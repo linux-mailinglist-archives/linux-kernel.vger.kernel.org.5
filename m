@@ -1,231 +1,155 @@
-Return-Path: <linux-kernel+bounces-142938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51CC58A3248
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:23:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44CC98A3257
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:24:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 74F101C22747
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:23:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AD85B271C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A743D148840;
-	Fri, 12 Apr 2024 15:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 009501482FE;
+	Fri, 12 Apr 2024 15:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bxVWIHeu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EwlkRM0C"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6988148827;
-	Fri, 12 Apr 2024 15:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993E41482ED
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:23:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712935331; cv=none; b=punu11N6u/hoq12nTm0WkvEUFIHVf3NPOIPq+uoTxbC+1tU9QxEy5GnZcWBU/Dp7K/X7Mh82X4rPIc86yW1zOdHRRCkEoNuIP/SHVV323HMrKtc16VKHSOc1wgz9JxdG8DEKXb7WSMz8Uy8JGH3uveJm4SQDoK1/xQGJ9/Hj3H0=
+	t=1712935391; cv=none; b=DcIq2uUcABInnlR4kacfMTzOgVzGlIS/V1j1ssp7fQ9TxOqG6I4yLEAjUefECdFynxax1I45s+zOXzsCr2vwnuP0WegaIZwNK5KgpZZ5MCTd7XszdC0H0iBZ+EwI0uqMfX6WupWakQfttaNPMADZnxIQdbKIu+o1dcnVTtCijI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712935331; c=relaxed/simple;
-	bh=GWI+u4qjsUPEJ+fxWTkTzIEPGmAcqzYbivpR7z2fEe8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sok5OjeJnyngF3Iq+8MjxRjPMv8SyQqtaDaLU2WpJ5+VPasMCkSwYpjkWybA+ObXPh8eIogAfxInL0AjB2AwvzJ3pTOtMNsugjTT/496CEESP2zX0FNyttO4mgNZeXTeNSMbhtOl4jAA8ghbB3vYiO21Ykj646/8UDo+/uBSjm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bxVWIHeu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E866C2BD11;
-	Fri, 12 Apr 2024 15:22:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712935331;
-	bh=GWI+u4qjsUPEJ+fxWTkTzIEPGmAcqzYbivpR7z2fEe8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bxVWIHeuV57J9RMesi0j36PpkdWXu7fFZsXHcxtjvg6SD6LEA/6CJeFxGGSWDNbFC
-	 xlFesC8XpFFDpWdfLiE8wAj3ULMWFO1fIn24Ot3T603B1raWNQGHEgRE1IlaQSDAEM
-	 XxCx9nzJLTPHiHxfF/x6ibt06xvWOPATwlovkvIoFKqbUxVAcdsOwBGJFq9IsVIrr+
-	 VnEmtedxD4mmSRHYFgwzikUR28XeeO1fsV+sf01HI1hw07yOPo7T28S6gmUqEDqlS8
-	 uLJntrlCKSEOYAFS1oJyhmzClJqfDJdGBMAzoeGHvs9eHxVcZA+izUoFnaHODMUu8U
-	 ioT9lwB3RMK8Q==
-Date: Fri, 12 Apr 2024 12:22:07 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the perf tree
-Message-ID: <ZhlRn0TUkcDaAZT5@x1>
-References: <20240402094116.79751030@canb.auug.org.au>
+	s=arc-20240116; t=1712935391; c=relaxed/simple;
+	bh=tYdbQHuWaeDgYGEpVnJFDxngCjS8l6C1canhCfQ0Cms=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QWPDmxsufMWeuvmYqLYoSb9FX4uLAq7Rx7fyxUQT7JzExSXkN8KTWYJKMu3h24YiqLZ5ga9Re7EddPN50Ex9avXoLrY1GbQ0nklhtrWdU2jXe+GA1dKvkrjz3ZjqbCWzqFf923uqZyeEi3kSZcVmwflPu7OHQOO9vjww+BrmBJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EwlkRM0C; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so1151979a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712935388; x=1713540188; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=dMjTSfSfGRkXpiU5gWnVdXpEg8tcWTYVZsG9FSy+vrY=;
+        b=EwlkRM0Cs+zt1p4Bm47nMKI9yGah8S6Gylr+mK3vZ9IQ9oS8BceWyhcV5zqY3C7Mxy
+         YADoNibCCAS1DZiOUg/pgicfapnTpR2hNKlnj2DMrhWTu4RnwoOgdeyQ6vDfrxUoaJeo
+         Fr1WsgkeaT/Fi10Wn9MOkD+XH+ma8HkW2DFL1wPgz0Kro+APCP6E3jahWOYgJChVyZxD
+         EfiP8MdVBdyabdfEha3BGGw8XgnctLNbbJXXpPW0XS+P6KvIfXE90eIdICSxSU2dJpgi
+         aZO//EwNEfwBQvY3BelUQCd/AGIJta5u1HiOCYB0J/KLL1zxzvu4j7nmAYXXON/890qN
+         3SjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712935388; x=1713540188;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dMjTSfSfGRkXpiU5gWnVdXpEg8tcWTYVZsG9FSy+vrY=;
+        b=uO1Ii+bl/BXF7Ii4ZmdrECXRaLBYIm0pjxEFA5GODrTF4Kwgl+XrYAOb8Q/nu0Pj5e
+         Ce6PpA2DdgwP1EKW7r/8e1YEit/pi6/l5SNEy2NwjAHwM8EZ7Kd+naz3rd7Ia/QNrify
+         5rHRyKhsGFCl16fquWbkhGntafymPt5pt2wXrOOI10p/oV5YM0yf6sClXyxWXfk3DiRp
+         WV/9AbjZi7J4Wwq9FBgHh6LQzuw6SLlQssoRJnavsjQklG8A4Er/nbYfawGUJvqkNw6B
+         SjaI1/3op+8b9fiJzGDOhah6Yv5TpNdaYMRCaiJUXd+MeDtxoeSuO7YG7k/3UM4sfr/p
+         pPfA==
+X-Forwarded-Encrypted: i=1; AJvYcCXIoVq9C20DWFxnpN0pQPRjKBBFR9U7Z7bE5/gwmVfhbvvx0erDj+sbs1ZFABez+uFRPDkrHjKZpvuhZoakaTbdJWj1pz2oQxKmYQ5i
+X-Gm-Message-State: AOJu0Yzu9ysWCi3VoqN4fAqMPQNDcJ7iNRzBuLc14D5HpqQX7Uc0sY2n
+	4JYSCDC8jMnVjcAxuagHaITQmcZVdDO9GLyzcABx03rv+nYQThTNXZtW8h0IXb4=
+X-Google-Smtp-Source: AGHT+IGB7l/5YB/IO7O3KUuqMWTWl5XDUHC+ou2bA3QoOIDrse6fmBz3yL+Zt5PXGL1tAxJ42OgVWw==
+X-Received: by 2002:a50:d59e:0:b0:56c:5a7b:5dbd with SMTP id v30-20020a50d59e000000b0056c5a7b5dbdmr1943944edi.15.1712935387916;
+        Fri, 12 Apr 2024 08:23:07 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id s24-20020a056402165800b0056e45917d09sm1755921edx.44.2024.04.12.08.23.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Apr 2024 08:23:07 -0700 (PDT)
+Message-ID: <65df3a1d-e7fc-453b-8b96-a461b8322113@linaro.org>
+Date: Fri, 12 Apr 2024 17:23:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240402094116.79751030@canb.auug.org.au>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: mfd: qcom,spmi-pmic: Add pbs to SPMI
+ device types
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Lee Jones <lee@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240412-pmi632-ppg-v2-1-8ac892b1bb61@fairphone.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240412-pmi632-ppg-v2-1-8ac892b1bb61@fairphone.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 09:41:16AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On 12/04/2024 16:22, Luca Weiss wrote:
+> Add the PBS (Programmable Boot Sequencer) to the list of devices.
 > 
-> After merging the perf tree, today's linux-next build (native i.e. ppc64le
-> perf) failed like this:
-> 
-> make[3]: *** No rule to make target '/home/sfr/next/next/tools/include/uapi/linux/stat.h', needed by '/home/sfr/next/perf/libbpf/staticobjs/libbpf.o'.  Stop.
+> Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+> Changes in v2:
 
-How is this built? Using O=/home/sfr/next/perf?
- 
-> Maybe caused by commit
-> 
->   f122b3d6d179 ("perf beauty: Introduce scrape script for the 'statx' syscall 'mask' argument")
-> 
-> or
-> 
->   a672af9139a8 ("tools headers: Remove almost unused copy of uapi/stat.h, add few conditional defines")
-> 
-> or a combination of them?
-> 
-> This is an incremental build but doing 'make -C tools/perf clean' and then
-> rebuilding works, so maybe there is a dependency missing?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-So I'm trying to revisit this, I did:
+Best regards,
+Krzysztof
 
-⬢[acme@toolbox perf-tools-next]$ rm -rf /tmp/build/$(basename $PWD)/ ; mkdir -p /tmp/build/$(basename $PWD)/
-⬢[acme@toolbox perf-tools-next]$ alias m='rm -rf ~/libexec/perf-core/ ; make -k CORESIGHT=1 O=/tmp/build/$(basename $PWD)/ -C tools/perf install-bin && perf test python'
-⬢[acme@toolbox perf-tools-next]$ git remote update torvalds
-Fetching torvalds
-⬢[acme@toolbox perf-tools-next]$ m
-<SNIP>
-  LD      /tmp/build/perf-tools-next/perf-in.o
-  CC      /tmp/build/perf-tools-next/pmu-events/pmu-events.o
-  LD      /tmp/build/perf-tools-next/pmu-events/pmu-events-in.o
-  LINK    /tmp/build/perf-tools-next/perf
-  INSTALL binaries
-  INSTALL tests
-  INSTALL libperf-jvmti.so
-  INSTALL libexec
-  INSTALL perf-archive
-  INSTALL perf-iostat
-  INSTALL strace/groups
-  INSTALL perl-scripts
-  INSTALL python-scripts
-  INSTALL dlfilters
-  INSTALL perf_completion-script
-  INSTALL perf-tip
-make: Leaving directory '/home/acme/git/perf-tools-next/tools/perf'
- 17: 'import perf' in python                                         : Ok
-⬢[acme@toolbox perf-tools-next]$
-
-Then left this there and merged perf-tools-next:
-
-⬢[acme@toolbox perf-tools-next]$ git merge perf-tools-next
-Auto-merging MAINTAINERS
-Merge made by the 'ort' strategy.
- MAINTAINERS                                                            |    1 +
- tools/include/uapi/asm-generic/fcntl.h                                 |  221 -----------
- tools/include/uapi/linux/openat2.h                                     |   43 ---
- tools/lib/perf/cpumap.c                                                |   33 +-
- tools/lib/perf/include/perf/cpumap.h                                   |   16 +
- tools/lib/perf/libperf.map                                             |    4 +
-<SNIP>
- tools/perf/util/vdso.c                                                 |   48 +--
- 186 files changed, 7217 insertions(+), 3829 deletions(-)
- delete mode 100644 tools/include/uapi/asm-generic/fcntl.h
- delete mode 100644 tools/include/uapi/linux/openat2.h
- rename tools/{ => perf/trace/beauty}/arch/x86/include/asm/irq_vectors.h (100%)
- rename tools/{ => perf/trace/beauty}/arch/x86/include/uapi/asm/prctl.h (100%)
- create mode 100755 tools/perf/trace/beauty/clone.sh
- create mode 100644 tools/perf/trace/beauty/fs_at_flags.c
- create mode 100755 tools/perf/trace/beauty/fs_at_flags.sh
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/fcntl.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/fs.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/mount.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/prctl.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/sched.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/stat.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/usbdevice_fs.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/linux/vhost.h (100%)
- rename tools/{ => perf/trace/beauty}/include/uapi/sound/asound.h (100%)
- create mode 100755 tools/perf/trace/beauty/statx_mask.sh
- create mode 100644 tools/perf/ui/browsers/annotate-data.c
- create mode 100644 tools/perf/util/disasm.c
- create mode 100644 tools/perf/util/disasm.h
-⬢[acme@toolbox perf-tools-next]$ 
-
-And:
-
-⬢[acme@toolbox perf-tools-next]$ m
-rm: cannot remove '/home/acme/libexec/perf-core/scripts/python/Perf-Trace-Util/lib/Perf/Trace/__pycache__/Core.cpython-312.pyc': Permission denied
-make: Entering directory '/home/acme/git/perf-tools-next/tools/perf'
-  BUILD:   Doing 'make -j28' parallel build
-Warning: Kernel ABI header differences:
-<SNIP>
-Auto-detecting system features:
-..                                   dwarf: [ on  ]
-..                      dwarf_getlocations: [ on  ]
-..                                   glibc: [ on  ]
-..                                  libbfd: [ on  ]
-..                          libbfd-buildid: [ on  ]
-..                                  libcap: [ on  ]
-..                                  libelf: [ on  ]
-..                                 libnuma: [ on  ]
-..                  numa_num_possible_cpus: [ on  ]
-..                                 libperl: [ on  ]
-..                               libpython: [ on  ]
-..                               libcrypto: [ on  ]
-..                               libunwind: [ on  ]
-..                      libdw-dwarf-unwind: [ on  ]
-..                             libcapstone: [ on  ]
-..                                    zlib: [ on  ]
-..                                    lzma: [ on  ]
-..                               get_cpuid: [ on  ]
-..                                     bpf: [ on  ]
-..                                  libaio: [ on  ]
-..                                 libzstd: [ on  ]
-
-  GEN     /tmp/build/perf-tools-next/common-cmds.h
-  LINK    /tmp/build/perf-tools-next/libperf-jvmti.so
-  INSTALL /tmp/build/perf-tools-next/libsubcmd/include/subcmd/run-command.h
-<SNIP>
-INSTALL libbpf_headers
-  LD      /tmp/build/perf-tools-next/libperf/libperf-in.o
-  CLANG   /tmp/build/perf-tools-next/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o
-  AR      /tmp/build/perf-tools-next/libperf/libperf.a
-  GENSKEL /tmp/build/perf-tools-next/util/bpf_skel/augmented_raw_syscalls.skel.h
-  GEN     /tmp/build/perf-tools-next/python/perf.cpython-312-x86_64-linux-gnu.so
-  GEN     /tmp/build/perf-tools-next/pmu-events/pmu-events.c
-  CC      /tmp/build/perf-tools-next/builtin-bench.o
-  CC      /tmp/build/perf-tools-next/builtin-annotate.o
-<SNIP>
-  CC      /tmp/build/perf-tools-next/util/bpf-event.o
-  CC      /tmp/build/perf-tools-next/util/bpf-utils.o
-  CC      /tmp/build/perf-tools-next/util/pfm.o
-  LD      /tmp/build/perf-tools-next/util/scripting-engines/perf-in.o
-  LD      /tmp/build/perf-tools-next/util/perf-in.o
-  LD      /tmp/build/perf-tools-next/perf-in.o
-  CC      /tmp/build/perf-tools-next/pmu-events/pmu-events.o
-  LD      /tmp/build/perf-tools-next/pmu-events/pmu-events-in.o
-  LINK    /tmp/build/perf-tools-next/perf
-  INSTALL binaries
-  INSTALL tests
-  INSTALL libperf-jvmti.so
-  INSTALL libexec
-  INSTALL perf-archive
-  INSTALL perf-iostat
-  INSTALL strace/groups
-  INSTALL perl-scripts
-  INSTALL python-scripts
-  INSTALL dlfilters
-  INSTALL perf_completion-script
-  INSTALL perf-tip
-make: Leaving directory '/home/acme/git/perf-tools-next/tools/perf'
- 17: 'import perf' in python                                         : Ok
-⬢[acme@toolbox perf-tools-next]$
-
-⬢[acme@toolbox perf-tools-next]$ ls -la tools/include/uapi/linux/stat.h
-ls: cannot access 'tools/include/uapi/linux/stat.h': No such file or directory
-⬢[acme@toolbox perf-tools-next]$
-
-I'm not being able to reproduce that problem, can you see where am I
-doing some mistake in the above steps?
-
-Thanks,
-
-- Arnaldo
 
