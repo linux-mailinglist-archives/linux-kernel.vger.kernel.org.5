@@ -1,209 +1,174 @@
-Return-Path: <linux-kernel+bounces-143090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF498A33FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:41:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAF578A33FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:44:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43742283366
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:41:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 031871C20E5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F78914B065;
-	Fri, 12 Apr 2024 16:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="t9TVPmkk"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2058.outbound.protection.outlook.com [40.107.220.58])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05EB314AD31;
+	Fri, 12 Apr 2024 16:44:27 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3F314A639
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.58
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712940103; cv=fail; b=oA/WS+q4m4pfdH71fwHPT/jqW9/bVxohChTwIj0J2zJwq9vxwInSY684Mt9YJwNgU0zYJ0LKSGifOb39gYlaSDuTb1yMRj11xzJcBhyCAYV6kVELtDNNrRwSouH4Agqr8XZMNKzkxJLgjGN7IWBWDUvbcWvlW1ylTZ8j0WQGncc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712940103; c=relaxed/simple;
-	bh=khwp501lEkYw69vMTX/J71LogpBNZvaXqcWXfBsOyYc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=tom0tvVMZwAW2Nsb9VD1b8OA73tlxqXtvTQaS8c2Ge1R12MKzHi9qAcJghbgTtsnkFCh/CgbIAq1UhSxDaSiYtj2IsGgVn1exS1sWxr0w6yHD8+tUc4qzYKlpr/OTxq2LNtdzm7BZPV68GQhy8mmMlJQ+d2OPJXt4xFG8M2SvgM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=t9TVPmkk; arc=fail smtp.client-ip=40.107.220.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OCugSR6MtlKDDmLK4S6r6HO8SkN8IGkhE4j7uIejSQCuYKx/cteiiSS/59B6qlwZBpXRQA+RAsrnWgHXZDVRvYnL6KJ3NTDkZ6zQPO/BYzDiB+6QjSGCftoSgsW8YCW/VZpLqDKUDeqxUkaK2ZP/L2rElP03R9f+DOv3ODwGPZYXCRg86BLl32krPim5+mV2nSuiiCuSDXRKit0CyvCQLDvuU8wYDpSLqB6pwvABIrihxmfZ8zu0IDFl32qObE177tZufeeJDrbgLKA6KlONEJpiMiHD01HFjYK+0RYyktvqJBPVr85VWgWlZZpikKjLHhjqFG9dIF5wCJpUxEBSSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0GxZ7oEB1zgfrI8VkstbellCVYAHoGYvwF0gzkJC25c=;
- b=dgUBDpJlbLAI8JrWFYSPs52DiFWemsAZlfnF55Q5e5HO1APKVIHRRnv1dCZkphWwsljf82XWhrimTUuk2oAvmpUdU00TchCBNuXY2Rp8i5zbdTCDO94uJBoMKdFzlRywgYhNw7WWDELRbnrYAoAI7CvX6048Kv7vz+Hb6nbmc7Zgu9T+MAeTxDGBZ2ajjyLg6baoEg7zv9Oj47v0HzwzzZJIIy5cNOOtDjL8Va07t5sxGbpgVGQLWpqZnmLZomN/JHwPMNnhue7Eyg/NZu3heTYx1+O1T3p4rPT4B6axIVYnhVyy6GBhCy532P362plmOCCtSeAu/erQE5JNggmeLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0GxZ7oEB1zgfrI8VkstbellCVYAHoGYvwF0gzkJC25c=;
- b=t9TVPmkkJlyv7f6ZYzXN97QU0p35RflVoXQ4RYacVWkLh2kVWDn5d+r53yJCRBfWlRXwQjOatO8kDIWbohaHah80nBJH8YdAVKccMvtWsyKU5/S64omlJL88825rjxQREq+1zt+fyRi1wQnv8yYa4YfjAc73o+A0os8xb9X1Mfc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB2810.namprd12.prod.outlook.com (2603:10b6:5:41::21) by
- IA1PR12MB6580.namprd12.prod.outlook.com (2603:10b6:208:3a0::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.46; Fri, 12 Apr 2024 16:41:38 +0000
-Received: from DM6PR12MB2810.namprd12.prod.outlook.com
- ([fe80::8af6:1232:41ce:24a3]) by DM6PR12MB2810.namprd12.prod.outlook.com
- ([fe80::8af6:1232:41ce:24a3%7]) with mapi id 15.20.7409.053; Fri, 12 Apr 2024
- 16:41:37 +0000
-Message-ID: <f0117eab-4e58-3d59-961f-f8f44a146605@amd.com>
-Date: Fri, 12 Apr 2024 18:41:27 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 02/14] x86/sev: Make the VMPL0 checking function more
- generic
-Content-Language: en-US
-To: Tom Lendacky <thomas.lendacky@amd.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, linux-coco@lists.linux.dev, svsm-devel@coconut-svsm.dev
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Dan Williams <dan.j.williams@intel.com>, Michael Roth
- <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <1b0d8ec8e671ad957a2ad888725ce24edeedf74a.1711405593.git.thomas.lendacky@amd.com>
-From: "Gupta, Pankaj" <pankaj.gupta@amd.com>
-In-Reply-To: <1b0d8ec8e671ad957a2ad888725ce24edeedf74a.1711405593.git.thomas.lendacky@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0430.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:d1::20) To DM6PR12MB2810.namprd12.prod.outlook.com
- (2603:10b6:5:41::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD5282C60
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:44:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712940266; cv=none; b=NNrK5T0H70TqzfRGZndXz52CU1utYFQX1aOyH5cQRMKfqgZbccoIt3bZw0M6UrdvX2grHeVheskyRW+qe2H+nJxEHCOkbID1yAVkOLaiF/ROUOdUyzl9bYe6zcCdUqsfyNqsTz9vq2oO4HJ47XOTNaf+yLUWU3J3itBRZlnYRvc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712940266; c=relaxed/simple;
+	bh=PvyKfVWllgQGZr/dfeKzFG//s8ySvJWao6OY6g4kPs8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NI48Dqlv7ymmJ0k9QXuHIhaNIQ1qCsrUEiK6BtUn454xFeqoETVSiQ+RFqyGUhB0U9NOPKM0TVQcbH5x9PEpLcV7erE5F2d/EGEH/Fj/gYqOiAGTcYyG7woRgN5n2l8V6nMfj4EQXe6Xa+rj4PHnKyKTtX5UFY3AMJd0TJUekjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvK0c-0005vG-47; Fri, 12 Apr 2024 18:44:14 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvK0a-00BuUQ-K1; Fri, 12 Apr 2024 18:44:12 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvK0a-000HtE-1h;
+	Fri, 12 Apr 2024 18:44:12 +0200
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Raag Jadav <raag.jadav@intel.com>,
+	kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] driver core: Make dev_err_probe() silent for -ENOMEM
+Date: Fri, 12 Apr 2024 18:44:05 +0200
+Message-ID: <20240412164405.335657-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2810:EE_|IA1PR12MB6580:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5701cc38-0391-4e7e-6ac1-08dc5b0f6c13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	67+88tm7yBrF5XZxBsNGPbKXleAqA0NYxeERe5dfsoYuXI4lopbivM3A2eSbuqZlRmwKTtZfNitm3zR6+dX8TK4uCiOJFDmozQGMFdEyUyYYDfZCt29nNpkOCRyKDIAlr7rNbhMYeGl+rkMcCfdKjTyWEmHePQFrgXd2byVmSYEvuJKjdnq0PStLaOoOJuSqLWEDVcUfmoSPgFrP2Q2cjCOPBikdQ4kpH+DMbvhdikkYcDTXMi3tDLZcpOzsTM8nnrVYwk19Kp900z7/OiI6jS7Ol3pJMbsJl6p/a5AFwEtVSlcqE6KsjGVINyIX9uAg/BAR037+H3mIkRRnhnD2j6V1BlSbUoJkT17ksKRlIlzNxfZ6v82k0oGaXwfPl46PYETextsAJMc4DO+BHlqN25f6pdzpGeyf7DLW9yvS9GRRq/L1zfEuaubwuG5fdMn8i1MTN/HFJiERvaOwfhkZnFAtl68uCZAv3nkYA0kNT9BEYSBml/L97GFlhnE+lCeMgYBjhW+gklhC7NOk8vmbmJ/uoisp+Ty2IA0pXYAmzF9OJVdXwNLgor3TGFTZiU7Rf8ri5yXofYMjvzqAxPR2+f35Rmu1cXrTH6mdAEy1L/+Mt2ILI4cVTWUVMDye415O1MCYUq34Dnlht5Z8pST6De+Q9nYvsHv6DIuRnmj36gU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2810.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cDhDUDFuOFdhYTZ6YzY0YjU5ekg5bzNhREtnWEtKY3ZoNmxkK0cyNm5DR0tE?=
- =?utf-8?B?cUswSW1BL0dEdS9xYTVhemN2clVNS2lERDFEUUVSL1B2Y3E1QVM2aEFxKzJW?=
- =?utf-8?B?QWhFdkpJb0FIbS9md0s4Qlp6b3ZxMVZGMlBGbE5pTzJlTXdYOTdzUWMzVGxS?=
- =?utf-8?B?SW9MV1BKSnRmWGtXczRGZ3ZYYVRYTkQzRzlwU1RINGFQZXg1MFNmeExQKytj?=
- =?utf-8?B?Q0dQNmRkTVZ0RlRPaGhRdmk1cXBXQ0NqYlQ4YTVKVVhtd3pCZ1FWWkxuS0sx?=
- =?utf-8?B?UXI0TjhFaG9MTDY5N0VNQlNwL1ZFMUY2a0piUGZMSndRalhzTWRiNUdjUHFi?=
- =?utf-8?B?MTFCdjMzQk02UHJRL2s3SGtqc3NTSk9LakZmbStaWEU2RlVYNUlSbEZDKzB1?=
- =?utf-8?B?YTlyVldwb21UL1djTXdML2hRZGlwRGVuUloxVDVDVVptd3N3NnlPcFBqS2Fr?=
- =?utf-8?B?MDBkeTR3cEZIS3NCMldybGVIeTlJc1BXMWNsL1lUT3NMZTZYTjVZYUFzTFA1?=
- =?utf-8?B?aXNmUE1OK3JvczI1VkgyLzFKZkJNVE9HTGh2QStFajhaZXNpNUNHYjhjM2Jt?=
- =?utf-8?B?OTNpY3FEVjJWZnNydXBzSVN1VE93VlNxdThscmJZc2FFSnlNOGszSGFmVUZt?=
- =?utf-8?B?Q0pEaEswaU5VRGhmQVFOWnBnalRWVjNDNTBpRUhnczZMOGIwZ1hITGxGNUVO?=
- =?utf-8?B?Mk1Xdyt3b2U5YmRJU1hjSTd3QlRIN3VhN0tyWkFoeml0NkF0L3ZMQWlkRUsy?=
- =?utf-8?B?YWxoYmhKandUT25MbE5rUjlTRHNJdjltM0phQitIVkc3c1B3dG1Hc2dkN0ta?=
- =?utf-8?B?WHdXS0FQRUZjd3Nqcm1BVjJTeU15MEFob1JaQnVteVdwc0tTeVczNjdXSlFh?=
- =?utf-8?B?bzZNTXRKVDYrODIxdG9TRThwQzMyaDI4M2pLNHc4YWMxUGpNSXVxUDFjeW5E?=
- =?utf-8?B?SmJTWUVYWUJBVHVhK1V2WHdUYUZiZFYzV0paR0toeEZlZENkcWFKbnZRVFdl?=
- =?utf-8?B?VjR4c0lEcmN0TG05YWlDUjUyTytXaGpNNndTMGpxWVRuUjdzTGtJNXpmQU0y?=
- =?utf-8?B?ZnNNZzhEOVhuNmtOaWlPZFd5R2k4M1FhR1V0dHdRdVF1MWtDcjhNRk5mUGNR?=
- =?utf-8?B?TUxzSEhTOVpjRlg5RXZEa2ViRFZvcWNZWjNMNFUyaXRLYVhKWjlsa2tOSzZM?=
- =?utf-8?B?Q2JxMGlIVFA0Q0h1R0x3aTdhS0FxU0NtSmdRc1Z5cFdwWUdOZ2w4S0VnK2lw?=
- =?utf-8?B?OGZibVE3dXhGRzZqSnQ2MWx1U0owVTFHOW4zUXhwN3pUb2NqQTczb01vekhK?=
- =?utf-8?B?aW1uTGFoek1HVUZHdmVGbENtSk91RUxSbVBuQVQzTEsyWlc3K2tJaE0wRWZT?=
- =?utf-8?B?bDhUYnBoWXlwTExqaWFvYnpUbE9YN2lHVnd1clp1UlQxeWNKUUpoWGFCWHlW?=
- =?utf-8?B?eEQ4ZHN0WHhRNCtyYktwSUVCNWF1QWdFajBGSFVSbUQzNlZ1U0VSdTNIODhX?=
- =?utf-8?B?RG9UekZKbDh4Y29jVXRUMWgzeXdlWWZJdzJTWkVNUy83OXlndVlYVTZkRG8r?=
- =?utf-8?B?cVJNb21xWDNmVHpFTVRFWnRkL203blFZWi8ySzlVcWxQeHlmWUs0TjluVUsv?=
- =?utf-8?B?aHA5cEdMWVNVOUhScHR6aXFEcDRmZ3I0RzdxUVhuTVZMM1FTWHFLdDIwOGVt?=
- =?utf-8?B?K2o0bnlkQXdaZ1pIYUJlMUJwSmxzSXFCUVIvSnUzbWNSWjEyQXJ1akN5OUk1?=
- =?utf-8?B?V0JHQkRQYlU3eitaN05UT3JJbE14dEw0Yjk3dEpHVG9ZYm5yS0V1VkkyR3Ew?=
- =?utf-8?B?Y05rSUZxT1VXWTluSFh1eUNrTzNWUjBNRDF5TjhLSXF0Wk5lbWZQeWdUVEpK?=
- =?utf-8?B?aUx0bTNVenZPN0s5R1ZKSyt2aGJZVWR3QUdPWVN6ZE9IMCtuaVZaMzJvSzlN?=
- =?utf-8?B?MURDWXNLa0Q3dVlOd3BSY0czdTMrNmk2OGJBZkEzWmRYeExQRjAxRDk0Z1cz?=
- =?utf-8?B?UkgyaFF5SlpJZnZya2pOcFNBV2ZLSEpRQ3B3YWtacFliVHpTQU9iUjVKR01V?=
- =?utf-8?B?dVBJNjQ1TzlwU0d4VWo3eWc5dTlQT041aktoRWZRTXBXVHRyTGxMYlEvYXdT?=
- =?utf-8?Q?fPqmmrOKMQOZxXqtDL9Fsye2W?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5701cc38-0391-4e7e-6ac1-08dc5b0f6c13
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2810.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 16:41:37.8549
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1zvdsC56l8YWpGxvU4aheAdtFgFASlXzkWx9lIGHPqbfbmz4wtvHWvFzxSaoiMz3WEKuxV4CUvUgPe5z7mUNKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6580
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4770; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=PvyKfVWllgQGZr/dfeKzFG//s8ySvJWao6OY6g4kPs8=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBmGWTWEZnGJxWQ2Vu3mBBFM/2kzByXuf0paJN7B ebA5pQ1BLyJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZhlk1gAKCRCPgPtYfRL+ TmCzB/4zz7NR2ixmR5CM1FszM/T0qofmZr5FnZU7l4aQRaRZ79iPxVQp90P4Wa8+Zn05iX7dqu3 di1xl2JXPMYtE2nHTF0OlyBDIBSHVC3o0IthEltnZzvXCCFxlefNrDB7Q8Ah44VQTO+udvxSrT4 jFeOOEgULtUo8npnUshzR4IUkAO01tliYW9o+W2IgDVKu/m1h6Vkxi6CLgtiO2mdpovWQ2JKGN+ tTnAdfuHSLAUIIGTgfK2yB+0qGJq0MCudwWiDCi6+07ER950k1tVbLy8GJL4zVsQ2tiO6u0//+i jrXgOkSiYOAYoViMXQ4NI5EruRdvXwaWDn9dNRErucyCR4GW
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 3/25/2024 11:26 PM, Tom Lendacky wrote:
-> Currently, the enforce_vmpl0() function uses a set argument when testing
-> for VMPL0 and terminates the guest if the guest is not running at VMPL0.
-> 
-> Make the function more generic by moving it into the common code, renaming
-> it, allowing it to take an argument for use in the VMPL0 check (RMPADJUST
-> instruction) and return the result of the check, allowing the caller to
-> determine the action taken based on the result.
-> 
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+For an out-of-memory error there should be no additional output. Adapt
+dev_err_probe() to not emit the error message when err is -ENOMEM.
+This simplifies handling errors that might among others be -ENOMEM.
 
-This is preparatory patch for patch3.
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
-Reviewed-by: Pankaj Gupta <pankaj.gupta@amd.com>
+I had the idea to make dev_err_probe() silent for -ENOMEM for a while now. 
+Triggered by https://lore.kernel.org/all/ZhleDwUJLDEG5QwH@black.fi.intel.com I
+finally implemented this idea.
 
-> ---
->   arch/x86/boot/compressed/sev.c | 13 ++++++-------
->   1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-> index 5ad0ff4664f1..49dc9661176d 100644
-> --- a/arch/x86/boot/compressed/sev.c
-> +++ b/arch/x86/boot/compressed/sev.c
-> @@ -335,10 +335,9 @@ void do_boot_stage2_vc(struct pt_regs *regs, unsigned long exit_code)
->   		sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SEV_ES_GEN_REQ);
->   }
->   
-> -static void enforce_vmpl0(void)
-> +static bool running_at_vmpl0(void *va)
->   {
->   	u64 attrs;
-> -	int err;
->   
->   	/*
->   	 * RMPADJUST modifies RMP permissions of a lesser-privileged (numerically
-> @@ -347,12 +346,11 @@ static void enforce_vmpl0(void)
->   	 *
->   	 * If the guest is running at VMPL0, it will succeed. Even if that operation
->   	 * modifies permission bits, it is still ok to do so currently because Linux
-> -	 * SNP guests are supported only on VMPL0 so VMPL1 or higher permission masks
-> -	 * changing is a don't-care.
-> +	 * SNP guests running at VMPL0 only run at VMPL0, so VMPL1 or higher
-> +	 * permission mask changes are a don't-care.
->   	 */
->   	attrs = 1;
-> -	if (rmpadjust((unsigned long)&boot_ghcb_page, RMP_PG_SIZE_4K, attrs))
-> -		sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_NOT_VMPL0);
-> +	return !rmpadjust((unsigned long)va, RMP_PG_SIZE_4K, attrs);
->   }
->   
->   /*
-> @@ -588,7 +586,8 @@ void sev_enable(struct boot_params *bp)
->   		if (!(get_hv_features() & GHCB_HV_FT_SNP))
->   			sev_es_terminate(SEV_TERM_SET_GEN, GHCB_SNP_UNSUPPORTED);
->   
-> -		enforce_vmpl0();
-> +		if (!running_at_vmpl0(&boot_ghcb_page))
-> +			sev_es_terminate(SEV_TERM_SET_LINUX, GHCB_TERM_NOT_VMPL0);
->   	}
->   
->   	if (snp && !(sev_status & MSR_AMD64_SEV_SNP_ENABLED))
+Best regards
+Uwe
+
+ drivers/base/core.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 4d51928c4088..8f1914ca6b6e 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -5054,11 +5054,22 @@ int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
+ 	vaf.fmt = fmt;
+ 	vaf.va = &args;
+ 
+-	if (err != -EPROBE_DEFER) {
+-		dev_err(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
+-	} else {
++	switch (err) {
++	case -EPROBE_DEFER:
+ 		device_set_deferred_probe_reason(dev, &vaf);
+ 		dev_dbg(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
++		break;
++
++	case -ENOMEM:
++		/*
++		 * We don't print anything on -ENOMEM, there is already enough
++		 * output.
++		 */
++		break;
++
++	default:
++		dev_err(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
++		break;
+ 	}
+ 
+ 	va_end(args);
+
+base-commit: 4118d9533ff3a5d16efb476a0d00afceecd92cf5
+prerequisite-patch-id: 950b86247f1ba5dfc0396d9777d83e641ff62c35
+prerequisite-patch-id: 59206f0661ac45767ecf89a11ee57a0f9ee26b3c
+prerequisite-patch-id: a3ca2b5359cf23a48ca505280d967f02d9ce356c
+prerequisite-patch-id: 2b7c70d39b660d374794bac26e7b5e9a7f26da8f
+prerequisite-patch-id: 569cb54f9b2390be8d51979045722462e0b63f2d
+prerequisite-patch-id: edc1f62b9d5c0e658c7283bd3353d2004a0c1fbf
+prerequisite-patch-id: 8201835ed22aa6956d219d84299f9226fb8254c1
+prerequisite-patch-id: 07772cf036deb3150560629bc287510901e90f24
+prerequisite-patch-id: d84360cad6a23ccbadc1205541ffb218fa589ba7
+prerequisite-patch-id: 79e7647450348ef0cca53af2bc5e5a0033dcec57
+prerequisite-patch-id: 45568b19e28a0cb3f46699ff945adc654eda07d2
+prerequisite-patch-id: 7daf4547e4b3785959e0c024ce95141cd1d936da
+prerequisite-patch-id: f3c1f5b72e3b503760d4b70bb661ceb8381c4822
+prerequisite-patch-id: 5e0cca8fff7c73448710f42e711eff5a863b8a31
+prerequisite-patch-id: 188bb3126861dc5027e5a0af78370ef8bb66fd8a
+prerequisite-patch-id: afaee9f242fa90b29a3b8e971d0cbfd00269ad2d
+prerequisite-patch-id: 5e815580f4d875d8720236fc016f6848d75b3cc9
+prerequisite-patch-id: 0fd48f45bc44d66c9ca01b03d570fea876fc4abb
+prerequisite-patch-id: b63f367f8354d56916d33c4236c79cf8e1c7d67a
+prerequisite-patch-id: ea68cb08a89ece1fb288f08d8c72ee7bdc378e79
+prerequisite-patch-id: 0fa92154ed986e765a41079f5aa441ae0ab4683b
+prerequisite-patch-id: 8eca4420a223355531ddfc5331729feb5fff9812
+prerequisite-patch-id: d72dbdaa1f3f12e970341277e7e5bbb8da15f228
+prerequisite-patch-id: 7699990bf345e9551251211ee798f3b93c257d24
+prerequisite-patch-id: 168172f0fec6fcf334cd6cc600749afd57ade8a1
+prerequisite-patch-id: 96a01bb6af22da23b4e7acb5897117db959e8a08
+prerequisite-patch-id: 82222b0c579003169bcc1f1d84bb34956655cfb0
+prerequisite-patch-id: 075db535154891b70ed4e659588e9294e06a5f38
+prerequisite-patch-id: 83c646c3aa4ef3578e0fcd86ffc395b51cc47763
+prerequisite-patch-id: 4b8d2995e96ae290599d752cf1c1d2537e47bfab
+prerequisite-patch-id: 5915e9d3dd78f832ab0017c81df770f443b32169
+prerequisite-patch-id: dba378294fcb0aa72ee6bbace049c3ecc2b97bcb
+prerequisite-patch-id: 712d0c765bdecbc60d72e62b10b329b525dfd16f
+prerequisite-patch-id: 85e037f468c34b7a904f926e0cc555d7863c2cc7
+prerequisite-patch-id: 4e475984306a28ba367a171a6450bcfb07d0eb3c
+prerequisite-patch-id: 40b6db6c8d4e5bcaab64ce1afd53a79586f3df0b
+prerequisite-patch-id: fd4da5ff37eba383f7de7dd219cfcb297155b654
+prerequisite-patch-id: b076059966b15d0bf1c8282f48502299987b628a
+prerequisite-patch-id: 6b4540ea605fc3feb59128abee429c870b506da5
+prerequisite-patch-id: b98d4896c4dbc26adb898815c3e10722796bc9ca
+prerequisite-patch-id: f82322e104e3194c77b66a2ab2e465dd2a162d65
+prerequisite-patch-id: 3c719132de0cc72d3e548b5f3623cccb28a74ab5
+prerequisite-patch-id: d23e9aef7476d7f0976a9d8919c8474a5f91c20c
+prerequisite-patch-id: e725b9cf221da371b19d5aef5d1b4a5e813a19ee
+prerequisite-patch-id: 932d88887d4028aee27a809eeb89d1dc7835acc8
+prerequisite-patch-id: 48554c57f1d06553af3ded861ebf9b88ee6b03c4
+prerequisite-patch-id: c26315d8be3a746b04dea921d41c903d054b774f
+prerequisite-patch-id: fc598d2febb873efbaf53d4abfba4fe9c27aee52
+prerequisite-patch-id: 77b58bda743a1fde9b0b040f7832ec3d5853ea75
+prerequisite-patch-id: a64b4850058cd9189ccca081847f8908dbf91ae3
+prerequisite-patch-id: 73a6bb8ed4e20eb90127f1c2e6361d52ae17791c
+-- 
+2.43.0
 
 
