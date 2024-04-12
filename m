@@ -1,95 +1,84 @@
-Return-Path: <linux-kernel+bounces-142042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390548A26AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:33:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 542728A26A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:33:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7C7F1F248A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:33:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ACB5287B39
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A564653C;
-	Fri, 12 Apr 2024 06:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADB85168A8;
+	Fri, 12 Apr 2024 06:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="umEAK5SR"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ueViv4fc"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D3540BE3
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FA18C15
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712903573; cv=none; b=tZjHUw9cIzHnU/WqCH9DqxwPiYHw6t6WZhNZyVY3IYAqcBcnw880TuwKj4gqjiTLY/ud7olnfleF6th+TEAz1KgdTpVj3y4ExW+gHYGEqOph1mXzm8igmXYSP62ztSPmPx4oQoUewrDiUrm4Oths9h9AaLbbSiwltAAHTzSnqzc=
+	t=1712903572; cv=none; b=Q7tK0zR9t7OPL+aTWJZm2fQEb11/prcWFSkcFDEckdrejfJ6WFlenbcAljHt5tvfjVWFUkeK4rL0IEgxBQkeX9k6eMvWeBkMB68+mwuJwBDvDeBZSpV58POxxLKyKYMubCo3KefKYHcLhhycsj/+RfZrGCE1xmHvyMe95gNeP9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712903573; c=relaxed/simple;
-	bh=bwU006iDRHmLpYECYxI0IIeu6Yfiw/jYFKnkfTxSxBA=;
+	s=arc-20240116; t=1712903572; c=relaxed/simple;
+	bh=uxgkGq0IyS6tdhfrvKhR3900zGHBdDLE3NA0/IJa7u4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sPfriigioYFfNiRyXtyB3JgXiCHNPo690jatRy5vadhTA1jAuxUhRIhx0dAT3idSoN1njhj7mf7S0sp5mFAWdoftbCxdj/IHd1HDecp71V01X1Hxve6o9DVwCZhsdoFpjgkV8msb8/Y9Ner1B4NMI5oLzocCj/nuhBW+4mmzKAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=umEAK5SR; arc=none smtp.client-ip=209.85.214.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=uuTO9NExv4bnPnyMIxz6B+LyKe/4JssXHX4W1ofRB18uaE6ISJGlymcWuJToKzI8bZabBO6xJzLoBOYj1UejZdd2PoxcBkkYJujne/t2aNsIwzucS/CjxoQxUZl5pWm3Oj5IUH+mvSt+pXMoWLfdipt+o24W+0F0NrmKrPFmtM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ueViv4fc; arc=none smtp.client-ip=209.85.210.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e3c9300c65so5860465ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:32:52 -0700 (PDT)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ea2ac4607aso371461a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:32:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712903572; x=1713508372; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712903570; x=1713508370; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=OZ1TSm7GFHa2Ucou+5Iv5f1vxmDGk25rrnqUZSXXWQw=;
-        b=umEAK5SR7rvEjnN4/z50FpxC8TdW/Pf6APRnLK49BddjBpnjZCno0PAVDYA1fCcO2F
-         k6IXDlgFey5CIYP66FoJABZIyXK1MwAMC0R3LU76KGAlA05OMhS12NmfA0idJS14fk1u
-         CWZneYuDBYM10I36PrRjU41en5cZtfxmzDD9PKuKICgScMl7hbPbWlIDQXvNF1Hdu/m9
-         2bMbyS3nDP/ZQ3kZHcNSa/h3bDWcCaDLBy7oYb3rBMnTqRv8JAHoyS/vSz4rUQpgI1m0
-         f7en9r8gy9JSrk/DF4bnjTK3jTrmKsm3NlbFotiIREcDh+7ZKPZbulkqgfpeCNwfk4c1
-         683g==
+        bh=1gOcCS7A/vf1M4eu5npCTxNSh214bCEI8cslchyUmXs=;
+        b=ueViv4fcJ+UKCH12lF9EWdGk8miFn+ZBZYjTAFy6/WU92xkPAoadlvU9xIeZIuFTm8
+         2yFEQ8TmBnf4RjTlj5Wlz96Tys/I0niRHWDzoeaJdKHMxelurbg8Ejv1Y9LMFB4JgFRl
+         FQJzUK0Gv4EKnVsfHikd7VZUCR34LIcOzOFRF3SKMhy1BUX+lM9Nqi+4K0rO9xoZtTOS
+         jk3Y0ui2EEVgBXpUzYjpLnUZZ+cFUjZ8R5phHKlthOOd4+RkFi2fcHjUg8koDRBUw/Jw
+         bcT+N2UXqVCB4ALUWbTaCvJgTFmBerk9r2z1NXPxRxUgTMHXgcKNGBkGLAqxQTIhIdb+
+         jx1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712903572; x=1713508372;
+        d=1e100.net; s=20230601; t=1712903570; x=1713508370;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OZ1TSm7GFHa2Ucou+5Iv5f1vxmDGk25rrnqUZSXXWQw=;
-        b=tcpLFANQ0lMepXY5KdYY0dXvqfwWcVPdVMCQif0m4IaQvMBI4z+hI2lYMNhjKNMrny
-         LWoaCY30BAAaLHji5P/8swXuwLfwz48VQ2b4EFVawXkZ91vFHfOfRNIsSMYmvtzVulrJ
-         cPnJZvPGRrlVUEWb4tuF1YdJkmB2LfcsU9tw74YxwE65BCFN7quNQpTLbFKqC0aCqVe+
-         1OqzAJOni59CVBGDi61z8kutrWPce9DrNyPMJV0mt4wQ+hqj/XrwUiwaKtxUyHGTUBNZ
-         Fehxolfbx6afIYOANQk8h4L40V5mNf+sIR0hgaRphI/4Xr3ityWUNukTFe5YfeKzmwbr
-         INEA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+Oa0oOUznE4+ZgV7AA/A6lH4SS0f8XRuUF8NfXT6TVTQORFsDZTELB3AF+5L5+rU7mw1jKpAv6/AbxhlOJhRwM6Qq442g/ztHQr7F
-X-Gm-Message-State: AOJu0YzKOWn9PFLJGbhn72tEicEYI29IhLGo27c8Ll0vPe3703jsqDln
-	ux5vuzfupsd5vlIIyCCcUy1Ld/Q792P4BZ6GEyLqpC3ESSfLdw2Gs7bFA5bV/rCOexQ4AchnfuE
-	=
-X-Google-Smtp-Source: AGHT+IFtWVDd1JybnaegLu2KjmDMDdAP9N33LYJF44OL052ORmXPnpbkzGfYpmuz2tVoN9tuYOItQg==
-X-Received: by 2002:a17:902:ccce:b0:1e5:4fde:15f with SMTP id z14-20020a170902ccce00b001e54fde015fmr2031560ple.7.1712903571591;
-        Thu, 11 Apr 2024 23:32:51 -0700 (PDT)
-Received: from thinkpad ([120.56.204.201])
-        by smtp.gmail.com with ESMTPSA id w2-20020a1709026f0200b001e43df03096sm472645plk.30.2024.04.11.23.32.46
+        bh=1gOcCS7A/vf1M4eu5npCTxNSh214bCEI8cslchyUmXs=;
+        b=g+jCBVDatm3t/w1WLXMSMmoFbDiNjj2F4p6/3FmrHZEY+B+TdtuLUtI2n2LaN+bpYA
+         /T7jToFck464W4ugL74QyOXLVTrhQPOVXUKlemku0UNpebeIfGDDU6CE+r1+ksWdZKKo
+         NpAUugYGUT6byStNVAHhPaUoZRK64oZenVCWG02h4omuJ6Xrzv4istBD8vj9pgweIQ4h
+         hIGn3JlwjMdRSffRPrQDfhZD2QbPDKzOfAH3koSj345enIxrDj46UsRW1ezvl8Vvaa9z
+         5RjRP0gyYfnQtH7DvCsMMQ0M730RzSCryXmkRCvoLUY2hLU0BeQinauc6Iw6Nvf5wViu
+         JqHw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfEBKdPSLBojkWYfAFEi73SMcfQz9y8cjbjXFrChVKtgxc7bS62BitwYfTUdu0yK40dmjVOeiRCMBqo6lR1+dirRduo6zYuXszS61x
+X-Gm-Message-State: AOJu0YxQyAkstIkIu6o5MPnrcj3D7jhbBQSQFf+1puCWxISyDKsk/k6c
+	vyKatEOH4E+1icsLOw+qONTnE9hZM3fCF3wPrFvQaVtHg1pqsYEyJ5r6OUl8Cew=
+X-Google-Smtp-Source: AGHT+IGBxBOg4TEsrK4sE46CjyZBiwV0uRDNuCX52Ny7ovU474/OKXO1O6Hb1DpNkthFrxyKZZXJIQ==
+X-Received: by 2002:a05:6830:4790:b0:6ea:2a61:176f with SMTP id df16-20020a056830479000b006ea2a61176fmr1779921otb.18.1712903569570;
+        Thu, 11 Apr 2024 23:32:49 -0700 (PDT)
+Received: from localhost ([122.172.85.136])
+        by smtp.gmail.com with ESMTPSA id k28-20020a63ba1c000000b005f0793db2ebsm1793984pgf.74.2024.04.11.23.32.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 23:32:51 -0700 (PDT)
-Date: Fri, 12 Apr 2024 12:02:42 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 10/10] PCI: qcom: Implement shutdown() callback to
- properly reset the endpoint devices
-Message-ID: <20240412063242.GA2712@thinkpad>
-References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
- <20240401-pci-epf-rework-v2-10-970dbe90b99d@linaro.org>
- <ZgvpnqdjQ39JMRiV@ryzen>
- <20240403133217.GK25309@thinkpad>
- <Zg22Dhi2c7U5oqoz@ryzen>
- <20240410105410.GC2903@thinkpad>
- <Zhanol2xi_E2Ypv3@ryzen>
- <ZhcAKSJCQag6AX09@ryzen>
+        Thu, 11 Apr 2024 23:32:49 -0700 (PDT)
+Date: Fri, 12 Apr 2024 12:02:46 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: gregkh@linuxfoundation.org
+Cc: lizhe <sensor1010@163.com>, rafael <rafael@kernel.org>,
+	linux-pm <linux-pm@vger.kernel.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: exit() callback is optional
+Message-ID: <20240412063246.tk5z245miakbxws4@vireshk-i7>
+References: <b97964653d02225f061e0c2a650b365c354b98c8.1712900945.git.viresh.kumar@linaro.org>
+ <5759bc29.32d04.18ed0ef5037.Coremail.sensor1010@163.com>
+ <20240412062407.ntahibzv6xsbrnxs@vireshk-i7>
+ <1b53a162.32e95.18ed0fdb13e.Coremail.sensor1010@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,96 +88,48 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZhcAKSJCQag6AX09@ryzen>
+In-Reply-To: <1b53a162.32e95.18ed0fdb13e.Coremail.sensor1010@163.com>
 
-On Wed, Apr 10, 2024 at 11:10:01PM +0200, Niklas Cassel wrote:
-> On Wed, Apr 10, 2024 at 04:52:18PM +0200, Niklas Cassel wrote:
-> > On Wed, Apr 10, 2024 at 04:24:10PM +0530, Manivannan Sadhasivam wrote:
-> > > 
-> > > Well, we could prevent the register access during PERST# assert time in the
-> > > endpoint, but my worry is that we will end up with 2 version of the cleanup
-> > > APIs. Lets take an example of dw_pcie_edma_remove() API which gets called
-> > > during deinit and it touches some eDMA registers.
-> > > 
-> > > So should we introduce another API which just clears the sw data structure and
-> > > not touching the registers? And this may be needed for other generic APIs as
-> > > well.
-> > 
-> > I agree that it will be hard to come up with an elegant solution to this
-> > problem.
-> > 
-> > These endpoint controllers that cannot do register accesses to their own
-> > controllers' DBI/register space without the RC providing a refclock are
-> > really becoming a pain... and the design and complexity of the PCI endpoint
-> > APIs is what suffers as a result.
-> > 
-> > PERST could be asserted at any time.
-> > So for your system to not crash/hang by accessing registers in the controller,
-> > an EPF driver must be designed with great care to never do any register access
-> > when it is not safe...
-> > 
-> > Perhaps the the EPF core should set the state (i.e. init_complete = false,
-> > even before calling the deinit callback in EPF driver, and perhaps even add
-> > safe-guards against init_complete in some APIs, so that e.g. a set_bar() call
-> > cannot trigger a crash because PERST# is asserted.. but even then, it could
-> > still be asserted in the middle of set_bar()'s execution.)
-> > 
-> > 
-> > Looking at the databook, it looks like core_clk is derived from pipe_clk
-> > output of the PHY. The PHY will either use external clock or internal clock.
-> > 
-> > 4.6.2 DBI Protocol Transactions
-> > it looks like core_clk must be active to read/write the DBI.
-> > 
-> > I really wish those controllers could e.g. change the clock temporarily
-> > using a mux, so that it could still perform DBI read/writes when there is
-> > not external refclk... Something like pm_sel_aux_clk selecting to use the
-> > aux clk instead of core_clk when in low power states.
-> > But I don't know the hardware well enough to know if that is possible for
-> > the DBI, so that might just be wishful thinking...
+Getting the Cc list back, + Greg.
+
+Greg,
+
+Looks like another one of those experiments with the community ?
+
+:)
+
+On 12-04-24, 14:27, lizhe wrote:
+> You are really disgusting and have no manners at all. This makes people feel disgusted with your company.
 > 
 > 
-> Looking at the rock5b SBC (rockchip rk3588), the PHY refclk can either
-> be taken from
-> -a PLL internally from the SoC.
-> or
-> -an external clock on the SBC.
 > 
-> There does not seem to be an option to get the refclk as an input from
-> the PCIe slot. (The refclk can only be output to the PCIe slot.)
+> ---- Replied Message ----
+> | From | Viresh Kumar<viresh.kumar@linaro.org> |
+> | Date | 04/12/2024 14:24 |
+> | To | lizhe<sensor1010@163.com> |
+> | Cc | rafael<rafael@kernel.org>、linux-pm<linux-pm@vger.kernel.org>、Vincent Guittot<vincent.guittot@linaro.org>、linux-kernel<linux-kernel@vger.kernel.org> |
+> | Subject | Re: [PATCH] cpufreq: exit() callback is optional |
+> On 12-04-24, 14:12, lizhe wrote:
+> > I was the first one to find this problem, so the patch should be submitted by me.
 > 
-> So when running two rock5b SBC, you cannot use a common clock for the RC
-> and the EP side, you have to use a separate reference clock scheme,
-> either SRNS or SRIS.
+> :)
 > 
-> Since I assume that you use two qcom platforms of the same model
-> (I remember that you wrote that you usually test with
-> qcom,sdx55-pcie-ep somewhere.)
-> Surely this board must be able to supply a reference clock?
-> (How else does it send this clock to the EP side?)
+> This patch doesn't take away any of the work you have done. What you are trying
+> to do is simplify drivers with empty exit callback and the unused return value
+> of the callback.
 > 
-
-It is not the same model. It is the same SoC but with different base boards.
-FWIW, I'm testing with both SDX55 and SM8450 SoC based boards.
-
-So the Qcom EP has no way to generate refclk internally (I double checked this)
-and it has to rely on refclk from either host or a separate clock source.
-
-But in most of the board designs they connect to host refclk by default.
-
-> So... why can't you run in SRNS or SRIS mode, where the EP provides
-> it's own clock?
+> And what I am trying to do is fix a bug in the cpufreq core, which only makes
+> your other patches more acceptable.
 > 
-
-As per the discussion I had with Qcom PCIe team, they that said SRIS is only
-available at the host side to supply independent clock to the EP. But that
-requires changes to the PHY sequence and could also result in preformance drop.
-Also this mode is available only on new SoCs but not on older ones like SDX55.
-
-So I don't think this is a viable option.
-
-- Mani
+> So no, you never identified the problem this patch is trying to solve.
+> 
+> Please don't feel that anyone is trying to take away your hardwork. That's not
+> how things are done here. We appreciate anyone who is spending time to make the
+> kernel better.
+> 
+> If I were to take credit of your work, then I would have sent a big patch to fix
+> the exit() callback issue you are trying to solve, with randomly sent patches.
 
 -- 
-மணிவண்ணன் சதாசிவம்
+viresh
 
