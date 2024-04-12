@@ -1,465 +1,112 @@
-Return-Path: <linux-kernel+bounces-143311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EEF58A3711
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE1978A3713
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:30:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15EDD2848CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:28:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69E80285061
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:30:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC171514DD;
-	Fri, 12 Apr 2024 20:28:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e7gZOQUj"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A0A199B8;
+	Fri, 12 Apr 2024 20:30:30 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A565314AD02
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B1AD27E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712953728; cv=none; b=Cj+pQTGb/nrvSQ3czvcS7yN7/0R9Kr4TMRHw3jB5GxXITyBZWEVV/5QSdjEXf8SUrms97Gyug/WG15gxsNR0Vbr0pxWZ/XhB6wXljkhc30SvnQL8YVvCq+PjYo4QGop6DSYKaFEf3qfxqfMxGyitoIceJcJDNwMbrQpO5QE/dgU=
+	t=1712953829; cv=none; b=m0aaGMBZ/ketFxE2KJgAnTLjqIqnvAcUujlMBW3qjcIYXPDJ0Pt9VH9JB1JjNiFIFtt/WgldlMimfiwYjsGwCdyDclraJaSHRBF9ea26BVnNS28bYVUA1XSSisB/eUqSu8Wms4XpPk13I70kN5HuOL/f26ida4ji677eOiLhl70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712953728; c=relaxed/simple;
-	bh=N7IX9nF8vCF0/TX4kpM+9leGLDqEbSW+fKgzpAt+uAU=;
+	s=arc-20240116; t=1712953829; c=relaxed/simple;
+	bh=Cs1zT7/fjRjge6O3CNoa3M5uBsQMm5ploTrUE1rc1n4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DtJgpXv156wj7s9cd2ZHEpdNdGoP1/6mGNUWvuf41kEB+04oQcum7hr/41Z9gtizDMYZhsjfSkT9i8ZNnqMQvDMnSvmtmKTqtQ1ObhHyXTSV9hz50OunVQOnjdPxA/hr4iFHLLFDMz84FD5miYxeWvl+WVi0kRc7ds46jPVYL+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e7gZOQUj; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ecec796323so1350406b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712953726; x=1713558526; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pGFHwuKbuynzrcj4lfuCemo+GDIQliA585QXUWNhvcc=;
-        b=e7gZOQUjOr1oZ/EUQJnbgowbDAzP8hsYRbZJQrMKJ8TMpuMa/9HNNhGg94+Zf7O6T6
-         3HLx7bTDjOKZ7U3YDxOFj1StjinRslqkwbYyb509yhiYCdwegV8e1qot0FuuUaVysPdV
-         HqBcrGxkfgtlChaDlXn9Vew83q3e6KobYllsG6Wf2E2hmvCRO4AzAxxetpOniZ69FcyV
-         D2o3h0F0WHi6ybdUuf+dEK+qltlQw23nbA6femovHCuuPobTWIa2P1NaX2WI3jxMxKKj
-         KsSW6z9pnefaTYKDHQKerR4RDSox2ZfwJ81BRGaK/gUkSGzFP2QZJODT6Dz9FhguZgvz
-         WjwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712953726; x=1713558526;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pGFHwuKbuynzrcj4lfuCemo+GDIQliA585QXUWNhvcc=;
-        b=vVC0jWHttBIYxeouqwVC5arcZpz2XbIJY/SDeHF8m7Lthb98l2PEL/1mWP4uSu+wfs
-         nxBQZwGc5hW4cCMsn8MuDAyQekWpwaI1edYbaI/ye3Zz/4aXad1vCwlU0MubCeRWq9Og
-         zqSssfFF/+oCOyx8sLlXmRFwzKgm7Iuswz5dXA8pAdw3wZMO1qqdhmsofR5H4qj7XtH4
-         Nw3VU0ve9kgS3ddEjpNcmT7YN8pXLRCPOchZQOwMqKFiOQ4lrKKqr1x6jmSs/Shpdy7I
-         5qwOFm/1605z/F/bXCGWm7FC8m8w0j2kkUL1Bz7r1yf/T9tnImNHjs+LbeFfMJADo0fJ
-         1uHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVELiceTgc+QMKC9QJZSMkUY5a/h7rF21H7G2iq/m4l9uRhInBn4nOqOz525lCfayWQNu0TqKBGjY2c6IBNtpc5pVIpsXReULlN06bI
-X-Gm-Message-State: AOJu0YxTXujaOthwRwELMeBjKGixS6g9vOYK9k+AMtWyVcY2cC4IQtz9
-	4kWWmfArFAt7OM0/lL50cz5sqqH+/chznUeW+4CAhz9a4xOgUcmxk2Qorut3SA==
-X-Google-Smtp-Source: AGHT+IF/pyYKCdeesipfm1c6SntP3hTFdZQDzGdbrUr79KrgoGi8Ou4ETsGS1IaVSoTAedJJIXBLVg==
-X-Received: by 2002:a05:6a00:a8c:b0:6ec:f28b:659f with SMTP id b12-20020a056a000a8c00b006ecf28b659fmr4075582pfl.3.1712953725642;
-        Fri, 12 Apr 2024 13:28:45 -0700 (PDT)
-Received: from google.com (210.73.125.34.bc.googleusercontent.com. [34.125.73.210])
-        by smtp.gmail.com with ESMTPSA id fa1-20020a056a002d0100b006e6b7124b33sm3233340pfb.209.2024.04.12.13.28.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 13:28:45 -0700 (PDT)
-Date: Fri, 12 Apr 2024 13:28:40 -0700
-From: David Matlack <dmatlack@google.com>
-To: James Houghton <jthoughton@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Paolo Bonzini <pbonzini@redhat.com>, Yu Zhao <yuzhao@google.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Sean Christopherson <seanjc@google.com>,
-	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Shaoqin Huang <shahuang@redhat.com>, Gavin Shan <gshan@redhat.com>,
-	Ricardo Koller <ricarkol@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	David Rientjes <rientjes@google.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/7] KVM: Add basic bitmap support into
- kvm_mmu_notifier_test/clear_young
-Message-ID: <ZhmZeFPRwOJVue5y@google.com>
-References: <20240401232946.1837665-1-jthoughton@google.com>
- <20240401232946.1837665-4-jthoughton@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gu8XDKCPLAiiLmu2rpM3/b27v2AViEdzacZr88iHk2t57KmFU85/xdpfdozAxRlGh43HKeNOPmROvVoXv2rtmYF0L3xCRS0JaQDskPrn8ursLW6PAnPOkqiJ7+CPHK1bFpwGgh9WtXieracyXIYyU0ctQ/8rjmYMkCE/dlRUcC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvNXM-00014Z-WC; Fri, 12 Apr 2024 22:30:17 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvNXL-00BwIK-JL; Fri, 12 Apr 2024 22:30:15 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvNXL-000N6u-1d;
+	Fri, 12 Apr 2024 22:30:15 +0200
+Date: Fri, 12 Apr 2024 22:30:09 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Raag Jadav <raag.jadav@intel.com>, linux-kernel@vger.kernel.org, kernel@pengutronix.de, 
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] driver core: Make dev_err_probe() silent for -ENOMEM
+Message-ID: <osr3czt5hnosryz67xqoai2fok2osronpb7ickfe3hfe6bn627@ekidtnmqu6qi>
+References: <20240412164405.335657-2-u.kleine-koenig@pengutronix.de>
+ <ZhlmpPNbEMRye2wZ@smile.fi.intel.com>
+ <cl5fmton3n5ayzr7ondnw7lzjaxoppyqhnoervj2fn4et75ish@cyko4abxbslg>
+ <ZhlqUdywIur4dzgE@smile.fi.intel.com>
+ <zjk3vnydp2yip343khmkq7v5vqbib6d6eyee6tx6h5nph4blzn@c26yrw2cqrt7>
+ <Zhl0_8whWU1ftFeJ@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="454j43ssc3prmpek"
 Content-Disposition: inline
-In-Reply-To: <20240401232946.1837665-4-jthoughton@google.com>
+In-Reply-To: <Zhl0_8whWU1ftFeJ@smile.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 2024-04-01 11:29 PM, James Houghton wrote:
-> Add kvm_arch_prepare_bitmap_age() for architectures to indiciate that
-> they support bitmap-based aging in kvm_mmu_notifier_test_clear_young()
-> and that they do not need KVM to grab the MMU lock for writing. This
-> function allows architectures to do other locking or other preparatory
-> work that it needs.
 
-There's a lot going on here. I know it's extra work but I think the
-series would be easier to understand and simplify if you introduced the
-KVM support for lockless test/clear_young() first, and then introduce
-support for the bitmap-based look-around.
+--454j43ssc3prmpek
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Specifically:
+Hello,
 
- 1. Make all test/clear_young() notifiers lockless. i.e. Move the
-    mmu_lock into the architecture-specific code (kvm_age_gfn() and
-    kvm_test_age_gfn()).
+On Fri, Apr 12, 2024 at 08:53:03PM +0300, Andy Shevchenko wrote:
+> Hmm, but why macro? Shouldn't compiler be clever enough to see it even for
+> the exported function?
 
- 2. Convert KVM/x86's kvm_{test,}_age_gfn() to be lockless for the TDP
-    MMU.
+If it's in the .c file only, the compiler doesn't know about it when
+compiling the dwc pwm driver ...
 
- 4. Convert KVM/arm64's kvm_{test,}_age_gfn() to hold the mmu_lock in
-    read-mode.
+Best regards
+Uwe
 
- 5. Add bitmap-based look-around support to KVM/x86 and KVM/arm64
-    (probably 2-3 patches).
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-> 
-> If an architecture does not implement kvm_arch_prepare_bitmap_age() or
-> is unable to do bitmap-based aging at runtime (and marks the bitmap as
-> unreliable):
->  1. If a bitmap was provided, we inform the caller that the bitmap is
->     unreliable (MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE).
->  2. If a bitmap was not provided, fall back to the old logic.
-> 
-> Also add logic for architectures to easily use the provided bitmap if
-> they are able. The expectation is that the architecture's implementation
-> of kvm_gfn_test_age() will use kvm_gfn_record_young(), and
-> kvm_gfn_age() will use kvm_gfn_should_age().
-> 
-> Suggested-by: Yu Zhao <yuzhao@google.com>
-> Signed-off-by: James Houghton <jthoughton@google.com>
-> ---
->  include/linux/kvm_host.h | 60 ++++++++++++++++++++++++++
->  virt/kvm/kvm_main.c      | 92 +++++++++++++++++++++++++++++-----------
->  2 files changed, 127 insertions(+), 25 deletions(-)
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 1800d03a06a9..5862fd7b5f9b 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1992,6 +1992,26 @@ extern const struct _kvm_stats_desc kvm_vm_stats_desc[];
->  extern const struct kvm_stats_header kvm_vcpu_stats_header;
->  extern const struct _kvm_stats_desc kvm_vcpu_stats_desc[];
->  
-> +/*
-> + * Architectures that support using bitmaps for kvm_age_gfn() and
-> + * kvm_test_age_gfn should return true for kvm_arch_prepare_bitmap_age()
-> + * and do any work they need to prepare. The subsequent walk will not
-> + * automatically grab the KVM MMU lock, so some architectures may opt
-> + * to grab it.
-> + *
-> + * If true is returned, a subsequent call to kvm_arch_finish_bitmap_age() is
-> + * guaranteed.
-> + */
-> +#ifndef kvm_arch_prepare_bitmap_age
-> +static inline bool kvm_arch_prepare_bitmap_age(struct mmu_notifier *mn)
+--454j43ssc3prmpek
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I find the name of these architecture callbacks misleading/confusing.
-The lockless path is used even when a bitmap is not provided. i.e.
-bitmap can be NULL in between kvm_arch_prepare/finish_bitmap_age().
+-----BEGIN PGP SIGNATURE-----
 
-> +{
-> +	return false;
-> +}
-> +#endif
-> +#ifndef kvm_arch_finish_bitmap_age
-> +static inline void kvm_arch_finish_bitmap_age(struct mmu_notifier *mn) {}
-> +#endif
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYZmccACgkQj4D7WH0S
+/k6jNAf/bVIC3/s1ikuJGlsCMDg2EYaVKxhXraHv68wJqqeakFnEcXYHEyWXBG2+
+osmNIeBScDf13TL4JOjoXmXFlrP4vVNbwryKnKlMEmcgcPQdpY04Kbn1WMwnHlv7
+F58+OeyDn0MC09Lwl5sUL+WaiOM+TLyfgDx543HyL/YhzzX/PxQn6YaXYAOHmJiF
+XYgSfXlWkATetd7JCi/s9WyAzDAk1KK8zfZOg536E/fK1YDU7iqaoImgf50cITj6
+jEcUwZJNg5DBQxOuFWMMp72fk5tVx2p8yVUsyYuDREkthHz1luWknfR5xj8cKwQd
+g8Zam+eaRV1qHkq4sHmM3b16OsCcaA==
+=rCYj
+-----END PGP SIGNATURE-----
 
-kvm_arch_finish_bitmap_age() seems unnecessary. I think the KVM/arm64
-code could acquire/release the mmu_lock in read-mode in
-kvm_test_age_gfn() and kvm_age_gfn() right?
-
-> +
->  #ifdef CONFIG_KVM_GENERIC_MMU_NOTIFIER
->  static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
->  {
-> @@ -2076,9 +2096,16 @@ static inline bool mmu_invalidate_retry_gfn_unsafe(struct kvm *kvm,
->  	return READ_ONCE(kvm->mmu_invalidate_seq) != mmu_seq;
->  }
->  
-> +struct test_clear_young_metadata {
-> +	unsigned long *bitmap;
-> +	unsigned long bitmap_offset_end;
-
-bitmap_offset_end is unused.
-
-> +	unsigned long end;
-> +	bool unreliable;
-> +};
->  union kvm_mmu_notifier_arg {
->  	pte_t pte;
->  	unsigned long attributes;
-> +	struct test_clear_young_metadata *metadata;
-
-nit: Maybe s/metadata/test_clear_young/ ?
-
->  };
->  
->  struct kvm_gfn_range {
-> @@ -2087,11 +2114,44 @@ struct kvm_gfn_range {
->  	gfn_t end;
->  	union kvm_mmu_notifier_arg arg;
->  	bool may_block;
-> +	bool lockless;
-
-Please document this as it's somewhat subtle. A reader might think this
-implies the entire operation runs without taking the mmu_lock.
-
->  };
->  bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
->  bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
->  bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
->  bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
-> +
-> +static inline void kvm_age_set_unreliable(struct kvm_gfn_range *range)
-> +{
-> +	struct test_clear_young_metadata *args = range->arg.metadata;
-> +
-> +	args->unreliable = true;
-> +}
-> +static inline unsigned long kvm_young_bitmap_offset(struct kvm_gfn_range *range,
-> +						    gfn_t gfn)
-> +{
-> +	struct test_clear_young_metadata *args = range->arg.metadata;
-> +
-> +	return hva_to_gfn_memslot(args->end - 1, range->slot) - gfn;
-> +}
-> +static inline void kvm_gfn_record_young(struct kvm_gfn_range *range, gfn_t gfn)
-> +{
-> +	struct test_clear_young_metadata *args = range->arg.metadata;
-> +
-> +	WARN_ON_ONCE(gfn < range->start || gfn >= range->end);
-> +	if (args->bitmap)
-> +		__set_bit(kvm_young_bitmap_offset(range, gfn), args->bitmap);
-> +}
-> +static inline bool kvm_gfn_should_age(struct kvm_gfn_range *range, gfn_t gfn)
-> +{
-> +	struct test_clear_young_metadata *args = range->arg.metadata;
-> +
-> +	WARN_ON_ONCE(gfn < range->start || gfn >= range->end);
-> +	if (args->bitmap)
-> +		return test_bit(kvm_young_bitmap_offset(range, gfn),
-> +				args->bitmap);
-> +	return true;
-> +}
->  #endif
->  
->  #ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index d0545d88c802..7d80321e2ece 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -550,6 +550,7 @@ struct kvm_mmu_notifier_range {
->  	on_lock_fn_t on_lock;
->  	bool flush_on_ret;
->  	bool may_block;
-> +	bool lockless;
->  };
->  
->  /*
-> @@ -598,6 +599,8 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
->  	struct kvm_memslots *slots;
->  	int i, idx;
->  
-> +	BUILD_BUG_ON(sizeof(gfn_range.arg) != sizeof(gfn_range.arg.pte));
-> +
->  	if (WARN_ON_ONCE(range->end <= range->start))
->  		return r;
->  
-> @@ -637,15 +640,18 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
->  			gfn_range.start = hva_to_gfn_memslot(hva_start, slot);
->  			gfn_range.end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, slot);
->  			gfn_range.slot = slot;
-> +			gfn_range.lockless = range->lockless;
->  
->  			if (!r.found_memslot) {
->  				r.found_memslot = true;
-> -				KVM_MMU_LOCK(kvm);
-> -				if (!IS_KVM_NULL_FN(range->on_lock))
-> -					range->on_lock(kvm);
-> -
-> -				if (IS_KVM_NULL_FN(range->handler))
-> -					break;
-> +				if (!range->lockless) {
-> +					KVM_MMU_LOCK(kvm);
-> +					if (!IS_KVM_NULL_FN(range->on_lock))
-> +						range->on_lock(kvm);
-> +
-> +					if (IS_KVM_NULL_FN(range->handler))
-> +						break;
-> +				}
->  			}
->  			r.ret |= range->handler(kvm, &gfn_range);
->  		}
-> @@ -654,7 +660,7 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
->  	if (range->flush_on_ret && r.ret)
->  		kvm_flush_remote_tlbs(kvm);
->  
-> -	if (r.found_memslot)
-> +	if (r.found_memslot && !range->lockless)
->  		KVM_MMU_UNLOCK(kvm);
->  
->  	srcu_read_unlock(&kvm->srcu, idx);
-> @@ -682,19 +688,24 @@ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
->  	return __kvm_handle_hva_range(kvm, &range).ret;
->  }
->  
-> -static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn,
-> -							 unsigned long start,
-> -							 unsigned long end,
-> -							 gfn_handler_t handler)
-> +static __always_inline int kvm_handle_hva_range_no_flush(
-> +		struct mmu_notifier *mn,
-> +		unsigned long start,
-> +		unsigned long end,
-> +		gfn_handler_t handler,
-> +		union kvm_mmu_notifier_arg arg,
-> +		bool lockless)
->  {
->  	struct kvm *kvm = mmu_notifier_to_kvm(mn);
->  	const struct kvm_mmu_notifier_range range = {
->  		.start		= start,
->  		.end		= end,
->  		.handler	= handler,
-> +		.arg		= arg,
->  		.on_lock	= (void *)kvm_null_fn,
->  		.flush_on_ret	= false,
->  		.may_block	= false,
-> +		.lockless	= lockless,
->  	};
->  
->  	return __kvm_handle_hva_range(kvm, &range).ret;
-> @@ -909,15 +920,36 @@ static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
->  				    kvm_age_gfn);
->  }
->  
-> -static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
-> -					struct mm_struct *mm,
-> -					unsigned long start,
-> -					unsigned long end,
-> -					unsigned long *bitmap)
-> +static int kvm_mmu_notifier_test_clear_young(struct mmu_notifier *mn,
-> +					     struct mm_struct *mm,
-> +					     unsigned long start,
-> +					     unsigned long end,
-> +					     unsigned long *bitmap,
-> +					     bool clear)
-
-Perhaps pass in the callback (kvm_test_age_gfn/kvm_age_gfn) instead of
-true/false to avoid the naked booleans at the callsites?
-
->  {
-> -	trace_kvm_age_hva(start, end);
-> +	if (kvm_arch_prepare_bitmap_age(mn)) {
-> +		struct test_clear_young_metadata args = {
-> +			.bitmap		= bitmap,
-> +			.end		= end,
-> +			.unreliable	= false,
-> +		};
-> +		union kvm_mmu_notifier_arg arg = {
-> +			.metadata = &args
-> +		};
-> +		bool young;
-> +
-> +		young = kvm_handle_hva_range_no_flush(
-> +					mn, start, end,
-> +					clear ? kvm_age_gfn : kvm_test_age_gfn,
-> +					arg, true);
-
-I suspect the end result will be cleaner we make all architectures
-lockless. i.e. Move the mmu_lock acquire/release into the
-architecture-specific code.
-
-This could result in more acquire/release calls (one per memslot that
-overlaps the provided range) but that should be a single memslot in the
-majority of cases I think?
-
-Then unconditionally pass in the metadata structure.
-
-Then you don't need any special casing for the fast path / bitmap path.
-The only thing needed is to figure out whether to return
-MMU_NOTIFIER_YOUNG vs MMU_NOTIFIER_YOUNG_LOOK_AROUND and that can be
-plumbed via test_clear_young_metadata or by changing gfn_handler_t to
-return an int instead of a bool.
-
-> +
-> +		kvm_arch_finish_bitmap_age(mn);
->  
-> -	/* We don't support bitmaps. Don't test or clear anything. */
-> +		if (!args.unreliable)
-> +			return young ? MMU_NOTIFIER_YOUNG_FAST : 0;
-> +	}
-> +
-> +	/* A bitmap was passed but the architecture doesn't support bitmaps */
->  	if (bitmap)
->  		return MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE;
->  
-> @@ -934,7 +966,21 @@ static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
->  	 * cadence. If we find this inaccurate, we might come up with a
->  	 * more sophisticated heuristic later.
->  	 */
-> -	return kvm_handle_hva_range_no_flush(mn, start, end, kvm_age_gfn);
-> +	return kvm_handle_hva_range_no_flush(
-> +			mn, start, end, clear ? kvm_age_gfn : kvm_test_age_gfn,
-> +			KVM_MMU_NOTIFIER_NO_ARG, false);
-
-Should this return MMU_NOTIFIER_YOUNG explicitly? This code is assuming
-MMU_NOTIFIER_YOUNG == (int)true.
-
-> +}
-> +
-> +static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
-> +					struct mm_struct *mm,
-> +					unsigned long start,
-> +					unsigned long end,
-> +					unsigned long *bitmap)
-> +{
-> +	trace_kvm_age_hva(start, end);
-> +
-> +	return kvm_mmu_notifier_test_clear_young(mn, mm, start, end, bitmap,
-> +						 true);
->  }
->  
->  static int kvm_mmu_notifier_test_young(struct mmu_notifier *mn,
-> @@ -945,12 +991,8 @@ static int kvm_mmu_notifier_test_young(struct mmu_notifier *mn,
->  {
->  	trace_kvm_test_age_hva(start, end);
->  
-> -	/* We don't support bitmaps. Don't test or clear anything. */
-> -	if (bitmap)
-> -		return MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE;
-> -
-> -	return kvm_handle_hva_range_no_flush(mn, start, end,
-> -					     kvm_test_age_gfn);
-> +	return kvm_mmu_notifier_test_clear_young(mn, mm, start, end, bitmap,
-> +						 false);
->  }
->  
->  static void kvm_mmu_notifier_release(struct mmu_notifier *mn,
-> -- 
-> 2.44.0.478.gd926399ef9-goog
-> 
+--454j43ssc3prmpek--
 
