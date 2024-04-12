@@ -1,221 +1,151 @@
-Return-Path: <linux-kernel+bounces-142401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29DA68A2B21
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:25:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD5F8A2B25
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:25:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47E371C22840
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:25:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D235928CCF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926D1524A6;
-	Fri, 12 Apr 2024 09:24:57 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30A950A87
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AB2502AA;
+	Fri, 12 Apr 2024 09:25:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC1E50299
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712913897; cv=none; b=cxSh3y66KzppnHjEStLNHcq005P2VibpgieFwOG2NlXT+nJp3wZ/MlhZ0SLy/cXJkGH9Fz+8TQWTX+BU2F/K8usiAemAVeXEZ4TXamLvnSP8Af2oLxB068FFTIJ76jsGsfA9rIHpY7PWatUrvt4hNvy1R1PoOEvKswpVB4prDew=
+	t=1712913925; cv=none; b=rBHoijx8rrA3wb46nGkbH19RTUeXV2r2EbQoPHqPtDaIcZzeFZcjKNI3hJwBiD+QM9XS48kWam0ku7FNyKNIHxhehIjC1gOacXRjdWKct99kA+GQXbQIFA2fm5p5cCF4sUCWVSgFslV73HaT+aiwreqf/URsLlCA3JIlirqBQ1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712913897; c=relaxed/simple;
-	bh=JeRFl6IV6v5i010O95XTQGaSHiDkUq3NQHN6d2k86g8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Ai+KgtxO4Q7KsQccrwsv7kXsRkSTnGUMhDc1bT72TMf3LHgL9xNvd2/KSkqISyu206D4qvqJJOO1Kk5pQs3/mZme6uD8BQWI3egBpf8HCKJ3wJWM/7sTrkAgvcBZT8OeoLnIQ0fpm9+HfTwa+f2GeXRcrxNwh/h7mK1I2ZGs5sk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VGB0R3lh1z2NW5X;
-	Fri, 12 Apr 2024 17:21:59 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id E766118001A;
-	Fri, 12 Apr 2024 17:24:52 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 17:24:51 +0800
-From: Peng Zhang <zhangpeng362@huawei.com>
-To: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC: <akpm@linux-foundation.org>, <dennisszhou@gmail.com>,
-	<shakeelb@google.com>, <jack@suse.cz>, <surenb@google.com>,
-	<kent.overstreet@linux.dev>, <mhocko@suse.cz>, <vbabka@suse.cz>,
-	<yuzhao@google.com>, <yu.ma@intel.com>, <wangkefeng.wang@huawei.com>,
-	<sunnanyong@huawei.com>, <zhangpeng362@huawei.com>
-Subject: [RFC PATCH 3/3] mm: convert mm's rss stats into lazy_percpu_counter
-Date: Fri, 12 Apr 2024 17:24:41 +0800
-Message-ID: <20240412092441.3112481-4-zhangpeng362@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240412092441.3112481-1-zhangpeng362@huawei.com>
-References: <20240412092441.3112481-1-zhangpeng362@huawei.com>
+	s=arc-20240116; t=1712913925; c=relaxed/simple;
+	bh=Ms333QPBPkXGEfuU7DWm2MeYtBor2EJJghz3FR3A02o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lCdb77DFuB03/SMkHP0gABnrkaNnJItU8Uf48JwXfZBXrtPx2mYA+f4rqUkfJjv18kKVTb6XzRvgJqOIwMq3EBR7pL9pKpea0ClRjuLm5tsUNs5pZPzu5sg5LJ9S4V9WTPwKsM8xgZflChF5MjT/y2M5LXQ8wNpHkjZfmIvemrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A520E339;
+	Fri, 12 Apr 2024 02:25:50 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.17.205])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A61953F64C;
+	Fri, 12 Apr 2024 02:25:19 -0700 (PDT)
+Date: Fri, 12 Apr 2024 10:25:16 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	David Hildenbrand <david@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Itaru Kitayama <itaru.kitayama@fujitsu.com>
+Subject: Re: [PATCH v2 3/4] arm64: mm: Don't remap pgtables for allocate vs
+ populate
+Message-ID: <Zhj9_HFVVxEZqdnB@FVFF77S0Q05N>
+References: <20240404143308.2224141-1-ryan.roberts@arm.com>
+ <20240404143308.2224141-4-ryan.roberts@arm.com>
+ <ZhffSyrqCQsMV2pG@FVFF77S0Q05N>
+ <37336367-f876-4429-a8a6-f887fc7f69ee@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37336367-f876-4429-a8a6-f887fc7f69ee@arm.com>
 
-From: ZhangPeng <zhangpeng362@huawei.com>
+On Fri, Apr 12, 2024 at 08:53:18AM +0100, Ryan Roberts wrote:
+> Hi Mark,
+> 
+> [...]
+> 
+> > Does something like the below look ok to you? The trade-off performance-wise is
+> > that late uses will still use the fixmap, and will redundantly zero the tables,
+> > but the logic remains fairly simple, and I suspect the overhead for late
+> > allocations might not matter since the bulk of late changes are non-allocating.
 
-Since commit f1a7941243c1 ("mm: convert mm's rss stats into
-percpu_counter"), the rss_stats have converted into percpu_counter,
-which convert the error margin from (nr_threads * 64) to approximately
-(nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
-performance regression on fork/exec/shell. Even after commit 14ef95be6f55
-("kernel/fork: group allocation/free of per-cpu counters for mm struct"),
-the performance of fork/exec/shell is still poor compared to
-previous kernel versions.
+> > @@ -303,12 +301,18 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
+> >  			pudval |= PUD_TABLE_PXN;
+> >  		BUG_ON(!pgtable_alloc);
+> >  		pmd_phys = pgtable_alloc(PMD_SHIFT);
+> > +
+> > +		pmdp = pmd_set_fixmap(pmd_phys);
+> > +		init_clear_pgtable(pmdp);
+> > +
+> >  		__pud_populate(pudp, pmd_phys, pudval);
+> >  		pud = READ_ONCE(*pudp);
+> > +	} else {
+> > +		pmdp = pmd_set_fixmap(pud_page_paddr(pud));
+> >  	}
+> >  	BUG_ON(pud_bad(pud));
+> >  
+> > -	pmdp = pmd_set_fixmap_offset(pudp, addr);
+> > +	pmdp += pmd_index(addr);
+> >  	do {
+> >  		pgprot_t __prot = prot;
+> >  
+> > @@ -345,12 +349,18 @@ static void alloc_init_pud(p4d_t *p4dp, unsigned long addr, unsigned long end,
+> >  			p4dval |= P4D_TABLE_PXN;
+> >  		BUG_ON(!pgtable_alloc);
+> >  		pud_phys = pgtable_alloc(PUD_SHIFT);
+> > +
+> > +		pudp = pud_set_fixmap(pud_phys);
+> > +		init_clear_pgtable(pudp);
+> > +
+> >  		__p4d_populate(p4dp, pud_phys, p4dval);
+> >  		p4d = READ_ONCE(*p4dp);
+> > +	} else {
+> > +		pudp = pud_set_fixmap(p4d_page_paddr(p4d));
+> 
+> With this change I end up in pgtable folding hell. pXX_set_fixmap() is defined
+> as NULL when the level is folded (and pXX_page_paddr() is not defined at all).
+> So it all compiles, but doesn't boot.
 
-To mitigate performance regression, we use lazy_percpu_counter to delay
-the allocation of percpu memory for rss_stats. After lmbench test, we
-will get 3% ~ 6% performance improvement for lmbench fork_proc/exec_proc/
-shell_proc after conversion. The test results are as follows:
+Sorry about that; I had not thought to check the folding logic when hacking
+that up.
 
-             base           base+revert        base+lazy_percpu_counter
+> I think the simplest approach is to follow this pattern:
+> 
+> ----8<----
+> @@ -340,12 +338,15 @@ static void alloc_init_pud(p4d_t *p4dp, unsigned long
+> addr, unsigned long end,
+>                         p4dval |= P4D_TABLE_PXN;
+>                 BUG_ON(!pgtable_alloc);
+>                 pud_phys = pgtable_alloc(PUD_SHIFT);
+> +               pudp = pud_set_fixmap(pud_phys);
+> +               init_clear_pgtable(pudp);
+> +               pudp += pud_index(addr);
+>                 __p4d_populate(p4dp, pud_phys, p4dval);
+> -               p4d = READ_ONCE(*p4dp);
+> +       } else {
+> +               BUG_ON(p4d_bad(p4d));
+> +               pudp = pud_set_fixmap_offset(p4dp, addr);
+>         }
+> -       BUG_ON(p4d_bad(p4d));
+> 
+> -       pudp = pud_set_fixmap_offset(p4dp, addr);
+>         do {
+>                 pud_t old_pud = READ_ONCE(*pudp);
+> ----8<----
+> 
+> For the map case, we continue to use pud_set_fixmap_offset() which is always
+> defined (and always works correctly).
+> 
+> Note also that the previously unconditional BUG_ON needs to be prior to the
+> fixmap call to be useful, and its really only valuable in the map case because
+> for the alloc case we are the ones setting the p4d so we already know its not
+> bad. This means we don't need the READ_ONCE() in the alloc case.
+> 
+> Shout if you disagree.
 
-fork_proc    427.4ms        394.1ms  (7.8%)    413.9ms  (3.2%)
-exec_proc    2205.1ms       2042.2ms (7.4%)    2072.0ms (6.0%)
-shell_proc   3180.9ms       2963.7ms (6.8%)    3010.7ms (5.4%)
+That looks good, and I agree with the reasoning here.
 
-Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- include/linux/mm.h          |  8 ++++----
- include/linux/mm_types.h    |  4 ++--
- include/trace/events/kmem.h |  4 ++--
- kernel/fork.c               | 12 ++++--------
- 4 files changed, 12 insertions(+), 16 deletions(-)
+Thanks for working on this!
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 07c73451d42f..d1ea246b99c3 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2631,28 +2631,28 @@ static inline bool get_user_page_fast_only(unsigned long addr,
-  */
- static inline unsigned long get_mm_counter(struct mm_struct *mm, int member)
- {
--	return percpu_counter_read_positive(&mm->rss_stat[member]);
-+	return lazy_percpu_counter_read_positive(&mm->rss_stat[member]);
- }
- 
- void mm_trace_rss_stat(struct mm_struct *mm, int member);
- 
- static inline void add_mm_counter(struct mm_struct *mm, int member, long value)
- {
--	percpu_counter_add(&mm->rss_stat[member], value);
-+	lazy_percpu_counter_add(&mm->rss_stat[member], value);
- 
- 	mm_trace_rss_stat(mm, member);
- }
- 
- static inline void inc_mm_counter(struct mm_struct *mm, int member)
- {
--	percpu_counter_inc(&mm->rss_stat[member]);
-+	lazy_percpu_counter_add(&mm->rss_stat[member], 1);
- 
- 	mm_trace_rss_stat(mm, member);
- }
- 
- static inline void dec_mm_counter(struct mm_struct *mm, int member)
- {
--	percpu_counter_dec(&mm->rss_stat[member]);
-+	lazy_percpu_counter_sub(&mm->rss_stat[member], 1);
- 
- 	mm_trace_rss_stat(mm, member);
- }
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index c432add95913..bf44c3a6fc99 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -18,7 +18,7 @@
- #include <linux/page-flags-layout.h>
- #include <linux/workqueue.h>
- #include <linux/seqlock.h>
--#include <linux/percpu_counter.h>
-+#include <linux/lazy-percpu-counter.h>
- 
- #include <asm/mmu.h>
- 
-@@ -898,7 +898,7 @@ struct mm_struct {
- 
- 		unsigned long saved_auxv[AT_VECTOR_SIZE]; /* for /proc/PID/auxv */
- 
--		struct percpu_counter rss_stat[NR_MM_COUNTERS];
-+		struct lazy_percpu_counter rss_stat[NR_MM_COUNTERS];
- 
- 		struct linux_binfmt *binfmt;
- 
-diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
-index 6e62cc64cd92..3a35d9a665b7 100644
---- a/include/trace/events/kmem.h
-+++ b/include/trace/events/kmem.h
-@@ -399,8 +399,8 @@ TRACE_EVENT(rss_stat,
- 		__entry->mm_id = mm_ptr_to_hash(mm);
- 		__entry->curr = !!(current->mm == mm);
- 		__entry->member = member;
--		__entry->size = (percpu_counter_sum_positive(&mm->rss_stat[member])
--							    << PAGE_SHIFT);
-+		__entry->size = (lazy_percpu_counter_sum_positive(&mm->rss_stat[member])
-+							  << PAGE_SHIFT);
- 	),
- 
- 	TP_printk("mm_id=%u curr=%d type=%s size=%ldB",
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 99076dbe27d8..0a4efb436030 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -823,7 +823,7 @@ static void check_mm(struct mm_struct *mm)
- 			 "Please make sure 'struct resident_page_types[]' is updated as well");
- 
- 	for (i = 0; i < NR_MM_COUNTERS; i++) {
--		long x = percpu_counter_sum(&mm->rss_stat[i]);
-+		long x = lazy_percpu_counter_sum(&mm->rss_stat[i]);
- 
- 		if (unlikely(x))
- 			pr_alert("BUG: Bad rss-counter state mm:%p type:%s val:%ld\n",
-@@ -910,6 +910,8 @@ static void cleanup_lazy_tlbs(struct mm_struct *mm)
-  */
- void __mmdrop(struct mm_struct *mm)
- {
-+	int i;
-+
- 	BUG_ON(mm == &init_mm);
- 	WARN_ON_ONCE(mm == current->mm);
- 
-@@ -924,7 +926,7 @@ void __mmdrop(struct mm_struct *mm)
- 	put_user_ns(mm->user_ns);
- 	mm_pasid_drop(mm);
- 	mm_destroy_cid(mm);
--	percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
-+	lazy_percpu_counter_destroy_many(&mm->rss_stat[i], NR_MM_COUNTERS);
- 
- 	free_mm(mm);
- }
-@@ -1301,16 +1303,10 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
- 	if (mm_alloc_cid(mm))
- 		goto fail_cid;
- 
--	if (percpu_counter_init_many(mm->rss_stat, 0, GFP_KERNEL_ACCOUNT,
--				     NR_MM_COUNTERS))
--		goto fail_pcpu;
--
- 	mm->user_ns = get_user_ns(user_ns);
- 	lru_gen_init_mm(mm);
- 	return mm;
- 
--fail_pcpu:
--	mm_destroy_cid(mm);
- fail_cid:
- 	destroy_context(mm);
- fail_nocontext:
--- 
-2.25.1
-
+Mark.
 
