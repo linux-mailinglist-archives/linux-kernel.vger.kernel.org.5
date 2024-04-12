@@ -1,129 +1,94 @@
-Return-Path: <linux-kernel+bounces-142445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F18E18A2BA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:57:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBCD68A2BB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:01:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 914301F23257
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:57:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 768ED284A00
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5797E5336D;
-	Fri, 12 Apr 2024 09:57:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A3152F92;
-	Fri, 12 Apr 2024 09:57:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C8253393;
+	Fri, 12 Apr 2024 10:01:06 +0000 (UTC)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E503524DC;
+	Fri, 12 Apr 2024 10:01:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712915854; cv=none; b=D0eyPJFLG8V9jniwra8We3gMwW0Bps8Auj6gMWT6Wy7WK9Li0/X+PNS3SKCTfMcaL3EUfHOsUsgITtl6r+EelWlUrlPgaD6gjsSqnyBl94YYXn8wNHCrRL1YAG154QzEWXy8w1v7Jy1WubYayr8K9EJE+aqHEBEzaz73oqIdt7M=
+	t=1712916066; cv=none; b=NQuxILOyApt9pexVl4mJ2E/7beYULa945ahHCxjjxcDGv3Roe1cF/GZGL6GgMul+Vk/ffFpBrdKPSC+tLErr603tgiHC6HqEd8K4IwFN6Cqhs/wfrfyC3cKPnM8psyXHY1Baf1Rq9+UxihqCUfuhzdqxQTPd+VVIGN9bN005Ido=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712915854; c=relaxed/simple;
-	bh=9ta90R5dH9mhamLwVYs0q7+kUmW2cMPBIFTryHHTN/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oslGiXZsVBypZIXJKkIhHrBimaRuaecz/ddisbNZdD78EYJFx4ymm1pfwYoC3ncCwAwg1BLLuhKwDixjwzQYarK5Bq+ZeaL0a7n7sfxXGCdeTWjlIp5G3IlyzOkrGXIZLF235fdOYl4zZOrpXI7LbDzeiWMjbMFTshUh55PZ93A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9581339;
-	Fri, 12 Apr 2024 02:58:01 -0700 (PDT)
-Received: from [192.168.1.100] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 092CB3F64C;
-	Fri, 12 Apr 2024 02:57:30 -0700 (PDT)
-Message-ID: <3c5c85d4-8657-4ee0-88fa-ee47dce4cc7c@arm.com>
-Date: Fri, 12 Apr 2024 10:57:29 +0100
+	s=arc-20240116; t=1712916066; c=relaxed/simple;
+	bh=FHWV3NbTZJVvgX19u1exvDjE/a+Vl9HY6tKBV4SMR/g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tcfCRt90S9VVklgULnUOfRAVyqQMZTWuYF/v82b471Y+M+XElgRIs+FEI5mLSPrq3SOmxxRBCjIpeeDjmKpakf0IRuxX8olCThXiRyf25vF0TiSawT+VSRU7vuRV7HPaYSWAXs5PcTusC92j8WmQKcAJavnNEJkk2NLSSouyWUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+X-IronPort-AV: E=Sophos;i="6.07,195,1708354800"; 
+   d="scan'208";a="201242322"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 12 Apr 2024 19:01:01 +0900
+Received: from renesas-deb12.cephei.uk (unknown [10.226.93.65])
+	by relmlir6.idc.renesas.com (Postfix) with ESMTP id BD76141E0D16;
+	Fri, 12 Apr 2024 19:00:56 +0900 (JST)
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+To: Sergey Shtylyov <s.shtylyov@omp.ru>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	=?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>
+Cc: Paul Barker <paul.barker.ct@bp.renesas.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	YueHaibing <yuehaibing@huawei.com>,
+	netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [net PATCH v2 0/4] ravb Ethernet driver bugfixes
+Date: Fri, 12 Apr 2024 11:00:20 +0100
+Message-Id: <20240412100024.2296-1-paul.barker.ct@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/7] coresight: tmc-etr: Add support to use reserved
- trace memory
-To: Linu Cherian <lcherian@marvell.com>, suzuki.poulose@arm.com
-Cc: linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, sgoutham@marvell.com, gcherian@marvell.com,
- Anil Kumar Reddy <areddy3@marvell.com>, mike.leach@linaro.org,
- leo.yan@linaro.org
-References: <20240307033625.325058-1-lcherian@marvell.com>
- <20240307033625.325058-3-lcherian@marvell.com>
-Content-Language: en-US
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <20240307033625.325058-3-lcherian@marvell.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+These patches fix bugs found during recent work on the ravb driver.
+
+Patches 1 & 2 affect the R-Car code paths so have been tested on an
+R-Car M3N Salvator-XS board - this is the only R-Car board I currently
+have access to.
+
+Patches 2, 3 & 4 affect the GbEth code paths so have been tested on
+RZ/G2L and RZ/G2UL SMARC EVK boards.
+
+Changes from v1:
+  * Fixed typos in commit message of patch
+    "net: ravb: Allow RX loop to move past DMA mapping errors".
+  * Added Sergey's Reviewed-by tags.
+  * Expanded Cc list as Patchwork complained that I had missed people.
+  * Trimmed the call trace in accordance with the docs [1] in patch
+    "net: ravb: Fix GbEth jumbo packet RX checksum handling".
+
+[1]: https://docs.kernel.org/process/submitting-patches.html#backtraces-in-commit-messages
+
+Paul Barker (4):
+  net: ravb: Count packets instead of descriptors in R-Car RX path
+  net: ravb: Allow RX loop to move past DMA mapping errors
+  net: ravb: Fix GbEth jumbo packet RX checksum handling
+  net: ravb: Fix RX byte accounting for jumbo packets
+
+ drivers/net/ethernet/renesas/ravb_main.c | 67 +++++++++++-------------
+ 1 file changed, 32 insertions(+), 35 deletions(-)
 
 
-
-On 07/03/2024 03:36, Linu Cherian wrote:
-> Add support to use reserved memory for coresight ETR trace buffer.
-> 
-> Introduce a new ETR buffer mode called ETR_MODE_RESRV, which
-> becomes available when ETR device tree node is supplied with a valid
-> reserved memory region.
-> 
-> ETR_MODE_RESRV can be selected only by explicit user request.
-> 
-> $ echo resrv >/sys/bus/coresight/devices/tmc_etr<N>/buf_mode_preferred
-> 
-> Signed-off-by: Anil Kumar Reddy <areddy3@marvell.com>
-> Signed-off-by: Linu Cherian <lcherian@marvell.com>
-> ---
-> Changelog from v6:
-> * Removed redundant goto statements
-> * Setting of etr_buf->size to the reserved memory size is done
->   after successful dma map inside the alloc function
-> * Removed the special casing for ETR_MODE_RESRV 
-> * Fixed the tab spacing in struct tmc_drvdata 
-> 
->  .../hwtracing/coresight/coresight-tmc-core.c  | 47 +++++++++++
->  .../hwtracing/coresight/coresight-tmc-etr.c   | 82 ++++++++++++++++++-
->  drivers/hwtracing/coresight/coresight-tmc.h   | 27 ++++++
->  3 files changed, 153 insertions(+), 3 deletions(-)
-> 
-
-[...]
-
->  static bool etr_can_use_flat_mode(struct etr_buf_hw *buf_hw, ssize_t etr_buf_size)
-> @@ -874,13 +947,10 @@ static struct etr_buf *tmc_alloc_etr_buf(struct tmc_drvdata *drvdata,
->  	if (!etr_buf)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	etr_buf->size = size;
-> -
-
-Hi Linu,
-
-Not sure if this was left in by mistake? It's not mentioned in the
-commit message and it doesn't seem to match the description.
-
-Please make sure the current tests pass both with and without a reserved
-buffer defined in the DT. I get lots of failures with this patchset
-applied on N1SDP. ETF seems to work but ETR doesn't:
-
-  $ sudo perf test -vvv "arm coresight"
-
-  Recording trace (only user mode) with path: CPU1 => tmc_etf0
-  CoreSight path testing (CPU1 -> tmc_etf0): PASS
-
-  Recording trace (only user mode) with path: CPU1 => tmc_etr0
-  CoreSight path testing (CPU1 -> tmc_etr0): FAIL
-  ...
-
-Dmesg:
-  [ 1938.622091] coresight tmc_etr0: Unable to allocate ETR buffer
-
->  	/* If there is user directive for buffer mode, try that first */
->  	if (drvdata->etr_mode != ETR_MODE_AUTO)
->  		rc = tmc_etr_mode_alloc_buf(drvdata->etr_mode, drvdata,
->  					    etr_buf, node, pages);
-> -
-
-Whitespace change.
+base-commit: 2ae9a8972ce04046957f8af214509cebfd3bfb9c
+-- 
+2.39.2
 
 
