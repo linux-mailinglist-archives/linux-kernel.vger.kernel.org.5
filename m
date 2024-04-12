@@ -1,173 +1,213 @@
-Return-Path: <linux-kernel+bounces-143429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A66DD8A38E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:24:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066078A38E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:25:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0E7D1C21D64
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:24:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F796286197
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7236C152530;
-	Fri, 12 Apr 2024 23:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D2315252B;
+	Fri, 12 Apr 2024 23:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tW6ap+zQ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C6bVqxHC"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="dqw/ELXu"
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BB9225D7;
-	Fri, 12 Apr 2024 23:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 719A815251A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 23:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712964233; cv=none; b=HEuBLnCz5ho+C6Nr9p6HLdP9LFqDxEOyf+WomaDzzGinXeQ0G1RC+HTu6cDrLjC5GU2WXebPr/b7GtrIQN/zzBRUS1FuujgVM46aoNItevlgPg5+esm3EH8F9MqffPNUiD1CwEfn03wrwn+UC3Bf+cHlZBBMIAzd8Xzm2ST/w/Q=
+	t=1712964310; cv=none; b=OU9WX0oC94C5j5TjlX0gpNMTWIZOYDYBAi1nyD+xgbiDfkrumIPda15wXzeiBq6Hntbo6G+KRaiN3Nj9fe5npcCAUUW3HpAoc2mgmU7NWebK7rb1WyEXhz0vGCUyuX02WqEhwnOecIeRdZgPsUu2AeRtx8OcPwOzOjjluD55ZIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712964233; c=relaxed/simple;
-	bh=CbK4jt4ZdUloJNuVh6KOM2ueno3wxztt8Qa5vgstwIQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PwLx5P2uiQode9/rlPdVsm0S0/NihuwcKmScsrOnS6auK+GM+v2gT+8x+LzhNyWqQQyOxiJShttW9an50wNFXW5IPv2LesEi2zdeBr7A0WZhAYkkaKbhBUMByTIenVN3yFGwx7cI6ClQYsz20jaSSOhBEPnj60nPi4LtrRuQYtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tW6ap+zQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C6bVqxHC; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712964230;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T5xu2FVtNRnOIqknb2Ux4D1eBvHtL7IvYUAUi+UDnWI=;
-	b=tW6ap+zQjCfPb0Iu5NRfFG9LND9NrDkPfEJWzzMV7FCLTiO/67DEBwqkhnToa6FAcP2EMM
-	6MUD2W5m6nuwV2lpFNG3h+9zzeXDVM+p+g58Cp/G+e4GRZcfa5YXlQCXsvhowZhIeayP0F
-	mX0bfZnV7zatQ27FSiwCVDCNzdKFDc9OqpMidB2qf2Cpn4vHrQKR1CDd5Jo0Vu7BskZTIr
-	zk34+SsJ8yxAruaTIUuw2IA0vIdHj/NMRshMO3Ypq0Afb5kNOeHECSYmsLQEyGEwXiqLV8
-	1HqLCmjoZ7R9k59MXcM+5pSKlvvx5MjGxECT/fcNGhgdh8TjLYqmzvmpqlulZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712964230;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T5xu2FVtNRnOIqknb2Ux4D1eBvHtL7IvYUAUi+UDnWI=;
-	b=C6bVqxHCPN+wfRrnH1w7K16dZrgwWFLb9vxFt3+t2PJptgUt5gh64ablXIU/tU1hN5ia0j
-	DVRgHQA0LBs0mhCA==
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>, linux-pm@vger.kernel.org,
- loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
- x86@kernel.org, Miguel Luis <miguel.luis@oracle.com>, James Morse
- <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
- Brucker <jean-philippe@linaro.org>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- linuxarm@huawei.com, justin.he@arm.com, jianyong.wu@arm.com
-Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from
- acpi_processor_get_info()
-In-Reply-To: <ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
- <20240412143719.11398-4-Jonathan.Cameron@huawei.com>
- <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
- <ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk> <87bk6ez4hj.ffs@tglx>
- <ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
-Date: Sat, 13 Apr 2024 01:23:48 +0200
-Message-ID: <878r1iyxkr.ffs@tglx>
+	s=arc-20240116; t=1712964310; c=relaxed/simple;
+	bh=KGyMekWTlazKBqS5Mf0nI0xFELlChiDJZMmvQrG+A+A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=H+ME9IWFmmtFYqaYX9pSBzDmXhFEDx8RAshXRq7FDMzvbcsz0evegSVjRYLLDGJ1YzP49w74gsQoKIMFZPCLPIFfELSK/2snQHKLQHVof++TgAy1c+w8sJFCkVVVgEkbEdB8cki0k9yke8IuGJ98c+bamnEzGFubHSA4UNTUcyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=dqw/ELXu; arc=none smtp.client-ip=209.85.210.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ea128e4079so909351a34.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712964306; x=1713569106; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lmhooQqIc2chRcc2CAcdYrKYNFL3maDSCzi5ZTdPPdo=;
+        b=dqw/ELXuyY+mPMEQBBcaMcuPrESkGoJJ/exIivvVmKpijjq04YOuqVln0osFb45XP5
+         cQJFN7ylI099jWf8BromQLiovz4H9j/5gZyI7wgwX6PGI20vypXx7PxKDStG7gN5N0Fg
+         YPzsdO+MvgZDHidM1dt4IuqrdtWLKW8noMUyNq0zRybmNZs+Fl1mbymbzqKT1sIRA1pq
+         VuTivesSBuvTZxO5185cJ8R8pP84vp2acDNN9UgBL0MEEzrpt6sN/0IhA4hqG993vBz6
+         jhWK9MgxFZ4ssNltWt/2SOWiVL0eDmp1MT3FZnEovyNg4fWaACuCcyPmF9xn3yOfTT2S
+         tQMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712964306; x=1713569106;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lmhooQqIc2chRcc2CAcdYrKYNFL3maDSCzi5ZTdPPdo=;
+        b=CD5k3d67G0U4JBUqBL/VeebPCO+Wg1rEU7I1X+mHKnw3amqxxUqqWVCVrJvo8A+8nn
+         MzZG3+aAnZ+5Ln0Np9Xp13jSBuMdlUz2DDZuKBlvaoaaJDV31gZDUZ9bRhkid8+IYEw4
+         /ETwCRPsHScOUfObB7kvNqp9903E8s0cB/uJY0J9lG1WcGvUfO3bvxqo936n1qcSoTKH
+         tUDchH6liO5BR/yHCFrIQiNZqA43KyYhl+aXDx40GwiQAUhzFq1kYAWia3DtvtKu61O2
+         JJI6OVnOIa9WQnME+gr9RgPXvcQGZtT6rnzdhXiSEtoOKQpA7LmuJ7+bU1mooi37UW59
+         6bkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWnLy0EVdLSnmHAgS/nCvrNdaFRs3tS8uxie2sebJGl0dPmVVNpAMn5UVcnagBmps7+AOE6B0aywT9lsYLnhuc3nCNqPtncZcelon55
+X-Gm-Message-State: AOJu0YyUykUFQe1GrpyThV9UWCbSpsYzQO7EzGsarn2gCVam0JNY8MD0
+	lExdrwwAOrByY5zYSN5GmKOPitX4pXlPv2B6FCtC0XYNuiWuGPQ5UUa4xaITzPK6k+5TijidvYT
+	l
+X-Google-Smtp-Source: AGHT+IFKhbeDy09RPmweEEU2kr604GNlIZ6syKQfPoxLifZv0u4Qu3LWVrmTGfIVSOd1G+fOG0HqtA==
+X-Received: by 2002:aca:1107:0:b0:3c5:e03a:8f51 with SMTP id 7-20020aca1107000000b003c5e03a8f51mr3716220oir.48.1712964306530;
+        Fri, 12 Apr 2024 16:25:06 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id 5-20020aca2805000000b003c5f72e5a6asm751372oix.58.2024.04.12.16.25.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 16:25:06 -0700 (PDT)
+From: David Lechner <dlechner@baylibre.com>
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: David Lechner <dlechner@baylibre.com>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: adc: ad7944: Consolidate spi_sync() wrapper
+Date: Fri, 12 Apr 2024 18:25:02 -0500
+Message-ID: <20240412-ad7944-consolidate-msg-v1-1-7fdeff89172f@baylibre.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
-Russell!
+Since commit 6020ca4de8e5 ("iio: adc: ad7944: use spi_optimize_message()"),
+The helper functions wrapping spi_sync() for 3-wire and 4-wire modes are
+virtually identical. Since gpiod_set_value_cansleep() does a NULL check
+internally, we can consolidate the two functions into one and avoid
+switch statements at the call sites.
 
-On Fri, Apr 12 2024 at 22:52, Russell King (Oracle) wrote:
-> On Fri, Apr 12, 2024 at 10:54:32PM +0200, Thomas Gleixner wrote:
->> > As for the cpu locking, I couldn't find anything in arch_register_cpu()
->> > that depends on the cpu_maps_update stuff nor needs the cpus_write_lock
->> > being taken - so I've no idea why the "make_present" case takes these
->> > locks.
->> 
->> Anything which updates a CPU mask, e.g. cpu_present_mask, after early
->> boot must hold the appropriate write locks. Otherwise it would be
->> possible to online a CPU which just got marked present, but the
->> registration has not completed yet.
->
-> Yes. As far as I've been able to determine, arch_register_cpu()
-> doesn't manipulate any of the CPU masks. All it seems to be doing
-> is initialising the struct cpu, registering the embedded struct
-> device, and setting up the sysfs links to its NUMA node.
->
-> There is nothing obvious in there which manipulates any CPU masks, and
-> this is rather my fundamental point when I said "I couldn't find
-> anything in arch_register_cpu() that depends on ...".
->
-> If there is something, then comments in the code would be a useful aid
-> because it's highly non-obvious where such a manipulation is located,
-> and hence why the locks are necessary.
+The default cases of the removed switch statement were just to make the
+compiler happy and are not reachable since the mode is validated in the
+probe function. So removing those should be safe.
 
-acpi_processor_hotadd_init()
-..
-         acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
+Signed-off-by: David Lechner <dlechner@baylibre.com>
+---
+ drivers/iio/adc/ad7944.c | 67 ++++++++++--------------------------------------
+ 1 file changed, 13 insertions(+), 54 deletions(-)
 
-That ends up in fiddling with cpu_present_mask.
+diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
+index 9dc86ec23c36..4af574ffa864 100644
+--- a/drivers/iio/adc/ad7944.c
++++ b/drivers/iio/adc/ad7944.c
+@@ -214,40 +214,26 @@ static int ad7944_4wire_mode_init_msg(struct device *dev, struct ad7944_adc *adc
+ 	return devm_add_action_or_reset(dev, ad7944_unoptimize_msg, &adc->msg);
+ }
+ 
+-/*
+- * ad7944_3wire_cs_mode_conversion - Perform a 3-wire CS mode conversion and
+- *                                   acquisition
++/**
++ * ad7944_convert_and_acquire - Perform a single conversion and acquisition
+  * @adc: The ADC device structure
+  * @chan: The channel specification
+  * Return: 0 on success, a negative error code on failure
+  *
+- * This performs a conversion and reads data when the chip is wired in 3-wire
+- * mode with the CNV line on the ADC tied to the CS line on the SPI controller.
+- *
+- * Upon successful return adc->sample.raw will contain the conversion result.
+- */
+-static int ad7944_3wire_cs_mode_conversion(struct ad7944_adc *adc,
+-					   const struct iio_chan_spec *chan)
+-{
+-	return spi_sync(adc->spi, &adc->msg);
+-}
+-
+-/*
+- * ad7944_4wire_mode_conversion - Perform a 4-wire mode conversion and acquisition
+- * @adc: The ADC device structure
+- * @chan: The channel specification
+- * Return: 0 on success, a negative error code on failure
++ * Perform a conversion and acquisition of a single sample using the
++ * pre-optimized adc->msg.
+  *
+  * Upon successful return adc->sample.raw will contain the conversion result.
+  */
+-static int ad7944_4wire_mode_conversion(struct ad7944_adc *adc,
+-					const struct iio_chan_spec *chan)
++static int ad7944_convert_and_acquire(struct ad7944_adc *adc,
++				      const struct iio_chan_spec *chan)
+ {
+ 	int ret;
+ 
+ 	/*
+ 	 * In 4-wire mode, the CNV line is held high for the entire conversion
+-	 * and acquisition process.
++	 * and acquisition process. In other modes adc->cnv is NULL and is
++	 * ignored (CS is wired to CNV in those cases).
+ 	 */
+ 	gpiod_set_value_cansleep(adc->cnv, 1);
+ 	ret = spi_sync(adc->spi, &adc->msg);
+@@ -262,22 +248,9 @@ static int ad7944_single_conversion(struct ad7944_adc *adc,
+ {
+ 	int ret;
+ 
+-	switch (adc->spi_mode) {
+-	case AD7944_SPI_MODE_DEFAULT:
+-		ret = ad7944_4wire_mode_conversion(adc, chan);
+-		if (ret)
+-			return ret;
+-
+-		break;
+-	case AD7944_SPI_MODE_SINGLE:
+-		ret = ad7944_3wire_cs_mode_conversion(adc, chan);
+-		if (ret)
+-			return ret;
+-
+-		break;
+-	default:
+-		return -EOPNOTSUPP;
+-	}
++	ret = ad7944_convert_and_acquire(adc, chan);
++	if (ret)
++		return ret;
+ 
+ 	if (chan->scan_type.storagebits > 16)
+ 		*val = adc->sample.raw.u32;
+@@ -338,23 +311,9 @@ static irqreturn_t ad7944_trigger_handler(int irq, void *p)
+ 	struct ad7944_adc *adc = iio_priv(indio_dev);
+ 	int ret;
+ 
+-	switch (adc->spi_mode) {
+-	case AD7944_SPI_MODE_DEFAULT:
+-		ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
+-		if (ret)
+-			goto out;
+-
+-		break;
+-	case AD7944_SPI_MODE_SINGLE:
+-		ret = ad7944_3wire_cs_mode_conversion(adc, &indio_dev->channels[0]);
+-		if (ret)
+-			goto out;
+-
+-		break;
+-	default:
+-		/* not supported */
++	ret = ad7944_convert_and_acquire(adc, &indio_dev->channels[0]);
++	if (ret)
+ 		goto out;
+-	}
+ 
+ 	iio_push_to_buffers_with_timestamp(indio_dev, &adc->sample.raw,
+ 					   pf->timestamp);
 
-I grant you that arch_register_cpu() is not, but it might rely on the
-external locking too. I could not be bothered to figure that out.
-
->> Define "real hotplug" :)
->> 
->> Real physical hotplug does not really exist. That's at least true for
->> x86, where the physical hotplug support was chased for a while, but
->> never ended up in production.
->> 
->> Though virtualization happily jumped on it to hot add/remove CPUs
->> to/from a guest.
->> 
->> There are limitations to this and we learned it the hard way on X86. At
->> the end we came up with the following restrictions:
->> 
->>     1) All possible CPUs have to be advertised at boot time via firmware
->>        (ACPI/DT/whatever) independent of them being present at boot time
->>        or not.
->> 
->>        That guarantees proper sizing and ensures that associations
->>        between hardware entities and software representations and the
->>        resulting topology are stable for the lifetime of a system.
->> 
->>        It is really required to know the full topology of the system at
->>        boot time especially with hybrid CPUs where some of the cores
->>        have hyperthreading and the others do not.
->> 
->> 
->>     2) Hot add can only mark an already registered (possible) CPU
->>        present. Adding non-registered CPUs after boot is not possible.
->> 
->>        The CPU must have been registered in #1 already to ensure that
->>        the system topology does not suddenly change in an incompatible
->>        way at run-time.
->> 
->> The same restriction would apply to real physical hotplug. I don't think
->> that's any different for ARM64 or any other architecture.
->
-> This makes me wonder whether the Arm64 has been barking up the wrong
-> tree then, and whether the whole "present" vs "enabled" thing comes
-> from a misunderstanding as far as a CPU goes.
->
-> However, there is a big difference between the two. On x86, a processor
-> is just a processor. On Arm64, a "processor" is a slice of the system
-> (includes the interrupt controller, PMUs etc) and we must enumerate
-> those even when the processor itself is not enabled. This is the whole
-> reason there's a difference between "present" and "enabled" and why
-> there's a difference between x86 cpu hotplug and arm64 cpu hotplug.
-> The processor never actually goes away in arm64, it's just prevented
-> from being used.
-
-It's the same on X86 at least in the physical world.
-
-Thanks,
-
-        tglx
-
+---
+base-commit: aabc0aa90c927a03d509d0b592720d9897894ce4
+change-id: 20240412-ad7944-consolidate-msg-378515e51628
 
