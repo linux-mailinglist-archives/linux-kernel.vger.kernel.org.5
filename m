@@ -1,200 +1,181 @@
-Return-Path: <linux-kernel+bounces-143099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A668A8A3434
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:58:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBF538A343C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:00:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BC6A2844BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:58:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E7AF1F22FA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:00:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA4614BFB0;
-	Fri, 12 Apr 2024 16:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01EFD14C5BF;
+	Fri, 12 Apr 2024 17:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="O7oFQ6hj"
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L/sLXm7Q"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3378414B075
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:58:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5D314BF8B
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941090; cv=none; b=qisBc/E/EYVDG1Yxpa+sLYuwdVNJjijcYCXP4+Yjnc4tYKqrOwTvEWhIVMnhougpuQbOseZb8IqAlhI5rkT9pYrjdJOqb0uYSbxxenk/7d2vAr7X7MLiIg0z0E7PJlnpnLjt5jqNRqreSjKINEJ3RihJY2HzHvOy/M9wpIvA9S4=
+	t=1712941208; cv=none; b=hX70EKT8TKhF3xSxIN3Ztf+BNe06Ai8qaj3WWTjHB1R50gEDc9N2N9mAx0Jt5usV25zpMnrtTBmWVMA+L1rrMoKDeZHAY1N9jf10N2IUZ1q39VI8AyIUWqWYsudpxVfAeWxUPKPDPFbMTilucciEdic8jeNVN2/5RpirNHS8lg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712941090; c=relaxed/simple;
-	bh=z//6a/ujrWe0aR0i6I+FUKPGioDXc9HHkfE1eqzCmDM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e7AtXhJ79LJQEdeNU2zToIlztWdGtCwbXjx2t5ElRKNaF03Ntodz+GYsXIZsMeXn6FfkTSPt/qsBjVrfQcXNdXV6/pO00xjBt1jOZ3ZO1C3kGWCcjcyAqakUP3lE4bxvhwaPronNfCF6soVoYVnEHTzTMT1h/Iw9fugpj2UCD24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=O7oFQ6hj; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ed691fb83eso982315b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:58:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712941088; x=1713545888; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FJWVQnWLX/pkislYxbbN5qnILpyF7P63m18zWA+EsbY=;
-        b=O7oFQ6hjTUPaAqQqZaOUsB82dNIB1k6axYtvjal5tXBpSPDjdt7niGcj0HvFrnvcPG
-         pYP1LO23fgTE2EBAXmQw4O4s81ywaGJpVIDxAmTgmuzlItNDOn2s+RuO2mVwigN0CxzA
-         n7dmqBlZORo6xkna1SQZNWnh7gIqmqfGnWzllab4a+coSEgs5HsuSgjasJmmzUyHWUoW
-         qnAF7tjpi67dVUFjYCXvIQpobXCBawdeoyO2vbhcu1f+FyJl9pHKW52n/YEsjvK8jrPu
-         mnuIrbjDmxSa6Uyo+bKu4QJq1DoRwwoN0WMk1ODbUPFm5eMdn/XsW4X1WdE99oaFUZrj
-         4SWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712941088; x=1713545888;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FJWVQnWLX/pkislYxbbN5qnILpyF7P63m18zWA+EsbY=;
-        b=ZvPwDMuRWyMmtHr+LaDnuDpXk9Opgg6mhatStD/M+N3fqykPRyZGF5PGh6obWCJxCi
-         BmgHFy6FqAp2F2UonIGNTqvHLKQm9GfPrVl1LzxjwmKz5KJxDU2UzWlu2m0pMvPAjwEQ
-         8GgmYJFIoQRjwaOwJp2HS7zbVC9JHyyv5ni1FszLLDxhtL7j7EqmFBoMeR+S6DtJLYzK
-         TeA2ZxFeQ012FI/71SpSJmq3CfDhxWOVumnHPs68xVBNwT0+Gc7y3sxuLcn8M0fhJNWZ
-         7mgmR+wNpH/YSEHSM1lTN3sg4ze4hQxCz1auLOvhKv842jZAYC+//mDpd3/5KXorLV3q
-         wuwg==
-X-Forwarded-Encrypted: i=1; AJvYcCVfsXGT7niilFxJtejC7VTnBI83zPaeBTnxMVH3WfXIZeT8Obc6hP7IBmUwPrT1Jl6rH/qJMLSA8mRinB8XSLln4vSsi5j+mtzBRgoQ
-X-Gm-Message-State: AOJu0YxbD67NjQABtcfp6qiXhZXmzl6lfCXEXEf2f9gmlcNHdDHYkFeL
-	kZa6lyWwEuGiSVrYie8Lq23yA8bCaytcEosKG0vnCLmXSL8atykB+/zzdMMxZQI=
-X-Google-Smtp-Source: AGHT+IGPCmN3W2HTZ0QmJ+6REUIlwbvOotgDE2tr5rxL5ipmW/2VnsTgQx/xnNwczxd72R2Uusa6Og==
-X-Received: by 2002:a05:6a20:5648:b0:1a7:4b6f:7934 with SMTP id is8-20020a056a20564800b001a74b6f7934mr3088514pzc.17.1712941088421;
-        Fri, 12 Apr 2024 09:58:08 -0700 (PDT)
-Received: from ghost ([2601:647:5700:6860:121b:da6b:94f1:304])
-        by smtp.gmail.com with ESMTPSA id a26-20020aa7865a000000b006ea8ba9902asm3085131pfo.28.2024.04.12.09.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 09:58:07 -0700 (PDT)
-Date: Fri, 12 Apr 2024 09:58:04 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 06/19] riscv: Extend cpufeature.c to detect vendor
- extensions
-Message-ID: <ZhloHGxa5jRRR9xg@ghost>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746@rivosinc.com>
- <20240412-sprawl-product-1e1d02e25bca@wendy>
+	s=arc-20240116; t=1712941208; c=relaxed/simple;
+	bh=nlm/PlL7S0d86mipB9qgwefzeZzjCi8t2bhdskjNnOM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UAEx9pEAemzN5RoFekakngQINVyP7nIqAKSUpgwOFUcdaSGPAGgQwCNsp90YCRatQN/AT3FyW2v5XfUhYxcwOO6ITWPHXA1fZqO+RcrgF1HHxas+fAkcaPWL1sN5uyoRwyD0QF1RK/0kZW9dISJb4RgNb3ALytgOCBhnsrh+7Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=L/sLXm7Q; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43CGv9vC019167;
+	Fri, 12 Apr 2024 16:59:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : reply-to : from :
+ in-reply-to : content-type : content-transfer-encoding; s=pp1;
+ bh=5XL2E6x0dqCo3xg8bJjmVErWdlQ1QDlpDbOFaY04e+c=;
+ b=L/sLXm7Qvh1DVU4KeiufxOITRxXcpsnpzJAbiCofsdIXQZI12ILXuRXq8LNAoRv4Fnbi
+ qArQJ91zBDI4bzNll8M05RZuiZjr2SHWXvx2utNEqSgE+TbN2mOXR6zB8EVmkF3sk5zf
+ ZsYdbMZOHyXeWoo15J39CU89PSNENiIpJtkLpk+q6zHGMW1MsBsg87nnFZBWQVczVTmx
+ BjtWFr8WO/LwYsb+7LD68A+gOPHMTOhlhKx7sCUgQRLLUKm5zsQvFeecxrEF7Ux1VkwI
+ WR6/WfEFMWJy9u+8aZ1Nxj8qs9D52/waHRNiZwLoM3J7luZYjmA96ELKE3SYNKS000V+ FA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xf74yr91c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 16:59:33 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43CGxWMW024219;
+	Fri, 12 Apr 2024 16:59:32 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xf74yr914-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 16:59:32 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43CEoNkv029907;
+	Fri, 12 Apr 2024 16:59:31 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbj7mtx0r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 16:59:30 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43CGxRtK26084080
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 Apr 2024 16:59:30 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D974C5806C;
+	Fri, 12 Apr 2024 16:59:27 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 92DB758062;
+	Fri, 12 Apr 2024 16:59:20 +0000 (GMT)
+Received: from [9.43.52.155] (unknown [9.43.52.155])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 12 Apr 2024 16:59:20 +0000 (GMT)
+Message-ID: <65b1691d-8d90-4057-8ad0-da546a0ac8a1@linux.ibm.com>
+Date: Fri, 12 Apr 2024 22:29:17 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412-sprawl-product-1e1d02e25bca@wendy>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
+ affinity changes
+To: Ze Gao <zegao2021@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+References: <20240313085817.48892-1-zegao@tencent.com>
+Content-Language: en-US
+Reply-To: 20240313085817.48892-1-zegao@tencent.com
+From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+In-Reply-To: <20240313085817.48892-1-zegao@tencent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: u7TN5oyhrxA3pBw5t-mFwbZefT3J2lTS
+X-Proofpoint-GUID: Wh5Mt0rqumQ8sWWFEi8SBZ9KZ1vkHbGc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-12_13,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ malwarescore=0 clxscore=1011 adultscore=0 priorityscore=1501
+ mlxlogscore=616 phishscore=0 bulkscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404120124
 
-On Fri, Apr 12, 2024 at 01:30:08PM +0100, Conor Dooley wrote:
-> On Thu, Apr 11, 2024 at 09:11:12PM -0700, Charlie Jenkins wrote:
-> >  static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct riscv_isainfo *isainfo,
-> 
-> > -					  unsigned long *isa2hwcap, const char *isa)
-> > +					struct riscv_isainfo *isavendorinfo, unsigned long vendorid,
-> > +					unsigned long *isa2hwcap, const char *isa)
-> >  {
-> >  	/*
-> >  	 * For all possible cpus, we have already validated in
-> > @@ -349,8 +384,30 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
-> >  		const char *ext = isa++;
-> >  		const char *ext_end = isa;
-> >  		bool ext_long = false, ext_err = false;
-> > +		struct riscv_isainfo *selected_isainfo = isainfo;
-> > +		const struct riscv_isa_ext_data *selected_riscv_isa_ext = riscv_isa_ext;
-> > +		size_t selected_riscv_isa_ext_count = riscv_isa_ext_count;
-> > +		unsigned int id_offset = 0;
-> >  
-> >  		switch (*ext) {
-> > +		case 'x':
-> > +		case 'X':
-> 
-> One quick remark is that we should not go and support this stuff via
-> riscv,isa in my opinion, only allowing it for the riscv,isa-extensions
-> parsing. We don't have a way to define meanings for vendor extensions in
-> this way. ACPI also uses this codepath and at the moment the kernel's
-> docs say we're gonna follow isa string parsing rules in a specific version
-> of the ISA manual. While that manual provides a format for the string and
-> meanings for standard extensions, there's nothing in there that allows us
-> to get consistent meanings for specific vendor extensions, so I think we
-> should avoid intentionally supporting this here.
+Hi Ze Gao,
 
-Getting a "consistent meaning" is managed by a vendor. If a vendor
-supports a vendor extension and puts it in their DT/ACPI table it's up
-to them to ensure that it works. How does riscv,isa-extensions allow for
-a consistent meaning?
-
+On 13/03/24 14:28, Ze Gao wrote:
+> We observered select_idle_sibling() is likely to return the *target* cpu
+> early which is likely to be the previous cpu this task is running on even
+> when it's actually not within the affinity list newly set, from where after
+> we can only rely on select_fallback_rq() to choose one for us at its will
+> (the first valid mostly for now).
 > 
-> I'd probably go as far as to actively skip vendor extensions in
-> riscv_parse_isa_string() to avoid any potential issues.
+> However, the one chosen by select_fallback_rq() is highly likely not a
+> good enough candidate, sometimes it has to rely on load balancer to kick
+> in to place itself to a better cpu, which adds one or more unnecessary
+> migrations in no doubt. For example, this is what I get when I move task
+> 3964 to cpu 23-24 where cpu 23 has a cpu bound work pinned already:
 > 
-> > +			bool found;
-> > +
-> > +			found = get_isa_vendor_ext(vendorid,
-> > +						   &selected_riscv_isa_ext,
-> > +						   &selected_riscv_isa_ext_count);
-> > +			selected_isainfo = isavendorinfo;
-> > +			id_offset = RISCV_ISA_VENDOR_EXT_BASE;
-> > +			if (!found) {
-> > +				pr_warn("No associated vendor extensions with vendor id: %lx\n",
-> > +					vendorid);
+>         swapper       0 [013]   959.791829: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=13 dest_cpu=23
+> kworker/24:2-mm    1014 [024]   959.806148: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=23 dest_cpu=24
 > 
-> This should not be a warning, anything we don't understand should be
-> silently ignored to avoid spamming just because the kernel has not grown
-> support for it yet.
 
-Sounds good.
+I am able to reproduce this scenario of having an extra migration through load balance
+swapper       0 [031] 398764.057232: sched:sched_migrate_task: comm=loop pid=178687 prio=120 orig_cpu=31 dest_cpu=33
+ksoftirqd/0  13 [000] 398764.356138: sched:sched_migrate_task: comm=loop pid=178687 prio=120 orig_cpu=33 dest_cpu=34
 
-- Charlie
+I wrote a simple c program that blocks for few seconds, meanwhile I taskset it to CPUs 33,34 while I already have a
+busy task running on CPU 33.
+
+> The thing is we can actually do better if we do checks early and take more
+> advantages of the *target* in select_idle_sibling(). That is, we continue
+> the idle cpu selection if *target* fails the test of cpumask_test_cpu(
+> *target*, p->cpus_ptr). By doing so, we are likely to pick a good candidate,
+> especially when the newly allowed cpu set shares some cpu resources with
+> *target*.
+> 
+> And with this change, we clearly see the improvement when I move task 3964
+> to cpu 25-26 where cpu 25 has a cpu bound work pinned already.
+> 
+>         swapper       0 [027]  4249.204658: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=27 dest_cpu=26
+
+But after applying this patch, The extra migration is still happening as CPU 33 is still chosen by try_to_wake_up.
+
+On placing some perf probes and testing,
+    migration/57     304 [057] 12216.988491:       sched:sched_migrate_task: comm=loop pid=11172 prio=120 orig_cpu=57 dest_cpu=4
+         swapper       0 [004] 12226.989065: probe:select_idle_sibling_L124: (c0000000001bafc0) i=-1 recent_used_cpu=-1 prev_aff=-1
+         swapper       0 [004] 12226.989071:       probe:select_fallback_rq: (c0000000001a2e38) cpu=4
+         swapper       0 [004] 12226.989074:       sched:sched_migrate_task: comm=loop pid=11172 prio=120 orig_cpu=4 dest_cpu=33
+         swapper       0 [000] 12227.007768:       sched:sched_migrate_task: comm=loop pid=11172 prio=120 orig_cpu=33 dest_cpu=34
+
+It is observed that, select_fallback_rq is still taken in this scenario as default target is returned at the end of select_idle_sibling
+which was CPU 4.
+
+In most of my testing, default target is returned at the end of the function due to the initial checks. It's possible that there would
+be cases where we can get optimal CPU before we reach end of the select_idle_sibling function but it would be interesting to know if the
+extra time spent in finding an optimal cpu have an impact instead of returning it earlier if in most of the times we are returning the
+default target at the end. 
+
+Thanks and Regards
+Madadi Vineeth Reddy
 
 > 
-> Thanks,
-> Conor.
+> Note we do the same check for *prev* in select_idle_sibling() as well.
 > 
-> > +				for (; *isa && *isa != '_'; ++isa)
-> > +					;
-> > +				ext_err = true;
-> > +				break;
-> > +			}
-> > +			fallthrough;
-> >  		case 's':
-> >  			/*
-> >  			 * Workaround for invalid single-letter 's' & 'u' (QEMU).
-> > @@ -366,8 +423,6 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
-> >  			}
-> >  			fallthrough;
-> >  		case 'S':
-> > -		case 'x':
-> > -		case 'X':
-> >  		case 'z':
-> >  		case 'Z':
-> >  			/*
-> > @@ -476,8 +531,10 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
-> >  				set_bit(nr, isainfo->isa);
-> >  			}
-> >  		} else {
-> > -			for (int i = 0; i < riscv_isa_ext_count; i++)
-> > -				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
-> > +			for (int i = 0; i < selected_riscv_isa_ext_count; i++)
-> > +				match_isa_ext(&selected_riscv_isa_ext[i], ext,
-> > +					      ext_end, selected_isainfo,
-> > +					      id_offset);
-> >  		}
-> >  	}
-> >  }
-
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
 
 
