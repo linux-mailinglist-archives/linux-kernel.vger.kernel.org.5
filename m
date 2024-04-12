@@ -1,101 +1,102 @@
-Return-Path: <linux-kernel+bounces-143257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE518A3660
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:29:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 071978A3661
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:30:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E5F81F223AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:29:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 384ED1C2303D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F181915099F;
-	Fri, 12 Apr 2024 19:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49AC5150980;
+	Fri, 12 Apr 2024 19:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="pnVaRNS1"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TxV6at5G"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 756F0150990
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B9314F9C6
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712950174; cv=none; b=H/3xTk7+SF7zAJVZmjdiuhZTJA6mbFwKXc1O+tkbXYzZbk1iiETdWyLSBllFkRKSOVq+nM3FZz1OzIPq+KYYjuw4RNGtfN22TlPcWq8okuQLYFmii28D6LYDmj7VkIr4AREMXbrDJpww3bpEB1VPjPxaTY1ht2F9GEFLRDfwbEM=
+	t=1712950246; cv=none; b=mL7SeETycm3U1pa+gKjel4dgiBmeyU+517gjweI4i1AfikHuUStCDwgN8HghdEdG5zGQzshxIA07AKxwOLkx2OtbxX088d6JmGwJfVyijMbZ+HboN885qdH+EZEcyORWKJc9Ccbyij8cGEIjRycdQathpBWAMjbEW5f1lx6GuqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712950174; c=relaxed/simple;
-	bh=dMU3YTqYEj6Pq0v0+vb73IdcglOkFpGJFmjvvfyr1GM=;
+	s=arc-20240116; t=1712950246; c=relaxed/simple;
+	bh=xXqpfdKuwNL9Kig307Qx7iHEKaVdnd+3al7mxs/lJ/E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XBrKziHalK1VvUsN0Vf0uyAvCNXrWQ6Da8dStOxcSUwbn9Nlw38ZkTtYi3UK06Bybj8OWF1JMG3XZ0cFZ4XbhT5FM/RHgkSkFtaCewmtXtciTgXl6UzJcHwfJZgEhRjpB0b60ubhjF1vqySICgUaH5eT2Wl9tBaq8o1zLYJ/POM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=pnVaRNS1; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d886f17740so24114351fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:29:32 -0700 (PDT)
+	 To:Cc:Content-Type; b=TrSoyi7FUrS34NpYAE0bO0033kQ9l/fWbGnzNEpI6tFyhBDYrESJnXU4OTx9O3KLRxVNzoICz9rw+Y8guBO9QTZ87n6IEBSeLU+Qm444ag4YQ9lK2hDPciIhUB4lECv0UAjMedmSz7ZGOW3RU4/gswgBoaEzNt3356LbTiz6FfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TxV6at5G; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-417e326fceaso1725e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:30:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712950170; x=1713554970; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712950243; x=1713555043; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dMU3YTqYEj6Pq0v0+vb73IdcglOkFpGJFmjvvfyr1GM=;
-        b=pnVaRNS1SIhV6qcMvXag+Ts1k+LJs1E1TkQHB6wDhvW/HnYkCnXjgO5br3fjDwzAgz
-         04yet4YmlPsb03hSaGAB6ogU5sVvu156av8irkeszqCK5VLM77s1/B+KtzI0IRro/yxi
-         Y0uS34W7RhgJb8nDRPFPSbavEz43RhNkfACjQHDrU0kJAxba0ysSGQZuZpsbnCFJA/IY
-         P61fFVM2DiaUkb5piD+EjJOmxPJzMSvOXqsiVvDRNyvqWU8eJxu2iW1kmJTtwmSsybaW
-         tSQok7e1uvX1vBhifiyhGtYkHHh+Av1DO+cAACcxkU4NcJEuyhECU54IVMi36uZRQSGq
-         OVIw==
+        bh=xXqpfdKuwNL9Kig307Qx7iHEKaVdnd+3al7mxs/lJ/E=;
+        b=TxV6at5GrVJfg/jpU1wiM1z7wgjF4aOhwqlIQ1cd1FVf0P+s4VlfoZ+Cct0YlqbjCG
+         CIxKCNcaXrN8QLMs7nFb+OyTGFJu3QVwpVOjQGd/1kHiJsx/0lj7P+mLaPX40vSwL0+M
+         z5rFfEzu8gnJ97Zpl3v0QJAiPTBryXPZxDykUHJ/KZfNfK9K8d2y9Qb9LuRKJ5XxtA6Z
+         pGDDAyNkltdy3kA6qeMYw02yxNjjuUeYefbpspDnh20HklcP65znu7ALciDbOqSEHD6D
+         v9kBVP9hlZ6FX8VME/lorqcQzEi0l7i2hYbajTu4XDOl957uG7jQ0tOXOi9/9eTFFzYp
+         NVDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712950170; x=1713554970;
+        d=1e100.net; s=20230601; t=1712950243; x=1713555043;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dMU3YTqYEj6Pq0v0+vb73IdcglOkFpGJFmjvvfyr1GM=;
-        b=LZ4HQO8Tr4ldwOnuX/Y5VtkY2jPR0wPOHmtbtunT8uu4iU0r3pJCn6oQVxIzkCAb00
-         6rNJ9j7B4V5TKnJKt8wDgOcO5mNSYIpS7IC3V+hruodWd1dRQH30m3cZ4xrRIAO9xSOW
-         LudH6t4/xUYwnYUO3E3XLeMPIPp+UcIPzqf5syFa0Rloqy9KNw7lBFWaxNlEZs18JZuP
-         pBJBishtqh/jlfFwsYtqAPDlH40IAbr5oZwk4evtDNEg++WM7kQ9vwOqOPY5DFYXjgD2
-         3K475VUYNWPyjJciW3Bye9z6yvcMCTjzUoLbfkqhFIzaTpMitjof3L8jfP5juy0ZvpaB
-         Dheg==
-X-Forwarded-Encrypted: i=1; AJvYcCX+CbsaY05wu56FKrexN1kBMLiHyy/unRpy6lkzwO7wtwF/vjQAXhOqUKYA214o6WXFClJ+UxkuicGI0EYGgiRFJLyZP2cuP0CC0MEc
-X-Gm-Message-State: AOJu0YzvGPZrDheAlGuKze8rEoDsfm8D6bfK8OL/S/yje2eOdqLJpOVl
-	1nsmc5YbGAcHYbo5AMZkP7hhJwDEK0JMouIV0YlBeEzBMXmpzBo8qVfbqqlusg81mpCua2L9++5
-	PqNj22j+Ee7feTjjSVOCHfbAjKCE+Jt+pvujFLg==
-X-Google-Smtp-Source: AGHT+IFPPr7frvWajQHGbkpxINHZewvW3o7jH7+UGGjVYe6zp1bkg8rR8QuGlvgmrYeG+47sm5i6VRjBLlopWWTUIBw=
-X-Received: by 2002:a2e:a70e:0:b0:2d8:cea3:85e7 with SMTP id
- s14-20020a2ea70e000000b002d8cea385e7mr1073208lje.12.1712950170486; Fri, 12
- Apr 2024 12:29:30 -0700 (PDT)
+        bh=xXqpfdKuwNL9Kig307Qx7iHEKaVdnd+3al7mxs/lJ/E=;
+        b=eUGX5EvxufC4WGjdar+tdKzfYwUsR6pCoNvuI9EMtZCVUc/V4g350ELx+xA2bhGTV8
+         gVUIYPqzGLdLpcljiDvBfmzYvCKP3ZvG0hROiMrYcfRj0AfWdBxVtyIyWigIKJDUj5rK
+         ZVuri6467P3T0jspA4yaIuQIW/Fiibu2m7yM3sKM0U/6S5NEdlmSHAu6VUojX2Rhkn1H
+         3IsI6K5XfR/+gFnDDl9C8j6LuAqNqdk9cUkgKAZ+gfaQZPAT6Ms2Q1GncUnw2VwjxI5d
+         dBpQNZ+DFwQUiVNpO/FGXH3fItJOTOfRXMpQovW7fXivKTG7PK0hyuup6a0afWpFQeml
+         EbuQ==
+X-Gm-Message-State: AOJu0YzMbN05a5WzOqe7W0EW28F3H2kjuE3O8Gf0BGf9H3bscWG+vQVA
+	b1csgUOHHW+bjY6uBvPtNtsZED+fhszmlu3aFk3A0DSsfA4AEfo9md1SPjfnF6I9z42KAMAiTJy
+	czcKHEe5MivZld6NGgcJS5CZBZ9PoBtr6SGvT
+X-Google-Smtp-Source: AGHT+IGevUffXrsP0zpzECV2A0lqZ+/gOkOlJB5YDYGLcWSxoooRreou4WiRPDCja5l0bWkxTJK40nL5YsmoSdm/uiA=
+X-Received: by 2002:a05:600c:35c7:b0:416:b76e:b9ad with SMTP id
+ r7-20020a05600c35c700b00416b76eb9admr23167wmq.7.1712950243298; Fri, 12 Apr
+ 2024 12:30:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408233201.419893-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240408233201.419893-1-andriy.shevchenko@linux.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Fri, 12 Apr 2024 21:29:19 +0200
-Message-ID: <CAMRc=MfnAYFPtk-pwtd496c-qry0aQs1NJCkTEQ+jLF+JGyxNQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] Documentation: gpio: Replace leading TABs by
- spaces in the code blocks
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>, 
-	Jonathan Corbet <corbet@lwn.net>
+References: <20240411231954.62156-1-edliaw@google.com> <20240411163409.4f8969fa8a46b63d04a28f77@linux-foundation.org>
+In-Reply-To: <20240411163409.4f8969fa8a46b63d04a28f77@linux-foundation.org>
+From: Edward Liaw <edliaw@google.com>
+Date: Fri, 12 Apr 2024 12:30:15 -0700
+Message-ID: <CAG4es9Wti4JACt9KzvEW4oSX0wZyBWC9NCLDW11NXYeeOzLM1w@mail.gmail.com>
+Subject: Re: [PATCH] selftests/harness: remove use of LINE_MAX
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
+	Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Peter Xu <peterx@redhat.com>, 
+	David Hildenbrand <david@redhat.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	"Mike Rapoport (IBM)" <rppt@kernel.org>, linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	linux-mm@kvack.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 9, 2024 at 1:32=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Thu, Apr 11, 2024 at 4:34=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
 >
-> The code blocks are indented with two spaces, if the leading TAB
-> is occurred the syntax highlighting might be broken in some editors.
-> To prevent that unify all code blocks by using spaces instead of
-> leading TAB(s).
+> Thanks, I'll grab and shall send it Linuswards for 6.9-rcX.
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+> I added
+>
+> Fixes: 38c957f07038 ("selftests: kselftest_harness: generate test name on=
+ce")
+>
 
-Applied, thanks!
-
-Bart
+Thanks, I just realized I forgot to remove the <limits.h> includes.
+Should I send another patch for that or send a v2 of this one?
 
