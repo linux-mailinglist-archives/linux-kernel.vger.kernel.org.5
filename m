@@ -1,100 +1,127 @@
-Return-Path: <linux-kernel+bounces-141927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD968A252C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:29:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E28028A252D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ACEA1C212E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:29:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8777F1F2215E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09C4182DF;
-	Fri, 12 Apr 2024 04:29:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5B479FD;
+	Fri, 12 Apr 2024 04:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="agtHApzR"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FA1v+h7P"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8055182C3
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3179ECF
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712896155; cv=none; b=jz13QCHmv/4AjmGhqCNDda7zGLqL9AOe4y8q/TZb38CoXl1Z4qR/Cchd+TLGJkT9Z/22wm2vtidvvxqMoR8DS7nEIaJg+dzNv7lrivA7/hAoFH7t7fDJ4KMmRPhcBGLlOdZ28/4Ob+r4XFR9p0Fza3A2UHARjjqc+EeyejT3ZOQ=
+	t=1712896436; cv=none; b=dEM9AZ4sACHvKIJF3eIdqXh2CUTFhuG6ohF7itJfTqC6GERD0LDt1Y/mLc6iMXHIGml+tnkOEj4JVQBwnI3qGte2iBuX52gXFsSt6koI5Q9UibF5nJtwZjAnMRc8jS+27VQS+kiqnDQ480RcJQMutUZDxZc4xQzZND3dl7sZ1gU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712896155; c=relaxed/simple;
-	bh=DHM6nAj7Jy+55xoiSG9PHnUuCFZzkPIfgyOUGfjMPfI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OD/wVZDUdRdp9c9Q9Bs+A8RWY5VggMlZUGsMdKA+NHy6vYjIny1xSh8j6M5Ka+O0PkqDei6SE55xq0UxrJxWRMZnUXEEg0BefWGJmkfxyl65kuMsah7IeH+QcHAmoboNsw8TZh4x9bPjMc2CQvUulkP/w86YAK3Z3bOon1ZZBHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=agtHApzR; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=SN8hBhDzhEUTSap+6csDB4UNd+5T+CN0+lWmQ/p4FDc=; b=agtHApzRQofGYkGfLMtOs1d/+m
-	hlYU+4xuzwyVQ3OuNO3ibmzlpuOQDWqWTS/9e8ZWgzm+oWfm/otMmAnqaQ04RGkZ6V4IFRWm5bwPh
-	i2DOVo13NVlZwFkXefjz84zAZ8VhwpqCPN3HnnlYQCvalyfsyYlbs2Dnl7N1tL+r0DpSP1r/8e66x
-	YC1RO1EIQPeMgUSeQRvACcySK3DpNkSpTU+W5t2YZf1FfIRrhRQ6f/srEDN4wVhagRdYNr4bVPfHP
-	EKSIMWETcJx914O80SSxpJFP5W9V4Ozd80f1pXF3zDldTW/d2PEVYpvVuqD9tvIMmEtRaTYQM7h+N
-	JfVwrktA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rv8XG-00Avx6-2A;
-	Fri, 12 Apr 2024 04:29:10 +0000
-Date: Fri, 12 Apr 2024 05:29:10 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCHSET RFC 0/437] Kill off old fops ->read() and ->write()
-Message-ID: <20240412042910.GK2118490@ZenIV>
-References: <20240411153126.16201-1-axboe@kernel.dk>
+	s=arc-20240116; t=1712896436; c=relaxed/simple;
+	bh=SJuUOTk+tPDs17txQdrtU8laczHkgPN5aFVZ1F1rw/w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N5ExbTzgPYjBHhf9ZHQPXN8LHU4BQqBgvS7CMmIC4Ias3uaB8oStI684uwkXACYdT6uINVESHHH9mLMUm7uv4rWIpif7v/foj8falNurOW2mo5NMe11Ed56JqNs0IMXkOZSJJ5Czso9TfVvNhIejBVLEGKUlobefdmBWvZRhgPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FA1v+h7P; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-434ffc2b520so105451cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712896433; x=1713501233; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TVRSfRvmBRbYw1q/vaK/nM/qS2bMxaTpEW8dnav8EoM=;
+        b=FA1v+h7PEzzFV2nE6nY45TA00iddzXIDkYujxApXK1fVRxs7PH94ZuTFCaUHJpfYz8
+         uMgx9ESDzZlu+GRifX6t2nMZLIVjK1QQmADtSqx7sTNAaaUjIfZb1k7/lxqJB9S0t1SD
+         Y+GwYbKyfLCjZgRRkcxMCyjGyH3tl2KG/P/4k3TMOxX9FK1Jm2YDisF3hU3Au3VXfNVW
+         XU/C/vwiVb583J7gbosQbpmgjRW7EXdkfq6Qt2yY+fsDuDqJc4rBST1Fj+oYvW1Lept0
+         IC35415IdEWi51AldPB1NnKbgpYFJXZnukQAOoXz189+qKgppU4fo8YbDJ7PQOsoDeWC
+         PIDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712896433; x=1713501233;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TVRSfRvmBRbYw1q/vaK/nM/qS2bMxaTpEW8dnav8EoM=;
+        b=V7KIu5rOQeOh1DBZjIRLAYqDhNFhueRIEJdNCxUSXJAqDEti3XojY3HJDZ4mlWmgZA
+         ZO490kBkEQv+o737aMEYsItn0nm+SZKSDUG5uHL0RXRbUBeMA9zpeejiny52ystAR3+Q
+         Q/vY9m+rMUqX1FzsUpBsdQgj0EOGVIj1lLhJ84Btc73cjdgpVtrrfyPwHpRgUGyyf7kJ
+         Ed+b1P2d7ZLxA/1PY+L6FjhzOEfnPeGwYX9CFvnylQoFo4e8ta+8bes1uj7ygK9Qo5RA
+         mGoO4SYQdyblClzVN3Y5QMSZYipDesRIIy1jtukj6Op1SV9GEqwsbd4iPWV3w115w1U1
+         sh0A==
+X-Forwarded-Encrypted: i=1; AJvYcCW8K75R5uI7snohMcq/TGtC5y6CIz8ti+htdavEXdT1HDFos2yu190CheOWWYA2B1l6YhEPdUi3A1MIc7sKPE7Lz41Jx48n7PcOwV/y
+X-Gm-Message-State: AOJu0Ywh8Ws8BxRQ5nrNirBx/80hn3WgXFsSFSgYAxYRwVTNMPA9H3xg
+	l2I35EPk0AfZrLT6LcZm7dVBDX1UUWJT+LyFRkR8+385B6wSefsLmPjt5fwuT4UWnqIkNKitr87
+	ZGKjT9Pm9VMWEG7hT3mhChNSTE7AofIC8Xu/L
+X-Google-Smtp-Source: AGHT+IETP2n//L+kxBDDp8gcDnZCE5kU7b73rpf8Dn1Q/fiMFtcf2Jqd5JysQcbhoF7R3IYgW5oLE+44lL+65Vn1Cng=
+X-Received: by 2002:a05:622a:4898:b0:434:bdee:935b with SMTP id
+ fc24-20020a05622a489800b00434bdee935bmr106821qtb.27.1712896433572; Thu, 11
+ Apr 2024 21:33:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20240222051539.3001988-3-saravanak@google.com>
+In-Reply-To: <20240222051539.3001988-3-saravanak@google.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Thu, 11 Apr 2024 21:33:16 -0700
+Message-ID: <CAGETcx_zC_HKoFr=m_erAM+tWPQLe8TuLtJpZ6+dtac8UEYCWQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] checkpatch: Don't check for 75 chars per line for
+ create/delete mode lines
+To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, 
+	Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: kernel-team@android.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 09:12:20AM -0600, Jens Axboe wrote:
-> Hi,
-> 
-> This patchset will obviously be split, commit messages updated, and
-> specific driver patches targeted to where they belong. But I figured
-> it'd be useful to blast out the full set at least once for reference,
-> and then I'll continue down the right path for the next one.
-> 
-> Subject line says it all, really. 10 years ago we added ->read_iter()
-> and ->write_iter() to struct file_operations. These are great, as they
-> pass in an iov_iter rather than a user buffer + length, and they also
-> take a struct kiocb rather than just a file. Since then we've had two
-> paths for any read or write - one legacy one that can't do per-IO hints
-> like "This read should be non-blocking", they strictly only work with
-> O_NONBLOCK on the file, and a newer one that supports everything the
-> old path does and a bunch more. We've had a few issues with the
-> iov_iter based path being slower, but those have basically been
-> resolved with solutions like ITER_UBUF to optimize the single segment
-> case that is often the fast path.
-> 
-> There are basically three parts to this series:
-> 
-> 1) Add generic helpers that we need to convert drivers.
-> 2) Convert any use of fops->read() and ->write()
-> 3) Kill off old cruft.
-> 3a) Profit.
+On Wed, Feb 21, 2024 at 9:15=E2=80=AFPM Saravana Kannan <saravanak@google.c=
+om> wrote:
+>
+> Cover letters have a "create/delete mode <mode> <filename>" line for file=
+s
+> added/deleted in the patch series. Ignore these lines when checking for t=
+he
+> maximum 75 chars per line limit.
+>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-The fundamental problem with that is that a bunch of drivers
-do care about the vector boundaries.  Very much so.  It's very
-common to have this kind of situation:
-	write() parses the buffer sloppily, and ignores the junk in
-the end, claiming that everything that been written.
-	writev() feeds each vector to write().
+I know patch 2/2 is not going to be picked up. But can we pick up this
+one please?
 
-From a cursory look through that pile, you seem to have broken
-writev() on at least some (if not all) of those.
+-Saravana
+
+> ---
+>  scripts/checkpatch.pl | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 9c4c4a61bc83..f306634a938c 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3271,6 +3271,8 @@ sub process {
+>                                         # filename then :
+>                       $line =3D~ /^\s*(?:Fixes:|$link_tags_search|$signat=
+ure_tags)/i ||
+>                                         # A Fixes:, link or signature tag=
+ line
+> +                     $line =3D~ /^\s*(?:delete|create) mode\s+[0-8]+\s+\=
+S+\s*$/i ||
+> +                                       # A "create/delete mode <mode> <f=
+ilename>" line found in cover letters
+>                       $commit_log_possible_stack_dump)) {
+>                         WARN("COMMIT_LOG_LONG_LINE",
+>                              "Prefer a maximum 75 chars per line (possibl=
+e unwrapped commit description?)\n" . $herecurr);
+> --
+> 2.44.0.rc0.258.g7320e95886-goog
+>
 
