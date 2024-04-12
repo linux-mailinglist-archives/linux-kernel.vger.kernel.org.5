@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-142161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1C548A2858
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:38:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96FD68A2859
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0069A1C23AF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:38:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF726B225A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:38:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF194F213;
-	Fri, 12 Apr 2024 07:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629A350286;
+	Fri, 12 Apr 2024 07:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fB31oEB+"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yu75JMON"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B9E4D5BF
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446B750241
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712907491; cv=none; b=l2Mg5wzgibTdOfEwRmPPizlMwLQRJCBGGv2KK2sgkBzSLJB5o/Eeun6ldSynedZxfHhbjeUaZlyk2tAx8tXCHxo/6d79qk6TaBGkiXVatAqH+iPkcW1Fl/oBtpDPl9MJe3J1wt4GxJFAz7UUWvlsxsrZTWrvotLOnrG0RYjBn+s=
+	t=1712907497; cv=none; b=ivOXPs3Nm/o8cVHOjX0K62A6HUMASpJuxdR9ONdc8yI4Aoq9CwH7kTk9nnCEU5Ekjy5zWJdDhCulE3rhMFZb0w8ydaiP+AvShpwTPueOpyUN6LNVT9c/8PUkaD9to1cGAIdBYYb0CytHqvov8K5DqBKw+Yt2r8qgWmYGhLvWnq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712907491; c=relaxed/simple;
-	bh=4Hwop6FJ5nVwlMbGbX82ySoe31PuiWS/yVoZEPPvmDc=;
+	s=arc-20240116; t=1712907497; c=relaxed/simple;
+	bh=GkrF5NbnmDIO2PSdgna9PVGIA+4K9OmSE88/osARHDA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PXvykVSBxxZ98SMPw/iS37/+e++L5MaSGFGrjj/hS1d8bF7KzinpcznA6AkJ6BCTSP5B0q2QNAEBY1CfdQudXGYbrt/c1bBVb01hD1aeV1bmjdtUETQue5Jdn2Yu6uOd1hfw4kiSlsbkYyXFfKwyNmEwQ0B+Obvq0GQiwXOdsGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fB31oEB+; arc=none smtp.client-ip=209.85.214.169
+	 MIME-Version; b=FBDmctRTDS+UaKk792L9SpMd5UY0Qi4z9wndHMPGunZPnHrPWYmnPrKpLS8onGWn11j0SJdAggiis3VKi+mduGgJbBMHp5Pv+VZ6gO4zed6VlEnS/cXoW/OP3LMQE3/xGIUhCwsStlJH4qqUXska/uDuWoxKz+8HI2c587XqnBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yu75JMON; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e40042c13eso4839875ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 00:38:10 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e3c3aa8938so4360685ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 00:38:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712907490; x=1713512290; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712907495; x=1713512295; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hsOHXEK8Nh5pewumsjjrvdM3HKJLRrjO6yqH5K5tp/s=;
-        b=fB31oEB+PAW0Vf0FvIAUqwWC9cw+L+fcQV7mb1y4xYizPKP1zRA+vWS31nYSf/JvXb
-         u1opi38uyGk0L9nhtvnLY2u9dB0jX9T9VDeYqhNklBOT8UqSoUwCoamYnzPRtV2R/UeS
-         X+Qj3XblBQVDr/IkKfQPilxPCblDQ0MeZCdB10zbGt6Y+mAOW0lqkW79Z/X9GfILZUe7
-         XiYVyS7B3BEi4WwRmKtEpQJlC/ExnMowDiK3cwKNTfm3XJ20zBuPHSON+VLMrgcN7P5H
-         xpb4HQ3KNNEZ0Tg+sYwTnPphD6bgEAZPlTWbT0S8KSyHYN9NDbEOM13mEIaxsPU14vfs
-         gw2w==
+        bh=HKv+dOKRCJhG1tenSkeU7/8yjqgzALDAmJSETtZIvnY=;
+        b=Yu75JMONCiqln6iIbS0A7A446Q9rpPavKaVSHz+sRrkv2CiGWkmFC9ZSCb4cCUmD+T
+         HoKS2afIx28uzsFE/NIbRvpAm6UvK7buCwX9UzalN2Pitlqd/c5PtMjpoBYJmNr4ZgRq
+         nwKTusC88WYakmjQstmSrzVjCl7YayeLTj1EXVU/OkQMl56UyXjHatvkrE4ieBxfI+oq
+         Wp9aWKwi8crKpoLqUd8ZdtPQoS9f7ulo8hSOOOyJXLE25VGTt1MGPs6EjBK+B80Vvu43
+         xVAMOmgkaB2ZTpYx348k//FM//BXzF/2RBKZeYpd1mSvd+smj3E0CGJmX9xCp50cGOuh
+         bExg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712907490; x=1713512290;
+        d=1e100.net; s=20230601; t=1712907495; x=1713512295;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hsOHXEK8Nh5pewumsjjrvdM3HKJLRrjO6yqH5K5tp/s=;
-        b=dNnwD4+2W6hfzcY+UzSQ7iicZBzkpj+UrmhzoyVcLgu2foQGPYwSEMxTPJ84PPOaZX
-         cLGTch6gbnLvbwAVO6oNHMDUtesIow5bbZzDEKiN+FV9EDTrrCF4KtSSH97v8jXF0cwE
-         LoPu7NmpYZJu4DJuzxQ1suJdrlPB+bB9rVCUji8RigcYRH88bNxdwba32jpac6Nt3tPi
-         2OAjnrWmDOH7bVlkbe2ud5AS7EfDknu8njS/swGQkXAtnjhpKOK00EDBVG4ssLBU3tRB
-         p1KxEFSvZ+f003Z/9A1KD2EPGDcrXMt0VWWNsTL2fPUbTt/6hGXMZO5FaU6Ee7CICgy1
-         rEiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWJOeMZ3J6NOZ9/aVoQDWe/SFPWk8n8G1j/MBE4ynJsH0si6EyWW1GRsyjpyLvpaLaPBQHYyoushO3e77uiPnP9MMK9ZmnFwHnBDZIK
-X-Gm-Message-State: AOJu0YwB1mVoyLA19SRNVjZWjzWlEvfamcP16Z+9932BFlwL/jM3sJ7k
-	80g9rVAA8Sb77YnD4hBXds0TZyWKkBe6ww5iS//JQRnkH9B9+Tb4
-X-Google-Smtp-Source: AGHT+IHWZYew+Q9NtnWF+a6SE88ptdUjsAwDnwkkWmi3sA6yX2D3E8zqruIKdheWkebuC2R11yEKEg==
-X-Received: by 2002:a17:902:9341:b0:1e2:952b:81fc with SMTP id g1-20020a170902934100b001e2952b81fcmr1436795plp.29.1712907489843;
-        Fri, 12 Apr 2024 00:38:09 -0700 (PDT)
+        bh=HKv+dOKRCJhG1tenSkeU7/8yjqgzALDAmJSETtZIvnY=;
+        b=miTY+PKdYRnCrefMaWnlgB879n1f7b5FHMWym20XIfv44WktpQbGMMIfq3+gymuO32
+         nAv09t4gcXmMlYE7zXRI10wpGmLVL4c+9xKft7Vej73oPK3CpAshXY5OwHew238RDei0
+         HxugoolqKcCcYXAtWVRqBdk/VD5aY9n/zaqcFpgwtWRGSZDzLFEqzWJThplVrztnHur+
+         ZtqItH12yR0IcFyKExlQkVSfCnyoI5C5le8SisYZhoVRqTerVjIGKCQkb1Lk9ZbmoLaW
+         Aab6Hpys0B0ybl6eJePLx6272R0L0dKu0E/6OSgipu2vEJlp+V2sxhT7+9uzFheAROMe
+         30ig==
+X-Forwarded-Encrypted: i=1; AJvYcCVDzXLz1n7xq6grZSudlrJv2HmXGl2ru227Zqkwei9p+yFZUYgS3gOpmPFFU63TJKQaEx/rOr+DHzWkINxoyADmMTRxu7SeEBanyn7Q
+X-Gm-Message-State: AOJu0Yyu++BS2QB2N9mn5JVli9GH5+v13kS5WQ+21cLvjlVGBT0eBldL
+	yLjqruTBzdc0bNWoZBZ/6iRhYYeqvDkIzrM2cUXx+9QQIU4fNtAK
+X-Google-Smtp-Source: AGHT+IEs8mtcjto8rOXz5YMEcwZFJOMI1fiWwDFq30NXF3pGJzIMZvBmCkp2JLPcrzhMVIiefWw4TQ==
+X-Received: by 2002:a17:902:e950:b0:1e3:e0a7:3c9 with SMTP id b16-20020a170902e95000b001e3e0a703c9mr2171282pll.14.1712907495496;
+        Fri, 12 Apr 2024 00:38:15 -0700 (PDT)
 Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170903110500b001e478f359bdsm2344011plh.127.2024.04.12.00.38.04
+        by smtp.gmail.com with ESMTPSA id n5-20020a170903110500b001e478f359bdsm2344011plh.127.2024.04.12.00.38.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 00:38:09 -0700 (PDT)
+        Fri, 12 Apr 2024 00:38:15 -0700 (PDT)
 From: Barry Song <21cnbao@gmail.com>
 To: akpm@linux-foundation.org,
 	linux-mm@kvack.org
@@ -82,9 +82,9 @@ Cc: cerasuolodomenico@gmail.com,
 	yosryahmed@google.com,
 	yuzhao@google.com,
 	corbet@lwn.net
-Subject: [PATCH v5 2/4] mm: add per-order mTHP anon_swpout and anon_swpout_fallback counters
-Date: Fri, 12 Apr 2024 19:37:38 +1200
-Message-Id: <20240412073740.294272-3-21cnbao@gmail.com>
+Subject: [PATCH v5 3/4] mm: add docs for per-order mTHP counters and transhuge_page ABI
+Date: Fri, 12 Apr 2024 19:37:39 +1200
+Message-Id: <20240412073740.294272-4-21cnbao@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240412073740.294272-1-21cnbao@gmail.com>
 References: <20240412073740.294272-1-21cnbao@gmail.com>
@@ -98,11 +98,9 @@ Content-Transfer-Encoding: 8bit
 
 From: Barry Song <v-songbaohua@oppo.com>
 
-This helps to display the fragmentation situation of the swapfile, knowing
-the proportion of how much we haven't split large folios.  So far, we only
-support non-split swapout for anon memory, with the possibility of
-expanding to shmem in the future.  So, we add the "anon" prefix to the
-counter names.
+This patch includes documentation for mTHP counters and an ABI file
+for sys-kernel-mm-transparent-hugepage, which appears to have been
+missing for some time.
 
 Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 Cc: Chris Li <chrisl@kernel.org>
@@ -115,79 +113,75 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>
 Cc: Suren Baghdasaryan <surenb@google.com>
 Cc: Yosry Ahmed <yosryahmed@google.com>
 Cc: Yu Zhao <yuzhao@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
 ---
- include/linux/huge_mm.h | 2 ++
- mm/huge_memory.c        | 4 ++++
- mm/page_io.c            | 1 +
- mm/vmscan.c             | 3 +++
- 4 files changed, 10 insertions(+)
+ .../sys-kernel-mm-transparent-hugepage        | 17 +++++++++++
+ Documentation/admin-guide/mm/transhuge.rst    | 28 +++++++++++++++++++
+ 2 files changed, 45 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index c5beb54b97cb..b69c3b3e1436 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -268,6 +268,8 @@ enum mthp_stat_item {
- 	MTHP_STAT_ANON_FAULT_ALLOC,
- 	MTHP_STAT_ANON_FAULT_FALLBACK,
- 	MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
-+	MTHP_STAT_ANON_SWPOUT,
-+	MTHP_STAT_ANON_SWPOUT_FALLBACK,
- 	__MTHP_STAT_COUNT
- };
- 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 21c4ac74b484..13e74724d0c3 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -557,11 +557,15 @@ static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
- DEFINE_MTHP_STAT_ATTR(anon_fault_alloc, MTHP_STAT_ANON_FAULT_ALLOC);
- DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STAT_ANON_FAULT_FALLBACK);
- DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
-+DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
-+DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
- 
- static struct attribute *stats_attrs[] = {
- 	&anon_fault_alloc_attr.attr,
- 	&anon_fault_fallback_attr.attr,
- 	&anon_fault_fallback_charge_attr.attr,
-+	&anon_swpout_attr.attr,
-+	&anon_swpout_fallback_attr.attr,
- 	NULL,
- };
- 
-diff --git a/mm/page_io.c b/mm/page_io.c
-index a9a7c236aecc..46c603dddf04 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -217,6 +217,7 @@ static inline void count_swpout_vm_event(struct folio *folio)
- 		count_memcg_folio_events(folio, THP_SWPOUT, 1);
- 		count_vm_event(THP_SWPOUT);
- 	}
-+	count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPOUT);
- #endif
- 	count_vm_events(PSWPOUT, folio_nr_pages(folio));
- }
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index bca2d9981c95..49bd94423961 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1231,6 +1231,8 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 						goto activate_locked;
- 				}
- 				if (!add_to_swap(folio)) {
-+					int __maybe_unused order = folio_order(folio);
+diff --git a/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage b/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
+new file mode 100644
+index 000000000000..80dde0fd576c
+--- /dev/null
++++ b/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
+@@ -0,0 +1,17 @@
++What:		/sys/kernel/mm/hugepages/
++Date:		April 2024
++Contact:	Barry Song <baohua@kernel.org>
++Description:
++		/sys/kernel/mm/transparent_hugepage/ contains a number of files and
++		subdirectories,
++			- defrag
++			- enabled
++			- hpage_pmd_size
++			- khugepaged
++			- shmem_enabled
++			- use_zero_page
++			- subdirectories of the form hugepages-<size>kB, where <size>
++			  is the page size of the hugepages supported by the kernel/CPU
++			  combination.
 +
- 					if (!folio_test_large(folio))
- 						goto activate_locked_split;
- 					/* Fallback to swap normal pages */
-@@ -1242,6 +1244,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 							THP_SWPOUT_FALLBACK, 1);
- 						count_vm_event(THP_SWPOUT_FALLBACK);
- 					}
-+					count_mthp_stat(order, MTHP_STAT_ANON_SWPOUT_FALLBACK);
- #endif
- 					if (!add_to_swap(folio))
- 						goto activate_locked_split;
++		See Documentation/admin-guide/mm/transhuge.rst for details.
+diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+index 04eb45a2f940..f436ff982f22 100644
+--- a/Documentation/admin-guide/mm/transhuge.rst
++++ b/Documentation/admin-guide/mm/transhuge.rst
+@@ -447,6 +447,34 @@ thp_swpout_fallback
+ 	Usually because failed to allocate some continuous swap space
+ 	for the huge page.
+ 
++In /sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/stats, There are
++also individual counters for each huge page size, which can be utilized to
++monitor the system's effectiveness in providing huge pages for usage. Each
++counter has its own corresponding file.
++
++anon_fault_alloc
++	is incremented every time a huge page is successfully
++	allocated and charged to handle a page fault.
++
++anon_fault_fallback
++	is incremented if a page fault fails to allocate or charge
++	a huge page and instead falls back to using huge pages with
++	lower orders or small pages.
++
++anon_fault_fallback_charge
++	is incremented if a page fault fails to charge a huge page and
++	instead falls back to using huge pages with lower orders or
++	small pages even though the allocation was successful.
++
++anon_swpout
++	is incremented every time a huge page is swapout in one
++	piece without splitting.
++
++anon_swpout_fallback
++	is incremented if a huge page has to be split before swapout.
++	Usually because failed to allocate some continuous swap space
++	for the huge page.
++
+ As the system ages, allocating huge pages may be expensive as the
+ system uses memory compaction to copy data around memory to free a
+ huge page for use. There are some counters in ``/proc/vmstat`` to help
 -- 
 2.34.1
 
