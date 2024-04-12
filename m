@@ -1,78 +1,77 @@
-Return-Path: <linux-kernel+bounces-142924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 914CB8A3217
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:18:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F9F98A3218
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:18:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 992E21C21087
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:18:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A25751C226C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58A5148FF8;
-	Fri, 12 Apr 2024 15:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E32148FE0;
+	Fri, 12 Apr 2024 15:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wn6ZL6Nb";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="t3HktWwF"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hZ15pQuk";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kIR8ukdU"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736FF1487F2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78EF148824;
 	Fri, 12 Apr 2024 15:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712934875; cv=none; b=j0i6uiq8Kjqw4hCdakSC8cX+i2I155XA4IGwwn8Qa/j9eqN9uH7r3Jj0e1KBYiWRb/fapSGu9VPc7QCGTbOglok+VRLPoZer+JlgLylOg89Wm4jVTaVJrwq42qsfGyElvm+6ov6cyyY3dEZ8DLsROHhUTZn/XPmxwZF90x+tpCQ=
+	t=1712934875; cv=none; b=diU8cDOFXlw0TIrU3O0kyZhK0cHqd6QN/IriQXZcnIK/FKXzJei7aHguLtnJPK0Mnl8J9ho4eWFUvrKVjIxGlQOZLVFZmuXGslA5QZ8jSfZbJX5TWWLIMCk1mnwYpKTei532f56r4cgs3ugGMKX+JSfl7Wia5eTFu7ZZQbH6cjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712934875; c=relaxed/simple;
-	bh=qcS3kbQCgIaXt9loTOK2wXSVFBTDBe9ONKy5I193WZ4=;
+	bh=fb1E57xKDAhnqlkrFHmAr2KhNB6ymu6UQRhaMajPbhU=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=F+7SIeDb9ODU06v5jdajfdxmiaxd+HUAYDD2ObtViL+WSU6HjehnutrpLRmmus+LtbDRSdmAsYv9bd2BIH5QLX7ECQTiTinRxUNYy6jSa73aX4geHdgT74alnxWJVIbEIDRjqAgq831x3naV3cNabBj/HlnqFyMcPbhbO/qQnFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wn6ZL6Nb; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=t3HktWwF; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=i9K3jb+nUqoxPNfdcgP8ezvT0Eo5dwX2IIGztRikOixoobb48TX+JVWL8YTCvhBADrLH1WUu5ifXkbfJZRB+uqIdCkNzKAPOmDhU/yAxf8Q9iGriUE7llixjeS4MuBmH5TT4NHTsFy5RRXkYbhxqOosToMRf6/uw1oLWbO0iZI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hZ15pQuk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kIR8ukdU; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 12 Apr 2024 15:14:30 -0000
+Date: Fri, 12 Apr 2024 15:14:31 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712934871;
+	s=2020; t=1712934872;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DYsxybRbHJADoeHwWoUIoA4oypUcOZiJa2jWyx5aNtM=;
-	b=wn6ZL6NbSWmPrb4Kmhg2Fj9HhYRLqPHQBYjY4tT/+oux7WOpB2RTngBNq7bDWoE3nvNEUX
-	DK1t4oIMxvNtr9FAt8MTiwlCCmU6ZGyYoSTf5FjregzzwIOXFHRlpMLs9EEyNRnk0HotEK
-	xsWHQakMdUqIjWGbM1HSGxfSnMnEUVNtNXHk8WXJ0EJICH2VBKLYC2Xjm3hjXUVV36LmY4
-	K7M0rkLVATeqhl0l9EGnPyjbeswHT2edDEFNOphNJLKyYTOV+7YGUMm+zG5GHIGJZUHkyO
-	sYCQm+GXSOM2ARYWADdu8/AyrJOJnmZv6N47YohDQKf+XZM/FbaVoxdgQmkzog==
+	bh=ZGitsXzVs6GPO6QWLbf+t+JIJz4IymL3axR/tx/1tCM=;
+	b=hZ15pQuk3AUCzJIpU7H/j5AQGWZymBUiUIJ1C7FI4LGQ31pvO+qXvrYljCM1Td0iaFAWY6
+	2gSkiJFANRVn+pSKgQmdxu0u6VYsM6oACH3N4n4gUI/Y1LqKzjXYzS80rDcR86KTTEftNj
+	2/orl86hbLrTAFYuRcNelzieCYSVeY/0gi92MyOv7bNd0UKXLgJ+NJx7A5ojKAXX7VtZCu
+	cS5oHUU2CjzKgrPhKuNdCZL4fRussFxYD4ZdQyTfx48JtTIMn/xBEqOf2h1MQwBou+os9D
+	FYuAph+8b0rKdgIEvxnmqvucj+LkQN58KaTuMD3mfVziKUPCx3SltbxjL88LxA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712934871;
+	s=2020e; t=1712934872;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DYsxybRbHJADoeHwWoUIoA4oypUcOZiJa2jWyx5aNtM=;
-	b=t3HktWwFRDL+sFBEu2UosgVZmNIgkpxnQRUCyNpFjyFo+zZ/2DdZOVR3UCRgsnPYGc1fEK
-	NgE1BwVYOnV4uLAg==
+	bh=ZGitsXzVs6GPO6QWLbf+t+JIJz4IymL3axR/tx/1tCM=;
+	b=kIR8ukdUmHEwqRdGt0ybJSI/jsx43aUXbNyGJQUsEvov4UjkxFIQfjA88WmhdRujzqR7hR
+	k2VpGcN9x4vhVGDQ==
 From: "tip-bot2 for Bitao Hu" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Avoid summation loops for /proc/interrupts
+Subject:
+ [tip: irq/core] genirq: Provide a snapshot mechanism for interrupt statistics
 Cc: Thomas Gleixner <tglx@linutronix.de>, Bitao Hu <yaoma@linux.alibaba.com>,
- Liu Song <liusong@linux.alibaba.com>,
- Douglas Anderson <dianders@chromium.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240411074134.30922-4-yaoma@linux.alibaba.com>
-References: <20240411074134.30922-4-yaoma@linux.alibaba.com>
+ x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20240411074134.30922-3-yaoma@linux.alibaba.com>
+References: <20240411074134.30922-3-yaoma@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171293487060.10875.15677909235587319984.tip-bot2@tip-bot2>
+Message-ID: <171293487132.10875.3663822954081868406.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -82,108 +81,127 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     25a4a015118037809c97d089d69e927737e589e1
-Gitweb:        https://git.kernel.org/tip/25a4a015118037809c97d089d69e927737e589e1
+Commit-ID:     99cf63c56661be0a0c42f79b56f37a4aa34b4779
+Gitweb:        https://git.kernel.org/tip/99cf63c56661be0a0c42f79b56f37a4aa34b4779
 Author:        Bitao Hu <yaoma@linux.alibaba.com>
-AuthorDate:    Thu, 11 Apr 2024 15:41:32 +08:00
+AuthorDate:    Thu, 11 Apr 2024 15:41:31 +08:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Fri, 12 Apr 2024 17:08:05 +02:00
 
-genirq: Avoid summation loops for /proc/interrupts
+genirq: Provide a snapshot mechanism for interrupt statistics
 
-show_interrupts() unconditionally accumulates the per CPU interrupt
-statistics to determine whether an interrupt was ever raised.
+The soft lockup detector lacks a mechanism to identify interrupt storms as
+root cause of a lockup. To enable this the detector needs a mechanism to
+snapshot the interrupt count statistics on a CPU when the detector observes
+a potential lockup scenario and compare that against the interrupt count
+when it warns about the lockup later on. The number of interrupts in that
+period give a hint whether the lockup might have been caused by an interrupt
+storm.
 
-This can be avoided for all interrupts which are not strictly per CPU
-and not of type NMI because those interrupts provide already an
-accumulated counter. The required logic is already implemented in
-kstat_irqs().
-
-Split the inner access logic out of kstat_irqs() and use it for
-kstat_irqs() and show_interrupts() to avoid the accumulation loop
-when possible.
+Instead of having extra storage in the lockup detector and accessing the
+internals of the interrupt descriptor directly, add a snapshot member to
+the per CPU irq_desc::kstat_irq structure and provide interfaces to take a
+snapshot of all interrupts on the current CPU and to retrieve the delta of
+a specific interrupt later on.
 
 Originally-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Liu Song <liusong@linux.alibaba.com>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20240411074134.30922-4-yaoma@linux.alibaba.com
+Link: https://lore.kernel.org/r/20240411074134.30922-3-yaoma@linux.alibaba.com
 
 ---
- kernel/irq/internals.h |  2 ++
- kernel/irq/irqdesc.c   | 16 +++++++++++-----
- kernel/irq/proc.c      |  6 ++----
- 3 files changed, 15 insertions(+), 9 deletions(-)
+ include/linux/irqdesc.h     |  4 ++++
+ include/linux/kernel_stat.h |  8 ++++++++
+ kernel/irq/Kconfig          |  4 ++++
+ kernel/irq/irqdesc.c        | 25 +++++++++++++++++++++++++
+ 4 files changed, 41 insertions(+)
 
-diff --git a/kernel/irq/internals.h b/kernel/irq/internals.h
-index 1d92532..6c43ef3 100644
---- a/kernel/irq/internals.h
-+++ b/kernel/irq/internals.h
-@@ -98,6 +98,8 @@ extern void mask_irq(struct irq_desc *desc);
- extern void unmask_irq(struct irq_desc *desc);
- extern void unmask_threaded_irq(struct irq_desc *desc);
+diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+index c286126..fd091c3 100644
+--- a/include/linux/irqdesc.h
++++ b/include/linux/irqdesc.h
+@@ -20,9 +20,13 @@ struct pt_regs;
+ /**
+  * struct irqstat - interrupt statistics
+  * @cnt:	real-time interrupt count
++ * @ref:	snapshot of interrupt count
+  */
+ struct irqstat {
+ 	unsigned int	cnt;
++#ifdef CONFIG_GENERIC_IRQ_STAT_SNAPSHOT
++	unsigned int	ref;
++#endif
+ };
  
-+extern unsigned int kstat_irqs_desc(struct irq_desc *desc, const struct cpumask *cpumask);
-+
- #ifdef CONFIG_SPARSE_IRQ
- static inline void irq_mark_irq(unsigned int irq) { }
- #else
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index f348faf..3820931 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -976,24 +976,30 @@ static bool irq_is_nmi(struct irq_desc *desc)
- 	return desc->istate & IRQS_NMI;
- }
- 
--static unsigned int kstat_irqs(unsigned int irq)
-+unsigned int kstat_irqs_desc(struct irq_desc *desc, const struct cpumask *cpumask)
- {
--	struct irq_desc *desc = irq_to_desc(irq);
- 	unsigned int sum = 0;
- 	int cpu;
- 
--	if (!desc || !desc->kstat_irqs)
--		return 0;
- 	if (!irq_settings_is_per_cpu_devid(desc) &&
- 	    !irq_settings_is_per_cpu(desc) &&
- 	    !irq_is_nmi(desc))
- 		return data_race(desc->tot_count);
- 
--	for_each_possible_cpu(cpu)
-+	for_each_cpu(cpu, cpumask)
- 		sum += data_race(per_cpu(desc->kstat_irqs->cnt, cpu));
+ /**
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 9935f7e..9c042c6 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -79,6 +79,14 @@ static inline unsigned int kstat_cpu_softirqs_sum(int cpu)
  	return sum;
  }
  
-+static unsigned int kstat_irqs(unsigned int irq)
++#ifdef CONFIG_GENERIC_IRQ_STAT_SNAPSHOT
++extern void kstat_snapshot_irqs(void);
++extern unsigned int kstat_get_irq_since_snapshot(unsigned int irq);
++#else
++static inline void kstat_snapshot_irqs(void) { }
++static inline unsigned int kstat_get_irq_since_snapshot(unsigned int irq) { return 0; }
++#endif
++
+ /*
+  * Number of interrupts per specific IRQ source, since bootup
+  */
+diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
+index 2531f34..529adb1 100644
+--- a/kernel/irq/Kconfig
++++ b/kernel/irq/Kconfig
+@@ -108,6 +108,10 @@ config GENERIC_IRQ_MATRIX_ALLOCATOR
+ config GENERIC_IRQ_RESERVATION_MODE
+ 	bool
+ 
++# Snapshot for interrupt statistics
++config GENERIC_IRQ_STAT_SNAPSHOT
++	bool
++
+ # Support forced irq threading
+ config IRQ_FORCED_THREADING
+        bool
+diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+index b59b792..f348faf 100644
+--- a/kernel/irq/irqdesc.c
++++ b/kernel/irq/irqdesc.c
+@@ -994,6 +994,31 @@ static unsigned int kstat_irqs(unsigned int irq)
+ 	return sum;
+ }
+ 
++#ifdef CONFIG_GENERIC_IRQ_STAT_SNAPSHOT
++
++void kstat_snapshot_irqs(void)
++{
++	struct irq_desc *desc;
++	unsigned int irq;
++
++	for_each_irq_desc(irq, desc) {
++		if (!desc->kstat_irqs)
++			continue;
++		this_cpu_write(desc->kstat_irqs->ref, this_cpu_read(desc->kstat_irqs->cnt));
++	}
++}
++
++unsigned int kstat_get_irq_since_snapshot(unsigned int irq)
 +{
 +	struct irq_desc *desc = irq_to_desc(irq);
 +
 +	if (!desc || !desc->kstat_irqs)
 +		return 0;
-+	return kstat_irqs_desc(desc, cpu_possible_mask);
++	return this_cpu_read(desc->kstat_irqs->cnt) - this_cpu_read(desc->kstat_irqs->ref);
 +}
 +
- #ifdef CONFIG_GENERIC_IRQ_STAT_SNAPSHOT
- 
- void kstat_snapshot_irqs(void)
-diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
-index 6954e0a..5c320c3 100644
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -488,10 +488,8 @@ int show_interrupts(struct seq_file *p, void *v)
- 	if (!desc || irq_settings_is_hidden(desc))
- 		goto outsparse;
- 
--	if (desc->kstat_irqs) {
--		for_each_online_cpu(j)
--			any_count |= data_race(per_cpu(desc->kstat_irqs->cnt, j));
--	}
-+	if (desc->kstat_irqs)
-+		any_count = kstat_irqs_desc(desc, cpu_online_mask);
- 
- 	if ((!desc->action || irq_desc_is_chained(desc)) && !any_count)
- 		goto outsparse;
++#endif
++
+ /**
+  * kstat_irqs_usr - Get the statistics for an interrupt from thread context
+  * @irq:	The interrupt number
 
