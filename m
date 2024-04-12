@@ -1,134 +1,132 @@
-Return-Path: <linux-kernel+bounces-143242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DA18A3636
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:13:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD818A3638
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53A42B22D7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:13:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB757B2395B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4B814F9E3;
-	Fri, 12 Apr 2024 19:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD39614F9EC;
+	Fri, 12 Apr 2024 19:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bv3HvwR1"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h1kHyLw9"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 045B914AD37
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD11C14AD37;
+	Fri, 12 Apr 2024 19:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712949181; cv=none; b=j0LbBFikN4aUhwqxxUmlpq6budDrM4MqyN4MRNn0787kWMRrxOzpCHcTXI9vP2sIqlA/yfamOVTz6dry4RnRlELZSVbcWDryYSAlPci0m2BJiNee9jVMxiOYZA8e1rASl85JjpCxhtj5Oq9OwdhX4cDSbtABaSLfbj0+8JyELmc=
+	t=1712949241; cv=none; b=dO7bnDgspknU0z1KMkTaFKMbpepyZQEtpy7/kVv6qsNK3sxwykRWEZJfbuWyMOwYWt4R/xWRFeecUlMIyRv0+E5MUQyzTXX/eh0IteLNoN6rse98KsHrOdeJDErhu6uTtnFiHLjPReM0MVhUYW4JhOZLGEWLjnLcfdIBvzZIMC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712949181; c=relaxed/simple;
-	bh=H8JEpoCZflLA8EFMplPsC53vlbE/L29pBi4hH+AtR0k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LEjdtTzlEMjtG2yCizeFWFR3gMk4OTZAc8g0uBv4u/Ja9Ql/MLfykh6oPI+Deo/0KAALSppHAy9PO+igT7QJd6hnvkiaM9ETXA5XQyRZwIRigG2+5fB5wAAhXA/79ilJlCHxZQ6s02QF1Z+8bKU+fJe04mNSMbaTEF4qPn7OXbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bv3HvwR1; arc=none smtp.client-ip=192.198.163.12
+	s=arc-20240116; t=1712949241; c=relaxed/simple;
+	bh=Eu3ZcZPFL16HSzXgIdXanfvswaxE9WSR58W60oCYX1A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fn9rDdSfCrDTpY5ruBgqvkWTWVpBPWhn1yvsGWjQYTQsG37QRzCLX5ojQ0+utDZAsJlxHnmB97NGFF/ROkrENKCk+/x7djdC52kq14O5HG19hmJtueWD1PQU+qJ8ZnxgcyMOU0u6HAiTWHMW+JFDCUIzRaJJ9UuDBBig2625Xt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h1kHyLw9; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712949180; x=1744485180;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=H8JEpoCZflLA8EFMplPsC53vlbE/L29pBi4hH+AtR0k=;
-  b=bv3HvwR1NvvorkC//dsOp5IKwpKHGTTn+uyiRR9ub9VtmRV5T0ekZRxP
-   /SO6fI5jBtdf/o4vT//1htmnInEUcQwiDiLbCTHwvHkwQsmPRIAoItAO0
-   ksRJZ9kZZGuK9k8Op3HqIuZRcbn9Wma+04AEjzp53of0GA4R9zUJ6mGZZ
-   zAxl01SPIrROWGn33diKcL78sYH+3WgiRd+zb8gYvil5MLpTevY8Kno0o
-   4blYC/lBaN/r9QQNQG0FwBIvYQ5byjdvoVRZ66jV+ex3iHJd7tr+GZDnd
-   +CY3apWaSrO0A6ZBMAxXAI6dlQQmkpNDsvzLQlrFzo8k8NIuF/6vMZoXI
-   Q==;
-X-CSE-ConnectionGUID: 8/540h1nRmWT2K6vBIfaKQ==
-X-CSE-MsgGUID: BQfLfVW2TlaqHBVwZ2z0ow==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="12200212"
+  t=1712949240; x=1744485240;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Eu3ZcZPFL16HSzXgIdXanfvswaxE9WSR58W60oCYX1A=;
+  b=h1kHyLw9jG1mSlPE9pRxS8PO1Ol8XraPcLvUWYI3+oHW7hq4SeLnPDkJ
+   PWkYbsQ4dxkWqt5zdZQ0+rJ9KQXnRqJm7TOeve1WWz5lWBFbXGKOne5k3
+   XANrRS1tsW4UDvPXRtWGRUr6jzBsUrykUa0tAx6yGUX7k7zg4S/UjAEuh
+   LLzUPq9ekbAL6qmxA+gzmYolj3tFyWDwPr6hXg1S1AD4FMxBISVW/o3kd
+   dcpsGByryf5XtT4N45WXu9amMXw1vVXBrh5tXs7b0/9GjGXbTNLJI+Yth
+   7m7cbotxLZZgzChAfiHAocJA3TMLY7rqryraPG9ISBCdk0NLHxEO6pPW6
+   w==;
+X-CSE-ConnectionGUID: CUOPCJzMSjGxnSz03ZpSng==
+X-CSE-MsgGUID: s/svFllQR7Ggv6U2TdhLCg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="12200342"
 X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="12200212"
+   d="scan'208";a="12200342"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 12:12:54 -0700
-X-CSE-ConnectionGUID: Xx7g3qi7QZa1/0/zVKOl0A==
-X-CSE-MsgGUID: CFH6OVtJRyerXC/HpwifbA==
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 12:13:59 -0700
+X-CSE-ConnectionGUID: VQj/SEm1QCagNhACyRVF7w==
+X-CSE-MsgGUID: vJ5c31aURduo5abfjbOttw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="26106796"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orviesa004.jf.intel.com with ESMTP; 12 Apr 2024 12:12:50 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id DE192169; Fri, 12 Apr 2024 22:12:48 +0300 (EEST)
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@intel.com
-Cc: sathyanarayanan.kuppuswamy@linux.intel.com,
-	hpa@zytor.com,
-	seanjc@google.com,
-	elena.reshetova@intel.com,
-	rick.p.edgecombe@intel.com,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Chris Oo <cho@microsoft.com>,
-	Dexuan Cui <decui@microsoft.com>
-Subject: [PATCH] x86/tdx: Preserve shared bit on mprotect()
-Date: Fri, 12 Apr 2024 22:12:47 +0300
-Message-ID: <20240412191247.369841-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
+   d="scan'208";a="26107097"
+Received: from zchen24-mobl1.amr.corp.intel.com (HELO [10.209.67.36]) ([10.209.67.36])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 12:13:59 -0700
+Message-ID: <156e1b5b-0f19-4993-b46c-7b67b91317a4@linux.intel.com>
+Date: Fri, 12 Apr 2024 12:13:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] platform/x86/intel/ifs: Disable irq during one load
+ stage
+To: Jithu Joseph <jithu.joseph@intel.com>, ilpo.jarvinen@linux.intel.com,
+ hdegoede@redhat.com, markgross@kernel.org
+Cc: linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ ashok.raj@intel.com, tony.luck@intel.com, rostedt@goodmis.org,
+ ravi.v.shankar@intel.com, patches@lists.linux.dev
+References: <20240412172349.544064-1-jithu.joseph@intel.com>
+ <20240412172349.544064-4-jithu.joseph@intel.com>
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240412172349.544064-4-jithu.joseph@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The TDX guest platform takes one bit from the physical address to
-indicate if the page is shared (accessible by VMM). This bit is not part
-of the physical_mask and is not preserved during mprotect(). As a
-result, the 'shared' bit is lost during mprotect() on shared mappings.
 
-_COMMON_PAGE_CHG_MASK specifies which PTE bits need to be preserved
-during modification. AMD includes 'sme_me_mask' in the define to
-preserve the 'encrypt' bit.
+On 4/12/24 10:23 AM, Jithu Joseph wrote:
+> One of the stages in IFS image loading process involves loading individual
+> chunks (test patterns) from test image file to secure memory.
+>
+> Driver issues a WRMSR(MSR_AUTHENTICATE_AND_COPY_CHUNK) operation to do
+> this. This operation can take up to 5 msec, and if an interrupt occurs
+> in between, the AUTH_AND_COPY_CHUNK u-code implementation aborts the
+> operation.
+>
+> Interrupt sources such as NMI or SMI are handled by retrying. Regular
+> interrupts may occur frequently enough to prevent this operation from ever
+> completing. Disable irq on local cpu around the aforementioned WRMSR to
+> allow the operation to complete.
+>
+> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Reviewed-by: Ashok Raj <ashok.raj@intel.com>
+> ---
 
-To cover both Intel and AMD cases, include 'cc_mask' in
-_COMMON_PAGE_CHG_MASK instead of 'sme_me_mask'.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: 41394e33f3a0 ("x86/tdx: Extend the confidential computing API to support TDX guests")
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Chris Oo <cho@microsoft.com>
-Cc: Dexuan Cui <decui@microsoft.com>
----
- arch/x86/include/asm/pgtable_types.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Looks good to me.
 
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 3f648ffdfbe5..7dd2fdfacff3 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -148,7 +148,7 @@
- #define _COMMON_PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |	\
- 				 _PAGE_SPECIAL | _PAGE_ACCESSED |	\
- 				 _PAGE_DIRTY_BITS | _PAGE_SOFT_DIRTY |	\
--				 _PAGE_DEVMAP | _PAGE_ENC | _PAGE_UFFD_WP)
-+				 _PAGE_DEVMAP | _PAGE_CC | _PAGE_UFFD_WP)
- #define _PAGE_CHG_MASK	(_COMMON_PAGE_CHG_MASK | _PAGE_PAT)
- #define _HPAGE_CHG_MASK (_COMMON_PAGE_CHG_MASK | _PAGE_PSE | _PAGE_PAT_LARGE)
- 
-@@ -173,6 +173,7 @@ enum page_cache_mode {
- };
- #endif
- 
-+#define _PAGE_CC		(_AT(pteval_t, cc_mask))
- #define _PAGE_ENC		(_AT(pteval_t, sme_me_mask))
- 
- #define _PAGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT)
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+
+>  drivers/platform/x86/intel/ifs/load.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
+> index 584c44387e10..39f19cb51749 100644
+> --- a/drivers/platform/x86/intel/ifs/load.c
+> +++ b/drivers/platform/x86/intel/ifs/load.c
+> @@ -233,7 +233,9 @@ static int copy_hashes_authenticate_chunks_gen2(struct device *dev)
+>  		chunk_table[0] = starting_chunk_nr + i;
+>  		chunk_table[1] = linear_addr;
+>  		do {
+> +			local_irq_disable();
+>  			wrmsrl(MSR_AUTHENTICATE_AND_COPY_CHUNK, (u64)chunk_table);
+> +			local_irq_enable();
+>  			rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
+>  			err_code = chunk_status.error_code;
+>  		} while (err_code == AUTH_INTERRUPTED_ERROR && --retry_count);
+
 -- 
-2.43.0
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
