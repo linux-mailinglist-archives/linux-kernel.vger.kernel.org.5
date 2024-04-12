@@ -1,170 +1,164 @@
-Return-Path: <linux-kernel+bounces-142663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3EE8A2E83
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:38:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 363588A2E87
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:39:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CC9C2879F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:38:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 596B11C225CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:39:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDF85B694;
-	Fri, 12 Apr 2024 12:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EB74205E2B;
+	Fri, 12 Apr 2024 12:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NfSqe5yw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PnLnJnwC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5195555C3B;
-	Fri, 12 Apr 2024 12:37:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D4F5914B
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712925475; cv=none; b=LUPiIOeY7L9qRgfO7s7TsEeiLh2H2YbXiyn82Bxb2O8QeBa4W12KYXpjwIevm3UqbkCOJo4E1tMjYkAI/6vRf4U+MsaHXZHj4ufgFIm6b9kBOi4hqEPaGCwW2Dk9qLmn/U3ez5DboH5d7p2CgW40zzzOak9T18FD0x3NGitveOw=
+	t=1712925546; cv=none; b=odREJ6aaNws1SFy8Lac+sOajIsFtokZ8vTJhdfbI2uJySglOBlZaiiP1fCB9OP4k1xGJjVkREx+ZFMUP7j4PhNqFbYUA/ZvfadHI2FSko9NsPtjEh83UC5Zx0AjXr031ViI15VsaEv5sLVKREe2ZHylOe/MuZSMSI1YaFW3Cw0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712925475; c=relaxed/simple;
-	bh=C0wVk5cOtI3tAGSa3X+/7Lo5QFB431pX7oYKu/xlIg4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qAiWXCV2WX4kx2Plhe0IT/v2gXFoQopRenJHUE+0H6zTVVvARzMNrCAR//1I6Uhr9VVEHhDUqJY4p/R/ai9xSNyu8sMsgz0OxmrUqjXpW2Ks0ruFa31QV3yIBdzKsXreXgKe0AfQuRtNiSkIIQ6/KFkubjfXeqFczIuFg4MB6NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NfSqe5yw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7F4AC4AF07;
-	Fri, 12 Apr 2024 12:37:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712925474;
-	bh=C0wVk5cOtI3tAGSa3X+/7Lo5QFB431pX7oYKu/xlIg4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NfSqe5ywT9N1aTLIrHBScsTlGElesoeZ2B4h01aGvwgLuo7e/GXmSnp1YdGBOzxhd
-	 ncO601AARHmgdyKTS+w8dEW6WOOBT7aJs6xA3/gETK2O2rAyZrlDcJELUgumpVNSoC
-	 PM2SG7Pq8qzdHTYAJ65ho3rM5lI/pLVhePj6Z5PEdVA8G25LV4l/+hbMvZXuT759cS
-	 PvAvpIKJIThrUf9EobZoeRgutQGI9grhb8jukktuID3mc4HHqXuhpL8m5NqDL45T2V
-	 tY3Tm0lmPYNVIAmJRmHIU90aUWm7YdO7prErJLpWO7OK3Pp+3WiL+/W/eAeD/1DS8o
-	 6t8QvDFFuyMvQ==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516d727074eso1086136e87.0;
-        Fri, 12 Apr 2024 05:37:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVfB0OvGKgA+ZFGgMsjpFb/HKHfDks5u3ORAy0JRsjDF9QRG4hPTMi37bXHbRfRxO4UR5zRU94zvMdarimb2PBtIPu+U/lTEvFInknRNt+1GHmDv+MAqTwzFPZILgpnhqVg5QgihxXhCA==
-X-Gm-Message-State: AOJu0Yw9RTqJOe/P6ple9waY5axGDkggJU9ILQ+KAgP4PfDWs7JgaGa+
-	nDlVmosJIPMf+hE1c1aKGgS/BRRF5DovBYcQdrR+MngOTnnMa7gaNc5jbbr+bmDVY8yna1GajPd
-	7UEgotaKSpjvgykhXZmfWp8utyg==
-X-Google-Smtp-Source: AGHT+IEPdekwyhDzkGjzMModGVmVX+iai4Ht/W6b6ZsLvIi1Pt2LX57dciG3IUlZb1DPGcgZeVS0Urn1rk9Ty5lLfV0=
-X-Received: by 2002:ac2:4248:0:b0:516:cc2d:f6a1 with SMTP id
- m8-20020ac24248000000b00516cc2df6a1mr1489141lfl.51.1712925473235; Fri, 12 Apr
- 2024 05:37:53 -0700 (PDT)
+	s=arc-20240116; t=1712925546; c=relaxed/simple;
+	bh=USUFhPdHsEeP0gGiz8EnyD3iVzrLpXTAMLVGITI3K6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mipNV/HLFUI1r4BL6yk+nUahARUwVDb7KGoTLm3oFh/4o2Hk7EcrJ5ZHA1SQlCBe4/1lXVuU65E/F7KMleo3G4pVNCagSw2DpKXv8fI9JXFVFBYDWpDNi06qhcltvDwFOHKc4j7iLMoDNuNfN8+i/zpBzWsU7uhlaz/zwmn2sAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PnLnJnwC; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712925544;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dsC1auUUKTeMEPNRcjF9vosQb+zXYGMKbKRowFQ0VRU=;
+	b=PnLnJnwCLgFCm+FZaxYDLjTkjIMWMY77s3f3F+LFU19wGgnpQugG3iI+1506SEFgx1EwS6
+	JtClN+kreN5Z2P5mSVr0wmzl3G/nr6fIj3EJnVYOPzqEXltBgxeVO3S5gga/t7mqn31MLj
+	VaNiSgWueTsvv0dc0pxlEOfKRXcZQcM=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-618-pLGVM9IvNnGr4w6LJkSjsQ-1; Fri, 12 Apr 2024 08:39:02 -0400
+X-MC-Unique: pLGVM9IvNnGr4w6LJkSjsQ-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-69945bfdbfdso630666d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:39:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712925542; x=1713530342;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dsC1auUUKTeMEPNRcjF9vosQb+zXYGMKbKRowFQ0VRU=;
+        b=ON8zAUqF2bpJWQzzr5oZ6K8OXTkd43Ho1uDGHmtkca0ZyiKP7SHt2ldDNVYnNoJbEP
+         oUbukhgdmbKOyPMd5H3M+tIpDMSdKFzLkSgzNYwqwxe/4qaivWoHhBPOphNq9mbgbj1R
+         NJlhs/pnH0ygHjYXC5yNlIutTRJF8xxx8qgctopnr4FAEwP85mk+4UNC9TkKb2V85yfR
+         Q1B4fuCv+Nu8fiuFTjMw8WEosaNiSeF8GyXMKS3lFOeSEId5jNbKTqJaFPgtUfaTPBxA
+         wS9PSObjRwPRT1fkXwA4aQjwjJCLkl83NOzU2HIujDjufBrlegT0k7YmHB27k2cBCCOT
+         XQNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXsPQEWbcukXXOmv9f/SK524snD/xaJnphuTH12IRsl4FxErUJ88S/G3WkY3IDRlVaEv1stqCijlaF7pN72t++IeY9csH+JdYt4/sLi
+X-Gm-Message-State: AOJu0YzPREiHlncgcqWlivkQiHIsraHjSS+tBCwx2rftTl9BGQvFR8R7
+	yGIFgcfCF8CDHvJoM57ebCDAm3b51F1dk34Ikgtn4Xjf85umliWJyaMVpPXpN6V8jjUq/e4WkBv
+	38i5Uigfs+0iYtjf2NmMSpk7cuBQ6PSApMDUeCLDCGTt0kFT8uflM6OO7VQwrzA==
+X-Received: by 2002:a05:6214:230c:b0:69b:ce6:271b with SMTP id gc12-20020a056214230c00b0069b0ce6271bmr2767638qvb.2.1712925542048;
+        Fri, 12 Apr 2024 05:39:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfD1xZ5z/cTBIdsqmi9jotZa3qa+LzP4dmFWH+zJg3Qz57yLpIAPqOXHLjdTArqmRO/gjQKQ==
+X-Received: by 2002:a05:6214:230c:b0:69b:ce6:271b with SMTP id gc12-20020a056214230c00b0069b0ce6271bmr2767605qvb.2.1712925541419;
+        Fri, 12 Apr 2024 05:39:01 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id ej6-20020ad45a46000000b00696b1050be8sm2281738qvb.133.2024.04.12.05.39.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 05:39:01 -0700 (PDT)
+Date: Fri, 12 Apr 2024 08:38:59 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Lokesh Gidra <lokeshgidra@google.com>,
+	Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+Message-ID: <ZhkrY5tkxgAsL1GF@x1n>
+References: <20240410170621.2011171-1-peterx@redhat.com>
+ <20240411171319.almhz23xulg4f7op@revolver>
+ <ZhhSItiyLYBEdAX3@x1n>
+ <ZhhV3PKgEX9d7_vA@casper.infradead.org>
+ <ZhhaRXHKk7w_hKgi@x1n>
+ <Zhhd-A7w1A8JUadM@casper.infradead.org>
+ <ZhinCD-PoblxGFm0@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412112931.285507-1-apatel@ventanamicro.com>
-In-Reply-To: <20240412112931.285507-1-apatel@ventanamicro.com>
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 12 Apr 2024 07:37:40 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJBpN2qNgiKs_nL+JxM7qaaQkd4Gk06UNefp3gB1HQ7_w@mail.gmail.com>
-Message-ID: <CAL_JsqJBpN2qNgiKs_nL+JxM7qaaQkd4Gk06UNefp3gB1HQ7_w@mail.gmail.com>
-Subject: Re: [PATCH] of: property: Add fw_devlink support for interrupt-map property
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Saravana Kannan <saravanak@google.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Atish Patra <atishp@atishpatra.org>, 
-	Andrew Jones <ajones@ventanamicro.com>, Sunil V L <sunilvl@ventanamicro.com>, 
-	Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZhinCD-PoblxGFm0@casper.infradead.org>
 
-On Fri, Apr 12, 2024 at 6:29=E2=80=AFAM Anup Patel <apatel@ventanamicro.com=
-> wrote:
->
-> Some of the PCI controllers (such as generic PCI host controller)
-> use "interrupt-map" DT property to describe the mapping between
-> PCI endpoints and PCI interrupt pins.
+On Fri, Apr 12, 2024 at 04:14:16AM +0100, Matthew Wilcox wrote:
+> On Thu, Apr 11, 2024 at 11:02:32PM +0100, Matthew Wilcox wrote:
+> > > How many instructions it takes for a late RETRY for WRITEs to private file
+> > > mappings, fallback to mmap_sem?
+> > 
+> > Doesn't matter.  That happens _once_ per VMA, and it's dwarfed by the
+> > cost of allocating and initialising the COWed page.  You're adding
+> > instructions to every single page fault.  I'm not happy that we had to
+> > add extra instructions to the fault path for single-threaded programs,
+> > but we at least had the justification that we were improving scalability
+> > on large systems.  Your excuse is "it makes the code cleaner".  And
+> > honestly, I don't think it even does that.
+> 
+> Suren, what would you think to this?
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 6e2fe960473d..e495adcbe968 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -5821,15 +5821,6 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+>         if (!vma_start_read(vma))
+>                 goto inval;
+> 
+> -       /*
+> -        * find_mergeable_anon_vma uses adjacent vmas which are not locked.
+> -        * This check must happen after vma_start_read(); otherwise, a
+> -        * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
+> -        * from its anon_vma.
+> -        */
+> -       if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
+> -               goto inval_end_read;
+> -
+>         /* Check since vm_start/vm_end might change before we lock the VMA */
+>         if (unlikely(address < vma->vm_start || address >= vma->vm_end))
+>                 goto inval_end_read;
+> 
+> That takes a few insns out of the page fault path (good!) at the cost
+> of one extra trip around the fault handler for the first fault on an
+> anon vma.  It makes the file & anon paths more similar to each other
+> (good!)
+> 
+> We'd need some data to be sure it's really a win, but less code is
+> always good.
 
-I would go as far as saying that's the only case as that's the only
-case where the interrupts are not described in DT.
+You at least need two things:
 
-> Currently, there is no fw_devlink created based on "interrupt-map"
-> DT property so interrupt controller is not guaranteed to be probed
-> before PCI host controller. This mainly affects RISC-V platforms
-> where both PCI host controller and interrupt controllers are probed
-> as regular platform devices.
+  (1) don't throw away Jann's comment so easily
 
-That's *every* system with PCI really.
+  (2) have a look on whether anon memory has the fallback yet, at all
 
-> This creates fw_devlink between consumers (PCI host controller) and
-> supplier (interrupt controller) based on "interrupt-map" DT property.
->
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  drivers/of/property.c | 53 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
->
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index a6358ee99b74..ccbbb651a89a 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1311,6 +1311,58 @@ static struct device_node *parse_interrupts(struct=
- device_node *np,
->         return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.n=
-p;
->  }
->
-> +static struct device_node *parse_interrupt_map(struct device_node *np,
-> +                                              const char *prop_name, int=
- index)
-> +{
-> +       struct device_node *tn, *ipar, *supnp =3D NULL;
-> +       u32 addrcells, intcells, cells;
-> +       const __be32 *imap, *imap_end;
-> +       int i, imaplen;
-> +
-> +       if (!IS_ENABLED(CONFIG_OF_IRQ))
-> +               return NULL;
-> +
-> +       if (strcmp(prop_name, "interrupt-map"))
-> +               return NULL;
-> +
-> +       ipar =3D of_node_get(np);
-> +       do {
-> +               if (!of_property_read_u32(ipar, "#interrupt-cells", &intc=
-ells))
-> +                       break;
-> +               tn =3D ipar;
-> +               ipar =3D of_irq_find_parent(ipar);
-> +               of_node_put(tn);
-> +       } while (ipar);
-> +       if (!ipar)
-> +               return NULL;
-> +       addrcells =3D of_bus_n_addr_cells(ipar);
-> +       of_node_put(ipar);
-> +
-> +       imap =3D of_get_property(np, "interrupt-map", &imaplen);
-> +       if (!imap || imaplen <=3D (addrcells + intcells))
-> +               return NULL;
-> +       imap_end =3D imap + imaplen;
-> +
-> +       for (i =3D 0; i <=3D index && imap < imap_end; i++) {
-> +               if (supnp)
-> +                       of_node_put(supnp);
-> +
-> +               imap +=3D addrcells;
-> +               imap +=3D intcells;
-> +
-> +               supnp =3D of_find_node_by_phandle(be32_to_cpu(imap[0]));
-> +               if (!supnp)
-> +                       return NULL;
-> +               imap +=3D 1;
-> +
-> +               if (of_property_read_u32(supnp, "#interrupt-cells", &cell=
-s))
-> +                       return NULL;
-> +               imap +=3D cells;
+Maybe someone can already comment in a harsh way on this one, but no, I'm
+not going to be like that.
 
-This is wrong. Technically, you can have #address-cells too.
+I still don't understand why you don't like so much to not fallback at all
+if we could, the flags I checked was all in hot cache I think anyway.
 
-The bigger problem I have is this creates 2 sets of 'interrupt-map'
-parsing code. Your version skips a lot of things like whether the
-interrupt controller is available and there's the list of
-'interrupt-map' abusers to think about.
+And since I'm also enough on how you comment in your previous replies, I'll
+leave the rest comments for others.
 
-Rob
+-- 
+Peter Xu
+
 
