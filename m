@@ -1,260 +1,140 @@
-Return-Path: <linux-kernel+bounces-142756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C6E8A2FC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 608B08A2FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:46:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C621D1C23CAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:45:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8044E1C23E2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 023CB84DE4;
-	Fri, 12 Apr 2024 13:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9948A7FBB4;
+	Fri, 12 Apr 2024 13:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iOu+FDfi"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="0/bxQFHY"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68FC84A3B;
-	Fri, 12 Apr 2024 13:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7946284A3B
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712929504; cv=none; b=TYbmmoUtMCXvS5vC/nYd5LXlURXzzdXqG/KvuNKNM3ZCIXHy3hFV5OkW9Wob9Hz0ZJ4L/zabo3Jx1vNp6/WRMckYDzzL8znKmQD5DZ1ZL/AboFsmwAPZxtvDYKXR2JEoLmmcqD6yZ1OXxPr/mhDUVXxN2fe00Sd6SSLxcCT6sLs=
+	t=1712929587; cv=none; b=tFdLXMVRJu64c1B2/ShCXNM4z+Qq/8SRDJljxVf75Zk0X2hjggqM7D+z8yUR12i3jM94d/ryUpjmLSGRWOkUxg+oFBVqw/r6oWT5fdsf0NlTjXUlIEDAOk9yQaQ1iULpA0DhrB7oTd9pIMATBxivnE+5H1jVgR1fWe92L9Ke2Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712929504; c=relaxed/simple;
-	bh=WkOse5NWhetwI4hvIS8h085YA8LZIv0m1x0ud7AY7rg=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=jEfyEFwbkpPoXfSvpvqWayssQsiDj198tlrVPUuMrc52nAm7gA0x5lUA3KPAa7+je/XjMzRsWlC/1Gk/BOQYhlO1MUc3TiDzsBGfWBusTUGwrXjDI34Od7gbXQripEBw4wzpE+Gceg2l70FRH52VkKP8LCI3uRl++yPbRJdACpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iOu+FDfi; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712929503; x=1744465503;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=WkOse5NWhetwI4hvIS8h085YA8LZIv0m1x0ud7AY7rg=;
-  b=iOu+FDfiMPme3oiefH5dDS8MIeA/FmEyEmUmljCn4Csepe2ITiOt6hcc
-   AswwhVtrPGg6wL0QeyADnNyTcR7iEBIJ8wbnYu0WEeigARWvOdgkCMVu0
-   KPJCgBi0hAir4ueaGKBIQkAVIwiT4U32Mtk5p9nLI4ARi8ye4XnPHg1Gt
-   rm2ukSJUDKS5RUefrRwtdhCbR4RoD0i8WoJrmlRB/7SfoeJzUnCGDllSB
-   pFcloVNiLHXpPiNhVL72fUWlYWXiyrTrQptJLOD0Jjet3HI/fWN7KjlRG
-   cUDJ3uWTZpZWb5eNgA62yAa3hTmvDkSHuTPvmZ4oGAN/6iKS435Q0Tw8U
-   A==;
-X-CSE-ConnectionGUID: KSWXZywwSqS8rhX/bLCaaw==
-X-CSE-MsgGUID: 105MRIKbTuGE8gFMMoiyFQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="18990272"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="18990272"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:45:02 -0700
-X-CSE-ConnectionGUID: 2Op4pL7YRdigt8obJOPcmg==
-X-CSE-MsgGUID: /Id2MiN8RtWDJLYRVyoYqw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="25914397"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.32])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:44:59 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 12 Apr 2024 16:44:55 +0300 (EEST)
-To: Parker Newman <parker@finest.io>
-cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-    Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-    linux-serial <linux-serial@vger.kernel.org>, 
-    Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v2 3/7] serial: exar: add support for config/set single
- MPIO
-In-Reply-To: <20240412093613.0cbb4362@SWDEV2.connecttech.local>
-Message-ID: <90e76b4c-10f8-2c06-2c86-51bdf822f968@linux.intel.com>
-References: <cover.1712863999.git.pnewman@connecttech.com> <3e671b6c0d11a2d0c292947675ed087eaaa5445e.1712863999.git.pnewman@connecttech.com> <b057b1e2-1cf9-2f20-2453-b359a1e89f01@linux.intel.com> <20240412093613.0cbb4362@SWDEV2.connecttech.local>
+	s=arc-20240116; t=1712929587; c=relaxed/simple;
+	bh=7RSPEOIscnMm7dOTuji3aseUcvWIzTKOuJAMdoMNZCs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bcHgBHRfhUoonnK/jAyO2ELSEyRc2G2eYJNWOVqBVDt9SwAviklNtWIkQXsuCxQ2VMj8ulhGiOG0g2P8qAu8jYD1uO73VOoLsywsiqH9UBm2QsdJ0CbK++C17uvPxGBZS6tNoKoL6xJYI/2vlTQ51M1NGhuc73bK/0bxoSVS2NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0/bxQFHY; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so897098276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712929585; x=1713534385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MD684C+IDzwSheJ1UHZ4hhLjZ76bWs/LZUDmR9GhUFE=;
+        b=0/bxQFHY0tBNwP/YP2bzxzi1DBbbAeKUo/4iyQQZRPFiVQewY1KxIs/FwTMqD0mOT/
+         eVXsNg1aEk4Iq+9+51Yj5N4tB+t0/PrKDNO2wtT+Bg32s/1v9zZrQlmDW1bspiCA9p2G
+         Y80Y5Roi0zFX9TSNEioPVN4kSvqQ+aZACeREjiYrB3kwzPgMhffd2JeU3rx9SMytqKxY
+         UxecYajfEqCY85puLxqRxZG/isx1ix4T5TDzt7/wf0Ma5d6GWxpbOM1RVZWWf2FABCua
+         SYPwbdeDsUBeh4vCJVe73SeD0WXGy/rl7cAya8Md9NyKvea0/h+VtDQmdYVagzikDzWV
+         d7ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712929585; x=1713534385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MD684C+IDzwSheJ1UHZ4hhLjZ76bWs/LZUDmR9GhUFE=;
+        b=xB+w3Bka84QcmCfuKKGqxpx0nSgpPzTuaLDngTr2iZXzrr0/VvLDD7s/ysGidzZpoR
+         /NefMQgUd9aFpCc40sAXO9FaV1d4X7D9XU/QFVMGT1o0Hy2yjzsQ47TerIPcG9uc3E05
+         M93eN9uF3CDHS0ycfi5faUseAhyYvFgSB54J3HPq04PcFBchDfi2MbDXsiklHksKu+4r
+         z/DboQk6L/MDsMHWhMi9rwZYUuj1PcSW9RVDLKAt7GAXhWDXycbwsTFDvWfcAXLph8r3
+         AQ9wXOzyYRqBD9xMHl/yVcTWHxBjq3YLC+qp0FhFgefGJYpEIVPCV61RzIqsxQnputqU
+         IEdA==
+X-Forwarded-Encrypted: i=1; AJvYcCX4CGj9Ifo0xLCj28/KL3fQw36ZMitfousVsHnWCqH0P+s4vMGSjrvou4aCKJ+nkM9xj/AXM7ErS5jDIvcIgOiTmTRofie6HMzzlxCC
+X-Gm-Message-State: AOJu0YxdMv6i0fCQTDwAGGPh7GEI7NHWKNhgKUqlbWrXT/sZVXnBsC+w
+	JN763g7/PeD2XUk75GuRkGG5EORJRU0NBColOXHX8TS/5eUxdVdsm8YJUcdd1yMuCeYxXLyqO3v
+	0BzUrkCW3iEThJb/O6xZjnRUwFefZcczvP4rz
+X-Google-Smtp-Source: AGHT+IEXBU3je4IuLBZr910CrfHyCWhugWPhZGKp18yXylpp2KIKtknN6Tvqq4rBkKN+CNeH7B4DeFc2KjMhtI+32PQ=
+X-Received: by 2002:a05:6902:181:b0:dc6:ff32:aaea with SMTP id
+ t1-20020a056902018100b00dc6ff32aaeamr2734459ybh.24.1712929585246; Fri, 12 Apr
+ 2024 06:46:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-2064743525-1712929495=:1014"
+References: <20240410170621.2011171-1-peterx@redhat.com> <20240411171319.almhz23xulg4f7op@revolver>
+ <ZhhSItiyLYBEdAX3@x1n> <ZhhV3PKgEX9d7_vA@casper.infradead.org>
+ <ZhhaRXHKk7w_hKgi@x1n> <Zhhd-A7w1A8JUadM@casper.infradead.org>
+ <ZhinCD-PoblxGFm0@casper.infradead.org> <CAJuCfpHpewmiyMxyPd_A8KSyQ6tB-1wHLV-FJ7KBrpV=RY9F7w@mail.gmail.com>
+ <Zhk4AKtGd-5_yK_3@casper.infradead.org>
+In-Reply-To: <Zhk4AKtGd-5_yK_3@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 12 Apr 2024 06:46:14 -0700
+Message-ID: <CAJuCfpFYOrJQqyAw4wKgBS-X2iLh2+h9Hyc6mawYV+RPD8eDSA@mail.gmail.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Peter Xu <peterx@redhat.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Lokesh Gidra <lokeshgidra@google.com>, 
+	Alistair Popple <apopple@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Apr 12, 2024 at 6:32=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Fri, Apr 12, 2024 at 05:46:52AM -0700, Suren Baghdasaryan wrote:
+> > On Thu, Apr 11, 2024 at 8:14=E2=80=AFPM Matthew Wilcox <willy@infradead=
+org> wrote:
+> > About the code, I'll take a closer look once I'm back from vacation
+> > this weekend but I think you will also have to modify
+> > do_anonymous_page() to use vmf_anon_prepare() instead of
+> > anon_vma_prepare().
+>
+> Ah yes.  Also do_huge_pmd_anonymous_page().  And we should do this:
+>
+> +++ b/mm/rmap.c
+> @@ -182,8 +182,6 @@ static void anon_vma_chain_link(struct vm_area_struct=
+ *vma,
+>   * for the new allocation. At the same time, we do not want
+>   * to do any locking for the common case of already having
+>   * an anon_vma.
+> - *
+> - * This must be called with the mmap_lock held for reading.
+>   */
+>  int __anon_vma_prepare(struct vm_area_struct *vma)
+>  {
+> @@ -191,6 +189,7 @@ int __anon_vma_prepare(struct vm_area_struct *vma)
+>         struct anon_vma *anon_vma, *allocated;
+>         struct anon_vma_chain *avc;
+>
+> +       mmap_assert_locked(mm);
+>         might_sleep();
+>
+>         avc =3D anon_vma_chain_alloc(GFP_KERNEL);
+>
 
---8323328-2064743525-1712929495=:1014
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Yes.
 
-On Fri, 12 Apr 2024, Parker Newman wrote:
+> > > We could even eagerly initialise vma->anon_vma for anon vmas.  I don'=
+t
+> > > know why we don't do that.
+> >
+> > You found the answer to that question a long time ago and IIRC it was
+> > because in many cases we end up not needing to set vma->anon_vma at
+> > all. So, this is an optimization to try avoiding extra operations
+> > whenever we can. I'll try to find your comment on this.
+>
+> I thought that was file VMAs that I found the answer to that question?
 
-> On Fri, 12 Apr 2024 13:20:41 +0300 (EEST)
-> Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
->=20
-> > On Thu, 11 Apr 2024, parker@finest.io wrote:
-> >=20
-> > > From: Parker Newman <pnewman@connecttech.com>
-> > >=20
-> > > Adds support for configuring and setting a single MPIO
-> > >=20
-> > > Signed-off-by: Parker Newman <pnewman@connecttech.com>
-> > > ---
-> > >  drivers/tty/serial/8250/8250_exar.c | 88 +++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 88 insertions(+)
-> > >=20
-> > > diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial=
-/8250/8250_exar.c
-> > > index 49d690344e65..9915a99cb7c6 100644
-> > > --- a/drivers/tty/serial/8250/8250_exar.c
-> > > +++ b/drivers/tty/serial/8250/8250_exar.c
-> > > @@ -305,6 +305,94 @@ static int exar_ee_read(struct exar8250 *priv, u=
-int8_t ee_addr)
-> > >  =09return data;
-> > >  }
-> > >=20
-> > > +/**
-> > > + * exar_mpio_config() - Configure an EXar MPIO as input or output
-> > > + * @priv: Device's private structure
-> > > + * @mpio_num: MPIO number/offset to configure
-> > > + * @output: Configure as output if true, inout if false
-> > > + *
-> > > + * Configure a single MPIO as an input or output and disable trisate=
-=2E =20
-> >=20
-> > tristate
-> >=20
-> > > + * If configuring as output it is reccomended to set value with
-> > > + * exar_mpio_set prior to calling this function to ensure default st=
-ate. =20
-> >=20
-> > Use () if talking about function.
-> >=20
-> > > + *
-> > > + * Return: 0 on success, negative error code on failure
-> > > + */
-> > > +static int exar_mpio_config(struct exar8250 *priv,
-> > > +=09=09=09unsigned int mpio_num, bool output)
-> > > +{
-> > > +=09uint8_t sel_reg; //MPIO Select register (input/output)
-> > > +=09uint8_t tri_reg; //MPIO Tristate register
-> > > +=09uint8_t value;
-> > > +=09unsigned int bit;
-> > > +
-> > > +=09if (mpio_num < 8) {
-> > > +=09=09sel_reg =3D UART_EXAR_MPIOSEL_7_0;
-> > > +=09=09tri_reg =3D UART_EXAR_MPIO3T_7_0;
-> > > +=09=09bit =3D mpio_num;
-> > > +=09} else if (mpio_num >=3D 8 && mpio_num < 16) {
-> > > +=09=09sel_reg =3D UART_EXAR_MPIOSEL_15_8;
-> > > +=09=09tri_reg =3D UART_EXAR_MPIO3T_15_8;
-> > > +=09=09bit =3D mpio_num - 8;
-> > > +=09} else {
-> > > +=09=09return -EINVAL;
-> > > +=09}
-> > > +
-> > > +=09//Disable MPIO pin tri-state
-> > > +=09value =3D exar_read_reg(priv, tri_reg);
-> > > +=09value &=3D ~(BIT(bit)); =20
-> >=20
-> > Use more meaningful variable name than "bit", it could perhaps even avo=
-id=20
-> > the need to use the comment if the code is self-explanary with better=
-=20
-> > variable name.
-> >=20
-> > > +=09exar_write_reg(priv, tri_reg, value);
-> > > +
-> > > +=09value =3D exar_read_reg(priv, sel_reg);
-> > > +=09//Set MPIO as input (1) or output (0) =20
-> >=20
-> > Unnecessary comment.
-> >=20
-> > > +=09if (output)
-> > > +=09=09value &=3D ~(BIT(bit)); =20
-> >=20
-> > Unnecessary parenthesis.
-> >=20
-> > > +=09else
-> > > +=09=09value |=3D BIT(bit);
-> > > +
-> > > +=09exar_write_reg(priv, sel_reg, value); =20
-> >=20
-> > Don't leave empty line into RMW sequence.
-> >=20
-> > > +
-> > > +=09return 0;
-> > > +}
-> > > +/**
-> > > + * exar_mpio_set() - Set an Exar MPIO output high or low
-> > > + * @priv: Device's private structure
-> > > + * @mpio_num: MPIO number/offset to set
-> > > + * @high: Set MPIO high if true, low if false
-> > > + *
-> > > + * Set a single MPIO high or low. exar_mpio_config must also be call=
-ed
-> > > + * to configure the pin as an output.
-> > > + *
-> > > + * Return: 0 on success, negative error code on failure
-> > > + */
-> > > +static int exar_mpio_set(struct exar8250 *priv,
-> > > +=09=09unsigned int mpio_num, bool high)
-> > > +{
-> > > +=09uint8_t reg;
-> > > +=09uint8_t value;
-> > > +=09unsigned int bit;
-> > > +
-> > > +=09if (mpio_num < 8) {
-> > > +=09=09reg =3D UART_EXAR_MPIOSEL_7_0;
-> > > +=09=09bit =3D mpio_num;
-> > > +=09} else if (mpio_num >=3D 8 && mpio_num < 16) {
-> > > +=09=09reg =3D UART_EXAR_MPIOSEL_15_8;
-> > > +=09=09bit =3D mpio_num - 8;
-> > > +=09} else {
-> > > +=09=09return -EINVAL;
-> > > +=09}
-> > > +
-> > > +=09value =3D exar_read_reg(priv, reg);
-> > > +
-> > > +=09if (high)
-> > > +=09=09value |=3D BIT(bit);
-> > > +=09else
-> > > +=09=09value &=3D ~(BIT(bit)); =20
-> >=20
-> > Extra parenthesis.
-> >=20
-> > > +
-> > > +=09exar_write_reg(priv, reg, value); =20
-> >=20
-> > Again, I'd put this kind of simple RMW sequence without newlines.
-> >=20
-> > > +
-> > > +=09return 0;
-> > > +} =20
->=20
-> I will fix above.=20
->=20
-> > There are zero users of these functions so I couldn't review if two=20
-> > functions are really needed, or if the difference could be simply handl=
-ed=20
-> > using a boolean parameter.
-> >=20
->=20
-> The functions are used by code in other patches in this series.=20
->=20
-> I kept exar_mpio_set() and exar_mpio_config() separate because we plan on
-> adding support for other features in the future that require reading and=
-=20
-> writing MPIO.=20
-
-Ok. After getting up to the point where the callers were, I started to=20
-understand things somewhat better so keeping them separate seems fine=20
-with how I ended up understanding things.
-
-But please put these functions into the patch which is using them when you=
-=20
-reorganize the series.
-
---=20
- i.
-
---8323328-2064743525-1712929495=:1014--
+I'll try to find that discussion once I get back to my workstation this wee=
+kend.
 
