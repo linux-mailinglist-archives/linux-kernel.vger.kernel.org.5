@@ -1,167 +1,220 @@
-Return-Path: <linux-kernel+bounces-142483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B15CC8A2C27
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B2FF8A2C2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:20:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0CC91C2177C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:20:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B71D1C23165
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D02F53816;
-	Fri, 12 Apr 2024 10:20:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A60844369
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:19:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CFB53818;
+	Fri, 12 Apr 2024 10:20:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J3fqYhUm"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D22F535B7;
+	Fri, 12 Apr 2024 10:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712917201; cv=none; b=SoIcF/LtDJTicJVMRk8x8/2LctUNeSTi9KfxzjrHnMdEvFA3lV/r3X76VE7sJNYh9hkvsvXQ4FAZrNy7BHpGPHajDhUi5d9n2nEydSyM1tcIpFzhif0EudgZdR2KV5qiN6v+vxGfzxQXk6bpqT6uGFJKWi+fw7JclHM72sHKIx8=
+	t=1712917251; cv=none; b=g0iAylCuLvdi6Gy7jc25uTH1pwJC5kQFRzGtlZnRpFf9aRL8gxA3KxjTD+Lq97ziaXyfC2ympwRqBF0BV6sWpo6dOEwjtHe36QXoy/hMuRqjnpqFXTo4mJvHP1tYEM1NCaH6/FPkuahO7fWflRidqnhZ6mjnMWlJ4/NKWCsw4nw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712917201; c=relaxed/simple;
-	bh=K9W+Y4I98n2qqn8cSmOOvctrkBrlVZxDqpqIIWfNgRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rW/GXMg9Hw9TgkbLMajQOy3PpKQGzo2H4KFGMcLbd5sBFLYMJLgYQhBlIqo20kHejqnt2LxLp6+XxvTNcMdqQawTUEb+usWxToH2xPyM/kvwqQLfo9VEMTx146arL2a1UvMcqmWe958AB00qqX+Jr5CkbnVMqz842U4VH4OuE34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C11CD339;
-	Fri, 12 Apr 2024 03:20:28 -0700 (PDT)
-Received: from [10.57.73.208] (unknown [10.57.73.208])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 82D393F64C;
-	Fri, 12 Apr 2024 03:19:57 -0700 (PDT)
-Message-ID: <b1f417fb-1f8b-4349-a6bc-97694b92587f@arm.com>
-Date: Fri, 12 Apr 2024 11:19:56 +0100
+	s=arc-20240116; t=1712917251; c=relaxed/simple;
+	bh=uA7PtL0L1ljtXQJKIJ2F2O2vSZgqgTCaVG40coZxt3c=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=fUbJHVA+Modj/2vba/5nEuw2kW09WstALWzhipSLwh8aa3K1XUweeWjU83wWv/m0f4TW0SiTmCghiEw1Ed2ZDDx/Yg+g+gktDtD5i21FHmCAkCla5bBTKhAytTYtBv0yO6B5OF7xVHsFdIdWdbbIIUbsIZbCXhjR7zxmIgSELuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J3fqYhUm; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712917250; x=1744453250;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=uA7PtL0L1ljtXQJKIJ2F2O2vSZgqgTCaVG40coZxt3c=;
+  b=J3fqYhUmJ+B7bE3Yl76+gaLTMojo66u34kOYcoyenFk6DJWPS0TsWoDG
+   jIgv5lyx1hIeDT4kUA1tv2rYqowHJi3owVtiC/haBZcbdWwbtG/nJYgvD
+   5pkv+gRqzHHaaNV0e4o0NrAFwucbW8i2WLavolhTZx/UaItdDMCjWIhoN
+   /HXxM2kHx4IzaTF4oZ1864usexuUs304s9GKc1aR0oxFE7a449M5iSPgl
+   o9fmc2GKIe1QrAlLUgyhK2Q3VKf0slkxqoHjCsmeFIgEFjDqPRy1uCwKq
+   3g1o0/fTtl8g4RC69ULXuN9B5PKnsrvfxUCcy5nO/gc4Vwn5IRiGEb1ji
+   A==;
+X-CSE-ConnectionGUID: 3Jz2wNYfRxKRe4ZLlsuYlg==
+X-CSE-MsgGUID: ffrUGbGqRuGbQ4tCMFs93Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="19788614"
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="19788614"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 03:20:50 -0700
+X-CSE-ConnectionGUID: n2VmyR4GTsazuyWQgg6aJw==
+X-CSE-MsgGUID: XieXYW+7SMur8XIPowtQ3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="52352334"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.32])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 03:20:46 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Fri, 12 Apr 2024 13:20:41 +0300 (EEST)
+To: parker@finest.io
+cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    Jiri Slaby <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+    linux-serial <linux-serial@vger.kernel.org>, 
+    Parker Newman <pnewman@connecttech.com>
+Subject: Re: [PATCH v2 3/7] serial: exar: add support for config/set single
+ MPIO
+In-Reply-To: <3e671b6c0d11a2d0c292947675ed087eaaa5445e.1712863999.git.pnewman@connecttech.com>
+Message-ID: <b057b1e2-1cf9-2f20-2453-b359a1e89f01@linux.intel.com>
+References: <cover.1712863999.git.pnewman@connecttech.com> <3e671b6c0d11a2d0c292947675ed087eaaa5445e.1712863999.git.pnewman@connecttech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/4] mm: add docs for per-order mTHP counters and
- transhuge_page ABI
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org
-Cc: cerasuolodomenico@gmail.com, chrisl@kernel.org, david@redhat.com,
- kasong@tencent.com, linux-kernel@vger.kernel.org, peterx@redhat.com,
- surenb@google.com, v-songbaohua@oppo.com, willy@infradead.org,
- yosryahmed@google.com, yuzhao@google.com, corbet@lwn.net
-References: <20240412073740.294272-1-21cnbao@gmail.com>
- <20240412073740.294272-4-21cnbao@gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240412073740.294272-4-21cnbao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 
-On 12/04/2024 08:37, Barry Song wrote:
-> From: Barry Song <v-songbaohua@oppo.com>
+On Thu, 11 Apr 2024, parker@finest.io wrote:
+
+> From: Parker Newman <pnewman@connecttech.com>
 > 
-> This patch includes documentation for mTHP counters and an ABI file
-> for sys-kernel-mm-transparent-hugepage, which appears to have been
-> missing for some time.
+> Adds support for configuring and setting a single MPIO
 > 
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> Cc: Chris Li <chrisl@kernel.org>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-> Cc: Kairui Song <kasong@tencent.com>
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Ryan Roberts <ryan.roberts@arm.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Yosry Ahmed <yosryahmed@google.com>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-
-A few nits, but regardless:
-
-Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-
+> Signed-off-by: Parker Newman <pnewman@connecttech.com>
 > ---
->  .../sys-kernel-mm-transparent-hugepage        | 17 +++++++++++
->  Documentation/admin-guide/mm/transhuge.rst    | 28 +++++++++++++++++++
->  2 files changed, 45 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
+>  drivers/tty/serial/8250/8250_exar.c | 88 +++++++++++++++++++++++++++++
+>  1 file changed, 88 insertions(+)
 > 
-> diff --git a/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage b/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
-> new file mode 100644
-> index 000000000000..80dde0fd576c
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
-> @@ -0,0 +1,17 @@
-> +What:		/sys/kernel/mm/hugepages/
+> diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
+> index 49d690344e65..9915a99cb7c6 100644
+> --- a/drivers/tty/serial/8250/8250_exar.c
+> +++ b/drivers/tty/serial/8250/8250_exar.c
+> @@ -305,6 +305,94 @@ static int exar_ee_read(struct exar8250 *priv, uint8_t ee_addr)
+>  	return data;
+>  }
+> 
+> +/**
+> + * exar_mpio_config() - Configure an EXar MPIO as input or output
+> + * @priv: Device's private structure
+> + * @mpio_num: MPIO number/offset to configure
+> + * @output: Configure as output if true, inout if false
+> + *
+> + * Configure a single MPIO as an input or output and disable trisate.
 
-Err, transparent_hugepage, right? copy/paste error?
+tristate
 
-> +Date:		April 2024
-> +Contact:	Barry Song <baohua@kernel.org>
+> + * If configuring as output it is reccomended to set value with
+> + * exar_mpio_set prior to calling this function to ensure default state.
 
-Looks like a bunch of mm sysfs interfaces use:
+Use () if talking about function.
 
-Contact:	Linux memory management mailing list <linux-mm@kvack.org>
-
-I'll leave that up to you!
-
-> +Description:
-> +		/sys/kernel/mm/transparent_hugepage/ contains a number of files and
-> +		subdirectories,
-> +			- defrag
-> +			- enabled
-> +			- hpage_pmd_size
-> +			- khugepaged
-> +			- shmem_enabled
-> +			- use_zero_page
-> +			- subdirectories of the form hugepages-<size>kB, where <size>
-> +			  is the page size of the hugepages supported by the kernel/CPU
-> +			  combination.
+> + *
+> + * Return: 0 on success, negative error code on failure
+> + */
+> +static int exar_mpio_config(struct exar8250 *priv,
+> +			unsigned int mpio_num, bool output)
+> +{
+> +	uint8_t sel_reg; //MPIO Select register (input/output)
+> +	uint8_t tri_reg; //MPIO Tristate register
+> +	uint8_t value;
+> +	unsigned int bit;
 > +
-> +		See Documentation/admin-guide/mm/transhuge.rst for details.> diff --git a/Documentation/admin-guide/mm/transhuge.rst
-b/Documentation/admin-guide/mm/transhuge.rst
-> index 04eb45a2f940..f436ff982f22 100644
-> --- a/Documentation/admin-guide/mm/transhuge.rst
-> +++ b/Documentation/admin-guide/mm/transhuge.rst
-> @@ -447,6 +447,34 @@ thp_swpout_fallback
->  	Usually because failed to allocate some continuous swap space
->  	for the huge page.
->  
-> +In /sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/stats, There are
-> +also individual counters for each huge page size, which can be utilized to
-> +monitor the system's effectiveness in providing huge pages for usage. Each
-> +counter has its own corresponding file.
+> +	if (mpio_num < 8) {
+> +		sel_reg = UART_EXAR_MPIOSEL_7_0;
+> +		tri_reg = UART_EXAR_MPIO3T_7_0;
+> +		bit = mpio_num;
+> +	} else if (mpio_num >= 8 && mpio_num < 16) {
+> +		sel_reg = UART_EXAR_MPIOSEL_15_8;
+> +		tri_reg = UART_EXAR_MPIO3T_15_8;
+> +		bit = mpio_num - 8;
+> +	} else {
+> +		return -EINVAL;
+> +	}
 > +
-> +anon_fault_alloc
-> +	is incremented every time a huge page is successfully
-> +	allocated and charged to handle a page fault.
-> +
-> +anon_fault_fallback
-> +	is incremented if a page fault fails to allocate or charge
-> +	a huge page and instead falls back to using huge pages with
-> +	lower orders or small pages.
-> +
-> +anon_fault_fallback_charge
-> +	is incremented if a page fault fails to charge a huge page and
-> +	instead falls back to using huge pages with lower orders or
-> +	small pages even though the allocation was successful.
-> +
-> +anon_swpout
-> +	is incremented every time a huge page is swapout in one
+> +	//Disable MPIO pin tri-state
+> +	value = exar_read_reg(priv, tri_reg);
+> +	value &= ~(BIT(bit));
 
-nit: swapout -> "swapped out"? Although I see this is just a copy/paste of the
-description of the existing counter...
+Use more meaningful variable name than "bit", it could perhaps even avoid 
+the need to use the comment if the code is self-explanary with better 
+variable name.
 
-> +	piece without splitting.
+> +	exar_write_reg(priv, tri_reg, value);
 > +
-> +anon_swpout_fallback
-> +	is incremented if a huge page has to be split before swapout.
-> +	Usually because failed to allocate some continuous swap space
-> +	for the huge page.
+> +	value = exar_read_reg(priv, sel_reg);
+> +	//Set MPIO as input (1) or output (0)
+
+Unnecessary comment.
+
+> +	if (output)
+> +		value &= ~(BIT(bit));
+
+Unnecessary parenthesis.
+
+> +	else
+> +		value |= BIT(bit);
 > +
->  As the system ages, allocating huge pages may be expensive as the
->  system uses memory compaction to copy data around memory to free a
->  huge page for use. There are some counters in ``/proc/vmstat`` to help
+> +	exar_write_reg(priv, sel_reg, value);
+
+Don't leave empty line into RMW sequence.
+
+> +
+> +	return 0;
+> +}
+> +/**
+> + * exar_mpio_set() - Set an Exar MPIO output high or low
+> + * @priv: Device's private structure
+> + * @mpio_num: MPIO number/offset to set
+> + * @high: Set MPIO high if true, low if false
+> + *
+> + * Set a single MPIO high or low. exar_mpio_config must also be called
+> + * to configure the pin as an output.
+> + *
+> + * Return: 0 on success, negative error code on failure
+> + */
+> +static int exar_mpio_set(struct exar8250 *priv,
+> +		unsigned int mpio_num, bool high)
+> +{
+> +	uint8_t reg;
+> +	uint8_t value;
+> +	unsigned int bit;
+> +
+> +	if (mpio_num < 8) {
+> +		reg = UART_EXAR_MPIOSEL_7_0;
+> +		bit = mpio_num;
+> +	} else if (mpio_num >= 8 && mpio_num < 16) {
+> +		reg = UART_EXAR_MPIOSEL_15_8;
+> +		bit = mpio_num - 8;
+> +	} else {
+> +		return -EINVAL;
+> +	}
+> +
+> +	value = exar_read_reg(priv, reg);
+> +
+> +	if (high)
+> +		value |= BIT(bit);
+> +	else
+> +		value &= ~(BIT(bit));
+
+Extra parenthesis.
+
+> +
+> +	exar_write_reg(priv, reg, value);
+
+Again, I'd put this kind of simple RMW sequence without newlines.
+
+> +
+> +	return 0;
+> +}
+
+There are zero users of these functions so I couldn't review if two 
+functions are really needed, or if the difference could be simply handled 
+using a boolean parameter.
+
+-- 
+ i.
 
 
