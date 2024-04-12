@@ -1,147 +1,105 @@
-Return-Path: <linux-kernel+bounces-142662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0841B8A2E7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:38:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0CEA8A2E65
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:36:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D0ED1F22FBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:38:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D9EBB218D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:36:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41075A4D1;
-	Fri, 12 Apr 2024 12:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C305914B;
+	Fri, 12 Apr 2024 12:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Do472uni"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="I2cTeQU7"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C694D205E2B
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489FD58AD3
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712925437; cv=none; b=Zot1rW2auIJem9vsSkD1OBtyeQ7VociHDLDls7vavNji+YJY35fPojtiiZLbhRkCgeUbY08GBc8Wg/avwOc5GmOcQzrJssCx+wsFc5pvemK2HYxQ9JYkENaak+Hst5uuSwPpD0HinZcRObcNRv/apt9kT91+ZdE2Bh1lA/ZP5xY=
+	t=1712925395; cv=none; b=jIEyWj1zbAEbkv5LT8qMxox7wQ6GVx/8ZA4/g9VaEgso6DOPKqy0IP/JJu7DNF54yUOj/+SakP/vV6PzAVmvjWkv4bFCSEybt0aY8nlAOXTyvYbS2OYqnc9bb7L7wuXlnup/AAjxo0pFhFi2LoCU0y3Em83Xm5pjcGQeH9mrZ+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712925437; c=relaxed/simple;
-	bh=TOAT4TTAOWZXp1h7q54paBib/TPxqqPYt/m0hPrKDjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R7kWEQKFwjm9r5o56CoaPy9xM+zOxaiapAW1nUe+ZiHlEFEIIv/qsrsck5pA8jMbJVjWJ1Ic8jcUr+zjXMZMXAh5yIcAYPoW9IMwER8xsPHEAmKWcmZSpYWY9kH0uU0fme0nDVRZcVeoD/uMqQ2vUjJrJPng/mJZIdkChRtmKM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Do472uni; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712925434;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G73VCC5q7JEsOcm9nuCMvIK+kF0cB2PArLXaQyavNe0=;
-	b=Do472uniqkROiZYXJax8mdptbrz3rThguAzcst7eff90nr+5U15ZQufaeCdRvYzn4nKNG2
-	G3XFbC1MlCFe2qYrnYjSsWIkNMqWI/5Km6bUXNpLP1zILvOgomro7gVSUckIvlZO70dI5Z
-	IQ6cicrmWltYGJqqezGCGpGjWzswe4M=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-606-HdPWaD0fNQeNnOeMpYxRCw-1; Fri, 12 Apr 2024 08:37:11 -0400
-X-MC-Unique: HdPWaD0fNQeNnOeMpYxRCw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B505B802E4D;
-	Fri, 12 Apr 2024 12:37:10 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.136])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 73C72492BC7;
-	Fri, 12 Apr 2024 12:37:07 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Fri, 12 Apr 2024 14:35:44 +0200 (CEST)
-Date: Fri, 12 Apr 2024 14:35:36 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Mark Brown <broonie@kernel.org>
-Cc: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] selftests: fix build failure with NOLIBC
-Message-ID: <20240412123536.GA32444@redhat.com>
-References: <87sf02bgez.ffs@tglx>
- <87r0fmbe65.ffs@tglx>
- <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx>
- <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
- <87frw2axv0.ffs@tglx>
- <20240404145408.GD7153@redhat.com>
- <87le5t9f14.ffs@tglx>
- <20240406150950.GA3060@redhat.com>
- <f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk>
+	s=arc-20240116; t=1712925395; c=relaxed/simple;
+	bh=q/zq68O6+sSBrl97NyQg0CjTsV0FrQQrptYSnKIK5qA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aYyum+uvQcBL+wXjBN9ZtacA87jXYDEwKDDX1znM3MJzSSs8i0ktM/2+uJdp2nobXmEm9bhuY80OXlzOkpJb9rJ+nXG6oLKtoKL3wPig1eym29aSWz45fLP/TPJ8ftvgqjfgmJHR6b26RY/KBWU5v9G0jQf9hdjg2oPrk7AJfb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=I2cTeQU7; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e37503115so725544a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1712925392; x=1713530192; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q9BoxTR1JROCUR8SnlVHtABNOhFI4wAk1SS2lfIXdDc=;
+        b=I2cTeQU7a/6nht7u7IlFLRW8F3L9jO5d/Bl4jCCshuKL+u57vSgP/Zp2EOz5JH2LUw
+         VqWgpOJR3euy+da4CXbTUaWGX3f5IDN3HCtPBZmyANHYpqymjtb1mELL/fxCq/czYe4l
+         J3XfyR6j8PigD24xvPiQFbHh2gmrSC+kBtBJA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712925392; x=1713530192;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q9BoxTR1JROCUR8SnlVHtABNOhFI4wAk1SS2lfIXdDc=;
+        b=eCmK/IIdknHqLtfa3+6hV84A0kWsIuEhUBxnJJ1Rt6h/DgALJxwtiDYyVbD8FVVhXg
+         0awcRyg/O2ii4FrYdLrVJ/B9fnvA5One5m2n2iIBeHSnPnBPKk/d59RNWm3RApe5qSmk
+         RTDGOaAawIgtDRaTX8hE+D6ER67CAZr2xCbfgHYAHt0lmCqEHwPOFEFb9rQN8vDBe7na
+         tISiNej+DnyY+SYIKlx3zx8Mi/aixQVRfjjl+2v7eLm2kssRSFlStfkLk5BgRozb/0hK
+         KziaF6tWtJg/b+H05wfEeIfgZS0iF/tlCtrfBH1ELLPEPFDjwplqyn2VsBWxOa8wjef3
+         8oBg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhZ4eRmfxQNYrZb30RJnMKusnSOk58pA7ixyt7mC+LGo1zpUpHFFKXmU9S+N2ndaz2F3jv+pmH1kJx9zNrYBLSretIc43NgHesSFq9
+X-Gm-Message-State: AOJu0YziCTE+hJHsesBQE4wMcHDCVaNuXxjJbBSYmyyFfBezJYw0UP1e
+	0tXZP7jbtEHSyhew3g6XkAlbzHbz6b7rbE4wQP0dXreWTB5UP4oeWMIc25SFRHoTeVVdNConpz2
+	PVO/7UafyBLV0eumppp2h/qcSqzVB+yYNJg/NjQ==
+X-Google-Smtp-Source: AGHT+IF0OXEoT3ZY3zlYrIJBP9t60HKo5W88sTuoOTax+N/wQVoD3KFVgeyr2E2zTF30Vq1n1+Eqqz1nG3Ytmq9tODw=
+X-Received: by 2002:a17:907:94c1:b0:a51:e5c7:55b7 with SMTP id
+ dn1-20020a17090794c100b00a51e5c755b7mr1811230ejc.47.1712925392535; Fri, 12
+ Apr 2024 05:36:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+References: <20240403021808.309900-1-vinicius.gomes@intel.com>
+In-Reply-To: <20240403021808.309900-1-vinicius.gomes@intel.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Fri, 12 Apr 2024 14:36:21 +0200
+Message-ID: <CAJfpeguqW4mPE9UyLmccisTex_gmwq6p9_6_EfVm-1oh6CrEBA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] overlayfs: Optimize override/revert creds
+To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: brauner@kernel.org, amir73il@gmail.com, hu1.chen@intel.com, 
+	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
+	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-As Mark explains ksft_min_kernel_version() can't be compiled with nolibc,
-it doesn't implement uname().
+On Wed, 3 Apr 2024 at 04:18, Vinicius Costa Gomes
+<vinicius.gomes@intel.com> wrote:
 
-Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_timer_distribution()")
-Reported-by: Mark Brown <broonie@kernel.org>
-Closes: https://lore.kernel.org/all/f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk/
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- tools/testing/selftests/kselftest.h           | 6 ++++++
- tools/testing/selftests/timers/posix_timers.c | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+>  - in ovl_rename() I had to manually call the "light" the overrides,
+>    both using the guard() macro or using the non-light version causes
+>    the workload to crash the kernel. I still have to investigate why
+>    this is happening. Hints are appreciated.
 
-diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
-index 973b18e156b2..0d9ed3255f5e 100644
---- a/tools/testing/selftests/kselftest.h
-+++ b/tools/testing/selftests/kselftest.h
-@@ -392,6 +392,11 @@ static inline __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
- static inline int ksft_min_kernel_version(unsigned int min_major,
- 					  unsigned int min_minor)
- {
-+#ifdef NOLIBC
-+	ksft_print_msg("NOLIBC: Can't check kernel version: "
-+			"Function not implemented\n");
-+	return -1;
-+#else
- 	unsigned int major, minor;
- 	struct utsname info;
- 
-@@ -399,6 +404,7 @@ static inline int ksft_min_kernel_version(unsigned int min_major,
- 		ksft_exit_fail_msg("Can't parse kernel version\n");
- 
- 	return major > min_major || (major == min_major && minor >= min_minor);
-+#endif
- }
- 
- #endif /* __KSELFTEST_H */
-diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
-index d86a0e00711e..878496d2a656 100644
---- a/tools/testing/selftests/timers/posix_timers.c
-+++ b/tools/testing/selftests/timers/posix_timers.c
-@@ -241,7 +241,7 @@ static int check_timer_distribution(void)
- 
- 	if (!ctd_failed)
- 		ksft_test_result_pass("check signal distribution\n");
--	else if (ksft_min_kernel_version(6, 3))
-+	else if (ksft_min_kernel_version(6, 3) > 0)
- 		ksft_test_result_fail("check signal distribution\n");
- 	else
- 		ksft_test_result_skip("check signal distribution (old kernel)\n");
--- 
-2.25.1.362.g51ebf55
+Don't know.  Well, there's nesting (in ovl_nlink_end()) but I don't
+see why that should be an issue.
 
+I see why Amir suggested moving away from scoped guards, but that also
+introduces the possibility of subtle bugs if we don't audit every one
+of those sites carefully...
 
+Maybe patchset should be restructured to first do the
+override_creds_light() conversion without guards, and then move over
+to guards.   Or the other way round, I don't have a preference.  But
+mixing these two independent changes doesn't sound like a great idea
+in any case.
+
+Thanks,
+Miklos
 
