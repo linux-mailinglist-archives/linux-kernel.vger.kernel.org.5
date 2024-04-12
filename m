@@ -1,230 +1,107 @@
-Return-Path: <linux-kernel+bounces-142599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4510E8A2DA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:38:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238D88A2DA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:38:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6898E1C211BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:38:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC68B1F2142F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10ACB5730A;
-	Fri, 12 Apr 2024 11:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360D658AA8;
+	Fri, 12 Apr 2024 11:36:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ozIHY03/"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8w1HujX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB5055E43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7949554BD3
 	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712921802; cv=none; b=i3ZpJQpqjc25NT4K64Kbrqduj5DItELkbymFPP6zUMZkTHsbd92wsqbair/jgrQBeINMdfkYQWi6UIuBcO+Zm9J7Nn/0ijIWcPB7kunPBGPBuT9jQZKRbgIED1INThGsxcIjKJ4Hb2fGQU8sZBsHoi7XxxDBgJnqlCCp+8ZmDAM=
+	t=1712921800; cv=none; b=Bt4JXSi2aDJgnoEJlHk8ifT3wxoLk2/vaCJZ77l140NNH4lTLV4WXUFEZfqqWlVFgfFyC1or8ebHBYy8SeKKMfmyjrZiPM1z0O0gSDvGmpLW50G/QUhvZQlZhbP4RIjyXSwjd7S1ItcNWwvEuDLhuYylAu5+tf8QgzlPdS6hT0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712921802; c=relaxed/simple;
-	bh=JQmPULKAKKMI1B10Eze+iMKfEwwEb7vwyYQxdaJovBk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PjblRYZ36BlI1IsAPmuPGLosT5GQV/mmkcxGRp8WXSXnAs4Jub6H1FSHjuLbHEJNrzwIptu2IBLTTcuxlHqS8PmkkDDi7ht6qW2vxvVWIrpb1qJA0pXwG98V5rUwnG15AQ3PbueZfjM/lpoUxa50ceyju09Vb2pwXe2jv1/FtNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ozIHY03/; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc73148611so889623276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712921799; x=1713526599; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HGBpkgffnv2itiKDdWNZjHSJUW/0KojY7TNsqJx4VxA=;
-        b=ozIHY03/UyhkUBxCuOJ3SJ7H+fiafgTqHbekvVetJndq0h1fQl3JB3hETFBxiABUoe
-         WNeFY3Wr45UeP4Wn5C5w+5/j4BOAEQVI4SdQ4b87QEcmGhT7LjgukUGwRO5nA6NI6M2o
-         h3HbL4Sp/ZrkmpHUUkkY695z1F5txgS5QY+d69lxKeTyQkOe66lvjJZjWXH1ReYqVymH
-         ROkYiMlE3aNSDJyE0neN7nHM9uEDe+gu0Vr91RMuikzH9pzeHI5nMcwSTBZR/boWZxJl
-         0faFsn//NLpDNhYYJ050DSgmMvEhzjjnLZ4e0E7emrPzlogSmheO8x3ggNR9RGpu9Z9s
-         tSBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712921800; x=1713526600;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HGBpkgffnv2itiKDdWNZjHSJUW/0KojY7TNsqJx4VxA=;
-        b=ZlUfyhlZOJVTcWlIcDpHu1VndG2NHwK7/+8RH4Y7K8WK36QTrrFDph03PBB84cKf+1
-         FLasY0KyJV+/in7ZTPzLnrSWVR6RdKX9KexrSNrFpuHos4ngrKAHhe6Iwi3goO+1BsBC
-         yY9CDvlzWw+tc2XJ4AetDyzhOo5AJGKfDeqwCa7JRhyoChXLAObfmikLc63hXgOTjKbZ
-         qYEmdQs9kV8PqtSHNlvUg0kUc4mqwYyZBFCseHR7RMkR3jZ+kTcCKVsgOoFH0kD38G2R
-         EWtWBOHKe4+otRroDpvpiqTy+ejbQ8hpFpJTpjN1C5qAzY6ch6wG/1nZ/gLx9J72zOcl
-         DBXg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3NG252YObtJXRrYVCSAAba0GMC6fOgiEXI8q0pA6hMqMyTRdvPyIGOM32gztxfGYOReRSXTrd8luL2stiJ15GjlReTyGpWp5akqCM
-X-Gm-Message-State: AOJu0YzFxIhkrh4UXvS7hQ9xWZpSb8p3qQFuYGzRA0sU7jOnK867qN0p
-	6fWii71XQPoYxqjrpoNrrajMOoc5kvc/w40t/7WMwIC8eJtaxYbRcDVhVFrVmWCKf/5GK2qVWN6
-	/DCkX4c+/mlwhH39ztzMdHcWMlYFSa3voGT3aypj9KR628XYu
-X-Google-Smtp-Source: AGHT+IHSEEns6ewLu8Mz5Jc/NCzdVzTmaahZgvNMBsPgn/554HUcVdF/3+cHuruSXAD2cV8kdZ7nUOSKbuFnxHo5JRw=
-X-Received: by 2002:a05:6902:150b:b0:dc6:4d0c:e9de with SMTP id
- q11-20020a056902150b00b00dc64d0ce9demr2486954ybu.0.1712921799663; Fri, 12 Apr
- 2024 04:36:39 -0700 (PDT)
+	s=arc-20240116; t=1712921800; c=relaxed/simple;
+	bh=0B7OZ4+cm6zX6NHLWDukEzHI5Sp9zfAE8/FxHCWBZTs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=jb7ySPmDOx2dmV7r2AYYYU8QYzmrlysNREdkrGnC5JmFCuhCwYxZpBjFkptGrPrwEaCgQFo2qIcBdXnbiNxEsGcsvMfV6rzv9igYy+uPuAQclmByy+2ZWYU5yYBqJQQgvK9dUtInuMyTpQzkJRaQOSNY4TapTQPB/othrPzB2ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8w1HujX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2833C2BD11;
+	Fri, 12 Apr 2024 11:36:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712921800;
+	bh=0B7OZ4+cm6zX6NHLWDukEzHI5Sp9zfAE8/FxHCWBZTs=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=M8w1HujX7Xic2R9CyhILYprTMR60t/5vkkUbAkGgjqG5XQ0wdRUKX15KAuSPy44JK
+	 HUIWKb+ddZIPuFyb17fkFY4YkyZB2gEWQ6Av1Kc/Pg+JA1no+WcgYh6mIP7uekxfLu
+	 VWxJEZSxxIb6Xt7ab/dcorooioBhHovpPY3YTwKtTbnA2dXdJ6zdqtvq9HI9iM4p11
+	 aEY1vpbNpYmetpPndHlBXmBnZ9s/FzFwNGieVg/Hy5nvs8s6ffI30SToBP7cys/QUw
+	 L6xTxVjlOdeVU7z+TREN3Yr/fl7d6P59hAig7IeA5xV8b+Ex5wa1a7mO3nYerkBGfo
+	 rKQN3blVHp7+Q==
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ linux-kernel@vger.kernel.org, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>
+In-Reply-To: <20240410202912.1659275-1-andriy.shevchenko@linux.intel.com>
+References: <20240410202912.1659275-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 0/2] regmap: Amend MODULE_DESCRIPTION() texts
+Message-Id: <171292179844.7190.3919795371064412980.b4-ty@kernel.org>
+Date: Fri, 12 Apr 2024 12:36:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411-pm8xxx-vibrator-new-design-v9-0-7bf56cb92b28@quicinc.com>
- <20240411-pm8xxx-vibrator-new-design-v9-2-7bf56cb92b28@quicinc.com>
- <CAA8EJpoL9vCAUgWmHcoxppo_gJqaw_xqdYqcJkS6Xza-5aSh3A@mail.gmail.com>
- <fa6c8b30-11f3-bd80-67cb-713e4348eccf@quicinc.com> <CAA8EJpqa=5yaTRHuEiYynTDFy53YPFk4R3q_EV8rmsBN1iR5fA@mail.gmail.com>
- <00b8cea6-fed2-4224-8aeb-c731dc1b666f@quicinc.com>
-In-Reply-To: <00b8cea6-fed2-4224-8aeb-c731dc1b666f@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 12 Apr 2024 14:36:32 +0300
-Message-ID: <CAA8EJpoCYb=3=YVBe+xYO+ccUMLzddwY-jsdT6HuFNvE5GyoPQ@mail.gmail.com>
-Subject: Re: [PATCH v9 2/4] input: pm8xxx-vibrator: refactor to support new
- SPMI vibrator
-To: Fenglin Wu <quic_fenglinw@quicinc.com>
-Cc: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Fri, 12 Apr 2024 at 06:41, Fenglin Wu <quic_fenglinw@quicinc.com> wrote:
->
->
->
-> On 4/11/2024 10:05 PM, Dmitry Baryshkov wrote:
-> > On Thu, 11 Apr 2024 at 16:45, Fenglin Wu <quic_fenglinw@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2024/4/11 18:58, Dmitry Baryshkov wrote:
-> >>> On Thu, 11 Apr 2024 at 11:32, Fenglin Wu via B4 Relay
-> >>> <devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
-> >>>>
-> >>>> From: Fenglin Wu <quic_fenglinw@quicinc.com>
-> >>>>
-> >>>> Currently, vibrator control register addresses are hard coded,
-> >>>> including the base address and offsets, it's not flexible to
-> >>>> support new SPMI vibrator module which is usually included in
-> >>>> different PMICs with different base address. Refactor it by using
-> >>>> the base address defined in devicetree.
-> >>>>
-> >>>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
-> >>>> ---
-> >>>>    drivers/input/misc/pm8xxx-vibrator.c | 42 ++++++++++++++++++++++++------------
-> >>>>    1 file changed, 28 insertions(+), 14 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
-> >>>> index 89f0f1c810d8..2959edca8eb9 100644
-> >>>> --- a/drivers/input/misc/pm8xxx-vibrator.c
-> >>>> +++ b/drivers/input/misc/pm8xxx-vibrator.c
-> >>>> @@ -20,26 +20,26 @@
-> >>>>    #define MAX_FF_SPEED           0xff
-> >>>>
-> >>>>    struct pm8xxx_regs {
-> >>>> -       unsigned int enable_addr;
-> >>>> +       unsigned int enable_offset;
-> >>>>           unsigned int enable_mask;
-> >>>>
-> >>>> -       unsigned int drv_addr;
-> >>>> +       unsigned int drv_offset;
-> >>>>           unsigned int drv_mask;
-> >>>>           unsigned int drv_shift;
-> >>>>           unsigned int drv_en_manual_mask;
-> >>>>    };
-> >>>>
-> >>>>    static const struct pm8xxx_regs pm8058_regs = {
-> >>>> -       .drv_addr = 0x4A,
-> >>>> +       .drv_offset = 0x4A,
-> >>>
-> >>> If the DT already has reg = <0x4a> and you add drv_offset = 0x4a,
-> >>> which register will be used by the driver?
-> >>>
-> >>> Also, while we are at it, please downcase all the hex numbers that you
-> >>> are touching.
-> >>>
-> >> For SSBI vibrator, the "reg" value defined in DT is not used, see below.
-> >>
-> >>
-> >>>>           .drv_mask = 0xf8,
-> >>>>           .drv_shift = 3,
-> >>>>           .drv_en_manual_mask = 0xfc,
-> >>>>    };
-> >>>>
-> >>>>    static struct pm8xxx_regs pm8916_regs = {
-> >>>> -       .enable_addr = 0xc046,
-> >>>> +       .enable_offset = 0x46,
-> >>
-> >> [...]
-> >>
-> >>>> @@ -170,7 +173,7 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
-> >>>>           struct pm8xxx_vib *vib;
-> >>>>           struct input_dev *input_dev;
-> >>>>           int error;
-> >>>> -       unsigned int val;
-> >>>> +       unsigned int val, reg_base = 0;
-> >>>>           const struct pm8xxx_regs *regs;
-> >>>>
-> >>>>           vib = devm_kzalloc(&pdev->dev, sizeof(*vib), GFP_KERNEL);
-> >>>> @@ -190,13 +193,24 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
-> >>>>
-> >>>>           regs = of_device_get_match_data(&pdev->dev);
-> >>>>
-> >>>> +       if (regs->enable_offset != 0) {
-> >>>> +               error = fwnode_property_read_u32(pdev->dev.fwnode, "reg", &reg_base);
-> >>>> +               if (error < 0) {
-> >>>> +                       dev_err(&pdev->dev, "Failed to read reg address, rc=%d\n", error);
-> >>>> +                       return error;
-> >>>> +               }
-> >>>> +       }
-> >>>> +
-> >>>> +       vib->enable_addr = reg_base + regs->enable_offset;
-> >>>> +       vib->drv_addr = reg_base + regs->drv_offset;
-> >>
-> >> The reg_base is initialized as 0 and it is assigned as the "reg" value
-> >> defined in DT only for SPMI vibrators.
-> >
-> > Please don't. This is counterintuitive. We have reg in DT. We should
-> > be using it.
-> >
-> Hmm, the original driver doesn't use the reg value defined in DT at all,
-> Anyway, I can make the SSBI offset to 0, so the base address defined in
-> the DT will be always added regardless of SSBI or SPMI vibrator. Let me
-> know.
+On Wed, 10 Apr 2024 23:27:51 +0300, Andy Shevchenko wrote:
+> A couple of MODULE_DESCRIPTION() text related changes.
+> 
+> v2:
+> - added first patch to change spelling (Mark)
+> - updated second one accordingly (Mark)
+> 
+> Andy Shevchenko (2):
+>   regmap: Drop capitalisation in MODULE_DESCRIPTION()
+>   regmap: spi: Add missing MODULE_DESCRIPTION()
+> 
+> [...]
 
-Yes, please. This follows the logic of the SPMI change too.
+Applied to
 
-> Thanks
->
-> >>
-> >>>> +
-> >>>>           /* operate in manual mode */
-> >>>> -       error = regmap_read(vib->regmap, regs->drv_addr, &val);
-> >>>> +       error = regmap_read(vib->regmap, vib->drv_addr, &val);
-> >>>>           if (error < 0)
-> >>>>                   return error;
-> >>>>
-> >>>>           val &= regs->drv_en_manual_mask;
-> >>>> -       error = regmap_write(vib->regmap, regs->drv_addr, val);
-> >>>> +       error = regmap_write(vib->regmap, vib->drv_addr, val);
-> >>>>           if (error < 0)
-> >>>>                   return error;
-> >>>>
-> >>>>
-> >>>> --
-> >>>> 2.25.1
-> >>>>
-> >>>>
-> >>>
-> >>>
-> >
-> >
-> >
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
+Thanks!
 
+[1/2] regmap: Drop capitalisation in MODULE_DESCRIPTION()
+      commit: c1ffff88750a697483eabb052004a937631720b6
+[2/2] regmap: spi: Add missing MODULE_DESCRIPTION()
+      commit: 135cec6ba82ebffc0275c5228b4c4bf279fbf6f5
 
--- 
-With best wishes
-Dmitry
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
