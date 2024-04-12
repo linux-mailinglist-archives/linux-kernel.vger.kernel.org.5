@@ -1,151 +1,171 @@
-Return-Path: <linux-kernel+bounces-142149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A53E8A281E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:32:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B960E8A2823
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:33:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F7DD1F2234D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:32:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4650EB2203F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A160C4D9FB;
-	Fri, 12 Apr 2024 07:31:45 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2144CE0F;
+	Fri, 12 Apr 2024 07:33:06 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713721C6B6;
-	Fri, 12 Apr 2024 07:31:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31CB482DA;
+	Fri, 12 Apr 2024 07:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712907105; cv=none; b=Jbh4cH6WNSX51KdXqkIYl3Qx63hXnvptJfaFVLofdAIEoi/21fGHRsgArtym3zy9RSDpnheoCTuG051zQt/Pw6BJW7bP4eErMo5fAiMHBlaoUoxeV76iZ8CIk8u0mi/5Fw69MStptSDvIOMxhCJ4mi+OKShuQn54toeL73pyXTk=
+	t=1712907185; cv=none; b=hLNFlzkVNzdZ7AvLW6XTCeffbRVgNtWjry3O7V6UbKMWeCjX0z4Pryxkz3YePGdqwgb4sqyEpxgpQ1rm+4nVVozLXdUwwm5OlWEzbOa06wvlGldSkak7SZ2wgm4hBaqERmxx6qgtSZRF92BVsM8v8nB/YHuF0h6sLin80JY9ZqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712907105; c=relaxed/simple;
-	bh=Ka9bocoV3z1Rqz9gdaa1Yi1ILRquOLH+4MaHJLVNmwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cOCwf7gQ7ZOzByOR8D0eLdeZIOmuBASA5eMb7ghK41F0s2LoypTgpfqPbxUEczqEUHlUY8LKDIdbOtHrmHP+6vObVum5lGGeUnrW+BHxp35HOuKdOHoPz8L2SQorE36uE0l/gfaekdOcv64LQtYzZXUdgSk/+6WJphyIX0nitAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rvBNn-000lkG-GJ; Fri, 12 Apr 2024 15:31:36 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 12 Apr 2024 15:31:53 +0800
-Date: Fri, 12 Apr 2024 15:31:53 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-	davem@davemloft.net, linux-kernel@vger.kernel.org,
-	saulo.alessandre@tse.jus.br, lukas@wunner.de, bbhushan2@marvell.com,
-	jarkko@kernel.org
-Subject: Re: [PATCH v8 00/13] Add support for NIST P521 to ecdsa
-Message-ID: <ZhjjaTwo8dYFY6Ky@gondor.apana.org.au>
-References: <20240404141856.2399142-1-stefanb@linux.ibm.com>
+	s=arc-20240116; t=1712907185; c=relaxed/simple;
+	bh=Mt8IzKrTJIg0OktXcVnjo6qucYM6NxyBrcGfo6gQT70=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LVO5YWB9V21mBvH/Y4/qY0j+TwVqpgv6rwtjSizCbH27W2TVsvb0WXJAJj52Wv1gbUFlkTDvAZjMvSQScXn1cVXvUO/R1cHtbOjIXpAXLgPS+sMYKdqIaVWydtMqHVlREO64XT+9iV2eRVlWycD94gVavCdCBCbLAgjCD6ia/Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [172.18.169.210] (ip-185-104-138-49.ptr.icomera.net [185.104.138.49])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 40BCE61E5FE01;
+	Fri, 12 Apr 2024 09:32:20 +0200 (CEST)
+Message-ID: <74e93b3c-66c2-45e6-a1e1-0679ac59371c@molgen.mpg.de>
+Date: Fri, 12 Apr 2024 09:32:15 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404141856.2399142-1-stefanb@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] Bluetooth: btusb: Add USB HWID to usb_device_id table
+ for Acer NB
+To: Jiande Lu <jiande.lu@mediatek.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+ Johan Hedberg <johan.hedberg@gmail.com>,
+ Luiz Von Dentz <luiz.dentz@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+ Chris Lu <chris.lu@mediatek.com>, Deren Wu <deren.Wu@mediatek.com>,
+ Aaron Hou <aaron.hou@mediatek.com>, Steve Lee <steve.lee@mediatek.com>,
+ linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mediatek <linux-mediatek@lists.infradead.org>
+References: <20240412064307.6478-1-jiande.lu@mediatek.com>
+Content-Language: en-US
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20240412064307.6478-1-jiande.lu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 04, 2024 at 10:18:43AM -0400, Stefan Berger wrote:
-> This series adds support for the NIST P521 curve to the ecdsa module
-> to enable signature verification with it.
-> 
-> An issue with the current code in ecdsa is that it assumes that input
-> arrays providing key coordinates for example, are arrays of digits
-> (a 'digit' is a 'u64'). This works well for all currently supported
-> curves, such as NIST P192/256/384, but does not work for NIST P521 where
-> coordinates are 8 digits + 2 bytes long. So some of the changes deal with
-> converting byte arrays to digits and adjusting tests on input byte
-> array lengths to tolerate arrays not providing multiples of 8 bytes.
-> 
-> Regards,
->    Stefan
-> 
-> v8:
->  - Changed nbits from unsigned int to u32 (5/13)
->  - Added MODULE_ALIAS_CRYPTO("ecdsa-nist-p521") (11/13)
->  - Applied R-b & T-b tags from Jarkko
->  - Rebased on master branch at
->    https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
-> 
-> v7:
->  - Applied T-b tag from Christian to all patches
->  - Applied R-b tag from Jarkko to some patches
->  - Rephrased some patch descriptions per Jarkko's request
-> 
-> v6:
->  - Use existing #defines for number of digits rather than plain numbers
->    (1/13, 6/13) following Bharat's suggestion
->  - Initialize result from lowest 521 bits of product rather than going
->    through tmp variable (6/13)
-> 
-> v5:
->  - Simplified ecc_digits_from_bytes as suggested by Lukas (1/12)
->  - Using nbits == 521 to detect NIST P521 curve rather than strcmp()
->    (5,6/12)
->  - Nits in patch description and comments (11/12)
-> 
-> v4:
->  - Followed suggestions by Lukas Wummer (1,5,8/12)
->  - Use nbits rather than ndigits where needed (8/12)
->  - Renaming 'keylen' variablest to bufsize where necessary (9/12)
->  - Adjust signature size calculation for NIST P521 (11/12)
-> 
-> v3:
->  - Dropped ecdh support
->  - Use ecc_get_curve_nbits for getting number of bits in NIST P521 curve
->    in ecc_point_mult (7/10)
-> 
-> v2:
->  - Reformulated some patch descriptions
->  - Fixed issue detected by krobot
->  - Some other small changes to the code
-> 
-> 
-> Stefan Berger (13):
->   crypto: ecc - Use ECC_CURVE_NIST_P192/256/384_DIGITS where possible
->   crypto: ecdsa - Convert byte arrays with key coordinates to digits
->   crypto: ecdsa - Adjust tests on length of key parameters
->   crypto: ecdsa - Extend res.x mod n calculation for NIST P521
->   crypto: ecc - Add nbits field to ecc_curve structure
->   crypto: ecc - Implement vli_mmod_fast_521 for NIST p521
->   crypto: ecc - Add special case for NIST P521 in ecc_point_mult
->   crypto: ecc - Add NIST P521 curve parameters
->   crypto: ecdsa - Replace ndigits with nbits where precision is needed
->   crypto: ecdsa - Rename keylen to bufsize where necessary
->   crypto: ecdsa - Register NIST P521 and extend test suite
->   crypto: asymmetric_keys - Adjust signature size calculation for NIST
->     P521
->   crypto: x509 - Add OID for NIST P521 and extend parser for it
-> 
->  crypto/asymmetric_keys/public_key.c       |  14 ++-
->  crypto/asymmetric_keys/x509_cert_parser.c |   3 +
->  crypto/ecc.c                              |  44 +++++--
->  crypto/ecc_curve_defs.h                   |  49 ++++++++
->  crypto/ecdsa.c                            |  63 +++++++---
->  crypto/ecrdsa_defs.h                      |   5 +
->  crypto/testmgr.c                          |   7 ++
->  crypto/testmgr.h                          | 146 ++++++++++++++++++++++
->  include/crypto/ecc_curve.h                |   2 +
->  include/crypto/ecdh.h                     |   1 +
->  include/crypto/internal/ecc.h             |  24 +++-
->  include/linux/oid_registry.h              |   1 +
->  12 files changed, 336 insertions(+), 23 deletions(-)
-> 
-> 
-> base-commit: a9a72140536fe02d98bce72a608ccf3ba9008a71
-> -- 
-> 2.43.0
+Dear Jiande,
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+
+Thank you for your patches. Some minor comments from side.
+
+Am 12.04.24 um 08:43 schrieb Jiande Lu:
+> From: "jiande.lu" <jiande.lu@mediatek.com>
+
+I’d spell your name Jiande Lu:
+
+     $ git config --global user.name "Jiande Lu"
+     $ git commit --amend -s --author="Jiande Lu <jiande.lu@mediatek.com>"
+
+For the commit message summary/title, I’d use:
+
+Bluetooth: btusb: Add USB HW ids for MT7921/MT7922/MT7925
+
+> This commit add HWID for wireless modules specific to Acer
+
+This commit add*s* is redundant. Just use imperative mood: Add HW ids for …
+
+> notebook models to ensure proper recongnition and functionality
+
+recognition
+
+> 
+> Https://acer.com/tw-zh/support/product-support/
+> SFE16-42/NX.KH5TA.0.01/downloads
+
+Please put it in one line and spell the schema https:// all lowercase.
+
+It’d be great if you listed the models in the commit message too, and 
+mentioned, on what device you tested your change.
+
+> Signed-off-by: jiande.lu <jiande.lu@mediatek.com>
+> ---
+> v4: Update title
+> ---
+> v3: Fix patch fail
+> ---
+> v2: Update commit description and fix typo
+> ---
+> ---
+>   drivers/bluetooth/btusb.c | 24 ++++++++++++++++++++++++
+>   1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index c391e612b83b..b71efca2af73 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -616,6 +616,9 @@ static const struct usb_device_id quirks_table[] = {
+>   	{ USB_DEVICE(0x0e8d, 0x0608), .driver_info = BTUSB_MEDIATEK |
+>   						     BTUSB_WIDEBAND_SPEECH |
+>   						     BTUSB_VALID_LE_STATES },
+> +	{ USB_DEVICE(0x13d3, 0x3606), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+
+Unfortunately, these entries are not sorted by the id. Can you please 
+send a follow-up patch to sort the ids in these sections?
+
+>   	/* MediaTek MT7922 Bluetooth devices */
+>   	{ USB_DEVICE(0x13d3, 0x3585), .driver_info = BTUSB_MEDIATEK |
+> @@ -662,11 +665,32 @@ static const struct usb_device_id quirks_table[] = {
+>   	{ USB_DEVICE(0x35f5, 0x7922), .driver_info = BTUSB_MEDIATEK |
+>   						     BTUSB_WIDEBAND_SPEECH |
+>   						     BTUSB_VALID_LE_STATES },
+> +	{ USB_DEVICE(0x13d3, 0x3614), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+> +	{ USB_DEVICE(0x13d3, 0x3615), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+> +	{ USB_DEVICE(0x04ca, 0x38e4), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+> +	{ USB_DEVICE(0x13d3, 0x3605), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+> +	{ USB_DEVICE(0x13d3, 0x3607), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+
+Please sort the entries.
+
+>   	/* Additional MediaTek MT7925 Bluetooth devices */
+> +	{ USB_DEVICE(0x0489, 0xE113), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+
+Lowercase: 0xe113
+
+>   	{ USB_DEVICE(0x13d3, 0x3602), .driver_info = BTUSB_MEDIATEK |
+>   						     BTUSB_WIDEBAND_SPEECH |
+>   						     BTUSB_VALID_LE_STATES },
+> +	{ USB_DEVICE(0x13d3, 0x3603), .driver_info = BTUSB_MEDIATEK |
+> +						     BTUSB_WIDEBAND_SPEECH |
+> +						     BTUSB_VALID_LE_STATES },
+>   
+>   	/* Additional Realtek 8723AE Bluetooth devices */
+>   	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
+
+
+Kind regards,
+
+Paul
 
