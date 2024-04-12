@@ -1,209 +1,127 @@
-Return-Path: <linux-kernel+bounces-142554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB128A2D11
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:06:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B4898A2D14
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:08:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8009528445E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:06:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99A11B2161E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4375353818;
-	Fri, 12 Apr 2024 11:06:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FB4537E6;
+	Fri, 12 Apr 2024 11:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="pYJMvh2g";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="CGUjdGJc"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B2Co/ig4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 921935339E;
-	Fri, 12 Apr 2024 11:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712919975; cv=fail; b=M+qyWi+ZR9qCbYHQzfVLg58ax6DtyjW3+BBJFa+TDtMHwYzBk470Stqemoh6cCtpHSzp2mAET0U5SNBffYBe8VlzOVmC2Ho1tWVuZ9Zil986DRD6MmK/qXmW6tDOr7KDc/0M90MNAk/dbuMfeSdDfiO1oHPsAadSP62/MlEmR+I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712919975; c=relaxed/simple;
-	bh=52aIV4Wra8M/22bVbzGgBlSGHfekU7YhMBHKiev+BGs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=g/XJa1K7MNwB5yaKTXQ76depo/HidIngKh1E5qLricG/ZoypeD8XXstLX+j4oKpvvcZNFuQayEGfgeVj+KmsUowPTLBhSKgBJncCuyHlZkSPylFG3/KhupUkBbq7XceTC9fXnKhJiczivgwcXbsNCZqzKi99AlLLOhWyLRPpxO8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=pYJMvh2g; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=CGUjdGJc; arc=fail smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: a940eb84f8bc11ee935d6952f98a51a9-20240412
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=52aIV4Wra8M/22bVbzGgBlSGHfekU7YhMBHKiev+BGs=;
-	b=pYJMvh2ggZ4LKtBi12N86RpOrvCt3x+6+61z/tArps2pruyjxDbwSnwCiZMXlNyIV3gXd21C5i5aOYyD4ypiVSnB0VytAYuWwSKzzwVsWmfeDZUh7HyNMstT/ycRTIAZa+Y01HIZXcaBCoZToxzOIZYANZWIZG+r9STxvDCSmJM=;
-X-CID-CACHE: Type:Local,Time:202404121821+08,HitQuantity:2
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:31db4e5b-e6cb-4c0a-a028-af16baedbce6,IP:0,U
-	RL:0,TC:41,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:36
-X-CID-META: VersionHash:6f543d0,CLOUDID:d5ad9982-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:4,Content:0,EDM:-3,IP:nil,URL
-	:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SP
-	R:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 3,BAP
-X-CID-BAS: 3,BAP,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: a940eb84f8bc11ee935d6952f98a51a9-20240412
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
-	(envelope-from <olivia.wen@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1133937984; Fri, 12 Apr 2024 19:06:07 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 12 Apr 2024 19:06:05 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 12 Apr 2024 19:06:05 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m+v7SQS0w6Y47FtgMigv7D2WOT09l9seTUhU4pumPfo3mtLc+D7NFTXoOUhbnkJHg3zeDlgKfY3j2lKyq4tINAcb9uyz3G+pumMtci5IAaASZjqI2f9ihFVbJm0gHaaQXlFzUBF2NUXH9t9ugHzDEbbGMgXeoCnZJk88QZOohZvdZa7FWX+4RF3V4PYy3Snx6pRoGZR01nHqVg6VXcK9eTZ0rqjD8sntPq4aHEHG6eG04W0Lwv0zH7tYgn/xQryVP/K6GmePNM0gMCyDMpcv4OojHQJ5aXJBGroVCtxIBGwq6n0rgv/9PsZ7ZSbawtEyki53nejHOCpcPxNPY3zSkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=52aIV4Wra8M/22bVbzGgBlSGHfekU7YhMBHKiev+BGs=;
- b=E49Wj7k6cOyIbFXtGwzFD3ocAbv8K3i2yJpTTf/Qk+XUMJCYvf82FPbj5dWw+L6iNflwEvM5TYLlMEwgyDJvpldASYbosh0hpBISU/352FB98VT89CBNz1Ned9msb9Ahj0zUIUQTW31ROQr6lJ6kYYOD386V9PGTv9K6KHFVO3Oyw3jqlm4C/5g3hv9P1ldMWF+61NHsO9guwjUKJngy5CLN0wImWr/LS9NCy2uUgWeW7B0fGV8hAeDM2RjpPAftDgaSq5paWu55sRfI30L/f2jRfaolx6LtrKJ9blOycgUKMT8vcLTuT9eXZan71a+/eYwlgvuL46LcTWYSiwFyQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=52aIV4Wra8M/22bVbzGgBlSGHfekU7YhMBHKiev+BGs=;
- b=CGUjdGJcfEH2xoAU0PDJObBthwMTWB5ydMZW0boYpYhvU5WA8VhFrSP2uD2ldy9svCVbM7qWqJBLYP/6NjlQ336GLWXL+Wg5ANXUHTNjUWznZoc338n/KpWzNYGWjH7B3XC6uEp9g6eDBFGQa6oD6Y+kLtlN1GVogI00iNr5XtE=
-Received: from KL1PR03MB6226.apcprd03.prod.outlook.com (2603:1096:820:8c::14)
- by KL1PR03MB7407.apcprd03.prod.outlook.com (2603:1096:820:e9::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Fri, 12 Apr
- 2024 11:06:03 +0000
-Received: from KL1PR03MB6226.apcprd03.prod.outlook.com
- ([fe80::85d1:1a4f:cc89:46fa]) by KL1PR03MB6226.apcprd03.prod.outlook.com
- ([fe80::85d1:1a4f:cc89:46fa%7]) with mapi id 15.20.7409.053; Fri, 12 Apr 2024
- 11:06:03 +0000
-From: =?utf-8?B?T2xpdmlhIFdlbiAo5rip5YCp6IuTKQ==?= <Olivia.Wen@mediatek.com>
-To: "robh@kernel.org" <robh@kernel.org>, "mathieu.poirier@linaro.org"
-	<mathieu.poirier@linaro.org>, "andersson@kernel.org" <andersson@kernel.org>,
-	"krzk@kernel.org" <krzk@kernel.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	=?utf-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?=
-	<Jason-ch.Chen@mediatek.com>, =?utf-8?B?WWF5YSBDaGFuZyAo5by16ZuF5riFKQ==?=
-	<Yaya.Chang@mediatek.com>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
-	Project_Global_Chrome_Upstream_Group
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	=?utf-8?B?VGVkZHkgQ2hlbiAo6Zmz5Lm+5YWDKQ==?= <Teddy.Chen@mediatek.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "matthias.bgg@gmail.com"
-	<matthias.bgg@gmail.com>, "krzk+dt@kernel.org" <krzk+dt@kernel.org>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>,
-	=?utf-8?B?VGluZ0hhbiBTaGVuICjmsojlu7fnv7Ap?= <TingHan.Shen@mediatek.com>
-Subject: Re: [PATCH 2/2] remoteproc: mediatek: Support MT8188 SCP core 1
-Thread-Topic: [PATCH 2/2] remoteproc: mediatek: Support MT8188 SCP core 1
-Thread-Index: AQHai9axYKR+Wo7XokGUJy4nwRh4YbFkeyIA
-Date: Fri, 12 Apr 2024 11:06:03 +0000
-Message-ID: <aa64c07569f249d52252689f47db2a6a9bfc2666.camel@mediatek.com>
-References: <20240411033750.6476-1-olivia.wen@mediatek.com>
-	 <20240411033750.6476-3-olivia.wen@mediatek.com>
-	 <f1bdf524-17b4-4cce-a7ed-abc97786c975@kernel.org>
-In-Reply-To: <f1bdf524-17b4-4cce-a7ed-abc97786c975@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: KL1PR03MB6226:EE_|KL1PR03MB7407:EE_
-x-ms-office365-filtering-correlation-id: 18add865-ca5b-4ecb-1d93-08dc5ae08b35
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kPcEI0XBTn6gHK24TRM6Kcz09s4832vrFBLevqoxfnyjZ6MryLG0kwRJG1/A1SO6dxK4/x7zilwGZBrb0G5oVoCEF3VEpPOayx6aljqrylHLk/riUvGQKMz82NIkWHAGDt7PdWjHf1acYukzPu2HxSS/8TtaRtb3mWnvCotMq2WvpI73yu6EhU9aYAgOwViyXyouS/z+UBhlYuYzOdfoZ4PagFm7HtSlH/qj18itfqqZrK1zJvYXl3I+DG5x4TPDwduz1JyadJLGwzF3JbpPTQOkMwrmOV11GTNDUY6X1X2B11AQhqavZgj+pPEcuzOCQfZBzb4iIKmb+CVWPvMDHXBSh2TRB/LneFTbI6CdDN6W/uVwV6t863/V3aoxTzlPdF9vI6oCUVnpllPmFX/EzVxYgQNEcbVrehiEl8zlG37avppCds4z4eGzAnfSbqoAOBNUcqVU0in47H4+75+LkBiBwwnPpeDu53UdsDQ7Z2VhsiFcvRPlRgG1+yMSEKuLgUiz1oo5NGPeXzBIBAomwyPXD1SO/oGk9Vi8an1+EyG9jjpZ0vfbncOTcFPyhHoVI80ZThrjiQDhHbwneec7Vz7xh4fNsTjZOEIfEnAbkfCTg+vhnLjocptRuHE14yPzNr3mgFEAE1AmjuXf4RGk+lGtK3pV6Cy2mzAo4Mq/OmYCTgRzTxPmb/xs1JZpk6oGBuumJEEz3b8PjVkdjloQlw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR03MB6226.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MkNLZWFBU053SlcvUVAvU2lZYlpWVWxoWityWGJWanRURUFJREpuRHhHK2F3?=
- =?utf-8?B?U0FXLzlmQVAxUlQzdmRwU1ZFU1hlbjhMY3JMQUprYlNVT2h2OFpLVlVXRStu?=
- =?utf-8?B?SDFZODVmZzBENnQ3cDFTODZwQkQ5SkJFOWtjTDA4Zm5nWFp2cmZXNlJiMFZP?=
- =?utf-8?B?QnJpeHljanpHeTl4Y1A1Wnc4bjN4dmlPOS8rVjlaNUtETlI1VVo2eWFsQWpt?=
- =?utf-8?B?Zm1KRkZEQWJzVzNtY0VPdjRoTW5qL215ZWZpc0tHTVVuNmFySnNNMHBkOVJV?=
- =?utf-8?B?NlhEVzJ0MTRIeTNKNTczMlhlNUVJZnlGWVhBNXBYdWpxam1TRWJMUjJkMmVK?=
- =?utf-8?B?N3lBNFFVaTFCdFY2ZmROVzBJNERMNmdEeUpLNjdpTUxmdTl1UlF0NGhXVmZL?=
- =?utf-8?B?cy9GQ2RuVDBhNmVXUmhTemNnNjNONDVMdGlUZVA4M0RPTERRcFRHZ3MzVHV0?=
- =?utf-8?B?WGJrdlNXRlRzWFRCNlByc3c2SDNkZk9OUXE1NEdXYkVVT2paNFBoUHRFNytU?=
- =?utf-8?B?ZHZvcnlnOU9aS25pSytjWXQ1UFVCNDAvaXpkSTRDQ2hEQXlTaW1KaGtRRVdN?=
- =?utf-8?B?a0dWMS8vWGF1QndvTitGRmFxc0tJWkVEZFYwNW5VeEpMRU5Sc0x1bXNhUjNs?=
- =?utf-8?B?TlZtZU5JRkhWYVJLbFBWVkNNYXQ1OHpHQXBTNDJ3YytPY2RrN2NCZ2gwQ2Vn?=
- =?utf-8?B?N3pBWlBKQkRZdGRubHlxaVVITEp3RjZUSUVRQTYxT0RqdThZYWtFVldXSHNr?=
- =?utf-8?B?YTAvUU5UN2pFdk80N2k2UUhCN1pXSVlVY1R2THIrb0J5Uk5IQksrTVZTNitQ?=
- =?utf-8?B?b3F1U2hDVFhGSEZ1S2lzbVJRQmJnTW8rYUxUWGZESytjUG5PN1dBK1duNUZr?=
- =?utf-8?B?M3BVZ3MvSE1ycjMvMGFOckdqb3IvdnFkbHd0S01nbWluVHZEamNGNFk5MW14?=
- =?utf-8?B?K2hWaURYcnBibmVHb3hKTndUVGh5SGwySkhqbjR4dnJOc0tzREppSTBlRjNX?=
- =?utf-8?B?NEViZ0pWY3NtS2Jna1dCRW9zZU9jemJzQW1Yc2ZsRzRjdTVtaXg1aGZ4ckNR?=
- =?utf-8?B?R1U5dlRtZU5md096QlFTYTdwRWN1dkRaSXYrWUlHb0wyeXJPRUs0ZHZpU3Y0?=
- =?utf-8?B?NThZME5MeUVmblFHaExpVmQ5L01WYzZXeTBtZ2NKOVZtb1IzUnNxY1ByTmd5?=
- =?utf-8?B?NmluSVZSbmtnaEVtOUpISm10ZzhXcEl6RmhUd1JLQiswUXV0bjNtQytsbFBW?=
- =?utf-8?B?dnlOYnIyM1FpK0MwcFpRbDdocTdDQy9jbDJXeERPMWpJQS9MdWkwQ01sY0JJ?=
- =?utf-8?B?Y20yYk5SWVNLT0tJdVZUaGRISTEwTzZKS0FSRGFLY1FBZ25JcHBOMTJaamxW?=
- =?utf-8?B?cFVmT0VIMGh4VUlqWGxlSUZhQWNIb0RrSVhyVnJ5MFpwUjIxVUtLSVY3L1hl?=
- =?utf-8?B?OTAyakNWK0xRUjZvcmJBalN6b01NV0krNzA4Ri90MWJmOXAvL3VoOTZ4Y2Nu?=
- =?utf-8?B?M0dWcHMwSXdZZXJleTB4Tm4yVE5iaTdTQzhuUTdZa1Yya3pydDZFamk0Nk1B?=
- =?utf-8?B?bkVpbzlWZ21BRkhTRWZWYjV5bFB1cUgyR2dNaElzaHB3M3pFUVI2UW8wYVB6?=
- =?utf-8?B?WkhWMVh2dmplQmhPVXlyUjJwQkVTazVTc3NuRzF2cXlBV2RoQVlHZmZZbjhE?=
- =?utf-8?B?T3U5a1YzTFlTNW0rYWpEclB3MDlhWVlTd1Nzb3k1MDhYek9SNDBwYThFMXpT?=
- =?utf-8?B?Q3FzVGVrYktxZGNWS2FNQ1dhSjFDbkZQWEJCWkpuNEZVWmR6WUFKcTlyaVZj?=
- =?utf-8?B?MVZIaVF3SENYVXFFZUdqVFZwTktUT1k0ZGVQRWsyRkFaSTdTVzQ0cVg2RXpL?=
- =?utf-8?B?N1V3Z1ZGVldCY0xraXBsQUZjUzMwQ0tpdUpQY29yQlVNVmZZREpEbzNpVlBp?=
- =?utf-8?B?Zkh1ZDQxNGF1Uk5SMUlnL0xmVGtQeDhCaVd1Q1IzaEkyQ282ekdJRWovWlg5?=
- =?utf-8?B?L3ZCeWtVcE9TY3Q1QmtkMHlqSlJNYzNiWFJIRkV1UmNBQTB4N21aUnJvZVRS?=
- =?utf-8?B?eW1hbER0ektZc1M3ay9nMGtPMXkvd0RPU080b25ESmFya05iajYwSzdVVW0y?=
- =?utf-8?B?WE0wRER5WTlwazMwRWxyM3A3RjN2dXpLbktmSitYdVFCbW1iSjU4SWtONy9h?=
- =?utf-8?B?Mnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BCDC59C96A74914396A8F1402171BCC3@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4185742AA2;
+	Fri, 12 Apr 2024 11:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712920114; cv=none; b=NhTmR0fp4jargjOGkpA/G1+9rrfAWNuSzxH9MV0Wzwt6fHzqAfgHQT1W03FaDirxl3zAhWSYcXW7F+cCcvQyVYiGuUKKHNEQCbel7VTfqHffoGq3Zlb+xSk5Dc+5pUB0PjiqlmlYlgXJuu7kawNKdD4Oa0oMhJOPtdERTF9lH6k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712920114; c=relaxed/simple;
+	bh=aZygeNBLEEDvbPmqCRdbWqGVMAlMZFqaBfZ8Ykze24A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a3zCBcJlon8cM21A5THsahofqAqSwQAl8GuUrwz41nAjvxnKxPnUhTbYDdafVR5H2g3awyte/S8566OCt3C6qHFo3CDPu8OjMEO/epKMfzc6Be6UXyf9kBEfeDQp99gK/oD38eIHaLdnPWYBoIu2IHlpYW0xass7HIugfUyi/Z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B2Co/ig4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1A23C113CD;
+	Fri, 12 Apr 2024 11:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712920113;
+	bh=aZygeNBLEEDvbPmqCRdbWqGVMAlMZFqaBfZ8Ykze24A=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=B2Co/ig4fQDui8awDdlQ0XScFHJIuAiFcojLdIMiUsEyOgqaSdIXxvrkz4jilWHfS
+	 djWEcQyzBCmSfpP1BTlgocWtcVKeDWfACCJ//olPguRtir6zWVNXJWnlzw6eJeEF1V
+	 JRpveal4oxI7nG+d8Tu+xv1NsSMukzalRSWPAqOLKAGMwu6j93OeZ4ByObH4RBm1xm
+	 vEd+71IgOzcUu13veNgSH59EHFTxOWA0nH8ah7plgHzgNQwgJqs8AhFbrFW8WMYEdw
+	 gFjDk1sYuL94r/NCCFIHykBbeV2Hr9wNrSEUm55UDJ9/BUZvegPIkRNi7jqK7i3OaX
+	 H+MaLimsCJCXA==
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ea0a6856d7so232322a34.1;
+        Fri, 12 Apr 2024 04:08:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVDB5tcT/cNwF3vtDz6O+vGGWCHkxHD3Dm22VuLr7Syxzh8hKZZENZH8e1+V5M1sp7lJiwjhZGVXEIG6+NuEGOQjnL4RX07sg8D0B29ZqsfM7KMc5kt5B6nSx/8FPj5cMHw26NIB2M=
+X-Gm-Message-State: AOJu0YzMQu0xuBRMByLyZJ8x/GkS+XE8TwvZp9VxgkWw+vRrQ2HEqSMy
+	SRvA8eaOIpb5e7gB0ON+116mEVLuoaBPxdH9z/n9YpoRWNj+kIq1eriP59+dMO3coD//mx4ESdD
+	nZT8wpH9QQC67NSA6WLzy10NMhmk=
+X-Google-Smtp-Source: AGHT+IHrlRrBdOMWR/yEt0NRmSyQw6EkKYYcIWaW0NioL2FpGlMBM79s2nKjhwOs0cukIeughxSYMsnjm8uwIUwRn04=
+X-Received: by 2002:a05:6870:7a6:b0:22d:fb4b:9d11 with SMTP id
+ en38-20020a05687007a600b0022dfb4b9d11mr2454769oab.4.1712920112998; Fri, 12
+ Apr 2024 04:08:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR03MB6226.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18add865-ca5b-4ecb-1d93-08dc5ae08b35
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2024 11:06:03.4016
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jgUxvh13HDof0Exdjoie1dr6y8MVeaYkXICSaQWvdxjTWw4MOW1ebo+PbXPVpdYZG4GS50LsgK6lYTwn9RMZew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7407
+References: <b97964653d02225f061e0c2a650b365c354b98c8.1712900945.git.viresh.kumar@linaro.org>
+In-Reply-To: <b97964653d02225f061e0c2a650b365c354b98c8.1712900945.git.viresh.kumar@linaro.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 12 Apr 2024 13:08:21 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hsrG1WHwUDSCbUtxQSjdQV_f30xiQHUE_A=jK9ZSyOVA@mail.gmail.com>
+Message-ID: <CAJZ5v0hsrG1WHwUDSCbUtxQSjdQV_f30xiQHUE_A=jK9ZSyOVA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: exit() callback is optional
+To: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, 
+	Vincent Guittot <vincent.guittot@linaro.org>, sensor1010@163.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgS3J6eXN6dG9mLA0KDQpPbiBUaHUsIDIwMjQtMDQtMTEgYXQgMDg6MDcgKzAyMDAsIEtyenlz
-enRvZiBLb3psb3dza2kgd3JvdGU6DQo+ICAJIA0KPiBFeHRlcm5hbCBlbWFpbCA6IFBsZWFzZSBk
-byBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bnRpbA0KPiB5b3UgaGF2ZSB2
-ZXJpZmllZCB0aGUgc2VuZGVyIG9yIHRoZSBjb250ZW50Lg0KPiAgT24gMTEvMDQvMjAyNCAwNToz
-Nywgb2xpdmlhLndlbiB3cm90ZToNCj4gPiArfTsNCj4gPiArDQo+ID4gIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19zY3Bfb2ZfbWF0Y2hbXSA9IHsNCj4gPiAgeyAuY29tcGF0
-aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtc2NwIiwgLmRhdGEgPSAmbXQ4MTgzX29mX2RhdGEgfSwN
-Cj4gPiAgeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODYtc2NwIiwgLmRhdGEgPSAmbXQ4
-MTg2X29mX2RhdGEgfSwNCj4gPiBAQCAtMTMyMyw2ICsxMzYyLDcgQEAgc3RhdGljIGNvbnN0IHN0
-cnVjdCBvZl9kZXZpY2VfaWQNCj4gbXRrX3NjcF9vZl9tYXRjaFtdID0gew0KPiA+ICB7IC5jb21w
-YXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1zY3AiLCAuZGF0YSA9ICZtdDgxOTJfb2ZfZGF0YSB9
-LA0KPiA+ICB7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS1zY3AiLCAuZGF0YSA9ICZt
-dDgxOTVfb2ZfZGF0YSB9LA0KPiA+ICB7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5NS1z
-Y3AtZHVhbCIsIC5kYXRhID0NCj4gJm10ODE5NV9vZl9kYXRhX2NvcmVzIH0sDQo+ID4gK3sgLmNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTg4LXNjcC1kdWFsIiwgLmRhdGEgPQ0KPiAmbXQ4MTg4
-X29mX2RhdGFfY29yZXMgfSwNCj4gDQo+IFdoeSBkbyB5b3UgYWRkIG5ldyBlbnRyaWVzIHRvIHRo
-ZSBlbmQ/IExvb2sgYXQgdGhlIGxpc3QgZmlyc3QuDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEty
-enlzenRvZg0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXdzLg0KSSB3aWxsIGNoYW5nZSB0aGUgb3Jk
-ZXIgYXMgZm9sbG93cy4NCj4gK3sgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTg4LXNjcC1k
-dWFsIiwgLmRhdGEgPQ0KJm10ODE4OF9vZl9kYXRhX2NvcmVzIH0sDQo+ICB7IC5jb21wYXRpYmxl
-ID0gIm1lZGlhdGVrLG10ODE5NS1zY3AtZHVhbCIsIC5kYXRhID0NCiZtdDgxOTVfb2ZfZGF0YV9j
-b3JlcyB9LA0KDQpCZXN0IHJlZ2FyZHMsDQpPbGl2aWENCg==
+On Fri, Apr 12, 2024 at 7:49=E2=80=AFAM Viresh Kumar <viresh.kumar@linaro.o=
+rg> wrote:
+>
+> The exit() callback is optional and shouldn't be called without checking
+> a valid pointer first.
+>
+> Also, we must clear freq_table pointer even if the exit() callback isn't
+> present.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/cpufreq.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 66e10a19d76a..fd9c3ed21f49 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -1679,10 +1679,13 @@ static void __cpufreq_offline(unsigned int cpu, s=
+truct cpufreq_policy *policy)
+>          */
+>         if (cpufreq_driver->offline) {
+>                 cpufreq_driver->offline(policy);
+> -       } else if (cpufreq_driver->exit) {
+> -               cpufreq_driver->exit(policy);
+> -               policy->freq_table =3D NULL;
+> +               return;
+>         }
+> +
+> +       if (cpufreq_driver->exit)
+> +               cpufreq_driver->exit(policy);
+> +
+> +       policy->freq_table =3D NULL;
+>  }
+>
+>  static int cpufreq_offline(unsigned int cpu)
+> @@ -1740,7 +1743,7 @@ static void cpufreq_remove_dev(struct device *dev, =
+struct subsys_interface *sif)
+>         }
+>
+>         /* We did light-weight exit earlier, do full tear down now */
+> -       if (cpufreq_driver->offline)
+> +       if (cpufreq_driver->offline && cpufreq_driver->exit)
+>                 cpufreq_driver->exit(policy);
+>
+>         up_write(&policy->rwsem);
+> --
+
+I have applied this patch (for 6.10 because I don't think it is
+urgent) because it addresses both issues with missing ->exit() driver
+callback checks.  I honestly don't think it would be better to apply a
+separate patch for each of them.
+
+Thanks!
 
