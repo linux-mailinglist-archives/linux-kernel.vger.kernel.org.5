@@ -1,115 +1,153 @@
-Return-Path: <linux-kernel+bounces-143280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F21A8A36B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:00:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BD968A36A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:59:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38B051C23223
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:00:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 065E5287A89
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E37D15099F;
-	Fri, 12 Apr 2024 20:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A721509B9;
+	Fri, 12 Apr 2024 19:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@isd.uni-stuttgart.de header.b="bglzD7am"
-Received: from mxex2.tik.uni-stuttgart.de (mxex2.tik.uni-stuttgart.de [129.69.192.21])
+	dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="gpteDel6";
+	dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="5caQbqJE"
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903971509AB;
-	Fri, 12 Apr 2024 19:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712951999; cv=none; b=LL6lAJbArAbIMhHwNb5gxZ1gnzBKwOAdVZbXmm//X/Yn54cpYeolPOrwESPVb9arrWdlf2+1yHZSFZxkiFQYafRUMFZL9zprKYodKd5pjvQeQcmWNaDs48JHpQSU2R6sHi35Fe2EmWWQmrxRVul+kgn/E0RpY1jxiIeEQTQtUWI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712951999; c=relaxed/simple;
-	bh=ObWGWVtdg8U0NPbe/EAvSL2dL0N1qhqx+T4lt2FGPoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=r7vMm2aPaXa9dn/y7ys9KrRYo6FDKKsG9UCAUo4fYpvU4qyRUUxrqV7fi66fyRPS+VgkOW4Tp0B2vJ4gjNAC6POO6sPbIsjQZ/531u1Y1PjF0kmVoTMeNgiG/cVGoNylIkvbiK+bn0jYVTM8bmGqztnuM+5Fu8/it/Dh7QtDdSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isd.uni-stuttgart.de; spf=none smtp.mailfrom=isd.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@isd.uni-stuttgart.de header.b=bglzD7am; arc=none smtp.client-ip=129.69.192.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isd.uni-stuttgart.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=isd.uni-stuttgart.de
-Received: from localhost (localhost [127.0.0.1])
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id CFCA660B43;
-	Fri, 12 Apr 2024 21:52:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
-	 h=content-transfer-encoding:content-type:content-type
-	:in-reply-to:organization:from:from:content-language:references
-	:subject:subject:user-agent:mime-version:date:date:message-id;
-	 s=dkim; i=@isd.uni-stuttgart.de; t=1712951522; x=1714690323;
-	 bh=ObWGWVtdg8U0NPbe/EAvSL2dL0N1qhqx+T4lt2FGPoo=; b=bglzD7amfmfJ
-	kMS2GaVF0TWKN1LuhlbIIguj1W3FyyWEpxF1gHVyoj1aT5mMCGafjtUMk3eu/KMW
-	VaW8shkw+IkpLmY1Z/hzGPDMX+lL/T1+rWcwp4PDz46j/5hqLiP4McOOOJP2uV03
-	N4cbnbv008i0dIfgyN3pDMBLUpAEnBJFAN1YN4jjiFp4FUMzfx4wiXjG0fO2ma91
-	ZDQUDIiTq8nJfUNi0sXFamJqPQ8yiJ/Goj955aYNbcbd4ua2RJIRftnR9wsdrS5G
-	6XT97+7h1jzVYmAmASVwwy+l05rXBT6U+OtOsxEcxW9pLd5gByYsTNYI0/5VoS5a
-	T8Rd5sufrw==
-X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
-Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
- by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
- with ESMTP id hMBUxXXMAYCz; Fri, 12 Apr 2024 21:52:02 +0200 (CEST)
-Received: from authenticated client
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
-Message-ID: <4a1e0cb6-c319-4eb1-9bd1-5ff13eabfe1b@isd.uni-stuttgart.de>
-Date: Fri, 12 Apr 2024 21:52:01 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6214E14EC4E;
+	Fri, 12 Apr 2024 19:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712951979; cv=pass; b=tM02eqSb0VXaU5aseqDfndC4vmK/DfD1l3sZPRySJSKEghbYm0IsV7w+79SCv/uilQ3/lAQNvQx71jCIqhnCTnwFZgsUULP3NBfpYUF2rJr9fzISIO15n8dO3EVJGBf+PvIT0HG6aFw7M3KGa+b3mpLkxf/wZzqdeNAK4c6FdMo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712951979; c=relaxed/simple;
+	bh=9GILyS5wOQePaTKkVr8cMkodqWg8VGVjdnrVrcN1rW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c1nm87q+sp2g+CV3VmLD3GgnE+08gH9pWgSTcAElVZ63ha8tp6nMgPMYDYiECeoeFzYKGl6RtrpWTcXb5S76Qn2AKyg/ifHQzg0xEdOSluX+eXpeh8pmkgycbmOkm+lNR+pG/vJXsoHzAAsoXK81PXIn3sRNIH80GpWKXMIJP4g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net; spf=none smtp.mailfrom=gerhold.net; dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=gpteDel6; dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=5caQbqJE; arc=pass smtp.client-ip=85.215.255.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=gerhold.net
+ARC-Seal: i=1; a=rsa-sha256; t=1712951603; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=mXyGqxePBmd8lepTK9pbK2hPDvbmzxqP0x17Md01t23w2aU7a5WkCyRHk1r/1usGiH
+    FX1oxFNvY/JCYdHn/28AN8z3OwDjmngIxWPyghO5ntAPLnEo/xA8jYtkZkmOZsO7ic13
+    C8z8DLohWxvChxLviNf24oeUSzd8w1bq3CLQSHY7X01aa1YrI0WZXbqnQHgjX8lKRiBK
+    H3GFTa696yq0mBsep4FP+NSibjrmSwqkNGIP95uEUvyP5P9Nc8Awr09LqtRE2l6XW0LI
+    OJF7tNzLn27AgpJc60ivEkp1ZmSDjjn+8kCjaW/O95fUNYRX+yy8Kb8RpyVEjlJP8VSs
+    Vfww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1712951603;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=FhdLnrYDB2Gbpoa3iA3B4bHJbBtO20mT/yS1LRQLe4o=;
+    b=TRhtcnenJDtY7Ywd7qaePVOa/MlvA+jL4MBT/8FcsbHJDGj99IDVgKDNVo9/oA38MS
+    1m3ZjXHtxjpT12QbrNb976NX9JiV9nctmeJhwIxtXzW1N+yAo/8FZT5bDwueE4c1ET0s
+    7KHgowHbNlhGUnEY3F8UTIofU7GQikxoNwIviT1jTLOk0SFlOvvtY/kqGG3ds9XIDCPY
+    bOJLM4T5KAde+qGHNj5BqdMORRYV3JPUu5OsicFlQ4Ll8osh4BqfbWDXFjOCZINdTDOf
+    1jPpQTdSFqzcLgFhrxjtKq2hW6xsWkP3IBNVJVpTKRTvkOvDsk+ZHD3Z/FYi+a3tVeiB
+    8qkg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1712951603;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=FhdLnrYDB2Gbpoa3iA3B4bHJbBtO20mT/yS1LRQLe4o=;
+    b=gpteDel69DQ0ThyZf+szYkf4LEln0Uw1Gu4zbWYDyHCJnQEWy5jUlX4CPTTz5q1eS4
+    //3LzhIGq9zSuCyyC3ffb0DSD2qUhYe0i6rd7nNwpz4cwe2xrFmG6AxZClI4KrpJlNU8
+    sFfhvxXp5YibwGMPOZMEaR3yZyIBBw+5y4LnUEU2xu/RcxW6Na6OVZ1I9t+sxvXKbe0R
+    TfVZdfAOtgtiwx7HTL7+pqVh9BqkvFctfT16uMo1WYxT/fKjTr/UdaviSwD11VaDMR24
+    B3NN2KUSOaLabW2uzlQd13cOWFeRAHUUoLP9pxfHgValNPsZil+ElxGhcfEjZ4/aEBlG
+    rWnA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1712951603;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=FhdLnrYDB2Gbpoa3iA3B4bHJbBtO20mT/yS1LRQLe4o=;
+    b=5caQbqJEeEmju7YbfP7/x+LNKYr7C1dExLHSFFtXhfpc4JddZWWvOctbNhJhcsdsEh
+    r2UB+9Dx32Fzfgp3yLBw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA+p3h"
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 50.3.2 DYNA|AUTH)
+    with ESMTPSA id Raf12503CJrModL
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 12 Apr 2024 21:53:22 +0200 (CEST)
+Date: Fri, 12 Apr 2024 21:53:16 +0200
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
+Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: sa8155p-adp: lower min volt for
+ L13C regulator
+Message-ID: <ZhmRJPAZUSlc1CSH@gerhold.net>
+References: <20240412190310.1647893-1-volodymyr_babchuk@epam.com>
+ <20240412190310.1647893-2-volodymyr_babchuk@epam.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] wifi: ath11k: support DT ieee80211-freq-limit
- property to limit channels
-To: Robert Marko <robimarko@gmail.com>, kvalo@kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, jjohnson@kernel.org, linux-wireless@vger.kernel.org,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- ath11k@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240412162510.29483-1-robimarko@gmail.com>
- <20240412162510.29483-2-robimarko@gmail.com>
-Content-Language: de-DE, en-US
-From: Christian Lamparter <christian.lamparter@isd.uni-stuttgart.de>
-Organization: Universitaet Stuttgart - ISD
-In-Reply-To: <20240412162510.29483-2-robimarko@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412190310.1647893-2-volodymyr_babchuk@epam.com>
 Content-Transfer-Encoding: 7bit
 
-On 4/12/24 6:24 PM, Robert Marko wrote:
-> The common DT property can be used to limit the available channels
-> but ath11k has to manually call wiphy_read_of_freq_limits().
->
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
+On Fri, Apr 12, 2024 at 07:03:26PM +0000, Volodymyr Babchuk wrote:
+> Voltage regulator L13C is used by SD card IO interface. In order to
+> support UHS modes, IO interface voltage needs to be set to 1.8V. This
+> patch extends minimum voltage range of L13C regulator to allow this.
+> 
 
-I've seen this before.
+I think this one also deserves a Fixes and stable tag. One could argue
+that enabling UHS modes is a new "feature" but I would say the original
+commit just missed setting the correct voltages with the intended use
+case. I doubt limiting to high speed was intended.
 
-https://patchwork.kernel.org/project/linux-wireless/patch/ed266944c721de8dbf0fe35f387a3a71b2c84037.1686486468.git.chunkeey@gmail.com/
+Maybe also add a Suggested-by tag from myself:
 
-(dt-binding too. it has/had an ack)
-https://patchwork.kernel.org/project/linux-wireless/patch/fc606d2550d047a53b4289235dd3c0fe23d5daac.1686486468.git.chunkeey@gmail.com/
+Fixes: 0deb2624e2d0 ("arm64: dts: qcom: sa8155p-adp: Add support for uSD card")
+Cc: stable@vger.kernel.org
+Suggested-by: Stephan Gerhold <stephan@gerhold.net>
 
-sooo.... this is awkward.
+I believe you do not need to resend just to add these tags, the b4 tool
+should pick them up while applying. It looks like this might not work
+for the Cc: stable tag though...
 
+Thanks,
+Stephan
+
+> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
 > ---
->   drivers/net/wireless/ath/ath11k/mac.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-> index c32be587000d..59bde128d351 100644
-> --- a/drivers/net/wireless/ath/ath11k/mac.c
-> +++ b/drivers/net/wireless/ath/ath11k/mac.c
-> @@ -10124,6 +10124,7 @@ static int __ath11k_mac_register(struct ath11k *ar)
->   	if (ret)
->   		goto err;
->   
-> +	wiphy_read_of_freq_limits(ar->hw->wiphy);
->   	ath11k_mac_setup_ht_vht_cap(ar, cap, &ht_cap);
->   	ath11k_mac_setup_he_cap(ar, cap);
->   
-
+>  arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> index b2cf2c988336c..9e9c7f81096bb 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
+> @@ -283,7 +283,7 @@ vreg_l12c_1p808: ldo12 {
+>  
+>  		vreg_l13c_2p96: ldo13 {
+>  			regulator-name = "vreg_l13c_2p96";
+> -			regulator-min-microvolt = <2504000>;
+> +			regulator-min-microvolt = <1800000>;
+>  			regulator-max-microvolt = <2960000>;
+>  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+>  		};
+> -- 
+> 2.44.0
 
