@@ -1,290 +1,255 @@
-Return-Path: <linux-kernel+bounces-142616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 172298A2DD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:58:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 962B28A2DDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:59:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70CC8B223BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:58:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB9F0B227AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6225755E72;
-	Fri, 12 Apr 2024 11:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iH1fEoIf"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C41C3FE55;
-	Fri, 12 Apr 2024 11:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712923109; cv=fail; b=Fs45sFKU6J3Y/bXnYlcTm9+AwEceMdZ2JyEDUWA0bUYxWHsvZ5v/+iuxBZ9saj+SGFiBancDUL4L+qN/8nnMG6Xl4sTf86kAgNV3D5qa4G8sIcuJiOYC5scOz6xgLYjgbPY7H9YF5fdGDljtGWt4BzWPVsVBAf0QmnCiSNMSr0c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712923109; c=relaxed/simple;
-	bh=tj6BYuGFlwo5BVeonyJod5tXysM0BiDe5MsOvmzb1cs=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=WD2oslYuM+dZR42DE8nG4x0LepfMe5ULC7yvGiGM9Lx14TZNP/jTJdOSBbAY9R6F/3Ole2Olp+aTQ6tKr9LvfVSkfneTel1eLfIy/aC2kGAaTooZgNVmWr3rcUTiyKkFi8EnhWOWGyisUG40+Pw3wHhLSNAbYyptAhE7Hmqpgt4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iH1fEoIf; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712923107; x=1744459107;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=tj6BYuGFlwo5BVeonyJod5tXysM0BiDe5MsOvmzb1cs=;
-  b=iH1fEoIfBIIdllyZHRPFrO/OHES4sN5N+XIu9nv4np8Ch/jGmlY5BrCe
-   7XxaJtxGSSu/QaMters2OjQXGJTy9hVYIioDLNiU0FUZcUOuheJ4oq+Ks
-   lLvuRP6N+PJDPsS3/U8LHhYJEPutc+ofMVS0z4st4pmOC211hNEnmkMzc
-   4292d9M5gTOtD6V9gIBaxRoJxayxBXvmFUZ9HxyEUy4AiHqabgX35//kC
-   EqPRkV9SpN9SghlJHYo9UdMyHCE5WicAfg0T8Xmd8+0NF3rxaNhiZG3NU
-   vHfsU/Zxs6yRZwn2g13u1kdEoVyYt7AAVIXpz3n1j1h/2+gDIOtK6Dw3z
-   g==;
-X-CSE-ConnectionGUID: C5RVa+3XRBmviW0Hp+WJKg==
-X-CSE-MsgGUID: IkP0907LRaCAeDXVFOoUrA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="19770031"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="19770031"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 04:58:26 -0700
-X-CSE-ConnectionGUID: ygmezDUkQHyQEphMYmgZiQ==
-X-CSE-MsgGUID: MW2R9ObmTmqOvfHboH5Yww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="21190623"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Apr 2024 04:58:26 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 04:58:25 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 12 Apr 2024 04:58:25 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 04:58:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VS2fPt307S7c7L1G2EwRtWon1uz+rPy8V/ozXRVxpOCw6AkBEVpHbp/63XRVb2N80hh2ksJQT0eBJoAmxvmELQBcqZL0UsnGIMiEJDL33FnUXS+rQ6t4wPHAcIMpv71a34Ad2DzCo5g8dXt2bLGwerxk+NiBzPdCGDIaWi2m5xnUJ3VP82xAkcm0memTZ0FolPRBZX8AvoS7eLArCB/KYC1pRBOh3yjdY8JKhEkdIXTgRpDpIn3wd0T4HZ400+0qSvuVHU2n98M2DMwH+pNB4BJ4AwlOyoTuYJerPw/ZmnxV/Vg+jR8XZwu7Gmx0bP0dsgISjsjJeYcfSJlseuDniQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A2PAv8IVmPE/yS3mQ4rL6zN1JM8d0uW0WtYKOt31890=;
- b=h9HX0WQVhdI/NOnIaIj+hVFJWOnzh1J2m0juLhdcGw0tJTnSm+LylMhh4wGVRiXNH0lq/DXnDTmh2VF10JL2yFp1UxRZnp5FpBw3OhNw478cl3FEaJdX2wNDDakxXWo5drMHfRGJBzAjXTZoOfO1+ExWi/+x5cyLEIvUFFJ35J0AAvhvoj3Bcf2zBMvdpamCIbZnu5WMdEax+SSSKN3EsZJ7wQ4aUP/tIFobUr9ZE87gRQPaJ2rXTdZ41pcktQqhcjWXiK/+9VAq8qd6Qwqva3YlS5pgcPss+8M1QwyIhttftzmBTPVVAU7Uzgcp6dPChHMWQvWo0xjRQXFh7A/KCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- DM4PR11MB7206.namprd11.prod.outlook.com (2603:10b6:8:112::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7430.46; Fri, 12 Apr 2024 11:58:18 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af%5]) with mapi id 15.20.7472.025; Fri, 12 Apr 2024
- 11:58:18 +0000
-Date: Fri, 12 Apr 2024 19:57:50 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Ackerley Tng <ackerleytng@google.com>
-CC: <sagis@google.com>, <linux-kselftest@vger.kernel.org>,
-	<afranji@google.com>, <erdemaktas@google.com>, <isaku.yamahata@intel.com>,
-	<seanjc@google.com>, <pbonzini@redhat.com>, <shuah@kernel.org>,
-	<pgonda@google.com>, <haibo1.xu@intel.com>, <chao.p.peng@linux.intel.com>,
-	<vannapurve@google.com>, <runanwang@google.com>, <vipinsh@google.com>,
-	<jmattson@google.com>, <dmatlack@google.com>, <linux-kernel@vger.kernel.org>,
-	<kvm@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH v5 09/29] KVM: selftests: TDX: Add report_fatal_error
- test
-Message-ID: <ZhkhvtijbhxKKAEk@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <ZeHFlsrBKWR6bfRZ@yzhao56-desk.sh.intel.com>
- <diqzwmp3ji0r.fsf@ctop-sg.c.googlers.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <diqzwmp3ji0r.fsf@ctop-sg.c.googlers.com>
-X-ClientProxiedBy: SG2PR01CA0176.apcprd01.prod.exchangelabs.com
- (2603:1096:4:28::32) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E24B56473;
+	Fri, 12 Apr 2024 11:59:19 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DEBF55E48
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712923158; cv=none; b=Q8RH5bWafVejJ3r3hk+4yab0xGk8g8N9pAWWQZ8GUqaRJ9Rj6Kpmuxc+kF1gj9xHcGxb4JxmMS2X4zhNs0ea7EW95WrLu0BUq4TnxWqtyJyXigF0/iwtl+PYk5cDFPBGiEwFcO+Li7r6tmmziDSxNMwg/IsYxDi+YCP9xqZ2jbc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712923158; c=relaxed/simple;
+	bh=/sb+A9lK7Yo/5fBZfRv2ZdrJCofGb/FZmlFC/z/g59o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hSmIDYGsbGsH3R+2B/i7pd3eDGFso6F0/zsyrJuElsUixnbANK194+ejdE75mU3e7ylEXnpxVC+l5HJtanQx/kmakySKn4A0h7l+j0wF6feD2OOk5LuMGXhOqreg5Yhs3eWJPdVgZ92gtcPD1amNBztw9TlKoSE/cFesJuRowQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECFEE339;
+	Fri, 12 Apr 2024 04:59:44 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80C613F766;
+	Fri, 12 Apr 2024 04:59:13 -0700 (PDT)
+Message-ID: <a9934cfa-3c11-4c7c-b8aa-effaf015acbc@arm.com>
+Date: Fri, 12 Apr 2024 12:59:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|DM4PR11MB7206:EE_
-X-MS-Office365-Filtering-Correlation-Id: 103cef75-9643-494f-b476-08dc5ae7d7e2
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oMl7LQbGmm85ZeoK647Dh7giisOj/gcvtLRsDpbeOzveb6MzLdLckzOyI/1KYHLiRxGpWXDYbkohRzzQfBg1zvQYr0+/fdnB3hYRL9iiXzJ2qr3xekBul+dEzEHfjs6oCWUyeWg9Tu/G9DdwrC6iZ7Lfk8/R+XGYrywYvwIDS2n171/pEbtXkH35LcNfXSEqTOj57vcYHMhVi/P2t/rmdQpSK1MPteB8ZwWMLQ66D+cirnKZpWI+k+RG04m+Hvk5SSGXrv6MBhr8gmSnK5eFRGmWyHROQP/I8pzJfTnm77UOFDU0l6QDfw8bvdaI3XfWgWKRb3W36Zy3zdjruKRjv2ehx2Jif/sfokuXs3IDxyzw0Y+crEfi2JuolhjcvVlFWXVpSkvZ3niqLD3P6orE56zqGpg1WRfSUg5sglsrPi+85v+C1fxcq7vFypBOGCa/MOeNO4lJiTBIqWR5Ldj6UedMo7ryygJXqAEWNjf/ECtaSZF40G5LjnnugUptgsuDuC7pMQAozHRMZqAUWnEUUYx9qhG+jabtY99H5AVkSDQl7p7e4O0aU+J+XdUr4MdWe+hrAXnz6rW8zRVtyfE+P0zIXhZQTLzO0/Hb7UysV++WJEiAj9EVHdeZR133b5F7J3Oe3MgBoLOB+wMw79jgNBVKzdj7zFDaz1TVJ1GPueI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m1dKb71r9T9N1thuLe0qtByWU8hRYf8iU00IiSv+4RaFTmFstoBzqDKFcsY9?=
- =?us-ascii?Q?yaL8F9gYu89lAnrkNHeYr3xvprJW4y0xd1qYqRh4jJoCW1thOlhkSuVvmh3q?=
- =?us-ascii?Q?LlDbKnNZU13x2ljkH6FaHOjssq0lHWffdIrZGPcQ348Yv3XleUlDhmIov33m?=
- =?us-ascii?Q?XWGWQjYB4BrfPjfL/wABOUcliVGIliR2nKVppiWY2KSpH4CXiC7nuy/EpiWb?=
- =?us-ascii?Q?sqA6NU6EShOhWCTAANohVLdQnzIHtAEt0+1Rwo2gDvboHXbSiBcHB0IobIga?=
- =?us-ascii?Q?nYxbDp854g7YREvgV55nhGK4TW8G5kVZp1prLZkM3gJYUsozjQ1jxrcwOO4V?=
- =?us-ascii?Q?W4AAskLKEO9sHbGnS3Ox4GlFWaZDDoCP6qsugbAUPgt65L9kCqiUgo4l0VXW?=
- =?us-ascii?Q?i0y47bnUJ030h0erw875SmW7AbdRt5M6pTP2XbkjE3KJbl8n+r7zVl6xkJnS?=
- =?us-ascii?Q?OrbbSx9n/WpiUrEhDGOIO9FZ801Sj96UYZRK+NVT4+kzsNATg2KWEma7tOsX?=
- =?us-ascii?Q?BIQl6bV9ddPxSlnXhmYIszf4JFoukpCsaYPSuvoj3QnWJs7mRrJzuptP1jsT?=
- =?us-ascii?Q?hoMFZJVJAX9RAeVrNg1hjoxVeJyhxzZyPtip2f+aDm8gXc+ITEsjN4S5gRvC?=
- =?us-ascii?Q?L0E9tEKbjfEywu52eaLSkaPVoGS8+A4AmYj8odeM/R0ZzHo4Rd9eCuJHNqEg?=
- =?us-ascii?Q?n6cWuU1d1xph3nq3kVAKsp28HEzG+/Mqgowo+WDheNsEKwWHmlzfzjFG/w3s?=
- =?us-ascii?Q?y2ChPMoQD9NMxg++IrOldz6SKxJogZM19cFeQp6epEa7uyw8p4V4STkMyyfL?=
- =?us-ascii?Q?jjIPOwmLl7QrrDIB0TteI0yXdqv8wDSMh/pknrSl7ruALgZlUz/FuLU8FYft?=
- =?us-ascii?Q?HqYOYIjk80s7G3zBky9kZJkf4BNux85XG+cxgSMfoITs/+UG9YqLnTOjudpT?=
- =?us-ascii?Q?oEGf4U+q3UhHU2ubpIpUmWRrXisjEjUKoAIbRQlS9AbHQNove0z+gnHcnyA6?=
- =?us-ascii?Q?WlD0dEYHB3o6+o6zZRsEivbIB+SSHTVUISKAhgHgRvYQx31vLMpTf9P4mWs8?=
- =?us-ascii?Q?buEWHJAGAovMAor9E/qSYBEuYMsw3GcgKsLg6A8bqzTpsWQ263osgvNVmGqc?=
- =?us-ascii?Q?GYYrwK3HkSWjAjhjdhRQT8gcQZxXXLYsDugjcWBYtd489JhKWgqsDW7j4Wo/?=
- =?us-ascii?Q?LUkQ5XtUIO9FpAA1D1MUZP3DMQ7q1DLilebO+hbeSln3fI5dRe9ie6YbUV7I?=
- =?us-ascii?Q?QPlw0gAm5xKvyCf7R2jY1f5kKqS/fNgPaoHOvYzc/ZH53j4LJKBCOeGrclaW?=
- =?us-ascii?Q?1kVOtcizvpvebKFSEuwYH2ImCn+VTcwHCmqTgeKAVTTEpshzHzXqgy86NdaC?=
- =?us-ascii?Q?SoTWZr9+IwQytUmZY5u5YNiHdCktmsAgZJwCL3UJLLQ9mczgMowgqPlr0Jon?=
- =?us-ascii?Q?WOEPrI1rThizOZS3ywEy3Hfzop9WJjLV93XLZvXg98MYGqbKD85uugcYEJAO?=
- =?us-ascii?Q?g+n4fLYEOTY4V3Ua4lSutZCtV3kxdsL4sEpTzTqniuBCq5KGRkQuVLj98L5L?=
- =?us-ascii?Q?Hdlw30Rcu8aKuarF5Z9KnWNp8sEepCU9PmI43eVX?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 103cef75-9643-494f-b476-08dc5ae7d7e2
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 11:58:18.7060
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nj2/AhWtZjnMeT2/lv7RmYW9immonWG4t/MCGnZwyXP6JOso/9WLXgdMpwg0khg0nCkPmdx6qIWInSITG0vKpw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7206
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 1/4] mm: add per-order mTHP anon_fault_alloc and
+ anon_fault_fallback counters
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: cerasuolodomenico@gmail.com, chrisl@kernel.org, david@redhat.com,
+ kasong@tencent.com, linux-kernel@vger.kernel.org, peterx@redhat.com,
+ surenb@google.com, v-songbaohua@oppo.com, willy@infradead.org,
+ yosryahmed@google.com, yuzhao@google.com, corbet@lwn.net
+References: <20240412114858.407208-1-21cnbao@gmail.com>
+ <20240412114858.407208-2-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240412114858.407208-2-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 12, 2024 at 04:56:36AM +0000, Ackerley Tng wrote:
-> Yan Zhao <yan.y.zhao@intel.com> writes:
+On 12/04/2024 12:48, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
 > 
-> > ...
-> >> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> >> index b570b6d978ff..6d69921136bd 100644
-> >> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> >> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
-> >> @@ -49,4 +49,23 @@ bool is_tdx_enabled(void);
-> >>   */
-> >>  void tdx_test_success(void);
-> >>  
-> >> +/**
-> >> + * Report an error with @error_code to userspace.
-> >> + *
-> >> + * Return value from tdg_vp_vmcall_report_fatal_error is ignored since execution
-> >> + * is not expected to continue beyond this point.
-> >> + */
-> >> +void tdx_test_fatal(uint64_t error_code);
-> >> +
-> >> +/**
-> >> + * Report an error with @error_code to userspace.
-> >> + *
-> >> + * @data_gpa may point to an optional shared guest memory holding the error
-> >> + * string.
-> >> + *
-> >> + * Return value from tdg_vp_vmcall_report_fatal_error is ignored since execution
-> >> + * is not expected to continue beyond this point.
-> >> + */
-> >> +void tdx_test_fatal_with_data(uint64_t error_code, uint64_t data_gpa);
-> > I found nowhere is using "data_gpa" as a gpa, even in patch 23, it's
-> > usage is to pass a line number ("tdx_test_fatal_with_data(ret, __LINE__)").
-> >
-> >
+> Profiling a system blindly with mTHP has become challenging due to the
+> lack of visibility into its operations.  Presenting the success rate of
+> mTHP allocations appears to be pressing need.
 > 
-> This function tdx_test_fatal_with_data() is meant to provide a generic
-> interface for TDX tests to use TDG.VP.VMCALL<ReportFatalError>, and so
-> the parameters of tdx_test_fatal_with_data() generically allow error_code and
-> data_gpa to be specified.
+> Recently, I've been experiencing significant difficulty debugging
+> performance improvements and regressions without these figures.  It's
+> crucial for us to understand the true effectiveness of mTHP in real-world
+> scenarios, especially in systems with fragmented memory.
 > 
-> The tests just happen to use the data_gpa parameter to pass __LINE__ to
-> the host VMM, but other tests in future that use the
-> tdx_test_fatal_with_data() function in the TDX testing library could
-> actually pass a GPA through using data_gpa.
+> This patch establishes the framework for per-order mTHP
+> counters. It begins by introducing the anon_fault_alloc and
+> anon_fault_fallback counters. Additionally, to maintain consistency
+> with thp_fault_fallback_charge in /proc/vmstat, this patch also tracks
+> anon_fault_fallback_charge when mem_cgroup_charge fails for mTHP.
+> Incorporating additional counters should now be straightforward as well.
 > 
-> >>  #endif // SELFTEST_TDX_TEST_UTIL_H
-> >> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> >> index c2414523487a..b854c3aa34ff 100644
-> >> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> >> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> >> @@ -1,8 +1,31 @@
-> >>  // SPDX-License-Identifier: GPL-2.0-only
-> >>  
-> >> +#include <string.h>
-> >> +
-> >>  #include "tdx/tdcall.h"
-> >>  #include "tdx/tdx.h"
-> >>  
-> >> +void handle_userspace_tdg_vp_vmcall_exit(struct kvm_vcpu *vcpu)
-> >> +{
-> >> +	struct kvm_tdx_vmcall *vmcall_info = &vcpu->run->tdx.u.vmcall;
-> >> +	uint64_t vmcall_subfunction = vmcall_info->subfunction;
-> >> +
-> >> +	switch (vmcall_subfunction) {
-> >> +	case TDG_VP_VMCALL_REPORT_FATAL_ERROR:
-> >> +		vcpu->run->exit_reason = KVM_EXIT_SYSTEM_EVENT;
-> >> +		vcpu->run->system_event.ndata = 3;
-> >> +		vcpu->run->system_event.data[0] =
-> >> +			TDG_VP_VMCALL_REPORT_FATAL_ERROR;
-> >> +		vcpu->run->system_event.data[1] = vmcall_info->in_r12;
-> >> +		vcpu->run->system_event.data[2] = vmcall_info->in_r13;
-> >> +		vmcall_info->status_code = 0;
-> >> +		break;
-> >> +	default:
-> >> +		TEST_FAIL("TD VMCALL subfunction %lu is unsupported.\n",
-> >> +			  vmcall_subfunction);
-> >> +	}
-> >> +}
-> >> +
-> >>  uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
-> >>  				      uint64_t write, uint64_t *data)
-> >>  {
-> >> @@ -25,3 +48,19 @@ uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
-> >>  
-> >>  	return ret;
-> >>  }
-> >> +
-> >> +void tdg_vp_vmcall_report_fatal_error(uint64_t error_code, uint64_t data_gpa)
-> >> +{
-> >> +	struct tdx_hypercall_args args;
-> >> +
-> >> +	memset(&args, 0, sizeof(struct tdx_hypercall_args));
-> >> +
-> >> +	if (data_gpa)
-> >> +		error_code |= 0x8000000000000000;
-> >> 
-> > So, why this error_code needs to set bit 63?
-> >
-> >
-> 
-> The Intel GHCI Spec says in R12, bit 63 is set if the GPA is valid. As a
-But above "__LINE__" is obviously not a valid GPA.
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> Cc: Chris Li <chrisl@kernel.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> Cc: Kairui Song <kasong@tencent.com>
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Yosry Ahmed <yosryahmed@google.com>
+> Cc: Yu Zhao <yuzhao@google.com>
 
-Do you think it's better to check "data_gpa" is with shared bit on and
-aligned in 4K before setting bit 63?
+LGTM!
 
-> generic TDX testing library function, this check allows the user to use
-> tdg_vp_vmcall_report_fatal_error() with error_code and data_gpa and not
-> worry about setting bit 63 before calling
-> tdg_vp_vmcall_report_fatal_error(), though if the user set bit 63 before
-> that, there is no issue.
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+
+> ---
+>  include/linux/huge_mm.h | 21 +++++++++++++++++
+>  mm/huge_memory.c        | 52 +++++++++++++++++++++++++++++++++++++++++
+>  mm/memory.c             |  5 ++++
+>  3 files changed, 78 insertions(+)
 > 
-> >> +	args.r11 = TDG_VP_VMCALL_REPORT_FATAL_ERROR;
-> >> +	args.r12 = error_code;
-> >> +	args.r13 = data_gpa;
-> >> +
-> >> +	__tdx_hypercall(&args, 0);
-> >> +}
-> 
-> >> <snip>
-> 
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index e896ca4760f6..d4fdb2641070 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -264,6 +264,27 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
+>  					  enforce_sysfs, orders);
+>  }
+>  
+> +enum mthp_stat_item {
+> +	MTHP_STAT_ANON_FAULT_ALLOC,
+> +	MTHP_STAT_ANON_FAULT_FALLBACK,
+> +	MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
+> +	__MTHP_STAT_COUNT
+> +};
+> +
+> +struct mthp_stat {
+> +	unsigned long stats[ilog2(MAX_PTRS_PER_PTE) + 1][__MTHP_STAT_COUNT];
+> +};
+> +
+> +DECLARE_PER_CPU(struct mthp_stat, mthp_stats);
+> +
+> +static inline void count_mthp_stat(int order, enum mthp_stat_item item)
+> +{
+> +	if (order <= 0 || order > PMD_ORDER)
+> +		return;
+> +
+> +	this_cpu_inc(mthp_stats.stats[order][item]);
+> +}
+> +
+>  #define transparent_hugepage_use_zero_page()				\
+>  	(transparent_hugepage_flags &					\
+>  	 (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index dc30139590e6..dfc38cc83a04 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -526,6 +526,48 @@ static const struct kobj_type thpsize_ktype = {
+>  	.sysfs_ops = &kobj_sysfs_ops,
+>  };
+>  
+> +DEFINE_PER_CPU(struct mthp_stat, mthp_stats) = {{{0}}};
+> +
+> +static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
+> +{
+> +	unsigned long sum = 0;
+> +	int cpu;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		struct mthp_stat *this = &per_cpu(mthp_stats, cpu);
+> +
+> +		sum += this->stats[order][item];
+> +	}
+> +
+> +	return sum;
+> +}
+> +
+> +#define DEFINE_MTHP_STAT_ATTR(_name, _index)				\
+> +static ssize_t _name##_show(struct kobject *kobj,			\
+> +			struct kobj_attribute *attr, char *buf)		\
+> +{									\
+> +	int order = to_thpsize(kobj)->order;				\
+> +									\
+> +	return sysfs_emit(buf, "%lu\n", sum_mthp_stat(order, _index));	\
+> +}									\
+> +static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+> +
+> +DEFINE_MTHP_STAT_ATTR(anon_fault_alloc, MTHP_STAT_ANON_FAULT_ALLOC);
+> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STAT_ANON_FAULT_FALLBACK);
+> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
+> +
+> +static struct attribute *stats_attrs[] = {
+> +	&anon_fault_alloc_attr.attr,
+> +	&anon_fault_fallback_attr.attr,
+> +	&anon_fault_fallback_charge_attr.attr,
+> +	NULL,
+> +};
+> +
+> +static struct attribute_group stats_attr_group = {
+> +	.name = "stats",
+> +	.attrs = stats_attrs,
+> +};
+> +
+>  static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>  {
+>  	unsigned long size = (PAGE_SIZE << order) / SZ_1K;
+> @@ -549,6 +591,12 @@ static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>  		return ERR_PTR(ret);
+>  	}
+>  
+> +	ret = sysfs_create_group(&thpsize->kobj, &stats_attr_group);
+> +	if (ret) {
+> +		kobject_put(&thpsize->kobj);
+> +		return ERR_PTR(ret);
+> +	}
+> +
+>  	thpsize->order = order;
+>  	return thpsize;
+>  }
+> @@ -880,6 +928,8 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+>  		folio_put(folio);
+>  		count_vm_event(THP_FAULT_FALLBACK);
+>  		count_vm_event(THP_FAULT_FALLBACK_CHARGE);
+> +		count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_FALLBACK);
+> +		count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
+>  		return VM_FAULT_FALLBACK;
+>  	}
+>  	folio_throttle_swaprate(folio, gfp);
+> @@ -929,6 +979,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+>  		mm_inc_nr_ptes(vma->vm_mm);
+>  		spin_unlock(vmf->ptl);
+>  		count_vm_event(THP_FAULT_ALLOC);
+> +		count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_ALLOC);
+>  		count_memcg_event_mm(vma->vm_mm, THP_FAULT_ALLOC);
+>  	}
+>  
+> @@ -1050,6 +1101,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
+>  	folio = vma_alloc_folio(gfp, HPAGE_PMD_ORDER, vma, haddr, true);
+>  	if (unlikely(!folio)) {
+>  		count_vm_event(THP_FAULT_FALLBACK);
+> +		count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_FALLBACK);
+>  		return VM_FAULT_FALLBACK;
+>  	}
+>  	return __do_huge_pmd_anonymous_page(vmf, &folio->page, gfp);
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 649a547fe8e3..f31da2de19c6 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4368,6 +4368,7 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>  		folio = vma_alloc_folio(gfp, order, vma, addr, true);
+>  		if (folio) {
+>  			if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
+> +				count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
+>  				folio_put(folio);
+>  				goto next;
+>  			}
+> @@ -4376,6 +4377,7 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>  			return folio;
+>  		}
+>  next:
+> +		count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK);
+>  		order = next_order(&orders, order);
+>  	}
+>  
+> @@ -4485,6 +4487,9 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  
+>  	folio_ref_add(folio, nr_pages - 1);
+>  	add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +	count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_FAULT_ALLOC);
+> +#endif
+>  	folio_add_new_anon_rmap(folio, vma, addr);
+>  	folio_add_lru_vma(folio, vma);
+>  setpte:
+
 
