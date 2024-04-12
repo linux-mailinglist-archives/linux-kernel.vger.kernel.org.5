@@ -1,53 +1,76 @@
-Return-Path: <linux-kernel+bounces-142439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B5458A2B93
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:50:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D446F8A2B97
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:51:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 377F72825AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:50:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AE011F22309
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547C2535C9;
-	Fri, 12 Apr 2024 09:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E70F52F9B;
+	Fri, 12 Apr 2024 09:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qNeCk35+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="iwRtVJQh";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="eLJcdaXt"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F8F524B8;
-	Fri, 12 Apr 2024 09:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FF45102F;
+	Fri, 12 Apr 2024 09:50:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712915391; cv=none; b=nxCtI0YOx3SmaEPpzDqAD8uocge+HYVpguCMlbdNMU+sCU3SScI/x5SvnTUSY0W+DUNe1lbea6ITin6BSAzimJbTG2yq5ZFdztKYsU1YKBb++L8HDMCNTjv0TRa0Xt24gBmj6SxVU6uHCToN8FqeE4HBwpPSPAJBNNXyC5IL7x4=
+	t=1712915456; cv=none; b=IL7N6AN268o/FwZffB3Jv+D7EPKvTPg4iP7h4GxrGh/8uj2CKMui+Ace9uAXJOhvBKiUvu/aTWLjl1sTCSAl/pHvCY7QH+u4rMeAdik+g5z4pvgvkmnsUPBUQaGfqmMCUGyZnZILLPvL/JfSiXjJ3g4Ns6L4a4VsPwn+YgROLtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712915391; c=relaxed/simple;
-	bh=6P8XYJG2gjvHIFspaQMqxg4nwxIZmt8EeJiCgo0GJSI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UMaPHpsQjpMpNDN/a3sTv+GyH5/y66kcXQmTCRh0yhtEqsyYSt03NW++gM09I8bFuIG4XlZ7PAAHf9Wn3rIBOCir0a4Ulb7aQlP/cpttzTxQD5NBrpUOLVL83rSBEtlLW9IEAt7gvAmAVLhgc4m7p0qvtgdZy9lqBgkq1TEStMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qNeCk35+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A996CC113CC;
-	Fri, 12 Apr 2024 09:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712915391;
-	bh=6P8XYJG2gjvHIFspaQMqxg4nwxIZmt8EeJiCgo0GJSI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=qNeCk35+z/bd9zlkuxcGeX3zlkJ+CuDUAeEfSHJuKUjZsObzQkJry2KmE+Yum6qFJ
-	 bH5KmxbcyNnyOiiZoXb26S6iRAon7YOJrhm3wrBWtmVqRxAwOHC3K1RCZBlzKtux7g
-	 odCYn7ULHZSfzMN2jKbuGtb7OmN7+Y8kHYNmx5p6COWQTARerA59yL+1Icr0A6Ua5M
-	 Trqj1p9L5kO9XMOQyODSwz4uYZh+kPH2OD37z4H7feunVpKItbCIvuh5+qZ77Uu2kG
-	 bGXDdN+S/shjmaHUID28/VlieUg6A6LwpBz86LKN2038WYvbef/yAhfjfRQOl5Trt6
-	 MnMD2rob/IVXw==
-From: Chao Yu <chao@kernel.org>
-To: Jan Kara <jack@suse.com>
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH] quota: fix to propagate error of mark_dquot_dirty() to caller
-Date: Fri, 12 Apr 2024 17:49:42 +0800
-Message-Id: <20240412094942.2131243-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712915456; c=relaxed/simple;
+	bh=1IgzUj1eTO/PMSNfq6ZmN/QoFcyQyezZTR1aBc3v9QI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OU10xsCfz7o8JNOMIhfbdoMDsKEP2q2fXHM4hHZEy4KlWzhs0X6PcEp7vKL/oMlrPc8bjelTtIm+KHGKQ9t9ZEH6PQEypBuwkgac7Pz+Yx9140v9pdRBtsF/+xnhFSmnfwebCTupZr2ZqQkUUmP5DkS5i0NeE65Tzfa9rD4MuzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=iwRtVJQh; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=eLJcdaXt reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1712915452; x=1744451452;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QgmGdOEg7DQ1tbApfsUFEBLKwsTG/q51J960XOq9RNs=;
+  b=iwRtVJQhcCSjgOFKCaIKKXQwhAZGjglnNnytQyCCJyl5m/H2guHT0xSH
+   HBC4QdhhakSourEZaNKxDry8aNMmG7sA6jz0Sw8lWztHXJRp+MF0zX7lf
+   KGlmHrTD5cErln5KBH3jGss8H6Ailpao4fHM6t6HKp94EIu27fg6MeW9A
+   Qd8v7IWWyrlz+2d18CD06Z9tuBWwLo3o6Et1+Hqhs0yA7ePU8Muh9iMdt
+   udmrquofLK543ui9WLehQFY63as95/5tA+IyfHszzDNfsaxrvM5ipgoAZ
+   KEpajY2hJyPgGg9ZJs3KJRk6bHcT+1Uls4ItgNDzdKC/RNNuViH7cPsQ3
+   g==;
+X-IronPort-AV: E=Sophos;i="6.07,195,1708383600"; 
+   d="scan'208";a="36387222"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 12 Apr 2024 11:50:43 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 51F3416F476;
+	Fri, 12 Apr 2024 11:50:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1712915439; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=QgmGdOEg7DQ1tbApfsUFEBLKwsTG/q51J960XOq9RNs=;
+	b=eLJcdaXtCcPDUsh17wT3L4DWPuDzstek0kkdq7E5sWLD6P4yD0hbvexOeCkhqKsFnWXTtz
+	mID5ZL1IO42zIhi4YWfIDeZ4zVlT40FCENCWnrr6i2L5t0mQcVjnnyyTHDIx984ef5isKU
+	JyoXnBh3vGJMiMNV7GPsH/oZcNMFbpv0S2ClUUnIov9nGRauiJzb5Wbn0gUmBJnK3b/+N4
+	3at3Lhb9HKEq9Q4UVCZ16vlBR5bplj5nMNqBkZh8biiGgzFrqcEhvGX2UuhxQdxAeVqzsC
+	gZD9XFXaYk7BcyUfWdcdG8i7PQ9zZhR3lSmMbPODXKS77/sR7lVyfpwoePPGsQ==
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Jonathan Corbet <corbet@lwn.net>
+Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	linux-pci@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] Documentation: PCI: pci-endpoint: Fix EPF ops list
+Date: Fri, 12 Apr 2024 11:50:31 +0200
+Message-Id: <20240412095031.256163-1-alexander.stein@ew.tq-group.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,89 +78,39 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-in order to let caller be aware of failure of mark_dquot_dirty().
+With commit 5779dd0a7dbd7 ("PCI: endpoint: Use notification chain
+mechanism to notify EPC events to EPF") the linkup callback has been
+removed and replaced by EPC event notifications.
 
-Signed-off-by: Chao Yu <chao@kernel.org>
+With commit 256ae475201b1 ("PCI: endpoint: Add pci_epf_ops to expose
+function-specific attrs") a new (optional) add_cfs callback was added.
+Update documentation accordingly.
+
+Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 ---
- fs/quota/dquot.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+Changes in v2:
+* Separated paragraphs by blank line
 
-diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-index dacbee455c03..b2a109d8b198 100644
---- a/fs/quota/dquot.c
-+++ b/fs/quota/dquot.c
-@@ -1737,7 +1737,7 @@ int __dquot_alloc_space(struct inode *inode, qsize_t number, int flags)
+ Documentation/PCI/endpoint/pci-endpoint.rst | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Documentation/PCI/endpoint/pci-endpoint.rst b/Documentation/PCI/endpoint/pci-endpoint.rst
+index 4f5622a65555..3961ff4e5beb 100644
+--- a/Documentation/PCI/endpoint/pci-endpoint.rst
++++ b/Documentation/PCI/endpoint/pci-endpoint.rst
+@@ -172,8 +172,7 @@ by the PCI endpoint function driver.
+ 	 * bind: ops to perform when a EPC device has been bound to EPF device
+ 	 * unbind: ops to perform when a binding has been lost between a EPC
+ 	   device and EPF device
+-	 * linkup: ops to perform when the EPC device has established a
+-	   connection with a host system
++	 * add_cfs: optional ops to create function specific config attributes
  
- 	if (reserve)
- 		goto out_flush_warn;
--	mark_all_dquot_dirty(dquots);
-+	ret = mark_all_dquot_dirty(dquots);
- out_flush_warn:
- 	srcu_read_unlock(&dquot_srcu, index);
- 	flush_warnings(warn);
-@@ -1786,7 +1786,7 @@ int dquot_alloc_inode(struct inode *inode)
- warn_put_all:
- 	spin_unlock(&inode->i_lock);
- 	if (ret == 0)
--		mark_all_dquot_dirty(dquots);
-+		ret = mark_all_dquot_dirty(dquots);
- 	srcu_read_unlock(&dquot_srcu, index);
- 	flush_warnings(warn);
- 	return ret;
-@@ -1990,7 +1990,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
- 	qsize_t inode_usage = 1;
- 	struct dquot __rcu **dquots;
- 	struct dquot *transfer_from[MAXQUOTAS] = {};
--	int cnt, index, ret = 0;
-+	int cnt, index, ret = 0, err;
- 	char is_valid[MAXQUOTAS] = {};
- 	struct dquot_warn warn_to[MAXQUOTAS];
- 	struct dquot_warn warn_from_inodes[MAXQUOTAS];
-@@ -2087,8 +2087,12 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
- 	 * mark_all_dquot_dirty().
- 	 */
- 	index = srcu_read_lock(&dquot_srcu);
--	mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
--	mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
-+	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
-+	if (err < 0)
-+		ret = err;
-+	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
-+	if (err < 0)
-+		ret = err;
- 	srcu_read_unlock(&dquot_srcu, index);
- 
- 	flush_warnings(warn_to);
-@@ -2098,7 +2102,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
- 	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
- 		if (is_valid[cnt])
- 			transfer_to[cnt] = transfer_from[cnt];
--	return 0;
-+	return ret;
- over_quota:
- 	/* Back out changes we already did */
- 	for (cnt--; cnt >= 0; cnt--) {
-@@ -2726,6 +2730,7 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
- 	struct mem_dqblk *dm = &dquot->dq_dqb;
- 	int check_blim = 0, check_ilim = 0;
- 	struct mem_dqinfo *dqi = &sb_dqopt(dquot->dq_sb)->info[dquot->dq_id.type];
-+	int ret;
- 
- 	if (di->d_fieldmask & ~VFS_QC_MASK)
- 		return -EINVAL;
-@@ -2807,7 +2812,9 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
- 	else
- 		set_bit(DQ_FAKE_B, &dquot->dq_flags);
- 	spin_unlock(&dquot->dq_dqb_lock);
--	mark_dquot_dirty(dquot);
-+	ret = mark_dquot_dirty(dquot);
-+	if (ret < 0)
-+		return ret;
- 
- 	return 0;
- }
+   The PCI Function driver can then register the PCI EPF driver by using
+   pci_epf_register_driver().
 -- 
-2.40.1
+2.34.1
 
 
