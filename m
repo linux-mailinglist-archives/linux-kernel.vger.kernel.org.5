@@ -1,115 +1,128 @@
-Return-Path: <linux-kernel+bounces-142951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D47E8A3271
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:28:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ACFA8A3276
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09089285B67
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:28:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3501B284DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F3A1147C9D;
-	Fri, 12 Apr 2024 15:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6D21482F3;
+	Fri, 12 Apr 2024 15:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Brtp5Tzl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kbk2UBoi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8319B144D34;
-	Fri, 12 Apr 2024 15:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CF55E22C;
+	Fri, 12 Apr 2024 15:29:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712935706; cv=none; b=V5tBrGthsBtIELZWozhu9ipPMxlh+Y7a4RLWwJvAhVFjpGvo18PB4/0h57eYRvx7Xh5aywEUbK5rxhX5ENRNrwJUkMcphlU0180yuCkZjiSVZLFuWwkLiokDwilwM4z3XQbiBg0PpJeqEx48mH0baBrs6YlQyYWF8aY4h7/ppus=
+	t=1712935794; cv=none; b=jYkTVRzJyKHnV3Nt7Y7kOd+Wijv/4EionQoy/oiZKz5b/8H2tE/2D8TbVLByR//QcatDIT2jsYF5Se+D8JQ4p2gMYz+Eb42MGdBz1WYeLRpkmVFsDwFTgvc0jac/llFm6zefpYZDRZmaz0mSJjRmWyIh6O2J92byKxqUEDppP+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712935706; c=relaxed/simple;
-	bh=0GPAx3B+uC1u8pMMt3HI7wNGi3jM/KEZtOQcPni5jHg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l2P7jtH380wr7AD0Em1azfGRrpmFcI325Q1bvYdRI9bhI+yYbu5FLrXlDMMv50uPC2VrD/15jeoeN/G4CeIANvBW+M7fngqMUXGOygI90Yjarrs8kLF0FrB7ZyFnx5VXjtvE1WsWNxX/Po2wJ8fPe5kTNOEsVxfcHv3r5PXxdVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Brtp5Tzl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73541C113CC;
-	Fri, 12 Apr 2024 15:28:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712935706;
-	bh=0GPAx3B+uC1u8pMMt3HI7wNGi3jM/KEZtOQcPni5jHg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Brtp5TzlhQO8e0+0nt8tDnuEtZn99kmCrkGK4SNeQPwAJzYxKEJXxbVkzvO2RVdYd
-	 3HsUkNo7VmZTutSu7I0feRtP7KJwpOjAZN5FPbDCrGz7nCnLzdCXkp25w0CpKEhzeM
-	 PqQb97nVIYnvwxUSWprJoFJiHNomoYl/4WtWw7RA=
-Date: Fri, 12 Apr 2024 17:28:20 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Parker Newman <parker@finest.io>
-Cc: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-serial <linux-serial@vger.kernel.org>,
-	Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v2 6/7] serial: exar: add CTI board and port setup
- functions
-Message-ID: <2024041248-enjoyable-barterer-4f01@gregkh>
-References: <cover.1712863999.git.pnewman@connecttech.com>
- <ca94454e54504c1621f17f5e3933cad299f61344.1712863999.git.pnewman@connecttech.com>
- <c73b4fc3-be87-6a6d-408e-634ba915f28e@linux.intel.com>
- <20240412111926.5b4c9953@SWDEV2.connecttech.local>
+	s=arc-20240116; t=1712935794; c=relaxed/simple;
+	bh=qGEPCejRwk/YkyvcWWuTjmptHtF6OxrrwTGW2ghtYFk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VsnOGSaXUHibHy09DRjLz05RSDtngN7rMqeJoh7kg7TXMArA2VpdFIt1exUrFoZht9UAT3I0exoMrfuUU4k+8i/UzwcsdUJnBoXxWALfusQrCXlHruvtF1c5Zid8dV+dR9Nl41C7UlPkyOGvhmaFc01dTrRrwwq5uikx4GPWWGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kbk2UBoi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F40DC113CC;
+	Fri, 12 Apr 2024 15:29:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712935794;
+	bh=qGEPCejRwk/YkyvcWWuTjmptHtF6OxrrwTGW2ghtYFk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Kbk2UBoiNO5BqUeKdQW1HzLxYNWWsIxd+wCKn/2g5nlpwVdyyozlrunEpSgsyjz7X
+	 NTgXtDpd3EQO6X6ywGiQF+2o9sMNjRHMl5kmPQYTeFCLKBIQKR9leagc5YG4p/oT7R
+	 XkCkROl/FtKFLP0GHYUGISaxKMvO/exUxP5/wHdXUgKmgkJRE9stQo1gK8GpqmPkDC
+	 bTX/xtF0KYB4HjX7OCh1HvelhN4J6mbYOMsKAPPg9WKa65LZqn/NpiThvy30ZIWDcD
+	 oQGWu60cQmP2okcq56Ou2O39pdL3+HSNSSGvuweCtc6/x0hCGQaJ6+2otowvEwktvn
+	 N753Meoj/bcsw==
+Message-ID: <bf069dc3-9216-4bbc-b0de-a5a3f2b1fc5d@kernel.org>
+Date: Fri, 12 Apr 2024 17:29:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240412111926.5b4c9953@SWDEV2.connecttech.local>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: i2c: qcom-cci: Document sc8280xp compatible
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, wsa@kernel.org,
+ Loic Poulain <loic.poulain@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240412-linux-next-24-04-11-sc8280xp-cci-compat-string-fix-v1-1-7dbafff36932@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240412-linux-next-24-04-11-sc8280xp-cci-compat-string-fix-v1-1-7dbafff36932@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 12, 2024 at 11:19:26AM -0400, Parker Newman wrote:
-> On Fri, 12 Apr 2024 13:57:01 +0300 (EEST)
-> Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
+On 12/04/2024 15:53, Bryan O'Donoghue wrote:
+> Add sc8280xp compatible consistent with recent CAMSS CCI interfaces.
 > 
-> > On Thu, 11 Apr 2024, parker@finest.io wrote:
-> > 
-> > > From: Parker Newman <pnewman@connecttech.com>
-> > > 
-> > > - Removed old port setup function and replaced with UART specific ones
-> > > - Added board setup functions for CTI boards
-> > > - Replaced CONNECT_DEVICE macro with CTI_EXAR_DEVICE and CTI_PCI_DEVICE  
-> > 
-> > In general, you should try to do refactoring in a preparatory patch (one 
-> > refactoring thing at a time) and add new stuff in another patch in 
-> > the series. I didn't go to figure out how much it applies to those three 
-> > items because you likely know the answer immediately.
-> > 
-> > > - Moved "generic rs485" support up in the file  
-> > 
-> > Please do this in a separate patch.
-> > 
+> sc8280xp has the following clock list and so requires its own compat
+> string and sc8280xp specific clock definition in the yaml.
 > 
-> Will do.
+> - const: camnoc_axi
+> - const: slow_ahb_src
+> - const: cpas_ahb
+> - const: cci
 > 
-> > 
-> > Another general level problem with your series is that it adds functions 
-> > x, y, etc. without users, whereas the expected way of doing things would 
-> > be to add the functions in the change they are getting used so it's easier 
-> > to follow what's going on.
-> > 
-> > I believe if you separate the refactoring & moving code around into own 
-> > changes (no functional change type patches), the new stuff is much 
-> > smaller so there is no need to split that illogically into incomplete 
-> > fragments in some patches.
-> > 
-> > --
-> >  i.
-> > 
-> 
-> Thanks for the feedback, I am new to the mailing lists and am trying to balance
-> what you mention above with not having giant patches. 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
 
-It's a fine line, and takes a while to learn, but as a first cut, this
-was pretty good, I didn't have any major problems with the structure of
-it, so nice work.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-thanks,
+Best regards,
+Krzysztof
 
-greg k-h
 
