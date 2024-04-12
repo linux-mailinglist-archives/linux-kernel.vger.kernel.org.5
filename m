@@ -1,185 +1,116 @@
-Return-Path: <linux-kernel+bounces-143398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27AE28A381C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:57:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4D468A381D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:58:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AD6C1C22719
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:57:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2D6C1C2270C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9714E152196;
-	Fri, 12 Apr 2024 21:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 630F7152181;
+	Fri, 12 Apr 2024 21:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="fidIA4hg"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="Pf7V8BTo"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64804152180
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 21:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5439E14F122
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 21:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712959013; cv=none; b=SI2xKjk0g4RCtMxlHteWwsiFAJyWrQYBNaAX7JOR5E2u9IL8Q22rfUTU/5pAdXW3gUwReHLl3Xmlp5Llt15cwTVxzNid0/2ElSUs3rVfZMnFr6i/sqRoAcvpaqlpAwdscldYAddq2CQVxSwcLemdHrSswUasNec4BP0TPSOKGUs=
+	t=1712959121; cv=none; b=Bs2+2XXsQ8ctsNj9U77+Yq0qkvKE1/B5GIi9d5LGq+zJqiUAjfdS4IbusDyL7k7JjMHvvgwwWWMbMwIOuyXUMuJy90CCZ/209l4xy+xLjtlGIzBUqj+V9mvvBxvXjFIc6NwnirSum51PryBbVTsP6hlqZRlLVs7wMJZDdIT97eM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712959013; c=relaxed/simple;
-	bh=1PaWGfxyrHB5QHCFj3ZBI3SC8je2iOSCNdYW+yj2zZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lRR3nPnkmq+6hk9MReS94oysuzdNIHGqDvckpSbifXEr3gNytFVw86SjLyGj3vNyiPltCUoGuvhj1WTNGbIXBmWkJOzXf6P26vwYTCYz4FW8RpqWfpQrEm/mjUAHP6EMGuDZmJTvJkYYl9gfCbyh78F+SGXgo+PbhDUG4zP7oMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=fidIA4hg; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e50a04c317so8247495ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:56:52 -0700 (PDT)
+	s=arc-20240116; t=1712959121; c=relaxed/simple;
+	bh=sUrCeSRuN1AgHGz+TliAi2YSUcHKJxlopXa8Nm66Vxk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=UHn8YkSRLCcbqcOKuLVc8K2FRVgVLFlRcn5QfRhrEm7Y65PI6WjcBA8GXT4wfF5IVgsSvNqD6K8pqyTNECBY55viENfDLHrLX61juqzR3/oDnvBrQ94gPbI++7p27wFNn6O6O/ZCp5Uww/wPf9InQ/9IWiKJ7kFdzmk4/hpAIz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=Pf7V8BTo; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41551639550so9163205e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:58:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712959012; x=1713563812; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KaHJoFfHeKcbZbr8DZBqF2w1WE3ebjk/glljyT7W9ZI=;
-        b=fidIA4hgMjYhSe/iokhz19RcljwGVludiAbQOtT/mqtLkfFJodHOeqLL4bG9FV1bKQ
-         X/j4onsaejAYs3iXIs9uz25e2mYJ1fs4kNEmLSYFck06h0dM9o8dXqFzCQ/T+TnMcenN
-         a+UESJqJM3K4Sudn3WsAgFEy9UudSyCCg4pE5vUAgA6GVeAkfj366YyRAH8Y5um0Usvb
-         eoOD3aawPKyRzOMVXI9/b/8ZdrGDrnjzMJq5CySWWx3fSm3ApumvMVIdjjFTxooJ6gPY
-         L0rjYklLLPmoCzVbfqCARJ6q7aOTRnpIMgEgojA3es0nLHwRUVCUE/kARg+U8dGN1TJE
-         +lqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712959012; x=1713563812;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712959119; x=1713563919; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KaHJoFfHeKcbZbr8DZBqF2w1WE3ebjk/glljyT7W9ZI=;
-        b=D8XrTAJaXk75ScxS71YQTIJGmMsTl/aqihIgvVoPH27WNMq4pNVDg29ltmWQvqv0n9
-         gsQ9LfWfvnFFIvMstJdQQ36T5K3FMQFM7u1cQJtStgPa49DR67yOE90pLRruJ/zo2YGS
-         4JloraeIFaAX5cj94VZLLWUSypfIemenvgNbfW/nItTDiyms9MrgC/egKBZBD8wlExqu
-         b1/5wljbmRutT/ty2eyh62GsXxmYLWjwwNh2rqQXP6/n07GNtkRLBlTcsbnkytTSNhkh
-         mtSI9xm6xvsrAn5wTeDRP5hin2DXhzYxgeIim0anLhdaP8yrv8NxiCSSmbm0lsy6TgD5
-         tS/A==
-X-Forwarded-Encrypted: i=1; AJvYcCX+ON1DQw1u3NS7UC9YqWaqsluTTQhd9sfE1bKTohVpHgr6aEFNxlbkJ35AE08KUmvbON1F7uyLq3PfcygWbcNZJZ2Yblr5v6iviqAB
-X-Gm-Message-State: AOJu0YyARN1f47egTsh297oobWuv8AmInddBla442B6rKAABV2cb+ZTk
-	1qXdN5NPFuodOHIgHj16Nn0dn8rfPs7XIS82Sf5T0FAz//x5JPwWJJcOrZ6VR6g=
-X-Google-Smtp-Source: AGHT+IEWqFfAYkiXilmnZ21u0Vqs/Bc8kyXEc8OwbOgXHViFBz7n/2ViIbfUfkCfp7Uh0oJ1KjxbyQ==
-X-Received: by 2002:a17:903:250:b0:1e4:b1ea:23ef with SMTP id j16-20020a170903025000b001e4b1ea23efmr4487004plh.49.1712959011683;
-        Fri, 12 Apr 2024 14:56:51 -0700 (PDT)
-Received: from ghost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id o16-20020a170902d4d000b001e088a9e2bcsm3463749plg.292.2024.04.12.14.56.50
+        bh=RJ32s1BONnzC61piCM2zghhCEX6pmq6Ffv/Ga55RjGY=;
+        b=Pf7V8BToJVeLUrPTU9/1HMwPQkwM5kZZifP5cHwAmVrD9/VHlDUx9mbtja0LepHfmg
+         l87PRM7r5UptdxKWu01zSmIINpMl3W9YKB8xU4VqzOwwACwfOSwVX5vXlywET91VQQ7/
+         SfRk+Se0hF3VgClO7rpi/L9/+4A7bhBOX1yGWBPgjV/ZclozBlCEP0THweS1Tv4gHWY2
+         zL64A9gFqACqrnBCks5r9bFtgwfvZCyhup+/8kfVt35SmbkjVvQe6e8uMmF0A6piwKLD
+         z5KeCmhr9+sIbXk73mpb5/Wq3NvQmOknmVE7a7UHMXkbG2JJ8Eww5eEjjNC29pFij6Y+
+         oFJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712959119; x=1713563919;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RJ32s1BONnzC61piCM2zghhCEX6pmq6Ffv/Ga55RjGY=;
+        b=aBeZwdL/UrraQOiK5NWWvtZxvIHZuSx5QqHMbudW6vpXp+nfelMb7GpFCAhb0Yz2hk
+         t4ujAUcCQI+WLSZNe288hVBCXNBdeOd8jgPaDK/6vqtaMndM//p+oTI7VKnYHHciVQrY
+         W7zaA08cqMbly3nnsp/+/CeoR7p/Wrum/jxP758ybcZ2Unpn1U9sPhWrwHTZoQxrnw1F
+         wV6YQplGEgNADU6vEc2C2QXWxMQj95tuRcNNlUQap1kK98U0srxQel6iuWgBcQI/m9Ax
+         JcyXqdAWzQyK2ehfAGFZRlZbT3J1ql4+7TqGl8HnetZK2N+0F/LQct1BDRCB1RPN8mmi
+         6EEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWbgDgUrq926eo4jVU4i0p5xdgjX/5e4CJH4mBbv7Oy9TxBmi89rK5z79jSLBQhDAkgeeVCxr43WILRA/DW+wk3CUlzql1Km1DpOr0+
+X-Gm-Message-State: AOJu0Yw8eqZCLYkoscXR+0eqboFJdquRbLKFki6ektMqHR0iv5dhfV8M
+	hoRBkXmLbU7c7txX0xGzUEL8aky/TGBUeJsUPYpSup9QDODDSeNqHfT6dBGnVvg=
+X-Google-Smtp-Source: AGHT+IHV5fCe36SFn7L7PyMHbd3nP6FgtWZBD0K/H/INpxXjFgp9zRGGtBW0eioaeFkNgAT5hLK9dQ==
+X-Received: by 2002:a05:600c:5693:b0:417:eed9:e29a with SMTP id jt19-20020a05600c569300b00417eed9e29amr3125688wmb.23.1712959118717;
+        Fri, 12 Apr 2024 14:58:38 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id c18-20020a5d5292000000b00341b451a31asm5079516wrv.36.2024.04.12.14.58.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 14:56:51 -0700 (PDT)
-Date: Fri, 12 Apr 2024 14:56:48 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 08/19] riscv: Introduce vendor variants of extension
- helpers
-Message-ID: <ZhmuIGX71THEuZWx@ghost>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-8-4af9815ec746@rivosinc.com>
- <20240412-dwarf-shower-5a7300fcd283@wendy>
- <ZhlypvTdsFPZBr08@ghost>
- <20240412-drab-french-55d8ff2c8cfa@spud>
- <ZhmhtLS5NuRrPOfu@ghost>
- <20240412-geranium-monotone-b47f414715d1@spud>
+        Fri, 12 Apr 2024 14:58:38 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: thorsten.blum@toblux.com
+Cc: gregkh@linuxfoundation.org,
+	javierm@redhat.com,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	lukas.bulwahn@gmail.com
+Subject: [RESEND PATCH] m68k: amiga: Use str_plural() to fix Coccinelle warning
+Date: Fri, 12 Apr 2024 23:57:07 +0200
+Message-ID: <20240412215704.204403-4-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240330175720.126122-2-thorsten.blum@toblux.com>
+References: <20240330175720.126122-2-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412-geranium-monotone-b47f414715d1@spud>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 10:34:10PM +0100, Conor Dooley wrote:
-> On Fri, Apr 12, 2024 at 02:03:48PM -0700, Charlie Jenkins wrote:
-> > On Fri, Apr 12, 2024 at 09:40:03PM +0100, Conor Dooley wrote:
-> > > On Fri, Apr 12, 2024 at 10:43:02AM -0700, Charlie Jenkins wrote:
-> > > > On Fri, Apr 12, 2024 at 12:49:57PM +0100, Conor Dooley wrote:
-> > > > > On Thu, Apr 11, 2024 at 09:11:14PM -0700, Charlie Jenkins wrote:
-> > > > > > Create vendor variants of the existing extension helpers. If the
-> > > > > > existing functions were instead modified to support vendor extensions, a
-> > > > > > branch based on the ext value being greater than
-> > > > > > RISCV_ISA_VENDOR_EXT_BASE would have to be introduced. This additional
-> > > > > > branch would have an unnecessary performance impact.
-> > > > > > 
-> > > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > > > 
-> > > > > I've not looked at the "main" patch in the series that adds all of the
-> > > > > probing and structures for representing this info yet beyond a cursory
-> > > > > glance, but it feels like we're duplicating a bunch of infrastructure
-> > > > > here before it is necessary. The IDs are all internal to Linux, so I'd
-> > > > > rather we kept everything in the same structure until we have more than
-> > > > > a handful of vendor extensions. With this patch (and the theadpmu stuff)
-> > > > > we will have three vendor extensions which feels like a drop in the
-> > > > > bucket compared to the standard ones.
-> > > > 
-> > > > It is not duplicating infrastructure. If we merge this into the existing
-> > > > infrastructure, we would be littering if (ext > RISCV_ISA_VENDOR_EXT_BASE)
-> > > > in __riscv_isa_extension_available. This is particularily important
-> > > > exactly because we have so few vendor extensions currently so this check
-> > > > would be irrelevant in the vast majority of cases.
-> > > 
-> > > That's only because of your implementation. The existing vendor extension
-> > > works fine without this littering. That's another thing actually, you
-> > > forgot to convert over the user we already have :)
-> > 
-> > Oh right, I will convert them over. The fundemental goal of this patch
-> > is to allow a way for vendors to support their own extensions without
-> > needing to populate riscv_isa_ext. This is to create separation between
-> > vendors so they do not impact each other.
-> 
-> The one that needs converting is xandespmu. As I said on the other patch
-> a minute I don't think isolating vendors for the internal representation
-> is needed and can be left in hwprobe. I also don't think we can rely on
-> a behaviour of "SiFive CPUs will always have SiFive's mvendorid" or that
-> kinda thing, I've heard talk of the SoC vendor getting their mvendorid
-> for custom CPU cores instead of the CPU vendor and it's possible for
-> the SBI implementation to "adjust" the values also.
+Fixes the following Coccinelle/coccicheck warning reported by
+string_choices.cocci:
 
-Okay that may be possible but that is up to the vendor when that
-happens. The vendor extensions are fundamentally different from the
-standard extensions and have even less guarantees of correctness which
-seems like it would invite more errata if multiple vendors implement the
-same vendor extensions. I can extract the code into a different file for
-each vendor so that is more clear.
+	opportunity for str_plural(zorro_num_autocon)
 
-- Charlie
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ arch/m68k/amiga/config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> > xlinuxenvcfg does not fit into this scheme however. This scheme assumes
-> > that a hart cannot have multiple vendors which that extension breaks.
-> > xlinuxenvcfg is really filling a hole in the standard isa that is
-> > applicible to all vendors and does not appear in the device tree so it
-> > is okay for that to live outside this scheme.
-> 
-> Ye, xlinuxenvcfg is an internal psuedo-extension that should be treated
-> more like a standard one than something vendor.
-> 
-> > > > It is also unecessary to push off the refactoring until we have some
-> > > > "sufficient" amount of vendor extensions to deem changing the
-> > > > infrastructure when I already have the patch available here. This does
-> > > > not introduce any extra overhead to existing functions and will be able
-> > > > to support vendors into the future.
-> > > 
-> > > Yeah, maybe that's true but this was my gut reaction before reading the
-> > > other patch in detail (which I've still yet to do).
-> > 
-> > - Charlie
-> > 
-
+diff --git a/arch/m68k/amiga/config.c b/arch/m68k/amiga/config.c
+index 99718f3dc686..d4b170c861bf 100644
+--- a/arch/m68k/amiga/config.c
++++ b/arch/m68k/amiga/config.c
+@@ -836,7 +836,7 @@ static void amiga_get_hardware_list(struct seq_file *m)
+ 		seq_printf(m, "\tZorro II%s AutoConfig: %d Expansion "
+ 				"Device%s\n",
+ 				AMIGAHW_PRESENT(ZORRO3) ? "I" : "",
+-				zorro_num_autocon, zorro_num_autocon == 1 ? "" : "s");
++				zorro_num_autocon, str_plural(zorro_num_autocon));
+ #endif /* CONFIG_ZORRO */
+ 
+ #undef AMIGAHW_ANNOUNCE
+-- 
+2.44.0
 
 
