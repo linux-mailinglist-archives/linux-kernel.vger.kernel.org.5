@@ -1,502 +1,269 @@
-Return-Path: <linux-kernel+bounces-141908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 215878A2504
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:16:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9540E8A2507
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:16:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A91F1F2150F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:16:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6CA61C230DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E75711C29C;
-	Fri, 12 Apr 2024 04:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D71C1D6BD;
+	Fri, 12 Apr 2024 04:12:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="1XDvnHCO"
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r2F8IuTK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00F152F7A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657CC18633
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:12:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712895129; cv=none; b=mGYCOzc98zNruAfbkrFZoZNo9Ta2E+CSJK0dpl8l2lCXmwjQ2rmDDFe4praVz1GQHy/WKTFMSJiEn7hFZr79B16oEAPBi2vTlojoitIGA8pxjfSRlFYCITgTaUS4FWPU9Se225KfOYQZJDpHOAFEpkgtxUWgHsTTAurvKdERQig=
+	t=1712895159; cv=none; b=pq/wMLQ8v3GiLxDKzaCj0mtbp3vM2BPgvMaHSezu4y5FiKdcOYSTQDtekKdiQqSmf+DhUVUnDuyvv0Hv/il2+Q0C84COL89eQDiBokE76pnBsEKF8qcjRRWzotUH0Lofrq8xeE7WopCbuqyVwlIRhZZTuE6cmyDljjSE02nzPZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712895129; c=relaxed/simple;
-	bh=setlXx3TJ6lyIKgXawEUk3ohSd1uErym55YpPmsw1PM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Ma2gs9cAphxKZXknKkDfyg3kmb5POn6Id8BJvs6zadQA8ekV4sGFlHc38e/4DdB0n/M/3tWoa+nmAooVHjPdZ8dqGRlQQsx8JYB3DjDwjSNb3wz3IGUK7E7p4yjSvQeCd0nKBK5Jo+6I8x4PLcWW+06M/Q/TxyWk+xxncmlVRlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=1XDvnHCO; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-23333ef4a02so369909fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712895127; x=1713499927; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hBgQEL1+H27tUR3gRHQ8/GPCnYAaOyIYbabDB3akuF4=;
-        b=1XDvnHCO9PagYhL+9/wkzUSzO44hbUL+SMbj0QV2Eq1m54nuVshJ9ZcxrDQPjlTmNp
-         Q2sSfM8OomTq4ooIPIK3lc6CNJyvFGhhro/R4jpJ02UoWZFfym5zC1WH9g4Pt2vjpg8F
-         H9XGxbNB1jmlL+gU6pmz6vuCYo7UtUlfBH4qh+i7pnzjeiWtATQmfTt/9VJloNecoHUA
-         8FypHkZWMR5rXeNJaNJzv3DThgwrAhMP8p9gC8WfhdEdtq3MGT6oBcbB1+PuWBFwk81t
-         n1vw5SUfCgR28dAFEDLXVQdMISE+7qpgeMTzxYGE5cYKOSEzHTKMWpLWkVqRWNizXfPU
-         Cu2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712895127; x=1713499927;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hBgQEL1+H27tUR3gRHQ8/GPCnYAaOyIYbabDB3akuF4=;
-        b=ZQGdqVOKb9p6fmrH6ml7mEe3GBN+3L2ggSMnc2iAZb6+UbyipgoLRSiXgWBTMWKPvB
-         Lqz/BDmhVVgvd/bJxtciWyM4EP3vUX6MgMMIEo6FUaHMihJLdEfSJWdmdo6QIDPOG8da
-         m/YzjrfSbvuuwWL4D+idBCnXWRC2WVG/pj+WTHmJ+Tz6CgyP1RB6yUCbyYSa9fMKJEiT
-         gx7MJVY5k3TXNQvZgX1ge2RfuoQSBnrB0kwy3LdW8GHhoVji5/jxbvtuwXh6t3O214PE
-         SNvMpNUDScQYpuWwgDoQCRvi4FtIjXmDa1bBgiVTzlsWRZW4c6t2DRhumZBiEBjJ/kaB
-         Kvow==
-X-Forwarded-Encrypted: i=1; AJvYcCXE5qW08hSM9F6S4gVVwr1R/mXAy+Fw2tN74hX7UhoGmmjtL/zOJpr3teDhtSUVMt8r6YwTzVfhR/aHxHo9yMbQUusZ/sMdlDjiXnZF
-X-Gm-Message-State: AOJu0YzMFRgGkT28TrxPeeZANsLfLlE49/rJDmQbxT5k3DBQwpPDyVmR
-	r+ms5OHCjfNFaIkasKO3o0a+AWvGgQMwubQBU9QtgRIA3msMxnQOwcmj7M+AUlY=
-X-Google-Smtp-Source: AGHT+IHX8xTHzyi0CfDCyFmjJK1fceX50eydv3gKBY34F1kxgp7gZ6QSg+vOGVKfACocPpgVhSSIww==
-X-Received: by 2002:a05:6870:f694:b0:22c:ca8c:d133 with SMTP id el20-20020a056870f69400b0022cca8cd133mr1710429oab.23.1712895126965;
-        Thu, 11 Apr 2024 21:12:06 -0700 (PDT)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id ka13-20020a056a00938d00b006e57247f4e5sm1949712pfb.8.2024.04.11.21.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 21:12:06 -0700 (PDT)
-From: Charlie Jenkins <charlie@rivosinc.com>
-Date: Thu, 11 Apr 2024 21:11:25 -0700
-Subject: [PATCH 19/19] selftests: riscv: Support xtheadvector in vector
- tests
+	s=arc-20240116; t=1712895159; c=relaxed/simple;
+	bh=Cxe0KEo5HYGIG3uR4CS3mYn9ImiPTk34Rc1Q3j9rM4k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GQtmjITiWL6WeMmhroDUfQdmgWiSDcGV59ECSOjBxEUiJfR72+q3HcU56Eoj2zchnjZkCOhllk+cf25FhaKmDL7NgpGW75wWngjQ11GGo5GWfrRLq+1V1xoI7IzF8EtdiABGpGgHv5RmQxJstlHzOgtVJWF/+OYpGtAkNZM4NV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r2F8IuTK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11D77C32781
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712895159;
+	bh=Cxe0KEo5HYGIG3uR4CS3mYn9ImiPTk34Rc1Q3j9rM4k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=r2F8IuTK4sikJ+Pou47SWUWgxzG54/DdqSWoIc/+Mowpd67wIsCbkrxU10sgKECyy
+	 BE+psPx0XOQVNpeM/1Pii9YkuCXK/npyCLdZOjYxF7R0Hgr53ArPYeM2zhHrUU5nNG
+	 Y1z/ky8ppyF4829g1dTI3sMRBG+GQ1TjzxVpTiIs7Mh2ACCfwPFr6GJcs2CWqkpZh7
+	 hH7RYcnweMDYZuglAN+6ueMY8T2OBjL8gO2MJh1TnX5GuST5qtUi8mzCdJA/CbUvpu
+	 RERPTEo2ks+r7Kn/FjbuHZ+ca7iFqLl5SPHIxtLPp0Ew/WKjKcD/pQTxBaCxPPcD0Y
+	 rq/BMiHzrWhjg==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4702457ccbso48660066b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:12:38 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVQTLQZh/19Ftcq7SswNyMRKmG/4Jb5GVWpcVdFX/Hg7wQVU5rPqh8ojBwmxfbN9CS2BlzL8UpvX+pvx4etrpnVhdbT8sdDNRH/mFss
+X-Gm-Message-State: AOJu0YxMC/qqFCbCVuq/+y2oxARlicDLfgv3vX1UHJcMFimyl+BxRGgy
+	6Y5tkUMguxJVVIt3gjBuIBYX96sIZlP0LqLZz9F5EimxvdFwayCzvs6eQ1JfqQkT1cOYESj8HD2
+	pOJfuxggXx6FMgaWt0NzkjoFCT6Q=
+X-Google-Smtp-Source: AGHT+IHEN3YuDi9aWyK/O9J7zZTQ0B1yZp/YaIsLZymqc/hpdrQrpSqJyjbcQyaJVA4ZhFWO6g4su/V+eiAkxJDq1o4=
+X-Received: by 2002:a17:906:80c7:b0:a52:2e54:7022 with SMTP id
+ a7-20020a17090680c700b00a522e547022mr825073ejx.10.1712895157514; Thu, 11 Apr
+ 2024 21:12:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240411-dev-charlie-support_thead_vector_6_9-v1-19-4af9815ec746@rivosinc.com>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
-In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Paul Walmsley <paul.walmsley@sifive.com>, 
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
- Guo Ren <guoren@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- Conor Dooley <conor.dooley@microchip.com>, Evan Green <evan@rivosinc.com>, 
- =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>, 
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>, 
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
- linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712895091; l=12407;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=setlXx3TJ6lyIKgXawEUk3ohSd1uErym55YpPmsw1PM=;
- b=DFiNEfbuNTXJBVQy57BvwjHbRMXRRtHbs8W/+cTm3ep34BNHoYoDurwcfO3RfoLiUe8lRGTvo
- LQbEgxji3HbAqsYmPShEOF/s7o8Xyob32bx00GFXVD+VF0gdSIFsUzV
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+References: <20240411010510.22135-1-yangtiezhu@loongson.cn> <20240411010510.22135-2-yangtiezhu@loongson.cn>
+In-Reply-To: <20240411010510.22135-2-yangtiezhu@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Fri, 12 Apr 2024 12:12:30 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6TVEEB=xdr_ymuUnDqPDXwtM7R7yJBj03YhWpCwqjAiA@mail.gmail.com>
+Message-ID: <CAAhV-H6TVEEB=xdr_ymuUnDqPDXwtM7R7yJBj03YhWpCwqjAiA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] LoongArch: Move CONFIG_HAVE_SETUP_PER_CPU_AREA
+ related code to smp.c
+To: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>, 
+	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Extend existing vector tests to be compatible with the xtheadvector
-instruction set.
+On Thu, Apr 11, 2024 at 9:05=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
+>
+> Currently, if CONFIG_NUMA is not set but CONFIG_SMP is set, the arch
+> specified setup_per_cpu_areas() in arch/loongarch/kernel/numa.c will
+> not be built and the generic setup_per_cpu_areas() in mm/percpu.c is
+> actually used, this is not reasonable and does not work as intended.
+Why is the generic version not reasonable? We need a custom version
+just because it can put the percpu variable in the best node. If NUMA
+disabled, software can only see one node, how to optimize?
 
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- .../selftests/riscv/vector/v_exec_initval_nolibc.c | 23 ++++--
- tools/testing/selftests/riscv/vector/v_helpers.c   | 16 +++-
- tools/testing/selftests/riscv/vector/v_helpers.h   |  4 +-
- tools/testing/selftests/riscv/vector/v_initval.c   | 12 ++-
- .../selftests/riscv/vector/vstate_exec_nolibc.c    | 20 +++--
- .../testing/selftests/riscv/vector/vstate_prctl.c  | 85 +++++++++++++++-------
- 6 files changed, 111 insertions(+), 49 deletions(-)
+Huacai
 
-diff --git a/tools/testing/selftests/riscv/vector/v_exec_initval_nolibc.c b/tools/testing/selftests/riscv/vector/v_exec_initval_nolibc.c
-index 363727672704..b6c79d3a92fc 100644
---- a/tools/testing/selftests/riscv/vector/v_exec_initval_nolibc.c
-+++ b/tools/testing/selftests/riscv/vector/v_exec_initval_nolibc.c
-@@ -18,13 +18,22 @@ int main(int argc, char **argv)
- 	unsigned long vl;
- 	int first = 1;
- 
--	asm volatile (
--		".option push\n\t"
--		".option arch, +v\n\t"
--		"vsetvli	%[vl], x0, e8, m1, ta, ma\n\t"
--		".option pop\n\t"
--		: [vl] "=r" (vl)
--	);
-+	if (argc > 2 && strcmp(argv[2], "x"))
-+		asm volatile (
-+			// 0 | zimm[10:0] | rs1 | 1 1 1 | rd |1010111| vsetvli
-+			// vsetvli	t4, x0, e8, m1, d1
-+			".insn		0b00000000000000000111111011010111\n\t"
-+			"mv		%[vl], t4\n\t"
-+			: [vl] "=r" (vl) : : "t4"
-+		);
-+	else
-+		asm volatile (
-+			".option push\n\t"
-+			".option arch, +v\n\t"
-+			"vsetvli	%[vl], x0, e8, m1, ta, ma\n\t"
-+			".option pop\n\t"
-+			: [vl] "=r" (vl)
-+		);
- 
- #define CHECK_VECTOR_REGISTER(register) ({					\
- 	for (int i = 0; i < vl; i++) {						\
-diff --git a/tools/testing/selftests/riscv/vector/v_helpers.c b/tools/testing/selftests/riscv/vector/v_helpers.c
-index 15c22318db72..fb6bece73119 100644
---- a/tools/testing/selftests/riscv/vector/v_helpers.c
-+++ b/tools/testing/selftests/riscv/vector/v_helpers.c
-@@ -6,6 +6,15 @@
- #include <unistd.h>
- #include <sys/wait.h>
- 
-+int is_xtheadvector_supported(void)
-+{
-+	struct riscv_hwprobe pair;
-+
-+	pair.key = RISCV_HWPROBE_KEY_VENDOR_EXT_0;
-+	riscv_hwprobe(&pair, 1, 0, NULL, 0);
-+	return pair.value & RISCV_HWPROBE_VENDOR_EXT_XTHEADVECTOR;
-+}
-+
- int is_vector_supported(void)
- {
- 	struct riscv_hwprobe pair;
-@@ -15,9 +24,9 @@ int is_vector_supported(void)
- 	return pair.value & RISCV_HWPROBE_IMA_V;
- }
- 
--int launch_test(char *next_program, int test_inherit)
-+int launch_test(char *next_program, int test_inherit, int xtheadvector)
- {
--	char *exec_argv[3], *exec_envp[1];
-+	char *exec_argv[4], *exec_envp[1];
- 	int rc, pid, status;
- 
- 	pid = fork();
-@@ -29,7 +38,8 @@ int launch_test(char *next_program, int test_inherit)
- 	if (!pid) {
- 		exec_argv[0] = next_program;
- 		exec_argv[1] = test_inherit != 0 ? "x" : NULL;
--		exec_argv[2] = NULL;
-+		exec_argv[2] = xtheadvector != 0 ? "x" : NULL;
-+		exec_argv[3] = NULL;
- 		exec_envp[0] = NULL;
- 		/* launch the program again to check inherit */
- 		rc = execve(next_program, exec_argv, exec_envp);
-diff --git a/tools/testing/selftests/riscv/vector/v_helpers.h b/tools/testing/selftests/riscv/vector/v_helpers.h
-index 88719c4be496..67d41cb6f871 100644
---- a/tools/testing/selftests/riscv/vector/v_helpers.h
-+++ b/tools/testing/selftests/riscv/vector/v_helpers.h
-@@ -1,5 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- 
-+int is_xtheadvector_supported(void);
-+
- int is_vector_supported(void);
- 
--int launch_test(char *next_program, int test_inherit);
-+int launch_test(char *next_program, int test_inherit, int xtheadvector);
-diff --git a/tools/testing/selftests/riscv/vector/v_initval.c b/tools/testing/selftests/riscv/vector/v_initval.c
-index f38b5797fa31..be9e1d18ad29 100644
---- a/tools/testing/selftests/riscv/vector/v_initval.c
-+++ b/tools/testing/selftests/riscv/vector/v_initval.c
-@@ -7,10 +7,16 @@
- 
- TEST(v_initval)
- {
--	if (!is_vector_supported())
--		SKIP(return, "Vector not supported");
-+	int xtheadvector = 0;
- 
--	ASSERT_EQ(0, launch_test(NEXT_PROGRAM, 0));
-+	if (!is_vector_supported()) {
-+		if (is_xtheadvector_supported())
-+			xtheadvector = 1;
-+		else
-+			SKIP(return, "Vector not supported");
-+	}
-+
-+	ASSERT_EQ(0, launch_test(NEXT_PROGRAM, 0, xtheadvector));
- }
- 
- TEST_HARNESS_MAIN
-diff --git a/tools/testing/selftests/riscv/vector/vstate_exec_nolibc.c b/tools/testing/selftests/riscv/vector/vstate_exec_nolibc.c
-index 1f9969bed235..12d30d3b90fa 100644
---- a/tools/testing/selftests/riscv/vector/vstate_exec_nolibc.c
-+++ b/tools/testing/selftests/riscv/vector/vstate_exec_nolibc.c
-@@ -6,13 +6,16 @@
- 
- int main(int argc, char **argv)
- {
--	int rc, pid, status, test_inherit = 0;
-+	int rc, pid, status, test_inherit = 0, xtheadvector = 0;
- 	long ctrl, ctrl_c;
- 	char *exec_argv[2], *exec_envp[2];
- 
--	if (argc > 1)
-+	if (argc > 1 && strcmp(argv[1], "x"))
- 		test_inherit = 1;
- 
-+	if (argc > 2 && strcmp(argv[2], "x"))
-+		xtheadvector = 1;
-+
- 	ctrl = my_syscall1(__NR_prctl, PR_RISCV_V_GET_CONTROL);
- 	if (ctrl < 0) {
- 		puts("PR_RISCV_V_GET_CONTROL is not supported\n");
-@@ -53,11 +56,14 @@ int main(int argc, char **argv)
- 				puts("child's vstate_ctrl not equal to parent's\n");
- 				exit(-1);
- 			}
--			asm volatile (".option push\n\t"
--				      ".option arch, +v\n\t"
--				      "vsetvli x0, x0, e32, m8, ta, ma\n\t"
--				      ".option pop\n\t"
--				      );
-+			if (xtheadvector)
-+				asm volatile (".insn	0x00007ed7");
-+			else
-+				asm volatile (".option push\n\t"
-+					".option arch, +v\n\t"
-+					"vsetvli x0, x0, e32, m8, ta, ma\n\t"
-+					".option pop\n\t"
-+					);
- 			exit(ctrl);
- 		}
- 	}
-diff --git a/tools/testing/selftests/riscv/vector/vstate_prctl.c b/tools/testing/selftests/riscv/vector/vstate_prctl.c
-index 528e8c544db0..dd3c5f06f800 100644
---- a/tools/testing/selftests/riscv/vector/vstate_prctl.c
-+++ b/tools/testing/selftests/riscv/vector/vstate_prctl.c
-@@ -11,7 +11,7 @@
- 
- #define NEXT_PROGRAM "./vstate_exec_nolibc"
- 
--int test_and_compare_child(long provided, long expected, int inherit)
-+int test_and_compare_child(long provided, long expected, int inherit, int xtheadvector)
- {
- 	int rc;
- 
-@@ -21,7 +21,7 @@ int test_and_compare_child(long provided, long expected, int inherit)
- 		       provided, rc);
- 		return -1;
- 	}
--	rc = launch_test(NEXT_PROGRAM, inherit);
-+	rc = launch_test(NEXT_PROGRAM, inherit, xtheadvector);
- 	if (rc != expected) {
- 		printf("Test failed, check %d != %ld\n", rc,  expected);
- 		return -2;
-@@ -36,7 +36,7 @@ TEST(get_control_no_v)
- {
- 	long rc;
- 
--	if (is_vector_supported())
-+	if (is_vector_supported() || is_xtheadvector_supported())
- 		SKIP(return, "Test expects vector to be not supported");
- 
- 	rc = prctl(PR_RISCV_V_GET_CONTROL);
-@@ -48,7 +48,7 @@ TEST(set_control_no_v)
- {
- 	long rc;
- 
--	if (is_vector_supported())
-+	if (is_vector_supported() || is_xtheadvector_supported())
- 		SKIP(return, "Test expects vector to be not supported");
- 
- 	rc = prctl(PR_RISCV_V_SET_CONTROL, PR_RISCV_V_VSTATE_CTRL_ON);
-@@ -61,7 +61,7 @@ TEST(vstate_on_current)
- 	long flag;
- 	long rc;
- 
--	if (!is_vector_supported())
-+	if (!is_vector_supported() && !is_xtheadvector_supported())
- 		SKIP(return, "Vector not supported");
- 
- 	flag = PR_RISCV_V_VSTATE_CTRL_ON;
-@@ -74,7 +74,7 @@ TEST(vstate_off_eperm)
- 	long flag;
- 	long rc;
- 
--	if (!is_vector_supported())
-+	if (!is_vector_supported() && !is_xtheadvector_supported())
- 		SKIP(return, "Vector not supported");
- 
- 	flag = PR_RISCV_V_VSTATE_CTRL_OFF;
-@@ -86,87 +86,116 @@ TEST(vstate_off_eperm)
- TEST(vstate_on_no_nesting)
- {
- 	long flag;
-+	int xtheadvector = 0;
- 
--	if (!is_vector_supported())
--		SKIP(return, "Vector not supported");
-+	if (!is_vector_supported()) {
-+		if (is_xtheadvector_supported())
-+			xtheadvector = 1;
-+		else
-+			SKIP(return, "Vector not supported");
-+	}
- 
- 	/* Turn on next's vector explicitly and test */
- 	flag = PR_RISCV_V_VSTATE_CTRL_ON << PR_RISCV_V_VSTATE_CTRL_NEXT_SHIFT;
- 
--	EXPECT_EQ(0, test_and_compare_child(flag, PR_RISCV_V_VSTATE_CTRL_ON, 0));
-+	EXPECT_EQ(0, test_and_compare_child(flag, PR_RISCV_V_VSTATE_CTRL_ON, 0, xtheadvector));
- }
- 
- TEST(vstate_off_nesting)
- {
- 	long flag;
-+	int xtheadvector = 0;
- 
--	if (!is_vector_supported())
--		SKIP(return, "Vector not supported");
-+	if (!is_vector_supported()) {
-+		if (is_xtheadvector_supported())
-+			xtheadvector = 1;
-+		else
-+			SKIP(return, "Vector not supported");
-+	}
- 
- 	/* Turn off next's vector explicitly and test */
- 	flag = PR_RISCV_V_VSTATE_CTRL_OFF << PR_RISCV_V_VSTATE_CTRL_NEXT_SHIFT;
- 
--	EXPECT_EQ(0, test_and_compare_child(flag, PR_RISCV_V_VSTATE_CTRL_OFF, 1));
-+	EXPECT_EQ(0, test_and_compare_child(flag, PR_RISCV_V_VSTATE_CTRL_OFF, 1, xtheadvector));
- }
- 
- TEST(vstate_on_inherit_no_nesting)
- {
- 	long flag, expected;
-+	int xtheadvector = 0;
- 
--	if (!is_vector_supported())
--		SKIP(return, "Vector not supported");
-+	if (!is_vector_supported()) {
-+		if (is_xtheadvector_supported())
-+			xtheadvector = 1;
-+		else
-+			SKIP(return, "Vector not supported");
-+	}
- 
- 	/* Turn on next's vector explicitly and test no inherit */
- 	flag = PR_RISCV_V_VSTATE_CTRL_ON << PR_RISCV_V_VSTATE_CTRL_NEXT_SHIFT;
- 	flag |= PR_RISCV_V_VSTATE_CTRL_INHERIT;
- 	expected = flag | PR_RISCV_V_VSTATE_CTRL_ON;
- 
--	EXPECT_EQ(0, test_and_compare_child(flag, expected, 0));
-+	EXPECT_EQ(0, test_and_compare_child(flag, expected, 0, xtheadvector));
- }
- 
- TEST(vstate_on_inherit)
- {
- 	long flag, expected;
-+	int xtheadvector = 0;
- 
--	if (!is_vector_supported())
--		SKIP(return, "Vector not supported");
-+	if (!is_vector_supported()) {
-+		if (is_xtheadvector_supported())
-+			xtheadvector = 1;
-+		else
-+			SKIP(return, "Vector not supported");
-+	}
- 
- 	/* Turn on next's vector explicitly and test inherit */
- 	flag = PR_RISCV_V_VSTATE_CTRL_ON << PR_RISCV_V_VSTATE_CTRL_NEXT_SHIFT;
- 	flag |= PR_RISCV_V_VSTATE_CTRL_INHERIT;
- 	expected = flag | PR_RISCV_V_VSTATE_CTRL_ON;
- 
--	EXPECT_EQ(0, test_and_compare_child(flag, expected, 1));
-+	EXPECT_EQ(0, test_and_compare_child(flag, expected, 1, xtheadvector));
- }
- 
- TEST(vstate_off_inherit_no_nesting)
- {
- 	long flag, expected;
-+	int xtheadvector = 0;
- 
--	if (!is_vector_supported())
--		SKIP(return, "Vector not supported");
--
-+	if (!is_vector_supported()) {
-+		if (is_xtheadvector_supported())
-+			xtheadvector = 1;
-+		else
-+			SKIP(return, "Vector not supported");
-+	}
- 	/* Turn off next's vector explicitly and test no inherit */
- 	flag = PR_RISCV_V_VSTATE_CTRL_OFF << PR_RISCV_V_VSTATE_CTRL_NEXT_SHIFT;
- 	flag |= PR_RISCV_V_VSTATE_CTRL_INHERIT;
- 	expected = flag | PR_RISCV_V_VSTATE_CTRL_OFF;
- 
--	EXPECT_EQ(0, test_and_compare_child(flag, expected, 0));
-+	EXPECT_EQ(0, test_and_compare_child(flag, expected, 0, xtheadvector));
- }
- 
- TEST(vstate_off_inherit)
- {
- 	long flag, expected;
-+	int xtheadvector = 0;
- 
--	if (!is_vector_supported())
--		SKIP(return, "Vector not supported");
-+	if (!is_vector_supported()) {
-+		if (is_xtheadvector_supported())
-+			xtheadvector = 1;
-+		else
-+			SKIP(return, "Vector not supported");
-+	}
- 
- 	/* Turn off next's vector explicitly and test inherit */
- 	flag = PR_RISCV_V_VSTATE_CTRL_OFF << PR_RISCV_V_VSTATE_CTRL_NEXT_SHIFT;
- 	flag |= PR_RISCV_V_VSTATE_CTRL_INHERIT;
- 	expected = flag | PR_RISCV_V_VSTATE_CTRL_OFF;
- 
--	EXPECT_EQ(0, test_and_compare_child(flag, expected, 1));
-+	EXPECT_EQ(0, test_and_compare_child(flag, expected, 1, xtheadvector));
- }
- 
- /* arguments should fail with EINVAL */
-@@ -174,7 +203,7 @@ TEST(inval_set_control_1)
- {
- 	int rc;
- 
--	if (!is_vector_supported())
-+	if (!is_vector_supported() && !is_xtheadvector_supported())
- 		SKIP(return, "Vector not supported");
- 
- 	rc = prctl(PR_RISCV_V_SET_CONTROL, 0xff0);
-@@ -187,7 +216,7 @@ TEST(inval_set_control_2)
- {
- 	int rc;
- 
--	if (!is_vector_supported())
-+	if (!is_vector_supported() && !is_xtheadvector_supported())
- 		SKIP(return, "Vector not supported");
- 
- 	rc = prctl(PR_RISCV_V_SET_CONTROL, 0x3);
-@@ -200,7 +229,7 @@ TEST(inval_set_control_3)
- {
- 	int rc;
- 
--	if (!is_vector_supported())
-+	if (!is_vector_supported() && !is_xtheadvector_supported())
- 		SKIP(return, "Vector not supported");
- 
- 	rc = prctl(PR_RISCV_V_SET_CONTROL, 0xc);
-
--- 
-2.44.0
-
+>
+> Let us select HAVE_SETUP_PER_CPU_AREA unconditionally and then move
+> CONFIG_HAVE_SETUP_PER_CPU_AREA related code from numa.c to smp.c to
+> avoid this problem.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/loongarch/Kconfig       |  2 +-
+>  arch/loongarch/kernel/numa.c | 58 -----------------------------------
+>  arch/loongarch/kernel/smp.c  | 59 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 60 insertions(+), 59 deletions(-)
+>
+> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+> index a5f300ec6f28..64052ae2c2af 100644
+> --- a/arch/loongarch/Kconfig
+> +++ b/arch/loongarch/Kconfig
+> @@ -151,7 +151,7 @@ config LOONGARCH
+>         select HAVE_RUST
+>         select HAVE_SAMPLE_FTRACE_DIRECT
+>         select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
+> -       select HAVE_SETUP_PER_CPU_AREA if NUMA
+> +       select HAVE_SETUP_PER_CPU_AREA
+>         select HAVE_STACK_VALIDATION if HAVE_OBJTOOL
+>         select HAVE_STACKPROTECTOR
+>         select HAVE_SYSCALL_TRACEPOINTS
+> diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
+> index 8fe21f868f72..49dc1d932ce2 100644
+> --- a/arch/loongarch/kernel/numa.c
+> +++ b/arch/loongarch/kernel/numa.c
+> @@ -48,64 +48,6 @@ EXPORT_SYMBOL(__cpuid_to_node);
+>
+>  nodemask_t numa_nodes_parsed __initdata;
+>
+> -#ifdef CONFIG_HAVE_SETUP_PER_CPU_AREA
+> -unsigned long __per_cpu_offset[NR_CPUS] __read_mostly;
+> -EXPORT_SYMBOL(__per_cpu_offset);
+> -
+> -static int __init pcpu_cpu_to_node(int cpu)
+> -{
+> -       return early_cpu_to_node(cpu);
+> -}
+> -
+> -static int __init pcpu_cpu_distance(unsigned int from, unsigned int to)
+> -{
+> -       if (early_cpu_to_node(from) =3D=3D early_cpu_to_node(to))
+> -               return LOCAL_DISTANCE;
+> -       else
+> -               return REMOTE_DISTANCE;
+> -}
+> -
+> -void __init pcpu_populate_pte(unsigned long addr)
+> -{
+> -       populate_kernel_pte(addr);
+> -}
+> -
+> -void __init setup_per_cpu_areas(void)
+> -{
+> -       unsigned long delta;
+> -       unsigned int cpu;
+> -       int rc =3D -EINVAL;
+> -
+> -       if (pcpu_chosen_fc =3D=3D PCPU_FC_AUTO) {
+> -               if (nr_node_ids >=3D 8)
+> -                       pcpu_chosen_fc =3D PCPU_FC_PAGE;
+> -               else
+> -                       pcpu_chosen_fc =3D PCPU_FC_EMBED;
+> -       }
+> -
+> -       /*
+> -        * Always reserve area for module percpu variables.  That's
+> -        * what the legacy allocator did.
+> -        */
+> -       if (pcpu_chosen_fc !=3D PCPU_FC_PAGE) {
+> -               rc =3D pcpu_embed_first_chunk(PERCPU_MODULE_RESERVE,
+> -                                           PERCPU_DYNAMIC_RESERVE, PMD_S=
+IZE,
+> -                                           pcpu_cpu_distance, pcpu_cpu_t=
+o_node);
+> -               if (rc < 0)
+> -                       pr_warn("%s allocator failed (%d), falling back t=
+o page size\n",
+> -                               pcpu_fc_names[pcpu_chosen_fc], rc);
+> -       }
+> -       if (rc < 0)
+> -               rc =3D pcpu_page_first_chunk(PERCPU_MODULE_RESERVE, pcpu_=
+cpu_to_node);
+> -       if (rc < 0)
+> -               panic("cannot initialize percpu area (err=3D%d)", rc);
+> -
+> -       delta =3D (unsigned long)pcpu_base_addr - (unsigned long)__per_cp=
+u_start;
+> -       for_each_possible_cpu(cpu)
+> -               __per_cpu_offset[cpu] =3D delta + pcpu_unit_offsets[cpu];
+> -}
+> -#endif
+> -
+>  /*
+>   * Get nodeid by logical cpu number.
+>   * __cpuid_to_node maps phyical cpu id to node, so we
+> diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
+> index aabee0b280fe..88b9c6b68d1e 100644
+> --- a/arch/loongarch/kernel/smp.c
+> +++ b/arch/loongarch/kernel/smp.c
+> @@ -29,6 +29,7 @@
+>  #include <asm/loongson.h>
+>  #include <asm/mmu_context.h>
+>  #include <asm/numa.h>
+> +#include <asm/pgalloc.h>
+>  #include <asm/processor.h>
+>  #include <asm/setup.h>
+>  #include <asm/time.h>
+> @@ -717,3 +718,61 @@ void flush_tlb_one(unsigned long vaddr)
+>         on_each_cpu(flush_tlb_one_ipi, (void *)vaddr, 1);
+>  }
+>  EXPORT_SYMBOL(flush_tlb_one);
+> +
+> +#ifdef CONFIG_HAVE_SETUP_PER_CPU_AREA
+> +unsigned long __per_cpu_offset[NR_CPUS] __read_mostly;
+> +EXPORT_SYMBOL(__per_cpu_offset);
+> +
+> +static int __init pcpu_cpu_to_node(int cpu)
+> +{
+> +       return early_cpu_to_node(cpu);
+> +}
+> +
+> +static int __init pcpu_cpu_distance(unsigned int from, unsigned int to)
+> +{
+> +       if (early_cpu_to_node(from) =3D=3D early_cpu_to_node(to))
+> +               return LOCAL_DISTANCE;
+> +       else
+> +               return REMOTE_DISTANCE;
+> +}
+> +
+> +void __init pcpu_populate_pte(unsigned long addr)
+> +{
+> +       populate_kernel_pte(addr);
+> +}
+> +
+> +void __init setup_per_cpu_areas(void)
+> +{
+> +       unsigned long delta;
+> +       unsigned int cpu;
+> +       int rc =3D -EINVAL;
+> +
+> +       if (pcpu_chosen_fc =3D=3D PCPU_FC_AUTO) {
+> +               if (nr_node_ids >=3D 8)
+> +                       pcpu_chosen_fc =3D PCPU_FC_PAGE;
+> +               else
+> +                       pcpu_chosen_fc =3D PCPU_FC_EMBED;
+> +       }
+> +
+> +       /*
+> +        * Always reserve area for module percpu variables.  That's
+> +        * what the legacy allocator did.
+> +        */
+> +       if (pcpu_chosen_fc !=3D PCPU_FC_PAGE) {
+> +               rc =3D pcpu_embed_first_chunk(PERCPU_MODULE_RESERVE,
+> +                                           PERCPU_DYNAMIC_RESERVE, PMD_S=
+IZE,
+> +                                           pcpu_cpu_distance, pcpu_cpu_t=
+o_node);
+> +               if (rc < 0)
+> +                       pr_warn("%s allocator failed (%d), falling back t=
+o page size\n",
+> +                               pcpu_fc_names[pcpu_chosen_fc], rc);
+> +       }
+> +       if (rc < 0)
+> +               rc =3D pcpu_page_first_chunk(PERCPU_MODULE_RESERVE, pcpu_=
+cpu_to_node);
+> +       if (rc < 0)
+> +               panic("cannot initialize percpu area (err=3D%d)", rc);
+> +
+> +       delta =3D (unsigned long)pcpu_base_addr - (unsigned long)__per_cp=
+u_start;
+> +       for_each_possible_cpu(cpu)
+> +               __per_cpu_offset[cpu] =3D delta + pcpu_unit_offsets[cpu];
+> +}
+> +#endif
+> --
+> 2.42.0
+>
+>
 
