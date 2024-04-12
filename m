@@ -1,184 +1,115 @@
-Return-Path: <linux-kernel+bounces-141840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A6E38A2422
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:03:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D96A58A2424
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:03:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DF7F1F22210
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:03:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16A521C21726
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB96714AA9;
-	Fri, 12 Apr 2024 03:02:58 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B3414006;
+	Fri, 12 Apr 2024 03:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZ0kQvhQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5F3125BA;
-	Fri, 12 Apr 2024 03:02:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00378179A7;
+	Fri, 12 Apr 2024 03:03:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712890978; cv=none; b=rr2DN+lxTkUBzV/mwFlsLIZ3wIdTT6J2nbtkSH9zuZHttK6+kfXkuMRgJJqlanog+E8lMJ43q70RmHZN7KKB4zqoIkhGquUCz2UF0tUUdhKkXrPCWRBeFdQ1krtPNbQNr81vqnRi7HD7IJ6hK5evBDwteYxKX0GiWg+NX7Tbs2Y=
+	t=1712890987; cv=none; b=cyIF1lSz4Rn5GBH/4UOyPKDhydL2ElxPO7BvcYZ06koyFEC402u6Oe4Lint2SWBDMoqxpupH864O4O5WMxac3AE/KNRvRR2FiPeVIrpA5JIUIWqxY99RbQdtt7O+abnFjmGAvgpLHQm0Gpr6cC1bgOth8McxgrXP5CKamLkdl6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712890978; c=relaxed/simple;
-	bh=mksHlutSXcQUklVG/Sm4Rj52riQY7SIjyLfdHrSpKqs=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=eP7L9CfuodQqN7zp+EO37gl3gIo0lFg/waWod/8tWjBLXnXYTyGduPkF0XK+lUKF0/cHrKEwa82w0nNqad302nYfZPJIHtdkseraEI7OZoRLbjahXmCR4pdzhf2KhNqC5e8idTMF8Nkc51LMWq63eYFbJG7WlC4uFpN4KhBLTR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VG1Z34nHXz1S5M8;
-	Fri, 12 Apr 2024 11:02:03 +0800 (CST)
-Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8E4DC180063;
-	Fri, 12 Apr 2024 11:02:51 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 11:02:51 +0800
-Subject: Re: [PATCH v4 4/4] Documentation: add debugfs description for hisi
- migration
-To: Alex Williamson <alex.williamson@redhat.com>
-CC: <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
-	<jonathan.cameron@huawei.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <20240402032432.41004-1-liulongfang@huawei.com>
- <20240402032432.41004-5-liulongfang@huawei.com>
- <20240404140750.78549701.alex.williamson@redhat.com>
-From: liulongfang <liulongfang@huawei.com>
-Message-ID: <699fed1e-51c0-2d74-0f1f-6f45813f4cb4@huawei.com>
-Date: Fri, 12 Apr 2024 11:02:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1712890987; c=relaxed/simple;
+	bh=dL2vbLyBJ7fQbcvTp51l49lPhbA/iYRHmD1oK3utQ8k=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=u8hIKgYwyDo2T3woANU7EVebc1zkzF/23Bbo3kHqYiGQAL5uHfKg1mWbfz3XcJqXkKm+2dJnyBZEb2g6rVkx4g7hUY+vo+27HG8xCohbrBTaJC1n+HqJcruwePOiDtW+9QdSwmzrlvAR3OSsaigdc9Y21sazz2h7tzxNf7Zn2xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IZ0kQvhQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54EEBC072AA;
+	Fri, 12 Apr 2024 03:03:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712890986;
+	bh=dL2vbLyBJ7fQbcvTp51l49lPhbA/iYRHmD1oK3utQ8k=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=IZ0kQvhQHE45vOxLKM9Qe1+1O2wckWfB7W2uk/KDf6B5evQgBBrQ8/wuutr3pm1fz
+	 vwRDvGXSB6wAft8hI8c6K1mXqHQetBXyzoMIvw3a4XbBu058/dyBWmBkkjKWHvibds
+	 zLm7dMYveplj67gHHolFcxTvypWINm3M+BkFDicpGyrgA7bUX8qQM2BCmFynycup1f
+	 mGYgDjn+90vaqrH3ERNDyyfn8VPGn6e6y7wSaqS+R7A6Dn15x98lIVedR6fA/fPQ+B
+	 x+AfxlLKrlvcan27uEYLW8Fyr6cUwB9SnI1GghSJZpS1V7kFscOaMRCqpASD/0K5nH
+	 to2ESXtN/8AAQ==
+Message-ID: <15b31289dfafa2516e524aadcb02a6af.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240404140750.78549701.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600005.china.huawei.com (7.193.23.191)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <SEZPR06MB69596A0104AA2385391049EA96052@SEZPR06MB6959.apcprd06.prod.outlook.com>
+References: <20240225-pll-v1-0-fad6511479c6@outlook.com> <20240225-pll-v1-1-fad6511479c6@outlook.com> <d8dc639c2c6d188d2ce3728573d9a53d.sboyd@kernel.org> <SEZPR06MB6959E563B692827A3E5152DD96052@SEZPR06MB6959.apcprd06.prod.outlook.com> <fa5fe57faeda3323174e4caddc1ac2a6.sboyd@kernel.org> <SEZPR06MB69596A0104AA2385391049EA96052@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Subject: Re: [PATCH RFC 1/2] clk: hisilicon: rename hi3519 PLL registration function
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, Igor Opaniuk <igor.opaniuk@foundries.io>, Jorge Ramirez-Ortiz Gmail <jorge.ramirez.ortiz@gmail.com>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Michael Turquette <mturquette@baylibre.com>, Yang Xiwen <forbidden405@outlook.com>, Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Date: Thu, 11 Apr 2024 20:03:04 -0700
+User-Agent: alot/0.10
 
-On 2024/4/5 4:07, Alex Williamson wrote:
-> On Tue, 2 Apr 2024 11:24:32 +0800
-> Longfang Liu <liulongfang@huawei.com> wrote:
-> 
->> Add a debugfs document description file to help users understand
->> how to use the hisilicon accelerator live migration driver's
->> debugfs.
->>
->> Update the file paths that need to be maintained in MAINTAINERS
->>
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->> ---
->>  .../ABI/testing/debugfs-hisi-migration        | 34 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  2 files changed, 35 insertions(+)
->>  create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
->>
->> diff --git a/Documentation/ABI/testing/debugfs-hisi-migration b/Documentation/ABI/testing/debugfs-hisi-migration
->> new file mode 100644
->> index 000000000000..3d7339276e6f
->> --- /dev/null
->> +++ b/Documentation/ABI/testing/debugfs-hisi-migration
->> @@ -0,0 +1,34 @@
->> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/data
->> +Date:		Apr 2024
->> +KernelVersion:  6.9
-> 
-> At best 6.10 with a merge window in May.
-> 
->> +Contact:	Longfang Liu <liulongfang@huawei.com>
->> +Description:	Read the live migration data of the vfio device.
->> +		These data include device status data, queue configuration
->> +		data and some task configuration data.
->> +		The output format of the data is defined by the live
->> +		migration driver.
-> 
-> "Dumps the device debug migration buffer, state must first be saved
-> using the 'save' attribute."
-> 
->> +
->> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/attr
->> +Date:		Apr 2024
->> +KernelVersion:  6.9
->> +Contact:	Longfang Liu <liulongfang@huawei.com>
->> +Description:	Read the live migration attributes of the vfio device.
->> +		it include device status attributes and data length attributes
->> +		The output format of the attributes is defined by the live
->> +		migration driver.
-> 
-> AFAICT from the previous patch, this attribute is useless.
-> 
->> +
->> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/cmd_state
->> +Date:		Apr 2024
->> +KernelVersion:  6.9
->> +Contact:	Longfang Liu <liulongfang@huawei.com>
->> +Description:	Used to obtain the device command sending and receiving
->> +		channel status. If successful, returns the command value.
->> +		If failed, return error log.
->> +
-> 
-> Seems like it statically returns "OK" plus the actual value.
-> 
-> 
->> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/save
->> +Date:		Apr 2024
->> +KernelVersion:  6.9
->> +Contact:	Longfang Liu <liulongfang@huawei.com>
->> +Description:	Trigger the Hisilicon accelerator device to perform
->> +		the state saving operation of live migration through the read
->> +		operation, and output the operation log results.
-> 
-> These interfaces are confusing, attr and data only work if there has
-> either been a previous save OR the user migration process closed saving
-> or resuming fds in the interim, and the user doesn't know which one
-> they get.  Note that debug_migf isn't even discarded between
-> open/close, only cmd and save require the device to be opened by a
-> user, data and attr might continue to return data from some previous
-> user save, resume, or debugfs save.
->
+Quoting Yang Xiwen (2024-04-11 03:31:58)
+> On 4/11/2024 3:53 PM, Stephen Boyd wrote:
+> > Quoting Yang Xiwen (2024-04-11 00:44:33)
+> >> On 4/11/2024 2:52 PM, Stephen Boyd wrote:
+> >>> Quoting Yang Xiwen via B4 Relay (2024-02-24 08:56:09)
+> >>>> diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisil=
+icon/clk-hi3559a.c
+> >>>> index ff4ca0edce06..77fa4203a428 100644
+> >>>> --- a/drivers/clk/hisilicon/clk-hi3559a.c
+> >>>> +++ b/drivers/clk/hisilicon/clk-hi3559a.c
+> >>>> @@ -452,7 +452,7 @@ static const struct clk_ops hisi_clk_pll_ops =3D=
+ {
+> >>>>           .recalc_rate =3D clk_pll_recalc_rate,
+> >>>>    };
+> >>>>   =20
+> >>>> -static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clk=
+s,
+> >>>> +static void _hisi_clk_register_pll(struct hi3559av100_pll_clock *cl=
+ks,
+> >>> Prefix it with hi3559a then to be SoC specific please. But this is al=
+so
+> >>> static so I'm not sure why this patch is needed at all.
+> >>
+> >> it includes the header that marks this function non-static. Also the
+> >> prototype is incompatible.
+> > What is 'it'?
+>=20
+>=20
+> The line 18 `#include "clk.h"`, and please see patch 2.
+>=20
+>=20
+> Patch 2 added 2 functions to "clk.h", one of them reused the=20
+> `hisi_clk_register_pll` name with a different prototype.
+>=20
+>=20
+> >
+> >   $ git grep hisi_clk_register_pll
+> >   drivers/clk/hisilicon/clk-hi3559a.c:static void hisi_clk_register_pll=
+(struct hi3559av100_pll_clock *clks,
+> >   drivers/clk/hisilicon/clk-hi3559a.c:    hisi_clk_register_pll(hi3559a=
+v100_pll_clks,
+>=20
+>=20
+> a snippet copied from patch 2:
+>=20
+>=20
+> +int hisi_clk_register_pll(struct device *dev, const struct hisi_pll_cloc=
+k *clks,
+> +                         int nums, struct hisi_clock_data *data);
+>=20
+>=20
 
-data: Indicates the device migration data obtained after the migration is completed.
-This data is saved in debug_migf. The user reads it through "cat" and
-presents it to the user in the form of hexadecimal pure data.
-
-attr: Indicates the configuration parameters of the migration process after the
-migration is completed. These parameters are saved in vfio device and debug_migf.
-The user reads it through "cat" and presents it to the user in the form of key-value
-pairs such as <attribute name, attribute value>.
-
-Save is an action process. After "cat" it, a migration save operation will be
-performed and the result data will be updated to debug_migf.
-
-There is still a big difference between data and attr, and the data formats are
-also different. Not merging makes it easier for users to obtain information.
-If you feel confused about save, it is recommended to use migrate_save.
-
-Thanks,
-Longfang.
-
-> 
-> 
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 7625911ec2f1..8c2d13b13273 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -23072,6 +23072,7 @@ M:	Longfang Liu <liulongfang@huawei.com>
->>  M:	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
->>  L:	kvm@vger.kernel.org
->>  S:	Maintained
->> +F:	Documentation/ABI/testing/debugfs-hisi-migration
->>  F:	drivers/vfio/pci/hisilicon/
->>  
->>  VFIO MEDIATED DEVICE DRIVERS
-> 
-> .
-> 
+Ok, got it. Prefix the existing hisi_clk_register_pll() as
+hi3559a_clk_register_pll().
 
