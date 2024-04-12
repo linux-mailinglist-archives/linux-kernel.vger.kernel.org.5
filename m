@@ -1,77 +1,69 @@
-Return-Path: <linux-kernel+bounces-142931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA6FB8A3232
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:21:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B66B8A323F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:22:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994D5284788
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:21:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DDBD1F2619A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5107B1482F0;
-	Fri, 12 Apr 2024 15:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSaKeSH7"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 319B8149018;
+	Fri, 12 Apr 2024 15:19:46 +0000 (UTC)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FE33145B36
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0559E148FEB;
+	Fri, 12 Apr 2024 15:19:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712935055; cv=none; b=ituj6lHSuleLzUoBneNKKLnH9wtSneaekM3TFV3BBchYv7z0yuZQr8iWlMLbQyy1GB7u159B2tFoqz4zsQzHh9Ik87pzIT1CE0Z+6wss0HXDdLAYCSCJUvQNiQVoqQO9Tx4ZlE3uDDUUmbMR9MW3eGT3iMduubLSjvn3YAyrUO8=
+	t=1712935185; cv=none; b=QLUS2TzV625M2vi++EwCyHKZ3LnaVot6HS3PSuQ3yx3fTehIQLxIbcK2+99arpTynTNNpcQw/j215uMXq41+7RtDUkKky4ES8QPk/qpDmE83UexGHHbFXZo9ZazSYHI55goQ/PK6LiAOswjm5ZnOT7Y6R7BV4ookBKP7AuGQjW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712935055; c=relaxed/simple;
-	bh=qcMiL2ufsHXp7WFWbsB9/Gxuc3YOSuDXAu/2vPMjgG8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EfL8dHLF8gmwOlEeEmp43tAkUbgc8Jfk6/2Lki3nxjjCyFhe8Enweinyo9b2+JnQTLoQPxkz9JGzC7Jrvu5xmCfAC0aKhK+qauya3OhmBvqNtiZQazBekpbuXX8yl+/BI2d10QHDyNY9mMFKrfaF/DnikxUi8FepjvlcffwTQRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSaKeSH7; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1712935185; c=relaxed/simple;
+	bh=FvqEqe3MTT50afwWaUsr48s47BsocIrCd/3V3OFcp9Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nDWiMiWWylkQyqm999BGQGLSaH7oeezSo96AjSE2O8d1AM674ZHT5SjD+Zzn51t/KwRCcGWs7qjlUQAmC0FZJKR8H8a+pDendieSPjawsycmZGe/KNZ00E/XboIn5zSKoSSKshGnQ6jZvPYsb9ERU31Jb0lkbXkCBlq//6jIhGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-343d32aba7eso301922f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712935052; x=1713539852; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oVORJrtQBGCZetsXVvQsSiJEGSqOyrmNrkV1tAuNtSE=;
-        b=iSaKeSH7sNcIAYy4nWS+EuXP8cszIXcbyw457FTuM40rzJ+BT70h2tBd0B2T3PZhn9
-         +MSyWCa1qy42ZfcTGorVoTLj30k3grlyh3Eo+j2aem0c0aDp23JKC1xbIbAt3Jvq9xsA
-         B9Mu9J4A3qNL12bJ6yt2Te2Oek3GbAVICj5h5UCV249uV2xEyFsBcY5dmfW1PLkj5Kx1
-         r9z97nyp06XeXMeX6ZaJpMXBzLPmjXnN1PTpqnfNmb7sf91D7N1Pw+udZKufnMHjjcQl
-         f/EeBIcxG+/cfCDAg4mLKT/x2T9HMrO+neU2m4HvAvMe7dFv/y/cV8m2Oo0L2IFrDZH1
-         wqtQ==
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a521fd786beso130655966b.3;
+        Fri, 12 Apr 2024 08:19:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712935052; x=1713539852;
+        d=1e100.net; s=20230601; t=1712935182; x=1713539982;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=oVORJrtQBGCZetsXVvQsSiJEGSqOyrmNrkV1tAuNtSE=;
-        b=A4YGygyn+dRUMJHJFL9DhX6Cjl14eHaRh8p4bRhTaR//bRbF7AzCbvXzTHkrT+Ancz
-         h1esuOMeGusVedbCkdPMT0ow7ozAeniRVSHST21DKsjxIkKWGC/fevjsH1BfjBz0B/LO
-         SYa6aW6swOCQkCsEDswRRsufHXpP1IsnfCOVEv/cYCpc/2psqbLtXTfsuA4ALHBOOSaK
-         UOlbB7+w96rZ5f7NxMWCO9d3XIXEK8HrM/PwnKyItZniWDekROe/YjmOXHPG/m4I+Lhr
-         TMH5eHZWulmZD6AJwLE9i8tYK+Wclf3bWIP8y9W3Mjff7ANMPN2SiNRATg9lZ9W9Z9D2
-         nvJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqveV6oBayBBR9RPQ6LG2CbU+4C/CMjwQHgoZ+HSJpzWq0+qQTkZLRvXV0jWWxz1CDIcxYbE+ifwa44FLYX4a5vbtjAk+EJp5AQUxv
-X-Gm-Message-State: AOJu0YxL89X5JMYRzb8FTAuG7U+7CGaafGm1Vzerg58hOYcAQASl+dQk
-	B+Z3DKOOW1MYQd9FMMamAdxJfIyY7zWuiO2AVA3dH9sTWxk0YamxTCp1Fg==
-X-Google-Smtp-Source: AGHT+IEv4YmJAi7c4JNV+frTjtshhbBZ/wuLesD2ZvAli872i2Xf2hKyjo7HlygcAY4V6H5bTvxStw==
-X-Received: by 2002:adf:f308:0:b0:346:500f:9297 with SMTP id i8-20020adff308000000b00346500f9297mr1990455wro.2.1712935052186;
-        Fri, 12 Apr 2024 08:17:32 -0700 (PDT)
-Received: from ivan-HLYL-WXX9.guest.codethink.co.uk ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id c10-20020a5d4cca000000b0034698307cf8sm4474332wrt.15.2024.04.12.08.17.30
+        bh=Toy+6eJwj8m4A5nHvTu6+7St99Me1YSKR5Lk0IsG71I=;
+        b=KzQg3u8Lg13SmWnHZo67LrOZBuNZUuuxvbB4E0jRL3z+nvMDvb6NORVnLBJtrqgj03
+         Bmh6M42JH7VeTGvCjgZ8Pd7r3Yu031cRTpDJpNI/iqWbJ44TElBT8Gq+QgSrt5E91S9x
+         k/shhsBtvz1uXqfmzCXuResX0O6NdAeeZgnrG/T9Zz2R9yMpoDHNv1JqaTrW/jjITrR+
+         i6InVEswKKBEHxeNe2zBTdUDjQgAG0kyKyORqxSYmA4FBp7/oFQfWkeR1+gH2FRgNyH5
+         M7wjXIwgOf45w5YjbpLBZ1UV99cGl0AmpXvJIDXw+/3gS9uh06UBDPq1vD+kPf8rSLTk
+         O+Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCVCMD/ubU/iGZ9wHkb8noDIYfBESWeoKerC+dvJUtvm/Z543yv9a7DngUjtEpgEpCM3BwFnLJ9dNw5rt4pR4h20Ztg+b948JVQUl++K
+X-Gm-Message-State: AOJu0YznYY4dkaS0bcbfhrffeUcFKBS8aH5IQJyGkXlFJz4263sNHIKg
+	BqKQqELhiOP1iSFdd/Yuce0Ysy+HTWa72O/FsGxHK9ysovUWUhhd
+X-Google-Smtp-Source: AGHT+IEk7l/ee2i5g6wDGH+J38stVV5NJ/nSwaYbDEoMIwN8scIhkT4LedWitUP6SSacIZp0eiYmrw==
+X-Received: by 2002:a17:906:607:b0:a52:2e91:321e with SMTP id s7-20020a170906060700b00a522e91321emr1988820ejb.72.1712935182068;
+        Fri, 12 Apr 2024 08:19:42 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id w17-20020a1709067c9100b00a4a396ba54asm1928145ejo.93.2024.04.12.08.19.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 08:17:31 -0700 (PDT)
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dca: make dca_class a static const structure
-Date: Fri, 12 Apr 2024 16:17:26 +0100
-Message-Id: <20240412151726.189030-1-ivan.orlov0322@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 12 Apr 2024 08:19:41 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: "David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	horms@kernel.org
+Subject: [PATCH net-next 1/2] net: ipv6_gre: Do not use custom stat allocator
+Date: Fri, 12 Apr 2024 08:19:25 -0700
+Message-ID: <20240412151928.2895993-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,86 +72,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The driver core allows for struct class to be in read-only memory. Move
-the dca_class structure to be declared at build time placing it into
-read-only memory, instead of having to be dynamically allocated at boot
-time.
+With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+convert veth & vrf"), stats allocation could be done on net core
+instead of in this driver.
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+With this new approach, the driver doesn't have to bother with error
+handling (allocation failure checking, making sure free happens in the
+right spot, etc). This is core responsibility now.
+
+Remove the allocation in the ip6_gre and leverage the network
+core allocation instead.
+
+Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/dca/dca-sysfs.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ net/ipv6/ip6_gre.c | 22 +++++-----------------
+ 1 file changed, 5 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/dca/dca-sysfs.c b/drivers/dca/dca-sysfs.c
-index fcc83ede0909..b915c2b4601e 100644
---- a/drivers/dca/dca-sysfs.c
-+++ b/drivers/dca/dca-sysfs.c
-@@ -13,7 +13,9 @@
- #include <linux/gfp.h>
- #include <linux/export.h>
+diff --git a/net/ipv6/ip6_gre.c b/net/ipv6/ip6_gre.c
+index 95fbdaf85711..b5b417902c0a 100644
+--- a/net/ipv6/ip6_gre.c
++++ b/net/ipv6/ip6_gre.c
+@@ -1444,7 +1444,6 @@ static void ip6gre_dev_free(struct net_device *dev)
  
--static struct class *dca_class;
-+static const struct class dca_class = {
-+	.name = "dca",
-+};
- static struct idr dca_idr;
- static spinlock_t dca_idr_lock;
- 
-@@ -22,14 +24,14 @@ int dca_sysfs_add_req(struct dca_provider *dca, struct device *dev, int slot)
- 	struct device *cd;
- 	static int req_count;
- 
--	cd = device_create(dca_class, dca->cd, MKDEV(0, slot + 1), NULL,
-+	cd = device_create(&dca_class, dca->cd, MKDEV(0, slot + 1), NULL,
- 			   "requester%d", req_count++);
- 	return PTR_ERR_OR_ZERO(cd);
+ 	gro_cells_destroy(&t->gro_cells);
+ 	dst_cache_destroy(&t->dst_cache);
+-	free_percpu(dev->tstats);
  }
  
- void dca_sysfs_remove_req(struct dca_provider *dca, int slot)
- {
--	device_destroy(dca_class, MKDEV(0, slot + 1));
-+	device_destroy(&dca_class, MKDEV(0, slot + 1));
+ static void ip6gre_tunnel_setup(struct net_device *dev)
+@@ -1453,6 +1452,7 @@ static void ip6gre_tunnel_setup(struct net_device *dev)
+ 	dev->needs_free_netdev = true;
+ 	dev->priv_destructor = ip6gre_dev_free;
+ 
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 	dev->type = ARPHRD_IP6GRE;
+ 
+ 	dev->flags |= IFF_NOARP;
+@@ -1500,13 +1500,9 @@ static int ip6gre_tunnel_init_common(struct net_device *dev)
+ 	tunnel->net = dev_net(dev);
+ 	strcpy(tunnel->parms.name, dev->name);
+ 
+-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!dev->tstats)
+-		return -ENOMEM;
+-
+ 	ret = dst_cache_init(&tunnel->dst_cache, GFP_KERNEL);
+ 	if (ret)
+-		goto cleanup_alloc_pcpu_stats;
++		return ret;
+ 
+ 	ret = gro_cells_init(&tunnel->gro_cells, dev);
+ 	if (ret)
+@@ -1530,9 +1526,6 @@ static int ip6gre_tunnel_init_common(struct net_device *dev)
+ 
+ cleanup_dst_cache_init:
+ 	dst_cache_destroy(&tunnel->dst_cache);
+-cleanup_alloc_pcpu_stats:
+-	free_percpu(dev->tstats);
+-	dev->tstats = NULL;
+ 	return ret;
  }
  
- int dca_sysfs_add_provider(struct dca_provider *dca, struct device *dev)
-@@ -49,7 +51,7 @@ int dca_sysfs_add_provider(struct dca_provider *dca, struct device *dev)
- 	if (ret < 0)
- 		return ret;
+@@ -1893,13 +1886,9 @@ static int ip6erspan_tap_init(struct net_device *dev)
+ 	tunnel->net = dev_net(dev);
+ 	strcpy(tunnel->parms.name, dev->name);
  
--	cd = device_create(dca_class, dev, MKDEV(0, 0), NULL, "dca%d", dca->id);
-+	cd = device_create(&dca_class, dev, MKDEV(0, 0), NULL, "dca%d", dca->id);
- 	if (IS_ERR(cd)) {
- 		spin_lock(&dca_idr_lock);
- 		idr_remove(&dca_idr, dca->id);
-@@ -71,20 +73,22 @@ void dca_sysfs_remove_provider(struct dca_provider *dca)
+-	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+-	if (!dev->tstats)
+-		return -ENOMEM;
+-
+ 	ret = dst_cache_init(&tunnel->dst_cache, GFP_KERNEL);
+ 	if (ret)
+-		goto cleanup_alloc_pcpu_stats;
++		return ret;
  
- int __init dca_sysfs_init(void)
- {
-+	int err;
-+
- 	idr_init(&dca_idr);
- 	spin_lock_init(&dca_idr_lock);
+ 	ret = gro_cells_init(&tunnel->gro_cells, dev);
+ 	if (ret)
+@@ -1921,9 +1910,6 @@ static int ip6erspan_tap_init(struct net_device *dev)
  
--	dca_class = class_create("dca");
--	if (IS_ERR(dca_class)) {
-+	err = class_register(&dca_class);
-+	if (err) {
- 		idr_destroy(&dca_idr);
--		return PTR_ERR(dca_class);
-+		return err;
- 	}
- 	return 0;
+ cleanup_dst_cache_init:
+ 	dst_cache_destroy(&tunnel->dst_cache);
+-cleanup_alloc_pcpu_stats:
+-	free_percpu(dev->tstats);
+-	dev->tstats = NULL;
+ 	return ret;
  }
  
- void __exit dca_sysfs_exit(void)
- {
--	class_destroy(dca_class);
-+	class_unregister(&dca_class);
- 	idr_destroy(&dca_idr);
- }
+@@ -1948,6 +1934,7 @@ static void ip6gre_tap_setup(struct net_device *dev)
+ 	dev->needs_free_netdev = true;
+ 	dev->priv_destructor = ip6gre_dev_free;
  
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 	dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+ 	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+ 	netif_keep_dst(dev);
+@@ -2250,6 +2237,7 @@ static void ip6erspan_tap_setup(struct net_device *dev)
+ 	dev->needs_free_netdev = true;
+ 	dev->priv_destructor = ip6gre_dev_free;
+ 
++	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 	dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+ 	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+ 	netif_keep_dst(dev);
 -- 
-2.34.1
+2.43.0
 
 
