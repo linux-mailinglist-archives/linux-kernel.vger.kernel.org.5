@@ -1,194 +1,249 @@
-Return-Path: <linux-kernel+bounces-142738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 422AF8A2F81
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:34:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0D658A2F9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:36:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AFCDB241AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:34:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E37051C21F5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B8A83CD4;
-	Fri, 12 Apr 2024 13:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3761E83CCE;
+	Fri, 12 Apr 2024 13:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jY/IlpJN"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="jIAcMZ9w"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C1D83CBA;
-	Fri, 12 Apr 2024 13:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3EAC1DFD9;
+	Fri, 12 Apr 2024 13:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712928855; cv=none; b=F9LGXfMXzoz10MwybRY+Nnfl9Ll9X7aOcih68XXcK1WJ0HzXe8s1kyZmOEjRcjTjrjLe4gQYq4UMduq+DrNxGx+6t07/c6ASeQMuevuonXpk2uNltY8P2KeQQ71SmRolew2eOe397H7eQoDRZ+gNQxR/sGzOeYeGh4nlBJgbpBc=
+	t=1712928984; cv=none; b=M8NLKaEHvklJZM5fnulVt0GWQ8HWYFTOWU13r8VnnPJZziI5gdRoz8G44hTbxr84QOdXEwAKl3fx4SM2W3rxMsdtNtFe2dOlwDtiUFD/ztHNNPVROEwdzxsgd2IU3rYzagfAX8r7U4GLW7lQPIkfyhB8PemaK5b6sv/8ixKyA7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712928855; c=relaxed/simple;
-	bh=bXuJBsmh+9cSqT7Y0dmwOptaeFP94AwFcrF1Nc5BiuI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NUiuqKF1sfUS/0s0FM15N7ESTCNspY0Suw6upXM4qylEZputXdD0tJkfidDq3jtb6zxnku9QO0QHnDg+UmhVfZ91k93fnkO3GJNnhKzaEITtb2vS8W1bBr7zQXXq+hX2VPobPTNmo5ohT+4d/VrbrANo2HtkeNuwRioIlAtqJEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jY/IlpJN; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-22e6b61d652so375897fac.0;
-        Fri, 12 Apr 2024 06:34:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712928853; x=1713533653; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KvnQBzgnQ9uzdcnNmTyAu4+OT66V0srgD7VC/MHPQzE=;
-        b=jY/IlpJN+sJu/dLKO2vpnbnmb6X1sT+W9+UBJqpfpUSwnAKl57tDb0HwFIf5PQNSsE
-         StgaWZZ1L2W2IDIDU0I4XMEQWbT9bjDnteOuGu5N1IPZbEpZFT9t4xtF0+Bce/Vwd/EU
-         vVmM6RCsFOSfGbZR4sy80OqVkl1XWfPZUL36H7d7Yw1XViNwrFLrjDKQucPzxodJ/x7U
-         za3I+k7QO4vAzlWip91jEC+EbXMHK6Lo0L6CDcDDd4GXADQizHU9M/JKea2c3Cdh5czg
-         FTp6KVOb+CFNyOSzPFTrxKvKiXJ4EMHWxM6qShnXfrCd9eICNVTVFraKbq6viJk21Dvl
-         K3mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712928853; x=1713533653;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KvnQBzgnQ9uzdcnNmTyAu4+OT66V0srgD7VC/MHPQzE=;
-        b=SVcdhzLP2Ha7kBrTiTv4rzQR3VbWtYSqWanVUqDAZMHtbs0DVM8G/Zo5kKrpIC4KPM
-         uBzRELgRZcf+rFNDiFbD9U+RpU2j4bToErxKNVO8v5U/URly9o6Pdm4BD87cTze2ip+f
-         93BzaE0ET5n+iLZEp8aWBcXCFukKNP54h4QNKJOv9JOU0GryAR9MOuEaJwI9zLRXN05j
-         bxqIxpiJq9gsnk/TT72cTWglaWZXeRKPuKuwo3InJQpG5MFFtfc8BtcSVEIFi9YPbHLU
-         Lwnh6yjBGEhxCSpchDR277loBHeMoOaosHdbSTM8NiY0L+N0WY93bA9PVXVav36KDcqk
-         jP1w==
-X-Forwarded-Encrypted: i=1; AJvYcCVKVqGH3Of0Mgo40jmK0LhbKoaJJdejUxQRDNTLVqxIc5B1cJ5GfSFRLsHalHCdSMTqNcUhdEZop3JfJI9qPfXx0ONz0TSIvezUx2zISiBsxFCoQXcECLR+hS+dkW9HTKulCg/5/qRojRcszK4=
-X-Gm-Message-State: AOJu0Yz5/JPsvoRwa5uODaQb/19KBIn13yvP1v3XoaRa8r8wwr2BoCuJ
-	ownQN/0Jc/eeyBk/A4hjt7psS8DqJUtBTDyn/R+rwAxcCDXM+wDh
-X-Google-Smtp-Source: AGHT+IEkVEiOlsnwx7zwiEWGQXRD4FOqTaoslwquKyUNiezCxlBMBl7euy1yuc9DBbIHaY9eVZakjw==
-X-Received: by 2002:a05:6870:4689:b0:22e:df68:ee7a with SMTP id a9-20020a056870468900b0022edf68ee7amr3006137oap.42.1712928853468;
-        Fri, 12 Apr 2024 06:34:13 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id h13-20020ac8714d000000b00434ee466ea6sm2226084qtp.22.2024.04.12.06.34.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 06:34:12 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 7799C1200066;
-	Fri, 12 Apr 2024 09:34:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 12 Apr 2024 09:34:12 -0400
-X-ME-Sender: <xms:VDgZZnw8m58zfDWAICVPSINpABCStGj9owgD0koi_5J3WhbMugTX2A>
-    <xme:VDgZZvREtv-v7UFgfFK_9ynT1m5MReZZcukxuC89K6tycxzVW25QJAKZbYPwOXCr7
-    B-3kPsBGqUePHKVBg>
-X-ME-Received: <xmr:VDgZZhXs3sK4JcbIc0qob9KfgPyKNktLZii63NSIQ9LD8etloFo1y2Wjgg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeiuddgieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhepvefghfeuveekudetgfevudeuudejfeeltdfhgfehgeekkeeigfdukefh
-    gfegleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:VDgZZhjPRF8HpIK5wwWhT1hdRsTM-MG8UsK8_9wr_aCzSLDBqBsDkA>
-    <xmx:VDgZZpCBv1glBUsQ2gZ2WtoWWu-h1sT4D7buVspeF887xnA3W6_r0g>
-    <xmx:VDgZZqImmKn7-K5zlthz9EdadcifVY7WHQKcutmY3dZ7LtV-yJvUkw>
-    <xmx:VDgZZoCQc3RdJ-ExBu7fGyGau8j-Kf6lGGC5Lw5pNACnpGXXQEptPg>
-    <xmx:VDgZZlxTuKeUA2JTXZUoQLm_zNPYWTppxb23VIoIeHkgg4FlVS-hO47c>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 12 Apr 2024 09:34:11 -0400 (EDT)
-Date: Fri, 12 Apr 2024 06:34:10 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Miguel Ojeda <ojeda@kernel.org>,
-	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>, bjorn3_gh@protonmail.com,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
-Message-ID: <Zhk4Uqc4LImR2n_r@Boquns-Mac-mini.home>
-References: <20240411230801.1504496-1-boqun.feng@gmail.com>
- <20240411230801.1504496-3-boqun.feng@gmail.com>
- <CANiq72nSSAVkynVaAq7bQKoL6N8K2JUXp8AOVvu7vN+siAhk-Q@mail.gmail.com>
+	s=arc-20240116; t=1712928984; c=relaxed/simple;
+	bh=+f12AoCq1Uk7MdNTnhqJMwJbAErNbJVN3OzdMGHbrj4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pqRxfjkyhJVJiCCFH9VynGrs5FxH2ncTLn6mTPHJhaGhVMUesUqsmskjBxXFxwrGDw8My6JV9EzCFU8CFabFhUab0DDaNFCtFiM08zYQWQEvDbInpFGxHVmmW2fJaEt0zlAJrSEnronLWBuaKn4Hccmvt8x/dI0PVXX6QgCZ7S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=jIAcMZ9w; arc=none smtp.client-ip=74.208.4.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
+	s=s1-ionos; t=1712928975; x=1713533775; i=parker@finest.io;
+	bh=Gt74haBilWrf2DFuac5s7xs1UEykV4iYzenuK42Ti6w=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:
+	 References;
+	b=jIAcMZ9wRc2YuUHrfuNZc8a/ZmNDzNnZxZ5qb8lEc0fvg+D14rTfCamwaHTmbiKS
+	 uzEoCkR1TnBW9ZFpHLO0dyaNcvq/HafZyGhTzWCKmMwSCJb2l/qKUZ09ODxaYq9Hw
+	 WSO3nSOIhYquidnxSuyDZ9Z0LCPW0qBWePdejFCtI3kdk94Ot+6wIPr04Lq8062yG
+	 mPCRV5trFIPbFj50FlBz5BAAKhITwTN5B5Y+i3OEIApJjgMnBQweMd6Xr0L8q7XK+
+	 5CQlSsh3KyDb6DZnrdtZdc6fowL+GKWRLwMYBA528F/P6vXQln4dtmUCVPE6qLQYx
+	 A4JCAWah7zo7nB6fKQ==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
+ mrelay.perfora.net (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 0MVerB-1sGSpd3f83-00YwhH; Fri, 12 Apr 2024 15:36:14 +0200
+Date: Fri, 12 Apr 2024 09:36:13 -0400
+From: Parker Newman <parker@finest.io>
+To: Ilpo =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, LKML <linux-kernel@vger.kernel.org>, linux-serial
+ <linux-serial@vger.kernel.org>, Parker Newman <pnewman@connecttech.com>
+Subject: Re: [PATCH v2 3/7] serial: exar: add support for config/set single
+ MPIO
+Message-ID: <20240412093613.0cbb4362@SWDEV2.connecttech.local>
+In-Reply-To: <b057b1e2-1cf9-2f20-2453-b359a1e89f01@linux.intel.com>
+References: <cover.1712863999.git.pnewman@connecttech.com>
+	<3e671b6c0d11a2d0c292947675ed087eaaa5445e.1712863999.git.pnewman@connecttech.com>
+	<b057b1e2-1cf9-2f20-2453-b359a1e89f01@linux.intel.com>
+Organization: Connect Tech Inc.
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72nSSAVkynVaAq7bQKoL6N8K2JUXp8AOVvu7vN+siAhk-Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:bkX7ucM1qk5+VnygobM35POx/lwpyru7giJyC2mlhFqkUEc5uTf
+ BWLkZK/7UTKX2uy3pAqbuEsaMik5dZu4d9+h8iClEILL2HJ1enAg0TBt8JdeCQdbflt9mg2
+ kbkXG8vRE5zjFAJpzNEFopnBkwNsEJg6XzihZCts8z21vxzkQBX8vlPIatBf6Q0UsSvrYS6
+ hwMvNZ8wTrfIsyH2BlmdQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:z11ttMU+Sow=;yZ1j1QLlQ7kqOHJfM1vaNxLdMci
+ vEF5vMlPI5vB6+orJavTlmip6jjKG60mb1gQJ0Qrgi6mz23izlJ5LsV33fBBgj6PdBMBvqGv4
+ dG9dLOnvTtJp39klqP+oLQWdQWLOYvH7z4y3Vb0Log+56US4/K49lWWsT7/LZ4CPv456rd+rE
+ MdcCvkd6gcbdtC7KwHi4xHwD4p8W1dIIsFaPx4choiXr3V50x0BCplUc5EeGCuXQ+loA08Q5F
+ XdTGOx6gG+DfB3m/v8gciVzHKYRYDVQa1UsmfEFp0ewe7G1VbWeej0RJ41IbiLsiSTShESWaF
+ /vjA8QFdc4lxXga/xSzbOyyEYmRwh875xp6LUtrfvDDDXo1Cji+Gw8y2zvqKbuVi4wjQnNefQ
+ 3wFLIEIT3U+eDZ9d/ULXitEN0CKEE8UDFUmMgUR41MShUMvb06FwhjJwMgkieRMS8ZdHWrH0a
+ kb01iQZSWiFrt/ky9dG8jueWfJHGvGowiAGHUIcHElDVNhMsPKQNGcLSVJ+PPNqY9We0rUtMT
+ Owt5/BD4k66ZNcJ9OW56hGB0egKr+SfpaIIQjz3oXTBaGQ6+/oMhKApWVsQ5hXO86CQwXV3bQ
+ /y8xXDtvNDzV1VgMQLvje0LNrqy4qCuWIn6D5DT02JDJ1ytJTsuivhOkB0rq85YRILDq4/oN4
+ 0HOHT8QSQ1vkCJRjawRkxFrVykn0mgXKXlxA/ghxr7Wq6uwxnn+F7BrsSduGc+rIyNxaxmMbn
+ stiwrOWV8bj1jb05URYsRPMvWFbBSmd4dHOGWUsAtUY+kjfMW9u2yM=
 
-On Fri, Apr 12, 2024 at 09:14:03AM +0200, Miguel Ojeda wrote:
-> On Fri, Apr 12, 2024 at 1:08 AM Boqun Feng <boqun.feng@gmail.com> wrote:
-> >
-> > Currently since Rust code is compiled with "-Coverflow-checks=y", so a
-> 
-> Nit: it is enabled by default, but configurable (`CONFIG_RUST_OVERFLOW_CHECKS`).
-> 
+On Fri, 12 Apr 2024 13:20:41 +0300 (EEST)
+Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
 
-Ok, I will change it accordingly.
+> On Thu, 11 Apr 2024, parker@finest.io wrote:
+>=20
+> > From: Parker Newman <pnewman@connecttech.com>
+> >=20
+> > Adds support for configuring and setting a single MPIO
+> >=20
+> > Signed-off-by: Parker Newman <pnewman@connecttech.com>
+> > ---
+> >  drivers/tty/serial/8250/8250_exar.c | 88 +++++++++++++++++++++++++++++
+> >  1 file changed, 88 insertions(+)
+> >=20
+> > diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8=
+250/8250_exar.c
+> > index 49d690344e65..9915a99cb7c6 100644
+> > --- a/drivers/tty/serial/8250/8250_exar.c
+> > +++ b/drivers/tty/serial/8250/8250_exar.c
+> > @@ -305,6 +305,94 @@ static int exar_ee_read(struct exar8250 *priv, uin=
+t8_t ee_addr)
+> >  	return data;
+> >  }
+> >=20
+> > +/**
+> > + * exar_mpio_config() - Configure an EXar MPIO as input or output
+> > + * @priv: Device's private structure
+> > + * @mpio_num: MPIO number/offset to configure
+> > + * @output: Configure as output if true, inout if false
+> > + *
+> > + * Configure a single MPIO as an input or output and disable trisate. =
+=20
+>=20
+> tristate
+>=20
+> > + * If configuring as output it is reccomended to set value with
+> > + * exar_mpio_set prior to calling this function to ensure default stat=
+e. =20
+>=20
+> Use () if talking about function.
+>=20
+> > + *
+> > + * Return: 0 on success, negative error code on failure
+> > + */
+> > +static int exar_mpio_config(struct exar8250 *priv,
+> > +			unsigned int mpio_num, bool output)
+> > +{
+> > +	uint8_t sel_reg; //MPIO Select register (input/output)
+> > +	uint8_t tri_reg; //MPIO Tristate register
+> > +	uint8_t value;
+> > +	unsigned int bit;
+> > +
+> > +	if (mpio_num < 8) {
+> > +		sel_reg =3D UART_EXAR_MPIOSEL_7_0;
+> > +		tri_reg =3D UART_EXAR_MPIO3T_7_0;
+> > +		bit =3D mpio_num;
+> > +	} else if (mpio_num >=3D 8 && mpio_num < 16) {
+> > +		sel_reg =3D UART_EXAR_MPIOSEL_15_8;
+> > +		tri_reg =3D UART_EXAR_MPIO3T_15_8;
+> > +		bit =3D mpio_num - 8;
+> > +	} else {
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	//Disable MPIO pin tri-state
+> > +	value =3D exar_read_reg(priv, tri_reg);
+> > +	value &=3D ~(BIT(bit)); =20
+>=20
+> Use more meaningful variable name than "bit", it could perhaps even avoid=
+=20
+> the need to use the comment if the code is self-explanary with better=20
+> variable name.
+>=20
+> > +	exar_write_reg(priv, tri_reg, value);
+> > +
+> > +	value =3D exar_read_reg(priv, sel_reg);
+> > +	//Set MPIO as input (1) or output (0) =20
+>=20
+> Unnecessary comment.
+>=20
+> > +	if (output)
+> > +		value &=3D ~(BIT(bit)); =20
+>=20
+> Unnecessary parenthesis.
+>=20
+> > +	else
+> > +		value |=3D BIT(bit);
+> > +
+> > +	exar_write_reg(priv, sel_reg, value); =20
+>=20
+> Don't leave empty line into RMW sequence.
+>=20
+> > +
+> > +	return 0;
+> > +}
+> > +/**
+> > + * exar_mpio_set() - Set an Exar MPIO output high or low
+> > + * @priv: Device's private structure
+> > + * @mpio_num: MPIO number/offset to set
+> > + * @high: Set MPIO high if true, low if false
+> > + *
+> > + * Set a single MPIO high or low. exar_mpio_config must also be called
+> > + * to configure the pin as an output.
+> > + *
+> > + * Return: 0 on success, negative error code on failure
+> > + */
+> > +static int exar_mpio_set(struct exar8250 *priv,
+> > +		unsigned int mpio_num, bool high)
+> > +{
+> > +	uint8_t reg;
+> > +	uint8_t value;
+> > +	unsigned int bit;
+> > +
+> > +	if (mpio_num < 8) {
+> > +		reg =3D UART_EXAR_MPIOSEL_7_0;
+> > +		bit =3D mpio_num;
+> > +	} else if (mpio_num >=3D 8 && mpio_num < 16) {
+> > +		reg =3D UART_EXAR_MPIOSEL_15_8;
+> > +		bit =3D mpio_num - 8;
+> > +	} else {
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	value =3D exar_read_reg(priv, reg);
+> > +
+> > +	if (high)
+> > +		value |=3D BIT(bit);
+> > +	else
+> > +		value &=3D ~(BIT(bit)); =20
+>=20
+> Extra parenthesis.
+>=20
+> > +
+> > +	exar_write_reg(priv, reg, value); =20
+>=20
+> Again, I'd put this kind of simple RMW sequence without newlines.
+>=20
+> > +
+> > +	return 0;
+> > +} =20
 
-> > although overflow detection is nice to have, however this makes
-> > `Ktime::sub()` behave differently than `ktime_sub()`, moreover it's not
-> > clear that the overflow checking is helpful, since for example, the
-> > current binder usage[1] doesn't have the checking.
-> >
-> > Therefore make `Ktime::sub()` have the same semantics as `ktime_sub()`:
-> > overflow behaves like 2s-complement wrapping sub.
-> 
-> If `ktime_sub()`'s callers rely on wrapping in some cases, then an
-> alternative we should consider is having a method for explicitly
-> wrapping, like the integers. This would allow callers to decide and it
+I will fix above.=20
 
-That works for me, although I would prefer `Ktime::sub()` is wrapping
-sub and we have another function doing a safe version of sub.
+> There are zero users of these functions so I couldn't review if two=20
+> functions are really needed, or if the difference could be simply handled=
+=20
+> using a boolean parameter.
+>=20
 
-> would make the expected semantics clear since the beginning (which is
-> the easiest time to add this kind of thing) for Rust code.
-> 
-> Otherwise, I agree we should at least document the preconditions clearly.
-> 
-> Having said that, I see a `ktime_add_unsafe()` too, which was added
-> due to a UBSAN report for `ktime_add()` in commit 979515c56458 ("time:
-> Avoid undefined behaviour in ktime_add_safe()"). There is also a
-> private `ktime_add_safe()` too, which is a saturating one.
-> 
+The functions are used by code in other patches in this series.=20
 
-Exactly, ktime_add_safe() doesn't panic if overflow happens, right?
-I think that's pretty clear on how time subsystem wants to handle
-overflow (saturating it, or zeroing it instead of panicing).
+I kept exar_mpio_set() and exar_mpio_config() separate because we plan on
+adding support for other features in the future that require reading and=20
+writing MPIO.=20
 
-> So, given that, can callers actually rely on wrapping for these
-> functions, or not? The documentation on the C side could perhaps be
-> clarified here (including the mention of UB in `ktime_add_unsafe()` --
-> we use `-fno-strict-overflow`) and perhaps using the `wrapping_*()` C
-> functions too.
-> 
+Thanks,
+-Parker
 
-I must defer this to Thomas.
 
-> In addition, Binder calls `ktime_ms_delta()`, not `ktime_sub()`,
-> right? In that case the arguments are called `later` and `earlier`,
-> perhaps those have a different expectation even if `ktime_sub()` is
-> allowed to overflow and thus it would make sense to check in that
-> function only instead? (and document accordingly)
-> 
-
-Maybe, however neither of this function probably shouldn't have the
-panic-on-overflow behavior. So I agree that overflow checking is not a
-bad thing, but when to check and how to handle overflow should be
-controlled by the users, and making the default behavior
-panic-on-overflow doesn't look reasonable to me.
-
-Regards,
-Boqun
-
-> Thanks!
-> 
-> Cheers,
-> Miguel
+=20
 
