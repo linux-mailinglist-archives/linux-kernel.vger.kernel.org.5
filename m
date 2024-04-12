@@ -1,87 +1,95 @@
-Return-Path: <linux-kernel+bounces-142059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28038A26E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:44:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB318A26E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DB1FB24DB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:44:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A3921C20D93
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5807C481D5;
-	Fri, 12 Apr 2024 06:44:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IX+9AUAk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776E6446B6;
+	Fri, 12 Apr 2024 06:46:34 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1E547A5D;
-	Fri, 12 Apr 2024 06:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15C638DC9;
+	Fri, 12 Apr 2024 06:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712904268; cv=none; b=bl09+sSqni1+EjGJq8Dx46pNHa10NxSkLWcXKjZk7XbdqgPjrGhT2MYgVYawUKm50KWD+E9vdIioAktZojFrxP3JjSmSedEK3598blWX5JCzgcX1vQLHS78q18Ld/AE0VGp2LEzU7A+2GLpqiZwMni7VQS6r2K3jdTQrkVAe+Wo=
+	t=1712904394; cv=none; b=nEpiUMrEd+RBK5k2dNePrVpwQYIiIgaDeHuCL8A1kN98PlHlqLIQg/h+X01vKPHbKk6FNwlwehvkSI/mibhaf6hBY0T4RzY5UJKpUz5HDJJ/ne5sRprz5w4if7zJ2EYaQVWZPRiphy4DrAURih72zFoL1yPWc+9QdX9rkKoX/xQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712904268; c=relaxed/simple;
-	bh=p/wEHDi9WkTon8K9W0QGAWN2QZ/PbnxknsFcFz7yp9M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c9v72qSIL71q4ivhPBk/Er0nxHd9btG9oE/sUJMDAT6wpY0TXfPsZLg2mfzchOGAEggYW74vrMvTtYyAchxmdQCrIrLI3yxRGu9KTNwEpTu19qm29/O5x8Vlx/AMUKajBqXUmjHt92Z0km/du8J5+8c2I8xcM2f2Cn613+TkGbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IX+9AUAk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B65E1C2BBFC;
-	Fri, 12 Apr 2024 06:44:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712904268;
-	bh=p/wEHDi9WkTon8K9W0QGAWN2QZ/PbnxknsFcFz7yp9M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IX+9AUAkW6h0r9HL+ctHFkv4loKhrTf5AD7L3futOE2ncVsLk687T62Vp+OMIugqk
-	 s4GO23iJsYZAyIP4YPY3+Tu53HBDyXXK1xg1iqpfglR/CZpRfJ5ezdcgU8yw0FMnh2
-	 eMoq9twdsdmSxmJGVd8x3z0YpCELMTyi4P5aVEerXuaXzAgppM77V4vzt6JfKV2/bi
-	 rGywNo5jF6EWnaQvYVg3RjmF19Cc9TPlEYSZv2GQ712+lf8j3gHCUuDNxiwWfRTRlD
-	 qzg2GIkd92R1n9qnC+z5K2dNCKm+qaJoesYyzHv1vFL0BMfWRqWpGsd+Rr3xZ7I7zT
-	 gNAXAs8Rs3IQA==
-Date: Fri, 12 Apr 2024 08:44:21 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Charles Mirabile <cmirabil@redhat.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() -
- requirements
-Message-ID: <20240412-zander-graustufen-bf63bbaa88fd@brauner>
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
- <20240411-alben-kocht-219170e9dc99@brauner>
- <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
- <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
- <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com>
- <CABe3_aE_quPE0zKe-p11DF1rBx-+ecJKORY=96WyJ_b+dbxL9A@mail.gmail.com>
- <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
+	s=arc-20240116; t=1712904394; c=relaxed/simple;
+	bh=Oy+Hel7q1Y3lqePMTMMYyggkM6XZ16QFNOxSp8Nh4PI=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=MHGhET9DI6vJAH5qeMowKrtT3WF6WPbkmkYxa/sl/jyZaq8cn5akOZZX0yWn9G9JZ8+rvmh4cfK5zRxCfYlO4Y0lNtIIt/e7vApfDTsulYS/5aadFh04X6ilnU8PWpEzwZxadp7HcKD16Rb6zyxQ4IAX/kUORgF4mJfNf0cOpmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id 9EDC53780C22;
+	Fri, 12 Apr 2024 06:46:29 +0000 (UTC)
+From: "Shreeya Patel" <shreeya.patel@collabora.com>
+In-Reply-To: <20240411095416.853744210@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240411095416.853744210@linuxfoundation.org>
+Date: Fri, 12 Apr 2024 07:46:29 +0100
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
+Message-ID: <3c0c9c-6618d900-5d3-194ac52@77440530>
+Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?6=2E6?= 000/114] 
+ =?utf-8?q?6=2E6=2E27-rc1?= review
+User-Agent: SOGoMail 5.10.0
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 11:13:53AM -0700, Linus Torvalds wrote:
-> On Thu, 11 Apr 2024 at 10:35, Charles Mirabile <cmirabil@redhat.com> wrote:
-> >
-> > And a slightly dubious addition to bypass these checks for tmpfiles
-> > across the board.
-> 
-> Does this make sense?
-> 
-> I 100% agree that one of the primary reasons why people want flink()
-> is that "open tmpfile, finalize contents and permissions, then link
-> the final result into the filesystem".
-> 
-> But I would expect that the "same credentials as open" check is the
-> one that really matters.
+On Thursday, April 11, 2024 15:25 IST, Greg Kroah-Hartman <gregkh@linux=
+foundation.org> wrote:
 
-Yes. There's no need to give O_TMPFILE special status there. We also end
-up with a collection of special-cases which is just unpleasant.
+> This is the start of the stable review cycle for the 6.6.27 release.
+> There are 114 patches in this series, all will be posted as a respons=
+e
+> to this one.  If anyone has any issues with these being applied, plea=
+se
+> let me know.
+>=20
+> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6=
+27-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
+git linux-6.6.y
+> and the diffstat can be found below.
+>=20
+
+KernelCI report for stable-rc/linux-6.6.y for this week :-
+
+## stable-rc HEAD for linux-6.6.y:
+Date: 2024-04-11
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
+git/log/?h=3D3126167a036c76b2c9a53d19f7387cdcaf2ffd19
+
+## Build failures:
+No build failures seen for the stable-rc/linux-6.6.y commit head \o/
+
+## Boot failures:
+No **new** boot failures seen for the stable-rc/linux-6.6.y commit head=
+ \o/
+
+Tested-by: kernelci.org bot <bot@kernelci.org>
+
+Thanks,
+Shreeya Patel
+
 
