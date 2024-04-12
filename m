@@ -1,280 +1,205 @@
-Return-Path: <linux-kernel+bounces-143200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E34CC8A35B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:30:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 386928A35B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:31:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 129F81C2415D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:30:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E45B3286530
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:31:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3FE14EC49;
-	Fri, 12 Apr 2024 18:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5025148FE6;
+	Fri, 12 Apr 2024 18:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jpCRkYro"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZQQWusNG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0032914E2EC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47B11373;
+	Fri, 12 Apr 2024 18:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712946608; cv=none; b=M1AYTsT82Un030k46nObX7TOE7CxcCjd6BzRAtFrWDx23wQ6SK1QDke3MzkWYIiBVmbO21Ogyg3Qbg+9pFoqWVHaqLivQ6MzkQgWSzHeyIZz8kt3LXmgy4QYWHCnSWQmuC5YK+lxz0vzHRCJ37Tzzz8e7xNzmOvI27+bmVRJHlY=
+	t=1712946653; cv=none; b=jCB88+WcXzXZzeBHVpHm10L/huksWSM83Cab7jGly6O34+6zTWX/q9YvDosBshEGOScXzRzPcozfx0up/DfOF/Pf6eQOsTCrf4Sd53FZJS5ESZ/1WprYa0AGRRbtmk7GpL0oRIYUttHnz7HSR4NNbQQYBEcwwTSH4L+RecDFxu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712946608; c=relaxed/simple;
-	bh=RKOs60WHL+SBdWq3uUVpvTOugaIx5MWQ+ImewTH54kY=;
+	s=arc-20240116; t=1712946653; c=relaxed/simple;
+	bh=PjJ0r1jv+Gy40inFGbGqF8OvINrRwJDv/80NI2l5XUc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TXoSB5mWKyBtkuT8bhV+kdKyjn6lJ8bwaoExLJ0Tvsb+CeKCQGvXnzzzMK6PB4YV2RdCZNoFzIw9urQW1qxOvCgcC7ZZx07oyHIzxSxvqt2dqqDEhd2ggkD15iDGU9jsH9kTzDvVf6NB5KD/5k338HM9HeapBLAA8kBDuh9bpiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jpCRkYro; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56fe8093c9eso1242447a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712946605; x=1713551405; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hD2nD0XariWODin1huWBZbgRGq+Hrz+B6uxbj5nmPoA=;
-        b=jpCRkYroEtu3nSskyv7xGrfa2grtbRvFcnfy6hN1AHGUc7h0PKx5BRpJZ+gE7gcUK7
-         Qbt1rmdgsHVUGY/5oxtYzGHh2q/vXltI+CrIRIvDW2AE0/3ZbcVvY/OpchK3gUllVbWf
-         dCT+cNgZAXyc0ug9IPBZ/h0B9WeH6XE53eivD+ow2K9mw18u1x4mx3PKMyZV9O/KlcNW
-         v5G0XzUpDkk1huDglLEDkVYzSze5VcghirTdgsB6surL6m5FaKtKMuSg9dmvyYBIGknV
-         h1qfZWRuzDgrBP6gkglxW20Vo6WUJmiPmvUjLla0Z3R2sZCklEP5JkocmKyxgE8g0Wf3
-         EzSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712946605; x=1713551405;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hD2nD0XariWODin1huWBZbgRGq+Hrz+B6uxbj5nmPoA=;
-        b=PB/5XxyXD2fjmwwOcrMI0mpxayF49pDUzLPxltF36hydtEg7azCWisoBbr1GbS/IN9
-         +9aOrBV2wlSWCb23ZrqSUxQ5Fs5dMsEbbGHzSpgG9qNWNAMam0wZ42OIDqtvCIqFJYFe
-         7FXDnZRMDfSbyIwlMg49RglK/pGv3lSeP7Nvq7pAj/i3tqJAJw2Uesy04Z2L0mnlpEqz
-         dXv50VudmexhmdHyoJzDcnY4phgU43mymEl6TM0xxPrUDdogUr9ByCWsq+hMkt88KB2l
-         x6+KQNyUEYe2eKaESOnar5wn1kirwDeechdEYmtouwNzNpBLy3jhQvgcwrvVZ0qrIvoJ
-         wrwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWokJrdtMcDT4H/H77C+5XjZu+l0INnDVp17RxhKkeOn/h/TnXrL4swFeK+IRh2PlNA63NW9M/EwH9UCpmjiAsoX5jy2MfyVSbUZJpt
-X-Gm-Message-State: AOJu0YwTHUpjEoGQDv8qg2q1PVRyehsfCRgyWTT3HXTDcJgiRGUuBQe6
-	t/KOPNISnMHFexbp7yGwca0UVMlrBntADk1hpPR6FXR30V4CxfXjs59eN8vbg2JQrOWUnfTzYAQ
-	5WiqBxXSY6g/gbyynXjzEvn8fLe4=
-X-Google-Smtp-Source: AGHT+IGDMpUjzSkY3psrdP+Q+TVgpXXBLlLrW6Om+fPGeJ5DUQVuJtaswTsWa3AEWUXE3N4x5fygVtV0hE0rXT+wkKA=
-X-Received: by 2002:a50:99c2:0:b0:568:7c01:a4a2 with SMTP id
- n2-20020a5099c2000000b005687c01a4a2mr2152393edb.13.1712946605037; Fri, 12 Apr
- 2024 11:30:05 -0700 (PDT)
+	 To:Cc:Content-Type; b=KyiTICiL6xXiCMPv9mH7f3bocIF5FVjOCOTppTV/ZQjRg9YO0+qK/Itu1MkeRvzEg4/TAvRLpuMFir+dX392l1d2kgmQLLUxSuO/uFDf6MtKCs1AJDrdSzqw8W4mw4fOvCNAQAcEuMF/XlqfizqHZGujq0lSfVamFYWaY5bg6r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZQQWusNG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64A33C32781;
+	Fri, 12 Apr 2024 18:30:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712946653;
+	bh=PjJ0r1jv+Gy40inFGbGqF8OvINrRwJDv/80NI2l5XUc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZQQWusNG6ExBvY436QlvONSgQH5kbBgDfbHpEXf21tXhje42q0jreHJC9+TdiOZTb
+	 /AEVXF46pkLyBL0qmtps6lIkaCDRZE06wX4rAI9ukziCq86KHNjF+ssi2wG5/ccvIw
+	 z19wt8wvGtJ8ZjwjOfLaLcex6/4MwD1lfR6DDBFkZ5fsnZiWIJN++FbgCcL7ko1EwI
+	 9btL93ZH4JI9iDwfPNB9Y7u2Tc9fw5RxLDg/eqbtvcoFWufEQBMk1DExUfDwCFJtww
+	 C7jYNeF52ysH7D2f2zo8BxxoyzRfqvk9xpAkNeCFmpKFwgtuNH//JHaOqaPCClC0fq
+	 2nJ877KMWCiDg==
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-22f0429c1ebso147229fac.0;
+        Fri, 12 Apr 2024 11:30:53 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUlaTHQ9Hjw/DzQxEBKg4UlrdgfFJhtYSva8DYtuPpDPiiDZ77SwX/xfSI98wQE+t2Z2fYzlrJRCLjPw+OfoD270KtF1c3BDSaf8IVQSw+8auXQGRTiMuow1mKGZz7aTkaGui6HEUHjTjS40Hppqyak4W2iCYoODAAbQfe66EzWeR8Taug=
+X-Gm-Message-State: AOJu0YzgOscM/5SbHG2tms3LuyvdOtVzshCp23WenZl+rT1rjAMB6lW3
+	DriTI14iNGOn9jM3/J1lRjtYsA9bQkKWzhOH2OMPiVufZ8z2e3XJoUdwhpGizBywtTkj2kO6ueX
+	SVKt+cUilMtJtD/+Rv4Q/9A9OhUM=
+X-Google-Smtp-Source: AGHT+IFDKbKacACQlXu+Vha1dYER/o7zLL0gXJIc6Jg1rU5tcmimRio9VrXjAKDGAGecTYjA8A0m0vMnHNM03elbI48=
+X-Received: by 2002:a05:6871:612:b0:229:ee6d:77da with SMTP id
+ w18-20020a056871061200b00229ee6d77damr3536849oan.2.1712946652664; Fri, 12 Apr
+ 2024 11:30:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411153232.169560-1-zi.yan@sent.com> <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
- <CAHbLzkr99knWKZvE4WCWKKr=eezkg89idpE59oo_oBneAQynAA@mail.gmail.com>
- <86722546-1d54-4224-9f31-da4f368cd47e@redhat.com> <CAHbLzkrxR_cpVd_KF1rz9CTVmr4q0KX7T=SseOo8X5u23-5ZJQ@mail.gmail.com>
- <0A4D2CA1-E156-43E9-A1C9-E09E62E760A3@nvidia.com> <A06608B4-9187-42DD-B9A2-CBBC3D5C9312@nvidia.com>
-In-Reply-To: <A06608B4-9187-42DD-B9A2-CBBC3D5C9312@nvidia.com>
-From: Yang Shi <shy828301@gmail.com>
-Date: Fri, 12 Apr 2024 11:29:53 -0700
-Message-ID: <CAHbLzkoxXDwV8H_G2wSPNd3=pCtY-H-A20nBp-fxYNO_RVUTwQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Zi Yan <ziy@nvidia.com>
-Cc: David Hildenbrand <david@redhat.com>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
+References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com> <20240412143719.11398-4-Jonathan.Cameron@huawei.com>
+In-Reply-To: <20240412143719.11398-4-Jonathan.Cameron@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 12 Apr 2024 20:30:40 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
+Message-ID: <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
+Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, x86@kernel.org, Russell King <linux@armlinux.org.uk>, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, 
+	James Morse <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, linuxarm@huawei.com, justin.he@arm.com, 
+	jianyong.wu@arm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 7:31=E2=80=AFAM Zi Yan <ziy@nvidia.com> wrote:
+On Fri, Apr 12, 2024 at 4:38=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
 >
-> On 12 Apr 2024, at 10:21, Zi Yan wrote:
+> From: James Morse <james.morse@arm.com>
 >
-> > On 11 Apr 2024, at 17:59, Yang Shi wrote:
-> >
-> >> On Thu, Apr 11, 2024 at 2:15=E2=80=AFPM David Hildenbrand <david@redha=
-t.com> wrote:
-> >>>
-> >>> On 11.04.24 21:01, Yang Shi wrote:
-> >>>> On Thu, Apr 11, 2024 at 8:46=E2=80=AFAM David Hildenbrand <david@red=
-hat.com> wrote:
-> >>>>>
-> >>>>> On 11.04.24 17:32, Zi Yan wrote:
-> >>>>>> From: Zi Yan <ziy@nvidia.com>
-> >>>>>>
-> >>>>>> In __folio_remove_rmap(), a large folio is added to deferred split=
- list
-> >>>>>> if any page in a folio loses its final mapping. It is possible tha=
-t
-> >>>>>> the folio is unmapped fully, but it is unnecessary to add the foli=
-o
-> >>>>>> to deferred split list at all. Fix it by checking folio mapcount b=
-efore
-> >>>>>> adding a folio to deferred split list.
-> >>>>>>
-> >>>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> >>>>>> ---
-> >>>>>>    mm/rmap.c | 9 ++++++---
-> >>>>>>    1 file changed, 6 insertions(+), 3 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/mm/rmap.c b/mm/rmap.c
-> >>>>>> index 2608c40dffad..d599a772e282 100644
-> >>>>>> --- a/mm/rmap.c
-> >>>>>> +++ b/mm/rmap.c
-> >>>>>> @@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_r=
-map(struct folio *folio,
-> >>>>>>                enum rmap_level level)
-> >>>>>>    {
-> >>>>>>        atomic_t *mapped =3D &folio->_nr_pages_mapped;
-> >>>>>> -     int last, nr =3D 0, nr_pmdmapped =3D 0;
-> >>>>>> +     int last, nr =3D 0, nr_pmdmapped =3D 0, mapcount =3D 0;
-> >>>>>>        enum node_stat_item idx;
-> >>>>>>
-> >>>>>>        __folio_rmap_sanity_checks(folio, page, nr_pages, level);
-> >>>>>> @@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_r=
-map(struct folio *folio,
-> >>>>>>                        break;
-> >>>>>>                }
-> >>>>>>
-> >>>>>> -             atomic_sub(nr_pages, &folio->_large_mapcount);
-> >>>>>> +             mapcount =3D atomic_sub_return(nr_pages,
-> >>>>>> +                                          &folio->_large_mapcount=
-) + 1;
-> >>>>>
-> >>>>> That becomes a new memory barrier on some archs. Rather just re-rea=
-d it
-> >>>>> below. Re-reading should be fine here.
-> >>>>>
-> >>>>>>                do {
-> >>>>>>                        last =3D atomic_add_negative(-1, &page->_ma=
-pcount);
-> >>>>>>                        if (last) {
-> >>>>>> @@ -1554,7 +1555,9 @@ static __always_inline void __folio_remove_r=
-map(struct folio *folio,
-> >>>>>>                 * is still mapped.
-> >>>>>>                 */
-> >>>>>>                if (folio_test_large(folio) && folio_test_anon(foli=
-o))
-> >>>>>> -                     if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_p=
-mdmapped)
-> >>>>>> +                     if ((level =3D=3D RMAP_LEVEL_PTE &&
-> >>>>>> +                          mapcount !=3D 0) ||
-> >>>>>> +                         (level =3D=3D RMAP_LEVEL_PMD && nr < nr_=
-pmdmapped))
-> >>>>>>                                deferred_split_folio(folio);
-> >>>>>>        }
-> >>>>>
-> >>>>> But I do wonder if we really care? Usually the folio will simply ge=
-t
-> >>>>> freed afterwards, where we simply remove it from the list.
-> >>>>>
-> >>>>> If it's pinned, we won't be able to free or reclaim, but it's rathe=
-r a
-> >>>>> corner case ...
-> >>>>>
-> >>>>> Is it really worth the added code? Not convinced.
-> >>>>
-> >>>> It is actually not only an optimization, but also fixed the broken
-> >>>> thp_deferred_split_page counter in /proc/vmstat.
-> >>>>
-> >>>> The counter actually counted the partially unmapped huge pages (so
-> >>>> they are on deferred split queue), but it counts the fully unmapped
-> >>>> mTHP as well now. For example, when a 64K THP is fully unmapped, the
-> >>>> thp_deferred_split_page is not supposed to get inc'ed, but it does
-> >>>> now.
-> >>>>
-> >>>> The counter is also useful for performance analysis, for example,
-> >>>> whether a workload did a lot of partial unmap or not. So fixing the
-> >>>> counter seems worthy. Zi Yan should have mentioned this in the commi=
-t
-> >>>> log.
-> >>>
-> >>> Yes, all that is information that is missing from the patch descripti=
-on.
-> >>> If it's a fix, there should be a "Fixes:".
-> >>>
-> >>> Likely we want to have a folio_large_mapcount() check in the code bel=
-ow.
-> >>> (I yet have to digest the condition where this happens -- can we have=
- an
-> >>> example where we'd use to do the wrong thing and now would do the rig=
-ht
-> >>> thing as well?)
-> >>
-> >> For example, map 1G memory with 64K mTHP, then unmap the whole 1G or
-> >> some full 64K areas, you will see thp_deferred_split_page increased,
-> >> but it shouldn't.
-> >>
-> >> It looks __folio_remove_rmap() incorrectly detected whether the mTHP
-> >> is fully unmapped or partially unmapped by comparing the number of
-> >> still-mapped subpages to ENTIRELY_MAPPED, which should just work for
-> >> PMD-mappable THP.
-> >>
-> >> However I just realized this problem was kind of workaround'ed by comm=
-it:
-> >>
-> >> commit 98046944a1597f3a02b792dbe9665e9943b77f28
-> >> Author: Baolin Wang <baolin.wang@linux.alibaba.com>
-> >> Date:   Fri Mar 29 14:59:33 2024 +0800
-> >>
-> >>     mm: huge_memory: add the missing folio_test_pmd_mappable() for THP
-> >> split statistics
-> >>
-> >>     Now the mTHP can also be split or added into the deferred list, so=
- add
-> >>     folio_test_pmd_mappable() validation for PMD mapped THP, to avoid
-> >>     confusion with PMD mapped THP related statistics.
-> >>
-> >>     Link: https://lkml.kernel.org/r/a5341defeef27c9ac7b85c97f030f93e43=
-68bbc1.1711694852.git.baolin.wang@linux.alibaba.com
-> >>     Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> >>     Acked-by: David Hildenbrand <david@redhat.com>
-> >>     Cc: Muchun Song <muchun.song@linux.dev>
-> >>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >>
-> >> This commit made thp_deferred_split_page didn't count mTHP anymore, it
-> >> also made thp_split_page didn't count mTHP anymore.
-> >>
-> >> However Zi Yan's patch does make the code more robust and we don't
-> >> need to worry about the miscounting issue anymore if we will add
-> >> deferred_split_page and split_page counters for mTHP in the future.
-> >
-> > Actually, the patch above does not fix everything. A fully unmapped
-> > PTE-mapped order-9 THP is also added to deferred split list and
-> > counted as THP_DEFERRED_SPLIT_PAGE without my patch, since nr is 512
-> > (non zero), level is RMAP_LEVEL_PTE, and inside deferred_split_folio()
-> > the order-9 folio is folio_test_pmd_mappable().
-> >
-> > I will add this information in the next version.
+> The arm64 specific arch_register_cpu() call may defer CPU registration
+> until the ACPI interpreter is available and the _STA method can
+> be evaluated.
 >
-> It might
-> Fixes: b06dc281aa99 ("mm/rmap: introduce folio_remove_rmap_[pte|ptes|pmd]=
-()"),
-> but before this commit fully unmapping a PTE-mapped order-9 THP still inc=
-reased
-> THP_DEFERRED_SPLIT_PAGE, because PTEs are unmapped individually and first=
- PTE
-> unmapping adds the THP into the deferred split list. This means commit b0=
-6dc281aa99
-> did not change anything and before that THP_DEFERRED_SPLIT_PAGE increase =
-is
-> due to implementation. I will add this to the commit log as well without =
-Fixes
-> tag.
-
-Thanks for digging deeper. The problem may be not that obvious before
-mTHP because PMD-mappable THP is converted to PTE-mapped due to
-partial unmap in most cases. But mTHP is always PTE-mapped in the
-first place. The other reason is batched rmap remove was not supported
-before David's optimization.
-
-Now we do have reasonable motivation to make it precise and it is also
-easier to do so than before.
-
+> If this occurs, then a second attempt is made in
+> acpi_processor_get_info(). Note that the arm64 specific call has
+> not yet been added so for now this will never be successfully
+> called.
 >
+> Systems can still be booted with 'acpi=3Doff', or not include an
+> ACPI description at all as in these cases arch_register_cpu()
+> will not have deferred registration when first called.
 >
+> This moves the CPU register logic back to a subsys_initcall(),
+> while the memory nodes will have been registered earlier.
+> Note this is where the call was prior to the cleanup series so
+> there should be no side effects of moving it back again for this
+> specific case.
+>
+> [PATCH 00/21] Initial cleanups for vCPU HP.
+> https://lore.kernel.org/all/ZVyz%2FVe5pPu8AWoA@shell.armlinux.org.uk/
+>
+> e.g. 5b95f94c3b9f ("x86/topology: Switch over to GENERIC_CPU_DEVICES")
+>
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Co-developed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
+> ---
+> v5: Update commit message to make it clear this is moving the
+>     init back to where it was until very recently.
+>
+>     No longer change the condition in the earlier registration point
+>     as that will be handled by the arm64 registration routine
+>     deferring until called again here.
+> ---
+>  drivers/acpi/acpi_processor.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
+c
+> index 93e029403d05..c78398cdd060 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -317,6 +317,18 @@ static int acpi_processor_get_info(struct acpi_devic=
+e *device)
+>
+>         c =3D &per_cpu(cpu_devices, pr->id);
+>         ACPI_COMPANION_SET(&c->dev, device);
+> +       /*
+> +        * Register CPUs that are present. get_cpu_device() is used to sk=
+ip
+> +        * duplicate CPU descriptions from firmware.
+> +        */
+> +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
+> +           !get_cpu_device(pr->id)) {
+> +               int ret =3D arch_register_cpu(pr->id);
+> +
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+>         /*
+>          *  Extra Processor objects may be enumerated on MP systems with
+>          *  less than the max # of CPUs. They should be ignored _iff
 > --
-> Best Regards,
-> Yan, Zi
+
+I am still unsure why there need to be two paths calling
+arch_register_cpu() in acpi_processor_get_info().
+
+Just below the comment partially pulled into the patch context above,
+there is this code:
+
+if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+         int ret =3D acpi_processor_hotadd_init(pr);
+
+        if (ret)
+                return ret;
+}
+
+For the sake of the argument, fold acpi_processor_hotadd_init() into
+it and drop the redundant _STA check from it:
+
+if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
+        if (invalid_phys_cpuid(pr->phys_id))
+                return -ENODEV;
+
+        cpu_maps_update_begin();
+        cpus_write_lock();
+
+       ret =3D acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
+       if (ret) {
+                cpus_write_unlock();
+                cpu_maps_update_done();
+                return ret;
+       }
+       ret =3D arch_register_cpu(pr->id);
+       if (ret) {
+                acpi_unmap_cpu(pr->id);
+
+                cpus_write_unlock();
+                cpu_maps_update_done();
+                return ret;
+       }
+      pr_info("CPU%d has been hot-added\n", pr->id);
+      pr->flags.need_hotplug_init =3D 1;
+
+      cpus_write_unlock();
+      cpu_maps_update_done();
+}
+
+so I'm not sure why this cannot be combined with the new code.
+
+Say acpi_map_cpu) / acpi_unmap_cpu() are turned into arch calls.
+What's the difference then?  The locking, which should be fine if I'm
+not mistaken and need_hotplug_init that needs to be set if this code
+runs after the processor driver has loaded AFAICS.
 
