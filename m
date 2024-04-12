@@ -1,158 +1,175 @@
-Return-Path: <linux-kernel+bounces-141789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6F528A2372
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:52:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8BA8A2360
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03C5E1C22BF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:52:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 748981F231B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D03BDDC9;
-	Fri, 12 Apr 2024 01:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04140CA6B;
+	Fri, 12 Apr 2024 01:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="BCuVMQDc"
-Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="h78Qsxjb"
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58CBCD299;
-	Fri, 12 Apr 2024 01:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81414C92
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 01:50:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712886710; cv=none; b=sBA68asQLsXyX2gIychERvT67B26dTe6CA7Gk6BHjsrMZxOEktSre7tNrH5FzIQGoAPMZlJHyF5IUpohOYc621YlcAfeA3Ey8kowKhO34uGDQ8gVPkJV8yKgS45MTN2E0//NZDchRYnO1kcfOW1iJPRCTNMTn9pKoATWQeR+8Ps=
+	t=1712886642; cv=none; b=gcnWXR237iaqQfT8N+JuEyPNg5liZyUrllksc1UAH7yxdD7HDWX6KS/AM7qQjuLvxAXzPFVzp3mfOOutcqljlq2MYF4cKqwRLHBCXv5M4YzL/QXE4JoFP8Y/tvIQlsf0Swnq2GZAsR7gxLxYLtxDJbEB6/kgxvYKiGpn2bmyk6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712886710; c=relaxed/simple;
-	bh=9foBUyuwAc/BVowri7rNOQtXGtztZ3wtSpYnM6Ic54g=;
-	h=Message-ID:Content-Type:Mime-Version:Subject:From:In-Reply-To:
-	 Date:Cc:References:To; b=tqzGjCQC1YeIw/StGM83RtcF/oWI0sDyG0RZIQo2+CBTmwRWZd3hSaiDa/8+1krUMqd2PUHpzEQ1lLziPEleTu/Qwj2IbPn4MXj2vQNa7WPfHyvahGS4tTsB98WDQoVbaPwtPvargKi0WzR5/yvRSqjlslPLI6jgLNifHLK50Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=BCuVMQDc; arc=none smtp.client-ip=162.62.58.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712886691; bh=grNHUKauo33AOqUbUNv6E8S7kTP2vs4ALEUy8MB1AYA=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To;
-	b=BCuVMQDco6omgrXz4+I3E7l+HPxVhvEmH+JdZXyVKLqnUmRkG6iBBie/Nk7tRS410
-	 862H4SPWo1J+hduySbpUPk9V6RY9LTVtGUvcu/sETKpzypjw4b+1W8EUB3llcUI8pK
-	 MfjzcazVm2UDSn8nUist8M1GjCnfhG6trJYbG2vE=
-Received: from smtpclient.apple ([2406:840:f99a:b03c:85cb:7203:1084:e303])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id C898B00C; Fri, 12 Apr 2024 09:50:09 +0800
-X-QQ-mid: xmsmtpt1712886609tgl1651vh
-Message-ID: <tencent_3EC60EBE4F410FED19C726DCA218AA10E707@qq.com>
-X-QQ-XMAILINFO: Msgy4IdPSbYaZ64GTE7WkXXeggA/2VsreH9GQ9OT9UyO2Ihb4jjUAwx/RrMBzk
-	 vrBDoQ/g7uFY4E7iXB0Sl0bgoDE/d/PV765MFVHfULK4AhCYJhr7uOkc44uBuTSMQ06FlqjJr1oJ
-	 aZUiSlUU48WdPPXkfREvScKcBCvPa3uh2zNfX/QBq18mDH/kad32384cwMti0baQa4cYPAWaDzJh
-	 NV9uliLT+PJZXtF4RBmUini0fTtXUUysLpMbmeUJA2KCgOQXY6/KA5XC/0wW5XQmVFqYjPOKBFnp
-	 YabGR4yRFXPgkavkrIQilDcBe2w8aOycfWEUcHgXV0HuiC4JUxOXq7xla4g9DQklhRjn36ZQqOxl
-	 VOCUHLL8QRC8uBq2zq8zwUI1Lf0iNYatltiuXd5eGLODi7Zs6kLBAMvJP4t1AyTfCu+on8bx9hdW
-	 OeiFYYsxS1At2cSnyQeGrF5auR9DRtpOs5+mHv2w1+o9G0uht20HJpo2sKcI3TjYjzbKfgF45Ln+
-	 5ygg5CNVuFF+P038YORYiuuY8XJgO7LA0/1Hj5nIG4CDv0GC19dJjFds4QvTGFiF/3gZvkcy9cw3
-	 0IyE0ht3nEm24AmpIOhy4GiBxG9VMowtAV4W0J/v/pATFxZGrkcSICuKfZ1zCzbsN8LOKXdVejxX
-	 XgBp17Gre62tGXv1gArNGusQKZKFze57c8fSKzeapsHMg6b66vSYYd6Ke2pFG+Hqf2dUftYyzFDC
-	 6YQdJhz70qAG23Z7IImPOwzdQ9dz4iBxizTAZG6ZeKZ46qA3pCPzwdfmUD8PFltc6hrBBGeAzCTv
-	 BSDweV68npXjf382Jjm6+LVbixWlRDIf3lnlu14fCoMYQwb4i2JCO6BEF8eaECgtBHaNNafaGZ5T
-	 TmxSsLePzsIuXWHCE3n5tHncA9HLO0lfgDelPv7lJAxBQ9yATKvo/+lpIxUYdxYbas7cwm8bCR9f
-	 aG0iBZL4uBEJ+N/l7emvrwZmm2iQTDO0P9aCl2ktJqZ7MTO26iHdPhS+kWnlIj
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1712886642; c=relaxed/simple;
+	bh=RKfWMjr5Qx55FeibUP0Tdl8Z8rvHwRWMq761t6ZocyU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QhoD2J4anXn2wQy1qOF6yz5AyReaQe2tfRYpqbPlR6oTtwGUFvtQnV5AJ/9Z1NlUttZEOzhCHVa5bapMp21QY4B45ABG0js/X6Iod82PZvVum3WMGqyXgGJFIa3glcccZ7XsywnUpIgST8O/45RDssAKkaiWUp39w6weIPIoWZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=h78Qsxjb; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78d5e80bc42so34443985a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google; t=1712886640; x=1713491440; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RKfWMjr5Qx55FeibUP0Tdl8Z8rvHwRWMq761t6ZocyU=;
+        b=h78QsxjbzPkO/ItaWrTyIkFan3/dyp94gMjCEpJH+Zvh1erJ2w5qSgko4G9vzet6Jh
+         yOe6LZmESQn50cwnYr0S9ENNQFSzKePUIY7yTirD8CyOmZmun11yd1oiCS2Ynklmybcp
+         v/wCgavYj02iCwJ6IlUSE0OHvXDnATLZEKExoJRkb5ilhtaDrIefqnyMFgGKuMMYbU+i
+         X00WeKDOBlL50XwfXR1c+yebDg1QJtEvrVPwKmO/ShtGqOzBmeDGKp5yM2sNFh6LO77a
+         OWptLaKGcVsRBi88GP0vB7u9+yjyQNBMx0JNpPh5FkMvisSNKrBhs/zimRkYxRaZ9SxT
+         qQog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712886640; x=1713491440;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RKfWMjr5Qx55FeibUP0Tdl8Z8rvHwRWMq761t6ZocyU=;
+        b=J66o2U13Z2AgXmUeXFgj2MaBrPib4n/TOHpVWm0HjHDJqjDxPopiAuNdwdQUG7nFwy
+         5ZvryS7ISL73AC0l15uJMBhgBYDzW+UaYeS9Mm1u4LjAFGly7pwc0MNqrFjKOq3/pHr9
+         +brH2VoZ2QUld8XR8YLwBPZ+VCOEfw+dW4vOtbhUHYzypEPBoSSrnvjd8Auj3dYM9xSA
+         vkx4YPwqLxhSlQPQD/CORYLgYklDO9rjqQLgH7wlH7gN/jSYvgGlJ5c63kMD5po3Xc0D
+         Qtc4nNNbgpyaJ95CWJK13d836PPibivfohcK1X/SuG8hF8Z36ybztGxTvsWfQ7TMBbbJ
+         tZZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXwL7zE6zbjbzoyw6ROj99HXAwqfgnJOxy+uqRYsqtt3hnaM73ellBT51OGA3OTSbV6FTtDumKQ+b5UZXsxCaL5B7dbjMQeZ0WXYuPQ
+X-Gm-Message-State: AOJu0Yy2ljbPbJTHSnxw5EaPxJ58wB0AQ8OeZqFlVfrTNC3SO4hr1vfx
+	XmBeO48vJ1LiF1vaUyB3IKywJigPHyBfptN8ayE+s+fO9tzl0zaVzGgBqqEtuQ==
+X-Google-Smtp-Source: AGHT+IEGFAJCUIz0qOFVbQF9We1/gUwvWByxa1EsnJiVP7yOg9G4RuZdQ2KksmDUL1kOxZcOvJDljQ==
+X-Received: by 2002:a05:620a:14a1:b0:78d:5700:2ce0 with SMTP id x1-20020a05620a14a100b0078d57002ce0mr1227193qkj.68.1712886639804;
+        Thu, 11 Apr 2024 18:50:39 -0700 (PDT)
+Received: from ip-172-31-44-15.us-east-2.compute.internal (ec2-52-15-100-147.us-east-2.compute.amazonaws.com. [52.15.100.147])
+        by smtp.googlemail.com with ESMTPSA id f10-20020a05620a15aa00b0078d76c1178esm1756677qkk.119.2024.04.11.18.50.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 18:50:39 -0700 (PDT)
+From: Kyle Huey <me@kylehuey.com>
+X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
+To: Kyle Huey <khuey@kylehuey.com>,
+	linux-kernel@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Robert O'Callahan <robert@ocallahan.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH v6 0/7] Combine perf and bpf for fast eval of hw breakpoint conditions
+Date: Thu, 11 Apr 2024 18:50:12 -0700
+Message-Id: <20240412015019.7060-1-khuey@kylehuey.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: linux-next: manual merge of the riscv-dt tree with the risc-v
- tree
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <20240411094901.2130c36e@canb.auug.org.au>
-Date: Fri, 12 Apr 2024 09:49:58 +0800
-Cc: Conor Dooley <Conor.Dooley@microchip.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul@pwsan.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Masahiro Yamada <masahiroy@kernel.org>,
- Palmer Dabbelt <palmer@rivosinc.com>
-Content-Transfer-Encoding: quoted-printable
-X-OQ-MSGID: <0DA22639-19D6-4766-AD5D-9A0A3B6CB2AB@cyyself.name>
-References: <20240411094901.2130c36e@canb.auug.org.au>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
+rr, a userspace record and replay debugger[0], replays asynchronous events
+such as signals and context switches by essentially[1] setting a breakpoint
+at the address where the asynchronous event was delivered during recording
+with a condition that the program state matches the state when the event
+was delivered.
 
+Currently, rr uses software breakpoints that trap (via ptrace) to the
+supervisor, and evaluates the condition from the supervisor. If the
+asynchronous event is delivered in a tight loop (thus requiring the
+breakpoint condition to be repeatedly evaluated) the overhead can be
+immense. A patch to rr that uses hardware breakpoints via perf events with
+an attached BPF program to reject breakpoint hits where the condition is
+not satisfied reduces rr's replay overhead by 94% on a pathological (but a
+real customer-provided, not contrived) rr trace.
 
-> On Apr 11, 2024, at 07:49, Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> Hi all,
->=20
-> Today's linux-next merge of the riscv-dt tree got a conflict in:
->=20
->  arch/riscv/Makefile
->=20
-> between commit:
->=20
->  3b938e231b66 ("riscv: merge two if-blocks for KBUILD_IMAGE")
->=20
-> from the risc-v tree and commit:
->=20
->  ef10bdf9c3e6 ("riscv: Kconfig.socs: Split ARCH_CANAAN and =
-SOC_CANAAN_K210")
->=20
+The only obstacle to this approach is that while the kernel allows a BPF
+program to suppress sample output when a perf event overflows it does not
+suppress signalling the perf event fd or sending the perf event's SIGTRAP.
+This patch set redesigns __perf_overflow_handler() and
+bpf_overflow_handler() so that the former invokes the latter directly when
+appropriate rather than through the generic overflow handler machinery,
+passes the return code of the BPF program back to __perf_overflow_handler()
+to allow it to decide whether to execute the regular overflow handler,
+reorders bpf_overflow_handler() and the side effects of perf event
+overflow, changes __perf_overflow_handler() to suppress those side effects
+if the BPF program returns zero, and adds a selftest.
 
-I am the author of this commit. I just renamed CONFIG_ARCH_CANAAN to
-CONFIG_SOC_CANAAN_K210 in arch/riscv/Makefile.
+The previous version of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20240214173950.18570-1-khuey@kylehuey.com/
 
-> from the riscv-dt tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your =
-tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any =
-particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc arch/riscv/Makefile
-> index 7c60bbe1f785,fa6c389c3986..000000000000
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@@ -143,15 -133,7 +143,15 @@@ boot :=3D arch/riscv/boo
->  ifeq ($(CONFIG_XIP_KERNEL),y)
->  KBUILD_IMAGE :=3D $(boot)/xipImage
->  else
-> - ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
-> ++ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)
+Changes since v5:
 
-I reviewed commit 3b938e231b66 ("riscv: merge two if-blocks for
-KBUILD_IMAGE"). Your change only replaces the ARCH_CANAAN symbol with
-SOC_CANAAN_K210 here. My intention for ef10bdf9c3e6 ("riscv: =
-Kconfig.socs:
-Split ARCH_CANAAN and SOC_CANAAN_K210") is to use loader.bin only for
-Canaan K210 SoC but not for other Canaan SoCs. So I think that's the =
-right
-way to resolve merge conflict.
+Patches 1, 2, and 3 are added to address Ingo's review comments.
 
-Reviewed-by: Yangyu Chen <cyy@cyyself.name>
+Patches 4 through 7 are the previous patches 1 through 4.
 
-> +KBUILD_IMAGE :=3D $(boot)/loader.bin
-> +else
-> +ifeq ($(CONFIG_EFI_ZBOOT),)
->  KBUILD_IMAGE :=3D $(boot)/Image.gz
-> +else
-> +KBUILD_IMAGE :=3D $(boot)/vmlinuz.efi
-> +endif
-> +endif
->  endif
->=20
->  libs-y +=3D arch/riscv/lib/
+Patches 4 through 7 add Andrii's Acked-by.
+
+Patch 5 fixes Ingo's comments about punctuation and newlines.
+
+v4 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20240119001352.9396-1-khuey@kylehuey.com/
+
+Changes since v4:
+
+Patches 1, 2, 3, 4 added various Acked-by.
+
+Patch 4 addresses additional nits from Song.
+
+v3 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kylehuey.com/
+
+Changes since v3:
+
+Patches 1, 2, 3 added various Acked-by.
+
+Patch 4 addresses Song's review comments by dropping signals_expected and the
+corresponding ASSERT_OKs, handling errors from signal(), and fixing multiline
+comment formatting.
+
+v2 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey.com/
+
+Changes since v2:
+
+Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
+this code to implement this feature in a cleaner way. Patch 2 is separated
+for the benefit of the ARM arch maintainers.
+
+Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
+implementation thanks to the earlier refactoring.
+
+Patch 4 is v2's patch 3, and addresses review comments about C++ style
+comments, getting a TRAP_PERF definition into the test, and unnecessary
+NULL checks.
+
+[0] https://rr-project.org/
+[1] Various optimizations exist to skip as much as execution as possible
+before setting a breakpoint, and to determine a subset of program state
+that is practical to check and verify.
+
 
 
