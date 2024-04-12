@@ -1,78 +1,95 @@
-Return-Path: <linux-kernel+bounces-143297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 432538A36EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:18:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE6898A36EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:18:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F524B25433
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:18:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BA1F1C22AE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65830152187;
-	Fri, 12 Apr 2024 20:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F071514C4;
+	Fri, 12 Apr 2024 20:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZPJn5CmS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p7jt+z9c"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C44715217D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:17:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66582150990;
+	Fri, 12 Apr 2024 20:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712953054; cv=none; b=Cl4SEJyMMWAIjP41qnxNhdfejW8O8AGfHwZ9Q7oVN16lD5Ub31PSugzfksrzzUjiVENPXPXzZLUzCCIRbcEGy/aepA9bBMWixACSS/8x1GS381cJcn8ADPiRBKiTyl6jiQ1o7TnhCyS+orQJtjZDa6NvjLk3tONo6gtShBZixjc=
+	t=1712953111; cv=none; b=BE3grueGpCVy+RxOtZDufurX+iN+3mJkkwLkB/SEtyTdb6NLMU49aVAUgdDD58sYKXyJ/Gv1xtsuJ1vzxTAbhQ6EVwDZBo47/QAjcUPPtLmEPlOveGa90qw+0RLIz93P5eisIG+yne9smNwVeYya54+0fMsSUtlFTTUV5GU9Okw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712953054; c=relaxed/simple;
-	bh=l6MVm4fYmOjNFAcaZ+mBIuLxVK28bF5PHXlbB/aZFqA=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=u/6YGz3qhbcvbfPOOuQtqgyUtUBV6NRGJV+SvR6NMjZQpptzA4XOKS62Pktwsnj/ARl6UU8A/CR106OZlzd0uBd7L6UhtfRobzp4NS1G6Uq65xWciMnkebg2RehAOUa/qoIscja1y4s13BHtkg+pIcfssld5gz3ibL2mGoWfaqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZPJn5CmS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 33C43C32783;
-	Fri, 12 Apr 2024 20:17:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712953054;
-	bh=l6MVm4fYmOjNFAcaZ+mBIuLxVK28bF5PHXlbB/aZFqA=;
-	h=Subject:From:In-Reply-To:References:Date:To:List-Id:Cc:From;
-	b=ZPJn5CmS54Dw7dfTctA4rwwB8LmqndbaYm0YMlmcCSXa0Zmy4yQrr9yFHrRWty9GA
-	 OkIY1sV+cpYqgnhASILyU+lVwOAdMCxIgFUyuF20qBoY2qeR6N77HB5MDGzQwtZup7
-	 /ZD7ViVqrssWTyu/qibKkFnTXlmnlncnKRxjaj2ojFxecIigAPeDHXReF2OrZeXHTn
-	 2RCEPeD7Pb8Got96CUfyvWaumkzPxrZSXPYptXvnao8WXn7WOac6HwniStTdzS6OxO
-	 TcMu8sKK9JuMUEtZu0h0m1vi/Xw5fI569EbrPL2CMV6MSfN7EuiiDA2XptHJE4g//+
-	 Amv6La2qFEIYQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 27BB8DF7856;
-	Fri, 12 Apr 2024 20:17:34 +0000 (UTC)
-Subject: Re: [GIT PULL] SoC fixes for 6.9
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <4c6039da-5362-46ad-8126-dacaf7ad1169@app.fastmail.com>
-References: <4c6039da-5362-46ad-8126-dacaf7ad1169@app.fastmail.com>
-X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
-X-PR-Tracked-Message-Id: <4c6039da-5362-46ad-8126-dacaf7ad1169@app.fastmail.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-fixes-6.9-1
-X-PR-Tracked-Commit-Id: 011d79ef1cfad701c2d8e7e80d8c77523af9c771
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 678e14c772130d3a83225ed56fb9860a40bca38b
-Message-Id: <171295305415.15771.6575415152452339171.pr-tracker-bot@kernel.org>
-Date: Fri, 12 Apr 2024 20:17:34 +0000
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, soc@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+	s=arc-20240116; t=1712953111; c=relaxed/simple;
+	bh=+8yd8nRZnsK4xoNUZ2lOwNHS5meRrf+aFzhiGaoSBD0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=HHpl93OB7FAFjPom8D/hDUnG6+4Daz0JP5VnTX0uwvLobqJIkpTZEO+OfknB9yoBCMdcFcVeCE0UGD7V4otN9Ll9ndxAsv0uDfwIVK4zNdp3TEuqOSoLgiL2/aQZngQC1k97x04qVe4tt9b2SjW8bYrTUpiTB6zxCq/65MhWpNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p7jt+z9c; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7040a36b-b74a-41df-bd84-093b0e97a6b4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712953107;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nLHlIUYkkULgzyqbRS6FF1LI5GIXKe6Pa6vjv4BQWm8=;
+	b=p7jt+z9cc4v9PIS8lyAxIEXownkEIzBPe2g/oZJocDj4+m7XfpeRT8+5MwP1cGjSpwfvEH
+	97EB0INVEdoR8NvS9SGgD7uUEnXN+IrXV35yevhrSx32zgnj95OyuNzJ51zSnNGtSUxKV2
+	9ajPlMK08u5WN2ucsSuKB2G77y3VFAI=
+Date: Fri, 12 Apr 2024 16:18:01 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Subject: Re: [PATCH 4.19 000/175] 4.19.312-rc1 review
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+To: Pavel Machek <pavel@denx.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+ linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+ akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+ patches@kernelci.org, lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+ maco@android.com, tglx@linutronix.de, christophe.jaillet@wanadoo.fr
+References: <20240411095419.532012976@linuxfoundation.org>
+ <ZhmPpo+EI9Ce3bI1@duo.ucw.cz>
+ <a6bc828d-9e1f-4932-bcf7-314de74b21cc@linux.dev>
+Content-Language: en-US
+In-Reply-To: <a6bc828d-9e1f-4932-bcf7-314de74b21cc@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Fri, 12 Apr 2024 21:48:34 +0200:
+On 4/12/24 16:10, Sean Anderson wrote:
+> On 4/12/24 15:46, Pavel Machek wrote:
+>>> Sean Anderson <sean.anderson@linux.dev>
+>>>     soc: fsl: qbman: Use raw spinlock for cgr_lock
+>> 
+>> As we don't have commit ef2a8d5478b9 ("net: dpaa: Adjust queue depth
+>> on rate change") in 4.19, we should not really need this.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-fixes-6.9-1
+Sorry, I missed this the first time around, but this bug will still
+occur (just much more rarely) without this commit.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/678e14c772130d3a83225ed56fb9860a40bca38b
+--Sean
 
-Thank you!
+> Plus, 10msec
+>> under raw spinlock is quite evil, such kernel is not realtime any
+>> more. We should not be doing that.
+> 
+> Patches welcome :)
+> 
+> At some point I will try and revisit this.
+> 
+> --Sean
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
 
