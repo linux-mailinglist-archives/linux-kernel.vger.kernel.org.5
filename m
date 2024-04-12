@@ -1,130 +1,75 @@
-Return-Path: <linux-kernel+bounces-142009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3D1D8A260D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:58:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF2758A260C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:58:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3F781C212E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:58:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 031C6B22B0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:58:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26FE92BCF4;
-	Fri, 12 Apr 2024 05:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1CD21C6B6;
+	Fri, 12 Apr 2024 05:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F1C7VCAu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WeqD9saA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54691DDDB;
-	Fri, 12 Apr 2024 05:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F841BC2A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712901477; cv=none; b=cpvl+vDNIeuWcy8Pr58/HEw0BVzVPgPe0qDtk4zajgsH/BaLB8OlGVsozS3dQRJoLOW+m7q45LC0HfeLL37cxcGQxSy9A1xSDe0GVld0o4baPbdrrje3i2rzogfbz6lQYG/CFk97ANs9j+FWkU5+SIvo690h8jFMYKk2NsofKck=
+	t=1712901474; cv=none; b=JHagaL+5qBaKHgUto3po2zEX1qtqxIEqmWnPp37FCKJvDKwG6CVsSg8PrNslQsZIBq9xF0onM9mWxVh2Yyu+NjyZUX/PZOIjca+HMEGb4mO5Zn1Pi4oCYusUwtJ+aVdm4I7L9tL6vAeof89gZyf13tbX+KhiP97vpHLQD2AG9oI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712901477; c=relaxed/simple;
-	bh=G8hY+FjLTfuIVDy57N/LtDBhn3ksctV6ZZ1Ygu0usZ8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bAyLvjS6wZs5X4bVJP7scr8yBXUC0q/E6dswUN56VR9v/5oP495nYHyqGl0HR2USl9Dg3aSuTlfhZ4DBn2vLvtkSrC/TSYGo7Q5pGlT0MztjiYQ1caNyFx2oH14BQ7vxacExgPjXSpGzEnAwGAfsjkgr6oTc8IAxg/Sxuy92zo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F1C7VCAu; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712901476; x=1744437476;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=G8hY+FjLTfuIVDy57N/LtDBhn3ksctV6ZZ1Ygu0usZ8=;
-  b=F1C7VCAubQQsab5goh3xq6S7Bu+5YTBCQLs10oQWTUNqOOeF5/8sczwa
-   peFNL7N2XO+QcpPu4CWfipJPdrDclVwFSdQqiojAGhDmGvdYHyq2sSQ46
-   BzLDkMAnk9Dq6zflhEYnHxJlNQxm84AXQMwmaX1wTyAfC9+6G4h+jZYVV
-   6eWBfvUShzwafdHWLsTag5772oW1OHn8i9l3pqRkhltYMiU88ZcxJqDxw
-   n39U37icRo3fFD+wl1TTS3EJgMItqv60OmV8j5cS0zuD79+/oHXx9qhBw
-   jJm4C5MgHiAPwJ8z/ksnMfK3luN6uFyO77j04RIALZM56LD7fyHtncag7
-   w==;
-X-CSE-ConnectionGUID: gNngCGD/R2KaO1nj2A1zVw==
-X-CSE-MsgGUID: D2jLTxB3SM6YanerxoLrgA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="12197661"
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="12197661"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 22:57:56 -0700
-X-CSE-ConnectionGUID: 1KuqrSs2RDat7Er/1WVpHg==
-X-CSE-MsgGUID: 8iIV9R12Si+eflAuqF5r4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="52299881"
-Received: from xiongzha-mobl1.ccr.corp.intel.com (HELO [10.124.244.162]) ([10.124.244.162])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 22:57:50 -0700
-Message-ID: <41c6af10-82f8-4e67-9d55-6034ad079418@linux.intel.com>
-Date: Fri, 12 Apr 2024 13:57:47 +0800
+	s=arc-20240116; t=1712901474; c=relaxed/simple;
+	bh=oJPkC238Iod2FQetv56pnlrxaJrm3LWtaawuw9o0MVQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gtftOKzRT3swmINdoSDM86Ppq2jbAUr6PelB0K9h5MquCH6QGAvmKEz0hPStQa2mcJTqv5Oox/eTXZe27jl2hRVAnIujGTP6vVkNm8lj7wWmq7KrsUgpikvPRm26xBakuuXnv/CQ5fycri8Dg6vLbdfMACNJuzej3YQx1wmcejE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WeqD9saA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F60C2BBFC;
+	Fri, 12 Apr 2024 05:57:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712901473;
+	bh=oJPkC238Iod2FQetv56pnlrxaJrm3LWtaawuw9o0MVQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WeqD9saAgaCVnrAkxKLY7mjJIezKB5Pj1tIc5AsvkAPV+fqpKP2ChOf+8Yo2Ts9b6
+	 Nccf+oANHBHy+cH8f1NobpK9l2tAgCAMN9tmg0r1NVQaqIDmyFtqLjg3/w9anEiUOO
+	 IEjBQVdto8cbZddzU0xUiCzD1jLdFan69HryHhvU=
+Date: Fri, 12 Apr 2024 07:57:48 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2] misc/pvpanic: add support for normal shutdowns
+Message-ID: <2024041240-twice-deem-16cf@gregkh>
+References: <20240412-pvpanic-shutdown-v2-1-5e544417bc17@weissschuh.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 06/41] perf: x86: Add function to switch PMI handler
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
- kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-7-xiong.y.zhang@linux.intel.com>
- <Zhg3X_5A6BslIg-u@google.com>
-From: "Zhang, Xiong Y" <xiong.y.zhang@linux.intel.com>
-In-Reply-To: <Zhg3X_5A6BslIg-u@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240412-pvpanic-shutdown-v2-1-5e544417bc17@weissschuh.net>
 
-
-
-On 4/12/2024 3:17 AM, Sean Christopherson wrote:
-> On Fri, Jan 26, 2024, Xiong Zhang wrote:
->> From: Xiong Zhang <xiong.y.zhang@intel.com>
->>
->> Add function to switch PMI handler since passthrough PMU and host PMU will
->> use different interrupt vectors.
->>
->> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
->> Signed-off-by: Mingwei Zhang <mizhang@google.com>
->> ---
->>  arch/x86/events/core.c            | 15 +++++++++++++++
->>  arch/x86/include/asm/perf_event.h |  3 +++
->>  2 files changed, 18 insertions(+)
->>
->> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
->> index 40ad1425ffa2..3f87894d8c8e 100644
->> --- a/arch/x86/events/core.c
->> +++ b/arch/x86/events/core.c
->> @@ -701,6 +701,21 @@ struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr, void *data)
->>  }
->>  EXPORT_SYMBOL_GPL(perf_guest_get_msrs);
->>  
->> +void perf_guest_switch_to_host_pmi_vector(void)
->> +{
->> +	lockdep_assert_irqs_disabled();
->> +
->> +	apic_write(APIC_LVTPC, APIC_DM_NMI);
->> +}
->> +EXPORT_SYMBOL_GPL(perf_guest_switch_to_host_pmi_vector);
->> +
->> +void perf_guest_switch_to_kvm_pmi_vector(void)
->> +{
->> +	lockdep_assert_irqs_disabled();
->> +
->> +	apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR);
->> +}
->> +EXPORT_SYMBOL_GPL(perf_guest_switch_to_kvm_pmi_vector);
+On Fri, Apr 12, 2024 at 12:03:57AM +0200, Thomas Weiﬂschuh wrote:
+> Shutdown requests are normally hardware dependent.
+> By extending pvpanic to also handle shutdown requests, guests can
+> submit such requests with an easily implementable and cross-platform
+> mechanism.
 > 
-> Why slice and dice the context switch if it's all in perf?  Just do this in
-> perf_guest_enter().  
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> ---
+> To: Arnd Bergmann <arnd@arndb.de>
+> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 > 
-As perf_guest_enter() is in perf core which manages all PMUs, while switch_pmi_vector is for x86 core PMU only, so switch_pmi_vector is put in x86 pmu driver. pmu driver can call perf core function directly, perf core manage pmu through pmu->ops and pmu->flags. If switch_pmi_vector is called in perf_guest_enter, extra interfaces will be added into pmu->ops, this impacts other PMU driver. 
+> Changes in v2:
+> - Drop RFC status
+
+Nope, still there :(
 
