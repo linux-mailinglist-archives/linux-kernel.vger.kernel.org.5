@@ -1,188 +1,78 @@
-Return-Path: <linux-kernel+bounces-143293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC408A36E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:17:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42DA68A36E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:17:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A59B0B24906
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:17:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC92A1F21900
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:17:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA3DD1514C8;
-	Fri, 12 Apr 2024 20:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEBBD1514CA;
+	Fri, 12 Apr 2024 20:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CjfvI559"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SN3gp99/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558CC1509B9;
-	Fri, 12 Apr 2024 20:17:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA4043AC1;
+	Fri, 12 Apr 2024 20:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712953026; cv=none; b=B/jPGzDVFRWGY2Jv4rjId4u3NhL0GDFEwcME+UyReaeV5DfNJGgJyqsuYHQ8efswremzHPNOQ+48H1c9nl4C0uRm6F5kKmc5ljN0ifDf4bPBCyXj4aHzuwVUWq6gLTUbMx+fHBwLe+mPNEnCO29oMfQifs00iV9f83gxAoEia9E=
+	t=1712953050; cv=none; b=W0xo7F7RHZfeigcIbRjLxPBxcdnTIfcsXVOtRn0fCv8OVjsu1CBgWS/Pn41ATxPPMoG1IUtqbuXaCd8Zw8+xA+7sQVWhmO41NTnwi3yJMWlNKeWInoLl4fRpLP8GQkasCOeOg5EoWZIqMeAPlSAZ/bNdrS8WtLUPwGFUyDgQers=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712953026; c=relaxed/simple;
-	bh=gRtk42mEkPYRS2+FeeJPBc/53CUWk0nWuXvrBo/KmZ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rxmGus+ZAjyk0ik0El2BjlWMnR8OP+5dEcgYH6SyOH2Yhh/QZUEid8j3t9v452bqyUhTdco4ZXydQdfcxSiei1oOGNj57uQY9DKtIpOcpG5jcBVSMlVyhbjvKR2roWGewMf8PWfQid6EFior1F1UQGH7l6WlwzmMAqAGKsqi3AY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CjfvI559; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712953024; x=1744489024;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gRtk42mEkPYRS2+FeeJPBc/53CUWk0nWuXvrBo/KmZ0=;
-  b=CjfvI559GqmLFlL9HNOtOsuDFAdbIb7hjRUGa/HIM2yWwwNdX/eCYd0H
-   aionN7ATW5fIRjuNu7vfcfYW1MEqfB/ec3pIKpFmCiv0eUxzoGQNN+SXC
-   b+4FhjimEpYWfd2W6SOEbtwyMV1CJQQu5Yp62zTLaF+uwEVJHWdu4vh7B
-   Km/GME07iALZROEYxPKW/BHvy7lSN9SBPoNalfJgub1r4hkWpuppGNlgY
-   UsQyhaqT+8wQx13dln4SVFJNQgn//AIrLeVDql5hBAnXdUeEXsvDD+RMV
-   /kpAu+Whkp6OTUONstgpUb/co8FmT+lwX4ZNLDEit0uaEzu9dPvJRXjWC
-   A==;
-X-CSE-ConnectionGUID: S1T4jC7iTsuyCCPRfb6llQ==
-X-CSE-MsgGUID: b4XPtzCETC65Of/R6bJ2WQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="12208032"
-X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="12208032"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 13:17:03 -0700
-X-CSE-ConnectionGUID: gxXJc0U9Rw+Z4cl435oOXw==
-X-CSE-MsgGUID: p6NoYQyWRMGsXb7kmO5RPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="25982451"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 13:17:04 -0700
-Date: Fri, 12 Apr 2024 13:17:02 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 079/130] KVM: TDX: vcpu_run: save/restore host
- state(host kernel gs)
-Message-ID: <20240412201702.GJ3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <4a766983346b2c01e943348af3c5ca6691e272f9.1708933498.git.isaku.yamahata@intel.com>
- <8132ddff-16f3-482f-b08b-a73aa8eddbbc@linux.intel.com>
+	s=arc-20240116; t=1712953050; c=relaxed/simple;
+	bh=XeYKWDAmiU+ijMz8HvnN3e/s2DNlpRN1ouiSnlAL2dE=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=koWjDOPTXttMMMrUm5BMucYw/kJdU0V2kFuuYFKpaelAhmm1cWFPhCkui8Pb71ZnoiUxRY7rgMqaGDFmqh1/QE7OgWTLJiiPz2P2VEE3WpUKuo5NSV7+uCAvp1di52VtZKoctZoFez6dSpS0ePCCgIK4JsFo5y29xRrSl4WQ8UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SN3gp99/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C6E0FC113CC;
+	Fri, 12 Apr 2024 20:17:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712953049;
+	bh=XeYKWDAmiU+ijMz8HvnN3e/s2DNlpRN1ouiSnlAL2dE=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=SN3gp99/53jJDx5ugUHBXUjQz4RTb2Ri+pdkME+i+BNBLbL4C7BI0zoJW0jsg7+X4
+	 dxGoJN8GXtqrGCROM7Jm6JF6hj5L0LRnZEnKb1g4orzut52xN48bn/wKJNHoCZvAr/
+	 zEYac6FYSZjuRw53MnQV8nH4JrSuaq9LlzAL9kCAk3h2ncZ2TPah+gkWG/3/y+rrLZ
+	 VvYYEY9DuLdJakN4enf2XSfDUMaxZwp0PARMlKAddNfP6TdQM7vySZtlM+KHjaMUOU
+	 yXgcBsJYiUCiasZcpESexcQ1itnydIWpoubYQ2jnv/1mM1VEifHuxnepoVMMk3fLDj
+	 n9npaCY41dZ1A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BD48DDF7855;
+	Fri, 12 Apr 2024 20:17:29 +0000 (UTC)
+Subject: Re: [git pull] IOMMU Fixes for Linux v6.9-rc3
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <Zhl3n4fWSWswqzpr@8bytes.org>
+References: <Zhl3n4fWSWswqzpr@8bytes.org>
+X-PR-Tracked-List-Id: <iommu.lists.linux.dev>
+X-PR-Tracked-Message-Id: <Zhl3n4fWSWswqzpr@8bytes.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v6.9-rc3
+X-PR-Tracked-Commit-Id: b8246a2ad80a810cafbeddb30525278f9d64bca3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c7c4e1304c2ef69fc2b75b39e681d2c0cb9f1d55
+Message-Id: <171295304976.15771.7288432007426362317.pr-tracker-bot@kernel.org>
+Date: Fri, 12 Apr 2024 20:17:29 +0000
+To: Joerg Roedel <joro@8bytes.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org, iommu@lists.linux.dev
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8132ddff-16f3-482f-b08b-a73aa8eddbbc@linux.intel.com>
 
-On Sun, Apr 07, 2024 at 11:02:52AM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+The pull request you sent on Fri, 12 Apr 2024 20:04:15 +0200:
 
-> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> > index d72651ce99ac..8275a242ce07 100644
-> > --- a/arch/x86/kvm/vmx/main.c
-> > +++ b/arch/x86/kvm/vmx/main.c
-> > @@ -158,6 +158,32 @@ static void vt_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> >   	vmx_vcpu_reset(vcpu, init_event);
-> >   }
-> > +static void vt_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
-> > +{
-> > +	/*
-> > +	 * All host state is saved/restored across SEAMCALL/SEAMRET,
-> 
-> It sounds confusing to me.
-> If all host states are saved/restored across SEAMCALL/SEAMRET, why this
-> patch saves/restores MSR_KERNEL_GS_BASE for host?
->
+> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v6.9-rc3
 
-No. Probably we should update the comment. Something like
-  restored => restored or initialized to reset state.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c7c4e1304c2ef69fc2b75b39e681d2c0cb9f1d55
 
-Except conditionally saved/restored MSRs (e.g., perfrmon, debugreg), IA32_START,
-IA32_LSTART, MSR_SYSCALL_MASK, IA32_TSC_AUX and TA32_KERNEL_GS_BASE are reset to
-initial state.  uret handles the first four. The kernel_gs_base needs to be
-restored on TDExit.
+Thank you!
 
-> >   and the
-> > +	 * guest state of a TD is obviously off limits.  Deferring MSRs and DRs
-> > +	 * is pointless because the TDX module needs to load *something* so as
-> > +	 * not to expose guest state.
-> > +	 */
-> > +	if (is_td_vcpu(vcpu)) {
-> > +		tdx_prepare_switch_to_guest(vcpu);
-> > +		return;
-> > +	}
-> > +
-> > +	vmx_prepare_switch_to_guest(vcpu);
-> > +}
-> > +
-> > +static void vt_vcpu_put(struct kvm_vcpu *vcpu)
-> > +{
-> > +	if (is_td_vcpu(vcpu)) {
-> > +		tdx_vcpu_put(vcpu);
-> > +		return;
-> > +	}
-> > +
-> > +	vmx_vcpu_put(vcpu);
-> > +}
-> > +
-> >   static int vt_vcpu_pre_run(struct kvm_vcpu *vcpu)
-> >   {
-> >   	if (is_td_vcpu(vcpu))
-> > @@ -326,9 +352,9 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
-> >   	.vcpu_free = vt_vcpu_free,
-> >   	.vcpu_reset = vt_vcpu_reset,
-> > -	.prepare_switch_to_guest = vmx_prepare_switch_to_guest,
-> > +	.prepare_switch_to_guest = vt_prepare_switch_to_guest,
-> >   	.vcpu_load = vmx_vcpu_load,
-> > -	.vcpu_put = vmx_vcpu_put,
-> > +	.vcpu_put = vt_vcpu_put,
-> >   	.update_exception_bitmap = vmx_update_exception_bitmap,
-> >   	.get_msr_feature = vmx_get_msr_feature,
-> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > index fdf9196cb592..9616b1aab6ce 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -1,5 +1,6 @@
-> >   // SPDX-License-Identifier: GPL-2.0
-> >   #include <linux/cpu.h>
-> > +#include <linux/mmu_context.h>
-> >   #include <asm/tdx.h>
-> > @@ -423,6 +424,7 @@ u8 tdx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
-> >   int tdx_vcpu_create(struct kvm_vcpu *vcpu)
-> >   {
-> >   	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
-> > +	struct vcpu_tdx *tdx = to_tdx(vcpu);
-> >   	WARN_ON_ONCE(vcpu->arch.cpuid_entries);
-> >   	WARN_ON_ONCE(vcpu->arch.cpuid_nent);
-> > @@ -446,9 +448,47 @@ int tdx_vcpu_create(struct kvm_vcpu *vcpu)
-> >   	if ((kvm_tdx->xfam & XFEATURE_MASK_XTILE) == XFEATURE_MASK_XTILE)
-> >   		vcpu->arch.xfd_no_write_intercept = true;
-> > +	tdx->host_state_need_save = true;
-> > +	tdx->host_state_need_restore = false;
-> > +
-> >   	return 0;
-> >   }
-> > +void tdx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
-> 
-> Just like vmx_prepare_switch_to_host(), the input can be "struct vcpu_tdx
-> *", since vcpu is not used inside the function.
-> And the callsites just use "to_tdx(vcpu)"
-> 
-> > +{
-> > +	struct vcpu_tdx *tdx = to_tdx(vcpu);
-> Then, this can be dropped.
-
-prepare_switch_to_guest() is used for kvm_x86_ops.prepare_switch_to_guest().
-kvm_x86_ops consistently takes struct kvm_vcpu.
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
