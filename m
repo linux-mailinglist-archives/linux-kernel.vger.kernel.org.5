@@ -1,165 +1,124 @@
-Return-Path: <linux-kernel+bounces-143328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF938A3745
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:49:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE758A3747
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:49:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 895DC1F22324
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:49:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD5551C23148
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 635044086B;
-	Fri, 12 Apr 2024 20:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="Dst9qPNT"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C20114EC4E;
+	Fri, 12 Apr 2024 20:49:44 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25602F844
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:49:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E11E14A600
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712954978; cv=none; b=QlMsNlpErw49hG0Ed3DLTMZWZYL8ASlr/P48WIwxVihCvDVqo5ZuOTUHg9VI8f7lWEjmUtwADJdu+GK0n1Ho2jXkfYyidpXJ9hSz7FhpYJDuGf7fFSIH9tRlYx+9isUM86y6XrV/U+SpI6wpyrTDIHwQ2AMqhaxO/QF/uG4Yp9s=
+	t=1712954983; cv=none; b=kNitw2CGRHzyJtjYYEeU/Yb72RmXUFzCldp0CXt3slQ/z3saZ7zzETKjzE9IFWqYo1Q1wxdwe1Y7Z9vqZATLCouwGLrZqvF3huN8HcqnND0W5M2UGC1/ids4RKWCzwDH0LHtymBJ6QvjkLdIKrRk8yGsdWhvTnief2DPOpRPLAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712954978; c=relaxed/simple;
-	bh=SI8LyFXWk12/XUzxfdu9P61bWqIvGJedFSgwFIAgJ4M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QvKrwaJ3ElMP/Of35ndK9tMTVyFeiQ8Bya142zUI8sQdXkAmG+Spfvc88ClcvFx/BYRTECrlp0Pzf4p5iOO7bparsUMHDiJRiEoPJgSqdFjI6Wq5AIVbEVh0RyUDqGfQR5DY9hRY3cQuUXzprNUw0boQHA2+NPl2sVG7dxUS8/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=Dst9qPNT; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4180c6a1003so4908825e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1712954975; x=1713559775; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZIJGnA7TN+BEfAdwT7IEnOdJBJpks8qVlQRsyWpANt4=;
-        b=Dst9qPNTcEnutZ9pl5tnqKoFFvEWClWBodHZcr4CQ3bM+8tcMvzgt3/vOqJZz8X6iA
-         fvDSuLjtAC9wsKcFAASBbUMRlF8Eo+jM/JQSyfBf2DBgQXqAaR6vsEeJTsJrgJ/8GB2/
-         T1PyZNpsVdbajpflygy+9y0lv2QyLF3zBScdM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712954975; x=1713559775;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZIJGnA7TN+BEfAdwT7IEnOdJBJpks8qVlQRsyWpANt4=;
-        b=aNcrl9p9OpFjMG71QfejEq8bf1fp7lBxAUpbM0nHpcGEXlQz/M7MTCufuYlsb4NY6k
-         CTGlcjNDicEEffb7wDtvn5F/hrS9DF7RdxHkuHlYRfRJwjg4TbhFZ9OwxW/D/+dUvsb3
-         D7+kp0Pmig6AsOkVSmU9MP+TiQsLc/fHfBPrSNk5HRDQUHZZQceuxpesoPQPzLhvko8W
-         A1Np81Xgu+d/UTlUCVNlD4fMogJdr0vRAU0OE2eHvhY++IpDoysk3TjeED8Bo5ZjraRh
-         Hny0wugTSXfTNYPW/muYlfGYxbJXatjkhlJRDVUm3UiHgPXXOs5CTsIc0PV3aDg1BZ2d
-         cpNg==
-X-Gm-Message-State: AOJu0Yy9BYAjb8X97JcJphJ+29a85I4zMhWE3SPcAhU8OnpvsF0+oO9H
-	jR7e8fSf8B9ZG9clpPsMTilnNM18/cungm2XbvDS/WRa0ZIWFZ1pQlLFBAMavZY=
-X-Google-Smtp-Source: AGHT+IE5CGgwTxeIhNRNUk6kB07G0zsT5yitwY6Y8sIvm6tsiw1U6BlEibHUTqDi2rsZccpkptQKiQ==
-X-Received: by 2002:a05:600c:1e08:b0:418:1ac7:fdd2 with SMTP id ay8-20020a05600c1e0800b004181ac7fdd2mr415153wmb.16.1712954975123;
-        Fri, 12 Apr 2024 13:49:35 -0700 (PDT)
-Received: from [192.168.1.10] (host-92-3-248-192.as13285.net. [92.3.248.192])
-        by smtp.gmail.com with ESMTPSA id b9-20020a05600c4e0900b00417fdf58a26sm3089099wmq.33.2024.04.12.13.49.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 13:49:34 -0700 (PDT)
-Message-ID: <b0074626-8e98-4573-8047-08916fbb5537@citrix.com>
-Date: Fri, 12 Apr 2024 21:49:33 +0100
+	s=arc-20240116; t=1712954983; c=relaxed/simple;
+	bh=qHPCMth1Dk6Js73rTbBzK82G3+seRbaXOvlWBerU8Jc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AwRZv24IgYS6GE9tmMTUvOmbiEOiipefxlLwqsniWvOMCBZrKfH8RId5l1vVthagWMiAzVhmSpn8Svogu4q67VjPXPoZ2NzYmoqEroEjbr9C13XOX3m1ukQ5SbkOe1a399QvtHsxuWWV5zfbb9IRbdaC9ehH6v0IeJxd3PSosdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvNq4-0002W0-2n; Fri, 12 Apr 2024 22:49:36 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvNq3-00BwMt-C7; Fri, 12 Apr 2024 22:49:35 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rvNq3-000NRt-0w;
+	Fri, 12 Apr 2024 22:49:35 +0200
+Date: Fri, 12 Apr 2024 22:49:35 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Russell King <rmk+kernel@armlinux.org.uk>, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] clk: Provide !COMMON_CLK dummy for
+ devm_clk_rate_exclusive_get()
+Message-ID: <xfaf22rf6gnrxpinkciybsyk4dx2bfqgozv6udwymegtcgd26i@jq5be7fm5lhi>
+References: <202403270305.ydvX9xq1-lkp@intel.com>
+ <20240327073310.520950-2-u.kleine-koenig@pengutronix.de>
+ <d95554f623f023a2f5499fa2f6f76567.sboyd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] x86/bugs: Remove support for Spectre v2 LFENCE
- "retpolines"
-To: Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org
-Cc: linux-kernel@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Daniel Sneddon <daniel.sneddon@linux.intel.com>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Alexandre Chartre <alexandre.chartre@oracle.com>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sean Christopherson <seanjc@google.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Nikolay Borisov <nik.borisov@suse.com>, KP Singh <kpsingh@kernel.org>,
- Waiman Long <longman@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Ingo Molnar <mingo@kernel.org>
-References: <cover.1712944776.git.jpoimboe@kernel.org>
- <e5356c0e018cd0a96aabe719f685c237ac519403.1712944776.git.jpoimboe@kernel.org>
-Content-Language: en-GB
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <e5356c0e018cd0a96aabe719f685c237ac519403.1712944776.git.jpoimboe@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tcm26yzrf676zf3u"
+Content-Disposition: inline
+In-Reply-To: <d95554f623f023a2f5499fa2f6f76567.sboyd@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 12/04/2024 7:10 pm, Josh Poimboeuf wrote:
-> I found several bugs where code assumes that X86_FEATURE_RETPOLINE
-> actually means retpolines (imagine that!).
 
-Yeah :(   One could also imagine a past where that was pointed out, or
-just read about it in the archives.
+--tcm26yzrf676zf3u
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->   In fact that feature also
-> includes the original AMD LFENCE "retpolines", which aren't in fact
-> retpolines.
->
-> Really, those "retpolines" should just be removed.  They're already
-> considered vulnerable due to the fact that the speculative window after
-> the indirect branch can still be long enough to do multiple dependent
-> loads.  And recent tooling makes such gadgets easier to find.
+Hello Stephen,
 
-There are two Atom CPUs which are not repotline safe, and for which
-Intel released a statement saying "use lfence/jmp" on these.
+On Thu, Mar 28, 2024 at 03:35:57PM -0700, Stephen Boyd wrote:
+> Quoting Uwe Kleine-K=F6nig (2024-03-27 00:33:10)
+> > To be able to compile drivers using devm_clk_rate_exclusive_get() also
+> > on platforms without the common clk framework, add a dummy
+> > implementation that does the same as clk_rate_exclusive_get() in that
+> > case (i.e. nothing).
+> >=20
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202403270305.ydvX9xq1-lkp=
+@intel.com/
+> > Fixes: b0cde62e4c54 ("clk: Add a devm variant of clk_rate_exclusive_get=
+()")
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+>=20
+> Applied to clk-fixes
 
-I'm still trying to find it...
+I assume that means it will be sent to Linus before 6.9? That would be
+great because I want to make use of this function in some drivers and
+the build bots nag about my for-next branch that in some configurations
+this function is missing.
 
-~Andrew
+Thanks
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--tcm26yzrf676zf3u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYZnl4ACgkQj4D7WH0S
+/k4bhAf/dU3dIH1rQHO52ZY4eCb6/UQ6pdDM8CzZxB2oGa60PXugNfbK5LqTCNEB
+q5FVGKRHe+lbUG2Dk4belrX3ZNMXweqywtHu0bXbPZZjPjCvrYmCdRJKuHLSQgRV
+5gHxyFQshzOr49JHsWieLVj7le4bAHBbgF9r/a2gcWUsS4xOAaNNCzgPb8fR7nzX
+pcbXThX4rhn9kP65ZokC2sEJyobMFNCrTewaOXP6UNaSUt/M/qTnsgDhxMa7ywPi
+4deahcIXXS5ZKj2ICyz08cNryUnJVA+bhYNvzi7zP51TvNynLcwYfdkF+n5T5Gin
+aUgbiu3Sm38THO0Eiw5M+GgIUfYj0A==
+=/h7x
+-----END PGP SIGNATURE-----
+
+--tcm26yzrf676zf3u--
 
