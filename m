@@ -1,106 +1,169 @@
-Return-Path: <linux-kernel+bounces-141818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D28C88A23D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:42:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38B168A23DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C57AB233CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:42:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF29D1F2380E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7A9168A8;
-	Fri, 12 Apr 2024 02:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80AF710A3C;
+	Fri, 12 Apr 2024 02:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="BDohIcd+"
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QOwbCjmt"
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165AC134BD;
-	Fri, 12 Apr 2024 02:41:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E7917F5
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 02:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712889705; cv=none; b=DBS0AWrYFXFmxc5wRVxEFZHbCViuLTKWyKCtYfYxRADglb8DjeGbRtM2WzBOUFDEkW4wjj6f5XVRnhZHEIs/YeM8YRHYX2UuB2GkhRfdE8YLnlc1NpFW7bndxFHg1EAGccizmZlCOY0OTC1Vpyc2ATkqyWp4YSaTRvYO8n/eGp8=
+	t=1712889888; cv=none; b=F/aCzDYVG1xXFYygJ8e/KU8xD7O84lQS+TI1nwvJbDtZSQQgwhA2smNRu1RIWlLrRf4McNQvjTRMXoPHROylmHbO7s8wNj2oekHSWIbjPJ7VWeVSJGMRAOERwvXgs9uDRaAieHPxKm5XR8Y3WEHHbOqhSGoqXhX09FceCEKOhJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712889705; c=relaxed/simple;
-	bh=kPTWyd27qtpz0j7CiJ8MLUsJpEDcMvRcWprNNYOooUM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YFnOoBMQGV8dIZ+HPHQCEN8hdjdteSAI5DgvAoonHia0SlSnm/WZrMRO+3cHf7wf6Ka6w/99fwq4uLXKibTqDZFHjsnG1QqkHaR1++252H8Sq1YWVlS7+/qM3SlkGOpHAGxp63munPYOaL6o8BxLQfUk/+2PUJI5yOI4Pe/psco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=BDohIcd+; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712889693; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=YjwBFUKfQzATV8MN0CZKmv5/RE4aS2y4MQlXc0URcto=;
-	b=BDohIcd+BA1HWdfhgGDJAB4OvcRuI7Bm+8EGF0jJ3kxgDTZWRqtV6H2voAk90PRsZaJRHLsQBXgdXFba11+Jeb5m1zR7jdryVSmgFdvcwkMqcwSvhFHJm0fn6atpRyOQwowrId6DC/kycD9UfLkhihsPa7Gr66MuuRwohPm0bVU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4MgPBj_1712889692;
-Received: from 30.221.130.139(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W4MgPBj_1712889692)
-          by smtp.aliyun-inc.com;
-          Fri, 12 Apr 2024 10:41:32 +0800
-Message-ID: <8ff4deab-13ab-4fdf-b418-fbfefe46c087@linux.alibaba.com>
-Date: Fri, 12 Apr 2024 10:41:31 +0800
+	s=arc-20240116; t=1712889888; c=relaxed/simple;
+	bh=d8TMlfpqfj0EJkk4co1gVGQPXhL+ttMpGKUpO6Ej/tw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oNbL81efktZXVdkN2BrrgY0DsmNuD3EeSXV4ZGxaHMBtEPN/C58du1JxqBv3TOk4MQffZR+yu9T6DF5Gp7WEkXIuiDmNI3gZyLBA2wokjhDuv3P/512eOhHLv97ZdaMy1VRB/+lXLT1WzR3MTzdoaSutjMz3XvqfKtAkduc4Jd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QOwbCjmt; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Apr 2024 22:44:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712889884;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I79hH/MqceyrY7sxro/GgYJP7b4PlTecMBGnWtJf/kE=;
+	b=QOwbCjmtAEE42sRxAb7b4AOsULuYL9eaT/ENTW68O2WWOHkwIByai13wmNjulZDpk5VlT1
+	0lj9Lx96lHfqscUXt+BmOsp7OqM5uuz9N670Zr5su0INS0k36HpSg3jSSaGzx32sJAidS8
+	cZ9xhmBRsbwCenfTJ97RuZqjlEbytwQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Hongbo Li <lihongbo22@huawei.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2] bcachefs: chardev: make bch_chardev_class constant
+Message-ID: <vl32k2zzdeohe6ek5cmfibme7ka2e76x57xbxcm26olxlog6ef@lkxtlw63csnv>
+References: <20240308-bcachefs-v2-1-3e84c845055e@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] ACPICA: AEST: Support AEST V2
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org,
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
- <ZhZacAOVpAXK8lDE@bogus>
- <e3c91a7b-4bcc-45ce-92e6-c6a50ad80479@linux.alibaba.com>
- <Zhep-UCqqPlg9BIh@bogus>
-Content-Language: en-US
-From: Ruidong Tian <tianruidong@linux.alibaba.com>
-In-Reply-To: <Zhep-UCqqPlg9BIh@bogus>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240308-bcachefs-v2-1-3e84c845055e@marliere.net>
+X-Migadu-Flow: FLOW_OUT
 
-
-
-在 2024/4/11 17:14, Sudeep Holla 写道:
-> On Thu, Apr 11, 2024 at 03:54:48PM +0800, Ruidong Tian wrote:
->>
->>
->> 在 2024/4/10 17:22, Sudeep Holla 写道:
->>> On Wed, Apr 10, 2024 at 02:36:00PM +0800, Ruidong Tian wrote:
->>>> AEST V2 was published[1], add V2 support based on AEST V1.
->>>>
->>>
->>> Any changes to ACPICA has to get merged in the external ACPICA project.
->>> Refer [1] for details from Rafael. You can also refer [2] in the kernel
->>> docs.
->>>
->>
->> Patch1 is just a fix to follow kernel code style.
+On Fri, Mar 08, 2024 at 09:12:47AM -0300, Ricardo B. Marliere wrote:
+> Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> a const *"), the driver core allows for struct class to be in read-only
+> memory, so move the bch_chardev_class structure to be declared at build
+> time placing it into read-only memory, instead of having to be dynamically
+> allocated at boot time. Also, correctly clean up after failing paths in
+> bch2_chardev_init().
 > 
-> IIUC such changes are not allowed as ACPICA changes are always imported
-> from the external project. So you have to take same route as patch2
+> Cc: Hongbo Li <lihongbo22@huawei.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-In ACPICA, all struct use typedef which is not allowed in kernel:
-
-     It's a **mistake** to use typedef for structures and pointers[1].
-
-I see all other structs in actbl2.h follow this rule, so I fix all 
-typedef in AEST struct to follow kernel code style. But i can not apple 
-this fix in ACPICA. Patch1 is just a kernel patch.
-
-[1]: Documentation/process/coding-style.rst
-
-> 1
->> Patch2 had merged to
->> acpica project, PR link can be see in patch2 comment:
->>
->>    Link: https://github.com/acpica/acpica/commit/ebb4979
+Thanks, applied
+> ---
+> Changes in v2:
+> - Used "free the last thing" pattern in bch2_chardev_init().
+> - Link to v1: https://lore.kernel.org/r/20240305-bcachefs-v1-1-436196e25729@marliere.net
+> ---
+>  fs/bcachefs/chardev.c | 35 ++++++++++++++++++++++-------------
+>  1 file changed, 22 insertions(+), 13 deletions(-)
 > 
-> Thanks, this will then get imported into kernel next time ACPICA changes
-> get merged which usually happens regularly.
+> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
+> index 226b39c17667..dc09f547dae6 100644
+> --- a/fs/bcachefs/chardev.c
+> +++ b/fs/bcachefs/chardev.c
+> @@ -940,7 +940,9 @@ static const struct file_operations bch_chardev_fops = {
+>  };
+>  
+>  static int bch_chardev_major;
+> -static struct class *bch_chardev_class;
+> +static const struct class bch_chardev_class = {
+> +	.name = "bcachefs",
+> +};
+>  static struct device *bch_chardev;
+>  
+>  void bch2_fs_chardev_exit(struct bch_fs *c)
+> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+>  	if (c->minor < 0)
+>  		return c->minor;
+>  
+> -	c->chardev = device_create(bch_chardev_class, NULL,
+> +	c->chardev = device_create(&bch_chardev_class, NULL,
+>  				   MKDEV(bch_chardev_major, c->minor), c,
+>  				   "bcachefs%u-ctl", c->minor);
+>  	if (IS_ERR(c->chardev))
+> @@ -968,32 +970,39 @@ int bch2_fs_chardev_init(struct bch_fs *c)
+>  
+>  void bch2_chardev_exit(void)
+>  {
+> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> -		device_destroy(bch_chardev_class,
+> -			       MKDEV(bch_chardev_major, U8_MAX));
+> -	if (!IS_ERR_OR_NULL(bch_chardev_class))
+> -		class_destroy(bch_chardev_class);
+> +	device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, U8_MAX));
+> +	class_unregister(&bch_chardev_class);
+>  	if (bch_chardev_major > 0)
+>  		unregister_chrdev(bch_chardev_major, "bcachefs");
+>  }
+>  
+>  int __init bch2_chardev_init(void)
+>  {
+> +	int ret;
+> +
+>  	bch_chardev_major = register_chrdev(0, "bcachefs-ctl", &bch_chardev_fops);
+>  	if (bch_chardev_major < 0)
+>  		return bch_chardev_major;
+>  
+> -	bch_chardev_class = class_create("bcachefs");
+> -	if (IS_ERR(bch_chardev_class))
+> -		return PTR_ERR(bch_chardev_class);
+> +	ret = class_register(&bch_chardev_class);
+> +	if (ret)
+> +		goto major_out;
+>  
+> -	bch_chardev = device_create(bch_chardev_class, NULL,
+> +	bch_chardev = device_create(&bch_chardev_class, NULL,
+>  				    MKDEV(bch_chardev_major, U8_MAX),
+>  				    NULL, "bcachefs-ctl");
+> -	if (IS_ERR(bch_chardev))
+> -		return PTR_ERR(bch_chardev);
+> +	if (IS_ERR(bch_chardev)) {
+> +		ret = PTR_ERR(bch_chardev);
+> +		goto class_out;
+> +	}
+>  
+>  	return 0;
+> +
+> +class_out:
+> +	class_unregister(&bch_chardev_class);
+> +major_out:
+> +	unregister_chrdev(bch_chardev_major, "bcachefs-ctl");
+> +	return ret;
+>  }
+>  
+>  #endif /* NO_BCACHEFS_CHARDEV */
+> 
+> ---
+> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+> change-id: 20240305-bcachefs-27a4bb8b9f4f
+> 
+> Best regards,
+> -- 
+> Ricardo B. Marliere <ricardo@marliere.net>
 > 
 
