@@ -1,122 +1,155 @@
-Return-Path: <linux-kernel+bounces-143129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74E408A34CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:33:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E4D58A34D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:34:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5BB51C21FD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:33:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84959B22A5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 432BA14D456;
-	Fri, 12 Apr 2024 17:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF6A148313;
+	Fri, 12 Apr 2024 17:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YDbqWkc1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="qvNcdshZ"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A945491F;
-	Fri, 12 Apr 2024 17:33:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED1214D2BD
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712943222; cv=none; b=vF/xNFizHAVWI0qj88m6V/xAm4UQpvlhrg6UU1DLyNiEipV0uzAp2CbTnvcrc51mwEok1hcsftwwRgoHyO9wf5z+Z6SZBfLbFuiJ7EjVqck2N8ypcdp7He1QFyNYMgLK56YLNffoyUM9gDOJJL5gI1e9VBBxzTsGs3lhyanA3a4=
+	t=1712943273; cv=none; b=UksGdxzKlqBNkztojolybrmS7UmRgGU9olbgeWqqT9POPLKvCqTAUIeziqf9AGT91Wj9CQtsNFUAb0lFIbbv+8FxYEeYQ4YJi3WPkdy8sN83GsJ1eahH9+R3y68K/Wt6MsfcCnEgLc07LBwkqiotp2YbxvmF/e6WRC+UfCVEB3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712943222; c=relaxed/simple;
-	bh=+Kb4STvNJ+pOq+Bbj0vo6MDVZVuYbMArjfmW9xuJGRM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V2aeP1KnFdBociHNc29FDYPL6LI3vDyhPYzN1i+Lp+f/NOWV4K9AI1CT9BQvQbMACADDv9xg9YrVSs8LS5pgcAT85X93dtkbkBxDurJ+lMvQSi0uz6Hqp1H4B161l0z5YN6L4ZDnpRQfdN05zPPE6vjJBZk6lPlZntqwsRlfen4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YDbqWkc1; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712943221; x=1744479221;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+Kb4STvNJ+pOq+Bbj0vo6MDVZVuYbMArjfmW9xuJGRM=;
-  b=YDbqWkc1C+vbY0lABkO1YMTeUx43Se7tvGWT6H+/sYc78H9yb777Qzmn
-   xHiiuirbns7h5AEjolHKYctOuNpwq1JCakZ3cQDy00jV5MXhoe/4kZjCx
-   n0ze3gdrcgSJIKtByuxIO2aPquYpSbhmDLG8aEx0LgePXURdcD+xFQf3+
-   Bt91Urs9pDh16D8GwtiUuIfYgH14tclZxoAsOp5gN+58obWgtlfix1BxY
-   UowbTeLXSUUEtyFktb/7ECqUHytJGQr8sV5APR2ErjoZr+vZ4J6zYZcyp
-   lHlB9pKUQWidjy4/Js9+ZliKRIb79ntM4BigZ1g1HH5yNQafotFaLr5Ws
-   w==;
-X-CSE-ConnectionGUID: wCycNY2DTS2Eetw2E0d61A==
-X-CSE-MsgGUID: gcps37+oT5a1Ab8HfOK8Eg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8578640"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="8578640"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:33:40 -0700
-X-CSE-ConnectionGUID: PepGGd6URwelQES4/NIPNQ==
-X-CSE-MsgGUID: 1KzlB0FzTxiRHI3zLn1afA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="21326063"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa006.fm.intel.com with ESMTP; 12 Apr 2024 10:33:38 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id C3039FF; Fri, 12 Apr 2024 20:33:36 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH net-next v1 1/1] can: mcp251x: Fix up includes
-Date: Fri, 12 Apr 2024 20:33:32 +0300
-Message-ID: <20240412173332.186685-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+	s=arc-20240116; t=1712943273; c=relaxed/simple;
+	bh=trPSWbts0qeWRZx2qyrUZFaFTVVwg7Cc9kvkrHlL3Yc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T8mhiujJGYMhDzISmLL16eUqwQA+gdfhVTAf+OsTsAHpLg4NVCLYJV0Qj1e3957qjQzqwe1TSgyZudvplWkT7LYts4VQfFb9yfB0y4mx+41Ss8jeTJV/cyAV9mrY4CN2BDSYz99hV+smrUYDboL7nN/EiebKbiydOI2Kwca6qvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=qvNcdshZ; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so753580a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:34:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712943271; x=1713548071; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PEydYnVIUiV6lB5t0xe0YqzJX4OVoeUrqtT1X9ALVoM=;
+        b=qvNcdshZoOmLKcj6Hxhn8syXlCyDMdQAZ4X+m5c3xG9coLzT5HEFz7Du7HhJBELiUZ
+         hhPsSnNxlEmbkrtle+3SGyxhiqahYZCu9IfHaqIffV1CBaoogmyG2NJKQVDx/avQN/Yq
+         RcB+RORJSbaTyyAgNkaBGxP4VepCLYccBJZoQhB2i9Nn9ZTyIMBuaaUMImVXPYiGlDXR
+         8JzSJjyZk/QareLUU0t6AtNAZNBYFWTYS8j5y/LR68DJNPUhTpUy8ZUbWBZzNmCVnhzI
+         bbWSfsfTr+ua76Bcx4wiWxQeHhr6cQmXb26YFW5n3dMFbKpaYbAkC/thhM149Bg9ffN/
+         LBJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712943271; x=1713548071;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PEydYnVIUiV6lB5t0xe0YqzJX4OVoeUrqtT1X9ALVoM=;
+        b=k8WIG+RrMklaemVoLszRC2ZeT0kw4Is+SSHH3QmgQeKrBBQgQ2o/0crS5a7WmT0/hY
+         O8+Mx9WWSdIDl60MkcORI9sIxrBqL/t9pG9gDb1Y0nCWCEOaQKAp0sr0jw1ApH4aYqfU
+         W7ijRVQxEQdLH7LhL0ri9N+AJXREFfH61HvxpWnGO9ajNEhXrTZ6r2Qe8R3RDMnzJmUt
+         24MredMKdr1n0LE84Rn4bgWZqClH53b9cBS7XO+BtD9Dpq+is0R8d8w/zhuTz4TA3IVP
+         EJV9ISFxmd30h6fH61OORsb1CTBY4dsACTAY3R66yURRTeAA2xrwtIdexerPWYfM8YrJ
+         h6Tg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRhGFijdQWi3DoIeBkTVoObjhHACtCFHojymUUEYOvj1UKVeqHgTFOsNc9+Hm67IWrID1XJ8UciZhYglPH0nQ3dKR9ZA1P2oDuPyi4
+X-Gm-Message-State: AOJu0YxHjlB2gLP453OM325MoLJwNCugNaJfRNTXZJJIehhx+vsRXLXP
+	z3N0NdeF2ivFAM6I4qKX/VepfGb7RE3ocAIoUyyEFijhZ1kBIbf/EiSw3JW47vA=
+X-Google-Smtp-Source: AGHT+IGecMdCX/L7b/b4jRRmemcxcjENo5rWeeIe8AMz+k5W0w7mlpSYqVctJhJ2M4+aY/mVz0JUCQ==
+X-Received: by 2002:a17:90a:2cf:b0:2a5:733c:3105 with SMTP id d15-20020a17090a02cf00b002a5733c3105mr3650134pjd.26.1712943271582;
+        Fri, 12 Apr 2024 10:34:31 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:121b:da6b:94f1:304])
+        by smtp.gmail.com with ESMTPSA id fs6-20020a17090af28600b002a4e331cc69sm4732571pjb.20.2024.04.12.10.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 10:34:31 -0700 (PDT)
+Date: Fri, 12 Apr 2024 10:34:28 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 07/19] riscv: Optimize
+ riscv_cpu_isa_extension_(un)likely()
+Message-ID: <ZhlwpKuqVkQCr6u+@ghost>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-7-4af9815ec746@rivosinc.com>
+ <20240412-aerosol-heritage-cec1eca172fb@wendy>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412-aerosol-heritage-cec1eca172fb@wendy>
 
-This driver is including the legacy GPIO header <linux/gpio.h>
-but the only thing it is using from that header is the wrong
-define for GPIOF_DIR_OUT.
+On Fri, Apr 12, 2024 at 11:40:38AM +0100, Conor Dooley wrote:
+> On Thu, Apr 11, 2024 at 09:11:13PM -0700, Charlie Jenkins wrote:
+> > When alternatives are disabled, riscv_cpu_isa_extension_(un)likely()
+> > checks if the current cpu supports the selected extension if not all
+> > cpus support the extension. It is sufficient to only check if the
+> > current cpu supports the extension.
+> > 
+> > The alternatives code to handle if all cpus support an extension is
+> > factored out into a new function to support this.
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> 
+> >  static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, const unsigned long ext)
+> >  {
+> > -	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && riscv_has_extension_unlikely(ext))
+> > -		return true;
+> > +	compiletime_assert(ext < RISCV_ISA_EXT_MAX,
+> > +			   "ext must be < RISCV_ISA_EXT_MAX");
+> >  
+> > -	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+> > +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && __riscv_has_extension_unlikely_alternatives(ext))
+> > +		return true;
+> > +	else
+> > +		return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+> >  }
+> 
+> static __always_inline bool riscv_cpu_has_extension_likely(int cpu, const unsigned long ext)
+> {
+> 	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && riscv_has_extension_likely(ext))
+> 		return true;
+> 
+> 	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+> }
+> 
+> This is the code as things stand. If alternatives are disabled, the if
+> statement becomes if (0 && foo) which will lead to the function call
+> getting constant folded away and all you end up with is the call to
+> __riscv_isa_extension_available(). Unless I am missing something, I don't
+> think this patch has any affect?
 
-Fix it up by using GPIO_LINE_DIRECTION_* macros respectively.
+Yeah I fumbled this one it appears. I got thrown off by the nested
+IS_ENABLED(CONFIG_RISCV_ALTERNATIVE). This patch eliminates the need for
+this and maybe can avoid avoid confusion in the future.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/net/can/spi/mcp251x.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+- Charlie
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 79c4bab5f724..643974b3f329 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -28,7 +28,6 @@
- #include <linux/device.h>
- #include <linux/ethtool.h>
- #include <linux/freezer.h>
--#include <linux/gpio.h>
- #include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-@@ -482,9 +481,9 @@ static int mcp251x_gpio_get_direction(struct gpio_chip *chip,
- 				      unsigned int offset)
- {
- 	if (mcp251x_gpio_is_input(offset))
--		return GPIOF_DIR_IN;
-+		return GPIO_LINE_DIRECTION_IN;
- 
--	return GPIOF_DIR_OUT;
-+	return GPIO_LINE_DIRECTION_OUT;
- }
- 
- static int mcp251x_gpio_get(struct gpio_chip *chip, unsigned int offset)
--- 
-2.43.0.rc1.1336.g36b5255a03ac
+> 
+> Thanks,
+> Conor.
+> 
+
 
 
