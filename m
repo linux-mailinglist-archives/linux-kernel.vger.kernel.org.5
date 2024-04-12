@@ -1,126 +1,145 @@
-Return-Path: <linux-kernel+bounces-143346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BED38A3770
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B3248A3777
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:02:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35468285746
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:00:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB1F285C91
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF591149006;
-	Fri, 12 Apr 2024 21:00:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C8C1509AE;
+	Fri, 12 Apr 2024 21:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lFsV9t9s"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aU7KLIPJ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 299EB3D0B8;
-	Fri, 12 Apr 2024 21:00:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67553D548;
+	Fri, 12 Apr 2024 21:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712955618; cv=none; b=GRTKeQjVFdOHfekDtVLW5wX0/tYQ+rfzhW+SnUkanIaJJZRE1f7a39OLa4BPy2fQ0pg1sYuRhmk3Pfx06cRuwSNVG11tD14/QAwDmMYMDiTEw/sU4F8wBdx5fv8vkKuAgXH317c/jAPZGAxyAzw9mNAunHPvCBHnfbb1RCzrP7k=
+	t=1712955721; cv=none; b=atwBQQPn7da2EVxgz1qKne7X0F6oclC5vLMm/aVjltlSt7VPLSJRbMRrQIMi1uaTIx7/sX5n3G860OBBN0OnnKuRPEVI15XgQaHJw5wtOWUPRgEXOf5NlVMi/3oDyuc3tHq5RHPnDtqmOR0D4K9RVX3GbHFGMBrNL7kd9ngOAcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712955618; c=relaxed/simple;
-	bh=ufExrA51nJyDuRZXOc6Zqlx89622UOkI5PEpjDpkuFg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cp8emQNQyaC95k2tdM88XmneZPbgxjmGNcYoEHWcWPFT3qHMLZLkVAAaB0tfjAt0C9y3UdJml4hRGHPqFj4KvVIR1b02cj8ynpDAbGR8HA+UQT3f17D574QvPKn41HRSLILR0nIC+tpBfkDwDIj920mzUl1XRQf+66nhOcjuJi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lFsV9t9s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6111BC2BD11;
-	Fri, 12 Apr 2024 21:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712955617;
-	bh=ufExrA51nJyDuRZXOc6Zqlx89622UOkI5PEpjDpkuFg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lFsV9t9s6+jpzEwEmP+dIWWBhZTPFt/rJGzOY6NZzVIQABiZruk5OcirG5RfZyaI9
-	 27ZctoEN1U22XtTW9xZ5n2pIr06PaWb7bBC0Ni0SuZ0eaMoA79uJvs+gZCbYIrBCxU
-	 TNq6G2mAbVIwDgOLIvHsBPwMzdFHb9/8gYHG+Oo2gPoaqHB1W2zpKXBMA/95RDgTtM
-	 eNEGMhpqyDatnIsgX649O4JJVbadReziMgJhiahKHqaIvlVFPd5G0Qg9iQLKZTcdiE
-	 4a4Z0QCDgYqvDj1lB6ZUvihWCdBiervg3/7lJMb7zUF2FgPIlc6qipDc4Qe9sQMnTy
-	 xlxJ/gPTg75BQ==
-Date: Fri, 12 Apr 2024 23:59:07 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	linux-hardening@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-	Ross Zwisler <zwisler@google.com>, wklin@google.com,
-	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Linus Torvalds <torvalds@linuxfoundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [POC][RFC][PATCH 1/2] mm/x86: Add wildcard * option as
- memmap=nn*align:name
-Message-ID: <Zhmgm86tzpanoweB@kernel.org>
-References: <20240409210254.660888920@goodmis.org>
- <20240409211351.075320273@goodmis.org>
- <202404091521.B63E85D@keescook>
- <20240409191156.5f92a15c@gandalf.local.home>
- <202404091638.2F98764A41@keescook>
+	s=arc-20240116; t=1712955721; c=relaxed/simple;
+	bh=wDiqDfSQwKgl2YXcdLMUIGZS+yBAbZt9wH6TycsKLQ8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BqsAjSRDi/DP5huNukVNtCogTgRKUosr3J8/fNLX3UgxAyT8PPvBK9Ej9G3EUxhAucK7uUX414o1phhyWBhXHMEFIvgX1UcO1gDlrl70VEUBwndjwn7SqPVg0FFl5mtTOwWPPPXsF0XqvbFXYg1dT706sRf8+nznDbKOoinsd7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aU7KLIPJ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43CJhNVw028876;
+	Fri, 12 Apr 2024 21:01:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=xHF+sDd8rsIy2kUSdpvt
+	vP96ViWFd/9tKXSBhWUmSq4=; b=aU7KLIPJ/2N9L6/2TPXDu/Bi+4TM+Z/3MpVo
+	rGOGH03qa/ZcOzfgwEeG3WW8ItNI8RLas0hLVSfypxYp+Bi9f4u2re231F7kmGKC
+	Ojq4bT8h1U3aeSnIafPvR+ZJQPvHk05nBDyYsXrQNYgdGt/SuFSYc8eO+GWGnINW
+	sCVg5gzP5zdmp3q3r3oLNVvN4XVRrzLYBRZK6gbXMTAeSBgSIt/WvPyOLZJjNLsZ
+	sNDOVuCKeBzEspJqsuGz/e/hehF3MhraTxwzmhdC/g6ptHLviEL8Hp2K/w6IxRjn
+	je5h5TR+qu06Um0gbJsbziEN9SOf9yaKj/YjN66EmVwp9C3lNA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xf9wgrjec-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 21:01:27 +0000 (GMT)
+Received: from pps.filterd (NALASPPMTA05.qualcomm.com [127.0.0.1])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43CL0kwI025723;
+	Fri, 12 Apr 2024 21:01:26 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by NALASPPMTA05.qualcomm.com (PPS) with ESMTPS id 3xf5qntx8x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 21:01:26 +0000
+Received: from NALASPPMTA05.qualcomm.com (NALASPPMTA05.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43CL0ZeL025662;
+	Fri, 12 Apr 2024 21:01:26 GMT
+Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
+	by NALASPPMTA05.qualcomm.com (PPS) with ESMTPS id 43CL1QPC027052
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 21:01:26 +0000
+Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
+	id 2ABB222097; Fri, 12 Apr 2024 14:01:25 -0700 (PDT)
+From: Abhishek Chauhan <quic_abchauha@quicinc.com>
+To: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Subject: [RFC PATCH bpf-next v3 0/2] Replace mono_delivery_time with tstamp_type
+Date: Fri, 12 Apr 2024 14:01:23 -0700
+Message-Id: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202404091638.2F98764A41@keescook>
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2w5KFFQIfGVL8DEc01YRNfcrngS0lgG2
+X-Proofpoint-GUID: 2w5KFFQIfGVL8DEc01YRNfcrngS0lgG2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-12_17,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=790
+ malwarescore=0 phishscore=0 suspectscore=0 spamscore=0 mlxscore=0
+ adultscore=0 clxscore=1015 priorityscore=1501 lowpriorityscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404120151
 
-On Tue, Apr 09, 2024 at 04:41:24PM -0700, Kees Cook wrote:
-> On Tue, Apr 09, 2024 at 07:11:56PM -0400, Steven Rostedt wrote:
-> > On Tue, 9 Apr 2024 15:23:07 -0700
-> > Kees Cook <keescook@chromium.org> wrote:
-> > 
-> > > Do we need to involve e820 at all? I think it might be possible to just
-> > > have pstore call request_mem_region() very early? Or does KASLR make
-> > > that unstable?
-> > 
-> > Yeah, would that give the same physical memory each boot, and can we
-> > guarantee that KASLR will not map the kernel over the previous location?
-> 
-> Hm, no, for physical memory it needs to get excluded very early, which
-> means e820.
+Patch 1 :- This patch takes care of only renaming the mono delivery
+timestamp to tstamp_type with no change in functionality of 
+existing available code in kernel also  
+Starts assigning tstamp_type with either mono or real and 
+introduces a new enum in the skbuff.h, again no change in functionality 
+of the existing available code in kernel , just making the code scalable.
 
-Whatever memory is reserved in arch/x86/kernel/e820.c, that happens after
-kaslr, so to begin with, a new memmap parameter should be also added to
-parse_memmap in arch/x86/boot/compressed/kaslr.c to ensure the same
-physical address will be available after KASLR.
+Patch 2 :- Additional bit was added to support userspace timestamp to 
+avoid tstamp drops in the forwarding path when testing TC-ETF. 
+With this patch i am not sure what impacts it has towards BPF code. 
+I need upstream BPF community to help me in adding the necessary BPF 
+changes to avoid any BPF test case failures. 
+I haven't changed any of the BPF functionalities and hence i need 
+upstream BPF help to assist me with those changes so i can make them as 
+part of this patch.  
 
-More generally, memmap= is x86 specific and a bit of a hack.
-Why won't you add a new kernel parameter that will be parsed in, say, 
-mm/mm_init.c and will create the mmap_map (or whatever it will be named)
-and reserve that memory in memblock rather than in e820?
+Abhishek Chauhan (2):
+  net: Rename mono_delivery_time to tstamp_type for scalabilty
+  net: Add additional bit to support userspace timestamp type
 
-This still will require update to arch/x86/boot/compressed/kaslr.c of
-course.
-
-> So, yeah, your proposal makes sense. I'm not super excited
-> about this be x86-only though. What does arm64 for for memmap?
-> 
-> -- 
-> Kees Cook
-> 
+ include/linux/skbuff.h                        | 50 ++++++++++++++-----
+ include/net/inet_frag.h                       |  4 +-
+ net/bridge/netfilter/nf_conntrack_bridge.c    |  6 +--
+ net/core/dev.c                                |  2 +-
+ net/core/filter.c                             |  8 +--
+ net/ipv4/inet_fragment.c                      |  2 +-
+ net/ipv4/ip_fragment.c                        |  2 +-
+ net/ipv4/ip_output.c                          | 10 ++--
+ net/ipv4/raw.c                                |  2 +-
+ net/ipv4/tcp_output.c                         | 14 +++---
+ net/ipv6/ip6_output.c                         |  8 +--
+ net/ipv6/netfilter.c                          |  6 +--
+ net/ipv6/netfilter/nf_conntrack_reasm.c       |  2 +-
+ net/ipv6/raw.c                                |  2 +-
+ net/ipv6/reassembly.c                         |  2 +-
+ net/ipv6/tcp_ipv6.c                           |  2 +-
+ net/packet/af_packet.c                        |  7 ++-
+ net/sched/act_bpf.c                           |  4 +-
+ net/sched/cls_bpf.c                           |  4 +-
+ .../selftests/bpf/prog_tests/ctx_rewrite.c    |  8 +--
+ 20 files changed, 84 insertions(+), 61 deletions(-)
 
 -- 
-Sincerely yours,
-Mike.
+2.25.1
+
 
