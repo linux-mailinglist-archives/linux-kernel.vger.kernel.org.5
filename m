@@ -1,138 +1,158 @@
-Return-Path: <linux-kernel+bounces-143229-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D48188A35F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:48:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5739A8A35F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:46:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02BD61C21795
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:48:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C67B283901
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2797414F9F5;
-	Fri, 12 Apr 2024 18:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A12614EC53;
+	Fri, 12 Apr 2024 18:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PvsD2jfB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="NJpSzMgO"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27CC014F9D7;
-	Fri, 12 Apr 2024 18:47:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D340714E2DA
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712947679; cv=none; b=YPKogkPU0//Nhw43SiV+sUB/9xS9QEg85paA/HsFRTxo9vVrxH85jDi7eFk5z2nl9vvYIYxUUCYiQlSAgweBhAj/ulbJ8PrYY4569gmk/SFEi1S87xuBY1L0pkz5Mprz75dWkFIbuMJCDpTqyJZxjWCfPtvvcWcwZlJA4fTO18M=
+	t=1712947588; cv=none; b=ptiJoMcw0iDemUP2qwT1anydYcEoR+TTVnCCBajEo8P6tmK08DAAp1oUMa3OLdIKHzOHLqzZqmsdj5C/Lu6vAQ9wyg0Q334kfDnjJoDodB3xZ0nZr46R9U5dc0He5GTrusTgSWip4fk362rYNwZi5xDl5FBgOImDxXEJMHIUQlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712947679; c=relaxed/simple;
-	bh=qNwaH9FoWBTAdA5ghiLL6X1/WsUFM5GWDUFnPLH5qSM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DPlEI5AZSH+RB3n01HlXImGluT2ePqSR9u3uknA+xQTkxLNMB0NFr75IUfBvLb8DS2HIiekNjBmVJ1ZO3si71quav1tliwm/SZZaHK4zLRQDtCofbXZWyAmGa4N+OkwmrUxGeEpAfXnHjp/w48s4tfk0o7btkM7DT9MDLtwbQis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PvsD2jfB; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712947678; x=1744483678;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qNwaH9FoWBTAdA5ghiLL6X1/WsUFM5GWDUFnPLH5qSM=;
-  b=PvsD2jfBBcSBZchkQThnlaBrdmCkIpO0X4Yg4BSZKB/wFUjN2SB9h0Ow
-   8TqQMpoWWnYeXJ2yRIEEaUgJYhGFS12HOe0AgZNH3sHlrlPHPkNp+D0IF
-   18keApwAKWEO/uBUTFU3uNNaEXwLcsrmcKMOKsNVw9meZ4D31RgnYE6D4
-   IFgj8SIHEKqzj11ZXvZiW5+crkJWYxsvGERPn39EK77BIXPbt+tNQ94hB
-   iSM3Uq40oLYgtNFFpvk3rKh7D496c/wVgXvU0GswSphEIlTz6HZhPFR1U
-   m0AJGk8uKwUzkIPJOSJXScv6Zg/5n1+QO1gytFmbsomTCdGfRMw4lQNFa
-   g==;
-X-CSE-ConnectionGUID: ptA1TsM4SsSXPZqRh27TbQ==
-X-CSE-MsgGUID: H2yytqZWRWm7AWjf2wr83A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8333189"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="8333189"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 11:47:58 -0700
-X-CSE-ConnectionGUID: pj9FaUm4SIWVi/UmnAvSsw==
-X-CSE-MsgGUID: 8U1PKzKvTKmf/o+lukE73A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="25856201"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa003.fm.intel.com with ESMTP; 12 Apr 2024 11:47:56 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 249612BE; Fri, 12 Apr 2024 21:47:55 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Adrian Hunter <adrian.hunter@intel.com>,
-	Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v1 2/2] mmc: sdhci-acpi: Use devm_platform_ioremap_resource()
-Date: Fri, 12 Apr 2024 21:46:21 +0300
-Message-ID: <20240412184706.366879-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
-In-Reply-To: <20240412184706.366879-2-andriy.shevchenko@linux.intel.com>
-References: <20240412184706.366879-2-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1712947588; c=relaxed/simple;
+	bh=qKkswK18vpnSN345O9M11lS7tdby0F+ByaBIolhUUXA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HSVib03jPkJtzVqxSUp3Tw3T1FMtzXuEetXeHiIiqqhCjWERLWPExBu/Yyds1PZ7e1Wi+Qea87z41wCW3wGdJ3e9nVdITGb2JSmBbj9JalgYh/O6IWHoW79HfjMhyPeNXSgLTmHh81/fTc0fcrry4SjKymhTUyYoXwawnx2ofo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=NJpSzMgO; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e5ebb30129so468575ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712947586; x=1713552386; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jhdmuDh97ehxPhYQBh/JW7pvCSTVsjtJJK5Y5QDdmM8=;
+        b=NJpSzMgO2NM1CljmTV21oKb+kmm/SZHqXiDfvfccELH/SOEs7LEzkEvsb+4qYM3vor
+         tc5dpUplGL0hrzgmIr6cUzgu7DdjlhvGYRQyEfpvK/vcY+xeEs+r0jrh+ZmxnKMaOjxP
+         fvXvex5wT0a35qa/W0E0GPNGAburVs8VktwlJEVe9eLVdgfZY+LiCLry4V4brkD864+t
+         PRGJZY4gr4U8Ts6AuCSOGFV/QXYQbLLn/Banboqtkf3tlq0m714BaV8l4e1Ya33IJCRs
+         XOR20todyiga2MsVgVNrnCm81n7gRgm5UfxM6em6f8b4uPm6nVO3Af9NST9YbXk6Wl4X
+         ivww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712947586; x=1713552386;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jhdmuDh97ehxPhYQBh/JW7pvCSTVsjtJJK5Y5QDdmM8=;
+        b=SSPxeux9JwE/RNM6QSMktdAWbtVwf526e2DoPpXneNsM7a6FekLkRV1pL7CSTxIFNe
+         PFxfsBapOKQ+A+hsMSM3iBwXH6CSidqWwlrGlLr8CIQH1EiYHA7/d6qLreQgbbdXWoEf
+         SpPAse2pXAT0aqMZoAO6uWZmMz4Li2CS/51XnaXgF1FchU764e0YGjYE/6G8VMSMM+9v
+         qe8bzn8lZ79ShhVGhoRrA48WKajhfW3EuBppoWz/wGQJ0YMe4CeVg6aElN6mqz4rk2aZ
+         bL3Pt0Z6rD31m2gTAtiqTKiLc1GF3lFQCq3XSTV8xjFXLZ+W3bb5eGGJisYEHJnGZMLS
+         8dkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWYtpRh07+dUJyYO/iHMDLhX1dWg8YKZIDIfm00oEVq0CipZW874IfC3kYKolsFwT0gdJH90Qnm0lF52H6DAMiByCtFDSzBsk8DTa68
+X-Gm-Message-State: AOJu0YxHqSvY9Hcvaw68DthUWIo0B41Y6iFBXwnhfWyfyThplfUJ2dsl
+	BJ4Zv2sKHNWSrruAYFX2TjjBXbr2a3S3XSazoPC+99kO7lTyRxF42n+JiFKNTF4=
+X-Google-Smtp-Source: AGHT+IFwxybYzCqREDQlA4G/991sEd0Qsau4lgiSO1q7Go2BFR9+aFqtd2m1c15qUgSnxQTpows9RQ==
+X-Received: by 2002:a17:903:8ce:b0:1e4:70d0:9333 with SMTP id lk14-20020a17090308ce00b001e470d09333mr4440423plb.9.1712947586221;
+        Fri, 12 Apr 2024 11:46:26 -0700 (PDT)
+Received: from ghost ([107.84.152.28])
+        by smtp.gmail.com with ESMTPSA id y2-20020a17090322c200b001e447bf336esm3300373plg.282.2024.04.12.11.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 11:46:25 -0700 (PDT)
+Date: Fri, 12 Apr 2024 11:46:21 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Evan Green <evan@rivosinc.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 02/19] riscv: cpufeature: Fix thead vector hwcap removal
+Message-ID: <ZhmBfaKXMMtolwSr@ghost>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-2-4af9815ec746@rivosinc.com>
+ <20240412-tuesday-resident-d9d07e75463c@wendy>
+ <CALs-HsuMZOMpDh8kwQx6FE2mawzt+qTD-WZ6Mvhrt+hUhkZimg@mail.gmail.com>
+ <20240412-employer-crier-c201704d22e3@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240412-employer-crier-c201704d22e3@spud>
 
-The struct resource is not used for anything else, so we can simplify
-the code a bit by using the helper function.
+On Fri, Apr 12, 2024 at 07:38:04PM +0100, Conor Dooley wrote:
+> On Fri, Apr 12, 2024 at 10:04:17AM -0700, Evan Green wrote:
+> > On Fri, Apr 12, 2024 at 3:26 AM Conor Dooley <conor.dooley@microchip.com> wrote:
+> > >
+> > > On Thu, Apr 11, 2024 at 09:11:08PM -0700, Charlie Jenkins wrote:
+> > > > The riscv_cpuinfo struct that contains mvendorid and marchid is not
+> > > > populated until all harts are booted which happens after the DT parsing.
+> > > > Use the vendorid/archid values from the DT if available or assume all
+> > > > harts have the same values as the boot hart as a fallback.
+> > > >
+> > > > Fixes: d82f32202e0d ("RISC-V: Ignore V from the riscv,isa DT property on older T-Head CPUs")
+> > >
+> > > If this is our only use case for getting the mvendorid/marchid stuff
+> > > from dt, then I don't think we should add it. None of the devicetrees
+> > > that the commit you're fixing here addresses will have these properties
+> > > and if they did have them, they'd then also be new enough to hopefully
+> > > not have "v" either - the issue is they're using whatever crap the
+> > > vendor shipped.
+> > > If we're gonna get the information from DT, we already have something
+> > > that we can look at to perform the disable as the cpu compatibles give
+> > > us enough information to make the decision.
+> > >
+> > > I also think that we could just cache the boot CPU's marchid/mvendorid,
+> > > since we already have to look at it in riscv_fill_cpu_mfr_info(), avoid
+> > > repeating these ecalls on all systems.
+> > >
+> > > Perhaps for now we could just look at the boot CPU alone? To my
+> > > knowledge the systems that this targets all have homogeneous
+> > > marchid/mvendorid values of 0x0.
+> > 
+> > It's possible I'm misinterpreting, but is the suggestion to apply the
+> > marchid/mvendorid we find on the boot CPU and assume it's the same on
+> > all other CPUs? Since we're reporting the marchid/mvendorid/mimpid to
+> > usermode in a per-hart way, it would be better IMO if we really do
+> > query marchid/mvendorid/mimpid on each hart. The problem with applying
+> > the boot CPU's value everywhere is if we're ever wrong in the future
+> > (ie that assumption doesn't hold on some machine), we'll only find out
+> > about it after the fact. Since we reported the wrong information to
+> > usermode via hwprobe, it'll be an ugly userspace ABI issue to clean
+> > up.
+> 
+> You're misinterpreting, we do get the values on all individually as
+> they're brought online. This is only used by the code that throws a bone
+> to people with crappy vendor dtbs that put "v" in riscv,isa when they
+> support the unratified version.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mmc/host/sdhci-acpi.c | 20 +++-----------------
- 1 file changed, 3 insertions(+), 17 deletions(-)
+Not quite, the alternatives are patched before the other cpus are
+booted, so the alternatives will have false positives resulting in
+broken kernels.
 
-diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
-index 32ae6f763c1d..b9c8eb87a01a 100644
---- a/drivers/mmc/host/sdhci-acpi.c
-+++ b/drivers/mmc/host/sdhci-acpi.c
-@@ -779,8 +779,6 @@ static int sdhci_acpi_probe(struct platform_device *pdev)
- 	struct acpi_device *device;
- 	struct sdhci_acpi_host *c;
- 	struct sdhci_host *host;
--	struct resource *iomem;
--	resource_size_t len;
- 	size_t priv_size;
- 	int quirks = 0;
- 	int err;
-@@ -801,17 +799,6 @@ static int sdhci_acpi_probe(struct platform_device *pdev)
- 	if (sdhci_acpi_byt_defer(dev))
- 		return -EPROBE_DEFER;
- 
--	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!iomem)
--		return -ENOMEM;
--
--	len = resource_size(iomem);
--	if (len < 0x100)
--		dev_err(dev, "Invalid iomem size!\n");
--
--	if (!devm_request_mem_region(dev, iomem->start, len, dev_name(dev)))
--		return -ENOMEM;
--
- 	priv_size = slot ? slot->priv_size : 0;
- 	host = sdhci_alloc_host(dev, sizeof(struct sdhci_acpi_host) + priv_size);
- 	if (IS_ERR(host))
-@@ -833,10 +820,9 @@ static int sdhci_acpi_probe(struct platform_device *pdev)
- 		goto err_free;
- 	}
- 
--	host->ioaddr = devm_ioremap(dev, iomem->start,
--					    resource_size(iomem));
--	if (host->ioaddr == NULL) {
--		err = -ENOMEM;
-+	host->ioaddr = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(host->ioaddr)) {
-+		err = PTR_ERR(host->ioaddr);
- 		goto err_free;
- 	}
- 
--- 
-2.43.0.rc1.1336.g36b5255a03ac
+- Charlie
 
 
