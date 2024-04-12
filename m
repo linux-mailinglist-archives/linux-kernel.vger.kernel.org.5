@@ -1,123 +1,96 @@
-Return-Path: <linux-kernel+bounces-143100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1A208A3437
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:59:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594D58A3439
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:59:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60879B2238A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:59:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FB651F232F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:59:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9968614C584;
-	Fri, 12 Apr 2024 16:59:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111DD14BFA2;
+	Fri, 12 Apr 2024 16:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B7PAvxxF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dHzal/Li"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D316E5491F;
-	Fri, 12 Apr 2024 16:59:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E9914AD17;
+	Fri, 12 Apr 2024 16:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941164; cv=none; b=HbfZ7nm+P1zAaTtuG+O+wxljBr5NjtFp5Qz4Z6ptUn5zUistTTrkPWbu7b7nNUv10wNGGS8fNsI/r7azta3UaK3zuqNxJ+rwGRKDv5W/EnQYR6c/q2wXoAm8nbNHzoLCtaMoN1JZQapIXCgiNP889hv8DijkwmdbLqLgnJwNYkY=
+	t=1712941188; cv=none; b=W5WpAfIA5oi7ktHywL/aIfacE2cKEAsZEGL1KSqjOCjY4zYJ6Ug6+bj0FzBuwODYI0fasc/HuhDeUIGt7TzZl3FEtRgvCcKV7guLtMHXQFokVgKHCjXAQaqR1qOnjp410ulBSyGkKYhJoTjjaZWqbKaBwRgQZsX/5JTiIL5lnYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712941164; c=relaxed/simple;
-	bh=vjUt8Ss2air20ASfcUx9xukrTcaaeYFx19lixRDlmP0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=avzY5o91SyvG515X4J/gpFKl61VdZd1ydGM25lhVIo7dFYAkq/LDqOnWFi3/zP3ZwiFF/9a+wcBchmOEaEDwv5ZtDFJLzeb8IQI7NV18yN0Cy0dtIRUgJtEBOG1xNZpVDrRhv6EvED008uJXYW509V2v2BBmKX5aQrdjVNL6+Go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B7PAvxxF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D84F9C113CC;
-	Fri, 12 Apr 2024 16:59:22 +0000 (UTC)
+	s=arc-20240116; t=1712941188; c=relaxed/simple;
+	bh=qb8b7mSbwJyS8ETnO/Xg6oCFvhGOYwOX6gR2VBV/lHo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=NpEULxmeoFt9wZSwzMDYrp3upZnB/+J9UEbCOcESL9L/bb8/SPuLy5pymLvc2vw2udpxpH9f4cT8pAPRO7MyysLMCoM0y+VMGmQf3bVqHZ6zB8VX8LqdrOd2pe+ktjTIPvmoqrWI3ZpIFqqoTTo4Ip2U+uKGSphoD0r7vk36ljo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dHzal/Li; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7043C113CC;
+	Fri, 12 Apr 2024 16:59:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712941163;
-	bh=vjUt8Ss2air20ASfcUx9xukrTcaaeYFx19lixRDlmP0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=B7PAvxxFsSFHG7ZCnsELk3yzsJDSXiXUwUaoao8fjYeQgunNY5KA0SHMn7Mm2zdTp
-	 sVvu012C7X5XqVa215VQ+KY3HWjwFpLMeLnp1Q3ghYPc8Bq+kZMoO6fWOEQwW3XzTk
-	 heHhS7uZJYfnMqMGaZ/mJao/tGod1J5x/tbZC+2SveyvvQuBFPoNCbTtyKhckzG8OQ
-	 Kud6G/ycDucl9EMm6zAKzZ9kZ94MjqVqyM5d+nS5sv2G9+xPfotvp4oZrH/KTgQe+2
-	 LJZxaVycmHkafDql7cJYNvg5YmO8q5NcvPgvJM3v0N4uSsfqhGyWUZlmVPQP3Ynufd
-	 esHkLQ+rsTAJw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, Andreas
- Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, Conor
- Dooley <conor@kernel.org>, Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-In-Reply-To: <20240412154342.GA1310856@mit.edu>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
- <20240412154342.GA1310856@mit.edu>
-Date: Fri, 12 Apr 2024 18:59:19 +0200
-Message-ID: <87a5lyecuw.fsf@all.your.base.are.belong.to.us>
+	s=k20201202; t=1712941187;
+	bh=qb8b7mSbwJyS8ETnO/Xg6oCFvhGOYwOX6gR2VBV/lHo=;
+	h=Date:From:To:Cc:Subject:From;
+	b=dHzal/LiMS3Wf/DtMmhmagyVbo7tZbWiufIXe3JdcKe/+/M0gfQchNat9IHTZmuc8
+	 z8l867ucXJdHawhWvp2bec4n9G8bPX20Mt4t+tlAhdy3Su+U/qOaEEPENzPmBr4MxC
+	 Wfmp+tEpWVGECpzgdKXACvH0eK2nw0tIhyS+93gq3K+tG/Mxf1Jqs55CJgV0Fzsu71
+	 PaJdOwfTnSBGlKXJTfveuvOlHJFNdHgMumptOPWY7FPw6r1bon8P0s4f2Qo1dgQQDc
+	 YIfmsujyeAOBxzMYFnJI01V5NPgLaLhxhWeTVWpCnRcVEmSaqH+scA9+fb+8kSgTh5
+	 fG9ikYRTCmIBg==
+Date: Fri, 12 Apr 2024 11:59:45 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	Edmund Raile <edmund.raile@proton.me>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+Subject: [GIT PULL] PCI fixes for v6.9
+Message-ID: <20240412165945.GA6532@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-> On Fri, Apr 12, 2024 at 04:57:08PM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
->> Hi!
->>=20
->> I've been looking at an EXT4 splat on riscv32, that LKFT found [1]:
->
-> I'm getting a "page not found" for [1]?
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-You are? It's working for me!
+are available in the Git repository at:
 
->> This was not present in 6.7. Bisection wasn't really helpful (to me at
->> least); I got it down to commit c604110e662a ("Merge tag 'vfs-6.8.misc'
->> of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs"), and when I
->> revert the commits in the vfs merge the splat went away, but I *really*
->> struggle to see how those are related...
->
-> It sounds like you have a reliable repro; is it something that can be
-> streamlined into a simple test program?  If so, is it something that
-> can be reproduced on other architectures?  And could you make it
-> available?
+  git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.9-fixes-1
 
-It's kind of streamlined: Linaro has this nice "tuxrun" tool, that can
-be installed via pip, e.g.
+for you to fetch changes up to 302b84e84d108b878efc56ebfea09474159be56b:
 
-  $ pipx install tuxrun
+  Revert "PCI: Mark LSI FW643 to avoid bus reset" (2024-03-29 11:57:12 -0500)
 
-if you're on Debian.
+----------------------------------------------------------------
+- Revert a quirk that prevented Secondary Bus Reset for LSI / Agere FW643.
+  We thought the device was broken, but the reset does work correctly on
+  other platforms, and the reset avoids leaking data out of VMs (Bjorn
+  Helgaas)
 
-Then you can get the splat by running:
+- Update MAINTAINERS to reflect that Gustavo Pimentel is no longer
+  reachable (Manivannan Sadhasivam)
 
-  $ tuxrun  --runtime docker --device qemu-riscv32 --kernel https://storage=
-tuxsuite.com/public/linaro/lkft/builds/2esMBaAMQJpcmczj0aL94fp4QnP/Image.g=
-z --parameters SKIPFILE=3Dskipfile-lkft.yaml --parameters SHARD_NUMBER=3D10=
- --parameters SHARD_INDEX=3D1 --image docker.io/linaro/tuxrun-dispatcher:v0=
-66.1 --tests ltp-controllers
+----------------------------------------------------------------
+Bjorn Helgaas (1):
+      Revert "PCI: Mark LSI FW643 to avoid bus reset"
 
-(--runtime knows "podman" as well)
+Manivannan Sadhasivam (1):
+      MAINTAINERS: Drop Gustavo Pimentel as PCI DWC Maintainer
 
-You can pass your own kernel to --kernel, and the config for riscv32 can
-be obtained here [2].
-
-Build with "make ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu-", and make
-sure to have the riscv64 cross-compilation support (yes, same toolchain
-for rv32!).
-
-It's when the rootfs is mounted, and the kernel is looking an init.
-
-
-I'll keep debugging -- it was more if anyone had seen it before. I'll
-try to reproduce on some other 32b platform as well.
-
-
-Thanks,
-Bj=C3=B6rn
-
-[2] https://storage.tuxsuite.com/public/linaro/lkft/builds/2esMBaAMQJpcmczj=
-0aL94fp4QnP/config
+ CREDITS              | 4 ++++
+ MAINTAINERS          | 1 -
+ drivers/pci/quirks.c | 8 --------
+ 3 files changed, 4 insertions(+), 9 deletions(-)
 
