@@ -1,48 +1,50 @@
-Return-Path: <linux-kernel+bounces-143016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8512B8A334B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:10:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C0F8A334C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:10:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2515C1F24A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:10:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD882282331
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:10:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C790149C77;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9FC149DE2;
 	Fri, 12 Apr 2024 16:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="m/5W5Ayg"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="qkHwS4KK"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3A914884C;
-	Fri, 12 Apr 2024 16:09:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7864E148FE0;
+	Fri, 12 Apr 2024 16:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938176; cv=none; b=nDhjCQhYmBzTcLv8HLmzjHL2dgJaU0w1mLyT813x7df3Ms+yMuhoYaCRBlZNOGFEC+z94PJ+RhXBKBNB6SOAOrBjvxaLBFxyXIMv8z5wZeDJKULBHiMflS+tqS1mqrEqq6S4XWjzokLRwP72JM7s8g3t5LnojXIskqeo+f993bc=
+	t=1712938177; cv=none; b=GOLgFt6ao+HgGeaQVfHiu4/dsAF46NKHjA0FuXwznYMQF2arNtZz0zdTitxpV6zzGQuYnH72fItq9yMefFK39lnFHMYvyyHdlRdDRS5bEyNVv3bAy3ztsI9qxFJLywMDh5fCpeW64JvtsfBQzlFhQH6B13pLDf5b7B81GvGyMPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938176; c=relaxed/simple;
-	bh=key2rY0okj8iTY/sKjeNG8DebhT6mn/FJZAaKfGK91E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BEXLpjz7PsJbpirgwIDmvnutxNTrRNyRPxySzKnQAr2AZlBV6aex0uthEpctalgV+KnKcP3vy8tcn1RTGUzw9xfpTy0Wb2BwFbNlVvJSpVcW46wyzLfiubF881fytnS4VykgouUZawpC0NIPMl7PzQzS3W1j3PzNMURUY+DTURg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=m/5W5Ayg; arc=none smtp.client-ip=212.227.15.15
+	s=arc-20240116; t=1712938177; c=relaxed/simple;
+	bh=Xl//q731aW0Vkg6xStkZbeY7hhmmCZZjkS/RmnzqPTs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=oUls6CqbZ/4Hx6I2gaNCWZuki+34voIsiYqfq6JOXIBpEPfshfS2DA4wlBALtEgVLlOx0vH+5OuZZ5z+PbTAB86IzJ8gWyU808VOkr2XEXxqDxsl/TCpB0+/749x4nncRdNi1ByqW+95xdJIoMMB9mMwS+FxgIvw7nZlARTIpOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=qkHwS4KK; arc=none smtp.client-ip=212.227.15.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712938143; x=1713542943; i=w_armin@gmx.de;
-	bh=GfYGlzTabZ/Md6Ur06TpQylZldL1dEkuYiWABfiFon0=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=m/5W5Ayg/cLKO6mqu+hsj+RN9pqKhFwmqKRKSFCwCY0gV+qinWNOKYvpFF/lRTeR
-	 OQYLA0rpOYfYN6WvX8BajQ0+WNaDRexCLtOuK0M43KtsO6Hu6n7r+h2DfqnOiAoc3
-	 xVD6trFryUR9HyRjvEAghFYRcEo81mVmlGM945nUPH6jnaxVEUSwn80u6+MuwcGVe
-	 2y01YTIVE/Jz+sA68Q7TYbYUqcommHH56V0RTNv7lLhifG+z/jcxiB8yGjcEmIvBl
-	 B1mHlQUXTUxrM+cEgXFegxmUidPjmxRxIbgAQIk3aeassvfaXN9O8b4QKtuuCFCvK
-	 wdTTTKliQTVcI76Nag==
+	s=s31663417; t=1712938146; x=1713542946; i=w_armin@gmx.de;
+	bh=4bNz4HADHMJk8zX2s5JUwo5N2xKp50HBrHFfUcgB7HE=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
+	 References;
+	b=qkHwS4KKWc7FCDSqiU32rOgfMegf7Ux9Y8xnW3SJS1bdFEvaMCeIrFu2a+DTo8q/
+	 fFNmEZz9TublMolVfGNhCzG35v0TIazk7E1/E0WXPbT9D3BgQVVDdnfeczPoYGd/T
+	 y/4x2Hc3/QUUKcPyWvZFl4c04078Q7T8KMPNEf9ETXvgDq/0+3Vrl7NmAJoeN4Xp7
+	 Ca1pBYaJ8jtNNgHRjHxIU8stZBNmgZcEjHnpZxevchU1T1Xy8jmJHiE6j1m9n0eNF
+	 2fS9ryMSh205nZckBr86WftnzwFFgRwGgP9N97qskTWy5j0L96y/CEpKkuT9H1PFt
+	 dDQdSWbqDmIJVVhZpA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
  (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MHXFr-1rzSKU0AOv-00Db32; Fri, 12 Apr 2024 18:09:03 +0200
+ 1N1Obh-1st56v08Nv-012qfA; Fri, 12 Apr 2024 18:09:06 +0200
 From: Armin Wolf <W_Armin@gmx.de>
 To: mlj@danelec.com,
 	rafael.j.wysocki@intel.com,
@@ -55,10 +57,12 @@ Cc: jdelvare@suse.com,
 	linux-hwmon@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	platform-driver-x86@vger.kernel.org
-Subject: [PATCH v3 1/2] hwmon: (core) Add support for power fault attribute
-Date: Fri, 12 Apr 2024 18:08:56 +0200
-Message-Id: <20240412160857.79858-1-W_Armin@gmx.de>
+Subject: [PATCH v3 2/2] ACPI: fan: Add hwmon support
+Date: Fri, 12 Apr 2024 18:08:57 +0200
+Message-Id: <20240412160857.79858-2-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240412160857.79858-1-W_Armin@gmx.de>
+References: <20240412160857.79858-1-W_Armin@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,93 +70,270 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:FxN8oOpXNdjbD6CD5rAKuRlwWxOj0azlCpDAY3MnyB/WSTkNHyl
- HE/auXD4vpPP6BXM+nU9pvumVwDf4Su+KryhDAmxqJDu8yiDN65uHKbPYAw97u/FiWmko1q
- Hho5TLZCzT0BwtE7qJV4xiv3mJ/a8nOewjXizuGz1IP0TwXpaVSPDkpdyoI8WjdMpxv/mUW
- QAgUgReNCQyayF+gFWCyQ==
+X-Provags-ID: V03:K1:ATeDI3Ztaey3Q+xF/40OjjazINpxlzLusnTzoboGCKkbDinWhCc
+ XASO0ZGZJFO3TInxY1oS0cXcNjAsnrRz2Z3s9rvehpsTfRRgWr1uJ/eYhSgZa3k5U76qCJ+
+ QmI4xs+YRw1jisd3z19sjRkg3F+tp3rUJO03Dzh0daroiLrQKnQoR6L/rw1bGaTxwRc5K9f
+ WjBW2XwsHJoUeq0FC/wAw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:14VeDLJl1bg=;KEqr7ll/Hc3qkWPfpw6n4LsbJL1
- c8x8CgG9ChVqgozx19NjB6vtmvVcPnWUZuIkUpXd2IoU1eZxfT8st/8o4e7LzBmt2gxfCuoZJ
- dVWm+IxbFQr74U/KExjrG3HYcg1DmvcwKFzBg5KfT9Ng4slLYwOXl+DLprnJ/4sRxjKsLgEFj
- ca90DiwEra/KsOtbhhXRxB2GaAE3PU6pfdu7jjtWey7U/YQULXX7X4oSK2nS7prKEaVZDtYMZ
- EmG477JPhy1mZRtXIiqebhQCEXag6gBngjcjzJetSi/R2HbbHMA7ZgKyzLppjU8JsHdyn5hUK
- 1J5O6tE8njQN3dbBb4I4lrqy+SfDiUXyqENKxPARclE1bAq+Mtxy27ItVMUxGlFBsod4EMXoj
- GRMBeLmJi4GRPiYl39q4C1mcK4RQ0QhJiXNR0kLbbBN0n+tAD83sn5RRtkLmNWG+//eGEAFpq
- PQIZMrfgM2afNEdermyHaO4Yywd1PEja+zdzVMi9VtJ0b7IECl3M3nBgW+Z30AgsGhqPyXz8f
- om6O35uDstQ9wsH5lXRSO6Z5NoKCqVbhBlWa3Mu7YdaVOxKzGw9qy+Zuj6l4sBLNYVndcURaW
- 0XG1mKeU5NG3rJPHlfgfbWh23k0lFJIZoTHzhZQ7vnkCUDEeZx79ND6loApE1IkwDJ/eJu8hJ
- NId6Dv2NIk55CmVKgEynArgI0MuuMkzArq4PdrmN6NXGI339DSedyIgGf6+HDob2OCR2o2KGM
- png1ApJBjheu5hAxEnGoqcuOgCf3oxZ5rMBguz8z2/hqGT8V4aqkrWLk9URKLV2dif/6krtQx
- lvV4hWowzBevjjmigXh0FKNSsMK53JPj75lmKMi+8/iuc=
+UI-OutboundReport: notjunk:1;M01:P0:c0G0mNKzvb4=;3eyu6aPGlHi1JnisxhB4NzhShOm
+ Hiw1pqRHXNuhoL01BDjCSuE68TkE8xAv2WiojS2A4acITIfwukxsyZ4RIVzTEj1oR4w/SE99L
+ b5mvlV+On6EHgvYzuBGFlHRxOMckqJ4QWGl8LK6nPu0IiqyspOn40gASJTNMu5JvihrO4ofuj
+ S5gr+iP0DgG29AJHeAHvKb7l+2IVCM+sjMpcWTdCpABdMOsDVuqmi5+rA9u/uzjRV6KYYiZ9c
+ CAGpJbhXVvEOQFkshzfASDwSzq2/4PDfCe4zHzji2C6hLHNVkuyiBgZjUA1QFKrj4Ma229K8J
+ pov9ATB+2dZ3lQixalKZmXV0dkTL+2xHFKjV5wLlFL8ucUxcn+UOofXQw/8ZWemFhbpZfmnm7
+ hUG+AEGdbaCJrDSKczUWggH428T2ZDBK9dIOq0RoodvjEfHqSrPPLabGNHPQF5W4cum05WAPq
+ qlX0NnLKgl/XPO+rVaD2zmZX//hbqF3kE5J3TvRxUcizYk4TLLl4zPmSGELqd/tnXP9hnNvVs
+ 2VXQ+8bkGteakZ/lv4qylizAoYlbTWoVdrLcz4afX/xg3A/292Q0M6nuWOznCTyeNMtl7sV6i
+ exmtIpCrGM/nQwhuoFI3NWCQVzVrJUOzKvnYIo8vS5FmP05s2DeaDTnVuO8Lif9ddjxPqY3V9
+ AK/kJCTpPc02p18QUlIlLQtwYs1u9mIurz3EAPrW0ZiDJWRd+95ELwRMnJb74+fANN4q30ACX
+ 6oexrr9TL4Ph95aarBSX3jUV0TcUHoEa/QUVjVhWTm9/nsNSu/C+ohD8/0OP7akKrfZmJepjq
+ ++i3guXpCSHk9vzwgSYvV60LPZ1BtRk7RZuO74qPv9Dsw=
 
-Power sensor driver might want to signal that the power
-value is not usable. Add a new power fault attribute to
-report such failures.
+Currently, the driver does only support a custom sysfs
+to allow userspace to read the fan speed.
+Add support for the standard hwmon interface so users
+can read the fan speed with standard tools like "sensors".
+
+Compile-tested only.
 
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
 Changes since v2:
-- added patch
+- add support for fanX_target and power attrs
+
+Changes since v1:
+- fix undefined reference error
+- fix fan speed validation
+- coding style fixes
+- clarify that the changes are compile-tested only
+- add hwmon maintainers to cc list
+
+The changes will be tested by Mikael Lund Jepsen from Danelec and
+should be merged only after those tests.
 =2D--
- Documentation/ABI/testing/sysfs-class-hwmon | 9 +++++++++
- drivers/hwmon/hwmon.c                       | 1 +
- include/linux/hwmon.h                       | 2 ++
- 3 files changed, 12 insertions(+)
+ drivers/acpi/Makefile    |   1 +
+ drivers/acpi/fan.h       |   9 +++
+ drivers/acpi/fan_core.c  |   4 ++
+ drivers/acpi/fan_hwmon.c | 148 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 162 insertions(+)
+ create mode 100644 drivers/acpi/fan_hwmon.c
 
-diff --git a/Documentation/ABI/testing/sysfs-class-hwmon b/Documentation/A=
-BI/testing/sysfs-class-hwmon
-index cfd0d0bab483..ed01d43d2491 100644
-=2D-- a/Documentation/ABI/testing/sysfs-class-hwmon
-+++ b/Documentation/ABI/testing/sysfs-class-hwmon
-@@ -882,6 +882,15 @@ Description:
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index 39ea5cfa8326..61ca4afe83dc 100644
+=2D-- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -77,6 +77,7 @@ obj-$(CONFIG_ACPI_TINY_POWER_BUTTON)	+=3D tiny-power-but=
+ton.o
+ obj-$(CONFIG_ACPI_FAN)		+=3D fan.o
+ fan-objs			:=3D fan_core.o
+ fan-objs			+=3D fan_attr.o
++fan-$(CONFIG_HWMON)		+=3D fan_hwmon.o
 
- 		RW
+ obj-$(CONFIG_ACPI_VIDEO)	+=3D video.o
+ obj-$(CONFIG_ACPI_TAD)		+=3D acpi_tad.o
+diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h
+index f89d19c922dc..db25a3898af7 100644
+=2D-- a/drivers/acpi/fan.h
++++ b/drivers/acpi/fan.h
+@@ -10,6 +10,8 @@
+ #ifndef _ACPI_FAN_H_
+ #define _ACPI_FAN_H_
 
-+What:		/sys/class/hwmon/hwmonX/powerY_fault
-+Description:
-+		Reports a power sensor failure.
++#include <linux/kconfig.h>
 +
-+		- 1: Failed
-+		- 0: Ok
+ #define ACPI_FAN_DEVICE_IDS	\
+ 	{"INT3404", }, /* Fan */ \
+ 	{"INTC1044", }, /* Fan for Tiger Lake generation */ \
+@@ -57,4 +59,11 @@ struct acpi_fan {
+ int acpi_fan_get_fst(struct acpi_device *device, struct acpi_fan_fst *fst=
+);
+ int acpi_fan_create_attributes(struct acpi_device *device);
+ void acpi_fan_delete_attributes(struct acpi_device *device);
 +
-+		RO
++#if IS_REACHABLE(CONFIG_HWMON)
++int devm_acpi_fan_create_hwmon(struct acpi_device *device);
++#else
++static inline int devm_acpi_fan_create_hwmon(struct acpi_device *device) =
+{ return 0; };
++#endif
 +
- What:		/sys/class/hwmon/hwmonX/powerY_rated_min
- Description:
- 		Minimum rated power.
-diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-index 3b259c425ab7..6150d64f5c4c 100644
-=2D-- a/drivers/hwmon/hwmon.c
-+++ b/drivers/hwmon/hwmon.c
-@@ -560,6 +560,7 @@ static const char * const hwmon_power_attr_templates[]=
+ #endif
+diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c
+index ff72e4ef8738..7cea4495f19b 100644
+=2D-- a/drivers/acpi/fan_core.c
++++ b/drivers/acpi/fan_core.c
+@@ -336,6 +336,10 @@ static int acpi_fan_probe(struct platform_device *pde=
+v)
+ 		if (result)
+ 			return result;
+
++		result =3D devm_acpi_fan_create_hwmon(device);
++		if (result)
++			return result;
++
+ 		result =3D acpi_fan_create_attributes(device);
+ 		if (result)
+ 			return result;
+diff --git a/drivers/acpi/fan_hwmon.c b/drivers/acpi/fan_hwmon.c
+new file mode 100644
+index 000000000000..57216ba872db
+=2D-- /dev/null
++++ b/drivers/acpi/fan_hwmon.c
+@@ -0,0 +1,148 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * fan_hwmon.c - hwmon interface for the ACPI Fan driver
++ *
++ * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>
++ */
++
++#include <linux/acpi.h>
++#include <linux/hwmon.h>
++#include <linux/limits.h>
++#include <linux/units.h>
++
++#include "fan.h"
++
++/* Returned when the ACPI fan does not support speed reporting */
++#define FAN_SPEED_UNAVAILABLE	0xffffffff
++#define FAN_POWER_UNAVAILABLE	0xffffffff
++
++static struct acpi_fan_fps *acpi_fan_get_current_fps(struct acpi_fan *fan=
+, u64 control)
++{
++	int i;
++
++	for (i =3D 0; i < fan->fps_count; i++) {
++		if (fan->fps[i].control =3D=3D control)
++			return &fan->fps[i];
++	}
++
++	return NULL;
++}
++
++static umode_t acpi_fan_is_visible(const void *drvdata, enum hwmon_sensor=
+_types type, u32 attr,
++				   int channel)
++{
++	return 0444;
++}
++
++static int acpi_fan_read(struct device *dev, enum hwmon_sensor_types type=
+, u32 attr, int channel,
++			 long *val)
++{
++	struct acpi_device *adev =3D dev_get_drvdata(dev);
++	struct acpi_fan *fan =3D acpi_driver_data(adev);
++	struct acpi_fan_fps *fps;
++	struct acpi_fan_fst fst;
++	int ret;
++
++	ret =3D acpi_fan_get_fst(adev, &fst);
++	if (ret < 0)
++		return ret;
++
++	switch (type) {
++	case hwmon_fan:
++		switch (attr) {
++		case hwmon_fan_input:
++			if (fst.speed =3D=3D FAN_SPEED_UNAVAILABLE)
++				return -ENODATA;
++
++			if (fst.speed > LONG_MAX)
++				return -EOVERFLOW;
++
++			*val =3D fst.speed;
++			return 0;
++		case hwmon_fan_target:
++			fps =3D acpi_fan_get_current_fps(fan, fst.control);
++			if (!fps)
++				return -ENODATA;
++
++			*val =3D fps->speed;
++			return 0;
++		case hwmon_fan_fault:
++			*val =3D (fst.speed =3D=3D FAN_SPEED_UNAVAILABLE);
++			return 0;
++		default:
++			break;
++		}
++		break;
++	case hwmon_power:
++		fps =3D acpi_fan_get_current_fps(fan, fst.control);
++		if (!fps)
++			return -ENODATA;
++
++		switch (attr) {
++		case hwmon_power_input:
++			if (fps->power =3D=3D FAN_POWER_UNAVAILABLE)
++				return -ENODATA;
++
++			if (fps->power > LONG_MAX / MICROWATT_PER_MILLIWATT)
++				return -EOVERFLOW;
++
++			*val =3D fps->power * MICROWATT_PER_MILLIWATT;
++			return 0;
++		case hwmon_power_fault:
++			*val =3D (fps->power =3D=3D FAN_POWER_UNAVAILABLE);
++			return 0;
++		default:
++			break;
++		}
++		break;
++	default:
++		break;
++	}
++
++	return -EOPNOTSUPP;
++}
++
++static const struct hwmon_ops acpi_fan_ops =3D {
++	.is_visible =3D acpi_fan_is_visible,
++	.read =3D acpi_fan_read,
++};
++
++static const struct hwmon_channel_info * const acpi_fan_info[] =3D {
++	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_TARGET |  HWMON_F_FAULT)=
+,
++	HWMON_CHANNEL_INFO(power, HWMON_P_INPUT | HWMON_P_FAULT),
++	NULL
++};
++
++static const struct hwmon_chip_info acpi_fan_chip_info =3D {
++	.ops =3D &acpi_fan_ops,
++	.info =3D acpi_fan_info,
++};
++
++static const struct hwmon_channel_info * const acpi_fan_fine_grain_info[]=
  =3D {
- 	[hwmon_power_crit] =3D "power%d_crit",
- 	[hwmon_power_label] =3D "power%d_label",
- 	[hwmon_power_alarm] =3D "power%d_alarm",
-+	[hwmon_power_fault] =3D "power%d_fault",
- 	[hwmon_power_cap_alarm] =3D "power%d_cap_alarm",
- 	[hwmon_power_min_alarm] =3D "power%d_min_alarm",
- 	[hwmon_power_max_alarm] =3D "power%d_max_alarm",
-diff --git a/include/linux/hwmon.h b/include/linux/hwmon.h
-index edf96f249eb5..00122e565dbf 100644
-=2D-- a/include/linux/hwmon.h
-+++ b/include/linux/hwmon.h
-@@ -237,6 +237,7 @@ enum hwmon_power_attributes {
- 	hwmon_power_max_alarm,
- 	hwmon_power_lcrit_alarm,
- 	hwmon_power_crit_alarm,
-+	hwmon_power_fault,
- 	hwmon_power_rated_min,
- 	hwmon_power_rated_max,
- };
-@@ -270,6 +271,7 @@ enum hwmon_power_attributes {
- #define HWMON_P_MAX_ALARM		BIT(hwmon_power_max_alarm)
- #define HWMON_P_LCRIT_ALARM		BIT(hwmon_power_lcrit_alarm)
- #define HWMON_P_CRIT_ALARM		BIT(hwmon_power_crit_alarm)
-+#define HWMON_P_FAULT			BIT(hwmon_power_fault)
- #define HWMON_P_RATED_MIN		BIT(hwmon_power_rated_min)
- #define HWMON_P_RATED_MAX		BIT(hwmon_power_rated_max)
-
++	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_FAULT),
++	NULL
++};
++
++static const struct hwmon_chip_info acpi_fan_fine_grain_chip_info =3D {
++	.ops =3D &acpi_fan_ops,
++	.info =3D acpi_fan_fine_grain_info,
++};
++
++int devm_acpi_fan_create_hwmon(struct acpi_device *device)
++{
++	struct acpi_fan *fan =3D acpi_driver_data(device);
++	const struct hwmon_chip_info *info;
++	struct device *hdev;
++
++	/* When in fine grain control mode, not every fan control value
++	 * has an associated fan performance state.
++	 */
++	if (fan->fif.fine_grain_ctrl)
++		info =3D &acpi_fan_fine_grain_chip_info;
++	else
++		info =3D &acpi_fan_chip_info;
++
++	hdev =3D devm_hwmon_device_register_with_info(&device->dev, "acpi_fan", =
+device, info, NULL);
++
++	return PTR_ERR_OR_ZERO(hdev);
++}
 =2D-
 2.39.2
 
