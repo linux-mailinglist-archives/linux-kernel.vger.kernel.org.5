@@ -1,239 +1,159 @@
-Return-Path: <linux-kernel+bounces-143014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDB0A8A333F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:09:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8512B8A334B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0ACB1C21D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:09:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2515C1F24A47
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8395148FF9;
-	Fri, 12 Apr 2024 16:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C790149C77;
+	Fri, 12 Apr 2024 16:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ntpXF88l"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2087.outbound.protection.outlook.com [40.107.8.87])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="m/5W5Ayg"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6169814900A;
-	Fri, 12 Apr 2024 16:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938150; cv=fail; b=lYnnC/ymbXX/x0wRFoO7ucvsU2hIeQQuz4LTP5FJg9OfE95luqjIobSuFhfXeaxiGAXgDzKwwyqcliwbFlfYivEUdUbmItSMX2uYCje7LhFexid+5DdhUOq48dUDRaOxOzS5VlUVXxp0841uPMs3xBbwg2Z6m/94rTdHS74v5kI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938150; c=relaxed/simple;
-	bh=14QaVJp1PZG1/XG0XoWT//cMaejeB36UdS94KQbcBsE=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=L4Jo+aElbJIHE+0A9nB5gZ6WoWsv6kr5OJ8g/Ktk53jkr21LaYXBe9YVIVCoKtGaZ0WqMLqKiEIPErDcok3rmE3+oggEK4Jypx+clYHO0GpTD24Z3M4ZOBHkjkQlA4JZHgYSoTKLkULOFrIEPVn7Qs/kdBREtbX2xoau7Ajbr6s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ntpXF88l; arc=fail smtp.client-ip=40.107.8.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VRSjJLZKhWP5mM0XNCbEqbj96v5ZY994OR6hG0g3HoyY3fZl/euuAuyl6YHlpEW6r9NM5q66+4WlT706I9iN6ZR6qCDpsgP9V5J7jacM2QBZcR6fGlENVLguHA0poXKoOtA1b+/HMHkd/o2Hx3CE2LqRpGv1Pptd3zKt+90Gi4mS2rVSb3KuQz2UPl14z9vuC9tZz+Gn0dva0e+Bn1z7Ocw5p4r/2UnOaYEgllUvsUAo3ObcmooYSxjlzX0m2SFoTqOSyM8o630r/7VCS412YlmGQNQb/ICiosV50RlDNsRKijCGQXpeKUA2MkDzIrumrTTDInUvUpg9hsCw2KeyWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4D3g1yKn1DkeyVV3av44X1Wyra+mTLKgpM+gTzeXlmM=;
- b=JNOLhXTQScj7GujJLUCsyfoKV9T5XG04S/JQxMzFyn7czfEX4opIJftt5zB3Fk713ZnvPMcNmw+EAWGOtj6ZCjW+uli90llMHePCXIewj9zrOIW4QoTFshZJrHAHkUnMrCojPL2tjCWnP/CED2JigKYNNum6okq1V7iY8hz9jXT67yS+bTEjjqBwciw4WAS6vFDUyisvJYN3wDsVNwJrhtDGFQhQEo64fkq/usFFhF3Upv5NdX1Ez8OOCZr4rP0HR/cMqmONiXx3NG21Ye3Z/Xji3O09fAvepsBn4HQvabkcX1bsINgJegh4lwHzi9gS8OlbeFOIv8zHe2hOwMxhBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4D3g1yKn1DkeyVV3av44X1Wyra+mTLKgpM+gTzeXlmM=;
- b=ntpXF88lOD+kq6aNwFmnIj/w+LjIJUWTrvRyvM150MFXeDLeWZu/FDTytstPA6tkDbmERkhzhGTwB1+Usl+3xOJfKkVPnfQiYxLpNMYPxneZhbnqVcA4POK7jYlaQ4rL1IUopR8ndClXd82O/6aSUWUwVpacVew4IcPosdf70ek=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PA4PR04MB9462.eurprd04.prod.outlook.com (2603:10a6:102:2aa::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
- 2024 16:09:03 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7409.055; Fri, 12 Apr 2024
- 16:09:02 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: cassel@kernel.org
-Cc: Frank.li@nxp.com,
-	bhelgaas@google.com,
-	gustavo.pimentel@synopsys.com,
-	helgaas@kernel.org,
-	imx@lists.linux.dev,
-	jdmason@kudzu.us,
-	jingoohan1@gmail.com,
-	kw@linux.com,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3A914884C;
+	Fri, 12 Apr 2024 16:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712938176; cv=none; b=nDhjCQhYmBzTcLv8HLmzjHL2dgJaU0w1mLyT813x7df3Ms+yMuhoYaCRBlZNOGFEC+z94PJ+RhXBKBNB6SOAOrBjvxaLBFxyXIMv8z5wZeDJKULBHiMflS+tqS1mqrEqq6S4XWjzokLRwP72JM7s8g3t5LnojXIskqeo+f993bc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712938176; c=relaxed/simple;
+	bh=key2rY0okj8iTY/sKjeNG8DebhT6mn/FJZAaKfGK91E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BEXLpjz7PsJbpirgwIDmvnutxNTrRNyRPxySzKnQAr2AZlBV6aex0uthEpctalgV+KnKcP3vy8tcn1RTGUzw9xfpTy0Wb2BwFbNlVvJSpVcW46wyzLfiubF881fytnS4VykgouUZawpC0NIPMl7PzQzS3W1j3PzNMURUY+DTURg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=m/5W5Ayg; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1712938143; x=1713542943; i=w_armin@gmx.de;
+	bh=GfYGlzTabZ/Md6Ur06TpQylZldL1dEkuYiWABfiFon0=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=m/5W5Ayg/cLKO6mqu+hsj+RN9pqKhFwmqKRKSFCwCY0gV+qinWNOKYvpFF/lRTeR
+	 OQYLA0rpOYfYN6WvX8BajQ0+WNaDRexCLtOuK0M43KtsO6Hu6n7r+h2DfqnOiAoc3
+	 xVD6trFryUR9HyRjvEAghFYRcEo81mVmlGM945nUPH6jnaxVEUSwn80u6+MuwcGVe
+	 2y01YTIVE/Jz+sA68Q7TYbYUqcommHH56V0RTNv7lLhifG+z/jcxiB8yGjcEmIvBl
+	 B1mHlQUXTUxrM+cEgXFegxmUidPjmxRxIbgAQIk3aeassvfaXN9O8b4QKtuuCFCvK
+	 wdTTTKliQTVcI76Nag==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MHXFr-1rzSKU0AOv-00Db32; Fri, 12 Apr 2024 18:09:03 +0200
+From: Armin Wolf <W_Armin@gmx.de>
+To: mlj@danelec.com,
+	rafael.j.wysocki@intel.com,
+	lenb@kernel.org
+Cc: jdelvare@suse.com,
+	linux@roeck-us.net,
+	linux@weissschuh.net,
+	ilpo.jarvinen@linux.intel.com,
+	linux-acpi@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org,
-	mani@kernel.org,
-	robh@kernel.org
-Subject: [PATCH v4 1/1] PCI: dwc: Fix index 0 incorrectly being interpreted as a free ATU slot
-Date: Fri, 12 Apr 2024 12:08:41 -0400
-Message-Id: <20240412160841.925927-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR05CA0036.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::11) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	platform-driver-x86@vger.kernel.org
+Subject: [PATCH v3 1/2] hwmon: (core) Add support for power fault attribute
+Date: Fri, 12 Apr 2024 18:08:56 +0200
+Message-Id: <20240412160857.79858-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA4PR04MB9462:EE_
-X-MS-Office365-Filtering-Correlation-Id: 470e145d-9b64-4b30-f9c2-08dc5b0ade87
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	lMff4ase7yGBkRL8B4k5EY8riQ9pug83NfyWv/WKzgEW+tPaiO34Ji66aFCvtY+XAlkm60KB1nXORddzgQfa59priCzMWmixvoZ0u2MW+NLjw36OgYaLlbEmZl0IJDXaJyDkby5ipKt12WnBR3RK2mvMwbsFD5ws7w/AayvBTJ6j4n7DLq6HZ7DrAKZE6Rrq0Bh1t5dDz5Yx8d5VibLsqtGEO5G1jIHMxCjA8tugONVG6uygKhEEhDsiNGhdBA5UfP2Tjg3n599jypBOuSTFMAvmHfIlww27zOGeyA1Dr1MKyjX90xJAhxJkRUlGerk9DoSn3r6tncIp9tnVAKdnoICjydllh0DdLWqASU3bTX3MZqG0vSC1Y8+zIqiMw7qQVleXqjgtei0eghMakykjTnutIYvDkNRWlDENxVVtzKSsvuKkXsZgPtRluj35YQ9ohWiSGj+jwzA2xh3K2jfg1P0F5xcRqTyrGjdRRjjTeEP7/YNjzTwyJnGGVmRvYcCYGRLGcFhOcSIY0qpEx+ZzG3WsbAm45X0K2LQ/nze0zi+Y+OrBx/ZtzkaZ8N7wzTGJmqIL8lFSmmjWVqsH/FzUI9iGWqVY1IFAkWfe4jxmtjEboKBWPE5pXeeKPfZ+Pe6e/zg8Ov/WCAWyEIsTjVsnYO6uKwLjfZllWnOVa6ZV7Jo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(52116005)(7416005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ptMG9Uq2yShwzBpoL8f17tzE1qfxdC/qPC358hKCU9F9EDOr/f8sfpcTAvL1?=
- =?us-ascii?Q?xYAQ7QVhwqa7pvc9Ay33Lm4uC7dMRS0UKB309Ikb5PXRZ3AXCMbBl7KdtM2L?=
- =?us-ascii?Q?n2aWFFzXwa9AY9xrDpIK2BF55cnSU90LWHlYb71rL3qgwHLSYCae8R818viB?=
- =?us-ascii?Q?5/RzAQICD55j+J+ll/6cntTPz4yMRyskqqUDTiXoRFvAxv1fYBqFoxXsxR2V?=
- =?us-ascii?Q?F6fs6uDP4cN6pyUjwksoaj8SwbTBiCXGnwqHuopQktthEXsS1foksvNqrou7?=
- =?us-ascii?Q?xCTpDw9ugk1SwXMP4Hc2Fnrd7cYTev75V3DRY2eQaABQHk+Tg8CEURmOSev1?=
- =?us-ascii?Q?Md0CXEsY4cNnDV91pZ7RT0lzaqZgDmNJWuvUI6ono5hSeSRnwJq9eHwdgNz6?=
- =?us-ascii?Q?nf24KLDoyXPsyCcBipV3qfeh0vmuGXjJXAJa8iTkKmW5ZwnbTfzNxJWL8JoC?=
- =?us-ascii?Q?G05SXiBDLyq1LR3KAbTMwzEgKytL8f6YJ12zatb/ZhLhA28GSoTtpVuVZgBP?=
- =?us-ascii?Q?uKbQ1sNzOkuL4r1NoxJj2sOnPq7VYLCOZRDZJF9Im5nXf9U26XfL1SeU1rm9?=
- =?us-ascii?Q?kO+bsZMhweCeoCJFYO7WIPIz8ZyB0SV2N0JfycsYITTdaT120cRocEawQO/S?=
- =?us-ascii?Q?R1XkGRH/9ZPXWnXkCsr0ZF+vGysZxTTqUidNiQtcqre+eYDukGK7dxEchbW2?=
- =?us-ascii?Q?O0RECqph225JNlOz/gT2R81LimZatqc7dmRKWYKrVu1UlyjJwtcqqnPWTyc0?=
- =?us-ascii?Q?3OiWCqFRo/h1s5WaSromGWxvN5IegiCqzrjSuNGXk1xbEZimvJqizeCBLqiI?=
- =?us-ascii?Q?j0CyrSaNolxewtKUw2XsuioTRcXqtSHKgA7dziqHkYUX3Jg+j4GLSgTVwKnO?=
- =?us-ascii?Q?hv3xNpazdaDCV2m0n8fXo0Sdjv3oIII66YKgpVZMIX54UOsil3USK2jVaSQl?=
- =?us-ascii?Q?pqFkQ2bIb0w4IAOkF1fOtt1PJFQJPiCHYuCmmYMpW0ICbL5V4kbt18KndYSD?=
- =?us-ascii?Q?24hkutWWI0I+BPd0N1HwC4jn2GELLH4eQGmWkbDkrLCj3aFM6AWqMsRFA0oH?=
- =?us-ascii?Q?fC3iWZlp1Troryf4x4YdhtLrCDHzqKqwJfmdGe97EbjsJkT+5eAfyZwENHs3?=
- =?us-ascii?Q?p8JoWqfuFKgIxDywJYlHNlfLKGpG3cb6LebnZzkoZ83ugegJUdRrB4kXgS+s?=
- =?us-ascii?Q?ugdtqINAjdKYTH+NdkeWmxI7uIN3bidtBvmyTbRPxhyDVkMToy/M+sFPSgQZ?=
- =?us-ascii?Q?xwFg7NOu0WytXVTR0kUsS3LgooI0jVgh1VDsxiw812tEyLaC77kt4Wd6raAs?=
- =?us-ascii?Q?XZo+3dPaOGgN3iE7AWhM4kpkE/o5YLOEU+OH6uVikcvTiOds5kYbCSzYRa+I?=
- =?us-ascii?Q?JzXLfWeCcN00mBrsQKudbKgbeAU6Sjoerb6UsAfOKKmw8cDXKaWM8wlng23u?=
- =?us-ascii?Q?B2miOPXGGHQPgPA5gCIFEywBAVzDRzBT2ZW6DgC1yIl0E420AAYmo3oYXXh7?=
- =?us-ascii?Q?0ogbaBjnMtoZuGY0XCYYlinGoqXRdcvPujhALoUfITyRVBSPNbzGq8oQqNvk?=
- =?us-ascii?Q?KWag2ygmbG5CO0Cs9j0wUIslly9whARf3VM2dBq7?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 470e145d-9b64-4b30-f9c2-08dc5b0ade87
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 16:09:02.2243
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +oZOkwLLiDVHg08QTcRkU6RH+dtVSHH1bR6hRezXytCG11jXzhKTnvtFJFzmzO+CvlMU0NorlpJpc5ZFwXxeQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9462
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FxN8oOpXNdjbD6CD5rAKuRlwWxOj0azlCpDAY3MnyB/WSTkNHyl
+ HE/auXD4vpPP6BXM+nU9pvumVwDf4Su+KryhDAmxqJDu8yiDN65uHKbPYAw97u/FiWmko1q
+ Hho5TLZCzT0BwtE7qJV4xiv3mJ/a8nOewjXizuGz1IP0TwXpaVSPDkpdyoI8WjdMpxv/mUW
+ QAgUgReNCQyayF+gFWCyQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:14VeDLJl1bg=;KEqr7ll/Hc3qkWPfpw6n4LsbJL1
+ c8x8CgG9ChVqgozx19NjB6vtmvVcPnWUZuIkUpXd2IoU1eZxfT8st/8o4e7LzBmt2gxfCuoZJ
+ dVWm+IxbFQr74U/KExjrG3HYcg1DmvcwKFzBg5KfT9Ng4slLYwOXl+DLprnJ/4sRxjKsLgEFj
+ ca90DiwEra/KsOtbhhXRxB2GaAE3PU6pfdu7jjtWey7U/YQULXX7X4oSK2nS7prKEaVZDtYMZ
+ EmG477JPhy1mZRtXIiqebhQCEXag6gBngjcjzJetSi/R2HbbHMA7ZgKyzLppjU8JsHdyn5hUK
+ 1J5O6tE8njQN3dbBb4I4lrqy+SfDiUXyqENKxPARclE1bAq+Mtxy27ItVMUxGlFBsod4EMXoj
+ GRMBeLmJi4GRPiYl39q4C1mcK4RQ0QhJiXNR0kLbbBN0n+tAD83sn5RRtkLmNWG+//eGEAFpq
+ PQIZMrfgM2afNEdermyHaO4Yywd1PEja+zdzVMi9VtJ0b7IECl3M3nBgW+Z30AgsGhqPyXz8f
+ om6O35uDstQ9wsH5lXRSO6Z5NoKCqVbhBlWa3Mu7YdaVOxKzGw9qy+Zuj6l4sBLNYVndcURaW
+ 0XG1mKeU5NG3rJPHlfgfbWh23k0lFJIZoTHzhZQ7vnkCUDEeZx79ND6loApE1IkwDJ/eJu8hJ
+ NId6Dv2NIk55CmVKgEynArgI0MuuMkzArq4PdrmN6NXGI339DSedyIgGf6+HDob2OCR2o2KGM
+ png1ApJBjheu5hAxEnGoqcuOgCf3oxZ5rMBguz8z2/hqGT8V4aqkrWLk9URKLV2dif/6krtQx
+ lvV4hWowzBevjjmigXh0FKNSsMK53JPj75lmKMi+8/iuc=
 
-When PERST# assert and deassert happens on the PERST# supported platforms,
-the both iATU0 and iATU6 will map inbound window to BAR0. DMA will access
-to the area that was previously allocated (iATU0) for BAR0, instead of the
-new area (iATU6) for BAR0.
+Power sensor driver might want to signal that the power
+value is not usable. Add a new power fault attribute to
+report such failures.
 
-Right now, we dodge the bullet because both iATU0 and iATU6 should
-currently translate inbound accesses to BAR0 to the same allocated memory
-area. However, having two separate inbound mappings for the same BAR is a
-disaster waiting to happen.
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+Changes since v2:
+- added patch
+=2D--
+ Documentation/ABI/testing/sysfs-class-hwmon | 9 +++++++++
+ drivers/hwmon/hwmon.c                       | 1 +
+ include/linux/hwmon.h                       | 2 ++
+ 3 files changed, 12 insertions(+)
 
-The mapping between PCI BAR and iATU inbound window are maintained in the
-dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for
-a BAR, dw_pcie_ep_inbound_atu() API will first check for the availability
-of the existing mapping in the array and if it is not found (i.e., value in
-the array indexed by the BAR is found to be 0), then it will allocate a new
-map value using find_first_zero_bit().
+diff --git a/Documentation/ABI/testing/sysfs-class-hwmon b/Documentation/A=
+BI/testing/sysfs-class-hwmon
+index cfd0d0bab483..ed01d43d2491 100644
+=2D-- a/Documentation/ABI/testing/sysfs-class-hwmon
++++ b/Documentation/ABI/testing/sysfs-class-hwmon
+@@ -882,6 +882,15 @@ Description:
 
-The issue here is, the existing logic failed to consider the fact that the
-map value '0' is a valid value for BAR0. Because, find_first_zero_bit()
-will return '0' as the map value for BAR0 (note that it returns the first
-zero bit position).
+ 		RW
 
-Due to this, when PERST# assert + deassert happens on the PERST# supported
-platforms, the inbound window allocation restarts from BAR0 and the
-existing logic to find the BAR mapping will return '6' for BAR0 instead of
-'0' due to the fact that it considers '0' as an invalid map value.
-
-So fix this issue by always incrementing the map value before assigning to
-bar_to_atu[] array and then decrementing it while fetching. This will make
-sure that the map value '0' always represents the invalid mapping."
-
-Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
-Closes: https://lore.kernel.org/linux-pci/ZXsRp+Lzg3x%2Fnhk3@x1-carbon/
-Tested-by: Niklas Cassel <niklas.cassel@wdc.com>
-Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
-Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
-
-Notes:
-    Change from v3 to v4
-    - commit message add "Right now, we dodge..."
-    - Add Reviewed-by: Manivannan Sadhasivam
-    
-    Change from v2 to v3
-    - Add impact in commit message
-    - Add mani's detail description
-    - Fix Closes link
-    
-    Change from v1 to v2
-    - update subject
-    - use free_win + 1 solution
-    - still leave MAX_IATU_IN as 256. I am not sure if there are platfrom have
-    256 ATU. Suppose it only use max 6 in current EP framework.
-    - @Niklas, can you help test it. My platform become unstable today.
-
- drivers/pci/controller/dwc/pcie-designware-ep.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index 5befed2dc02b7..ba932bafdb230 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -139,7 +139,7 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
- 	if (!ep->bar_to_atu[bar])
- 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
- 	else
--		free_win = ep->bar_to_atu[bar];
-+		free_win = ep->bar_to_atu[bar] - 1;
- 
- 	if (free_win >= pci->num_ib_windows) {
- 		dev_err(pci->dev, "No free inbound window\n");
-@@ -153,7 +153,11 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
- 		return ret;
- 	}
- 
--	ep->bar_to_atu[bar] = free_win;
-+	/*
-+	 * Always increment free_win before assignment, since value 0 is used to identify
-+	 * unallocated mapping.
-+	 */
-+	ep->bar_to_atu[bar] = free_win + 1;
- 	set_bit(free_win, ep->ib_window_map);
- 
- 	return 0;
-@@ -190,7 +194,10 @@ static void dw_pcie_ep_clear_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
- 	struct dw_pcie_ep *ep = epc_get_drvdata(epc);
- 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
- 	enum pci_barno bar = epf_bar->barno;
--	u32 atu_index = ep->bar_to_atu[bar];
-+	u32 atu_index = ep->bar_to_atu[bar] - 1;
++What:		/sys/class/hwmon/hwmonX/powerY_fault
++Description:
++		Reports a power sensor failure.
 +
-+	if (!ep->bar_to_atu[bar])
-+		return;
- 
- 	__dw_pcie_ep_reset_bar(pci, func_no, bar, epf_bar->flags);
- 
--- 
-2.34.1
++		- 1: Failed
++		- 0: Ok
++
++		RO
++
+ What:		/sys/class/hwmon/hwmonX/powerY_rated_min
+ Description:
+ 		Minimum rated power.
+diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
+index 3b259c425ab7..6150d64f5c4c 100644
+=2D-- a/drivers/hwmon/hwmon.c
++++ b/drivers/hwmon/hwmon.c
+@@ -560,6 +560,7 @@ static const char * const hwmon_power_attr_templates[]=
+ =3D {
+ 	[hwmon_power_crit] =3D "power%d_crit",
+ 	[hwmon_power_label] =3D "power%d_label",
+ 	[hwmon_power_alarm] =3D "power%d_alarm",
++	[hwmon_power_fault] =3D "power%d_fault",
+ 	[hwmon_power_cap_alarm] =3D "power%d_cap_alarm",
+ 	[hwmon_power_min_alarm] =3D "power%d_min_alarm",
+ 	[hwmon_power_max_alarm] =3D "power%d_max_alarm",
+diff --git a/include/linux/hwmon.h b/include/linux/hwmon.h
+index edf96f249eb5..00122e565dbf 100644
+=2D-- a/include/linux/hwmon.h
++++ b/include/linux/hwmon.h
+@@ -237,6 +237,7 @@ enum hwmon_power_attributes {
+ 	hwmon_power_max_alarm,
+ 	hwmon_power_lcrit_alarm,
+ 	hwmon_power_crit_alarm,
++	hwmon_power_fault,
+ 	hwmon_power_rated_min,
+ 	hwmon_power_rated_max,
+ };
+@@ -270,6 +271,7 @@ enum hwmon_power_attributes {
+ #define HWMON_P_MAX_ALARM		BIT(hwmon_power_max_alarm)
+ #define HWMON_P_LCRIT_ALARM		BIT(hwmon_power_lcrit_alarm)
+ #define HWMON_P_CRIT_ALARM		BIT(hwmon_power_crit_alarm)
++#define HWMON_P_FAULT			BIT(hwmon_power_fault)
+ #define HWMON_P_RATED_MIN		BIT(hwmon_power_rated_min)
+ #define HWMON_P_RATED_MAX		BIT(hwmon_power_rated_max)
+
+=2D-
+2.39.2
 
 
