@@ -1,145 +1,163 @@
-Return-Path: <linux-kernel+bounces-142502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D919A8A2C62
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:34:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26AA48A2C86
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:38:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 952562846D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:34:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5CCC1F2423F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533AA3F9D5;
-	Fri, 12 Apr 2024 10:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC3A43AC0;
+	Fri, 12 Apr 2024 10:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h+4yd2yx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b="f/y3/o+O"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2081.outbound.protection.outlook.com [40.107.117.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2000D3A8D8
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712918045; cv=none; b=sihUGb/XvdbLoS/BOant+cJrXR406OJKQmOgpHVw3lQMjh/TSd3vPy5WXywcXc/wphzuuZkVxrWJlbnlpw37XibVX7uugDNhyhURiBcRffEVfNs21OskzUV37Ng7ySlJvYWHaymnrhmcj4jk1vr/0KD60YXWnkL9l2jS2aX3pnA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712918045; c=relaxed/simple;
-	bh=aQ+0dgYl5PSPxKi0XkUYJ1LBvfFy3GUwsB3keBtJ+HE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=u8VYAjqTEwqFrUQ1OPk/IBVZ+F/xyufmSxi17/LLucUvuOeIzgdebRSbJW2tiI2QCtRLmFfdifdYzDgZ68l06nFN1v/REdsBOSM+Rf9c7XR9t31YWp7Mgx+smxgbskV/yjexDgpsd9Hs4bv/k10N5QSwceZmMGTQv+tG/rgljwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h+4yd2yx; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712918043;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aQ+0dgYl5PSPxKi0XkUYJ1LBvfFy3GUwsB3keBtJ+HE=;
-	b=h+4yd2yxoOsX8RkY0lvJGwHsQk7p1U+nNR5vGv4Jp+/JdR9MD53w6+aO2OiCCeDDJqsFA9
-	qa4LDtEhCneuYDiGOXqgmMmUdCJreFazm3QmOeCZyWachdIqOx8T/7h467EXvTswrNim45
-	l6iP8dMddSLRLt4x/IKL8wOW70wYnFo=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-31-uBydvwhcM5W0Zw4IgWBHMg-1; Fri, 12 Apr 2024 06:34:01 -0400
-X-MC-Unique: uBydvwhcM5W0Zw4IgWBHMg-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2a090878480so663621a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:34:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712918040; x=1713522840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aQ+0dgYl5PSPxKi0XkUYJ1LBvfFy3GUwsB3keBtJ+HE=;
-        b=FSy8LhKW3Dg1GafNjb48YkCRoetWqWF1zNO6gkdfhpCDG0EfquSZ8oDjOQL6maUqXn
-         Ao0CgGMt2m0+4NtFIKI0f41i//SlfqYs040YkC91Xn2zD/VNlqJD4l4gfr0q2H/XEhvH
-         rNNlWIlMl92WwfqhWf9CVGKc0407WGIm9hJX5nCbhsCOLqtK1x64wbxuUhUCfLGM3EJX
-         ayB4aKA4Xyybgijn2j6pOXb9OnUYcWhEECliwnoH2wkpmvuqdGcmJeSm5gwhWkfwuH0Y
-         yZWURyI8lN5psEh495w/iajHaAAOi7H3W+u4czbV/arOPQkNb+SSE3UCUKwCnIfaM/Cs
-         BdFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVtUeFtUvD440euc3xkW5qOefc0NQfpJpFU682m/hYMMnNYhpPwJ65uO1nhrFBeiAVYDWSej9ygNe3yoIFcjrBTAapZTOsXGcsPIjMg
-X-Gm-Message-State: AOJu0Yw0KH25WDWYUqwhJdT3wfD7uQAARlKCridalCm5Gc4d1R4jmxDV
-	oePKe6F2z1shmHfYjoeEDuJdicCZWscR5WGpIBp4LzqS5La4Ox+aY+tYuSj8G3o6Z2fMa3oi2wo
-	bWdxQhLpvFhYhuRcpABdo6SwD5POEGFYC2JOa0dHc3d2+Cl83htN99awNJGMlzjvyIm6hV+D4ZW
-	jOzwd/TCKS0WvxaJjcJRz1l1/XMZkwRlZ0+rsMD1N0wP93weo=
-X-Received: by 2002:a17:90a:7146:b0:2a5:be1a:6831 with SMTP id g6-20020a17090a714600b002a5be1a6831mr7419617pjs.19.1712918040023;
-        Fri, 12 Apr 2024 03:34:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHmKBGYsHbd2vrqtRgYlvMbYZxsQ0Q3qtnhsNOclN1VHDo60nE7x6ha1MFRXl0o4DhGGAkDEArkejLpWG7wisk=
-X-Received: by 2002:a17:90a:7146:b0:2a5:be1a:6831 with SMTP id
- g6-20020a17090a714600b002a5be1a6831mr7419601pjs.19.1712918039715; Fri, 12 Apr
- 2024 03:33:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D798D1CAA3;
+	Fri, 12 Apr 2024 10:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.81
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712918168; cv=fail; b=QRU/NGY4XCwQlX7F3X+FzyZifum0T8Mq5rfc2nHZz6EF8kjLXhkhTx7UKnkSK0FtnkwPSzALj4Ql3jAU9EJjRiTVxb1Tzm94Yrm+PxwC/AxuJ2TLGkVwm4UxmBTqYZS7neiVXbIy7CgCVaBAi4cPx6k7xx5T3/qxy7qxxXr1lOE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712918168; c=relaxed/simple;
+	bh=6S416KwxLfCtEeZ6OyMeopnp0v2WlooLPqk1tgImJgE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lcfSkBVdynOENq5e9B3bFsLc42dlJsyjOQimYJtSBJdS6BSK1126p7Nrz/ej3wtk2ykY/R6j6Bkfa2hu6eaSshM9ki4iTDd9Ue2TFIeMuXNT2c9x28jQnGLDeuAphpkZdQMY0R+bEc0OV5Wss4TKTIRRwKMCUD10dBerRKZTw6k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com; spf=pass smtp.mailfrom=nuvoton.com; dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b=f/y3/o+O; arc=fail smtp.client-ip=40.107.117.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nuvoton.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RKImd7XeZh/fBOwxLz5MHI6E1T97lGnWmPvl+OZl6xbBoNKK3qqq2fzr+de7zoKbwR1zWI/cFsSd0OIQjsoN8yXBbWlS6IimD7bQo7bt7cOeWG5rmJVrPBgp1wP14rctqYGEiIVPbQOQ2twoAKzf80SpwyCd8LLCuwkvtTyEgxi0J9Iy9V/KUxSM/t0smu1oOO15olkT5Th2WixnwwY4oSppGkTw0+L9chrwWE7zJ+yKOWHnTNB1Lxzc3MmGiKjvJjdN//zt2OsXHVRNTB+g0OmV4WkO0p9Y6u46MnvGGcDtJtmPvjHSm0gfEfeWeGDF2KvqySpPfzkzJMcGbHL01g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EUvrX9jrmtMjpHmz6D8VLu5LDN7o/EHtoES/dsqqc4o=;
+ b=d+CkUYipw1S/5dmrLsw868rGaWs8yjSMLwR1A6GF/XY9qv5uHM6+ujoHeHtLCExuQDRM/37YJM2woGte3bUNbq5tE0ehnTUuC7N5g20zoHaavNAMaW2UrcdhHJn/8GmJVZVUINkqh4AVprWpHwmEX9Aiw43U83RTEpgjcYePGmIHOTCuw2bUatNDzBBO6UuGOgns2o5IDwxd4mB2XfS5TgxIR4dChrrqeo624pCPoBS2sd0si3J1VONgeLzXQNHkCJrpU9SzDR1pSUUi2zpo2+ziAeTIvs3dkS/sC5hnYfswNh3+AhwOQoiHvGiYFEti2g90S4mNdsBOag8nuqZ9bQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EUvrX9jrmtMjpHmz6D8VLu5LDN7o/EHtoES/dsqqc4o=;
+ b=f/y3/o+O6NZqBha72xpiztySIv0B/HIl5kTTMi6Mu7IZUyZc8I9HlQXTf61IPJ1GMCV+ER4OdRWBjeM0h5MMABdfjdXHpajIWF1tLxCR/TiVnSI5yUazVZgwPQt44jY+lZkaqX/eeAoqhOzWDZJxGfCKopF1qnT2EMCfdK3TwmM=
+Received: from SG2PR02CA0035.apcprd02.prod.outlook.com (2603:1096:3:18::23) by
+ TY0PR03MB6536.apcprd03.prod.outlook.com (2603:1096:400:21c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
+ 2024 10:36:00 +0000
+Received: from SG2PEPF000B66CA.apcprd03.prod.outlook.com
+ (2603:1096:3:18:cafe::57) by SG2PR02CA0035.outlook.office365.com
+ (2603:1096:3:18::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.26 via Frontend
+ Transport; Fri, 12 Apr 2024 10:36:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ SG2PEPF000B66CA.mail.protection.outlook.com (10.167.240.22) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Fri, 12 Apr 2024 10:36:00 +0000
+Received: from NTHCML01B.nuvoton.com (10.1.8.178) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 12 Apr
+ 2024 18:35:55 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01B.nuvoton.com
+ (10.1.8.178) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Fri, 12 Apr
+ 2024 18:35:55 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Fri, 12 Apr 2024 18:35:55 +0800
+From: Seven Lee <wtli@nuvoton.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-sound@vger.kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <linux-kernel@vger.kernel.org>,
+	<robh+dt@kernel.org>, <conor+dt@kernel.org>, <perex@perex.cz>,
+	<tiwai@suse.com>, <YHCHuang@nuvoton.com>, <KCHSU0@nuvoton.com>,
+	<CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>, <wtli@nuvoton.com>,
+	<scott6986@gmail.com>, <supercraig0719@gmail.com>, <dardar923@gmail.com>,
+	<edson.drosdeck@gmail.com>, <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 1/3] ASoC: dt-bindings: nau8821: Add delay control for ADC
+Date: Fri, 12 Apr 2024 18:35:52 +0800
+Message-ID: <20240412103554.3487290-1-wtli@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411050257.42943-1-lukas.bulwahn@redhat.com> <bfjccttmurk7aajps2m7gcyl532rg7rnlutfhbvupsphxjk2pa@fx5onnkr7625>
-In-Reply-To: <bfjccttmurk7aajps2m7gcyl532rg7rnlutfhbvupsphxjk2pa@fx5onnkr7625>
-From: Lukas Bulwahn <lbulwahn@redhat.com>
-Date: Fri, 12 Apr 2024 12:33:48 +0200
-Message-ID: <CAOc5a3P-LX0dkhLFxF-ggOxqkLqM0DJcXqccMJJqtF9U5rbEsQ@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: adjust file entry in ARM/LPC32XX SOC SUPPORT
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Animesh Agarwal <animeshagarwal28@gmail.com>, linux-i2c@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Lukas Bulwahn <lukas.bulwahn@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CA:EE_|TY0PR03MB6536:EE_
+X-MS-Office365-Filtering-Correlation-Id: a69cfc3b-137e-494e-0841-08dc5adc586a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	p6jPcI/C54wRH3dO005Ca9wMFQ91G1IjHTLgq1B1oIKZtUqaPrMLnhJAC/dJuWKYCXCbS25yARR0M6tvbQKzTMrFVzAxXIFLE3mTHgmp2wdAbAQlDtMIYSUf155hRGXpucvTZaVkfJZnwTon5DpuWQjaV5GnrjDdEUtuCKzvm1NQs7RrVoulMKfzCZ7ODcq4Y8Qd7MH0fNEzt574J9ihJ7S+Fd/w2pgRSvayHDaag9TX05NFTm9m2Je1O424YCvZmtr9YwXxU871AKepabRxFw9sbx2dFQ90hN887a2bse0EA3gYYwvOjSTz9HjE5qvnk0Up6tjp8WmbumCfKB8uTXli2j+D/QW5LwSS/0nP7ts44der6lH7HPkpxhr4DW0lpMoTsNjFxGtXsfiYEEBUGPiDhzinZS+vbhRWnNLXvUjpxHDfJWksspXy7kTcFIiv0cAjoOn/T5Mt4qORQDzFTQSjiNEiEcTJLlYc/1DhAHorV5PtCMv8+a90hUprERgwHWFJcJFIHlg47HIMeZMR7VH/GTa6cDzm5chfGsL5jYs3S/1MLFdc3TGn++9wt0Gki5sK4460bpne22AEhK+GMwYrBP83JWFxpJ14NZJ0Bueck67otWBUVJrlqY+A8EwG6nEHOFT/kzghrPneq3QGJzEAqXnp4frTL1G2bBiFQBuG7yVIJf1rC8vmj0q3VdifCYRqb0cIhW/tXSS+Zs4k1ZA/VPGTuYcFUEMFgvaThHjRFtk8A7h5sLr/AvAb5krI
+X-Forefront-Antispam-Report:
+	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(7416005)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 10:36:00.1322
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a69cfc3b-137e-494e-0841-08dc5adc586a
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SG2PEPF000B66CA.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY0PR03MB6536
 
-On Fri, Apr 12, 2024 at 11:34=E2=80=AFAM Andi Shyti <andi.shyti@kernel.org>=
- wrote:
->
-> Hi Lukas,
->
-> On Thu, Apr 11, 2024 at 07:02:57AM +0200, Lukas Bulwahn wrote:
-> > Commit 20c9819ccd9e ("dt-bindings: i2c: nxp,pnx-i2c: Convert to dtschem=
-a")
-> > converts i2c-pnx.txt to nxp,pnx-i2c.yaml, but misses to adjust the file
-> > entry in ARM/LPC32XX SOC SUPPORT.
-> >
-> > Hence, ./scripts/get_maintainer.pl --self-test=3Dpatterns complains abo=
-ut a
-> > broken reference.
-> >
-> > Adjust the file entry in ARM/LPC32XX SOC SUPPORT after this conversion.
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
->
-> before taking this I just want to make sure the e-mail in the SoB
-> is correct as checkpatch is warning me about 'lbulwahn' and
-> 'lukas.bulwahn'.
->
-> It's not about the warning, just double checking the e-mail
-> address as often to mix my addresses up and looks also your first
-> patch with the redhat e-mail.
->
+Change the original fixed delay to the assignment from the property. It
+will make it more flexible to different platforms to avoid pop noise at
+the beginning of recording.
 
-Thanks for the hint. And yes, that is a stupid setup mistake from my
-side or at least from the email server's side.
+Signed-off-by: Seven Lee <wtli@nuvoton.com>
+---
+ .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-I joined Red Hat at the beginning of April and hence, it was my first
-email with the redhat address.
-
-lbulwahn is my 'official email address', lukas.bulwahn is an email
-alias to the same mailbox. I actually want to have the commits in the
-kernel carry 'lukas.bulwahn@redhat.com' and not 'lbulwahn'.
-
-I have sent them out with 'From: Lukas Bulwahn
-<lukas.bulwahn@redhat.com>' in my patch file; so, checkpatch did not
-complain locally.
-
-The gmail server however turns this into:
-
-From: Lukas Bulwahn <lbulwahn@redhat.com>
-X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-
-I will see what I can do and send out a v2.
-
-Thanks again for the hint!
-
-Lukas
+diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+index 054b53954ac3..a726c5a9b067 100644
+--- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
++++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+@@ -103,6 +103,13 @@ properties:
+         just limited to the left adc for design demand.
+     type: boolean
+ 
++  nuvoton,adc-delay-ms:
++    description: Delay (in ms) to make input path stable and avoid pop noise.
++        The default value is 125 and range between 125 to 500 ms.
++    minimum: 125
++    maximum: 500
++    default: 125
++
+   '#sound-dai-cells':
+     const: 0
+ 
+@@ -136,6 +143,7 @@ examples:
+             nuvoton,jack-eject-debounce = <0>;
+             nuvoton,dmic-clk-threshold = <3072000>;
+             nuvoton,dmic-slew-rate = <0>;
++            nuvoton,nuvoton,adc-delay-ms = <125>;
+             #sound-dai-cells = <0>;
+         };
+     };
+-- 
+2.25.1
 
 
