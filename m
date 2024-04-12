@@ -1,89 +1,111 @@
-Return-Path: <linux-kernel+bounces-142228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E93C98A2935
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:22:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E8958A2936
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:22:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DBC71F2218F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:22:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29CEB2826A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8334F1F2;
-	Fri, 12 Apr 2024 08:22:21 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB9F4F1F5;
-	Fri, 12 Apr 2024 08:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EAF5027B;
+	Fri, 12 Apr 2024 08:22:32 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87964502B2;
+	Fri, 12 Apr 2024 08:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712910141; cv=none; b=JSV5wJRtOZo46s2FClXCgh4GOzVSI+ysSzScg25WBfjzAqw68rlLrDVQJ5U37iVqqu6QPDQmdbPKl299HvneMMDplF/Jpsg5SKYDfQA7brbfOAnZoS3FKsoQA90nL6oPopTxvDRGyISGUPq7jtBV8rLrUSl0oXc45QzJEHf4zlw=
+	t=1712910152; cv=none; b=kSBsiAb43wNcm5OxH24qu9hDz4rC5x87QsEHxiVB9h2gRPjLc/vNNyD4S2AoFDLjaLEfLBPnkSQVJi6IEjdTHHQwPwpxB70SvTpQfDUaaaOt0ziaLDHG8fkjfXXdv8yE7fvaVxzg5Ol7vysRTIpS90PaWy2AwTJjuieNlLpbA84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712910141; c=relaxed/simple;
-	bh=9KS+FHwnRssF1d7d2Iwik6/+NpzaoXCE4mQMQeIDero=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OVicmLwHSc+igMqnsjncRib7y46FA/rRjEKhzYjj029fDIWWLYVd9TFtjMEKUA/SLBAd2ihn6arW3zXb/UU4N3R35r9EXd+YMGnDPSda/NQEaXOh1KSliVO0rkwmDIbRvijwon7CiIGZFGv/KGszTa4rn8CgxPeTQ23Gf15fm4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rvCAN-000n5W-DN; Fri, 12 Apr 2024 16:21:48 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 12 Apr 2024 16:22:04 +0800
-Date: Fri, 12 Apr 2024 16:22:04 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Alexey Romanov <avromanov@salutedevices.com>
-Cc: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-	"clabbe@baylibre.com" <clabbe@baylibre.com>,
-	"davem@davemloft.net" <davem@davemloft.net>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"khilman@baylibre.com" <khilman@baylibre.com>,
-	"jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
-	"vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	kernel <kernel@sberdevices.ru>
-Subject: Re: [PATCH v7 00/23] Support more Amlogic SoC families in crypto
- driver
-Message-ID: <ZhjvLMcMXKNmlCZ7@gondor.apana.org.au>
-References: <20240411133832.2896463-1-avromanov@salutedevices.com>
- <ZhiiPVckOYH9dFQ/@gondor.apana.org.au>
- <20240412081931.3s2fw6hds3hh5cwg@cab-wsm-0029881.sigma.sbrf.ru>
+	s=arc-20240116; t=1712910152; c=relaxed/simple;
+	bh=peYTgt9uBIcWrdPc00owGJXHu/yjGHl8jXUFuJL+vS4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=flWnQfM8oNMNuQ9u3K/o5XT3Jq6Iq0cX92ktP6Irgbb1RU/ygnveF9aQsEb9TEZDQqqMtR/0rvfFsUYU9ORqx/8jzzwgj4danT6svOasXeTJK38MnPM8kph9wVc0NBuL8zKb8//jLLZBM/bSe004BPgQuoA19YSGWiKYM9kRZzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16402339;
+	Fri, 12 Apr 2024 01:22:58 -0700 (PDT)
+Received: from [192.168.1.100] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 069173F6C4;
+	Fri, 12 Apr 2024 01:22:26 -0700 (PDT)
+Message-ID: <7f5c32dd-edc6-4b53-9cdd-780756f5536c@arm.com>
+Date: Fri, 12 Apr 2024 09:22:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412081931.3s2fw6hds3hh5cwg@cab-wsm-0029881.sigma.sbrf.ru>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf test: Increase buffer size for Coresight basic tests
+To: Anshuman Khandual <anshuman.khandual@arm.com>,
+ linux-perf-users@vger.kernel.org
+Cc: Mike Leach <mike.leach@linaro.org>, Peter Zijlstra
+ <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, coresight@lists.linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240326113749.257250-1-james.clark@arm.com>
+ <5a4023aa-af9b-48d2-84f3-a0b9b30dc54e@arm.com>
+Content-Language: en-US
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <5a4023aa-af9b-48d2-84f3-a0b9b30dc54e@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 12, 2024 at 08:19:36AM +0000, Alexey Romanov wrote:
->
-> Old Amlogic Soc's for crypto HW used a BLKMV engine, which required
-> a clk input and a second interrupt line. New SoC's uses DMA engine
-> and don't need this.
+
+
+On 12/04/2024 08:04, Anshuman Khandual wrote:
 > 
-> I spoke with vendor, and they confirmed that AXG, G12A, G12B, SM1,
-> A1, S4 and GXL is using DMA engine and crypto HW is not connected
-> to clk / second interrupt line.
+> 
+> On 3/26/24 17:07, James Clark wrote:
+>> These tests record in a mode that includes kernel trace but look for
+>> samples of a userspace process. This makes them sensitive to any kernel
+>> compilation options that increase the amount of time spent in the
+>> kernel. If the trace buffer is completely filled before userspace is
+>> reached then the test will fail. Double the buffer size to fix this.
+> 
+> This is a valid concern to address, but just wondering how did we arrive
+> at the conclusion that doubling the buffer size i.e making that 8M will
+> solve the problem positively for vast number of kerne build scenarios ?
+> 
 
-Sorry I'm just asking you to ensure that you've tested the whole
-patch-series with CRYPTO_MANAGER_EXTRA_TESTS enabled and there are
-no errors reported.
+Nobody else has reported anything yet, if it happens again we can always
+increase it again if that is what the issue is. I had most of the kernel
+debugging stuff turned on like memory debugging etc, which is probably
+why I ran into it and 8MB fixed it for me. So I'm not sure if there is
+much more that could be added.
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+>>
+>> The other tests in the same file aren't sensitive to this for various
+>> reasons, for example the iterate devices test filters by userspace
+>> trace only. But in order to keep coverage of all the modes, increase the
+>> buffer size rather than filtering by userspace for the basic tests.
+>>
+>> Fixes: d1efa4a0a696 ("perf cs-etm: Add separate decode paths for timeless and per-thread modes")
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  tools/perf/tests/shell/test_arm_coresight.sh | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
+>> index 65dd85207125..3302ea0b9672 100755
+>> --- a/tools/perf/tests/shell/test_arm_coresight.sh
+>> +++ b/tools/perf/tests/shell/test_arm_coresight.sh
+>> @@ -188,7 +188,7 @@ arm_cs_etm_snapshot_test() {
+>>  
+>>  arm_cs_etm_basic_test() {
+>>  	echo "Recording trace with '$*'"
+>> -	perf record -o ${perfdata} "$@" -- ls > /dev/null 2>&1
+>> +	perf record -o ${perfdata} "$@" -m,8M -- ls > /dev/null 2>&1
+>>  
+>>  	perf_script_branch_samples ls &&
+>>  	perf_report_branch_samples ls &&
 
