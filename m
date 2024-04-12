@@ -1,142 +1,135 @@
-Return-Path: <linux-kernel+bounces-143305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 363438A3703
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:22:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 828E88A3705
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA8051F21ECC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:22:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C67C2817CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480111514E5;
-	Fri, 12 Apr 2024 20:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046171514CE;
+	Fri, 12 Apr 2024 20:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBBFqL53"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K2C91B5K"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7295614F9C6;
-	Fri, 12 Apr 2024 20:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660C114A091;
+	Fri, 12 Apr 2024 20:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712953338; cv=none; b=rD+7R/cTcxggeN7Awxc9EjklxDZVOtT0hKxrXgtD8ZXwlp4HYkyv4rNUjoGYq0LmcH/bRF4/D4Bnl0rGcarv509W4ie82iVObDbAOW9B0XgnkYR1t3wWMCMjHskqx3XdlVa5GFRZXKvf+5ud21ooNu1pXMoQavpa4qqI5dCxC54=
+	t=1712953390; cv=none; b=ZJ4N4S43lP1HBiibPKF15+2s3QFTFtrrL78O9qysbrJa33aRNtKrYyzflUmilX8Sv4e/fuG7W9c/uZTvheDIftq6dIA/828YuqmLr9zw7cO4aEc5I4pKhz8KH5i58LCJw7aDZ2pEiTki7jUZPUch3SbrH2KrdU5Zxp5ugNLoTYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712953338; c=relaxed/simple;
-	bh=sn2OmynqMr6J7esZV94bEU0Yo+Dr7urRItKlgNXXkk8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=qhh+DVzwfvS1HMMy8VucMrmyNMPMbNMtnFnDrb2d2Auc/7qKpJ3fL2Oj8fkgMv2GmcoIn+KbmYz7B9d/r3WaFNzNwkGA8FHov+iv55PmjED/boSTRTexFMl3QSAo6BDO9qDBCUIsmTY+nQPIeT2dDcsIVjXNwASA39EblkdidJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBBFqL53; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A70C113CC;
-	Fri, 12 Apr 2024 20:22:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712953338;
-	bh=sn2OmynqMr6J7esZV94bEU0Yo+Dr7urRItKlgNXXkk8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=mBBFqL53k8d8ZRiCErYU+z9y7mNs9HHDllT10pZ3ClqXZjEuN0B8ebU0XrYAbSEpa
-	 QIQCzjz9kSUPV2Gm101R8qF0Fzm/d2ECYeTqOYdngkP0oFGR/IEq1gIF5QqZJLwFLh
-	 FwyDBuniceg4diUmqI1tezD9L6IV7P6ymG4dV/PcGZyQNp9isKFZpILhe3DRxFroRZ
-	 kl6wGt76+5I0oZFe7K9D9ea7a2c8J3M7XvW75EVELJ4xyJA6ycIRtQUiukrwLyTuh2
-	 Hbb4UXqrYyQamtx23jHin0qc0HsDUuz6DG1NpfKAu+Ky81T3wDDvRZtoadLACzqpGp
-	 0K71g/atBsARQ==
-Date: Fri, 12 Apr 2024 15:22:16 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, Niklas Cassel <cassel@kernel.org>,
-	linux-arm-kernel@axis.com, linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v12 8/8] PCI: endpoint: Remove "core_init_notifier" flag
-Message-ID: <20240412202216.GA14590@bhelgaas>
+	s=arc-20240116; t=1712953390; c=relaxed/simple;
+	bh=0e7QtWcrYcZu/1mJ7SvXgWqTcC4MGPyYxRyJTfLNCFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O4NqD4OGhj4krKU2EPhgzrriscCUqfYFm+xgXiaytEuISXahmxiHNaFWs+75J4qEYy0P+3Ovh38WdGVU3eb2yPDLeODMoszGNx8dDSqa0kcK9G/kobVHJMaSUSfu/1xPfQfv5lB2Wy+xgK+btMDNRmKOwL9fA3uHORtg1x8Du2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K2C91B5K; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712953388; x=1744489388;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0e7QtWcrYcZu/1mJ7SvXgWqTcC4MGPyYxRyJTfLNCFQ=;
+  b=K2C91B5KQ4EHbsE8OKE5yBLv4NPiwNZ6ukRG2Ewk5q3G3QSipmUwjTHv
+   hOPvHpmspN2WR6jpUM7CMp/ljLJnSCcrku2m2zYCG8A3RKu3B/o8AGTub
+   DNtY36iua5IhE47uY8k9/f4eo4Nt85uCVTFHNwbyoeEMNSNguKMrtSp/V
+   bRX+TyCcWZ2G4XJ9X4LrcdG3Ya+E/6Vt27lK5cjDpNXulcIgzG+XWo2gD
+   E1QkXTmadArl+ZXIbkzYOun2V60Wr+eB7v8LdPmYSk69oAtaOy5+fwpAm
+   YZrq7TThb1khWhryNQdhFS9zsY0OG7lPrv0lL3jzpSz4z7U2ystKzPX4o
+   Q==;
+X-CSE-ConnectionGUID: pj698n8mRc2b4tF8c6yiNQ==
+X-CSE-MsgGUID: T8XUXINVQ7OpF4NMyD7I+w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8553140"
+X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
+   d="scan'208";a="8553140"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 13:23:08 -0700
+X-CSE-ConnectionGUID: mzZrOC12T4ifdGfSPIm59Q==
+X-CSE-MsgGUID: CpZlv0XMRLa7zOC7/sxuqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
+   d="scan'208";a="21901413"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 13:23:07 -0700
+Date: Fri, 12 Apr 2024 13:23:05 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Chao Gao <chao.gao@intel.com>, isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 081/130] KVM: x86: Allow to update cached values in
+ kvm_user_return_msrs w/o wrmsr
+Message-ID: <20240412202305.GL3039520@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <ac270005b09c45512504e1e99a80c56f3019496a.1708933498.git.isaku.yamahata@intel.com>
+ <bd193eed-25c0-4b00-86be-cc08d994343e@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240327-pci-dbi-rework-v12-8-082625472414@linaro.org>
+In-Reply-To: <bd193eed-25c0-4b00-86be-cc08d994343e@linux.intel.com>
 
-On Wed, Mar 27, 2024 at 02:43:37PM +0530, Manivannan Sadhasivam wrote:
-> "core_init_notifier" flag is set by the glue drivers requiring refclk from
-> the host to complete the DWC core initialization. Also, those drivers will
-> send a notification to the EPF drivers once the initialization is fully
-> completed using the pci_epc_init_notify() API. Only then, the EPF drivers
-> will start functioning.
+On Sun, Apr 07, 2024 at 01:36:46PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
+
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index b361d948140f..1b189e86a1f1 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -440,6 +440,15 @@ static void kvm_user_return_msr_cpu_online(void)
+> >   	}
+> >   }
+> > +static void kvm_user_return_register_notifier(struct kvm_user_return_msrs *msrs)
+> > +{
+> > +	if (!msrs->registered) {
+> > +		msrs->urn.on_user_return = kvm_on_user_return;
+> > +		user_return_notifier_register(&msrs->urn);
+> > +		msrs->registered = true;
+> > +	}
+> > +}
+> > +
+> >   int kvm_set_user_return_msr(unsigned slot, u64 value, u64 mask)
+> >   {
+> >   	unsigned int cpu = smp_processor_id();
+> > @@ -454,15 +463,21 @@ int kvm_set_user_return_msr(unsigned slot, u64 value, u64 mask)
+> >   		return 1;
+> >   	msrs->values[slot].curr = value;
+> > -	if (!msrs->registered) {
+> > -		msrs->urn.on_user_return = kvm_on_user_return;
+> > -		user_return_notifier_register(&msrs->urn);
+> > -		msrs->registered = true;
+> > -	}
+> > +	kvm_user_return_register_notifier(msrs);
+> >   	return 0;
+> >   }
+> >   EXPORT_SYMBOL_GPL(kvm_set_user_return_msr);
+> > +/* Update the cache, "curr", and register the notifier */
+> Not sure this comment is necessary, since the code is simple.
+
+Ok, let's remove it.
+
+
+> > +void kvm_user_return_update_cache(unsigned int slot, u64 value)
 > 
-> For the rest of the drivers generating refclk locally, EPF drivers will
-> start functioning post binding with them. EPF drivers rely on the
-> 'core_init_notifier' flag to differentiate between the drivers.
-> Unfortunately, this creates two different flows for the EPF drivers.
-> 
-> So to avoid that, let's get rid of the "core_init_notifier" flag and follow
-> a single initialization flow for the EPF drivers. This is done by calling
-> the dw_pcie_ep_init_notify() from all glue drivers after the completion of
-> dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
-> send the notification to the EPF drivers once the initialization is fully
-> completed.
+> As a public API, is it better to use "kvm_user_return_msr_update_cache"
+> instead of "kvm_user_return_update_cache"?
+> Although it makes the API name longer...
 
-Thanks for doing this!  I think this is a significantly nicer
-solution than core_init_notifier was.
-
-One question: both qcom and tegra194 call dw_pcie_ep_init_registers()
-from an interrupt handler, but they register that handler in a
-different order with respect to dw_pcie_ep_init().
-
-I don't know what actually starts the process that leads to the
-interrupt, but if it's dw_pcie_ep_init(), then one of these (qcom, I
-think) must be racy:
-
-  qcom_pcie_ep_probe
-    dw_pcie_ep_init                                             <- A
-    qcom_pcie_ep_enable_irq_resources
-      devm_request_threaded_irq(qcom_pcie_ep_perst_irq_thread)  <- B
-
-  qcom_pcie_ep_perst_irq_thread
-    qcom_pcie_perst_deassert
-      dw_pcie_ep_init_registers
-
-  tegra_pcie_dw_probe
-    tegra_pcie_config_ep
-      devm_request_threaded_irq(tegra_pcie_ep_pex_rst_irq)      <- B
-      dw_pcie_ep_init                                           <- A
-
-  tegra_pcie_ep_pex_rst_irq
-    pex_ep_event_pex_rst_deassert
-      dw_pcie_ep_init_registers
-
-Whatever the right answer is, I think qcom and tegra194 should both
-order dw_pcie_ep_init() and the devm_request_threaded_irq() the same
-way.
-
-Bjorn
+Yes, other functions consistently user user_return_msr. We should do so.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
