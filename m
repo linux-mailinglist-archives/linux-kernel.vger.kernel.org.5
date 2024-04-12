@@ -1,164 +1,107 @@
-Return-Path: <linux-kernel+bounces-143385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 901088A37E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:32:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D1F8A37EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:33:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4663428721F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:32:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8A85B24671
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9AD15217C;
-	Fri, 12 Apr 2024 21:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8B615217F;
+	Fri, 12 Apr 2024 21:33:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PXF3Zz5Q"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhSTbhDx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E759152179
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 21:32:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61815610B;
+	Fri, 12 Apr 2024 21:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712957556; cv=none; b=MHQWApybscyPka1EshkkzooWe6R65+0S4LGK4aQVnLSgVVEsJLeUzBWhW+oRIaH+cHduHAGMHVlQRAFu9SPWuD1kYq9CG66pQEqo1MKFkctH8SxWn6l1pVKA2SuwkzkssbcMbbshZChycIve8QbqiMz809EU8IT6AB9e0fIw27I=
+	t=1712957610; cv=none; b=gYtMhdqm+FIZJZxhh4Y/v6yCxVfEmgUXfanti8upPkwTuqeqYZk9nEruH1qKUjXbLKgXbenuqpPW/LjV5W7thDhAzGD+GfUF7plDI2+kFNU5GfxO/K4wtfve6jbUjZr6g4LOjp4tRRCxjj2zeGUXZA2NOYA/sgTeF+zGerihXws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712957556; c=relaxed/simple;
-	bh=gbwgYTpF/BcSQV0HXsiHe1579SMMnmR3GWasc0GUJc4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rcAoHJeZk7QqYAt5VjfUtxyvhpVfeGxr40oR2S/0mfiAsve0ZZnS1zbyuui02ypibV7BjNI88YQrrLQcZ61ppHbtEXtLXj87lQ+1PFN2CbQCyJFYBEEQZvpgx4uKXQqxpKOMFD+5kp+0id09cjHc9dYT0Dg6l3md9GnRidaF1r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PXF3Zz5Q; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-434ffc2b520so36021cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712957553; x=1713562353; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5bOsXTEuHSJ7y+R+ng6MulWBYUcUx1JMdZqOniqnEV8=;
-        b=PXF3Zz5QqLYslSKTWLtcejFioLU/JxedoaAIRJRnT2LwRU0VHDhIbDWBYXwccSlK6O
-         p6I4na2yEtF7n81cnN2YWnhlY2CxombfhzCf4LidohTwflZ/5jnlBqyHsLvV2Zg6vuCj
-         P2Fg42gkRyjpNn9vaUBQWMiQ0suyYXJZyzKlOQKIPvVpHxrzO7g6v3rxUqekY9SR3XTv
-         c8Id6+hvKH24pblUcRDVcv310beaPnS+BXmL2KAc3WPBe8FKpaqeL/zx1t63bLXWzit6
-         BntzBJlGFjbKkXCYp4/F1mSNpTMZSuaf36z+zX3+rjeZUUdxtfcofiIm1s0ndcnXIAlP
-         TfFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712957553; x=1713562353;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5bOsXTEuHSJ7y+R+ng6MulWBYUcUx1JMdZqOniqnEV8=;
-        b=uvWd4hOuTyZhXbuGH4+WDQ1CAGYq4kRhYWqayYaV6iIsrN2WCQS1+q2rqy4uQPi1i4
-         Y3/s0y6d3bU+2ue+o7SXj89f7EVnjvE6VzxH7umuwaK4tHHTKub7Nu1wq69nn2w2T/s9
-         y8j0sizH7judh3YVPF0RAH/RMn5xQ28twMx9woUcLfmgpL4PTiW7XLOZwGWFi+C04nq9
-         /zy2440FskwcprZa3h2IW6EebA67cfy3n2Tb+ljW0NxGc08EGOlyVTuuDDWuqClHLA7h
-         KnErDL2DEyqtONjk/09Ij6mhHxnxUlXa36l9Qsj8zatiJylE0afpC1xo6eHc0ImGXOMb
-         Yu1w==
-X-Forwarded-Encrypted: i=1; AJvYcCVG1fThKCAjfsERehLWDbVCqFsZyNA1QhE0vyTodGC2C3fVqLFSY6TAPDfnUjRP4lI4AbLAj9RPyUFAhL8UIpLjO8AmtL36yzdCAsOS
-X-Gm-Message-State: AOJu0Yy8gXBnQVwNKzLVP79u7uIlRsOEKcnKY03SCNlG4E594d13tKLr
-	VKUFL0x7urvDdH3N4TM9QDk6KH0ncFRvDfIpnMEhoi6cZi3UCl1x96tjoZV3dFN9SF00GAJdaY4
-	sw6LuguQr/eHyiBMFghx137Ceqo4K9RbTMJUU
-X-Google-Smtp-Source: AGHT+IHoLnA8rSSQsZ3I5df06ZmXxHEMFSYbpT/WK4qJDmffFK7AEoxvfrE5gza6mQMl3dOr4fy1NaKIHmZsf8NM7Zs=
-X-Received: by 2002:a05:622a:1995:b0:434:a690:e326 with SMTP id
- u21-20020a05622a199500b00434a690e326mr25736qtc.9.1712957553270; Fri, 12 Apr
- 2024 14:32:33 -0700 (PDT)
+	s=arc-20240116; t=1712957610; c=relaxed/simple;
+	bh=CtC3I2fZQ9mZwBg/TkYlfnfS9MFN0gpK2lQ696PJfG4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=tDQpeCxcWK26FT8E/UshpxRx62RGr569tdfLVb2VxPr0bCyItzEXD3JrDIrsiVwLQ/p7LZs5YYhOduw5/UbExUplo80ZKYQVgXkAsUdhwcvc8HOwQJb+11eHfAm0dhMZ6HrsimcRzYc87eogRGTxkzs78Q6Vr4FpUAqqB0jUXJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhSTbhDx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BF3C113CC;
+	Fri, 12 Apr 2024 21:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712957610;
+	bh=CtC3I2fZQ9mZwBg/TkYlfnfS9MFN0gpK2lQ696PJfG4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=HhSTbhDx+UWURLfC7hyj8yyHFrTuSDmbdVUCnommqoKxlUxohFWXZfu8zZy4uL+oO
+	 bNexmE9vPvhh3q/VdkYgk2zTi8NtvrRth2hbv4WSvNwDnvWnHiL6HQHAqzOScatefn
+	 noUtbdiM9PKpxBqMmC54oC5bUgu6mS6n7Nymk9BuYWJpVfJA8IVYmXtfTf6K5TOMhY
+	 CgM5RxS+q4mYVevj/nkmA1h/yhdDDT8DLjh5RwT08wbD4zgEjI7UpoFsTEAdUX6jwg
+	 n2GnhytXq2vfNm19rt+JkfOe4dU4zR3CEpSCIRp/oXtCfaN3RNJrF/rv2x8tS4Tyc6
+	 1tWYqreRv2HUw==
+Date: Fri, 12 Apr 2024 16:33:28 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc: linux-pci@vger.kernel.org, bhelgaas@google.com, lpieralisi@kernel.org,
+	kw@linux.com, robh@kernel.org, matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: mt7621: Fix possible string truncation in snprintf
+Message-ID: <20240412213328.GA19361@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412025903.489470-1-davidgow@google.com>
-In-Reply-To: <20240412025903.489470-1-davidgow@google.com>
-From: Rae Moar <rmoar@google.com>
-Date: Fri, 12 Apr 2024 17:32:21 -0400
-Message-ID: <CA+GJov7BGQmPUCzA_3Em6P0tXAWnUX-YD5r3pdPKFSSNL0tgyw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Fix race condition in try-catch completion
-To: David Gow <davidgow@google.com>
-Cc: Kees Cook <keescook@chromium.org>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Naresh Kamboju <naresh.kamboju@linaro.org>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Will Deacon <will@kernel.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Guenter Roeck <linux@roeck-us.net>, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org, 
-	Brendan Higgins <brendan.higgins@linux.dev>, 
-	Linux Kernel Functional Testing <lkft@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240111082704.2259450-1-sergio.paracuellos@gmail.com>
 
-On Thu, Apr 11, 2024 at 10:59=E2=80=AFPM David Gow <davidgow@google.com> wr=
-ote:
->
-> KUnit's try-catch infrastructure now uses vfork_done, which is always
-> set to a valid completion when a kthread is created, but which is set to
-> NULL once the thread terminates. This creates a race condition, where
-> the kthread exits before we can wait on it.
->
-> Keep a copy of vfork_done, which is taken before we wake_up_process()
-> and so valid, and wait on that instead.
->
-> Fixes: 4de2a8e4cca4 ("kunit: Handle test faults")
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Closes: https://lore.kernel.org/lkml/20240410102710.35911-1-naresh.kamboj=
-u@linaro.org/
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Acked-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Signed-off-by: David Gow <davidgow@google.com>
+On Thu, Jan 11, 2024 at 09:27:04AM +0100, Sergio Paracuellos wrote:
+> The following warning appears when driver is compiled with W=1.
+> 
+> CC      drivers/pci/controller/pcie-mt7621.o
+> drivers/pci/controller/pcie-mt7621.c: In function ‘mt7621_pcie_probe’:
+> drivers/pci/controller/pcie-mt7621.c:228:49: error: ‘snprintf’ output may
+> be truncated before the last format character [-Werror=format-truncation=]
+> 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
+>     |                                                 ^
+> drivers/pci/controller/pcie-mt7621.c:228:9: note: ‘snprintf’ output between
+> 10 and 11 bytes into a destination of size 10
+> 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
+>     |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Clean this up increasing destination buffer one byte.
+> 
+> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> Closes: https://lore.kernel.org/linux-pci/20240110212302.GA2123146@bhelgaas/T/#t
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-Hello,
-
-This fix looks good to me. I have tested it and besides the fortify
-test error discussed in the previous patch series I am happy.
-
-Thanks!
--Rae
-
-Reviewed-by: Rae Moar <rmoar@google.com>
-
+Krzysztof applied this to pci/controller/mt7621 for v6.10, thanks!  I
+just pulled that branch into "next", so it should appear in the next
+linux-next.
 
 > ---
->  lib/kunit/try-catch.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index fa687278ccc9..6bbe0025b079 100644
-> --- a/lib/kunit/try-catch.c
-> +++ b/lib/kunit/try-catch.c
-> @@ -63,6 +63,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->  {
->         struct kunit *test =3D try_catch->test;
->         struct task_struct *task_struct;
-> +       struct completion *task_done;
->         int exit_code, time_remaining;
->
->         try_catch->context =3D context;
-> @@ -75,13 +76,16 @@ void kunit_try_catch_run(struct kunit_try_catch *try_=
-catch, void *context)
->                 return;
->         }
->         get_task_struct(task_struct);
-> -       wake_up_process(task_struct);
->         /*
->          * As for a vfork(2), task_struct->vfork_done (pointing to the
->          * underlying kthread->exited) can be used to wait for the end of=
- a
-> -        * kernel thread.
-> +        * kernel thread. It is set to NULL when the thread exits, so we
-> +        * keep a copy here.
->          */
-> -       time_remaining =3D wait_for_completion_timeout(task_struct->vfork=
-_done,
-> +       task_done =3D task_struct->vfork_done;
-> +       wake_up_process(task_struct);
-> +
-> +       time_remaining =3D wait_for_completion_timeout(task_done,
->                                                      kunit_test_timeout()=
-);
->         if (time_remaining =3D=3D 0) {
->                 try_catch->try_result =3D -ETIMEDOUT;
-> --
-> 2.44.0.683.g7961c838ac-goog
->
+>  drivers/pci/controller/pcie-mt7621.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-mt7621.c b/drivers/pci/controller/pcie-mt7621.c
+> index 79e225edb42a..d97b956e6e57 100644
+> --- a/drivers/pci/controller/pcie-mt7621.c
+> +++ b/drivers/pci/controller/pcie-mt7621.c
+> @@ -202,7 +202,7 @@ static int mt7621_pcie_parse_port(struct mt7621_pcie *pcie,
+>  	struct mt7621_pcie_port *port;
+>  	struct device *dev = pcie->dev;
+>  	struct platform_device *pdev = to_platform_device(dev);
+> -	char name[10];
+> +	char name[11];
+>  	int err;
+>  
+>  	port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
+> -- 
+> 2.25.1
+> 
 
