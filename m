@@ -1,96 +1,195 @@
-Return-Path: <linux-kernel+bounces-142560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D07958A2D29
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:19:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6A08A2D30
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:20:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85AD21F22DEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:19:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D51D1C21C49
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD9B5466C;
-	Fri, 12 Apr 2024 11:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E095467B;
+	Fri, 12 Apr 2024 11:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="eQ5UPlU0"
-Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OpONXfsa"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC3C3D3B1;
-	Fri, 12 Apr 2024 11:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D8D42064;
+	Fri, 12 Apr 2024 11:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712920758; cv=none; b=jgov2BuN8ZPP4Kj4oM3x7xDk7TBlWErb2dX4ABCnvOSWxxmzgZZspCo7CB4xRTGGqD7J61klwiKBScrRWMmOdh86AmdZd9cDl+1uqmGZEk6zUKq5DjbQr6zZ5XKdgONJFBJYSZULoJnnfOCR0auUoivFXtSZYZsvHHsnKZTmGQA=
+	t=1712920814; cv=none; b=f6TLbleleVu8JbCz3nli8qsXlAxkVZH/AniTePH6vDoLU7WURyKddtdhamq5PoAs4StYxVqDierMXZXkJzDDmX+VKYudqYoVwDRsK4P8Bacv8rl6AagpF1wyrS80/eMNMwJBiXMr4tRdZ9b1yf/mlzm56hEWpjdxNrRcyBQmbnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712920758; c=relaxed/simple;
-	bh=8/SKetfBZBy2Kh39R7Wd6mztgC+n9WBxP1ZOYm7Roz4=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=vGbEwEumwi0kASCvL5FWm0z85i/48I5YMo9EFudHYO1YU5k/3Yb/R0Ycj0iIPB4uttb7j8RHpae81gakpmO/FBQSfa8kin523Uy4u9AepJNdhOcY+fAllQDnHtuJ/HOmor5SdW2yTl0TCpSe0duHzB9ssKjs01cvQnFKXMZvypY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=eQ5UPlU0; arc=none smtp.client-ip=193.104.135.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
-Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
-	by mail1.fiberby.net (Postfix) with ESMTPSA id 4D8FC600A2;
-	Fri, 12 Apr 2024 11:19:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
-	s=202008; t=1712920747;
-	bh=8/SKetfBZBy2Kh39R7Wd6mztgC+n9WBxP1ZOYm7Roz4=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=eQ5UPlU0Il6iUiB9lA5UENtj+dwdRTE/O0z9PasN3FZrzEAn2nMd7Q0SIM0W8/aQ8
-	 jqcI4bdEm1dSfagbMh1rjAvhVmWpErHcW3JP7pxa2UM2I7IuC699JrkXOlynPP4lyj
-	 xoUwOeL7in/J+GKlDIr+4EbgsvhmPvziZTqh9jaPy8wFcfBBC9Jqu43SCy2BTf9YJl
-	 KvSecv/IU+n9XY/S/rr1rd5JJsQ362fxXcUs6bbqRphun3oGWWfSfM4xwXEM+uIDDC
-	 ccRoFVz7V/tR0ChVYf0PMa/x49KA1LKZPFOj8thumXZ6DSIehuSae8dXginPsdjZv/
-	 nkVgVSEZES+1Q==
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by x201s (Postfix) with ESMTP id F196120106A;
-	Fri, 12 Apr 2024 11:18:59 +0000 (UTC)
-Message-ID: <5fb7638c-e70a-49ea-94d5-6b7f3e953255@fiberby.net>
-Date: Fri, 12 Apr 2024 11:18:59 +0000
+	s=arc-20240116; t=1712920814; c=relaxed/simple;
+	bh=NsEj4itARfSaIua1zjLoV9RjS978JVu1/c1b7YaNTAg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GJo/10wCI7Q066xFXjNd72UmPMFJcgWKzg4F2P3Jf4zsIZ7kfbP0AjycqfLM9BkebLwiiRRqOQYUEzzcXGS8Gm1oQcNcrb+NV9GLeJATK4hkUsNhPVZJlcxlmQ/no54q/uDXQTXAFRyHWZe9pAxAWImfrfdzMu1WLr81QljZ5dY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OpONXfsa; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d8743ecebdso8004031fa.1;
+        Fri, 12 Apr 2024 04:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712920811; x=1713525611; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K6llkGzTMtDecfn5lL/x3eZ2VS0QYxokhuUgjTqLIds=;
+        b=OpONXfsaV/7DVKZQd5jZIk86hcsxXX7uNbesCcgVgsQAZKyi7VFkHtG1eXJqaQ9eOc
+         M5KzKnFsKq848WtYFDc8Y5vPMQpaj2RjTzcXSbQZxSDPRizA3/GgFWXpE2nmz9qFrK7P
+         THipi+/O6dgFIoHDOB5XPvFGS/8Oq/BF1P6QwCRa7lThHDZbMXPVdkrERz+11RFpEbrL
+         79ntYdgUNQUDvTM46haDSD2velTZyNitBQy/C3RlhfPZONny83WkIBV4uGRPwMKTzfNc
+         DNjS7sSvlTlN/Fu8ZhHt69wwJR1nlRudhO7E2YHPn0aayn0ncuOuiRpoqctxUBiGUslG
+         iilA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712920811; x=1713525611;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K6llkGzTMtDecfn5lL/x3eZ2VS0QYxokhuUgjTqLIds=;
+        b=T7faIMegymv3RNM1Y42PoafPVqZZUtL72wWUBnPG9NDSWaOM4DdIEL3R1vBGas/tqj
+         ESzYNiEtzeUlKp4/jwgmNg1/9a067g9FH8lkC7qk+/epxnf18up1byoobVVnWYUERyQS
+         2wV8FzdqxSKZZdGHZt6WXFVuMqpk84iL8W2rfZL/MUR7e3WFUDMREZzZ9wpkq6lbKM+x
+         z0UbLUWLzwLCM8WVbYAA/vqQZ7QWNvabrnWcugiRiPJ4YLqIpjNnCbo0prKw4SusyTxT
+         WbO6iDVgTjJMDjsCHfiq0yXbc6EsEAcFe7mZM7Bw5vNd591wv9YWSclLvMmo5fKP/s7P
+         OmlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWTQCc6eOVNDMFbCPxssCB6x3+7OrlT4Nq7Jgm2YH85fcGNCFBGJZe98E4soqgE7gWMc1C8n94Uc9OprMhxA8UuC/yLyM9LBqkJu8OP/G4Khvx45vxaJ98DSqsNSM7A+3GsuX9E9ARFzSzlvgLM/JCukS67ldNkQ1gIAer4JMf25Ka1Y99Xa2hF
+X-Gm-Message-State: AOJu0Yz/JQuxU9thZjWg+hIqLI+5kI3NmZdC5GT7wntlSm/t1rbKyoIf
+	eSrV4O7cXmssbyuPLkz8PI+mqnMzEBxcWRvrUB/AJT79QsHerC6O
+X-Google-Smtp-Source: AGHT+IG0Ay17+e84Jpncmal/zU9S7d+YchunQ8ETIecjF9tTTfmCwanY2Hb24PMu6UeHLuTOeEQIAQ==
+X-Received: by 2002:a2e:8456:0:b0:2d4:99f8:8b9f with SMTP id u22-20020a2e8456000000b002d499f88b9fmr1342547ljh.50.1712920810475;
+        Fri, 12 Apr 2024 04:20:10 -0700 (PDT)
+Received: from fedora ([213.255.186.46])
+        by smtp.gmail.com with ESMTPSA id d11-20020a2e330b000000b002d68abf446bsm483910ljc.139.2024.04.12.04.20.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 04:20:09 -0700 (PDT)
+Date: Fri, 12 Apr 2024 14:20:03 +0300
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+To: Matti Vaittinen <mazziesaccount@gmail.com>,
+	Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: [RFC PATCH v2 0/6] Support ROHM BD96801 scalable PMIC
+Message-ID: <cover.1712920132.git.mazziesaccount@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] octeontx2-pf: fix FLOW_DIS_IS_FRAGMENT implementation
-From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
-To: "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Sunil Kovvuri Goutham <sgoutham@marvell.com>,
- Geethasowjanya Akula <gakula@marvell.com>,
- Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
- Hariprasad Kelam <hkelam@marvell.com>, Suman Ghosh <sumang@marvell.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20240410134303.21560-1-ast@fiberby.net>
- <SJ0PR18MB5216D2276BA11D5C5E31D6A6DB042@SJ0PR18MB5216.namprd18.prod.outlook.com>
- <27ac48c0-b19c-4104-8ec9-08232e3f42f6@fiberby.net>
- <235918fc-9b9b-4efa-8258-69bd5c7d40d4@fiberby.net>
-Content-Language: en-US
-In-Reply-To: <235918fc-9b9b-4efa-8258-69bd5c7d40d4@fiberby.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="+cts3s1576ejsO2H"
+Content-Disposition: inline
 
-Hi maintainers,
 
-On 4/12/24 10:25 AM, Asbjørn Sloth Tønnesen wrote:
-> On 4/12/24 9:01 AM, Asbjørn Sloth Tønnesen wrote:
-> I was a bit in a hurry, to get the reply in before a meeting,
-> so: s/FLOW_DIS_FIRST_FRAG/FLOW_DIS_IS_FRAGMENT/g
+--+cts3s1576ejsO2H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It was just a fix for my reply to Suman, so I am a bit confused
-why the patch itself got marked as "Changes Requested" in patchwork [1].
+Support ROHM BD96801 "scalable" PMIC.
 
-I can spin a v2, but the only change would currently be Jacob Keller's Reviewed-by.
+The ROHM BD96801 is automotive grade PMIC, intended to be usable in
+multiple solutions. The BD96801 can be used as a stand-alone, or together
+with separate 'companion PMICs'. This modular approach aims to make this
+PMIC suitable for various use-cases.
 
-[1] https://patchwork.kernel.org/project/netdevbpf/patch/20240410134303.21560-1-ast@fiberby.net/
+This is sent as an RFC because of the regulator features which can be
+configured only when the PMIC is in STBY state. This is described more
+detailed in the regulator patch.
 
--- 
-Best regards
-Asbjørn Sloth Tønnesen
-Network Engineer
-Fiberby - AS42541
+Another "oddity" is that the PMIC has two physical IRQ lines. When using
+regmap IRQ to create own IRQ controller instance for both HWIRQs, there
+will be a naming collison in debugfs for the IRQ domains. As a
+work-around the MFD driver uses
+irq_domain_update_bus_token(intb_domain, DOMAIN_BUS_WIRED);
+to append '-1' at the end of the domain name.
+
+Rest of the series ought to be business as usual.
+
+Revision history:
+RFCv1 =3D> RFCv2:
+	- Tidying code based on feedback form Krzysztof Kozlowski and
+	  Lee Jones.
+	- Documented undocumented watchdog related DT properties.
+	- Added usage of the watchdog IRQ.
+	- Use irq_domain_update_bus_token() to work-around debugFS name
+	  collision for IRQ domains.
+
+---
+
+Matti Vaittinen (6):
+  dt-bindings: ROHM BD96801 PMIC regulators
+  dt-bindings: mfd: bd96801 PMIC core
+  mfd: support ROHM BD96801 PMIC core
+  regulator: bd96801: ROHM BD96801 PMIC regulators
+  watchdog: ROHM BD96801 PMIC WDG driver
+  MAINTAINERS: Add ROHM BD96801 'scalable PMIC' entries
+
+ .../bindings/mfd/rohm,bd96801-pmic.yaml       |  171 ++
+ .../regulator/rohm,bd96801-regulator.yaml     |   69 +
+ MAINTAINERS                                   |    4 +
+ drivers/mfd/Kconfig                           |   13 +
+ drivers/mfd/Makefile                          |    1 +
+ drivers/mfd/rohm-bd96801.c                    |  476 ++++
+ drivers/regulator/Kconfig                     |   12 +
+ drivers/regulator/Makefile                    |    2 +
+ drivers/regulator/bd96801-regulator.c         | 2114 +++++++++++++++++
+ drivers/watchdog/Kconfig                      |   13 +
+ drivers/watchdog/Makefile                     |    1 +
+ drivers/watchdog/bd96801_wdt.c                |  389 +++
+ include/linux/mfd/rohm-bd96801.h              |  211 ++
+ include/linux/mfd/rohm-generic.h              |    1 +
+ 14 files changed, 3477 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd96801-pmic=
+=2Eyaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd9680=
+1-regulator.yaml
+ create mode 100644 drivers/mfd/rohm-bd96801.c
+ create mode 100644 drivers/regulator/bd96801-regulator.c
+ create mode 100644 drivers/watchdog/bd96801_wdt.c
+ create mode 100644 include/linux/mfd/rohm-bd96801.h
+
+
+base-commit: 4cece764965020c22cff7665b18a012006359095
+--=20
+2.43.2
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--+cts3s1576ejsO2H
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmYZGN4ACgkQeFA3/03a
+ocWYIwgAzLthY1mGUrJltIt+7dpeQeW5Wo09PluWsOgE8R6LFbeW2l+JKQa4d/oW
+EcV0LHwayFqavbkzcNkccWQgswv7CH6ujyAGGy+tOPh55JTFRHrF+d8bBEBRZAL6
+R3QdWzHToebZQQfUJS3ysMm/Now4v0YxbVRKx9y4fdWxBbDvZhZnxns0/A7wEBKU
+tOLO+IvIRXmwrL7hIxMkTJXzMIsGl4gn0XVoY1asEgiJlxiWiNK0xEIiJ5XYS7OD
+5LmYPCgCvVhcMa4oZCUqWN7u21TgzxB4smdGDAELJlSrlVIcAhCUJ6Olr0m5HDXx
+62nrmlBIKNu2OGaRXri/6OSPyFewww==
+=tRI6
+-----END PGP SIGNATURE-----
+
+--+cts3s1576ejsO2H--
 
