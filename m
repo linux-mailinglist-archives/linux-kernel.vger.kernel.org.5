@@ -1,115 +1,90 @@
-Return-Path: <linux-kernel+bounces-143269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D5708A3677
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:47:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B7F8A3679
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:47:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04607B23742
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:46:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33359286F3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492F8150990;
-	Fri, 12 Apr 2024 19:46:51 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F023C150993;
+	Fri, 12 Apr 2024 19:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GahFOO0K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1997C446BD;
-	Fri, 12 Apr 2024 19:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C873446BD;
+	Fri, 12 Apr 2024 19:47:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712951210; cv=none; b=Ua8+UgbNnzIO23C0SbIeTN2jPUdkp3NPkFEbccleGOMJqbS06HWy13h1aKTBr1dw4kTWk5IGEzyUUTkutf3MN9JKhpf52qCQ+XfG17aAZQGAb7HdpbhpzwFNdO8mN2MP4r5lsptjKCzQR6erO0g/nD8wP7Zk0DqnLWv4Msw7eDA=
+	t=1712951232; cv=none; b=VcO4H6zgZxrxba9AHVY45ANND+WQhhAfqSqXpIz7fGMfJsyu0NftT62UxDEDuFmrU9p+Ng+a0S1+Wjf/QTcGC4vQaRhOigFZEMv+vM5Mhi+ekMi5uFDxMgFhR1LYPug9ljfF1kqjt/fnNG9CmuwFvMwc98NCnSqxmm9JSu5zvwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712951210; c=relaxed/simple;
-	bh=XnUrEkoHFPhR4diIWtplmjQl0KVV2B+fVMTBj+eA3Mw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TS1nlcJRMifforFzuRlxzHqv2xOWaMgriYW4aOwAwJ1FjxPHpgLPP+qevVcrNGlBsdEbQt3EIbyQ8GmIX2yuWpZcZ5onz4eYMx+9HSr+UFGN3lD3J3qSJhGrSSIpls7ykYyRNTlSaf4lTlJ4g6NFKr8rLqhps2vVNpESwDApofw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 172A01C007B; Fri, 12 Apr 2024 21:46:47 +0200 (CEST)
-Date: Fri, 12 Apr 2024 21:46:46 +0200
-From: Pavel Machek <pavel@denx.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
-	maco@android.com, tglx@linutronix.de, christophe.jaillet@wanadoo.fr,
-	sean.anderson@linux.dev
-Subject: Re: [PATCH 4.19 000/175] 4.19.312-rc1 review
-Message-ID: <ZhmPpo+EI9Ce3bI1@duo.ucw.cz>
-References: <20240411095419.532012976@linuxfoundation.org>
+	s=arc-20240116; t=1712951232; c=relaxed/simple;
+	bh=CfsPH7NNwB3Rm4gIvUDyGKYjaZUDiprjWdsWosYSfIs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=VzoGNktK/3lqpIZp+msW5ZuMuRc9lekBU9+vQ7Zf3Yn8/RXk/Sr8hVarUxZoUrbvk+SZDFKtjWeZjPXhzoDyagLTvbFjGQH3Ld/TFvNapSnH5pu00xokBND0t+6XIiWiNstSqxaF9/yvQ8vXqKnJTVJiFTLeRucpUV5Cc7Q4cnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GahFOO0K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF0EC113CC;
+	Fri, 12 Apr 2024 19:47:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712951231;
+	bh=CfsPH7NNwB3Rm4gIvUDyGKYjaZUDiprjWdsWosYSfIs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=GahFOO0KNuU4CxKtAN2Nd3UdZvRaruKqYiwn97i1SOpl+cMoM8bryCFMxIV2t3cjp
+	 bh764RrVFmL+A3Gh9EgiMGIHBq2RPj3qIMFPUSTo1EeY1HkhNUsPecxKi6rhhA/ZvV
+	 x//aH6QfEvrkzpbqS2h5EQd6hJG+FGy/RzPexW5VVsUdb8bEyVf9JhlmHJR+Yi/YqV
+	 jKOJGzrOxmEIa0zD1KG0chqHnlbxi1FjKbMiFVTeybwYhZk7yBOdxz+JGQb7GxfCZl
+	 Hp7dr1lO3MFerBwHKBhu1ciF39aGeLGH32UKSPH95xp/driOj+thpx1hBWKegFOqzJ
+	 yps29T5OsXk7A==
+Date: Fri, 12 Apr 2024 21:47:07 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa@kernel.org>
+Cc: linux-i2c <linux-i2c@vger.kernel.org>, 
+	lkml <linux-kernel@vger.kernel.org>, Lukas Bulwahn <lbulwahn@redhat.com>, 
+	Andi Shyti <andi.shyti@kernel.org>
+Subject: [GIT PULL] i2c-host-fixes for v6.9-rc4
+Message-ID: <7z65zupqngw4i4mzgablb37osz3gwz6767og5t4b32o4o3joqy@ypkuxdgilibd>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IWHESQAOlY1kgx+/"
-Content-Disposition: inline
-In-Reply-To: <20240411095419.532012976@linuxfoundation.org>
-
-
---IWHESQAOlY1kgx+/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi Wolfram,
 
-> This is the start of the stable review cycle for the 4.19.312 release.
-> There are 175 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+In this pull request there is only the path update in the
+MAINTAINER file for the pnx driver from Lukas.
 
-> Martijn Coenen <maco@android.com>
->     loop: Remove sector_t truncation checks
+Thanks,
+Andi
 
-AFAICT, in 4.19, sector_t is not guaranteed to be u64, see
-include/linux/types.h. So we can't take this.
+The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
 
-> Thomas Gleixner <tglx@linutronix.de>
->     timers: Move clearing of base::timer_running under base:: Lock
+  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
 
-AFAICT, we don't have those NULL assignments in expire_timers in
-4.19. Can someone doublecheck this? We also don't support PREEMPT_RT
-there.
+are available in the Git repository at:
 
-> Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->     slimbus: core: Remove usage of the deprecated ida_simple_xx() API
+  git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git tags/i2c-host-fixes-6.9-rc4
 
-AFAICT this is just a cleanup. We should not need this.
+for you to fetch changes up to 3731629ddb80ae5f52cb95d7321bccfb138cab7f:
 
-> Sean Anderson <sean.anderson@linux.dev>
->     soc: fsl: qbman: Use raw spinlock for cgr_lock
+  MAINTAINERS: adjust file entry in ARM/LPC32XX SOC SUPPORT (2024-04-12 11:27:39 +0200)
 
-As we don't have commit ef2a8d5478b9 ("net: dpaa: Adjust queue depth
-on rate change") in 4.19, we should not really need this. Plus, 10msec
-under raw spinlock is quite evil, such kernel is not realtime any
-more. We should not be doing that.
+----------------------------------------------------------------
+No real fixes here, only one path updated in the MAINTAINERS
+file.
 
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+----------------------------------------------------------------
+Lukas Bulwahn (1):
+      MAINTAINERS: adjust file entry in ARM/LPC32XX SOC SUPPORT
 
---IWHESQAOlY1kgx+/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZhmPpgAKCRAw5/Bqldv6
-8p7jAKC1wg9cT7GCMWzsEHEwhuwzFSfYkwCfdjnujTG6NWr2akCF44/qcO/dweI=
-=pWcx
------END PGP SIGNATURE-----
-
---IWHESQAOlY1kgx+/--
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
