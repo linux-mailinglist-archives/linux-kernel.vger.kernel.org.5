@@ -1,47 +1,94 @@
-Return-Path: <linux-kernel+bounces-142176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF0C8A287A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 323748A287B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:49:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDD671F21FC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:48:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4DF31F21D7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58404D9F4;
-	Fri, 12 Apr 2024 07:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816C74F5FA;
+	Fri, 12 Apr 2024 07:48:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W4/0dwmO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M9AoY0dx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="30Go7L5u";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ghBzotRh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gm+Uc32c"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC7B4BAA6;
-	Fri, 12 Apr 2024 07:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D404E1B3
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:48:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712908122; cv=none; b=quEzk9xIU/3BwdvKX40nQmEB9RPUc3j9lftD3oYuM0dVmPxZZjN/H8TNAAqo6CrKIpjhL+XD9KJ3ioWto1JYIQWsW2isIlePwrCzhzv63uzvG0LrtFddzhBvgpzHpEjRFLVRaT9voNUVh2mH7QbWMqiv2NnfR7KH+uKHSnR8Jys=
+	t=1712908125; cv=none; b=gnbcIf3l6OY/DP5XZp1kC8fvLA2DDcbHAbZEZpMjDgpaG1TKTtnczBYXYjr4eT6PNCZasqftRdz3msc3c65Ml/RkkxwOQDWnqENmaHMuBddjd9nB5+SZNCXtRfoA2uQy3+rAbz9JpeAsXDmFhmRRg/7LEIEUpBR/S6HGEgC5X9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712908122; c=relaxed/simple;
-	bh=CF9oWDzCYOqtphIi9RHhUlEJ0YZEjnZhZllTYc5lRe8=;
+	s=arc-20240116; t=1712908125; c=relaxed/simple;
+	bh=jXsU6Kb2cNja2z4fiHkIKLrZZXwEhKgL9qc3t3d41Zg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T6kK4c2kX7IWlJ6VappmB83rxujj+GB/i6q1luR4AQxfLtzmCRBHWWawZH8wt28l4IwJrJnW26/IfmwLq5cJj89EyT1r538gd2YfinJo8vmmymW+xscsSW0NqKeIkDWpdZi/GAYMB1DWMP0jrkZDp/2SjlPW/ev+O3f9xqFvW6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W4/0dwmO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D4B7C113CC;
-	Fri, 12 Apr 2024 07:48:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712908121;
-	bh=CF9oWDzCYOqtphIi9RHhUlEJ0YZEjnZhZllTYc5lRe8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=W4/0dwmOm139lOpxDlRRyrAMKb1EVMISM8nVCYpv9ZCM7rr+OGDUSwNXBgzQmOlKY
-	 eHp+HIOHZZjfBmtNfor1hRINuJFovViPaDycq+QqZieC4NW0VYh7wifdqXYImizUo0
-	 KKo+dI5PmfrwY1CBCFIZ1hrXaZd2GSjESFdPqJAbqWBtsE6P0D5XP/HfZlZ/VMwlem
-	 hejpYM+606MEjwA1U89ZTrcCDGswR9qvvo31LpHzHSSqs20gNy92mmnQvkX+Bn2m8U
-	 rh6086/C+f4aLJSSDZR87W58RP+fcTNq9v7mc4ZqGSSn62y4068WGSgfpigPrKM2uU
-	 FPZJX2NysVIaQ==
-Message-ID: <9b7df4f5-3a3c-40ff-b5c2-adeed2dcf780@kernel.org>
-Date: Fri, 12 Apr 2024 16:48:38 +0900
+	 In-Reply-To:Content-Type; b=f+07HDcqsksaymcQKa+kr8hTopV9Z/vKimLc/rs3QnXM++TB+nkzj5ILed/cEvgJA+9hKMzjI2ftXgaVPBTtONioOMrfMJKU1Tze2HdODIf9tKdAb6WtNejDdZcGEOS8JpUQed9MLxKjKiqwcqSjwgx3bfsgaxWzRuoIRMk1GJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M9AoY0dx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=30Go7L5u; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ghBzotRh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gm+Uc32c; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2B96F5F9B4;
+	Fri, 12 Apr 2024 07:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712908122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SaSfckjXYUnyk8FJwdqdTVvSoVpi0vbEbtm9bShPV2s=;
+	b=M9AoY0dxSpBfnpJ2/tB87Ij/80PYIt6iPK0vyHNcYWop0IFktYwnRuEwG6qN/2LXJtT4eU
+	jJSYLzcoYnrj7Yd7pGSXibeXAuLREE5LEBEfiaXSG3s6VqVN8jFHWCIf4V4BDQicwXRyqG
+	9IsVsqnx9LD332Ob30UQAEuwr50zSpU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712908122;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SaSfckjXYUnyk8FJwdqdTVvSoVpi0vbEbtm9bShPV2s=;
+	b=30Go7L5u81p3+LHSucwgzyHFnAFum03+wSfGwOfxiMbpeOiMIf0YlLQ0KX7kK1bKumxdgg
+	WJdKi5ZOJw6m3ADg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712908121; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SaSfckjXYUnyk8FJwdqdTVvSoVpi0vbEbtm9bShPV2s=;
+	b=ghBzotRhErprVdX3R1SZmG6dKvt5Z3JQiDyfBq5IQqnWJKjTSebtT/yl36RA/NHmYI1X73
+	e+VzGzIv1vx/1XI8aJ4G7J9nsap2ztThQyFoGsakE+g0X8sW/YrNVage74nmG6TSzXSWAk
+	i86HHVCRfkkJF21V2S4whzlBbcYof1U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712908121;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SaSfckjXYUnyk8FJwdqdTVvSoVpi0vbEbtm9bShPV2s=;
+	b=Gm+Uc32cbVPLO62Y8Ymxk5mZ3LwqOXdRlDYZ7nVehMr5amWjtpWNi7qvzXjUvAWLGBCG3T
+	qp0xNK0J7OOzJaAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D6FD13942;
+	Fri, 12 Apr 2024 07:48:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FQ30AlnnGGZicAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 12 Apr 2024 07:48:41 +0000
+Message-ID: <38ef26aa-169b-48ad-81ad-8378e7a38f25@suse.cz>
+Date: Fri, 12 Apr 2024 09:48:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,131 +96,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: add max_dispatch to sysfs
-To: dongliang cui <cuidongliang390@gmail.com>
-Cc: Jens Axboe <axboe@kernel.dk>, Dongliang Cui <dongliang.cui@unisoc.com>,
- ke.wang@unisoc.com, hongyu.jin.cn@gmail.com, niuzhiguo84@gmail.com,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240410101858.1149134-1-dongliang.cui@unisoc.com>
- <5a67c4f7-4794-45b4-838c-7b739372d3a5@kernel.dk>
- <5a83c1f7-3ab8-486a-b633-33b44858d290@kernel.org>
- <CAPqOJe1FsfA-sx4JXB-UyhUZ4ui3eagFJJ6Z6TfBUpp76ZSw9A@mail.gmail.com>
+Subject: Re: [PATCH] slub: limit number of slabs to scan in count_partial()
 Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <CAPqOJe1FsfA-sx4JXB-UyhUZ4ui3eagFJJ6Z6TfBUpp76ZSw9A@mail.gmail.com>
+To: "Christoph Lameter (Ampere)" <cl@linux.com>,
+ Jianfeng Wang <jianfeng.w.wang@oracle.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, penberg@kernel.org,
+ rientjes@google.com, iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+ junxiao.bi@oracle.com
+References: <20240411164023.99368-1-jianfeng.w.wang@oracle.com>
+ <e0222219-eb2d-5e1e-81e1-548eeb5f73e0@linux.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <e0222219-eb2d-5e1e-81e1-548eeb5f73e0@linux.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.29
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[]
 
-On 4/12/24 16:25, dongliang cui wrote:
-> On Thu, Apr 11, 2024 at 1:19 PM Damien Le Moal <dlemoal@kernel.org> wrote:
->>
->> On 4/10/24 22:17, Jens Axboe wrote:
->>> On 4/10/24 4:18 AM, Dongliang Cui wrote:
->>>> The default configuration in the current code is that when the device
->>>> is not busy, a single dispatch will attempt to pull 'nr_requests'
->>>> requests out of the schedule queue.
->>>>
->>>> I tried to track the dispatch process:
->>>>
->>>> COMM            TYPE    SEC_START       IOPRIO       INDEX
->>>> fio-17304       R    196798040       0x2005       0
->>>> fio-17306       R    197060504       0x2005       1
->>>> fio-17307       R    197346904       0x2005       2
->>>> fio-17308       R    197609400       0x2005       3
->>>> fio-17309       R    197873048       0x2005       4
->>>> fio-17310       R    198134936       0x2005       5
->>>> ...
->>>> fio-17237       R    197122936         0x0       57
->>>> fio-17238       R    197384984         0x0       58
->>>> <...>-17239     R    197647128         0x0       59
->>>> fio-17240       R    197909208         0x0       60
->>>> fio-17241       R    198171320         0x0       61
->>>> fio-17242       R    198433432         0x0       62
->>>> fio-17300       R    195744088       0x2005       0
->>>> fio-17301       R    196008504       0x2005       0
->>>>
->>>> The above data is calculated based on the block event trace, with each
->>>> column containing: process name, request type, sector start address,
->>>> IO priority.
->>>>
->>>> The INDEX represents the order in which the requests are extracted from
->>>> the scheduler queue during a single dispatch process.
->>>>
->>>> Some low-speed devices cannot process these requests at once, and they will
->>>> be requeued to hctx->dispatch and wait for the next issuance.
->>>>
->>>> There will be a problem here, when the IO priority is enabled, if you try
->>>> to dispatch "nr_request" requests at once, the IO priority will be ignored
->>>> from the scheduler queue and all requests will be extracted.
->>>>
->>>> In this scenario, if a high priority request is inserted into the scheduler
->>>> queue, it needs to wait for the low priority request in the hctx->dispatch
->>>> to be processed first.
->>>>
->>>> --------------------dispatch 1st----------------------
->>>> fio-17241       R       198171320         0x0       61
->>>> fio-17242       R       198433432         0x0       62
->>>> --------------------dispatch 2nd----------------------
->>>> fio-17300       R       195744088       0x2005       0
->>>>
->>>> In certain scenarios, we hope that requests can be processed in order of io
->>>> priority as much as possible.
->>>>
->>>> Maybe max_dispatch should not be a fixed value, but can be adjusted
->>>> according to device conditions.
->>>>
->>>> So we give a interface to control the maximum value of single dispatch
->>>> so that users can configure it according to devices characteristics.
->>>
->>> I agree that pulling 'nr_requests' out of the scheduler will kind of
->>> defeat the purpose of the scheduler to some extent. But rather than add
->>> another knob that nobody knows about or ever will touch (and extra queue
->>> variables that just take up space), why not just default to something a
->>> bit saner? Eg we could default to 1/8 or 1/4 of the scheduler depth
->>> instead.
-> Current mechanism will try to pulling everything out of the scheduler,
-> regardless
-> of the priority of request. Perhaps reducing the queue depth does not solve the
-> priority disorder scenario. Reducing depth may also weakens the role
-> of priorify.
+On 4/11/24 7:02 PM, Christoph Lameter (Ampere) wrote:
+> On Thu, 11 Apr 2024, Jianfeng Wang wrote:
 > 
->>
->> Why not default to pulling what can actually be executed, that is, up to the
->> number of free hw tags / budget ? Anything more than that will be requeued anyway.
-> The process of pulling the request out of schedule will try to obtain
-> the hw tags.
-> If hw tags are obtained, request will continue to be pulled out of scheduler.
-> However, for slow devices, the number of hw tags is generally greater than the
-> number of requests that the device can currently handle, and
-> unprocessed requests
-> may not be arranged in dispatch_list in order of priority.
+>> So, the fix is to limit the number of slabs to scan in
+>> count_partial(), and output an approximated result if the list is too
+>> long. Default to 10000 which should be enough for most sane cases.
+> 
+> 
+> That is a creative approach. The problem though is that objects on the 
+> partial lists are kind of sorted. The partial slabs with only a few 
+> objects available are at the start of the list so that allocations cause 
+> them to be removed from the partial list fast. Full slabs do not need to 
+> be tracked on any list.
+> 
+> The partial slabs with few objects are put at the end of the partial list 
+> in the hope that the few objects remaining will also be freed which would 
+> allow the freeing of the slab folio.
+> 
+> So the object density may be higher at the beginning of the list.
+> 
+> kmem_cache_shrink() will explicitly sort the partial lists to put the 
+> partial pages in that order.
+> 
+> Can you run some tests showing the difference between the estimation and 
+> the real count?
 
-What ? If the number of hw tags you have for your device is larger than what the
-device can actually handle, that means that your device driver is very buggy. A
-hw tag is a direct identifier of queued commands on the device side. So you
-cannot have more than what the device allows.
-
-May be you are confusing this with the fact that even if you have the correct
-maximum number of hw tags, the device may sometimes refuse to accept a new
-command using a free tag. E.g. a scsi device may return TSF (task set full) even
-if its queue is not full (some hw tags are free). But that is not the common case.
-
-As for the commands not being arranged in priority order when submitted, that is
-also strange. You are going to get the commands from the scheduler in priority
-order, so they will be sorted naturally as such in the dispatch queue, unless
-you get a lot of requeue from the device (again, generally not the usual case).
-
-> And for budget, I found that the budget is set by the driver. Some
-> slow devices,
-> such as emmc, do not register this interface, unable to set budget.
-
-May be that is exactly what you need to do to solve your issue: implement that
-for emmc. Have you tried ?
-
-
--- 
-Damien Le Moal
-Western Digital Research
-
+Maybe we could also get a more accurate picture by counting N slabs from the
+head and N from the tail and approximating from both. Also not perfect, but
+could be able to answer the question if the kmem_cache is significantly
+fragmented. Which is probably the only information we can get from the
+slabinfo <active_objs> vs <num_objs>. IIRC the latter is always accurate,
+the former never because of cpu slabs, so we never know how many objects are
+exactly in use. By comparing both we can get an idea of the fragmentation,
+and if this change won't make that estimate significantly worse, it should
+be acceptable.
 
