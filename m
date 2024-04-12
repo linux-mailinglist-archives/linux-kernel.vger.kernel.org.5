@@ -1,195 +1,259 @@
-Return-Path: <linux-kernel+bounces-142562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6A08A2D30
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:20:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9878A2D32
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D51D1C21C49
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 260D2284E84
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:20:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E095467B;
-	Fri, 12 Apr 2024 11:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E25F54677;
+	Fri, 12 Apr 2024 11:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OpONXfsa"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ewDSaNlD"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D8D42064;
-	Fri, 12 Apr 2024 11:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D078453811;
+	Fri, 12 Apr 2024 11:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712920814; cv=none; b=f6TLbleleVu8JbCz3nli8qsXlAxkVZH/AniTePH6vDoLU7WURyKddtdhamq5PoAs4StYxVqDierMXZXkJzDDmX+VKYudqYoVwDRsK4P8Bacv8rl6AagpF1wyrS80/eMNMwJBiXMr4tRdZ9b1yf/mlzm56hEWpjdxNrRcyBQmbnY=
+	t=1712920847; cv=none; b=PimrlBeYRvoFyVN4MtIJmTeM7ZEEay+0o/2ecgu9/6xG34AooGUjiZ/reIB8gskDUvLY9nKWtBakWMtrQAEj8Jqpgw2Y0P6E/i0O0gutHLuCONPuX7Y0llq5ABk1jQ6DxntVqW2TZIvLRUilKsNO4KTxJXnV9dALjSq7QjoZbjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712920814; c=relaxed/simple;
-	bh=NsEj4itARfSaIua1zjLoV9RjS978JVu1/c1b7YaNTAg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=GJo/10wCI7Q066xFXjNd72UmPMFJcgWKzg4F2P3Jf4zsIZ7kfbP0AjycqfLM9BkebLwiiRRqOQYUEzzcXGS8Gm1oQcNcrb+NV9GLeJATK4hkUsNhPVZJlcxlmQ/no54q/uDXQTXAFRyHWZe9pAxAWImfrfdzMu1WLr81QljZ5dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OpONXfsa; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d8743ecebdso8004031fa.1;
-        Fri, 12 Apr 2024 04:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712920811; x=1713525611; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K6llkGzTMtDecfn5lL/x3eZ2VS0QYxokhuUgjTqLIds=;
-        b=OpONXfsaV/7DVKZQd5jZIk86hcsxXX7uNbesCcgVgsQAZKyi7VFkHtG1eXJqaQ9eOc
-         M5KzKnFsKq848WtYFDc8Y5vPMQpaj2RjTzcXSbQZxSDPRizA3/GgFWXpE2nmz9qFrK7P
-         THipi+/O6dgFIoHDOB5XPvFGS/8Oq/BF1P6QwCRa7lThHDZbMXPVdkrERz+11RFpEbrL
-         79ntYdgUNQUDvTM46haDSD2velTZyNitBQy/C3RlhfPZONny83WkIBV4uGRPwMKTzfNc
-         DNjS7sSvlTlN/Fu8ZhHt69wwJR1nlRudhO7E2YHPn0aayn0ncuOuiRpoqctxUBiGUslG
-         iilA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712920811; x=1713525611;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K6llkGzTMtDecfn5lL/x3eZ2VS0QYxokhuUgjTqLIds=;
-        b=T7faIMegymv3RNM1Y42PoafPVqZZUtL72wWUBnPG9NDSWaOM4DdIEL3R1vBGas/tqj
-         ESzYNiEtzeUlKp4/jwgmNg1/9a067g9FH8lkC7qk+/epxnf18up1byoobVVnWYUERyQS
-         2wV8FzdqxSKZZdGHZt6WXFVuMqpk84iL8W2rfZL/MUR7e3WFUDMREZzZ9wpkq6lbKM+x
-         z0UbLUWLzwLCM8WVbYAA/vqQZ7QWNvabrnWcugiRiPJ4YLqIpjNnCbo0prKw4SusyTxT
-         WbO6iDVgTjJMDjsCHfiq0yXbc6EsEAcFe7mZM7Bw5vNd591wv9YWSclLvMmo5fKP/s7P
-         OmlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTQCc6eOVNDMFbCPxssCB6x3+7OrlT4Nq7Jgm2YH85fcGNCFBGJZe98E4soqgE7gWMc1C8n94Uc9OprMhxA8UuC/yLyM9LBqkJu8OP/G4Khvx45vxaJ98DSqsNSM7A+3GsuX9E9ARFzSzlvgLM/JCukS67ldNkQ1gIAer4JMf25Ka1Y99Xa2hF
-X-Gm-Message-State: AOJu0Yz/JQuxU9thZjWg+hIqLI+5kI3NmZdC5GT7wntlSm/t1rbKyoIf
-	eSrV4O7cXmssbyuPLkz8PI+mqnMzEBxcWRvrUB/AJT79QsHerC6O
-X-Google-Smtp-Source: AGHT+IG0Ay17+e84Jpncmal/zU9S7d+YchunQ8ETIecjF9tTTfmCwanY2Hb24PMu6UeHLuTOeEQIAQ==
-X-Received: by 2002:a2e:8456:0:b0:2d4:99f8:8b9f with SMTP id u22-20020a2e8456000000b002d499f88b9fmr1342547ljh.50.1712920810475;
-        Fri, 12 Apr 2024 04:20:10 -0700 (PDT)
-Received: from fedora ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id d11-20020a2e330b000000b002d68abf446bsm483910ljc.139.2024.04.12.04.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 04:20:09 -0700 (PDT)
-Date: Fri, 12 Apr 2024 14:20:03 +0300
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-To: Matti Vaittinen <mazziesaccount@gmail.com>,
-	Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Matti Vaittinen <mazziesaccount@gmail.com>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [RFC PATCH v2 0/6] Support ROHM BD96801 scalable PMIC
-Message-ID: <cover.1712920132.git.mazziesaccount@gmail.com>
+	s=arc-20240116; t=1712920847; c=relaxed/simple;
+	bh=xMEl6xIBN3UJSYa3ztdRTvc6fQYA4DRvANhfTgBkv6U=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GxND/fQ4aT5lhTbVzRR0FB+qLbWJIcNuxBGI/waUF9atYcA0lBLkjDA2500vt3ovXOKQeNgwUJSklFa8XQQdaKbDJgMu26WPY+4+PmEe3Kev3pdXBvOUwHT+n/aZ9Kd3bAB8NKt72m4wgNDdNJhvSQ5T67NuoUtcj95OPSIqL1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ewDSaNlD; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43CBKUed037054;
+	Fri, 12 Apr 2024 06:20:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712920830;
+	bh=d1maaB2MvaXISGJNrxbZnn4gNGefEUtmWWGu7P6XHCM=;
+	h=From:To:CC:Subject:Date;
+	b=ewDSaNlDoDqXfdndEYfzbyS+8lvkVR2i9yynPeElBk5WhU6BRAtAz5eyS3gx4i/ht
+	 f7TjDZbmAUJZTk3jMPVoQUNZCpCg0BYKKrhfhoNw5+klmQB9lBHbLe5W+yRYO3HSth
+	 3OfGQnaY9afbLWIcnV41N8oF9vI1eOap7H/AbhOc=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43CBKUsI020558
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 12 Apr 2024 06:20:30 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 12
+ Apr 2024 06:20:29 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 12 Apr 2024 06:20:29 -0500
+Received: from uda0510294.dhcp.ti.com (uda0510294.dhcp.ti.com [10.24.69.66])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43CBKQtL115252;
+	Fri, 12 Apr 2024 06:20:27 -0500
+From: Beleswar Padhi <b-padhi@ti.com>
+To: <nm@ti.com>
+CC: <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
+        <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <b-kapoor@ti.com>, <u-kumar1@ti.com>
+Subject: [PATCH v3] arm64: dts: ti: k3-j721e-sk: Add support for multiple CAN instances
+Date: Fri, 12 Apr 2024 16:50:25 +0530
+Message-ID: <20240412112025.201639-1-b-padhi@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+cts3s1576ejsO2H"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+CAN instance 0 in the mcu domain is brought on the J721E-SK board
+through header J1. Thus, add its respective transceiver 1 dt node to add
+support for this CAN instance.
 
---+cts3s1576ejsO2H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+CAN instances 0, 5 and 9 in the main domain are brought on the J721E-SK
+board through headers J5, J6 and J2 respectively. Thus, add their
+respective transceivers 2, 3 and 4 dt nodes to add support for these CAN
+instances.
 
-Support ROHM BD96801 "scalable" PMIC.
-
-The ROHM BD96801 is automotive grade PMIC, intended to be usable in
-multiple solutions. The BD96801 can be used as a stand-alone, or together
-with separate 'companion PMICs'. This modular approach aims to make this
-PMIC suitable for various use-cases.
-
-This is sent as an RFC because of the regulator features which can be
-configured only when the PMIC is in STBY state. This is described more
-detailed in the regulator patch.
-
-Another "oddity" is that the PMIC has two physical IRQ lines. When using
-regmap IRQ to create own IRQ controller instance for both HWIRQs, there
-will be a naming collison in debugfs for the IRQ domains. As a
-work-around the MFD driver uses
-irq_domain_update_bus_token(intb_domain, DOMAIN_BUS_WIRED);
-to append '-1' at the end of the domain name.
-
-Rest of the series ought to be business as usual.
-
-Revision history:
-RFCv1 =3D> RFCv2:
-	- Tidying code based on feedback form Krzysztof Kozlowski and
-	  Lee Jones.
-	- Documented undocumented watchdog related DT properties.
-	- Added usage of the watchdog IRQ.
-	- Use irq_domain_update_bus_token() to work-around debugFS name
-	  collision for IRQ domains.
-
+Signed-off-by: Beleswar Padhi <b-padhi@ti.com>
 ---
+Test logs: https://gist.github.com/3V3RYONE/2144fa883bf3a390981d25572971fcf3
 
-Matti Vaittinen (6):
-  dt-bindings: ROHM BD96801 PMIC regulators
-  dt-bindings: mfd: bd96801 PMIC core
-  mfd: support ROHM BD96801 PMIC core
-  regulator: bd96801: ROHM BD96801 PMIC regulators
-  watchdog: ROHM BD96801 PMIC WDG driver
-  MAINTAINERS: Add ROHM BD96801 'scalable PMIC' entries
+v3: Changelog:
+1) Updated board name in capital letters in commit message description
+2) Updated test logs to include communication between all applicable CAN
+instances
 
- .../bindings/mfd/rohm,bd96801-pmic.yaml       |  171 ++
- .../regulator/rohm,bd96801-regulator.yaml     |   69 +
- MAINTAINERS                                   |    4 +
- drivers/mfd/Kconfig                           |   13 +
- drivers/mfd/Makefile                          |    1 +
- drivers/mfd/rohm-bd96801.c                    |  476 ++++
- drivers/regulator/Kconfig                     |   12 +
- drivers/regulator/Makefile                    |    2 +
- drivers/regulator/bd96801-regulator.c         | 2114 +++++++++++++++++
- drivers/watchdog/Kconfig                      |   13 +
- drivers/watchdog/Makefile                     |    1 +
- drivers/watchdog/bd96801_wdt.c                |  389 +++
- include/linux/mfd/rohm-bd96801.h              |  211 ++
- include/linux/mfd/rohm-generic.h              |    1 +
- 14 files changed, 3477 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd96801-pmic=
-=2Eyaml
- create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd9680=
-1-regulator.yaml
- create mode 100644 drivers/mfd/rohm-bd96801.c
- create mode 100644 drivers/regulator/bd96801-regulator.c
- create mode 100644 drivers/watchdog/bd96801_wdt.c
- create mode 100644 include/linux/mfd/rohm-bd96801.h
+Link to v2:
+https://lore.kernel.org/linux-arm-kernel/20240325103405.182692-1-b-padhi@ti.com/
 
+v2: Changelog:
+1) Re-ordered status = "okay" property to the end of all applicable dt
+nodes following kernel documentation
 
-base-commit: 4cece764965020c22cff7665b18a012006359095
---=20
-2.43.2
+Link to v1:
+https://lore.kernel.org/linux-arm-kernel/20240315124728.490331-1-b-padhi@ti.com/
 
+ arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 116 +++++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
 
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+index 0c4575ad8d7c..7170f0220afd 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+@@ -210,6 +210,42 @@ vdd_sd_dv_alt: gpio-regulator-tps659411 {
+ 			 <3300000 0x1>;
+ 	};
+ 
++	transceiver1: can-phy0 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
++		standby-gpios = <&wkup_gpio0 3 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver2: can-phy1 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&main_mcan0_gpio_pins_default>;
++		standby-gpios = <&main_gpio0 65 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver3: can-phy2 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&main_mcan5_gpio_pins_default>;
++		standby-gpios = <&main_gpio0 66 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver4: can-phy3 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&main_mcan9_gpio_pins_default>;
++		standby-gpios = <&main_gpio0 67 GPIO_ACTIVE_HIGH>;
++	};
++
+ 	dp_pwr_3v3: fixedregulator-dp-prw {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "dp-pwr";
+@@ -367,6 +403,45 @@ J721E_IOPAD(0x164, PIN_OUTPUT, 7) /* (V29) RGMII5_TD2 */
+ 		>;
+ 	};
+ 
++	main_mcan0_pins_default: main-mcan0-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x208, PIN_INPUT, 0) /* (W5) MCAN0_RX */
++			J721E_IOPAD(0x20c, PIN_OUTPUT, 0) /* (W6) MCAN0_TX */
++		>;
++	};
++
++	main_mcan0_gpio_pins_default: main-mcan0-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x108, PIN_INPUT, 7) /* (AD27) PRG0_PRU1_GPO2.GPIO0_65 */
++		>;
++	};
++
++	main_mcan5_pins_default: main-mcan5-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x050, PIN_INPUT, 6) /* (AE21) PRG1_PRU0_GPO18.MCAN5_RX */
++			J721E_IOPAD(0x04c, PIN_OUTPUT, 6) /* (AJ21) PRG1_PRU0_GPO17.MCAN5_TX */
++		>;
++	};
++
++	main_mcan5_gpio_pins_default: main-mcan5-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x10c, PIN_INPUT, 7) /* (AC25) PRG0_PRU1_GPO3.GPIO0_66 */
++		>;
++	};
++
++	main_mcan9_pins_default: main-mcan9-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x0d0, PIN_INPUT, 6) /* (AC27) PRG0_PRU0_GPO8.MCAN9_RX */
++			J721E_IOPAD(0x0cc, PIN_OUTPUT, 6) /* (AC28) PRG0_PRU0_GPO7.MCAN9_TX */
++		>;
++	};
++
++	main_mcan9_gpio_pins_default: main-mcan9-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x110, PIN_INPUT, 7) /* (AD29) PRG0_PRU1_GPO4.GPIO0_67 */
++		>;
++	};
++
+ 	dp0_pins_default: dp0-default-pins {
+ 		pinctrl-single,pins = <
+ 			J721E_IOPAD(0x1c4, PIN_INPUT, 5) /* SPI0_CS1.DP0_HPD */
+@@ -555,6 +630,19 @@ J721E_WKUP_IOPAD(0xfc, PIN_INPUT_PULLUP, 0) /* (H24) WKUP_I2C0_SDA */
+ 		>;
+ 	};
+ 
++	mcu_mcan0_pins_default: mcu-mcan0-default-pins {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x0ac, PIN_INPUT, 0) /* (C29) MCU_MCAN0_RX */
++			J721E_WKUP_IOPAD(0x0a8, PIN_OUTPUT, 0) /* (D29) MCU_MCAN0_TX */
++		>;
++	};
++
++	mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x0bc, PIN_INPUT, 7) /* (F27) WKUP_GPIO0_3 */
++		>;
++	};
++
+ 	/* Reset for M.2 M Key slot on PCIe1  */
+ 	mkey_reset_pins_default: mkey-reset-pns-default-pins {
+ 		pinctrl-single,pins = <
+@@ -1108,6 +1196,34 @@ &pcie1_rc {
+ 	num-lanes = <2>;
+ };
+ 
++&mcu_mcan0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_mcan0_pins_default>;
++	phys = <&transceiver1>;
++	status = "okay";
++};
++
++&main_mcan0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan0_pins_default>;
++	phys = <&transceiver2>;
++	status = "okay";
++};
++
++&main_mcan5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan5_pins_default>;
++	phys = <&transceiver3>;
++	status = "okay";
++};
++
++&main_mcan9 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan9_pins_default>;
++	phys = <&transceiver4>;
++	status = "okay";
++};
++
+ &ufs_wrapper {
+ 	status = "disabled";
+ };
+-- 
+2.34.1
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---+cts3s1576ejsO2H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmYZGN4ACgkQeFA3/03a
-ocWYIwgAzLthY1mGUrJltIt+7dpeQeW5Wo09PluWsOgE8R6LFbeW2l+JKQa4d/oW
-EcV0LHwayFqavbkzcNkccWQgswv7CH6ujyAGGy+tOPh55JTFRHrF+d8bBEBRZAL6
-R3QdWzHToebZQQfUJS3ysMm/Now4v0YxbVRKx9y4fdWxBbDvZhZnxns0/A7wEBKU
-tOLO+IvIRXmwrL7hIxMkTJXzMIsGl4gn0XVoY1asEgiJlxiWiNK0xEIiJ5XYS7OD
-5LmYPCgCvVhcMa4oZCUqWN7u21TgzxB4smdGDAELJlSrlVIcAhCUJ6Olr0m5HDXx
-62nrmlBIKNu2OGaRXri/6OSPyFewww==
-=tRI6
------END PGP SIGNATURE-----
-
---+cts3s1576ejsO2H--
 
