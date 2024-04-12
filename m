@@ -1,120 +1,152 @@
-Return-Path: <linux-kernel+bounces-143333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E678A3754
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:53:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB9418A3750
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:53:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EDD21C21E8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:53:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1E4A1C20C23
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4297B14BF9B;
-	Fri, 12 Apr 2024 20:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCCC5478B;
+	Fri, 12 Apr 2024 20:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NrS0A2bL"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JOEhex0/"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0688817C7F;
-	Fri, 12 Apr 2024 20:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377F62F875
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712955213; cv=none; b=X51A8gf2ml0SaRINugpOUCwU3U0KXPyvn3IrxnlkJfNCoqZPxVVBqMldUIhtCGtpC5D4GefkOvDp1jEPXmRzifoYuWee5fET7HPNHBGRWFcI4fMxj+s8Iyu3kS0PzxJCimrbBnQc7RgZ4SRS1GDjFP7tt1mT9o3q041xWL1mutw=
+	t=1712955189; cv=none; b=K0Jaw1uZl+ZpUCrAe4EG8xXCpTKMkDXqCkDk3CwQo9ViFJFRXkdbXRDj0yj9zFewHXAaM/bbU5tlJKaCpI+MgF1+fc41+U7iT+WI8o+VsjHO2Ch+T3X/GDEec0xqp2MVmm2W7965sQSEXgAgY3vFotocjaE+pE2U5U96PCnRsDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712955213; c=relaxed/simple;
-	bh=gtXa1g8Diw8jhvbhoBh7settfSPef9KvqOllWKOXyXk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=mejmgUbyecRyDlpLHjxefo1QA8qpALpIXTz59XmVlqIQcg96a4LHsIzSe71iSNnZPsQQN6KOPFRLl8YI9FLtxemezcAlxfMdXXZmoI4Q0eP0MCKvUGEIjqKKEschpzeyE7VFArw6cX5hFqwa6rx5Sproxd1efyceDA8C0ZWr7MI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NrS0A2bL; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43CKTvuh002893;
-	Fri, 12 Apr 2024 20:53:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=HgJDa/2EwgakQCDAhk1JenjRlC2wN9yg1hRDEABckvY=; b=Nr
-	S0A2bL0sek98H41TF0941WBLNT3tvWmfofmy3d9Jcx/srTi7/WcjymTS0S14e8RC
-	Zq244J8TXEC+ANlFlpg/KXTjwXNf1plhYGEL4Vzmq3w2g9q8yC76MAgYv9zO4hyt
-	53aCp9iap5FZpTmwILT4PDh4+/YpF6xr35O236D2tcdyQSxVCGKOyQ1YscJMaTO4
-	kGMq2DaXCZLBkAbIiBkdBJ6tloi84bTepA6mDFFNLNhklUWZZAaQU/q3oVevijO0
-	brFSJSSpCkOWFfEUc/ycMrv8Ujasu9x1fXz71swD3grV3QljrVC1Bgd+I/EAdKeg
-	jnuoQIutiLX1OET8C8kQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xf9x6rjuw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 20:53:06 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43CKr5D0021876
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 20:53:05 GMT
-Received: from [10.110.37.144] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 12 Apr
- 2024 13:53:04 -0700
-Message-ID: <c7106c8e-0c99-4160-966e-b1a8ba5770ee@quicinc.com>
-Date: Fri, 12 Apr 2024 13:53:02 -0700
+	s=arc-20240116; t=1712955189; c=relaxed/simple;
+	bh=qGcc/rgVjEIkz41rcNhQCOoE29RUhq2mJkMJFN2mQyQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AmbxgWgcI7cQdcGo1TpJMRjmtNReK51uHEhUS+dShKYKhs0j6qYVnw7upL9Ok8YGCiOqzgmq5nUIAa+v2GImpPLeqFLsEQS1NdJWt+aTftB+HmAOK6O6Fav6hWnJ/uQSt4sm8MmFmuGQifnyOahogDGaLkK9GDzfDhX+g/JHuys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JOEhex0/; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so1272671b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:53:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712955188; x=1713559988; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kuI1xDSDY3wZqRxOoGKgeFXQbOBRCo2OPPgj3TfcWU4=;
+        b=JOEhex0/s/ow7z4CMqiadcfhvIHg0Uxi1d5Z7kkTTfVP76DW/9/u5zWsbmxg16pHAQ
+         dh3M0+xNPwCAXJPUZEp49nhrMIrqSKRfh6YvAnQ4ox9f24RzckPEO/mI2RCOcZxTjGeW
+         qZ1OhXi92XV+ThrCYM23ZigHzGsDY/NTB/6/3Yp2rEwZSYK0t4ImGWxjSIId0ZpwvcNf
+         EGxxoCHdekz6IxC/V/QZLvv68+JCmP88cxt6ftcnJPWm/LI9QixucKkf9u6NtYlkxkiz
+         oHiHNLBrxrvyII4YMOn3hZqbaF79PN64gqTN+K06a9UgnxJLcycQMxoOPI2d27eS9Szy
+         rKPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712955188; x=1713559988;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kuI1xDSDY3wZqRxOoGKgeFXQbOBRCo2OPPgj3TfcWU4=;
+        b=Lc2HdwMMiBB52tNsWhfVQkBJCu1naZCwYqKBZesEqG58jZ3OhHVuExHTZ9LeY3TKdN
+         ejEVvWLHWSxh1e40nfTzq2CRDDquLpJVAfCSz7PbtL7nuthVIJjnB2Pc7nVrRWOHZ441
+         VUlc8dlKjKB4ZqlBdyJ/4hLQB8fuTKYVvkl8pe4DXuMSoZ3rAS8CYdFN3HJx+4cJuODP
+         TDECvRy1MrU2ubGhO6bLNtG0wkAG4m11z5UXQlyCMIKTCSofF0KPN8DHAxmD8N+VqOMy
+         SeiQUfA9nJHzF5RT+XOH3ox7nFhWmZfLuD1aDLo8xpjFSKJOygtm7t/nfJBKqjdHzKlx
+         0Uvg==
+X-Forwarded-Encrypted: i=1; AJvYcCW0zd5HgfgGsynYvWLuPjXt7JxyvFt3ZzOFof62HR9MnN+7TvEE7hMvO0k/2yk2WQJ2T0235p7wioGvn8Juv4Gj2xX7z8IaNIgAvJYN
+X-Gm-Message-State: AOJu0YxRKckqvL7+jtOkAxib8QpP8WQj6RhJ6JWg4izl3znn3HGwjYz6
+	KyRv66FRgeXo+0FPcBlhuM1mfYHG48gzXe1VQfDjfMBRvGMCM8ya3je7MYOg0c4=
+X-Google-Smtp-Source: AGHT+IHrp3HzycZe7Jfb+XseUZGp1zZGIQ3nFRwoibOMYKPLe2QkUbH6yPsYO0522TOlVaFgwYmSxw==
+X-Received: by 2002:a05:6a00:1798:b0:6ea:bdbc:6a4 with SMTP id s24-20020a056a00179800b006eabdbc06a4mr4030047pfg.13.1712955187671;
+        Fri, 12 Apr 2024 13:53:07 -0700 (PDT)
+Received: from ghost ([50.145.13.30])
+        by smtp.gmail.com with ESMTPSA id j16-20020a62b610000000b006ecceed26bfsm3264351pff.219.2024.04.12.13.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 13:53:07 -0700 (PDT)
+Date: Fri, 12 Apr 2024 13:53:03 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 12/19] riscv: Create xtheadvector file
+Message-ID: <ZhmfL4Nutu8s4SMF@ghost>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-12-4af9815ec746@rivosinc.com>
+ <20240412-thirty-sacrament-db052c7fe6fe@wendy>
+ <Zhl8Y+GzTB/ip7rT@ghost>
+ <20240412-displease-sensually-33d91fc3fe63@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] wifi: ath11k: support DT ieee80211-freq-limit
- property to limit channels
-Content-Language: en-US
-To: Christian Lamparter <christian.lamparter@isd.uni-stuttgart.de>,
-        Robert
- Marko <robimarko@gmail.com>, <kvalo@kernel.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <jjohnson@kernel.org>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <ath11k@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240412162510.29483-1-robimarko@gmail.com>
- <20240412162510.29483-2-robimarko@gmail.com>
- <4a1e0cb6-c319-4eb1-9bd1-5ff13eabfe1b@isd.uni-stuttgart.de>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <4a1e0cb6-c319-4eb1-9bd1-5ff13eabfe1b@isd.uni-stuttgart.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: oKEhJCcr9ogoabfdMqA007OIM4biwoUC
-X-Proofpoint-GUID: oKEhJCcr9ogoabfdMqA007OIM4biwoUC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-12_17,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=784 spamscore=0
- phishscore=0 bulkscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- clxscore=1011 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404120149
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412-displease-sensually-33d91fc3fe63@spud>
 
-On 4/12/2024 12:52 PM, Christian Lamparter wrote:
-> On 4/12/24 6:24 PM, Robert Marko wrote:
->> The common DT property can be used to limit the available channels
->> but ath11k has to manually call wiphy_read_of_freq_limits().
->>
->> Signed-off-by: Robert Marko <robimarko@gmail.com>
+On Fri, Apr 12, 2024 at 08:00:46PM +0100, Conor Dooley wrote:
+> On Fri, Apr 12, 2024 at 11:24:35AM -0700, Charlie Jenkins wrote:
+> > On Fri, Apr 12, 2024 at 12:30:32PM +0100, Conor Dooley wrote:
+> > > On Thu, Apr 11, 2024 at 09:11:18PM -0700, Charlie Jenkins wrote:
+> > > > These definitions didn't fit anywhere nicely, so create a new file to
+> > > > house various xtheadvector instruction encodings.
+> > > > 
+> > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/xtheadvector.h | 25 +++++++++++++++++++++++++
+> > > >  1 file changed, 25 insertions(+)
+> > > > 
+> > > > diff --git a/arch/riscv/include/asm/xtheadvector.h b/arch/riscv/include/asm/xtheadvector.h
+> > > > new file mode 100644
+> > > > index 000000000000..348263ea164c
+> > > > --- /dev/null
+> > > > +++ b/arch/riscv/include/asm/xtheadvector.h
+> > > > @@ -0,0 +1,25 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > > +
+> > > > +/*
+> > > > + * Vector 0.7.1 as used for example on T-Head Xuantie cores, uses an older
+> > > > + * encoding for vsetvli (ta, ma vs. d1), so provide an instruction for
+> > > > + * vsetvli	t4, x0, e8, m8, d1
+> > > > + */
+> > > > +#define THEAD_VSETVLI_T4X0E8M8D1	".long	0x00307ed7\n\t"
+> > > > +#define THEAD_VSETVLI_X0X0E8M8D1	".long	0x00307057\n\t"
+> > > > +
+> > > > +/*
+> > > > + * While in theory, the vector-0.7.1 vsb.v and vlb.v result in the same
+> > > > + * encoding as the standard vse8.v and vle8.v, compilers seem to optimize
+> > > > + * the call resulting in a different encoding and then using a value for
+> > > > + * the "mop" field that is not part of vector-0.7.1
+> > > > + * So encode specific variants for vstate_save and _restore.
+> > > 
+> > > This wording seems oddly familiar to me, did Heiko not write this?
+> > 
+> > Yeah, I wasn't sure how to attribute him. He wrote almost all of the
+> > lines in this file, but I put it together into this file. What is the
+> > standard way of doing that?
 > 
-> I've seen this before.
-> 
-> https://patchwork.kernel.org/project/linux-wireless/patch/ed266944c721de8dbf0fe35f387a3a71b2c84037.1686486468.git.chunkeey@gmail.com/
-> 
-> (dt-binding too. it has/had an ack)
-> https://patchwork.kernel.org/project/linux-wireless/patch/fc606d2550d047a53b4289235dd3c0fe23d5daac.1686486468.git.chunkeey@gmail.com/
-> 
-> sooo.... this is awkward.
+> The original patches have his sob and authorship, so I would at least
+> expect co-developed-by.
 
-Patchwork indicates Changes Requested
-Any idea what changes Kalle is looking for?
+Perfect, thank you for pointing me in the right direction.
+
+- Charlie
 
 
