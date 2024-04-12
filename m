@@ -1,84 +1,78 @@
-Return-Path: <linux-kernel+bounces-142154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C98C48A282D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:34:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF8728A282C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:34:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 691B71F24279
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:34:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C2011C23C58
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71EC4CDEC;
-	Fri, 12 Apr 2024 07:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ivea1Bws"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22BB4D9F0;
+	Fri, 12 Apr 2024 07:34:03 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0355236AEF;
-	Fri, 12 Apr 2024 07:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFFD22C683;
+	Fri, 12 Apr 2024 07:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712907257; cv=none; b=hdgaqUsVO6aIdG3adrEjdfff4VSh0qm344oZhSn/CucsTsioCSjkjOpSD7YDGjBe+2lWC+v6EvQ68s2upGUdq3R/QPHQpGdUgmacS7IEaOQyjepRb5CRSc45K7ofMuEXUjhjx78jxXwXeYb7PfUAO6SFNUPWgIkEl+FY3da/4fQ=
+	t=1712907243; cv=none; b=i1HYxDtkrwku6CRdhPKCyANpfCciw2lLONnvm9IhfOVZY+Dw2ndTI9k7SDbq+IhghYz+cAa73Up5sObmiIqkHV+WO7E6+k2ei/haGfMiXWKY1YtS29X2rZeIzQVhVhvh2ls9RkE0Z9q669flqiuj7N+uKu3fvLoG5C0gtPuA7b4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712907257; c=relaxed/simple;
-	bh=w1lIadg9vFyCZlOc49Hriwu+EbwJmqXkOFt9/Hp73YE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=s1AMtsbEMakAwT2+59PGKUyHiZHuWeJf/6NX/dJVInNwPutOTgJsTE+1pFpXGKkP+v0cMQVakY/u0dveknOldAJsMpzb9JhD/0nM8sxDOecEq03dINvecib1qLMqk5gQGsdW516DbfdOctQ2X0bXZmn9KhxlJHyOBaeKPv3Jq8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ivea1Bws; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFB9DC2BD10;
-	Fri, 12 Apr 2024 07:34:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712907256;
-	bh=w1lIadg9vFyCZlOc49Hriwu+EbwJmqXkOFt9/Hp73YE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Ivea1BwsvjvOeUz3ESVhOaiEgwlkfMRBYZ+FZNW8C/LqlTjTuVJy6SFOBxzGLf7Xw
-	 JL6+V1PuzfqkTwMqBcve7o47UiGRL+wvHFuM+tiW9x81Xnf/1HOGKwFBud5v+QOtcz
-	 7V3wTh0l6DC/rmn6UUQsl5saMkG1aPwx501vrvzuftYMeLSX1EcYhpQl6Oi4qvJE5W
-	 HXBDV3FskKNQWiWQAx2c4/sbqaHsnA/tLkCzST9guZhuWrR6ecX1OA2r/Ct/Nhdh5i
-	 QAGIpy5DaPWPr90MN12pOtqYzaf0OSMKL4kmsOdqxbnwwer/L29Fx6ew9i6BEZjWBb
-	 /h+yLMvuvV2IQ==
-From: Lee Jones <lee@kernel.org>
-To: Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>, 
- Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>, 
- Lee Jones <lee@kernel.org>, linux-fpga@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Peter Colberg <peter.colberg@intel.com>
-Cc: Russ Weight <russ.weight@linux.dev>, Marco Pagani <marpagan@redhat.com>, 
- Matthew Gerlach <matthew.gerlach@linux.intel.com>, 
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
- Russ Weight <russell.h.weight@intel.com>
-In-Reply-To: <20240402184925.1065932-1-peter.colberg@intel.com>
-References: <20240402184925.1065932-1-peter.colberg@intel.com>
-Subject: Re: (subset) [PATCH v2] mfd: intel-m10-bmc: Change staging size to
- a variable
-Message-Id: <171290725366.2913077.13035135180909218343.b4-ty@kernel.org>
-Date: Fri, 12 Apr 2024 08:34:13 +0100
+	s=arc-20240116; t=1712907243; c=relaxed/simple;
+	bh=GNZf4ZMmtPLFmZQP81XNKQV7onvRSXivTLOXU1L2RDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Konsr5N00Z3hapi9ldGlVAlOrVw9AzC6otxkvr/QtGDrEBuAzA6N9ado2uqWFOW3EdtGj/qn1NW9NcqD5NZC9e2U9012lsv9czritj+9FbGdB9E8eGshIUM9A/fRLHTOao0/KkAyZm7D6jHxW2+DDtwYR6ilVQWgC1WKXpQ9gD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rvBQ5-000lxK-JK; Fri, 12 Apr 2024 15:33:58 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 12 Apr 2024 15:34:15 +0800
+Date: Fri, 12 Apr 2024 15:34:15 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, ardb@kernel.org, luto@kernel.org,
+	chang.seok.bae@intel.com
+Subject: Re: [PATCH] crypto: x86/aes-xts - make non-AVX implementation use
+ new glue code
+Message-ID: <Zhjj97HevVmll+gz@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240407212231.41781-1-ebiggers@kernel.org>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
 
-On Tue, 02 Apr 2024 14:49:25 -0400, Peter Colberg wrote:
-> The secure update driver does a sanity-check of the image size in
-> comparison to the size of the staging area in FLASH. Instead of
-> hard-wiring M10BMC_STAGING_SIZE, move the staging size to the
-> m10bmc_csr_map structure to make the size assignment more flexible.
+Eric Biggers <ebiggers@kernel.org> wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
+> Make the non-AVX implementation of AES-XTS (xts-aes-aesni) use the new
+> glue code that was introduced for the AVX implementations of AES-XTS.
+> This reduces code size, and it improves the performance of xts-aes-aesni
+> due to the optimization for messages that don't span page boundaries.
 > 
+> This required moving the new glue functions higher up in the file and
+> allowing the IV encryption function to be specified by the caller.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+> arch/x86/crypto/aes-xts-avx-x86_64.S |   2 +-
+> arch/x86/crypto/aesni-intel_asm.S    |  16 +-
+> arch/x86/crypto/aesni-intel_glue.c   | 317 +++++++++++----------------
+> 3 files changed, 132 insertions(+), 203 deletions(-)
 
-Applied, thanks!
-
-[1/1] mfd: intel-m10-bmc: Change staging size to a variable
-      commit: 770bb9cf4e857ac76f0671309cec689d2a3a4b46
-
---
-Lee Jones [李琼斯]
-
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
