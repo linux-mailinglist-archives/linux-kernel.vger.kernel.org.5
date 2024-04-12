@@ -1,235 +1,171 @@
-Return-Path: <linux-kernel+bounces-143116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 587048A347D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:09:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 961C28A3484
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:12:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CCC82844B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B96081C23E93
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C0E14C584;
-	Fri, 12 Apr 2024 17:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA48514D29A;
+	Fri, 12 Apr 2024 17:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r3Z0ASd1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="D+RLPQOu"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C063148313;
-	Fri, 12 Apr 2024 17:09:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96A1414B065
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941757; cv=none; b=SloBFHao6cAQk6HKVdu0VA4LgoQvbZa7alpqPz+Um1/M8hioWrPNDPf3g0am+HmTI68BXiMSNl/xIqdvIXgD/sXeknqVzzmDgLtCZ+OwU4h0wY694oT+YBMt09DOq3q4l4ryKC2ri1fYq+shohtvEGbcMQWyfPnZZXx+16pWwts=
+	t=1712941946; cv=none; b=UNWfOfJu3ELjdqzNwoZ5KV5sxb4872rJRpHkh6gsMx8mDhRPcUpH0TDBYU+XmQt1OpdOlQAhHsY6ig772YgYtwOwUMqZS4AndxHYUuEahw/RfwbLLnAfzB3Lyr70e6yQ4yTtJFNIoVgDoYZZy9mN6HONjD3zo1YFhWcbe+ajUx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712941757; c=relaxed/simple;
-	bh=rODVTp50yYh7uHyWLRmbneyBP6EM4zG3s6ciF0ijsFM=;
+	s=arc-20240116; t=1712941946; c=relaxed/simple;
+	bh=zqFAuUa4RtTLPiQXk/lFHSFz6oHcmMCx6C1nVyRW8AM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J8I1svBbqgcSP36TyMuNCdbACPjhTHTl9ZGbj1zcqckAWeFEfmgqcDNlyycVGCqX7XLSF1RW7DVZshRz+savlRCLOM3sDMA/ievzJb2CHXRhplK/qnQEdFgxXldmffu4I1sEllsfvM9j7o/3Fdkh3CytSWzwRvUai1Nnyn6DIMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r3Z0ASd1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C47C113CC;
-	Fri, 12 Apr 2024 17:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712941757;
-	bh=rODVTp50yYh7uHyWLRmbneyBP6EM4zG3s6ciF0ijsFM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r3Z0ASd1Vbz2BCHg856p6HeTst7bRy6ZsqyXB2MPPhztelw89YGgJdwfb26UO9PhP
-	 v64xiouHlIWYFFTKKQykYPSLp1P1f0BAZlFKZlJQkEGWV/srZcakZ5Bm6r2Dv2Or3A
-	 5TeD7cKC3+MU5LlBPYJcWBGYP7BzIjIfvPQZi4BobvEXrbzZwXZwL0sfzRRZbq398T
-	 0GyMAPOjmDLEJeUtaeFaYWK8gMO+4FTZ1okPz0kxmghQ1evPREBo9eo2nAoqErVAP0
-	 e+C7x0hi1ITEnrgSS3YkxeV4sYEiGFlbxDZCfPm9Y/7gby+EhiXmiV+j8veUiFaVBz
-	 PjpmnUwVJALzQ==
-Date: Fri, 12 Apr 2024 22:39:10 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Cc: Qiang Yu <quic_qianyu@quicinc.com>, mani@kernel.org,
-	mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-	quic_mrana@quicinc.com
-Subject: Re: [PATCH v2 2/2] bus: mhi: host: pci_generic: Add edl callback to
- enter EDL
-Message-ID: <20240412170910.GA21555@thinkpad>
-References: <1712805329-46158-1-git-send-email-quic_qianyu@quicinc.com>
- <1712805329-46158-3-git-send-email-quic_qianyu@quicinc.com>
- <78de32be-7e3b-e7e9-61f3-9679993dbe71@quicinc.com>
- <a901549e-c3ec-47b5-9523-a6342eca455f@quicinc.com>
- <95ee53a5-e261-9106-1104-09077e348a99@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VlbTEsGjkXPcNX44Q5PX4rru4N+tei5tJI8TBg2emWZKZ/1NObsfxWX6GlyhofCOUZZ7TJIOB89SxwmlJGQwaD5iVPd3JlzsN6VImCkfjMMoLNoU4M8wIJRv3zNQn3QigbFln0UQKzsu+RiAsIg65GGaH2TdMUUBmGLHYeMC4TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=D+RLPQOu; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso849949a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:12:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712941943; x=1713546743; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V6RQsJgA0sqhyVb4iUdwKlWBxVZP7PvFbdqSmnVezOg=;
+        b=D+RLPQOuO59Frl872Dq1M1BXp+H6DMxSrUpYFhphqoStzdMR5F5CmS+v7VjCYYBFk9
+         VyxPjF2P2a1sfW38Msxs07wCvPIk2OrtWZgnAsOywGWA3zUK9yUwUDtvhnE/C/mBYoR0
+         3a84ssdOeskMF336DP4192GCjKJfsIckDwa0AMlqoR1t/B1NK6oewhuFNNL7FsK4nhuS
+         /1yWKDVCK68KPbJyV6Aduv9vOwdsH2s11d3Oqhj42xAmT4gl2Di5xiRfsPjFvNi2Dkcw
+         dT9j3BRnG98HpCXMy7mPTICPjclKHObbjsaoZlVL20yrmIJIWgErGX0eAuoTxXaWQj8T
+         Klrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712941943; x=1713546743;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V6RQsJgA0sqhyVb4iUdwKlWBxVZP7PvFbdqSmnVezOg=;
+        b=Dk4yt0nFG03lUR59I1IbJ+OTBE6EnfH2fnyoEKSvg5F9Mn9nTZCbshjP0TqzQ77Klw
+         eUs0P8KHsDKnT0cIhWx1ZL2W2o/GW0angoQJioCoRGKiqtaF85lLyOND3Qe0xraiMTsm
+         N6fw/wCuOZ3/bXiBPbREWhE5hgqgbrUCJiZN2zMcWVtLq1PR8khpCjGGWyhCARyU6fh1
+         57UsrrV2hNlzVAkiZimLrq3ro+D0QEQ54YiSoq2Gb9wZTJH2jLl7eizpJNHggkndaM9n
+         +AFDEBARoeJHfVtDKgkI042+/hFJRyLLCAU+k08w92zim8hscRvU7ORX0yHZmsEUlKJD
+         xCaw==
+X-Forwarded-Encrypted: i=1; AJvYcCVaI8BTVaQG71AwQWcTXHgBojdQ8kP+0w20Xo1wkBeNfQQwwQCUsIY4xZ7eeO6Gi09Y5c928hxPJeXsHgoFL2DMgk4FqlFcFePmmnMP
+X-Gm-Message-State: AOJu0YywuLwBi5QCrYlRw0XJTYseZGdozN3gWgjVSO2xjyd7oSRjUKtg
+	R+RPN1XGy/idzx7/E0KdSNYCdcg0tmHrzJVxMkLfeLjB0aMYEZIiyXqL5KTBsb8=
+X-Google-Smtp-Source: AGHT+IGENLLg9Nrtb+afnnQbyAqzrlHIs52avdhanWUzgTqUmFBmisUUxHkztjDQR67LUvfCdWQBaQ==
+X-Received: by 2002:a05:6a20:550a:b0:1a9:4343:765f with SMTP id ko10-20020a056a20550a00b001a94343765fmr3511412pzb.23.1712941942911;
+        Fri, 12 Apr 2024 10:12:22 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:121b:da6b:94f1:304])
+        by smtp.gmail.com with ESMTPSA id u4-20020aa78484000000b006ed59179b14sm3114754pfn.83.2024.04.12.10.12.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 10:12:22 -0700 (PDT)
+Date: Fri, 12 Apr 2024 10:12:20 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 02/19] riscv: cpufeature: Fix thead vector hwcap removal
+Message-ID: <ZhlrdGXfSushUNTp@ghost>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-2-4af9815ec746@rivosinc.com>
+ <20240412-tuesday-resident-d9d07e75463c@wendy>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <95ee53a5-e261-9106-1104-09077e348a99@quicinc.com>
+In-Reply-To: <20240412-tuesday-resident-d9d07e75463c@wendy>
 
-On Fri, Apr 12, 2024 at 08:16:52AM -0600, Jeffrey Hugo wrote:
-> On 4/12/2024 1:13 AM, Qiang Yu wrote:
+On Fri, Apr 12, 2024 at 11:25:47AM +0100, Conor Dooley wrote:
+> On Thu, Apr 11, 2024 at 09:11:08PM -0700, Charlie Jenkins wrote:
+> > The riscv_cpuinfo struct that contains mvendorid and marchid is not
+> > populated until all harts are booted which happens after the DT parsing.
+> > Use the vendorid/archid values from the DT if available or assume all
+> > harts have the same values as the boot hart as a fallback.
 > > 
-> > On 4/11/2024 10:46 PM, Jeffrey Hugo wrote:
-> > > On 4/10/2024 9:15 PM, Qiang Yu wrote:
-> > > > Add mhi_pci_generic_edl_trigger as edl_trigger for some devices
-> > > > (eg. SDX65)
-> > > > to enter EDL mode by writing the 0xEDEDEDED cookie to the channel 91
-> > > > doorbell register and forcing an SOC reset afterwards.
-> > > > 
-> > > > Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> > > > ---
-> > > >   drivers/bus/mhi/host/pci_generic.c | 50
-> > > > ++++++++++++++++++++++++++++++++++++++
-> > > >   1 file changed, 50 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/bus/mhi/host/pci_generic.c
-> > > > b/drivers/bus/mhi/host/pci_generic.c
-> > > > index 51639bf..a529815 100644
-> > > > --- a/drivers/bus/mhi/host/pci_generic.c
-> > > > +++ b/drivers/bus/mhi/host/pci_generic.c
-> > > > @@ -27,12 +27,23 @@
-> > > >   #define PCI_VENDOR_ID_THALES    0x1269
-> > > >   #define PCI_VENDOR_ID_QUECTEL    0x1eac
-> > > >   +#define MHI_EDL_DB            91
-> > > > +#define MHI_EDL_COOKIE            0xEDEDEDED
-> > > > +
-> > > > +/* Device can enter EDL by first setting edl cookie then
-> > > > issuing inband reset*/
-> > > > +#define MHI_PCI_GENERIC_EDL_TRIGGER    BIT(0)
-> > > > +
-> > > > +#define CHDBOFF            0x18
-> > > 
-> > > This is already in drivers/bus/mhi/common.h why duplicate it here?
-> > 
-> > I only see common.h be included in ep/internal.h host/internal.h and
-> > host/trace.h. So I thought it can only be used by MHI stack. Can we
-> > include common.h in pci_generic.c?
+> > Fixes: d82f32202e0d ("RISC-V: Ignore V from the riscv,isa DT property on older T-Head CPUs")
 > 
-> Up to Mani, but duplicating the definition seems like it would result in
-> maintence overhead over time.  An alternative to including the header might
-> be a new API between MHI and controller which allow the setting of a CHDB to
-> a specific value.
+> If this is our only use case for getting the mvendorid/marchid stuff
+> from dt, then I don't think we should add it. None of the devicetrees
+> that the commit you're fixing here addresses will have these properties
+> and if they did have them, they'd then also be new enough to hopefully
+> not have "v" either - the issue is they're using whatever crap the
+> vendor shipped.
+
+Yes, the DT those shipped with will not have the property in the DT so
+will fall back on the boot hart. The addition of the DT properties allow
+future heterogenous systems to be able to function.
+
+> If we're gonna get the information from DT, we already have something
+> that we can look at to perform the disable as the cpu compatibles give
+> us enough information to make the decision.
 > 
+> I also think that we could just cache the boot CPU's marchid/mvendorid,
+> since we already have to look at it in riscv_fill_cpu_mfr_info(), avoid
+> repeating these ecalls on all systems.
 
-+1 to the new API suggestion.
+Yeah that is a minor optimization that can I can apply.
 
-- Mani
-
-> > > 
-> > > > +#define CHDBOFF_CHDBOFF_MASK 0xFFFFFFFF
-> > > > +#define CHDBOFF_CHDBOFF_SHIFT    0
-> > > > +
-> > > >   /**
-> > > >    * struct mhi_pci_dev_info - MHI PCI device specific information
-> > > >    * @config: MHI controller configuration
-> > > >    * @name: name of the PCI module
-> > > >    * @fw: firmware path (if any)
-> > > >    * @edl: emergency download mode firmware path (if any)
-> > > > + * @edl_trigger: each bit represents a different way to enter EDL
-> > > >    * @bar_num: PCI base address register to use for MHI MMIO
-> > > > register space
-> > > >    * @dma_data_width: DMA transfer word size (32 or 64 bits)
-> > > >    * @mru_default: default MRU size for MBIM network packets
-> > > > @@ -44,6 +55,7 @@ struct mhi_pci_dev_info {
-> > > >       const char *name;
-> > > >       const char *fw;
-> > > >       const char *edl;
-> > > > +    unsigned int edl_trigger;
-> > > >       unsigned int bar_num;
-> > > >       unsigned int dma_data_width;
-> > > >       unsigned int mru_default;
-> > > > @@ -292,6 +304,7 @@ static const struct mhi_pci_dev_info
-> > > > mhi_qcom_sdx75_info = {
-> > > >       .name = "qcom-sdx75m",
-> > > >       .fw = "qcom/sdx75m/xbl.elf",
-> > > >       .edl = "qcom/sdx75m/edl.mbn",
-> > > > +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
-> > > >       .config = &modem_qcom_v2_mhiv_config,
-> > > >       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> > > >       .dma_data_width = 32,
-> > > > @@ -302,6 +315,7 @@ static const struct mhi_pci_dev_info
-> > > > mhi_qcom_sdx65_info = {
-> > > >       .name = "qcom-sdx65m",
-> > > >       .fw = "qcom/sdx65m/xbl.elf",
-> > > >       .edl = "qcom/sdx65m/edl.mbn",
-> > > > +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
-> > > >       .config = &modem_qcom_v1_mhiv_config,
-> > > >       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> > > >       .dma_data_width = 32,
-> > > > @@ -312,6 +326,7 @@ static const struct mhi_pci_dev_info
-> > > > mhi_qcom_sdx55_info = {
-> > > >       .name = "qcom-sdx55m",
-> > > >       .fw = "qcom/sdx55m/sbl1.mbn",
-> > > >       .edl = "qcom/sdx55m/edl.mbn",
-> > > > +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
-> > > >       .config = &modem_qcom_v1_mhiv_config,
-> > > >       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> > > >       .dma_data_width = 32,
-> > > > @@ -928,6 +943,38 @@ static void health_check(struct timer_list *t)
-> > > >       mod_timer(&mhi_pdev->health_check_timer, jiffies +
-> > > > HEALTH_CHECK_PERIOD);
-> > > >   }
-> > > >   +static int mhi_pci_generic_edl_trigger(struct mhi_controller
-> > > > *mhi_cntrl)
-> > > > +{
-> > > > +    int ret;
-> > > > +    u32 val;
-> > > > +    void __iomem *edl_db;
-> > > > +    void __iomem *base = mhi_cntrl->regs;
-> > > 
-> > > It looks like this file follows reverse christmas tree, but this
-> > > function does not. you should fix it.
-> > 
-> > Will fix it in next version patch.
-> > > 
-> > > > +
-> > > > +    ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
-> > > > +    if (ret) {
-> > > > +        dev_err(mhi_cntrl->cntrl_dev, "Wake up device fail
-> > > > before trigger EDL\n");
-> > > > +        return ret;
-> > > > +    }
-> > > > +
-> > > > +    pm_wakeup_event(&mhi_cntrl->mhi_dev->dev, 0);
-> > > > +    mhi_cntrl->runtime_get(mhi_cntrl);
-> > > > +
-> > > > +    mhi_cntrl->read_reg(mhi_cntrl, base + CHDBOFF, &val);
-> > > > +    val = (val & CHDBOFF_CHDBOFF_MASK) >> CHDBOFF_CHDBOFF_SHIFT;
-> > > > +
-> > > > +    edl_db = base + val + (8 * MHI_EDL_DB);
-> > > > +
-> > > > +    mhi_cntrl->write_reg(mhi_cntrl, edl_db + 4,
-> > > > upper_32_bits(MHI_EDL_COOKIE));
-> > > > +    mhi_cntrl->write_reg(mhi_cntrl, edl_db,
-> > > > lower_32_bits(MHI_EDL_COOKIE));
-> > > > +
-> > > > +    mhi_soc_reset(mhi_cntrl);
-> > > > +
-> > > > +    mhi_cntrl->runtime_put(mhi_cntrl);
-> > > > +    mhi_device_put(mhi_cntrl->mhi_dev);
-> > > > +
-> > > > +    return 0;
-> > > > +}
-> > > > +
-> > > >   static int mhi_pci_probe(struct pci_dev *pdev, const struct
-> > > > pci_device_id *id)
-> > > >   {
-> > > >       const struct mhi_pci_dev_info *info = (struct
-> > > > mhi_pci_dev_info *) id->driver_data;
-> > > > @@ -962,6 +1009,9 @@ static int mhi_pci_probe(struct pci_dev
-> > > > *pdev, const struct pci_device_id *id)
-> > > >       mhi_cntrl->runtime_put = mhi_pci_runtime_put;
-> > > >       mhi_cntrl->mru = info->mru_default;
-> > > >   +    if (info->edl_trigger & MHI_PCI_GENERIC_EDL_TRIGGER)
-> > > > +        mhi_cntrl->edl_trigger = mhi_pci_generic_edl_trigger;
-> > > > +
-> > > >       if (info->sideband_wake) {
-> > > >           mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-> > > >           mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-> > > 
 > 
+> Perhaps for now we could just look at the boot CPU alone? To my
+> knowledge the systems that this targets all have homogeneous
+> marchid/mvendorid values of 0x0.
+
+They have an mvendorid of 0x5b7.
+
+This is already falling back on the boot CPU, but that is not a solution
+that scales. Even though all systems currently have homogenous
+marchid/mvendorid I am hesitant to assert that all systems are
+homogenous without providing an option to override this. The overhead is
+looking for a field in the DT which does not seem to be impactful enough
+to prevent the addition of this option.
+
+> 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> 
+> > @@ -514,12 +521,23 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
+> >  				pr_warn("Unable to find \"riscv,isa\" devicetree entry\n");
+> >  				continue;
+> >  			}
+> > +			if (of_property_read_u64(node, "riscv,vendorid", &this_vendorid) < 0) {
+> > +				pr_warn("Unable to find \"riscv,vendorid\" devicetree entry, using boot hart mvendorid instead\n");
+> 
+> This should 100% not be a warning, it's not a required property in the
+> binding.
+
+Yes definitely, thank you.
+
+- Charlie
+
+> 
+> Cheers,
+> Conor.
+> 
+> > +				this_vendorid = boot_vendorid;
+> > +			}
 > 
 
--- 
-மணிவண்ணன் சதாசிவம்
+
 
