@@ -1,90 +1,106 @@
-Return-Path: <linux-kernel+bounces-143270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B7F8A3679
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:47:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8EC48A367D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:48:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33359286F3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:47:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 059B41C21C2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:48:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F023C150993;
-	Fri, 12 Apr 2024 19:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06EF2150980;
+	Fri, 12 Apr 2024 19:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GahFOO0K"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rol3UFQd";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+wva99r1"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C873446BD;
-	Fri, 12 Apr 2024 19:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9FC405FD
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712951232; cv=none; b=VcO4H6zgZxrxba9AHVY45ANND+WQhhAfqSqXpIz7fGMfJsyu0NftT62UxDEDuFmrU9p+Ng+a0S1+Wjf/QTcGC4vQaRhOigFZEMv+vM5Mhi+ekMi5uFDxMgFhR1LYPug9ljfF1kqjt/fnNG9CmuwFvMwc98NCnSqxmm9JSu5zvwA=
+	t=1712951307; cv=none; b=FDKP3INAAioAKn4zG7v8ywBYRY/5TTXSqJ1cdNda+hDfmYytcI9rmOZF8GtWznRDWek6sWFiWASXNqmyBWE97AUQW/kOsi99/VxeAuIPypeXhhB4sPeYmqVf1iCGobQVTtzLAXDQUouKRDR/WOMn9qdk7vO7hZLmnGjx4wzKYOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712951232; c=relaxed/simple;
-	bh=CfsPH7NNwB3Rm4gIvUDyGKYjaZUDiprjWdsWosYSfIs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VzoGNktK/3lqpIZp+msW5ZuMuRc9lekBU9+vQ7Zf3Yn8/RXk/Sr8hVarUxZoUrbvk+SZDFKtjWeZjPXhzoDyagLTvbFjGQH3Ld/TFvNapSnH5pu00xokBND0t+6XIiWiNstSqxaF9/yvQ8vXqKnJTVJiFTLeRucpUV5Cc7Q4cnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GahFOO0K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAF0EC113CC;
-	Fri, 12 Apr 2024 19:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712951231;
-	bh=CfsPH7NNwB3Rm4gIvUDyGKYjaZUDiprjWdsWosYSfIs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=GahFOO0KNuU4CxKtAN2Nd3UdZvRaruKqYiwn97i1SOpl+cMoM8bryCFMxIV2t3cjp
-	 bh764RrVFmL+A3Gh9EgiMGIHBq2RPj3qIMFPUSTo1EeY1HkhNUsPecxKi6rhhA/ZvV
-	 x//aH6QfEvrkzpbqS2h5EQd6hJG+FGy/RzPexW5VVsUdb8bEyVf9JhlmHJR+Yi/YqV
-	 jKOJGzrOxmEIa0zD1KG0chqHnlbxi1FjKbMiFVTeybwYhZk7yBOdxz+JGQb7GxfCZl
-	 Hp7dr1lO3MFerBwHKBhu1ciF39aGeLGH32UKSPH95xp/driOj+thpx1hBWKegFOqzJ
-	 yps29T5OsXk7A==
-Date: Fri, 12 Apr 2024 21:47:07 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa@kernel.org>
-Cc: linux-i2c <linux-i2c@vger.kernel.org>, 
-	lkml <linux-kernel@vger.kernel.org>, Lukas Bulwahn <lbulwahn@redhat.com>, 
-	Andi Shyti <andi.shyti@kernel.org>
-Subject: [GIT PULL] i2c-host-fixes for v6.9-rc4
-Message-ID: <7z65zupqngw4i4mzgablb37osz3gwz6767og5t4b32o4o3joqy@ypkuxdgilibd>
+	s=arc-20240116; t=1712951307; c=relaxed/simple;
+	bh=gvBb/3sOt9Qvp6wLzqbJbKrrCL8NP4h8q5rBctg3GSU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=q90fgeyrfkBbr25LbXKPQNwstnMae8RgM87C4aA3yr78DP7En4nPh+cyAScVMvkS9Ptj8dLyuHfZJkVw+8yuGlMWDDfCbcKMi+TFokss3GQoF869bWCHqaKw89rBTJzUYRdMG3lIiNQZG0XPH20+VnHbr40jo4x9BRwhlNdK05g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rol3UFQd; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=+wva99r1; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712951304;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T1vyvcDhC58JLm7RLxNaW159SgckVo+LvqWczZaOlJk=;
+	b=Rol3UFQdnbm+phlwCqPYQhYOpgVywBhFXjBjpW8EcYqJm52Eyurq4CRBevU0G8GgbzH9Vy
+	nhEHvKOoJ7Ocq49eQnjvuFSWlmJBhRrZxyvql1nK9fqOhdJmiI43QURiMn6ekQUiJtMAR7
+	NTkQ5+bULDllJNCkqGXNW90BFOH1075W2jECe9mjSER/yV0q9Ma/xScXadC62ozdXZWy5L
+	hXmOKWWtLa7Z+IQu8+mOuoUM0rLe23aGaC8pAFb6ffHJA4tsz+51OltmZGFOIxWGSrUJNQ
+	/TBI2HqMIyjJ/fDQ/V2JVOKodM5xd5mP43O6KChf9CI5A8xWBfxQAlCvMS1izQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712951304;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T1vyvcDhC58JLm7RLxNaW159SgckVo+LvqWczZaOlJk=;
+	b=+wva99r1FJa/LWjWhAjfjRQVcAppxuAozPmQzy71WOTAayQJudzY+y5ueftRrufMi89Qu6
+	CkA/pEEk+Yix9nBg==
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Anna-Maria Behnsen
+ <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>,
+ John Stultz <jstultz@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Oleg
+ Nesterov <oleg@redhat.com>
+Subject: Re: [patch V2 07/50] posix-cpu-timers: Split up posix_cpu_timer_get()
+In-Reply-To: <87mspyxwua.fsf@email.froward.int.ebiederm.org>
+References: <20240410164558.316665885@linutronix.de>
+ <20240410165551.376994018@linutronix.de>
+ <87mspyxwua.fsf@email.froward.int.ebiederm.org>
+Date: Fri, 12 Apr 2024 21:48:23 +0200
+Message-ID: <87jzl2z7js.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 
-Hi Wolfram,
+On Fri, Apr 12 2024 at 13:25, Eric W. Biederman wrote:
+> Thomas Gleixner <tglx@linutronix.de> writes:
+>> In preparation for addressing issues in the timer_get() and timer_set()
+>> functions of posix CPU timers.
+>
+> To see that this was safe I had to lookup and see that
+> cpu_timer_getexpires is a truly trivial function.
+>
+> static inline u64 cpu_timer_getexpires(struct cpu_timer *ctmr)
+> {
+> 	return ctmr->node.expires;
+> }
+>
+> I am a bit confused by the purpose of this function in
+> posix-cpu-timers.c.
 
-In this pull request there is only the path update in the
-MAINTAINER file for the pnx driver from Lukas.
+I added that back then when I converted the code over to use a
+timerqueue instead of a linked list mostly because I did not want to
+fiddle in the inwars of timerqueue.
+
+> In some places this helper is used (like below), and in other places
+> like bump_cpu_timer the expires member is accessed directly.
+>
+> It isn't really a problem, but it is something that might be
+> worth making consistent in the code to make it easier to read.
+
+Yes, that's definitely inconsistent. I'll have a look.
 
 Thanks,
-Andi
 
-The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
-
-  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git tags/i2c-host-fixes-6.9-rc4
-
-for you to fetch changes up to 3731629ddb80ae5f52cb95d7321bccfb138cab7f:
-
-  MAINTAINERS: adjust file entry in ARM/LPC32XX SOC SUPPORT (2024-04-12 11:27:39 +0200)
-
-----------------------------------------------------------------
-No real fixes here, only one path updated in the MAINTAINERS
-file.
-
-----------------------------------------------------------------
-Lukas Bulwahn (1):
-      MAINTAINERS: adjust file entry in ARM/LPC32XX SOC SUPPORT
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+        tglx
 
