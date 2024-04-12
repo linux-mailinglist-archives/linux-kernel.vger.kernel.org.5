@@ -1,167 +1,118 @@
-Return-Path: <linux-kernel+bounces-141951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8E78A2571
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:11:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E45818A2580
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:12:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81DEA1F22BF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:11:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D7631C22594
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156CA1BC44;
-	Fri, 12 Apr 2024 05:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4514E17731;
+	Fri, 12 Apr 2024 05:11:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ILoP8DVH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="qR1sBwC3"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C2E1BC20
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4A62C853;
+	Fri, 12 Apr 2024 05:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712898655; cv=none; b=uQQrhs7N4MOd6gm6VoamiVFbnBNV9bCrIiRHUZiviqDNzC9Sg7M+gd+aBWJLNkYbOlkjJV3zhldjHbnn6whEPQp8WrTAEeQR+bvfYni0bC48QP2dW7lfJz9qiBPdKHdgY1yOi9Y9tn73wTqE6XgnJaeJE8RMBhWwQ/EsDEHZP0I=
+	t=1712898713; cv=none; b=QktrmGcUNDi9NRP22uSa67d+5K97t2XjstpmsCcsTfRbZwPu6ieATa4V2sgq6XjtH+CZjWb+ospjtn/X1PP3+dz7AqH4JnSY7V8U4fGavUE4H22/YBcPOsWUWM5svgAejRdYQzmGezZnmBSvID0/wXkkTJxj2IANiGnunWxm/44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712898655; c=relaxed/simple;
-	bh=n1nTu7+xRC3qxpPaBRrMAeZo5K6PsyIpi+vTtIf4SBo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M4PA9fVtSOaSTShlH6BztZyuDZfp6jh2blpV4STDvnT2HnIzQAG7EhlEH/ep8NLwIK/nWVLSXlg3XFvbjrkZc2yKSgH+ea3iArWmOjKiqElolue34vwr+5irGUtror3gjuXNuoWU8+O5XKRoHbYHXMCqRV73XCM/Tg67kGJbMxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ILoP8DVH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BE21C2BBFC;
-	Fri, 12 Apr 2024 05:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712898654;
-	bh=n1nTu7+xRC3qxpPaBRrMAeZo5K6PsyIpi+vTtIf4SBo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ILoP8DVHM+rOWyAyCSwYjPNpJ2HCEgAYwuctUOVN0QqrGrfMCQuqgxgmb1tLe02Pr
-	 +Y/QcLsY2TXSsIu2rVfZl7evevaPh4DSpFXzcikhfjw2eJ/wNFc7W7w8VGwU5jItfk
-	 paI4rGE3T87LBEJtbbsMMvviLgHp1bMal/Ec5NI0=
-Date: Fri, 12 Apr 2024 07:10:51 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: li.hao40@zte.com.cn
-Cc: jirislaby@kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: hvc: wakeup hvc console immediately when needed
-Message-ID: <2024041237-shifty-unethical-4a5d@gregkh>
-References: <20240412113848167egmP7kBg1Qm5sxfwGALG-@zte.com.cn>
+	s=arc-20240116; t=1712898713; c=relaxed/simple;
+	bh=ckxiAva6NtfOVZb76KvA2/vT+MZfq8toz6Bf3K5O6wI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=tzQT9hweMS/dzMbo8wlxcfkP95Of6A8UWiL1QMcbw47T1ZZrub62lu65oNlizkLHgs1OrB6MB3UR6XncAS1S90bMyIzeSSejqORQJgrVPkbmitGaitBCj4mUnPogAaVtnpnC2b1f3mwnDj2RGSSkgq9OwOyFvYtpyOy59MKsFHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=qR1sBwC3; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712898708;
+	bh=FZe94IGm60i+wrx7mytputrazrpPG+SV8qrIZglowmg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=qR1sBwC3vlTfLWyH1uiHI/UnlIjSUoWhZo4szCw9EytXnnGp5ceQSEJd85as8Gkbt
+	 +XaEiifvkeZDFJ0+GhDu09rV38JCNN+NNjsiJT8QDMwPtUmREQ0FrLyYNvoZ7H8k2/
+	 vRlIjdpgTGdrzjW1iyochicBCcyAyX/s+FPiNtEYP4VXk61LfmDoH4fPClufNaTnNz
+	 Ld4fXMuYxQ/WeABNBrRn9g/J1MHYzXKlyc/DVKhShZfvWEcUfTk+t4mmdxJR21u9Ag
+	 dw8DVvlS9go4r5Oo4wMrBus9Sej8xdR3kYYguMzuWMtui9HmNFhJeHcEMxqCacpjW+
+	 zA74AT67Xko0g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VG4Rl6HY6z4wx5;
+	Fri, 12 Apr 2024 15:11:47 +1000 (AEST)
+Date: Fri, 12 Apr 2024 15:11:47 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>, Wu Hao
+ <hao.wu@intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Xu Yilun
+ <yilun.xu@linux.intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the fpga tree
+Message-ID: <20240412151147.22a059ff@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412113848167egmP7kBg1Qm5sxfwGALG-@zte.com.cn>
+Content-Type: multipart/signed; boundary="Sig_/eRnw..xp0u8Ga9jNOdmZ2SW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Fri, Apr 12, 2024 at 11:38:48AM +0800, li.hao40@zte.com.cn wrote:
-> From: Li Hao <li.hao40@zte.com.cn>
-> 
-> Cancel the do_wakeup flag in hvc_struct, and change it to immediately
-> wake up tty when hp->n_outbuf is 0 in hvc_push().
-> 
-> When we receive a key input character, the interrupt handling function
-> hvc_handle_interrupt() will be executed, and the echo thread
-> flush_to_ldisc() will be added to the queue.
-> 
-> If the user is currently using tcsetattr(), a hang may occur. tcsetattr()
-> enters kernel and waits for hp->n_outbuf to become 0 via
-> tty_wait_until_sent(). If the echo thread finishes executing before
-> reaching tty_wait_until_sent (for example, put_chars() takes too long),
-> it will cause while meeting the wakeup condition (hp->do_wakeup = 1),
-> tty_wait_until_sent() cannot be woken up (missed the tty_wakeup() of
-> this round's tty_poll). Unless the next key input character comes,
-> hvc_poll will be executed, and tty_wakeup() will be performed through
-> the do_wakeup flag.
-> 
-> Signed-off-by: Li Hao <li.hao40@zte.com.cn>
-> ---
->  drivers/tty/hvc/hvc_console.c | 12 +++++-------
->  drivers/tty/hvc/hvc_console.h |  1 -
->  2 files changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-> index cd1f657f7..2fa90d938 100644
-> --- a/drivers/tty/hvc/hvc_console.c
-> +++ b/drivers/tty/hvc/hvc_console.c
-> @@ -476,11 +476,13 @@ static void hvc_hangup(struct tty_struct *tty)
->  static int hvc_push(struct hvc_struct *hp)
->  {
->  	int n;
-> +	struct tty_struct *tty;
-> 
->  	n = hp->ops->put_chars(hp->vtermno, hp->outbuf, hp->n_outbuf);
-> +	tty = tty_port_tty_get(&hp->port);
->  	if (n <= 0) {
->  		if (n == 0 || n == -EAGAIN) {
-> -			hp->do_wakeup = 1;
-> +			tty_wakeup(tty);
->  			return 0;
->  		}
->  		/* throw away output on error; this happens when
-> @@ -491,7 +493,7 @@ static int hvc_push(struct hvc_struct *hp)
->  	if (hp->n_outbuf > 0)
->  		memmove(hp->outbuf, hp->outbuf + n, hp->n_outbuf);
->  	else
-> -		hp->do_wakeup = 1;
-> +		tty_wakeup(tty);
-> 
->  	return n;
->  }
-> @@ -739,11 +741,7 @@ static int __hvc_poll(struct hvc_struct *hp, bool may_sleep)
->  	poll_mask |= HVC_POLL_READ;
-> 
->   out:
-> -	/* Wakeup write queue if necessary */
-> -	if (hp->do_wakeup) {
-> -		hp->do_wakeup = 0;
-> -		tty_wakeup(tty);
-> -	}
-> +	/* Wakeup in hvc_push */
->   bail:
->  	spin_unlock_irqrestore(&hp->lock, flags);
-> 
-> diff --git a/drivers/tty/hvc/hvc_console.h b/drivers/tty/hvc/hvc_console.h
-> index cf4c1af08..6622f71ba 100644
-> --- a/drivers/tty/hvc/hvc_console.h
-> +++ b/drivers/tty/hvc/hvc_console.h
-> @@ -36,7 +36,6 @@ struct hvc_struct {
->  	struct tty_port port;
->  	spinlock_t lock;
->  	int index;
-> -	int do_wakeup;
->  	int outbuf_size;
->  	int n_outbuf;
->  	uint32_t vtermno;
-> -- 
-> 2.25.1
+--Sig_/eRnw..xp0u8Ga9jNOdmZ2SW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+After merging the fpga tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+drivers/fpga/ice40-spi.c:201:35: error: implicit declaration of function 'o=
+f_match_ptr' [-Werror=3Dimplicit-function-declaration]
+  201 |                 .of_match_table =3D of_match_ptr(ice40_fpga_of_matc=
+h),
+      |                                   ^~~~~~~~~~~~
+drivers/fpga/ice40-spi.c:201:35: error: initialization of 'const struct of_=
+device_id *' from 'int' makes pointer from integer without a cast [-Werror=
+=3Dint-conversion]
+drivers/fpga/ice40-spi.c:201:35: note: (near initialization for 'ice40_fpga=
+_driver.driver.of_match_table')
+drivers/fpga/ice40-spi.c:201:35: error: initializer element is not constant
+drivers/fpga/ice40-spi.c:201:35: note: (near initialization for 'ice40_fpga=
+_driver.driver.of_match_table')
+cc1: all warnings being treated as errors
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
+Caused by commit
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+  5d04660b29fb ("fpga: ice40-spi: Remove unused of_gpio.h")
 
-thanks,
+I have used the fpga tree from next-20240411 for today.
 
-greg k-h's patch email bot
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/eRnw..xp0u8Ga9jNOdmZ2SW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYYwpMACgkQAVBC80lX
+0Gx0yQgAgoRAfQYJw5MwUHc55xNs/m1J2IAReeekwKlpJK3GWDbaZ350/tkn1wCq
+4NllF3tnntYjUYWJf18BZx+GM0bci/UMReiILCb0wEIa13TJu3DhU176hxdlxph7
+Ckq0ve4+J2z+Vfh1+2xwSzVcNSecgXEPgpU4kBTMQPO9jSV9oUqbbXQ8elAd5nV/
+nhotpXwCzbmvUFtxDLjEmWTHKjLXJ05ZtG70+KW9m8kcQaZ+eXFIwr0GdN8eF2gN
+285Mjmj73h9+SbZ+T31a4OeQ07MdYBTZ9SNcqBVIl1FDxWmTKjIfBFu6qBtUzQje
+9tKKLhd2RaiUsU9FQzq7BmzyXdtZxg==
+=XnsU
+-----END PGP SIGNATURE-----
+
+--Sig_/eRnw..xp0u8Ga9jNOdmZ2SW--
 
