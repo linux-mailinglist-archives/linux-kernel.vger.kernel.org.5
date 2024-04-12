@@ -1,111 +1,110 @@
-Return-Path: <linux-kernel+bounces-142037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FFFC8A269A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:28:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E858A2690
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:27:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A15E11C228D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:28:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B9B72815AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3032340BEE;
-	Fri, 12 Apr 2024 06:28:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39EC3FB09;
+	Fri, 12 Apr 2024 06:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="I4TntV39"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="omulzr0l"
+Received: from out203-205-221-149.mail.qq.com (out203-205-221-149.mail.qq.com [203.205.221.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6DC3FE5B;
-	Fri, 12 Apr 2024 06:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B98B3F9E0
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712903290; cv=none; b=uF2/oOx7skK9SF3SstkB15evn9GstrLKcR5mjhIJyr/NKi5KqbywvvExykVDE4HaKPLhve5nSGgDLBmcSc+bnxnlIQ8KLdjCPOYazFmUaHbcVUg29AJ+N0TCPBM89xuOqA/uvRYy8shYdfgdry4AJ/8Dpw5S3QrAPQluaKoAr+8=
+	t=1712903261; cv=none; b=Wf1rDZzo7rDOVL785bVYngX/P238ojX5pWCQYzmU6LuP82AKWsXIcq3mDt4QNwlNncQCN8sKJsPSZ4AblluwolNIGNdism5QFt7d/KLzRW5D31jhK1vIsNmzTQxGdWRKPYyxBNTlj2OcN2bBhtYEn4v0Ip/G5zM9LgWn8+ZVGkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712903290; c=relaxed/simple;
-	bh=s25N0TuD2mKVnak326HEWl8NP4R38SQt9FxwJaCaMSI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UWZP2E6hRCZdOc97r0MEKlzqEqmCMwQ37uwt3Rm1JjoUinttGhFU5deGjhKZCl4KcTVvuJX/cxnw+WyovhIaP4U72tyQyy5aamMbzZ5ym5Vu8NXa/i6oM0V1IVWefHw+7i412RsYHH3cTSbwDOY0wBByQw6bGICJN18yWi9OkM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=I4TntV39; arc=none smtp.client-ip=91.207.212.93
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43C0RJ5o014097;
-	Fri, 12 Apr 2024 08:27:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=s25N0TuD2mKVnak326HEWl8NP4R38SQt9FxwJaCaMSI=; b=I4
-	TntV39qdNvna/x0r4lkyP4NzQgLHdtb5KRXZXhmRYLAHBxfbGILwiOlyQySw7/N2
-	brRLGppXPHoQPVfMk5e/FG+PE33r3WSI8mW2L/ciNJnEmlcVMlfSDH23kfRWnWAZ
-	Gy7P+uAg7k9G+/BPY+njfs6w2OSnvfevI8hb6f+90goDO3hRxUStsMmt/Y2/1pxp
-	lazHYhTpaAKiJ20VUadXbsXn+DjvET9aKobGeawDuOa6r0lqBK7cnbJU9TUEYCmV
-	qDiHXAsL9uZixO/nwRo91Q2FoDHgIhMu/Fx5zke78HLfGI+dEA5A+KiLj/b9plTL
-	38vWRqK8d5os4zSm2cew==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xauh5fnqj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 08:27:45 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 8E8324002D;
-	Fri, 12 Apr 2024 08:27:42 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B0AAA20DD96;
-	Fri, 12 Apr 2024 08:26:53 +0200 (CEST)
-Received: from [10.252.29.77] (10.252.29.77) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 12 Apr
- 2024 08:26:52 +0200
-Message-ID: <82b2a672-ecd9-40e6-83fb-c469498230af@foss.st.com>
-Date: Fri, 12 Apr 2024 08:26:52 +0200
+	s=arc-20240116; t=1712903261; c=relaxed/simple;
+	bh=mpG73ntkI+bKnWbZWLV1SvgJybIvz4F5Ii6CWsA53Qs=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=NA9mj0biL3l8ot73iAIM9lkEFMwl1FyLmxPzEcYk/UWq2vnvcnpwUA/1iyqCScbfrawnUkfakqOFe4QKbHB3ympGt+rv5pNTigy9ej80hQundnlp5zB3qoDsDToI8aNtNsS/ot8pAtaL/XfvmDZgrH4eVGO9CT5gRXnn8lB6GC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=omulzr0l; arc=none smtp.client-ip=203.205.221.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712903254; bh=D8d08kdXjrFd28ginRdzdAdRNU2wwkO/zqvD1S6aOGE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=omulzr0leRzsi57LqNmlKQHklbB3iyYiKql9AigtmqNk/ZoKOS9po86lTcwDR7TxB
+	 mrCsruuospHXDPbmi5UTU6ZafuLMOxsk6KPftcXX6l8ekHB8O+NzBgW5pkhow8RZFO
+	 gCHrtBgN9zMC7pJX0bBIKzJcgb4Lm4zG1LxV14lo=
+Received: from Yangyus-MBP-2.lan ([219.141.235.82])
+	by newxmesmtplogicsvrszc6-0.qq.com (NewEsmtp) with SMTP
+	id 6DDA90ED; Fri, 12 Apr 2024 14:27:29 +0800
+X-QQ-mid: xmsmtpt1712903249tchi8hoao
+Message-ID: <tencent_49E156C63C84E435E6F16509D6699339520A@qq.com>
+X-QQ-XMAILINFO: M6lqjKFHeg8FipVhaxR+kEqYAYB7tJUinzNVL1AmDc5DgmTMqHVxOFMH9MdVvV
+	 RjPhvTEMHFHFNzmcs9Aso2kRDaElcQapDDlJwGkBBhWa59KhptInSCzFi03vMg4LzERqRTZQ1sJH
+	 CNwnCmgUbBUIIERkAWWI5ZK2gZuvi4zwiiGC+wR497dv+g43C3eN2JS5O7Je9Y6JSbC3b+djrjzT
+	 is/rS4G4tjTzsKLPax7qS7oAx7SJLE/XmKBeXrzrz3Qmc4F5hfqJ/3hZN3FsWWH3VcgFyuw8qf+j
+	 eiV9+dyW/PuokfeGq0Ko589nTnyFWgZECvR4yt5fKkP9bIgQDqLM6G2g5mly91OlFrL9On6PMTif
+	 FJdE9a192NEFtCl+UWCfyxh8ZZ2wbYvMmvE9UOb3GS6xU/Tr7TbPjPINZZ9ecjgnobJ7ocdNqNHi
+	 1s7o3Zq+t8JEi9C+16Uwe6O8ssdxqdtAgsbhco7k6BKEiBYkZUu0E2UYmS0rwFsMuIn6f/lAu646
+	 wLzCtFhObPbbeMQkiyf1dpvjVC8A/nXkupyawyK4+ldMuF8chHbnuffrn/WczlsV08UGuU/V/If4
+	 z2gvOQt8/PBLvTLv9w+dLovbn+7popyN1zfKg1MdqMOwjmGzK1Dj+cMMQjxZpQBC8+D9XbpFTRa3
+	 c9Px4pQB2KSD4hUsvPtpQfuNN42fQE5utHLK5kJYr2XOhgGy0Y6j79KVhI26e7m59RHkbRoxyWcc
+	 pGVurjjQF0Vgt0CP2K/RhKXKmXGR6Ez24GgnCCEp9v/RCWowSHECv6IIECzBfDlH+98UUR58dsiG
+	 DftcNxVBMSIoVMU24t23HUMnay7tCqipq67fxLzF0UsIlkLT/nUqJ/DjJVRXTB54DSsbMM/6SeKD
+	 qwUrpMixt0xaelMdd/Ucma3hsRRjqDxmo9LwXdiEYBcOUrjTeY+LpFcaolblLmrzLNU1tEYeaghx
+	 VEqmBD/GaU1ukUuKp4//LrQaxRNyClcp71h31IuKwmHJU5f/IiWqKhwnP8NevXBzJFk/yZem4=
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+From: Yangyu Chen <cyy@cyyself.name>
+To: conor@kernel.org
+Cc: ajones@ventanamicro.com,
+	anup@brainfault.org,
+	aou@eecs.berkeley.edu,
+	atishp@atishpatra.org,
+	conor.dooley@microchip.com,
+	dqfext@gmail.com,
+	guoren@kernel.org,
+	heiko@sntech.de,
+	inochiama@outlook.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	mark.rutland@arm.com,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com,
+	will@kernel.org
+Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
+Date: Fri, 12 Apr 2024 14:27:28 +0800
+X-OQ-MSGID: <20240412062728.71533-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <20240314-pep-announcer-2d7f10ff8b65@spud>
+References: <20240314-pep-announcer-2d7f10ff8b65@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 3/4] clk: stm32: introduce clocks for STM32MP257
- platform
-To: Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Torgue
-	<alexandre.torgue@foss.st.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin
-	<mcoquelin.stm32@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-CC: <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20240411092453.243633-1-gabriel.fernandez@foss.st.com>
- <20240411092453.243633-4-gabriel.fernandez@foss.st.com>
- <7efb8858995d0c97ad2deccb24318353.sboyd@kernel.org>
-Content-Language: en-US
-From: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
-In-Reply-To: <7efb8858995d0c97ad2deccb24318353.sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-12_03,2024-04-09_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
+>> IMHO, it may be better to use a new DT property like "riscv,cpu-errata" or
+>> "<vendor>,cpu-errata". It can achieve almost everything like using pseudo
+>> isa. And the only cost I think is a small amount code to parse this.
+> 
+> I suppose we could do that, but accounting for vendor specifics was one
+> of the goals for the property I only just added and that I am suggesting
+> to use here.
 
-On 4/12/24 08:22, Stephen Boyd wrote:
-> Quoting gabriel.fernandez@foss.st.com (2024-04-11 02:24:52)
->> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->>
->> This driver is intended for the STM32MP25 clock family and utilizes
->> the stm32-core API, similar to the stm32mp13 clock driver.
->>
->> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
->> ---
-> Applied to clk-next
-Thank's Stephen
+I think there is a simpler way to do that. We use T-Head PMU by default
+for All T-Head CPUs (from mvendor id). Then, to test there is sscofpmf in
+the ISA string being probed by the kernel. If yes, then use scofpmf.
+Otherwise, use T-Head PMU.
+
+I will check if this can also be switched in any vendor CSR like Svpbmt and
+T-Head MAE we discussed before.
+
+Thanks,
+Yangyu Chen
+
 
