@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-143177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFAD78A3564
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:10:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3DE8A3565
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:11:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34CA0B20F93
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:10:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B09AD1F22789
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA36014EC59;
-	Fri, 12 Apr 2024 18:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE1914F103;
+	Fri, 12 Apr 2024 18:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qSwhmJPI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PnwENq27"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008FE14E2FC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A2814EC60
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712945440; cv=none; b=Y3/bpN0q1QXV8SRu6gma04vzFgQmLY+rGQWqG0VFvksJsCFJRYmZFilB5bIQ4VaJ7D2f5Z2PW8LzeJDlWD8oYM+E5ayX10K8jA1W3vS6GuarFnBglyA7S+GcQYIagUBKVqTNBJdKzhbbUgll+ltmCI0obPj1TAQA5KTzXRMcisU=
+	t=1712945441; cv=none; b=IPDJ+gMD+XiMTnHoIeLAz9Gg8bGrZNHte4ngiWC16K9lRZOLbNo0fUxQ1i8KssrEw3BY8uSve4pjw0AiJ4V8P6dkEi1y67zlu9JImh7Evn8uxM+c/dTC614RWLh+LBEu7WYHo8P/72N5AhvOUWG52b2pnyH8R5ZvKqlMEQYXCI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712945440; c=relaxed/simple;
-	bh=YK2ZkmaxtGjqhU7ayXuNAm2Nf5PMoaPQIn3V1c2Mvxc=;
+	s=arc-20240116; t=1712945441; c=relaxed/simple;
+	bh=8NZHE1tS6vfknLA1oyfYTojtWsl+OR5G87hXz6y9g5w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iZYnXSRmTpKTCY/s4EUraExKc05G2ZYMawVlqsu1MFzcRle+qIvq74RaWC72pVf+60dLJr9NKyODpITTCWyiQ5Ey1dCNyGQO/YiNXZQ7XpiLHJo7bJ6/N/i7xJiP5xAT2d9/oJi2370uNj3CqIgcNIC8GH+MEPwbWtz3JTrSnlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qSwhmJPI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30B9AC32781;
+	 MIME-Version; b=XZa94evWT7J3q+dbcwETrF4lHO/azj7xPfn8bKAe56d6CxC7M7+VB7/uSZiIX3+OODLMP2cFaIFFDu8r1KUbpopjPTDiusZ5wTvVzdioVbOzOuFhsU5/5eVQ90RIvp06tVKUvIMVYqYNiw5NoTQAf2q/OGq4JrxsDTapt+zZ5H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PnwENq27; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F87C32786;
 	Fri, 12 Apr 2024 18:10:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712945439;
-	bh=YK2ZkmaxtGjqhU7ayXuNAm2Nf5PMoaPQIn3V1c2Mvxc=;
+	s=k20201202; t=1712945440;
+	bh=8NZHE1tS6vfknLA1oyfYTojtWsl+OR5G87hXz6y9g5w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qSwhmJPIwiLbgLC6ZIYv9zerzm7jSiDP5NPGd4KoTpJHL57rEiWCtxCZ5JeTLk9lY
-	 0e4T3lWkSpvdXB1e8JZcyOIQ/AazBZkGD33v4B8GZnVuwYl2mhJtl3/smFoqgDeh3q
-	 LxX4+zBMMuAdrnV1ywTyAY9SRftiYNYQlXcJ59vwJHI/v73Rf6ppdF1LDheA42yoqD
-	 yIYQU3qMIgVVnDk+sn2iBqz83kqk+xS2aU6HhYpRMlrE9MU8jyrZ5KXv4k/HZ2CUq1
-	 X1D/Go00deKIww79GmmMb24i150MNVCj54SdXaP3sbpKpRuYqdVIsM+w/eN1gvbou/
-	 Cnob4oA2249sA==
+	b=PnwENq27GKTELnxMvUoZ8+jmsfhQy+Q+870u2mG+IiA2sxv9jwNwy0ZkRJfumNfzx
+	 3d1B8SJxdFwUOsKNTKUN/uMa3pWhiedeB8rsef/NXyBB+YWDSn61LvWxfEQnC7FWEY
+	 MGBsdg8MP2ho3zIApifLmNSoqT6+Q3kwZ4adtY/BeJrtXGo4MAG29w2G854hUnYfdU
+	 uoAZ1I5wDYekZYh3wPLAD/VOIIPA1ruYqu36mHVow5EfY0MZGMicreYJyAq8KEwV8a
+	 JRRRUFUwqaZDCZCnmQcy+X8JAvrr7l7gQRLVXY+pFxc1zuCZHZEph3e02MRj5aAUkw
+	 N7SfiULmO+Jsg==
 From: Josh Poimboeuf <jpoimboe@kernel.org>
 To: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -59,9 +59,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Waiman Long <longman@redhat.com>,
 	Borislav Petkov <bp@alien8.de>,
 	Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v2 1/3] x86/bugs: Only harden syscalls when needed
-Date: Fri, 12 Apr 2024 11:10:32 -0700
-Message-ID: <079f24edefb5b47e922c2804f199463e04ccf0c8.1712944776.git.jpoimboe@kernel.org>
+Subject: [PATCH 2/3] x86/bugs: Fix BHI retpoline check
+Date: Fri, 12 Apr 2024 11:10:33 -0700
+Message-ID: <ad3807424a3953f0323c011a643405619f2a4927.1712944776.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1712944776.git.jpoimboe@kernel.org>
 References: <cover.1712944776.git.jpoimboe@kernel.org>
@@ -73,235 +73,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Syscall hardening (i.e., converting the syscall indirect branch to a
-series of direct branches) may cause performance regressions in certain
-scenarios.  Only use the syscall hardening when indirect branches are
-considered unsafe.
+Confusingly, X86_FEATURE_RETPOLINE doesn't mean retpolines are enabled,
+as it also includes the original "AMD retpoline" which isn't a retpoline
+at all.
 
-Fixes: 1e3ad78334a6 ("x86/syscall: Don't force use of indirect calls for system calls")
+Also replace cpu_feature_enabled() with boot_cpu_has() because this is
+before alternatives are patched and cpu_feature_enabled()'s fallback
+path is slower than plain old boot_cpu_has().
+
+Fixes: ec9404e40e8f ("x86/bhi: Add BHI mitigation knob")
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/entry/common.c            | 15 ++++++++++++---
- arch/x86/entry/syscall_32.c        | 11 +----------
- arch/x86/entry/syscall_64.c        |  6 ------
- arch/x86/entry/syscall_x32.c       |  7 ++++++-
- arch/x86/include/asm/cpufeatures.h |  1 +
- arch/x86/include/asm/syscall.h     |  8 +++++++-
- arch/x86/kernel/cpu/bugs.c         | 31 +++++++++++++++++++++++++++++-
- 7 files changed, 57 insertions(+), 22 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 6de50b80702e..c0f8116291e4 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -49,7 +49,10 @@ static __always_inline bool do_syscall_x64(struct pt_regs *regs, int nr)
- 
- 	if (likely(unr < NR_syscalls)) {
- 		unr = array_index_nospec(unr, NR_syscalls);
--		regs->ax = x64_sys_call(regs, unr);
-+		if (likely(cpu_feature_enabled(X86_FEATURE_INDIRECT_SAFE)))
-+			regs->ax = sys_call_table[unr](regs);
-+		else
-+			regs->ax = x64_sys_call(regs, unr);
- 		return true;
- 	}
- 	return false;
-@@ -66,7 +69,10 @@ static __always_inline bool do_syscall_x32(struct pt_regs *regs, int nr)
- 
- 	if (IS_ENABLED(CONFIG_X86_X32_ABI) && likely(xnr < X32_NR_syscalls)) {
- 		xnr = array_index_nospec(xnr, X32_NR_syscalls);
--		regs->ax = x32_sys_call(regs, xnr);
-+		if (likely(cpu_feature_enabled(X86_FEATURE_INDIRECT_SAFE)))
-+			regs->ax = x32_sys_call_table[xnr](regs);
-+		else
-+			regs->ax = x32_sys_call(regs, xnr);
- 		return true;
- 	}
- 	return false;
-@@ -162,7 +168,10 @@ static __always_inline void do_syscall_32_irqs_on(struct pt_regs *regs, int nr)
- 
- 	if (likely(unr < IA32_NR_syscalls)) {
- 		unr = array_index_nospec(unr, IA32_NR_syscalls);
--		regs->ax = ia32_sys_call(regs, unr);
-+		if (likely(cpu_feature_enabled(X86_FEATURE_INDIRECT_SAFE)))
-+			regs->ax = ia32_sys_call_table[unr](regs);
-+		else
-+			regs->ax = ia32_sys_call(regs, unr);
- 	} else if (nr != -1) {
- 		regs->ax = __ia32_sys_ni_syscall(regs);
- 	}
-diff --git a/arch/x86/entry/syscall_32.c b/arch/x86/entry/syscall_32.c
-index c2235bae17ef..aab31760b4e3 100644
---- a/arch/x86/entry/syscall_32.c
-+++ b/arch/x86/entry/syscall_32.c
-@@ -14,25 +14,16 @@
- #endif
- 
- #define __SYSCALL(nr, sym) extern long __ia32_##sym(const struct pt_regs *);
--
- #include <asm/syscalls_32.h>
- #undef __SYSCALL
- 
--/*
-- * The sys_call_table[] is no longer used for system calls, but
-- * kernel/trace/trace_syscalls.c still wants to know the system
-- * call address.
-- */
--#ifdef CONFIG_X86_32
- #define __SYSCALL(nr, sym) __ia32_##sym,
--const sys_call_ptr_t sys_call_table[] = {
-+const sys_call_ptr_t ia32_sys_call_table[] = {
- #include <asm/syscalls_32.h>
- };
- #undef __SYSCALL
--#endif
- 
- #define __SYSCALL(nr, sym) case nr: return __ia32_##sym(regs);
--
- long ia32_sys_call(const struct pt_regs *regs, unsigned int nr)
- {
- 	switch (nr) {
-diff --git a/arch/x86/entry/syscall_64.c b/arch/x86/entry/syscall_64.c
-index 33b3f09e6f15..96ea1f8a1d3f 100644
---- a/arch/x86/entry/syscall_64.c
-+++ b/arch/x86/entry/syscall_64.c
-@@ -11,11 +11,6 @@
- #include <asm/syscalls_64.h>
- #undef __SYSCALL
- 
--/*
-- * The sys_call_table[] is no longer used for system calls, but
-- * kernel/trace/trace_syscalls.c still wants to know the system
-- * call address.
-- */
- #define __SYSCALL(nr, sym) __x64_##sym,
- const sys_call_ptr_t sys_call_table[] = {
- #include <asm/syscalls_64.h>
-@@ -23,7 +18,6 @@ const sys_call_ptr_t sys_call_table[] = {
- #undef __SYSCALL
- 
- #define __SYSCALL(nr, sym) case nr: return __x64_##sym(regs);
--
- long x64_sys_call(const struct pt_regs *regs, unsigned int nr)
- {
- 	switch (nr) {
-diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
-index 03de4a932131..5aef4230faca 100644
---- a/arch/x86/entry/syscall_x32.c
-+++ b/arch/x86/entry/syscall_x32.c
-@@ -11,8 +11,13 @@
- #include <asm/syscalls_x32.h>
- #undef __SYSCALL
- 
--#define __SYSCALL(nr, sym) case nr: return __x64_##sym(regs);
-+#define __SYSCALL(nr, sym) __x64_##sym,
-+const sys_call_ptr_t x32_sys_call_table[] = {
-+#include <asm/syscalls_x32.h>
-+};
-+#undef __SYSCALL
- 
-+#define __SYSCALL(nr, sym) case nr: return __x64_##sym(regs);
- long x32_sys_call(const struct pt_regs *regs, unsigned int nr)
- {
- 	switch (nr) {
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 3c7434329661..7c87fe80c696 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -470,6 +470,7 @@
- #define X86_FEATURE_BHI_CTRL		(21*32+ 2) /* "" BHI_DIS_S HW control available */
- #define X86_FEATURE_CLEAR_BHB_HW	(21*32+ 3) /* "" BHI_DIS_S HW control enabled */
- #define X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT (21*32+ 4) /* "" Clear branch history at vmexit using SW loop */
-+#define X86_FEATURE_INDIRECT_SAFE	(21*32+ 4) /* "" Indirect branches aren't vulnerable to Spectre v2 */
- 
- /*
-  * BUG word(s)
-diff --git a/arch/x86/include/asm/syscall.h b/arch/x86/include/asm/syscall.h
-index 2fc7bc3863ff..dfb59521244c 100644
---- a/arch/x86/include/asm/syscall.h
-+++ b/arch/x86/include/asm/syscall.h
-@@ -16,14 +16,20 @@
- #include <asm/thread_info.h>	/* for TS_COMPAT */
- #include <asm/unistd.h>
- 
--/* This is used purely for kernel/trace/trace_syscalls.c */
- typedef long (*sys_call_ptr_t)(const struct pt_regs *);
- extern const sys_call_ptr_t sys_call_table[];
- 
-+#if defined(CONFIG_X86_32)
-+#define ia32_sys_call_table sys_call_table
-+#else
- /*
-  * These may not exist, but still put the prototypes in so we
-  * can use IS_ENABLED().
-  */
-+extern const sys_call_ptr_t ia32_sys_call_table[];
-+extern const sys_call_ptr_t x32_sys_call_table[];
-+#endif
-+
- extern long ia32_sys_call(const struct pt_regs *, unsigned int nr);
- extern long x32_sys_call(const struct pt_regs *, unsigned int nr);
- extern long x64_sys_call(const struct pt_regs *, unsigned int nr);
 diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index ca295b0c1eee..dcb97cc2758f 100644
+index dcb97cc2758f..e827613c9e39 100644
 --- a/arch/x86/kernel/cpu/bugs.c
 +++ b/arch/x86/kernel/cpu/bugs.c
-@@ -1664,6 +1664,15 @@ static void __init bhi_select_mitigation(void)
- 	if (!IS_ENABLED(CONFIG_X86_64))
+@@ -1652,7 +1652,8 @@ static void __init bhi_select_mitigation(void)
  		return;
  
-+	/*
-+	 * There's no hardware mitigation in place, so mark indirect branches
-+	 * as unsafe.
-+	 *
-+	 * One could argue the SW loop makes indirect branches safe again, but
-+	 * Linus prefers it this way.
-+	 */
-+	setup_clear_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
-+
- 	/* Mitigate KVM by default */
- 	setup_force_cpu_cap(X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT);
- 	pr_info("Spectre BHI mitigation: SW BHB clearing on vm exit\n");
-@@ -1678,6 +1687,21 @@ static void __init spectre_v2_select_mitigation(void)
- 	enum spectre_v2_mitigation_cmd cmd = spectre_v2_parse_cmdline();
- 	enum spectre_v2_mitigation mode = SPECTRE_V2_NONE;
- 
-+	/*
-+	 * X86_FEATURE_INDIRECT_SAFE indicates whether indirect calls can be
-+	 * considered safe.  That means either:
-+	 *
-+	 *   - the CPU isn't vulnerable to Spectre v2 or its variants;
-+	 *
-+	 *   - a hardware mitigation is in place (e.g., IBRS, BHI_DIS_S); or
-+	 *
-+	 *   - the user turned off mitigations altogether.
-+	 *
-+	 * Assume innocence until proven guilty: set the cap bit now, then
-+	 * clear it later if/when needed.
-+	 */
-+	setup_force_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
-+
- 	/*
- 	 * If the CPU is not affected and the command line mode is NONE or AUTO
- 	 * then nothing to do.
-@@ -1764,11 +1788,16 @@ static void __init spectre_v2_select_mitigation(void)
- 		break;
- 
- 	case SPECTRE_V2_LFENCE:
-+		setup_clear_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
-+		fallthrough;
- 	case SPECTRE_V2_EIBRS_LFENCE:
- 		setup_force_cpu_cap(X86_FEATURE_RETPOLINE_LFENCE);
--		fallthrough;
-+		setup_force_cpu_cap(X86_FEATURE_RETPOLINE);
-+		break;
- 
- 	case SPECTRE_V2_RETPOLINE:
-+		setup_clear_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
-+		fallthrough;
- 	case SPECTRE_V2_EIBRS_RETPOLINE:
- 		setup_force_cpu_cap(X86_FEATURE_RETPOLINE);
- 		break;
+ 	/* Retpoline mitigates against BHI unless the CPU has RRSBA behavior */
+-	if (cpu_feature_enabled(X86_FEATURE_RETPOLINE)) {
++	if (boot_cpu_has(X86_FEATURE_RETPOLINE) &&
++	    !boot_cpu_has(X86_FEATURE_RETPOLINE_LFENCE)) {
+ 		spec_ctrl_disable_kernel_rrsba();
+ 		if (rrsba_disabled)
+ 			return;
+@@ -2833,11 +2834,13 @@ static const char *spectre_bhi_state(void)
+ {
+ 	if (!boot_cpu_has_bug(X86_BUG_BHI))
+ 		return "; BHI: Not affected";
+-	else if  (boot_cpu_has(X86_FEATURE_CLEAR_BHB_HW))
++	else if (boot_cpu_has(X86_FEATURE_CLEAR_BHB_HW))
+ 		return "; BHI: BHI_DIS_S";
+-	else if  (boot_cpu_has(X86_FEATURE_CLEAR_BHB_LOOP))
++	else if (boot_cpu_has(X86_FEATURE_CLEAR_BHB_LOOP))
+ 		return "; BHI: SW loop, KVM: SW loop";
+-	else if (boot_cpu_has(X86_FEATURE_RETPOLINE) && rrsba_disabled)
++	else if (boot_cpu_has(X86_FEATURE_RETPOLINE) &&
++		 !boot_cpu_has(X86_FEATURE_RETPOLINE_LFENCE) &&
++		 rrsba_disabled)
+ 		return "; BHI: Retpoline";
+ 	else if (boot_cpu_has(X86_FEATURE_CLEAR_BHB_LOOP_ON_VMEXIT))
+ 		return "; BHI: Vulnerable, KVM: SW loop";
 -- 
 2.44.0
 
