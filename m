@@ -1,193 +1,94 @@
-Return-Path: <linux-kernel+bounces-141844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B6178A242B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:07:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7D708A2433
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF6A1C21985
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:07:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04A0B1C219F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54F61798E;
-	Fri, 12 Apr 2024 03:07:06 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F09A17BA9;
+	Fri, 12 Apr 2024 03:10:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZM1ArxsQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E44134B2;
-	Fri, 12 Apr 2024 03:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA41D14016;
+	Fri, 12 Apr 2024 03:10:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712891226; cv=none; b=rdvlG0TfR8pHbLQPrJn9Bypw7li4m5Mviey3PYoF7uC4heuNZEmTdWw2dgwY1ukc3uPTFPIQIjCZcLiK5xfVUzyuoKst2EYRAv4FeRtNFGTJASll/pLxmGuZPwqENg7Ijg5sRmoJWR3AuMKDAuDRhmt0q5tUyReWUmf2vTYoTl0=
+	t=1712891429; cv=none; b=OHUWARBDOJsK7xLBWY//IwYMXikQwraHBcPy/35eKbiUBWA78HNU55p+HLdbwAYC5rm5Lf4Dx/olBFsalM+wBSKB1VU/2MxEkC/sMa56/UTyeXCv93it342gmPOPl0iL1XwPt0ff8P5Ok7fBoPiNu31JVJd/uxl2u1WGD71NHDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712891226; c=relaxed/simple;
-	bh=WeQV3etAK0C96I94xGlBbd9Uo4UsxU5yT6PWfCgir+Y=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=b6wvYhfC3+3xKzghEvRWMr/tjGCupdDUB6kbnPbtBlwZuo0MhgXBkUKEJH8ZD2p9gHap2/qTF7RUqZ/KAT6IFjbnzfRLEfX9+FLhnp9uznJZ94LTFFXCzLudRcVUWUH3qVA5uTSeREFS4aZccIS8b9bMO69S1CIBq2ifCux6Esg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VG1cb4bnqztSdR;
-	Fri, 12 Apr 2024 11:04:15 +0800 (CST)
-Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
-	by mail.maildlp.com (Postfix) with ESMTPS id 41B30140124;
-	Fri, 12 Apr 2024 11:07:01 +0800 (CST)
-Received: from [10.67.121.110] (10.67.121.110) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 11:07:00 +0800
-Subject: Re: [PATCH v4 2/4] hisi_acc_vfio_pci: Create subfunction for data
- reading
-To: Alex Williamson <alex.williamson@redhat.com>
-CC: <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
-	<jonathan.cameron@huawei.com>, <kvm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-	=?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@redhat.com>
-References: <20240402032432.41004-1-liulongfang@huawei.com>
- <20240402032432.41004-3-liulongfang@huawei.com>
- <20240404140731.2b75cb80.alex.williamson@redhat.com>
-From: liulongfang <liulongfang@huawei.com>
-Message-ID: <f1ffdcc6-e74b-bf6c-bddb-73debd78900b@huawei.com>
-Date: Fri, 12 Apr 2024 11:07:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1712891429; c=relaxed/simple;
+	bh=kAWQtCPE7s4/t10iRouhzrduC5k5lVHNvQ94kj1uOe4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Cold+sWGM54PVA7I7Y1kTtD9+UukRVIKlmZLU1eC//crs1QU9n+E8Z6K/unEw1/i/xD/21YjCpbavrb/b0ZvdbXWdmvIzCQJwJadRUJwlGIwA21tP1zzMu4ESGt6UelX+p8DTq/JNpeFYxMx8FYRWQgefsb25DbX4Be+XEy/a4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZM1ArxsQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5BF7BC32781;
+	Fri, 12 Apr 2024 03:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712891429;
+	bh=kAWQtCPE7s4/t10iRouhzrduC5k5lVHNvQ94kj1uOe4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ZM1ArxsQCas8hA0t62la9y4aMuPmMmIZL44mLakujCbaCd2SEw4W6PgoBt0t/PpfR
+	 5wTasXKBwXRLeg+xzM59IlgqZMvtNLCY4bsipIlKRPsIMglgp6upP8pLMRhYh1I+hl
+	 7+1Z/GCSGFiX0W9Zcfnj4t/JZeM3Lua8j22mM+omBCL0NzyyT0w6Nh77BpTr9xfDV7
+	 yvAyPwcJzy/xa6MyxzYTAavhHVbFasEOJCt2ziMdpULHdHkfzsErmwprFwK4Nk6FtG
+	 wZTP9kCjwCzSMClnhUUusswhsMxigk+9vqVL5G+WLyy/UtHQ4Nrj+drEJpnx1Po9Bl
+	 ebISBF+JFdXNA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41BC8C4339F;
+	Fri, 12 Apr 2024 03:10:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240404140731.2b75cb80.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600005.china.huawei.com (7.193.23.191)
+Subject: Re: [PATCH][next] tls: remove redundant assignment to variable decrypted
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171289142926.25647.8582026125131591464.git-patchwork-notify@kernel.org>
+Date: Fri, 12 Apr 2024 03:10:29 +0000
+References: <20240410144136.289030-1-colin.i.king@gmail.com>
+In-Reply-To: <20240410144136.289030-1-colin.i.king@gmail.com>
+To: Colin King (gmail) <colin.i.king@gmail.com>
+Cc: borisp@nvidia.com, john.fastabend@gmail.com, kuba@kernel.org,
+ davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 
-On 2024/4/5 4:07, Alex Williamson wrote:
-> On Tue, 2 Apr 2024 11:24:30 +0800
-> Longfang Liu <liulongfang@huawei.com> wrote:
-> 
->> During the live migration process. It needs to obtain various status
->> data of drivers and devices. In order to facilitate calling it in the
->> debugfs function. For all operations that read data from device registers,
->> the driver creates a subfunction.
->> Also fixed the location of address data.
-> 
-> Cédric noted privately and I agree, 1) fixes should be provided in
-> separate patches with a Fixes: tag rather than subtly included in a
-> minor refactoring, and 2) what does this imply about the existing
-> functionality of migration?  This would seem to suggest existing
-> migration data is bogus if we're offset by a register reading the DMA
-> address.  The commit log for the Fixes patch should describe this.
->
+Hello:
 
-Okay, the modification of the DMA address offset part is split into
-a new patch, and the modification of this part is explained clearly.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Thanks,
-Longfang.
+On Wed, 10 Apr 2024 15:41:36 +0100 you wrote:
+> The variable decrypted is being assigned a value that is never read,
+> the control of flow after the assignment is via an return path and
+> decrypted is not referenced in this path. The assignment is redundant
+> and can be removed.
+> 
+> Cleans up clang scan warning:
+> net/tls/tls_sw.c:2150:4: warning: Value stored to 'decrypted' is never
+> read [deadcode.DeadStores]
+> 
+> [...]
 
->>
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->> ---
->>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 56 +++++++++++--------
->>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  3 +
->>  2 files changed, 37 insertions(+), 22 deletions(-)
->>
->> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
->> index 45351be8e270..bf358ba94b5d 100644
->> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
->> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
->> @@ -486,6 +486,39 @@ static int vf_qm_load_data(struct hisi_acc_vf_core_device *hisi_acc_vdev,
->>  	return 0;
->>  }
->>  
->> +static int vf_qm_read_data(struct hisi_qm *vf_qm, struct acc_vf_data *vf_data)
->> +{
->> +	struct device *dev = &vf_qm->pdev->dev;
->> +	int ret;
->> +
->> +	ret = qm_get_regs(vf_qm, vf_data);
->> +	if (ret)
->> +		return -EINVAL;
->> +
->> +	/* Every reg is 32 bit, the dma address is 64 bit. */
->> +	vf_data->eqe_dma = vf_data->qm_eqc_dw[QM_XQC_ADDR_HIGH];
->> +	vf_data->eqe_dma <<= QM_XQC_ADDR_OFFSET;
->> +	vf_data->eqe_dma |= vf_data->qm_eqc_dw[QM_XQC_ADDR_LOW];
->> +	vf_data->aeqe_dma = vf_data->qm_aeqc_dw[QM_XQC_ADDR_HIGH];
->> +	vf_data->aeqe_dma <<= QM_XQC_ADDR_OFFSET;
->> +	vf_data->aeqe_dma |= vf_data->qm_aeqc_dw[QM_XQC_ADDR_LOW];
->> +
->> +	/* Through SQC_BT/CQC_BT to get sqc and cqc address */
->> +	ret = qm_get_sqc(vf_qm, &vf_data->sqc_dma);
->> +	if (ret) {
->> +		dev_err(dev, "failed to read SQC addr!\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	ret = qm_get_cqc(vf_qm, &vf_data->cqc_dma);
->> +	if (ret) {
->> +		dev_err(dev, "failed to read CQC addr!\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static int vf_qm_state_save(struct hisi_acc_vf_core_device *hisi_acc_vdev,
->>  			    struct hisi_acc_vf_migration_file *migf)
->>  {
->> @@ -511,31 +544,10 @@ static int vf_qm_state_save(struct hisi_acc_vf_core_device *hisi_acc_vdev,
->>  		return ret;
->>  	}
->>  
->> -	ret = qm_get_regs(vf_qm, vf_data);
->> +	ret = vf_qm_read_data(vf_qm, vf_data);
->>  	if (ret)
->>  		return -EINVAL;
->>  
->> -	/* Every reg is 32 bit, the dma address is 64 bit. */
->> -	vf_data->eqe_dma = vf_data->qm_eqc_dw[1];
->> -	vf_data->eqe_dma <<= QM_XQC_ADDR_OFFSET;
->> -	vf_data->eqe_dma |= vf_data->qm_eqc_dw[0];
->> -	vf_data->aeqe_dma = vf_data->qm_aeqc_dw[1];
->> -	vf_data->aeqe_dma <<= QM_XQC_ADDR_OFFSET;
->> -	vf_data->aeqe_dma |= vf_data->qm_aeqc_dw[0];
->> -
->> -	/* Through SQC_BT/CQC_BT to get sqc and cqc address */
->> -	ret = qm_get_sqc(vf_qm, &vf_data->sqc_dma);
->> -	if (ret) {
->> -		dev_err(dev, "failed to read SQC addr!\n");
->> -		return -EINVAL;
->> -	}
->> -
->> -	ret = qm_get_cqc(vf_qm, &vf_data->cqc_dma);
->> -	if (ret) {
->> -		dev_err(dev, "failed to read CQC addr!\n");
->> -		return -EINVAL;
->> -	}
->> -
->>  	migf->total_length = sizeof(struct acc_vf_data);
->>  	return 0;
->>  }
->> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
->> index 5bab46602fad..7a9dc87627cd 100644
->> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
->> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
->> @@ -38,6 +38,9 @@
->>  #define QM_REG_ADDR_OFFSET	0x0004
->>  
->>  #define QM_XQC_ADDR_OFFSET	32U
->> +#define QM_XQC_ADDR_LOW		0x1
->> +#define QM_XQC_ADDR_HIGH	0x2
->> +
->>  #define QM_VF_AEQ_INT_MASK	0x0004
->>  #define QM_VF_EQ_INT_MASK	0x000c
->>  #define QM_IFC_INT_SOURCE_V	0x0020
-> 
-> .
-> 
+Here is the summary with links:
+  - [next] tls: remove redundant assignment to variable decrypted
+    https://git.kernel.org/netdev/net-next/c/f7ac8fbd3215
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
