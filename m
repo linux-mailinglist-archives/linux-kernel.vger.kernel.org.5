@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-141770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 279428A2335
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:28:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E43D8A2338
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:28:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA0261F22FAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:27:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DD581C2144D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D4710A0D;
-	Fri, 12 Apr 2024 01:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4CE14F70;
+	Fri, 12 Apr 2024 01:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e5raXPwn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wa9HJT4N"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12310DDA5;
-	Fri, 12 Apr 2024 01:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9382F12B79;
+	Fri, 12 Apr 2024 01:27:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712885250; cv=none; b=EFpXw/xasJEy7wj291vwVjmdmExg6UNyz6NQxkrSkXR8ufEkEUNWOOFHuuqsCP7zcQnBtMFz38In1rlFGTiPSnSG6itYNebcsR4nPDHnK73ZolnHfKzit/VBQPpgCUyLaf8x2SSz52BIjPUF9bVB+7XUq2eYpr/P9ey5aePiCz8=
+	t=1712885251; cv=none; b=Y/7mEfiCHffK4c52yEXSHA4feyZxstDbZSmWujyqNnpSTS9aS9NiaOWA9Cl4EdfN9G0CDoAEoorkJ9Aui1rECwRFMI+JEw7X5qt70xEnk3ZyvpPFCOVmJzgfL+thY4atsJ74ippIqpsH6GjzzMdFB35G+nbZ5KPCPmhGkcgAMow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712885250; c=relaxed/simple;
-	bh=5ViWQZ7ou49Yi5Tnf91RIZvSahqJo/+6GhHKRmpt2Y4=;
+	s=arc-20240116; t=1712885251; c=relaxed/simple;
+	bh=Ftl1ELwoUg2yhIIHfz2G1tgb+Ro1SsK1dVV7+WesnzE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mINsxBAy9AU7qKxXDCK9n2V4OMbozrysigaEDWMKB2FSoCVDn6Awp47XdmLskWeeQ8Z4cv5aGb/lHVaFhekzlzYca6EWBgImRz8BTG6YjZMW8JPFs7rzzu1iFJ+6gc+bNuE1B8EidYks2JILUT12JGG7vlJ0CA+BDiIrvRDl5iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e5raXPwn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC9B5C4AF0C;
-	Fri, 12 Apr 2024 01:27:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UI9zfiDUoyVVty96/eXPuV4+wY76fR4mSn/SohaFfd8x7AFsJy6SZvYuIKSFi7irBnmJZr5RtyVV4jw44s/YnV1tVu2zDbl35n+OMTVyNpfEshOda+4o6mUfQ9nWvF7U9pxNiBBfnIDPxSkeRfAu1kdAdKWCS26hUFhg4OLDC7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wa9HJT4N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AB3C32781;
+	Fri, 12 Apr 2024 01:27:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712885249;
-	bh=5ViWQZ7ou49Yi5Tnf91RIZvSahqJo/+6GhHKRmpt2Y4=;
+	s=k20201202; t=1712885250;
+	bh=Ftl1ELwoUg2yhIIHfz2G1tgb+Ro1SsK1dVV7+WesnzE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e5raXPwnOradGJVdlQR6W2+MajpJeqIokJo/5RBLUhJ8myP+u+zKz5ve9QEivkDLQ
-	 4CWGiWADSDFBzlAgt+mWXp4f70J7WVC2gywwDkBLLB/WIXHj2dTZwXm7wU2nH7hdPs
-	 NM/5urLYvf6uUxiLBaleu/9l5lgSM3PXmT0vUyV2N3iPURZrHBPG2ef0/xsTWnLEny
-	 14f0SdtDTfxOVFTBPp8uz5XHz+DXuls6Xe9SkWDp25slx4QHgE+6XaL27pO0bTSto+
-	 VPIvHQmVsIneQJFROXgHXKtLAi0EFbMJ0DfwruhV4+Ubyt3HaJGLcaYjYSu+pZiFFC
-	 vXYwRwCN8wEBw==
+	b=Wa9HJT4NX2U9KixURe0OmDMPjdp9Mh/udp2DgLxOk0T2fcCR7+N45J6MTJUW6bsvh
+	 9VZTiGYMMyIN9DEhzRR1ZsaqWCHkzKp3ssYDO+P0s9Fhy9deoiHi6h/EGbS82BY2jR
+	 ADYy7X0+FENxApBVTAbsKCxR1aCbMSdKEWeGqDib1TPy1D0QA3Woa0vUBWqxjxRJCx
+	 yrhbIeRLxsSAXnUvo8mZnwaxvR/G/GcbeQaioCU2GPe0xmdy5CFBDf8OrCdjhfNaur
+	 7LRvXgsHxrmAlOnJx+ejBS5ciMbPxqwCiwu5rYFgwJ6IJTeQheSLIkYp+qvFA5tCH+
+	 vMzaABd1XIyvA==
 From: Bjorn Andersson <andersson@kernel.org>
-To: ~postmarketos/upstreaming@lists.sr.ht,
-	phone-devel@vger.kernel.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Luca Weiss <luca@z3ntu.xyz>
-Cc: linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: qcom: msm8974-sony-shinano: Enable vibrator
-Date: Thu, 11 Apr 2024 20:27:23 -0500
-Message-ID: <171288524178.749915.2229709720158856709.b4-ty@kernel.org>
+To: Maximilian Luz <luzmaximilian@gmail.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Guru Das Srinagesh <quic_gurus@quicinc.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] firmware: qcom: uefisecapp: Fix memory related IO errors and crashes
+Date: Thu, 11 Apr 2024 20:27:24 -0500
+Message-ID: <171288524180.749915.6159719966958784520.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240406-shinano-vib-v1-1-fdd02af39d56@z3ntu.xyz>
-References: <20240406-shinano-vib-v1-1-fdd02af39d56@z3ntu.xyz>
+In-Reply-To: <20240406130125.1047436-1-luzmaximilian@gmail.com>
+References: <20240406130125.1047436-1-luzmaximilian@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,16 +67,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Sat, 06 Apr 2024 17:27:20 +0200, Luca Weiss wrote:
-> Enable the vibrator connected to PM8941 found on the Sony shinano
-> platform.
+On Sat, 06 Apr 2024 15:01:09 +0200, Maximilian Luz wrote:
+> It turns out that while the QSEECOM APP_SEND command has specific fields
+> for request and response buffers, uefisecapp expects them both to be in
+> a single memory region. Failure to adhere to this has (so far) resulted
+> in either no response being written to the response buffer (causing an
+> EIO to be emitted down the line), the SCM call to fail with EINVAL
+> (i.e., directly from TZ/firmware), or the device to be hard-reset.
 > 
-> 
+> [...]
 
 Applied, thanks!
 
-[1/1] ARM: dts: qcom: msm8974-sony-shinano: Enable vibrator
-      commit: 5c94b0b906436aad74e559195007afdd328211f4
+[1/1] firmware: qcom: uefisecapp: Fix memory related IO errors and crashes
+      commit: ed09f81eeaa8f9265e1787282cb283f10285c259
 
 Best regards,
 -- 
