@@ -1,110 +1,103 @@
-Return-Path: <linux-kernel+bounces-142034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E858A2690
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:27:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D4CF8A2694
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:28:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B9B72815AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:27:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 320611F251AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39EC3FB09;
-	Fri, 12 Apr 2024 06:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A01C3AC16;
+	Fri, 12 Apr 2024 06:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="omulzr0l"
-Received: from out203-205-221-149.mail.qq.com (out203-205-221-149.mail.qq.com [203.205.221.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zg3kGTnW"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B98B3F9E0
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9A9249E4
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712903261; cv=none; b=Wf1rDZzo7rDOVL785bVYngX/P238ojX5pWCQYzmU6LuP82AKWsXIcq3mDt4QNwlNncQCN8sKJsPSZ4AblluwolNIGNdism5QFt7d/KLzRW5D31jhK1vIsNmzTQxGdWRKPYyxBNTlj2OcN2bBhtYEn4v0Ip/G5zM9LgWn8+ZVGkw=
+	t=1712903282; cv=none; b=jrCL0NzbHm4uzPf36qK+pY3kKIF01A450FBQcTSzVrK8Z18/xxFNz2AvrqU9MTUnxVNqfUxovVtDw0BY2PtnVLzedcO/HNhAbjyowzXxtuU2oFzWhs3yye/kwRBleRBfDNrwwezIXzL0EztyFkDJtobfbzoW1dngx0tmxOWWjJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712903261; c=relaxed/simple;
-	bh=mpG73ntkI+bKnWbZWLV1SvgJybIvz4F5Ii6CWsA53Qs=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=NA9mj0biL3l8ot73iAIM9lkEFMwl1FyLmxPzEcYk/UWq2vnvcnpwUA/1iyqCScbfrawnUkfakqOFe4QKbHB3ympGt+rv5pNTigy9ej80hQundnlp5zB3qoDsDToI8aNtNsS/ot8pAtaL/XfvmDZgrH4eVGO9CT5gRXnn8lB6GC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=omulzr0l; arc=none smtp.client-ip=203.205.221.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712903254; bh=D8d08kdXjrFd28ginRdzdAdRNU2wwkO/zqvD1S6aOGE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=omulzr0leRzsi57LqNmlKQHklbB3iyYiKql9AigtmqNk/ZoKOS9po86lTcwDR7TxB
-	 mrCsruuospHXDPbmi5UTU6ZafuLMOxsk6KPftcXX6l8ekHB8O+NzBgW5pkhow8RZFO
-	 gCHrtBgN9zMC7pJX0bBIKzJcgb4Lm4zG1LxV14lo=
-Received: from Yangyus-MBP-2.lan ([219.141.235.82])
-	by newxmesmtplogicsvrszc6-0.qq.com (NewEsmtp) with SMTP
-	id 6DDA90ED; Fri, 12 Apr 2024 14:27:29 +0800
-X-QQ-mid: xmsmtpt1712903249tchi8hoao
-Message-ID: <tencent_49E156C63C84E435E6F16509D6699339520A@qq.com>
-X-QQ-XMAILINFO: M6lqjKFHeg8FipVhaxR+kEqYAYB7tJUinzNVL1AmDc5DgmTMqHVxOFMH9MdVvV
-	 RjPhvTEMHFHFNzmcs9Aso2kRDaElcQapDDlJwGkBBhWa59KhptInSCzFi03vMg4LzERqRTZQ1sJH
-	 CNwnCmgUbBUIIERkAWWI5ZK2gZuvi4zwiiGC+wR497dv+g43C3eN2JS5O7Je9Y6JSbC3b+djrjzT
-	 is/rS4G4tjTzsKLPax7qS7oAx7SJLE/XmKBeXrzrz3Qmc4F5hfqJ/3hZN3FsWWH3VcgFyuw8qf+j
-	 eiV9+dyW/PuokfeGq0Ko589nTnyFWgZECvR4yt5fKkP9bIgQDqLM6G2g5mly91OlFrL9On6PMTif
-	 FJdE9a192NEFtCl+UWCfyxh8ZZ2wbYvMmvE9UOb3GS6xU/Tr7TbPjPINZZ9ecjgnobJ7ocdNqNHi
-	 1s7o3Zq+t8JEi9C+16Uwe6O8ssdxqdtAgsbhco7k6BKEiBYkZUu0E2UYmS0rwFsMuIn6f/lAu646
-	 wLzCtFhObPbbeMQkiyf1dpvjVC8A/nXkupyawyK4+ldMuF8chHbnuffrn/WczlsV08UGuU/V/If4
-	 z2gvOQt8/PBLvTLv9w+dLovbn+7popyN1zfKg1MdqMOwjmGzK1Dj+cMMQjxZpQBC8+D9XbpFTRa3
-	 c9Px4pQB2KSD4hUsvPtpQfuNN42fQE5utHLK5kJYr2XOhgGy0Y6j79KVhI26e7m59RHkbRoxyWcc
-	 pGVurjjQF0Vgt0CP2K/RhKXKmXGR6Ez24GgnCCEp9v/RCWowSHECv6IIECzBfDlH+98UUR58dsiG
-	 DftcNxVBMSIoVMU24t23HUMnay7tCqipq67fxLzF0UsIlkLT/nUqJ/DjJVRXTB54DSsbMM/6SeKD
-	 qwUrpMixt0xaelMdd/Ucma3hsRRjqDxmo9LwXdiEYBcOUrjTeY+LpFcaolblLmrzLNU1tEYeaghx
-	 VEqmBD/GaU1ukUuKp4//LrQaxRNyClcp71h31IuKwmHJU5f/IiWqKhwnP8NevXBzJFk/yZem4=
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Yangyu Chen <cyy@cyyself.name>
-To: conor@kernel.org
-Cc: ajones@ventanamicro.com,
-	anup@brainfault.org,
-	aou@eecs.berkeley.edu,
-	atishp@atishpatra.org,
-	conor.dooley@microchip.com,
-	dqfext@gmail.com,
-	guoren@kernel.org,
-	heiko@sntech.de,
-	inochiama@outlook.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	mark.rutland@arm.com,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	will@kernel.org
-Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
-Date: Fri, 12 Apr 2024 14:27:28 +0800
-X-OQ-MSGID: <20240412062728.71533-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240314-pep-announcer-2d7f10ff8b65@spud>
-References: <20240314-pep-announcer-2d7f10ff8b65@spud>
+	s=arc-20240116; t=1712903282; c=relaxed/simple;
+	bh=Xf3Qvz06ChTjt3NNxv8JB28kb5ddfgTfylD67tibqpw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LwDOrAO19voVIWV/18dXWiEvphp7YsUeQIpEglXDx0eJO5kRHl5E4smDrNm7+4OMXS+vStoUgfLitWphHh5TI/ShpgqUS1+gUWSjNjLAbNK74DjrQl9GaByb//MuLdZAAM6xdKiFfcmr63XiU31wQq1b+Kh2kjltAvvpWxnDJhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zg3kGTnW; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6eaf1005fcaso422682b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712903281; x=1713508081; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=apPZ6XNAlNDIylQ/q/6dilZ76kjUyGxWvmJrZFzfD4w=;
+        b=zg3kGTnWfQB8h4rv5mVVSdxkiXhDrxN9A/fIb312t7+Li/9cNR2Om3yQaq+eivHujr
+         3di8auKyN6Z2L1Jt575dQOAy1wesm/z09WWWI5Oc8pw3bzm9idICKGEiQSAHR/xoeXtM
+         SeA7LSpJUnlW1le5k5I4kYpREzAlqXXIDYTvb5A3lpeXklW5brn2KR056feYSbhuEnhL
+         kpsTmjinWAJAL8X1MQPhB13XBDnxw3GF0B2tdDjKV0KyBT24Ex3ug+zm7VwkkKIUDJdg
+         aFGD4FxocpWTYxq7UGIXkvIi6WfRD4QN4P3kk3396uAbdOdzXoelMZJm5zorD1VvwOOs
+         mDcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712903281; x=1713508081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=apPZ6XNAlNDIylQ/q/6dilZ76kjUyGxWvmJrZFzfD4w=;
+        b=wi8pIleBUTMjfuVJJ9BALy1ZZQgwLhBBv7dfOhm3pdYkp9ZKp5Eu2Nyur/PbEMzJIW
+         zdQTIqHdTHmTljk6ROOpR+iedpPMkXgj5EaS/sr6tlS1xDuFF8ehZoABXjFeCAlbYr6e
+         NHytEXo0N9gbm6/FSFQHLTv4KKpDZ3cDDx9hU13DfYy+1nDCpeYP4xrsmO1suLZPZODR
+         onVcsHQoHMn/yLV4sBA9IWOat0Tc2soAoustY/6WInURy16OoBc+/QyhZO/3VmseVYnY
+         iuhnMJIiU6UToqE1CQXywclccozqIfuPL7Uw8bZ2Y+B9mxmH6lnllYdH+ZhozNmK7nke
+         Oo1w==
+X-Forwarded-Encrypted: i=1; AJvYcCW/kQaPM1goCk4IZgtU9F8I48gAV74TpqrS+z0lJjLm1ONZIG2bE2PTVM5IWnk30aCZa2N6mBWamIH+t5y0d620qKybXaa8sTA/RpSV
+X-Gm-Message-State: AOJu0YwuYbt1NSsrJDCvXXvKcUXZsAu8R3xuVwoaD4+WHLuSwd/Pbtyb
+	Dg3AXpqYuG3dz7alzjEwfOA0VaOB18QmKMGkPqcQ9qwn5mzbxTW5u+uEqe6Bz1s=
+X-Google-Smtp-Source: AGHT+IFVbE/Eyfm80YGhaFewYbdmD554u1rNm5djLK2fqSFsGiRb8Bs1bZ3FM+N5MfgT3jVw96aFCg==
+X-Received: by 2002:a05:6a00:2387:b0:6ea:df6a:39e7 with SMTP id f7-20020a056a00238700b006eadf6a39e7mr2052486pfc.13.1712903280761;
+        Thu, 11 Apr 2024 23:28:00 -0700 (PDT)
+Received: from localhost ([122.172.85.136])
+        by smtp.gmail.com with ESMTPSA id u12-20020a056a00124c00b006ed93e7ef22sm2173178pfi.39.2024.04.11.23.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 23:28:00 -0700 (PDT)
+Date: Fri, 12 Apr 2024 11:57:58 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: lizhe <sensor1010@163.com>
+Cc: rafael <rafael@kernel.org>, linux-pm <linux-pm@vger.kernel.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cpufreq: exit() callback is optional
+Message-ID: <20240412062758.yak3lpvuus7ba2e7@vireshk-i7>
+References: <b97964653d02225f061e0c2a650b365c354b98c8.1712900945.git.viresh.kumar@linaro.org>
+ <7bd5d6c1.32db8.18ed0f5e6c3.Coremail.sensor1010@163.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bd5d6c1.32db8.18ed0f5e6c3.Coremail.sensor1010@163.com>
 
->> IMHO, it may be better to use a new DT property like "riscv,cpu-errata" or
->> "<vendor>,cpu-errata". It can achieve almost everything like using pseudo
->> isa. And the only cost I think is a small amount code to parse this.
-> 
-> I suppose we could do that, but accounting for vendor specifics was one
-> of the goals for the property I only just added and that I am suggesting
-> to use here.
+On 12-04-24, 14:19, lizhe wrote:
+> Why did you do that? Why did you plagiarize others' achievements? Is this the style of Linaro?
 
-I think there is a simpler way to do that. We use T-Head PMU by default
-for All T-Head CPUs (from mvendor id). Then, to test there is sscofpmf in
-the ISA string being probed by the kernel. If yes, then use scofpmf.
-Otherwise, use T-Head PMU.
+Even if your changes make sense, the discussions needs to be healthy. I am a
+co-maintainer of the cpufreq subsystem and its mine and Rafael's responsibility
+to keep things moving in the right direction.
 
-I will check if this can also be switched in any vendor CSR like Svpbmt and
-T-Head MAE we discussed before.
+This patch fixes a issue you never mentioned over LKML.
 
-Thanks,
-Yangyu Chen
+Lets not make this awkward, it won't help anyone.
 
+Thanks.
+
+-- 
+viresh
 
