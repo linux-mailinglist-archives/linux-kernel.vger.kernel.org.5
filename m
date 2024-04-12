@@ -1,123 +1,174 @@
-Return-Path: <linux-kernel+bounces-142935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DBFD8A3241
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EEB418A323B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:21:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6BA91F26435
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:22:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4C841F25D22
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFCA7149C44;
-	Fri, 12 Apr 2024 15:19:47 +0000 (UTC)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05FF382483;
+	Fri, 12 Apr 2024 15:19:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="TewO1ChV"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CC2148FF9;
-	Fri, 12 Apr 2024 15:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661481487C6
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712935187; cv=none; b=ETuhd2T67qHHiX2nlMlE8tp7uBqQI+pryZNg2qU1vdS44yzLrlpLNIihkfimDsoxiYv7K+Tw6Pluegzf457J7onA0if/ynbVteWcURsEBkcwXTdsZtZr36iKxkXiKmh221H6j64mMqslC9bdyD0oDSNXTv+bwKZVVQrS3zVMcrs=
+	t=1712935176; cv=none; b=LBKRUOH/H6dYKokPKg/GwfLzXzAC8INXPKSf7zg2v+BMjxUaAI7/M8+7QF6VwNMNntIb7oExpOHeaX0CdM9eRL6+fXwjv3gn7UPHoEZuF/uXk8NR3VjKgKFO7p92lVXTL5oWHP9dg9T8BPBi4HV36L4rDgKiAO3jab87HCuTLVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712935187; c=relaxed/simple;
-	bh=1I9KctD9v8HDw1TZ54buI8FQkI+tMCN3Y5eq63v1xj4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ke45mNOr5T3Ab5XYVxC92qLd+WN8Pr29kRwGtxI/FdJ2d2bXqZwUPZZfebm5p1k+bs/gBZhPpnrz1oIfA9eA1X75ksNXdfm96CaaYsxTAsaXYlW9GbGqOUtYALl4dbw0oLpeFncNpJaVCaKnCoDGio4wg54s8aYsOuQJOqM0m4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso1031960a12.3;
-        Fri, 12 Apr 2024 08:19:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712935184; x=1713539984;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IsgwtMpEymBii2Q07PG7fDKinM7HRQw2ddeFPhLPyuo=;
-        b=pgKPMxLIg13rIrNKEIzv+ESrGHLRaGJV/Cu8x7IYmhomlwFPRpe1b+0Cu9//2DrX3b
-         DoGWmeyee5Nowj3xa+VnBnYH218qkUi0KDiKYLeMUILPPWBwpt2tjjfAGJ7KbEk5lvob
-         IyGI6nZEZt/j5rTITuNo5VFOTNqGj80OxGqoY4QYi04swrmxoWdRBMNC5U9b9NzWJzTp
-         eGEmbo17mrrhk7bjBUANmp3CkgyojERj7dvC2cvP1s1pNdxIE6GBHSEX5myaUEtPqxEX
-         18m816OIlcN1zKaGWdc196PtuEwtPL/McitBaLgbI8MHvYS5rWIgsxXd0xMDQKfnNMuF
-         YVlA==
-X-Forwarded-Encrypted: i=1; AJvYcCXANeTrWaztdVrlvxKONGd6RB0r29uLg+dx0bC+YN5/Ae6uInFiEcKL1HNtxwUbX7JaGV7bMI1rGCKYRvoPyThWdw95DVyxj4adE5Nd
-X-Gm-Message-State: AOJu0YzO7L+wP3JH5lBiN10TSzIgO4rMtMvR2diRkZqZ6DG6+U2K9kH3
-	tm6BCRw+1+8V//mm7Psfqt09xU4x/eBrkLAQsoiwt942KI6Ns8JN
-X-Google-Smtp-Source: AGHT+IHcKXe2KUB58A9HTpVzlHxQLHgjlX1xlkgMV5RezWAayQTuhjhD97HaygRb+Uiurq7avvTuTQ==
-X-Received: by 2002:a17:906:f0ce:b0:a52:4363:b028 with SMTP id dk14-20020a170906f0ce00b00a524363b028mr25080ejb.29.1712935183722;
-        Fri, 12 Apr 2024 08:19:43 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-006.fbsv.net. [2a03:2880:30ff:6::face:b00c])
-        by smtp.gmail.com with ESMTPSA id og50-20020a1709071df200b00a51ba0be887sm1942278ejc.192.2024.04.12.08.19.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 08:19:43 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: "David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	horms@kernel.org
-Subject: [PATCH net-next 2/2] net: ip6_gre: Remove generic .ndo_get_stats64
-Date: Fri, 12 Apr 2024 08:19:26 -0700
-Message-ID: <20240412151928.2895993-2-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240412151928.2895993-1-leitao@debian.org>
-References: <20240412151928.2895993-1-leitao@debian.org>
+	s=arc-20240116; t=1712935176; c=relaxed/simple;
+	bh=PbKlGesAILRM8egOcOsHeXdQ4cD9J0LY94ZDaOSVUjA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QQi/G/zEBYcsVhP7j14148+AyystykAm2oWXfaRil3YRoC9Nm6T/+luGN9YhH8VNCOtQVRMHiyoISKoCNmtVNspgdHBYrOaYLdcyYBx+BuutYhxT2LDI+t/PklniATfDefKonDG9peAmpsBZPUsd7GnOC+FCvgRklnpJ7CG/y24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=TewO1ChV; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=DGzof1GGkX+qr1HYb79Xnt9O/wZA8sRs08uMtKKlZes=; b=TewO1ChVJSortfw0EVN1FWaF3V
+	9e+5Nf+DUlIDtfXF35qysW/QHL5h6l86zbSKK8tiO//XPCRMp0WElDoyREyQozRKrn25Hk39cgfL3
+	HEOr1BhQOJnE57vhTbankwEpehQ915Qj4G05UmNRz4Ug71bCdM5s5pI8algyZzLZRH+53f2lmrys+
+	pFhmYIbeK8rnh1BW2VZFcT6g57cEuMjBYCr1bOaJRAE1J5eVjptbuq09B3UTPq5GtO7u2eagLC8At
+	BC5/WzWW6/A+77TP9+E18DBvv7/OD3gT7IOL4adO7BdO1JnNF04JQ52UaNlEC9MWy/Fe9MUwzOWeO
+	C4oqdq3Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rvIgZ-00000009UqM-3aUy;
+	Fri, 12 Apr 2024 15:19:27 +0000
+Date: Fri, 12 Apr 2024 16:19:27 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Peter Xu <peterx@redhat.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Lokesh Gidra <lokeshgidra@google.com>,
+	Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+Message-ID: <ZhlQ_4Ve0vYNbWbl@casper.infradead.org>
+References: <20240411171319.almhz23xulg4f7op@revolver>
+ <ZhhSItiyLYBEdAX3@x1n>
+ <ZhhV3PKgEX9d7_vA@casper.infradead.org>
+ <ZhhaRXHKk7w_hKgi@x1n>
+ <Zhhd-A7w1A8JUadM@casper.infradead.org>
+ <ZhinCD-PoblxGFm0@casper.infradead.org>
+ <ZhkrY5tkxgAsL1GF@x1n>
+ <CAJuCfpG7YkQ2giKiv07TetTn=QHK9x723vnLaTjDCaQjUvAavw@mail.gmail.com>
+ <ZhlCVOz7qaDtldfL@casper.infradead.org>
+ <CAJuCfpGGUD6ev-KFhON2D2RqQRZSgjxFXvkNqeux-LrJw4L+iw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpGGUD6ev-KFhON2D2RqQRZSgjxFXvkNqeux-LrJw4L+iw@mail.gmail.com>
 
-Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
-configured") moved the callback to dev_get_tstats64() to net core, so,
-unless the driver is doing some custom stats collection, it does not
-need to set .ndo_get_stats64.
+On Fri, Apr 12, 2024 at 09:53:29AM -0500, Suren Baghdasaryan wrote:
+> Unless vmf_anon_prepare() already explains why vma->anon_vma poses a
+> problem for per-vma locks, we should have an explanation there. This
+> comment would serve that purpose IMO.
 
-Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
-doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
-function pointer.
+I'll do you one better; here's some nice kernel-doc for
+vmd_anon_prepare():
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- net/ipv6/ip6_gre.c | 3 ---
- 1 file changed, 3 deletions(-)
+commit f89a1cd17f13
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Fri Apr 12 10:41:02 2024 -0400
 
-diff --git a/net/ipv6/ip6_gre.c b/net/ipv6/ip6_gre.c
-index b5b417902c0a..3942bd2ade78 100644
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -1434,7 +1434,6 @@ static const struct net_device_ops ip6gre_netdev_ops = {
- 	.ndo_start_xmit		= ip6gre_tunnel_xmit,
- 	.ndo_siocdevprivate	= ip6gre_tunnel_siocdevprivate,
- 	.ndo_change_mtu		= ip6_tnl_change_mtu,
--	.ndo_get_stats64	= dev_get_tstats64,
- 	.ndo_get_iflink		= ip6_tnl_get_iflink,
- };
+    mm: Delay the check for a NULL anon_vma
+    
+    Instead of checking the anon_vma early in the fault path where all page
+    faults pay the cost, delay it until we know we're going to need the
+    anon_vma to be filled in.  This will have a slight negative effect on the
+    first fault in an anonymous VMA, but it shortens every other page fault.
+    It also makes the code slightly cleaner as the anon and file backed
+    fault handling look more similar.
+    
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index d8d2ed80b0bf..718f91f74a48 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1057,11 +1057,13 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
+ 	gfp_t gfp;
+ 	struct folio *folio;
+ 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
++	vm_fault_t ret;
  
-@@ -1857,7 +1856,6 @@ static const struct net_device_ops ip6gre_tap_netdev_ops = {
- 	.ndo_set_mac_address = eth_mac_addr,
- 	.ndo_validate_addr = eth_validate_addr,
- 	.ndo_change_mtu = ip6_tnl_change_mtu,
--	.ndo_get_stats64 = dev_get_tstats64,
- 	.ndo_get_iflink = ip6_tnl_get_iflink,
- };
+ 	if (!thp_vma_suitable_order(vma, haddr, PMD_ORDER))
+ 		return VM_FAULT_FALLBACK;
+-	if (unlikely(anon_vma_prepare(vma)))
+-		return VM_FAULT_OOM;
++	ret = vmf_anon_prepare(vmf);
++	if (ret)
++		return ret;
+ 	khugepaged_enter_vma(vma, vma->vm_flags);
  
-@@ -1920,7 +1918,6 @@ static const struct net_device_ops ip6erspan_netdev_ops = {
- 	.ndo_set_mac_address =	eth_mac_addr,
- 	.ndo_validate_addr =	eth_validate_addr,
- 	.ndo_change_mtu =	ip6_tnl_change_mtu,
--	.ndo_get_stats64 =	dev_get_tstats64,
- 	.ndo_get_iflink =	ip6_tnl_get_iflink,
- };
+ 	if (!(vmf->flags & FAULT_FLAG_WRITE) &&
+diff --git a/mm/memory.c b/mm/memory.c
+index 6e2fe960473d..46b509c3bbc1 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3213,6 +3213,21 @@ static inline vm_fault_t vmf_can_call_fault(const struct vm_fault *vmf)
+ 	return VM_FAULT_RETRY;
+ }
  
--- 
-2.43.0
-
++/**
++ * vmf_anon_prepare - Prepare to handle an anonymous fault.
++ * @vmf: The vm_fault descriptor passed from the fault handler.
++ *
++ * When preparing to insert an anonymous page into a VMA from a
++ * fault handler, call this function rather than anon_vma_prepare().
++ * If this vma does not already have an associated anon_vma and we are
++ * only protected by the per-VMA lock, the caller must retry with the
++ * mmap_lock held.  __anon_vma_prepare() will look at adjacent VMAs to
++ * determine if this VMA can share its anon_vma, and that's not safe to
++ * do with only the per-VMA lock held for this VMA.
++ *
++ * Return: 0 if fault handling can proceed.  Any other value should be
++ * returned to the caller.
++ */
+ vm_fault_t vmf_anon_prepare(struct vm_fault *vmf)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+@@ -4437,8 +4452,9 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+ 	}
+ 
+ 	/* Allocate our own private page. */
+-	if (unlikely(anon_vma_prepare(vma)))
+-		goto oom;
++	ret = vmf_anon_prepare(vmf);
++	if (ret)
++		return ret;
+ 	/* Returns NULL on OOM or ERR_PTR(-EAGAIN) if we must retry the fault */
+ 	folio = alloc_anon_folio(vmf);
+ 	if (IS_ERR(folio))
+@@ -5821,15 +5837,6 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+ 	if (!vma_start_read(vma))
+ 		goto inval;
+ 
+-	/*
+-	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
+-	 * This check must happen after vma_start_read(); otherwise, a
+-	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
+-	 * from its anon_vma.
+-	 */
+-	if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
+-		goto inval_end_read;
+-
+ 	/* Check since vm_start/vm_end might change before we lock the VMA */
+ 	if (unlikely(address < vma->vm_start || address >= vma->vm_end))
+ 		goto inval_end_read;
 
