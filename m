@@ -1,166 +1,162 @@
-Return-Path: <linux-kernel+bounces-142691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D84158A2EDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:08:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E153D8A2EDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:07:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DCCC1F21F61
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:08:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB9CE1C20DB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA975FBA0;
-	Fri, 12 Apr 2024 13:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0E75F860;
+	Fri, 12 Apr 2024 13:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VoVb/NS1"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mlWYRY6R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B23B62818
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC854224D8;
+	Fri, 12 Apr 2024 13:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712927290; cv=none; b=Lvph8hlBgsJhSd3/cW91lyzzrrNDfbFeuEseR0gvYvW7JjyWdDQQMrtUj8dTtwzQ3MNa1FCSt9sLxFjmFkPosvSGobIGZcoCyOlBZIoud2BsGuwBMN3E2jYj+OFfsjFWxhV/J0LuzZ3rdlVvhHiKQJSx3ABf5U28Gr7BY1lUAVs=
+	t=1712927263; cv=none; b=iH/E8a1bESxvMQRDDxc6HNPMm7+uaZWyuN682tWdbBBlgbz0PMwe8aweteOrMqpEIGDun7r2xAlprMXCn9+/4muIxBZmvTqs0TRR5b4bTkxjJvOWHJ0WZC9MgTB1Qyl+qjA0ZjVSXRqNhDaqAWmCmk73PwhXx5a7GL/uhshW2h8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712927290; c=relaxed/simple;
-	bh=Q1Db/ZKdhoYZY4z6pe4loFoumzC09sqIMjzSkx6k370=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=jayIpPmpMa381G45d/Hk4S/d/OJfgUr0D26KRit94DSoN2DhhMla2USoGpnkzY70aJ2/ibCDjaOss/y6mag0fEpNVkKkce5SJr+1xpwaFHtC9AqgY+eKTXfNKsRRPx0dmApQZNOPdDwH8BOAereLW3x+bnRulLdUKJx9aVWxZY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VoVb/NS1; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712927287; x=1744463287;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Q1Db/ZKdhoYZY4z6pe4loFoumzC09sqIMjzSkx6k370=;
-  b=VoVb/NS1mseqbLFZczbgW/RuAgPsa+uBdSoRjm0JVrupz0oeiW3qFSMq
-   AlwLbPzF9DCs4SpzKPhrDBD+MBaW/rq6zx/cVRrY+dK7OMoOfWgIfrgGy
-   FDhkFqxKYF3bCpxs3C6SUxag9zPahtc6i2gL2N79l5KCKgGAMrR/QVApz
-   MjFwNiCvfPNhlrPxmOZ8QTu0sM2VhPfL6kMWxNyVrr05OrVtd6ZMhINN7
-   6KSfDHA+iipgICCmTa3LenN3UNmmeC/zG3V6xERveUHdRDGmjI/hWncEx
-   q+HLn3QcqtG7jx8uHDSw8v6zHFx/amlpRsDFF0yckPrXYrnmWVQk6oJ49
-   w==;
-X-CSE-ConnectionGUID: QwTLxichSIi3CeFvDvI8zA==
-X-CSE-MsgGUID: peYNsKP7RP27nmdGofz6jw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8239295"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="8239295"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:08:06 -0700
-X-CSE-ConnectionGUID: N6EQa6+ZS5ePyGkc5Q8A1g==
-X-CSE-MsgGUID: jdRJ4EDWT0ydliAjldhpZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="25882120"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 12 Apr 2024 06:08:05 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rvGdP-0009mP-00;
-	Fri, 12 Apr 2024 13:08:03 +0000
-Date: Fri, 12 Apr 2024 21:07:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kyle Huey <me@kylehuey.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	x86@kernel.org, Ingo Molnar <mingo@kernel.org>
-Subject: [tip:perf/core 10/17] kernel/events/core.c:9634:13: warning:
- 'perf_event_free_bpf_handler' defined but not used
-Message-ID: <202404122021.kE3qOoZo-lkp@intel.com>
+	s=arc-20240116; t=1712927263; c=relaxed/simple;
+	bh=WXXIdGk+X4xSO8A0Mdd/JdZXvSOz7cKKHzKcx7zp/e4=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YmMAEgkC1dkAh6rJCF1JtWJEJT8jcU3rBhxyMeJizZ9bzyWivMdqYo5cBR3krZC+zaZcugYMRGftcokw8uTEplW+tMQXCQZf6D02vbrI0o7tX6vGcpmXnBHpZam62Tn42chkWaa49jh3NEmRa3Zz9ISBkqapBmvDp7JYsPNO/AU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mlWYRY6R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C47CC113CC;
+	Fri, 12 Apr 2024 13:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712927262;
+	bh=WXXIdGk+X4xSO8A0Mdd/JdZXvSOz7cKKHzKcx7zp/e4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mlWYRY6R+uO4KNbt8cIf64MguVd8/GHUg7jqEfibnb2j2yYOr842hoff3W6jZ2W6Q
+	 BRWCuZA/oNlXy6/0CFH3viAXrc8qD5Z1kg2VqyfMrkRlL0GkKt6FGGkq7vjol+/rWf
+	 xhKn1pcS/RFNPqEmpu+De8hHFtcOYW9290Q6wreBB+LuxJjv7MvmphVuMNI5yVeK6v
+	 8LwCZ6+IMlvHhnGCu56SknAEpcfLvStMVcRpKtbhCnCjRQrnLJanixlnZPvxJPcLtA
+	 DyvXUuh5xMgv1rPhe/ETCYBkM2o42kXk36Yi7g8UEQFJ2zPIyYqG+w5RiuGqXWqE3I
+	 xnLxdM3U5CxIw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rvGd1-003tLC-MV;
+	Fri, 12 Apr 2024 14:07:39 +0100
+Date: Fri, 12 Apr 2024 14:07:38 +0100
+Message-ID: <86le5isp9h.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	loongarch@lists.linux.dev,
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	kvm-riscv@lists.infradead.org,
+	linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 0/4] KVM, mm: remove the .change_pte() MMU notifier and set_pte_at_notify()
+In-Reply-To: <20240405115815.3226315-1-pbonzini@redhat.com>
+References: <20240405115815.3226315-1-pbonzini@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: pbonzini@redhat.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, oliver.upton@linux.dev, zhaotianrui@loongson.cn, maobibo@loongson.cn, tsbogend@alpha.franken.de, npiggin@gmail.com, anup@brainfault.org, atishp@atishpatra.org, seanjc@google.com, akpm@linux-foundation.org, david@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
-head:   93d3fde7fd19c2e2cde7220e7986f9a75e9c5680
-commit: 4c03fe11b96bda60610aca77002e83f37b4a2242 [10/17] perf/bpf: Reorder bpf_overflow_handler() ahead of __perf_event_overflow()
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240412/202404122021.kE3qOoZo-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240412/202404122021.kE3qOoZo-lkp@intel.com/reproduce)
+On Fri, 05 Apr 2024 12:58:11 +0100,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
+> 
+> The .change_pte() MMU notifier callback was intended as an optimization
+> and for this reason it was initially called without a surrounding
+> mmu_notifier_invalidate_range_{start,end}() pair.  It was only ever
+> implemented by KVM (which was also the original user of MMU notifiers)
+> and the rules on when to call set_pte_at_notify() rather than set_pte_at()
+> have always been pretty obscure.
+> 
+> It may seem a miracle that it has never caused any hard to trigger
+> bugs, but there's a good reason for that: KVM's implementation has
+> been nonfunctional for a good part of its existence.  Already in
+> 2012, commit 6bdb913f0a70 ("mm: wrap calls to set_pte_at_notify with
+> invalidate_range_start and invalidate_range_end", 2012-10-09) changed the
+> .change_pte() callback to occur within an invalidate_range_start/end()
+> pair; and because KVM unmaps the sPTEs during .invalidate_range_start(),
+> .change_pte() has no hope of finding a sPTE to change.
+> 
+> Therefore, all the code for .change_pte() can be removed from both KVM
+> and mm/, and set_pte_at_notify() can be replaced with just set_pte_at().
+> 
+> Please review!  Also feel free to take the KVM patches through the mm
+> tree, as I don't expect any conflicts.
+> 
+> Thanks,
+> 
+> Paolo
+> 
+> Paolo Bonzini (4):
+>   KVM: delete .change_pte MMU notifier callback
+>   KVM: remove unused argument of kvm_handle_hva_range()
+>   mmu_notifier: remove the .change_pte() callback
+>   mm: replace set_pte_at_notify() with just set_pte_at()
+> 
+>  arch/arm64/kvm/mmu.c                  | 34 -----------------
+>  arch/loongarch/include/asm/kvm_host.h |  1 -
+>  arch/loongarch/kvm/mmu.c              | 32 ----------------
+>  arch/mips/kvm/mmu.c                   | 30 ---------------
+>  arch/powerpc/include/asm/kvm_ppc.h    |  1 -
+>  arch/powerpc/kvm/book3s.c             |  5 ---
+>  arch/powerpc/kvm/book3s.h             |  1 -
+>  arch/powerpc/kvm/book3s_64_mmu_hv.c   | 12 ------
+>  arch/powerpc/kvm/book3s_hv.c          |  1 -
+>  arch/powerpc/kvm/book3s_pr.c          |  7 ----
+>  arch/powerpc/kvm/e500_mmu_host.c      |  6 ---
+>  arch/riscv/kvm/mmu.c                  | 20 ----------
+>  arch/x86/kvm/mmu/mmu.c                | 54 +--------------------------
+>  arch/x86/kvm/mmu/spte.c               | 16 --------
+>  arch/x86/kvm/mmu/spte.h               |  2 -
+>  arch/x86/kvm/mmu/tdp_mmu.c            | 46 -----------------------
+>  arch/x86/kvm/mmu/tdp_mmu.h            |  1 -
+>  include/linux/kvm_host.h              |  2 -
+>  include/linux/mmu_notifier.h          | 44 ----------------------
+>  include/trace/events/kvm.h            | 15 --------
+>  kernel/events/uprobes.c               |  5 +--
+>  mm/ksm.c                              |  4 +-
+>  mm/memory.c                           |  7 +---
+>  mm/migrate_device.c                   |  8 +---
+>  mm/mmu_notifier.c                     | 17 ---------
+>  virt/kvm/kvm_main.c                   | 50 +------------------------
+>  26 files changed, 10 insertions(+), 411 deletions(-)
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404122021.kE3qOoZo-lkp@intel.com/
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-All warnings (new ones prefixed by >>):
-
->> kernel/events/core.c:9634:13: warning: 'perf_event_free_bpf_handler' defined but not used [-Wunused-function]
-    9634 | static void perf_event_free_bpf_handler(struct perf_event *event)
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->> kernel/events/core.c:9596:12: warning: 'perf_event_set_bpf_handler' defined but not used [-Wunused-function]
-    9596 | static int perf_event_set_bpf_handler(struct perf_event *event,
-         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/perf_event_free_bpf_handler +9634 kernel/events/core.c
-
-  9595	
-> 9596	static int perf_event_set_bpf_handler(struct perf_event *event,
-  9597					      struct bpf_prog *prog,
-  9598					      u64 bpf_cookie)
-  9599	{
-  9600		if (event->overflow_handler_context)
-  9601			/* hw breakpoint or kernel counter */
-  9602			return -EINVAL;
-  9603	
-  9604		if (event->prog)
-  9605			return -EEXIST;
-  9606	
-  9607		if (prog->type != BPF_PROG_TYPE_PERF_EVENT)
-  9608			return -EINVAL;
-  9609	
-  9610		if (event->attr.precise_ip &&
-  9611		    prog->call_get_stack &&
-  9612		    (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) ||
-  9613		     event->attr.exclude_callchain_kernel ||
-  9614		     event->attr.exclude_callchain_user)) {
-  9615			/*
-  9616			 * On perf_event with precise_ip, calling bpf_get_stack()
-  9617			 * may trigger unwinder warnings and occasional crashes.
-  9618			 * bpf_get_[stack|stackid] works around this issue by using
-  9619			 * callchain attached to perf_sample_data. If the
-  9620			 * perf_event does not full (kernel and user) callchain
-  9621			 * attached to perf_sample_data, do not allow attaching BPF
-  9622			 * program that calls bpf_get_[stack|stackid].
-  9623			 */
-  9624			return -EPROTO;
-  9625		}
-  9626	
-  9627		event->prog = prog;
-  9628		event->bpf_cookie = bpf_cookie;
-  9629		event->orig_overflow_handler = READ_ONCE(event->overflow_handler);
-  9630		WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
-  9631		return 0;
-  9632	}
-  9633	
-> 9634	static void perf_event_free_bpf_handler(struct perf_event *event)
-  9635	{
-  9636		struct bpf_prog *prog = event->prog;
-  9637	
-  9638		if (!prog)
-  9639			return;
-  9640	
-  9641		WRITE_ONCE(event->overflow_handler, event->orig_overflow_handler);
-  9642		event->prog = NULL;
-  9643		bpf_prog_put(prog);
-  9644	}
-  9645	#else
-  9646	static int perf_event_set_bpf_handler(struct perf_event *event,
-  9647					      struct bpf_prog *prog,
-  9648					      u64 bpf_cookie)
-  9649	{
-  9650		return -EOPNOTSUPP;
-  9651	}
-  9652	
+	M.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Without deviation from the norm, progress is not possible.
 
