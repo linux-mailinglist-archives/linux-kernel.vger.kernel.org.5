@@ -1,144 +1,96 @@
-Return-Path: <linux-kernel+bounces-142798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F29B8A3045
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 459968A3049
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:16:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8934F1F23D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:15:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECC021F212E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E06127E27;
-	Fri, 12 Apr 2024 14:14:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0888615F;
+	Fri, 12 Apr 2024 14:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="cRNS12vo"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VFNM6wCN"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE686127E1A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081C7205E22;
+	Fri, 12 Apr 2024 14:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712931287; cv=none; b=Rx2xlw4diYueOyTsq1vWnVIvWgNSkPNc606LWDqbe3yQ1dMHxnh4GNEAo5o2d2pKosOxfteWbo922OzkFp2XIOo9QekYnIKpHSNtNwPpKu6Dj+nUX1Da+xOlpM49tWh8p338F2mFiQep3ssOLtjuOPjvSnX7pKUQCvPQE8uFLps=
+	t=1712931391; cv=none; b=lWLiqO4lLKPXkCQmTONOskN91KLUUg0ElXIbAAtip6oOd4fd6rf4mo77TMnMoQkXXZGFIk+AUfq5GEiHQ5WiT1xxpwXhhe2nfrEn4LUsF1j4E3dBG9BhJNunrkKbT4/LpOmXLIkms/M+tZ4ZGU+qGG76rMP8IQxnlP/YwwAr3iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712931287; c=relaxed/simple;
-	bh=VFOjDpeiJyVBmuCjZq2PaHhMPoFPoJPszNs7YqX5OkU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uH09vtLi4a6QiHUfiaqvAeB0faqiDrTiDps/wTAeQIK2P0+ZvPZ8e4eHd+3gXmL8ZI9ANcMAJx2YGC4Cr+lArYaJzGDaO5bnQBBUjzRtcIhI6nW26uYsL+q3bn1VGUq7Oiw2ZfTU+c2yk8Fxpipznc0pa2MxGquXfcnNuEAnU/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=cRNS12vo; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e411e339b8so7831935ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:14:45 -0700 (PDT)
+	s=arc-20240116; t=1712931391; c=relaxed/simple;
+	bh=SA0q6SsNFlcUSbmyksfGP3j4aVnwqM+5MoF1Muj/XLA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GPbfcI1Z7i+qstQlB3lN1UbVbdQEnEzoTI+xE+bI3uZSQheUOR/op1MMDfExKF+NwA13bfRhqIHjTPgYG00lSteMbyFtKMDGtmQsegrMdz6sPSce7eDhsoguFpGc2I974gtNXEs3LUa5U5k7lrSLxC7LpLTf6o18j+VpRVT/f+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VFNM6wCN; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d47a92cfefso11100981fa.1;
+        Fri, 12 Apr 2024 07:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1712931285; x=1713536085; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6BN1Urc2kyfk8pciJnttFzTHhad5ozLJgp9UClqWWGc=;
-        b=cRNS12vozZUvOioUFKe2nqFcXLVYqA9ZBksfONsBJCP0HTu1nfuvTK33QY5JIpGqoH
-         yihndnDg/c0+mq0HBR5jro+2K/YlKtQNjNaHuQT6LXeIyD0O+QoJnN75gQRZS57Hp2vy
-         5I5IBf+xSjIbokOKfF4QFYI808vSDQTKPJCzAz6a0oiQoDrQFkYxF+0r0Z5nuVn0zkBd
-         uJ1Xs/DMug6vHS0riFYnEIj1616v045eAL6gB3mqGj6aSoy3t/y+K6GoR5zUSy6scu8S
-         KqF7ZjsdZSTv/AkJKFjLvUHnj8Y9PZwYx2wALFyoMjxSQL6XTxOue47kgC66fwEweeEp
-         2/7g==
+        d=gmail.com; s=20230601; t=1712931388; x=1713536188; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SA0q6SsNFlcUSbmyksfGP3j4aVnwqM+5MoF1Muj/XLA=;
+        b=VFNM6wCNQrgh0By69e3PBn2Jmw8uc4aKhbrBZuMwpqzDrfIE+b+E0PKKAqZaE7J6NT
+         3XNNSSd7cPRujvvXTLSbX+SnWEWxtUV8nuPEPNi4nACZCUVXDmSfXnob9NB6zVooryeQ
+         UlIXtSkZRYlIdmvnKIMm4McUzc/RNMNVOAK9mRPxJgRNIN032BVxEn3HhIZAC1HDi924
+         CWPWjfcqRrH+BWDWvP2ghTnveQ8HcKA8L1fUDHbfyauZGiSSDiTtmw3tVVtb6cSVNSb7
+         EdorjixdTw+5+I8GQ2rRAtlgHtsw34Z3uqBqYXt4Kyjy1g/IC0Q6fvx19kal/4HBBO7q
+         Jhdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712931285; x=1713536085;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6BN1Urc2kyfk8pciJnttFzTHhad5ozLJgp9UClqWWGc=;
-        b=bEgk5wjicoWWzW52sbBwEPyPgmhdXwEuUEAhoDdTdFILKTxBxgVT6lW136VwsxeQJj
-         fWN8KwgJccDqZX54pfbrYME+Y8AAF5/LxX8stztF33JtZX10v9a52O6ApEbKGqv4bk27
-         VJ8lzOtQjX9ykz6TN8DqBSodR/P/1ylTiNh8wJzQVZRx79N6bd4RI/dLQlur4liTR9Fs
-         74LIDKICLv/I4OMrAaL/rB03YqUHKe007iIuXsXq+ngKb+ivkQlwvephBaXaLQkBY0gs
-         iNo/6RMQ4U8OynQgCdNsruAc7p3UDT3bPTxE4jNMXt4m7pao+SRe5+iJJ1qU/HFEmWBt
-         7bwA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyTwD5yZtNl41SrOMWUOKhTT9pJnp+aWFyBEEa1K8NQ9b2PDmB9W+glclcX8LRNIVRTNM1Svg3GVzxZyAuPG0wDLCD+/JNz46EAG+O
-X-Gm-Message-State: AOJu0YzXLME49ZszkzQohoLK0LnReWKM4BqkNtYYSImErT9JT9ApOn9Z
-	hHOuuztF9GBmCwmWnttpApMu5iA8yUCe2ybpXX23FzHW4DD9FBu+pBL/a75ponY=
-X-Google-Smtp-Source: AGHT+IEhGtHgIeYGGSLbc6oBN7XL53bKvS2DDTDcLXzi+9IoqV4JySk3icBGad6yh6P05adENL02Wg==
-X-Received: by 2002:a17:903:184:b0:1e3:e0a2:ccc3 with SMTP id z4-20020a170903018400b001e3e0a2ccc3mr3364272plg.30.1712931285262;
-        Fri, 12 Apr 2024 07:14:45 -0700 (PDT)
-Received: from [10.12.171.228] ([103.114.192.135])
-        by smtp.gmail.com with ESMTPSA id d7-20020a170902654700b001e20afa1038sm3098061pln.8.2024.04.12.07.14.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 07:14:44 -0700 (PDT)
-Message-ID: <2031ea8c-29a0-4514-b042-7c0eabb4f443@shopee.com>
-Date: Fri, 12 Apr 2024 22:14:39 +0800
+        d=1e100.net; s=20230601; t=1712931388; x=1713536188;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SA0q6SsNFlcUSbmyksfGP3j4aVnwqM+5MoF1Muj/XLA=;
+        b=ixZOeQBj3aYeK+rjPsPZHK7J7kzO6oI0M2lEu+JYQHGZqwvpjdvjq/TT+kxQ2aN83f
+         N52V6lYzjGp9J10KRKae7rMi6PJcTHtR3ohOPpKG0AAMKsn5uG5qZlQkUrhfVVyIcbdG
+         9WX9UppgULgadvPJwYvnpBxmx+S3OGDTTnXSLzsKNh+1+2JCCHXftjbVFyNE6kg5FmR5
+         qxx0wLtleZShptcmwnbWYphUE5dpUz1A4q8D0TTiIwoh7asSuMpmGrVqdsVnkgqK8o+P
+         wNk+R5AKDVd+liZVodbU8aLWIuZmQloXhbxwOpOrurYeySUXSzys/q6sMrXYUk1uZFYg
+         gDZA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZvDAZwl6yxN5WN9T+2mAjq8nQOQMXJXeAiwtCDRlETOUe8UXSJfn5DMi5DRZeurbvLWrsDK07f8jWYjdJBDOhtpTsg0Vyhrs3ermHtMb1VHs32mb1bpsIpymPO9q73iEKMSuxU8pp/g==
+X-Gm-Message-State: AOJu0Yyk5Fph+BIRuYH5j86aKcM8SgGBQ1tTw0uCO+jgLQ+//NeOawbM
+	FZ+2smXmdYFvvjsAmHy4/DOffW8cvpCSsdvjjVVYONWfbrRAp7TTCWS0LYAcQ9Ux8P0NXekRO4/
+	Jh1jL/fXbYhuJ/tJ4orKmbblfs08=
+X-Google-Smtp-Source: AGHT+IHN1he0MRVv1bTgEsUkkS+mTqrtLXetL9ppYbRVjNCqz/IXwcP7pZldQHAqVu/k6BLU2IAiQWzC8tpvO83CdzA=
+X-Received: by 2002:a2e:b5ae:0:b0:2d6:fb69:114e with SMTP id
+ f14-20020a2eb5ae000000b002d6fb69114emr1557427ljn.21.1712931387856; Fri, 12
+ Apr 2024 07:16:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] slub: Clear __GFP_COMP flag when allocating 0 order page
-To: Matthew Wilcox <willy@infradead.org>, Vlastimil Babka <vbabka@suse.cz>
-Cc: "Christoph Lameter (Ampere)" <cl@linux.com>, penberg@kernel.org,
- rientjes@google.com, iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
- roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240411091832.608280-1-haifeng.xu@shopee.com>
- <5482360c-0a0b-e5f5-b88e-4a6ec4d43f7d@linux.com>
- <5d3c4a5e-0c27-4058-adf1-91e9602e5ccb@suse.cz>
- <ZhkmcNwOKktO3pxT@casper.infradead.org>
-From: Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <ZhkmcNwOKktO3pxT@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240404160649.967-1-bavishimithil@gmail.com> <78091796-fd0a-42dd-a4da-f7bed3025bf9@linaro.org>
+ <CAGzNGRnuG_gLUrH1N57WvpKbpiNtFrcsG6nJcacQNJB_yMYNrA@mail.gmail.com>
+ <ec7f77a7-2cf1-4ea6-b9c4-d4fe8a1673ab@linaro.org> <CAGzNGRktm5gMj=bhtX2RAzcn1v5ref+nV-HV3Fct56FzAzxjWA@mail.gmail.com>
+ <c9084453-65f1-43b0-88df-5b73052ccb72@linaro.org> <CAGzNGR=2-us8GRB3RNi4_24QZ9rNBC7Lx0PFsWwbvxuRKk5ngw@mail.gmail.com>
+ <352672fc-b6e1-458e-b4f9-840a8ba07c7e@linaro.org> <CAGzNGRnjCydMMJS6Cqht7zT1GvhbVtKAe1hu8oaf8YwRfA=hZg@mail.gmail.com>
+In-Reply-To: <CAGzNGRnjCydMMJS6Cqht7zT1GvhbVtKAe1hu8oaf8YwRfA=hZg@mail.gmail.com>
+From: Mithil <bavishimithil@gmail.com>
+Date: Fri, 12 Apr 2024 19:46:16 +0530
+Message-ID: <CAGzNGR=60czJWH4=1_1Hf1yH1KZQpmDqsv_zySLr-S_D0vqosg@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: omap-mcpdm: Convert to DT schema
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
+Is the patch better now? I'd still like to learn from where i did the
+mistakes (which seem very silly now)
 
-
-On 2024/4/12 20:17, Matthew Wilcox wrote:
-> On Fri, Apr 12, 2024 at 10:01:29AM +0200, Vlastimil Babka wrote:
->> On 4/11/24 6:51 PM, Christoph Lameter (Ampere) wrote:
->>> On Thu, 11 Apr 2024, Haifeng Xu wrote:
->>>
->>>> @@ -1875,6 +1875,13 @@ static inline struct slab *alloc_slab_page(gfp_t flags, int node,
->>>> 	struct slab *slab;
->>>> 	unsigned int order = oo_order(oo);
->>>>
->>>> +	/*
->>>> +	 * If fallback to the minimum order allocation and the order is 0,
->>>> +	 * clear the __GFP_COMP flag.
->>>> +	 */
->>>> +	if (order == 0)
->>>> +		flags = flags & ~__GFP_COMP;
->>>
->>>
->>> This would be better placed in allocate_slab() when the need for a
->>> fallback to a lower order is detected after the first call to alloc_slab_page().
->>
->> Yeah. Although I don't really see the harm of __GFP_COMP with order-0 in the
->> first place, if the only issue is that the error output might be confusing.
->> I'd also hope we should eventually get rid of those odd non-__GFP_COMP
->> high-order allocations and then can remove the flag.
-> 
-> The patch seems pointless to me.  I wouldn't clear the flag.  If
-> somebody finds it confusing, that's really just their expectations being
-> wrong.  folio_alloc() sets __GFP_COMP on all allocations, whether or not
-> they're order 0.
-
-If we don't care about the warnings at all, then higher-order and lower-order allocations can set
-__GFP_COMP when creating a new slab, just like folio_alloc(). If so, there is no need to check 
-the order in calculate_sizes() and we can set __GFP_COMP in kmem_cache by default.
-
-diff --git a/mm/slub.c b/mm/slub.c
-index e7bf1a1a31a8..49a3ebefab86 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4461,9 +4461,7 @@ static int calculate_sizes(struct kmem_cache *s)
-        if ((int)order < 0)
-                return 0;
-
--       s->allocflags = 0;
--       if (order)
--               s->allocflags |= __GFP_COMP;
-+       s->allocflags = __GFP_COMP;
-
-        if (s->flags & SLAB_CACHE_DMA)
-                s->allocflags |= GFP_DMA;
+Best Regards,
+Mithil
 
