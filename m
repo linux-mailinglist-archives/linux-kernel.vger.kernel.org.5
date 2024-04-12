@@ -1,164 +1,96 @@
-Return-Path: <linux-kernel+bounces-142561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A97D18A2D2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:19:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D07958A2D29
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:19:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6A391C21407
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:19:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85AD21F22DEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5475C54677;
-	Fri, 12 Apr 2024 11:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BD9B5466C;
+	Fri, 12 Apr 2024 11:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mkJObC+U"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="eQ5UPlU0"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21D4E53804
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC3C3D3B1;
+	Fri, 12 Apr 2024 11:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712920770; cv=none; b=KueHq6Fr+8EgqHJrDbjBvgmFrHwHTZ41dlt1hk8gYBj2E/CmLcV6jTtIM3z4TSit9VRxUFZQqWj+0RjsqM0BCsmwXqlvkJyBVhSOH8/b3Rz2Ny7/ZsJCnaNUEmGCB/gZv2njytnzC9H+rVakd9sDLaKyKK9ab5BeTPpCaGY7PGM=
+	t=1712920758; cv=none; b=jgov2BuN8ZPP4Kj4oM3x7xDk7TBlWErb2dX4ABCnvOSWxxmzgZZspCo7CB4xRTGGqD7J61klwiKBScrRWMmOdh86AmdZd9cDl+1uqmGZEk6zUKq5DjbQr6zZ5XKdgONJFBJYSZULoJnnfOCR0auUoivFXtSZYZsvHHsnKZTmGQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712920770; c=relaxed/simple;
-	bh=jJXQWARzxh60e8csc7f0AlY8R8u61wyoaZ5C9ACBeKc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=krIu/pHNz9uE6nw4WA4TGwKq0LbVkEfKea1rXKp2e5TTzY/UNwhsOodds/7b+DRoasSyr0ieI7uWqQ2lDHdRGJwCR7nIjH5tgSDriMrCjGYd1+hibRaBzni+9/DVuOkT7qDWmf3JcC49/un4jFij7dl5qXcYzGuyCAf1+p6K6F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mkJObC+U; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso564512276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712920767; x=1713525567; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=v5rDLo34QYHoVsmJR+qXt/vyD8JmocFWIjXhIAKbA2M=;
-        b=mkJObC+U8nDDJgklpIU2LoOmw05ZgepN0LI6hV8mIj+8ORTLPsMXz2BEsPNBXWYWwg
-         bwkKqaJSOUZny7uJwMNVBWfbtQwG/bQgnmKHe5t572TgKJbqbsF0UVpQtII24Lb6qEpG
-         y9FJsyUj4xrQxyPYOmShTpov9U3m6cJzzZASfQCHGa2o6MlI6U9E0YD+qGnHdonYTOIK
-         fvMj0PW79tMCa3Fn/wsEH+rL3vBtI+xc0SEwbP+svld33oQzHaxkohDwQUwYBe0wB/jv
-         VZ5pBXn4yKGdcDBXzbAlgPuk2vLLlka3ibPXdU00NO4GBYTRAWHknON4QLXgvFP9rRcc
-         XgUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712920767; x=1713525567;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v5rDLo34QYHoVsmJR+qXt/vyD8JmocFWIjXhIAKbA2M=;
-        b=Zv3hCkqkdA7+Vny9tM7KxcbXtk6wm+QZGMii9af3BbdzzS0mBuB5XJ3uQ/kKo2Hc5d
-         sAOgJpiCgJ2+GR2D0VgP5+mAQnQALgRDmf3iyf12EGlme1+FXVL8vUe6tzQl3vHXH1yz
-         ead3e2kgzcXft7AeODeLlOiyCs77ECJMctwSO1dR1RKwL9pSayT8A14r85FefIIFe9Wx
-         p6r4YwgzVCjJuPLXIJUaYoZ3qIbdE+KPKnqKpIlgL5vcgCPReB2EMmsWLlgeHbpvTIC0
-         JuvHqRYX6NPI2gQG5Q+OJjTI6lec/P0EAIdoJvmIn4aV0VOleWrh+gbnMBSHvg6Bn3qq
-         UKiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0q3Wqgz6FOb28ex64YFTJYUnGlaFoOTcYI47dK8jg3JdoVb7rTTegdcGHENRFV/0sXVgYRhuNK0u+oqC3GasUBK8UZ9b0/HnlwS7t
-X-Gm-Message-State: AOJu0Yx3kRyjjtg2V56VIManD7hR0iGukVIaDSw/h44TXHDzJYkKECEk
-	uTjpGsUb1UAyARArONYXDjarSW4zfMVKRl6Ej7J6ptIRI4+0xMmfHyiWl4CZ7sIhzVlPxOIUQLz
-	K4jhxYM7rc8/xl6aexDp33MHiz0w9IiyA/GrY8g==
-X-Google-Smtp-Source: AGHT+IGjcxQfZZ4gEXpxEJHHCkUAzxFeclWwScgkVbFOPUQuv53ARt5z+a4tB0oWhU95+YIs637qHwGwylAPZ0V78DI=
-X-Received: by 2002:a25:2d07:0:b0:dcc:ae3:d8a0 with SMTP id
- t7-20020a252d07000000b00dcc0ae3d8a0mr2500615ybt.48.1712920767132; Fri, 12 Apr
- 2024 04:19:27 -0700 (PDT)
+	s=arc-20240116; t=1712920758; c=relaxed/simple;
+	bh=8/SKetfBZBy2Kh39R7Wd6mztgC+n9WBxP1ZOYm7Roz4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=vGbEwEumwi0kASCvL5FWm0z85i/48I5YMo9EFudHYO1YU5k/3Yb/R0Ycj0iIPB4uttb7j8RHpae81gakpmO/FBQSfa8kin523Uy4u9AepJNdhOcY+fAllQDnHtuJ/HOmor5SdW2yTl0TCpSe0duHzB9ssKjs01cvQnFKXMZvypY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=eQ5UPlU0; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 4D8FC600A2;
+	Fri, 12 Apr 2024 11:19:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1712920747;
+	bh=8/SKetfBZBy2Kh39R7Wd6mztgC+n9WBxP1ZOYm7Roz4=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=eQ5UPlU0Il6iUiB9lA5UENtj+dwdRTE/O0z9PasN3FZrzEAn2nMd7Q0SIM0W8/aQ8
+	 jqcI4bdEm1dSfagbMh1rjAvhVmWpErHcW3JP7pxa2UM2I7IuC699JrkXOlynPP4lyj
+	 xoUwOeL7in/J+GKlDIr+4EbgsvhmPvziZTqh9jaPy8wFcfBBC9Jqu43SCy2BTf9YJl
+	 KvSecv/IU+n9XY/S/rr1rd5JJsQ362fxXcUs6bbqRphun3oGWWfSfM4xwXEM+uIDDC
+	 ccRoFVz7V/tR0ChVYf0PMa/x49KA1LKZPFOj8thumXZ6DSIehuSae8dXginPsdjZv/
+	 nkVgVSEZES+1Q==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id F196120106A;
+	Fri, 12 Apr 2024 11:18:59 +0000 (UTC)
+Message-ID: <5fb7638c-e70a-49ea-94d5-6b7f3e953255@fiberby.net>
+Date: Fri, 12 Apr 2024 11:18:59 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com> <20240410134044.2138310-10-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240410134044.2138310-10-claudiu.beznea.uj@bp.renesas.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Fri, 12 Apr 2024 13:18:51 +0200
-Message-ID: <CAPDyKFq1+cL1M9qGY0P58ETHUZHGymxQL0w92emUJPMe7a_GxA@mail.gmail.com>
-Subject: Re: [PATCH RESEND v8 09/10] watchdog: rzg2l_wdt: Power on the PM
- domain in rzg2l_wdt_restart()
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, p.zabel@pengutronix.de, 
-	geert+renesas@glider.be, magnus.damm@gmail.com, biju.das.jz@bp.renesas.com, 
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] octeontx2-pf: fix FLOW_DIS_IS_FRAGMENT implementation
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+To: "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+ Geethasowjanya Akula <gakula@marvell.com>,
+ Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+ Hariprasad Kelam <hkelam@marvell.com>, Suman Ghosh <sumang@marvell.com>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20240410134303.21560-1-ast@fiberby.net>
+ <SJ0PR18MB5216D2276BA11D5C5E31D6A6DB042@SJ0PR18MB5216.namprd18.prod.outlook.com>
+ <27ac48c0-b19c-4104-8ec9-08232e3f42f6@fiberby.net>
+ <235918fc-9b9b-4efa-8258-69bd5c7d40d4@fiberby.net>
+Content-Language: en-US
+In-Reply-To: <235918fc-9b9b-4efa-8258-69bd5c7d40d4@fiberby.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, 10 Apr 2024 at 16:19, Claudiu <claudiu.beznea@tuxon.dev> wrote:
->
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> The rzg2l_wdt_restart() is called from atomic context. Calling
-> pm_runtime_{get_sync, resume_and_get}() or any other runtime PM resume
-> APIs is not an option as it may lead to issues as described in commit
-> e4cf89596c1f ("watchdog: rzg2l_wdt: Fix 'BUG: Invalid wait context'")
-> that removed the pm_runtime_get_sync() and used directly the
-> clk_prepare_enable() APIs.
+Hi maintainers,
 
-Calling clk_prepare_enable() doesn't work from an atomic context
-either as it may sleep on the clk prepare mutex.
+On 4/12/24 10:25 AM, Asbjørn Sloth Tønnesen wrote:
+> On 4/12/24 9:01 AM, Asbjørn Sloth Tønnesen wrote:
+> I was a bit in a hurry, to get the reply in before a meeting,
+> so: s/FLOW_DIS_FIRST_FRAG/FLOW_DIS_IS_FRAGMENT/g
 
-As I said in the other reply too, it looks like we need a different
-solution. I am not sure what, but I am happy to help discuss it.
+It was just a fix for my reply to Suman, so I am a bit confused
+why the patch itself got marked as "Changes Requested" in patchwork [1].
 
->
-> Starting with RZ/G3S the watchdog could be part of its own software
-> controlled power domain (see the initial implementation in Link section).
-> In case the watchdog is not used the power domain is off and accessing
-> watchdog registers leads to aborts.
->
-> To solve this the patch powers on the power domain using
-> dev_pm_genpd_resume() API before enabling its clock. This is not
-> sleeping or taking any other locks as the power domain will not be
-> registered with GENPD_FLAG_IRQ_SAFE flags.
->
-> Link: https://lore.kernel.org/all/20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+I can spin a v2, but the only change would currently be Jacob Keller's Reviewed-by.
 
-Kind regards
-Uffe
+[1] https://patchwork.kernel.org/project/netdevbpf/patch/20240410134303.21560-1-ast@fiberby.net/
 
-> ---
->
-> Changes in v8:
-> - none, this patch is new
->
->  drivers/watchdog/rzg2l_wdt.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c
-> index c8c20cfb97a3..98e5e9914a5d 100644
-> --- a/drivers/watchdog/rzg2l_wdt.c
-> +++ b/drivers/watchdog/rzg2l_wdt.c
-> @@ -12,6 +12,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_domain.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->  #include <linux/units.h>
-> @@ -164,6 +165,17 @@ static int rzg2l_wdt_restart(struct watchdog_device *wdev,
->         struct rzg2l_wdt_priv *priv = watchdog_get_drvdata(wdev);
->         int ret;
->
-> +       /*
-> +        * The device may be part of a power domain that is currently
-> +        * powered off. We need to power it up before accessing registers.
-> +        * We don't undo the dev_pm_genpd_resume() as the device need to
-> +        * be up for the reboot to happen. Also, as we are in atomic context
-> +        * here there is no need to increment PM runtime usage counter
-> +        * (to make sure pm_runtime_active() doesn't return wrong code).
-> +        */
-> +       if (!pm_runtime_active(wdev->parent))
-> +               dev_pm_genpd_resume(wdev->parent);
-> +
->         clk_prepare_enable(priv->pclk);
->         clk_prepare_enable(priv->osc_clk);
->
-> --
-> 2.39.2
->
->
+-- 
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
