@@ -1,195 +1,399 @@
-Return-Path: <linux-kernel+bounces-142366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263498A2AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 300A38A2ABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:17:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0E9B28311D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:16:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6422283E62
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5155C502B0;
-	Fri, 12 Apr 2024 09:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FukpbDhM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD1F1EEF8;
-	Fri, 12 Apr 2024 09:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712913392; cv=fail; b=Gu1hq5YyJ3deRcv9KfrOFSY45IYUa0sr3ookZqH9Rsrrx6gPmBD+DWm5TNn6vkjClq9t7RsFo7+C+5zauLW6LLRLd2jlD3CtrWK6f1HxdROltce7B40jVn3QyAPi+6XyJKEXlTIqB+zDUXVADoSTYU8QV83MlIbcYa0b5B92P9w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712913392; c=relaxed/simple;
-	bh=lXURzvpQy6x1/H3hzQqOVbcm6LBqWWnXyPji6UC27bM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ITmGyGuPdaQmJW6RTm7fvsEJyTlmWRu/Fm+oTUiQzi40CILKFgxeuN5GILYN+c7YaWkClcakjx6lbJsLzKILrOo78EdvddtmHYqUAJm1BeRg2zalPE5tKpQ2L7ueo0GN6W2TSzGWj995/gQkwMaUTvUgeuRn+B0dAalsMY6tYrg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FukpbDhM; arc=fail smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712913391; x=1744449391;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=lXURzvpQy6x1/H3hzQqOVbcm6LBqWWnXyPji6UC27bM=;
-  b=FukpbDhMhKICz+0xYLqI/KWLzRlKuRq8GLTVg796fDvuI6Est2htNeEQ
-   0d/3kAItAS5jUgMGlmz4HQ3a+wDjg9u3IC+/d/qzal1TE40F/l36JH+F5
-   CZyrMKBKApzMTXwoVy2NoecMXD6CmAwO+SswcgiyZko3mVTlvkUzCMQq7
-   pEvU+qzudCNXDmtCoaMRlSoKG0f3/x+XnX+hz6B5ZybVWn7ss8wb439WW
-   t8qkE6E6YI3BlW6urUtSngyZys4O4UcyVIBDBTGtzWrC2mEFQRIP8ED1k
-   d/a32oC6YOFB1hxJN9MM/FjSU/4tVU7aBiA4Cg9PAsc4McCzCAyNWpOpl
-   w==;
-X-CSE-ConnectionGUID: tVCAROCMRn2HBdzXL6P2BQ==
-X-CSE-MsgGUID: voRo/jjMSPenmdpFPJ84Dw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="19757997"
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="19757997"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 02:16:29 -0700
-X-CSE-ConnectionGUID: wklUZsnfT7ero8k/9LKyJg==
-X-CSE-MsgGUID: O0hUmBAOTGSFGcp4gHJcGQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="21757317"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Apr 2024 02:16:28 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 02:16:28 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 02:16:28 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 12 Apr 2024 02:16:28 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 02:16:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q7VYK/Ve1v1SUy9osNG/qOBmneCFQ5Bd8ocw6Z2Q8I1sAqm/rU4CUsPOZ6rSenTTeBDVZNn5o4iaWNftxJ3gaj0uDfoucacmb30rYB6DW0scl+nOM9RG83vTH593VN0mbc7ck2eehFPMdPPzEahSupQkWTLC+Sw8q4phMXE4+xbtU2532PlrX5U7Mb9ybtPIxueyLJl7i8zloA7wecoQdR2EKTg5DBRLyPO7He2j67H/fZMzaR7uqGpLTPKr3uzFCNYimmEmwWe1tnby7YfIym1cG5f5Z9KQyVbVxsgZkV/wUED58N/fGqO1ajx1ImAI+OnA2WXsAF40HKyCykusIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lXURzvpQy6x1/H3hzQqOVbcm6LBqWWnXyPji6UC27bM=;
- b=VOyli7wQjZLADE7IDe/YykwH9+JdIM/SBfM/Vxk5mVVY9voqD6Dp4BoVAFBpr2/JX08veI9J/RgyAwuLQlcBqZArPTZUIaia0oqUJ0kC9mOorUjYrzQy5GFdG7gHfup59XQLKkQJ4hT4TdPkN9d25VKI/lREdMRj7KcpO2NZ2VmD/EhtkRzi/EgXgIzKf/ewh5bR7OxbAK+AoHNCuaR6xcIPou9qt7hjGw/ImFlilkkbif83mFLLHL7po6zFudeirmkOxbrZAwlSZasXXOAJtimUgr3Vzvrv8oyjqKZa5+/2G4bqHqIFckZELNQ+3dH/c1J3lkaFjmRkJTBg/NmhCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by MN2PR11MB4664.namprd11.prod.outlook.com (2603:10b6:208:26e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Fri, 12 Apr
- 2024 09:16:25 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234%6]) with mapi id 15.20.7452.019; Fri, 12 Apr 2024
- 09:16:25 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>, LKML
-	<linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter Zijlstra
-	<peterz@infradead.org>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Hansen, Dave"
-	<dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
-	<mingo@redhat.com>
-CC: "Luse, Paul E" <paul.e.luse@intel.com>, "Williams, Dan J"
-	<dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, "Raj, Ashok"
-	<ashok.raj@intel.com>, "maz@kernel.org" <maz@kernel.org>, "seanjc@google.com"
-	<seanjc@google.com>, Robin Murphy <robin.murphy@arm.com>,
-	"jim.harris@samsung.com" <jim.harris@samsung.com>, "a.manzanares@samsung.com"
-	<a.manzanares@samsung.com>, Bjorn Helgaas <helgaas@kernel.org>, "Zeng, Guang"
-	<guang.zeng@intel.com>, "robert.hoo.linux@gmail.com"
-	<robert.hoo.linux@gmail.com>
-Subject: RE: [PATCH v2 06/13] x86/irq: Set up per host CPU posted interrupt
- descriptors
-Thread-Topic: [PATCH v2 06/13] x86/irq: Set up per host CPU posted interrupt
- descriptors
-Thread-Index: AQHah6hf9srldbbdPECjRLpjdfKYWLFkZHcg
-Date: Fri, 12 Apr 2024 09:16:25 +0000
-Message-ID: <BN9PR11MB527696368E4022DBAC9DD7768C042@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
- <20240405223110.1609888-7-jacob.jun.pan@linux.intel.com>
-In-Reply-To: <20240405223110.1609888-7-jacob.jun.pan@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|MN2PR11MB4664:EE_
-x-ms-office365-filtering-correlation-id: 16bbae4e-e6a0-4066-ce2d-08dc5ad13a43
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: a/8GkVO/GilaHPEOJO9GklzVrEBtjbLRJTGKBCidCIzK/I880R10xVrgihJeotivsrT9uNaMjqBF9aWNdUxWRS+1Up+PfcKdVifFVNt7/xNDQIr4EsVa+Jk/DE3Lv2r/dd+Zk9kX0Fxt+XHPA56Y2DDbkoqXFusU8qIgSPs9+r4hgmY2VpSVIimT/TDVP5yHYVIWCm/iF0xiN5mDfJaKrMw6VleyZYBiEr9oBZ2a0k5YRpP8aWg1jnuFpLIgO7vKj1zfTf0hUDXjP+Bn+3WseCiBRD61hCtIu6xTwAWQPh55P3gmU2SxVEpUBvOd0fGRL7Ar7dAzoiFz3kgHmh2JX5JOdkxmV1M241Tmmx0bt4KWIWY7CSxU580XYejs82dq/rxgYQHg6oYGHiybusvZux+K66x2F/omDEvj/sPjVdrwP1gnBSRJWEHLdkySBbm/WdgAYiJ29O2usWOVevBnI+kx6PXq9TY6s9x9q9N1UPpQzt/GDygJjW5kffy+LsCh+n7rLQfqp/DiY6usBsHANMTuCl5J2hJvLbkAsaYUcQBI4vigpGnVy9kqb+9Iq+bjeJe6GcNESiRuvH6L1iwVxsP110XevYCWXyl1GMj+Bi2WIXrGbGzTY3D4ml/WwGe3Oue9pJVfrwgLamphjSiWSv/Jpvyrj3EIkDqLdQl4COtmA9K6AP+LTZXqUVHogpPEcjf2KG+VVrKLGs45IMv9LvtvIpeUEGbUeNPLysWiSDY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015)(921011)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CPr0bGzaVliEN+NZ7Ckqgvb7hDlJTfRC45HxUUv3MeYdZ/nxv08DSmIzSQ1V?=
- =?us-ascii?Q?QIPa1cdhF024aacJUvGWl+IWLHi2edxNxXX53bpgs3TiHWHRfaw7s6tYGXe8?=
- =?us-ascii?Q?810o111bK2eOcRCLPQVvbiiM85lP+J8Hdm5ZFUoqXXhj+LOqhy4mcsnQqOQ1?=
- =?us-ascii?Q?GeDtuX7WK9Hjrp32cMcnll2e7Z4hKY/jHYI3+0nEL3YXI1PVOEbGi8QzMB3k?=
- =?us-ascii?Q?L90wUa6DuZ67KnXBA5+XW0FAsMSW3tcAEsHVlNg/AEHXoRNHrKBEvZhxprV0?=
- =?us-ascii?Q?E8ZKPMBM/3D0ShHZIYTWW4wSUb4V6iZPW1OqVO4Y32/edwUgm9xR4Dz3N2dv?=
- =?us-ascii?Q?pRl7qGAiRjVjPCl6ZBKpT0taI+3JSUIt/sHrflaJF0a2oPVz5Jd4FdKs5PzE?=
- =?us-ascii?Q?VvNSUs5Ov3zhSz40DH8EN9XgEIYFmYMyS9I2tv7JjGjChy3mhV+cxSe5hnBO?=
- =?us-ascii?Q?MfpybWViN/+hKgAJG/sGcFYdPI1a4yUWcwBdnAWwB7MhrjTTw1cXA5XU8eg7?=
- =?us-ascii?Q?GJCbPstIXHYhZZS34cfFgpAjkvpw5q6oO+CMPsAd9i82goGsC2vBmGGzPUom?=
- =?us-ascii?Q?X8jkW23E/nGOzH2MHWW1noUAeyKpIRir1/F851pneqQNYefZCTmSqIIUx2W3?=
- =?us-ascii?Q?NzoWK5Tece8UZgIprpN3C0EGvOBInRVMa6RwX/ty2DdoXREcRdo4V1JksFk/?=
- =?us-ascii?Q?3d1MJO/9aDX/ZTBCzjyjSH2v3pJH2vYzfzq6CTnBChMjWJZ84jlXJddkjpOI?=
- =?us-ascii?Q?sSxk9r7DsrgNLoz60D50jgmHmtgw8wYUWAuBXxkZtQTBOLjjuVyGNbTWJhS1?=
- =?us-ascii?Q?ryItoOIhWIW7f3zf59/ZHb22Oucaf1iJmH/rYKZan4Q4vu3N/nbDzFzK6wos?=
- =?us-ascii?Q?rbenZlztMg7wE9ExvXUXZd5LQ27SxOy+NHnM8xXMPaV49YelRUGcEr2JCfM1?=
- =?us-ascii?Q?35y/4xZI5BmbGvggSoh5iCoiB0NHOQHVxAod2rRFTQQUtcUpC5o69/eBLdGU?=
- =?us-ascii?Q?eyezEGIH3stYAFqSmDLnSmG16TR971Nse1NQDFXsggnzWLqsB76W0tiJsApJ?=
- =?us-ascii?Q?+3AUZ9AISHuTJbzxgySO9AugzU8uxU9LxzBeLZJv6ImcAHMVMQtQukTHsbGU?=
- =?us-ascii?Q?yxJZ8w4TvdlQV7oFtSrJ81SEetQ3zgskaMtxwWl7k1YPuubElLkgAhTYLj5p?=
- =?us-ascii?Q?HSJeJfrTc0HKYKPsmCoRUWadh3URoZQeeAcrhneE1IvBzKyWxrpb0bvtyIQB?=
- =?us-ascii?Q?lb9fY6aaEfNUlUwe42dVOmQ6ZHvw8IxDIGE7EKGsu+95sDFT7QP+8HsjRJCt?=
- =?us-ascii?Q?1s4QXvBGYE4S22fddoUHzQ+qIStOD5VEMmfmqj9z/SgnumwFMFzDNwIwCzLI?=
- =?us-ascii?Q?hvBhlBjX8ivYXM3DeKGIfSfmVe44uXezR5oeIfYha8EJLVvYoEZ8z2V2+bm1?=
- =?us-ascii?Q?fQLr4sCuRsYygB1TVaPmEIQhTdUhPGYYC5ksp+WCf9vzjC4V8HMEGcxjYgF9?=
- =?us-ascii?Q?5x04lxMG6skTl/4uXMDua1ey/8P1LAtt5uTqzHfZa95t0cvcYfdwEUbvajHT?=
- =?us-ascii?Q?Xznv9qzCPtwaatOV00YeEPyuM/5+KS9swtJ7hBkv?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8CA51C27;
+	Fri, 12 Apr 2024 09:16:41 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762313A1DE
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712913400; cv=none; b=QThLnqLnMhtxi5g5+2ZYIcMcqwYZqwesDzWvS+abKp+7lt8yaEpnI/TIpmEPv2jEdt11YA8CVZGsbYilAUKu9DY5HppPnEJ/P9tCQ4gtsqDrXmBd0glKSAO/jJpCsnAZXkXXrn5RgRWWI7wRATMUGDDpY9Ej1infOBLlKTLoMsI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712913400; c=relaxed/simple;
+	bh=m8wmhttkjegEb0znpFbKxkpl/f5l/RZypCQy8XbVBkI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CxaUFRExYrC3LeEqw/50oToyDRnHRZZVuEd7IQDlaihZgLonxXxbP9h7Wfwdj6uiZyZ5yX0+V23XR+1SBggIgSolnrrAClf6yjPn/XaAiJtG9Gv/3wp9LZDzCLDkArRWb/s9u5DVlpTjB/rpkM1b1ZOGqK3TkeLWNL4v+i45Whk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9514B339;
+	Fri, 12 Apr 2024 02:17:01 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A8033F64C;
+	Fri, 12 Apr 2024 02:16:30 -0700 (PDT)
+Message-ID: <cc9a3d6b-4979-4635-a51a-2edf07853ec6@arm.com>
+Date: Fri, 12 Apr 2024 10:16:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16bbae4e-e6a0-4066-ce2d-08dc5ad13a43
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2024 09:16:25.1656
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: S6Q56gAEE/jt1Qy5DDso3fymuSC/Qt/xA2bBTK+J4w49cFi19yYEmFQARjxaK8KCeug9VGGhBCa9f7hyT28kYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4664
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] mm: add per-order mTHP anon_alloc and
+ anon_alloc_fallback counters
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: david@redhat.com, akpm@linux-foundation.org, linux-mm@kvack.org,
+ cerasuolodomenico@gmail.com, chrisl@kernel.org, kasong@tencent.com,
+ peterx@redhat.com, surenb@google.com, v-songbaohua@oppo.com,
+ willy@infradead.org, yosryahmed@google.com, yuzhao@google.com,
+ linux-kernel@vger.kernel.org
+References: <20240405102704.77559-1-21cnbao@gmail.com>
+ <20240405102704.77559-2-21cnbao@gmail.com>
+ <7cf0a47b-0347-4e81-956f-34bef4ef794a@arm.com>
+ <CAGsJ_4zWiYguj1y6Q7Ls41yFkuL5=-ii7pY=rYHg1AZeXe4uTQ@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4zWiYguj1y6Q7Ls41yFkuL5=-ii7pY=rYHg1AZeXe4uTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Sent: Saturday, April 6, 2024 6:31 AM
->=20
-> +#ifdef CONFIG_X86_POSTED_MSI
-> +
-> +/* Posted Interrupt Descriptors for coalesced MSIs to be posted */
-> +DEFINE_PER_CPU_ALIGNED(struct pi_desc, posted_interrupt_desc);
+On 11/04/2024 23:40, Barry Song wrote:
+> On Fri, Apr 12, 2024 at 4:38 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 05/04/2024 11:27, Barry Song wrote:
+>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>
+>>> Profiling a system blindly with mTHP has become challenging due to the
+>>> lack of visibility into its operations. Presenting the success rate of
+>>> mTHP allocations appears to be pressing need.
+>>>
+>>> Recently, I've been experiencing significant difficulty debugging
+>>> performance improvements and regressions without these figures.
+>>> It's crucial for us to understand the true effectiveness of mTHP in
+>>> real-world scenarios, especially in systems with fragmented memory.
+>>>
+>>> This patch sets up the framework for per-order mTHP counters, starting
+>>> with the introduction of anon_alloc and anon_alloc_fallback counters.
+>>> Incorporating additional counters should now be straightforward as well.
+>>>
+>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>> ---
+>>>  include/linux/huge_mm.h | 19 ++++++++++++++++
+>>>  mm/huge_memory.c        | 48 +++++++++++++++++++++++++++++++++++++++++
+>>>  mm/memory.c             |  2 ++
+>>>  3 files changed, 69 insertions(+)
+>>>
+>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>> index e896ca4760f6..c5d33017a4dd 100644
+>>> --- a/include/linux/huge_mm.h
+>>> +++ b/include/linux/huge_mm.h
+>>> @@ -264,6 +264,25 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
+>>>                                         enforce_sysfs, orders);
+>>>  }
+>>>
+>>> +enum mthp_stat_item {
+>>> +     MTHP_STAT_ANON_ALLOC,
+>>> +     MTHP_STAT_ANON_ALLOC_FALLBACK,
+>>> +     __MTHP_STAT_COUNT
+>>> +};
+>>> +
+>>> +struct mthp_stat {
+>>> +     unsigned long stats[PMD_ORDER + 1][__MTHP_STAT_COUNT];
+>>
+>> I saw a fix for this allocation dynamically due to powerpc PMD_ORDER not being
+>> constant. I wonder if ilog2(MAX_PTRS_PER_PTE) would help here?
+>>
+> 
+> It's a possibility. However, since we've passed all the build tests
+> using dynamic
+> allocation, it might not be worth the effort to attempt static
+> allocation again. Who
+> knows what will happen next :-)
 
-'posted_msi_desc' to be more accurate?
+If the dynamic version is clear and obvious then fair enough. I tried doing
+something similar for the swap-out series but it turned out a mess, so ended up
+falling back to static allocation which was much easier to understand.
+
+> 
+>>> +};
+>>> +
+>>> +DECLARE_PER_CPU(struct mthp_stat, mthp_stats);
+>>> +
+>>> +static inline void count_mthp_stat(int order, enum mthp_stat_item item)
+>>
+>> I thought we were going to call this always counting up type of stat and event?
+>> "count_mthp_event"? But I'm happy with it as is, personally.
+>>
+>>> +{
+>>> +     if (unlikely(order > PMD_ORDER))
+>>> +             return;
+>>
+>> I'm wondering if it also makes sense to ignore order == 0? Although I guess if
+>> called for order-0 its safe since the storage exists and sum_mthp_stat() is
+>> never be called for 0. Ignore this comment :)
+> 
+> Agreed. I'd like to change it to ignore oder 0;
+> 
+>>
+>>> +     this_cpu_inc(mthp_stats.stats[order][item]);
+>>> +}
+>>> +
+>>>  #define transparent_hugepage_use_zero_page()                         \
+>>>       (transparent_hugepage_flags &                                   \
+>>>        (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index 9d4b2fbf6872..5b875f0fc923 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -526,6 +526,46 @@ static const struct kobj_type thpsize_ktype = {
+>>>       .sysfs_ops = &kobj_sysfs_ops,
+>>>  };
+>>>
+>>> +DEFINE_PER_CPU(struct mthp_stat, mthp_stats) = {{{0}}};
+>>> +
+>>> +static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
+>>> +{
+>>> +     unsigned long sum = 0;
+>>> +     int cpu;
+>>> +
+>>> +     for_each_online_cpu(cpu) {
+>>
+>> What happens if a cpu that was online and collected a bunch of stats gets
+>> offlined? The user will see stats get smaller?
+>>
+>> Perhaps this should be for_each_possible_cpu()? Although I'm not sure what
+>> happens to percpu data when a cpu goes offline? Is the data preserved? Or wiped,
+>> or unmapped? dunno. Might we need to rescue stats into a global counter at
+>> offline-time?
+> 
+> Good catch. I see /proc/vmstat is always using the  for_each_online_cpu() but it
+> doesn't have the issue, but mTHP counters do have the problem.
+> 
+> * step 1: cat  the current thp_swpout value before running a test
+> program which does
+> swpout;
+> 
+> / # cat /proc/vmstat | grep thp_swpout
+> thp_swpout 0
+> / # cat /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/stats/anon_swpout
+> 0
+> 
+> * step 2: run the test program on cpu2;
+> 
+> / # taskset -c 2 /home/barry/develop/linux/swpcache-2m
+> 
+> * step 3: cat the current thp_swpout value after running a test
+> program which does
+> swpout;
+> 
+> / # cat /proc/vmstat | grep thp_swpout
+> thp_swpout 98
+> / # cat /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/stats/anon_swpout
+> 98
+> 
+> *step 4: offline cpu2 and read thp_swpout;
+> 
+> / # echo 0 > /sys/devices/system/cpu/cpu2/online
+> [  339.058661] psci: CPU2 killed (polled 0 ms)
+> 
+> / # cat /proc/vmstat | grep thp_swpout
+> thp_swpout 98
+> / # cat /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/stats/anon_swpout
+> 0
+> 
+> *step 5: online cpu2 and read thp_swpout
+> 
+> / # echo 1 > /sys/devices/system/cpu/cpu2/online
+> [  791.642058] CPU2: Booted secondary processor 0x0000000002 [0x000f0510]
+> 
+> / # cat /proc/vmstat | grep thp_swpout
+> thp_swpout 98
+> / # cat /sys/kernel/mm/transparent_hugepage/hugepages-2048kB/stats/anon_swpout
+> 98
+> 
+> 
+> 
+> As you can see, in step 4, /proc/vmstat is all good but mTHP counters become
+> zero.
+> 
+> The reason is /proc/vmstat will fold the offline cpu to an online cpu
+> but mthp counters lack
+> it:
+> 
+> /*
+>  * Fold the foreign cpu events into our own.
+>  *
+>  * This is adding to the events on one processor
+>  * but keeps the global counts constant.
+>  */
+> void vm_events_fold_cpu(int cpu)
+> {
+>         struct vm_event_state *fold_state = &per_cpu(vm_event_states, cpu);
+>         int i;
+> 
+>         for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+>                 count_vm_events(i, fold_state->event[i]);
+>                 fold_state->event[i] = 0;
+>         }
+> }
+> 
+> static int page_alloc_cpu_dead(unsigned int cpu)
+> {
+>         ...
+>         /*
+>          * Spill the event counters of the dead processor
+>          * into the current processors event counters.
+>          * This artificially elevates the count of the current
+>          * processor.
+>          */
+>         vm_events_fold_cpu(cpu);
+>         ...
+> 
+>         return 0;
+> }
+> 
+> So I will do the same thing for mTHP counters - fold offline cpu
+> counters to online one.
+
+That all looks like a complete mess - better avoided if possible! A quick search
+for "for_each_possible_cpu" shows loads of places where code is iterating over
+all *possible* cpus and grabbing its per-cpu data. So the data definitely
+remains accessible when the cpu is offline. Looks like it doesn't get wiped either.
+
+So can't you just change your sum function to iterate over all possible cpus?
+
+> 
+>>
+>>> +             struct mthp_stat *this = &per_cpu(mthp_stats, cpu);
+>>> +
+>>> +             sum += this->stats[order][item];
+>>> +     }
+>>> +
+>>> +     return sum;
+>>> +}
+>>> +
+>>> +#define DEFINE_MTHP_STAT_ATTR(_name, _index)                                 \
+>>> +static ssize_t _name##_show(struct kobject *kobj,                    \
+>>> +                     struct kobj_attribute *attr, char *buf)         \
+>>> +{                                                                    \
+>>> +     int order = to_thpsize(kobj)->order;                            \
+>>> +                                                                     \
+>>> +     return sysfs_emit(buf, "%lu\n", sum_mthp_stat(order, _index));  \
+>>> +}                                                                    \
+>>> +static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+>>
+>> Very nice!
+> 
+> Right. I got duplicated copy-paste and bad small in code so I wrote this macro.
+> 
+>>
+>>> +
+>>> +DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_ANON_ALLOC);
+>>> +DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBACK);
+>>> +
+>>> +static struct attribute *stats_attrs[] = {
+>>> +     &anon_alloc_attr.attr,
+>>> +     &anon_alloc_fallback_attr.attr,
+>>> +     NULL,
+>>> +};
+>>> +
+>>> +static struct attribute_group stats_attr_group = {
+>>> +     .name = "stats",
+>>> +     .attrs = stats_attrs,
+>>> +};
+>>> +
+>>>  static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>>>  {
+>>>       unsigned long size = (PAGE_SIZE << order) / SZ_1K;
+>>> @@ -549,6 +589,12 @@ static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>>>               return ERR_PTR(ret);
+>>>       }
+>>>
+>>> +     ret = sysfs_create_group(&thpsize->kobj, &stats_attr_group);
+>>> +     if (ret) {
+>>> +             kobject_put(&thpsize->kobj);
+>>> +             return ERR_PTR(ret);
+>>> +     }
+>>> +
+>>>       thpsize->order = order;
+>>>       return thpsize;
+>>>  }
+>>> @@ -1050,8 +1096,10 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
+>>>       folio = vma_alloc_folio(gfp, HPAGE_PMD_ORDER, vma, haddr, true);
+>>>       if (unlikely(!folio)) {
+>>>               count_vm_event(THP_FAULT_FALLBACK);
+>>> +             count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_ALLOC_FALLBACK);
+>>
+>> I think we should aim for the PMD-oder MTHP_STAT_ANON_ALLOC and
+>> MTHP_STAT_ANON_ALLOC_FALLBACK to match THP_FAULT_ALLOC and THP_FAULT_FALLBACK.
+>> Its not currently setup this way...
+> 
+> right. I also realized this and asked for your comments on this in another
+> thread.
+
+Ahh sorry - must have missed that.
+
+> 
+>>
+>>
+>>>               return VM_FAULT_FALLBACK;
+>>>       }
+>>> +     count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_ALLOC);
+>>>       return __do_huge_pmd_anonymous_page(vmf, &folio->page, gfp);
+>>>  }
+>>>
+>>> diff --git a/mm/memory.c b/mm/memory.c
+>>> index 649e3ed94487..1723c8ddf9cb 100644
+>>> --- a/mm/memory.c
+>>> +++ b/mm/memory.c
+>>> @@ -4374,8 +4374,10 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>>>                       }
+>>>                       folio_throttle_swaprate(folio, gfp);
+>>>                       clear_huge_page(&folio->page, vmf->address, 1 << order);
+>>> +                     count_mthp_stat(order, MTHP_STAT_ANON_ALLOC);
+>>>                       return folio;
+>>>               }
+>>> +             count_mthp_stat(order, MTHP_STAT_ANON_ALLOC_FALLBACK);
+>>
+>> ...And we should follow the usage same pattern for the smaller mTHP here too.
+>> Which means MTHP_STAT_ANON_ALLOC_FALLBACK should be after the next: label. We
+> 
+> The only difference is the case
+> 
+> if (mem_cgroup_charge(folio, vma->vm_mm, gfp))
+>       goto next;
+> 
+> but vmstat is counting this as fallback so i feel good to move after next,
+> 
+>         if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
+>                 folio_put(folio);
+>                 count_vm_event(THP_FAULT_FALLBACK);
+>                 count_vm_event(THP_FAULT_FALLBACK_CHARGE);
+>                 return VM_FAULT_FALLBACK;
+>         }
+> 
+>> could introduce a MTHP_STAT_ANON_ALLOC_FALLBACK_CHARGE which would only trigger
+>> on a fallback due to charge failure, just like THP_FAULT_FALLBACK_CHARGE?
+> 
+> it is fine to add this THP_FAULT_FALLBACK_CHARGE though it is not that
+> useful for profiling buddy fragmentation.
+
+Well I thought you were interested in isolating fallback due to fragmentation
+only. You would get that with (FAULT_FALLBACK - FAULT_FALLBACK_CHARGE)? But if
+you think the latter will be relatively small/unimportant for now, and therefore
+FAULT_FALLBACK will give good enough approximation on its own, then I'm happy
+not to add FAULT_FALLBACK_CHARGE for now.
+
+> 
+>>
+>>>  next:
+>>>               order = next_order(&orders, order);
+>>>       }
+>>
+> 
+> Thanks
+> Barry
 
 
