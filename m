@@ -1,130 +1,133 @@
-Return-Path: <linux-kernel+bounces-141870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F188A246C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC9E98A2471
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:34:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A18ACB21019
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:30:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA7DEB21299
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:34:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2024517731;
-	Fri, 12 Apr 2024 03:30:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E430217BDD;
+	Fri, 12 Apr 2024 03:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M2bf9ob+"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="g+Mq3vUO"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3611010A24;
-	Fri, 12 Apr 2024 03:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0CD28FC;
+	Fri, 12 Apr 2024 03:34:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712892607; cv=none; b=YuKqs3sb02eSopjmNdfOtXduGX13jTu6uggUabV4Cv9iiqmuYwsWE4KBStAPpAY0/9cC0mxZ2ydQ29sKd3uJcowR6b/LjVw/IPUwvdkYNlfeMhHAQXFiQiThqoJwTQ5om9poIbH8QJWnUrN1kJjbPWljyBSlbpvHiQVD4RgyRbg=
+	t=1712892855; cv=none; b=HUZga4YfPZWsztky/nrzSkFjWZCNxDMMtY91yoOngM65NA7kiKOyPFrXlAdRhIWiD4YwuBt2oBYwt0Oa+ypmDElsuVx8lNUmb7bprNzOWVt44BdShZoSAizzZHUbsnF6PvlOg/y1hIYNqWMNWZd9pDVIZlprImpTrCZ6sy5r/Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712892607; c=relaxed/simple;
-	bh=0FE7ZZ0q2OwnDOATxKqkxrKnMGTlyV/klncgByuwXfE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TFiBcb70GJHDqf2xefzOu0JJXtNWd/Vu2TD2ZSywzXwLseL3q4Bs/SusRylXgmYMZ5wAE9GvmhXjNuzsUS/J7UK/Y/aCTFDbX2pZaVYqUJojx+71+hTkpUZRZO2fwmXLA2nE85QWNGsLD2iyqJ1GImGXNevbDEmKEI8Ql27Qd5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M2bf9ob+; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce2aada130so361426a12.1;
-        Thu, 11 Apr 2024 20:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712892605; x=1713497405; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MahGK5AhKSVTA/Sn1c+ldMSf99A3o38T7tu0F0YfQQk=;
-        b=M2bf9ob+4BrHxun0MNbnUGFAR5vx+BWGiZEbExyJmr7oNu5cDNMEV5m7vjBolRW0no
-         shsYSmxcwRxY8tcMPNjAjH21aTjyOnKtmgxr2pfIdzRdwPaUHkBJqvKY2v8CnPQNYSZz
-         t1YprBh52q8uZcDQrwiEq+gdPmc7iz4v/jDfGqjlGwYfAXsjg1gzqcDG+j5TbsZTUwCg
-         EYkjwK7TnCNcozB6OGbpKeXXH30z2+GUU1T2/VfL3q/LsIgz8nx36bul2O0ni0IsdKkq
-         l5py6oh1zKIhMOHZo7x79dJABN/WoClUORYndH598a8BuY5Ff5EZKvztw4IyVZmgHjyJ
-         GEeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712892605; x=1713497405;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MahGK5AhKSVTA/Sn1c+ldMSf99A3o38T7tu0F0YfQQk=;
-        b=V0z+8z5nie7ojLTqL+BbnlKu32fM0pSk4rB3aFnwO3DjkCqkjxR+FACDYFbJFPCbr5
-         Mt7FS3cpIPxQLeCLNPsrm6vyycyZkwtJZoL6cLbb6corHEpcOXebBR2K2qDcp5bTkK/Y
-         oPqx3kRl6YhAkhNzO740HhLokJVGaDDTMwP8d/1yuAfex0BdwKUf0M/f5efBaajHOFfQ
-         G/DODS5XxEBYBKyNeVOV13o+3eFVflO2zvVGWioEpTKy1r2ylUkWeb8/MsUJ59eBzcKw
-         U6EcmBe61F2+3ZKg8tAOu2UbLRBUmOT1/XcSO0MBH4teykBZYG9sP+OdDVX1nauG38hs
-         jhtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUzFreG9Z94bsoSw+yW7BH/sOav8OJcqJdzO+hqGBlr51dEcyRaYnQZ6GgDEuGxwva+1g3TiC78QENaGI74CE7euTlZ3WrdxhPcgFFiWU1OKX+EFRdHjTwjBdF7FcDbuugxWZhG64WUOa5pmFbYc5h3
-X-Gm-Message-State: AOJu0YzF8zbfDL/IEiAvtozhOdiR4ipRtdB7vTeZ5lroDcBH/qOxseNQ
-	teJi/PrmgNavttSNUM2W6XoOcYU25g2CYxNzhEw1hLgex06oef2y
-X-Google-Smtp-Source: AGHT+IG79Aswokc9JNZ0asQJOrImcIU14MDWRvfD7gvVqIWpEyW1OHU61mBS5rCnSSYUnOV7vF1JIA==
-X-Received: by 2002:a17:90a:1c97:b0:2a2:4135:5310 with SMTP id t23-20020a17090a1c9700b002a241355310mr1324609pjt.12.1712892605368;
-        Thu, 11 Apr 2024 20:30:05 -0700 (PDT)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id i20-20020a632214000000b005cd835182c5sm1782142pgi.79.2024.04.11.20.29.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 20:30:05 -0700 (PDT)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: mhiramat@kernel.org
-Cc: akpm@linux-foundation.org,
-	arnd@arndb.de,
-	changbin.du@huawei.com,
-	christophe.leroy@csgroup.eu,
-	geert@linux-m68k.org,
-	jpoimboe@kernel.org,
-	kjlx@templeofstupid.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	ndesaulniers@google.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	tj@kernel.org,
-	ytcoode@gmail.com
-Subject: [PATCH v2] init/main.c: Remove redundant space from saved_command_line
-Date: Fri, 12 Apr 2024 11:29:50 +0800
-Message-ID: <20240412032950.12687-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240412080839.c903a0058bd6594d31bc1d3e@kernel.org>
-References: <20240412080839.c903a0058bd6594d31bc1d3e@kernel.org>
+	s=arc-20240116; t=1712892855; c=relaxed/simple;
+	bh=7UUc+9AWLzj9smYxaD8BUoPg3oDr6y3pMqaVgw67Uu8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=qrUSr3H23pcnWTKjqT6rNSonJVlgq2904uvYObQ0b1ULQ27RO4Wfs+E9ep4ft1xkX33I5Vtq+4ulzGVDYYQ9TGd8kHyAyKDOLg4dbDmal3aGXW9WQI5IHm1foDzHxLEF4DMwsq9p1VxfI7uaWv2nwe+CsnvJJm/6YUrhSEoB2wM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=g+Mq3vUO; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712892848;
+	bh=9NHUhxP5YI/EJKapznWec2l/J2qFs55hoUvYBue1eMU=;
+	h=Date:From:To:Cc:Subject:From;
+	b=g+Mq3vUOnS8hzVRgMdknmHD56/BeU0fOre6PzCJsL3Q2XYx9LXjt8Gm3kNr3EA9XL
+	 R6WsDV7+Xa3Gq6+0Dwboc30L6YEpBnNP/KVj3KdboZ1Tp8glG+WIcYggr8bs5QkL2Z
+	 i0KAlC3pd3ALsZ+ZZbu+rQSRxonnFyF76L6RnbNwOBJW1eDcGlIfy43XTEeIGi0Pni
+	 +K9VoYE7iVh51pDKXus6z3BPTPDxvHEYvb3ZnEM0T4EWH6IAmxgoHOV2u8PEJm5oyj
+	 DquSCnDdAU+uPPvvRXNpPG9fWhYbo4odgSVVMZjC1N+3CI4WR2LFOyV4i1crQqEnFJ
+	 yPhkLbyK6Hywg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VG2H41Dpjz4wd7;
+	Fri, 12 Apr 2024 13:34:08 +1000 (AEST)
+Date: Fri, 12 Apr 2024 13:34:07 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: KVM <kvm@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the kvm tree
+Message-ID: <20240412133407.3364cda3@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/XoZoWVvdCW=_3sRXUnSB=2I";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-There is a space at the end of extra_init_args. In the current logic,
-copying extra_init_args to saved_command_line will cause extra spaces
-in saved_command_line here or there. Remove the trailing space from
-extra_init_args to make the string in saved_command_line look more perfect.
+--Sig_/XoZoWVvdCW=_3sRXUnSB=2I
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-v1 -> v2: Fix the issue using the method suggested by Masami
+Hi all,
 
- init/main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+After merging the kvm tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-diff --git a/init/main.c b/init/main.c
-index 881f6230ee59..0f03dd15e0e2 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -627,8 +627,10 @@ static void __init setup_command_line(char *command_line)
- 
- 	if (extra_command_line)
- 		xlen = strlen(extra_command_line);
--	if (extra_init_args)
-+	if (extra_init_args) {
-+		extra_init_args = strim(extra_init_args); /* remove trailing space */
- 		ilen = strlen(extra_init_args) + 4; /* for " -- " */
-+	}
- 
- 	len = xlen + strlen(boot_command_line) + 1;
- 
--- 
-2.44.0
+kernel/events/uprobes.c: In function '__replace_page':
+kernel/events/uprobes.c:160:35: error: storage size of 'range' isn't known
+  160 |         struct mmu_notifier_range range;
+      |                                   ^~~~~
+kernel/events/uprobes.c:162:9: error: implicit declaration of function 'mmu=
+_notifier_range_init' [-Werror=3Dimplicit-function-declaration]
+  162 |         mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm, ad=
+dr,
+      |         ^~~~~~~~~~~~~~~~~~~~~~~
+kernel/events/uprobes.c:162:41: error: 'MMU_NOTIFY_CLEAR' undeclared (first=
+ use in this function)
+  162 |         mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm, ad=
+dr,
+      |                                         ^~~~~~~~~~~~~~~~
+kernel/events/uprobes.c:162:41: note: each undeclared identifier is reporte=
+d only once for each function it appears in
+kernel/events/uprobes.c:175:9: error: implicit declaration of function 'mmu=
+_notifier_invalidate_range_start' [-Werror=3Dimplicit-function-declaration]
+  175 |         mmu_notifier_invalidate_range_start(&range);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kernel/events/uprobes.c:208:9: error: implicit declaration of function 'mmu=
+_notifier_invalidate_range_end' [-Werror=3Dimplicit-function-declaration]
+  208 |         mmu_notifier_invalidate_range_end(&range);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kernel/events/uprobes.c:160:35: warning: unused variable 'range' [-Wunused-=
+variable]
+  160 |         struct mmu_notifier_range range;
+      |                                   ^~~~~
+cc1: some warnings being treated as errors
 
+Caused by commit
+
+  b06d4c260e93 ("mm: replace set_pte_at_notify() with just set_pte_at()")
+
+I have applied the following patial revert for today.
+
+
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/XoZoWVvdCW=_3sRXUnSB=2I
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYYq68ACgkQAVBC80lX
+0GwKJwf+LxCKR/B3h+5Y+ROivsBKoQNcSbtZdRJdmQialSJIHIa2IY2dm5pEF9D/
+nQ7b7GS0S9oJ2AhDN77CEDnpmwAoeNyDCtIjw/H/FE94BwJm3STg42i/8/l8ssfP
+QDifXLUYHv+ozqLBASs28unuhbkz+06s+0978xzl/gxpLUouQ6cbVIqJFLpz6wUi
+wl5f+Odxjgf4T+axgNpUxixRfQNRGgWioONBE1rgoo7Ta0OioRM1KXd07f8p2RL4
+VPQ3r0GdeIVfjGtNd4PS0d4AhKeSxHww/a1rR/HbBTLcNce3z+CQLAziEHhj+zKG
+b8nCO/vcKw0q9FNpLIgK+RBigeo4SQ==
+=5LsJ
+-----END PGP SIGNATURE-----
+
+--Sig_/XoZoWVvdCW=_3sRXUnSB=2I--
 
