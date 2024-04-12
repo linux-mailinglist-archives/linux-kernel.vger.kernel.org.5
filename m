@@ -1,128 +1,126 @@
-Return-Path: <linux-kernel+bounces-142166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C9B38A2865
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:42:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B76468A2862
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:41:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C17A2287DB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C852D1C23A19
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EDB94D9F0;
-	Fri, 12 Apr 2024 07:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F269D4D5B0;
+	Fri, 12 Apr 2024 07:41:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="wBZqaEaU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uaqj3G6J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24AD94D5A5
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4AA3218B;
+	Fri, 12 Apr 2024 07:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712907719; cv=none; b=l+PXI3uh8augpbB7cSmzUOftSiTbw8RFVUMhNOy+uUuEJdC5nC+Bs/DoHvgkzAFiFSl2XoBAeGk3NWOXgQ0MU0ulQjPlrpe8d/DEWkp3Os/uakH9cPUE/3LiE8bY22qNv18vjxMbDGPeobWtCyUh0Ib3ekcEA162En2WZderP6Q=
+	t=1712907683; cv=none; b=Cl9Xi6pRC/J39D3GrX29atxIFjaoJNhtE4rMBG/Il5MWTNibk94PekOmvQhqSNYYs7AxDMW6Lz4u/zU6uyQjON5Dp6RDWf/jX4EboV+gnjw3zKOwcMlqftYHD/TcQta9iuz5T/vUtt+iXXloyhG9ZXkz3FCElfSsvHeHLSVM6XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712907719; c=relaxed/simple;
-	bh=vRauUdjmEXaNb3aJ9t3FYkcm7oavR/ToqvPX7bbz4uw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F9RJ2KfdUQNqJtmLDMXhtbY6tDD68DpmVcR2RgtiZ7OfXFFP4TFOSSXSx4WPxy/QipdaKkbdsjDP3IkSzHg9xBpz57kEpxId5wATV6iHLVjaXAKBPM6rZjCMS7sdiUIW3dul7jS9u3dOuP/cCKAo72oskvpOy5xtQYcwUvGjHJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=wBZqaEaU; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712907716; x=1744443716;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vRauUdjmEXaNb3aJ9t3FYkcm7oavR/ToqvPX7bbz4uw=;
-  b=wBZqaEaUbJMnsVsy3++tOZQjlioV6g2rEU5pfuINxF22EjjdeBUsuRtG
-   zU34U2SAXHDPE3uwJ/68ehPWmvMH0gdqSlkZZiz53nHvkZ3JQ7TqT9FYA
-   94EIj89EbXmXV+eycRxCptPXxsbbzJHmBf5nL3EqafpNcFlb0VzNK1Aie
-   hYin9gbXw/gEPfRIS+jc4cl+z92MhSt7VheciH0i3WgHVIvgZqU+JlDrv
-   wVmjCe1ROzEphHZWT3LHOKdpdJXoHbCRepaTYh1ycbWo0UD7YzESUtHbS
-   ij7iipFEPAeKm/ugB8yDppHdARm6yrHM+kurfhg1uY/zji5HDX1x2HvvF
-   w==;
-X-CSE-ConnectionGUID: E4sSRy7HTmSlkU9T5OWDeg==
-X-CSE-MsgGUID: KFqPtSAzSbOvrsO8JAXZEw==
-X-IronPort-AV: E=Sophos;i="6.07,195,1708412400"; 
-   d="asc'?scan'208";a="20655805"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 00:41:49 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 00:41:40 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 12 Apr 2024 00:41:37 -0700
-Date: Fri, 12 Apr 2024 08:40:46 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Yangyu Chen <cyy@cyyself.name>
-CC: <conor@kernel.org>, <ajones@ventanamicro.com>, <anup@brainfault.org>,
-	<aou@eecs.berkeley.edu>, <atishp@atishpatra.org>, <dqfext@gmail.com>,
-	<guoren@kernel.org>, <heiko@sntech.de>, <inochiama@outlook.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-riscv@lists.infradead.org>, <mark.rutland@arm.com>,
-	<palmer@dabbelt.com>, <paul.walmsley@sifive.com>, <will@kernel.org>
-Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
-Message-ID: <20240412-ivy-excitable-b740ff80c0d1@wendy>
-References: <20240314-pep-announcer-2d7f10ff8b65@spud>
- <tencent_49E156C63C84E435E6F16509D6699339520A@qq.com>
+	s=arc-20240116; t=1712907683; c=relaxed/simple;
+	bh=LR+bEwyj9w9Lz1Iy+tTJ6XhyijBDBX//2OTo3KKfYvk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZntqnS8z51fZ9LiscHVd16ZO3dtGflXAkRT6oQ8Cnpc5nBTix21j5Jplmr8rTvOCjyvlLzlwfHRFQBT/mamsXcIvz+3CGJqiuLBIDKkQhfdOBxSqYi10FUn710SWgz+tYygcaj8YMYunjq3afu7MBPyZBSG5WXYcjLb59KDQik4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uaqj3G6J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DA9CC113CC;
+	Fri, 12 Apr 2024 07:41:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712907682;
+	bh=LR+bEwyj9w9Lz1Iy+tTJ6XhyijBDBX//2OTo3KKfYvk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uaqj3G6JwGUsGiKVZAnZ/RABtuhKdxdxGmICk8vmMfDrEhUHa8ClA+BCqBs48OjZp
+	 t0n+sysKV81IUSZ5qM9PJFCMAPE/FOf2f84Qsb0BDZ6rYgxd9BAkg77O7OFfxI2Nau
+	 HXGUtnBS6btQvSv7Bgrr+5Gfg3b+QDwFbdpPdS7o=
+Date: Fri, 12 Apr 2024 09:41:19 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Herve Codina <herve.codina@bootlin.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>,
+	Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] PCI: of: Attach created of_node to existing device
+Message-ID: <2024041219-impure-upcountry-9e9d@gregkh>
+References: <20240325153919.199337-1-herve.codina@bootlin.com>
+ <20240325153919.199337-3-herve.codina@bootlin.com>
+ <2024041142-applause-spearman-bd38@gregkh>
+ <20240411203449.GA2641-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="YcE8yn2YH89m/k/Y"
-Content-Disposition: inline
-In-Reply-To: <tencent_49E156C63C84E435E6F16509D6699339520A@qq.com>
-
---YcE8yn2YH89m/k/Y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240411203449.GA2641-robh@kernel.org>
 
-On Fri, Apr 12, 2024 at 02:27:28PM +0800, Yangyu Chen wrote:
-> >> IMHO, it may be better to use a new DT property like "riscv,cpu-errata=
-" or
-> >> "<vendor>,cpu-errata". It can achieve almost everything like using pse=
-udo
-> >> isa. And the only cost I think is a small amount code to parse this.
-> >=20
-> > I suppose we could do that, but accounting for vendor specifics was one
-> > of the goals for the property I only just added and that I am suggesting
-> > to use here.
->=20
-> I think there is a simpler way to do that. We use T-Head PMU by default
-> for All T-Head CPUs (from mvendor id). Then, to test there is sscofpmf in
-> the ISA string being probed by the kernel. If yes, then use scofpmf.
-> Otherwise, use T-Head PMU.
+On Thu, Apr 11, 2024 at 03:34:49PM -0500, Rob Herring wrote:
+> On Thu, Apr 11, 2024 at 03:23:55PM +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Mar 25, 2024 at 04:39:15PM +0100, Herve Codina wrote:
+> > > The commit 407d1a51921e ("PCI: Create device tree node for bridge")
+> > > creates of_node for PCI devices.
+> > > 
+> > > During the insertion handling of these new DT nodes done by of_platform,
+> > > new devices (struct device) are created. For each PCI devices a struct
+> > > device is already present (created and handled by the PCI core).
+> > > Having a second struct device to represent the exact same PCI device is
+> > > not correct.
+> > > 
+> > > On the of_node creation:
+> > > - tell the of_platform that there is no need to create a device for this
+> > >   node (OF_POPULATED flag),
+> > > - link this newly created of_node to the already present device,
+> > > - tell fwnode that the device attached to this of_node is ready using
+> > >   fwnode_dev_initialized().
+> > > 
+> > > With this fix, the of_node are available in the sysfs device tree:
+> > > /sys/devices/platform/soc/d0070000.pcie/
+> > > + of_node -> .../devicetree/base/soc/pcie@d0070000
+> > > + pci0000:00
+> > >   + 0000:00:00.0
+> > >     + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0
+> > >     + 0000:01:00.0
+> > >       + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0/dev@0,0
+> > > 
+> > > On the of_node removal, revert the operations.
+> > > 
+> > > Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > 
+> > I need an ack from the maintainer here before I can take this.
+> 
+> Correct me if I'm wrong, but having the of_node sysfs link populated or 
+> changed after device_add is a race we lost. Userspace is notified about 
+> the new device and then some time later the symlink shows up.
 
-I am strongly opposed to doing something like this. Firstly, making it
-unconditional is a time-bomb as if T-Head ever ship something without
-support then we'll be broken on that platform and have to return to
-conditional behaviour. Secondly, we are taking agency away from
-hypervisors etc that may not want a guest to use the PMU.
+Ah, yes, I missed that, good catch, this will not work.
 
-Cheers,
-Conor.
+> However, it so far is not appearing that there's an easy way to 
+> reshuffle order of things to fix this.
+> 
+> Maybe the short term (and stable) answer just don't create any of_node 
+> symlinks on these dynamically created nodes.
 
---YcE8yn2YH89m/k/Y
-Content-Type: application/pgp-signature; name="signature.asc"
+That would work, but does userspace really need to know this
+information?
 
------BEGIN PGP SIGNATURE-----
+thanks,
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhjlaAAKCRB4tDGHoIJi
-0vdsAP9wMESP3pjIW4X/gjaZdmF9qSoS1iPGX2xdeWah9RffBAD+J5sImHAkYWje
-UrhSTPIfH7O2esfADX2481ITlcF4LwY=
-=eWjq
------END PGP SIGNATURE-----
-
---YcE8yn2YH89m/k/Y--
+greg k-h
 
