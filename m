@@ -1,166 +1,141 @@
-Return-Path: <linux-kernel+bounces-147777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A88A8A798F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:01:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25DAA8A79A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:10:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F17284B54
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:01:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56B221C2240B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C796FA8;
-	Wed, 17 Apr 2024 00:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A027620;
+	Wed, 17 Apr 2024 00:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="uqHnMyBB"
-Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01olkn2057.outbound.protection.outlook.com [40.92.102.57])
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="ALFUaIzp"
+Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D20D4685;
-	Wed, 17 Apr 2024 00:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.102.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713312053; cv=fail; b=TOzDI8axHr5wbkEgUdQ80daEcR/NmKNuK0oMcE8Q83LoItW+sW54Zo4BvxdhUQXKMOvmJgkLPpcpNKWe7JF6ozTqIuPpPO2+VAXvZXULYslIXTgPX2MPvau70sfulajYuBVR/sBLh4mvgQ+fUK+fX3Jmw21lDSN3WPRsxo0U8Bg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713312053; c=relaxed/simple;
-	bh=ueAbQ9/b1HVTFLtY06HmKX9nSz+NHnYPRR62+euzxmk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=iSfSpnaRkogsrxqDfnyslNoDENzZlDb8LFk5c6S7ksIPEyfsqioxjhc0fyxm7q2VwBh5Arqo3rdNK/pngH0UW1M1XP4fD+2ges/7lmMTyXAppQcS+EW7Dm1T+ytZBQzvuVHZiSV6D/G8Y9fJl/tRgXhKU/PPjXbLT7bI5MngArk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=uqHnMyBB; arc=fail smtp.client-ip=40.92.102.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SsyKP5ishRLXZ7wVZeNAnVpUY4aSSVSRGDB6YljKWuVSgzBoucoDXz6VSJ9Zyd8e+phMcdM26WPOKFSKnn0Pw86QtQh5iUVQubkukYRmcPpok0oABe8DusN8Tt7c4BY3ry+Pbd+XCX2PJHI1hCdHc+0csjn3+fqGN+EZSfs4aosVh+xIzAl2OWUc2+s/FBTR4VvtlfPfXDBBHHPnX6r2oRZtvDH1b29g+Lvh608ZecQCo2yRBZ1l+61P+kwTjAH2wKIsBFknMJxVyyXGsmNMaNYws8WHEhOsJ5L3CQNO27AQt0QH1VYYx8y+nmtrC5t5Qm1MgJ9pR7jI/gDWhiDEDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fA/JWBoybBau7SjbgcugZNDu/G5eQKw173HmHJdAhJY=;
- b=SimbWnTCqyxjLumkLX7HqFNfQjILDmEolEhHcwqaG/TPmGrlWtoGph9XyNenRUPmsV83+VzkS3Lzf1ntOWeo5diNIAezV65oGaHhY9p2W2kLTVlChu/kfpw+OrhZcFXKmT5HAnopszsB5hGJsHqzm9QGbPaHzIm6AZJ1YxMLliM2CrwAu9sOJ9Z+KxFArBTLzs0rAqSCReKZy8dT4ZENdFMpQTAwjRqjhenKCr9FQPoXjFKs6aWO7izbiaFI9JMPh+MCsmcwy5QEtBqmnRSje0RZTsxN0DXQ0SFP4hboSYtsJsjbBoEAVPDVX+4Dwx8VU0n8NVkKlGKlfv3XW8JtXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fA/JWBoybBau7SjbgcugZNDu/G5eQKw173HmHJdAhJY=;
- b=uqHnMyBBIzyYjYp+g2eWRmkmjEYrw/hGBLprq/Xflw3KAStZy+QExEOh+m+C4TixkzJmG9s4+qz/tr0Q6Y5OyMu8O2QC0vAdEnvIQc58k+2fwAhVv5xeiOgQgSh3RLEg0n0FZw+jrmUyiwDEqwGuK9E+zbMDr8RybOcQzbY5z/9FraBTFaPrAzNleqe/zucFtCuZ0g8WIf9lrtoRsdwCrBViha23oYDSE7W3fY4ZGMcIWwbVprYq36ZJdjt5LQKwwD5+qNqI2nDOEo9tD5e/3yYeNuLIr1e3fNTh3ZjhhgR3G/daIolnxTd0CgyJj70GBgR4Yz58OaTVk7ATgjx2ag==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PN2P287MB1455.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1ae::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Wed, 17 Apr
- 2024 00:00:33 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::664:2ecc:c36:1f2c%3]) with mapi id 15.20.7452.049; Wed, 17 Apr 2024
- 00:00:32 +0000
-Message-ID:
- <MA0P287MB2822D66AFB826428DB13E527FE0F2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Wed, 17 Apr 2024 08:00:28 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: mmc: sdhci-of-dwcmhsc: Add Sophgo SG2042
- support
-To: Conor Dooley <conor@kernel.org>, Chen Wang <unicornxw@gmail.com>
-Cc: adrian.hunter@intel.com, aou@eecs.berkeley.edu, conor+dt@kernel.org,
- guoren@kernel.org, inochiama@outlook.com, jszhang@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
- paul.walmsley@sifive.com, robh@kernel.org, ulf.hansson@linaro.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-riscv@lists.infradead.org,
- chao.wei@sophgo.com, haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
- tingzhu.wang@sophgo.com
-References: <cover.1713258948.git.unicorn_wang@outlook.com>
- <032c06642b01f06c86ba8bcd2108d18c005b57eb.1713258948.git.unicorn_wang@outlook.com>
- <20240416-pretext-cognitive-295526072596@spud>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20240416-pretext-cognitive-295526072596@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN: [8YyUbG5YfFeNjWhzcYu+9xbHjs8TDo1H]
-X-ClientProxiedBy: SG2PR04CA0156.apcprd04.prod.outlook.com (2603:1096:4::18)
- To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <553df95a-8b6d-4486-b047-0d5f8af91ff8@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DB1196
+	for <linux-kernel@vger.kernel.org>; Wed, 17 Apr 2024 00:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713312607; cv=none; b=U9S8akRcsT9uJB6oRZQxex7NB52FjkxaPb68Ir3Ngx5LN/+BY0akXaiV0oXZ87Pp7J1Idz3di5R+w3sxn9ZMvLI3tvty4f2B05qgaLg3E/xSoj6g1keWWYfcd/hDO1gLKqUMjQbie/yy7/qYpAnMK+DDvgzqPAMGRag8eiqFt58=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713312607; c=relaxed/simple;
+	bh=1/QhQq/SNBvhM5Qukg8qId++gk6cla4fzJPkLM7SWYI=;
+	h=Message-Id:In-Reply-To:References:To:Cc:From:Date:Subject; b=L/u+MGEJsovGok5mQtElmZz2r2iA9YL7XVtjtKSOglg15wR301g/bOhDa4WBhUxZ6/vtvIedoIHRB2qcL4q1eFSFYmJiNFNwyDqWJIMSFBxpSmzMaoYuPmcnhp+2QKqSe76slngbt0/7C5xmOVWnVUwwK2pmNPq0vwMIW/8+4NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=ALFUaIzp; arc=none smtp.client-ip=148.163.152.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355092.ppops.net [127.0.0.1])
+	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GEstYE010955;
+	Tue, 16 Apr 2024 17:24:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	message-id:in-reply-to:references:to:cc:from:date:subject; s=
+	DKIM202306; bh=bxlhcCLLu2nVwVVshKc9HTXBGPT+xoKrYdwmFjIADko=; b=A
+	LFUaIzpDXni0XvmvS0y2Pxqhcy4PQpTgtvxQlsDj8ehh8lmGWKw/KdeDd8BuUd8Q
+	hMBekukD2lvL+7VD+InMM3QMnnniANJSzk4HQYX0F3VzKOg16JlETL9y8pT4Uewi
+	K5mg5FPC/nPBzPUS7n4OW0xJ0Lx2W91X6kEbRo1tCH913lQPZqh7mMBqyFTn2Ke6
+	5RCAEdwT2KoGnNwjqDI+okLTM6csDjI07GYqTd23+rZUqoRAUzMrgungknlghjUI
+	otEww2i4ylzuDct59uiCTfJLLIqtdgfsHjXj7PtkQXqOKESgOg+YnW7bUlt/6/qV
+	3OSJR5JfFMbHDiub4UYuA==
+Received: from va32lpfpp02.lenovo.com ([104.232.228.22])
+	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3xha96c2th-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 17:24:57 +0000 (GMT)
+Received: from va32lmmrp01.lenovo.com (va32lmmrp01.mot.com [10.62.177.113])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by va32lpfpp02.lenovo.com (Postfix) with ESMTPS id 4VJrWs1PZ0z53xyY;
+	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
+Received: from ilclbld243.mot.com (ilclbld243.mot.com [100.64.22.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: mbland)
+	by va32lmmrp01.lenovo.com (Postfix) with ESMTPSA id 4VJrWs15XGz2VZRf;
+	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
+Message-Id: <20240416122254.868007168-5-mbland@motorola.com>
+In-Reply-To: <20240416122254.868007168-1-mbland@motorola.com>
+References: <20240416122254.868007168-1-mbland@motorola.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Maxwell Bland <mbland@motorola.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Maxwell Bland <mbland@motorola.com>, linux-kernel@vger.kernel.org
+From: Maxwell Bland <mbland@motorola.com>
+Date: Fri, 12 Apr 2024 10:00:34 -0500
+Subject: [PATCH 4/5] arm64: dynamic enforcement of PXNTable
+X-Proofpoint-GUID: c40_PDWtT41G9D4WZ4RFrQBRvh-FsbVL
+X-Proofpoint-ORIG-GUID: c40_PDWtT41G9D4WZ4RFrQBRvh-FsbVL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_14,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ impostorscore=0 mlxlogscore=624 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 spamscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404160108
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN2P287MB1455:EE_
-X-MS-Office365-Filtering-Correlation-Id: d57cae31-fcdb-4ecf-c60c-08dc5e716694
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8sudoPhejsCiyen+dYIAbGqKo5shvPfSQORoUbvOMDqlhR2id/n62a3p70de1+47w1KkAfdTDGjo1PqJ47YOwCJNi2R8P8t22TzUcPQIXPNtmWXm8GKgWdUpqwKnxVlFVi1HQdFBugZbYr0KOgUTC3+XGS0W5gmmB/37IjPgHVXxcvX6Vlqj2O4Iu+F97NezI0pqod6V6fHcL/ewMinI35bo147UFBNNpRkJCqhrGgJUuu7HWnF8lVl7coJ+5CoJOTEPjiaIEQJO8RoQGqUtLpsxmPI8S2TVxRKhG0EHm/u95aKZN9e00ETm3kaJXak/zEgPs5SH32ey4OJhQad6lZrbo5DtbE+dwpP71clczH2EizK1+M3JgT+4f2MsIBZDqTU55R3jXL2vM9RzFkAtdX5EDxn1Rg1rmwunsnY1uKQQAY0eIZJ0KeLyRonztOuD5aVMBOD5TQmI6mHLu8LlU06hg5k/AAEMwJvAoTr2yap1PE6XkxIbfbkYHebLqXPzZp/SL2Fne6GIiwrrI9ejIDir03x1GDB/1lwes1Bl17jWBos+pmjSPYEjKMEX5cw9
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bkN1eWd5azJ1TGxtWnppL1ZuQ3hSNXZVSXgzQlNmRjlWQjQzeXdxRGxRMDQx?=
- =?utf-8?B?TGpESmxQVjExYkczOTBhS3h4UVlla0xZaDlQdGFBZUFiUlhQOCtvMmNkazlN?=
- =?utf-8?B?TFZ4Q2RXaHU1QjcvOUdoTEdVR0dBTk9xZ1NjZVVyeTBrRU5xZzh4cURjbUdW?=
- =?utf-8?B?M3lBMmNlQkV6RXhKRWNwS2RwR3BDSnljdXU2VGdiU0RBU3l1cVZlVnZJWXoz?=
- =?utf-8?B?VDE4R2EzVXFWYklZUHk4TE13TEg1WUw3cUFveU91RUF3ZXJuVHlQNmlrQ1hi?=
- =?utf-8?B?U3JLWlh6VUs3TkhnVXh4SnhlNjY2QklGWjRXTWMzS1AxUTY5SGpyT0hWcCtS?=
- =?utf-8?B?YXlVOHJ5MVYwdWRySUF3MnFyLzU5SU40Vjk1Z1VQVkxIbjNhQlRyNkh3TFh6?=
- =?utf-8?B?MFdTbXZNNEpwdFpqQzhCN1JuQ1ViWFZqWEZFcUF5NmQ1bEJnL2tZa3NpVGJK?=
- =?utf-8?B?NDRSSFRhUXl0c0VINHBZVlFhcTB3WGNENlRXbEd2ZXNKbFA1WC8zcitnS1Av?=
- =?utf-8?B?N3VpbkkydlNnZ3pSenNMZXB1dlhBdzBHMVQ3SEQ3Zm90YnhiQnN2SklsQmlE?=
- =?utf-8?B?S3BzWHpjS2hHTU12NVV0M0ZpamRsSmtSSFFuUWpzL2pRNWxFeGFodk13TUxo?=
- =?utf-8?B?Y0hkQXlRTDdRc0FYWVJvZmtCa0cybmg5bGNPekhacm9ORktsWGxJVE0zQnpB?=
- =?utf-8?B?RXdBZlQ1QklKMmZPU1Q4aUpXWGc0UkREQ3JKd1pZTHFSUlVieU1wTVEwdHJU?=
- =?utf-8?B?TnI2dE1sSjhPSUYvOXhwK1Jod3pGZTNZbEdpUTJlK3ZmQk82TXhpUlNTQjJ0?=
- =?utf-8?B?cUZWeEQ3Nysrc0ZRQVJERW5ITmROa1ZINHdHMDk2d3dKM014d202K2k1RWtE?=
- =?utf-8?B?d2E5angzc3V5a211RzlkckloblNUL1pHRUc5OUswSjFqQjhOMXJzMG1mOHA3?=
- =?utf-8?B?TVBUQTVkN0tqdGxqYlVMNEMyMStNa1RWM0RMYWwyYi94UWd5YVhGTyt5V1hR?=
- =?utf-8?B?VFFEclBiYTkzZ1JYRFFGVERUT1JFRGVYL0Uvd0xrZFV5czVPOXdpU0I3SVp0?=
- =?utf-8?B?WkJiaFNFek1qTDhvVW04ZXNMQ05TT3BremNZdEFuOCtaV1BHMmZ4Ym8yZENk?=
- =?utf-8?B?WktMTW5wN0FMbWlYeVp6NjQ1c3l0cDRRWkJvT0xoeXlzNWMzaUlMSm8wcVdH?=
- =?utf-8?B?SGJBUUhVZE1lQ2JqRWg4Qm04WklXSWJqeThqVnJiMjBnZjBmQm1xMFpZTHUy?=
- =?utf-8?B?UmVscFR0WkIxWThzZm44TTJZVTNQWWt6ZXZ3TTQrNDdybE0wLy9vQzBzWXJH?=
- =?utf-8?B?RlpuVjBSNHIvMEVzV2tBaWhHZU5jM0IyKzZTV2JabzRvL2QzeWtsdHE5bytX?=
- =?utf-8?B?WGNDZXNydjMyZm9Ud1JtRkNSdGt4dlErY1doeEdaTXBYMmlqN0tvVUhZb0xw?=
- =?utf-8?B?a0ljbU1ZR3drRzhaMTBpdWdCVWVxb1VCTkxad0NjMTF2T3d0c2QzWHhtb01j?=
- =?utf-8?B?dENEQkRuSW1nK2RiWGNOVDA3cFprdlVpdzZPTFc3a1VRVm9FTkltZU1uVVN3?=
- =?utf-8?B?MVpwYmNHbFdrMCs1STlFMDFuNXpWdUZaRW00Y0ZDTHhiZEQ5QzJsNnVXM0lt?=
- =?utf-8?B?bXR3eGVYb0duaFhKRmpJc3hVRnFIVzBuU24xQmhlRVhYbEZTeXNHNy9DNk1M?=
- =?utf-8?Q?UkWHycfN7INId+w8xLbh?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d57cae31-fcdb-4ecf-c60c-08dc5e716694
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Apr 2024 00:00:32.7793
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2P287MB1455
 
+PXNTable is enforced during the init process to ensure that regions of
+user memory and kernel data cannot be executed from, preventing attacks
+which write to writable kernel pages and then modify the kernel's page
+tables to make this code executable. This patch ensures this protection
+is also preserved for dynamically allocated pages/pagetables, making it
+so that all PMDs populated outside of the module code region are
+PXNTable by default.
 
-On 2024/4/17 0:44, Conor Dooley wrote:
-> On Tue, Apr 16, 2024 at 05:50:37PM +0800, Chen Wang wrote:
-[......]
->> +    anyOf:
->> +      - minItems: 1
->> +        items:
->> +          - description: core clock
->> +          - description: bus clock for optional
->> +          - description: axi clock for rockchip specified
->> +          - description: block clock for rockchip specified
->> +          - description: timer clock for rockchip specified
->> +
->> +      - minItems: 1
-> I don't think this minItems is needed, this is for one device which has
-> all 3, no?
-Yes, SG2042 requires all the 3 clocks presented,  I will remove this 
-minItems.
-> I also think this combination should only be permitted for the sg2042,
-> since it is not valid for the existing devices.
-Yes, I will add condition to allow this combination only for sg2042, 
-thanks.
-> Cheers,
-> Conor.
+Signed-off-by: Maxwell Bland <mbland@motorola.com>
+---
+ arch/arm64/include/asm/pgalloc.h | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-[......]
+diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
+index 5785272144e8..2376b4e7915c 100644
+--- a/arch/arm64/include/asm/pgalloc.h
++++ b/arch/arm64/include/asm/pgalloc.h
+@@ -12,6 +12,7 @@
+ #include <asm/processor.h>
+ #include <asm/cacheflush.h>
+ #include <asm/tlbflush.h>
++#include <asm/module.h>
+ 
+ #define __HAVE_ARCH_PGD_FREE
+ #define __HAVE_ARCH_PUD_FREE
+@@ -119,6 +120,12 @@ static inline void __pmd_populate(pmd_t *pmdp, phys_addr_t ptep,
+ 	set_pmd(pmdp, __pmd(__phys_to_pmd_val(ptep) | prot));
+ }
+ 
++static inline bool vaddr_is_data(unsigned long vaddr)
++{
++	return ((vaddr + PMD_SIZE < MODULES_ASLR_START || vaddr >= MODULES_ASLR_END) &&
++		(vaddr + PMD_SIZE < (unsigned long) _text || vaddr >= (unsigned long) _etext));
++}
++
+ /*
+  * Populate the pmdp entry with a pointer to the pte.  This pmd is part
+  * of the mm address space.
+@@ -127,8 +134,11 @@ static inline void
+ pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmdp, pte_t *ptep,
+ 		    unsigned long vaddr)
+ {
++	pmdval_t pmd = PMD_TYPE_TABLE | PMD_TABLE_UXN;
+ 	VM_BUG_ON(mm && mm != &init_mm);
+-	__pmd_populate(pmdp, __pa(ptep), PMD_TYPE_TABLE | PMD_TABLE_UXN);
++	if (vaddr_is_data(vaddr))
++		pmd |= PMD_TABLE_PXN;
++	__pmd_populate(pmdp, __pa(ptep), pmd);
+ }
+ 
+ static inline void
+-- 
+2.39.2
 
 
