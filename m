@@ -1,265 +1,240 @@
-Return-Path: <linux-kernel+bounces-142330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F0E38A2A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:05:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC1B8A2A4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:06:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED97728977F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:05:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C02971C20B68
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:06:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44EC54FB7;
-	Fri, 12 Apr 2024 08:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YsBuXPKM"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22C3E5CDF2;
+	Fri, 12 Apr 2024 09:00:35 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F88F5491B;
-	Fri, 12 Apr 2024 08:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20EB54F86
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712912324; cv=none; b=XiT21X1tW+XXqBS3by+3atNerw4DukD3kJukVDJq0AVGAyx6UitJFsEsj3qFPjb9Nu11Qh979YjCBshvMYEFFv3ZkVSCwd0qUaO7xL+AeFK73dVZz8xLGRybCv1aMp6EOvNWRwjHRE6m6SVCu+8dMKsSCXUarKUuBB/JJzfoVUQ=
+	t=1712912434; cv=none; b=afCn+5S3e9uUBu6zkMIQ4YRirUM7in0A8nRzgCO2ngYLFHV56XnIr7pwvo5WzD6jxAebn84z8HkTXrCUneaEqKAy3Jjoa9ppivehHQaiOUTmGsCFMVznTvW5WO6x/iacUQfxP//pwWvuzoCdlOl6KsIf9VoVbYKMieLJzRhMUf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712912324; c=relaxed/simple;
-	bh=huChjCQNWVRZ2z0cjXm27vIfd7qkeml70iNGjBlY0Y4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ss1dRjQGDani3lq40k2Cn3hytEXaa5+ttMJsUJhQg/IJWHSF6rOAUa+T3lWw9ZE7uMBOLszr21iaor+gRq9lUs24sSLMcgZjqMeapIpuLpJ6LWU+bI/AHvpz65/OT9JFCbw+1cavcMgAPFdPlNgpwoAFU4rihzpSBnXxElR1RrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YsBuXPKM; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d09bd434so867969e87.1;
-        Fri, 12 Apr 2024 01:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712912320; x=1713517120; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fFYPg17+SisPh/dO8GWqmztHALXDDWObuz1gO+wVXeE=;
-        b=YsBuXPKMGShVXQLGyQ554tX7yJkjdo42l1iFhFlWfpcHX9iUVLyzLPsJJ7XaJvj5nk
-         oZD12daNi0eiXUf3gOzoQpQeVRqy5Mf8jVxYyG4FtdwThPEFu0SBnEPgLyLL9z0Vov4V
-         tB8pJcppMnyM4CYsBWrPE9mmivxApVtlU+Aq8JCZfZKwv2hce9bH+dz23es/IwxscSDv
-         vMwN6VFAxtvCpSaGPlzGybipWHH8XCcCZpBNZrlVKYitDQZenzVllFOwDvSMgVOqgbhU
-         aPGJXtUzqOtFrjPW7D2LKDu1SEK3E0QzA34Bzo9jPsq82ZzL+Id9iQwVSqGO3hCSC1NA
-         FDDg==
+	s=arc-20240116; t=1712912434; c=relaxed/simple;
+	bh=lUR8gjpQoG75Rj0AXF/vb4V7WxkjkkemsnpsDiJ1y+8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OeV7s/orOhUP2WNlA3rvSy6lAubn42N81vi7Dh7B7cMb3m620rePSZuGF6bcCcvZ4n1Z76I3lcy4Kzug43wKMXeaLoelt25rnHsiHF/fvI6TZfnOEY2eIm5JdfdMEElKhn11yaRZj1UR1EaSeHbKR5A0TSpc6v9ajAfd53U1WzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36a25ad3ac4so7844095ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 02:00:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712912320; x=1713517120;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fFYPg17+SisPh/dO8GWqmztHALXDDWObuz1gO+wVXeE=;
-        b=HLUMs88af9vdX3hrfVuqDtSnYBxFfhUTRVrgx5K+wRZbd+BUPVqeaW/z1150ASioS6
-         lOQ2wK+W/tg+3Fa7KEqBUbD2C5uj58mPaBRyk9Sl33nBYZ4iXPl7gBMnWXAI2Gs7yhHX
-         lxIJSE8eY6JgLnIRLZIE0Ej6JOoaOuGxWgOPUg6HMUjVEPBuCe5Pl9JvHrYHHEK2M0vO
-         hb4ofP4NoNo7uCMopnMoeoaHhYLt7YCvqO29a+1lZP7TipbIuDIy9AsT+NfM0AXyLlrP
-         Y+9xJ9C+0MjLOUvPwRC1TzUNbYzSbo0sMW+NsIRYM2s1UNMCuivTVCNjJ8GKQi+ZvSWn
-         rvNg==
-X-Forwarded-Encrypted: i=1; AJvYcCVihtyZD343/pgq7sGClpeWSwefWAI1ICEyTX3goe9vB/XTsYGlUZ4xuyBOSw6v8vtSmt8bbdODzDUeR6OxTbkpfZSpTVnmqIlI/hKmQ4BHs9ir80HOpaCEXZ7p5H0Q6A1iAHDploGbDRjtosCWWuGXEbtKF/UyH5lBEbh/B5rrRntakYj+MOBp
-X-Gm-Message-State: AOJu0Yy5+MrklEaxxngK9HprKLnsYXjiF9/vurp66hpsNGc6L/obUMyt
-	3dc4XeugTEO30HFmIITZT32Y0QbOuQK9zJk8ypIWQDn6BzRRpiBW
-X-Google-Smtp-Source: AGHT+IGAUv6OT2596DIE+RgEZ5zFhzXzYqcKOgGctjOv73rSkpxzaDu1qnLEdnfnz//LgENdfu6Hvg==
-X-Received: by 2002:a05:6512:21ce:b0:518:8aa3:c4ee with SMTP id d14-20020a05651221ce00b005188aa3c4eemr480147lft.42.1712912320168;
-        Fri, 12 Apr 2024 01:58:40 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id b25-20020ac247f9000000b00516a01d2f44sm465460lfp.240.2024.04.12.01.58.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 01:58:39 -0700 (PDT)
-Message-ID: <700b63a1-ce91-4d91-9db7-43c195ba7a6f@gmail.com>
-Date: Fri, 12 Apr 2024 11:58:38 +0300
+        d=1e100.net; s=20230601; t=1712912431; x=1713517231;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jVD4bGYtEQYA0AWSL1QYjeD+MyjUVeeblZwNbRgRNwc=;
+        b=LlVbnQ9Ks8mKyS7RwwxJtzLp6hc92/47BNA7ExA4k2fLoAqnb9Ln4r4kYC+abDn8kj
+         afLEf88ueiVtj4qItsA0Bc9Xv6WAJBYe8UW2AdD9jBV1Oe1SCamvW7iPwuyWit7fwaSb
+         BA9fEib/k3E2s5ss9CYzTz21SVaV6Lt3qj6ML9Fo05jOSuGDqlzbTIfZVs8FnGZkArar
+         UWZWDffN1wzUbB6AwaWNOIW1mSSa7ABWPSXL6Ft5XK7bHSWYaSa/wAVkFJvYgjfr5TMr
+         C0Ca0Af/YV4Rqjv84bhn0yKRbCgrv0cphZ5wPfb1WXiX0CEPCuGMEOiJRKFyrSdf8V6H
+         RQdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU7geBXES+SyVq8u6S9qXM7hjyD2/idzyA+FXDhs1OgHbaWl/23T1bnvz+Q6aXgMd8IPyor/76bZ5xzdjGRkZ5c5UHc05GJRWTfgkLo
+X-Gm-Message-State: AOJu0YzLuNKqr9dR3DwW37MjRPsA0BmwKK3jN0W5QZ9h8JVykXCtd2AK
+	htqy8N3D5HXRwa74nOW/0CitHpEbZupKsDzX6kwiWHT3GGcBvQ21CXF/wP6yzT4emQpms3dV4mP
+	ik7Yug38TI4zaDWL3UfoDTczch3uepYlEZ59Z0I07g2DWdDHyzanOE/0=
+X-Google-Smtp-Source: AGHT+IF8+U3ZUe/fDcoTVmUyOQa04e2x3lFY2i5czruXTEPUjNU6CxOwokCVIRorMwur482oS7jf1dGJCkbwQjk4sEi7BculncDX
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 3/6] mfd: support ROHM BD96801 PMIC core
-Content-Language: en-US, en-GB
-To: Lee Jones <lee@kernel.org>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-References: <cover.1712058690.git.mazziesaccount@gmail.com>
- <b86b7a73968810339b6cea7701bc3b6f626b4086.1712058690.git.mazziesaccount@gmail.com>
- <20240411143856.GD2399047@google.com>
- <25c959bc-fb02-42d9-b973-4a74cebd7208@gmail.com>
- <20240412072347.GM2399047@google.com>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20240412072347.GM2399047@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:ca0d:0:b0:368:efa4:be00 with SMTP id
+ j13-20020a92ca0d000000b00368efa4be00mr160157ils.3.1712912431720; Fri, 12 Apr
+ 2024 02:00:31 -0700 (PDT)
+Date: Fri, 12 Apr 2024 02:00:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000063e340615e2811c@google.com>
+Subject: [syzbot] [gfs2?] INFO: task hung in __gfs2_lookup
+From: syzbot <syzbot+8a86bdd8c524e46ff97a@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/12/24 10:23, Lee Jones wrote:
-> On Fri, 12 Apr 2024, Matti Vaittinen wrote:
-> 
->> Hi deee Ho Lee!
->>
->> Thanks a ton for taking a look at this :) I already sent the V2 yesterday,
->> briefly before receiving your comments. I think all of the comments are
->> relevant for the V2 as well, I will fix them for the V3 when I get to that.
->> If you find the time to take a look at V2, then the major things are
->> addition of a watchdog IRQ + a work-around for the debugFS name collision
->> for IRQ domains.
->>
->> On 4/11/24 17:38, Lee Jones wrote:
->>> On Tue, 02 Apr 2024, Matti Vaittinen wrote:
->>>
->>>> The ROHM BD96801 PMIC is highly customizable automotive grade PMIC
->>>> which integrates regulator and watchdog funtionalities.
->>>>
->>>> Provide IRQ and register accesses for regulator/watchdog drivers.
->>>>
->>>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->>>> ---
->>>>    drivers/mfd/Kconfig              |  13 +
->>>>    drivers/mfd/Makefile             |   1 +
->>>>    drivers/mfd/rohm-bd96801.c       | 454 +++++++++++++++++++++++++++++++
->>>>    include/linux/mfd/rohm-bd96801.h | 212 +++++++++++++++
->>>>    include/linux/mfd/rohm-generic.h |   1 +
->>>>    5 files changed, 681 insertions(+)
->>>>    create mode 100644 drivers/mfd/rohm-bd96801.c
->>>>    create mode 100644 include/linux/mfd/rohm-bd96801.h
->>>>
->>>> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
->>>> index 4b023ee229cf..947045eb3a8e 100644
->>>> --- a/drivers/mfd/Kconfig
->>>> +++ b/drivers/mfd/Kconfig
->>>> @@ -2089,6 +2089,19 @@ config MFD_ROHM_BD957XMUF
->>>>    	  BD9573MUF Power Management ICs. BD9576 and BD9573 are primarily
->>>>    	  designed to be used to power R-Car series processors.
->>>> +config MFD_ROHM_BD96801
->>>> +	tristate "ROHM BD96801 Power Management IC"
->>>> +	depends on I2C=y
->>>> +	depends on OF
->>>> +	select REGMAP_I2C
->>>> +	select REGMAP_IRQ
->>>> +	select MFD_CORE
->>>> +	help
->>>> +	  Select this option to get support for the ROHM BD96801 Power
->>>> +	  Management IC. The ROHM BD96801 is a highly scalable power management
->>>
->>> Power Management
->>
->> Out of the curiosity, why is the "Power Management IC" written with
->> capitals, when speaking of a class of devices instead of a model? (I am 100%
->> fine with the change, just curious).
-> 
-> It's no different to how its expressed in the tristate section above.
-> 
-> Power Management IC or PMIC.
-> 
->    "provides power management capabilities" describes its function?
-> 
->    "is a scalable Power Management IC", describes the device?
-> 
-> But actually, it just looks odd when both are used in the same section.
-> 
-> /me likes uniformity and consistency.
+Hello,
 
-It's okay, thanks for the explanation :)
+syzbot found the following issue on:
 
->>>> +	  IC for industrial and automotive use. The BD96801 can be used as a
->>>> +	  master PMIC in a chained PMIC solutions with suitable companion PMICs
->> ...
->>
->>>> +static int bd96801_i2c_probe(struct i2c_client *i2c)
->>>> +{
->>>> +	int i, ret, intb_irq, errb_irq, num_regu_irqs, num_intb, num_errb = 0;
->>>> +	struct regmap_irq_chip_data *intb_irq_data, *errb_irq_data;
->>>> +	struct irq_domain *intb_domain, *errb_domain;
->>>> +	const struct fwnode_handle *fwnode;
->>>> +	struct resource *regulator_res;
->>>> +	struct regmap *regmap;
->>>> +
->>>> +	fwnode = dev_fwnode(&i2c->dev);
->>>> +	if (!fwnode) {
->>>> +		dev_err(&i2c->dev, "no fwnode\n");
->>>> +		return -EINVAL;
->>>
->>> Why not dev_err_probe() here for uniformity?
->>
->> I can change it to dev_err_probe() if it's strongly preferred. It just feels
->> silly to use dev_err_probe() when the return value is hardcoded.
-> 
-> Not at all:
-> 
-> git grep dev_err_probe | grep "\-[A-Z]" 
+HEAD commit:    4118d9533ff3 Add linux-next specific files for 20240411
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=101fa5cb180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=16ca158ef7e08662
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a86bdd8c524e46ff97a
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1509eb25180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fbeaa3180000
 
-Yes, I know people do use the dev_err_probe() with hardcoded errors but 
-it does not make me feel any better about it :)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1eb8b3998228/disk-4118d953.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c17244f68cad/vmlinux-4118d953.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/df207f8c8f2a/bzImage-4118d953.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/2b56e1dd3dfb/mount_0.gz
 
->> Intentionally writing code like
->>
->> err = -EINVAL;
->> if (err == ...)
->>
->> just makes me feel a bit sick.
-> 
-> Why would you want to do that?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8a86bdd8c524e46ff97a@syzkaller.appspotmail.com
 
-This is what the dev_err_probe() with a hardcoded err does, right?
+INFO: task syz-executor359:5091 blocked for more than 143 seconds.
+      Not tainted 6.9.0-rc3-next-20240411-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor359 state:D stack:24984 pid:5091  tgid:5091  ppid:5088   flags:0x00004002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5409 [inline]
+ __schedule+0x17e8/0x4a50 kernel/sched/core.c:6746
+ __schedule_loop kernel/sched/core.c:6823 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6838
+ bit_wait+0x12/0xd0 kernel/sched/wait_bit.c:199
+ __wait_on_bit+0xb0/0x2f0 kernel/sched/wait_bit.c:49
+ out_of_line_wait_on_bit+0x1d5/0x260 kernel/sched/wait_bit.c:64
+ wait_on_bit include/linux/wait_bit.h:76 [inline]
+ gfs2_glock_wait+0xc7/0x2b0 fs/gfs2/glock.c:1344
+ gfs2_glock_nq_init fs/gfs2/glock.h:238 [inline]
+ __gfs2_lookup+0x11b/0x280 fs/gfs2/inode.c:905
+ __lookup_slow+0x28c/0x3f0 fs/namei.c:1692
+ lookup_slow+0x53/0x70 fs/namei.c:1709
+ walk_component+0x2e1/0x410 fs/namei.c:2004
+ lookup_last fs/namei.c:2461 [inline]
+ path_lookupat+0x16f/0x450 fs/namei.c:2485
+ filename_lookup+0x256/0x610 fs/namei.c:2514
+ user_path_at_empty+0x42/0x60 fs/namei.c:2921
+ user_path_at include/linux/namei.h:57 [inline]
+ ksys_umount fs/namespace.c:1916 [inline]
+ __do_sys_umount fs/namespace.c:1924 [inline]
+ __se_sys_umount fs/namespace.c:1922 [inline]
+ __x64_sys_umount+0xf4/0x170 fs/namespace.c:1922
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f83e9183587
+RSP: 002b:00007fffdb5f1f68 EFLAGS: 00000202 ORIG_RAX: 00000000000000a6
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f83e9183587
+RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fffdb5f2020
+RBP: 00007fffdb5f2020 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000202 R12: 00007fffdb5f3110
+R13: 0000555562dbd740 R14: 0000555562dac338 R15: 00007fffdb5f5290
+ </TASK>
 
-int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
-{
-	...
-	if (err != -EPROBE_DEFER) {
-		dev_err(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
-	} else {
-		device_set_deferred_probe_reason(dev, &vaf);
-		dev_dbg(dev, "error %pe: %pV", ERR_PTR(err), &vaf);
-	}
-	...
-}
+Showing all locks held in the system:
+1 lock held by khungtaskd/30:
+ #0: ffffffff8e335ca0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8e335ca0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:841 [inline]
+ #0: ffffffff8e335ca0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
+2 locks held by getty/4849:
+ #0: ffff88802ad660a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002f162f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2201
+1 lock held by syz-executor359/5091:
+ #0: ffff888068e3d1f0 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: inode_lock_shared include/linux/fs.h:801 [inline]
+ #0: ffff888068e3d1f0 (&type->i_mutex_dir_key#6){.+.+}-{3:3}, at: lookup_slow+0x45/0x70 fs/namei.c:1708
 
-> 
->>>> +	}
->>>> +
->>>> +	intb_irq = fwnode_irq_get_byname(fwnode, "intb");
->>>> +	if (intb_irq < 0)
->>>> +		return dev_err_probe(&i2c->dev, intb_irq,
->>>> +				     "No INTB IRQ configured\n");
->>>
->>> This function would look nicer if you expanded to 100-chars.
->>
->> The reason why I still prefer the good old 80-chars for files I work with,
->> is that I am often having 3 terminal windows parallel on my laptop screen.
->> (Or, when I have my wide mofnitor connected it is 3 editor windows +
->> minicom). I need to keep the terminals small enough. Besides... I hate to
->> admit this, but the time is finally taking it's toll. My eyes aren't quite
->> the same they were 2 years ago...
-> 
-> Upgrade your 14" CRT monitor to something more modern. :)
+=============================================
 
-But those things were built to last! And throwing away perfectly working 
-stuff... :)
+NMI backtrace for cpu 1
+CPU: 1 PID: 30 Comm: khungtaskd Not tainted 6.9.0-rc3-next-20240411-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
+ watchdog+0xfde/0x1020 kernel/hung_task.c:380
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 4529 Comm: klogd Not tainted 6.9.0-rc3-next-20240411-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:__rb_insert_augmented+0x9/0x6b0 lib/rbtree.c:458
+Code: c3 cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 55 41 57 41 56 <41> 55 41 54 53 48 83 ec 38 48 89 54 24 08 48 89 74 24 10 48 89 fd
+RSP: 0018:ffffc90004a4f518 EFLAGS: 00000086
+RAX: 000000052ae920a0 RBX: ffff8880b943e6c0 RCX: dffffc0000000000
+RDX: ffffffff816bbee0 RSI: ffff8880b943e710 RDI: ffff88807d890090
+RBP: 1ffff1100fb12019 R08: ffff88807d8900a7 R09: 0000000000000000
+R10: ffff88807d890098 R11: ffffed100fb12015 R12: ffff88802e575b18
+R13: dffffc0000000000 R14: ffff88807d890080 R15: ffff88807d8900c8
+FS:  00007ff2573a4380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005617143a8600 CR3: 000000002be1e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ put_prev_entity+0x62/0x210 kernel/sched/fair.c:5493
+ pick_next_task_fair+0x363/0xde0 kernel/sched/fair.c:8535
+ __pick_next_task+0xb0/0x2c0 kernel/sched/core.c:6030
+ pick_next_task kernel/sched/core.c:6120 [inline]
+ __schedule+0x729/0x4a50 kernel/sched/core.c:6702
+ preempt_schedule_common+0x84/0xd0 kernel/sched/core.c:6925
+ preempt_schedule+0xe1/0xf0 kernel/sched/core.c:6949
+ preempt_schedule_thunk+0x1a/0x30 arch/x86/entry/thunk.S:12
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+ _raw_spin_unlock_irqrestore+0x130/0x140 kernel/locking/spinlock.c:194
+ spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
+ __wake_up_common_lock+0x18c/0x1e0 kernel/sched/wait.c:108
+ sock_def_readable+0x20f/0x5b0 net/core/sock.c:3353
+ unix_dgram_sendmsg+0x148e/0x1f80 net/unix/af_unix.c:2113
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ __sys_sendto+0x3a4/0x4f0 net/socket.c:2191
+ __do_sys_sendto net/socket.c:2203 [inline]
+ __se_sys_sendto net/socket.c:2199 [inline]
+ __x64_sys_sendto+0xde/0x100 net/socket.c:2199
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7ff2575069b5
+Code: 8b 44 24 08 48 83 c4 28 48 98 c3 48 98 c3 41 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 26 45 31 c9 45 31 c0 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 76 7a 48 8b 15 44 c4 0c 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007fff461d0318 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007ff2575069b5
+RDX: 000000000000004e RSI: 0000556259833d70 RDI: 0000000000000003
+RBP: 000055625982f910 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000004000 R11: 0000000000000246 R12: 0000000000000013
+R13: 00007ff257694212 R14: 00007fff461d0418 R15: 0000000000000000
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.937 msecs
 
-> 
-> I have a 32" 4k monitor with a good sized font and each of my 3
-> terminals (per i3 workspace) are ~150 chars wide.
-> 
->> So, same old story, I can change this if it is important enough for others,
->> but personally I rather work with the short lines.
-> 
-> It's not a showstopper.
 
-I'll revise the line lengths for next version. I think this one still 
-won't go much over 80 chars, which may still fit on my terminals. I'll 
-change it if it fits, keep it if it wont. Thanks for pointing it out :)
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Yours,
-	-- Matti
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
