@@ -1,60 +1,72 @@
-Return-Path: <linux-kernel+bounces-143028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDAB68A3362
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:13:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 069798A3372
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:15:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A56F281DC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:13:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A246B2217E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19FF148FEE;
-	Fri, 12 Apr 2024 16:13:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A7D1487E4
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76E1D148FEE;
+	Fri, 12 Apr 2024 16:15:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MlZCXcez"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9B61487F6;
+	Fri, 12 Apr 2024 16:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938411; cv=none; b=GTj2Adcbv0L/uEPZ+d0bjVNqE5k5HoGqIR/Kvvg5xrZ7hXDCGquC8pSmXTQDUKCN2ZTxCoiV5eLznOQmikEAn+e/j0byDjlnXRVkZIybB5wzMQqp+NSWWf2wKijG+oLopWTsTwMMg7Xf3Lzu/EEXbHTAIyfe+A1JZe+Y26gsLOs=
+	t=1712938518; cv=none; b=SasC4JdA1hI9l02dgpFVLUM6VMp6F4R5+SBZXZeEEGsfie4xGzax8J7Zh+8eppO/5XQB+t0MTdYjnsWzDO0Cwrstltk6TEvlmaVicJG6IYyseWi2xvITJJzmqikGQeyGnX1Ktba0AycLgpGhg2Qs6SgH3abg6AmLmeULkE4h808=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938411; c=relaxed/simple;
-	bh=Q4V6Zn9TStSChaSxBLObNVv7hgA1ULUGeyWgeYmigkY=;
+	s=arc-20240116; t=1712938518; c=relaxed/simple;
+	bh=V1ce7pLVJkYNy1H2D56NR0dfAzQf/796KsVr4ABO0B8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rtCbdldEl3II2Zp8m+4HzE3t3LpViZlZEeZtM3ISQYV66n9WP7tFQOoj6O1a4kiLZRcUCcu2IHHwDUDFNAZsXM7gLuohgdQbWyfa5sF5vR7QtsiIE/wWXUw/zIGhrmZy9ePIDfmI+J8Z4oafAxwZU7td4D96b8f/6FrRcHO1ofo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 255B0339;
-	Fri, 12 Apr 2024 09:13:58 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 340723F64C;
-	Fri, 12 Apr 2024 09:13:26 -0700 (PDT)
-Date: Fri, 12 Apr 2024 17:13:23 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 03/31] x86/resctrl: Move ctrlval string parsing policy
- away from the arch code
-Message-ID: <Zhldo59cSmSLwFGZ@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-4-james.morse@arm.com>
- <1776b49b-3c0e-41a7-bbc5-19310c428429@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XkNAF6ca78ANEg7EZZ3D6ATLpftm++bAb98YKkPJ+URGMII8/8IPuTXlRTMbLFoJm+0kUlwWoLBrT1C1hzzp13jMQxH3K0TsaitK7xWX3W6CWHe8AUl7XobWqXOat2+2q/Njn7Jj7GrBeOnKdaOCWXuaPGih/58dHRCZInwy4CY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MlZCXcez; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712938517; x=1744474517;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=V1ce7pLVJkYNy1H2D56NR0dfAzQf/796KsVr4ABO0B8=;
+  b=MlZCXcezFAoN/UcTunjpI0bcg//EiSUDR2+RiY99cn7lH0gbZn/bSLNx
+   Oskgmrot2m2tkuVbbO6E6gmEiuIE3rcoNvYIBE2877g0sJAXb13dxOmJk
+   p4j+ch4hifdOsLg0ijpO4/LoG8OlFWJAKfWA4R+EWoP8e1URCWw4MHRsf
+   STGeC2Qr/lhp5EXktMCsLg8rzELu4dni/nVTnHgUYcayGGNVRejedPSGU
+   4D8YlfLComMGuBbKcrwroW4GsHZ0ki+UHRh4X4+AZ4q8orpUu1dQKf3a8
+   U5ekhEGI/9Ik4FXc+gsRgu1whQQ6u9Bm8w3qYhUtiyvzExrVGxUGcRes1
+   Q==;
+X-CSE-ConnectionGUID: fddpKE/XQ0KpixAwDo0T3g==
+X-CSE-MsgGUID: VnE+YxcRRD+VzrP1d1FngA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19548224"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="19548224"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 09:15:16 -0700
+X-CSE-ConnectionGUID: KQDw4Xd9STietWAI4ytIoA==
+X-CSE-MsgGUID: ud941DghRkOk2DhWFAi44w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="21359037"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 09:15:14 -0700
+Date: Fri, 12 Apr 2024 19:15:11 +0300
+From: Raag Jadav <raag.jadav@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: u.kleine-koenig@pengutronix.de, jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com, linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] pwm: dwc: allow suspend/resume for 16 channels
+Message-ID: <ZhleDwUJLDEG5QwH@black.fi.intel.com>
+References: <20240412060812.20412-1-raag.jadav@intel.com>
+ <ZhlU176sS36_JvQU@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,44 +75,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1776b49b-3c0e-41a7-bbc5-19310c428429@redhat.com>
+In-Reply-To: <ZhlU176sS36_JvQU@smile.fi.intel.com>
 
-Hi,
+On Fri, Apr 12, 2024 at 06:35:51PM +0300, Andy Shevchenko wrote:
+> On Fri, Apr 12, 2024 at 11:38:12AM +0530, Raag Jadav wrote:
+> > With 16 channel pwm support, we're registering two instances of pwm_chip
+> > with 8 channels each. We need to update PM functions to use both instances
+> > of pwm_chip during power state transitions.
+> > 
+> > Introduce struct dwc_pwm_drvdata and use it as driver_data, which will
+> > maintain both instances of pwm_chip along with dwc_pwm_info and allow us
+> > to use them inside suspend/resume handles.
+> 
+> ...
+> 
+> > +	data = devm_kzalloc(dev, struct_size(data, chips, info->nr), GFP_KERNEL);
+> > +	if (!data)
+> > +		return dev_err_probe(dev, -ENOMEM, "Failed to allocate drvdata\n");
+> 
+> Haven't noticed before, but we do not print messages for -ENOMEM. Just return
+> the code.
 
-On Tue, Apr 09, 2024 at 05:13:01PM +0200, David Hildenbrand wrote:
+Any special case for -ENOMEM?
+I found a few drivers which still do.
 
-[...]
-
-> > @@ -195,6 +204,14 @@ int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
-> >   	return 0;
-> >   }
-> > +static ctrlval_parser_t *get_parser(struct rdt_resource *res)
-> > +{
-> > +	if (res->fflags & RFTYPE_RES_CACHE)
-> > +		return &parse_cbm;
-> > +	else
-> > +		return &parse_bw;
-> > +}
-> 
-> Besides what Reinette said, I'd have added here something that would fire in
-> case someone adds something unexpected in the future, like
-> 
-> WARN_ON_ONCE(!(res->fflags & (RFTYPE_RES_CACHE|RFTYPE_RES_MB));
-> 
-> At the beginning of the function.
-> 
-> 
-> Apart from that, nothing jumped at me.
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-
-Thanks for that -- I guess that would benefit from discussion; please
-see my reply to Reinette on this patch.
-
-Cheers
----Dave
+Raag
 
