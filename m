@@ -1,77 +1,102 @@
-Return-Path: <linux-kernel+bounces-141755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5C0E8A22F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:35:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 462318A22FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:41:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DE161F22C82
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:35:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B0F1C227EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADBEF1FBA;
-	Fri, 12 Apr 2024 00:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD882107;
+	Fri, 12 Apr 2024 00:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SYIhgFQI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bNdyU1Ch"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F249A17E9
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 00:35:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70DB205E14;
+	Fri, 12 Apr 2024 00:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712882129; cv=none; b=JNZUf2plqOfhT8VQ2C+tMgUOEsDrotKwXyKMpApYm54J+m2hdVgO8uhCHhN/DSRxYwaEuhWnYf826CdqlJcOH53+pmocbUIF9lwbVIsLo1GSIjC8aDOYLvqleG95FyRTqsR4u3z485tJlJyGt5aKPiCpdXo+Of+J6bIh38olKcQ=
+	t=1712882473; cv=none; b=kFymivb33fQDDepspufrqgqu288N+xJh9b/tmUpZBbAEpiqumIQSFvtusZAx8f6ggLC6WXwRzyPw03YxX0uqTLcklCXJnHSbdsbmySFa7wP25fX7Wo64VswtKFcYwresiQ9HNJaGGykoD9s+Vh11Q8LxwinvNsrKjyoMpTM0XgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712882129; c=relaxed/simple;
-	bh=Zd0UnFAEVBYqLc+J6a48EFFUgrWUs/hzCkKQ2PDZS2k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IqLZSAy94wuXPtpysOxfKttlt4o+XvGyAedaEtnXVArVk+Jo2OhtCm0+7MolgvL29iLZMXHWS0yvcqcY+6bVqg/LZ2cCF2SA9NQ4PE3Pr/sTBhqgPcF5q6DQ+XM/6ybGYe8GPYaQa27uoqVARypzUMEvaQ14XlFQDZF1Q65a6sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SYIhgFQI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14897C072AA;
-	Fri, 12 Apr 2024 00:35:28 +0000 (UTC)
+	s=arc-20240116; t=1712882473; c=relaxed/simple;
+	bh=tkAwC8xYx2SEMYsDRYYQ97QABsmy3xXHEjMopBbT+c8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=W6Oc1qylgm7O8LMUKrCt4ehEaIJy7kx29WKZSVJZfOkhT6ONlNGUe0L2x8YMDQPTZRAs/F2HGaRDNpi8UysaRu1Lfrh64VZbsYxDdP35gVe5wT7SqT8M3k6u7uPBa8EQ/KH/uzyy59ga5IKeG/PuMuVRY6W79wK8ULvPgq3qSao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bNdyU1Ch; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1D8C072AA;
+	Fri, 12 Apr 2024 00:41:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712882128;
-	bh=Zd0UnFAEVBYqLc+J6a48EFFUgrWUs/hzCkKQ2PDZS2k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SYIhgFQIiT4iU75zL3wCYTbWNWJ/nSFuIdTCPwelmcdDqb+wV5nzItJAoy2tC0M2T
-	 66atD6/HhXNVH47sP29ioke+bUdnd6piQqIZMA5G5LxA6VaJ6xjxq8k/Pb+PR2b7bI
-	 ptVq2tMkZiURcQA3QKMeXnO1bQ535zAilkMduhbwffK7KaZM05XEnFBKlx+2sx0eXc
-	 I4KukZFIuNi5BQn8phHt2clbN6hKs9jPyO5AsfenqsVBsTz93A7q6PgJvbk9i8O6uJ
-	 Pfr3cS2+vgh5NVqQQHG5Dnt7pP2dT1xl+BSYN/Ibzj/z6XX5yL9jI1dnfQZN6arLwd
-	 9F2Wym3OmgHQA==
-Date: Thu, 11 Apr 2024 18:35:25 -0600
-From: Keith Busch <kbusch@kernel.org>
-To: Daniel Wagner <dwagner@suse.de>
-Cc: Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-	James Smart <james.smart@broadcom.com>,
-	Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/6]  nvme-fabrics: short-circuit connect retries
-Message-ID: <ZhiBzXBvjTeDuHbS@kbusch-mbp.dhcp.thefacebook.com>
-References: <20240409093510.12321-1-dwagner@suse.de>
+	s=k20201202; t=1712882473;
+	bh=tkAwC8xYx2SEMYsDRYYQ97QABsmy3xXHEjMopBbT+c8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=bNdyU1ChaQuXySi1UCUMOwqufaYdRlPh3Y+g2ASclM16FitpF0x3TWGfDh1b4j6Fy
+	 gHaUvNHwpzh7tpoh5MlJIvdxgQ7QB9bdGEqtc2e4LlRSLbBsFxcu32AKqxs8QQ4nYJ
+	 G0zWoM7HT3nh/8KFZbrkFzrefPRMKAGJznuW1aCAgpRYIk5gqFzdU6+oC7veRazQh4
+	 sfUlK6sugnZjU8YhIgRPzJ9bzGlzP4h8B6GnwwWyDjk/y4kyYjSwNOa5urJ71yHKae
+	 B4mHUlDFoh0s5DiLY/Ab29znpyGzR3XxqRZFzFGrjlFiK3P/JgyVpGTkibqXxqD6BU
+	 SCLdwdeaZhlsQ==
+From: Mark Brown <broonie@kernel.org>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20240411142648.650921-1-sbinding@opensource.cirrus.com>
+References: <20240411142648.650921-1-sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v1] ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP
+ config
+Message-Id: <171288247200.110635.15927713546125669144.b4-ty@kernel.org>
+Date: Fri, 12 Apr 2024 01:41:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409093510.12321-1-dwagner@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-On Tue, Apr 09, 2024 at 11:35:04AM +0200, Daniel Wagner wrote:
-> The first patch returns only kernel error codes now and avoids overwriting error
-> codes later. Thje newly introduced helper for deciding if a reconnect should be
-> attempted is the only place where we have the logic (and documentation).
+On Thu, 11 Apr 2024 15:26:48 +0100, Stefan Binding wrote:
+> Currently, all ASoC systems are set to use VPMON for DSP1RX5_SRC,
+> however, this is required only for internal boost systems.
+> External boost systems require VBSTMON instead of VPMON to be the
+> input to DSP1RX5_SRC.
+> Shared Boost Active acts like Internal boost (requires VPMON).
+> Shared Boost Passive acts like External boost (requires VBSTMON)
+> All systems require DSP1RX6_SRC to be set to VBSTMON.
 > 
-> On the target side I've separate the nvme status from the dhchap status handling
-> which made it a bit clearer. I was tempted to refactor the code in
-> nvmet_execute_auth_send to avoid hitting the 80 chars limit but didn't came up
-> with something nice yet. So let's keep this change at a minimum before any
-> refactoring attempts.
-> 
-> I've tested with blktests and also an real hardware for nvme-fc.
+> [...]
 
-Thanks, series applied to nvme-6.9.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP config
+      commit: eefb831d2e4dd58d58002a2ef75ff989e073230d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
