@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-142725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 980438A2F68
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:29:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4EF08A2F67
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52A6A282E11
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:29:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D65DD1C20F50
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C1182899;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 257E782888;
 	Fri, 12 Apr 2024 13:29:33 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F85824A8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B13824A7
 	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712928572; cv=none; b=HC1eNa1jR9ZHWjYG7TtF6+EC9fIUYeP/6ujKkAlz2RzWmI2DRMC4bGn7oGlw5l8eeeyFInxj5WUfUiXuF/2zS08IJKKpEJud2hjrYy2XNqn/paTlXqbveUw2zvKHTFM9/esxFC+QaEHakVC0ux48Fzmwdrwdgk1NtPRriyUzr5w=
+	t=1712928572; cv=none; b=AUg6CKsza3Ez4LCCDl/z+67sH1f20kyy+JbsjAswCk8Woquu1oBRpcgs6tu4mciacFup3qKyBaRcmdoayqESAq7d3RK02/bcLQ9j4W4/Z29PLNUXdL/NMR6zB9Zmkk8AekOiFTQ6bNz6SxKd8xkEX7Lv1uPBQuHOPrOOTYnuilA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712928572; c=relaxed/simple;
-	bh=ANIJRUlQz6LQ5jbf92Mbu1AsZcgEwSE3Z9aKa1ZENwQ=;
+	bh=0TOkjBaTj5it68Im/6giqJjimq/460uMEJuzqUrd+Zk=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=eIxFOhPNv5enKx+utBLljNLKoJIwuSi5Nl3GdBMIEeJLqPzLkslAOP8k3nAC1KHeet0v/7hoeZ9MLq1jTjQiP+yAY2q/En8mg0sgYyhSXQK2hAIjH/u+A8vBHxX3gk11DUEs1uPf+fpTpT2Dpcp33zL4tU1F8wi7Wy26iMrIovk=
+	 Content-Type; b=Vnmuyvt6uvaE9JdTjDJ/2xnoA83Of/pYhw+prKWzK1s79JWAFrpWaCn4Y2QxwCeXM+WNSV3PDnkmvz/SyDRboBhLiH48rE+R4d6tearFkMN+61k4sijcWDSANxSzQURpZY8p2P0QItd+JY6vfn0LJk1obITm6MfH3W4HR9WsD58=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE99C3277B;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4851BC2BD10;
 	Fri, 12 Apr 2024 13:29:32 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rvH0n-000000012pR-45QV;
-	Fri, 12 Apr 2024 09:32:13 -0400
-Message-ID: <20240412133213.834390718@goodmis.org>
+	id 1rvH0o-000000012pu-0YH3;
+	Fri, 12 Apr 2024 09:32:14 -0400
+Message-ID: <20240412133213.994663842@goodmis.org>
 User-Agent: quilt/0.67
-Date: Fri, 12 Apr 2024 09:31:53 -0400
+Date: Fri, 12 Apr 2024 09:31:54 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
  Andrew Morton <akpm@linux-foundation.org>,
- Yang Li <yang.lee@linux.alibaba.com>
-Subject: [for-linus][PATCH 1/4] eventfs: Fix kernel-doc comments to functions
+ Prasad Pandit <pjp@fedoraproject.org>,
+ Randy Dunlap <rdunlap@infradead.org>
+Subject: [for-linus][PATCH 2/4] tracing: Fix FTRACE_RECORD_RECURSION_SIZE Kconfig entry
 References: <20240412133152.723632549@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -52,65 +53,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Prasad Pandit <pjp@fedoraproject.org>
 
-This commit fix kernel-doc style comments with complete parameter
-descriptions for the lookup_file(),lookup_dir_entry() and
-lookup_file_dentry().
+Fix FTRACE_RECORD_RECURSION_SIZE entry, replace tab with
+a space character. It helps Kconfig parsers to read file
+without error.
 
-Link: https://lore.kernel.org/linux-trace-kernel/20240322062604.28862-1-yang.lee@linux.alibaba.com
+Link: https://lore.kernel.org/linux-trace-kernel/20240322121801.1803948-1-ppandit@redhat.com
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Fixes: 773c16705058 ("ftrace: Add recording of functions that caused recursion")
+Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- fs/tracefs/event_inode.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ kernel/trace/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index dc067eeb6387..894c6ca1e500 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -336,6 +336,7 @@ static void update_inode_attr(struct dentry *dentry, struct inode *inode,
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index 61c541c36596..47345bf1d4a9 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -965,7 +965,7 @@ config FTRACE_RECORD_RECURSION
  
- /**
-  * lookup_file - look up a file in the tracefs filesystem
-+ * @parent_ei: Pointer to the eventfs_inode that represents parent of the file
-  * @dentry: the dentry to look up
-  * @mode: the permission that the file should have.
-  * @attr: saved attributes changed by user
-@@ -389,6 +390,7 @@ static struct dentry *lookup_file(struct eventfs_inode *parent_ei,
- /**
-  * lookup_dir_entry - look up a dir in the tracefs filesystem
-  * @dentry: the directory to look up
-+ * @pei: Pointer to the parent eventfs_inode if available
-  * @ei: the eventfs_inode that represents the directory to create
-  *
-  * This function will look up a dentry for a directory represented by
-@@ -478,16 +480,20 @@ void eventfs_d_release(struct dentry *dentry)
- 
- /**
-  * lookup_file_dentry - create a dentry for a file of an eventfs_inode
-+ * @dentry: The parent dentry under which the new file's dentry will be created
-  * @ei: the eventfs_inode that the file will be created under
-  * @idx: the index into the entry_attrs[] of the @ei
-- * @parent: The parent dentry of the created file.
-- * @name: The name of the file to create
-  * @mode: The mode of the file.
-  * @data: The data to use to set the inode of the file with on open()
-  * @fops: The fops of the file to be created.
-  *
-- * Create a dentry for a file of an eventfs_inode @ei and place it into the
-- * address located at @e_dentry.
-+ * This function creates a dentry for a file associated with an
-+ * eventfs_inode @ei. It uses the entry attributes specified by @idx,
-+ * if available. The file will have the specified @mode and its inode will be
-+ * set up with @data upon open. The file operations will be set to @fops.
-+ *
-+ * Return: Returns a pointer to the newly created file's dentry or an error
-+ * pointer.
-  */
- static struct dentry *
- lookup_file_dentry(struct dentry *dentry,
+ config FTRACE_RECORD_RECURSION_SIZE
+ 	int "Max number of recursed functions to record"
+-	default	128
++	default 128
+ 	depends on FTRACE_RECORD_RECURSION
+ 	help
+ 	  This defines the limit of number of functions that can be
 -- 
 2.43.0
 
