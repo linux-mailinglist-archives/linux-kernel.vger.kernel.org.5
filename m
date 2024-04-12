@@ -1,107 +1,171 @@
-Return-Path: <linux-kernel+bounces-142598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238D88A2DA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:38:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C48A8A2DAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:38:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC68B1F2142F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:38:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 300241C21416
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360D658AA8;
-	Fri, 12 Apr 2024 11:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1F45674D;
+	Fri, 12 Apr 2024 11:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8w1HujX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="B4ybTsXF"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7949554BD3
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF245674E;
+	Fri, 12 Apr 2024 11:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712921800; cv=none; b=Bt4JXSi2aDJgnoEJlHk8ifT3wxoLk2/vaCJZ77l140NNH4lTLV4WXUFEZfqqWlVFgfFyC1or8ebHBYy8SeKKMfmyjrZiPM1z0O0gSDvGmpLW50G/QUhvZQlZhbP4RIjyXSwjd7S1ItcNWwvEuDLhuYylAu5+tf8QgzlPdS6hT0s=
+	t=1712921909; cv=none; b=oDt+yQddqy8ypjSYxfP8MnkCzruYTYP7oKC1WoPYjrWkUI6UH/4fvvK+xXwXQ03NleLePeG6kLQwAHp8hNIo1ZHBmQetjxDCjq8+Dqkd7K9LnpVVwaTcBVIl2AZ9IrgQAI9810mtQcW+zCHchVOytUAGNT/zqgv3WTELajROwXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712921800; c=relaxed/simple;
-	bh=0B7OZ4+cm6zX6NHLWDukEzHI5Sp9zfAE8/FxHCWBZTs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=jb7ySPmDOx2dmV7r2AYYYU8QYzmrlysNREdkrGnC5JmFCuhCwYxZpBjFkptGrPrwEaCgQFo2qIcBdXnbiNxEsGcsvMfV6rzv9igYy+uPuAQclmByy+2ZWYU5yYBqJQQgvK9dUtInuMyTpQzkJRaQOSNY4TapTQPB/othrPzB2ns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8w1HujX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2833C2BD11;
-	Fri, 12 Apr 2024 11:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712921800;
-	bh=0B7OZ4+cm6zX6NHLWDukEzHI5Sp9zfAE8/FxHCWBZTs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=M8w1HujX7Xic2R9CyhILYprTMR60t/5vkkUbAkGgjqG5XQ0wdRUKX15KAuSPy44JK
-	 HUIWKb+ddZIPuFyb17fkFY4YkyZB2gEWQ6Av1Kc/Pg+JA1no+WcgYh6mIP7uekxfLu
-	 VWxJEZSxxIb6Xt7ab/dcorooioBhHovpPY3YTwKtTbnA2dXdJ6zdqtvq9HI9iM4p11
-	 aEY1vpbNpYmetpPndHlBXmBnZ9s/FzFwNGieVg/Hy5nvs8s6ffI30SToBP7cys/QUw
-	 L6xTxVjlOdeVU7z+TREN3Yr/fl7d6P59hAig7IeA5xV8b+Ex5wa1a7mO3nYerkBGfo
-	 rKQN3blVHp7+Q==
-From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- linux-kernel@vger.kernel.org, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>
-In-Reply-To: <20240410202912.1659275-1-andriy.shevchenko@linux.intel.com>
-References: <20240410202912.1659275-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 0/2] regmap: Amend MODULE_DESCRIPTION() texts
-Message-Id: <171292179844.7190.3919795371064412980.b4-ty@kernel.org>
-Date: Fri, 12 Apr 2024 12:36:38 +0100
+	s=arc-20240116; t=1712921909; c=relaxed/simple;
+	bh=aWPWXWwePYJ7mcthXXcnh6W3EMOk6ujdepGmdYxSc0c=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HJsq8TpNdeQlIWq3QaksZlpxXCxO5vuYVnkRj1GUUTVPsAL5NGr6GtAMsk8Q8P4FAtIfXkpiyiOVOAiD/YHWd0bAWIyu+c4yI5CaYS2q6Oh/ePYJRAc53uRdUcgxTxyRMERlWvMsvGWVD7lx5mc2dCDo//8PnjFK7r0egy/guUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=B4ybTsXF; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712921908; x=1744457908;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aWPWXWwePYJ7mcthXXcnh6W3EMOk6ujdepGmdYxSc0c=;
+  b=B4ybTsXFVrSB7obR05QAb5IRs7584qdbH4++gFBdVj1o6VZ1GfDS8Irv
+   ePwPuu8FILMnb3ZHUU+FAnj/rvxWpr6TGXCL48kFh73NFnNGXWNRErmgw
+   DFPE+XUOoVsl9f1hajG8b9N47NMY8JVfslhQcs70iCuqzLIANti+pLrkQ
+   BH7d6NeZCu68DKm3qih8nDAx5Y+E0IXTbRr27q5iAF7pKBnxTv91dktKU
+   BBbZjnsR4cF6DXhPBFGlSJGM0E4lul8NbajMJIzeCTpi1BNZciYjNZFvv
+   mX9zvcFKwFQauGWYd5XPAYDskpGoXSwQnLr2o+zCctuVpKn6Gpzvhrcq9
+   Q==;
+X-CSE-ConnectionGUID: ++lz7ARxTeyfeBIEUobjog==
+X-CSE-MsgGUID: KH8PpH+1RGyAV72cISUUNA==
+X-IronPort-AV: E=Sophos;i="6.07,196,1708412400"; 
+   d="asc'?scan'208";a="20734020"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 04:38:27 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 04:38:03 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 12 Apr 2024 04:37:59 -0700
+Date: Fri, 12 Apr 2024 12:37:08 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
+	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
+	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
+	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
+	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 15/19] riscv: hwcap: Add v to hwcap if xtheadvector
+ enabled
+Message-ID: <20240412-thrill-amnesty-019897f21466@wendy>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-15-4af9815ec746@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ibtP5+Ck2kdPiHYk"
+Content-Disposition: inline
+In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-15-4af9815ec746@rivosinc.com>
 
-On Wed, 10 Apr 2024 23:27:51 +0300, Andy Shevchenko wrote:
-> A couple of MODULE_DESCRIPTION() text related changes.
-> 
-> v2:
-> - added first patch to change spelling (Mark)
-> - updated second one accordingly (Mark)
-> 
-> Andy Shevchenko (2):
->   regmap: Drop capitalisation in MODULE_DESCRIPTION()
->   regmap: spi: Add missing MODULE_DESCRIPTION()
-> 
-> [...]
+--ibtP5+Ck2kdPiHYk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied to
+On Thu, Apr 11, 2024 at 09:11:21PM -0700, Charlie Jenkins wrote:
+> xtheadvector is not vector 1.0 compatible, but it can leverage all of
+> the same save/restore routines as vector plus
+> riscv_v_first_use_handler(). vector 1.0 and xtheadvector are mutually
+> exclusive so there is no risk of overlap.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+I think this not okay to do - if a program checks hwcap to see if vector
+is supported they'll get told it is on T-Head system where only the 0.7.1
+is.
 
-Thanks!
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
+>  arch/riscv/kernel/cpufeature.c | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
+e.c
+> index 41a4d2028428..59f628b1341c 100644
+> --- a/arch/riscv/kernel/cpufeature.c
+> +++ b/arch/riscv/kernel/cpufeature.c
+> @@ -647,9 +647,13 @@ static void __init riscv_fill_hwcap_from_isa_string(=
+unsigned long *isa2hwcap)
+>  		 * Many vendors with T-Head CPU cores which implement the 0.7.1
+>  		 * version of the vector specification put "v" into their DTs.
+>  		 * CPU cores with the ratified spec will contain non-zero
+> -		 * marchid.
+> +		 * marchid. Only allow "v" to be set if xtheadvector is present.
+>  		 */
+> -		if (acpi_disabled && this_vendorid =3D=3D THEAD_VENDOR_ID &&
+> +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
+> +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
+> +			this_hwcap |=3D isa2hwcap[RISCV_ISA_EXT_v];
+> +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
+> +		} else if (acpi_disabled && this_vendorid =3D=3D THEAD_VENDOR_ID &&
+>  		    this_archid =3D=3D 0x0) {
+>  			this_hwcap &=3D ~isa2hwcap[RISCV_ISA_EXT_v];
+>  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
+> @@ -776,6 +780,15 @@ static int __init riscv_fill_hwcap_from_ext_list(uns=
+igned long *isa2hwcap)
+> =20
+>  		of_node_put(cpu_node);
+> =20
+> +		/*
+> +		 * Enable kernel vector routines if xtheadvector is present
+> +		 */
+> +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
+> +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
+> +			this_hwcap |=3D isa2hwcap[RISCV_ISA_EXT_v];
+> +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
+> +		}
+> +
+>  		/*
+>  		 * All "okay" harts should have same isa. Set HWCAP based on
+>  		 * common capabilities of every "okay" hart, in case they don't.
+>=20
+> --=20
+> 2.44.0
+>=20
 
-[1/2] regmap: Drop capitalisation in MODULE_DESCRIPTION()
-      commit: c1ffff88750a697483eabb052004a937631720b6
-[2/2] regmap: spi: Add missing MODULE_DESCRIPTION()
-      commit: 135cec6ba82ebffc0275c5228b4c4bf279fbf6f5
+--ibtP5+Ck2kdPiHYk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-----BEGIN PGP SIGNATURE-----
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkc5AAKCRB4tDGHoIJi
+0gKCAP4v+esN57jD+BTAcXXG/qusYjMQbk1rVAldJniCgV0x0gEAibLnaoOuNXqF
+Pa0786aCvAvHYTWbBfJ/ykNix6NyKQI=
+=b/XX
+-----END PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--ibtP5+Ck2kdPiHYk--
 
