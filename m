@@ -1,221 +1,294 @@
-Return-Path: <linux-kernel+bounces-143319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E135E8A372E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:42:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F6068A3731
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:43:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A53286834
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:42:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE04DB226CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5D23D56D;
-	Fri, 12 Apr 2024 20:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223672E62F;
+	Fri, 12 Apr 2024 20:42:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YJqkcLFA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LuOPdjst"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1DB92E62F;
-	Fri, 12 Apr 2024 20:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75B1433D5
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:42:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712954570; cv=none; b=u3tYfqsJODCakJyTlvCkHBCPZSWVaKENe/RhdZfgHNC1JB4hOAtRxEn41rjBYzu1P3uVFbZXka4GtjUNEz6BGT/W68Ec6Inv8iBfIK5fIHSjgffVfWYPwClylhoE+zPlShhDzw6Zuu6CkKKVLy6pwKgENl3Y0wqs8FbCmFHWyWA=
+	t=1712954577; cv=none; b=T4yXuP0ZH+A/UeECuOExgXb+OJAeh1GPrcp83KxwBMpVVk6BHIPLI+WSClUjv0MdNZJ1ZlZcHlP/NMYQodFHb2MPaEpN/wcQEAxOMJxTt7kWGm2nd8Ig1ewyleST2jktDE6xCFWppLSabC0SL2+dMflS17Bvy2Md85vZWxw1paM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712954570; c=relaxed/simple;
-	bh=FaCmkfXZATbbGc1AaFlo/IMENWfiiSjV1ABEmJ4XPIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AyihCKVeRLSvchcm1yxBVWLfsW88WZyhMUFh1m0UihMIA1YSO1yTmIt4JrKvXY8Nsh5Ot3yGMR06tP0ivz+UExcrggznjZWlPyclnnqsdpdvmIMIJEz8oTHyq9OxOyqQy1LaGRFJ1FnKxbGt9FnmdcIQjKELgT1fYYY7NcFTJ6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YJqkcLFA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D54F2C113CC;
-	Fri, 12 Apr 2024 20:42:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712954569;
-	bh=FaCmkfXZATbbGc1AaFlo/IMENWfiiSjV1ABEmJ4XPIM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YJqkcLFAcTsECllx9rhUB7eW6r6kldZQq87sHenDtlvleSY+oc02M7gOBOIq2PiHf
-	 pi0V3EJp4UXuUwTQp32d2dR8uv689jDwAk/GBKR9ckn3fydrzu2JhFZfRICo9hbY7Z
-	 8j2dCb7X1tDUdaTe7rD1aOhV5DEFqAwC5NAVBCm+A8I7BtdYO2XNMQ94MFZs/oacFa
-	 bBU8X5cJoaqgCKIxEDs5A1tIky/8KiRjIMbI2bOtOjTzUjtt1YcFjJDYhaDyhXv7BA
-	 rzEJ317H0UxRsRe9RiWZWwdRI/+knA9alX+gyAQ0xu9mmAfVbenxuAsBbm/17726lS
-	 h5NrCjSUio34w==
-Date: Fri, 12 Apr 2024 21:42:42 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Evan Green <evan@rivosinc.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 02/19] riscv: cpufeature: Fix thead vector hwcap removal
-Message-ID: <20240412-scrabble-outback-dca318d44660@spud>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-2-4af9815ec746@rivosinc.com>
- <20240412-tuesday-resident-d9d07e75463c@wendy>
- <CALs-HsuMZOMpDh8kwQx6FE2mawzt+qTD-WZ6Mvhrt+hUhkZimg@mail.gmail.com>
- <20240412-employer-crier-c201704d22e3@spud>
- <ZhmBfaKXMMtolwSr@ghost>
- <20240412-earmark-sanction-810b7222cae5@spud>
- <Zhma45a2I7DgD8Ni@ghost>
+	s=arc-20240116; t=1712954577; c=relaxed/simple;
+	bh=J85Au1+EGwbBZq1rpAsUbtk/iRvaIU4GOBpDvc7u2QQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eq8oS5AcXo13wRdnLjJAFDolwii+SbAjbkJH9o9cXj9fs6VbxbB1qDbhcSjCMiz+7/NNsX6YRS36li+Ln7B6SXGvSUrojFqnkCa01zVkslZUdUiDVE9K+2knibfpAC9QkMrtOFFudAk0laSvYkpLyBVZDL7K+lO7x63oYvmxz9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LuOPdjst; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e424bd30fbso10709425ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712954575; x=1713559375; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OK8rKoUkQPD7clWTz5JNPeyB8DiO1KapbhHZGBnPwVA=;
+        b=LuOPdjstagMNDYFqkNTjobPkmlqJPRdrM17LkLae8qWwwO/d0BjLlHEDXHBrMYHmKm
+         LpzuFp92CbvcNwdCq/gy0oZd9GiEk46hqSfwEjI+7/wsg4yHzGbvzdO6gHt5tjwYj9Zq
+         yCldMITOBgiktfizMKtjYIaolWKecSMrDWxsM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712954575; x=1713559375;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OK8rKoUkQPD7clWTz5JNPeyB8DiO1KapbhHZGBnPwVA=;
+        b=oS7b9GeckkQtWle8oDWVH+Xs2OtR/8YDry/TJhWtqI4Wheras0BJTeoP+smXXxNXJg
+         3nFzbMrlN7ihPCpbRN5Glt3FqtNUpZTI2xl1KUQFUY3UEmlsdbr6x1k+rgRAnEdErgBw
+         4YdSs3rQY4xAu8KFE2WZAj/0gyLVPwfdfOziqd4OzkEuP8W4r1uZGsBgwHDYZtX/zjJh
+         9QI/1hoOPhH6imC9eXqVvOA4bE31kKQYFm4FHp4TrdRvEnMI2GIj180XfmkedMQ6pfdk
+         TI+sTsTwfSpdVkDHTgzq6lU/ympBzGlItW0gy54Rp2qNnLCT3i/IbttNgbcrxjMYs0QE
+         B+aA==
+X-Forwarded-Encrypted: i=1; AJvYcCXabYJpvZqcDkdkPQC5J+JOT3JA7Ndf9Y9t1gZU/52Sa7ytRwFWFv5nHQcWyc0hJJOkfmlwIdxe6XLE+wP7EtR2W26igCM9lR6EadOv
+X-Gm-Message-State: AOJu0Yxoy0mPEUvEzzZ03cJaoA5lSrnwyryGLWTAkDWC/SuNAA+xCl3O
+	9aA4NW1mS50qQD76JX6Cx6pVKliEfyXURhyQDx70U+o91MLH4nbIhiKWsp2YNcfrvCRX92N33dJ
+	l9WGHTnO9yAKX9X7noc7TMcfUMJ6bzTd+8P5V
+X-Google-Smtp-Source: AGHT+IGvWLQ9M9g+BbhWyW6/OkthS05jBy0U4kOMYl32CiNaIdA/Bgb3c8R2RlbJBAd+bdDx4ApIgS6LyjEEmNgicYY=
+X-Received: by 2002:a17:903:24d:b0:1e4:9ad7:2211 with SMTP id
+ j13-20020a170903024d00b001e49ad72211mr4358093plh.45.1712954575082; Fri, 12
+ Apr 2024 13:42:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="x8exgmtxQWZyWHHC"
-Content-Disposition: inline
-In-Reply-To: <Zhma45a2I7DgD8Ni@ghost>
-
-
---x8exgmtxQWZyWHHC
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240119110842.772606-1-abailon@baylibre.com> <20240119110842.772606-4-abailon@baylibre.com>
+In-Reply-To: <20240119110842.772606-4-abailon@baylibre.com>
+From: Pin-yen Lin <treapking@chromium.org>
+Date: Fri, 12 Apr 2024 16:42:44 -0400
+Message-ID: <CAEXTbpd+HRj_ar3UnCSkCMbELSLraAgET9G3a3_7u9fPkdKNVg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] thermal: Add support of multi sensors to thermal_of
+To: Alexandre Bailon <abailon@baylibre.com>
+Cc: rafael@kernel.org, daniel.lezcano@linaro.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, rui.zhang@intel.com, 
+	lukasz.luba@arm.com, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 01:34:43PM -0700, Charlie Jenkins wrote:
-> On Fri, Apr 12, 2024 at 08:26:12PM +0100, Conor Dooley wrote:
-> > On Fri, Apr 12, 2024 at 11:46:21AM -0700, Charlie Jenkins wrote:
-> > > On Fri, Apr 12, 2024 at 07:38:04PM +0100, Conor Dooley wrote:
-> > > > On Fri, Apr 12, 2024 at 10:04:17AM -0700, Evan Green wrote:
-> > > > > On Fri, Apr 12, 2024 at 3:26=E2=80=AFAM Conor Dooley <conor.doole=
-y@microchip.com> wrote:
-> > > > > >
-> > > > > > On Thu, Apr 11, 2024 at 09:11:08PM -0700, Charlie Jenkins wrote:
-> > > > > > > The riscv_cpuinfo struct that contains mvendorid and marchid =
-is not
-> > > > > > > populated until all harts are booted which happens after the =
-DT parsing.
-> > > > > > > Use the vendorid/archid values from the DT if available or as=
-sume all
-> > > > > > > harts have the same values as the boot hart as a fallback.
-> > > > > > >
-> > > > > > > Fixes: d82f32202e0d ("RISC-V: Ignore V from the riscv,isa DT =
-property on older T-Head CPUs")
-> > > > > >
-> > > > > > If this is our only use case for getting the mvendorid/marchid =
-stuff
-> > > > > > from dt, then I don't think we should add it. None of the devic=
-etrees
-> > > > > > that the commit you're fixing here addresses will have these pr=
-operties
-> > > > > > and if they did have them, they'd then also be new enough to ho=
-pefully
-> > > > > > not have "v" either - the issue is they're using whatever crap =
-the
-> > > > > > vendor shipped.
-> > > > > > If we're gonna get the information from DT, we already have som=
-ething
-> > > > > > that we can look at to perform the disable as the cpu compatibl=
-es give
-> > > > > > us enough information to make the decision.
-> > > > > >
-> > > > > > I also think that we could just cache the boot CPU's marchid/mv=
-endorid,
-> > > > > > since we already have to look at it in riscv_fill_cpu_mfr_info(=
-), avoid
-> > > > > > repeating these ecalls on all systems.
-> > > > > >
-> > > > > > Perhaps for now we could just look at the boot CPU alone? To my
-> > > > > > knowledge the systems that this targets all have homogeneous
-> > > > > > marchid/mvendorid values of 0x0.
-> > > > >=20
-> > > > > It's possible I'm misinterpreting, but is the suggestion to apply=
- the
-> > > > > marchid/mvendorid we find on the boot CPU and assume it's the sam=
-e on
-> > > > > all other CPUs? Since we're reporting the marchid/mvendorid/mimpi=
-d to
-> > > > > usermode in a per-hart way, it would be better IMO if we really do
-> > > > > query marchid/mvendorid/mimpid on each hart. The problem with app=
-lying
-> > > > > the boot CPU's value everywhere is if we're ever wrong in the fut=
-ure
-> > > > > (ie that assumption doesn't hold on some machine), we'll only fin=
-d out
-> > > > > about it after the fact. Since we reported the wrong information =
-to
-> > > > > usermode via hwprobe, it'll be an ugly userspace ABI issue to cle=
-an
-> > > > > up.
-> > > >=20
-> > > > You're misinterpreting, we do get the values on all individually as
-> > > > they're brought online. This is only used by the code that throws a=
- bone
-> > > > to people with crappy vendor dtbs that put "v" in riscv,isa when th=
-ey
-> > > > support the unratified version.
-> > >=20
-> > > Not quite,
-> >=20
-> > Remember that this patch stands in isolation and the justification given
-> > in your commit message does not mention anything other than fixing my
-> > broken patch.
->=20
-> Fixing the patch in the simplest sense would be to eagerly get the
-> mvendorid/marchid without using the cached version. But this assumes
-> that all harts have the same mvendorid/marchid. This is not something
-> that I am strongly attached to. If it truly is detrimental to Linux to
-> allow a user a way to specify different vendorids for different harts
-> then I will remove that code.
+Hi Alexandre,
 
-I think that the simple fix is all that we need to do here, perhaps
-updating the comment to point out how naive we are being.
-`
-> >=20
-> > > the alternatives are patched before the other cpus are
-> > > booted, so the alternatives will have false positives resulting in
-> > > broken kernels.
-> >=20
-> > Over-eagerly disabling vector isn't going to break any kernels and
-> > really should not break a behaving userspace either.
-> > Under-eagerly disabling it (in a way that this approach could solve) is
-> > only going to happen on a system where the boot hart has non-zero values
-> > and claims support for v but a non-boot hart has zero values and
-> > claims support for v but actually doesn't implement the ratified versio=
-n.
-> > If the boot hart doesn't support v, then we currently disable the
-> > extension as only homogeneous stuff is supported by Linux. If the boot
-> > hart claims support for "v" but doesn't actually implement the ratified
-> > version neither the intent of my original patch nor this fix for it are
-> > going to help avoid a broken kernel.
-> >=20
-> > I think we do have a problem if the boot cpu having some erratum leads
-> > to the kernel being patched in a way that does not work for the other
-> > CPUs on the system, but I don't think this series addresses that sort of
-> > issue at all as you'd be adding code to the pi section if you were fixi=
-ng
-> > it. I also don't think we should be making pre-emptive changes to the
-> > errata patching code either to solve that sort of problem, until an SoC
-> > shows up where things don't work.
-> > Cheers,
-> > Conor.
->=20
->=20
+On Fri, Apr 12, 2024 at 4:23=E2=80=AFPM Alexandre Bailon <abailon@baylibre.=
+com> wrote:
+>
+> This updates thermal_of to support more than one sensor.
+> If during the registration we find another thermal zone referencing
+> this sensors and some other, then we create the multi sensor thermal
+> zone (if it doesn't exist) and register the sensor to it.
+>
+> Signed-off-by: Alexandre Bailon <abailon@baylibre.com>
+> ---
+>  drivers/thermal/thermal_of.c | 139 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 139 insertions(+)
+>
+> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+> index 1e0655b63259..3f36d8a3d8e8 100644
+> --- a/drivers/thermal/thermal_of.c
+> +++ b/drivers/thermal/thermal_of.c
+> @@ -441,12 +441,146 @@ static void thermal_of_zone_unregister(struct ther=
+mal_zone_device *tz)
+>         struct thermal_trip *trips =3D tz->trips;
+>         struct thermal_zone_device_ops *ops =3D tz->ops;
+>
+> +       thermal_multi_sensor_unregister(tz);
+>         thermal_zone_device_disable(tz);
+>         thermal_zone_device_unregister(tz);
+>         kfree(trips);
+>         kfree(ops);
+>  }
+>
+> +int thermal_of_get_sensor_id(struct device_node *tz_np,
+> +                           struct device_node *sensor_np,
+> +                           int phandle_index, u32 *id)
+> +{
+> +       struct of_phandle_args sensor_specs;
+> +       int ret;
+> +
+> +       ret =3D of_parse_phandle_with_args(tz_np,
+> +                                        "thermal-sensors",
+> +                                        "#thermal-sensor-cells",
+> +                                        phandle_index,
+> +                                        &sensor_specs);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (sensor_specs.np !=3D sensor_np) {
+> +               of_node_put(sensor_specs.np);
+> +               return -ENODEV;
+> +       }
+> +
+> +       if (sensor_specs.args_count > 1)
+> +               pr_warn("%pOFn: too many cells in sensor specifier %d\n",
+> +                       sensor_specs.np, sensor_specs.args_count);
+> +
+> +       *id =3D sensor_specs.args_count ? sensor_specs.args[0] : 0;
+> +       of_node_put(sensor_specs.np);
+> +
+> +       return 0;
+> +}
+> +
+> +static int thermal_of_has_sensor_id(struct device_node *tz_np,
+> +                                   struct device_node *sensor_np,
+> +                                   u32 sensor_id)
+> +{
+> +       int count;
+> +       int i;
+> +
+> +       count =3D of_count_phandle_with_args(tz_np,
+> +                                          "thermal-sensors",
+> +                                          "#thermal-sensor-cells");
+> +       if (count <=3D 0)
+> +               return -ENODEV;
+> +
+> +       for (i =3D 0; i < count; i++) {
+> +               int ret;
+> +               u32 id;
+> +
+> +               ret =3D thermal_of_get_sensor_id(tz_np, sensor_np, i, &id=
+);
+> +               if (ret)
+> +                       return ret;
 
---x8exgmtxQWZyWHHC
-Content-Type: application/pgp-signature; name="signature.asc"
+We should just `continue` here or handle -ENODEV differently. The
+current implementation doesn't support a thermal zone references
+sensors from different nodes.
 
------BEGIN PGP SIGNATURE-----
+> +
+> +               if (id =3D=3D sensor_id)
+> +                       return i;
+> +
+> +       }
+> +
+> +       return -ENODEV;
+> +}
+> +
+> +static int thermal_of_register_mutli_sensor(struct device_node *sensor, =
+int id,
+> +                                           struct thermal_zone_device *t=
+z,
+> +                                           struct device_node *tz_np)
+> +{
+> +       struct device_node *child;
+> +       u32 *coeff;
+> +       int ret;
+> +       int i;
+> +
+> +       /*
+> +        * Go through all the thermal zone and check if the sensor is
+> +        * referenced. If so, find or create a multi sensor thermal zone
+> +        * and register the sensor to it.
+> +        */
+> +       for_each_available_child_of_node(of_get_parent(tz_np), child) {
+> +               int count;
+> +               int index;
+> +               int offset;
+> +
+> +               /* Skip the tz that is currently registering */
+> +               if (child =3D=3D tz_np)
+> +                       continue;
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhmcwgAKCRB4tDGHoIJi
-0oTAAQDno++1nLt6Q8uGl7ojf9Chi1JQVMjrCW3M6+YErlW3mgEA93Ys+zCKhrrD
-IDx65h0ho73Nloy8xmMLtheykAzE0go=
-=90eE
------END PGP SIGNATURE-----
+of_thermal_zone_find() simply returns the first thermal zone
+containing the sensor, so there's no guarantee that tz here is the
+currently registering thermal zone. Maybe we should make
+of_thermal_zone_find() only return thermal zones with only one sensor
+attached?
 
---x8exgmtxQWZyWHHC--
+> +
+> +               /* Test if the sensor is referenced by a tz*/
+> +               index =3D thermal_of_has_sensor_id(child, sensor, id);
+> +               if (index < 0)
+> +                       continue;
+> +
+> +               /*
+> +                * Get the coefficients and offset and assign them to the
+> +                * multi sensor thermal zone.
+> +                */
+> +               count =3D of_count_phandle_with_args(child,
+> +                                                  "thermal-sensors",
+> +                                                  "#thermal-sensor-cells=
+");
+> +               coeff =3D kmalloc_array(count, sizeof(*coeff), GFP_KERNEL=
+);
+> +               if (!coeff)
+> +                       goto err;
+> +
+> +               for (i =3D 0; i < count; i++) {
+> +                       ret =3D of_property_read_u32_index(child,
+> +                                                        "coefficients",
+> +                                                        i, coeff + i);
+> +                       if (ret)
+> +                               coeff[i] =3D 1;
+> +               }
+> +
+> +               ret =3D of_property_read_u32_index(child, "coefficients",
+> +                                                count, &offset);
+> +               if (ret)
+> +                       offset =3D 0;
+> +
+> +               /* Make sure the coeff and offset won't cause an overflow=
+ */
+> +               ret =3D thermal_multi_sensor_validate_coeff(coeff, count,=
+ offset);
+> +               if (ret)
+> +                       goto err_free_coeff;
+> +
+> +               ret =3D thermal_multi_sensor_register(child->name, tz,
+> +                                                        coeff[index]);
+
+The indentation of this line is wrong.
+
+> +               if (ret)
+> +                       goto err_free_coeff;
+> +               kfree(coeff);
+> +       }
+> +
+> +       return 0;
+> +
+> +err_free_coeff:
+> +       kfree(coeff);
+> +err:
+> +       thermal_multi_sensor_unregister(tz);
+> +
+> +       return ret;
+> +}
+> +
+>  /**
+>   * thermal_of_zone_register - Register a thermal zone with device node
+>   * sensor
+> @@ -528,6 +662,11 @@ static struct thermal_zone_device *thermal_of_zone_r=
+egister(struct device_node *
+>                 return ERR_PTR(ret);
+>         }
+>
+> +       /* Register the sensor to all other thermal zone referencing it *=
+/
+> +       ret =3D thermal_of_register_mutli_sensor(sensor, id, tz, np);
+> +       if (ret)
+> +               pr_warn("Failed to register a sensor to a multi sensor tz=
+\n");
+> +
+>         return tz;
+>
+>  out_kfree_trips:
+> --
+> 2.41.0
+>
+
+Best regards,
+Pin-yen
 
