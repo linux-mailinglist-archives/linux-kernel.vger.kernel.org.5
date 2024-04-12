@@ -1,60 +1,63 @@
-Return-Path: <linux-kernel+bounces-143004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73B7C8A331C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:07:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E24AD8A331D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:07:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 287681F24214
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:07:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C67C28215B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9E8149011;
-	Fri, 12 Apr 2024 16:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9104D1494C7;
+	Fri, 12 Apr 2024 16:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mx/O81hL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UozAD1Ha"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA16148FEC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:06:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91C91494B7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938013; cv=none; b=ldLqLrnIce2IcJiWOQjgLK3eJm64nsZKJLPs/m+rYqRE3d5V/LUro5gVwCOGoP97Kr+5ii5W/oJyxkauh56yQK3EhXgDPo/XRDWE3YEO64N6YeIX/nwguyEutqbhzUusySRaHMI/jjScGcyh9lcBckra72sytjfQxnWDD9cwv7I=
+	t=1712938015; cv=none; b=HHs4eesZkBr07daWFjVWiw6qTXv2GlVylEsxyvb56xYa/AA6zjiAZPPBsbXluGm73kgKsHwvcfN/O/PnEtfVdAYbLnCyyObq+tvZzJC8su7o2Aqw01yov3Pa614FIQIMhBFchWobRdRLu8VHaCj5AiTcodUFBBR8fynXfDSB4n4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938013; c=relaxed/simple;
-	bh=PJGJ67ht3268iKCLboefQhkpwdJV8r/DJ9VGMHsGW2U=;
+	s=arc-20240116; t=1712938015; c=relaxed/simple;
+	bh=g/ypGRIKAzpOzVYJiDDtGJo0LvInSV4h5nueccUUC1E=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CEByG31MhXUDXJnRNgfwhrdtM7tN2+d0jWc0EzsVNWA6Tui4X1wFD33g/Y6tyNO0/wjLgXpeytaxHf0xrxrZeiMqKdqdAZWmh6bbm7GwebIzpmPO1sB9raPKkvmxqakAOZj9B2nTfLjmTQlJRKs3WOYJM7BAZTLFuIpBwzVl9vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mx/O81hL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 187A6C2BD11;
-	Fri, 12 Apr 2024 16:06:50 +0000 (UTC)
+	 MIME-Version:Content-Type; b=HQuGnkgQU1nMp/mhjnDZZEenLZWI95nj7ZcZXYvdKumCZdA3Lm1VUFVK2mYq9arCPyTncH5tpfuVE+lFKZuOumXoBGNXDHhAQJKeAzbPTQZ5Nj9n4VMUVsyhxg/9GRokLahk2GIfL75fPq8PtPYET+sTfHKrImWGhY99H3XeoFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UozAD1Ha; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B682C32783;
+	Fri, 12 Apr 2024 16:06:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712938012;
-	bh=PJGJ67ht3268iKCLboefQhkpwdJV8r/DJ9VGMHsGW2U=;
+	s=k20201202; t=1712938015;
+	bh=g/ypGRIKAzpOzVYJiDDtGJo0LvInSV4h5nueccUUC1E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Mx/O81hL5dT0O/edFDwB1kHRYfEpQxG++9cpDvIHlrAMj9Vekrumt3nL9WA4Ra1PA
-	 4LRRRKvFLnKSe6Y4GTMl3B4SNHeE/GR81yaQiEtsv8TfcPKByJG1ErjoT9qLfbQYIE
-	 FrL3uD4TCD8Cb+kwOmjsl/a4tOwGvnXPim5nTvJ6hzSqeKttTeiIN1X1ixH+JZ6yS+
-	 Dk+V0jcrSedqcrIO0ZV8riMegq5kKIBFFyZWZImoJ8sTgv67Ac/r0+ZySGN1WGyEsL
-	 KsUULpoET3DZOOrZkyaAetwYpXYoSs/dkMfGxC5S09iTx28LVU/vmGyaLZDbgsN/+e
-	 SmztuwbLOoR9Q==
+	b=UozAD1HamJCb6dTRkGR8DSOae+cGUG8EkVSMTQQFzl2d6h9cqFhmiNH3lDDFlqPqX
+	 nFBTMTgdWGSkfrsvDvLQxBqhkE3qc0noU+gxfop1tY87nBxAqdwLbOndsDZNX0ZJW2
+	 aAwc7Chu6p58efmVzToP0Dpr0pbQhBOqDQzvhEjwLHa301qNUzkcejhRyzkDbRl88E
+	 epS1fbw31dWNUoPWfUTO070NgO2RDmVhXcHe+/gHt29c9fJAobFlsHzr4odGEpHwbZ
+	 gtxNlyl0H0hKzVnFyxtdIlFQBDKcK8LldekfgoH5o7OrkwwZJDwyAu6ujYIZ7CqXau
+	 BwcSy3PuEthnw==
 From: Will Deacon <will@kernel.org>
-To: catalin.marinas@arm.com,
-	mark.rutland@arm.com,
-	suzuki.poulose@arm.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Jinjie Ruan <ruanjinjie@huawei.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	David Hildenbrand <david@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>
 Cc: kernel-team@android.com,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] arm64: Remove unnecessary irqflags alternative.h include
-Date: Fri, 12 Apr 2024 17:06:40 +0100
-Message-Id: <171276570998.830195.7238014942066048494.b4-ty@kernel.org>
+	Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Speed up boot with faster linear map creation
+Date: Fri, 12 Apr 2024 17:06:41 +0100
+Message-Id: <171293670589.3659902.6442840474459477952.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240314063819.2636445-1-ruanjinjie@huawei.com>
-References: <20240314063819.2636445-1-ruanjinjie@huawei.com>
+In-Reply-To: <20240412131908.433043-1-ryan.roberts@arm.com>
+References: <20240412131908.433043-1-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,17 +67,27 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Thu, 14 Mar 2024 14:38:19 +0800, Jinjie Ruan wrote:
-> Since commit 20af807d806d ("arm64: Avoid cpus_have_const_cap() for
-> ARM64_HAS_GIC_PRIO_MASKING"), the alternative.h include is not used,
-> so remove it.
+On Fri, 12 Apr 2024 14:19:05 +0100, Ryan Roberts wrote:
+> It turns out that creating the linear map can take a significant proportion of
+> the total boot time, especially when rodata=full. And most of the time is spent
+> waiting on superfluous tlb invalidation and memory barriers. This series reworks
+> the kernel pgtable generation code to significantly reduce the number of those
+> TLBIs, ISBs and DSBs. See each patch for details.
 > 
+> The below shows the execution time of map_mem() across a couple of different
+> systems with different RAM configurations. We measure after applying each patch
+> and show the improvement relative to base (v6.9-rc2):
 > 
+> [...]
 
-Applied to arm64 (for-next/misc), thanks!
+Applied to arm64 (for-next/mm), thanks!
 
-[1/1] arm64: Remove unnecessary irqflags alternative.h include
-      https://git.kernel.org/arm64/c/98631c4904bf
+[1/3] arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
+      https://git.kernel.org/arm64/c/5c63db59c5f8
+[2/3] arm64: mm: Batch dsb and isb when populating pgtables
+      https://git.kernel.org/arm64/c/1fcb7cea8a5f
+[3/3] arm64: mm: Don't remap pgtables for allocate vs populate
+      https://git.kernel.org/arm64/c/0e9df1c905d8
 
 Cheers,
 -- 
