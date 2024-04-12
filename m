@@ -1,213 +1,111 @@
-Return-Path: <linux-kernel+bounces-143023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 482DE8A3358
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:12:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38EA88A335F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:13:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B7E81C246FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:12:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC14D1F22206
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D39148FEE;
-	Fri, 12 Apr 2024 16:12:20 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD001474A2
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC67148FFC;
+	Fri, 12 Apr 2024 16:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pq4LaE6/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E85149013;
+	Fri, 12 Apr 2024 16:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938340; cv=none; b=HlFxH+889plT4PyHlexVVIPQD4RfqSFXdKMl17WCUaZId9Q9DtVaYvVeeCeaxWewRiOE3sJ3s/xQfEaqaR7XaChrrKPeO0idJANzY7ulom9lBEyXUITq9eJhTBaMWlPwn8d4/lE5i71lZmDBoM7EVcNtF/LB6UA+21JL0Ba/9rs=
+	t=1712938388; cv=none; b=qqCS/d3ZlQTyNBNC12n/gwUm3fmzBGHQ8vlPl7s9Cw3DG4o7AJNg6jyFkV4cVyRczho2hSN7wyjC1ANZeFL89VPoMgIjRVhmSZYQ54BHXLKTfg0YeojjSowpcxQgqRwMzjUCQ6ENeuY5+fimyrfaOOk0FXL7i4OgpggvQFly8js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938340; c=relaxed/simple;
-	bh=iFq6HUwsZ+yQ51vSn3XxUBy2Qqrq2aWHcrC3qBN9gc8=;
+	s=arc-20240116; t=1712938388; c=relaxed/simple;
+	bh=r9WaCo8AsteMJKMuCry4QLLOt5QJS8GtJCslkwm4RRg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VJWK02o0k3sLfCHlH1+zftEWiu+SYBW+TXNlppcohRUJfwLd+ikqEvz0D09c0ubTK19/WxGtelTkYjsKCOorPec01nxEPoBWiyeXHhPkjAXzZSViQjkVgVD7M1fzckiZlWiHqhv/CcKTQ5AJWjahvTBNzve/Ei3TacR3hxMY23k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99DBC339;
-	Fri, 12 Apr 2024 09:12:46 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D7603F64C;
-	Fri, 12 Apr 2024 09:12:14 -0700 (PDT)
-Date: Fri, 12 Apr 2024 17:12:08 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 05/31] x86/resctrl: Remove rdtgroup from
- update_cpu_closid_rmid()
-Message-ID: <ZhldWJVck7VmU3G3@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-6-james.morse@arm.com>
- <6bbff669-cbe5-4284-b64a-4825a541b35f@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oQt6qBkE3tYhFHpI1IJJ5FE9xtsOMHyqtTjfcqL0UoeCc931yCfkAX0SWw5XldL3SeV6A7jqhFRb6lLax+LTC/qLogiU9Nq3hblCkVM1KwAKc3B8I0YQ3IhogCVwfBQSQc+l4pVEieI3Folv9r9X/JlSQHP9baGCv7YiuSMfZTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pq4LaE6/; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712938387; x=1744474387;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=r9WaCo8AsteMJKMuCry4QLLOt5QJS8GtJCslkwm4RRg=;
+  b=Pq4LaE6/F3x8DNJRlqP2EtkETduvAbpIktYXzR2VGTbMCL1bVvUnWgl5
+   GVa/OYMWpov9M8S09zRWFsf7d9wLJKbiLOhOq5Qn9FO2bM2/Z7+SwJNxW
+   b/7SObTfGSbzCGb/UPdig+nSz6m5Rk/kIP2QaDEbBRCzBqyfHEvP9En/x
+   hTftdSduofXve9u1xjkMH7iPnCFc6qofUssKBMG/uKnen0a8ipUfY4Dnm
+   jSnTIzuXgTckr8QdtpdmWP1QC2E7cTEE9R0O0MmDCzjGGg18q4jkXu70G
+   mDLAAN+tFLPhA5wz8HgcLU2APAtNAShGhZQeHh3JHDjKc35qsyi+aqrbH
+   Q==;
+X-CSE-ConnectionGUID: vVAMHv+xQg+untUz1c2mTA==
+X-CSE-MsgGUID: vXZ09wXyQN6EvhquuLccyg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19004074"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="19004074"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 09:12:45 -0700
+X-CSE-ConnectionGUID: KzmtAe7WRUi18L9Yy/ABFg==
+X-CSE-MsgGUID: FD2R05LQTP+6SOIcx/DkCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="58696027"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 09:12:42 -0700
+Date: Fri, 12 Apr 2024 19:12:39 +0300
+From: Raag Jadav <raag.jadav@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] pwm: dwc: allow suspend/resume for 16 channels
+Message-ID: <Zhldd6D7ts_QJ7rt@black.fi.intel.com>
+References: <20240412060812.20412-1-raag.jadav@intel.com>
+ <zf74jdjza2kfgmiecmlwlws46fmy3rtxvcocmkwewgx64oewpm@xfyq2zt6ts5u>
+ <Zhk-7Tp4HzF41Is5@black.fi.intel.com>
+ <ZhlXLNlsHEWrxEjF@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <6bbff669-cbe5-4284-b64a-4825a541b35f@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZhlXLNlsHEWrxEjF@smile.fi.intel.com>
 
-On Mon, Apr 08, 2024 at 08:16:08PM -0700, Reinette Chatre wrote:
-> Hi James,
+On Fri, Apr 12, 2024 at 06:45:48PM +0300, Andy Shevchenko wrote:
+> On Fri, Apr 12, 2024 at 06:38:24PM +0300, Raag Jadav wrote:
+> > On Fri, Apr 12, 2024 at 01:12:48PM +0200, Uwe Kleine-König wrote:
+> > > On Fri, Apr 12, 2024 at 11:38:12AM +0530, Raag Jadav wrote:
 > 
-> On 3/21/2024 9:50 AM, James Morse wrote:
-> > update_cpu_closid_rmid() takes a struct rdtgroup as an argument, which
-> > it uses to update the local CPUs default pqr values. This is a problem
-> > once the resctrl parts move out to /fs/, as the arch code cannot
-> > poke around inside struct rdtgroup.
+> ...
+> 
+> > > Otherwise I (only slightly) dislike
+> > > > +	struct dwc_pwm_drvdata *data;
+> > > because "data" is very generic. I'd call it ddata. But I don't feel
+> > > strong here. I'm happy if you change to "ddata" in v2, I will silently
+> > > apply anyhow if you prefer "data".
 > > 
-> > Rename update_cpu_closid_rmid() as resctrl_arch_sync_cpus_defaults()
-> > to be used as the target of an IPI, and pass the effective CLOSID
-> > and RMID in a new struct.
-> > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > ---
-> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 19 +++++++++++++++----
-> >  include/linux/resctrl.h                | 11 +++++++++++
-> >  2 files changed, 26 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> > index 5d2c1ce5b6b1..18f097fce51e 100644
-> > --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> > +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> > @@ -341,13 +341,13 @@ static int rdtgroup_cpus_show(struct kernfs_open_file *of,
-> >   * from update_closid_rmid() is protected against __switch_to() because
-> >   * preemption is disabled.
-> >   */
-> > -static void update_cpu_closid_rmid(void *info)
-> > +void resctrl_arch_sync_cpu_defaults(void *info)
-> >  {
-> > -	struct rdtgroup *r = info;
-> > +	struct resctrl_cpu_sync *r = info;
-> >  
-> >  	if (r) {
-> >  		this_cpu_write(pqr_state.default_closid, r->closid);
-> > -		this_cpu_write(pqr_state.default_rmid, r->mon.rmid);
-> > +		this_cpu_write(pqr_state.default_rmid, r->rmid);
-> >  	}
-> >  
-> >  	/*
-> > @@ -362,11 +362,22 @@ static void update_cpu_closid_rmid(void *info)
-> >   * Update the PGR_ASSOC MSR on all cpus in @cpu_mask,
-> >   *
-> >   * Per task closids/rmids must have been set up before calling this function.
-> > + * @r may be NULL.
-> >   */
-> >  static void
-> >  update_closid_rmid(const struct cpumask *cpu_mask, struct rdtgroup *r)
-> >  {
-> > -	on_each_cpu_mask(cpu_mask, update_cpu_closid_rmid, r, 1);
-> > +	struct resctrl_cpu_sync defaults;
-> > +	struct resctrl_cpu_sync *defaults_p = NULL;
+> > I think "data" is more readable, something like "ddata" would make me
+> > re-adjust my glasses ;)
 > 
-> Please maintain reverse fir order.
+> ddata is _kinda_ idiomatic, there at least several drivers use this name
+> (as of my knowledge). I am bending towards Uwe's suggestion here.
 
-Or, more tersely as follows?
+Will update in v2.
 
-	struct resctrl_cpu_sync defaults, *defaults_p = NULL;
-
-"Reverse fir order" seems to be documented as a preference rather than a
-rule.
-
-The declarations can be swapped, but defaults_p is in some sense a weak
-pointer to defaults, so it feels a bit strange to declare them backwards.
-
-Alternatively, could we rename defaults_p to p?  Given the size of this
-function I don't think that impacts clarity.
-
-I'll wait for your opinion on this.
-
-
-> > +
-> > +	if (r) {
-> > +		defaults.closid = r->closid;
-> > +		defaults.rmid = r->mon.rmid;
-> > +		defaults_p = &defaults;
-> > +	}
-> > +
-> > +	on_each_cpu_mask(cpu_mask, resctrl_arch_sync_cpu_defaults, defaults_p,
-> > +			 1);
-> >  }
-> >  
-> >  static int cpus_mon_write(struct rdtgroup *rdtgrp, cpumask_var_t newmask,
-> > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> > index 6e87bc95f5ea..2b79e4159507 100644
-> > --- a/include/linux/resctrl.h
-> > +++ b/include/linux/resctrl.h
-> > @@ -220,6 +220,17 @@ struct resctrl_schema {
-> >  	u32				num_closid;
-> >  };
-> >  
-> > +struct resctrl_cpu_sync {
-> > +	u32 closid;
-> > +	u32 rmid;
-> > +};
-> > +
-> > +/*
-> > + * Update and re-load this CPUs defaults. Called via IPI, takes a pointer to
+Raag
 > 
-> "this CPU's defaults"?
-
-Ack (also in the commit message).
-
+> -- 
+> With Best Regards,
+> Andy Shevchenko
 > 
-> > + * struct resctrl_cpu_sync, or NULL.
-> > + */
 > 
-> Updating the CPU's defaults is not the primary goal of this function and because
-> of that I do not think this should be the focus with the main goal (updating
-> RMID and CLOSID on CPU) ignored. Specifically, this function only updates
-> the defaults if *info is set but it _always_ ensures CPU is running with
-> appropriate CLOSID/RMID (which may or may not be from a CPU default).
-> 
-> I think resctrl_arch_sync_cpu_closid_rmid() may be more appropriate
-> and the comment needs to elaborate what the function does.
->
-> > +void resctrl_arch_sync_cpu_defaults(void *info);
-
-That seems reasonable, and follows the original naming and what the
-code does:
-
-What about:
-
-/**
- * resctrl_arch_sync_cpu_defaults() - Refresh the CPU's CLOSID and RMID.
- *				      Call via IPI.
- * @info:	If non-NULL, a pointer to a struct resctrl_cpu_sync specifying
- *		the new CLOSID and RMID for tasks in the default resctrl ctrl
- *		and mon group when running on this CPU.  If NULL, the default
- *		CLOSID and RMID are not changed.
- *
- * This is how reassignment of CPUs and/or tasks to different resctrl groups
- * is propagated when requested by the resctrl fs core code.
- *
- * This function should typically record the per-cpu defaults specified by
- * @info (if any), and then reconfigure the CPU's hardware CLOSID and RMID
- * for subsequent execution based on @current, in the same way as during a
- * task switch.
- */
-
-..?
-
-
-Cheers
----Dave
 
