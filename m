@@ -1,65 +1,66 @@
-Return-Path: <linux-kernel+bounces-143136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 436DB8A34DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:36:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 809548A34D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:36:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E79BB281280
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:36:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A43671C23525
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 053BF14F9EF;
-	Fri, 12 Apr 2024 17:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1AC414F9DE;
+	Fri, 12 Apr 2024 17:35:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fIjnWguQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a6Lwt/Qn"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487B714E2EC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7E2514D70F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712943340; cv=none; b=fCt1ivlOuaIrGRJZzIcdt5lD5Gkk4LxFC0ly/6LsNg3FWzng2A6/fiBhYyojVsI+BliH/sEHAT+R1hvDhTe0DgRFb4apP78fKtk4DssdJcSUYKErYMPG097iQvEBMdOdJM4YEQHBtguLBy5HPS9Kr8vXV4V/cnnMK1xa31EL4w8=
+	t=1712943340; cv=none; b=mHuIQtmV+nsYz1dt+zpuAyLDjK4opC4ftPQ5b441L/KvyjkgQ3a5M3+x+Cw05aaDwzCKSKijxbghnUXGUQtIEz8zBnc64vu/BxYPFDTnRayPJRSpek8VdBtt00F6u3BZKIOHKLB+m+FY64ANiN++7Yr3P743E5FK0xE5KAKfGBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712943340; c=relaxed/simple;
-	bh=AYc/dQIgIGfPyd8Ji3WVCJ/kBmRWzsyv1BvZrf6DJiU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PpMBUMoTpKeywpc2migo/h6c76b/L6Efdw7YXsthp6fYa1vqhuwcrDddxFK3t36GJ2eMqP98Q5a4slDV4t2pHC6OKPIE6Zl7otSpB6r++/3DsRwnJgHeI6CJQKhDtHAcnVEN3uuD/XGokAfOmeirBLDqZbo5IT/sGuZfACOEiZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fIjnWguQ; arc=none smtp.client-ip=170.10.129.124
+	bh=bPjAUZMA01b9lUF0UD8JVCw3aUt22kqfXXw3vYFxhg4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VavJ2f1zAQVMkwFepH6L4noHi4lVRCSzdVDggJbo2Wh7BzASa6zMfKPSd0IJY1j/C0F9gwdnDVfyrgLGMc01gWPfu4nW1Sgw8wy5TPt9mOPiXz6EFcNsmkRs5JA85AFJD1Z/+4EY7ubcCdMy4/aLG/PRYd1GdUBpPiQ2Bt/B3fU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a6Lwt/Qn; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712943338;
+	s=mimecast20190719; t=1712943337;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OiuOtF3km5mOrYS4QJpem+PodieKRqZDiEKM9mH6/7c=;
-	b=fIjnWguQq+xvcHemc6JvyPcfPYVZe33JF8Z75z8lL/O8STYywvs7ljfx38Iyytm7A8WM2B
-	9j07ZSqYgQj+B1qKZOGNyIA57nuODcjv/xM4KdKCo3zZy968X3nRQymHna2xR241CCdRls
-	2reEh0RxIRVoX9zGKIbSw5ZZNyp8BRw=
+	bh=08wrH4E5iMZpPUrk1H4xeC+yRmkAmHopAddNodFzADc=;
+	b=a6Lwt/QnMw7dYZtb5hfDcVBZOLyFhsZ2Xg+XKiT+7ndzwKDVELxXco+Y3AdFysoVUY6xvx
+	dc3xeE3DjFFhDYbAAypab2hd3cP8xumebCPTLz31XIca0p5rweMcK9Z88sV4tCp49nZO3z
+	DhCBqCRJUZGRbLLPSVqc7dRSnt+wz98=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-483-BRP0A3PAOyWRxaH4tNJ55Q-1; Fri,
- 12 Apr 2024 13:35:34 -0400
-X-MC-Unique: BRP0A3PAOyWRxaH4tNJ55Q-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-615-CrK2vUYrNbmLuiFSkaIp7Q-1; Fri,
+ 12 Apr 2024 13:35:36 -0400
+X-MC-Unique: CrK2vUYrNbmLuiFSkaIp7Q-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 36C4738049F9;
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5CDF638049FC;
 	Fri, 12 Apr 2024 17:35:34 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1FA01492BC7;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3FDCB492BC7;
 	Fri, 12 Apr 2024 17:35:34 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	kvm@vger.kernel.org
-Subject: [PATCH 06/10] KVM, x86: add architectural support code for #VE
-Date: Fri, 12 Apr 2024 13:35:28 -0400
-Message-ID: <20240412173532.3481264-7-pbonzini@redhat.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>
+Subject: [PATCH 07/10] KVM: VMX: Introduce test mode related to EPT violation VE
+Date: Fri, 12 Apr 2024 13:35:29 -0400
+Message-ID: <20240412173532.3481264-8-pbonzini@redhat.com>
 In-Reply-To: <20240412173532.3481264-1-pbonzini@redhat.com>
 References: <20240412173532.3481264-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -72,77 +73,196 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Dump the contents of the #VE info data structure and assert that #VE does
-not happen, but do not yet do anything with it.
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-No functional change intended, separated for clarity only.
+To support TDX, KVM is enhanced to operate with #VE.  For TDX, KVM uses the
+suppress #VE bit in EPT entries selectively, in order to be able to trap
+non-present conditions.  However, #VE isn't used for VMX and it's a bug
+if it happens.  To be defensive and test that VMX case isn't broken
+introduce an option ept_violation_ve_test and when it's set, BUG the vm.
 
-Extracted from a patch by Isaku Yamahata <isaku.yamahata@intel.com>.
-
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Message-Id: <d6db6ba836605c0412e166359ba5c46a63c22f86.1705965635.git.isaku.yamahata@intel.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/include/asm/vmx.h | 12 ++++++++++++
- arch/x86/kvm/vmx/vmx.c     | 12 ++++++++++++
- 2 files changed, 24 insertions(+)
+ arch/x86/kvm/Kconfig    | 13 ++++++++++
+ arch/x86/kvm/vmx/vmcs.h |  5 ++++
+ arch/x86/kvm/vmx/vmx.c  | 53 ++++++++++++++++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.h  |  6 ++++-
+ 4 files changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-index ac6da0a5f5e6..d77a31039f24 100644
---- a/arch/x86/include/asm/vmx.h
-+++ b/arch/x86/include/asm/vmx.h
-@@ -71,6 +71,7 @@
- #define SECONDARY_EXEC_ENCLS_EXITING		VMCS_CONTROL_BIT(ENCLS_EXITING)
- #define SECONDARY_EXEC_RDSEED_EXITING		VMCS_CONTROL_BIT(RDSEED_EXITING)
- #define SECONDARY_EXEC_ENABLE_PML               VMCS_CONTROL_BIT(PAGE_MOD_LOGGING)
-+#define SECONDARY_EXEC_EPT_VIOLATION_VE		VMCS_CONTROL_BIT(EPT_VIOLATION_VE)
- #define SECONDARY_EXEC_PT_CONCEAL_VMX		VMCS_CONTROL_BIT(PT_CONCEAL_VMX)
- #define SECONDARY_EXEC_ENABLE_XSAVES		VMCS_CONTROL_BIT(XSAVES)
- #define SECONDARY_EXEC_MODE_BASED_EPT_EXEC	VMCS_CONTROL_BIT(MODE_BASED_EPT_EXEC)
-@@ -226,6 +227,8 @@ enum vmcs_field {
- 	VMREAD_BITMAP_HIGH              = 0x00002027,
- 	VMWRITE_BITMAP                  = 0x00002028,
- 	VMWRITE_BITMAP_HIGH             = 0x00002029,
-+	VE_INFORMATION_ADDRESS		= 0x0000202A,
-+	VE_INFORMATION_ADDRESS_HIGH	= 0x0000202B,
- 	XSS_EXIT_BITMAP                 = 0x0000202C,
- 	XSS_EXIT_BITMAP_HIGH            = 0x0000202D,
- 	ENCLS_EXITING_BITMAP		= 0x0000202E,
-@@ -631,4 +634,13 @@ enum vmx_l1d_flush_state {
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index 3aaf7e86a859..7632fe6e4db9 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -95,6 +95,19 @@ config KVM_INTEL
+ 	  To compile this as a module, choose M here: the module
+ 	  will be called kvm-intel.
  
- extern enum vmx_l1d_flush_state l1tf_vmx_mitigation;
- 
-+struct vmx_ve_information {
-+	u32 exit_reason;
-+	u32 delivery;
-+	u64 exit_qualification;
-+	u64 guest_linear_address;
-+	u64 guest_physical_address;
-+	u16 eptp_index;
-+};
++config KVM_INTEL_PROVE_VE
++        bool "Check that guests do not receive #VE exceptions"
++        default KVM_PROVE_MMU || DEBUG_KERNEL
++        depends on KVM_INTEL
++        help
 +
- #endif
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 6780313914f8..2c746318c6c3 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6408,6 +6408,18 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
- 	if (secondary_exec_control & SECONDARY_EXEC_ENABLE_VPID)
- 		pr_err("Virtual processor ID = 0x%04x\n",
- 		       vmcs_read16(VIRTUAL_PROCESSOR_ID));
-+	if (secondary_exec_control & SECONDARY_EXEC_EPT_VIOLATION_VE) {
-+		struct vmx_ve_information *ve_info;
++          Checks that KVM's page table management code will not incorrectly
++          let guests receive a virtualization exception.  Virtualization
++          exceptions will be trapped by the hypervisor rather than injected
++          in the guest.
 +
-+		pr_err("VE info address = 0x%016llx\n",
-+		       vmcs_read64(VE_INFORMATION_ADDRESS));
-+		ve_info = __va(vmcs_read64(VE_INFORMATION_ADDRESS));
-+		pr_err("ve_info: 0x%08x 0x%08x 0x%016llx 0x%016llx 0x%016llx 0x%04x\n",
-+		       ve_info->exit_reason, ve_info->delivery,
-+		       ve_info->exit_qualification,
-+		       ve_info->guest_linear_address,
-+		       ve_info->guest_physical_address, ve_info->eptp_index);
-+	}
++          If unsure, say N.
++
+ config X86_SGX_KVM
+ 	bool "Software Guard eXtensions (SGX) Virtualization"
+ 	depends on X86_SGX && KVM_INTEL
+diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
+index 7c1996b433e2..b25625314658 100644
+--- a/arch/x86/kvm/vmx/vmcs.h
++++ b/arch/x86/kvm/vmx/vmcs.h
+@@ -140,6 +140,11 @@ static inline bool is_nm_fault(u32 intr_info)
+ 	return is_exception_n(intr_info, NM_VECTOR);
  }
  
- /*
++static inline bool is_ve_fault(u32 intr_info)
++{
++	return is_exception_n(intr_info, VE_VECTOR);
++}
++
+ /* Undocumented: icebp/int1 */
+ static inline bool is_icebp(u32 intr_info)
+ {
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 2c746318c6c3..1a5ad18a1fee 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -869,6 +869,12 @@ void vmx_update_exception_bitmap(struct kvm_vcpu *vcpu)
+ 
+ 	eb = (1u << PF_VECTOR) | (1u << UD_VECTOR) | (1u << MC_VECTOR) |
+ 	     (1u << DB_VECTOR) | (1u << AC_VECTOR);
++	/*
++	 * #VE isn't used for VMX.  To test against unexpected changes
++	 * related to #VE for VMX, intercept unexpected #VE and warn on it.
++	 */
++	if (IS_ENABLED(CONFIG_KVM_INTEL_PROVE_VE))
++		eb |= 1u << VE_VECTOR;
+ 	/*
+ 	 * Guest access to VMware backdoor ports could legitimately
+ 	 * trigger #GP because of TSS I/O permission bitmap.
+@@ -2602,6 +2608,9 @@ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 					&_cpu_based_2nd_exec_control))
+ 			return -EIO;
+ 	}
++	if (!IS_ENABLED(CONFIG_KVM_INTEL_PROVE_VE))
++		_cpu_based_2nd_exec_control &= ~SECONDARY_EXEC_EPT_VIOLATION_VE;
++
+ #ifndef CONFIG_X86_64
+ 	if (!(_cpu_based_2nd_exec_control &
+ 				SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES))
+@@ -2626,6 +2635,7 @@ static int setup_vmcs_config(struct vmcs_config *vmcs_conf,
+ 			return -EIO;
+ 
+ 		vmx_cap->ept = 0;
++		_cpu_based_2nd_exec_control &= ~SECONDARY_EXEC_EPT_VIOLATION_VE;
+ 	}
+ 	if (!(_cpu_based_2nd_exec_control & SECONDARY_EXEC_ENABLE_VPID) &&
+ 	    vmx_cap->vpid) {
+@@ -4588,6 +4598,7 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
+ 		exec_control &= ~SECONDARY_EXEC_ENABLE_VPID;
+ 	if (!enable_ept) {
+ 		exec_control &= ~SECONDARY_EXEC_ENABLE_EPT;
++		exec_control &= ~SECONDARY_EXEC_EPT_VIOLATION_VE;
+ 		enable_unrestricted_guest = 0;
+ 	}
+ 	if (!enable_unrestricted_guest)
+@@ -4711,8 +4722,40 @@ static void init_vmcs(struct vcpu_vmx *vmx)
+ 
+ 	exec_controls_set(vmx, vmx_exec_control(vmx));
+ 
+-	if (cpu_has_secondary_exec_ctrls())
++	if (cpu_has_secondary_exec_ctrls()) {
+ 		secondary_exec_controls_set(vmx, vmx_secondary_exec_control(vmx));
++		if (secondary_exec_controls_get(vmx) &
++		    SECONDARY_EXEC_EPT_VIOLATION_VE) {
++			if (!vmx->ve_info) {
++				/* ve_info must be page aligned. */
++				struct page *page;
++
++				BUILD_BUG_ON(sizeof(*vmx->ve_info) > PAGE_SIZE);
++				page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
++				if (page)
++					vmx->ve_info = page_to_virt(page);
++			}
++			if (vmx->ve_info) {
++				/*
++				 * Allow #VE delivery. CPU sets this field to
++				 * 0xFFFFFFFF on #VE delivery.  Another #VE can
++				 * occur only if software clears the field.
++				 */
++				vmx->ve_info->delivery = 0;
++				vmcs_write64(VE_INFORMATION_ADDRESS,
++					     __pa(vmx->ve_info));
++			} else {
++				/*
++				 * Because SECONDARY_EXEC_EPT_VIOLATION_VE is
++				 * used only for debugging, it's okay to leave
++				 * it disabled.
++				 */
++				pr_err("Failed to allocate ve_info. disabling EPT_VIOLATION_VE.\n");
++				secondary_exec_controls_clearbit(vmx,
++								 SECONDARY_EXEC_EPT_VIOLATION_VE);
++			}
++		}
++	}
+ 
+ 	if (cpu_has_tertiary_exec_ctrls())
+ 		tertiary_exec_controls_set(vmx, vmx_tertiary_exec_control(vmx));
+@@ -5200,6 +5243,12 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+ 	if (is_invalid_opcode(intr_info))
+ 		return handle_ud(vcpu);
+ 
++	/*
++	 * #VE isn't supposed to happen.  Block the VM if it does.
++	 */
++	if (KVM_BUG_ON(is_ve_fault(intr_info), vcpu->kvm))
++		return -EIO;
++
+ 	error_code = 0;
+ 	if (intr_info & INTR_INFO_DELIVER_CODE_MASK)
+ 		error_code = vmcs_read32(VM_EXIT_INTR_ERROR_CODE);
+@@ -7474,6 +7523,8 @@ void vmx_vcpu_free(struct kvm_vcpu *vcpu)
+ 	free_vpid(vmx->vpid);
+ 	nested_vmx_free_vcpu(vcpu);
+ 	free_loaded_vmcs(vmx->loaded_vmcs);
++	if (vmx->ve_info)
++		free_page((unsigned long)vmx->ve_info);
+ }
+ 
+ int vmx_vcpu_create(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 65786dbe7d60..0da79a386825 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -362,6 +362,9 @@ struct vcpu_vmx {
+ 		DECLARE_BITMAP(read, MAX_POSSIBLE_PASSTHROUGH_MSRS);
+ 		DECLARE_BITMAP(write, MAX_POSSIBLE_PASSTHROUGH_MSRS);
+ 	} shadow_msr_intercept;
++
++	/* ve_info must be page aligned. */
++	struct vmx_ve_information *ve_info;
+ };
+ 
+ struct kvm_vmx {
+@@ -574,7 +577,8 @@ static inline u8 vmx_get_rvi(void)
+ 	 SECONDARY_EXEC_ENABLE_VMFUNC |					\
+ 	 SECONDARY_EXEC_BUS_LOCK_DETECTION |				\
+ 	 SECONDARY_EXEC_NOTIFY_VM_EXITING |				\
+-	 SECONDARY_EXEC_ENCLS_EXITING)
++	 SECONDARY_EXEC_ENCLS_EXITING |					\
++	 SECONDARY_EXEC_EPT_VIOLATION_VE)
+ 
+ #define KVM_REQUIRED_VMX_TERTIARY_VM_EXEC_CONTROL 0
+ #define KVM_OPTIONAL_VMX_TERTIARY_VM_EXEC_CONTROL			\
 -- 
 2.43.0
 
