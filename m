@@ -1,158 +1,171 @@
-Return-Path: <linux-kernel+bounces-142857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43AFD8A30F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:40:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032E28A3105
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:42:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE8671F24AA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:40:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F29D1F245E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC4A142623;
-	Fri, 12 Apr 2024 14:40:39 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 53F441419B1
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB49D142E88;
+	Fri, 12 Apr 2024 14:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CaaXOpS1"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955F81422CD;
+	Fri, 12 Apr 2024 14:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712932839; cv=none; b=Hyn3iQ97UtUWok1pl2o20j+bC29fD82sUITkC+j9Su68dyMioT8bgBVRsEJ9NBlGzjNWOsk/LgyZug7aGHzz2igJrGLprkUSROmie8o5qybGn2gsIeWRU2pTlKd2GXyxoji/l+7WNDEi3sty1wCdlqoH6HKnd3bB9xRi8ixnQD8=
+	t=1712932940; cv=none; b=EvzLaYdzbbQ3PHWKU6XdxT5Ns1C1TheRxEBEb/5DT7H36RqUHSghAPfbJlU9EHf338rKDBil/TxUVTvdu6K+w0Oc69DewbY8Wpws7li/T3ROw+NElM3t3kxAJWbOhHwS+DLc+KqkfLOF7DPnxA8ryrKuo3BKPaXQaZA61B5k0Tk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712932839; c=relaxed/simple;
-	bh=ShGPl1cFxs2KT93wGPWsQ+fVDhsk7CoQz0Ic6PzBBEM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hXDbw18awErRf9RnwtExIXqsYXU9aJB/48nvT3E1FIFYqCks2UHayLHX3hlLmVsWWO7aRuVNNbsTfmluRe/Em2PtY4i1gD/7Gm4aZ78N4lRx1AeklCsOMOXIHuVrl/Ix1CEV3mJ2oEggO6NP+GdikYD8pi5QmgjiZeIg0KgmI34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 36157 invoked by uid 1000); 12 Apr 2024 10:40:35 -0400
-Date: Fri, 12 Apr 2024 10:40:35 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Sam Sun <samsun1006219@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-  Greg KH <gregkh@linuxfoundation.org>, swboyd@chromium.org,
-  ricardo@marliere.net, hkallweit1@gmail.com, heikki.krogerus@linux.intel.com,
-  mathias.nyman@linux.intel.com, royluo@google.com,
-  syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
-Subject: Re: [Linux kernel bug] general protection fault in disable_store
-Message-ID: <45e246ab-01e8-40b7-8ede-b47957df0d7b@rowland.harvard.edu>
-References: <CAEkJfYON+ry7xPx=AiLR9jzUNT+i_Va68ACajOC3HoacOfL1ig@mail.gmail.com>
- <92fe8e95-bc01-4d7d-9678-8cfc55cc4a7b@rowland.harvard.edu>
- <CAEkJfYORHKO16xT3DCS04JFzkquz6oZ5CdC2USJ5-c0WihAMXg@mail.gmail.com>
+	s=arc-20240116; t=1712932940; c=relaxed/simple;
+	bh=Vx9AcN4PoALM5/qtOiCZ6N7gbWAJhqxvNWL/3pXbHDQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BHsg2jLtYK3MevF4xIMq/eERY82hfIzMD/uN7PzBGArHLZxhbIczOyF80AlItlJUHA4g8ifol6pPMm5C/8AC7pHsTwn3WEw8UrQ3mgGiqYzXk71GH9zjVMuWWOiLVHaqfKnabCdL1aNp3dT0u3mej7zRyRMfuyKT9gIRLwgWG0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CaaXOpS1; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso743415a12.3;
+        Fri, 12 Apr 2024 07:42:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712932938; x=1713537738; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6QFhwob2H+YmXGrRuSyJw5ag+KZ6vVeg830c04nwrNg=;
+        b=CaaXOpS13Ccuz7QZIsx9i19yM84GIdG0To3bsPxJH6uToHI4HSfVtLKK0KZXFbrvnD
+         w8TCaVpZtcllS5EHipk3QyUqLhyGO+BIRdNjWqlQ+aHQJIose6+7m5K0mP/UBLemFkEK
+         To9l1NOajPXy8i+OoPl3kUMwvH/Uc27Wr3SNyRL2TpWDh9u8HfGlTk97yZnMKoEXbem6
+         v6TXOXdIlmciBVlhkoUsffWVgBXqIxClmNgw7o5KHHiqdFXtSliF4BbQEU5wihpujsar
+         ssNyMxeyHu2Krl2acGpNU6Fpodu5Eu07IP+av+9vLumB3rtKQ3d1eiOyQyO99KxO9Upl
+         SLbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712932938; x=1713537738;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6QFhwob2H+YmXGrRuSyJw5ag+KZ6vVeg830c04nwrNg=;
+        b=nXE6KVBUhkMpaJqLL/wj3WmoyE6wDudpqaIkmq8UUiUpRi1/9BsleYBIt3+dSbsyAs
+         nJ/0Gt9HDjxFTfrCSUMphf9jAK9PgMaIo4GK1DMxqinFh+/clfcIdvjUrkzM9K+I7W4g
+         JfY26b87P1ZFd/y6j/NKn83nDT6SpFLktT/knnuqD3qUjA2oH/A8MnDWYBWDZXT3BRuH
+         nmXFye72AR4QSCHPwqMpqFOGwT1+qiTdd8mCWAR6iuDCd8oYRiveZ+5h8VFZeGFd39kn
+         9HWBJ5MlL33v7Q7vb9uFHLKwcxRKEGZfXJ3+uhaUAkqnDDU7zBXg4cJBK2WF2H9ReW5c
+         jlVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVAhV9dQVQHH2JQvpGXZArB9qpW7z7A8h4Sp5Y8a2xAAQqBBv3tKJMeFSZBcUt1W+6LamWjErUm/2JfurIFizrJwdtBvUGQBqzJ4wpxhHDroKJapQ6/QOiIUFRXvysLlZ1MhkcWNXv15EMthUQ=
+X-Gm-Message-State: AOJu0Yxx/iOFcNbzs6+iyRswCeqeJvseQvLQZfuDs1KrosNdyzECQ6N9
+	izekgh2dFsLhHT3zhExIOKsVjJHOSBbXqXxXrO5Ng1MTTMn8Tu3aLo6I/+38/fcOGOGY6ir6WNL
+	zso3sOEt3SDsL7ZbiEygypXITGco=
+X-Google-Smtp-Source: AGHT+IE9wnsUg4rH8z6mmvraJI+4Eo9u935Luu9KrcObKEviVUPWS/ECrhs1BDPQihTBCvx/S6Hyv8KVZGvxU0Dc4t4=
+X-Received: by 2002:a17:90a:8c0e:b0:2a5:d313:4d3f with SMTP id
+ a14-20020a17090a8c0e00b002a5d3134d3fmr2963704pjo.34.1712932937744; Fri, 12
+ Apr 2024 07:42:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEkJfYORHKO16xT3DCS04JFzkquz6oZ5CdC2USJ5-c0WihAMXg@mail.gmail.com>
+References: <20240411230801.1504496-1-boqun.feng@gmail.com>
+ <20240411230801.1504496-3-boqun.feng@gmail.com> <CANiq72nSSAVkynVaAq7bQKoL6N8K2JUXp8AOVvu7vN+siAhk-Q@mail.gmail.com>
+ <Zhk4Uqc4LImR2n_r@Boquns-Mac-mini.home>
+In-Reply-To: <Zhk4Uqc4LImR2n_r@Boquns-Mac-mini.home>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 12 Apr 2024 16:41:26 +0200
+Message-ID: <CANiq72ka4UvJzb4dN12fpA1WirgDHXcvPurvc7B9t+iPUfWnew@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Miguel Ojeda <ojeda@kernel.org>, 
+	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	bjorn3_gh@protonmail.com, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Vegard Nossum <vegard.nossum@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 09:08:12PM +0800, Sam Sun wrote:
-> Sorry for the mistake I made when debugging this bug. Now I have more
-> information about it. Disassembly of function disable_store() in the
-> latest upstream kernel is listed below.
-> ```
-> Dump of assembler code for function disable_store:
->    ...
->    0xffffffff86e907eb <+187>:   lea    -0x8(%r14),%r12
->    0xffffffff86e907ef <+191>:   mov    (%rbx),%rax
->    0xffffffff86e907f2 <+194>:   mov    %rax,0x20(%rsp)
->    0xffffffff86e907f7 <+199>:   lea    -0xa8(%rax),%rdi
->    0xffffffff86e907fe <+206>:   mov    %rdi,0x18(%rsp)
->    0xffffffff86e90803 <+211>:   call   0xffffffff86e20220
-> <usb_hub_to_struct_hub>
->    0xffffffff86e90808 <+216>:   mov    %rax,%rbx
->    0xffffffff86e9080b <+219>:   shr    $0x3,%rax
->    0xffffffff86e9080f <+223>:   movabs $0xdffffc0000000000,%rcx
->    0xffffffff86e90819 <+233>:   cmpb   $0x0,(%rax,%rcx,1)
->    0xffffffff86e9081d <+237>:   je     0xffffffff86e90827 <disable_store+247>
->    0xffffffff86e9081f <+239>:   mov    %rbx,%rdi
->    0xffffffff86e90822 <+242>:   call   0xffffffff81eeb0b0
-> <__asan_report_load8_noabort>
->    0xffffffff86e90827 <+247>:   lea    0x60(%rsp),%rsi
->    ...
-> ```
-> The cmpb in disable_store()<+233> is generated by KASAN to check the
-> shadow memory status. If equals 0, which means the load 8 is valid,
-> pass the KASAN check. However, this time rax is 0, so it first
-> triggers general protection fault, since 0xdffffc0000000000 is not a
-> valid address. rax contains the return address of function
-> usb_hub_to_struct_hub(), in this case is a NULL.
-> 
-> In function usb_hub_to_struct_hub(), I checked hdev and its sub
-> domains, and they are not NULL. Is it possible that
-> usb_deauthorized_device() set
-> hdev->actconfig->interface[0]->dev.driver_data to NULL? I cannot
-> confirm that since every time I try to breakpoint the code it crashes
-> differently.
+On Fri, Apr 12, 2024 at 3:34=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
+>
+> That works for me, although I would prefer `Ktime::sub()` is wrapping
+> sub and we have another function doing a safe version of sub.
 
-I suspect the usb_hub_to_struct_hub() call is racing with the 
-spinlock-protected region in hub_disconnect() (in hub.c).
+Why? It goes against the "normal" case in integers. It is also not
+what `ktime_sub()` does, which is the "normal" case here, vs.
+`_unsafe()` and `_safe()` ones.
 
-> If there is any other thing I could help, please let me know.
+> Exactly, ktime_add_safe() doesn't panic if overflow happens, right?
+> I think that's pretty clear on how time subsystem wants to handle
+> overflow (saturating it, or zeroing it instead of panicing).
 
-Try the patch below.  It should eliminate that race, which hopefully 
-will fix the problem.
+There are three variants in C (for addition) that I can see:
 
-Alan Stern
+  - No suffix: not supposed to wrap.
+  - `_unsafe()`: wraps.
+  - `_safe()`: saturates.
 
+The first one, in normal C, would be UB. In kernel C, it wraps but may
+be detected by UBSAN (this is what Kees is re-introducing very
+recently with 557f8c582a9b ("ubsan: Reintroduce signed overflow
+sanitizer")).
 
+So, in Rust terms, the three options above would map to:
 
-Index: usb-devel/drivers/usb/core/hub.c
-===================================================================
---- usb-devel.orig/drivers/usb/core/hub.c
-+++ usb-devel/drivers/usb/core/hub.c
-@@ -72,6 +72,9 @@
-  * change to USB_STATE_NOTATTACHED even when the semaphore isn't held. */
- static DEFINE_SPINLOCK(device_state_lock);
- 
-+/* Protect hdev->maxchild and hub's intfdata */
-+static DEFINE_SPINLOCK(hub_state_lock);
-+
- /* workqueue to process hub events */
- static struct workqueue_struct *hub_wq;
- static void hub_event(struct work_struct *work);
-@@ -152,9 +155,13 @@ static inline char *portspeed(struct usb
- /* Note that hdev or one of its children must be locked! */
- struct usb_hub *usb_hub_to_struct_hub(struct usb_device *hdev)
- {
--	if (!hdev || !hdev->actconfig || !hdev->maxchild)
--		return NULL;
--	return usb_get_intfdata(hdev->actconfig->interface[0]);
-+	struct usb_hub *hub = NULL;
-+
-+	spin_lock_irq(&hub_state_lock);
-+	if (hdev && hdev->actconfig && hdev->maxchild)
-+		hub = usb_get_intfdata(hdev->actconfig->interface[0]);
-+	spin_unlock_irq(&hub_state_lock);
-+	return hub;
- }
- 
- int usb_device_supports_lpm(struct usb_device *udev)
-@@ -1714,7 +1721,9 @@ static int hub_configure(struct usb_hub
- 			break;
- 		}
- 	}
-+	spin_lock_irq(&hub_state_lock);
- 	hdev->maxchild = i;
-+	spin_unlock_irq(&hub_state_lock);
- 	for (i = 0; i < hdev->maxchild; i++) {
- 		struct usb_port *port_dev = hub->ports[i];
- 
-@@ -1790,9 +1799,11 @@ static void hub_disconnect(struct usb_in
- 
- 	/* Avoid races with recursively_mark_NOTATTACHED() */
- 	spin_lock_irq(&device_state_lock);
-+	spin_lock(&hub_state_lock);
- 	port1 = hdev->maxchild;
- 	hdev->maxchild = 0;
- 	usb_set_intfdata(intf, NULL);
-+	spin_unlock(&hub_state_lock);
- 	spin_unlock_irq(&device_state_lock);
- 
- 	for (; port1 > 0; --port1)
+  - Raw operators.
+  - `wrapping_`.
+  - `saturating_`.
 
+Because the raw operators are what we use for arithmetic that is "not
+supposed to wrap" too. That is, they wrap, but may be checked by the
+Kconfig option. Of course, it may be worth having an intermediate
+option that does not actually go for a full-blown Rust-panic for that,
+but the point is that the current "not supposed to wrap" methods are
+the raw operators.
+
+All three, in fact, are "safe" in Rust terms, since none can actually
+trigger UB (in kernel C at least -- it would be different in normal C:
+the first one would map to an unsafe Rust method, i.e. `unchecked_`).
+
+Instead, in the C side, `_unsafe()` seems to be used to mean instead
+"you should be checking for overflow if needed, because it will never
+be reported by UBSAN unlike the raw one". Again, this is based on my
+reading of that commit and the docs on `_unsafe()`. It may be wrong,
+or maybe the subtraction is supposed to be different. It should
+probably be clarified in the C side anyway.
+
+And, relatedly, I see that when the `union` was removed in commit
+2456e8553544 ("ktime: Get rid of the union"), `ktime_add_unsafe()`
+stopped returning a `ktime_t` even when both inputs are `ktime_t`s
+themselves:
+
+    static_assert(_Generic(ktime_add(a, b), ktime_t: true, default:
+false)); // OK
+    static_assert(_Generic(ktime_add_unsafe(a, b), ktime_t: true,
+default: false)); // Bad
+
+It returns an `u64` now, which could surprise users, and probably
+should be fixed. The only user just puts the result into a `ktime_t`,
+so there is no actual issue today.
+
+> I must defer this to Thomas.
+
+Yeah, the question on the C API was meant for Thomas et al.
+
+> Maybe, however neither of this function probably shouldn't have the
+> panic-on-overflow behavior. So I agree that overflow checking is not a
+> bad thing, but when to check and how to handle overflow should be
+> controlled by the users, and making the default behavior
+> panic-on-overflow doesn't look reasonable to me.
+
+Yes, it should be controlled by callers, but the point above is that,
+from the looks of it, these interfaces are not meant to overflow to
+begin with.
+
+Cheers,
+Miguel
 
