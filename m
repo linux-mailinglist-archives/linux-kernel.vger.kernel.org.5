@@ -1,325 +1,275 @@
-Return-Path: <linux-kernel+bounces-141933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20938A2544
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9027F8A2548
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:44:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 115C71C21335
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:42:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF0EB1C2309E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3693AD531;
-	Fri, 12 Apr 2024 04:42:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KAdRL7AB"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725111A28C;
+	Fri, 12 Apr 2024 04:44:20 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6008C1A28C
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EC48C13
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712896949; cv=none; b=jOKLbR6BUo0YR3JRT2iP8HRKa7t+dVWfFkL9CP3d2pwJIHW9RnM6gpDu07jHH91h1kbV36t2cQP4HUOjsUV0ohBZw5kdc+ealevFF+Qtq3ztNNV/04RLM+OXskuiirNtWlemgxoauJu1KDIDsTmXDujY9J5xoNSkFzXr2ZNgqXQ=
+	t=1712897059; cv=none; b=DLDEdRGXe9bDpfa8PruJ2N/qzI7edl0TkmJoevKDrjbuAM+jEQqL6pFX7xQxyjvM41aRs3ucewHNsp07oGAYipNFR+LLw94+ZBHLrD1gc1fE1nushre9KQwB6XY/xiKomF7WPRYVnyEiw9CW1P9sh+BoElLBqi0Gguj9vzxfm6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712896949; c=relaxed/simple;
-	bh=vkCzVpCRRUioCGR8LPETsGHbP0mD8/yLkEzCZ2O+Jhc=;
-	h=Date:In-Reply-To:Mime-Version:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=gE+DhW6TQuwyNwkZLyDJgcpHr8D+QKfooCcoy+viaEzzpHez26Uce/BHYlYa9aZfuzrBFxOXsVe8GZsSawFpTsXR6ztXq77qRYWlX5HRYUhWwhqsrO9T7ks6DDBc4GWB2V9BJozHk84BPXGBN8RILdfbS2ix457WH1i43L2CaBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KAdRL7AB; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so1006141276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712896945; x=1713501745; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CNKCkNsot/Do8CE0Y5PRYhfWnEd0oPU98R4yomeMOBg=;
-        b=KAdRL7ABeQBDR68zGR4r3gd3yBnOHSANTuyY/BAJQisQ5OA/7GHCdz5ujAcmyAp1cZ
-         +UKf3PbgVyhlLLD39mB4miLmkBbzVetqWPZ4rMJV8+eKDitGC1DMDYQgvZBYiho3X3K7
-         xoMC846oSq1AnAsPUmTEjih3ty+t+A0h4YHrTv6Z4nneosTusWfyQQwOZYvPOKOsmUlf
-         CA3uAdT+JnZSPDwKZRKD3YlWXYB5nCzqUfcMQHuE+mX9VwKlniqbaoTyk+7gT8G1FM1l
-         X/bSz5pQJQ/ky5iGlbnZuWEUdUEWZiMj3SuGHnVEe4t+BJltG+eoMfdVOGO0xbJd4Y1/
-         2zKA==
+	s=arc-20240116; t=1712897059; c=relaxed/simple;
+	bh=FhvTXwUAai1hqoc4Lk63Cx/KnDPdGaH5T8GcEZysPVw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=XKI8P895Mdc+9ecTNe7WNP3hJ131xq5GUMzWYYT2/1slXxoNxTlSTH8ItkGxBGKa3YGn+4DJbqu3uMIcdObZcZ6ZqcJQrNXMt5KLpFIT/C2db8d4iBk4nZJZRpPGn4XMJjgS7aFjqBj9GPFSTOI0GRAcUfjOFL5kEMVxAQgsCdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36849578ac4so5329875ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:44:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712896945; x=1713501745;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+        d=1e100.net; s=20230601; t=1712897057; x=1713501857;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CNKCkNsot/Do8CE0Y5PRYhfWnEd0oPU98R4yomeMOBg=;
-        b=QINCmbakg3uKc3sRPj3jQsUodPximt1xlwsDhCfJlPv403+eFjNxt8mCqFaRiaW+c3
-         novrhIuIQUmS5JPC1DAe+wlnphyJ/I8AY/pPEfbTVsqzwPLermHaBykHmc1oUZB4giFH
-         KimYg5GRqDGSqRLe5R/q1kreO8DlrBeXwkhmHzc76+zdSLm0Mvb7Dh7gg0EmLCEjnwTY
-         utViOC4+toC5/9dYiR3twsHVtKxufvJJmB+Ip0QG7w12XNlMub7lAl27GbG0sjh2BIdn
-         tF5s48w3SnT/o/cLBz+oUwjjYzhGwnUqs6at51raIX8a3wp6AJCSDt5R2xPtwwp7iDJ/
-         zxIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3sq+xPjpM7FhFZfeUU8CGwVsh0LteQpmV/RGdHC1OQALkX7m+hfPYr89uApt4Onq6oLdUXkyOUONboX9T10Miv3fYQvzWVOeW8NHP
-X-Gm-Message-State: AOJu0Yz3A7MZnDOyMLGGOii+tJcomas7vZYmEl+lSmXf18p14TJWOyZX
-	ACcagzSmtR8toiMUa62SVUHebSwSwX+extE3YDIKsUwwb7G18A21R5IdyxYjL3cDHsHthxWLdOG
-	XuUJ3a65/wkOBpHYG56GjwQ==
-X-Google-Smtp-Source: AGHT+IEsfuiZZhvEJhEk4hpJZ3tcDHr2XUVgWTfEcekqoXuE6gxc30NQGBAMRLukncKNx2Memz3jUMFF4Ph6YCHTNA==
-X-Received: from ctop-sg.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:1223])
- (user=ackerleytng job=sendgmr) by 2002:a05:6902:150d:b0:dc6:cafd:dce5 with
- SMTP id q13-20020a056902150d00b00dc6cafddce5mr477459ybu.12.1712896945446;
- Thu, 11 Apr 2024 21:42:25 -0700 (PDT)
-Date: Fri, 12 Apr 2024 04:42:21 +0000
-In-Reply-To: <75fde3c3-17a1-466f-a920-30769730808c@intel.com> (dongsheng.x.zhang@intel.com)
+        bh=HAhQIXfW8xBEuSdDsNQsYph3pDu0nc5My/lHfZx4wT8=;
+        b=nLZuYPJSrcfv1BdtXtxXUub7n4ChQMPKmjwWdGK530U715z1776FKcZT+MVNNYUVZT
+         QYvYdAKobPjyxVrnaJhtRaFKbCOIOoEo74sAMsFm0SR7gwdF/iIFe83SOyE3eVvrikbN
+         9YAsZMigKpR+x2RJzLbi2j5cQaISY0VsCsqpr3cn76hcEyINmuOLif1sRC9re5T7WwGJ
+         a76TfXbU7TlpxsJPpe9ZAIywA0hK+SbVZJuLHzzLRJfyuSeaMTJVLK45hGJWMjGKPv8U
+         EU3dymtktBrx6A8Uut7MkC9Cfg+pHybyQNyIPBAkUp6HIdwb2rkZrjklodzB504fQEGy
+         bQcA==
+X-Forwarded-Encrypted: i=1; AJvYcCW0MP7Jd/nqYIH7pXb/J3CXcbZQ8Rtqk2ymcP4DLn0zHgtjfkj0/U/Mk54QDw8UyFhHeyPVT5bai9RgYIodJ7dCXCF38zHVwA6jFUsj
+X-Gm-Message-State: AOJu0Ywo5xEdU8FZm/dXb9Nqt3oiw5pdmy8Ogbq+RdrBaTNUpZQ9Zn9t
+	lWIFjssh0j1GFFNoCTa0GRm3MGEE7rwTpg5MC6aN0EmcGgpmd8ihUpOFOOvMkEX2svF3/8Z7Cds
+	LJSnXJwQr/Bb34kpMtMcONl+RDMMg++KlvsRjYrlwh4ojY3IDYP+WYlM=
+X-Google-Smtp-Source: AGHT+IF6alcoFvLfVNjbSasjdrR1MuCme+6gYfCXpS05IZbrn+Nf5nfybhkMdPBUJm1+oTrceUbFfj/aT+OlmrAVzWWcyZzYMiHD
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-ID: <diqzzftzjioi.fsf@ctop-sg.c.googlers.com>
-Subject: Re: [RFC PATCH v5 08/29] KVM: selftests: TDX: Add TDX lifecycle test
-From: Ackerley Tng <ackerleytng@google.com>
-To: dongsheng.x.zhang@intel.com
-Cc: sagis@google.com, linux-kselftest@vger.kernel.org, afranji@google.com, 
-	erdemaktas@google.com, isaku.yamahata@intel.com, seanjc@google.com, 
-	pbonzini@redhat.com, shuah@kernel.org, pgonda@google.com, haibo1.xu@intel.com, 
-	chao.p.peng@linux.intel.com, vannapurve@google.com, runanwang@google.com, 
-	vipinsh@google.com, jmattson@google.com, dmatlack@google.com, 
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
+MIME-Version: 1.0
+X-Received: by 2002:a92:ca0d:0:b0:36b:214:bc2f with SMTP id
+ j13-20020a92ca0d000000b0036b0214bc2fmr88964ils.3.1712897057088; Thu, 11 Apr
+ 2024 21:44:17 -0700 (PDT)
+Date: Thu, 11 Apr 2024 21:44:17 -0700
+In-Reply-To: <0000000000001e41e20615824081@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009ffb1d0615deec6b@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __hci_req_sync
+From: syzbot <syzbot+27209997e4015fb4702e@syzkaller.appspotmail.com>
+To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-"Zhang, Dongsheng X" <dongsheng.x.zhang@intel.com> writes:
+syzbot has found a reproducer for the following issue on:
 
-> On 12/12/2023 12:46 PM, Sagi Shahar wrote:
->> From: Erdem Aktas <erdemaktas@google.com>
->> 
->> Adding a test to verify TDX lifecycle by creating a TD and running a
->> dummy TDG.VP.VMCALL <Instruction.IO> inside it.
->> 
->> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
->> Signed-off-by: Ryan Afranji <afranji@google.com>
->> Signed-off-by: Sagi Shahar <sagis@google.com>
->> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
->> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
->> ---
->>  tools/testing/selftests/kvm/Makefile          |  4 +
->>  .../selftests/kvm/include/x86_64/tdx/tdcall.h | 35 ++++++++
->>  .../selftests/kvm/include/x86_64/tdx/tdx.h    | 12 +++
->>  .../kvm/include/x86_64/tdx/test_util.h        | 52 +++++++++++
->>  .../selftests/kvm/lib/x86_64/tdx/tdcall.S     | 90 +++++++++++++++++++
->>  .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 27 ++++++
->>  .../selftests/kvm/lib/x86_64/tdx/tdx_util.c   |  1 +
->>  .../selftests/kvm/lib/x86_64/tdx/test_util.c  | 34 +++++++
->>  .../selftests/kvm/x86_64/tdx_vm_tests.c       | 45 ++++++++++
->>  9 files changed, 300 insertions(+)
->>  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
->>  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
->>  create mode 100644 tools/testing/selftests/kvm/include/x86_64/tdx/test_util.h
->>  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/tdcall.S
->>  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
->>  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx/test_util.c
->>  create mode 100644 tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
->> 
->> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
->> index a35150ab855f..80d4a50eeb9f 100644
->> --- a/tools/testing/selftests/kvm/Makefile
->> +++ b/tools/testing/selftests/kvm/Makefile
->> @@ -52,6 +52,9 @@ LIBKVM_x86_64 += lib/x86_64/vmx.c
->>  LIBKVM_x86_64 += lib/x86_64/sev.c
->>  LIBKVM_x86_64 += lib/x86_64/tdx/tdx_util.c
->>  LIBKVM_x86_64 += lib/x86_64/tdx/td_boot.S
->> +LIBKVM_x86_64 += lib/x86_64/tdx/tdcall.S
->> +LIBKVM_x86_64 += lib/x86_64/tdx/tdx.c
->> +LIBKVM_x86_64 += lib/x86_64/tdx/test_util.c
->>  
->>  LIBKVM_aarch64 += lib/aarch64/gic.c
->>  LIBKVM_aarch64 += lib/aarch64/gic_v3.c
->> @@ -152,6 +155,7 @@ TEST_GEN_PROGS_x86_64 += set_memory_region_test
->>  TEST_GEN_PROGS_x86_64 += steal_time
->>  TEST_GEN_PROGS_x86_64 += kvm_binary_stats_test
->>  TEST_GEN_PROGS_x86_64 += system_counter_offset_test
->> +TEST_GEN_PROGS_x86_64 += x86_64/tdx_vm_tests
->>  
->>  # Compiled outputs used by test targets
->>  TEST_GEN_PROGS_EXTENDED_x86_64 += x86_64/nx_huge_pages_test
->> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
->> new file mode 100644
->> index 000000000000..78001bfec9c8
->> --- /dev/null
->> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdcall.h
->> @@ -0,0 +1,35 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/* Adapted from arch/x86/include/asm/shared/tdx.h */
->> +
->> +#ifndef SELFTESTS_TDX_TDCALL_H
->> +#define SELFTESTS_TDX_TDCALL_H
->> +
->> +#include <linux/bits.h>
->> +#include <linux/types.h>
->> +
->> +#define TDG_VP_VMCALL_INSTRUCTION_IO_READ 0
->> +#define TDG_VP_VMCALL_INSTRUCTION_IO_WRITE 1
->
-> Nit:
-> Probably we can define the following instead in test_util.c?
-> /* Port I/O direction */
-> #define PORT_READ	0
-> #define PORT_WRITE	1
->
-> Then use them in place of TDG_VP_VMCALL_INSTRUCTION_IO_READ/TDG_VP_VMCALL_INSTRUCTION_IO_WRITE?
-> which are too long
->
+HEAD commit:    00dcf5d862e8 Merge tag 'acpi-6.9-rc4' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f84c93180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=285be8dd6baeb438
+dashboard link: https://syzkaller.appspot.com/bug?extid=27209997e4015fb4702e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179a3b4d180000
 
-I was actually thinking to align all the macro definitions with the
-definitions in the Intel GHCI Spec, so
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-00dcf5d8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7a72277e36da/vmlinux-00dcf5d8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5c529702b5e0/bzImage-00dcf5d8.xz
 
-3.9 TDG.VP.VMCALL<Instruction.IO>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27209997e4015fb4702e@syzkaller.appspotmail.com
 
-becomes TDG_VP_VMCALL_INSTRUCTION_IO and then add suffixes READ and
-WRITE for the directions.
+==================================================================
+BUG: KASAN: slab-use-after-free in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+BUG: KASAN: slab-use-after-free in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+BUG: KASAN: slab-use-after-free in refcount_read include/linux/refcount.h:136 [inline]
+BUG: KASAN: slab-use-after-free in skb_unref include/linux/skbuff.h:1227 [inline]
+BUG: KASAN: slab-use-after-free in __kfree_skb_reason net/core/skbuff.c:1224 [inline]
+BUG: KASAN: slab-use-after-free in kfree_skb_reason+0x36/0x210 net/core/skbuff.c:1251
+Read of size 4 at addr ffff88801d9c3b24 by task syz-executor.2/5302
 
-PORT_READ and PORT_WRITE seem a little too unspecific, but I agree that
-TDG_VP_VMCALL_INSTRUCTION_IO_READ/TDG_VP_VMCALL_INSTRUCTION_IO_WRITE are
-long.
+CPU: 3 PID: 5302 Comm: syz-executor.2 Not tainted 6.9.0-rc3-syzkaller-00189-g00dcf5d862e8 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc3/0x620 mm/kasan/report.c:488
+ kasan_report+0xd9/0x110 mm/kasan/report.c:601
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0xef/0x1a0 mm/kasan/generic.c:189
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+ refcount_read include/linux/refcount.h:136 [inline]
+ skb_unref include/linux/skbuff.h:1227 [inline]
+ __kfree_skb_reason net/core/skbuff.c:1224 [inline]
+ kfree_skb_reason+0x36/0x210 net/core/skbuff.c:1251
+ kfree_skb include/linux/skbuff.h:1262 [inline]
+ __hci_req_sync+0x61d/0x980 net/bluetooth/hci_request.c:184
+ hci_req_sync+0x97/0xd0 net/bluetooth/hci_request.c:206
+ hci_dev_cmd+0x653/0x9c0 net/bluetooth/hci_core.c:790
+ hci_sock_ioctl+0x4f3/0x8e0 net/bluetooth/hci_sock.c:1153
+ sock_do_ioctl+0x116/0x280 net/socket.c:1222
+ sock_ioctl+0x22e/0x6c0 net/socket.c:1341
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:904 [inline]
+ __se_sys_ioctl fs/ioctl.c:890 [inline]
+ __x64_sys_ioctl+0x193/0x220 fs/ioctl.c:890
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f98e227dbcb
+Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <89> c2 3d 00 f0 ff ff 77 1c 48 8b 44 24 18 64 48 2b 04 25 28 00 00
+RSP: 002b:00007fff8983d770 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f98e227dbcb
+RDX: 00007fff8983d7e8 RSI: 00000000400448dd RDI: 0000000000000003
+RBP: 0000555556cf6430 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000008 R11: 0000000000000246 R12: 0000000000000003
+R13: 0000000000000003 R14: 0000000000000001 R15: 00000000fffffff1
+ </TASK>
 
->> +
->> +#define TDX_HCALL_HAS_OUTPUT BIT(0)
->> +
->> +#define TDX_HYPERCALL_STANDARD 0
->> +
->> +/*
->> + * Used in __tdx_hypercall() to pass down and get back registers' values of
->> + * the TDCALL instruction when requesting services from the VMM.
->> + *
->> + * This is a software only structure and not part of the TDX module/VMM ABI.
->> + */
->> +struct tdx_hypercall_args {
->> +	u64 r10;
->> +	u64 r11;
->> +	u64 r12;
->> +	u64 r13;
->> +	u64 r14;
->> +	u64 r15;
->> +};
->> +
->> +/* Used to request services from the VMM */
->> +u64 __tdx_hypercall(struct tdx_hypercall_args *args, unsigned long flags);
->> +
->> +#endif // SELFTESTS_TDX_TDCALL_H
->> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
->> new file mode 100644
->> index 000000000000..a7161efe4ee2
->> --- /dev/null
->> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
->> @@ -0,0 +1,12 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +#ifndef SELFTEST_TDX_TDX_H
->> +#define SELFTEST_TDX_TDX_H
->> +
->> +#include <stdint.h>
->> +
->> +#define TDG_VP_VMCALL_INSTRUCTION_IO 30
->
-> Nit:
-> arch/x86/include/uapi/asm/vmx.h already exports the following define:
-> #define EXIT_REASON_IO_INSTRUCTION      30
->
-> Linux kernel example (arch/x86/coco/tdx/tdx.c):
-> static bool handle_in(struct pt_regs *regs, int size, int port)
-> {
-> 	struct tdx_module_args args = {
-> 		.r10 = TDX_HYPERCALL_STANDARD,
-> 		.r11 = hcall_func(EXIT_REASON_IO_INSTRUCTION),
-> 		.r12 = size,
-> 		.r13 = PORT_READ,
-> 		.r14 = port,
-> 	};
->
-> So just like the kernel, here we can also use EXIT_REASON_IO_INSTRUCTION in place of TDG_VP_VMCALL_INSTRUCTION_IO,
-> just need to do a '#include "vmx.h"' or '#include <asm/vmx.h>' to bring in the define
->
+Allocated by task 5308:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ unpoison_slab_object mm/kasan/common.c:312 [inline]
+ __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:338
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3798 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ kmem_cache_alloc+0x136/0x320 mm/slub.c:3852
+ skb_clone+0x190/0x3f0 net/core/skbuff.c:2063
+ hci_send_cmd_sync net/bluetooth/hci_core.c:4220 [inline]
+ hci_cmd_work+0x66a/0x710 net/bluetooth/hci_core.c:4240
+ process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
+ process_scheduled_works kernel/workqueue.c:3335 [inline]
+ worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-I think aligning macro definitions with the spec is better in this case.
+Freed by task 5308:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ kasan_save_free_info+0x3b/0x60 mm/kasan/generic.c:579
+ poison_slab_object mm/kasan/common.c:240 [inline]
+ __kasan_slab_free+0x11d/0x1a0 mm/kasan/common.c:256
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2106 [inline]
+ slab_free mm/slub.c:4280 [inline]
+ kmem_cache_free+0x12e/0x380 mm/slub.c:4344
+ kfree_skbmem+0x10e/0x200 net/core/skbuff.c:1159
+ __kfree_skb net/core/skbuff.c:1217 [inline]
+ kfree_skb_reason+0x13a/0x210 net/core/skbuff.c:1252
+ kfree_skb include/linux/skbuff.h:1262 [inline]
+ hci_req_sync_complete+0x16c/0x270 net/bluetooth/hci_request.c:109
+ hci_event_packet+0x963/0x1170 net/bluetooth/hci_event.c:7604
+ hci_rx_work+0x2c4/0x1610 net/bluetooth/hci_core.c:4171
+ process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
+ process_scheduled_works kernel/workqueue.c:3335 [inline]
+ worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-It seems odd to be calling an EXIT_REASON_* when making a hypercall.
+The buggy address belongs to the object at ffff88801d9c3a40
+ which belongs to the cache skbuff_head_cache of size 240
+The buggy address is located 228 bytes inside of
+ freed 240-byte region [ffff88801d9c3a40, ffff88801d9c3b30)
 
-Later on in this patch series this macro is added
+The buggy address belongs to the physical page:
+page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1d9c2
+head: order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff80000000840(slab|head|node=0|zone=1|lastcpupid=0xfff)
+page_type: 0xffffffff()
+raw: 00fff80000000840 ffff888015b8e000 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000190019 00000001ffffffff 0000000000000000
+head: 00fff80000000840 ffff888015b8e000 dead000000000122 0000000000000000
+head: 0000000000000000 0000000000190019 00000001ffffffff 0000000000000000
+head: 00fff80000000001 ffffea0000767081 dead000000000122 00000000ffffffff
+head: 0000000200000000 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 5314, tgid 5314 (kworker/u33:8), ts 1081717469726, free_ts 1081659697828
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1534
+ prep_new_page mm/page_alloc.c:1541 [inline]
+ get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3317
+ __alloc_pages+0x22b/0x2460 mm/page_alloc.c:4575
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2175 [inline]
+ allocate_slab mm/slub.c:2338 [inline]
+ new_slab+0xcc/0x3a0 mm/slub.c:2391
+ ___slab_alloc+0x66d/0x1790 mm/slub.c:3525
+ __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3610
+ __slab_alloc_node mm/slub.c:3663 [inline]
+ slab_alloc_node mm/slub.c:3835 [inline]
+ kmem_cache_alloc+0x2e9/0x320 mm/slub.c:3852
+ skb_clone+0x190/0x3f0 net/core/skbuff.c:2063
+ hci_send_cmd_sync net/bluetooth/hci_core.c:4220 [inline]
+ hci_cmd_work+0x66a/0x710 net/bluetooth/hci_core.c:4240
+ process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
+ process_scheduled_works kernel/workqueue.c:3335 [inline]
+ worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+page last free pid 5294 tgid 5294 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1141 [inline]
+ free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2347
+ free_unref_page+0x33/0x3c0 mm/page_alloc.c:2487
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x4e/0x140 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x192/0x1e0 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x69/0x90 mm/kasan/common.c:322
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3798 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ kmalloc_trace+0x147/0x330 mm/slub.c:3992
+ kmalloc include/linux/slab.h:628 [inline]
+ kzalloc include/linux/slab.h:749 [inline]
+ tomoyo_print_bprm security/tomoyo/audit.c:26 [inline]
+ tomoyo_init_log+0xcb6/0x2180 security/tomoyo/audit.c:264
+ tomoyo_supervisor+0x30c/0xea0 security/tomoyo/common.c:2089
+ tomoyo_audit_env_log security/tomoyo/environ.c:36 [inline]
+ tomoyo_env_perm+0x193/0x210 security/tomoyo/environ.c:63
+ tomoyo_environ security/tomoyo/domain.c:672 [inline]
+ tomoyo_find_next_domain+0xef9/0x2020 security/tomoyo/domain.c:878
+ tomoyo_bprm_check_security security/tomoyo/tomoyo.c:102 [inline]
+ tomoyo_bprm_check_security+0x12e/0x1d0 security/tomoyo/tomoyo.c:92
+ security_bprm_check+0x65/0xb0 security/security.c:1191
+ search_binary_handler fs/exec.c:1766 [inline]
+ exec_binprm fs/exec.c:1820 [inline]
+ bprm_execve fs/exec.c:1872 [inline]
+ bprm_execve+0x642/0x19b0 fs/exec.c:1848
+ do_execveat_common.isra.0+0x5cb/0x750 fs/exec.c:1979
+ do_execve fs/exec.c:2053 [inline]
+ __do_sys_execve fs/exec.c:2129 [inline]
+ __se_sys_execve fs/exec.c:2124 [inline]
+ __x64_sys_execve+0x8c/0xb0 fs/exec.c:2124
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
 
-#define TDG_VP_VMCALL_VE_REQUEST_MMIO 48
+Memory state around the buggy address:
+ ffff88801d9c3a00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+ ffff88801d9c3a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88801d9c3b00: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+                               ^
+ ffff88801d9c3b80: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801d9c3c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc
+==================================================================
 
-which matches
 
-3.7 TDG.VP.VMCALL<#VE.RequestMMIO>
-
-in the Intel GHCI Spec.
-
-The equivalent EXIT_REASON is EXIT_REASON_EPT_VIOLATION, which I feel
-doesn't carry the same meaning as an explicit request for MMIO, as in
-TDG_VP_VMCALL_VE_REQUEST_MMIO.
-
-So I think even though the numbers are the same, they don't carry the
-same meaning and it's probably better to have different macro
-definitions.
-
-Or we could define one in terms of the other?
-
-Later on in this patch series other macros are also added, specific to TDX
-
-#define TDG_VP_VMCALL_GET_TD_VM_CALL_INFO 0x10000
-#define TDG_VP_VMCALL_MAP_GPA 0x10001
-#define TDG_VP_VMCALL_REPORT_FATAL_ERROR 0x10003
-
-which matches
-
-3.1 TDG.VP.VMCALL<GetTdVmCallInfo>
-3.2 TDG.VP.VMCALL<MapGPA>
-3.4 TDG.VP.VMCALL<ReportFatalError>
-
-in the Intel GHCI Spec.
-
-It's nice to have the naming convention for all the VMCALLs line up. :)
-
->> +
->> +uint64_t tdg_vp_vmcall_instruction_io(uint64_t port, uint64_t size,
->> +				      uint64_t write, uint64_t *data);
->> +
-
->> <snip>
-
->> +void verify_td_lifecycle(void)
->> +{
->> +	struct kvm_vm *vm;
->> +	struct kvm_vcpu *vcpu;
->> +
->> +	vm = td_create();
->> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
->> +	vcpu = td_vcpu_add(vm, 0, guest_code_lifecycle);
->> +	td_finalize(vm);
->> +
->> +	printf("Verifying TD lifecycle:\n");
->> +
->> +	vcpu_run(vcpu);
->> +	TDX_TEST_ASSERT_SUCCESS(vcpu);
->> +
->> +	kvm_vm_free(vm);
->> +	printf("\t ... PASSED\n");
->> +}
->
-> Nit:
-> All the functions used locally inside tdx_vm_tests.c can be declared static:
-> static void guest_code_lifecycle(void)
-> static void verify_td_lifecycle(void)
->
-
-Will fix this, thanks!
-
->> +
->> +int main(int argc, char **argv)
->> +{
->> +	setbuf(stdout, NULL);
->> +
->> +	if (!is_tdx_enabled()) {
->> +		print_skip("TDX is not supported by the KVM");
->> +		exit(KSFT_SKIP);
->> +	}
->> +
->> +	run_in_new_process(&verify_td_lifecycle);
->> +
->> +	return 0;
->> +}
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
