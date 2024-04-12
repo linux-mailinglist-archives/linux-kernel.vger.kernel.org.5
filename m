@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-143127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDAB8A34B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:31:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A2E68A34BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:31:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E1861C22D02
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:31:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE7371F22100
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C8114F117;
-	Fri, 12 Apr 2024 17:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C587014F139;
+	Fri, 12 Apr 2024 17:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H1NG5SPd"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eKKRrOyb"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8421214D44F;
-	Fri, 12 Apr 2024 17:30:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C0914EC76;
+	Fri, 12 Apr 2024 17:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712943047; cv=none; b=JhlIx09WRzU5zdViSxvMJzdwtPwc6aCvG9GRP9PqfBo0nNvengnGNo5oCNBGKzoEQ6k3wW51oOd7LvswnHxQumbA21b3Ho/sebxFLj9P0tzA9Y5+F6VTdwoN9c2mfcZ7UdpnbPi/JoYpqVqQ7AXFj0HJJ7tFgBpoGKV4cYzNa74=
+	t=1712943049; cv=none; b=PdHVKee6f6KbyeUC72ZbCdLEsaUxPI5tbso3mwunMs8Vf+5OnaD5kzs8qJGM6f2Jn7N+7JiqMPXOIfxAXFFUzJq87yTebyKFN1heZN4ALO+cvox9PZdrgTU1SFcr21eAwTA7Mpi3Ea4a/YTSd8DUbQsiZN2jOaJjxE4yITGtYqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712943047; c=relaxed/simple;
-	bh=53VPmLYStvI4gEILOZdjzTXxl1Rvmbkp0Ro+tl8CTdM=;
+	s=arc-20240116; t=1712943049; c=relaxed/simple;
+	bh=0q/n4BB5A4qfKK7WTII1e9HuGi84JwM3B21N0UMYoMo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rnWMog3wxeKH+lq72/m4ekyN0ADbKh52ySklN90HoTY3/L3zreHR5Pum6RIsg956uZMVB5YOL4Xq/as5C7Ln8LXv1TnMKOhK3j22AGD2WcwmwHRbUcLW0QkqAWz/ElphC4tkMPn+uRIGG/JMpCqyol9RreQWvqCduwkntpp4HLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H1NG5SPd; arc=none smtp.client-ip=192.198.163.13
+	 MIME-Version; b=tiIZ9BVbcMitdQJZDQB+dGCGCnRVTR9k6PKuKjuvQO9iF1CpNFb8/0ijiPvGoq0gyZzSJcaLBVKln0QggzUVC+H+dQGicUtRlnQsQRTWzgYvMKWh4Zg3+AnHClk04Io+g/BdoghOJr8SZnf7dEmhf66rmmbK+3RtfONpKv3SP/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eKKRrOyb; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712943047; x=1744479047;
+  t=1712943048; x=1744479048;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=53VPmLYStvI4gEILOZdjzTXxl1Rvmbkp0Ro+tl8CTdM=;
-  b=H1NG5SPdvGw5OikyOl6Xtz1MZSbFhCDlr1GNbcK33CRiDApgEvKdO7bb
-   aQwmRH0dnG3zcA+rtX8sw7qBymKkLYI1pio9O7/BLWtRHpfrCkeC0vdhI
-   wCNALystGcV/L3gAfwyhd0SLGdwGAVH2nnCL5C6gZHT2O1w8rwWsNuCvE
-   DJVM4h9sOTe8DmmTETvyoFLC/F1CKqvv8AiFT2eSi6RPvIBU3FrhrRy8P
-   iScRj7Gt+KYW8IsWAS5kmXdZhIUrn9B8dO5ExAW5/xnfLxwcoDbhBPFjf
-   tipQFNBmsOzY7U2TUNcKBeIP1Yz7gp6w/D9HLqtYuNm2kHbZDAEBBiVTy
-   w==;
-X-CSE-ConnectionGUID: hMQT4+R1RICs3OGxhFwrjg==
-X-CSE-MsgGUID: vRIzfe73R0+vgfLYsolRCg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="11365689"
+  bh=0q/n4BB5A4qfKK7WTII1e9HuGi84JwM3B21N0UMYoMo=;
+  b=eKKRrOybPFyQitMwSC8LilydS1LD+NAA3RKncuHdtoUbcsaiPtuRC4zx
+   UtVK5fELIYAdXX2liXAv1Yb1hJQBy5EwA1ETWlg9OHNbfiJFioYF5wcme
+   jKCUD0TF6LuhmWSD1Gj94/6vm0NSSDZUyBQrr6oW9zFtyGpJO+3txNEug
+   qzNggYevA4X6MvYHwf2R6E2VdU5D47DNSvYoZMfc1qn8zGTDjxi7TBmKc
+   mprn6qs1vy/88KZj0gba0+Pmj116N61pm28yGzk5G1+NTjyWDxdx7Pzaa
+   nC+S8ErSGhF/SdFSaYYch/KvlBsX+gqLzrrvHcM805nAw4pnh37DzfH4v
+   A==;
+X-CSE-ConnectionGUID: dsqflwa8Q7K5Iwdn+80Wbw==
+X-CSE-MsgGUID: SE20U8scR1G2W+0jQ3LQrQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="11365694"
 X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="11365689"
+   d="scan'208";a="11365694"
 Received: from orviesa007.jf.intel.com ([10.64.159.147])
   by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:30:43 -0700
-X-CSE-ConnectionGUID: BId4IbBrRS2kytb9eccrjQ==
-X-CSE-MsgGUID: movp/L6LQHq5WdRBvF4hNA==
+X-CSE-ConnectionGUID: zPCuEzLMT5miAOxrOYdj0Q==
+X-CSE-MsgGUID: OFOLKwADSD+tETiNBK/HVQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="21780775"
+   d="scan'208";a="21780778"
 Received: from jithujos.sc.intel.com ([172.25.103.66])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:30:42 -0700
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:30:43 -0700
 From: Jithu Joseph <jithu.joseph@intel.com>
 To: ilpo.jarvinen@linux.intel.com,
 	hdegoede@redhat.com,
@@ -70,9 +70,9 @@ Cc: linux-kernel@vger.kernel.org,
 	sathyanarayanan.kuppuswamy@intel.com,
 	ravi.v.shankar@intel.com,
 	patches@lists.linux.dev
-Subject: [PATCH 2/3] platform/x86/intel/ifs: trace: display batch num in hex
-Date: Fri, 12 Apr 2024 10:23:48 -0700
-Message-Id: <20240412172349.544064-3-jithu.joseph@intel.com>
+Subject: [PATCH 3/3] platform/x86/intel/ifs: Disable irq during one load stage
+Date: Fri, 12 Apr 2024 10:23:49 -0700
+Message-Id: <20240412172349.544064-4-jithu.joseph@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240412172349.544064-1-jithu.joseph@intel.com>
 References: <20240412172349.544064-1-jithu.joseph@intel.com>
@@ -84,34 +84,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In Field Scan test image files are named in ff-mm-ss-<batch02x>.scan
-format. Current trace output, prints the batch number in decimal format.
+One of the stages in IFS image loading process involves loading individual
+chunks (test patterns) from test image file to secure memory.
 
-Make it easier to correlate the trace line to a test image file by
-showing the batch number also in hex format.
+Driver issues a WRMSR(MSR_AUTHENTICATE_AND_COPY_CHUNK) operation to do
+this. This operation can take up to 5 msec, and if an interrupt occurs
+in between, the AUTH_AND_COPY_CHUNK u-code implementation aborts the
+operation.
 
-Add 0x prefix to all fields in the trace line to make the type explicit.
+Interrupt sources such as NMI or SMI are handled by retrying. Regular
+interrupts may occur frequently enough to prevent this operation from ever
+completing. Disable irq on local cpu around the aforementioned WRMSR to
+allow the operation to complete.
 
 Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 Reviewed-by: Ashok Raj <ashok.raj@intel.com>
 ---
- include/trace/events/intel_ifs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/intel/ifs/load.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/trace/events/intel_ifs.h b/include/trace/events/intel_ifs.h
-index 8ce2de120f2d..0d88ebf2c980 100644
---- a/include/trace/events/intel_ifs.h
-+++ b/include/trace/events/intel_ifs.h
-@@ -28,7 +28,7 @@ TRACE_EVENT(ifs_status,
- 		__entry->status	= status;
- 	),
- 
--	TP_printk("batch: %.2d, start: %.4x, stop: %.4x, status: %.16llx",
-+	TP_printk("batch: 0x%.2x, start: 0x%.4x, stop: 0x%.4x, status: 0x%.16llx",
- 		__entry->batch,
- 		__entry->start,
- 		__entry->stop,
+diff --git a/drivers/platform/x86/intel/ifs/load.c b/drivers/platform/x86/intel/ifs/load.c
+index 584c44387e10..39f19cb51749 100644
+--- a/drivers/platform/x86/intel/ifs/load.c
++++ b/drivers/platform/x86/intel/ifs/load.c
+@@ -233,7 +233,9 @@ static int copy_hashes_authenticate_chunks_gen2(struct device *dev)
+ 		chunk_table[0] = starting_chunk_nr + i;
+ 		chunk_table[1] = linear_addr;
+ 		do {
++			local_irq_disable();
+ 			wrmsrl(MSR_AUTHENTICATE_AND_COPY_CHUNK, (u64)chunk_table);
++			local_irq_enable();
+ 			rdmsrl(MSR_CHUNKS_AUTHENTICATION_STATUS, chunk_status.data);
+ 			err_code = chunk_status.error_code;
+ 		} while (err_code == AUTH_INTERRUPTED_ERROR && --retry_count);
 -- 
 2.25.1
 
