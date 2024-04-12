@@ -1,147 +1,205 @@
-Return-Path: <linux-kernel+bounces-142414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E65E8A2B38
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:30:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D6DB8A2B3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:31:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F2531C230FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:30:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92D6BB2369C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECB750A6C;
-	Fri, 12 Apr 2024 09:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1C0251C36;
+	Fri, 12 Apr 2024 09:31:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="N6xx9wWV";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yh8Ud/Ts"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LVECWtOy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D0A17742;
-	Fri, 12 Apr 2024 09:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712914248; cv=none; b=HQdK6wr8c1jvP30c0S7bKfx6GScW19SgzbXyHdpWwrEraAeyj0m1NdJn/Kzc9rzddlBGwvdForzBskIpIYI5YuoN2//GPQ18dJnTb2hrxUwYAStPdXXPN8q7/MgJ7cCZT263j2nRb+xR773hwT7TJOMgar37xM9+jKyKMOmbHf4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712914248; c=relaxed/simple;
-	bh=KXBKsENv3/qYMNG6XcbGWAoRgPxC+ZNfUnRYJJFEX4c=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=eAS27HYGCzQop++vBejS6Zs5YvyVDLEXGAg4FS1TgO2ldDR5nZJVbVIUO7icU3ZoJN2BSPlrWQpQEnE0kva664m0J4IIwjpQhQVfOnS2P94Ijn2roNCHIxbMJH+aYeEbl4NzKp2U7g7vrtLCwJIDuma4lvtMEVfDM9X7/XCermw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=N6xx9wWV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yh8Ud/Ts; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 12 Apr 2024 09:30:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712914244;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hWU+2DOu8uZaUnaW9pfGZZkuf1OU8vCAAv51aFmuGkI=;
-	b=N6xx9wWV5kuHyma8pwVuJKk9rcfPkfBeaLGZ0H/DpADIFxmXVXHu6K5bTHSqbjjDzFEJbN
-	WHypUTshKg1Zb6G9XJg8OZq8hYSD9qBkd8gtlBNuekBeF5LBeFIX+4Kd96XDqLhDLptBZt
-	6rtPPSRVDj9C9lzgA7M18Ppz1tjpGyQdRvg0r9Ql2A4nu7vnmpxcrOOCNlRiugkkkx6Kgj
-	Zac0jAIO6ugrnWYectIUtKicI8Fe/fco9bRwK+OtT0cR03EjwfY3PyRhxP+hKFOFO0RE4T
-	B2HTZhUODQDl8xbDDFNXrKaKAgREYVVLEex7mVPsTTSo6x2L8kKCwRismIQoIQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712914244;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hWU+2DOu8uZaUnaW9pfGZZkuf1OU8vCAAv51aFmuGkI=;
-	b=yh8Ud/Ts44+VgUOIfF66WRUHE7+002SYmUTpcpdCIqpwJxI4aN03Ho8zRNZUz1xXsuJYYT
-	zl0jt+4AjvQ6ZGBA==
-From: "tip-bot2 for Li RongQing" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/sev: Take NUMA node into account when allocating
- memory for per-CPU SEV data
-Cc: Li RongQing <lirongqing@baidu.com>, Ingo Molnar <mingo@kernel.org>,
- Nikunj A Dadhania <nikunj@amd.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240412030130.49704-1-lirongqing@baidu.com>
-References: <20240412030130.49704-1-lirongqing@baidu.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF535027F;
+	Fri, 12 Apr 2024 09:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712914299; cv=fail; b=rkSNH68UwPOg/b5YxgOSt+Y5dqF1GtHtuEVLCFlxmJEzM0rFUG1tNSTvr7sETRL7M7xmTr3ZRIj0UOMn8OQfpYGzdt563cR85az7ED6wFTexqx9HD7M7IfAxSmCxc69N824Ld3CTXmHq1i+3J5YgSfPT1j/ZHzbj+RCjqC7s064=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712914299; c=relaxed/simple;
+	bh=8omDXhmHGb4NC55m1Dql5yK5NjKsiexoJxatcAXIg8E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=bHhg81k/k0Rktvtm6rQETh7GkuWj/mk3jFtgkLY8rZde9FsYnx8e7of8Or3mCMiprQYcdWSszpbMc3tguM9/hd7hbsgJGR4nsm2rLTQiwNHCNUeI8+Kx9z2m+ilK/lAN7vdEbk0IxdHY0Hsw0o4aRXzdRnHKTnbty9qRbWaIzHU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LVECWtOy; arc=fail smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712914297; x=1744450297;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=8omDXhmHGb4NC55m1Dql5yK5NjKsiexoJxatcAXIg8E=;
+  b=LVECWtOyymILkCKFjCziTCceM5LeinaztOPCU2Zw4ZBvaDQtxRSrM8KD
+   SIzmuOCS3tIVoheXi3aRtJgM0PaK9gWdNyP1A8bJJtNFdJWIgzbq60uhU
+   1Ez12wUGpde8+UivOURvDZxHMocaD9NwFGgDVpaUZbQpVDCDQT9h9kbAa
+   NEsQen9B34qZYPBQn3Q6BE5THYES4hp+Xi7yFV0AccukFlZEeDHXesxDH
+   qQUnIVcUiqMvb/hFNSctywNpPBp3ba9381DHzTCpQ1v2u/CC3IBqQlhNt
+   AwUA429BBjkFp7DGTWbQyYn7xPW/hK8cuaT9umZrTEdZXfb7KDuZrzkqu
+   g==;
+X-CSE-ConnectionGUID: GQ22ix6MSy+amYdMBO6r1Q==
+X-CSE-MsgGUID: HBELl5KTRcyoCiL46y1guw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="25877979"
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="25877979"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 02:31:37 -0700
+X-CSE-ConnectionGUID: Dp5oFSbIRlm023GJCJTQfA==
+X-CSE-MsgGUID: 2s92IXZyQfOhHU6eajVlWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="21227293"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Apr 2024 02:31:37 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 02:31:36 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 12 Apr 2024 02:31:36 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 02:31:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HuFm+OwZFknjwitUTSBwF+JBIuNRrBqmYLyNkX57QrP/9qiOa09E0wud4kL+vXm38sZA9vr4NJcg1wiGUbdKsxrvzAvoYJGhb0nY4UAyHTUvfDUOE+L6a4EeekxHlDcDoUuFOhJ7sCC6fZikGdKcjRvNn7QN8mKtctqfAaCA4ohbz3CXVxxHMKBSvocoojogI/lVmS8MhU9hx5yxioxfgXqduuYhK3mu5sF26kr7useD7Wh+kMNxv8fH+NO6zgwZm3oKSW9UzQvTetxNJc0xm3xFIodQgmLTY0z5TdIlGK6T3WrmQgP//lL1Z8QmTi9H2dPXTlTSl0gNqYdzJL8CMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MZGl0q8Xh4vVtT8iJdiV7vLqmprTNMnDb/LsaUHU2mU=;
+ b=Q4L5dJgTNKFWcqSCwKc8DAzdOyl55sAlsDS+WH8cj6G7VNbaR0pSPEgb5QShEj9wSzGsEVmsN9T/hNoaDiBGC+iIrQdg92Iq/OKv26COGZYffD8ej7/xv7wYxytpOczdDqWB40CkIQN6gHwlpp/TPTT9oRajViO9Jh9bLiEFsfSHEifTbcDWQCrZB7qVmb2fn/bywEvNlh8gwYDmBobY2qff/x9uwZ5LI3UphxdEbXDQnEDehUsUm0h0watWCtEtuJwnPePt9mJqatZeouEWv8X6TRIRVodeox7U/V2RnRpd+Nz/v95r8xItOCiLsXkZMcCIXjWbBzJzQckSOr/avw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by CO1PR11MB5012.namprd11.prod.outlook.com (2603:10b6:303:90::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Fri, 12 Apr
+ 2024 09:31:33 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::6c9f:86e:4b8e:8234]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::6c9f:86e:4b8e:8234%6]) with mapi id 15.20.7452.019; Fri, 12 Apr 2024
+ 09:31:33 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Jacob Pan <jacob.jun.pan@linux.intel.com>, LKML
+	<linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Hansen, Dave"
+	<dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
+	<mingo@redhat.com>
+CC: "Luse, Paul E" <paul.e.luse@intel.com>, "Williams, Dan J"
+	<dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, "Raj, Ashok"
+	<ashok.raj@intel.com>, "maz@kernel.org" <maz@kernel.org>, "seanjc@google.com"
+	<seanjc@google.com>, Robin Murphy <robin.murphy@arm.com>,
+	"jim.harris@samsung.com" <jim.harris@samsung.com>, "a.manzanares@samsung.com"
+	<a.manzanares@samsung.com>, Bjorn Helgaas <helgaas@kernel.org>, "Zeng, Guang"
+	<guang.zeng@intel.com>, "robert.hoo.linux@gmail.com"
+	<robert.hoo.linux@gmail.com>
+Subject: RE: [PATCH v2 11/13] iommu/vt-d: Make posted MSI an opt-in cmdline
+ option
+Thread-Topic: [PATCH v2 11/13] iommu/vt-d: Make posted MSI an opt-in cmdline
+ option
+Thread-Index: AQHah6hi0qfZeBkquE2g8LsVrlLDi7FkZ5DQ
+Date: Fri, 12 Apr 2024 09:31:32 +0000
+Message-ID: <BN9PR11MB527627DF2470FEC3144F59B08C042@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
+ <20240405223110.1609888-12-jacob.jun.pan@linux.intel.com>
+In-Reply-To: <20240405223110.1609888-12-jacob.jun.pan@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CO1PR11MB5012:EE_
+x-ms-office365-filtering-correlation-id: 8e4563ae-c8f9-4188-727e-08dc5ad35744
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KYFnMVPH3sgAwWvoqNdsA5CHs65KBiKCklQfij3Wid0lmD8FIHXkGKHF3hOPU4nrcjJo7LsqUp4UJrTw9SpQwsW1cE06xU8lbIBucjFxv0A/6vsMp//LfAS95SlyZ1Fgo0/VDfx4npiztmmMp3a3p1FPXlU2W8CFLhlCWD3qYFpaFTU8DWEBvRhTmg7rQuTFGOAsx5WppM4ZPvDMt/aBQjDSINxNT1xz4KI+o7eWGYDJZyyHRIpRe/AlMpCgvpjHDQMYzzj1cg7PjUGNWxXJmiaSOIxjiQisq7EApwNnxL9AyM76C7HUH0+pGsteh7HMwvMAe74KOIfWcoe97yQYWOap3+QzbU31tEakC0Hr4N5WdHwSWTN8+fRcyaNtUf23IURAr3c5ECFImaA/w2hAEisnJALT1X0UAelkJVEyjdi3f1e7Y68J8mo+H5FzAr7UKAzG1wmm8bIU6XgSjzS48qHnk7NDu7Ec/055EWhBAx/e7uiopkmyvfyQ8NBm6zc5rwadz0FF5r5cmOYqOFglM4g6lm1R4rd8eeoTYWFi0C8rCVCmQpUc9wCRHKqeLIsR8gr3FZYYpjLgUWlArgVFJ+6uk7ZQAjCBln1ft6KXa/NB31ZSqTaw+QE31hQBQHeFLamp83PsZK1tYye3S8eccP3QuF5H2FDa7jJGQBmNMB+ccoH+K34xiLmVed5bOpTaFymbToYlALE85yDscDDhxcCFwszfcjYRx2wfM0UTLHs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007)(921011)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9AUI4S0vUnUP4PBSvVNpNvsm3+HrnTF4RQWgWVjal5kBqkIx9B77ru/7ehjr?=
+ =?us-ascii?Q?LG3ySZ1FifD5JPq2FJiUTn4HHtm9h88ouSHmaKv0cd2w9w5yTkBude99W7x7?=
+ =?us-ascii?Q?O5Xqo6Kuu8EF7rTj4uOVZl8oqk0R4fYvSwnZACs3d+Ftyi9Ty4/5dGQ++hmc?=
+ =?us-ascii?Q?aWX0t6rKuZVoP956L00b6pKewD0jxQhV7yBbtdHhzMmZBq0ilKFasARLC/WF?=
+ =?us-ascii?Q?Htnb/rdsGXHThuHtbLpRiSeUp7q2TqCipimRKxymY1zERp7Cm85SqzMYf91y?=
+ =?us-ascii?Q?aVQSZz1yOP9mYA4r5oZGE4cmEnM4tY2QmFKrF5BsM8rvadJ0F6JutwkeD9JE?=
+ =?us-ascii?Q?COVZBbVIpm1FMJoKOFTELTHYLugx+IV8fYGHOdgKQmmTdOSNg7NZskb5NpYm?=
+ =?us-ascii?Q?t9UxAjIdpLMbWjJDyYajO98tq9hcZTmXQIJswGdju1auKDn34GGIRWk1nIMg?=
+ =?us-ascii?Q?OC8ikORPUVc+jvzzgH46cla8XsTzaYD2K6YDwfi2DamqxDP+vk08eGH3M4d7?=
+ =?us-ascii?Q?Di06fj5RTu8Wb6JOsBX4LxVczV2mrn5Zr/uM0rHbUPHayExzid2TRuAPPh73?=
+ =?us-ascii?Q?t/9vhagisRC1q+70Y26QbuWdMTafhSuyFQugnNx5nsjbEhXRSP1QN9AJUd57?=
+ =?us-ascii?Q?fMbPHBRupmowtupZQ1p9tEp5QjpmhXGSiT2QdRuZhmtmSaXesw6JWAUgqe48?=
+ =?us-ascii?Q?1dk+2Ng7bTOwTvbbUa/eAmKDW/82RUpV85Pck3aPLs0FjcPWxkBUYsi3JRsn?=
+ =?us-ascii?Q?61Cs2+N9iwvE3s8D6e51ntXZc1tZbnjEFt2k9TEPINKAN1EzD+cad8f58fBV?=
+ =?us-ascii?Q?bPlC94B+rj7Vv3dkbPkNLmrdjddcCwjlv0Q2Jx6yXO+wOUf+m47RyPk7C+S0?=
+ =?us-ascii?Q?egDxyy+8B0OxLwlZylvLG9rJbUdYOWlE6AEb82a/zuLKPfhGHninP327HdY4?=
+ =?us-ascii?Q?OWGL8m+Ii4ukt7wprMCYwn2zZ6oW7KLUlkWGN4JM0gOu1H6VyQ4JGc3G6M5W?=
+ =?us-ascii?Q?VcMjjTdxPo7wXxtSo/VeIN3ZbuT1CSiojIRqwbpiLo4dHdlzcnU0tyIhpUr8?=
+ =?us-ascii?Q?bx322pihOyBtSUYa/LUYdh4T1L4M6wm3T19gii3YFjv4nhMnnFwtehpEjwrb?=
+ =?us-ascii?Q?tmUFWKKuVacWeV8sS414PYqG+SW2RYNKkv4Pi/uHQCHZ6VpsuzwR9i3Unv9g?=
+ =?us-ascii?Q?0FwdpmlHYFziiZYfEKIf8iEsINJUCccRroFKGCwOEa+9vBrFuYh0S7VMy/4j?=
+ =?us-ascii?Q?+tKZXKHqZc2QyGN5f7Vmzy5n17NyHyH91O0XyCvZ/7FXG0vx259PGBqK79Gu?=
+ =?us-ascii?Q?TbO2RwKctYTRTUrMLD8YkAaZnqln5Co5hagZuFlo1cWmIqDiqOuvNv9lHcCn?=
+ =?us-ascii?Q?b4dduq83PY2ARRI3HnWVBBTYKSdGsDPd1A+LWZzgZn0FiHHh8+GHLYJz0ZFj?=
+ =?us-ascii?Q?7Tdeucr2XOcvQmnxNLT6fEXbcrCvkGwSS3LQSaRk4d24rlIoU06xpl4XUihO?=
+ =?us-ascii?Q?9s+Y9WHTIsexF+I7NqGDiVF9hqAQEjbg/aeIaNmIgPpvhKvA6pkqF1S6KgSe?=
+ =?us-ascii?Q?PwfODoF7DYkGN8TpdV6mJZC+SfsCfQYxp61ZHTFm?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171291424272.10875.9437012394556385229.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e4563ae-c8f9-4188-727e-08dc5ad35744
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2024 09:31:32.8369
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +oQlNCqw7RiNZ5lBwTA6bX21tW2+VoEPBDtGIFZ1XK76xw42gehMeVTRqI1p62+OPx6wjKvBsiFGy1URFXjB2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5012
+X-OriginatorOrg: intel.com
 
-The following commit has been merged into the x86/cpu branch of tip:
+> From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Sent: Saturday, April 6, 2024 6:31 AM
+>=20
+> +#ifdef CONFIG_X86_POSTED_MSI
+> +		else if (!strncmp(str, "posted_msi", 10)) {
+> +			if (disable_irq_post || disable_irq_remap)
+> +				pr_warn("Posted MSI not enabled due to
+> conflicting options!");
+> +			else
+> +				enable_posted_msi =3D 1;
+> +		}
+> +#endif
 
-Commit-ID:     426565279f161631cbb4b925660540bdb65f2201
-Gitweb:        https://git.kernel.org/tip/426565279f161631cbb4b925660540bdb65f2201
-Author:        Li RongQing <lirongqing@baidu.com>
-AuthorDate:    Fri, 12 Apr 2024 11:01:30 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 12 Apr 2024 11:25:26 +02:00
+the check of disable_irq_remap is unnecessary. It's unlikely to have
+a configuration with disable_irq_post=3D0 while disable_irq_remap=3D1
+given the latter has bigger scope.
 
-x86/sev: Take NUMA node into account when allocating memory for per-CPU SEV data
+but thinking more do we really need a check here? there is no order
+guarantee that "posted_msi" is parsed after the parameters deciding
+the value of two disable variables.
 
-per-CPU SEV data is dominantly accessed from their own local CPUs,
-so allocate them node-local to improve performance.
-
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Nikunj A Dadhania <nikunj@amd.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Link: https://lore.kernel.org/r/20240412030130.49704-1-lirongqing@baidu.com
----
- arch/x86/kernel/sev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 38ad066..995f944 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -938,7 +938,7 @@ static int snp_set_vmsa(void *va, bool vmsa)
- #define INIT_LDTR_ATTRIBS	(SVM_SELECTOR_P_MASK | 2)
- #define INIT_TR_ATTRIBS		(SVM_SELECTOR_P_MASK | 3)
- 
--static void *snp_alloc_vmsa_page(void)
-+static void *snp_alloc_vmsa_page(int cpu)
- {
- 	struct page *p;
- 
-@@ -950,7 +950,7 @@ static void *snp_alloc_vmsa_page(void)
- 	 *
- 	 * Allocate an 8k page which is also 8k-aligned.
- 	 */
--	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
-+	p = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
- 	if (!p)
- 		return NULL;
- 
-@@ -1019,7 +1019,7 @@ static int wakeup_cpu_via_vmgexit(u32 apic_id, unsigned long start_ip)
- 	 * #VMEXIT of that vCPU would wipe out all of the settings being done
- 	 * here.
- 	 */
--	vmsa = (struct sev_es_save_area *)snp_alloc_vmsa_page();
-+	vmsa = (struct sev_es_save_area *)snp_alloc_vmsa_page(cpu);
- 	if (!vmsa)
- 		return -ENOMEM;
- 
-@@ -1341,7 +1341,7 @@ static void __init alloc_runtime_data(int cpu)
- {
- 	struct sev_es_runtime_data *data;
- 
--	data = memblock_alloc(sizeof(*data), PAGE_SIZE);
-+	data = memblock_alloc_node(sizeof(*data), PAGE_SIZE, cpu_to_node(cpu));
- 	if (!data)
- 		panic("Can't allocate SEV-ES runtime data");
- 
+it probably makes more sense to just set enable_posted_msi here
+and then do all required checks when picking up the irqchip in
+intel_irq_remapping_alloc().
 
