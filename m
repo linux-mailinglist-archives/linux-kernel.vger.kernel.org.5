@@ -1,97 +1,132 @@
-Return-Path: <linux-kernel+bounces-142435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CF228A2B82
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:47:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8462D8A2B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:49:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17D3D284928
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:47:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF263B23D4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F14A524B4;
-	Fri, 12 Apr 2024 09:47:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2149C54668;
-	Fri, 12 Apr 2024 09:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77B452F61;
+	Fri, 12 Apr 2024 09:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="MlsbreRH"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1238D3A1DE;
+	Fri, 12 Apr 2024 09:49:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712915220; cv=none; b=LVb1v204V0fnsMGH8DpH31BVtwN0OeRhHxu+hCzzT6DAemgv1bJO5wVohsomRdph6XEdLCPvlYfRy21sZ2qLjqOdS4Y7Y4WbpC35CEFOjukvihcORx9RakpzEqu3ClcAttrjOVEwOk6krfpvTeDJ/fw1qzUIU69FCOgGVhinQ+E=
+	t=1712915370; cv=none; b=SgWNKd4lWhF/9IFOafHmrWtfv/y+k9Gn/MNf63i2Jx2V3jRmfhH+++iQV0aTIMjQuoRN25fvOWDl8cfPgEcyNEKI18k+KZWBMXUEJtnaQ6bXasvbZgGv1BrGI0PFRp6GiAOqdPQ4BwLUb26BVbe92IfbkJlhqu/ocmPzU/Fgfug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712915220; c=relaxed/simple;
-	bh=h6f8y8w1EB4vmaYGFMXAt3NWwiMleFSkOdMtKqaPuSY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KzU3eABB7Cc2EgbF3AtZrBj0PxMdSq/2GFUnOMC4jXALtL9Z1A/3BTlCZ/yRjrLNilG/kBJcX3aHAp5Re4pU4vqTIIMWQ8PZiFGda8vhmzRcM+OIVQyURslQoDBDvambXWmtrRnSjQkquQ1fBbCm3mu+czbgvrLJXZwzZjUL5JM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC7FA339;
-	Fri, 12 Apr 2024 02:47:27 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 529A53F64C;
-	Fri, 12 Apr 2024 02:46:57 -0700 (PDT)
-Date: Fri, 12 Apr 2024 10:46:54 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	linux-riscv@lists.infradead.org
-Subject: Re: [External] Re: [PATCH 1/2] ACPI: PPTT: Populate cacheinfo
- entirely with PPTT
-Message-ID: <ZhkDDnNvKiyStZZ2@bogus>
-References: <20240407123829.36474-1-cuiyunhui@bytedance.com>
- <ZhetojJewygmTf6N@bogus>
- <CAEEQ3wkfHvH4jXNO5NRDf0Fc3xUkY64hp7BDBmgNVdcsmYy-kA@mail.gmail.com>
- <Zhj-4C7xlklG1m5B@bogus>
- <CAEEQ3wkO4WPaY+bPidg-fDqV5MrQwh8ESbSv-+q8Odhat9XDrQ@mail.gmail.com>
+	s=arc-20240116; t=1712915370; c=relaxed/simple;
+	bh=6owmbQFyX2Ns1f9TuwGmcwHTt0ZOyFfydguyhh8Vl7U=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RTzTqJXQ7OTp9JEt40yvbjNrx51zBLcJQ2myfH8o5VVe6wKIEiaSIvbuCARwtRIaq5hYIem/S42m/Zn+nNAZgIuD7UQO4QPv2GJbZPHQirZAGmCX2zTM1aYEdVClmCt8Rv4tddAzMR3GrHd0E9UKhgAEUzvny8yOIVRMK//6pDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=MlsbreRH; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712915368; x=1744451368;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6owmbQFyX2Ns1f9TuwGmcwHTt0ZOyFfydguyhh8Vl7U=;
+  b=MlsbreRHcmTInJvfw7m9oyvf/oE+jdJUK0/tBhurAjNmUIcEx5GjnMPW
+   Q/h5TtbhJXoLiSQpkDldGysxcWcVZNc0hI2CAaPpxKGvi2qZNr0HkXLko
+   5bIa5P+2A2E3a4By9l82X6mfE+fDJPGkT5yoxwmlRlnGjLMPAMiT1maGO
+   sjPxiRG5gr19QyFBmdhlvHnzpBOjki9nBstfX3YmvRrjlN/oSV9fmnCmn
+   K7KoTnXQ4NaME30qaDXkBvGAdOybF1uPHkuFM7E6wJlPOh0EcXaQHmyer
+   GoC3WmfWuwuJTyiLxNLX7xrVR0EPLko0n10eG5jJwR6FENULp7Xf5c56G
+   g==;
+X-CSE-ConnectionGUID: CriWT839Tiya/FLJiLrKhg==
+X-CSE-MsgGUID: W2UCeI60TdOdUEqyUVu4cg==
+X-IronPort-AV: E=Sophos;i="6.07,195,1708412400"; 
+   d="asc'?scan'208";a="20722576"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 02:49:20 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 02:48:30 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 12 Apr 2024 02:48:27 -0700
+Date: Fri, 12 Apr 2024 10:47:36 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: <wefu@redhat.com>
+CC: <jszhang@kernel.org>, <alexandre.belloni@bootlin.com>, <robh@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<guoren@kernel.org>, <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+	<aou@eecs.berkeley.edu>, <linux-riscv@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-rtc@vger.kernel.org>
+Subject: Re: [PATCH 4/5] Kconfig: Enable APM X-Gene RTC for XuanTie TH1520
+Message-ID: <20240412-ogle-daily-c18bc6e7ddd5@wendy>
+References: <20240412080238.134191-1-wefu@redhat.com>
+ <20240412080238.134191-5-wefu@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rrezwGm8P4r68fCr"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEEQ3wkO4WPaY+bPidg-fDqV5MrQwh8ESbSv-+q8Odhat9XDrQ@mail.gmail.com>
+In-Reply-To: <20240412080238.134191-5-wefu@redhat.com>
 
-On Fri, Apr 12, 2024 at 05:42:22PM +0800, yunhui cui wrote:
-> Hi Sudeep,
-> 
-> On Fri, Apr 12, 2024 at 5:29 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Fri, Apr 12, 2024 at 10:10:05AM +0800, yunhui cui wrote:
-> > > Hi Sudeep,
-> > >
-> > > On Thu, Apr 11, 2024 at 5:30 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > > >
-> > > > On Sun, Apr 07, 2024 at 08:38:28PM +0800, Yunhui Cui wrote:
-> > > > > When the type and level information of this_leaf cannot be obtained
-> > > > > from arch, cacheinfo is completely filled in with the content of PPTT.
-> > > > >
-> > > >
-> > > > Which platform is this ? Is this arm64 based or something else like RISC-V
-> > > > based ? That would help to understand some context here.
-> > > >
-> > >
-> > > Thanks for your response, RISC-V currently has this requirement.
-> > > Please see: https://patchwork.kernel.org/project/linux-riscv/patch/20240407123829.36474-2-cuiyunhui@bytedance.com/
-> > >
-> >
-> > It would be helpful for the review if you have such information in the
-> > commit message.
->
-> Okay, I will update it in the commit message in v2. Do you have some
-> comments on the content of the patch?
->
+--rrezwGm8P4r68fCr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I will take a look at the patch later today or early next week now that
-I understand the requirement better. Sorry for the delay.
+On Fri, Apr 12, 2024 at 04:01:46PM +0800, wefu@redhat.com wrote:
+> From: Wei Fu <wefu@redhat.com>
+>=20
+> This patch enables APM X-Gene RTC for XuanTie TH1520.
+>=20
+> Signed-off-by: Wei Fu <wefu@redhat.com>
+> ---
+>  drivers/rtc/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> index 3a89f1e6095d..b219aeef4ce9 100644
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -1880,7 +1880,7 @@ config RTC_DRV_MT7622
+>  config RTC_DRV_XGENE
+>  	tristate "APM X-Gene RTC"
+>  	depends on HAS_IOMEM
+> -	depends on ARCH_XGENE || COMPILE_TEST
+> +	depends on ARCH_XGENE || ARCH_THEAD || COMPILE_TEST
+>  	help
+>  	  If you say yes here you get support for the APM X-Gene SoC real time
+>  	  clock.
 
---
-Regards,
-Sudeep
+If I was configuring my system by reading menuconfig, I would have
+absolutely no idea that this driver supports platforms other than the
+X-Gene one. I think the Kconfig stuff for this likely needs an update to
+convey that it's no longer just one SoC family that's supported here.
+
+--rrezwGm8P4r68fCr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkDOAAKCRB4tDGHoIJi
+0mNyAP9KxQ4U9S5RMOVtCU2/kCBefOY/cpPKf8icvcFiSV8+zQEAtUzy/SD4CsMb
+eHL+pw8s6mfIChq7hPkxKZlv8QtVrgk=
+=nx9k
+-----END PGP SIGNATURE-----
+
+--rrezwGm8P4r68fCr--
 
