@@ -1,299 +1,246 @@
-Return-Path: <linux-kernel+bounces-142170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1CCA8A286A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:44:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C8558A286D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:44:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C488C1C23E53
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:44:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F5971C23C41
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13CE55027B;
-	Fri, 12 Apr 2024 07:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AB2E4CDF9;
+	Fri, 12 Apr 2024 07:44:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tBoPVn5u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m1nV32DV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A335026B
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32372C683
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712907828; cv=none; b=qxQw4RNZXgqPHJGf8TaFUi3pdyDVsxXa7C1AthKKJLiF8pr107ay58LkMFK6kOTQlcyHmAiTgizpqEeRiGx3J7m3UwfjVbmxkgMvVoNEl3mQKF6Wc18KsNqFlyjj/Mmo5H8G/DobFznIK+DcKvGLFC93Th+fJh09jOpRzbXQHkU=
+	t=1712907879; cv=none; b=aOKHX4sLrHcymSsgMn1d4XAzUXAZukBeBJOw/k3EdVqGE/v835uSgEcYgTayyYKO8jR4pyR/XnROVIusOoKq//Y5W3lqqeIKIEWPPml/OrqciQzPlIs0IaME8CRoa5xy4VqLoQOGEBStbhEXSj3W//Ic07gWd+ctWNb3iifQ1Zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712907828; c=relaxed/simple;
-	bh=Lp7pujWU1SN5Yqh9R8ylDr89ozBe25tKE3JyBV77E7o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tG7qfo6E/R69/hcxRol/iSo4l24NlYmkBczlADKesQCouiYq4UE/8UUzO636sifl/IB9wYVmFFMZv80T1F67Y7/xVV2k01vlDwHK735fYnYQ2h+8ddWA76uYuDBUMFhwIY3fizWHef1UkLS9rzWX6yETRJr/q276kqnpIUK0KkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tBoPVn5u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9366C113CC;
-	Fri, 12 Apr 2024 07:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712907827;
-	bh=Lp7pujWU1SN5Yqh9R8ylDr89ozBe25tKE3JyBV77E7o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tBoPVn5u4UF6/IrlxJ5DcGxNC8SdCBB8SE4n6Jh2ipU7Spya/vvL6MDt1n4e9buG4
-	 pinExls7ZCDSDUY6Ol6xrKgltUIT7ysgdnv7vdAzaMUzPRkLBeaWdFn5oLb7oVvBCB
-	 +3J9dsgBu/Q5MnzryrIBDCbxlPxHS5oUSmsgriViQ1WGwgqAFdStwfBvLbbq8iQrtS
-	 TxOOkdMD11Ujoah2noeLjpSWaKhrQ9k2Vt2rqLfIyQnx2cu8WEYRZdeFKDkyDKIlbu
-	 9hxbGrTF2y7L4UQ1NDMjeFZMqb/YoEn1jb7AwuYcNNmWqeyx/dNlkbG+iq25PoFktG
-	 WV57slUx61h6g==
-Date: Fri, 12 Apr 2024 08:43:44 +0100
-From: Lee Jones <lee@kernel.org>
-To: Min Li <lnimi@hotmail.com>
-Cc: linux-kernel@vger.kernel.org, Min Li <min.li.xe@renesas.com>
-Subject: Re: [PATCH mfd v1 1/2] mfd: rsmu: support I2C SMBus access
-Message-ID: <20240412074344.GQ2399047@google.com>
-References: <LV3P220MB12022B2F96505825BDDE6A2AA0052@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1712907879; c=relaxed/simple;
+	bh=ghTkgrOk/ahJP9DFKGx5Q4jgJn6AK7ro0xQpT2L9IrY=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=C1U9mZrz3RYgb+K70N9npgoAvH3QmrE+QalhO5W2ccYbfyEWtuCS6WA95ovv2Pa+K08HACJbcWsmvOyAnMv7qR8paZs9FxIPhEdSaFg+46+TmCn8lVHGOJnL7SnSlT/Pc3Mfi1F8OY0Z24Jx+Kldd98c0xLzuaGoI6dZE2AXuv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m1nV32DV; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712907878; x=1744443878;
+  h=date:from:to:cc:subject:message-id;
+  bh=ghTkgrOk/ahJP9DFKGx5Q4jgJn6AK7ro0xQpT2L9IrY=;
+  b=m1nV32DVN86QodBn27mAuPfG44YmHEq1Yvo9bedbPnvoYqctek/+Ub2Y
+   9bfyH7kOaJ0O++JIi3H7vT1aPff+PnGnx/N4QuyxtJ5dUfy5K5ZbnC8ZO
+   drEHw/hAdP32ZpjskJCn5VHVl0W3ixwzzeIlY/p2Ty9aOHuQofzMt2EsF
+   Jmd/nq/KtiubyQa+gyyR7q+PBSyeKRGMEvq6R/6ICw80vjXz0KnGOZ6c4
+   BoHO9ja+l4Cq/oDxZoU1L/SinNPOg5Kdps2r0gYLiwsA68mYV2zeeNesS
+   7zMU69pcfMuEcVFy1TKzi2l/s74h9FRT538wSiaPvOfPUZ2w/PetPUHoi
+   A==;
+X-CSE-ConnectionGUID: 7O91IlMsR6+5NnPjYjEuUg==
+X-CSE-MsgGUID: sv19mt00SCajgyo5ktB6ug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8226794"
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="8226794"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 00:44:37 -0700
+X-CSE-ConnectionGUID: hVEht0c0S/6lTFdOKG2QIw==
+X-CSE-MsgGUID: NoGFAGTIR52UVoM5Xyx4og==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="21734924"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 12 Apr 2024 00:44:36 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rvBaL-0009W7-34;
+	Fri, 12 Apr 2024 07:44:33 +0000
+Date: Fri, 12 Apr 2024 15:44:00 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ b4ba814ae4a4d07d1b983601c3b2ea488864cc88
+Message-ID: <202404121558.Oz9oTuqG-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <LV3P220MB12022B2F96505825BDDE6A2AA0052@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
 
-On Thu, 11 Apr 2024, Min Li wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: b4ba814ae4a4d07d1b983601c3b2ea488864cc88  Merge branch into tip/master: 'x86/shstk'
 
-> From: Min Li <min.li.xe@renesas.com>
-> 
-> 8a3400x device implements its own reg_read and reg_write,
-> which only supports I2C bus access. This patch adds support
-> for SMBus access.
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
-> send the patch series as --thread suggested by Lee
+elapsed time: 1019m
 
-These are still not connected.
+configs tested: 154
+configs skipped: 4
 
->  drivers/mfd/rsmu_i2c.c | 107 +++++++++++++++++++++++++++++++++++------
->  drivers/mfd/rsmu_spi.c |   8 +--
->  2 files changed, 97 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/mfd/rsmu_i2c.c b/drivers/mfd/rsmu_i2c.c
-> index 5711e512b..cba64f107 100644
-> --- a/drivers/mfd/rsmu_i2c.c
-> +++ b/drivers/mfd/rsmu_i2c.c
-> @@ -32,6 +32,8 @@
->  #define	RSMU_SABRE_PAGE_ADDR		0x7F
->  #define	RSMU_SABRE_PAGE_WINDOW		128
->  
-> +typedef int (*rsmu_rw_device)(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes);
-> +
->  static const struct regmap_range_cfg rsmu_sabre_range_cfg[] = {
->  	{
->  		.range_min = 0,
-> @@ -54,7 +56,28 @@ static bool rsmu_sabre_volatile_reg(struct device *dev, unsigned int reg)
->  	}
->  }
->  
-> -static int rsmu_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes)
-> +static int rsmu_smbus_i2c_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
-> +{
-> +	struct i2c_client *client = to_i2c_client(rsmu->dev);
-> +
-> +	return i2c_smbus_write_i2c_block_data(client, reg, bytes, buf);
-> +}
-> +
-> +static int rsmu_smbus_i2c_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
-> +{
-> +	struct i2c_client *client = to_i2c_client(rsmu->dev);
-> +	int ret;
-> +
-> +	ret = i2c_smbus_read_i2c_block_data(client, reg, bytes, buf);
-> +	if (ret == bytes)
-> +		return 0;
-> +	else if (ret < 0)
-> +		return ret;
-> +	else
-> +		return -EIO;
-> +}
-> +
-> +static int rsmu_i2c_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
->  {
->  	struct i2c_client *client = to_i2c_client(rsmu->dev);
->  	struct i2c_msg msg[2];
-> @@ -84,10 +107,11 @@ static int rsmu_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes)
->  	return 0;
->  }
->  
-> -static int rsmu_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes)
-> +static int rsmu_i2c_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
->  {
->  	struct i2c_client *client = to_i2c_client(rsmu->dev);
-> -	u8 msg[RSMU_MAX_WRITE_COUNT + 1]; /* 1 Byte added for the device register */
-> +	/* we add 1 byte for device register */
-> +	u8 msg[RSMU_MAX_WRITE_COUNT + 1];
->  	int cnt;
->  
->  	if (bytes > RSMU_MAX_WRITE_COUNT)
-> @@ -107,7 +131,8 @@ static int rsmu_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes
->  	return 0;
->  }
->  
-> -static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg)
-> +static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg,
-> +				    rsmu_rw_device rsmu_write_device)
->  {
->  	u32 page = reg & RSMU_CM_PAGE_MASK;
->  	u8 buf[4];
-> @@ -136,35 +161,35 @@ static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg)
->  	return err;
->  }
->  
-> -static int rsmu_reg_read(void *context, unsigned int reg, unsigned int *val)
-> +static int rsmu_i2c_reg_read(void *context, unsigned int reg, unsigned int *val)
->  {
->  	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
->  	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
->  	int err;
->  
-> -	err = rsmu_write_page_register(rsmu, reg);
-> +	err = rsmu_write_page_register(rsmu, reg, rsmu_i2c_write_device);
->  	if (err)
->  		return err;
->  
-> -	err = rsmu_read_device(rsmu, addr, (u8 *)val, 1);
-> +	err = rsmu_i2c_read_device(rsmu, addr, (u8 *)val, 1);
->  	if (err)
->  		dev_err(rsmu->dev, "Failed to read offset address 0x%x\n", addr);
->  
->  	return err;
->  }
->  
-> -static int rsmu_reg_write(void *context, unsigned int reg, unsigned int val)
-> +static int rsmu_i2c_reg_write(void *context, unsigned int reg, unsigned int val)
->  {
->  	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
->  	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
->  	u8 data = (u8)val;
->  	int err;
->  
-> -	err = rsmu_write_page_register(rsmu, reg);
-> +	err = rsmu_write_page_register(rsmu, reg, rsmu_i2c_write_device);
->  	if (err)
->  		return err;
->  
-> -	err = rsmu_write_device(rsmu, addr, &data, 1);
-> +	err = rsmu_i2c_write_device(rsmu, addr, &data, 1);
->  	if (err)
->  		dev_err(rsmu->dev,
->  			"Failed to write offset address 0x%x\n", addr);
-> @@ -172,12 +197,57 @@ static int rsmu_reg_write(void *context, unsigned int reg, unsigned int val)
->  	return err;
->  }
->  
-> -static const struct regmap_config rsmu_cm_regmap_config = {
-> +static int rsmu_smbus_i2c_reg_read(void *context, unsigned int reg, unsigned int *val)
-> +{
-> +	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
-> +	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
-> +	int err;
-> +
-> +	err = rsmu_write_page_register(rsmu, reg, rsmu_smbus_i2c_write_device);
-> +	if (err)
-> +		return err;
-> +
-> +	err = rsmu_smbus_i2c_read_device(rsmu, addr, (u8 *)val, 1);
-> +	if (err)
-> +		dev_err(rsmu->dev, "Failed to read offset address 0x%x\n", addr);
-> +
-> +	return err;
-> +}
-> +
-> +static int rsmu_smbus_i2c_reg_write(void *context, unsigned int reg, unsigned int val)
-> +{
-> +	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
-> +	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
-> +	u8 data = (u8)val;
-> +	int err;
-> +
-> +	err = rsmu_write_page_register(rsmu, reg, rsmu_smbus_i2c_write_device);
-> +	if (err)
-> +		return err;
-> +
-> +	err = rsmu_smbus_i2c_write_device(rsmu, addr, &data, 1);
-> +	if (err)
-> +		dev_err(rsmu->dev,
-> +			"Failed to write offset address 0x%x\n", addr);
-> +
-> +	return err;
-> +}
-> +
-> +static const struct regmap_config rsmu_i2c_cm_regmap_config = {
->  	.reg_bits = 32,
->  	.val_bits = 8,
->  	.max_register = 0x20120000,
-> -	.reg_read = rsmu_reg_read,
-> -	.reg_write = rsmu_reg_write,
-> +	.reg_read = rsmu_i2c_reg_read,
-> +	.reg_write = rsmu_i2c_reg_write,
-> +	.cache_type = REGCACHE_NONE,
-> +};
-> +
-> +static const struct regmap_config rsmu_smbus_i2c_cm_regmap_config = {
-> +	.reg_bits = 32,
-> +	.val_bits = 8,
-> +	.max_register = 0x20120000,
-> +	.reg_read = rsmu_smbus_i2c_reg_read,
-> +	.reg_write = rsmu_smbus_i2c_reg_write,
->  	.cache_type = REGCACHE_NONE,
->  };
->  
-> @@ -219,7 +289,15 @@ static int rsmu_i2c_probe(struct i2c_client *client)
->  
->  	switch (rsmu->type) {
->  	case RSMU_CM:
-> -		cfg = &rsmu_cm_regmap_config;
-> +		if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-> +			cfg = &rsmu_i2c_cm_regmap_config;
-> +		} else if (i2c_check_functionality(client->adapter,
-> +						   I2C_FUNC_SMBUS_I2C_BLOCK)) {
-> +			cfg = &rsmu_smbus_i2c_cm_regmap_config;
-> +		} else {
-> +			dev_err(rsmu->dev, "Unsupported i2c adapter\n");
-> +			return -ENOTSUPP;
-> +		}
->  		break;
->  	case RSMU_SABRE:
->  		cfg = &rsmu_sabre_regmap_config;
-> @@ -236,6 +314,7 @@ static int rsmu_i2c_probe(struct i2c_client *client)
->  		rsmu->regmap = devm_regmap_init(&client->dev, NULL, client, cfg);
->  	else
->  		rsmu->regmap = devm_regmap_init_i2c(client, cfg);
-> +
->  	if (IS_ERR(rsmu->regmap)) {
->  		ret = PTR_ERR(rsmu->regmap);
->  		dev_err(rsmu->dev, "Failed to allocate register map: %d\n", ret);
-> diff --git a/drivers/mfd/rsmu_spi.c b/drivers/mfd/rsmu_spi.c
-> index ca0a1202c..39d9be1e1 100644
-> --- a/drivers/mfd/rsmu_spi.c
-> +++ b/drivers/mfd/rsmu_spi.c
-> @@ -106,10 +106,10 @@ static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg)
->  			return 0;
->  		page_reg = RSMU_CM_PAGE_ADDR;
->  		page = reg & RSMU_PAGE_MASK;
-> -		buf[0] = (u8)(page & 0xff);
-> -		buf[1] = (u8)((page >> 8) & 0xff);
-> -		buf[2] = (u8)((page >> 16) & 0xff);
-> -		buf[3] = (u8)((page >> 24) & 0xff);
-> +		buf[0] = (u8)(page & 0xFF);
-> +		buf[1] = (u8)((page >> 8) & 0xFF);
-> +		buf[2] = (u8)((page >> 16) & 0xFF);
-> +		buf[3] = (u8)((page >> 24) & 0xFF);
->  		bytes = 4;
->  		break;
->  	case RSMU_SABRE:
-> -- 
-> 2.39.2
-> 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                   randconfig-001-20240412   gcc  
+arc                   randconfig-002-20240412   gcc  
+arm                              alldefconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240412   gcc  
+arm                   randconfig-002-20240412   clang
+arm                   randconfig-003-20240412   clang
+arm                   randconfig-004-20240412   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240412   gcc  
+arm64                 randconfig-002-20240412   gcc  
+arm64                 randconfig-003-20240412   clang
+arm64                 randconfig-004-20240412   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240412   gcc  
+csky                  randconfig-002-20240412   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240412   clang
+hexagon               randconfig-002-20240412   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240412   gcc  
+i386         buildonly-randconfig-002-20240412   clang
+i386         buildonly-randconfig-003-20240412   gcc  
+i386         buildonly-randconfig-004-20240412   gcc  
+i386         buildonly-randconfig-005-20240412   gcc  
+i386         buildonly-randconfig-006-20240412   gcc  
+i386                                defconfig   clang
+i386                  randconfig-002-20240412   gcc  
+i386                  randconfig-003-20240412   clang
+i386                  randconfig-004-20240412   clang
+i386                  randconfig-005-20240412   clang
+i386                  randconfig-006-20240412   gcc  
+i386                  randconfig-011-20240412   clang
+i386                  randconfig-012-20240412   gcc  
+i386                  randconfig-013-20240412   clang
+i386                  randconfig-014-20240412   gcc  
+i386                  randconfig-015-20240412   gcc  
+i386                  randconfig-016-20240412   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240412   gcc  
+loongarch             randconfig-002-20240412   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240412   gcc  
+nios2                 randconfig-002-20240412   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240412   gcc  
+parisc                randconfig-002-20240412   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240412   clang
+powerpc               randconfig-002-20240412   clang
+powerpc               randconfig-003-20240412   gcc  
+powerpc64             randconfig-001-20240412   gcc  
+powerpc64             randconfig-002-20240412   gcc  
+powerpc64             randconfig-003-20240412   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240412   clang
+riscv                 randconfig-002-20240412   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240412   gcc  
+s390                  randconfig-002-20240412   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240412   gcc  
+sh                    randconfig-002-20240412   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240412   gcc  
+sparc64               randconfig-002-20240412   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240412   clang
+um                    randconfig-002-20240412   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240412   gcc  
+x86_64       buildonly-randconfig-002-20240412   gcc  
+x86_64       buildonly-randconfig-003-20240412   gcc  
+x86_64       buildonly-randconfig-004-20240412   clang
+x86_64       buildonly-randconfig-005-20240412   clang
+x86_64       buildonly-randconfig-006-20240412   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240412   clang
+x86_64                randconfig-002-20240412   gcc  
+x86_64                randconfig-003-20240412   gcc  
+x86_64                randconfig-004-20240412   clang
+x86_64                randconfig-005-20240412   clang
+x86_64                randconfig-006-20240412   clang
+x86_64                randconfig-011-20240412   clang
+x86_64                randconfig-012-20240412   gcc  
+x86_64                randconfig-013-20240412   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240412   gcc  
 
 -- 
-Lee Jones [李琼斯]
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
