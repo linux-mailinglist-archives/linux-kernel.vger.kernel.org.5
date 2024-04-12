@@ -1,230 +1,367 @@
-Return-Path: <linux-kernel+bounces-141805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF68D8A23AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:08:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EE0D8A23B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:10:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E07A1F226B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:08:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BEC1B24066
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0958411185;
-	Fri, 12 Apr 2024 02:07:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D6551094E;
+	Fri, 12 Apr 2024 02:09:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OjoqMKgb"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EbaBVulv"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0B3101EE
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 02:07:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E638D299
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 02:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712887671; cv=none; b=ZW7VA+L7ttC75XDfYxvls2dlsl4qqtixAS3d77h4IDFTAu5lfZ5scWxtA3jLXJSyk4hhciYRzfN8VYSw71kf/mKhmfmSTfW58vuZ5J3SooM1tr3Go7izE533oKEY16DwwsSTW8Eb3YC68aakNFxrlfpTCAvM0GTFKNiJrRraBXA=
+	t=1712887791; cv=none; b=HRyTT4To9SmB5K+jMTOnH1hLKIU3Wylf5FpFltGdH+cefQIWx/qSb+uYOoNBcTQ5MrRi17DTDVWq+cW7RfmZQUKvSULZxW5rOsEUSr8jGgw/M/s4wwJymTVBk0Fzyk2qYqPTz0YcVrCP39lN6pIZ5p2kRa/CVyDzWpTCb9zbG2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712887671; c=relaxed/simple;
-	bh=1q11t7yvW1jL1zb5HSEuFU8i7pc8pFeVnikLXS61Uxs=;
+	s=arc-20240116; t=1712887791; c=relaxed/simple;
+	bh=jfUntjJnH+OMHbD2BxQnSCfIyTkNUXTJUh3haHMU/3U=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lA4BiIA+GI9nAVCCxNF0vgRCPhYeDGIkeijA5ZQj37fUdABbwBRXUPgqgYfWQG+msZAOFcH2K99OS6bFxOKbVefHvWxGpmr464tY76Gyn1JGpclYNum4V3LtJ+FOGQfx44dh9/JisiU54FHqpn+cPVI3KKTFiR1TX8qXpoUM6Zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OjoqMKgb; arc=none smtp.client-ip=209.85.167.43
+	 To:Cc:Content-Type; b=cBU7QWLnNM+wWy6oF/dshYEsoKNWCf8loGU8ry0Zdhz8FagalhHP3SnaFvFIw+oWhBs4bT9/NYgtUFjgmJADgSTYIUz5rHaO/dVi85ABQaXfPnoo3uuEEDnl2IoLgA7KmMWZ1hvNXq56rOFiNsPfi+YvXo4qgX0n86UFXxy5FT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EbaBVulv; arc=none smtp.client-ip=209.85.208.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d47ce662so621253e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:07:49 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso492990a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712887667; x=1713492467; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712887787; x=1713492587; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5/3k3JxJTwlap/AjeFL5ZKsYU4dX5m8N2zUFTIwlNiA=;
-        b=OjoqMKgbV6ExhDeVYe5KbFlb1oWskOqkCTuYQLeuS/uiVg/FlLlKO2lR0k45zK+iqE
-         hi4QebPUm7ik0X64cIGKk+JDORqyvYyGEkV/cDoAcbyR0AAa397a1/x37mN3P1QvDoBn
-         iWI5z4AeQB81lTBy8mKetfXfx4qDjjImfRb6iHReSu5R6+eEbZP8HmBVsJAJCfUom7ub
-         uJvaxARqt2bL5dehErLNAvWgLv65tBMzOtH3Ger4tw5CE0BhFJI3aL5S+X7srtayUO58
-         usGszpkPtQem09q0IVZhbKw9aO8xNR9rh1yhA2pDcc08V6gxdMnlBVoaewpuck+/fUT+
-         hwOg==
+        bh=x41aUECQyH1uJoELeJiHibMz7iZeQsBZdUA9Cc2JC0Q=;
+        b=EbaBVulv+XTyQKAALbHZW6Opk2cgpaqSHbXCT0afU+xAvAVnT/3z9tRpctsXvwcPoo
+         dToLojclruIUiTRb1g6+ao+ZdktrE11qcjx8wk0IfrRq8v/DMqThYuyvWcF/35+pRH7j
+         tRIpQuURLNfi7OPh3RhgagTnhVl2je+KmzQNMpH3HuSb7sIVeiRy82gmKa07QlMYgCpy
+         TDhGk2RoWxSjxgVDX9cbL/ipEOrdXfHd9pKqT0EeG8qeMC39lKR8bs9vDFn+jgLnzcpj
+         ZRwlexdrNjYB+ZP3vBo2UcfVx9mSdqn5dLq8C27pngFHIeq+XQXR5+PB99GGQCnzfkJN
+         gfsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712887667; x=1713492467;
+        d=1e100.net; s=20230601; t=1712887787; x=1713492587;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5/3k3JxJTwlap/AjeFL5ZKsYU4dX5m8N2zUFTIwlNiA=;
-        b=n/nYeagG4MeBFnKHwMsGBblwSzzaa8ccF5CRyIQXCC9QkMQvNc0ALAbpW7M7z/JbXP
-         1vEWIbnCrjHkFk/jLjx37R2f/7y0EGNtLaveR4DB4d/tCIgL92sMtHAfEkdcPtmnHo17
-         dUUIkjjdRB05vKazs2urLzh8ORLdx4qwcUQ+xFQpVGBCLCyhdhMoRy8LFBvBDVoaSE8z
-         uhotWRYYe/LXewihboA9kpk8TfTyaVsuSU6hFEjpTN+GNrgTyW+XGu+kvHh/fpQBotf7
-         6PSq4oIhm18TZnPUzUw7RFJ0jPObOpAEy091Wxq+iHpWtwkoGoy9/QuiOy1GYOhIdcLG
-         d6hQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXV5WkwZK41Xblbmau5pqyFoUHGVEHDS/QoVrFcEl4QPb7tsDNqKY2+oazQ4/9UvnzkqwqAQ4QzxB1zR2UI6y/sWgQd6J94DWmIA7IN
-X-Gm-Message-State: AOJu0YxzX/75EZtiUQINE+v6FZMZakVnd/qqOsz7pzz2xBb1fqezq1yw
-	1K2vDU+hrBI9PrlEpfdyVoKotrL0fgPIJPOsoWm3gcZAJzvtbOmc6zeWxIUdMP/Dkx0N7x14XZk
-	0g3KX3yx3QY47EO8RniNNweuowsA=
-X-Google-Smtp-Source: AGHT+IHB0JdqUUFhdudNNoeO+JnYOVK/BsVh/H/RXL13v9tqfKo1C9R13uTqWJRXOxEDNh/pG+DVa2j3WmUl+v09DoE=
-X-Received: by 2002:a05:6512:32a6:b0:515:b0be:3a42 with SMTP id
- q6-20020a05651232a600b00515b0be3a42mr1078898lfe.33.1712887667277; Thu, 11 Apr
- 2024 19:07:47 -0700 (PDT)
+        bh=x41aUECQyH1uJoELeJiHibMz7iZeQsBZdUA9Cc2JC0Q=;
+        b=oE7u28PiXpN7QeO495USzgWsJdrypOiH19FTFZa4QBv710r9qZkNSC9FPPTwTDuxfz
+         udIX3mdQ/9nXvYfUhIGmsqCYbEYesyJQJg5vzNJZHQqhKFhD0csMMtpdc3u16GgVhXiW
+         R4bquxSjXu3KxZ7DXzBlhL/R3bhc6enR6ajpH62psHL3Wf79P+xDj20l1e7nDhCW7QKk
+         ddtwpmY5s6d+HYAqr8glDYDfOKivqSXhQA/ES00iTGFsKccKs0EUlCayIWkuuXVBexor
+         5OtdvNPVcURtAZXeBXHtw4V7BT4iLgmSCePqVFymttVvfnOwXOLiy34t3jlztZgHaJ88
+         sc4A==
+X-Forwarded-Encrypted: i=1; AJvYcCUZmPKF8VU0bWcobFBMf8O8PfnBeGPnPr3jPR06ZbnasvNp5RZthBkMGMIMI/I8y9bVT08d0E92bo5hc9bkzju28vf/XEkwlAtNILfX
+X-Gm-Message-State: AOJu0YxJuS62vJ2Rh+5DvVKgmVyxnoyk46l4G/97AyeVBWcH+X0daAEj
+	Xa+YzFwysVfOapZkqyPJ7yq5RohC4N10nu79OaECJNNg5MGZ24ZzdsLykgjgKZiRySrieC+NkMI
+	MzLJjE0UjVwSkKDRCKxEOcxTqdicqXkO/
+X-Google-Smtp-Source: AGHT+IGLOacDFDocnZwYMyuilqXHN9H+0VBuzfNXqCGXgGq5ADANxEeokXkpwDcR21MNsW/eQtXwE9p6m2AQrcl5OTM=
+X-Received: by 2002:a50:d642:0:b0:56d:fdb3:bcc5 with SMTP id
+ c2-20020a50d642000000b0056dfdb3bcc5mr824684edj.12.1712887787112; Thu, 11 Apr
+ 2024 19:09:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409082631.187483-1-21cnbao@gmail.com> <20240409082631.187483-2-21cnbao@gmail.com>
- <95bc0ebb-49f4-4331-8809-3e4625f1d91a@arm.com>
-In-Reply-To: <95bc0ebb-49f4-4331-8809-3e4625f1d91a@arm.com>
-From: Chuanhua Han <chuanhuahan@gmail.com>
-Date: Fri, 12 Apr 2024 10:07:35 +0800
-Message-ID: <CANzGp4Jzw9bUnQw1zVdw7V6=pARx7x5s8QTyXJGfdEzrXVkZTA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/5] mm: swap: introduce swap_free_nr() for batched swap_free()
+References: <20240408042437.10951-1-ioworker0@gmail.com> <20240408042437.10951-3-ioworker0@gmail.com>
+ <3cd1036d-3814-4a10-b6d2-099937ceabc8@arm.com>
+In-Reply-To: <3cd1036d-3814-4a10-b6d2-099937ceabc8@arm.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Fri, 12 Apr 2024 10:09:36 +0800
+Message-ID: <CAK1f24m=nC=ecuOZesQvytnxJms2d-wONKT4_7GUfvz0PJz+oQ@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] mm/arm64: override mkold_clean_ptes() batch helper
 To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com, 
-	hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com, 
-	kasong@tencent.com, surenb@google.com, v-songbaohua@oppo.com, 
-	willy@infradead.org, xiang@kernel.org, ying.huang@intel.com, 
-	yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com, 
-	linux-kernel@vger.kernel.org
+Cc: akpm@linux-foundation.org, david@redhat.com, 21cnbao@gmail.com, 
+	mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com, 
+	shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com, 
+	songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Ryan Roberts <ryan.roberts@arm.com> =E4=BA=8E2024=E5=B9=B44=E6=9C=8811=E6=
-=97=A5=E5=91=A8=E5=9B=9B 22:30=E5=86=99=E9=81=93=EF=BC=9A
+On Thu, Apr 11, 2024 at 9:17=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
 >
-> On 09/04/2024 09:26, Barry Song wrote:
-> > From: Chuanhua Han <hanchuanhua@oppo.com>
+> On 08/04/2024 05:24, Lance Yang wrote:
+> > The per-pte get_and_clear/modify/set approach would result in
+> > unfolding/refolding for contpte mappings on arm64. So we need
+> > to override mkold_clean_ptes() for arm64 to avoid it.
+>
+> IIRC, in the last version, I suggested copying the wrprotect_ptes() patte=
+rn to
+> correctly iterate over contpte blocks. I meant for you to take it as insp=
+iration
+> but looks like you have done a carbon copy, including lots of things that=
+ are
+> unneeded here. That's my fault for not being clear - sorry!
+
+My bad. I must have misunderstood your intention.
+
+>
+>
 > >
-> > While swapping in a large folio, we need to free swaps related to the w=
-hole
-> > folio. To avoid frequently acquiring and releasing swap locks, it is be=
-tter
-> > to introduce an API for batched free.
-> >
-> > Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
-> > Co-developed-by: Barry Song <v-songbaohua@oppo.com>
-> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->
-> Couple of nits; feel free to ignore.
->
-> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->
+> > Suggested-by: David Hildenbrand <david@redhat.com>
+> > Suggested-by: Barry Song <21cnbao@gmail.com>
+> > Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
+> > Signed-off-by: Lance Yang <ioworker0@gmail.com>
 > > ---
-> >  include/linux/swap.h |  5 +++++
-> >  mm/swapfile.c        | 51 ++++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 56 insertions(+)
+> >  arch/arm64/include/asm/pgtable.h | 55 ++++++++++++++++++++++++++++++++
+> >  arch/arm64/mm/contpte.c          | 15 +++++++++
+> >  2 files changed, 70 insertions(+)
 > >
-> > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > index 11c53692f65f..b7a107e983b8 100644
-> > --- a/include/linux/swap.h
-> > +++ b/include/linux/swap.h
-> > @@ -483,6 +483,7 @@ extern void swap_shmem_alloc(swp_entry_t);
-> >  extern int swap_duplicate(swp_entry_t);
-> >  extern int swapcache_prepare(swp_entry_t);
-> >  extern void swap_free(swp_entry_t);
-> > +extern void swap_free_nr(swp_entry_t entry, int nr_pages);
-> >  extern void swapcache_free_entries(swp_entry_t *entries, int n);
-> >  extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
-> >  int swap_type_of(dev_t device, sector_t offset);
-> > @@ -564,6 +565,10 @@ static inline void swap_free(swp_entry_t swp)
-> >  {
+> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/=
+pgtable.h
+> > index 9fd8613b2db2..395754638a9a 100644
+> > --- a/arch/arm64/include/asm/pgtable.h
+> > +++ b/arch/arm64/include/asm/pgtable.h
+> > @@ -1223,6 +1223,34 @@ static inline void __wrprotect_ptes(struct mm_st=
+ruct *mm, unsigned long address,
+> >               __ptep_set_wrprotect(mm, address, ptep);
 > >  }
 > >
-> > +void swap_free_nr(swp_entry_t entry, int nr_pages)
+> > +static inline void ___ptep_mkold_clean(struct mm_struct *mm, unsigned =
+long addr,
+> > +                                    pte_t *ptep, pte_t pte)
 > > +{
+> > +     pte_t old_pte;
+> > +
+> > +     do {
+> > +             old_pte =3D pte;
+> > +             pte =3D pte_mkclean(pte_mkold(pte));
+> > +             pte_val(pte) =3D cmpxchg_relaxed(&pte_val(*ptep),
+> > +                                            pte_val(old_pte), pte_val(=
+pte));
+> > +     } while (pte_val(pte) !=3D pte_val(old_pte));
+> > +}
+>
+> Given you are clearing old and dirty, you have nothing to race against, s=
+o you
+> shouldn't need the cmpxchg loop here; just a get/modify/set should do? Of=
+ course
+> if you are setting one or the other, then you need the loop.
+
+Got it.
+
+>
+> > +
+> > +static inline void __ptep_mkold_clean(struct mm_struct *mm, unsigned l=
+ong addr,
+> > +                                   pte_t *ptep)
+> > +{
+> > +     ___ptep_mkold_clean(mm, addr, ptep, __ptep_get(ptep));
+> > +}
+>
+> I don't see a need for this intermediate function.
+>
+> > +
+> > +static inline void __mkold_clean_ptes(struct mm_struct *mm, unsigned l=
+ong addr,
+> > +                                   pte_t *ptep, unsigned int nr)
+> > +{
+> > +     unsigned int i;
+> > +
+> > +     for (i =3D 0; i < nr; i++, addr +=3D PAGE_SIZE, ptep++)
+>
+> It would probably be good to use the for() loop pattern used by the gener=
+ic
+> impls here too.
+
+Got it.
+
+>
+> > +             __ptep_mkold_clean(mm, addr, ptep);
 > > +}
 > > +
-> >  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp=
-)
-> >  {
-> >  }
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index 28642c188c93..f4c65aeb088d 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -1356,6 +1356,57 @@ void swap_free(swp_entry_t entry)
-> >               __swap_entry_free(p, entry);
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> >  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
+> >  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+> > @@ -1379,6 +1407,8 @@ extern void contpte_wrprotect_ptes(struct mm_stru=
+ct *mm, unsigned long addr,
+> >  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+> >                               unsigned long addr, pte_t *ptep,
+> >                               pte_t entry, int dirty);
+> > +extern void contpte_mkold_clean_ptes(struct mm_struct *mm, unsigned lo=
+ng addr,
+> > +                             pte_t *ptep, unsigned int nr);
+> >
+> >  static __always_inline void contpte_try_fold(struct mm_struct *mm,
+> >                               unsigned long addr, pte_t *ptep, pte_t pt=
+e)
+> > @@ -1603,6 +1633,30 @@ static inline int ptep_set_access_flags(struct v=
+m_area_struct *vma,
+> >       return contpte_ptep_set_access_flags(vma, addr, ptep, entry, dirt=
+y);
 > >  }
 > >
-> > +/*
-> > + * Free up the maximum number of swap entries at once to limit the
-> > + * maximum kernel stack usage.
-> > + */
-> > +#define SWAP_BATCH_NR (SWAPFILE_CLUSTER > 512 ? 512 : SWAPFILE_CLUSTER=
-)
-> > +
-> > +/*
-> > + * Called after swapping in a large folio, batched free swap entries
-> > + * for this large folio, entry should be for the first subpage and
-> > + * its offset is aligned with nr_pages
-> > + */
-> > +void swap_free_nr(swp_entry_t entry, int nr_pages)
+> > +#define mkold_clean_ptes mkold_clean_ptes
+> > +static inline void mkold_clean_ptes(struct mm_struct *mm, unsigned lon=
+g addr,
+> > +                                 pte_t *ptep, unsigned int nr)
 > > +{
-> > +     int i, j;
-> > +     struct swap_cluster_info *ci;
-> > +     struct swap_info_struct *p;
-> > +     unsigned int type =3D swp_type(entry);
-> > +     unsigned long offset =3D swp_offset(entry);
-> > +     int batch_nr, remain_nr;
-> > +     DECLARE_BITMAP(usage, SWAP_BATCH_NR) =3D { 0 };
-> > +
-> > +     /* all swap entries are within a cluster for mTHP */
-> > +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER=
-);
-> > +
-> > +     if (nr_pages =3D=3D 1) {
-> > +             swap_free(entry);
-> > +             return;
-> > +     }
-> > +
-> > +     remain_nr =3D nr_pages;
-> > +     p =3D _swap_info_get(entry);
-> > +     if (p) {
+> > +     if (likely(nr =3D=3D 1)) {
+> > +             /*
+> > +              * Optimization: mkold_clean_ptes() can only be called fo=
+r present
+> > +              * ptes so we only need to check contig bit as condition =
+for unfold,
+> > +              * and we can remove the contig bit from the pte we read =
+to avoid
+> > +              * re-reading. This speeds up madvise(MADV_FREE) which is=
+ sensitive
+> > +              * for order-0 folios. Equivalent to contpte_try_unfold()=
+.
+> > +              */
 >
-> nit: perhaps return early if (!p) ? Then you dedent the for() block.
-
-Agreed!
-
+> Is this true? Do you have data that shows the cost? If not, I'd prefer to=
+ avoid
+> the optimization and do it the more standard way:
 >
-> > +             for (i =3D 0; i < nr_pages; i +=3D batch_nr) {
-> > +                     batch_nr =3D min_t(int, SWAP_BATCH_NR, remain_nr)=
-;
+> contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+>
+> > +             pte_t orig_pte =3D __ptep_get(ptep);
 > > +
-> > +                     ci =3D lock_cluster_or_swap_info(p, offset);
-> > +                     for (j =3D 0; j < batch_nr; j++) {
-> > +                             if (__swap_entry_free_locked(p, offset + =
-i * SWAP_BATCH_NR + j, 1))
-> > +                                     __bitmap_set(usage, j, 1);
-> > +                     }
-> > +                     unlock_cluster_or_swap_info(p, ci);
-> > +
-> > +                     for_each_clear_bit(j, usage, batch_nr)
-> > +                             free_swap_slot(swp_entry(type, offset + i=
- * SWAP_BATCH_NR + j));
-> > +
->
-> nit: perhaps change to for (;;), and do the checks here to avoid clearing=
- the
-> bitmap on the last run:
->
->                         i +=3D batch_nr;
->                         if (i < nr_pages)
->                                 break;
-Great, thank you for your advice!
->
-> > +                     bitmap_clear(usage, 0, SWAP_BATCH_NR);
-> > +                     remain_nr -=3D batch_nr;
+> > +             if (unlikely(pte_cont(orig_pte))) {
+> > +                     __contpte_try_unfold(mm, addr, ptep, orig_pte);
+> > +                     orig_pte =3D pte_mknoncont(orig_pte);
 > > +             }
+> > +             ___ptep_mkold_clean(mm, addr, ptep, orig_pte);
+> > +     } else {
+> > +             contpte_mkold_clean_ptes(mm, addr, ptep, nr);
 > > +     }
+>
+> ...but I don't think you should ever need to unfold in the first place. E=
+ven if
+> it's folded and you are trying to clear access/dirty for a single pte, yo=
+u can
+> just clear the whole block. See existing comment in
+> contpte_ptep_test_and_clear_young().
+
+Thanks for pointing that out.
+
+>
+> So this ends up as something like:
+>
+> static inline void clear_young_dirty_ptes(struct mm_struct *mm,
+>                         unsigned long addr, pte_t *ptep, unsigned int nr,
+>                         bool clear_young, bool clear_dirty)
+> {
+>         if (likely(nr =3D=3D 1 && !pte_cont(__ptep_get(ptep))))
+>                 clear_young_dirty_ptes(mm, addr, ptep, nr,
+>                                         clear_young, clear_dirty);
+>         else
+>                 contpte_clear_young_dirty_ptes(mm, addr, ptep, nr,
+>                                         clear_young, clear_dirty);
+> }
+
+Nice. I'll make sure to follow this approach.
+
+>
+>
 > > +}
 > > +
-> >  /*
-> >   * Called after dropping swapcache to decrease refcnt to swap entries.
-> >   */
+> >  #else /* CONFIG_ARM64_CONTPTE */
+> >
+> >  #define ptep_get                             __ptep_get
+> > @@ -1622,6 +1676,7 @@ static inline int ptep_set_access_flags(struct vm=
+_area_struct *vma,
+> >  #define wrprotect_ptes                               __wrprotect_ptes
+> >  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+> >  #define ptep_set_access_flags                        __ptep_set_access=
+_flags
+> > +#define mkold_clean_ptes                     __mkold_clean_ptes
+> >
+> >  #endif /* CONFIG_ARM64_CONTPTE */
+> >
+> > diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
+> > index 1b64b4c3f8bf..dbff9c5e9eff 100644
+> > --- a/arch/arm64/mm/contpte.c
+> > +++ b/arch/arm64/mm/contpte.c
+> > @@ -361,6 +361,21 @@ void contpte_wrprotect_ptes(struct mm_struct *mm, =
+unsigned long addr,
+> >  }
+> >  EXPORT_SYMBOL_GPL(contpte_wrprotect_ptes);
+> >
+> > +void contpte_mkold_clean_ptes(struct mm_struct *mm, unsigned long addr=
+,
+> > +                           pte_t *ptep, unsigned int nr)
+> > +{
+> > +     /*
+> > +      * If clearing the young and dirty bits for an entire contig rang=
+e, we can
+> > +      * avoid unfolding. Just set old/clean and wait for the later mmu=
+_gather
+> > +      * flush to invalidate the tlb. If it's a partial range though, w=
+e need to
+> > +      * unfold.
+> > +      */
 >
+> nit: Please reflow comments like this to 80 cols.
 >
+> We can avoid unfolding in all cases. See existing comment in
+> contpte_ptep_test_and_clear_young(). Suggest something like this (unteste=
+d):
+>
+> void clear_young_dirty_ptes(struct mm_struct *mm, unsigned long addr,
+>                             pte_t *ptep, unsigned int nr,
+>                             bool clear_young, bool clear_dirty)
+> {
+>         /*
+>          * We can safely clear access/dirty without needing to unfold fro=
+m the
+>          * architectures perspective, even when contpte is set. If the ra=
+nge
+>          * starts or ends midway through a contpte block, we can just exp=
+and to
+>          * include the full contpte block. While this is not exactly what=
+ the
+>          * core-mm asked for, it tracks access/dirty per folio, not per p=
+age.
+>          * And since we only create a contpte block when it is covered by=
+ a
+>          * single folio, we can get away with clearing access/dirty for t=
+he
+>          * whole block.
+>          */
+>
+>         unsigned int start =3D addr;
+>         unsigned int end =3D start + nr;
+>
+>         if (pte_cont(__ptep_get(ptep + nr - 1)))
+>                 end =3D ALIGN(end, CONT_PTE_SIZE);
+>
+>         if (pte_cont(__ptep_get(ptep))) {
+>                 start =3D ALIGN_DOWN(start, CONT_PTE_SIZE);
+>                 ptep =3D contpte_align_down(ptep);
+>         }
+>
+>         __clear_young_dirty_ptes(mm, start, ptep, end - start,
+>                                  clear_young, clear_dirty);
+> }
 
+Nice. Thanks a lot for your help!
 
---=20
 Thanks,
-Chuanhua
+Lance
+
+>
+> Thanks,
+> Ryan
+>
+> > +
+> > +     contpte_try_unfold_partial(mm, addr, ptep, nr);
+> > +     __mkold_clean_ptes(mm, addr, ptep, nr);
+> > +}
+> > +EXPORT_SYMBOL_GPL(contpte_mkold_clean_ptes);
+> > +
+> >  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+> >                                       unsigned long addr, pte_t *ptep,
+> >                                       pte_t entry, int dirty)
+>
 
