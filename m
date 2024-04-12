@@ -1,228 +1,132 @@
-Return-Path: <linux-kernel+bounces-142612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0480F8A2DC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:51:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6050C8A2DC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:51:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28FCC1C21589
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:51:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E44A0B2170D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6384456440;
-	Fri, 12 Apr 2024 11:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D0756754;
+	Fri, 12 Apr 2024 11:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ceZLQ1C4"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="vK+omR2p"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECACF5490C;
-	Fri, 12 Apr 2024 11:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D67B854FB7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712922658; cv=none; b=DJCSMRom9rmjzpdQYKiaYc9mbRfTm1ZrOg0rw26HUVfasfrZAmiPo1DMlqq2l7bN1llzchTPi9qC1jhlepLdSGQF8t1KbMabFa+4+YpcW2LtW3UA4dtjHzwFR696I7ecDUBag8kIJMHNrwSJWd8kxqfzAwTQQtudkA+JkR9PHU8=
+	t=1712922660; cv=none; b=sGVWe5rVwPlUACGhNhYSK1JjySB8CBrblz7K0PXPy4yLkp32G/8pYN+NVbKIIHdz2nzz6b5Pdy1hjc7iApqeZuiTY70u0GAm1a5phwLMWVNGQy8HsXUg+dM2q/OKtCJlIJHGUq1EjyCpDPvoctPXMdppMWP4U3gobR9YPxTwXcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712922658; c=relaxed/simple;
-	bh=/MsWLEJD+g2lmJVxWXE9ihQ+XOiKAY5YDqrlImseWCM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MkTOMCJ6nT0VWRGTTqrzdAubkjdpPqIgYxyy9ck1tHT0WPD2pN7B8VhkaDUQ7RSnmOjzLja4XawGDVOVvgWBHIPo0tLPLIKfJW7wmypAttHSl70OXqP4+3TJQeqXJYZSkvIMjtoi7Ml2RGTSSYaNDf0GVt0pjB58rlgvNp3DpEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ceZLQ1C4; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712922657; x=1744458657;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/MsWLEJD+g2lmJVxWXE9ihQ+XOiKAY5YDqrlImseWCM=;
-  b=ceZLQ1C4Zx2xp8ul0pxyDVnNHXuLPYZXqxO0nQ7I6XuPbC6nIRuA69kI
-   eRdD6eR8USM7wblnUfazwkwHa9e4JNspHaofp3h+0Ss3OL2sSky0ZfO0O
-   DCXtC+07GOaBn3mLOuibI4nEHAdCWjDxMZDD2l1/kM5yuLW336YEc8nte
-   qBLfarCIN9lgWPZWGI/4Wx0kALQeIkh6bo4Td73sVdN2/6j/iGHac/fyH
-   FsZTJqBqXQWE2ulUcYqbtnLTThq6Vb8wzbEDGvlfodEUd10K1CzD9/QUI
-   8uCnW0LyXswsfat1pUAKXZSRw4uEzoBIbuce0zXMuTDyRFnzCbCmVjmNp
-   g==;
-X-CSE-ConnectionGUID: DbXRGJMARISTcHYzzFqcJQ==
-X-CSE-MsgGUID: r4WPBt/kRzewCEGLyzl6yw==
-X-IronPort-AV: E=Sophos;i="6.07,196,1708412400"; 
-   d="asc'?scan'208";a="20735309"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 04:50:56 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 04:50:52 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 12 Apr 2024 04:50:48 -0700
-Date: Fri, 12 Apr 2024 12:49:57 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
-	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
-	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
-	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
-	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
-	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
-	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 08/19] riscv: Introduce vendor variants of extension
- helpers
-Message-ID: <20240412-dwarf-shower-5a7300fcd283@wendy>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-8-4af9815ec746@rivosinc.com>
+	s=arc-20240116; t=1712922660; c=relaxed/simple;
+	bh=6z1NM+xFuUNh+JCkp6BiT4e7bjolhUgniKMAOQP3vq0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZEYgt0k842NyozJSRv2538f0f/QJE9rN0zmw+cOq+AhvX+szMnb7RzASmJNosCAunFN6109AXFEGsTPmSHNmDAtIXNZpSNm1PLvw4bNbcnvXVmNMl2D8w7l/aTlStxK+rnbJS2pf0n0MUXDysFtDdgUMIKm+YD35fBw+RrA8A9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=vK+omR2p; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e703e0e5deso691446b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1712922657; x=1713527457; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fISH+O8RMH1Vim1fhD1kwnl/iMlNkK4IQpBqECYAtN4=;
+        b=vK+omR2pJqPGrL3jxemQteuSDuBmIab2U7grJcXpkf3vntUsQT3rIskgr7gh0dWNZu
+         LJlXUlmmrPxMpBF7Tuo8Q8GNueoa4ufrp/wHr3KPCp2zX3pQBMQX3Sg8pl8X8K/91dqy
+         4pCGGYclmAl5CRE3DqiG9sNUrVpQAF3DkRvzfTL3Mt7VdtUsSxt5BOoaCXObjaBptfZZ
+         9ZR74sfun+1NNfHRRT0UcL7S8kNjZLPCBhE73KQEY+0jaM6wVUKjdf+SNaiWDUH6itZo
+         zdqO5uzKdbipj/6hWt5OWNqYlpRs9pXJ4zb3oT172S7VPbAD6fokdg9RK1GvA+kTapZ/
+         Rp7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712922657; x=1713527457;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fISH+O8RMH1Vim1fhD1kwnl/iMlNkK4IQpBqECYAtN4=;
+        b=PtxV104iczQmHUiHi+LzwAMVTdyIPdWdang4SyvR54MU33nPa7u0enfh9LppdhRLHk
+         N90ftyr/mCISAJzAet01RzaMvhRp9jXPho9EndBZCi0TmWh706dSZnPgHWbHfAuXtqz3
+         WD+kT99zmLjKhYUcVHmnOkc9wawlPq9FofxlAXsgnqZ6NM57AyE/PtabwoL2OYnYHugq
+         9WhZfRqE0fVeirvpNDdXrjCdZoMlWGWD31akLuQIth/zhl8p1+ZJtGV9lSYieCNxI0iT
+         W0R2Wyhldq0tobW73jbojg7LD5FKKNA6N4dS8I4YUrGsnQqtMH13Ov/DKmEVatyqmaI4
+         wlYg==
+X-Forwarded-Encrypted: i=1; AJvYcCX+/blaCUtHddpO6P+EtZzXRrANtooSxNMv926svJMGj8ViORHQQfY+Wbi7NOZW7y1TAYLzirD5GP/6vWeR/EdNGk0dJAsGVnnoQgEF
+X-Gm-Message-State: AOJu0Yykn9WTBJ12T6yqZUyyMo9sYyyH0CiZuCGTo9gBInL/jHIPIW74
+	B5t30iOoKHa+8G1XnlXXsODgEYy1BJd40tcLN6TKmOo3oh1Zrch96NJ+Ty0m4pCvvjPMywIn84M
+	m5BvjNWRo2vvUHDXkJcdMJ96Ipl67IS04HDutAw==
+X-Google-Smtp-Source: AGHT+IHaFtm91nTnlsAoPlDzCvBuH9jkOA41r/Q2yzSRO8GdMNfDBlujSAYpXUO3pUimW9Z99G8gVa1f7Mlje8Hn9xE=
+X-Received: by 2002:a05:6a20:9791:b0:1a7:7358:f108 with SMTP id
+ hx17-20020a056a20979100b001a77358f108mr2373491pzc.24.1712922657034; Fri, 12
+ Apr 2024 04:50:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="OxSigVsCwYUnQIoR"
-Content-Disposition: inline
-In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-8-4af9815ec746@rivosinc.com>
-
---OxSigVsCwYUnQIoR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240411095416.853744210@linuxfoundation.org>
+In-Reply-To: <20240411095416.853744210@linuxfoundation.org>
+From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date: Fri, 12 Apr 2024 20:50:46 +0900
+Message-ID: <CAKL4bV6up8KqinyhFqBPPvc+fyabtBkwy-7tVyNVzABx9QY3fg@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/114] 6.6.27-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 09:11:14PM -0700, Charlie Jenkins wrote:
-> Create vendor variants of the existing extension helpers. If the
-> existing functions were instead modified to support vendor extensions, a
-> branch based on the ext value being greater than
-> RISCV_ISA_VENDOR_EXT_BASE would have to be introduced. This additional
-> branch would have an unnecessary performance impact.
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Hi Greg
 
-I've not looked at the "main" patch in the series that adds all of the
-probing and structures for representing this info yet beyond a cursory
-glance, but it feels like we're duplicating a bunch of infrastructure
-here before it is necessary. The IDs are all internal to Linux, so I'd
-rather we kept everything in the same structure until we have more than
-a handful of vendor extensions. With this patch (and the theadpmu stuff)
-we will have three vendor extensions which feels like a drop in the
-bucket compared to the standard ones.
+On Thu, Apr 11, 2024 at 7:25=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.27 release.
+> There are 114 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.27-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+6.6.27-rc1 tested.
 
-> ---
->  arch/riscv/include/asm/cpufeature.h | 54 +++++++++++++++++++++++++++++++=
-++++++
->  arch/riscv/kernel/cpufeature.c      | 34 ++++++++++++++++++++---
->  2 files changed, 84 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
-/cpufeature.h
-> index db2ab037843a..8f19e3681b4f 100644
-> --- a/arch/riscv/include/asm/cpufeature.h
-> +++ b/arch/riscv/include/asm/cpufeature.h
-> @@ -89,6 +89,10 @@ bool __riscv_isa_extension_available(const unsigned lo=
-ng *isa_bitmap, unsigned i
->  #define riscv_isa_extension_available(isa_bitmap, ext)	\
->  	__riscv_isa_extension_available(isa_bitmap, RISCV_ISA_EXT_##ext)
-> =20
-> +bool __riscv_isa_vendor_extension_available(const unsigned long *vendor_=
-isa_bitmap, unsigned int bit);
-> +#define riscv_isa_vendor_extension_available(isa_bitmap, ext)	\
-> +	__riscv_isa_vendor_extension_available(isa_bitmap, RISCV_ISA_VENDOR_EXT=
-_##ext)
-> +
->  static __always_inline bool
->  __riscv_has_extension_likely_alternatives(const unsigned long ext)
->  {
-> @@ -117,6 +121,8 @@ __riscv_has_extension_unlikely_alternatives(const uns=
-igned long ext)
->  	return true;
->  }
-> =20
-> +/* Standard extension helpers */
-> +
->  static __always_inline bool
->  riscv_has_extension_likely(const unsigned long ext)
->  {
-> @@ -163,4 +169,52 @@ static __always_inline bool riscv_cpu_has_extension_=
-unlikely(int cpu, const unsi
->  		return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
->  }
-> =20
-> +/* Vendor extension helpers */
-> +
-> +static __always_inline bool
-> +riscv_has_vendor_extension_likely(const unsigned long ext)
-> +{
-> +	compiletime_assert(ext < RISCV_ISA_VENDOR_EXT_MAX,
-> +			   "ext must be < RISCV_ISA_VENDOR_EXT_MAX");
-> +
-> +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE))
-> +		return __riscv_has_extension_likely_alternatives(ext);
-> +	else
-> +		return __riscv_isa_vendor_extension_available(NULL, ext);
-> +}
-> +
-> +static __always_inline bool
-> +riscv_has_vendor_extension_unlikely(const unsigned long ext)
-> +{
-> +	compiletime_assert(ext < RISCV_ISA_VENDOR_EXT_MAX,
-> +			   "ext must be < RISCV_ISA_VENDOR_EXT_MAX");
-> +
-> +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE))
-> +		return __riscv_has_extension_unlikely_alternatives(ext);
-> +	else
-> +		return __riscv_isa_vendor_extension_available(NULL, ext);
-> +}
-> +
-> +static __always_inline bool riscv_cpu_has_vendor_extension_likely(int cp=
-u, const unsigned long ext)
-> +{
-> +	compiletime_assert(ext < RISCV_ISA_VENDOR_EXT_MAX,
-> +			   "ext must be < RISCV_ISA_VENDOR_EXT_MAX");
-> +
-> +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE))
-> +		return __riscv_has_extension_likely_alternatives(ext);
-> +	else
-> +		return __riscv_isa_vendor_extension_available(hart_isa_vendor[cpu].isa=
-, ext);
-> +}
-> +
-> +static __always_inline bool riscv_cpu_has_vendor_extension_unlikely(int =
-cpu, const unsigned long ext)
-> +{
-> +	compiletime_assert(ext < RISCV_ISA_VENDOR_EXT_MAX,
-> +			   "ext must be < RISCV_ISA_VENDOR_EXT_MAX");
-> +
-> +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE))
-> +		return __riscv_has_extension_unlikely_alternatives(ext);
-> +	else
-> +		return __riscv_isa_vendor_extension_available(hart_isa_vendor[cpu].isa=
-, ext);
-> +}
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-Same stuff about constant folding applies to these, I think these should
-just mirror the existing functions (if needed at all).
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
 
-Cheers,
-Conor.
+[    0.000000] Linux version 6.6.27-rc1rv
+(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
+Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Fri Apr 12 19:42:31 JST 2024
 
---OxSigVsCwYUnQIoR
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkf5QAKCRB4tDGHoIJi
-0t21AQDpXCNkKreoJcGsD1c3KhhnWrrt3e8Dua+btfF4IRjd5AD+OTlLyxva26D5
-OHyd+dKNVKNYXjtuHGTu8h6vqaR8mw0=
-=H6/V
------END PGP SIGNATURE-----
-
---OxSigVsCwYUnQIoR--
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
 
