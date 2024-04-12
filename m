@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-143339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 445CF8A3763
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:57:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 339648A3765
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F84287726
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:57:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 451BAB21C80
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3023149006;
-	Fri, 12 Apr 2024 20:57:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1309614EC4E;
+	Fri, 12 Apr 2024 20:57:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kk4KEBKi"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YVigdaAq"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1BD39FD5;
-	Fri, 12 Apr 2024 20:57:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCC83D0B8;
+	Fri, 12 Apr 2024 20:57:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712955460; cv=none; b=JoqB5pvXaPNKRUUxvkvwF5uFW+4B9bSl8KFBOtZWrB1Um93zWpKVmRHxfWowASpGxCBOIPeRNySzq9YAy0Z3Z0ZiKrmDDRubkbUe6YfwXtZVQ8EF2W73Vhb88gzwN0nsVty86OoPGcyrOf/YXP1L98jwSCsKGJ+yGwQDzrbogRE=
+	t=1712955461; cv=none; b=NITQQoADDtNOSnAxlEjCaFvlAK4uv9yvY7v1KwlnWC3c+j8OC9vCIBbyg8UyhBrpAMoUEQFfbjlcAvQP+p8kDDKClQmGVAv12OpdGQBFDBxLw4G4OEstWOguxrL3W+UeTkgFYgwIwAhdeuH6uPusCUGAePLacnn7PqGTheEBk5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712955460; c=relaxed/simple;
-	bh=LTfEH0OW5wceSR4OBc7/jsdPA8w7QFdiyqHte0fJzYM=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=q+w58MYugbJjVIXYaL2sILcmoqut+23lAjTsfLE8pUJkXMuUMMYqEod/9wzbfCCzf9YE9mhxywG1/9PZlLVpQ9tLUr8DG2/1v9izc2NUjvRu8ubI9f75VD5ubz1z+ubWnP9jCPNj0tFLD7oHyG9HyN+mC9ndo/vjtR4ZFopzVCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kk4KEBKi; arc=none smtp.client-ip=209.85.221.43
+	s=arc-20240116; t=1712955461; c=relaxed/simple;
+	bh=BVzVqp8trzkV4ZG9KOZgQC6TrXg1L740OrPWMBaBgXI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=OJpj8owj3QrkLU+OmIeN1HhSVyHrEk75SKMLmnKLKgRh73GrgHs8wakMKd8Z5+5q8Xkj4ZKeB8jC+3euRAxG0YSRsg9RqtENmUHPxjfLwBafqSy/Rs5meyyM3jOtt4cyBZzLBGHEVMsZbL3glplaF5Jehj2dtkm3fDO5LiAzMg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YVigdaAq; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3462178fbf9so703594f8f.1;
-        Fri, 12 Apr 2024 13:57:38 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-346f4266e59so951430f8f.3;
+        Fri, 12 Apr 2024 13:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712955456; x=1713560256; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dg2ahnpNhhd49pJIzFyauGmvavc6mK+oTZvc0UBJgxY=;
-        b=kk4KEBKioDl7plYBwPWv+6G1EUNe0AXf2b16GdxBYUHgofQhq7j49yt+r59pW5H730
-         0Gfxktj15uRxKv+690i/ATMiGiQ8RXjpz+wmAnC9104wh++Wxnh4NPZdyHGIHfqRWgjT
-         62/RMbqSUPTQvQLSwxjqSLK7r3tS43/uslQr9VDOKRh9QycrCeGzbdPDzmKAolKTHo1I
-         g5D9F06fSntMM7XjHOjl9eOwXCEPv91GkQEfkPLERQOc9W8/EnIhFx3Tdv8aQPD6v+ld
-         ybn8k8Mj59mR+209od/F9zCxOZy+KJErMdNfG8DJ9/fAyWXM8+ivxac/5osUpTHaw1jq
-         k6ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712955456; x=1713560256;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1712955458; x=1713560258; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dg2ahnpNhhd49pJIzFyauGmvavc6mK+oTZvc0UBJgxY=;
-        b=edoQv9EAiK+maBjy50Thfx9umbazUw0r3WeIkLSkIvLFV2Bwompeow2QmIDRkcNhHp
-         uS8APKQusIiTlMSutcQJzF3G7qDX3VQQU8IraaXkVO0iH27kxHH6kM99oKyLjP0x1hSG
-         VeWC8iWtMRsveG43DDMU8HWTbr8i3bdIxPKwpy6vYxBcoWzDbc3bsE/q0N9aevdosBKU
-         JLVMANfp/Ekn/l7bf1XC5oX76FHv1NBFAcgdDEkfmLI9ge/Ye14cs9lEezN9f05Xlf4h
-         0kV7wKo3/0p4KOcwKJaynaEbt/1WOPpwEK8y1mpl7PaXSYlquGBlgUFbo2Ij5qoQRa7s
-         +z/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVhr3GAJo03EQCjF5QxAMloCn9BDRKiSSUTHet5S/PHfop5Q0vP3LEGjArPZYlPjcpaz50zB/pKugT5JHnBZRZZiRf1ApCtcZXshhoq
-X-Gm-Message-State: AOJu0YyMW55y1qs56LSIWwQWcP9dnUi71uZkfuEBRCOBoa1swixeAjvq
-	fGYLBPMoheqM4GL7AZTxIlZpNjbMdmIbKML7YJ4orYLQ8lEDpDka42uAXUTf
-X-Google-Smtp-Source: AGHT+IG9CTjG81WWEOCd4+OLOjxVcWFAzOSSs3Au25Q+ubb759cApR0HrsQogS1sH9U6Hpz1gZiaUQ==
-X-Received: by 2002:a5d:6744:0:b0:343:a8cb:7990 with SMTP id l4-20020a5d6744000000b00343a8cb7990mr2762792wrw.29.1712955456093;
-        Fri, 12 Apr 2024 13:57:36 -0700 (PDT)
+        bh=FCkHkDQ/J68KHhz/dTMPvVvcbRSRcKWJMB2HWO4YtQw=;
+        b=YVigdaAq/g36pPt666tgFMPxBOZfCoPlRZKNYP51yaQI19VMc7ymugrL5scdf3Om1s
+         iSsF9RUYTcEMEKEQtJ6RBNB0BQShEv+GVXZ976ZLaaWkHpxd1QxEWfk3xBT25BHWR37c
+         h6C8vdSfyadOdlZcfND/KLzQTQwOcJUtYlZAnJ9Jr3IFyO/5EG/1n6DQPdv9UpUHCHqz
+         8QrRmFW64LLGOPtKZxt4MCzME0HzRJp+ce6tsEZfLOny8E1GpRpBJ70SBTK89o19OzK6
+         pTogzdPIvswYNYZ7QExC/cOH4t4MMH2takafohrQqo2+LNwf7pkC82E2MeW4Uau9L68y
+         uClg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712955458; x=1713560258;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FCkHkDQ/J68KHhz/dTMPvVvcbRSRcKWJMB2HWO4YtQw=;
+        b=lDx8sKuRGM6PxW9epm3uO3C6co9p1xwiQ6Ixb+i3wW7B4aFou3ADTbgr+H4DMINhca
+         txg8rcwzMQzWNjJhVMbiDdVSOKHpGVRhJLYEYlM/bHEgfbO7slk9j1bjcejKHp7aZG+c
+         ryCZSEcUZSJYmP7uv/P2rngAw1Iy96TahhXcOGbjddjiDuCcs84k7yrl1WWIxmxxk/sb
+         u3OgvkNWOsVd+qn5TG13w7gdu1PYzFQwtuuhF17hMk61R+C+R5WGvyJM6wA9lpfP0ctD
+         vUxnt5edZ1TpIhxVtR+Fzez/fbGY/C/y+gsolho7NTxecQyH1iiQ3WGG751QE7zLY1cH
+         cCcw==
+X-Forwarded-Encrypted: i=1; AJvYcCU1NLNoufZzQQVH7J6H9ldEeud21htbRmH4Uvua8qrZuURFaaB5zUDXG9exBJ8PZfV5v9h45ADs1SrBFpQe5quY89wQxJZWECYniwvP
+X-Gm-Message-State: AOJu0YxEt7Vt3tu0r4hQPjDxhPoGQaVW0szM2o/p3u6Ga5/rAdIfgptN
+	wrGQyxu0EufoLpfPJ/dwBMP7AlKe6Px8CQGU8L6R7S6216XBrR2x7P3/W54Y
+X-Google-Smtp-Source: AGHT+IEQuY+GRVK7Mx2y0/jxPH/4rPt5kCgpEIOi6/M/lI6EsXKAEZhr2FgGd04JdKqS9jN2leaM9A==
+X-Received: by 2002:a05:6000:1846:b0:345:84c8:35ec with SMTP id c6-20020a056000184600b0034584c835ecmr3148644wri.61.1712955457657;
+        Fri, 12 Apr 2024 13:57:37 -0700 (PDT)
 Received: from [127.0.1.1] (84-115-213-64.cable.dynamic.surfer.at. [84.115.213.64])
-        by smtp.gmail.com with ESMTPSA id l8-20020a5d4808000000b0034599eca6c9sm4989203wrq.41.2024.04.12.13.57.34
+        by smtp.gmail.com with ESMTPSA id l8-20020a5d4808000000b0034599eca6c9sm4989203wrq.41.2024.04.12.13.57.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 13:57:35 -0700 (PDT)
+        Fri, 12 Apr 2024 13:57:36 -0700 (PDT)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: [PATCH 0/6] input: use device_for_each_child_node_scoped()
-Date: Fri, 12 Apr 2024 22:57:29 +0200
-Message-Id: <20240412-input_device_for_each_child_node_scoped-v1-0-dbad1bc7ea84@gmail.com>
+Date: Fri, 12 Apr 2024 22:57:30 +0200
+Subject: [PATCH 1/6] input: iqs269a: use
+ device_for_each_child_node_scoped()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,63 +78,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADmgGWYC/x2NUQrCMBAFr1L220AstgWvIrIs2ddmQZKQaBFK7
- 26Q+RoY3juooRoa3YeDKnZrllOX62WgECVtcKbdafTjzXecpfJ5s/Y0gNdcGRIih2gv5ZQV3EI
- uUOdlmmSZRReA+lqpWO37f3o8z/MHGZsZyXkAAAA=
+Message-Id: <20240412-input_device_for_each_child_node_scoped-v1-1-dbad1bc7ea84@gmail.com>
+References: <20240412-input_device_for_each_child_node_scoped-v1-0-dbad1bc7ea84@gmail.com>
+In-Reply-To: <20240412-input_device_for_each_child_node_scoped-v1-0-dbad1bc7ea84@gmail.com>
 To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712955454; l=1795;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712955454; l=1319;
  i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=LTfEH0OW5wceSR4OBc7/jsdPA8w7QFdiyqHte0fJzYM=;
- b=IggHSVg34Jubfo9KeV3wgUEG6kpICuiSXv2zWHBXqWD2mnHsY2NVuMHm9RE+H+cDTL4RPq3CV
- taaJVZY20iyCoBB6bv5l0MFGiwpmUw7qsnThJyBd6aLREe+Gtvyb0MB
+ bh=BVzVqp8trzkV4ZG9KOZgQC6TrXg1L740OrPWMBaBgXI=;
+ b=OWZxFFVeMFbp30HoGyKbQFkZWG0nZLw2JOlLptiD8lPNzuuxYLdMYhN1UgLJdSPazE0fMQKYg
+ XKjSvQEShV7AyK34k/bkzVlgM8b99ZaDo0BKWMMRJX/2ant8yoojTpX
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
 Switch to the _scoped() version introduced in commit 365130fd47af
 ("device property: Introduce device_for_each_child_node_scoped()")
 to remove the need for manual calling of fwnode_handle_put() in the
-paths where the code exits the loop early. This modification simplifies
-the code and eliminates the risk of leaking memory if any early exit is
-added without de-allocating the child node.
-
-There are six users of the non-scoped version in the input subsystem:
-
-- iqs269a
-- qt1050
-- gpio_keys
-- gpio_keys_polled
-- adc-keys
-- adc-joystick
-
-This series is based on the master branch of linux-next (next-20240412)
-to have access to the scoped version of device_for_each_child_node().
+paths where the code exits the loop early.
 
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
-Javier Carrasco (6):
-      input: iqs269a: use device_for_each_child_node_scoped()
-      input: qt1050: use device_for_each_child_node_scoped()
-      input: gpio_keys: use device_for_each_child_node_scoped()
-      input: gpio_keys_polled: use device_for_each_child_node_scoped()
-      input: adc-keys: use device_for_each_child_node_scoped()
-      input: adc-joystick: use device_for_each_child_node_scoped()
+ drivers/input/misc/iqs269a.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
- drivers/input/joystick/adc-joystick.c     | 16 +++++-----------
- drivers/input/keyboard/adc-keys.c         |  5 +----
- drivers/input/keyboard/gpio_keys.c        |  4 +---
- drivers/input/keyboard/gpio_keys_polled.c |  4 +---
- drivers/input/keyboard/qt1050.c           | 12 ++++--------
- drivers/input/misc/iqs269a.c              |  7 ++-----
- 6 files changed, 14 insertions(+), 34 deletions(-)
----
-base-commit: 9ed46da14b9b9b2ad4edb3b0c545b6dbe5c00d39
-change-id: 20240404-input_device_for_each_child_node_scoped-0a55a76ad7ee
+diff --git a/drivers/input/misc/iqs269a.c b/drivers/input/misc/iqs269a.c
+index cd14ff9f57cf..843f8a3f3410 100644
+--- a/drivers/input/misc/iqs269a.c
++++ b/drivers/input/misc/iqs269a.c
+@@ -811,7 +811,6 @@ static int iqs269_parse_prop(struct iqs269_private *iqs269)
+ {
+ 	struct iqs269_sys_reg *sys_reg = &iqs269->sys_reg;
+ 	struct i2c_client *client = iqs269->client;
+-	struct fwnode_handle *ch_node;
+ 	u16 general, misc_a, misc_b;
+ 	unsigned int val;
+ 	int error;
+@@ -1049,12 +1048,10 @@ static int iqs269_parse_prop(struct iqs269_private *iqs269)
+ 
+ 	sys_reg->event_mask = ~((u8)IQS269_EVENT_MASK_SYS);
+ 
+-	device_for_each_child_node(&client->dev, ch_node) {
++	device_for_each_child_node_scoped(&client->dev, ch_node) {
+ 		error = iqs269_parse_chan(iqs269, ch_node);
+-		if (error) {
+-			fwnode_handle_put(ch_node);
++		if (error)
+ 			return error;
+-		}
+ 	}
+ 
+ 	/*
 
-Best regards,
 -- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+2.40.1
 
 
