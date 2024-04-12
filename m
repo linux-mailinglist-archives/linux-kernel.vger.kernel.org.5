@@ -1,139 +1,152 @@
-Return-Path: <linux-kernel+bounces-142766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDDFB8A2FE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:51:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C208A2FE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:52:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 767551F23508
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:51:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAEEE1C20DAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A948F85645;
-	Fri, 12 Apr 2024 13:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dphFY/ob"
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFA785940;
+	Fri, 12 Apr 2024 13:52:22 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECF18564A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D77684A37;
+	Fri, 12 Apr 2024 13:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712929887; cv=none; b=qwsfH/VeDUrsS0uF7CYmb/f9pncbQU3/Jo25Y0Lv/xcdVfp44XwpoKYB6MtKoJDdcCOeB9vc/9MfOFo+Jpw18YZxo7T9DqpC2wtbCuEplRNxn+QSz0TXQgK5TxXi412WkcyLw5JBr7JfOBxfn/cGT/iCCEyNUwW4xjgszx+ukzo=
+	t=1712929942; cv=none; b=JlhJwm0ZSlGzaap/PHiRrFKa6MhMZ8E83wFkzOJxNd5lHhk5NQRDzRQf8vKBQDO3IR1AMaw8QZh8oxtlyFA7TNFOuwWS9+Zl8TtCygphfRZ8c1oF6FGMAhamj5TWfU9WsXMC5OVaAtQoGsV09PA9Su71XF+ZvxgL6YAW8hvW9Zw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712929887; c=relaxed/simple;
-	bh=53Cs+42uICznC+Xas0chinXqpYt7sWkCvzQ690iV654=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AfxA8NscJBBQNPwSYX1mgJIXEl8hslnIn8+RuNcUvCWtVu67XSlkghhcSEhmtsA0I0P3eRzih84kZK3sF76ZpXjZq+w9EJ8atAauudJsVRuhE6vSCqVa/nZzUYvmvsTuVVL9U1Z44T8XQHcMBo2mFKrxWCfmuLhsRpieJSi/Blg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dphFY/ob; arc=none smtp.client-ip=209.85.222.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7e61a25900cso211832241.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712929884; x=1713534684; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tJnR5552tR98GvdFl2I9gJzxKsxtaACk6KQyxfOH2CQ=;
-        b=dphFY/obs5pjYf4o3FSjgCLJBTcJ5+J+d6Nj3Xr8Vh3rlZExJMe13QB67253zP/c/l
-         QIR+hqVyoDeIivtI1e2aZDdRbH9wM0RpMn6C1cGzUoes85ok1cNlCAvIq3M9+p/Pk/ba
-         Hc/coAOxhbGvVSzefTAA1fnoP/6TXU5bJRkuSNQD45a6cPrEM5vwTfnjowBMuEMC6CUb
-         gxUIlHDNSO360mWTLE9uP/qildXmKhKNqhqxPu2GD0GpJHf9zY+WXuV0RwjsRIgEsv9t
-         RgzCAvmf9PPTWpNqAyDyI8ojxFQxtPhC2B6N8FuNww4p8k/o+Z9P2GfIDrqIO1Y43Mwf
-         B0cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712929884; x=1713534684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tJnR5552tR98GvdFl2I9gJzxKsxtaACk6KQyxfOH2CQ=;
-        b=n4Z3thGdBPRFWLRRaMHQYL9vpJIlZc+0o85jhe0qEnQN1UNngyLEj4SprnU5U9EfgP
-         Kh5paiAEEqAqXXNKUvbuQpBvIVjb8l4wd9qZPtjhumYYt+iO+1gFoZ5dZUqYV0DwrRwW
-         ctoqAtD0IHTVCUF7PBKqTnMUMx5npPD2p3S7ZhglbEMvQQAZ3HmyGeO/m2v0T7M7AK5O
-         I5mBdDoGF5R2T14M6mhwDi25LoVuyaKTZEkuEhvJKsZJUVuDzOzvE37qLCuGJ5MuZL9D
-         35qQyD0OqjsAPPi/88yNPRpUatszCy2cY98nvglbQYzmjabB3/P3E6wHX173rpoPVdSX
-         6C7w==
-X-Forwarded-Encrypted: i=1; AJvYcCV+VOHDa+pGzI0Wx5xDUiTYFLKOXAgoTnMbSKFmfULqCAMOqLNHrqDLnNt3jQurlklZV4jcG86KInfwHs/Y2+GjGdwrVpjJBbCDWnx8
-X-Gm-Message-State: AOJu0Yy7thXfbmlPQYb1hK2tvMapgZkeH4Gl1tCQBw3CSz12+Z+k3STh
-	vlAKqa6NNvLtUqLFGsYcSZCs+Ix6X5ETggRHn7f5BKSpEv5pmQnDMNEu49pPbQy8W1V9n9/xhza
-	TP11N49RiE4389C81MiFMFjKMUP4c9f0T5Inw
-X-Google-Smtp-Source: AGHT+IHxgfhOwDhXlQkc4GDre4LJSpeZ5vnnJ1PuHWiqe7qJwFHXNft4Odbv4126CJsS+HrJIjBy3eOB/r89t4EkPWM=
-X-Received: by 2002:a05:6102:160b:b0:47a:3ce6:6cfb with SMTP id
- cu11-20020a056102160b00b0047a3ce66cfbmr3725899vsb.19.1712929884209; Fri, 12
- Apr 2024 06:51:24 -0700 (PDT)
+	s=arc-20240116; t=1712929942; c=relaxed/simple;
+	bh=55RiW4BEfu5Env7yZxccHZdVTi6u77GwAhH6ejdUMXo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uk7f5gB438b4lVT8/YzqNPkFxNd9gWiWdZl0MGV/ff0wtvW8uTvITGzVyO8RnDnfQUmJY6gyoACW5mIO7gBUiJE/9/mTEBmfVtbCymfufREX0ttysLqnJSX19U5eOX9L/yjiGfYtrH3Dqyt98SfGV/iGqbai4hAugwoizFljxMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VGHww2wX3z2CcCF;
+	Fri, 12 Apr 2024 21:49:20 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+	by mail.maildlp.com (Postfix) with ESMTPS id 348DC140554;
+	Fri, 12 Apr 2024 21:52:14 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 21:52:13 +0800
+From: Zheng Yejian <zhengyejian1@huawei.com>
+To: <mchehab@kernel.org>
+CC: <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<zhengyejian1@huawei.com>
+Subject: [PATCH] media: dvb-usb: Fix unexpected infinite loop in dvb_usb_read_remote_control()
+Date: Fri, 12 Apr 2024 21:52:56 +0800
+Message-ID: <20240412135256.1546051-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411230801.1504496-1-boqun.feng@gmail.com>
- <20240411230801.1504496-3-boqun.feng@gmail.com> <CAH5fLgg0CkZO9KF58boui6Y5ajpXHuGh0OxyNru2aEG5pNObwQ@mail.gmail.com>
- <Zhk0q-0eM4z5JHqn@Boquns-Mac-mini.home>
-In-Reply-To: <Zhk0q-0eM4z5JHqn@Boquns-Mac-mini.home>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 12 Apr 2024 15:51:12 +0200
-Message-ID: <CAH5fLghL=G-ihevf1_D0aGffmJMtxtSpMDoTGtrmdiDfhwpKnw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Miguel Ojeda <ojeda@kernel.org>, 
-	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	bjorn3_gh@protonmail.com, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 
-On Fri, Apr 12, 2024 at 3:18=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Fri, Apr 12, 2024 at 10:36:05AM +0200, Alice Ryhl wrote:
-> > On Fri, Apr 12, 2024 at 1:08=E2=80=AFAM Boqun Feng <boqun.feng@gmail.co=
-m> wrote:
-> > >
-> > > Currently since Rust code is compiled with "-Coverflow-checks=3Dy", s=
-o a
-> > > normal substraction may be compiled as an overflow checking and panic
-> > > if overflow happens:
-> > >
-> > >         subq    %rsi, %rdi
-> > >         jo      .LBB0_2
-> > >         movq    %rdi, %rax
-> > >         retq
-> > > .LBB0_2:
-> > >         pushq   %rax
-> > >         leaq    str.0(%rip), %rdi
-> > >         leaq    .L__unnamed_1(%rip), %rdx
-> > >         movl    $33, %esi
-> > >         callq   *core::panicking::panic::h59297120e85ea178@GOTPCREL(%=
-rip)
-> > >
-> > > although overflow detection is nice to have, however this makes
-> > > `Ktime::sub()` behave differently than `ktime_sub()`, moreover it's n=
-ot
-> > > clear that the overflow checking is helpful, since for example, the
-> > > current binder usage[1] doesn't have the checking.
-> >
-> > I don't think this is a good idea at all. Any code that triggers an
-> > overflow in Ktime::sub is wrong, and anyone who enables
-> > CONFIG_RUST_OVERFLOW_CHECKS does so because they want such bugs to be
-> > caught. You may have been able to find one example of a subtraction
-> > that doesn't have a risk of overflow, but overflow bugs really do
->
-> The point is you won't panic the kernel because of an overflow. I
-> agree that overflow is something we want to catch, but currently
-> ktime_t doesn't panic if overflow happens.
+Infinite log printing occurs during fuzz test:
 
-What the CONFIG_RUST_OVERFLOW_CHECKS option does is enable panics on
-overflow. So I don't understand how "it panics on overflow" is an
-argument for removing the overflow check. That's what you asked for!
-One could perhaps argue about whether CONFIG_RUST_OVERFLOW_CHECKS is a
-good idea (I think it is), but that is orthogonal. When
-CONFIG_RUST_OVERFLOW_CHECKS is enabled, you should respect the flag.
+  rc rc1: DViCO FusionHDTV DVB-T USB (LGZ201) as ...
+  ...
+  dvb-usb: schedule remote query interval to 100 msecs.
+  dvb-usb: DViCO FusionHDTV DVB-T USB (LGZ201) successfully initialized ...
+  dvb-usb: bulk message failed: -22 (1/0)
+  dvb-usb: bulk message failed: -22 (1/0)
+  dvb-usb: bulk message failed: -22 (1/0)
+  ...
+  dvb-usb: bulk message failed: -22 (1/0)
 
-Alice
+Looking into the codes, there is a loop in dvb_usb_read_remote_control(),
+that is in rc_core_dvb_usb_remote_init() create a work that will call
+dvb_usb_read_remote_control(), and this work will reschedule itself at
+'rc_interval' intervals to recursively call dvb_usb_read_remote_control(),
+see following code snippet:
+
+  rc_core_dvb_usb_remote_init() {
+    ...
+    INIT_DELAYED_WORK(&d->rc_query_work, dvb_usb_read_remote_control);
+    schedule_delayed_work(&d->rc_query_work,
+                          msecs_to_jiffies(rc_interval));
+    ...
+  }
+
+  dvb_usb_read_remote_control() {
+    ...
+    err = d->props.rc.core.rc_query(d);
+    if (err)
+      err(...)  // Did not return even if query failed
+    schedule_delayed_work(&d->rc_query_work,
+                          msecs_to_jiffies(rc_interval));
+  }
+
+When the infinite log printing occurs, the query callback
+'d->props.rc.core.rc_query' is cxusb_rc_query(). And the log is due to
+the failure of finding a valid 'generic_bulk_ctrl_endpoint'
+in usb_bulk_msg(), see following code snippet:
+
+  cxusb_rc_query() {
+    cxusb_ctrl_msg() {
+      dvb_usb_generic_rw() {
+        ret = usb_bulk_msg(d->udev, usb_sndbulkpipe(d->udev,
+                           d->props.generic_bulk_ctrl_endpoint),...);
+        if (ret)
+          err("bulk message failed: %d (%d/%d)",ret,wlen,actlen);
+          ...
+      }
+  ...
+  }
+
+By analyzing the corresponding USB descriptor, it shows that the
+bNumEndpoints is 0 in its interface descriptor, but
+the 'generic_bulk_ctrl_endpoint' is 1, that means user don't configure
+a valid endpoint for 'generic_bulk_ctrl_endpoint', therefore this
+'invalid' USB device should be rejected before it calls into
+dvb_usb_read_remote_control().
+
+To fix it, iiuc, we can add endpoint check in dvb_usb_adapter_init().
+
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ drivers/media/usb/dvb-usb/dvb-usb-init.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+Hi, I'm not very familiar with USB driver, and I'm not sure the
+type check is appropriate or not here. Would be any device properties
+that allow 'generic_bulk_ctrl_endpoint' not being configured, or would
+it be configured late after init ? :)
+
+diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+index fbf58012becd..48e7b9fb93dd 100644
+--- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
++++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+@@ -104,6 +104,14 @@ static int dvb_usb_adapter_init(struct dvb_usb_device *d, short *adapter_nrs)
+ 	 * sometimes a timeout occurs, this helps
+ 	 */
+ 	if (d->props.generic_bulk_ctrl_endpoint != 0) {
++		ret = usb_pipe_type_check(d->udev, usb_sndbulkpipe(d->udev,
++					  d->props.generic_bulk_ctrl_endpoint));
++		if (ret)
++			goto frontend_init_err;
++		ret = usb_pipe_type_check(d->udev, usb_rcvbulkpipe(d->udev,
++					  d->props.generic_bulk_ctrl_endpoint));
++		if (ret)
++			goto frontend_init_err;
+ 		usb_clear_halt(d->udev, usb_sndbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
+ 		usb_clear_halt(d->udev, usb_rcvbulkpipe(d->udev, d->props.generic_bulk_ctrl_endpoint));
+ 	}
+-- 
+2.25.1
+
 
