@@ -1,121 +1,179 @@
-Return-Path: <linux-kernel+bounces-142175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9CA8A2877
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:48:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF0C8A287A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACADEB212D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:48:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDD671F21FC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F724CE13;
-	Fri, 12 Apr 2024 07:48:23 +0000 (UTC)
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58404D9F4;
+	Fri, 12 Apr 2024 07:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W4/0dwmO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290FA482DA
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.216.63.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC7B4BAA6;
+	Fri, 12 Apr 2024 07:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712908102; cv=none; b=KceSNnhkrgXEmt204gzgp/9MB8HyQlA/WfQOuMKo31J8Ek75qwsyJmzOT1yxJZlcmTIyb21y/siw5uTHiIw27yGFcb8jBfNnNSlS9NfDio16351UrtEZAt/zsTKLHL+Sl7VzjUGAEhkbJVc1bAdOGzIx4AvWLcdY9N6BPLDO0dk=
+	t=1712908122; cv=none; b=quEzk9xIU/3BwdvKX40nQmEB9RPUc3j9lftD3oYuM0dVmPxZZjN/H8TNAAqo6CrKIpjhL+XD9KJ3ioWto1JYIQWsW2isIlePwrCzhzv63uzvG0LrtFddzhBvgpzHpEjRFLVRaT9voNUVh2mH7QbWMqiv2NnfR7KH+uKHSnR8Jys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712908102; c=relaxed/simple;
-	bh=B1uQVK0k0DZBtuOYjQrE7vq5W6eOZW3yvRW1Nld4Vsg=;
-	h=Date:Message-ID:In-Reply-To:References:Mime-Version:From:To:Cc:
-	 Subject:Content-Type; b=XdnN4I9q5LASUZCznIQ8MPrC6vfImzRsuGiiUJ6SMVuNXz/vxH2L4sLrVAB/rPLPE+6g/a6BvwY4u3io3ccVLrJGi1lJAsN8fK8gMf7puLOUt7dsy8PBPhMzYnid9pO2N4XWY9gEJL4cguZhZPtoKsrzVNOWD4kA7F+E8LbC2/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=63.216.63.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4VG7wL0YBBz8XrRK;
-	Fri, 12 Apr 2024 15:48:18 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.99.176])
-	by mse-fl1.zte.com.cn with SMTP id 43C7m3bH093870;
-	Fri, 12 Apr 2024 15:48:03 +0800 (+08)
-	(envelope-from li.hao40@zte.com.cn)
-Received: from mapi (xaxapp01[null])
-	by mapi (Zmail) with MAPI id mid31;
-	Fri, 12 Apr 2024 15:48:06 +0800 (CST)
-Date: Fri, 12 Apr 2024 15:48:06 +0800 (CST)
-X-Zmail-TransId: 2af96618e73623d-204a2
-X-Mailer: Zmail v1.0
-Message-ID: <20240412154806397beb4yGovKASnUXpyoxUJu@zte.com.cn>
-In-Reply-To: <75dff5cd-7b0e-4039-9157-8bf10cf7ba29@kernel.org>
-References: 20240412113848167egmP7kBg1Qm5sxfwGALG-@zte.com.cn,75dff5cd-7b0e-4039-9157-8bf10cf7ba29@kernel.org
+	s=arc-20240116; t=1712908122; c=relaxed/simple;
+	bh=CF9oWDzCYOqtphIi9RHhUlEJ0YZEjnZhZllTYc5lRe8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T6kK4c2kX7IWlJ6VappmB83rxujj+GB/i6q1luR4AQxfLtzmCRBHWWawZH8wt28l4IwJrJnW26/IfmwLq5cJj89EyT1r538gd2YfinJo8vmmymW+xscsSW0NqKeIkDWpdZi/GAYMB1DWMP0jrkZDp/2SjlPW/ev+O3f9xqFvW6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W4/0dwmO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D4B7C113CC;
+	Fri, 12 Apr 2024 07:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712908121;
+	bh=CF9oWDzCYOqtphIi9RHhUlEJ0YZEjnZhZllTYc5lRe8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=W4/0dwmOm139lOpxDlRRyrAMKb1EVMISM8nVCYpv9ZCM7rr+OGDUSwNXBgzQmOlKY
+	 eHp+HIOHZZjfBmtNfor1hRINuJFovViPaDycq+QqZieC4NW0VYh7wifdqXYImizUo0
+	 KKo+dI5PmfrwY1CBCFIZ1hrXaZd2GSjESFdPqJAbqWBtsE6P0D5XP/HfZlZ/VMwlem
+	 hejpYM+606MEjwA1U89ZTrcCDGswR9qvvo31LpHzHSSqs20gNy92mmnQvkX+Bn2m8U
+	 rh6086/C+f4aLJSSDZR87W58RP+fcTNq9v7mc4ZqGSSn62y4068WGSgfpigPrKM2uU
+	 FPZJX2NysVIaQ==
+Message-ID: <9b7df4f5-3a3c-40ff-b5c2-adeed2dcf780@kernel.org>
+Date: Fri, 12 Apr 2024 16:48:38 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <li.hao40@zte.com.cn>
-To: <jirislaby@kernel.org>
-Cc: <gregkh@linuxfoundation.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: =?UTF-8?B?UmU6IFJlOiBbUEFUQ0hdIHR0eTogaHZjOiB3YWtldXAgaHZjIGNvbnNvbGUgaW1tZWRpYXRlbHkgd2hlbiBuZWVkZWQ=?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 43C7m3bH093870
-X-Fangmail-Gw-Spam-Type: 0
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 6618E742.000/4VG7wL0YBBz8XrRK
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block: add max_dispatch to sysfs
+To: dongliang cui <cuidongliang390@gmail.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Dongliang Cui <dongliang.cui@unisoc.com>,
+ ke.wang@unisoc.com, hongyu.jin.cn@gmail.com, niuzhiguo84@gmail.com,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240410101858.1149134-1-dongliang.cui@unisoc.com>
+ <5a67c4f7-4794-45b4-838c-7b739372d3a5@kernel.dk>
+ <5a83c1f7-3ab8-486a-b633-33b44858d290@kernel.org>
+ <CAPqOJe1FsfA-sx4JXB-UyhUZ4ui3eagFJJ6Z6TfBUpp76ZSw9A@mail.gmail.com>
+Content-Language: en-US
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <CAPqOJe1FsfA-sx4JXB-UyhUZ4ui3eagFJJ6Z6TfBUpp76ZSw9A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> On 12. 04. 24, 5:38, li.hao40@zte.com.cn wrote:
-> > From: Li Hao <li.hao40@zte.com.cn>
-> > 
-> > Cancel the do_wakeup flag in hvc_struct, and change it to immediately
-> > wake up tty when hp->n_outbuf is 0 in hvc_push().
-> > 
-> > When we receive a key input character, the interrupt handling function
-> > hvc_handle_interrupt() will be executed, and the echo thread
-> > flush_to_ldisc() will be added to the queue.
-> > 
-> > If the user is currently using tcsetattr(), a hang may occur. tcsetattr()
-> > enters kernel and waits for hp->n_outbuf to become 0 via
-> > tty_wait_until_sent(). If the echo thread finishes executing before
-> > reaching tty_wait_until_sent (for example, put_chars() takes too long),
-> > it will cause while meeting the wakeup condition (hp->do_wakeup = 1),
-> > tty_wait_until_sent() cannot be woken up (missed the tty_wakeup() of
-> > this round's tty_poll). Unless the next key input character comes,
-> > hvc_poll will be executed, and tty_wakeup() will be performed through
-> > the do_wakeup flag.
-> > 
-> > Signed-off-by: Li Hao <li.hao40@zte.com.cn>
-> > ---
-> >   drivers/tty/hvc/hvc_console.c | 12 +++++-------
-> >   drivers/tty/hvc/hvc_console.h |  1 -
-> >   2 files changed, 5 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-> > index cd1f657f7..2fa90d938 100644
-> > --- a/drivers/tty/hvc/hvc_console.c
-> > +++ b/drivers/tty/hvc/hvc_console.c
-> > @@ -476,11 +476,13 @@ static void hvc_hangup(struct tty_struct *tty)
-> >   static int hvc_push(struct hvc_struct *hp)
-> >   {
-> >       int n;
-> > +    struct tty_struct *tty;
-> > 
-> >       n = hp->ops->put_chars(hp->vtermno, hp->outbuf, hp->n_outbuf);
-> > +    tty = tty_port_tty_get(&hp->port);
-> >       if (n <= 0) {
-> >           if (n == 0 || n == -EAGAIN) {
-> > -            hp->do_wakeup = 1;
-> > +            tty_wakeup(tty);
+On 4/12/24 16:25, dongliang cui wrote:
+> On Thu, Apr 11, 2024 at 1:19 PM Damien Le Moal <dlemoal@kernel.org> wrote:
+>>
+>> On 4/10/24 22:17, Jens Axboe wrote:
+>>> On 4/10/24 4:18 AM, Dongliang Cui wrote:
+>>>> The default configuration in the current code is that when the device
+>>>> is not busy, a single dispatch will attempt to pull 'nr_requests'
+>>>> requests out of the schedule queue.
+>>>>
+>>>> I tried to track the dispatch process:
+>>>>
+>>>> COMM            TYPE    SEC_START       IOPRIO       INDEX
+>>>> fio-17304       R    196798040       0x2005       0
+>>>> fio-17306       R    197060504       0x2005       1
+>>>> fio-17307       R    197346904       0x2005       2
+>>>> fio-17308       R    197609400       0x2005       3
+>>>> fio-17309       R    197873048       0x2005       4
+>>>> fio-17310       R    198134936       0x2005       5
+>>>> ...
+>>>> fio-17237       R    197122936         0x0       57
+>>>> fio-17238       R    197384984         0x0       58
+>>>> <...>-17239     R    197647128         0x0       59
+>>>> fio-17240       R    197909208         0x0       60
+>>>> fio-17241       R    198171320         0x0       61
+>>>> fio-17242       R    198433432         0x0       62
+>>>> fio-17300       R    195744088       0x2005       0
+>>>> fio-17301       R    196008504       0x2005       0
+>>>>
+>>>> The above data is calculated based on the block event trace, with each
+>>>> column containing: process name, request type, sector start address,
+>>>> IO priority.
+>>>>
+>>>> The INDEX represents the order in which the requests are extracted from
+>>>> the scheduler queue during a single dispatch process.
+>>>>
+>>>> Some low-speed devices cannot process these requests at once, and they will
+>>>> be requeued to hctx->dispatch and wait for the next issuance.
+>>>>
+>>>> There will be a problem here, when the IO priority is enabled, if you try
+>>>> to dispatch "nr_request" requests at once, the IO priority will be ignored
+>>>> from the scheduler queue and all requests will be extracted.
+>>>>
+>>>> In this scenario, if a high priority request is inserted into the scheduler
+>>>> queue, it needs to wait for the low priority request in the hctx->dispatch
+>>>> to be processed first.
+>>>>
+>>>> --------------------dispatch 1st----------------------
+>>>> fio-17241       R       198171320         0x0       61
+>>>> fio-17242       R       198433432         0x0       62
+>>>> --------------------dispatch 2nd----------------------
+>>>> fio-17300       R       195744088       0x2005       0
+>>>>
+>>>> In certain scenarios, we hope that requests can be processed in order of io
+>>>> priority as much as possible.
+>>>>
+>>>> Maybe max_dispatch should not be a fixed value, but can be adjusted
+>>>> according to device conditions.
+>>>>
+>>>> So we give a interface to control the maximum value of single dispatch
+>>>> so that users can configure it according to devices characteristics.
+>>>
+>>> I agree that pulling 'nr_requests' out of the scheduler will kind of
+>>> defeat the purpose of the scheduler to some extent. But rather than add
+>>> another knob that nobody knows about or ever will touch (and extra queue
+>>> variables that just take up space), why not just default to something a
+>>> bit saner? Eg we could default to 1/8 or 1/4 of the scheduler depth
+>>> instead.
+> Current mechanism will try to pulling everything out of the scheduler,
+> regardless
+> of the priority of request. Perhaps reducing the queue depth does not solve the
+> priority disorder scenario. Reducing depth may also weakens the role
+> of priorify.
 > 
-> What if tty is NULL? Did you intent to use tty_port_tty_wakeup() instead?
-> 
-> thanks,
-> -- 
-> js
-> suse labs
+>>
+>> Why not default to pulling what can actually be executed, that is, up to the
+>> number of free hw tags / budget ? Anything more than that will be requeued anyway.
+> The process of pulling the request out of schedule will try to obtain
+> the hw tags.
+> If hw tags are obtained, request will continue to be pulled out of scheduler.
+> However, for slow devices, the number of hw tags is generally greater than the
+> number of requests that the device can currently handle, and
+> unprocessed requests
+> may not be arranged in dispatch_list in order of priority.
 
-Thank you for your prompt reply.
-tty_port_tty_wakeup() is better, it no longer check if tty is NULL in hvc_push()
+What ? If the number of hw tags you have for your device is larger than what the
+device can actually handle, that means that your device driver is very buggy. A
+hw tag is a direct identifier of queued commands on the device side. So you
+cannot have more than what the device allows.
 
-Li Hao
+May be you are confusing this with the fact that even if you have the correct
+maximum number of hw tags, the device may sometimes refuse to accept a new
+command using a free tag. E.g. a scsi device may return TSF (task set full) even
+if its queue is not full (some hw tags are free). But that is not the common case.
+
+As for the commands not being arranged in priority order when submitted, that is
+also strange. You are going to get the commands from the scheduler in priority
+order, so they will be sorted naturally as such in the dispatch queue, unless
+you get a lot of requeue from the device (again, generally not the usual case).
+
+> And for budget, I found that the budget is set by the driver. Some
+> slow devices,
+> such as emmc, do not register this interface, unable to set budget.
+
+May be that is exactly what you need to do to solve your issue: implement that
+for emmc. Have you tried ?
+
+
+-- 
+Damien Le Moal
+Western Digital Research
+
 
