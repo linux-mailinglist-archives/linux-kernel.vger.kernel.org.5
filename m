@@ -1,143 +1,201 @@
-Return-Path: <linux-kernel+bounces-142651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA0C88A2E51
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:31:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB40F8A2E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBB0A1C228E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:31:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1147B22309
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D29B5786D;
-	Fri, 12 Apr 2024 12:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D2B57337;
+	Fri, 12 Apr 2024 12:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Kw7pa1wE"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="YAHg2XAj"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E592356B64;
-	Fri, 12 Apr 2024 12:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001004597F;
+	Fri, 12 Apr 2024 12:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712924993; cv=none; b=U0tQhA1zUnfls4B61OJGK9nvt4uBP9uD6kqjHrljNa4kqUzJ0etVCL/ToxqoH/p5hds8Di43ms6fXDSyrcfYrG7j77QjHCIUwfm1XJw5KyTNs47issfs/ieK3tjUZWQPSrzn5c4VBOqZp6JOLnuBRGJVNEOthfJk7dVCBM5llZk=
+	t=1712925071; cv=none; b=A0IcYShq3v6awrMTK5UAL38mw3DrgTDg8Sa4fmWxBWr2CPUehIyEYt8o6NGKOxU6qQiFPpMbhXWFPyr02xSq617R930/+4XjEPYIZpN7aEVxUThbeZ+rK7E32qYXCLbTpW/fn+x1puaetqLRpXlYQLGCtaJyWjyPB8foMM4znqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712924993; c=relaxed/simple;
-	bh=8h9T0GeTP+vOniNfikiPnfgeGCG1dXcgA4/FtwLyHHE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CzIzyUEHIHg6ftM73eRyBhiGCMguokWP+v2V1oDTYpkHBIzVpsdJMuYmI6w+dfLy8HplFYcca+7+lJlQTK2biI66C7MkmR6zwrDyYE+qFi03wZ8GloLZ4vrQAdIVct0AXUdIf18F4E+X0Cal19rcydycAMiq3PzU3vBAmcyuF4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Kw7pa1wE; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43CC84Or028944;
-	Fri, 12 Apr 2024 12:29:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=IzaZDBYAW7Ds3k8XifIiNUwmHPCzZYo380zBubpNgSM=;
- b=Kw7pa1wEaLM3LwE0CjUh87mzrGs6+uK+K6hFBJMI5xhltzlxZLvfASU3lFEFCVmQvfVE
- 6Nr/sgW9Nvb3VhhjoJvnd5iwP+1LQTmtbJniAmGFK/EVqHEXDTs4eYD6dYRFqQqImUtH
- F3eJIceu7Zv6dCPowXpFJR7MqEW58BjyAhgIu1tcPkJGSDRlMTWxCDw0iUg4yYyC74m9
- jlCqy3Oa9QP3CH9Q4Q7jztflKmEurFW9Yd4i1mA30TaSeJ92WV911Qa13j30ZkyhAP7R
- ijDHq3rLOryBQSCjK0ahEsJwONmBdi7Z/7CHoq+RTOl0iWjisqI7LD0MfP2Fj3/4ZEUm BA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xf4pg81pc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 12:29:49 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43CAm3lK022560;
-	Fri, 12 Apr 2024 12:29:48 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbhqphsxu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 12:29:48 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43CCTjiA44171622
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Apr 2024 12:29:47 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C80AD58055;
-	Fri, 12 Apr 2024 12:29:45 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 351B05805D;
-	Fri, 12 Apr 2024 12:29:45 +0000 (GMT)
-Received: from [9.61.20.106] (unknown [9.61.20.106])
-	by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 12 Apr 2024 12:29:45 +0000 (GMT)
-Message-ID: <95b551f1-7599-96e1-b528-0701465baf5a@linux.ibm.com>
-Date: Fri, 12 Apr 2024 08:29:44 -0400
+	s=arc-20240116; t=1712925071; c=relaxed/simple;
+	bh=o8YSWsoCfZ7tptBqUVVtBw1fFnKL06BvA0qNMfnioDw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hrKgMjZgU6xYp+kONcTUnwd/shQlVeMwqsTBstoVwlEBRGLrGq4+SgzFwFIupwpegcnzhpHIudEcjTcvF/pYHBU+bk1ZqIJQyRY/DU1f3daxeAqtihNksiiaP55Yic0GZtaV7RDYz872oJ0aKVOLWWf39kMGwFvW3kq5CfrHeXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=YAHg2XAj; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712925068; x=1744461068;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=o8YSWsoCfZ7tptBqUVVtBw1fFnKL06BvA0qNMfnioDw=;
+  b=YAHg2XAjz7reUSlwhHo3OfF5Idv4gtTNL0u6hg6Ez4/4TdvRQE+0Jm3h
+   eXn6PURY+LVOAyym2nk8cV6tG4V8Adyy4MCmL4zkXa7z9bcCsuteA58IN
+   Ha84RKCsIEWH+PNTJ7opAhaIvRxwwk5ihL7RUGSDd1ABonlbtKSdziEFZ
+   pbBirLOAHzDllFbmpm3kiWWs/7hfmWVWyP+QxFLNQ4exZxai+XIgE4Fg0
+   i7GMOjQorX47q/94/Ygabzs/O1WULRC3MQhhRU1TpywpP6J5z1tRRocuK
+   xpUsvI+ciSXJH94rX7hYQMd5XQldcMZ4evKM91uEAZmKKXnQqsp7dzxoC
+   Q==;
+X-CSE-ConnectionGUID: 8n3UuTh2QzaDn5A8rQGjFg==
+X-CSE-MsgGUID: nqO9YiBGTYCscAdrhaD7/w==
+X-IronPort-AV: E=Sophos;i="6.07,196,1708412400"; 
+   d="asc'?scan'208";a="188017039"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 05:31:07 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 05:31:03 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 12 Apr 2024 05:30:59 -0700
+Date: Fri, 12 Apr 2024 13:30:08 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
+	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
+	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
+	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
+	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 06/19] riscv: Extend cpufeature.c to detect vendor
+ extensions
+Message-ID: <20240412-sprawl-product-1e1d02e25bca@wendy>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 4/5] s390/vfio-ap: Add write support to sysfs attr
- ap_config
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pasic@linux.ibm.com, akrowiak@linux.ibm.com, borntraeger@de.ibm.com,
-        gor@linux.ibm.com, hca@linux.ibm.com,
-        Matthew Rosato <mjrosato@linux.ibm.com>
-References: <20240326164706.29167-1-jjherne@linux.ibm.com>
- <20240326164706.29167-5-jjherne@linux.ibm.com>
- <ZhP9qHs6tjPbh1/J@tuxmaker.boeblingen.de.ibm.com>
-Content-Language: en-US
-From: "Jason J. Herne" <jjherne@linux.ibm.com>
-In-Reply-To: <ZhP9qHs6tjPbh1/J@tuxmaker.boeblingen.de.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6gq9dZi1pChz8kaAM-SzDB43pCdY3NJu
-X-Proofpoint-ORIG-GUID: 6gq9dZi1pChz8kaAM-SzDB43pCdY3NJu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-12_08,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 suspectscore=0 clxscore=1011 phishscore=0 mlxlogscore=999
- impostorscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404120090
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="/rKIhypokaxpjzdO"
+Content-Disposition: inline
+In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746@rivosinc.com>
 
-On 4/8/24 10:22 AM, Alexander Gordeev wrote:
-> On Tue, Mar 26, 2024 at 12:47:05PM -0400, Jason J. Herne wrote:
-> 
-> Hi Jason,
-> 
-> This series still has some issues.
-> 
->> +	newbuf = rest = kstrndup(buf, AP_CONFIG_STRLEN, GFP_KERNEL);
-> 
-> This line triggers a checkpatch warning. Would it make sense
-> to turn it into below instead?
-> 
-> 	newbuf = kstrndup(buf, AP_CONFIG_STRLEN, GFP_KERNEL);
->> +	if (!newbuf)
->> +		return -ENOMEM;
-> 	rest = newbuf;
+--/rKIhypokaxpjzdO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I can make that change. My checkpatch.pl script does not point this
-issue out with --strict. Should I be running checkpatch with --strict?
+On Thu, Apr 11, 2024 at 09:11:12PM -0700, Charlie Jenkins wrote:
+>  static void __init riscv_parse_isa_string(unsigned long *this_hwcap, str=
+uct riscv_isainfo *isainfo,
 
-> Also, please address other checkpatch suggestions.
-> 
+> -					  unsigned long *isa2hwcap, const char *isa)
+> +					struct riscv_isainfo *isavendorinfo, unsigned long vendorid,
+> +					unsigned long *isa2hwcap, const char *isa)
+>  {
+>  	/*
+>  	 * For all possible cpus, we have already validated in
+> @@ -349,8 +384,30 @@ static void __init riscv_parse_isa_string(unsigned l=
+ong *this_hwcap, struct risc
+>  		const char *ext =3D isa++;
+>  		const char *ext_end =3D isa;
+>  		bool ext_long =3D false, ext_err =3D false;
+> +		struct riscv_isainfo *selected_isainfo =3D isainfo;
+> +		const struct riscv_isa_ext_data *selected_riscv_isa_ext =3D riscv_isa_=
+ext;
+> +		size_t selected_riscv_isa_ext_count =3D riscv_isa_ext_count;
+> +		unsigned int id_offset =3D 0;
+> =20
+>  		switch (*ext) {
+> +		case 'x':
+> +		case 'X':
 
-Yep, I'll run with --strict and address everything.
+One quick remark is that we should not go and support this stuff via
+riscv,isa in my opinion, only allowing it for the riscv,isa-extensions
+parsing. We don't have a way to define meanings for vendor extensions in
+this way. ACPI also uses this codepath and at the moment the kernel's
+docs say we're gonna follow isa string parsing rules in a specific version
+of the ISA manual. While that manual provides a format for the string and
+meanings for standard extensions, there's nothing in there that allows us
+to get consistent meanings for specific vendor extensions, so I think we
+should avoid intentionally supporting this here.
 
->> +	/* Save old state */
->> +	/* The volatile cast here is to work around a gcc false positive
->> +	 * Wstringop-overread-warning.
->> +	 */
->> +	ap_matrix_copy(&m_old, (*(struct ap_matrix * volatile *)(&matrix_mdev->matrix)));
-> 
-> Could you please come up with a different workaround? This issue has already
-> been resolved in the past in different ways. See commit 34186b48d29b ("ARM:
-> sharpsl_param: work around -Wstringop-overread warning") for example.
+I'd probably go as far as to actively skip vendor extensions in
+riscv_parse_isa_string() to avoid any potential issues.
 
-Sure, I like this solution way better than using volatile. Thanks for
-providing the pointer to this.
+> +			bool found;
+> +
+> +			found =3D get_isa_vendor_ext(vendorid,
+> +						   &selected_riscv_isa_ext,
+> +						   &selected_riscv_isa_ext_count);
+> +			selected_isainfo =3D isavendorinfo;
+> +			id_offset =3D RISCV_ISA_VENDOR_EXT_BASE;
+> +			if (!found) {
+> +				pr_warn("No associated vendor extensions with vendor id: %lx\n",
+> +					vendorid);
+
+This should not be a warning, anything we don't understand should be
+silently ignored to avoid spamming just because the kernel has not grown
+support for it yet.
+
+Thanks,
+Conor.
+
+> +				for (; *isa && *isa !=3D '_'; ++isa)
+> +					;
+> +				ext_err =3D true;
+> +				break;
+> +			}
+> +			fallthrough;
+>  		case 's':
+>  			/*
+>  			 * Workaround for invalid single-letter 's' & 'u' (QEMU).
+> @@ -366,8 +423,6 @@ static void __init riscv_parse_isa_string(unsigned lo=
+ng *this_hwcap, struct risc
+>  			}
+>  			fallthrough;
+>  		case 'S':
+> -		case 'x':
+> -		case 'X':
+>  		case 'z':
+>  		case 'Z':
+>  			/*
+> @@ -476,8 +531,10 @@ static void __init riscv_parse_isa_string(unsigned l=
+ong *this_hwcap, struct risc
+>  				set_bit(nr, isainfo->isa);
+>  			}
+>  		} else {
+> -			for (int i =3D 0; i < riscv_isa_ext_count; i++)
+> -				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
+> +			for (int i =3D 0; i < selected_riscv_isa_ext_count; i++)
+> +				match_isa_ext(&selected_riscv_isa_ext[i], ext,
+> +					      ext_end, selected_isainfo,
+> +					      id_offset);
+>  		}
+>  	}
+>  }
+
+--/rKIhypokaxpjzdO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkpUAAKCRB4tDGHoIJi
+0suMAP9hVav0oRL2jmBJm2ACwJ1+CNYfBT488OIk7AWbRjBIigEAtUP/mmReLFMY
+g7/EcQ6a/96RixRPX9yYcg23rYMJOQE=
+=w9t9
+-----END PGP SIGNATURE-----
+
+--/rKIhypokaxpjzdO--
 
