@@ -1,182 +1,121 @@
-Return-Path: <linux-kernel+bounces-142412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F24C88A2B34
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:29:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BFE98A2B35
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:30:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A964328DAC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:29:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD23C1C2311D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B531451033;
-	Fri, 12 Apr 2024 09:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aTXnQP1T"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86AE5029B;
-	Fri, 12 Apr 2024 09:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9D950A6C;
+	Fri, 12 Apr 2024 09:30:11 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0B65029B
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712914173; cv=none; b=advsZrV1n3/45tTAEHPqIOYxztXhwdFEryBVyOJGbn957IahxjUho0ZbvzSGx24ckUDfCIXhehseDQZb6HV3cE953QE0FZaAbWqgp/QkzrmP69KOT3WnZFPTDjXpgSo48ASe3Xa126jzmMGwlhrlEI/xaLbRJAYqHZoctYpz6nI=
+	t=1712914210; cv=none; b=s2zK3G2jLJ4R1psI7e+MiiDalxsotrYfomNRZg70ORoMXVJhAANV44Z8/0yXV1hVnBLL0zMAQKY41FlarNjPWtfQImC/WCUwtGISv4eTG1pgR5UPMRx7mxExZ7RlIKjThLRuJZ1etR46HvwNAhyLZP9JXlcmz5PAftQBWkMgnFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712914173; c=relaxed/simple;
-	bh=/sjvyrSm7S4Xp8PqDAqn9dtnDgY764wTIuC53kgyd/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xk0wqx8ptjTTc2PUxpi4PmG1vcgYgWvgtMsLca2s3KQ0Wt8Oq7jHr8kiathdLxL8IMbyhcUZ3Tsts3tduXw2X0JsvHsR2vsLleAbi/gkFodt/USMbU7qtIAhT+yk4hAIJ93PLJSoz/Xk0wx6gXlk2fkUYTRh6c3RUosVFN23h2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aTXnQP1T; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712914172; x=1744450172;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/sjvyrSm7S4Xp8PqDAqn9dtnDgY764wTIuC53kgyd/Q=;
-  b=aTXnQP1TTHJC5CmtYiWNy/IooMPpyIW+5/akY0qiWElrZ9wj2nX32BeW
-   e98+zxVlcjHAGU2n75gPZWiY8T3J5L5iZpGBvVH4FrOkOAQQ24Bln7tU5
-   ImgeEvmGtV0sYtAYou7l5RbZxW/XxIUblUljh/V/J0qRxkiGX7Hj9t1dq
-   H/P3H94VTXoHaGa6iGKvp9qIuaUs6Z3jRY8/u64uyvhVFi3M8LZuWeuX4
-   fnMS04RBlgapKdTXNfsR7tgoLOXGNowCtzZY8wDLZE4CdMhJ4d87h4yA9
-   5Gj+t6SxRHHMCa9zbZk9bIHn6AZG6RAByVAV2uvO2AjUMuexE6epGkrG+
-   w==;
-X-CSE-ConnectionGUID: zwJXQZpsRvOi09rAP4s02Q==
-X-CSE-MsgGUID: iNClxgVwTrCgVJmPHYvz0A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="12147592"
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="12147592"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 02:29:31 -0700
-X-CSE-ConnectionGUID: p2Te1THcR+aMzCOnjjCYPA==
-X-CSE-MsgGUID: jcYHBli3TPqHQtKTb5McTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="21167117"
-Received: from dev-qz.sh.intel.com (HELO localhost) ([10.239.147.89])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 02:29:29 -0700
-Date: Fri, 12 Apr 2024 17:29:43 +0800
-From: Qiang Zhang <qiang4.zhang@linux.intel.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Qiang Zhang <qiang4.zhang@intel.com>, Stable@vger.kernel.org
-Subject: Re: [PATCH RESEND] bootconfig: use memblock_free_late to free xbc
- memory to buddy
-Message-ID: <Zhj/B4w5rCpZKm1K@dev-qz>
-References: <20240412024103.3078378-1-qiang4.zhang@linux.intel.com>
- <20240412163448.98950acccc3baea1a3f07fed@kernel.org>
+	s=arc-20240116; t=1712914210; c=relaxed/simple;
+	bh=HFqo7+vWZ0Wz3w2aeaZqrJQ+MORGGd/mtA2CPk//mpI=;
+	h=Subject:To:References:Cc:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ALccvGOqP1MVq6rk/TEYOBtL0jS7k43Xs6696fih0pUCzdhDHMQHpy4Ljqwr+W6gwnelo9Z1TA7orfYulklOIehmSB1ag/uPGJYKd7YUnCvw2UVtW1n3GT6uWZocF9ocExpx/QzbMOCEaq/yu7KeFq/tGM0Dy7awvPSosn5jPQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Bxiegf_xhmgFMmAA--.2890S3;
+	Fri, 12 Apr 2024 17:30:07 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxHs8c_xhmV6N4AA--.34991S3;
+	Fri, 12 Apr 2024 17:30:05 +0800 (CST)
+Subject: Re: [PATCH v3 3/4] LoongArch: Save and restore PERCPU_BASE_KS for
+ ACPI S3 state
+To: Huacai Chen <chenhuacai@kernel.org>
+References: <20240411010510.22135-1-yangtiezhu@loongson.cn>
+ <20240411010510.22135-4-yangtiezhu@loongson.cn>
+ <CAAhV-H7SqudMeyK6_+j0ah=N=ywsv=4kk_b=hxocEQFsKZ+0bA@mail.gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>,
+ Marc Zyngier <maz@kernel.org>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <9b95e6d7-35d2-eeee-f6dc-fc7741a48b62@loongson.cn>
+Date: Fri, 12 Apr 2024 17:30:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412163448.98950acccc3baea1a3f07fed@kernel.org>
+In-Reply-To: <CAAhV-H7SqudMeyK6_+j0ah=N=ywsv=4kk_b=hxocEQFsKZ+0bA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8AxHs8c_xhmV6N4AA--.34991S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tFW7KryUXw47ZFW5Ar1xCrX_yoW8Xw17pF
+	92yF4ktF40kFn7JF1qv3WqgF4UX393KrWIq3ZIk3yqkr9Fq3s8Wr4rt3WYgF1kWw1xAa10
+	v3yft343XFyUJabCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4Xo7DU
+	UUU
 
-On Fri, Apr 12, 2024 at 04:34:48PM +0900, Masami Hiramatsu wrote:
->On Fri, 12 Apr 2024 10:41:04 +0800
->qiang4.zhang@linux.intel.com wrote:
->
->> From: Qiang Zhang <qiang4.zhang@intel.com>
->> 
->> On the time to free xbc memory, memblock has handed over memory to buddy
->> allocator. So it doesn't make sense to free memory back to memblock.
->> memblock_free() called by xbc_exit() even causes UAF bugs on architectures
->> with CONFIG_ARCH_KEEP_MEMBLOCK disabled like x86. Following KASAN logs
->> shows this case.
->> 
->> [    9.410890] ==================================================================
->> [    9.418962] BUG: KASAN: use-after-free in memblock_isolate_range+0x12d/0x260
->> [    9.426850] Read of size 8 at addr ffff88845dd30000 by task swapper/0/1
->> 
->> [    9.435901] CPU: 9 PID: 1 Comm: swapper/0 Tainted: G     U             6.9.0-rc3-00208-g586b5dfb51b9 #5
->> [    9.446403] Hardware name: Intel Corporation RPLP LP5 (CPU:RaptorLake)/RPLP LP5 (ID:13), BIOS IRPPN02.01.01.00.00.19.015.D-00000000 Dec 28 2023
->> [    9.460789] Call Trace:
->> [    9.463518]  <TASK>
->> [    9.465859]  dump_stack_lvl+0x53/0x70
->> [    9.469949]  print_report+0xce/0x610
->> [    9.473944]  ? __virt_addr_valid+0xf5/0x1b0
->> [    9.478619]  ? memblock_isolate_range+0x12d/0x260
->> [    9.483877]  kasan_report+0xc6/0x100
->> [    9.487870]  ? memblock_isolate_range+0x12d/0x260
->> [    9.493125]  memblock_isolate_range+0x12d/0x260
->> [    9.498187]  memblock_phys_free+0xb4/0x160
->> [    9.502762]  ? __pfx_memblock_phys_free+0x10/0x10
->> [    9.508021]  ? mutex_unlock+0x7e/0xd0
->> [    9.512111]  ? __pfx_mutex_unlock+0x10/0x10
->> [    9.516786]  ? kernel_init_freeable+0x2d4/0x430
->> [    9.521850]  ? __pfx_kernel_init+0x10/0x10
->> [    9.526426]  xbc_exit+0x17/0x70
->> [    9.529935]  kernel_init+0x38/0x1e0
->> [    9.533829]  ? _raw_spin_unlock_irq+0xd/0x30
->> [    9.538601]  ret_from_fork+0x2c/0x50
->> [    9.542596]  ? __pfx_kernel_init+0x10/0x10
->> [    9.547170]  ret_from_fork_asm+0x1a/0x30
->> [    9.551552]  </TASK>
->> 
->> [    9.555649] The buggy address belongs to the physical page:
->> [    9.561875] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x45dd30
->> [    9.570821] flags: 0x200000000000000(node=0|zone=2)
->> [    9.576271] page_type: 0xffffffff()
->> [    9.580167] raw: 0200000000000000 ffffea0011774c48 ffffea0012ba1848 0000000000000000
->> [    9.588823] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->> [    9.597476] page dumped because: kasan: bad access detected
->> 
->> [    9.605362] Memory state around the buggy address:
->> [    9.610714]  ffff88845dd2ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> [    9.618786]  ffff88845dd2ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> [    9.626857] >ffff88845dd30000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->> [    9.634930]                    ^
->> [    9.638534]  ffff88845dd30080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->> [    9.646605]  ffff88845dd30100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->> [    9.654675] ==================================================================
->> 
->
->Oops, good catch! Indeed, it is too late to use memblock_free().
->
->BTW, is it safe to call memblock_free_late() in early boot stage,
->because xbc_free_mem() will be called also from xbc_init().
->If not, we need a custom internal __xbc_exit() or xbc_cleanup()
->which is called from xbc_init() and uses memblock_free().
 
-No, memblock_free_late() can't be used early.
-Exit and Cleanup seem alike and are confusing. Maybe adding a early flag to
-_xbc_exit(bool early) is more clear. I will push a V2 for this.
 
+On 04/12/2024 12:18 PM, Huacai Chen wrote:
+> Hi, Tiezhu,
 >
->Thank you,
->
->
->> Cc: Stable@vger.kernel.org
->> Signed-off-by: Qiang Zhang <qiang4.zhang@intel.com>
->> ---
->>  lib/bootconfig.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/lib/bootconfig.c b/lib/bootconfig.c
->> index c59d26068a64..4524ee944df0 100644
->> --- a/lib/bootconfig.c
->> +++ b/lib/bootconfig.c
->> @@ -63,7 +63,7 @@ static inline void * __init xbc_alloc_mem(size_t size)
->>  
->>  static inline void __init xbc_free_mem(void *addr, size_t size)
->>  {
->> -	memblock_free(addr, size);
->> +	memblock_free_late(__pa(addr), size);
->>  }
->>  
->>  #else /* !__KERNEL__ */
->> -- 
->> 2.39.2
->> 
->> 
->
->
->-- 
->Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> On Thu, Apr 11, 2024 at 9:05 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>
+>> Currently, per_cpu_offset(x) is defined as __per_cpu_offset[x])
+>> only under CONFIG_SMP in include/asm-generic/percpu.h, that is
+>> to say, the implementation of loongarch_common_resume() which
+>> calls per_cpu_offset(0) is not suitable for the case of non-SMP,
+>> so do not write per_cpu_offset(0) to PERCPU_BASE_KS when resume,
+>> just save the value of PERCPU_BASE_KS when suspend and restore
+>> it when resume to make it work well for both SMP and non-SMP.
+> For non-SMP you need PERCPU_BASE_KS to do what?
+
+The initial aim is to avoid build error under !CONFIG_SMP
+and it works well on both !CONFIG_SMP and CONFIG_SMP, the
+changes are similar with the code in hibernate.c.
+
+An alternative way is to do the following simple change,
+but it seems a little ugly due to the ifdef, let me know
+what is your preference.
+
+diff --git a/arch/loongarch/power/suspend.c b/arch/loongarch/power/suspend.c
+index 166d9e06a64b..35191afefcda 100644
+--- a/arch/loongarch/power/suspend.c
++++ b/arch/loongarch/power/suspend.c
+@@ -44,7 +44,9 @@ void loongarch_common_resume(void)
+  {
+         sync_counter();
+         local_flush_tlb_all();
++#ifdef
+         csr_write64(per_cpu_offset(0), PERCPU_BASE_KS);
++#endif
+         csr_write64(eentry, LOONGARCH_CSR_EENTRY);
+         csr_write64(eentry, LOONGARCH_CSR_MERRENTRY);
+         csr_write64(tlbrentry, LOONGARCH_CSR_TLBRENTRY);
+
+Thanks,
+Tiezhu
+
 
