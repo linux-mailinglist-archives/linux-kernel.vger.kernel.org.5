@@ -1,399 +1,456 @@
-Return-Path: <linux-kernel+bounces-142550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71BB08A2D0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A65AF8A2D0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:05:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F09F01F21A80
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:05:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 347C11F2230E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3395052F70;
-	Fri, 12 Apr 2024 11:05:06 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546B34437D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D2942056;
+	Fri, 12 Apr 2024 11:05:33 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E284437A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:05:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712919905; cv=none; b=lY6HzV0aWPzqM5f00wYYn4aVL3Qn4IVdQHRAfuXglI7H7JKesNZFgdUZicPfKtr5oeoKSR7vjaGAD+F8SgG9jMYlrePQ/CLHExD5JDDi335ImW46PPZWGd8aPvfNUWCFdWeBcV8r8lr0XbvvXDlN1fMQgSUUEgpcUO5usCdM4N4=
+	t=1712919932; cv=none; b=R36yGFfbRMICf2mWZ0/1ybkiRPsaFakVjlZTRIikdxczy/jKTrrU61EoH2zfnmmMkNfU+igLHHNIEy2hJEY2VVwbpLM5wZ2kB8k0DiCv1JM7CsMgjfhpIK2RTPKDaRSTFsxyDKeduJ6Z3XqgZNJH9BAf8P4LJKTgzw58XcLOJm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712919905; c=relaxed/simple;
-	bh=oxx0y04oySwgOUgVHNoUaoZzOduqrNetF+f166lju5U=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=l4gC1LYubc/2p21n0GheDVyY1kf/n4DAN35/1yOHZn9P2aulikYMxgAex3lKLUOlUyjfGyMhj+wqh5zhysqC4tyHLceuRQU01WXE1FpBlCh5RMKWf8n/r49gLCOSDC5FHuBHxu/VHe6aBSg8NH7KG9M0V3yip1A6OT1mowCH6b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d66a30a83aso61506439f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:05:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712919902; x=1713524702;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wERfHLy8vuqyzLf9NT1SV0eQ9Em0v+99TFCqdH1fKMI=;
-        b=eXxM6HkgeEeAK4elKgmT6ukLpepkGeHBi4Rq34VEE0KaNzO8fgGmBdESxyhfqdlfmP
-         8IGuqU+CI1JlJa003a0siXmVgNkkSsqnFA2GhKMTEmOB/fsm4aPgjluZpfh31k2/zPgz
-         8dNToK+VLHkM8jFg8FkCyX10V0jxq/dAwbAramtGbMUzkze870bOJbKgRAuXw84zO5+y
-         yzsLojWLRDnr7/S6V+mitfvxEcbV0tFugk6khpBJTRCbLs1L87RGbeSQYSmKei4jQ8nn
-         YUvjtUXZ5yMAVoI894EE23Z/+bjL13l9Fxlu8D+qN97ybxM8W+F7ukCUo8w13Cav0exx
-         SeQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUTea2XumSB4Xr3qSAr6NAHc2UD6IkStsXhThWi/d+nQ25OVYxty4qk5t245P61VO7I1nNCd0+tx8QmLyp/GQOddVxTdjXAO9HvasGQ
-X-Gm-Message-State: AOJu0YxK6m9pc9x4NXvjvksV2UxLOaCv1rQwTgLk0BMlTyZcMq0YvVq/
-	fdQRiWTmxtjOcVmsolcH2Pounx5eqU171iSt+CRxWhA3r1d03nPyOw0a9ziEWSMDhfNDbUfHEVb
-	HncJwqY9F4U6wBIMcmRCBq4JAUyKfz8AckBTQ22YmeBnS6yDYBWtLRco=
-X-Google-Smtp-Source: AGHT+IERX4Olm096VXI9XsxU4lXl449YqVI/Wa44NZXcFcsLuSZ7275VTvtKkJT4TcmmxScI4Uc8tO61KDb1Xm94c5F6dmNnBub/
+	s=arc-20240116; t=1712919932; c=relaxed/simple;
+	bh=qXYTjphreYeMtpW1SxS+XKP/sJKpIFVNlJxnVofWKHE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r6zxt0hRGEDPqDyEFo6+102F6UCA7i4S33TIYHCRe64hC3q96uyu5sMT3W0ZDkA1hkVlb6RARurVpM0Yze2lem07FhFN1MOxCTOKFAkoBD7f4f57seH/KM1WI5UfPTVXybcg0Ukasa7tiVquvcDt8qBuPe+gqGxOTeLJ+HMHV5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B4B6339;
+	Fri, 12 Apr 2024 04:05:59 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8AD03F766;
+	Fri, 12 Apr 2024 04:05:26 -0700 (PDT)
+Message-ID: <b40352a1-17cd-44ea-bfb1-00be62fbf1cf@arm.com>
+Date: Fri, 12 Apr 2024 12:05:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:34a4:b0:482:dc5f:4d78 with SMTP id
- t36-20020a05663834a400b00482dc5f4d78mr29093jal.3.1712919902482; Fri, 12 Apr
- 2024 04:05:02 -0700 (PDT)
-Date: Fri, 12 Apr 2024 04:05:02 -0700
-In-Reply-To: <20240412104439.824-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005109960615e43e83@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __hci_req_sync
-From: syzbot <syzbot+27209997e4015fb4702e@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/4] mm: add per-order mTHP anon_fault_alloc and
+ anon_fault_fallback counters
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
+ chrisl@kernel.org, corbet@lwn.net, david@redhat.com, kasong@tencent.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, peterx@redhat.com,
+ surenb@google.com, v-songbaohua@oppo.com, willy@infradead.org,
+ yosryahmed@google.com, yuzhao@google.com
+References: <f5d6e014-5d6b-441c-8379-252ff24e2260@arm.com>
+ <20240412101756.296971-1-21cnbao@gmail.com>
+ <744fc49e-d91b-4f5a-9a27-1a25c50c2154@arm.com>
+ <CAGsJ_4z6B09wbRFTXXek+pNi9yCHSSF+ZS2gph+AtViMhZyN9w@mail.gmail.com>
+ <c9f425fd-285b-46b6-821e-fb758a4101e0@arm.com>
+ <CAGsJ_4yJLgVn-GSErtCQ=W=V9-S4AucbYcP3ZLqoE5ynHf1sGg@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4yJLgVn-GSErtCQ=W=V9-S4AucbYcP3ZLqoE5ynHf1sGg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+On 12/04/2024 11:53, Barry Song wrote:
+> On Fri, Apr 12, 2024 at 10:38 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 12/04/2024 11:29, Barry Song wrote:
+>>> On Fri, Apr 12, 2024 at 10:25 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> On 12/04/2024 11:17, Barry Song wrote:
+>>>>> On Fri, Apr 12, 2024 at 9:56 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>
+>>>>>> On 12/04/2024 10:43, Barry Song wrote:
+>>>>>>> On Fri, Apr 12, 2024 at 9:27 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>
+>>>>>>>> Hi Barry,
+>>>>>>>>
+>>>>>>>> 2 remaining comments - otherwise looks good. (same comments I just made in the
+>>>>>>>> v4 conversation).
+>>>>>>>>
+>>>>>>>> On 12/04/2024 08:37, Barry Song wrote:
+>>>>>>>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>>>>>>>
+>>>>>>>>> Profiling a system blindly with mTHP has become challenging due to the
+>>>>>>>>> lack of visibility into its operations.  Presenting the success rate of
+>>>>>>>>> mTHP allocations appears to be pressing need.
+>>>>>>>>>
+>>>>>>>>> Recently, I've been experiencing significant difficulty debugging
+>>>>>>>>> performance improvements and regressions without these figures.  It's
+>>>>>>>>> crucial for us to understand the true effectiveness of mTHP in real-world
+>>>>>>>>> scenarios, especially in systems with fragmented memory.
+>>>>>>>>>
+>>>>>>>>> This patch establishes the framework for per-order mTHP
+>>>>>>>>> counters. It begins by introducing the anon_fault_alloc and
+>>>>>>>>> anon_fault_fallback counters. Additionally, to maintain consistency
+>>>>>>>>> with thp_fault_fallback_charge in /proc/vmstat, this patch also tracks
+>>>>>>>>> anon_fault_fallback_charge when mem_cgroup_charge fails for mTHP.
+>>>>>>>>> Incorporating additional counters should now be straightforward as well.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>>>>>>>> Cc: Chris Li <chrisl@kernel.org>
+>>>>>>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>>>>>>> Cc: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>>>>>>>>> Cc: Kairui Song <kasong@tencent.com>
+>>>>>>>>> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+>>>>>>>>> Cc: Peter Xu <peterx@redhat.com>
+>>>>>>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>>>>>>>> Cc: Suren Baghdasaryan <surenb@google.com>
+>>>>>>>>> Cc: Yosry Ahmed <yosryahmed@google.com>
+>>>>>>>>> Cc: Yu Zhao <yuzhao@google.com>
+>>>>>>>>> ---
+>>>>>>>>>  include/linux/huge_mm.h | 51 ++++++++++++++++++++++++++++++++++
+>>>>>>>>>  mm/huge_memory.c        | 61 +++++++++++++++++++++++++++++++++++++++++
+>>>>>>>>>  mm/memory.c             |  3 ++
+>>>>>>>>>  mm/page_alloc.c         |  4 +++
+>>>>>>>>>  4 files changed, 119 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>>>>>>>> index e896ca4760f6..c5beb54b97cb 100644
+>>>>>>>>> --- a/include/linux/huge_mm.h
+>>>>>>>>> +++ b/include/linux/huge_mm.h
+>>>>>>>>> @@ -264,6 +264,57 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
+>>>>>>>>>                                         enforce_sysfs, orders);
+>>>>>>>>>  }
+>>>>>>>>>
+>>>>>>>>> +enum mthp_stat_item {
+>>>>>>>>> +     MTHP_STAT_ANON_FAULT_ALLOC,
+>>>>>>>>> +     MTHP_STAT_ANON_FAULT_FALLBACK,
+>>>>>>>>> +     MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
+>>>>>>>>> +     __MTHP_STAT_COUNT
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>> +struct mthp_stat {
+>>>>>>>>> +     unsigned long stats[0][__MTHP_STAT_COUNT];
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>> +extern struct mthp_stat __percpu *mthp_stats;
+>>>>>>>>> +
+>>>>>>>>> +static inline void count_mthp_stat(int order, enum mthp_stat_item item)
+>>>>>>>>> +{
+>>>>>>>>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
+>>>>>>>>> +             return;
+>>>>>>>>> +
+>>>>>>>>> +     this_cpu_inc(mthp_stats->stats[order][item]);
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +static inline void count_mthp_stats(int order, enum mthp_stat_item item, long delta)
+>>>>>>>>> +{
+>>>>>>>>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
+>>>>>>>>> +             return;
+>>>>>>>>> +
+>>>>>>>>> +     this_cpu_add(mthp_stats->stats[order][item], delta);
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +/*
+>>>>>>>>> + * Fold the foreign cpu mthp stats into our own.
+>>>>>>>>> + *
+>>>>>>>>> + * This is adding to the stats on one processor
+>>>>>>>>> + * but keeps the global counts constant.
+>>>>>>>>> + */
+>>>>>>>>> +static inline void mthp_stats_fold_cpu(int cpu)
+>>>>>>>>> +{
+>>>>>>>>> +     struct mthp_stat *fold_stat;
+>>>>>>>>> +     int i, j;
+>>>>>>>>> +
+>>>>>>>>> +     if (!mthp_stats)
+>>>>>>>>> +             return;
+>>>>>>>>> +     fold_stat = per_cpu_ptr(mthp_stats, cpu);
+>>>>>>>>> +     for (i = 1; i <= PMD_ORDER; i++) {
+>>>>>>>>> +             for (j = 0; j < __MTHP_STAT_COUNT; j++) {
+>>>>>>>>> +                     count_mthp_stats(i, j, fold_stat->stats[i][j]);
+>>>>>>>>> +                     fold_stat->stats[i][j] = 0;
+>>>>>>>>> +             }
+>>>>>>>>> +     }
+>>>>>>>>> +}
+>>>>>>>>
+>>>>>>>> This is a pretty horrible hack; I'm pretty sure just summing for all *possible*
+>>>>>>>> cpus should work.
+>>>>>>>>
+>>>>>>>>> +
+>>>>>>>>>  #define transparent_hugepage_use_zero_page()                         \
+>>>>>>>>>       (transparent_hugepage_flags &                                   \
+>>>>>>>>>        (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
+>>>>>>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>>>>>>> index dc30139590e6..21c4ac74b484 100644
+>>>>>>>>> --- a/mm/huge_memory.c
+>>>>>>>>> +++ b/mm/huge_memory.c
+>>>>>>>>> @@ -526,6 +526,50 @@ static const struct kobj_type thpsize_ktype = {
+>>>>>>>>>       .sysfs_ops = &kobj_sysfs_ops,
+>>>>>>>>>  };
+>>>>>>>>>
+>>>>>>>>> +struct mthp_stat __percpu *mthp_stats;
+>>>>>>>>> +
+>>>>>>>>> +static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
+>>>>>>>>> +{
+>>>>>>>>> +     unsigned long sum = 0;
+>>>>>>>>> +     int cpu;
+>>>>>>>>> +
+>>>>>>>>> +     cpus_read_lock();
+>>>>>>>>> +     for_each_online_cpu(cpu) {
+>>>>>>>>> +             struct mthp_stat *this = per_cpu_ptr(mthp_stats, cpu);
+>>>>>>>>> +
+>>>>>>>>> +             sum += this->stats[order][item];
+>>>>>>>>> +     }
+>>>>>>>>> +     cpus_read_unlock();
+>>>>>>>>> +
+>>>>>>>>> +     return sum;
+>>>>>>>>> +}
+>>>>>>>>> +
+>>>>>>>>> +#define DEFINE_MTHP_STAT_ATTR(_name, _index)                                 \
+>>>>>>>>> +static ssize_t _name##_show(struct kobject *kobj,                    \
+>>>>>>>>> +                     struct kobj_attribute *attr, char *buf)         \
+>>>>>>>>> +{                                                                    \
+>>>>>>>>> +     int order = to_thpsize(kobj)->order;                            \
+>>>>>>>>> +                                                                     \
+>>>>>>>>> +     return sysfs_emit(buf, "%lu\n", sum_mthp_stat(order, _index));  \
+>>>>>>>>> +}                                                                    \
+>>>>>>>>> +static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+>>>>>>>>> +
+>>>>>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_alloc, MTHP_STAT_ANON_FAULT_ALLOC);
+>>>>>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STAT_ANON_FAULT_FALLBACK);
+>>>>>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
+>>>>>>>>> +
+>>>>>>>>> +static struct attribute *stats_attrs[] = {
+>>>>>>>>> +     &anon_fault_alloc_attr.attr,
+>>>>>>>>> +     &anon_fault_fallback_attr.attr,
+>>>>>>>>> +     &anon_fault_fallback_charge_attr.attr,
+>>>>>>>>> +     NULL,
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>> +static struct attribute_group stats_attr_group = {
+>>>>>>>>> +     .name = "stats",
+>>>>>>>>> +     .attrs = stats_attrs,
+>>>>>>>>> +};
+>>>>>>>>> +
+>>>>>>>>>  static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>>>>>>>>>  {
+>>>>>>>>>       unsigned long size = (PAGE_SIZE << order) / SZ_1K;
+>>>>>>>>> @@ -549,6 +593,12 @@ static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>>>>>>>>>               return ERR_PTR(ret);
+>>>>>>>>>       }
+>>>>>>>>>
+>>>>>>>>> +     ret = sysfs_create_group(&thpsize->kobj, &stats_attr_group);
+>>>>>>>>> +     if (ret) {
+>>>>>>>>> +             kobject_put(&thpsize->kobj);
+>>>>>>>>> +             return ERR_PTR(ret);
+>>>>>>>>> +     }
+>>>>>>>>> +
+>>>>>>>>>       thpsize->order = order;
+>>>>>>>>>       return thpsize;
+>>>>>>>>>  }
+>>>>>>>>> @@ -691,6 +741,11 @@ static int __init hugepage_init(void)
+>>>>>>>>>        */
+>>>>>>>>>       MAYBE_BUILD_BUG_ON(HPAGE_PMD_ORDER < 2);
+>>>>>>>>>
+>>>>>>>>> +     mthp_stats = __alloc_percpu((PMD_ORDER + 1) * sizeof(mthp_stats->stats[0]),
+>>>>>>>>> +                     sizeof(unsigned long));
+>>>>>>>>
+>>>>>>>> Personally I think it would be cleaner to allocate statically using
+>>>>>>>> ilog2(MAX_PTRS_PER_PTE) instead of PMD_ORDER.
+>>>>>>>
+>>>>>>> Hi Ryan,
+>>>>>>>
+>>>>>>> I don't understand why MAX_PTRS_PER_PTE is the correct size. For ARM64,
+>>>>>>>
+>>>>>>> #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
+>>>>>>>
+>>>>>>> #define MAX_PTRS_PER_PTE PTRS_PER_PTE
+>>>>>>>
+>>>>>>> #define PTRS_PER_PTE            (1 << (PAGE_SHIFT - 3))
+>>>>>>>
+>>>>>>> while PAGE_SIZE is 16KiB or 64KiB, PTRS_PER_PTE can be a huge number?
+>>>>>>>
+>>>>>>>
+>>>>>>> Am I missing something?
+>>>>>>
+>>>>>> PTRS_PER_PTE is the number of PTE entries in a PTE table. On arm64 its as follows:
+>>>>>>
+>>>>>> PAGE_SIZE       PAGE_SHIFT      PTRS_PER_PTE
+>>>>>> 4K              12              512
+>>>>>> 16K             14              2048
+>>>>>> 64K             16              8192
+>>>>>>
+>>>>>> So (PTRS_PER_PTE * PAGE_SIZE) = PMD_SIZE
+>>>>>>
+>>>>>> PMD_ORDER is ilog2(PMD_SIZE / PAGE_SIZE) = ilog2(PTRS_PER_PTE)
+>>>>>>
+>>>>>> MAX_PTRS_PER_PTE is just the maximum value that PTRS_PER_PTE will ever have,
+>>>>>> (and its equal to PTRS_PER_PTE except for powerpc).
+>>>>>>
+>>>>>> Pretty sure the math is correct?
+>>>>>
+>>>>> I am not convinced the math is correct :-)
+>>>>>
+>>>>> while page size is 64KiB, the page table is as below,
+>>>>> PMD_ORDER = L2 index bits = [41:29] = 13 != ilog2(8192)
+>>>>
+>>>> 1 << 13 = 8192
+>>>>
+>>>> Right? So:
+>>>>
+>>>> ilog2(8192) = 13
+>>>>
+>>>> What's wrong with that?
+>>>>
+>>>> I even checked in Python to make sure I'm not going mad:
+>>>>
+>>>>>>> import math
+>>>>>>> math.log2(8192)
+>>>> 13.0
+>>>
+>>> You're correct. My mind fixated on the '16' in the line '64K 16 8192'.
+>>> I mistakenly thought ilog2(8192) equals 16. Apologies for the confusion.
+>>
+>> No worries! We got there in the end :)
+>>
+>> Of course my suggestion relies on being able to get a compile-time constant from
+>> ilog2(MAX_PTRS_PER_PTE). I think that should work, right?
+> 
+> I guess so, ilog2 can detect compile-time const, otherwise, it will find the
+> last (most-significant) bit set.
+> 
+> I've implemented the following change, and the build all passed.
+> Currently conducting testing.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+LGTM - much cleaner!
 
-8ed6ff4a8ed6ff 4a8ed6ff4a8ed6ff 4a8ed6ff4a8ed6ff
-ZMM27=3D6e943afe6e943afe 6e943afe6e943afe 6e943afe6e943afe 6e943afe6e943afe=
- 6e943afe6e943afe 6e943afe6e943afe 6e943afe6e943afe 6e943afe6e943afe
-ZMM28=3D000000100000000f 0000000e0000000d 0000000c0000000b 0000000a00000009=
- 0000000800000007 0000000600000005 0000000400000003 0000000200000001
-ZMM29=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM30=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM31=3D0600000006000000 0600000006000000 0600000006000000 0600000006000000=
- 0600000006000000 0600000006000000 0600000006000000 0600000006000000
-info registers vcpu 2
-
-CPU#2
-RAX=3D000000000002eedf RBX=3D0000000000000002 RCX=3Dffffffff8ada9639 RDX=3D=
-0000000000000000
-RSI=3Dffffffff8b0cae80 RDI=3Dffffffff8b6f4de0 RBP=3Dffffed1002f54910 RSP=3D=
-ffffc90000187e08
-R8 =3D0000000000000001 R9 =3Dffffed100d686fdd R10=3Dffff88806b437eeb R11=3D=
-ffffffff8b0f3940
-R12=3D0000000000000002 R13=3Dffff888017aa4880 R14=3Dffffffff8f9f0150 R15=3D=
-0000000000000000
-RIP=3Dffffffff8adaaa2f RFL=3D00000242 [---Z---] CPL=3D0 II=3D0 A20=3D1 SMM=
-=3D0 HLT=3D1
-ES =3D0000 0000000000000000 ffffffff 00c00000
-CS =3D0010 0000000000000000 ffffffff 00a09b00 DPL=3D0 CS64 [-RA]
-SS =3D0018 0000000000000000 ffffffff 00c09300 DPL=3D0 DS   [-WA]
-DS =3D0000 0000000000000000 ffffffff 00c00000
-FS =3D0000 0000000000000000 ffffffff 00c00000
-GS =3D0000 ffff88806b400000 ffffffff 00c00000
-LDT=3D0000 0000000000000000 ffffffff 00c00000
-TR =3D0040 fffffe0000091000 00004087 00008b00 DPL=3D0 TSS64-busy
-GDT=3D     fffffe000008f000 0000007f
-IDT=3D     fffffe0000000000 00000fff
-CR0=3D80050033 CR2=3D0000559737519600 CR3=3D000000000d57a000 CR4=3D00350ef0
-DR0=3D0000000000000000 DR1=3D0000000000000000 DR2=3D0000000000000000 DR3=3D=
-0000000000000000=20
-DR6=3D00000000fffe0ff0 DR7=3D0000000000000400
-EFER=3D0000000000000d01
-FCW=3D037f FSW=3D0000 [ST=3D0] FTW=3D00 MXCSR=3D00001f80
-FPR0=3D0000000000000000 0000 FPR1=3D0000000000000000 0000
-FPR2=3D0000000000000000 0000 FPR3=3D0000000000000000 0000
-FPR4=3D0000000000000000 0000 FPR5=3D0000000000000000 0000
-FPR6=3D0000000000000000 0000 FPR7=3D0000000000000000 0000
-Opmask00=3D00000000fffffe00 Opmask01=3D0000000000000000 Opmask02=3D00000000=
-01e1f9ff Opmask03=3D0000000000000000
-Opmask04=3D0000000000000000 Opmask05=3D0000000000000000 Opmask06=3D00000000=
-00000000 Opmask07=3D0000000000000000
-ZMM00=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 3010618acb7d7b1a 2112f12ae4453470
-ZMM01=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 e5ee0ce20966b47b 6ffa03f7f09fa836
-ZMM02=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 5fa6630d8b71e143 3ab69ece09a12fae
-ZMM03=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 ccf069236b58b8e2 4838cb2249d1eec5
-ZMM04=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000100
-ZMM05=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000040
-ZMM06=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 275e2648807110fc 8f63b2ee9bb034ae
-ZMM07=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 22761a7e72b46797 73e1392d07f9fc4c
-ZMM08=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 2d7d825141dc2181 20d0c4c9a276a097
-ZMM09=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 3ae380b7f917da84 8f00916d9c8e26e9
-ZMM10=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 70c38b0d62dad3cd 451d8604954593f3
-ZMM11=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 c3f3dfc3f6e74c96 4067d9ad16df8442
-ZMM12=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM13=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM14=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 a54ff53a3c6ef372 bb67ae856a09e667
-ZMM15=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 5be0cd191f83d9ab 9b05688c510e527f
-ZMM16=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM17=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000055 9777330000000055 97374fa630000072 656c6c616b7a7973
-ZMM18=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 6864203a73250070 6475646e65735f70 636864203a732500 73646e6f63657320
-ZMM19=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 4d41051f56000055 4150414b40565f55 464d41051f560000 56414b4a46405605
-ZMM20=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM21=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM22=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM23=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM24=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM25=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 6966652036202065 616365200a326420 3220363220362064 6562656400316f00
-ZMM26=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 656265200a202062 61630a200a326420 2020323220360a64 2062656200200a00
-ZMM27=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- bfbfbfbfbfbfbfbf bfbfbfbfbfbfbfbf bfbfbfbfbfbfbfbf bfbf2b313423342c
-ZMM28=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 262821df2e2e33df 3228df3232202b22 df312e232d2435bf 2324353124322431
-ZMM29=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 4141414141414141 4141414141414141 4141414141414141 4141414141414141
-ZMM30=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 1a1a1a1a1a1a1a1a 1a1a1a1a1a1a1a1a 1a1a1a1a1a1a1a1a 1a1a1a1a1a1a1a1a
-ZMM31=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 2020202020202020 2020202020202020 2020202020202020 2020202020202020
-info registers vcpu 3
-
-CPU#3
-RAX=3D0000000000000020 RBX=3D00000000000003f8 RCX=3D0000000000000000 RDX=3D=
-00000000000003f8
-RSI=3Dffffffff84f98cf5 RDI=3Dffffffff949438e0 RBP=3Dffffffff949438a0 RSP=3D=
-ffffc9000339f180
-R8 =3D0000000000000001 R9 =3D000000000000001f R10=3D0000000000000000 R11=3D=
-63722d302e392e36
-R12=3D0000000000000000 R13=3D0000000000000020 R14=3Dffffffff84f98c90 R15=3D=
-0000000000000000
-RIP=3Dffffffff84f98d1f RFL=3D00000002 [-------] CPL=3D0 II=3D0 A20=3D1 SMM=
-=3D0 HLT=3D0
-ES =3D0000 0000000000000000 ffffffff 00c00000
-CS =3D0010 0000000000000000 ffffffff 00a09b00 DPL=3D0 CS64 [-RA]
-SS =3D0018 0000000000000000 ffffffff 00c09300 DPL=3D0 DS   [-WA]
-DS =3D0000 0000000000000000 ffffffff 00c00000
-FS =3D0000 0000000000000000 ffffffff 00c00000
-GS =3D0000 ffff88806b500000 ffffffff 00c00000
-LDT=3D0000 0000000000000000 ffffffff 00c00000
-TR =3D0040 fffffe00000d8000 00004087 00008b00 DPL=3D0 TSS64-busy
-GDT=3D     fffffe00000d6000 0000007f
-IDT=3D     fffffe0000000000 00000fff
-CR0=3D80050033 CR2=3D00007fc8cccd9514 CR3=3D000000000d57a000 CR4=3D00350ef0
-DR0=3D0000000000000000 DR1=3D0000000000000000 DR2=3D0000000000000000 DR3=3D=
-0000000000000000=20
-DR6=3D00000000fffe0ff0 DR7=3D0000000000000400
-EFER=3D0000000000000d01
-FCW=3D037f FSW=3D0000 [ST=3D0] FTW=3D00 MXCSR=3D00001f80
-FPR0=3D0000000000000000 0000 FPR1=3D0000000000000000 0000
-FPR2=3D0000000000000000 0000 FPR3=3D0000000000000000 0000
-FPR4=3D0000000000000000 0000 FPR5=3D0000000000000000 0000
-FPR6=3D0000000000000000 0000 FPR7=3D0000000000000000 0000
-Opmask00=3D0000000004880004 Opmask01=3D0000000000000001 Opmask02=3D00000000=
-ffffbfef Opmask03=3D0000000000000000
-Opmask04=3D0000000000000000 Opmask05=3D0000000000000000 Opmask06=3D00000000=
-00000000 Opmask07=3D0000000000000000
-ZMM00=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 00007fc8ccd7f063 00007fc8ccd7f063
-ZMM01=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 00007ffff9bd95f0 0000003000000010
-ZMM02=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000800000
-ZMM03=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM04=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000001000
-ZMM05=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000800000
-ZMM06=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 00007fc8ccc7acea
-ZMM07=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM08=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM09=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM10=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM11=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM12=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM13=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM14=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM15=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM16=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM17=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 2525252525252525 2525252525252525 2525252525252525 2525252525252525
-ZMM18=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 3d656c6966000a64 25203a7325206574 697277206f742064 656c696166000a29
-ZMM19=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 1840494c43000a41 00051f5600054051 4c5752054a510541 40494c4443000a0c
-ZMM20=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM21=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM22=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM23=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM24=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM25=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM26=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM27=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM28=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM29=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM30=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-ZMM31=3D0000000000000000 0000000000000000 0000000000000000 0000000000000000=
- 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-
-
-syzkaller build log:
-go env (err=3D<nil>)
-GO111MODULE=3D'auto'
-GOARCH=3D'amd64'
-GOBIN=3D''
-GOCACHE=3D'/syzkaller/.cache/go-build'
-GOENV=3D'/syzkaller/.config/go/env'
-GOEXE=3D''
-GOEXPERIMENT=3D''
-GOFLAGS=3D''
-GOHOSTARCH=3D'amd64'
-GOHOSTOS=3D'linux'
-GOINSECURE=3D''
-GOMODCACHE=3D'/syzkaller/jobs/linux/gopath/pkg/mod'
-GONOPROXY=3D''
-GONOSUMDB=3D''
-GOOS=3D'linux'
-GOPATH=3D'/syzkaller/jobs/linux/gopath'
-GOPRIVATE=3D''
-GOPROXY=3D'https://proxy.golang.org,direct'
-GOROOT=3D'/usr/local/go'
-GOSUMDB=3D'sum.golang.org'
-GOTMPDIR=3D''
-GOTOOLCHAIN=3D'auto'
-GOTOOLDIR=3D'/usr/local/go/pkg/tool/linux_amd64'
-GOVCS=3D''
-GOVERSION=3D'go1.21.4'
-GCCGO=3D'gccgo'
-GOAMD64=3D'v1'
-AR=3D'ar'
-CC=3D'gcc'
-CXX=3D'g++'
-CGO_ENABLED=3D'1'
-GOMOD=3D'/syzkaller/jobs/linux/gopath/src/github.com/google/syzkaller/go.mo=
-d'
-GOWORK=3D''
-CGO_CFLAGS=3D'-O2 -g'
-CGO_CPPFLAGS=3D''
-CGO_CXXFLAGS=3D'-O2 -g'
-CGO_FFLAGS=3D'-O2 -g'
-CGO_LDFLAGS=3D'-O2 -g'
-PKG_CONFIG=3D'pkg-config'
-GOGCCFLAGS=3D'-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=3D0=
- -ffile-prefix-map=3D/tmp/go-build616238421=3D/tmp/go-build -gno-record-gcc=
--switches'
-
-git status (err=3D<nil>)
-HEAD detached at 27de0a5cc
-nothing to commit, working tree clean
-
-
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-Makefile:31: run command via tools/syz-env for best compatibility, see:
-Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
-ing.md#using-syz-env
-go list -f '{{.Stale}}' ./sys/syz-sysgen | grep -q false || go install ./sy=
-s/syz-sysgen
-make .descriptions
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-Makefile:31: run command via tools/syz-env for best compatibility, see:
-Makefile:32: https://github.com/google/syzkaller/blob/master/docs/contribut=
-ing.md#using-syz-env
-bin/syz-sysgen
-touch .descriptions
-GOOS=3Dlinux GOARCH=3Damd64 go build "-ldflags=3D-s -w -X github.com/google=
-/syzkaller/prog.GitRevision=3D27de0a5cccaebe20ffd8fce48c2c5ec9d4b358fa -X '=
-github.com/google/syzkaller/prog.gitRevisionDate=3D20240411-171414'" "-tags=
-=3Dsyz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-fuzzer=
- github.com/google/syzkaller/syz-fuzzer
-GOOS=3Dlinux GOARCH=3Damd64 go build "-ldflags=3D-s -w -X github.com/google=
-/syzkaller/prog.GitRevision=3D27de0a5cccaebe20ffd8fce48c2c5ec9d4b358fa -X '=
-github.com/google/syzkaller/prog.gitRevisionDate=3D20240411-171414'" "-tags=
-=3Dsyz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-execpr=
-og github.com/google/syzkaller/tools/syz-execprog
-GOOS=3Dlinux GOARCH=3Damd64 go build "-ldflags=3D-s -w -X github.com/google=
-/syzkaller/prog.GitRevision=3D27de0a5cccaebe20ffd8fce48c2c5ec9d4b358fa -X '=
-github.com/google/syzkaller/prog.gitRevisionDate=3D20240411-171414'" "-tags=
-=3Dsyz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-stress=
- github.com/google/syzkaller/tools/syz-stress
-mkdir -p ./bin/linux_amd64
-gcc -o ./bin/linux_amd64/syz-executor executor/executor.cc \
-	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wfr=
-ame-larger-than=3D16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-forma=
-t-overflow -Wno-unused-but-set-variable -Wno-unused-command-line-argument -=
-static-pie -fpermissive -w -DGOOS_linux=3D1 -DGOARCH_amd64=3D1 \
-	-DHOSTGOOS_linux=3D1 -DGIT_REVISION=3D\"27de0a5cccaebe20ffd8fce48c2c5ec9d4=
-b358fa\"
-
-
-Error text is too large and was truncated, full error text is at:
-https://syzkaller.appspot.com/x/error.txt?x=3D128ef293180000
-
-
-Tested on:
-
-commit:         00dcf5d8 Merge tag 'acpi-6.9-rc4' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/li=
-nux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3D285be8dd6baeb43=
-8
-dashboard link: https://syzkaller.appspot.com/bug?extid=3D27209997e4015fb47=
-02e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Deb=
-ian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=3D15d98eeb1800=
-00
+> 
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index c5beb54b97cb..d4fdb2641070 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -272,47 +272,17 @@ enum mthp_stat_item {
+>  };
+> 
+>  struct mthp_stat {
+> -       unsigned long stats[0][__MTHP_STAT_COUNT];
+> +       unsigned long stats[ilog2(MAX_PTRS_PER_PTE) + 1][__MTHP_STAT_COUNT];
+>  };
+> 
+> -extern struct mthp_stat __percpu *mthp_stats;
+> +DECLARE_PER_CPU(struct mthp_stat, mthp_stats);
+> 
+>  static inline void count_mthp_stat(int order, enum mthp_stat_item item)
+>  {
+> -       if (order <= 0 || order > PMD_ORDER || !mthp_stats)
+> +       if (order <= 0 || order > PMD_ORDER)
+>                 return;
+> 
+> -       this_cpu_inc(mthp_stats->stats[order][item]);
+> -}
+> -
+> -static inline void count_mthp_stats(int order, enum mthp_stat_item
+> item, long delta)
+> -{
+> -       if (order <= 0 || order > PMD_ORDER || !mthp_stats)
+> -               return;
+> -
+> -       this_cpu_add(mthp_stats->stats[order][item], delta);
+> -}
+> -
+> -/*
+> - * Fold the foreign cpu mthp stats into our own.
+> - *
+> - * This is adding to the stats on one processor
+> - * but keeps the global counts constant.
+> - */
+> -static inline void mthp_stats_fold_cpu(int cpu)
+> -{
+> -       struct mthp_stat *fold_stat;
+> -       int i, j;
+> -
+> -       if (!mthp_stats)
+> -               return;
+> -       fold_stat = per_cpu_ptr(mthp_stats, cpu);
+> -       for (i = 1; i <= PMD_ORDER; i++) {
+> -               for (j = 0; j < __MTHP_STAT_COUNT; j++) {
+> -                       count_mthp_stats(i, j, fold_stat->stats[i][j]);
+> -                       fold_stat->stats[i][j] = 0;
+> -               }
+> -       }
+> +       this_cpu_inc(mthp_stats.stats[order][item]);
+>  }
+> 
+>  #define transparent_hugepage_use_zero_page()                           \
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 21c4ac74b484..e88961ffc398 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -526,20 +526,18 @@ static const struct kobj_type thpsize_ktype = {
+>         .sysfs_ops = &kobj_sysfs_ops,
+>  };
+> 
+> -struct mthp_stat __percpu *mthp_stats;
+> +DEFINE_PER_CPU(struct mthp_stat, mthp_stats) = {{{0}}};
+> 
+>  static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
+>  {
+>         unsigned long sum = 0;
+>         int cpu;
+> 
+> -       cpus_read_lock();
+> -       for_each_online_cpu(cpu) {
+> -               struct mthp_stat *this = per_cpu_ptr(mthp_stats, cpu);
+> +       for_each_possible_cpu(cpu) {
+> +               struct mthp_stat *this = &per_cpu(mthp_stats, cpu);
+> 
+>                 sum += this->stats[order][item];
+>         }
+> -       cpus_read_unlock();
+> 
+>         return sum;
+>  }
+> @@ -741,11 +739,6 @@ static int __init hugepage_init(void)
+>          */
+>         MAYBE_BUILD_BUG_ON(HPAGE_PMD_ORDER < 2);
+> 
+> -       mthp_stats = __alloc_percpu((PMD_ORDER + 1) *
+> sizeof(mthp_stats->stats[0]),
+> -                       sizeof(unsigned long));
+> -       if (!mthp_stats)
+> -               return -ENOMEM;
+> -
+>         err = hugepage_init_sysfs(&hugepage_kobj);
+>         if (err)
+>                 goto err_sysfs;
+> @@ -780,8 +773,6 @@ static int __init hugepage_init(void)
+>  err_slab:
+>         hugepage_exit_sysfs(hugepage_kobj);
+>  err_sysfs:
+> -       free_percpu(mthp_stats);
+> -       mthp_stats = NULL;
+>         return err;
+>  }
+>  subsys_initcall(hugepage_init);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 3135b5ca2457..b51becf03d1e 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5840,10 +5840,6 @@ static int page_alloc_cpu_dead(unsigned int cpu)
+>          */
+>         vm_events_fold_cpu(cpu);
+> 
+> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -       mthp_stats_fold_cpu(cpu);
+> -#endif
+> -
+>         /*
+>          * Zero the differential counters of the dead processor
+>          * so that the vm statistics are consistent.
+> 
+> 
+> Thanks
+> Barry
 
 
