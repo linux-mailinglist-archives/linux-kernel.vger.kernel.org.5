@@ -1,171 +1,82 @@
-Return-Path: <linux-kernel+bounces-142601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C48A8A2DAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:38:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B20A98A2DA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:38:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 300241C21416
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:38:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D95428153F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:38:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1F45674D;
-	Fri, 12 Apr 2024 11:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8662054FB8;
+	Fri, 12 Apr 2024 11:38:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="B4ybTsXF"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fwFVNXpi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF245674E;
-	Fri, 12 Apr 2024 11:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2A354918;
+	Fri, 12 Apr 2024 11:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712921909; cv=none; b=oDt+yQddqy8ypjSYxfP8MnkCzruYTYP7oKC1WoPYjrWkUI6UH/4fvvK+xXwXQ03NleLePeG6kLQwAHp8hNIo1ZHBmQetjxDCjq8+Dqkd7K9LnpVVwaTcBVIl2AZ9IrgQAI9810mtQcW+zCHchVOytUAGNT/zqgv3WTELajROwXU=
+	t=1712921896; cv=none; b=j/Yd6rvtHXrUpkVWEao32bNBLDqrTJU3xoebhLH07NtwZVLQcl0E4LsM+zF4frFRJEQflFMuh9Q8/vGH/tK+JC4K5O+RCZuG37Elg3OYmDeI4n7GyBnL6U/xSYaBmpnUh4bNTtpkLZzNbi+V7ssE9dsQvWkWc1GD9VfliGSwLn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712921909; c=relaxed/simple;
-	bh=aWPWXWwePYJ7mcthXXcnh6W3EMOk6ujdepGmdYxSc0c=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HJsq8TpNdeQlIWq3QaksZlpxXCxO5vuYVnkRj1GUUTVPsAL5NGr6GtAMsk8Q8P4FAtIfXkpiyiOVOAiD/YHWd0bAWIyu+c4yI5CaYS2q6Oh/ePYJRAc53uRdUcgxTxyRMERlWvMsvGWVD7lx5mc2dCDo//8PnjFK7r0egy/guUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=B4ybTsXF; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712921908; x=1744457908;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aWPWXWwePYJ7mcthXXcnh6W3EMOk6ujdepGmdYxSc0c=;
-  b=B4ybTsXFVrSB7obR05QAb5IRs7584qdbH4++gFBdVj1o6VZ1GfDS8Irv
-   ePwPuu8FILMnb3ZHUU+FAnj/rvxWpr6TGXCL48kFh73NFnNGXWNRErmgw
-   DFPE+XUOoVsl9f1hajG8b9N47NMY8JVfslhQcs70iCuqzLIANti+pLrkQ
-   BH7d6NeZCu68DKm3qih8nDAx5Y+E0IXTbRr27q5iAF7pKBnxTv91dktKU
-   BBbZjnsR4cF6DXhPBFGlSJGM0E4lul8NbajMJIzeCTpi1BNZciYjNZFvv
-   mX9zvcFKwFQauGWYd5XPAYDskpGoXSwQnLr2o+zCctuVpKn6Gpzvhrcq9
-   Q==;
-X-CSE-ConnectionGUID: ++lz7ARxTeyfeBIEUobjog==
-X-CSE-MsgGUID: KH8PpH+1RGyAV72cISUUNA==
-X-IronPort-AV: E=Sophos;i="6.07,196,1708412400"; 
-   d="asc'?scan'208";a="20734020"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 04:38:27 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 04:38:03 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 12 Apr 2024 04:37:59 -0700
-Date: Fri, 12 Apr 2024 12:37:08 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
-	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
-	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
-	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
-	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
-	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
-	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 15/19] riscv: hwcap: Add v to hwcap if xtheadvector
- enabled
-Message-ID: <20240412-thrill-amnesty-019897f21466@wendy>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-15-4af9815ec746@rivosinc.com>
+	s=arc-20240116; t=1712921896; c=relaxed/simple;
+	bh=pGc+Ksvp/3JDoauuu3KTD0EO0x9YqlaiRkeoKCKbnww=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=n3xYVGQQi3BVt3xauyodlmmcgc5nCCxDA5Xe8upMAbSs66wsRaqQVQZjcLN2Qkd66qugPoUcn5cVb6R3SYMVfc/aop3VDCG5kiZNfbqxC3ttgkJHJRghhdH1T8hgl5T4g06IKMbJNey9oWVHzhUprrkYIVx4WLeoacQ9ews3nEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fwFVNXpi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 544D4C113CC;
+	Fri, 12 Apr 2024 11:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712921896;
+	bh=pGc+Ksvp/3JDoauuu3KTD0EO0x9YqlaiRkeoKCKbnww=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=fwFVNXpiPzNtRMkFN+9o4xt/MGLfatDVeS5YCcWOfh9hKW2ItvnsCV/i1OcT1n4cW
+	 gYQoyvFXPzbJX38Lr1+KeV2dt432MIBX3sdDwc0pvP6OORDpyAenICW22+4XPaFsI3
+	 bVLE9xeDvESfOM30eL9OuZDyHJBxkXW5bkc9wD/A808tjQ7ORoH1HqysxOnIL3ZSCX
+	 RVlbWRHPN2uqo5LbsRCFIWF/jfvXlDwbbcXJS2aqmtPUWLUztReeJIUT21UfPedfhB
+	 2YDcNpfzBHGk3BYQPo1dQINgcXRiAVaWp6PvQtF8kWqaf5wmCeDftEIBW2xDN7gQPA
+	 sumu4iglry+6Q==
+Date: Fri, 12 Apr 2024 13:38:14 +0200 (CEST)
+From: Jiri Kosina <jikos@kernel.org>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+cc: bentiss@kernel.org, linux-input@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>, 
+    Ivan Gorinov <linux-kernel@altimeter.info>
+Subject: Re: [PATCH] HID: Remove the unused variable minor
+In-Reply-To: <20240407022804.27081-1-jiapeng.chong@linux.alibaba.com>
+Message-ID: <nycvar.YFH.7.76.2404121337420.5680@cbobk.fhfr.pm>
+References: <20240407022804.27081-1-jiapeng.chong@linux.alibaba.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ibtP5+Ck2kdPiHYk"
-Content-Disposition: inline
-In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-15-4af9815ec746@rivosinc.com>
+Content-Type: text/plain; charset=US-ASCII
 
---ibtP5+Ck2kdPiHYk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sun, 7 Apr 2024, Jiapeng Chong wrote:
 
-On Thu, Apr 11, 2024 at 09:11:21PM -0700, Charlie Jenkins wrote:
-> xtheadvector is not vector 1.0 compatible, but it can leverage all of
-> the same save/restore routines as vector plus
-> riscv_v_first_use_handler(). vector 1.0 and xtheadvector are mutually
-> exclusive so there is no risk of overlap.
+> Variable minor is not effectively used, so delete it.
+> 
+> drivers/hid/hid-winwing.c:123:15: warning: variable 'minor' set but not used.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8705
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-I think this not okay to do - if a program checks hwcap to see if vector
-is supported they'll get told it is on T-Head system where only the 0.7.1
-is.
+I've added
 
->=20
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/kernel/cpufeature.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 41a4d2028428..59f628b1341c 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -647,9 +647,13 @@ static void __init riscv_fill_hwcap_from_isa_string(=
-unsigned long *isa2hwcap)
->  		 * Many vendors with T-Head CPU cores which implement the 0.7.1
->  		 * version of the vector specification put "v" into their DTs.
->  		 * CPU cores with the ratified spec will contain non-zero
-> -		 * marchid.
-> +		 * marchid. Only allow "v" to be set if xtheadvector is present.
->  		 */
-> -		if (acpi_disabled && this_vendorid =3D=3D THEAD_VENDOR_ID &&
-> +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
-> +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
-> +			this_hwcap |=3D isa2hwcap[RISCV_ISA_EXT_v];
-> +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
-> +		} else if (acpi_disabled && this_vendorid =3D=3D THEAD_VENDOR_ID &&
->  		    this_archid =3D=3D 0x0) {
->  			this_hwcap &=3D ~isa2hwcap[RISCV_ISA_EXT_v];
->  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
-> @@ -776,6 +780,15 @@ static int __init riscv_fill_hwcap_from_ext_list(uns=
-igned long *isa2hwcap)
-> =20
->  		of_node_put(cpu_node);
-> =20
-> +		/*
-> +		 * Enable kernel vector routines if xtheadvector is present
-> +		 */
-> +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
-> +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
-> +			this_hwcap |=3D isa2hwcap[RISCV_ISA_EXT_v];
-> +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
-> +		}
-> +
->  		/*
->  		 * All "okay" harts should have same isa. Set HWCAP based on
->  		 * common capabilities of every "okay" hart, in case they don't.
->=20
-> --=20
-> 2.44.0
->=20
+	Fixes: 266c990debad2 ("HID: Add WinWing Orion2 throttle support")
 
---ibtP5+Ck2kdPiHYk
-Content-Type: application/pgp-signature; name="signature.asc"
+CCed Ivan here, and applied. Thanks,
 
------BEGIN PGP SIGNATURE-----
+-- 
+Jiri Kosina
+SUSE Labs
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkc5AAKCRB4tDGHoIJi
-0gKCAP4v+esN57jD+BTAcXXG/qusYjMQbk1rVAldJniCgV0x0gEAibLnaoOuNXqF
-Pa0786aCvAvHYTWbBfJ/ykNix6NyKQI=
-=b/XX
------END PGP SIGNATURE-----
-
---ibtP5+Ck2kdPiHYk--
 
