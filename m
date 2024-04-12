@@ -1,151 +1,83 @@
-Return-Path: <linux-kernel+bounces-143184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C244F8A3573
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:16:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB3F8A3574
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:16:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B87A11C20DBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:16:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CCBE1C215A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C490C14EC4C;
-	Fri, 12 Apr 2024 18:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="a4qF07Hq"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC69114E2FE;
+	Fri, 12 Apr 2024 18:16:19 +0000 (UTC)
+Received: from gentwo.org (gentwo.org [62.72.0.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B43C14E2E1;
-	Fri, 12 Apr 2024 18:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B80014D70E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712945772; cv=none; b=B3fJByjNqXyM9WLFu043dPNsgdlU9HNC6cHAtkU7K15hVU+Txtjc+0s9PH+D+1rVSpg5sLld+uh2VI9eNNxIWwEQHf2PlmjfdnWjT98vsY/gCjxzODw/KiMUYMOkJNTD6hHXuZVKJaMLK2XD1bXKIbwGXvcRS7o0mM9MhyP2alY=
+	t=1712945779; cv=none; b=PrwObrjgjLH7DuR7VJyJbU/aR3tmHxckJDb4noUQ4ZrtZNF4JXkvEaTjbE0JnITNYQZo2MZctYcBSAEScnA4nD/vUoOmldoEqqzMBrsZFruu4480pxOfaYuBb/tk2QgBkOIWehKBZrFtOFyCtl3dwBdYpRzepC2Mu4uEMD3gFaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712945772; c=relaxed/simple;
-	bh=dZ7DBLOplA06T/PhVO+GGVrNbWcG7Pg5wgdv1SwGr5A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l3HeGaH+1BQE3A5CWz22/DbV2GkPTftAOTogZX67XnCUN6wuu3DkN/Mbp2e7cmuZVLxF0tkskzhXzQGkuSGUYWxUk5RNmXndB3Aow1eSfpxg0oGskwM+IYO78RlfxJxsjvffAohegQhfswxt3sQRzrPSTJgCSmsxxogGzXv1MWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=a4qF07Hq; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (85-76-65-73-nat.elisa-mobile.fi [85.76.65.73])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 989029D5;
-	Fri, 12 Apr 2024 20:15:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712945725;
-	bh=dZ7DBLOplA06T/PhVO+GGVrNbWcG7Pg5wgdv1SwGr5A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a4qF07Hqp6QbxF+DdKNbg7E7ucc1k7j8PMU8AdrQ8GEeUczRxaDedLhQMG2y08F50
-	 FWldRDtmW6vvKRgbBXSETpbhvAKPXyH/1WW6fVTfaoC8z2Gn6iAJrjueZ0BJVcmNxY
-	 WUZ6FCLszKLkFKtJrEfOwLzKrieVVIwpV546YvmA=
-Date: Fri, 12 Apr 2024 21:15:58 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/9] media: subdev: Add v4l2_subdev_is_streaming()
-Message-ID: <20240412181558.GI31122@pendragon.ideasonboard.com>
-References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
- <20240410-enable-streams-impro-v3-6-e5e7a5da7420@ideasonboard.com>
+	s=arc-20240116; t=1712945779; c=relaxed/simple;
+	bh=WWXEsl0DDy0E7PW+5dOmtMA8fTtGxsREx4qh4SvPSKA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=tx/VOGJurR10rLeGGKBltigwLC05UeolLWT/D6eIlotUc/hPNPBnnmyo9JYans1pbAa5m7sGe/eEgaxD9sZ3YOtDLe0V1PChvjpROROqZ/IdJxTk0hVzjJ7o/6bzTT+Q3LZV+fa2sukDpB7iHoNn1vpKPsCoZxkZXBi+hEGFXf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=fail smtp.mailfrom=linux.com; arc=none smtp.client-ip=62.72.0.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.com
+Received: by gentwo.org (Postfix, from userid 1003)
+	id 7593640A96; Fri, 12 Apr 2024 11:16:10 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+	by gentwo.org (Postfix) with ESMTP id 72EDE40A8D;
+	Fri, 12 Apr 2024 11:16:10 -0700 (PDT)
+Date: Fri, 12 Apr 2024 11:16:10 -0700 (PDT)
+From: "Christoph Lameter (Ampere)" <cl@linux.com>
+To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+cc: Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org, 
+    linux-kernel@vger.kernel.org, penberg@kernel.org, rientjes@google.com, 
+    iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, junxiao.bi@oracle.com
+Subject: Re: [PATCH] slub: limit number of slabs to scan in count_partial()
+In-Reply-To: <a8e208fb-7842-4bca-9d2d-3aae21da030c@oracle.com>
+Message-ID: <bb2cb21b-0a5e-0154-2a7d-7e630b50aa4a@linux.com>
+References: <20240411164023.99368-1-jianfeng.w.wang@oracle.com> <e0222219-eb2d-5e1e-81e1-548eeb5f73e0@linux.com> <38ef26aa-169b-48ad-81ad-8378e7a38f25@suse.cz> <a8e208fb-7842-4bca-9d2d-3aae21da030c@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240410-enable-streams-impro-v3-6-e5e7a5da7420@ideasonboard.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-Hi Tomi,
+On Fri, 12 Apr 2024, Jianfeng Wang wrote:
 
-Thank you for the patch.
+>>> Can you run some tests showing the difference between the estimation and
+>>> the real count?
+>
+> Yes.
+> On a server with one NUMA node, I create a case that uses many dentry objects.
+> For "dentry", the length of partial slabs is slightly above 250000. Then, I
+> compare my approach of scanning N slabs from the list's head v.s. the original
+> approach of scanning the full list. I do it by getting both results using
+> the new and the original count_partial() and printing them in /proc/slabinfo.
+>
+> N = 10000
+> my_result = 4741651
+> org_result = 4744966
+> diff = (org_result - my_result) / org_result = 0.00069 = 0.069 %
+>
+> Increasing N further to 25000 will only slight improve the accuracy:
+> N = 15000 -> diff =  0.02 %
+> N = 20000 -> diff =  0.01 %
+> N = 25000 -> diff = -0.017 %
+>
+> Based on the measurement, I think the difference between the estimation and
+> the real count is very limited (i.e. less than 0.1% for N = 10000). The
+> benefit is significant: shorter execution time for get_slabinfo(); no more
+> soft lockups or crashes caused by count_partial().
 
-On Wed, Apr 10, 2024 at 03:35:53PM +0300, Tomi Valkeinen wrote:
-> Add a helper function which returns whether the subdevice is streaming,
-> i.e. if .s_stream or .enable_streams has been called successfully.
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/media/v4l2-core/v4l2-subdev.c | 25 +++++++++++++++++++++++++
->  include/media/v4l2-subdev.h           | 13 +++++++++++++
->  2 files changed, 38 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 3d2c9c224b8f..20b5a00cbeeb 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -2419,6 +2419,31 @@ void v4l2_subdev_notify_event(struct v4l2_subdev *sd,
->  }
->  EXPORT_SYMBOL_GPL(v4l2_subdev_notify_event);
->  
-> +bool v4l2_subdev_is_streaming(struct v4l2_subdev *sd)
-> +{
-> +	struct v4l2_subdev_state *state;
-> +
-> +	if (!v4l2_subdev_has_op(sd, pad, enable_streams))
-> +		return sd->streaming_enabled;
-> +
-> +	state = v4l2_subdev_get_locked_active_state(sd);
-> +
-> +	if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS))
-> +		return !!sd->enabled_pads;
+Wow. That is good. Maybe decrease N to 1000 instead?
 
-I think this can be moved above the
-v4l2_subdev_get_locked_active_state() call.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-Any plan to convert drivers to this ?
-
-> +
-> +	for (unsigned int i = 0; i < state->stream_configs.num_configs; ++i) {
-> +		const struct v4l2_subdev_stream_config *cfg;
-> +
-> +		cfg = &state->stream_configs.configs[i];
-> +
-> +		if (cfg->enabled)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +EXPORT_SYMBOL_GPL(v4l2_subdev_is_streaming);
-> +
->  int v4l2_subdev_get_privacy_led(struct v4l2_subdev *sd)
->  {
->  #if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> index d6867511e9cf..270a4dfa5663 100644
-> --- a/include/media/v4l2-subdev.h
-> +++ b/include/media/v4l2-subdev.h
-> @@ -1914,4 +1914,17 @@ extern const struct v4l2_subdev_ops v4l2_subdev_call_wrappers;
->  void v4l2_subdev_notify_event(struct v4l2_subdev *sd,
->  			      const struct v4l2_event *ev);
->  
-> +/**
-> + * v4l2_subdev_is_streaming() - Returns if the subdevice is streaming
-> + * @sd: The subdevice
-> + *
-> + * v4l2_subdev_is_streaming() tells if the subdevice is currently streaming.
-> + * "Streaming" here means whether .s_stream() or .enable_streams() has been
-> + * successfully called, and the streaming has not yet been disabled.
-> + *
-> + * If the subdevice implements .enable_streams() this function must be called
-> + * while holding the active state lock.
-> + */
-> +bool v4l2_subdev_is_streaming(struct v4l2_subdev *sd);
-> +
->  #endif /* _V4L2_SUBDEV_H */
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
 
