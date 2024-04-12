@@ -1,150 +1,113 @@
-Return-Path: <linux-kernel+bounces-142832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00E4F8A309E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:27:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E18078A319C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 071221C2435F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:27:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D3FF1C2318E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A501327F3;
-	Fri, 12 Apr 2024 14:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A071474D1;
+	Fri, 12 Apr 2024 14:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="lfhlR26B"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oEPUvAYY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C5212D1FC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC907146D71
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712931844; cv=none; b=ERlSQAujruba2No0af6hwKbGzKFpmhBABjpCQthwFGNlMfgfjOU36q2nAt3NKhoD3zrW26vVVf0BQytK/S3jyodsqi7/QJ7xeP02V7wI0+9QojCS2rtovdASolm6TNXMIoYgYNNhxx//JzmZnYv3ZFH4PiujxtprCazYLTHAi28=
+	t=1712933661; cv=none; b=nK/E+2DIcdy6ONo9vFBSBCoiw/m+vokq+7rkRWKUgiP0qMtJNhzjdzuWIVP/1c3HjWzYxLLNDpZMPIQIPTbBHdZeOlAvfZW0+dC1txjoOxjuqZJCAmCdazTIUjGfLHC6EG2RGnh06dzuGDIU5CYwJh3yK0PLrGKtNR8TiSgwPWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712931844; c=relaxed/simple;
-	bh=xPJfvrJkroHWen1V+x+kRG0Fv8xPw4I9S3y/eqOkAa0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=KI5ms/at72mXGiU9bsiSGFmibHABqLolsxyb2ZbUFdNpmIUf62IQQ0yqMy6qBy3PHHgPgEbGFoLsY3xXCjMiE40XT2yPkd9FBuRiKgVd39K4xn7nb6VL5bp+haTjEagqmfReCWADIzDiWjcw817kxpPNYmTMVkoUmbkLji3WtBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=lfhlR26B; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4715991c32so122715466b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:24:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1712931841; x=1713536641; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kGGpBuMkk3rcfY7clPvu4R5GEYInWk7ZpVaUvi+LAPw=;
-        b=lfhlR26B1CJ7iMkal+tk28o3iwUeAhLMtmPTXj9rzkjBwh69ghHQzEZ7Eg607QRIfL
-         FkWxkNvk4HO+TALIUDsynEUeJunJf/POFcSaVHdCJXkWGnJk5p1rK4uzUDFk2S0YBC5a
-         Wv9GQVwrpPPPGxuSZ4/hH+qMo94eCVlDf+OZ223sa+Ed9wgleQSF/kHni83zSwAReP/v
-         qRSpgfKh6l9lPw34ab34kqBYfPozrlXgquzrlxK0FHKCmVWpmQksxAGucDGyx2DpVIAj
-         vsjYjb+v1txV7Tm79qkLeUepvq+0SbeAHPZfWs2JdEtbqlwtnEZAABvCKmnujP+nOCrC
-         w+yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712931841; x=1713536641;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kGGpBuMkk3rcfY7clPvu4R5GEYInWk7ZpVaUvi+LAPw=;
-        b=cNFIjquFSzqQcfn/yzrBT8TxIDw3rzcZpKfrlcykAiTd4bwE6ZFWAW8ixOOsFC7vdN
-         TP8M1z30xVMFZsnCo0LbsJOol/1Js9lr1Eq+3f1ECKXlxXXZKiS7bv9q60QCan7iq7oz
-         ShRzcT/l8fs5uX7y8gm8cVK5xuzSY9KUPcO5QDZGQ/8ULBup/lY9V8vbHID8D9uDAxdL
-         iIEA+qSGZOJhr7gPo1OocVd8xV0ZVVOXOXeK/sujY9B13fVequdzTTAmzap+pbgWX0o0
-         Y9KYRQPlNIOGTFsjEAjN61BywCdGRD+gI5Y/tNFhM7dwJ90bFNO3ht9w9Q/VMAc4DLVD
-         8cvA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxNrEcrzEIb6twI9raNhM2iViyU9b3bGFyNHrWtFdJHIDO0bAy0bEwgk2yEnO5DFqI+59naif7OdRZXqMAYeG52bWcaYSOdgnD95Ya
-X-Gm-Message-State: AOJu0Yx0XvSCbsZspU6vPDvNBbnqgA22lAJ4Pch7+OO889qrxONxwKGO
-	SYN7MnWHKbajp6wZ2Kj4Vgh4lDpLa40L59iBHNDyaireGtQzcdf8c6+5b2mOqYo=
-X-Google-Smtp-Source: AGHT+IFRwnYmNxoacwMYfZHwJlXDTXp4RSdWCA1aODz1NYxwf5Bx9Aehjl/icfWlQ/9r67E/c8s6qw==
-X-Received: by 2002:a17:907:25c1:b0:a51:d7c8:300c with SMTP id ae1-20020a17090725c100b00a51d7c8300cmr2369381ejc.17.1712931840880;
-        Fri, 12 Apr 2024 07:24:00 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id hg20-20020a1709072cd400b00a5225c87f65sm1563965ejc.56.2024.04.12.07.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 07:24:00 -0700 (PDT)
+	s=arc-20240116; t=1712933661; c=relaxed/simple;
+	bh=afqeI7wnK4mu5ocuG6kYCfL1dWMMCoS8i0jeYsFz9Us=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PxC38se7MBahBRoejAUJ4q691mt8fNYexrOvh+rBb7Nw7MxZ0WdMGRTs/m0CPTdQusuK2MVfn9UUXgmtAPptVm8KgsJQcoXlbiqcKjuqOW8xmpH5YOLlvWPC+tENVQQto0mELR8vk8vI3KwtStfrFPRzYTUPu6Fw+kf9zl+u4lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oEPUvAYY; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712933660; x=1744469660;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=afqeI7wnK4mu5ocuG6kYCfL1dWMMCoS8i0jeYsFz9Us=;
+  b=oEPUvAYYIg43BVe+qBahdtYRmZ6cXpa6Ej/hrYbkt5kY0a+kNyXOgJAp
+   7Tou2339qi8gyt7ty3ZUC0TGge5dAxDfH9y5ouwuP3LYjRetPqJePS/r9
+   uwOPENjHxxcIxNO0l4/r77I6Pdym8Le5Up4VyQiJaGKdSSCObMRU/E+cR
+   kx+2hn+8zJ2afwcEOKbkgGBsGUQjZ+ktp6H3FeTA+9mKMZM4yGWJ2COVI
+   c+4YQfa7lXNugZXXE+BBlBoMCX3I4o/qxacOAlB9kEY6eTYS0bQRCzkqF
+   4l0YmiXZ1XY7o7YKSYLPEB82Un6zR1eJHGmVIPE88Y5gr2KcpDvLK3QKb
+   Q==;
+X-CSE-ConnectionGUID: cruOWevMRuSV0MMJvjq7cQ==
+X-CSE-MsgGUID: fbFdY5BARmWxRfilBpA/ZQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8249803"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="8249803"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 07:54:19 -0700
+X-CSE-ConnectionGUID: OfRelUKURkSR1jEyQC/4RA==
+X-CSE-MsgGUID: VI1JjWtxTNOCSRjm6b0tmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="21238609"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 07:54:15 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rvHqJ-00000003eP8-0aUV;
+	Fri, 12 Apr 2024 17:25:27 +0300
+Date: Fri, 12 Apr 2024 17:25:26 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kyle Meyer <kyle.meyer@hpe.com>
+Cc: linux-kernel@vger.kernel.org, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	russ.anderson@hpe.com, dimitri.sivanich@hpe.com, steve.wahl@hpe.com
+Subject: Re: [PATCH v2 2/2] sched/topology: Optimize topology_span_sane()
+Message-ID: <ZhlEVoW6FJC6uBVE@smile.fi.intel.com>
+References: <20240410213311.511470-1-kyle.meyer@hpe.com>
+ <20240410213311.511470-3-kyle.meyer@hpe.com>
+ <Zhe9ttm9Ppv2wT3S@smile.fi.intel.com>
+ <ZhhcPwFCgxDUhndo@DESKTOP-IR8JFSN.>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 12 Apr 2024 16:23:59 +0200
-Message-Id: <D0I7NRQQGOSJ.3JB82F1X4GIQM@fairphone.com>
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: "Luca Weiss" <luca.weiss@fairphone.com>, "Marcel Holtmann"
- <marcel@holtmann.org>, "Johan Hedberg" <johan.hedberg@gmail.com>, "Luiz
- Augusto von Dentz" <luiz.dentz@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, "Paolo Abeni" <pabeni@redhat.com>
-Cc: <~postmarketos/upstreaming@lists.sr.ht>,
- <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <phone-devel@vger.kernel.org>
-Subject: Re: [PATCH] Bluetooth: Add more Bluetooth version defines
-X-Mailer: aerc 0.17.0
-References: <20240216-bluetooth-defines-v1-1-6c39aacc66a8@fairphone.com>
-In-Reply-To: <20240216-bluetooth-defines-v1-1-6c39aacc66a8@fairphone.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhhcPwFCgxDUhndo@DESKTOP-IR8JFSN.>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri Feb 16, 2024 at 2:22 PM CET, Luca Weiss wrote:
-> Add the various Bluetooth version identifiers found in the "Assigned
-> Numbers" document[0] from the Bluetooth SIG.
->
-> [0] https://www.bluetooth.com/specifications/assigned-numbers/
+On Thu, Apr 11, 2024 at 04:55:11PM -0500, Kyle Meyer wrote:
+> On Thu, Apr 11, 2024 at 01:38:46PM +0300, Andy Shevchenko wrote:
+> > On Wed, Apr 10, 2024 at 04:33:11PM -0500, Kyle Meyer wrote:
 
-Hi all,
+..
 
-Is there any interest in this patch? Would be nice to get at least a
-positive or negative reaction to it.
+> > > Since topology_span_sane() is called inside of for_each_cpu(), each
+> > > pervious CPU has already been compared against every other CPU. The
+> > 
+> > previous
+> 
+> Thank you for pointing that out. Should I send an updated version or can
+> a maintainer correct my mistake?
 
-Regards
-Luca
+Depends on the maintainer. I'm not the one here, don't expect answer from me.
 
->
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
-> To be clear, I don't have a use case for these extra defines myself but
-> some time ago when working on Bluetooth I came across this and thought
-> it would be interesting to have the list complete. No other motives.
-> ---
->  include/net/bluetooth/bluetooth.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/include/net/bluetooth/bluetooth.h b/include/net/bluetooth/bl=
-uetooth.h
-> index 7ffa8c192c3f..818eb142eda3 100644
-> --- a/include/net/bluetooth/bluetooth.h
-> +++ b/include/net/bluetooth/bluetooth.h
-> @@ -39,11 +39,20 @@
->  #endif
-> =20
->  /* Bluetooth versions */
-> +#define BLUETOOTH_VER_1_0B	0
->  #define BLUETOOTH_VER_1_1	1
->  #define BLUETOOTH_VER_1_2	2
->  #define BLUETOOTH_VER_2_0	3
->  #define BLUETOOTH_VER_2_1	4
-> +#define BLUETOOTH_VER_3_0	5
->  #define BLUETOOTH_VER_4_0	6
-> +#define BLUETOOTH_VER_4_1	7
-> +#define BLUETOOTH_VER_4_2	8
-> +#define BLUETOOTH_VER_5_0	9
-> +#define BLUETOOTH_VER_5_1	10
-> +#define BLUETOOTH_VER_5_2	11
-> +#define BLUETOOTH_VER_5_3	12
-> +#define BLUETOOTH_VER_5_4	13
-> =20
->  /* Reserv for core and drivers use */
->  #define BT_SKB_RESERVE	8
->
-> ---
-> base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
-> change-id: 20240216-bluetooth-defines-b810ce543191
->
-> Best regards,
+> > > current CPU only needs to be compared against higher-numbered CPUs.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
