@@ -1,134 +1,121 @@
-Return-Path: <linux-kernel+bounces-143180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 256F98A356A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:11:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BD648A356D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:11:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7C401F221EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:11:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C249E1C21D28
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 654D914EC6E;
-	Fri, 12 Apr 2024 18:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A83F14F112;
+	Fri, 12 Apr 2024 18:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KDoa0lyh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eaV2NFxU"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9431014E2F5;
-	Fri, 12 Apr 2024 18:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215B114D70E;
+	Fri, 12 Apr 2024 18:11:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712945467; cv=none; b=YnpE69NsX9r8nEjUKhK2Rmh6Wmtl/zegruSKEw4GgH19yEoU+mQnX2TZPuT/80L4kEcaJgHA6G8y7PDJVAFDagYv3QDMlOozMqVK6yE8I52yYAh11POeqQob9gt6PbfSfMkgn2B6ovLaQFpzLR6ZBPRq7l6p5piEnL3POhsCbWc=
+	t=1712945468; cv=none; b=CokQYdeV7SdqSxsSmwq06YAJAk7dh98qCVt1aVUrOzlPBDLw1quLBRxfgDMpI34Lhe1emAiVNSXy07b/FpgySzMWkp6ZP6xnO3IN4tcFNxgyTO2knmaYuao+BMdHciMykuqSn6HAu3D0vZxT6SIvEuQ0Z6IuJTWHTpYvRoXNUoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712945467; c=relaxed/simple;
-	bh=w0Rj2BE2ik1TfBrDf8LZJAbgRfaaZayTzrNsUAR3K2o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m2+0aM1WOg8qSEgCt+S1ol1dY1/smwWMpQx84KUUPXoX69mLjS0c7oBr2HKtV8FuEr2TjAtQvR9KsPADQb0a3IbspfkkQsPcVgBsBhRActwNqkb7n8N6JhVz8i/5UD1zlot0dNJ7+exkX4bOEV9xH35Qugrq1F5ULaiW5WL1u1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KDoa0lyh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39808C32781;
-	Fri, 12 Apr 2024 18:11:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712945467;
-	bh=w0Rj2BE2ik1TfBrDf8LZJAbgRfaaZayTzrNsUAR3K2o=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=KDoa0lyhtKdtCX/st2OM4yzUUFYH/wZdlPwfOk+/h8yG51SmuMko1dILZUaYH2o1m
-	 zQI3FRfCn/Hn+EN8T9pDEMxHFseYAmF9CSISfO9ZwiJPDeXtTPKj+rDaNAyokflBfS
-	 GTG4Dx+gn0cE091MRS9iZmeAxI2qMgvpwdGeEeY42wYLjOTm9feo+Mz2e9S5ZyQb5b
-	 ABCjuloula+NpOC95mrh3iqQfkSHIVDusunVEqmZXpMlqjaFIBvcMQ27MtXFcDHNrK
-	 +ik/LaCgimMKWnS1KZWhL+Rjs0uyr+OKK5KwxK9aOia+mvN/lXBmGyhG+Ieuo/kg0F
-	 rjoNjC118QESA==
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-22f211d761bso40762fac.0;
-        Fri, 12 Apr 2024 11:11:07 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUa5gwbFpCROVoXBIOhp7dDWVTuEmSRd30XnVa3QIqDSso9wuOx0NimMocTricRCBb+vsKq+1LKmZKXoZz5w0KyDjn1O61avkdJcv/QyVaxcvUNmH2VJ1MPpo3KixI07liz3D8o+d6Uts/NzQJEB2kKLOjZu0fdh3q6ocpjRRSUo6HXlYE=
-X-Gm-Message-State: AOJu0YxH6jNr7KHK4CaSEDVuvj4JLWU6ag4HGZHbLiSvvCfVsql6OAU0
-	uF91aWe74GGaWcEg5eeGXFy4qnCzWguTtn/NjdxXjB+WqWhIYIKHBuxpM+OZLm2Bq7a1dasrnOL
-	baHMjPsveyo9VSDt/Xl4zw6oDKZc=
-X-Google-Smtp-Source: AGHT+IGKtcKlSO2lFAIq6OKvn2JNPJn0Ga+grmKCMWsQcAXz9raUofNuscAxbTpGInOFPwn5aIKNB4YKf2Ez0fmcZl8=
-X-Received: by 2002:a05:6870:9a97:b0:22e:6e96:ed41 with SMTP id
- hp23-20020a0568709a9700b0022e6e96ed41mr3822217oab.2.1712945466524; Fri, 12
- Apr 2024 11:11:06 -0700 (PDT)
+	s=arc-20240116; t=1712945468; c=relaxed/simple;
+	bh=X8JAZ83PISoSih6UqWtdaIMVzQTC/9WJWILUPIQBXJ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nRHofX9591XTo6IkeCIZMgIq4ERbH3Y73NlPjlxncuP5el+1cmT8SAqctZIoDHk5Z5TMCYZNoOx0ZnuLFCeLC/cN8gDZ1SGjQhfVW0nmltlxVQH2BmlW34IMYBef/m5ay+grApzhgtz8Fdy3f1bgr6ZJQWFWI/G1tFftC+fwdbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eaV2NFxU; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e4f341330fso11596515ad.0;
+        Fri, 12 Apr 2024 11:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712945466; x=1713550266; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0JthIKMm0QudgaXVbOYMQ9cuPyBbvwy6KmupLEHj/Ww=;
+        b=eaV2NFxUKDJhfShgSZOAp/6DbfWsMe8hUifndzvfGFjkq3uEM8bo0NprsQVU5mD44Z
+         gLQRlm0COP6TBPEXO9vgF7XDtyg4NAgmlCfBUKR5bodmO21b3NQy99aBeitRqB6SGJAe
+         Yuf8vrIApbwuM0qWB1OAj9sxFVSOIykR9zVSeCIncia3dVkiJa8zJk7YiYnV79BCbU0w
+         Tcge7+FWwLpFzS9iqrlH8U6FRj5FDlu/xLByivAoGp5ES4S0c1drHd4o1ctQLDwD6RkN
+         iOWYvRSgt96NAtMlvwap7xHhCNZm9ahICbT372yIwddRZk2le51PsHl/fvUB/Ryz+ufi
+         SJMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712945466; x=1713550266;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0JthIKMm0QudgaXVbOYMQ9cuPyBbvwy6KmupLEHj/Ww=;
+        b=VoSJ4bZrWzPfIJRs2ZJM0tqeF0iER6aYfBVuijomx1CFzDHaFskh/QOnpWS4ZU4rOi
+         NKInuPoiRn8WDVSEkr2ci1Uc9anRvJLqeAsC0ntQBzYMBw9JuMEbJ8KLKXNTzBU5jYdW
+         BQU5Y0wej0HezeHBvb6ReSmJKxsEpVnfxZ1PL7kiBtRlHveL0vpL1LhHznUlWSGZ3prE
+         VQ5ujdFyDp41VbHfCGqyGPukz1jC5EUdGkeLJ6KdYm4Q3g0hi3D8wdT5IIJPhxm2S125
+         AfVUSqlctOUBfJtsarVRvH7cOt1db614JHZvxQQ0B7btNigG/Pspm028TMpk4wePul47
+         eq1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWmXPbYaPLI5iYWxIBbZhIf62Fv9JTI4zCwcfwUJD59iwl3U8ki9WorKPqao/nJNkHGvQsQJOjC7AICiVpKHxjE5yUz1iX85naEDgSqpiXVzWSCDBMQMNR/ZL0Az+FThQUFGw+l0mZ+ATSSjCdGyF9AbXNzKe8so6LMoxCraMp8MjDr
+X-Gm-Message-State: AOJu0Ywja89K7vD8WvBWz/90PIJgJNdSLp47OrwErgeytolvYbG4WtD4
+	bYlXueOydfP+OBI4eLhCeNXYwf1gOP7At5gRduL5NdjPLfVAguW4
+X-Google-Smtp-Source: AGHT+IE0PSTDSZKKtsu0hbpf/Klp71X2ePxEwc6wEp4D3GSUygJCRHA20izUrDuTvbH4UoBXRzSJUQ==
+X-Received: by 2002:a17:902:9a08:b0:1e5:870a:b2c0 with SMTP id v8-20020a1709029a0800b001e5870ab2c0mr3134934plp.14.1712945466289;
+        Fri, 12 Apr 2024 11:11:06 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:a5f4])
+        by smtp.gmail.com with ESMTPSA id h11-20020a170902680b00b001e0bcccc800sm1283613plk.35.2024.04.12.11.11.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 11:11:05 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 12 Apr 2024 08:11:04 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, chenhuacai@kernel.org, josef@toxicpanda.com,
+	jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net,
+	pctammela@mojatatu.com, yukuai3@huawei.com, qde@naccy.de,
+	zhaotianrui@loongson.cn, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+	cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 6/6] blk-throtl: switch to use rq_qos
+Message-ID: <Zhl5ONFlPg4vqjGj@slm.duckdns.org>
+References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+ <20240406080059.2248314-7-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com> <20240412143719.11398-3-Jonathan.Cameron@huawei.com>
-In-Reply-To: <20240412143719.11398-3-Jonathan.Cameron@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 12 Apr 2024 20:10:54 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0izN5naWY7sTi16whds9ubXkLpgqV2gePQs869BoJTCDA@mail.gmail.com>
-Message-ID: <CAJZ5v0izN5naWY7sTi16whds9ubXkLpgqV2gePQs869BoJTCDA@mail.gmail.com>
-Subject: Re: [PATCH v5 02/18] ACPI: processor: Set the ACPI_COMPANION for the
- struct cpu instance
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, x86@kernel.org, Russell King <linux@armlinux.org.uk>, 
-	"Rafael J . Wysocki" <rafael@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, 
-	James Morse <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, linuxarm@huawei.com, justin.he@arm.com, 
-	jianyong.wu@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240406080059.2248314-7-yukuai1@huaweicloud.com>
 
-On Fri, Apr 12, 2024 at 4:38=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> The arm64 specific arch_register_cpu() needs to access the _STA
-> method of the DSDT object so make it available by assigning the
-> appropriate handle to the struct cpu instance.
->
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
->  drivers/acpi/acpi_processor.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
-c
-> index 7a0dd35d62c9..93e029403d05 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -235,6 +235,7 @@ static int acpi_processor_get_info(struct acpi_device=
- *device)
->         union acpi_object object =3D { 0 };
->         struct acpi_buffer buffer =3D { sizeof(union acpi_object), &objec=
-t };
->         struct acpi_processor *pr =3D acpi_driver_data(device);
-> +       struct cpu *c;
->         int device_declaration =3D 0;
->         acpi_status status =3D AE_OK;
->         static int cpu0_initialized;
-> @@ -314,6 +315,8 @@ static int acpi_processor_get_info(struct acpi_device=
- *device)
->                         cpufreq_add_device("acpi-cpufreq");
->         }
->
-> +       c =3D &per_cpu(cpu_devices, pr->id);
-> +       ACPI_COMPANION_SET(&c->dev, device);
+Hello,
 
-This is also set for per_cpu(cpu_sys_devices, pr->id) in
-acpi_processor_add(), via acpi_bind_one().
+On Sat, Apr 06, 2024 at 04:00:59PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> To avoid exposing blk-throttle internal implementation to general block
+> layer.
+..
+> @@ -832,7 +832,7 @@ void submit_bio_noacct(struct bio *bio)
+>  		goto not_supported;
+>  	}
+>  
+> -	if (blk_throtl_bio(bio))
+> +	if (rq_qos_throttle_bio(q, bio))
+>  		return;
+>  	submit_bio_noacct_nocheck(bio);
+>  	return;
 
-Moreover, there is some pr->id validation in acpi_processor_add(), so
-it seems premature to use it here this way.
+This is a half-way conversion, right? You're adding a dedicated hook to
+rq_qos and none of the other hooks can be used by blk-throtl. Even the name,
+rq_qos_throttle_bio(), becomes a misnomer. I'm not really sure this makes
+things better or worse. It makes certain things a bit cleaner but other
+things nastier. I don't know.
 
-I think that ACPI_COMPANION_SET() should be called from here on
-per_cpu(cpu_sys_devices, pr->id) after validating pr->id (so the
-pr->id validation should all be done here) and then NULL can be passed
-as acpi_dev to acpi_bind_one() in acpi_processor_add().  Then, there
-will be one physical device corresponding to the processor ACPI device
-and no confusion.
+Thanks.
 
->         /*
->          *  Extra Processor objects may be enumerated on MP systems with
->          *  less than the max # of CPUs. They should be ignored _iff
-> --
-> 2.39.2
->
+-- 
+tejun
 
