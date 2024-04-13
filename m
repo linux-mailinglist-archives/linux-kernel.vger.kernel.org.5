@@ -1,207 +1,181 @@
-Return-Path: <linux-kernel+bounces-143642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47FF08A3BCF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AFFDF8A3BD1
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:04:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0C1A2837AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:02:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65DCA2828F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24FC1CFBB;
-	Sat, 13 Apr 2024 09:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C81C922EE4;
+	Sat, 13 Apr 2024 09:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wqv9b+We"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="CwEapwmc"
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2015.outbound.protection.outlook.com [40.92.103.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CFE208B6;
-	Sat, 13 Apr 2024 09:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712998951; cv=none; b=V+iSV4wnX2oQlbzmvkBqynmCKAhqoycnk01N+66HmdSPqa8Ascpf0vwy6Df2cGWiiwfgyV/M9A94HnSOJOL2f6K2hWzhqJhuiTOGirYVMtCfd9p/851wDXC+ukQVrePLhD1fg1q/b852v2uqHQtFL8unPdB518sFKe21uJwLObk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712998951; c=relaxed/simple;
-	bh=XPRehqCoDRDu9KhHYz3crrBqqIS6vn4FnjXgBrmLMmA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nuqFukTJyt/bhem+tD2lVdMKS80ENzqqF03Nzdm7E1gYjSJlhe+f/23jUuiSsgF3T4/ORs6QRikDhx+jIbcaRBYj50Fp9tcCpm10TvLA+7ZbtHS07fWQXbiKSjS+8G/eFhHVgDf4LfuidwLoXz7FMYjYCJGXq+z0vjvT9pd0qZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wqv9b+We; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so24168611fa.0;
-        Sat, 13 Apr 2024 02:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712998947; x=1713603747; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pp0/G7jaP4xfrxL+Nun8zOzJR4cjAehFUaa+BSEMdpo=;
-        b=Wqv9b+Wewe3YOICMKgyxyJvhHgSLliQdYiTZZz1l4a+b5OLZOcNRkd9unc4IVlLXB4
-         ExPLzId+d3eaERVU2VNIBpUzlyB9onkymM132PW14p8JqAAtL2N1gbl1Re7YTuRqb+8d
-         foVS4Nwbrd5tSKmG3VSOwmBOlc2Xz/UNGXj7o7Hu3b0QcubENchpSKrFl14SafhMWywv
-         8ABDHKxzqdrE9o9kzyhetFrg6L2mGNu/U76Vr0oPJxP/a2BY0DgZt6n94Y00WtCzanUD
-         BRqP1WaPFwSZH1HkwyyXwiCxKDhs3qV+ZRgwxWN0r+4cH5biWui6F+vcMCTXez9Vc6ap
-         qR7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712998947; x=1713603747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pp0/G7jaP4xfrxL+Nun8zOzJR4cjAehFUaa+BSEMdpo=;
-        b=tZUw/RQovQuvdzETIe7+VDm7IGIWXmccKWLki8hwiFE8b7+Tm+C9gQ8sbej/jY62gc
-         W52qMq0kkdQp2DFUj5STkPQ2AlgYJmp57k8LSfgiS/st8LPchAsQae+cAFE6iUnSDKgA
-         SVy9SyeJTfQLOWvixi9D3LiQWzgWXNdR5SJ3qsKBx4RIPRFtNOY3Qk84m73Ya68NJCgc
-         mDn+IVZmdedPOvra/plmCakIvKd8tIU/Y0R/hTe14+JHMhZuidpj06s/9dCcosUIW+lg
-         Hf+6QOzywSa6OPd9GVi92dbEkja9xAhiko5Nt5dMiCGCNi060VOH+EAzwASTCMhzDM9H
-         UmTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVT41ZVEchC3EMdw1NZLKWeO5dbWQu47ANlZ4dbZNGnNMS5nNCMEjqIFSx0vp7fWMVG+gQ9B13LZFpdH+4NWvSTu+Hq1OCZ0nDJWX8L
-X-Gm-Message-State: AOJu0YyNkK9b10oAP3jcRlekBx9FlUicDi//F7e4M0ndpIQwUUZbuFZT
-	xFf7N2MAm2qtKjqcwTflk03PhbshoLbBMcPYssSLSWI3m4aPcKdSMr03TTf6rUGrkrgLagU1oUm
-	pv9n4Nut3+mTSIg+mpy2VNXowDHY=
-X-Google-Smtp-Source: AGHT+IHbtoFqqjXX5yyttD1d6EXR2Ucsz/XnNTkzhDCPle8jgk8iv+xWYiUcY861uOmzEGG6a/rKvF6l9YveU6MTRbc=
-X-Received: by 2002:a2e:81c3:0:b0:2d4:9fbe:b5f with SMTP id
- s3-20020a2e81c3000000b002d49fbe0b5fmr2758427ljg.36.1712998947218; Sat, 13 Apr
- 2024 02:02:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1BDF14265;
+	Sat, 13 Apr 2024 09:04:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.103.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712999044; cv=fail; b=nutDgnN85SEw5lQVaB5O4BmBVUPX7QEZPAb4OYdEXoIUWPH0ym5/nSHNOUuvyvvlx/uMuFamlyKFU8YpwTjGMmihp1filDzq7pRGssasUA6YwFIkCyvRXSoENMvAQdhNoW5ykf8gn0cOhaU7JsyllzGlh9blcQZEGD+FNOztHbs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712999044; c=relaxed/simple;
+	bh=857XDgg0F/5FFpPHhG6ay7iLpIjJP4/dGOp6VA9GAWI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Os0MEMp6kJ+UTs3bQNF/eJd11qENk2kp9Ik6Bat7r37/xcizZDLVObq0hce1cVfduFNAl3vklRqRsR1aPO4ciOPPiofiQlxo+gL60mwRvQLm++QrTSPe4va/IYeVkVmXvBJ+fyqcg2M2srJGO+ebiPiuKKUn7uWkNbVZa7wu0Hs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=CwEapwmc; arc=fail smtp.client-ip=40.92.103.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QEAcI18Z0urGtJyISsTibkulasVQTiY1CQoE8imtogpa+7ftNNZ21fba9aYZCLm2sVBLIDvWxTZJRwXCRFO2oHAqudiqjQS6xiF7u+keY9fLDBmRuKGNuOy2fbYNSQpAzZN8rPocWbPgvR5MtaNNb/enFGAUXbaCAoNnUugvA6D6dmLx5bIMYbbtT0AhB2OubpOVD1Jd/7zNuAB17lrkNRZsJ+z150H68OcV7om33Ck5IjrZFG99Wc1rtVCzSxwEhikCX/ZCe2raQFM0NpgjaC/d37XH7R6TVM/L1u719mqhZvhdjBe3lviSzjfKjyZW2sgcdNnQyd9gzZWxHI5ioA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pm7kQ79ge/VjXMkwSDu8956GkQIzzsvc5fioeHGcbAc=;
+ b=XKIdyyssK0KW+rFvyacSmeXTbEuK+6eI7dXiKY+uQkq49SrQUjpVc8s84JfNrkH0v1tUHJ9p4QoNfK36StvhwQ9U4PIdGVtSSOllzMcGuPBiGGrZP/UkHAvNw+v9M8aFXAARNSgZ0z6wlWF41N+82f120c5tw25WHu3fmz89m2qbyOEvxojnY/zH9Ck7eYqk1q6orsiJ6OcyykQ0lxEteqfkT1iP59S2zFEKmIede9j8MmZpkWBAde4rHuieY4KwrrKYfyp0AOdwVwL0E8HeuTDZnSS0DYSuOQHwspFqWr3qkZH74jqrXgzya8jNq/pug14ax5Bl0Ubo018XFIyyOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pm7kQ79ge/VjXMkwSDu8956GkQIzzsvc5fioeHGcbAc=;
+ b=CwEapwmcQWJa5EsAkZ7RHw+mVBxLYJUJiNjqRHBQO3kmsXfDy7BZDB1c1NSGYeEVy1kAL7iKQ4aLp8wy4CtYesvg8EWuUxRSkNHYvE3YanppnWcQ7zrIPAvDiJbR/qe6budPVmacQs9DwEpLkQ7Qpr4VyKGPLkApp9ydMWnQbaez6M1szrGDwzA4ScYRlYz1EbphFgHbUktQr8G2Ma6RBynOS7p+pDPlLETuRLwwEHjfbrwS7rQ3OXfWpqEdMnq8wm6KFhOhpLTRZpVawpw97PV2vBDvzro2Rt6h95p7u9Zn+HAqBvpABD/kQyJ2mqX9ncjsAvPmiNL2x0x/6k9rZg==
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
+ by PN3P287MB2108.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1d2::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Sat, 13 Apr
+ 2024 09:03:56 +0000
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::664:2ecc:c36:1f2c]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::664:2ecc:c36:1f2c%3]) with mapi id 15.20.7409.046; Sat, 13 Apr 2024
+ 09:03:56 +0000
+Message-ID:
+ <MA0P287MB2822087FAA743D612EC7C110FE0B2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Date: Sat, 13 Apr 2024 17:03:53 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: dts: sophgo: use real clock for sdhci
+To: Inochi Amaoto <inochiama@outlook.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang <jszhang@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <IA1PR20MB4953CA5D46EA8913B130D502BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+From: Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <IA1PR20MB4953CA5D46EA8913B130D502BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [uKrAbWDDSnVVigfZSyhQk47nnAYoO5+t]
+X-ClientProxiedBy: SI2P153CA0001.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::7)
+ To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
+X-Microsoft-Original-Message-ID:
+ <5a657ec3-02a4-4bf0-86be-5870c14b5b84@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409112758.467112-1-rickaran@axis.com> <20240409112758.467112-2-rickaran@axis.com>
-In-Reply-To: <20240409112758.467112-2-rickaran@axis.com>
-From: Steve French <smfrench@gmail.com>
-Date: Sat, 13 Apr 2024 04:02:15 -0500
-Message-ID: <CAH2r5msm+xFyMPCJV7Luf6aQ04cHOhevmjJi8J-2Bf711T1ziQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] smb: client: Fix hang in smb2_reconnect
-To: Rickard Andersson <rickaran@axis.com>
-Cc: linux-cifs@vger.kernel.org, samba-technical@lists.samba.org, 
-	sfrench@samba.org, pc@manguebit.com, ronniesahlberg@gmail.com, 
-	sprasad@microsoft.com, tom@talpey.com, linux-kernel@vger.kernel.org, 
-	rickard314.andersson@gmail.com, kernel@axis.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PN3P287MB2108:EE_
+X-MS-Office365-Filtering-Correlation-Id: b624d2d3-4bb4-4c42-9129-08dc5b98a631
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	CgLCLe3EcbyurMNhP44jzxFq3uIhXnusgzCF+dTmurI9yQIrCI63cFHXEB80Imflc+a7goBoFjet/B6GvydWfHCXhavtjPZvLLL4AS8+5Zx2IYCj4GtiR0F+1upMxAvUp/PxvFlb+DjbLNNxL6bRPWtxhTbOcpO1HiUBOJ2gNes6uW5KcVmIi0VmgmKhpllJ4ytnCzTTa2XinNfA0gQu4YD4/WYcMdNV+A0nA+uAxaAG8JJJzTo4mp1P1IkNTYGl0+KxeZcRWI/Ku3iPjtT73SgCc1aNxmYvPGc42jWrE7Xbbzk2SC3eM2tjl0F2tpqCFKGYyD6f+FT22LoY9ljJewLbqPcyD14AXpbz9FZd/Ml1CpdHXXvyz2Of5Oeuf2qDJ8+JDlE8xLPMI4vJ6oazGPBC3l9QNKqnm7EyhEEpdikWN9EuXhYJ9GfcJo9IUBFXYATBDbS2DPSWiMz53Yozo7gSO5blepzmu3iNOpH2m6pjAMfAhEYJVp9Tk5uHxb5IoCjrZkSWgZ7XiYwMbmtf476b1QFvNxdyXQt65wV2cESFgq5W3cwCPvXia7rZYl+X
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZTViZDFDMkp5VUJ5MVArSzcvRmdsanNKbTBZWFp5SnJuVFRlM3VQVUFBSklE?=
+ =?utf-8?B?WGdxTHM0YVhBbnFlbFAxbWx5a2ZWMFF4WWgzK3MxYSs5cGdzVWpIL1JkbFNm?=
+ =?utf-8?B?ZzczMDFraXVUU2VhYUVHQi9JeklWMStiNS9WWk5PZExUSWpLRmJObVpCRVRv?=
+ =?utf-8?B?c205RWFHTVRLNmY0MWg0UnpRdWVHMWIwWDE1U1RmSEVub2U2R294M0lqbzI4?=
+ =?utf-8?B?Smc5MEZkY1JPWDRWbTFWQW1OdGk2MUpCNStMN2NoL1JPb2lJU05EUVlER0NK?=
+ =?utf-8?B?NFZWVDV1eklSOXRBV211SFhxcG1wMXRCUkw0aWRFNXhoOUxORnBKcHphMmE5?=
+ =?utf-8?B?dFNNeVdUSWkvWGg2SzdlZUdyQkR5T3dvaWdFOFlCT3ptWGhVQnlBdFpkejJo?=
+ =?utf-8?B?NVB6bWw0ZitlelFUZ1RzNTZZRHFGQ3VkbVRjdThVMGZIamw0bk1JTUJxeFEr?=
+ =?utf-8?B?MlJQL1Fmdk5ZWlBzZWswclNiN0YxWlU3WkgyZWhXbzZQNzlGeGVXYi81MjNP?=
+ =?utf-8?B?SFhidkEyM2tBT0twR0lnSG1MZHMrT2tUSlBPUzNpNFZHaUp0VXd2UWFidmFJ?=
+ =?utf-8?B?SDBIQkREaW0zTHdpUjA4Tm90UXkzTmp0aWpMWGpyS3J1Q0RxVDArVTNEVVhW?=
+ =?utf-8?B?bktjYWkwNDY3Uy9EMzRTOGdPT2JOUmp2ZER4Mmh1ek1lMEVtVmtTZGlFaVp5?=
+ =?utf-8?B?TGk0SWZKRW92cDBkclUzYWdDcHJvb0wzdlBlSndTL1VnNys5SWVia3NTekh3?=
+ =?utf-8?B?QTg0OTAwVVJsTlJUZFdVV1A2TGVIcFRlbmNWMFZITk51OEVlY2FNdTdiRFFz?=
+ =?utf-8?B?bDU1TWQ4R1VBNnEvYmhxN2ErU0t0UUVZMjU4cU5sdXMyZmtXcEh2SDFaTTg2?=
+ =?utf-8?B?cnJDTmxKa0hnY0J2RjMxVDVZdFpJd0U4SzZVeTRpZTV4TEh4d3JmSkxJTS9J?=
+ =?utf-8?B?S2prYzBPQ3pVSDhNdUIxeXZ2a3FrZzNxVmhlTytlUTdGaDZxWTluKzYzRGg2?=
+ =?utf-8?B?cnlpWmlXZHFHT2IwWFVac3dPM0F6SUdReFNaUVNNck9hTHlQeFd0Y0oyZ1lp?=
+ =?utf-8?B?cUlSNnR2WHNudlNuV1UwS09xRHVyZ3FaMytHTStjM3V6RWQ1Y1hRendSL3Ix?=
+ =?utf-8?B?dzl0WEovQmliM0dxTFdVbllYNmVaWlpka2ZMc3VocXlvcFdDT3o5SzIyTkg4?=
+ =?utf-8?B?cmFDazR4MjFaWUJBR1pmSFBMb1dmblpvSFJKQitSQ3FTUStYdEdXWnBzOFla?=
+ =?utf-8?B?K3pFeXY4OSsvd2hvUUlWaXgySXJwVzVjYm5JaU95OFVZMzRDWDJqckl3bHJW?=
+ =?utf-8?B?T0pkdWZUSVRIZk1EWnVHOUJIWXNqakxPVFdndHczTVNzaWZaUHdJdDhCK3kv?=
+ =?utf-8?B?RkJEZmFXaS9WOTlFUndRWmdsUE9pS0VsNjVaV2JWSXpEYStITlVGWEh5RkV1?=
+ =?utf-8?B?YnJVdnNPL0NMdDdRNU5lYkdpVzJFa29qcXh2aFBTajNkaFFzeGczY29ySW9B?=
+ =?utf-8?B?WkFDU2dadzBsdnNXY3p2MnUxNi9RQmR0L1lyVmhKaVRUWFoxbkxNQ1FXb3Fi?=
+ =?utf-8?B?QUYyYUlNUWxyK3RRRHNQVS8rMnAvUll0ZlhKQWVXTGVEanM3VGY5V1lGZjdL?=
+ =?utf-8?B?QjBaQmtESXlYT2hNZ2tXTHZOeTJFRm44ekZpVmlTNFBjNlZTanRmdDNyU1Zx?=
+ =?utf-8?Q?KwRSqJSGTrkglBfb0Y7M?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b624d2d3-4bb4-4c42-9129-08dc5b98a631
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2024 09:03:56.2964
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB2108
 
-Shyam and I tried some experiments and there are two cases where the
-patch breaks:
-1) ChangeNotify will time out
-2) Certainly byte range lock calls (they can be allowed to block) will time=
-out
 
-An obvious alternative would be to not make this change for the
-commands like ChangeNotify and blocking locks but allow it for the
-others.
-
-On Tue, Apr 9, 2024 at 6:29=E2=80=AFAM Rickard Andersson <rickaran@axis.com=
-> wrote:
+On 2024/4/11 20:21, Inochi Amaoto wrote:
+> As the clk patch is merged, Use real clocks for sdhci0.
 >
-> From: Rickard x Andersson <rickaran@axis.com>
->
-> Test case:
-> mount -t cifs //192.168.0.1/test y -o
->   port=3D19999,ro,vers=3D2.1,sec=3Dnone,echo_interval=3D1
-> kill smbd with SIGSTOP
-> umount /tmp/y
->
-> Gives the following error:
->  INFO: task umount:466 blocked for more than 122 seconds.
->        Not tainted 6.8.2-axis9-devel #1
->  "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this
->  message.
->  task:umount state:D stack:0 pid:466 tgid:466 ppid:464 flags:0x00000004
->   __schedule from schedule+0x34/0x108
->   schedule from schedule_preempt_disabled+0x24/0x34
->   schedule_preempt_disabled from __mutex_lock.constprop.0+0x330/0x8b0
->   __mutex_lock.constprop.0 from smb2_reconnect+0x278/0x8fc [cifs]
->   smb2_reconnect [cifs] from SMB2_open_init+0x54/0x9f4 [cifs]
->   SMB2_open_init [cifs] from smb2_query_info_compound+0x1a0/0x500[cifs]
->   smb2_query_info_compound [cifs] from smb2_queryfs+0x64/0x134 [cifs]
->   smb2_queryfs [cifs] from cifs_statfs+0xc8/0x318 [cifs]
->   cifs_statfs [cifs] from statfs_by_dentry+0x60/0x84
->   statfs_by_dentry from fd_statfs+0x30/0x74
->   fd_statfs from sys_fstatfs64+0x40/0x6c
->   sys_fstatfs64 from ret_fast_syscall+0x0/0x54
->
-> The umount task is blocked waiting on the session mutex. The reason it
-> never gets the session mutex is because 'kworker/0:3' is holding the
-> mutex and is waiting for response (see line 1209 in
-> fs/smb/client/smb2pdu.c.
->
-> Stack trace of 'kworker/0:3' just before calling wait_for_response:
->  CPU: 0 PID: 220 Comm: kworker/0:3 Not tainted 6.8.2-axis9-devel #1
->  Hardware name: Freescale i.MX6 SoloX (Device Tree)
->  Workqueue: cifsiod smb2_reconnect_server [cifs]
->   unwind_backtrace from show_stack+0x18/0x1c
->   show_stack from dump_stack_lvl+0x24/0x2c
->   dump_stack_lvl from compound_send_recv+0x7bc/0xac8 [cifs]
->   compound_send_recv [cifs] from cifs_send_recv+0x34/0x3c [cifs]
->   cifs_send_recv [cifs] from SMB2_negotiate+0x410/0x13dc [cifs]
->   SMB2_negotiate [cifs] from smb2_negotiate+0x4c/0x58 [cifs]
->   smb2_negotiate [cifs] from cifs_negotiate_protocol+0x9c/0x100 [cifs]
->   cifs_negotiate_protocol [cifs] from smb2_reconnect+0x418/0x8fc [cifs]
->   smb2_reconnect [cifs] from smb2_reconnect_server+0x1dc/0x514 [cifs]
->   smb2_reconnect_server [cifs] from process_one_work+0x188/0x3ec
->   process_one_work from worker_thread+0x1fc/0x430
->   worker_thread from kthread+0x110/0x130
->   kthread from ret_from_fork+0x14/0x28
->
-> Change-Id: I53439ffb007c9c51d77ce40fb655a34e5ca291ec
-> Signed-off-by: Rickard x Andersson <rickaran@axis.com>
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
 > ---
->  fs/smb/client/transport.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+>   arch/riscv/boot/dts/sophgo/cv18xx.dtsi | 12 +++---------
+>   1 file changed, 3 insertions(+), 9 deletions(-)
 >
-> diff --git a/fs/smb/client/transport.c b/fs/smb/client/transport.c
-> index 994d70193432..96b8f8757ddc 100644
-> --- a/fs/smb/client/transport.c
-> +++ b/fs/smb/client/transport.c
-> @@ -32,6 +32,8 @@
->  /* Max number of iovectors we can use off the stack when sending request=
-s. */
->  #define CIFS_MAX_IOV_SIZE 8
+> diff --git a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+> index 75d0c57f4ffb..891932ae470f 100644
+> --- a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+> +++ b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+> @@ -47,13 +47,6 @@ osc: oscillator {
+>   		#clock-cells = <0>;
+>   	};
 >
-> +#define RESPONSE_TIMEOUT_SECS 50
-> +
->  void
->  cifs_wake_up_task(struct mid_q_entry *mid)
->  {
-> @@ -735,13 +737,14 @@ static int allocate_mid(struct cifs_ses *ses, struc=
-t smb_hdr *in_buf,
->  static int
->  wait_for_response(struct TCP_Server_Info *server, struct mid_q_entry *mi=
-dQ)
->  {
-> -       int error;
-> +       int ret;
-> +
-> +       ret =3D wait_event_killable_timeout(server->response_q,
-> +                                         midQ->mid_state !=3D MID_REQUES=
-T_SUBMITTED &&
-> +                                         midQ->mid_state !=3D MID_RESPON=
-SE_RECEIVED,
-> +                                         RESPONSE_TIMEOUT_SECS*HZ);
+> -	sdhci_clk: sdhci-clock {
+> -		compatible = "fixed-clock";
+> -		clock-frequency = <375000000>;
+> -		clock-output-names = "sdhci_clk";
+> -		#clock-cells = <0>;
+> -	};
+> -
+>   	soc {
+>   		compatible = "simple-bus";
+>   		interrupt-parent = <&plic>;
+> @@ -298,8 +291,9 @@ sdhci0: mmc@4310000 {
+>   			compatible = "sophgo,cv1800b-dwcmshc";
+>   			reg = <0x4310000 0x1000>;
+>   			interrupts = <36 IRQ_TYPE_LEVEL_HIGH>;
+> -			clocks = <&sdhci_clk>;
+> -			clock-names = "core";
+> +			clocks = <&clk CLK_AXI4_SD0>,
+> +				 <&clk CLK_SD0>;
+> +			clock-names = "core", "bus";
+>   			status = "disabled";
+>   		};
+
+Reviewed-by: Chen Wang <unicorn_wang@outlook.com>
+
+Thanks.
+
 >
-> -       error =3D wait_event_state(server->response_q,
-> -                                midQ->mid_state !=3D MID_REQUEST_SUBMITT=
-ED &&
-> -                                midQ->mid_state !=3D MID_RESPONSE_RECEIV=
-ED,
-> -                                (TASK_KILLABLE|TASK_FREEZABLE_UNSAFE));
-> -       if (error < 0)
-> +       if ((ret < 0) || (ret =3D=3D 0))
->                 return -ERESTARTSYS;
->
->         return 0;
 > --
-> 2.30.2
+> 2.44.0
 >
->
-
-
---=20
-Thanks,
-
-Steve
 
