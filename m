@@ -1,184 +1,208 @@
-Return-Path: <linux-kernel+bounces-143877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4504B8A3EA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:13:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 197C38A3EA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64EF31C20A11
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:13:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA9EB281D23
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A458F57316;
-	Sat, 13 Apr 2024 21:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C195644F;
+	Sat, 13 Apr 2024 21:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b="E9arffBQ";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="R92ttszp"
-Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cJXsBlq/"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE34756B7A;
-	Sat, 13 Apr 2024 21:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7442901
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 21:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713042799; cv=none; b=D4VK8kg57m9AKqR7qMwIiXxGQ/8sbfdImhGyJKfH4TdqKisbG+W5FwzJJIlcON/SutF5ehXHfzPIohAmtcLyalcOIWw7z+KMwz6G+C2roKC/yXBLpfyVspT5Hzh4vz2NjidfNurFMduyX3SHpQuMok/tZGUYam6tSA+iC5k+BDQ=
+	t=1713042832; cv=none; b=ttfh8BskMQ5BbLYSBg0vsP4rNzkKNiHScSe4cjnW4ZGhjkFBTzgJXH1jk7B3bqK0c63IXWwXG672cZivGrdx3MmCcbnKSiv8dkpGmYDy+hWgqlo899I52ZfvYMgmo4mKlrAKDed0ILWzVKDmEi/2UKjrgLpPiLFH6j9MIyzJVNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713042799; c=relaxed/simple;
-	bh=XLox6UtpxNNViuhE/NDra0lioJOlzF3C0YrXvofTdgE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DmgYoZ5bpEmFf6ExrxvrqWMCtUsgNiSIsEC33Zan1b6SIaQ/lSOzA94LK5NkkstDo8YXWjaxYUDqqP/CoAmHQ7fjF2WEDkrw+akdpRehAbUwK6VRuos4uFc5rO7i1rLZTSQ83+Fqmuf7sJg54hIQf7gSirhKRdTMovl0qYBNjlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de; spf=pass smtp.mailfrom=naccy.de; dkim=pass (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b=E9arffBQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=R92ttszp; arc=none smtp.client-ip=64.147.123.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=naccy.de
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfout.west.internal (Postfix) with ESMTP id 6919E1C000F3;
-	Sat, 13 Apr 2024 17:13:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 13 Apr 2024 17:13:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=naccy.de; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1713042794; x=
-	1713129194; bh=x9bMflE1VBqipkYwFyM5kAoaLsmNkwYcPLOiqTA4+lc=; b=E
-	9arffBQkErqwyEZdWFovtua/5raeNnSZ1xWOsGubC98lFyJcqm3hwtjG1Q6n8K5L
-	TtS+5Abds7t6VNGxUBn2jvZ30mJtSvSMZtFFh5bsrAeuUio5NZ50O0qvZrboq4+v
-	hGJ7BlO4+TwO+f8v1x2hPPGl43NSXkU/kHlFq9jpa5WL0o8oU3ypMCzeQS6418b0
-	JTy8ZlFL3jqGUtfBKs9jzj9St3R81hxnPsJjnrV0MBWwvWePVYfKLhUJdJ9iZ6qt
-	OkYjuhdVbEEYvCjmNJrshpZ6SVy4NctFGLTHGFPtWfNHB8ezeliwaembksnIfSNw
-	gCbHazQ5PdibDH4Nzo81w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1713042794; x=
-	1713129194; bh=x9bMflE1VBqipkYwFyM5kAoaLsmNkwYcPLOiqTA4+lc=; b=R
-	92ttszpXK6uq685UbSmsEqJpJquDBFoz4llvPrc5NB6x1iuycHgz8UQxcsXnO3EQ
-	NEAoWY0eDGqZZtVL8jM8HNRlaseWRNKisUAbvHYr6xkI+JPnTVXlRica/0WmHkq9
-	a61ZjqZC0qZNcbUXxYT74u81/leAoAB3DNjgoq8czeII8npuuCNmnl216t2fUaPQ
-	f8RNx0b/dmyCWZkTUJ/dP7f2Ypz62s3emCmslofnrtLNtJYwGF1rqmbiTQ5h5RL8
-	uQAUvBD+u0s+PelncJhGLtuwPCpPRVGQa2dEJ+AGz0uuB+tMYiDo+Wm0x82MSiM9
-	OH3ir0EvZYvIp4TXqVekg==
-X-ME-Sender: <xms:avUaZhahJJ49ijkL0hzlrd-klRlRsRwcd3Z-UFz4YdLOud94SGUOzg>
-    <xme:avUaZoZ2kBqAArO5L6mMd5q69TCigX4y-sHk0Cw6_RqGMA-G48VGC-D1g0zHMWTuo
-    P-e4ZHKCLaY_ithfFc>
-X-ME-Received: <xmr:avUaZj8z54ij4wFHwwXrTXDk-guXUHE6rxR6Vadpyz9IEAed6fnDBNlYPMqSpGfEUkPVKFsn8hZ0RkHUMRl3rU1AjLPf9RCLPQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeiiedgudeiudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefsuhgv
-    nhhtihhnucffvghslhgrnhguvghsuceoqhguvgesnhgrtggthidruggvqeenucggtffrrg
-    htthgvrhhnpeevieehjedtveevueeujedtveehtddugfeukeeffeettddttddtleehudeh
-    feetleenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hquggvsehnrggttgihrdguvg
-X-ME-Proxy: <xmx:avUaZvrXcid039Ant9Llg1Aw1aijiMlDV9Nbttpds7OgWLXoQnZOqw>
-    <xmx:avUaZspVrBwTUgKooT304z_2o_PzijqFF30dOAY0tMorRb0loifq3Q>
-    <xmx:avUaZlSfks0Ykr34Uw5XhZmNz29Pve4I-f_dH0Ms4cSH9-Zpef-2vQ>
-    <xmx:avUaZkrgoG4BFiPmeVm4M2GDe726EwP8vUo9hdp-UptDYPoqDOIXog>
-    <xmx:avUaZqbdtlMWdmsvZWIozwCx2FhMJFEnl2h9vsP3QVVWNJT5qvx3yAEi>
-Feedback-ID: i14194934:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 13 Apr 2024 17:13:12 -0400 (EDT)
-From: Quentin Deslandes <qde@naccy.de>
-To: bpf@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com,
-	Quentin Deslandes <qde@naccy.de>
-Subject: [PATCH 2/2] libbpf: fix dump of subsequent char arrays
-Date: Sat, 13 Apr 2024 23:12:58 +0200
-Message-ID: <20240413211258.134421-3-qde@naccy.de>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240413211258.134421-1-qde@naccy.de>
-References: <20240413211258.134421-1-qde@naccy.de>
+	s=arc-20240116; t=1713042832; c=relaxed/simple;
+	bh=XGReRWz7u7T8neea9WRts0ekrqtCQCSHyQ6+MlKIXXE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BzPGX3yNQN2ccpLT3kLhv7y5WmM6eEuNGPgxHnhfTAPCr6pPzg1r+GNAGtNeGWXhTHRYEDzMvKaoJDbBiP+6MmNP909N4cM+omyAZxKwviGl8loTM/TIzGfPQKm8vfTJzVYUUFNTkHq4WTz1jRHMvUCfTYoi5HP8dxOOUrsRp1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cJXsBlq/; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51beae2f13so230190166b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:13:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713042829; x=1713647629; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=U/QcS7aKqLvfcOrAHC9t/RNGgAG9N/gh7FrnnJ0LyKg=;
+        b=cJXsBlq/JeLE7Ese/v1yubDNkfEyxFt82pC4IYjwxB1dIyTmXNFHo4h29l3qx7ATaA
+         LROdhCCAV7MAwUC2thQ3SLjZL8qphaJrrqGbHd5skOd1l2Jr93YP7Bn0Q8cJea2MHsaG
+         bzlxBjERZCDjPoqGw8yjpJmjNGWePvoM38HhifLaTOMC/aneCG5NPxeBicDpvQ1tghPQ
+         RvAjGI7xSQwPG7IXMbMSdL0rI1iJ/yVtn4nwaEnyGI5if3tkdH+hTC3nzhRx3uOXhoSm
+         XfYVaq9jRlF8Ea3+ABtKeo26FY8IRcx0wkSwPQp1uwpTsh03OOz5M0XtpvTLfKhQRvAl
+         h92A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713042829; x=1713647629;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U/QcS7aKqLvfcOrAHC9t/RNGgAG9N/gh7FrnnJ0LyKg=;
+        b=dcfejmbwZFg/wGSRYznYLYVsNcAlwgwG8IAJZWByzfxuqc+S7NlmD/rXm6kTD4VBoo
+         bdm5XE6JDG7fr+oXh4FnkPJ/gp/8Rb8ugECMajdlXlmkYU5Ob/gI5jsg2E+Xqvz7iLnh
+         oQ+Y6KXDhjzruFh+ncPBebV8NvAMZqhXs7ltnlqtz1YgqCylxf2tVbaGNPHxJCixh0Kj
+         Ka859qNS01Pf6LuAKyZ++YPovECRkfQPL3vrfTivWGk93mZPqChtESjySrFZ4J85gEw9
+         VBFM4pyVkgnyxbwp0MExSJc1gsw04yZsUoeMA0Z0NTl1B/XaUJG+BROrHO48sPO3aAfp
+         FHNw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbX3wtLFrDACmB3qk4eBXjjjxrpykRFaUv3wh3eWJcHElZj0u083H2xyBevc9gCoGzTppU2la/WMsOytSUAGaYOWHofhIHiztP18Yy
+X-Gm-Message-State: AOJu0YxqRZ19NN+bs1lNFUc0/m9sVl270oD546gjlLLNNdnTET3gJU4x
+	EuC+2rGc8G+xopdsrvfd8fS4zFC+jH7K9X8um7VPX9YlLSqQ4Fuh7+TiAnmqY6A=
+X-Google-Smtp-Source: AGHT+IFWuvfsMgahGLa+kTIMnUfbUbWCZlLRSzZJcSHFDWPdBB6rJ0uf0VK89rG+ntQXqMTNChKoaw==
+X-Received: by 2002:a17:906:b7d1:b0:a51:c747:531d with SMTP id fy17-20020a170906b7d100b00a51c747531dmr3671963ejb.64.1713042829092;
+        Sat, 13 Apr 2024 14:13:49 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id b24-20020a17090630d800b00a4e781bd30dsm3387480ejb.24.2024.04.13.14.13.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Apr 2024 14:13:48 -0700 (PDT)
+Message-ID: <08ec46be-971f-4234-b65c-96992b5b0a87@linaro.org>
+Date: Sat, 13 Apr 2024 23:13:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
+ binding
+To: "Haener, Michael" <michael.haener@siemens.com>,
+ "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+ "krzk@kernel.org" <krzk@kernel.org>
+Cc: "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+ "peterhuewe@gmx.de" <peterhuewe@gmx.de>, "robh@kernel.org"
+ <robh@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "conor+dt@kernel.org" <conor+dt@kernel.org>,
+ "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+ "lukas@wunner.de" <lukas@wunner.de>
+References: <20240413071621.12509-1-michael.haener@siemens.com>
+ <20240413071621.12509-3-michael.haener@siemens.com>
+ <9634ac9e-23ad-4bb9-aecf-d46c875f8d2f@kernel.org>
+ <85fa06dfb9bb69443ce86e10b8c4619317cccb3e.camel@siemens.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <85fa06dfb9bb69443ce86e10b8c4619317cccb3e.camel@siemens.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When dumping a character array, libbpf will watch for a '\0' and set
-is_array_terminated=true if found. This prevents libbpf from printing
-the remaining characters of the array, treating it as a nul-terminated
-string.
+On 13/04/2024 22:26, Haener, Michael wrote:
+> On Sat, 2024-04-13 at 10:38 +0200, Krzysztof Kozlowski wrote:
+>> On 13/04/2024 09:15, M. Haener wrote:
+>>> From: Michael Haener <michael.haener@siemens.com>
+>>>
+>>> Add the ST chip st33ktpm2xi2c to the supported compatible strings
+>>> of the
+>>> TPM TIS I2C schema. The Chip is compliant with the TCG PC Client
+>>> TPM
+>>> Profile specification.
+>>>
+>>> For reference, a datasheet is available at:
+>>> https://www.st.com/resource/en/data_brief/st33ktpm2xi2c.pdf
+>>>
+>>> Reviewed-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+>>> Signed-off-by: Michael Haener <michael.haener@siemens.com>
+>>> ---
+>>
+>>
+>> Not tested...
+> 
+> I was only able to verify and test the conformity of the ST chip
+> st33ktpm2xi2c with kernel 6.1, so I left out the test-by tag.
 
-However, once this flag is set, it's never reset, leading to subsequent
-characters array not being printed properly:
+I don't mean your tag. Your SoB means you tested it, but I meant you did
+not send the binding for testing via automation.
 
-str_multi = (__u8[2][16])[
-    [
-        'H',
-        'e',
-        'l',
-    ],
-],
+> Unfortunately, there is no newer kernel for my embedded hardware.
+> 
+>>
+>> Please use scripts/get_maintainers.pl to get a list of necessary
+>> people
+>> and lists to CC. It might happen, that command when run on an older
+>> kernel, gives you outdated entries. Therefore please be sure you base
+>> your patches on recent Linux kernel.
+>>
+>> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+>> people, so fix your workflow. Tools might also fail if you work on
+>> some
+>> ancient tree (don't, instead use mainline), work on fork of kernel
+>> (don't, instead use mainline) or you ignore some maintainers (really
+>> don't). Just use b4 and everything should be fine, although remember
+>> about `b4 prep --auto-to-cc` if you added new patches to the
+>> patchset.
+>>
+>> You missed at least devicetree list (maybe more), so this won't be
+>> tested by automated tooling.
+> 
+> I called the script scripts/get_maintainer.pl on the latest kernel
+> version for each of the two patches and added the output list to the
+> individual patches accordingly. And only for the cover-letter I linked
+> the two lists together.
+> I understand now that I should have sent the whole series to both
+> lists.
+> 
 
-This patch saves the is_array_terminated flag and restores its
-default (false) value before looping over the elements of an array, then
-restores it afterward. This way, libbpf's behavior is unchanged when
-dumping the characters of an array, but subsequent arrays are printed
-properly:
+No, that's not the case. You did not Cc output of get_maintainer.pl.
+Read *AGAIN* my message..
 
-str_multi = (__u8[2][16])[
-    [
-        'H',
-        'e',
-        'l',
-    ],
-    [
-        'l',
-        'o',
-    ],
-],
-
-Signed-off-by: Quentin Deslandes <qde@naccy.de>
----
- tools/lib/bpf/btf_dump.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 6a37e8517435..5dbca76b953f 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -2032,6 +2032,7 @@ static int btf_dump_array_data(struct btf_dump *d,
- 	__u32 i, elem_type_id;
- 	__s64 elem_size;
- 	bool is_array_member;
-+	bool is_array_terminated;
- 
- 	elem_type_id = array->type;
- 	elem_type = skip_mods_and_typedefs(d->btf, elem_type_id, NULL);
-@@ -2067,12 +2068,15 @@ static int btf_dump_array_data(struct btf_dump *d,
- 	 */
- 	is_array_member = d->typed_dump->is_array_member;
- 	d->typed_dump->is_array_member = true;
-+	is_array_terminated = d->typed_dump->is_array_terminated;
-+	d->typed_dump->is_array_terminated = false;
- 	for (i = 0; i < array->nelems; i++, data += elem_size) {
- 		if (d->typed_dump->is_array_terminated)
- 			break;
- 		btf_dump_dump_type_data(d, NULL, elem_type, elem_type_id, data, 0, 0);
- 	}
- 	d->typed_dump->is_array_member = is_array_member;
-+	d->typed_dump->is_array_terminated = is_array_terminated;
- 	d->typed_dump->depth--;
- 	btf_dump_data_pfx(d);
- 	btf_dump_type_values(d, "]");
--- 
-2.44.0
+Best regards,
+Krzysztof
 
 
