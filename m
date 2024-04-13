@@ -1,192 +1,301 @@
-Return-Path: <linux-kernel+bounces-143867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C80888A3E80
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:27:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED5348A3E81
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:31:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5EBD1C20D59
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:27:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7156E1F2181A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9B456446;
-	Sat, 13 Apr 2024 20:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E4C1EB31;
+	Sat, 13 Apr 2024 20:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b="FZdmWuaU"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2046.outbound.protection.outlook.com [40.107.21.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="GWfBoP65"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B47FD55E4F;
-	Sat, 13 Apr 2024 20:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713040017; cv=fail; b=lmjQ8lFZaLdPJcoFwBv9GISG2SsbYTrYFIw73Wm95oSLHM0X5kprxDQ2kd1P/5vcaY7XDggeiJvhA7Ck1Uf6Cd7nCWvRTzdd2cFN0fBtaGNMq2bnqwILfXmkcuKWflS+vT7/SEU6fnSqhgYoU/8hHNhCtDBh0XKzHecfLFvPsK0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713040017; c=relaxed/simple;
-	bh=dRvXeDRYmOUBVqotgjdvW5Fb3YRGhzyiktjo7rKJ8ig=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=YEP42dnsyn0RbEG3mhjLLzsppbpJk9KwkCyBKDso/MlgKRiOhsZOR//x0HvfZdIAMuyHZrCtbs6CdKubG8mkfFuFnufo1luHpHKaVlPfOvYpo+z4FpbVlGTjtQiATYDi2csJbotP8horTp8dhYEw0l+AR0XyvinDAGIstBnluZE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b=FZdmWuaU; arc=fail smtp.client-ip=40.107.21.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LXewc9AiEkJLkSo/EqmlYOgwTMzEyPMEDCP5SATAVVGvSWgKALYOIj7CITCRuKGRawKi7FM40Cb2TRVTuskFVidwLtUl123tSXpofQ6ueXLcDzxRWSUGmQ337sLYE1cSIvm9ZiAS9DseJAbMbEdS5mzcT57jczb8rsHzdhunqWkz12CZP2fT3ti+ayS/c1smofnMY1B9z5FaKjI71Xcrk+rDsGvK4eZLfoDt1xz12iDI1nINCRGxv+JOrYlqeqraBV4Nj0HGINiF1zt6idJVatar6MZfNlTVqPmzT6H3yB5iZ7W4e/QCBVOvDeZW+q9Tez8r98RYlR3SEP3+xltHGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dRvXeDRYmOUBVqotgjdvW5Fb3YRGhzyiktjo7rKJ8ig=;
- b=S6U4u2iOM7Mm1G4K6kTqNC327MpkCXUD7DP2a9keH/KiuJOSeFgeL9Vt5/M5U3MO94xHY0EgDqljA7vQ7FmUeccv/LFA9kku03y/gFxLhOCN9XqOmK2uGq4UZ4L5/Sx/1VzHmJaS0LXSzlBNIBqzE0ntpxETchLFmDTi1wH4NM216izeo92eKQ95LY2BHymyed4/w2KlQ4iiIHhIRzSsWT4iwsBSpq8jvhCQPe+z5K24n/pu6OmVXuWAlQTHc1Ck9wYhI9AuSE4YYaInBuMgld9/Xr8LJXJIe/LyZ8FL/n5IfYClXOnbGwT1/oXp44KgUXSowShqRYFPh/5YHRgbEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dRvXeDRYmOUBVqotgjdvW5Fb3YRGhzyiktjo7rKJ8ig=;
- b=FZdmWuaUq9xN88FTLQBmsijfBD5U7BTM7QTOcxDf8Al97stKc8qlBmQ3l30XMuM0bUGXyq2kcK2xGW/b81/VuQlEkypwsfPpc9r9GfiaEOaGsPEegU0QUKBR+P1PxqpUUmv3cmnw5a3cx356esovLRrEGgy0tZxMkF7FCbC0KKnykLhABfG3XIEwj3t7pqNCJG9CYu4BMJVNF53qfVeJ5FgbFcj8psvIdyedeXCUSl4pVBF6oCSt/FT2vLGBWHVUptbAAGUTGKXM54FwG6MB/aVYDejO7tjLwAAxXBQrZV+3fKXKR598Lfc73O42t4gRBKNc8Q3KrED1gJZOR26OBg==
-Received: from DB7PR10MB2506.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:46::26)
- by AM7PR10MB3221.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:109::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.43; Sat, 13 Apr
- 2024 20:26:50 +0000
-Received: from DB7PR10MB2506.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f293:fe16:3e4c:18a]) by DB7PR10MB2506.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::f293:fe16:3e4c:18a%7]) with mapi id 15.20.7409.055; Sat, 13 Apr 2024
- 20:26:48 +0000
-From: "Haener, Michael" <michael.haener@siemens.com>
-To: "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-	"krzk@kernel.org" <krzk@kernel.org>
-CC: "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>,
-	"jarkko@kernel.org" <jarkko@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"peterhuewe@gmx.de" <peterhuewe@gmx.de>, "robh@kernel.org" <robh@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"lukas@wunner.de" <lukas@wunner.de>
-Subject: Re: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
- binding
-Thread-Topic: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
- binding
-Thread-Index: AQHajXKMFk8mwsoMoUWVe+Co/8YqIrFl4RiAgADF0gA=
-Date: Sat, 13 Apr 2024 20:26:48 +0000
-Message-ID: <85fa06dfb9bb69443ce86e10b8c4619317cccb3e.camel@siemens.com>
-References: <20240413071621.12509-1-michael.haener@siemens.com>
-	 <20240413071621.12509-3-michael.haener@siemens.com>
-	 <9634ac9e-23ad-4bb9-aecf-d46c875f8d2f@kernel.org>
-In-Reply-To: <9634ac9e-23ad-4bb9-aecf-d46c875f8d2f@kernel.org>
-Accept-Language: de-CH, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB7PR10MB2506:EE_|AM7PR10MB3221:EE_
-x-ms-office365-filtering-correlation-id: 87a13c69-a33e-4ec7-93c5-08dc5bf80b99
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- oXAsiiRDap/94o5SHoE6wc3FlRS+rOaMg2d36lNdh4X6FuyOQdgjBkqrxKprCbg9MAFMEVwVWL+TAIKn+Ga7y1wfQ/a/2AqY9IHRm4GXKFM8p9eDHJQ2ACkAudcPOgrGIq2QTxxazKDAAQXaNDsvqee/1N5+iEmcJLQ1wsxBF1luSFGLvBKpOzaG3X7JHC5X917Sogmv0WsfmZTByMYjyIXPG+ogpldWGw8dGF+PzCRgtlOOJXP57TZdKcMeaDMzjFkADpeDc9VvitGolYOsG4xk/SYXg+9RztTVb68iZshcpEedgevlWdpV3ge1crO5qOK+70FUZeloGGT2C+7EQWDiEif+64Pt2MqC4lW7DVg0Yv4TgzntOBuJZ6oeQZj6yF0haj4baEnY/Etj5OMxHlrCyOVnVNX+f3+v/4W86wEedoJb65m4O84LeSDCg8i4JFYdKefrTV2ogz4Szq36AlOM420uZDASqTTKp0GlGVdRfIDT2drrbFdw2Bf8x5VIgQ5i6jWwM3FfPejT7KTbJ9v2BaquUgDVNk9fHFOXUxRaEdxoOxAgLtNA6sDVto4GrHUb+pYoibn2NCcVFS6G5u0Xk2tYo0KpXYy26dEeLIYKnWXERqb2uyGPmZiSmSUJ8+sH01woVYoa7e5c1wNgltEANx85Hg7BoIte2Dyatr4Ij+/ViTGbFs882h2p6ABB
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR10MB2506.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007)(1580799018)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?QU1TZ1JCRW1xYlNSUkZZR2x5SkY5WFhscnVJTnJTMHNvYUMvbENBSU15L2la?=
- =?utf-8?B?ZU1FWE50amRqZ1hPaHp4bmJhUi9TdFpQWmlFYi91TUtLQzkzaDNzbzZXc20y?=
- =?utf-8?B?cVBMWVV5aEJ4YS9LQ3FrT29GTXBaOEQ4VFh5Rm1TMThBVm9YUkw4Wmo5bEVD?=
- =?utf-8?B?OTZrS3dmOWc4Tjlzc2hwVm8veGpUb3YzTEVMa1NJcVZITmkzaXhTNkl6YWlZ?=
- =?utf-8?B?WXppVXJ0LzNEc2Yvb0ZDWEZxbE5mWlZWQzdwaFdaT1I3MDdHYkY0MUJqTDVI?=
- =?utf-8?B?MU1zSTNjTjhHZElPd1RzL0Z5OUdTQUVuTTJUdEdjNmZxdjZxa0lEODJzOTE0?=
- =?utf-8?B?WTFjSW0zajVxbTFKSkJtRkxDTExXTVpacytrdXRMNUxVdHAxZlBJZVREZzlF?=
- =?utf-8?B?R2RyU3FRSkNnY1NOcDhxUTFXb0tzUGVsc3Y5OEh0RDVtOEhJWlBiSjdMbXdr?=
- =?utf-8?B?YW5jMlNVZ1plcUhidWFucmZ3ZDJGbjJWMWxkaC9ZTWRwWUdocU1zekhxVzRG?=
- =?utf-8?B?TFI3N2pGNHE4VTNuQzA0dnRxUWxvNFFxNDA4ZWw1QjliYnVEVU9xOUZSaUR6?=
- =?utf-8?B?OWZ3YWxLVjAvT2tqRkk0SnhmenltVG9wUkpGeEdsakY3MUVUSXN4Q1BhQSts?=
- =?utf-8?B?bjdYQ2xPQVRxeDV3cUljOUlORXNVQ0FxSEtsVzEwdjA4RXFqR3QvK3lyZGUv?=
- =?utf-8?B?dUZqN0x3Ri9YUUFCc2Njc2FKUnZIQ2NtbERTdnhyNmxnYkkxa3JnOGRab0Zm?=
- =?utf-8?B?VDZwdTNXQ2VycTNyWVN0V1owQWFmeTQ2YitiMS9FTWxkd3M2NldYU2FQY1dm?=
- =?utf-8?B?MWZLcGs5YXRzWlErdTg0VHdjcEJ1eXQwamRPeU9FNXhIdFRNYzlnbVZPZEh6?=
- =?utf-8?B?NjV3UzBRL0R6N2RGQnhDS3M5SDdjNzE5YWdPUjdTcTBDUW9uSlFrL0RyV3RW?=
- =?utf-8?B?MnFGVk9RekI4cmVpVU5Ma2V4UlMzNElYUjJweDA3OGFUeEs2d3VkYTk5MjND?=
- =?utf-8?B?RExoSVJpTWdmTUQzSHE0SVQyMHpkU0VRRWkrMHpTbG1SMkxDRGRqNVpBZ1VS?=
- =?utf-8?B?VUFGZ3dYWnVyd3JFODJUWHl4RFF6U1czWDBnZnphVDQ1ZG1rWlRVT3VRZENy?=
- =?utf-8?B?SlBkUXRWTkhvRC9GNUNDS2xhK1dNK3V1bi95R29hN3cvbDQ5QktyT2dmUmVn?=
- =?utf-8?B?dXVUUkJ0NmdncWk0Z1Ruc09YblFSVFpkdnNkN1h0TGNWRUNBaElDeGw3bUJs?=
- =?utf-8?B?cGQ2QTMvRms5TGNzTU5rUVNvOGtES2NpcUswRkhBL3RkNU11QTVzeU5YUEdV?=
- =?utf-8?B?K0I5NSszMXdRY2xrd1BkeHRNYU5PS3plMGQ3R0w1eFoxNE9oVkpxMHNtdzBh?=
- =?utf-8?B?R3R6RThEaXVxREFIRHhPZldYS1dJRi9BN3ZpRkhYWkxhUjJnd1dTeUlnWm1K?=
- =?utf-8?B?YWNnMmpjdHFFU0EwNitGOG5iQnFUall0eEtBdVpEeXE2emFkWlB5YjlyV1VT?=
- =?utf-8?B?VElZVnBISW1hWlpoS0NVVkw5MytnYzJ4VVFva3c2S2J3OEk5Yi8yM2pnb01u?=
- =?utf-8?B?bWNhcUlDNjI5S3BVVlp6UG1wend0RWo0UlJESlRGTnJjUTkyWDBuZHcrTGc5?=
- =?utf-8?B?YlFyQWp2TTgzeUxJMkZXSHF5ZUdOcHZYYUpDMFpjdWJTdGE0RmxwRHkzY1F5?=
- =?utf-8?B?bUpxSWZ4R1MyQXBFN1cxOWFyRU9tdEl4S2hMS0E0NjJpSHZQTkI1RDczb1NN?=
- =?utf-8?B?R2NSRlhNMnFrM2ZnT3BLeFlkMWRGeks1USt4dytzSkJxVkYzSDFZUXk1akd1?=
- =?utf-8?B?NWNYbXh3UmN0SjExUzJqak01S2t6ZXZZeFBGV1BXOFRjQUszcktBbzNNa2pR?=
- =?utf-8?B?bWFqSmN5VUhkVmV6QmVPNTYzV2xITUhhUzBCWFV0ZUhWYVFnQlNhbytqV2Q0?=
- =?utf-8?B?aDQxR1o3eTAyU0Y3Sk1BL0NySVJ6M1BIM01rMXN2cDMvNk1obmJkbWJMY3VH?=
- =?utf-8?B?bytPWThuMnZ4NkUxaWI3TTFKMkRKUFZZRXFzd1lCUUdWMHltTzgzdHhVMmEv?=
- =?utf-8?B?WmxjSDVwL0xNNUZTdEs5RGpYZVZwbWl6UnNTR2o3TzhpSkVJUnRrcmtiMFE1?=
- =?utf-8?B?eVRXc2JONXV5N3VnTUhJUDhDQnNTUzhsTWpSamNXODRreTNjaUlKVGtqSTZ1?=
- =?utf-8?B?OGc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FC1B16A660AA104E91CD2E1310016F21@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C88224F2
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 20:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713040289; cv=none; b=KdCjeVnG0Quva21y4HApcqo02+AuYrl+4qwERFq/JZa2AzgykVUufx2zBurhAWkF1zMyW6JhLdSG79xF0PIJpFOW4dNm6V5VAPGS0eW1BvrxcNTPNOVKycO6/k+u9S93QPU6c6el84T+u+5tv7DZIOjru/5KnXZP/+srXQuLoWg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713040289; c=relaxed/simple;
+	bh=zPnKbyggW02GZFESP1/3jpSugPAH/BCgKb0vmgRJNj0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jmJkUUDg9kjdnX4Jr++GF79EpBV81NCuahrMGhqVrYvXkoLY/JzHR7ngdiUwnVjQMTwMWhFKwHI9jtVio5ktaW6BfSfMTMMVWgk+bHhF49BfONGftz9qGX1KhVjfu0ZuhDm5Hq2Id10HxaYOLLoz3INqOJA70wpuDGRZvHLh70s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=GWfBoP65; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2da01cb187cso35050171fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 13:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713040285; x=1713645085; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TjrMB1ZUNpuer39IbGQklxA6x6b3XJD77HTu/DFLCMk=;
+        b=GWfBoP65Hrnfwmvs+4PX6XRSKystDZ9vIqJ0/G4wafC27HJygEG7UJykGwbMLf5KHe
+         QaOTKz1fVdTZkefUoXOY8zdqEXI1WFTLk9QXZZBxtYiOJvzkcS+jqkWEFSbuKCe/F8XB
+         bhKtGws+GkDEVQtawxCwTmskZD9UroW8RQ3/JX2+VKdto6CEMGO/+xjzBspu/2btYTI0
+         v8jWVEgomf/HSpcuJJhwHbQTOasP/t6T+C1TtMWxz82ECWW8b40om2i8BsnSPOB0v5mQ
+         3S/lMHE1IFa2Rf3jWMe6d3rJh34iMf5R8UobjJJA6k4p/+87xlU9l9IuEA6EfjjWaaV/
+         /ldQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713040285; x=1713645085;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TjrMB1ZUNpuer39IbGQklxA6x6b3XJD77HTu/DFLCMk=;
+        b=TEv8xAGqUFAZjY6Cw0q6XuzFud9uZeyekCALOvgnAmEhKJqUBNYNkMubTnomB5vHoz
+         vvY3XHDxwT0NfKSF/TLc+XTCAdctrN9usp4T0UTTFzhKFhDtc0T1GF6hl0TILrV+VBwp
+         Ptwjosul+l2lwopD2HcDAd5baop0LxD7QQLHyx81KL6kTKy5iTyTxCoTZINbh1aU5Iqw
+         jE9Rb6Rjk9DnfXfJ8m7rkw8qAUtBeKhoLZ3EXCwjWjzGQE6kVVG0BW8JWiIwiGU7O8dj
+         5j3ZceH63GOq5QwmgT3BuwWrFn7Xgvj8WgNcQ4xegSqJvRGFaoCKQidvj8wUIqGGSKHr
+         S+Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCXU18ILML224iWrqDaoHL/ZL9KSyLWNb3bghek6osfTp+rYVtVMf6duNTxunrCoGI36WC+PV1t/aCSzjMcwxgFZuYrDewU5QTFLI35j
+X-Gm-Message-State: AOJu0Yx+NPrTaNHvI1Lhurpf1xNig5FH6xcEQhqAoND94he7j2OKbjvR
+	hwgb3rE9PBpqd/qt4MpMo6mmMxevJQji8qZoN+DPR7heXx9TEo9hrAank1Sf9RbvQ9wmjg1FVCA
+	F/2osMUjM6kdonnhTK9KT+Hip1tRNypovXIE+XQ==
+X-Google-Smtp-Source: AGHT+IENh6flnft8na0SxgvmSEr2Ex5ghZZs7IfT+rp50Hl2MvuV1CwaAQoFIBfCINdUp2BovA24ee7jGaa+eVn/wF4=
+X-Received: by 2002:a2e:a451:0:b0:2d8:d972:67e3 with SMTP id
+ v17-20020a2ea451000000b002d8d97267e3mr4796053ljn.5.1713040284644; Sat, 13 Apr
+ 2024 13:31:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR10MB2506.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87a13c69-a33e-4ec7-93c5-08dc5bf80b99
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2024 20:26:48.4091
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 243RyOsRO7Dhg5HRCwwSZbS4lrW1zca03PBFQZKViGIptUWaUuk7+2Q3SFIRUFyR3pAuKV9XMCI0v7NfY1eu7k08lI90/Vaqepjp6D1Raeo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR10MB3221
+References: <20240413151152.165682-1-alisa.roman@analog.com> <20240413151152.165682-2-alisa.roman@analog.com>
+In-Reply-To: <20240413151152.165682-2-alisa.roman@analog.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Sat, 13 Apr 2024 15:31:13 -0500
+Message-ID: <CAMknhBH8UewSoZu-V6ERda=q8wO2NYg8RinnC2+RMF3LhKwtUg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] iio: adc: ad7192: Use standard attribute
+To: Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org, nuno.sa@analog.com, 
+	marcelo.schmitt@analog.com, bigunclemax@gmail.com, okan.sahin@analog.com, 
+	fr0st61te@gmail.com, alisa.roman@analog.com, marcus.folkesson@gmail.com, 
+	schnelle@linux.ibm.com, liambeguin@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T24gU2F0LCAyMDI0LTA0LTEzIGF0IDEwOjM4ICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
-b3RlOg0KPiBPbiAxMy8wNC8yMDI0IDA5OjE1LCBNLiBIYWVuZXIgd3JvdGU6DQo+ID4gRnJvbTog
-TWljaGFlbCBIYWVuZXIgPG1pY2hhZWwuaGFlbmVyQHNpZW1lbnMuY29tPg0KPiA+DQo+ID4gQWRk
-IHRoZSBTVCBjaGlwIHN0MzNrdHBtMnhpMmMgdG8gdGhlIHN1cHBvcnRlZCBjb21wYXRpYmxlIHN0
-cmluZ3MNCj4gPiBvZiB0aGUNCj4gPiBUUE0gVElTIEkyQyBzY2hlbWEuIFRoZSBDaGlwIGlzIGNv
-bXBsaWFudCB3aXRoIHRoZSBUQ0cgUEMgQ2xpZW50DQo+ID4gVFBNDQo+ID4gUHJvZmlsZSBzcGVj
-aWZpY2F0aW9uLg0KPiA+DQo+ID4gRm9yIHJlZmVyZW5jZSwgYSBkYXRhc2hlZXQgaXMgYXZhaWxh
-YmxlIGF0Og0KPiA+IGh0dHBzOi8vd3d3LnN0LmNvbS9yZXNvdXJjZS9lbi9kYXRhX2JyaWVmL3N0
-MzNrdHBtMnhpMmMucGRmDQo+ID4NCj4gPiBSZXZpZXdlZC1ieTogQWxleGFuZGVyIFN2ZXJkbGlu
-IDxhbGV4YW5kZXIuc3ZlcmRsaW5Ac2llbWVucy5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogTWlj
-aGFlbCBIYWVuZXIgPG1pY2hhZWwuaGFlbmVyQHNpZW1lbnMuY29tPg0KPiA+IC0tLQ0KPg0KPg0K
-PiBOb3QgdGVzdGVkLi4uDQoNCkkgd2FzIG9ubHkgYWJsZSB0byB2ZXJpZnkgYW5kIHRlc3QgdGhl
-IGNvbmZvcm1pdHkgb2YgdGhlIFNUIGNoaXANCnN0MzNrdHBtMnhpMmMgd2l0aCBrZXJuZWwgNi4x
-LCBzbyBJIGxlZnQgb3V0IHRoZSB0ZXN0LWJ5IHRhZy4NClVuZm9ydHVuYXRlbHksIHRoZXJlIGlz
-IG5vIG5ld2VyIGtlcm5lbCBmb3IgbXkgZW1iZWRkZWQgaGFyZHdhcmUuDQoNCj4NCj4gUGxlYXNl
-IHVzZSBzY3JpcHRzL2dldF9tYWludGFpbmVycy5wbCB0byBnZXQgYSBsaXN0IG9mIG5lY2Vzc2Fy
-eQ0KPiBwZW9wbGUNCj4gYW5kIGxpc3RzIHRvIENDLiBJdCBtaWdodCBoYXBwZW4sIHRoYXQgY29t
-bWFuZCB3aGVuIHJ1biBvbiBhbiBvbGRlcg0KPiBrZXJuZWwsIGdpdmVzIHlvdSBvdXRkYXRlZCBl
-bnRyaWVzLiBUaGVyZWZvcmUgcGxlYXNlIGJlIHN1cmUgeW91IGJhc2UNCj4geW91ciBwYXRjaGVz
-IG9uIHJlY2VudCBMaW51eCBrZXJuZWwuDQo+DQo+IFRvb2xzIGxpa2UgYjQgb3Igc2NyaXB0cy9n
-ZXRfbWFpbnRhaW5lci5wbCBwcm92aWRlIHlvdSBwcm9wZXIgbGlzdCBvZg0KPiBwZW9wbGUsIHNv
-IGZpeCB5b3VyIHdvcmtmbG93LiBUb29scyBtaWdodCBhbHNvIGZhaWwgaWYgeW91IHdvcmsgb24N
-Cj4gc29tZQ0KPiBhbmNpZW50IHRyZWUgKGRvbid0LCBpbnN0ZWFkIHVzZSBtYWlubGluZSksIHdv
-cmsgb24gZm9yayBvZiBrZXJuZWwNCj4gKGRvbid0LCBpbnN0ZWFkIHVzZSBtYWlubGluZSkgb3Ig
-eW91IGlnbm9yZSBzb21lIG1haW50YWluZXJzIChyZWFsbHkNCj4gZG9uJ3QpLiBKdXN0IHVzZSBi
-NCBhbmQgZXZlcnl0aGluZyBzaG91bGQgYmUgZmluZSwgYWx0aG91Z2ggcmVtZW1iZXINCj4gYWJv
-dXQgYGI0IHByZXAgLS1hdXRvLXRvLWNjYCBpZiB5b3UgYWRkZWQgbmV3IHBhdGNoZXMgdG8gdGhl
-DQo+IHBhdGNoc2V0Lg0KPg0KPiBZb3UgbWlzc2VkIGF0IGxlYXN0IGRldmljZXRyZWUgbGlzdCAo
-bWF5YmUgbW9yZSksIHNvIHRoaXMgd29uJ3QgYmUNCj4gdGVzdGVkIGJ5IGF1dG9tYXRlZCB0b29s
-aW5nLg0KDQpJIGNhbGxlZCB0aGUgc2NyaXB0IHNjcmlwdHMvZ2V0X21haW50YWluZXIucGwgb24g
-dGhlIGxhdGVzdCBrZXJuZWwNCnZlcnNpb24gZm9yIGVhY2ggb2YgdGhlIHR3byBwYXRjaGVzIGFu
-ZCBhZGRlZCB0aGUgb3V0cHV0IGxpc3QgdG8gdGhlDQppbmRpdmlkdWFsIHBhdGNoZXMgYWNjb3Jk
-aW5nbHkuIEFuZCBvbmx5IGZvciB0aGUgY292ZXItbGV0dGVyIEkgbGlua2VkDQp0aGUgdHdvIGxp
-c3RzIHRvZ2V0aGVyLg0KSSB1bmRlcnN0YW5kIG5vdyB0aGF0IEkgc2hvdWxkIGhhdmUgc2VudCB0
-aGUgd2hvbGUgc2VyaWVzIHRvIGJvdGgNCmxpc3RzLg0KDQo+DQo+IFBsZWFzZSBraW5kbHkgcmVz
-ZW5kIGFuZCBpbmNsdWRlIGFsbCBuZWNlc3NhcnkgVG8vQ2MgZW50cmllcy4NCj4NCj4gQmVzdCBy
-ZWdhcmRzLA0KPiBLcnp5c3p0b2YNCj4NCg0KQmVzdCByZWdhcmRzLA0KTWljaGFlbA0K
+On Sat, Apr 13, 2024 at 10:12=E2=80=AFAM Alisa-Dariana Roman
+<alisadariana@gmail.com> wrote:
+>
+> Replace custom attribute filter_low_pass_3db_frequency_available with
+> standard attribute.
+>
+> Store the available values in ad7192_state struct.
+>
+> The function that used to compute those values replaced by
+> ad7192_update_filter_freq_avail().
+>
+> Function ad7192_show_filter_avail() is no longer needed.
+>
+> Note that the initial available values are hardcoded.
+>
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+> ---
+
+With the question below addressed:
+
+Reviewed-by: David Lechner <dlechner@baylibre.com>
+
+>  drivers/iio/adc/ad7192.c | 67 ++++++++++++++++++----------------------
+>  1 file changed, 30 insertions(+), 37 deletions(-)
+>
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index 7bcc7e2aa2a2..ac737221beae 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+> @@ -190,6 +190,7 @@ struct ad7192_state {
+>         u32                             mode;
+>         u32                             conf;
+>         u32                             scale_avail[8][2];
+> +       u32                             filter_freq_avail[4][2];
+>         u32                             oversampling_ratio_avail[4];
+>         u8                              gpocon;
+>         u8                              clock_sel;
+> @@ -473,6 +474,16 @@ static int ad7192_setup(struct iio_dev *indio_dev, s=
+truct device *dev)
+>         st->oversampling_ratio_avail[2] =3D 8;
+>         st->oversampling_ratio_avail[3] =3D 16;
+>
+> +       st->filter_freq_avail[0][0] =3D 600;
+> +       st->filter_freq_avail[1][0] =3D 800;
+> +       st->filter_freq_avail[2][0] =3D 2300;
+> +       st->filter_freq_avail[3][0] =3D 2720;
+> +
+> +       st->filter_freq_avail[0][1] =3D 1000;
+> +       st->filter_freq_avail[1][1] =3D 1000;
+> +       st->filter_freq_avail[2][1] =3D 1000;
+> +       st->filter_freq_avail[3][1] =3D 1000;
+> +
+>         return 0;
+>  }
+>
+> @@ -586,48 +597,24 @@ static int ad7192_get_f_adc(struct ad7192_state *st=
+)
+>                                  f_order * FIELD_GET(AD7192_MODE_RATE_MAS=
+K, st->mode));
+>  }
+>
+> -static void ad7192_get_available_filter_freq(struct ad7192_state *st,
+> -                                                   int *freq)
+> +static void ad7192_update_filter_freq_avail(struct ad7192_state *st)
+>  {
+>         unsigned int fadc;
+>
+>         /* Formulas for filter at page 25 of the datasheet */
+>         fadc =3D ad7192_compute_f_adc(st, false, true);
+> -       freq[0] =3D DIV_ROUND_CLOSEST(fadc * 240, 1024);
+> +       st->filter_freq_avail[0][0] =3D DIV_ROUND_CLOSEST(fadc * 240, 102=
+4);
+>
+>         fadc =3D ad7192_compute_f_adc(st, true, true);
+> -       freq[1] =3D DIV_ROUND_CLOSEST(fadc * 240, 1024);
+> +       st->filter_freq_avail[1][0] =3D DIV_ROUND_CLOSEST(fadc * 240, 102=
+4);
+>
+>         fadc =3D ad7192_compute_f_adc(st, false, false);
+> -       freq[2] =3D DIV_ROUND_CLOSEST(fadc * 230, 1024);
+> +       st->filter_freq_avail[2][0] =3D DIV_ROUND_CLOSEST(fadc * 230, 102=
+4);
+>
+>         fadc =3D ad7192_compute_f_adc(st, true, false);
+> -       freq[3] =3D DIV_ROUND_CLOSEST(fadc * 272, 1024);
+> +       st->filter_freq_avail[3][0] =3D DIV_ROUND_CLOSEST(fadc * 272, 102=
+4);
+>  }
+>
+> -static ssize_t ad7192_show_filter_avail(struct device *dev,
+> -                                       struct device_attribute *attr,
+> -                                       char *buf)
+> -{
+> -       struct iio_dev *indio_dev =3D dev_to_iio_dev(dev);
+> -       struct ad7192_state *st =3D iio_priv(indio_dev);
+> -       unsigned int freq_avail[4], i;
+> -       size_t len =3D 0;
+> -
+> -       ad7192_get_available_filter_freq(st, freq_avail);
+> -
+> -       for (i =3D 0; i < ARRAY_SIZE(freq_avail); i++)
+> -               len +=3D sysfs_emit_at(buf, len, "%d.%03d ", freq_avail[i=
+] / 1000,
+> -                                    freq_avail[i] % 1000);
+> -
+> -       buf[len - 1] =3D '\n';
+> -
+> -       return len;
+> -}
+> -
+> -static IIO_DEVICE_ATTR(filter_low_pass_3db_frequency_available,
+> -                      0444, ad7192_show_filter_avail, NULL, 0);
+> -
+>  static IIO_DEVICE_ATTR(bridge_switch_en, 0644,
+>                        ad7192_show_bridge_switch, ad7192_set,
+>                        AD7192_REG_GPOCON);
+> @@ -637,7 +624,6 @@ static IIO_DEVICE_ATTR(ac_excitation_en, 0644,
+>                        AD7192_REG_CONF);
+>
+>  static struct attribute *ad7192_attributes[] =3D {
+> -       &iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.at=
+tr,
+>         &iio_dev_attr_bridge_switch_en.dev_attr.attr,
+>         NULL
+>  };
+> @@ -647,7 +633,6 @@ static const struct attribute_group ad7192_attribute_=
+group =3D {
+>  };
+>
+>  static struct attribute *ad7195_attributes[] =3D {
+> -       &iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.at=
+tr,
+>         &iio_dev_attr_bridge_switch_en.dev_attr.attr,
+>         &iio_dev_attr_ac_excitation_en.dev_attr.attr,
+>         NULL
+> @@ -665,17 +650,15 @@ static unsigned int ad7192_get_temp_scale(bool unip=
+olar)
+>  static int ad7192_set_3db_filter_freq(struct ad7192_state *st,
+>                                       int val, int val2)
+>  {
+> -       int freq_avail[4], i, ret, freq;
+> +       int i, ret, freq;
+>         unsigned int diff_new, diff_old;
+>         int idx =3D 0;
+>
+>         diff_old =3D U32_MAX;
+>         freq =3D val * 1000 + val2;
+>
+> -       ad7192_get_available_filter_freq(st, freq_avail);
+> -
+> -       for (i =3D 0; i < ARRAY_SIZE(freq_avail); i++) {
+> -               diff_new =3D abs(freq - freq_avail[i]);
+> +       for (i =3D 0; i < ARRAY_SIZE(st->filter_freq_avail); i++) {
+> +               diff_new =3D abs(freq - st->filter_freq_avail[i][0]);
+>                 if (diff_new < diff_old) {
+>                         diff_old =3D diff_new;
+>                         idx =3D i;
+> @@ -826,6 +809,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev=
+,
+>                 st->mode &=3D ~AD7192_MODE_RATE_MASK;
+>                 st->mode |=3D FIELD_PREP(AD7192_MODE_RATE_MASK, div);
+>                 ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
+> +               ad7192_update_filter_freq_avail(st);
+>                 break;
+>         case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
+>                 ret =3D ad7192_set_3db_filter_freq(st, val, val2 / 1000);
+> @@ -846,6 +830,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev=
+,
+>                                 break;
+>                         }
+>                 mutex_unlock(&st->lock);
+> +               ad7192_update_filter_freq_avail(st);
+
+Does this need to go inside of the mutex guard to avoid potential race
+conditions?
+
+>                 break;
+>         default:
+>                 ret =3D -EINVAL;
+> @@ -888,6 +873,12 @@ static int ad7192_read_avail(struct iio_dev *indio_d=
+ev,
+>                 /* Values are stored in a 2D matrix  */
+>                 *length =3D ARRAY_SIZE(st->scale_avail) * 2;
+>
+> +               return IIO_AVAIL_LIST;
+> +       case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
+> +               *vals =3D (int *)st->filter_freq_avail;
+> +               *type =3D IIO_VAL_FRACTIONAL;
+> +               *length =3D ARRAY_SIZE(st->filter_freq_avail) * 2;
+> +
+>                 return IIO_AVAIL_LIST;
+>         case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+>                 *vals =3D (int *)st->oversampling_ratio_avail;
+> @@ -956,7 +947,9 @@ static const struct iio_info ad7195_info =3D {
+>                         BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) =
+| \
+>                         (_mask_all), \
+>                 .info_mask_shared_by_type_available =3D (_mask_type_av), =
+\
+> -               .info_mask_shared_by_all_available =3D (_mask_all_av), \
+> +               .info_mask_shared_by_all_available =3D \
+> +                       BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) =
+| \
+> +                       (_mask_all_av), \
+>                 .ext_info =3D (_ext_info), \
+>                 .scan_index =3D (_si), \
+>                 .scan_type =3D { \
+> --
+> 2.34.1
+>
 
