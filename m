@@ -1,47 +1,73 @@
-Return-Path: <linux-kernel+bounces-143698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3C088A3C5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:59:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD3178A3C60
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:59:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C7FC282330
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:59:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3438F1F21865
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A193D994;
-	Sat, 13 Apr 2024 10:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E993E474;
+	Sat, 13 Apr 2024 10:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nq9sqE87"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GSPsWUzP"
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DEA335D3;
-	Sat, 13 Apr 2024 10:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B820225CB;
+	Sat, 13 Apr 2024 10:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713005944; cv=none; b=tU9zRkGbHAOP5Tw1Jbg+sGOocYtdGIxSftNGUCOwoL8C4HUhSgGhHFLyacM2xLXjlKDIS06jiijaBdlQIlPcf7eyDSlgtDTvS1Mv+S0p9i7T192y8l9agyDE30dmeiJRmuRvim8zSxyDu08COf/tcgrg/Wv3Lo5ihDz1ugFHwTE=
+	t=1713005967; cv=none; b=V5rjQnOHe/vFlOmbw9cdW/HFrh7qytt0Nifd11u4eruAuaBtkCQu+P7hIkq4+vUmg7qrMVFrCZ2gNUaqm32OnpnyVZYq0/t2JJJr3t5a7p4Z4hX0rsnqGqTnZGdZeFW12oUFBRpZ2pCuHLR/LMlfY20aGyrgx2czKt02LS25y8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713005944; c=relaxed/simple;
-	bh=XyNBnr7ZFttTsLqdtEP1Op0rqj1KHbc1K3+1RVUo3JU=;
+	s=arc-20240116; t=1713005967; c=relaxed/simple;
+	bh=uOjaUGqPKVq3+j2VJs/TEKafBEYOo8VXLsRCY3RPo/8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=igcVWC5lSCA71HR8wC67rJgWYjYPHn2/bZoHue+pxBktO4IFXDe64ZCzFtVvPb2ypdSoN/AfB4hq7yLXBSlpMAEMoM6eO1igL/6qCAQhkMhXKdGzj4hGFAF3L/Wn3tVa+jApefH+6uRk2faTsyYGv+fQOPJT+76IGu411hQ+rnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nq9sqE87; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6CAEC113CD;
-	Sat, 13 Apr 2024 10:59:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713005944;
-	bh=XyNBnr7ZFttTsLqdtEP1Op0rqj1KHbc1K3+1RVUo3JU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Nq9sqE878GK3tzKgdOCKLRiXzTmcttHGdRZ2QAtOe7mGQ37jPnIskR6nPz0bhGY8I
-	 fhaRy1TEYLZln8KJJIAIvT1E4GbnVCOcC71ay6y3B2vY08Ho26f+1D68WtZJIXG0QB
-	 TJiWEeKFHAVZz7pDwAxe0t6R0j/gDCYTka6zOq2SMvdY82ae9eep9ElH7xNiJ4Lf6a
-	 LtevqiIoTmBA+5fw9jq8b5ugwLnkIZKZySnWu6KTiMCO/ERA0f2V0v2nmP+M+mv5fP
-	 n3TlMi1gS2jM+CPjORNR4XZeYshS+kVWkzciUGd98uEZcMXDhW871QCE4GTSd7W5IE
-	 lRIfC1/FLHdjg==
-Message-ID: <a263ecd6-af04-4a21-b106-a9c208007c81@kernel.org>
-Date: Sat, 13 Apr 2024 12:58:59 +0200
+	 In-Reply-To:Content-Type; b=c+0roipmVakyGdTwPFtIUAWO/0H6G+XLzOd+2nkcTxsrlPGay/7OdVk8eW9Ejjo0uNk0cW8IsD5c7Tbami058fyXUFg1PYXnufqHB2fuab9KjX8TFj02Nemv+YfKYWFq6Gu3AgUp2qI5pSFNVCmTjpjW9ATw2LXjXMdhNfTdBtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GSPsWUzP; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-22a96054726so1262831fac.0;
+        Sat, 13 Apr 2024 03:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713005965; x=1713610765; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9hUP/8ZgJ+b6bN2VxVCxAiZaitZzpbRs5WnErLxeF08=;
+        b=GSPsWUzPyq8HZNpCoLmbSZEhoSKcrjTzUqRzLf7zaSLcY0vbyib1Y1JatLjclqEes7
+         Of70rBX1Wh0an6+GOJx//CiuFL9UtXobYQYLCSiW1eo66kJxzQSLjurhV0BNL3tzT0/4
+         6QzZ8HwwEp9oPNxkoREonwuNphzPyD4iiSTyEPNXTgRbFlYCM+KT7HCSK6Ns3+1at61r
+         lOyOKWe4l6qiWT0/vBZMkZQeaOpy0Y+j58KuCrLOC1d4gnXiWrEenF762psK7Uwt25CW
+         j3wtcqalOQs8fTrWJD7IIjc34K6RKkbG/DmBAlaTJpKMywoZmmGau9NBrdevLT0kRPU7
+         /zPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713005965; x=1713610765;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9hUP/8ZgJ+b6bN2VxVCxAiZaitZzpbRs5WnErLxeF08=;
+        b=Y9P/CYc/9dmYaANaRFsZZ4D8Wmg9/hX10z9dlCSdS/btGFeANvtF0hd5OzJMKG2Zk6
+         YYqIx12HTWXMCSDeQcpEpGP0DIULn+j29dqpAxnDjhZyIAX34zTymIu/pMBhorYa28W4
+         H8Gl4CvsD46/Imh5VaE1druUBYM8u4CVduPNlQPmToUvOmlAkBehhnKCNTih0g9t0JCt
+         ydpdpSd5zQYROZiIR3lp4eX8awuqhpnLaV8TPdLjR6sCMKeSAoVZ6bttOUc9zI482Ppj
+         IW4ccD/dIhL/SGH0yEanOkcyTmgiJGQqB99htoWdcHfC37Nncnvj00unfxS5sOPRg//r
+         jBhg==
+X-Forwarded-Encrypted: i=1; AJvYcCWJAGD/hsjVAcW9u0AP/RAYflP9ygOxeQtyABpDm/8JAHtzxRNz3XwB4szNS+WL00hTK7xZY095NQFHbtq8BUCrd9MX
+X-Gm-Message-State: AOJu0YzaKgPosvv4tMWvWUJJGg0F5c9dnCZcHIajuUGWXL3EjPzLCcde
+	SXZTJQ0WxKhy2m3lESrgH15awkGnlHxCmKR42dafzMAG24yD8nFx
+X-Google-Smtp-Source: AGHT+IGyBscLxvzKjs9tfnJDbxZslNl53miRQHsAAQdFdgIgfp+w8iJsvtPKqDglEFKZeub/xcSWOw==
+X-Received: by 2002:a05:6870:d0c3:b0:22e:e416:a5ea with SMTP id k3-20020a056870d0c300b0022ee416a5eamr5443820oaa.51.1713005964673;
+        Sat, 13 Apr 2024 03:59:24 -0700 (PDT)
+Received: from [172.27.234.129] (ec2-16-163-40-128.ap-east-1.compute.amazonaws.com. [16.163.40.128])
+        by smtp.gmail.com with ESMTPSA id gb10-20020a056a00628a00b006e6ae26625asm4169308pfb.68.2024.04.13.03.59.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Apr 2024 03:59:24 -0700 (PDT)
+Message-ID: <6153f44c-841a-4eea-a51b-5a68c84faf47@gmail.com>
+Date: Sat, 13 Apr 2024 18:59:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,81 +75,123 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/2] regulator: dt-bindings: pca9450: add PMIC_RST_B
- warm reset property
-To: Fabio Aiuto <fabio.aiuto@engicam.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Matteo Lisi <matteo.lisi@engicam.com>,
- Mirko Ardinghi <mirko.ardinghi@engicam.com>
-References: <20240412084428.400607-1-fabio.aiuto@engicam.com>
- <20240412084428.400607-2-fabio.aiuto@engicam.com>
+Subject: Re: [PATCH v2 11/13] iommu/vt-d: Make posted MSI an opt-in cmdline
+ option
+To: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
+ Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+ kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>,
+ Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+ Paul Luse <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+ Jens Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>,
+ "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org, seanjc@google.com,
+ Robin Murphy <robin.murphy@arm.com>, jim.harris@samsung.com,
+ a.manzanares@samsung.com, Bjorn Helgaas <helgaas@kernel.org>,
+ guang.zeng@intel.com
+References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
+ <20240405223110.1609888-12-jacob.jun.pan@linux.intel.com>
+ <8871e541-4991-44f3-aab7-d3a657fc59db@gmail.com>
+ <20240408163312.7b7f3d18@jacob-builder>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240412084428.400607-2-fabio.aiuto@engicam.com>
-Content-Type: text/plain; charset=UTF-8
+From: Robert Hoo <robert.hoo.linux@gmail.com>
+In-Reply-To: <20240408163312.7b7f3d18@jacob-builder>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 12/04/2024 10:44, Fabio Aiuto wrote:
-> The default configuration of the PMIC behavior makes the PMIC
-> power cycle most regulators on PMIC_RST_B assertion. This power
-> cycling causes the memory contents of OCRAM to be lost.
-> Some systems needs some memory that survives reset and
-> reboot, therefore add a property to mark the regulator as
-> performing warm resets on PMIC_RST_B assertion.
+On 4/9/2024 7:33 AM, Jacob Pan wrote:
+> Hi Robert,
 > 
-> Cc: Matteo Lisi <matteo.lisi@engicam.com>
-> Cc: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
-> ---
-
-Discussion continues in v3.
-
-Best regards,
-Krzysztof
+> On Sat, 6 Apr 2024 12:31:14 +0800, Robert Hoo <robert.hoo.linux@gmail.com>
+> wrote:
+> 
+>> On 4/6/2024 6:31 AM, Jacob Pan wrote:
+>>> Add a command line opt-in option for posted MSI if
+>>> CONFIG_X86_POSTED_MSI=y.
+>>>
+>>> Also introduce a helper function for testing if posted MSI is supported
+>>> on the platform.
+>>>
+>>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+>>> ---
+>>>    Documentation/admin-guide/kernel-parameters.txt |  1 +
+>>>    arch/x86/include/asm/irq_remapping.h            | 11 +++++++++++
+>>>    drivers/iommu/irq_remapping.c                   | 13 ++++++++++++-
+>>>    3 files changed, 24 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt
+>>> b/Documentation/admin-guide/kernel-parameters.txt index
+>>> bb884c14b2f6..e5fd02423c4c 100644 ---
+>>> a/Documentation/admin-guide/kernel-parameters.txt +++
+>>> b/Documentation/admin-guide/kernel-parameters.txt @@ -2251,6 +2251,7 @@
+>>>    			no_x2apic_optout
+>>>    				BIOS x2APIC opt-out request will be
+>>> ignored nopost	disable Interrupt Posting
+>>> +			posted_msi enable MSIs delivered as posted
+>>> interrupts
+>>>    	iomem=		Disable strict checking of access to
+>>> MMIO memory strict	regions from userspace.
+>>> diff --git a/arch/x86/include/asm/irq_remapping.h
+>>> b/arch/x86/include/asm/irq_remapping.h index 7a2ed154a5e1..e46bde61029b
+>>> 100644 --- a/arch/x86/include/asm/irq_remapping.h
+>>> +++ b/arch/x86/include/asm/irq_remapping.h
+>>> @@ -50,6 +50,17 @@ static inline struct irq_domain
+>>> *arch_get_ir_parent_domain(void) return x86_vector_domain;
+>>>    }
+>>>    
+>>> +#ifdef CONFIG_X86_POSTED_MSI
+>>> +extern int enable_posted_msi;
+>>> +
+>>> +static inline bool posted_msi_supported(void)
+>>> +{
+>>> +	return enable_posted_msi && irq_remapping_cap(IRQ_POSTING_CAP);
+>>> +}
+>>
+>> Out of this patch set's scope, but, dropping into irq_remappping_cap(),
+>> I'd like to bring this change for discussion:
+>>
+>> diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
+>> index 4047ac396728..ef2de9034897 100644
+>> --- a/drivers/iommu/irq_remapping.c
+>> +++ b/drivers/iommu/irq_remapping.c
+>> @@ -98,7 +98,7 @@ void set_irq_remapping_broken(void)
+>>
+>>    bool irq_remapping_cap(enum irq_remap_cap cap)
+>>    {
+>> -       if (!remap_ops || disable_irq_post)
+>> +       if (!remap_ops || disable_irq_remap)
+>>                   return false;
+>>
+>>           return (remap_ops->capability & (1 << cap));
+>>
+>>
+>> 1. irq_remapping_cap() is to exam some cap, though at present it has only
+>> 1 cap, i.e. IRQ_POSTING_CAP, simply return false just because of
+>> disable_irq_post isn't good. Instead, IRQ_REMAP is the foundation of all
+>> remapping caps. 2. disable_irq_post is used by Intel iommu code only,
+>> here irq_remapping_cap() is common code. e.g. AMD iommu code doesn't use
+>> it to judge set cap of irq_post or not.
+> I agree, posting should be treated as a sub-capability of remapping.
+> IRQ_POSTING_CAP is only set when remapping is on.
+> 
+> We need to delete this such that posting is always off when remapping is
+> off.
+> 
+> --- a/drivers/iommu/intel/irq_remapping.c
+> +++ b/drivers/iommu/intel/irq_remapping.c
+> @@ -1038,11 +1038,7 @@ static void disable_irq_remapping(void)
+>                  iommu_disable_irq_remapping(iommu);
+>          }
+>   
+> -       /*
+> -        * Clear Posted-Interrupts capability.
+> -        */
+> -       if (!disable_irq_post)
+> -               intel_irq_remap_ops.capability &= ~(1 << IRQ_POSTING_CAP);
+> +       intel_irq_remap_ops.capability &= ~(1 << IRQ_POSTING_CAP);
+>   }
+> 
+Right.
 
 
