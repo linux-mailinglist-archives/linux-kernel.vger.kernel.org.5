@@ -1,144 +1,104 @@
-Return-Path: <linux-kernel+bounces-143494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E9B98A3A27
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:40:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C9528A3A34
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:43:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 886811C2135B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:40:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 419F21C21321
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8874B9461;
-	Sat, 13 Apr 2024 01:40:49 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A176A182BB;
+	Sat, 13 Apr 2024 01:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n/MwGqsQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2034C97
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 01:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A7E8F48;
+	Sat, 13 Apr 2024 01:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712972449; cv=none; b=GKWKKxsAvkVlW4E8LUBXB8aY1arqQ51ZP6YSASbfdKr2bFkIFZ/5DlIYQb44mb24NLE0eFYDVA8EbcpWvTFralKcyXech6wsT16kqviZ3zrPk6CjHV+OF2Aw6C7u6ivLoyGhqanNuwzrXZ0O5sCl1uT53HA1Yr33oZkBfR+vqKk=
+	t=1712972584; cv=none; b=swa0fg7m4Y71zwW+xncmzNsUTvToSkjpdOrS9PZvnHdPGPpRCEnc84uVPPalRR6OceIx7iae0W7j4RZq54DhysyZzu+8vQWBpkMPFG9+ehEoz5bXZROpDDRD46LBOTWr0ZaUNwEk4uvGRqTCgAHVDZUU8TGmQICqWuKe2NHs2NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712972449; c=relaxed/simple;
-	bh=e+E1Ec0oTaN19dEWIyIQnYGFtuI3vCcAgC7gE8NBcMY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Y4Rey2izNN5EMyFV8CqnalBq156I+oz+dGVp+Ase42X5pE1A6mdONFLOjSD12RavwHFGNwXjbt1YXvyPPqSKvkcofGhV74BmF5RLJJnKc1S7TdM4Fz/dJlhf2YzuSEz29TaQOQ6DT8b7ee0xsnA7lr3zEeci2JhZR3UEUm15hVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d5e2b1d05aso157404839f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:40:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712972446; x=1713577246;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9q+AJtCE1QySXDmN1Cnk/o5LPFJdmAvLyzZEzOfRaE4=;
-        b=Krm6V2H6T19BqutIZ8FQHw0Iazir+cKILxY1ib02F4b+fhuvVfhxqdMl8FuH252JEl
-         Q+Pz4fY+FUXMcyLOCty5qPudQsK/dqWKZf6P99Aalum5nBDH5p4dr8RPvaNZVUka9leG
-         bci1tp8r7e+mPFkytS/yKuXoy9gzxvN6l1ih/6yoSPF1adlMkRtuPfaYqY4mdwLL6wgp
-         +BL6/xtBXc25Mxl/0kDX0uTodmuwl++vQRAOaWkvkiNgP0kVCsurTvSv4TThhSouTblS
-         DhSgvSLa1mYCZR6Zxl0CEUeNs8/ev67VwKL1xJ35zGLGwjNfNTXaGDPFgDgwtWczu4Qu
-         nnqw==
-X-Gm-Message-State: AOJu0YxHOrSuDL4gjPLweUVKoimfFG627bj2TG7PQfju23GvHUBUYJZK
-	IfQE+mmFe1k+KbjuLmzW4hBLtTz+M8RgVmK3/1kve9v1irlSxeySj6ErL0+4+DXBt60E4pEfqKx
-	HwFoQAqzmITF1wQfhm4llkUwJqanLUA2knMpn3y1Pgogb2mzeVkD1jcE=
-X-Google-Smtp-Source: AGHT+IEMBL6QYiaEZBHDhNgeyVSGrC8foZB1DZLap0JANY5agQWYITqgC/S0Od3zOyZo8hrfuErqr3nbBSqCO0W2emQmKafFTtJq
+	s=arc-20240116; t=1712972584; c=relaxed/simple;
+	bh=KHPrFD1YMMjtcQAp8KwZm5roaOz4QkN4zvujtINqzO8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Y5BuLcUuYcsy/g3uQCEUjTrobJfmIAtEjkEUepuuFBTf66+mMuVHFg76DYxFRFXbUxK+YwbA3TjaFwFWx71wDXK1jc8ju0fIyFia1gN6oF7lykKupkL0tud42EYg9VL6vzW/faeNOYSphrlzZveZrk1gqquRobKMQcYESqR1O7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n/MwGqsQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 56AFDC113CC;
+	Sat, 13 Apr 2024 01:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712972584;
+	bh=KHPrFD1YMMjtcQAp8KwZm5roaOz4QkN4zvujtINqzO8=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=n/MwGqsQM4590CNBTR+NWw7r2c1yzMZm/qGtz/zGicjm6g388ME5VSxeWXCyM7hOX
+	 3KQ/y/NG772xoNU5d+Lp/TJARU1McUyiDgPGDXHnmtgpWxkQBjJQ//eleP2B4wNjIH
+	 QaJEtNSCkcPBz3a3/VYx8kR0/IiuOyEllEFYHAaEJ/XXF1naWQng/MVAGGLY8fM6yv
+	 NTpTcemrsmwyOijDoGXv5jp36eiHO610figA13HUWtk9CwAhnaNWFsg9OMf4b5U9BZ
+	 42W3InFKpoU4yjlDDfgwlRtrQYggGefQYCXewAOVx3Lq0Wl9l+EOK6HSVCLySXpTci
+	 xyrB3RbrrDQfw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 443FCC4345F;
+	Sat, 13 Apr 2024 01:43:04 +0000 (UTC)
+From: Dmitry Safonov via B4 Relay <devnull+0x7f454c46.gmail.com@kernel.org>
+Subject: [PATCH net 0/4] selftests/net/tcp_ao: A bunch of fixes for TCP-AO
+ selftests
+Date: Sat, 13 Apr 2024 02:42:51 +0100
+Message-Id: <20240413-tcp-ao-selftests-fixes-v1-0-f9c41c96949d@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c02:b0:36a:20a2:e47b with SMTP id
- l2-20020a056e021c0200b0036a20a2e47bmr284450ilh.6.1712972445996; Fri, 12 Apr
- 2024 18:40:45 -0700 (PDT)
-Date: Fri, 12 Apr 2024 18:40:45 -0700
-In-Reply-To: <00000000000042c9190615cdb315@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000276bf20615f07a61@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
-From: syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABvjGWYC/x2M0QqCQBBFf0XmuQE1i+hXoofZ2Wsu1Co7SwTiv
+ zf6eM7l3JUMJcHo3qxU8E2W5uzQnRrSSfILnKIz9W0/tEN35qoLy8yG91hh1XhMPxhLFI3Xi4Z
+ bEPJ4KTgGbx+UUenpMoiBQ5Gs0/75EasotG1/KEN2noYAAAA=
+To: "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Dmitry Safonov <0x7f454c46@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712972582; l=913;
+ i=0x7f454c46@gmail.com; s=20240410; h=from:subject:message-id;
+ bh=KHPrFD1YMMjtcQAp8KwZm5roaOz4QkN4zvujtINqzO8=;
+ b=g4UdatSWnniIGkEvTKc/9CPb83Xp944jIoxZpzLz9t1htXBnI3Aw6tuhEKco7FkzxCITkkCkOSFX
+ jed5RYawCjbpGTDx15YXqwSBIGA97j352IR06NXZUMCi5/8jz2Ef
+X-Developer-Key: i=0x7f454c46@gmail.com; a=ed25519;
+ pk=cFSWovqtkx0HrT5O9jFCEC/Cef4DY8a2FPeqP4THeZQ=
+X-Endpoint-Received: by B4 Relay for 0x7f454c46@gmail.com/20240410 with
+ auth_id=152
+X-Original-From: Dmitry Safonov <0x7f454c46@gmail.com>
+Reply-To: 0x7f454c46@gmail.com
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Started as addressing the flakiness issues in rst_ipv*, that affect
+netdev dashboard.
 
-***
+Signed-off-by: Dmitry Safonov <0x7f454c46@gmail.com>
+---
+Dmitry Safonov (4):
+      selftests/tcp_ao: Make RST tests less flaky
+      selftests/tcp_ao: Zero-init tcp_ao_info_opt
+      selftests/tcp_ao: Fix fscanf() call for format-security
+      selftests/tcp_ao: Printing fixes to confirm with format-security
 
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
-Author: hdanton@sina.com
+ tools/testing/selftests/net/tcp_ao/lib/proc.c      |  2 +-
+ tools/testing/selftests/net/tcp_ao/lib/setup.c     | 12 +++++------
+ tools/testing/selftests/net/tcp_ao/rst.c           | 23 ++++++++++++----------
+ .../selftests/net/tcp_ao/setsockopt-closed.c       |  2 +-
+ 4 files changed, 21 insertions(+), 18 deletions(-)
+---
+base-commit: 8f2c057754b25075aa3da132cd4fd4478cdab854
+change-id: 20240413-tcp-ao-selftests-fixes-adacd65cb8ba
 
-On Thu, 11 Apr 2024 01:11:20 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    6ebf211bb11d Add linux-next specific files for 20240410
-> git tree:       linux-next
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1621af9d180000
+Best regards,
+-- 
+Dmitry Safonov <0x7f454c46@gmail.com>
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  6ebf211bb11d
 
---- x/fs/notify/fsnotify.c
-+++ y/fs/notify/fsnotify.c
-@@ -101,8 +101,8 @@ void fsnotify_sb_delete(struct super_blo
- 	wait_var_event(fsnotify_sb_watched_objects(sb),
- 		       !atomic_long_read(fsnotify_sb_watched_objects(sb)));
- 	WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PRIO_CONTENT));
--	WARN_ON(fsnotify_sb_has_priority_watchers(sb,
--						  FSNOTIFY_PRIO_PRE_CONTENT));
-+	WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PRIO_PRE_CONTENT));
-+	synchronize_srcu(&fsnotify_mark_srcu);
- 	kfree(sbinfo);
- }
- 
-@@ -499,7 +499,7 @@ int fsnotify(__u32 mask, const void *dat
- {
- 	const struct path *path = fsnotify_data_path(data, data_type);
- 	struct super_block *sb = fsnotify_data_sb(data, data_type);
--	struct fsnotify_sb_info *sbinfo = fsnotify_sb_info(sb);
-+	struct fsnotify_sb_info *sbinfo;
- 	struct fsnotify_iter_info iter_info = {};
- 	struct mount *mnt = NULL;
- 	struct inode *inode2 = NULL;
-@@ -529,6 +529,8 @@ int fsnotify(__u32 mask, const void *dat
- 		inode2_type = FSNOTIFY_ITER_TYPE_PARENT;
- 	}
- 
-+	iter_info.srcu_idx = srcu_read_lock(&fsnotify_mark_srcu);
-+	sbinfo = fsnotify_sb_info(sb);
- 	/*
- 	 * Optimization: srcu_read_lock() has a memory barrier which can
- 	 * be expensive.  It protects walking the *_fsnotify_marks lists.
-@@ -539,8 +541,10 @@ int fsnotify(__u32 mask, const void *dat
- 	if ((!sbinfo || !sbinfo->sb_marks) &&
- 	    (!mnt || !mnt->mnt_fsnotify_marks) &&
- 	    (!inode || !inode->i_fsnotify_marks) &&
--	    (!inode2 || !inode2->i_fsnotify_marks))
--		return 0;
-+	    (!inode2 || !inode2->i_fsnotify_marks)) {
-+		ret = 0;
-+		goto out;
-+	}
- 
- 	marks_mask = sb->s_fsnotify_mask;
- 	if (mnt)
-@@ -558,10 +562,10 @@ int fsnotify(__u32 mask, const void *dat
- 	 * Otherwise, return if none of the marks care about this type of event.
- 	 */
- 	test_mask = (mask & ALL_FSNOTIFY_EVENTS);
--	if (!(test_mask & marks_mask))
--		return 0;
--
--	iter_info.srcu_idx = srcu_read_lock(&fsnotify_mark_srcu);
-+	if (!(test_mask & marks_mask)) {
-+		ret = 0;
-+		goto out;
-+	}
- 
- 	if (sbinfo) {
- 		iter_info.marks[FSNOTIFY_ITER_TYPE_SB] =
---
 
