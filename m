@@ -1,105 +1,137 @@
-Return-Path: <linux-kernel+bounces-143650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3F4B8A3BEA
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:27:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A118A3BED
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:28:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5BC1F21C0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:27:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3FF37B21B1B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D3E2C6B3;
-	Sat, 13 Apr 2024 09:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BC5B2E62D;
+	Sat, 13 Apr 2024 09:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b9Hn57IX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="BRz/xMje"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E68218B14;
-	Sat, 13 Apr 2024 09:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8359F1DFF5;
+	Sat, 13 Apr 2024 09:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713000451; cv=none; b=cigDI8fwjEBY+ENRke5uvxvC7zWcTs7SjYhry4uhx6dfamSAKH1AN/04xbl7LTrD9rlI+3PoGvxE+tazrTBreaxhPHgmoqBsOtiGyeNcwkUJJlkUbK/dOxQ8opMKCGQ7ususN6U0K12qbTMZWE01rSKZ79bxbRK5qoPkCB1yYPs=
+	t=1713000465; cv=none; b=KSHA4bxpAL+69sXkpLUF1AXCfJWYAkV2brSJXBSjZBIg0IP2xilP63PG64j2pGGexpgQwD34dtvczmnp8uAE4T+xs0dqRLq+L330xJufnAym9jTBrfGpcePh0dW+gig1AlGm0bfb/ibHQBVbEgyUCI2+GdG337WgU5MPppYlV+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713000451; c=relaxed/simple;
-	bh=8FmkxRB0I6lztwgCbDGCSRZG9dB3qR5SIonDflggVww=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=thiaVFUBXXckpyVDIFarEFCDpKkleFsaR1P35cwOFqiXZEFp1HZMC+8uYvi9x3jBAWhgosqi26Ke2PM7DtIEHDRL8cdcfZ2ZB/OLDIXosEOpdyej2osgHWs7+0W38qsWHxJMb5Cv2ADjuGI0ettx/ZTnUMIVC5iK0uUl3w/vOYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b9Hn57IX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB09C113CD;
-	Sat, 13 Apr 2024 09:27:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713000450;
-	bh=8FmkxRB0I6lztwgCbDGCSRZG9dB3qR5SIonDflggVww=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=b9Hn57IX/VvTNUy9obuO8zlFnX+pRlFGrpvIqioTwwuScVCBVb5ogzv9pvoWuvVgg
-	 CdEXKW5u345k2qQWe01PwyguqSgOt41OMYFyGmYKAxuo1rGXj4rZaNOPMgpq0Czysc
-	 wTg+hO8PZMXlaWPGA/ObXguuOdsf/PB08UOazC6pKcfIVrkzggdYDZajDaqUyKHqLg
-	 A2EtU63HpGI7phjtOvR2FFPJWHpuUocLhSy9+Ik/2KFPO7rfW/RbCGrl3dhZRTJslp
-	 NENuo2+7vFLdbaAkEkqOIkNXZQTBGmTt9NVuNZQBGNnAiT18MveFHS938SosRb7dJL
-	 rHDrVDzwbTasw==
-Date: Sat, 13 Apr 2024 10:27:17 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
-Cc: joel@jms.id.au, bsp-development.geo@leica-geosystems.com, Eddie James
- <eajames@linux.ibm.com>, Lars-Peter Clausen <lars@metafoo.de>,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] iio: pressure: dps310: support negative
- temperature values
-Message-ID: <20240413102717.1ad05f7e@jic23-huawei>
-In-Reply-To: <20240410103604.992989-1-thomas.haemmerle@leica-geosystems.com>
-References: <20240327084937.3801125-1-thomas.haemmerle@leica-geosystems.com>
-	<20240410103604.992989-1-thomas.haemmerle@leica-geosystems.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713000465; c=relaxed/simple;
+	bh=rsDou3yig95tjaZU/ZRDjjcvRLMm27lPOIafPxdw5B4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kfM9O4xOU5GL3bIufM4qyPq/SDOTCYexSYagci/qqRhjsPXnKegF8OmVFjuo/1WG0TpmE7No4q2M67Ti5wdEqFsCkj+wcM9K65+Piktj4Vz0nSDYXg/odcDyy4RGosjkdE44YuUMyZ3XHdO7wyhQkeoL8Lblmjzj+CvnNE0lVHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=BRz/xMje; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1713000459;
+	bh=3aewD2oJ5lCGPTd/q9AbSX1ze3K0D7ZipcutTcBOOjA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=BRz/xMjewXr7BMy3kMWgkeZJOsjd+wKW1GyUv4bUGLosF97Jk7ABL1DhG7HQ9+Hop
+	 all7poKtpvnaLLCkzwXzF3QqmcT//I4w88f5Y0uuSF4Qtgvj6fxNSiI7IIqkhfgWKA
+	 XVR2eRlygS8QCiNLOSJujhnLiHqR9Bd/9aGwlflun9+VojsvezdzXrMXjXstI0ufYz
+	 eJmsRV64sfSRlHpd+Q4JbhyAbrR+pQknoEdCEHAzOrmCqyYARIFBUseRZebMjOWIyV
+	 4PxwPqpeeWnR01lcwV9em2FoQpBmjoayJYUYNLDRMTuXfnpUB6VBHGTFajRBMht3fC
+	 5drB7aG9b+pmA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VGp4T3FZBz4wyV;
+	Sat, 13 Apr 2024 19:27:37 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Sean Christopherson
+ <seanjc@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
+ Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Peter Zijlstra
+ <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Pawan Gupta
+ <pawan.kumar.gupta@linux.intel.com>, Daniel Sneddon
+ <daniel.sneddon@linux.intel.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH 1/3] x86/cpu: Actually turn off mitigations by default
+ for SPECULATION_MITIGATIONS=n
+In-Reply-To: <20240413115324.53303a68@canb.auug.org.au>
+References: <20240409175108.1512861-1-seanjc@google.com>
+ <20240409175108.1512861-2-seanjc@google.com>
+ <20240413115324.53303a68@canb.auug.org.au>
+Date: Sat, 13 Apr 2024 19:27:36 +1000
+Message-ID: <87edb9d33r.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 10 Apr 2024 12:36:00 +0200
-Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com> wrote:
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> Hi Sean,
+>
+> I noticed this commit in linux-next.
+>
+> On Tue,  9 Apr 2024 10:51:05 -0700 Sean Christopherson <seanjc@google.com=
+> wrote:
+>>
+>> Initialize cpu_mitigations to CPU_MITIGATIONS_OFF if the kernel is built
+>> with CONFIG_SPECULATION_MITIGATIONS=3Dn, as the help text quite clearly
+>> states that disabling SPECULATION_MITIGATIONS is supposed to turn off all
+>> mitigations by default.
+>>=20
+>>   =E2=94=82 If you say N, all mitigations will be disabled. You really
+>>   =E2=94=82 should know what you are doing to say so.
+>>=20
+>> As is, the kernel still defaults to CPU_MITIGATIONS_AUTO, which results =
+in
+>> some mitigations being enabled in spite of SPECULATION_MITIGATIONS=3Dn.
+>>=20
+>> Fixes: f43b9876e857 ("x86/retbleed: Add fine grained Kconfig knobs")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>> ---
+>>  kernel/cpu.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>=20
+>> diff --git a/kernel/cpu.c b/kernel/cpu.c
+>> index 8f6affd051f7..07ad53b7f119 100644
+>> --- a/kernel/cpu.c
+>> +++ b/kernel/cpu.c
+>> @@ -3207,7 +3207,8 @@ enum cpu_mitigations {
+>>  };
+>>=20=20
+>>  static enum cpu_mitigations cpu_mitigations __ro_after_init =3D
+>> -	CPU_MITIGATIONS_AUTO;
+>> +	IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
+>> +						     CPU_MITIGATIONS_OFF;
+>>=20=20
+>>  static int __init mitigations_parse_cmdline(char *arg)
+>>  {
+>> --=20
+>> 2.44.0.478.gd926399ef9-goog
+>>=20
+>
+> I noticed because it turned off all mitigations for my PowerPC qemu
+> boot tests - probably because CONFIG_SPECULATION_MITIGATIONS only
+> exists in arch/x86/Kconfig ... thus for other architectures that have
+> cpu mitigations, this will always default them to off, right?
 
-> This patch set fixes the reading of negative temperatures (returned in
-> millidegree celsius). As this requires a change of the error handling
-> other functions are aligned with this.
-> In addition a small code simplification for reading the scale factors
-> for temperature and pressure is included.
-One quick process thing.
-For IIO (and probably most of the rest of the kernel) we strongly discourage
-sending new versions in reply to a previous version.
+Yep.
 
-The only real result is that in a typical email client the threads become
-confused and the new version may be missed entirely.
+The patch has the effect of changing the default for non-x86 arches from
+auto to off.
 
-Just sent a fresh thread - the naming makes it easy to connect new
-versions to older ones and tools like b4 deal with this automatically.
+I see at least powerpc, arm64 and s390 use cpu_mitigations_off() and
+will be affected.
 
-Jonathan
-> 
-> ---
-> Changes in v2:
->  - include fixes tag
->  - Split up patch
->  - introduce variables for intermediate results in functions
->  - simplify scale factor reading
-> 
-> Thomas Haemmerle (4):
->   iio: pressure: dps310: support negative temperature values
->   iio: pressure: dps310: introduce consistent error handling
->   iio: pressure: dps310: consistently check return value of
->     `regmap_read`
->   iio: pressure: dps310: simplify scale factor reading
-> 
->  drivers/iio/pressure/dps310.c | 138 +++++++++++++++++++---------------
->  1 file changed, 77 insertions(+), 61 deletions(-)
-> 
-> 
-> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
-
+cheers
 
