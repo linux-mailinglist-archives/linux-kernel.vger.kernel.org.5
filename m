@@ -1,139 +1,148 @@
-Return-Path: <linux-kernel+bounces-143502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1F768A3A42
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 345678A3A44
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:54:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51CE11F21D29
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:51:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD5E31F2279B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C0510A2B;
-	Sat, 13 Apr 2024 01:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37BC18F48;
+	Sat, 13 Apr 2024 01:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jk9/sFzc"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="EDqqRVR7"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28EBE8C1A;
-	Sat, 13 Apr 2024 01:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A145DDA3;
+	Sat, 13 Apr 2024 01:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712973059; cv=none; b=O2J1eMl+KPt9TvScmEfH27FO7k9uD1IkQpN+Cfj7uCs5UOwgkViLJDDbzxrYDoy7dknHChwelBFg/G1+bc1XuZQuJEyNEI6wqeJmBQQ+Kv7lz+xLTgkLBgnSvZGmXw5nrdvf+OgWmb+kGBgjzIjiF+I1va4Rsl0OFapwi0e3k2o=
+	t=1712973243; cv=none; b=VmAheqCw4h0zjiS/Gstps6gyeUI1nb3dHw4zcJBV3cFjbXtXa8milFa1zFhxbIK8OKm7xp/Hy1T8MbcP7bjmqxpc+InbFJcJZkLsoKZTfqxkHy3Zk7+5vgFN9xpfBLmqDUj9BrT/A0BrM/O2bqySzDyQndXzf3UbM2kHmyQG+MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712973059; c=relaxed/simple;
-	bh=wA/RPdttBexHgU+bBZVYr/ZfCaV8CxDw9/T2dT+Y+HM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MA7ys4TnlRlAXfUei7MKED/8K9VtbWGMh5lSr2Gb5q9N5omIsTYRuFgaYxjEXL+QUssWHMw0T3q2jyvqQ+vcHVR+9qxr/D9lPtdzVCmGjzyYH4TChL5h4h0XfpU59oJna+OWjt1CS60OwEWBdq9M0GQHJlwuJP7F+yxtjH5xujA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jk9/sFzc; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2a4df5d83c7so917358a91.0;
-        Fri, 12 Apr 2024 18:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712973057; x=1713577857; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s/jYHLvRaUJ+lBVWUfhvMvFS8ppGNLYChc1nBTlFCR4=;
-        b=jk9/sFzcUoDfOMKrRupnYhasbcJ1hb4YVuksONO530sOB9AToOVWnmPSi55VuhxY6o
-         ykFKc1XShOynkXFCH7LTOMaZmByIaZCr6TLISY8qx48Eyn3gcrU+plJIuHJrz0X8NkBB
-         SFyFALyjHHIDZgPzwhAQjDWzLiAQrMTLRdMuUozo36h+Jy00/As+LPk3RlZBUGHsm5fV
-         IefbuGBLuO+GjFKYSoequn56WdjOEArMpab4w9G/WWdsBrGPDvlmmzXUURQyVLqjwpOa
-         JnxVpwtDztCg0b3EKdi2WycUGKNq4MP/ZGUq9e0zHSCcB0HcvL/nEPDDWCjyWHMTdC51
-         r9BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712973057; x=1713577857;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s/jYHLvRaUJ+lBVWUfhvMvFS8ppGNLYChc1nBTlFCR4=;
-        b=hdf+snM2p6GVscayJKrxrl8Gm/uuge2kZkjebNVHbBgoUVyrsSVAuNBqQMVHV2k6oF
-         q9K/HsAXnq8mOlVFYBgq7FyoGaHxA2yZ4xCXc4WjTufEHggcS84G76sHmunjaCyF/BMm
-         /xi0HVudM84ILFNFQ35FwcEuLDihqokOfG7zH0OqXrM0oWrUEC0yyxyiy95Xg/lz2xUq
-         tka8/eBWVd1Prlqj9NGwxVSKV/cygMhSxNz0MTufkXfBf7Xew2mb/WH12H7c1NNUYyVz
-         tWDNnCxQism5Z1JUfa6LAj3PfwRQ0CFRD33vyRa5CPytLrbaAyMTOFGAFZk0casBsEAu
-         Z51Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUa5ofFvFEguW3SlFglYGsYlSQL6Oq10tLfdIsSM9Bg6he26T7UpyNEhSMd4nrXVeOsbbBLbCRUVYXR198WPSJdoVwB+AxLLPqjyLom8M/Humz36LKN05QcP48IdJnusvJ2n2tzLTvrxu5jn7ckOmbD4imgRxU6q3dQF7SeUioWof4sVQ+e
-X-Gm-Message-State: AOJu0YzZpdvzb2vMOtyYNJWoMFSsqXaRW9dZqPa1XYhW7iH+jGLuXRfx
-	1pwOh/Ev/C6o+VQdb8skY+WQ8pVhh7pgSVvNMCtT8mY6ikjoDK7zxulhNTkBhyXwIbVDAybcMXN
-	7kvtfOv7FRr0zdFweKNDnzW6xgMo=
-X-Google-Smtp-Source: AGHT+IEnA2gF8Fop3YlgII3fFzng5P/PNmy1T4aHT3kJcllvkCoJFI+g7ex3/xElJrGaG4o+QWSsiVsCLRo41rcNmMI=
-X-Received: by 2002:a17:90a:e015:b0:2a2:f35f:f13c with SMTP id
- u21-20020a17090ae01500b002a2f35ff13cmr4040677pjy.46.1712973057271; Fri, 12
- Apr 2024 18:50:57 -0700 (PDT)
+	s=arc-20240116; t=1712973243; c=relaxed/simple;
+	bh=nsOYgZD6NcU0rdrT4T38X2Zder785/fBw+JPZN9oFnU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nGcfqiP+Hdpg2xgzHavPMlSzRbPiHc/lLMcWk6PwZBuSuhnooz5Txl/5Rmq61+Sm91FlUOBfW1j0wMw0687rDC6TanDNoNCCIFMSgyP9zQ8ooJCqzuDPHM94icRDF6dLYHaKVpHtZBvZqjBfp58iI7hpYa60mq3GQxBCz/ppR3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=EDqqRVR7; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712973232;
+	bh=Y4BOwpk8yD9IlKJHunm77VnxmVc/7lRfLru6wBoJFaA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EDqqRVR7LZ+SNtsMLjm8Fbb2ebWukmsVwlTD9Z5qqjqBTjJ+ij7wd3FflepCx5rPp
+	 h+Wwxe5GUSHf8dJHrMu8kjC21MG7Pmwk18uIvcfKqOpW/Po2ZP4FHVkBv8VjM7V8cF
+	 9XogbxEee+D2oAoGtql/r7CvmIUHJXpgeisXI96MJbJStyXttEhsr4gawGO9p2JZ39
+	 V+/kD2cFFA9AS3zn4p05EpYKcmW/SNA/bUNixWgkQhNp6LQC0EWRG8sX/VlrHxF8qg
+	 +XqSGud5sE+3h2q9V3srWooQOTG0n+K15PV6b9mm5nJBDm0BFcmCOhFf4c47Q7FKzH
+	 xTPdCfRJOiYSw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VGc0t0dkgz4wcC;
+	Sat, 13 Apr 2024 11:53:49 +1000 (AEST)
+Date: Sat, 13 Apr 2024 11:53:24 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, Peter Zijlstra
+ <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Pawan Gupta
+ <pawan.kumar.gupta@linux.intel.com>, Daniel Sneddon
+ <daniel.sneddon@linux.intel.com>, <linuxppc-dev@lists.ozlabs.org>, Michael
+ Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 1/3] x86/cpu: Actually turn off mitigations by default
+ for SPECULATION_MITIGATIONS=n
+Message-ID: <20240413115324.53303a68@canb.auug.org.au>
+In-Reply-To: <20240409175108.1512861-2-seanjc@google.com>
+References: <20240409175108.1512861-1-seanjc@google.com>
+	<20240409175108.1512861-2-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240413-tcp-ao-selftests-fixes-v1-0-f9c41c96949d@gmail.com> <20240413-tcp-ao-selftests-fixes-v1-4-f9c41c96949d@gmail.com>
-In-Reply-To: <20240413-tcp-ao-selftests-fixes-v1-4-f9c41c96949d@gmail.com>
-From: Dmitry Safonov <0x7f454c46@gmail.com>
-Date: Sat, 13 Apr 2024 02:50:46 +0100
-Message-ID: <CAJwJo6bjzgL7Y_EPOL1rYqSz5MNO60iKtCFF-_guq48FwxwKKg@mail.gmail.com>
-Subject: Re: [PATCH net 4/4] selftests/tcp_ao: Printing fixes to confirm with format-security
-To: 0x7f454c46@gmail.com
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/NbG7tw_eh21Qan+TJ2Af+bh";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/NbG7tw_eh21Qan+TJ2Af+bh
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, 13 Apr 2024 at 02:43, Dmitry Safonov via B4 Relay
-<devnull+0x7f454c46.gmail.com@kernel.org> wrote:
->
-> From: Dmitry Safonov <0x7f454c46@gmail.com>
->
-> On my new laptop with packages from nixos-unstable, gcc 12.3.0 produces
-> > lib/setup.c: In function =E2=80=98__test_msg=E2=80=99:
-> > lib/setup.c:20:9: error: format not a string literal and no format argu=
-ments [-Werror=3Dformat-security]
-> >    20 |         ksft_print_msg(buf);
-> >       |         ^~~~~~~~~~~~~~
-> > lib/setup.c: In function =E2=80=98__test_ok=E2=80=99:
-> > lib/setup.c:26:9: error: format not a string literal and no format argu=
-ments [-Werror=3Dformat-security]
-> >    26 |         ksft_test_result_pass(buf);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~
-> > lib/setup.c: In function =E2=80=98__test_fail=E2=80=99:
-> > lib/setup.c:32:9: error: format not a string literal and no format argu=
-ments [-Werror=3Dformat-security]
-> >    32 |         ksft_test_result_fail(buf);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~
-> > lib/setup.c: In function =E2=80=98__test_xfail=E2=80=99:
-> > lib/setup.c:38:9: error: format not a string literal and no format argu=
-ments [-Werror=3Dformat-security]
-> >    38 |         ksft_test_result_xfail(buf);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~~
-> > lib/setup.c: In function =E2=80=98__test_error=E2=80=99:
-> > lib/setup.c:44:9: error: format not a string literal and no format argu=
-ments [-Werror=3Dformat-security]
-> >    44 |         ksft_test_result_error(buf);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~~
-> > lib/setup.c: In function =E2=80=98__test_skip=E2=80=99:
-> > lib/setup.c:50:9: error: format not a string literal and no format argu=
-ments [-Werror=3Dformat-security]
-> >    50 |         ksft_test_result_skip(buf);
-> >       |         ^~~~~~~~~~~~~~~~~~~~~
-> > cc1: some warnings being treated as errors
->
-> As the buffer was already pre-printed into, print it as a string
-> rather than a format-string.
->
-> Fixes: cfbab37b3da0 ("selftests/net: Add TCP-AO library")
-> Signed-off-by: Dmitry Safonov <0x7f454c46@gmail.com>
+Hi Sean,
 
-And this one as well,
+I noticed this commit in linux-next.
 
-Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Link: https://lore.kernel.org/all/0c6d4f0d-2064-4444-986b-1d1ed782135f@coll=
-abora.com/
+On Tue,  9 Apr 2024 10:51:05 -0700 Sean Christopherson <seanjc@google.com> =
+wrote:
+>
+> Initialize cpu_mitigations to CPU_MITIGATIONS_OFF if the kernel is built
+> with CONFIG_SPECULATION_MITIGATIONS=3Dn, as the help text quite clearly
+> states that disabling SPECULATION_MITIGATIONS is supposed to turn off all
+> mitigations by default.
+>=20
+>   =E2=94=82 If you say N, all mitigations will be disabled. You really
+>   =E2=94=82 should know what you are doing to say so.
+>=20
+> As is, the kernel still defaults to CPU_MITIGATIONS_AUTO, which results in
+> some mitigations being enabled in spite of SPECULATION_MITIGATIONS=3Dn.
+>=20
+> Fixes: f43b9876e857 ("x86/retbleed: Add fine grained Kconfig knobs")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  kernel/cpu.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 8f6affd051f7..07ad53b7f119 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -3207,7 +3207,8 @@ enum cpu_mitigations {
+>  };
+> =20
+>  static enum cpu_mitigations cpu_mitigations __ro_after_init =3D
+> -	CPU_MITIGATIONS_AUTO;
+> +	IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
+> +						     CPU_MITIGATIONS_OFF;
+> =20
+>  static int __init mitigations_parse_cmdline(char *arg)
+>  {
+> --=20
+> 2.44.0.478.gd926399ef9-goog
+>=20
+
+I noticed because it turned off all mitigations for my PowerPC qemu
+boot tests - probably because CONFIG_SPECULATION_MITIGATIONS only
+exists in arch/x86/Kconfig ... thus for other architectures that have
+cpu mitigations, this will always default them to off, right?
 
 --=20
-             Dmitry
+Cheers,
+Stephen Rothwell
+
+--Sig_/NbG7tw_eh21Qan+TJ2Af+bh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYZ5ZQACgkQAVBC80lX
+0GynlAf/Wrk3YC50MGX7+3M9JTuw86KpBU8ObFWWrRoQMz1pL8HUIJ2r3DD3jmY5
+Q+Wb4noRymG9Y+zIoB5TFzdn84TKTTJSzQhu6EVrn4loYN2rRQTimU8gmhQejExl
+75el/6d9lIOIL2VvgFAddpIvahlc+s2ovo4y1rPXlR7uAQq5LNUEz7H8fuCkGcGO
+/ATBSVfhyDN3ryvmDXO7XU+Nsb24Bz5i3NmHTv20sbdMkij26+u8QCtyZFOhmbrY
+DjMi+IxL0kcsUg4jnoXrAaC/yy1etU96S5iukrMNRj2ENI4Nv8ivwYDdawdpzIdx
+mIFCuaKOVfcaUfJ51s/eUK3Pq0PAVw==
+=K4/i
+-----END PGP SIGNATURE-----
+
+--Sig_/NbG7tw_eh21Qan+TJ2Af+bh--
 
