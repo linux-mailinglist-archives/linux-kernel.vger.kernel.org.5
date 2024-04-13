@@ -1,276 +1,193 @@
-Return-Path: <linux-kernel+bounces-143734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143735-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 742ED8A3CC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:06:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 880918A3CC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:08:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93F111C20B59
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:06:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E96F51F21963
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715B5446DB;
-	Sat, 13 Apr 2024 13:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B754A3FB1C;
+	Sat, 13 Apr 2024 13:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b="O9QHXzZX"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="QPKBP7uY"
+Received: from OS0P286CU010.outbound.protection.outlook.com (mail-japanwestazolkn19010000.outbound.protection.outlook.com [52.103.66.0])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B688D446AC;
-	Sat, 13 Apr 2024 13:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713013578; cv=none; b=W4/tqeXz+wULe7H4bNnNnR7Kq7Frw2MoJNG2D9Ri0fVUDYec93ucOro1Gd14e3aIQfTf69K1eLjswg2Hj3cEtBoGcz1A4HEgEEiavBapicixQi06hClX9yoQVqWTvTp03zgGLBfCfHZ7k97Off/5ezTQGZbwNxffWAi0xUEGDFM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713013578; c=relaxed/simple;
-	bh=MzbVw7TG8Upbp7umydgmO+bsnapGUtlFn/xOM1E7JMk=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=S6U2CoH4kMfgts6K9pQn9HFzq1FXIfcJ8WnVI1KLf+oFu1egFoJ2Ie+xGG+4Y6Vf6bOzGtr+2z8q6EhsTTUKSTcvTTYn6+DU/AVlUuCDH8W58gMNEaS+KH9U6Fv22NNRuYzjdv7AhqSg62ioIVbdqAdDIsToFeHCH1aDYueJgI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b=O9QHXzZX; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1713013565; x=1713618365; i=schierlm@gmx.de;
-	bh=Zmy6kJuf0Yp448xeLYX/7DYKynh6RAhzDjoFxgh3wP8=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-	b=O9QHXzZXZSR6wr2WOCIFugzkNBmySaQfVC5/Qw80jSLJgktMrh4uk9igyzpMN0Tl
-	 6bg7sQbwlKK5R01yZqIllZupdrHHdir9wH1X5ih7sVkDVaXfkBMxEguF4vKhTybO1
-	 vy2WYJ0WnpOfkbF72LUhCshAdytDhZ1tRYSqEwg3acS9uMYSCaNmQczeBLHcJZ7GJ
-	 NPTWFi1NsnF8/BNCpyEJZLkhqR7YykK26ZSnacgtiV42aLCPsmQQx/xfC3GBbnguw
-	 RkScODEFKmt+me1R/MzNuydTAhI0H/iD2O70hvY8bv/Hl0J4SpeRW74aj4/9w0Hno
-	 CPRK8YeWDeyodMgy9Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.56] ([84.145.191.35]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MPGRp-1s86Lo0AsX-00Pgfa; Sat, 13
- Apr 2024 15:06:05 +0200
-Message-ID: <2db080ae-5e59-46e8-ac4e-13cdf26067cc@gmx.de>
-Date: Sat, 13 Apr 2024 15:06:05 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203E8383AA;
+	Sat, 13 Apr 2024 13:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.66.0
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713013693; cv=fail; b=JoAr5ZUoiM4t969gJWHfDCKFSTeLf69jPStCo9PL750uIfOfeaXCorwZ16uufYVn6QGn/yf0yLBzvi882IeGkqY7E5RJJKvAjQweSp+UFhKij5bVuGDHsEg2Iql2ExM9pomRZhEJkan4Ou7tAPzksaMexCt+VhR9jY7GTvj8N80=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713013693; c=relaxed/simple;
+	bh=8F88CRpBpIG2rG310LnuwRJx1z4NVc6qPB8zsZ56rrc=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=PLxANDMq3XGSd5Zj0ZlFiRmTu1Avysxqc4yLrcLblitkQ65iLF0u1dwAN5/Q2qrZBhWAMuUViTU3WZ2aHCTpxz0w/D7hToBq2QL8RgGFftusXuevhL2pUlaa0T9gwYTL9LUZ3nc7z34NTSegSVt2XLb2S91TNahwhz+KODClckg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=QPKBP7uY; arc=fail smtp.client-ip=52.103.66.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FayIaH4d0BxcX0I0D0s1G1okxVdRhVweix4/avPVRRAFvSoHDZusfHrM/dPST4L/0+anLxmeFE/ZGIwGvWT6YI1D7nh6DnUl5dyMVlBs3F4pA1DGeMsDrWde5F9FHHa+iMhFhiMillG2HuSzzT1hG0oMbyfsn7Kfy6vCUdSIr4JuAFUjP63LG9C54ZefWOndXxH7yiaodLjZV4tGP2rJdYnrWs8TYekZezw+yiWA42+0nyPI5cOt42viX0+10E1mSxA4GNUUExr1QI04L6Uf1xEba6oRcCfsh02stiU6qKQK/BkFoV8mVJQCLLlDY+ThZD96XClo1vwwjr9uBh5i9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hTM8PY7dyx3dKoUCEjXNYOvEJDZzx52EX7IRsxXtbQs=;
+ b=mRO+E/JD6MiZ1EQEIFgjufX7WhgGt1dBRx0bX+H0wUGEzEsSSMmbxJHzvZwQFPH1v4173IPY5+ajJjAGupNdYQlmy1ZfLEm4WoPZIl9lz9S25+SnMHOnFB8XkpRxCo8V8gighZkvkUamiDQd4qq63jOQ6dWGK52q6Ef9E1E30fDFU4HgK+5A8IUgZ1xQJEVdHGcCoGdDTh8dGa4Q0twmyoGLX4cM/WaHF5vHI2y2NPuKIOIrzVdLz/eWWJd4WsJLy6ahy7ehfpulc59Dm6IaEfDPLjsf1iwMWYJuDxcbfixoZxqGQObCmFMvKlzopRTQq4LwpVzeaLId9RTlkKASwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hTM8PY7dyx3dKoUCEjXNYOvEJDZzx52EX7IRsxXtbQs=;
+ b=QPKBP7uYlm0Tm3yQ5XZCewAdAQSdTSFzeVG/Gj+9LFg9TgVyfsgJgffxHE7fTcuTnfh+3xfRpz2XaNAuyck5qJTNEzgiwbVlJQEKzDVuSsA42P4N0jYxQpOzMaG6W+k3hKUtIPlZWBJLxRdP2cX4q28X9BVGqvemqEF64cJff44pvcI9eXYN+C/n2qBjChGZ5RsBy07RJ0g75YeN9L2/hikImRvAaV9wJRz3WdFBz9U6Y65OPl9ilv17atlUJCpOx0DoWiGWCFMxQ2/y0Noq5IONDDf2xXXh9271j6ifue+IAYcCai6pxZZ3dcwlT91MKu4C0b4fnlPArcBUoNX7Ag==
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:209::11)
+ by OSZP286MB1797.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1ba::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.43; Sat, 13 Apr
+ 2024 13:08:06 +0000
+Received: from TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8]) by TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::f2c3:e53f:2ea9:55c8%4]) with mapi id 15.20.7409.053; Sat, 13 Apr 2024
+ 13:08:06 +0000
+From: ArcticLampyrid <ArcticLampyrid@outlook.com>
+To: james.schulman@cirrus.com,
+	david.rhodes@cirrus.com,
+	rf@opensource.cirrus.com
+Cc: patches@opensource.cirrus.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ArcticLampyrid <ArcticLampyrid@outlook.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Fix internal speakers for Legion Y9000X 2022 IAH7
+Date: Sat, 13 Apr 2024 21:07:55 +0800
+Message-ID:
+ <TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.44.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [VPB2WDdPzJP7XoxMsZPzvytTXemr8Ed2fcOMMo3vu9jWTfTgVM0yaQ==]
+X-ClientProxiedBy: TY2PR02CA0047.apcprd02.prod.outlook.com
+ (2603:1096:404:a6::35) To TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:209::11)
+X-Microsoft-Original-Message-ID:
+ <20240413130755.57218-1-ArcticLampyrid@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: de-DE
-From: Michael Schierl <schierlm@gmx.de>
-To: Jean Delvare <jdelvare@suse.com>, "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Early kernel panic in dmi_decode when running 32-bit kernel on
- Hyper-V on Windows 11
-Autocrypt: addr=schierlm@gmx.de; keydata=
- xsFNBF+amRYBEACvwIMUTYHep294xNuk+jKA63GkZl7D3SlI4LbzJt1Cm4AvT/mQ5/UV3bAG
- VeB6iXDeCH28bQNXd4DymSMEzgXVkmcNws4MzFhhA/mbRuVntN8G6zGnAJb9NerBLwhEcSzN
- vCG7FnUKOLs+z75rQfyuBpYnzMj5prrFvCBW/3fBElajvLbDT/ZRdU7QqFmCVy7dtdk++tz+
- 5pZzN4Tfy2f+DVsvdWjrQ0NX8J0FsI5QtdRLHP3oRJLTuNl7Vff6CE/wPnvFQQjguoapolFz
- jQFX5krR2C8axNg00qIMviGpio/AAI6La1QdSP/CpcD2QfzZPIdIaQy4yUCE/BoTBPgZWdC5
- zwhmpN/qfSBs5QtUacL/4I+knomX/XyIqZNWqoVZ8FkX7i8AZO4ymuBwx8wZP5XUZwM6rzAd
- MMEKWrWWvks67uYmEuL4isP9QhZmG7EniWVt7is+X/alCT9cULEg+sXhHW4NOhCNlg020Bdg
- CHmdo7RecGqzKFIE/3RgYm+TwKc3YU/bgslIPu6Qz+Qqvz10Y4DFpyuNH6yOJMdRjpYpXYSF
- 6EjkFdFJKBmdpbYx08QRjPaQzt6ZYLEVm/bFhtyoBE9fyLLOjt/kERoMs+Ho4uNpjPKFfFR8
- UD/SMkP7AaztCaQJT8EtczAXOtLdVar9+7143jEUuJlgg232SQARAQABzS9NaWNoYWVsIFNj
- aGllcmwgKFRodW5kZXJiaXJkKSA8c2NoaWVybG1AZ214LmRlPsLBlAQTAQgAPhYhBDX8Kw94
- NM6vtg6y281NaFzbm/3GBQJlHx1cAhsDBQkJRv/KBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
- AAoJEM1NaFzbm/3GlIkQAIXZGienuIciGMXWcvRwDSjtm+tgoTXoyFCQKuhoa2EArpa5mRQS
- EXZ/68jdeaEoHii4u8utNSccLUVtM8DQTGOhuwhdjDYN2a9YcUtyVCoHuE9kqd6yURzu8uEU
- cb3ViQUDEkv3s0ZTty4VYuEYnV+BrhFMOvfY13HsMZQ+HNpqOt+3FjB17YBXyUc84RRanmIX
- BcLTW+LB/y+jpWaK6CvP7Mpst3HAXTl2fp/lERGLkDjFABqgbTxAvZG9baigUoFjrhniuukw
- 7dZ0T7fwjDNvMRXFU4sigP77l9vwMqGwCrykYm0KnxtdWNM8mu8iPfHZyZTHv5siYv1URovx
- abh/6e0sDJKPipsWTIbD9AokYPzbinJNs9iVly5aAFQuo53hUnSxxjoWTPLtbgoAV4TBuScJ
- h40ij1cgq7cJgFORb/FhuNjgv/SJhQaL/YWBgywxI4XdMTj5mh5vIhJnewTiaLrSxDGm2aTQ
- O+T1r96052STv/yz8hFT2N1pMxXGtHONjQzrGyqg4b8oaBUv/qTCYGAJmFDCy5UC1awPuRcp
- pTmW5U75XjdxjO1pVxrZfWTMYy4I02XlEb6zisWZpwrq14rcl1C2XyNtD/q5I0q3MgKXpzxT
- AHSuS/IMrYHpCi4gkFDCuEQIa9QM33kPh6eAIL6zevBe1XnU1FIuk/y0zsFNBF+amRYBEACo
- T8ZSaqeSZ6RxkNu5f9e+Cnlvyc1R+UJUTD34nQMDzupXbbo8xCEjF6AefjopsOQ/6w4P5shd
- 2RGlt2cUxq4RaNlogJSwXL8wzPJSkROtDrhYMBtLiZI6XK6H6IAlnkEZIvzZCVd0y1muhKXw
- C5x/9aKPkWFDVfpXvSHQ9chGOWVu6QiWHVSgg/y0+cATbun1gv/zkwD+pu1N6uZdlTw34uL/
- I2MRkuJIbb4M904y548aHXMDCILBRH26VQ5LwJ2jd0HblZEt+O+I6J7OovzAkFZTHu/2RvX7
- Sr2rN5XIMYTKApe+nqLW3nbCD526TX5mh99+4R6nQE+A2CF4Z1uBfXkVIZftWQ4zv6qJiqrm
- fCFH0uOcgN/Lrz8yz3iGZ/+cbV0B4IWeZq0EVHuKzD9mZyM2j7Y6Ih1gGIqfokNgueUh/hyv
- DY4fEW4QZQfGwXDCxUY44dmFAcfA941S7EWDp1XqtSS4COtejPzIud3zsGnpOQRJi2s4oUOn
- HHVr5TdDIRD7zu0hiOkv5C4k1PNJ68goMeu1FJzFcZDOd7sZ0x71OPi4FZ10hmTAB1Op+kiu
- RYoNuUfCA0xwZsGF7KUdIm/Qg69FIVCAPa6Vd2rTXIbB7pgmi595wVWObaSRYrwyBbUDCfMu
- K1BHqMUxwnZMYcELVYAkRq3U3uL7EihvaQARAQABwsF8BBgBCAAmFiEENfwrD3g0zq+2DrLb
- zU1oXNub/cYFAmUfHV0CGwwFCQlG/8oACgkQzU1oXNub/ca6vRAAlKbBvN7QJz5x1mPooqY0
- qz6+yJVYA4wWCFEWfdOF4oIDXR6WJpt09UNrp7JUNF2NtCZAoLdHMACMAaGM+9Ujrz93hZPP
- tRca7gyyolWHVIAz+setuGU9UDC9ut4MpolZbhbDunX6Ris8mkoQoWU7FgfQ8TOGTIhaPb2G
- rLWAIs6Qc5jtoIItnc8bbebZGn7drGKY7FFqOsggERR/6oO/mkcP3NL+5NAAX6p2w1fVLmrV
- D21olKqOBmSK/DS2UAKf22/MxsT0/3IKxrcL8sOqHkQ2TaDTysdWVyF1gTo9YUlbw6y/omzZ
- irDlwcCAxPSG2ysiDQTK/jWhmsPMZ5QclsC5/DBi369zZfVyzU6tIylThddxM+EV+l9GWPm+
- wTTrVT9VStkm2nQFIfOfZrmAX7o0hNiK+cB8u8EFni1MrMk+BY5EskFRcxq97+nhFZ3z0I6q
- obUwLL0gH1iO/zFXdStHju7NV5d9V/OXwPMcRvSNOBPoC2b6ekP7iN0RUwBHCyNrL2Vu3LHy
- BwZ3jk6JR+xhRvVn2gXIMKA6qJ5XEhzGjKYYg7MnbA73jXuaa8RIvWJbMmnzkk57czt+Nycz
- X/YlaN5mlntK0gHYX29ddh59l2atvpzOiOi9uiRMJI6ZI+jy141kvQTgjnxUOS9mQN853jLL
- uxTR60TDY/d6Kz8=
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wnxcfEPvQSVin60yHibRAREf98iazoETSilrkYIx7JMsOUo1qkn
- 0zE9CCA3FG+YrC+bL62Qik1o8EOa45AtunEUpFB0J7ATf4SL1upAdNuK0vo2ii2OdpeMZzs
- nhdvyJajyhQYjnzB4Ax+8ws2IcY86q/ssCuAHweMloF1Xu0b767bXrPzUfJ4bV5ygufZJ0C
- +whvzuD0zcQIW6Oko6Dpg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:m+0TQ2x8aVQ=;2wkxSnulSUw2bmjnwoGSEX+Pkbj
- ciAu6SWgL/kAtBETGUkDUe786/8UBRA6utA6DxuQ25HxxBuRSaXSvfK/ox19dd2PPKYyPLIII
- bPCby1XqCqbkyYw7CM6yLxEr7zYN9fYx9pdCBREOozvLpJ9W8A6DiIl5dH/xH449kFLGtbhtR
- 83+ITcr2Nwglm7Q4mrMay59NHQ/0yg32hcUwzYgc2VGxCoHGkVfX7xP8yU3UsYhQoMSfgk9jD
- y/PYsj5nkUNYP24tShfBOOIp/neXgN6t0554fZgfYmsJAyL8ogYow0dVnjrUExFIQrE4yaQVz
- bl4qyKjzhFA7lNJQqbiFfEIklf+cqveaJiHxsi62QWwxRz/KWMLbsd/tqSol8Xcrl+dQxWMJo
- X/uN1JIevRhB3pxjVlRhO/licZfB2P8rgAzaBhCr768eM2oofhMHXdiA3T2TCnsLU1iniZJK0
- TSMfOOep4cfugwMtZWIIIv1d0fSKE7ZghrkNuSRZSjfMQUD9i1J++d5cil1gT76aOXRA7cHpG
- hMcXry41QJF9UuCdUHJHObEG0x+CIOiUin4L3T6MEYL9I+1ZCbrwCgRsJxVuu4VJ/TeA2YTNx
- GjJTqvQ79Qysw7CGb/44WliPcXiCO2NIkoZ52PZ3fW7BG22PerHJM8cowvhlQByFdObOjLKMC
- NBlGSrezzMnWP82QROtGq72cgg3DSF4FAXApmChc7kgDByEA9wDszZ3gW8cHwhVrwcLM1GwwS
- v95gMeAnw2582Jz4TAz/d4JBXEA+9nFb++C8SAyICQVoIk2qmbe8C6duI3xkU/YlXYn5jQ7HP
- Klr3tvO1AJ3q1zNkHKo9mrddt1XpKuBBnDqpyOSXT1Ix4=
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2535:EE_|OSZP286MB1797:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4fa911bb-756e-4136-7a26-08dc5bbac21b
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zlgmQt56CYYyrVJVcFGrTpt5J09ebkl74RY9WlNg4p9ah2Um0tDMaIZqYgoPsHu66zhm/okT6hpPvyFprfyH/EV3thCzfrd8PW9VYr7SkYo4DJyTN+XQH9t8l1zTtzjr+kzW3h5GAS4KoqcmPu/8ErGh0rmbkGZuj7vTryGeS1wTs4yeQy9c6YwY0gmSz6GADWNBqC067j68adDMjEhY8abYcjivTis8SoqkCTTq5h1JLiMLRIQ7psgrU8mGTt6axr/9GK5IRsmcrgh4ITeaC4kNpfh1o4I5Ogw4EiNifkrM/wanYArEeUh9YK4KI/X90cnakGTtZCUCya6uml8OkJcbsDbluPW9x5KhyLb0/U4vg9o+oJvHdOSeA7vMe7Jin09Vd3vRU+hvT4/oLiPVj9eBMeRIs9a8MLX/s4qSnwVyIk5wABloOSdtfvKSnHkPh5abJz0eQgiVz310kQylMd99Jb1lM+FZ7EeJhFMbMeN5FR8tnpnOL8xIxzG0p/x5dNKW2cogD7nOGfHGIVvT2HaY7SQukclnCHrTmTbs6gZtcngibtlzM0ExUkMDW6OXZTjAzbW12pUHdjMtKzbL2YTO0yCIbjn5q6MampxKoIjI47nGAJ602B+wYsgbm7du
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?sb5ZwyMkc3S+WrPkYwK3DRfO587HCo3YajX0JPDJA2JQAGtNqLqjcCAYp/Ol?=
+ =?us-ascii?Q?o5a41xfOGq54fL6QGpPh/fk9EYkIiYIZAmimRKuLvhXyBco9deNRJqEJGWls?=
+ =?us-ascii?Q?EJSB9V3AfnHA4giiXDxpjfcaDmh5HuWi/Ay2kdLYBa+FkfJnaoaieDGgN2Ak?=
+ =?us-ascii?Q?Urr3b5u9u6UgI/hmjb2j7iJ/HEfG8orh/0YdyyUSEFVlZIdeYW4I6zkVWbiv?=
+ =?us-ascii?Q?RpPpAsOlFZnfjiuoH/1mJVtkqtwXRQBTvb2jE165O4YonyuE/llTwShLp4kf?=
+ =?us-ascii?Q?f96vcI+h1PAAML52tjuy9artVH8QRUgD1O8FiNCLBv+RhzUHHgmPsK28vlpt?=
+ =?us-ascii?Q?5xpvenCamTfBdpNa2tJn/T+qEwmlZRWaW+PLMfcc3blSZc7Lu/gKaK8KQeCj?=
+ =?us-ascii?Q?gvfNB0THZF4j1WSxeVYKdvbKH7muGCs7RY5q082Cmgx00ZJ25nPiFuHftN9Y?=
+ =?us-ascii?Q?lOJuP7Aa/y1gLLD9VQiUiH6w0Kh2Dm4rH3KoQXEkW/1uLjX0uVnOk3ilx0L2?=
+ =?us-ascii?Q?2vCHOSBOsOEfqvJfoTf589jheGBIC18HVcggQYYS+ZYFS073/1rZG+H0JmrW?=
+ =?us-ascii?Q?2tH04oXtHNBpU0RTzL31UAVEbP7yb5+DxjlU4fxm26Dygu7jFgr/OmxuOsrC?=
+ =?us-ascii?Q?hhQOd5ZBKiXpUeCjrDM5mi4QdeKaHOq/UA3m+6Xf2/DVpXmHl17hFJYOtiN6?=
+ =?us-ascii?Q?GCV+juW4PglPRdkGbAlra8UFoTYZMX6Hz5oNigfS1la0DgJLAV2D00e9F7iL?=
+ =?us-ascii?Q?QU6Vg1NXhvzdWm4wg2IV93kqevOrPG/d+Z7NrtWsilTaKVHHFmh9EbW15xDZ?=
+ =?us-ascii?Q?7sapZ1mg2SWFMZCFKtnZi2njAPj4ewz+38OBK+L4J5LCBsqUne1dCg3WwPKg?=
+ =?us-ascii?Q?SgU8+i4lACYjKqm93KafffGKvHSeSAFTAPt2eImHWAFgBDatiC5T2KFxznqL?=
+ =?us-ascii?Q?zM/0oi+sZk0+pMj2IeOOCDPK8+IcpDlAEnZxmuWcLhXSWhqudNxTsV0wmqUq?=
+ =?us-ascii?Q?YvPPNtCz4z9Sfc7bbCpOMovGMKXSY5wtFeKMZDASKENnCPnPD2E2vihPvAFa?=
+ =?us-ascii?Q?x69YoQ9xq/WOx4vF7TaqeZt4h6TkCq6CKnIXi5CwuUOwQ5zhfjuGOtLyzD/J?=
+ =?us-ascii?Q?CC7PVD63tL96Q7G4GjDsTLAKScdMd2c9Jq971zZ/zn7EhVPRCNCk3IeL2ez0?=
+ =?us-ascii?Q?p8oq3tuD0zDv8YJ2/NUL2rdxAugo4LRLc4MKR5/ILB2HjM5dj2ZrLBAw/Nvr?=
+ =?us-ascii?Q?JgYlUfv58JAHRD7ePrPl04NN1XKdO8GGDaijSafHTQ=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fa911bb-756e-4136-7a26-08dc5bbac21b
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2024 13:08:06.2003
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZP286MB1797
 
-[please cc: me as I am not subscribed to either mailing list]
+This fixes the sound not working from internal speakers on
+Lenovo Legion Y9000X 2022 IAH7 models.
 
-Hello,
+Signed-off-by: ArcticLampyrid <ArcticLampyrid@outlook.com>
+Cc: <stable@vger.kernel.org>
+---
+ sound/pci/hda/cs35l41_hda_property.c | 17 +++++++++++++++++
+ sound/pci/hda/patch_realtek.c        |  1 +
+ 2 files changed, 18 insertions(+)
 
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+index 8fb688e41..244e41d51 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -109,6 +109,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
+ 	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
+ 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
+ 	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
++	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
+ 	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ 	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+@@ -414,6 +415,21 @@ static int lenovo_legion_no_acpi(struct cs35l41_hda *cs35l41, struct device *phy
+ 	return 0;
+ }
+ 
++/*
++ * Some devices just have a single interrupt line for multiple amps, for which we
++ * should just register the interrupt for the first amp. Otherwise, we would meet EBUSY
++ * when registering the interrupt for the second amp.
++ */
++static int single_interrupt_dsd_config(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
++			       const char *hid)
++{
++	generic_dsd_config(cs35l41, physdev, id, hid);
++	if (id != 0x40) {
++		cs35l41->hw_cfg.gpio2.func = CS35L41_NOT_USED;
++	}
++	return 0;
++}
++
+ struct cs35l41_prop_model {
+ 	const char *hid;
+ 	const char *ssid;
+@@ -500,6 +516,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+ 	{ "CSC3551", "10431F1F", generic_dsd_config },
+ 	{ "CSC3551", "10431F62", generic_dsd_config },
+ 	{ "CSC3551", "10433A60", generic_dsd_config },
++	{ "CSC3551", "17AA386E", single_interrupt_dsd_config },
+ 	{ "CSC3551", "17AA386F", generic_dsd_config },
+ 	{ "CSC3551", "17AA3877", generic_dsd_config },
+ 	{ "CSC3551", "17AA3878", generic_dsd_config },
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index cdcb28aa9..ac729187f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10382,6 +10382,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
+ 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
++	SND_PCI_QUIRK(0x17aa, 0x386e, "Legion Y9000X 2022 IAH7", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FIXUP_CS35L41_I2C_2),
+-- 
+2.44.0
 
-I am writing to you as Jean is listed as maintainer of dmi, and the rest
-are listed as maintainer for Hyper-V drivers. If I should have written
-elsewhere, please kindly point me to the correct location.
-
-I am having issues running 32-bit Debian (kernel 6.1.0) on Hyper-V on
-Windows 11 (10.0.22631.3447) when the virtual machine has assigned more
-than one vCPU. The kernel does not boot and no output is shown on screen.
-
-I was able to redirect early printk to serial port and capture this panic:
-
-> early console in setup code
-> Probing EDD (edd=3Doff to disable)... ok
-> [    0.000000] Linux version 6.1.0-18-686-pae (debian-kernel@lists.debia=
-n.org) (gcc-12 (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian)=
- 2.40) #1 SMP PREEMPT_DYNAMIC Debian 6.1.76-1 (2024-02-01)
-> [    0.000000] BIOS-provided physical RAM map:
-> [    0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] us=
-able
-> [    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] re=
-served
-> [    0.000000] BIOS-e820: [mem 0x00000000000e0000-0x00000000000fffff] re=
-served
-> [    0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000007ffeffff] us=
-able
-> [    0.000000] BIOS-e820: [mem 0x000000007fff0000-0x000000007fffefff] AC=
-PI data
-> [    0.000000] BIOS-e820: [mem 0x000000007ffff000-0x000000007fffffff] AC=
-PI NVS
-> [    0.000000] printk: bootconsole [earlyser0] enabled
-> [    0.000000] NX (Execute Disable) protection: active
-> [    0.000000] BUG: unable to handle page fault for address: ffa45000
-> [    0.000000] #PF: supervisor read access in kernel mode
-> [    0.000000] #PF: error_code(0x0000) - not-present page
-> [    0.000000] *pdpt =3D 000000000fe74001
-> [    0.000000] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 6.1.0-18-686-pae =
-#1  Debian 6.1.76-1
-> [    0.000000] EIP: dmi_decode+0x2e3/0x40e
-> [    0.000000] Code: 10 53 e8 b8 f9 ff ff 83 c4 0c e9 3e 01 00 00 0f b6 =
-7e 01 31 db 83 ef 04 d1 ef 39 df 0f 8e 2b 01 00 00 8a 4c 5e 04 84 c9 79 1e=
- <0f> b6 54 5e 05 89 f0 88 4d f0 e8 c0 f7 ff ff 8a 4d f0 89 c2 89 c8
-> [    0.000000] EAX: cff6d220 EBX: 000024bd ECX: cfd2caff EDX: cf9e942c
-> [    0.000000] ESI: ffa40681 EDI: 7ffffffe EBP: cfc37e90 ESP: cfc37e80
-> [    0.000000] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 0021=
-0086
-> [    0.000000] CR0: 80050033 CR2: ffa45000 CR3: 0fe78000 CR4: 00000020
-> [    0.000000] Call Trace:
-> [    0.000000]  ? __die_body.cold+0x14/0x1a
-> [    0.000000]  ? __die+0x21/0x26
-> [    0.000000]  ? page_fault_oops+0x69/0x120
-> [    0.000000]  ? uuid_string+0x157/0x1a0
-> [    0.000000]  ? kernelmode_fixup_or_oops.constprop.0+0x80/0xe0
-> [    0.000000]  ? __bad_area_nosemaphore.constprop.0+0xfc/0x130
-> [    0.000000]  ? bad_area_nosemaphore+0xf/0x20
-> [    0.000000]  ? do_kern_addr_fault+0x79/0x90
-> [    0.000000]  ? exc_page_fault+0xbc/0x160
-> [    0.000000]  ? paravirt_BUG+0x10/0x10
-> [    0.000000]  ? handle_exception+0x133/0x133
-> [    0.000000]  ? dmi_disable_osi_vista+0x1/0x37
-> [    0.000000]  ? paravirt_BUG+0x10/0x10
-> [    0.000000]  ? dmi_decode+0x2e3/0x40e
-> [    0.000000]  ? dmi_disable_osi_vista+0x1/0x37
-> [    0.000000]  ? paravirt_BUG+0x10/0x10
-> [    0.000000]  ? dmi_decode+0x2e3/0x40e
-> [    0.000000]  ? dmi_smbios3_present+0xd8/0xd8
-> [    0.000000]  dmi_decode_table+0xa9/0xe0
-> [    0.000000]  ? dmi_smbios3_present+0xd8/0xd8
-> [    0.000000]  ? dmi_smbios3_present+0xd8/0xd8
-> [    0.000000]  dmi_walk_early+0x34/0x58
-> [    0.000000]  dmi_present+0x149/0x1b6
-> [    0.000000]  dmi_setup+0x18d/0x22e
-> [    0.000000]  setup_arch+0x676/0xd3f
-> [    0.000000]  ? lockdown_lsm_init+0x1c/0x20
-> [    0.000000]  ? initialize_lsm+0x33/0x4e
-> [    0.000000]  start_kernel+0x65/0x644
-> [    0.000000]  ? set_intr_gate+0x45/0x58
-> [    0.000000]  ? early_idt_handler_common+0x44/0x44
-> [    0.000000]  i386_start_kernel+0x48/0x4a
-> [    0.000000]  startup_32_smp+0x161/0x164
-> [    0.000000] Modules linked in:
-> [    0.000000] CR2: 00000000ffa45000
-> [    0.000000] ---[ end trace 0000000000000000 ]---
-> [    0.000000] EIP: dmi_decode+0x2e3/0x40e
-> [    0.000000] Code: 10 53 e8 b8 f9 ff ff 83 c4 0c e9 3e 01 00 00 0f b6 =
-7e 01 31 db 83 ef 04 d1 ef 39 df 0f 8e 2b 01 00 00 8a 4c 5e 04 84 c9 79 1e=
- <0f> b6 54 5e 05 89 f0 88 4d f0 e8 c0 f7 ff ff 8a 4d f0 89 c2 89 c8
-> [    0.000000] EAX: cff6d220 EBX: 000024bd ECX: cfd2caff EDX: cf9e942c
-> [    0.000000] ESI: ffa40681 EDI: 7ffffffe EBP: cfc37e90 ESP: cfc37e80
-> [    0.000000] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 0021=
-0086
-> [    0.000000] CR0: 80050033 CR2: ffa45000 CR3: 0fe78000 CR4: 00000020
-> [    0.000000] Kernel panic - not syncing: Attempted to kill the idle ta=
-sk!
-> [    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill th=
-e idle task! ]---
-
-The same panic can be reproduced with vanilla 6.8.4 kernel.
-
-By adding some (or rather a lot of) printk into dmi_scan.c, I believe
-that the issue is caused by this line:
-
-<https://github.com/torvalds/linux/blob/13a0ac816d22aa47d6c393f14a99f39e49=
-b960df/drivers/firmware/dmi_scan.c#L295>
-
-Or rather by a dmi_header with dm->type =3D=3D 10 and dm->length =3D=3D 0.
-
-As the length is (unsigned) zero, after subtracting the (unsigned)
-header length and dividing by two, count is slightly below signed
-integer max value (and stays there after being casted to signed),
-resulting in the loop running "forever" until it reaches non-mapped
-memory, resulting in the panic above.
-
-
-I am unsure who is the culprit, whether DMI header is supposed to not
-have length zero or whether Linux is supposed to parse it more gracefully.
-
-In any case, when adding an extra if clause to this function to return
-early in case dm->length is zero, the system boots fine and appears to
-work fine at first glance. As I unfortunately have no idea what DMI is
-used for by the kernels, I do not know if there are any other things I
-should test, since the "Onboard device information" is obviously missing.
-
-
-If I should perform other tests, please tell me. Otherwise I hope that
-either an update of Hyper-V or the Linux kernel (or maybe some kernel
-parameter I missed) can make 32-bit Linux bootable on Hyper-V again in
-the future.
-
-[Slightly off-topic: As 64-bit kernels work fine, if there are ways to
-run a 32-bit userland containerized or chrooted in a 64-bit kernel so
-that the userland (espeically uname and autoconf) cannot distinguish
-from a 32-bit kernel, that might be another option for my use case.
-Nested virtualization would of course also work, but the performance
-loss due to nested virtualization negates the effect of being able to
-pass more than one of the (2 physical, 4 hyperthreaded) cores of my
-laptop to the VM].
-
-
-
-Thanks for help and best regards,
-
-
-Michael
 
