@@ -1,195 +1,123 @@
-Return-Path: <linux-kernel+bounces-143666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BCFB8A3C1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:04:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFF938A3C20
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:11:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA4B32838EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:04:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BCEC1C213D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D086D3D566;
-	Sat, 13 Apr 2024 10:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795082576B;
+	Sat, 13 Apr 2024 10:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QEm/N5pM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VqLjDwxp"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1D3F38FA3;
-	Sat, 13 Apr 2024 10:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795A61BDE6;
+	Sat, 13 Apr 2024 10:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713002654; cv=none; b=U4WI5TGeIFzmdxFlZJ5d5jt86O5jK9tPmxvgAK25m0iONIt0eCu9Pq5Wlx7HymFwLOeOVP0HtogZNdNE8i1rNLxUnEzwquTPdXu/jDbDqM0ZYVhbsfCwrpVO+D7q7WNzLA08mAj27J6JmM3ghZCWgVfKzEXGQy9/KmM0yhMx/ig=
+	t=1713003064; cv=none; b=qJsg57354Jhf7lciwIdop3CTlKP74F6TdeWOGPlegOTZqzTt0kpnVoc8WjAaESvggZJI7IrT6PYogfgQ4sbHfyidN/QF3D+1Mx5AUkmerKiQs2UwlDLIup/ZHvQRk98Mb5bFSlP+eopvUpA9sruzLPSf7jepJZ1jZBuBsyVb2F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713002654; c=relaxed/simple;
-	bh=POBRYNf3GAArnS/YrpXQPpWonHaf18oGrH0uGkz3lbA=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n+NuJzmApLZSJ6zCEX1mc1eGetJIr3scSzEaQcVolFHmGYqe6xe5cCf4GvDxUnMfD7sWRjf5leubr4vqjFiHRY2HVAMPuBxbiryVlSNirswZ4NDoweE9TpdPpnYZ/TAJCFSSsFoslvwUGfneIzNFDL7KFw2giixwhde6yoGPQ4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QEm/N5pM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CEC7C113CD;
-	Sat, 13 Apr 2024 10:04:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713002653;
-	bh=POBRYNf3GAArnS/YrpXQPpWonHaf18oGrH0uGkz3lbA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QEm/N5pMW5qXdleao0BfFlyRN0aPDJR0OeAhNySHfgFQ1O0ICz52ELqp6L4MF7lEh
-	 NvQStWr0CUjKs4B4ib6olFPeS7k1nPmZlKyIEOoR0spi7oWCw7U+07TlAhdErsPszs
-	 GGpxxwy1uw/3VmN7PBLe4RuLsk3x+765oRv1cmdhVDyObSjAHGxLQZQAAkwps1PTpj
-	 W+0IQgFKMs7TCc/cWTs6AXG7lVdo/NaV94zZv8UHgs3L89vLRv2SaiW885tGgPciTO
-	 FEb+Qa6kU9n7VqB+j006Jr7lM4Nojz5z0BzqAdtDEIH2C1DRmj6UgetmexT0k2Nl6S
-	 ShjpRKfFttG7A==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rvaF1-0047UL-9P;
-	Sat, 13 Apr 2024 11:04:11 +0100
-Date: Sat, 13 Apr 2024 11:04:11 +0100
-Message-ID: <86frvpshno.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Sebastian Ott <sebott@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 2/4] KVM: arm64: maintain per VM value for CTR_EL0
-In-Reply-To: <20240405120108.11844-3-sebott@redhat.com>
-References: <20240405120108.11844-1-sebott@redhat.com>
-	<20240405120108.11844-3-sebott@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1713003064; c=relaxed/simple;
+	bh=9n23xcSIvhfwRBwgRidm0Nmbhtmcr9UunIBGBhcaPyk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KtiK0zBrIDu9+m8NykpO5fWi33A+tLl5ZhR+6oxJR+jlnlAByYfNmUcrgsKQXNuUkKWZQZcPoRlRv2t3qtsPIN6ylQIBUD1p2YLj1eUj+RDy7VhWcqDFrv6uoF02vM3H7heG+lSakN+nIONbU/ZCl0PRDukbrwwTzF0E1vXZLFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VqLjDwxp; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-2228c4c5ac3so983706fac.0;
+        Sat, 13 Apr 2024 03:11:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713003062; x=1713607862; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2ZBciApKLMvjxOVZYXzIoJbnqbwzjS65kVqw40ak0hE=;
+        b=VqLjDwxpLKTEu8Xik0fzud+CmpPWjeXbobDI4Inyy//Lu0W2ukHT/xIIZmMrx9ZbUh
+         NaDi7IpLcztY7w5+F9zONhxWe5wbrPnmXP1PCyUdpZjecnlH/LyiJCZVNNlszrmU8EOj
+         ywN/Hfd9wVzBvjt3VjbWwfnXP1xv4m+W08ewvR+ghOjH6FlJlpn0zYMdwDQibFATSrAj
+         CEFyIrFWonHRI2Zv04PkkHeMrDc6HpOX/cnN2s424c5LsugLhEgulrxu0xAzWeNOwvzA
+         3mL14KY5Hld/2VVKEMHrMpEJY3XSX4EH5R/29EmymheI8d6n8rTF5nVpxTlU+yxKZxzg
+         nU9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713003062; x=1713607862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2ZBciApKLMvjxOVZYXzIoJbnqbwzjS65kVqw40ak0hE=;
+        b=mT3GV/D2awhABYu4DEYGW3P//An0jkL8ZU/DVpTZ6Fmla9v40/T015FZOAeu3ByPW6
+         KwuwjjjwvtMJxKSI4J1KKdA2VEWtU+mukxyxLUe4sILVwfwwH3gXdWv7bl8JXdcQ1gi2
+         XWeDVyy+q2GyeowbDuq0CQHTCkhBdqJacLmnd5eOe7Zp6OpmmZsUvi8CqLAVLC6wRpxP
+         xz7yFxcMnBGCi9K+WSPeMHoa9/UOgHLAgCOBU/3Nf280rqOHPp5IwcHyogygVGiKrRV4
+         UThMALyYZKu17Frc9okuMRoHpTsz/Rzmn+3IGRhrw170iED53w/MwTe5WxFS5ribZkmR
+         pUuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUwMG/oMYNnjaFM6oQwRUQqCWyHk2t2T4Jdq/iULADE6+ul1TfC6g8eHKhFwilZ22UnNDPtb27uOIPLo99PYAAXKA2VGsCuxWLdM129
+X-Gm-Message-State: AOJu0Yy4cTEa4gKD6GvrgEHanjqVnhGOfmM6Fy3J1FJQAqUVh59MrEE5
+	DOpH3XH3fEF/ax4yz+trhmMSIkgBBlocWCCIHn584KHLuw8Ga3WJ2E63Jh/dvCOI+5G5fVWgcYL
+	v2NG5wPnFlAKHP9XGDQCdvVrDINM=
+X-Google-Smtp-Source: AGHT+IF6froqlMKKHPZGGxDZaZCd9+PLuvrqkLxfrrlHTkfygyF32u4tsaPghUAiwCTEKYeeEXNjwrVbcox5him7Ktc=
+X-Received: by 2002:a05:6870:f10f:b0:21f:d2a0:60f with SMTP id
+ k15-20020a056870f10f00b0021fd2a0060fmr5876813oac.51.1713003062633; Sat, 13
+ Apr 2024 03:11:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: sebott@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240111082704.2259450-1-sergio.paracuellos@gmail.com> <20240412213328.GA19361@bhelgaas>
+In-Reply-To: <20240412213328.GA19361@bhelgaas>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Sat, 13 Apr 2024 12:10:51 +0200
+Message-ID: <CAMhs-H-OWe3WRQb1iBj2oSy1s5wzazSo4ce9Hd+wxKUivy+3aQ@mail.gmail.com>
+Subject: Re: [PATCH] PCI: mt7621: Fix possible string truncation in snprintf
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: linux-pci@vger.kernel.org, bhelgaas@google.com, lpieralisi@kernel.org, 
+	kw@linux.com, robh@kernel.org, matthias.bgg@gmail.com, 
+	angelogioacchino.delregno@collabora.com, linux-mediatek@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 05 Apr 2024 13:01:06 +0100,
-Sebastian Ott <sebott@redhat.com> wrote:
-> 
-> In preparation for CTR_EL0 emulation maintain a per VM for this
-> register and use it where appropriate.
-> 
-> Signed-off-by: Sebastian Ott <sebott@redhat.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h |  1 +
->  arch/arm64/kvm/sys_regs.c         | 22 +++++++++++++++-------
->  2 files changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 9e8a496fb284..481216febb46 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -318,6 +318,7 @@ struct kvm_arch {
->  
->  	/* PMCR_EL0.N value for the guest */
->  	u8 pmcr_n;
-> +	u64 ctr_el0;
->  
->  	/* Iterator for idreg debugfs */
->  	u8	idreg_debugfs_iter;
+On Fri, Apr 12, 2024 at 11:33=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org>=
+ wrote:
+>
+> On Thu, Jan 11, 2024 at 09:27:04AM +0100, Sergio Paracuellos wrote:
+> > The following warning appears when driver is compiled with W=3D1.
+> >
+> > CC      drivers/pci/controller/pcie-mt7621.o
+> > drivers/pci/controller/pcie-mt7621.c: In function =E2=80=98mt7621_pcie_=
+probe=E2=80=99:
+> > drivers/pci/controller/pcie-mt7621.c:228:49: error: =E2=80=98snprintf=
+=E2=80=99 output may
+> > be truncated before the last format character [-Werror=3Dformat-truncat=
+ion=3D]
+> > 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
+> >     |                                                 ^
+> > drivers/pci/controller/pcie-mt7621.c:228:9: note: =E2=80=98snprintf=E2=
+=80=99 output between
+> > 10 and 11 bytes into a destination of size 10
+> > 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
+> >     |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > Clean this up increasing destination buffer one byte.
+> >
+> > Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> > Closes: https://lore.kernel.org/linux-pci/20240110212302.GA2123146@bhel=
+gaas/T/#t
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+>
+> Krzysztof applied this to pci/controller/mt7621 for v6.10, thanks!  I
+> just pulled that branch into "next", so it should appear in the next
+> linux-next.
 
-Please consider the alignment of the fields. This leaves a 7 byte hole
-that could be avoided (yes, I'm on a mission to reduce the size of the
-various structures, because they are absolute pigs).
+Awesome. Thanks for letting me know.
 
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 131f5b0ca2b9..4d29b1a0842d 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -215,13 +215,21 @@ void vcpu_write_sys_reg(struct kvm_vcpu *vcpu, u64 val, int reg)
->  /* CSSELR values; used to index KVM_REG_ARM_DEMUX_ID_CCSIDR */
->  #define CSSELR_MAX 14
->  
-> +static u64 kvm_get_ctr_el0(struct kvm *kvm)
-> +{
-> +	if (kvm->arch.ctr_el0)
-> +		return kvm->arch.ctr_el0;
-
-Is this relying on some bits not being 0?
-
-> +
-> +	return read_sanitised_ftr_reg(SYS_CTR_EL0);
-
-Why isn't the shadow value always populated?
-
-> +}
-> +
->  /*
->   * Returns the minimum line size for the selected cache, expressed as
->   * Log2(bytes).
->   */
-> -static u8 get_min_cache_line_size(bool icache)
-> +static u8 get_min_cache_line_size(struct kvm *kvm, bool icache)
->  {
-> -	u64 ctr = read_sanitised_ftr_reg(SYS_CTR_EL0);
-> +	u64 ctr = kvm_get_ctr_el0(kvm);
->  	u8 field;
->  
->  	if (icache)
-> @@ -248,7 +256,7 @@ static u32 get_ccsidr(struct kvm_vcpu *vcpu, u32 csselr)
->  	if (vcpu->arch.ccsidr)
->  		return vcpu->arch.ccsidr[csselr];
->  
-> -	line_size = get_min_cache_line_size(csselr & CSSELR_EL1_InD);
-> +	line_size = get_min_cache_line_size(vcpu->kvm, csselr & CSSELR_EL1_InD);
->  
->  	/*
->  	 * Fabricate a CCSIDR value as the overriding value does not exist.
-> @@ -283,7 +291,7 @@ static int set_ccsidr(struct kvm_vcpu *vcpu, u32 csselr, u32 val)
->  	u32 i;
->  
->  	if ((val & CCSIDR_EL1_RES0) ||
-> -	    line_size < get_min_cache_line_size(csselr & CSSELR_EL1_InD))
-> +	    line_size < get_min_cache_line_size(vcpu->kvm, csselr & CSSELR_EL1_InD))
->  		return -EINVAL;
->  
->  	if (!ccsidr) {
-> @@ -1862,7 +1870,7 @@ static bool access_ctr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->  	if (p->is_write)
->  		return write_to_read_only(vcpu, p, r);
->  
-> -	p->regval = read_sanitised_ftr_reg(SYS_CTR_EL0);
-> +	p->regval = kvm_get_ctr_el0(vcpu->kvm);
->  	return true;
->  }
->  
-> @@ -1882,7 +1890,7 @@ static bool access_clidr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->   */
->  static u64 reset_clidr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
->  {
-> -	u64 ctr_el0 = read_sanitised_ftr_reg(SYS_CTR_EL0);
-> +	u64 ctr_el0 = kvm_get_ctr_el0(vcpu->kvm);
->  	u64 clidr;
->  	u8 loc;
->  
-> @@ -1935,7 +1943,7 @@ static u64 reset_clidr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
->  static int set_clidr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
->  		      u64 val)
->  {
-> -	u64 ctr_el0 = read_sanitised_ftr_reg(SYS_CTR_EL0);
-> +	u64 ctr_el0 = kvm_get_ctr_el0(vcpu->kvm);
->  	u64 idc = !CLIDR_LOC(val) || (!CLIDR_LOUIS(val) && !CLIDR_LOUU(val));
->  
->  	if ((val & CLIDR_EL1_RES0) || (!(ctr_el0 & CTR_EL0_IDC) && idc))
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Best regards,
+    Sergio Paracuellos
 
