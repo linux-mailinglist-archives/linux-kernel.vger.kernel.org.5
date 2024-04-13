@@ -1,292 +1,241 @@
-Return-Path: <linux-kernel+bounces-143831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2392E8A3DF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:27:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEAA48A3DFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78362B20FC7
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:27:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BD541F2191D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE40751010;
-	Sat, 13 Apr 2024 17:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DFA53365;
+	Sat, 13 Apr 2024 17:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QgXTkt+u"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ztj7BZLV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B85A347A2;
-	Sat, 13 Apr 2024 17:26:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E3250A72;
+	Sat, 13 Apr 2024 17:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713029220; cv=none; b=oZL2Y6yf1kXR2Dj5GMKUf4AZX2iR4OXoGFkdmaBxjTw5FviRUmNjSKPUnV23wK711PsOubyjNECJx6l+/hMnwwOn6QO7VWYsMJ8o3KzcyYYPGxL8MBz+LL5ZVFsyXyfnQCZf8fU5WGJ1AdmlRk3ydoI6w5i4DkBpfSthgyIBNQE=
+	t=1713029221; cv=none; b=dav5oJ3GOYErSij5xUFjqOSMq/wRvR7D5QRTCd+ClQ4BQt+gzm6nnbJ+/PIlr16dJpyg88ruYVharuEPI0ZZy3KlPO8KdM0HGBz8pocsTGSBxA/XN8Vk7vv74fQ8yvTGd48l6NGBR0x2joaUm27NZdwx1lkyXuD+ex9ptw9vudo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713029220; c=relaxed/simple;
-	bh=5UeKOyi53VeVQcVkrVDSoWnTbPIVlOepA4P5i5nnoUc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=M8W9LZCV4gt5CqFWzgpfemfe20QNCIGpUV8RWOkngbtol/TaxYiOBD3ZCT3E+2MReRtT5uDopymr9c1IlgM2zDWYJ2W7m44FquwyFOv56m7wcTm1vqJug5ky0wgMHSr6f4eZj3d6+BsJY5Y6ddon8EMvPwkV+GwwUiL/VyAgIWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QgXTkt+u; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713029218; x=1744565218;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5UeKOyi53VeVQcVkrVDSoWnTbPIVlOepA4P5i5nnoUc=;
-  b=QgXTkt+u/YUi92jtpdvtfeJNWi6AQEqHg6RE9YX1VwgSCCW8K9oPtwwo
-   85Gxu4qJBP9LlcA+tmh+Y8lWgSLoocVt8NmGqCeaJC4pSxccA3/nNWfQS
-   VLcij949Kp8hXFwjsomTuLhDT3n/qObq08nQHcpeZp4ddeorR+Z8lV+En
-   PHSQXndAQxkuXDv271ldjkqVNkHfVkLyKAMCmW9itiGUTRQHSTM/UeIBP
-   ohTbAaQ8XbB5BRdK92Jwk08i1anA7Fzz9sBynUWQdr9+vMmz+pcGyYR9y
-   HkCCh7MWjf8UoPezwzDW4Qv4jRfTTOn2Llvd2spCDd49tnY7bJe3NRB9E
-   Q==;
-X-CSE-ConnectionGUID: vhKUOqhGRTWQtMhv3mhd7Q==
-X-CSE-MsgGUID: 1yuT8kTmQHSHOEo1AhAurQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11043"; a="8637614"
-X-IronPort-AV: E=Sophos;i="6.07,199,1708416000"; 
-   d="scan'208";a="8637614"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2024 10:26:57 -0700
-X-CSE-ConnectionGUID: ijmeSYHbRPGRhMqmmVVECw==
-X-CSE-MsgGUID: THg4LPW5SrSJE+P+Sjkgxg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,199,1708416000"; 
-   d="scan'208";a="26202088"
-Received: from test2-linux-lab.an.intel.com ([10.122.105.166])
-  by orviesa003.jf.intel.com with ESMTP; 13 Apr 2024 10:26:58 -0700
-From: matthew.gerlach@linux.intel.com
-To: bhelgaas@google.com,
-	lpieralisi@kernel.org,
-	kw@linux.com,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Subject: [PATCH v3] dt-bindings: PCI: altera: Convert to YAML
-Date: Sat, 13 Apr 2024 12:26:41 -0500
-Message-Id: <20240413172641.436341-1-matthew.gerlach@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713029221; c=relaxed/simple;
+	bh=u/SAMBTjn/1RIl+MFDxpRcPT+1MsF38Z4unlvZ8guCQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=T6lUT261Jzti2fZVqqUS2ZUDnoUa6N9oF4dv1ZfZZ3dCBHTXRmREodlikv0OFeItHLhSveTej5PqW4wLQwfPoDkug85O3nrvp2fi//Iv7klvj8/RWOSR7WECsqxt1asY5JgdWG+O9SbGoqcJiCayetMnQbOGH6W9v0y/vbeMRXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ztj7BZLV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B465C113CD;
+	Sat, 13 Apr 2024 17:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713029221;
+	bh=u/SAMBTjn/1RIl+MFDxpRcPT+1MsF38Z4unlvZ8guCQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ztj7BZLV5/pioIeo9pPtQR9nmTXHqstOTjOHqW+I10j7vHKEg1KEoX7htDnclBAWr
+	 AclX1XflMDzYtM447T8F8q4AXMn10RZP+R8sq1GWp0DMRnRd1kO/cRqyrs4FK/phGd
+	 1P23mh6CL9h/PCOTSLGzGJQuK+aIT5Mu42fks2AY7AyrNHhXyrck8f0fHAxOpNhplz
+	 8ylTx0mC01BcZeW2Acud5ATb5q0OiVzO27QV26Vq6dw3+bWiS4WEHm3QBvOW9JxZdK
+	 PCT5OSkh7DnUFO1M26Qx3F9g9PXyaBmudD3g60oo/+Poaujjv1dCjSOJ7cUZQwYgqy
+	 kISob1IUQxPHg==
+Date: Sat, 13 Apr 2024 18:26:42 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alexandru.tachici@analog.com, lars@metafoo.de, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org,
+ nuno.sa@analog.com, marcelo.schmitt@analog.com, bigunclemax@gmail.com,
+ dlechner@baylibre.com, okan.sahin@analog.com, fr0st61te@gmail.com,
+ alisa.roman@analog.com, marcus.folkesson@gmail.com, schnelle@linux.ibm.com,
+ liambeguin@gmail.com
+Subject: Re: [PATCH v5 3/5] iio: adc: ad7192: Add aincom supply
+Message-ID: <20240413182642.29f7214d@jic23-huawei>
+In-Reply-To: <20240413151152.165682-4-alisa.roman@analog.com>
+References: <20240413151152.165682-1-alisa.roman@analog.com>
+	<20240413151152.165682-4-alisa.roman@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On Sat, 13 Apr 2024 18:11:50 +0300
+Alisa-Dariana Roman <alisadariana@gmail.com> wrote:
 
-Convert the device tree bindings for the Altera Root Port PCIe controller
-from text to YAML.
+> AINCOM should actually be a supply. If present and it has a non-zero
+> voltage, the pseudo-differential channels are configured as single-ended
+> with an offset. Otherwise, they are configured as differential channels
+> between AINx and AINCOM pins.
+> 
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+Hi Alisa,
 
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
----
-v3:
- - Added years to copyright
- - Correct order in file of allOf and unevaluatedProperties
- - remove items: in compatible field
- - fix reg and reg-names constraints
- - replace deprecated pci-bus.yaml with pci-host-bridge.yaml
- - fix entries in ranges property
- - remove device_type from required
+Main comment here is that you can't modify the channel arrays in place
+because there may be more that one instance of the hardware.
+My preference would be to pick between static const iio_chan_spec
+arrays depending on whether the aincom is provided or not.
 
-v2:
- - Move allOf: to bottom of file, just like example-schema is showing
- - add constraint for reg and reg-names
- - remove unneeded device_type
- - drop #address-cells and #size-cells
- - change minItems to maxItems for interrupts:
- - change msi-parent to just "msi-parent: true"
- - cleaned up required:
- - make subject consistent with other commits coverting to YAML
- - s/overt/onvert/g
----
- .../devicetree/bindings/pci/altera-pcie.txt   |  50 --------
- .../bindings/pci/altr,pcie-root-port.yaml     | 112 ++++++++++++++++++
- 2 files changed, 112 insertions(+), 50 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pci/altera-pcie.txt
- create mode 100644 Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
+Jonathan
 
-diff --git a/Documentation/devicetree/bindings/pci/altera-pcie.txt b/Documentation/devicetree/bindings/pci/altera-pcie.txt
-deleted file mode 100644
-index 816b244a221e..000000000000
---- a/Documentation/devicetree/bindings/pci/altera-pcie.txt
-+++ /dev/null
-@@ -1,50 +0,0 @@
--* Altera PCIe controller
--
--Required properties:
--- compatible :	should contain "altr,pcie-root-port-1.0" or "altr,pcie-root-port-2.0"
--- reg:		a list of physical base address and length for TXS and CRA.
--		For "altr,pcie-root-port-2.0", additional HIP base address and length.
--- reg-names:	must include the following entries:
--		"Txs": TX slave port region
--		"Cra": Control register access region
--		"Hip": Hard IP region (if "altr,pcie-root-port-2.0")
--- interrupts:	specifies the interrupt source of the parent interrupt
--		controller.  The format of the interrupt specifier depends
--		on the parent interrupt controller.
--- device_type:	must be "pci"
--- #address-cells:	set to <3>
--- #size-cells:		set to <2>
--- #interrupt-cells:	set to <1>
--- ranges:	describes the translation of addresses for root ports and
--		standard PCI regions.
--- interrupt-map-mask and interrupt-map: standard PCI properties to define the
--		mapping of the PCIe interface to interrupt numbers.
--
--Optional properties:
--- msi-parent:	Link to the hardware entity that serves as the MSI controller
--		for this PCIe controller.
--- bus-range:	PCI bus numbers covered
--
--Example
--	pcie_0: pcie@c00000000 {
--		compatible = "altr,pcie-root-port-1.0";
--		reg = <0xc0000000 0x20000000>,
--			<0xff220000 0x00004000>;
--		reg-names = "Txs", "Cra";
--		interrupt-parent = <&hps_0_arm_gic_0>;
--		interrupts = <0 40 4>;
--		interrupt-controller;
--		#interrupt-cells = <1>;
--		bus-range = <0x0 0xFF>;
--		device_type = "pci";
--		msi-parent = <&msi_to_gic_gen_0>;
--		#address-cells = <3>;
--		#size-cells = <2>;
--		interrupt-map-mask = <0 0 0 7>;
--		interrupt-map = <0 0 0 1 &pcie_0 1>,
--			            <0 0 0 2 &pcie_0 2>,
--			            <0 0 0 3 &pcie_0 3>,
--			            <0 0 0 4 &pcie_0 4>;
--		ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
--			  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
--	};
-diff --git a/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-new file mode 100644
-index 000000000000..13b97f4fd5ee
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-@@ -0,0 +1,112 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (C) 2015, 2019, 2024, Intel Corporation
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/altr,pcie-root-port.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Altera PCIe Root Port
-+
-+maintainers:
-+  - Matthew Gerlach <matthew.gerlach@linux.intel.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - altr,pcie-root-port-1.0
-+      - altr,pcie-root-port-2.0
-+
-+  reg:
-+    minItems: 2
-+    maxItems: 3
-+
-+  reg-names:
-+    minItems: 2
-+    maxItems: 3
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-map-mask:
-+    items:
-+      - const: 0
-+      - const: 0
-+      - const: 0
-+      - const: 7
-+
-+  interrupt-map:
-+    maxItems: 4
-+
-+  "#interrupt-cells":
-+    const: 1
-+
-+  msi-parent: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - interrupt-map
-+  - interrupt-map-mask
-+
-+allOf:
-+  - $ref: /schemas/pci/pci-host-bridge.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - altr,pcie-root-port-1.0
-+    then:
-+      properties:
-+        reg:
-+          items:
-+            - description: TX slave port region
-+            - description: Control register access region
-+
-+        reg-names:
-+          items:
-+            - const: Txs
-+            - const: Cra
-+
-+    else:
-+      properties:
-+        reg:
-+          items:
-+            - description: Hard IP region
-+            - description: TX slave port region
-+            - description: Control register access region
-+
-+        reg-names:
-+          items:
-+            - const: Hip
-+            - const: Txs
-+            - const: Cra
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    pcie_0: pcie@c00000000 {
-+        compatible = "altr,pcie-root-port-1.0";
-+        reg = <0xc0000000 0x20000000>,
-+              <0xff220000 0x00004000>;
-+        reg-names = "Txs", "Cra";
-+        interrupt-parent = <&hps_0_arm_gic_0>;
-+        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
-+        #interrupt-cells = <1>;
-+        bus-range = <0x0 0xff>;
-+        device_type = "pci";
-+        msi-parent = <&msi_to_gic_gen_0>;
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+        interrupt-map-mask = <0 0 0 7>;
-+        interrupt-map = <0 0 0 1 &pcie_intc 1>,
-+                        <0 0 0 2 &pcie_intc 2>,
-+                        <0 0 0 3 &pcie_intc 3>,
-+                        <0 0 0 4 &pcie_intc 4>;
-+        ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000>,
-+                 <0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
-+    };
--- 
-2.34.1
+> ---
+>  drivers/iio/adc/ad7192.c | 53 +++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 49 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index ac737221beae..a9eb4fab39ca 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+> @@ -175,7 +175,7 @@ enum {
+>  struct ad7192_chip_info {
+>  	unsigned int			chip_id;
+>  	const char			*name;
+> -	const struct iio_chan_spec	*channels;
+> +	struct iio_chan_spec		*channels;
+>  	u8				num_channels;
+>  	const struct iio_info		*info;
+>  };
+> @@ -186,6 +186,7 @@ struct ad7192_state {
+>  	struct regulator		*vref;
+>  	struct clk			*mclk;
+>  	u16				int_vref_mv;
+> +	u16				aincom_mv;
+>  	u32				fclk;
+>  	u32				mode;
+>  	u32				conf;
+> @@ -745,6 +746,9 @@ static int ad7192_read_raw(struct iio_dev *indio_dev,
+>  		/* Kelvin to Celsius */
+>  		if (chan->type == IIO_TEMP)
+>  			*val -= 273 * ad7192_get_temp_scale(unipolar);
+> +		else if (st->aincom_mv && chan->channel2 == -1)
+> +			*val += DIV_ROUND_CLOSEST_ULL((u64)st->aincom_mv * 1000000000,
+> +						      st->scale_avail[gain][1]);
+>  		return IIO_VAL_INT;
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		*val = DIV_ROUND_CLOSEST(ad7192_get_f_adc(st), 1024);
+> @@ -982,7 +986,7 @@ static const struct iio_info ad7195_info = {
+>  #define AD7193_CHANNEL(_si, _channel1, _address) \
+>  	AD7193_DIFF_CHANNEL(_si, _channel1, -1, _address)
+>  
+> -static const struct iio_chan_spec ad7192_channels[] = {
+> +static struct iio_chan_spec ad7192_channels[] = {
+>  	AD719x_DIFF_CHANNEL(0, 1, 2, AD7192_CH_AIN1P_AIN2M),
+>  	AD719x_DIFF_CHANNEL(1, 3, 4, AD7192_CH_AIN3P_AIN4M),
+>  	AD719x_TEMP_CHANNEL(2, AD7192_CH_TEMP),
+> @@ -994,7 +998,7 @@ static const struct iio_chan_spec ad7192_channels[] = {
+>  	IIO_CHAN_SOFT_TIMESTAMP(8),
+>  };
+>  
+> -static const struct iio_chan_spec ad7193_channels[] = {
+> +static struct iio_chan_spec ad7193_channels[] = {
+No to this.
+
+Imagine you have 2 devices wired in parallel to the same host
+but only one of them is using vincomm.  Which setting you
+get will depend on which order the probe happens in.
+
+You need to take a copy of the channels array or have enough
+variants that you can pick between static const arrays depending
+on the setting.  If that works here that is the preferred path to
+take.  Have ad7193_channels + ad7193_channels_with_vincomm or
+something like that.
+
+
+>  	AD7193_DIFF_CHANNEL(0, 1, 2, AD7193_CH_AIN1P_AIN2M),
+>  	AD7193_DIFF_CHANNEL(1, 3, 4, AD7193_CH_AIN3P_AIN4M),
+>  	AD7193_DIFF_CHANNEL(2, 5, 6, AD7193_CH_AIN5P_AIN6M),
+> @@ -1048,11 +1052,27 @@ static void ad7192_reg_disable(void *reg)
+>  	regulator_disable(reg);
+>  }
+>  
+> +static int ad7192_config_channels(struct ad7192_state *st)
+> +{
+> +	struct iio_chan_spec *channels = st->chip_info->channels;
+> +	int i;
+> +
+> +	if (!st->aincom_mv)
+> +		for (i = 0; i < st->chip_info->num_channels; i++)
+> +			if (channels[i].channel2 == -1) {
+> +				channels[i].differential = 1;
+> +				channels[i].channel2 = 0;
+> +			}
+> +
+> +	return 0;
+> +}
+> +
+>  static int ad7192_probe(struct spi_device *spi)
+>  {
+>  	struct ad7192_state *st;
+>  	struct iio_dev *indio_dev;
+> -	int ret;
+> +	struct regulator *aincom;
+> +	int ret = 0;
+>  
+>  	if (!spi->irq) {
+>  		dev_err(&spi->dev, "no IRQ?\n");
+> @@ -1067,6 +1087,26 @@ static int ad7192_probe(struct spi_device *spi)
+>  
+>  	mutex_init(&st->lock);
+>  
+> +	aincom = devm_regulator_get_optional(&spi->dev, "aincom");
+> +	if (!IS_ERR(aincom)) {
+> +		ret = regulator_enable(aincom);
+> +		if (ret) {
+> +			dev_err(&spi->dev, "Failed to enable specified AINCOM supply\n");
+> +			return ret;
+> +		}
+> +
+> +		ret = devm_add_action_or_reset(&spi->dev, ad7192_reg_disable, aincom);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = regulator_get_voltage(aincom);
+> +		if (ret < 0)
+> +			return dev_err_probe(&spi->dev, ret,
+> +					     "Device tree error, AINCOM voltage undefined\n");
+> +	}
+> +
+> +	st->aincom_mv = ret / 1000;
+I think I'd make the two paths more explicit
+
+		ret = regulator_get_voltage(aincom);
+		if (ret < 0)
+			return dev_err_probe(&spi->dev, ret,
+					     "Device tree error, AINCOM voltage undefined\n");
+		st->aincom_mv = ret / 1000;
+	} else {
+		st->aincom_mv = 0;	
+	}
+or rely on default for st->aincom_mv already being zero and don't bother adding
+the else, just move aincom_mv setting into the path with the voltage being read
+and not the other path.
+
+Setting it unconditionally by dividing 0 / 1000 is correct of course, but
+not particularly obvious!	
+
+		
+> +
+>  	st->avdd = devm_regulator_get(&spi->dev, "avdd");
+>  	if (IS_ERR(st->avdd))
+>  		return PTR_ERR(st->avdd);
+> @@ -1113,6 +1153,11 @@ static int ad7192_probe(struct spi_device *spi)
+>  	st->int_vref_mv = ret / 1000;
+>  
+>  	st->chip_info = spi_get_device_match_data(spi);
+> +
+> +	ret = ad7192_config_channels(st);
+> +	if (ret)
+> +		return ret;
+> +
+>  	indio_dev->name = st->chip_info->name;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->channels = st->chip_info->channels;
 
 
