@@ -1,208 +1,317 @@
-Return-Path: <linux-kernel+bounces-143581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 664EC8A3B14
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 07:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8851C8A3B17
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 07:20:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2CF7285C82
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 05:14:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2D03284B2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 05:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED89D1CAB8;
-	Sat, 13 Apr 2024 05:14:45 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192651C6B8;
+	Sat, 13 Apr 2024 05:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ltstJaU/"
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C845E1C6A5
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 05:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D781BC41
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 05:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712985285; cv=none; b=A2gAq96pMnrOmCRHv0W8geJDOrr1WZCUAzdhSOWU3kSwYKklsXReUOLP1EZdh2AmDNnbRvfpSqGdf36RDuLiMeELqG9CiwjyIS+uuWHTG2SPa4Qbq3dXua8+L0Si2q4aSrBPh3/y4Rq4UhaTGAhaFyQQ1NyDCZe5ihEV9E7CWAA=
+	t=1712985599; cv=none; b=pr+VNviAZjQ83ZN0375MtufuwU879L0phjPK5zE1tj/IhD25LEtBH0EZPZoILfoHyWRrKrFOrCcyitmtM6KepqypE87V2yUBt/cb8bCyIOMcs2RKzH4og484CEHvvpjA9ZNR/Fn1Ob8/btHdfn0VWU77iHl5k5JE+iAV+y6yKK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712985285; c=relaxed/simple;
-	bh=b6PdiE/obLSOQsJqadtVkGUFa+3lB2V934XtDFSUkbE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CiwlsmD7qVQvcFO7c7Q3E17rr6Vd652r8fL3I0fbK8PDvAK5hUJI9pM76HXtwm1c+mhQivwZ/ekzJJAbeSjeYTHY/WEAi/ZovUmGDO7lT9f9fh4kX3DN++29oZ4dMxmXgTBXjJ0o05mnDQFZ2lwYRc2+5LIZ0Z9LcrXCEBxKLjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cf265b30e2so171956139f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 22:14:43 -0700 (PDT)
+	s=arc-20240116; t=1712985599; c=relaxed/simple;
+	bh=VFh8G5Lzu+KZrcNdIjpd5WvPhWHRIgfCLe/mXA0Jmzw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cTovO9RdTjaB7GVaLUsIEyTo56r5hecST093AOd3w33GR5hPRRROW+nQq7ySbOY4zejnyqTr8mTX+ZmFNal81rd567KBNa2qD5IoEbxsFO+1vMZFWKWlfxsvdrRptszBufJB2hKkVJUYDiqeyXNXuwZpq7ocqeD7719uV4gwBvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ltstJaU/; arc=none smtp.client-ip=209.85.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4dc9f17c27bso470100e0c.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 22:19:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712985596; x=1713590396; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z033l8aBmpmazijIqdn4X3dK8gfkoX6WQoDM/KTSRrM=;
+        b=ltstJaU/uvPapfFAL3dato6qhrlRNtFzkqwavS6F9AqyILlNGhCS+A3B/hzfdL2DKk
+         fvkjv3N89P8UYtCGUtOIwG+IYkMp0vsNJRDNI1ZWx0U4V8HiYT4aHXJJHhWdDI2i6Pra
+         oIthISyU/16H7lW7VI1tGKMTbiu6i9MI/VTVbtzpa1LjX18Xtt1+eHnxSYYH6y+BNN1y
+         jxxmc2kDO/yvnB+kDrziQa8jmF2LeOMK7LaIPCxP0eh9yAf9yR5Cwy4L1ovP5+7TyWqj
+         OlWf/YpIO8HDo0/mS1ceGbZphxf2XhDGEcxIVPVG1uPK+479I90tX0TGrrpFOaOZ2zT0
+         rW4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712985283; x=1713590083;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yaCyk3QclmFG8mk/Yvl9YPI5nFuDCGZkzEfNn9lMiS0=;
-        b=vwWg4tbBNHyeIV8oXuvpIB9HMUtHFtGdvq9M8NsP7XVgKQQNkPBBOjm9Dl9b9Ywib/
-         zMh9GWy7mLzoHOgrd2f9vKLZ1efBOiPcqRfGMnVDhRDYV/cVmDVUL757OVpeWcfHLNjJ
-         y3tCo9xZmco56xYI+LsDgGMIMK44iI01/SrqqI3Med6b1Au5xPGVOW907ZI/FQZSqDZi
-         Qrr7BpW0k0okx7NRzs11clQr0grQnJdBWLKV5fxfoit332c6WAs8ii6A3BLsIHjyT6NA
-         YNvqY/pxE7fyXNpNeivzxhzXkI8dW8SazQsqgIRYbuJVZ9ZPKCNNBQGELY/8F81OHrsL
-         uUOw==
-X-Forwarded-Encrypted: i=1; AJvYcCULxCcW0L1TpRBeTvCqWWAgh8j8TAbG/jV58d/Cfq9g2/NMcD6PJy/GOZ0Za50MhK6R3Yat7Y7CZ1yPk/PTIUrnLEjR69+aeJQHajBz
-X-Gm-Message-State: AOJu0YyqShD0pGmqqMCWm1UCjJzM6OvWE75jAR8/h3jOcezZ6ycUe7g2
-	wdKajD8gwf3+6WIIGEo3W40McwCbu3AJhVt3xmDvlZRS8aVCg+0Qc0es0w7UemlxGYOtbqQx82u
-	PkzYfG0iR8QLUizmYRKfsCWzJbvpxAO/UndrrLUg+oK4BLG2/L4Dk/98=
-X-Google-Smtp-Source: AGHT+IHuYB6AP31KS2a9Jwk9rB2BnpCot4tMi4ATZvXrPzKrkqeF6u2YaAlSfw34biMPIrS/63KcQXjK7mkxzDG5c2TcMtuGy30z
+        d=1e100.net; s=20230601; t=1712985596; x=1713590396;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z033l8aBmpmazijIqdn4X3dK8gfkoX6WQoDM/KTSRrM=;
+        b=NgP8hLzMIDI8dIMHo6fMvbisBL0Lw3nRznTr4cuiTrih/VU/NU+xVkxK9+K22wTmoJ
+         LxY455r4FNk6WfF0rGuyd1DeNJafMWp3Z2AC/t1jirdjL7NjRSW/W5frDsalb6cW5nUM
+         yytWh+IX6yKC51lMQZZjh7R34od+9v3sf4+spJ8prIq7Qi2wgJAfHoPqcuVLgxgXyLkw
+         CeFppgF7v/yDoj0lqFeNnasltd8l7EsB3BqMImOKQ4K0d3aSij9joTqgzx9LqDVRolrX
+         LlvKmRUZG3tgi2ylZstOopAPZ8oXJU+gW/FVKATILXoZVysMm7S7HVLBCTc/UmTu9vRa
+         MoYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzCjgpAucy7m5JMpHMxlVco1AugEkCuUmV38t4Pi+GuKx14nT0v1EDOwRLBNxnot/XkmQ3XO+6DK7EOVflN5U0BW9r8sNge2WEK8hB
+X-Gm-Message-State: AOJu0YxsMhoqKR7YquYxZ/z3TfM3dNEE6Xmkf1t/I+sMie1uQ8FYAwaj
+	faXHva4VFb267ztGq0BWopH/DpmodD1JzQ3teXAUWaYzYzRoVrymTsBCaCyfXKOyqIoz122c8kw
+	UhYiECR4U4QUU+otv0Qzjzbx5qVg=
+X-Google-Smtp-Source: AGHT+IGmXMo7rIWI2XQN4+oSlAn7GwLHqPD1oNcVmQbFVLAVgpKcOrn+79N1muwSp3oBCu0MbkXGP0QIxmZEVIopPCk=
+X-Received: by 2002:a05:6122:c9f:b0:4d3:3a8c:13ad with SMTP id
+ ba31-20020a0561220c9f00b004d33a8c13admr4533302vkb.8.1712985596121; Fri, 12
+ Apr 2024 22:19:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:174a:b0:367:472c:e7d7 with SMTP id
- y10-20020a056e02174a00b00367472ce7d7mr374864ill.0.1712985282980; Fri, 12 Apr
- 2024 22:14:42 -0700 (PDT)
-Date: Fri, 12 Apr 2024 22:14:42 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004c3fc90615f37756@google.com>
-Subject: [syzbot] [bpf?] possible deadlock in __queue_map_get
-From: syzbot <syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
+References: <20240413015410.30951-1-lipeifeng@oppo.com>
+In-Reply-To: <20240413015410.30951-1-lipeifeng@oppo.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Sat, 13 Apr 2024 17:19:44 +1200
+Message-ID: <CAGsJ_4yGTcgMnK_81hMUAL0xG06Nmu0kn3bwdQHhSiDV8HQ+ZA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/shrinker: add SHRINKER_NO_DIRECT_RECLAIM
+To: lipeifeng@oppo.com
+Cc: akpm@linux-foundation.org, david@fromorbit.com, zhengqi.arch@bytedance.com, 
+	roman.gushchin@linux.dev, muchun.song@linux.dev, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Sat, Apr 13, 2024 at 1:54=E2=80=AFPM <lipeifeng@oppo.com> wrote:
+>
+> From: Peifeng Li <lipeifeng@oppo.com>
+>
+> In the case of insufficient memory, threads will be in direct_reclaim to
+> reclaim memory, direct_reclaim will call shrink_slab to run sequentially
+> each shrinker callback. If there is a lock-contention in the shrinker
+> callback,such as spinlock,mutex_lock and so on, threads may be likely to
+> be stuck in direct_reclaim for a long time, even if the memfree has reach=
+ed
+> the high watermarks of the zone, resulting in poor performance of threads=
+.
+>
+> Example 1: shrinker callback may wait for spinlock
+> static unsigned long mb_cache_shrink(struct mb_cache *cache,
+>                                      unsigned long nr_to_scan)
+> {
+>         struct mb_cache_entry *entry;
+>         unsigned long shrunk =3D 0;
+>
+>         spin_lock(&cache->c_list_lock);
+>         while (nr_to_scan-- && !list_empty(&cache->c_list)) {
+>                 entry =3D list_first_entry(&cache->c_list,
+>                                          struct mb_cache_entry, e_list);
+>                 if (test_bit(MBE_REFERENCED_B, &entry->e_flags) ||
+>                     atomic_cmpxchg(&entry->e_refcnt, 1, 0) !=3D 1) {
+>                         clear_bit(MBE_REFERENCED_B, &entry->e_flags);
+>                         list_move_tail(&entry->e_list, &cache->c_list);
+>                         continue;
+>                 }
+>                 list_del_init(&entry->e_list);
+>                 cache->c_entry_count--;
+>                 spin_unlock(&cache->c_list_lock);
+>                 __mb_cache_entry_free(cache, entry);
+>                 shrunk++;
+>                 cond_resched();
+>                 spin_lock(&cache->c_list_lock);
+>         }
+>         spin_unlock(&cache->c_list_lock);
+>
+>         return shrunk;
+> }
+> Example 2: shrinker callback may wait for mutex lock
+> static
+> unsigned long kbase_mem_evictable_reclaim_scan_objects(struct shrinker *s=
+,
+>                 struct shrink_control *sc)
+> {
+>         struct kbase_context *kctx;
+>         struct kbase_mem_phy_alloc *alloc;
+>         struct kbase_mem_phy_alloc *tmp;
+>         unsigned long freed =3D 0;
+>
+>         kctx =3D container_of(s, struct kbase_context, reclaim);
+>
+>         // MTK add to prevent false alarm
+>         lockdep_off();
+>
+>         mutex_lock(&kctx->jit_evict_lock);
+>
+>         list_for_each_entry_safe(alloc, tmp, &kctx->evict_list, evict_nod=
+e) {
+>                 int err;
+>
+>                 err =3D kbase_mem_shrink_gpu_mapping(kctx, alloc->reg,
+>                                 0, alloc->nents);
+>                 if (err !=3D 0) {
+>                         freed =3D -1;
+>                         goto out_unlock;
+>                 }
+>
+>                 alloc->evicted =3D alloc->nents;
+>
+>                 kbase_free_phy_pages_helper(alloc, alloc->evicted);
+>                 freed +=3D alloc->evicted;
+>                 list_del_init(&alloc->evict_node);
+>
+>                 kbase_jit_backing_lost(alloc->reg);
+>
+>                 if (freed > sc->nr_to_scan)
+>                         break;
+>         }
+> out_unlock:
+>         mutex_unlock(&kctx->jit_evict_lock);
+>
+>         // MTK add to prevent false alarm
+>         lockdep_on();
+>
+>         return freed;
+> }
+>
+> In mobile-phone,threads are likely to be stuck in shrinker callback durin=
+g
+> direct_reclaim, with example like the following:
+> <...>-2806    [004] ..... 866458.339840: mm_shrink_slab_start:
+>                         dynamic_mem_shrink_scan+0x0/0xb8 ... priority 2
+> <...>-2806    [004] ..... 866459.339933: mm_shrink_slab_end:
+>                         dynamic_mem_shrink_scan+0x0/0xb8 ...
+>
+> For the above reason, the patch introduces SHRINKER_NO_DIRECT_RECLAIM tha=
+t
+> allows driver to set shrinker callback not to be called in direct_reclaim
+> unless sc->priority is 0.
+>
+> The reason why sc->priority=3D0 allows shrinker callback to be called in
+> direct_reclaim is for two reasons:
+> 1.Always call all shrinker callback in drop_slab that priority is 0.
+> 2.sc->priority is 0 during direct_reclaim, allow direct_reclaim to call
+> shrinker callback, to reclaim memory timely.
+>
+> Note:
+> 1.shrinker_register() default not to set SHRINKER_NO_DIRECT_RECLAIM, to
+> maintain the current behavior of the code.
+> 2.Logic of kswapd and drop_slab to call shrinker callback isn't affected.
+>
+> Signed-off-by: Peifeng Li <lipeifeng@oppo.com>
+> ---
+> -v2: fix the commit message
+>  include/linux/shrinker.h |  5 +++++
+>  mm/shrinker.c            | 38 +++++++++++++++++++++++++++++++++++---
+>  2 files changed, 40 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+> index 1a00be90d93a..2d5a8b3a720b 100644
+> --- a/include/linux/shrinker.h
+> +++ b/include/linux/shrinker.h
+> @@ -130,6 +130,11 @@ struct shrinker {
+>   * non-MEMCG_AWARE shrinker should not have this flag set.
+>   */
+>  #define SHRINKER_NONSLAB       BIT(4)
+> +/*
+> + * Can shrinker callback be called in direct_relcaim unless
+> + * sc->priority is 0?
+> + */
+> +#define SHRINKER_NO_DIRECT_RECLAIM     BIT(5)
+>
 
-syzbot found the following issue on:
+My point is, drivers won't voluntarily stay unreclaimed during direct
+reclamation. Hence, this approach is unlikely to succeed. Those
+drivers can't be trusted. Had they been aware of their slowness,
+they wouldn't have written code in this manner.
 
-HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=140c3f8d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16975413180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11062cf3180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com
-
-============================================
-WARNING: possible recursive locking detected
-6.8.0-syzkaller-05271-gf99c5f563c17 #0 Not tainted
---------------------------------------------
-strace-static-x/5063 is trying to acquire lock:
-ffff8880233421d8 (&qs->lock){-.-.}-{2:2}, at: __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
-
-but task is already holding lock:
-ffff8880233401d8 (&qs->lock){-.-.}-{2:2}, at: __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&qs->lock);
-  lock(&qs->lock);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-4 locks held by strace-static-x/5063:
- #0: ffff88807c3d6c68 (&pipe->mutex){+.+.}-{3:3}, at: pipe_write+0x1c9/0x1a40 fs/pipe.c:455
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
- #2: ffff8880233401d8 (&qs->lock){-.-.}-{2:2}, at: __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #3: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
-
-stack backtrace:
-CPU: 0 PID: 5063 Comm: strace-static-x Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
- __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
- lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
- __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
- bpf_prog_bf9a7c5adf7f532a+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
- trace_contention_end+0xf6/0x120 include/trace/events/lock.h:122
- __pv_queued_spin_lock_slowpath+0x939/0xc60 kernel/locking/qspinlock.c:560
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
- queued_spin_lock_slowpath+0x42/0x50 arch/x86/include/asm/qspinlock.h:51
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- do_raw_spin_lock+0x272/0x370 kernel/locking/spinlock_debug.c:116
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
- _raw_spin_lock_irqsave+0xe1/0x120 kernel/locking/spinlock.c:162
- __queue_map_get+0x14b/0x4d0 kernel/bpf/queue_stack_maps.c:105
- bpf_prog_bf9a7c5adf7f532a+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- __traceiter_contention_end+0x7b/0xb0 include/trace/events/lock.h:122
- trace_contention_end+0xd7/0x100 include/trace/events/lock.h:122
- __mutex_lock_common kernel/locking/mutex.c:617 [inline]
- __mutex_lock+0x2e5/0xd70 kernel/locking/mutex.c:752
- pipe_write+0x1c9/0x1a40 fs/pipe.c:455
- call_write_iter include/linux/fs.h:2108 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa84/0xcb0 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x4e8593
-Code: c7 c2 a8 ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 48 89 54 24 18
-RSP: 002b:00007ffc411c1eb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000000002c RCX: 00000000004e8593
-RDX: 000000000000002c RSI: 000000001b0c0140 RDI: 0000000000000002
-RBP: 000000001b0c0140 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002c
-R13: 000000000063f460 R14: 000000000000002c R15: 0000000000000001
- </TASK>
+Detecting problematic driver shrinkers and marking them as skipped
+might prove challenging. I concur with Zhengqi; the priority should
+be fixing the driver whose shrinker is slow. Do you have a list of
+slow drivers?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  __printf(2, 3)
+>  struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...=
+);
+> diff --git a/mm/shrinker.c b/mm/shrinker.c
+> index dc5d2a6fcfc4..7a5dffd166cd 100644
+> --- a/mm/shrinker.c
+> +++ b/mm/shrinker.c
+> @@ -4,7 +4,7 @@
+>  #include <linux/shrinker.h>
+>  #include <linux/rculist.h>
+>  #include <trace/events/vmscan.h>
+> -
+> +#include <linux/swap.h>
+>  #include "internal.h"
+>
+>  LIST_HEAD(shrinker_list);
+> @@ -544,7 +544,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mas=
+k, int nid,
+>                         if (!memcg_kmem_online() &&
+>                             !(shrinker->flags & SHRINKER_NONSLAB))
+>                                 continue;
+> -
+> +                       /*
+> +                        * SHRINKER_NO_DIRECT_RECLAIM, mean that shrinker=
+ callback
+> +                        * should not be called in direct_reclaim unless =
+priority
+> +                        * is 0.
+> +                        */
+> +                       if ((shrinker->flags & SHRINKER_NO_DIRECT_RECLAIM=
+) &&
+> +                                       !current_is_kswapd()) {
+> +                               /*
+> +                                * 1.Always call shrinker callback in dro=
+p_slab that
+> +                                * priority is 0.
+> +                                * 2.sc->priority is 0 during direct_recl=
+aim, allow
+> +                                * direct_reclaim to call shrinker callba=
+ck, to reclaim
+> +                                * memory timely.
+> +                                */
+> +                               if (priority)
+> +                                       continue;
+> +                       }
+>                         ret =3D do_shrink_slab(&sc, shrinker, priority);
+>                         if (ret =3D=3D SHRINK_EMPTY) {
+>                                 clear_bit(offset, unit->map);
+> @@ -658,7 +674,23 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, s=
+truct mem_cgroup *memcg,
+>                         continue;
+>
+>                 rcu_read_unlock();
+> -
+> +               /*
+> +                * SHRINKER_NO_DIRECT_RECLAIM, mean that shrinker callbac=
+k
+> +                * should not be called in direct_reclaim unless priority
+> +                * is 0.
+> +                */
+> +               if ((shrinker->flags & SHRINKER_NO_DIRECT_RECLAIM) &&
+> +                               !current_is_kswapd()) {
+> +                       /*
+> +                        * 1.Always call shrinker callback in drop_slab t=
+hat
+> +                        * priority is 0.
+> +                        * 2.sc->priority is 0 during direct_reclaim, all=
+ow
+> +                        * direct_reclaim to call shrinker callback, to r=
+eclaim
+> +                        * memory timely.
+> +                        */
+> +                       if (priority)
+> +                               continue;
+> +               }
+>                 ret =3D do_shrink_slab(&sc, shrinker, priority);
+>                 if (ret =3D=3D SHRINK_EMPTY)
+>                         ret =3D 0;
+> --
+> 2.34.1
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks
+Barry
 
