@@ -1,98 +1,116 @@
-Return-Path: <linux-kernel+bounces-143573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 127518A3AFF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:15:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0CF8A3B02
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:21:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B965285C01
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:15:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C47A1C21FBD
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95D11C69D;
-	Sat, 13 Apr 2024 04:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7BA1C2BD;
+	Sat, 13 Apr 2024 04:21:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="FzCAOtmk"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p1YTh15+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E5A1B964
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 04:15:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DCD1BF37
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 04:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712981739; cv=none; b=KVWW0Qs4xaN38hbQzFrPV4oC9u5RDJ9+1tX1E4Q3Erq+5zXTbzxbeEjamdIS5QHtLe4MR1emU4DnBiDI+1Zzaw4manBfwIGlcXUQZWpbvVcF0GrBMwX5Zftlb2wIZ07H6GHtsftRegnYjyjBjyXAFkHv6cT1p3kB3+7RiSP3pKo=
+	t=1712982098; cv=none; b=Uq0PUmCzSK94RQTQ9qF1P6DLbUCWBrik+IEbIrfjyqaF+y0kuXVDXcODPRANY86KxYAZDWO/HN6znvNjGrfMjNciIdXxMOJRtIROB7ladaHLhBQu7kbGA3bjrsyeSmtR2C87NHgHObVaGjlUSTuyRF/Edw+wPcl1TSpzNDVUgEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712981739; c=relaxed/simple;
-	bh=2j9ShjLfSgpt1dRoNoPWk+SPK9pwF6GyYMHgJkLP354=;
+	s=arc-20240116; t=1712982098; c=relaxed/simple;
+	bh=CCB9vHLqRR69IsVfqOm+w0j+qxCe4Y2M4F8ATCYzNNo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gv82hNGHZc8sPbnzCKGr9eg1HyKCxqFGEzJAwaSlj/USAtsD3WV35swAbHyGjx+uvJ/cOa3j6fCt8zols1enzbmXeM7zELJBs6tPXOokrdPNT3UxHYOJjgXY7FJQjHW4n7CLuRB168kilfftov12iw1PUaizafv2th3OUztwqBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=FzCAOtmk; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=L8fKgzAxuXRxYh8g7LfILxb7Rk2jCjze6hOtopuCmrs=; b=FzCAOtmkGaE1V42QVhtfTNNNlv
-	XWhLtGKHlChkI+X7K2IBnUBZRCj1QQo1+hD1ZzsXANwAA3HX9LXXTo3m6w/V+/WsupB4a11tsAvOJ
-	/dG/QKK6qoE/qjKWXTTQ7QhXgI9MdiZVkadG3gi+cY/suKTWVbDHTtifOfpw4BvrnXfcpKux0lmwo
-	MOkYdPbtOJH6ZFuO0Ds4xYmOnsxsL27rgk5d9VIxDPOHYviHEvkNNe2STWTYlVyYJbot4ji8eWQxo
-	zy+HUoWKPIYL7VjJdZKWvOn7vGZnKorfWdL3qFP9IeGRZgxpw86YLLUVMN/emUTMAhSZAH+84Mu5L
-	yLMROmBw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rvUne-00BYVm-0r;
-	Sat, 13 Apr 2024 04:15:34 +0000
-Date: Sat, 13 Apr 2024 05:15:34 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCHSET RFC 0/437] Kill off old fops ->read() and ->write()
-Message-ID: <20240413041534.GO2118490@ZenIV>
-References: <20240411153126.16201-1-axboe@kernel.dk>
- <20240412042910.GK2118490@ZenIV>
- <b6725c23-ad82-4082-9e72-b219fc2b453e@kernel.dk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LeGk7qMzQkK5I5Y2rvUh0rm2EacsU1lvMlrC1L8vArixsmyhkEFDJ45iTB3I5ayHocAcqdh6tUiUs5+0lyRVIagJ5R+0rD7IyVNqq9++d6z86OtKsHpfz/8U8Tt86NeAvWcvfb+Ypv/I4WxLZPg3EzcyIHE85mFeO9aHg4cttyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p1YTh15+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D17FC113CD;
+	Sat, 13 Apr 2024 04:21:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712982097;
+	bh=CCB9vHLqRR69IsVfqOm+w0j+qxCe4Y2M4F8ATCYzNNo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p1YTh15+eGg5LcpadJEMrQT52iB53KIgbccvUQTglxB52vMCV/L7T90ZDpJCvh//L
+	 X1vdiYc45ERAMhcP5VtAoS4wPQOg1BEtHeyzUmhBLuTHON4rP3YVGPrTHZHOoJ09nx
+	 wilqxER0gaMhRTIAxlYWyV9dwcvClfvDTCwv9Pn4RZA1sEK9VR0mkssvsNm2vXJZlL
+	 MyWSdhdGYvyIEFv78x6MTn8aTz9hGPWTEJSPe+VrOOP+meayPrhpg+R1y6IVzRa2oN
+	 QtbGPakljkAxRfdbp5A/jIpH9F2DZoVEArODFDBtT5jSOq6GI+j3sPjjsmTnu4qTRe
+	 3tWVXwVbJFJ7w==
+Date: Fri, 12 Apr 2024 21:21:35 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 3/3] x86/bugs: Remove support for Spectre v2 LFENCE
+ "retpolines"
+Message-ID: <20240413042135.z2vglouqfl763m77@treble>
+References: <cover.1712944776.git.jpoimboe@kernel.org>
+ <e5356c0e018cd0a96aabe719f685c237ac519403.1712944776.git.jpoimboe@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <b6725c23-ad82-4082-9e72-b219fc2b453e@kernel.dk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <e5356c0e018cd0a96aabe719f685c237ac519403.1712944776.git.jpoimboe@kernel.org>
 
-On Fri, Apr 12, 2024 at 07:58:13AM -0600, Jens Axboe wrote:
-
-> I'm aware of some drivers that do different things from write vs writev,
-> or read vs readv for instance. But those I did cater to, by having a
-> flag they can now check.
+On Fri, Apr 12, 2024 at 11:10:34AM -0700, Josh Poimboeuf wrote:
+> I found several bugs where code assumes that X86_FEATURE_RETPOLINE
+> actually means retpolines (imagine that!).  In fact that feature also
+> includes the original AMD LFENCE "retpolines", which aren't in fact
+> retpolines.
 > 
-> Can you be a bit more specific on an example of a driver that does the
-> above?
+> Really, those "retpolines" should just be removed.  They're already
+> considered vulnerable due to the fact that the speculative window after
+> the indirect branch can still be long enough to do multiple dependent
+> loads.  And recent tooling makes such gadgets easier to find.
+> 
+> Also, EIBRS_LFENCE tests worse in real-world benchmarks than the actual
+> BHI mitigations, so it's both slower and less secure.
+> 
+> Specifically this removes support for the following cmdline options:
+> 
+>   - spectre_v2=retpoline,amd
+>   - spectre_v2=retpoline,lfence
+>   - spectre_v2=eibrs,lfence
+> 
+> Now when any of those options are used, it will print an error and fall
+> back to the defaults (spectre_v2=auto spectre_bhi=on).
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Consider e.g. your #39.  Current mainline: 1 call of ->set() for each
-segment passed to writev() on any of those.  With your patch: call
-segments concatenated and if the concatenation looks like a number,
-a single call of ->set().
+Compile fix:
 
-If nothing else, it's a user-visible ABI change.  And in cases when ->set()
-has non-trivial side effects, it just might break a real-world code that
-is currently correct.
-
-I picked that one because I didn't want to dig through the drivers -
-I'm pretty sure that there's more to be found there.
-
-It's not just "write() and writev() parse the data in different way" - we do
-have a couple of those, but that's a minor problem.
-
-"write(fd, buf, len1); write(fd, buf + len1, len1 + len2); is not the same
-thing as write(fd, buf, len1 + len2)" is not rare for character devices and
-for regular files on procfs/debugfs/etc.
-
-For any of those you need to use you vfs_write_iter() helper or you'll
-be breaking userland ABI.  The cost of audit of several thousands of ->write()
-(and ->read() - similar problem applies there) instances, checking that property
-is the main reason this conversion hadn't been already done.
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index e1c421282a78..3a1349c0f225 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -53,7 +53,7 @@
+ #ifdef CONFIG_MITIGATION_RETPOLINE
+ # define DISABLE_RETPOLINE	0
+ #else
+-# define DISABLE_RETPOLINE	(1 << (X86_FEATURE_RETPOLINE & 31)
++# define DISABLE_RETPOLINE	(1 << (X86_FEATURE_RETPOLINE & 31))
+ #endif
+ 
+ #ifdef CONFIG_MITIGATION_RETHUNK
 
