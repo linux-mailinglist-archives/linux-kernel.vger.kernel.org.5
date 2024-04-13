@@ -1,284 +1,119 @@
-Return-Path: <linux-kernel+bounces-143802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1DA28A3DA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 18:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41FC78A3DA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 18:15:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4971C1F21995
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:14:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC3911F21A68
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364AD4D106;
-	Sat, 13 Apr 2024 16:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E3E4F215;
+	Sat, 13 Apr 2024 16:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K9byVTfG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f1vZeonN"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385DD28EA;
-	Sat, 13 Apr 2024 16:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90464D9F4
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 16:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713024866; cv=none; b=RCgMMhadKHk1SzPMK0dBes0fzCL0s0PwV8btBorPqS5e6eVSG34iRaJTUJrNl6xZC00pVgU+0RBy36FqwUXHWhbr5CvB7XWNQrcDzhsqnBfYsX61NHMOLxjDO9nIMTlfCztejfd/kZUiOCRA+dLAy94IrXOviqWl8pc/6n0G46A=
+	t=1713024941; cv=none; b=o4aZbthfCpNP8BVwwlig9uyAfH2ON9TaGdYYyZxV6B/z/vyGehzjfZCbIoUGnj9mBdRDUfZnI/Lrw07TIOg22/9ldiPqPbUd7JPZiFAbxX/uPY2UaCTbGAZ64615NBLrfhw146xj6nb2h6WHi/5tlRuq91MEUiU03BmdTelN1Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713024866; c=relaxed/simple;
-	bh=EG54GmgohlqxXTg+gda5rYJMmQ8eRU3Vm55LkUqh0Ug=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cwfu0NPSWbU6U77Yupmk4P9OR1XPXYo/1XZyGmsKLjI+h7QKJ8LQuE4TSahhBueNonenvUMytISWPcUZ9QTmKM5sNK3roBoVtgkdg2myaNWjfst6hCKxKW6gfTe6RIrxZnkh27eF2B651Fj18wuokzf+31ne3gP7bkhglM915nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K9byVTfG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CFAFC2BBFC;
-	Sat, 13 Apr 2024 16:14:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713024865;
-	bh=EG54GmgohlqxXTg+gda5rYJMmQ8eRU3Vm55LkUqh0Ug=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=K9byVTfG/AbwzuFPfSRVUSpAOlWLAAoEqc+oDcji0JM5yQSM16u370a3qMRmJImd3
-	 1FrFXPRnZCsxr6RezJ5PiZYRoCYr/q5QSXA1Y0HXpw+5tylP0Z89XPBE11udtAQoPu
-	 4U2jI6D8uGwwSCef7tuUDRlEQMcqgx+3lQbPxn4a5xTxgnkofAHhEkLYcWH+9zJrV4
-	 cvqHe1P7mXpfQ4dc1uKv1okDq3LU9i1vgW2l8c6xHoEyagt9+oqkTrsLGVndWELlJR
-	 g8CaTxp70xTUZVk+s0QqQWOJg6IdxU91CLsbayFgaEWjT+ZxDrBS0oaef7hSSPseNp
-	 Tt2Cfd40ktBSA==
-Date: Sat, 13 Apr 2024 17:14:09 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
-Cc: David Lechner <dlechner@baylibre.com>, Marcelo Schmitt
- <marcelo.schmitt@analog.com>, lars@metafoo.de,
- Michael.Hennerich@analog.com, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: Add AD4000
-Message-ID: <20240413171409.4575fe6f@jic23-huawei>
-In-Reply-To: <ZhVfARtMfOLOPRid@debian-BULLSEYE-live-builder-AMD64>
-References: <cover.1712585500.git.marcelo.schmitt@analog.com>
-	<7c877c865f0b7da28d9f1f177b3b2692b0ae20b9.1712585500.git.marcelo.schmitt@analog.com>
-	<CAMknhBGKNZhGbD7pQ0Z7SMCWqxqGux0LcO_wW0XGP4hLTOwNBg@mail.gmail.com>
-	<ZhVfARtMfOLOPRid@debian-BULLSEYE-live-builder-AMD64>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713024941; c=relaxed/simple;
+	bh=uULgMz3JKuDpdOau9yZRUpNOUxNPe5WHGUMytORdTxk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=I6EjXTgJxUG/DGoB4Okpi7SWcqZRk/D5uMhQrO7MSgVtmsCs3u7qq9c/HtA97Jh9+JpHOPzwImpoqO6Gyh4nBCriciGMxm98ycf6uLwXGKjSAsZJVQFJyfCwwT33Onidi/ENJpMV9iOtbNdFcZL4UQ/vrD1jSmniK81YJmuiViE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f1vZeonN; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ecf05fd12fso1769834b3a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 09:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713024939; x=1713629739; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ww0eRWU1bZKxz08q8r2/bHR93XGflEa/z2w+7o6mm74=;
+        b=f1vZeonNo4X9smP5pJjGLXaIY3a1LaQ8rBS2YSgPC7u9uoubDuduTwtNqADmsYVoME
+         ElGeR0Jl55ROMT1Td4UxUwiZpTLc4Mp7osfMmBbd0/6r49OiAImcuob9wUiofOzEInPq
+         jxFb8n8EfKgW8B60CopcpMO3UbKDKqQwAD5TKb8REbnB9scRaLXM1K/jU098VUaLPk2H
+         57GkpYhIuXwOQQMBuWbkCl7Q4edhO7snAkoM0C8kQgcLyrT0+zfh76k+dvfadCqSwk47
+         5SEaDO+kGhBTM58VTCkaspwCC9SlVGg4wU1UAT4xzCDbIN+XGnMZoh0H9ukuqCqiJmeg
+         FeKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713024939; x=1713629739;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ww0eRWU1bZKxz08q8r2/bHR93XGflEa/z2w+7o6mm74=;
+        b=QNBc3JpVrbYXv9SyLEei+oWnG9hJFCNVgJDSS4jlIKEm8czqVc359osMAWh0Pm1D06
+         Idw5Obw5Yp9KkdDsnWQlaoOOxAvRqRXHhNoN6Oaf04py/VhSUG/PeGMgk3aaLPYB1yoE
+         eKeGl8hAqBHFFICid4ImvMX2l+j5qZK6plT9mIOesqu0wMGHq/WQcL2tyxccHyD4ZHta
+         CT1/lgOZAJdJR7zqaPxHb4pzeJfg0myP10kao30LVN6TDgxQr92AuGRFw8EbF0Xp6CM3
+         KM388tR56t2SjmRAn3fBO8plajiB5PT3v/FX/28qngdDh4I78u6suCfmGa8DSZyvo4iC
+         K8xw==
+X-Forwarded-Encrypted: i=1; AJvYcCVrcy2N2RqqnH2uRyrWHzCfzn0FDHob6/VXuD6Twh/Hwxow5r6g6RBcocT+OyMByftYl+V2/Pxs7AhFtRysInrZ/9cBrQxiyW5y13Tn
+X-Gm-Message-State: AOJu0YxqYF7wtYWjRUy/eSxfnx/1d3GOBhw9UevuiU68raGTUnHCjkIA
+	HqdRJ1wKj50FjWIZm1nVE0zYomJbeDuFuQ9IQN7y0V0cImFDNX1wtgAVQYVP
+X-Google-Smtp-Source: AGHT+IG3p/D//mMW+/rh6IM3cCgM4vwDigZqhwR6nkapQBxdDAcfZW3ch+Z9gNj5ULt0WKCoSVXyeQ==
+X-Received: by 2002:a17:902:64d7:b0:1e5:d083:c5b3 with SMTP id y23-20020a17090264d700b001e5d083c5b3mr3580633pli.5.1713024939128;
+        Sat, 13 Apr 2024 09:15:39 -0700 (PDT)
+Received: from lima-default.. (1-175-176-70.dynamic-ip.hinet.net. [1.175.176.70])
+        by smtp.gmail.com with ESMTPSA id im23-20020a170902bb1700b001e2936705b4sm4863943plb.243.2024.04.13.09.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Apr 2024 09:15:38 -0700 (PDT)
+From: Chin-Chun Chen <chinchunchen2001@gmail.com>
+To: yury.norov@gmail.com
+Cc: linux@rasmusvillemoes.dk,
+	linux-kernel@vger.kernel.org,
+	Chin-Chun Chen <chinchunchen2001@gmail.com>
+Subject: [PATCH v2] include/linux/bitops.h: Fix function fns
+Date: Sun, 14 Apr 2024 00:15:27 +0800
+Message-Id: <20240413161527.12030-1-chinchunchen2001@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240413061204.10382-1-chinchunchen2001@gmail.com>
+References: <20240413061204.10382-1-chinchunchen2001@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, 9 Apr 2024 12:30:09 -0300
-Marcelo Schmitt <marcelo.schmitt1@gmail.com> wrote:
+Modified the function fns to resolve a calculation error by reducing n first to correctly determine the n-th set bit instead of n+1.
 
-> On 04/08, David Lechner wrote:
-> > On Mon, Apr 8, 2024 at 9:32=E2=80=AFAM Marcelo Schmitt
-> > <marcelo.schmitt@analog.com> wrote: =20
-> > >
-> > > Add device tree documentation for AD4000 family of ADC devices.
-> > >
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/ad4000-4004-4008.pdf
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/ad4001-4005.pdf
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/ad4002-4006-4010.pdf
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/ad4003-4007-4011.pdf
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/ad4020-4021-4022.pdf
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/adaq4001.pdf
-> > > Datasheet: https://www.analog.com/media/en/technical-documentation/da=
-ta-sheets/adaq4003.pdf
-> > > =20
-> >=20
-> > Suggested-by: David Lechner <dlechner@baylibre.com>
-> >=20
-> > (if you still use mostly my suggestions in the end) =20
->=20
-> Yes, it's been of great help. Will include the tag in future ad4000 DT pa=
-tches.
->=20
-> >  =20
-> > > Signed-off-by: Marcelo Schmitt <marcelo.schmitt@analog.com>
-> > > ---
-> > >  .../bindings/iio/adc/adi,ad4000.yaml          | 201 ++++++++++++++++=
-++
-> > >  MAINTAINERS                                   |   7 +
-> > >  2 files changed, 208 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad4=
-000.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yam=
-l b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
-> > > new file mode 100644
-> > > index 000000000000..ca06afb5149e
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad4000.yaml
-> > > @@ -0,0 +1,201 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iio/adc/adi,ad4000.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Analog Devices AD4000 and similar Analog to Digital Converters
-> > > +
-> > > +maintainers:
-> > > +  - Marcelo Schmitt <marcelo.schmitt@analog.com>
-> > > +
-> > > +description: |
-> > > +  Analog Devices AD4000 family of Analog to Digital Converters with =
-SPI support.
-> > > +  Specifications can be found at:
-> > > +    https://www.analog.com/media/en/technical-documentation/data-she=
-ets/ad4000-4004-4008.pdf
-> > > +    https://www.analog.com/media/en/technical-documentation/data-she=
-ets/ad4001-4005.pdf
-> > > +    https://www.analog.com/media/en/technical-documentation/data-she=
-ets/ad4002-4006-4010.pdf
-> > > +    https://www.analog.com/media/en/technical-documentation/data-she=
-ets/ad4003-4007-4011.pdf
-> > > +    https://www.analog.com/media/en/technical-documentation/data-she=
-ets/ad4020-4021-4022.pdf
-> > > +    https://www.analog.com/media/en/technical-documentation/data-she=
-ets/adaq4001.pdf
-> > > +    https://www.analog.com/media/en/technical-documentation/data-she=
-ets/adaq4003.pdf
-> > > +
-> > > +$ref: /schemas/spi/spi-peripheral-props.yaml#
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - adi,ad4000
-> > > +      - adi,ad4001
-> > > +      - adi,ad4002
-> > > +      - adi,ad4003
-> > > +      - adi,ad4004
-> > > +      - adi,ad4005
-> > > +      - adi,ad4006
-> > > +      - adi,ad4007
-> > > +      - adi,ad4008
-> > > +      - adi,ad4010
-> > > +      - adi,ad4011
-> > > +      - adi,ad4020
-> > > +      - adi,ad4021
-> > > +      - adi,ad4022
-> > > +      - adi,adaq4001
-> > > +      - adi,adaq4003
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  spi-max-frequency:
-> > > +    maximum: 102040816 # for VIO > 2.7 V, 81300813 for VIO > 1.7 V
-> > > +
-> > > +  spi-cpha: true
-> > > +
-> > > +  adi,spi-mode:
-> > > +    $ref: /schemas/types.yaml#/definitions/string
-> > > +    enum: [ single, chain ] =20
-> >=20
-> > It sounds like there are more possible wiring configurations for these
-> > chips that I thought when suggesting reusing this binding from AD7944
-> > so we probably need more options here. (see my reply to the cover
-> > letter for the complete context of these remarks)
-> >=20
-> > We identified A) an additional wiring configuration where SDI of the
-> > ADC chip is wired to SDO of the SPI controller and B) a potential need
-> > to pin mux between wiring modes to work around SPI controller
-> > limitations perhaps we could omit the adi,spi-mode property and just
-> > use the standard pinctrl properties.
-> >=20
-> >   pinctrl-names:
+This commit improves the accuracy and reliability of the code.
+---
+Changes since v1:
+* Clarified the commit message.
+* Fixed the incorrect operation.
 
-I'm lost on how pinctrl makes sense here.
-Yes you are changing the modes of the pins, but not in a conventional sense
-of some register that is being updated to say now use them like this.
-The mode is dependent on the timing sequence of how the pins are used.
-Otherwise looking at it a different way it's an external wiring thing we
-aren't controlling it at all.  Is pinctrl suitable for that?
-I always thought of it as a way to change configurations of SoC pins.
+Signed-off-by: Chin-Chun Chen <chinchunchen2001@gmail.com>
+---
+ include/linux/bitops.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-A pointer to some precendence in another driver for using it like this
-would go some way towards convincing me.
+diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+index 2ba557e067fe..5842d7d03f19 100644
+--- a/include/linux/bitops.h
++++ b/include/linux/bitops.h
+@@ -258,7 +258,7 @@ static inline unsigned long fns(unsigned long word, unsigned int n)
+ 
+ 	while (word) {
+ 		bit = __ffs(word);
+-		if (n-- == 0)
++		if (--n == 0)
+ 			return bit;
+ 		__clear_bit(bit, &word);
+ 	}
 
-Jonathan
+base-commit: 8f2c057754b25075aa3da132cd4fd4478cdab854
+-- 
+2.40.1
 
-
-> >     description: |
-> >       Names for possible ways the SDI line of the controller is wired.
-> >=20
-> >       * default: The SDI line of the ADC is connected to the SDO line o=
-f the
-> >         SPI controller.  CNV line of the ADC is connected to CS of the =
-SPI
-> >         controller. =20
-> Not sure if should be DT, but maybe also point out that in default mode t=
-he
-> SPI controller must be capable of keeping ADC SDI (controller SDO) line h=
-igh
-> during ADC conversions.
->=20
-> >       * single: The datasheet calls this "3-wire mode".  (NOTE: The dat=
-asheet's
-> >         definition of 3-wire mode is NOT at all related to the standard
-> >         spi-3wire property!)  In this mode, SDI is tied to VIO, and the=
- CNV line
-> >         can be connected to the CS line of the SPI controller (typical)=
- or to a
-> >         GPIO, in which case the CS line of the controller is unused.  T=
-he SDO
-> >         line of the SPI controller is not connected.
-> >       * multi: The datasheet calls this "4-wire mode" and is used when =
-multiple
-> >         chips are connected in parallel.  In this mode, the ADC SDI lin=
-e is tied
-> >         to the CS line on the SPI controller and the CNV line is connec=
-ted to
-> >         a GPIO.  The SDO line of the SPI controller is not connected.
-> >       * chain: The datasheet calls this "chain mode".  This mode is use=
-d to save
-> >         on wiring when multiple ADCs are used.  In this mode, the SDI l=
-ine of
-> >         one chip is tied to the SDO of the next chip in the chain and t=
-he SDI of
-> >         the last chip in the chain is tied to GND.  Only the first chip=
- in the
-> >         chain is connected to the SPI bus.  The CNV line of all chips a=
-re tied
-> >         together.  The CS line of the SPI controller can be used as the=
- CNV line
-> >         only if it is active high.
-> >=20
-> >       If one name is specified, it is assumed the chip is hard-wired in=
- this
-> >       configuration.
-> >=20
-> >       If two names are specified, it is assumed that a pinmux can switc=
-h between
-> >       the two wiring configurations.  The first is the default mode for=
- reading
-> >       and writing registers on the chip and the second is the mode for =
-reading
-> >       the conversion data from the chip.
-> >     oneOf:
-> >       - items:
-> >           - enum:
-> >             - default
-> >             - single
-> >             - multi
-> >             - chain
-> >       - items:
-> >           - const: default
-> >           - enum:
-> >             - single
-> >             - multi
-> >             - chain
-> >=20
-> >   pinctrl-0:
-> >     maxItems: 1
-> >=20
-> >   pinctrl-1:
-> >     maxItems: 1
 
