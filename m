@@ -1,130 +1,92 @@
-Return-Path: <linux-kernel+bounces-143506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2F998A3A4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:00:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 919EE8A3A50
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BED91C213C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:00:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13F25B2189F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6991612B87;
-	Sat, 13 Apr 2024 01:59:54 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4734413ADA;
+	Sat, 13 Apr 2024 02:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CStO0Vbn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6B56D52F;
-	Sat, 13 Apr 2024 01:59:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8898ADDA3;
+	Sat, 13 Apr 2024 02:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712973594; cv=none; b=WYw2iuPINSjBjWCkneWn7uukRpB0IbwPwnfcnvJwZlxqLt32YIqQyrtyX8jtJXQappStqtph5pA0U4Xqw0lXuFllIpnOEmspsFYTXUFuqdwBFyhEKNNJ0XYOQurO5Afb1m3sHFrluW6SdS8l+9v926NbTiIY0orNvC3+rEEHjZY=
+	t=1712973630; cv=none; b=dTRo4sjRbiPpNRB+atWGKsyt1sUZ1Ukp9vB09lB5lEo9oRHZFxwKgNEtnKTysWG2LfJZDGufI+IL9YkpOmQx7ihN5m7B+qOwNpDeh3XzbvjyzF7459hNc/QIe3u/INyjfK2tBgY5FKSSbtEXt7O2GlKDlD9i2X9mri+g22YPnYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712973594; c=relaxed/simple;
-	bh=nnlDPjPKfEohwaKd9r81/1qp2ve/24ImVnOTGTeLfs0=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=gjtUGHB8wmIiB0osNQeeSHJJp5+F0DCyLLWIHJmajhc5z1R78CHVxK1Ueq1w+uA2V5FP33u6zUTQgWzvG+QWsF5Tfnfsj8cQiHdxKnEfeHmICJ82iflBwbLTqb2CTYbiJ1OsM3FtPhh9U9kLpRgrfIJOTDpFJDL1x43ROD36SeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VGc7h0fWvz4f3l95;
-	Sat, 13 Apr 2024 09:59:44 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8E6AD1A0175;
-	Sat, 13 Apr 2024 09:59:48 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgBnOBET5xlmKg1bJw--.20969S3;
-	Sat, 13 Apr 2024 09:59:48 +0800 (CST)
-Subject: Re: [PATCH RFC v2 2/6] blk-throttle: delay initialization until
- configuration
-To: Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, chenhuacai@kernel.org, josef@toxicpanda.com,
- jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net, pctammela@mojatatu.com,
- qde@naccy.de, zhaotianrui@loongson.cn, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
- <20240406080059.2248314-3-yukuai1@huaweicloud.com>
- <Zhl2a2m3L3QEELtj@slm.duckdns.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <7531ba77-964a-169d-f55f-a8dcfcdbb450@huaweicloud.com>
-Date: Sat, 13 Apr 2024 09:59:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1712973630; c=relaxed/simple;
+	bh=ms+bUVd/IKUymPV47kf9GehhxekDnUfPq318Bj94ZjA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=BT9DmhQfKoppiEHD0EAgBT52Zuw+bMB2XvL1K5m2zJrT7/sjstzW5MzZSEm1yu17oeb4s1SXgZwpCmL7aU4q9m1zmiHlM2qQ8xB61wyrNJqVGj0IIGe+uNSc300pOyUAxNe/kwt3oy0AeB7nM7aA7An+/gHmr8Q9Y8Ap6IP1DTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CStO0Vbn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0DADFC2BBFC;
+	Sat, 13 Apr 2024 02:00:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712973630;
+	bh=ms+bUVd/IKUymPV47kf9GehhxekDnUfPq318Bj94ZjA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=CStO0VbnDmSdlYEC6Ko/ZjlSzPnocz8vtEVow4Kzu8S8pyPb8Bso2ItXHDkXUtHG2
+	 Mz2toMIr4Z2LezXXIQGAm5aKhRl9YoGtw29Wr71cmie+0g55XPvC1tG1dVaoB4r7Hu
+	 0t65J/SuYoh3WzT5y9XCbyAG58keNlRMlmmabWtW9x2gGLM9+ZmbAmDoJ+s2XLABPV
+	 Ozj/N2olHsoBSn61/ZawTa8SvyXKW1B4ByE6PnJ5bXZ0022alddiGp9lM4tphImzSo
+	 +DUfeYgn9dB4FDrsNkmG6n9PyWmm5ez73kMpxBOKs1FVVY9j/yyx0zZYzX6xnl6ApJ
+	 ZGaW17VPw80PA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EDE47DF7859;
+	Sat, 13 Apr 2024 02:00:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zhl2a2m3L3QEELtj@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBnOBET5xlmKg1bJw--.20969S3
-X-Coremail-Antispam: 1UD129KBjvJXoWrKr1rtF4xGFykXw18ZrWDArb_yoW8Jr4fpa
-	y5Xa98tF4kXrZag3srZw1fZF9akr4xAFy8C3s8KrW5JF42vr4rKFnYg34YyF4fAF1I9r42
-	va18Grn8G3Wvka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
-	JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUF0eHDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Subject: Re: [PATCH net-next v1] net: nfc: remove inappropriate attrs check
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171297362997.26889.4301912686279451050.git-patchwork-notify@kernel.org>
+Date: Sat, 13 Apr 2024 02:00:29 +0000
+References: <20240410034846.167421-1-linma@zju.edu.cn>
+In-Reply-To: <20240410034846.167421-1-linma@zju.edu.cn>
+To: Lin Ma <linma@zju.edu.cn>
+Cc: krzysztof.kozlowski@linaro.org, andreyknvl@google.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-ÔÚ 2024/04/13 1:59, Tejun Heo Ð´µÀ:
-> Hello,
-> 
-> On Sat, Apr 06, 2024 at 04:00:55PM +0800, Yu Kuai wrote:
->> @@ -1480,6 +1547,9 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
->>   	struct cgroup_subsys_state *pos_css;
->>   	struct blkcg_gq *blkg;
->>   
->> +	if (!q->td)
->> +		return;
-> 
-> So, this naked test is safe because the interface functions are shut down by
-> the time this function is called.
-> 
->>   static inline bool blk_should_throtl(struct bio *bio)
->>   {
->> -	struct throtl_grp *tg = blkg_to_tg(bio->bi_blkg);
->> +	struct throtl_grp *tg;
->>   	int rw = bio_data_dir(bio);
->>   
->> +	if (!bio->bi_bdev->bd_queue->td)
->> +		return false;
-> 
-> and this one because ->td is set while the queue is frozen and this path
-> shouldn't be running while it gets set, right?
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Yes, this is called under bio_queue_enter()
+On Wed, 10 Apr 2024 11:48:46 +0800 you wrote:
+> Revert "NFC: fix attrs checks in netlink interface"
+> This reverts commit 18917d51472fe3b126a3a8f756c6b18085eb8130.
 > 
-> Can you please add comments explaining why those are safe? Otherwise, the
-> patch looks generally sane to me on the first glance. Can you please also
-> add how you tested the change?
-
-And I realized that there are no tests for bkl-throttle from blktests,
-and I'm using some other tests from our testers to cover basic
-functionality. Perhaps will it make sense to add some tests to blktests?
-
-Thanks,
-Kuai
-
+> Our checks found weird attrs present check in function
+> nfc_genl_dep_link_down() and nfc_genl_llc_get_params(), which are
+> introduced by commit 18917d51472f ("NFC: fix attrs checks in netlink
+> interface").
 > 
-> Thanks.
-> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v1] net: nfc: remove inappropriate attrs check
+    https://git.kernel.org/netdev/net-next/c/a799de0e5985
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
