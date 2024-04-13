@@ -1,116 +1,254 @@
-Return-Path: <linux-kernel+bounces-143574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E0CF8A3B02
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:21:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B04B08A3B05
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:25:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C47A1C21FBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:21:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E65B2B225FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:25:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7BA1C2BD;
-	Sat, 13 Apr 2024 04:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774C61C6A7;
+	Sat, 13 Apr 2024 04:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p1YTh15+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bjsthzPG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DCD1BF37
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 04:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C531BF37;
+	Sat, 13 Apr 2024 04:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712982098; cv=none; b=Uq0PUmCzSK94RQTQ9qF1P6DLbUCWBrik+IEbIrfjyqaF+y0kuXVDXcODPRANY86KxYAZDWO/HN6znvNjGrfMjNciIdXxMOJRtIROB7ladaHLhBQu7kbGA3bjrsyeSmtR2C87NHgHObVaGjlUSTuyRF/Edw+wPcl1TSpzNDVUgEE=
+	t=1712982321; cv=none; b=KxiY+8r4nWYx3hCXJAtD4njEZah+vsc6OwaQAEcmNPF5GeuAlSvlBTmsSMd1AHiR5bWfwvob0TtMFbwuhasncgJExFGSgxr47lJdHCC24DcU2ct5ylss9aOVrUpRddPn5HCuQ6ggzYjbj6AlqjFZkxis8KRuJGMX8mKkUdygupI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712982098; c=relaxed/simple;
-	bh=CCB9vHLqRR69IsVfqOm+w0j+qxCe4Y2M4F8ATCYzNNo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LeGk7qMzQkK5I5Y2rvUh0rm2EacsU1lvMlrC1L8vArixsmyhkEFDJ45iTB3I5ayHocAcqdh6tUiUs5+0lyRVIagJ5R+0rD7IyVNqq9++d6z86OtKsHpfz/8U8Tt86NeAvWcvfb+Ypv/I4WxLZPg3EzcyIHE85mFeO9aHg4cttyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p1YTh15+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D17FC113CD;
-	Sat, 13 Apr 2024 04:21:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712982097;
-	bh=CCB9vHLqRR69IsVfqOm+w0j+qxCe4Y2M4F8ATCYzNNo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p1YTh15+eGg5LcpadJEMrQT52iB53KIgbccvUQTglxB52vMCV/L7T90ZDpJCvh//L
-	 X1vdiYc45ERAMhcP5VtAoS4wPQOg1BEtHeyzUmhBLuTHON4rP3YVGPrTHZHOoJ09nx
-	 wilqxER0gaMhRTIAxlYWyV9dwcvClfvDTCwv9Pn4RZA1sEK9VR0mkssvsNm2vXJZlL
-	 MyWSdhdGYvyIEFv78x6MTn8aTz9hGPWTEJSPe+VrOOP+meayPrhpg+R1y6IVzRa2oN
-	 QtbGPakljkAxRfdbp5A/jIpH9F2DZoVEArODFDBtT5jSOq6GI+j3sPjjsmTnu4qTRe
-	 3tWVXwVbJFJ7w==
-Date: Fri, 12 Apr 2024 21:21:35 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 3/3] x86/bugs: Remove support for Spectre v2 LFENCE
- "retpolines"
-Message-ID: <20240413042135.z2vglouqfl763m77@treble>
-References: <cover.1712944776.git.jpoimboe@kernel.org>
- <e5356c0e018cd0a96aabe719f685c237ac519403.1712944776.git.jpoimboe@kernel.org>
+	s=arc-20240116; t=1712982321; c=relaxed/simple;
+	bh=ADQ643WQVT4ms6dHvkDhww1VAbLjrBeUBMpdKo1Lbqk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=shUZAZqDgrubRhsyTO+RJf9FMtThXlQqN30Rx/fX861VPp+yTE0zJiO+4PI1t0mvlCCOuKZ22prVyEmJ60bLE5X4b628+zEEZoy3OImjRsz6wtrQRenbH+6UgUFyjiNNuV3ds1qRzS7/WiYERR056S9L1JQKGXK2J+XN0OLz+0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bjsthzPG; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712982320; x=1744518320;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ADQ643WQVT4ms6dHvkDhww1VAbLjrBeUBMpdKo1Lbqk=;
+  b=bjsthzPGkTtyyh47npYX5N8prCcmft2Bv/+wI60FIYK33u8rgAKdDSUI
+   kcnFuSS9SLcTcfNBlpu1hT6G7zHEuVjc78RVUVylx7tIxs09+qyFqIxI1
+   Ge9R20gfVzMooSKdKhkI+jl89ZbdLKIkJFLQCxfAs/5M5l/2kw8KaOEc/
+   zmJB38WhSyz/TRtteri6beKWJuwqn9Pzs050M/9HwHYzJDCh0VmV7G7oQ
+   s9IgE5uIvPUSvOOtLBeTiZtv0IBmIaT3vyspO4RAuBPT7g39AOgU30oWS
+   DsjROOOWSJlZ4lpH6tpyQhtJZSv6hnV08Hm4B+7Tlz+xKXYgYYu82UNvY
+   w==;
+X-CSE-ConnectionGUID: yglPpSB6T4iXuVurr34wSQ==
+X-CSE-MsgGUID: DNm4zNBnQv2aU6eDozMZbQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8623603"
+X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
+   d="scan'208";a="8623603"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:25:19 -0700
+X-CSE-ConnectionGUID: ss31M2v4SKuZ31YmAwJUfw==
+X-CSE-MsgGUID: aIw13MhyR3WQqS+WMdbb0A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
+   d="scan'208";a="21985151"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.225.92]) ([10.124.225.92])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:25:14 -0700
+Message-ID: <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
+Date: Sat, 13 Apr 2024 12:25:11 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e5356c0e018cd0a96aabe719f685c237ac519403.1712944776.git.jpoimboe@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
+To: Mingwei Zhang <mizhang@google.com>
+Cc: Sean Christopherson <seanjc@google.com>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-24-xiong.y.zhang@linux.intel.com>
+ <ZhhZush_VOEnimuw@google.com>
+ <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
+ <Zhn9TGOiXxcV5Epx@google.com>
+Content-Language: en-US
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <Zhn9TGOiXxcV5Epx@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 11:10:34AM -0700, Josh Poimboeuf wrote:
-> I found several bugs where code assumes that X86_FEATURE_RETPOLINE
-> actually means retpolines (imagine that!).  In fact that feature also
-> includes the original AMD LFENCE "retpolines", which aren't in fact
-> retpolines.
-> 
-> Really, those "retpolines" should just be removed.  They're already
-> considered vulnerable due to the fact that the speculative window after
-> the indirect branch can still be long enough to do multiple dependent
-> loads.  And recent tooling makes such gadgets easier to find.
-> 
-> Also, EIBRS_LFENCE tests worse in real-world benchmarks than the actual
-> BHI mitigations, so it's both slower and less secure.
-> 
-> Specifically this removes support for the following cmdline options:
-> 
->   - spectre_v2=retpoline,amd
->   - spectre_v2=retpoline,lfence
->   - spectre_v2=eibrs,lfence
-> 
-> Now when any of those options are used, it will print an error and fall
-> back to the defaults (spectre_v2=auto spectre_bhi=on).
-> 
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 
-Compile fix:
+On 4/13/2024 11:34 AM, Mingwei Zhang wrote:
+> On Sat, Apr 13, 2024, Mi, Dapeng wrote:
+>> On 4/12/2024 5:44 AM, Sean Christopherson wrote:
+>>> On Fri, Jan 26, 2024, Xiong Zhang wrote:
+>>>> From: Dapeng Mi <dapeng1.mi@linux.intel.com>
+>>>>
+>>>> Implement the save/restore of PMU state for pasthrough PMU in Intel. In
+>>>> passthrough mode, KVM owns exclusively the PMU HW when control flow goes to
+>>>> the scope of passthrough PMU. Thus, KVM needs to save the host PMU state
+>>>> and gains the full HW PMU ownership. On the contrary, host regains the
+>>>> ownership of PMU HW from KVM when control flow leaves the scope of
+>>>> passthrough PMU.
+>>>>
+>>>> Implement PMU context switches for Intel CPUs and opptunistically use
+>>>> rdpmcl() instead of rdmsrl() when reading counters since the former has
+>>>> lower latency in Intel CPUs.
+>>>>
+>>>> Co-developed-by: Mingwei Zhang <mizhang@google.com>
+>>>> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+>>>> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+>>>> ---
+>>>>    arch/x86/kvm/vmx/pmu_intel.c | 73 ++++++++++++++++++++++++++++++++++++
+>>>>    1 file changed, 73 insertions(+)
+>>>>
+>>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>>>> index 0d58fe7d243e..f79bebe7093d 100644
+>>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>>>> @@ -823,10 +823,83 @@ void intel_passthrough_pmu_msrs(struct kvm_vcpu *vcpu)
+>>>>    static void intel_save_pmu_context(struct kvm_vcpu *vcpu)
+>>> I would prefer there be a "guest" in there somewhere, e.g. intel_save_guest_pmu_context().
+>> Yeah. It looks clearer.
+>>>>    {
+>>>> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>>>> +	struct kvm_pmc *pmc;
+>>>> +	u32 i;
+>>>> +
+>>>> +	if (pmu->version != 2) {
+>>>> +		pr_warn("only PerfMon v2 is supported for passthrough PMU");
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	/* Global ctrl register is already saved at VM-exit. */
+>>>> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, pmu->global_status);
+>>>> +	/* Clear hardware MSR_CORE_PERF_GLOBAL_STATUS MSR, if non-zero. */
+>>>> +	if (pmu->global_status)
+>>>> +		wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, pmu->global_status);
+>>>> +
+>>>> +	for (i = 0; i < pmu->nr_arch_gp_counters; i++) {
+>>>> +		pmc = &pmu->gp_counters[i];
+>>>> +		rdpmcl(i, pmc->counter);
+>>>> +		rdmsrl(i + MSR_ARCH_PERFMON_EVENTSEL0, pmc->eventsel);
+>>>> +		/*
+>>>> +		 * Clear hardware PERFMON_EVENTSELx and its counter to avoid
+>>>> +		 * leakage and also avoid this guest GP counter get accidentally
+>>>> +		 * enabled during host running when host enable global ctrl.
+>>>> +		 */
+>>>> +		if (pmc->eventsel)
+>>>> +			wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, 0);
+>>>> +		if (pmc->counter)
+>>>> +			wrmsrl(MSR_IA32_PMC0 + i, 0);
+>>> This doesn't make much sense.  The kernel already has full access to the guest,
+>>> I don't see what is gained by zeroing out the MSRs just to hide them from perf.
+>> It's necessary to clear the EVENTSELx MSRs for both GP and fixed counters.
+>> Considering this case, Guest uses GP counter 2, but Host doesn't use it. So
+>> if the EVENTSEL2 MSR is not cleared here, the GP counter 2 would be enabled
+>> unexpectedly on host later since Host perf always enable all validate bits
+>> in PERF_GLOBAL_CTRL MSR. That would cause issues.
+>>
+>> Yeah,  the clearing for PMCx MSR should be unnecessary .
+>>
+> Why is clearing for PMCx MSR unnecessary? Do we want to leaking counter
+> values to the host? NO. Not in cloud usage.
 
-diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index e1c421282a78..3a1349c0f225 100644
---- a/arch/x86/include/asm/disabled-features.h
-+++ b/arch/x86/include/asm/disabled-features.h
-@@ -53,7 +53,7 @@
- #ifdef CONFIG_MITIGATION_RETPOLINE
- # define DISABLE_RETPOLINE	0
- #else
--# define DISABLE_RETPOLINE	(1 << (X86_FEATURE_RETPOLINE & 31)
-+# define DISABLE_RETPOLINE	(1 << (X86_FEATURE_RETPOLINE & 31))
- #endif
- 
- #ifdef CONFIG_MITIGATION_RETHUNK
+No, this place is clearing the guest counter value instead of host 
+counter value. Host always has method to see guest value in a normal VM 
+if he want. I don't see its necessity, it's just a overkill and 
+introduce extra overhead to write MSRs.
+
+
+>
+> Please make changes to this patch with **extreme** caution.
+>
+> According to our past experience, if there is a bug somewhere,
+> there is a catch here (normally).
+>
+> Thanks.
+> -Mingwei
+>>> Similarly, if perf enables a counter if PERF_GLOBAL_CTRL without first restoring
+>>> the event selector, we gots problems.
+>>>
+>>> Same thing for the fixed counters below.  Can't this just be?
+>>>
+>>> 	for (i = 0; i < pmu->nr_arch_gp_counters; i++)
+>>> 		rdpmcl(i, pmu->gp_counters[i].counter);
+>>>
+>>> 	for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
+>>> 		rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i,
+>>> 		       pmu->fixed_counters[i].counter);
+>>>
+>>>> +	}
+>>>> +
+>>>> +	rdmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
+>>>> +	/*
+>>>> +	 * Clear hardware FIXED_CTR_CTRL MSR to avoid information leakage and
+>>>> +	 * also avoid these guest fixed counters get accidentially enabled
+>>>> +	 * during host running when host enable global ctrl.
+>>>> +	 */
+>>>> +	if (pmu->fixed_ctr_ctrl)
+>>>> +		wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, 0);
+>>>> +	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
+>>>> +		pmc = &pmu->fixed_counters[i];
+>>>> +		rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i, pmc->counter);
+>>>> +		if (pmc->counter)
+>>>> +			wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
+>>>> +	}
+>>>>    }
+>>>>    static void intel_restore_pmu_context(struct kvm_vcpu *vcpu)
+>>>>    {
+>>>> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+>>>> +	struct kvm_pmc *pmc;
+>>>> +	u64 global_status;
+>>>> +	int i;
+>>>> +
+>>>> +	if (pmu->version != 2) {
+>>>> +		pr_warn("only PerfMon v2 is supported for passthrough PMU");
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	/* Clear host global_ctrl and global_status MSR if non-zero. */
+>>>> +	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
+>>> Why?  PERF_GLOBAL_CTRL will be auto-loaded at VM-Enter, why do it now?
+>> As previous comments say, host perf always enable all counters in
+>> PERF_GLOBAL_CTRL by default. The reason to clear PERF_GLOBAL_CTRL here is to
+>> ensure all counters in disabled state and the later counter manipulation
+>> (writing MSR) won't cause any race condition or unexpected behavior on HW.
+>>
+>>
+>>>> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, global_status);
+>>>> +	if (global_status)
+>>>> +		wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, global_status);
+>>> This seems especially silly, isn't the full MSR being written below?  Or am I
+>>> misunderstanding how these things work?
+>> I think Jim's comment has already explain why we need to do this.
+>>
+>>>> +	wrmsrl(MSR_CORE_PERF_GLOBAL_STATUS_SET, pmu->global_status);
+>>>> +
+>>>> +	for (i = 0; i < pmu->nr_arch_gp_counters; i++) {
+>>>> +		pmc = &pmu->gp_counters[i];
+>>>> +		wrmsrl(MSR_IA32_PMC0 + i, pmc->counter);
+>>>> +		wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, pmc->eventsel);
+>>>> +	}
+>>>> +
+>>>> +	wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
+>>>> +	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
+>>>> +		pmc = &pmu->fixed_counters[i];
+>>>> +		wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, pmc->counter);
+>>>> +	}
+>>>>    }
+>>>>    struct kvm_pmu_ops intel_pmu_ops __initdata = {
+>>>> -- 
+>>>> 2.34.1
+>>>>
 
