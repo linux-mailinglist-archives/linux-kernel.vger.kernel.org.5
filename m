@@ -1,83 +1,107 @@
-Return-Path: <linux-kernel+bounces-143702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0121D8A3C6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:05:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930988A3C6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:10:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60322281FEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:05:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AB71F2211D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E58C3DBBE;
-	Sat, 13 Apr 2024 11:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF9B3DBBE;
+	Sat, 13 Apr 2024 11:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SAOnqAN4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PmYA3c5+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zVWQo0F5"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904A51DFD0;
-	Sat, 13 Apr 2024 11:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EDD1DFD0
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 11:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713006321; cv=none; b=ShgOGf6gbl2K3LWCo0IKFRGpIag1k3gbR4WJ0SiVclMlinfQs+w3zQNOsazuoVMnzuce3RQ4HwksBdNb9TE/EDXzxrd8REtCihznNzdlJi+b5hEtC9RjedPvi1M9/nw1lZ4jY3FB7hW+ngWVZQ1HbT7kQNFjHAT7oTnibGqP+Dk=
+	t=1713006626; cv=none; b=h+eWIvfVFRzqM6bFZlGUoCJ37g+ncn90I7xjT80rflgFMmwUorrq3apdpQUCwrEVhIZft0E5+zjoPXpk/d4zbCFomKMQAgEabrfginORpKSlkMXnB3mWEPUdq/CiAx/OoOHce3Nh5XVk0Ymozs6Pz/JJIvrwO+stSI33LWhC8iU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713006321; c=relaxed/simple;
-	bh=V3Zu5G77tqEQ8hNClJQcGwH8VEW5Nfg9tKuIPYVYU/E=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tMTijhrXscnLDv1ToVSCJFfFWumoQ8cGuetXsdMf4NXDuLpg1F2oElzOjPtcbv0DxKn09NDtdndW3aJ7HBTHAYENAFhasz2HWj6kAiOrX90w0dCfb1Lqb0VjvyDMJjhuQZhhpRArUAFsjZIm7ytIA6KyARTY51TpbKF7ZCz8fRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SAOnqAN4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5DFFC2BBFC;
-	Sat, 13 Apr 2024 11:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713006320;
-	bh=V3Zu5G77tqEQ8hNClJQcGwH8VEW5Nfg9tKuIPYVYU/E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SAOnqAN4DVepX+AHbcnLGgFGqdPWgawkgnuUO7Uw/WbTUBZBGvY7w3fh3mspPVuxm
-	 SbNPi3gz5vVfI8tguUWt3DRZGiZrAsGsRwkjgkmzNDmTab8mm/SJaMvne7ybzuxY98
-	 lRLFePdmClDha7jI8+XaWRvdwBbGtzP1gDn180aJHcVte76yDI5hvXlV/f+QkFWcjw
-	 gXf4XiEqrNpW2XsJVjzfb+z91f0VT545FMkj+2DOaBI5MSwFM9JDKnW7vlNmPhc0UR
-	 j8j+U3XviYRSH1Lq+F+nyjJii/88J5PI86HuPl4oMYQH4XnYGXW5Z9pZWjP5Z2b1Hx
-	 ym0cUnmAheL2A==
-Date: Sat, 13 Apr 2024 12:05:07 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?=
- <nuno.sa@analog.com>, linux-iio@vger.kernel.org,
+	s=arc-20240116; t=1713006626; c=relaxed/simple;
+	bh=AK8PSoFQHCoOJm4ED6t2eH2/Y+s506tQ0RjjxcOPYss=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=isiODrXUfU01HRQz+MeM9bGraSQWOKyxp9dS79tKmmqj9HmH2JrJMpnbMTvudNp8JLGoq5ak7XhYWUX1K5K3Xtvny8AGgs8lsZE0930si5k5XApXltwPusKzyCz8uoLcNpHjI8hVvlmUiyGzcDduacNmqm8l4HQRGTf0V/ZhhNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PmYA3c5+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zVWQo0F5; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713006616;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ud3R6yDl9VRbE7siqBnptDz2G1hQfqVZPP/3nt2wP+w=;
+	b=PmYA3c5+62jlKLwDbz4DIE0xTP+huhpo2hiHvJ/XSwRKrifPsClIptWaCctZlHyD6e0ohL
+	DC0Tau6a7G5n4ENAcOBG0n6oUpA1uytTHFBngfAvmU4OQ8uRH4n/KPchkbwMsD3+6gt+AN
+	fuYRGYoAeWTI7TUZMrZshkF5eOa5oc4SMU3kMwulOjXM7tJFKaUkAOpY/wVg4Y1hh6PkYm
+	Sq07E0IBN+1ce/wtcuNKsK4QIkkl6c5bf6ozDVtxV6ueMJCyVDDGPTyNB8SPYfBFmwoorT
+	mUA2pIC6bsZ9awqepqMMEpOg5nK7UmekgCP7C2wFsisHTtC3I5vlWNHVRxwVzw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713006616;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ud3R6yDl9VRbE7siqBnptDz2G1hQfqVZPP/3nt2wP+w=;
+	b=zVWQo0F5mq2VVw2SSbud1xpcs6kSc6YY1Xyl5zi2X96xxL0xoeqJ6s3uB4ES3WuicT3i+e
+	hfVlss9IwHxOx6Bg==
+To: syzbot <syzbot+1dab15008502531a13d2@syzkaller.appspotmail.com>,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: ad7944: Consolidate spi_sync() wrapper
-Message-ID: <20240413120507.05bbd229@jic23-huawei>
-In-Reply-To: <20240412-ad7944-consolidate-msg-v1-1-7fdeff89172f@baylibre.com>
-References: <20240412-ad7944-consolidate-msg-v1-1-7fdeff89172f@baylibre.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+Cc: lizhi.xu@windriver.com, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [syzbot] [syzbot] [kernel?] inconsistent lock state in
+ sock_hash_delete_elem
+In-Reply-To: <00000000000045aaf30615035889@google.com>
+References: <00000000000045aaf30615035889@google.com>
+Date: Sat, 13 Apr 2024 13:10:16 +0200
+Message-ID: <8734rpzffr.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On Fri, 12 Apr 2024 18:25:02 -0500
-David Lechner <dlechner@baylibre.com> wrote:
+On Sun, Mar 31 2024 at 23:46, syzbot wrote:
+> For archival purposes, forwarding an incoming command email to
+> linux-kernel@vger.kernel.org.
+>
+> ***
+>
+> Subject: [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
+> Author: lizhi.xu@windriver.com
+>
+> #syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index d44efa0d0611..07a3c1d2c2d8 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -5676,7 +5676,7 @@ void scheduler_tick(void)
+>  
+>  	sched_clock_tick();
+>  
+> -	rq_lock(rq, &rf);
+> +	rq_lock_irqsave(rq, &rf);
 
-> Since commit 6020ca4de8e5 ("iio: adc: ad7944: use spi_optimize_message()"),
-> The helper functions wrapping spi_sync() for 3-wire and 4-wire modes are
-> virtually identical. Since gpiod_set_value_cansleep() does a NULL check
-> internally, we can consolidate the two functions into one and avoid
-> switch statements at the call sites.
-> 
-> The default cases of the removed switch statement were just to make the
-> compiler happy and are not reachable since the mode is validated in the
-> probe function. So removing those should be safe.
-> 
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-I was initially dubious about implying the need to change a GPIO when we don't,
-but given that the resulting function is really simple and the comment on that
-is immediately above the code (not obvious from this diff) this seems fine to
-me.
-
-Applied.
+That's just wrong. scheduler_tick() is invoked from hard interrupt
+context with interrupts disabled.
+  
+>  	update_rq_clock(rq);
+>  	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+> @@ -5688,7 +5688,7 @@ void scheduler_tick(void)
+>  	sched_core_tick(rq);
+>  	task_tick_mm_cid(rq, curr);
+>  
+> -	rq_unlock(rq, &rf);
+> +	rq_unlock_irqrestore(rq, &rf);
+>  
+>  	if (sched_feat(LATENCY_WARN) && resched_latency)
+>  		resched_latency_warn(cpu, resched_latency);
 
