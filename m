@@ -1,180 +1,171 @@
-Return-Path: <linux-kernel+bounces-143663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14CD48A3C11
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:56:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763118A3C18
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E2BD1C20F7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:56:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADCC6B21A57
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115413C46B;
-	Sat, 13 Apr 2024 09:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A101F3D556;
+	Sat, 13 Apr 2024 10:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mFZQ2ioQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MDqSIGaw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F4B3DBB7;
-	Sat, 13 Apr 2024 09:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF5814265;
+	Sat, 13 Apr 2024 10:01:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713002189; cv=none; b=dNznbpcJ5iZs5l+Cik4vKLdHuBLqxBNH4tZzD2C7HJxzN0tQNEBEWwFixIQu79RwnrK9hbVCnB4FaOHpSPe+xr6ZDrgJ52rw+4YSTK30dQeVKfEkLzC4mnjC63qW3ri3FfXgdnwizveCHGthe92JcF2xZ5twOpER3NuQRdLp+VY=
+	t=1713002473; cv=none; b=RzeQnn6FjQtFSU+jdvm46tbjKFp1Ba/D0LnTQghZhv4xKQLe8hecRcW6jVxL4aVmiP4xqXOr6s//H1OUy1smE5A15DI8hR5It7KmcO4UL+4M6GwL1aMoCEwxpgJU1+LtC6jjhAHuF7aaytdIrJ0CgUuQ10bGMmFTQh0idEt+gnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713002189; c=relaxed/simple;
-	bh=QDdFeOtdYZxjp46RxGOVjOsa4iTVpoIZG/FPIUq7PkU=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k4sb9BW3qRClr6agh2lOEc+GAWDMbBtdlx5PmfUjlVAuvD6YKQoFn9CuJfcESE+aYsJLN3ZK4NsGqku47mN4dWdTvbgvPruaSZpu3wOUYr5UG6wVEp43cieghAV2zGliEDhPZPVMKjb00GpIaObQAXTRS8P6zHIHFMSHtylKVp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mFZQ2ioQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FB85C4AF55;
-	Sat, 13 Apr 2024 09:56:28 +0000 (UTC)
+	s=arc-20240116; t=1713002473; c=relaxed/simple;
+	bh=M8jzyVtgD1C3f4LkPu9lLRDNvCWXKSwAyeVD4GJA+0U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gYvnvJsD8Rja6zEy7+N50yUo6eagubt3vkR82JQPgdF/1/oDBp+CvmgvVLfh/yTKhoGXW5MTEfAspIEWzsI6d8qNE0vCIHD/QW3od54/94479jLZTRs5ZJiB99q/g8kCO+hBcbDE9X+Igr4+FtMpAbv++EJ1NIVHE8ujxpD62Z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MDqSIGaw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A686C4AF0D;
+	Sat, 13 Apr 2024 10:01:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713002188;
-	bh=QDdFeOtdYZxjp46RxGOVjOsa4iTVpoIZG/FPIUq7PkU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mFZQ2ioQYI4SPEajzb0CoDJ+DBpEtqV/6Z/BFQ4PKiYU1objwuCL1h0YEV5wVvaaV
-	 CStVGbxbg2PLEvUpiruu3vkH/y4cM4+cyaR6uTFrqiuCgSAt4YmdU+kQNO4mhteYE5
-	 q333pUGrVdvWTX2jJozMVr1WfreRxN9CZWgNdxAf4RoHKNGu901fhZ7/hHch++3d1I
-	 m2eFAZSX3y2YCFXBDOjGGbQYp+igVsDeuNqTryAXEm0o7f2cHg2zXaMLKr1soTFZ2j
-	 ofMp5Ohw4rwS2q0YaHgiHwMQ7+YkitOG5MjuKApjtCEFb8HYoNf/A99GWK9EyWwGw/
-	 8+Y5NXUY8UrNA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rva7W-0047Ih-AA;
-	Sat, 13 Apr 2024 10:56:26 +0100
-Date: Sat, 13 Apr 2024 10:56:25 +0100
-Message-ID: <86h6g5si0m.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Will Deacon <will@kernel.org>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	kvm-riscv@lists.infradead.org,
-	linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
-In-Reply-To: <ZhlLHtfeSHk9gRRO@google.com>
-References: <20240405115815.3226315-1-pbonzini@redhat.com>
-	<20240405115815.3226315-2-pbonzini@redhat.com>
-	<20240412104408.GA27645@willie-the-truck>
-	<86jzl2sovz.wl-maz@kernel.org>
-	<ZhlLHtfeSHk9gRRO@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1713002472;
+	bh=M8jzyVtgD1C3f4LkPu9lLRDNvCWXKSwAyeVD4GJA+0U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MDqSIGawNAVQorIkIpn+/2QhThS0S2hvseA7ElQRoNzI1lAODuWbvWRePH/moP0K1
+	 aYo/+4AtTxFNy+DPSPHzQZ766DHK4FdFXZ5eCUSPHcDDP8O8rwk/5fengDxFj3MoTI
+	 q84dAWhts56Mfjc+Cs3A1sFeehJCoacYnCC0ENjh+ORBGNf5j+YaEBbi1BuAMux+F1
+	 aeQPz1J2wKKcMyByrAZnqq63Io9lHLK4KB0K05DbiaZEy4h06qQcR2X2XaTadH1wbj
+	 SwKRKpp0hFKEB3VYwHgsWeVmlS/ocbVedTHtqzeDP9fDplNt3L22AhAnlux5nEhTUI
+	 rhMGZNAgrHBcg==
+Date: Sat, 13 Apr 2024 11:01:08 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240413-ranging-uselessly-4b1de2210593@spud>
+References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+ <20240412154342.GA1310856@mit.edu>
+ <87a5lyecuw.fsf@all.your.base.are.belong.to.us>
+ <20240413043542.GE187181@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: seanjc@google.com, will@kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, oliver.upton@linux.dev, zhaotianrui@loongson.cn, maobibo@loongson.cn, tsbogend@alpha.franken.de, npiggin@gmail.com, anup@brainfault.org, atishp@atishpatra.org, akpm@linux-foundation.org, david@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FJpzzv1jTl7B+Rbm"
+Content-Disposition: inline
+In-Reply-To: <20240413043542.GE187181@mit.edu>
 
-On Fri, 12 Apr 2024 15:54:22 +0100,
-Sean Christopherson <seanjc@google.com> wrote:
-> 
-> On Fri, Apr 12, 2024, Marc Zyngier wrote:
-> > On Fri, 12 Apr 2024 11:44:09 +0100, Will Deacon <will@kernel.org> wrote:
-> > > On Fri, Apr 05, 2024 at 07:58:12AM -0400, Paolo Bonzini wrote:
-> > > Also, if you're in the business of hacking the MMU notifier code, it
-> > > would be really great to change the .clear_flush_young() callback so
-> > > that the architecture could handle the TLB invalidation. At the moment,
-> > > the core KVM code invalidates the whole VMID courtesy of 'flush_on_ret'
-> > > being set by kvm_handle_hva_range(), whereas we could do a much
-> > > lighter-weight and targetted TLBI in the architecture page-table code
-> > > when we actually update the ptes for small ranges.
-> > 
-> > Indeed, and I was looking at this earlier this week as it has a pretty
-> > devastating effect with NV (it blows the shadow S2 for that VMID, with
-> > costly consequences).
-> > 
-> > In general, it feels like the TLB invalidation should stay with the
-> > code that deals with the page tables, as it has a pretty good idea of
-> > what needs to be invalidated and how -- specially on architectures
-> > that have a HW-broadcast facility like arm64.
-> 
-> Would this be roughly on par with an in-line flush on arm64?  The simpler, more
-> straightforward solution would be to let architectures override flush_on_ret,
-> but I would prefer something like the below as x86 can also utilize a range-based
-> flush when running as a nested hypervisor.
-> 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index ff0a20565f90..b65116294efe 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -601,6 +601,7 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
->         struct kvm_gfn_range gfn_range;
->         struct kvm_memory_slot *slot;
->         struct kvm_memslots *slots;
-> +       bool need_flush = false;
->         int i, idx;
->  
->         if (WARN_ON_ONCE(range->end <= range->start))
-> @@ -653,10 +654,22 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
->                                         break;
->                         }
->                         r.ret |= range->handler(kvm, &gfn_range);
-> +
-> +                       /*
-> +                        * Use a precise gfn-based TLB flush when possible, as
-> +                        * most mmu_notifier events affect a small-ish range.
-> +                        * Fall back to a full TLB flush if the gfn-based flush
-> +                        * fails, and don't bother trying the gfn-based flush
-> +                        * if a full flush is already pending.
-> +                        */
-> +                       if (range->flush_on_ret && !need_flush && r.ret &&
-> +                           kvm_arch_flush_remote_tlbs_range(kvm, gfn_range.start
-> +                                                            gfn_range.end - gfn_range.start + 1))
-> +                               need_flush = true;
->                 }
->         }
->  
-> -       if (range->flush_on_ret && r.ret)
-> +       if (need_flush)
->                 kvm_flush_remote_tlbs(kvm);
->  
->         if (r.found_memslot)
 
-I think this works for us on HW that has range invalidation, which
-would already be a positive move.
+--FJpzzv1jTl7B+Rbm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For the lesser HW that isn't range capable, it also gives the
-opportunity to perform the iteration ourselves or go for the nuclear
-option if the range is larger than some arbitrary constant (though
-this is additional work).
+On Sat, Apr 13, 2024 at 12:35:42AM -0400, Theodore Ts'o wrote:
+> On Fri, Apr 12, 2024 at 06:59:19PM +0200, Bj=F6rn T=F6pel wrote:
+> >=20
+> >   $ pipx install tuxrun
+> >=20
+> > if you're on Debian.
+> >=20
+> > Then you can get the splat by running:
+> >=20
+> >   $ tuxrun  --runtime docker --device qemu-riscv32 --kernel https://sto=
+rage.tuxsuite.com/public/linaro/lkft/builds/2esMBaAMQJpcmczj0aL94fp4QnP/Ima=
+ge.gz --parameters SKIPFILE=3Dskipfile-lkft.yaml --parameters SHARD_NUMBER=
+=3D10 --parameters SHARD_INDEX=3D1 --image docker.io/linaro/tuxrun-dispatch=
+er:v0.66.1 --tests ltp-controllers
+>=20
+> Yeah, what I was hoping for was a shell script or a .c file hich was
+> the reproducer, because that way I can run the test in my test infrastruc=
+ture [1]
+>=20
+> [1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-x=
+fstests.md
+>=20
+> I'm sure there are plenty of nice things about tuxrun, but with
+> kvm-xfstests I can easily get a shell so I can run the test sccript by
+> hand, perhaps with strace so I can see what is going on.  Or I attach
+> gdb to the kernel via "gdb /path/to/vmlinux" and "target remote
+> localhost:7499".
+>=20
+> I'm guessing that "ltp-controllers" means that the test might be from
+> the Linux Test Project?  If so, that's great because I've added ltp
+> support to my test infrastructure (which also supports blktests,
+> phoronix test suite, and can be run on gce and on android devices in
+> addition to qemu, and on the arm64, i386, and x86_64 architectures).
+>=20
+> > Build with "make ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu-", and =
+make
+> > sure to have the riscv64 cross-compilation support (yes, same toolchain
+> > for rv32!).
+> >=20
+> > It's when the rootfs is mounted, and the kernel is looking an init.
+>=20
+> Hmm, so this happening as soon as the VM starts, before actually
+> starting to run any tests?  Is it possible for you to send me the
+> rootfs as a downloading image, as opposed to my trying to paw through
+> the docker image?
+>=20
+> > I'll keep debugging -- it was more if anyone had seen it before. I'll
+> > try to reproduce on some other 32b platform as well.
+>=20
+> Well, it's not happening on my rootfs on i386 using my test infrastructur=
+e:
+>=20
+> % cd /usr/projects/linux/ext4
+> % git checkout v6.8
+> % install-kconfig --arch i386
+> % kbuild --arch i386
+> % kvm-xfstests shell
+>     ...
+> root@kvm-xfstests:~# cd ltp
+> root@kvm-xfstests:~# ./runltp
+>=20
+> (I don't have ltp support fully automated the way I can run blktests
+> using "kvm-xfstests --blktests" or run xfstests via "gce-xfstests -c
+> ext4/all -g auto".  The main missing is teaching ltp to create an
+> junit xml results file so that the test results can be summarized and
+> so the test results can be more easily summarized and compared against
+> past runs on different kernel versions.)
+>=20
+> Anyway, if you can send me your rootfs, I can try to take a look at it.
 
-But this still considers the whole range as being affected by
-range->handler(). It'd be interesting to try and see whether more
-precise tracking is (or isn't) generally beneficial.
+I think this should be the rootfs here:
+https://drive.google.com/file/d/1HIo8EkAKY0xpTIIlwd9fXjRzmIdD7BUA/view?usp=
+=3Dsharing
 
-Thanks,
+I also attempted to bisect this and ended up at a slightly different
+commit to Bjorn: 8c9440fea774 ("Merge tag 'vfs-6.8.mount' of git://git.kern=
+el.org/pub/scm/linux/kernel/git/vfs/vfs")
+That's a merge of 3f6984e7301f & 5bd3cf8cbc8a, both of which booted for
+me. I also tried to bisect in reverse to find the fix a la syzbot, since it
+is not broken in 6.9, but that's pretty error prone and I ended up down
+branches based on 6.7 and was not able to find the fix.
 
-	M.
+--FJpzzv1jTl7B+Rbm
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Without deviation from the norm, progress is not possible.
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhpX4wAKCRB4tDGHoIJi
+0tRqAQCXXbOrWb84G1BMCnEc/q7K6gnaG6NpDOGxRUtn77Aj9wD/Z8HV03soxS6w
+zP3EBHNHEyYrQfbMFW54iQq7kSvAjgk=
+=6oYE
+-----END PGP SIGNATURE-----
+
+--FJpzzv1jTl7B+Rbm--
 
