@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-143774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D3E88A3D4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:21:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 856A88A3D56
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:22:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6360028233A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:21:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5A181C20C1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532F54654D;
-	Sat, 13 Apr 2024 15:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9DA50296;
+	Sat, 13 Apr 2024 15:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JQu8t4a6"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Gnxrd3e9"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB2345BE1;
-	Sat, 13 Apr 2024 15:21:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C058847F79;
+	Sat, 13 Apr 2024 15:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713021693; cv=none; b=sG8A4C5hQcDy7+I2gFgaZK6+xPJ5D+c7zCoOsqaY39ctXr42Fnj0KNO1q2X7BBnpu7U9ygL42vSwqR6sog8WLvrgYACrwCEwtJSGGOG67+xdzeFaNHTnDm5ZsXONzV2u4w8mussveeKjhS2uT87vsqZYXnmCLTpsf/Ng9r5a6uc=
+	t=1713021697; cv=none; b=FtzmnDRte1jdqPMsUz/N0tj0chchqtwIA7hZ3Y3lVB7K6l1LzelwEEMacIzLKd67R2sHjpT4kKUJQV5lOoS3sK7NSUPWu3UONPbrMo/N6G9fRCGkhxG/tBMZiL7CAL7Y7dVkpOnrTesgYSyhWEIy8QGvKK38DnOrkNxKI3ynIkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713021693; c=relaxed/simple;
-	bh=yEWjbDnznVC6vT4NO/Xj3JDq3tC38KjlGRoMlOKXXps=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z8gHuB+xB9Y67wFlcx7/QBr86ZfHbUCqN7flFo4hjkLQtTQcrE66rVqp7VQJXIBNiw8nBguZBBXyE7bWxlJQK8V5v6af8eXjzvAtw0W8EgaHDrM48LWamX/jjfo/CRW0LRdbLYfWw6SOcrd30vUP+hhFNPTBufxJKc9W6GBPUTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=JQu8t4a6; arc=none smtp.client-ip=205.220.180.131
+	s=arc-20240116; t=1713021697; c=relaxed/simple;
+	bh=fpVQxqMoLzAB9+4r9U4oPUKA5wB9q5w9DC7PRMLy0Fo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VEWwHv29Y7wPJIsIGrDL/NBYthJeZ2Mlo8dSWX8n8dtDbopp+PcFZgtsy/r3DHwIqWkFezj8xdy34vXAcVAXYK90ZGIHu+dwiWrncXqcCNmqf28n2wmS9inZjJx40mFJCmNVfRrWS1VHtHVej/sNskSEjNzhgWMwFP4Qwwkhia0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Gnxrd3e9; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43DF8N9f030225;
-	Sat, 13 Apr 2024 15:21:10 GMT
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43DFEocq001618;
+	Sat, 13 Apr 2024 15:21:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=qcppdkim1; bh=v1nRL8Z
-	DfgPlt89U1eI5XAv4EMOC/gfGb5BYwBW6vPk=; b=JQu8t4a655UPNQQ8dGlTmJP
-	oQ9mY2FKlsgjA8ZrFGG9G9gnU1WOdagMFN1FjvjAdU/MJ38/a6PA3S14I3gWG1Hb
-	C+brhU03ryywUQxJu8DLtVwr/hZ3BVDxkUUcwc/1ILZeppcClqEt6JOg2P5yvsQx
-	fuw1bvSdpRu0KIcgFLJRdT2v6u+m3limXExyI5tanwWfxHjXxCnLVwvT8TGBzSpf
-	Q4XrVcY0uOI9K8QHHem5vdxNtqKUs8W234VL8nLQIvHgNzHyoKcN0ZGgV3xcridd
-	Wyx2HTEamHfdjKf90GR0h9xksqjm7FwrYjmonR9qyQFfER1ZLB+zNjqaDlbmaFQ=
-	=
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xfh2crnw4-1
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:mime-version:content-transfer-encoding:content-type; s=
+	qcppdkim1; bh=dYACaZmRrE5GD+NA+4Drz7RoHHqXE9omqGCamCn2T/s=; b=Gn
+	xrd3e9QGVgx8Pz+/iqxl+geBVQex8u5Nrp3QQT/85MJpfgGq8bfAJCrwi62ZB33G
+	QH3ssb5/lymVpMzCH7gYrLPlyjtSIGX6YCy3tRVg6wm9SrpnHBl7XwreoqqRSgOM
+	T6svdT86W3U4lQZ0isR86MpsVtAkta+//Bop++9NsmVN1X8CePPXgr9NFROslhaZ
+	nLhxH0cnV3Loqpi+36iaU9ZW9uhe+2vlVdZ58AsLkuWu5WRepWjrdoz6MqDpaSqo
+	IubbvPudQnU4VJtfBDkbLGwpnJRnj7ITzjQzK9wMGHQYADfHYxyhJhvGogJcHw+P
+	FPPz8zEeyrMKoegKZsqQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xfkbdgj0h-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Apr 2024 15:21:10 +0000 (GMT)
+	Sat, 13 Apr 2024 15:21:17 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43DFL8uV007731
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43DFLGmn026395
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Apr 2024 15:21:08 GMT
+	Sat, 13 Apr 2024 15:21:16 GMT
 Received: from hu-jkona-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Sat, 13 Apr 2024 08:21:00 -0700
+ 15.2.1544.9; Sat, 13 Apr 2024 08:21:08 -0700
 From: Jagadeesh Kona <quic_jkona@quicinc.com>
 To: Bjorn Andersson <andersson@kernel.org>,
         Michael Turquette
@@ -86,11 +87,13 @@ CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         Imran Shaik
 	<quic_imrashai@quicinc.com>,
         Ajit Pandey <quic_ajipan@quicinc.com>,
-        "Jagadeesh Kona" <quic_jkona@quicinc.com>
-Subject: [PATCH V5 RESEND 0/5] PM: domains: Add control for switching back and forth to HW control
-Date: Sat, 13 Apr 2024 20:50:08 +0530
-Message-ID: <20240413152013.22307-1-quic_jkona@quicinc.com>
+        "Jagadeesh Kona" <quic_jkona@quicinc.com>, Dhruva Gole <d-gole@ti.com>
+Subject: [PATCH V5 RESEND 1/5] PM: domains: Allow devices attached to genpd to be managed by HW
+Date: Sat, 13 Apr 2024 20:50:09 +0530
+Message-ID: <20240413152013.22307-2-quic_jkona@quicinc.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240413152013.22307-1-quic_jkona@quicinc.com>
+References: <20240413152013.22307-1-quic_jkona@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,63 +106,176 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: FAzFLGXG3OsMsDAkOAIwv7xrlrnCVhrp
-X-Proofpoint-GUID: FAzFLGXG3OsMsDAkOAIwv7xrlrnCVhrp
+X-Proofpoint-ORIG-GUID: SXHHahJ9QIJBOQgeUwojuUvn0lZapJAe
+X-Proofpoint-GUID: SXHHahJ9QIJBOQgeUwojuUvn0lZapJAe
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-13_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 impostorscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404130113
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 clxscore=1011 malwarescore=0 adultscore=0 mlxscore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404130112
 
-This series adds support for dev_pm_genpd_set_hwmode() and dev_pm_genpd_get_hwmode() APIs
-and support in gdsc provider drivers to register respective callbacks and venus consumer
-driver example using above API to switch the power domain(GDSC) to HW/SW modes dynamically
-at runtime.
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-This is resend of V5 series, added R-By tags received in V5 for 1st & 2nd patches.
+Some power-domains may be capable of relying on the HW to control the power
+for a device that's hooked up to it. Typically, for these kinds of
+configurations the consumer driver should be able to change the behavior of
+power domain at runtime, control the power domain in SW mode for certain
+configurations and handover the control to HW mode for other usecases.
 
-Link to V5: https://lore.kernel.org/all/20240315111046.22136-1-quic_jkona@quicinc.com/
+To allow a consumer driver to change the behaviour of the PM domain for its
+device, let's provide a new function, dev_pm_genpd_set_hwmode(). Moreover,
+let's add a corresponding optional genpd callback, ->set_hwmode_dev(),
+which the genpd provider should implement if it can support switching
+between HW controlled mode and SW controlled mode. Similarly, add the
+dev_pm_genpd_get_hwmode() to allow consumers to read the current mode and
+its corresponding optional genpd callback, ->get_hwmode_dev(), which the
+genpd provider can also implement to synchronize the initial HW mode
+state in genpd_add_device() by reading back the mode from the hardware.
 
-Changes in V5:
-- Updated 1st patch as per V4 review comments to synchronize the initial HW mode state by
-  invoking ->get_hwmode_dev()callback in genpd_add_device()
-- With above change, SW cached hwmode will contain correct value initially, and it will be
-  updated everytime mode is changed in set_hwmode, hence updated dev_pm_genpd_get_hwmode()
-  to just return SW cached hwmode in 1st patch
-- Updated commit text for 1st, 3rd, 4th and 5th patches
-- Updated 3rd and 5th patches as per review comments received on V4 series
-- Added R-By tags received in older series to 1st and 2nd patches
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
+---
+ drivers/pmdomain/core.c   | 64 +++++++++++++++++++++++++++++++++++++++
+ include/linux/pm_domain.h | 17 +++++++++++
+ 2 files changed, 81 insertions(+)
 
-Previous series:
-V4: https://lore.kernel.org/all/20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org/
-V3: https://lore.kernel.org/lkml/20230823114528.3677667-1-abel.vesa@linaro.org/ 
-V2: https://lore.kernel.org/lkml/20230816145741.1472721-1-abel.vesa@linaro.org/
-V1: https://lore.kernel.org/all/20230628105652.1670316-1-abel.vesa@linaro.org/
-
-Abel Vesa (1):
-  PM: domains: Add the domain HW-managed mode to the summary
-
-Jagadeesh Kona (3):
-  clk: qcom: gdsc: Add set and get hwmode callbacks to switch GDSC mode
-  clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
-  venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode on
-    V6
-
-Ulf Hansson (1):
-  PM: domains: Allow devices attached to genpd to be managed by HW
-
- drivers/clk/qcom/gdsc.c                       | 37 +++++++++
- drivers/clk/qcom/gdsc.h                       |  1 +
- drivers/clk/qcom/videocc-sc7280.c             |  2 +-
- drivers/clk/qcom/videocc-sm8250.c             |  4 +-
- .../media/platform/qcom/venus/pm_helpers.c    | 39 ++++++----
- drivers/pmdomain/core.c                       | 78 ++++++++++++++++++-
- include/linux/pm_domain.h                     | 17 ++++
- 7 files changed, 157 insertions(+), 21 deletions(-)
-
+diff --git a/drivers/pmdomain/core.c b/drivers/pmdomain/core.c
+index 4215ffd9b11c..70d8634dd9e8 100644
+--- a/drivers/pmdomain/core.c
++++ b/drivers/pmdomain/core.c
+@@ -578,6 +578,68 @@ void dev_pm_genpd_synced_poweroff(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(dev_pm_genpd_synced_poweroff);
+ 
++/**
++ * dev_pm_genpd_set_hwmode() - Set the HW mode for the device and its PM domain.
++ *
++ * @dev: Device for which the HW-mode should be changed.
++ * @enable: Value to set or unset the HW-mode.
++ *
++ * Some PM domains can rely on HW signals to control the power for a device. To
++ * allow a consumer driver to switch the behaviour for its device in runtime,
++ * which may be beneficial from a latency or energy point of view, this function
++ * may be called.
++ *
++ * It is assumed that the users guarantee that the genpd wouldn't be detached
++ * while this routine is getting called.
++ *
++ * Return: Returns 0 on success and negative error values on failures.
++ */
++int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
++{
++	struct generic_pm_domain *genpd;
++	int ret = 0;
++
++	genpd = dev_to_genpd_safe(dev);
++	if (!genpd)
++		return -ENODEV;
++
++	if (!genpd->set_hwmode_dev)
++		return -EOPNOTSUPP;
++
++	genpd_lock(genpd);
++
++	if (dev_gpd_data(dev)->hw_mode == enable)
++		goto out;
++
++	ret = genpd->set_hwmode_dev(genpd, dev, enable);
++	if (!ret)
++		dev_gpd_data(dev)->hw_mode = enable;
++
++out:
++	genpd_unlock(genpd);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(dev_pm_genpd_set_hwmode);
++
++/**
++ * dev_pm_genpd_get_hwmode() - Get the HW mode setting for the device.
++ *
++ * @dev: Device for which the current HW-mode setting should be fetched.
++ *
++ * This helper function allows consumer drivers to fetch the current HW mode
++ * setting of its the device.
++ *
++ * It is assumed that the users guarantee that the genpd wouldn't be detached
++ * while this routine is getting called.
++ *
++ * Return: Returns the HW mode setting of device from SW cached hw_mode.
++ */
++bool dev_pm_genpd_get_hwmode(struct device *dev)
++{
++	return dev_gpd_data(dev)->hw_mode;
++}
++EXPORT_SYMBOL_GPL(dev_pm_genpd_get_hwmode);
++
+ static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
+ {
+ 	unsigned int state_idx = genpd->state_idx;
+@@ -1676,6 +1738,8 @@ static int genpd_add_device(struct generic_pm_domain *genpd, struct device *dev,
+ 
+ 	gpd_data->cpu = genpd_get_cpu(genpd, base_dev);
+ 
++	gpd_data->hw_mode = genpd->get_hwmode_dev ? genpd->get_hwmode_dev(genpd, dev) : false;
++
+ 	ret = genpd->attach_dev ? genpd->attach_dev(genpd, dev) : 0;
+ 	if (ret)
+ 		goto out;
+diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+index 772d3280d35f..797b3987b37b 100644
+--- a/include/linux/pm_domain.h
++++ b/include/linux/pm_domain.h
+@@ -175,6 +175,10 @@ struct generic_pm_domain {
+ 	int (*set_performance_state)(struct generic_pm_domain *genpd,
+ 				     unsigned int state);
+ 	struct gpd_dev_ops dev_ops;
++	int (*set_hwmode_dev)(struct generic_pm_domain *domain,
++			      struct device *dev, bool enable);
++	bool (*get_hwmode_dev)(struct generic_pm_domain *domain,
++			      struct device *dev);
+ 	int (*attach_dev)(struct generic_pm_domain *domain,
+ 			  struct device *dev);
+ 	void (*detach_dev)(struct generic_pm_domain *domain,
+@@ -237,6 +241,7 @@ struct generic_pm_domain_data {
+ 	unsigned int performance_state;
+ 	unsigned int default_pstate;
+ 	unsigned int rpm_pstate;
++	bool hw_mode;
+ 	void *data;
+ };
+ 
+@@ -266,6 +271,8 @@ int dev_pm_genpd_remove_notifier(struct device *dev);
+ void dev_pm_genpd_set_next_wakeup(struct device *dev, ktime_t next);
+ ktime_t dev_pm_genpd_get_next_hrtimer(struct device *dev);
+ void dev_pm_genpd_synced_poweroff(struct device *dev);
++int dev_pm_genpd_set_hwmode(struct device *dev, bool enable);
++bool dev_pm_genpd_get_hwmode(struct device *dev);
+ 
+ extern struct dev_power_governor simple_qos_governor;
+ extern struct dev_power_governor pm_domain_always_on_gov;
+@@ -334,6 +341,16 @@ static inline ktime_t dev_pm_genpd_get_next_hrtimer(struct device *dev)
+ static inline void dev_pm_genpd_synced_poweroff(struct device *dev)
+ { }
+ 
++static inline int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
++{
++	return -EOPNOTSUPP;
++}
++
++static inline bool dev_pm_genpd_get_hwmode(struct device *dev)
++{
++	return false;
++}
++
+ #define simple_qos_governor		(*(struct dev_power_governor *)(NULL))
+ #define pm_domain_always_on_gov		(*(struct dev_power_governor *)(NULL))
+ #endif
 -- 
 2.43.0
 
