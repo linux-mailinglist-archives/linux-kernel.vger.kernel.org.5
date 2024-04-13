@@ -1,101 +1,98 @@
-Return-Path: <linux-kernel+bounces-143691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A52FE8A3C52
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:51:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E9A48A3C54
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21CF4B21939
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:51:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C9461C20CB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811413D96B;
-	Sat, 13 Apr 2024 10:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1j0+eXL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4C83C46B;
+	Sat, 13 Apr 2024 10:51:20 +0000 (UTC)
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBCF22032B;
-	Sat, 13 Apr 2024 10:51:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27AAA3EA96;
+	Sat, 13 Apr 2024 10:51:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713005471; cv=none; b=d4SWKO6lAO0Tc58g3o+/YqNUgni6TvZsOun5a0PGqbMusdo8g3Lp6jbdkOBsNi5vDDa4oo2s53tjI6DwSus4ODu3WMbLT28M+s2lDhpnELn7YADBsGuUk8cgtR3OI+HstSp5nfazfTVHyrVPORM9CBIfnSTLgSjtQ7Ct2xO6aVI=
+	t=1713005479; cv=none; b=RojA6T9/7m7Ivt6Z0T5S1DHighyN0cupGKJYX9KoKBICQJ6FO838ynk0SWTSOezqReyw5z6X1XXbJreUBNerZrkd+jU5pH9qD1Ok62dUHNg3JHgK2fMAGP0Gc8wvxISfiIbD4TunPMUHmyJNZoORJnVcnKlbQTCpHs3tWo0R7II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713005471; c=relaxed/simple;
-	bh=1I9aNImIGoSMVbeQ1cOQLSbD7GRmUwabTf9B4XP8dhU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lkf9QyIYp63QZF9U7DKgTntw57t7o3/pkxTEBj9UKUuPIHQA2qni3CqkVlWKb39KPxIs0oDLhPUpYij19e8d+k5snqOranvWVhP4A/ggVy3gQkGQggL8Aox1ULhTdETnX6qPcIQzvNoXu3zQ1kz3b2z9XbdbFOf92wCwYw8YqaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1j0+eXL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8CC7C113CD;
-	Sat, 13 Apr 2024 10:51:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713005471;
-	bh=1I9aNImIGoSMVbeQ1cOQLSbD7GRmUwabTf9B4XP8dhU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=k1j0+eXL1VZR5woVbQsVy0+ucqsBoUvbUu/TfAEw2hG8/NJL6ckoX3tU4T5v7BjLC
-	 HhXZCyaD5FhzGJ/wZkC3FRiGS6DRaD9EZ/E0QBEyHKuCavHZDA50aPVnTgj9rY/Rdn
-	 r8HSfpYJzdPtsOCM16lUtitqosP7eZa4YH/0RoDnMTKQjrj+zYiMf2eqKNrb2+MNAm
-	 OYTdNCwl+DRgNRlrIyY5ZO5JNcXyKRzkqcDQg0MdgnuG412OSKjmnNT4002oQ/n2TE
-	 A9+hB1pZ03RHkQYnagiCTaQzQbTYQLb4TlhvxcxesI6ea56Bssm4F0XEYmQjhuaesh
-	 jdHo3Cp3+Gpag==
-Date: Sat, 13 Apr 2024 11:50:55 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
-Cc: Dumitru Ceclan via B4 Relay
- <devnull+dumitru.ceclan.analog.com@kernel.org>, dumitru.ceclan@analog.com,
- Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
- <Michael.Hennerich@analog.com>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, David Lechner <dlechner@baylibre.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] iio: adc: ad7173: fix buffers enablement for
- ad7176-2
-Message-ID: <20240413115055.4f7a5892@jic23-huawei>
-In-Reply-To: <05ef3e35-1ce0-48c4-9517-e8c1280cf96d@gmail.com>
-References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
-	<20240401-ad4111-v1-2-34618a9cc502@analog.com>
-	<20240406155646.694f710b@jic23-huawei>
-	<05ef3e35-1ce0-48c4-9517-e8c1280cf96d@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713005479; c=relaxed/simple;
+	bh=8bpdfCe2nuq6dKsz2FLSG+VUZG2U5J6jqaUpYbF9eW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jaOei+zXTLA8DQTGekgkyaoz4E2GLDwegenqG7qeYKvDZKU4DwjYgWcUZ2oob/FqTsPinFUrKPPuqyklkfmZNXmeVD7i1yTysPAEMWRcBDa+I1HX680awsrDFspKHRB8/Luv+oA/UBen1isrCwLrYxm/RYGf25o0FmGlDXm/WcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=176.9.242.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 4A4771029D24D;
+	Sat, 13 Apr 2024 12:51:15 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 2C13048440; Sat, 13 Apr 2024 12:51:15 +0200 (CEST)
+Date: Sat, 13 Apr 2024 12:51:15 +0200
+From: Lukas Wunner <lukas@wunner.de>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "M. Haener" <michael.haener@siemens.com>,
+	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alexander Sverdlin <alexander.sverdlin@siemens.com>
+Subject: Re: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
+ binding
+Message-ID: <ZhpjozjbeWrb0OTl@wunner.de>
+References: <20240413071621.12509-1-michael.haener@siemens.com>
+ <20240413071621.12509-3-michael.haener@siemens.com>
+ <8c13a349-a721-44d3-9e23-2e01f4c2ca4d@linaro.org>
+ <Zhpb2URMxuoilKAZ@wunner.de>
+ <3d08cf54-f58f-446f-977e-21ba65986924@linaro.org>
+ <ZhpfwaIUc0HpfZP1@wunner.de>
+ <889ca65c-c9c7-4658-9c34-5d89774218cc@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <889ca65c-c9c7-4658-9c34-5d89774218cc@linaro.org>
 
-On Mon, 8 Apr 2024 19:40:26 +0300
-"Ceclan, Dumitru" <mitrutzceclan@gmail.com> wrote:
-
-> On 06/04/2024 17:56, Jonathan Cameron wrote:
-> > On Mon, 01 Apr 2024 18:32:20 +0300
-> > Dumitru Ceclan via B4 Relay <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
-> >   
-> >> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
-> >>
-> >> AD7176-2 does not feature input buffers, enable buffers only on
-> >>  supported models.
-> >>
-> >> Fixes: cff259bf7274 ("iio: adc: ad7173: fix buffers enablement for ad7176-2")
-> >> Signed-off-by: Dumitru Ceclan <dumitru.ceclan@analog.com>  
-> > How bad is this?  If you can find out if writing those bits does anything
-> > harmful (they are reserved and datasheet says should be written 0 I think)
-> > That will help people decide whether to backport the fix?  
+On Sat, Apr 13, 2024 at 12:43:38PM +0200, Krzysztof Kozlowski wrote:
+> On 13/04/2024 12:34, Lukas Wunner wrote:
+> > The other patch just adds an entry to of_tis_i2c_match[] in the driver,
+> > pretty unspectacular:
+> > 
+> > https://lore.kernel.org/all/20240413071621.12509-2-michael.haener@siemens.com/
 > 
-> The bits are marked as read-only and there does not seem to be any effect on the ADC.
-> So drop this one?
+> Then why is it needed?
 
-Patch is good as makes the driver more consistent, just drop the Fixes tag so we
-don't end up backporting this.  That is basically treat it as code improvement
-rather than a fix.  Add a note on the bits being read only so this not fixing
-a bug, just an inconsistency.
+The binding requires two entries in the compatible string used in the DT,
+the chip name followed by the generic string:
+
+        items:
+          - enum:
+              - infineon,slb9673
+              - nuvoton,npct75x
+          - const: tcg,tpm-tis-i2c
+
+This allows us to deal with device-specific quirks, should they pop up
+(e.g. special timing requirements, hardware bugs).  We don't know in
+advance if they will be discovered, but if they are, it's cumbersome
+to determine after the fact which products (and thus DTs) are affected.
+So having the name of the actual chip used on the board has value.
 
 Thanks,
 
-Jonathan
+Lukas
 
