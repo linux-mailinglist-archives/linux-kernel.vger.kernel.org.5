@@ -1,176 +1,489 @@
-Return-Path: <linux-kernel+bounces-143637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 468A18A3BC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:53:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35FA88A3BC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:54:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 566E6282EBC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:53:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 969881F222E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:54:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D705208B6;
-	Sat, 13 Apr 2024 08:53:29 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E72381B9;
+	Sat, 13 Apr 2024 08:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QVfnos+F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FD3366
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF0124A0D;
+	Sat, 13 Apr 2024 08:54:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712998408; cv=none; b=L2a+2jhlgvL2DTO5rnMpWDdJMTodAn63rwW7CojvnQDJkVIMAQddQP/MPePzlhEWF3zjq5GAlWkU+x3Fu/SeZSr4v11gL9XqmyI3bSlwprJ/NFoq+RKM6Le8Bo+BveNK/JCTYjwXMQ0hi1K4/LZVsmiQsp9qwYqfrxtKFMTe4V0=
+	t=1712998454; cv=none; b=SQzYFvHvxROmA3DEVR9uwVQCIlT1RI8v7ZWrcpRX364v6SqBj/kjx6hI9YEbinZu/FKheS3KFYOyP4RcP4U9UhsfRHZY12zXRV2xThZUGBn7Gux987uiz3p3W+0o5eSgSfKHKCVAalYRWVnkSCqqTHGKgCcd/4tIzsCo5oEfGtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712998408; c=relaxed/simple;
-	bh=q1f+qIenTjU87HvgrTci/0lO/OmQUYZp0C3XI44taKU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ntNMdVvePMHSOqJFYKVvMv6YgrEiGBRzgjWSXfPhDOd5RIsA97nrLvpd2COm8hBDv2D2Ge+AXL3Ro/Bb3mJDYavPApXfgw4LxaIutWqfoRzMqanvmbbaoHvZJGXVz7p8Lp+XebzoN9fZj/CutRRA2g8fn6MWVMUBhYGfYx5MCRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36a25ad3ac4so18047765ab.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 01:53:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712998405; x=1713603205;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HWUTFpUC6BmICZ9mi19Jleu67VjpzL72heJuzJK4nhM=;
-        b=g28t9dyQWgApkmAB1b6PDDaYSbDd4NemOxh5iKX6iNEtWa3nyRYa3wUfmyHM/Sh3bO
-         oAZ+k9mwtwjSTTNa4xsFtnA82ODAhSOdJ24hIxWPkEAKiwaFOXRWYcuWa8PPOD9/0vm2
-         GvKKXGsfneL8TlUEP5Dj2i83FP0NtvlkaKKK32qME1ev1pFTq/xTr14NBtgpMQJclauG
-         xctdhNzcuwZvEbZUyMEw4V4uO3uOkZiIdJjOy5OdS+xG8Qu1rZfs6EJitOXA7U/DXV9a
-         v3Pj8NmAUlUm2FdvtptxYZQo+fOKkKCqfihddNsiIN0h2QdsUMOKJsKAdwgjw646bmDj
-         P3qw==
-X-Forwarded-Encrypted: i=1; AJvYcCXF1xGQIqmI+K+hW8EThbplkVWCih96BiSXhQVAzk+jR8GNUFq8gYPlCXkzRj41qUEpZYKZInMPsdEUuuJIQJOMb7mQPnW7gTkl9lpk
-X-Gm-Message-State: AOJu0YzgYyP0I7Jo3dJDaQ+ZHhN53aM7fD4bOpyhtMGHY0uSJOlxD0bd
-	KE0Cmo4e70/wDVYlb8xsK1LyTFcwzKwsTKF+kMUUJI0pWzGI46exKt/b7EgVjMzrYdWz0+J/bNR
-	Iv9fUIJT0jC6kSJaca2dzimlS3KP4fkeWU1A5m2k3Q6ddT2cMiRtlMVw=
-X-Google-Smtp-Source: AGHT+IEGBowWjKOjUooEKDb1b8oNk5hXHh9OD1BRWNtS6omSxghUG49uJIUymKgtNbzHP+tnyUH67jxgH5ftGYYPPz1u9QNx9fAK
+	s=arc-20240116; t=1712998454; c=relaxed/simple;
+	bh=HH2cMpjxYOZ9njPFekUwOVOexlYk0u2xmlvbK+U/aY0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ls6vkymQabZi56N/hK1bkRaG0MkJKPucLwcbCKbmsoIK581zwDgb7uFHzHATYAqcM8+HqLZAuKJ2GXOz3kLgRe7NHULQwSHMODfnMGRDX+rs8jlOHCvdf9JblKtSXM5TsCEL9/HZtWhWa+3/uIRPrC4appPkXBraBW5xiul2lZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QVfnos+F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD519C2BBFC;
+	Sat, 13 Apr 2024 08:54:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712998453;
+	bh=HH2cMpjxYOZ9njPFekUwOVOexlYk0u2xmlvbK+U/aY0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QVfnos+FRpSsY6yH5YokaFCBZl9e3dXjfmTc8ejFpYh9PBUkyqcgLCacd0ctfqrFk
+	 OBEcV1spfRGeFooudJ4Wqtwbrx/Se5BLGr2rszqFjhP+tLbnd+ndRhwgRxA6yOuGdB
+	 /09ysgzZhhtiAh0rcqj2TcxASqPyxhazrV6bgccxuvRxYBvOEHf1spuVBgeZfrZzHm
+	 gzIxgBfsHr0G/7ToKO0I6KpEkd9e6SVp77fva3qliye4wnP2D2m58uPA13j3xDW+0Y
+	 1DWFewKbI9Oj9L4Y1mEqgPqXrwNVcGyX9USV2aNkghkdrIWCcho2nM1AbBs0jzHubY
+	 H9iOUwWi3k9Wg==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d8b194341eso15305611fa.3;
+        Sat, 13 Apr 2024 01:54:13 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVgZEgOuaqX/Rz5MtaFXbK8bC/qF1hr498fDpiKvoKQmZfq8nyUxfhtYlJ8eUaSajwW2Hwv6P2tNjuwuNp0hcmSpSjnFznQNDUSwxvX
+X-Gm-Message-State: AOJu0YzYtFRBpE93/oJz21yDDP2Wl1z/1uJ7euUv2uA6jyOEFh0ht/4p
+	8VlzEGQd0ggmqlRtrTPHko8g86fJzZOxR8M3iHb/5NC7/KkmOyvrjrG+Mc517mjFP+HAgXh0KCK
+	4fpNx7r7P34cQeXbyJmD+ms2nVDI=
+X-Google-Smtp-Source: AGHT+IEj1/RCKlAbKCmXaeJo8cSBJq7GZYSQokwTIyVWgPEuHfBie/BLHn+U4f/RDV6H0oVg9Sdth0pOQz+4IBN+Irs=
+X-Received: by 2002:a2e:81da:0:b0:2d8:d0c9:1ffc with SMTP id
+ s26-20020a2e81da000000b002d8d0c91ffcmr3324151ljg.1.1712998451922; Sat, 13 Apr
+ 2024 01:54:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d11:b0:36a:3ee8:b9f9 with SMTP id
- i17-20020a056e021d1100b0036a3ee8b9f9mr396626ila.2.1712998405474; Sat, 13 Apr
- 2024 01:53:25 -0700 (PDT)
-Date: Sat, 13 Apr 2024 01:53:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000759c060615f685b3@google.com>
-Subject: [syzbot] [arm?] BUG: unable to handle kernel paging request in trans_pgd_create_copy
-From: syzbot <syzbot+2d1f5a94167d430a3bd7@syzkaller.appspotmail.com>
-To: catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	will@kernel.org
+References: <20240413000947.67988-1-ebiggers@kernel.org>
+In-Reply-To: <20240413000947.67988-1-ebiggers@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Sat, 13 Apr 2024 10:54:00 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGSoc24ZUu0Q01+E26p2OsTB23p5dg9uGHdCca0DM70XQ@mail.gmail.com>
+Message-ID: <CAMj1kXGSoc24ZUu0Q01+E26p2OsTB23p5dg9uGHdCca0DM70XQ@mail.gmail.com>
+Subject: Re: [PATCH] crypto: x86/aesni-xts - deduplicate aesni_xts_enc() and aesni_xts_dec()
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	"Chang S . Bae" <chang.seok.bae@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+On Sat, 13 Apr 2024 at 02:10, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> From: Eric Biggers <ebiggers@google.com>
+>
+> Since aesni_xts_enc() and aesni_xts_dec() are very similar, generate
+> them from a macro that's passed an argument enc=1 or enc=0.  This
+> reduces the length of aesni-intel_asm.S by 112 lines while still
+> producing the exact same object file in both 32-bit and 64-bit mode.
+>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  arch/x86/crypto/aesni-intel_asm.S | 270 +++++++++---------------------
+>  1 file changed, 79 insertions(+), 191 deletions(-)
+>
 
-syzbot found the following issue on:
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 
-HEAD commit:    2c71fdf02a95 Merge tag 'drm-fixes-2024-04-09' of https://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13400033180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3b59c588989b5f9a
-dashboard link: https://syzkaller.appspot.com/bug?extid=2d1f5a94167d430a3bd7
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a303d3180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=128de44d180000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-2c71fdf0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/627c4a5b3fcb/vmlinux-2c71fdf0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/39628cd13511/Image-2c71fdf0.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2d1f5a94167d430a3bd7@syzkaller.appspotmail.com
-
-Unable to handle kernel paging request at virtual address ffffffffc0000000
-Mem abort info:
-  ESR = 0x0000000096000006
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x06: level 2 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-swapper pgtable: 4k pages, 52-bit VAs, pgdp=00000000425f4000
-[ffffffffc0000000] pgd=1000000042ac9003, p4d=00000000429e0003, pud=00000000429e1003, pmd=0000000000000000
-Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 3174 Comm: syz-executor195 Not tainted 6.9.0-rc3-syzkaller-00023-g2c71fdf02a95 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 81400009 (Nzcv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-pc : copy_pud arch/arm64/mm/trans_pgd.c:127 [inline]
-pc : copy_p4d arch/arm64/mm/trans_pgd.c:169 [inline]
-pc : copy_page_tables arch/arm64/mm/trans_pgd.c:188 [inline]
-pc : trans_pgd_create_copy+0x164/0x864 arch/arm64/mm/trans_pgd.c:215
-lr : trans_alloc arch/arm64/mm/trans_pgd.c:31 [inline]
-lr : trans_pgd_create_copy+0x2c/0x864 arch/arm64/mm/trans_pgd.c:208
-sp : ffff8000893b3c30
-x29: ffff8000893b3c30 x28: f9f00000058e9200 x27: fff0000000000000
-x26: fff1000000000000 x25: fff0008000000000 x24: fff0000000000000
-x23: ffff800000000000 x22: ffffffffc0000000 x21: fff000007fdff000
-x20: ffff8000893b3d68 x19: ffffffffc0000000 x18: 0000000000000001
-x17: ffff800080171268 x16: ffff800080170f48 x15: ffff80008016f800
-x14: 0000000000000002 x13: 0000000000000000 x12: 0000000000072170
-x11: 000000000003cd0d x10: 0000000000000001 x9 : 0000000000000000
-x8 : f1f0000007ef9000 x7 : 0000000000000000 x6 : 000000000000003f
-x5 : 0000000000000040 x4 : 0000000000000000 x3 : 1000000000000000
-x2 : 00000000bfdff000 x1 : fff0ffffffffffff x0 : 18000000bfdfe003
-Call trace:
- copy_p4d arch/arm64/mm/trans_pgd.c:167 [inline]
- copy_page_tables arch/arm64/mm/trans_pgd.c:188 [inline]
- trans_pgd_create_copy+0x164/0x864 arch/arm64/mm/trans_pgd.c:215
- machine_kexec_post_load+0xa4/0x2c0 arch/arm64/kernel/machine_kexec.c:135
- do_kexec_load+0x28c/0x2e4 kernel/kexec.c:162
- __do_sys_kexec_load kernel/kexec.c:261 [inline]
- __se_sys_kexec_load kernel/kexec.c:242 [inline]
- __arm64_sys_kexec_load+0x9c/0xe8 kernel/kexec.c:242
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:48
- el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:152
- el0_svc+0x34/0xf8 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:598
-Code: eb01001f f94002a0 54fff9a2 b4002380 (f94002c0) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	eb01001f 	cmp	x0, x1
-   4:	f94002a0 	ldr	x0, [x21]
-   8:	54fff9a2 	b.cs	0xffffffffffffff3c  // b.hs, b.nlast
-   c:	b4002380 	cbz	x0, 0x47c
-* 10:	f94002c0 	ldr	x0, [x22] <-- trapping instruction
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> diff --git a/arch/x86/crypto/aesni-intel_asm.S b/arch/x86/crypto/aesni-intel_asm.S
+> index 1cb55eea2efa..3a3e46188dec 100644
+> --- a/arch/x86/crypto/aesni-intel_asm.S
+> +++ b/arch/x86/crypto/aesni-intel_asm.S
+> @@ -2823,32 +2823,28 @@ SYM_FUNC_END(aesni_ctr_enc)
+>  .Lgf128mul_x_ble_mask:
+>         .octa 0x00000000000000010000000000000087
+>  .previous
+>
+>  /*
+> - * _aesni_gf128mul_x_ble:              internal ABI
+> - *     Multiply in GF(2^128) for XTS IVs
+> + * _aesni_gf128mul_x_ble: Multiply in GF(2^128) for XTS IVs
+>   * input:
+>   *     IV:     current IV
+>   *     GF128MUL_MASK == mask with 0x87 and 0x01
+>   * output:
+>   *     IV:     next IV
+>   * changed:
+> - *     CTR:    == temporary value
+> + *     KEY:    == temporary value
+>   */
+> -#define _aesni_gf128mul_x_ble() \
+> -       pshufd $0x13, IV, KEY; \
+> -       paddq IV, IV; \
+> -       psrad $31, KEY; \
+> -       pand GF128MUL_MASK, KEY; \
+> -       pxor KEY, IV;
+> +.macro _aesni_gf128mul_x_ble
+> +       pshufd $0x13, IV, KEY
+> +       paddq IV, IV
+> +       psrad $31, KEY
+> +       pand GF128MUL_MASK, KEY
+> +       pxor KEY, IV
+> +.endm
+>
+> -/*
+> - * void aesni_xts_enc(const struct crypto_aes_ctx *ctx, u8 *dst,
+> - *                   const u8 *src, unsigned int len, le128 *iv)
+> - */
+> -SYM_FUNC_START(aesni_xts_enc)
+> +.macro _aesni_xts_crypt        enc
+>         FRAME_BEGIN
+>  #ifndef __x86_64__
+>         pushl IVP
+>         pushl LEN
+>         pushl KEYP
+> @@ -2863,39 +2859,50 @@ SYM_FUNC_START(aesni_xts_enc)
+>         movdqa .Lgf128mul_x_ble_mask(%rip), GF128MUL_MASK
+>  #endif
+>         movups (IVP), IV
+>
+>         mov 480(KEYP), KLEN
+> +.if !\enc
+> +       add $240, KEYP
+> +
+> +       test $15, LEN
+> +       jz .Lxts_loop4\@
+> +       sub $16, LEN
+> +.endif
+>
+> -.Lxts_enc_loop4:
+> +.Lxts_loop4\@:
+>         sub $64, LEN
+> -       jl .Lxts_enc_1x
+> +       jl .Lxts_1x\@
+>
+>         movdqa IV, STATE1
+>         movdqu 0x00(INP), IN
+>         pxor IN, STATE1
+>         movdqu IV, 0x00(OUTP)
+>
+> -       _aesni_gf128mul_x_ble()
+> +       _aesni_gf128mul_x_ble
+>         movdqa IV, STATE2
+>         movdqu 0x10(INP), IN
+>         pxor IN, STATE2
+>         movdqu IV, 0x10(OUTP)
+>
+> -       _aesni_gf128mul_x_ble()
+> +       _aesni_gf128mul_x_ble
+>         movdqa IV, STATE3
+>         movdqu 0x20(INP), IN
+>         pxor IN, STATE3
+>         movdqu IV, 0x20(OUTP)
+>
+> -       _aesni_gf128mul_x_ble()
+> +       _aesni_gf128mul_x_ble
+>         movdqa IV, STATE4
+>         movdqu 0x30(INP), IN
+>         pxor IN, STATE4
+>         movdqu IV, 0x30(OUTP)
+>
+> +.if \enc
+>         call _aesni_enc4
+> +.else
+> +       call _aesni_dec4
+> +.endif
+>
+>         movdqu 0x00(OUTP), IN
+>         pxor IN, STATE1
+>         movdqu STATE1, 0x00(OUTP)
+>
+> @@ -2909,63 +2916,84 @@ SYM_FUNC_START(aesni_xts_enc)
+>
+>         movdqu 0x30(OUTP), IN
+>         pxor IN, STATE4
+>         movdqu STATE4, 0x30(OUTP)
+>
+> -       _aesni_gf128mul_x_ble()
+> +       _aesni_gf128mul_x_ble
+>
+>         add $64, INP
+>         add $64, OUTP
+>         test LEN, LEN
+> -       jnz .Lxts_enc_loop4
+> +       jnz .Lxts_loop4\@
+>
+> -.Lxts_enc_ret_iv:
+> +.Lxts_ret_iv\@:
+>         movups IV, (IVP)
+>
+> -.Lxts_enc_ret:
+> +.Lxts_ret\@:
+>  #ifndef __x86_64__
+>         popl KLEN
+>         popl KEYP
+>         popl LEN
+>         popl IVP
+>  #endif
+>         FRAME_END
+>         RET
+>
+> -.Lxts_enc_1x:
+> +.Lxts_1x\@:
+>         add $64, LEN
+> -       jz .Lxts_enc_ret_iv
+> +       jz .Lxts_ret_iv\@
+> +.if \enc
+>         sub $16, LEN
+> -       jl .Lxts_enc_cts4
+> +       jl .Lxts_cts4\@
+> +.endif
+>
+> -.Lxts_enc_loop1:
+> +.Lxts_loop1\@:
+>         movdqu (INP), STATE
+> +.if \enc
+>         pxor IV, STATE
+>         call _aesni_enc1
+> +.else
+> +       add $16, INP
+> +       sub $16, LEN
+> +       jl .Lxts_cts1\@
+>         pxor IV, STATE
+> -       _aesni_gf128mul_x_ble()
+> +       call _aesni_dec1
+> +.endif
+> +       pxor IV, STATE
+> +       _aesni_gf128mul_x_ble
+>
+>         test LEN, LEN
+> -       jz .Lxts_enc_out
+> +       jz .Lxts_out\@
+>
+> +.if \enc
+>         add $16, INP
+>         sub $16, LEN
+> -       jl .Lxts_enc_cts1
+> +       jl .Lxts_cts1\@
+> +.endif
+>
+>         movdqu STATE, (OUTP)
+>         add $16, OUTP
+> -       jmp .Lxts_enc_loop1
+> +       jmp .Lxts_loop1\@
+>
+> -.Lxts_enc_out:
+> +.Lxts_out\@:
+>         movdqu STATE, (OUTP)
+> -       jmp .Lxts_enc_ret_iv
+> +       jmp .Lxts_ret_iv\@
+>
+> -.Lxts_enc_cts4:
+> +.if \enc
+> +.Lxts_cts4\@:
+>         movdqa STATE4, STATE
+>         sub $16, OUTP
+> +.Lxts_cts1\@:
+> +.else
+> +.Lxts_cts1\@:
+> +       movdqa IV, STATE4
+> +       _aesni_gf128mul_x_ble
+>
+> -.Lxts_enc_cts1:
+> +       pxor IV, STATE
+> +       call _aesni_dec1
+> +       pxor IV, STATE
+> +.endif
+>  #ifndef __x86_64__
+>         lea .Lcts_permute_table, T1
+>  #else
+>         lea .Lcts_permute_table(%rip), T1
+>  #endif
+> @@ -2987,174 +3015,34 @@ SYM_FUNC_START(aesni_xts_enc)
+>         movups (IVP), %xmm0
+>         pshufb %xmm0, IN1
+>         pblendvb IN2, IN1
+>         movaps IN1, STATE
+>
+> +.if \enc
+>         pxor IV, STATE
+>         call _aesni_enc1
+>         pxor IV, STATE
+> +.else
+> +       pxor STATE4, STATE
+> +       call _aesni_dec1
+> +       pxor STATE4, STATE
+> +.endif
+>
+>         movups STATE, (OUTP)
+> -       jmp .Lxts_enc_ret
+> +       jmp .Lxts_ret\@
+> +.endm
+> +
+> +/*
+> + * void aesni_xts_enc(const struct crypto_aes_ctx *ctx, u8 *dst,
+> + *                   const u8 *src, unsigned int len, le128 *iv)
+> + */
+> +SYM_FUNC_START(aesni_xts_enc)
+> +       _aesni_xts_crypt        1
+>  SYM_FUNC_END(aesni_xts_enc)
+>
+>  /*
+>   * void aesni_xts_dec(const struct crypto_aes_ctx *ctx, u8 *dst,
+>   *                   const u8 *src, unsigned int len, le128 *iv)
+>   */
+>  SYM_FUNC_START(aesni_xts_dec)
+> -       FRAME_BEGIN
+> -#ifndef __x86_64__
+> -       pushl IVP
+> -       pushl LEN
+> -       pushl KEYP
+> -       pushl KLEN
+> -       movl (FRAME_OFFSET+20)(%esp), KEYP      # ctx
+> -       movl (FRAME_OFFSET+24)(%esp), OUTP      # dst
+> -       movl (FRAME_OFFSET+28)(%esp), INP       # src
+> -       movl (FRAME_OFFSET+32)(%esp), LEN       # len
+> -       movl (FRAME_OFFSET+36)(%esp), IVP       # iv
+> -       movdqa .Lgf128mul_x_ble_mask, GF128MUL_MASK
+> -#else
+> -       movdqa .Lgf128mul_x_ble_mask(%rip), GF128MUL_MASK
+> -#endif
+> -       movups (IVP), IV
+> -
+> -       mov 480(KEYP), KLEN
+> -       add $240, KEYP
+> -
+> -       test $15, LEN
+> -       jz .Lxts_dec_loop4
+> -       sub $16, LEN
+> -
+> -.Lxts_dec_loop4:
+> -       sub $64, LEN
+> -       jl .Lxts_dec_1x
+> -
+> -       movdqa IV, STATE1
+> -       movdqu 0x00(INP), IN
+> -       pxor IN, STATE1
+> -       movdqu IV, 0x00(OUTP)
+> -
+> -       _aesni_gf128mul_x_ble()
+> -       movdqa IV, STATE2
+> -       movdqu 0x10(INP), IN
+> -       pxor IN, STATE2
+> -       movdqu IV, 0x10(OUTP)
+> -
+> -       _aesni_gf128mul_x_ble()
+> -       movdqa IV, STATE3
+> -       movdqu 0x20(INP), IN
+> -       pxor IN, STATE3
+> -       movdqu IV, 0x20(OUTP)
+> -
+> -       _aesni_gf128mul_x_ble()
+> -       movdqa IV, STATE4
+> -       movdqu 0x30(INP), IN
+> -       pxor IN, STATE4
+> -       movdqu IV, 0x30(OUTP)
+> -
+> -       call _aesni_dec4
+> -
+> -       movdqu 0x00(OUTP), IN
+> -       pxor IN, STATE1
+> -       movdqu STATE1, 0x00(OUTP)
+> -
+> -       movdqu 0x10(OUTP), IN
+> -       pxor IN, STATE2
+> -       movdqu STATE2, 0x10(OUTP)
+> -
+> -       movdqu 0x20(OUTP), IN
+> -       pxor IN, STATE3
+> -       movdqu STATE3, 0x20(OUTP)
+> -
+> -       movdqu 0x30(OUTP), IN
+> -       pxor IN, STATE4
+> -       movdqu STATE4, 0x30(OUTP)
+> -
+> -       _aesni_gf128mul_x_ble()
+> -
+> -       add $64, INP
+> -       add $64, OUTP
+> -       test LEN, LEN
+> -       jnz .Lxts_dec_loop4
+> -
+> -.Lxts_dec_ret_iv:
+> -       movups IV, (IVP)
+> -
+> -.Lxts_dec_ret:
+> -#ifndef __x86_64__
+> -       popl KLEN
+> -       popl KEYP
+> -       popl LEN
+> -       popl IVP
+> -#endif
+> -       FRAME_END
+> -       RET
+> -
+> -.Lxts_dec_1x:
+> -       add $64, LEN
+> -       jz .Lxts_dec_ret_iv
+> -
+> -.Lxts_dec_loop1:
+> -       movdqu (INP), STATE
+> -
+> -       add $16, INP
+> -       sub $16, LEN
+> -       jl .Lxts_dec_cts1
+> -
+> -       pxor IV, STATE
+> -       call _aesni_dec1
+> -       pxor IV, STATE
+> -       _aesni_gf128mul_x_ble()
+> -
+> -       test LEN, LEN
+> -       jz .Lxts_dec_out
+> -
+> -       movdqu STATE, (OUTP)
+> -       add $16, OUTP
+> -       jmp .Lxts_dec_loop1
+> -
+> -.Lxts_dec_out:
+> -       movdqu STATE, (OUTP)
+> -       jmp .Lxts_dec_ret_iv
+> -
+> -.Lxts_dec_cts1:
+> -       movdqa IV, STATE4
+> -       _aesni_gf128mul_x_ble()
+> -
+> -       pxor IV, STATE
+> -       call _aesni_dec1
+> -       pxor IV, STATE
+> -
+> -#ifndef __x86_64__
+> -       lea .Lcts_permute_table, T1
+> -#else
+> -       lea .Lcts_permute_table(%rip), T1
+> -#endif
+> -       add LEN, INP            /* rewind input pointer */
+> -       add $16, LEN            /* # bytes in final block */
+> -       movups (INP), IN1
+> -
+> -       mov T1, IVP
+> -       add $32, IVP
+> -       add LEN, T1
+> -       sub LEN, IVP
+> -       add OUTP, LEN
+> -
+> -       movups (T1), %xmm4
+> -       movaps STATE, IN2
+> -       pshufb %xmm4, STATE
+> -       movups STATE, (LEN)
+> -
+> -       movups (IVP), %xmm0
+> -       pshufb %xmm0, IN1
+> -       pblendvb IN2, IN1
+> -       movaps IN1, STATE
+> -
+> -       pxor STATE4, STATE
+> -       call _aesni_dec1
+> -       pxor STATE4, STATE
+> -
+> -       movups STATE, (OUTP)
+> -       jmp .Lxts_dec_ret
+> +       _aesni_xts_crypt        0
+>  SYM_FUNC_END(aesni_xts_dec)
+>
+> base-commit: 751fb2528c12ef64d1e863efb196cdc968b384f6
+> --
+> 2.44.0
+>
+>
 
