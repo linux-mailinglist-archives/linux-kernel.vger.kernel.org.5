@@ -1,229 +1,198 @@
-Return-Path: <linux-kernel+bounces-143704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72FFA8A3C70
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:11:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE6A98A3C75
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:25:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28FDB2825D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:11:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ECF91F21FB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A503E47B;
-	Sat, 13 Apr 2024 11:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7F93F9C0;
+	Sat, 13 Apr 2024 11:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KrAsfsAR"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uri4XwlR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01D43DB91
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 11:11:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6963D0D9
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 11:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713006683; cv=none; b=i2K1JaJ2hhX+xQ/BHKt+UaKgagmzzzF/cIqJKR2dytPnNrkUGxKywUOlqknkwJ9Vse4LZMgu1awqN8ElijKVgHt/Us42YleKFtSFFaw1jvYoQ72OvNoAH0dLcXwpgjg6E8IADwd5wvIqFQoQWrMh1XfM48EN71VYmG7+lB+WzEk=
+	t=1713007503; cv=none; b=Fj1rVM0e8sAMM8/SaI5w3oamkcAL4ObOfey1nVYXnnyHkENwiCi14ro2URMeY6sAZ1v5zCgNMiu1WvAJ2tvgKc72dmbGEe3LW1nGw4t3oN+9fYYgLY1MuPVIKN/dHVxQjE/1RRTYvGMviP3Rid27TsamVQ1+XJUbvYelSTG4VcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713006683; c=relaxed/simple;
-	bh=yqFTGPFpUELq92u6Jwc0LpudMXSZpeOTpg8NEgcDRJI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RnU0dLhRrSZ3In/c5Ny+pf2vXxYqb3TZmav6XFH1FFZZKInz+T/7tjPOPn5clrWm56xwW4XLc3DX+BwX2VJztpwLH2xCD90LmwPWyoMc5eqrcTLyiTvIDsedK4EiL9Q3tPuhcFACDZPw/HakfXAyzQCGFAV/93P46UHuY+H6zk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrAsfsAR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF35DC2BD10;
-	Sat, 13 Apr 2024 11:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713006682;
-	bh=yqFTGPFpUELq92u6Jwc0LpudMXSZpeOTpg8NEgcDRJI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KrAsfsARagsovovWhbrM3DzytETGRjjf1eEVd624V+MA957i7JHN7rtdGv64H5p5u
-	 YHtu9XkrauozUBYhf7grICnq/NEQ9Q0uO4k1iUzFg4JtGnElCBkAm2ODfHxscsoNQ4
-	 y1S5hmNEn+iPZjombc6VwQTgBXH83KY+RZ5q7KOX4AKUSAHygbJ5ytWgojWTgt/6bz
-	 daOxYgfnyKwcVYXOBayDT1R6jjOXpfCXNhBYLv4JlCCfhnvIuOQtfenFILxoID7Kt5
-	 N21DStLF6OcAnlHG8lmoYzbFV7qWz0BmiB5wM/sS/qAr7q3zyFZNSdWizL8fcP2yA1
-	 CjWtaMGmS7ptg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rvbI0-0048U7-J8;
-	Sat, 13 Apr 2024 12:11:20 +0100
-Date: Sat, 13 Apr 2024 12:11:20 +0100
-Message-ID: <86cyqtsejr.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: tglx@linutronix.de,
-	yury.norov@gmail.com,
-	akpm@linux-foundation.org,
-	florian.fainelli@broadcom.com,
-	chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com,
-	anup@brainfault.org,
-	palmer@dabbelt.com,
-	samuel.holland@sifive.com,
-	linux@rasmusvillemoes.dk,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] irqchip/gic-v3-its: Avoid explicit cpumask allocation on stack
-In-Reply-To: <08D93AF972A58F13+ZhpegNehN5/RYie5@centos8>
-References: <20240412105839.2896281-1-dawei.li@shingroup.cn>
-	<20240412105839.2896281-4-dawei.li@shingroup.cn>
-	<86il0msn4z.wl-maz@kernel.org>
-	<08D93AF972A58F13+ZhpegNehN5/RYie5@centos8>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1713007503; c=relaxed/simple;
+	bh=bIZwXJuyXzez1b15wr20TySh8UjtK3VL4+xANWMGEUc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pfbakMe6tb2wcvUJu8PQCKdoUvUh/z6vlUsPcSMEFDwxpOONTpQxbrvJ2j7uC82Yo6lbCGzEK2Mr7xu5gb8T7xaqCeoAwQDxPxO+CCTV8I6sKe3vs5AptBy2dbUXXyzwLsE5E8/eAi5gT4d8INDi9ELBlMO4BzUMeWj0ygV5dW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uri4XwlR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 933E3C2BBFC;
+	Sat, 13 Apr 2024 11:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713007503;
+	bh=bIZwXJuyXzez1b15wr20TySh8UjtK3VL4+xANWMGEUc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uri4XwlRqwXUyeEIp7cGLT2/6MyUe1SPz+G24cxFSa7LC+K3XBZPmxUu6z43bFImR
+	 Np1fJpVqokMCwtN6HK7JnZBpP3GI60LGbgeiGEfMtFIgsuPpKvfFHEINonvYDVuYuv
+	 xg6yphZ3GvWwp2p2vp7/5TORVO/xG339vMb4nHX0=
+Date: Sat, 13 Apr 2024 13:25:00 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Vamsi Krishna Attunuru <vattunuru@marvell.com>
+Cc: "arnd@arndb.de" <arnd@arndb.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Jerin Jacob <jerinj@marvell.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v5 1/1] misc: mrvl-cn10k-dpi: add Octeon
+ CN10K DPI administrative driver
+Message-ID: <2024041310-bundle-patio-8a22@gregkh>
+References: <MW4PR18MB5244C76290A15737DC94FFDBA6042@MW4PR18MB5244.namprd18.prod.outlook.com>
+ <20240412121005.1825881-1-vattunuru@marvell.com>
+ <2024041250-nursing-tidy-db7e@gregkh>
+ <MW4PR18MB5244FA7231C64F8A7928B83EA6042@MW4PR18MB5244.namprd18.prod.outlook.com>
+ <2024041258-reminder-widely-00c0@gregkh>
+ <MW4PR18MB52447D1E7F0CD0D1CA6BAACCA6042@MW4PR18MB5244.namprd18.prod.outlook.com>
+ <2024041351-endowment-underrate-4b8d@gregkh>
+ <MW4PR18MB52449EBFE3862D7C3065D22AA60B2@MW4PR18MB5244.namprd18.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dawei.li@shingroup.cn, tglx@linutronix.de, yury.norov@gmail.com, akpm@linux-foundation.org, florian.fainelli@broadcom.com, chenhuacai@kernel.org, jiaxun.yang@flygoat.com, anup@brainfault.org, palmer@dabbelt.com, samuel.holland@sifive.com, linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW4PR18MB52449EBFE3862D7C3065D22AA60B2@MW4PR18MB5244.namprd18.prod.outlook.com>
 
-On Sat, 13 Apr 2024 11:29:20 +0100,
-Dawei Li <dawei.li@shingroup.cn> wrote:
+On Sat, Apr 13, 2024 at 10:58:37AM +0000, Vamsi Krishna Attunuru wrote:
 > 
-> Hi Marc,
 > 
-> Thanks for the review.
-> 
-> On Fri, Apr 12, 2024 at 02:53:32PM +0100, Marc Zyngier wrote:
-> > On Fri, 12 Apr 2024 11:58:36 +0100,
-> > Dawei Li <dawei.li@shingroup.cn> wrote:
-> > > 
-> > > In general it's preferable to avoid placing cpumasks on the stack, as
-> > > for large values of NR_CPUS these can consume significant amounts of
-> > > stack space and make stack overflows more likely.
+> > -----Original Message-----
+> > From: Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Saturday, April 13, 2024 11:18 AM
+> > To: Vamsi Krishna Attunuru <vattunuru@marvell.com>
+> > Cc: arnd@arndb.de; linux-kernel@vger.kernel.org; Jerin Jacob
+> > <jerinj@marvell.com>
+> > Subject: Re: [EXTERNAL] Re: [PATCH v5 1/1] misc: mrvl-cn10k-dpi: add
+> > Octeon CN10K DPI administrative driver
+> > 
+> > On Fri, Apr 12, 2024 at 04:19:58PM +0000, Vamsi Krishna Attunuru wrote:
 > > >
-> > > Remove cpumask var on stack and use proper cpumask API to address it.
-> > 
-> > Define proper. Or better, define what is "improper" about the current
-> > usage.
-> 
-> Sorry for the confusion.
-> 
-> I didn't mean current implementation is 'improper', actually both
-> implementations share equivalent API usages. I will remove this
-> misleading expression from commit message.
-> 
-> > 
 > > >
-> > > Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> > > ---
-> > >  drivers/irqchip/irq-gic-v3-its.c | 9 ++++++---
-> > >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> > > index fca888b36680..a821396c4261 100644
-> > > --- a/drivers/irqchip/irq-gic-v3-its.c
-> > > +++ b/drivers/irqchip/irq-gic-v3-its.c
-> > > @@ -3826,7 +3826,7 @@ static int its_vpe_set_affinity(struct irq_data *d,
-> > >  				bool force)
-> > >  {
-> > >  	struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
-> > > -	struct cpumask common, *table_mask;
-> > > +	struct cpumask *table_mask;
-> > >  	unsigned long flags;
-> > >  	int from, cpu;
-> > >  
-> > > @@ -3850,8 +3850,11 @@ static int its_vpe_set_affinity(struct irq_data *d,
-> > >  	 * If we are offered another CPU in the same GICv4.1 ITS
-> > >  	 * affinity, pick this one. Otherwise, any CPU will do.
-> > >  	 */
-> > > -	if (table_mask && cpumask_and(&common, mask_val, table_mask))
-> > > -		cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
-> > > +	if (table_mask && cpumask_intersects(mask_val, table_mask)) {
-> > > +		cpu = cpumask_test_cpu(from, mask_val) &&
-> > > +		      cpumask_test_cpu(from, table_mask) ?
-> > > +		      from : cpumask_first_and(mask_val, table_mask);
+> > > > -----Original Message-----
+> > > > From: Greg KH <gregkh@linuxfoundation.org>
+> > > > Sent: Friday, April 12, 2024 9:05 PM
+> > > > To: Vamsi Krishna Attunuru <vattunuru@marvell.com>
+> > > > Cc: arnd@arndb.de; linux-kernel@vger.kernel.org
+> > > > Subject: Re: [EXTERNAL] Re: [PATCH v5 1/1] misc: mrvl-cn10k-dpi: add
+> > > > Octeon CN10K DPI administrative driver
+> > > >
+> > > > On Fri, Apr 12, 2024 at 01:56:36PM +0000, Vamsi Krishna Attunuru wrote:
+> > > > >
+> > > > >
+> > > > > > -----Original Message-----
+> > > > > > From: Greg KH <gregkh@linuxfoundation.org>
+> > > > > > Sent: Friday, April 12, 2024 5:57 PM
+> > > > > > To: Vamsi Krishna Attunuru <vattunuru@marvell.com>
+> > > > > > Cc: arnd@arndb.de; linux-kernel@vger.kernel.org
+> > > > > > Subject: [EXTERNAL] Re: [PATCH v5 1/1] misc: mrvl-cn10k-dpi: add
+> > > > > > Octeon CN10K DPI administrative driver
+> > > > > >
+> > > > > > Prioritize security for external emails: Confirm sender and
+> > > > > > content safety before clicking links or opening attachments
+> > > > > >
+> > > > > > ----------------------------------------------------------------
+> > > > > > ----
+> > > > > > -- On Fri, Apr 12, 2024 at 05:10:05AM -0700, Vamsi Attunuru wrote:
+> > > > > > > Adds a misc driver for Marvell CN10K DPI(DMA Engine) device's
+> > > > > > > physical function which initializes DPI DMA hardware's global
+> > > > > > > configuration and enables hardware mailbox channels between
+> > > > > > > physical function (PF) and it's virtual functions (VF). VF
+> > > > > > > device drivers (User space drivers) use this hw mailbox to
+> > > > > > > communicate any required device configuration on it's respective
+> > VF device.
+> > > > > > > Accordingly, this DPI PF driver provisions the VF device resources.
+> > > > > > >
+> > > > > > > At the hardware level, the DPI physical function (PF) acts as
+> > > > > > > a management interface to setup the VF device resources, VF
+> > > > > > > devices are only provisioned to handle or control the actual
+> > > > > > > DMA Engine's data transfer
+> > > > > > capabilities.
+> > > > > >
+> > > > > > No pointer to the userspace code that uses this?  Why not?  How
+> > > > > > are we supposed to be able to review this?
+> > > > >
+> > > > > Userspace code will use two functionalities (mailbox & ioctl) from
+> > > > > this driver. DPDK DMA driver uses the mailbox and the dpdk
+> > > > > application uses the ioctl to setup the device attributes. We are
+> > > > > waiting for this kernel driver get merged  to update the
+> > > > > corresponding support in DPDK
+> > > > driver and applications. I will provide the pointers to both the use
+> > > > cases in userspace code.
+> > > > > Meanwhile below is the current dpdk dma driver that uses sysfs
+> > > > > based scheme to convey mbox requests to the kernel DPI driver
+> > > > > which gets
+> > > > replaced with hardware mailbox scheme once mrvl-cn10k-dpi kernel
+> > > > driver is merged.
+> > > > > https://urldefense.proofpoint.com/v2/url?u=https-
+> > > > 3A__github.com_DPDK_d
+> > > > > pdk_blob_main_drivers_common_cnxk_roc-
+> > > > 5Fdpi.c&d=DwIBAg&c=nKjWec2b6R0mO
+> > > > >
+> > > >
+> > yPaz7xtfQ&r=WllrYaumVkxaWjgKto6E_rtDQshhIhik2jkvzFyRhW8&m=o3EhoL
+> > > > s7dsod
+> > > > > -YHS438Wl2Pf_MKMBYegGSKteoX3qFTB0HV897ykpCVbTp-
+> > > > nmj4e&s=A6TJDFUtPm3ksJh
+> > > > > qop89CL8GgKj4sjkJIVi1-RdnUr8&e=
+> > > >
+> > > > So this is a DPDK thing?  Ugh, do the networking people know about this?
+> > > > If not, why aren't they reviewing this?
+> > >
+> > > Actually, It's not networking related. Like the Linux kernel, DPDK
+> > > also supports multiple subsystems like network, scheduler, DMA,
+> > > mempool etc. Regarding the usecases, the DPDK Marvell DMA/DPI VF
+> > > driver interacts(over hardware mailbox) with the mrvl-cn10k-dpi misc
+> > kernel driver(administrative driver) for setting up the VF device resources.
 > > 
-> > So we may end-up computing the AND of the two bitmaps twice (once for
-> > cpumask_intersects(), once for cpumask_first_and()), instead of only
-> > doing it once.
+> > So this is something that the PCI core should be concerned about then?
 > 
-> Actually maybe it's possible to merge these 2 bitmap ops into one:
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index fca888b36680..7a267777bd0b 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -3826,7 +3826,8 @@ static int its_vpe_set_affinity(struct irq_data *d,
->                                 bool force)
->  {
->         struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
-> -       struct cpumask common, *table_mask;
-> +       struct cpumask *table_mask;
-> +       unsigned int common;
->         unsigned long flags;
->         int from, cpu;
-> 
-> @@ -3850,10 +3851,13 @@ static int its_vpe_set_affinity(struct irq_data *d,
->          * If we are offered another CPU in the same GICv4.1 ITS
->          * affinity, pick this one. Otherwise, any CPU will do.
->          */
-> -       if (table_mask && cpumask_and(&common, mask_val, table_mask))
-> -               cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
-> -       else
-> +       if (table_mask && (common = cpumask_first_and(mask_val, table_mask)) < nr_cpu_ids) {
-> +               cpu = cpumask_test_cpu(from, mask_val) &&
-> +                     cpumask_test_cpu(from, table_mask) ?
-> +                     from : common;
-> +       } else {
->                 cpu = cpumask_first(mask_val);
-> +       }
-> 
+> No, it's a normal PCIe sriov capability implemented in all sriov capable PCIe devices.
+> Our PF device aka this driver in kernel space service mailbox requests from userspace
+> applications via VF devices. For instance, DPI VF device from user space writes into
+> mailbox registers and the DPI hardware triggers an interrupt to DPI PF device.
+> Upon PF interrupt, this driver services the mailbox requests.
+
+Isn't that a "normal" PCI thing?  How is this different from other
+devices that have VF?
+
+> > > DPDK is one example that uses this driver, there can be other
+> > > userspace generic frameworks/applications where the virtual functions
+> > > are binded to userspace drivers and interact with physical/administrative
+> > function driver running in the kernel.
 > > 
-> > I don't expect that to be horrible, but I also note that you don't
-> > even talk about the trade-offs you are choosing to make.
+> > Are there other devices/drivers that do this today in Linux?  Why make a
+> > device-specific api for this common functionality?
 > 
-> With change above, I assume that the tradeoff is minor and can be ignored?
+> The apis defined in this driver are specific to Marvell DPI hardware.
 
-Yup, this works. My preference would be something which I find
-slightly more readable though (avoiding assignment in the
-conditional):
+The api, yes, but that's the point, shouldn't this be generic for all
+hardware that supports this?  Implementation should be device specific,
+in the driver.
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index fca888b36680..299dafc7c0ea 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -3826,9 +3826,9 @@ static int its_vpe_set_affinity(struct irq_data *d,
- 				bool force)
- {
- 	struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
--	struct cpumask common, *table_mask;
-+	struct cpumask *table_mask;
- 	unsigned long flags;
--	int from, cpu;
-+	int from, cpu = nr_cpu_ids;
- 
- 	/*
- 	 * Changing affinity is mega expensive, so let's be as lazy as
-@@ -3850,10 +3850,15 @@ static int its_vpe_set_affinity(struct irq_data *d,
- 	 * If we are offered another CPU in the same GICv4.1 ITS
- 	 * affinity, pick this one. Otherwise, any CPU will do.
- 	 */
--	if (table_mask && cpumask_and(&common, mask_val, table_mask))
--		cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
--	else
-+	if (table_mask)
-+		cpu = cpumask_any_and(mask_val, table_mask);
-+	if (cpu < nr_cpu_ids) {
-+		 if (cpumask_test_cpu(from, mask_val) &&
-+		     cpumask_test_cpu(from, table_mask))
-+			 cpu = from;
-+	} else {
- 		cpu = cpumask_first(mask_val);
-+	}
- 
- 	if (from == cpu)
- 		goto out;
+> For instance,
+> the variables molr(max outstanding load requests), fifo_max, ebus_port are
+> DPI hardware specific. Generally, drivers use driver-specific api to configure
+> any device-specific configuration which does not fit in common functionality right.
+> 
+> Mailbox operations like dpi_queue_open & close are requests sent from VF device
+> to PF device for setting up the VF queue resources.
 
-Thanks,
+Why is an ioctl to a random character device the correct api to
+userspace for this type of thing?  Shouldn't this go through the PCI
+layer api instead?
 
-	M.
+thanks,
 
--- 
-Without deviation from the norm, progress is not possible.
+greg k-h
 
