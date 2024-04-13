@@ -1,376 +1,197 @@
-Return-Path: <linux-kernel+bounces-143592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE1518A3B33
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 07:58:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E53E48A3B37
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62A5D1F22850
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 05:58:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A0C52823B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 506751CAB7;
-	Sat, 13 Apr 2024 05:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3CE1CD26;
+	Sat, 13 Apr 2024 06:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IKTUpq2k"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="X9dizk+Q"
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2089.outbound.protection.outlook.com [40.107.15.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9409B18633
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 05:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712987910; cv=none; b=Hcctm3npxat9ixh/eyG1VdU0JhKTbAYrqLg6iq3M7gR7eNt2+2ouSYJyxN12PH1VOAgMqWACAPMB0LDOugO3F3LpuY+t1AR6CmCfuG4v0i4De4DVYKloFyPyBC4bLmXLqkyPSNtZRehYu3jEeUz2Dbq4wMnMrVRfz1X0AFB818g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712987910; c=relaxed/simple;
-	bh=HU7thTIYtcC0c7hByVsU2/c6aP4NzI8KDTBbxSEhy5U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P61TmSId8AecVeI6G0ZntTdmaOzgUKJIRZt4Sf87CVFWgzQo/5bkzMHk7lj74adSkgyco0uIzAResAtoS6mbdlzPnaBBCnGlPCbaGiVy5X9vjU+3r2MRQ+czy3jU/u4Otc24x+4uT5Na0AmHjIZ0yb50yEhvSv/AgOjN4ttT0Hc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IKTUpq2k; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2330f85c2ebso1029301fac.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 22:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712987907; x=1713592707; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FjFvmkrzi13rpe1gaHU7tj05ZLNOeYzGSqdwOX09dTo=;
-        b=IKTUpq2kryWh/Ax17Mtq1fC3aAzKuDAJ3GK5/qPe/ehfbWbRjf5l28nXaXpImXLmNk
-         NvOEcgSoEQhNX1MSYN8cRhicuPsqnO+tpJLSKuGJvxQiMlFC6G1+OBXLYlQZksOBAM7i
-         4EicSYeSQKG3XQ7E7YhWu3bhHYF97i5J9DAXmiVkJ5wWFGtAdulUjXd85qA1gKomqizj
-         yaEujmaQDTFlLXNt0ix1ytq/nHe36EEiUNCSAp4cJuWtBcAepxbbSoGMqmV4KfdNfigQ
-         UPGxaKRmaIDhZ21ueBcAbj6/fMzU+9Ahzeeb97Yx+HLjSxrJNIt+Aqis18JIOaiV/Q8u
-         zeug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712987907; x=1713592707;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FjFvmkrzi13rpe1gaHU7tj05ZLNOeYzGSqdwOX09dTo=;
-        b=izH4RVl3ZwSd59Pcs9NYLSqA9hmg68fgwqRJmTnp3RFhtRNZycqymiRT9n8G1hrMu5
-         olvdM1bokMCrjkluNS1VPo/+V/YdUK5Hv92JzvdaoHN1QntJIHoiXCE38YrOnD76yKY/
-         kE2GTpew1+Cnc0YSSnWJaVNvMiBJAq1vSdlV2YiPEyuFUudXwgRxhzjfFs4ZRIEW24OJ
-         9GwuGKLHRmpVGpqSQM/urT8v5JjA1hgg/7BDQaeI5IMhZE/snoOOnxjIOwz6U+CUbwem
-         +QUn2OC5ZKMdBxJMEWeqsuIHTUd0zVGtHfPhucD4aAIi1C6xhvhcu2wm1RmqDNPlL/ux
-         eaew==
-X-Forwarded-Encrypted: i=1; AJvYcCVQsnwulUHnZakit8vGVzLLxm8xgqWt/dRhH8YhGlCQ0YMvNonyC9l8FGTEGvUCW5/QlGbkKgIlc5kJewrtULUaRfpTnpcbPzWGS08C
-X-Gm-Message-State: AOJu0YwN6jMrR8OXeCK6vm0ojbbOwaDgqp7k10733WFKf7lLP5nwoM0a
-	PSe8wK2QOMwGqM1ctpnjaeB608lsxljdXe4CRb9ep+JgcY5QOjExvKyZwzriY9KEPOBXNGR1kRh
-	cSeQpjvHeySSXXeMo8REsITcFKt9+tHkPB4M=
-X-Google-Smtp-Source: AGHT+IFb+k36oaBQOwp8PZ6UyEoUSHB/QVqViPq1CEHfj4ru0PRI5QbdNndx+Q8+hZQNZXKJrDX0dXX3kCOqO5mlx1U=
-X-Received: by 2002:a05:6870:430e:b0:221:8a03:6dea with SMTP id
- w14-20020a056870430e00b002218a036deamr5316637oah.38.1712987907512; Fri, 12
- Apr 2024 22:58:27 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1877EFC0C;
+	Sat, 13 Apr 2024 06:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.89
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712988081; cv=fail; b=LOPjHJcpo5Q1SgBwxoib/VCazjuCpg2UlEP6GZAqg3Cs+oQq6RWVex+bFGbpG0Jy+DG3eafk+X8IyOKt4ZOFfWUskxPglHhDAje3Wyc2eIT/SSgmfSiJ6LlI65zf29cVysQWf3JZMjTeEBQH8ukGNmFXUXLaqAkfd8KoXgJOP58=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712988081; c=relaxed/simple;
+	bh=v2NfMpWrBg2TTjp0HILX3NC7tXElB505zoSxqOVoefo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=XZXfJsF6wcXhwYdkhRRK1FIkAthXbUS114s2L2vQ7Wl87LHav0d55tF4dpQMrmo8OZ+cgobDbdc78bc9uXg6mqKH5qVX732aerIX8MhNPD+os2G8TPBBxiqbtETBk0rZXyNOrGji4oedE7fzm5ntmg/TWE3tydeE0jow2vn82I4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=X9dizk+Q; arc=fail smtp.client-ip=40.107.15.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hAl17t8DD7am3mikI2RzOFjhiWgkJo7CW3nhJl3wP5wBt/dObme1asAvmX4ynJKYNsHoOytlRpYj9UmyTfRPvH6g1voviQ6X6OSgqUWeavJhPudVQXWRGcMgMnDuqixZXMkl4yw0os/2psU4xAtyynkuicnMsp25O4eLXoX7UjFeR7oDWn2J/DNfekmbJDOR85LWr46BDEyqjNx0fnFguC01XTCno0cSgVtCXo1VAEAor6c365YKF0NWaC8NA+JsxjIIoThgS9BZv/YyI9hFApxr8x3rwPCCQbTs2IUdp/6pZVdMHBIV1Li/sBovM7JDcN02CD2b7zNJ+MtRYTPoNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+Vw7Eh+FZ7rOvuA5OX+0eghB2aa5xongtLD3Vm545kY=;
+ b=TZ6//Sifey9+WnDnxlbR/OKw652fd6zoAw23hoYXe4FXprLGkwP6LFULJ1R5Ik4pNKl0hkHbAgpOR6svyBG1/FaH6wkyIbqpZU/87cyMRwpEImonY9IWv/ip/yjBqwsixN7rFb1VALbOGK/Qf3YdLRAvgmu+hjwRf/T7KEkaY/8kNn6wytqAdyAKfOBW8UPS6uUzHaubud6dasTaHxNh+a3lXwq58L/LBrZiYovAoXPWp02EtmRSQtr3RXRF/uUfn9z/lyEI5yaOf0D9SJRs0mUgpKL3IWg2HsQiwQGWVRWY5Bkvg25bf0zVqapTUiyV33gB2vB88jAy49+81Yr/3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+Vw7Eh+FZ7rOvuA5OX+0eghB2aa5xongtLD3Vm545kY=;
+ b=X9dizk+QGKc4FT1eMVsYbK6uQEP8vEkNjAmTlcLo1EKzVE5klAaMuSuJw/NesWLMdjcMtf7lztb5CmIooqRxuqwyRGPrdfQoNb0IKbs0EnS4hR+gkbB+YbseGTKb6eHZYYctUqyd6LNpY6RFclewyV5qWC6jlcVmX7G+4rr8jbM=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB9095.eurprd04.prod.outlook.com (2603:10a6:20b:446::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Sat, 13 Apr
+ 2024 06:01:17 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.037; Sat, 13 Apr 2024
+ 06:01:17 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Frank Li <frank.li@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+CC: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam
+	<festevam@gmail.com>, Peng Fan <peng.fan@arm.com>, Sudeep Holla
+	<sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/3] dt-bindings: firmware: arm,scmi: support i.MX95 SCMI
+ Pinctrl
+Thread-Topic: [PATCH 2/3] dt-bindings: firmware: arm,scmi: support i.MX95 SCMI
+ Pinctrl
+Thread-Index: AQHajG9fogbrSJSEIkC/zlbnV4Z6dbFkvpCAgAD3YxA=
+Date: Sat, 13 Apr 2024 06:01:17 +0000
+Message-ID:
+ <DU0PR04MB9417C3A75792347AB3A12774880B2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240412-pinctrl-scmi-oem-v1-v1-0-704f242544c1@nxp.com>
+ <20240412-pinctrl-scmi-oem-v1-v1-2-704f242544c1@nxp.com>
+ <ZhlPK4PmnYHj0K2d@lizhi-Precision-Tower-5810>
+In-Reply-To: <ZhlPK4PmnYHj0K2d@lizhi-Precision-Tower-5810>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB9095:EE_
+x-ms-office365-filtering-correlation-id: 888ee029-2cd1-4f33-a3e6-08dc5b7f224a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ cDA0JKGFuIrIJ6704OY9z5PhZbC+lKCqAGu0vCEJHBkBGdEs2TuclIjaJbgpkRggSPlDCrsxPYgp/V7wyX+X16053pBmT3LTsxOtEBr7M3OOl75zTyjD4ZlULAHlZHNi2YjAeC5Rth/tKM7jiA1TtEkMGPT1GcRlYDXpWA97Lpz2QIczuhEvDWxNVKPNv5teteRGkD0BrqNc0+srj0doSa2M9N379qAGSiAordrAlTxMHBdaOco/6DHlp8FBRyrySAg5eDR1Y1Yy3Ra/ZsXIIr+9tR4iGgbCHGirg1ZFBS47r55oufgWyrj4sCrYKW2TJz4iZDSVSpsJFA8LgNAcZa8bp/rjOlwMqV4kujtzk7697z/kdB9I4EsAIl8xqM853/xG6RuYFiUsWWs3n1cos2RuVJGn9sDBmeoXiFvly6nORnE9HeQCzvPcUBu4fKpc5cLDiu4TtoguQochWcy89IvbUFNnR6w1v+SMaK9m2bD7Ne1tgkDi/GY/YyFjqZY43v1MmeQhZ/vwk2sK9yBepkwCsbIiZIaPDGNVCf/GivhVq2XsE7mPlWclqA2U4BMEZymxBsJ4Go9sW0ZlEgX/DswlFhsGJhwtQlbvyeoYc7XvuW4LYehLbAEz2O4etIzMkOn/Eacu1Hoj1KpC11Znc0r3wz7SnkuNKOKF0528wuDNsib+7qWBVvy/2Nys64T+woKmQdAGwFgQQlkxnVisyT4b74BOM08codnj2iTaxYY=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?n1QWokcENZ2ErWubg77GYRpufKmL1yvzvFCmK/gb9xEn/VhcfusAy5dx/7U5?=
+ =?us-ascii?Q?/LYfT8N5w3HW9frWNGD1euE9n528T14EUYwdvxj4h9rQR05klUFxj9GbuCzv?=
+ =?us-ascii?Q?j2NpFrNRPwQ3g8ZPfHldo0qqvK+UBWBfpg6Pn6TP9JJcJbUtdh9v3uMOfqTj?=
+ =?us-ascii?Q?E0DSXA4e5ybpYMVAFYh98w78JsyQaX779YQkvtw3cHlcyCrZKEoY/RMUZ7x6?=
+ =?us-ascii?Q?Tn42wl9RZCcxJzH6LtE6wyhjzucXjICAGFxpg/nQMIarMl24QquuJ1DSZsDT?=
+ =?us-ascii?Q?7i6/wL5niqxh0cqqYL1gL7fw2wuJysDVECbDibgsMac3KG0QNfZuEtvSUYWq?=
+ =?us-ascii?Q?SKaXz48eKy5clmEHcGtGN08Wt3MmJPCGrRxuXVYTWNZb+qBxzZ+XNL1N6/T1?=
+ =?us-ascii?Q?2Is7zQX9sJFuU/aha7ku0l+z5sFEockoOCQOKqIwHGgplkYy3Dqzmrei1VVJ?=
+ =?us-ascii?Q?QCtMnrnV68Elt8e3OFGHBW4QLTXSzSkb3kWKqAb8Zzx341oxnrItxCzBPV3c?=
+ =?us-ascii?Q?zSTmFXwLHZzi9Y5Ed3Js8tOYSFVkBCvkOHyl+M1qYKd4QYiynmiZSu11qLbF?=
+ =?us-ascii?Q?lnmAtgZToVDdm5fRTvMZL2yyF41SiSZ252xaYWasMjm4q27Z092xWimc4SUm?=
+ =?us-ascii?Q?jwKyw1m0xik87YrqUzJvr4tNqwX/GqrJqj3TVkOLn5eQvrVbKJ8GR78Ge3cC?=
+ =?us-ascii?Q?0mucvsOcs3KdSRXRgKywuLpXD/5XwlvCNZU8hmCHW3EiN4t4mlkRWguAljXM?=
+ =?us-ascii?Q?h+bQIMN1jOAaJQMEfO4JPwdFggUM+rSLfitxxbdZv7xSzacbkc91ielLdM8Y?=
+ =?us-ascii?Q?41LGUcLQoWI6VslpZdd7fwJ8pRKd2WRgK2p+4WqEqmJGlvHHy7xP15Hhq/fk?=
+ =?us-ascii?Q?aTuZrLVqIg5ZFB5N4otTkYzbesjbWAvKhjQA7JgmcX8Lxme+4NHUCvHFLXTJ?=
+ =?us-ascii?Q?9ovUO385obfrbqn4BxdaskvB383vFeUVby/pVWMB16XDv7Ag2l1HU38JO+2O?=
+ =?us-ascii?Q?JwMTsMp/+0GNyOagY/H8PuRwkt4LebaphuRdVRf7k8d8wNWT38nOShD8Ay+4?=
+ =?us-ascii?Q?X4gN0jMT9DSvw5CvHPaMSaXvFkjndIMpABa7wvOiz4g9Pz3hZE8bSj2PXXhN?=
+ =?us-ascii?Q?i0vZ0p1a3KVb1sACIe+3g5VyD59X/J5MPSeYbEGBKxzW0WhPy59C5CcPKRIY?=
+ =?us-ascii?Q?Q/DGrv2o9+IvWwXXnUHiPBUy67O/KIO5vQsmsAFvVE6M0fMcBZcwCOFQK1Rk?=
+ =?us-ascii?Q?u0u9aZdm6dsUcWWwGlR91Ft12S7RNEkXY41U/mMN7mQpuPE5cLiN4tRAw9bb?=
+ =?us-ascii?Q?o/Ji1huYPuzmMDW20qMEw5xZd9tFLbQRipn6V5Fa7sHdATSL6k4yaOzFQ1w8?=
+ =?us-ascii?Q?l1JFCgiEiyaICx44iO09Ww9yPk36EwD0dyx3PqVp08tg0psQPwW8vG+vHrLk?=
+ =?us-ascii?Q?WGDntIkFQgPsPyh6UdOeZOg8FCEhq2GPW1yrTjp0EW9a6Bo2RXZI1jxQci1M?=
+ =?us-ascii?Q?h2RcEx/iVtzehkTBug6RnTf8PaIoAa/FOHrxaEKlJGdmcES/yZIfsWM/J3sw?=
+ =?us-ascii?Q?yQ+Z2DmTCB8op9QFa1U=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240413015410.30951-1-lipeifeng@oppo.com> <CAGsJ_4yGTcgMnK_81hMUAL0xG06Nmu0kn3bwdQHhSiDV8HQ+ZA@mail.gmail.com>
- <00861870-5c40-4f00-b91f-fc4cfb4a780b@oppo.com>
-In-Reply-To: <00861870-5c40-4f00-b91f-fc4cfb4a780b@oppo.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 13 Apr 2024 17:58:16 +1200
-Message-ID: <CAGsJ_4ynP79dc7j9jQbMgyyTNJzEzyBCiBpqJgeW0QN0NvgOHQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mm/shrinker: add SHRINKER_NO_DIRECT_RECLAIM
-To: lipeifeng@oppo.com
-Cc: akpm@linux-foundation.org, david@fromorbit.com, zhengqi.arch@bytedance.com, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 888ee029-2cd1-4f33-a3e6-08dc5b7f224a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2024 06:01:17.3677
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: COMyqcuC5ef+cmJQmAIVoUIZG5+0X9qS0u23/JnxwFANR0dURLnOVykxMS+9qKRDLpne87Z5auXpaKGpfdyRIA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9095
 
-On Sat, Apr 13, 2024 at 5:42=E2=80=AFPM =E6=9D=8E=E5=9F=B9=E9=94=8B <lipeif=
-eng@oppo.com> wrote:
->
->
-> =E5=9C=A8 2024/4/13 13:19, Barry Song =E5=86=99=E9=81=93:
-> > On Sat, Apr 13, 2024 at 1:54=E2=80=AFPM <lipeifeng@oppo.com> wrote:
-> >> From: Peifeng Li <lipeifeng@oppo.com>
-> >>
-> >> In the case of insufficient memory, threads will be in direct_reclaim =
-to
-> >> reclaim memory, direct_reclaim will call shrink_slab to run sequential=
-ly
-> >> each shrinker callback. If there is a lock-contention in the shrinker
-> >> callback,such as spinlock,mutex_lock and so on, threads may be likely =
-to
-> >> be stuck in direct_reclaim for a long time, even if the memfree has re=
-ached
-> >> the high watermarks of the zone, resulting in poor performance of thre=
-ads.
-> >>
-> >> Example 1: shrinker callback may wait for spinlock
-> >> static unsigned long mb_cache_shrink(struct mb_cache *cache,
-> >>                                       unsigned long nr_to_scan)
-> >> {
-> >>          struct mb_cache_entry *entry;
-> >>          unsigned long shrunk =3D 0;
-> >>
-> >>          spin_lock(&cache->c_list_lock);
-> >>          while (nr_to_scan-- && !list_empty(&cache->c_list)) {
-> >>                  entry =3D list_first_entry(&cache->c_list,
-> >>                                           struct mb_cache_entry, e_lis=
-t);
-> >>                  if (test_bit(MBE_REFERENCED_B, &entry->e_flags) ||
-> >>                      atomic_cmpxchg(&entry->e_refcnt, 1, 0) !=3D 1) {
-> >>                          clear_bit(MBE_REFERENCED_B, &entry->e_flags);
-> >>                          list_move_tail(&entry->e_list, &cache->c_list=
-);
-> >>                          continue;
-> >>                  }
-> >>                  list_del_init(&entry->e_list);
-> >>                  cache->c_entry_count--;
-> >>                  spin_unlock(&cache->c_list_lock);
-> >>                  __mb_cache_entry_free(cache, entry);
-> >>                  shrunk++;
-> >>                  cond_resched();
-> >>                  spin_lock(&cache->c_list_lock);
-> >>          }
-> >>          spin_unlock(&cache->c_list_lock);
-> >>
-> >>          return shrunk;
-> >> }
-> >> Example 2: shrinker callback may wait for mutex lock
-> >> static
-> >> unsigned long kbase_mem_evictable_reclaim_scan_objects(struct shrinker=
- *s,
-> >>                  struct shrink_control *sc)
-> >> {
-> >>          struct kbase_context *kctx;
-> >>          struct kbase_mem_phy_alloc *alloc;
-> >>          struct kbase_mem_phy_alloc *tmp;
-> >>          unsigned long freed =3D 0;
-> >>
-> >>          kctx =3D container_of(s, struct kbase_context, reclaim);
-> >>
-> >>          // MTK add to prevent false alarm
-> >>          lockdep_off();
-> >>
-> >>          mutex_lock(&kctx->jit_evict_lock);
-> >>
-> >>          list_for_each_entry_safe(alloc, tmp, &kctx->evict_list, evict=
-_node) {
-> >>                  int err;
-> >>
-> >>                  err =3D kbase_mem_shrink_gpu_mapping(kctx, alloc->reg=
-,
-> >>                                  0, alloc->nents);
-> >>                  if (err !=3D 0) {
-> >>                          freed =3D -1;
-> >>                          goto out_unlock;
-> >>                  }
-> >>
-> >>                  alloc->evicted =3D alloc->nents;
-> >>
-> >>                  kbase_free_phy_pages_helper(alloc, alloc->evicted);
-> >>                  freed +=3D alloc->evicted;
-> >>                  list_del_init(&alloc->evict_node);
-> >>
-> >>                  kbase_jit_backing_lost(alloc->reg);
-> >>
-> >>                  if (freed > sc->nr_to_scan)
-> >>                          break;
-> >>          }
-> >> out_unlock:
-> >>          mutex_unlock(&kctx->jit_evict_lock);
-> >>
-> >>          // MTK add to prevent false alarm
-> >>          lockdep_on();
-> >>
-> >>          return freed;
-> >> }
-> >>
-> >> In mobile-phone,threads are likely to be stuck in shrinker callback du=
-ring
-> >> direct_reclaim, with example like the following:
-> >> <...>-2806    [004] ..... 866458.339840: mm_shrink_slab_start:
-> >>                          dynamic_mem_shrink_scan+0x0/0xb8 ... priority=
- 2
-> >> <...>-2806    [004] ..... 866459.339933: mm_shrink_slab_end:
-> >>                          dynamic_mem_shrink_scan+0x0/0xb8 ...
-> >>
-> >> For the above reason, the patch introduces SHRINKER_NO_DIRECT_RECLAIM =
-that
-> >> allows driver to set shrinker callback not to be called in direct_recl=
-aim
-> >> unless sc->priority is 0.
-> >>
-> >> The reason why sc->priority=3D0 allows shrinker callback to be called =
-in
-> >> direct_reclaim is for two reasons:
-> >> 1.Always call all shrinker callback in drop_slab that priority is 0.
-> >> 2.sc->priority is 0 during direct_reclaim, allow direct_reclaim to cal=
-l
-> >> shrinker callback, to reclaim memory timely.
+> Subject: Re: [PATCH 2/3] dt-bindings: firmware: arm,scmi: support i.MX95
+> SCMI Pinctrl
+>=20
+> On Fri, Apr 12, 2024 at 08:29:26AM +0800, Peng Fan (OSS) wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > i.MX95 SCMI Pinctrl uses OEM specific units, so add '$ref' to
+> > '/schemas/pinctrl/nxp,imx95-pinctrl.yaml' and an example.
+>=20
+> where 'example'?
 
-We already provide current_is_kswapd() and shrinker_control to drivers. If =
-you
-believe that sc->priority can assist shrinker callbacks in behaving
-differently, why
-not simply pass it along with the shrinker_control and allow drivers
-to decide their
-preferred course of action?
+I was thinking to add the whole example including pinctrl/bbm/misc
+using a separate patch after all the vendor stuff got accepted.
 
-I don't find it reasonable to reverse the approach. Allowing drivers
-to pass a flag
-to the memory management core doesn't seem sensible.
+Thanks,
+Peng.
 
-> >>
-> >> Note:
-> >> 1.shrinker_register() default not to set SHRINKER_NO_DIRECT_RECLAIM, t=
-o
-> >> maintain the current behavior of the code.
-> >> 2.Logic of kswapd and drop_slab to call shrinker callback isn't affect=
-ed.
-> >>
-> >> Signed-off-by: Peifeng Li <lipeifeng@oppo.com>
-> >> ---
-> >> -v2: fix the commit message
-> >>   include/linux/shrinker.h |  5 +++++
-> >>   mm/shrinker.c            | 38 +++++++++++++++++++++++++++++++++++---
-> >>   2 files changed, 40 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> >> index 1a00be90d93a..2d5a8b3a720b 100644
-> >> --- a/include/linux/shrinker.h
-> >> +++ b/include/linux/shrinker.h
-> >> @@ -130,6 +130,11 @@ struct shrinker {
-> >>    * non-MEMCG_AWARE shrinker should not have this flag set.
-> >>    */
-> >>   #define SHRINKER_NONSLAB       BIT(4)
-> >> +/*
-> >> + * Can shrinker callback be called in direct_relcaim unless
-> >> + * sc->priority is 0?
-> >> + */
-> >> +#define SHRINKER_NO_DIRECT_RECLAIM     BIT(5)
-> >>
-> > My point is, drivers won't voluntarily stay unreclaimed during direct
-> > reclamation. Hence, this approach is unlikely to succeed. Those
-> > drivers can't be trusted. Had they been aware of their slowness,
-> > they wouldn't have written code in this manner.
->
-> Actually, we hope there is a way for us to solve the block of shrinker
-> callback,
->
-> Because many drivers can't remove their lock in shrinker callback
-> timely, with
->
-> the flags, we can tell drivers to add it.
->
-> > Detecting problematic driver shrinkers and marking them as skipped
-> > might prove challenging. I concur with Zhengqi; the priority should
-> > be fixing the driver whose shrinker is slow. Do you have a list of
-> > slow drivers?
->
-> Most of slow drivers hadn't been upstreamed, so that we can not gather
->
-> a list of slow drivers.
->
-> I am curious if executing do_shrink_slab() asynchronously could be accept=
-ed
->
-> in Linux? or executing part of shrinker callbacks asynchronously?
-
-That entirely hinges on the type of data we possess. As Zhengqi pointed out=
-,
-asynchronous slab shrinkers could also impede memory reclamation. If the
-data eventually shows that this isn't an issue, asynchronous slab shrinkers
-might discover a solution.
-
->
-> In my mind, if the memory-reclaim-path of the kernel would be affected by
->
-> the driver, the robustness of the kernel will be greatly reduced.
->
+>=20
+> Frank
+>=20
+> >
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  Documentation/devicetree/bindings/firmware/arm,scmi.yaml | 8 +++++---
+> >  1 file changed, 5 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > index e9d3f043c4ed..ebc6c083b538 100644
+> > --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+> > @@ -249,9 +249,11 @@ properties:
+> >
+> >    protocol@19:
+> >      type: object
+> > -    allOf:
+> > -      - $ref: '#/$defs/protocol-node'
+> > -      - $ref: /schemas/pinctrl/pinctrl.yaml
+> > +    anyOf:
+> > +      - $ref: /schemas/pinctrl/nxp,imx95-pinctrl.yaml
+> > +      - allOf:
+> > +          - $ref: '#/$defs/protocol-node'
+> > +          - $ref: /schemas/pinctrl/pinctrl.yaml
+> >
+> >      unevaluatedProperties: false
 > >
 > >
-> >>   __printf(2, 3)
-> >>   struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt,=
- ...);
-> >> diff --git a/mm/shrinker.c b/mm/shrinker.c
-> >> index dc5d2a6fcfc4..7a5dffd166cd 100644
-> >> --- a/mm/shrinker.c
-> >> +++ b/mm/shrinker.c
-> >> @@ -4,7 +4,7 @@
-> >>   #include <linux/shrinker.h>
-> >>   #include <linux/rculist.h>
-> >>   #include <trace/events/vmscan.h>
-> >> -
-> >> +#include <linux/swap.h>
-> >>   #include "internal.h"
-> >>
-> >>   LIST_HEAD(shrinker_list);
-> >> @@ -544,7 +544,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_=
-mask, int nid,
-> >>                          if (!memcg_kmem_online() &&
-> >>                              !(shrinker->flags & SHRINKER_NONSLAB))
-> >>                                  continue;
-> >> -
-> >> +                       /*
-> >> +                        * SHRINKER_NO_DIRECT_RECLAIM, mean that shrin=
-ker callback
-> >> +                        * should not be called in direct_reclaim unle=
-ss priority
-> >> +                        * is 0.
-> >> +                        */
-> >> +                       if ((shrinker->flags & SHRINKER_NO_DIRECT_RECL=
-AIM) &&
-> >> +                                       !current_is_kswapd()) {
-> >> +                               /*
-> >> +                                * 1.Always call shrinker callback in =
-drop_slab that
-> >> +                                * priority is 0.
-> >> +                                * 2.sc->priority is 0 during direct_r=
-eclaim, allow
-> >> +                                * direct_reclaim to call shrinker cal=
-lback, to reclaim
-> >> +                                * memory timely.
-> >> +                                */
-> >> +                               if (priority)
-> >> +                                       continue;
-> >> +                       }
-> >>                          ret =3D do_shrink_slab(&sc, shrinker, priorit=
-y);
-> >>                          if (ret =3D=3D SHRINK_EMPTY) {
-> >>                                  clear_bit(offset, unit->map);
-> >> @@ -658,7 +674,23 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid=
-, struct mem_cgroup *memcg,
-> >>                          continue;
-> >>
-> >>                  rcu_read_unlock();
-> >> -
-> >> +               /*
-> >> +                * SHRINKER_NO_DIRECT_RECLAIM, mean that shrinker call=
-back
-> >> +                * should not be called in direct_reclaim unless prior=
-ity
-> >> +                * is 0.
-> >> +                */
-> >> +               if ((shrinker->flags & SHRINKER_NO_DIRECT_RECLAIM) &&
-> >> +                               !current_is_kswapd()) {
-> >> +                       /*
-> >> +                        * 1.Always call shrinker callback in drop_sla=
-b that
-> >> +                        * priority is 0.
-> >> +                        * 2.sc->priority is 0 during direct_reclaim, =
-allow
-> >> +                        * direct_reclaim to call shrinker callback, t=
-o reclaim
-> >> +                        * memory timely.
-> >> +                        */
-> >> +                       if (priority)
-> >> +                               continue;
-> >> +               }
-> >>                  ret =3D do_shrink_slab(&sc, shrinker, priority);
-> >>                  if (ret =3D=3D SHRINK_EMPTY)
-> >>                          ret =3D 0;
-> >> --
-> >> 2.34.1
-> > Thanks
-> > Barry
+> > --
+> > 2.37.1
+> >
 
