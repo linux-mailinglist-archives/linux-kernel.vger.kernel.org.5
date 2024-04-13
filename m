@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-143632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EC298A3BAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:44:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 442A58A3BAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:44:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E1431C20F22
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:44:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E655B282C96
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1E820DD3;
-	Sat, 13 Apr 2024 08:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C653E3D96B;
+	Sat, 13 Apr 2024 08:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sMpq8mPy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sk8IayQq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 984FA1CD20
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:44:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137DE3D544
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712997852; cv=none; b=cBT/bc75luGRybLkuHj7AE7d2VRDskMOjBrRCREKvo+zBomWudgxAYzgdayBpHNh3CjsNvq6+bndzM8Gn8BmIcBEWC32bLMVLVkZ2S+nok8JQGqw/aqB0stYBxh/O9wy2aOELx+c71Vlr1XfJ5BLnJwK1GcaWKTEyv75uXrtw0o=
+	t=1712997882; cv=none; b=YGVyLrMtnVNLdSjqwZoKwKExBnVP5mxnstH5CK2eI5BilX2hJt2BfUcJazmV4cnpTRp8omRHPnbTiVHNhwpuls30PsXGpLp1BLFBbYVJO8ZYcVwXlSiOg/xToRpe5XeGHtcNzbcpA5FzKEToWvN16M6pBoNQUPfCnqGv0EmgpUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712997852; c=relaxed/simple;
-	bh=kHjM1Xq6wd71WRSOSKPfkgfBOcQIYnJWZvz8Rf68cbo=;
+	s=arc-20240116; t=1712997882; c=relaxed/simple;
+	bh=/wLGnoIeoo4W2cyvTVt18c7gw15g1e4ZJjlq9J58C44=;
 	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uxDFM6FOvI0yRoF+xB3J/FXWMGgt6st37W/CvxKv/COG/+dg/1S82c5wa8RweXAHTFi1Rm380qPKi8fVl1i1vP3U8er0qvdG0/LQtFClMzRbnJodLCMDFx1Z4C5vSKwfNfonp4QJRoDhza6TJYnvhHaBaU50OEukwxCHUvl4TtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sMpq8mPy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CEDCC113CD;
-	Sat, 13 Apr 2024 08:44:12 +0000 (UTC)
+	 MIME-Version:Content-Type; b=d+ALUS1MeS73BDWUjE5gIPGCS+bm4cj9/lU4Px6l3tUH7dOwGXOSIKwBDvYnImOXoYwk4JHMofB4Y5+a46eUfPVM1XBb7eJ447gNUvdiKeqbZIJ96JooSSn8xRrV2HEWyj9B3Vs7z2+lLI4ds22L1Yk/3elHpMaOQ1TOwkY8JxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sk8IayQq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92AEDC113CD;
+	Sat, 13 Apr 2024 08:44:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712997852;
-	bh=kHjM1Xq6wd71WRSOSKPfkgfBOcQIYnJWZvz8Rf68cbo=;
+	s=k20201202; t=1712997881;
+	bh=/wLGnoIeoo4W2cyvTVt18c7gw15g1e4ZJjlq9J58C44=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sMpq8mPyQ01Uh0Y31wuSNEPAVYYnn6mZh2Le6JPIoQeAv8/jwUwYqKxVkVK2M7LNO
-	 IK1jBOU46dnAk+o7N0fM2+eISJEUHnr+/XUlGLxIdC8TA02ycLX1tIIuHPmw6NZY0x
-	 Xz/i0MR1oza01o62jtBPrd0iunFFauLl64G/N4ZoOecGoAZgZv3ZXOMHoy8ulK+uNc
-	 /LebkAG678ADDx9mI4BmM3EHN+WV1Xt5ZF6oR6mwM/g5O29lODo0dzP01AZFZt2At1
-	 ZpfsZ0UJOp03/fTGBvVE1utiwk87TqVsVJt9THupjwTzIhyX9DhyDXGcxK7rr+hrii
-	 3vZcfd2TFLy5w==
+	b=Sk8IayQqtx9l/zyO0uiI3pKkotGl+asOUMuEwZ1h3+9pFDkJ7d/JK4Tg90tR5vMka
+	 hoXdKG7G66aAjEDID4Scaza6Tc0Man5HkljhsvrWWTgtWyM87132XLk/pTeMSiBWW+
+	 MJ3uLt+ISEXxjy7gfljbKhak0RBlDoSQSLJSOvcQ1Rifn2eDGps9KPttj+8bhd+WI1
+	 nTbx4Y3JWx8+PdJzMoIm8Bib19qpU9c+PfgptPIf0MSm+YXudxo0S6OwtUcdTxsqyc
+	 WbDhonz+uWQs5KtwYyzkmWgeziznjzK8M+Jg4loTwPtXNuo4PV/NEflxkCGXv7sUyJ
+	 3aqjFtAanVoRA==
 Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
 	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.95)
 	(envelope-from <maz@kernel.org>)
-	id 1rvYza-0046hD-0T;
-	Sat, 13 Apr 2024 09:44:10 +0100
-Date: Sat, 13 Apr 2024 09:44:13 +0100
-Message-ID: <878r1hslcy.wl-maz@kernel.org>
+	id 1rvZ03-0046hp-8L;
+	Sat, 13 Apr 2024 09:44:39 +0100
+Date: Sat, 13 Apr 2024 09:44:42 +0100
+Message-ID: <877ch1slc5.wl-maz@kernel.org>
 From: Marc Zyngier <maz@kernel.org>
 To: Guanrui Huang <guanrui.huang@linux.alibaba.com>
 Cc: yuzenghui@huawei.com,
@@ -55,10 +55,9 @@ Cc: yuzenghui@huawei.com,
 	tglx@linutronix.de,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] irqchip/gic-v3-its: remove BUG_ON in its_vpe_irq_domain_alloc
-In-Reply-To: <20240413064051.31315-2-guanrui.huang@linux.alibaba.com>
+Subject: Re: [PATCH v4 1/2] irqchip/gic-v3-its: Fix double free on error
+In-Reply-To: <20240413064051.31315-1-guanrui.huang@linux.alibaba.com>
 References: <20240413064051.31315-1-guanrui.huang@linux.alibaba.com>
-	<20240413064051.31315-2-guanrui.huang@linux.alibaba.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
  (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -74,44 +73,43 @@ X-SA-Exim-Rcpt-To: guanrui.huang@linux.alibaba.com, yuzenghui@huawei.com, shanno
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Sat, 13 Apr 2024 07:40:51 +0100,
+On Sat, 13 Apr 2024 07:40:50 +0100,
 Guanrui Huang <guanrui.huang@linux.alibaba.com> wrote:
 > 
-> If vm is NULL in here, that means caller has a bug.
-> BUG_ON in here is useless, this will paper over bug.
-
-This BUG_ON() doesn't paper over a bug like your previous patch
-did. It catches a bug (vm should never be NULL), but also forces the
-system to crash for no good reason.
-
-The same effect will be obtained by letting the code run its course
-and vm being dereferenced, triggering an exception.
-
+> In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error
+> with i > 0, its_vpe_irq_domain_free may free bitmap and vprop_page,
+> and then there is a double free in its_vpe_irq_domain_alloc.
 > 
-> So just remove this check.
+> Fix it by calling its_vpe_irq_domain_free directly, bitmap and
+> vprop_page will be freed in this function.
 > 
 > Signed-off-by: Guanrui Huang <guanrui.huang@linux.alibaba.com>
 > ---
->  drivers/irqchip/irq-gic-v3-its.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/irqchip/irq-gic-v3-its.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
 > 
 > diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index 2305f6b524a9..55c83e19719d 100644
+> index fca888b36680..2305f6b524a9 100644
 > --- a/drivers/irqchip/irq-gic-v3-its.c
 > +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -4521,8 +4521,6 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
->  	struct page *vprop_page;
->  	int base, nr_ids, i, err = 0;
+> @@ -4561,13 +4561,8 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
+>  		irqd_set_resend_when_in_progress(irq_get_irq_data(virq + i));
+>  	}
 >  
-> -	BUG_ON(!vm);
+> -	if (err) {
+> -		if (i > 0)
+> -			its_vpe_irq_domain_free(domain, virq, i);
 > -
->  	bitmap = its_lpi_alloc(roundup_pow_of_two(nr_irqs), &base, &nr_ids);
->  	if (!bitmap)
->  		return -ENOMEM;
+> -		its_lpi_free(bitmap, base, nr_ids);
+> -		its_free_prop_table(vprop_page);
+> -	}
+> +	if (err)
+> +		its_vpe_irq_domain_free(domain, virq, i);
+>  
+>  	return err;
+>  }
 
-With the commit message fixed:
-
-Acked-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
 	M.
 
