@@ -1,159 +1,101 @@
-Return-Path: <linux-kernel+bounces-143687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F7E8A3C4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:47:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261F28A3C4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:49:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6526E1F21B8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:47:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD4241F21C51
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E799225CB;
-	Sat, 13 Apr 2024 10:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66EE522A;
+	Sat, 13 Apr 2024 10:49:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b="f5xYqjrz"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="pxpgdLKO"
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9041C522A;
-	Sat, 13 Apr 2024 10:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8432208B6
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 10:49:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713005263; cv=none; b=FPe5Kt8Id6LH/p+doRGjBRyJlmNIzGjCya8zksQrgo50wAvd1FA+N0oAGM2P3/42mqDbMSCY/ap3YRnKIPAKvnMEjffcGV0PA4639OSfLvwxPhO/ozfs3bIvqkp76ZWyDcskCl6KBkZRzSkk0JYU9UT75ncHs/7uNH2KRVSAr+Y=
+	t=1713005369; cv=none; b=NBKbCq4P3bzBV0vQIE9yYfjDuFg1buyOF47YmCb4eloELG5DBJTuNT0WIHYTW4UzwHl9olR+q991vcv6KRopaueLZxgQYWbTHln0Ed3SDyoRyF6CK846zP7tvAEynzS/65K7ebOCELNlfGjyU9n2M5s2GbVeRWaoDY8ybUdX4QI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713005263; c=relaxed/simple;
-	bh=dtj8cKaEYZEqPiYf61cd6NvcMFEQuQfVErXWHJY6Kqw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kakVraRYmI42YiOfzJD+nmT+MTjQQ9zhy4Q00cuuGVzXXMDjrFUdfpbwiUirwl2l/KffZogLgVZtBWLXduDIre6pRznHLW278Dk3JYsiCVw9oLL4PTCphFz3nInbQ7lgvbQNkD1rUxQ4iF1toN7s+KE8tObVknD+qKI5Y7y/Ywc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=timschumi@gmx.de header.b=f5xYqjrz; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1713005248; x=1713610048; i=timschumi@gmx.de;
-	bh=4a41sV2lx69XoXu8tNnX+vKhNLO8EAHbtWA3k97j/IE=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=f5xYqjrzRZMeHje+G++v/bmwri4QC6G4puengRcqLZKfALfc5VEJDqMj9/OVODoL
-	 5/FlOTasQjPhETulTC31TiXkLKx2/BlwPDdsR5tRkOReyTl0TBWWoNad88tb01jK3
-	 xbLeU1R/+CO3A8nrCArfijwtehKhtSLqSbR8b9S1eDjZJra0TS4Nzk94s3CB3NUIw
-	 xYggjyK+WvArVAQ8DoGvQ2TMaJlDn70qQsPIVJjWPnxGpinDMGQsphkDaFPzJJxzw
-	 cmhiME95o0qaMDCppFkAbd4YW87/2g4LJcXdfdAkHdH7azvnw9GUqAPJfZTq9cTVC
-	 WmNQuZL/hn3i6we1lQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.222.0.2] ([93.218.98.241]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mqs0X-1sZaVt1vWL-00mvpl; Sat, 13
- Apr 2024 12:47:28 +0200
-Message-ID: <ef107046-200c-48fc-b678-eb06c1224940@gmx.de>
-Date: Sat, 13 Apr 2024 12:47:21 +0200
+	s=arc-20240116; t=1713005369; c=relaxed/simple;
+	bh=8ikedhSJn26YGGIQUYARbenr5fQ6p+qp34A7xNOjONo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CEEljWQQXPo5sJcGzDY/e9NmPpR5wUCcLIcXhDnfQWkNw5PiP+V2ASr2/htnxw1AHmWY0ICztz89hsld17q9e7HCSeOVVtsKhYiWLEkFS+pW7tUmC0DU5WP0YzD4pTqa+NfJQR7XU+6Akt/9jZtw8ajSvvGNCVik8fiiyfrYHZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=pxpgdLKO; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4VGqtk0Ylmz9sTJ;
+	Sat, 13 Apr 2024 12:49:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1713005358;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wRGrx20qaxTfTav8oY1WT1NLMhax9e4c1ieS3RFQnwU=;
+	b=pxpgdLKOYYVsr4/b3ezC7BU4ALFnYptXwo5EnikVmvVRywnQJUJXsNsj/sQ3BFM2ggg9Fc
+	zpp6ls4XvbqvIUtPc+Pqtro8P67Nm6o3Yeo3KdXFMy2jf1QZt0QZWuU5rJUp9rjwiiGRj+
+	02Y1zV/ANmRK+mtDH/OtSNMFxAD1N7z6D9cO3s0AEVzmYjRK4o3suI76065mEMXWr2qHQr
+	VuTkTUERVCG+GqMi+RKYnuF4hv+orhitWDHpE8EuosXSCTjqrYpkef3c+dat+HFIWrC4sP
+	QXMn0P0/1VQXjKMKtTk23fB3wbWBVf7KXgiugJjhk2FTv5lNpB3e7cdizpkOvw==
+Date: Sat, 13 Apr 2024 12:49:01 +0200
+From: Erhard Furtner <erhard_f@mailbox.org>
+To: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>, Bagas
+ Sanjaya <bagasdotme@gmail.com>, x86@kernel.org, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, jpoimboe@kernel.org, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, Peter Zijlstra
+ <peterz@infradead.org>, Breno Leitao <leitao@debian.org>
+Subject: Re: [bisected] Kernel v6.9-rc3 fails to boot on a Thinkpad T60 with
+ MITIGATION_RETHUNK=y (regression from v6.8.5)
+Message-ID: <20240413124901.7f1a8e51@yea>
+In-Reply-To: <68e3503c-5573-4d82-8fb0-5b955c212d67@leemhuis.info>
+References: <20240413024956.488d474e@yea>
+	<ZhpOIeVq1KQXzjBp@archie.me>
+	<68e3503c-5573-4d82-8fb0-5b955c212d67@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] efivarfs: Iterate variables with increasing name buffer
- sizes
-To: Peter Jones <pjones@redhat.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>, Matthew Garrett <mjg59@srcf.ucam.org>,
- linux-efi@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
- linux-kernel@vger.kernel.org
-References: <20240122231507.1307793-1-timschumi@gmx.de>
- <CAMj1kXHSSRacU3hp6D3sdUKDESi1FoD33Qi=5Df+=_biZ-vqhA@mail.gmail.com>
- <223a4e75-2e06-4bc6-a70c-823f0eb308d7@gmx.de>
- <CAMj1kXEKF_a6wLtoMYCwBKEVDo6k1u=Cas-=4Ar4WnANHNu+cg@mail.gmail.com>
- <b58a112f-767f-4918-8262-63ac1dbfebbf@gmx.de>
- <CA+g+hrh_REk-bcTt-D+eSngofxdejeRXuXKhf1O15wzn+qMy6Q@mail.gmail.com>
-Content-Language: en-US
-From: Tim Schumacher <timschumi@gmx.de>
-In-Reply-To: <CA+g+hrh_REk-bcTt-D+eSngofxdejeRXuXKhf1O15wzn+qMy6Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KMdOa9E4IU8lq3pORVR6gjmjfH8NPYsjBplgz3AKyOA8WqMMUTe
- k84lWx6ZDhmtw4/IDjuSok3mfYK7P+MmTjZ6sEG8sHUINMnhY25xbLL8gYhw/FxduG+W5k/
- 8BU9HmAoj4CoBTWyhWaD25f6OBsytRzDT3UjAnEqzvmPT45qvC2BH5xoqZKA5L2UuG6n5Y0
- ArTVCshObeORT+WYgsKgA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:89TJqehjHG8=;LngesEic6ImhsvOf1pFtjAbbK7u
- DpJ85dSo60lcIcvhVTBtY73rukhqaBYWHwm8zfvxaMIQe7AA4J+iUCoTAC9LkXaNTejGPH7P5
- +Ory3hj/f3orjJ8vy2fiRjEXDIUlVVAsJyvO2DZUceEbaKn3wJkM8tYSX/DPR/Z8Ok7WI3uhB
- 3bL+fpSoYjakS5t7m1C304wvedKXxC9JbvZxGhMIqCyHkK2NkFAmJ6LTXlVMEFgjp715Y5e+P
- nEko9ZrDCPs5rFP3dfaZolnaV9P/nzRxNVzIiFAE6Kq+cdOmOfrHUIojwCYPLO9qz/8n98FMz
- hjfkpd2MUdxeZ+tWdGoVCQVXvdNgXG8WqOw82bzNBVTSi9rjVSCzBswNu1GcYkRv/pwZT6vRt
- M7nuHY1D5ZTNoFz7daaaXfYCm/4t9TtzQfAZDNa3ZSaV07jNYSY9sHUwBTl0YBI7qvI362+le
- ChLiXJ9T3hWDc3InomT7rNlV2v6EVdQX82EXcHqkqa5niiYeFE4eIAbmcQkMQ8uiOvYN8F0eq
- cv0e848YACSXc+DStXM/9pjhA2Zpm3TKZzRdryfqySPG8t3+qftzcPUaqsYioPe5wy78DjWC7
- 0WmHrxgL+Wmji6YoVnWKNMseT+UYXW4lQKUh78OwuAMDcaQFuQ8X4ZfXA+NrYIJI9J4Jy1mt7
- RfVIJ4TetcGK3gdl/OVoBO3zfjlDqZ9jfG7+45OUFC+VTDk01V4ewN/sQnzyyHGkusiZR3iNb
- tZ8Pu4mRPiJO46BBTmAJrFQzsKbwxr2LfKBkcRgGDAdMgcPdtX6NKl2/bpV0ZyoO4xIdcyuOL
- UkfMnXWX7nsJ3l3kcZeYtFDC3VxBmN0DMDDQbEkr05fEg=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-MBO-RS-META: k3ssgyup1b4oybo1zmrkgh8m4j9pf3bb
+X-MBO-RS-ID: e16be028c3858998bcc
 
-On 24.01.24 22:25, Peter Jones wrote:
-> On Tue, Jan 23, 2024 at 12:33=E2=80=AFPM Tim Schumacher <timschumi@gmx.d=
-e> wrote:
->>
->> On 23.01.24 15:09, Ard Biesheuvel wrote:
->>> On Tue, 23 Jan 2024 at 14:55, Tim Schumacher <timschumi@gmx.de> wrote:
->>>>
->>>> I'd rather avoid introducing deviations from the specifications on th=
-e
->>>> kernel side as well.
->>>
->>> Which specification would this deviate from?
->>
->> The preexisting comment claims "Per EFI spec", and it appears that I go=
-t
->> mislead by that. Neither the UEFI specification, nor the newest revisio=
-n
->> of the EFI specification (which I guess is what would have been current
->> back in 2004, when this comment was introduced) seem to make any mentio=
-n
->> of a maximum length for the variable name.
->
-> Curiously, I can't find it in the 1.02 spec (the oldest I can find)
-> either.  When I inherited efibootmgr around 2013, this was a
-> limitation there, but I don't see anything in that tree that claims
-> it's a spec limitation either.  My suspicion is this is a former
-> Itanium firmware limit that got promoted to "the spec says" by word of
-> mouth, or was in some very early ia64 implementation spec.
+On Sat, 13 Apr 2024 11:46:09 +0200
+"Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info> wrote:
 
-In case anyone is still curious about this, I managed to track down where
-the supposed limit actually came from.
+> On 13.04.24 11:19, Bagas Sanjaya wrote:
+> 
+> There was an earlier report about this here:
+> https://lore.kernel.org/all/78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com/
+> 
+> Boris there suggested: "perhaps we should make
+> CONFIG_MITIGATION_RETHUNK depend on !X86_32":
+> https://lore.kernel.org/all/20240403173059.GJZg2SUwS8MXw7CdwF@fat_crate.local/
+> 
+> But that did not happen afaics. Would it be wise to go down that path?
+> 
+> Ciao, Thorsten
 
-The efivarfs documentation claims that "The old sysfs EFI variables code o=
-nly
-supported variables of up to 1024 bytes. This limitation existed in versio=
-n
-0.99 of the EFI specification, but was removed before any full releases."
+Ah I see. Well in my case it's no old P4 heater but a not that ancient T2400 Intel Core Duo with 31W TDP. ;)
 
-With some effort I managed to track down a copy of EFI v0.99 [1], which
-indeed says the following:
+But good to hear I would not need CONFIG_MITIGATION_RETHUNK anyhow? If that's the case depending on !X86_32 would make sense. Don't know whether the 32bit Intel Atoms (the only 'recent' X86_32 CPU left besides the Core Duo) would need this mitigation.
 
-"The size of the VariableName, including the Unicode Null in bytes plus th=
-e
-  DataSize is limited to a maximum size of 1024 bytes."
-
-This note was there at least in version 0.92 and 0.99, and gone in at leas=
-t
-version 1.02. I haven't been able to find a copy of version 1.01, but it m=
-ost
-likely never even existed online, given that 1.02 happened only 12 days la=
-ter
-(and for the sole reason of "legal and trademarking requirements").
-The EFI 0.99 errata (which might have included more details) sadly doesn't=
- seem
-to have been backed up anywhere by third-parties.
-
-Tim
-
-[1] Searching for "EFISpec_V099" on your preferred search engine should
-     find it. I doubt that Intel will care about copyright assignments for
-     feedback on 0.99 now, but the agreement prompt sadly prevented the We=
-b
-     Archive from reaching it.
+Regards,
+Erhard
 
