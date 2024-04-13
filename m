@@ -1,180 +1,126 @@
-Return-Path: <linux-kernel+bounces-143884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2318A3EBC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:30:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A597E8A3E9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:13:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFC02B21703
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:30:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACAD01C20A97
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:13:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0D355E7B;
-	Sat, 13 Apr 2024 21:30:19 +0000 (UTC)
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [5.144.164.164])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347BD55E6E;
+	Sat, 13 Apr 2024 21:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b="L+3ziR5M";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BxcOiVpp"
+Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EABB1EB31
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 21:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.164
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FD91758B;
+	Sat, 13 Apr 2024 21:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713043818; cv=none; b=TEglOwQLmyOpTGEgFAoiACfkGZh0ZmAS8Xm0LlZSAFE4zoFPtSddt6Ib+Qe+wOgQtLubuWsqKZ76ebnBHTMIS+2rj8D55n8mbS1LAEKh/X6KyfdoFpN7Nw6M6iPkxiOe+JBT7P0cTCq/1tRfyCKn9DNKiNFxXWNyzGwwiKleD8k=
+	t=1713042792; cv=none; b=LMA98hAA03Qr5+z5edmX9gUBlTYkgkw+apxeY5B/oNoufnTIHr8u+5OvhJSiCS+wi1lTbrVjc437xQ7fKq4v8yZ8MRVdBptYtxaXqwODvQ+dMVgiHatZ+Di7cZk1mpEmPfOsiKSxjH6UorVium7YMV5+sM86WK5BXCvv+of/EEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713043818; c=relaxed/simple;
-	bh=sSRLyOrAPUnlICcYlFjeeGuacJ5dYEn8lr800sZSWnU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ar82pJHP9cKhhwgcRAtZ/Yq9HcavpDme3UlRo3Xz/6OYYSikmfZl9Kx553F6vBAW/8SLa9SfDZM7hxpHDHkjvcC0ouVhgBgWTPwlGk+0iHq1TAy4FBhRDdEAv8AwxdKjuqsCWMdANb3hqz0KuATeCFYwreGkBlYR6AmzQvRu3kU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r1.th.seeweb.it (Postfix) with ESMTPSA id ADFAC205A9;
-	Sat, 13 Apr 2024 23:12:44 +0200 (CEST)
-Date: Sat, 13 Apr 2024 23:12:43 +0200
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>, 
-	Caleb Connolly <caleb.connolly@linaro.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v5 3/4] drm/mipi-dsi: add mipi_dsi_compression_mode_ext()
-Message-ID: <ne2pxdg5fridoixlw46r66lcsl4okewvnucklrpwqiuxkqljmz@7tggpzxev5wo>
-References: <20240408-lg-sw43408-panel-v5-0-4e092da22991@linaro.org>
- <20240408-lg-sw43408-panel-v5-3-4e092da22991@linaro.org>
+	s=arc-20240116; t=1713042792; c=relaxed/simple;
+	bh=JNF5t9XmqxCv4XZMxVJkYpXw2NzoexaqKIvwllIO5Iw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o6IGr1VO1j7PX+SuE5gxFjJL4m5zJLIWuuDExqHNwfnFZMdCHN/DFRmhurDtYWOXyKnVP7R0cps78P5voWxAX0RxIGKr7nN2Fz8q3SYduDP+aFMfB5CR5xvl3qs1Y0UASNqcmrrcKKEnNI28j0GRBdL+XuT24GOjg9PcWHxgTZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de; spf=pass smtp.mailfrom=naccy.de; dkim=pass (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b=L+3ziR5M; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=BxcOiVpp; arc=none smtp.client-ip=64.147.123.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=naccy.de
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfhigh.west.internal (Postfix) with ESMTP id EED971800123;
+	Sat, 13 Apr 2024 17:13:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sat, 13 Apr 2024 17:13:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=naccy.de; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1713042785; x=1713129185; bh=AcUdTy9bE+3uK/JKyP4lv
+	iW/sR0ay5Ov179BxHD+sbU=; b=L+3ziR5MF9BPCH7DBDw7SaKnJWOALX1tr2bcF
+	+xwatLVAzMhELxbxjzMGyzES9oaVnfK99O1NNFMtERdpgk4oEj4TksLSYgei88EK
+	aiR6mqdzNVAWJzQe/aS6Jhu7bpdDiAVVDVoJLOWrep9dv2Pnp3bY80hyzoAeffUY
+	uh6srQ6DHoWnpRrbJC6O+zqbjEH9GF8lJyb1QcLech/lRe0iAHxEoHVSJJZsF4eW
+	RY4D1oBwY9uuxOCHna0w6yVFH8U32GJFpbNOZAjwY4sVfEe7ck11uHNnT/0ZlryL
+	N6AJtZvy4+CUDGbFoa293lZhtp1c+Vntny032YY8YhnKX6HjA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1713042785; x=1713129185; bh=AcUdTy9bE+3uK/JKyP4lviW/sR0a
+	y5Ov179BxHD+sbU=; b=BxcOiVpp+Uz6R1uJJsFWaHq31Qojafjjm9VXufy+P/vx
+	lnRaBVXkMr6Mk2xVmaJ4uYxRCkEGjwUmtYGAAvCnaW6hut9DCoxwUdrYPjnR4SOt
+	fKO5g8yXQopCZRYSoldsYSOIjLmYOd5U/OHeF9CCmfuFdx7PunGvhqSyCHlsag5p
+	5cR0xj+ykbIIaQF6IBEmIJWTtG94TsPa7xw1Jl+hbl6zYeM9wzK1RPaz19lPO5fi
+	CB9aWz/S1Yl57wCMEeidxrsMMvopV4OePN58cX/1XqRfP74P01WFt7JcDeShWjb7
+	GWTn+lIv63WEmlh7EEUgPnRFg+Rtp7KTzHL9tM9vMg==
+X-ME-Sender: <xms:YPUaZtSZpQUfCKiOafz5Q3fbrL53kc7FlCLCgeq6tsU61wh2NaAXXA>
+    <xme:YPUaZmwTHR-80Bw6pK87lRtNpfkrpWxc-jmBLwLvIbrXVmZgjM3GfPLVWCNSBIWXK
+    lBUDk24VmdZRjgFkyk>
+X-ME-Received: <xmr:YPUaZi2lxOXQHDBw5B-7jFFCjq3agAShR1H7mthsHYRxxqFLU_DrEawKDSbISTvKGo2VZW40M9i_Kjc3hQ-4LylSa9k4oBMQyg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeiiedgudeiudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefsuhgvnhht
+    ihhnucffvghslhgrnhguvghsuceoqhguvgesnhgrtggthidruggvqeenucggtffrrghtth
+    gvrhhnpefhffeiiedvieehgeeljedtueeijeelgfffjeefheehhfehffeifeegudfhheei
+    hfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehqug
+    gvsehnrggttgihrdguvg
+X-ME-Proxy: <xmx:YPUaZlAugBHHf9IqS_vMybABBKS0t2BvrqmPMSdVJGiN49N2D93_wg>
+    <xmx:YPUaZmhcM-ucvPoS_kLAd8mUzfNUYpDXllmwd7fMEHW_M85RG8lqJQ>
+    <xmx:YPUaZppkqiocsFo8qc6dlQ5Ej15t-NkkxDMk_D-mg8IyAwyLjucEoA>
+    <xmx:YPUaZhjDhP1fUSIOVmtvXRSfqJOFT7rXVP9oJHE29u4uQOmjpLO3GQ>
+    <xmx:YfUaZtQmZ3iG9cnyhEYRAdagx6rX9A2V5L4hkqmEjSU6N8HZgZMW0aOt>
+Feedback-ID: i14194934:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 13 Apr 2024 17:13:02 -0400 (EDT)
+From: Quentin Deslandes <qde@naccy.de>
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	Quentin Deslandes <qde@naccy.de>
+Subject: [PATCH 0/2] libbpf: fixes for character arrays dump
+Date: Sat, 13 Apr 2024 23:12:56 +0200
+Message-ID: <20240413211258.134421-1-qde@naccy.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408-lg-sw43408-panel-v5-3-4e092da22991@linaro.org>
+Content-Transfer-Encoding: 8bit
 
-On 2024-04-08 02:53:52, Dmitry Baryshkov wrote:
-> Add the extended version of mipi_dsi_compression_mode(). It provides
-> a way to specify the algorithm and PPS selector.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Patch #1 fixes an issue where character arrays in dumps would
+have their last bracket misaligned if a '\0' was found in the
+array.
 
-Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+Patch #2 fixes an issue where only the first character array
+containing '\0' would be printed, the other ones would be
+dumped as empty.
 
-Something doesn't stick with me on the _ext() naming, but I don't have something
-better to propose.
+Quentin Deslandes (2):
+  libbpf: fix misaligned array closing bracket
+  libbpf: fix dump of subsequent char arrays
 
-- Marijn
+ tools/lib/bpf/btf_dump.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> ---
->  drivers/gpu/drm/drm_mipi_dsi.c | 41 ++++++++++++++++++++++++++++++++++-------
->  include/drm/drm_mipi_dsi.h     |  9 +++++++++
->  2 files changed, 43 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-> index 9874ff6d4718..795001bb7ff1 100644
-> --- a/drivers/gpu/drm/drm_mipi_dsi.c
-> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
-> @@ -645,29 +645,56 @@ int mipi_dsi_set_maximum_return_packet_size(struct mipi_dsi_device *dsi,
->  EXPORT_SYMBOL(mipi_dsi_set_maximum_return_packet_size);
->  
->  /**
-> - * mipi_dsi_compression_mode() - enable/disable DSC on the peripheral
-> + * mipi_dsi_compression_mode_ext() - enable/disable DSC on the peripheral
->   * @dsi: DSI peripheral device
->   * @enable: Whether to enable or disable the DSC
-> + * @algo: Selected compression algorithm
-> + * @pps_selector: Select PPS from the table of pre-stored or uploaded PPS entries
->   *
-> - * Enable or disable Display Stream Compression on the peripheral using the
-> - * default Picture Parameter Set and VESA DSC 1.1 algorithm.
-> + * Enable or disable Display Stream Compression on the peripheral.
->   *
->   * Return: 0 on success or a negative error code on failure.
->   */
-> -int mipi_dsi_compression_mode(struct mipi_dsi_device *dsi, bool enable)
-> +int mipi_dsi_compression_mode_ext(struct mipi_dsi_device *dsi, bool enable,
-> +				  enum mipi_dsi_compression_algo algo,
-> +				  unsigned int pps_selector)
->  {
-> -	/* Note: Needs updating for non-default PPS or algorithm */
-> -	u8 tx[2] = { enable << 0, 0 };
-> +	u8 tx[2] = { };
->  	struct mipi_dsi_msg msg = {
->  		.channel = dsi->channel,
->  		.type = MIPI_DSI_COMPRESSION_MODE,
->  		.tx_len = sizeof(tx),
->  		.tx_buf = tx,
->  	};
-> -	int ret = mipi_dsi_device_transfer(dsi, &msg);
-> +	int ret;
-> +
-> +	if (algo > 3 || pps_selector > 3)
-> +		return -EINVAL;
-> +
-> +	tx[0] = (enable << 0) |
-> +		(algo << 1) |
-> +		(pps_selector << 4);
-> +
-> +	ret = mipi_dsi_device_transfer(dsi, &msg);
->  
->  	return (ret < 0) ? ret : 0;
->  }
-> +EXPORT_SYMBOL(mipi_dsi_compression_mode_ext);
-> +
-> +/**
-> + * mipi_dsi_compression_mode() - enable/disable DSC on the peripheral
-> + * @dsi: DSI peripheral device
-> + * @enable: Whether to enable or disable the DSC
-> + *
-> + * Enable or disable Display Stream Compression on the peripheral using the
-> + * default Picture Parameter Set and VESA DSC 1.1 algorithm.
-> + *
-> + * Return: 0 on success or a negative error code on failure.
-> + */
-> +int mipi_dsi_compression_mode(struct mipi_dsi_device *dsi, bool enable)
-> +{
-> +	return mipi_dsi_compression_mode_ext(dsi, enable, MIPI_DSI_COMPRESSION_DSC, 0);
-> +}
->  EXPORT_SYMBOL(mipi_dsi_compression_mode);
->  
->  /**
-> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> index 3011d33eccbd..82b1cc434ea3 100644
-> --- a/include/drm/drm_mipi_dsi.h
-> +++ b/include/drm/drm_mipi_dsi.h
-> @@ -226,6 +226,12 @@ static inline int mipi_dsi_pixel_format_to_bpp(enum mipi_dsi_pixel_format fmt)
->  	return -EINVAL;
->  }
->  
-> +enum mipi_dsi_compression_algo {
-> +	MIPI_DSI_COMPRESSION_DSC = 0,
-> +	MIPI_DSI_COMPRESSION_VENDOR = 3,
-> +	/* other two values are reserved, DSI 1.3 */
-> +};
-> +
->  struct mipi_dsi_device *
->  mipi_dsi_device_register_full(struct mipi_dsi_host *host,
->  			      const struct mipi_dsi_device_info *info);
-> @@ -242,6 +248,9 @@ int mipi_dsi_turn_on_peripheral(struct mipi_dsi_device *dsi);
->  int mipi_dsi_set_maximum_return_packet_size(struct mipi_dsi_device *dsi,
->  					    u16 value);
->  int mipi_dsi_compression_mode(struct mipi_dsi_device *dsi, bool enable);
-> +int mipi_dsi_compression_mode_ext(struct mipi_dsi_device *dsi, bool enable,
-> +				  enum mipi_dsi_compression_algo algo,
-> +				  unsigned int pps_selector);
->  int mipi_dsi_picture_parameter_set(struct mipi_dsi_device *dsi,
->  				   const struct drm_dsc_picture_parameter_set *pps);
->  
-> 
-> -- 
-> 2.39.2
-> 
+--
+2.44.0
 
