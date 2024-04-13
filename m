@@ -1,84 +1,119 @@
-Return-Path: <linux-kernel+bounces-143455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63ED08A3961
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:33:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FB508A391D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:25:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFD3B2848E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:33:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF52B1F22A4A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1C229AB;
-	Sat, 13 Apr 2024 00:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0104C97;
+	Sat, 13 Apr 2024 00:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="I8NcdD/e";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="I8NcdD/e"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="o3JhPfkN"
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19C037E;
-	Sat, 13 Apr 2024 00:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6696A17722
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 00:25:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712968380; cv=none; b=mTuQwrHETK3iNwA+3iShWdaAaJg/mN0xUYcKGKQhzQvvYBguEq+I8X+3wnEZrqdHqT3VR3hMnDhxHE8Noco17QZqLIDXAI8J2MTmhl7wgZ9QXabs/HsIPJjtn094g9DHEVNxSbULuuR+VdC4dGNl6+ULLIMjl8ZF14z50acfPBk=
+	t=1712967928; cv=none; b=MdSEr+HgBwGT/yoSSklrcALTXVi4wuR2jnub3Ze1SXHnwMENHl+8bqBLcwFV4g8Rp/uSm9BSkKusSnkAa8FdxqkchyA+LRldHdvJMwRpOfS3ToS1OqtJ1rjJ2AMxQq6KnuyuRHWEv7BqDWQ6kstR0mTVaeWSxLVb5I+7BPCZZIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712968380; c=relaxed/simple;
-	bh=coyk5nt8YNwTSTgY3qFZSAF1qy56yQEwiyGek0JLb04=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gBaq8Ja/qsNL8xOC6HCFPz/HjpQyAY3PPQpHBULFuo/qVDD8hfaqylzApyGwaaaG9weH2aebFCDiExQUPE5W1zydMfKOrjxiuJGnh9YyuhGoU1fhC19H6v53PbeogRZdclWGS5X82ePKI8SUiDO2WRljoK05gHR0PhgEdgfn9f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=I8NcdD/e; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=I8NcdD/e; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DAC6022C4A;
-	Sat, 13 Apr 2024 00:32:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712968375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Ga9BDy950sqrkymKo/DX0soSuDFkOI9AzOuH62JvhYw=;
-	b=I8NcdD/e1cLEL+nxIyxQnHqKpsUPCfjG7jRi48rRO496Fg9sqJd96AMINZ//aK1SXlaaBk
-	yx4TdpyriWgtaSgGl3g1WhSlTJSfzkL68Mk4dsPaxMgqIS5ivgz8XTOgNTqZPx+CdO/iOO
-	ZzXxGKsXCAQYTDO6ttOJiJVn4fGySh8=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712968375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Ga9BDy950sqrkymKo/DX0soSuDFkOI9AzOuH62JvhYw=;
-	b=I8NcdD/e1cLEL+nxIyxQnHqKpsUPCfjG7jRi48rRO496Fg9sqJd96AMINZ//aK1SXlaaBk
-	yx4TdpyriWgtaSgGl3g1WhSlTJSfzkL68Mk4dsPaxMgqIS5ivgz8XTOgNTqZPx+CdO/iOO
-	ZzXxGKsXCAQYTDO6ttOJiJVn4fGySh8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE3361368B;
-	Sat, 13 Apr 2024 00:32:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /MuCKrfSGWZhGAAAD6G6ig
-	(envelope-from <jeffm@suse.com>); Sat, 13 Apr 2024 00:32:55 +0000
-Received: from localhost.localdomain (silencio.work.jeffm.io [192.168.111.21])
-	by mail.work.jeffm.io (Postfix) with ESMTPS id 52F881014592;
-	Fri, 12 Apr 2024 20:32:50 -0400 (EDT)
-Received: by localhost.localdomain (Postfix, from userid 1000)
-	id B6E721079455; Fri, 12 Apr 2024 20:22:54 -0400 (EDT)
-From: Jeff Mahoney <jeffm@suse.com>
-To: Wayne Lin <Wayne.Lin@amd.com>,
-	dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jeff Mahoney <jeffm@suse.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] drm/mst: Fix NULL pointer dereference in drm_dp_add_payload_part2 (again)
-Date: Fri, 12 Apr 2024 20:22:52 -0400
-Message-ID: <20240413002252.30780-1-jeffm@suse.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712967928; c=relaxed/simple;
+	bh=M3Sws9Xq1UzqxeHQp2ggqKkuvHy+mXvA6zrymX1lBx0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=LyQHFt2EkG/FOmJKvzHQEmsL5uW4gX+YiU8z1POb1ZUgEmD5a1YWqBWUBfRPdyjh/sD4KCPJnRG7sE05iFefMYX0DKme75mt39TrX22Fco//slk3cniXSHO4b07V/+msrp9thQE2PMAN0c1ygsjDA9xndBCovNOrvuUMmQePACA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=o3JhPfkN; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-78d723c0dc5so96083185a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1712967925; x=1713572725; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dxPD9e5Q1st8MCbV2NGQC2VF5/nUXXzMpKHuTELQ6SM=;
+        b=o3JhPfkN60GZkJ+A2dN9FdRjc6N/ygABBTSuD7TdhZsIOxsFZqKRXBeRJti0RWPPlh
+         yM1dfdkRETLGaqn9J+sWb/PGthUYX8ryhpTjFbB43XXY46OMsBNnwaQMaG5XmQFhzYl9
+         r3ZB6IX3R6hsPPmhBIR/YVVNaHxx3ImMTrS3a+6lE9ZuvSZww1JoN17Tlw9AQS7gdl/Z
+         plc75xfaOvrZa6brUtaKa3kDv9uNfcG8hCczNuKXRUBS+BdOlOQQw8c1dnMVW+bRJNvh
+         RZK1bMmpDnru1i66thQplnxRvdsr04uwjx605hH3wG5ZjCeNYyHDAvbyXnxA8NpLK01B
+         JfHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712967925; x=1713572725;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dxPD9e5Q1st8MCbV2NGQC2VF5/nUXXzMpKHuTELQ6SM=;
+        b=R0OCx9DRH3zPnsgzdpcgobuCGDWvzZ8kfK9vwj8MM9eqTE1pptytfl2AmRHqZ/b9C7
+         V0/ZuP3Rur6q5zd7/GSBAYwzBe7/I5xpZxPS4JLd7WrmahDhmhdsMFYkMYr51KtSaHvv
+         wSpa5F8mHn60O9hRRyiMLHLfjpxP7mXOtHcDTlDr1HEFGF8ZrFWAOyMfRk0vUvURtNU0
+         n4I9sXuVMKCaNpA7LcXmXWOPqakEbvWWtgoPBtWLonUkEYKOdSOayJGy4fN+RUj5tINf
+         sQop6lETiY9VQzHOQa4a6WgcryF4fnJ0yFt/z7Qo3jF5w6tuhOu8d7fMUjfZRp2dFi07
+         o6PA==
+X-Forwarded-Encrypted: i=1; AJvYcCWLjORzR/M5nf8lpvPe00kHdSNgBF9UICzb/2CNDfotkX3BkosBiTljMyO38E47SSp9sMYVBRMi7K/PNm2RexoqLWxJGELyMRFOSTjn
+X-Gm-Message-State: AOJu0YwUYzk/HQukFiCzfHPkvZc+1Px1g5yRcGAR6EsQVQ2mWGkIVvLm
+	C+17bfdMXJa4ZFdIYKOKJZa0Q1kDxbUYPlLPHlBvvpwzdX4wHkZpuUb7ZllvvlY=
+X-Google-Smtp-Source: AGHT+IF7Vr8g4aGey5MWA+q3W7MDwSCWGzrkZkaE7zDxFxXJB774VSRb4A04gmHX15xeQKDoOQC1aA==
+X-Received: by 2002:a05:620a:c90:b0:78d:39ef:c1e4 with SMTP id q16-20020a05620a0c9000b0078d39efc1e4mr4239836qki.24.1712967925336;
+        Fri, 12 Apr 2024 17:25:25 -0700 (PDT)
+Received: from soleen.c.googlers.com.com (128.174.85.34.bc.googleusercontent.com. [34.85.174.128])
+        by smtp.gmail.com with ESMTPSA id wl25-20020a05620a57d900b0078d5fece9a6sm3053490qkn.101.2024.04.12.17.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 17:25:25 -0700 (PDT)
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+To: akpm@linux-foundation.org,
+	alim.akhtar@samsung.com,
+	alyssa@rosenzweig.io,
+	asahi@lists.linux.dev,
+	baolu.lu@linux.intel.com,
+	bhelgaas@google.com,
+	cgroups@vger.kernel.org,
+	corbet@lwn.net,
+	david@redhat.com,
+	dwmw2@infradead.org,
+	hannes@cmpxchg.org,
+	heiko@sntech.de,
+	iommu@lists.linux.dev,
+	jernej.skrabec@gmail.com,
+	jonathanh@nvidia.com,
+	joro@8bytes.org,
+	krzysztof.kozlowski@linaro.org,
+	linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-sunxi@lists.linux.dev,
+	linux-tegra@vger.kernel.org,
+	lizefan.x@bytedance.com,
+	marcan@marcan.st,
+	mhiramat@kernel.org,
+	m.szyprowski@samsung.com,
+	pasha.tatashin@soleen.com,
+	paulmck@kernel.org,
+	rdunlap@infradead.org,
+	robin.murphy@arm.com,
+	samuel@sholland.org,
+	suravee.suthikulpanit@amd.com,
+	sven@svenpeter.dev,
+	thierry.reding@gmail.com,
+	tj@kernel.org,
+	tomas.mudrunka@gmail.com,
+	vdumpa@nvidia.com,
+	wens@csie.org,
+	will@kernel.org,
+	yu-cheng.yu@intel.com,
+	rientjes@google.com,
+	bagasdotme@gmail.com,
+	mkoutny@suse.com
+Subject: [PATCH v6 00/11] IOMMU memory observability
+Date: Sat, 13 Apr 2024 00:25:11 +0000
+Message-ID: <20240413002522.1101315-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,64 +121,112 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: 0.20
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.20 / 50.00];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.00)[25.85%];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,ffwll.ch,suse.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
 
-Commit 54d217406afe (drm: use mgr->dev in drm_dbg_kms in
-drm_dp_add_payload_part2) appears to have been accidentially reverted as
-part of commit 5aa1dfcdf0a42 (drm/mst: Refactor the flow for payload
-allocation/removement).
+----------------------------------------------------------------------
+Changelog
+----------------------------------------------------------------------
+v6:
+- Added Acked-bys
+- fixed minor spelling error
+- Synced with Linus master branch (8f2c057754b25075aa3da132cd4fd4478cdab854)
 
-I've been seeing NULL pointer dereferences in drm_dp_add_payload_part2
-due to state->dev being NULL in the debug message printed if the payload
-allocation has failed.
+----------------------------------------------------------------------
+Description
+----------------------------------------------------------------------
+IOMMU subsystem may contain state that is in gigabytes. Majority of that
+state is iommu page tables. Yet, there is currently, no way to observe
+how much memory is actually used by the iommu subsystem.
 
-This commit restores mgr->dev to avoid the Oops.
+This patch series solves this problem by adding both observability to
+all pages that are allocated by IOMMU, and also accountability, so
+admins can limit the amount if via cgroups.
 
-Fixes: 5aa1dfcdf0a42 ("drm/mst: Refactor the flow for payload allocation/removement")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jeff Mahoney <jeffm@suse.com>
----
- drivers/gpu/drm/display/drm_dp_mst_topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The system-wide observability is using /proc/meminfo:
+SecPageTables:    438176 kB
 
-diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-index 03d528209426..3dc966f25c0c 100644
---- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-@@ -3437,7 +3437,7 @@ int drm_dp_add_payload_part2(struct drm_dp_mst_topology_mgr *mgr,
- 
- 	/* Skip failed payloads */
- 	if (payload->payload_allocation_status != DRM_DP_MST_PAYLOAD_ALLOCATION_DFP) {
--		drm_dbg_kms(state->dev, "Part 1 of payload creation for %s failed, skipping part 2\n",
-+		drm_dbg_kms(mgr->dev, "Part 1 of payload creation for %s failed, skipping part 2\n",
- 			    payload->port->connector->name);
- 		return -EIO;
- 	}
+Contains IOMMU and KVM memory.
+
+Per-node observability:
+/sys/devices/system/node/nodeN/meminfo
+Node N SecPageTables:    422204 kB
+
+Contains IOMMU and KVM memory in the given NUMA node.
+
+Per-node IOMMU only observability:
+/sys/devices/system/node/nodeN/vmstat
+nr_iommu_pages 105555
+
+Contains number of pages IOMMU allocated in the given node.
+
+Accountability: using sec_pagetables cgroup-v2 memory.stat entry.
+
+With the change, iova_stress[1] stops as limit is reached:
+
+$ ./iova_stress
+iova space:     0T      free memory:   497G
+iova space:     1T      free memory:   495G
+iova space:     2T      free memory:   493G
+iova space:     3T      free memory:   491G
+
+stops as limit is reached.
+
+This series encorporates suggestions that came from the discussion
+at LPC [2].
+----------------------------------------------------------------------
+[1] https://github.com/soleen/iova_stress
+[2] https://lpc.events/event/17/contributions/1466
+----------------------------------------------------------------------
+Previous versions
+v1: https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
+v2: https://lore.kernel.org/linux-mm/20231130201504.2322355-1-pasha.tatashin@soleen.com
+v3: https://lore.kernel.org/all/20231226200205.562565-1-pasha.tatashin@soleen.com
+v4: https://lore.kernel.org/all/20240207174102.1486130-1-pasha.tatashin@soleen.com
+v5: https://lore.kernel.org/all/20240222173942.1481394-1-pasha.tatashin@soleen.com
+----------------------------------------------------------------------
+
+Pasha Tatashin (11):
+  iommu/vt-d: add wrapper functions for page allocations
+  iommu/dma: use iommu_put_pages_list() to releae freelist
+  iommu/amd: use page allocation function provided by iommu-pages.h
+  iommu/io-pgtable-arm: use page allocation function provided by
+    iommu-pages.h
+  iommu/io-pgtable-dart: use page allocation function provided by
+    iommu-pages.h
+  iommu/exynos: use page allocation function provided by iommu-pages.h
+  iommu/rockchip: use page allocation function provided by iommu-pages.h
+  iommu/sun50i: use page allocation function provided by iommu-pages.h
+  iommu/tegra-smmu: use page allocation function provided by
+    iommu-pages.h
+  iommu: observability of the IOMMU allocations
+  iommu: account IOMMU allocated memory
+
+ Documentation/admin-guide/cgroup-v2.rst |   2 +-
+ Documentation/filesystems/proc.rst      |   4 +-
+ drivers/iommu/amd/amd_iommu.h           |   8 -
+ drivers/iommu/amd/init.c                |  91 ++++++------
+ drivers/iommu/amd/io_pgtable.c          |  13 +-
+ drivers/iommu/amd/io_pgtable_v2.c       |  18 +--
+ drivers/iommu/amd/iommu.c               |  11 +-
+ drivers/iommu/dma-iommu.c               |   7 +-
+ drivers/iommu/exynos-iommu.c            |  14 +-
+ drivers/iommu/intel/dmar.c              |  16 +-
+ drivers/iommu/intel/iommu.c             |  47 ++----
+ drivers/iommu/intel/iommu.h             |   2 -
+ drivers/iommu/intel/irq_remapping.c     |  16 +-
+ drivers/iommu/intel/pasid.c             |  18 +--
+ drivers/iommu/intel/svm.c               |  11 +-
+ drivers/iommu/io-pgtable-arm.c          |  15 +-
+ drivers/iommu/io-pgtable-dart.c         |  37 ++---
+ drivers/iommu/iommu-pages.h             | 186 ++++++++++++++++++++++++
+ drivers/iommu/rockchip-iommu.c          |  14 +-
+ drivers/iommu/sun50i-iommu.c            |   7 +-
+ drivers/iommu/tegra-smmu.c              |  18 ++-
+ include/linux/mmzone.h                  |   5 +-
+ mm/vmstat.c                             |   3 +
+ 23 files changed, 359 insertions(+), 204 deletions(-)
+ create mode 100644 drivers/iommu/iommu-pages.h
+
 -- 
-2.44.0
+2.44.0.683.g7961c838ac-goog
 
 
