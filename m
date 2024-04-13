@@ -1,106 +1,96 @@
-Return-Path: <linux-kernel+bounces-143657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F5708A3BFF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:42:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FB408A3C01
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:46:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF641F21865
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:42:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F5CAB218C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:46:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB85381B9;
-	Sat, 13 Apr 2024 09:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C049638FA3;
+	Sat, 13 Apr 2024 09:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RBspg1Lx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="hrdbw6qr"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B39D1E515;
-	Sat, 13 Apr 2024 09:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47442C695;
+	Sat, 13 Apr 2024 09:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713001324; cv=none; b=bVHleeXDWYUCY9K8vrSnrAsulkVIHXgMFt9pG6SksdUGBdUnhMsXQzZSzIUWwUrbzCkVSUauyza79NIb6Hs2E1OcJXX3ICrpALl8QWLhmcbKjQjaPlVxKDg4eas33cB0UhGeTOxYQ6+jYXAAiq1XqhGCjrMs+jUTFJL9Qweze+Y=
+	t=1713001586; cv=none; b=havcTmPNpDFj1zWbXuiBl7p8iWfWdhUI+l1ueG5VOJUSgOsER9NHPeNOWacVFyG/mjVj2U3t1K98D8fjodvrAUHP3xZtPYBCWxAW87vAdUFXtN8s/2FYPgyrXgaKoGLlxxzze+PJL3nmpJ6HDxUvB5rxqai4VZlowstszVAG3Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713001324; c=relaxed/simple;
-	bh=rIdyIzeWyytQNTt2PuS6xZHsPm01Tq24RBxQ59IuLm4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jpALFyMt2Zqz5ZNvcIcnB6bUmg6A64ic4v3iNZ4ltE7ZpbkpmUkn4u66+RA07OzqXc+3SYQEDtAC+O5VfPlrgv4mY5A83kvLqkyJEqx+zq30iclz/VRn51wgbwcCR9tmUvm1lqAVz9VAIY/IuDb8JZqfYWWFneOWKgqhMso6Fqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RBspg1Lx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FF39C3277B;
-	Sat, 13 Apr 2024 09:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713001323;
-	bh=rIdyIzeWyytQNTt2PuS6xZHsPm01Tq24RBxQ59IuLm4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RBspg1Lx9XU/EoMFCU9hXzhO2MUatTIBx+YbZxVcb+hCq99a7b4pA1zBYOXPfy4HL
-	 DL3+rkKK4ovi5OHs+uSFBIvG4UBc88+Wl8n4YtF21LvTb3agOJ64Iy4TrJzPOLXarl
-	 rG/xwyB1aX6gJFhW4odPJWNyqa1jjZYrZWlK8pab4tiP6INTc8GvtJsiJT202ctH/b
-	 KKOTZXqBJ231P6warRbuWr+5FBX1cHxmNFq3Wy9uK9xP7zi3RMIkxmTcMWaCXMb8jq
-	 Q6tBhgv4yGVyhrZ9YaZYyTzPNnF+lT5SfsYqEk+MGDAh0OT+n9l2S2wy8vtqUWWxrg
-	 QWLNgfhdwaZdw==
-Date: Sat, 13 Apr 2024 11:41:57 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() -
- requirements
-Message-ID: <20240413-aufgaben-feigen-e61a1ec3668f@brauner>
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <20240412-vegetarisch-installieren-1152433bd1a7@brauner>
- <CAHk-=wiYnnv7Kw7v+Cp2xU6_Fd-qxQMZuuxZ61LgA2=Gtftw-A@mail.gmail.com>
+	s=arc-20240116; t=1713001586; c=relaxed/simple;
+	bh=Ztmw7mAa84lxMDMSs6zmz7G2+daGprxOSPZXS2TG924=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hjB0CP/hlCrHxaaWg+qs3FngdMS5LfMgFI8aIivns0EG4yHVnipPaasE9zjUGPYsVdoeN0bqcdGUBMc4/Oto5GFnglWeN5XsVXV5rW0Z/fId+JngQ4QJQIKxXAqHR2BG/2P234wu1aQOy2lp681k6LJjpxq/PA/xl/FApIKbyr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=hrdbw6qr; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=Ztmw7mAa84lxMDMSs6zmz7G2+daGprxOSPZXS2TG924=;
+	t=1713001584; x=1713433584; b=hrdbw6qrKTu7OI7uxBDeaLHakS53exA7oSFiK+JjEM1Fq9N
+	OW35y9h5Gp6BnJw+3SeEfSVSJonn1vj6M1hfEJEdZJCFwDYPrutRNMAhVom5VNJurdtw10zL2GH+6
+	VqqXsHZGi7iycWwCswb2am6EjBkC+lriD4KicaS144Wy5vJYQaO3QPvyqP8mLSs5xI5a4A9Ac3iIs
+	959noTFSBF50ex2F4cDWYUItekiCP6igE89SgjF7uS3m+d4js/17HqokYOYg7fYSjwqPTtmTSUH+F
+	L7IDhnZzRUefaMzIisYUypWcYa1BeWu5qcrVv+ortLDfoM9JZtIascm39kjplJxw==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rvZxa-0000fw-CN; Sat, 13 Apr 2024 11:46:10 +0200
+Message-ID: <68e3503c-5573-4d82-8fb0-5b955c212d67@leemhuis.info>
+Date: Sat, 13 Apr 2024 11:46:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiYnnv7Kw7v+Cp2xU6_Fd-qxQMZuuxZ61LgA2=Gtftw-A@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [bisected] Kernel v6.9-rc3 fails to boot on a Thinkpad T60 with
+ MITIGATION_RETHUNK=y (regression from v6.8.5)
+To: Bagas Sanjaya <bagasdotme@gmail.com>,
+ Erhard Furtner <erhard_f@mailbox.org>, x86@kernel.org,
+ Linux Regressions <regressions@lists.linux.dev>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ jpoimboe@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Peter Zijlstra <peterz@infradead.org>, Breno Leitao <leitao@debian.org>
+References: <20240413024956.488d474e@yea> <ZhpOIeVq1KQXzjBp@archie.me>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <ZhpOIeVq1KQXzjBp@archie.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713001584;7c34a78a;
+X-HE-SMSGID: 1rvZxa-0000fw-CN
 
-On Fri, Apr 12, 2024 at 10:43:06AM -0700, Linus Torvalds wrote:
-> Side note: I'd really like to relax another unrelated AT_EMPTY_PATH
-> issue: we should just allow a NULL path for that case.
-> 
-> The requirement that you pass an actual empty string is insane. It's
-> wrong. And it adds a noticeable amount of expense to this path,
-> because just getting the single byte and looking it up is fairly
-> expensive.
-> 
-> This was more noticeable because glibc at one point (still?) did
-> 
->         newfstatat(6, "", buf, AT_EMPTY_PATH)
-> 
-> when it should have just done a simple "fstat()".
-> 
-> So there were (are?) a *LOT* of AT_EMPTY_PATH users, and they all do a
-> pointless "let's copy a string from user space".
-> 
-> And yes, I know exactly why AT_EMPTY_PATH exists: because POSIX
-> traditionally says that a path of "" has to return -ENOENT, not the
-> current working directory. So AT_EMPTY_PATH basically says "allow the
-> empty path for lookup".
-> 
-> But while it *allows* the empty path, it does't *force* it, so it
-> doesn't mean "avoid the lookup", and we really end up doing a lot of
-> extra work just for this case. Just the user string copy is a big deal
-> because of the whole overhead of accessing user space, but it's also
-> the whole "allocate memory for the path etc".
-> 
-> If we either said "a NULL path with AT_EMPTY_PATH means empty", or
-> even just added a new AT_NULL_PATH thing that means "path has to be
-> NULL, and it means the same as AT_EMPTY_PATH with an empty path", we'd
-> be able to avoid quite a bit of pointless work.
+On 13.04.24 11:19, Bagas Sanjaya wrote:
+> On Sat, Apr 13, 2024 at 02:49:56AM +0200, Erhard Furtner wrote:
+>> Greetings!
+>>
+>> With MITIGATION_RETHUNK=y selected in kernel .config v6.9-rc3 fails to boot on my Thinkpad T60. The resulting kernel stalls booting at "x86/fpu: x87 FPU will use FXSAVE":
+>> [...]
+>> 4461438a8405e800f90e0e40409e5f3d07eed381 is the first bad commit
 
-It also causes issues for sandboxed enviroments (most recently for the
-Chrome sandbox) because AT_EMPTY_PATH doesn't actually mean
-AT_EMPTY_PATH unless the string is actually empty. Otherwise
-AT_EMPTY_PATH is ignored. So I'm all on board for this. I need to think
-a bit whether AT_NULL_PATH or just allowing NULL would be nicer. Mostly
-because I want to ensure that userspace can easily detect this new
-feature.
+There was an earlier report about this here:
+https://lore.kernel.org/all/78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com/
+
+Boris there suggested: "perhaps we should make
+CONFIG_MITIGATION_RETHUNK depend on !X86_32":
+https://lore.kernel.org/all/20240403173059.GJZg2SUwS8MXw7CdwF@fat_crate.local/
+
+But that did not happen afaics. Would it be wise to go down that path?
+
+Ciao, Thorsten
+
 
