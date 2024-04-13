@@ -1,64 +1,47 @@
-Return-Path: <linux-kernel+bounces-143487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E3F68A3A11
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:17:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98AE88A3A20
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:30:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88DA41C20D71
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:17:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52E972838BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:30:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98BED9461;
-	Sat, 13 Apr 2024 01:17:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4AB9A95B;
+	Sat, 13 Apr 2024 01:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RUeBHJvZ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nzstgtCA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9808E4C65;
-	Sat, 13 Apr 2024 01:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBA063C8;
+	Sat, 13 Apr 2024 01:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712971037; cv=none; b=Te9jWApM8bP1D5EHitTT9t71AhOHdzatuRFJnE5swLTmzpexQ1oVdMWxRO92RUKxijqxhQ8/DlqXk/KF6s1pP/S2dzggQ6hwNNULhmUhsx53NprweVJ7snYkJqSeS38WnmZmaBNaEadTFNPtIsDhKeCUMRe1chSFkOWj7Xd5Q1w=
+	t=1712971828; cv=none; b=MBNwKn6J6UA6OHtAQN06P7XxzWXmJ1qj5RzNy9/btmF5XJGoRGrjhMpQlqr6Plzg2kn9no5APSWR95HXQgop2/dVT/GS64wxNGuQ8uuMhVj5duuaqFF3ILTISZTXonyXASwIRpxjho3hdWann0soSquGYPwNn6ySjSP0gnQ1iWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712971037; c=relaxed/simple;
-	bh=55ReJDyVB5r2W4OxOdSNq8Xwma1suCauO6ERsIH+3YM=;
+	s=arc-20240116; t=1712971828; c=relaxed/simple;
+	bh=d2icaWJTTOCZ5p+K61BPO2+gXckymnqiwHcjN9WUKe0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l4Hxk7vkk3zekPgIarX+t0syEeQPlZ9nCKB0Ud6VCizj7k0aZhFEeWZr+5KK6w8vKysrPJqcPY77nstqkXhZ7MHB1HxnTP1V+S+p+Zp4SUAI8cAuPq6WGZVxqBsAXEa6ELrbz9Q+odFFxIz8dFm0PUBw2iLgmJTaRRRi7kyIl+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RUeBHJvZ; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712971036; x=1744507036;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=55ReJDyVB5r2W4OxOdSNq8Xwma1suCauO6ERsIH+3YM=;
-  b=RUeBHJvZk06UdP5/+F+P7HL0RrHQ+O4EUGpx5h4yKA+y7sSlCLEvYBjw
-   dJQFQChYv1VHebpXZj8Q1swU5BDcQeGMjooY7lg1jExceOrazfKXQqXsS
-   Wn29UTmthk8AsIQ30X9TgqKgoR1b1lf4EwNu/Fj2J143UfmSXRWwj6L11
-   HqJdm3Fl1kEcKV/CE5pLVoZ2der6JTW/MjNvGjtFCjN6vuOwH7OyVdWqn
-   FFebDb3ulXtldGfrQogx1mEmrlYm0qMCZ//fjSGBilcz7taM5w9JBeoLS
-   WOdgmJHtGSJd3kZUMZbG1gwomyB9WR5Hq9LfB1AhDxIY5khD5hG0MAb2d
-   Q==;
-X-CSE-ConnectionGUID: E9BsqdqGQKyX4jE/qxQ+nQ==
-X-CSE-MsgGUID: Q2Sk2oqRRnWFhxGqRWnpOA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="12229258"
-X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="12229258"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 18:17:15 -0700
-X-CSE-ConnectionGUID: rNDCJI7GT9+wTEVUKQjFhQ==
-X-CSE-MsgGUID: /w0TusEkQH2JSdxijFUqDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="21883896"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.225.92]) ([10.124.225.92])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 18:17:10 -0700
-Message-ID: <71f037d5-38bb-4493-878f-19adc02af2df@linux.intel.com>
-Date: Sat, 13 Apr 2024 09:17:07 +0800
+	 In-Reply-To:Content-Type; b=EzXmH94mKSxo0c9J1oWCAOFBleHXrMg8UkY1Rb40hhkM5dH4DTsbP2DXgr3i/v51L2LNwvF24Jgx4LENoXNoQ38M7EpUbkpG9YDKqrMc1glgNLS9rxRnImhyXQXCqkbwtwihe7QSuJwjAfEswzHvU8BPFtHwE4BQmaObzbenc4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nzstgtCA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FEA4C113CC;
+	Sat, 13 Apr 2024 01:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712971827;
+	bh=d2icaWJTTOCZ5p+K61BPO2+gXckymnqiwHcjN9WUKe0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nzstgtCALFZLYrHVuB/4ho0QONvxViQK41ZeNBgY1MirDR3BM9reA6wzV3ztKn/4Y
+	 7olDDQ2OiPSG4aBWP6FQKq5GkNFvseLFwAhIKCfOaSTndLaiGXXwbg6YiB/Vf3RwrU
+	 s/6cgMFMYGdfFB9DeQ+VHSdeB5+llLPq4peH4z7be9HlFEbjJ9na80l5IZVYTSJYxk
+	 MYZloJslfAW5QblF1coreliXQcwNQiKovAm2Tljv5rxT1ZASKHUg1fiIubF+y8C+RN
+	 u0U57Vzcoyd256Shgr/BihKR91Jb76oIKFTpxFqSoqd15BItGAeSvWhACmaPxcvarH
+	 N6H4FU+hy7O6A==
+Message-ID: <43f55f4b-cb2a-4845-9ded-40ce68f3351c@kernel.org>
+Date: Sat, 13 Apr 2024 09:30:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,169 +49,128 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 04/41] perf: core/x86: Add support to register a new
- vector for PMI handling
-To: "Zhang, Xiong Y" <xiong.y.zhang@linux.intel.com>,
- Sean Christopherson <seanjc@google.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
- kan.liang@intel.com, zhenyuw@linux.intel.com, jmattson@google.com,
- kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-5-xiong.y.zhang@linux.intel.com>
- <ZhgZdqAB6LlvJLof@google.com>
- <3b4f03f8-146f-46ce-b729-046e9444d9e4@linux.intel.com>
+Subject: Re: [PATCH] quota: fix to propagate error of mark_dquot_dirty() to
+ caller
+To: Jan Kara <jack@suse.cz>
+Cc: Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240412094942.2131243-1-chao@kernel.org>
+ <20240412121517.dydwqiqkdzvwpwf5@quack3>
+ <20240412130130.m4msohzpiojtve7r@quack3>
 Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <3b4f03f8-146f-46ce-b729-046e9444d9e4@linux.intel.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <20240412130130.m4msohzpiojtve7r@quack3>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+On 2024/4/12 21:01, Jan Kara wrote:
+> On Fri 12-04-24 14:15:17, Jan Kara wrote:
+>> On Fri 12-04-24 17:49:42, Chao Yu wrote:
+>>> in order to let caller be aware of failure of mark_dquot_dirty().
+>>>
+>>> Signed-off-by: Chao Yu <chao@kernel.org>
+>>
+>> Thanks. I've added the patch to my tree.
+> 
+> So this patch was buggy because mark_all_dquots() dirty was returning 1 in
+> case some dquot was indeed dirtied which resulted in e.g.
+> dquot_alloc_inode() to return 1 and consequently __ext4_new_inode() to fail
 
-On 4/12/2024 11:56 AM, Zhang, Xiong Y wrote:
->
-> On 4/12/2024 1:10 AM, Sean Christopherson wrote:
->> On Fri, Jan 26, 2024, Xiong Zhang wrote:
->>> From: Xiong Zhang <xiong.y.zhang@intel.com>
->>>
->>> Create a new vector in the host IDT for PMI handling within a passthrough
->>> vPMU implementation. In addition, add a function to allow the registration
->>> of the handler and a function to switch the PMI handler.
->>>
->>> This is the preparation work to support KVM passthrough vPMU to handle its
->>> own PMIs without interference from PMI handler of the host PMU.
->>>
->>> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
->>> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+Correct, I missed that case.
+
+> and eventually we've crashed in ext4_create().  I've fixed up the patch to
+> make mark_all_dquots() return 0 or error.
+
+Thank you for catching and fixing it.
+
+Thanks,
+
+> 
+> 								Honza
+> 
 >>> ---
->>>   arch/x86/include/asm/hardirq.h           |  1 +
->>>   arch/x86/include/asm/idtentry.h          |  1 +
->>>   arch/x86/include/asm/irq.h               |  1 +
->>>   arch/x86/include/asm/irq_vectors.h       |  2 +-
->>>   arch/x86/kernel/idt.c                    |  1 +
->>>   arch/x86/kernel/irq.c                    | 29 ++++++++++++++++++++++++
->>>   tools/arch/x86/include/asm/irq_vectors.h |  1 +
->>>   7 files changed, 35 insertions(+), 1 deletion(-)
+>>>   fs/quota/dquot.c | 21 ++++++++++++++-------
+>>>   1 file changed, 14 insertions(+), 7 deletions(-)
 >>>
->>> diff --git a/arch/x86/include/asm/hardirq.h b/arch/x86/include/asm/hardirq.h
->>> index 66837b8c67f1..c1e2c1a480bf 100644
->>> --- a/arch/x86/include/asm/hardirq.h
->>> +++ b/arch/x86/include/asm/hardirq.h
->>> @@ -19,6 +19,7 @@ typedef struct {
->>>   	unsigned int kvm_posted_intr_ipis;
->>>   	unsigned int kvm_posted_intr_wakeup_ipis;
->>>   	unsigned int kvm_posted_intr_nested_ipis;
->>> +	unsigned int kvm_vpmu_pmis;
->> Somewhat off topic, does anyone actually ever use these particular stats?  If the
->> desire is to track _all_ IRQs, why not have an array and bump the counts in common
->> code?
-> it is used in arch_show_interrupts() for /proc/interrupts.
-
-Yes, these interrupt stats are useful, e.g. when we analyze the VM-EXIT 
-performance overhead, if the vm-exits are caused by external interrupt, 
-we usually need to look at these interrupt stats and check which exact 
-interrupt causes the vm-exits.
-
->>>   #endif
->>>   	unsigned int x86_platform_ipis;	/* arch dependent */
->>>   	unsigned int apic_perf_irqs;
->>> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
->>> index 05fd175cec7d..d1b58366bc21 100644
->>> --- a/arch/x86/include/asm/idtentry.h
->>> +++ b/arch/x86/include/asm/idtentry.h
->>> @@ -675,6 +675,7 @@ DECLARE_IDTENTRY_SYSVEC(IRQ_WORK_VECTOR,		sysvec_irq_work);
->>>   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_VECTOR,		sysvec_kvm_posted_intr_ipi);
->>>   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,	sysvec_kvm_posted_intr_wakeup_ipi);
->>>   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,	sysvec_kvm_posted_intr_nested_ipi);
->>> +DECLARE_IDTENTRY_SYSVEC(KVM_VPMU_VECTOR,	        sysvec_kvm_vpmu_handler);
->> I vote for KVM_VIRTUAL_PMI_VECTOR.  I don't see any reasy to abbreviate "virtual",
->> and the vector is a for a Performance Monitoring Interupt.
-> yes, KVM_GUEST_PMI_VECTOR in your next reply is better.
->>>   #endif
+>>> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+>>> index dacbee455c03..b2a109d8b198 100644
+>>> --- a/fs/quota/dquot.c
+>>> +++ b/fs/quota/dquot.c
+>>> @@ -1737,7 +1737,7 @@ int __dquot_alloc_space(struct inode *inode, qsize_t number, int flags)
 >>>   
->>>   #if IS_ENABLED(CONFIG_HYPERV)
->>> diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
->>> index 836c170d3087..ee268f42d04a 100644
->>> --- a/arch/x86/include/asm/irq.h
->>> +++ b/arch/x86/include/asm/irq.h
->>> @@ -31,6 +31,7 @@ extern void fixup_irqs(void);
+>>>   	if (reserve)
+>>>   		goto out_flush_warn;
+>>> -	mark_all_dquot_dirty(dquots);
+>>> +	ret = mark_all_dquot_dirty(dquots);
+>>>   out_flush_warn:
+>>>   	srcu_read_unlock(&dquot_srcu, index);
+>>>   	flush_warnings(warn);
+>>> @@ -1786,7 +1786,7 @@ int dquot_alloc_inode(struct inode *inode)
+>>>   warn_put_all:
+>>>   	spin_unlock(&inode->i_lock);
+>>>   	if (ret == 0)
+>>> -		mark_all_dquot_dirty(dquots);
+>>> +		ret = mark_all_dquot_dirty(dquots);
+>>>   	srcu_read_unlock(&dquot_srcu, index);
+>>>   	flush_warnings(warn);
+>>>   	return ret;
+>>> @@ -1990,7 +1990,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
+>>>   	qsize_t inode_usage = 1;
+>>>   	struct dquot __rcu **dquots;
+>>>   	struct dquot *transfer_from[MAXQUOTAS] = {};
+>>> -	int cnt, index, ret = 0;
+>>> +	int cnt, index, ret = 0, err;
+>>>   	char is_valid[MAXQUOTAS] = {};
+>>>   	struct dquot_warn warn_to[MAXQUOTAS];
+>>>   	struct dquot_warn warn_from_inodes[MAXQUOTAS];
+>>> @@ -2087,8 +2087,12 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
+>>>   	 * mark_all_dquot_dirty().
+>>>   	 */
+>>>   	index = srcu_read_lock(&dquot_srcu);
+>>> -	mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
+>>> -	mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
+>>> +	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
+>>> +	if (err < 0)
+>>> +		ret = err;
+>>> +	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
+>>> +	if (err < 0)
+>>> +		ret = err;
+>>>   	srcu_read_unlock(&dquot_srcu, index);
 >>>   
->>>   #ifdef CONFIG_HAVE_KVM
->>>   extern void kvm_set_posted_intr_wakeup_handler(void (*handler)(void));
->>> +extern void kvm_set_vpmu_handler(void (*handler)(void));
->> virtual_pmi_handler()
->>
->>>   #endif
+>>>   	flush_warnings(warn_to);
+>>> @@ -2098,7 +2102,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
+>>>   	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
+>>>   		if (is_valid[cnt])
+>>>   			transfer_to[cnt] = transfer_from[cnt];
+>>> -	return 0;
+>>> +	return ret;
+>>>   over_quota:
+>>>   	/* Back out changes we already did */
+>>>   	for (cnt--; cnt >= 0; cnt--) {
+>>> @@ -2726,6 +2730,7 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
+>>>   	struct mem_dqblk *dm = &dquot->dq_dqb;
+>>>   	int check_blim = 0, check_ilim = 0;
+>>>   	struct mem_dqinfo *dqi = &sb_dqopt(dquot->dq_sb)->info[dquot->dq_id.type];
+>>> +	int ret;
 >>>   
->>>   extern void (*x86_platform_ipi_callback)(void);
->>> diff --git a/arch/x86/include/asm/irq_vectors.h b/arch/x86/include/asm/irq_vectors.h
->>> index 3a19904c2db6..120403572307 100644
->>> --- a/arch/x86/include/asm/irq_vectors.h
->>> +++ b/arch/x86/include/asm/irq_vectors.h
->>> @@ -77,7 +77,7 @@
->>>    */
->>>   #define IRQ_WORK_VECTOR			0xf6
+>>>   	if (di->d_fieldmask & ~VFS_QC_MASK)
+>>>   		return -EINVAL;
+>>> @@ -2807,7 +2812,9 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
+>>>   	else
+>>>   		set_bit(DQ_FAKE_B, &dquot->dq_flags);
+>>>   	spin_unlock(&dquot->dq_dqb_lock);
+>>> -	mark_dquot_dirty(dquot);
+>>> +	ret = mark_dquot_dirty(dquot);
+>>> +	if (ret < 0)
+>>> +		return ret;
 >>>   
->>> -/* 0xf5 - unused, was UV_BAU_MESSAGE */
->>> +#define KVM_VPMU_VECTOR			0xf5
->> This should be inside
->>
->> 	#ifdef CONFIG_HAVE_KVM
->>
->> no?
-> yes, it should have #if IS_ENABLED(CONFIG_KVM)
->>>   #define DEFERRED_ERROR_VECTOR		0xf4
->>>   
->>>   /* Vector on which hypervisor callbacks will be delivered */
->>> diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
->>> index 8857abc706e4..6944eec251f4 100644
->>> --- a/arch/x86/kernel/idt.c
->>> +++ b/arch/x86/kernel/idt.c
->>> @@ -157,6 +157,7 @@ static const __initconst struct idt_data apic_idts[] = {
->>>   	INTG(POSTED_INTR_VECTOR,		asm_sysvec_kvm_posted_intr_ipi),
->>>   	INTG(POSTED_INTR_WAKEUP_VECTOR,		asm_sysvec_kvm_posted_intr_wakeup_ipi),
->>>   	INTG(POSTED_INTR_NESTED_VECTOR,		asm_sysvec_kvm_posted_intr_nested_ipi),
->>> +	INTG(KVM_VPMU_VECTOR,		        asm_sysvec_kvm_vpmu_handler),
->> kvm_virtual_pmi_handler
->>
->>> @@ -332,6 +351,16 @@ DEFINE_IDTENTRY_SYSVEC_SIMPLE(sysvec_kvm_posted_intr_nested_ipi)
->>>   	apic_eoi();
->>>   	inc_irq_stat(kvm_posted_intr_nested_ipis);
+>>>   	return 0;
 >>>   }
->>> +
->>> +/*
->>> + * Handler for KVM_PT_PMU_VECTOR.
->> Heh, not sure where the PT part came from...
-> I will change it to KVM_GUEST_PMI_VECTOR
->>> + */
->>> +DEFINE_IDTENTRY_SYSVEC(sysvec_kvm_vpmu_handler)
->>> +{
->>> +	apic_eoi();
->>> +	inc_irq_stat(kvm_vpmu_pmis);
->>> +	kvm_vpmu_handler();
->>> +}
->>>   #endif
->>>   
->>>   
->>> diff --git a/tools/arch/x86/include/asm/irq_vectors.h b/tools/arch/x86/include/asm/irq_vectors.h
->>> index 3a19904c2db6..3773e60f1af8 100644
->>> --- a/tools/arch/x86/include/asm/irq_vectors.h
->>> +++ b/tools/arch/x86/include/asm/irq_vectors.h
->>> @@ -85,6 +85,7 @@
->>>   
->>>   /* Vector for KVM to deliver posted interrupt IPI */
->>>   #ifdef CONFIG_HAVE_KVM
->>> +#define KVM_VPMU_VECTOR			0xf5
->> Heh, and your copy+paste is out of date.
-> Get it. 0xf5 isn't aligned with 0xf2, and the above comment should be moved prior POSTED_INTR_VECTOR
->
-> thanks
->>>   #define POSTED_INTR_VECTOR		0xf2
->>>   #define POSTED_INTR_WAKEUP_VECTOR	0xf1
->>>   #define POSTED_INTR_NESTED_VECTOR	0xf0
 >>> -- 
->>> 2.34.1
+>>> 2.40.1
 >>>
+>> -- 
+>> Jan Kara <jack@suse.com>
+>> SUSE Labs, CR
+>>
 
