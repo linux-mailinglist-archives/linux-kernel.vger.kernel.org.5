@@ -1,85 +1,114 @@
-Return-Path: <linux-kernel+bounces-143500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE1C8A3A3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB648A3A3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:50:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E307283E73
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:44:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF25F283F16
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA9A18039;
-	Sat, 13 Apr 2024 01:44:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB18101EE;
+	Sat, 13 Apr 2024 01:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q4qtFcMa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fNrSaqOH"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905E91758B;
-	Sat, 13 Apr 2024 01:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DD546BA;
+	Sat, 13 Apr 2024 01:50:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712972684; cv=none; b=WfX8Hd5e4XUD4gW5PbCPrrhFeOvHeldo+Y1mCSXq9upoiOmtDMwRlZWpes2CC7oZb9NbgMHZ7RbGgvdJj/jcXGs8Hbzdhtc91rwHFYU60flrIjOBtFbaWTKP2oOwxLdwt01yh55axM29CgNDgul1dj+kmVQaTvgVGEOOR03WnRU=
+	t=1712973017; cv=none; b=KXVrmwZL+RR4l5UbDUImOmMu9uhNdrxv6vCSjcC31MSHUs7fE+7BDq9sXy71+7rHFNMcsWtpU9otlKVfWWZW8aZT8O3uYLfQk/rWXqkLwrGGKlk4H7cZFWyFJPX1Zn8FGn5COO01Qq3hZnMtGtpNTjPsLEGWi88BDsd4VM3qtow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712972684; c=relaxed/simple;
-	bh=sGErZXyr/YdrYfCuD5psfBudy0tjfQVP+V5GzMrYuk8=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u2+30cjSnD5FwPUmil4Cn/ci0XkLqvhuo4nLQlY438WXIJc9cqcOXE0wOiqtBOm65qyHrRs/W/yLiYWK/MmVhmlSGkT8WAy6QmKV9jRKgHX4O8HmvrTvFZamL55aWb5VEhE0pfCnwbY1sTXOqScxk0de2TqlTPpwwLGwMACUOZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q4qtFcMa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3191C113CC;
-	Sat, 13 Apr 2024 01:44:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712972684;
-	bh=sGErZXyr/YdrYfCuD5psfBudy0tjfQVP+V5GzMrYuk8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=q4qtFcMacjqD98Dkv4BFueEEQ1M5YqRHiDswvRgAkd7QUNYmC8SoKE+cVZzRl1g5+
-	 xLcULigzqPGMxkgHR++YfSH0PElXc2JrueYkeZPX8oH+Nz695Nx/IQH6IOR5tEEU+L
-	 kA7wmUIO2NKaCsS7ijiYPoz0kt1px2m4o1KpxhNro1ysrW0FOZd6RQrgP2KfwHQ9lO
-	 +BLKcclvEb71FjKFlgyHEy/nVcDT4gWF+HZblXn3pkgtwzeivbntFY76sX2+LYkRET
-	 4cqCjrWeGhUDEs0TccvElWYtZBDUNcs1ZZjSvs+WLdS7YyD8XJaDjoqzfg1rVffjOV
-	 iN/mzkpTo0kqg==
-Date: Fri, 12 Apr 2024 18:44:42 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Cc: Hariprasad Kelam <hkelam@marvell.com>, "netdev@vger.kernel.org"
- <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "davem@davemloft.net"
- <davem@davemloft.net>, Geethasowjanya Akula <gakula@marvell.com>, Jerin
- Jacob <jerinj@marvell.com>, Linu Cherian <lcherian@marvell.com>, Subbaraya
- Sundeep Bhatta <sbhatta@marvell.com>, Naveen Mamindlapalli
- <naveenm@marvell.com>, "edumazet@google.com" <edumazet@google.com>,
- "pabeni@redhat.com" <pabeni@redhat.com>
-Subject: Re: [net-next PatchV2] octeontx2-af: map management port always to
- first PF
-Message-ID: <20240412184442.26417b54@kernel.org>
-In-Reply-To: <BY3PR18MB47373F66158D5E98147EDFCDC6042@BY3PR18MB4737.namprd18.prod.outlook.com>
-References: <20240410132538.20158-1-hkelam@marvell.com>
-	<20240411195532.033e21fb@kernel.org>
-	<BY3PR18MB47373F66158D5E98147EDFCDC6042@BY3PR18MB4737.namprd18.prod.outlook.com>
+	s=arc-20240116; t=1712973017; c=relaxed/simple;
+	bh=nK7S4AX7MvARgqM6BBHBiwuYAnJjjYfTAUaMHXm0s7s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U2xrzWrmLvbFu6S7YoamNJgG24hdzIuz8Uxv9pD54RlnmzlwGyu9NpcvFhnL9FxI30t31x0LLuStMhaQCNnSc2I/V0uB8/e2z7df8eTOzZMrljFk+tA+SKcWcGz6Kb9mi8hg/K/JMHrNabMmMGu/h07lAU1nSQrz+BE863OTn9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fNrSaqOH; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a2d0ca3c92so986493a91.0;
+        Fri, 12 Apr 2024 18:50:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712973015; x=1713577815; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4GoxZ/DDCn693PM29RJyJPYwUobIu0pR6Xc9xkzx0qE=;
+        b=fNrSaqOHzM3eH+01xq9bOJj41HrL/gZ+mehDlcXFXKa5e1VGoCAYLXjb/3PJGxwPtC
+         Q54QYm90XtMzOQkwGS9+T8XOmnlDguCL4jFm8RmPAwv3EGPyzbh505QXTAivmI9slmdG
+         vIcp5ZY6FydAMNksZ0O+N1cm6cnQsNg6u5f1j8+bzVlAGO/2usosmlxXMGRIpMe8MJob
+         dvy9KOQemat+M+Ii3kyC7DDzKsY3kUNabCmsKYvp2nTjXdfnJlgPzrnvTNuxWw/abXqa
+         2790AeMb/Vhgrt1bidNo29EuTRDuEKXyRJYXhRRmf+q0/9DdmEj1L1v6H1AiA1nDOpRJ
+         SzBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712973015; x=1713577815;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4GoxZ/DDCn693PM29RJyJPYwUobIu0pR6Xc9xkzx0qE=;
+        b=fuD2pBeQVB+nQD6sgfPTnK0wbD150HtcMJ+iL1VG3s1h6Z+mrjdV9WanzuxVem19+I
+         9H+UBASz5VVwgTwk7CFEusa7TYaYOyaTGnNDWH/VFs/cMdUI8IGVAKMigTVySDZwfEAp
+         ZSxe2LDbhtMrkKaSTZwG5JGWea8SiRX83sSdYM33+0dumaW4R4g/2iPIM+06ePB7yntH
+         MYN/2EtggHsPFMXXIWv0C/Nsrpp/YgKNX/uIfKeHQjYCLUZk1b8PJUgLWFNGPxMrgwpI
+         6vYeZJrntMzrwdcJF0ffyPAy0VyqKYWVbROBW/71Xbfccy0BOkPOg+Gv+9GFUzsrP4Je
+         0u0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUxNLpc1aY7giA4IA0O1sicXLYUnKBeNfzC9Pnk/bB5IXJOP/RpQCZDnWl2NDEocXc6J/uSH2fZY5yOoqHd7xvgUdLCJDH1tV2nW5dQoxaKkZntyN68CDYihaQDbgxnAbyLKS1a4KU5pyEL36UQDSU58bPw+X1Mod+8/ka/gi49NWzB/J2Y
+X-Gm-Message-State: AOJu0Ywcs26gQ9iWqRuV9HrO7Vj0DxhWGMEAarPmUBJ9QnsPWi/FEpgp
+	Ne/HjsqfhPlQmc7tsrkTJPwflZS5GmCZ4FK2XrfVsh4RyAJwN4dKdlaXmsv66MZQGD1XnnliRsJ
+	gzrD+scO+3jT4pXdFMnsI/dSlD/0=
+X-Google-Smtp-Source: AGHT+IH6BUPdU+NoMidFc6+jlwGqlMb9lQWMamK9mVH+ehSf6Wk5SSCtqrn3kznnpDURD5OV1Dq7BRw/BiLOHFJ83j8=
+X-Received: by 2002:a17:90b:8cb:b0:2a5:3c66:25a8 with SMTP id
+ ds11-20020a17090b08cb00b002a53c6625a8mr10160280pjb.15.1712973015100; Fri, 12
+ Apr 2024 18:50:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240413-tcp-ao-selftests-fixes-v1-0-f9c41c96949d@gmail.com> <20240413-tcp-ao-selftests-fixes-v1-3-f9c41c96949d@gmail.com>
+In-Reply-To: <20240413-tcp-ao-selftests-fixes-v1-3-f9c41c96949d@gmail.com>
+From: Dmitry Safonov <0x7f454c46@gmail.com>
+Date: Sat, 13 Apr 2024 02:50:03 +0100
+Message-ID: <CAJwJo6buDyTvL5Hh0Mhbrd-pzzom6m0D5==ujvKi3g5ejBURQg@mail.gmail.com>
+Subject: Re: [PATCH net 3/4] selftests/tcp_ao: Fix fscanf() call for format-security
+To: 0x7f454c46@gmail.com
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>, 
+	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 12 Apr 2024 12:07:40 +0000 Sunil Kovvuri Goutham wrote:
-> Agree, that there is no concept of management port in Linux.
-> From Octeon hardware pov, there are multiple MACs and each MAC (internally called RPM) is capable of supporting multiple interfaces (called LMACs).
-> Let's say there are two RPMs on the board and RPM0 is configured to 2x50G and RPM1 is configured as 4x10G.
-> When kernel boots with this config, let's say the interface names are eth0, eth1.. eth5.
-> If user is using 'eth3' for NFS, DHCP, SSH etc (ie for device management purposes) and then if user changes RPM0
-> config to 4x10G, then in the subsequent boot the same RPM1:LMAC0 could be named as 'eth5' now.
-> Customers have reported that their scripts are not working in these scenarios and they want some predictable naming.
-> 
-> What this patch does is that, RPM:LMAC0 which customer is using for management port is always mapped to 
-> same PCI device, so that interface naming remains unchanged irrespective of different RPM configurations.
+On Sat, 13 Apr 2024 at 02:43, Dmitry Safonov via B4 Relay
+<devnull+0x7f454c46.gmail.com@kernel.org> wrote:
+>
+> From: Dmitry Safonov <0x7f454c46@gmail.com>
+>
+> On my new laptop with packages from nixos-unstable, gcc 12.3.0 produces:
+> > lib/proc.c: In function =E2=80=98netstat_read_type=E2=80=99:
+> > lib/proc.c:89:9: error: format not a string literal and no format argum=
+ents [-Werror=3Dformat-security]
+> >    89 |         if (fscanf(fnetstat, type->header_name) =3D=3D EOF)
+> >       |         ^~
+> > cc1: some warnings being treated as errors
+>
+> Here the selftests lib parses header name, while expectes non-space word
+> ending with a column.
+>
+> Fixes: cfbab37b3da0 ("selftests/net: Add TCP-AO library")
+> Signed-off-by: Dmitry Safonov <0x7f454c46@gmail.com>
 
-You should try to associate a devlink port with the netdev, that will
-give it appropriate predictable naming. (Failing that, just implement
-ndo_get_phys_port_name directly, but really devlink is much preferred).
+Actually, now I see that it was also reported, adding
+
+Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Link: https://lore.kernel.org/all/0c6d4f0d-2064-4444-986b-1d1ed782135f@coll=
+abora.com/
+
+--=20
+             Dmitry
 
