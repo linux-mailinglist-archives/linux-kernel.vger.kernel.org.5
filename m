@@ -1,72 +1,47 @@
-Return-Path: <linux-kernel+bounces-143484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75DBD8A39FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:03:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A01F8A3A01
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:04:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD65CB2224E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:03:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E6061F218D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECA763C8;
-	Sat, 13 Apr 2024 00:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52116F9DA;
+	Sat, 13 Apr 2024 00:58:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="b/DAJ9iO"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PRkoCYnM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BAB4C83
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 00:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5F9FBE8;
+	Sat, 13 Apr 2024 00:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712969845; cv=none; b=WcbcAa7um4jJZIb9jRghxlfbnLXZTRvr4hlIj3gcySlvkK/ngnUK/vaezlbdaB3/qYIBPzoHFcjDhWIwj0j4gIHKCb7/nwvYnEsCvQOZTjvy5cdEJqCWainSdZVMmEdWScO788SYaJeaK+iLAdevveZxZGgvJpbsa5gb7Iql1qo=
+	t=1712969879; cv=none; b=rZRZlWevszcJIct7TyEIemJod0N5aHQQqorh/I9GerMgdKlktDpwaBmfs6+vr2cTya+INtty1zZBg91oPepwSFGmX/Ynn5ABzeagO2TFTGdy5BiGQDZQrWdT+e0NgPYl7DDbWXhWy11ySsyfxPwu4cL1WVlSrJOrjgmelVax+V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712969845; c=relaxed/simple;
-	bh=bmzo1ooKzqufK+juDvo25PZMBaSl3V6Gz4q4MzinNGI=;
+	s=arc-20240116; t=1712969879; c=relaxed/simple;
+	bh=iKwV1siHHETSufd441N7QeNvqbceqVeJJKDGHwjTtjg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JTL5N4jAOEGXBhCYanaNi6YNkOTsKnRn/zv/7qV5nFhpYy4twiYfFm8sodjUKFghh7WXvROyEZSx8IFgF8c1lKvvUvL6TZLL6zGXE36E6tro0cRZ1lJdYNu7Xi4Db1KlgDBtHAXQU/GvPfyaV2qXXP8HA3T8YxO5eJI7MgQV2zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=b/DAJ9iO; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3442f4e098bso1398004f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1712969840; x=1713574640; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wc6szgZjNNFyh/LwTAWMUZNCmALq+FNR/Ebns3AOlpc=;
-        b=b/DAJ9iOSoS2kY4rEO8CA6EkYIjguKRyM8bp7s2L3qy4wA2vmVHRGWQRXEb/pKOT0R
-         zr90UeovvZ85AW//d4dVYXSEh9v2aabWhThaEt7wOmeDkr3JkJRKtx4NuT7OmEu5N3MG
-         +1A6+lDVRVwsvdBiHHcLsTkJfSSH9gIFMHyuHGF7zG+85rXu/z6dae9m2WLVmKnkBwtY
-         5OEn0Zp1KMsrAfAABOvmSv2AyP5M/F+pWOoG70VsTRXt6onjgfHwyxZc/PPBmPoi73LX
-         +zSOUpZA2AMtdssZrmTooes6WTw+ycKw/5suBo8QqVzW54yP29LN1zucxmy61b5lzb0X
-         osgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712969840; x=1713574640;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wc6szgZjNNFyh/LwTAWMUZNCmALq+FNR/Ebns3AOlpc=;
-        b=JqAVwQ/y9YLKRBFKQ/mXV3wbH8lPyfyI7qqTxLREC0gBsHGv41aqlV3TJcVue48+gx
-         JknIMjRq2Qluvj0Kfr+IWMEhbvdMiZvturH+FPuM0gdQx6j43g1yoWcU8orNgVlC+/MC
-         8JzXx6cfDy55eUm3+sbWpPKTooStDDJJmAFMoyQ7/QdxfIJCvqPS3AQ0epaMnHFJ18Js
-         qMGVV+lwNGwWiSWqZg8jAd5UTnO3XyWMWcYA8gBpIW7SFD6im+rkz0AZqwNFA8Mp/TOz
-         wwmsEf/m1eM8QPu6yXJoIUtCdYpcL7VAXyauB4qlKyhOsTxJlS65hrB2umrERKEn4PUY
-         RB+w==
-X-Gm-Message-State: AOJu0Yw3XapgDTXQP1y9fB514nVBwoRVCVe2V//tPpvWNQJt6GFtn4P4
-	+DpYtsokhE25IDQGz/Pq2OEg1sD41qHV0nNyb+xsS9nz9vdknmMBhweEqIn15E8=
-X-Google-Smtp-Source: AGHT+IG5KyNZ5UA78drYL10vGyqyFOO3ZKeVjROMtVCq0nW7TCGzkkBZy2nnAMrb7RUrG6yqAasTfA==
-X-Received: by 2002:adf:fc49:0:b0:345:6cec:4e02 with SMTP id e9-20020adffc49000000b003456cec4e02mr5032792wrs.12.1712969840341;
-        Fri, 12 Apr 2024 17:57:20 -0700 (PDT)
-Received: from ?IPV6:2001:559:57b:111::ffff:d600? ([2001:559:57b:111::ffff:d600])
-        by smtp.gmail.com with ESMTPSA id z5-20020ae9c105000000b0078ed33d55f2sm837987qki.121.2024.04.12.17.57.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 17:57:19 -0700 (PDT)
-Message-ID: <c55d8329-6d59-4821-89f2-6b50fa9dc6a7@suse.com>
-Date: Fri, 12 Apr 2024 20:57:18 -0400
+	 In-Reply-To:Content-Type; b=AqAdrkqVr0TpJwGFuWOw94soleAHqmXSl15HoeoeBuWSORAvMDD9NwxeYzKSzd1pnX9vEvPYmqxRwCRRoK3N0L51ds4aweD8XokHKfCkPcJ0svy9+/5vVofxFbNZdsSOOQMUAGwxPyE6UYbjv5t8zVLuGc0R3XDHaktDPLfBcyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PRkoCYnM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76322C113CC;
+	Sat, 13 Apr 2024 00:57:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712969879;
+	bh=iKwV1siHHETSufd441N7QeNvqbceqVeJJKDGHwjTtjg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PRkoCYnMMwrYOVcgec4yvAzkvpd2yEzuCYLPPdtlhbsprxdZs1wkRgu1ytpuN9df7
+	 hyoPmKJNaGrgx3ooEOh1eWrl9dkG3hIF0ljlbkreJKZ5jA7PmiKTtBSRvJmm8ZNvSG
+	 y4yjd2MgP5ENJmf268Et1oXsKYvBTiGIQYSsw3QF2xtXC1vB5tdjCNP4QEPw1tva1w
+	 yL6VypUIm6xKgh310WMxNHIIKCtAnxrSDeod/LQ4xpjAq9kkNqVezRTMedIR/ZklfO
+	 V76AF6J0HhgyCA6HNUTVTrFXtwH45TBUx8+bYg+lJy3s23oD7dKLQBY+8A6CKWbqYx
+	 VvhLWX9pi6efQ==
+Message-ID: <b42edf62-b423-4293-a5dd-eafa9e405bf0@kernel.org>
+Date: Sat, 13 Apr 2024 09:57:57 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,62 +49,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/mst: Fix NULL pointer dereference in
- drm_dp_add_payload_part2 (again)
-To: Wayne Lin <Wayne.Lin@amd.com>, dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, stable@vger.kernel.org
-References: <20240413002252.30780-1-jeffm@suse.com>
+Subject: Re: [PATCH] ata: libata-core: Allow command duration limits detection
+ for ACS-4 drives
+To: Igor Pylypiv <ipylypiv@google.com>, Niklas Cassel <cassel@kernel.org>
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240411201224.1311198-1-ipylypiv@google.com>
+From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
-From: Jeff Mahoney <jeffm@suse.com>
-In-Reply-To: <20240413002252.30780-1-jeffm@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Organization: Western Digital Research
+In-Reply-To: <20240411201224.1311198-1-ipylypiv@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-As a follow up, I read through the original thread before sending this 
-and my understanding is that this message probably shouldn't be getting 
-printed in the first place.  I've turned on KMS, ATOMIC, STATE, and DP 
-debugging to see what shakes out.  I have a KVM on my desk that I use to 
-switch between systems fairly frequently.  I'm speculating that the 
-connecting and disconnecting is related, so I'm hopeful I can trigger it 
-quickly.
+On 4/12/24 05:12, Igor Pylypiv wrote:
+> Even though the command duration limits (CDL) feature was first added
+> in ACS-5 (major version 12), there are some ACS-4 (major version 11)
+> drives that implement CDL as well.
+> 
+> IDENTIFY_DEVICE, SUPPORTED_CAPABILITIES, and CURRENT_SETTINGS log pages
+> are mandatory in the ACS-4 standard so it should be safe to read these
+> log pages on older drives implementing the ACS-4 standard.
+> 
+> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
 
--Jeff
+Looks good, but I think this needs:
 
-On 4/12/24 20:22, Jeff Mahoney wrote:
-> Commit 54d217406afe (drm: use mgr->dev in drm_dbg_kms in
-> drm_dp_add_payload_part2) appears to have been accidentially reverted as
-> part of commit 5aa1dfcdf0a42 (drm/mst: Refactor the flow for payload
-> allocation/removement).
-> 
-> I've been seeing NULL pointer dereferences in drm_dp_add_payload_part2
-> due to state->dev being NULL in the debug message printed if the payload
-> allocation has failed.
-> 
-> This commit restores mgr->dev to avoid the Oops.
-> 
-> Fixes: 5aa1dfcdf0a42 ("drm/mst: Refactor the flow for payload allocation/removement")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+Fixes: 62e4a60e0cdb ("scsi: ata: libata: Detect support for command duration
+limits")
+Cc: stable.vger.kernel.org
+
+so that we have 6.6 LTS also getting this fix and accepting the same devices as
+mainline. I will add that when applying.
+
 > ---
->   drivers/gpu/drm/display/drm_dp_mst_topology.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/ata/libata-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> index 03d528209426..3dc966f25c0c 100644
-> --- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> @@ -3437,7 +3437,7 @@ int drm_dp_add_payload_part2(struct drm_dp_mst_topology_mgr *mgr,
->   
->   	/* Skip failed payloads */
->   	if (payload->payload_allocation_status != DRM_DP_MST_PAYLOAD_ALLOCATION_DFP) {
-> -		drm_dbg_kms(state->dev, "Part 1 of payload creation for %s failed, skipping part 2\n",
-> +		drm_dbg_kms(mgr->dev, "Part 1 of payload creation for %s failed, skipping part 2\n",
->   			    payload->port->connector->name);
->   		return -EIO;
->   	}
+> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+> index be3412cdb22e..c449d60d9bb9 100644
+> --- a/drivers/ata/libata-core.c
+> +++ b/drivers/ata/libata-core.c
+> @@ -2539,7 +2539,7 @@ static void ata_dev_config_cdl(struct ata_device *dev)
+>  	bool cdl_enabled;
+>  	u64 val;
+>  
+> -	if (ata_id_major_version(dev->id) < 12)
+> +	if (ata_id_major_version(dev->id) < 11)
+>  		goto not_supported;
+>  
+>  	if (!ata_log_supported(dev, ATA_LOG_IDENTIFY_DEVICE) ||
 
 -- 
-Jeff Mahoney
-VP Engineering, Linux Systems
+Damien Le Moal
+Western Digital Research
+
 
