@@ -1,126 +1,166 @@
-Return-Path: <linux-kernel+bounces-143768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BF468A3D2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:16:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D3E88A3D4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:21:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8077FB214A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:16:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6360028233A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0146945C08;
-	Sat, 13 Apr 2024 15:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532F54654D;
+	Sat, 13 Apr 2024 15:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N4z+86AH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="JQu8t4a6"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EDF42A96;
-	Sat, 13 Apr 2024 15:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBB2345BE1;
+	Sat, 13 Apr 2024 15:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713021390; cv=none; b=QK9lCPRVrekkQeKID9z7VVOiG23VrQ/3CvM1Qy7/VETdZoUmvfNggoCPX/PZ/pru06U0RF2yOktu9nD5ijIN/ow19SMi6uT23cM0bNf+UB9usqPZO5q76BiWL/0JMhRAlL8Ee9FiPe8rFW5nY/QtHpYmKFRlNmU3q0VcrYXCe7E=
+	t=1713021693; cv=none; b=sG8A4C5hQcDy7+I2gFgaZK6+xPJ5D+c7zCoOsqaY39ctXr42Fnj0KNO1q2X7BBnpu7U9ygL42vSwqR6sog8WLvrgYACrwCEwtJSGGOG67+xdzeFaNHTnDm5ZsXONzV2u4w8mussveeKjhS2uT87vsqZYXnmCLTpsf/Ng9r5a6uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713021390; c=relaxed/simple;
-	bh=29YarKc0WYNTWP1PNRSnD3A3fcc5Wb6BU/OaAvyB/hA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U/9HK+zxGxkkYnx4einnpfV9TSb+Pq5zgeqfapZXTNWbnXp3GeM16q2r+jHV6LWessZqMQOnI0AI8MIwgpftrrAQEnYVQML7LEu/qAH0gy1pu9L69fOVgGBI8A+p9DRfg2mi3snWcz+Cz5JxDaGqUh3VxLjtYRRSHyOykhUyuWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N4z+86AH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A026C113CD;
-	Sat, 13 Apr 2024 15:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713021389;
-	bh=29YarKc0WYNTWP1PNRSnD3A3fcc5Wb6BU/OaAvyB/hA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N4z+86AH0nG+BT1F1V4YYCbQR4fb/rU0cC4UJPobP/ZgaWUvZtMILOxRC5lE2ijJ3
-	 2ZdA2ADpZ/XDl2Z3VafgsCqzB2EqwSo9DZkg9kfHnnz60Qnv/81xem4W3j+eZj3ioU
-	 tLEfkV99gj9E/SM8KqenvLn0RUEt/UVtG+ECerTuLyBLTqBBP+C7qkAIFlMKVxUUvq
-	 14Fz4iCKIuIOaHOe7ixIgYpcByeAAON5VpMUs/glzbgp5X+rLThZ4Y952cU6S5v6tr
-	 YG3tqkBrKGMTt45/tQeYWOH4x5tTj4RBguxgIXEbn51A+HyzB1YjkuhT/nb2RBeTYP
-	 eXuC86M6sFU+g==
-Date: Sat, 13 Apr 2024 17:16:24 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() -
- requirements
-Message-ID: <20240413-armbrust-specht-394d58f53f0f@brauner>
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <20240412-vegetarisch-installieren-1152433bd1a7@brauner>
- <CAHk-=wiYnnv7Kw7v+Cp2xU6_Fd-qxQMZuuxZ61LgA2=Gtftw-A@mail.gmail.com>
- <20240413-aufgaben-feigen-e61a1ec3668f@brauner>
+	s=arc-20240116; t=1713021693; c=relaxed/simple;
+	bh=yEWjbDnznVC6vT4NO/Xj3JDq3tC38KjlGRoMlOKXXps=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z8gHuB+xB9Y67wFlcx7/QBr86ZfHbUCqN7flFo4hjkLQtTQcrE66rVqp7VQJXIBNiw8nBguZBBXyE7bWxlJQK8V5v6af8eXjzvAtw0W8EgaHDrM48LWamX/jjfo/CRW0LRdbLYfWw6SOcrd30vUP+hhFNPTBufxJKc9W6GBPUTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=JQu8t4a6; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43DF8N9f030225;
+	Sat, 13 Apr 2024 15:21:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=v1nRL8Z
+	DfgPlt89U1eI5XAv4EMOC/gfGb5BYwBW6vPk=; b=JQu8t4a655UPNQQ8dGlTmJP
+	oQ9mY2FKlsgjA8ZrFGG9G9gnU1WOdagMFN1FjvjAdU/MJ38/a6PA3S14I3gWG1Hb
+	C+brhU03ryywUQxJu8DLtVwr/hZ3BVDxkUUcwc/1ILZeppcClqEt6JOg2P5yvsQx
+	fuw1bvSdpRu0KIcgFLJRdT2v6u+m3limXExyI5tanwWfxHjXxCnLVwvT8TGBzSpf
+	Q4XrVcY0uOI9K8QHHem5vdxNtqKUs8W234VL8nLQIvHgNzHyoKcN0ZGgV3xcridd
+	Wyx2HTEamHfdjKf90GR0h9xksqjm7FwrYjmonR9qyQFfER1ZLB+zNjqaDlbmaFQ=
+	=
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xfh2crnw4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Apr 2024 15:21:10 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43DFL8uV007731
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Apr 2024 15:21:08 GMT
+Received: from hu-jkona-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Sat, 13 Apr 2024 08:21:00 -0700
+From: Jagadeesh Kona <quic_jkona@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Michael Turquette
+	<mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov
+	<stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mauro Carvalho Chehab
+	<mchehab@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J .
+ Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, Pavel Machek
+	<pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Andy
+ Gross" <agross@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, Taniya Das <quic_tdas@quicinc.com>,
+        "Satya Priya
+ Kakitapalli" <quic_skakitap@quicinc.com>,
+        Imran Shaik
+	<quic_imrashai@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        "Jagadeesh Kona" <quic_jkona@quicinc.com>
+Subject: [PATCH V5 RESEND 0/5] PM: domains: Add control for switching back and forth to HW control
+Date: Sat, 13 Apr 2024 20:50:08 +0530
+Message-ID: <20240413152013.22307-1-quic_jkona@quicinc.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240413-aufgaben-feigen-e61a1ec3668f@brauner>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FAzFLGXG3OsMsDAkOAIwv7xrlrnCVhrp
+X-Proofpoint-GUID: FAzFLGXG3OsMsDAkOAIwv7xrlrnCVhrp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-13_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0
+ spamscore=0 mlxlogscore=999 suspectscore=0 impostorscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404130113
 
-On Sat, Apr 13, 2024 at 11:41:57AM +0200, Christian Brauner wrote:
-> On Fri, Apr 12, 2024 at 10:43:06AM -0700, Linus Torvalds wrote:
-> > Side note: I'd really like to relax another unrelated AT_EMPTY_PATH
-> > issue: we should just allow a NULL path for that case.
-> > 
-> > The requirement that you pass an actual empty string is insane. It's
-> > wrong. And it adds a noticeable amount of expense to this path,
-> > because just getting the single byte and looking it up is fairly
-> > expensive.
-> > 
-> > This was more noticeable because glibc at one point (still?) did
-> > 
-> >         newfstatat(6, "", buf, AT_EMPTY_PATH)
-> > 
-> > when it should have just done a simple "fstat()".
-> > 
-> > So there were (are?) a *LOT* of AT_EMPTY_PATH users, and they all do a
-> > pointless "let's copy a string from user space".
-> > 
-> > And yes, I know exactly why AT_EMPTY_PATH exists: because POSIX
-> > traditionally says that a path of "" has to return -ENOENT, not the
-> > current working directory. So AT_EMPTY_PATH basically says "allow the
-> > empty path for lookup".
-> > 
-> > But while it *allows* the empty path, it does't *force* it, so it
-> > doesn't mean "avoid the lookup", and we really end up doing a lot of
-> > extra work just for this case. Just the user string copy is a big deal
-> > because of the whole overhead of accessing user space, but it's also
-> > the whole "allocate memory for the path etc".
-> > 
-> > If we either said "a NULL path with AT_EMPTY_PATH means empty", or
-> > even just added a new AT_NULL_PATH thing that means "path has to be
-> > NULL, and it means the same as AT_EMPTY_PATH with an empty path", we'd
-> > be able to avoid quite a bit of pointless work.
-> 
-> It also causes issues for sandboxed enviroments (most recently for the
-> Chrome sandbox) because AT_EMPTY_PATH doesn't actually mean
-> AT_EMPTY_PATH unless the string is actually empty. Otherwise
-> AT_EMPTY_PATH is ignored. So I'm all on board for this. I need to think
-> a bit whether AT_NULL_PATH or just allowing NULL would be nicer. Mostly
-> because I want to ensure that userspace can easily detect this new
-> feature.
+This series adds support for dev_pm_genpd_set_hwmode() and dev_pm_genpd_get_hwmode() APIs
+and support in gdsc provider drivers to register respective callbacks and venus consumer
+driver example using above API to switch the power domain(GDSC) to HW/SW modes dynamically
+at runtime.
 
-I think it should be ok to allow AT_EMPTY_PATH with NULL because
-userspace can detect whether the kernel allows that by passing
-AT_EMPTY_PATH with a NULL path argument and they would get an error back
-that would tell them that this kernel doesn't support NULL paths.
+This is resend of V5 series, added R-By tags received in V5 for 1st & 2nd patches.
 
-I'd like to try a patch for this next week. It's a good opportunity to
-get into some of the more gritty details of this area.
+Link to V5: https://lore.kernel.org/all/20240315111046.22136-1-quic_jkona@quicinc.com/
 
-From a rough first glance most AT_EMPTY_PATH users should be covered by
-adapting getname_flags() accordingly.
+Changes in V5:
+- Updated 1st patch as per V4 review comments to synchronize the initial HW mode state by
+  invoking ->get_hwmode_dev()callback in genpd_add_device()
+- With above change, SW cached hwmode will contain correct value initially, and it will be
+  updated everytime mode is changed in set_hwmode, hence updated dev_pm_genpd_get_hwmode()
+  to just return SW cached hwmode in 1st patch
+- Updated commit text for 1st, 3rd, 4th and 5th patches
+- Updated 3rd and 5th patches as per review comments received on V4 series
+- Added R-By tags received in older series to 1st and 2nd patches
 
-Imho, this could likely be done by introducing a single struct filename
-null_filename. That also takes care of audit that reuses the pathname.
-That thing would basically never go away and the refcnt remain fixed at
-one. Kind of similar to what we did for struct mnt_idmap nop_mnt_idmap.
-That's at least what I naively hope for but I haven't yet starting
-looking into all the dark corners.
+Previous series:
+V4: https://lore.kernel.org/all/20240122-gdsc-hwctrl-v4-0-9061e8a7aa07@linaro.org/
+V3: https://lore.kernel.org/lkml/20230823114528.3677667-1-abel.vesa@linaro.org/ 
+V2: https://lore.kernel.org/lkml/20230816145741.1472721-1-abel.vesa@linaro.org/
+V1: https://lore.kernel.org/all/20230628105652.1670316-1-abel.vesa@linaro.org/
+
+Abel Vesa (1):
+  PM: domains: Add the domain HW-managed mode to the summary
+
+Jagadeesh Kona (3):
+  clk: qcom: gdsc: Add set and get hwmode callbacks to switch GDSC mode
+  clk: qcom: Use HW_CTRL_TRIGGER flag to switch video GDSC to HW mode
+  venus: pm_helpers: Use dev_pm_genpd_set_hwmode to switch GDSC mode on
+    V6
+
+Ulf Hansson (1):
+  PM: domains: Allow devices attached to genpd to be managed by HW
+
+ drivers/clk/qcom/gdsc.c                       | 37 +++++++++
+ drivers/clk/qcom/gdsc.h                       |  1 +
+ drivers/clk/qcom/videocc-sc7280.c             |  2 +-
+ drivers/clk/qcom/videocc-sm8250.c             |  4 +-
+ .../media/platform/qcom/venus/pm_helpers.c    | 39 ++++++----
+ drivers/pmdomain/core.c                       | 78 ++++++++++++++++++-
+ include/linux/pm_domain.h                     | 17 ++++
+ 7 files changed, 157 insertions(+), 21 deletions(-)
+
+-- 
+2.43.0
+
 
