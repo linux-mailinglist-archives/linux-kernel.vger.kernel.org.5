@@ -1,107 +1,229 @@
-Return-Path: <linux-kernel+bounces-143703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930988A3C6F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:10:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72FFA8A3C70
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:11:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AB71F2211D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:10:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28FDB2825D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:11:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF9B3DBBE;
-	Sat, 13 Apr 2024 11:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A503E47B;
+	Sat, 13 Apr 2024 11:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="PmYA3c5+";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zVWQo0F5"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KrAsfsAR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EDD1DFD0
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 11:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01D43DB91
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 11:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713006626; cv=none; b=h+eWIvfVFRzqM6bFZlGUoCJ37g+ncn90I7xjT80rflgFMmwUorrq3apdpQUCwrEVhIZft0E5+zjoPXpk/d4zbCFomKMQAgEabrfginORpKSlkMXnB3mWEPUdq/CiAx/OoOHce3Nh5XVk0Ymozs6Pz/JJIvrwO+stSI33LWhC8iU=
+	t=1713006683; cv=none; b=i2K1JaJ2hhX+xQ/BHKt+UaKgagmzzzF/cIqJKR2dytPnNrkUGxKywUOlqknkwJ9Vse4LZMgu1awqN8ElijKVgHt/Us42YleKFtSFFaw1jvYoQ72OvNoAH0dLcXwpgjg6E8IADwd5wvIqFQoQWrMh1XfM48EN71VYmG7+lB+WzEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713006626; c=relaxed/simple;
-	bh=AK8PSoFQHCoOJm4ED6t2eH2/Y+s506tQ0RjjxcOPYss=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=isiODrXUfU01HRQz+MeM9bGraSQWOKyxp9dS79tKmmqj9HmH2JrJMpnbMTvudNp8JLGoq5ak7XhYWUX1K5K3Xtvny8AGgs8lsZE0930si5k5XApXltwPusKzyCz8uoLcNpHjI8hVvlmUiyGzcDduacNmqm8l4HQRGTf0V/ZhhNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=PmYA3c5+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zVWQo0F5; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713006616;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ud3R6yDl9VRbE7siqBnptDz2G1hQfqVZPP/3nt2wP+w=;
-	b=PmYA3c5+62jlKLwDbz4DIE0xTP+huhpo2hiHvJ/XSwRKrifPsClIptWaCctZlHyD6e0ohL
-	DC0Tau6a7G5n4ENAcOBG0n6oUpA1uytTHFBngfAvmU4OQ8uRH4n/KPchkbwMsD3+6gt+AN
-	fuYRGYoAeWTI7TUZMrZshkF5eOa5oc4SMU3kMwulOjXM7tJFKaUkAOpY/wVg4Y1hh6PkYm
-	Sq07E0IBN+1ce/wtcuNKsK4QIkkl6c5bf6ozDVtxV6ueMJCyVDDGPTyNB8SPYfBFmwoorT
-	mUA2pIC6bsZ9awqepqMMEpOg5nK7UmekgCP7C2wFsisHTtC3I5vlWNHVRxwVzw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713006616;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ud3R6yDl9VRbE7siqBnptDz2G1hQfqVZPP/3nt2wP+w=;
-	b=zVWQo0F5mq2VVw2SSbud1xpcs6kSc6YY1Xyl5zi2X96xxL0xoeqJ6s3uB4ES3WuicT3i+e
-	hfVlss9IwHxOx6Bg==
-To: syzbot <syzbot+1dab15008502531a13d2@syzkaller.appspotmail.com>,
- linux-kernel@vger.kernel.org
-Cc: lizhi.xu@windriver.com, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [syzbot] [syzbot] [kernel?] inconsistent lock state in
- sock_hash_delete_elem
-In-Reply-To: <00000000000045aaf30615035889@google.com>
-References: <00000000000045aaf30615035889@google.com>
-Date: Sat, 13 Apr 2024 13:10:16 +0200
-Message-ID: <8734rpzffr.ffs@tglx>
+	s=arc-20240116; t=1713006683; c=relaxed/simple;
+	bh=yqFTGPFpUELq92u6Jwc0LpudMXSZpeOTpg8NEgcDRJI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RnU0dLhRrSZ3In/c5Ny+pf2vXxYqb3TZmav6XFH1FFZZKInz+T/7tjPOPn5clrWm56xwW4XLc3DX+BwX2VJztpwLH2xCD90LmwPWyoMc5eqrcTLyiTvIDsedK4EiL9Q3tPuhcFACDZPw/HakfXAyzQCGFAV/93P46UHuY+H6zk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KrAsfsAR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF35DC2BD10;
+	Sat, 13 Apr 2024 11:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713006682;
+	bh=yqFTGPFpUELq92u6Jwc0LpudMXSZpeOTpg8NEgcDRJI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KrAsfsARagsovovWhbrM3DzytETGRjjf1eEVd624V+MA957i7JHN7rtdGv64H5p5u
+	 YHtu9XkrauozUBYhf7grICnq/NEQ9Q0uO4k1iUzFg4JtGnElCBkAm2ODfHxscsoNQ4
+	 y1S5hmNEn+iPZjombc6VwQTgBXH83KY+RZ5q7KOX4AKUSAHygbJ5ytWgojWTgt/6bz
+	 daOxYgfnyKwcVYXOBayDT1R6jjOXpfCXNhBYLv4JlCCfhnvIuOQtfenFILxoID7Kt5
+	 N21DStLF6OcAnlHG8lmoYzbFV7qWz0BmiB5wM/sS/qAr7q3zyFZNSdWizL8fcP2yA1
+	 CjWtaMGmS7ptg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rvbI0-0048U7-J8;
+	Sat, 13 Apr 2024 12:11:20 +0100
+Date: Sat, 13 Apr 2024 12:11:20 +0100
+Message-ID: <86cyqtsejr.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: tglx@linutronix.de,
+	yury.norov@gmail.com,
+	akpm@linux-foundation.org,
+	florian.fainelli@broadcom.com,
+	chenhuacai@kernel.org,
+	jiaxun.yang@flygoat.com,
+	anup@brainfault.org,
+	palmer@dabbelt.com,
+	samuel.holland@sifive.com,
+	linux@rasmusvillemoes.dk,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] irqchip/gic-v3-its: Avoid explicit cpumask allocation on stack
+In-Reply-To: <08D93AF972A58F13+ZhpegNehN5/RYie5@centos8>
+References: <20240412105839.2896281-1-dawei.li@shingroup.cn>
+	<20240412105839.2896281-4-dawei.li@shingroup.cn>
+	<86il0msn4z.wl-maz@kernel.org>
+	<08D93AF972A58F13+ZhpegNehN5/RYie5@centos8>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dawei.li@shingroup.cn, tglx@linutronix.de, yury.norov@gmail.com, akpm@linux-foundation.org, florian.fainelli@broadcom.com, chenhuacai@kernel.org, jiaxun.yang@flygoat.com, anup@brainfault.org, palmer@dabbelt.com, samuel.holland@sifive.com, linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Sun, Mar 31 2024 at 23:46, syzbot wrote:
-> For archival purposes, forwarding an incoming command email to
-> linux-kernel@vger.kernel.org.
->
-> ***
->
-> Subject: [syzbot] [kernel?] inconsistent lock state in sock_hash_delete_elem
-> Author: lizhi.xu@windriver.com
->
-> #syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index d44efa0d0611..07a3c1d2c2d8 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -5676,7 +5676,7 @@ void scheduler_tick(void)
->  
->  	sched_clock_tick();
->  
-> -	rq_lock(rq, &rf);
-> +	rq_lock_irqsave(rq, &rf);
+On Sat, 13 Apr 2024 11:29:20 +0100,
+Dawei Li <dawei.li@shingroup.cn> wrote:
+> 
+> Hi Marc,
+> 
+> Thanks for the review.
+> 
+> On Fri, Apr 12, 2024 at 02:53:32PM +0100, Marc Zyngier wrote:
+> > On Fri, 12 Apr 2024 11:58:36 +0100,
+> > Dawei Li <dawei.li@shingroup.cn> wrote:
+> > > 
+> > > In general it's preferable to avoid placing cpumasks on the stack, as
+> > > for large values of NR_CPUS these can consume significant amounts of
+> > > stack space and make stack overflows more likely.
+> > >
+> > > Remove cpumask var on stack and use proper cpumask API to address it.
+> > 
+> > Define proper. Or better, define what is "improper" about the current
+> > usage.
+> 
+> Sorry for the confusion.
+> 
+> I didn't mean current implementation is 'improper', actually both
+> implementations share equivalent API usages. I will remove this
+> misleading expression from commit message.
+> 
+> > 
+> > >
+> > > Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> > > ---
+> > >  drivers/irqchip/irq-gic-v3-its.c | 9 ++++++---
+> > >  1 file changed, 6 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> > > index fca888b36680..a821396c4261 100644
+> > > --- a/drivers/irqchip/irq-gic-v3-its.c
+> > > +++ b/drivers/irqchip/irq-gic-v3-its.c
+> > > @@ -3826,7 +3826,7 @@ static int its_vpe_set_affinity(struct irq_data *d,
+> > >  				bool force)
+> > >  {
+> > >  	struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
+> > > -	struct cpumask common, *table_mask;
+> > > +	struct cpumask *table_mask;
+> > >  	unsigned long flags;
+> > >  	int from, cpu;
+> > >  
+> > > @@ -3850,8 +3850,11 @@ static int its_vpe_set_affinity(struct irq_data *d,
+> > >  	 * If we are offered another CPU in the same GICv4.1 ITS
+> > >  	 * affinity, pick this one. Otherwise, any CPU will do.
+> > >  	 */
+> > > -	if (table_mask && cpumask_and(&common, mask_val, table_mask))
+> > > -		cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
+> > > +	if (table_mask && cpumask_intersects(mask_val, table_mask)) {
+> > > +		cpu = cpumask_test_cpu(from, mask_val) &&
+> > > +		      cpumask_test_cpu(from, table_mask) ?
+> > > +		      from : cpumask_first_and(mask_val, table_mask);
+> > 
+> > So we may end-up computing the AND of the two bitmaps twice (once for
+> > cpumask_intersects(), once for cpumask_first_and()), instead of only
+> > doing it once.
+> 
+> Actually maybe it's possible to merge these 2 bitmap ops into one:
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index fca888b36680..7a267777bd0b 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -3826,7 +3826,8 @@ static int its_vpe_set_affinity(struct irq_data *d,
+>                                 bool force)
+>  {
+>         struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
+> -       struct cpumask common, *table_mask;
+> +       struct cpumask *table_mask;
+> +       unsigned int common;
+>         unsigned long flags;
+>         int from, cpu;
+> 
+> @@ -3850,10 +3851,13 @@ static int its_vpe_set_affinity(struct irq_data *d,
+>          * If we are offered another CPU in the same GICv4.1 ITS
+>          * affinity, pick this one. Otherwise, any CPU will do.
+>          */
+> -       if (table_mask && cpumask_and(&common, mask_val, table_mask))
+> -               cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
+> -       else
+> +       if (table_mask && (common = cpumask_first_and(mask_val, table_mask)) < nr_cpu_ids) {
+> +               cpu = cpumask_test_cpu(from, mask_val) &&
+> +                     cpumask_test_cpu(from, table_mask) ?
+> +                     from : common;
+> +       } else {
+>                 cpu = cpumask_first(mask_val);
+> +       }
+> 
+> > 
+> > I don't expect that to be horrible, but I also note that you don't
+> > even talk about the trade-offs you are choosing to make.
+> 
+> With change above, I assume that the tradeoff is minor and can be ignored?
 
-That's just wrong. scheduler_tick() is invoked from hard interrupt
-context with interrupts disabled.
-  
->  	update_rq_clock(rq);
->  	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
-> @@ -5688,7 +5688,7 @@ void scheduler_tick(void)
->  	sched_core_tick(rq);
->  	task_tick_mm_cid(rq, curr);
->  
-> -	rq_unlock(rq, &rf);
-> +	rq_unlock_irqrestore(rq, &rf);
->  
->  	if (sched_feat(LATENCY_WARN) && resched_latency)
->  		resched_latency_warn(cpu, resched_latency);
+Yup, this works. My preference would be something which I find
+slightly more readable though (avoiding assignment in the
+conditional):
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index fca888b36680..299dafc7c0ea 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -3826,9 +3826,9 @@ static int its_vpe_set_affinity(struct irq_data *d,
+ 				bool force)
+ {
+ 	struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
+-	struct cpumask common, *table_mask;
++	struct cpumask *table_mask;
+ 	unsigned long flags;
+-	int from, cpu;
++	int from, cpu = nr_cpu_ids;
+ 
+ 	/*
+ 	 * Changing affinity is mega expensive, so let's be as lazy as
+@@ -3850,10 +3850,15 @@ static int its_vpe_set_affinity(struct irq_data *d,
+ 	 * If we are offered another CPU in the same GICv4.1 ITS
+ 	 * affinity, pick this one. Otherwise, any CPU will do.
+ 	 */
+-	if (table_mask && cpumask_and(&common, mask_val, table_mask))
+-		cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
+-	else
++	if (table_mask)
++		cpu = cpumask_any_and(mask_val, table_mask);
++	if (cpu < nr_cpu_ids) {
++		 if (cpumask_test_cpu(from, mask_val) &&
++		     cpumask_test_cpu(from, table_mask))
++			 cpu = from;
++	} else {
+ 		cpu = cpumask_first(mask_val);
++	}
+ 
+ 	if (from == cpu)
+ 		goto out;
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
