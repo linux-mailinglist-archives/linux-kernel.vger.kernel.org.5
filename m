@@ -1,56 +1,87 @@
-Return-Path: <linux-kernel+bounces-143537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 875818A3AA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 05:21:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C03E98A3A98
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 05:18:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A87831C22807
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:21:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E0CEB2361D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:18:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0381BF33;
-	Sat, 13 Apr 2024 03:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9DF182BB;
+	Sat, 13 Apr 2024 03:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fovUMSMb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xp4eOUFL"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 649C918E20;
-	Sat, 13 Apr 2024 03:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE12EEA9
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 03:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712978479; cv=none; b=WuPur8dGskylmcEFooXw/91Mkkq9r6YAP5jGkvsmOZM34ohRhd+MyKmQ1W7TddNv9m6zKkS6uOVRH4WgTvnOu/pxcVHs5l5lscIKiJNpDyolEh3nvt39wNiMN9aFcEPfaesDelDBzgo9IID6cW28+iJfqEmXPEcHLy8VDMjCO7M=
+	t=1712978297; cv=none; b=hkTc+696i9BSNHlvcw1MTMJeuqYD5FlPmXoqOiKuHa9iTFp2uLFIO9fOKZycGol6g2jkNMdNvu0TdA+H1uouWsMb3pehvtqQfrtzmuqMMVPnA8JaF3F5GZwtOD9AdiDL/veXylq8G4OrXZmLG5WAVBKh1bBrpf+WjPqgCZzcRmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712978479; c=relaxed/simple;
-	bh=2YTRDnluqLJ6SJdgJANZogX29mh3u1GYlUugT+10bXE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qoJFGuKIbZeOiZ70J8WvsdTymLmDKE4Mqeng0hbuoJJUSEp1j1eX3KpcrwNW8hAuHcUOMRiDREVwOk02PW0hjuhNsssxdo2ogx6afwiOSdswYCrCC3oWUfeVZuWGsURJKgUflqxadBqvBgvxCv4WglDMAzvB2tR7OPYpiRXsZAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fovUMSMb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA154C32786;
-	Sat, 13 Apr 2024 03:21:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712978479;
-	bh=2YTRDnluqLJ6SJdgJANZogX29mh3u1GYlUugT+10bXE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fovUMSMbcEH12dA5gIr1A9+/nXgWv4IJIaJnfHlOdeBx4O+/V0Bqx/cpWtNdhi+hU
-	 Fw+D6Wp2jPzrzTDl9cHuUwqA5NzWWE80llTGZNzCytOwiW72Dd1tkE2n3GZ1NT5WHP
-	 YG4eGFv5G2inueQckcG2s5ps4eP79RKUCi8w0kSXhg6b1csy/c9TUbuPPJVHa2X2ol
-	 tuLwy9k5ya61L2olLtsJFYJLrSzrLZJucBOyJWzXzKy+OSfrhvmcjdqAMkgKzoYJ8D
-	 VsKLF6bxupnNWNFoCFlyUm5PNfE/0ICRidQW74FFvtdRy4fG2R9OrCu7dbUvXiaQ2/
-	 Gb7xevDo83nZg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Chang S . Bae" <chang.seok.bae@intel.com>
-Subject: [PATCH 3/3] crypto: x86/aes-xts - optimize size of instructions operating on lengths
-Date: Fri, 12 Apr 2024 20:17:28 -0700
-Message-ID: <20240413031728.159495-4-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240413031728.159495-1-ebiggers@kernel.org>
-References: <20240413031728.159495-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1712978297; c=relaxed/simple;
+	bh=Fama9Su1+zJu7/zSs5t57yOZMei5xDHkLujGRBWKBKI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uEclKEMvikaPSzd1qpjHzJeg9OtHOu0KeUcQo5EjSRW0sDDI2bx6lDeD+PE4nhldAUTR0YKAd86oI1DC+60siz8lQMyCDxFfMtI8cAjERyUyOpk9MGNzSWjf9kEMQefE1Qf+toGxDd2xXmfdQj4Eli0ah0hsBcBQGWZo5qmeT7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xp4eOUFL; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a469dffbdfeso46579466b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712978294; x=1713583094; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PNnFVE6OxAC9vi6MOO4Z+HaTgoU0dnwIGRx/mpHEgUA=;
+        b=Xp4eOUFLhhdcJIizdNGX4hxL9MZPxLaLmLmkwovu1pUF9gTqdeSiQLv2PomfU5fjk+
+         04m+ZTpmM5s5Cfm1EJ0Ym7osnaQvfX7dt41tcdhJ8T3g/NI3kuWwd+q2diJrBrRleucM
+         HtCTfgljZQjwUUmGp0kSZn5Mu3Ih8dqxq0sF/Wgx+npWOEf347h/wC1+Xxl46Vq2moHr
+         8v23e5Iau0krZK6NTHVZ1mS3ZPXnuZwKH7MvkcbhxzpN1dPyrG3y+8y2jb6NVm8WCuWJ
+         45yIIzYCZnvjGz7JfYgrWORTbjGl60MckARx3canYLwLQPqMCVRPKTVMzOj4cNMoH3YZ
+         IAtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712978294; x=1713583094;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PNnFVE6OxAC9vi6MOO4Z+HaTgoU0dnwIGRx/mpHEgUA=;
+        b=MDd8HGGxUf/mXaeqJ6Qy2wRyLOpWwKvgTT+7eqTQGVDceOMkQhq3Te6T/BLl43YEbl
+         rHHzYpBGqiZId/IUj+iCcAJFoL+C31UrnqsGXGAfTlHIl8p8g649hTO8AHICHUa2QaIt
+         SODAif6XcW4dQUwbcmVb+0yATJxVGw/TXG4ETBEusTbaBgxKm4T3SwjA6K0qV2jTLQpX
+         XlajlPhqMCAfeJ4iTe1VcYo76Kl+hIJ3qHMDFWbwYQERGZwoy3xT5FJPp/DIydFxPMIa
+         Lj9KPbBKON4YYhZ55QF7z6F111fK2MZgPEgFfQGxCwln85rMn2vcGK7pMW8AFh/osXBV
+         497Q==
+X-Gm-Message-State: AOJu0YyYCBcLGvi9cdpgF/Lf/AsQR5Pgg33uuvt47KmAffqNyM8P0F9Y
+	XWe7RKKwPxbi1zwb2FHOKuKhguWIfmIXw9Z72HbEZ6gwv4MT31gl0SE6PcT4
+X-Google-Smtp-Source: AGHT+IEoRr1BXhNT33CwKQB7WNo688HaHNYsVo8mJA+Hk5OaW9zxOC3HPhro1PhDEYACC3i9jGCV2g==
+X-Received: by 2002:a17:907:6d24:b0:a52:431e:636a with SMTP id sa36-20020a1709076d2400b00a52431e636amr1046090ejc.7.1712978293773;
+        Fri, 12 Apr 2024 20:18:13 -0700 (PDT)
+Received: from dmitrii-TM1701.. ([2001:8f8:1d36:b77d:8995:4615:5d13:26])
+        by smtp.gmail.com with ESMTPSA id g4-20020a1709063b0400b00a51bbee7e55sm2450153ejf.53.2024.04.12.20.18.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 20:18:13 -0700 (PDT)
+From: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: jani.nikula@linux.intel.com,
+	joonas.lahtinen@linux.intel.com,
+	rodrigo.vivi@intel.com,
+	tursulin@ursulin.net,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	dmitrii.bundin.a@gmail.com,
+	intel-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	bp@suse.de,
+	gongruiqi1@huawei.com,
+	rdunlap@infradead.org,
+	michal.wajdeczko@intel.com
+Subject: [PATCH] drm/i915/guc: Fix UB due to signed int overflow
+Date: Sat, 13 Apr 2024 06:17:47 +0300
+Message-Id: <20240413031747.2416581-1-dmitrii.bundin.a@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,214 +90,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Eric Biggers <ebiggers@google.com>
+Fix compile errors of the form "FIELD_PREP: mask is not constant" caused
+by signed integer constant overflow. Files affected:
 
-x86_64 has the "interesting" property that the instruction size is
-generally a bit shorter for instructions that operate on the 32-bit (or
-less) part of registers, or registers that are in the original set of 8.
+drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
 
-This patch adjusts the AES-XTS code to take advantage of that property
-by changing the LEN parameter from size_t to unsigned int (which is all
-that's needed and is what the non-AVX implementation uses) and using the
-%eax register for KEYLEN.
+Reproducible with gcc 7.5
 
-This decreases the size of aes-xts-avx-x86_64.o by 1.2%.
-
-Note that changing the kmovq to kmovd was going to be needed anyway to
-make the AVX10/256 code really work on CPUs that don't support 512-bit
-vectors (since the AVX10 spec says that 64-bit opmask instructions will
-only be supported on processors that support 512-bit vectors).
-
-Signed-off-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
 ---
- arch/x86/crypto/aes-xts-avx-x86_64.S | 40 +++++++++++++++-------------
- arch/x86/crypto/aesni-intel_glue.c   | 18 ++++++-------
- 2 files changed, 30 insertions(+), 28 deletions(-)
+ drivers/gpu/drm/i915/gt/uc/abi/guc_klvs_abi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/crypto/aes-xts-avx-x86_64.S b/arch/x86/crypto/aes-xts-avx-x86_64.S
-index 802d3b90d337..48f97b79f7a9 100644
---- a/arch/x86/crypto/aes-xts-avx-x86_64.S
-+++ b/arch/x86/crypto/aes-xts-avx-x86_64.S
-@@ -83,18 +83,20 @@
- // Function parameters
- .set	KEY,		%rdi	// Initially points to crypto_aes_ctx, then is
- 				// advanced to point to 7th-from-last round key
- .set	SRC,		%rsi	// Pointer to next source data
- .set	DST,		%rdx	// Pointer to next destination data
--.set	LEN,		%rcx	// Remaining length in bytes
-+.set	LEN,		%ecx	// Remaining length in bytes
-+.set	LEN8,		%cl
-+.set	LEN64,		%rcx
- .set	TWEAK,		%r8	// Pointer to next tweak
+diff --git a/drivers/gpu/drm/i915/gt/uc/abi/guc_klvs_abi.h b/drivers/gpu/drm/i915/gt/uc/abi/guc_klvs_abi.h
+index 58012edd4eb0..8814d4cd371c 100644
+--- a/drivers/gpu/drm/i915/gt/uc/abi/guc_klvs_abi.h
++++ b/drivers/gpu/drm/i915/gt/uc/abi/guc_klvs_abi.h
+@@ -29,7 +29,7 @@
+  */
  
--// %r9 holds the AES key length in bytes.
--.set	KEYLEN,		%r9d
--.set	KEYLEN64,	%r9
-+// %rax holds the AES key length in bytes.
-+.set	KEYLEN,		%eax
-+.set	KEYLEN64,	%rax
+ #define GUC_KLV_LEN_MIN				1u
+-#define GUC_KLV_0_KEY				(0xffff << 16)
++#define GUC_KLV_0_KEY				(0xffffU << 16)
+ #define GUC_KLV_0_LEN				(0xffff << 0)
+ #define GUC_KLV_n_VALUE				(0xffffffff << 0)
  
--// %rax and %r10-r11 are available as temporaries.
-+// %r9-r11 are available as temporaries.
- 
- .macro	_define_Vi	i
- .if VL == 16
- 	.set	V\i,		%xmm\i
- .elseif VL == 32
-@@ -563,13 +565,13 @@
- 	// When decrypting a message whose length isn't a multiple of the AES
- 	// block length, exclude the last full block from the main loop by
- 	// subtracting 16 from LEN.  This is needed because ciphertext stealing
- 	// decryption uses the last two tweaks in reverse order.  We'll handle
- 	// the last full block and the partial block specially at the end.
--	lea		-16(LEN), %rax
--	test		$15, LEN
--	cmovnz		%rax, LEN
-+	lea		-16(LEN), %eax
-+	test		$15, LEN8
-+	cmovnz		%eax, LEN
- .endif
- 
- 	// Load the AES key length: 16 (AES-128), 24 (AES-192), or 32 (AES-256).
- 	movl		480(KEY), KEYLEN
- 
-@@ -648,11 +650,11 @@
- 	jge		.Lmain_loop\@
- 
- 	// Check for the uncommon case where the data length isn't a multiple of
- 	// 4*VL.  Handle it out-of-line in order to optimize for the common
- 	// case.  In the common case, just fall through to the ret.
--	test		$4*VL-1, LEN
-+	test		$4*VL-1, LEN8
- 	jnz		.Lhandle_remainder\@
- .Ldone\@:
- 	// Store the next tweak back to *TWEAK to support continuation calls.
- 	vmovdqu		TWEAK0_XMM, (TWEAK)
- .if VL > 16
-@@ -716,39 +718,39 @@
- 	_aes_crypt	\enc, _XMM, TWEAK1_XMM, %xmm0
- .endif
- 
- .if USE_AVX10
- 	// Create a mask that has the first LEN bits set.
--	mov		$-1, %rax
--	bzhi		LEN, %rax, %rax
--	kmovq		%rax, %k1
-+	mov		$-1, %r9d
-+	bzhi		LEN, %r9d, %r9d
-+	kmovd		%r9d, %k1
- 
- 	// Swap the first LEN bytes of the en/decryption of the last full block
- 	// with the partial block.  Note that to support in-place en/decryption,
- 	// the load from the src partial block must happen before the store to
- 	// the dst partial block.
- 	vmovdqa		%xmm0, %xmm1
- 	vmovdqu8	16(SRC), %xmm0{%k1}
- 	vmovdqu8	%xmm1, 16(DST){%k1}
- .else
--	lea		.Lcts_permute_table(%rip), %rax
-+	lea		.Lcts_permute_table(%rip), %r9
- 
- 	// Load the src partial block, left-aligned.  Note that to support
- 	// in-place en/decryption, this must happen before the store to the dst
- 	// partial block.
--	vmovdqu		(SRC, LEN, 1), %xmm1
-+	vmovdqu		(SRC, LEN64, 1), %xmm1
- 
- 	// Shift the first LEN bytes of the en/decryption of the last full block
- 	// to the end of a register, then store it to DST+LEN.  This stores the
- 	// dst partial block.  It also writes to the second part of the dst last
- 	// full block, but that part is overwritten later.
--	vpshufb		(%rax, LEN, 1), %xmm0, %xmm2
--	vmovdqu		%xmm2, (DST, LEN, 1)
-+	vpshufb		(%r9, LEN64, 1), %xmm0, %xmm2
-+	vmovdqu		%xmm2, (DST, LEN64, 1)
- 
- 	// Make xmm3 contain [16-LEN,16-LEN+1,...,14,15,0x80,0x80,...].
--	sub		LEN, %rax
--	vmovdqu		32(%rax), %xmm3
-+	sub		LEN64, %r9
-+	vmovdqu		32(%r9), %xmm3
- 
- 	// Shift the src partial block to the beginning of its register.
- 	vpshufb		%xmm3, %xmm1, %xmm1
- 
- 	// Do a blend to generate the src partial block followed by the second
-@@ -793,11 +795,11 @@ SYM_FUNC_END(aes_xts_encrypt_iv)
- 
- // Below are the actual AES-XTS encryption and decryption functions,
- // instantiated from the above macro.  They all have the following prototype:
- //
- // void (*xts_asm_func)(const struct crypto_aes_ctx *key,
--//			const u8 *src, u8 *dst, size_t len,
-+//			const u8 *src, u8 *dst, unsigned int len,
- //			u8 tweak[AES_BLOCK_SIZE]);
- //
- // |key| is the data key.  |tweak| contains the next tweak; the encryption of
- // the original IV with the tweak key was already done.  This function supports
- // incremental computation, but |len| must always be >= 16 (AES_BLOCK_SIZE), and
-diff --git a/arch/x86/crypto/aesni-intel_glue.c b/arch/x86/crypto/aesni-intel_glue.c
-index e7d21000cb05..110b3282a1f2 100644
---- a/arch/x86/crypto/aesni-intel_glue.c
-+++ b/arch/x86/crypto/aesni-intel_glue.c
-@@ -897,11 +897,11 @@ static int xts_setkey_aesni(struct crypto_skcipher *tfm, const u8 *key,
- }
- 
- typedef void (*xts_encrypt_iv_func)(const struct crypto_aes_ctx *tweak_key,
- 				    u8 iv[AES_BLOCK_SIZE]);
- typedef void (*xts_crypt_func)(const struct crypto_aes_ctx *key,
--			       const u8 *src, u8 *dst, size_t len,
-+			       const u8 *src, u8 *dst, unsigned int len,
- 			       u8 tweak[AES_BLOCK_SIZE]);
- 
- /* This handles cases where the source and/or destination span pages. */
- static noinline int
- xts_crypt_slowpath(struct skcipher_request *req, xts_crypt_func crypt_func)
-@@ -1019,18 +1019,18 @@ static void aesni_xts_encrypt_iv(const struct crypto_aes_ctx *tweak_key,
- {
- 	aesni_enc(tweak_key, iv, iv);
- }
- 
- static void aesni_xts_encrypt(const struct crypto_aes_ctx *key,
--			      const u8 *src, u8 *dst, size_t len,
-+			      const u8 *src, u8 *dst, unsigned int len,
- 			      u8 tweak[AES_BLOCK_SIZE])
- {
- 	aesni_xts_enc(key, dst, src, len, tweak);
- }
- 
- static void aesni_xts_decrypt(const struct crypto_aes_ctx *key,
--			      const u8 *src, u8 *dst, size_t len,
-+			      const u8 *src, u8 *dst, unsigned int len,
- 			      u8 tweak[AES_BLOCK_SIZE])
- {
- 	aesni_xts_dec(key, dst, src, len, tweak);
- }
- 
-@@ -1183,16 +1183,16 @@ static struct simd_skcipher_alg *aesni_simd_xctr;
- asmlinkage void aes_xts_encrypt_iv(const struct crypto_aes_ctx *tweak_key,
- 				   u8 iv[AES_BLOCK_SIZE]);
- 
- #define DEFINE_XTS_ALG(suffix, driver_name, priority)			       \
- 									       \
--asmlinkage void aes_xts_encrypt_##suffix(const struct crypto_aes_ctx *key,     \
--					 const u8 *src, u8 *dst, size_t len,   \
--					 u8 tweak[AES_BLOCK_SIZE]);	       \
--asmlinkage void aes_xts_decrypt_##suffix(const struct crypto_aes_ctx *key,     \
--					 const u8 *src, u8 *dst, size_t len,   \
--					 u8 tweak[AES_BLOCK_SIZE]);	       \
-+asmlinkage void								       \
-+aes_xts_encrypt_##suffix(const struct crypto_aes_ctx *key, const u8 *src,      \
-+			 u8 *dst, unsigned int len, u8 tweak[AES_BLOCK_SIZE]); \
-+asmlinkage void								       \
-+aes_xts_decrypt_##suffix(const struct crypto_aes_ctx *key, const u8 *src,      \
-+			 u8 *dst, unsigned int len, u8 tweak[AES_BLOCK_SIZE]); \
- 									       \
- static int xts_encrypt_##suffix(struct skcipher_request *req)		       \
- {									       \
- 	return xts_crypt(req, aes_xts_encrypt_iv, aes_xts_encrypt_##suffix);   \
- }									       \
 -- 
-2.44.0
+2.34.1
 
 
