@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-143619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10B2B8A3B7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:45:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB00B8A3B80
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:46:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5AB31F22711
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 07:45:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B745285C2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 07:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 664B31CFBE;
-	Sat, 13 Apr 2024 07:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054371D543;
+	Sat, 13 Apr 2024 07:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G6daAlqH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KcV0yQZq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D361CF8D;
-	Sat, 13 Apr 2024 07:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEBC1CABA;
+	Sat, 13 Apr 2024 07:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712994293; cv=none; b=cFuzJVVoAUvJJRrJ600hbpWY0N5wpLi6j1KXS7X/EKFsqGEz4X0zChU7PiKxvwn8tD3cyYZh2I/I9EzeKPT3Hq7pqpS8oa+qAeb/w96lL7U+HQYlsgGiUkl2g489uOQaPJu5uoYgvXvQ7YBihgluOUwUQW8JR8YGVebe8RKIkXA=
+	t=1712994386; cv=none; b=NzlOIRFGrNXnUW8BXeBhWY9q2B8JiK4ChN+99MTXgtpw0RL0ZpemQpnZaEIBx37uhnpVgkpVKhF/U4wXmNLHjvCyl0VB1DTsLGhoEI86OtB/ZxQaRVBx0Z0XYwu0N/fJYpCy+DQOGJlUtSSATUD0gH7SpPlM21nPECruxQfKiKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712994293; c=relaxed/simple;
-	bh=yoRz4LmT4sL/rxeYbbmJ9nqa12i7gjIUXOHuyYjEd2I=;
+	s=arc-20240116; t=1712994386; c=relaxed/simple;
+	bh=EFG57ur6VM2fF5I1LlhEiqOAY8BW8ZGEjVQbtumsv7o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qx6anh9WQuBNh5GY1yJ/H+spowj5wzCGLtZeAKbdsI8tgheWj5iRgpMpZxaN8fCrpLdZTAc+pUGRU9+6KkFf+pbHg920HzwPYrYoWP3Fr1mnKh+9xC4ztl1yMcoxl8AflMEbtF7B6Gpy9wMAy6v+5tdpbNyiYl7xGgaOgjksbk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G6daAlqH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDDC8C113CD;
-	Sat, 13 Apr 2024 07:44:49 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=r8k+D3Bl8iuC40FPOcnX8MF44fUe0uvS04IdXlhMqIa5wZ+l6x+wPDemwZH3/Iikpu470Xw8k+0vUzGfcclmtC0Nd15kZqTiIlihlEJVHxkgMw/vGaW8d7HZXquNbee6m4dVyYdCfqBwKa0ieB2/N2SAXozNwnnCwdSwi/mj/+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KcV0yQZq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 217B9C113CD;
+	Sat, 13 Apr 2024 07:46:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712994293;
-	bh=yoRz4LmT4sL/rxeYbbmJ9nqa12i7gjIUXOHuyYjEd2I=;
+	s=k20201202; t=1712994385;
+	bh=EFG57ur6VM2fF5I1LlhEiqOAY8BW8ZGEjVQbtumsv7o=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=G6daAlqHoCkfcrZVmDcBBlQ9bO/uuwBGqRbXtL0DSsIbbceZh1DzxMEJR+XY98qCW
-	 vJE3BJGDOKZqaq4OWo+ftYp58FQkvz/hJnTJp/DY9yhq7t8mj6uHyuae3DKrLdYlEd
-	 fiPEEzG9jIP43p9TXP8fdMpRbaLXorWagJ6p+tJwS0Y1BQIYG9nWFUYt7zg4Sbe9eK
-	 8POGwcA1Oj1gzruKVr2FxAVSygYVNRS06wl2Z9+eX7Rw16BQX6qTJh+JBAZQzG31mF
-	 xfhqtbltjChh2bnmB8BqIgf4jByX/UHFYP99gxgyELpey88JIEgIN36lRsJreRxtO/
-	 xegtDFISNMJNg==
-Message-ID: <49d8364f-eca8-4830-947b-dd380be6bf06@kernel.org>
-Date: Sat, 13 Apr 2024 09:44:47 +0200
+	b=KcV0yQZq8BBvz+6/2T+U0noNlNdEpC1m8O9RsB5po3ycjFSDXHknKojiLQ5nSor9e
+	 aSS3vRBDaJsXfjW0E9EpjbZVjqCJFenjSbzSQwloiyc6zdvPvveywKIQLkckf9/Z1X
+	 joksWKHBW6FlSBaNe1d1iw9cP7JRowjrsK8q9OaRcX0i73oVomKxUtQrZy+jrMgx0u
+	 6SzubZSJrmhQaDHpJn4tJNXKbvWLSHCoApkrzGr1yFUFOXwOf2e7mO086lc/fgp93O
+	 ebJ1ImK/G7pnqjr15/Acb16tvMphJF7ETtZMP1FMa4nkO3rhh6SSKcmBaXubEcuEYD
+	 wpGtACdf7JZGA==
+Message-ID: <a3c8ae52-fd6e-49e3-9733-43a1927fdb94@kernel.org>
+Date: Sat, 13 Apr 2024 09:46:19 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,14 +49,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] Add devicetree binding for ArmSoM Sige7 board
+Subject: Re: [PATCH 1/2] arm64: dts: rockchip: Add ArmSom Sige7 board
 To: Jianfeng Liu <liujianfeng1994@gmail.com>, devicetree@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
  heiko@sntech.de, sfr@canb.auug.org.au, weizhao.ouyang@arm.com
 References: <20240413032328.784142-1-liujianfeng1994@gmail.com>
- <20240413032328.784142-2-liujianfeng1994@gmail.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -102,23 +101,113 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240413032328.784142-2-liujianfeng1994@gmail.com>
+In-Reply-To: <20240413032328.784142-1-liujianfeng1994@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 On 13/04/2024 05:23, Jianfeng Liu wrote:
+> Specification:
+>         Rockchip Rk3588 SoC
+>         4x ARM Cortex-A76, 4x ARM Cortex-A55
+>         8/16/32GB Memory LPDDR4/LPDDR4x
+>         Mali G610MP4 GPU
+>         2× MIPI-CSI Connector
+>         1× MIPI-DSI Connector
+>         1x M.2 Key M (PCIe 3.0 4-lanes)
+>         2x RTL8125 2.5G Ethernet
+>         Onboard AP6275P for WIFI6/BT5
+>         32GB/64GB/128GB eMMC
+>         MicroSD card slot
+>         1x USB2.0, 1x USB3.0 Type-A, 1x US3.0 Type-C
+>         1x HDMI Output, 1x type-C DP Output
+> 
+> Functions work normally:
+>         USB2.0 Host
+>         USB3.0 Type-A Host (depend on just applied USBDP driver[1])
+>         M.2 Key M (PCIe 3.0 4-lanes)
+>         2x RTL8125 2.5G Ethernet
+>         eMMC
+>         MicroSD card
+> 
+> More information can be obtained from the following website
+>         https://docs.armsom.org/armsom-sige7
+> 
+> [1] https://lore.kernel.org/all/20240408225109.128953-1-sebastian.reichel@collabora.com/
+> 
 > Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
 > ---
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
+>  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>  .../boot/dts/rockchip/rk3588-armsom-sige7.dts | 725 ++++++++++++++++++
+>  2 files changed, 726 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+> index 7da198be8..0624c7284 100644
+> --- a/arch/arm64/boot/dts/rockchip/Makefile
+> +++ b/arch/arm64/boot/dts/rockchip/Makefile
+> @@ -111,6 +111,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-roc-pc.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-rock-3a.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-wolfvision-pf5.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-wolfvision-pf5-io-expander.dtbo
+> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-armsom-sige7.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-coolpi-cm5-evb.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6a-io.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-edgeble-neu6a-wifi.dtbo
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts b/arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts
+> new file mode 100644
+> index 000000000..aa45e60bb
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts
+> @@ -0,0 +1,725 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/leds/common.h>
+> +#include "rk3588.dtsi"
+> +
+> +/ {
+> +	model = "ArmSoM Sige7";
+> +	compatible = "armsom,sige7", "rockchip,rk3588";
 
+Bindings come before users.
 
-Missing commit msg. Describe the hardware.
+> +
+> +	aliases {
+> +		mmc0 = &sdhci;
+> +		mmc1 = &sdmmc;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial2:1500000n8";
+> +	};
+> +
+> +	analog-sound {
+> +		compatible = "audio-graph-card";
+> +		label = "rk3588-es8316";
+> +
+> +		widgets = "Microphone", "Mic Jack",
+> +			  "Headphone", "Headphones";
+> +
+> +		routing = "MIC2", "Mic Jack",
+> +			  "Headphones", "HPOL",
+> +			  "Headphones", "HPOR";
+> +
+> +		dais = <&i2s0_8ch_p0>;
+> +		hp-det-gpio = <&gpio1 RK_PD5 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&hp_detect>;
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&led_rgb_g>;
+> +
+> +		led_rgb_g {
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-
-
+No underscores in node names.
 
 Best regards,
 Krzysztof
