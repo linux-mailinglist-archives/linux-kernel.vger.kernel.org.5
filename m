@@ -1,254 +1,137 @@
-Return-Path: <linux-kernel+bounces-143575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B04B08A3B05
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:25:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CDF78A3B0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:36:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E65B2B225FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:25:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A059D1F24C59
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774C61C6A7;
-	Sat, 13 Apr 2024 04:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D3D1C2BE;
+	Sat, 13 Apr 2024 04:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bjsthzPG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="TbnQtMH6"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C531BF37;
-	Sat, 13 Apr 2024 04:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A55921C6AF
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 04:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712982321; cv=none; b=KxiY+8r4nWYx3hCXJAtD4njEZah+vsc6OwaQAEcmNPF5GeuAlSvlBTmsSMd1AHiR5bWfwvob0TtMFbwuhasncgJExFGSgxr47lJdHCC24DcU2ct5ylss9aOVrUpRddPn5HCuQ6ggzYjbj6AlqjFZkxis8KRuJGMX8mKkUdygupI=
+	t=1712982984; cv=none; b=Gn5YC8wFaiIbwk1poaHqHikzivyuK/Ktk9f3seZEb0CzbxJoLswEH3Oe/ULtQs0XTcBXyBl93VWij9J76XXElsyEdhJoNAMeCqukZ0lcjw7oaA8auQ04m5PSZfBEZ+zc92SkgZp/bG9KxwT/cZIb2OeYNUFFIxDTwBZlzv2DKn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712982321; c=relaxed/simple;
-	bh=ADQ643WQVT4ms6dHvkDhww1VAbLjrBeUBMpdKo1Lbqk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=shUZAZqDgrubRhsyTO+RJf9FMtThXlQqN30Rx/fX861VPp+yTE0zJiO+4PI1t0mvlCCOuKZ22prVyEmJ60bLE5X4b628+zEEZoy3OImjRsz6wtrQRenbH+6UgUFyjiNNuV3ds1qRzS7/WiYERR056S9L1JQKGXK2J+XN0OLz+0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bjsthzPG; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712982320; x=1744518320;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=ADQ643WQVT4ms6dHvkDhww1VAbLjrBeUBMpdKo1Lbqk=;
-  b=bjsthzPGkTtyyh47npYX5N8prCcmft2Bv/+wI60FIYK33u8rgAKdDSUI
-   kcnFuSS9SLcTcfNBlpu1hT6G7zHEuVjc78RVUVylx7tIxs09+qyFqIxI1
-   Ge9R20gfVzMooSKdKhkI+jl89ZbdLKIkJFLQCxfAs/5M5l/2kw8KaOEc/
-   zmJB38WhSyz/TRtteri6beKWJuwqn9Pzs050M/9HwHYzJDCh0VmV7G7oQ
-   s9IgE5uIvPUSvOOtLBeTiZtv0IBmIaT3vyspO4RAuBPT7g39AOgU30oWS
-   DsjROOOWSJlZ4lpH6tpyQhtJZSv6hnV08Hm4B+7Tlz+xKXYgYYu82UNvY
-   w==;
-X-CSE-ConnectionGUID: yglPpSB6T4iXuVurr34wSQ==
-X-CSE-MsgGUID: DNm4zNBnQv2aU6eDozMZbQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8623603"
-X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
-   d="scan'208";a="8623603"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:25:19 -0700
-X-CSE-ConnectionGUID: ss31M2v4SKuZ31YmAwJUfw==
-X-CSE-MsgGUID: aIw13MhyR3WQqS+WMdbb0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
-   d="scan'208";a="21985151"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.225.92]) ([10.124.225.92])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:25:14 -0700
-Message-ID: <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com>
-Date: Sat, 13 Apr 2024 12:25:11 +0800
+	s=arc-20240116; t=1712982984; c=relaxed/simple;
+	bh=fbIpJRyqCzHbHwHwiGGAvD34UuOfNcgBOS9zc+epVds=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ENtKoKSMYS38rohL7i2y+2YpIqTKrdUa85HaUxdbzbHRUAuGi7EZCPxKZzdlNFBcVsJnxg/NigdbUEshviOSM9G2QjeZHI0uDGfgvlVALIXVDKzurgAL5Al+QGGGSgty8XuDkcfiw/cWUcfZCtP5XuprX578WPBeNSddyOtWiq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=TbnQtMH6; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43D4ZgBU018660
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Apr 2024 00:35:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1712982946; bh=/B4pXAPsMRR82DA1Wh7RuqgKoBHilarf9qCJOIPKqF4=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=TbnQtMH6TFa+kLU/M/0hqC87t19sYAJN33+wvj898a7IJ849R+CNp8YkoxJc/Eeqm
+	 I2PCmWvJ0bGYq9M9QpnVJo0D7W+DMRoH2GHhUJAP5O8E8XWOtKLsZlCprWefjOuJpC
+	 zsYq77DgwqdyyjzyOGaLj+eVsx7pFRn771AUsyRhDjbuR5qA+8fLh273p/m7yumP98
+	 djtYmjbKvdy3xFtzs0yaGDs2tVDUtytiErDSfYlSXQUDHzYXGGstKUVL6NVEF2ie/f
+	 Qe78Fkdk33nf6FYe0NcVWu+C/fZdkYwQQ1tQRiic7WUtjR7NLiVjj3mdNn2fty2KSS
+	 LXpNi5K/SoXmw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 2A66215C0CB5; Sat, 13 Apr 2024 00:35:42 -0400 (EDT)
+Date: Sat, 13 Apr 2024 00:35:42 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+        Conor Dooley <conor@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240413043542.GE187181@mit.edu>
+References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+ <20240412154342.GA1310856@mit.edu>
+ <87a5lyecuw.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Sean Christopherson <seanjc@google.com>,
- Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
- peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-24-xiong.y.zhang@linux.intel.com>
- <ZhhZush_VOEnimuw@google.com>
- <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com>
- <Zhn9TGOiXxcV5Epx@google.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <Zhn9TGOiXxcV5Epx@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a5lyecuw.fsf@all.your.base.are.belong.to.us>
 
+On Fri, Apr 12, 2024 at 06:59:19PM +0200, Björn Töpel wrote:
+> 
+>   $ pipx install tuxrun
+> 
+> if you're on Debian.
+> 
+> Then you can get the splat by running:
+> 
+>   $ tuxrun  --runtime docker --device qemu-riscv32 --kernel https://storage.tuxsuite.com/public/linaro/lkft/builds/2esMBaAMQJpcmczj0aL94fp4QnP/Image.gz --parameters SKIPFILE=skipfile-lkft.yaml --parameters SHARD_NUMBER=10 --parameters SHARD_INDEX=1 --image docker.io/linaro/tuxrun-dispatcher:v0.66.1 --tests ltp-controllers
 
-On 4/13/2024 11:34 AM, Mingwei Zhang wrote:
-> On Sat, Apr 13, 2024, Mi, Dapeng wrote:
->> On 4/12/2024 5:44 AM, Sean Christopherson wrote:
->>> On Fri, Jan 26, 2024, Xiong Zhang wrote:
->>>> From: Dapeng Mi <dapeng1.mi@linux.intel.com>
->>>>
->>>> Implement the save/restore of PMU state for pasthrough PMU in Intel. In
->>>> passthrough mode, KVM owns exclusively the PMU HW when control flow goes to
->>>> the scope of passthrough PMU. Thus, KVM needs to save the host PMU state
->>>> and gains the full HW PMU ownership. On the contrary, host regains the
->>>> ownership of PMU HW from KVM when control flow leaves the scope of
->>>> passthrough PMU.
->>>>
->>>> Implement PMU context switches for Intel CPUs and opptunistically use
->>>> rdpmcl() instead of rdmsrl() when reading counters since the former has
->>>> lower latency in Intel CPUs.
->>>>
->>>> Co-developed-by: Mingwei Zhang <mizhang@google.com>
->>>> Signed-off-by: Mingwei Zhang <mizhang@google.com>
->>>> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
->>>> ---
->>>>    arch/x86/kvm/vmx/pmu_intel.c | 73 ++++++++++++++++++++++++++++++++++++
->>>>    1 file changed, 73 insertions(+)
->>>>
->>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->>>> index 0d58fe7d243e..f79bebe7093d 100644
->>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
->>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->>>> @@ -823,10 +823,83 @@ void intel_passthrough_pmu_msrs(struct kvm_vcpu *vcpu)
->>>>    static void intel_save_pmu_context(struct kvm_vcpu *vcpu)
->>> I would prefer there be a "guest" in there somewhere, e.g. intel_save_guest_pmu_context().
->> Yeah. It looks clearer.
->>>>    {
->>>> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
->>>> +	struct kvm_pmc *pmc;
->>>> +	u32 i;
->>>> +
->>>> +	if (pmu->version != 2) {
->>>> +		pr_warn("only PerfMon v2 is supported for passthrough PMU");
->>>> +		return;
->>>> +	}
->>>> +
->>>> +	/* Global ctrl register is already saved at VM-exit. */
->>>> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, pmu->global_status);
->>>> +	/* Clear hardware MSR_CORE_PERF_GLOBAL_STATUS MSR, if non-zero. */
->>>> +	if (pmu->global_status)
->>>> +		wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, pmu->global_status);
->>>> +
->>>> +	for (i = 0; i < pmu->nr_arch_gp_counters; i++) {
->>>> +		pmc = &pmu->gp_counters[i];
->>>> +		rdpmcl(i, pmc->counter);
->>>> +		rdmsrl(i + MSR_ARCH_PERFMON_EVENTSEL0, pmc->eventsel);
->>>> +		/*
->>>> +		 * Clear hardware PERFMON_EVENTSELx and its counter to avoid
->>>> +		 * leakage and also avoid this guest GP counter get accidentally
->>>> +		 * enabled during host running when host enable global ctrl.
->>>> +		 */
->>>> +		if (pmc->eventsel)
->>>> +			wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, 0);
->>>> +		if (pmc->counter)
->>>> +			wrmsrl(MSR_IA32_PMC0 + i, 0);
->>> This doesn't make much sense.  The kernel already has full access to the guest,
->>> I don't see what is gained by zeroing out the MSRs just to hide them from perf.
->> It's necessary to clear the EVENTSELx MSRs for both GP and fixed counters.
->> Considering this case, Guest uses GP counter 2, but Host doesn't use it. So
->> if the EVENTSEL2 MSR is not cleared here, the GP counter 2 would be enabled
->> unexpectedly on host later since Host perf always enable all validate bits
->> in PERF_GLOBAL_CTRL MSR. That would cause issues.
->>
->> Yeah,Â  the clearing for PMCx MSR should be unnecessary .
->>
-> Why is clearing for PMCx MSR unnecessary? Do we want to leaking counter
-> values to the host? NO. Not in cloud usage.
+Yeah, what I was hoping for was a shell script or a .c file hich was
+the reproducer, because that way I can run the test in my test infrastructure [1]
 
-No, this place is clearing the guest counter value instead of host 
-counter value. Host always has method to see guest value in a normal VM 
-if he want. I don't see its necessity, it's just a overkill and 
-introduce extra overhead to write MSRs.
+[1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
 
+I'm sure there are plenty of nice things about tuxrun, but with
+kvm-xfstests I can easily get a shell so I can run the test sccript by
+hand, perhaps with strace so I can see what is going on.  Or I attach
+gdb to the kernel via "gdb /path/to/vmlinux" and "target remote
+localhost:7499".
 
->
-> Please make changes to this patch with **extreme** caution.
->
-> According to our past experience, if there is a bug somewhere,
-> there is a catch here (normally).
->
-> Thanks.
-> -Mingwei
->>> Similarly, if perf enables a counter if PERF_GLOBAL_CTRL without first restoring
->>> the event selector, we gots problems.
->>>
->>> Same thing for the fixed counters below.  Can't this just be?
->>>
->>> 	for (i = 0; i < pmu->nr_arch_gp_counters; i++)
->>> 		rdpmcl(i, pmu->gp_counters[i].counter);
->>>
->>> 	for (i = 0; i < pmu->nr_arch_fixed_counters; i++)
->>> 		rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i,
->>> 		       pmu->fixed_counters[i].counter);
->>>
->>>> +	}
->>>> +
->>>> +	rdmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
->>>> +	/*
->>>> +	 * Clear hardware FIXED_CTR_CTRL MSR to avoid information leakage and
->>>> +	 * also avoid these guest fixed counters get accidentially enabled
->>>> +	 * during host running when host enable global ctrl.
->>>> +	 */
->>>> +	if (pmu->fixed_ctr_ctrl)
->>>> +		wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, 0);
->>>> +	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
->>>> +		pmc = &pmu->fixed_counters[i];
->>>> +		rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i, pmc->counter);
->>>> +		if (pmc->counter)
->>>> +			wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
->>>> +	}
->>>>    }
->>>>    static void intel_restore_pmu_context(struct kvm_vcpu *vcpu)
->>>>    {
->>>> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
->>>> +	struct kvm_pmc *pmc;
->>>> +	u64 global_status;
->>>> +	int i;
->>>> +
->>>> +	if (pmu->version != 2) {
->>>> +		pr_warn("only PerfMon v2 is supported for passthrough PMU");
->>>> +		return;
->>>> +	}
->>>> +
->>>> +	/* Clear host global_ctrl and global_status MSR if non-zero. */
->>>> +	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
->>> Why?  PERF_GLOBAL_CTRL will be auto-loaded at VM-Enter, why do it now?
->> As previous comments say, host perf always enable all counters in
->> PERF_GLOBAL_CTRL by default. The reason to clear PERF_GLOBAL_CTRL here is to
->> ensure all counters in disabled state and the later counter manipulation
->> (writing MSR) won't cause any race condition or unexpected behavior on HW.
->>
->>
->>>> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, global_status);
->>>> +	if (global_status)
->>>> +		wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, global_status);
->>> This seems especially silly, isn't the full MSR being written below?  Or am I
->>> misunderstanding how these things work?
->> I think Jim's comment has already explain why we need to do this.
->>
->>>> +	wrmsrl(MSR_CORE_PERF_GLOBAL_STATUS_SET, pmu->global_status);
->>>> +
->>>> +	for (i = 0; i < pmu->nr_arch_gp_counters; i++) {
->>>> +		pmc = &pmu->gp_counters[i];
->>>> +		wrmsrl(MSR_IA32_PMC0 + i, pmc->counter);
->>>> +		wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, pmc->eventsel);
->>>> +	}
->>>> +
->>>> +	wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
->>>> +	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
->>>> +		pmc = &pmu->fixed_counters[i];
->>>> +		wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, pmc->counter);
->>>> +	}
->>>>    }
->>>>    struct kvm_pmu_ops intel_pmu_ops __initdata = {
->>>> -- 
->>>> 2.34.1
->>>>
+I'm guessing that "ltp-controllers" means that the test might be from
+the Linux Test Project?  If so, that's great because I've added ltp
+support to my test infrastructure (which also supports blktests,
+phoronix test suite, and can be run on gce and on android devices in
+addition to qemu, and on the arm64, i386, and x86_64 architectures).
+
+> Build with "make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-", and make
+> sure to have the riscv64 cross-compilation support (yes, same toolchain
+> for rv32!).
+> 
+> It's when the rootfs is mounted, and the kernel is looking an init.
+
+Hmm, so this happening as soon as the VM starts, before actually
+starting to run any tests?  Is it possible for you to send me the
+rootfs as a downloading image, as opposed to my trying to paw through
+the docker image?
+
+> I'll keep debugging -- it was more if anyone had seen it before. I'll
+> try to reproduce on some other 32b platform as well.
+
+Well, it's not happening on my rootfs on i386 using my test infrastructure:
+
+% cd /usr/projects/linux/ext4
+% git checkout v6.8
+% install-kconfig --arch i386
+% kbuild --arch i386
+% kvm-xfstests shell
+    ...
+root@kvm-xfstests:~# cd ltp
+root@kvm-xfstests:~# ./runltp
+
+(I don't have ltp support fully automated the way I can run blktests
+using "kvm-xfstests --blktests" or run xfstests via "gce-xfstests -c
+ext4/all -g auto".  The main missing is teaching ltp to create an
+junit xml results file so that the test results can be summarized and
+so the test results can be more easily summarized and compared against
+past runs on different kernel versions.)
+
+Anyway, if you can send me your rootfs, I can try to take a look at it.
+
+       	       	       	    	      - Ted
 
