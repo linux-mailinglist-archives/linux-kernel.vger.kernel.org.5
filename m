@@ -1,174 +1,95 @@
-Return-Path: <linux-kernel+bounces-143627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 080278A3B98
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:11:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F3418A3B9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:12:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABD04284030
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:11:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF067B2176F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F44120B20;
-	Sat, 13 Apr 2024 08:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BDB20B20;
+	Sat, 13 Apr 2024 08:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YfU9wOqo"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="Bu6UDgW/"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1687944F
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0ED944F;
+	Sat, 13 Apr 2024 08:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712995855; cv=none; b=fUfBsudaIt3DQ2VNFuxUoUp8r30IRENiCj7cii+X+DYYd+oYlP1j5UHGL6r6YKT2KeYVmjczsz2WxpinB1bmUbrX71dZZPbUjOu8ZT8/5cUVsFmHwj2+ZFKt4wWjcioYFBbh+tS/AYWTQMwzdi5G6vlv8FwVgv83yLqWRN1zjp4=
+	t=1712995955; cv=none; b=FTPNQRkTmDqk08fwJqgupu8+YTBBum/kae/t3RIZWHGgURAjjf20dxXqXarVtOYhPHyvfCEIkoVx9LdT04bUzgUdowgm18vVFs+CFlWqDo9xuyp6gKj0fB3yEpPuT+4UN3IVFumPHaz5c3FCaY/n2WKKz7t51ewEeG4cR6pT6do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712995855; c=relaxed/simple;
-	bh=Hzx2Ez5MMmDRwCCt7ueWKPGZ2NGimuMLqXHARjJVxKg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fS+bDo/j0J4OlgSmOp/mRL00J1oyi3fNDbfduqPEwxo7RrvTHFalLQl731/qPaNQPkm3N4MsL2MJnxeTjFIGxMrjtiVIeYWWh6yaVfA8bJUyFAAgetSaHJ2WJif87RDNIwoekJbjRSvwJVnox2T75gxkQ5rTYJVzz2nLgCDfKMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YfU9wOqo; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-343f62d8124so1246590f8f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 01:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712995852; x=1713600652; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=cslKi75/x2PpuWKVEmXOT7J5pruaCjcrME468msEacc=;
-        b=YfU9wOqoc4Ru1YvwS0h8HV4ILtrT11bQ8osz7UVK3N808PmVlDMTzaiIzpwLFTHXNx
-         CVxf9HS/HuJOSYTPC12BndcxTOpkvai1JuYH5V+7EUg1gfjKi9vCdht3V6SDrhasKpHw
-         po2+iicOxfPYBJL7e+l8eEnIxUClEGTq0bZTkFV3HL3ehuS9zu9M+iKDp4t1jZVs5pB5
-         LeGF6O9vcgGYv+FStGndqCtwDNlauWoQUanxTaJ+5vZE9TWCID5P4XR1tYkGY870AmSv
-         mN8vtYWTYWQyDGZZwkrogkEPpbYDcA/tHIcGcnCRpFtEzkCNYaFyw39JmiAHzLY6FBvS
-         gxaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712995852; x=1713600652;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cslKi75/x2PpuWKVEmXOT7J5pruaCjcrME468msEacc=;
-        b=Fcf8MOqjw2d1Bn3bKs9CTk7r6yzYxtxgYyxb3hmGFJQOmFGKHnDcozoQpKr0XP7Bfd
-         Axais+A31DZLIPiUeUDQMgQiQCqa2KMOdsi9DO1y04pf62bbT+W/YECt2Jo+/gLtrAcb
-         5wsMhFVO/GV5U9gqTHYqoPMIZA10rmIdyYA8ENpWF9cz7JtTbVezxHVkB7Hb7oatfDWw
-         ajde7ZQSt3wBKO5S3Iwtbyw5RqaJLuzCMizTgvL3LTyJQVTgEMmLClwyRLo65C3ryxmb
-         gqFQDEHAwBccE3AQs7scZKe5C3toMRAphEeZmUpIeoT/oShDz3oHMlO5gdpJKlmIkNQI
-         tlAQ==
-X-Gm-Message-State: AOJu0YzkZ1Tm1nRwgG0o6qZhj281m/cTMa6x8qQWI+tZPMgmORrlDaA6
-	zEco9N/2pl7IJdYrRalBvhDonKZU4MKTGv0uCE9hhsCkmmBvA+vuD0nYugBRU94=
-X-Google-Smtp-Source: AGHT+IHz8P+i8m8IWUnSmsr3BzstT/EuoLjm4dDYnc/s56k6Ams5/WR9/s8FkLz8QeWYTCaL0wmwGw==
-X-Received: by 2002:a05:600c:3aca:b0:418:f6b:ecec with SMTP id d10-20020a05600c3aca00b004180f6bececmr1737383wms.23.1712995852265;
-        Sat, 13 Apr 2024 01:10:52 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id p10-20020a05600c468a00b00416ba2db6b4sm8054886wmo.18.2024.04.13.01.10.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Apr 2024 01:10:51 -0700 (PDT)
-Message-ID: <8c13a349-a721-44d3-9e23-2e01f4c2ca4d@linaro.org>
-Date: Sat, 13 Apr 2024 10:10:49 +0200
+	s=arc-20240116; t=1712995955; c=relaxed/simple;
+	bh=3EHZjVd+aLZ3jM9IhMRLRR+KLD0vUVJPZD02Pv8QCTo=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=kzm7X766PAnaRvPNgBLPH++RX9D2GHIOPOzbMtzTqp/2hcSDZBsb7aX9x1SXJql6JR6DLYAFcO7KhBg/7mrzPomp6QhVwlu15Tlnt81dLI5epTYHQJdhBtROCtuF1IMIHk+1wgupAchDc/WdBEEvCk/p4U4Lel6hXRSF7P8xH28=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=Bu6UDgW/; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
- binding
-To: "M. Haener" <michael.haener@siemens.com>, linux-integrity@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
- Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Lukas Wunner <lukas@wunner.de>,
- Alexander Sverdlin <alexander.sverdlin@siemens.com>
-References: <20240413071621.12509-1-michael.haener@siemens.com>
- <20240413071621.12509-3-michael.haener@siemens.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240413071621.12509-3-michael.haener@siemens.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1712995951;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ahlUb9+Un53eTerF9Lifl5XA3JlHB2YHwocz+Ot5irk=;
+	b=Bu6UDgW/c68Krg6kKB8aSCIEMHl5gzJ3nYG44WRalu+s/vgsKw+FaOerxX9yYS5rif1TyL
+	xREyQzbWxJIlkKALTCDHY9TJ7xwWrNp6cu4tVrZI9fqPdSXTaMIu5HuZ6W4Y5HbtdbRXdA
+	q86i6NI3YLzEJ4x74NClyUK3FDXO/skz/n1nBLkndfh7T0UVeryUlavs7mLeGQpOBq3tBE
+	91LRvUYqI3oQy2Od++Psrbym/vlHvlIirJqtuhJqNE+CtERrwU7REzF59SMvUbE6qUWFFW
+	A9hcam1wyedhnJ+bqM0UM0+35xSi+tSHn6fYFsaDcMMRk+vDyzN35Peg0PrLlw==
+Date: Sat, 13 Apr 2024 10:12:31 +0200
+From: Dragan Simic <dsimic@manjaro.org>
+To: =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
+Cc: linux-i2c@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/18] i2c: rk3x: remove printout on handled timeouts
+In-Reply-To: <8358604.T7Z3S40VBb@diego>
+References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
+ <hgdhrf2jiovfxcppdtsq32sfbk4xuq7ewiwq4awwztj4mp3yez@kj6ixihkcxhe>
+ <af8ac48f10a1636ab2486aef91e01c3f@manjaro.org> <8358604.T7Z3S40VBb@diego>
+Message-ID: <cfb8d27455b213a87af4b20f96225d9e@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On 13/04/2024 09:15, M. Haener wrote:
-> From: Michael Haener <michael.haener@siemens.com>
+Hello Heiko,
+
+On 2024-04-13 09:58, Heiko Stübner wrote:
+> Am Samstag, 13. April 2024, 08:44:41 CEST schrieb Dragan Simic:
+>> On 2024-04-13 08:38, Wolfram Sang wrote:
+>> >> Maybe it would be good to turn it into a debug message, instead of
+>> >> simply removing it?  Maybe not all client drivers handle it correctly,
+>> >> in which case having an easy way for debugging would be beneficial.
+>> >
+>> > Hmm, but it still returns -ETIMEDOUT to distinguish cases?
+>> 
+>> Sure, but I think that having such an additional debug facility
+>> can only help and save the people from adding temporary printk()s
+>> while debugging.
 > 
-
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-
-A nit, subject: drop second/last, redundant "binding". The "dt-bindings"
-prefix is already stating that these are bindings.
-See also:
-https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
-
-
->  Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> Also we're talking about two lines of code, I wouldn't call that bloat 
+> ;-)
+> I was thinking about dev_dbg vs. removal too, but hadn't a clear
+> favorite.
 > 
-> diff --git a/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml
-> index 3ab4434b7352..af7720dc4a12 100644
-> --- a/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml
-> +++ b/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml
-> @@ -32,6 +32,7 @@ properties:
->            - enum:
->                - infineon,slb9673
->                - nuvoton,npct75x
-> +              - st,st33ktpm2xi2c
+> So essentially Dragan is tipping the scale and I guess dev_dbg might be
+> the nicer way to go.
 
-I got only one patch, but if these are compatible, why do you need
-second patch? Plus binding come before users.
-
-Please explain what are you doing in other patch.
-
-Best regards,
-Krzysztof
-
+Yes, the code for printing the message is already there and it's only
+a couple of lines, so it might be a good idea to recycle it. :)
 
