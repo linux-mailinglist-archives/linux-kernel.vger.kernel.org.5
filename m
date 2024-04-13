@@ -1,135 +1,153 @@
-Return-Path: <linux-kernel+bounces-143732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D552D8A3CC2
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:03:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33DFB8A3CC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:05:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118471C20CBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:03:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF33F282266
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFBBF44C7E;
-	Sat, 13 Apr 2024 13:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBC73EA76;
+	Sat, 13 Apr 2024 13:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCQPqIA0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E9SUDrHg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 383B43F8C7;
-	Sat, 13 Apr 2024 13:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60D31C2A5
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 13:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713013362; cv=none; b=lyFsH6tSa6xEyviOc3Kf5bKzM7q8gVGLbzexWuaOX5VljObs1ff72N78VwvDbKf5Mxh0iWQFwkL0y2uQ4+LrsSqDPD+e9mZWAYdxbXD1+SvGbHjbwKiTJenfY3+2jq58VqEiAPZ8/xiv/EaXCiMJC6arNzX8JIn8sSeGd88sWO0=
+	t=1713013542; cv=none; b=fFUH0BOVZFD6fgs2mocmzWUBl08xmnngUpIpKAW8YT8MxoyQEg8ZY3TwNqS84ylw1f9XVvikw6iI+Rf+e6Ntqf0N1+pq0UbAQ1b8xHJjWn8SCzL1QuXSrE7gZQv2GUx1HiMjyjVKG29CiQeWMPWNFnzweXsJcTfJnRMDlS8Kx3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713013362; c=relaxed/simple;
-	bh=1hfFJpbVy+jRqc4NBcjfKebyqWZeLEI6ADFhHCGKzT4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FsTt7uu8RMFB0nOjFFW+nvJwpMzzI7HfhimcCIzN6C5kTQCSq8UMe7OXDm173ZuE0pFeUv4R4TbLPRulATcpZPIiGMfK/ocdkamfz3KxH+4oNYDaavbs1HGKS/DEw2YKAf3c4G2sBoCC9pf4JA2LdyxCa1LTB4Jxq2UBUMwP1Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CCQPqIA0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A3EB9C2BBFC;
-	Sat, 13 Apr 2024 13:02:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713013361;
-	bh=1hfFJpbVy+jRqc4NBcjfKebyqWZeLEI6ADFhHCGKzT4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=CCQPqIA06KHZZ/+XG8gQbIoK5NvuyjL91mRzOaJYMlENGMi4mzkudX8VdVSe/EAep
-	 Q5aUgzhl3cl1L3gowy5Hw3YE35ElF+LyYQ+r3Zld2CofPeD4Lr5TvL1b5LARxXcQnD
-	 HmAKjbHSYTFOzQxax7D2mniLZoS9fW7vPWoCIY7bFbXcVLol3W1uHc5Uu9I3+p+tHQ
-	 isds+FcGceR080wyqyyBb4UhGgpU3N008ZJ1pBcWAFUcUt+T9SOApBMJhLR+2gsHyO
-	 bq1UZHae8A4WP/sY9MKbN8yqda2ZHOQtatWVH4IIjrX0Yc689WKyqPBc+NmWtlrm5K
-	 Z2Q9+ZRE7BiFw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B0BBC04FFF;
-	Sat, 13 Apr 2024 13:02:41 +0000 (UTC)
-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Sat, 13 Apr 2024 16:01:40 +0300
-Subject: [PATCH net 2/2] net: dsa: mt7530: fix port mirroring for MT7988
- SoC switch
+	s=arc-20240116; t=1713013542; c=relaxed/simple;
+	bh=9mQps6gBriAa691971K8dp+F7qu3ElBTZlsuuOPGNuY=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=YKzibZIeqQIeXy1vIMIuFKHagigU299aRVFdK17sp3r4/YLl4+c8mgfKeqEuV8kcRE+xhtq7jI+F7xXCnRoUdV/4cBocOyqd4lt/gTt6yhIBqYZwXH15M8Yr/kF/weqIQfY+aqX3Vlxtux+0BihNJ12tkwFyEzKRpxjZxkvHT9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E9SUDrHg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713013538;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LjC/r8afP2Rq17fs73k7VkcEwW9IeRku59pv+b0GDdk=;
+	b=E9SUDrHgjujbIK6V4uLxulC/qGN2i7ZI2x+VISFPUaqzzgaQX0jWr1ZZUbBbT2ygsytljd
+	J6Ol9WW5RA8T8FQLlZbjDMUZU0eqthQ8Y1AxXh/Y5vVs6pE59ojvfeezH0QygVjKsnCvQW
+	oWGRn3e3SbPxBul9uRz9bimVdqeZtmQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-556-_BoiXWH_O5STI0cNsjwTKA-1; Sat, 13 Apr 2024 09:05:33 -0400
+X-MC-Unique: _BoiXWH_O5STI0cNsjwTKA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416a844695dso9429775e9.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 06:05:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713013532; x=1713618332;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LjC/r8afP2Rq17fs73k7VkcEwW9IeRku59pv+b0GDdk=;
+        b=NVwIjssUtJyyj3XaiN0wR20KczwjlVwHJQLXI+hNPr9n4CshsqC3mEoXk0XrJzVNEo
+         cARTK31idJRu3tIbtOtvAY0HaP9pEzXsFGqvrg3gEkqFbbBnDZoiN2HArsbQm8GEgGLT
+         NwIWUOSdn8pY0Nao4dUq6s9tAUoE1BcHt2ky2nM4T9YAanZsSuUTPld9G74ZoN/Fvx8m
+         llFafifzMxwH19V3edj8czZ7SluKsvAioeW7t2ebpuETEvbYs09qs44ViYb0A7uX/hzH
+         xYI+jaAO5jYpDcJwFW+hLESgUunU+HSCRv4ZTFymKj+yvxNwWfLpWIC7IgI/igkrB7Up
+         e56A==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ/GP/raT9cvd+OkkkyxLM+a9THCyf9vRNN2nAkiR2GSVuICrWXMw55BWXUj1Vi7Vbof6ZaFa/vVMA+EOHyebNA2wOnhNVvq1wE8dl
+X-Gm-Message-State: AOJu0YyjExC6Y3CLaRXAVV/RjGXAcEOnRywoDL4RbbSoL9pbm049Xs2p
+	XAu7eXncN8/bWFZpeKdwvkCWLJ6Zp4QYCbf6FuC+cCutwfPh31OaabW1Hf2rhJzd5g2//Djg+ez
+	AevQ2PakuB3vg3zvjdQarnUtaTM4xN2Os2nGOCn0Ve/qXwyGytG/viQgMIVJEYg==
+X-Received: by 2002:a05:600c:5818:b0:414:60fe:8f2b with SMTP id jz24-20020a05600c581800b0041460fe8f2bmr4636646wmb.18.1713013532597;
+        Sat, 13 Apr 2024 06:05:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHMW4dxiTvS7n2eWbssZJ0Xn/PGf10S4HVEPbaYyCkOe5omKF1qw+lfUNoMszIeJDG2JRMtxQ==
+X-Received: by 2002:a05:600c:5818:b0:414:60fe:8f2b with SMTP id jz24-20020a05600c581800b0041460fe8f2bmr4636624wmb.18.1713013532067;
+        Sat, 13 Apr 2024 06:05:32 -0700 (PDT)
+Received: from rh (p200300c93f06ef00707ff2f902cfda41.dip0.t-ipconnect.de. [2003:c9:3f06:ef00:707f:f2f9:2cf:da41])
+        by smtp.gmail.com with ESMTPSA id z17-20020a05600c0a1100b00416b8da335esm8914249wmp.48.2024.04.13.06.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Apr 2024 06:05:31 -0700 (PDT)
+Date: Sat, 13 Apr 2024 15:05:30 +0200 (CEST)
+From: Sebastian Ott <sebott@redhat.com>
+To: Marc Zyngier <maz@kernel.org>
+cc: linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+    linux-kernel@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>, 
+    James Morse <james.morse@arm.com>, 
+    Suzuki K Poulose <suzuki.poulose@arm.com>, 
+    Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 2/4] KVM: arm64: maintain per VM value for CTR_EL0
+In-Reply-To: <86frvpshno.wl-maz@kernel.org>
+Message-ID: <7e9c8367-6e9e-e36b-934e-170c90522134@redhat.com>
+References: <20240405120108.11844-1-sebott@redhat.com> <20240405120108.11844-3-sebott@redhat.com> <86frvpshno.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240413-b4-for-net-mt7530-fix-mirroring-to-local-port-and-mt7988-v1-2-476deff8cc06@arinc9.com>
-References: <20240413-b4-for-net-mt7530-fix-mirroring-to-local-port-and-mt7988-v1-0-476deff8cc06@arinc9.com>
-In-Reply-To: <20240413-b4-for-net-mt7530-fix-mirroring-to-local-port-and-mt7988-v1-0-476deff8cc06@arinc9.com>
-To: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>, 
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
- Florian Fainelli <f.fainelli@gmail.com>, 
- Vladimir Oltean <olteanv@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Holger Stadali <hs@giax.de>, 
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com, 
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713013352; l=1595;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=J5sBZDEYQ2MZhOw2PxMAD+gQryIOB3G0EIw5h33fGKY=;
- b=1ey++0YizyHi3vcP2NlwKUdn8ZXxyN89dYXm/TAlv6xdycNAjjkoeViF08Xq34iWLaB/yBlgs
- 7aq3qAX1yCuA5RcztQ1SxOoidtaDCWL3nktMXq4ac2BoLg8BcYRTy5I
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
- with auth_id=115
-X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Reply-To: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Sat, 13 Apr 2024, Marc Zyngier wrote:
+> On Fri, 05 Apr 2024 13:01:06 +0100,
+> Sebastian Ott <sebott@redhat.com> wrote:
+>>
+>> In preparation for CTR_EL0 emulation maintain a per VM for this
+>> register and use it where appropriate.
+>>
+>> Signed-off-by: Sebastian Ott <sebott@redhat.com>
+>> ---
+>>  arch/arm64/include/asm/kvm_host.h |  1 +
+>>  arch/arm64/kvm/sys_regs.c         | 22 +++++++++++++++-------
+>>  2 files changed, 16 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>> index 9e8a496fb284..481216febb46 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -318,6 +318,7 @@ struct kvm_arch {
+>>
+>>  	/* PMCR_EL0.N value for the guest */
+>>  	u8 pmcr_n;
+>> +	u64 ctr_el0;
+>>
+>>  	/* Iterator for idreg debugfs */
+>>  	u8	idreg_debugfs_iter;
+>
+> Please consider the alignment of the fields. This leaves a 7 byte hole
+> that could be avoided (yes, I'm on a mission to reduce the size of the
+> various structures, because they are absolute pigs).
 
-The "MT7988A Wi-Fi 7 Generation Router Platform: Datasheet (Open Version)
-v0.1" document shows bits 16 to 18 as the MIRROR_PORT field of the CPU
-forward control register. Currently, the MT7530 DSA subdriver configures
-bits 0 to 2 of the CPU forward control register which breaks the port
-mirroring feature for the MT7988 SoC switch.
+OK.
 
-Fix this by using the MT7531_MIRROR_PORT_GET() and MT7531_MIRROR_PORT_SET()
-macros which utilise the correct bits.
+>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+>> index 131f5b0ca2b9..4d29b1a0842d 100644
+>> --- a/arch/arm64/kvm/sys_regs.c
+>> +++ b/arch/arm64/kvm/sys_regs.c
+>> @@ -215,13 +215,21 @@ void vcpu_write_sys_reg(struct kvm_vcpu *vcpu, u64 val, int reg)
+>>  /* CSSELR values; used to index KVM_REG_ARM_DEMUX_ID_CCSIDR */
+>>  #define CSSELR_MAX 14
+>>
+>> +static u64 kvm_get_ctr_el0(struct kvm *kvm)
+>> +{
+>> +	if (kvm->arch.ctr_el0)
+>> +		return kvm->arch.ctr_el0;
+>
+> Is this relying on some bits not being 0?
+>
+>> +
+>> +	return read_sanitised_ftr_reg(SYS_CTR_EL0);
+>
+> Why isn't the shadow value always populated?
 
-Fixes: 110c18bfed41 ("net: dsa: mt7530: introduce driver for MT7988 built-in switch")
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- drivers/net/dsa/mt7530.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+The idea was for kvm->arch.ctr_el0 being non zero only if userspace
+set it up to differ from the host value. So it can be used to decide
+if we need to set up a trap for the reg access (without comparing it
+to the host value again).
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index b84e1845fa02..8090390edaf9 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -1883,14 +1883,16 @@ mt7530_port_vlan_del(struct dsa_switch *ds, int port,
- 
- static int mt753x_mirror_port_get(unsigned int id, u32 val)
- {
--	return (id == ID_MT7531) ? MT7531_MIRROR_PORT_GET(val) :
--				   MIRROR_PORT(val);
-+	return (id == ID_MT7531 || id == ID_MT7988) ?
-+		       MT7531_MIRROR_PORT_GET(val) :
-+		       MIRROR_PORT(val);
- }
- 
- static int mt753x_mirror_port_set(unsigned int id, u32 val)
- {
--	return (id == ID_MT7531) ? MT7531_MIRROR_PORT_SET(val) :
--				   MIRROR_PORT(val);
-+	return (id == ID_MT7531 || id == ID_MT7988) ?
-+		       MT7531_MIRROR_PORT_SET(val) :
-+		       MIRROR_PORT(val);
- }
- 
- static int mt753x_port_mirror_add(struct dsa_switch *ds, int port,
-
--- 
-2.40.1
-
+Thanks,
+Sebastian
 
 
