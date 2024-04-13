@@ -1,511 +1,383 @@
-Return-Path: <linux-kernel+bounces-143492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 129DD8A3A24
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:34:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 067FE8A3A26
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 03:38:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 757491F21C05
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:33:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 889D51F228BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:38:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E665A95B;
-	Sat, 13 Apr 2024 01:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA9810962;
+	Sat, 13 Apr 2024 01:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qFU0lqxi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="IIGLAvDi"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2064.outbound.protection.outlook.com [40.107.215.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C91E748D
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 01:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712972031; cv=none; b=XX3FtvaswFsNgDYBkR0hZ7dLHbutpsWseJf3OL0Fg6HwScz3ON2Bs4bOpSeohoewmwtnBcO6Fv/P/cevbbzH9/Et2TpeFPRIK2/W/59MJg6UlyM0YRhIo+IihQi9bZvGYf4Xm2F4Cm3C79yeS3I0qxeD55D0BbHkPsKz7/kQILw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712972031; c=relaxed/simple;
-	bh=uBpvCHlQaP8IqddNqpSbpuPHjfVjZsNi3kfMKYnlTEg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YGlgB/azVbnvJr+S+BWCeDkNKn2ac9H4yQy9ZRk3vPiM9CZfOmVdunrBibdefn6HijO56RJogFpNhbrdtdh1n3ywq86MwFJpC6DnhwMIi7yrohNOvU6RVd93xylofT8VqgQE8QaOLxW3RzZckSl8YTCil8yKtF2LpY66kK5dMbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qFU0lqxi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DCAEC113CC;
-	Sat, 13 Apr 2024 01:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712972031;
-	bh=uBpvCHlQaP8IqddNqpSbpuPHjfVjZsNi3kfMKYnlTEg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qFU0lqxiqpIFa6Zn/JKhlC8mG21w5NVE9rpVExsZ1B1Z9k1yBt36o926PupqQxYge
-	 XL1oBlJ9i14i7O5h2fhGDxYzy5ZD+t8mS/7Fis87Mb8ocCPxufZGyHKf1bYYmoz0zH
-	 yo9kSXCyZmmqnDCUAcOVUH0PVT5ntWG4VWrRzfufAW3F3//EUHfiu05kEO+XO2iM/k
-	 RJO7wTjhMhHxMwUfdkJBChizrNcxyV6+mfjnfDpJKJfY4JlG/5LSmDfPiB7Ldpw25j
-	 7TB1425fNsZ4g14ElyVT0up6jvSzVJtEUkIJ/HDSWoq2w/XqH1eTrEtTyMk+0KUUmO
-	 NVL3IZy4q5oIg==
-Message-ID: <2ca3cb91-1db5-4a9b-9dd0-8caad2d09f31@kernel.org>
-Date: Sat, 13 Apr 2024 09:33:47 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5483A101DB
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 01:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712972305; cv=fail; b=nnYwSH3m/zWDfPNx18x/uqkzVWW21c+vrahUPCvwEVOzyAidnF4oe/DJ3WR7aSeffTYVuJxy/XSqD0FPLN4+O6UjjAeupEGWaI85wgUG61Sh65jHsxGcxiEtlTFDUEkkecQo21X4etCeW5dCRmaRapJaZEigKCgkecgON5kBh1c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712972305; c=relaxed/simple;
+	bh=diSnx4hUw/OkiNYrbiCBGlGVcVBKeFeQAzYBjNS4AAk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=kFxuGETMcU6Yc8CG95RmvSC85lCrR+LXJxmRIbhegXxCvBMuYXNMEZ+/XdPADwmqfq9YlED3k8LZq2XcfEHCTdkqBUr613nWBZwMtz0kpsW63EeQM0IHP/88A6vIWootS83sJgs7ri+vMkEXsa2qNM1RXPE7zgm6Vo94IjMXVGk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=IIGLAvDi; arc=fail smtp.client-ip=40.107.215.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GRrI62q9EJ8AQxVGvOLE3IFxBNQZfAa4xjNV4QWkBhJMhC79gW8Y1rw5Mde4VrsFu2fg7H3zSQcAqJpDs9Vk9yWLZzOa1UgWeSpOAHOWp3saUxeIDGoTRXfmI62pJH57lCriIKX69ze0McRXLbpdvIE4KxPsJsQj0L8nfXTVUi9b2AMPXFxGjIsvzEwxu4gdXmlrsPDGB7jUK4n2+YodIMybbUkpINFFy+2bDFfmlPPb/XIMcIWSa6Jf8EIa+SH+w1lX++3LC6n6SK8tElQkTaU2W5su7N7f8c5bqyBM2r4MBFLzxEWe3+VluG6tE+gHFZlUmD6nRMXD/1nWgN4C2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=18RviH9HWCxGx3oT8pg2Blte3tv/n+nKMl3ih88tikM=;
+ b=LfhyphCjfXdBaq8lduSmZWba/pgScoCCRminqPmgCz5lTxVEO7HH5CsTFpYjnb100qiKVV1QDFuZ30+sNwPQ5XHtuC8A2eHRpydCWFi52MUEyOwJnu6IQ9P3mN9ljelkZJ5h2jT4QPGFnOPp83oA/avkX3N06oF9a6GbkOgW2x5pOfzO0YGEjZW0XVksKyOqzs00+Z1pMeTVHcZTiktHD4m4NXUZTPyM9GmJu2YSB0RCKMlHN7/JZS30EVhI0gKvonyG2Nt4xBgMPuRIoql79ZyMI95butGWeh9ZzGKVjuruZogffpzU1i3kmIttZ8lI0lBGzYUqLiriK/uddDMXdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=18RviH9HWCxGx3oT8pg2Blte3tv/n+nKMl3ih88tikM=;
+ b=IIGLAvDi2ow8umR+Iu0neBARoAXK3USmVb9eJ3AUrp4efW0LVs6WVgoDEGFLaBIoHubxeFQeSNYOGwWXBDSxWL2JHF83nnadOH+vfeDtSGolaiFWJk7oToh8h+7DuLLDCkslV0CkwzIR6/BKkq2VcIZ+J031v3VLIAagedboeXQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+Received: from TYZPR02MB5595.apcprd02.prod.outlook.com (2603:1096:400:1c5::12)
+ by TYZPR02MB5867.apcprd02.prod.outlook.com (2603:1096:400:1f8::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.54; Sat, 13 Apr
+ 2024 01:38:19 +0000
+Received: from TYZPR02MB5595.apcprd02.prod.outlook.com
+ ([fe80::60d1:4349:510c:8133]) by TYZPR02MB5595.apcprd02.prod.outlook.com
+ ([fe80::60d1:4349:510c:8133%5]) with mapi id 15.20.7409.042; Sat, 13 Apr 2024
+ 01:38:18 +0000
+Message-ID: <ecf21a58-bc2e-444c-bf89-ad3539a9d325@oppo.com>
+Date: Sat, 13 Apr 2024 09:38:15 +0800
+User-Agent: Mozilla Thunderbird
+Reply-To: lipeifeng@oppo.com
+Subject: Re: [PATCH] mm/shrinker: add SHRINKER_NO_DIRECT_RECLAIM
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: akpm@linux-foundation.org, david@fromorbit.com, roman.gushchin@linux.dev,
+ muchun.song@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Barry Song <21cnbao@gmail.com>
+References: <20240412080706.744-1-lipeifeng@oppo.com>
+ <d78ec9ea-006a-4317-b0df-99ad31994b0d@bytedance.com>
+From: =?UTF-8?B?5p2O5Z+56ZSL?= <lipeifeng@oppo.com>
+In-Reply-To: <d78ec9ea-006a-4317-b0df-99ad31994b0d@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: TYAPR01CA0199.jpnprd01.prod.outlook.com
+ (2603:1096:404:29::19) To TYZPR02MB5595.apcprd02.prod.outlook.com
+ (2603:1096:400:1c5::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] f2fs: zone: don't block IO if there is remained open
- zone
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- Daeho Jeong <daeho43@gmail.com>
-References: <20240407135848.3638669-1-chao@kernel.org>
- <Zhmje71C7FOTIfom@google.com>
-Content-Language: en-US
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <Zhmje71C7FOTIfom@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR02MB5595:EE_|TYZPR02MB5867:EE_
+X-MS-Office365-Filtering-Correlation-Id: 00d1c27a-72cf-42c6-a7e3-08dc5b5a653f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	FWYrx5EPS90jbRUFJ4w1kWx3RBXg7vX4g1KRkOho9BZ5WteD7ZRqCHUhu7nrNYSGIgEtbq6BbUFUGWwDv4mG2cko+gkIDGAc5At0Isuk906w3O7rMFwl2lLJTSU+IpAdHIY6dikh3Pz/ufOvs9qhN7r7Ar6GvZ2/xXP47zg615ciwJ/BY3NyBk6fbQ8IC4bvPA3Mxz6BoeDq/7pif9HtBywk1JJIorqvC11v34OEqPK2hfHLYQxb3E1Y0uv8XtrBoAW+UMAXm7dTYO1Kq9G9yLE55YfjZGU1oubrM4mPtAOI+IU9nXm+HDMhrdaUPZN5G+sb0rxDrirTrobCQivSG6y7n5eTrvD3R2W8fjqgewe/E7o6J1jeHsah+bjFdW3uO/R5o2dLlVrX57X6W+OiPl/GBNNl0a324GIAdoB3zi/FwkjhOXRe3ohlo3jyqdMMADOUVQ+SDrqYfb3GYCZcb4Re4ce+TKlzfTSaoUQkEtVi9JCR3kkny1K8lwzfwPEQu52VzGShq2SENCAT9LbuZqmH82JnRVOrDrgscFx97L1BJMhHkmKIdMLCTKGkLBO6VST8anQRrBSwaGS2dQp0Sxu/ew8k3EoR4PRU4iCZXwbxeFM6tD+D89CBGgdXDFWL8VHOnjz7gKXt3iDr0dmXfcw/9NQzuixgoW3G2WGiH0w=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR02MB5595.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VkU1RkRTQjFiQkJoK3ZOa1N6Y1hwMVpWc2NqNVRqS21jMWRRS3ZyampCWllt?=
+ =?utf-8?B?V3BQaklUQlBTUHZ4Mm1MbE1QSkxxL1p6Nnc4dyt0bC9LSkl1aTRlVHVRTzVH?=
+ =?utf-8?B?alJNbWNjakV5amVxcVRKaFlLMUt5YXE2YnNXNXRmby9Kd0J4UkFVYU9yRnJ4?=
+ =?utf-8?B?cXM2RjMzZld0V2VBcnZhaEl1QUUvOTk3cEN4dXpHdzdLV1hZK0xtQlhOWGRZ?=
+ =?utf-8?B?OEVRZGxnalJOaDhhcllSNzE4bmE0a3MveWRZN2ZMb29xbkdRc3VzS3NIdG1l?=
+ =?utf-8?B?d2tEdlhvYUxwcVV5dEg4T2RsazJyY1B4R1hkQkZJS3NDaEFzdlVXbzdlOTNX?=
+ =?utf-8?B?VTJyQzVRakVJdjBWc3ArUmd2QlF5eml5ZTd0SThOSjdRa3l4MThQaWJNNmd1?=
+ =?utf-8?B?SVJQYVlUZXo1RFpsS1Y1ZFE5Kzc4amRqMU1OSjcyNU9EMEhOa0xtelZPZUlG?=
+ =?utf-8?B?VkhpSmdqWmNhYkRDYVNqV2NHa0Q2NDBPRUoxTFdURGRkQmF6TUVkWCt0MUVL?=
+ =?utf-8?B?WHAyRGdpQlVuOHM1d0pIMnJHMXNhV3VXSDl5VUg0Z0tncE9Db290VDB2RFdn?=
+ =?utf-8?B?UzVPaHZsVzRNRVpwclpzTkFlWW5CTlBNTkZoaFJ3WVp2UndpMWhDMXRRTFBH?=
+ =?utf-8?B?RU9LY3BydDNkeE11d2hsNGpZclJpcGIzVUpjK3plUmdCR3hRNjVNclVlWjNV?=
+ =?utf-8?B?KzdVN3NCYnNVT3ZYSmVJQm1hbUFEM25oZHVnWk9WU3VZTXFBdTJRWE5Oak85?=
+ =?utf-8?B?d1BaT214K21Jb29ZeFgxcXZqZ1F3YjJUMFlZRGJiempOSFI0eGN2MXhPYS9F?=
+ =?utf-8?B?bytRVXBlNDlHR2FEdjMzVVBEYy96eWRQUloxZXdzbDFsbG5hSS9seHFtMGJ3?=
+ =?utf-8?B?S08wSGtXdEVFUVJ5ME42b1kxSjJjaUhyb3ZzZjdPUkNjNC9FM2hYZUlnd2hl?=
+ =?utf-8?B?Y3VBcEpOc1dBdjdyS01mUEZmdzhLaTQzY1lZK3BBU2ZSU2tuRCtlczlIWUpV?=
+ =?utf-8?B?S2xwemhub2o2N29jME51R0NxclNrRjB1a0UxMGNyQ3lKOW9jdmI3Mm1jK1ZE?=
+ =?utf-8?B?aE5JRVlzVisraDNKSFQ3OVFnVUx4NXMwMFN3aTUwYWZ0cldnMUF3Ni8rNmE1?=
+ =?utf-8?B?TVdpeEpuaFJnN0lqeERQN29UTE1sZ2luVUFmOWNNcmhibko0QzJMZkk1ZzZO?=
+ =?utf-8?B?NkpKRHVhKzdnWU1RYWJlcmVZTmJjRjR2NUc4VmZDekZKSXFRM0crSS9rWWhm?=
+ =?utf-8?B?cjI4ZzZCUnVJTHhlR3FmK0NCSEp2KzBuelBxNEl6dzQ3THFNMGNTdDgxRkts?=
+ =?utf-8?B?V3FPbGFPRGE3NXpQN0RialNvUDhKZnkrVHVjd0ZtNzVsNXhwOHdnNHAwazhu?=
+ =?utf-8?B?RVo3ZWNyUmc0YjFaYi9BK253eEpWR1NPZU9USUZ1UFBhSUlCUnljZkhRVmlY?=
+ =?utf-8?B?MUwrVHgvL1VtSGEwYWlia0RoaHhpN2Q0SWNQZHV3TUpUQUlrT3BpWHRvQXpn?=
+ =?utf-8?B?eTlLWXFjR0IybVhWbkdTU2VuK2JnMmd4Q245MURKSDQvYzB1V1A2VDFlYmlz?=
+ =?utf-8?B?d2NqY21pTlJkYVN5bndhY25SUGdKZkxLMGhxcGlqcEllQk9wYU15UmtnZTc1?=
+ =?utf-8?B?TVBCVDJsMWtudVhVQ0dYd0pzYmE4UzcrWnpYZlRyZ3BacHMxM013RWtwMlEr?=
+ =?utf-8?B?TUlSRjNxUjBXYWhUdW55ZDJWTTdxcDhkWUNDUjdvMjZzdmZhN1RidDNRQXUx?=
+ =?utf-8?B?ZHV0UnRZY205VmtCRGVJaW5kczdxZ2Ixa1RCZ0cxK1AxR29PQ2tTWHhCS1dZ?=
+ =?utf-8?B?LzJ2UVRjVVNMNVVhUVNkaEJFUVB2bUtsVDdNdm5QS1IwRW5JV3Q0WWEzZjVI?=
+ =?utf-8?B?TEFCYklva3BzbVFHMVUwWTVxR0wySnZIa1ZCNGIxYVd5Um5TOHEzVU5zalkx?=
+ =?utf-8?B?UGwrRndRU295amRRSURGYWx2cGZQZnVWbTNNdUlnTEVxN1c4ZkZ3M0daY2FY?=
+ =?utf-8?B?ZmhoRU5IemhKQ0VYeTZqUFo0RXZsZlQzMWpHRlhrT2VobWlFdXR3VmFjaFhG?=
+ =?utf-8?B?eElDaU1qZmhRNzVUaUdpK3VrM3laU3FsdklhM1VLZUwrbmFHcGdvaUxTR2tI?=
+ =?utf-8?Q?fw+oHV8/8pnWo64Tjt1YFg5me?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00d1c27a-72cf-42c6-a7e3-08dc5b5a653f
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR02MB5595.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2024 01:38:18.5154
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xyI7wV7GhCgPy1rXTKKh2dVVPpHO0Rq1CoTJRfd3WjxBFbX6+GA/MI7M+l9T3Yq+9FRqe4UMftcwkanFTQpB1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB5867
 
-On 2024/4/13 5:11, Jaegeuk Kim wrote:
-> On 04/07, Chao Yu wrote:
->> max open zone may be larger than log header number of f2fs, for
->> such case, it doesn't need to wait last IO in previous zone, let's
->> introduce available_open_zone semaphore, and reduce it once we
->> submit first write IO in a zone, and increase it after completion
->> of last IO in the zone.
+
+在 2024/4/12 16:47, Qi Zheng 写道:
+> Hi Peifeng,
+>
+> On 2024/4/12 16:07, lipeifeng@oppo.com wrote:
+>> From: Peifeng Li <lipeifeng@oppo.com>
 >>
->> Cc: Daeho Jeong <daeho43@gmail.com>
->> Signed-off-by: Chao Yu <chao@kernel.org>
+>> In the case of insufficient memory, threads will be in direct_reclaim to
+>> reclaim memory, direct_reclaim will call shrink_slab to run sequentially
+>> each shrinker callback. If there is a lock-contention in the shrinker
+>> callback,such as spinlock,mutex_lock and so on, threads may be likely to
+>> be stuck in direct_reclaim for a long time, even if the memfree has 
+>> reached
+>> the high watermarks of the zone, resulting in poor performance of 
+>> threads.
+>>
+>> Example 1: shrinker callback may wait for spinlock
+>> static unsigned long mb_cache_shrink(struct mb_cache *cache,
+>>                                       unsigned long nr_to_scan)
+>> {
+>>          struct mb_cache_entry *entry;
+>>          unsigned long shrunk = 0;
+>>
+>>          spin_lock(&cache->c_list_lock);
+>>          while (nr_to_scan-- && !list_empty(&cache->c_list)) {
+>>                  entry = list_first_entry(&cache->c_list,
+>>                                           struct mb_cache_entry, 
+>> e_list);
+>>                  if (test_bit(MBE_REFERENCED_B, &entry->e_flags) ||
+>>                      atomic_cmpxchg(&entry->e_refcnt, 1, 0) != 1) {
+>>                          clear_bit(MBE_REFERENCED_B, &entry->e_flags);
+>>                          list_move_tail(&entry->e_list, &cache->c_list);
+>>                          continue;
+>>                  }
+>>                  list_del_init(&entry->e_list);
+>>                  cache->c_entry_count--;
+>>                  spin_unlock(&cache->c_list_lock);
+>>                  __mb_cache_entry_free(cache, entry);
+>>                  shrunk++;
+>>                  cond_resched();
+>>                  spin_lock(&cache->c_list_lock);
+>>          }
+>>          spin_unlock(&cache->c_list_lock);
+>>
+>>          return shrunk;
+>> }
+>> Example 2: shrinker callback may wait for mutex lock
+>> static
+>> unsigned long kbase_mem_evictable_reclaim_scan_objects(struct 
+>> shrinker *s,
+>>         struct shrink_control *sc)
+>> {
+>>     struct kbase_context *kctx;
+>>     struct kbase_mem_phy_alloc *alloc;
+>>     struct kbase_mem_phy_alloc *tmp;
+>>     unsigned long freed = 0;
+>>
+>>     kctx = container_of(s, struct kbase_context, reclaim);
+>>
+>>     // MTK add to prevent false alarm
+>>     lockdep_off();
+>>
+>>     mutex_lock(&kctx->jit_evict_lock);
+>>
+>>     list_for_each_entry_safe(alloc, tmp, &kctx->evict_list, 
+>> evict_node) {
+>>         int err;
+>>
+>>         err = kbase_mem_shrink_gpu_mapping(kctx, alloc->reg,
+>>                 0, alloc->nents);
+>>         if (err != 0) {
+>>             freed = -1;
+>>             goto out_unlock;
+>>         }
+>>
+>>         alloc->evicted = alloc->nents;
+>>
+>>         kbase_free_phy_pages_helper(alloc, alloc->evicted);
+>>         freed += alloc->evicted;
+>>         list_del_init(&alloc->evict_node);
+>>
+>>         kbase_jit_backing_lost(alloc->reg);
+>>
+>>         if (freed > sc->nr_to_scan)
+>>             break;
+>>     }
+>> out_unlock:
+>>     mutex_unlock(&kctx->jit_evict_lock);
+>>
+>>     // MTK add to prevent false alarm
+>>     lockdep_on();
+>>
+>>     return freed;
+>> }
+>>
+>> In mobile-phone,threads are likely to be stuck in shrinker callback 
+>> during
+>> direct_reclaim, with example like the following:
+>> <...>-2806    [004] ..... 866458.339840: mm_shrink_slab_start:
+>>             dynamic_mem_shrink_scan+0x0/0xb8 ... priority 2
+>> <...>-2806    [004] ..... 866459.339933: mm_shrink_slab_end:
+>>             dynamic_mem_shrink_scan+0x0/0xb8 ...
+>>
+>> For the above reason, the patch introduces SHRINKER_NO_DIRECT_RECLAIM 
+>> that
+>> allows driver to set shrinker callback not to be called in 
+>> direct_reclaim
+>> unless sc->priority is 0.
+>
+> Hmm, this is just a workaround, no shrinker will want to set this flag.
+> If a shrinker has a lock contention problem, then it needs to be fixed.
+>
+> Perhaps executing do_shrink_slab() asynchronously may be a more
+> fundamental solution, but this may result in untimely reclamation.
+>
+In fact, we have implemented do_shrink_slab() asynchronous, but the code 
+changes are
+
+relatively large, which may have a large impact on different products.
+
+This submit also wants to consult the community experts on which 
+solution you prefer.
+
+In real projects, most of the shrinker callback has synchronization 
+mechanism, and many
+
+drivers want to remove synchronization operation will be difficult, such 
+as the mali driver
+
+of ARM. If the memory-reclaim-path of the kernel will be affected by the 
+driver, the
+
+robustness of the kernel will be greatly reduced.
+
+Back to this patch, with this flag, at least in the case that the driver 
+cannot remove the
+
+synchronization mechanism, we can recommend the corresponding driver to 
+set this flag
+
+to improve the performance of the kernel memory reclaim.
+
+>>
+>> The reason why sc->priority=0 allows shrinker callback to be called in
+>> direct_reclaim is for two reasons:
+>> 1.Always call all shrinker callback in drop_slab that priority is 0.
+>> 2.sc->priority is 0 during direct_reclaim, allow direct_reclaim to call
+>> shrinker callback, to reclaim memory timely.
+>>
+>> Note:
+>> 1.Register_shrinker_prepared() default not to set
+>
+> This API is no longer included in the latest upstream code. Please
+> submit a patch based on the latest code.
+>
+> Thanks,
+> Qi
+Allright, I will submit the V2 patch with the new commit message.
+>
+>> SHRINKER_NO_DIRECT_RECLAIM, to maintain the current behavior of the 
+>> code.
+>> 2.Logic of kswapd and drop_slab to call shrinker callback isn't 
+>> affected.
+>>
+>> Signed-off-by: Peifeng Li <lipeifeng@oppo.com>
 >> ---
->> v3:
->> - avoid race condition in between __submit_merged_bio()
->> and __allocate_new_segment().
->>   fs/f2fs/data.c    | 105 ++++++++++++++++++++++++++++++----------------
->>   fs/f2fs/f2fs.h    |  34 ++++++++++++---
->>   fs/f2fs/iostat.c  |   7 ++++
->>   fs/f2fs/iostat.h  |   2 +
->>   fs/f2fs/segment.c |  43 ++++++++++++++++---
->>   fs/f2fs/segment.h |  12 +++++-
->>   fs/f2fs/super.c   |   2 +
->>   7 files changed, 156 insertions(+), 49 deletions(-)
+>>   include/linux/shrinker.h |  5 +++++
+>>   mm/shrinker.c            | 36 ++++++++++++++++++++++++++++++++++--
+>>   2 files changed, 39 insertions(+), 2 deletions(-)
 >>
->> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->> index 0d88649c60a5..18a4ac0a06bc 100644
->> --- a/fs/f2fs/data.c
->> +++ b/fs/f2fs/data.c
->> @@ -373,11 +373,10 @@ static void f2fs_write_end_io(struct bio *bio)
->>   #ifdef CONFIG_BLK_DEV_ZONED
->>   static void f2fs_zone_write_end_io(struct bio *bio)
->>   {
->> -	struct f2fs_bio_info *io = (struct f2fs_bio_info *)bio->bi_private;
->> +	struct f2fs_sb_info *sbi = iostat_get_bio_private(bio);
->>   
->> -	bio->bi_private = io->bi_private;
->> -	complete(&io->zone_wait);
->>   	f2fs_write_end_io(bio);
->> +	up(&sbi->available_open_zones);
->>   }
->>   #endif
->>   
->> @@ -531,6 +530,24 @@ static void __submit_merged_bio(struct f2fs_bio_info *io)
->>   	if (!io->bio)
->>   		return;
->>   
->> +#ifdef CONFIG_BLK_DEV_ZONED
->> +	if (io->open_zone) {
->> +		/*
->> +		 * if there is no open zone, it will wait for last IO in
->> +		 * previous zone before submitting new IO.
->> +		 */
->> +		down(&fio->sbi->available_open_zones);
->> +		io->open_zone = false;
->> +		io->zone_openned = true;
->> +	}
->> +
->> +	if (io->close_zone) {
->> +		io->bio->bi_end_io = f2fs_zone_write_end_io;
->> +		io->zone_openned = false;
->> +		io->close_zone = false;
->> +	}
->> +#endif
->> +
->>   	if (is_read_io(fio->op)) {
->>   		trace_f2fs_prepare_read_bio(io->sbi->sb, fio->type, io->bio);
->>   		f2fs_submit_read_bio(io->sbi, io->bio, fio->type);
->> @@ -601,9 +618,9 @@ int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi)
->>   			INIT_LIST_HEAD(&sbi->write_io[i][j].bio_list);
->>   			init_f2fs_rwsem(&sbi->write_io[i][j].bio_list_lock);
->>   #ifdef CONFIG_BLK_DEV_ZONED
->> -			init_completion(&sbi->write_io[i][j].zone_wait);
->> -			sbi->write_io[i][j].zone_pending_bio = NULL;
->> -			sbi->write_io[i][j].bi_private = NULL;
->> +			sbi->write_io[i][j].open_zone = false;
->> +			sbi->write_io[i][j].zone_openned = false;
->> +			sbi->write_io[i][j].close_zone = false;
->>   #endif
->>   		}
->>   	}
->> @@ -634,6 +651,31 @@ static void __f2fs_submit_merged_write(struct f2fs_sb_info *sbi,
->>   	f2fs_up_write(&io->io_rwsem);
->>   }
->>   
->> +void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type)
->> +{
->> +#ifdef CONFIG_BLK_DEV_ZONED
->> +	struct f2fs_bio_info *io;
->> +
->> +	if (!f2fs_sb_has_blkzoned(sbi))
->> +		return;
->> +
->> +	io = sbi->write_io[PAGE_TYPE(type)] + type_to_temp(type);
->> +
->> +	f2fs_down_write(&io->io_rwsem);
->> +	if (io->zone_openned) {
->> +		if (io->bio) {
->> +			io->close_zone = true;
->> +			__submit_merged_bio(io);
->> +		} else if (io->zone_openned) {
->> +			up(&sbi->available_open_zones);
->> +			io->zone_openned = false;
->> +		}
->> +	}
->> +	f2fs_up_write(&io->io_rwsem);
->> +#endif
->> +
->> +}
->> +
->>   static void __submit_merged_write_cond(struct f2fs_sb_info *sbi,
->>   				struct inode *inode, struct page *page,
->>   				nid_t ino, enum page_type type, bool force)
->> @@ -918,22 +960,16 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
->>   }
->>   
->>   #ifdef CONFIG_BLK_DEV_ZONED
->> -static bool is_end_zone_blkaddr(struct f2fs_sb_info *sbi, block_t blkaddr)
->> +static bool is_blkaddr_zone_boundary(struct f2fs_sb_info *sbi,
->> +					block_t blkaddr, bool start)
->>   {
->> -	int devi = 0;
->> +	if (!f2fs_blkaddr_in_seqzone(sbi, blkaddr))
->> +		return false;
->> +
->> +	if (start)
->> +		return (blkaddr % sbi->blocks_per_blkz) == 0;
->> +	return (blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
->>   
->> -	if (f2fs_is_multi_device(sbi)) {
->> -		devi = f2fs_target_device_index(sbi, blkaddr);
->> -		if (blkaddr < FDEV(devi).start_blk ||
->> -		    blkaddr > FDEV(devi).end_blk) {
->> -			f2fs_err(sbi, "Invalid block %x", blkaddr);
->> -			return false;
->> -		}
->> -		blkaddr -= FDEV(devi).start_blk;
->> -	}
->> -	return bdev_is_zoned(FDEV(devi).bdev) &&
->> -		f2fs_blkz_is_seq(sbi, devi, blkaddr) &&
->> -		(blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
->>   }
->>   #endif
->>   
->> @@ -944,20 +980,14 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>   	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
->>   	struct page *bio_page;
->>   	enum count_type type;
->> +#ifdef CONFIG_BLK_DEV_ZONED
->> +	bool blkzoned = f2fs_sb_has_blkzoned(sbi) && btype < META;
->> +#endif
->>   
->>   	f2fs_bug_on(sbi, is_read_io(fio->op));
->>   
->>   	f2fs_down_write(&io->io_rwsem);
->>   next:
->> -#ifdef CONFIG_BLK_DEV_ZONED
->> -	if (f2fs_sb_has_blkzoned(sbi) && btype < META && io->zone_pending_bio) {
->> -		wait_for_completion_io(&io->zone_wait);
->> -		bio_put(io->zone_pending_bio);
->> -		io->zone_pending_bio = NULL;
->> -		io->bi_private = NULL;
->> -	}
->> -#endif
+>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>> index 1a00be90d93a..2d5a8b3a720b 100644
+>> --- a/include/linux/shrinker.h
+>> +++ b/include/linux/shrinker.h
+>> @@ -130,6 +130,11 @@ struct shrinker {
+>>    * non-MEMCG_AWARE shrinker should not have this flag set.
+>>    */
+>>   #define SHRINKER_NONSLAB    BIT(4)
+>> +/*
+>> + * Can shrinker callback be called in direct_relcaim unless
+>> + * sc->priority is 0?
+>> + */
+>> +#define SHRINKER_NO_DIRECT_RECLAIM    BIT(5)
+>>     __printf(2, 3)
+>>   struct shrinker *shrinker_alloc(unsigned int flags, const char 
+>> *fmt, ...);
+>> diff --git a/mm/shrinker.c b/mm/shrinker.c
+>> index dc5d2a6fcfc4..3ac50da72494 100644
+>> --- a/mm/shrinker.c
+>> +++ b/mm/shrinker.c
+>> @@ -544,7 +544,23 @@ static unsigned long shrink_slab_memcg(gfp_t 
+>> gfp_mask, int nid,
+>>               if (!memcg_kmem_online() &&
+>>                   !(shrinker->flags & SHRINKER_NONSLAB))
+>>                   continue;
 >> -
->>   	if (fio->in_list) {
->>   		spin_lock(&io->io_lock);
->>   		if (list_empty(&io->io_list)) {
->> @@ -985,6 +1015,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>   	type = WB_DATA_TYPE(bio_page, fio->compressed_page);
->>   	inc_page_count(sbi, type);
->>   
->> +#ifdef CONFIG_BLK_DEV_ZONED
->> +	if (blkzoned && is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, true))
->> +		io->open_zone = true;
->> +#endif
->> +
->>   	if (io->bio &&
->>   	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
->>   			      fio->new_blkaddr) ||
->> @@ -1010,15 +1045,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
->>   	io->last_block_in_bio = fio->new_blkaddr;
->>   
->>   	trace_f2fs_submit_page_write(fio->page, fio);
->> +
->>   #ifdef CONFIG_BLK_DEV_ZONED
->> -	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
->> -			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
->> -		bio_get(io->bio);
->> -		reinit_completion(&io->zone_wait);
->> -		io->bi_private = io->bio->bi_private;
->> -		io->bio->bi_private = io;
->> -		io->bio->bi_end_io = f2fs_zone_write_end_io;
->> -		io->zone_pending_bio = io->bio;
->> +	if (blkzoned &&
->> +		is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, false)) {
->> +		io->close_zone = true;
->>   		__submit_merged_bio(io);
->>   	}
->>   #endif
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index 694f8a52cb84..8a26530cf4fb 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -1234,16 +1234,16 @@ struct f2fs_bio_info {
->>   	struct bio *bio;		/* bios to merge */
->>   	sector_t last_block_in_bio;	/* last block number */
->>   	struct f2fs_io_info fio;	/* store buffered io info. */
->> -#ifdef CONFIG_BLK_DEV_ZONED
->> -	struct completion zone_wait;	/* condition value for the previous open zone to close */
->> -	struct bio *zone_pending_bio;	/* pending bio for the previous zone */
->> -	void *bi_private;		/* previous bi_private for pending bio */
->> -#endif
->>   	struct f2fs_rwsem io_rwsem;	/* blocking op for bio */
->>   	spinlock_t io_lock;		/* serialize DATA/NODE IOs */
->>   	struct list_head io_list;	/* track fios */
->>   	struct list_head bio_list;	/* bio entry list head */
->>   	struct f2fs_rwsem bio_list_lock;	/* lock to protect bio entry list */
->> +#ifdef CONFIG_BLK_DEV_ZONED
->> +	bool open_zone;			/* open a zone */
->> +	bool zone_openned;		/* zone has been openned */
->> +	bool close_zone;		/* close a zone */
->> +#endif
->>   };
->>   
->>   #define FDEV(i)				(sbi->devs[i])
->> @@ -1560,6 +1560,7 @@ struct f2fs_sb_info {
->>   #ifdef CONFIG_BLK_DEV_ZONED
->>   	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
->>   	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
->> +	struct semaphore available_open_zones;	/* available open zones */
->>   #endif
->>   
->>   	/* for node-related operations */
->> @@ -3822,6 +3823,7 @@ void f2fs_destroy_bio_entry_cache(void);
->>   void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
->>   			  enum page_type type);
->>   int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi);
->> +void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type);
->>   void f2fs_submit_merged_write(struct f2fs_sb_info *sbi, enum page_type type);
->>   void f2fs_submit_merged_write_cond(struct f2fs_sb_info *sbi,
->>   				struct inode *inode, struct page *page,
->> @@ -4469,6 +4471,28 @@ static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
->>   
->>   	return test_bit(zno, FDEV(devi).blkz_seq);
->>   }
->> +
->> +static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
->> +							block_t blkaddr)
->> +{
->> +	int devi = 0;
->> +
->> +	if (f2fs_is_multi_device(sbi)) {
->> +		devi = f2fs_target_device_index(sbi, blkaddr);
->> +		if (blkaddr < FDEV(devi).start_blk ||
->> +		    blkaddr > FDEV(devi).end_blk) {
->> +			f2fs_err(sbi, "Invalid block %x", blkaddr);
->> +			return false;
->> +		}
->> +		blkaddr -= FDEV(devi).start_blk;
->> +	}
->> +
->> +	if (!bdev_is_zoned(FDEV(devi).bdev) ||
->> +		!f2fs_blkz_is_seq(sbi, devi, blkaddr))
->> +		return false;
->> +
->> +	return true;
-> 
-> Applied as below.
-> 
-> @@ -4485,11 +4485,8 @@ static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
->                  blkaddr -= FDEV(devi).start_blk;
->          }
-> 
-> -       if (!bdev_is_zoned(FDEV(devi).bdev) ||
-> -               !f2fs_blkz_is_seq(sbi, devi, blkaddr))
-> -               return false;
-> -
-> -       return true;
-> +       return bdev_is_zoned(FDEV(devi).bdev) &&
-> +               f2fs_blkz_is_seq(sbi, devi, blkaddr);
-
-Looks good, thank you for cleanup.
-
-Thanks,
-
->   }
->   #endif
-> 
->> +}
->>   #endif
->>   
->>   static inline int f2fs_bdev_index(struct f2fs_sb_info *sbi,
->> diff --git a/fs/f2fs/iostat.c b/fs/f2fs/iostat.c
->> index f8703038e1d8..a8626e297876 100644
->> --- a/fs/f2fs/iostat.c
->> +++ b/fs/f2fs/iostat.c
->> @@ -237,6 +237,13 @@ static inline void __update_iostat_latency(struct bio_iostat_ctx *iostat_ctx,
->>   	spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
->>   }
->>   
->> +void *iostat_get_bio_private(struct bio *bio)
->> +{
->> +	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
->> +
->> +	return iostat_ctx->sbi;
->> +}
->> +
->>   void iostat_update_and_unbind_ctx(struct bio *bio)
->>   {
->>   	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
->> diff --git a/fs/f2fs/iostat.h b/fs/f2fs/iostat.h
->> index eb99d05cf272..9006c3d41590 100644
->> --- a/fs/f2fs/iostat.h
->> +++ b/fs/f2fs/iostat.h
->> @@ -58,6 +58,7 @@ static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
->>   	return iostat_ctx->post_read_ctx;
->>   }
->>   
->> +extern void *iostat_get_bio_private(struct bio *bio);
->>   extern void iostat_update_and_unbind_ctx(struct bio *bio);
->>   extern void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
->>   		struct bio *bio, struct bio_post_read_ctx *ctx);
->> @@ -68,6 +69,7 @@ extern void f2fs_destroy_iostat(struct f2fs_sb_info *sbi);
->>   #else
->>   static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi, struct inode *inode,
->>   		enum iostat_type type, unsigned long long io_bytes) {}
->> +static inline void *iostat_get_bio_private(struct bio *bio) { return bio->bi_private; }
->>   static inline void iostat_update_and_unbind_ctx(struct bio *bio) {}
->>   static inline void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
->>   		struct bio *bio, struct bio_post_read_ctx *ctx) {}
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index 4fd76e867e0a..4a3cf2888faf 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -3140,6 +3140,9 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
->>   		return err;
->>   	stat_inc_seg_type(sbi, curseg);
->>   	locate_dirty_segment(sbi, old_segno);
->> +
->> +	f2fs_blkzoned_submit_merged_write(sbi, type);
->> +
->>   	return 0;
->>   }
->>   
->> @@ -3461,12 +3464,7 @@ static int __get_segment_type(struct f2fs_io_info *fio)
->>   		f2fs_bug_on(fio->sbi, true);
->>   	}
->>   
->> -	if (IS_HOT(type))
->> -		fio->temp = HOT;
->> -	else if (IS_WARM(type))
->> -		fio->temp = WARM;
->> -	else
->> -		fio->temp = COLD;
->> +	fio->temp = type_to_temp(type);
->>   	return type;
->>   }
->>   
->> @@ -4132,6 +4130,27 @@ static int restore_curseg_summaries(struct f2fs_sb_info *sbi)
->>   		return -EINVAL;
->>   	}
->>   
->> +#ifdef CONFIG_BLK_DEV_ZONED
->> +	if (f2fs_sb_has_blkzoned(sbi)) {
->> +		for (type = 0; type < NR_PERSISTENT_LOG; type++) {
->> +			struct curseg_info *curseg = CURSEG_I(sbi, type);
->> +			enum page_type ptype;
->> +			enum temp_type temp;
->> +
->> +			if (!(curseg->next_blkoff % sbi->blocks_per_blkz))
->> +				continue;
->> +
->> +			if (!f2fs_blkaddr_in_seqzone(sbi,
->> +					START_BLOCK(sbi, curseg->segno)))
->> +				continue;
->> +
->> +			ptype = PAGE_TYPE(type);
->> +			temp = type_to_temp(type);
->> +			down(&sbi->available_open_zones);
->> +			sbi->write_io[ptype][temp].zone_openned = true;
->> +		}
->> +	}
->> +#endif
->>   	return 0;
->>   }
->>   
->> @@ -5451,6 +5470,18 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
->>   	for (i = 0; i < NR_CURSEG_TYPE; i++) {
->>   		kfree(array[i].sum_blk);
->>   		kfree(array[i].journal);
->> +
->> +#ifdef CONFIG_BLK_DEV_ZONED
->> +		if (f2fs_sb_has_blkzoned(sbi)) {
->> +			enum page_type ptype = PAGE_TYPE(i);
->> +			enum temp_type temp = type_to_temp(i);
->> +
->> +			if (sbi->write_io[ptype][temp].zone_openned) {
->> +				up(&sbi->available_open_zones);
->> +				sbi->write_io[ptype][temp].zone_openned = false;
->> +			}
->> +		}
->> +#endif
->>   	}
->>   	kfree(array);
->>   }
->> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
->> index e1c0f418aa11..855978ca869f 100644
->> --- a/fs/f2fs/segment.h
->> +++ b/fs/f2fs/segment.h
->> @@ -24,7 +24,8 @@
->>   
->>   #define IS_DATASEG(t)	((t) <= CURSEG_COLD_DATA)
->>   #define IS_NODESEG(t)	((t) >= CURSEG_HOT_NODE && (t) <= CURSEG_COLD_NODE)
->> -#define SE_PAGETYPE(se)	((IS_NODESEG((se)->type) ? NODE : DATA))
->> +#define PAGE_TYPE(t)	(IS_NODESEG(t) ? NODE : DATA)
->> +#define SE_PAGETYPE(se)	(PAGE_TYPE((se)->type))
->>   
->>   static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
->>   						unsigned short seg_type)
->> @@ -965,3 +966,12 @@ static inline unsigned int first_zoned_segno(struct f2fs_sb_info *sbi)
->>   			return GET_SEGNO(sbi, FDEV(devi).start_blk);
->>   	return 0;
->>   }
->> +
->> +static inline enum temp_type type_to_temp(int type)
->> +{
->> +	if (IS_HOT(type))
->> +		return HOT;
->> +	else if (IS_WARM(type))
->> +		return WARM;
->> +	return COLD;
->> +}
->> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->> index fdf358c7f808..954baa6c100d 100644
->> --- a/fs/f2fs/super.c
->> +++ b/fs/f2fs/super.c
->> @@ -3893,6 +3893,8 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
->>   				sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
->>   			return -EINVAL;
->>   		}
->> +
->> +		sema_init(&sbi->available_open_zones, sbi->max_open_zones);
->>   	}
->>   
->>   	zone_sectors = bdev_zone_sectors(bdev);
->> -- 
->> 2.40.1
+>> +            /*
+>> +             * SHRINKER_NO_DIRECT_RECLAIM, mean that shrinker callback
+>> +             * should not be called in direct_reclaim unless priority
+>> +             * is 0.
+>> +             */
+>> +            if ((shrinker->flags & SHRINKER_NO_DIRECT_RECLAIM) &&
+>> +                    !current_is_kswapd()) {
+>> +                /*
+>> +                 * 1.Always call shrinker callback in drop_slab that
+>> +                 * priority is 0.
+>> +                 * 2.sc->priority is 0 during direct_reclaim, allow
+>> +                 * direct_reclaim to call shrinker callback, to reclaim
+>> +                 * memory timely.
+>> +                 */
+>> +                if (priority)
+>> +                    continue;
+>> +            }
+>>               ret = do_shrink_slab(&sc, shrinker, priority);
+>>               if (ret == SHRINK_EMPTY) {
+>>                   clear_bit(offset, unit->map);
+>> @@ -658,7 +674,23 @@ unsigned long shrink_slab(gfp_t gfp_mask, int 
+>> nid, struct mem_cgroup *memcg,
+>>               continue;
+>>             rcu_read_unlock();
+>> -
+>> +        /*
+>> +         * SHRINKER_NO_DIRECT_RECLAIM, mean that shrinker callback
+>> +         * should not be called in direct_reclaim unless priority
+>> +         * is 0.
+>> +         */
+>> +        if ((shrinker->flags & SHRINKER_NO_DIRECT_RECLAIM) &&
+>> +                !current_is_kswapd()) {
+>> +            /*
+>> +             * 1.Always call shrinker callback in drop_slab that
+>> +             * priority is 0.
+>> +             * 2.sc->priority is 0 during direct_reclaim, allow
+>> +             * direct_reclaim to call shrinker callback, to reclaim
+>> +             * memory timely.
+>> +             */
+>> +            if (priority)
+>> +                continue;
+>> +        }
+>>           ret = do_shrink_slab(&sc, shrinker, priority);
+>>           if (ret == SHRINK_EMPTY)
+>>               ret = 0;
 
