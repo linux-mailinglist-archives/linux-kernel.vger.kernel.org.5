@@ -1,134 +1,160 @@
-Return-Path: <linux-kernel+bounces-143634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C63D48A3BB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:46:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F3078A3BB5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:47:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85AD91F22248
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2A0F2827A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6B2208B6;
-	Sat, 13 Apr 2024 08:46:11 +0000 (UTC)
-Received: from mail115-80.sinamail.sina.com.cn (mail115-80.sinamail.sina.com.cn [218.30.115.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0EBA2110B;
+	Sat, 13 Apr 2024 08:47:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OMRLCK57"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E05366
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF8D1C2BD
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712997971; cv=none; b=XRZjoiFWH9snixFWU5FkjP3uqxAazzjIZDmFxcROwPDaQPtghKKq6rdJySsZl396p8kXZiP88nRki5A81fr4xA2oO9qWZglblVp1HVWFYLBaqhH7s/aw7rfMLKYrCF0pm7bMkKbymIiYKg0aPF2bz7qedK+Fu/kg3O04GaBg9jU=
+	t=1712998050; cv=none; b=JtRYmUk9SEiBp60HwoI7dw2lx6Zs1CwfrZTlnE2gyo7sWTGYdWVzAKerRbdgOSqjSOza3TM/dgQyRicaFVBf8uIXlsVp2WS+9bkU1GrRIf2HyDAtErphCH7uejL4Ww7yQWWhQFBNyljtebOpukYCJRLNI98NYs5WWnoeXMJ1N2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712997971; c=relaxed/simple;
-	bh=UWWc0EfDzeo1KhUuECrIHIrSFuJFcZtoao1je9C1Tk4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HKu+t1YgwZYHPGk9jRi8PdFoKvjpP/nUVLKH99IrzaUhde5fhcFWvw6k1Hatue0/eeownXFM8GvMq5k3+/9p0YcCZol35ssa77r9S2M5E+7JfbVoCZM5SwrT1gvN6FNzOpuY7RRhypCGRxmha2RWZYJOv8O//PnN1mdaYyb6xx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.51.22])
-	by sina.com (10.75.12.45) with ESMTP
-	id 661A4624000059B8; Sat, 13 Apr 2024 16:45:26 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 57740031457756
-X-SMAIL-UIID: 1A7EB68A59634771834D1050F8AB7392-20240413-164526-1
-From: Hillf Danton <hdanton@sina.com>
-To: amir73il@gmail.com
-Cc: syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>,
-	linux-fsdevel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [syzbot] Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
-Date: Sat, 13 Apr 2024 16:45:19 +0800
-Message-Id: <20240413084519.1774-1-hdanton@sina.com>
-In-Reply-To: <00000000000095bb400615f4b0ed@google.com>
-References: 
+	s=arc-20240116; t=1712998050; c=relaxed/simple;
+	bh=guMeNbCqf8Bf7dLBBZ03qR5b/wAPVhCuSkwUDiHkreo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nqYZlLbDCwZKRc5Pnfl0daiWrCuUenuThVxX9VySN+ldHO415+QLS2tIq1rE+CQ/T0kw4Cf7RQeXhuz2tUhqBnJOSlx4piNdUiRoyfltWN+HUdO8yauiYCevembY0STf7gB5/asGZwN4eBgmvhKRCJ2w0psiilUWgQzIkDerzUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OMRLCK57; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so2124079a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 01:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712998047; x=1713602847; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=rII/pQt/MW1EBrzDYRD3z/sRc7Tary/0+K7B68syeNY=;
+        b=OMRLCK57a41t37uwapCRplFClEO+pxTlffutfB2VDznar1RD/9ezkEEQrHVl/CEEVt
+         0hTWs5eP2n1h6rbi85IxNf0zHPjUJmd6RZoKCzV847E6LXSJvzzTY/BSNNBfuqq4DOxA
+         BvaVbNfgTJnDDIU1nwfx65reuB9V1DWp9Yxyp3T9o1FH3CaRWKamjPrhXUKBNU005DUt
+         JgX6LsEw3XUclEjk0fP5jQYTyQtfE7FBBC0a54Qo31HMHtctDOWKLCnFWtlx57cbP2xH
+         9WTHbX/W6bAo5EjsUhlGIT6QRgN0OTE808nx0r4Mndcqn8s1WXBzfCkECSb55ri6ElR+
+         xclA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712998047; x=1713602847;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rII/pQt/MW1EBrzDYRD3z/sRc7Tary/0+K7B68syeNY=;
+        b=AycphjT6TXbZO7hrGvOqnT7ABp9P9wBz1x/CwG4bop0mreOs7kHgsHwjcwPKU/xmNB
+         ZyjmmBZX/wT0QmskFxZ+aqwRPAR7Z+f5c09pYIlAV0ffyzYrN1Yu7cwLpN7gy+6YsAmN
+         bCkQ480WIAyu4xUNtiEHokaQSxiBOrPyZhchMUZELv5rRSBPFvCNj7+zdy22VwXb5jdB
+         tXpfdkK4+Li79/JxPmH86v6gN0HoI/U56mV7euEwSQvqwGfKGhYL3y2hNkI3OchIc73Q
+         tho/CVAMAzo0D49dcvq5obtM5C6xPbYdm8loKB2q+kSVtXRB0UyMfvo2pgcAYVMCdFn0
+         Ofdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQnltRak+cDrbtBj+5xmhdswt/MflwEzFnN7bVlYWkJVRRCnU25AVbQEwL/Cuco1PzcyGmmPosj6d5hrNdXHOnBwtFKA/dTIfavI0m
+X-Gm-Message-State: AOJu0YylgUCLrw0p/w8X32pN2UQHzI3lsmALLcdIvYfOmkTluSJvfdQf
+	gRlN5J+hTIqlNwOwUxays7bhLFG5QkOoyfVPbRTfNSxnyag1dK1wc25SuRudPMk=
+X-Google-Smtp-Source: AGHT+IGHF+5m3Vbg3WQcgDLVBuRhXBmb/Mh6KEGMPJznnhUA3UPiXlgXiDdzEwh6Fj5RkgHrzFtlTw==
+X-Received: by 2002:a17:907:9448:b0:a52:5296:cd94 with SMTP id dl8-20020a170907944800b00a525296cd94mr270923ejc.60.1712998046792;
+        Sat, 13 Apr 2024 01:47:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id go36-20020a1709070da400b00a51fea47897sm2722435ejc.214.2024.04.13.01.47.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Apr 2024 01:47:26 -0700 (PDT)
+Message-ID: <ab700927-d7b6-44c6-bbe0-8c52e4a0f907@linaro.org>
+Date: Sat, 13 Apr 2024 10:47:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] clk: samsung: introduce nMUX to reparent MUX
+ clocks
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org
+Cc: alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ andre.draszik@linaro.org, willmcvicker@google.com, kernel-team@android.com,
+ s.nawrocki@samsung.com, cw00.choi@samsung.com, mturquette@baylibre.com,
+ sboyd@kernel.org, semen.protsenko@linaro.org, linux-clk@vger.kernel.org,
+ jaewon02.kim@samsung.com
+References: <20240328123440.1387823-1-tudor.ambarus@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240328123440.1387823-1-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 12 Apr 2024 23:42:19 -0700 Amir Goldstein
-> On Sat, Apr 13, 2024 at 4:41=E2=80=AFAM Hillf Danton <hdanton@sina.com> wrote:
-> >
-> > On Thu, 11 Apr 2024 01:11:20 -0700
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    6ebf211bb11d Add linux-next specific files for 20240410
-> > > git tree:       linux-next
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1621af9d180000
-> >
-> > #syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  6ebf211bb11d
-> >
-> > --- x/fs/notify/fsnotify.c
-> > +++ y/fs/notify/fsnotify.c
-> > @@ -101,8 +101,8 @@ void fsnotify_sb_delete(struct super_blo
-> >         wait_var_event(fsnotify_sb_watched_objects(sb),
-> >                        !atomic_long_read(fsnotify_sb_watched_objects(sb)));
-> >         WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PRIO_CONTENT));
-> > -       WARN_ON(fsnotify_sb_has_priority_watchers(sb,
-> > -                                                 FSNOTIFY_PRIO_PRE_CONTENT));
-> > +       WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PRIO_PRE_CONTENT));
-> > +       synchronize_srcu(&fsnotify_mark_srcu);
-> >         kfree(sbinfo);
-> >  }
-> >
-> > @@ -499,7 +499,7 @@ int fsnotify(__u32 mask, const void *dat
-> >  {
-> >         const struct path *path =3D fsnotify_data_path(data, data_type);
-> >         struct super_block *sb =3D fsnotify_data_sb(data, data_type);
-> > -       struct fsnotify_sb_info *sbinfo =3D fsnotify_sb_info(sb);
-> > +       struct fsnotify_sb_info *sbinfo;
-> >         struct fsnotify_iter_info iter_info = {};
-> >         struct mount *mnt =3D NULL;
-> >         struct inode *inode2 =3D NULL;
-> > @@ -529,6 +529,8 @@ int fsnotify(__u32 mask, const void *dat
-> >                 inode2_type =3D FSNOTIFY_ITER_TYPE_PARENT;
-> >         }
-> >
-> > +       iter_info.srcu_idx =3D srcu_read_lock(&fsnotify_mark_srcu);
-> > +       sbinfo =3D fsnotify_sb_info(sb);
-> >         /*
-> >          * Optimization: srcu_read_lock() has a memory barrier which can
-> >          * be expensive.  It protects walking the *_fsnotify_marks lists.
+On 28/03/2024 13:34, Tudor Ambarus wrote:
+> v3:
+> - update first patch:
+>   - remove __nMUX() as it duplicated __MUX() with an exception on flags.
+>   - update commit message
+>   - update comment and say that nMUX() shall be used where MUX reparenting
+>     on clock rate chage is allowed
+> - collect R-b, A-b tags
 > 
-> 
-> See comment above. This kills the optimization.
-> It is not worth letting all the fsnotify hooks suffer the consequence
-> for the edge case of calling fsnotify hook during fs shutdown.
 
-Say nothing before reading your fix.
-> 
-> Also, fsnotify_sb_info(sb) in fsnotify_sb_has_priority_watchers()
-> is also not protected and using srcu_read_lock() there completely
-> nullifies the purpose of fsnotify_sb_info.
-> 
-> Here is a simplified fix for fsnotify_sb_error() rebased on the
-> pending mm fixes for this syzbot boot failure:
-> 
-> #syz test: https://github.com/amir73il/linux fsnotify-fixes
+Sorry for late response, somehow this end up deep in inbox. You
+reference some non existing commits, so I think you do not work on
+mainline trees.
 
-Feel free to post your patch at lore because not everyone has 
-access to sites like github.
-> 
-> Jan,
-> 
-> I think that all the functions called from fs shutdown context
-> should observe that SB_ACTIVE is cleared but wasn't sure?
+Also Fixes must come before other patches, so probably first patch
+should be squashed with second. Otherwise second patch is not a complete
+fix.
 
-If you composed fix based on SB_ACTIVE that is cleared in
-generic_shutdown_super() with &sb->s_umount held for write,
-I wonder what simpler serialization than srcu you could
-find/create in fsnotify.
+Best regards,
+Krzysztof
+
 
