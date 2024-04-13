@@ -1,105 +1,170 @@
-Return-Path: <linux-kernel+bounces-143752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EED78A3D00
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:40:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51B7C8A3D04
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:43:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AEAA282429
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:40:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72C9F1C20BE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:43:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346D943ADF;
-	Sat, 13 Apr 2024 14:40:30 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B89845942;
+	Sat, 13 Apr 2024 14:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0b1WjH7d";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TGTnmWCA"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C2C224E8
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AE51DDF1;
+	Sat, 13 Apr 2024 14:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713019229; cv=none; b=PvAJtPCYZ1fAwAxDohzc4YQQdQpPRA7WgaQ6JoHk08YHq6OTDYOzsHJaHguWJjNBU3PgjNV0fOIfXQMgRlQ271HVBLgRwbO5uFrgWT8vVpPb7+NlyUHHRkDVuLTF53fpvistC+v+WBUvVI/S3QYYiATcX8gIwqWVsvb+q42lPiM=
+	t=1713019406; cv=none; b=b1AV9WOjGDqAsyiSYqJeGWy6oEp4/Xb1Cu60d0mKGAUqWQb0A+CX7acdpDK9DJ9lQbVTpAgJ92B3+Q4t87IaQeP+oUfHJ1tGp+IUeLXSnP4yyK++f3mtHD207liJAstyepCDbMi07rex6Ibc1tR/bCdBbGrrckvEQAqUmtciwVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713019229; c=relaxed/simple;
-	bh=vbk4Rhnn3ao/4dMYfvwvco8I9PpmQbe9zJvUjEbea7E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=S2GwQibIW7hmreh7Jguc89PehKbrRhYwWolanJk3Hp1dlPwHmYp8qftl2fW3nvg+HLPkmuGz3PfdenGf5DosTeXg6YAqulPape4RnL4eLic89jBj5N4vjOHdkBh+PzjVO84dcyHnVuzciQknr2JPReYxwibmQCXvjTVqnw/eMXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5f08fdba8so218560239f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 07:40:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713019227; x=1713624027;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k35GJLyO+qF0Q6nfe6UOQLLAPZY5SGbHLJa33ufBKTk=;
-        b=sit6QRTDeQE7TEWXuJwH6j+4Q1XBAW313hxcAr6SaPOsXbE4iY998iO7UShNhTWSE+
-         ZdoV9cYfNw5xe9U/RJxEXjzTPNikOFjfAOMToHt6+piZiVtG/xkL81KB0YFSUd4o7yfa
-         rPmuRBV3c8BAwAwwrXGm9k28pXd7wCETn2Hd4FQuvVsztYCcLTXnLbTt6HTI22PemBeo
-         b4Ru2mryjE+sS/9AEh/i2t09pxiAWbV5sDWCfxP9me4Nc3lIucwpEpD5XLC37CkPa5Qb
-         duCg6kpPLGp6ip+qpROR8WjwAaIR+6ufyE78QbLCWH7adggkvaT8wU4l0MmyvmGTksY8
-         jmcg==
-X-Gm-Message-State: AOJu0Yw8hsvwA7kG2DgMGCR9BqZqWHKAXdFoEBi0nBxFbgaJFDtGNrJB
-	9Qx9UmpGfD610gPfoVgQcIW5JTfL/pSMDfGp5lLPz0Ui1frSOEJkeL0j3vTAWZQ6OIIdG9Wgk2s
-	n4tJVmVAfL1wdBHhot5mqEakjVjmE5Q6Y1QRg6rYAjVGor7DIUofHZOw=
-X-Google-Smtp-Source: AGHT+IGQt2aifAlrcC1TTvoHh/jgfQr8s0oQRybE8GJdnG0ldr+uX8w/gOAIaQA62bIBFrCCRyt6X1WrxmhSlBW/D5N6c2Ng34HB
+	s=arc-20240116; t=1713019406; c=relaxed/simple;
+	bh=F3WSVlUVeB9L++bk4Ow6JCLg2bFHCz7po4reWSuVgdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mTc/b6uf5MdDkKUZvH8GbWguY1+VDGvkckr4qN6tZ6aMS8g4Ll+fwkwpcgHVjGxyfWuQCI/EOtuCZ3yfT95ohE3f2cVD5wT+xmIMyrn3kp31VPU3UdvmjiLKZrvVohPYcYzeu0J/kn2rPZcUh69QTWseMpDrw2ZiSMDkmAt7v1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0b1WjH7d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TGTnmWCA; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sat, 13 Apr 2024 16:43:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713019401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=94QYgK1moV3EtlUcP69QNbkfRF65WDHcbcu3aXuhzMA=;
+	b=0b1WjH7dMokMw4gA5sphaavop2jbUouwWon4BETiEJ3Auh4mkbDA6CaWbyUNg2HXh5x6sV
+	ONFBFVjW0E764jN462mFwDfHi2QRFkYfyeIHxJcy3VbT1aBnTVP5C58iksUwVE6rUrLEKJ
+	5MlqE2iqe6pljzIGKfUbctAoWA2M34tOOrMm3oVsdNYvuv4Pxq5J39z0MKV5uCYzKKqh3U
+	80jVJeaID7Ii+A4CUhy9Q4fzgdYP/hww5l96idQt9myulM92AIR61c34rdO2vrrS2KQlcV
+	/KP8sifRsZXoC18ILZxYH35jCImumZRAwqv918IPuYpQQPJGbQyHNSiefxQk3w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713019401;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=94QYgK1moV3EtlUcP69QNbkfRF65WDHcbcu3aXuhzMA=;
+	b=TGTnmWCAiCLkdCMHYZVFT8OBvD3zVHceh/mgLEaqFERDP2BwWHD5eEVTI9rdWYMR4gvfxq
+	35B6dGXcXkTn8uDA==
+From: Nam Cao <namcao@linutronix.de>
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, "Theodore
+ Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ linux-ext4@vger.kernel.org, Conor Dooley <conor@kernel.org>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240413164318.7260c5ef@namcao>
+In-Reply-To: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:52c:b0:36a:2130:33a8 with SMTP id
- h12-20020a056e02052c00b0036a213033a8mr168304ils.3.1713019227753; Sat, 13 Apr
- 2024 07:40:27 -0700 (PDT)
-Date: Sat, 13 Apr 2024 07:40:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009062560615fb5e31@google.com>
-Subject: [syzbot] Monthly media report (Apr 2024)
-From: syzbot <syzbot+list9b4228196b8993e50208@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello media maintainers/developers,
+On 2024-04-12 Bj=C3=B6rn T=C3=B6pel wrote:
+> Hi!
+>=20
+> I've been looking at an EXT4 splat on riscv32, that LKFT found [1]:
+>=20
+>   | EXT4-fs (vda): mounted filesystem 13697a42-d10e-4a9e-8e56-cb9083be92f=
+9 ro with ordered data mode. Quota mode: disabled.
+>   | VFS: Mounted root (ext4 filesystem) readonly on device 254:0.
+>   | Unable to handle kernel NULL pointer dereference at virtual address 0=
+0000006
+>   | Oops [#1]
+>   | Modules linked in:
+>   | CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.8.0 #41
+>   | Hardware name: riscv-virtio,qemu (DT)
+>   | epc : ext4_search_dir+0x52/0xe4
+>   |  ra : __ext4_find_entry+0x1d6/0x578
+>   | epc : c035b60e ra : c035b876 sp : c253fc10
+>   |  gp : c21a7380 tp : c25c8000 t0 : 44c0657f
+>   |  t1 : 0000000c t2 : 1de5b089 s0 : c253fc50
+>   |  s1 : 00000000 a0 : fffffffc a1 : fffff000
+>   |  a2 : 00000000 a3 : c29c04f8 a4 : c253fd00
+>   |  a5 : 00000000 a6 : c253fcfc a7 : fffffff3
+>   |  s2 : 00001000 s3 : 00000000 s4 : 00001000
+>   |  s5 : c29c04f8 s6 : c292db40 s7 : c253fcfc
+>   |  s8 : fffffff7 s9 : c253fd00 s10: fffff000
+>   |  s11: c292db40 t3 : 00000007 t4 : 5e8b4525
+>   |  t5 : 00000000 t6 : 00000000
+>   | status: 00000120 badaddr: 00000006 cause: 0000000d
+>   | [<c035b60e>] ext4_search_dir+0x52/0xe4
+>   | [<c035b876>] __ext4_find_entry+0x1d6/0x578
+>   | [<c035bcaa>] ext4_lookup+0x92/0x200
+>   | [<c0295c14>] __lookup_slow+0x8e/0x142
+>   | [<c029943a>] walk_component+0x104/0x174
+>   | [<c0299f18>] path_lookupat+0x78/0x182
+>   | [<c029b24c>] filename_lookup+0x96/0x158
+>   | [<c029b346>] kern_path+0x38/0x56
+>   | [<c0c1bee4>] init_mount+0x46/0x96
+>   | [<c0c2ae1c>] devtmpfs_mount+0x44/0x7a
+>   | [<c0c01c26>] prepare_namespace+0x226/0x27c
+>   | [<c0c01130>] kernel_init_freeable+0x27e/0x2a0
+>   | [<c0b78402>] kernel_init+0x2a/0x158
+>   | [<c0b82bf2>] ret_from_fork+0xe/0x20
+>   | Code: 84ae a809 d303 0044 949a 0f63 0603 991a fd63 0584 (c603) 0064=20
+>   | ---[ end trace 0000000000000000 ]---
+>   | Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000=
+000b
+>=20
+> This was not present in 6.7. Bisection wasn't really helpful (to me at
+> least); I got it down to commit c604110e662a ("Merge tag 'vfs-6.8.misc'
+> of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs"), and when I
+> revert the commits in the vfs merge the splat went away, but I *really*
+> struggle to see how those are related...
+>=20
+> What I see in ext4_search_dir() is that search_buf is 0xfffff000, and at
+> some point the address wraps to zero, and boom. I doubt that 0xfffff000
+> is a sane address.
 
-This is a 31-day syzbot report for the media subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/media
+I have zero knowledge about file system, but I think it's an integer
+overflow problem. The calculation of "dlimit" overflow and dlimit wraps
+around, this leads to wrong comparison later on.
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 19 issues are still open and 85 have been fixed so far.
+I guess that explains why your bisect and Conor's bisect results are
+strange: the bug has been here for quite some time, but it only appears
+when "dlimit" happens to overflow.
 
-Some of the still happening issues:
+It can be fixed by re-arrange the comparisons a bit. Can you give the
+below patch a try?
 
-Ref Crashes Repro Title
-<1> 4656    Yes   possible deadlock in v4l2_ctrl_handler_log_status
-                  https://syzkaller.appspot.com/bug?extid=9948f8e188482c5d1a3e
-<2> 867     Yes   general protection fault in ir_raw_event_store_with_filter
-                  https://syzkaller.appspot.com/bug?extid=34008406ee9a31b13c73
-<3> 206     Yes   inconsistent lock state in sync_timeline_debug_remove
-                  https://syzkaller.appspot.com/bug?extid=7dcd254b8987a29f6450
-<4> 57      Yes   KASAN: use-after-free Read in send_packet
-                  https://syzkaller.appspot.com/bug?extid=f1a69784f6efe748c3bf
-<5> 6       Yes   INFO: task hung in cec_claim_log_addrs
-                  https://syzkaller.appspot.com/bug?extid=116b65a23bc791ae49a6
-<6> 3       Yes   KASAN: use-after-free Read in em28xx_init_extension (2)
-                  https://syzkaller.appspot.com/bug?extid=99d6c66dbbc484f50e1c
-<7> 3       No    WARNING in call_s_stream
-                  https://syzkaller.appspot.com/bug?extid=5bcd7c809d365e14c4df
+Best regards,
+Nam
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 05b647e6bc19..71b88b33b676 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -1532,15 +1532,13 @@ int ext4_search_dir(struct buffer_head *bh, char *s=
+earch_buf, int buf_size,
+ 		    unsigned int offset, struct ext4_dir_entry_2 **res_dir)
+ {
+ 	struct ext4_dir_entry_2 * de;
+-	char * dlimit;
+ 	int de_len;
+=20
+ 	de =3D (struct ext4_dir_entry_2 *)search_buf;
+-	dlimit =3D search_buf + buf_size;
+-	while ((char *) de < dlimit - EXT4_BASE_DIR_LEN) {
++	while ((char *) de - search_buf < buf_size - EXT4_BASE_DIR_LEN) {
+ 		/* this code is executed quadratically often */
+ 		/* do minimal checking `by hand' */
+-		if (de->name + de->name_len <=3D dlimit &&
++		if (de->name + de->name_len - search_buf <=3D buf_size &&
+ 		    ext4_match(dir, fname, de)) {
+ 			/* found a match - just to be sure, do
+ 			 * a full check */
 
