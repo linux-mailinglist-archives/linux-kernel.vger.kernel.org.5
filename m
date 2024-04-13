@@ -1,102 +1,235 @@
-Return-Path: <linux-kernel+bounces-143672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23EDE8A3C34
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:18:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031368A3C35
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:19:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B4B8B214C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:18:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF542282C0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:19:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C000F3D544;
-	Sat, 13 Apr 2024 10:18:14 +0000 (UTC)
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A37DB3D544;
+	Sat, 13 Apr 2024 10:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c29dNQ+y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EEB366;
-	Sat, 13 Apr 2024 10:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25451CFA8;
+	Sat, 13 Apr 2024 10:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713003494; cv=none; b=JC0BXLqsFs7kwRzHqmeqQNQgHfydCihYHzARLeuuPKzqzpEiq9d7wtY4yj/y66X/bea3bcW47FdKWHQ9zmj35d6+MscYxBCH1SXDwRXiAsq3N3pkGaqB3XOmoUmIXspkAcMPOKB/ObTTy3D4FgBxrFSUZspM+7l/0evvwgsA9wk=
+	t=1713003579; cv=none; b=j9U9t2BlWA9OQctnEcwD0xBCZg9ECltG0O1/4TnQfMdSemMdYP8R3+auv8JpvO3Ytpcq/VA5vpA+TEBx3fnHPOdKrkE+xjHjQhkjr84d8qm0srOJmCLgxbT0SwUDr/sL0MvCp+Cl4iMWrXl4MqF/gLLykhu3siEvfOPJU+omxMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713003494; c=relaxed/simple;
-	bh=8n8Eie6eulIaD90R6Wujwp9lc64DiR88OsppJS6AirY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HeE+BaIb+EFKcrVoOIJzDQJgGt8BbBAArSuwfz+CDV3lxUtkcs6FYGssoqdSudEBEaBYqtg5Sb95iH+OWfDzre42DVhNSVXzP6ux/eK6w92mL1bK4HGnRGkM8S7IeO8DQvvCXQRrIDX6iDDu/d6W8/P5LjU5gVjwxhCfOEJ7va4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=176.9.242.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 96A8E100DCEF8;
-	Sat, 13 Apr 2024 12:18:01 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 5ECA52483; Sat, 13 Apr 2024 12:18:01 +0200 (CEST)
-Date: Sat, 13 Apr 2024 12:18:01 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "M. Haener" <michael.haener@siemens.com>,
-	linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Huewe <peterhuewe@gmx.de>,
-	Jarkko Sakkinen <jarkko@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alexander Sverdlin <alexander.sverdlin@siemens.com>
-Subject: Re: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
- binding
-Message-ID: <Zhpb2URMxuoilKAZ@wunner.de>
-References: <20240413071621.12509-1-michael.haener@siemens.com>
- <20240413071621.12509-3-michael.haener@siemens.com>
- <8c13a349-a721-44d3-9e23-2e01f4c2ca4d@linaro.org>
+	s=arc-20240116; t=1713003579; c=relaxed/simple;
+	bh=9Hu40LkvlfQcCNkyBLs/RLhZHlI4yg/7v8dPJiVYyEs=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=brgSzYd1hRa4gLodZ7ktpKw0OrQiYGIA27scsYAsjgMlOAKijwBdWtK4PQHOEzaKYPuCstQa92KhJD/toz1ah2iHRj4Go3Lj4oXP1pnI3MUsxOVPqI5HUA2628zFZt20U7UjzxrxV2GlZKCn63nAvdV5YLFI1JRB0uN0HWhL9GY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c29dNQ+y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C37BC4AF07;
+	Sat, 13 Apr 2024 10:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713003579;
+	bh=9Hu40LkvlfQcCNkyBLs/RLhZHlI4yg/7v8dPJiVYyEs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=c29dNQ+yEubEhbE3XnXXfhoAGCvaWZ5K9uB9X21vxDxDhDmr4B+n0VE6ouSrj7cG1
+	 pjpqVKhq7uzDJ3WOpuR2H7UCz2V0J4CPBEdUN09AHuQuV3VAXxI+oGYb/LOZMqQ/Q0
+	 eZ5ZP3jd0EkZty/k32oHNI2pTXOM3ZM47DKIJRfetlxyNJXfgt2EXfVGpHHXf3WlM+
+	 PWiZG9yn7GLfpOtiXXYA6zlCFf0813Lc39o8CyLCkaZde2t13pXUW9BWdzGVRUpAIQ
+	 L8FqQc5mvo+ewtlQtGXy7rGYpwNsHbgpdRc1xkgAlUDkv5ZOpmZJGWfZb4Y2RKPXRB
+	 W7XOKRXg7YY/A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rvaTx-0047xk-6h;
+	Sat, 13 Apr 2024 11:19:37 +0100
+Date: Sat, 13 Apr 2024 11:19:35 +0100
+Message-ID: <86edb9sgy0.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Sebastian Ott <sebott@redhat.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 3/4] KVM: arm64: add emulation for CTR_EL0 register
+In-Reply-To: <20240405120108.11844-4-sebott@redhat.com>
+References: <20240405120108.11844-1-sebott@redhat.com>
+	<20240405120108.11844-4-sebott@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c13a349-a721-44d3-9e23-2e01f4c2ca4d@linaro.org>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: sebott@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Sat, Apr 13, 2024 at 10:10:49AM +0200, Krzysztof Kozlowski wrote:
-> Please use subject prefixes matching the subsystem. You can get them for
-> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-> your patch is touching.
+On Fri, 05 Apr 2024 13:01:07 +0100,
+Sebastian Ott <sebott@redhat.com> wrote:
+> 
+> CTR_EL0 is currently handled as an invariant register, thus
+> guests will be presented with the host value of that register.
+> Add emulation for CTR_EL0 based on a per VM value.
+> 
+> When CTR_EL0 is changed the reset function for CLIDR_EL1 is
+> called to make sure we present the guest with consistent
+> register values.
 
-To be fair, "dt-bindings: tpm: " is actually the only prefix used
-so far for the file that's touched here:
+Isn't that a change in the userspace ABI? You are now creating an
+explicit ordering between the write to CTR_EL0 and the rest of the
+cache hierarchy registers. It has the obvious capacity to lead to the
+wrong result in a silent way...
 
-$ git log --oneline Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml 
-26c9d15 dt-bindings: tpm: Consolidate TCG TIS bindings
+> 
+> Signed-off-by: Sebastian Ott <sebott@redhat.com>
+> ---
+>  arch/arm64/kvm/sys_regs.c | 72 ++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 64 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index 4d29b1a0842d..b0ba292259f9 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1874,6 +1874,55 @@ static bool access_ctr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
+>  	return true;
+>  }
+>  
+> +static u64 reset_ctr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd)
+> +{
+> +	vcpu->kvm->arch.ctr_el0 = 0;
+> +	return kvm_get_ctr_el0(vcpu->kvm);
 
-Personally I don't think we need to differentiate between spi/i2c/mmio
-bindings in the prefix, so the prefix used by Michael seems fine.
+I'd expect the cached value to be reset instead of being set to
+0. What are you achieving by this?
 
+> +}
+> +
+> +static int get_ctr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
+> +		   u64 *val)
+> +{
+> +	*val = kvm_get_ctr_el0(vcpu->kvm);
+> +	return 0;
+> +}
+> +
+> +static const struct sys_reg_desc *get_sys_reg_desc(u32 encoding);
+> +
+> +static int set_ctr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *rd,
+> +		   u64 val)
+> +{
+> +	u64 host_val = read_sanitised_ftr_reg(SYS_CTR_EL0);
+> +	u64 old_val = kvm_get_ctr_el0(vcpu->kvm);
+> +	const struct sys_reg_desc *clidr_el1;
+> +	int ret;
+> +
+> +	if (val == old_val)
+> +		return 0;
+> +
+> +	if (kvm_vm_has_ran_once(vcpu->kvm))
+> +		return -EBUSY;
+> +
+> +	mutex_lock(&vcpu->kvm->arch.config_lock);
+> +	ret = arm64_check_features(vcpu, rd, val);
+> +	if (ret) {
+> +		mutex_unlock(&vcpu->kvm->arch.config_lock);
+> +		return ret;
+> +	}
+> +	if (val != host_val)
+> +		vcpu->kvm->arch.ctr_el0 = val;
+> +	else
+> +		vcpu->kvm->arch.ctr_el0 = 0;
+> +
+> +	mutex_unlock(&vcpu->kvm->arch.config_lock);
+> +
+> +	clidr_el1 = get_sys_reg_desc(SYS_CLIDR_EL1);
+> +	if (clidr_el1)
+> +		clidr_el1->reset(vcpu, clidr_el1);
+> +
+> +	return 0;
 
-> A nit, subject: drop second/last, redundant "binding". The "dt-bindings"
-> prefix is already stating that these are bindings.
-> See also:
-> https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+No check against what can be changed, and in what direction? You seem
+to be allowing a guest to migrate from a host with IDC==1 to one where
+IDC==0 (same for DIC). How can that work? Same for the cache lines,
+which can be larger on the target... How will the guest survive that?
 
-Right, so maybe just:
+> +}
+> +
+>  static bool access_clidr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
+>  			 const struct sys_reg_desc *r)
+>  {
+> @@ -2460,7 +2509,11 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_CCSIDR2_EL1), undef_access },
+>  	{ SYS_DESC(SYS_SMIDR_EL1), undef_access },
+>  	{ SYS_DESC(SYS_CSSELR_EL1), access_csselr, reset_unknown, CSSELR_EL1 },
+> -	{ SYS_DESC(SYS_CTR_EL0), access_ctr },
+> +	{ SYS_DESC(SYS_CTR_EL0), access_ctr, .reset = reset_ctr,
+> +	  .get_user = get_ctr, .set_user = set_ctr, .val = (CTR_EL0_DIC_MASK |
+> +							    CTR_EL0_IDC_MASK |
+> +							    CTR_EL0_DminLine_MASK |
+> +							    CTR_EL0_IminLine_MASK)},
+>  	{ SYS_DESC(SYS_SVCR), undef_access },
+>  
+>  	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
+> @@ -3623,6 +3676,13 @@ static bool index_to_params(u64 id, struct sys_reg_params *params)
+>  	}
+>  }
+>  
+> +static const struct sys_reg_desc *get_sys_reg_desc(u32 encoding)
+> +{
+> +	struct sys_reg_params params = encoding_to_params(encoding);
+> +
+> +	return find_reg(&params, sys_reg_descs, ARRAY_SIZE(sys_reg_descs));
+> +}
+> +
+>  const struct sys_reg_desc *get_reg_by_id(u64 id,
+>  					 const struct sys_reg_desc table[],
+>  					 unsigned int num)
+> @@ -3676,18 +3736,11 @@ FUNCTION_INVARIANT(midr_el1)
+>  FUNCTION_INVARIANT(revidr_el1)
+>  FUNCTION_INVARIANT(aidr_el1)
+>  
+> -static u64 get_ctr_el0(struct kvm_vcpu *v, const struct sys_reg_desc *r)
+> -{
+> -	((struct sys_reg_desc *)r)->val = read_sanitised_ftr_reg(SYS_CTR_EL0);
+> -	return ((struct sys_reg_desc *)r)->val;
+> -}
+> -
+>  /* ->val is filled in by kvm_sys_reg_table_init() */
+>  static struct sys_reg_desc invariant_sys_regs[] __ro_after_init = {
+>  	{ SYS_DESC(SYS_MIDR_EL1), NULL, get_midr_el1 },
+>  	{ SYS_DESC(SYS_REVIDR_EL1), NULL, get_revidr_el1 },
+>  	{ SYS_DESC(SYS_AIDR_EL1), NULL, get_aidr_el1 },
+> -	{ SYS_DESC(SYS_CTR_EL0), NULL, get_ctr_el0 },
+>  };
+>  
+>  static int get_invariant_sys_reg(u64 id, u64 __user *uaddr)
+> @@ -4049,6 +4102,9 @@ void kvm_init_sysreg(struct kvm_vcpu *vcpu)
+>  			vcpu->arch.hcrx_el2 |= (HCRX_EL2_MSCEn | HCRX_EL2_MCE2);
+>  	}
+>  
+> +	if (vcpu->kvm->arch.ctr_el0)
+> +		vcpu->arch.hcr_el2 |= HCR_TID2;
 
-dt-bindings: tpm: Add st,st33ktpm2xi2c
-
-?
-
-
-> I got only one patch, but if these are compatible, why do you need
-> second patch? Plus binding come before users.
-
-Right, the order of the patches needs to be reversed it seems.
+Why trap CTR_EL0 if the values are the same as the host? I really
+dislike the use of the value 0 as a such an indication. Why isn't this
+grouped with the traps in vcpu_reset_hcr()?
 
 Thanks,
 
-Lukas
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
