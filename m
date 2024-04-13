@@ -1,151 +1,112 @@
-Return-Path: <linux-kernel+bounces-143750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 131158A3CF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:19:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38FD28A3CFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:35:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4030F1C2092B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:19:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3995B21619
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:35:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D33F446DC;
-	Sat, 13 Apr 2024 14:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828C024A0E;
+	Sat, 13 Apr 2024 14:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N9MOQg7w"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="f1xi1Yga"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0E6446AF
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E0F1848
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713017964; cv=none; b=L6qN8ontVjzJkFzB5+bts/J5kZBCNlQD/CSjxYf3owK9ZXTq/Oiz8Sv8gUHT6yEJjRU5FCnitZWRL224ddZ9j+iJE1cBZzctIIirY95NNjD3yH7oaPvII02INPo1dDD8qDT4gkvvgCWBM9WjYydr8MZjHKS2cRCa5dHYQJYNG+o=
+	t=1713018914; cv=none; b=T5KAluqFkeU72rGHn5m2htZ/3xxT9NIFNyJM9XihYMHbguer3+kwQyEm5NbrGDbSOAxqAop/CW4liVbp1PvBL7zQFM1ah6BekPlXP7xAEKUYUzAfzdrarof00geydclsGGecJcuyfG5127YvIO5BFfiUS3e4wueeB6bCtD26cBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713017964; c=relaxed/simple;
-	bh=pI4zqrbDe0xOthfGgbfKKxHvZXDTJNV784x8upizaIs=;
+	s=arc-20240116; t=1713018914; c=relaxed/simple;
+	bh=dPk0cDacUvwbrHHuf9fZXLRbdY/HN7S5wX29Cy0IFyk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PPdqXo9Z4HNit6hZ5nshLOI79f6n1uuDTgFT8HWyJp/68hLwWrh/Vk5OrR2dwt5EqmFxFovJKu3GMvGxwVQRnP34J0X0BOJvneJPUMIvEXkLnAu/6mU1GyJkOFKFfT+50H7diJkcOU2LktRAwrZN3CmKg6zNhe27whnfq3dcv+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N9MOQg7w; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713017961;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=z72n2c9rvzB7U1Xb9kq/ArIj/cYrcKMMmIL868r1S0Q=;
-	b=N9MOQg7wvvVjzLBzK/wKyIzkUVZEuaJDYwRGZXia9I8By41LjvIOV3rtahTlHItV2VaV7X
-	tpkWCSTOr0uqCQGGqJaoFjIiAk4i27XX45GcuSWb52TNWckpDoGnB9cbs2ZoyvS4ZKXxrM
-	XiImTyq7BguqV6CoiNTTQ3HiEx3KxIk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-682-rkB8vYFPOx6M8ku4QDbPOA-1; Sat,
- 13 Apr 2024 10:19:20 -0400
-X-MC-Unique: rkB8vYFPOx6M8ku4QDbPOA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E9041C03143;
-	Sat, 13 Apr 2024 14:19:19 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.136])
-	by smtp.corp.redhat.com (Postfix) with SMTP id B2AFA2026D06;
-	Sat, 13 Apr 2024 14:19:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat, 13 Apr 2024 16:17:53 +0200 (CEST)
-Date: Sat, 13 Apr 2024 16:17:46 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
-	Chris von Recklinghausen <crecklin@redhat.com>
-Subject: [PATCH] sched/isolation: fix boot crash when maxcpus <
- first-housekeeping-cpu
-Message-ID: <20240413141746.GA10008@redhat.com>
-References: <20240130010046.2730139-2-leobras@redhat.com>
- <20240402105847.GA24832@redhat.com>
- <20240411143905.GA19288@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oXRjZYrbbENkBYOi6VGmXgE6dk0k2DtlwhhNX4jTw02Xt+5d/2JhyqmrkEc0fK+/MgcaaoJpSEcXoSPFxnBt6lDwLFz5mqc+TU2SqrYnt1TaQNpZCYwtJS2+81zRW9jb4IwYy9fi3P8ib72ibx0nVdjDsslE5c442R6xw7XzBvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=f1xi1Yga; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=dPk0
+	cDacUvwbrHHuf9fZXLRbdY/HN7S5wX29Cy0IFyk=; b=f1xi1YgacavXRDSt6xtN
+	LvS4ALlTEAcOlRfGb8vyAFs8ysega+SUXmBbQ2z1BSK5kgHOPfvVaW7Dk3hHKrsS
+	cxfUbpkwMFqx1QOXiq2GZXTLo3cHcIcYJGEmQLtK60c+ZkhksY07L22O94u0aNpu
+	FlyzDY++jCJSe8UdT257ReMr8csMORsb01IR5bOskz1PjykKHs8PfS7/V+yE3Qto
+	Q/mtH9gmDrtyxmX/uCF0PgvqtTk0bDn5sMJczCKdT6Z48TtziMasNrA6brcx+jn1
+	AIaMpQhA8LoAW2cWPqFnemid54eYIsrOUmTtQUXNZKRYP35ahggC/XGvyH/OqE60
+	Rw==
+Received: (qmail 1533133 invoked from network); 13 Apr 2024 16:35:07 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 13 Apr 2024 16:35:07 +0200
+X-UD-Smtp-Session: l3s3148p1@9IltS/sVoppQk7GI
+Date: Sat, 13 Apr 2024 16:35:06 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
+Cc: Dragan Simic <dsimic@manjaro.org>, linux-i2c@vger.kernel.org, 
+	Andi Shyti <andi.shyti@kernel.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/18] i2c: rk3x: remove printout on handled timeouts
+Message-ID: <dnh4yiajjqcxcq7xjvj35quda7yrf7tubp2l2ktsaf4zgzai4n@xdefxkk76yyg>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Dragan Simic <dsimic@manjaro.org>, linux-i2c@vger.kernel.org, 
+	Andi Shyti <andi.shyti@kernel.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
+ <hgdhrf2jiovfxcppdtsq32sfbk4xuq7ewiwq4awwztj4mp3yez@kj6ixihkcxhe>
+ <af8ac48f10a1636ab2486aef91e01c3f@manjaro.org>
+ <8358604.T7Z3S40VBb@diego>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3rm5ajlyb22bpc7l"
+Content-Disposition: inline
+In-Reply-To: <8358604.T7Z3S40VBb@diego>
+
+
+--3rm5ajlyb22bpc7l
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240411143905.GA19288@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
-
-housekeeping_setup() checks cpumask_intersects(present, online) to ensure
-that the kernel will have at least one housekeeping CPU after smp_init(),
-but this doesn't work if the maxcpus= kernel parameter limits the number
-of processors available after bootup.
-
-For example, the kernel with "maxcpus=2 nohz_full=0-2" parameters crashes
-at boot time on my virtual machine with 4 CPUs.
-
-Change housekeeping_setup() to use cpumask_first_and() and check that the
-returned cpu number is valid and less than setup_max_cpus.
-
-Another corner case is "nohz_full=0" on a machine with a single CPU or
-with the maxcpus=1 kernel argument. In this case non_housekeeping_mask
-is empty and IIUC tick_nohz_full_setup() makes no sense. And indeed, the
-kernel hits the WARN_ON(tick_nohz_full_running) in tick_sched_do_timer().
-
-And how should the kernel interpret the "nohz_full=" parameter? I think
-it should be silently ignored, but currently cpulist_parse() happily
-returns the empty cpumask and this leads to the same problem.
-
-Change housekeeping_setup() to check cpumask_empty(non_housekeeping_mask)
-and do nothing in this case.
-
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/sched/isolation.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 2a262d3ecb3d..5891e715f00d 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -118,6 +118,7 @@ static void __init housekeeping_setup_type(enum hk_type type,
- static int __init housekeeping_setup(char *str, unsigned long flags)
- {
- 	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
-+	unsigned int first_cpu;
- 	int err = 0;
- 
- 	if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK)) {
-@@ -138,7 +139,8 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
- 	cpumask_andnot(housekeeping_staging,
- 		       cpu_possible_mask, non_housekeeping_mask);
- 
--	if (!cpumask_intersects(cpu_present_mask, housekeeping_staging)) {
-+	first_cpu = cpumask_first_and(cpu_present_mask, housekeeping_staging);
-+	if (first_cpu >= nr_cpu_ids || first_cpu >= setup_max_cpus) {
- 		__cpumask_set_cpu(smp_processor_id(), housekeeping_staging);
- 		__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
- 		if (!housekeeping.flags) {
-@@ -147,6 +149,9 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
- 		}
- 	}
- 
-+	if (cpumask_empty(non_housekeeping_mask))
-+		goto free_housekeeping_staging;
-+
- 	if (!housekeeping.flags) {
- 		/* First setup call ("nohz_full=" or "isolcpus=") */
- 		enum hk_type type;
--- 
-2.25.1.362.g51ebf55
 
 
+> Also we're talking about two lines of code, I wouldn't call that bloat ;-)
+
+With this patch, yes. But once you allow debug code, it is hard to draw
+a line which debug is still okay and which is too fine-grained. And then
+you end up with a lot. Over the years, I developed the tendency to try
+to have less but meaningful error printouts. But I don't enforce it
+strictly because it is too much bike-shedding discussion.
+
+In case of this error printout here, it is just wrong. But, see, it also
+came from this tendency I don't like to have printouts for every error.
+
+
+--3rm5ajlyb22bpc7l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYamBoACgkQFA3kzBSg
+KbZ5mQ//Sz4z/OJ/HyrUnuAtL6eJjBPkhIyxgjlxGgFSZ7sPECcUBR6Y0itNh20D
+LVMfF3XdU05v1wHMbmysTKBje3SdNsBMhLpM4hYXC65CLyO9mlPGeath+W0yMtGR
+DQIaItYs4WssxmRd9C9gbi9XDINsMq8JfSccPtVgFqWMXowYtnJHc+y9ykMH65R0
+YT9X05NYGdCd9aNEfyDDb6I4t4S3v3p20/va00L/jfaQubpoTomDfuhtOGy04cQn
+xzT1PAdTR6HPLN+2Nl0FUHMUhO1GaJzsn5MT5XSuuHzIgQ+d4zrVzfPXziP1fJP8
+jsR/FMHBc7uhFtinY5YW+8DURLwA6zwe8pGNvuf5StFfGQK8MIefDH6cIOz4c3y1
+xCbz9B7a/dOKB6Q8VkFLgvEC2Uxcj8J0klrG1vuxAtqTig30dm/zJO44gi9luivY
+mUdkrCF6JDQlBuWdyku1U26vGbUZq/y5x3xLU++BkuaDBRQNyBo9rZi5up+FhZTe
+rsRKO+Ey5ils8d1zyElAnaUylSoMrFlMpTb7IATzM4+v59+T9kCv1DL2cOrYJKb2
+NU+Mp6yjYXAmK8fP/OJzO/7FzMlS7nxGue1XKaTH2NNM9Dq/SEvQIU5JZKJs27MJ
+oYVVlVRo2cXhZIZ6Yfo9WvO91vYe9lWTxl2+MIJKhs9dhzNlTYo=
+=I1ij
+-----END PGP SIGNATURE-----
+
+--3rm5ajlyb22bpc7l--
 
