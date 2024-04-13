@@ -1,96 +1,111 @@
-Return-Path: <linux-kernel+bounces-143916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7EA48A3F83
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 00:52:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A9FD8A3F85
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 01:05:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC44B1C20DD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:52:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBC8028226A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73D343AB9;
-	Sat, 13 Apr 2024 22:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4402053E0C;
+	Sat, 13 Apr 2024 23:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Xq2NZvHi"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dl7AgR88"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE231DFF4
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 22:52:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180E22907;
+	Sat, 13 Apr 2024 23:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713048757; cv=none; b=pCSTpW4eVLrt0X0COfq35SqTu4GvWiNj0gG+I9OFsMyCuG73B9WTpec6uxRk/CqZKFRtDxw2xbedyl9fXf7VCTSkerUrulhQ1T9vmDm1I0vyIsHnClxBmQme2spq49qZKpQ4kXZMleyBPaUXg2egHGnTlqg+2UfQbIg/IdoOC1g=
+	t=1713049524; cv=none; b=hdpMApI6ikcS7kt1zCAVk27RKiLFpFRHi6xQobFkyTQyVrNfRao7r3ViN53xRWjfGmaNY+zcBvEosWrZ/24/Wqa5eunmSkedH+00JCqnnA/IL5oE5QYuFueB62MEFLraoulWoJXmJJKEj2ul7AgaInkUclwYbWvyNCCNfQ+Y+ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713048757; c=relaxed/simple;
-	bh=p4WHYuDdZkUXSCcnAPSW9ZbfL3B4IrFnKvFtJtQajVc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ksYNBXLGm1ED4x9NDzzp8kTM/dx0ORxFCWhzRhYljGAX5SFSpl7gAbkq2Afh/Naxyp93IFJCzQv63iXEU/dxWf0/441Y0vl/usmDKiLzZo+pNsxwlfLQnAVnQJKLemCveI1uJvb/KZham+9tJhob3GKTYpHS39pZ2fsuz5/wBmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Xq2NZvHi; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=3rndp98eVT8xk43ZfC1mcEoaahpfqsSRQRLuTarqD34=; b=Xq2NZvHiWK9tjBYRQAZJxyRRi+
-	XyySPdv6NufSpFK+nOdWpEYlL41F6j07+Gf560tiAAVzD7RS/lbDwutTumugALM9c9iN0HI5OHydC
-	NiGme//C0/s97Ad6sKUHV1aqkSO44dAhkfcnaPO/tkEJWhWa2CKrnK8XBtXXU2aw9r/c4JQy17qKu
-	u3692y4qAmPM6eKloyeGUBU43zpj/wN/x5woWyWlcGQ4Zj8oTmzTXW2efCeSFGlWJYlHkELVqa/JO
-	ARqkSm0zW07fBxFnvXBe3aliqA8JQTpGdSQ/4sOgjpML8hJvByNqfYGtWnCDByFNgQX21hOpsHQpj
-	GlUVt7ew==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvmEZ-0000000CHv1-0H9R;
-	Sat, 13 Apr 2024 22:52:31 +0000
-Date: Sat, 13 Apr 2024 23:52:30 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Peter Xu <peterx@redhat.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Lokesh Gidra <lokeshgidra@google.com>,
-	Alistair Popple <apopple@nvidia.com>
-Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
-Message-ID: <ZhsMru7gcqR6gL9q@casper.infradead.org>
-References: <ZhhaRXHKk7w_hKgi@x1n>
- <Zhhd-A7w1A8JUadM@casper.infradead.org>
- <ZhinCD-PoblxGFm0@casper.infradead.org>
- <ZhkrY5tkxgAsL1GF@x1n>
- <CAJuCfpG7YkQ2giKiv07TetTn=QHK9x723vnLaTjDCaQjUvAavw@mail.gmail.com>
- <ZhlCVOz7qaDtldfL@casper.infradead.org>
- <CAJuCfpGGUD6ev-KFhON2D2RqQRZSgjxFXvkNqeux-LrJw4L+iw@mail.gmail.com>
- <ZhlQ_4Ve0vYNbWbl@casper.infradead.org>
- <ZhlT4eG05mUcOQQJ@casper.infradead.org>
- <CAJuCfpENhnjnrDPfJPyYaNNLT9VT414VbT45WBoN-EkqTjGMtA@mail.gmail.com>
+	s=arc-20240116; t=1713049524; c=relaxed/simple;
+	bh=8QEicRx42xj/J7UkEpto502zcBqvBEWrDJOliH3rKmM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a3Ja3obQkeQ8XfMuXeD4HoHzbiOZQwrlYTEdLFlzgM43XQsjM5G637T2pFuUtIK1QMR4yVPZ+2yjq+aD+mE/VgswVVkrljXwnNmgVgRnzLp9+ip9SlKw8SeCy95ijZprUV0DWWZ3OEumOog7SAEPsMxFzLj8Ezy5ohy+Kdf11Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dl7AgR88; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-416a8ec0239so10775615e9.0;
+        Sat, 13 Apr 2024 16:05:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713049521; x=1713654321; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=07rvDcYqUh3/Dt5nvYFufhJtipnvIOms6QidQpuPmH4=;
+        b=Dl7AgR88nZpWBnOewfRFvZkgVA8xxRKKP6/OExj9qWQ7hmty+ai0lUB5eCWOe30thc
+         81Z4V9+bUUfDU+rmChr7wFwY05Z8v9eud//1t1r5wIFMNWmABM1JwiZlukqIxC+COrL3
+         cJtD4OaYMrkZOhKRs4waNMG6v4yW0HpbrlR7c9L9BHcfzN4XfuuDZq7FNfP3p13+AX+G
+         i99SWni8mO5Fm7B4KJqj7UAASHAbgCfa4xegHDRuqMteIbjjmVJujx/BvlMGbkqtNV5S
+         WBiL7xYPNSpmdUFT2PDV0XDuhPz1L0Oj7mL5vssQ5cdii+UKSwYfIlHDilgrKOm6WBNo
+         SDqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713049521; x=1713654321;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=07rvDcYqUh3/Dt5nvYFufhJtipnvIOms6QidQpuPmH4=;
+        b=e/mMInGd2QEs+LHfbeaq3jVxImKLIT5reaN6cUCydAV5E6Cvh6fAVRsVJV4+2yhH4V
+         kSf5fAK+JVWILXxdRFavZD0Pr6O6qjFuYGzg2uYq81ayXASrqdPoU1q7DTGK9J9FFEVC
+         FMX3xofU0pXJbZTQnrGItbrSRbj23X900PlMy4zZcdzsIq+JCRgyrEZPLTUl5bP63sED
+         29n8RqAbyXuJ620dhT05jF43Q4dSfVVwO/jQ9QS1CFuzZK1/51t11Ju3Oh9nHrWbO/wV
+         KulM7XboH9HbORUE9aHYA3D950RG+6v+S9HntgWZQTL0kg4Y7ZIHJM1ryZxH42aCWBsW
+         Etig==
+X-Forwarded-Encrypted: i=1; AJvYcCWJZgUQq+y+biq+w7QQ7Koif4V8YsuhvawR/ReKa1TZbB25nbGnApvEnLZX+oENIcC7+dj5N11f54fQbKWMogYETU6Bjh/l72/ghf2QHlFTFnS3Kmx018RxG3yU86mgUIPh2jFKs9Ze+FOAlKY=
+X-Gm-Message-State: AOJu0YxYP1bR3ygy1ZHxZIq8i6SM2BScBLpD25WgWeeea1cNjhQR02P7
+	dSsr+BJ48QVW3cVrKT5j1pq7kZwl5SAELi0cymetTqZIwx6ebm5c
+X-Google-Smtp-Source: AGHT+IEWdxKZcdIPalz7fsxdwwP+xAiU+4CSeyDMaQe7wC2X83AnDjW4o/FObjWOHjOxhkKTXW6jHA==
+X-Received: by 2002:a05:600c:1d09:b0:417:29a3:3f50 with SMTP id l9-20020a05600c1d0900b0041729a33f50mr5260855wms.11.1713049521199;
+        Sat, 13 Apr 2024 16:05:21 -0700 (PDT)
+Received: from lewis-nuc.. (a.e.3.a.e.c.e.b.9.9.8.e.e.7.8.3.2.5.b.3.a.b.d.1.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:1dba:3b52:387e:e899:bece:a3ea])
+        by smtp.googlemail.com with ESMTPSA id r10-20020a05600c35ca00b00415dfa709dasm10213859wmq.15.2024.04.13.16.05.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Apr 2024 16:05:20 -0700 (PDT)
+From: Lewis Robbins <lewis.robbins2@gmail.com>
+To: lewis.robbins2@gmail.com
+Cc: Ping-Ke Shih <pkshih@realtek.com>,
+	Kalle Valo <kvalo@kernel.org>,
+	linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] wifi: rtw88: reduce failed to flush queue severity
+Date: Sat, 13 Apr 2024 23:59:03 +0100
+Message-ID: <20240413230030.390563-2-lewis.robbins2@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpENhnjnrDPfJPyYaNNLT9VT414VbT45WBoN-EkqTjGMtA@mail.gmail.com>
 
-On Sat, Apr 13, 2024 at 02:46:56PM -0700, Suren Baghdasaryan wrote:
-> On Fri, Apr 12, 2024 at 8:31 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >  - Rename lock_vma() to uffd_lock_vma() because it really is uffd
-> >    specific.
-> 
-> I'm planning to expand the scope of lock_vma() and reuse it for
-> /proc/pid/maps reading under per-VMA locks. No objection to renaming
-> it for now but I'll likely rename it back later once it's used in more
-> places.
+Reduce the log message severity when we fail to flush device priority
+queue. If a system has a lot of traffic, we may fail to flush the queue
+in time. This generates a lot of messages in the kernel ring buffer. As
+this is a common occurrence, we should use dev_info instead of dev_warn.
 
-That would seem like a mistake.  The uffd lock_vma() will create an
-anon_vma for VMAs that don't have one, and you wouldn't want that.
-It seems to me that lock_vma_under_rcu() does everything you want except
-the fallback to mmap_read_lock().  And I'm not sure there's a good way
-to package that up ... indeed, I don't see why you'd want the "take
-the mmap_lock, look up the VMA, drop the mmap read lock" part at all --
-once you've got the mmap_lock, just hold it until you're done.
+Signed-off-by: Lewis Robbins <lewis.robbins2@gmail.com>
+---
+ drivers/net/wireless/realtek/rtw88/mac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/realtek/rtw88/mac.c b/drivers/net/wireless/realtek/rtw88/mac.c
+index 0c1c1ff31085..800f4eabae13 100644
+--- a/drivers/net/wireless/realtek/rtw88/mac.c
++++ b/drivers/net/wireless/realtek/rtw88/mac.c
+@@ -1040,7 +1040,7 @@ static void __rtw_mac_flush_prio_queue(struct rtw_dev *rtwdev,
+ 	 * And it requires like ~2secs to flush the full priority queue.
+ 	 */
+ 	if (!drop)
+-		rtw_warn(rtwdev, "timed out to flush queue %d\n", prio_queue);
++		rtw_info(rtwdev, "timed out to flush queue %d\n", prio_queue);
+ }
+ 
+ static void rtw_mac_flush_prio_queues(struct rtw_dev *rtwdev,
+-- 
+2.44.0
 
 
