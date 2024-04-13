@@ -1,106 +1,96 @@
-Return-Path: <linux-kernel+bounces-143595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58A808A3B42
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:39:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99BCA8A3B43
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:41:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C069B21F92
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:39:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5AA11C21257
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6FCD1C6A0;
-	Sat, 13 Apr 2024 06:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB8B1CABF;
+	Sat, 13 Apr 2024 06:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="UXFnA0ga"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="remnbn8I"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B81846F
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 06:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516E633C5
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 06:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712990349; cv=none; b=LNqIJKj4ai57Q5l8Oz6ZqGH9m/LjtTFfq4GJWEjRQIn9JPIEPwWSFC6o8cy+mITPgk1Vy6bI0YJJCJ0a5UoCY082B1U7792zyLpjkIH52YTjroK9mliTdakqQvvtjUvlYWTqKfLWefvHG5h/CR1Za8Q2JIPaEzHySIXBRAXkACw=
+	t=1712990467; cv=none; b=Cs7a9hfy7UVRtWis3d3rSVHHKzAxP7LTu6KX+uM+Xp2og+UC92tF/EjBDnITXLdPNePqNrJ25uY4MzpYp2lKZvEgOwvDEOt8cGNoAkKmCILD/KOChQo2zabCcf+pgnqfTrKOAQZ44hAasE5AJNu5la9ILMSCcFpTVawXWOW4s1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712990349; c=relaxed/simple;
-	bh=hZke1ChR2zX30fUMb71QHmBPhn9bQ8Lye0W2PKfJAXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=izLZKW08yMw7FxBVvO9FYSS39O64Jmi80qImpO2oPHQPNVpHJlBTj3PIccDIBOSBv4qrIhNLRsymwvdqjbdrjJQyq0BdD90bQDD+umg90UDjeVssECYtA1jOzYU8MyHBCOAwg5x9XVzZwKnGQnWmQLZ5+MgDqM4GrxhbdKBcuVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=UXFnA0ga; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=UGLa
-	QB+Iw2RM3zOnSeet1OBI5DXFOCaVcQZGWoHw6/M=; b=UXFnA0gaRTlicU1eGmFw
-	M14hrfGPhOdCy0ib+qkmujECYDiFSrKgoORtfxtbBa5WBOKyTUXuxrKWlxpIVE8C
-	h3oupEisiSp0NWM94P7jK8j8ystIKDdu/QI+aXZVbxDuv2a8mU4uKI5KQd8ODy/g
-	BD5nGZ0F1PlNXPWzTxnZTil9QtellL+7lW4cr7ioTL+0PojF9+H6cEmKL+iF/rxx
-	XcfTT3i6ZnkDaaxO3T6OtmC3SnbQOdBMGmh2dFxsQWgYSRzlodSWnKc968nBuhzF
-	nZIj/1Ahkv9/qHBip6PkYAWH2gc5BlYcaf7fJEIOqx1aYw4bX4WG4kik9EKBg5sv
-	nQ==
-Received: (qmail 1435521 invoked from network); 13 Apr 2024 08:38:55 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 13 Apr 2024 08:38:55 +0200
-X-UD-Smtp-Session: l3s3148p1@CBRspPQV8ElQk7GI
-Date: Sat, 13 Apr 2024 08:38:54 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: linux-i2c@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/18] i2c: rk3x: remove printout on handled timeouts
-Message-ID: <hgdhrf2jiovfxcppdtsq32sfbk4xuq7ewiwq4awwztj4mp3yez@kj6ixihkcxhe>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Dragan Simic <dsimic@manjaro.org>, linux-i2c@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <20240410112418.6400-33-wsa+renesas@sang-engineering.com>
- <4bcd397ec377a4932c34d62c85ef28ed@manjaro.org>
+	s=arc-20240116; t=1712990467; c=relaxed/simple;
+	bh=zfO/QxmQJ/t1TEDAe6rBSwFvFvCziigNdI3WcpmvD+M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IUqfqO9aGsC78upwDCylluCHkEKnq5pvaoHwuWrYhGmlUW6oaNaEb8hidwF4hM6XB52z0QHRfYaGpFHfxRHLYDqG7nDNfyplBhl1rKJLOKi0tVZNjeT4uRXKFS7vdGnzOQLch1y9thYlrYRJk0Up7E+ggrtOpBMx6jhW6LAttwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=remnbn8I; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712990454; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=/OZ68aDj4lKRSYMfEx7Rvi/TenxwyTAvkYzYhYxFPtE=;
+	b=remnbn8IJoKMPgkzpHjGcNlc5PtjCYMD9wnj0D8+3acYJ9C8VX8OxR4Kv4EtEkAS4bSOBcVFHzeojGnqeyK0ciQkkzjQMeuCb1PIul3VUkqEGWETQ3zKfa5yAJcZKhmdkZtW0oxLPTL9L14m/y5sV9Kxihelr2jaTC2zXt/JMts=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=guanrui.huang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4Q.spW_1712990452;
+Received: from localhost(mailfrom:guanrui.huang@linux.alibaba.com fp:SMTPD_---0W4Q.spW_1712990452)
+          by smtp.aliyun-inc.com;
+          Sat, 13 Apr 2024 14:40:53 +0800
+From: Guanrui Huang <guanrui.huang@linux.alibaba.com>
+To: maz@kernel.org
+Cc: yuzenghui@huawei.com,
+	shannon.zhao@linux.alibaba.com,
+	tglx@linutronix.de,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Guanrui Huang <guanrui.huang@linux.alibaba.com>
+Subject: [PATCH v4 1/2] irqchip/gic-v3-its: Fix double free on error
+Date: Sat, 13 Apr 2024 14:40:50 +0800
+Message-Id: <20240413064051.31315-1-guanrui.huang@linux.alibaba.com>
+X-Mailer: git-send-email 2.36.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qknyah4mgczhweoa"
-Content-Disposition: inline
-In-Reply-To: <4bcd397ec377a4932c34d62c85ef28ed@manjaro.org>
+Content-Transfer-Encoding: 8bit
 
+In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error
+with i > 0, its_vpe_irq_domain_free may free bitmap and vprop_page,
+and then there is a double free in its_vpe_irq_domain_alloc.
 
---qknyah4mgczhweoa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fix it by calling its_vpe_irq_domain_free directly, bitmap and
+vprop_page will be freed in this function.
 
+Signed-off-by: Guanrui Huang <guanrui.huang@linux.alibaba.com>
+---
+ drivers/irqchip/irq-gic-v3-its.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-> Maybe it would be good to turn it into a debug message, instead of
-> simply removing it?  Maybe not all client drivers handle it correctly,
-> in which case having an easy way for debugging would be beneficial.
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index fca888b36680..2305f6b524a9 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -4561,13 +4561,8 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
+ 		irqd_set_resend_when_in_progress(irq_get_irq_data(virq + i));
+ 	}
+ 
+-	if (err) {
+-		if (i > 0)
+-			its_vpe_irq_domain_free(domain, virq, i);
+-
+-		its_lpi_free(bitmap, base, nr_ids);
+-		its_free_prop_table(vprop_page);
+-	}
++	if (err)
++		its_vpe_irq_domain_free(domain, virq, i);
+ 
+ 	return err;
+ }
+-- 
+2.36.1
 
-Hmm, but it still returns -ETIMEDOUT to distinguish cases?
-
-
---qknyah4mgczhweoa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYaKHoACgkQFA3kzBSg
-KbYlVA/+MUricXOt+mbCxREQXUINn+xSChvT9stYcMVqMxjDu0SEak6tkUuGcvTt
-BAXj3a93QxZB0kyVlC+ULQHlssZxloRDwNUZ+aE/0OCobAwGFDNZCOyh7b0YirOE
-r7YY0OP7vib7uFU5bNc6Ma9N7991PH107cxViqwYhiNNtNt0pOXa/WXP+ZMTqodP
-AeOvQ+PN2aK9pmObgpvnXAr07Lgu5LqRlJPLP76fTKDbEp93cT9KLnr1h1MEaU4u
-K6vNCPqasHCHtgYXCr1ScIzWT5WAgYH7pzEZK7ByX7L0Im8Mtq3HlIb2WIkapCH1
-c0VDGUOPpNQAbzfX/fnZFr+ujb4CD2sedtsDo3R+uQO0xd3sXuMo6rAlf2wh79dj
-3j9+tBcFBD+ZZIFcyXE5INVB/eMsVkZePRHr5Rzu9iwv/vSs+NvgFjnbUBE+/jCE
-lC+R7EjoH+gKH+1cCfy2hK8nnrh3x7APIiCs9Od/L04kpZpH7o72IrUEvDzitlR3
-CKKgGLCGypujRE5jD5uH84X0uJCwPSuXICFCA1Oxrsmp9spQ9hDoGPZV1xc9LF1p
-fvzwLZGa8Z3TeiUXhB0ccQmrnd4BjXK37MBZ6l1Srz9AYZxPpC/JAAGi9ZCjlSl+
-D/OkobkAhZx1/Z6nKZsCF7ENBjiDlLayyUX5CVAU7DjYipfMyDs=
-=L3eu
------END PGP SIGNATURE-----
-
---qknyah4mgczhweoa--
 
