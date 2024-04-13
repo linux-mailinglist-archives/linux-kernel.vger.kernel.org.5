@@ -1,160 +1,156 @@
-Return-Path: <linux-kernel+bounces-143523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CFA68A3A7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:25:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F078A3A80
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:27:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11B4E284340
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:25:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ABC28B21978
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5084C1C6B2;
-	Sat, 13 Apr 2024 02:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="d4pxaDSq"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B124A168DA;
+	Sat, 13 Apr 2024 02:27:27 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 232221B978
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 02:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D640D8C1A
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 02:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712975058; cv=none; b=VSplSDEyiL3l+prAYhXgIgxPHSp5EiisY/vslD12P6FtItCBczC55ECMqzHo/U+clhInhD6tyrC8J5pr3/ZzwPr+LgEzYzgkOkXFc1WixQSzTZBxFtSAAr34Mm+wV9BvwEF5oZdh4YCOPdN/owrOPww1X9i5T5paoxXe3nXYZYQ=
+	t=1712975247; cv=none; b=vBnXck79PjD50RiNF57dQjWE5KubpXzBDgYnF1c/v4OleQO6URwutYHQAkZ/Zt1BDdwtL8jtkctj/ZOW0UtcWXase4OiQiGLaS9l+dO1odlBPVZ8ederfyFoIcJBQR6P6efWdAfVFEAsJ4t/fHhJ+P91i50gKBa+YRUR0VrRj4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712975058; c=relaxed/simple;
-	bh=zyDgBGE0uOh7yhHXUN8OqLzqFOje2WXWPFCwIO8VvvQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=dO5MryBcCCe20v3S65qoaLAqK1/14x0Z9Ku0Y55I2SEXtI3JuYJa4cWfUqQ97R8cK/df4PLvYN0yJl1z0gtEZVyPhDQKLaxaYPncsnLJk6fcOwj6EALIjtC88RCsjr+w2aP361HG6n6qZgFM9e3lGWBxczkbSOfmuczbVIdsgzg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=d4pxaDSq; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-617bd0cf61fso28196047b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712975056; x=1713579856; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GGSekAACS+5O/41JM9vPAXBnj4QEps+gftm74rD23xg=;
-        b=d4pxaDSqBGDGO9wHMrgP4boezbPfC5OKND7tT9B3V9YzKCl/mT+fRPvw7r9dkSIGGt
-         ZOvvSgT/M9BvI9AAsbPm9uZCFGL90zcdHQWfvWVLFhTrVGZOz8JYCaUu6XtOsoZBaqOU
-         5tNJv6xJPXJoY2yeriYx9gg2rKBiIXdcIDxgWjavTjWENSg7dTl39yLkVqVLkQUDo9Lr
-         qSBvAhstyV56k+4GMJeiFJ80Jjdmmi1vol80thOpC0VjQmUUfreala1wlsTiB0P8YHM8
-         7DUtTU5uEM9uKjWIGvUUj+q0ZXeC+cR3PQm0sqN9mffRIPNEQ3pDSnzfGinJsZ3jbu+D
-         XsIw==
+	s=arc-20240116; t=1712975247; c=relaxed/simple;
+	bh=VlwQ4wR3c+gOVAmJlO2LaFAC69KfefrN/1KxDxizliU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=F1LgWzXaEWpXQdNfkd82SYeUeIqBYoyylInPhhlEK09ZW906B9pPxg/7e6Rl7hxjaWjfzcMSooCTQepHPHVUrHxx7A8EPXHA6/mtJCiVKc4UlMUJHFQmNJRvDYJ0ErctSx7l5FhG8vd+L/lEu4EcrL4aJc7JKrKyHE2NAeKvIBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d5efba3f8fso175954739f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:27:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712975056; x=1713579856;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GGSekAACS+5O/41JM9vPAXBnj4QEps+gftm74rD23xg=;
-        b=KycZpQ6owxkavxak6+Sd7/smwx+XAwB4+cxej9EZoIpTjM8L7+uDejGlo9MZwqxFDO
-         P7M3l9qfe77jg13cz+ZC6ssxmo8NyN7m1NEROEeYfARoAwubK1jRb4v6L1Q+2KHoHwhf
-         s5h/hM7/bxODFw+0OU9EHk3akkMJkknOgu58kJepuH6KWe2S8UKGoNUUaiLn72NN8wDB
-         1x+JLyFf3XTaJMqiS4qFvfmczdUHVS/5/Kuxth8GHlcJxzFsg1AmQfp1R9m8zLBvFZBw
-         2mwZFjnLqsDmRg/Rr/6CdeXyGxyJwkvX+wHhpUhSSAOxu5WLNvrN8pV4bpAEgNKhM8CG
-         7X0g==
-X-Forwarded-Encrypted: i=1; AJvYcCXkEmymhrPZeNB2HKBboQya38vc2QBSTRkhWg534SoGpKlKyeSkuLdACh1XALKyWfU8XUq8wvPs+1kn/Ws+Jfi1SKJ8HEsvBXJKs1uo
-X-Gm-Message-State: AOJu0YwOoU+l3Ub6FD0tqvZyhcUEm7Bq7qnsa3Wf57TtK6YDv2K/MYhk
-	bchSsjPh0Y+diWJV7gg+sL4VvyT0XV8wtlEsKbwvOH73MY1DF71dx5a0P9iobMQUHO8IDkJMiWJ
-	Ha+dEnGqbgbx9FEflhg==
-X-Google-Smtp-Source: AGHT+IFlkK/1syKwe6dvTycUcSxBT93UngoIpgQpJlcuebA8rvVZJNpQ+d8xJDsJnJOws2HVuhkwwg+6UgtMptz/
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a81:4fcd:0:b0:618:a530:10aa with SMTP
- id d196-20020a814fcd000000b00618a53010aamr174476ywb.8.1712975056398; Fri, 12
- Apr 2024 19:24:16 -0700 (PDT)
-Date: Sat, 13 Apr 2024 02:24:07 +0000
-In-Reply-To: <20240413022407.785696-1-yosryahmed@google.com>
+        d=1e100.net; s=20230601; t=1712975245; x=1713580045;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JGpFiZMoct/gTKw486CudPM82VeVmjUMnBJvMxioOug=;
+        b=AL2G1RL4x/8sDp2mLuzu3gpv1q4B9jNcJP7eYZX/TAQ5giepkwUUgFpfmHFIDdw4tz
+         JB6iGeLOeS4Cr0Kc85mCQqrCI+pMyAKuP+GyNV8v3BogmJBNQU9xcyUjXYxENJRDWXag
+         dSRqJjcrkl+jn+tpd24/lDAhsYmPtvQ/GCm6n+ks1cxi4Vv1vIiYBHqog2v2D+bL6pJ4
+         slBRRYTOwipiQ9C1R0TgGt/BZmYUgJtub3OWtLldZkMzYKA/F2IqpItTMeAz/+kjcQlY
+         QldODa/9X2JC2jm7wBEb4rJbY3EFXfOFKlFxpBE/pLv4HmLXX7+hPIpet7HHiidL0JvB
+         XAHA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQP7OCEhx6JXHd6lEEuR0EBsRUQyUUZkFESzzSAy8pNCdjZb6E4qANxSzfm9k/36pISyyboUlUdtOGRFLqZoYbifpjdGqV5qHekd/H
+X-Gm-Message-State: AOJu0Yx5qlvPOUG87MOxskoeY5decYet/DFCEktTEMdMUb87LWOZAbUX
+	44lqgeJaTzu+bOzQmO8dLr4NJi7ESpwKsuZlaseBPphkxyQI4u68JH6jdp1vf5T2l8UK+VML5A5
+	ECQaGSp8IPJEoGYilE34f8JMmNNwfYk/+p+IRmIl09v/4s8X2quMRCFU=
+X-Google-Smtp-Source: AGHT+IHfcl5Kh+4PDWY92bV+Hcoj+JIhrgUf7vFKqM4wkeIxu9S/k/ExVOpCoENytMxVuej6SRqool+l6LT95MstiEbIWqKYC9kf
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240413022407.785696-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Message-ID: <20240413022407.785696-5-yosryahmed@google.com>
-Subject: [PATCH v3 4/4] mm: zswap: remove same_filled module params
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>, "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:2494:b0:47c:6d4:3e57 with SMTP id
+ x20-20020a056638249400b0047c06d43e57mr137698jat.0.1712975245105; Fri, 12 Apr
+ 2024 19:27:25 -0700 (PDT)
+Date: Fri, 12 Apr 2024 19:27:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fe696d0615f120bb@google.com>
+Subject: [syzbot] [mm?] KMSAN: kernel-infoleak in bpf_probe_write_user
+From: syzbot <syzbot+79102ed905e5b2dc0fc3@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-These knobs offer more fine-grained control to userspace than needed and
-directly expose/influence kernel implementation; remove them.
+Hello,
 
-For disabling same_filled handling, there is no logical reason to refuse
-storing same-filled pages more efficiently and opt for compression.
-Scanning pages for patterns may be an argument, but the page contents
-will be read into the CPU cache anyway during compression. Also,
-removing the same_filled handling code does not move the needle
-significantly in terms of performance anyway [1].
+syzbot found the following issue on:
 
-For disabling non_same_filled handling, it was added when the compressed
-pages in zswap were not being properly charged to memcgs, as workloads
-could escape the accounting with compression [2]. This is no longer the
-case after commit f4840ccfca25 ("zswap: memcg accounting"), and using
-zswap without compression does not make much sense.
+HEAD commit:    fec50db7033e Linux 6.9-rc3
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=16509ba1180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=13e7da432565d94c
+dashboard link: https://syzkaller.appspot.com/bug?extid=79102ed905e5b2dc0fc3
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a4af9d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12980f9d180000
 
-[1]https://lore.kernel.org/lkml/CAJD7tkaySFP2hBQw4pnZHJJwe3bMdjJ1t9VC2VJd=khn1_TXvA@mail.gmail.com/
-[2]https://lore.kernel.org/lkml/19d5cdee-2868-41bd-83d5-6da75d72e940@maciej.szmigiero.name/
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/901017b36ccc/disk-fec50db7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/16bfcf5618d3/vmlinux-fec50db7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/dc9c5a1e7d02/bzImage-fec50db7.xz
 
-Cc: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+79102ed905e5b2dc0fc3@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+BUG: KMSAN: kernel-infoleak in __copy_to_user_inatomic include/linux/uaccess.h:125 [inline]
+BUG: KMSAN: kernel-infoleak in copy_to_user_nofault+0x129/0x1f0 mm/maccess.c:149
+ instrument_copy_to_user include/linux/instrumented.h:114 [inline]
+ __copy_to_user_inatomic include/linux/uaccess.h:125 [inline]
+ copy_to_user_nofault+0x129/0x1f0 mm/maccess.c:149
+ ____bpf_probe_write_user kernel/trace/bpf_trace.c:349 [inline]
+ bpf_probe_write_user+0x104/0x180 kernel/trace/bpf_trace.c:327
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+ __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x6a5/0xa30 mm/slub.c:4377
+ vfs_writev+0x12bf/0x1450 fs/read_write.c:978
+ do_writev+0x251/0x5c0 fs/read_write.c:1018
+ __do_sys_writev fs/read_write.c:1091 [inline]
+ __se_sys_writev fs/read_write.c:1088 [inline]
+ __x64_sys_writev+0x98/0xe0 fs/read_write.c:1088
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+Local variable stack created at:
+ __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+
+Bytes 0-7 of 8 are uninitialized
+Memory access of size 8 starts at ffff888121ec7ae8
+Data copied to user address 00000000ffffffff
+
+CPU: 1 PID: 4779 Comm: dhcpcd Not tainted 6.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
 ---
- mm/zswap.c | 19 -------------------
- 1 file changed, 19 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index f1d3204c604bd..243a7c202c6c7 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -123,19 +123,6 @@ static unsigned int zswap_accept_thr_percent = 90; /* of max pool size */
- module_param_named(accept_threshold_percent, zswap_accept_thr_percent,
- 		   uint, 0644);
- 
--/*
-- * Enable/disable handling same-value filled pages (enabled by default).
-- * If disabled every page is considered non-same-value filled.
-- */
--static bool zswap_same_filled_pages_enabled = true;
--module_param_named(same_filled_pages_enabled, zswap_same_filled_pages_enabled,
--		   bool, 0644);
--
--/* Enable/disable handling non-same-value filled pages (enabled by default) */
--static bool zswap_non_same_filled_pages_enabled = true;
--module_param_named(non_same_filled_pages_enabled, zswap_non_same_filled_pages_enabled,
--		   bool, 0644);
--
- /* Number of zpools in zswap_pool (empirically determined for scalability) */
- #define ZSWAP_NR_ZPOOLS 32
- 
-@@ -1386,9 +1373,6 @@ static bool zswap_is_folio_same_filled(struct folio *folio, unsigned long *value
- 	unsigned int pos, last_pos = PAGE_SIZE / sizeof(*page) - 1;
- 	bool ret = false;
- 
--	if (!zswap_same_filled_pages_enabled)
--		return false;
--
- 	page = kmap_local_folio(folio, 0);
- 	val = page[0];
- 
-@@ -1466,9 +1450,6 @@ bool zswap_store(struct folio *folio)
- 		goto store_entry;
- 	}
- 
--	if (!zswap_non_same_filled_pages_enabled)
--		goto freepage;
--
- 	/* if entry is successfully added, it keeps the reference */
- 	entry->pool = zswap_pool_current_get();
- 	if (!entry->pool)
--- 
-2.44.0.683.g7961c838ac-goog
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
