@@ -1,121 +1,117 @@
-Return-Path: <linux-kernel+bounces-143918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4495F8A3F87
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 01:11:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE82D8A3F8F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 01:22:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E79BE1F21762
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:11:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 696DC282289
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC7F446BA;
-	Sat, 13 Apr 2024 23:11:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA8B58AA1;
+	Sat, 13 Apr 2024 23:22:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="xnts0B9l"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JFyuaQr3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC6CC1E892
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 23:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571C85467B;
+	Sat, 13 Apr 2024 23:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713049886; cv=none; b=CKAk0lpFUt423YYD5fVMmMb3fYgExPMnISHqKSt8TdSZ7TDL7x8mbmdB4O/mpv5HTO1MEFYqfBRwfU7piEUxBR1QDyZdeGa91Bf7RMnWF14l8H7AcNDLud5Xm3MCJfri1n3Y0gGId/V/7mKP1HH784MSzhr5aGW5f4wPK2dw9Rs=
+	t=1713050522; cv=none; b=AIYdwWeRSt+ZiLfBOtiMgT2r5kryQYyBR2iSGUk4puOHtFEQvtD+KYsmy5+EZm8bjWe9l2N1/hEhZqT/OxqAkRdZ/02eJq4EYmLwS66whHX8tx9UDyzFttfe5olagNzzXbtWIIpgitRqFz0KSt6i0rdHRA61e6zizRgWphZi3Ec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713049886; c=relaxed/simple;
-	bh=WOCFtt0c46SWdiDs8r2PoPm+DbunefgRyl83pbxigBU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZVDhpS6oySVCfMTcVFc+jsXtOwHIWXYYNjKfMyIpcdWqdzzbRnGIFQUeKAsO9GVdBBk0lLcTZD8Dj/ttD3yzBNkzxn8WQgqaZsHxptsDUrZga6zZDsVUiadIe0hWq0Mkc5+Opg8Ru9mtifVqopW1VCfUbOe2qbRX9qbeywr/MJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xnts0B9l; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso1943404276.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 16:11:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713049883; x=1713654683; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=csSeqaFAe6Z+ul1ySqtt8/CstapSGfvhsytWycvEOOs=;
-        b=xnts0B9loguRYkjJQOD3Kco0L7wIRXW4K9WDTaMz1he72X5utJgGiZ+YP0x0Tg9kHq
-         H3/QSepSU1SF8M+goqFLSFyWSK4K0TNFTjambkoDcyAYwusLpLoRiGCcood6a4TAoEV/
-         7fo/DsMKo5waSy/bIiqWK8u3vwbmBs54MAMnC8D2nx/y7vAdeiVt+EdagIVMfTOpAHWX
-         Vt//4T2fJvS83uW7heE2xtxc0BUSFOml02eB3FDuj+KCIdlYwhW4qhSF2e4xt/iUjfPL
-         r/bW6rHlyL+cU77OoQbbyCqziXoKUSNXv7LF3MIKuKYjPdAlJ88IZKQmTXpZIG2EYSC6
-         YP6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713049883; x=1713654683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=csSeqaFAe6Z+ul1ySqtt8/CstapSGfvhsytWycvEOOs=;
-        b=sRkYxhZKz4oEQ/tzdfh7HK5aPlyyyGUJCoUduVHXhzoVpI/Ac/bgPclepzbCq/FVQl
-         YmdN8cfFC490OhkW6l29h7ZGIHU+5AZoeTBMNQC/ild+wl+je7ZpiHuclOTJ+nFJXj6r
-         1Pyg/7WXXeVTLStzimHuRlr+GcmUlrVPg4ogvonXWcXauqQT4MflevGXut6BlasFpRYG
-         JArpbdmO8lfyA3KdfvIkpmQ8F+eGx+cHvqGpZrneOiUeyz9qIo3CFmzr9LlhWG8wunQX
-         ABBbyDimNn6DYl2Vv9ILoVK9frdbC24u/KwbkxJ/L8NkDVFCoSWagTnFmDBy4GRRoi1T
-         Ep+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWmm3cWgzfFw8ZjSRzN6khacd95jHAdUZohedR2sBNb+VWMttAvELaNMSHvResRos/na2g73XcJB/izAIWvI3cONXIh0KVskbFCGiWo
-X-Gm-Message-State: AOJu0Yz3hj2TuR5+SPUkUBZKKy+RDpjTrFJkQnSGLfMk7G2HxzVSXaGZ
-	tPqBU2YHhbLRq/4TTAQ2x2E9xBiUFqEQ9m5eG3GICfWRJ3MIXPvLiTd3S59wFcEu/imVidIvThu
-	dG++8VQqNvGg/j3xblQVhKLggoSYdyTM4LsMGtrYBk85kGvHLMw==
-X-Google-Smtp-Source: AGHT+IFtxU98M1BnEWEv3QfPEmkPfn29XAjP54gzFcyaJNpV7r83njK1Vbln3Z6d2auODyARE7hwMeA/AA7uLaHZ7vE=
-X-Received: by 2002:a05:6902:3c8:b0:dcf:30dc:127c with SMTP id
- g8-20020a05690203c800b00dcf30dc127cmr5325849ybs.18.1713049883140; Sat, 13 Apr
- 2024 16:11:23 -0700 (PDT)
+	s=arc-20240116; t=1713050522; c=relaxed/simple;
+	bh=5sXxlITJ7ccJ9IO677OflEjBXzzDrtBJfYoq9+yqxrU=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=SRAdTgZ8caOvRH1jpj/DQnTfPKCSIUTai78S+OsR0xvqg0bs8PHEbSyrUOTocYCaF5s65e7pCPYTTMEfDk/0NAPoaWZ+mGjZV7lbBdGirWGcGw3kJlf+ASRNEHC5g3aC+OTlVk9GyAAovQm8GTWbY+BZ+Gcm/NaSnJ81eA5FgVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JFyuaQr3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A165C113CD;
+	Sat, 13 Apr 2024 23:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713050521;
+	bh=5sXxlITJ7ccJ9IO677OflEjBXzzDrtBJfYoq9+yqxrU=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=JFyuaQr3iqQKPC3xtPcJKTaugcMkzIT3+QIOscOXXPPIAWkz1ntYjYcdZteFXXi3v
+	 WTrMgBDobIDYSheTLC/8akivtt+2h2244i7XFd/+ir3mL7G+uNH2tkHJ5UntJ3GPHh
+	 gOhLL+TdmbhAsYZUhZV1vDuG6DbL0pEVjoss5UQzdISlghAcnLUVRodgcL/1BbRtE3
+	 qg/KGhqEkEjJRbRLsX0iEB7lt+r8fvYhXGzdKxZI8fyHiETLYsm6hDos92lg4EUV06
+	 1A/70+KgVh67zAHTAjzIK5maFaDE/FzjglALJq5r/No5qOIXY9jQSWflfCZtAHpaVx
+	 Bhszc9/Mg5H9A==
+Date: Sat, 13 Apr 2024 18:22:00 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZhhaRXHKk7w_hKgi@x1n> <Zhhd-A7w1A8JUadM@casper.infradead.org>
- <ZhinCD-PoblxGFm0@casper.infradead.org> <ZhkrY5tkxgAsL1GF@x1n>
- <CAJuCfpG7YkQ2giKiv07TetTn=QHK9x723vnLaTjDCaQjUvAavw@mail.gmail.com>
- <ZhlCVOz7qaDtldfL@casper.infradead.org> <CAJuCfpGGUD6ev-KFhON2D2RqQRZSgjxFXvkNqeux-LrJw4L+iw@mail.gmail.com>
- <ZhlQ_4Ve0vYNbWbl@casper.infradead.org> <ZhlT4eG05mUcOQQJ@casper.infradead.org>
- <CAJuCfpENhnjnrDPfJPyYaNNLT9VT414VbT45WBoN-EkqTjGMtA@mail.gmail.com> <ZhsMru7gcqR6gL9q@casper.infradead.org>
-In-Reply-To: <ZhsMru7gcqR6gL9q@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Sat, 13 Apr 2024 16:11:09 -0700
-Message-ID: <CAJuCfpH8OpNF3vpcRAoBy_k9G_bMicgoHXipe=93Ub4dLjGOug@mail.gmail.com>
-Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Peter Xu <peterx@redhat.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Lokesh Gidra <lokeshgidra@google.com>, 
-	Alistair Popple <apopple@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Rob Herring <robh@kernel.org>
+To: Andrea della Porta <andrea.porta@suse.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Phil Elwell <phil@raspberrypi.com>, linux-gpio@vger.kernel.org, 
+ Ulf Hansson <ulf.hansson@linaro.org>, Kamal Dasu <kamal.dasu@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Jonathan Bell <jonathan@raspberrypi.com>, devicetree@vger.kernel.org, 
+ Al Cooper <alcooperx@gmail.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+ Adrian Hunter <adrian.hunter@intel.com>, 
+ Linus Walleij <linus.walleij@linaro.org>
+In-Reply-To: <2d1272cad92ad618297a6683e9264e31b8f2df73.1713036964.git.andrea.porta@suse.com>
+References: <cover.1713036964.git.andrea.porta@suse.com>
+ <2d1272cad92ad618297a6683e9264e31b8f2df73.1713036964.git.andrea.porta@suse.com>
+Message-Id: <171305051859.2373978.16308105985451713694.robh@kernel.org>
+Subject: Re: [PATCH 1/6] dt-bindings: pinctrl: Add support for BCM2712 pin
+ controller
 
-On Sat, Apr 13, 2024 at 3:52=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Sat, Apr 13, 2024 at 02:46:56PM -0700, Suren Baghdasaryan wrote:
-> > On Fri, Apr 12, 2024 at 8:31=E2=80=AFAM Matthew Wilcox <willy@infradead=
-org> wrote:
-> > >  - Rename lock_vma() to uffd_lock_vma() because it really is uffd
-> > >    specific.
-> >
-> > I'm planning to expand the scope of lock_vma() and reuse it for
-> > /proc/pid/maps reading under per-VMA locks. No objection to renaming
-> > it for now but I'll likely rename it back later once it's used in more
-> > places.
->
-> That would seem like a mistake.  The uffd lock_vma() will create an
-> anon_vma for VMAs that don't have one, and you wouldn't want that.
-> It seems to me that lock_vma_under_rcu() does everything you want except
-> the fallback to mmap_read_lock().  And I'm not sure there's a good way
-> to package that up ... indeed, I don't see why you'd want the "take
-> the mmap_lock, look up the VMA, drop the mmap read lock" part at all --
-> once you've got the mmap_lock, just hold it until you're done.
 
-Yeah, you are right about anon_vma creation. I definitely don't want
-that part when reading maps files.
+On Sun, 14 Apr 2024 00:14:23 +0200, Andrea della Porta wrote:
+> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> ---
+>  .../pinctrl/brcm,bcm2712-pinctrl.yaml         | 99 +++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml
+> 
 
-Not sure about holding mmap_lock until I'm done. The goal of that
-patch is to minimize blocking of any modifications while we are
-reading maps files, so locking smaller parts might still make sense.
-But it would be hard to argue one way or another without any data.
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:46:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:47:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:48:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:49:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:50:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:51:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:52:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:53:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:54:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:55:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:56:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:57:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+/Documentation/devicetree/bindings/pinctrl/brcm,bcm2712-pinctrl.yaml:58:18: [warning] wrong indentation: expected 18 but found 17 (indentation)
+
+dtschema/dtc warnings/errors:
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/2d1272cad92ad618297a6683e9264e31b8f2df73.1713036964.git.andrea.porta@suse.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
