@@ -1,175 +1,252 @@
-Return-Path: <linux-kernel+bounces-143624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F1AA8A3B8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:03:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80DBE8A3B90
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:04:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F707B21A96
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:03:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37D09283E93
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F9E8C15;
-	Sat, 13 Apr 2024 08:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D5E208BC;
+	Sat, 13 Apr 2024 08:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="it0HzjsI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TmJtYyuI"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E171D545
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27DAB1CFBB;
+	Sat, 13 Apr 2024 08:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712995393; cv=none; b=TVSYaXkCldZNiDrImLzmGKk8a9m72WAEGcPxsiGWGR0OwkSj24rCJHL5GVdVabTvK9Gb1WkV2koJJ82psUZRgiY7UZprTqQe6SVBd1Sg4W/3DVG1HL0mBXjH14q9LExFUwqJIUpENMc4IxSoy24NScd1Mlbsz+PrgwoXDD/lMdg=
+	t=1712995463; cv=none; b=bJKD13k6slE0+BP6vbpL/7jwhnOXPQanL4tou9BdwTy/gyezw4OZuFroZJASZPjt1bqCMAV+G5ELE6C1nDeMpBhPiFZ9hsEchX39pz82/yTKmXSZIsPZweOgF4Klf9j6vW7nzkiQtyJj6R/QZJ0/e4prsip//WUoHo0rfte0NNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712995393; c=relaxed/simple;
-	bh=BZzuA1IAYbmjQHu2QiVbkmN1yObj7axezpWEaikI0rM=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=cOFDENbAfMPAONv6ub4mOjw0+wBPYldtqLj36wOL76QplvI/keB3twJdE/HGYHUI1J53xT1UnmNTgl6zEjfvsIDBTPozzGHkyxNEFXpaobhBA4X+JQn2fVY6GgUuo6UB/jm3aE/VoCtWCJK3T0DOFMijdg9XUjL+FrnAIF1cL7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=it0HzjsI; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712995391; x=1744531391;
-  h=date:from:to:cc:subject:message-id;
-  bh=BZzuA1IAYbmjQHu2QiVbkmN1yObj7axezpWEaikI0rM=;
-  b=it0HzjsIS5Rh0yqhEBdWJJ7j1+uCq4pVTxr+QX0OoCHmxHRB5YTMu922
-   cLA0jA0TmeRbscLaTAAPQRun3RrQLMxHh3Gmt2ev1whgQ7jcgIao5udpu
-   Br7FMf8b1e/3doxhQzr4tbYq1jdlbOlSX4iFeHTdEV4QGx566jN1Deuub
-   as4g9ARCQICLPm9vzN/xAAmIJqgPQ6v8Mk+d1ZfGWAxq31vsB7tVfsmda
-   rsJHcos36/z1tfamAfloZSfDA7T28hps8aiKXkawnjBKH1D2cuJvDMMz5
-   V6CDsbRdsjup20sLRz1cr03iPVy3NzrQseSJLtpdu03Tzk7//72Oedve+
-   A==;
-X-CSE-ConnectionGUID: j/Fxu9g0TFOO0z2/kRgMXg==
-X-CSE-MsgGUID: hdvGO1a/TPOPhaG+ZQ8/tA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19846020"
-X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
-   d="scan'208";a="19846020"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2024 01:03:10 -0700
-X-CSE-ConnectionGUID: qnbENAa9RUCr8LT0qKeyuQ==
-X-CSE-MsgGUID: s2r58Qh5RBWWacK8Emd77w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
-   d="scan'208";a="21424941"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 13 Apr 2024 01:03:09 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rvYLr-000257-1O;
-	Sat, 13 Apr 2024 08:03:07 +0000
-Date: Sat, 13 Apr 2024 16:02:50 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 86d1b22a75cffa50160e4621da00311e6f6f48de
-Message-ID: <202404131648.oPjeZVY8-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712995463; c=relaxed/simple;
+	bh=QZCEK0CIagBybPLkRjQZB+ueBDbozC2tromIPFers3g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LxMle+v50VkPy6ZQuwm9ngTnoFmLRznb5QCEqN+JTjiELCGRFoj3st10KgoUgVVJ63Rba8rdZFbpQDlMnFUiCsnsyH7tFPSN9XmT7dxwm2EgxKRzaiI62tCHXsrFb6n844jzcj67/NG034tVS+orYjqeKbrz3CDoLXI1BJ+GdB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TmJtYyuI; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e3ff14f249so12471235ad.1;
+        Sat, 13 Apr 2024 01:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712995461; x=1713600261; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bxLRqhr1FqEjQA1PjAbGBGSdX+2n1rP+a8Vb8lQhOj4=;
+        b=TmJtYyuISRyej/RpB7e9gUcNkNuMxhsJnRQqL1aqKJUpHOGYlZqN9myFKA1CV3V3Ru
+         wf5/yXpeVtRIDjj3NTYlQWKGJ0yRDKjrgvj6Tr1XPOwHv32JO6IyDmSYhSaXEUsZaWVT
+         5V6km8uY/QRM+0cBHDgfoUvlSt1CUA3gHQGQbMuCdjsYfxx01QPSnPz76z8we3Rf0mmJ
+         xa2+HMb2DQGruI95GhALQz6CfRIwoN7VLoy2jB0JoL4GVw5J2mFRVgkM5SDgJlaJrt3k
+         M8mInFu4Kl/AOMY5wQtAgpcY/GZes9dzIc/wXcpcl8BNzjuKtHYltuPDb93ZDYTgPDJB
+         pZdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712995461; x=1713600261;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bxLRqhr1FqEjQA1PjAbGBGSdX+2n1rP+a8Vb8lQhOj4=;
+        b=GbAWbmA9h8mOMOI+OvcWoeoPRbauqk/3uLchdTDzF6EYw/l4GqJvGBr59uB69uUFhL
+         kNuF+ypViqU1Ko90AB+a1L2RlCJJi1m4dxS+Yz3mEuTfBPDrpJIYRubua7ydO+ATBraF
+         9X/g6YIUez2B9wWESN0Bm1+fKfUORD+QP8koiDZDikHhiJNXgiO7A8f8PXur5AqKSCS3
+         ItvIW9ratoO6Q4xtwBBD2Iga1jFTrbiR6eU4VoLU7cXPBhSzTknX8Cuotz6vLIc8j8Oa
+         scWVnO3XUBOTZyZm3mEznUllf0mivunslCnGb5p1B+vGZUCszBYPWITNUW0e9cbs7QjS
+         TJbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEX9f/1qxx59GCOrduS0GEYoFj+s439GqggBZldocjOFKTbWjtgkMjbQFMG+jrX/K1/rl5forGgrSHw4gFxtLnmxufBz8siBiGMpGMCjZuxRoo5TqbaIKayHtIPJU1WMS+iuzpeOMlYQ==
+X-Gm-Message-State: AOJu0YxZFtXBzdPa5bHmf1g0s59cpJUIQFvBdcyRYTk9YrT/jg4waSZi
+	z+mBM9DzEonGu3AdqBc5iZA04+HdUMvANYo1hz6ILUXOsRyrMa57dUFLSJhGCFk=
+X-Google-Smtp-Source: AGHT+IGUGLWSwfiw7R8x/M8N7rE7Rt5vT6K+6abu8hm6zxcpzczpPkE1/EDPv515yZpWvd8XwEVlPQ==
+X-Received: by 2002:a17:902:d4cb:b0:1e0:c0b9:589e with SMTP id o11-20020a170902d4cb00b001e0c0b9589emr9877377plg.25.1712995461252;
+        Sat, 13 Apr 2024 01:04:21 -0700 (PDT)
+Received: from [0.0.0.0] (42-3-109-144.ptr.netvigator.com. [42.3.109.144])
+        by smtp.gmail.com with ESMTPSA id i18-20020a170902c95200b001e3f148ffb8sm4121481pla.21.2024.04.13.01.04.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Apr 2024 01:04:20 -0700 (PDT)
+Message-ID: <f2496498-d8cb-449c-905b-fb32d9b3deff@gmail.com>
+Date: Sat, 13 Apr 2024 16:04:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: Split PMU nodes for heterogeneous CPUs
+To: Rob Herring <robh@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240412222942.3874269-1-robh@kernel.org>
+Content-Language: en-US
+From: Xilin Wu <wuxilin123@gmail.com>
+In-Reply-To: <20240412222942.3874269-1-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 86d1b22a75cffa50160e4621da00311e6f6f48de  Merge branch into tip/master: 'x86/shstk'
+On 2024/4/13 6:29, Rob Herring wrote:
+> Arm heterogeneous configurations should have separate PMU nodes for each
+> CPU uarch as the uarch specific events can be different. The
+> "arm,armv8-pmuv3" compatible is also intended for s/w models rather than
+> specific uarch implementations.
+> 
+> All the kryo CPUs are missing PMU compatibles, so they can't be fixed.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>   arch/arm64/boot/dts/qcom/msm8956.dtsi |  4 ++--
+>   arch/arm64/boot/dts/qcom/msm8976.dtsi | 10 ++++++++++
+>   arch/arm64/boot/dts/qcom/sm4450.dtsi  | 11 ++++++++---
+>   arch/arm64/boot/dts/qcom/sm8350.dtsi  | 14 ++++++++++++--
+>   arch/arm64/boot/dts/qcom/sm8550.dtsi  | 19 +++++++++++++++++--
+>   arch/arm64/boot/dts/qcom/sm8650.dtsi  | 14 ++++++++++++--
+>   6 files changed, 61 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/msm8956.dtsi b/arch/arm64/boot/dts/qcom/msm8956.dtsi
+> index 668e05185c21..fa36b62156bb 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8956.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8956.dtsi
+> @@ -8,8 +8,8 @@
+>   
+>   #include "msm8976.dtsi"
+>   
+> -&pmu {
+> -	interrupts = <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(6) | IRQ_TYPE_LEVEL_HIGH)>;
+> +&pmu_a72 {
+> +	interrupts = <GIC_PPI 7 (GIC_CPU_MASK_RAW(0x30) | IRQ_TYPE_LEVEL_HIGH)>;
+>   };
+>   
+>   &tsens {
+> diff --git a/arch/arm64/boot/dts/qcom/msm8976.dtsi b/arch/arm64/boot/dts/qcom/msm8976.dtsi
+> index d2bb1ada361a..1ad102b1633c 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8976.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8976.dtsi
+> @@ -226,6 +226,16 @@ pmu: pmu {
+>   		compatible = "arm,armv8-pmuv3";
+>   		interrupts = <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_HIGH)>;
+>   	};
+> +	pmu-a53 {
+> +		compatible = "arm,cortex-a53-pmu";
+> +		interrupts = <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+> +	};
+> +
+> +	pmu_a72: pmu-a72 {
+> +		compatible = "arm,cortex-a72-pmu";
+> +		interrupts = <GIC_PPI 7 (GIC_CPU_MASK_RAW(0xf0) | IRQ_TYPE_LEVEL_HIGH)>;
+> +	};
+> +
+>   
+>   	psci {
+>   		compatible = "arm,psci-1.0";
+> diff --git a/arch/arm64/boot/dts/qcom/sm4450.dtsi b/arch/arm64/boot/dts/qcom/sm4450.dtsi
+> index 603c962661cc..411eb7577407 100644
+> --- a/arch/arm64/boot/dts/qcom/sm4450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm4450.dtsi
+> @@ -268,9 +268,14 @@ memory@a0000000 {
+>   		reg = <0x0 0xa0000000 0x0 0x0>;
+>   	};
+>   
+> -	pmu {
+> -		compatible = "arm,armv8-pmuv3";
+> -		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> +	pmu-a55 {
+> +		compatible = "arm,cortex-a55-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-a78 {
+> +		compatible = "arm,cortex-a78-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+>   	};
+>   
+>   	psci {
+> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> index a5e7dbbd8c6c..127fa9a935da 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> @@ -300,8 +300,18 @@ memory@80000000 {
+>   		reg = <0x0 0x80000000 0x0 0x0>;
+>   	};
+>   
+> -	pmu {
+> -		compatible = "arm,armv8-pmuv3";
+> +	pmu-a55 {
+> +		compatible = "arm,cortex-a55-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-a78 {
+> +		compatible = "arm,cortex-a78-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-x1 {
+> +		compatible = "arm,cortex-x1-pmu";
+>   		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+>   	};
+>   
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index 3904348075f6..8e7d0ac17a12 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -357,8 +357,23 @@ memory@a0000000 {
+>   		reg = <0 0xa0000000 0 0>;
+>   	};
+>   
+> -	pmu {
+> -		compatible = "arm,armv8-pmuv3";
+> +	pmu-a510 {
+> +		compatible = "arm,cortex-a510-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-a710 {
+> +		compatible = "arm,cortex-a710-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-a720 {
+> +		compatible = "arm,cortex-a720-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-x3 {
+> +		compatible = "arm,cortex-x3-pmu";
+>   		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+>   	};
+>   
 
-elapsed time: 1295m
+I believe SM8550 uses cortex-a715 instead of a720.
 
-configs tested: 83
-configs skipped: 3
+> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> index ba72d8f38420..90102a41489d 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> @@ -394,8 +394,18 @@ memory@a0000000 {
+>   		reg = <0 0xa0000000 0 0>;
+>   	};
+>   
+> -	pmu {
+> -		compatible = "arm,armv8-pmuv3";
+> +	pmu-a520 {
+> +		compatible = "arm,cortex-a520-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-a720 {
+> +		compatible = "arm,cortex-a720-pmu";
+> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+> +	};
+> +
+> +	pmu-x4 {
+> +		compatible = "arm,cortex-x4-pmu";
+>   		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
+>   	};
+>   
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386                                defconfig   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
