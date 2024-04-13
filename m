@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-143747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28B38A3CEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:16:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E63998A3CF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:17:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63789282256
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:16:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 223691C20AD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCB045BF3;
-	Sat, 13 Apr 2024 14:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E2004501F;
+	Sat, 13 Apr 2024 14:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="Nu2bsjxV"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="cAPy4kkf"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B153145978
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:16:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 476F23FB1B
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713017794; cv=none; b=RN0k2FPErq70LShv3Ay2OIeaP9AmRrxcv/EFXMNBbg0fZup8Whs0B0Os1VBoSHtlJBs1JaCvQq0gDeSRQgtsQqDP1+B05ZuYUUleFbPF/zNs1IBYwyPOViHzXWasl+Zx/0nSvh+Y9gLat8AiVJ3y5PKy1eyLqSff8ncokkfFQ5c=
+	t=1713017811; cv=none; b=j/lPEjayTI+eUvAUSPVcLVpiiSRReaoc7HLjlvt181Qmb13c9DbaHaYLOx8VwdiBLKmE+EC0eXQBxcWaozlGW+z23j+CiBxEG2/8q06RWHY3FUaBjUpDsbLGTPMBdJQLbEylYwHnCi9gzBEjoudtwbLmXSGgUXsiTlC4MWu8HGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713017794; c=relaxed/simple;
-	bh=dtcXlJarwcAh738y46KpVauFfDZzs+CPG9CoF31We34=;
+	s=arc-20240116; t=1713017811; c=relaxed/simple;
+	bh=DU50FXhrCuqhtNLOaapUXMuCslN3deTrvJGkJumTsUM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iFWv4YxRO06WsCMiYscKcwC9KEo+3CIacVAj5ik1W2wryxrbzvXjMJzPwCNnGl/38Nx0s/tc35ji+aDdp53AGNUHZAd+1p4xiMPIIDEJ+GfkmP0IHQtciQZkmZShvBY34UI0Yq7Hf1ZT+s3E7s8ZmBUpLh7eZjFPbDK7ewMj/yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=Nu2bsjxV; arc=none smtp.client-ip=209.85.219.172
+	 MIME-Version; b=U/BJ3VDPpjtGmmiMUMhdRBYZ6eDtyLHJzyuPGGtou0uS8xhYb6AK9ldhESTzT/+qrn2ry1g8ZI8IMKqGPkwjR1UwQGTFsIA5BdsfbElaXvlZQI5azOVqMu7pCE6RJdekOcUHhn+xUT0IgGGtqbNXbJJXutu9QEbZw9tC212Q6sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=cAPy4kkf; arc=none smtp.client-ip=209.85.219.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so1714109276.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 07:16:32 -0700 (PDT)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso1969195276.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 07:16:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1713017791; x=1713622591; darn=vger.kernel.org;
+        d=kylehuey.com; s=google; t=1713017809; x=1713622609; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wlVoXtYOUZbgedQGH68sMA7/TKjo/LarRqMzSUO0lI8=;
-        b=Nu2bsjxVqTg/ziqOueDSd91dHssNR9yH/ZebKAPCUg2QODI4KC4Pzbzw9M6/uLPM0e
-         W7YTVxWBO4rp2+nsL5PGCmxHGjkTA0u61oCYTsTfNj2Rhi3L959+2Im1yZsJlbfNDrOa
-         PMsGYXn2p7DiTgi3Rc19eo26VE5+z30pxR1QiFGKcmkoRLo0fYtfA+Fnhb90j6Q2gslY
-         zjbRoZ+kYS6oPWwPZwXLgceEXIqownbnI2Dh/xZ/7h4I6A2jmHUG20iTO2RjNC/LHQPO
-         zS9rXQbjckRziA9xewB0UoT5wFoWDXLc3htDDGW+RWD0PejiOnGqlqwl/HGFv/37Y9zQ
-         4aHg==
+        bh=wDrdykoIXMbP7phUYiJI1yePs0EFYaz2XrXDwzySQjw=;
+        b=cAPy4kkfSUmZR+hXckSUlPaaef5IwNiFk1XkRTaHmRByL/XdYZzAVkZQw3fQ2RkU/H
+         PDsFtC1QBrJ9aFBk8g878ctQYK/V6YLzMLkGl0Bqrmka7nOk6KnPPPSK9Y+/W5bSPOsu
+         OIUwymznFCGbP2wHqXfzNSAtBsk0cx7S885WCO1ru/X2bHU3PpZmG+3AMw8wNkDIu8QJ
+         QaxuE71FaXyggY+CpM3JqIe77nuRMXEts1Msn9AqGrANKZSrW94MYnYaQJJ3s8BRTcR7
+         fjd+LFixychMnKqi8syz/vjfg2/8v/WobLdfYLEIB423mgOOYi5x1r3Rnd8OWWVEIZts
+         7f3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713017791; x=1713622591;
+        d=1e100.net; s=20230601; t=1713017809; x=1713622609;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wlVoXtYOUZbgedQGH68sMA7/TKjo/LarRqMzSUO0lI8=;
-        b=eA+2Ff95DKiyF3opSH2StqDL0Ru80LNKB3QZq2oz516QMrcQrpp7J1ydHzYP49ZEpU
-         nQBpXz9nl3I6bYK8YyZFqptxREv45ljlJ/ILIMqqg0SCaBpJzHH3Cbqlx+t1N7gr7L8g
-         LbX8D8GHyJ7X4k00Oi1n9tmDmUcZlMnacMViUlzZmqxl+QCSSyFqYcZe7CyhPHSH1M9k
-         9HG6n+Wf7E3wGYX22jVMVKpwtCD5Fwukq03a5/CbyFfMGAW/mY/ljGy7llh0+X0d3dxK
-         T2Qt00U00kn3MiFiH2Am5jr4UuBylL2MJZaaA3IfogFfgHkqUDMrvhPdma5rCMqOVXQD
-         tgfg==
-X-Forwarded-Encrypted: i=1; AJvYcCXN0YZnZXnZzdqTydyq83vKTsgjWOLfkPNbgBNCN4+nwDvMP5uvBV54/emTLaopS83ZU3YQvUW9STmokRrBKH0Rb0iw6ZoRU7Yr+Isu
-X-Gm-Message-State: AOJu0YwpnLrtpkEykNwf4JrShOx584YU5P3swlM+xcRUe8lNw8/Ka0MY
-	R03PZ3Lc3B10+O52sx0bCcl8nR/K+UhuNZvED9K30ifBwZtfLdGRjzJGW7HkUw==
-X-Google-Smtp-Source: AGHT+IHfzpuJoLkZ5tVYHvUeMheeAQWCbrYbrG2Pq0evod13mRpefIayqHQkJwSzDH+nNCGjp5Q6RQ==
-X-Received: by 2002:a25:8083:0:b0:dc6:bd4c:b119 with SMTP id n3-20020a258083000000b00dc6bd4cb119mr5325358ybk.55.1713017791674;
-        Sat, 13 Apr 2024 07:16:31 -0700 (PDT)
+        bh=wDrdykoIXMbP7phUYiJI1yePs0EFYaz2XrXDwzySQjw=;
+        b=iJHc7KAPg+b7MDWHito1NGwOlVZU/tA5TEJ69oO8dqdc92bfkt5XyTtxZ5VhicGIxZ
+         5WtRz0WVO8LdHDSUMcGSt+Ni6p7Bwpb+vFN7cLOSdBI977ZNkU05XrOJcfOojQ1yQTLn
+         Vd+o9L6Xj6/B/Mz3mave8OEtk8uRpj8zSNmt++rtNvZsjEv+7h2t9HPF578rr8ayhwY4
+         iqqTZKYLsuBlkOXram8RHVCTkcU1qUm4Vg38Obz20Zl21+FWtCM8wDluQPZB27aCmWR5
+         kP1xsJ3ScUpEoR4CUFEhnmY+WvjtG8sOfes2bWz7t52daSv/x7muogto81x5ALZieTtD
+         5tOg==
+X-Forwarded-Encrypted: i=1; AJvYcCXgydomgYQtza5GFmraTvYXvbjraokRLOD9wf+yE94Y2uyzLpkcSwMs3AkQ5oYTpUhH2vLLaKbREWjSM4qM7XnnQW6L181G/y0iEP2S
+X-Gm-Message-State: AOJu0Yx/eyh7TmAdZCoNHgc4GpciK2Sqt2Ow3yIyP6GGAyme6I8Ct4uf
+	Sq9ICCPLWDA4ubRz90KnFstHeACdSVcmyGoaF43IxigWWB0D5dVXqjTsLVn6jw==
+X-Google-Smtp-Source: AGHT+IEPuFA7BoJq94Q7691/uH1K4Hr0sbggqPd6G24r2jhNxtEzpxxCYcjtl26dmMUD1ygx7+PSww==
+X-Received: by 2002:a5b:890:0:b0:dc7:4460:878a with SMTP id e16-20020a5b0890000000b00dc74460878amr4899160ybq.3.1713017809304;
+        Sat, 13 Apr 2024 07:16:49 -0700 (PDT)
 Received: from ip-172-31-11-157.us-east-2.compute.internal (ec2-3-145-99-109.us-east-2.compute.amazonaws.com. [3.145.99.109])
-        by smtp.googlemail.com with ESMTPSA id v5-20020a254805000000b00dcdb6934617sm1193349yba.62.2024.04.13.07.16.30
+        by smtp.googlemail.com with ESMTPSA id v5-20020a254805000000b00dcdb6934617sm1193349yba.62.2024.04.13.07.16.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 07:16:31 -0700 (PDT)
+        Sat, 13 Apr 2024 07:16:48 -0700 (PDT)
 From: Kyle Huey <me@kylehuey.com>
 X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
 To: Kyle Huey <khuey@kylehuey.com>,
@@ -82,9 +82,9 @@ Cc: Robert O'Callahan <robert@ocallahan.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH v3 1/3] perf: Move perf_event_fasync() to perf_event.h
-Date: Sat, 13 Apr 2024 07:16:16 -0700
-Message-Id: <20240413141618.4160-2-khuey@kylehuey.com>
+Subject: [PATCH v3 2/3] perf/ring_buffer: Trigger IO signals for watermark_wakeup
+Date: Sat, 13 Apr 2024 07:16:18 -0700
+Message-Id: <20240413141618.4160-3-khuey@kylehuey.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240413141618.4160-1-khuey@kylehuey.com>
 References: <20240413141618.4160-1-khuey@kylehuey.com>
@@ -96,52 +96,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This will allow it to be called from perf_output_wakeup().
+perf_output_wakeup() already marks the perf event fd available for polling.
+Trigger IO signals with FASYNC too.
 
 Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 ---
- include/linux/perf_event.h | 8 ++++++++
- kernel/events/core.c       | 8 --------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ kernel/events/ring_buffer.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 13a2b05cc431..4924bae0a015 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1680,6 +1680,14 @@ perf_event_addr_filters(struct perf_event *event)
- 	return ifh;
+diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+index 60ed43d1c29e..4013408ce012 100644
+--- a/kernel/events/ring_buffer.c
++++ b/kernel/events/ring_buffer.c
+@@ -22,6 +22,10 @@ static void perf_output_wakeup(struct perf_output_handle *handle)
+ 	atomic_set(&handle->rb->poll, EPOLLIN);
+ 
+ 	handle->event->pending_wakeup = 1;
++
++	if (*perf_event_fasync(handle->event) && !handle->event->pending_kill)
++		handle->event->pending_kill = POLL_IN;
++
+ 	irq_work_queue(&handle->event->pending_irq);
  }
  
-+static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
-+{
-+	/* only the parent has fasync state */
-+	if (event->parent)
-+		event = event->parent;
-+	return &event->fasync;
-+}
-+
- extern void perf_event_addr_filters_sync(struct perf_event *event);
- extern void perf_report_aux_output_id(struct perf_event *event, u64 hw_id);
- 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index cd88d1e89eb8..7358b11f9003 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6684,14 +6684,6 @@ static const struct file_operations perf_fops = {
-  * to user-space before waking everybody up.
-  */
- 
--static inline struct fasync_struct **perf_event_fasync(struct perf_event *event)
--{
--	/* only the parent has fasync state */
--	if (event->parent)
--		event = event->parent;
--	return &event->fasync;
--}
--
- void perf_event_wakeup(struct perf_event *event)
- {
- 	ring_buffer_wakeup(event);
 -- 
 2.34.1
 
