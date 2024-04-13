@@ -1,411 +1,198 @@
-Return-Path: <linux-kernel+bounces-143855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8FD78A3E49
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:06:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49CC58A3E4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 161BE1C20AFF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:06:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCDF31F215D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:08:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48FA53E16;
-	Sat, 13 Apr 2024 20:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37DBE54915;
+	Sat, 13 Apr 2024 20:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="iFokChrM"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="YtkWpABM"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2059.outbound.protection.outlook.com [40.107.237.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166701CD0C
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 20:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713038756; cv=none; b=St+jpE3+7XTaITnoOX23B3jZhmeZ36KqzxvuDgYNmxONdkCWhQvilzlVTMjEW5Ey9iBIHGxN31Ro+wVndieOXxzc0bdvFXSS/xjFVJAiq7mcRgx2NdZirdqkZI1lgLhsKwFEtEwFSkRhNRfn0vI874m1IVVNYGt0YcRsB1hbYlU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713038756; c=relaxed/simple;
-	bh=G5KyVytV//vNjdLRl1XvHHCAToStbzy2uRg8qGFTybs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tI8IdMtRQagjTPoTzffq6gAfRqoBzpfFzx6G3VGSB5rzHJua9nNrpSIvxWg8cY/NQBgDWo6v2d567vZro7BgWzyDWVGFykMqGMs5OVM58cINVPQbsyjHQovyWJ8h23yyI0eaNozE8ruskleptJYAxa9B0mvaNqCPaEFuxl0+tcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=iFokChrM; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso21916351fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 13:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713038752; x=1713643552; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jlGD+qdCOiEZc9bytwKuo7IS7+QuzfujJRMSsaN5K3I=;
-        b=iFokChrMBjRscjurnpHvSOGpso5snfreJLckXE3nWt+v4zV9+4Yn2Sok5qu93RE3xQ
-         wbphat+obYuUtjb+XLzxQFAFnq3/YhA+gOS5k9uNOjzm+uEHsxeXHqehWtPuS9hEiEfy
-         Is2CTckM+CBMpd05vmEydFvP77ihvMiLcRtN0Fesw/FK5F0fr4VrP3QkJWb+WBt3w174
-         xnG54FXHQzhUmyJxHJHIypDPdNtR+Gss+b0O+ou3TUdUvxJs47vifjcw0+FPbe9ocgpu
-         0ADDMmoRCZV/86QyJYTxJIBWw8rlVt4n/mkEL/Ra4y5aQX+cId1WBVZAhHp8dckpURAZ
-         xmLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713038752; x=1713643552;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jlGD+qdCOiEZc9bytwKuo7IS7+QuzfujJRMSsaN5K3I=;
-        b=h2kvez7kn4CZ30u2WLqlu+XIIxuc78iYmacxQWz+uwNblexzHSRtwG3xbLkA3iz1x+
-         KyypT5vJtyv8rSgLkPjb/pi2pt9TzPiDjDcrIpbPesc5cCL/s/JUPTdCUnVbjobGWr2a
-         AEMlZRih/0oMFl02e/1K7equ1Qnxc6fjbI+BFT7r7Pyly+LPvMIpyjudkKd0fQAJu1+X
-         aQZGT+MVpBHlYt5OqVO0fhnOH+nOvrUFCYWG/aQT3yWl1T2l3J522+bkMUxwsegKCWme
-         eJWqtY0Ph45dGqYEzCRuytG1LNdgX+cYHvfhvhV5ZOPPj8lb0F2GJcgZC2yoJD93fx8w
-         YRFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXb5/mtUMEKaqBdbymdSXappx7eli/1pLUkUcZpq9sOzS3zC5kyO91Z/jEe9pLNAPGcjAodYAX0FUY3CnjcQTQPjYMRE9S4Twb7EaCP
-X-Gm-Message-State: AOJu0Ywmgu8wExlw90Hr7EIWlANZW+gr4Df14tdI1onGaOEzEF+jkGvv
-	jGPf34xybsBBobYjVF6+SZfg1hbGR/1rV0T2sPcHvIsUuiOVHtKeOMBHrHolAEe7hZ0/3SU9KdF
-	wlw/jGz1EUlsyl0X1U8YKkC7R5gOaSlidGBiOPA==
-X-Google-Smtp-Source: AGHT+IHdj4RXGAiLDEWiRQg8fQCONsSW/SLIaSMHnBuczdmm80HYmxVvr4Bkj7VB6XblcZNd4Yhay0HNzkgoZ0x3mi8=
-X-Received: by 2002:a2e:9cd5:0:b0:2d9:fde0:86e2 with SMTP id
- g21-20020a2e9cd5000000b002d9fde086e2mr4334962ljj.15.1713038752033; Sat, 13
- Apr 2024 13:05:52 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BAB4F20A;
+	Sat, 13 Apr 2024 20:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713038886; cv=fail; b=sacb96EtupCf/Q56CGVErXPPfYva3MLIoyHm7MPKXe5o0orF9hthdGvD4RXd1s6kTFqt2m9cb6znFE25uox3vxIwC5rJlVV7dNYmZVjs9CUBkkK0IDYerx4hiBU/X+RWjfdxdMC7P9f0bdsvPaBRQF4RLePnrW2Nn5fL6d3HkjI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713038886; c=relaxed/simple;
+	bh=HNNzN3334tX/pU3zEVAjlWFi1Ge7jvyKR0KtNp1OsAY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ofzWirSLUuxR+mkot1sGQVvBTSTX2Cubp+c+wrUhT54kKuEI/0B9yBkMuFFr9blZWbV0nftHLjJbHXT1fRW5IysXZ3gokd50fdzrLq/cixNwRO1xyzN5nwOzl2B7N7V08IEBDqAJHiLiG3Sy4Ct5ojRUcDgm1PlRYFDZaTM0lRI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=YtkWpABM; arc=fail smtp.client-ip=40.107.237.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j8WuDCbX66hoJbEa46MaN65oRrqhNUby6oAamMBXdNECD+Q59zYhCCgzP7H/xdqWH8vFzx3p8o3a2epxFU9W8NCns7TSgBX5D6qiXtTd9/r1oDSlC/2m7t3IKdjS8t19JODXcrXx1wkKom43uDadTgv25CQfMUETOQz1dcAcf4c9aBrV7N4EhGhOJxbYP1w8bw4iJ+ilfLuo1MX9aILv0xYaZ0vYLqchY2O9Rij8+PQXGCccoudHsVKiUEU9GmvEeMv4j5vOFY5doXT85TfJaAgxHT808ReTWjmZC1jK3yvRJVLKNEQ+7tiRu1CxU2kplSHgwVe9P/LlsffYf3sK4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7Ldy4aGEadHWsLGVGxixwC5Xmy2B/Sn2gi1wsIlA9SU=;
+ b=Da6YMRIVZO465D4FtfVtCRK95c/jRORMYs0cGjimzDW9Jp1f2xdr8crlah0f2FzjtMnp3we4/zJwrnhKrsIWXVznKnhHar3SSxdAJuTIGgd9FrtGgAa2z/DrHtWPqnsui7B9pBwj1fMLhhj4JurwtgWfyrdeL9P0v/K3m7McHuqz0nVCf8bgzQCjGbw/19obdEaFdofE7f7Zcu9Lp5uoyskCfbtIldaHzhNE82h+zblNNGF8dQ/SsA+cBME4GjOfHuWoIzWIYrnyp9rIFhrf+LIJr0H5jfe5djvO5il8F1+J8ATvLYVbDNxK8N2VdO8WalKi8qOIpYDULf1ZuoH4Yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7Ldy4aGEadHWsLGVGxixwC5Xmy2B/Sn2gi1wsIlA9SU=;
+ b=YtkWpABMS/AR9OW1eZo36RHZPgUsbLCreM+F1KcnV8GQ2QFG7cNXMlb5Pec01dEuhKHKejfelddquUVOLRuqYV5Yy0kME3I+C/BMZQD8H2BtNKpY2U3gHntE6qPE8I0QksztK6QgFIdpQK5kUAgBxEO2E5YBJD0ERHTEyEDMKR1QghBcjRlhRjydIhzCmip4818DjiC3JyaznjIZgsonFToRThxKhmyRE/FXNC5/sSujeiANmYKyYPyk5aBh4Xhh2p8vNzf+vBTfzrg3Zv86MM056pbpJIkLY+OEYDwpn/cRKgyP69gVUruGnxKDAq5mCAGGA4iNShI47zZeddNzaw==
+Received: from SA0PR11CA0034.namprd11.prod.outlook.com (2603:10b6:806:d0::9)
+ by CY5PR12MB6647.namprd12.prod.outlook.com (2603:10b6:930:40::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.54; Sat, 13 Apr
+ 2024 20:07:59 +0000
+Received: from SN1PEPF0002636C.namprd02.prod.outlook.com
+ (2603:10b6:806:d0:cafe::60) by SA0PR11CA0034.outlook.office365.com
+ (2603:10b6:806:d0::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.31 via Frontend
+ Transport; Sat, 13 Apr 2024 20:07:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SN1PEPF0002636C.mail.protection.outlook.com (10.167.241.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Sat, 13 Apr 2024 20:07:59 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sat, 13 Apr
+ 2024 13:07:53 -0700
+Received: from [10.110.48.28] (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Sat, 13 Apr
+ 2024 13:07:52 -0700
+Message-ID: <24b88e53-a1fe-4fba-a7b5-ffcbeba88a73@nvidia.com>
+Date: Sat, 13 Apr 2024 13:07:52 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240413151152.165682-1-alisa.roman@analog.com> <20240413151152.165682-6-alisa.roman@analog.com>
-In-Reply-To: <20240413151152.165682-6-alisa.roman@analog.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Sat, 13 Apr 2024 15:05:40 -0500
-Message-ID: <CAMknhBFzUeW5+rs_GgCZCiit=eW04VHyCnt-__jXLnO3Z29ksA@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] iio: adc: ad7192: Add AD7194 support
-To: Alisa-Dariana Roman <alisadariana@gmail.com>
-Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org, 
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org, nuno.sa@analog.com, 
-	marcelo.schmitt@analog.com, bigunclemax@gmail.com, okan.sahin@analog.com, 
-	fr0st61te@gmail.com, alisa.roman@analog.com, marcus.folkesson@gmail.com, 
-	schnelle@linux.ibm.com, liambeguin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] mm/gup: consistently name GUP-fast functions
+To: David Hildenbrand <david@redhat.com>, <linux-kernel@vger.kernel.org>
+CC: <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, "Mike
+ Rapoport" <rppt@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>, Peter Xu
+	<peterx@redhat.com>, <linux-arm-kernel@lists.infradead.org>,
+	<loongarch@lists.linux.dev>, <linux-mips@vger.kernel.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-s390@vger.kernel.org>,
+	<linux-sh@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<x86@kernel.org>
+References: <20240402125516.223131-1-david@redhat.com>
+ <20240402125516.223131-2-david@redhat.com>
+Content-Language: en-US
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20240402125516.223131-2-david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636C:EE_|CY5PR12MB6647:EE_
+X-MS-Office365-Filtering-Correlation-Id: 40dcf203-1e71-41f9-509f-08dc5bf56ae6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/Yh8kiGrxSEYZAQRKZ4+LFpmEH/MXvcK7Bd6ZaKz5mXR7hSl3pBC9OcSHtRPRLv68jtBcL9wDJRMrFW3BwZegnfwQ8Da65eoEJppmnIDnCcY/xfsHHyNWwtEoA/p6HNwQZtQ13xxNzzKQuMFn/ESRAS4fp6g/6oIsgOknsu+EISPCQA21IiTdonAk9nJbN2ndwv/l7DlutS3tZ4MZjoVssLon/GRUlB5D8Wwl5/q+4CocXjkIQa1QLF4eYj9RuIe0lycJrwFKsUEEnVz5u/8VEoaaOYoqxAp4ytevAFWDvKqt4PneEbKWQWBTzyJrlqv9bquDur6v4/jbEH1ujo71HwxFXRIshg8A7jL2mWRitO1fM9v5pZVAdaRN6XwtLwaqxOBVuxCbxC5eer25cFzLWYbB7TNGTHZC+AdBUgwyD6ltsH4a0hy3d2pyWsL3nybbuNzwslnhaMNRlkSqKDeb3Sorm6mmBS3fc7Hnm0gUdI85AiqR9fFvHkmxZKcXZoq1jAtZM3Jp+7dq5sUFwB3xzIweBzh0hb0QiQVjhE+34A5rLvlExI3Oiil5qCoVDIyPtsnfpUgQY3/hyHFGagnlS5FEuvRulIh0PW6Nl31NgPJLTjQDiPTLoW0aBBDldsm3am/hrsyS1p9aXn4WO1vH/EnPrbFTvfADdXyakOf49ffZWIOy8i49rBsuSBMQduj21y0LEmmCdyNXwOuB2Brs+E7O5p5EGgNGV3Nclobg/Z/3GPHxZXIW6eyRlWTzKvj
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2024 20:07:59.6800
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40dcf203-1e71-41f9-509f-08dc5bf56ae6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SN1PEPF0002636C.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6647
 
-On Sat, Apr 13, 2024 at 10:13=E2=80=AFAM Alisa-Dariana Roman
-<alisadariana@gmail.com> wrote:
->
-> Unlike the other AD719Xs, AD7194 has configurable differential
-> channels. The user can dynamically configure them in the devicetree.
->
-> Also modify config AD7192 description for better scaling.
->
-> Moved ad7192_chip_info struct definition to allow use of callback
-> function parse_channels().
+On 4/2/24 5:55 AM, David Hildenbrand wrote:
+> Let's consistently call the "fast-only" part of GUP "GUP-fast" and rename
+> all relevant internal functions to start with "gup_fast", to make it
+> clearer that this is not ordinary GUP. The current mixture of
+> "lockless", "gup" and "gup_fast" is confusing.
+> 
+> Further, avoid the term "huge" when talking about a "leaf" -- for
+> example, we nowadays check pmd_leaf() because pmd_huge() is gone. For the
+> "hugepd"/"hugepte" stuff, it's part of the name ("is_hugepd"), so that
+> stays.
+> 
+> What remains is the "external" interface:
+> * get_user_pages_fast_only()
+> * get_user_pages_fast()
+> * pin_user_pages_fast()
+> 
+> The high-level internal functions for GUP-fast (+slow fallback) are now:
+> * internal_get_user_pages_fast() -> gup_fast_fallback()
+> * lockless_pages_from_mm() -> gup_fast()
+> 
+> The basic GUP-fast walker functions:
+> * gup_pgd_range() -> gup_fast_pgd_range()
+> * gup_p4d_range() -> gup_fast_p4d_range()
+> * gup_pud_range() -> gup_fast_pud_range()
+> * gup_pmd_range() -> gup_fast_pmd_range()
+> * gup_pte_range() -> gup_fast_pte_range()
+> * gup_huge_pgd()  -> gup_fast_pgd_leaf()
+> * gup_huge_pud()  -> gup_fast_pud_leaf()
+> * gup_huge_pmd()  -> gup_fast_pmd_leaf()
 
-It looks like this no longer needs to be moved in this revision.
+This is my favorite cleanup of 2024 so far. The above mix was confusing
+even if one worked on this file all day long--you constantly have to
+translate from function name, to "is this fast or slow?". whew.
 
->
-> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+
+> 
+> The weird hugepd stuff:
+> * gup_huge_pd() -> gup_fast_hugepd()
+> * gup_hugepte() -> gup_fast_hugepte()
+> 
+> The weird devmap stuff:
+> * __gup_device_huge_pud() -> gup_fast_devmap_pud_leaf()
+> * __gup_device_huge_pmd   -> gup_fast_devmap_pmd_leaf()
+> * __gup_device_huge()     -> gup_fast_devmap_leaf()
+> * undo_dev_pagemap()      -> gup_fast_undo_dev_pagemap()
+> 
+> Helper functions:
+> * unpin_user_pages_lockless() -> gup_fast_unpin_user_pages()
+> * gup_fast_folio_allowed() is already properly named
+> * gup_fast_permitted() is already properly named
+> 
+> With "gup_fast()", we now even have a function that is referred to in
+> comment in mm/mmu_gather.c.
+> 
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  drivers/iio/adc/Kconfig  |  11 ++-
->  drivers/iio/adc/ad7192.c | 140 ++++++++++++++++++++++++++++++++++++---
->  2 files changed, 138 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> index 8db68b80b391..74fecc284f1a 100644
-> --- a/drivers/iio/adc/Kconfig
-> +++ b/drivers/iio/adc/Kconfig
-> @@ -88,12 +88,17 @@ config AD7173
->           called ad7173.
->
->  config AD7192
-> -       tristate "Analog Devices AD7190 AD7192 AD7193 AD7195 ADC driver"
-> +       tristate "Analog Devices AD7192 and similar ADC driver"
->         depends on SPI
->         select AD_SIGMA_DELTA
->         help
-> -         Say yes here to build support for Analog Devices AD7190,
-> -         AD7192, AD7193 or AD7195 SPI analog to digital converters (ADC)=
-.
-> +         Say yes here to build support for Analog Devices SPI analog to =
-digital
-> +         converters (ADC):
-> +         - AD7190
-> +         - AD7192
-> +         - AD7193
-> +         - AD7194
-> +         - AD7195
->           If unsure, say N (but it's safe to say "Y").
->
->           To compile this driver as a module, choose M here: the
-> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-> index a9eb4fab39ca..646ab56b87e3 100644
-> --- a/drivers/iio/adc/ad7192.c
-> +++ b/drivers/iio/adc/ad7192.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * AD7190 AD7192 AD7193 AD7195 SPI ADC driver
-> + * AD7192 and similar SPI ADC driver
->   *
->   * Copyright 2011-2015 Analog Devices Inc.
->   */
-> @@ -128,10 +128,21 @@
->  #define AD7193_CH_AIN8         0x480 /* AIN7 - AINCOM */
->  #define AD7193_CH_AINCOM       0x600 /* AINCOM - AINCOM */
->
-> +#define AD7194_CH_POS(x)       (((x) - 1) << 4)
-> +#define AD7194_CH_NEG(x)       ((x) - 1)
-> +#define AD7194_CH_DIFF(pos, neg) \
-> +               (((neg) =3D=3D 0 ? BIT(10) : AD7194_CH_NEG(neg)) | AD7194=
-_CH_POS(pos))
-> +#define AD7194_CH_TEMP         0x100 /* Temp sensor */
-> +#define AD7194_CH_BASE_NR      18
-> +#define AD7194_CH_AIN_START    1
-> +#define AD7194_CH_AIN_NR       16
-> +#define AD7194_CH_DIFF_NR_MAX  256
-> +
->  /* ID Register Bit Designations (AD7192_REG_ID) */
->  #define CHIPID_AD7190          0x4
->  #define CHIPID_AD7192          0x0
->  #define CHIPID_AD7193          0x2
-> +#define CHIPID_AD7194          0x3
->  #define CHIPID_AD7195          0x6
->  #define AD7192_ID_MASK         GENMASK(3, 0)
->
-> @@ -169,17 +180,10 @@ enum {
->         ID_AD7190,
->         ID_AD7192,
->         ID_AD7193,
-> +       ID_AD7194,
->         ID_AD7195,
->  };
->
-> -struct ad7192_chip_info {
-> -       unsigned int                    chip_id;
-> -       const char                      *name;
-> -       struct iio_chan_spec            *channels;
-> -       u8                              num_channels;
-> -       const struct iio_info           *info;
-> -};
-> -
->  struct ad7192_state {
->         const struct ad7192_chip_info   *chip_info;
->         struct regulator                *avdd;
-> @@ -201,6 +205,15 @@ struct ad7192_state {
->         struct ad_sigma_delta           sd;
->  };
->
-> +struct ad7192_chip_info {
-> +       unsigned int                    chip_id;
-> +       const char                      *name;
-> +       struct iio_chan_spec            *channels;
-> +       u8                              num_channels;
-> +       const struct iio_info           *info;
-> +       int (*parse_channels)(struct iio_dev *indio_dev);
-> +};
-> +
->  static const char * const ad7192_syscalib_modes[] =3D {
->         [AD7192_SYSCALIB_ZERO_SCALE] =3D "zero_scale",
->         [AD7192_SYSCALIB_FULL_SCALE] =3D "full_scale",
-> @@ -925,6 +938,15 @@ static const struct iio_info ad7192_info =3D {
->         .update_scan_mode =3D ad7192_update_scan_mode,
->  };
->
-> +static const struct iio_info ad7194_info =3D {
-> +       .read_raw =3D ad7192_read_raw,
-> +       .write_raw =3D ad7192_write_raw,
-> +       .write_raw_get_fmt =3D ad7192_write_raw_get_fmt,
-> +       .read_avail =3D ad7192_read_avail,
-> +       .validate_trigger =3D ad_sd_validate_trigger,
-> +       .update_scan_mode =3D ad7192_update_scan_mode,
-> +};
-> +
->  static const struct iio_info ad7195_info =3D {
->         .read_raw =3D ad7192_read_raw,
->         .write_raw =3D ad7192_write_raw,
-> @@ -1016,6 +1038,90 @@ static struct iio_chan_spec ad7193_channels[] =3D =
-{
->         IIO_CHAN_SOFT_TIMESTAMP(14),
->  };
->
-> +static int ad7192_parse_channel(struct fwnode_handle *child,
-> +                               struct iio_chan_spec *ad7194_channels)
+>   mm/gup.c | 205 ++++++++++++++++++++++++++++---------------------------
+>   1 file changed, 103 insertions(+), 102 deletions(-)
+> 
 
-nit: this is only requiring one "channel" and is not used as
-"channels" array, so I would leave out the "s".
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-> +{
-> +       u32 ain[2];
-> +       int ret;
-> +
-> +       ret =3D fwnode_property_read_u32_array(child, "diff-channels", ai=
-n,
-> +                                            ARRAY_SIZE(ain));
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (!in_range(ain[0], AD7194_CH_AIN_START, AD7194_CH_AIN_NR) ||
-> +           !in_range(ain[1], AD7194_CH_AIN_START, AD7194_CH_AIN_NR))
-> +               return -EINVAL;
-> +
-> +       ad7194_channels->channel =3D ain[0];
-> +       ad7194_channels->channel2 =3D ain[1];
-> +       ad7194_channels->address =3D AD7194_CH_DIFF(ain[0], ain[1]);
-> +
-> +       return 0;
-> +}
-> +
-> +static int ad7192_parse_channels(struct iio_dev *indio_dev)
 
-Better name might be ad7194_parse_channels() or
-ad7192_parse_ad7194_channels() since this is specific to the ad7194
-chip.
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
-> +{
-> +       struct ad7192_state *st =3D iio_priv(indio_dev);
-> +       struct device *dev =3D indio_dev->dev.parent;
-> +       struct iio_chan_spec *ad7194_channels;
-> +       struct fwnode_handle *child;
-> +       struct iio_chan_spec ad7194_chan =3D AD7193_CHANNEL(0, 0, 0);
-> +       struct iio_chan_spec ad7194_chan_diff =3D AD7193_DIFF_CHANNEL(0, =
-0, 0, 0);
-> +       struct iio_chan_spec ad7194_chan_temp =3D AD719x_TEMP_CHANNEL(0, =
-0);
-> +       struct iio_chan_spec ad7194_chan_timestamp =3D IIO_CHAN_SOFT_TIME=
-STAMP(0);
-> +       unsigned int num_channels, index =3D 0, ain_chan;
-> +       int ret;
-> +
-> +       num_channels =3D device_get_child_node_count(dev);
-> +       if (num_channels > AD7194_CH_DIFF_NR_MAX)
-> +               return -EINVAL;
-> +
-> +       num_channels +=3D AD7194_CH_BASE_NR;
-> +
-> +       ad7194_channels =3D devm_kcalloc(dev, sizeof(*ad7194_channels),
-> +                                      num_channels, GFP_KERNEL);
-
-nit: technically, the argument order is supposed to be count then size
-
-> +       if (!ad7194_channels)
-> +               return -ENOMEM;
-> +
-> +       indio_dev->channels =3D ad7194_channels;
-> +       indio_dev->num_channels =3D num_channels;
-> +
-> +       device_for_each_child_node(dev, child) {
-> +               *ad7194_channels =3D ad7194_chan_diff;
-> +               ad7194_channels->scan_index =3D index++;
-> +               ret =3D ad7192_parse_channel(child, ad7194_channels);
-> +               if (ret) {
-> +                       fwnode_handle_put(child);
-> +                       return ret;
-> +               }
-> +               ad7194_channels++;
-> +       }
-> +
-> +       *ad7194_channels =3D ad7194_chan_temp;
-> +       ad7194_channels->scan_index =3D index++;
-> +       ad7194_channels->address =3D AD7194_CH_TEMP;
-> +       ad7194_channels++;
-
-nit: It would seem more natural to have all voltage channels
-altogether rather than having the temperature channel in between.
-
-> +
-> +       for (ain_chan =3D 1; ain_chan <=3D 16; ain_chan++) {
-> +               if (st->aincom_mv) {
-> +                       *ad7194_channels =3D ad7194_chan;
-> +               } else {
-> +                       *ad7194_channels =3D ad7194_chan_diff;
-> +                       ad7194_channels->channel2 =3D 0;
-> +               }
-
-Same comment as on [PATCH 3/5] pseudo-differential channels have
-differential =3D 0 and so nothing should depend on st->aincom_mv being 0
-or not.
-
-> +               ad7194_channels->scan_index =3D index++;
-> +               ad7194_channels->channel =3D ain_chan;
-> +               ad7194_channels->address =3D AD7194_CH_DIFF(ain_chan, 0);
-> +               ad7194_channels++;
-> +       }
-> +
-> +       *ad7194_channels =3D ad7194_chan_timestamp;
-> +       ad7194_channels->scan_index =3D index;
-> +
-> +       return 0;
-> +}
-> +
->  static const struct ad7192_chip_info ad7192_chip_info_tbl[] =3D {
->         [ID_AD7190] =3D {
->                 .chip_id =3D CHIPID_AD7190,
-> @@ -1038,6 +1144,12 @@ static const struct ad7192_chip_info ad7192_chip_i=
-nfo_tbl[] =3D {
->                 .num_channels =3D ARRAY_SIZE(ad7193_channels),
->                 .info =3D &ad7192_info,
->         },
-> +       [ID_AD7194] =3D {
-> +               .chip_id =3D CHIPID_AD7194,
-> +               .name =3D "ad7194",
-> +               .info =3D &ad7194_info,
-> +               .parse_channels =3D ad7192_parse_channels,
-> +       },
->         [ID_AD7195] =3D {
->                 .chip_id =3D CHIPID_AD7195,
->                 .name =3D "ad7195",
-> @@ -1164,6 +1276,12 @@ static int ad7192_probe(struct spi_device *spi)
->         indio_dev->num_channels =3D st->chip_info->num_channels;
->         indio_dev->info =3D st->chip_info->info;
->
-> +       if (st->chip_info->parse_channels) {
-> +               ret =3D st->chip_info->parse_channels(indio_dev);
-> +               if (ret)
-> +                       return ret;
-> +       }
-
-Take it or leave it, but I think it would be nice to move
-
-    indio_dev->channels =3D st->chip_info->channels;
-    indio_dev->num_channels =3D st->chip_info->num_channels;
-
-into an else { } here to make it clear what parse_channels is doing.
-
-> +
->         ret =3D ad_sd_init(&st->sd, indio_dev, spi, &ad7192_sigma_delta_i=
-nfo);
->         if (ret)
->                 return ret;
-> @@ -1201,6 +1319,7 @@ static const struct of_device_id ad7192_of_match[] =
-=3D {
->         { .compatible =3D "adi,ad7190", .data =3D &ad7192_chip_info_tbl[I=
-D_AD7190] },
->         { .compatible =3D "adi,ad7192", .data =3D &ad7192_chip_info_tbl[I=
-D_AD7192] },
->         { .compatible =3D "adi,ad7193", .data =3D &ad7192_chip_info_tbl[I=
-D_AD7193] },
-> +       { .compatible =3D "adi,ad7194", .data =3D &ad7192_chip_info_tbl[I=
-D_AD7194] },
->         { .compatible =3D "adi,ad7195", .data =3D &ad7192_chip_info_tbl[I=
-D_AD7195] },
->         {}
->  };
-> @@ -1210,6 +1329,7 @@ static const struct spi_device_id ad7192_ids[] =3D =
-{
->         { "ad7190", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7190] },
->         { "ad7192", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7192] },
->         { "ad7193", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7193] },
-> +       { "ad7194", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7194] },
->         { "ad7195", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7195] },
->         {}
->  };
-> @@ -1226,6 +1346,6 @@ static struct spi_driver ad7192_driver =3D {
->  module_spi_driver(ad7192_driver);
->
->  MODULE_AUTHOR("Michael Hennerich <michael.hennerich@analog.com>");
-> -MODULE_DESCRIPTION("Analog Devices AD7190, AD7192, AD7193, AD7195 ADC");
-> +MODULE_DESCRIPTION("Analog Devices AD7192 and similar ADC");
->  MODULE_LICENSE("GPL v2");
->  MODULE_IMPORT_NS(IIO_AD_SIGMA_DELTA);
-> --
-> 2.34.1
->
 
