@@ -1,107 +1,116 @@
-Return-Path: <linux-kernel+bounces-143509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08028A3A54
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:01:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7D88A3A58
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:06:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC4F428334B
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:01:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 194BBB21BD9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42FA113ADA;
-	Sat, 13 Apr 2024 02:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YhXvchdx"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C32814A81;
+	Sat, 13 Apr 2024 02:06:13 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D7410A19
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 02:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8792E442C;
+	Sat, 13 Apr 2024 02:06:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712973702; cv=none; b=Jv3hsGRFIFNZlVfVM01ONVV/fyt81ZwIsKyeln39WshhgtjhhOJrVkIH7GpWk6JVTwtIqjxeLGCx79x8jgFu8hJWv3x3rPmeNA82rwSWlsgWqxBzP0axugNYIhYU7wK9fRtr3IlxmOqPnPGCPJJC8NSimvZ6p9YfMgOIeYzY+6c=
+	t=1712973973; cv=none; b=I9QmlmOUk5f5cO6y8MN/tZTMqub+WbSsH8jG1lkQ9bG14JJ6LbTU1wriYuJEhcdEybvJF3fZWjW0Rdx1JZqLRhDFnOHaCQYoo+WCl2wMKFpeWsBOcYqxNFUlD1jgjdGJGFlYw5N+jBpj6+dsQ/KKn9QRIj/HC/bsEM+zumz+pwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712973702; c=relaxed/simple;
-	bh=p/2hydVnnlEbKTZWwG+nen+utD/CQpvcPpWEmaZG1X0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fUiSPGLK9UxZutnZdw43wpwBdbZZ4nZywpfVaYKzGNvB7FmylSxS6ARV9cmzgggQFzLYWEavpRIGugabt8TY75DJnO67pjX1GWeq99B0zPeOSgiGbZBW25J0HJXiVlwJtPfzVYLapgIrz7ZKU9Xt6wXWFAUDAoG5hVrl8wPL5U4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YhXvchdx; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d8b2389e73so15018711fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:01:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712973699; x=1713578499; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p/2hydVnnlEbKTZWwG+nen+utD/CQpvcPpWEmaZG1X0=;
-        b=YhXvchdxwSpqIsMYezQXre5h2uWHe9pmytB9uSv7F1q86v1ZKOZe2Bj6QWXPPT6BC9
-         3HYvJBG4ePfdX1kTzxOoSJIptg+w43h8lS3X0tgsX41+EUFaz5phVQCKu7fnRIdwUev0
-         QpANy7EBoeb+pfeseO8REUWnJjITLBAqKytXM2sZ63Gvv5r23ErtCcy1w0EON33h6kiu
-         k8GBLlBViAjA2806YpvON28eTz5wOGSahQ8krOkxJcdSECs1RWr1rLV99WdJNa1oHMPk
-         wWR7/SJDDLiCZmXXiX7S+LebD6mxKsVplVN8rIK9Xs09xccju7EmfvC+pPRVDxdgwnqs
-         aiGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712973699; x=1713578499;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p/2hydVnnlEbKTZWwG+nen+utD/CQpvcPpWEmaZG1X0=;
-        b=Fq5+LVGPSDWi7qdV13czXb76yI3GDvoHcDfOZjf9a7DK3DLaG8DzEH/PMRBF8mr7wv
-         Or60pr6r7OYnanQlgmJl5wu36OtI1jfHSWoRfL8F9oXmbHO2ZWjunvC4VHFJqoQAB6Pf
-         x/2EQWJ0TtOxfIuD9pR+MlfaMU8YnQmAP/2z3p1WzTa1dwDzIzm5C8FYm9SpL9d9X8VG
-         2RkJvXjkDmchOHXqCmR69PvvyX4xcsgx6BFr7a5yTdHzIj+o21W505OCBVYPDyUfZ/Yi
-         Z2FfQIWjSMP/OKLlUkJiO087hn2Hq//nkLQKjlTJMEKCNLB0LeYhg3JtVKLF0qBUiTji
-         ssUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHXGdrsnNPfk4HCpdk8AYBFtipbnvrA6i2XMaqa2LKkUFtvRZGeMG1kwZwVKkdySzQSJAqRMRlWWcotXkkeQGOXc/mFRNVbD2DO0np
-X-Gm-Message-State: AOJu0YwZMUGSyP2RF0QliThmrGvvAIBy+86wGObgmmgys699vNrHWy5W
-	KDCVowZAbKs6aOfhevAspITgww3h3Ykp6Kc9MgjrVJY4jZC+vXgz+LwmuxuN3cV0OZqSq22sWZw
-	bN1wrnbmjSGHArejhupIrOa5B3Is=
-X-Google-Smtp-Source: AGHT+IERcfQivnwk0kUV3dGOcGKRjqKT2qQKRpEgfdFliRAGDubcGJS45zyMOCaW4aZWeQQrMNpkomEOqYyFw/nbCGs=
-X-Received: by 2002:a2e:9f49:0:b0:2d8:3b49:f831 with SMTP id
- v9-20020a2e9f49000000b002d83b49f831mr2677746ljk.2.1712973698752; Fri, 12 Apr
- 2024 19:01:38 -0700 (PDT)
+	s=arc-20240116; t=1712973973; c=relaxed/simple;
+	bh=+ETQMhi2fRULLMuIe7XIGB4fHAAgtUZrpLjbPwhBsbA=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=bZ8qFLZ8uSR6nEpk/qlfWhj6l504SdtTr5fuincGctjwlkrEbc8r0rwu+EvsFzkMCdD7Y/Zj7URmEWa5B3IuWRpjhvJsPbo7K66+5J1rw5FqjGxfgfJIBYVOTvVHvFs5MVFvv25k4nAUyPh7MK6U/wIXCTrlhg98qQtJj467uQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VGcGp2tNBz4f3jdT;
+	Sat, 13 Apr 2024 10:05:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 5A3171A0175;
+	Sat, 13 Apr 2024 10:06:01 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBGI6BlmPXJbJw--.20790S3;
+	Sat, 13 Apr 2024 10:06:01 +0800 (CST)
+Subject: Re: [PATCH RFC v2 5/6] blk-throttle: support to destroy throtl_data
+ when blk-throttle is disabled
+To: Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, chenhuacai@kernel.org, josef@toxicpanda.com,
+ jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net, pctammela@mojatatu.com,
+ qde@naccy.de, zhaotianrui@loongson.cn, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+ cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+ <20240406080059.2248314-6-yukuai1@huaweicloud.com>
+ <Zhl37slglnnTSMO7@slm.duckdns.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <1bb85208-1224-77dc-f0b2-7b7a228ef70b@huaweicloud.com>
+Date: Sat, 13 Apr 2024 10:06:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412064353.133497-1-zhaoyang.huang@unisoc.com> <20240412143457.5c6c0ae8f6df0f647d7cf0be@linux-foundation.org>
-In-Reply-To: <20240412143457.5c6c0ae8f6df0f647d7cf0be@linux-foundation.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Sat, 13 Apr 2024 10:01:27 +0800
-Message-ID: <CAGWkznHRyZDuumF=70DncgPHFM0+pgxuONh98Bykz5b-=rCjCQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: protect xa split stuff under lruvec->lru_lock
- during migration
-To: Andrew Morton <akpm@linux-foundation.org>, Dave Chinner <david@fromorbit.com>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Alex Shi <alexs@kernel.org>, 
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Zhl37slglnnTSMO7@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCXaBGI6BlmPXJbJw--.20790S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF1fCF4xJFW8tr15ZFW5ZFb_yoW3tFX_Ca
+	yvyr97Gr17Xa4kJasrJFW3XFWv9w45CFWUX34q9F45AasxX3W8AFWfKrWSvF13uan7KF98
+	WrW8JF40yr15WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbaxFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+	Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x0JUl-eOUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-loop Dave, since he has ever helped set up an reproducer in
-https://lore.kernel.org/linux-mm/20221101071721.GV2703033@dread.disaster.ar=
-ea/
-@Dave Chinner , I would like to ask for your kindly help on if you can
-verify this patch on your environment if convenient. Thanks a lot.
+Hi,
 
+ÔÚ 2024/04/13 2:05, Tejun Heo Ð´µÀ:
+> Hello,
+> 
+> On Sat, Apr 06, 2024 at 04:00:58PM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Currently once blk-throttle is enabled, it can't be destroyed until disk
+>> removal, even it's disabled.
+>>
+>> Also prepare to support building it as kernel module.
+> 
+> The benefit of doing this whenever the ruleset becomes empty seems marginal.
+> This isn't necessary to allow unloading blk-throttle and
+> blkg_conf_exit_blkg() is also necessary because of this, right?
 
-On Sat, Apr 13, 2024 at 5:34=E2=80=AFAM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Fri, 12 Apr 2024 14:43:53 +0800 "zhaoyang.huang" <zhaoyang.huang@uniso=
-c.com> wrote:
->
-> > Livelock in [1] is reported multitimes since v515,
->
-> Are you able to provide us with a means by which others can reproduce thi=
-s?
->
+Yes, this is why blkg_conf_exit_blkg() is necessary.
+
+I think that we need find an appropriate time to unload blk-throttle
+other than deleting the gendisk. I also think of adding a new user input
+like "8:0 free" to do this. These are the solutions that I can think of
+for now.
+
+Thanks,
+Kuai
+
+> 
 > Thanks.
+> 
+
 
