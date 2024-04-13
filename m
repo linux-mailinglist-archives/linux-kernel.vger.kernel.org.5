@@ -1,118 +1,134 @@
-Return-Path: <linux-kernel+bounces-143633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 442A58A3BAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:44:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C63D48A3BB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:46:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E655B282C96
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85AD91F22248
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 08:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C653E3D96B;
-	Sat, 13 Apr 2024 08:44:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sk8IayQq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6B2208B6;
+	Sat, 13 Apr 2024 08:46:11 +0000 (UTC)
+Received: from mail115-80.sinamail.sina.com.cn (mail115-80.sinamail.sina.com.cn [218.30.115.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137DE3D544
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34E05366
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712997882; cv=none; b=YGVyLrMtnVNLdSjqwZoKwKExBnVP5mxnstH5CK2eI5BilX2hJt2BfUcJazmV4cnpTRp8omRHPnbTiVHNhwpuls30PsXGpLp1BLFBbYVJO8ZYcVwXlSiOg/xToRpe5XeGHtcNzbcpA5FzKEToWvN16M6pBoNQUPfCnqGv0EmgpUo=
+	t=1712997971; cv=none; b=XRZjoiFWH9snixFWU5FkjP3uqxAazzjIZDmFxcROwPDaQPtghKKq6rdJySsZl396p8kXZiP88nRki5A81fr4xA2oO9qWZglblVp1HVWFYLBaqhH7s/aw7rfMLKYrCF0pm7bMkKbymIiYKg0aPF2bz7qedK+Fu/kg3O04GaBg9jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712997882; c=relaxed/simple;
-	bh=/wLGnoIeoo4W2cyvTVt18c7gw15g1e4ZJjlq9J58C44=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d+ALUS1MeS73BDWUjE5gIPGCS+bm4cj9/lU4Px6l3tUH7dOwGXOSIKwBDvYnImOXoYwk4JHMofB4Y5+a46eUfPVM1XBb7eJ447gNUvdiKeqbZIJ96JooSSn8xRrV2HEWyj9B3Vs7z2+lLI4ds22L1Yk/3elHpMaOQ1TOwkY8JxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sk8IayQq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92AEDC113CD;
-	Sat, 13 Apr 2024 08:44:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712997881;
-	bh=/wLGnoIeoo4W2cyvTVt18c7gw15g1e4ZJjlq9J58C44=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Sk8IayQqtx9l/zyO0uiI3pKkotGl+asOUMuEwZ1h3+9pFDkJ7d/JK4Tg90tR5vMka
-	 hoXdKG7G66aAjEDID4Scaza6Tc0Man5HkljhsvrWWTgtWyM87132XLk/pTeMSiBWW+
-	 MJ3uLt+ISEXxjy7gfljbKhak0RBlDoSQSLJSOvcQ1Rifn2eDGps9KPttj+8bhd+WI1
-	 nTbx4Y3JWx8+PdJzMoIm8Bib19qpU9c+PfgptPIf0MSm+YXudxo0S6OwtUcdTxsqyc
-	 WbDhonz+uWQs5KtwYyzkmWgeziznjzK8M+Jg4loTwPtXNuo4PV/NEflxkCGXv7sUyJ
-	 3aqjFtAanVoRA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rvZ03-0046hp-8L;
-	Sat, 13 Apr 2024 09:44:39 +0100
-Date: Sat, 13 Apr 2024 09:44:42 +0100
-Message-ID: <877ch1slc5.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Guanrui Huang <guanrui.huang@linux.alibaba.com>
-Cc: yuzenghui@huawei.com,
-	shannon.zhao@linux.alibaba.com,
-	tglx@linutronix.de,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1712997971; c=relaxed/simple;
+	bh=UWWc0EfDzeo1KhUuECrIHIrSFuJFcZtoao1je9C1Tk4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HKu+t1YgwZYHPGk9jRi8PdFoKvjpP/nUVLKH99IrzaUhde5fhcFWvw6k1Hatue0/eeownXFM8GvMq5k3+/9p0YcCZol35ssa77r9S2M5E+7JfbVoCZM5SwrT1gvN6FNzOpuY7RRhypCGRxmha2RWZYJOv8O//PnN1mdaYyb6xx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.88.51.22])
+	by sina.com (10.75.12.45) with ESMTP
+	id 661A4624000059B8; Sat, 13 Apr 2024 16:45:26 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 57740031457756
+X-SMAIL-UIID: 1A7EB68A59634771834D1050F8AB7392-20240413-164526-1
+From: Hillf Danton <hdanton@sina.com>
+To: amir73il@gmail.com
+Cc: syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>,
+	linux-fsdevel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] irqchip/gic-v3-its: Fix double free on error
-In-Reply-To: <20240413064051.31315-1-guanrui.huang@linux.alibaba.com>
-References: <20240413064051.31315-1-guanrui.huang@linux.alibaba.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+Subject: Re: [syzbot] Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
+Date: Sat, 13 Apr 2024 16:45:19 +0800
+Message-Id: <20240413084519.1774-1-hdanton@sina.com>
+In-Reply-To: <00000000000095bb400615f4b0ed@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: guanrui.huang@linux.alibaba.com, yuzenghui@huawei.com, shannon.zhao@linux.alibaba.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sat, 13 Apr 2024 07:40:50 +0100,
-Guanrui Huang <guanrui.huang@linux.alibaba.com> wrote:
+On Fri, 12 Apr 2024 23:42:19 -0700 Amir Goldstein
+> On Sat, Apr 13, 2024 at 4:41=E2=80=AFAM Hillf Danton <hdanton@sina.com> wrote:
+> >
+> > On Thu, 11 Apr 2024 01:11:20 -0700
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    6ebf211bb11d Add linux-next specific files for 20240410
+> > > git tree:       linux-next
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1621af9d180000
+> >
+> > #syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git  6ebf211bb11d
+> >
+> > --- x/fs/notify/fsnotify.c
+> > +++ y/fs/notify/fsnotify.c
+> > @@ -101,8 +101,8 @@ void fsnotify_sb_delete(struct super_blo
+> >         wait_var_event(fsnotify_sb_watched_objects(sb),
+> >                        !atomic_long_read(fsnotify_sb_watched_objects(sb)));
+> >         WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PRIO_CONTENT));
+> > -       WARN_ON(fsnotify_sb_has_priority_watchers(sb,
+> > -                                                 FSNOTIFY_PRIO_PRE_CONTENT));
+> > +       WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PRIO_PRE_CONTENT));
+> > +       synchronize_srcu(&fsnotify_mark_srcu);
+> >         kfree(sbinfo);
+> >  }
+> >
+> > @@ -499,7 +499,7 @@ int fsnotify(__u32 mask, const void *dat
+> >  {
+> >         const struct path *path =3D fsnotify_data_path(data, data_type);
+> >         struct super_block *sb =3D fsnotify_data_sb(data, data_type);
+> > -       struct fsnotify_sb_info *sbinfo =3D fsnotify_sb_info(sb);
+> > +       struct fsnotify_sb_info *sbinfo;
+> >         struct fsnotify_iter_info iter_info = {};
+> >         struct mount *mnt =3D NULL;
+> >         struct inode *inode2 =3D NULL;
+> > @@ -529,6 +529,8 @@ int fsnotify(__u32 mask, const void *dat
+> >                 inode2_type =3D FSNOTIFY_ITER_TYPE_PARENT;
+> >         }
+> >
+> > +       iter_info.srcu_idx =3D srcu_read_lock(&fsnotify_mark_srcu);
+> > +       sbinfo =3D fsnotify_sb_info(sb);
+> >         /*
+> >          * Optimization: srcu_read_lock() has a memory barrier which can
+> >          * be expensive.  It protects walking the *_fsnotify_marks lists.
 > 
-> In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error
-> with i > 0, its_vpe_irq_domain_free may free bitmap and vprop_page,
-> and then there is a double free in its_vpe_irq_domain_alloc.
 > 
-> Fix it by calling its_vpe_irq_domain_free directly, bitmap and
-> vprop_page will be freed in this function.
-> 
-> Signed-off-by: Guanrui Huang <guanrui.huang@linux.alibaba.com>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index fca888b36680..2305f6b524a9 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -4561,13 +4561,8 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
->  		irqd_set_resend_when_in_progress(irq_get_irq_data(virq + i));
->  	}
->  
-> -	if (err) {
-> -		if (i > 0)
-> -			its_vpe_irq_domain_free(domain, virq, i);
-> -
-> -		its_lpi_free(bitmap, base, nr_ids);
-> -		its_free_prop_table(vprop_page);
-> -	}
-> +	if (err)
-> +		its_vpe_irq_domain_free(domain, virq, i);
->  
->  	return err;
->  }
+> See comment above. This kills the optimization.
+> It is not worth letting all the fsnotify hooks suffer the consequence
+> for the edge case of calling fsnotify hook during fs shutdown.
 
-Reviewed-by: Marc Zyngier <maz@kernel.org>
+Say nothing before reading your fix.
+> 
+> Also, fsnotify_sb_info(sb) in fsnotify_sb_has_priority_watchers()
+> is also not protected and using srcu_read_lock() there completely
+> nullifies the purpose of fsnotify_sb_info.
+> 
+> Here is a simplified fix for fsnotify_sb_error() rebased on the
+> pending mm fixes for this syzbot boot failure:
+> 
+> #syz test: https://github.com/amir73il/linux fsnotify-fixes
 
-	M.
+Feel free to post your patch at lore because not everyone has 
+access to sites like github.
+> 
+> Jan,
+> 
+> I think that all the functions called from fs shutdown context
+> should observe that SB_ACTIVE is cleared but wasn't sure?
 
--- 
-Without deviation from the norm, progress is not possible.
+If you composed fix based on SB_ACTIVE that is cleared in
+generic_shutdown_super() with &sb->s_umount held for write,
+I wonder what simpler serialization than srcu you could
+find/create in fsnotify.
 
