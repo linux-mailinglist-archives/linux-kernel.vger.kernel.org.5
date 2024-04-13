@@ -1,478 +1,363 @@
-Return-Path: <linux-kernel+bounces-143860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3E9C8A3E63
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:16:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C40338A3E6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:21:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1029C281E61
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:16:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E44F31C20B48
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E64E5490B;
-	Sat, 13 Apr 2024 20:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D5E54915;
+	Sat, 13 Apr 2024 20:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VRWikUoR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="RaMxr38k";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rZvXXyi3"
+Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F0B23BE
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 20:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3416123BE;
+	Sat, 13 Apr 2024 20:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713039392; cv=none; b=cLDZU9Im4zgPQf3tyzkkWAoeYUdlIwvK4WxfpSsnYERgqdx5Z3i/VgFf3Y573ShgK/QPo5dBXHuMcsx72Pqg52/R9zkMINkXP+Qi/1X5vwKqgX4Og63kjfZC6MkJKvxSg8gIQ4sQQivERsJvHm1TtjbFv2VEfgU5E4OAEOD65tE=
+	t=1713039692; cv=none; b=BevMIMG/PTGXiYI25YgSuiMMwvWSADnu82odJTzeVgtNgQKPxmmDOXvw9zU8uYMQD6dTLJI+Y4QvQ6mTP0sPnYcBavChcGkJXF6lmXKGd1BGelk2RoayGL//l2a7rhWs49fng9WmgMKRHV/d4f5f0+9HIllGClUH3DX0VnuXp2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713039392; c=relaxed/simple;
-	bh=GdlA4bisbUSqyWN7Sakaqn6p1AY64gpCQUaDpmQDV/A=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=ONozFQLI3uALwzfaP4ChKJY2bOacPV7UzjS0gcSgS+iNmCqSP23jv56KJERlzG2Sdnfg42H/DasmsfeFQ2yMadbd7oA8x1LMJIaSe+1/SwGABsJKqpTC2EqTR4Io57co1vvVL9OBtK4UVfHDnFoLU2ToKrIjSO++Afb390Dnhzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VRWikUoR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0A17C113CD;
-	Sat, 13 Apr 2024 20:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713039391;
-	bh=GdlA4bisbUSqyWN7Sakaqn6p1AY64gpCQUaDpmQDV/A=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=VRWikUoREogrm0JhDJbg6AWqLMrVuhu/EsQPhHvPS0zgEbpJZJSjum9Oj2twLJl36
-	 JzT9lZnyz5HaWEOBQ2Du1SE8pKzHSGiKMFsxXzJUysMyOcPoOWDrOUfVO3we7QXGqM
-	 W+DXfHfvGFQ0tsSV3qoCm7l8ec3P8AT9BaGUKZoRlosHByvbwrdedo7gtwgtBFaKhq
-	 15d7R/cA0Wxofe8fgHL/G1zM0kp1BtbdMPtYiRV6KSbj7YJyPlLxYZc61ukDj/LyHQ
-	 cBxOOMZuL0EUXk/S+7N2pu3gNsWcn6hfJ0D5UQcX9+SLGzSJe+D1fqFb0Ik1xG31Xe
-	 1ogamdPZu/EdQ==
+	s=arc-20240116; t=1713039692; c=relaxed/simple;
+	bh=zAdtXVatRJXtfODpENwmf60lQdVBH44vsMoxw4Llvok=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P1GVgJKCCkeSBGAVkrgbUiPZGG1uLYLesyTkYPozYVQNZnwHpBhrru7wW3UEdT+Yuf7jPcxP9R0+2h/djHeWbtga8CoDrPokMnSBdnbkYUbzrCtjDcMjN+Nr2xS/Qi7AaMTIdY0zgYSRUg4TLETcTDd5+uzB6YkPWTfdTgDXAj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=RaMxr38k; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rZvXXyi3; arc=none smtp.client-ip=64.147.123.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 889CA180009D;
+	Sat, 13 Apr 2024 16:21:24 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sat, 13 Apr 2024 16:21:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1713039683; x=1713126083; bh=fq+/IgHD56xmC4qkpsxEe
+	ynTUfNdHkceCUnjS4UT8n8=; b=RaMxr38kvHAQXuvZH5AmgGBID/RIk0NBKXncv
+	Hwe774igEmTGuCkdWtZ5h8Aji3FTVI+jCanJLMO+qg+leX9ExEXi5ubWo8telzsf
+	FmO8XS1oW1Yp/s0QyzD9UOLRkiFybvY+Mrm5r0BgO2rnSrpWThsjCKCIhGObZ0BI
+	y/2PqphKmwe9iMvJWpC73LXv3rZhOR+rcuTW0PDg75kOb27jCCykH2Y886tQsxhv
+	h2aGA+CCNe0OsGhke1ovgBqgoRgA2RSL04YcDKDRa8z4Sa4LI6X0kySJ2dYKYkmM
+	s09MPKf5OekwcJ/hS4dFqRaSrVDKwey6IWm6VcgLPe4m7r6MQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1713039683; x=1713126083; bh=fq+/IgHD56xmC4qkpsxEeynTUfNd
+	HkceCUnjS4UT8n8=; b=rZvXXyi3KdHjf9o/uY7MtWTykh5BZIl5AqT9W8zXfLhd
+	eeiqnKasuuyo5b5mOIC6xyF+aH82rQYHbyE9nd5wovEdSCs/BmQoWlVhRNaZwdad
+	9bbSukUqKrzjlLsl4SevNOngrtaEvmxHEDYKILw6EVdGC6PyS7Ib53LT3pkvRWz5
+	+pqp2LDsbm7pEoXiYt3Z3Hw4eZBS5FNt50O3ho2R1IaEuD4OVmWT6S7tzVu1FvRr
+	lPWu1IN6MvVPtt6GQx45u3e5+cmx+z4jeQNd+gtLafR264IZxV9/ITM0H2Cpbwi/
+	nfNrRsIuutEi8K4XFaqw09PiaRUGu7MU72wKDI4Uwg==
+X-ME-Sender: <xms:Q-kaZm3U39qQhflagP5ZI6W0srmSQcdm2ZimjmlkEw4mS3LKK0iyfw>
+    <xme:Q-kaZpF8mewhPc3FhSfcOsPqnHesP5-MARSJ4BubZnYh4BBuntG6uoQxUVcgm8bkQ
+    Zg9n4kdc7rT-fakEbg>
+X-ME-Received: <xmr:Q-kaZu6nUC4qd9UhrPisaCYluRzDY5RpFUGZuMoFp-iGvaqp5S8AH7ZKTKs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeiiedgudehudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpedfnfhukhgv
+    ucffrdculfhonhgvshdfuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrth
+    htvghrnhepgfdujedthfduudekffefkeeiffdttddvhfegudduueffuefhfefggeefteev
+    vdegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplh
+    hukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:Q-kaZn3AgqfjMT8QMTxk8XcYdJAWdshtjgZ0zV0bXnuSLFppo4wxow>
+    <xmx:Q-kaZpEHHOFbEZDYOL0egJ2-d0O8PS-l-6jit7H85u9UU21wq1Cvkg>
+    <xmx:Q-kaZg8bTkC7Oz3Z6SzB1PLf8bUbrotH4Wo-V6MiWOClaRoDZt6mrw>
+    <xmx:Q-kaZumQAvS9791HFa87dpYXLGbg8Ijv6f1_oIxxH8xsW1HiEaipqw>
+    <xmx:Q-kaZu4uTx8lNUgS5GNXIR1CNcn_hsFL1gj16Xs7YYKQuDBdnQkmCGHm>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 13 Apr 2024 16:21:19 -0400 (EDT)
+From: "Luke D. Jones" <luke@ljones.dev>
+To: hdegoede@redhat.com
+Cc: corentin.chary@gmail.com,
+	ilpo.jarvinen@linux.intel.com,
+	mohamed.ghanmi@supcom.tn,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Luke D . Jones" <luke@ljones.dev>
+Subject: [PATCH] platform/x86: asus-wmi: add support for vivobook fan profiles
+Date: Sun, 14 Apr 2024 08:21:12 +1200
+Message-ID: <20240413202112.37729-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 13 Apr 2024 23:16:26 +0300
-Message-Id: <D0J9S678XST7.370ZQFB5VJO0W@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <anil.s.keshavamurthy@intel.com>,
- <aou@eecs.berkeley.edu>, <catalin.marinas@arm.com>, <davem@davemloft.net>,
- <linux-arm-kernel@lists.infradead.org>, <naveen.n.rao@linux.ibm.com>,
- <palmer@dabbelt.com>, <paul.walmsley@sifive.com>, <will@kernel.org>
-Subject: Re: [PATCH v2 4/4] kprobes: Remove core dependency on modules
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Mark Rutland" <mark.rutland@arm.com>, "Masami Hiramatsu"
- <mhiramat@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240403150154.667649-1-mark.rutland@arm.com>
- <20240403150154.667649-5-mark.rutland@arm.com>
- <D0B6SY8DJ5RC.KLZ08YRNLOH3@kernel.org>
- <D0BFT1AHHVYR.2V75A0HT23T67@kernel.org>
- <20240405011026.8e96b1d129452f84210b6f66@kernel.org>
- <Zg7Zi9Gfa3jWNJ6q@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <Zg7Zi9Gfa3jWNJ6q@FVFF77S0Q05N.cambridge.arm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu Apr 4, 2024 at 7:47 PM EEST, Mark Rutland wrote:
-> On Fri, Apr 05, 2024 at 01:10:26AM +0900, Masami Hiramatsu wrote:
-> > On Thu, 04 Apr 2024 18:18:21 +0300
-> > "Jarkko Sakkinen" <jarkko@kernel.org> wrote:
-> >=20
-> > > On Thu Apr 4, 2024 at 11:15 AM EEST, Jarkko Sakkinen wrote:
-> > > > On Wed Apr 3, 2024 at 6:01 PM EEST, Mark Rutland wrote:
-> > > > > From: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > >
-> > > > > Tracing with kprobes while running a monolithic kernel is current=
-ly
-> > > > > impossible because KPROBES depends on MODULES. While this depende=
-ncy is
-> > > > > necessary when HAVE_KPROBES_ALLOC=3Dn and the core kprobes code a=
-llocates
-> > > > > memory using module_alloc(), all the other module-specific code o=
-nly
-> > > > > exist to handle the case when MODULES=3Dy, and can be hidden behi=
-nd
-> > > > > ifdeffery.
-> > > > >
-> > > > > Add the necessary ifdeffery, and remove the dependency on MODULES=
-=3Dy when
-> > > > > HAVE_KPROBES_ALLOC=3Dy.
-> > > > >
-> > > > > As of this patch kprobes can be used when MODULES=3Dn on arm64 an=
-d
-> > > > > riscv. All other architectures still depend on MODULES, either by=
- virtue
-> > > > > of the core dependency on MODULES when HAVE_KPROBES_ALLOC=3Dn, or=
- by
-> > > > > virtue of an explciit dependency on MODULES in arch code.
-> > > > >
-> > > > > Other architectures can enable support by implementing their own
-> > > > > kprobes_alloc_insn_page() and kprobes_free_insn_page() which do n=
-ot
-> > > > > depend on MODULES.
-> > > > >
-> > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > Link: https://lore.kernel.org/lkml/20240326134616.7691-1-jarkko@k=
-ernel.org/
-> > > > > [Mark: Remove execmem changes, depend on HAVE_KPROBES_ALLOC]
-> > > > > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > > > > Cc: Albert Ou <aou@eecs.berkeley.edu>
-> > > > > Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-> > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > > > Cc: David S. Miller <davem@davemloft.net>
-> > > > > Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > > Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
-> > > > > Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> > > > > Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> > > > > Cc: Will Deacon <will@kernel.org>
-> > > > > ---
-> > > > >  arch/Kconfig                |  2 +-
-> > > > >  kernel/kprobes.c            | 46 ++++++++++++++++++++++---------=
-------
-> > > > >  kernel/trace/trace_kprobe.c | 15 ++++++++++--
-> > > > >  3 files changed, 41 insertions(+), 22 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/Kconfig b/arch/Kconfig
-> > > > > index 85bb59f7b8c07..0df2c88547b3c 100644
-> > > > > --- a/arch/Kconfig
-> > > > > +++ b/arch/Kconfig
-> > > > > @@ -52,7 +52,7 @@ config GENERIC_ENTRY
-> > > > > =20
-> > > > >  config KPROBES
-> > > > >  	bool "Kprobes"
-> > > > > -	depends on MODULES
-> > > > > +	depends on MODULES || HAVE_KPROBES_ALLOC
-> > > > >  	depends on HAVE_KPROBES
-> > > > >  	select KALLSYMS
-> > > > >  	select TASKS_RCU if PREEMPTION
-> > > > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > > > > index fa2ee4e59eca2..ec4493a41b505 100644
-> > > > > --- a/kernel/kprobes.c
-> > > > > +++ b/kernel/kprobes.c
-> > > > > @@ -1594,6 +1594,7 @@ static int check_kprobe_address_safe(struct=
- kprobe *p,
-> > > > >  			goto out;
-> > > > >  		}
-> > > > > =20
-> > > > > +#ifdef CONFIG_MODULES
-> > > > >  		/*
-> > > > >  		 * If the module freed '.init.text', we couldn't insert
-> > > > >  		 * kprobes in there.
-> > > > > @@ -1604,7 +1605,9 @@ static int check_kprobe_address_safe(struct=
- kprobe *p,
-> > > > >  			*probed_mod =3D NULL;
-> > > > >  			ret =3D -ENOENT;
-> > > > >  		}
-> > > > > +#endif /* CONFIG_MODULES */
-> > > > >  	}
-> > > > > +
-> > > > >  out:
-> > > > >  	preempt_enable();
-> > > > >  	jump_label_unlock();
-> > > > > @@ -2484,24 +2487,6 @@ int kprobe_add_area_blacklist(unsigned lon=
-g start, unsigned long end)
-> > > > >  	return 0;
-> > > > >  }
-> > > > > =20
-> > > > > -/* Remove all symbols in given area from kprobe blacklist */
-> > > > > -static void kprobe_remove_area_blacklist(unsigned long start, un=
-signed long end)
-> > > > > -{
-> > > > > -	struct kprobe_blacklist_entry *ent, *n;
-> > > > > -
-> > > > > -	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
-> > > > > -		if (ent->start_addr < start || ent->start_addr >=3D end)
-> > > > > -			continue;
-> > > > > -		list_del(&ent->list);
-> > > > > -		kfree(ent);
-> > > > > -	}
-> > > > > -}
-> > > > > -
-> > > > > -static void kprobe_remove_ksym_blacklist(unsigned long entry)
-> > > > > -{
-> > > > > -	kprobe_remove_area_blacklist(entry, entry + 1);
-> > > > > -}
-> > > > > -
-> > > > >  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigne=
-d long *value,
-> > > > >  				   char *type, char *sym)
-> > > > >  {
-> > > > > @@ -2566,6 +2551,25 @@ static int __init populate_kprobe_blacklis=
-t(unsigned long *start,
-> > > > >  	return ret ? : arch_populate_kprobe_blacklist();
-> > > > >  }
-> > > > > =20
-> > > > > +#ifdef CONFIG_MODULES
-> > > > > +/* Remove all symbols in given area from kprobe blacklist */
-> > > > > +static void kprobe_remove_area_blacklist(unsigned long start, un=
-signed long end)
-> > > > > +{
-> > > > > +	struct kprobe_blacklist_entry *ent, *n;
-> > > > > +
-> > > > > +	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
-> > > > > +		if (ent->start_addr < start || ent->start_addr >=3D end)
-> > > > > +			continue;
-> > > > > +		list_del(&ent->list);
-> > > > > +		kfree(ent);
-> > > > > +	}
-> > > > > +}
-> > > > > +
-> > > > > +static void kprobe_remove_ksym_blacklist(unsigned long entry)
-> > > > > +{
-> > > > > +	kprobe_remove_area_blacklist(entry, entry + 1);
-> > > > > +}
-> > > > > +
-> > > > >  static void add_module_kprobe_blacklist(struct module *mod)
-> > > > >  {
-> > > > >  	unsigned long start, end;
-> > > > > @@ -2662,6 +2666,9 @@ static int kprobes_module_callback(struct n=
-otifier_block *nb,
-> > > > >  	mutex_unlock(&kprobe_mutex);
-> > > > >  	return NOTIFY_DONE;
-> > > > >  }
-> > > > > +#else
-> > > > > +#define kprobes_module_callback	(NULL)
-> > > > > +#endif /* CONFIG_MODULES */
-> > > > > =20
-> > > > >  static struct notifier_block kprobe_module_nb =3D {
-> > > > >  	.notifier_call =3D kprobes_module_callback,
-> > > > > @@ -2726,7 +2733,8 @@ static int __init init_kprobes(void)
-> > > > >  	err =3D arch_init_kprobes();
-> > > > >  	if (!err)
-> > > > >  		err =3D register_die_notifier(&kprobe_exceptions_nb);
-> > > > > -	if (!err)
-> > > > > +
-> > > > > +	if (!err && IS_ENABLED(CONFIG_MODULES))
-> > > > >  		err =3D register_module_notifier(&kprobe_module_nb);
-> > > > > =20
-> > > > >  	kprobes_initialized =3D (err =3D=3D 0);
-> > > > > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kpr=
-obe.c
-> > > > > index 14099cc17fc9e..c509ba776e679 100644
-> > > > > --- a/kernel/trace/trace_kprobe.c
-> > > > > +++ b/kernel/trace/trace_kprobe.c
-> > > > > @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_with=
-in_module(struct trace_kprobe *tk,
-> > > > >  	return strncmp(module_name(mod), name, len) =3D=3D 0 && name[le=
-n] =3D=3D ':';
-> > > > >  }
-> > > > > =20
-> > > > > +#ifdef CONFIG_MODULES
-> > > > >  static nokprobe_inline bool trace_kprobe_module_exist(struct tra=
-ce_kprobe *tk)
-> > > > >  {
-> > > > >  	char *p;
-> > > > > @@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_modu=
-le_exist(struct trace_kprobe *tk)
-> > > > > =20
-> > > > >  	return ret;
-> > > > >  }
-> > > > > +#else
-> > > > > +#define trace_kprobe_module_exist(tk) false /* aka a module neve=
-r exists */
-> > > > > +#endif /* CONFIG_MODULES */
-> > > > > =20
-> > > > >  static bool trace_kprobe_is_busy(struct dyn_event *ev)
-> > > > >  {
-> > > > > @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace=
-_kprobe *tk)
-> > > > >  	return ret;
-> > > > >  }
-> > > > > =20
-> > > > > +#ifdef CONFIG_MODULES
-> > > > >  /* Module notifier call back, checking event on the module */
-> > > > >  static int trace_kprobe_module_callback(struct notifier_block *n=
-b,
-> > > > >  				       unsigned long val, void *data)
-> > > > > @@ -699,6 +704,9 @@ static int trace_kprobe_module_callback(struc=
-t notifier_block *nb,
-> > > > > =20
-> > > > >  	return NOTIFY_DONE;
-> > > > >  }
-> > > > > +#else
-> > > > > +#define trace_kprobe_module_callback (NULL)
-> > > > > +#endif /* CONFIG_MODULES */
-> > > > > =20
-> > > > >  static struct notifier_block trace_kprobe_module_nb =3D {
-> > > > >  	.notifier_call =3D trace_kprobe_module_callback,
-> > > > > @@ -1933,8 +1941,11 @@ static __init int init_kprobe_trace_early(=
-void)
-> > > > >  	if (ret)
-> > > > >  		return ret;
-> > > > > =20
-> > > > > -	if (register_module_notifier(&trace_kprobe_module_nb))
-> > > > > -		return -EINVAL;
-> > > > > +	if (IS_ENABLED(CONFIG_MODULES)) {
-> > > > > +		ret =3D register_module_notifier(&trace_kprobe_module_nb);
-> > > > > +		if (ret)
-> > > > > +			return -EINVAL;
-> > > > > +	}
-> > > > > =20
-> > > > >  	return 0;
-> > > > >  }
-> > > >
-> > > > 2/4, 3/4, 4/4:
-> > > >
-> > > > Tested-by: Jarkko Sakkinen <jarkko@kernel.org> # arch/riscv
-> > >=20
-> > > Hey, I tried the pci_proc_init example:
-> > >=20
-> > > [    3.060703] ------------[ ftrace bug ]------------
-> > > [    3.060944] ftrace faulted on writing
-> > > [    3.060987] [<ffffffff8102c0da>] pci_proc_init+0x0/0x80
-> > > [    3.061509] Updating ftrace call site to call a different ftrace f=
-unction
-> > > [    3.061756] ftrace record flags: 80100001
-> > > [    3.061925]  (1)
-> > > [    3.061925]  expected tramp: ffffffff8000aa60
-> > > [    3.062527] ------------[ cut here ]------------
-> > > [    3.062652] WARNING: CPU: 0 PID: 18 at kernel/trace/ftrace.c:2180 =
-ftrace_bug+0x282/0x2b8
-> > > [    3.062747] CPU: 0 PID: 18 Comm: migration/0 Not tainted 6.9.0-rc1=
- #2
-> > > [    3.062807] Hardware name: riscv-virtio,qemu (DT)
-> > > [    3.062868] Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpus=
-locked+0x140/0x18c
-> > > [    3.062925] epc : ftrace_bug+0x282/0x2b8
-> > > [    3.062957]  ra : ftrace_bug+0x282/0x2b8
-> > > [    3.062989] epc : ffffffff80fc31f4 ra : ffffffff80fc31f4 sp : ff20=
-000000093c70
-> > > [    3.063014]  gp : ffffffff824b7780 tp : ff60000002a85940 t0 : ffff=
-ffff800923a6
-> > > [    3.063037]  t1 : 0000000000000020 t2 : 6465746365707865 s0 : ff20=
-000000093cb0
-> > > [    3.063061]  s1 : ffffffff8102c0da a0 : 0000000000000022 a1 : ffff=
-ffff8229b7f0
-> > > [    3.063084]  a2 : 0000000000000010 a3 : fffffffffffffffe a4 : 0000=
-000000000000
-> > > [    3.063108]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000=
-000000000001
-> > > [    3.063131]  s2 : ff60000002850ab0 s3 : ffffffffffffffff s4 : 0000=
-000000000002
-> > > [    3.063154]  s5 : 0000000002000000 s6 : 0000000082000000 s7 : 0000=
-000000000000
-> > > [    3.063178]  s8 : 0000000000000001 s9 : ffffffff824bca18 s10: ff60=
-000002845140
-> > > [    3.063202]  s11: 00000000000000ab t3 : ffffffff824ce9ef t4 : ffff=
-ffff824ce9ef
-> > > [    3.063225]  t5 : ffffffff824ce9f0 t6 : ff20000000093aa8
-> > > [    3.063248] status: 0000000200000100 badaddr: 0000000000000000 cau=
-se: 0000000000000003
-> > > [    3.063331] [<ffffffff80fc31f4>] ftrace_bug+0x282/0x2b8
-> > > [    3.063398] [<ffffffff80108b1a>] ftrace_replace_code+0xfe/0x168
-> > > [    3.063430] [<ffffffff80108c82>] ftrace_modify_all_code+0x5c/0x16a
-> > > [    3.063460] [<ffffffff80108da2>] __ftrace_modify_code+0x12/0x1c
-> > > [    3.063490] [<ffffffff800f299c>] multi_cpu_stop+0x118/0x1a0
-> > > [    3.063519] [<ffffffff800f242e>] cpu_stopper_thread+0xb2/0x12a
-> > > [    3.063548] [<ffffffff8005dece>] smpboot_thread_fn+0x1aa/0x1d2
-> > > [    3.063577] [<ffffffff80057fec>] kthread+0xfe/0x106
-> > > [    3.063606] [<ffffffff80fe3d76>] ret_from_fork+0xe/0x20
-> > > [    3.063676] ---[ end trace 0000000000000000 ]---
-> > > [    3.069730] ------------[ cut here ]------------
-> > > [    3.069861] Failed to disarm kprobe-ftrace at pci_proc_init+0x0/0x=
-80 (error -19)
-> > > [    3.070078] WARNING: CPU: 0 PID: 1 at kernel/kprobes.c:1128 __disa=
-rm_kprobe_ftrace+0x9a/0xae
-> > > [    3.070124] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W     =
-     6.9.0-rc1 #2
-> > > [    3.070133] Hardware name: riscv-virtio,qemu (DT)
-> > > [    3.070141] epc : __disarm_kprobe_ftrace+0x9a/0xae
-> > > [    3.070150]  ra : __disarm_kprobe_ftrace+0x9a/0xae
-> > > [    3.070157] epc : ffffffff800ffcda ra : ffffffff800ffcda sp : ff20=
-00000000be30
-> > > [    3.070162]  gp : ffffffff824b7780 tp : ff60000002a70000 t0 : ffff=
-ffff800923a6
-> > > [    3.070167]  t1 : 0000000000000046 t2 : 6f742064656c6961 s0 : ff20=
-00000000be60
-> > > [    3.070173]  s1 : ffffffffffffffed a0 : 0000000000000044 a1 : ffff=
-ffff8229b7f0
-> > > [    3.070178]  a2 : 0000000000000010 a3 : fffffffffffffffe a4 : 0000=
-000000000000
-> > > [    3.070182]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000=
-000000000001
-> > > [    3.070187]  s2 : ffffffff824bc940 s3 : ffffffff822ac158 s4 : ff60=
-000002b53c80
-> > > [    3.070192]  s5 : ffffffff824bc940 s6 : ffffffff822ac158 s7 : ffff=
-ffff81000000
-> > > [    3.070197]  s8 : ffffffff814775f8 s9 : ffffffff824f23d8 s10: 0000=
-000000000000
-> > > [    3.070202]  s11: 0000000000000000 t3 : ffffffff824ce9d7 t4 : ffff=
-ffff824ce9d7
-> > > [    3.070206]  t5 : ffffffff824ce9d8 t6 : ff2000000000bc48
-> > > [    3.070211] status: 0000000200000120 badaddr: 0000000000000000 cau=
-se: 0000000000000003
-> > > [    3.070218] [<ffffffff800ffcda>] __disarm_kprobe_ftrace+0x9a/0xae
-> > > [    3.070228] [<ffffffff80101b16>] kprobe_free_init_mem+0xc2/0x130
-> > > [    3.070236] [<ffffffff80fd9b38>] kernel_init+0x46/0x14e
-> > > [    3.070245] [<ffffffff80fe3d76>] ret_from_fork+0xe/0x20
-> > > [    3.070254] ---[ end trace 0000000000000000 ]---
-> > > [
-> > >=20
-> > > This is with riscv64 defconfig, tracing shenanigans and the following
-> > > bootconfig and the bug was realized in QEMU:
-> >=20
-> > So this is with CONFIG_MODULES=3Dy?
-> > This seems like an actual bug but not related to this series.
-> > Can you reproduce this without this patch series?
->
-> IIUC what's going on here is:
->
-> CONFIG_MODULES=3Dn
->
-> .. and so CONFIG_STRICT_MODULE_RWX=3Dn
->
-> When kprobe_free_init_mem() is called, system_state =3D=3D SYSTEM_FREEING=
-_INITMEM, which causes
-> core_kernel_text() to return 0 for inittext:
->
-> | int notrace core_kernel_text(unsigned long addr)
-> | {
-> |         if (is_kernel_text(addr))
-> |                 return 1;
-> |=20
-> |         if (system_state < SYSTEM_FREEING_INITMEM &&
-> |             is_kernel_inittext(addr))
-> |                 return 1;
-> |         return 0;
-> | }
->
-> This causes riscv's patch_map() to *not* fixmap the inittext, since it do=
-es:
->
-> |	if (core_kernel_text(uintaddr) || is_kernel_exittext(uintaddr))
-> |		page =3D phys_to_page(__pa_symbol(addr));
-> |	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
-> |		page =3D vmalloc_to_page(addr);
-> |	else
-> |		return addr;
->
-> ... which fails core_kernel_text(), and IS_ENABLED(CONFIG_STRICT_MODULE_R=
-WX),
-> returning the (read-only) mapping of the kernel image.
+From: Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
 
-Right not claiming to be expert with this code, so I guess this is
-use to create a temporary mapping for the time period when the code
-is patched into text?
+Add support for vivobook fan profiles wmi call on the ASUS VIVOBOOK
+to adjust power limits.
 
->
-> That would happen (by luck) to work with CONFIG_MODULES=3Dbecause it'd be=
- handled
-> by vmalloc_to_page() walking the page tables. I suspect that'll happen to=
- work
-> on arm64 by virtue of patch 1, but that wasn't intentional.
->
-> I'm not sure what the right fix is here, it's annoying that core_kernel_t=
-ext()
-> is special-cased for SYSTEM_FREEING_INITMEM, but that was deliberate as o=
-f
-> commit:
->
->   d2635f2012a44e3d ("mm: create a new system state and fix core_kernel_te=
-xt()")
->
-> ... though I'm not sure what exactly that was trying to fix at a higher l=
-evel.
->
-> I can look into this some more tomorrow.
+These fan profiles have a different device id than the ROG series.
+and different order. This reorders the existing modes and adds a new
+full speed mode available on these laptops.
 
-Thanks, I'll look forward to test this! Or it might be already out
-as I was sick most of this week :-) Have quite a big pile of emails
-to cycle through...
+As part of keeping the patch clean the throttle_thermal_policy_available
+boolean stored in the driver struct is removed and
+throttle_thermal_policy_dev is used in place (as on init it is zeroed).
 
-BR, Jarkko
+Signed-off-by: Mohamed Ghanmi <mohamed.ghanmi@supcom.tn>
+Co-developed-by: Luke D. Jones <luke@ljones.dev>
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+---
+ drivers/platform/x86/asus-wmi.c            | 100 +++++++++++----------
+ include/linux/platform_data/x86/asus-wmi.h |   1 +
+ 2 files changed, 55 insertions(+), 46 deletions(-)
+
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 2d2b4eca7fd8..439d330fb80b 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -97,6 +97,11 @@ module_param(fnlock_default, bool, 0444);
+ #define ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST	1
+ #define ASUS_THROTTLE_THERMAL_POLICY_SILENT	2
+ 
++#define ASUS_THROTTLE_THERMAL_POLICY_DEFAULT_VIVO	0
++#define ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST_VIVO	2
++#define ASUS_THROTTLE_THERMAL_POLICY_SILENT_VIVO		1
++#define ASUS_THROTTLE_THERMAL_POLICY_FULLSPEED		3
++
+ #define USB_INTEL_XUSB2PR		0xD0
+ #define PCI_DEVICE_ID_INTEL_LYNXPOINT_LP_XHCI	0x9c31
+ 
+@@ -285,8 +290,8 @@ struct asus_wmi {
+ 	u32 kbd_rgb_dev;
+ 	bool kbd_rgb_state_available;
+ 
+-	bool throttle_thermal_policy_available;
+ 	u8 throttle_thermal_policy_mode;
++	u32 throttle_thermal_policy_dev;
+ 
+ 	bool cpu_fan_curve_available;
+ 	bool gpu_fan_curve_available;
+@@ -3153,7 +3158,7 @@ static int fan_curve_get_factory_default(struct asus_wmi *asus, u32 fan_dev)
+ 	int err, fan_idx;
+ 	u8 mode = 0;
+ 
+-	if (asus->throttle_thermal_policy_available)
++	if (asus->throttle_thermal_policy_dev)
+ 		mode = asus->throttle_thermal_policy_mode;
+ 	/* DEVID_<C/G>PU_FAN_CURVE is switched for OVERBOOST vs SILENT */
+ 	if (mode == 2)
+@@ -3360,7 +3365,7 @@ static ssize_t fan_curve_enable_store(struct device *dev,
+ 		 * For machines with throttle this is the only way to reset fans
+ 		 * to default mode of operation (does not erase curve data).
+ 		 */
+-		if (asus->throttle_thermal_policy_available) {
++		if (asus->throttle_thermal_policy_dev) {
+ 			err = throttle_thermal_policy_write(asus);
+ 			if (err)
+ 				return err;
+@@ -3577,8 +3582,8 @@ static const struct attribute_group asus_fan_curve_attr_group = {
+ __ATTRIBUTE_GROUPS(asus_fan_curve_attr);
+ 
+ /*
+- * Must be initialised after throttle_thermal_policy_check_present() as
+- * we check the status of throttle_thermal_policy_available during init.
++ * Must be initialised after throttle_thermal_policy_dev is set as
++ * we check the status of throttle_thermal_policy_dev during init.
+  */
+ static int asus_wmi_custom_fan_curve_init(struct asus_wmi *asus)
+ {
+@@ -3619,38 +3624,31 @@ static int asus_wmi_custom_fan_curve_init(struct asus_wmi *asus)
+ }
+ 
+ /* Throttle thermal policy ****************************************************/
+-
+-static int throttle_thermal_policy_check_present(struct asus_wmi *asus)
+-{
+-	u32 result;
+-	int err;
+-
+-	asus->throttle_thermal_policy_available = false;
+-
+-	err = asus_wmi_get_devstate(asus,
+-				    ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY,
+-				    &result);
+-	if (err) {
+-		if (err == -ENODEV)
+-			return 0;
+-		return err;
+-	}
+-
+-	if (result & ASUS_WMI_DSTS_PRESENCE_BIT)
+-		asus->throttle_thermal_policy_available = true;
+-
+-	return 0;
+-}
+-
+ static int throttle_thermal_policy_write(struct asus_wmi *asus)
+ {
+-	int err;
+-	u8 value;
++	u8 value = asus->throttle_thermal_policy_mode;
+ 	u32 retval;
++	bool vivo;
++	int err;
+ 
+-	value = asus->throttle_thermal_policy_mode;
++	vivo = asus->throttle_thermal_policy_dev == ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY_VIVO;
++	if (vivo) {
++		switch (value) {
++		case ASUS_THROTTLE_THERMAL_POLICY_DEFAULT:
++			value = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT_VIVO;
++			break;
++		case ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST:
++			value = ASUS_THROTTLE_THERMAL_POLICY_OVERBOOST_VIVO;
++			break;
++		case ASUS_THROTTLE_THERMAL_POLICY_SILENT:
++			value = ASUS_THROTTLE_THERMAL_POLICY_SILENT_VIVO;
++			break;
++		default:
++			break;
++		}
++	}
+ 
+-	err = asus_wmi_set_devstate(ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY,
++	err = asus_wmi_set_devstate(asus->throttle_thermal_policy_dev,
+ 				    value, &retval);
+ 
+ 	sysfs_notify(&asus->platform_device->dev.kobj, NULL,
+@@ -3680,7 +3678,7 @@ static int throttle_thermal_policy_write(struct asus_wmi *asus)
+ 
+ static int throttle_thermal_policy_set_default(struct asus_wmi *asus)
+ {
+-	if (!asus->throttle_thermal_policy_available)
++	if (!asus->throttle_thermal_policy_dev)
+ 		return 0;
+ 
+ 	asus->throttle_thermal_policy_mode = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
+@@ -3690,9 +3688,14 @@ static int throttle_thermal_policy_set_default(struct asus_wmi *asus)
+ static int throttle_thermal_policy_switch_next(struct asus_wmi *asus)
+ {
+ 	u8 new_mode = asus->throttle_thermal_policy_mode + 1;
++	bool vivo;
+ 	int err;
+ 
+-	if (new_mode > ASUS_THROTTLE_THERMAL_POLICY_SILENT)
++	vivo = asus->throttle_thermal_policy_dev == ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY_VIVO;
++	if (!vivo && new_mode > ASUS_THROTTLE_THERMAL_POLICY_SILENT)
++		new_mode = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
++
++	if (vivo && new_mode > ASUS_THROTTLE_THERMAL_POLICY_FULLSPEED)
+ 		new_mode = ASUS_THROTTLE_THERMAL_POLICY_DEFAULT;
+ 
+ 	asus->throttle_thermal_policy_mode = new_mode;
+@@ -3725,13 +3728,17 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
+ 	struct asus_wmi *asus = dev_get_drvdata(dev);
+ 	u8 new_mode;
+ 	int result;
++	bool vivo;
+ 	int err;
+ 
+ 	result = kstrtou8(buf, 10, &new_mode);
+ 	if (result < 0)
+ 		return result;
+ 
+-	if (new_mode > ASUS_THROTTLE_THERMAL_POLICY_SILENT)
++	vivo = asus->throttle_thermal_policy_dev == ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY_VIVO;
++	if (vivo && new_mode > ASUS_THROTTLE_THERMAL_POLICY_FULLSPEED)
++		return -EINVAL;
++	else if (!vivo && new_mode > ASUS_THROTTLE_THERMAL_POLICY_SILENT)
+ 		return -EINVAL;
+ 
+ 	asus->throttle_thermal_policy_mode = new_mode;
+@@ -3748,7 +3755,10 @@ static ssize_t throttle_thermal_policy_store(struct device *dev,
+ 	return count;
+ }
+ 
+-// Throttle thermal policy: 0 - default, 1 - overboost, 2 - silent
++/*
++ * Throttle thermal policy: 0 - default, 1 - overboost, 2 - silent
++ * VIVOBOOK: 3 - fans full speed
++ */
+ static DEVICE_ATTR_RW(throttle_thermal_policy);
+ 
+ /* Platform profile ***********************************************************/
+@@ -3814,7 +3824,7 @@ static int platform_profile_setup(struct asus_wmi *asus)
+ 	 * Not an error if a component platform_profile relies on is unavailable
+ 	 * so early return, skipping the setup of platform_profile.
+ 	 */
+-	if (!asus->throttle_thermal_policy_available)
++	if (!asus->throttle_thermal_policy_dev)
+ 		return 0;
+ 
+ 	dev_info(dev, "Using throttle_thermal_policy for platform_profile support\n");
+@@ -4229,7 +4239,7 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
+ 	if (code == NOTIFY_KBD_FBM || code == NOTIFY_KBD_TTP) {
+ 		if (asus->fan_boost_mode_available)
+ 			fan_boost_mode_switch_next(asus);
+-		if (asus->throttle_thermal_policy_available)
++		if (asus->throttle_thermal_policy_dev)
+ 			throttle_thermal_policy_switch_next(asus);
+ 		return;
+ 
+@@ -4401,7 +4411,7 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
+ 	else if (attr == &dev_attr_fan_boost_mode.attr)
+ 		ok = asus->fan_boost_mode_available;
+ 	else if (attr == &dev_attr_throttle_thermal_policy.attr)
+-		ok = asus->throttle_thermal_policy_available;
++		ok = asus->throttle_thermal_policy_dev != 0;
+ 	else if (attr == &dev_attr_ppt_pl2_sppt.attr)
+ 		devid = ASUS_WMI_DEVID_PPT_PL2_SPPT;
+ 	else if (attr == &dev_attr_ppt_pl1_spl.attr)
+@@ -4693,16 +4703,15 @@ static int asus_wmi_add(struct platform_device *pdev)
+ 	else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE2))
+ 		asus->kbd_rgb_dev = ASUS_WMI_DEVID_TUF_RGB_MODE2;
+ 
++	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY))
++		asus->throttle_thermal_policy_dev = ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY;
++	else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY_VIVO))
++		asus->throttle_thermal_policy_dev = ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY_VIVO;
++
+ 	err = fan_boost_mode_check_present(asus);
+ 	if (err)
+ 		goto fail_fan_boost_mode;
+ 
+-	err = throttle_thermal_policy_check_present(asus);
+-	if (err)
+-		goto fail_throttle_thermal_policy;
+-	else
+-		throttle_thermal_policy_set_default(asus);
+-
+ 	err = platform_profile_setup(asus);
+ 	if (err)
+ 		goto fail_platform_profile_setup;
+@@ -4797,7 +4806,6 @@ static int asus_wmi_add(struct platform_device *pdev)
+ fail_input:
+ 	asus_wmi_sysfs_exit(asus->platform_device);
+ fail_sysfs:
+-fail_throttle_thermal_policy:
+ fail_custom_fan_curve:
+ fail_platform_profile_setup:
+ 	if (asus->platform_profile_support)
+diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
+index 3eb5cd6773ad..982a637744ec 100644
+--- a/include/linux/platform_data/x86/asus-wmi.h
++++ b/include/linux/platform_data/x86/asus-wmi.h
+@@ -64,6 +64,7 @@
+ #define ASUS_WMI_DEVID_SCREENPAD_LIGHT	0x00050032
+ #define ASUS_WMI_DEVID_FAN_BOOST_MODE	0x00110018
+ #define ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY 0x00120075
++#define ASUS_WMI_DEVID_THROTTLE_THERMAL_POLICY_VIVO 0x00110019
+ 
+ /* Misc */
+ #define ASUS_WMI_DEVID_PANEL_OD		0x00050019
+-- 
+2.44.0
+
 
