@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-143763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 941CE8A3D21
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FAC38A3D24
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:13:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B59821C20CAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:12:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FCE81C20B40
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A1623A9;
-	Sat, 13 Apr 2024 15:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B4A545970;
+	Sat, 13 Apr 2024 15:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXnFYjZi"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vf4/L0JM"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC52262BD;
-	Sat, 13 Apr 2024 15:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493111F94C;
+	Sat, 13 Apr 2024 15:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713021167; cv=none; b=Ek6MXH0KfoCgJwJ4XM7NgyimlgCf82yfuwg4rcxhhw9sOXAv2G6sNezjLGee4X4MqM96kwzWBNow/RdH3scP/zJWs0Tgfdvjwkdb4xi7/q6Byj5TvEPUFG6tfQcBAZsHOePDxdRyPiDzwEjAbTKN62gsnt7omPRHGAc9m4evQTM=
+	t=1713021175; cv=none; b=p8BHyY8BVebT66z/SptQ2QqEbNlJ6gxJVfPdSFe9swo24UZEaM79xR0eYPS7pLdk2HuPXApQQTpzt6W4R592f7/H47T9irJ9p8d01JWubfJ51EDmEkscYGOIA8XDQTvMqbUDsyEvkWnOqygkb0yQLQgCi9EeNfUkWHN9XVc//MQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713021167; c=relaxed/simple;
-	bh=O22EJf3Cxd7LhuWpyhu2TN+qJKoijknx7evp3ZrZrhI=;
+	s=arc-20240116; t=1713021175; c=relaxed/simple;
+	bh=7DFxNs6cCw28WpWPlFtO5E2+9N80ZigYuLgXuDTJF8o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R4vpDiU37xu3RQkhxf9AG7Oj0au36rXIMN5AOCuYNsD0OsWFB4OmkSzV6Z7FbtMFnBsl8DGpMdFHXRUv1HIXjdLrqlmBL+Xw3bqoqLXHVQ8c+spxwcvE8eaeMJmp9hI5QeWynVClsOmsTh083CXgKgYOhk32u/pKyw6Iqeezn8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UXnFYjZi; arc=none smtp.client-ip=209.85.208.50
+	 MIME-Version; b=XYfmQNLwNPVjgDgxkdrzrPZIBHvxwCz9iHHmU/wrGWKpoh5U5tuCmc5u3oBSw+8AQs9DDr6K+MbR/zVGyS2VjXkFV/q5ljGUsJQwu3ox3yfQK7GkNFCbmCmxIwhgZAKwHbIFKZJaReeE/iQHS3JvJH9LGciTrXMMXznsttjj+mQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vf4/L0JM; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56fffb1d14bso2413167a12.1;
-        Sat, 13 Apr 2024 08:12:45 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e37503115so1472896a12.1;
+        Sat, 13 Apr 2024 08:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713021164; x=1713625964; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713021172; x=1713625972; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rrAIbGvl062V/H8+KEradezmbkKsOapNvn4Za0W1owY=;
-        b=UXnFYjZiUz+bVNVmPfBnnVB5aMzJJqleVloBbY7sOnbGQ3M0D9H7oqqHcCcsRFR0Vi
-         mz2aUKCE90FcaLTZtR7dmCWTKpw00ee/+iC7Z/hvXbQiUJNQKI1OyMSeCRjWTgLypiSo
-         Yn9o2E7UCTSCClVOk1GsUeiidjy1Zv4MU5GQP2R54u6BCicToi2gvzlOYvsW/NnvafQB
-         SwlyVFn80zdYrOYcIImx8botxiDv/tu0Tr19NKbFC+rAcafEJYLT9q/AF3mh0xp2y4ea
-         v79Nz6JmMLhZjRNvIEebStxzHPEj5tEpAWbihEbZGDQ+5u2rGigDC96+yI0c6Q6EnyBe
-         CT2A==
+        bh=GBb11tvx+5eI8LczNJrgwOTTPkpu4Q5YHuvpeo/+GrM=;
+        b=Vf4/L0JM6DDX5TnUXKplsehsvWVtdso+6HNOJPOqmPbNQXXFLJgGADHqYolWCM9E25
+         mCE4gI+vikkzXZhthfHxx50SAaJGnmlZ0O4bAKhrxB1vR5B8VNW8EhEFrNWNcjnYp9KO
+         msr1v9odo/Z26f8FnDXRsEk5xMDzs7nFno/LMy8FIsMsxBmP2GHyoXPx8kg81crOZn17
+         dvXoXFjD81hsiZLxgKqe0PXA3twxFjIBRKbAqnNovQ57QCWxS6dlnbcwnHbKYlQIYWC7
+         mkzo5Vo1TFw5Jq2KOJy1w3n2Ij70KNYh0UyamsHiTwIM5GoKiz54aV9cFx0JLLnvK5bA
+         Qw1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713021164; x=1713625964;
+        d=1e100.net; s=20230601; t=1713021172; x=1713625972;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rrAIbGvl062V/H8+KEradezmbkKsOapNvn4Za0W1owY=;
-        b=VUMPw35EjQPSjgaxCOQZxa/7WGYT1b22QD4WTAn1uvglrn2fqKFNjrrJEg7mrc03ug
-         3h1qDoT2cx+RU/Uwnfjm6DXPQ4qRCAJgjWYEyHmGj+Bi8Ih8WWPvMrlHxoOiDGabtwc3
-         utk5rBeUMJ7k3LQAez+Ea5E0MgK9UMSTglf5lIvUgRvoEKCFSbTk9oWrYEqdmq6fft5h
-         8rLUr1d1MaaeIAtkkswpg/8NVI11a6aqzgCeU1eDwCpj5Vnk0nqIF6c3I8Y6Uvm8SZRX
-         jNUAqCX27U2bDnMAzc6SQmSOUj4LhCzuIVO/MRw+Jzz3MiEzcLWPQU8fYasiZN1NLuy6
-         udCg==
-X-Forwarded-Encrypted: i=1; AJvYcCWN2AC3+CDIl2QISUCZ1/hQk6/TS/MBCJtQrlyMHAXL+wTf4W0m7QXIq+Lj5akm+mF1vqwVBFUxaC84SJegxA2k83iy2JjXXJ7pUhgxxJEQQnydhEsx3Mdl+k0whBbps8ufs0e5GnwMammVJJctGCwqOWQ2FIBlp8ZxyGRGNnWiLoejLQ==
-X-Gm-Message-State: AOJu0YzLZtq7fLSiRzOHCChAFMbjT8d8hvIhI2EKBF3bvm8zJ5I9iMUT
-	jlkxdglbHS5Z2oCEs+Z7NqwVdf39Rs9fHys/p9EhT+B/ugYOhY+3
-X-Google-Smtp-Source: AGHT+IHoFqeoePISpFGsB074XF4BvxBF7Y4J0uSPtGuravVIiwQfD+AEvdW0dsUX5/ICFcaKh3kNKg==
-X-Received: by 2002:a05:6402:380c:b0:56e:2b41:32c7 with SMTP id es12-20020a056402380c00b0056e2b4132c7mr6173192edb.10.1713021163869;
-        Sat, 13 Apr 2024 08:12:43 -0700 (PDT)
+        bh=GBb11tvx+5eI8LczNJrgwOTTPkpu4Q5YHuvpeo/+GrM=;
+        b=krk9o1rz/i3Z1fBMb9CgOdfh2d3IBr4jQGbSX0ppAo4tvKikIyXkc4SZLuZV7AsuiY
+         22ydD80p6rA5dgSoNF/rMB/B8gQrMo5t1Fu0bRuOmFI1hU4iticNu27Ksc2j5ACdZdT8
+         ThrGluWV+eSVVNAwkfMOWle4JXKM/nQmkiDkjReXbqHjtt9wouIps4v8MVyrmhbASD0E
+         o0VNKY663osEUrUcKjRylbdNgwM4/J0HIhgynXnhxGtYtze4GDBHnmyl0l2xul/aoAI/
+         Mn8eJ8smrfBT6kkAOgK0B2LSalEjoibr2OmzYyWyo5c2mfUx/00qe33LKcjZKnk2kiv3
+         2SVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfWRDgo7rgQvrMnBU04oFBXw1oZ/TEpWFn7KcRSlHMYpYggcCW/QLGsBIIXPE8s23uT1v20/TWv1/0JUcQdVvUtSlA7Qyfp0n7pIIgVnF+/pHptjhwRZOnX1K7s20Pj7dgeAkVWYkrRjDmABdDGKJyDc9eAl6wEwtn+vtEwNQlU27Duw==
+X-Gm-Message-State: AOJu0YwdQGrlUtK+73adN9T1wgfWP4AX4tVs7RtkSeLvoQTU70p0kj5i
+	c3RD7Vpj2KAGe05kLcdWfbBaNlG04MGEmouP2MpblP5Izy1YZpjN
+X-Google-Smtp-Source: AGHT+IGYMOu3Gkzq5afKgGUw+AgREB9x270AgBtuh2/Bwqk3fdetT/jgQXBB2GariPF7W6U0MVV1VQ==
+X-Received: by 2002:a50:d4d8:0:b0:56d:f075:72f6 with SMTP id e24-20020a50d4d8000000b0056df07572f6mr2750727edj.40.1713021172473;
+        Sat, 13 Apr 2024 08:12:52 -0700 (PDT)
 Received: from spiri.. ([5.14.146.31])
-        by smtp.gmail.com with ESMTPSA id w4-20020a056402128400b0056e2b351956sm2749883edv.22.2024.04.13.08.12.40
+        by smtp.gmail.com with ESMTPSA id w4-20020a056402128400b0056e2b351956sm2749883edv.22.2024.04.13.08.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 08:12:43 -0700 (PDT)
+        Sat, 13 Apr 2024 08:12:52 -0700 (PDT)
 From: Alisa-Dariana Roman <alisadariana@gmail.com>
 X-Google-Original-From: Alisa-Dariana Roman <alisa.roman@analog.com>
 To: michael.hennerich@analog.com,
@@ -92,9 +92,9 @@ Cc: alexandru.tachici@analog.com,
 	marcus.folkesson@gmail.com,
 	schnelle@linux.ibm.com,
 	liambeguin@gmail.com
-Subject: [PATCH v5 1/5] iio: adc: ad7192: Use standard attribute
-Date: Sat, 13 Apr 2024 18:11:48 +0300
-Message-Id: <20240413151152.165682-2-alisa.roman@analog.com>
+Subject: [PATCH v5 2/5] dt-bindings: iio: adc: ad7192: Add aincom supply
+Date: Sat, 13 Apr 2024 18:11:49 +0300
+Message-Id: <20240413151152.165682-3-alisa.roman@analog.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240413151152.165682-1-alisa.roman@analog.com>
 References: <20240413151152.165682-1-alisa.roman@analog.com>
@@ -106,183 +106,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace custom attribute filter_low_pass_3db_frequency_available with
-standard attribute.
-
-Store the available values in ad7192_state struct.
-
-The function that used to compute those values replaced by
-ad7192_update_filter_freq_avail().
-
-Function ad7192_show_filter_avail() is no longer needed.
-
-Note that the initial available values are hardcoded.
+AINCOM should actually be a supply. If present and it has a non-zero
+voltage, the pseudo-differential channels are configured as single-ended
+with an offset. Otherwise, they are configured as differential channels
+between AINx and AINCOM pins.
 
 Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 ---
- drivers/iio/adc/ad7192.c | 67 ++++++++++++++++++----------------------
- 1 file changed, 30 insertions(+), 37 deletions(-)
+ .../devicetree/bindings/iio/adc/adi,ad7192.yaml          | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-index 7bcc7e2aa2a2..ac737221beae 100644
---- a/drivers/iio/adc/ad7192.c
-+++ b/drivers/iio/adc/ad7192.c
-@@ -190,6 +190,7 @@ struct ad7192_state {
- 	u32				mode;
- 	u32				conf;
- 	u32				scale_avail[8][2];
-+	u32				filter_freq_avail[4][2];
- 	u32				oversampling_ratio_avail[4];
- 	u8				gpocon;
- 	u8				clock_sel;
-@@ -473,6 +474,16 @@ static int ad7192_setup(struct iio_dev *indio_dev, struct device *dev)
- 	st->oversampling_ratio_avail[2] = 8;
- 	st->oversampling_ratio_avail[3] = 16;
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+index 16def2985ab4..ba506af3b73e 100644
+--- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+@@ -41,6 +41,14 @@ properties:
+   interrupts:
+     maxItems: 1
  
-+	st->filter_freq_avail[0][0] = 600;
-+	st->filter_freq_avail[1][0] = 800;
-+	st->filter_freq_avail[2][0] = 2300;
-+	st->filter_freq_avail[3][0] = 2720;
++  aincom-supply:
++    description: |
++      Optional AINCOM voltage supply. If present and it has a non-zero voltage,
++      the pseudo-differential channels are configured as single-ended channels
++      with the AINCOM voltage as offset. Otherwise, the pseudo-differential
++      channels are configured as differential channels: voltageX-voltage0, with
++      AINCOM as the negative input.
 +
-+	st->filter_freq_avail[0][1] = 1000;
-+	st->filter_freq_avail[1][1] = 1000;
-+	st->filter_freq_avail[2][1] = 1000;
-+	st->filter_freq_avail[3][1] = 1000;
-+
- 	return 0;
- }
+   dvdd-supply:
+     description: DVdd voltage supply
  
-@@ -586,48 +597,24 @@ static int ad7192_get_f_adc(struct ad7192_state *st)
- 				 f_order * FIELD_GET(AD7192_MODE_RATE_MASK, st->mode));
- }
- 
--static void ad7192_get_available_filter_freq(struct ad7192_state *st,
--						    int *freq)
-+static void ad7192_update_filter_freq_avail(struct ad7192_state *st)
- {
- 	unsigned int fadc;
- 
- 	/* Formulas for filter at page 25 of the datasheet */
- 	fadc = ad7192_compute_f_adc(st, false, true);
--	freq[0] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
-+	st->filter_freq_avail[0][0] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
- 
- 	fadc = ad7192_compute_f_adc(st, true, true);
--	freq[1] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
-+	st->filter_freq_avail[1][0] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
- 
- 	fadc = ad7192_compute_f_adc(st, false, false);
--	freq[2] = DIV_ROUND_CLOSEST(fadc * 230, 1024);
-+	st->filter_freq_avail[2][0] = DIV_ROUND_CLOSEST(fadc * 230, 1024);
- 
- 	fadc = ad7192_compute_f_adc(st, true, false);
--	freq[3] = DIV_ROUND_CLOSEST(fadc * 272, 1024);
-+	st->filter_freq_avail[3][0] = DIV_ROUND_CLOSEST(fadc * 272, 1024);
- }
- 
--static ssize_t ad7192_show_filter_avail(struct device *dev,
--					struct device_attribute *attr,
--					char *buf)
--{
--	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
--	struct ad7192_state *st = iio_priv(indio_dev);
--	unsigned int freq_avail[4], i;
--	size_t len = 0;
--
--	ad7192_get_available_filter_freq(st, freq_avail);
--
--	for (i = 0; i < ARRAY_SIZE(freq_avail); i++)
--		len += sysfs_emit_at(buf, len, "%d.%03d ", freq_avail[i] / 1000,
--				     freq_avail[i] % 1000);
--
--	buf[len - 1] = '\n';
--
--	return len;
--}
--
--static IIO_DEVICE_ATTR(filter_low_pass_3db_frequency_available,
--		       0444, ad7192_show_filter_avail, NULL, 0);
--
- static IIO_DEVICE_ATTR(bridge_switch_en, 0644,
- 		       ad7192_show_bridge_switch, ad7192_set,
- 		       AD7192_REG_GPOCON);
-@@ -637,7 +624,6 @@ static IIO_DEVICE_ATTR(ac_excitation_en, 0644,
- 		       AD7192_REG_CONF);
- 
- static struct attribute *ad7192_attributes[] = {
--	&iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.attr,
- 	&iio_dev_attr_bridge_switch_en.dev_attr.attr,
- 	NULL
- };
-@@ -647,7 +633,6 @@ static const struct attribute_group ad7192_attribute_group = {
- };
- 
- static struct attribute *ad7195_attributes[] = {
--	&iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.attr,
- 	&iio_dev_attr_bridge_switch_en.dev_attr.attr,
- 	&iio_dev_attr_ac_excitation_en.dev_attr.attr,
- 	NULL
-@@ -665,17 +650,15 @@ static unsigned int ad7192_get_temp_scale(bool unipolar)
- static int ad7192_set_3db_filter_freq(struct ad7192_state *st,
- 				      int val, int val2)
- {
--	int freq_avail[4], i, ret, freq;
-+	int i, ret, freq;
- 	unsigned int diff_new, diff_old;
- 	int idx = 0;
- 
- 	diff_old = U32_MAX;
- 	freq = val * 1000 + val2;
- 
--	ad7192_get_available_filter_freq(st, freq_avail);
--
--	for (i = 0; i < ARRAY_SIZE(freq_avail); i++) {
--		diff_new = abs(freq - freq_avail[i]);
-+	for (i = 0; i < ARRAY_SIZE(st->filter_freq_avail); i++) {
-+		diff_new = abs(freq - st->filter_freq_avail[i][0]);
- 		if (diff_new < diff_old) {
- 			diff_old = diff_new;
- 			idx = i;
-@@ -826,6 +809,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
- 		st->mode &= ~AD7192_MODE_RATE_MASK;
- 		st->mode |= FIELD_PREP(AD7192_MODE_RATE_MASK, div);
- 		ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
-+		ad7192_update_filter_freq_avail(st);
- 		break;
- 	case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
- 		ret = ad7192_set_3db_filter_freq(st, val, val2 / 1000);
-@@ -846,6 +830,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
- 				break;
- 			}
- 		mutex_unlock(&st->lock);
-+		ad7192_update_filter_freq_avail(st);
- 		break;
- 	default:
- 		ret = -EINVAL;
-@@ -888,6 +873,12 @@ static int ad7192_read_avail(struct iio_dev *indio_dev,
- 		/* Values are stored in a 2D matrix  */
- 		*length = ARRAY_SIZE(st->scale_avail) * 2;
- 
-+		return IIO_AVAIL_LIST;
-+	case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
-+		*vals = (int *)st->filter_freq_avail;
-+		*type = IIO_VAL_FRACTIONAL;
-+		*length = ARRAY_SIZE(st->filter_freq_avail) * 2;
-+
- 		return IIO_AVAIL_LIST;
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
- 		*vals = (int *)st->oversampling_ratio_avail;
-@@ -956,7 +947,9 @@ static const struct iio_info ad7195_info = {
- 			BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) | \
- 			(_mask_all), \
- 		.info_mask_shared_by_type_available = (_mask_type_av), \
--		.info_mask_shared_by_all_available = (_mask_all_av), \
-+		.info_mask_shared_by_all_available = \
-+			BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) | \
-+			(_mask_all_av), \
- 		.ext_info = (_ext_info), \
- 		.scan_index = (_si), \
- 		.scan_type = { \
+@@ -117,6 +125,7 @@ examples:
+             clock-names = "mclk";
+             interrupts = <25 0x2>;
+             interrupt-parent = <&gpio>;
++            aincom-supply = <&aincom>;
+             dvdd-supply = <&dvdd>;
+             avdd-supply = <&avdd>;
+             vref-supply = <&vref>;
 -- 
 2.34.1
 
