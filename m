@@ -1,124 +1,128 @@
-Return-Path: <linux-kernel+bounces-143645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F7F88A3BE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:18:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48CFA8A3BE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:18:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D3C31C20DCF
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:18:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E163B21785
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 325932E62D;
-	Sat, 13 Apr 2024 09:17:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18F1924A0E;
+	Sat, 13 Apr 2024 09:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ECF8S3BW"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BTdC3RSm"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25CA1CABD;
-	Sat, 13 Apr 2024 09:17:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB97F3D544;
+	Sat, 13 Apr 2024 09:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712999875; cv=none; b=Yt2GNW4dj6ZwjIPmoWvwTUKWfUbGpcIlQbBq1nJul629rgxcflDr7oh3DifBPJBM/qz5VljNdUvYr5cKSxZ1gF5U2D8iMX97Xfa31hgfXy+xR+G1MRMuth1avQQOdMzvQq+aAjCFgH7Wrq1rvu8NiD77uTDlFe2czDMPBOocGkA=
+	t=1712999902; cv=none; b=m+BIaAPkLoun3NHag+/xDY/JLRQ47kzHu4asbejWSqAAMWLFYLllzaYuQY2L7SDCol8C1rSkse+BwYJxHoyKW5dAHTRD2tTCcpfz3gr2L6oimEDo+hmRlY3k+7OR++MchS3cXqEX2hlP29bkWWObmpStfQgbFHtj8GT/kRpBFC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712999875; c=relaxed/simple;
-	bh=wRNMwDiQIl7U6AyLLbQ9gUlDqOSjb+gZG5zBDbEdpAQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FhHeSf7IIu1AVVEXLwC07hPbz7xFe46DELGY/EK5ofq0dht1Gj/vAqmdHiIBRsyrQRoURC8ghbw7Xnx97UG3ysoXagjB5TwX7mbpUV4c4LuWCOAjrugB5BQMH34Jea5VVoGJ3MidPYE5pOuZdQnaki/qV57vAzzQI/X0CREcH6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ECF8S3BW; arc=none smtp.client-ip=209.85.208.179
+	s=arc-20240116; t=1712999902; c=relaxed/simple;
+	bh=RVrHx2Tn7E+TdUywb+9mNfZoGlqTXYQ4SMZtjVw2Ev0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=q/rAEy+yh6JvrsuBiRiqernUtAqdxeSALZXEFulNwfLGBn5+T2KkVlKipGSUmEaW2tjf2QpWC4aQZhLLwp79yBv7T01z87E6XgLzD0ufvQaIhVDxFyHR4eVKQg3NOrAxtoti3YuENfNo1JMdHH2eOeHI9Y7is76qhCBtoaO8QTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BTdC3RSm; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2da08b07157so18341961fa.1;
-        Sat, 13 Apr 2024 02:17:53 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso17971511fa.0;
+        Sat, 13 Apr 2024 02:18:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712999872; x=1713604672; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FprEdCtwRuo2/5Chsw2LoMvecKwl1NWN0nipJJWRa7E=;
-        b=ECF8S3BWCva+yiJ2r/W2bQzWic3J6pS8rfo5evXtiB5DVS3Edt45+rRGMqNvoC9Hw7
-         MUtiAOURDqF7er+zuSl56jGVVcIR0D79icSsuvnmQj5ukAwYCtsta3L8cjwFeYE2kJLP
-         Qq5zUXV5UQSV/bO42hyL5GGNbSEWwutG2p04DrwHNPtydqAYSj1p7D/L56U8iTsGviP0
-         ABtMIrLfKb5Dnm4Ffy7KO6ZFiC/ZfNr6SSIB1tw2XJdwndKxehUGMxAzWA5+aAK6schG
-         Gi0vLUDhIcZ7342v268NCAxgZrsh55QrQrCdPdJ5n+sMcQFsPSHcM+OLIZx21R67L1vE
-         IWjA==
+        d=gmail.com; s=20230601; t=1712999899; x=1713604699; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JyDcydGm4xOAby3CAOG5g+X6Tv8De1Ldz9Wnnsymsuk=;
+        b=BTdC3RSmxlmcI+47oVjf23jkk/3eqMrBXkv6E7C85fi/t0CsPQZ6EuPkUrNkkKOTIV
+         Mj3tGppdYZhg5JT6ukb+7IfjJmikQ2ceLj+l9/juIAcV+jTTSqsRaRnGBhNafrmMlSCH
+         ld6p45CzZKxhbFXadSCcQLN2RB9A/1BvjNKCCvzCqSduLO6dG9HUJSpqHDN5pedzDjCJ
+         ZOTLQt2//9yH7gCbJJGMZ/a+vV8hLVaRzKw1xLpBJCnUjJlRmAghzTN+mgCGk83G+2G+
+         WDt6aNRkex25SE6yESv5Xhc+pQluISx/JHTsCsHGF/sSyY86i2RGQW04g6EHIWPL1Er2
+         LeWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712999872; x=1713604672;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FprEdCtwRuo2/5Chsw2LoMvecKwl1NWN0nipJJWRa7E=;
-        b=K3+xkyk83zEBD2/9dUHXBIR5qPmg9mrshqqDabRD+u+8TTmxfogHnSvySKL2+cUfkB
-         SRLkjCNH0wTLMCvH094wixbnR/eAdUrmRBCZRRQEATP6mE6fuZbXMh2FZqPtOs/RXd+Q
-         Y7v5g+dwpVEdZG0tjjQ1BjdCatYuHO8H4/zxS0MS+zyCp47oKIlwVF/ZCzfKGuVqisBP
-         kmx5GiiuKLNca42OGgPRCoEj5HZ3vcVIvKmC9iMSdpyiaBz3m/J7TV2/42ZjzIEVmbwO
-         QjqC1q223HLW2ThuaTpbu9EKbkktYo5WpCLxSMF/llicvT5VaEDtFr/vFPB7edK8bKva
-         KOVw==
-X-Forwarded-Encrypted: i=1; AJvYcCXuMkyzWoNk52s/UyvgFmPUdeG0mEDryIlTtF5yqb1scLqNZXi/lbUfGhSJVpdz8Tj14WnCNpQFTClck9O/6XYAQIl9r5OzgO7r9wteQe8MgUV6v7MP+df/+nlKOfbIhLUJ9t9yatKs
-X-Gm-Message-State: AOJu0YzoaIsiDWva3Jj1OTn7uF8ZXfpO9+sP+iRp4KZE4VVcS1MRQQYh
-	ShuXcpukwdKD35LREIhaI0nTLhFNCQHYx6Y8w+n/RPeH1b3KjkHG
-X-Google-Smtp-Source: AGHT+IExR290cPBeWjD3hksC6EFfjbaKR9t2qJiYmoeyx3bC+LFUi42XhP4I/wP547zW8LI2gp04Yg==
-X-Received: by 2002:a2e:9b8e:0:b0:2d4:676b:f591 with SMTP id z14-20020a2e9b8e000000b002d4676bf591mr3621367lji.45.1712999871741;
-        Sat, 13 Apr 2024 02:17:51 -0700 (PDT)
-Received: from foxbook (bfi40.neoplus.adsl.tpnet.pl. [83.28.46.40])
-        by smtp.gmail.com with ESMTPSA id k11-20020a170906578b00b00a51be2b75f3sm2751673ejq.35.2024.04.13.02.17.50
-        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
-        Sat, 13 Apr 2024 02:17:51 -0700 (PDT)
-Date: Sat, 13 Apr 2024 11:17:46 +0200
-From: =?UTF-8?B?TWljaGHFgg==?= Pecio <michal.pecio@gmail.com>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Mathias Nyman <mathias.nyman@linux.intel.com>, Mathias Nyman
- <mathias.nyman@intel.com>, LKML <linux-kernel@vger.kernel.org>,
- linux-usb@vger.kernel.org, Niklas Neronin <niklas.neronin@linux.intel.com>
-Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not
- part of current TD ep_index 1 comp_code 1
-Message-ID: <20240413111746.059dd4b7@foxbook>
-In-Reply-To: <fca78115-209f-4090-b83b-acc684484587@molgen.mpg.de>
-References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
-	<20240405113247.743e34b2@foxbook>
-	<7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
-	<20240406183659.3daf4fa0@foxbook>
-	<c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
-	<20240407142542.036fb02f@foxbook>
-	<1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
-	<20240408210541.771253ff@foxbook>
-	<82113c7d-0405-ba11-94d9-5673593cec50@linux.intel.com>
-	<fca78115-209f-4090-b83b-acc684484587@molgen.mpg.de>
+        d=1e100.net; s=20230601; t=1712999899; x=1713604699;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JyDcydGm4xOAby3CAOG5g+X6Tv8De1Ldz9Wnnsymsuk=;
+        b=e4gHiyrJy8c8qsvf7TZzyr1vZ1pBjoKIqwrWl6r1PrOpAlZPe2sxcjtxfpCHC4XVJb
+         MpvMKK3pPqKn1qP+eMpYyLFHlJ2t1cVPHttHx/ymjth4/z63VtkfLehyvBu3KF45IyuN
+         X0z896h6uuPbFSP8OFIXsh2FEW/RQCj31RGmE9HVnE5HXWS190Dy7cM3cLHp5JG/eIba
+         ydI14hYlUJYxJE88/8OYJrp63FrKEmEgUct+vhIq598zHetQdk8ruoZfQkzpHtbODUBK
+         F8uLM4jQxLTmVgh84mzTRn87ibrjl1doaI0dbVoqhy/9er3Cq8UYrH5GmPBo0iFkThNm
+         yXgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXnpUkuVGpSv5zvKpl2sk8uXgVJwa008k8DqNdnPDnsW6jaWpG3Vt3Xzt1jCxB+yV9ccxG5yXHUA/Y/bsFY1xIi3s/ApRS03odqeQ==
+X-Gm-Message-State: AOJu0YzSNh6wy6oaSNZXDoKaIEhlY0WehOI0GUJASSF3AzNnj+2DagMs
+	Na86NmRx9fa6sUzsEr8w68+gQE6MH35/KPVyz6UKSht/e/pRxwqFAJeqaNpXBE5hVoX9BdBTQ2Q
+	fPMxM5VVZ5ZM3XYXcvvh4EZ4Q6P0WwDjn
+X-Google-Smtp-Source: AGHT+IF3D/zDZnjVYFWOYOADLurETXOoliEJrkIk5sx9wm9HLXq4sej/FhzBBQlqR/n+TEtE4WaCdmCxbrQHEGAobAI=
+X-Received: by 2002:a2e:91c9:0:b0:2d8:6787:eaed with SMTP id
+ u9-20020a2e91c9000000b002d86787eaedmr4156036ljg.2.1712999898786; Sat, 13 Apr
+ 2024 02:18:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Steve French <smfrench@gmail.com>
+Date: Sat, 13 Apr 2024 04:18:07 -0500
+Message-ID: <CAH2r5msxJ8sZuc45wo9UYyaRNN1k0-=hgjOzyGxAvM+6OQUx6Q@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-> Thank you for the detailed analysis. Excuse my ignorance, but do you 
-> have an idea, what this Sennheiser USB headset does differently than 
-> other USB devices?
-It uses isochronous out transfers, which off the top of my head are
-almost only used for audio playback in the real world.
+Please pull the following changes since commit
+fec50db7033ea478773b159e0e2efb135270e3b7:
 
-However, I don't know what it is doing differently from your other USB
-headset. A few random hypotheses:
-- the other is not a "full speed" device (but it most likely is)
-- you haven't tried enough times to reproduce the bug
-- you have some software which automatically starts playback to the
-  Sennheiser when it's connected, but not to the other headset
-- different playback format and different USB packet size, although
-  192B/ms corresponds to 16 bit 48kHz stereo - the most comomn format.
+  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
+
+are available in the Git repository at:
+
+  git://git.samba.org/sfrench/cifs-2.6.git tags/v6.9-rc3-SMB3-client-fixes
+
+for you to fetch changes up to 35f834265e0dc78b003aa0d1af65cafb89666b76:
+
+  smb3: fix broken reconnect when password changing on the server by
+allowing password rotation (2024-04-11 16:03:48 -0500)
+
+----------------------------------------------------------------
+Four cifs.ko changesets, most also for stable
+- fix for oops in cifs_get_fattr of deleted files
+- fix for the remote open counter going negative in some directory lease cases
+- fix for mkfifo to instantiate dentry to avoid possible crash
+- important fix to allow handling key rotation for mount and remount
+(ie cases that are becoming more common when password that was used
+for the mount will expire soon but will be replaced by new password)
+----------------------------------------------------------------
+Paulo Alcantara (2):
+      smb: client: fix NULL ptr deref in
+cifs_mark_open_handles_for_deleted_file()
+      smb: client: instantiate when creating SFU files
+
+Steve French (2):
+      smb3: fix Open files on server counter going negative
+      smb3: fix broken reconnect when password changing on the server
+by allowing password rotation
+
+ fs/smb/client/cached_dir.c |  4 +--
+ fs/smb/client/cifsglob.h   |  1 +
+ fs/smb/client/connect.c    |  8 +++++
+ fs/smb/client/fs_context.c | 21 ++++++++++++
+ fs/smb/client/fs_context.h |  2 ++
+ fs/smb/client/inode.c      |  3 +-
+ fs/smb/client/misc.c       |  1 +
+ fs/smb/client/smb2ops.c    | 94
++++++++++++++++++++++++++++++++----------------------
+ fs/smb/client/smb2pdu.c    | 11 +++++++
+ 9 files changed, 103 insertions(+), 42 deletions(-)
 
 
-As for your bugzilla comment and the list of other TRB mismatch errors
-on linux-hardware - yes, these things happen due to a variety of bugs
-in host controllers and the driver. They are not all the same bug and
-they can't be analyzed or fixed if people don't report them and don't
-cooperate in debugging. These messages alone don't provide information
-about what specifically went wrong and under which circumstances.
+-- 
+Thanks,
 
-
-Regards,
-Michal
+Steve
 
