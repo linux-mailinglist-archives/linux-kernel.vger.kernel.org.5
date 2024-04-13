@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-143699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD3178A3C60
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:59:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 401768A3C66
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 13:01:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3438F1F21865
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:59:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608C21C2166E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E993E474;
-	Sat, 13 Apr 2024 10:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CBA73DB91;
+	Sat, 13 Apr 2024 11:01:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GSPsWUzP"
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mUBxHPx5"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B820225CB;
-	Sat, 13 Apr 2024 10:59:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF7A376E2
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 11:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713005967; cv=none; b=V5rjQnOHe/vFlOmbw9cdW/HFrh7qytt0Nifd11u4eruAuaBtkCQu+P7hIkq4+vUmg7qrMVFrCZ2gNUaqm32OnpnyVZYq0/t2JJJr3t5a7p4Z4hX0rsnqGqTnZGdZeFW12oUFBRpZ2pCuHLR/LMlfY20aGyrgx2czKt02LS25y8k=
+	t=1713006102; cv=none; b=u7J3tPkiPEb+UJUViKxRhS15/4NFadrQKgCMta5ADbSpVpzOPYRcbh6GrgV7JeWxQnU3jMK8n9ZVQ9NHCMUXq4J6VwcSNgYfwJf5X5soiSBytNyufct3acLZ2IfZFwNAqIeB9Uqy+Kbdm5UIVhF3lKFtgsteeDUsj2XtK8Ney3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713005967; c=relaxed/simple;
-	bh=uOjaUGqPKVq3+j2VJs/TEKafBEYOo8VXLsRCY3RPo/8=;
+	s=arc-20240116; t=1713006102; c=relaxed/simple;
+	bh=1JwtCwhi8iAE3mRKQLKMNkgmJmfQWWdXd/p2h7As/JY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c+0roipmVakyGdTwPFtIUAWO/0H6G+XLzOd+2nkcTxsrlPGay/7OdVk8eW9Ejjo0uNk0cW8IsD5c7Tbami058fyXUFg1PYXnufqHB2fuab9KjX8TFj02Nemv+YfKYWFq6Gu3AgUp2qI5pSFNVCmTjpjW9ATw2LXjXMdhNfTdBtE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GSPsWUzP; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-22a96054726so1262831fac.0;
-        Sat, 13 Apr 2024 03:59:25 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=BHsOttUqbCa71gEv+OIWg+YIH3RItW+wCB9aW9QKnVbjvJnIIuF0ybEn4UpvXj9THFjZWlJIriO2lxnUQ/qcAoVb5nBOuUQm8AB9imJJ9poVXthhO6r19qxHPjHrV+joITG8+SQB+vLhSjC5+9748drJYg1cPvF0BwZnDqhFOyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mUBxHPx5; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a523e1372b2so131447466b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 04:01:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713005965; x=1713610765; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9hUP/8ZgJ+b6bN2VxVCxAiZaitZzpbRs5WnErLxeF08=;
-        b=GSPsWUzPyq8HZNpCoLmbSZEhoSKcrjTzUqRzLf7zaSLcY0vbyib1Y1JatLjclqEes7
-         Of70rBX1Wh0an6+GOJx//CiuFL9UtXobYQYLCSiW1eo66kJxzQSLjurhV0BNL3tzT0/4
-         6QzZ8HwwEp9oPNxkoREonwuNphzPyD4iiSTyEPNXTgRbFlYCM+KT7HCSK6Ns3+1at61r
-         lOyOKWe4l6qiWT0/vBZMkZQeaOpy0Y+j58KuCrLOC1d4gnXiWrEenF762psK7Uwt25CW
-         j3wtcqalOQs8fTrWJD7IIjc34K6RKkbG/DmBAlaTJpKMywoZmmGau9NBrdevLT0kRPU7
-         /zPw==
+        d=linaro.org; s=google; t=1713006099; x=1713610899; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=cXDU16Ou8ZyDMO2AM+8sVodEeRZtWf6krx3rzx7SIrM=;
+        b=mUBxHPx5uFlOuRQjjHhKSDOZhQ/B77FQbikOUSzZDSO9ok1GIQFW8VsPaLTJy5Mj45
+         GPyA8l+Q1lXwgfY6/JDZuUwBLdjdlxgIpukasPknzMycljIfJDc87BZPt3iVMAfIDKbx
+         SZDtkvpDApdKbTZiFutJmQl06JVwKz84CxAvkTAH9ytr8PEH+v4HrqWce9J4aIekAa3e
+         wVM9PdShEOaayoWdxBoJ6YwiQKXAQEfvEHFY+fMYId3RDNIPZGwfEiQ1vz/J9CIIToAK
+         9Yh+tRRLlZaFqMUXbaQRCMCj1DbO9s4pmQykfeWtu63q4oEcKozc6SfCCtdb/gNUw2gg
+         eaNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713005965; x=1713610765;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9hUP/8ZgJ+b6bN2VxVCxAiZaitZzpbRs5WnErLxeF08=;
-        b=Y9P/CYc/9dmYaANaRFsZZ4D8Wmg9/hX10z9dlCSdS/btGFeANvtF0hd5OzJMKG2Zk6
-         YYqIx12HTWXMCSDeQcpEpGP0DIULn+j29dqpAxnDjhZyIAX34zTymIu/pMBhorYa28W4
-         H8Gl4CvsD46/Imh5VaE1druUBYM8u4CVduPNlQPmToUvOmlAkBehhnKCNTih0g9t0JCt
-         ydpdpSd5zQYROZiIR3lp4eX8awuqhpnLaV8TPdLjR6sCMKeSAoVZ6bttOUc9zI482Ppj
-         IW4ccD/dIhL/SGH0yEanOkcyTmgiJGQqB99htoWdcHfC37Nncnvj00unfxS5sOPRg//r
-         jBhg==
-X-Forwarded-Encrypted: i=1; AJvYcCWJAGD/hsjVAcW9u0AP/RAYflP9ygOxeQtyABpDm/8JAHtzxRNz3XwB4szNS+WL00hTK7xZY095NQFHbtq8BUCrd9MX
-X-Gm-Message-State: AOJu0YzaKgPosvv4tMWvWUJJGg0F5c9dnCZcHIajuUGWXL3EjPzLCcde
-	SXZTJQ0WxKhy2m3lESrgH15awkGnlHxCmKR42dafzMAG24yD8nFx
-X-Google-Smtp-Source: AGHT+IGyBscLxvzKjs9tfnJDbxZslNl53miRQHsAAQdFdgIgfp+w8iJsvtPKqDglEFKZeub/xcSWOw==
-X-Received: by 2002:a05:6870:d0c3:b0:22e:e416:a5ea with SMTP id k3-20020a056870d0c300b0022ee416a5eamr5443820oaa.51.1713005964673;
-        Sat, 13 Apr 2024 03:59:24 -0700 (PDT)
-Received: from [172.27.234.129] (ec2-16-163-40-128.ap-east-1.compute.amazonaws.com. [16.163.40.128])
-        by smtp.gmail.com with ESMTPSA id gb10-20020a056a00628a00b006e6ae26625asm4169308pfb.68.2024.04.13.03.59.17
+        d=1e100.net; s=20230601; t=1713006099; x=1713610899;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cXDU16Ou8ZyDMO2AM+8sVodEeRZtWf6krx3rzx7SIrM=;
+        b=an7kBO2tiFbD9S1D5sl+MGrydqbuWDWO0B2MOZSsNvj/cPQRBgereOhpgrY4+90+4a
+         9WQ/bRG77jbBgLlNKMukXaFtRySoyPCzGk0WgoJI0yiItUmi/ZF1CVAF4pyjil0HmRhe
+         xDUCnNyHMpioYzCi6LMSPKr/I4pZRhpxcDoOLJ5LDD9lkVsWQD7ZbAmbSu+yoFiO54Dk
+         fAPLE4zsKf01G1Qm/Wru8V2PEmg3XrxgURFCUq8BprK2ZGV3oXoId7M7wnSeDhpiLM81
+         K5EINf714LScPzv+/BoKAAUwdPwGH0czGvyhRckPAHl4UpdlV7Zb0jqEsBzd3SyWUXwQ
+         XkCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXJ9lCbWBRBrrldXi1pWeIes5DiQHLARya4Sc2wjLCpXCfVPseoh2MpT5cCKnaNDvnmQqNDDPNk7imlf4FcRb2zxdoeoOqdl31v5X1a
+X-Gm-Message-State: AOJu0Yz8BMCBFd3OECDIchT7M/4WdBb9Vhb//lsFGSApGkqO3ZBcdtjH
+	X7koXyVagUj0rE6jd+HrzOnNzSI7SQF2oYgLqV493f1tJTj5XUr+Jx8YVqZYiOQ=
+X-Google-Smtp-Source: AGHT+IEqqYA/tIZOlLrM4zVw+nGExQNL1qTKcKaxQR0VGl33NI6olV/6zQW40Rg1NOHSFhmZGqIOAg==
+X-Received: by 2002:a17:906:507:b0:a52:3d5e:a81 with SMTP id j7-20020a170906050700b00a523d5e0a81mr2035696eja.43.1713006098854;
+        Sat, 13 Apr 2024 04:01:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id bv13-20020a170906b1cd00b00a51a9d87570sm2904606ejb.17.2024.04.13.04.01.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Apr 2024 03:59:24 -0700 (PDT)
-Message-ID: <6153f44c-841a-4eea-a51b-5a68c84faf47@gmail.com>
-Date: Sat, 13 Apr 2024 18:59:16 +0800
+        Sat, 13 Apr 2024 04:01:38 -0700 (PDT)
+Message-ID: <548b7a66-9a56-4971-89eb-1a147d658f0f@linaro.org>
+Date: Sat, 13 Apr 2024 13:01:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,123 +76,111 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/13] iommu/vt-d: Make posted MSI an opt-in cmdline
- option
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
- Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
- Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>,
- Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
- Paul Luse <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>,
- Jens Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>,
- "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org, seanjc@google.com,
- Robin Murphy <robin.murphy@arm.com>, jim.harris@samsung.com,
- a.manzanares@samsung.com, Bjorn Helgaas <helgaas@kernel.org>,
- guang.zeng@intel.com
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
- <20240405223110.1609888-12-jacob.jun.pan@linux.intel.com>
- <8871e541-4991-44f3-aab7-d3a657fc59db@gmail.com>
- <20240408163312.7b7f3d18@jacob-builder>
+Subject: Re: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
+ binding
+To: Lukas Wunner <lukas@wunner.de>
+Cc: "M. Haener" <michael.haener@siemens.com>,
+ linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Peter Huewe <peterhuewe@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Alexander Sverdlin <alexander.sverdlin@siemens.com>
+References: <20240413071621.12509-1-michael.haener@siemens.com>
+ <20240413071621.12509-3-michael.haener@siemens.com>
+ <8c13a349-a721-44d3-9e23-2e01f4c2ca4d@linaro.org>
+ <Zhpb2URMxuoilKAZ@wunner.de>
+ <3d08cf54-f58f-446f-977e-21ba65986924@linaro.org>
+ <ZhpfwaIUc0HpfZP1@wunner.de>
+ <889ca65c-c9c7-4658-9c34-5d89774218cc@linaro.org>
+ <ZhpjozjbeWrb0OTl@wunner.de>
+ <bbe365cd-698e-4507-b5e6-d7dd4dcc7a75@linaro.org>
+ <ZhpkzWhOdW3OaJfn@wunner.de>
 Content-Language: en-US
-From: Robert Hoo <robert.hoo.linux@gmail.com>
-In-Reply-To: <20240408163312.7b7f3d18@jacob-builder>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZhpkzWhOdW3OaJfn@wunner.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 4/9/2024 7:33 AM, Jacob Pan wrote:
-> Hi Robert,
-> 
-> On Sat, 6 Apr 2024 12:31:14 +0800, Robert Hoo <robert.hoo.linux@gmail.com>
-> wrote:
-> 
->> On 4/6/2024 6:31 AM, Jacob Pan wrote:
->>> Add a command line opt-in option for posted MSI if
->>> CONFIG_X86_POSTED_MSI=y.
+On 13/04/2024 12:56, Lukas Wunner wrote:
+> On Sat, Apr 13, 2024 at 12:53:25PM +0200, Krzysztof Kozlowski wrote:
+>> On 13/04/2024 12:51, Lukas Wunner wrote:
+>>> The binding requires two entries in the compatible string used in the DT,
+>>> the chip name followed by the generic string:
 >>>
->>> Also introduce a helper function for testing if posted MSI is supported
->>> on the platform.
+>>>         items:
+>>>           - enum:
+>>>               - infineon,slb9673
+>>>               - nuvoton,npct75x
+>>>           - const: tcg,tpm-tis-i2c
 >>>
->>> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->>> ---
->>>    Documentation/admin-guide/kernel-parameters.txt |  1 +
->>>    arch/x86/include/asm/irq_remapping.h            | 11 +++++++++++
->>>    drivers/iommu/irq_remapping.c                   | 13 ++++++++++++-
->>>    3 files changed, 24 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/Documentation/admin-guide/kernel-parameters.txt
->>> b/Documentation/admin-guide/kernel-parameters.txt index
->>> bb884c14b2f6..e5fd02423c4c 100644 ---
->>> a/Documentation/admin-guide/kernel-parameters.txt +++
->>> b/Documentation/admin-guide/kernel-parameters.txt @@ -2251,6 +2251,7 @@
->>>    			no_x2apic_optout
->>>    				BIOS x2APIC opt-out request will be
->>> ignored nopost	disable Interrupt Posting
->>> +			posted_msi enable MSIs delivered as posted
->>> interrupts
->>>    	iomem=		Disable strict checking of access to
->>> MMIO memory strict	regions from userspace.
->>> diff --git a/arch/x86/include/asm/irq_remapping.h
->>> b/arch/x86/include/asm/irq_remapping.h index 7a2ed154a5e1..e46bde61029b
->>> 100644 --- a/arch/x86/include/asm/irq_remapping.h
->>> +++ b/arch/x86/include/asm/irq_remapping.h
->>> @@ -50,6 +50,17 @@ static inline struct irq_domain
->>> *arch_get_ir_parent_domain(void) return x86_vector_domain;
->>>    }
->>>    
->>> +#ifdef CONFIG_X86_POSTED_MSI
->>> +extern int enable_posted_msi;
->>> +
->>> +static inline bool posted_msi_supported(void)
->>> +{
->>> +	return enable_posted_msi && irq_remapping_cap(IRQ_POSTING_CAP);
->>> +}
+>>> This allows us to deal with device-specific quirks, should they pop up
+>>> (e.g. special timing requirements, hardware bugs).  We don't know in
+>>> advance if they will be discovered, but if they are, it's cumbersome
+>>> to determine after the fact which products (and thus DTs) are affected.
+>>> So having the name of the actual chip used on the board has value.
 >>
->> Out of this patch set's scope, but, dropping into irq_remappping_cap(),
->> I'd like to bring this change for discussion:
+>> So you say devices are compatible. Then the second patch is wrong.
 >>
->> diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
->> index 4047ac396728..ef2de9034897 100644
->> --- a/drivers/iommu/irq_remapping.c
->> +++ b/drivers/iommu/irq_remapping.c
->> @@ -98,7 +98,7 @@ void set_irq_remapping_broken(void)
->>
->>    bool irq_remapping_cap(enum irq_remap_cap cap)
->>    {
->> -       if (!remap_ops || disable_irq_post)
->> +       if (!remap_ops || disable_irq_remap)
->>                   return false;
->>
->>           return (remap_ops->capability & (1 << cap));
->>
->>
->> 1. irq_remapping_cap() is to exam some cap, though at present it has only
->> 1 cap, i.e. IRQ_POSTING_CAP, simply return false just because of
->> disable_irq_post isn't good. Instead, IRQ_REMAP is the foundation of all
->> remapping caps. 2. disable_irq_post is used by Intel iommu code only,
->> here irq_remapping_cap() is common code. e.g. AMD iommu code doesn't use
->> it to judge set cap of irq_post or not.
-> I agree, posting should be treated as a sub-capability of remapping.
-> IRQ_POSTING_CAP is only set when remapping is on.
+>> I cannot respond to it, though... so NAK-here-for-second-patch.
 > 
-> We need to delete this such that posting is always off when remapping is
-> off.
-> 
-> --- a/drivers/iommu/intel/irq_remapping.c
-> +++ b/drivers/iommu/intel/irq_remapping.c
-> @@ -1038,11 +1038,7 @@ static void disable_irq_remapping(void)
->                  iommu_disable_irq_remapping(iommu);
->          }
->   
-> -       /*
-> -        * Clear Posted-Interrupts capability.
-> -        */
-> -       if (!disable_irq_post)
-> -               intel_irq_remap_ops.capability &= ~(1 << IRQ_POSTING_CAP);
-> +       intel_irq_remap_ops.capability &= ~(1 << IRQ_POSTING_CAP);
->   }
-> 
-Right.
+> I disagree.  It's ugly to have inconsistencies between the DT bindings
+> and the driver.  So I think patch [1/2] in this series is fine.
+
+You are mixing different things. This patchset creates inconsistency.
+You even refer here to bindings while we discuss the driver...
+
+Why this one driver is different than all other Linux drivers? Why do
+you keep pushing here entirely different behavior?
+
+The devices are compatible, so growing match table is both redundant and
+confusing. That's everywhere. TPM is not different.
+
+Best regards,
+Krzysztof
 
 
