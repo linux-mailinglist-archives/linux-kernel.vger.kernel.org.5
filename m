@@ -1,152 +1,98 @@
-Return-Path: <linux-kernel+bounces-143572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C3B08A3AFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:13:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 127518A3AFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:15:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A72001C21C1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:13:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B965285C01
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D261C69A;
-	Sat, 13 Apr 2024 04:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95D11C69D;
+	Sat, 13 Apr 2024 04:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="afRqM0fW"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="FzCAOtmk"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4898E4C65;
-	Sat, 13 Apr 2024 04:13:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E5A1B964
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 04:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712981588; cv=none; b=BASXKdJAgBX7gPZUS/YvvJ+nSmdijUIdlz/GLG4CopRBj5Rb5FcwGfbNNca6me1TytHW4vGicx3ahVnP/gGzyVFlgQcr2nenbnzKTYqKR3Hu8OioqlPK+yktQHFFyaN8ioMAzMNSSMd1cD8ZLH0/u7ihYcoqyQIRpypD8VXnLls=
+	t=1712981739; cv=none; b=KVWW0Qs4xaN38hbQzFrPV4oC9u5RDJ9+1tX1E4Q3Erq+5zXTbzxbeEjamdIS5QHtLe4MR1emU4DnBiDI+1Zzaw4manBfwIGlcXUQZWpbvVcF0GrBMwX5Zftlb2wIZ07H6GHtsftRegnYjyjBjyXAFkHv6cT1p3kB3+7RiSP3pKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712981588; c=relaxed/simple;
-	bh=P0ICQc6p95hpk0kk9xF4xUigjuVNicJgP60eXiKynkY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sqM1EnMixZ+XrfHSHFLiXooBArjKLlbKBRhqB8ORx1lU3q9axn34tFu/NiZ9brWmWH61VUm0ccy9DLhD2Q29yJGEiksL8RbMAcB1/wMwNl7wcy/MgK7ROnB1WXzvJSot78pYKwmKuJHquHuvR9trGLzLcIXhFHMOp/+4jpk9Yrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=afRqM0fW; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712981587; x=1744517587;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=P0ICQc6p95hpk0kk9xF4xUigjuVNicJgP60eXiKynkY=;
-  b=afRqM0fWsJQgmi5Oy1As1em3bC16MChi20KdSZUkjKRH34Ft69AGkq71
-   N4aRZR4la0RoBBSP+w3sDWwYdNt4dJWKYGMT+HhYXZAiRi5+tOD2EtyiA
-   ky2x4ii8fBKWedy8SUNZDZH7n4OglrYq4DBbMcAlVbFDHOFQI5cAiBsmj
-   SVElpc1NDOmJgQrNMv5oCtDd8R7/GnwRJwS9rMvoLCy7b505YwPFWOTZR
-   GDFjYDLhERLt60PGWSD+4jKobw2hdfAVnElMHfFlU2+qN6qXrUPVHyUUj
-   9D4nDfarxt4qt12rNOEVpUnlsE6YgCt1aTqsJBwdmcxzXJm2+98EX0jCh
-   Q==;
-X-CSE-ConnectionGUID: bSnRlzrNQb6rs5D7yJqWVw==
-X-CSE-MsgGUID: 8TgulaYtReOCQPgX8V/BWw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19867301"
-X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
-   d="scan'208";a="19867301"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:13:06 -0700
-X-CSE-ConnectionGUID: Psw8T3LDSSWfdBZZA4W4yw==
-X-CSE-MsgGUID: 2ienEDwhR0+oRB6avL5SMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
-   d="scan'208";a="26213713"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.225.92]) ([10.124.225.92])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:13:01 -0700
-Message-ID: <e0fe15f6-993c-45ec-aea2-531a055fb0cd@linux.intel.com>
-Date: Sat, 13 Apr 2024 12:12:59 +0800
+	s=arc-20240116; t=1712981739; c=relaxed/simple;
+	bh=2j9ShjLfSgpt1dRoNoPWk+SPK9pwF6GyYMHgJkLP354=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gv82hNGHZc8sPbnzCKGr9eg1HyKCxqFGEzJAwaSlj/USAtsD3WV35swAbHyGjx+uvJ/cOa3j6fCt8zols1enzbmXeM7zELJBs6tPXOokrdPNT3UxHYOJjgXY7FJQjHW4n7CLuRB168kilfftov12iw1PUaizafv2th3OUztwqBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=FzCAOtmk; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=L8fKgzAxuXRxYh8g7LfILxb7Rk2jCjze6hOtopuCmrs=; b=FzCAOtmkGaE1V42QVhtfTNNNlv
+	XWhLtGKHlChkI+X7K2IBnUBZRCj1QQo1+hD1ZzsXANwAA3HX9LXXTo3m6w/V+/WsupB4a11tsAvOJ
+	/dG/QKK6qoE/qjKWXTTQ7QhXgI9MdiZVkadG3gi+cY/suKTWVbDHTtifOfpw4BvrnXfcpKux0lmwo
+	MOkYdPbtOJH6ZFuO0Ds4xYmOnsxsL27rgk5d9VIxDPOHYviHEvkNNe2STWTYlVyYJbot4ji8eWQxo
+	zy+HUoWKPIYL7VjJdZKWvOn7vGZnKorfWdL3qFP9IeGRZgxpw86YLLUVMN/emUTMAhSZAH+84Mu5L
+	yLMROmBw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rvUne-00BYVm-0r;
+	Sat, 13 Apr 2024 04:15:34 +0000
+Date: Sat, 13 Apr 2024 05:15:34 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCHSET RFC 0/437] Kill off old fops ->read() and ->write()
+Message-ID: <20240413041534.GO2118490@ZenIV>
+References: <20240411153126.16201-1-axboe@kernel.dk>
+ <20240412042910.GK2118490@ZenIV>
+ <b6725c23-ad82-4082-9e72-b219fc2b453e@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 37/41] KVM: x86/pmu: Allow writing to fixed counter
- selector if counter is exposed
-To: Sean Christopherson <seanjc@google.com>,
- Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
- kan.liang@intel.com, zhenyuw@linux.intel.com, jmattson@google.com,
- kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-38-xiong.y.zhang@linux.intel.com>
- <ZhheJUWRhCmmYa_F@google.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <ZhheJUWRhCmmYa_F@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6725c23-ad82-4082-9e72-b219fc2b453e@kernel.dk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+On Fri, Apr 12, 2024 at 07:58:13AM -0600, Jens Axboe wrote:
 
-On 4/12/2024 6:03 AM, Sean Christopherson wrote:
-> On Fri, Jan 26, 2024, Xiong Zhang wrote:
->> From: Mingwei Zhang <mizhang@google.com>
->>
->> Allow writing to fixed counter selector if counter is exposed. If this
->> fixed counter is filtered out, this counter won't be enabled on HW.
->>
->> Passthrough PMU implements the context switch at VM Enter/Exit boundary the
->> guest value cannot be directly written to HW since the HW PMU is owned by
->> the host. Introduce a new field fixed_ctr_ctrl_hw in kvm_pmu to cache the
->> guest value.  which will be assigne to HW at PMU context restore.
->>
->> Since passthrough PMU intercept writes to fixed counter selector, there is
->> no need to read the value at pmu context save, but still clear the fix
->> counter ctrl MSR and counters when switching out to host PMU.
->>
->> Signed-off-by: Mingwei Zhang <mizhang@google.com>
->> ---
->>   arch/x86/include/asm/kvm_host.h |  1 +
->>   arch/x86/kvm/vmx/pmu_intel.c    | 28 ++++++++++++++++++++++++----
->>   2 files changed, 25 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index fd1c69371dbf..b02688ed74f7 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -527,6 +527,7 @@ struct kvm_pmu {
->>   	unsigned nr_arch_fixed_counters;
->>   	unsigned available_event_types;
->>   	u64 fixed_ctr_ctrl;
->> +	u64 fixed_ctr_ctrl_hw;
->>   	u64 fixed_ctr_ctrl_mask;
-> Before introduce more fields, can someone please send a patch/series to rename
-> the _mask fields?  AFAIK, they all should be e.g. fixed_ctr_ctrl_rsvd, or something
-> to that effect.
+> I'm aware of some drivers that do different things from write vs writev,
+> or read vs readv for instance. But those I did cater to, by having a
+> flag they can now check.
+> 
+> Can you be a bit more specific on an example of a driver that does the
+> above?
 
-Yeah, I remember I ever said to cook a patch to rename all these _mask 
-fields. I would do it now.
+Consider e.g. your #39.  Current mainline: 1 call of ->set() for each
+segment passed to writev() on any of those.  With your patch: call
+segments concatenated and if the concatenation looks like a number,
+a single call of ->set().
 
+If nothing else, it's a user-visible ABI change.  And in cases when ->set()
+has non-trivial side effects, it just might break a real-world code that
+is currently correct.
 
->
-> Because I think we should avoid reinventing the naming wheel, and use "shadow"
-> instead of "hw", because KVM developers already know what "shadow" means.  But
-> "mask" also has very specific meaning for shadowed fields.  That, and "mask" is
-> a freaking awful name in the first place.
->
->>   	u64 global_ctrl;
->>   	u64 global_status;
->> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->> index 713c2a7c7f07..93cfb86c1292 100644
->> --- a/arch/x86/kvm/vmx/pmu_intel.c
->> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->> @@ -68,6 +68,25 @@ static int fixed_pmc_events[] = {
->>   	[2] = PSEUDO_ARCH_REFERENCE_CYCLES,
->>   };
->>   
->> +static void reprogram_fixed_counters_in_passthrough_pmu(struct kvm_pmu *pmu, u64 data)
-> We need to come up with shorter names, this ain't Java.  :-)  Heh, that can be
-> another argument for "mediated", it saves three characters.
->
-> And somewhat related, kernel style is <scope>_<blah>, i.e.
->
-> static void mediated_pmu_reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
+I picked that one because I didn't want to dig through the drivers -
+I'm pretty sure that there's more to be found there.
+
+It's not just "write() and writev() parse the data in different way" - we do
+have a couple of those, but that's a minor problem.
+
+"write(fd, buf, len1); write(fd, buf + len1, len1 + len2); is not the same
+thing as write(fd, buf, len1 + len2)" is not rare for character devices and
+for regular files on procfs/debugfs/etc.
+
+For any of those you need to use you vfs_write_iter() helper or you'll
+be breaking userland ABI.  The cost of audit of several thousands of ->write()
+(and ->read() - similar problem applies there) instances, checking that property
+is the main reason this conversion hadn't been already done.
 
