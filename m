@@ -1,135 +1,179 @@
-Return-Path: <linux-kernel+bounces-143792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3774B8A3D84
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3BC8A3D86
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:45:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D5E2823C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16A3C281E35
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8012146430;
-	Sat, 13 Apr 2024 15:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A83481AB;
+	Sat, 13 Apr 2024 15:45:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f5pGf375"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j51xE/oR"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6056D45C1C;
-	Sat, 13 Apr 2024 15:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29E547768
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 15:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713022768; cv=none; b=rh61/xBRhxzQQoiDU65342776J/CfTHEHkVuUXfPfxCNzT+vp/2t4p/PO3x8O7Mn3iTVXZraS8JO9mH1v753arWM3mYqNP2CSkUBP/A3h8Op5wUcq7qIVuA3pE2AaPltAr6/GZZ+wiOxaqCRz0Ksp6JTna5Sieg6ImwXJHcSEMw=
+	t=1713023119; cv=none; b=jJMZZ9eqxEddmJwQz2q9txlwOZ6F0t3dFoQpEGGjKq8wbyHAiMQKq2TVjcrKOEvxnG+/colkm4STyuisMRxspU97V21vIyGevasQHzvJvMnhiN4SkRGTE+kQnwc6TGElzxf9OHmo8OkhfEWz5/aoCP2+TAR+JpHWhOadh1gfulo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713022768; c=relaxed/simple;
-	bh=jL7uU696zbopMOteh9u4d9k59fFxvMnfP1MVAqxOv94=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ej4FzS05aTZbhf/7MN66c5sZdWg5stoTTKrXT+/vv+Iq2+R3LtM6NYMugAto0EWFysOV2a49PzRdA1Q0HHbe1OpAIdHECsipoNY0b04gnZxkBVukYzRinkwJpkUFujulSisnaKBYB7Nr3lgv/fQzquTANJS+6k1fr/R9qG4XsO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f5pGf375; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a5200afe39eso219524966b.1;
-        Sat, 13 Apr 2024 08:39:27 -0700 (PDT)
+	s=arc-20240116; t=1713023119; c=relaxed/simple;
+	bh=2JEeEAKK+fM9/amx8WJRJ3XYvGn0sAnfwgksY9PdaRg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HPglj53LezeOjLUQvMvEURorIMEbNiNjoUuBcw90fvW42UApflC2ynic/28XI2nmzsWt7K5KCRlx2Y/94TUruK34FIAfKPJYfxvS25pLyy/C8wnOEy1epQgysIjq5LQ70jdjnEz7cAYANm1ZPwNFiz9G5M+uw9Zze9Xwgj8OHQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j51xE/oR; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-570005cdf62so1159286a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713022766; x=1713627566; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HNEWJOBlR0y7Hhtt6axRN9X/exAZdSvN2lHOcVrlbOk=;
-        b=f5pGf375+79N2BHEX1fQKFTM60UI/1ZOoyjwEGlSmdDfMBMa3mKsex/Uul3sQKO/DO
-         Nq2I3sIxxKOjeEvUXYe6SUo8RCN/ejQTPyfNiDEWd4bs1K2G+ymRoN4VaYCbGdS7LmXe
-         kK0I0SxR9P1CXDIAbQN52sUbBteR4hgejOVuvmCdRZPm5KNK0ecQ/9qulcj8rxYrC59q
-         HU85di/6k2LvdfcGe0EVXgDhSAFE0DI/1RFM7kuSSZqUf/6pPAB8iUtTUFB0jEyRt83R
-         lV9DMkuwoXV/4fU3kS25Cw+DvLsAkGVxQi/e8t8n7FaCz1+01VIkmOzKNFvz68+J7i+n
-         TgsQ==
+        d=linaro.org; s=google; t=1713023116; x=1713627916; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tlcxDayxy7liV/dNtJA0sj3nxRJNURx3h61HUHMkCRg=;
+        b=j51xE/oRuEn4+A/ufUVddpV+xmkedGMEXILhpMmyu3/9LncXJlXroxt3q9N+mA4Qbx
+         4GpEWudDcuXF7ntFNPtGIMi4BVs4Lfgugk07CgUYyFHou02nraL3eNoeTKI647jQZicW
+         KNkwJbB7mtBKh9ma7ExTqoZrtzg63aJenGesNH4EIdqB6m0wZAXbpHDOMxcoJc2dCcK1
+         a3j57/UCzwYOYBsFz1BH/VbM0NDVQuhNOd7XKwZkq4G7s8mKRLPaQDxSN9JvGrI2Ve+k
+         aLSFmezWLAaNI+rZV6dxGVvKNKWKxgenvn4Hcof4ubc/HKGqM+yGv+dZnSWZMGPEFspf
+         U17g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713022766; x=1713627566;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNEWJOBlR0y7Hhtt6axRN9X/exAZdSvN2lHOcVrlbOk=;
-        b=uPkAV2SzsEYL4Jb4M4V9OgJh+zSbKztfUXtt1HAoo8AxSWkAjXVSGWE7CUNpFsYIe9
-         +KG6qHsHk8jpAT38M2aRSlObbAXH5JbW2EEsNdL2OzBtNqB4Gqx9vJc66aYMbLFdFLsk
-         yWOyI4mJyLqsSnY50bU6NRmXoTIZn3vg+vQB+1o36qS69K/7j19rJoRsPv1q4wY1Rt5d
-         X58gzDGtgRBxAHibAwqfUB14lDbFpEDZBcWChuBOJ037CclV9PnOso1AVDczrd/JbCcG
-         DufKZslCiqQpYkRzxyVkIpmX5YY89wR0DbnizN/f2pj9HNNtnLav/gq/+sOyRjvnlW0K
-         YTJg==
-X-Forwarded-Encrypted: i=1; AJvYcCVn9RTmtZGJ24UrFUHkrwfYDxDHBcsXIVV+pQo/q44JDoX9IV5cpcP+SWVFhqx6bo4/n2hZDrybfXojmZvdrB+w4QeTdQEL7E/NoSs+aQmUarzY1pmQ/kDS6S6g2MqvXj5Ki78qmNpEew==
-X-Gm-Message-State: AOJu0Yx4pW/SQGMBGLcAAjZdDeAR+cOuGk+XTxkNwMargUL8KitTG1fP
-	tu+vDFcvWF2kdgtn7Z2p13lzj52dPC9pBrEmX2bCvjv2daqcKxwM
-X-Google-Smtp-Source: AGHT+IHqgFh+uk15K0EwlCSK5KyFNaBttoC/3mMIKlGeivBdJuPR/0PC//p06HrA73var6K2Mhrrtg==
-X-Received: by 2002:a17:906:34d1:b0:a52:2e08:207e with SMTP id h17-20020a17090634d100b00a522e08207emr3722414ejb.77.1713022765539;
-        Sat, 13 Apr 2024 08:39:25 -0700 (PDT)
-Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id cx10-20020a170906c80a00b00a51b5282837sm3131680ejb.15.2024.04.13.08.39.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Apr 2024 08:39:25 -0700 (PDT)
-Message-ID: <521d4229-7490-4494-8191-cd5f3119249e@gmail.com>
-Date: Sat, 13 Apr 2024 17:39:24 +0200
+        d=1e100.net; s=20230601; t=1713023116; x=1713627916;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tlcxDayxy7liV/dNtJA0sj3nxRJNURx3h61HUHMkCRg=;
+        b=WuGCHMn7KobSSXAGzxjOnYxzgPHp6bwUvNG6XhjzjzhXhplOw1zSNJ8NaYN696QxLi
+         wseeGwQWVM45GlcXO+udOl1uspKn5Z352lWuGWiYGNDgT9YqCZSabWAmy6DCzwpF1fPz
+         BxyWuniy2895MzuLgdV+ZSoOhl/h+Ndm0MVledhgQ0/GW9YndxMFdgF6Yb7doyX0Lf4v
+         nZ2R1jNYRjqQyHRYLdD1otQFNyURUWbzpbXUT927WCyX+pUgfLxAZItZfjn67zOkObhF
+         CBMf0PQAWIirtzZQVzPXx8ONf9UPFm3xnJjGK598p+iBLO8kWkJquGNmKpnpFKdhzvVn
+         msRg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHtAK0d3KoHW0Zd8kSUCW/mbUqN363b+VtuY2XtfUtLu4ATYdP8cKUhLk93/R39cLvCASOeHJJcJVl7isqTqv5UMSx+6y6VULsVSyt
+X-Gm-Message-State: AOJu0Ywu6c0scO0ux1GrtWY2QUZeXut+/qg3tkwbvVNwiGqBb19H5Eh6
+	7RMak55fmdGGUT59AGzcQt7QEbYWwtLHpBEfGZsTwq3OmwqomUfzo7vdStBujNc=
+X-Google-Smtp-Source: AGHT+IH9nITMH1NYXvvNGCWOo5LpcfxyT/1mKLAquxmsTCBUpElTHPDzGJwDeR2jyobj1TP+8ro/HQ==
+X-Received: by 2002:a17:906:3c49:b0:a52:40b5:aedf with SMTP id i9-20020a1709063c4900b00a5240b5aedfmr1989672ejg.9.1713023116031;
+        Sat, 13 Apr 2024 08:45:16 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id en5-20020a17090728c500b00a51b8e8c8besm3128294ejc.86.2024.04.13.08.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Apr 2024 08:45:15 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3] iio: dac: ad5755: make use of of_device_id table
+Date: Sat, 13 Apr 2024 17:45:11 +0200
+Message-Id: <20240413154511.52576-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Johan Jonker <jbx6244@gmail.com>
-Subject: [PATCH v1 3/3] dt-bindings: display: add #sound-dai-cells property to
- rockchip inno hdmi
-To: hjc@rock-chips.com, heiko@sntech.de, andy.yan@rock-chips.com
-Cc: airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, markyao0591@gmail.com,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <3a035c16-75b5-471d-aa9d-e91c2bb9f8d0@gmail.com>
-Content-Language: en-US
-In-Reply-To: <3a035c16-75b5-471d-aa9d-e91c2bb9f8d0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The Rockchip inno HDMI controller can take one I2S input and transmit it
-over the HDMI output. Add #sound-dai-cells (= 0) to the binding for it.
+Store pointers to chip info (struct ad5755_chip_info) in driver match
+data, instead of enum, so every value will be != 0, populate the
+of_device_id table and use it in driver.  Even though it is one change,
+it gives multiple benefits:
+1. Allows to use spi_get_device_match_data() dropping local 'type'
+   variable.
+2. Makes both ID tables usable, so kernel can match via any of these
+   methods.
+3. Code is more obvious as both tables are properly filled.
+4. Fixes W=1 warning:
+   ad5755.c:866:34: error: unused variable 'ad5755_of_match' [-Werror,-Wunused-const-variable]
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 ---
- .../bindings/display/rockchip/rockchip,inno-hdmi.yaml        | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
-index be78dcfa1c76..5b87b0f1963e 100644
---- a/Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
-+++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
-@@ -37,6 +37,9 @@ properties:
-   power-domains:
-     maxItems: 1
+Changes in v3:
+1. Use pointers, according to Jonathan comments.
 
-+  "#sound-dai-cells":
-+    const: 0
-+
-   ports:
-     $ref: /schemas/graph.yaml#/properties/ports
+v2: https://lore.kernel.org/all/20240226192555.14aa178e@jic23-huawei/
 
-@@ -66,6 +69,7 @@ required:
-   - ports
+An old v1:
+https://lore.kernel.org/all/20230810111933.205619-1-krzysztof.kozlowski@linaro.org/
+---
+ drivers/iio/dac/ad5755.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
- allOf:
-+  - $ref: /schemas/sound/dai-common.yaml#
-   - if:
-       properties:
-         compatible:
-@@ -106,6 +110,7 @@ examples:
-       clock-names = "pclk";
-       pinctrl-names = "default";
-       pinctrl-0 = <&hdmi_ctl>;
-+      #sound-dai-cells = <0>;
-
-       ports {
-         #address-cells = <1>;
---
-2.39.2
+diff --git a/drivers/iio/dac/ad5755.c b/drivers/iio/dac/ad5755.c
+index 404865e35460..0b24cb19ac9d 100644
+--- a/drivers/iio/dac/ad5755.c
++++ b/drivers/iio/dac/ad5755.c
+@@ -809,7 +809,6 @@ static struct ad5755_platform_data *ad5755_parse_fw(struct device *dev)
+ 
+ static int ad5755_probe(struct spi_device *spi)
+ {
+-	enum ad5755_type type = spi_get_device_id(spi)->driver_data;
+ 	const struct ad5755_platform_data *pdata;
+ 	struct iio_dev *indio_dev;
+ 	struct ad5755_state *st;
+@@ -824,7 +823,7 @@ static int ad5755_probe(struct spi_device *spi)
+ 	st = iio_priv(indio_dev);
+ 	spi_set_drvdata(spi, indio_dev);
+ 
+-	st->chip_info = &ad5755_chip_info_tbl[type];
++	st->chip_info = spi_get_device_match_data(spi);
+ 	st->spi = spi;
+ 	st->pwr_down = 0xf;
+ 
+@@ -854,21 +853,21 @@ static int ad5755_probe(struct spi_device *spi)
+ }
+ 
+ static const struct spi_device_id ad5755_id[] = {
+-	{ "ad5755", ID_AD5755 },
+-	{ "ad5755-1", ID_AD5755 },
+-	{ "ad5757", ID_AD5757 },
+-	{ "ad5735", ID_AD5735 },
+-	{ "ad5737", ID_AD5737 },
++	{ "ad5755", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5755] },
++	{ "ad5755-1", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5755] },
++	{ "ad5757", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5757] },
++	{ "ad5735", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5735] },
++	{ "ad5737", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5737] },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(spi, ad5755_id);
+ 
+ static const struct of_device_id ad5755_of_match[] = {
+-	{ .compatible = "adi,ad5755" },
+-	{ .compatible = "adi,ad5755-1" },
+-	{ .compatible = "adi,ad5757" },
+-	{ .compatible = "adi,ad5735" },
+-	{ .compatible = "adi,ad5737" },
++	{ .compatible = "adi,ad5755", &ad5755_chip_info_tbl[ID_AD5755] },
++	{ .compatible = "adi,ad5755-1", &ad5755_chip_info_tbl[ID_AD5755] },
++	{ .compatible = "adi,ad5757", &ad5755_chip_info_tbl[ID_AD5757] },
++	{ .compatible = "adi,ad5735", &ad5755_chip_info_tbl[ID_AD5735] },
++	{ .compatible = "adi,ad5737", &ad5755_chip_info_tbl[ID_AD5737] },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, ad5755_of_match);
+@@ -876,6 +875,7 @@ MODULE_DEVICE_TABLE(of, ad5755_of_match);
+ static struct spi_driver ad5755_driver = {
+ 	.driver = {
+ 		.name = "ad5755",
++		.of_match_table = ad5755_of_match,
+ 	},
+ 	.probe = ad5755_probe,
+ 	.id_table = ad5755_id,
+-- 
+2.34.1
 
 
