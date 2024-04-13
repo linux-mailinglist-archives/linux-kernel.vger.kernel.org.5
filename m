@@ -1,301 +1,284 @@
-Return-Path: <linux-kernel+bounces-143868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED5348A3E81
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 275B28A3E87
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 22:38:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7156E1F2181A
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:31:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9A4A1F21844
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 20:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E4C1EB31;
-	Sat, 13 Apr 2024 20:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EC4F54916;
+	Sat, 13 Apr 2024 20:38:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="GWfBoP65"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="sWNjn8WG"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C88224F2
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 20:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED814224F2
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 20:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713040289; cv=none; b=KdCjeVnG0Quva21y4HApcqo02+AuYrl+4qwERFq/JZa2AzgykVUufx2zBurhAWkF1zMyW6JhLdSG79xF0PIJpFOW4dNm6V5VAPGS0eW1BvrxcNTPNOVKycO6/k+u9S93QPU6c6el84T+u+5tv7DZIOjru/5KnXZP/+srXQuLoWg=
+	t=1713040714; cv=none; b=U9kmmRuJqTNeCUAJJ2/SaxlvVs4GdIr5CBsB+5oGAn5gbGrnu0sEtvFEJJjc0atTMljEhxvUoHQDoima4nSojPd6ZXEK5RLCia1Vl4kDP9yA7FMCMFL6RLS6VMo/gmDkorqMpf7zKgrKgjrql5WsNVNmSWHyb/PgLp36MogEK6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713040289; c=relaxed/simple;
-	bh=zPnKbyggW02GZFESP1/3jpSugPAH/BCgKb0vmgRJNj0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jmJkUUDg9kjdnX4Jr++GF79EpBV81NCuahrMGhqVrYvXkoLY/JzHR7ngdiUwnVjQMTwMWhFKwHI9jtVio5ktaW6BfSfMTMMVWgk+bHhF49BfONGftz9qGX1KhVjfu0ZuhDm5Hq2Id10HxaYOLLoz3INqOJA70wpuDGRZvHLh70s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=GWfBoP65; arc=none smtp.client-ip=209.85.208.182
+	s=arc-20240116; t=1713040714; c=relaxed/simple;
+	bh=xSHBDd4Me8If6WJToj6vLbfBkCsdoFfXtMlxyXeajWA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gkpetqHuOvd8kNd+Z/afUFRoWZzw2qgEt729kOlsfpyO+RLKzDJx41IZR/xRZxkn86jp77XliFN8wf9H6xsuiGXhxp3jc6J1M/HNxXGDcQxbkxVtYFdjNymik7LqeHiHUR//huJQCMIZWKGfWCYegAczNHazRa7HlvRqGe9OsYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=sWNjn8WG; arc=none smtp.client-ip=209.85.161.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2da01cb187cso35050171fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 13:31:26 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5aa3af24775so1584121eaf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 13:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713040285; x=1713645085; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TjrMB1ZUNpuer39IbGQklxA6x6b3XJD77HTu/DFLCMk=;
-        b=GWfBoP65Hrnfwmvs+4PX6XRSKystDZ9vIqJ0/G4wafC27HJygEG7UJykGwbMLf5KHe
-         QaOTKz1fVdTZkefUoXOY8zdqEXI1WFTLk9QXZZBxtYiOJvzkcS+jqkWEFSbuKCe/F8XB
-         bhKtGws+GkDEVQtawxCwTmskZD9UroW8RQ3/JX2+VKdto6CEMGO/+xjzBspu/2btYTI0
-         v8jWVEgomf/HSpcuJJhwHbQTOasP/t6T+C1TtMWxz82ECWW8b40om2i8BsnSPOB0v5mQ
-         3S/lMHE1IFa2Rf3jWMe6d3rJh34iMf5R8UobjJJA6k4p/+87xlU9l9IuEA6EfjjWaaV/
-         /ldQ==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713040711; x=1713645511; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4x+1HTQ0RIZPFoOKvwxaxcB7QTNcWnf5Og46uHe7Vc8=;
+        b=sWNjn8WGASX9oqe22teSyyeGA3QQlo9xNLBOTfWWLP5KlCSCfROKC+nuYdOds9a8Gi
+         YD6Yyy744J5GTK77hsX7yeLSlsD1YLubWbBSFPhduQNSIDdwy2cU3o5OBm2eN0SPyr7z
+         Ownp2WCAyKWKCPlf0ZDO4b43k9FUgfJjDoX4tsS4kQXfjdeYV10euXfqyiQ95pPof0sI
+         UdKhe1LJ1YzYm5mlGw8ikBimleJpNqjTJi8J66VlJTfa1/7IPaWt/h4TY6wtwajSaaPa
+         ZK0Knnfnv74Kqf1QqVjk/XVqKJLwBntIjv8Tw81fxMdW4GQNaoSEQss9f/NMLswLnBOC
+         05CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713040285; x=1713645085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TjrMB1ZUNpuer39IbGQklxA6x6b3XJD77HTu/DFLCMk=;
-        b=TEv8xAGqUFAZjY6Cw0q6XuzFud9uZeyekCALOvgnAmEhKJqUBNYNkMubTnomB5vHoz
-         vvY3XHDxwT0NfKSF/TLc+XTCAdctrN9usp4T0UTTFzhKFhDtc0T1GF6hl0TILrV+VBwp
-         Ptwjosul+l2lwopD2HcDAd5baop0LxD7QQLHyx81KL6kTKy5iTyTxCoTZINbh1aU5Iqw
-         jE9Rb6Rjk9DnfXfJ8m7rkw8qAUtBeKhoLZ3EXCwjWjzGQE6kVVG0BW8JWiIwiGU7O8dj
-         5j3ZceH63GOq5QwmgT3BuwWrFn7Xgvj8WgNcQ4xegSqJvRGFaoCKQidvj8wUIqGGSKHr
-         S+Yg==
-X-Forwarded-Encrypted: i=1; AJvYcCXU18ILML224iWrqDaoHL/ZL9KSyLWNb3bghek6osfTp+rYVtVMf6duNTxunrCoGI36WC+PV1t/aCSzjMcwxgFZuYrDewU5QTFLI35j
-X-Gm-Message-State: AOJu0Yx+NPrTaNHvI1Lhurpf1xNig5FH6xcEQhqAoND94he7j2OKbjvR
-	hwgb3rE9PBpqd/qt4MpMo6mmMxevJQji8qZoN+DPR7heXx9TEo9hrAank1Sf9RbvQ9wmjg1FVCA
-	F/2osMUjM6kdonnhTK9KT+Hip1tRNypovXIE+XQ==
-X-Google-Smtp-Source: AGHT+IENh6flnft8na0SxgvmSEr2Ex5ghZZs7IfT+rp50Hl2MvuV1CwaAQoFIBfCINdUp2BovA24ee7jGaa+eVn/wF4=
-X-Received: by 2002:a2e:a451:0:b0:2d8:d972:67e3 with SMTP id
- v17-20020a2ea451000000b002d8d97267e3mr4796053ljn.5.1713040284644; Sat, 13 Apr
- 2024 13:31:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713040711; x=1713645511;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4x+1HTQ0RIZPFoOKvwxaxcB7QTNcWnf5Og46uHe7Vc8=;
+        b=nUPzMgQ+VJBshKmQPNrG4ugm00XTvAEC5zaY+F5uw4gTGqZ9k1F+c1dH4g6GSEYMnp
+         jmVN1gn3Tc9AVPZBnT77EkaUl6/Yo2Zp8DMhIYzzbFehvePCo1Sy7Ij9FG97LClMvLKg
+         8BLJjdvvfPGTX8sDuuJdLwLt3Ky2d5jFhkNAmL69GLKS5Ov5T9UdcXX7+9A5k+MHzw/u
+         Qlw5qAP6zjQg6RbDe2HA/v3akYarOAYw4v7KquOl/BDiNbZH7cihCrrghms6lVY/Mj/Z
+         K/MfPNyvXRVeszfl3LxZeM0dsfwB2/hF9h63rUb2MTKh00RcEkrTEcIspjORfB9/EOT6
+         A1kg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/e+vSDvYrr10maXjh4Vv7RpXGFkwp3Nh6dIigoPuJa2zM7wgLZpvRrZ4+eGqWDsmggebM4M9vqymD0GmY2RH0Zrm1ZyjU+a1FEIsI
+X-Gm-Message-State: AOJu0YwRO5Eb40Ar4iNPyC4cWWJcjKmQL4KnayKYLsPSmUk+z3y+YYMd
+	Hl0eFWdbMuZa6hsHFNLLjCtXF5zUp3U6jgxKs1qtGgW0CVLcqAaEPk7/vmdiwr0=
+X-Google-Smtp-Source: AGHT+IEE3c/u83djcsqJvHEGhksxOFX5yvKSmK0dHqgqlZy8nrs2GatIlTEKHognd/sndK9tWI2yYA==
+X-Received: by 2002:a05:6820:1ac2:b0:5ac:5c3c:6aca with SMTP id bu2-20020a0568201ac200b005ac5c3c6acamr6011704oob.0.1713040710955;
+        Sat, 13 Apr 2024 13:38:30 -0700 (PDT)
+Received: from [192.168.0.142] (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id w8-20020a4aaf08000000b005ac80676e8bsm493837oon.46.2024.04.13.13.38.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Apr 2024 13:38:30 -0700 (PDT)
+Message-ID: <e8599a44-f89b-4249-8fe2-db73edb74ead@baylibre.com>
+Date: Sat, 13 Apr 2024 15:38:29 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240413151152.165682-1-alisa.roman@analog.com> <20240413151152.165682-2-alisa.roman@analog.com>
-In-Reply-To: <20240413151152.165682-2-alisa.roman@analog.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] iio: ABI: add ABI file for the LTC2664 DAC
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Kim Seer Paller <kimseer.paller@analog.com>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Michael Hennerich <michael.hennerich@analog.com>
+References: <20240412032102.136071-1-kimseer.paller@analog.com>
+ <20240412032102.136071-3-kimseer.paller@analog.com>
+ <CAMknhBE9XihK27pRhyPwTNM3VQX=osYdDyCmjNspz1aqe_NVTw@mail.gmail.com>
+ <20240413162517.4644b649@jic23-huawei>
+Content-Language: en-US
 From: David Lechner <dlechner@baylibre.com>
-Date: Sat, 13 Apr 2024 15:31:13 -0500
-Message-ID: <CAMknhBH8UewSoZu-V6ERda=q8wO2NYg8RinnC2+RMF3LhKwtUg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/5] iio: adc: ad7192: Use standard attribute
-To: Alisa-Dariana Roman <alisadariana@gmail.com>
-Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org, 
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org, nuno.sa@analog.com, 
-	marcelo.schmitt@analog.com, bigunclemax@gmail.com, okan.sahin@analog.com, 
-	fr0st61te@gmail.com, alisa.roman@analog.com, marcus.folkesson@gmail.com, 
-	schnelle@linux.ibm.com, liambeguin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240413162517.4644b649@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 13, 2024 at 10:12=E2=80=AFAM Alisa-Dariana Roman
-<alisadariana@gmail.com> wrote:
->
-> Replace custom attribute filter_low_pass_3db_frequency_available with
-> standard attribute.
->
-> Store the available values in ad7192_state struct.
->
-> The function that used to compute those values replaced by
-> ad7192_update_filter_freq_avail().
->
-> Function ad7192_show_filter_avail() is no longer needed.
->
-> Note that the initial available values are hardcoded.
->
-> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
-> ---
+On 4/13/24 10:25 AM, Jonathan Cameron wrote:
+> On Fri, 12 Apr 2024 16:26:17 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
+> 
+>> On Thu, Apr 11, 2024 at 10:21 PM Kim Seer Paller
+>> <kimseer.paller@analog.com> wrote:
+>>>
+>>> Define the sysfs interface for toggle capable channels.
+>>>
+>>> Toggle enabled channels will have:
+>>>
+>>>  * out_voltageY_toggle_en  
+> The big missing thing in this ABI is a reference to existing precedence.
+> You aren't actually defining anything new, it just hasn't yet been generalized
+> beyond 1 device (unless you include PSK / FSK DDS drivers that are 'still' after
+> 13+ years in staging!)
+> 
+> This patch needs to be generalizing that documentation from the ltc2688.
+> 
+> Probably in sysfs-bus-iio-dac
+> 
+>>
+>> It looks like there are 3 toggle modes.
+>>
+>> Two involve the notion of "enabled" outputs that I assume this attribute is for:
+>>
+>> 1. Toggling all enabled pins at the same time using a software trigger
+>> (global toggle bit)
+>> 2. Toggling all enabled pins at the same time using a hardware trigger
+>> (TGP pin) and toggling pins
+>>
+> 
+> This is presumably the tricky one as that hardware toggle may not be in
+> control of the host CPU.
+> 
+>> The third mode though looks like it uses the same toggle select
+>> register for selecting A or B for each channel instead of enabling or
+>> disabling each channel.
+>>
+>> 3. Toggling all pins to A or B based on the toggle select register. No
+>> notion of enabled pins here.
+>>
+>> I haven't looked at the driver implementation, but it sounds like
+>> out_voltageY_toggle_en and out_voltageY_symbol would be writing to the
+>> same register in conflicting ways. So maybe we need yet another custom
+>> attribute to select the currently active toggle mode?
+> 
+> This one feels like it could be handled as a software optimisation over
+> just changing the DAC value directly.
+> 
+>>
+>> In any case, it would be helpful if the documentation below explained
+>> a bit better the intention and conditions required to use each
+>> attribute (or add a .rst documentation file for these chips to explain
+>> how to use it in more detail since this is rather complex feature).
+>>
+>>>  * out_voltageY_raw0
+>>>  * out_voltageY_raw1  
+>>
+>> I guess there is no enum iio_modifier that fits this. It seems like we
+>> could still have out_voltageY_raw for register A so that users that
+>> don't need to do any toggling can use standard ABI. And maybe
+>> out_voltageY_raw_toggled for register B (question for Jonathan)?
+> 
+> There is precedence for doing it like this (ltc2688)
+> Note that we should only see these attribute for changes specifically
+> configured for 'hardware' triggered toggling.
+> 
+> Note that we cannot have duplicate documentation so we need to create
+> a common docs file covering this and existing ltc2688 ABI that overlaps.
+> That may need some generalising to cover both parts.
+> 
+>>
+>> Or just have 8 channels instead of 4 where even channels are register
+>> A and odd channels are register B?
+>>
+>>>  * out_voltageY_symbol  
+>>
+>> "symbol" is a confusing name. It sounds like this just supports
+>> toggling one channel individually so _toggle_select would make more
+>> sense to me. Are there plans for supporting toggling multiple channels
+>> at the same time using a software trigger as well?
+> 
+> Again, precedence should have been called out.  It's not great ABI
+> but it corresponds to earlier work on Frequency Shift Keying DDS devices
+> (and I think Phase Shift Keying as well) in which this is call symbol.
+> Hence the name.
+> 
+>>
+>>>
+>>> The common interface present in all channels is:
+>>>
+>>>  * out_voltageY_raw (not present in toggle enabled channels)  
+>>
+>> As mentioned above, I don't think we need to have to make a
+>> distinction between toggle enabled channels and not enabled channels.
+> 
+> Was a while back but I think that last time this turned up we concluded
+> we did need a different interface because the current 'toggle value'
+> is not in our control.  Hence you are programming one channel that
+> does different things - think of it as setting the Max and Min values
+> for a generated waveform - perhaps the toggle pin is connected to a PWM
+> for example.
+> 
+>>
+>>>  * out_voltageY_raw_available
+>>>  * out_voltageY_powerdown  
+>>
+>> Is _powerdown a standard attribute? I don't see it documented
+>> anywhere. Perhaps you meant _en (via IIO_CHAN_INFO_ENABLE)?
+> 
+> It's there in Documentation/ABI/testing/sysfs-bus-iio
+> Different form simple enable (which came much later as ABI) because
+> it means entering a powerdown state in which a particular thing happens
+> on the output pin.  It is defined alongside powerdown_mode which 
+> defines what happens. (often a choice between different impedance / High Z etc)
+> 
+> 
+>>
+>>
+>>>  * out_voltageY_scale
+>>>  * out_voltageY_offset
+>>>
+>>> Co-developed-by: Michael Hennerich <michael.hennerich@analog.com>
+>>> Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+>>> Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
+>>> ---
+>>>  .../ABI/testing/sysfs-bus-iio-dac-ltc2664     | 30 +++++++++++++++++++
+>>>  MAINTAINERS                                   |  1 +
+>>>  2 files changed, 31 insertions(+)
+>>>  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664 b/Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
+>>> new file mode 100644
+>>> index 000000000..4b656b7af
+>>> --- /dev/null
+>>> +++ b/Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
+>>> @@ -0,0 +1,30 @@
+>>> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_toggle_en
+>>> +KernelVersion: 5.18
+>>> +Contact:       linux-iio@vger.kernel.org
+>>> +Description:
+>>> +               Toggle enable. Write 1 to enable toggle or 0 to disable it. This is
+>>> +               useful when one wants to change the DAC output codes. The way it should
+>>> +               be done is:
+>>> +
+>>> +               - disable toggle operation;
+>>> +               - change out_voltageY_raw0 and out_voltageY_raw1;
+>>> +               - enable toggle operation.
+>>> +
+>>> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_raw0
+>>> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_raw1
+>>> +KernelVersion: 5.18
+>>> +Contact:       linux-iio@vger.kernel.org
+>>> +Description:
+>>> +               It has the same meaning as out_voltageY_raw. This attribute is
+>>> +               specific to toggle enabled channels and refers to the DAC output
+>>> +               code in INPUT_A (_raw0) and INPUT_B (_raw1). The same scale and offset
+>>> +               as in out_voltageY_raw applies.
+>>> +
+>>> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_symbol
+>>> +KernelVersion: 5.18
+>>> +Contact:       linux-iio@vger.kernel.org
+>>> +Description:
+>>> +               Performs a SW toggle. This attribute is specific to toggle
+>>> +               enabled channels and allows to toggle between out_voltageY_raw0
+>>> +               and out_voltageY_raw1 through software. Writing 0 will select
+>>> +               out_voltageY_raw0 while 1 selects out_voltageY_raw1.
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index bd8645f6e..9ed00b364 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -12842,6 +12842,7 @@ M:      Kim Seer Paller <kimseer.paller@analog.com>
+>>>  L:     linux-iio@vger.kernel.org
+>>>  S:     Supported
+>>>  W:     https://ez.analog.com/linux-software-drivers
+>>> +F:     Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
+>>>  F:     Documentation/devicetree/bindings/iio/dac/adi,ltc2664.yaml
+>>>
+>>>  LTC2688 IIO DAC DRIVER
+>>> --
+>>> 2.34.1
+>>>  
+> 
 
-With the question below addressed:
+Clearly I have a lot to learn on this one! Thanks for all of the info.
 
-Reviewed-by: David Lechner <dlechner@baylibre.com>
-
->  drivers/iio/adc/ad7192.c | 67 ++++++++++++++++++----------------------
->  1 file changed, 30 insertions(+), 37 deletions(-)
->
-> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-> index 7bcc7e2aa2a2..ac737221beae 100644
-> --- a/drivers/iio/adc/ad7192.c
-> +++ b/drivers/iio/adc/ad7192.c
-> @@ -190,6 +190,7 @@ struct ad7192_state {
->         u32                             mode;
->         u32                             conf;
->         u32                             scale_avail[8][2];
-> +       u32                             filter_freq_avail[4][2];
->         u32                             oversampling_ratio_avail[4];
->         u8                              gpocon;
->         u8                              clock_sel;
-> @@ -473,6 +474,16 @@ static int ad7192_setup(struct iio_dev *indio_dev, s=
-truct device *dev)
->         st->oversampling_ratio_avail[2] =3D 8;
->         st->oversampling_ratio_avail[3] =3D 16;
->
-> +       st->filter_freq_avail[0][0] =3D 600;
-> +       st->filter_freq_avail[1][0] =3D 800;
-> +       st->filter_freq_avail[2][0] =3D 2300;
-> +       st->filter_freq_avail[3][0] =3D 2720;
-> +
-> +       st->filter_freq_avail[0][1] =3D 1000;
-> +       st->filter_freq_avail[1][1] =3D 1000;
-> +       st->filter_freq_avail[2][1] =3D 1000;
-> +       st->filter_freq_avail[3][1] =3D 1000;
-> +
->         return 0;
->  }
->
-> @@ -586,48 +597,24 @@ static int ad7192_get_f_adc(struct ad7192_state *st=
-)
->                                  f_order * FIELD_GET(AD7192_MODE_RATE_MAS=
-K, st->mode));
->  }
->
-> -static void ad7192_get_available_filter_freq(struct ad7192_state *st,
-> -                                                   int *freq)
-> +static void ad7192_update_filter_freq_avail(struct ad7192_state *st)
->  {
->         unsigned int fadc;
->
->         /* Formulas for filter at page 25 of the datasheet */
->         fadc =3D ad7192_compute_f_adc(st, false, true);
-> -       freq[0] =3D DIV_ROUND_CLOSEST(fadc * 240, 1024);
-> +       st->filter_freq_avail[0][0] =3D DIV_ROUND_CLOSEST(fadc * 240, 102=
-4);
->
->         fadc =3D ad7192_compute_f_adc(st, true, true);
-> -       freq[1] =3D DIV_ROUND_CLOSEST(fadc * 240, 1024);
-> +       st->filter_freq_avail[1][0] =3D DIV_ROUND_CLOSEST(fadc * 240, 102=
-4);
->
->         fadc =3D ad7192_compute_f_adc(st, false, false);
-> -       freq[2] =3D DIV_ROUND_CLOSEST(fadc * 230, 1024);
-> +       st->filter_freq_avail[2][0] =3D DIV_ROUND_CLOSEST(fadc * 230, 102=
-4);
->
->         fadc =3D ad7192_compute_f_adc(st, true, false);
-> -       freq[3] =3D DIV_ROUND_CLOSEST(fadc * 272, 1024);
-> +       st->filter_freq_avail[3][0] =3D DIV_ROUND_CLOSEST(fadc * 272, 102=
-4);
->  }
->
-> -static ssize_t ad7192_show_filter_avail(struct device *dev,
-> -                                       struct device_attribute *attr,
-> -                                       char *buf)
-> -{
-> -       struct iio_dev *indio_dev =3D dev_to_iio_dev(dev);
-> -       struct ad7192_state *st =3D iio_priv(indio_dev);
-> -       unsigned int freq_avail[4], i;
-> -       size_t len =3D 0;
-> -
-> -       ad7192_get_available_filter_freq(st, freq_avail);
-> -
-> -       for (i =3D 0; i < ARRAY_SIZE(freq_avail); i++)
-> -               len +=3D sysfs_emit_at(buf, len, "%d.%03d ", freq_avail[i=
-] / 1000,
-> -                                    freq_avail[i] % 1000);
-> -
-> -       buf[len - 1] =3D '\n';
-> -
-> -       return len;
-> -}
-> -
-> -static IIO_DEVICE_ATTR(filter_low_pass_3db_frequency_available,
-> -                      0444, ad7192_show_filter_avail, NULL, 0);
-> -
->  static IIO_DEVICE_ATTR(bridge_switch_en, 0644,
->                        ad7192_show_bridge_switch, ad7192_set,
->                        AD7192_REG_GPOCON);
-> @@ -637,7 +624,6 @@ static IIO_DEVICE_ATTR(ac_excitation_en, 0644,
->                        AD7192_REG_CONF);
->
->  static struct attribute *ad7192_attributes[] =3D {
-> -       &iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.at=
-tr,
->         &iio_dev_attr_bridge_switch_en.dev_attr.attr,
->         NULL
->  };
-> @@ -647,7 +633,6 @@ static const struct attribute_group ad7192_attribute_=
-group =3D {
->  };
->
->  static struct attribute *ad7195_attributes[] =3D {
-> -       &iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.at=
-tr,
->         &iio_dev_attr_bridge_switch_en.dev_attr.attr,
->         &iio_dev_attr_ac_excitation_en.dev_attr.attr,
->         NULL
-> @@ -665,17 +650,15 @@ static unsigned int ad7192_get_temp_scale(bool unip=
-olar)
->  static int ad7192_set_3db_filter_freq(struct ad7192_state *st,
->                                       int val, int val2)
->  {
-> -       int freq_avail[4], i, ret, freq;
-> +       int i, ret, freq;
->         unsigned int diff_new, diff_old;
->         int idx =3D 0;
->
->         diff_old =3D U32_MAX;
->         freq =3D val * 1000 + val2;
->
-> -       ad7192_get_available_filter_freq(st, freq_avail);
-> -
-> -       for (i =3D 0; i < ARRAY_SIZE(freq_avail); i++) {
-> -               diff_new =3D abs(freq - freq_avail[i]);
-> +       for (i =3D 0; i < ARRAY_SIZE(st->filter_freq_avail); i++) {
-> +               diff_new =3D abs(freq - st->filter_freq_avail[i][0]);
->                 if (diff_new < diff_old) {
->                         diff_old =3D diff_new;
->                         idx =3D i;
-> @@ -826,6 +809,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev=
-,
->                 st->mode &=3D ~AD7192_MODE_RATE_MASK;
->                 st->mode |=3D FIELD_PREP(AD7192_MODE_RATE_MASK, div);
->                 ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
-> +               ad7192_update_filter_freq_avail(st);
->                 break;
->         case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
->                 ret =3D ad7192_set_3db_filter_freq(st, val, val2 / 1000);
-> @@ -846,6 +830,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev=
-,
->                                 break;
->                         }
->                 mutex_unlock(&st->lock);
-> +               ad7192_update_filter_freq_avail(st);
-
-Does this need to go inside of the mutex guard to avoid potential race
-conditions?
-
->                 break;
->         default:
->                 ret =3D -EINVAL;
-> @@ -888,6 +873,12 @@ static int ad7192_read_avail(struct iio_dev *indio_d=
-ev,
->                 /* Values are stored in a 2D matrix  */
->                 *length =3D ARRAY_SIZE(st->scale_avail) * 2;
->
-> +               return IIO_AVAIL_LIST;
-> +       case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
-> +               *vals =3D (int *)st->filter_freq_avail;
-> +               *type =3D IIO_VAL_FRACTIONAL;
-> +               *length =3D ARRAY_SIZE(st->filter_freq_avail) * 2;
-> +
->                 return IIO_AVAIL_LIST;
->         case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
->                 *vals =3D (int *)st->oversampling_ratio_avail;
-> @@ -956,7 +947,9 @@ static const struct iio_info ad7195_info =3D {
->                         BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) =
-| \
->                         (_mask_all), \
->                 .info_mask_shared_by_type_available =3D (_mask_type_av), =
-\
-> -               .info_mask_shared_by_all_available =3D (_mask_all_av), \
-> +               .info_mask_shared_by_all_available =3D \
-> +                       BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) =
-| \
-> +                       (_mask_all_av), \
->                 .ext_info =3D (_ext_info), \
->                 .scan_index =3D (_si), \
->                 .scan_type =3D { \
-> --
-> 2.34.1
->
 
