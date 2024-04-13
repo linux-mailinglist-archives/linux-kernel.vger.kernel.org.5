@@ -1,170 +1,116 @@
-Return-Path: <linux-kernel+bounces-143754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51B7C8A3D04
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:43:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 265558A3D0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:54:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72C9F1C20BE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:43:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 966971F21995
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B89845942;
-	Sat, 13 Apr 2024 14:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57B742A96;
+	Sat, 13 Apr 2024 14:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0b1WjH7d";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TGTnmWCA"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="BfkK5Ob8"
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AE51DDF1;
-	Sat, 13 Apr 2024 14:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457902F873
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713019406; cv=none; b=b1AV9WOjGDqAsyiSYqJeGWy6oEp4/Xb1Cu60d0mKGAUqWQb0A+CX7acdpDK9DJ9lQbVTpAgJ92B3+Q4t87IaQeP+oUfHJ1tGp+IUeLXSnP4yyK++f3mtHD207liJAstyepCDbMi07rex6Ibc1tR/bCdBbGrrckvEQAqUmtciwVI=
+	t=1713020037; cv=none; b=GDHxe/gIg0DfkY5VE1C9NyPuaeYI570+OeTbY1WMvc4wQDwVN99hxVUd9ag3bQvMaym6tZeF0zIGrlbSVS/vVw336oSH0p0Y90ZI2vnuwkyS1TssTSw8PxZHDE/3J1oAYF12qYag1a3uuTygxoJ5YGgWd47qGOpk75psUlz+px0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713019406; c=relaxed/simple;
-	bh=F3WSVlUVeB9L++bk4Ow6JCLg2bFHCz7po4reWSuVgdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mTc/b6uf5MdDkKUZvH8GbWguY1+VDGvkckr4qN6tZ6aMS8g4Ll+fwkwpcgHVjGxyfWuQCI/EOtuCZ3yfT95ohE3f2cVD5wT+xmIMyrn3kp31VPU3UdvmjiLKZrvVohPYcYzeu0J/kn2rPZcUh69QTWseMpDrw2ZiSMDkmAt7v1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0b1WjH7d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TGTnmWCA; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Sat, 13 Apr 2024 16:43:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713019401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=94QYgK1moV3EtlUcP69QNbkfRF65WDHcbcu3aXuhzMA=;
-	b=0b1WjH7dMokMw4gA5sphaavop2jbUouwWon4BETiEJ3Auh4mkbDA6CaWbyUNg2HXh5x6sV
-	ONFBFVjW0E764jN462mFwDfHi2QRFkYfyeIHxJcy3VbT1aBnTVP5C58iksUwVE6rUrLEKJ
-	5MlqE2iqe6pljzIGKfUbctAoWA2M34tOOrMm3oVsdNYvuv4Pxq5J39z0MKV5uCYzKKqh3U
-	80jVJeaID7Ii+A4CUhy9Q4fzgdYP/hww5l96idQt9myulM92AIR61c34rdO2vrrS2KQlcV
-	/KP8sifRsZXoC18ILZxYH35jCImumZRAwqv918IPuYpQQPJGbQyHNSiefxQk3w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713019401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=94QYgK1moV3EtlUcP69QNbkfRF65WDHcbcu3aXuhzMA=;
-	b=TGTnmWCAiCLkdCMHYZVFT8OBvD3zVHceh/mgLEaqFERDP2BwWHD5eEVTI9rdWYMR4gvfxq
-	35B6dGXcXkTn8uDA==
-From: Nam Cao <namcao@linutronix.de>
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, "Theodore
- Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- linux-ext4@vger.kernel.org, Conor Dooley <conor@kernel.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <20240413164318.7260c5ef@namcao>
-In-Reply-To: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1713020037; c=relaxed/simple;
+	bh=a5q8nw0XgVR6N756cgpGAaeVwSwtSM1RleiWbr+/9M4=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=mK/MwBEOxntotrLZ7tnYtwOEJdOz55PfCwc6OszcvukuVKHQOC22SjHx0qJMDvzOTXinl6vqw8zKMkUOaQ4VIPqBQg9tDLjSevyOAbg40xZAbmaJUzIsOWBCnzU3QpEBlxVCsbmwC4dhitEeUYMQk1+uLuphMXDc3DFeZQM2EiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=BfkK5Ob8; arc=none smtp.client-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1713019724; bh=XLWYnmUp+Hs8di2CsOJWUPH+JTczqKrjI/H+CiBfNzw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=BfkK5Ob8Pm3bdAA0L0vN4c9SUTR/Z0Gst4FSuX4SC5+HltbhBlKxDHrTcg2ljB2xK
+	 ZiAgNNNRduVC4JXoHw0I5HXaxh1VcyiA8d7jHWA2B1vj+QJ2VaCaB0m8qeIRrEfXIR
+	 XhkeeRxum8GU6VFPzMm2/VlGfOSiiO+mWk1psvxs=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrsza15-1.qq.com (NewEsmtp) with SMTP
+	id C2A24241; Sat, 13 Apr 2024 22:48:42 +0800
+X-QQ-mid: xmsmtpt1713019722tuzea4s0c
+Message-ID: <tencent_9625BABA15BB89336B9E491B6A4BA61B2808@qq.com>
+X-QQ-XMAILINFO: NDgMZBR9sMmaP+1mcOH883vq/+M6jorP66N5F3Sb416cbQudDuTLHkjKwFd8kS
+	 VUkPV2D0j97I+EpemOboq9QPC1pG5aoAYx3NwYBLyfb5Gcnzrpjk3eqbpznqMKv1xixcYKUpEGu4
+	 sg4V3OvIqrNUqYMEFR0+Eh1mqINODEePxyrCnsd1UB+1rwKiu5yKZmdUNJgeq0fYIu1HS9keH8+5
+	 ABW8ihq0Ss5+YHle4u45XT62iegLb/YHRtM/JQPV1ckH/0ywWy053cdHmW0C8ZrbY+GgAZcl/QYV
+	 BiKnm7W2dkEY4RzYhjiWptZXqTmqiS+XCfH612i87Vrv4DaBS7Gkb3cCHQOFgC3pDxliXP42CEuC
+	 hNux5rtX0zksHrz1ccnKLsZrRVXsp9X66GXnGQM8LvvqTgA8YVOkJgg8AscE1pT4cbmVXIBjcyrO
+	 rttvjn4A3ch4jq0BLmg68UKZkBbUgNXIZxpeMRTPLLhMz1lG4o6KEKwHEiuiLZkoVdo1IGRPYUCe
+	 A5HfewCuRPuuLOSiSNyyzU2JhdW68/zK6g6VS3V79p4DM1ILu/9DhfrSci3i8RvJTzwiDNoAbfCN
+	 dariEAFqJMdN0BxhY94X7fyX3gdex/vMV3tRjuadOajMOddLzsWZIdnmX9WVFuKxDalELY22IUO+
+	 ioPH6opziyqaX1np+Z3/2/nkXnK+69dUrz8tDOqtl4CH12lg40wU5HEKj/4824im74OlRifRZNcp
+	 kZqp3Rc6tatLCv6EEbrgKfKlk8AVt1Twr+xN2hsXo4hzXZ9Obi8s2pp39/nLIGkHxJwPl9Q6Xyk7
+	 TqJNMQAVFuFoqDspCo99xAAnTIGnkUm5joamA/PUGVyIqunw85jCMGMTYxD4ppZq6ObNPHENvGlV
+	 ZgSIGdbyPHHt9n73ywC032F0MyXVtrEfCaL7Q79XoUTLyYOsYZpT/eeVt72cjHlzkJdUmyNMmFSe
+	 F1o3y6Y94=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+3a36aeabd31497d63f6e@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [gfs2?] KASAN: slab-use-after-free Read in gfs2_invalidate_folio
+Date: Sat, 13 Apr 2024 22:48:43 +0800
+X-OQ-MSGID: <20240413144842.2770371-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000004f557c0615d47e6d@google.com>
+References: <0000000000004f557c0615d47e6d@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On 2024-04-12 Bj=C3=B6rn T=C3=B6pel wrote:
-> Hi!
->=20
-> I've been looking at an EXT4 splat on riscv32, that LKFT found [1]:
->=20
->   | EXT4-fs (vda): mounted filesystem 13697a42-d10e-4a9e-8e56-cb9083be92f=
-9 ro with ordered data mode. Quota mode: disabled.
->   | VFS: Mounted root (ext4 filesystem) readonly on device 254:0.
->   | Unable to handle kernel NULL pointer dereference at virtual address 0=
-0000006
->   | Oops [#1]
->   | Modules linked in:
->   | CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.8.0 #41
->   | Hardware name: riscv-virtio,qemu (DT)
->   | epc : ext4_search_dir+0x52/0xe4
->   |  ra : __ext4_find_entry+0x1d6/0x578
->   | epc : c035b60e ra : c035b876 sp : c253fc10
->   |  gp : c21a7380 tp : c25c8000 t0 : 44c0657f
->   |  t1 : 0000000c t2 : 1de5b089 s0 : c253fc50
->   |  s1 : 00000000 a0 : fffffffc a1 : fffff000
->   |  a2 : 00000000 a3 : c29c04f8 a4 : c253fd00
->   |  a5 : 00000000 a6 : c253fcfc a7 : fffffff3
->   |  s2 : 00001000 s3 : 00000000 s4 : 00001000
->   |  s5 : c29c04f8 s6 : c292db40 s7 : c253fcfc
->   |  s8 : fffffff7 s9 : c253fd00 s10: fffff000
->   |  s11: c292db40 t3 : 00000007 t4 : 5e8b4525
->   |  t5 : 00000000 t6 : 00000000
->   | status: 00000120 badaddr: 00000006 cause: 0000000d
->   | [<c035b60e>] ext4_search_dir+0x52/0xe4
->   | [<c035b876>] __ext4_find_entry+0x1d6/0x578
->   | [<c035bcaa>] ext4_lookup+0x92/0x200
->   | [<c0295c14>] __lookup_slow+0x8e/0x142
->   | [<c029943a>] walk_component+0x104/0x174
->   | [<c0299f18>] path_lookupat+0x78/0x182
->   | [<c029b24c>] filename_lookup+0x96/0x158
->   | [<c029b346>] kern_path+0x38/0x56
->   | [<c0c1bee4>] init_mount+0x46/0x96
->   | [<c0c2ae1c>] devtmpfs_mount+0x44/0x7a
->   | [<c0c01c26>] prepare_namespace+0x226/0x27c
->   | [<c0c01130>] kernel_init_freeable+0x27e/0x2a0
->   | [<c0b78402>] kernel_init+0x2a/0x158
->   | [<c0b82bf2>] ret_from_fork+0xe/0x20
->   | Code: 84ae a809 d303 0044 949a 0f63 0603 991a fd63 0584 (c603) 0064=20
->   | ---[ end trace 0000000000000000 ]---
->   | Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000=
-000b
->=20
-> This was not present in 6.7. Bisection wasn't really helpful (to me at
-> least); I got it down to commit c604110e662a ("Merge tag 'vfs-6.8.misc'
-> of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs"), and when I
-> revert the commits in the vfs merge the splat went away, but I *really*
-> struggle to see how those are related...
->=20
-> What I see in ext4_search_dir() is that search_buf is 0xfffff000, and at
-> some point the address wraps to zero, and boom. I doubt that 0xfffff000
-> is a sane address.
+please test uaf in gfs2_invalidate_folio
 
-I have zero knowledge about file system, but I think it's an integer
-overflow problem. The calculation of "dlimit" overflow and dlimit wraps
-around, this leads to wrong comparison later on.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e8c39d0f57f3
 
-I guess that explains why your bisect and Conor's bisect results are
-strange: the bug has been here for quite some time, but it only appears
-when "dlimit" happens to overflow.
-
-It can be fixed by re-arrange the comparisons a bit. Can you give the
-below patch a try?
-
-Best regards,
-Nam
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 05b647e6bc19..71b88b33b676 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1532,15 +1532,13 @@ int ext4_search_dir(struct buffer_head *bh, char *s=
-earch_buf, int buf_size,
- 		    unsigned int offset, struct ext4_dir_entry_2 **res_dir)
+diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
+index 974aca9c8ea8..4ae5e73b6992 100644
+--- a/fs/gfs2/aops.c
++++ b/fs/gfs2/aops.c
+@@ -613,6 +613,7 @@ static void gfs2_discard(struct gfs2_sbd *sdp, struct buffer_head *bh)
+ 	gfs2_log_lock(sdp);
+ 	clear_buffer_dirty(bh);
+ 	bd = bh->b_private;
++	printk("bh: %p, bd: %p, %s\n", bh, bd, __func__);
+ 	if (bd) {
+ 		if (!list_empty(&bd->bd_list) && !buffer_pinned(bh))
+ 			list_del_init(&bd->bd_list);
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index 8cddf955ebc0..d05decef6af5 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -1007,6 +1007,7 @@ static void trans_drain(struct gfs2_trans *tr)
  {
- 	struct ext4_dir_entry_2 * de;
--	char * dlimit;
- 	int de_len;
-=20
- 	de =3D (struct ext4_dir_entry_2 *)search_buf;
--	dlimit =3D search_buf + buf_size;
--	while ((char *) de < dlimit - EXT4_BASE_DIR_LEN) {
-+	while ((char *) de - search_buf < buf_size - EXT4_BASE_DIR_LEN) {
- 		/* this code is executed quadratically often */
- 		/* do minimal checking `by hand' */
--		if (de->name + de->name_len <=3D dlimit &&
-+		if (de->name + de->name_len - search_buf <=3D buf_size &&
- 		    ext4_match(dir, fname, de)) {
- 			/* found a match - just to be sure, do
- 			 * a full check */
+ 	struct gfs2_bufdata *bd;
+ 	struct list_head *head;
++	struct buffer_head *bh;
+ 
+ 	if (!tr)
+ 		return;
+@@ -1022,6 +1023,9 @@ static void trans_drain(struct gfs2_trans *tr)
+ 	head = &tr->tr_databuf;
+ 	while (!list_empty(head)) {
+ 		bd = list_first_entry(head, struct gfs2_bufdata, bd_list);
++		bh = container_of((void *)bd, struct buffer_head, b_private);
++		printk("bh: %p, bd: %p, %s\n", bh, bd, __func__);
++		bh->b_private = NULL;
+ 		list_del_init(&bd->bd_list);
+ 		if (!list_empty(&bd->bd_ail_st_list))
+ 			gfs2_remove_from_ail(bd);
+
 
