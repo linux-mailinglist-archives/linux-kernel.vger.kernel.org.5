@@ -1,241 +1,179 @@
-Return-Path: <linux-kernel+bounces-143848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 096108A3E2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:07:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C728C8A3E2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:10:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF0B7281A0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:07:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FEBD1F21306
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001B85466D;
-	Sat, 13 Apr 2024 19:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E7053E30;
+	Sat, 13 Apr 2024 19:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bgp2IiMW"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="qW+f+wZH"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A56623BE;
-	Sat, 13 Apr 2024 19:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E9645941
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 19:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713035224; cv=none; b=jjLmx5mCkUN4sag/62BQ8adPrterfHy/MM74siOxx7xwCQ+/T7SQBRl+QZN+krm8UV/LumUaciMUbHVohKZeUuRf9rFdzWv82zqsDsey+HPPXq9/cbnGHdtRtBLUeOJ4AAm/KC1shpKYZLtTjdp5pFliBLozcy3pa5PVqjwICj0=
+	t=1713035424; cv=none; b=ZiGXeKjehy/SfzdADLBPOnMrBhuX6l2/NrVRC4FJ1BH49qAdAoVPuS3kyPYqJyDU2eXF4gkgKXaHOFeIwrPNobCNajxLgJpzTH0Hxx+w88IjJ+CVCGsbzm3WGuJ8pg/DQu/JiGryZmo96iIsYW0UxrYb238CV/KcIwiMl/gVkts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713035224; c=relaxed/simple;
-	bh=DNhhbIc6L+IKpDdQxrC3Ktu1wDXXBPiMctnl9rg5itU=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=bbhmYAUGQs15i3QWJP2qmXo1QweoGyw+ZI6M+rKbh+ujmXpWaA0wzsZFtLrG3O48bNYA2gzAXVZqo+DvTYXvEKEWHYr68EZ8AjC2o0agJlpAvEYDLY6R0NmgH9cgPvTdQuM60bJDnobRa8e68N/PNHCfj0eCKozO+ctynJEMYQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bgp2IiMW; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78d6021e2e3so130749685a.1;
-        Sat, 13 Apr 2024 12:07:02 -0700 (PDT)
+	s=arc-20240116; t=1713035424; c=relaxed/simple;
+	bh=NK36aVW0Q4AOfz3pKXy6wWqoZHB49yeleuvN/jCXBZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r1bjlbW8UuVd+WKTUzcDS9/HDNBTn7ojAZPFAd9BcxFmiNommI3jU/gJQQfN8yUkH0Xc+ha8D/6go7YGF9ZHPvxGVyESxo0fny0ccOhVX+KifVNUaZvp6s8EC+V9+Vfrf6o5tpUrM16luiTMTg9JE5QxuJV5AraUh+Z1shGbCaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=qW+f+wZH; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516cdb21b34so2507395e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 12:10:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713035221; x=1713640021; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713035420; x=1713640220; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mqez31DaanVbX+mWuT0+GQUVsDTps4xeskVhFkNVA0E=;
-        b=bgp2IiMWy9pv7iE97o2GSEvd7NtZOnKe2vnDcKZJOC5VKr5UnWJVqGqLhtUi6XQNqd
-         iEK2qT0T8AZJIePnSInpPFjgmOU0opS6c7a9ncHWWvl2qxjtgtDl/29QBlKw/gcs/z0X
-         929IZ/aFNeNOj8Ei18sUNeRqV4VkHjs+Z5nBFDZIB5m/Mo8itjGyVMY8Ol3h5sbwmdIl
-         B+8p8Jn2dNXkI+1oRr63hehsy7lAsmDABgsJWaKaeuTkxcCTL9TpH+hfG4u6ZjozbnJy
-         XQOKFM8al90NYdsICzTzF/+K55vcfn0T8kheEEIVtgoo5hG27RgV++g5j4rWur8f7TFy
-         wawQ==
+        bh=Ohhq94Hi9UA2u72f6b9WWlalORV6WhRgdHkGudBsR/4=;
+        b=qW+f+wZHdV294KbUYAZmsOrJgspuWnKwhiq3ptjOzY5UPCTjEjoAmORKvR6Mpo9pAo
+         Jc2aDLpRX8SyCj3LStaiTIwyqDbdZAAIRT4Lw5rZ9jrDME+GFyIFyRy5659NFx1FPoTD
+         xLD+IUC+sdaACXhajNd6DjcepPIQ0Oa30/fHJJGZyib4aJvMfCYtGbPGQpD3BXV45Hx7
+         dVUcnCTJbtlk3dW/JiTF9rcl2nR8Cxxn6LCW+7o3NLBZR6KotW/b6Q5cpeMEvtxEHqU9
+         qDk3Zw7H+60G02yf0AUAKErhH85MgA3oPOf+ATHSMf11fBM0L6dIsGDGIrWdAgBP3S5P
+         6PiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713035221; x=1713640021;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mqez31DaanVbX+mWuT0+GQUVsDTps4xeskVhFkNVA0E=;
-        b=M7NsL1WhOuyKjDxi9zKN1WXlt5d0RDjM2Zk0Q7BqnhqN7XyVS2rrg5IRjtfUhgleNH
-         paMmvR8GibSDLKzr4QicFGg8AQsj2yWW7Is6k3u2JK9M7rMyH0z6c9FzGThiCmut1V4N
-         lACEQ+7FEw9Wy6qgiWEfzFEF4z7qLM+GflanIardRnf9qtJRoWGlBQ1JBCfFywLDeUlN
-         njfW216X5cKvfXiZF2G5/6ozKZeWFrfiq9m2X02uovbl8jbyHe5KOCq6Z5KOz2N5WIQ5
-         ZQIkvd+HlP/l/ZpPCifGJaGdKtxUzkXoescnnPYd/90tPDVQ6tyXJDinVZUvB89d52cy
-         eLqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXVHaCi6R7Uxevuiw1laBKmpshXE8mwlY9d/lEslZcUFIkgidAukYe5rHGKd9OIm2V3idpsddJi0vFXXyZ6EfAy/Bt7f+AozottD/CP/CZEDzbYKfyaoTZcGW/nD0+YBjr9uSYkiNnQSWO88tY51uVfODH/H78ilA5H
-X-Gm-Message-State: AOJu0YzTpxn8+uGNlW58TloncRWN5bOOwq95W02+7Hd/HQOYk5nF/0IM
-	Qtmg3wAGBXJ+jfD8P/UFrxarhRfuZHnFb2M1l+naZOKoQKLEsDzn
-X-Google-Smtp-Source: AGHT+IHkdAuWAYDB6LpnIPHdJm0zAMcyvrrhUxT4H57RvsW70LQWs7ATZMLrXlZtE/wUpIh4GtNiyA==
-X-Received: by 2002:a05:620a:40cb:b0:78e:caa7:cd23 with SMTP id g11-20020a05620a40cb00b0078ecaa7cd23mr6967884qko.20.1713035221401;
-        Sat, 13 Apr 2024 12:07:01 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id b18-20020a05620a0cd200b0078d670115fcsm4044059qkj.51.2024.04.13.12.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 12:07:01 -0700 (PDT)
-Date: Sat, 13 Apr 2024 15:07:00 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- bpf <bpf@vger.kernel.org>
-Cc: kernel@quicinc.com
-Message-ID: <661ad7d4c65da_3be9a7294e@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240412210125.1780574-3-quic_abchauha@quicinc.com>
-References: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
- <20240412210125.1780574-3-quic_abchauha@quicinc.com>
-Subject: Re: [RFC PATCH bpf-next v3 2/2] net: Add additional bit to support
- userspace timestamp type
+        d=1e100.net; s=20230601; t=1713035420; x=1713640220;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ohhq94Hi9UA2u72f6b9WWlalORV6WhRgdHkGudBsR/4=;
+        b=mnlcZkdT5bmFnumhP8yJzuLn80RZ/bK5FF9+RIb0XeVs8/RrEdRsC+iogAZU4rehL8
+         /m/UHG3p45rtPX5NEHzYRNU6TQiCKo8RXdMhcAJDb7Do1aUP3K3ldNvK3GHbpRAkX9oS
+         rUW0+X1taht+25Kc4N+xMoyC+KXWPk7qSj6pDcZHnkhWQzoa9JxJ8PxO0ESzioQmAVuj
+         wfSVV6rsTjQsMJGF4JV3Bk2MaObEwlkDk5XyU/P8wn0KmynAHOaOQNZrd7hLDCeBQlq7
+         Ik2dpRhjIErRn+8Nhm4A0c2tg2iseFohUT3HmepxfK/jPwLqGmBhYHaD2hiNeDoJLS6t
+         fDZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4HpTlS3YmGjrjZemSpPlBvxCWBi4RTMLFSHp9uzitxA/g6HHqxRGkHxWdCyyzHRxLRjRHenloaS/Gq/3q3AmjSD5WXf9JYIXSLkSO
+X-Gm-Message-State: AOJu0YztzV0Bm6HCXisrll4oE1gpxl4emGcgCKCzd+rHuDFFzuPM3KB9
+	2OFBkFkhh6ROBPgUj3dHsaQrKNTAjHd6ELAeju/tfQZ+azq1PXb/dopJEhyw1MnAzKKogbj8kQ7
+	K9gkCnqGsHIPM4aXt4uBna0FGAfltdwZiYWjYwQ==
+X-Google-Smtp-Source: AGHT+IEevveWBjU7TZWnqjnm1VFpx0byQntZkv6S4ruBzyz3GDRxKVsXcuxEw66rLcFbF41a5ngZ+AFzGlSD4I+mW5o=
+X-Received: by 2002:a2e:3509:0:b0:2d8:3dc7:e302 with SMTP id
+ z9-20020a2e3509000000b002d83dc7e302mr3607781ljz.2.1713035420280; Sat, 13 Apr
+ 2024 12:10:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240413151152.165682-1-alisa.roman@analog.com> <20240413151152.165682-4-alisa.roman@analog.com>
+In-Reply-To: <20240413151152.165682-4-alisa.roman@analog.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Sat, 13 Apr 2024 14:10:08 -0500
+Message-ID: <CAMknhBFk9e=VDYFVUhKmabHKwhJKbVVA4tRz758QszjHLGUEpg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] iio: adc: ad7192: Add aincom supply
+To: Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org, nuno.sa@analog.com, 
+	marcelo.schmitt@analog.com, bigunclemax@gmail.com, okan.sahin@analog.com, 
+	fr0st61te@gmail.com, alisa.roman@analog.com, marcus.folkesson@gmail.com, 
+	schnelle@linux.ibm.com, liambeguin@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Abhishek Chauhan wrote:
-> tstamp_type can be real, mono or userspace timestamp.
-> 
-> This commit adds userspace timestamp and sets it if there is
-> valid transmit_time available in socket coming from userspace.
-
-Comment is outdated: we now set the actual clockid_t (compressed
-into fewer bits), rather than an abstract "go see sk_clockid".
- 
-> To make the design scalable for future needs this commit bring in
-> the change to extend the tstamp_type:1 to tstamp_type:2 to support
-> userspace timestamp.
-> 
-> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
-> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+On Sat, Apr 13, 2024 at 10:12=E2=80=AFAM Alisa-Dariana Roman
+<alisadariana@gmail.com> wrote:
+>
+> AINCOM should actually be a supply. If present and it has a non-zero
+> voltage, the pseudo-differential channels are configured as single-ended
+> with an offset. Otherwise, they are configured as differential channels
+> between AINx and AINCOM pins.
+>
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 > ---
-> Changes since v2
-> - Minor changes to commit subject
-> 
-> Changes since v1 
-> - identified additional changes in BPF framework.
-> - Bit shift in SKB_MONO_DELIVERY_TIME_MASK and TC_AT_INGRESS_MASK.
-> - Made changes in skb_set_delivery_time to keep changes similar to 
->   previous code for mono_delivery_time and just setting tstamp_type
->   bit 1 for userspace timestamp.
-> 
-> 
->  include/linux/skbuff.h                        | 19 +++++++++++++++----
->  net/ipv4/ip_output.c                          |  2 +-
->  net/ipv4/raw.c                                |  2 +-
->  net/ipv6/ip6_output.c                         |  2 +-
->  net/ipv6/raw.c                                |  2 +-
->  net/packet/af_packet.c                        |  7 +++----
->  .../selftests/bpf/prog_tests/ctx_rewrite.c    |  8 ++++----
->  7 files changed, 26 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index a83a2120b57f..b6346c21c3d4 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -827,7 +827,8 @@ enum skb_tstamp_type {
->   *	@tstamp_type: When set, skb->tstamp has the
->   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
->   *		skb->tstamp has the (rcv) timestamp at ingress and
-> - *		delivery_time at egress.
-> + *		delivery_time at egress or skb->tstamp defined by skb->sk->sk_clockid
-> + *		coming from userspace
->   *	@napi_id: id of the NAPI struct this skb came from
->   *	@sender_cpu: (aka @napi_id) source CPU in XPS
->   *	@alloc_cpu: CPU which did the skb allocation.
-> @@ -955,7 +956,7 @@ struct sk_buff {
->  	/* private: */
->  	__u8			__mono_tc_offset[0];
->  	/* public: */
-> -	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
-> +	__u8			tstamp_type:2;	/* See SKB_MONO_DELIVERY_TIME_MASK */
->  #ifdef CONFIG_NET_XGRESS
->  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
->  	__u8			tc_skip_classify:1;
+>  drivers/iio/adc/ad7192.c | 53 +++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 49 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
+> index ac737221beae..a9eb4fab39ca 100644
+> --- a/drivers/iio/adc/ad7192.c
+> +++ b/drivers/iio/adc/ad7192.c
+> @@ -175,7 +175,7 @@ enum {
+>  struct ad7192_chip_info {
+>         unsigned int                    chip_id;
+>         const char                      *name;
+> -       const struct iio_chan_spec      *channels;
+> +       struct iio_chan_spec            *channels;
+>         u8                              num_channels;
+>         const struct iio_info           *info;
+>  };
+> @@ -186,6 +186,7 @@ struct ad7192_state {
+>         struct regulator                *vref;
+>         struct clk                      *mclk;
+>         u16                             int_vref_mv;
+> +       u16                             aincom_mv;
 
-A quick pahole for a fairly standard .config that I had laying around
-shows a hole after this list of bits, so no huge concerns there from
-adding a bit:
+u32? (In case we have a future chip that can go above 6.5535V?
 
-           __u8               slow_gro:1;           /*     3: 4  1 */
-           __u8               csum_not_inet:1;      /*     3: 5  1 */
+>         u32                             fclk;
+>         u32                             mode;
+>         u32                             conf;
+> @@ -745,6 +746,9 @@ static int ad7192_read_raw(struct iio_dev *indio_dev,
+>                 /* Kelvin to Celsius */
 
-           /* XXX 2 bits hole, try to pack */
+Not related to this patch, but I'm not a fan of the way the
+temperature case writes over *val (maybe clean that up using a switch
+statement instead in another patch while we are working on this?).
+Adding the else if to this makes it even harder to follow.
 
-           __u16              tc_index;             /*     4     2 */
+>                 if (chan->type =3D=3D IIO_TEMP)
+>                         *val -=3D 273 * ad7192_get_temp_scale(unipolar);
+> +               else if (st->aincom_mv && chan->channel2 =3D=3D -1)
 
-> @@ -1090,10 +1091,10 @@ struct sk_buff {
->   */
->  #ifdef __BIG_ENDIAN_BITFIELD
->  #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
-> -#define TC_AT_INGRESS_MASK		(1 << 6)
-> +#define TC_AT_INGRESS_MASK		(1 << 5)
+I think the logic should be !chan->differential instead of
+chan->channel2 =3D -1 (more explanation on this below).
 
-Have to be careful when adding a new 2 bit tstamp_type with both bits
-set, that this does not incorrectly get interpreted as MONO.
+> +                       *val +=3D DIV_ROUND_CLOSEST_ULL((u64)st->aincom_m=
+v * 1000000000,
+> +                                                     st->scale_avail[gai=
+n][1]);
+>                 return IIO_VAL_INT;
+>         case IIO_CHAN_INFO_SAMP_FREQ:
+>                 *val =3D DIV_ROUND_CLOSEST(ad7192_get_f_adc(st), 1024);
 
-I haven't looked closely at the BPF API, but hopefully it can be
-extensible to return the specific type. If it is hardcoded to return
-either MONO or not, then only 0x1 should match, not 0x3.
+..
 
->  #else
->  #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
-> -#define TC_AT_INGRESS_MASK		(1 << 1)
-> +#define TC_AT_INGRESS_MASK		(1 << 2)
->  #endif
->  #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
->  
-> @@ -4262,6 +4263,16 @@ static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
->  	case CLOCK_MONO:
+>
+> +static int ad7192_config_channels(struct ad7192_state *st)
+> +{
+> +       struct iio_chan_spec *channels =3D st->chip_info->channels;
+> +       int i;
+> +
+> +       if (!st->aincom_mv)
 
-Come to think of it, these CLOCK_* names are too generic and shadow
-existing ones like CLOCK_MONOTONIC.
+As mentioned in my reply to the DT bindings patch, I don't think this
+logic is correct. AINx/AINCOM input pairs are always
+pseudo-differential regardless if AINCOM is tied to GND or is a
+non-zero voltage.
 
-Instead, define SKB_CLOCK_.
+Also, to be clear, for pseudo-differential inputs, we want
+differential =3D 0, so the existing channel specs look correct to me
+and therefore we don't need any changes like this.
 
->  		skb->tstamp_type = kt && tstamp_type;
->  		break;
-> +	/* if any other time base, must be from userspace
-> +	 * so set userspace tstamp_type bit
-> +	 * See skbuff tstamp_type:2
-> +	 * 0x0 => real timestamp_type
-> +	 * 0x1 => mono timestamp_type
-> +	 * 0x2 => timestamp_type set from userspace
-> +	 */
-> +	default:
-> +		if (kt && tstamp_type)
-> +			skb->tstamp_type = 0x2;
-
-Needs a constant.
-
-Plan is to add SKB_CLOCK_TAI, rather than SKB_CLOCK_USER that
-requires a further lookup to sk_clockid.
-
->  	}
->  }
->  
-> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> index 62e457f7c02c..c9317d4addce 100644
-> --- a/net/ipv4/ip_output.c
-> +++ b/net/ipv4/ip_output.c
-> @@ -1457,7 +1457,7 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
->  
->  	skb->priority = (cork->tos != -1) ? cork->priority: READ_ONCE(sk->sk_priority);
->  	skb->mark = cork->mark;
-> -	skb->tstamp = cork->transmit_time;
-> +	skb_set_delivery_time(skb, cork->transmit_time, sk->sk_clockid);
-
-If adding 1 or 2 specific clock types, like SKB_CLOCK_TAI, then
-skb_set_delivery_time will have to detect unsupported sk_clockid
-values and fail for those.
-
-The function does not return an error, so just fail to set the
-delivery time and WARN_ONCE.
-
-
+> +               for (i =3D 0; i < st->chip_info->num_channels; i++)
+> +                       if (channels[i].channel2 =3D=3D -1) {
+> +                               channels[i].differential =3D 1;
+> +                               channels[i].channel2 =3D 0;
+> +                       }
+> +
+> +       return 0;
+> +}
+> +
 
