@@ -1,396 +1,189 @@
-Return-Path: <linux-kernel+bounces-143759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F25EB8A3D15
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:06:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 579C78A3D18
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:09:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A4A1F21A9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:06:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 968A52824EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 15:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2EF45970;
-	Sat, 13 Apr 2024 15:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98BF745C04;
+	Sat, 13 Apr 2024 15:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGGnc2sN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="My7h+C74"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8413E23A9;
-	Sat, 13 Apr 2024 15:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A9A45979
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 15:09:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713020787; cv=none; b=IYI049Hpr8RcY+uDwWS6Zwu5CDTbDe0S449+OoEctF5okCWEJus2U/HIewHM0jC1EILf93urLsrUmWxOYnEDb1ZFWGSfmkYqlqB87sL/lWrpm7xDoEYUVHCDj7/d8qkV4vgGM3+PHOUIslvDK4kbaXaGGvkn0HMCigxwONszq2k=
+	t=1713020980; cv=none; b=Ik+eHltGv1OWSqaRKxszf2bZ+8rlmW3ehCMtbMueY2sW7aj/uUc4ITHbEIUyYaRvm+x+CJpM6xGDPQ1wg4laoMO4WpAY2IQVn38jisCO8P9HcGZICa1tyJnjJrtSPs0lfTX4l8mYZ9qBGHsJK/Wm8vuiCDAcWn2hetmlLAA8IDA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713020787; c=relaxed/simple;
-	bh=ufEmyZ5IxA0KU7idNtT0jCJqpoBbRR2IuGsv3TUhayY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=py07R0PB9fIWmYLWDXfVJN1J+e8Qk+UdQO1XrSu1yg/gz8QmIEcdxZSwVpKOZuMJlD1orvB/fPNjYBTS84BA5EAHiCa5gkqNJlZY8C/hwasy7XZ9J7YYFaP+sXjIOrFXEV1aE84soxBWpCq9/7g1fko7pVHH/raeOlkDlxdgLWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGGnc2sN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61535C113CD;
-	Sat, 13 Apr 2024 15:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713020787;
-	bh=ufEmyZ5IxA0KU7idNtT0jCJqpoBbRR2IuGsv3TUhayY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oGGnc2sN1igIn+gqpqJTNghcwxzZ6GCSEF9RbIb6Z20vniYloTKYuQbLQxLrAeSWd
-	 pB+tzqakmFAYk8+Mqr8BrqDFKrtwFlp1F1/hn1ee/wWZwIU2OmyVg9cpjsY0zbS1Y5
-	 D3xlfnfu03iK0daSRs3hfEvAUGfFbZ6q8+y7sizT2WV3BbgBy4XaYqz9fHfhb8Y0Dk
-	 S5mfhRY0A7qZy6cHj7j+ZKUmdovhv2vtumhYsCup9wMgMWeXqiGnmaxuGoNZBFk/vT
-	 yuRmOEQTBbypeOHrE9QqJBSWzcQ5p41+U9bzZA/YJ9P0AutkpjtPtJG+k3FeJBbyH5
-	 HuGRJhfk2wMzQ==
-Date: Sat, 13 Apr 2024 16:06:10 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Kim Seer Paller <kimseer.paller@analog.com>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Lars-Peter
- Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>
-Subject: Re: [PATCH 1/4] dt-bindings: iio: dac: Add adi,ltc2664.yaml
-Message-ID: <20240413160610.4cec010b@jic23-huawei>
-In-Reply-To: <CAMknhBHgKK_OEcPz-5ktxj+YEkB7jHpw5owdh9HVj_qfwuVXkQ@mail.gmail.com>
-References: <20240412032102.136071-1-kimseer.paller@analog.com>
-	<20240412032102.136071-2-kimseer.paller@analog.com>
-	<CAMknhBHgKK_OEcPz-5ktxj+YEkB7jHpw5owdh9HVj_qfwuVXkQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713020980; c=relaxed/simple;
+	bh=/NjYV+1zOoIBYarTIVIWxP8vVCv6VUoUEXR5Fe09YZ8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=KIlMqlDwxK4BAsmQlJWRaOOuG4amgMzfc0UnozjlQ4LxBo/pJRYAnNL2xsFgnO/xqLXxsCtKr2s03hKDdlgyY1qre37d964MZqA7xtPHPEL0y1ra7c+vCNS1SHpsiS8cVpXJ1dJdodeokktJDqwkWsyQopvYtofnzqMfhZm7fws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=My7h+C74; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e6a1edecfso2880711a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 08:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713020977; x=1713625777; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=uUjiWSpKaaRot8DcPu9d3bUDl81R1NzujRT2QNtvHUg=;
+        b=My7h+C74dRW4wE+Xqh+COiI1ainFn5ZLFCvPd8aMYSWDtpLrkecCnPoKEKztpEVxs1
+         CDw0p3761cLgL9+x+3RL6R3FfZpSp+oY1RojX7nAK0oXMUNDgt/QO8Xdo8oed2kg88lq
+         aQl6TJaa1q7ZaKPLyOeJSh/TSwxgf3WIg5VV5U7RVsz9LS1g+pF5T5ROgpTrq3DQevcf
+         9KxapTLkU9I7sgBzK0CSJP6jZvElZKUigDVgI5M6FOdkTVBiVvTVhbmcq7ZpcoRYHVG9
+         84XtGyXGYwhTcIGMW5xq5ZKWUl/DkER47+3l2C8ZohXpM4mKQsuUm/xDrDO6qd4zfqqr
+         sKHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713020977; x=1713625777;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uUjiWSpKaaRot8DcPu9d3bUDl81R1NzujRT2QNtvHUg=;
+        b=CsK4zcl0rSd/Zv8nxPP6ERBR17hTKADQJe8oMiBAL8yc27F/K54g+QNVa0oSBykBHs
+         Wrk5/WBwkHAYElPMgW/pd/GmetAVZW5OfZQ5JSN/SoXqikD8NvYs81PlXFewlY+GvMaP
+         rD90t535OGxQEK1A7m9bafZLUjxFvXPx/mq2hK7SUcT1ui6lXR76hWjH5zv0rRe/PPo8
+         am1htQ8xEB0OZjtOND/h/riCfCmZMzwQ6bhNHkZ7Q7eHfEjqUDrj+I7t9ELVirXTUZ0f
+         enhUa+1O5/fcEhKKlkC4i1LGZipex2+OKkVpuyeNoHobgqJCeycgtvjj3HE8V9wsyTEw
+         F4Tg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQPwsSWPc1M7sRBfjw6docnK36Wip1Ned+cNZ8pOsjcCg84OsPaNYs0m1gRxZB7+5J3+Xy/nyFpV5aMM88KPBw8MT3tXxJlOm1DtM4
+X-Gm-Message-State: AOJu0Yz3dqcw3uAz6vyLkwU41j3Lr8BMd1q2UIg1jgzXMv63XRw494Zq
+	Xw2m5JHch/as7BLvtsSSBA6tOjqdhSc0LGA7ioop08LdymmBgNgJ0hnjiodGE54=
+X-Google-Smtp-Source: AGHT+IFc3+tRxkNnLJgriwRgYfCZg6Q2OengoVU4yFnYPJb1OCMAgLNnXGgH+u17/mdvLCec6XsXsw==
+X-Received: by 2002:a50:8753:0:b0:56b:c210:870c with SMTP id 19-20020a508753000000b0056bc210870cmr4440554edv.15.1713020977139;
+        Sat, 13 Apr 2024 08:09:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id g37-20020a056402322500b005700e153647sm806121eda.38.2024.04.13.08.09.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Apr 2024 08:09:36 -0700 (PDT)
+Message-ID: <f245966c-267f-4159-a9ca-2561693d24d9@linaro.org>
+Date: Sat, 13 Apr 2024 17:09:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Avoid error message on rk3328 use
+To: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ Johan Jonker <jbx6244@gmail.com>, Dragan Simic <dsimic@manjaro.org>,
+ shironeko <shironeko@tesaguri.club>, Etienne Buira <etienne.buira@free.fr>,
+ Jonas Karlman <jonas@kwiboo.se>, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <ZhqO-DEmh-6TeHrt@Z926fQmE5jqhFMgp6>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZhqO-DEmh-6TeHrt@Z926fQmE5jqhFMgp6>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Fri, 12 Apr 2024 16:23:00 -0500
-David Lechner <dlechner@baylibre.com> wrote:
+On 13/04/2024 15:56, Etienne Buira wrote:
+> rockchip,rk3328-grf-gpio is handled as syscon, but syscon mandates
 
-> On Thu, Apr 11, 2024 at 10:21=E2=80=AFPM Kim Seer Paller
-> <kimseer.paller@analog.com> wrote:
-> >
-> > Add documentation for ltc2664 and ltc2672.
-> >
-> > Co-developed-by: Michael Hennerich <michael.hennerich@analog.com>
-> > Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-> > Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
+syscon does not need such property. I see it in gpio-syscon, but not in
+syscon.
 
-A few follow up comments inline as David and Krzysztof already gave
-good feedback.
+> presence of gpio,syscon-dev node (or it will call dev_err() when probed).
+> Correct rk3328.dtsi and related documentation to follow syscon's
+> expectations.
 
-> > ---
-> >  .../bindings/iio/dac/adi,ltc2664.yaml         | 230 ++++++++++++++++++
-> >  MAINTAINERS                                   |   8 +
-> >  2 files changed, 238 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ltc26=
-64.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ltc2664.yaml=
- b/Documentation/devicetree/bindings/iio/dac/adi,ltc2664.yaml
-> > new file mode 100644
-> > index 000000000..2f581a9e5
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/dac/adi,ltc2664.yaml
-> > @@ -0,0 +1,230 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/dac/adi,ltc2664.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Analog Devices LTC2664 and LTC2672 DAC
-> > +
-> > +maintainers:
-> > +  - Michael Hennerich <michael.hennerich@analog.com>
-> > +  - Kim Seer Paller <kimseer.paller@analog.com>
-> > +
-> > +description: |
-> > +  Analog Devices LTC2664 4 channel, 16 bit, +-10V DAC
-> > +  Analog Devices LTC2672 5 channel, 16 bit, 300mA DAC
-> > +  https://www.analog.com/media/en/technical-documentation/data-sheets/=
-ltc2664.pdf =20
->=20
-> This link gives a 404 error. Is there a typo?
->=20
->=20
-> > +  https://www.analog.com/media/en/technical-documentation/data-sheets/=
-ltc2672.pdf
-> > +
-> > +$defs:
-> > +  toggle-operation:
-> > +    type: object
-> > +    description: Toggle mode channel setting.
-> > +
-> > +    properties:
-> > +      reg:
-> > +        description: Channel number.
-> > +        minimum: 0
-> > +        maximum: 4
-> > + =20
->=20
-> > +      adi,toggle-mode:
-> > +        description:
-> > +          Set the channel as a toggle enabled channel. Toggle operatio=
-n enables
-> > +          fast switching of a DAC output between two different DAC cod=
-es without
-> > +          any SPI transaction.
-> > +        type: boolean =20
->=20
-> I'm not convinced that this belongs in the devicetree. It seems like
-> everything related to toggling can and should be left to runtime
-> configuration.
+No, look at gpio-syscon driver. Parent is used.
 
-Agreed - probably on a fifo basis, so each time you switch to the other
-toggle value, but if you happen to already have the value stored already
-you can elide the SPI transfer.
 
-I think we already have a device doing this, though I can't remember which
-driver it is.  Perhaps search for toggle.
+> 
+> Signed-off-by: Etienne Buira <etienne.buira@free.fr>
+> ---
+>  .../devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml      | 2 ++
 
->=20
-> > +
-> > +patternProperties:
-> > +  "^channel@[0-4]$":
-> > +    type: object
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - adi,ltc2664
-> > +      - adi,ltc2672
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  spi-max-frequency:
-> > +    maximum: 50000000
-> > +
-> > +  vcc-supply:
-> > +    description: Analog Supply Voltage Input.
-> > + =20
->=20
-> There is also an input supply for each output channel on ltc2672, so I
-> think we also need vdd0-supply, vdd1-supply, etc.
->=20
-> On ltc2664, there is V+ instead so it needs v-pos-supply.
->=20
-> And there is V~ on both which can be between -5.5V/-15.75V and GND, so
-> optional v-neg-supply seems appropriate.
+Please run scripts/checkpatch.pl and fix reported warnings. Then please
+run `scripts/checkpatch.pl --strict` and (probably) fix more warnings.
+Some warnings can be ignored, especially from --strict run, but the code
+here looks like it needs a fix. Feel free to get in touch if the warning
+is not clear.
 
-Only make it optional in the binding if the settings of the device change
-depending on whether it is there or not.  Looks like there is an internal
-reference, so maybe it really is optional.
+>  arch/arm64/boot/dts/rockchip/rk3328.dtsi                        | 1 +
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml b/Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml
+> index d8cce73ea0ae..2c878e7db900 100644
+> --- a/Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml
+> @@ -38,6 +38,7 @@ required:
+>    - compatible
+>    - gpio-controller
+>    - "#gpio-cells"
+> +  - gpio,syscon-dev
 
->=20
-> > +  iovcc-supply:
-> > +    description: Digital Input/Output Supply Voltage.
-> > +
-> > +  vref-supply:
-> > +    description:
-> > +      Reference Input/Output. The voltage at the REF pin sets the full=
--scale
-> > +      range of all channels. If not provided the internal reference is=
- used and
-> > +      also provided on the VREF pin. =20
->=20
-> There is no VREF pin, so it looks like there is a typo. And it would
-> make more sense to call this ref-supply as well.
->=20
-> > +
-> > +  clr-gpios:
-> > +    description:
-> > +      If specified, it will be asserted during driver probe. As the li=
-ne is
-> > +      active low, it should be marked GPIO_ACTIVE_LOW.
-> > +    maxItems: 1 =20
->=20
-> Some other potentially properties for complete bindings that would be
-> trivial to add now:
->=20
-> * (ltc2672) There is a FAULT output pin, so it would make sense to
-> have an interrupts property for that signal.
-> * (both) I haven't done any DACs myself yet, but I see ldac-gpios on a
-> few other bindings. I assume this is the typical way for handling the
-> LDAC signal on most DACs?
-> * (both) I see these have daisy chain capabilities, so an optional
-> #daisy-chained-devices could be appropriate.
->=20
-> Maybe not so trivial:
->=20
-> * (both) The MUX/MUXOUT pins look like we have an embedded pin mux, so
-> it could mean we need #pinctrl-cells. ltc2664 would also need
-> muxin-gpios for this.
-Not convinced that's the right approach - looks more like a channel
-selector than a conventional mux or pin control. Sure that's a mux, but
-we want a clean userspace control to let us choose a signal to measure
-at runtime
+No, not needed. And also incomplete - where is the property defined?
 
-If you wanted to support this I'd have the binding describe optional
-stuff to act as a consumer of an ADC channel on another device.=20
-The IIO driver would then provide a bunch of input channels to allow
-measurement of each of the signals.
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
 
-Look at io-channels etc in existing bindings for how to do that.
 
->=20
->=20
-> > +
-> > +  '#address-cells':
-> > +    const: 1
-> > +
-> > +  '#size-cells':
-> > +    const: 0
-> > +
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: adi,ltc2664
-> > +    then:
-> > +      properties:
-> > +        adi,manual-span-operation-config:
-> > +          description:
-> > +            This property must mimic the MSPAN pin configurations.
-> > +            By tying the MSPAN pins (MSP2, MSP1 and MSP0) to GND
-> > +            and/or VCC, any output range can be hardware-configured
-> > +            with different mid-scale or zero-scale reset options.
-> > +            The hardware configuration is latched during power on reset
-> > +            for proper operation.
-> > +              0 - MPS2=3DGND, MPS1=3DGND, MSP0=3DGND
-> > +              1 - MPS2=3DGND, MPS1=3DGND, MSP0=3DVCC
-> > +              2 - MPS2=3DGND, MPS1=3DVCC, MSP0=3DGND
-> > +              3 - MPS2=3DGND, MPS1=3DVCC, MSP0=3DVCC
-> > +              4 - MPS2=3DVCC, MPS1=3DGND, MSP0=3DGND
-> > +              5 - MPS2=3DVCC, MPS1=3DGND, MSP0=3DVCC
-> > +              6 - MPS2=3DVCC, MPS1=3DVCC, MSP0=3DGND
-> > +              7 - MPS2=3DVCC, MPS1=3DVCC, MSP0=3DVCC (enables SoftSpan=
- feature)
-> > +          $ref: /schemas/types.yaml#/definitions/uint32
-> > +          enum: [0, 1, 2, 3, 4, 5, 6, 7]
-> > +          default: 7 =20
->=20
-> Are these always hard-wired or could they be connected to gpios and
-> made configurable at runtime?
 
-This is always a fun gap for GPIOs. It would be nice to have a generic
-binding that said there was a fixed GPIO value that we could then query
-but not set.  I'm not aware of a general way to do this so we end up with
-optional GPIOs and some vendor specific property for when it's fixed.
-
->=20
-> > +
-> > +      patternProperties:
-> > +        "^channel@([0-3])$":
-> > +          $ref: '#/$defs/toggle-operation'
-> > +          unevaluatedProperties: false
-> > +
-> > +          description: Channel in toggle functionality.
-> > +
-> > +          properties:
-> > +            adi,output-range-microvolt:
-> > +              description: Specify the channel output full scale range=
- =20
->=20
-> How would someone writing a .dts know what values to select for this
-> property? Or is this something that should be configured at runtime
-> instead of in the devicetree? Or should this info come from the
-> missing voltage supplies I mentioned?
-
-Sometimes this one is a wiring related choice.  Sometimes to the extent
-that picking the wrong one from any userspace control can cause damage
-or is at least nonsense.=20
-
-You look to be right though that the possible values here aren' fine
-if the internal reference is used, but not the external.
-
-However, it's keyed off MPS pins so you can't control it if they aren't
-tied to all high.  So I'd imagine if the board can be damaged it will
-be hard wired.  Hence these could be controlled form userspace.
-It's a bit fiddly though as combines scale and offset controls and
-you can end trying to set things to an invalid combination.
-E.g. scale set to cover 20V range and offset set to 0V
-To get around that you have to clamp one parameter to nearest
-possible when the other is changed.
-
->=20
-> > +              oneOf:
-> > +                - items:
-> > +                    - const: 0
-> > +                    - enum: [5000000, 10000000]
-> > +                - items:
-> > +                    - const: -5000000
-> > +                    - const: 5000000
-> > +                - items:
-> > +                    - const: -10000000
-> > +                    - const: 10000000
-> > +                - items:
-> > +                    - const: -2500000
-> > +                    - const: 2500000
-> > +
-> > +          required:
-> > +            - adi,output-range-microvolt
-> > +
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: adi,ltc2672
-> > +    then:
-> > +      properties:
-> > +        adi,rfsadj-ohms:
-> > +          description: If FSADJ is tied to VCC, an internal RFSADJ (20=
- k=CE=A9) is
-> > +            selected, which results in nominal output ranges. When an =
-external
-> > +            resistor of 19 k=CE=A9 to 41 k=CE=A9 can be used instead b=
-y connecting the
-> > +            resistor between FSADJ and GND it controls the scaling of =
-the
-> > +            ranges, and the internal resistor is automatically disconn=
-ected.
-> > +          minimum: 19000
-> > +          maximum: 41000
-> > +          default: 20000 =20
->=20
-> This is the kind of description that would be helpful on some of the
-> other properties. It does a good job of explaining what value to
-> select based on what is connected to the chip.
->=20
-> > +
-> > +      patternProperties:
-> > +        "^channel@([0-4])$":
-> > +          $ref: '#/$defs/toggle-operation'
-> > +          unevaluatedProperties: false
-> > +
-> > +          description: Configuration properties for a channel in toggl=
-e mode
-> > +
-> > +          properties:
-> > +            adi,output-range-microamp:
-> > +              description: Specify the channel output full scale range.
-> > +              $ref: /schemas/types.yaml#/definitions/uint32
-> > +              enum: [3125000, 6250000, 12500000, 25000000, 50000000, 1=
-00000000,
-> > +                     200000000, 300000000]
-> > + =20
->=20
-> Same comments as adi,output-range-microvolt apply here.
->=20
-> > +          required:
-> > +            - adi,output-range-microamp
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - spi-max-frequency
-> > +  - vcc-supply
-> > +  - iovcc-supply
-> > +
-> > +additionalProperties: false
-> > + =20
+Best regards,
+Krzysztof
 
 
