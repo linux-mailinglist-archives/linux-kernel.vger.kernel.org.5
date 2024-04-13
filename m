@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-143878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 197C38A3EA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E22188A3EA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:19:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA9EB281D23
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:14:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4717C281D46
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84C195644F;
-	Sat, 13 Apr 2024 21:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2CF56443;
+	Sat, 13 Apr 2024 21:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cJXsBlq/"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cerVMa/5"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7442901
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 21:13:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD0B1758B
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 21:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713042832; cv=none; b=ttfh8BskMQ5BbLYSBg0vsP4rNzkKNiHScSe4cjnW4ZGhjkFBTzgJXH1jk7B3bqK0c63IXWwXG672cZivGrdx3MmCcbnKSiv8dkpGmYDy+hWgqlo899I52ZfvYMgmo4mKlrAKDed0ILWzVKDmEi/2UKjrgLpPiLFH6j9MIyzJVNA=
+	t=1713043152; cv=none; b=Ln3A/VjiC/QlA6R6vpNCTtyFHlPaP5VEqodDyasCl7P4owd0T+PxezUFaPce1uCFOTUVKtN47v1RNkMSkMx0sLT951/FNBiVNJIqVpONIYwvA2s7+TLiM7MZlMExJUP2cGc4HtJJcADZ9JGDqomUERUueexe0mFQFF2zqvfH8gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713042832; c=relaxed/simple;
-	bh=XGReRWz7u7T8neea9WRts0ekrqtCQCSHyQ6+MlKIXXE=;
+	s=arc-20240116; t=1713043152; c=relaxed/simple;
+	bh=f5WpgDyI5RH4w8+qTrxQQLmHeovh7aUIMRBXq45KDFQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BzPGX3yNQN2ccpLT3kLhv7y5WmM6eEuNGPgxHnhfTAPCr6pPzg1r+GNAGtNeGWXhTHRYEDzMvKaoJDbBiP+6MmNP909N4cM+omyAZxKwviGl8loTM/TIzGfPQKm8vfTJzVYUUFNTkHq4WTz1jRHMvUCfTYoi5HP8dxOOUrsRp1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cJXsBlq/; arc=none smtp.client-ip=209.85.218.47
+	 In-Reply-To:Content-Type; b=THeyQFVxFE9A4cpw1KEj/z/ABRm2xlsld1TvaUXP5K0irfUC+jJPlVyAij6pyQu8FHM5Nd9Fy7MrVbkTqKkMC1ri7IcUbRB7spxjIbM/F5BlXJnePlqdyD7EQLZCbRQqHWhkCdpmL54xNwdI9Q7Cgaj34mA+JQqotacvFbdwZqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cerVMa/5; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51beae2f13so230190166b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:13:50 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d895138d0eso16286661fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713042829; x=1713647629; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713043149; x=1713647949; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=U/QcS7aKqLvfcOrAHC9t/RNGgAG9N/gh7FrnnJ0LyKg=;
-        b=cJXsBlq/JeLE7Ese/v1yubDNkfEyxFt82pC4IYjwxB1dIyTmXNFHo4h29l3qx7ATaA
-         LROdhCCAV7MAwUC2thQ3SLjZL8qphaJrrqGbHd5skOd1l2Jr93YP7Bn0Q8cJea2MHsaG
-         bzlxBjERZCDjPoqGw8yjpJmjNGWePvoM38HhifLaTOMC/aneCG5NPxeBicDpvQ1tghPQ
-         RvAjGI7xSQwPG7IXMbMSdL0rI1iJ/yVtn4nwaEnyGI5if3tkdH+hTC3nzhRx3uOXhoSm
-         XfYVaq9jRlF8Ea3+ABtKeo26FY8IRcx0wkSwPQp1uwpTsh03OOz5M0XtpvTLfKhQRvAl
-         h92A==
+        bh=c/t4RoIebmHtQnR1i/xtxOlbaIAoGHKLclvovPcq0xw=;
+        b=cerVMa/5hzIU+1CskjIT/YEU4S02Ul9/CPomQQEUbSgsVcGmLX9Gj4ZpmRoXszhSB5
+         NaCJO5qEpmXKXePkPcKVM/NVkadNXgRSfWnLcjbh8YnVSLGIGYWWg/TddB0724uD17JM
+         vz+w8g5X+fZF+h7dTWFtk0Gutu/BkXmadZXb+x6lBKJxOZtxyHxuQG5mRlsm6FX9bLy1
+         q4qDIBB/iKv6pfV6A1mDaeHrY+8qOPH+OodYLOppBF6AQizSohW1OMSRyTM/x1bJvDwQ
+         yBObj6QJqt+xq+cCiJ16kj11mkJB0Bqn2uNjMCYVBMFtMFdXahAlDbm75XhfJv7CK6/B
+         8hVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713042829; x=1713647629;
+        d=1e100.net; s=20230601; t=1713043149; x=1713647949;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U/QcS7aKqLvfcOrAHC9t/RNGgAG9N/gh7FrnnJ0LyKg=;
-        b=dcfejmbwZFg/wGSRYznYLYVsNcAlwgwG8IAJZWByzfxuqc+S7NlmD/rXm6kTD4VBoo
-         bdm5XE6JDG7fr+oXh4FnkPJ/gp/8Rb8ugECMajdlXlmkYU5Ob/gI5jsg2E+Xqvz7iLnh
-         oQ+Y6KXDhjzruFh+ncPBebV8NvAMZqhXs7ltnlqtz1YgqCylxf2tVbaGNPHxJCixh0Kj
-         Ka859qNS01Pf6LuAKyZ++YPovECRkfQPL3vrfTivWGk93mZPqChtESjySrFZ4J85gEw9
-         VBFM4pyVkgnyxbwp0MExSJc1gsw04yZsUoeMA0Z0NTl1B/XaUJG+BROrHO48sPO3aAfp
-         FHNw==
-X-Forwarded-Encrypted: i=1; AJvYcCWbX3wtLFrDACmB3qk4eBXjjjxrpykRFaUv3wh3eWJcHElZj0u083H2xyBevc9gCoGzTppU2la/WMsOytSUAGaYOWHofhIHiztP18Yy
-X-Gm-Message-State: AOJu0YxqRZ19NN+bs1lNFUc0/m9sVl270oD546gjlLLNNdnTET3gJU4x
-	EuC+2rGc8G+xopdsrvfd8fS4zFC+jH7K9X8um7VPX9YlLSqQ4Fuh7+TiAnmqY6A=
-X-Google-Smtp-Source: AGHT+IFWuvfsMgahGLa+kTIMnUfbUbWCZlLRSzZJcSHFDWPdBB6rJ0uf0VK89rG+ntQXqMTNChKoaw==
-X-Received: by 2002:a17:906:b7d1:b0:a51:c747:531d with SMTP id fy17-20020a170906b7d100b00a51c747531dmr3671963ejb.64.1713042829092;
-        Sat, 13 Apr 2024 14:13:49 -0700 (PDT)
+        bh=c/t4RoIebmHtQnR1i/xtxOlbaIAoGHKLclvovPcq0xw=;
+        b=EEb31L/7OOMAhKaKI8pheI0q9LKfDIdQWSaHUouncrXcR55AuZ3E1so89AEZyeFYvd
+         6NYc6PcPLMyhZnLqesKe6WTh9ZWl5+bCJJUXZlXsH9pcX6W5a8SWI7T3IgolaofRYfhg
+         SOXDnSZLvICJ2/Cv/nyX1Ay0XxMsaf6uDbfnCeQWqabUlrdhdoQcsivRIkJZYYyxbCDs
+         /Xi7RrVB1DNmvr+PMf+AEkIWQ9reyrEOeDC05uQehd4YM50lWuXs6zUCvf2zR3lUOqXn
+         HdkcDrotBx13khK9HfoAH3byyT90aZdVb1tDPAuog5g2qwtkGnBsbgx6r4Ul1pCrO7+e
+         fFJg==
+X-Forwarded-Encrypted: i=1; AJvYcCVxVChRmSk8BUILmwlUAK7fiB0skQFu8T+FSidh9DD4P2hzVRbzfB9gQl5fFDnOd6ShGlKWtCGyydIVvxSYfu3lt/OTbKh7NKFqUm1Y
+X-Gm-Message-State: AOJu0YzQR11+m4yA3OIpREJYz9cFWq7mNr1Ytk0OI9c/oJR7USZ7mBju
+	4Cqb6SmXopQwKL0ues16rrLFPTc6P1EQS+OBAezgwGTZt+6ota6KvpA9LSnkncw=
+X-Google-Smtp-Source: AGHT+IGhEJoY1T2bRdIh0oLnEjbTS4HjO2WSGv+niFTapwKxg+8kSZyCCAZ9hw79+MgWE8QFweZpig==
+X-Received: by 2002:a2e:9cc2:0:b0:2d9:fde1:dcf1 with SMTP id g2-20020a2e9cc2000000b002d9fde1dcf1mr3401347ljj.41.1713043148768;
+        Sat, 13 Apr 2024 14:19:08 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id b24-20020a17090630d800b00a4e781bd30dsm3387480ejb.24.2024.04.13.14.13.47
+        by smtp.gmail.com with ESMTPSA id q5-20020aa7d445000000b0056b7ed75a46sm2942843edr.27.2024.04.13.14.19.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Apr 2024 14:13:48 -0700 (PDT)
-Message-ID: <08ec46be-971f-4234-b65c-96992b5b0a87@linaro.org>
-Date: Sat, 13 Apr 2024 23:13:46 +0200
+        Sat, 13 Apr 2024 14:19:08 -0700 (PDT)
+Message-ID: <2ad06ea8-220f-4d09-bbe7-c4dd12d0d8bd@linaro.org>
+Date: Sat, 13 Apr 2024 23:19:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,23 +76,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: tpm: Add st,st33ktpm2xi2c to TCG TIS
- binding
-To: "Haener, Michael" <michael.haener@siemens.com>,
- "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
- "krzk@kernel.org" <krzk@kernel.org>
-Cc: "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
- "peterhuewe@gmx.de" <peterhuewe@gmx.de>, "robh@kernel.org"
- <robh@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "lukas@wunner.de" <lukas@wunner.de>
-References: <20240413071621.12509-1-michael.haener@siemens.com>
- <20240413071621.12509-3-michael.haener@siemens.com>
- <9634ac9e-23ad-4bb9-aecf-d46c875f8d2f@kernel.org>
- <85fa06dfb9bb69443ce86e10b8c4619317cccb3e.camel@siemens.com>
+Subject: Re: [PATCH v5 4/5] dt-bindings: iio: adc: ad7192: Add AD7194 support
+To: Alisa-Dariana Roman <alisadariana@gmail.com>,
+ michael.hennerich@analog.com, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org,
+ nuno.sa@analog.com, marcelo.schmitt@analog.com, bigunclemax@gmail.com,
+ dlechner@baylibre.com, okan.sahin@analog.com, fr0st61te@gmail.com,
+ alisa.roman@analog.com, marcus.folkesson@gmail.com, schnelle@linux.ibm.com,
+ liambeguin@gmail.com
+References: <20240413151152.165682-1-alisa.roman@analog.com>
+ <20240413151152.165682-5-alisa.roman@analog.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -139,68 +135,109 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <85fa06dfb9bb69443ce86e10b8c4619317cccb3e.camel@siemens.com>
+In-Reply-To: <20240413151152.165682-5-alisa.roman@analog.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 13/04/2024 22:26, Haener, Michael wrote:
-> On Sat, 2024-04-13 at 10:38 +0200, Krzysztof Kozlowski wrote:
->> On 13/04/2024 09:15, M. Haener wrote:
->>> From: Michael Haener <michael.haener@siemens.com>
->>>
->>> Add the ST chip st33ktpm2xi2c to the supported compatible strings
->>> of the
->>> TPM TIS I2C schema. The Chip is compliant with the TCG PC Client
->>> TPM
->>> Profile specification.
->>>
->>> For reference, a datasheet is available at:
->>> https://www.st.com/resource/en/data_brief/st33ktpm2xi2c.pdf
->>>
->>> Reviewed-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
->>> Signed-off-by: Michael Haener <michael.haener@siemens.com>
->>> ---
->>
->>
->> Not tested...
+On 13/04/2024 17:11, Alisa-Dariana Roman wrote:
+> Unlike the other AD719Xs, AD7194 has configurable differential
+> channels. The user can dynamically configure them in the devicetree.
 > 
-> I was only able to verify and test the conformity of the ST chip
-> st33ktpm2xi2c with kernel 6.1, so I left out the test-by tag.
+> Also add an example for AD7194 devicetree.
+> 
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+> ---
+>  .../bindings/iio/adc/adi,ad7192.yaml          | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> index ba506af3b73e..855f0a2d7d75 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> @@ -21,8 +21,15 @@ properties:
+>        - adi,ad7190
+>        - adi,ad7192
+>        - adi,ad7193
+> +      - adi,ad7194
+>        - adi,ad7195
+>  
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+>    reg:
+>      maxItems: 1
+>  
+> @@ -104,8 +111,43 @@ required:
+>    - spi-cpol
+>    - spi-cpha
+>  
+> +patternProperties:
 
-I don't mean your tag. Your SoB means you tested it, but I meant you did
-not send the binding for testing via automation.
+This goes after properties:, so before required: block.
 
-> Unfortunately, there is no newer kernel for my embedded hardware.
-> 
->>
->> Please use scripts/get_maintainers.pl to get a list of necessary
->> people
->> and lists to CC. It might happen, that command when run on an older
->> kernel, gives you outdated entries. Therefore please be sure you base
->> your patches on recent Linux kernel.
->>
->> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
->> people, so fix your workflow. Tools might also fail if you work on
->> some
->> ancient tree (don't, instead use mainline), work on fork of kernel
->> (don't, instead use mainline) or you ignore some maintainers (really
->> don't). Just use b4 and everything should be fine, although remember
->> about `b4 prep --auto-to-cc` if you added new patches to the
->> patchset.
->>
->> You missed at least devicetree list (maybe more), so this won't be
->> tested by automated tooling.
-> 
-> I called the script scripts/get_maintainer.pl on the latest kernel
-> version for each of the two patches and added the output list to the
-> individual patches accordingly. And only for the cover-letter I linked
-> the two lists together.
-> I understand now that I should have sent the whole series to both
-> lists.
-> 
+> +  "^channel@[0-9]+$":
 
-No, that's not the case. You did not Cc output of get_maintainer.pl.
-Read *AGAIN* my message..
+Why restricting the pattern? If you have 256 channels, how are you going
+to encode it?
+
+> +    type: object
+> +    $ref: adc.yaml
+> +    unevaluatedProperties: false
+> +
+> +    properties:
+> +      reg:
+> +        description: The channel index.
+> +        minimum: 1
+> +        maximum: 256
+> +
+> +      diff-channels:
+> +        description: |
+> +          Both inputs can be connected to pins AIN1 to AIN16 by choosing the
+> +          appropriate value from 1 to 16.
+> +        items:
+> +          minimum: 1
+> +          maximum: 16
+> +
+> +    required:
+> +      - reg
+> +      - diff-channels
+> +
+>  allOf:
+>    - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - adi,ad7190
+> +            - adi,ad7192
+> +            - adi,ad7193
+> +            - adi,ad7195
+> +    then:
+> +      patternProperties:
+> +        "^channel@[0-9]+$": false
+>  
+>  unevaluatedProperties: false
+>  
+> @@ -136,3 +178,35 @@ examples:
+>              adi,burnout-currents-enable;
+>          };
+>      };
+> +  - |
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        adc@0 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            compatible = "adi,ad7194";
+> +            reg = <0>;
+
+compatible is always the first property. reg is second.
+
 
 Best regards,
 Krzysztof
