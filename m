@@ -1,179 +1,142 @@
-Return-Path: <linux-kernel+bounces-143826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284958A3DE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:10:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6B38A3DEB
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:13:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDAF1281E3F
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:10:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 308F81F2162B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5AEA4D59E;
-	Sat, 13 Apr 2024 17:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4792E4AEC8;
+	Sat, 13 Apr 2024 17:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fCnOdxm2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="KyCr+azv"
+Received: from smtpcmd02101.aruba.it (smtpcmd02101.aruba.it [62.149.158.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF396282EE;
-	Sat, 13 Apr 2024 17:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BDA481BA
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 17:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.158.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713028242; cv=none; b=CSOtYuxbo7MQyx4lQ8fbogxEujDkvVxZmrWH+pP7Rt5M/QillRPjqaZScWGTmPSE/W5m66GCWfTUB9kejdIH+2xr58daVmfbBrmJBOpQ7JMnBzUxg5Cv3pR1pHIw1KI70Xr7hQrbkJ8K6WuVl3zppsxEXEO78tmmhNei8M968S4=
+	t=1713028428; cv=none; b=QYmp0dl5BY0w7Lb/ceFWDxOEgIvst15fWWuR81bXe6ucnCUFlYNT0tptCPCphbFyWGELmIcXNxt/C7XPod8BQ6N+vNEgxpzI/e+jdI8SSLSuIVj073XXko/QJW7EMMICpIMAXN+Lxht5pRQlwsYTSlRyjmto2+EW8Stu+J+1ML0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713028242; c=relaxed/simple;
-	bh=IzyicTygVPL8TrsSuC1OhkdvoCcDqBn35t5oGA/FRLc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a+pvYJWoKLYSa57QCKhsfKResB3suGN/lBRZpppDeWJIsAhCz9SgF/HNljhnXoA5y8c6xeDvLyoCKRsIl+gPYXwubBFSDTKuEQuXB4dp4fipDnC2Ejsl1lIhR17bK+91Fh0POR+0YurNDfwz9R7SMf6pUIi5FljwUSbljRQ58OQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fCnOdxm2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9416BC2BD11;
-	Sat, 13 Apr 2024 17:10:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713028240;
-	bh=IzyicTygVPL8TrsSuC1OhkdvoCcDqBn35t5oGA/FRLc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fCnOdxm2I9+CZXrSVMKRSEdUMHRjFqbU8/cE7Prl4xN/zlIH98/2By3Vpt4qyT7Xt
-	 B4gqUcLHgfZIl7RCbdHuVgXN230Gp4yyOAVX791+SWqfKm0ISLdkoYjHaRCPuOjp/1
-	 NhSpYyD0R1JOGDChM2PYks4Tn+zmIsUNc0wlegpZoQdf+yB8uvmOH6ZAkSdG4INVK/
-	 Dwb8YrwuSrCiEpUNYl4+YGgeetiCMwGUEuB0KGouMqqMK/Q8UUCfXDjTYRzBlb25Ct
-	 0PMomrlklTkM4X2HBz5M9jAa8SJ59mZbaxtUYMsoZzRcpx89bR1SNAyjcERCYcuK0C
-	 XzWRyBhrrAsgg==
-Date: Sat, 13 Apr 2024 18:10:25 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: Kim Seer Paller <kimseer.paller@analog.com>, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Lars-Peter
- Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
- <broonie@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>
-Subject: Re: [PATCH 1/4] dt-bindings: iio: dac: Add adi,ltc2664.yaml
-Message-ID: <20240413181025.39d1a62e@jic23-huawei>
-In-Reply-To: <CAMknhBHMd2mK3yVoH_XjW7BapX5BTRZjUJpF=ZQrF8Mctf-NJQ@mail.gmail.com>
-References: <20240412032102.136071-1-kimseer.paller@analog.com>
-	<20240412032102.136071-2-kimseer.paller@analog.com>
-	<CAMknhBHgKK_OEcPz-5ktxj+YEkB7jHpw5owdh9HVj_qfwuVXkQ@mail.gmail.com>
-	<20240413160610.4cec010b@jic23-huawei>
-	<CAMknhBHMd2mK3yVoH_XjW7BapX5BTRZjUJpF=ZQrF8Mctf-NJQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713028428; c=relaxed/simple;
+	bh=IVys/OiNau2OwJaLogqS6aOLz32wgJUF4Aiij97BK7s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eurH5nuuamq/MmW5DuQ0erUq0Sf34VCGCLKjXaojzZzmdfyIaGeWg9iXWz5hqK4ZdCegOfmpPsse4F/v1+2Eu+p2SW7h0XINn51r+68m41XldEqjm6Maan87Ua9+1VCiBkAvsPk8ofAVXVDAwtX1GWe2V50bwDpA/ASv1ncNnno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=KyCr+azv; arc=none smtp.client-ip=62.149.158.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
+Received: from engicam ([77.32.26.8])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id vgtdrfT9rM2Q6vgterM8lW; Sat, 13 Apr 2024 19:10:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1713028235; bh=IVys/OiNau2OwJaLogqS6aOLz32wgJUF4Aiij97BK7s=;
+	h=Date:From:To:Subject:MIME-Version:Content-Type;
+	b=KyCr+azv28uuA8I7oOf+sQfh3PKzO8LX1VI2yqJurHQhoaiPg7GXAOnDxu6iCqFKr
+	 ezYHXoxV2iXiieykkKY9L9MP9unI06z3KuSC+5n7aeSvEW23clU2hW1EqOXVcmuuqd
+	 lt2HjmvmOcOCvOyWaXACZgTnhn3spurIs2H4klZlrreQ8QiJLC/AF3JCNeM5jNrYwa
+	 qvBJSQ3B1qgSYOP8c1Rjyu6UIKsihFw42wK7MY6Dvn4y91pzxCuAFvKQviVa/3sVds
+	 ojf+U61RxKh/CkD0l6CSZClxMhNQzFdrJX6dqS+nBKLc0/8Kl4M9seB+Jx/CsnCLLP
+	 NV3Pkh/83nllA==
+Date: Sat, 13 Apr 2024 19:10:33 +0200
+From: Fabio Aiuto <fabio.aiuto@engicam.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	Robin Gong <yibin.gong@nxp.com>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Matteo Lisi <matteo.lisi@engicam.com>,
+	Mirko Ardinghi <mirko.ardinghi@engicam.com>
+Subject: Re: [PATCH v3 1/2] regulator: dt-bindings: pca9450: add PMIC_RST_B
+ warm reset property
+Message-ID: <Zhq8ibYrZH05/AQt@engicam>
+References: <20240411165801.143160-1-fabio.aiuto@engicam.com>
+ <20240411165801.143160-2-fabio.aiuto@engicam.com>
+ <e86812b3-a3aa-4bdb-9b32-a0339f0f76b5@kernel.org>
+ <ZhjhCvVNezy9r7P4@engicam>
+ <bd1e6507-dee4-4dcf-bbd3-50539270cd63@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd1e6507-dee4-4dcf-bbd3-50539270cd63@kernel.org>
+X-CMAE-Envelope: MS4xfKq1b6hvFtKreRQ6dwzzBYaCof8q+mOwvcHOyjN6qdlRBeO7CC54ocwz3MMSSwDiw5RBvNhaq40l3tLrV4K/rdlCrxdJZ1FvBh5LHyJu2PYCU+40xZzq
+ mxxhaS/zhznl9DMGvH/VpwzYSvtqHDfY2+26MBOgPWT5Cm/5XzrFTgiRuuNxyjUpgjz0enliP7p96fHyxrkLkgIBuAFDpd81EIFTOQlTQSdTEdAUAodckqKO
+ m8cSBQcErTUBsqO2M1Te4B73M1MxTIddCzRFlVQRGUKeNVzxMBgiUEaZdn7ZGc4G+E+kL5mw/KmsnReu9OcQFJTMRvCjb3c4K+Qowl7cuHOvhbBjIRpAmfkS
+ jHfyx/Urx67u3cZiaf2nOB5AEseIKN66ir1JwQNo5utUircvftn2F0b4GiLdKmfoHcaRUxnbrH0h1d1ysX92Nn4wkJL4W9fCkIoBBvdin6C43QLVnK5myM5u
+ s4AzYf+LUWmFVjWK
 
-On Sat, 13 Apr 2024 11:21:55 -0500
-David Lechner <dlechner@baylibre.com> wrote:
+Dear Krzysztof,
 
-> On Sat, Apr 13, 2024 at 10:06=E2=80=AFAM Jonathan Cameron <jic23@kernel.o=
-rg> wrote:
-> >
-> > On Fri, 12 Apr 2024 16:23:00 -0500
-> > David Lechner <dlechner@baylibre.com> wrote:
-> > =20
-> > > On Thu, Apr 11, 2024 at 10:21=E2=80=AFPM Kim Seer Paller
-> > > <kimseer.paller@analog.com> wrote: =20
-> > > > =20
->=20
-> ...
->=20
-> > >
-> > > And there is V~ on both which can be between -5.5V/-15.75V and GND, so
-> > > optional v-neg-supply seems appropriate. =20
-> >
-> > Only make it optional in the binding if the settings of the device chan=
-ge
-> > depending on whether it is there or not.  Looks like there is an intern=
-al
-> > reference, so maybe it really is optional. =20
->=20
-> I suggested optional with the thinking that if the pin is tied to GND,
-> then the property would be omitted.
+Il Sat, Apr 13, 2024 at 12:58:35PM +0200, Krzysztof Kozlowski ha scritto:
+> On 12/04/2024 09:21, Fabio Aiuto wrote:
+> > Dear Krzysztof,
+> > 
+> > Il Thu, Apr 11, 2024 at 09:52:12PM +0200, Krzysztof Kozlowski ha scritto:
+> >> On 11/04/2024 18:58, Fabio Aiuto wrote:
+> >>> Add property to trigger warm reset on PMIC_RST_B assertion
+> >>>
+> >>
+> >> That's rather vague and does not tell me much why this is supposed to be
+> >> board level configuration. It sounds more like a debugging feature:
+> >> during development you want to retain memory contents for pstore etc.
+> >> Then I could imagine this should be turned runtime, e.g. via
+> >> sysfs/debugfs, because for example you want to start inspecting a
+> >> customer's device.
+> > 
+> > thanks, I spent too few time writing this commit log and I apologize
+> > for that. I was thinking about something like:
+> > 
+> >     The default configuration of the PMIC behavior makes the PMIC
+> >     power cycle most regulators on PMIC_RST_B assertion. This power
+> >     cycling causes the memory contents of OCRAM to be lost.
+> >     Some systems needs some memory that survives reset and
+> >     reboot, therefore add a property to tell PMIC_RST_B is
+> >     wired.
+> > 
+> > The actual configuration is made at probe time, anyway we need
+> > to override the default behavior of the pmic to get a warm reset
+> > everytime the PMIC_RST_B pin is asserted and this property tells
+> > us that "something is wired to that pin" and "it has to behave
+> > that way on pin assertion". Our use cases do not meet the need
+> > of further runtime configuration change.
+> 
+> What is the use case?
 
-We could but given VND isn't really that special in this case I think
-I'd prefer a fixed voltage reg of 0V if someone does wire it like that.
-(I think that works, though not sure I've tried a 0V supply ;)
->=20
->=20
-> ...
->=20
->=20
-> > >
-> > > * (both) The MUX/MUXOUT pins look like we have an embedded pin mux, so
-> > > it could mean we need #pinctrl-cells. ltc2664 would also need
-> > > muxin-gpios for this. =20
-> > Not convinced that's the right approach - looks more like a channel
-> > selector than a conventional mux or pin control. Sure that's a mux, but
-> > we want a clean userspace control to let us choose a signal to measure
-> > at runtime
-> >
-> > If you wanted to support this I'd have the binding describe optional
-> > stuff to act as a consumer of an ADC channel on another device.
-> > The IIO driver would then provide a bunch of input channels to allow
-> > measurement of each of the signals.
-> >
-> > Look at io-channels etc in existing bindings for how to do that.
-> > =20
->=20
-> Right. I was thinking that this pin might be connected to something
-> else external rather than the signal coming back to the SoC (or
-> whatever has the SPI controller). But it makes more sense that we
-> would want it as extra channels being read back by the SoC for
-> diagnostics.
+I just have an external power button connected to that pin, it works
+either with warm reset and cold-reset-except-ldo12. Moreover the default behavior
+is cold reset and not reset-disabled. Anyway I thought it was useful for other
+people to add a property selecting behavior for that pin too as was done for
+WDOG_B. That's why I mainly duplicated the logic. If there is a pin adding a
+reset source it's a good point to provide a way to access the register bits
+related to this signal.
 
-It might indeed.  But I think that's an exercise for the future if
-it matters.  Might be a debugfs control only perhaps.
+> 
+> Sorry, you did not bring any further argument why this is board
+> specific. And please don't explain how probing works, but address the
+> problem here: why type of reset is specific to board design. To me it is
+> OS policy.
+> 
 
->=20
-> ...
->=20
-> > > =20
-> > > > +
-> > > > +      patternProperties:
-> > > > +        "^channel@([0-3])$":
-> > > > +          $ref: '#/$defs/toggle-operation'
-> > > > +          unevaluatedProperties: false
-> > > > +
-> > > > +          description: Channel in toggle functionality.
-> > > > +
-> > > > +          properties:
-> > > > +            adi,output-range-microvolt:
-> > > > +              description: Specify the channel output full scale r=
-ange. =20
-> > >
-> > > How would someone writing a .dts know what values to select for this
-> > > property? Or is this something that should be configured at runtime
-> > > instead of in the devicetree? Or should this info come from the
-> > > missing voltage supplies I mentioned? =20
-> >
-> > Sometimes this one is a wiring related choice.  Sometimes to the extent
-> > that picking the wrong one from any userspace control can cause damage
-> > or is at least nonsense.
-> >
-> > You look to be right though that the possible values here aren' fine
-> > if the internal reference is used, but not the external.
-> >
-> > However, it's keyed off MPS pins so you can't control it if they aren't
-> > tied to all high.  So I'd imagine if the board can be damaged it will
-> > be hard wired.  Hence these could be controlled form userspace.
-> > It's a bit fiddly though as combines scale and offset controls and
-> > you can end trying to set things to an invalid combination.
-> > E.g. scale set to cover 20V range and offset set to 0V
-> > To get around that you have to clamp one parameter to nearest
-> > possible when the other is changed.
-> > =20
->=20
-> Thanks for the explanation. It sounds like I missed something in the
-> datasheet that would be helpful to call out in the description for
-> this property.
-Agreed - it needs more detail.
+Why reset type is specific to board design? I'm sorry but I don't know
+what you mean, as said my intention was to enlarge the number of configurable
+bits in pca9450 register space hoping this would be useful for someone.
 
-Jonathan
+All I can say is that is specific to board design for the same reason the
+wdog_b- reset type was specific to board design.
 
+Thank you for your time,
 
+fabio
+
+> Best regards,
+> Krzysztof
+> 
 
