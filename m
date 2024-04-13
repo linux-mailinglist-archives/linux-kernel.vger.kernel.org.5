@@ -1,163 +1,138 @@
-Return-Path: <linux-kernel+bounces-143828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0979B8A3DE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:13:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB318A3DEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 19:14:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 081181C208EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:13:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A0781F21756
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 17:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D383E4CB2E;
-	Sat, 13 Apr 2024 17:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981DB4CB2E;
+	Sat, 13 Apr 2024 17:14:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dBVBPVVO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JcMsgQRc"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217ED1D696;
-	Sat, 13 Apr 2024 17:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97A6F482D7
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 17:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713028406; cv=none; b=edXU/5b27zBbCF7ahXWrWhhXSlV50fInzqIqW4umQj9WG3Y7oBEetq2Hn2STX4N5qIw8ERS/fkJZcoGgl/4nH8ZPnRDIAbyWKw4hp1+Ce0qx7Z9BMK9ZCx2piQsrTa16lpuW0iX2gIjkw11IhGzZxFR1oa9g/Jp0/xGvJykqp3E=
+	t=1713028454; cv=none; b=lP74jl/OyLE2bFI76Je7RpwGO8/pLD24M+vpzmPU5fJ3xJ9ynRjALkN9evfcudPzKz1MkWwfMVxPcvDAEX0KxmEZtEUVRqmlSvPHcrYvIh+XhvnxdDgphrzBK0ILjmMkmVRSQz2RFms9HV9AMZu4yUU573dVXYPvBW+9v2vNZyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713028406; c=relaxed/simple;
-	bh=wzU2x996W99SPd342HnQZWaKhCHWFbUf/VpcY/S67u0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iMNun1dFhrQ+Uwi3Bog0sJBLEgOrmH9QzhTjBSBnXSv8rMIDNkNTjNqfIgz1XA3QxKNVSDZzSvOG+Z3ZbCb1q3ciiG4FuCMuEKdUwLi4KyCEsoh7WXnR4Ohn+Ty2pEHSdHazkQmgKIF/Yjk7q+ojIPvQw1IT63wO8fatLNGPWAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dBVBPVVO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B3D9C2BD11;
-	Sat, 13 Apr 2024 17:13:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713028405;
-	bh=wzU2x996W99SPd342HnQZWaKhCHWFbUf/VpcY/S67u0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dBVBPVVOj698PtOWSw+BhGfNn439y0jmpgeuSkzMoPWA7zc4P4mIgfsqBqcJJUHZv
-	 6aUAGQ4YoAfvNI3K82I52TZ6L1CsQqB8KaVX3FD7554tXBaI2x3YKjvZaqeeD2evMe
-	 vzQPwZSVyajDX7DiahtFj2dS6lQgVTk1Ledz/awoGRnUhihHr4+sw9NqI4l/CJo9bP
-	 efMI95bobKVJGWvuduXi2OKJa9oZtthR500gORByDBv8d/pxpMyHlD235oGzzFjFkB
-	 RJU3XlVL3YggKhSfZ6ahqlaHbaU+IvzUc5exMiAGja3GUuuzw6urLxb7lAn82Olk80
-	 LVMT5EulJOyOw==
-Date: Sat, 13 Apr 2024 18:13:11 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
- <Michael.Hennerich@analog.com>, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3] iio: dac: ad5755: make use of of_device_id table
-Message-ID: <20240413181311.674fbf95@jic23-huawei>
-In-Reply-To: <20240413154511.52576-1-krzysztof.kozlowski@linaro.org>
-References: <20240413154511.52576-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713028454; c=relaxed/simple;
+	bh=XcTA/luCjnxFy1jTuldTqBkbaCVB2SCFFFKdCPF41D0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EGQwgLvdTaGSFEsXR6BCAg+QwTFHyWSl85rWy5so3UZbEf2kmn1qDyPK1/AuwqI1B03fcSW5pRjv+crK4l7z9+5fcSd7QaCqGJ7PoMACIVDA4pt2BUl2a2Xlf0f4zr5Ttp8NySm8mqPjJFFi1u9jHEk4QUC+L81/GVh44t88AmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JcMsgQRc; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbed0710c74so1578059276.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 10:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713028451; x=1713633251; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NNXqxRVe9CVDdGjQD7K7O+b7VqxredJ801rqRgpXoHs=;
+        b=JcMsgQRc8IR1wSLV888l3xVOHyZ+pV204B2fFWoEWLDRHNe+HoxlZarJ0BfOzSGpP5
+         41rLWrMKaJFRBvGw2Qi0QxKpdye3Jx2owbHR53MbWwWZyHzM+S/RBiyeaUpJfKKw5NRA
+         A7pyqvZjmyVlcyvPxMJ4vCwhVNjy1DVhi80pP/kduPt50esBQY4mOQV0kraB+hh5DkP8
+         UlpetfW7CG7zu/18Cho50jaQxOvoMrGKdIgzzAwMf7tEftpMZtZuQEZ0390ZJ+dyraiw
+         gv2i5PjCyZ41fCM02WKR7f8VJp8tygjr+b7EPP/k3Kc/VIAm+ufy1DdbAa9TjjJpGx2I
+         LzVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713028451; x=1713633251;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NNXqxRVe9CVDdGjQD7K7O+b7VqxredJ801rqRgpXoHs=;
+        b=LCT3pHP8FqAEfJHh+Uf5gZLQIExIxjf5S6S3irdGPoZFzKD8Nw8eiOnxNir9mqip57
+         0A/mQ+VaHOZ8W05gVVFlKZmNrBF3EnIiTaE4Y6cWSwzvDymV4zLHIrTKyPqocIOW1+jy
+         N446FQIDGQ5ImzRb8IpMAl3KqBqIZX3/dufkDjwj9RDAs1oO3nQSbBK4HQwof60aer7v
+         qEjHu7dM4+0mpy0hGP56iZP2AK7CYxGohSU0GF2EPdh6T9HfwWhuYSAj6K4f0zz01v8s
+         jqkzmIaKgRqa3wbIUUZnMJT3hylV+jqwnoKudDWH0Cii7AkIzLOId3ZYmIRDhoqcOkBC
+         mQNw==
+X-Forwarded-Encrypted: i=1; AJvYcCWnu1EIL+7OoMRGkdBcZAxai7m0oREri2Aiygk//Njwo/1t1NtMS3vCK1ss6NpAIfS07D6JlXX9lDG7I+7KAF/Lxgx9FDfDm11/hQvv
+X-Gm-Message-State: AOJu0Ywc+b/xcfQZuh0mbFdJeQz0fAIES/Pl8ltbWjJhoIruAGjK+ixR
+	8wrIW16oo/Vah48fIH5WBK4YBWcezHCkmxuquTQYPzgc8NoLl5Jh
+X-Google-Smtp-Source: AGHT+IFPKq/7ygU3GL+7hvY+3YeqGWGW2Apesd2kZj994pHTyKtN1Ipb9nqqqKt8ef/Se5U4ULs7Nw==
+X-Received: by 2002:a05:6902:1024:b0:dcd:19ba:10df with SMTP id x4-20020a056902102400b00dcd19ba10dfmr6222959ybt.56.1713028451509;
+        Sat, 13 Apr 2024 10:14:11 -0700 (PDT)
+Received: from localhost ([69.73.66.55])
+        by smtp.gmail.com with ESMTPSA id u125-20020a256083000000b00dcdb7d232f9sm1262587ybb.4.2024.04.13.10.14.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Apr 2024 10:14:11 -0700 (PDT)
+Date: Sat, 13 Apr 2024 10:14:10 -0700
+From: Yury Norov <yury.norov@gmail.com>
+To: Chin-Chun Chen <chinchunchen2001@gmail.com>
+Cc: linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+	Chin-Chun Chen <chinchunchen2001@gmail.com>
+Subject: Re: [PATCH v2] include/linux/bitops.h: Fix function fns
+Message-ID: <Zhq9YpzCbvom3GFx@yury-ThinkPad>
+References: <20240413061204.10382-1-chinchunchen2001@gmail.com>
+ <20240413155635.11486-1-chinchunchen2001@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240413155635.11486-1-chinchunchen2001@gmail.com>
 
-On Sat, 13 Apr 2024 17:45:11 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-
-> Store pointers to chip info (struct ad5755_chip_info) in driver match
-> data, instead of enum, so every value will be != 0, populate the
-> of_device_id table and use it in driver.  Even though it is one change,
-> it gives multiple benefits:
-> 1. Allows to use spi_get_device_match_data() dropping local 'type'
->    variable.
-> 2. Makes both ID tables usable, so kernel can match via any of these
->    methods.
-> 3. Code is more obvious as both tables are properly filled.
-> 4. Fixes W=1 warning:
->    ad5755.c:866:34: error: unused variable 'ad5755_of_match' [-Werror,-Wunused-const-variable]
+On Sat, Apr 13, 2024 at 11:56:35PM +0800, Chin-Chun Chen wrote:
+> Modified the function fns to resolve a calculation error by reducing n first to correctly determine the n-th set bit instead of n+1.
 > 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-Applied but only pushed out as testing for 0-day so far, so I can rebase
-to add tags (or pull it if anyone finds an issue!)
+> This commit improves the accuracy and reliability of the code.
 
-Thanks for doing this Krzysztof.
+No it doesn't. Accuracy and reliability is tested in lib/test_bitmap.c.
+Have you tried to run it before sending this patch?
 
-Jonathan
+What error did you mean? How does pre-decrement over post-increment fix it?
 
 > ---
+> Changes since v1:
+> * Clarified the commit message.
+> * Fixed the incorrect operation.
 > 
-> Changes in v3:
-> 1. Use pointers, according to Jonathan comments.
-> 
-> v2: https://lore.kernel.org/all/20240226192555.14aa178e@jic23-huawei/
-> 
-> An old v1:
-> https://lore.kernel.org/all/20230810111933.205619-1-krzysztof.kozlowski@linaro.org/
+> Signed-off-by: Chin-Chun Chen <chinchunchen2001@gmail.com>
 > ---
->  drivers/iio/dac/ad5755.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+>  include/linux/bitops.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/iio/dac/ad5755.c b/drivers/iio/dac/ad5755.c
-> index 404865e35460..0b24cb19ac9d 100644
-> --- a/drivers/iio/dac/ad5755.c
-> +++ b/drivers/iio/dac/ad5755.c
-> @@ -809,7 +809,6 @@ static struct ad5755_platform_data *ad5755_parse_fw(struct device *dev)
+> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+> index 2ba557e067fe..5842d7d03f19 100644
+> --- a/include/linux/bitops.h
+> +++ b/include/linux/bitops.h
+> @@ -258,7 +258,7 @@ static inline unsigned long fns(unsigned long word, unsigned int n)
 >  
->  static int ad5755_probe(struct spi_device *spi)
->  {
-> -	enum ad5755_type type = spi_get_device_id(spi)->driver_data;
->  	const struct ad5755_platform_data *pdata;
->  	struct iio_dev *indio_dev;
->  	struct ad5755_state *st;
-> @@ -824,7 +823,7 @@ static int ad5755_probe(struct spi_device *spi)
->  	st = iio_priv(indio_dev);
->  	spi_set_drvdata(spi, indio_dev);
->  
-> -	st->chip_info = &ad5755_chip_info_tbl[type];
-> +	st->chip_info = spi_get_device_match_data(spi);
->  	st->spi = spi;
->  	st->pwr_down = 0xf;
->  
-> @@ -854,21 +853,21 @@ static int ad5755_probe(struct spi_device *spi)
->  }
->  
->  static const struct spi_device_id ad5755_id[] = {
-> -	{ "ad5755", ID_AD5755 },
-> -	{ "ad5755-1", ID_AD5755 },
-> -	{ "ad5757", ID_AD5757 },
-> -	{ "ad5735", ID_AD5735 },
-> -	{ "ad5737", ID_AD5737 },
-> +	{ "ad5755", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5755] },
-> +	{ "ad5755-1", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5755] },
-> +	{ "ad5757", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5757] },
-> +	{ "ad5735", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5735] },
-> +	{ "ad5737", (kernel_ulong_t)&ad5755_chip_info_tbl[ID_AD5737] },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(spi, ad5755_id);
->  
->  static const struct of_device_id ad5755_of_match[] = {
-> -	{ .compatible = "adi,ad5755" },
-> -	{ .compatible = "adi,ad5755-1" },
-> -	{ .compatible = "adi,ad5757" },
-> -	{ .compatible = "adi,ad5735" },
-> -	{ .compatible = "adi,ad5737" },
-> +	{ .compatible = "adi,ad5755", &ad5755_chip_info_tbl[ID_AD5755] },
-> +	{ .compatible = "adi,ad5755-1", &ad5755_chip_info_tbl[ID_AD5755] },
-> +	{ .compatible = "adi,ad5757", &ad5755_chip_info_tbl[ID_AD5757] },
-> +	{ .compatible = "adi,ad5735", &ad5755_chip_info_tbl[ID_AD5735] },
-> +	{ .compatible = "adi,ad5737", &ad5755_chip_info_tbl[ID_AD5737] },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(of, ad5755_of_match);
-> @@ -876,6 +875,7 @@ MODULE_DEVICE_TABLE(of, ad5755_of_match);
->  static struct spi_driver ad5755_driver = {
->  	.driver = {
->  		.name = "ad5755",
-> +		.of_match_table = ad5755_of_match,
->  	},
->  	.probe = ad5755_probe,
->  	.id_table = ad5755_id,
+>  	while (word) {
+>  		bit = __ffs(word);
+> -		if (n-- == 0)
+> +		if (--n == 0)
+>  			return bit;
+>  		__clear_bit(bit, &word);
+>  	}
+> 
+> base-commit: 8f2c057754b25075aa3da132cd4fd4478cdab854
 
+What does this 'base-commit' mean?
+
+Chin-Chun, if it's your first attempt to contribute to a public
+project, you're very welcome. But you have to be more descriptive
+on the error you're facing and trying to fix. The best practice is
+to provide a test together with a fix.
+
+Thanks,
+Yury
+
+--
+
+It may be just my paranoia after UMN and xz stories, but... I
+googled for this person and the email and found that it didn't
+appear in public domain before now. Let's see...
 
