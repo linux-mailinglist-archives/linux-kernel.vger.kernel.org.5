@@ -1,120 +1,112 @@
-Return-Path: <linux-kernel+bounces-143671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB3C98A3C2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:13:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 010A48A3C36
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 12:22:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0141C20C01
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:13:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A41A1C20B25
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 10:22:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1E138FA3;
-	Sat, 13 Apr 2024 10:13:06 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190D43D547;
+	Sat, 13 Apr 2024 10:22:13 +0000 (UTC)
+Received: from rockwork.org (rockwork.org [45.32.92.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88491944F
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 10:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842E024A0D
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 10:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.32.92.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713003186; cv=none; b=rX2tqJYzJ8k5EKN8X38eS2z1CpRnzi8omUQhmTOrDYCkbNpLqt/XALNXA7L2S1BWFB3iZQ17kBEC3dh9Pb6LGzGc/Nv7d1SgFY09gnCZaD2JZPaIaMWDi1lIhIC0/OF7noTaL75iLr+T4AZwqb5a/kvcqQsc/uXOP56e3v4J+LE=
+	t=1713003732; cv=none; b=JMxA/+3xYKmcT0yrQFMrA2LIfaRt5nE/S5omh6ZdeH4L5aV2IpN2R76W7/L1MW6huTOWlglDDBi1Sy5E6+t7rGqPry4thq7DwL5EP1faqub6fwRsrVr/2oZpscg8tCCrvGM6CLm4UU9KpjPrqCGb4ZwjWhk0jUpy+nozIu7dZFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713003186; c=relaxed/simple;
-	bh=z83jMz1ZVsAZkRW5PBfAK0WbIrqpcvbkOgy0dvBggvs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b6liaDKz4TIF7yKSRRd33rPY5L+pIgEh9cy6kNV6uJagVBFDvSkOxygk+iPcLhak1ABsk5nVQdw6dgobM4tfErglamkYQ0g3GxdGCgxr0zd6RoLaoxpu70SXsHRWDeLsujfSuGQStBpffm5Ix7Rpmoq+2UEr0Ule5T2KP2YSIIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvaNY-0006XS-N8; Sat, 13 Apr 2024 12:13:00 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvaNX-00C2qC-PY; Sat, 13 Apr 2024 12:12:59 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvaNX-000ijd-2H;
-	Sat, 13 Apr 2024 12:12:59 +0200
-Date: Sat, 13 Apr 2024 12:12:56 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Rob Herring <robh@kernel.org>, Puneet Gupta <puneet.gupta@amd.com>, 
-	Nipun Gupta <nipun.gupta@amd.com>, linux-kernel@vger.kernel.org, 
-	Abhijit Gangurde <abhijit.gangurde@amd.com>, kernel@pengutronix.de, 
-	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
-Subject: Re: [PATCH] cdx: Convert to platform remove callback returning void
-Message-ID: <wyt4jvdvbq4wrgxslwkdeg3e6mhjtfue4xwdec7sil3whhromv@57xjgduvont7>
-References: <5d40f57e978bcce003133306712ec96439e93595.1709886922.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1713003732; c=relaxed/simple;
+	bh=cKfJqzwn1UM58rtsZxhexJzGwK67MEdN/QUZgx3CAHw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TC/k2do+hJcXlBLvAOnPKeNOGhkLymf0edGRdlmuw8E6/2Lwi45wA/m+hKs+n3CDcqo63/K47LPdV5YA9wrJsi4c189fbqpnMpriO9tIT3Ty7yrRjKjmq9FOZki4vzuVDGNjXukZzwZbm28JC+EKHJFnONQXVuWxWqMp9G+Js7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rockwork.org; spf=pass smtp.mailfrom=rockwork.org; arc=none smtp.client-ip=45.32.92.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rockwork.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rockwork.org
+Received: from [IPV6:2408:8340:c42:16f0:eb78:1cb0:d0a9:e8e3] (unknown [IPv6:2408:8340:c42:16f0:eb78:1cb0:d0a9:e8e3])
+	by rockwork.org (Postfix) with ESMTPSA id 6537B5DD4A;
+	Sat, 13 Apr 2024 10:15:11 +0000 (UTC)
+Message-ID: <2688421d-37c2-4038-8d03-24ae175f137e@rockwork.org>
+Date: Sat, 13 Apr 2024 18:15:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s3i7kmvt6klw55wa"
-Content-Disposition: inline
-In-Reply-To: <5d40f57e978bcce003133306712ec96439e93595.1709886922.git.u.kleine-koenig@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/11] RISC-V: drivers/iommu: Add RISC-V IOMMU - Ziommu
+ support.
+To: Tomasz Jeznach <tjeznach@rivosinc.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Anup Patel <apatel@ventanamicro.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux@rivosinc.com, linux-kernel@vger.kernel.org,
+ Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
+ Palmer Dabbelt <palmer@dabbelt.com>, Nick Kossifidis <mick@ics.forth.gr>,
+ linux-riscv@lists.infradead.org
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <c33c24036c06c023947ecb47177da273569b3ac7.1689792825.git.tjeznach@rivosinc.com>
+Content-Language: en-US
+From: Xingyou Chen <rockrush@rockwork.org>
+In-Reply-To: <c33c24036c06c023947ecb47177da273569b3ac7.1689792825.git.tjeznach@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---s3i7kmvt6klw55wa
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/20/23 03:33, Tomasz Jeznach wrote:
+> ... > +#endif /* _RISCV_IOMMU_BITS_H_ */
+> diff --git a/drivers/iommu/riscv/iommu-pci.c b/drivers/iommu/riscv/iommu-pci.c
+> new file mode 100644
+> index 000000000000..c91f963d7a29
+> --- /dev/null
+> +++ b/drivers/iommu/riscv/iommu-pci.c
+> @@ -0,0 +1,134 @@
+> ...
+> +
+> +static struct pci_driver riscv_iommu_pci_driver = {
+> +	.name = KBUILD_MODNAME,
+> +	.id_table = riscv_iommu_pci_tbl,
+> +	.probe = riscv_iommu_pci_probe,
+> +	.remove = riscv_iommu_pci_remove,
+> +	.driver = {
+> +		   .pm = pm_sleep_ptr(&riscv_iommu_pm_ops),
+> +		   .of_match_table = riscv_iommu_of_match,
+> +		   },
+> +};
+> +
+> +module_driver(riscv_iommu_pci_driver, pci_register_driver, pci_unregister_driver);
 
-Hello Greg,
+There's helper macro to be considered, and not forced to:
+   module_pci_driver(riscv_iommu_pci_driver);
 
-On Fri, Mar 08, 2024 at 09:51:05AM +0100, Uwe Kleine-K=F6nig wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
->=20
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
->=20
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->=20
-> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> diff --git a/drivers/iommu/riscv/iommu-platform.c b/drivers/iommu/riscv/iommu-platform.c
+> new file mode 100644
+> index 000000000000..e4e8ca6711e7
+> --- /dev/null
+> +++ b/drivers/iommu/riscv/iommu-platform.c
+> @@ -0,0 +1,94 @@
+> ...
+> +
+> +static struct platform_driver riscv_iommu_platform_driver = {
+> +	.driver = {
+> +		   .name = "riscv,iommu",
+> +		   .of_match_table = riscv_iommu_of_match,
+> +		   .suppress_bind_attrs = true,
+> +		   },
+> +	.probe = riscv_iommu_platform_probe,
+> +	.remove_new = riscv_iommu_platform_remove,
+> +	.shutdown = riscv_iommu_platform_shutdown,
+> +};
+> +
+> +module_driver(riscv_iommu_platform_driver, platform_driver_register,
+> +	      platform_driver_unregister);
 
-we just talked in irc about this thread that might have fell through the
-cracks on your side.
-
-Thanks for reconsidering to apply it for v6.10-rc1,
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---s3i7kmvt6klw55wa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYaWqcACgkQj4D7WH0S
-/k42XAf+L94X/O0zykfTHe+CVju3dQcPIDr2btWJmpUSedAQdec4cmTn1IL2O4PU
-UKS1sgvdO1Qid0qVJHrsEcZrFzeVOAxU9PEkKNl0G35iF3Ku3M8Rz1NJoSQrWjU7
-J0m+4rbd8ZbWRcMMr4q+EOXa09QB508899blAXP+zV729MKnskvjhfWkuIlfPMFK
-eayd3cv6MF1LGnq0/XgoB99enlGH9DJeucdSC8F+zVMxRHkU/ni1UJNVSMWmxZ4x
-3ri8rjDAsd9cKn7De4AOdkjoTcLuTyP3Q06D6e5eFzyeuO5JMNGd1LUhC5i2r/bD
-S1wLHuY50mgFlhRzEBZciME1rX6HLg==
-=tSsa
------END PGP SIGNATURE-----
-
---s3i7kmvt6klw55wa--
+And also:
+   module_platform_driver(riscv_iommu_platform_driver);
 
