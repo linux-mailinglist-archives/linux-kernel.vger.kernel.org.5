@@ -1,194 +1,105 @@
-Return-Path: <linux-kernel+bounces-143648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B48D8A3BE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:20:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3F4B8A3BEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:27:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1C38B21823
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:20:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B5BC1F21C0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:27:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1E52C6B3;
-	Sat, 13 Apr 2024 09:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D3E2C6B3;
+	Sat, 13 Apr 2024 09:27:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="IVuWcay+"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b9Hn57IX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1552233A
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 09:19:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E68218B14;
+	Sat, 13 Apr 2024 09:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712999996; cv=none; b=b7Xcxy0/saVpG88jscNa0HQRE+WqPHmKnzTTLAkc8STEsks6UA/T3CR/CjjLuf4rLcQKxA5ZnZwZWMfCqsnnAIXPYTHGnxD3pJDyF8WXZy+L4Sv74ulmhM0ZTJ0Gr5xcrIrOlJsag7wwxF/LdbqpRr3K5DZAdMHdPBI0OTLttog=
+	t=1713000451; cv=none; b=cigDI8fwjEBY+ENRke5uvxvC7zWcTs7SjYhry4uhx6dfamSAKH1AN/04xbl7LTrD9rlI+3PoGvxE+tazrTBreaxhPHgmoqBsOtiGyeNcwkUJJlkUbK/dOxQ8opMKCGQ7ususN6U0K12qbTMZWE01rSKZ79bxbRK5qoPkCB1yYPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712999996; c=relaxed/simple;
-	bh=xtrhNFYIL5DFjvG5DohoWbQ0qLKf2DBPOxnSj+B1Pv8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mQN5hZwSWUCbzXa4Fd7/HUIUGcNBtMeeypqGsyxQsij2kTBDUbAdkCwYaglq2FzuZeQ8glPRTjOxuvp+nNl94srgMbBdk+nB3j3p/8yHBlUvwkScFm61XOcdzjPlKxQu2wLOu4dyITSdJPvlnwNOTFGDkgPeBH5Og+sVDEFVEjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=IVuWcay+; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e4266673bbso14317065ad.2
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 02:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1712999995; x=1713604795; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=69pCu+lIE1wVXKqySWp1XZJt2aC2QI11IyQxjcSF8a4=;
-        b=IVuWcay+iPBZHYrHvYohZYwRfKpDbTXVfyoxKtYc2SkOtRC7N9DSBil0k5CZ3jNifh
-         uEC/e6eLcZ5sSTdsYXkX41S4MhuRq/Qk5QjQV7Wha0S0sQX2JhnhQvmbgbJXLPYcOIn9
-         k75mZ8R+9DN27TnEKcOpmDO3C9dxPQ6TfMLDiS81/yyyupur73VdRD0DbpYuYA9EwgMq
-         p/hPxY8gwsGWxj1qKIyZFUf+uZNlYyU1Fz/d5q/RKYq1XtDexN5nhXbE6I+FzMgJ7vAF
-         EkzntIkH43rBcwe3vSV/06ePjyLs3nLTr/Betc8k1Bqjs42MEdIgA1DLP7yo9Vipb4Bt
-         Zliw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712999995; x=1713604795;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=69pCu+lIE1wVXKqySWp1XZJt2aC2QI11IyQxjcSF8a4=;
-        b=Vw+iT7nfCzPCgL1NEB3EdH2tLFnjO84G2iX86wT6/US9jf5g04FbMu21XTfi/2Eiat
-         XpPIlkDpAqWlO5gtHtgJWie+23810ri5n6MIdMVvrGQa7erkFRXWU0Es2OFubUkajiwA
-         i7r7Htskaj7UwUZlxOABl0qu7IrqvBQj0mCkfr1z0iGLxNyAC/YyhJWG7oDv6hE0/vwJ
-         cPFrpJxmn7NhXqDeEzXvjNlQkPS+5/M+XHLXIj8qoGf4n8QbyBbP9fLQ85CrDc8QlUx6
-         oZB3VMf5j8/ltcmu8P8piGQbQxpcl2Lqg2BTBVnvWfwVs2np/QJYKDLxteGQNajOSyAO
-         8/6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWHnGKLXJ5qAXHbecQVD3lpiP7OOBEQkwDb97X4g2VlOrWaOmXSt1EJHHE5E35qzdktT7Fv1b69z1ZnOMzVmr5diozpR4fYkB2KxynK
-X-Gm-Message-State: AOJu0Yw3btbQsg50/OC1h/JLwDT5F4GcYQlcy9d3Kmfb/nh3uajKJJ01
-	kpgfW/U2DPnlKO0xvH7HidlYmepPonk8SHVnrk5rcZsReIjTEY9mezRWZ5pvi1Q=
-X-Google-Smtp-Source: AGHT+IHtYnolIIRYPs/EmR5EEzZ1sL8+zY8lf7mTvGypESElWwhDypuX4pBANdN1oJ2iOm4IuKjKVA==
-X-Received: by 2002:a17:902:968c:b0:1e2:6d57:c1bb with SMTP id n12-20020a170902968c00b001e26d57c1bbmr3726399plp.21.1712999994631;
-        Sat, 13 Apr 2024 02:19:54 -0700 (PDT)
-Received: from anup-ubuntu-vm.localdomain ([103.97.165.210])
-        by smtp.gmail.com with ESMTPSA id n9-20020a170903110900b001e5c0ac3279sm2157153plh.74.2024.04.13.02.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 02:19:54 -0700 (PDT)
-From: Anup Patel <apatel@ventanamicro.com>
-To: Rob Herring <robh@kernel.org>,
-	Saravana Kannan <saravanak@google.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Atish Patra <atishp@atishpatra.org>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Anup Patel <anup@brainfault.org>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v2] of: property: Add fw_devlink support for interrupt-map property
-Date: Sat, 13 Apr 2024 14:49:42 +0530
-Message-Id: <20240413091942.316054-1-apatel@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713000451; c=relaxed/simple;
+	bh=8FmkxRB0I6lztwgCbDGCSRZG9dB3qR5SIonDflggVww=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=thiaVFUBXXckpyVDIFarEFCDpKkleFsaR1P35cwOFqiXZEFp1HZMC+8uYvi9x3jBAWhgosqi26Ke2PM7DtIEHDRL8cdcfZ2ZB/OLDIXosEOpdyej2osgHWs7+0W38qsWHxJMb5Cv2ADjuGI0ettx/ZTnUMIVC5iK0uUl3w/vOYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b9Hn57IX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CB09C113CD;
+	Sat, 13 Apr 2024 09:27:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713000450;
+	bh=8FmkxRB0I6lztwgCbDGCSRZG9dB3qR5SIonDflggVww=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=b9Hn57IX/VvTNUy9obuO8zlFnX+pRlFGrpvIqioTwwuScVCBVb5ogzv9pvoWuvVgg
+	 CdEXKW5u345k2qQWe01PwyguqSgOt41OMYFyGmYKAxuo1rGXj4rZaNOPMgpq0Czysc
+	 wTg+hO8PZMXlaWPGA/ObXguuOdsf/PB08UOazC6pKcfIVrkzggdYDZajDaqUyKHqLg
+	 A2EtU63HpGI7phjtOvR2FFPJWHpuUocLhSy9+Ik/2KFPO7rfW/RbCGrl3dhZRTJslp
+	 NENuo2+7vFLdbaAkEkqOIkNXZQTBGmTt9NVuNZQBGNnAiT18MveFHS938SosRb7dJL
+	 rHDrVDzwbTasw==
+Date: Sat, 13 Apr 2024 10:27:17 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
+Cc: joel@jms.id.au, bsp-development.geo@leica-geosystems.com, Eddie James
+ <eajames@linux.ibm.com>, Lars-Peter Clausen <lars@metafoo.de>,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] iio: pressure: dps310: support negative
+ temperature values
+Message-ID: <20240413102717.1ad05f7e@jic23-huawei>
+In-Reply-To: <20240410103604.992989-1-thomas.haemmerle@leica-geosystems.com>
+References: <20240327084937.3801125-1-thomas.haemmerle@leica-geosystems.com>
+	<20240410103604.992989-1-thomas.haemmerle@leica-geosystems.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Some of the PCI controllers (such as generic PCI host controller)
-use "interrupt-map" DT property to describe the mapping between
-PCI endpoints and PCI interrupt pins. This the only case where
-the interrupts are not described in DT.
+On Wed, 10 Apr 2024 12:36:00 +0200
+Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com> wrote:
 
-Currently, there is no fw_devlink created based on "interrupt-map"
-DT property so interrupt controller is not guaranteed to be probed
-before PCI host controller. This affects every platform where both
-PCI host controller and interrupt controllers are probed as regular
-platform devices.
+> This patch set fixes the reading of negative temperatures (returned in
+> millidegree celsius). As this requires a change of the error handling
+> other functions are aligned with this.
+> In addition a small code simplification for reading the scale factors
+> for temperature and pressure is included.
+One quick process thing.
+For IIO (and probably most of the rest of the kernel) we strongly discourage
+sending new versions in reply to a previous version.
 
-This creates fw_devlink between consumers (PCI host controller) and
-supplier (interrupt controller) based on "interrupt-map" DT property.
+The only real result is that in a typical email client the threads become
+confused and the new version may be missed entirely.
 
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
----
-Changes since v1:
-- Updated commit description based on Rob's suggestion
-- Use of_irq_parse_raw() for parsing interrupt-map DT property
----
- drivers/of/property.c | 58 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+Just sent a fresh thread - the naming makes it easy to connect new
+versions to older ones and tools like b4 deal with this automatically.
 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index a6358ee99b74..67be66384dac 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1311,6 +1311,63 @@ static struct device_node *parse_interrupts(struct device_node *np,
- 	return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.np;
- }
- 
-+static struct device_node *parse_interrupt_map(struct device_node *np,
-+					       const char *prop_name, int index)
-+{
-+	const __be32 *imap, *imap_end, *addr;
-+	struct of_phandle_args sup_args;
-+	struct device_node *tn, *ipar;
-+	u32 addrcells, intcells;
-+	int i, j, imaplen;
-+
-+	if (!IS_ENABLED(CONFIG_OF_IRQ))
-+		return NULL;
-+
-+	if (strcmp(prop_name, "interrupt-map"))
-+		return NULL;
-+
-+	ipar = of_node_get(np);
-+	do {
-+		if (!of_property_read_u32(ipar, "#interrupt-cells", &intcells))
-+			break;
-+		tn = ipar;
-+		ipar = of_irq_find_parent(ipar);
-+		of_node_put(tn);
-+	} while (ipar);
-+	if (!ipar)
-+		return NULL;
-+	addrcells = of_bus_n_addr_cells(ipar);
-+	of_node_put(ipar);
-+
-+	imap = of_get_property(np, "interrupt-map", &imaplen);
-+	if (!imap || imaplen <= (addrcells + intcells))
-+		return NULL;
-+	imap_end = imap + imaplen;
-+
-+	sup_args.np = NULL;
-+	for (i = 0; i <= index && imap < imap_end; i++) {
-+		if (sup_args.np) {
-+			of_node_put(sup_args.np);
-+			sup_args.np = NULL;
-+		}
-+
-+		addr = imap;
-+		imap += addrcells;
-+
-+		sup_args.np = np;
-+		sup_args.args_count = intcells;
-+		for (j = 0; j < intcells; j++)
-+			sup_args.args[j] = be32_to_cpu(imap[j]);
-+		imap += intcells;
-+
-+		if (of_irq_parse_raw(addr, &sup_args))
-+			return NULL;
-+		imap += sup_args.args_count + 1;
-+	}
-+
-+	return sup_args.np;
-+}
-+
- static struct device_node *parse_remote_endpoint(struct device_node *np,
- 						 const char *prop_name,
- 						 int index)
-@@ -1359,6 +1416,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
- 	{ .parse_prop = parse_msi_parent, },
- 	{ .parse_prop = parse_gpio_compat, },
- 	{ .parse_prop = parse_interrupts, },
-+	{ .parse_prop = parse_interrupt_map, },
- 	{ .parse_prop = parse_regulators, },
- 	{ .parse_prop = parse_gpio, },
- 	{ .parse_prop = parse_gpios, },
--- 
-2.34.1
+Jonathan
+> 
+> ---
+> Changes in v2:
+>  - include fixes tag
+>  - Split up patch
+>  - introduce variables for intermediate results in functions
+>  - simplify scale factor reading
+> 
+> Thomas Haemmerle (4):
+>   iio: pressure: dps310: support negative temperature values
+>   iio: pressure: dps310: introduce consistent error handling
+>   iio: pressure: dps310: consistently check return value of
+>     `regmap_read`
+>   iio: pressure: dps310: simplify scale factor reading
+> 
+>  drivers/iio/pressure/dps310.c | 138 +++++++++++++++++++---------------
+>  1 file changed, 77 insertions(+), 61 deletions(-)
+> 
+> 
+> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
 
 
