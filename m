@@ -1,98 +1,123 @@
-Return-Path: <linux-kernel+bounces-143872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D8358A3E93
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:05:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032DA8A3E96
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:08:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AAFD1F217E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:05:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9832CB21624
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 21:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1854A54FB7;
-	Sat, 13 Apr 2024 21:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD3955C33;
+	Sat, 13 Apr 2024 21:08:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dIb9Tt7P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AQvzQMyP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5657A23BE;
-	Sat, 13 Apr 2024 21:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0874623BE;
+	Sat, 13 Apr 2024 21:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713042323; cv=none; b=Mlr4u4SFiAJ4fEhu4ApZo+ekzpnyKad5YzZ7R+4e5frJDFmxc4ao69M5nN10LFUv8Xs5nXWTGDzGayAhU5iAxLH+mYE2lnCCE+BO5blfkN0vfaDiWLIdQKMHpDnLdhk88WPnCDJCuJB3/HbRaIyDXps/qtfaEWlwb2IcbI7hJmk=
+	t=1713042507; cv=none; b=tJMlLKyy65hG+9s+apM1GRg3meLw4JI5/CMS7sbyPlD1TFq3TKU0thdYs+p1JDycsWqtU8niaeemXtahnpn2VnfRx8mQ7CziLSea9l1hrBQkvZKEN4gfE+94dLvanSvNzDL4+7In43vlh+MH6jh2LZCGzG/oyx4FoGGcVQSV144=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713042323; c=relaxed/simple;
-	bh=jc5CSx3FODBAU6cziQpzfYX2MMDX+QOobH4WDFqX0T4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=f5Qau5AG2LNNSnhZDwl1xMCN8mzJnca5hL7Q/pLY79p5iZnOEh4xYHrbsZi4ddNtk4n8xFoE1wPwUwTNXw6l+Sn1Fk+TuF+FOX520FnDbJPlBTOPdK2Y9lRqs9ogdtzkDepdSaCXLrJNVWa6qdWH4yjyv5iBP8bxmgUPOQvcIEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dIb9Tt7P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34287C113CD;
-	Sat, 13 Apr 2024 21:05:18 +0000 (UTC)
+	s=arc-20240116; t=1713042507; c=relaxed/simple;
+	bh=8ftN+AozV8xrqm48t4mfEg6N/gXxQI8jvRXOIlRjc5s=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=HV9ADmzQpKUcXONF/tnvgROSRkfmKHscH802ilAx06hmPfzYCoz6lhhmcY8Dqt0MW69xVhIKgOuWIiU1iH/vf2l+Ny14vPhfZyL9EqybsbGbXaniXysInWP4krE9yLCtmflhy3x+PdycuImlKH5uVAts75fujzHqzJyscLFr2LQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AQvzQMyP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6C12FC113CD;
+	Sat, 13 Apr 2024 21:08:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713042322;
-	bh=jc5CSx3FODBAU6cziQpzfYX2MMDX+QOobH4WDFqX0T4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dIb9Tt7Phfd4Iz9XgRpCVE38Nh21WoCCnu/AQyEsSeKxiIV62iy7eT2v7Obp+C7LW
-	 6kGX8OisPCtTeUZ2KkKkiopz/rJz0VkThgjQJxuWA8gNOFz+61xGpXw8lChsvzqXNX
-	 8Bv+T4Ij+ZskhVWZSmYuhH21NMSa2/L3nqxwO4uoEWpXz+x4NRUjybawaVPye+XhWH
-	 pImrCYNA6hEmMGwBp0cVHF68nG9iGFk1UL0SzSFd+y2bUvBUV36/I7nrjb7/LBIiBm
-	 uPSb6Y3FRcHf8P0ZHqFSTZjthf7zF5w+NtdpckI5cCaJzOwUAvrI+tecZykBcUC8cQ
-	 iu5rhvO1P8X6A==
-From: Miguel Ojeda <ojeda@kernel.org>
-To: davidgow@google.com
-Cc: brendan.higgins@linux.dev,
-	dan.carpenter@linaro.org,
-	keescook@chromium.org,
-	kunit-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux@roeck-us.net,
-	lkft@linaro.org,
-	mic@digikod.net,
-	naresh.kamboju@linaro.org,
-	rmoar@google.com,
-	skhan@linuxfoundation.org,
-	will@kernel.org,
-	Miguel Ojeda <ojeda@kernel.org>
-Subject: Re: [PATCH] kunit: Fix race condition in try-catch completion
-Date: Sat, 13 Apr 2024 23:04:10 +0200
-Message-ID: <20240413210411.441424-1-ojeda@kernel.org>
-In-Reply-To: <20240412025903.489470-1-davidgow@google.com>
-References: <20240412025903.489470-1-davidgow@google.com>
+	s=k20201202; t=1713042506;
+	bh=8ftN+AozV8xrqm48t4mfEg6N/gXxQI8jvRXOIlRjc5s=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=AQvzQMyPsr0JldqzqNIGUFOjwCMRLj5SDBbzz57DAPtPKdG241YGxFecrrnPk+EEn
+	 T73fdmN33X4gLPiX3xDuh4K6rE+BjW6VYBCESKz4/Wz1IO39ZZEDKdSrh6JMAnqQPx
+	 +TMS8l5VAiNVJnxMeDF225u/4uuMm1MB/3sidZevb2mD+Ypiu3v0X1R12ajQc9DDi9
+	 k2iIUmAQU91joHGlTOL/37/HvPZ22uBbLLmFKoWJjjAoHLL+cfCDsyw/LvFVplacvO
+	 lKPuY6+0nX1XQ6BIXqGtMyfFdlXtQyyvZp76uNiJwwkjWFWzOOryZAABVB5w5b92QW
+	 87kGKO1K2dmOQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55312C4345F;
+	Sat, 13 Apr 2024 21:08:26 +0000 (UTC)
+From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
+Date: Sun, 14 Apr 2024 00:08:13 +0300
+Subject: [PATCH net-next] net: phy: mediatek-ge: do not disable EEE
+ advertisement
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Message-Id: <20240414-for-netnext-mediatek-ge-do-not-disable-eee-adv-v1-1-2fefd63c990b@arinc9.com>
+X-B4-Tracking: v=1; b=H4sIADz0GmYC/x3N2wrCMBCE4Vcpe+1CE4unV5FepNmJLmoiSSiF0
+ nc39fKH4ZuVCrKi0K1bKWPWoim2MIeO/NPFB1ilNdneDv3RGg4pc0SNWCp/IOoqXtxmkjimyqL
+ FTW8wAHYy83Q6S/A+XC/GUEO/GUGX/+GdmsM7ROO2/QBWJbCvigAAAA==
+To: Daniel Golle <daniel@makrotopia.org>, Qingfang Deng <dqfext@gmail.com>, 
+ SkyLake Huang <SkyLake.Huang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>, 
+ Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com, 
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713042497; l=1262;
+ i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
+ bh=3+tGyLYc9tR5wwy3EghRPXT4LZ9a92aLjvNesVkpu9o=;
+ b=W1Dn4HFVHIUCOJTQtcShYgKgcG7Ck+OXjRDh/mAj+PHLqe0nx8zL743Qod1CUINXYtPSl+N4t
+ 1RNaO8X4jOcCOCKSeamjbRPXGI3W7B8FkPtIlDoQG0kl4AFu1DlEgDG
+X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
+ pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
+X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
+ with auth_id=115
+X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Reply-To: arinc.unal@arinc9.com
 
-On Thu, Apr 11, 2024 at 10:59 PM David Gow <davidgow@google.com> wrote:
->
-> KUnit's try-catch infrastructure now uses vfork_done, which is always
-> set to a valid completion when a kthread is created, but which is set to
-> NULL once the thread terminates. This creates a race condition, where
-> the kthread exits before we can wait on it.
->
-> Keep a copy of vfork_done, which is taken before we wake_up_process()
-> and so valid, and wait on that instead.
->
-> Fixes: 4de2a8e4cca4 ("kunit: Handle test faults")
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Closes: https://lore.kernel.org/lkml/20240410102710.35911-1-naresh.kamboju@linaro.org/
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Acked-by: Mickaël Salaün <mic@digikod.net>
-> Signed-off-by: David Gow <davidgow@google.com>
+From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-I noticed it with the Rust tests too, and indeed this fixed it:
+The mediatek-ge PHY driver already disables EEE advertisement on the switch
+PHYs but my testing [1] shows that it is somehow enabled afterwards.
+Disabling EEE advertisement before the PHY driver initialises keeps it off.
+Therefore, remove disabling EEE advertisement here as it's useless.
 
-Tested-by: Miguel Ojeda <ojeda@kernel.org>
+Link: https://lore.kernel.org/netdev/d286ea27-e911-4dcb-9037-b75f22b437b8@arinc9.com/ [1]
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+---
+ drivers/net/phy/mediatek-ge.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Thanks!
+diff --git a/drivers/net/phy/mediatek-ge.c b/drivers/net/phy/mediatek-ge.c
+index a493ae01b267..54ea64a37ab3 100644
+--- a/drivers/net/phy/mediatek-ge.c
++++ b/drivers/net/phy/mediatek-ge.c
+@@ -23,9 +23,6 @@ static int mtk_gephy_write_page(struct phy_device *phydev, int page)
+ 
+ static void mtk_gephy_config_init(struct phy_device *phydev)
+ {
+-	/* Disable EEE */
+-	phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0);
+-
+ 	/* Enable HW auto downshift */
+ 	phy_modify_paged(phydev, MTK_PHY_PAGE_EXTENDED, 0x14, 0, BIT(4));
+ 
 
-Cheers,
-Miguel
+---
+base-commit: 32affa5578f0e6b9abef3623d3976395afbd265c
+change-id: 20240321-for-netnext-mediatek-ge-do-not-disable-eee-adv-b67dfccf9811
+
+Best regards,
+-- 
+Arınç ÜNAL <arinc.unal@arinc9.com>
+
+
 
