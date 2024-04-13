@@ -1,199 +1,152 @@
-Return-Path: <linux-kernel+bounces-143571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D00738A3AFB
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:11:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3B08A3AFD
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 06:13:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C58D28453C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:11:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A72001C21C1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 04:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19091C6A5;
-	Sat, 13 Apr 2024 04:11:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D261C69A;
+	Sat, 13 Apr 2024 04:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fsJy92Sd"
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="afRqM0fW"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18781BC3E;
-	Sat, 13 Apr 2024 04:11:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4898E4C65;
+	Sat, 13 Apr 2024 04:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712981491; cv=none; b=Rwi23q90lPH/zN8eG5TL708WYNlmHiWTLJRKXf9GVms5K1pQ2rSViDBZ5A1wRFV2WAwI13Nr5a7ab4Nh96IK0TOoW+cJEFkFVxoRGMYP78Xoyctgp0gGQa0RjcNhIebdQl8rQXXjSDRswF7HmNwQNRCCiHuUEjfFXFAQTIeGHNk=
+	t=1712981588; cv=none; b=BASXKdJAgBX7gPZUS/YvvJ+nSmdijUIdlz/GLG4CopRBj5Rb5FcwGfbNNca6me1TytHW4vGicx3ahVnP/gGzyVFlgQcr2nenbnzKTYqKR3Hu8OioqlPK+yktQHFFyaN8ioMAzMNSSMd1cD8ZLH0/u7ihYcoqyQIRpypD8VXnLls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712981491; c=relaxed/simple;
-	bh=AfPGdpoeXhVGR+SHbrTki7kqPG4xqSDp/j1KG2K2pxg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jfGPjEJICAs+Gzqw+6L3UwLntS7vGVVxVEt/QH6JyQeKP2y6fLDdbNVbTu0DQT1IRtI7RREYqlAv11MRzJqpelD9M2FE3jlqSs0/TKoSFZELuKuxEUdlh3k9KSj6PYHBUkA6DpHjoyAaIoVXhUM5O8J4OWvyxa7AIS/WqGwESkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fsJy92Sd; arc=none smtp.client-ip=209.85.160.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-23319017c4cso969751fac.2;
-        Fri, 12 Apr 2024 21:11:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712981489; x=1713586289; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EDhCSWEgnV+NzpnZC+839Wmob9VMoO2EjVmXGFw60QM=;
-        b=fsJy92SdASlRp4ceIXK8tDG7RmaqnR+JTDhucQXVIlwMMyKLJ2bI/RFLx83AkWLQZU
-         g0cqca1VsapH7j9WsoFqsg0W25tplq8axLI+BoD6dZ2SyCdQBJt/x2lZLzVDw9DZV/dd
-         Gu/dSjwvxcHORA1lEFkHJ/of5QVfnIsEd8Rwq20HqOqOaDou+aLEePJhmgoIQ4rer4Ep
-         75VE+bkfHV3lsUB45Pf8lfp/7LR4HyjIBJSdNrrsQBnOAco4BaJMUaqQxOafV9Eyenee
-         noOfqZV+8ziwUw4EUiiXIHB6UtfXE0NCeC9y+LETaSuryrhd9ZvkWMc7Q4BJgW+/Mh5s
-         HAhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712981489; x=1713586289;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EDhCSWEgnV+NzpnZC+839Wmob9VMoO2EjVmXGFw60QM=;
-        b=rmEYQEqZXHTcQk4W/BbkVwCFT+WBSk3Lg+V5mW0zO9Pe5f0thEJKHkWT8dylliQBlw
-         sm+hJnI6yPxvZL1tP1+CLRBppKTMObtkzI2M0BfFxt4nB4muF0paGDyY4Xp6NRXgXt4D
-         ZYYhz4pm6YrCtvgHsizPsuhXzk+vwTjz1LE0zxxSsTOJnErfOOBE5ig9h+BZVzElERgk
-         nIdScbyBBN/040rUoIthAe2Aaxiph97CrItZzunrb+wOpf8n4WglIwikSphps+RsThjw
-         K7nGNKuPS2QNhIpPMYbcHMn9Nt4B63C2yQ/Z1+0ah8QlEQelTb7/PoyUV015Uu7tX4en
-         Uhxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUPbVL08yHQ6UFbnMPIyc4oLIbl+be6CqqsmuxfXsyIxFUOq16WRSQJcKYVCko9vezDz5/faVaN1f+Ty9QXaFzVmym5xbLbOahhrCOjSmCZ84InS2YTRqQOKFt/oNoFfSwd
-X-Gm-Message-State: AOJu0YyTPgqk0+018E2eEnVqEe2fHyvHwQkzrx8yvsgRedgDZVyYZJR0
-	nzpnFInFjmf7isLv82DOaAcWxfbsNfkS7SkmUrOcuEg1xJn61Mnx
-X-Google-Smtp-Source: AGHT+IE+nEAWcd0+Z2P4/AV17wHWyQPGohLUz5foVK2JC1p4PEX3jDqCCzVk0FB1zWXVp5Fn7Jr8DQ==
-X-Received: by 2002:a05:6870:5488:b0:22e:cbfa:678d with SMTP id f8-20020a056870548800b0022ecbfa678dmr4605735oan.57.1712981488680;
-        Fri, 12 Apr 2024 21:11:28 -0700 (PDT)
-Received: from localhost.localdomain ([123.116.201.21])
-        by smtp.gmail.com with ESMTPSA id y22-20020aa78556000000b006ea81423c65sm3722131pfn.148.2024.04.12.21.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 21:11:27 -0700 (PDT)
-From: Liang Chen <liangchen.linux@gmail.com>
-To: mst@redhat.com,
-	jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	hengqi@linux.alibaba.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	john.fastabend@gmail.com,
-	hawk@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	liangchen.linux@gmail.com
-Subject: [PATCH net-next v7] virtio_net: Support RX hash XDP hint
-Date: Sat, 13 Apr 2024 12:10:35 +0800
-Message-Id: <20240413041035.7344-1-liangchen.linux@gmail.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1712981588; c=relaxed/simple;
+	bh=P0ICQc6p95hpk0kk9xF4xUigjuVNicJgP60eXiKynkY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sqM1EnMixZ+XrfHSHFLiXooBArjKLlbKBRhqB8ORx1lU3q9axn34tFu/NiZ9brWmWH61VUm0ccy9DLhD2Q29yJGEiksL8RbMAcB1/wMwNl7wcy/MgK7ROnB1WXzvJSot78pYKwmKuJHquHuvR9trGLzLcIXhFHMOp/+4jpk9Yrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=afRqM0fW; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712981587; x=1744517587;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=P0ICQc6p95hpk0kk9xF4xUigjuVNicJgP60eXiKynkY=;
+  b=afRqM0fWsJQgmi5Oy1As1em3bC16MChi20KdSZUkjKRH34Ft69AGkq71
+   N4aRZR4la0RoBBSP+w3sDWwYdNt4dJWKYGMT+HhYXZAiRi5+tOD2EtyiA
+   ky2x4ii8fBKWedy8SUNZDZH7n4OglrYq4DBbMcAlVbFDHOFQI5cAiBsmj
+   SVElpc1NDOmJgQrNMv5oCtDd8R7/GnwRJwS9rMvoLCy7b505YwPFWOTZR
+   GDFjYDLhERLt60PGWSD+4jKobw2hdfAVnElMHfFlU2+qN6qXrUPVHyUUj
+   9D4nDfarxt4qt12rNOEVpUnlsE6YgCt1aTqsJBwdmcxzXJm2+98EX0jCh
+   Q==;
+X-CSE-ConnectionGUID: bSnRlzrNQb6rs5D7yJqWVw==
+X-CSE-MsgGUID: 8TgulaYtReOCQPgX8V/BWw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19867301"
+X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
+   d="scan'208";a="19867301"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:13:06 -0700
+X-CSE-ConnectionGUID: Psw8T3LDSSWfdBZZA4W4yw==
+X-CSE-MsgGUID: 2ienEDwhR0+oRB6avL5SMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,198,1708416000"; 
+   d="scan'208";a="26213713"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.225.92]) ([10.124.225.92])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 21:13:01 -0700
+Message-ID: <e0fe15f6-993c-45ec-aea2-531a055fb0cd@linux.intel.com>
+Date: Sat, 13 Apr 2024 12:12:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 37/41] KVM: x86/pmu: Allow writing to fixed counter
+ selector if counter is exposed
+To: Sean Christopherson <seanjc@google.com>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
+ kan.liang@intel.com, zhenyuw@linux.intel.com, jmattson@google.com,
+ kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-38-xiong.y.zhang@linux.intel.com>
+ <ZhheJUWRhCmmYa_F@google.com>
+Content-Language: en-US
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <ZhheJUWRhCmmYa_F@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The RSS hash report is a feature that's part of the virtio specification.
-Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
-(still a work in progress as per [1]) support this feature. While the
-capability to obtain the RSS hash has been enabled in the normal path,
-it's currently missing in the XDP path. Therefore, we are introducing
-XDP hints through kfuncs to allow XDP programs to access the RSS hash.
 
-1.
-https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
+On 4/12/2024 6:03 AM, Sean Christopherson wrote:
+> On Fri, Jan 26, 2024, Xiong Zhang wrote:
+>> From: Mingwei Zhang <mizhang@google.com>
+>>
+>> Allow writing to fixed counter selector if counter is exposed. If this
+>> fixed counter is filtered out, this counter won't be enabled on HW.
+>>
+>> Passthrough PMU implements the context switch at VM Enter/Exit boundary the
+>> guest value cannot be directly written to HW since the HW PMU is owned by
+>> the host. Introduce a new field fixed_ctr_ctrl_hw in kvm_pmu to cache the
+>> guest value.  which will be assigne to HW at PMU context restore.
+>>
+>> Since passthrough PMU intercept writes to fixed counter selector, there is
+>> no need to read the value at pmu context save, but still clear the fix
+>> counter ctrl MSR and counters when switching out to host PMU.
+>>
+>> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+>> ---
+>>   arch/x86/include/asm/kvm_host.h |  1 +
+>>   arch/x86/kvm/vmx/pmu_intel.c    | 28 ++++++++++++++++++++++++----
+>>   2 files changed, 25 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index fd1c69371dbf..b02688ed74f7 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -527,6 +527,7 @@ struct kvm_pmu {
+>>   	unsigned nr_arch_fixed_counters;
+>>   	unsigned available_event_types;
+>>   	u64 fixed_ctr_ctrl;
+>> +	u64 fixed_ctr_ctrl_hw;
+>>   	u64 fixed_ctr_ctrl_mask;
+> Before introduce more fields, can someone please send a patch/series to rename
+> the _mask fields?  AFAIK, they all should be e.g. fixed_ctr_ctrl_rsvd, or something
+> to that effect.
 
-Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
----
-  Changes from v6:
-- fix a coding style issue
-  Changes from v5:
-- Preservation of the hash value has been dropped, following the conclusion
-  from discussions in V3 reviews. The virtio_net driver doesn't
-  accessing/using the virtio_net_hdr after the XDP program execution, so
-  nothing tragic should happen. As to the xdp program, if it smashes the
-  entry in virtio header, it is likely buggy anyways. Additionally, looking
-  up the Intel IGC driver,  it also does not bother with this particular
-  aspect.
----
- drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+Yeah, I remember I ever said to cook a patch to rename all these _mask 
+fields. I would do it now.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index c22d1118a133..2a1892b7b8d3 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -4621,6 +4621,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
- 	}
- }
- 
-+static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
-+			       enum xdp_rss_hash_type *rss_type)
-+{
-+	const struct xdp_buff *xdp = (void *)_ctx;
-+	struct virtio_net_hdr_v1_hash *hdr_hash;
-+	struct virtnet_info *vi;
-+
-+	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
-+		return -ENODATA;
-+
-+	vi = netdev_priv(xdp->rxq->dev);
-+	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
-+
-+	switch (__le16_to_cpu(hdr_hash->hash_report)) {
-+	case VIRTIO_NET_HASH_REPORT_TCPv4:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_UDPv4:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_TCPv6:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_UDPv6:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
-+		*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_IPv4:
-+		*rss_type = XDP_RSS_TYPE_L3_IPV4;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_IPv6:
-+		*rss_type = XDP_RSS_TYPE_L3_IPV6;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_IPv6_EX:
-+		*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
-+		break;
-+	case VIRTIO_NET_HASH_REPORT_NONE:
-+	default:
-+		*rss_type = XDP_RSS_TYPE_NONE;
-+	}
-+
-+	*hash = __le32_to_cpu(hdr_hash->hash_value);
-+	return 0;
-+}
-+
-+static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
-+	.xmo_rx_hash			= virtnet_xdp_rx_hash,
-+};
-+
- static int virtnet_probe(struct virtio_device *vdev)
- {
- 	int i, err = -ENOMEM;
-@@ -4747,6 +4801,7 @@ static int virtnet_probe(struct virtio_device *vdev)
- 				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
- 
- 		dev->hw_features |= NETIF_F_RXHASH;
-+		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
- 	}
- 
- 	if (vi->has_rss_hash_report)
--- 
-2.40.1
 
+>
+> Because I think we should avoid reinventing the naming wheel, and use "shadow"
+> instead of "hw", because KVM developers already know what "shadow" means.  But
+> "mask" also has very specific meaning for shadowed fields.  That, and "mask" is
+> a freaking awful name in the first place.
+>
+>>   	u64 global_ctrl;
+>>   	u64 global_status;
+>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+>> index 713c2a7c7f07..93cfb86c1292 100644
+>> --- a/arch/x86/kvm/vmx/pmu_intel.c
+>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+>> @@ -68,6 +68,25 @@ static int fixed_pmc_events[] = {
+>>   	[2] = PSEUDO_ARCH_REFERENCE_CYCLES,
+>>   };
+>>   
+>> +static void reprogram_fixed_counters_in_passthrough_pmu(struct kvm_pmu *pmu, u64 data)
+> We need to come up with shorter names, this ain't Java.  :-)  Heh, that can be
+> another argument for "mediated", it saves three characters.
+>
+> And somewhat related, kernel style is <scope>_<blah>, i.e.
+>
+> static void mediated_pmu_reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
 
