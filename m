@@ -1,172 +1,291 @@
-Return-Path: <linux-kernel+bounces-143458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8249F8A396E
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:50:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C6D8A3971
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 02:51:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 378DC2841B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:50:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C69E11F22850
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E964C7D;
-	Sat, 13 Apr 2024 00:50:21 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3074C97;
+	Sat, 13 Apr 2024 00:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j91zbUdJ"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE201361
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 00:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631C9442C
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 00:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712969421; cv=none; b=kqbsP9yl3h7zDvklQcZRCa47z1kcdmvI7SCB6QdSgx7jZYcuiIUbIOjqTr5XrF9DsAKUGLV2u77+qKqvmfz8Fentt7wDYAfXBPyGiabEQY5LUtu3kbrXpXcob/2hsi6Bi2wqAmMEH5gx3dmaay1YZcaPLBeay2kPoI9+U82d1Cs=
+	t=1712969472; cv=none; b=jfwIlF+clWTCifjNQvGFfhl+Nc8A4jSgH2RRWXYlEmTTh3OcnZC1vABiLBCaG7n4CEJwL3ZkHuNwnEOC3rzbg4wpGX3QQ/1GsYkMWA9SfYK77lIaCwfjC4VnqkMfR9BM2Qw9cpEOXIAyoHpI6dEBLWg2FiJczYGxEfHtGZGWFNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712969421; c=relaxed/simple;
-	bh=2PudCH3sanltZoJWKNx8RcWc6GEEHV5v127wrS9KFuw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uI43+arjFltBMz36Ue/hFrQtx3qyfMVH4IxAqHjRvKNUQGPh0rT08mvrMObq/Ezwjd7EjqpPcAh9G1YXfVFDkUB9c8JfjGcDww2Kz9Oz00dCm4nK2nbKg/g1AXouAzon0IQHMvF13w3vurD9eAxFeko/D9jnXC5CHtHif12FGgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36a1ab65a52so15767785ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:50:19 -0700 (PDT)
+	s=arc-20240116; t=1712969472; c=relaxed/simple;
+	bh=sX7WsVGNnSSRzcMcuJsLiMsgkSJor1iYlOzzqNwqPH4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GisfUfZDrsfKf74PI7e1mvrJ5KxrU+3GXoX4Dxo57sAldB5HiKzQmPe/SPuVRCczADzRSn82MrLeXccKl6AeUm7UBrT6EUqSK7b2Smq26OrRxMQyXCl5Vp49wRtLMEgUSZDMINA2nxL9Fb+/k00bq1gWlSkMu7UgT9RqUwEh3gQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j91zbUdJ; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e136cbcecso1575478a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712969469; x=1713574269; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kbYS3aC9uGvkjYk6/cLeqdOFTEci2uZlTd3WzZKqoXw=;
+        b=j91zbUdJXb/XDwDlj4j7nPDeyolCFPoUS0aGgZrNsEaDjJUzg4gn6SGflQs/wnOob4
+         m6BwZATik3I6Xa0h+/aXcxlDUXWWPD0/AQ/+1+wcgfMFzNWd2Cd0TLRaNpzOPYQ7jccu
+         BzIlqPh0V0LfbnZ1fp/jDiLTTKHJW01BhzBHTHZ/wKYkheOL7gdT8PAOFD/gvtGbpe8p
+         8gttQOIWZc0DVXV0f+Lwn0E7EdMpQYzgPF4zEaXxRBqvMXniJzp7RJCqqsjRRyhm8UOs
+         YFYiEjW/OCzA/wYdlH0iqwW+Y4uvHwcJwEd19BHsub1MSNfBCy++ZHfOA/SRiZhZU8Pu
+         IuUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712969419; x=1713574219;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ty8vjrN8ixEIeO3nPvDfskedfuwplOtYXeMyscPrwNA=;
-        b=EURPXFXEO2+cThOexRYxBFe0i/QbCWOlvXCrONJFIaB63co/p2s+1QZ3WTiI3p6E6O
-         VoT0SV8CFFum40l5fB0QtDHw3UQQR/OALsJx5zmJpS1L2QRoXpYuw0uRt0/pAD8SAnU9
-         8NcsLHXXx1gMVvu4O2kav6x8pecoHbb25dc7f5G/qMEnyNwO5aLne6YrTWYZdvpxeSWH
-         5H8xurejcnAT0SgkWceJZtYYWuv4e8FpnP2j1bdJT0TY7MsA5MLCObtaf5iOYMVpJ82g
-         WZelz103FK15/BnJJUbagW2Ry4BCrZNTb85DzzNFPoLMEQ5+X0Cx+W+d/NuonV6Mn3I+
-         WNTA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTdpuRdxQlLObNGMsiIh3sAz1TJYBQQXGPp7rQDQNbGLI7Q2c8CBB6l+F8cVPIRKiicqyCHSKtEZvZhzKhtRTq9R2Rx2QB8Gr/orhg
-X-Gm-Message-State: AOJu0YwRxVokrP47eIbEK9XRLTkLypx1olKHK8uxr968rFZd2lM0hbXW
-	BQ1Re8Ozvwq2dVhn/tppf6fdeBUBVQGZ4Pu+16QlPPjCKDQo/abGacaEG9hroZwoVYale2lx1Vb
-	iDrhdRoCsJQJ35xYFXRsetGnzeHQY6r5nsLiRJcdSv3Jy42Rn08nenEg=
-X-Google-Smtp-Source: AGHT+IH9qLKEt7z94jqgv0U9YhvpZZQaXbG55erGuK79lSTmq0zperO6eeigT5hGR9UCU2HqYvivcHSHOKo2dnIyacWGi5sW4xo0
+        d=1e100.net; s=20230601; t=1712969469; x=1713574269;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kbYS3aC9uGvkjYk6/cLeqdOFTEci2uZlTd3WzZKqoXw=;
+        b=i4qZWbJUTqnfdNKpIZufH/ZwlwfEI6Cm9/Wknrm/xDdnEyinF94dMOrZjAsw8ROMYe
+         HXkyK9zscrksuUZAmEPbGgYdCA2FsR2E/cvY+GIBDvufLWs8QZM7qYIRuQk2aagp3edl
+         uNRzNo+VnmSham32IE8/Dtmr0CckxGXjnPKIsQWPlPwGkJWH00QOdxTm43l54TnCvqH3
+         PJLtFkfuVc9OxedjzgXrv1NM1OBX51qv3xiqA05G27jEbKU5cYs1hw+hk9sdqCq8mBNH
+         innClb12inI5uUMAnTHyz2S2sgf79/z2yG1YR/TFtfX9D8yC/fIg6O51WXBEKPVhiobm
+         BYYw==
+X-Forwarded-Encrypted: i=1; AJvYcCWD0ObfBRGgT5K6uBhZCYmcEeQVpPUDO2mPrcE749hPdjJcVmw70D+udHksjBT7fRhAJUEXxIbKCQghONXIQ+g0xYW+VMbDVJm7x8BP
+X-Gm-Message-State: AOJu0YwrHFgIjAJLwjlHwyPSzNR6o0UdWZXRJoTFHf/3ocY5aJeU8oit
+	wGTjOohnreTzMjj/skBL8WF+qEogw44B6IuaxCVnoVduDyn+tdQhwH2K8tG9D/1RsGZTtNXCb+9
+	uXkjcBgseDaiPwGlXLc2U8ONSNf97Gg==
+X-Google-Smtp-Source: AGHT+IFK+kfekIP4WtA4fPXnB2LXRkQRlXC+1IOk8rSIah8aqbpb9YgJ0njZnDg9FhY2WCvVs8umWiOrLp+Hvq6ZvMM=
+X-Received: by 2002:a17:907:972a:b0:a51:827d:c99b with SMTP id
+ jg42-20020a170907972a00b00a51827dc99bmr3143961ejc.14.1712969468567; Fri, 12
+ Apr 2024 17:51:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1e01:b0:36a:190f:1c93 with SMTP id
- g1-20020a056e021e0100b0036a190f1c93mr292596ila.5.1712969419196; Fri, 12 Apr
- 2024 17:50:19 -0700 (PDT)
-Date: Fri, 12 Apr 2024 17:50:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000be1f530615efc5ca@google.com>
-Subject: [syzbot] [bpf?] [net?] KMSAN: uninit-value in sock_hash_delete_elem
-From: syzbot <syzbot+c33bff5d5da1391df027@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
+References: <20240411153232.169560-1-zi.yan@sent.com> <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
+ <2C698A64-268C-4E43-9EDE-6238B656A391@nvidia.com> <bc8effda-6ff4-458d-a3ee-0d6f25cd41e0@redhat.com>
+ <BBA893A5-1463-482E-8475-384BAD1AC6FD@nvidia.com> <CAHbLzkrg7HpEf1_g4qpeGAR68dUKosSGihhnLRNcONnGVWdCJQ@mail.gmail.com>
+ <2BE605BB-F474-48E3-A54F-1E9371BF59E5@nvidia.com>
+In-Reply-To: <2BE605BB-F474-48E3-A54F-1E9371BF59E5@nvidia.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Fri, 12 Apr 2024 17:50:56 -0700
+Message-ID: <CAHbLzkpKBzRUv+QVwsfSxMw7kuSkZhyYo9yjWS5x28fk8j_hRA@mail.gmail.com>
+Subject: Re: [PATCH] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+To: Zi Yan <ziy@nvidia.com>
+Cc: David Hildenbrand <david@redhat.com>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Fri, Apr 12, 2024 at 3:59=E2=80=AFPM Zi Yan <ziy@nvidia.com> wrote:
+>
+> On 12 Apr 2024, at 18:29, Yang Shi wrote:
+>
+> > On Fri, Apr 12, 2024 at 2:06=E2=80=AFPM Zi Yan <ziy@nvidia.com> wrote:
+> >>
+> >> On 12 Apr 2024, at 15:32, David Hildenbrand wrote:
+> >>
+> >>> On 12.04.24 16:35, Zi Yan wrote:
+> >>>> On 11 Apr 2024, at 11:46, David Hildenbrand wrote:
+> >>>>
+> >>>>> On 11.04.24 17:32, Zi Yan wrote:
+> >>>>>> From: Zi Yan <ziy@nvidia.com>
+> >>>>>>
+> >>>>>> In __folio_remove_rmap(), a large folio is added to deferred split=
+ list
+> >>>>>> if any page in a folio loses its final mapping. It is possible tha=
+t
+> >>>>>> the folio is unmapped fully, but it is unnecessary to add the foli=
+o
+> >>>>>> to deferred split list at all. Fix it by checking folio mapcount b=
+efore
+> >>>>>> adding a folio to deferred split list.
+> >>>>>>
+> >>>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >>>>>> ---
+> >>>>>>    mm/rmap.c | 9 ++++++---
+> >>>>>>    1 file changed, 6 insertions(+), 3 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/mm/rmap.c b/mm/rmap.c
+> >>>>>> index 2608c40dffad..d599a772e282 100644
+> >>>>>> --- a/mm/rmap.c
+> >>>>>> +++ b/mm/rmap.c
+> >>>>>> @@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_r=
+map(struct folio *folio,
+> >>>>>>                    enum rmap_level level)
+> >>>>>>    {
+> >>>>>>            atomic_t *mapped =3D &folio->_nr_pages_mapped;
+> >>>>>> -  int last, nr =3D 0, nr_pmdmapped =3D 0;
+> >>>>>> +  int last, nr =3D 0, nr_pmdmapped =3D 0, mapcount =3D 0;
+> >>>>>>            enum node_stat_item idx;
+> >>>>>>            __folio_rmap_sanity_checks(folio, page, nr_pages, level=
+);
+> >>>>>> @@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_r=
+map(struct folio *folio,
+> >>>>>>                            break;
+> >>>>>>                    }
+> >>>>>>   -                atomic_sub(nr_pages, &folio->_large_mapcount);
+> >>>>>> +          mapcount =3D atomic_sub_return(nr_pages,
+> >>>>>> +                                       &folio->_large_mapcount) +=
+ 1;
+> >>>>>
+> >>>>> That becomes a new memory barrier on some archs. Rather just re-rea=
+d it below. Re-reading should be fine here.
+> >>>>
+> >>>> Would atomic_sub_return_relaxed() work? Originally I was using atomi=
+c_read(mapped)
+> >>>> below, but to save an atomic op, I chose to read mapcount here.
+> >>>
+> >>> Some points:
+> >>>
+> >>> (1) I suggest reading about atomic get/set vs. atomic RMW vs. atomic
+> >>> RMW that return a value -- and how they interact with memory barriers=
+.
+> >>> Further, how relaxed variants are only optimized on some architecture=
+s.
+> >>>
+> >>> atomic_read() is usually READ_ONCE(), which is just an "ordinary" mem=
+ory
+> >>> access that should not be refetched. Usually cheaper than most other =
+stuff
+> >>> that involves atomics.
+> >>
+> >> I should have checked the actual implementation instead of being foole=
+d
+> >> by the name. Will read about it. Thanks.
+> >>
+> >>>
+> >>> (2) We can either use folio_large_mapcount() =3D=3D 0 or !atomic_read=
+(mapped)
+> >>> to figure out if the folio is now completely unmapped.
+> >>>
+> >>> (3) There is one fundamental issue: if we are not batch-unmapping the=
+ whole
+> >>> thing, we will still add the folios to the deferred split queue. Migr=
+ation
+> >>> would still do that, or if there are multiple VMAs covering a folio.
+> >>>
+> >>> (4) We should really avoid making common operations slower only to ma=
+ke
+> >>> some unreliable stats less unreliable.
+> >>>
+> >>>
+> >>> We should likely do something like the following, which might even be=
+ a bit
+> >>> faster in some cases because we avoid a function call in case we unma=
+p
+> >>> individual PTEs by checking _deferred_list ahead of time
+> >>>
+> >>> diff --git a/mm/rmap.c b/mm/rmap.c
+> >>> index 2608c40dffad..356598b3dc3c 100644
+> >>> --- a/mm/rmap.c
+> >>> +++ b/mm/rmap.c
+> >>> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rma=
+p(struct folio *folio,
+> >>>                  * page of the folio is unmapped and at least one pag=
+e
+> >>>                  * is still mapped.
+> >>>                  */
+> >>> -               if (folio_test_large(folio) && folio_test_anon(folio)=
+)
+> >>> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pm=
+dmapped)
+> >>> -                               deferred_split_folio(folio);
+> >>> +               if (folio_test_large(folio) && folio_test_anon(folio)=
+ &&
+> >>> +                   (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmdmapped=
+) &&
+> >>> +                   atomic_read(mapped) &&
+> >>> +                   data_race(list_empty(&folio->_deferred_list)))
+> >>
+> >> data_race() might not be needed, as Ryan pointed out[1]
+> >>
+> >>> +                       deferred_split_folio(folio);
+> >>>         }
+> >>>
+> >>> I also thought about handling the scenario where we unmap the whole
+> >>> think in smaller chunks. We could detect "!atomic_read(mapped)" and
+> >>> detect that it is on the deferred split list, and simply remove it
+> >>> from that list incrementing an THP_UNDO_DEFERRED_SPLIT_PAGE event.
+> >>>
+> >>> But it would be racy with concurrent remapping of the folio (might ha=
+ppen with
+> >>> anon folios in corner cases I guess).
+> >>>
+> >>> What we can do is the following, though:
+> >>>
+> >>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> >>> index dc30139590e6..f05cba1807f2 100644
+> >>> --- a/mm/huge_memory.c
+> >>> +++ b/mm/huge_memory.c
+> >>> @@ -3133,6 +3133,8 @@ void folio_undo_large_rmappable(struct folio *f=
+olio)
+> >>>         ds_queue =3D get_deferred_split_queue(folio);
+> >>>         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+> >>>         if (!list_empty(&folio->_deferred_list)) {
+> >>> +               if (folio_test_pmd_mappable(folio))
+> >>> +                       count_vm_event(THP_UNDO_DEFERRED_SPLIT_PAGE);
+> >>>                 ds_queue->split_queue_len--;
+> >>>                 list_del_init(&folio->_deferred_list);
+> >>>         }
+> >>>
+> >>> Adding the right event of course.
+> >>>
+> >>>
+> >>> Then it's easy to filter out these "temporarily added to the list, bu=
+t never split
+> >>> before the folio was freed" cases.
+> >>
+> >> So instead of making THP_DEFERRED_SPLIT_PAGE precise, use
+> >> THP_DEFERRED_SPLIT_PAGE - THP_UNDO_DEFERRED_SPLIT_PAGE instead? That s=
+hould work.
+> >
+> > It is definitely possible that the THP on the deferred split queue are
+> > freed instead of split. For example, 1M is unmapped for a 2M THP, then
+> > later the remaining 1M is unmapped, or the process exits before memory
+> > pressure happens. So how come we can tell it is "temporarily added to
+> > list"? Then THP_DEFERRED_SPLIT_PAGE - THP_UNDO_DEFERRED_SPLIT_PAGE
+> > actually just counts how many pages are still on deferred split queue.
+> > It may be useful. However the counter is typically used to estimate
+> > how many THP are partially unmapped during a period of time. So we
+> > just need to know the initial value and the value when we read it
+> > again.
+> >
+> >>
+> >> I wonder what THP_DEFERRED_SPLIT_PAGE counts. If it counts THP deferre=
+d
+> >> splits, why not just move the counter to deferred_split_scan(), where =
+the actual
+> >> split happens. Or the counter has a different meaning?
+> >
+> > The deferred_split_scan() / deferred_split_count() just can return the
+> > number of pages on a specific queue (a specific node with a specific
+> > memcg). But THP_DEFERRED_SPLIT_PAGE is a global counter. Did I miss
+> > something? Or you mean traverse all memcgs and all nodes? It sounds
+> > too overkilling.
+>
+> I mean instead of increasing THP_DEFERRED_SPLIT_PAGE when a folio is adde=
+d
+> to the split list, increase it when a folio is split in deferred_split_sc=
+an(),
+> regardless which list the folio is on.
 
-syzbot found the following issue on:
+It will have overlap with thp_split_page. And what if memory pressure
+doesn't happen? The counter will be 0 even though thousands THP have
+been partially unmapped.
 
-HEAD commit:    fec50db7033e Linux 6.9-rc3
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1425a483180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=13e7da432565d94c
-dashboard link: https://syzkaller.appspot.com/bug?extid=c33bff5d5da1391df027
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b653d3180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159a2cf3180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/901017b36ccc/disk-fec50db7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/16bfcf5618d3/vmlinux-fec50db7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dc9c5a1e7d02/bzImage-fec50db7.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c33bff5d5da1391df027@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in spin_lock_bh include/linux/spinlock.h:356 [inline]
-BUG: KMSAN: uninit-value in sock_hash_delete_elem+0x239/0x710 net/core/sock_map.c:945
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- sock_hash_delete_elem+0x239/0x710 net/core/sock_map.c:945
- ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
- bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
- __bpf_trace_block_bio_remap+0x34/0x50 include/trace/events/block.h:507
- __traceiter_block_bio_remap+0xa5/0x160 include/trace/events/block.h:507
- trace_block_bio_remap include/trace/events/block.h:507 [inline]
- blk_partition_remap block/blk-core.c:571 [inline]
- submit_bio_noacct+0x2449/0x2800 block/blk-core.c:762
- submit_bio+0x58a/0x5b0 block/blk-core.c:879
- ext4_io_submit fs/ext4/page-io.c:378 [inline]
- io_submit_add_bh fs/ext4/page-io.c:419 [inline]
- ext4_bio_write_folio+0x1e76/0x2e40 fs/ext4/page-io.c:563
- mpage_submit_folio+0x351/0x4a0 fs/ext4/inode.c:1869
- mpage_map_and_submit_buffers fs/ext4/inode.c:2115 [inline]
- mpage_map_and_submit_extent fs/ext4/inode.c:2254 [inline]
- ext4_do_writepages+0x3733/0x62e0 fs/ext4/inode.c:2679
- ext4_writepages+0x312/0x830 fs/ext4/inode.c:2768
- do_writepages+0x427/0xc30 mm/page-writeback.c:2612
- __writeback_single_inode+0x10d/0x12c0 fs/fs-writeback.c:1650
- writeback_sb_inodes+0xb48/0x1be0 fs/fs-writeback.c:1941
- __writeback_inodes_wb+0x14c/0x440 fs/fs-writeback.c:2012
- wb_writeback+0x4da/0xdf0 fs/fs-writeback.c:2119
- wb_check_old_data_flush fs/fs-writeback.c:2223 [inline]
- wb_do_writeback fs/fs-writeback.c:2276 [inline]
- wb_workfn+0x110c/0x1940 fs/fs-writeback.c:2304
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
- kthread+0x3e2/0x540 kernel/kthread.c:388
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-Local variable stack created at:
- __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
-
-CPU: 1 PID: 76 Comm: kworker/u8:5 Not tainted 6.9.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: writeback wb_workfn (flush-8:0)
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> --
+> Best Regards,
+> Yan, Zi
 
