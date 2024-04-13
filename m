@@ -1,116 +1,106 @@
-Return-Path: <linux-kernel+bounces-143656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A19368A3BFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:39:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F5708A3BFF
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 11:42:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39474B21778
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:39:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF641F21865
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60DEB376E2;
-	Sat, 13 Apr 2024 09:38:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB85381B9;
+	Sat, 13 Apr 2024 09:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="MjH6/odP"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RBspg1Lx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CA74A33;
-	Sat, 13 Apr 2024 09:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B39D1E515;
+	Sat, 13 Apr 2024 09:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713001131; cv=none; b=H1lJi7TBTNOvkl96TPMOX6VtjXw0hcI2hZyik1Kff/Y7Z/4x1VhpPcd9xFYjfZlm1TQ1NHzmvAyvJ0E7tK1h4dn+btPKFKN69QMRTzq8Bqxy8jsCZy965P5W1matFi6P14yD9ihpn7pzgYM1jTLTyJV79cnsO/VQeRY/5Xu2YF4=
+	t=1713001324; cv=none; b=bVHleeXDWYUCY9K8vrSnrAsulkVIHXgMFt9pG6SksdUGBdUnhMsXQzZSzIUWwUrbzCkVSUauyza79NIb6Hs2E1OcJXX3ICrpALl8QWLhmcbKjQjaPlVxKDg4eas33cB0UhGeTOxYQ6+jYXAAiq1XqhGCjrMs+jUTFJL9Qweze+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713001131; c=relaxed/simple;
-	bh=Et+IhBjd7PuuxJ8wSo2dfIX801FnHMjyZhnA43uxaLw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Sb0Apn+oH02AdB5/LENvRHuRxKcyykBp9xd3R5Gid/wdBoGCJpYC5g40CVcUyXo7HnwBaJtuB88fEiSl864f6Hfdce5aZwS9J6haaEXOSbPPh0+iKTQpDSxwat/RR/DAVUUmPIoXiwwPwJJUHK3O/hGhll975ykZtljrq6GOYIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=MjH6/odP; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1713001128;
-	bh=jPYPpXrOTdq14zbY1a5WM5rZP3IYtTcbIcNsjXlJspk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=MjH6/odPeFgoAEfNG2rNSGt2thn4S+aADBoSLF86JXfv/dzzX80RNdWPYVPLWA4km
-	 WABN2/vhWdwd4HsPSsxQNyWLQDu6QVoZfSOqmsukC9DZaJ0tj27yUlx4bgXQqGe+F6
-	 7vE+canYaQukx6oxuedLYuJav6633yNYphxX7VCQoyIkzH+qRF7Pg0GQTWkWvhtGeC
-	 TipxPPhkh9hRKBh6VFWbs16RXSaOOGQavzY0JWXgyoXZn8kw6AWo1ianMcDg4HVZWG
-	 bMW6Uy37rKrath0YVIVn6h6nF4qu8QXvzFbrGlTW+nzI3LSrKdXLIihEZkUVcNx7C2
-	 Znym4ghrFREwQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VGpKM2sTsz4wb2;
-	Sat, 13 Apr 2024 19:38:47 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Sean Christopherson
- <seanjc@google.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave
- Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Peter Zijlstra
- <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Pawan Gupta
- <pawan.kumar.gupta@linux.intel.com>, Daniel Sneddon
- <daniel.sneddon@linux.intel.com>, linuxppc-dev@lists.ozlabs.org,
- linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>, Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [PATCH 1/3] x86/cpu: Actually turn off mitigations by default
- for SPECULATION_MITIGATIONS=n
-In-Reply-To: <87edb9d33r.fsf@mail.lhotse>
-References: <20240409175108.1512861-1-seanjc@google.com>
- <20240409175108.1512861-2-seanjc@google.com>
- <20240413115324.53303a68@canb.auug.org.au> <87edb9d33r.fsf@mail.lhotse>
-Date: Sat, 13 Apr 2024 19:38:47 +1000
-Message-ID: <87bk6dd2l4.fsf@mail.lhotse>
+	s=arc-20240116; t=1713001324; c=relaxed/simple;
+	bh=rIdyIzeWyytQNTt2PuS6xZHsPm01Tq24RBxQ59IuLm4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jpALFyMt2Zqz5ZNvcIcnB6bUmg6A64ic4v3iNZ4ltE7ZpbkpmUkn4u66+RA07OzqXc+3SYQEDtAC+O5VfPlrgv4mY5A83kvLqkyJEqx+zq30iclz/VRn51wgbwcCR9tmUvm1lqAVz9VAIY/IuDb8JZqfYWWFneOWKgqhMso6Fqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RBspg1Lx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FF39C3277B;
+	Sat, 13 Apr 2024 09:42:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713001323;
+	bh=rIdyIzeWyytQNTt2PuS6xZHsPm01Tq24RBxQ59IuLm4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RBspg1Lx9XU/EoMFCU9hXzhO2MUatTIBx+YbZxVcb+hCq99a7b4pA1zBYOXPfy4HL
+	 DL3+rkKK4ovi5OHs+uSFBIvG4UBc88+Wl8n4YtF21LvTb3agOJ64Iy4TrJzPOLXarl
+	 rG/xwyB1aX6gJFhW4odPJWNyqa1jjZYrZWlK8pab4tiP6INTc8GvtJsiJT202ctH/b
+	 KKOTZXqBJ231P6warRbuWr+5FBX1cHxmNFq3Wy9uK9xP7zi3RMIkxmTcMWaCXMb8jq
+	 Q6tBhgv4yGVyhrZ9YaZYyTzPNnF+lT5SfsYqEk+MGDAh0OT+n9l2S2wy8vtqUWWxrg
+	 QWLNgfhdwaZdw==
+Date: Sat, 13 Apr 2024 11:41:57 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() -
+ requirements
+Message-ID: <20240413-aufgaben-feigen-e61a1ec3668f@brauner>
+References: <20240411001012.12513-1-torvalds@linux-foundation.org>
+ <20240412-vegetarisch-installieren-1152433bd1a7@brauner>
+ <CAHk-=wiYnnv7Kw7v+Cp2xU6_Fd-qxQMZuuxZ61LgA2=Gtftw-A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiYnnv7Kw7v+Cp2xU6_Fd-qxQMZuuxZ61LgA2=Gtftw-A@mail.gmail.com>
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
-..
->> On Tue,  9 Apr 2024 10:51:05 -0700 Sean Christopherson <seanjc@google.com> wrote:
-..
->>> diff --git a/kernel/cpu.c b/kernel/cpu.c
->>> index 8f6affd051f7..07ad53b7f119 100644
->>> --- a/kernel/cpu.c
->>> +++ b/kernel/cpu.c
->>> @@ -3207,7 +3207,8 @@ enum cpu_mitigations {
->>>  };
->>>  
->>>  static enum cpu_mitigations cpu_mitigations __ro_after_init =
->>> -	CPU_MITIGATIONS_AUTO;
->>> +	IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) ? CPU_MITIGATIONS_AUTO :
->>> +						     CPU_MITIGATIONS_OFF;
->>>  
->>>  static int __init mitigations_parse_cmdline(char *arg)
->>>  {
+On Fri, Apr 12, 2024 at 10:43:06AM -0700, Linus Torvalds wrote:
+> Side note: I'd really like to relax another unrelated AT_EMPTY_PATH
+> issue: we should just allow a NULL path for that case.
+> 
+> The requirement that you pass an actual empty string is insane. It's
+> wrong. And it adds a noticeable amount of expense to this path,
+> because just getting the single byte and looking it up is fairly
+> expensive.
+> 
+> This was more noticeable because glibc at one point (still?) did
+> 
+>         newfstatat(6, "", buf, AT_EMPTY_PATH)
+> 
+> when it should have just done a simple "fstat()".
+> 
+> So there were (are?) a *LOT* of AT_EMPTY_PATH users, and they all do a
+> pointless "let's copy a string from user space".
+> 
+> And yes, I know exactly why AT_EMPTY_PATH exists: because POSIX
+> traditionally says that a path of "" has to return -ENOENT, not the
+> current working directory. So AT_EMPTY_PATH basically says "allow the
+> empty path for lookup".
+> 
+> But while it *allows* the empty path, it does't *force* it, so it
+> doesn't mean "avoid the lookup", and we really end up doing a lot of
+> extra work just for this case. Just the user string copy is a big deal
+> because of the whole overhead of accessing user space, but it's also
+> the whole "allocate memory for the path etc".
+> 
+> If we either said "a NULL path with AT_EMPTY_PATH means empty", or
+> even just added a new AT_NULL_PATH thing that means "path has to be
+> NULL, and it means the same as AT_EMPTY_PATH with an empty path", we'd
+> be able to avoid quite a bit of pointless work.
 
-I think a minimal workaround/fix would be:
-
-diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
-index 2b8fd6bb7da0..290be2f9e909 100644
---- a/drivers/base/Kconfig
-+++ b/drivers/base/Kconfig
-@@ -191,6 +191,10 @@ config GENERIC_CPU_AUTOPROBE
- config GENERIC_CPU_VULNERABILITIES
-        bool
-
-+config SPECULATION_MITIGATIONS
-+       def_bool y
-+       depends on !X86
-+
- config SOC_BUS
-        bool
-        select GLOB
-
-cheers
+It also causes issues for sandboxed enviroments (most recently for the
+Chrome sandbox) because AT_EMPTY_PATH doesn't actually mean
+AT_EMPTY_PATH unless the string is actually empty. Otherwise
+AT_EMPTY_PATH is ignored. So I'm all on board for this. I need to think
+a bit whether AT_NULL_PATH or just allowing NULL would be nicer. Mostly
+because I want to ensure that userspace can easily detect this new
+feature.
 
