@@ -1,121 +1,129 @@
-Return-Path: <linux-kernel+bounces-143609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AED8A3B64
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A038A3B66
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 09:14:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38ABD1F2259C
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 07:11:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3F131F227E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 07:14:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F1471CD37;
-	Sat, 13 Apr 2024 07:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91DA1CD2D;
+	Sat, 13 Apr 2024 07:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="Ee/kev/T"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kali.org header.i=@kali.org header.b="ML95mva9"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0240A1CD20
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 07:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2263101D5
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 07:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712992264; cv=none; b=E/2r6nUdn+CV6QjGdSRnQg2XqIrypOHimbhmgQDQIJWm1CfHiDFz3re3UFLN9uthqawOr+/nQT8wSiNRjVmT1Ww8ASBW1bA4bmHVyxZsbbQSgcvaJBN2UDVzaeXUizLPtGIeHcNtaPMdu5gsBe1d7rJugNh6pL7rOVQp+ZyfnEw=
+	t=1712992471; cv=none; b=kFxMcAZ6Vt6NAWxyKvyg+jSlJEN2ZM/lHoAQ9wqK0lKCcCvbSwkuREusNAH0CLghrtV/YlVuPY2YfVZZhn/S+UKRXIAtwO6VqdYHokXVM4N0OBlU+9hVTpCt470W9hmcq9ctBrzMEHw1sZLbRFuAQrzzT3aqSqS8BIgjY22e7H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712992264; c=relaxed/simple;
-	bh=kvTTrXu/D+RBrfLW181LXtktGgwC7lY0YLQ1arsPkPA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xoc2JpT+I9fObxEmDGir6L0ZOOQqsYM9Nok1+Pdtc2SK55r21o8rEYJBu2THCbxnuHZsDjOTmgw6Oz1ivXF2WAIAMdAs3I8YYY/dS7TjgAMs/G4AMzoln5HdqmwQtXQOEBdEFZNcvg+3DKByhz7+ecKElSXBUmEqrPHz5sgTOpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=Ee/kev/T; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=fDsS
-	qP37JlfsnuvUi76pse1YRgLT6bu9xfYi42wQzxM=; b=Ee/kev/TBG9MhQM+562M
-	/l6v8JyCaSFeM9P5dsBDqQ8lKlzFxyqml8qH3LK/QNF/+LuqqFniIwLzrtkjEVZq
-	tPOExrh3s095LRWH8rAlrBng28jES8fiE1UTmlkPg0Qt65dPnmKvY0DaxvdlTeIR
-	e+afNoXyVUkXFFCp8oGd7hhANekvkhirYEbghpuX/8fmpbzUZwEGXqrlGMZdkpi1
-	MjCePYcHmL02P/FIoJ8aalwryR9+6hAjy/5h2uC3uTZa6gl76hcvI7AUzIFwAJdL
-	/7PhhSKZnzRgRgz6wI32Rf/weept8ZH1AydS0Bajqgn4tt0Ba51sUbwHQ6oeNf35
-	1Q==
-Received: (qmail 1442646 invoked from network); 13 Apr 2024 09:10:59 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 13 Apr 2024 09:10:59 +0200
-X-UD-Smtp-Session: l3s3148p1@pQQgF/UVSFRQk7GI
-Date: Sat, 13 Apr 2024 09:10:59 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: linux-i2c@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/18] i2c: rk3x: remove printout on handled timeouts
-Message-ID: <4ogowge36wr2lk2zdsv3zc3sm3pjk4h5wmy2hjth734kgsr3rs@lb4wsmkpavnd>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Dragan Simic <dsimic@manjaro.org>, linux-i2c@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <20240410112418.6400-33-wsa+renesas@sang-engineering.com>
- <4bcd397ec377a4932c34d62c85ef28ed@manjaro.org>
- <hgdhrf2jiovfxcppdtsq32sfbk4xuq7ewiwq4awwztj4mp3yez@kj6ixihkcxhe>
- <af8ac48f10a1636ab2486aef91e01c3f@manjaro.org>
+	s=arc-20240116; t=1712992471; c=relaxed/simple;
+	bh=o3+z2gjvWYe3ycjNtnxQBlBPcTLvyVZ3uulsKyfAvvQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gD/oNel5kAxEnMvBT5yZkhCHKbk8r1OmYmvh6W2nRq75hMVql10a5IIo19DWhF6EA8ui27EN8lJVAfcp9VkOKnpZ6y6g6U7DR13WQ/hbvFAqSNFMN0AEbTxHaPxM9Zfgjf21ECzLxypBl0F1S4TsUbeFVjeM2qYxPpK4cRUuo4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kali.org; spf=pass smtp.mailfrom=kali.org; dkim=pass (2048-bit key) header.d=kali.org header.i=@kali.org header.b=ML95mva9; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kali.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kali.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e6affdd21so479540a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 00:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kali.org; s=google; t=1712992468; x=1713597268; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/HHtPvGouLUwNBinHLkaycjej5YlmhYQaDzE3CvXbqE=;
+        b=ML95mva9yTzx2l+b/6u3g9jWv5UDHCZzA6zJfTAlo9Pr1MrKAg2F8ScGGRSZJOe0og
+         tDTrhpDvAIJ5CJT1bEziN6OYQ0Jf8gMMQwbEISNdapdXDBOh3S+bYdr3lOh3kVRvwBKW
+         8JK37gisChfFtkttjg0SNHShiIq36n99kagrSDcNhjQ3Fj1Y4vUjcy0/d2HFl1qk0Gic
+         0YPYPn9t4GqKKXYEWlW4SqBBHm0djueYhbaeMbyKLCRIsICg9QdGjGtrwrIIS3BXUVQL
+         2hgj0I3q5nArW/C/2RBZPXcBlT6mAruhuRd/q3dgvM+Nq1iniiQXqKiBVscVkdZfX/Kx
+         gNjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712992468; x=1713597268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/HHtPvGouLUwNBinHLkaycjej5YlmhYQaDzE3CvXbqE=;
+        b=WUlQIhN24KVUg4RXS+GEniRDvbC0vlA7gyilTkrh3Q9pjAeQpvFK3Q7y/5FBcpPedC
+         6MA/cf6Im50B2w8EeRnhpcTj8eyHtp8m1e5Z+7bdIe5CBfLJn+9ssTEd2F15ZJKTZq/j
+         9p2NL0R6SqPZQDs9mBF12o896H0QCTRNWCgLAPKUknWQCLewlVSXFFrjvRz2QjkaRpWm
+         Ij0pkVeyq92mwc+3SWAa3xNm0nuQbr4JrMaFAySOuoXRZaCRK2CauATzRruTYNO1D2Ja
+         gmGjJYzZVzKsgtww0p6GMsH0qn2Eqw3O8YCuYR7B1ZZtTnJueEMYSfFRX2tU4nO0sqxJ
+         /PNg==
+X-Forwarded-Encrypted: i=1; AJvYcCWCpg+boojrNqV+n0QLCOAH7T1/hnpWNlJ7+xsnYRyehaVB1uRZwSpLHtsTnPgZFkO5cViQwMn/uhF/lnDuvch3tVBaMcYKBg/HT+JH
+X-Gm-Message-State: AOJu0YxoYn0MyRKtTIveGDBkU2pWTVAPceLJ4xsdAyTWfP5eQNQgECwx
+	jAJlbkUhAjQXIr5bY63yWgEF6QRH1bw/rWv/QeMr7UPgum3NBB65WM+kwj1ZJ8KF8q1og0Fcvmm
+	Ed4/JS0B20V4S/TyPBwirgARfM/lwbTC4p2t0GA==
+X-Google-Smtp-Source: AGHT+IGjKQPBWk3zY4ooVWSwwjx8svo3iMnk4hrUD8lrSsQHtU9YoU3a9b5yDiFZBd6peTfPY9ZB3ENbAOeulzcfskI=
+X-Received: by 2002:a50:8754:0:b0:56e:2a38:1fb3 with SMTP id
+ 20-20020a508754000000b0056e2a381fb3mr3884604edv.4.1712992467646; Sat, 13 Apr
+ 2024 00:14:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="v5pm4t4sjideud7d"
-Content-Disposition: inline
-In-Reply-To: <af8ac48f10a1636ab2486aef91e01c3f@manjaro.org>
+References: <20240413064225.39643-1-jenneron@postmarketos.org> <20240413064225.39643-2-jenneron@postmarketos.org>
+In-Reply-To: <20240413064225.39643-2-jenneron@postmarketos.org>
+From: Steev Klimaszewski <steev@kali.org>
+Date: Sat, 13 Apr 2024 02:14:16 -0500
+Message-ID: <CAKXuJqg43-QVWAANyt3_z3fEVrHtXqVuJy5OFNMEZz=STDZQ0A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] soundwire: qcom: disable stop clock on 1.3.0 and below
+To: Anton Bambura <jenneron@postmarketos.org>
+Cc: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+	Bard Liao <yung-chuan.liao@linux.intel.com>, 
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
+	Sanyog Kale <sanyog.r.kale@intel.com>, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Thank you!
 
---v5pm4t4sjideud7d
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Sat, Apr 13, 2024 at 1:43=E2=80=AFAM Anton Bambura <jenneron@postmarketo=
+s.org> wrote:
+>
+> This patch returns back the behavior of disabling stop clock on soundwire
+> 1.3.0 and below which seems to have been altered by accident which
+> results in broken audio on sdm845 + wcd9340. For example, on AYN Odin and
+> Lenovo Yoga C630 devices.
+>
+> Fixes: 4830bfa2c812 ("soundwire: qcom: set clk stop need reset flag at ru=
+ntime")
+> Signed-off-by: Anton Bambura <jenneron@postmarketos.org>
+> ---
+>  drivers/soundwire/qcom.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index a1e2d6c98186..bc03484a28e8 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -628,6 +628,9 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
+>                         }
+>                 }
+>
+> +               if (ctrl->version <=3D SWRM_VERSION_1_3_0)
+> +                       ctrl->clock_stop_not_supported =3D true;
+> +
+>                 if (!found) {
+>                         qcom_swrm_set_slave_dev_num(bus, NULL, i);
+>                         sdw_slave_add(bus, &id, NULL);
+> --
+> 2.43.0
+>
+>
+Tested on the Lenovo Yoga C630
+Tested-by: Steev Klimaszewski <steev@kali.org>
 
-Hi Dragan,
-
-> Sure, but I think that having such an additional debug facility
-> can only help and save the people from adding temporary printk()s
-> while debugging.
-
-Mileages, I guess. I like temporary printouts for temporary debug
-sessions. This way the upstream source code stays slim. In my experience
-with I2C over the years, debugging happens with developers anyhow.
-Logfiles from users which help developers create patches are very rare.
-And those users are usually capable enough to add debug patches.
-Given these experiences (which may be different in other subsystems), I
-don't see why we should carry the bloat.
-
-That said, I'll leave the final decision to the driver maintainers.
-
-Happy hacking,
-
-   Wolfram
-
-
---v5pm4t4sjideud7d
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYaL/8ACgkQFA3kzBSg
-KbbTqw/9HLHorgJpCWkk5dX2IWoSeGm6vwPo9lvfGt+zKqEFeo4X5NK/tZq1+DDw
-VwDbGJjA1rQX/yVVyVfOMJ5WjijOh2VqDxFp1MDLHyjFFIUgsTUmks9xu5THk5BE
-crRGbBhB6Js3rYdvcnbhePf/Y640ARyk2yHaQertEy7iJLhT+c+LyFbUFu3MDQj+
-eUWXzHO0XApJnJ1YqnpDYYveqJBzC+IX5CYRJBVYHfyze4chasZZlwQgSVQR/wIM
-wBc043r+6y8mN9M4qnApS/IipmF4kpJC39C3P49SxCx51XAQUfxELsQ3/xKoamZD
-byF6vf07dheL8z5yTCDEBNGR04qAVtcMpIU8rWprjQB+rcYw1RJJmfr2gcut6Sf8
-EogV42Z9O/evQdgOQnV7mGTFd79scfnhoJvO+0o6dYb9hMMk23D0rOcvK+hhaaQC
-Tq9prAYaocSLx1lIYp0XZb7jPpdt1KPGIA0y8tygrniikjs202OPAESgA6yQD524
-W2VhkwlmeDWS5QpPLe97sMNDyZAkAfRaYzIiDjzrBEU6bZyg5xpsTYo8LgWMIAGR
-LcpKTnLZGRfe+d7NlEDJ5PoEjDUpqAsAUNm1n5+6fVoSthRcLtmX/YJJGmDOCDl2
-RqcupKY08BVqunvPrT1Ub9LlD9sAARcBi4mGQKAv4Y2m8Q7Onus=
-=dhyf
------END PGP SIGNATURE-----
-
---v5pm4t4sjideud7d--
+-- steev
 
