@@ -1,282 +1,151 @@
-Return-Path: <linux-kernel+bounces-143749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199A88A3CF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:17:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 131158A3CF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 16:19:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E460B215AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:17:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4030F1C2092B
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 14:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95358446B2;
-	Sat, 13 Apr 2024 14:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D33F446DC;
+	Sat, 13 Apr 2024 14:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="L9R+QSm4"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N9MOQg7w"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56090482D3
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0E6446AF
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 14:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713017853; cv=none; b=HV5C9nY1APHogmn0+avvgyNq+RvCCb1kZFKq1ZvDO6SO6/DBM9zA9Rc31Cy+qvG58pwjP+lTH9Jy9Nz4aj6m3yOss8zJY/ij+FgLrp5yO2bqOBIts3ZFp1MCmnmojYQPQVWa752tNv2+ntkNFBjH95a4aJGWWzPwf8IdGt/9gbQ=
+	t=1713017964; cv=none; b=L6qN8ontVjzJkFzB5+bts/J5kZBCNlQD/CSjxYf3owK9ZXTq/Oiz8Sv8gUHT6yEJjRU5FCnitZWRL224ddZ9j+iJE1cBZzctIIirY95NNjD3yH7oaPvII02INPo1dDD8qDT4gkvvgCWBM9WjYydr8MZjHKS2cRCa5dHYQJYNG+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713017853; c=relaxed/simple;
-	bh=TRqOC8Vk0vbbiZ0MlxLenaXd116F99mVCwhGyj/rLiI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uLj0x/D/Ccm8p9BmH7N9EdKML8BUnqKuSBqOJI156L8JxMThY5VrENDFNeNaBpfdouBpPnRhdkET8XfU29FMnqWer5oYz71/XzIDpyut6/ompcUR6lQqCgpRQ0OULCrc2eZO1FQo4iHaXxxqqCmvcs0JqGBfxMeH7D8L0aZNPoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=L9R+QSm4; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc23bf7e5aaso1917038276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 07:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1713017850; x=1713622650; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xv8kG9m16/eb8RbFxYy706uGwjYMM+2HEkRfZeEGPKE=;
-        b=L9R+QSm4s3DftkUfwzT5+StmzJ62j9crCegKBf4LWnzwKykchpyyMGEWHeugx/9EMa
-         d3SalJgsDhXSqo0AgMLQu0pBjeusffCIRMvxHVLIGwk9KDAY+Mf8nWfwqhJdUNlNeTkM
-         wk+EXjnARRE+ErSrPABxqRq6eKPXK1JR54a7tNfRxPVmRWPVpl63hAMai6KFEWsm4zDz
-         oHE1ep8oJ4tyjhPesvFI2bsrwlIzsmNIOU1Z1LFC+n696CVjAAegZHuE9haXV4uq9LSu
-         dkgxiOifRNOsgJN8GFesvcmKm3mPEDJ1ZsB4s6tqshtozhGyrovutpHKXPQn57kKkXiN
-         5eog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713017850; x=1713622650;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xv8kG9m16/eb8RbFxYy706uGwjYMM+2HEkRfZeEGPKE=;
-        b=KMXlzxksq/6ocvc8g1/A88oInmL/oyabOltm9Oz6NBSeiBLNThA7NASkzI8Z3rS03i
-         r269suflsw0MRETp+ZKukEFLjaeB26QDixPxh7mG9KFjiwg9oarxGSS8vz7lD1QwFHz/
-         6HX57p5C4JHLKw26hFHC/kLmoejaeVPRZUZYm2+JcTGWJ25CwnTs8xdqEJ3jc+nHowQi
-         uGycV34WinIpvqJrq8B+6SLFY8O7/9kFXhYCyD/wZt3h9sweE6UOKVQsNmotvW6vi+dY
-         YfO5kKC/EGrsw5DCWs/+cTcM3y2+AirEuooXqlyl8mK/baQFZkycq9pEL/ExQcGHCP+a
-         ImKA==
-X-Forwarded-Encrypted: i=1; AJvYcCVobiWoy6KqzX9en2ZcT5IHAv8hCMLEAyLvc8H5K4iR34+95LV0jRdeD/b5aw/1Op1EELN5yQaojTcJQYBxbYVWANs3igBiOc5EsIb4
-X-Gm-Message-State: AOJu0YyjVJ/8we5b+l5bSyXc4PbkYW/43whW5bjne3hIbWqPoEiGWV2D
-	hbe+5/iRtchokW6llNKQzohAkKXd+bWEq5d0SngSjwvt0KMTX48qjBteTnba4Q==
-X-Google-Smtp-Source: AGHT+IHdWfmUP29OS2Mnz/ZajV0Y8zieEb03Y4pOFphhcucJKssu82pq8Zz29O1npwOpQtXUYBkM/A==
-X-Received: by 2002:a25:9392:0:b0:dcb:38d3:3c6a with SMTP id a18-20020a259392000000b00dcb38d33c6amr5447050ybm.46.1713017850353;
-        Sat, 13 Apr 2024 07:17:30 -0700 (PDT)
-Received: from ip-172-31-11-157.us-east-2.compute.internal (ec2-3-145-99-109.us-east-2.compute.amazonaws.com. [3.145.99.109])
-        by smtp.googlemail.com with ESMTPSA id v5-20020a254805000000b00dcdb6934617sm1193349yba.62.2024.04.13.07.17.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 07:17:30 -0700 (PDT)
-From: Kyle Huey <me@kylehuey.com>
-X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
-To: Kyle Huey <khuey@kylehuey.com>,
-	linux-kernel@vger.kernel.org,
-	Namhyung Kim <namhyung@kernel.org>,
-	Ian Rodgers <irogers@google.com>,
+	s=arc-20240116; t=1713017964; c=relaxed/simple;
+	bh=pI4zqrbDe0xOthfGgbfKKxHvZXDTJNV784x8upizaIs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PPdqXo9Z4HNit6hZ5nshLOI79f6n1uuDTgFT8HWyJp/68hLwWrh/Vk5OrR2dwt5EqmFxFovJKu3GMvGxwVQRnP34J0X0BOJvneJPUMIvEXkLnAu/6mU1GyJkOFKFfT+50H7diJkcOU2LktRAwrZN3CmKg6zNhe27whnfq3dcv+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N9MOQg7w; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713017961;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z72n2c9rvzB7U1Xb9kq/ArIj/cYrcKMMmIL868r1S0Q=;
+	b=N9MOQg7wvvVjzLBzK/wKyIzkUVZEuaJDYwRGZXia9I8By41LjvIOV3rtahTlHItV2VaV7X
+	tpkWCSTOr0uqCQGGqJaoFjIiAk4i27XX45GcuSWb52TNWckpDoGnB9cbs2ZoyvS4ZKXxrM
+	XiImTyq7BguqV6CoiNTTQ3HiEx3KxIk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-682-rkB8vYFPOx6M8ku4QDbPOA-1; Sat,
+ 13 Apr 2024 10:19:20 -0400
+X-MC-Unique: rkB8vYFPOx6M8ku4QDbPOA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E9041C03143;
+	Sat, 13 Apr 2024 14:19:19 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.136])
+	by smtp.corp.redhat.com (Postfix) with SMTP id B2AFA2026D06;
+	Sat, 13 Apr 2024 14:19:16 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sat, 13 Apr 2024 16:17:53 +0200 (CEST)
+Date: Sat, 13 Apr 2024 16:17:46 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Robert O'Callahan <robert@ocallahan.org>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 3/3] selftests/perf_events: Test FASYNC with watermark wakeups
-Date: Sat, 13 Apr 2024 07:16:20 -0700
-Message-Id: <20240413141618.4160-4-khuey@kylehuey.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240413141618.4160-1-khuey@kylehuey.com>
-References: <20240413141618.4160-1-khuey@kylehuey.com>
+	Ingo Molnar <mingo@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
+	Chris von Recklinghausen <crecklin@redhat.com>
+Subject: [PATCH] sched/isolation: fix boot crash when maxcpus <
+ first-housekeeping-cpu
+Message-ID: <20240413141746.GA10008@redhat.com>
+References: <20240130010046.2730139-2-leobras@redhat.com>
+ <20240402105847.GA24832@redhat.com>
+ <20240411143905.GA19288@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411143905.GA19288@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-The test uses PERF_RECORD_SWITCH records to fill the ring buffer and
-trigger the watermark wakeup, which in turn should trigger an IO
-signal.
+housekeeping_setup() checks cpumask_intersects(present, online) to ensure
+that the kernel will have at least one housekeeping CPU after smp_init(),
+but this doesn't work if the maxcpus= kernel parameter limits the number
+of processors available after bootup.
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+For example, the kernel with "maxcpus=2 nohz_full=0-2" parameters crashes
+at boot time on my virtual machine with 4 CPUs.
+
+Change housekeeping_setup() to use cpumask_first_and() and check that the
+returned cpu number is valid and less than setup_max_cpus.
+
+Another corner case is "nohz_full=0" on a machine with a single CPU or
+with the maxcpus=1 kernel argument. In this case non_housekeeping_mask
+is empty and IIUC tick_nohz_full_setup() makes no sense. And indeed, the
+kernel hits the WARN_ON(tick_nohz_full_running) in tick_sched_do_timer().
+
+And how should the kernel interpret the "nohz_full=" parameter? I think
+it should be silently ignored, but currently cpulist_parse() happily
+returns the empty cpumask and this leads to the same problem.
+
+Change housekeeping_setup() to check cpumask_empty(non_housekeeping_mask)
+and do nothing in this case.
+
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
- .../testing/selftests/perf_events/.gitignore  |   1 +
- tools/testing/selftests/perf_events/Makefile  |   2 +-
- .../selftests/perf_events/watermark_signal.c  | 146 ++++++++++++++++++
- 3 files changed, 148 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/perf_events/watermark_signal.c
+ kernel/sched/isolation.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/perf_events/.gitignore b/tools/testing/selftests/perf_events/.gitignore
-index 790c47001e77..ee93dc4969b8 100644
---- a/tools/testing/selftests/perf_events/.gitignore
-+++ b/tools/testing/selftests/perf_events/.gitignore
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- sigtrap_threads
- remove_on_exec
-+watermark_signal
-diff --git a/tools/testing/selftests/perf_events/Makefile b/tools/testing/selftests/perf_events/Makefile
-index db93c4ff081a..70e3ff211278 100644
---- a/tools/testing/selftests/perf_events/Makefile
-+++ b/tools/testing/selftests/perf_events/Makefile
-@@ -2,5 +2,5 @@
- CFLAGS += -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
- LDFLAGS += -lpthread
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 2a262d3ecb3d..5891e715f00d 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -118,6 +118,7 @@ static void __init housekeeping_setup_type(enum hk_type type,
+ static int __init housekeeping_setup(char *str, unsigned long flags)
+ {
+ 	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
++	unsigned int first_cpu;
+ 	int err = 0;
  
--TEST_GEN_PROGS := sigtrap_threads remove_on_exec
-+TEST_GEN_PROGS := sigtrap_threads remove_on_exec watermark_signal
- include ../lib.mk
-diff --git a/tools/testing/selftests/perf_events/watermark_signal.c b/tools/testing/selftests/perf_events/watermark_signal.c
-new file mode 100644
-index 000000000000..49dc1e831174
---- /dev/null
-+++ b/tools/testing/selftests/perf_events/watermark_signal.c
-@@ -0,0 +1,146 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
+ 	if ((flags & HK_FLAG_TICK) && !(housekeeping.flags & HK_FLAG_TICK)) {
+@@ -138,7 +139,8 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
+ 	cpumask_andnot(housekeeping_staging,
+ 		       cpu_possible_mask, non_housekeeping_mask);
+ 
+-	if (!cpumask_intersects(cpu_present_mask, housekeeping_staging)) {
++	first_cpu = cpumask_first_and(cpu_present_mask, housekeeping_staging);
++	if (first_cpu >= nr_cpu_ids || first_cpu >= setup_max_cpus) {
+ 		__cpumask_set_cpu(smp_processor_id(), housekeeping_staging);
+ 		__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
+ 		if (!housekeeping.flags) {
+@@ -147,6 +149,9 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
+ 		}
+ 	}
+ 
++	if (cpumask_empty(non_housekeeping_mask))
++		goto free_housekeeping_staging;
 +
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <linux/perf_event.h>
-+#include <stddef.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <sys/mman.h>
-+#include <sys/syscall.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+
-+#include "../kselftest_harness.h"
-+
-+#define __maybe_unused __attribute__((__unused__))
-+
-+static int sigio_count;
-+
-+static void handle_sigio(int signum __maybe_unused,
-+			 siginfo_t *oh __maybe_unused,
-+			 void *uc __maybe_unused)
-+{
-+	++sigio_count;
-+}
-+
-+static void do_child(void)
-+{
-+	raise(SIGSTOP);
-+
-+	for (int i = 0; i < 20; ++i)
-+		sleep(1);
-+
-+	raise(SIGSTOP);
-+
-+	exit(0);
-+}
-+
-+TEST(watermark_signal)
-+{
-+	struct perf_event_attr attr;
-+	struct perf_event_mmap_page *p = NULL;
-+	struct sigaction previous_sigio, sigio = { 0 };
-+	pid_t child = -1;
-+	int child_status;
-+	int fd = -1;
-+	long page_size = sysconf(_SC_PAGE_SIZE);
-+
-+	sigio.sa_sigaction = handle_sigio;
-+	EXPECT_EQ(sigaction(SIGIO, &sigio, &previous_sigio), 0);
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.size = sizeof(attr);
-+	attr.type = PERF_TYPE_SOFTWARE;
-+	attr.config = PERF_COUNT_SW_DUMMY;
-+	attr.sample_period = 1;
-+	attr.disabled = 1;
-+	attr.watermark = 1;
-+	attr.context_switch = 1;
-+	attr.wakeup_watermark = 1;
-+
-+	child = fork();
-+	EXPECT_GE(child, 0);
-+	if (child == 0)
-+		do_child();
-+	else if (child < 0) {
-+		perror("fork()");
-+		goto cleanup;
-+	}
-+
-+	if (waitpid(child, &child_status, WSTOPPED) != child ||
-+	    !(WIFSTOPPED(child_status) && WSTOPSIG(child_status) == SIGSTOP)) {
-+		fprintf(stderr,
-+			"failed to sycnhronize with child errno=%d status=%x\n",
-+			errno,
-+			child_status);
-+		goto cleanup;
-+	}
-+
-+	fd = syscall(__NR_perf_event_open, &attr, child, -1, -1,
-+		     PERF_FLAG_FD_CLOEXEC);
-+	if (fd < 0) {
-+		fprintf(stderr, "failed opening event %llx\n", attr.config);
-+		goto cleanup;
-+	}
-+
-+	if (fcntl(fd, F_SETFL, FASYNC)) {
-+		perror("F_SETFL FASYNC");
-+		goto cleanup;
-+	}
-+
-+	if (fcntl(fd, F_SETOWN, getpid())) {
-+		perror("F_SETOWN getpid()");
-+		goto cleanup;
-+	}
-+
-+	if (fcntl(fd, F_SETSIG, SIGIO)) {
-+		perror("F_SETSIG SIGIO");
-+		goto cleanup;
-+	}
-+
-+	p = mmap(NULL, 2 * page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	if (p == NULL) {
-+		perror("mmap");
-+		goto cleanup;
-+	}
-+
-+	if (ioctl(fd, PERF_EVENT_IOC_ENABLE, 0)) {
-+		perror("PERF_EVENT_IOC_ENABLE");
-+		goto cleanup;
-+	}
-+
-+	if (kill(child, SIGCONT) < 0) {
-+		perror("SIGCONT");
-+		goto cleanup;
-+	}
-+
-+	if (waitpid(child, &child_status, WSTOPPED) != -1 || errno != EINTR)
-+		fprintf(stderr,
-+			"expected SIGIO to terminate wait errno=%d status=%x\n%d",
-+			errno,
-+			child_status,
-+			sigio_count);
-+
-+	EXPECT_GE(sigio_count, 1);
-+
-+cleanup:
-+	if (p != NULL)
-+		munmap(p, 2 * page_size);
-+
-+	if (fd >= 0)
-+		close(fd);
-+
-+	if (child > 0) {
-+		kill(child, SIGKILL);
-+		waitpid(child, NULL, 0);
-+	}
-+
-+	sigaction(SIGIO, &previous_sigio, NULL);
-+}
-+
-+TEST_HARNESS_MAIN
+ 	if (!housekeeping.flags) {
+ 		/* First setup call ("nohz_full=" or "isolcpus=") */
+ 		enum hk_type type;
 -- 
-2.34.1
+2.25.1.362.g51ebf55
+
 
 
