@@ -1,83 +1,112 @@
-Return-Path: <linux-kernel+bounces-144288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA7428A4432
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:49:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D8AD8A4405
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:38:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B53F0B2214C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:49:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E38D52813C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB571353FF;
-	Sun, 14 Apr 2024 16:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33C8137764;
+	Sun, 14 Apr 2024 16:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d6Cwpm+f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WOOC5Ont"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5305B36121
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 16:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8371353E1;
+	Sun, 14 Apr 2024 16:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713113372; cv=none; b=IqkLxRAkiMY/g/T665ZY5Rahy0e8LkzSaqZCmKb8DL3c5vzjvb23km95LaiA901WCVpuerEHdAy9lP97FER/o9ScbNwhpOagrvlcwgVXJ/0DBdmEQKpwKfhxrwyz7B7anvYIe20O3bNQ/++rJXxG7sVFfSExcCujWFJyh1MICiQ=
+	t=1713112625; cv=none; b=FnEwDpV1MSo/vRbIIwDIOYdFbbSL2Jlr3YL3GWGc3tVtECb6GSyeZtlW/hMqWy/YP6Rmrp33n2INyUwd1vO3EiN+S+KC1BIaZA+dysP9rhgmRAYnyS3nkc2oDyXtMFmNwj1vHlFCdqPs1yoJLg7xVlUQW6LCwqT/Sj66GkSXePU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713113372; c=relaxed/simple;
-	bh=Wss0WbtUOhjUWhYJ8vc04bb0suWYo6mOU9+OkAYhBcw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=t1zuF5STBlh2GkZEdJhy0yupGbj2Gyay2lufkQ0Yf6vHqGPnzrP9YtKGukjdYeulV9iDVqC5gHwOM3jTaLOlblT1SrWms4OJ1blW29hhPY+m4F1lMMHNKVqBqrssKR0+xe+2W9FnkSmdCYd6tlLP8az5NwOQ3toMd106M4RWsuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d6Cwpm+f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04281C072AA;
-	Sun, 14 Apr 2024 16:49:30 +0000 (UTC)
+	s=arc-20240116; t=1713112625; c=relaxed/simple;
+	bh=YPzrDayne4RsVvwgv+6Amz6T/hPNpbOfbV29tRkK+J4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=eOhl9AyqP92k7thRRQuwRFTBQ2Ut9j/bIvcnWacCm7EhuWDyQjOE/Rk7vMAOZpcRFzMNWTrEjT17IPb4UfT1EV9aspJ9ILBCql4IWDTrs0YHqkRxwgD33oJtnN9qrL7aoll/J6JXIekAWezYd8RNPh5Dp2Tv6E/mYr8Gkw1pcU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WOOC5Ont; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161F9C2BD10;
+	Sun, 14 Apr 2024 16:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713113372;
-	bh=Wss0WbtUOhjUWhYJ8vc04bb0suWYo6mOU9+OkAYhBcw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=d6Cwpm+fEoTII9Fi29J6au/DDKa2VJhKm96C02wk9z6fFDLf9pa+7rx//sI7lS9um
-	 z32FGHATSjYDmQ4lLT6b31eXyCMnsz2Bc2eVA1JHTHQg8Ao/QcKdMVWhZ81WKv9+j9
-	 uoVGS3cQcBXQqUwjz69L2KyX5egnTuyVUUJ4RZtejdeNxGbhtbF/m1c7A+80Q7xqBn
-	 wgljKMzVv5HOZ2qkKFd5ZJQmZzze8yxY+HVtdQALEzbDfiWy9URP6557EMHYMkPz/j
-	 gBSgfv8MuAa29XloP5ow/uBmZTemnlLEFyGRlHJJeLGpaOP63ATMfPv4Qqcz5JXohA
-	 50VXUb/IvUmwQ==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: boot: remove duplicated targets line
-Date: Mon, 15 Apr 2024 00:36:06 +0800
-Message-ID: <20240414163606.2598-1-jszhang@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=k20201202; t=1713112624;
+	bh=YPzrDayne4RsVvwgv+6Amz6T/hPNpbOfbV29tRkK+J4=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=WOOC5Ont5LDbeveY1rWMpV/B4eo9u0qhC0DiseQeuSnr9mS8HWXEzcrg1yM/zwJ8A
+	 Hp2yOH03ZGLwy0Awwa2cgdCCuNrzMft8pSKHZP7FEdDqAw3PC9BYMoaTEqYSSzds7I
+	 Csc3BozrAJ5tS5Sip69P2PzL8pBLR/yEMHyZiDg5/OTFR7zTZH/duuDoj512vRGQNy
+	 9QKOZwobNyXmCePZ8GfDT9YZuWjh24wC2dlZph/pSq1UW6LKMpcCiE516LxO54QYxm
+	 qBBh1hvllwVI/L4mv6b+JSJy7/TI5k4gkjPq+XzO0+dk8YBxd2ZPIX05urVQUZ15ud
+	 iogfjO/gVHqnQ==
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Date: Sun, 14 Apr 2024 18:36:06 +0200
+Subject: [PATCH 08/18] backlight: l4f00242t03: Constify lcd_ops
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240414-video-backlight-lcd-ops-v1-8-9b37fcbf546a@kernel.org>
+References: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
+In-Reply-To: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
+To: Lee Jones <lee@kernel.org>, 
+ Daniel Thompson <daniel.thompson@linaro.org>, 
+ Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
+ =?utf-8?q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>, 
+ Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
+ Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, 
+ linux-omap@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=787; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=YPzrDayne4RsVvwgv+6Amz6T/hPNpbOfbV29tRkK+J4=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHAX5+G2r4LHJsJWz/AdfA9TXepPdHYib8tDLf
+ NkIDcO22GqJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwF+QAKCRDBN2bmhouD
+ 1/LKD/9VWjfNPWPT125xSZyzNAAkWwa1XpfFmw9kMbYwZXaaL+DSmFpJSbBGFn7KSp3nyDQLlmy
+ YKCulZJMLmFMcQ0XQyTTZnlTLS/TxrjKqbi55mGJ6IOKwqDnqyekHpcZgrVGyyuZBbV9ibilzUU
+ BsCB20lUn1qXZ3Igk+phQmEv1OzfhQN6V44uoAmiTj/IW0o28iNW6G2SWBX3b4HiLhv6vquqHAI
+ 6u5++V1d3TNqBs4nWy95JdchIqVAd5u+EgCC+3M//c/AbLNdJ7nQlqZ9oE31cuAhLovB6VL5Lke
+ iQJD6pUfLs5UUVJCZowUbHjunADEgAY29AInndLpn9S8VmyoWWCC33v4c2SMLajz/3pxEpxm3If
+ 7ApIB+KRFZ+21zt0uDxchqnEEd5FVIM+ulxi7HSiTjgjLeN5DBGPlSFjNm6QllGQFZ+1q2caMMZ
+ eZcZPhfSv38aAGie8sgrrtPUQt6NrtcFcEeulKnJN5+ldxEAz1ogGj+ccbdYiRWejGXpAgk2OC0
+ QTypNgYJo38zrZqNBKem8jWkwNRvA288D6tYXj3PnCAPobUkWxc3cvCq2pue9v9XlgZ5/NsOHtP
+ z2d1pTDtY25H/5J5/FJVj8+tSA6Fnc2U2SG3kkc7dgMaVVzX8XH595u7m9SV+Sj+MjfqfH1jLE3
+ dISSCZSKXV0lKmA==
+X-Developer-Key: i=krzk@kernel.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-The "targets:" is duplicated in another line, remove the one with less
-targets.
+'struct lcd_ops' is not modified by core backlight code, so it can be
+made const for increased code safety.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/riscv/boot/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/video/backlight/l4f00242t03.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
-index 8e7fc0edf21d..e051c677f6c4 100644
---- a/arch/riscv/boot/Makefile
-+++ b/arch/riscv/boot/Makefile
-@@ -20,7 +20,6 @@ OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
- OBJCOPYFLAGS_loader.bin :=-O binary
- OBJCOPYFLAGS_xipImage :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
+diff --git a/drivers/video/backlight/l4f00242t03.c b/drivers/video/backlight/l4f00242t03.c
+index bd5137ee203b..dd0874f8c7ff 100644
+--- a/drivers/video/backlight/l4f00242t03.c
++++ b/drivers/video/backlight/l4f00242t03.c
+@@ -158,7 +158,7 @@ static int l4f00242t03_lcd_power_set(struct lcd_device *ld, int power)
+ 	return 0;
+ }
  
--targets := Image Image.* loader loader.o loader.lds loader.bin
- targets := Image Image.* loader loader.o loader.lds loader.bin xipImage
- 
- ifeq ($(CONFIG_XIP_KERNEL),y)
+-static struct lcd_ops l4f_ops = {
++static const struct lcd_ops l4f_ops = {
+ 	.set_power	= l4f00242t03_lcd_power_set,
+ 	.get_power	= l4f00242t03_lcd_power_get,
+ };
+
 -- 
-2.43.0
+2.34.1
 
 
