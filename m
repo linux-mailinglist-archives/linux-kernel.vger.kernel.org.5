@@ -1,258 +1,86 @@
-Return-Path: <linux-kernel+bounces-143952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871758A4003
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 05:22:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCCF18A4004
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 05:26:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85DE81C21170
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 03:22:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B20F2818CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 03:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7951B17721;
-	Sun, 14 Apr 2024 03:22:47 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8D6E17551;
+	Sun, 14 Apr 2024 03:26:04 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672E728E2;
-	Sun, 14 Apr 2024 03:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408293FF4
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:26:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713064967; cv=none; b=bHeMfKf82VicFJ5L3wHOcJqkbM+vvJTguotfutP/NBJhdTV6VvmDCsQbHHV+jRcV3pCPIJaJt4dQC+R8zZDQcQCZoeObE/eL2Y+tNaEGu7V4LQDG5+lud9aaBggqXMQDMVjOal+xDATFHhzgsyRDNvmEL5CraZoqanPLh7cI8LE=
+	t=1713065164; cv=none; b=h/vdxEIQqul8/lsbiDgjXlNuBolyTgh55hWCD/6v/zAQ0Y27JE2+Sd2B8gaEUrHNUxoLue+gY1sCexOiRudNmfXWl5oQDyssO9p28DHsRXtBglHk5z6jtLD1wPX9xVBln3RQgT+CxbKY2aXcRCA/N1pil4ZpE8ak5n+NjqK6khs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713064967; c=relaxed/simple;
-	bh=i7V0IVdjZPKh2lZW+Jfn2T/gp7NnIxL5lWxJPEsEsZs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UnGqMU9y1Fsy4LDXjQ39MOW9dgxOhHnnKUZ/bMuW676Sz8zGdFyZQrlNykqKDhF25OFY7GojO1EwkeL6fdONW6JNKIWziGsPo/eQRmMFHKR6sinwVlKgxZ7LDIQoiclH5P1017XsV2JErOeKGifTFgSMg7vHw9pJ58MiLsqtcVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rvqRu-0001As-32;
-	Sun, 14 Apr 2024 03:22:35 +0000
-Date: Sun, 14 Apr 2024 04:22:31 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: arinc.unal@arinc9.com
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next 2/2] net: dsa: mt7530: simplify core operations
-Message-ID: <ZhtL9zAO83HJb_Jq@makrotopia.org>
-References: <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v1-0-b08936df2770@arinc9.com>
- <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v1-2-b08936df2770@arinc9.com>
+	s=arc-20240116; t=1713065164; c=relaxed/simple;
+	bh=GKIGybLGRzkn0P4oJ/2Yi0U7cpZFepdtHyFXNuDNEMc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=EWZPUhAqTcbA+ktRCyMe5TO9wg2WKlx+t1RloXN+QYRge9wS5vD/u73hz7tlFItfqxmhIc523hvqjbkoqEZRJ8/zNtuDIid/l1TgT4gbHqti6HQFL2YGEAAQaWG8RN/BZsZS/IrY1gEE5i9JRq/2L8d16DUoEcBlV8pFY7e2CEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d676654767so261740539f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 20:26:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713065162; x=1713669962;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z2A8R4OgGaKEbiEYxSaJLZpQ3aQP0r/NUCilfVDvspo=;
+        b=GFlaLRa34g8nvrwZdTLDYftfOxBwTHn7OauRzoxpEpUpUsXQHZg6gFvLfGHl+rcPJh
+         4dcNS+XzDJncOPdMjIxsgD/Z/qmGUq7ZtVE1lGL6kV0o9PnVw6HdQPW39Qp41wXtkJr0
+         KlmpF3Qb2wqkVvQJfT8zz+Yimqs+Y6QUwQeVKNnAElTbn+tN30/doIhCBbUFKSM//cy0
+         qOOLJW6aRnf2QQ8hWzeemDn3CmbMVDl9GDNEc6dll+P8iEXHYf534TNn7aeHEIXEJady
+         Gii6uIHH3IDfYDVXNiIR4Z0levnUHUpZr/FjL12+bXTeeaYzT77HVWPFlGlbxvLnW6SX
+         xHzg==
+X-Forwarded-Encrypted: i=1; AJvYcCXa46CbtSQWKAKUqWD0REK/rdVdNbdbNCuTtcWtJCBRvshRcbqguCtyhk52cNvG78EqV278jfv84GQ2GIXBkFL12bquYsr1I/R7kDrx
+X-Gm-Message-State: AOJu0YwAcp7Picy0AI+JPYPrDPya4YHKwabmAKlX8+3cwn8Aln48qXIA
+	Ahut1dXpBzNQg+Nb290saJ1ZmYuwfzlcPHyI66JYtpTR1VpAm+iL3EHkD8kImKQZl51xOEGviX5
+	7ObWEpv2Lo//DQ8Pi9wnvQp9iRaoKYza/NIgbjnPLcR2d1joRp8/X5R8=
+X-Google-Smtp-Source: AGHT+IEV+V+bjvTUqhBxyLb7THjYPzhIMsrrMTFYJdvlz72/m9z8uPz84uDB1YcVWfdgLOmPDCCo8nzrG5+heT1Eq3VrbZ5GMlAs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v1-2-b08936df2770@arinc9.com>
+X-Received: by 2002:a05:6e02:174a:b0:369:f7ca:a358 with SMTP id
+ y10-20020a056e02174a00b00369f7caa358mr530157ill.0.1713065162455; Sat, 13 Apr
+ 2024 20:26:02 -0700 (PDT)
+Date: Sat, 13 Apr 2024 20:26:02 -0700
+In-Reply-To: <20240414025336.2016-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007c4dde06160610a3@google.com>
+Subject: Re: [syzbot] [kasan?] [mm?] INFO: rcu detected stall in __run_timer_base
+From: syzbot <syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Apr 14, 2024 at 01:08:20AM +0300, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> The core_rmw() function calls core_read_mmd_indirect() to read the
-> requested register, and then calls core_write_mmd_indirect() to write the
-> requested value to the register. Because Clause 22 is used to access Clause
-> 45 registers, some operations on core_write_mmd_indirect() are
-> unnecessarily run. Get rid of core_read_mmd_indirect() and
-> core_write_mmd_indirect(), and run only the necessary operations on
-> core_write() and core_rmw().
-> 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+Hello,
 
-Reviewed-by: Daniel Golle <daniel@makrotopia.org>
-Tested-by: Daniel Golle <daniel@makrotopia.org>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> ---
->  drivers/net/dsa/mt7530.c | 108 +++++++++++++++++++----------------------------
->  1 file changed, 43 insertions(+), 65 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> index fefa6dd151fa..2650eacf87a7 100644
-> --- a/drivers/net/dsa/mt7530.c
-> +++ b/drivers/net/dsa/mt7530.c
-> @@ -74,116 +74,94 @@ static const struct mt7530_mib_desc mt7530_mib[] = {
->  	MIB_DESC(1, 0xb8, "RxArlDrop"),
->  };
->  
-> -/* Since phy_device has not yet been created and
-> - * phy_{read,write}_mmd_indirect is not available, we provide our own
-> - * core_{read,write}_mmd_indirect with core_{clear,write,set} wrappers
-> - * to complete this function.
-> - */
-> -static int
-> -core_read_mmd_indirect(struct mt7530_priv *priv, int prtad, int devad)
-> +static void
-> +mt7530_mutex_lock(struct mt7530_priv *priv)
-> +{
-> +	if (priv->bus)
-> +		mutex_lock_nested(&priv->bus->mdio_lock, MDIO_MUTEX_NESTED);
-> +}
-> +
-> +static void
-> +mt7530_mutex_unlock(struct mt7530_priv *priv)
-> +{
-> +	if (priv->bus)
-> +		mutex_unlock(&priv->bus->mdio_lock);
-> +}
-> +
-> +static void
-> +core_write(struct mt7530_priv *priv, u32 reg, u32 val)
->  {
->  	struct mii_bus *bus = priv->bus;
-> -	int value, ret;
-> +	int ret;
-> +
-> +	mt7530_mutex_lock(priv);
->  
->  	/* Write the desired MMD Devad */
->  	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			 MII_MMD_CTRL, devad);
-> +			 MII_MMD_CTRL, MDIO_MMD_VEND2);
->  	if (ret < 0)
->  		goto err;
->  
->  	/* Write the desired MMD register address */
->  	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			 MII_MMD_DATA, prtad);
-> +			 MII_MMD_DATA, reg);
->  	if (ret < 0)
->  		goto err;
->  
->  	/* Select the Function : DATA with no post increment */
->  	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			 MII_MMD_CTRL, devad | MII_MMD_CTRL_NOINCR);
-> +			 MII_MMD_CTRL, MDIO_MMD_VEND2 | MII_MMD_CTRL_NOINCR);
->  	if (ret < 0)
->  		goto err;
->  
-> -	/* Read the content of the MMD's selected register */
-> -	value = bus->read(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			  MII_MMD_DATA);
-> -
-> -	return value;
-> +	/* Write the data into MMD's selected register */
-> +	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> +			 MII_MMD_DATA, val);
->  err:
-> -	dev_err(&bus->dev,  "failed to read mmd register\n");
-> +	if (ret < 0)
-> +		dev_err(&bus->dev, "failed to write mmd register\n");
->  
-> -	return ret;
-> +	mt7530_mutex_unlock(priv);
->  }
->  
-> -static int
-> -core_write_mmd_indirect(struct mt7530_priv *priv, int prtad,
-> -			int devad, u32 data)
-> +static void
-> +core_rmw(struct mt7530_priv *priv, u32 reg, u32 mask, u32 set)
->  {
->  	struct mii_bus *bus = priv->bus;
-> +	u32 val;
->  	int ret;
->  
-> +	mt7530_mutex_lock(priv);
-> +
->  	/* Write the desired MMD Devad */
->  	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			 MII_MMD_CTRL, devad);
-> +			 MII_MMD_CTRL, MDIO_MMD_VEND2);
->  	if (ret < 0)
->  		goto err;
->  
->  	/* Write the desired MMD register address */
->  	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			 MII_MMD_DATA, prtad);
-> +			 MII_MMD_DATA, reg);
->  	if (ret < 0)
->  		goto err;
->  
->  	/* Select the Function : DATA with no post increment */
->  	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			 MII_MMD_CTRL, devad | MII_MMD_CTRL_NOINCR);
-> +			 MII_MMD_CTRL, MDIO_MMD_VEND2 | MII_MMD_CTRL_NOINCR);
->  	if (ret < 0)
->  		goto err;
->  
-> +	/* Read the content of the MMD's selected register */
-> +	val = bus->read(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> +			MII_MMD_DATA);
-> +	val &= ~mask;
-> +	val |= set;
->  	/* Write the data into MMD's selected register */
->  	ret = bus->write(bus, MT753X_CTRL_PHY_ADDR(priv->phy_addr),
-> -			 MII_MMD_DATA, data);
-> +			 MII_MMD_DATA, val);
->  err:
->  	if (ret < 0)
-> -		dev_err(&bus->dev,
-> -			"failed to write mmd register\n");
-> -	return ret;
-> -}
-> -
-> -static void
-> -mt7530_mutex_lock(struct mt7530_priv *priv)
-> -{
-> -	if (priv->bus)
-> -		mutex_lock_nested(&priv->bus->mdio_lock, MDIO_MUTEX_NESTED);
-> -}
-> -
-> -static void
-> -mt7530_mutex_unlock(struct mt7530_priv *priv)
-> -{
-> -	if (priv->bus)
-> -		mutex_unlock(&priv->bus->mdio_lock);
-> -}
-> -
-> -static void
-> -core_write(struct mt7530_priv *priv, u32 reg, u32 val)
-> -{
-> -	mt7530_mutex_lock(priv);
-> -
-> -	core_write_mmd_indirect(priv, reg, MDIO_MMD_VEND2, val);
-> -
-> -	mt7530_mutex_unlock(priv);
-> -}
-> -
-> -static void
-> -core_rmw(struct mt7530_priv *priv, u32 reg, u32 mask, u32 set)
-> -{
-> -	u32 val;
-> -
-> -	mt7530_mutex_lock(priv);
-> -
-> -	val = core_read_mmd_indirect(priv, reg, MDIO_MMD_VEND2);
-> -	val &= ~mask;
-> -	val |= set;
-> -	core_write_mmd_indirect(priv, reg, MDIO_MMD_VEND2, val);
-> +		dev_err(&bus->dev, "failed to write mmd register\n");
->  
->  	mt7530_mutex_unlock(priv);
->  }
-> 
-> -- 
-> 2.40.1
-> 
-> 
+Reported-and-tested-by: syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=13cea36d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=1acbadd9f48eeeacda29
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=11872f4d180000
+
+Note: testing is done by a robot and is best-effort only.
 
