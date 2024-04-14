@@ -1,65 +1,78 @@
-Return-Path: <linux-kernel+bounces-144034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03BDF8A4119
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:00:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B286D8A411A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C356B21318
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:00:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D57481C21084
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAAF421A0D;
-	Sun, 14 Apr 2024 08:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93629219ED;
+	Sun, 14 Apr 2024 08:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b="YjQ0vDqT"
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QW7pONAp"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D7A20B12
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4A4208AD
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713081624; cv=none; b=tKfIorQeGMurqfB0ZuQKcgK4XkGUfW9K7SWrT9K4j8pOHLdLxj+HZD7kOjY8iW+WEhAzVzVi5jDj/iEjcsbfliA8H24nQ3Pw8jQ1nB9h5EWaOagWInHpDrkbn4/zGGjrvKpZwrCeds16jqlLVMphynLTdJG3FJ0D9Np7N7LIYow=
+	t=1713081679; cv=none; b=dw/KNlqCtCdwrlb0Uj6h/gWCY7dAiP7Ah0vhIPmaxD/VF1smYlA/nZcua17p5kzZ17msrm3Ss22q1/mF7ekX6EvqARBp8MxY40TPVFQwKvlrh1mN0UUYoj/r6YfWtd4ymIP4ij4KAfdOidkoislXENnGHfnq9qxly6Ib4vpJBRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713081624; c=relaxed/simple;
-	bh=zm9RpGKAoFVClY35GVKJp2e5Go7G/KpaY5NNEyPFbrk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oS06jSq5xjwU8pBviETjySeUNxrSi8O6arDb2phaQdLx7vxuyDfkNQNDc7raEaMoO5Tqjm0A2klacpt0efqS0JDbHmgNAXEL51Vm+YGYFhAMo6GKWNyh5zddFDGOz99qtayRAyaRdMFX2VBP0atMkdvL8mijANNk5BjYDxgK0Sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org; spf=none smtp.mailfrom=jookia.org; dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b=YjQ0vDqT; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jookia.org
-Date: Sun, 14 Apr 2024 18:00:09 +1000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-	t=1713081620;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sfKDt/wteDbIz5a70amJfBbHPdzo9pYu3x/eiw2iAEw=;
-	b=YjQ0vDqTFTO1Q6IIY4iWhHZxwK3Fzbut0Ai0B3RsPmHcUvMWGwWhuFS6dHHD+mWCtCTdpu
-	/z+2IWSeHyq0MJTU49dExv1jXlw9B3uUUjGsoY4Yu0RD2TiTnzCpovEbUwiQXhtM0difu5
-	lUBbeDC4Wfcmcpdsb8WOenukXgTzzeONrlUzSgPrhAgvqspCaQmbs6ttEENzfaU2v9QmNg
-	1DdtMzbsE6MMC/ZBc97wGYWy47M5313hP1T1KRecf/SKeLOvqzEL4KSZTA8h2V0KqaDdAL
-	yhWl363C+BNXqCXCW9XN9JHh52DPW9isco8suypKuiBZsNM9639crimJOXcc3A==
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: John Watts <contact@jookia.org>
-To: Andre Przywara <andre.przywara@arm.com>
-Cc: Chen-Yu Tsai <wens@csie.org>, Lee Jones <lee@kernel.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Ryan Walklin <ryan@testtoast.com>,
-	Chris Morgan <macroalpha82@gmail.com>
-Subject: Re: [PATCH 1/4] regulator: axp20x: AXP717: fix LDO supply rails and
- off-by-ones
-Message-ID: <ZhuNCUnJri4hBOxx@titan>
-References: <20240329235033.25309-1-andre.przywara@arm.com>
- <20240329235033.25309-2-andre.przywara@arm.com>
+	s=arc-20240116; t=1713081679; c=relaxed/simple;
+	bh=ECMysrP8zjPcxjfhOtZ0DK0O51XqwOuVaxe/4M8ZB+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ioxI0wfkwvglLxitfSEYEJjQqehAi7BPcT21fsCb4FKd2Gml7T58MEczT6lCSWHecXRIS7c7IyJRurG130R/kO5ewJoEbWzBKRNXri82dIZbG6Zdh0CIkBu1lnfnASvqRU7xLtng9kmdePLQYJ8USGev8m/a0jdjTm+V649/k80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QW7pONAp; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so5425558a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 01:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713081676; x=1713686476; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=iqP4FRZX74jWgTQcUVDjMloIsKSGUqdMZFPLZDB+JmA=;
+        b=QW7pONApnMzd1rFbwf5FZ4kwCbdm9mKbwi6xdtQrcrtlN74sBnD6LC/Vbf6+iBwqAJ
+         1UAnaOoOjOi831nwVbBm4d1Ogk86zVUcypry+dCn2ZaN2zD5p6OyssKqqgiWX3cSUh9Q
+         yYrznm3sl0+Ko6p6bvI/8UKCDkJ7F3A4MseitNBioxNuvG3iBCb4GvB4aSk7gkLm7nMb
+         z2JeTJy6P/nb3VVzDsvEGVyO6L8ey+wLwGVcJftKc33olEACW9w5Ms/WajjC4CLKpZDN
+         3qVLvgrvl4QWfonM0tciLEicP4pxnPY/b4uCyAngk9ew2Q1aoxNEXQLzEt9i4Re84PRT
+         c2cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713081676; x=1713686476;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iqP4FRZX74jWgTQcUVDjMloIsKSGUqdMZFPLZDB+JmA=;
+        b=ZuKpXIMFCm+CyDCnWvB73KldQzXUjX7H7zaft5KKKYcm+xQl/1xzUVgWdhFu5rrgSK
+         TtpVBYf0gL6G1e8DIMlNhX7nH67YqnQStK8Qv5OQXizZM40/W4uKWB88s9Blc+qL1C28
+         pvnuQ3kTgnrgR8VMqhGMNff4vOdwyLbMijfusShdT56kei3Kwt2jt1B4Kj7bHLZsrQ06
+         ciXM1AHSg3TGE6FFwqWhJujrQp76Rr0LbPtUsyNFZqs9qIUNDLE62iRQglop0iQPk4e5
+         ykXV9i56uhLOyg2uTqLhFSw8Sx0dCjwXZgQmQLKf0v41+JMx5Bck0+1uyZDJs0mlB+Ej
+         tD1g==
+X-Gm-Message-State: AOJu0Yy6XKWGpRMRaDqY0+RPSlWKrz6Gbza7vpnvcqPHfqMsBEdoA73E
+	Vra0Dr2xP84pVwKlql54XhOZL0fDHMvfcssYw9hWubvy/lmBnupG
+X-Google-Smtp-Source: AGHT+IHuE/Pn7Tdt6KdNWzZ8PKXNgvmuVfMED7Lbn5h7QLSUVtv42CUZ3llsLg5MrUdtc/eDn17uwQ==
+X-Received: by 2002:a17:906:6a08:b0:a46:4bd4:df86 with SMTP id qw8-20020a1709066a0800b00a464bd4df86mr9760100ejc.3.1713081676223;
+        Sun, 14 Apr 2024 01:01:16 -0700 (PDT)
+Received: from gmail.com (2A00111001332BCD9129005EE765889E.mobile.pool.telekom.hu. [2a00:1110:133:2bcd:9129:5e:e765:889e])
+        by smtp.gmail.com with ESMTPSA id og42-20020a1709071dea00b00a47152e6d10sm3923034ejc.134.2024.04.14.01.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Apr 2024 01:01:15 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Sun, 14 Apr 2024 10:01:12 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
+Subject: [GIT PULL] locking fix
+Message-ID: <ZhuNSJxHZzWhVAik@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,182 +81,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240329235033.25309-2-andre.przywara@arm.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Fri, Mar 29, 2024 at 11:50:30PM +0000, Andre Przywara wrote:
-> The X-Powers AXP717 PMIC has separate input supply pins for each group
-> of LDOs, so they are not all using the same DCDC1 input, as described
-> currently.
-> 
-> Replace the "supply" member of each LDO description with the respective
-> group supply name, so that the supply dependencies can be correctly
-> described in the devicetree.
-> Also fix two off-by-ones in the regulator macros, after some double
-> checking the numbers against the datasheet.
-> 
-> Fixes: d2ac3df75c3a ("regulator: axp20x: add support for the AXP717")
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Linus,
 
-Hi,
+Please pull the latest locking/urgent git tree from:
 
-> ---
->  drivers/regulator/axp20x-regulator.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-> index 34fcdd82b2eaa..3907606b091f6 100644
-> --- a/drivers/regulator/axp20x-regulator.c
-> +++ b/drivers/regulator/axp20x-regulator.c
-> @@ -140,7 +140,7 @@
->  
->  #define AXP717_DCDC1_NUM_VOLTAGES	88
->  #define AXP717_DCDC2_NUM_VOLTAGES	107
-> -#define AXP717_DCDC3_NUM_VOLTAGES	104
-> +#define AXP717_DCDC3_NUM_VOLTAGES	103
->  #define AXP717_DCDC_V_OUT_MASK		GENMASK(6, 0)
->  #define AXP717_LDO_V_OUT_MASK		GENMASK(4, 0)
->  
-> @@ -766,7 +766,7 @@ static const struct linear_range axp717_dcdc1_ranges[] = {
->  static const struct linear_range axp717_dcdc2_ranges[] = {
->  	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
->  	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
-> -	REGULATOR_LINEAR_RANGE(1600000, 88, 107, 100000),
-> +	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
->  };
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2024-04-14
 
-I'm not entirely sure these are correct after reading the datasheet.
+   # HEAD: fa1f51162338b3e2f520d4bfedc42b3b2e00da6d locking: Make rwsem_assert_held_write_nolockdep() build with PREEMPT_RT=y
 
-From what I can tell REGULATOR_LINEAR_RANGE is inclusive, so for DCDC1
-we have these ranges (we agree DCDC1 is correct, it is not affected by
-this patch):
+Fix a PREEMPT_RT build bug.
 
-#define AXP717_DCDC1_NUM_VOLTAGES	88
-static const struct linear_range axp717_dcdc1_ranges[] = {
-	REGULATOR_LINEAR_RANGE(500000,   0, 70, 10000),
-	REGULATOR_LINEAR_RANGE(1220000, 71, 87, 20000),
-};
+Thanks,
 
-The datasheet says this for the register:
+	Ingo
 
-0.5~1.2V,10mV/step,71steps
-1.22~1.54V,20mV/step,17steps
-0000000: 0.50V
-0000001: 0.51V
-..
-1000110: 1.20V
-1000111: 1.22V
-1001000: 1.24V
-..
-1010111: 1.54V
-1011000~1111111: Reserve
+------------------>
+Sebastian Andrzej Siewior (1):
+      locking: Make rwsem_assert_held_write_nolockdep() build with PREEMPT_RT=y
 
-Converting to decimal:
 
-0: 0.50V (range 1 start)
-1: 0.51V
-..
-70: 1.20V (range 1 end)
-71: 1.22V (range 2 start)
-72: 1.24V
-..
-87: 1.54V (range 2 end)
-88 onwards: reserved
+ include/linux/rwbase_rt.h | 4 ++--
+ include/linux/rwsem.h     | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-The maximum voltages are the last value plus one (to include voltage zero).
-
-For DCDC2 after applying this patch we get:
-
-#define AXP717_DCDC2_NUM_VOLTAGES	107
-static const struct linear_range axp717_dcdc2_ranges[] = {
-	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
-	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
-	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
-};
-
-The datasheet marks the maximum value as 1101011: 3.40V, so 106 (the old
-value for range) seems correct, but the NUM_VOLTAGES seems like it
-should be bumped up to 108. I think you fixed the wrong thing here.
-
-#define AXP717_DCDC3_NUM_VOLTAGES	103
-static const struct linear_range axp717_dcdc2_ranges[] = {
-	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
-	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
-	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
-};
-
-The datasheet marks the maximum value as 1101011: 3.40V, so 106 (the old
-value for range) seems correct, but the NUM_VOLTAGES seems like it
-should be bumped up to 108. I think you fixed the wrong thing here.
-For DCDC3 after applying this patch we get:
-
-#define AXP717_DCDC3_NUM_VOLTAGES	103
-static const struct linear_range axp717_dcdc3_ranges[] = {
-	REGULATOR_LINEAR_RANGE(500000,   0,  70, 10000),
-	REGULATOR_LINEAR_RANGE(1220000, 71, 102, 20000),
-};
-
-The datasheet marks the maximum value as 1100110: 1.84V, which is 102.
-So this patch to correct the AXP717_DCDC3_NUM_VOLTAGES is correct here.
-
-John.
-
->  
->  static const struct linear_range axp717_dcdc3_ranges[] = {
-> @@ -790,40 +790,40 @@ static const struct regulator_desc axp717_regulators[] = {
->  	AXP_DESC(AXP717, DCDC4, "dcdc4", "vin4", 1000, 3700, 100,
->  		 AXP717_DCDC4_CONTROL, AXP717_DCDC_V_OUT_MASK,
->  		 AXP717_DCDC_OUTPUT_CONTROL, BIT(3)),
-> -	AXP_DESC(AXP717, ALDO1, "aldo1", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, ALDO1, "aldo1", "aldoin", 500, 3500, 100,
->  		 AXP717_ALDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(0)),
-> -	AXP_DESC(AXP717, ALDO2, "aldo2", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, ALDO2, "aldo2", "aldoin", 500, 3500, 100,
->  		 AXP717_ALDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(1)),
-> -	AXP_DESC(AXP717, ALDO3, "aldo3", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, ALDO3, "aldo3", "aldoin", 500, 3500, 100,
->  		 AXP717_ALDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(2)),
-> -	AXP_DESC(AXP717, ALDO4, "aldo4", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, ALDO4, "aldo4", "aldoin", 500, 3500, 100,
->  		 AXP717_ALDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(3)),
-> -	AXP_DESC(AXP717, BLDO1, "bldo1", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, BLDO1, "bldo1", "bldoin", 500, 3500, 100,
->  		 AXP717_BLDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(4)),
-> -	AXP_DESC(AXP717, BLDO2, "bldo2", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, BLDO2, "bldo2", "bldoin", 500, 3500, 100,
->  		 AXP717_BLDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(5)),
-> -	AXP_DESC(AXP717, BLDO3, "bldo3", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, BLDO3, "bldo3", "bldoin", 500, 3500, 100,
->  		 AXP717_BLDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(6)),
-> -	AXP_DESC(AXP717, BLDO4, "bldo4", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, BLDO4, "bldo4", "bldoin", 500, 3500, 100,
->  		 AXP717_BLDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(7)),
-> -	AXP_DESC(AXP717, CLDO1, "cldo1", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, CLDO1, "cldo1", "cldoin", 500, 3500, 100,
->  		 AXP717_CLDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(0)),
-> -	AXP_DESC(AXP717, CLDO2, "cldo2", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, CLDO2, "cldo2", "cldoin", 500, 3500, 100,
->  		 AXP717_CLDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(1)),
-> -	AXP_DESC(AXP717, CLDO3, "cldo3", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, CLDO3, "cldo3", "cldoin", 500, 3500, 100,
->  		 AXP717_CLDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(2)),
-> -	AXP_DESC(AXP717, CLDO4, "cldo4", "vin1", 500, 3500, 100,
-> +	AXP_DESC(AXP717, CLDO4, "cldo4", "cldoin", 500, 3500, 100,
->  		 AXP717_CLDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
->  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(3)),
->  	AXP_DESC(AXP717, CPUSLDO, "cpusldo", "vin1", 500, 1400, 50,
-> -- 
-> 2.35.8
-> 
+diff --git a/include/linux/rwbase_rt.h b/include/linux/rwbase_rt.h
+index 29c4e4f243e4..f2394a409c9d 100644
+--- a/include/linux/rwbase_rt.h
++++ b/include/linux/rwbase_rt.h
+@@ -31,9 +31,9 @@ static __always_inline bool rw_base_is_locked(const struct rwbase_rt *rwb)
+ 	return atomic_read(&rwb->readers) != READER_BIAS;
+ }
+ 
+-static inline void rw_base_assert_held_write(const struct rwbase_rt *rwb)
++static __always_inline bool rw_base_is_write_locked(const struct rwbase_rt *rwb)
+ {
+-	WARN_ON(atomic_read(&rwb->readers) != WRITER_BIAS);
++	return atomic_read(&rwb->readers) == WRITER_BIAS;
+ }
+ 
+ static __always_inline bool rw_base_is_contended(const struct rwbase_rt *rwb)
+diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
+index 4f1c18992f76..c8b543d428b0 100644
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -167,14 +167,14 @@ static __always_inline int rwsem_is_locked(const struct rw_semaphore *sem)
+ 	return rw_base_is_locked(&sem->rwbase);
+ }
+ 
+-static inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
++static __always_inline void rwsem_assert_held_nolockdep(const struct rw_semaphore *sem)
+ {
+ 	WARN_ON(!rwsem_is_locked(sem));
+ }
+ 
+-static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
++static __always_inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
+ {
+-	rw_base_assert_held_write(sem);
++	WARN_ON(!rw_base_is_write_locked(&sem->rwbase));
+ }
+ 
+ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
 
