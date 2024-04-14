@@ -1,157 +1,103 @@
-Return-Path: <linux-kernel+bounces-144313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D10B98A4479
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:52:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D60E68A447C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:53:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB125B218BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:52:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9258C2825D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:53:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E80135A6A;
-	Sun, 14 Apr 2024 17:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49432136643;
+	Sun, 14 Apr 2024 17:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VXFF7a42"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b="AkPOpLs8"
+Received: from a.peacevolution.org (a.peacevolution.org [206.189.193.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAF413443E;
-	Sun, 14 Apr 2024 17:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D2F1350CC;
+	Sun, 14 Apr 2024 17:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.193.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713117127; cv=none; b=G6mLmp2Ff5sWFuoosUZDG8yKPNPYxiBjPlXmHln/8HY1WBtHFxUJUjC2UBoTf4wghG2af9ZHksVAlt0Ki23ulMSGA2x0YpYgqpBpKW0UwKZKJt4fBNWvKkhCY/Sbv37kyJqoVD3l4WtMclriSZVeWEEcL+H56AmkzfhT56L1XOk=
+	t=1713117201; cv=none; b=eml2OFtQIE2bXe/0yyV+BOxdVBn1x+2jaA1SHvXv1o7awo6vQ0C++f7sH691HVplQ0wND4BMcdiMBhZ/VNeATnP6uEEqg8takNJHIUtjksbYf4V9rSB1PInxF/e9d9iv1n3fX0mVVq+HfgUetMxik0NP/wT/VWZsfcXAHVRmOUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713117127; c=relaxed/simple;
-	bh=7oeIJBJB28bTtI1s924RfikvUhz080zhzK+OctRWIX0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FF/Br0HklLcq+snRgt2GPtcP/1KItjPrw1vOnhP7qd+HlhlWWTlsUlhOXrjvfeA1rM109k2zVGOG33bOcz8FFmNEGCih484IuSHqRD/wH3oziRiGnAUCMuFwAg1uWK3NgX/cKhqcRd3xXKNe2CDLnBaDy2uSv8dbjELJ8Qqjekw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VXFF7a42; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713117124;
-	bh=7oeIJBJB28bTtI1s924RfikvUhz080zhzK+OctRWIX0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VXFF7a42IADRYKhS+sBrSGfjmdAs85LDOwP9HMq5H+vYSp75SKYhQSrdMb8cRKQnq
-	 usMzPmf4/OLD6WNVR+2Urku1hyGSmMzjkknl66wX0hCEY+8yfh1LDUSc4ZUkOawl33
-	 QX6sOma7NStoOGHe3GB0KT9hFoIepEbrwgoYvuagBXZEFoxHPgB2IGZ95+e/LIciZ2
-	 fhtV6yxJQJR6ecWLrfdW3MR2/SFAUmmitHsYWcFw/CBd+eOnTpmkXsIq6ZyoaZ/vVT
-	 brPfDterPmxMmSLExE/4MKlFtOIEYggBvAj5v5utI0I6GqjEJlHaRxol2UCWYGZMnF
-	 JsSCt4nRcMvTA==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9273B37813CA;
-	Sun, 14 Apr 2024 17:52:04 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 3376D106134A; Sun, 14 Apr 2024 19:52:03 +0200 (CEST)
-Date: Sun, 14 Apr 2024 19:52:03 +0200
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Stafford Horne <shorne@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Jonas Bonn <jonas@southpole.se>, 
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Andrew Davis <afd@ti.com>, linux-openrisc@vger.kernel.org
-Subject: Re: [PATCH] openrisc: Use do_kernel_power_off()
-Message-ID: <rfbxtgppobtvtp2flghzpw7mzlrhnzwuk5gulwdauf5ecfkpa7@xk4qspf3mo3c>
-References: <20240331070230.2252922-1-shorne@gmail.com>
+	s=arc-20240116; t=1713117201; c=relaxed/simple;
+	bh=hNwjyUffC95XRThO4O6yfS+WZTIz/IwY5Q/AfIriQEI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vjlt+RyYGCvQNLgUH5Bq1SCQkro//2ZOVEhG+0NJ8OsHTe00ogq3X/yZ9vPw1aA94xl9VrM4L0iEpcopcEf0n/ME+K9S0Nc+5+fs8OaQjoAaaUTsWgPrjvKWUhF7ju/N6ExiIF17zEw6cmAEmnM2IUdp7XwVgf+IEZlykry929g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org; spf=pass smtp.mailfrom=peacevolution.org; dkim=pass (1024-bit key) header.d=peacevolution.org header.i=@peacevolution.org header.b=AkPOpLs8; arc=none smtp.client-ip=206.189.193.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=peacevolution.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=peacevolution.org
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+	by a.peacevolution.org (Postfix) with ESMTPA id 1627547919;
+	Sun, 14 Apr 2024 17:53:17 +0000 (UTC)
+From: Aren Moynihan <aren@peacevolution.org>
+To: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Cc: Aren Moynihan <aren@peacevolution.org>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>,
+	Ondrej Jirman <megi@xff.cz>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-iio@vger.kernel.org,
+	phone-devel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	Willow Barraco <contact@willowbarraco.fr>
+Subject: [PATCH 0/4] iio: light: stk3310: support powering off during suspend
+Date: Sun, 14 Apr 2024 13:53:00 -0400
+Message-ID: <20240414175300.956243-1-aren@peacevolution.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5g3tqu2f5hovaone"
-Content-Disposition: inline
-In-Reply-To: <20240331070230.2252922-1-shorne@gmail.com>
+Content-Transfer-Encoding: 8bit
+Authentication-Results: auth=pass smtp.auth=aren@peacevolution.org smtp.mailfrom=aren@peacevolution.org
+X-Spam-Level: ****
+X-Spamd-Bar: ++++
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peacevolution.org;
+	s=dkim; t=1713117198;
+	h=from:subject:date:message-id:to:cc:mime-version:content-transfer-encoding;
+	bh=tZiJxZ2AuICTeWkRxY/t4eLoCK/lqF8coOe31qJB5uc=;
+	b=AkPOpLs808ZtiKcJa9pz2HuAjlVpX4g8KlIGfQAB66oclE2qRSEVXEAdPokvp0EFUtEP55
+	KJ7NxiYJzBhLrdswsvhwdog0bvpYittKiIaPsJv5Zvd/20+90uHj/tpykLItXKtliDkVHB
+	FY4m2+3F3qGJbbymyr3VaXOlpVWO3b0=
 
+In the Pine64 PinePhone, the stk3310 chip is powered by a regulator that is
+disabled at system boot and can be shut off during suspend. To ensure that
+the chip properly initializes, both after boot and suspend, we need to
+manage this regulator.
 
---5g3tqu2f5hovaone
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Additionally if the chip is shut off in suspend, we need to make sure that
+it gets reinitialized with the same parameters after resume.
 
-Hi,
+Aren Moynihan (2):
+  dt-bindings: iio: light: stk33xx: add regulator for vdd supply
+  iio: light: stk3310: log error if reading the chip id fails
 
-On Sun, Mar 31, 2024 at 08:02:28AM +0100, Stafford Horne wrote:
-> After commit 14c5678720bd ("power: reset: syscon-poweroff: Use
-> devm_register_sys_off_handler(POWER_OFF)") setting up of pm_power_off
-> was removed from the driver, this causes OpenRISC platforms using
-> syscon-poweroff to no longer shutdown.
->=20
-> The kernel now supports chained power-off handlers. Use
-> do_kernel_power_off() that invokes chained power-off handlers.  All
-> architectures have moved away from using pm_power_off except OpenRISC.
->=20
-> This patch migrates openrisc to use do_kernel_power_off() instead of the
-> legacy pm_power_off().
->=20
-> Fixes: 14c5678720bd ("power: reset: syscon-poweroff: Use devm_register_sy=
-s_off_handler(POWER_OFF)")
-> Signed-off-by: Stafford Horne <shorne@gmail.com>
-> ---
+Ondrej Jirman (2):
+  iio: light: stk3310: Implement vdd supply and power it off during
+    suspend
+  arm64: dts: allwinner: pinephone: Add power supply to stk3311
 
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+ .../bindings/iio/light/stk33xx.yaml           |  1 +
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   |  1 +
+ drivers/iio/light/stk3310.c                   | 60 +++++++++++++++++--
+ 3 files changed, 58 insertions(+), 4 deletions(-)
 
--- Sebastian
+-- 
+2.44.0
 
->  arch/openrisc/kernel/process.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->=20
-> diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/proces=
-s.c
-> index 86e02929f3ac..3c27d1c72718 100644
-> --- a/arch/openrisc/kernel/process.c
-> +++ b/arch/openrisc/kernel/process.c
-> @@ -65,7 +65,7 @@ void machine_restart(char *cmd)
->  }
-> =20
->  /*
-> - * This is used if pm_power_off has not been set by a power management
-> + * This is used if a sys-off handler was not set by a power management
->   * driver, in this case we can assume we are on a simulator.  On
->   * OpenRISC simulators l.nop 1 will trigger the simulator exit.
->   */
-> @@ -89,10 +89,8 @@ void machine_halt(void)
->  void machine_power_off(void)
->  {
->  	printk(KERN_INFO "*** MACHINE POWER OFF ***\n");
-> -	if (pm_power_off !=3D NULL)
-> -		pm_power_off();
-> -	else
-> -		default_power_off();
-> +	do_kernel_power_off();
-> +	default_power_off();
->  }
-> =20
->  /*
-> --=20
-> 2.44.0
->=20
-
---5g3tqu2f5hovaone
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYcF78ACgkQ2O7X88g7
-+pq5mQ/+M+426GVgXDcqLWaBeZW3HA03bp5BIZ/MDyTJhm0Rddyq9+9y1SftS9bc
-A1Hn5oGq3LBhUarGxPIsDzum+BFAnY9H0iLLNSa9GxFNHvatxsEsPPLAgF1+M3Q5
-PaU9fBuC25Kihszf9bfnopMAt+3RbgDc2IVQv/f9sPjnd2S//342bFq2e8E7MTGp
-sMa91/Jn4/2OPwjiSogBx1LehE4cnREYOWo7ruBCp8fW4e6G+wpQ5FhSVfe3NF/m
-RYVpsVXGvVoIU1XecjC2CTi6g0MKJ6xZhXfjjRnmYDHnod04lVggh5zKzWgO6j+b
-7M+7pw7EaCce/38W5u/hM40X0FH1GT/ZUdmTFhaBPUFzBBTpw1X9HXe0VLJhIYGe
-urGx2G6QnX/x0YbDrbKJv27NsgVorKfE5qwPtpbD4MEhQqWovEl80Ysv0gCajs08
-RmPVqqmFsxSqbPjsrzP8BL1bPTMBN/2iM05hzScis9/OgrGHRuSm8TNCGx7stYpE
-PBoiE8bMlEKREoLriPRrcKvkpPCcKD1T19hsjonZZpLry6sTiQaCQbbeugNM97uK
-EWy5DmeTgiYSQ/10auOYWkJG2Tp1FKPWz9o5D892DBrRKeyweHnJEF5g7LYjC+hy
-5IQvYdd8SKIyrJACVazpoPbMWk8bjnmXuwBcXp8x2G+o7NtSzxY=
-=fROO
------END PGP SIGNATURE-----
-
---5g3tqu2f5hovaone--
 
