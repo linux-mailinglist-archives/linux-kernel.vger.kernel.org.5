@@ -1,150 +1,137 @@
-Return-Path: <linux-kernel+bounces-144086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55A158A419E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:55:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 163468A41A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:00:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00CCE1F215C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:55:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45B351C20E88
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:00:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1A12421D;
-	Sun, 14 Apr 2024 09:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E880B24B29;
+	Sun, 14 Apr 2024 09:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KzLfFXWS"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="YaPgL0LB"
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669E223763;
-	Sun, 14 Apr 2024 09:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6CC1AACB;
+	Sun, 14 Apr 2024 09:59:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713088534; cv=none; b=UDXQMVpGnXGqWl5cy8vawDRY/Ey58cw+LDPimWDjGzI8CeC163EqCs6Qt31W5hJu7f8N7ttDK0yQgJUNC/1SYl/p0iIFfopHAdxAobrNeOsPVfwunHt1ebqDK0L96M6NE3I4CbAXOlWB6+EhyL80XJZHVZT0xzQeLxerFDWcipg=
+	t=1713088797; cv=none; b=hOYb41iAmZtJxoedvEb9NdPFU2dL+2sWEwQXU5cKjhpxJjk6IBN5HDwPu1WsAQKyrtwuAxFU3r6b5IJlvdfaV8s3Pv0xNgVqYtMJAilmQCRVMCZKA/kVhUJHCK9vT/yj6DhnG+BPTckhKdpQTKm3DdrQSNMmEralDESRMtvgP+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713088534; c=relaxed/simple;
-	bh=b3tnisE5mCthW2dJBswBPlSIzQlrQrLbNhzUABTmHY4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=anwMLDERcusQawWEFIgkeqjMYJPDY++oyLxsL11Zms0G+j9rTtDmiYzrfCuNYTyx3s9zCgNZ9QLwJ2k9dxLKP0tjraWnvB43DPf1IxhwznXpTKpjWDCqnOMD29MI8NC9OaScgxk3wfMM9/vE23pd8URAbXTYbwcWYLGj2ky1j9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KzLfFXWS; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-518d98b9620so213053e87.3;
-        Sun, 14 Apr 2024 02:55:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713088531; x=1713693331; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mAW8FE3757+N73ozBr48CQyvPZHQOC5ywYwUdbEQp2A=;
-        b=KzLfFXWSY+ctCoHn3r52g9vyeTJaMDvRF/C+25b7H23WrwErCL+a7r0rLcqgW5UcV+
-         2JFvlGCsitldlPZ+1fvtUZCjMdhM9tqw+hdM0KTgE7pdFqAZ0FmrwMYjwzrhFHs4D3ZQ
-         xgs+gURcxFTihBLbuEmS1hWrhAR/ESqF0InbaNf+wud41nwIKjS4cutyWyk2iRtlX6VF
-         C22uwJTSmnGNPkabws6l2t+v6G+ljd/RfL8vaa3XLm9CizHEU4416pMS4/xh/fvNryU5
-         pVH6VmdesLtD/wAC67I80fz1/EZb2vcQQLWZ7bn0v47rAyEdiof6H03sehYwD56yUmlG
-         83Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713088531; x=1713693331;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mAW8FE3757+N73ozBr48CQyvPZHQOC5ywYwUdbEQp2A=;
-        b=GdLHFSWTyoXiJGATTtwghQadKmaTQ5hst1/0cnKcFRDs9Felf7Ck7qCeH2zZNjQgu7
-         ut5wyqWPd6W12kpxZ0KtVaG0N8LuLilTzHNHNd/beYyKpuMJp6HoWVI1FTc40Nmbk8Cj
-         vUVFSSollMlgaW/aTeJ7nptiILAOoSKC23qjhU5iLwQnirlvdgvAKjhG9AR5vFfJc/Av
-         UfOzzdPi1+Y6KIkVUB/K2uq4KZ7oIuQ6qc5E2EGecpzggTbnXsuxm3DvIoCV7sr5Kitu
-         ekGZLgZc+eZihf7LlLu/+whcRDMDo8+b9/KG5XZbfYPLT4MWmoR0HBYXvWgj8w8zoHqk
-         HGbw==
-X-Forwarded-Encrypted: i=1; AJvYcCUt5kU/RR7fVrgjpWGZLXnxaUQQ9HHaGu0dBZ73cf4xqqTYlRB8T/nYHQaW7gNWbZTWDfij2UG7XDX1sf9XZ0QgEK26UCFMhiT9ZmSFHdmFNBBPr3wrZErCUtxPqIQlFl1M6+khD+dEpQ==
-X-Gm-Message-State: AOJu0Yw+9EMlNVnaZuiedTLzXbiuCVQBrDRK4ZNpeOeERIdgeDeM4kNN
-	Sq69+xPC9LRJww3csStoGFldxMspyWV64S60m1v8BJtADoy3FvAq
-X-Google-Smtp-Source: AGHT+IEEKoM/iDTJCuznVR9HiQN/AVCO8Nii+pEgbCzxUMbS3kxqr5wisBFEtwUu4Hozxm6Lwg6jLw==
-X-Received: by 2002:ac2:51b7:0:b0:516:c099:e785 with SMTP id f23-20020ac251b7000000b00516c099e785mr4409977lfk.20.1713088531265;
-        Sun, 14 Apr 2024 02:55:31 -0700 (PDT)
-Received: from jernej-laptop.localnet (APN-123-252-50-gprs.simobil.net. [46.123.252.50])
-        by smtp.gmail.com with ESMTPSA id f10-20020a056000128a00b003436a3cae6dsm8677094wrx.98.2024.04.14.02.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 02:55:30 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jani Nikula <jani.nikula@intel.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Russell King <linux@armlinux.org.uk>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Maxime Ripard <mripard@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>,
- Alexander Stein <alexander.stein@ew.tq-group.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
- linux-sunxi@lists.linux.dev, linux-mips@vger.kernel.org,
- Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH 5/7] ARM: configs: sunxi: Enable DRM_DW_HDMI
-Date: Sun, 14 Apr 2024 11:55:27 +0200
-Message-ID: <3289340.44csPzL39Z@jernej-laptop>
-In-Reply-To: <20240403-fix-dw-hdmi-kconfig-v1-5-afbc4a835c38@kernel.org>
-References:
- <20240403-fix-dw-hdmi-kconfig-v1-0-afbc4a835c38@kernel.org>
- <20240403-fix-dw-hdmi-kconfig-v1-5-afbc4a835c38@kernel.org>
+	s=arc-20240116; t=1713088797; c=relaxed/simple;
+	bh=lkq1lrzB9HxKNl03Hpci59UA0sfQ1vTlkLoKDGZGgc4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jQi27+QM3Ni/5porIh/nbXAnh2rYrtliDjMt0CXRynXQONyk9THfx8FRAq61WsYfxhwkalNweyIGweKWWfR38vNVnFiL4mcWbnP3oIfUZnNGq3yM/uzR9Z8YBsv33GK47X4UwJg+LEV9m0afuG2Y4x44TE9qdqwftcaLniid9tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=YaPgL0LB; arc=none smtp.client-ip=80.12.242.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id vwdGrlEDlSoxzvwdGrpuSk; Sun, 14 Apr 2024 11:58:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1713088723;
+	bh=vJwVeMXmnUN8m7oxlGG0PhRilSD1pyJWjsrWEGLWca8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=YaPgL0LBOAlUN3v3MGzWg5qQRiFtebPEH7cCRm2gGLDPw4G4Oi7+izNrlJtrcJ4pC
+	 7Qp7zK/WwUIBc5ZL5LaUXYZr0456fzjGVQdrUiaSLMIlzIUpt/yQksJAnAnhxP/oN2
+	 g3UhZitgMeMSkqqEB9Gp/LAxEyzYk64DiFYPo/wt3/xbrV7tn8UoLgvMD29UjuJWq7
+	 XI39HBfbLyUq7ynOcSF6AceeoYbpMIlCYZEX39PAQ+TI2KGNPJeFVX+zA2gVZOFSsQ
+	 nH4KtopZJOga5ot5z6HUAzpP7WEA6BkVvtRLQmWldGOBnbt86gwDZutJXBHNZ0aJ/m
+	 Anc7CIDkHMj7A==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 14 Apr 2024 11:58:43 +0200
+X-ME-IP: 86.243.17.157
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <bentiss@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-input@vger.kernel.org
+Subject: [PATCH RESEND] HID: sony: Remove usage of the deprecated ida_simple_xx() API
+Date: Sun, 14 Apr 2024 11:58:39 +0200
+Message-ID: <9b7684381f9d09a7cd5840caa2a160d7764d6403.1713088684.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Dne sreda, 3. april 2024 ob 12:56:23 CEST je Maxime Ripard napisal(a):
-> Commit 4fc8cb47fcfd ("drm/display: Move HDMI helpers into display-helper
-> module") turned the DRM_DW_HDMI dependency of DRM_SUN8I_DW_HDMI into a
-> depends on which ended up disabling the driver in the defconfig. Make
-> sure it's still enabled.
-> 
-> Fixes: 4fc8cb47fcfd ("drm/display: Move HDMI helpers into display-helper module")
-> Reported-by: Mark Brown <broonie@kernel.org>
-> Reported-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+This is less verbose.
 
-Best regards,
-Jernej
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch has been sent about 3 months ago [1].
+A gentle reminder has been sent 1 month later [2].
 
-> ---
->  arch/arm/configs/sunxi_defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/configs/sunxi_defconfig b/arch/arm/configs/sunxi_defconfig
-> index bddc82f78942..a83d29fed175 100644
-> --- a/arch/arm/configs/sunxi_defconfig
-> +++ b/arch/arm/configs/sunxi_defconfig
-> @@ -108,10 +108,11 @@ CONFIG_DRM_SUN4I_HDMI_CEC=y
->  CONFIG_DRM_SUN8I_DW_HDMI=y
->  CONFIG_DRM_PANEL_LVDS=y
->  CONFIG_DRM_PANEL_SIMPLE=y
->  CONFIG_DRM_PANEL_EDP=y
->  CONFIG_DRM_SIMPLE_BRIDGE=y
-> +CONFIG_DRM_DW_HDMI=y
->  CONFIG_DRM_LIMA=y
->  CONFIG_FB_SIMPLE=y
->  CONFIG_BACKLIGHT_CLASS_DEVICE=y
->  CONFIG_BACKLIGHT_PWM=y
->  CONFIG_SOUND=y
-> 
-> 
+Neither one got any reply.
 
+So, I'm adding Andrew Morton in To:, in order to help in the merge process.
 
+Context:
+=======
+All patches to remove the ida_simple API have been sent.
+Matthew Wilcox seems happy with the on going work. (see [3])
 
+Based on next-20240412
+$git grep ida_simple_get | wc -l
+25
+
+Based on next-20240220
+$git grep ida_simple_get | wc -l
+36
+
+https://elixir.bootlin.com/linux/v6.8-rc3/A/ident/ida_simple_get
+50
+
+https://elixir.bootlin.com/linux/v6.7.4/A/ident/ida_simple_get
+81
+
+Thanks
+CJ
+
+[1]: https://lore.kernel.org/all/9c092dc6db15984d98732510bb052bb00683489b.1705005258.git.christophe.jaillet@wanadoo.fr/https://lore.kernel.org/all/19b538bc05c11747a3dd9fa204fde91942063d52.1698831460.git.christophe.jaillet@wanadoo.fr/
+[2]: https://lore.kernel.org/all/a1af20a9-951f-4a5d-8a60-04ded8d6f9a0@wanadoo.fr/
+[3]: https://lore.kernel.org/all/ZaqruGVz734zjxrZ@casper.infradead.org/
+---
+ drivers/hid/hid-sony.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
+index ebc0aa4e4345..55c0ad61d524 100644
+--- a/drivers/hid/hid-sony.c
++++ b/drivers/hid/hid-sony.c
+@@ -1844,8 +1844,7 @@ static int sony_set_device_id(struct sony_sc *sc)
+ 	 * All others are set to -1.
+ 	 */
+ 	if (sc->quirks & SIXAXIS_CONTROLLER) {
+-		ret = ida_simple_get(&sony_device_id_allocator, 0, 0,
+-					GFP_KERNEL);
++		ret = ida_alloc(&sony_device_id_allocator, GFP_KERNEL);
+ 		if (ret < 0) {
+ 			sc->device_id = -1;
+ 			return ret;
+@@ -1861,7 +1860,7 @@ static int sony_set_device_id(struct sony_sc *sc)
+ static void sony_release_device_id(struct sony_sc *sc)
+ {
+ 	if (sc->device_id >= 0) {
+-		ida_simple_remove(&sony_device_id_allocator, sc->device_id);
++		ida_free(&sony_device_id_allocator, sc->device_id);
+ 		sc->device_id = -1;
+ 	}
+ }
+-- 
+2.44.0
 
 
