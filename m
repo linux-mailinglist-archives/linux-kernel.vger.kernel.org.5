@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-144189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DD908A42E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:12:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B56A38A42E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:13:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B47AC281A1C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:12:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D1E1281AE1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E97F55C2E;
-	Sun, 14 Apr 2024 14:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4272153E0C;
+	Sun, 14 Apr 2024 14:13:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EtqZzgBR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o9DPKYlE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F887446AF;
-	Sun, 14 Apr 2024 14:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D8A02232B;
+	Sun, 14 Apr 2024 14:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713103937; cv=none; b=DlMiJXxDaBF3dpIqmTcxo6z0MCiqIDoEcGZJEiDXlxI7UXD46UwzIK/SIoPW9IZVl/0mGCj8+fZ4zmScjAWLTMS+nyeAlfSfND//lArh4OQWryFkvgMDRX2CArX+pmaUAwk4cxcXytnwCBhn3Q+eFrZcD3Z+AGA1zq7sAik3SOM=
+	t=1713104009; cv=none; b=sH7e/ZmvO81k4291BnEpFdhUDV5wbW54QotA0aNKHFjPBqZSjnX4g3nu5Q+BP+VlJyygmA2kkhAF3KVTsJbcV64CUpol9UlMArByXekEmgdxxVcyNoC5p9n8FarvH76myVwlioIGL2OFwM8QQ1L7HcfeRZlOPZC9Q0MzGwNp/Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713103937; c=relaxed/simple;
-	bh=qdIwjNuMH0LQJpcJiknIKRpygWmqOp4JwM7YzC65inM=;
+	s=arc-20240116; t=1713104009; c=relaxed/simple;
+	bh=vVSKlyA+67Dp+p6DZueNAg9OF64+thIvRjbveFftyBQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GQEODugNSiWEXHDc+QvlKJNEP26qMCLyv4028ral7Uh9EtJ1rtmeiLTh6658ppveynbwcfqhK3jiJPX8mvuiJ1b82bm73+YENR4/u3EQEz5UjF8c1UZp43O10SPiKkBPbc3qat2KIMKIGcQG/kPwLVqeyQEpHtglTzMgX0JIT6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EtqZzgBR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA7DC32781;
-	Sun, 14 Apr 2024 14:12:11 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=WYWkHwYXH/SsBUqWwfrffEIc8CwsBFPGKQFvvvifDLT18YsyUmUmNiV7bKY7FFptABOWsDnynzjPNgto0C440DEKVuPBDNACX+zIz7L2FnhhaI352SamnRCp7ULVTwEvAFQqYHX4BzEtUl+eKvEvuFJrLE1AP1v2OefNXueLnkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o9DPKYlE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B36FC072AA;
+	Sun, 14 Apr 2024 14:13:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713103936;
-	bh=qdIwjNuMH0LQJpcJiknIKRpygWmqOp4JwM7YzC65inM=;
+	s=k20201202; t=1713104008;
+	bh=vVSKlyA+67Dp+p6DZueNAg9OF64+thIvRjbveFftyBQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EtqZzgBRChVUtfJ3RHydXut8PLtmxXvDR/1KVTP4f3U+zviPQ99uyLcLxBCpww5Wz
-	 P+oYMBr4dEMNY2UrD8AaNhDRvA1IHiuyefqW2V15AbqYRKw7QdtZvC0Rs+elzfvib4
-	 r6rm+N+R+arTrM+w2wDchrOHxLo6X/EpteYSpcQlBUxPWNxPkUDjqjLdzFmtprdehE
-	 1PP258M3/XOkWN4g9SuxRI2LuswmBrAybWDq66JmsXUm3WNRWeL2/0kWQhKokt9rbf
-	 K4mxOEgwDqSYa4NQTc4hdiSSMuNvIEZNuxOpT7xOQMb6UvxMFsD5/Jvs/QQByxom08
-	 UqCCBHwPTlOBw==
-Message-ID: <40688eaa-9d85-4126-90f0-b8b7e746733f@kernel.org>
-Date: Sun, 14 Apr 2024 16:12:11 +0200
+	b=o9DPKYlErsti9IGFIs8rqIrycL+KVcvJcS8gFZeiO6KFN5LQ4J1vPR9VcEsK5uLGS
+	 lorzHgxhbplhR3Cp/JB6SPwaqnKIdtpUX05zODg4bUhohT/rVk/PejQXztvu1M4h7w
+	 I6ZHzIRWCCEuCH/CvGkr5Yi/AlWdqbc5ccjpB5aIpq2io1iTmjTIFjWHgRQCY9MKTy
+	 OWdg82NLrqc8R9unYftuGHrZYcAsbNZeoGTNdF59xxpVqBBLXGeRHWeX31i4dXN11T
+	 vQ1dH0aydBTTiUwfWrLvI7v6eSabW5zKxeInz/epyCAWNQBcbjVn5Rh/fiqS+loa+2
+	 Lr0u0peduSgGQ==
+Message-ID: <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
+Date: Sun, 14 Apr 2024 16:13:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,8 +49,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] dt-bindings: arm: bcm: add bindings for ASUS
- RT-AC5300
+Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
 To: arinc.unal@arinc9.com, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
  <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
@@ -60,7 +59,7 @@ To: arinc.unal@arinc9.com, Rob Herring <robh@kernel.org>,
 Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
- <20240414-for-soc-asus-rt-ac3200-ac5300-v1-2-118c90bae6e5@arinc9.com>
+ <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -106,17 +105,88 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-2-118c90bae6e5@arinc9.com>
+In-Reply-To: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 On 14/04/2024 13:46, Arınç ÜNAL via B4 Relay wrote:
 > From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> Add ASUS RT-AC5300 under BCM47094 based boards.
+> Add the device tree for ASUS RT-AC3200 which is an AC3200 router featuring
+> 5 Ethernet ports over the integrated Broadcom switch.
 > 
+> Hardware info:
+> * Processor: Broadcom BCM4709A0 dual-core @ 1.0 GHz
+> * Switch: BCM53012 in BCM4709A0
+> * DDR3 RAM: 256 MB
+> * Flash: 128 MB
+> * 2.4GHz: BCM43602 3x3 single chip 802.11b/g/n SoC
+> * 5GHz: BCM43602 3x3 two chips 802.11a/n/ac SoC
+> * Ports: 4 LAN Ports, 1 WAN Port
+> 
+> Co-developed-by: Tom Brautaset <tbrautaset@gmail.com>
+> Signed-off-by: Tom Brautaset <tbrautaset@gmail.com>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+>  arch/arm/boot/dts/broadcom/Makefile                |   1 +
+>  .../boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts   | 164 +++++++++++++++++++++
+>  2 files changed, 165 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/broadcom/Makefile b/arch/arm/boot/dts/broadcom/Makefile
+> index 7099d9560033..c61fca514775 100644
+> --- a/arch/arm/boot/dts/broadcom/Makefile
+> +++ b/arch/arm/boot/dts/broadcom/Makefile
+> @@ -64,6 +64,7 @@ dtb-$(CONFIG_ARCH_BCM_5301X) += \
+>  	bcm47081-luxul-xap-1410.dtb \
+>  	bcm47081-luxul-xwr-1200.dtb \
+>  	bcm47081-tplink-archer-c5-v2.dtb \
+> +	bcm4709-asus-rt-ac3200.dtb \
+>  	bcm4709-asus-rt-ac87u.dtb \
+>  	bcm4709-buffalo-wxr-1900dhp.dtb \
+>  	bcm4709-linksys-ea9200.dtb \
+> diff --git a/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts b/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts
+> new file mode 100644
+> index 000000000000..8640dda211ae
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts
+> @@ -0,0 +1,164 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Author: Tom Brautaset <tbrautaset@gmail.com>
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "bcm4709.dtsi"
+> +#include "bcm5301x-nand-cs0-bch8.dtsi"
+> +
+> +#include <dt-bindings/leds/common.h>
+> +
+> +/ {
+> +	compatible = "asus,rt-ac3200", "brcm,bcm4709", "brcm,bcm4708";
+> +	model = "ASUS RT-AC3200";
+> +
+> +	chosen {
+> +		bootargs = "console=ttyS0,115200 earlycon";
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+1. Use stdout.
+2. Drop earlycon, it is for debugging, not regular mainline usage.
+
+> +	};
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x00000000 0x08000000>,
+> +		      <0x88000000 0x08000000>;
+> +	};
+> +
+> +	nvram@1c080000 {
+> +		compatible = "brcm,nvram";
+> +		reg = <0x1c080000 0x00180000>;
+
+Why is this outside of soc? Both soc node and soc DTSI?
+
+
 
 Best regards,
 Krzysztof
