@@ -1,271 +1,142 @@
-Return-Path: <linux-kernel+bounces-144307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D2258A4467
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:30:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD6988A446A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:38:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60CB81C20CDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:30:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F7312824EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4932C135A65;
-	Sun, 14 Apr 2024 17:30:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="htrnAf79"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F60135A49;
+	Sun, 14 Apr 2024 17:38:06 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93C6134CD0;
-	Sun, 14 Apr 2024 17:30:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC7F1E534
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 17:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713115803; cv=none; b=K45L3pFTl4YJSTEJ7X26QKDAHe6XiDYdadl1XVjC8bUalb6OfltyvzGn5SZoSBjm7t/3H7sldO2ry6YISE27FyCGvzObSGXgvEVnsrjmMwHy279bw3NFz2+m+MfCyQHEF8124pZvfDsQu0xuMvf6lraTeI1NMTbQGVwjw+EH9r0=
+	t=1713116286; cv=none; b=povnXGcPeQFXttRBjmAmqbImYS6UXXyRzIa5h0GUg4e+mSq/3Lwnayko6FaYD2xTdSxnWE4C8cRvlJDFsS4OhGQjrro5ZJgCJ1QyhSwSlEoJ9rYgdx0/NvEhOO7uSycyLL1Ze8fUzVOB5giLDB/bG4v3uWvbwB+gmOFjCDbLFrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713115803; c=relaxed/simple;
-	bh=oGOHxDj4kfdOE/HzO5dKHC063UBWLzSiV7pAnYLyCPk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BcbQ7oIgj2Xg3Emx4iUG/Nznc3O9cIO24aspISl4wiLXvGsWUE6cFsB15beNePAoLQmpThdcSo/33//GKMPegXHroutLJDEASq7gTLlPS2w5pjgnbWRxPNiejEmGRdXe4DmsgysT5NiCvUkF2N9aJRtlb3ucEsAxHXWsM9zw3vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=htrnAf79; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713115799;
-	bh=oGOHxDj4kfdOE/HzO5dKHC063UBWLzSiV7pAnYLyCPk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=htrnAf79VM0ZqVqBR08Z4L/roRsBN2oX462GKbGRRZCjHSw8tqZdnPd1hHz+wYxbl
-	 /tl8y0l56GgRwLTCezto6y9/FvEOuQ5wQPyUWM8WfvOA8XFMOsT1U+iAK8mRiS/gG5
-	 CEWkTRLaVX4HKTOfAbbTxnYwE2VVn01DvVZnxImDkRQhXQf65BOYMqeBSnJ9QFwO/S
-	 c7l8nps68U+5T/z3jfHnAeD+7tuVMyGSUbjRmf2mFkQa8weO/wQ76kugoIKLvqJO88
-	 ihT0WrpcX5WwQwUrYsxOnyYKmPGvBJxP2yq7tvtmSaaxFrRzODLUl3MnvqJYwwMPg4
-	 e+YmDDCZqXDIA==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id ADBE13780627;
-	Sun, 14 Apr 2024 17:29:59 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id 13DD010608FB; Sun, 14 Apr 2024 19:29:57 +0200 (CEST)
-Date: Sun, 14 Apr 2024 19:29:56 +0200
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Mike Looijmans <mike.looijmans@topic.nl>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	=?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-Subject: Re: [PATCH v3 2/2] power: supply: ltc3350-charger: Add driver
-Message-ID: <lxxwadaf2mrghy2kygm3cucb7ygl5qu4dxnmpbancrm2hwjm4g@5eudactyudca>
-References: <20240409135442.37732-1-mike.looijmans@topic.nl>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.dab85cfc-973d-4930-8fea-324aa26b5801@emailsignatures365.codetwo.com>
- <20240409135442.37732-2-mike.looijmans@topic.nl>
- <5hpl2kspf667hmmxgg36ahiux5rs364qzrg2itpljspspa47vp@dsbnhdnq5s54>
- <efae4037-c22a-40be-8ba9-7c1c12ece042@topic.nl>
+	s=arc-20240116; t=1713116286; c=relaxed/simple;
+	bh=uidr0Ddh6k6IXNaT2mGWFi9tNi0K/wpCj/XjlY0jXF0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=MewZ+PXwNCbkp5tf9w8coeVEkQb0u+kkr3Qf+5T1/v7Ztbg2zoYY542c/Bzdhpz911wjVxB/8BhtAhfkwFwLqFvpa1JkVQJtukVIZaxBI78g+E65Q9ocxuzndNT2Dyq4M2oZ9byVD5UNvBrVJoqogu8YIXYdC/RyfC2EqcKllBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36a1149d7d5so29132505ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 10:38:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713116284; x=1713721084;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NBIO3XDXi4ggfPw+M/6u4pNUuoaraJSFo9S0jlwTc2w=;
+        b=ewF9HLAz/WeWbOnyfQWQ5AOCYDI3wkXgx7ma/pr2R3QrmSup+f3Bjmyo/NHArj6S/u
+         A+hDqFh07zcwuytnTJ9lOZ5fhLASxq2l/mqZ7nhM995dxnHUpn6CWPZDU6qSXbAuYJ90
+         fPcIh6yVe3jXOd6jqcXfco2CXimlhMb+jY1OPexZMloRmZfZJ5SjsPnfvDECinJLRpPF
+         bskydh6MJClL3ZsBsiHTncxvKZFjPIKwVzFDAwtFI13y5gJt/Y7dMSfgO+ewfw2W+ZBS
+         lvL1w6cwmRB1as791mps0B06ojboj/V+gujtaWWIqB6ohhAPloLqCPcFxOcpXlJI/zZ/
+         TPUg==
+X-Gm-Message-State: AOJu0YxeOpU2bj8oTVk0CossyVuSdBNI2GqDH+OcXG9ymG/2weGkT8Kk
+	R5V0FwDPtBUMvpFLY306cS3Ug47qzAC6mV+0CgebnW3vKvKxck4w9EsyEkeLLBsonclKkUYhTg1
+	Bv1xW3QxMpgwv6lYf/jzKry+SNkP794vAKqwR2Aj1yb1rJFMimxzhBIc=
+X-Google-Smtp-Source: AGHT+IGoZLJe3wzZ6QNxIF90brlarMgNhhXSKYDwvJ0EJ6GJDjLXobrNnK5YJ0SU6f8dtPvTeC03pwH5QdnwO3Oxk9WHGXGoZFLa
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="empim7clzpnbt47x"
-Content-Disposition: inline
-In-Reply-To: <efae4037-c22a-40be-8ba9-7c1c12ece042@topic.nl>
+X-Received: by 2002:a05:6e02:218a:b0:36a:92dc:a398 with SMTP id
+ j10-20020a056e02218a00b0036a92dca398mr419730ila.1.1713116283969; Sun, 14 Apr
+ 2024 10:38:03 -0700 (PDT)
+Date: Sun, 14 Apr 2024 10:38:03 -0700
+In-Reply-To: <CAE8VWiJFOtDVnSgMUmr0OsgUr6E+c9m5p_n-Dg_qn2LCdu2jcA@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000090b32f061611f7ff@google.com>
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfs_revalidate_dentry
+From: syzbot <syzbot+3ae6be33a50b5aae4dab@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, shresthprasad7@gmail.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KMSAN: uninit-value in hfs_revalidate_dentry
+
+loop0: detected capacity change from 0 to 64
+=====================================================
+BUG: KMSAN: uninit-value in hfs_revalidate_dentry+0x30b/0x3f0 fs/hfs/sysdep.c:30
+ hfs_revalidate_dentry+0x30b/0x3f0 fs/hfs/sysdep.c:30
+ lookup_fast+0x418/0x8e0
+ walk_component fs/namei.c:2000 [inline]
+ link_path_walk+0x817/0x1490 fs/namei.c:2331
+ path_lookupat+0xd9/0x6f0 fs/namei.c:2484
+ filename_lookup+0x22f/0x750 fs/namei.c:2514
+ user_path_at_empty+0x8b/0x3a0 fs/namei.c:2921
+ user_path_at include/linux/namei.h:57 [inline]
+ do_mount fs/namespace.c:3689 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x66b/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Uninit was created at:
+ __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2175 [inline]
+ allocate_slab mm/slub.c:2338 [inline]
+ new_slab+0x2de/0x1400 mm/slub.c:2391
+ ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
+ __slab_alloc mm/slub.c:3610 [inline]
+ __slab_alloc_node mm/slub.c:3663 [inline]
+ slab_alloc_node mm/slub.c:3835 [inline]
+ kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
+ alloc_inode_sb include/linux/fs.h:3091 [inline]
+ hfs_alloc_inode+0x5a/0xd0 fs/hfs/super.c:165
+ alloc_inode+0x86/0x460 fs/inode.c:261
+ iget_locked+0x2bf/0xee0 fs/inode.c:1280
+ hfs_btree_open+0x16c/0x1aa0 fs/hfs/btree.c:38
+ hfs_mdb_get+0x1fe2/0x28b0 fs/hfs/mdb.c:199
+ hfs_fill_super+0x1cf6/0x23c0 fs/hfs/super.c:406
+ mount_bdev+0x397/0x520 fs/super.c:1658
+ hfs_mount+0x4d/0x60 fs/hfs/super.c:456
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ x64_sys_call+0x2bf4/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:166
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+CPU: 0 PID: 5496 Comm: syz-executor.0 Not tainted 6.9.0-rc3-syzkaller-00365-g399f4dae683a-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
 
 
---empim7clzpnbt47x
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested on:
 
-[+cc Nicolas]
+commit:         399f4dae Merge tag 'for_linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1322ffdd180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=807e31f7fd7666b5
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ae6be33a50b5aae4dab
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=157ba243180000
 
-Hello Mike,
-
-On Fri, Apr 12, 2024 at 08:53:58AM +0200, Mike Looijmans wrote:
-> > please share output of
-> > ./tools/testing/selftests/power_supply/test_power_supply_properties.sh
-> > below the fold with your next submission. It's useful for verifying,
-> > that you got the unit scaling correct for the standard properties :)
->=20
-> Will do. Did a quick run on the driver as it is now, that yields the
-> following output:
->=20
-> (Any thoughts on the "arithmetic syntax error" messages?)
-
-The script contains some bash specific shell extensions and should
-use /bin/bash instead of /bin/sh in the shebang. Just call it with
-/bin/bash ./tools/testing/... and you should get rid of them :)
-
-Nicolas, do you want to send a fix for that to Shuah with Reported-by
-=66rom Mike?
-
-[...]
-
-> # Reported: '1' ()
-> ok 6 ltc3350.sysfs.online
-
-[...]
-
-> # Reported: '711600' uA (711.6 mA)
-> ok 24 ltc3350.sysfs.current_now
-
-So it's full, but still getting charged with 0.7 Amps at ~23V
-(i.e. 16W)? That seems quite high.
-
-[...]
-
-> > > +static ssize_t ltc3350_attr_show(struct device *dev,
-> > > +				 struct device_attribute *attr, char *buf,
-> > > +				 unsigned int reg, unsigned int scale)
-> > > +{
-> > > +	struct power_supply *psy =3D to_power_supply(dev);
-> > > +	struct ltc3350_info *info =3D power_supply_get_drvdata(psy);
-> > > +	unsigned int regval;
-> > > +	int ret;
-> > > +
-> > > +	ret =3D regmap_read(info->regmap, reg, &regval);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	regval *=3D scale; /* Scale is in 10 =CE=BCV units */
-> > please keep custom uAPI consistent with the general uAPI and use =C2=B5=
-V.
->=20
-> I'll amend the comment to clarify that this is about the scale factor pas=
-sed
-> into this method. This prevents overflow while keeping all calculations in
-> 32 bits.
-
-ack
-
-[...]
-
-> > > +/* Shunt voltage, 183.5=CE=BCV per LSB */
-> > > +LTC3350_DEVICE_ATTR_RW(vshunt, LTC3350_REG_VSHUNT, 1835);
-> > > +
-> > > +/* Single capacitor voltages, 183.5=CE=BCV per LSB */
-> > > +LTC3350_DEVICE_ATTR_RO(vcap1, LTC3350_REG_MEAS_VCAP1, 1835);
-> > > +LTC3350_DEVICE_ATTR_RO(vcap2, LTC3350_REG_MEAS_VCAP2, 1835);
-> > > +LTC3350_DEVICE_ATTR_RO(vcap3, LTC3350_REG_MEAS_VCAP3, 1835);
-> > > +LTC3350_DEVICE_ATTR_RO(vcap4, LTC3350_REG_MEAS_VCAP4, 1835);
-> > > +LTC3350_DEVICE_ATTR_RW(cap_uv, LTC3350_REG_CAP_UV_LVL, 1835);
-> > > +LTC3350_DEVICE_ATTR_RW(cap_ov, LTC3350_REG_CAP_OV_LVL, 1835);
-> > > +
-> > > +/* General purpose input, 183.5=CE=BCV per LSB */
-> > > +LTC3350_DEVICE_ATTR_RO(gpi, LTC3350_REG_MEAS_GPI, 1835);
-> > > +LTC3350_DEVICE_ATTR_RW(gpi_uv, LTC3350_REG_GPI_UV_LVL, 1835);
-> > > +LTC3350_DEVICE_ATTR_RW(gpi_ov, LTC3350_REG_GPI_OV_LVL, 1835);
-> > > +
-> > > +/* Input voltage, 2.21mV per LSB */
-> > > +LTC3350_DEVICE_ATTR_RO(vin, LTC3350_REG_MEAS_VIN, 22100);
-> > > +LTC3350_DEVICE_ATTR_RW(vin_uv, LTC3350_REG_VIN_UV_LVL, 22100);
-> > > +LTC3350_DEVICE_ATTR_RW(vin_ov, LTC3350_REG_VIN_OV_LVL, 22100);
-> > > +
-> > > +/* Capacitor stack voltage, 1.476 mV per LSB */
-> > > +LTC3350_DEVICE_ATTR_RO(vcap, LTC3350_REG_MEAS_VCAP, 14760);
-> > > +LTC3350_DEVICE_ATTR_RW(vcap_uv, LTC3350_REG_VCAP_UV_LVL, 14760);
-> > > +LTC3350_DEVICE_ATTR_RW(vcap_ov, LTC3350_REG_VCAP_OV_LVL, 14760);
-> > I suppose it would be sensible to expose this as a second
-> > power_supply device of type battery with ltc3350_config.supplied_to
-> > set to this second power_supply device.
-> >=20
-> > Then you can map
-> >=20
-> > LTC3350_REG_MEAS_VCAP -> VOLTAGE_NOW
-> > LTC3350_REG_VCAP_UV_LVL -> VOLTAGE_MIN
-> > LTC3350_REG_VCAP_OV_LVL -> VOLTAGE_MAX
-> > LTC3350_REG_VSHUNT -> CURRENT_NOW
-> > TECHNOLOGY =3D POWER_SUPPLY_TECHNOLOGY_CAPACITOR (new)
->=20
-> Makes sense.
->=20
-> Should I create a separate patch that adds the new properties?
-
-Yes, make it one extra patch adding POWER_SUPPLY_TECHNOLOGY_CAPACITOR
-and one extra patch for the cell information properties. Also do not
-forget to update all necessary files:
-
- * Documentation/ABI/testing/sysfs-class-power
- * include/linux/power_supply.h
- * drivers/power/supply/power_supply_sysfs.c
-
-> > Also the single capacitor voltages are similar to per-cell voltage
-> > information, so I think we should create generic properties for
-> > that:
-> >=20
-> > LTC3350_REG_NUM_CAPS   -> NUMBER_OF_CELLS (new)
-> > LTC3350_REG_MEAS_VCAP1 -> CELL1_VOLTAGE_NOW (new)
-> > LTC3350_REG_MEAS_VCAP2 -> CELL2_VOLTAGE_NOW (new)
-> > LTC3350_REG_MEAS_VCAP3 -> CELL3_VOLTAGE_NOW (new)
-> > LTC3350_REG_MEAS_VCAP4 -> CELL4_VOLTAGE_NOW (new)
-> > LTC3350_REG_CAP_UV_LVL -> CELL_VOLTAGE_MIN (new)
-> > LTC3350_REG_CAP_OV_LVL -> CELL_VOLTAGE_MAX (new)
-> >=20
-> > ...
-
-After re-reading it: This only works for serial cells, but not for
-parallel ones. While it's technically not possible to measure
-parallel cells, it might be desired to expose the exact
-configuration at some point. Thus it should be
-NUMBER_OF_SERIAL_CELLS. Also the documentation for
-CELL<X>_VOLTAGE_NOW should mention that this might measure more than
-one cell, if there are multiple cells connected in parallel.
-
-[...]
-
-> > > +
-> > > +static int ltc3350_probe(struct i2c_client *client)
-> > > +{
-> > > +	struct i2c_adapter *adapter =3D client->adapter;
-> > > +	struct device *dev =3D &client->dev;
-> > > +	struct ltc3350_info *info;
-> > > +	struct power_supply_config ltc3350_config =3D {};
-> > > +	int ret;
-> > > +
-> > > +	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_WORD_DATA)) {
-> > > +		dev_err(dev, "No support for SMBUS_WORD_DATA\n");
-> > > +		return -ENODEV;
-> > > +	}
-> > return dev_err_probe(dev, -ENODEV, "No support for SMBUS_WORD_DATA\n");
-> >=20
-> > But I think this can just be dropped. devm_regmap_init_i2c() should
-> > generate an error, if the i2c adapter requirements are not met.
->=20
-> It's quite interesting to see what other drivers do here. Most report a
-> message, and there's no consensus on the value returned.
-
-I checked and devm_regmap_init_i2c() calls into regmap_get_i2c_bus()
-and that contains the same check. If it fails, the bus will not be
-found and the function returns -ENOTSUPP. It should be fine to remove
-the driver specific extra handling with the error being printed for
-devm_regmap_init_i2c(). Considering this is mostly a hardware sanity
-check, I would expect this error to only happen on developer
-systems. A developer should be able to figure out what that means.
-
-Greetings,
-
--- Sebastian
-
---empim7clzpnbt47x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYcEpAACgkQ2O7X88g7
-+ppgJA/+IhLiJ3Q9ST7X5EasixJEnW6bG0DslSSvXUEw12PVjRSvZ1uJCzGtXMQ1
-3b+C3ARCcVkVpr64dQDMmYwUDTCi8XAodgv1NX+eEe9QuxW4xnbRSxIsvtZ6Tclb
-gPb9uLvwScTdrZX/zkwaWY3pcczimOzWLX3p+qymyd9+DNnFKZy88xWSLHyqCPVg
-TPF8ZcsHpPaDfQyRtizg1N+HUtAfL7ZGGW2g9gR2ekIBo4cK1Soa6nSDe9y30+CR
-fNd2X9/RSU2Dd+MEBOHje1ptBI7UMe2w1WxjS7duJl7oBj8cdRAyPlJ568UjekYK
-o8pRg1GiJ0SnoodbyjQpQXfg3Lofauhn4AsQ0n+qNbZFgAZks4hzBrhB+mwIYrjb
-/cr6MxwAU1J01Ch3b4nx7E8rtQx9sTk4f2hbw0WVj+ntj6hF1rIyKgNfsbHUl2kv
-q/uNOlhMyYlb1QVBy6KVw71U2nLlVrtGTFffbnfSQ9cq8ZEkjpdWavdhrZHmXDiz
-WAXR2rg68dU3xUP8AgQsAEaYFb9yklhQCHbpnbqUcCSqxF1UcCi2oFPyUpbKWWha
-E98DfJv4Zi9oRCMc0NogY50moD47FkEyF7tQMKdKCSd6BQJV58C0C/dUS4PcVg/G
-8siIqm9Vp2ElY7cASblwFxu89P17+0/UOmA634oTPZAz4VTE1BQ=
-=gXIh
------END PGP SIGNATURE-----
-
---empim7clzpnbt47x--
 
