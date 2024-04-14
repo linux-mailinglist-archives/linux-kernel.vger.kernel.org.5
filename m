@@ -1,337 +1,268 @@
-Return-Path: <linux-kernel+bounces-143936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 484738A3FE0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 04:04:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBD098A3FE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 04:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31E5C1C20AF2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:04:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 533721F214E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C278A12E6D;
-	Sun, 14 Apr 2024 02:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB73175AA;
+	Sun, 14 Apr 2024 02:04:37 +0000 (UTC)
 Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289B12901
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 02:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D6017551
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 02:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713060247; cv=none; b=F3WVF9MV8c8xLqKLL1X300thmpXtpXusXmav7kTqIAsGnaAoIN447h7VlhMTYUIh7S2t9WydnEPZ2WYSWpwd0M2THiqalE4VD7enp+DhuQAEmlAOv9uSWUaKKK8XUUtBKMfgVGn9Zj6vu9syjwC+xi3yAMRqV5kwwEDJyyJ9nuI=
+	t=1713060276; cv=none; b=QHaJ0kQ5vn2ffl7+kzZp597MsEjDN7lGYVeoeRrqA4k4scjO1vgynUZ7LdDuEh5d3vgX8fsOTh20s2bcroUlGtUGYqCuqTj3wPRJ7W8sI5CQc847hc/MbtGdtsr5IG7SgdY7L2CNLVvO9TOqvECYjwykQLUaVZ3LLGNUTpm7Ee0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713060247; c=relaxed/simple;
-	bh=79t1iIXwYDILZkqVHeU5uVeBpBahelNMzbAmsZ7rAEQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=brx/4+VaaOs9155BFmM9nAMI96Qp0qkZIKlPOy3DC92157UGVgzF+n/JUbOjxhR+v/6Yr6kvNxmsfRB8flBKRrrPRkuBVpD+Lv3UGDTdmn4Mhk5vGr/0tTbDxZIao9H+F/wd6J7aWPd0gsK22PqTC6iniK9IwBwilnYBH1clrZk=
+	s=arc-20240116; t=1713060276; c=relaxed/simple;
+	bh=C2Fsx+2NfUj28JIBVQ45CAyz+h3NEvygZ/BBl7Arzy0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Owfqq1WME9gwboB99RNlMa3c8KoYA2CCxMH4h++I+IdkF6XPNj2trCBOWgkzo4eAs09g+uLRkTnSoHSYpH5TsWKxbRXg+QpMRv5s94BdBMKxbPzW9bKAOLpHDBs+6ZRDEZuMwpA0FIi71LoTWYCdfk2RkVwBtcrswYvKhC51wSU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d5e2b1cfabso219942939f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 19:04:05 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d096c4d663so279932639f.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 19:04:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713060245; x=1713665045;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4zbb7sgquNhSaF6Zufi4bKsGp5lauvpevp7tE6E9AU=;
-        b=bbT5yp+31xt2/CDnpZb7cY8xtNnuvOARioCU5ZNm+6AD9VCY99F1/wY8/y8L2jWBR/
-         t8oHsUvs4mTWgwHVPKX7feknYrvn0xuDTT76rgg3z1jiT/Xrgzx+0/J8NxnLv4FDwjcz
-         8EdQXgx4wZvoNte0dOAqKQeHGHAYRCgjasBszWmzxJcC4izZzEgLSUbAYcxBQ1ayvtH9
-         8zOT27wmCgG3P9uR9eq16AU8hgXgvHOr+hKkRJ5fK2dBpC2ZwLtFg1E4qrrh9fbTOFo1
-         iM0dCXwL6+rrQirsk+qsKhJB7h0id/4W1D8t27Z+sBvtfP1tx1s0pInX3nFz3cmfv/rm
-         frTA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYxsHJmW/wbAeiaIhGRAT2SQzAox3A661mbtY0yJJSZ3DLnEgDIt1KepRpmJ0XKy7WkcHdmaq7Q7/f/ag0fds898bB2mZX0PlnM9aH
-X-Gm-Message-State: AOJu0YzpU5bAV70cPBqEtDRpY1Cig3osFr5NW3IBw4jNNKG7YSzKlmrM
-	XTL84O8fiJBJVI+kEFcujfCCcaKeWb9e6I6uyn3G2pVM8YqdkAzaZ1Em2GwtSO/FKOLyW/JODKt
-	53Oxz73SaT4sQLiyQx1xEFYwJwizffPiRlDxIS2SDJG7pFxwUX+gotfc=
-X-Google-Smtp-Source: AGHT+IFmyOewOq/IVoDL9U4dpgiwtXB+2TF0vNQpwQgWgif+J7xKWarUeBhPcYYnt+YP8gYsbt9XnUFc5Yqpd14/vve0thEvdTmH
+        d=1e100.net; s=20230601; t=1713060274; x=1713665074;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MCFSM1aTc7Bv7FQ0N3Tjzux7zsi15j98rP+EcecD/hk=;
+        b=aQJVTd1bj8g4LKB+Gbpl3iA5UZM6YGN0yOSQWUgPUejwI2Y5I63sSXpJRK1luXF1he
+         LHdgtJEFLMV5ZKLN4YA3qky5ez7tV2oNSJ9WT09/pK5apOdocYHGb3tJATpNC0ti6ZNy
+         ZOGgAvNf0nI6u3GGfwsOSTrmQUt+6aezgLD5iP0YSF1T/ip5Qlwke95Rd66l1gqeReYt
+         ZrkKRBWYufXGropriOhgNn8Ty4bX5GbVRVnSD6Z246dJeexv9H++vkNe/rpHw8HW0B3v
+         YvgTMa9ATTUBVUFTlfpqJdUnoLjKn9qYcrJZcSqZ2m3/0H8794E9ODPNnWhOtqjgUkDr
+         eX6g==
+X-Forwarded-Encrypted: i=1; AJvYcCVFn0/mOc3y9Rl3g96cdyVeEBwJo5xfqNmip4OpKRW5XvPZy8QrmUFGw/TgAOn0TiyyaMcmP/Pqa7y5kz5M7GtAT2kSiW4IBCiSMo0K
+X-Gm-Message-State: AOJu0YxAAWJwR8qsFaPdELrEnJsI1jSkE26AoVX8FH1M6aNuNhGrMLR8
+	ziXLGS1GY3gujFgC3qR6/P5XaStbUriWyhb4KkgU7dIscm1gD0LX4K1/pTmqTgEmYZ8yDTSifEu
+	KNdt7UcObPYnE86IxcodVxSRNwbIeRWE8pMsxS+AxP/PEOIbYO14Yzl4=
+X-Google-Smtp-Source: AGHT+IFj3LwOCgFdJLhlJ/hvletYRrI+O0W3fOWWZpdVn4fC11E8odpIeHSqA/yx/csusnjv9SRU0uBWND+FIVS+c9o/WKne/dpi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:412a:b0:482:e7cd:7910 with SMTP id
- ay42-20020a056638412a00b00482e7cd7910mr217821jab.3.1713060245349; Sat, 13 Apr
- 2024 19:04:05 -0700 (PDT)
-Date: Sat, 13 Apr 2024 19:04:05 -0700
-In-Reply-To: <tencent_5D519E8D1BA04BB71B792555BAB6BBB73308@qq.com>
+X-Received: by 2002:a05:6e02:2199:b0:369:b997:7342 with SMTP id
+ j25-20020a056e02219900b00369b9977342mr419685ila.3.1713060274409; Sat, 13 Apr
+ 2024 19:04:34 -0700 (PDT)
+Date: Sat, 13 Apr 2024 19:04:34 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000673a85061604ebbe@google.com>
-Subject: Re: [syzbot] [gfs2?] KASAN: slab-use-after-free Read in gfs2_invalidate_folio
-From: syzbot <syzbot+3a36aeabd31497d63f6e@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+Message-ID: <00000000000022a23c061604edb3@google.com>
+Subject: [syzbot] [kasan?] [mm?] INFO: rcu detected stall in __run_timer_base
+From: syzbot <syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, dvyukov@google.com, elver@google.com, 
+	glider@google.com, kasan-dev@googlegroups.com, keescook@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
 	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: sleeping function called from invalid context in gfs2_trans_add_data
+syzbot found the following issue on:
 
-BUG: sleeping function called from invalid context at include/linux/sched/mm.h:315
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5417, name: syz-executor.0
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-7 locks held by syz-executor.0/5417:
- #0: ffff88802f6340e0 (&type->s_umount_key#67){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
- #0: ffff88802f6340e0 (&type->s_umount_key#67){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
- #0: ffff88802f6340e0 (&type->s_umount_key#67){+.+.}-{3:3}, at: deactivate_super+0xd6/0x100 fs/super.c:504
- #1: ffff88803e574b78 (&sdp->sd_quota_sync_mutex){+.+.}-{3:3}, at: gfs2_quota_sync+0x19e/0x630 fs/gfs2/quota.c:1354
- #2: ffff888032be8808 (&gfs2_quota_imutex_key){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:795 [inline]
- #2: ffff888032be8808 (&gfs2_quota_imutex_key){+.+.}-{3:3}, at: do_sync+0x3af/0xd30 fs/gfs2/quota.c:944
- #3: ffff88802f634610 (sb_internal#2){.+.+}-{0:0}, at: gfs2_trans_begin+0x74/0x100 fs/gfs2/trans.c:118
- #4: ffff88803e575060 (&sdp->sd_log_flush_lock){++++}-{3:3}, at: __gfs2_trans_begin+0x533/0xb80 fs/gfs2/trans.c:87
- #5: ffff888032be8ca0 (&ip->i_rw_mutex){++++}-{3:3}, at: gfs2_unstuff_dinode+0x93/0x1460 fs/gfs2/bmap.c:161
- #6: ffff88803e574e88 (&sdp->sd_log_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
- #6: ffff88803e574e88 (&sdp->sd_log_lock){+.+.}-{2:2}, at: gfs2_log_lock fs/gfs2/log.h:32 [inline]
- #6: ffff88803e574e88 (&sdp->sd_log_lock){+.+.}-{2:2}, at: gfs2_trans_add_data+0x116/0x710 fs/gfs2/trans.c:203
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 5417 Comm: syz-executor.0 Not tainted 6.9.0-rc3-syzkaller-00073-ge8c39d0f57f3-dirty #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c64113180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+dashboard link: https://syzkaller.appspot.com/bug?extid=1acbadd9f48eeeacda29
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16435913180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111600cb180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1acbadd9f48eeeacda29@syzkaller.appspotmail.com
+
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu: 	0-...!: (1 GPs behind) idle=d3cc/1/0x4000000000000000 softirq=6440/6443 fqs=2
+rcu: 	(detected by 1, t=10506 jiffies, g=7245, q=210 ncpus=2)
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 5367 Comm: syz-executor780 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:lockdep_recursion_finish kernel/locking/lockdep.c:467 [inline]
+RIP: 0010:lock_release+0x5c0/0x9d0 kernel/locking/lockdep.c:5776
+Code: 00 fc ff df 4c 8b 64 24 08 48 8b 5c 24 28 49 89 dd 4c 8d b4 24 90 00 00 00 48 c7 c7 60 d3 aa 8b e8 d5 9c 02 0a b8 ff ff ff ff <65> 0f c1 05 28 c5 90 7e 83 f8 01 0f 85 9a 00 00 00 4c 89 f3 48 c1
+RSP: 0000:ffffc90000007720 EFLAGS: 00000082
+RAX: 00000000ffffffff RBX: 0000000000000046 RCX: ffffc90000007703
+RDX: 0000000000000001 RSI: ffffffff8baad360 RDI: ffffffff8bfed300
+RBP: ffffc90000007860 R08: ffffffff8f873a6f R09: 1ffffffff1f0e74d
+R10: dffffc0000000000 R11: fffffbfff1f0e74e R12: 1ffff92000000ef0
+R13: 0000000000000046 R14: ffffc900000077b0 R15: dffffc0000000000
+FS:  0000555594caf380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000600 CR3: 0000000023676000 CR4: 0000000000350ef0
+Call Trace:
+ <NMI>
+ </NMI>
+ <IRQ>
+ rcu_lock_release include/linux/rcupdate.h:308 [inline]
+ rcu_read_unlock include/linux/rcupdate.h:783 [inline]
+ advance_sched+0xb37/0xca0 net/sched/sch_taprio.c:987
+ __run_hrtimer kernel/time/hrtimer.c:1692 [inline]
+ __hrtimer_run_queues+0x597/0xd00 kernel/time/hrtimer.c:1756
+ hrtimer_interrupt+0x396/0x990 kernel/time/hrtimer.c:1818
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1032 [inline]
+ __sysvec_apic_timer_interrupt+0x109/0x3a0 arch/x86/kernel/apic/apic.c:1049
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0x52/0xc0 arch/x86/kernel/apic/apic.c:1043
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:__raw_spin_unlock_irq include/linux/spinlock_api_smp.h:160 [inline]
+RIP: 0010:_raw_spin_unlock_irq+0x29/0x50 kernel/locking/spinlock.c:202
+Code: 90 f3 0f 1e fa 53 48 89 fb 48 83 c7 18 48 8b 74 24 08 e8 0a b4 f2 f5 48 89 df e8 c2 f3 f3 f5 e8 1d 19 1d f6 fb bf 01 00 00 00 <e8> 52 e0 e5 f5 65 8b 05 a3 c4 84 74 85 c0 74 06 5b e9 71 40 00 00
+RSP: 0000:ffffc90000007cb0 EFLAGS: 00000282
+RAX: 49e89c1a0716e600 RBX: ffff8880b942a740 RCX: ffffffff81720c2a
+RDX: dffffc0000000000 RSI: ffffffff8baac1e0 RDI: 0000000000000001
+RBP: ffffc90000007e10 R08: ffffffff92ce5537 R09: 1ffffffff259caa6
+R10: dffffc0000000000 R11: fffffbfff259caa7 R12: ffff8880b942a788
+R13: ffffc90000007d60 R14: dffffc0000000000 R15: 00000000ffffdaa5
+ __run_timer_base+0x1c0/0x8e0 kernel/time/timer.c:2420
+ run_timer_base kernel/time/timer.c:2428 [inline]
+ run_timer_softirq+0xb7/0x170 kernel/time/timer.c:2438
+ __do_softirq+0x2be/0x943 kernel/softirq.c:554
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
+ irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:srso_safe_ret+0x0/0x20 arch/x86/lib/retpoline.S:208
+Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 48 b8 <48> 8d 64 24 08 c3 cc cc 0f ae e8 e8 f0 ff ff ff 0f 0b 66 2e 0f 1f
+RSP: 0000:ffffc90004907030 EFLAGS: 00000293
+RAX: ffffffff814095ec RBX: 0000000000000000 RCX: ffff888028fe0000
+RDX: 0000000000000000 RSI: ffffffff8140c1eb RDI: ffffffff8140c035
+RBP: 1ffff92000920e30 R08: ffffffff81409480 R09: 0000000000000000
+R10: ffffc90004907180 R11: fffff52000920e3c R12: ffffffff8f9755b0
+R13: dffffc0000000000 R14: 1ffff92000920e30 R15: ffffffff9008ea3e
+ srso_return_thunk+0x5/0x5f arch/x86/lib/retpoline.S:222
+ unwind_next_frame+0x67c/0x2a00 arch/x86/kernel/unwind_orc.c:495
+ __unwind_start+0x641/0x7c0 arch/x86/kernel/unwind_orc.c:760
+ unwind_start arch/x86/include/asm/unwind.h:64 [inline]
+ arch_stack_walk+0x103/0x1b0 arch/x86/kernel/stacktrace.c:24
+ stack_trace_save+0x118/0x1d0 kernel/stacktrace.c:122
+ save_stack+0xfb/0x1f0 mm/page_owner.c:129
+ __set_page_owner+0x29/0x380 mm/page_owner.c:195
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0x33ea/0x3580 mm/page_alloc.c:3311
+ __alloc_pages+0x256/0x680 mm/page_alloc.c:4569
+ alloc_pages_mpol+0x3de/0x650 mm/mempolicy.c:2133
+ pagetable_alloc include/linux/mm.h:2842 [inline]
+ __pud_alloc_one include/asm-generic/pgalloc.h:169 [inline]
+ pud_alloc_one include/asm-generic/pgalloc.h:189 [inline]
+ __pud_alloc+0x93/0x4b0 mm/memory.c:5692
+ pud_alloc include/linux/mm.h:2799 [inline]
+ __handle_mm_fault+0x4472/0x72d0 mm/memory.c:5236
+ handle_mm_fault+0x3c2/0x8a0 mm/memory.c:5470
+ do_user_addr_fault arch/x86/mm/fault.c:1413 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+ exc_page_fault+0x2a8/0x890 arch/x86/mm/fault.c:1563
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+RIP: 0033:0x7f37687f9bcc
+Code: 00 00 e8 67 52 03 00 48 83 f8 ff 74 07 48 89 05 3a 15 0b 00 31 d2 b9 00 06 00 20 bf 10 00 00 00 48 b8 74 65 61 6d 30 00 00 00 <48> 89 04 25 00 06 00 20 31 c0 48 89 14 25 08 06 00 20 48 8b 35 0b
+RSP: 002b:00007ffc3f74a370 EFLAGS: 00010246
+RAX: 000000306d616574 RBX: 0000000000000000 RCX: 0000000020000600
+RDX: 0000000000000000 RSI: 0000000800000003 RDI: 0000000000000010
+RBP: 00000000000f4240 R08: 0000000000000000 R09: 0000000100000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc3f74a3c0
+R13: 000000000003239a R14: 00007ffc3f74a38c R15: 0000000000000003
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 4.146 msecs
+rcu: rcu_preempt kthread starved for 10495 jiffies! g7245 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=1
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:26256 pid:16    tgid:16    ppid:2      flags:0x00004000
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x16c/0x1f0 lib/dump_stack.c:114
- __might_resched+0x3c0/0x5e0 kernel/sched/core.c:10197
- might_alloc include/linux/sched/mm.h:315 [inline]
- might_alloc include/linux/sched/mm.h:310 [inline]
- slab_pre_alloc_hook mm/slub.c:3746 [inline]
- slab_alloc_node mm/slub.c:3827 [inline]
- kmem_cache_alloc+0x281/0x320 mm/slub.c:3852
- kmem_cache_zalloc include/linux/slab.h:739 [inline]
- gfs2_alloc_bufdata fs/gfs2/trans.c:168 [inline]
- gfs2_trans_add_data+0x250/0x710 fs/gfs2/trans.c:206
- gfs2_unstuffer_folio fs/gfs2/bmap.c:81 [inline]
- __gfs2_unstuff_inode fs/gfs2/bmap.c:119 [inline]
- gfs2_unstuff_dinode+0xad9/0x1460 fs/gfs2/bmap.c:166
- gfs2_adjust_quota+0x124/0xb10 fs/gfs2/quota.c:879
- do_sync+0xa73/0xd30 fs/gfs2/quota.c:990
- gfs2_quota_sync+0x419/0x630 fs/gfs2/quota.c:1370
- gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
- sync_filesystem+0x10d/0x290 fs/sync.c:56
- generic_shutdown_super+0x7e/0x3d0 fs/super.c:620
- kill_block_super+0x3b/0x90 fs/super.c:1675
- gfs2_kill_sb+0x360/0x410 fs/gfs2/ops_fstype.c:1804
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
- deactivate_super+0xde/0x100 fs/super.c:505
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xdc/0x260 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5a5ca7f197
-Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007fff82f87ad8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f5a5ca7f197
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff82f87b90
-RBP: 00007fff82f87b90 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff82f88c50
-R13: 00007f5a5cac93b9 R14: 000000000001305f R15: 0000000000000001
+ context_switch kernel/sched/core.c:5409 [inline]
+ __schedule+0x17d3/0x4a20 kernel/sched/core.c:6736
+ __schedule_loop kernel/sched/core.c:6813 [inline]
+ schedule+0x14b/0x320 kernel/sched/core.c:6828
+ schedule_timeout+0x1be/0x310 kernel/time/timer.c:2572
+ rcu_gp_fqs_loop+0x2df/0x1370 kernel/rcu/tree.c:1663
+ rcu_gp_kthread+0xa7/0x3b0 kernel/rcu/tree.c:1862
+ kthread+0x2f2/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
  </TASK>
-syz-executor.0: attempt to access beyond end of device
-loop0: rw=1, sector=131324, nr_sectors = 4 limit=32768
-gfs2: fsid=syz:syz.0: Error 10 writing to journal, jid=0
-==================================================================
-BUG: KASAN: slab-use-after-free in list_empty include/linux/list.h:373 [inline]
-BUG: KASAN: slab-use-after-free in gfs2_discard fs/gfs2/aops.c:617 [inline]
-BUG: KASAN: slab-use-after-free in gfs2_invalidate_folio+0x718/0x820 fs/gfs2/aops.c:655
-Read of size 8 at addr ffff8880274f9168 by task syz-executor.0/5417
-
-CPU: 2 PID: 5417 Comm: syz-executor.0 Tainted: G        W          6.9.0-rc3-syzkaller-00073-ge8c39d0f57f3-dirty #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+rcu: Stack dump where RCU GP kthread last ran:
+CPU: 1 PID: 61 Comm: kworker/u8:4 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: events_unbound toggle_allocation_gate
+RIP: 0010:csd_lock_wait kernel/smp.c:311 [inline]
+RIP: 0010:smp_call_function_many_cond+0x1855/0x2960 kernel/smp.c:855
+Code: 89 e6 83 e6 01 31 ff e8 d9 d5 0b 00 41 83 e4 01 49 bc 00 00 00 00 00 fc ff df 75 07 e8 84 d1 0b 00 eb 38 f3 90 42 0f b6 04 23 <84> c0 75 11 41 f7 45 00 01 00 00 00 74 1e e8 68 d1 0b 00 eb e4 44
+RSP: 0018:ffffc900015c76e0 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 1ffff11017288c0d RCX: ffff88801aadbc00
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc900015c78e0 R08: ffffffff818923b7 R09: 1ffffffff259caa0
+R10: dffffc0000000000 R11: fffffbfff259caa1 R12: dffffc0000000000
+R13: ffff8880b9446068 R14: ffff8880b953f480 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555594cafca8 CR3: 000000000df32000 CR4: 0000000000350ef0
 Call Trace:
+ <IRQ>
+ </IRQ>
  <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc3/0x620 mm/kasan/report.c:488
- kasan_report+0xd9/0x110 mm/kasan/report.c:601
- list_empty include/linux/list.h:373 [inline]
- gfs2_discard fs/gfs2/aops.c:617 [inline]
- gfs2_invalidate_folio+0x718/0x820 fs/gfs2/aops.c:655
- folio_invalidate mm/truncate.c:158 [inline]
- truncate_cleanup_folio+0x2ac/0x3e0 mm/truncate.c:178
- truncate_inode_pages_range+0x271/0xe90 mm/truncate.c:358
- gfs2_evict_inode+0x75b/0x1460 fs/gfs2/super.c:1508
- evict+0x2ed/0x6c0 fs/inode.c:667
- iput_final fs/inode.c:1741 [inline]
- iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
- iput+0x5c/0x80 fs/inode.c:1757
- gfs2_put_super+0x2bd/0x760 fs/gfs2/super.c:625
- generic_shutdown_super+0x159/0x3d0 fs/super.c:641
- kill_block_super+0x3b/0x90 fs/super.c:1675
- gfs2_kill_sb+0x360/0x410 fs/gfs2/ops_fstype.c:1804
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
- deactivate_super+0xde/0x100 fs/super.c:505
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xdc/0x260 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5a5ca7f197
-Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007fff82f87ad8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f5a5ca7f197
-RDX: 0000000000000000 RSI: 0000000000000009 RDI: 00007fff82f87b90
-RBP: 00007fff82f87b90 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fff82f88c50
-R13: 00007f5a5cac93b9 R14: 000000000001305f R15: 0000000000000001
+ on_each_cpu_cond_mask+0x3f/0x80 kernel/smp.c:1023
+ on_each_cpu include/linux/smp.h:71 [inline]
+ text_poke_sync arch/x86/kernel/alternative.c:2086 [inline]
+ text_poke_bp_batch+0x352/0xb30 arch/x86/kernel/alternative.c:2296
+ text_poke_flush arch/x86/kernel/alternative.c:2487 [inline]
+ text_poke_finish+0x30/0x50 arch/x86/kernel/alternative.c:2494
+ arch_jump_label_transform_apply+0x1c/0x30 arch/x86/kernel/jump_label.c:146
+ static_key_enable_cpuslocked+0x136/0x260 kernel/jump_label.c:205
+ static_key_enable+0x1a/0x20 kernel/jump_label.c:218
+ toggle_allocation_gate+0xb5/0x250 mm/kfence/core.c:826
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa02/0x1770 kernel/workqueue.c:3335
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
+ kthread+0x2f2/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
  </TASK>
 
-Allocated by task 5417:
- kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- unpoison_slab_object mm/kasan/common.c:312 [inline]
- __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:338
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3798 [inline]
- slab_alloc_node mm/slub.c:3845 [inline]
- kmem_cache_alloc+0x136/0x320 mm/slub.c:3852
- kmem_cache_zalloc include/linux/slab.h:739 [inline]
- gfs2_alloc_bufdata fs/gfs2/trans.c:168 [inline]
- gfs2_trans_add_data+0x250/0x710 fs/gfs2/trans.c:206
- gfs2_unstuffer_folio fs/gfs2/bmap.c:81 [inline]
- __gfs2_unstuff_inode fs/gfs2/bmap.c:119 [inline]
- gfs2_unstuff_dinode+0xad9/0x1460 fs/gfs2/bmap.c:166
- gfs2_adjust_quota+0x124/0xb10 fs/gfs2/quota.c:879
- do_sync+0xa73/0xd30 fs/gfs2/quota.c:990
- gfs2_quota_sync+0x419/0x630 fs/gfs2/quota.c:1370
- gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
- sync_filesystem+0x10d/0x290 fs/sync.c:56
- generic_shutdown_super+0x7e/0x3d0 fs/super.c:620
- kill_block_super+0x3b/0x90 fs/super.c:1675
- gfs2_kill_sb+0x360/0x410 fs/gfs2/ops_fstype.c:1804
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
- deactivate_super+0xde/0x100 fs/super.c:505
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xdc/0x260 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-Freed by task 5417:
- kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- kasan_save_free_info+0x3b/0x60 mm/kasan/generic.c:579
- poison_slab_object mm/kasan/common.c:240 [inline]
- __kasan_slab_free+0x11d/0x1a0 mm/kasan/common.c:256
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2106 [inline]
- slab_free mm/slub.c:4280 [inline]
- kmem_cache_free+0x12e/0x380 mm/slub.c:4344
- trans_drain fs/gfs2/log.c:1028 [inline]
- gfs2_log_flush+0x1486/0x29b0 fs/gfs2/log.c:1167
- do_sync+0x550/0xd30 fs/gfs2/quota.c:1010
- gfs2_quota_sync+0x419/0x630 fs/gfs2/quota.c:1370
- gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
- sync_filesystem+0x10d/0x290 fs/sync.c:56
- generic_shutdown_super+0x7e/0x3d0 fs/super.c:620
- kill_block_super+0x3b/0x90 fs/super.c:1675
- gfs2_kill_sb+0x360/0x410 fs/gfs2/ops_fstype.c:1804
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
- deactivate_super+0xde/0x100 fs/super.c:505
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14e/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:114 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0x278/0x2a0 kernel/entry/common.c:218
- do_syscall_64+0xdc/0x260 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-The buggy address belongs to the object at ffff8880274f9150
- which belongs to the cache gfs2_bufdata of size 80
-The buggy address is located 24 bytes inside of
- freed 80-byte region [ffff8880274f9150, ffff8880274f91a0)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x274f9
-flags: 0xfff80000000800(slab|node=0|zone=1|lastcpupid=0xfff)
-page_type: 0xffffffff()
-raw: 00fff80000000800 ffff88801668ba40 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000080240024 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x112c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY|__GFP_HARDWALL), pid 5417, tgid 5417 (syz-executor.0), ts 78780685821, free_ts 78721961391
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1534
- prep_new_page mm/page_alloc.c:1541 [inline]
- get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3317
- __alloc_pages+0x22b/0x2460 mm/page_alloc.c:4575
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2175 [inline]
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0xcc/0x3a0 mm/slub.c:2391
- ___slab_alloc+0x66d/0x1790 mm/slub.c:3525
- __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3610
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- kmem_cache_alloc+0x2e9/0x320 mm/slub.c:3852
- kmem_cache_zalloc include/linux/slab.h:739 [inline]
- gfs2_alloc_bufdata fs/gfs2/trans.c:168 [inline]
- gfs2_trans_add_meta+0xade/0xf50 fs/gfs2/trans.c:243
- gfs2_alloc_extent fs/gfs2/rgrp.c:2239 [inline]
- gfs2_alloc_blocks+0x46c/0x19c0 fs/gfs2/rgrp.c:2449
- __gfs2_unstuff_inode fs/gfs2/bmap.c:107 [inline]
- gfs2_unstuff_dinode+0x499/0x1460 fs/gfs2/bmap.c:166
- gfs2_adjust_quota+0x124/0xb10 fs/gfs2/quota.c:879
- do_sync+0xa73/0xd30 fs/gfs2/quota.c:990
- gfs2_quota_sync+0x419/0x630 fs/gfs2/quota.c:1370
- gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
- sync_filesystem+0x10d/0x290 fs/sync.c:56
- generic_shutdown_super+0x7e/0x3d0 fs/super.c:620
-page last free pid 15 tgid 15 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1141 [inline]
- free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2347
- free_unref_page+0x33/0x3c0 mm/page_alloc.c:2487
- __folio_put_small mm/swap.c:119 [inline]
- __folio_put+0x166/0x1f0 mm/swap.c:142
- folio_put include/linux/mm.h:1506 [inline]
- free_page_and_swap_cache+0x1eb/0x250 mm/swap_state.c:305
- __tlb_remove_table arch/x86/include/asm/tlb.h:34 [inline]
- __tlb_remove_table_free mm/mmu_gather.c:227 [inline]
- tlb_remove_table_rcu+0x89/0xe0 mm/mmu_gather.c:282
- rcu_do_batch kernel/rcu/tree.c:2196 [inline]
- rcu_core+0x828/0x16b0 kernel/rcu/tree.c:2471
- __do_softirq+0x218/0x922 kernel/softirq.c:554
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Memory state around the buggy address:
- ffff8880274f9000: fa fb fb fb fb fb fb fb fb fb fc fc fc fc fa fb
- ffff8880274f9080: fb fb fb fb fb fb fb fb fc fc fc fc fa fb fb fb
->ffff8880274f9100: fb fb fb fb fb fb fc fc fc fc fa fb fb fb fb fb
-                                                          ^
- ffff8880274f9180: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8880274f9200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Tested on:
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-commit:         e8c39d0f Merge tag 'probes-fixes-v6.9-rc3' of git://gi..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15912add180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=285be8dd6baeb438
-dashboard link: https://syzkaller.appspot.com/bug?extid=3a36aeabd31497d63f6e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13bfbfcb180000
-
+If you want to undo deduplication, reply with:
+#syz undup
 
