@@ -1,157 +1,110 @@
-Return-Path: <linux-kernel+bounces-144115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF9658A4203
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:10:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F1298A420B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:24:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 321F61F2132E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:10:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A038B20F1A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F967364BF;
-	Sun, 14 Apr 2024 11:10:29 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1308F37171;
+	Sun, 14 Apr 2024 11:24:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sPuV3rjF"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 144483D994
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 11:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3C91E53F;
+	Sun, 14 Apr 2024 11:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713093028; cv=none; b=rR+zbtVa+5m2pYgVyLCoXPjFiVphSkTCNZIlpSh26Uft8FcZ9hhzKPKxLVDL8WJ4UtSQ9hdcIS3qOp6eC/cr9c+JvWhPgABnPr27NEVDFV3/bnLFPsh5WT3QM7tJ1WqiuFE/7wpliCYWPc7BhhaXHJVdyhAtuDieIHgGogk5OLg=
+	t=1713093852; cv=none; b=bStW0cJMVmDq17sL3Ik7ZuvCplxupMg0c49/vGIXgJUM8zemSrCD57Z5hv2YurOzZ0Kv6g5iOpPKyIi4qmF+aTz/8K57rQ8g9WjxfUn15ggQ0A22srfeX5ggz6jHJe0snjSAMzP5w3Rl2S+kn64NZqOS1ZkHZWCqcVG3it9Vu2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713093028; c=relaxed/simple;
-	bh=UuKeL2WcKRgqctSvEjKmBd6lMthB3+vcPL4dW8Jv3VY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=oPnS4VJT8kfqGZ18zLyMtTfk5VnqJ19Kk7rvpmBVOqV3WIUfq7x5dfyVocSPmuZGCwSmjLQOQu0mOWepcr9uEj9yDcOfXD4n3jS/YXijFBG2uhXPg8O0ukaOjA9ntVZNmWrkO6lTY912scEica30aoewYagu5gn3I7JAFyEwf8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d676654767so285920839f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 04:10:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713093026; x=1713697826;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YzmnxBjAYY26fFmUATQM9LcK9BACkrZL6MSaQ18rFTA=;
-        b=sFJkTuYnDpe0ifae/exTx5uHBOcrAqtAY4bJTUXT3aqnjskgbOq1tVLPHGMeHw9IHc
-         xZbnC9l9UPf7I7goCK5lU95fAhhYz47sYJLie0F8VmCiFvgZCd8FfBLMIz2WoMe6cN6h
-         H/lS/sqYvWX4q5a3RdSezaXTc0p8pAXASC+EEbs+DBjdevyfwNU8yqSZ166l3aSjZs8X
-         oNm2m2A3HfkaYRq24gHvcNuD0vyXTX6AdvtUDxHvImLnqzqGlo/UGMmnukA3XUq+WX6X
-         JEKUwI+38kBSRLR5yRgEgN1ZkQ8CCBpVix/nHFNYkRjOvd95LHIyqpie7gu9w2EEJ795
-         IK/A==
-X-Forwarded-Encrypted: i=1; AJvYcCV1dxkI4q3XILYxQTa1XA7IllQiCNOeudUEb4JzgGJLhBpFZwOj4ACv66Kba31EJX1gh/OpVGsilVxxNLaFTPyommJLaJtiWAQoXr+S
-X-Gm-Message-State: AOJu0YwJ8AR1LeOg+kjNy6DaPyxZe6P08rwe6aUSfn/lXZdLna3TG4Cu
-	PBnP+U61CyueYJIKBJ+ruzS4rbxbzACWxX7z68yaOjNjhAKXVpikZMZzhzspk1RyQ41YjM8P5Z9
-	hG4ZVckZ06/YfSoW46nAaI7nSMyO/ntEXhu/hiO0KUM9RrYjNmzFr48g=
-X-Google-Smtp-Source: AGHT+IGxQxMusWloR5gS9iI5uuVX6/hg0xZUr/CXJrEZQv4+AzJ/A6Tf+txuVVShPLp7owE02/dTU9uIQW8lIgNVHT+XWrgbOw63
+	s=arc-20240116; t=1713093852; c=relaxed/simple;
+	bh=3+14d476HF7Eg/5x5VeFkS89dhibjhDZzn1zokZIIQs=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=UOZCCNIhq5Ihf6GBRsQS4pg636rfWjQ7fNZ6RrLR8r5Lh0AXiE0rYn5kLH9G3EXUV4LvrqeSEiejd6D7uBsWOz6I5xYe4OVL88coVLYLHNgvHHcFnJZS3/IZTD7iLNPVf+o16RgQccbP+b2epZOE29Z7HgGKb1KwsPVD84+ZaMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=sPuV3rjF; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713093828; x=1713698628; i=markus.elfring@web.de;
+	bh=3+14d476HF7Eg/5x5VeFkS89dhibjhDZzn1zokZIIQs=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=sPuV3rjFZ13FLpg+pHK+MqevD7wr9MEV9e2qzqlz0pM92Xll1MkNtp2grQ7d9aEJ
+	 VxfgQmrNqXRrnTYLoOwdUUE4Ob6SYMpJjLGggfoyl160a68BN9hjQ4skArLXuQqLl
+	 tKdqs3S4hKxA/FFIZkPoxwYRQ+HdelpVer/OUaTRbkSK6IgwuwljMQEZPBPxInlUf
+	 COs4usTsvryshn4jti0OO5t5rdZeP4DIckOH8viDknDRwRaTny7s/JBWzMu0a3m4o
+	 5tkRS3yaqsGEBg331zOVNjHh8mtdpH1fj21CNryJrOFuOMag5FMEsuGNdQXt24LA1
+	 4E1O9lyc/z+DKOrp0A==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.88.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MPrPV-1s8OXv2Vj1-00MwKN; Sun, 14
+ Apr 2024 13:23:48 +0200
+Message-ID: <6881c322-8fbb-422f-bdbb-392a83d0b326@web.de>
+Date: Sun, 14 Apr 2024 13:23:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3420:b0:7d0:ad03:af0b with SMTP id
- n32-20020a056602342000b007d0ad03af0bmr229319ioz.2.1713093026304; Sun, 14 Apr
- 2024 04:10:26 -0700 (PDT)
-Date: Sun, 14 Apr 2024 04:10:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004cf0fe06160c8d71@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_percpu_map_lookup_elem
-From: syzbot <syzbot+0a079d6ef3831217a230@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: Justin Chen <justin.chen@broadcom.com>,
+ bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>
+References: <20240412181631.3488324-1-justin.chen@broadcom.com>
+Subject: Re: [PATCH net] net: bcmasp: fix memory leak when bringing down if
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240412181631.3488324-1-justin.chen@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:miItyTf1xf3ZWEaZIOQ8qWrYaLIZIV63roPT3U86WeNrAhnG35l
+ 0N/pZT/F0BjKk/7wD+8MzIQULDn4RXjOuiZG300XIFWlmNB6XQaFHUBtkx1PrBM46Ik2F90
+ 5alPUYQFlYqPt6ZiWrPK3p/1Ij7mhKkNTAzoytZyjaxEb3oBAo5rtc1XcEwzXhbA0XAg0Rr
+ OY9UDkKkJGNzaUsFUe13w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:GIlrxNOERsg=;zur1JOD68uS+ZeqZSZo/HCSPoDE
+ gLgUzmFjZ+9AQc4RtpNSjhEUNHU7IMWSYfXnhFUrbeHgfZMApdScXNHaV2rrQgG82dMZkAyWm
+ PIRpFd1kEq2VjT0MtyNPYkc5797ZtvGoNcniNXiRcforFh38dEnlmrKqUiDJU/8WFVm67r82m
+ Tx939w55VY6vP4WKX/LEYkrj7nS3awW6lL9REEK07L7d7IwecofGsgRVRJxvE6ueBncCL+n0+
+ YyczTsHrdBoSv7upeGvZ2wb9/EJhwinRX+J06ZUPU9jMo85YpAyVWPp3+Zk1KzsVj2k66WAZ1
+ z6AlCHkZJlplJ3HRIa46RsPQt4up0G3IVuzct902Q5Zv0wdLulRMmc97sAFznFy6mm/BTEGA4
+ LtYaICdmIUcKqm1gWf32vkUMGF/sZl/Cd75KzywuLHrUE+PlD5UR14GMfC2ViKsSL8U76TZSy
+ vtMZOTmTbrFK9FsvaY9daNshq++mAJ2HmEpAqYSQNbYenZXaSQoo8kVTisW9kmwQY2neLI1AY
+ NKlARD3iDeyFcqUEeIbpD3cfTr2YTandFsn0pHk6hSWbByQcSLBZbSP8FBJAlCH5mzxvhnQfI
+ UiHrwk6RksuLEhLgeapjgm0hDr4T6uR4KpfmduoJtBCea+ZbCpGV4otKnyLrkkZvMVly212kc
+ C32LBSO3bf1Xi9bNFnnYYFYqgXMFYrLhURgC3QL57e0W/3nbNy/Wy1bMWfkWKWiWj4FWJ90ar
+ uHzhBuaUtsjQJFmUIeFKuT1WiRNxfyV/gQfUxwt8V/8xTGTeV8quyXlLHP5XSNT9mYO55cv2n
+ okvlX14CBScbKPmFvl+jSydplH++UOvJWd/nHXcj8jf+8=
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    2c71fdf02a95 Merge tag 'drm-fixes-2024-04-09' of https://g..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=170425a1180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b5bc506ebba90cbf
-dashboard link: https://syzkaller.appspot.com/bug?extid=0a079d6ef3831217a230
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16abe213180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ab97ad180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/36c01edd4b1e/disk-2c71fdf0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7df598a3dceb/vmlinux-2c71fdf0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/678bacfb883c/bzImage-2c71fdf0.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0a079d6ef3831217a230@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
-BUG: KMSAN: uninit-value in htab_percpu_map_lookup_elem+0x3eb/0x4f0 kernel/bpf/hashtab.c:2302
- __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
- htab_percpu_map_lookup_elem+0x3eb/0x4f0 kernel/bpf/hashtab.c:2302
- ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
- bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run4+0x150/0x340 kernel/trace/bpf_trace.c:2422
- __bpf_trace_mm_page_alloc+0x37/0x50 include/trace/events/kmem.h:177
- trace_mm_page_alloc include/trace/events/kmem.h:177 [inline]
- __alloc_pages+0xdc0/0xe70 mm/page_alloc.c:4597
- alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
- vma_alloc_folio+0x418/0x680 mm/mempolicy.c:2303
- wp_page_copy mm/memory.c:3263 [inline]
- do_wp_page+0x196c/0x66e0 mm/memory.c:3660
- handle_pte_fault mm/memory.c:5316 [inline]
- __handle_mm_fault mm/memory.c:5441 [inline]
- handle_mm_fault+0x5b76/0xce00 mm/memory.c:5606
- do_user_addr_fault arch/x86/mm/fault.c:1362 [inline]
- handle_page_fault arch/x86/mm/fault.c:1505 [inline]
- exc_page_fault+0x419/0x730 arch/x86/mm/fault.c:1563
- asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:623
-
-Local variable stack created at:
- __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run4+0x150/0x340 kernel/trace/bpf_trace.c:2422
-
-CPU: 0 PID: 5021 Comm: syz-executor180 Not tainted 6.9.0-rc3-syzkaller-00023-g2c71fdf02a95 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
+Can it be nicer to use the word =E2=80=9Cinterface=E2=80=9D instead of =E2=
+=80=9Cif=E2=80=9D
+in the summary phrase?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> When bringing down the TX rings we flush the rings but forget to
+> reclaimed the flushed packets. This lead to a memory leak since we
+> do not free the dma mapped buffers. =E2=80=A6
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I find this change description improvable.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+* How do you think about to avoid typos?
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+* Would another imperative wording be more desirable?
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Regards,
+Markus
 
