@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-144268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AB678A43D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:36:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D578A43DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:36:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70D721C21BE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:36:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8229A1F210F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968E41353FF;
-	Sun, 14 Apr 2024 16:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65952135A4E;
+	Sun, 14 Apr 2024 16:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ejL/xz4E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kKfVuIO1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68F8134CC6;
-	Sun, 14 Apr 2024 16:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9884A134CC6;
+	Sun, 14 Apr 2024 16:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713112584; cv=none; b=BpdZG3/bg64SjfPr0LTQhj88asrAKYpSVSrpY+tojKH/aAuHPhgV6kJCc6SpjEELigVf2+Dj/971sEygEUR5JV2CsGoFhb50iyOM2kjqTJg0rKeCe8ikXrk3lE0NnCZIoIJWaesubki1v50amKKEmpm5A8mTpTrmibZ1GFBJrF0=
+	t=1713112589; cv=none; b=KDVRG3EDZHyXLJzkxK2Z2PM6enIpVVqgYuyuuNVGEqK0jZMBFv3xu1D8hy7O+/55HMGPZNoFfvJPXkgluZAGjA/a7zN53KR/ghjt0t4WOC3qqQHEcyNyIECP18eLtHdFk3u5pYitcE2wgavGa86fJevq6rV+uD7qxuSNW5BO9gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713112584; c=relaxed/simple;
-	bh=eNzOnZBoAvIfDYaYJCy+HYEyB3DpVs0pSukxdyTWkd0=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cKzCW/QTMD9Povmndnmjxzsn7Ko/00PT8MjdexHQuIX/CLDqVxxA+1nm+gQrGDLrcmo2dRFAMRLTbxuJMs8v+7GBvHMxFwoLz2DInDJtAzaUDuuBgiX0y3P5tQED3V/MwWkZJskbm7WK5E/FHow8H2iHI4Uns9+v4Q209whOeuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ejL/xz4E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EBC0C072AA;
-	Sun, 14 Apr 2024 16:36:19 +0000 (UTC)
+	s=arc-20240116; t=1713112589; c=relaxed/simple;
+	bh=z5qAb/aZb4HJjU1nY0q3WFWS8153iumjRfnCENwhTpU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=OAuZzTUOnQiPMd5Aqx08nUVOVEU6UEPvvTjtDPf9aRhQG+q/Q2TWLdRbUfrE7juMyr1RLCQfoExcy+VZM5KXmrEY/EQqg7HoXOL0F607e9rNIQPVESSD4eNdibCvINYBkEZ5/uDoq1TzxPqLh0bEO3hssgjWWxjX0917n7brK6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kKfVuIO1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5E44C2BD10;
+	Sun, 14 Apr 2024 16:36:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713112584;
-	bh=eNzOnZBoAvIfDYaYJCy+HYEyB3DpVs0pSukxdyTWkd0=;
-	h=From:Subject:Date:To:Cc:From;
-	b=ejL/xz4EMRQtIL8NFPoxCI7BA2WCz28U7xgpVypZZWpdJosTannIu+kkHbUgXlF1g
-	 XqUeOUUoyo2tBk188MJQ+ZD286korvAtpco7R0AqF+srxompcOH2o3bYxsARNS6+22
-	 RseGS5xk2EGB7dtHc+Xj1wdAcEymmLQKJ1hMPu+7fW1JYkuyu1D7EQzN5ZKj+XElcw
-	 WWy6zTNVcY6/fbR1xB7KfJjMt2I2uNzA3SQ5RIjYGVUWm8SWgMYhxdcLt1s+r9Vw6O
-	 A+VTqjum48dW4AS6DwV/smfJ7vZ+tY/j5sHdGeQqL4pXwWRs/u4dZ/bo9AXsBcBOze
-	 PLTo4g2+VwrzA==
+	s=k20201202; t=1713112589;
+	bh=z5qAb/aZb4HJjU1nY0q3WFWS8153iumjRfnCENwhTpU=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=kKfVuIO1xTF9DBQQsqJ+6JFm4fxOw4LuXEUKEKd6tnfwwpnuRomxK+B9pljOtcD4v
+	 YouAYjf7moCi0CFFtrhb3alKwZwkbtZuG7Wx6wqy0TPxIgJmH/nWApc+HNtUr/L7Dm
+	 DGfuIEFxJy6TZHNc3KQ7WSgt7dC45P3ICGVdbeyeUhtSZhchR1cTxPHD/iZaRN4TqG
+	 2UBEyPTWQJzYMAIZ5Gx+ZsPeIo4WdMs6AdoAGA/OjqUWUSnpH++t24Q8QjqL2jy2eI
+	 ftR1iiKx0JKuZMxHz9rIFaHdHCwq1CklG3WwNnCn3sacQ/3MtLyVf4GvyWcNg1KbjT
+	 qvx4Kayf1OkOQ==
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 00/18] backlight: Constify lcd_ops
-Date: Sun, 14 Apr 2024 18:35:58 +0200
-Message-Id: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
+Date: Sun, 14 Apr 2024 18:35:59 +0200
+Subject: [PATCH 01/18] backlight: Constify lcd_ops
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,9 +51,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAO4FHGYC/x3MTQqAIBBA4avErBswk/6uEi1KRxuKDI0IpLsnL
- b/FewkiBaYIQ5Eg0M2R/ZFRlQXodT4cIZtskEIqoSqFNxvyuMx629mtF+7aoD8jyrYxnap7a5c
- Ocn0Gsvz853F63w82aO77aQAAAA==
+Message-Id: <20240414-video-backlight-lcd-ops-v1-1-9b37fcbf546a@kernel.org>
+References: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
+In-Reply-To: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
 To: Lee Jones <lee@kernel.org>, 
  Daniel Thompson <daniel.thompson@linaro.org>, 
  Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
@@ -67,81 +67,83 @@ Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, 
  linux-omap@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2295; i=krzk@kernel.org;
- h=from:subject:message-id; bh=eNzOnZBoAvIfDYaYJCy+HYEyB3DpVs0pSukxdyTWkd0=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHAXysXFQnYyvdqcs/X5FakY9Fo/FHxiGQeytV
- tdgafVxAeSJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwF8gAKCRDBN2bmhouD
- 1+6rD/9zrg4QyHTGfati6i4s8LnmC6E8hhyOIATO04pH9rEDIPq7D9+7QUXi1gCd8nsDda+rGGc
- lrjLvf++q6aPw/5rfGmp7sRunrZAkttgq8TQnqGRBnsxZL9pi3GBfbuPxFXsdbTq3DmPUdS0Kwb
- IixWqSiF/PI9K3KXRmadIw4DQnZ/z6z8JBr0n2KJmrlf6cPHCEP8s6h2vHC0I635LJ8j1eXC2wF
- UTt19KZsqIV/J7/Lv0EtVygFY2UWHfHUs6crKGUt7Q6HKcsJeol6XWix5ecLTaM4DKkyARJ80Ed
- Ci+mO1BdAlczTrKKMpx8k26i0S9/oXsaqKhId2eCzKvOdOKytvhTq46mV0rOxGERh4cv69LJm7r
- ph5flgoJf/BX7/blXsoMhYX2JiIYYt4SNrfEuBVj25G+DygfCs/Dsc598z26dXnuBywCU/p99eQ
- MYGszfHkvKZUeri7xCiNHnNPnJ4Wn68mLl97KD+AWqc3pGJiClfVzoh/D3Xd8gaHfqX2MUK2EGZ
- eCJaeaujMjxs+w4MqfFK8sbQ0KrWnNWjYvdnku55wherHqChzpSxnNXiJmx0pHKCTcqHB8MgeXJ
- 6FlQJOQLB0BJC13I1l5/2uZxryjSeZn5sJBV+3UJDR8Q3oSdbfFP1EpYtpEKbJHCil9AME85b3e
- 3ZOQeRpuPIdNFOQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2432; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=z5qAb/aZb4HJjU1nY0q3WFWS8153iumjRfnCENwhTpU=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHAXz9nDuruVnQoZBQ+0fvh2Ilb98JS2983g+e
+ dDhNnweDlKJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwF8wAKCRDBN2bmhouD
+ 1zUHD/9QO+vhmEA35mCEGjhMycJkhHR2vbsqoQiS9B393cyyor52W46seZkdDRv18gL3cbFaDq2
+ GCW5CEXQE9OJa0LEsHI7ykKwU3SqAfxAxKCN0YhqB5slN79oYKV6KRlmhG8nWYjYcXFV1oPHiI9
+ BJhILiYxFy6vem5nw57qJrey+rFLPDTFHkHEQkOzxwzd1unlOXoRcfoytgRIKAWu9rVk41JsCtJ
+ 7KxGDdzDvu58gU1auOAVNqsi8YWioXvHM19X6iz6H01pcLhyLh2WGqX+yj57jExX6ZD++m5WiTM
+ 2hekdsNXZFjUdKYwuCRBzFtXUNE9KTFrwBThUGXnqzOm5FGTRRGWm6FwdE11Me9AKw8BMP2/o8h
+ YFIYnVZfsXpKKRBKHJQcxnNNMitFUTMCTPOo09tw7DR2AyD2Fe4uOeXwydRKcy7gq2F+elUUk9g
+ OJzlWh6xG3J3JudxnCnlhoUm1KJuaC2EtnDvNAwrexCvb6vM30L57uJJ+FkG7VVQqh6ateR6Imb
+ +ZDLnIWcXbCvG2yzKPCJaxult4EwJcoaGxtqter5TE2qQwH9fzTnL2ZvT2Ys7S5WpH2jxzyzGi9
+ mJhk+x5ZEBYBSTkV8K+fcR892HowQF0f4HBC+KM9bRlaDZaymgrH6pVnmKj5BDTzXV+tvOY4wYD
+ 7R7nFE7ZkRksu7g==
 X-Developer-Key: i=krzk@kernel.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Hi,
+'struct lcd_ops' passed in lcd_device_register() is not modified by core
+backlight code, so it can be made const for code safety.  This allows
+drivers to also define the structure as const.
 
-Dependencies
-============
-All further patches depend on the first patch.  Therefore everything
-could go via backlight tree (please ack) or via cross-tree pulls. Or
-whatever maintainer choose, just coordinate this with backlight.
-
-Best regards,
-Krzysztof
-
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
-Krzysztof Kozlowski (18):
-      backlight: Constify lcd_ops
-      backlight: ams369fg06: Constify lcd_ops
-      backlight: corgi_lcd: Constify lcd_ops
-      backlight: hx8357: Constify lcd_ops
-      backlight: ili922x: Constify lcd_ops
-      backlight: ili9320: Constify lcd_ops
-      backlight: jornada720_lcd: Constify lcd_ops
-      backlight: l4f00242t03: Constify lcd_ops
-      backlight: lms283gf05: Constify lcd_ops
-      backlight: lms501kf03: Constify lcd_ops
-      backlight: ltv350qv: Constify lcd_ops
-      backlight: otm3225a: Constify lcd_ops
-      backlight: platform_lcd: Constify lcd_ops
-      backlight: tdo24m: Constify lcd_ops
-      HID: picoLCD: Constify lcd_ops
-      fbdev: clps711x: Constify lcd_ops
-      fbdev: imx: Constify lcd_ops
-      fbdev: omap: lcd_ams_delta: Constify lcd_ops
+ drivers/video/backlight/lcd.c | 4 ++--
+ include/linux/lcd.h           | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
- drivers/hid/hid-picolcd_lcd.c            | 2 +-
- drivers/video/backlight/ams369fg06.c     | 2 +-
- drivers/video/backlight/corgi_lcd.c      | 2 +-
- drivers/video/backlight/hx8357.c         | 2 +-
- drivers/video/backlight/ili922x.c        | 2 +-
- drivers/video/backlight/ili9320.c        | 2 +-
- drivers/video/backlight/jornada720_lcd.c | 2 +-
- drivers/video/backlight/l4f00242t03.c    | 2 +-
- drivers/video/backlight/lcd.c            | 4 ++--
- drivers/video/backlight/lms283gf05.c     | 2 +-
- drivers/video/backlight/lms501kf03.c     | 2 +-
- drivers/video/backlight/ltv350qv.c       | 2 +-
- drivers/video/backlight/otm3225a.c       | 2 +-
- drivers/video/backlight/platform_lcd.c   | 2 +-
- drivers/video/backlight/tdo24m.c         | 2 +-
- drivers/video/fbdev/clps711x-fb.c        | 2 +-
- drivers/video/fbdev/imxfb.c              | 2 +-
- drivers/video/fbdev/omap/lcd_ams_delta.c | 2 +-
- include/linux/lcd.h                      | 6 +++---
- 19 files changed, 22 insertions(+), 22 deletions(-)
----
-base-commit: 9ed46da14b9b9b2ad4edb3b0c545b6dbe5c00d39
-change-id: 20240414-video-backlight-lcd-ops-276d8439ffb8
+diff --git a/drivers/video/backlight/lcd.c b/drivers/video/backlight/lcd.c
+index ba4771cbd781..ceec90ca758b 100644
+--- a/drivers/video/backlight/lcd.c
++++ b/drivers/video/backlight/lcd.c
+@@ -191,7 +191,7 @@ static const struct class lcd_class = {
+  * or a pointer to the newly allocated device.
+  */
+ struct lcd_device *lcd_device_register(const char *name, struct device *parent,
+-		void *devdata, struct lcd_ops *ops)
++		void *devdata, const struct lcd_ops *ops)
+ {
+ 	struct lcd_device *new_ld;
+ 	int rc;
+@@ -279,7 +279,7 @@ static int devm_lcd_device_match(struct device *dev, void *res, void *data)
+  */
+ struct lcd_device *devm_lcd_device_register(struct device *dev,
+ 		const char *name, struct device *parent,
+-		void *devdata, struct lcd_ops *ops)
++		void *devdata, const struct lcd_ops *ops)
+ {
+ 	struct lcd_device **ptr, *lcd;
+ 
+diff --git a/include/linux/lcd.h b/include/linux/lcd.h
+index 238fb1dfed98..68703a51dc53 100644
+--- a/include/linux/lcd.h
++++ b/include/linux/lcd.h
+@@ -61,7 +61,7 @@ struct lcd_device {
+ 	   points to something in the body of that driver, it is also invalid. */
+ 	struct mutex ops_lock;
+ 	/* If this is NULL, the backing module is unloaded */
+-	struct lcd_ops *ops;
++	const struct lcd_ops *ops;
+ 	/* Serialise access to set_power method */
+ 	struct mutex update_lock;
+ 	/* The framebuffer notifier block */
+@@ -102,10 +102,10 @@ static inline void lcd_set_power(struct lcd_device *ld, int power)
+ }
+ 
+ extern struct lcd_device *lcd_device_register(const char *name,
+-	struct device *parent, void *devdata, struct lcd_ops *ops);
++	struct device *parent, void *devdata, const struct lcd_ops *ops);
+ extern struct lcd_device *devm_lcd_device_register(struct device *dev,
+ 	const char *name, struct device *parent,
+-	void *devdata, struct lcd_ops *ops);
++	void *devdata, const struct lcd_ops *ops);
+ extern void lcd_device_unregister(struct lcd_device *ld);
+ extern void devm_lcd_device_unregister(struct device *dev,
+ 	struct lcd_device *ld);
 
-Best regards,
 -- 
-Krzysztof Kozlowski <krzk@kernel.org>
+2.34.1
 
 
