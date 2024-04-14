@@ -1,108 +1,87 @@
-Return-Path: <linux-kernel+bounces-144164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F45E8A4295
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:21:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C828A4290
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C02381C20E8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:21:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6D69281A38
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F8945BFB;
-	Sun, 14 Apr 2024 13:21:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=raxyte.com header.i=@raxyte.com header.b="pAaePoZO"
-Received: from gu.d.sender-sib.com (gu.d.sender-sib.com [77.32.148.22])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFED23EA90;
+	Sun, 14 Apr 2024 13:21:05 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6009641A84
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 13:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.32.148.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456A018AF4
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 13:21:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713100899; cv=none; b=OgbjsKoh12PeUdEzexw4EtTju4kRIh/xxoOWhJjAPYzmHuxdJTSp6aFLexZqT0r8YjKElMdv8IQClWPcTS/2Nuo86SZi0qh0Q/r39/O2d953nGCnK+aXdCJGkGIae/IT5ieE+cqpoJxc8lBSPpzCwDLYTLnVP+WDHBKpgraWUjo=
+	t=1713100865; cv=none; b=TQapE6GhZ5eGLXIfA9TghgcVqxVSMAsjF0ABg1oQMqGZTOFlmj0xhdOagKZ/bQkwYMz10RkpSgrtlpOBp6XiDQRDUIBkFb125hPuDxk7ynWXLg+l73JTIernVL4qpvWVxU+OBy4UBVRFpSWCdWrvKBWhar5QNC0QU+Fy5MGBinY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713100899; c=relaxed/simple;
-	bh=TD6uMI7QAWgg3XSqO08rarrvGml8Sx7m6ell7wkf6CU=;
-	h=Date:Subject:Mime-Version:Message-Id:To:From; b=uOYHdjuD0me9p+Z2i3cfb9Okwqtl1+XDg+Z5jgCczNvcbIYjaXo6U9QGaLWgWEPS3NpeZcthAHppBurObQG8tpUehEJHTRDrtiuB9l+RJ0kwnrPiYddLXbX1zDQ36i0aeJ2+uqZ4UuKoInHdoy1hFbpDjltFfVG+udLf10neIDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=raxyte.com; spf=pass smtp.mailfrom=gu.d.sender-sib.com; dkim=pass (1024-bit key) header.d=raxyte.com header.i=@raxyte.com header.b=pAaePoZO; arc=none smtp.client-ip=77.32.148.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=raxyte.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gu.d.sender-sib.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=raxyte.com;
- q=dns/txt; s=mail; bh=CRndFbjNIKMcK8zR6tbvt/PU4cTYUy67e6MOk0bjXFY=;
- h=from:subject:date:to:mime-version:content-transfer-encoding:x-csa-complaints:list-unsubscribe-post;
-        b=pAaePoZOskZ9WmQ4QnxPKvkkeS6BJy+KJFQHrN0agCfWt/jKUc2I9adcEsEM32NB+mvU8WW9AVfo
-        cmQfP9EOE3cTXI2+HLasz4OpdIZs1hici6RMcc3wuxJk5trW41oy+W4pDzqpXL3GHDZyNNEnE4zt
-        NiHMwNO0gJh/HT36XEs=
-Received: by smtp-relay.sendinblue.com with ESMTP id ca7b5992-61ae-4353-adcb-f81d7ca12f0d; Sun, 14 April 2024 13:20:26 +0000 (UTC)
-X-Mailin-EID: MjY2MTUxODYyfmxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmd%2BPDIwMjQwNDE0MTMxOTI4Ljg0NjYyNS0xLWRldkByYXh5dGUuY29tPn5ndS5kLnNlbmRlci1zaWIuY29t
-Date: Sun, 14 Apr 2024 18:49:28 +0530
-Subject: [PATCH] rust: update `dbg!()` to format column number
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713100865; c=relaxed/simple;
+	bh=+UCHK7tbG//9ug18P+r8XDKU8XjXhKi2RnpPesTbDwQ=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=gk5c6y65tKxSO2nkS+gfMY793tnx+GbsJQ474jNurVhYjQgomp7HnxOhQMcUH9W/mfGXLmnxpCl0XQEjK6r1MUwpl4WqLv9FP2ZF2CLu9GTRnIL3u+mf0jrEHBgf6QMp8JaDOdG3i+OYgJsIlJIZA3io/0WJTSvkc5tS4SgN8UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5f987a9f9so263026839f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:21:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713100863; x=1713705663;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HdGiYo+Dnh0uIIGoCxoo0gDRHsIGj4vm1CSYv2dlQ4c=;
+        b=Jrb9nXkjucCMkhiZklRQ5ETMtnPQLYJnkW+FwnenhsR5p/4C7jPnYISeCkfw0RNUr/
+         uOHk6duQjrGUYu/c/16e3X7jdRxVdpMQmiuaOPyVP4yg7LXF2XzV6zy6oS/hcFb1PUew
+         pquKAjI9tPMOpteAfLv3g3NX53zAZ2SyzMxGDE/7RVNLATf4VWM4FMB40PRydU0Hju9C
+         0rxrOlXYg1dIXKO37JIjpBs9tZdCrYSN0RGlPgUnjBEKfYEz+eyqMm2jrVuEPo58JknT
+         gGyVfiwXvDS1NdSSNw0iJDVLlVcHbftrOb28phO1fgkX6T7IKsK8xFu3bZek+0oMfWBn
+         7ljw==
+X-Forwarded-Encrypted: i=1; AJvYcCXT1EXlAgphYfSTBMfuOBKoVIgb88JYzx9z95zZTngFImT3aljIsadoHOYUptW2ypdaNzH1hRwchEnJ75RU88uaP7sGo1MblI701AA+
+X-Gm-Message-State: AOJu0YzSlWzvHTsr97GJAUxNoehZtAHBTylfCuRQlNmQKxq2E8ZlE1/Q
+	5iWqYd8B7Fx7S5I96UOhyIvgw7rZ7D170yMfJTsYQVjAWYREJt+pTPtX2GGz0SbssfbyHH0gu6D
+	aTIy2Ywb2UtXr7HbFNMJX+MTTfuddzgtQTRUt9SmT8fSJkSBuGxDBq3g=
+X-Google-Smtp-Source: AGHT+IFjnmw3uLVA4AnU0tsuMdzIawT0yaGj/kn1xZjSZhH1YCc3nF9v69ymqCmqO9ChHvxPqyNHX0UrfQMQ3nQyuKLxSLKWxf5P
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <ca7b5992-61ae-4353-adcb-f81d7ca12f0d@smtp-relay.sendinblue.com>
-Origin-messageId: <20240414131928.846625-1-dev@raxyte.com>
-To: <ojeda@kernel.org>,<alex.gaynor@gmail.com>,<wedsonaf@gmail.com>,<boqun.feng@gmail.com>,<gary@garyguo.net>,<bjorn3_gh@protonmail.com>,<benno.lossin@proton.me>,<a.hindborg@samsung.com>,<aliceryhl@google.com>,<dev@raxyte.com>,<rust-for-linux@vger.kernel.org>,<linux-kernel@vger.kernel.org>
-X-sib-id: tx-3UtHO3ro1AhphuDfZo2H2csw-KDWx18r1_y-zyyD5k6CBR-0p500iirHn-_v0t4umZi7PYt2f15O1HmJwVEJPKp57WmmDcEK1IU68I_hGnw1J8LFCP_QFUKvIklq1W1KzzL4FvIrfFzmiQSjSmNkFuSb_tcqzUNdOpEvMCmWCKCFJ-4XnqmTM
-X-CSA-Complaints: csa-complaints@eco.de
-List-Unsubscribe-Post: List-Unsubscribe=One-Click
-Feedback-ID: 77.32.148.22:7517309_-1:7517309:Sendinblue
-From: <dev@raxyte.com>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1c89:b0:36a:fe5f:732c with SMTP id
+ w9-20020a056e021c8900b0036afe5f732cmr532162ill.5.1713100863480; Sun, 14 Apr
+ 2024 06:21:03 -0700 (PDT)
+Date: Sun, 14 Apr 2024 06:21:03 -0700
+In-Reply-To: <tencent_79835DC09931CFA58DEC258D8DA51200DD07@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006eb5af06160e605d@google.com>
+Subject: Re: [syzbot] [pvrusb2?] [usb?] KASAN: slab-use-after-free Read in
+ pvr2_context_set_notify (3)
+From: syzbot <syzbot+d0f14b2d5a3d1587fbe7@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-In Rust 1.76.0, the `dbg!()` macro was updated to also format the column
-number. The reason cited was usage of a few characters worth of
-horizontal space while allowing direct jumps to the source location. [1]
+Hello,
 
-Link: https://github.com/rust-lang/rust/pull/114962 [1]
-Link: https://github.com/Rust-for-Linux/linux/issues/1065
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Signed-off-by: Raghav Narang <dev@raxyte.com>
----
- Branch rust-next=20
+Reported-and-tested-by: syzbot+d0f14b2d5a3d1587fbe7@syzkaller.appspotmail.com
 
- rust/kernel/std=5Fvendor.rs | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Tested on:
 
-diff --git a/rust/kernel/std=5Fvendor.rs b/rust/kernel/std=5Fvendor.rs
-index 388d6a514..39679a960 100644
---- a/rust/kernel/std=5Fvendor.rs
-+++ b/rust/kernel/std=5Fvendor.rs
-@@ -146,15 +146,16 @@ macro=5Frules! dbg {
-     // `$val` expression could be a block (`{ .. }`), in which case the =
-`pr=5Finfo!`
-     // will be malformed.
-     () =3D> {
--        $crate::pr=5Finfo!(=22[{}:{}]\n=22, ::core::file!(), ::core::line!=
-())
-+        $crate::pr=5Finfo!(=22[{}:{}:{}]\n=22, ::core::file!(), =
-::core::line!(), ::core::column!())
-     };
-     ($val:expr $(,)=3F) =3D> {
-         // Use of `match` here is intentional because it affects the =
-lifetimes
-         // of temporaries - https://stackoverflow.com/a/48732525/1063961
-         match $val {
-             tmp =3D> {
--                $crate::pr=5Finfo!(=22[{}:{}] {} =3D {:#=3F}\n=22,
--                    ::core::file!(), ::core::line!(), ::core::stringify!=
-($val), &tmp);
-+                $crate::pr=5Finfo!(=22[{}:{}:{}] {} =3D {:#=3F}\n=22,
-+                    ::core::file!(), ::core::line!(), ::core::column!(),
-+                    ::core::stringify!($val), &tmp);
-                 tmp
-             }
-         }
+commit:         a788e53c usb: usb-acpi: Fix oops due to freeing uninit..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1026f36d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dd8c589043bc2b49
+dashboard link: https://syzkaller.appspot.com/bug?extid=d0f14b2d5a3d1587fbe7
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17043c43180000
 
-base-commit: 8db31d3f3bd5dbc8cf3a22bba04b4b4add7f984e
---=20
-2.44.0
-
-
+Note: testing is done by a robot and is best-effort only.
 
