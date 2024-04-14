@@ -1,118 +1,82 @@
-Return-Path: <linux-kernel+bounces-144026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC6E8A4102
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:42:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77DBB8A4106
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:47:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9FB61C20D3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:42:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D74D281985
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C6B20B04;
-	Sun, 14 Apr 2024 07:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD40920B34;
+	Sun, 14 Apr 2024 07:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NsmLywl4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=siemens.com header.i=michael.haener@siemens.com header.b="Gz8TYfjE"
+Received: from mta-65-228.siemens.flowmailer.net (mta-65-228.siemens.flowmailer.net [185.136.65.228])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B6A1B95A;
-	Sun, 14 Apr 2024 07:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F79208A4
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 07:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.228
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713080564; cv=none; b=BOle6LmIyCN1pG3Z0rOlp/Qt2Fzt15tZ44bcjzbUpv2C4i4KJ99kMsygcBUl/06oLs5B02//r7DHOqACMZs1jlCH5H5F+xVL5v12IXLPOC4uYz+bfZZ3akFXOEgZ0qKaI1rF0eQEByeDxTLKot7K/YGcQfzVJp/ih4Y3SoDR/o8=
+	t=1713080835; cv=none; b=ICpP6IkJ5AqfPyWPYmmhGxiWCzSB5NBr0q4CGXoQxxWRiqy0JCfGz22lNg+3dj7GKJHQjRnPi035adL156K6bAqe51p1Y9UBfSoFzlOIXZjj8Ry6uWqTgRQTzrA9TcSrxyGzIyIl6VPD3fXv/5wfEWQTed10/7kEVMznNc0nIJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713080564; c=relaxed/simple;
-	bh=6ykjIOAiBTxAiHLB66C2NCpr8txrh6E+cO0uOmmMD4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AQASohzEwMhp069T7T2fo3BHoTHRJbkJWtVFiVo94R6EfzEW9SUzJt35uOWpDb4YAUXIgCr3seUlJ5JJKIl0D1nKKkL/pcfgs65YT5rOB8C0J5N4cVnU6eIOSAiGM+AzXFwZYTmlloBArNahbdm5U4Ahn3+LmfiuuqnPYHHUX8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NsmLywl4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB96CC072AA;
-	Sun, 14 Apr 2024 07:42:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713080564;
-	bh=6ykjIOAiBTxAiHLB66C2NCpr8txrh6E+cO0uOmmMD4g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NsmLywl4iNGNTHtupw2OuDIiGfTyBkJ5uvaHX4sOTTqDSdplEUtw0indT1FmDqTOX
-	 Uu8QwmdLfL75QuRUzpyyLwQed/6l6XHGBxZCFbYURYZkuIHNwL5f4ibQaC3kmV889m
-	 vCwfNMFWLBzzHfMGVyEUKt0g6t3azcILi72V5OcPcfTJswR7YHULYKsaQQf0nV3Nin
-	 Jd3KODzja7A4SLRwaJPdcZDetlenDlbiPC1Ay+wEOz77W2ZlZF2iWiTJ2Kucs67Z6a
-	 /8/Yq9grG3+kR83s4LaAeJWdDOvwhT0IngSJVkpcLWwJvEksY8Qo8OhMQRgdMEUH7P
-	 IZH6NtISNZ9mA==
-Date: Sun, 14 Apr 2024 16:42:37 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
-	Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] selftests: fix build failure with NOLIBC
-Message-ID: <ZhuI7TRZ111I3mBU@finisterre.sirena.org.uk>
-References: <87r0fmbe65.ffs@tglx>
- <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx>
- <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
- <87frw2axv0.ffs@tglx>
- <20240404145408.GD7153@redhat.com>
- <87le5t9f14.ffs@tglx>
- <20240406150950.GA3060@redhat.com>
- <f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk>
- <20240412123536.GA32444@redhat.com>
+	s=arc-20240116; t=1713080835; c=relaxed/simple;
+	bh=66B9xW2JnZF+T+ORl+vmwNxP9ZuLdipN2y3NqjssXK0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W+KJnUbxdauB7RMDZyygmx2ez4wiE2TO1NYVjctvYpC6xBCwss/SUqkv6qaUywe44nmZRXUqLbc3A8aKxfD708AOGiPzCZ7fRjSi73ey37D0z4r6oNE1JHwmQfGZ2XvXrNkqOzMkUAdfcqVAgFJw90Awv6fUyoHFYA9hKQaAclU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (1024-bit key) header.d=siemens.com header.i=michael.haener@siemens.com header.b=Gz8TYfjE; arc=none smtp.client-ip=185.136.65.228
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
+Received: by mta-65-228.siemens.flowmailer.net with ESMTPSA id 202404140747038c889a3b7225b45e3a
+        for <linux-kernel@vger.kernel.org>;
+        Sun, 14 Apr 2024 09:47:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
+ d=siemens.com; i=michael.haener@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
+ bh=mRTcKk9CAwzkOcmbjmAlIJKdoAVTq0P9oRRdIYZzYdw=;
+ b=Gz8TYfjEfurOTWhvYtKCLk18xlnVUejBN5W04nkiza/SyUHBV6y9rUVvs5Ab279BVT5Y4j
+ 3Z4Z9+I8eg3XPlDoLp/3GpAPJJGtnxmPuHXVb6Lt9m7pAlTu2wjdly7zWfG/6gjINpe0VLMb
+ XlfvwUemmwfBr2vtISPg0rpvxXrnQ=;
+From: Michael Haener <michael.haener@siemens.com>
+To: linux-integrity@vger.kernel.org
+Cc: Michael Haener <michael.haener@siemens.com>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Alexander Sverdlin <alexander.sverdlin@siemens.com>
+Subject: [PATCH v2 0/1] Add ST33KTPM2XI2C chip to the TPM TIS I2C driver
+Date: Sun, 14 Apr 2024 09:44:33 +0200
+Message-ID: <20240414074440.23831-1-michael.haener@siemens.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RDirHntfewS0PWXo"
-Content-Disposition: inline
-In-Reply-To: <20240412123536.GA32444@redhat.com>
-X-Cookie: You might have mail.
+Content-Transfer-Encoding: 8bit
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-664519:519-21489:flowmailer
 
+This patch series adds support for the ST33KTPM2XI2C chip.
 
---RDirHntfewS0PWXo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changelog:
+v2: removed driver patch
 
-On Fri, Apr 12, 2024 at 02:35:36PM +0200, Oleg Nesterov wrote:
-> As Mark explains ksft_min_kernel_version() can't be compiled with nolibc,
-> it doesn't implement uname().
->=20
-> Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_ti=
-mer_distribution()")
-> Reported-by: Mark Brown <broonie@kernel.org>
-> Closes: https://lore.kernel.org/all/f0523b3a-ea08-4615-b0fb-5b504a2d39df@=
-sirena.org.uk/
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Michael Haener (1):
+  dt-bindings: tpm: Add st,st33ktpm2xi2c
 
-Makes sense to me given that there's not likely to be any immediate
-users.
+ Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+-- 
+2.44.0
 
---RDirHntfewS0PWXo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYbiOoACgkQJNaLcl1U
-h9DjfAf+NeKWvpY1kfNztkGXC5XgmSPRN72mmjwoz5S5ADSj6eACj6FVUx8dMLmx
-MboAtU5eBumh83kzmDd64LH3zoNrC47WBOgPc8DNJ+Rojo+M1+9wA1EnC0qbPQyT
-0H4LAFT2+/erlxSCrXcI/ValOLvD7+OOlEpObFMbFzyCT3cLQhQe/7o1gkjvArBC
-Y39UmP6cvV69IhQ0VRg2F+xvOZTBrD4h2THuRwD6FXnMt/kYfcKpFO0BeB+XvbvV
-r+7KTIQ8fkxw19JNuwSpzOM7M1Y9gJcsyN+bIZf1ctwOullXzAv2hh1IruVehXfA
-Ey2qL/O9t3pwtZT3MddpQbx8KoJpAg==
-=MeqW
------END PGP SIGNATURE-----
-
---RDirHntfewS0PWXo--
 
