@@ -1,86 +1,54 @@
-Return-Path: <linux-kernel+bounces-144364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 126188A450A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F668A450D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:22:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1B291C20846
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:22:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC0961C208F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8DD136996;
-	Sun, 14 Apr 2024 20:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4374136996;
+	Sun, 14 Apr 2024 20:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ZYVuZhhh";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+nkF2OOL"
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="VGoWBVEb"
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8917B1D688;
-	Sun, 14 Apr 2024 20:22:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713126124; cv=pass; b=i30Crf8oSrQbu1fHPYyXTgaGgeR/keYvyWTtBBboZ617zCoV3QUUHtI87oSFiYFM00fVT4JLZgNxtfjvj/9DC2jjC3U1PsUlZ/nQNMH6J2ahu5vkl6ZREh+YXiBAOBX+ZrRqZ7BI7lHHpFYZ0KuzfOVrIa+3Hosi4O3qwzQH02Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713126124; c=relaxed/simple;
-	bh=vT8KOr3SvikJeMpg2ktjqGTrpiUSVOwI7Ulj4Tcu88w=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97AE50A98;
+	Sun, 14 Apr 2024 20:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713126159; cv=none; b=DEAqS2naB5/dTyf6mJbg+2xJlKG0Vpnafov3Ev3VRciJIse7/553SfTnQp+tiZsjOFjuBwHiwStbaSAoN4YhtTQF0equafI+1VGjr51qb79qomkwYzZFoxgvKpoZzVdM08///eYPiP4mS/cM2P/4ycfJ4JoWEy4PFG4rhIwqUuY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713126159; c=relaxed/simple;
+	bh=jS8aaEgrDy+LAshuOWNAXe/xU8eT+12PkVtGogZg7mo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H3zbjxtA/MGrvUSA0NLEden4UD8HV86HD7s8G9kjlLXnDYiyNbumdvsnlwIS/2ULaOSKq0j5s0/Q4o4zMoCfBZz0/r2Eec1yEq4MCSJgmnptux8OQYD8E5wqnDLQzDrn48p/plwdmdYtw/WhvP7lHykwOaqB0/QJfAcWVpsgt1E=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ZYVuZhhh; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+nkF2OOL; arc=pass smtp.client-ip=85.215.255.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-ARC-Seal: i=1; a=rsa-sha256; t=1713126101; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=nKKe3KUJgcml3yIeSAfS56G8gn/M7whEEmw5a5WE7fzwLxRAf4YgS3U8NaGBzH7EKN
-    SN9kbiTMgjzC3HdfxggzC2C+pa4fZhoalOouQUD3kp8xr6IUKFkF0OIRTn5QwBqcV4Pz
-    8S8DH7Tu870sSA+WqA15kFbfl7DUOq6JHzQriOqIzRtxWujt4beS0BpV09ip0z2wRjD4
-    2lNLFsrTTA+rGiGp3ZEVgu0cc5jR91gw8YAViIx4OMUwaD+f1eiehji4TnYMkGUbs5xU
-    HihvqqwdMTAJquFHn2bK4XonjIZADOExmrzz8qT2Mas8F2DGZcQBG9V63UnCDENsXtUg
-    JW2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1713126101;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FFdZNeDIHKlI++tV+rJTXXExTAzAeIULgTQSTJmSCuU=;
-    b=d+2z78jmUpVbWERrzidNkDGiRCzxitPyZ2tpox3AwqsqC3JvEgUdNG5uCXBcM9wmAu
-    UgHUzNX1yYTKNUm+/tOcB9QZ/7LtSF/W5z7SUFj5GP3eqD/YyCpJslokiqq7on3KUfOj
-    JlX//bb2fygswKgToU5A0T8XcU9lxZwKOHCPaa0wiFT4i9rz1H3dXjcA8Ej0uRgbQwlv
-    axiISXyFHxFHb3rJUTirzl8MdzUSgItAVwS+6OQetwz8/2X5+Alo1VBaZCtH9kwu0dAs
-    vQIigU063HdD99I/JZdXaBnEod5JnJDh89QXyeOLAvv/yK3UjMO5R7rFp8+wjLghDKRK
-    lsuA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1713126101;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FFdZNeDIHKlI++tV+rJTXXExTAzAeIULgTQSTJmSCuU=;
-    b=ZYVuZhhhuTXsfiqLhsPEg9wlcG8eThmmC3SBleBWs6PUuvW9kKG088eYLZb0T7bZDv
-    Ak+c4F8bikqsCZa3SUQxA0mHIX1w6+NtSM27rgwtEdQolFnQc48REWOGpwzW7cWr8x/I
-    +gHUrQYOgNgcshVn0/TdM8YkzkTsjKTaw7YdfZ9SmhXpERFqvGLxS8fSlgaihG78ocqt
-    0z0Z7+lrsvciLpvsV0Kw4uGfTq7a9sB3WSEY+/wl5YEVO8OKtAP86Zc1gVSRIC20zCRt
-    hPTW9mKqxNXClgLUadI/iW2eiNl3z7KoE3ATGPMVT4dvC7MZqmjbw/keLiY6Ht954K/3
-    Hx8Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1713126101;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FFdZNeDIHKlI++tV+rJTXXExTAzAeIULgTQSTJmSCuU=;
-    b=+nkF2OOLy0dmy4fcPZ9weFhIxlK4A9ibM3sS5vJCEe69AFulTfGJgtlCP8ET/+uzb2
-    YOxnle5qTxrA0hgL48Cg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR+J8xpzl0="
-Received: from [192.168.60.177]
-    by smtp.strato.de (RZmta 50.3.2 DYNA|AUTH)
-    with ESMTPSA id K701d603EKLfKo9
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sun, 14 Apr 2024 22:21:41 +0200 (CEST)
-Message-ID: <64586257-3cf6-4c10-a30b-200b1ecc5e80@hartkopp.net>
-Date: Sun, 14 Apr 2024 22:21:33 +0200
+	 In-Reply-To:Content-Type; b=MkWZFNoV6rTidd00vlm5Ou4OurojBMeSL9DwFVaMORy438IDjGjd+SI/3w/DUtQysH6A2c7bO/1dyJixNNsv8kNXj+KY7Wd4FYNUIZebC/iScReDNw3FHItq71HRgJZF+idXKRSy+bseX7MdAsTcBvt0kFHi/mw5DR2+vNjNkWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=VGoWBVEb; arc=none smtp.client-ip=80.12.242.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id w6MwrHBLldcyQw6MwrhVIY; Sun, 14 Apr 2024 22:22:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1713126154;
+	bh=KkvTV2uGL6FKiAI+4rZ2c43iMm1IAPg5puJ5Da/2gmA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=VGoWBVEbO8e8ObnKMMAiI23HFBK4+2cTBNwTBBv5Kpy7FfPiND7324CbPJ81PY2ih
+	 q2KU1txjPuXceK0t39bR64biSeI44UGoWoV30lcr786MM+3bZ2dlmBY4wasbn7omlq
+	 /WolJSFN90P2J2pueY0OG48fPgvLY5b4Sjfo/sRTk+gFk61kYFWUS62urj9Bc7DVGw
+	 SGLfX9M+VMF8LAre/8fxVVjB6eBrLJwno8kUrrvx9Rm9jb51iyPvtRMBOAHTBiWBVq
+	 4WrVnl21vt2XY/b4zxCS7NuYkGeMZnLDqQCZly4H4JHV8WJVBktSL6owB+iojK3Ryp
+	 PZyo6shu+hPVw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 14 Apr 2024 22:22:34 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <d0db78dd-c915-41f3-b1be-b30a0266741d@wanadoo.fr>
+Date: Sun, 14 Apr 2024 22:22:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,178 +56,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] Documentation: networking: document ISO
- 15765-2:2016
-To: Vincent Mailhol <vincent.mailhol@gmail.com>
-Cc: Francesco Valla <valla.francesco@gmail.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Simon Horman <horms@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>,
- fabio@redaril.me
-References: <20240329133458.323041-2-valla.francesco@gmail.com>
- <20240329133458.323041-3-valla.francesco@gmail.com>
- <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
- <9f5ad308-f2a0-47be-85f3-d152bc98099a@hartkopp.net>
- <CAMZ6RqKGKcYd4hAM8AVV72t78H-Kt92NXowx6Q+YCw=AuSxKuw@mail.gmail.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <CAMZ6RqKGKcYd4hAM8AVV72t78H-Kt92NXowx6Q+YCw=AuSxKuw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/panel: Add driver for EDO RM69380 OLED panel
+To: david@mainlining.org
+Cc: airlied@gmail.com, conor+dt@kernel.org, daniel@ffwll.ch,
+ devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ konradybcio@kernel.org, krzk+dt@kernel.org, linux-kernel@vger.kernel.org,
+ maarten.lankhorst@linux.intel.com, marijn.suijten@somainline.org,
+ mripard@kernel.org, neil.armstrong@linaro.org, quic_jesszhan@quicinc.com,
+ robh@kernel.org, sam@ravnborg.org, tzimmermann@suse.de,
+ ~postmarketos/upstreaming@lists.sr.ht
+References: <20240414-raydium-rm69380-driver-v1-0-5e86ba2490b5@mainlining.org>
+ <20240414-raydium-rm69380-driver-v1-2-5e86ba2490b5@mainlining.org>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240414-raydium-rm69380-driver-v1-2-5e86ba2490b5@mainlining.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Le 14/04/2024 à 17:22, David Wronek a écrit :
+> Add support for the 2560x1600@90Hz OLED panel by EDO bundled with a
+> Raydium RM69380 controller, as found on the Lenovo Xiaoxin Pad Pro 2021.
+> 
+> Signed-off-by: David Wronek <david-vu3DzTD92ROXwddmVfQv5g@public.gmane.org>
+> ---
+>   drivers/gpu/drm/panel/Kconfig                 |  14 +
+>   drivers/gpu/drm/panel/Makefile                |   1 +
+>   drivers/gpu/drm/panel/panel-raydium-rm69380.c | 378 ++++++++++++++++++++++++++
+>   3 files changed, 393 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 154f5bf82980..84cbd838f57e 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -542,6 +542,20 @@ config DRM_PANEL_RAYDIUM_RM692E5
+>   	  Say Y here if you want to enable support for Raydium RM692E5-based
+>   	  display panels, such as the one found in the Fairphone 5 smartphone.
+>   
+> +config DRM_PANEL_RAYDIUM_RM69380
+> +	tristate "Raydium RM69380-based DSI panel"
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	depends on DRM_DISPLAY_DP_HELPER
+> +	depends on DRM_DISPLAY_HELPER
+> +	depends on DRM_MIPI_DSI
+> +	depends on OF
+> +	help
+> +	  Say Y here if you want to enable support for Raydium RM69380-based
+> +	  display panels.
+> +
+> +	  This panel controller can be found in the Lenovo Xiaoxin Pad Pro 2021
+> +	  in combiantion with an EDO OLED panel.
 
+combination?
 
-On 14.04.24 06:03, Vincent Mailhol wrote:
+> +
+>   config DRM_PANEL_RONBO_RB070D30
+>   	tristate "Ronbo Electronics RB070D30 panel"
+>   	depends on OF
 
-> 
-> This doesn't remove the fact that I think that this naming convention
-> is stupid because of the RAS syndrome, but I acknowledge that CAN CC
-> is now the official denomination and thus, that we should adopt it in
-> our documentation as well.
-> 
-
-;-)
-
-
->>> Add a space between ISO and the number. Also, update the year:
->>>
->>>     ISO 15765-2:2024
->>>
->>
->> Interesting! Didn't know there's already a new version.
->>
->> Will check this out whether we really support ISO 15765-2:2024 ...
->>
->> Do you have the standard at hand right now or should we leave this as
->> ISO15765-2:2016 until we know?
-> 
-> I have access to the newer revisions. But I never really invested time
-> into reading that standard (neither the 2016 nor the 2024 versions).
-> 
-> Regardless, here is a verbatim extract from the Foreworld section of
-> ISO 15765-2:2024
-> 
->    This fourth edition cancels and replaces the third edition (ISO
->    15765-2:2016), which has been technically revised.
-> 
->    The main changes are as follows:
-> 
->      - restructured the document to achieve compatibility with OSI
->        7-layers model;
-> 
->      - introduced T_Data abstract service primitive interface to
->        achieve compatibility with ISO 14229-2;
-> 
->      - moved all transport layer protocol-related information to Clause 9;
-> 
->      - clarification and editorial corrections
-> 
-
-Yes, I've checked the release notes on the ISO website too.
-This really looks like editorial stuff that has nothing to do with the 
-data protocol and its segmentation.
-
->>>
->>> Here, I would suggest the C99 designated field initialization:
->>>
->>>     struct sockaddr_can addr = {
->>>             .can_family = AF_CAN;
->>>             .can_ifindex = if_nametoindex("can0");
->>>             .tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG;
->>>             .tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG;
->>>     };
-> 
-> Typo in my previous message: the designated initializers are not
-> separated by colon ";" but by comma ",". So it should have been:
-> 
->    struct sockaddr_can addr = {
->          .can_family = AF_CAN,
->          .can_ifindex = if_nametoindex("can0"),
->          .tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG,
->          .tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG,
->    };
-> 
->>> Well, this is just a suggestion, feel free to reject it if you do not like it.
->>
->> At least I don't like it.
->>
->> These values are usually interactively given on the command line:
->>
->>   >            .can_ifindex = if_nametoindex("can0");
->>   >            .tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG;
->>   >            .tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG;
->>
->> So have it in a static field initialization leads to a wrong path IMO.
-> 
-> There is no such limitation that C99 designated initializers should
-> only work with variables which have static storage duration. In my
-> suggested example, nothing is static.
-> 
-> I see this as the same thing as below example:
-> 
->    int foo(void);
-> 
->    int bar()
->    {
->            int i = foo();
->    }
-> 
->    int baz()
->    {
->            int i;
-> 
->            i = foo();
->    }
-> 
-> In bar(), the fact that the variable i is initialized at declaration
-> does not mean that it is static. In both examples, the variable i uses
-> automatic storage duration.
-> 
-> Here, my preference goes to bar(), but I recognize that baz() is also
-> perfectly fine. Replace the int type by the struct sockaddr_can type
-> and the scalar initialization by designated initializers and you
-> should see the connection.
-
-Oh, sorry. Maybe I expressed myself wrong.
-
-IMHO your way to work with an initializer is correct from the C standpoint.
-
-But I think this is pretty unusual for a code example when an 
-application programmer starts to work with ISO-TP.
-
-You usually get most of these values from the command line an fill the 
-struct _by hand_ - and not with a static initialization.
-
-That was my suggestion.
-
-> 
-> ** Different topic **
-> 
-> While replying on this, I encountered something which made me worry a bit:
-> 
-> The type of sockaddr_can.can_ifindex is a signed int:
-> 
->    https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/can.h#L243
-> 
-> But if_nametoindex() returns an unsigned int:
-> 
->     https://man7.org/linux/man-pages/man3/if_nametoindex.3.html
-> 
-> Shouldn't sockaddr_can.can_ifindex also be declared as an unsigned int?
-> 
-
-The if_index derives from struct netdevice.if_index
-
-https://elixir.bootlin.com/linux/v6.8.6/source/include/linux/netdevice.h#L2158
-
-which is an int.
-
-I don't think this would have an effect in real world to change 
-sockaddr_can.can_ifindex to an unsigned int.
-
-I wonder if it is more critical to existing user space code to change it 
-to unsigned int or to leave it as-is ...
-
-Best regards,
-Oliver
 
