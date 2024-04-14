@@ -1,165 +1,220 @@
-Return-Path: <linux-kernel+bounces-144371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 250668A451D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:32:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75BBD8A4537
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:40:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5788281541
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:32:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A33D1C20A84
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338D7136E0C;
-	Sun, 14 Apr 2024 20:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC9A136E2D;
+	Sun, 14 Apr 2024 20:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gmU8vl0K"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="vRkf9aeT"
+Received: from mail-108-mta218.mxroute.com (mail-108-mta218.mxroute.com [136.175.108.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D410024B28;
-	Sun, 14 Apr 2024 20:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCBE136980
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 20:40:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713126699; cv=none; b=WqM1r8pprEXG+c5FkmBxkCQpmyp2HqYC+2WQ/9Tw1tjMkGqjpyBMezb9IYxBPbe2vzJFiqggAzIf8VP177PqaopKOl35MbbHoJKlX5VOlpT/VGFY5s3KPaGFFzMK+fCV8q5ItbZ3sv5XgZV+hUxwXJ5k3mo8sf6gTG+Vgo2G/jA=
+	t=1713127227; cv=none; b=Og5lb1D9Z27hpRWHar5R975BdnOpUmilAsvFQHPWdwhgD8ZtKhY711FxqM054zG5qmfMGEwIlMfeH8i5jrLPNBRfl+ixF0su7/EfgNWtAkY5+Q7z0bIYg3h5jkZ9gV1jSq7Lqz2QGoFDgsevjQvGFWEYYdfTNsf7IkxsOaxsyJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713126699; c=relaxed/simple;
-	bh=KiZI1eDYSppAbrCtjM8QTFZgOeAOOCTkojlRKCffmoI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gV8BaANlg/6QeNPkg97LDX+Y/RMwnC/VDvAfptov7TBVVH09kQOCfMIWolo6tVeZFo4z45OTN8Zw7cPsNFKkQkyT8OGg6tt2Ff9WkiU82SKiPbZ8LFMIflYoON9yGWEuCk5fbKIueeFyVf4iK/i7shhEb5oPBbozjnlmbgeBqsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gmU8vl0K; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a526698f228so51333966b.1;
-        Sun, 14 Apr 2024 13:31:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713126696; x=1713731496; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nREPFOOYGgHIZaRHKi35j5pPCOGBubEsYEeqw+j/IwU=;
-        b=gmU8vl0KF03Vsl9QosVWISPBdIo44QO+wh16tZaLJ+KoNwDpORH4zN8XTZJr9204zc
-         yTAQPlKfESBuXgMym0BCU6JbJLtQpT2LznjUKGxjbpUAUpmBse8G8ha+Pz+ANp7ZBZ2y
-         0U/J4hrxJS4SjOv1ZSLVpMsl4w85igKgoCWFGxfobzzyPabKVY9j7ZwH2k3mL4VVU03b
-         rSnii4iRyTQPuAjyZqmwaDYS+3RhRrK0WVZaUc4tpxgm5oWPmAQlWwu1q/yiy9Mr59Sm
-         gobm6TM6SPvC0bLwb9xFzrDsdgBbOIt79zn0QN2RXfJthq5mjALAeqItP7rwmOKcrX5F
-         xFtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713126696; x=1713731496;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nREPFOOYGgHIZaRHKi35j5pPCOGBubEsYEeqw+j/IwU=;
-        b=WUVr9aud2pVgqeIAqFNHK6L6GAV27CtrzhB2j4vh3JsRDQ+IeXzhIaoOpWQePoOcBs
-         2bXSD4xkI35MumpYUsylOM5ywdWe6/MSmEVxuJgGmxQSZZ1oEmszHhuXxDDbK9t4xV+5
-         MV/axexZvolaMGMmy0/edOVr+iHxUNIkVxf+H5vihv/RAnyKfoErqZTtqXWvTU/BO4Zz
-         8z6sweaY/slbaFLO+RRR9aG5qrzCWkswzxdQlwArXhlZyRg0ZBbRhfNSyd/fqGBGknKr
-         gp0UysCREeZgIDMu0j/xWpKwWCWjRI8q1hKHg/9o2W11Qwbb9hQZZV5s9FCtaND6e/Tg
-         KMTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWwZ2Z6IxIAZYB12Yezlk5D30on+nFeYYwSLtGr2GkYpVJb2i4xQcHxclniyt7OOMhKIA5YAYO75iE/SAejeNJZ4UE0zHlBuc1CrOlhgB8tGtgR+SxoSB17ElYXTz1564FZjgUf9VM17T602tIvaG9AML6k4iASpwo2qvOQwdx5BuKymw==
-X-Gm-Message-State: AOJu0YwRhAmFPbV51z0jfs7EyqIwQJs3iL5NTNMa3kd0c0cSb7RvnqcH
-	y8WcXzzhZTQwAiFSD4JhNnzy8H5WezS2xW2gqFYP1vonKGIgEUtM
-X-Google-Smtp-Source: AGHT+IGUD/oYKuhmyY9fKyM8jgrVJ/LDpQDRupyPukzlQUDYrG8HXHzCHsXQITnhFuy1xolGzQAJ7w==
-X-Received: by 2002:a17:907:3f9e:b0:a52:1a7b:2ef8 with SMTP id hr30-20020a1709073f9e00b00a521a7b2ef8mr6243899ejc.27.1713126696004;
-        Sun, 14 Apr 2024 13:31:36 -0700 (PDT)
-Received: from [172.27.138.193] (c7.campus.utcluj.ro. [193.226.6.226])
-        by smtp.gmail.com with ESMTPSA id jg25-20020a170907971900b00a4e5ab88803sm4572628ejc.183.2024.04.14.13.31.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Apr 2024 13:31:35 -0700 (PDT)
-Message-ID: <1834b3fe-b345-4d93-97bb-82d0ffd75fa8@gmail.com>
-Date: Sun, 14 Apr 2024 23:31:33 +0300
+	s=arc-20240116; t=1713127227; c=relaxed/simple;
+	bh=VavDGKWSNy8j0H6V4AyMT//lgYexExvzph0BfMKV5A8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HW4cT95QU0OJUT2o+NhQhQvA9FhXD1PPoAZQgrcfDtJeAZZooR+lW6KhEcpmlOnW0rzUPsqwpkFm4Q4naIXzSqO6PIqdtubrgRqdPwE2Xltp3t8Lr+X6BUmtkNtW+CCVdN0PHLMtk7BfruTZTS35KJ3qSica4vrjYPwPzHIcowo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=vRkf9aeT; arc=none smtp.client-ip=136.175.108.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta218.mxroute.com (ZoneMTA) with ESMTPSA id 18ede522e540003bea.010
+ for <linux-kernel@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Sun, 14 Apr 2024 20:35:11 +0000
+X-Zone-Loop: 194b55375dad3c03fc2706ca91b9d842acda9cd4371d
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=eP7ba4MG9I/x9pHxrTh4yLTHg0biLr0j/s9u962DdSs=; b=vRkf9aeTPGOwsFaBv01kTdtyPD
+	/VT+LC1QPodsoGjkPhOCMbJyVNOpBO9J2/jga3dluFQ2F+oFxqMxqlQwWalleCHSD4ZEe/jCW5B3m
+	jkzJjzUWPrepc0xtfNFUbIefo36/9AQtVFH7/3Eic8wnTNQhnNmOCXentLIiO0JnZkyZWECQK8+vI
+	SKYTune7/bTqC84pB/pGEevetqTu7TG1ofPqkWxYheRvOfh67JaRhbF8f/YzTWXiN8dVUWWVc627q
+	ixdg3TC6aqzixKG9LbUwF122sRHfuOR1mgipD8jtlxXgaldyz6j5STrp6xMTInAngONdiFwhmx5Hq
+	3sYWI1Tg==;
+From: git@luigi311.com
+To: linux-media@vger.kernel.org
+Cc: dave.stevenson@raspberrypi.com,
+	jacopo.mondi@ideasonboard.com,
+	mchehab@kernel.org,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de,
+	kernel@pengutronix.de,
+	festevam@gmail.com,
+	sakari.ailus@linux.intel.com,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	pavel@ucw.cz,
+	phone-devel@vger.kernel.org,
+	Luis Garcia <git@luigi311.com>
+Subject: [PATCH v4 00/25] imx258 improvement series
+Date: Sun, 14 Apr 2024 14:34:38 -0600
+Message-ID: <20240414203503.18402-1-git@luigi311.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/5] dt-bindings: iio: adc: ad7192: Add AD7194 support
-Content-Language: en-US
-To: David Lechner <dlechner@baylibre.com>
-Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org,
- robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org,
- nuno.sa@analog.com, marcelo.schmitt@analog.com, bigunclemax@gmail.com,
- okan.sahin@analog.com, fr0st61te@gmail.com, alisa.roman@analog.com,
- marcus.folkesson@gmail.com, schnelle@linux.ibm.com, liambeguin@gmail.com
-References: <20240413151152.165682-1-alisa.roman@analog.com>
- <20240413151152.165682-5-alisa.roman@analog.com>
- <CAMknhBHJpOxRmJbiprVNfYB4JbLzjR2a9S8=5iVz_9O+013u1Q@mail.gmail.com>
-From: Alisa-Dariana Roman <alisadariana@gmail.com>
-In-Reply-To: <CAMknhBHJpOxRmJbiprVNfYB4JbLzjR2a9S8=5iVz_9O+013u1Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Id: personal@luigi311.com
 
-On 13.04.2024 22:29, David Lechner wrote:
-> On Sat, Apr 13, 2024 at 10:13 AM Alisa-Dariana Roman
-> <alisadariana@gmail.com> wrote:
->>
->> Unlike the other AD719Xs, AD7194 has configurable differential
->> channels. The user can dynamically configure them in the devicetree.
->>
->> Also add an example for AD7194 devicetree.
->>
->> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
->> ---
->>   .../bindings/iio/adc/adi,ad7192.yaml          | 74 +++++++++++++++++++
->>   1 file changed, 74 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
->> index ba506af3b73e..855f0a2d7d75 100644
->> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
->> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
->> @@ -21,8 +21,15 @@ properties:
->>         - adi,ad7190
->>         - adi,ad7192
->>         - adi,ad7193
->> +      - adi,ad7194
->>         - adi,ad7195
->>
->> +  "#address-cells":
->> +    const: 1
->> +
->> +  "#size-cells":
->> +    const: 0
->> +
->>     reg:
->>       maxItems: 1
->>
->> @@ -104,8 +111,43 @@ required:
->>     - spi-cpol
->>     - spi-cpha
->>
->> +patternProperties:
->> +  "^channel@[0-9]+$":
->> +    type: object
->> +    $ref: adc.yaml
->> +    unevaluatedProperties: false
->> +
->> +    properties:
->> +      reg:
->> +        description: The channel index.
->> +        minimum: 1
->> +        maximum: 256
->> +
->> +      diff-channels:
->> +        description: |
->> +          Both inputs can be connected to pins AIN1 to AIN16 by choosing the
->> +          appropriate value from 1 to 16.
->> +        items:
->> +          minimum: 1
->> +          maximum: 16
-> 
-> Don't we also need to allow 0 for AINCOM here? Or is this property
-> only for fully differential pairs and not pseudo-differential pairs?
+From: Luis Garcia <git@luigi311.com>
 
-I thought it would be a good idea to have the pseudo-differential pairs 
-set in the driver (all from AIN1 to AIN16 referenced to AINCOM). Only 
-differential ones are fully configurable in the devicetree.
+v4:
+  - Swapped out the use macro patch for a patch that uses the new
+    CCI register access helpers per Sakari Ailus
+  - Fix order of reset and powerdown gpio before disable regulators
+  - Fix formating of all patches
+  
+  - Implemented feedback from Pavel Machek
+    - media: i2c: imx258: Follow normal V4L2 behaviours
+    - media: i2c: imx258: Allow configuration of clock
+  - Implemented feedback from Sakari Ailus
+    - media: i2c: imx258: Add support for powerdown gpio
 
-Kind regards,
-Alisa-Dariana Roman
+
+v3 Luis Garcia
+
+- Add Use v4l2_link_freq_to_bitmap helper patch per Sakari Ailus
+- Separate dt-bindings for powerdown per Rob Herring
+- Fix dt-bindings for imx258.yaml
+- Fix sign offs per Dang Huynh 
+- Fix versioning per Conor Dooley and Kieran Bingham
+- Use scripts to validate and fix patches
+- Implemented feedback from Sakari Ailus
+  - media: i2c: imx258: Add support for 24MHz clock
+  - media: i2c: imx258: Add support for running on 2 CSI data lanes
+
+- Implemented feedback from Rob Herring
+  - dt-bindings: media: imx258: Add alternate compatible strings
+
+
+
+v2 Luis Garcia
+
+- Add use macros patch 
+- Add support for powerdown gpio patch
+- Add support for reset gpio patch
+- Dropped Add support for long exposure modes patch
+- Implemented feedback from Jacopo Mondi
+  - media: i2c: imx258: Add regulator control
+  - media: i2c: imx258: Add support for 24MHz clock
+  - media: i2c: imx258: Add support for running on 2 CSI data lanes
+  - media: i2c: imx258: Add get_selection for pixel array information
+  - media: i2c: imx258: Issue reset before starting streaming
+  - media: i2c: imx258: Set pixel_rate range to the same as the value
+  - dt-bindings: media: imx258: Add alternate compatible strings
+  - media: i2c: imx258: Change register settings for variants of the sensor
+  - media: i2c: imx258: Make HFLIP and VFLIP controls writable
+
+This adds a few more patches and drops one. The long exposure mode patch
+was dropped due to the bug that Jacopo found. The powerdown and reset gpio
+patches were added as that fixes support for the Pinephone Pro, without
+them the sensor doesn't initialize correctly.
+
+Tested on a Pinephone Pro by forcing 24 mhz clock and was able to access 
+all 3 resolutions. The two lower resolutions had some artifacts but that
+is expected as more changes are required to fix them for the
+Pinephone Pro specifically, kept all registers the same as Dave's original
+patch since that works on dedicated imx258 hardware and the artifacts are
+PPP specific so it shouldn't be a regression.
+
+
+
+v1 Dave Stevenson
+
+This is a set of patches for imx258 that allow it to work with alternate
+clock frequencies, over either 2 or 4 lanes, and generally adding
+flexibility to the driver.
+
+Tested with an IMX258 module from Soho Enterprises that has a 24MHz
+oscillator. Both 2 and 4 lane configurations work with correct link
+frequencies and pixel rates.
+
+Jacopo has tested on a PinePhone Pro which has an ~19.2MHz clock fed from
+the SoC, He confirms that the two lower resolution modes work, but not the
+full res mode. Comparing to the BSP it looks like they have some weird
+clock configuration in the 4208x3120 mode (nominally 1224Mb/s/lane instead
+of 1267). As it has never previously worked directly with the mainline
+driver this isn't a regression but may indicate that there is a need for
+support of additional link frequencies in the future.
+
+The last patch that makes HFLIP and VFLIP configurable may be contentious
+as I've retained the default configuration of inverted from the original
+driver. I know this was discussed recently, but I can't recall the final
+outcome.
+
+I am relying on someone from Intel testing this out, as correcting the
+cropping and supporting flips has changed the Bayer order. Seeing as this
+is all above board in V4L2 terms I really hope that the layers above it
+behave themselves.
+
+Cheers
+  Dave
+
+Dave Stevenson (20):
+  media: i2c: imx258: Remove unused defines
+  media: i2c: imx258: Make image geometry meet sensor requirements
+  media: i2c: imx258: Disable digital cropping on binned modes
+  media: i2c: imx258: Remove redundant I2C writes.
+  media: i2c: imx258: Add regulator control
+  media: i2c: imx258: Make V4L2_CID_VBLANK configurable.
+  media: i2c: imx258: Split out common registers from the mode based
+    ones
+  media: i2c: imx258: Add support for 24MHz clock
+  media: i2c: imx258: Add support for running on 2 CSI data lanes
+  media: i2c: imx258: Follow normal V4L2 behaviours for clipping
+    exposure
+  media: i2c: imx258: Add get_selection for pixel array information
+  media: i2c: imx258: Allow configuration of clock lane behaviour
+  media: i2c: imx258: Correct max FRM_LENGTH_LINES value
+  media: i2c: imx258: Issue reset before starting streaming
+  media: i2c: imx258: Set pixel_rate range to the same as the value
+  media: i2c: imx258: Support faster pixel rate on binned modes
+  dt-bindings: media: imx258: Rename to include vendor prefix
+  dt-bindings: media: imx258: Add alternate compatible strings
+  media: i2c: imx258: Change register settings for variants of the
+    sensor
+  media: i2c: imx258: Make HFLIP and VFLIP controls writable
+
+Luis Garcia (5):
+  dt-bindings: media: imx258: Add binding for powerdown-gpio
+  media: i2c: imx258: Add support for powerdown gpio
+  media: i2c: imx258: Add support for reset gpio
+  media:i2c: imx258: Use v4l2_link_freq_to_bitmap helper
+  media: i2c: imx258: Convert to new CCI register access helpers
+
+ .../i2c/{imx258.yaml => sony,imx258.yaml}     |   15 +-
+ MAINTAINERS                                   |    2 +-
+ drivers/media/i2c/Kconfig                     |    1 +
+ drivers/media/i2c/imx258.c                    | 1439 ++++++++++-------
+ 4 files changed, 848 insertions(+), 609 deletions(-)
+ rename Documentation/devicetree/bindings/media/i2c/{imx258.yaml => sony,imx258.yaml} (86%)
+
+-- 
+2.44.0
 
 
