@@ -1,129 +1,109 @@
-Return-Path: <linux-kernel+bounces-144302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E6E08A4459
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:11:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BFA98A4443
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:01:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91871B20D04
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:11:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC2BF1C21DDC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:01:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67ABF135A51;
-	Sun, 14 Apr 2024 17:11:14 +0000 (UTC)
-Received: from akranes.kaiser.cx (akranes.kaiser.cx [152.53.16.207])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5403136647;
+	Sun, 14 Apr 2024 17:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rYnFnNw4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8C3134CE8;
-	Sun, 14 Apr 2024 17:11:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=152.53.16.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFA11353F8;
+	Sun, 14 Apr 2024 17:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713114674; cv=none; b=YjJqb5NIIjeYv5E4HrsXMb9W5pQQ/q3qMu7MYDTGNiBANaOZ6UO92PCmv85+U9oy+GeWR0EyxzMy0u7meRkPDqK3Z2ZjhzhRj3MoHofNJ5gG2YTMTOviVQ2ScQQLOWEmGusuccpbAHRpYw2mVKKK3OJeO7A+D/dB6CP+pkJSF3I=
+	t=1713114092; cv=none; b=tBOigIMeOk5zLI3mQGO3uS65DsP1YAao+IgzaeLMI44Ymr5JAUALkMBUJj0ixU7RF5Oh4P9rhPAb4Qn6/JxUtyHmJsh+VUNk5DA5w1gJ4ktnaguHBGOMwW0qhtVumgcgg9FUvRW+v8Y9bN52QKqRm/4bz7J6okF6Jz7UR6+tMII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713114674; c=relaxed/simple;
-	bh=wpe8KlwzaSSM+u2lvF16DyF5qHpDrPDvVSCVM3ngkNQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qqpCE7G9sxwBQup+0lZ6y3tCXvJ2helv3Ju61c4cJLFXwhXq4gIeKZWImGtNuSTvIZ5ofeewkT8SUjLmzyTVetd5WvnVBKUiHvSeUS64z+cD773Fiq5qjpa7S91XpAj95zfn32OK1vYe/RaRis0EEYlzoaOzWt9eBArvvWzBOQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx; spf=pass smtp.mailfrom=kaiser.cx; arc=none smtp.client-ip=152.53.16.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kaiser.cx
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kaiser.cx
-Received: from dslb-188-097-210-242.188.097.pools.vodafone-ip.de ([188.97.210.242] helo=martin-debian-3.kaiser.cx)
-	by akranes.kaiser.cx with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <martin@kaiser.cx>)
-	id 1rw3Dj-003uVz-0Q;
-	Sun, 14 Apr 2024 19:00:47 +0200
-From: Martin Kaiser <martin@kaiser.cx>
-To: Anna Schumaker <Anna.Schumaker@Netapp.com>,
-	Trond Myklebust <trond.myklebust@hammerspace.com>,
-	David Howells <dhowells@redhat.com>
-Cc: NeilBrown <neilb@suse.de>,
-	Jeff Layton <jlayton@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v3] nfs: keep server info for remounts
-Date: Sun, 14 Apr 2024 19:01:09 +0200
-Message-Id: <20240414170109.137696-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713114092; c=relaxed/simple;
+	bh=ted2EB6/3rRPIS/bCEaZLR50/zdj+pHcSxe+25yLhvg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=rUvrqf898OR7kvJl6tfVWmD9m7ILXxVr1CsVy6MVDSE2IZMq22vPXEk7BEZgOke8yuMsAgvL70UCLUzyXDiIcMJ8gA8Y887vlJQ6vSB83AUAcqoaakwTrZLaWEHqfTlwJiko5FWrat/ElNpDT9BTR6NckOa+p7XjTw3aGOp9EGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rYnFnNw4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9F01CC072AA;
+	Sun, 14 Apr 2024 17:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713114091;
+	bh=ted2EB6/3rRPIS/bCEaZLR50/zdj+pHcSxe+25yLhvg=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=rYnFnNw44M5VBOH4i3wTHmFGjpERNyFyCmOIUFwyDmxq6DgnpNK+N5oJBFt2l7zzF
+	 4YaRDuaIMqjvx8u4cGOfJ7V2MSt/JnPIcXWJFKBb9A82z2VVmf4zee9TjcCN/u0WYY
+	 XcORPwp0Ul0bq2oiXjLuRzlGbLVgXRWpU4wIddHaI1xIRs+5HQ8O+O5BC5z3bYA46e
+	 k2/mPEfYnpvBuj+xY9L9fV2j9ae5HK+aPHaVNr4b8sPTUsoTwa0nyl2dOCKuBt/LpQ
+	 tvhjj6lgyBYTlRlXm35K5TE+zWDw+JRGrC1gRiz9Tl41moA71eR4EY84p3v0lCFP/8
+	 m2cwemWj6dU5w==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8877EC4345F;
+	Sun, 14 Apr 2024 17:01:31 +0000 (UTC)
+From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
+Subject: [PATCH 0/4] ASUS RT-AC3100 and ASUS RT-AC88U device tree
+ improvements
+Date: Sun, 14 Apr 2024 20:01:20 +0300
+Message-Id: <20240414-for-soc-asus-rt-ac3100-improvements-v1-0-0e40caf1a70a@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAOALHGYC/x3NMQ6DMAxA0asgz7XkkLRDr1J1CK6hHkiQTRES4
+ u6NGN/y/wEupuLw7A4w2dS1loZw64C/uUyC+mmGnvpEKUQcq6FXxuw/R1sxcwxEqPNidZNZyur
+ INOSUHvc4cIRWWkxG3a/L632efx6rFFR1AAAA
+To: Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Hauke Mehrtens <hauke@hauke-m.de>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713114081; l=974;
+ i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
+ bh=ted2EB6/3rRPIS/bCEaZLR50/zdj+pHcSxe+25yLhvg=;
+ b=xmIWfBZS6gMIuWyH9ZufjaesZaWHkmSMkBS50irEp196eawGCZbnHq6O2mvwKIJCHQgjkD1O/
+ jp4QXiYPBQlCBldgqjh4o1DhT/+Hlu90jOHeY2SvkzpQ2ACxmfiyEKJ
+X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
+ pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
+X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
+ with auth_id=115
+X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Reply-To: arinc.unal@arinc9.com
 
-With newer kernels that use fs_context for nfs mounts, remounts fail with
--EINVAL.
+Hello.
 
-$ mount -t nfs -o nolock 10.0.0.1:/tmp/test /mnt/test/
-$ mount -t nfs -o remount /mnt/test/
-mount: mounting 10.0.0.1:/tmp/test on /mnt/test failed: Invalid argument
+This patch series introduces small improvements to the device trees of ASUS
+RT-AC3100 and ASUS RT-AC88U.
 
-For remounts, the nfs server address and port are populated by
-nfs_init_fs_context and later overwritten with 0x00 bytes by
-nfs23_parse_monolithic. The remount then fails as the server address is
-invalid.
-
-Fix this by not overwriting nfs server info in nfs23_parse_monolithic if
-we're doing a remount.
-
-Fixes: f2aedb713c28 ("NFS: Add fs_context support.")
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
- v3:
- - rebased against linux-next from 12th April 2024
+Arınç ÜNAL (4):
+      ARM: dts: BCM5301X: use color and function on ASUS RT-AC3100 and RT-AC88U
+      ARM: dts: BCM5301X: provide address for SoC MACs on ASUS RT-AC3100 & AC88U
+      ARM: dts: BCM5301X: remove duplicate compatible on ASUS RT-AC3100 & AC88U
+      ARM: dts: BCM5301X: remove earlycon on ASUS RT-AC3100 and ASUS RT-AC88U
 
- v2:
- - rebased against linux-next from 26th February 2024
+ .../boot/dts/broadcom/bcm47094-asus-rt-ac3100.dts  | 13 ++++-
+ .../boot/dts/broadcom/bcm47094-asus-rt-ac3100.dtsi | 59 ++++++++++++----------
+ .../boot/dts/broadcom/bcm47094-asus-rt-ac88u.dts   |  8 ++-
+ 3 files changed, 51 insertions(+), 29 deletions(-)
+---
+base-commit: 011d79ef1cfad701c2d8e7e80d8c77523af9c771
+change-id: 20240413-for-soc-asus-rt-ac3100-improvements-c0ba44653bc3
 
-Dear all,
-I'm resending this patch again. The problem that I'm trying to fix is still
-present in linux-next. Thanks in advance for any reviews and comments.
-
-I guess that we're taking this path for remounts
-
-do_remount
-    fs_context_for_reconfigure
-        alloc_fs_context
-            init_fs_context == nfs_init_fs_context
-               fc->root is set for remounts
-               ctx->nfs_server is populated
-    parse_monolithic_mount_data
-        nfs_fs_context_parse_monolithic
-            nfs23_parse_monolithic
-               ctx->nfs_server is overwritten with data from mount request
-
-An alternative to checking for !is_remount_fc(fc) would be to check
-if (ctx->nfs_server.addrlen == 0)
-
-fs/nfs/fs_context.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
-index d0a0956f8a13..cac1157be2c2 100644
---- a/fs/nfs/fs_context.c
-+++ b/fs/nfs/fs_context.c
-@@ -1112,9 +1112,12 @@ static int nfs23_parse_monolithic(struct fs_context *fc,
- 		ctx->acdirmax	= data->acdirmax;
- 		ctx->need_mount	= false;
- 
--		memcpy(sap, &data->addr, sizeof(data->addr));
--		ctx->nfs_server.addrlen = sizeof(data->addr);
--		ctx->nfs_server.port = ntohs(data->addr.sin_port);
-+		if (!is_remount_fc(fc)) {
-+			memcpy(sap, &data->addr, sizeof(data->addr));
-+			ctx->nfs_server.addrlen = sizeof(data->addr);
-+			ctx->nfs_server.port = ntohs(data->addr.sin_port);
-+		}
-+
- 		if (sap->ss_family != AF_INET ||
- 		    !nfs_verify_server_address(sap))
- 			goto out_no_address;
+Best regards,
 -- 
-2.39.2
+Arınç ÜNAL <arinc.unal@arinc9.com>
+
 
 
