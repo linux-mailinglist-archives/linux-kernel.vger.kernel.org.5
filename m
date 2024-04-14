@@ -1,138 +1,144 @@
-Return-Path: <linux-kernel+bounces-144097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB478A41C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:12:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6E838A41B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:04:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5058E1F21634
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:12:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 602132818ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A602D04E;
-	Sun, 14 Apr 2024 10:12:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4AE2E646;
+	Sun, 14 Apr 2024 10:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="afEGcyno"
-Received: from msa.smtpout.orange.fr (out-69.smtpout.orange.fr [193.252.22.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o2Npsp7Y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F532C848;
-	Sun, 14 Apr 2024 10:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C9018AF4;
+	Sun, 14 Apr 2024 10:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713089535; cv=none; b=r+423BN1qS8ouhxvCvbxeaX83GTMWkabUh4snLW33+O8VxJCj4wqnwE9xCgz3NGG5ncaJG2aO+ijutQTIfssWAypJqvwbCcWcGiDtkrxms5jJ1Be68g/xbSkLwg2jfmBQBYvujuNFGgWIzOnepEAA7Gvv7+8m6yTdOESJbIGG3M=
+	t=1713089051; cv=none; b=npeEHEhJmFR5rPCOQngNVXX5t3hig0wUzqmtmEVDOOiU13rLYerXZoRBzucfgLAbN1uDpYI8Y8RVqsuNH0nDLIRcd4+KOqJ8a1MfD5aFkMkihcn16d58VMVL3OYUE+QfkxCNJTSZGcMChk6xlWGiSscmqHDcdair6Q7Ga+EkuAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713089535; c=relaxed/simple;
-	bh=lkq1lrzB9HxKNl03Hpci59UA0sfQ1vTlkLoKDGZGgc4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qBP7LbsC8vT45iLRAZp9pn/eD9el8c+i4SDGhie22casHLOBoeU367DA7yjedBtzkIUnClaX2dEbdyhkUmOnazCmIzbqCUmOM4GjFEsLSrvFDOeZ8s++Vzbb05CdVLdPTQ2sYt69Dv29x66fYPn1VT8OIE2UbmcD3svcjdXPKBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=afEGcyno; arc=none smtp.client-ip=193.252.22.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id vwhervJ5FwSN5vwherU9fE; Sun, 14 Apr 2024 12:03:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1713088996;
-	bh=vJwVeMXmnUN8m7oxlGG0PhRilSD1pyJWjsrWEGLWca8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=afEGcynoPMftMo0taM5DLQbyO5wId531Rxl3MdAcfn+qajL3mgP5c7PqKHAkz78s7
-	 ZQza+LIx3ob2WuE3j1pDK0ihGlBQ0hyKZvX2Q7nlO/phSkIR5+xPwbQZuqYHWG1E2v
-	 Q7BP0coNiSyuCCKuKixVvlKXtiHzaBX7bXO6zRKCWMzi9PlJEOM8kRqwNN98NS4xpN
-	 C0yiTasdHVeG3nkA18uBdDn3EiPgMcrfkQvcw3qnag0fkdnoL+ewoUsh2PWeRpw69/
-	 +Kw/7X6US5SNfVxdbV4soQuoGae1EGhYf1SJuNeJDprFewKdYDglyUk/EhBQT4aXZ2
-	 jcpClt8KvG7Ng==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Apr 2024 12:03:16 +0200
-X-ME-IP: 86.243.17.157
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: akpm@linux-foundation.org,
-	Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <bentiss@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-input@vger.kernel.org
-Subject: [PATCH RESEND] HID: sony: Remove usage of the deprecated ida_simple_xx() API
-Date: Sun, 14 Apr 2024 12:03:11 +0200
-Message-ID: <9b7684381f9d09a7cd5840caa2a160d7764d6403.1713088684.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713089051; c=relaxed/simple;
+	bh=84SLxTZp/DWUX/lhao6dmVikTW+EASr4F/Wo+VvHJ2Q=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=qgP6EH3Yn+dRK4IIdKC2MZLUqJj8DSy2KuDliFqqiS/G/ylfHWpr8ApOYDyPEwUm8eE32MaguQuMoT+WGyt7diFsPKZq8RlaBCF2kKI8SZqM6LcZQKWPbroJbQvZV0DStIf95EYqif82mFfu8a48j79mHJ0Hvlyu0DY1Qce8vxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o2Npsp7Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F070C072AA;
+	Sun, 14 Apr 2024 10:04:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713089050;
+	bh=84SLxTZp/DWUX/lhao6dmVikTW+EASr4F/Wo+VvHJ2Q=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=o2Npsp7Y/2kFx6aWgxDP3pyAmSaJlirscJnkHNSwFto1h3wewpxzUxLZFOh4vsg7o
+	 /OVOzCy6dndN0a9+9XCD796uTwrsaZoWiJxyTQpdgeiEFCc1tANwFbMLPLBVZ44X12
+	 Q7UB5kwfdyY9WfHy1IpHYthPIH15v8vl1Ux7k7+XIVhh03xVhyGsrFBA734dt4JShs
+	 4ofI649ZGqw8aM5YHrrTaj3gy+auhEYovYxG/S8+gAvck6qFvTPI7W7M7Ilhxfpiyu
+	 9RIK+fBOVv4Wgh7lANfeEPg90P0xQ/0lPkL6QwLYYt91JDmAJHeA5ku2CQWQlONCHN
+	 srxuAt5jEhKhg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77223C4345F;
+	Sun, 14 Apr 2024 10:04:10 +0000 (UTC)
+From: Nikita Shubin via B4 Relay <devnull+nikita.shubin.maquefel.me@kernel.org>
+Subject: [PATCH v2 0/4] DONOTMERGE: ep93xx-clk from ep93xx device tree
+ conversion
+Date: Sun, 14 Apr 2024 13:03:47 +0300
+Message-Id: <20240408-ep93xx-clk-v2-0-9c5629dec2dd@maquefel.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAOqG2YC/22Nyw6CMBREf4Xctde0pVB15X8YFqVcpJGXLTY1h
+ H+3sHZ5ZnJmVvDkLHm4ZSs4CtbbaUwgThmYTo9PQtskBsGEZJJdkOZrHiOa/oVloTTPC9VQqSA
+ JtfaEtdOj6XZl0H4htxezo9bG4+VRJe6sXyb3PU4D39O/+4EjQ96wVppcyFKq+6DfH2qpPw8E1
+ bZtPwK4zrS/AAAA
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, Nikita Shubin <nikita.shubin@maquefel.me>, 
+ Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713089049; l=2238;
+ i=nikita.shubin@maquefel.me; s=20230718; h=from:subject:message-id;
+ bh=84SLxTZp/DWUX/lhao6dmVikTW+EASr4F/Wo+VvHJ2Q=;
+ b=z9XAN1DXXWE3QxCyuTkNMTNSk5hrGWnglICBc7KGTF+lnAe7G6ti2xpimedDy1Wf6oac/GtTG3kg
+ fiFfdHpjAaVBVJ7+W+hyMLvKrp8qGPxNIM3ksHHchbay3miQxYWO
+X-Developer-Key: i=nikita.shubin@maquefel.me; a=ed25519;
+ pk=vqf5YIUJ7BJv3EJFaNNxWZgGuMgDH6rwufTLflwU9ac=
+X-Endpoint-Received: by B4 Relay for nikita.shubin@maquefel.me/20230718
+ with auth_id=65
+X-Original-From: Nikita Shubin <nikita.shubin@maquefel.me>
+Reply-To: nikita.shubin@maquefel.me
 
-ida_alloc() and ida_free() should be preferred to the deprecated
-ida_simple_get() and ida_simple_remove().
+The goal is to recieve ACKs.
 
-This is less verbose.
+This is a fraction of v9 "ep93xx device tree conversion" series:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+https://lore.kernel.org/all/20240326-ep93xx-v9-0-156e2ae5dfc8@maquefel.me/
+
+The clk driver for ep93xx was converted to AUX device, as suggested
+originally by Stephen Boyd.
+
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
 ---
-This patch has been sent about 3 months ago [1].
-A gentle reminder has been sent 1 month later [2].
+Changes in v2:
+- soc: Add SoC driver for Cirrus ep93xx:
+  - added __init for ep93xx_adev_alloc(), ep93xx_controller_register()
+  - added static, __initconst for pinctrl_names[]
+  - clk revision for SPI is now resolved here through differently named
+    clk device
+  - more verbose Kconfig description
 
-Neither one got any reply.
+  NOTE: "of" includes are required unfortunately.
 
-So, I'm adding Andrew Morton in To:, in order to help in the merge process.
+- clk: ep93xx: add DT support for Cirrus EP93xx:
+  - dropped includes
+  - dropped ep93xx_soc_table[]
+  - add different named clk and dropped involved includes
+  - moved pll's and fclk, hclk, pclk init to separate function
+  - fixed ep93xx_clk_ids[] explicit lines
+ 
+  NOTE: clk_hw_register_div() is clk-ep9xx internal function which uses
+  devm.
 
-Context:
-=======
-All patches to remove the ida_simple API have been sent.
-Matthew Wilcox seems happy with the on going work. (see [3])
-
-Based on next-20240412
-$git grep ida_simple_get | wc -l
-25
-
-Based on next-20240220
-$git grep ida_simple_get | wc -l
-36
-
-https://elixir.bootlin.com/linux/v6.8-rc3/A/ident/ida_simple_get
-50
-
-https://elixir.bootlin.com/linux/v6.7.4/A/ident/ida_simple_get
-81
-
-Thanks
-CJ
-
-[1]: https://lore.kernel.org/all/9c092dc6db15984d98732510bb052bb00683489b.1705005258.git.christophe.jaillet@wanadoo.fr/https://lore.kernel.org/all/19b538bc05c11747a3dd9fa204fde91942063d52.1698831460.git.christophe.jaillet@wanadoo.fr/
-[2]: https://lore.kernel.org/all/a1af20a9-951f-4a5d-8a60-04ded8d6f9a0@wanadoo.fr/
-[3]: https://lore.kernel.org/all/ZaqruGVz734zjxrZ@casper.infradead.org/
 ---
- drivers/hid/hid-sony.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Nikita Shubin (4):
+      ARM: ep93xx: add regmap aux_dev
+      clk: ep93xx: add DT support for Cirrus EP93xx
+      dt-bindings: soc: Add Cirrus EP93xx
+      soc: Add SoC driver for Cirrus ep93xx
 
-diff --git a/drivers/hid/hid-sony.c b/drivers/hid/hid-sony.c
-index ebc0aa4e4345..55c0ad61d524 100644
---- a/drivers/hid/hid-sony.c
-+++ b/drivers/hid/hid-sony.c
-@@ -1844,8 +1844,7 @@ static int sony_set_device_id(struct sony_sc *sc)
- 	 * All others are set to -1.
- 	 */
- 	if (sc->quirks & SIXAXIS_CONTROLLER) {
--		ret = ida_simple_get(&sony_device_id_allocator, 0, 0,
--					GFP_KERNEL);
-+		ret = ida_alloc(&sony_device_id_allocator, GFP_KERNEL);
- 		if (ret < 0) {
- 			sc->device_id = -1;
- 			return ret;
-@@ -1861,7 +1860,7 @@ static int sony_set_device_id(struct sony_sc *sc)
- static void sony_release_device_id(struct sony_sc *sc)
- {
- 	if (sc->device_id >= 0) {
--		ida_simple_remove(&sony_device_id_allocator, sc->device_id);
-+		ida_free(&sony_device_id_allocator, sc->device_id);
- 		sc->device_id = -1;
- 	}
- }
+ .../bindings/arm/cirrus/cirrus,ep9301.yaml         |  38 +
+ .../bindings/soc/cirrus/cirrus,ep9301-syscon.yaml  |  94 +++
+ drivers/clk/Kconfig                                |   8 +
+ drivers/clk/Makefile                               |   1 +
+ drivers/clk/clk-ep93xx.c                           | 834 +++++++++++++++++++++
+ drivers/soc/Kconfig                                |   1 +
+ drivers/soc/Makefile                               |   1 +
+ drivers/soc/cirrus/Kconfig                         |  17 +
+ drivers/soc/cirrus/Makefile                        |   2 +
+ drivers/soc/cirrus/soc-ep93xx.c                    | 252 +++++++
+ include/dt-bindings/clock/cirrus,ep9301-syscon.h   |  46 ++
+ include/linux/soc/cirrus/ep93xx.h                  |  26 +
+ 12 files changed, 1320 insertions(+)
+---
+base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+change-id: 20240408-ep93xx-clk-657a1357de67
+
+Best regards,
 -- 
-2.44.0
+Nikita Shubin <nikita.shubin@maquefel.me>
+
 
 
