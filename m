@@ -1,200 +1,249 @@
-Return-Path: <linux-kernel+bounces-144033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE6958A4115
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:56:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03BDF8A4119
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:00:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1941282A51
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:56:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C356B21318
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22748210E7;
-	Sun, 14 Apr 2024 07:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAAF421A0D;
+	Sun, 14 Apr 2024 08:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="oTWaWeHu"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b="YjQ0vDqT"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C15215E9B;
-	Sun, 14 Apr 2024 07:56:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51D7A20B12
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713081401; cv=none; b=PwgMA71XRYSCoCP6IpYgw4kxF6IDlY53NjBf+JdMLmK1RyimODOwxsBNjRNgPGU/YsaGHSIDkNVgMyB6PgZycc/B0eRReOBn5UIQCji4OZI8xoDM4qXZ5Mk8ezBl2M4drtzPpPgz6I8XN/Pj00oWUx6y0G0V4OcvYWLde00/1Lk=
+	t=1713081624; cv=none; b=tKfIorQeGMurqfB0ZuQKcgK4XkGUfW9K7SWrT9K4j8pOHLdLxj+HZD7kOjY8iW+WEhAzVzVi5jDj/iEjcsbfliA8H24nQ3Pw8jQ1nB9h5EWaOagWInHpDrkbn4/zGGjrvKpZwrCeds16jqlLVMphynLTdJG3FJ0D9Np7N7LIYow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713081401; c=relaxed/simple;
-	bh=txG+MaiGhkYK6WZayglTtsGLPC9RsnrKCz2cnhHMAtg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=YFxidvVyRY9q9MgW6rBNqiL43FnnAuBR39wj1K3bKv6mKu2TGcUoDuJIbwK17cmTnE2VUr3ZsIhBAl2yKr3up2sEAJXoIYbkwaUq9ucdQJI3cLhfhHWAa6MZesuCXr8ZLOwe6MX+X+EI08VRvn+boeRGbgB75dIx6lGvEjaRPSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=oTWaWeHu; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1713081388;
-	bh=txG+MaiGhkYK6WZayglTtsGLPC9RsnrKCz2cnhHMAtg=;
-	h=From:Date:Subject:To:Cc:From;
-	b=oTWaWeHuxUAT50GTvGTwOMRFrD2NUDOHWRd5cI7jxTMSQUSghN4eDwDr1v8soR7LM
-	 86elWuuny7t4N+Wn+CJ7HEi6q56rTdP5N9eyh9K8VOk0vHvsmHDoG8EKs31SIf84vt
-	 +/G/Y/dIjO3jpWoR1pK6ngcf1ccBXYFt2hcRqKe0=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sun, 14 Apr 2024 09:56:23 +0200
-Subject: [PATCH] tools/nolibc: add support for uname(2)
+	s=arc-20240116; t=1713081624; c=relaxed/simple;
+	bh=zm9RpGKAoFVClY35GVKJp2e5Go7G/KpaY5NNEyPFbrk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oS06jSq5xjwU8pBviETjySeUNxrSi8O6arDb2phaQdLx7vxuyDfkNQNDc7raEaMoO5Tqjm0A2klacpt0efqS0JDbHmgNAXEL51Vm+YGYFhAMo6GKWNyh5zddFDGOz99qtayRAyaRdMFX2VBP0atMkdvL8mijANNk5BjYDxgK0Sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org; spf=none smtp.mailfrom=jookia.org; dkim=pass (2048-bit key) header.d=jookia.org header.i=@jookia.org header.b=YjQ0vDqT; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=jookia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=jookia.org
+Date: Sun, 14 Apr 2024 18:00:09 +1000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
+	t=1713081620;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sfKDt/wteDbIz5a70amJfBbHPdzo9pYu3x/eiw2iAEw=;
+	b=YjQ0vDqTFTO1Q6IIY4iWhHZxwK3Fzbut0Ai0B3RsPmHcUvMWGwWhuFS6dHHD+mWCtCTdpu
+	/z+2IWSeHyq0MJTU49dExv1jXlw9B3uUUjGsoY4Yu0RD2TiTnzCpovEbUwiQXhtM0difu5
+	lUBbeDC4Wfcmcpdsb8WOenukXgTzzeONrlUzSgPrhAgvqspCaQmbs6ttEENzfaU2v9QmNg
+	1DdtMzbsE6MMC/ZBc97wGYWy47M5313hP1T1KRecf/SKeLOvqzEL4KSZTA8h2V0KqaDdAL
+	yhWl363C+BNXqCXCW9XN9JHh52DPW9isco8suypKuiBZsNM9639crimJOXcc3A==
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: John Watts <contact@jookia.org>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, Lee Jones <lee@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Ryan Walklin <ryan@testtoast.com>,
+	Chris Morgan <macroalpha82@gmail.com>
+Subject: Re: [PATCH 1/4] regulator: axp20x: AXP717: fix LDO supply rails and
+ off-by-ones
+Message-ID: <ZhuNCUnJri4hBOxx@titan>
+References: <20240329235033.25309-1-andre.przywara@arm.com>
+ <20240329235033.25309-2-andre.przywara@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240414-nolibc-uname-v1-1-28a1fdbd5c64@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIACaMG2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE0MT3bz8nMykZN3SvMTcVN2UVGMLS9NEExMj0zQloJaCotS0zAqwcdG
- xtbUA0uBRgF4AAAA=
-To: Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713081387; l=3814;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=txG+MaiGhkYK6WZayglTtsGLPC9RsnrKCz2cnhHMAtg=;
- b=iSSLGnCYRC5zFPlphtA8E3uU1uI7QrmwEbQ5wteqb1DtG8koyghnwfl11QJTXB5WelscFbjuU
- 4RAJBHppMilDQrg2YMcU28DkJ42anKlzxR4bLNYjIKYW2x7sf9Km13M
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329235033.25309-2-andre.przywara@arm.com>
+X-Migadu-Flow: FLOW_OUT
 
-All supported kernels are assumed to use struct new_utsname.
-This is validated in test_uname().
+On Fri, Mar 29, 2024 at 11:50:30PM +0000, Andre Przywara wrote:
+> The X-Powers AXP717 PMIC has separate input supply pins for each group
+> of LDOs, so they are not all using the same DCDC1 input, as described
+> currently.
+> 
+> Replace the "supply" member of each LDO description with the respective
+> group supply name, so that the supply dependencies can be correctly
+> described in the devicetree.
+> Also fix two off-by-ones in the regulator macros, after some double
+> checking the numbers against the datasheet.
+> 
+> Fixes: d2ac3df75c3a ("regulator: axp20x: add support for the AXP717")
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 
-uname(2) can for example be used in ksft_min_kernel_version() from the
-kernels selftest framework.
+Hi,
 
-Link: https://lore.kernel.org/lkml/20240412123536.GA32444@redhat.com/
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- tools/include/nolibc/sys.h                   | 27 ++++++++++++++++++
- tools/testing/selftests/nolibc/nolibc-test.c | 42 ++++++++++++++++++++++++++++
- 2 files changed, 69 insertions(+)
+> ---
+>  drivers/regulator/axp20x-regulator.c | 28 ++++++++++++++--------------
+>  1 file changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
+> index 34fcdd82b2eaa..3907606b091f6 100644
+> --- a/drivers/regulator/axp20x-regulator.c
+> +++ b/drivers/regulator/axp20x-regulator.c
+> @@ -140,7 +140,7 @@
+>  
+>  #define AXP717_DCDC1_NUM_VOLTAGES	88
+>  #define AXP717_DCDC2_NUM_VOLTAGES	107
+> -#define AXP717_DCDC3_NUM_VOLTAGES	104
+> +#define AXP717_DCDC3_NUM_VOLTAGES	103
+>  #define AXP717_DCDC_V_OUT_MASK		GENMASK(6, 0)
+>  #define AXP717_LDO_V_OUT_MASK		GENMASK(4, 0)
+>  
+> @@ -766,7 +766,7 @@ static const struct linear_range axp717_dcdc1_ranges[] = {
+>  static const struct linear_range axp717_dcdc2_ranges[] = {
+>  	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
+>  	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
+> -	REGULATOR_LINEAR_RANGE(1600000, 88, 107, 100000),
+> +	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
+>  };
 
-diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
-index dda9dffd1d74..7b82bc3cf107 100644
---- a/tools/include/nolibc/sys.h
-+++ b/tools/include/nolibc/sys.h
-@@ -22,6 +22,7 @@
- #include <linux/stat.h>  /* for statx() */
- #include <linux/prctl.h>
- #include <linux/resource.h>
-+#include <linux/utsname.h>
- 
- #include "arch.h"
- #include "errno.h"
-@@ -1139,6 +1140,32 @@ int umount2(const char *path, int flags)
- }
- 
- 
-+/*
-+ * int uname(struct utsname *buf);
-+ */
-+
-+struct utsname {
-+	char sysname[65];
-+	char nodename[65];
-+	char release[65];
-+	char version[65];
-+	char machine[65];
-+	char domainname[65];
-+};
-+
-+static __attribute__((unused))
-+int sys_uname(struct utsname *buf)
-+{
-+	return my_syscall1(__NR_uname, buf);
-+}
-+
-+static __attribute__((unused))
-+int uname(struct utsname *buf)
-+{
-+	return __sysret(sys_uname(buf));
-+}
-+
-+
- /*
-  * int unlink(const char *path);
-  */
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 6ba4f8275ac4..3c9a9bd38194 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -27,6 +27,7 @@
- #include <sys/syscall.h>
- #include <sys/sysmacros.h>
- #include <sys/time.h>
-+#include <sys/utsname.h>
- #include <sys/wait.h>
- #include <dirent.h>
- #include <errno.h>
-@@ -761,6 +762,45 @@ int test_stat_timestamps(void)
- 	return 0;
- }
- 
-+int test_uname(void)
-+{
-+	struct utsname buf;
-+	char osrelease[sizeof(buf.release)];
-+	ssize_t r;
-+	int fd;
-+
-+	memset(&buf.domainname, 'P', sizeof(buf.domainname));
-+
-+	if (uname(&buf))
-+		return 1;
-+
-+	if (strncmp("Linux", buf.sysname, sizeof(buf.sysname)))
-+		return 1;
-+
-+	fd = open("/proc/sys/kernel/osrelease", O_RDONLY);
-+	if (fd == -1)
-+		return 1;
-+
-+	r = read(fd, osrelease, sizeof(osrelease));
-+	if (r == -1)
-+		return 1;
-+
-+	close(fd);
-+
-+	if (osrelease[r - 1] == '\n')
-+		r--;
-+
-+	/* Validate one of the later fields to ensure field sizes are correct */
-+	if (strncmp(osrelease, buf.release, r))
-+		return 1;
-+
-+	/* Ensure the field domainname is set, it is missing from struct old_utsname */
-+	if (strnlen(buf.domainname, sizeof(buf.domainname)) == sizeof(buf.domainname))
-+		return 1;
-+
-+	return 0;
-+}
-+
- int test_mmap_munmap(void)
- {
- 	int ret, fd, i, page_size;
-@@ -966,6 +1006,8 @@ int run_syscall(int min, int max)
- 		CASE_TEST(stat_fault);        EXPECT_SYSER(1, stat(NULL, &stat_buf), -1, EFAULT); break;
- 		CASE_TEST(stat_timestamps);   EXPECT_SYSZR(1, test_stat_timestamps()); break;
- 		CASE_TEST(symlink_root);      EXPECT_SYSER(1, symlink("/", "/"), -1, EEXIST); break;
-+		CASE_TEST(uname);             EXPECT_SYSZR(1, test_uname()); break;
-+		CASE_TEST(uname_fault);       EXPECT_SYSER(1, uname(NULL), -1, EFAULT); break;
- 		CASE_TEST(unlink_root);       EXPECT_SYSER(1, unlink("/"), -1, EISDIR); break;
- 		CASE_TEST(unlink_blah);       EXPECT_SYSER(1, unlink("/proc/self/blah"), -1, ENOENT); break;
- 		CASE_TEST(wait_child);        EXPECT_SYSER(1, wait(&tmp), -1, ECHILD); break;
+I'm not entirely sure these are correct after reading the datasheet.
 
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240414-nolibc-uname-de3895a4425f
+From what I can tell REGULATOR_LINEAR_RANGE is inclusive, so for DCDC1
+we have these ranges (we agree DCDC1 is correct, it is not affected by
+this patch):
 
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
+#define AXP717_DCDC1_NUM_VOLTAGES	88
+static const struct linear_range axp717_dcdc1_ranges[] = {
+	REGULATOR_LINEAR_RANGE(500000,   0, 70, 10000),
+	REGULATOR_LINEAR_RANGE(1220000, 71, 87, 20000),
+};
 
+The datasheet says this for the register:
+
+0.5~1.2V,10mV/step,71steps
+1.22~1.54V,20mV/step,17steps
+0000000: 0.50V
+0000001: 0.51V
+..
+1000110: 1.20V
+1000111: 1.22V
+1001000: 1.24V
+..
+1010111: 1.54V
+1011000~1111111: Reserve
+
+Converting to decimal:
+
+0: 0.50V (range 1 start)
+1: 0.51V
+..
+70: 1.20V (range 1 end)
+71: 1.22V (range 2 start)
+72: 1.24V
+..
+87: 1.54V (range 2 end)
+88 onwards: reserved
+
+The maximum voltages are the last value plus one (to include voltage zero).
+
+For DCDC2 after applying this patch we get:
+
+#define AXP717_DCDC2_NUM_VOLTAGES	107
+static const struct linear_range axp717_dcdc2_ranges[] = {
+	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
+	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
+	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
+};
+
+The datasheet marks the maximum value as 1101011: 3.40V, so 106 (the old
+value for range) seems correct, but the NUM_VOLTAGES seems like it
+should be bumped up to 108. I think you fixed the wrong thing here.
+
+#define AXP717_DCDC3_NUM_VOLTAGES	103
+static const struct linear_range axp717_dcdc2_ranges[] = {
+	REGULATOR_LINEAR_RANGE(500000,   0,  70,  10000),
+	REGULATOR_LINEAR_RANGE(1220000, 71,  87,  20000),
+	REGULATOR_LINEAR_RANGE(1600000, 88, 106, 100000),
+};
+
+The datasheet marks the maximum value as 1101011: 3.40V, so 106 (the old
+value for range) seems correct, but the NUM_VOLTAGES seems like it
+should be bumped up to 108. I think you fixed the wrong thing here.
+For DCDC3 after applying this patch we get:
+
+#define AXP717_DCDC3_NUM_VOLTAGES	103
+static const struct linear_range axp717_dcdc3_ranges[] = {
+	REGULATOR_LINEAR_RANGE(500000,   0,  70, 10000),
+	REGULATOR_LINEAR_RANGE(1220000, 71, 102, 20000),
+};
+
+The datasheet marks the maximum value as 1100110: 1.84V, which is 102.
+So this patch to correct the AXP717_DCDC3_NUM_VOLTAGES is correct here.
+
+John.
+
+>  
+>  static const struct linear_range axp717_dcdc3_ranges[] = {
+> @@ -790,40 +790,40 @@ static const struct regulator_desc axp717_regulators[] = {
+>  	AXP_DESC(AXP717, DCDC4, "dcdc4", "vin4", 1000, 3700, 100,
+>  		 AXP717_DCDC4_CONTROL, AXP717_DCDC_V_OUT_MASK,
+>  		 AXP717_DCDC_OUTPUT_CONTROL, BIT(3)),
+> -	AXP_DESC(AXP717, ALDO1, "aldo1", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, ALDO1, "aldo1", "aldoin", 500, 3500, 100,
+>  		 AXP717_ALDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(0)),
+> -	AXP_DESC(AXP717, ALDO2, "aldo2", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, ALDO2, "aldo2", "aldoin", 500, 3500, 100,
+>  		 AXP717_ALDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(1)),
+> -	AXP_DESC(AXP717, ALDO3, "aldo3", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, ALDO3, "aldo3", "aldoin", 500, 3500, 100,
+>  		 AXP717_ALDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(2)),
+> -	AXP_DESC(AXP717, ALDO4, "aldo4", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, ALDO4, "aldo4", "aldoin", 500, 3500, 100,
+>  		 AXP717_ALDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(3)),
+> -	AXP_DESC(AXP717, BLDO1, "bldo1", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, BLDO1, "bldo1", "bldoin", 500, 3500, 100,
+>  		 AXP717_BLDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(4)),
+> -	AXP_DESC(AXP717, BLDO2, "bldo2", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, BLDO2, "bldo2", "bldoin", 500, 3500, 100,
+>  		 AXP717_BLDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(5)),
+> -	AXP_DESC(AXP717, BLDO3, "bldo3", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, BLDO3, "bldo3", "bldoin", 500, 3500, 100,
+>  		 AXP717_BLDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(6)),
+> -	AXP_DESC(AXP717, BLDO4, "bldo4", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, BLDO4, "bldo4", "bldoin", 500, 3500, 100,
+>  		 AXP717_BLDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO0_OUTPUT_CONTROL, BIT(7)),
+> -	AXP_DESC(AXP717, CLDO1, "cldo1", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, CLDO1, "cldo1", "cldoin", 500, 3500, 100,
+>  		 AXP717_CLDO1_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(0)),
+> -	AXP_DESC(AXP717, CLDO2, "cldo2", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, CLDO2, "cldo2", "cldoin", 500, 3500, 100,
+>  		 AXP717_CLDO2_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(1)),
+> -	AXP_DESC(AXP717, CLDO3, "cldo3", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, CLDO3, "cldo3", "cldoin", 500, 3500, 100,
+>  		 AXP717_CLDO3_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(2)),
+> -	AXP_DESC(AXP717, CLDO4, "cldo4", "vin1", 500, 3500, 100,
+> +	AXP_DESC(AXP717, CLDO4, "cldo4", "cldoin", 500, 3500, 100,
+>  		 AXP717_CLDO4_CONTROL, AXP717_LDO_V_OUT_MASK,
+>  		 AXP717_LDO1_OUTPUT_CONTROL, BIT(3)),
+>  	AXP_DESC(AXP717, CPUSLDO, "cpusldo", "vin1", 500, 1400, 50,
+> -- 
+> 2.35.8
+> 
 
