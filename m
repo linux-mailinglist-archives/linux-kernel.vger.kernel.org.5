@@ -1,293 +1,198 @@
-Return-Path: <linux-kernel+bounces-144159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7C368A428D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:18:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4593E8A428F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB3A21C209E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:18:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AABF01F2128A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8C443AD1;
-	Sun, 14 Apr 2024 13:18:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608F93EA97;
+	Sun, 14 Apr 2024 13:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xANgkuPp"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="D6bZHN46"
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2110.outbound.protection.outlook.com [40.107.105.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F304F8BC;
-	Sun, 14 Apr 2024 13:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713100679; cv=none; b=SOEBAdtBIOV5Urdmbq5hMjpQ2HcqT0yrm8jeYHl6OPXfL8AR26W26+er5PQHdLkNXTVP4JoxO+rlCWGXOU9OYfaHVWhSD6XsGeKh0a5gjIBMWYQQtwItt+nvBXMUdTO12NYtj4Ss2gvTJYFhbAnl1qaSRgLHl0fMkre72KadLNQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713100679; c=relaxed/simple;
-	bh=Qu2UHNtcHhUUEJhqna7Iwsyq/Ry6n1UFBiLy0zlBRIk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DBDJ1Hd2iyur72IU1YixQEp2CfMKyysbyasogX/ZcHaTbOC8Uu+zf6xzwPvMQsMyaM1H2vAwM06i+2Z0bxgDe75/QfYeZHlqivvOR/0mxDDEokKr6AvnAvtqqIe/hBBAki9jq+2whcoEfT4xBYCDc/bGvkVvKVqRb6Jyk29PUeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xANgkuPp; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713100676;
-	bh=Qu2UHNtcHhUUEJhqna7Iwsyq/Ry6n1UFBiLy0zlBRIk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=xANgkuPpR+cFcuPisB6cwLlAetiYGpNijmhFNUjThqhRRs0lcAeEC6TqOT/hiBsii
-	 9kAr0xH+aGfZ7f+uoWbgYhbOTKbZXblrX37RunyYFOYuToQxxE+EPINriMPVhTa8Qt
-	 hEvpgW+buHN9vIJiPV+hkER40fG7IMcSv5uLqRPLaQJqQjS+25c9euYQGobvO+v0az
-	 09S38DSx0xUXL6fpUVHod4D6BlEdqkve2kh+QQg4gqErKA7GJe6MMy2OdQnAdJzv1U
-	 qoIaK/2ymCGX3zHLew13x5zT2UrKx2705+Y8+qcMknqYkT0Sug3XMSKDLkLGW8akb6
-	 JWIonl3g57Org==
-Received: from localhost.localdomain (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 33B103781104;
-	Sun, 14 Apr 2024 13:17:53 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kernel@collabora.com
-Subject: [PATCH 4/4] selftests: entry_from_vm86: conform test to TAP format output
-Date: Sun, 14 Apr 2024 18:18:07 +0500
-Message-Id: <20240414131807.2253344-5-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240414131807.2253344-1-usama.anjum@collabora.com>
-References: <20240414131807.2253344-1-usama.anjum@collabora.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53BA55C2E;
+	Sun, 14 Apr 2024 13:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.110
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713100741; cv=fail; b=YxEDGV/rdqA95FdIOP9+Nvexw5chzaG/WU528LvyDM9KBfz1Zg5NEUl15w16C/LhR27J7jtmb9cpjbB6RdPGEqVMiMBn1Gikz2NMbjGsHK9Ww8cH9e/RJ9chPU9pM6KhXIo4gyfywvgwnG2IgWS3r0zxVMtPpUnXdQ2dzNAIfHI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713100741; c=relaxed/simple;
+	bh=Y03DKvhdMltidGar/C2r5DidZcMEZVa2hk4VoG9fIV4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=u+r1BJ4C26EPfl/9w0rO8VymF4JFtMe+ur15A9f1cTYje8l87ic+GbF1e3TJIpxp1aFttLOQeyCI6juXyAuxajoQOuvioVgOP1VaEqvVGGGfp7m+Lxy5CMNaeLRjoUJdrfn109QyaesYli+C0Kp5TjsgpZQ5OUgohFBX6wAhVLA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=D6bZHN46; arc=fail smtp.client-ip=40.107.105.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SbcVWdvLUAwyw8PDz8fzfnfd4Pmf9mAr4Jmokpv0AUjC9nvEA/C5CE0UIo0FaGk/PQ/WRP81loDqs0gA18henF74t8MIshCa2SxNNKZsXYaKtZPZ0/vprHFRf12fb4F2Scf1me1n8oOEkQ5eCCYMGmOkRpsyY4E0ZcCVvbRTUn8FWnFfdhcmA/WGdzHGL5jkD5Qw3lAhqCpZ+IgHUfCBGRTgK21FBYXwX8tRRC0s0blgMlF9KeQcZNu/vrA6ozSIL6Muafj+BcN2PI+/H9YpsqbPMUuHxmg1SjBZAtkaZig4mUtzbORoLe4FNU2/1mkq6Gv/oeBY1NncNQnXk8e3NA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y03DKvhdMltidGar/C2r5DidZcMEZVa2hk4VoG9fIV4=;
+ b=A4remmAwFZiKF4VqUBIXgeI6dDX5xVzrnEcSKWK+gFsX6Vzmng9/PbwnZMfNi5KNuuWNw+vsDDAxbSK+I+k/X0EcfW4WXq3Fvxpsi3kOoTV+kHQ5bZDTIEiiAPGl6GvbAtlSKfl7lV4vgvtB6XZMR7LeDXImLcf4CiAHdrLxklCn6nAAHzhjvnnPbbkoHEpNFj4/CJ9GLmyU0wK/LYLTx48zVaqANF/Xx2eheKpxL0AoNXGT3d1QKYe9yZ/zMvDcAHuuz77oY3ShGa3UGiirBUMWEaop6aMw81ruhvyRmSDzaomcUVMp5wL4ETHUU0W37Km8NJLFQ2j8cSq2UVi12w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y03DKvhdMltidGar/C2r5DidZcMEZVa2hk4VoG9fIV4=;
+ b=D6bZHN46wqUGOoGUjik0ot+R9icHDJ2wvRJUZN4YqU2Zol0rLClmP1rmixhpqxBV+cPYJOZFfO+r/OoKGi5JvlFNALX4N3wV3Yn3myO+XNLEAOtJB5X75Z1OnGNqqLByn2Js2HYQ8w/gzolDKSFQd8MzQFwIworKUF5VSODmQng=
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
+ by AM0PR04MB6897.eurprd04.prod.outlook.com (2603:10a6:208:184::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.49; Sun, 14 Apr
+ 2024 13:18:57 +0000
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::c04e:8a97:516c:5529]) by AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::c04e:8a97:516c:5529%7]) with mapi id 15.20.7452.046; Sun, 14 Apr 2024
+ 13:18:56 +0000
+From: Josua Mayer <josua@solid-run.com>
+To: Andrew Lunn <andrew@lunn.ch>, Gregory Clement
+	<gregory.clement@bootlin.com>, Sebastian Hesselbarth
+	<sebastian.hesselbarth@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Rob Herring <robh@kernel.org>
+CC: Yazan Shhady <yazan.shhady@solid-run.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] arm64: dts: add description for solidrun cn9131
+ solidwan board
+Thread-Topic: [PATCH v3 4/4] arm64: dts: add description for solidrun cn9131
+ solidwan board
+Thread-Index: AQHajmt4w4zwT8gI9EGUFXDjzCdkprFnv8QA
+Date: Sun, 14 Apr 2024 13:18:56 +0000
+Message-ID: <3958052d-fc09-4c4c-a9e3-4923871cff44@solid-run.com>
+References: <20240414-cn9130-som-v3-0-350a67d44e0a@solid-run.com>
+ <20240414-cn9130-som-v3-4-350a67d44e0a@solid-run.com>
+In-Reply-To: <20240414-cn9130-som-v3-4-350a67d44e0a@solid-run.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=solid-run.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM9PR04MB7586:EE_|AM0PR04MB6897:EE_
+x-ms-office365-filtering-correlation-id: 3575e0e0-ecbb-4d17-3fbb-08dc5c857084
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 889nVa1RWFSncAq2diz3ZRjXmnud6PIENCwp/rNnK/uQ35laxeox7NxVVpRvKE97EnDgPB2XVE6fJ5+qnaUlteqtyF0Q/inK39n0kER07Pz2obS1Rs+zL1AXbzPWDJflLv7QuX2ORZC7HMH+x+aDHEnpEgLAnbBo9FGzPJkDa4rfmQlGFQTneZxYrkUhpKZSEb3Rof0at3XhAO1aYU7N4N6eJPrLeBEQo/6AbaYAnVM7AWm1nfPDnATZargMj0vixNEmNC3Av5HD3ImIcFKOzNdgMjPi1qCjZdFQ5uq2EMvH/Itu4T6rqbTKgP4qFwcdKZbckMpkpnTrN457c3/tDgZL8kOrFcePOVrvAxFu8p4a/qgPW3JJGFJaqcCEkkLS1sM53Dy+fbRlrGrqI8C4VwYlwbVxVAMU3dLa6DIT6YA/vnvN1mkKi+lXChbddmMZKgTjCYS1dZ3XwDRYHHDc9MhN6Wihdm9Z5U2vXHyH527mGq7EXQxmGTpBVlJ/xSB4AYD0ASgRo9hTTOJpPkdgklLMYmxMDKx2+mhztvcaHkSw2caH0Mof9W7NImQ3FZ92Ow13Sh2Kbxx2QFF46Nn9spG4J2pDInyZSMgW9YwVipq4tm3JVGmyXYIpCTxMXc9dCcaexwUJVZcErOEZlmZT8v2rSGRKW1Jifl1MGX7mBukWzfRaSl9PQX3HmQR5J61s2OKA91QT5IMiBL8crO5DQQtlculCN/xvdCj8MDF43OQ=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?QkQ1ZE9FNG56bnZSRmt4djF5b0lGTmtyaEloUkpLUkIrbFF3bDc3Z1Q4RENT?=
+ =?utf-8?B?MWxscmNoeWtTNU5YVHZ5dkRNWExSejdmZjFTRWhYSHNpeGxoVEVxbDREWnVm?=
+ =?utf-8?B?K3hnMnN5UEJ4ZFYxWmpVcVozbnRiUmpqdVRSYUFJNWxkZGlueEdMMld3Y0xV?=
+ =?utf-8?B?TFduR2pNMHhTVTNhUjdLY1RvOWVXV2NkRFVYZUJXeTRvWWQ0UkxtSXJramNt?=
+ =?utf-8?B?YTZZdW96enV0eEFFS2RLMU4wTlMrem4zdXcxM0FrMFlsb0M1bkEzdUV3dFlV?=
+ =?utf-8?B?Y3hpNFd2N3lnNFhha3VoOUo3UG5tWmZBcmpBaUhnUHhWYk02NUtjZEdDTk42?=
+ =?utf-8?B?UldwcjJ4dGgraG91OUt6R3pOSzVkb0pVaTZhcFY4NlpVZjJiREY3NFJ5c2VX?=
+ =?utf-8?B?TDlpTGFpamx6SzlJWjA4M3F4NEdXVDNlOU8vOVU1bGhXTUFoT0VocVNUU0t3?=
+ =?utf-8?B?d25jamN6c0YzQWMwdU5wcExFMXY3c1ZYZ3ZSQ08vU25lN0pweWxxZ1ZjY05W?=
+ =?utf-8?B?bEx2QStSdmhHSkRURjlVQW5mOEtHMkNMRTFsNG92OWNBNVFFSUZXTm41KzVl?=
+ =?utf-8?B?bXh2ZXlIUDRrTmN6WXI4MkYwSzY4amR6eEd4Sk8rVG9KV3BmSCtXOWZtcnFX?=
+ =?utf-8?B?Mjk4SWhscnhHcW4zNk1MaGpSdWEweEhuVlVOZVNzRGo1VlNSM2Zham4vTncy?=
+ =?utf-8?B?YWdiWTQrdmtRZFRTbDdwU2R5MUFHaDhSS2Zvd3lidGUvMjZuQ0RocCtadlVp?=
+ =?utf-8?B?eXo3NnlRTEMrM3FYQWJ5YzVPTExQdEdoMFdIaG50T3BYTkVtYjZwa2pEMC9a?=
+ =?utf-8?B?U09hTlZuNVl1dHBPeXVWSFRHQ3hiOWs3UWxFeE8vcGdpbnVnOXc4eUk1dWJn?=
+ =?utf-8?B?NlZsWm5qK3dTWFdOZThrRWlIY2xBM21Oanh2V2UvdWF5V1lNNmZZYzk1TW9J?=
+ =?utf-8?B?VHE2UjNFK0F1NzBkRHRTYldpamx2RFE0YjJ6NUhhZms1dTBuUzdJRE1pNm4x?=
+ =?utf-8?B?NjhxeWN3ZlhhSURSK0crdWNlT2NRK0xuUlVPY3pFcUQ0T3BCRVRYOVIzNlUw?=
+ =?utf-8?B?Z2dpK1NzbXlMb2xoY05vT3Y3bnRDb3o5dGFHRU5lSEZ3bk0yV29MaVhGM2NL?=
+ =?utf-8?B?WVoxYS85SGpteXVaT1BCbkY2eDJ3czQwNlEyWGRGM0lzc1hRWEpuY3U1T1Vp?=
+ =?utf-8?B?L2l2dkFRcTJ0QjVobjh0alovWkV3c3g0RTdyRlNxdE8yZ3Z5T0RSN3hhak83?=
+ =?utf-8?B?RGprQlFsMm1tVTdzWFNLdXFGNzMxSHVacjMrZU50dHY1UWdXRGNRTTFzZExv?=
+ =?utf-8?B?eVZMRVN1SjUxRmhVbVJxaitCdzV3Mkt0VGVvRERhZjJiTWRzUUdFaDhISWJo?=
+ =?utf-8?B?MmlDQU5XTjVPNVRFUWdQdHNCTTRvVy9ER1k4R0RqZm5Pa3VheXIzazFGcFY3?=
+ =?utf-8?B?T3RyM0ROMnRva0VWS3czb00yN0JWRFZFOXVxZC9FZGlDUmY4UEg2NnBRTjly?=
+ =?utf-8?B?ZXpCQzlVZGtyZDFtUWMycnBRY2hYRUtCTUdNYjN5T3NFeU1TWlpXYWZ5KzVW?=
+ =?utf-8?B?S2M4VWxwbEI1eHkzdUJUMFNsOFUxaGdySkYwRzlCNnBKbmF6bmRPNkQxVTc1?=
+ =?utf-8?B?Z1NQbXZ6Qm5ielQ3MXFMQ2RsRVhkc2xIVGh4Sk5HZ3VENW9vY2hhcWtadk9C?=
+ =?utf-8?B?Q0hPUGtPR1hmYS8yUno0VFhoSlVNS0FadEhWemtkVDlXbWZvR2RCV0t4N01P?=
+ =?utf-8?B?bFVCaXprWURrZzlqaEJ4UEd3NGxmWGRXblRhWnJDOW9wbVp2b0txNFVaU3JZ?=
+ =?utf-8?B?VEJrK0hCd2NTMnFxTU50aDNBdnVsWUU5c3FaNlFwSEh6c3g5YmV1Ui9pTnU1?=
+ =?utf-8?B?a211OHladWR1b3ErekZpcGh1cm9ZM3VlSVUzaHBkeHBrUTZydDZpMjhKYVNu?=
+ =?utf-8?B?UnBqZFZNWkFvbEFzVHpFTzNFa2x6dTloYi90Qnc3b2MyMk5WK0pxTHJJOHVG?=
+ =?utf-8?B?OTBEUGNwanhxd1Jld1dzbXR5ZFJHU25JQ0Y3VVhSSGRTdzFKbG5XVFpLSXdl?=
+ =?utf-8?B?cmlld05ETnJ4b1JQYXVnLzh6MlpoMHZ2RXl5OHhjZEoxdEg2RjBHblhVK3I5?=
+ =?utf-8?Q?2ESc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <42AA7F2EC301F84EAE9F1A1C8124B0F1@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3575e0e0-ecbb-4d17-3fbb-08dc5c857084
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2024 13:18:56.7679
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: F7CUpUd44VXPbr5G+SEmAqtSj9MXBPa8xKxi6pJGDOUNo12z09HOyeKFT8qitm+oTFYJIwzmpuFM1jHgf7A+hw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6897
 
-Conform the layout, informational and status messages to TAP. No
-functional change is intended other than the layout of output messages.
-
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
- tools/testing/selftests/x86/entry_from_vm86.c | 109 +++++++++---------
- 1 file changed, 53 insertions(+), 56 deletions(-)
-
-diff --git a/tools/testing/selftests/x86/entry_from_vm86.c b/tools/testing/selftests/x86/entry_from_vm86.c
-index d1e919b0c1dc8..a4efa4588e6f8 100644
---- a/tools/testing/selftests/x86/entry_from_vm86.c
-+++ b/tools/testing/selftests/x86/entry_from_vm86.c
-@@ -23,9 +23,9 @@
- #include <stdbool.h>
- #include <errno.h>
- #include <sys/vm86.h>
-+#include "../kselftest.h"
- 
- static unsigned long load_addr = 0x10000;
--static int nerrs = 0;
- 
- static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 		       int flags)
-@@ -36,7 +36,7 @@ static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 	sa.sa_flags = SA_SIGINFO | flags;
- 	sigemptyset(&sa.sa_mask);
- 	if (sigaction(sig, &sa, 0))
--		err(1, "sigaction");
-+		ksft_exit_fail_perror("sigaction");
- }
- 
- static void clearhandler(int sig)
-@@ -46,7 +46,7 @@ static void clearhandler(int sig)
- 	sa.sa_handler = SIG_DFL;
- 	sigemptyset(&sa.sa_mask);
- 	if (sigaction(sig, &sa, 0))
--		err(1, "sigaction");
-+		ksft_exit_fail_perror("sigaction");
- }
- 
- static sig_atomic_t got_signal;
-@@ -56,10 +56,8 @@ static void sighandler(int sig, siginfo_t *info, void *ctx_void)
- 	ucontext_t *ctx = (ucontext_t*)ctx_void;
- 
- 	if (ctx->uc_mcontext.gregs[REG_EFL] & X86_EFLAGS_VM ||
--	    (ctx->uc_mcontext.gregs[REG_CS] & 3) != 3) {
--		printf("[FAIL]\tSignal frame should not reflect vm86 mode\n");
--		nerrs++;
--	}
-+	    (ctx->uc_mcontext.gregs[REG_CS] & 3) != 3)
-+		ksft_test_result_fail("Signal frame should not reflect vm86 mode\n");
- 
- 	const char *signame;
- 	if (sig == SIGSEGV)
-@@ -69,9 +67,9 @@ static void sighandler(int sig, siginfo_t *info, void *ctx_void)
- 	else
- 		signame = "unexpected signal";
- 
--	printf("[INFO]\t%s: FLAGS = 0x%lx, CS = 0x%hx\n", signame,
--	       (unsigned long)ctx->uc_mcontext.gregs[REG_EFL],
--	       (unsigned short)ctx->uc_mcontext.gregs[REG_CS]);
-+	ksft_test_result_pass("%s: FLAGS = 0x%lx, CS = 0x%hx\n", signame,
-+			      (unsigned long)ctx->uc_mcontext.gregs[REG_EFL],
-+			      (unsigned short)ctx->uc_mcontext.gregs[REG_CS]);
- 
- 	got_signal = 1;
- }
-@@ -137,13 +135,13 @@ static bool do_test(struct vm86plus_struct *v86, unsigned long eip,
- {
- 	long ret;
- 
--	printf("[RUN]\t%s from vm86 mode\n", text);
-+	ksft_print_msg("%s from vm86 mode\n", text);
- 	v86->regs.eip = eip;
- 	ret = vm86(VM86_ENTER, v86);
- 
- 	if (ret == -1 && (errno == ENOSYS || errno == EPERM)) {
--		printf("[SKIP]\tvm86 %s\n",
--		       errno == ENOSYS ? "not supported" : "not allowed");
-+		ksft_test_result_skip("vm86 %s\n",
-+				      errno == ENOSYS ? "not supported" : "not allowed");
- 		return false;
- 	}
- 
-@@ -159,29 +157,27 @@ static bool do_test(struct vm86plus_struct *v86, unsigned long eip,
- 		else
- 			sprintf(trapname, "%d", trapno);
- 
--		printf("[INFO]\tExited vm86 mode due to #%s\n", trapname);
-+		ksft_print_msg("Exited vm86 mode due to #%s\n", trapname);
- 	} else if (VM86_TYPE(ret) == VM86_UNKNOWN) {
--		printf("[INFO]\tExited vm86 mode due to unhandled GP fault\n");
-+		ksft_print_msg("Exited vm86 mode due to unhandled GP fault\n");
- 	} else if (VM86_TYPE(ret) == VM86_TRAP) {
--		printf("[INFO]\tExited vm86 mode due to a trap (arg=%ld)\n",
--		       VM86_ARG(ret));
-+		ksft_print_msg("Exited vm86 mode due to a trap (arg=%ld)\n",
-+			       VM86_ARG(ret));
- 	} else if (VM86_TYPE(ret) == VM86_SIGNAL) {
--		printf("[INFO]\tExited vm86 mode due to a signal\n");
-+		ksft_print_msg("Exited vm86 mode due to a signal\n");
- 	} else if (VM86_TYPE(ret) == VM86_STI) {
--		printf("[INFO]\tExited vm86 mode due to STI\n");
-+		ksft_print_msg("Exited vm86 mode due to STI\n");
- 	} else {
--		printf("[INFO]\tExited vm86 mode due to type %ld, arg %ld\n",
--		       VM86_TYPE(ret), VM86_ARG(ret));
-+		ksft_print_msg("Exited vm86 mode due to type %ld, arg %ld\n",
-+			       VM86_TYPE(ret), VM86_ARG(ret));
- 	}
- 
- 	if (rettype == -1 ||
--	    (VM86_TYPE(ret) == rettype && VM86_ARG(ret) == retarg)) {
--		printf("[OK]\tReturned correctly\n");
--	} else {
--		printf("[FAIL]\tIncorrect return reason (started at eip = 0x%lx, ended at eip = 0x%lx)\n", eip, v86->regs.eip);
--		nerrs++;
--	}
--
-+	    (VM86_TYPE(ret) == rettype && VM86_ARG(ret) == retarg))
-+		ksft_test_result_pass("Returned correctly\n");
-+	else
-+		ksft_test_result_fail("Incorrect return reason (started at eip = 0x%lx, ended at eip = 0x%lx)\n",
-+				      eip, v86->regs.eip);
- 	return true;
- }
- 
-@@ -215,26 +211,20 @@ void do_umip_tests(struct vm86plus_struct *vm86, unsigned char *test_mem)
- 	/* Results when using register operands */
- 	msw3 = *(unsigned short *)(test_mem + 2080);
- 
--	printf("[INFO]\tResult from SMSW:[0x%04x]\n", msw1);
--	printf("[INFO]\tResult from SIDT: limit[0x%04x]base[0x%08lx]\n",
--	       idt1.limit, idt1.base);
--	printf("[INFO]\tResult from SGDT: limit[0x%04x]base[0x%08lx]\n",
--	       gdt1.limit, gdt1.base);
-+	ksft_print_msg("Result from SMSW:[0x%04x]\n", msw1);
-+	ksft_print_msg("Result from SIDT: limit[0x%04x]base[0x%08lx]\n",
-+		       idt1.limit, idt1.base);
-+	ksft_print_msg("Result from SGDT: limit[0x%04x]base[0x%08lx]\n",
-+		       gdt1.limit, gdt1.base);
- 
--	if (msw1 != msw2 || msw1 != msw3)
--		printf("[FAIL]\tAll the results of SMSW should be the same.\n");
--	else
--		printf("[PASS]\tAll the results from SMSW are identical.\n");
-+	ksft_test_result((msw1 == msw2 && msw1 == msw3),
-+			 "All the results from SMSW are identical.\n");
- 
--	if (memcmp(&gdt1, &gdt2, sizeof(gdt1)))
--		printf("[FAIL]\tAll the results of SGDT should be the same.\n");
--	else
--		printf("[PASS]\tAll the results from SGDT are identical.\n");
-+	ksft_test_result(!memcmp(&gdt1, &gdt2, sizeof(gdt1)),
-+			 "All the results from SGDT are identical.\n");
- 
--	if (memcmp(&idt1, &idt2, sizeof(idt1)))
--		printf("[FAIL]\tAll the results of SIDT should be the same.\n");
--	else
--		printf("[PASS]\tAll the results from SIDT are identical.\n");
-+	ksft_test_result(!memcmp(&idt1, &idt2, sizeof(idt1)),
-+			 "All the results from SIDT are identical.\n");
- 
- 	sethandler(SIGILL, sighandler, 0);
- 	do_test(vm86, vmcode_umip_str - vmcode, VM86_SIGNAL, 0,
-@@ -250,11 +240,15 @@ void do_umip_tests(struct vm86plus_struct *vm86, unsigned char *test_mem)
- int main(void)
- {
- 	struct vm86plus_struct v86;
--	unsigned char *addr = mmap((void *)load_addr, 4096,
--				   PROT_READ | PROT_WRITE | PROT_EXEC,
--				   MAP_ANONYMOUS | MAP_PRIVATE, -1,0);
-+	unsigned char *addr;
-+
-+	ksft_print_header();
-+	ksft_set_plan(18);
-+
-+	addr = mmap((void *)load_addr, 4096, PROT_READ | PROT_WRITE | PROT_EXEC,
-+		    MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
- 	if (addr != (unsigned char *)load_addr)
--		err(1, "mmap");
-+		ksft_exit_fail_perror("mmap");
- 
- 	memcpy(addr, vmcode, end_vmcode - vmcode);
- 	addr[2048] = 2;
-@@ -270,7 +264,8 @@ int main(void)
- 	/* Use the end of the page as our stack. */
- 	v86.regs.esp = 4096;
- 
--	assert((v86.regs.cs & 3) == 0);	/* Looks like RPL = 0 */
-+	if (v86.regs.cs & 3)
-+		ksft_exit_fail_msg("Looks like RPL = 0\n");
- 
- 	/* #BR -- should deliver SIG??? */
- 	do_test(&v86, vmcode_bound - vmcode, VM86_INTx, 5, "#BR");
-@@ -333,16 +328,18 @@ int main(void)
- 	v86.regs.ss = 0;
- 	sethandler(SIGSEGV, sighandler, 0);
- 	got_signal = 0;
--	if (do_test(&v86, 0, VM86_SIGNAL, 0, "Execute null pointer") &&
--	    !got_signal) {
--		printf("[FAIL]\tDid not receive SIGSEGV\n");
--		nerrs++;
--	}
-+	if (do_test(&v86, 0, VM86_SIGNAL, 0, "Execute null pointer"))
-+		ksft_test_result(got_signal, "Received SIGSEGV\n");
-+	else
-+		ksft_test_result_skip("Received SIGSEGV\n");
-+
- 	clearhandler(SIGSEGV);
- 
- 	/* Make sure nothing explodes if we fork. */
- 	if (fork() == 0)
- 		return 0;
- 
--	return (nerrs == 0 ? 0 : 1);
-+	ksft_test_result_pass("fork succeeded\n");
-+
-+	ksft_finished();
- }
--- 
-2.39.2
-
+QW0gMTQuMDQuMjQgdW0gMTQ6NTggc2NocmllYiBKb3N1YSBNYXllcjoNCj4gQWRkIGRlc2NyaXB0
+aW9uIGZvciB0aGUgU29saWRSdW4gQ045MTMxIFNvbGlkV0FOLCBiYXNlZCBvbiBDTjkxMzAgU29N
+DQo+IHdpdGggYW4gZXh0cmEgY29tbXVuaWNhdGlvbiAgcHJvY2Vzc29yIG9uIHRoZSBjYXJyaWVy
+IGJvYXJkLg0KPg0KPiBUaGlzIGJvYXJkIGRpZmZlcmVudGlhdGVzIGl0c2VsZiBmcm9tIENOOTEz
+MCBDbGVhcmZvZyBieSBwcm92aWRpbmcNCj4gYWRkaXRpb25hbCBTb0MgbmF0aXZlIG5ldHdvcmsg
+aW50ZXJmYWNlcyBhbmQgcGNpIGJ1c2VzOg0KPiAyeCAxMEdicHMgU0ZQKw0KPiA0eCAxR2JwcyBS
+SjQ1DQo+IDF4IG1pbmlQQ0ktRQ0KPiAxeCBtLjIgYi1rZXkgd2l0aCBzYXRhLCB1c2ItMi4wIGFu
+ZCB1c2ItMy4wDQo+IDF4IG0uMiBtLWtleSB3aXRoIHBjaWUgYW5kIHVzYi0yLjANCj4gMXggbS4y
+IGIta2V5IHdpdGggcGNpZSwgdXNiLTIuMCwgdXNiLTMuMCBhbmQgMnggc2ltIHNsb3RzDQo+IDF4
+IG1wY2llIHdpdGggcGNpZSBvbmx5DQo+IDJ4IHR5cGUtYSB1c2ItMi4wLzMuMA0KPg0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBKb3N1YSBNYXllciA8am9zdWFAc29saWQtcnVuLmNvbT4NCj4gLS0tDQo+ICBh
+cmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwvTWFrZWZpbGUgICAgICAgICAgICAgICB8ICAgMSAr
+DQo+ICBhcmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwvY245MTMxLWNmLXNvbGlkd2FuLmR0cyB8
+IDY1MyArKysrKysrKysrKysrKysrKysrKysNCj4gIDIgZmlsZXMgY2hhbmdlZCwgNjU0IGluc2Vy
+dGlvbnMoKykNCj4NCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVsbC9N
+YWtlZmlsZSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVsbC9NYWtlZmlsZQ0KPiBpbmRleCAw
+MTlmMjI1MWQ2OTYuLjE2ZjlkNzE1NmQ5ZiAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm02NC9ib290
+L2R0cy9tYXJ2ZWxsL01ha2VmaWxlDQo+ICsrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVs
+bC9NYWtlZmlsZQ0KPiBAQCAtMzAsMyArMzAsNCBAQCBkdGItJChDT05GSUdfQVJDSF9NVkVCVSkg
+Kz0gYWM1eC1yZC1jYXJyaWVyLWNuOTEzMS5kdGINCj4gIGR0Yi0kKENPTkZJR19BUkNIX01WRUJV
+KSArPSBhYzUtOThkeDM1eHgtcmQuZHRiDQo+ICBkdGItJChDT05GSUdfQVJDSF9NVkVCVSkgKz0g
+Y245MTMwLWNmLWJhc2UuZHRiDQo+ICBkdGItJChDT05GSUdfQVJDSF9NVkVCVSkgKz0gY245MTMw
+LWNmLXByby5kdGINCj4gK2R0Yi0kKENPTkZJR19BUkNIX01WRUJVKSArPSBjbjkxMzEtY2Ytc29s
+aWR3YW4uZHRiDQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwvY245
+MTMxLWNmLXNvbGlkd2FuLmR0cyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVsbC9jbjkxMzEt
+Y2Ytc29saWR3YW4uZHRzDQpjdXQNCj4gKwlsZWRzIHsNCj4gKwkJY29tcGF0aWJsZSA9ICJncGlv
+LWxlZHMiOw0KPiArCQlwaW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOw0KPiArCQlwaW5jdHJsLTAg
+PSA8JmNwMF9sZWRfcGlucyAmY3AxX2xlZF9waW5zPjsNCj4gKw0KPiArCQkvKiBmb3Igc2ZwLTEg
+KEo0MikgKi8NCj4gKwkJbGVkLXNmcDEtYWN0aXZpdHkgew0KPiArCQkJbGFiZWwgPSAic2ZwMSI7
+DQo+ICsJCQlncGlvcyA9IDwmY3AwX2dwaW8xIDcgR1BJT19BQ1RJVkVfSElHSD47DQo+ICsJCQlj
+b2xvciA9IDxMRURfQ09MT1JfSURfR1JFRU4+Ow0KPiArCQl9Ow0KPiArDQo+ICsJCS8qIGZvciBz
+ZnAtMSAoSjQyKSAqLw0KPiArCQlsZWQtc2ZwMS1saW5rIHsNCj4gKwkJCWxhYmVsID0gInNmcDEi
+Ow0KPiArCQkJZ3Bpb3MgPSA8JmNwMF9ncGlvMSA0IEdQSU9fQUNUSVZFX0hJR0g+Ow0KPiArCQkJ
+Y29sb3IgPSA8TEVEX0NPTE9SX0lEX1lFTExPVz47DQo+ICsJCX07DQo+ICsNCj4gKwkJLyogKEoy
+OCkgKi8NCj4gKwkJbGVkLXNmcDAtYWN0aXZpdHkgew0KPiArCQkJbGFiZWwgPSAic2ZwMCI7DQo+
+ICsJCQlncGlvcyA9IDwmY3AxX2dwaW8yIDIyIEdQSU9fQUNUSVZFX0hJR0g+Ow0KPiArCQkJY29s
+b3IgPSA8TEVEX0NPTE9SX0lEX0dSRUVOPjsNCj4gKwkJfTsNCj4gKw0KPiArCQkvKiAoSjI4KSAq
+Lw0KPiArCQlsZWQtc2ZwMC1saW5rIHsNCj4gKwkJCWxhYmVsID0gInNmcDAiOw0KPiArCQkJZ3Bp
+b3MgPSA8JmNwMV9ncGlvMiAyMyBHUElPX0FDVElWRV9ISUdIPjsNCj4gKwkJCWNvbG9yID0gPExF
+RF9DT0xPUl9JRF9ZRUxMT1c+Ow0KPiArCQl9Ow0KPiArCX07DQo+ICsNCkhlcmUgSSBhbSB1bmNl
+cnRhaW4gd2hhdCB0byBwdXQgaW4gdGhlIGxhYmVsLg0KRWFjaCBTRlAgaGFzIGEgc2luZ2xlIGR1
+YWwtY29sb3IgKDMgdGVybWluYWxzKSBMRUQsDQp3aXRoIG9uZSBncGlvIGNvbnRyb2xsaW5nIGVh
+Y2ggY29sb3VyLg0KDQpDb2xvdXJzIGFyZSBzaW1pbGFyIHRvIFJKNDUgY29ubmVjdG9ycyAoeWVs
+bG93LCBncmVlbiksDQphbmQgYXJlIGludGVuZGVkIGZvciB0aGUgc2FtZSBwdXJwb3NlOiBsaW5r
+LCBhY3Rpdml0eS4NCg0K
 
