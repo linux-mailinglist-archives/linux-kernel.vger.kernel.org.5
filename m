@@ -1,211 +1,146 @@
-Return-Path: <linux-kernel+bounces-144021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989D98A40E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34D518A40EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:29:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79D8F1C20E71
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:28:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FC261C20BB1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F0620B34;
-	Sun, 14 Apr 2024 07:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05EB208A7;
+	Sun, 14 Apr 2024 07:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mSn3bFIT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="chUpjni5"
+Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213BE17565;
-	Sun, 14 Apr 2024 07:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B59A1C6A8;
+	Sun, 14 Apr 2024 07:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.26
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713079683; cv=none; b=ekIp91v3s3LBHAb2WunZcXrjH4xV3xGCu+c6oWltHqyO/V7ICXpHU7SFrr9NaxZu6OCYlp3u1+MZsxen3cNlwzBzpYU8k/j+Z5/7qoVjgTf8av2a1ickI3nlBiVyab0RNknvZV/Z1KU4m4IYjvdxuZHAMrCHC9NhD2YLRBTf7LE=
+	t=1713079740; cv=none; b=Y7tQV6CSEh4IhKaYjPdq5pOStOuHg/CnKOaKApSwYhqJM8Qch2UAcsYA/B1WbZo0gvF4mRYBBcefgYdRYGLlRaCHdCOzz8h08vEj9nKT20g1KCMXOE8TBc8hnLj4Zg5iin1E9EsgfxxWDRXiz/mPLU2bgcS3KoX0RA4fXm72tuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713079683; c=relaxed/simple;
-	bh=7UcAoz/SHZJ9dQ0bgxdPwC8jDXsqkfxw4nZlv0SLw5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qbtxOfhZcaHsLD9jYrV2UIUzMCUE9EUXt1oaTpBMKzUZn1goQjZB8pC3+WRqLnjsOZnjz5GFc1H0/VPGjPGUY5yL3HHcR6uudTMBBTuF9XHxapMb6wL1ZZxvPcrwVX7L6g+IAnkXJRbzpuc2X1Q9qW95KlpFG4HTyJ5E5ImdaFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mSn3bFIT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 759F8C072AA;
-	Sun, 14 Apr 2024 07:27:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713079682;
-	bh=7UcAoz/SHZJ9dQ0bgxdPwC8jDXsqkfxw4nZlv0SLw5o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mSn3bFITK7eYlJdTFbScch0ThBeU+CtfVZynIF2TKYAjwpfIWpT9mvprRtl/vRdi+
-	 PWs0IudDlFW6Beno7xjDAiW1ip7pL/FGhEaTkCamfUxQ5eDkHTs4QkNm97zhVJccwv
-	 UxX9+hkJgUV7GSohwVI620vdp0JYtwTWKKysZvcjBk9t6kUNPFg5Eeatgn84u8vivs
-	 7On6vy8KLlD97z5wp8DI0bLXFhxIaSTkHjS//iWFuOPg7CQ+rJyeDYDISTJa6W6AFc
-	 TXNbcHaOhhepqyuh8BUKoPaV89wZMsoGzWH9gtBjUYYSDb1AqF+wsfY3ZeQjYF2dQ5
-	 tmillpYns8epg==
-Date: Sun, 14 Apr 2024 10:26:47 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Sam Ravnborg <sam@ravnborg.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 06/15] mm/execmem, arch: convert simple overrides of
- module_alloc to execmem
-Message-ID: <ZhuFNyaZcfOrp7Cl@kernel.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
- <20240411160051.2093261-7-rppt@kernel.org>
- <20240411205346.GA66667@ravnborg.org>
+	s=arc-20240116; t=1713079740; c=relaxed/simple;
+	bh=zxDtmr9cEt3OU2v2d+Z08dqlldGrpRufndtqdNYKnlk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=LYT17mmCiLd6/xUf2U0wYnBp4rj8Mapv87IC6zQLFEv6h66wZ1/t4X+0a9lcpzj4FKmgwAVNfFAyFxKpenlm0A8/hXjZtaoK4PyQOHSa8NHU1rYOq3Qp/Sgjrf+DfPBV5ufWgMHsQCu5aF+q/fd0xKke0ZX4JySDSsD0TpgZUNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=chUpjni5; arc=none smtp.client-ip=80.12.242.26
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id vuIGrbbZtReGpvuIHrYJio; Sun, 14 Apr 2024 09:28:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1713079735;
+	bh=sg8mnWXtf9g5Ie61S+7ZWPXichK4YHH1B5BtmQzPcp0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=chUpjni5ug14LifuErcTbkLCzLte4FPuoL4pJlu6lKeTCoAD+Y7Z1FTsMVx66miFQ
+	 VXWAxiwsaBWgHXkWWLLoesvYPoweacr23nndBiVD9QMrcc89XDLoGc48HrjCER2AM5
+	 VQnoejJQNVXlacqGEObUyhb1bN7boe8gX1L7uYN7TdipijICiRhlfwVtD/OdE8H88x
+	 Nq/x2Iq/Uzfy4pq9qjAaNDVzkCN8lNj7UsyGjCQKUBJc+PJyB1xmMg8uO7UzTay4+q
+	 WK4KXkbAKEVg1uwFVmvfnht2k44JQMorfe3Cdi4m20HKRQMtYKe2v8oxl8nZxfVqD/
+	 sQjtNZ0w+wFjA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 14 Apr 2024 09:28:55 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <059f414d-096e-4a45-bde5-d984fddf96b6@wanadoo.fr>
+Date: Sun, 14 Apr 2024 09:28:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411205346.GA66667@ravnborg.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/6] mmc: sdhci-brcmstb: Add BCM2712 support
+To: Andrea della Porta <andrea.porta@suse.com>
+References: <cover.1713036964.git.andrea.porta@suse.com>
+ <7a75876def65f6282b7b3ca17ef8008c305d6c32.1713036964.git.andrea.porta@suse.com>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: adrian.hunter@intel.com, alcooperx@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, florian.fainelli@broadcom.com,
+ jonathan@raspberrypi.com, kamal.dasu@broadcom.com,
+ krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+ phil@raspberrypi.com, robh@kernel.org, ulf.hansson@linaro.org
+In-Reply-To: <7a75876def65f6282b7b3ca17ef8008c305d6c32.1713036964.git.andrea.porta@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 11, 2024 at 10:53:46PM +0200, Sam Ravnborg wrote:
-> Hi Mike.
+Le 14/04/2024 à 00:14, Andrea della Porta a écrit :
+> Broadcom BCM2712 SoC has an SDHCI card controller using the SDIO CFG
+> register block present on other STB chips. Add support for BCM2712
+> SD capabilities of this chipset.
+> The silicon is SD Express capable but this driver port does not currently
+> include that feature yet.
+> Based on downstream driver by raspberry foundation maintained kernel.
 > 
-> On Thu, Apr 11, 2024 at 07:00:42PM +0300, Mike Rapoport wrote:
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > Several architectures override module_alloc() only to define address
-> > range for code allocations different than VMALLOC address space.
-> > 
-> > Provide a generic implementation in execmem that uses the parameters for
-> > address space ranges, required alignment and page protections provided
-> > by architectures.
-> > 
-> > The architectures must fill execmem_info structure and implement
-> > execmem_arch_setup() that returns a pointer to that structure. This way the
-> > execmem initialization won't be called from every architecture, but rather
-> > from a central place, namely a core_initcall() in execmem.
-> > 
-> > The execmem provides execmem_alloc() API that wraps __vmalloc_node_range()
-> > with the parameters defined by the architectures.  If an architecture does
-> > not implement execmem_arch_setup(), execmem_alloc() will fall back to
-> > module_alloc().
-> > 
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> 
-> This code snippet could be more readable ...
-> > diff --git a/arch/sparc/kernel/module.c b/arch/sparc/kernel/module.c
-> > index 66c45a2764bc..b70047f944cc 100644
-> > --- a/arch/sparc/kernel/module.c
-> > +++ b/arch/sparc/kernel/module.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/string.h>
-> >  #include <linux/ctype.h>
-> >  #include <linux/mm.h>
-> > +#include <linux/execmem.h>
-> >  
-> >  #include <asm/processor.h>
-> >  #include <asm/spitfire.h>
-> > @@ -21,34 +22,26 @@
-> >  
-> >  #include "entry.h"
-> >  
-> > +static struct execmem_info execmem_info __ro_after_init = {
-> > +	.ranges = {
-> > +		[EXECMEM_DEFAULT] = {
-> >  #ifdef CONFIG_SPARC64
-> > -
-> > -#include <linux/jump_label.h>
-> > -
-> > -static void *module_map(unsigned long size)
-> > -{
-> > -	if (PAGE_ALIGN(size) > MODULES_LEN)
-> > -		return NULL;
-> > -	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
-> > -				GFP_KERNEL, PAGE_KERNEL, 0, NUMA_NO_NODE,
-> > -				__builtin_return_address(0));
-> > -}
-> > +			.start = MODULES_VADDR,
-> > +			.end = MODULES_END,
-> >  #else
-> > -static void *module_map(unsigned long size)
-> > +			.start = VMALLOC_START,
-> > +			.end = VMALLOC_END,
-> > +#endif
-> > +			.alignment = 1,
-> > +		},
-> > +	},
-> > +};
-> > +
-> > +struct execmem_info __init *execmem_arch_setup(void)
-> >  {
-> > -	return vmalloc(size);
-> > -}
-> > -#endif /* CONFIG_SPARC64 */
-> > -
-> > -void *module_alloc(unsigned long size)
-> > -{
-> > -	void *ret;
-> > -
-> > -	ret = module_map(size);
-> > -	if (ret)
-> > -		memset(ret, 0, size);
-> > +	execmem_info.ranges[EXECMEM_DEFAULT].pgprot = PAGE_KERNEL;
-> >  
-> > -	return ret;
-> > +	return &execmem_info;
-> >  }
-> >  
-> >  /* Make generic code ignore STT_REGISTER dummy undefined symbols.  */
-> 
-> ... if the following was added:
-> 
-> diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
-> index 9e85d57ac3f2..62bcafe38b1f 100644
-> --- a/arch/sparc/include/asm/pgtable_32.h
-> +++ b/arch/sparc/include/asm/pgtable_32.h
-> @@ -432,6 +432,8 @@ static inline int io_remap_pfn_range(struct vm_area_struct *vma,
-> 
->  #define VMALLOC_START           _AC(0xfe600000,UL)
->  #define VMALLOC_END             _AC(0xffc00000,UL)
-> +#define MODULES_VADDR           VMALLOC_START
-> +#define MODULES_END             VMALLOC_END
-> 
-> 
-> Then the #ifdef CONFIG_SPARC64 could be dropped and the code would be
-> the same for 32 and 64 bits.
- 
-Yeah, the #ifdef there can be dropped even regardless of execmem.
-I'll add a patch for that.
+> Signed-off-by: Andrea della Porta <andrea.porta-IBi9RG/b67k@public.gmane.org>
+> ---
+>   drivers/mmc/host/sdhci-brcmstb.c | 130 +++++++++++++++++++++++++++++++
+>   1 file changed, 130 insertions(+)
 
-> Just a drive-by comment.
-> 
-> 	Sam
-> 
+..
 
--- 
-Sincerely yours,
-Mike.
+> +static void sdhci_brcmstb_set_power(struct sdhci_host *host, unsigned char mode,
+> +				  unsigned short vdd)
+> +{
+> +	if (!IS_ERR(host->mmc->supply.vmmc)) {
+> +		struct mmc_host *mmc = host->mmc;
+
+This would look nicer if mmc was defined at the beginning of the 
+function and used in the if (!IS_ERR()) test.
+
+> +
+> +		mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
+> +	}
+> +	sdhci_set_power_noreg(host, mode, vdd);
+> +}
+> +
+>   static void sdhci_brcmstb_set_uhs_signaling(struct sdhci_host *host,
+>   					    unsigned int timing)
+>   {
+> @@ -168,6 +233,36 @@ static void sdhci_brcmstb_set_uhs_signaling(struct sdhci_host *host,
+>   	sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
+>   }
+
+..
+
+> @@ -354,6 +468,19 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>   	if (res)
+>   		goto err;
+>   
+> +	priv->pinctrl = devm_pinctrl_get(&pdev->dev);
+> +	if (IS_ERR(priv->pinctrl)) {
+> +			no_pinctrl = true;
+> +	}
+
+Indentation looks to large here.
+No need to { }
+
+> +	priv->pins_default = pinctrl_lookup_state(priv->pinctrl, "default");
+> +	if (IS_ERR(priv->pins_default)) {
+> +			dev_dbg(&pdev->dev, "No pinctrl default state\n");
+> +			no_pinctrl = true;
+
+Indentation looks to large here.
+
+> +	}
+> +
+> +	if (no_pinctrl )
+> +		priv->pinctrl = NULL;
+> +
+>   	/*
+>   	 * Automatic clock gating does not work for SD cards that may
+>   	 * voltage switch so only enable it for non-removable devices.
+
+..
+
 
