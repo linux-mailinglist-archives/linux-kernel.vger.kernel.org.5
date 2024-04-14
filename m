@@ -1,102 +1,164 @@
-Return-Path: <linux-kernel+bounces-144211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 632DB8A4331
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:39:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C6138A4332
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:46:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 947331C208C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:39:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C463281942
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72500134434;
-	Sun, 14 Apr 2024 14:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F0F134433;
+	Sun, 14 Apr 2024 14:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="U6WKyjZy"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIkXn/kZ"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E2E12D771;
-	Sun, 14 Apr 2024 14:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD9D2421D
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 14:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713105569; cv=none; b=idoLk+YHPfHKC0RdhjVIiag0sTIU699bpnlTYIslVV4gq14TX+Z8xJlo73KE4CD0PnY4CsoAEm1aAZ7b5nCq/jepu5zNQOfBNbIwV5HcAX1MhiZWq5Vx3u2VtWJ7CaA2d6wWchHXYqjHfQaU0i0GG3sNYtj3e0Qi4Hm7zoR2Xyk=
+	t=1713105992; cv=none; b=IijmG1bfAnka5ejDTF+/wpjXKGVZ53279oO6c3rBzxD/ruUmFFc17+jk/tO8PZ/4E3u1Y+4pJIrx6+IogWdpADSgg38k5kVATne/Fh9wShknQ/f4c7v7l9LTvEsICIMLQwrvQs7kz8hOblTHhD9LjMNdMn6GKlnGq6XKiTpfeD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713105569; c=relaxed/simple;
-	bh=QnrMKwGOYsOZJ210O+bWTxyLQa0cpJ6kdUhnlA2EYfY=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=NM4FYOwpy/F6jmZBzdz8t7vmjdjUd/E3J55uimIILmt7HA6oyGjhboBoOL/jXVErh2GFnclfXPAsITESm6IWWqhl3pNozLtFUILMxl52VQ9yf39Q+DJ+Kd1tyeo7RU12JbDYolDLDcCsR7ufIPUSuBLxZRiYnW8NOsz/oVrF5wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=U6WKyjZy; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713105566;
-	bh=QnrMKwGOYsOZJ210O+bWTxyLQa0cpJ6kdUhnlA2EYfY=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=U6WKyjZyqs+5BMU6c8fF9j2xs3t/zVe7fKj95t0PpCdXG/b6OQxdkECLeL0hWpfl7
-	 P1GSsaERrMuMe8Kzzj3v7hg4LBRQEqP83gADAkJ1SQYZEFwiXPGI8hJaiU1yA1tVHC
-	 uGfxsBLiKD+qrkteSwGyns7SJEOhCybQJ/HscUb/rtg+tbg4OvUDvZ5qM/K1Z2LlU2
-	 FOpcSZaQVoa6H4EVrivon+YK7KV6WembjojYrZSwnAfSByPdsNnfXfBLREAobwZt+b
-	 izA6AnZDE+mOC69/trGjFKd3vo3rMwrfjJmcjGSwyZnjki+6n30xSaTfiunn1Biioq
-	 USOyaXY5vdedA==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8D4F237809CE;
-	Sun, 14 Apr 2024 14:39:23 +0000 (UTC)
-Message-ID: <b7c437f5-ac70-4611-908d-b665d8e02679@collabora.com>
-Date: Sun, 14 Apr 2024 19:39:58 +0500
+	s=arc-20240116; t=1713105992; c=relaxed/simple;
+	bh=Pnm5uzyLFqokE6i2gRypdZYPe78cFXqpMW9vYEyg+PI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=br7LeeZToj+UYCFfbFEh1TUFNFYnsEXBkrgTLdyn2EC36041Fu/xgt+yKdO4/zBOXWxEeizz1W1ioLsF1ZbkrH8iIqBeTpqUkLx2n0xPTp2XOi28qjtx55CckuUu1syGJ6C4l1lAmoqHMp/FpDbRGOU5pG5kgm4QyhB7aroPkZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YIkXn/kZ; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2a6fa7773d3so1323132a91.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 07:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713105990; x=1713710790; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B3tViLkTicsEqeEJWOwiTN/e7BHPxS/OI+grJULG3HM=;
+        b=YIkXn/kZOlXy9oHExfq7oHDStZmThmqdiqNOSLidoxjgHT5DRmrGZjut2w6U41yP2I
+         h3OgSvPE7TYHoX2DAlNu6Ioc8P3Ll7xWBf3bSnwuje/inCCJ1y8ivmyE0Szss22SP7H+
+         heKa3QxqJldWGhncPesHeiyLYjywkXQvXiZRSkQdwr+Y9rA4ir4FVMsEEsqIO+kxnG/2
+         hIcXS4GDG9Yr2eZ2Z2tMrTRdEx4cyk9wMjKDkcIojPJfGynUEVBbA+TKWAVodkmwj8SW
+         QCzOnJXUp1lFuK4EY/uLWVL5q0+8FqdhMnqZTk83SRgLzFHhXTVc30I0dk/napKlEasg
+         Beeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713105990; x=1713710790;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B3tViLkTicsEqeEJWOwiTN/e7BHPxS/OI+grJULG3HM=;
+        b=W0uHYLrtsbAx9Ai1pTSWKVsG+7gw8oiYeeU6CUlrSojnhAU2SO88w7Mx3K8RIegacW
+         B+6mRXUwykPAQHH5Tt09NPnDoapFIsW001XVM/Ha6Wr94rJbLxzgjj62zSXryegAMqK7
+         tRbuc78hHsHqspAYP0HinxtzH0UusZjV+jlzNB9XB7tr6zOrVsVQDFZa1Dl7AYERLWAD
+         152iag2Q63+K4wGBHf5SjshALAC463RRwiVpSuRdZEel30qZu5EnRnS88nPm+mKXKEE7
+         h6mL/zmMxvNbmz7c13P9nTh+bb1iqsi9RkSATeiDruvg3qolbVsWOSbX7xszIBW3Ixyg
+         bQ5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUm7IkBUFouEuAxEIRzmxzgwmXa6VrCBnLdb8kkyA7aDftyiiyaVJRwh+ojNnH3FRLu2s1cPRxpae14ZaKWC1Gih9s3p/9iT0o/ZXbK
+X-Gm-Message-State: AOJu0YxOrXPcuVARrFvosocWu6n53V8+FKaJ/vpJHF1rxrsYSiaVYjZk
+	8zyYALSxtgWjC8p7M2V+xZgV812yw6P4jK2IZIGkn7ee4VV0adzj
+X-Google-Smtp-Source: AGHT+IFZq/s/lmveYTlCBXK+H1HNANw04Kjky+33wlLezYN9D6uBCi2pfeFOVwDbLR348xK5M/fbwQ==
+X-Received: by 2002:a17:902:eb81:b0:1e4:7cc5:2292 with SMTP id q1-20020a170902eb8100b001e47cc52292mr8096811plg.49.1713105990200;
+        Sun, 14 Apr 2024 07:46:30 -0700 (PDT)
+Received: from localhost.localdomain ([2401:4900:1cb8:5ab4:8eca:a8e7:b24c:7514])
+        by smtp.gmail.com with ESMTPSA id d15-20020a170902654f00b001e41ffb9de7sm6196325pln.28.2024.04.14.07.46.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Apr 2024 07:46:29 -0700 (PDT)
+From: Sumadhura Kalyan <opensourcecond@gmail.com>
+To: florian.fainelli@broadcom.com,
+	bcm-kernel-feedback-list@broadcom.com,
+	gregkh@linuxfoundation.org
+Cc: linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	sumadhura kalyan <opensourcecond@gmail.com>
+Subject: [PATCH V3] staging: vc04_services: Re-align function parameters
+Date: Sun, 14 Apr 2024 20:16:14 +0530
+Message-Id: <20240414144614.125672-1-opensourcecond@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Kevin Tian <kevin.tian@intel.com>, Shuah Khan <shuah@kernel.org>,
- kernel@collabora.com, iommu@lists.linux.dev,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240325090048.1423908-1-usama.anjum@collabora.com>
- <45b4d209-675a-4b42-b62c-6644bafa36c0@collabora.com>
- <20240405001020.GB5792@ziepe.ca>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240405001020.GB5792@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/5/24 5:10 AM, Jason Gunthorpe wrote:
-> On Mon, Mar 25, 2024 at 02:11:41PM +0500, Muhammad Usama Anjum wrote:
->> On 3/25/24 2:00 PM, Muhammad Usama Anjum wrote:
->>> Add FAULT_INJECTION_DEBUG_FS and FAILSLAB configurations which are
->>> needed by iommufd_fail_nth test.
->>>
->>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>> ---
->>> While building and running these tests on x86, defconfig had these
->>> configs enabled. But ARM64's defconfig doesn't enable these configs.
->>> Hence the config options are being added explicitly in this patch.
->> Please disregard this extra comment. Overall this patch is needed to enable
->> these config options of x86 and ARM both.
-> 
-> I picked this and the other patch up, thanks
-Not sure why but I'm unable to find this patch in next and in your tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd.git/log/?h=for-next
+From: sumadhura kalyan <opensourcecond@gmail.com>
 
-Maybe this patch was missed?
+Checkpatch complains that:
 
+CHECK: Lines should not end with a '('
++typedef void (*vchiq_mmal_buffer_cb)(
 
-> 
-> Jason
-> 
+Re-align the function parameters to make checkpatch happy.
 
+Signed-off-by: Sumadhura Kalyan <opensourcecond@gmail.com>
+---
+
+v1 -> v2: Repharse the subject line.
+
+ .../vc04_services/vchiq-mmal/mmal-vchiq.h     | 29 +++++++------------
+ 1 file changed, 11 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
+index 09f030919d4e..98909fde978e 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
+@@ -42,8 +42,7 @@ struct vchiq_mmal_port_buffer {
+ 
+ struct vchiq_mmal_port;
+ 
+-typedef void (*vchiq_mmal_buffer_cb)(
+-		struct vchiq_mmal_instance  *instance,
++typedef void (*vchiq_mmal_buffer_cb)(struct vchiq_mmal_instance  *instance,
+ 		struct vchiq_mmal_port *port,
+ 		int status, struct mmal_buffer *buffer);
+ 
+@@ -101,31 +100,25 @@ int vchiq_mmal_finalise(struct vchiq_mmal_instance *instance);
+ /* Initialise a mmal component and its ports
+  *
+  */
+-int vchiq_mmal_component_init(
+-		struct vchiq_mmal_instance *instance,
+-		const char *name,
+-		struct vchiq_mmal_component **component_out);
++int vchiq_mmal_component_init(struct vchiq_mmal_instance *instance,
++			      const char *name, struct vchiq_mmal_component **component_out);
+ 
+-int vchiq_mmal_component_finalise(
+-		struct vchiq_mmal_instance *instance,
+-		struct vchiq_mmal_component *component);
++int vchiq_mmal_component_finalise(struct vchiq_mmal_instance *instance,
++				  struct vchiq_mmal_component *component);
+ 
+-int vchiq_mmal_component_enable(
+-		struct vchiq_mmal_instance *instance,
+-		struct vchiq_mmal_component *component);
++int vchiq_mmal_component_enable(struct vchiq_mmal_instance *instance,
++				struct vchiq_mmal_component *component);
+ 
+-int vchiq_mmal_component_disable(
+-		struct vchiq_mmal_instance *instance,
+-		struct vchiq_mmal_component *component);
++int vchiq_mmal_component_disable(struct vchiq_mmal_instance *instance,
++				 struct vchiq_mmal_component *component);
+ 
+ /* enable a mmal port
+  *
+  * enables a port and if a buffer callback provided enque buffer
+  * headers as appropriate for the port.
+  */
+-int vchiq_mmal_port_enable(
+-		struct vchiq_mmal_instance *instance,
+-		struct vchiq_mmal_port *port,
++int vchiq_mmal_port_enable(struct vchiq_mmal_instance *instance,
++			   struct vchiq_mmal_port *port,
+ 		vchiq_mmal_buffer_cb buffer_cb);
+ 
+ /* disable a port
 -- 
-BR,
-Muhammad Usama Anjum
+2.25.1
+
 
