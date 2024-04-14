@@ -1,122 +1,86 @@
-Return-Path: <linux-kernel+bounces-143955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00CE28A4007
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 05:41:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 070898A4009
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:02:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86C13B2106B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 03:41:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A27E281C83
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 04:02:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A912F17740;
-	Sun, 14 Apr 2024 03:41:34 +0000 (UTC)
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939CB175BE;
+	Sun, 14 Apr 2024 04:02:05 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5D428E8;
-	Sun, 14 Apr 2024 03:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDC03FF4
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 04:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713066094; cv=none; b=oAQDTLw5Fn7uKwHIdtisZCt5t8UG+zxGpbWoCMWyq+KlRn/UwmWjzh/zrDm2JVGw3T1PbETSqDcKPO4GLBgZ6YJGBc3MGFkjOjezh+UKByR8wbuq+WlMd3rwzkIxcMjHTExBWe569D98lyR2au9D1NJDrMGmg4SBtr1OEoKuQ7E=
+	t=1713067325; cv=none; b=uXRLbKGlZaP2wmtl3KX8DCrBiey1iuySlkRjlfWqLNnC1ElpFHVPnKJoShdh2BdxD98PJWjHzPtpZGq1WF7PAqfBiWHv6dVCxnHMsH+qr9LUfLq01FQmMnxydE7Glv2Z5TW4kkJ4r2wrx7qpUrkqqwVm1h8lHUtrnPLhjFP5j3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713066094; c=relaxed/simple;
-	bh=XcqDE9wDOopQ32UWvS4Gc8ZFheu9sU8EeMdFHOPHjDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=itUl8MqqRrCchIimVs9KzZfZSoZ5nb+cqa1AuR76dz5//sPPTXQiqwum3SFcgYc4NxiqO0yKobBP7UXqcg02sEdQQmGA9NuFrToEyxPcbGNFwrWFunNjK6XU/s/qUg22BbzQQSxpfbIy7rznhcuhhudwUTKjeV1RbvVZ6kx+/UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
-Received: from local
-	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-	 (Exim 4.96.2)
-	(envelope-from <daniel@makrotopia.org>)
-	id 1rvqk3-0001Ep-2T;
-	Sun, 14 Apr 2024 03:41:19 +0000
-Date: Sun, 14 Apr 2024 04:41:16 +0100
-From: Daniel Golle <daniel@makrotopia.org>
-To: arinc.unal@arinc9.com
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Holger Stadali <hs@giax.de>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net 2/2] net: dsa: mt7530: fix port mirroring for MT7988
- SoC switch
-Message-ID: <ZhtQXFsqS_y6_LHC@makrotopia.org>
-References: <20240413-b4-for-net-mt7530-fix-mirroring-to-local-port-and-mt7988-v1-0-476deff8cc06@arinc9.com>
- <20240413-b4-for-net-mt7530-fix-mirroring-to-local-port-and-mt7988-v1-2-476deff8cc06@arinc9.com>
+	s=arc-20240116; t=1713067325; c=relaxed/simple;
+	bh=cLiDg5X/fCmSIJ1UdPqS7CwsOVyL1jOQRhab/XFk6zk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=JznPbg1nUDPiBt9SXFscq9dn3D5gh5vjhaZNJu1J93n0Yyt5VMc0IPvMYsi37IOSrukplE+YZtMcA+mgzte3Tz7/KJpWpD3Tz+60x46WqRhrH+EHcmh6pEX+UczgThbK4P0VJ1mknt3kgwxdKyRBjXe1wu/dFFGzBpH9P29tnB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d5e2b1cfabso225547339f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 21:02:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713067323; x=1713672123;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wn4d26eFrYk5AFnRTclNewtTfJfSsW6ayzUDan9jgB8=;
+        b=E7ueT/tLqalI+8fhOKodp18WkHcGZUdC+mqHqhUK1F3si/aiDRaEQyDHgBjiMGuUtM
+         u3+h/YgRZ1E9K60JI9xMzrTGqXy6QHxQ7VlvNsrW9ckyO1EoghprluuGAM9+OZrMgoqe
+         iaBVpGwY+TIlbw9PZD/n/6fa0KBIlQCkSbcBNPwv5WLm0YbDAD2n/IB0Qw2oHmwZb+eF
+         KbxJv5K5knbeWUCe/K2hb2Eo8w86JsR9/aSe+uXH6lw3wPuUVuoF3eZ8fp40p1pg9ufU
+         rE8uTqQc9hacH/OjSvQ7LaX/v1nGS2XYc444goZx60KO65+dGSCf92tCFTgp+K2sM5GH
+         RB5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXbA6+5eJXBbcR/+1w92uTo4jfRBHvk38M4SxJ8Z2nIHD8ufY/K9nOPxffIx55zxYmIy+ajp8dBp3Ky4n/r5BL3cOlbVj3sUBcUuGcE
+X-Gm-Message-State: AOJu0YyarXMRkC5ZHq1niTaH0Zf9XE/j+nlWmpJD9ftZFdLDdAUaWaH8
+	MjKuYaT1VJTk9CoknlE5nZ+RnZXLrFuhyLFjdAvhG1KP9fy2edEonf48a1u9q4o8gjz2y4FJywp
+	TW/AWrOLC37r9I7Qlosyl4WXPsPev2hX6Wx1hpdp8Oj8kcXSDuRlB5sA=
+X-Google-Smtp-Source: AGHT+IFWaX/CEDVujWHI+IQ371zVQH/FUn+j8sGr4THgUPRvt/FkljSDPb17H2O3ilxpFMLd19/dOK6qXTD/wjuVzw6Xswv51YdC
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240413-b4-for-net-mt7530-fix-mirroring-to-local-port-and-mt7988-v1-2-476deff8cc06@arinc9.com>
+X-Received: by 2002:a05:6602:3fc6:b0:7d6:27c9:b815 with SMTP id
+ fc6-20020a0566023fc600b007d627c9b815mr235398iob.4.1713067323195; Sat, 13 Apr
+ 2024 21:02:03 -0700 (PDT)
+Date: Sat, 13 Apr 2024 21:02:03 -0700
+In-Reply-To: <20240414033119.2079-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000046a1890616069166@google.com>
+Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in __vma_reservation_common
+From: syzbot <syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Apr 13, 2024 at 04:01:40PM +0300, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> The "MT7988A Wi-Fi 7 Generation Router Platform: Datasheet (Open Version)
-> v0.1" document shows bits 16 to 18 as the MIRROR_PORT field of the CPU
-> forward control register. Currently, the MT7530 DSA subdriver configures
-> bits 0 to 2 of the CPU forward control register which breaks the port
-> mirroring feature for the MT7988 SoC switch.
-> 
-> Fix this by using the MT7531_MIRROR_PORT_GET() and MT7531_MIRROR_PORT_SET()
-> macros which utilise the correct bits.
-> 
-> Fixes: 110c18bfed41 ("net: dsa: mt7530: introduce driver for MT7988 built-in switch")
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+Hello,
 
-Acked-by: Daniel Golle <daniel@makrotopia.org>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> ---
->  drivers/net/dsa/mt7530.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-> index b84e1845fa02..8090390edaf9 100644
-> --- a/drivers/net/dsa/mt7530.c
-> +++ b/drivers/net/dsa/mt7530.c
-> @@ -1883,14 +1883,16 @@ mt7530_port_vlan_del(struct dsa_switch *ds, int port,
->  
->  static int mt753x_mirror_port_get(unsigned int id, u32 val)
->  {
-> -	return (id == ID_MT7531) ? MT7531_MIRROR_PORT_GET(val) :
-> -				   MIRROR_PORT(val);
-> +	return (id == ID_MT7531 || id == ID_MT7988) ?
-> +		       MT7531_MIRROR_PORT_GET(val) :
-> +		       MIRROR_PORT(val);
->  }
->  
->  static int mt753x_mirror_port_set(unsigned int id, u32 val)
->  {
-> -	return (id == ID_MT7531) ? MT7531_MIRROR_PORT_SET(val) :
-> -				   MIRROR_PORT(val);
-> +	return (id == ID_MT7531 || id == ID_MT7988) ?
-> +		       MT7531_MIRROR_PORT_SET(val) :
-> +		       MIRROR_PORT(val);
->  }
->  
->  static int mt753x_port_mirror_add(struct dsa_switch *ds, int port,
-> 
-> -- 
-> 2.40.1
-> 
-> 
+Reported-and-tested-by: syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         9ed46da1 Add linux-next specific files for 20240412
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=17d54961180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7ea0abc478c49859
+dashboard link: https://syzkaller.appspot.com/bug?extid=ad1b592fc4483655438b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=118851eb180000
+
+Note: testing is done by a robot and is best-effort only.
 
