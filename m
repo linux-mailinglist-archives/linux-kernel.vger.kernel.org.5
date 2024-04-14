@@ -1,192 +1,144 @@
-Return-Path: <linux-kernel+bounces-144186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C9B38A42DA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:09:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27E9C8A42D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:09:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 863B41C20899
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:09:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8609B211CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8A156471;
-	Sun, 14 Apr 2024 14:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D324A54BF0;
+	Sun, 14 Apr 2024 14:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kct0spDp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KKtfqaGX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D872524BA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1682469946;
 	Sun, 14 Apr 2024 14:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713103696; cv=none; b=bIgCCgwk0kmCrjn2h4r2dmLHFJ5NlqGmC4IF3z/IfQWYOgc0mN5DDfQEtKuxP3MSp4NzCyAVWLjaZeiwOC6gMc9mVrfRSExf0igQntl5Je1DZ8wS4/iXHFJqpjeO2vEEursMp13St8I4u4BgjUwVYp0oL0ngcDrB6i/s8ZLSOvw=
+	t=1713103696; cv=none; b=Ed3ZYn8eCHisgZPO/F+4AQc6siuXyZz52YUhmmZ3nO5LIW1G/sBOBQOZknTpixc5ZNdxBW5wm3mnxPjXP5THyL0rtvIcuhoCPDTlz0wrltqrSyf0moXvvzUCh6CqPBoSc7+3SwZywl5S33QAQK2ssnpdxpuyn4fO5YA3pD1qzZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713103696; c=relaxed/simple;
-	bh=P6C2uaZWdzkaxUS/4whafeWniP5J9sza+c4EUKItEQ4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NS1MSkt2uAhl6OGPsiRPKDIMATtm81xYIoC/qbyNR0gZEVQsR9BzQQPiUQimBsfncYz+1Q8g5CL1kp7kglybhM45a6FPwTA1g0SIERAe/fPYdNmR+INoVjAHjmp9UhHxbgVjLVIF9OxtAgxhP5lFFZr7rbU9d51eXVp6sgA5k2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kct0spDp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AA64C072AA;
-	Sun, 14 Apr 2024 14:08:12 +0000 (UTC)
+	bh=nJphaxyGk5suB7H36OjqlLYhSoBdMx7ElHPwRl517d0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=baWpR7lgWrR5OFFBG90TiiS/o0YRK0oLOdzES6obopDUNIOgwKwVgmUfL1OH1TUF2IKevFTI4UGTvnckmq8GeNcIDSV6nkttvQyGuHMWyYMb+dHUSn6qkLI1AXaSINjg/9ySQrShvZZZoDTSbU2eb44uhCw0lmYkSyrVK5od08c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KKtfqaGX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7932C2BD11;
+	Sun, 14 Apr 2024 14:08:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1713103695;
-	bh=P6C2uaZWdzkaxUS/4whafeWniP5J9sza+c4EUKItEQ4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=kct0spDpdnU+Oef1efVYeGuX1xs7cslj0SveDcqa/6NQjCikhXkAI5Vpg/Wf5NvFR
-	 E3IY6hlSiEcE88JrPAH1K81YnpFWBYcuxb80gK1oymF8ME3pqnUX88g8DcRDmEaTX+
-	 wQ+Fx3q8jIBmFhM5/bUE/UYSnkWBWcraOTaezFBHZ1kfHddWa3M9mKHw16QQhmQ+jl
-	 Wl0o5XcYxt7W06fqiBp/GoKzyk/YvMIjIl3cRlvVCtbob2edABcDlO7qWZglqhRTP8
-	 SWcn/juxtG3VcXJRvbZcByeliZX+NR0knteaKUL1jd7YE69HV7Bgj2dMEfYlO5uBm9
-	 H+jpOmx3BdZ+w==
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Sun, 14 Apr 2024 16:07:35 +0200
-Subject: [PATCH v2 5/5] mmc: sdhci-s3c: Choose sdhci_ops based on variant
+	bh=nJphaxyGk5suB7H36OjqlLYhSoBdMx7ElHPwRl517d0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=KKtfqaGXNf6ctHlU9UkBITIAtIiMUXT6NFIiTGdm3+tyNS5BojD78UO4E3Bs+JzRk
+	 hUS6xHiWSaYJRGhHykfOeuGRQf8Ng4wSSrKTPIQ1KP4E1DAy3dnD/NHTGo1/dtM2Ev
+	 Q9VeGbig0+8dF17EoYKo2eg8Jjq3OyD2gLyAOXNR8pusfRt3tJhtHa4tZDJqYV4DAy
+	 Oc+2UvT+7j7NVGyyRAHUVoIgDp3DqoN2Cgq5JsBrYMTyfsjTCc2J6M7J5/gqRVagc9
+	 MJar/oNL/+BYrBvsVgS/30FQi6r1T7ghGUy466yxWtmcrYKDBUb9cWtrLJPNKdyo+G
+	 JkfZw2ubteobw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Andreas Dilger <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>
+Cc: Nam Cao <namcao@linutronix.de>, linux-fsdevel
+ <linux-fsdevel@vger.kernel.org>, Christian Brauner <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, linux-riscv@lists.infradead.org, Theodore
+ Ts'o <tytso@mit.edu>, Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Conor Dooley <conor@kernel.org>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+In-Reply-To: <887E261B-3C76-4CD9-867B-5D087051D004@dilger.ca>
+References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+ <20240413164318.7260c5ef@namcao>
+ <22E65CA5-A2C0-44A3-AB01-7514916A18FC@dilger.ca>
+ <20240414021555.GQ2118490@ZenIV>
+ <887E261B-3C76-4CD9-867B-5D087051D004@dilger.ca>
+Date: Sun, 14 Apr 2024 16:08:11 +0200
+Message-ID: <87v84kujec.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240414-mmc-const-sdhci-ops-v2-5-262f81faadac@kernel.org>
-References: <20240414-mmc-const-sdhci-ops-v2-0-262f81faadac@kernel.org>
-In-Reply-To: <20240414-mmc-const-sdhci-ops-v2-0-262f81faadac@kernel.org>
-To: Adrian Hunter <adrian.hunter@intel.com>, 
- Angelo Dureghello <adureghello@baylibre.com>, 
- Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Orson Zhai <orsonzhai@gmail.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, 
- Chunyan Zhang <zhang.lyra@gmail.com>, Ben Dooks <ben-linux@fluff.org>, 
- Jaehoon Chung <jh80.chung@samsung.com>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzk@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3968; i=krzk@kernel.org;
- h=from:subject:message-id; bh=P6C2uaZWdzkaxUS/4whafeWniP5J9sza+c4EUKItEQ4=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmG+M3tp0WY1HbY6u/BNP3jUZnARS+VLivgrLfQ
- xZoFJE26eaJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhvjNwAKCRDBN2bmhouD
- 1+K3D/9tSh2DQGQf+DmCy04xDvumNPYmDIpDPVyW4wfJgw7T9zk5EIXLCiUwH9ANA2lbc/6lyOr
- V935AQHhWr/vTg0YcxydmTIlMPvFbDPKVfDor5P5RBGgqfFVJkUkAUYzISrEs/XtJ4aWIQPltnq
- 8NhPi4xuuQhBds5/EPgJhmi3gms0Rn/eGLNDYveal+Khc+AEStzrRT+/GUhe/WqFhkVa6IwfUE5
- lUVPOb0a137J9ZkwdVj73AklRdpqoLd2HvpPq9WOhH/GPxdcdy8mjI8v9i6UtMuokzJiodl0q9I
- 0/uj+V7prdUhUirtynRhczYanYjkJpAjSpOPp0wXJ/xach5T9CvVtu8xFgdETC+R119di1ErMCR
- +6rgliO5WZIfSsJhs91HSsXAHX5CXx4JhGbKkschwKTse5RR1/t9d9dDfXNyWAgcijxGhL3GS4P
- ORDf4QUXEM40foi5F5L8YU2YXIQnUPmHDMXdlAeP/I03kbc2OXS0om+wC06SgkU70I9Fi3IXSKg
- QpOcYzaJ/29d4wTavSK9NoYGm7Yg5dDHpezgZa32mgqOeqONaKCxcYben8zrrGL68aw7Ez7jGq2
- UkYlJLcWz9wIMlvfD94A+D/X/r8E1m/i+DV6sw4JbzEXrJnT8fgo3vAfMYf2ytEuPSwXwDQIBr/
- FOP/AfYmPt+mF4Q==
-X-Developer-Key: i=krzk@kernel.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The difference between old S3C64xx and newer Exynos4 SDHCI controller
-variants is in clock handling (the "no_divider" field in drvdata).
-Choose the proper sdhci_ops based on the variant instead of patching
-ops in probe, if Exynos4 is used.
+Andreas Dilger <adilger@dilger.ca> writes:
 
-This allows making struct sdhci_ops const for code safety and probably
-opens further options in the future, as the dynamic pointer ops table is
-not anymore that dynamic.
+> On Apr 13, 2024, at 8:15 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
+>>=20
+>> On Sat, Apr 13, 2024 at 07:46:03PM -0600, Andreas Dilger wrote:
+>>=20
+>>> As to whether the 0xfffff000 address itself is valid for riscv32 is
+>>> outside my realm, but given that RAM is cheap it doesn't seem unlikely
+>>> to have 4GB+ of RAM and want to use it all.  The riscv32 might consider
+>>> reserving this page address from allocation to avoid similar issues in
+>>> other parts of the code, as is done with the NULL/0 page address.
+>>=20
+>> Not a chance.  *Any* page mapped there is a serious bug on any 32bit
+>> box.  Recall what ERR_PTR() is...
+>>=20
+>> On any architecture the virtual addresses in range (unsigned long)-512..
+>> (unsigned long)-1 must never resolve to valid kernel objects.
+>> In other words, any kind of wraparound here is asking for an oops on
+>> attempts to access the elements of buffer - kernel dereference of
+>> (char *)0xfffff000 on a 32bit box is already a bug.
+>>=20
+>> It might be getting an invalid pointer, but arithmetical overflows
+>> are irrelevant.
+>
+> The original bug report stated that search_buf =3D 0xfffff000 on entry,
+> and I'd quoted that at the start of my email:
+>
+> On Apr 12, 2024, at 8:57 AM, Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> wro=
+te:
+>> What I see in ext4_search_dir() is that search_buf is 0xfffff000, and at
+>> some point the address wraps to zero, and boom. I doubt that 0xfffff000
+>> is a sane address.
+>
+> Now that you mention ERR_PTR() it definitely makes sense that this last
+> page HAS to be excluded.
+>
+> So some other bug is passing the bad pointer to this code before this
+> error, or the arch is not correctly excluding this page from allocation.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/mmc/host/sdhci-s3c.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+Yeah, something is off for sure.
 
-diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
-index 6493b0edba34..a71d56c7031f 100644
---- a/drivers/mmc/host/sdhci-s3c.c
-+++ b/drivers/mmc/host/sdhci-s3c.c
-@@ -130,14 +130,16 @@ struct sdhci_s3c {
-  * struct sdhci_s3c_drv_data - S3C SDHCI platform specific driver data
-  * @sdhci_quirks: sdhci host specific quirks.
-  * @no_divider: no or non-standard internal clock divider.
-+ * @ops: sdhci_ops to use for this variant
-  *
-  * Specifies platform specific configuration of sdhci controller.
-  * Note: A structure for driver specific platform data is used for future
-  * expansion of its usage.
-  */
- struct sdhci_s3c_drv_data {
--	unsigned int	sdhci_quirks;
--	bool		no_divider;
-+	unsigned int		sdhci_quirks;
-+	bool			no_divider;
-+	const struct sdhci_ops	*ops;
- };
- 
- static inline struct sdhci_s3c *to_s3c(struct sdhci_host *host)
-@@ -412,7 +414,7 @@ static void sdhci_cmu_set_clock(struct sdhci_host *host, unsigned int clock)
- 	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
- }
- 
--static struct sdhci_ops sdhci_s3c_ops = {
-+static const struct sdhci_ops sdhci_s3c_ops_s3c6410 = {
- 	.get_max_clock		= sdhci_s3c_get_max_clk,
- 	.set_clock		= sdhci_s3c_set_clock,
- 	.get_min_clock		= sdhci_s3c_get_min_clock,
-@@ -421,6 +423,15 @@ static struct sdhci_ops sdhci_s3c_ops = {
- 	.set_uhs_signaling	= sdhci_set_uhs_signaling,
- };
- 
-+static const struct sdhci_ops sdhci_s3c_ops_exynos4 __maybe_unused = {
-+	.get_max_clock		= sdhci_cmu_get_max_clock,
-+	.set_clock		= sdhci_cmu_set_clock,
-+	.get_min_clock		= sdhci_cmu_get_min_clock,
-+	.set_bus_width		= sdhci_set_bus_width,
-+	.reset			= sdhci_reset,
-+	.set_uhs_signaling	= sdhci_set_uhs_signaling,
-+};
-+
- #ifdef CONFIG_OF
- static int sdhci_s3c_parse_dt(struct device *dev,
- 		struct sdhci_host *host, struct s3c_sdhci_platdata *pdata)
-@@ -560,7 +571,7 @@ static int sdhci_s3c_probe(struct platform_device *pdev)
- 		pdata->cfg_gpio(pdev, pdata->max_width);
- 
- 	host->hw_name = "samsung-hsmmc";
--	host->ops = &sdhci_s3c_ops;
-+	host->ops = &sdhci_s3c_ops_s3c6410;
- 	host->quirks = 0;
- 	host->quirks2 = 0;
- 	host->irq = irq;
-@@ -570,6 +581,7 @@ static int sdhci_s3c_probe(struct platform_device *pdev)
- 	host->quirks |= SDHCI_QUIRK_NO_HISPD_BIT;
- 	if (drv_data) {
- 		host->quirks |= drv_data->sdhci_quirks;
-+		host->ops = drv_data->ops;
- 		sc->no_divider = drv_data->no_divider;
- 	}
- 
-@@ -617,16 +629,6 @@ static int sdhci_s3c_probe(struct platform_device *pdev)
- 	/* HSMMC on Samsung SoCs uses SDCLK as timeout clock */
- 	host->quirks |= SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK;
- 
--	/*
--	 * If controller does not have internal clock divider,
--	 * we can use overriding functions instead of default.
--	 */
--	if (sc->no_divider) {
--		sdhci_s3c_ops.set_clock = sdhci_cmu_set_clock;
--		sdhci_s3c_ops.get_min_clock = sdhci_cmu_get_min_clock;
--		sdhci_s3c_ops.get_max_clock = sdhci_cmu_get_max_clock;
--	}
--
- 	/* It supports additional host capabilities if needed */
- 	if (pdata->host_caps)
- 		host->mmc->caps |= pdata->host_caps;
-@@ -758,6 +760,7 @@ MODULE_DEVICE_TABLE(platform, sdhci_s3c_driver_ids);
- #ifdef CONFIG_OF
- static const struct sdhci_s3c_drv_data exynos4_sdhci_drv_data = {
- 	.no_divider = true,
-+	.ops = &sdhci_s3c_ops_exynos4,
- };
- 
- static const struct of_device_id sdhci_s3c_dt_match[] = {
+(FWIW, I manage to hit this for Linus' master as well.)
 
--- 
-2.34.1
+I added a print (close to trace_mm_filemap_add_to_page_cache()), and for
+this BT:
 
+  [<c01e8b34>] __filemap_add_folio+0x322/0x508
+  [<c01e8d6e>] filemap_add_folio+0x54/0xce
+  [<c01ea076>] __filemap_get_folio+0x156/0x2aa
+  [<c02df346>] __getblk_slow+0xcc/0x302
+  [<c02df5f2>] bdev_getblk+0x76/0x7a
+  [<c03519da>] ext4_getblk+0xbc/0x2c4
+  [<c0351cc2>] ext4_bread_batch+0x56/0x186
+  [<c036bcaa>] __ext4_find_entry+0x156/0x578
+  [<c036c152>] ext4_lookup+0x86/0x1f4
+  [<c02a3252>] __lookup_slow+0x8e/0x142
+  [<c02a6d70>] walk_component+0x104/0x174
+  [<c02a793c>] path_lookupat+0x78/0x182
+  [<c02a8c7c>] filename_lookup+0x96/0x158
+  [<c02a8d76>] kern_path+0x38/0x56
+  [<c0c1cb7a>] init_mount+0x5c/0xac
+  [<c0c2ba4c>] devtmpfs_mount+0x44/0x7a
+  [<c0c01cce>] prepare_namespace+0x226/0x27c
+  [<c0c011c6>] kernel_init_freeable+0x286/0x2a8
+  [<c0b97ab8>] kernel_init+0x2a/0x156
+  [<c0ba22ca>] ret_from_fork+0xe/0x20
+
+I get a folio where folio_address(folio) =3D=3D 0xfffff000 (which is
+broken).
+
+Need to go into the weeds here...
+
+
+Bj=C3=B6rn
 
