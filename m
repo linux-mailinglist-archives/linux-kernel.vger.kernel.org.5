@@ -1,162 +1,109 @@
-Return-Path: <linux-kernel+bounces-144292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A308A443B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B27818A443A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:00:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 261A0B22292
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:00:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33E32B22183
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED5B7135A4D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F601135412;
 	Sun, 14 Apr 2024 17:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="l2iWlvqw"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="b23DnHf/"
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645B856771;
-	Sun, 14 Apr 2024 16:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE13A1DDD1;
+	Sun, 14 Apr 2024 16:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713114002; cv=none; b=Nw9wPoDwtRFCsNfXWN493Z5tK8qzkhD45D5vvrOo/IgirEzipF9Dp5U0Rcp4RH7UQC/UvRaTLxOxVU+nicEz0azWwD9eouNc3jTZFNXaRzfIQhXjBIJLZ5PH0NufZs8YYh0Q9h7VFA3+fLHgPF3XN8IMZ8REdc7Y0SV8nOIytN8=
+	t=1713114001; cv=none; b=JUQ75NjKmrjHmeqxJ1BO7xPHFzBmLom3MEXJ2xEjrmrHR3EkOfslouB5rFHpbN4eRaFra/JVQfrTDu4GjW+giaaSz8gOUnlAqTuYh2uzUJzCdBoz9hKohJiLpnBq6o3NThc/KBq3newJehdLBIDe9ZF0fAC0TEVreV99wKipork=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713114002; c=relaxed/simple;
-	bh=2vuBy3JddhPuK9fJ9dNH99j+JK+Ocuh5sJ+yj+qGuyo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z5t96SqAWluwajBQRP2Y4x+UAuTeMmThOKxpYD5fns1Hq3ADjPqjHUhZRiR19OqbUUSf6oyhJbq7dtB5TxKWhtlXMRzXSdAqXMNlHC92IBk/38oI8ZdW+BnrhNutWhcHSRJGPymxrFvnksLimy1MuhaXx1XiZhYjRw2HaPw1Grw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=l2iWlvqw; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 45EB7C0002;
-	Sun, 14 Apr 2024 16:59:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1713113997;
+	s=arc-20240116; t=1713114001; c=relaxed/simple;
+	bh=mbkka5ov0pjllyobnal4qlOmTS94vtLU8iRcxxEH3UQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gQXrSqbdWFOwTxBmqkbO9m12xZnT0EAdjxIqpeuehEAy0kl/kUKQjasID3TEefQOQEjwU59EgJnuQmTLFv+bGR8zY1Vzt4+AXHftvDZDGK+O1+fBYtckDIWfmJWN+b6ehyTyFD/tDuK66XzSHAw4EpeQiCiTDqWghER0d8UPaXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=b23DnHf/; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 0C1821C0081; Sun, 14 Apr 2024 18:59:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
+	t=1713113990;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ipEBFetRHAp/1hDn1rxccOCzTGrkejfX5LP8iZREH/g=;
-	b=l2iWlvqw93ZguKYWf/EEd7zOtf7nArGTD28rVSvnJ1QExWcS6YD43CtrdnuA8dRuTOQyDK
-	caI9PHDFXWN7vndkxzfIjzd+qySS1bClcaPovKPT+LXMDjEH113OxG06x7PNPfw6uDelnC
-	5HhlOxXzeJe6O59mh+hUX4QfqpM/OZ34pAUi5cB2/vaWzGire0ACgTR6vqIZQvvqmwdXT0
-	vfKD/eEpilCNPtK85S5H1NibRGffTYGjs5tRauaLkEz4+WOHqqxQ92S3U8XX8v3WUSfGOS
-	n5vS0vZ8RMNRKb9Z3wNQwHENDLl1OsBdTz2dAbHpqRDMrJygu+OhbqgtMt3j8Q==
-Message-ID: <85261d11-d6cb-4718-88d9-95a7efe5c0ab@arinc9.com>
-Date: Sun, 14 Apr 2024 19:59:44 +0300
+	bh=plvj2pu75zmJtwfWQwKO6E7gQ/zblJirjpZJ84tKWdc=;
+	b=b23DnHf/PlbnxjUd96V7Z1pSmri8eOHFbo7ZnAEiiCAQAKOnISp9CxhtATYpRO+Yk7f1H+
+	E5DfQMtRTVXwKikZMbxxSKTVtAbbTkf6rqJFdX8ERUWIykIDT5WLdZMGiyqhQru06qY0nD
+	I/7ZA8U0gJmTZbhXtVZcLQ3iY5dxpp8=
+Date: Sun, 14 Apr 2024 18:59:49 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: serdeliuk@yahoo.com
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] Samsung Galaxy Z Fold5 initial support
+Message-ID: <ZhwLheDmwFTYBU/C@duo.ucw.cz>
+References: <20240407-samsung-galaxy-zfold5-q5q-v4-0-8b67b1813653@yahoo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
-To: Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
- <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
- <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="m4hfCxMWwdamns22"
+Content-Disposition: inline
+In-Reply-To: <20240407-samsung-galaxy-zfold5-q5q-v4-0-8b67b1813653@yahoo.com>
 
-On 14.04.2024 17:13, Krzysztof Kozlowski wrote:
-> On 14/04/2024 13:46, Arınç ÜNAL via B4 Relay wrote:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> Add the device tree for ASUS RT-AC3200 which is an AC3200 router featuring
->> 5 Ethernet ports over the integrated Broadcom switch.
->>
->> Hardware info:
->> * Processor: Broadcom BCM4709A0 dual-core @ 1.0 GHz
->> * Switch: BCM53012 in BCM4709A0
->> * DDR3 RAM: 256 MB
->> * Flash: 128 MB
->> * 2.4GHz: BCM43602 3x3 single chip 802.11b/g/n SoC
->> * 5GHz: BCM43602 3x3 two chips 802.11a/n/ac SoC
->> * Ports: 4 LAN Ports, 1 WAN Port
->>
->> Co-developed-by: Tom Brautaset <tbrautaset@gmail.com>
->> Signed-off-by: Tom Brautaset <tbrautaset@gmail.com>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
->> ---
->>   arch/arm/boot/dts/broadcom/Makefile                |   1 +
->>   .../boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts   | 164 +++++++++++++++++++++
->>   2 files changed, 165 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/broadcom/Makefile b/arch/arm/boot/dts/broadcom/Makefile
->> index 7099d9560033..c61fca514775 100644
->> --- a/arch/arm/boot/dts/broadcom/Makefile
->> +++ b/arch/arm/boot/dts/broadcom/Makefile
->> @@ -64,6 +64,7 @@ dtb-$(CONFIG_ARCH_BCM_5301X) += \
->>   	bcm47081-luxul-xap-1410.dtb \
->>   	bcm47081-luxul-xwr-1200.dtb \
->>   	bcm47081-tplink-archer-c5-v2.dtb \
->> +	bcm4709-asus-rt-ac3200.dtb \
->>   	bcm4709-asus-rt-ac87u.dtb \
->>   	bcm4709-buffalo-wxr-1900dhp.dtb \
->>   	bcm4709-linksys-ea9200.dtb \
->> diff --git a/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts b/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts
->> new file mode 100644
->> index 000000000000..8640dda211ae
->> --- /dev/null
->> +++ b/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts
->> @@ -0,0 +1,164 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
->> +/*
->> + * Author: Tom Brautaset <tbrautaset@gmail.com>
->> + */
->> +
->> +/dts-v1/;
->> +
->> +#include "bcm4709.dtsi"
->> +#include "bcm5301x-nand-cs0-bch8.dtsi"
->> +
->> +#include <dt-bindings/leds/common.h>
->> +
->> +/ {
->> +	compatible = "asus,rt-ac3200", "brcm,bcm4709", "brcm,bcm4708";
->> +	model = "ASUS RT-AC3200";
->> +
->> +	chosen {
->> +		bootargs = "console=ttyS0,115200 earlycon";
-> 
-> 1. Use stdout.
-> 2. Drop earlycon, it is for debugging, not regular mainline usage.
 
-I see that bcm4708.dtsi which this device tree includes already describes
-stdout-path with the same value so I'll just get rid of the chosen node
-here.
+--m4hfCxMWwdamns22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
->> +	};
->> +
->> +	memory@0 {
->> +		device_type = "memory";
->> +		reg = <0x00000000 0x08000000>,
->> +		      <0x88000000 0x08000000>;
->> +	};
->> +
->> +	nvram@1c080000 {
->> +		compatible = "brcm,nvram";
->> +		reg = <0x1c080000 0x00180000>;
-> 
-> Why is this outside of soc? Both soc node and soc DTSI?
+Hi!
 
-I don't maintain the SoC device tree files so I don't know. The nvram node
-doesn't exist on any of the device tree files included by this device tree.
+> - removed extraneous new line
+> - removed pcie_1_phy_aux_clk
+> - removed extranous pcie1
+>=20
+> This documents and add intial dts support for Samsung Galaxy Z Fold5 (sam=
+sung,q5q)
+> which is a foldable phone by Samsung based on the sm8550 SoC.
+>=20
+> Currently working features:
+> - Framebuffer
+> - UFS
+> - i2c
+> - Buttons
 
-Arınç
+Interesting, folding will be fun to play with.
+
+Please cc phone-devel@vger.kernel.org with phone patches.
+
+Best regards,
+							Pavel
+--=20
+People of Russia, stop Putin before his war on Ukraine escalates.
+
+--m4hfCxMWwdamns22
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZhwLhQAKCRAw5/Bqldv6
+8hMnAJ0SvZJcotQx/i0WTcWAHOs8ojpFYQCgkFU8uaiXJCBFTkgnf0I+bS7wCIc=
+=wOHG
+-----END PGP SIGNATURE-----
+
+--m4hfCxMWwdamns22--
 
