@@ -1,110 +1,140 @@
-Return-Path: <linux-kernel+bounces-144050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA08F8A413E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 184AB8A4143
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:35:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14FC7281AFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:35:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9744281B3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC7A224EF;
-	Sun, 14 Apr 2024 08:35:03 +0000 (UTC)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A68C23769;
+	Sun, 14 Apr 2024 08:35:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VrcFMysy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4C4219F3
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F77023748
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713083703; cv=none; b=ZogDvrz/Kwy8RDv1XuMvoNdsDIbZzxwxoL5lpOYUasRYfGKcMBg28/vtgvSlkScV2PE1n6GZPVD/Ms5Yn83l0tDBZzJDPLK6EuW7iPq72MTIpUlKY8ZOwnQz5P8imsVTqQVybBCNZYyNxkrEw7zVU3cbpYz4o6+HSoLkuA8+dHQ=
+	t=1713083713; cv=none; b=JuCOGXLECiMqRu4ohqLC2mJstaLjAjnFoZLBNFeyTGlz4Vid85wLmjI7kZuMeTtfV/q+Kqb73bxeFsiz3wi5BfN38U8iR0zbc7JSv4+btbj+8+pSdjDoWABumiTNSk1nLHdZCfRVY6EOlnqEmBCxl0xmd01nsUslnnUe8mFpnVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713083703; c=relaxed/simple;
-	bh=rODNJ0Ukhp6xqvTSkV55aTTmI0Z+BHUMDDSzoazWTg4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=g0Zk86DU/KNROPvCMO6nLJ8TAvQP9WX0V4NXBQWPR/7F4B3APrQwhMjW/7y5wknXTMyNkfxCw4YeDpBpMobw63M4wbmtWDnjacRGz62qcuTv7JV/DuBmPQlOdUS+sDEaXdZypVPtBThfA5mvoNitcDJK7+jPea3vn3Kvo2Svmrw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516d8764656so831125e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 01:35:01 -0700 (PDT)
+	s=arc-20240116; t=1713083713; c=relaxed/simple;
+	bh=ZPYqqtyateQAglR+k6OVKvCAe8YRzI/MA8ssd/t5pbQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PmOen3/3MKp8NOO19kh81tne/9BTYM1D68gk8aq1g+cYZgTibSohVHIlvCNUiDoqL6pn7CF+hqGGMeGu8rhWsj/jQRPbpCJQ9wE/9RVuBAjhVzhwgXQ5wt67TpwEAKcZfMhBqipVOVjRo/+afqbdngLpLVbOc60ght8pvUuW8Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VrcFMysy; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713083710;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FmgfpCrRtCqNbVMsFXJuOmvk/MLLt9gA4dRZP1RBeX4=;
+	b=VrcFMysypTOei2Nx+OKdh1UuUdODAWgXQBp5ZKaipGgmQM2dUf2K4+ZhZXPzAthXn0yCsi
+	bepF8E951QSn8rrpZkag7YOJMZ0iejCnfUPirF54yOF2Cn5c4gqBrt/QrgS+Za+9YVNF2X
+	E2YUfUYxX8tHNOFl9e1w1FjD4/ZII+c=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-224-yAkxYB7tNjqbuHTwOQ18Kw-1; Sun, 14 Apr 2024 04:35:08 -0400
+X-MC-Unique: yAkxYB7tNjqbuHTwOQ18Kw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343f1064acaso1387941f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 01:35:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713083700; x=1713688500;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rODNJ0Ukhp6xqvTSkV55aTTmI0Z+BHUMDDSzoazWTg4=;
-        b=fzU3hQ1OHNDuXvkgZt6N5Gh2L79nQ2jfjGA54FFeAUAAIIOQ1IIJW19vpBFfHt7xPG
-         3HtE6HJrKbxCzE7KNeGpQDhkqOfNRYecRjcnrrJte51HogxLev+F4nhG518ecefDp/Uv
-         NB1ZJ/+cU5t8gcDy91YKgFIKvR5oGZ5e9M2HADFZ9R/7nSnH/QKeuP5G8RN0DUACnvrp
-         JdC9KQBnJ8MkQVYbBdeiHXDKpeQ0QmTml1KxOFjzoWQLI7vx86WmxzOFBwZ3m06l3NnQ
-         uvdBdINdFjeKG0fywO0a4IiIIbWDJRTtZ9Wd7CkfpD9h15eHstl10uclaY1zliDWMF45
-         9SBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVmYbV+n/5/x2skgFrDu/CNQgJbQItIizxnoqd39QRVQ7X9MVh4LtGtXNy6Bs+7YvwHSHQseGCDyfJ4ynUSyi4euFPwDjZaqxUZ1q6E
-X-Gm-Message-State: AOJu0Yy62B68DG7YtcVKHPl2ltjS8n00O/dSldPfHBNnDhPY50KT6QoX
-	miZyYYvKYHEm6rLnDlVHR+AvkzbyteOxaEXIACoFbl5J9VIdm+MuVHRnwA==
-X-Google-Smtp-Source: AGHT+IHUerSoHWBsGEYAfYQTKd/vCWDjdmSOFzRHu8Rk87rKdywP2XPry+/l30vZZvfgcddZaKXuMA==
-X-Received: by 2002:a2e:3a18:0:b0:2d4:25c5:df1e with SMTP id h24-20020a2e3a18000000b002d425c5df1emr3891400lja.5.1713083699832;
-        Sun, 14 Apr 2024 01:34:59 -0700 (PDT)
-Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
-        by smtp.gmail.com with ESMTPSA id gw7-20020a05600c850700b004146e58cc35sm14861616wmb.46.2024.04.14.01.34.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Apr 2024 01:34:59 -0700 (PDT)
-Message-ID: <bd345f52-3435-4e40-975d-321f706857be@grimberg.me>
-Date: Sun, 14 Apr 2024 11:34:58 +0300
+        d=1e100.net; s=20230601; t=1713083707; x=1713688507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FmgfpCrRtCqNbVMsFXJuOmvk/MLLt9gA4dRZP1RBeX4=;
+        b=tIzZjKakBqzCnKHj+lFZMPssGmBt73UVs5Rnt0VXoWJFYQORV4DmVYpInVBv/3vApw
+         5XDhcgmi4B71t5dXUl0uY7ADJMEKw1ur9/1xZVFFSExBCcR1OUBs65xjyLvc0VrP3FIJ
+         3H2tM37U4A6UJN9SSxqzipfO/x2i3Bpc1I6lLmVFwu5vIIPoPWmPtCH+vbScPQJ8zlVE
+         nVbrAWe8JdmWr0mrUyqaHprBPsDXP94pEYglBD9CBAJ3lWYSzD0sNOWUWg86l0nqmJx7
+         lLXiR55HYx7QYIrYBXqvaqYAHfQkhoEBoSlqXdFafsSUO6ZfqSzAMS8mqYYlr3eGxRKP
+         to/g==
+X-Forwarded-Encrypted: i=1; AJvYcCW+IGddY+rLtqy/v/IDTPCt0ub24wJl4/Zk9z6bv7Jkq2wlXt4YruJbPmdRSsK5de2B6YvD2l0NCL4etBY5Powtq+JI4WoKnTnEDqjr
+X-Gm-Message-State: AOJu0YzRI+DlQCDxWSBpS2doZYdE6ZuhC69LP+nCKz3+uMZLkjjMF6XS
+	bQJfPEr39jbGW2d6cLl16wh8k0e5S5WoiBphGmsvu8UksAhVYYxn/eH17ymaUhhLyEuiuSvpbQo
+	HoCPsuR/Or09VwP+jG1DTpx6HyzMHE5MZ6oMsMukGattojZuzbOzrBa5IXoUv5UjXrsPvWQ==
+X-Received: by 2002:a05:6000:232:b0:345:663f:f0a1 with SMTP id l18-20020a056000023200b00345663ff0a1mr5215822wrz.55.1713083706781;
+        Sun, 14 Apr 2024 01:35:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEud3PzT7Nr9AygoJHk6xDRgJwZJGsPs20hazfYSLls12vM50Lh6SjxqeEIXzgG7uN3p2DHqQ==
+X-Received: by 2002:a05:6000:232:b0:345:663f:f0a1 with SMTP id l18-20020a056000023200b00345663ff0a1mr5215809wrz.55.1713083706195;
+        Sun, 14 Apr 2024 01:35:06 -0700 (PDT)
+Received: from redhat.com ([31.187.78.68])
+        by smtp.gmail.com with ESMTPSA id k9-20020adfe3c9000000b00344a8f9cf18sm8576894wrm.7.2024.04.14.01.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Apr 2024 01:35:05 -0700 (PDT)
+Date: Sun, 14 Apr 2024 04:35:03 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org
+Subject: Re: [PATCH] vhost-vdpa: Remove usage of the deprecated
+ ida_simple_xx() API
+Message-ID: <20240414043334-mutt-send-email-mst@kernel.org>
+References: <bd27d4066f7749997a75cf4111fbf51e11d5898d.1705350942.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/6] nvme-fabrics: short-circuit connect retries
-To: Keith Busch <kbusch@kernel.org>, Daniel Wagner <dwagner@suse.de>
-Cc: Christoph Hellwig <hch@lst.de>, James Smart <james.smart@broadcom.com>,
- Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240409093510.12321-1-dwagner@suse.de>
- <ZhiBzXBvjTeDuHbS@kbusch-mbp.dhcp.thefacebook.com>
- <vbptto5zefkdadnpyhcjelfrsgadb2stjh3sole6n6mdd4h7dq@lrdxk5p5qh6w>
- <ZhlSJcTwGVrlk8OP@kbusch-mbp.dhcp.thefacebook.com>
-Content-Language: he-IL, en-US
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <ZhlSJcTwGVrlk8OP@kbusch-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd27d4066f7749997a75cf4111fbf51e11d5898d.1705350942.git.christophe.jaillet@wanadoo.fr>
+
+On Mon, Jan 15, 2024 at 09:35:50PM +0100, Christophe JAILLET wrote:
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
+> 
+> Note that the upper limit of ida_simple_get() is exclusive, buInputt the one of
+
+What's buInputt? But?
+
+> ida_alloc_max() is inclusive. So a -1 has been added when needed.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
 
+Jason, wanna ack?
 
-On 12/04/2024 18:24, Keith Busch wrote:
-> On Fri, Apr 12, 2024 at 09:24:04AM +0200, Daniel Wagner wrote:
->> On Thu, Apr 11, 2024 at 06:35:25PM -0600, Keith Busch wrote:
->>> On Tue, Apr 09, 2024 at 11:35:04AM +0200, Daniel Wagner wrote:
->>>> The first patch returns only kernel error codes now and avoids overwriting error
->>>> codes later. Thje newly introduced helper for deciding if a reconnect should be
->>>> attempted is the only place where we have the logic (and documentation).
->>>>
->>>> On the target side I've separate the nvme status from the dhchap status handling
->>>> which made it a bit clearer. I was tempted to refactor the code in
->>>> nvmet_execute_auth_send to avoid hitting the 80 chars limit but didn't came up
->>>> with something nice yet. So let's keep this change at a minimum before any
->>>> refactoring attempts.
->>>>
->>>> I've tested with blktests and also an real hardware for nvme-fc.
->>> Thanks, series applied to nvme-6.9.
->> Thanks! I have an updated version here which addresses some of Sagi's
->> feedback, e.g. using only one helper function. Sorry I didn't send out
->> it earlier, I got a bit side tracked in testing because of the 'funky'
->> results with RDMA.
->>
->> Do you want me to send a complete fresh series or patches on top of this
->> series? I'm fine either way.
-> Oh sorry, I didn't notice the discussion carried on after the "review"
-> tag. Please send me the update, I'll force push.
+> ---
+>  drivers/vhost/vdpa.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index bc4a51e4638b..849b9d2dd51f 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -1534,7 +1534,7 @@ static void vhost_vdpa_release_dev(struct device *device)
+>  	struct vhost_vdpa *v =
+>  	       container_of(device, struct vhost_vdpa, dev);
+>  
+> -	ida_simple_remove(&vhost_vdpa_ida, v->minor);
+> +	ida_free(&vhost_vdpa_ida, v->minor);
+>  	kfree(v->vqs);
+>  	kfree(v);
+>  }
+> @@ -1557,8 +1557,8 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
+>  	if (!v)
+>  		return -ENOMEM;
+>  
+> -	minor = ida_simple_get(&vhost_vdpa_ida, 0,
+> -			       VHOST_VDPA_DEV_MAX, GFP_KERNEL);
+> +	minor = ida_alloc_max(&vhost_vdpa_ida, VHOST_VDPA_DEV_MAX - 1,
+> +			      GFP_KERNEL);
+>  	if (minor < 0) {
+>  		kfree(v);
+>  		return minor;
+> -- 
+> 2.43.0
 
-I think that what we want is to have a special handling in the very specific
-connect failure when the host/ctrl credentials mismatch, because out of all
-the reasons to a connection failure, this _could_ be transient.
 
