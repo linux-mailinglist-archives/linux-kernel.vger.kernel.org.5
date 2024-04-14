@@ -1,110 +1,87 @@
-Return-Path: <linux-kernel+bounces-144117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F1298A420B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 152AA8A420C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:27:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A038B20F1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:24:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49F01B20F4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1308F37171;
-	Sun, 14 Apr 2024 11:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sPuV3rjF"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9935C36B1C;
+	Sun, 14 Apr 2024 11:27:05 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3C91E53F;
-	Sun, 14 Apr 2024 11:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F40364A1
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 11:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713093852; cv=none; b=bStW0cJMVmDq17sL3Ik7ZuvCplxupMg0c49/vGIXgJUM8zemSrCD57Z5hv2YurOzZ0Kv6g5iOpPKyIi4qmF+aTz/8K57rQ8g9WjxfUn15ggQ0A22srfeX5ggz6jHJe0snjSAMzP5w3Rl2S+kn64NZqOS1ZkHZWCqcVG3it9Vu2c=
+	t=1713094025; cv=none; b=VsBZRxenJBSRWvBtkiNcRYL1qevnovvVgNeIH1qk7geqA+DPxLE/ZqtQODuLwJ4Rnm76JjMHVI1ZoOYdTico/kqvsFTsUSLLHd9R31KFHmDAIMLDA3tf6GMwZbzCTxWRAMGYuefl4QGsihfssWpFjT9BSC3UDl7wusK6ALvovTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713093852; c=relaxed/simple;
-	bh=3+14d476HF7Eg/5x5VeFkS89dhibjhDZzn1zokZIIQs=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=UOZCCNIhq5Ihf6GBRsQS4pg636rfWjQ7fNZ6RrLR8r5Lh0AXiE0rYn5kLH9G3EXUV4LvrqeSEiejd6D7uBsWOz6I5xYe4OVL88coVLYLHNgvHHcFnJZS3/IZTD7iLNPVf+o16RgQccbP+b2epZOE29Z7HgGKb1KwsPVD84+ZaMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=sPuV3rjF; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713093828; x=1713698628; i=markus.elfring@web.de;
-	bh=3+14d476HF7Eg/5x5VeFkS89dhibjhDZzn1zokZIIQs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=sPuV3rjFZ13FLpg+pHK+MqevD7wr9MEV9e2qzqlz0pM92Xll1MkNtp2grQ7d9aEJ
-	 VxfgQmrNqXRrnTYLoOwdUUE4Ob6SYMpJjLGggfoyl160a68BN9hjQ4skArLXuQqLl
-	 tKdqs3S4hKxA/FFIZkPoxwYRQ+HdelpVer/OUaTRbkSK6IgwuwljMQEZPBPxInlUf
-	 COs4usTsvryshn4jti0OO5t5rdZeP4DIckOH8viDknDRwRaTny7s/JBWzMu0a3m4o
-	 5tkRS3yaqsGEBg331zOVNjHh8mtdpH1fj21CNryJrOFuOMag5FMEsuGNdQXt24LA1
-	 4E1O9lyc/z+DKOrp0A==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.88.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MPrPV-1s8OXv2Vj1-00MwKN; Sun, 14
- Apr 2024 13:23:48 +0200
-Message-ID: <6881c322-8fbb-422f-bdbb-392a83d0b326@web.de>
-Date: Sun, 14 Apr 2024 13:23:47 +0200
+	s=arc-20240116; t=1713094025; c=relaxed/simple;
+	bh=fkilD6RXXITJvunj7/Llw0NbNITB6YbE2nYjiH6+fU8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=lrK0wC98NJEIoVLz7J9wBCcyLjhuo5btu5WaCfPINtkOR6dTZgg6gkhC/u2on8uFW63GjV2R873VG6GplwN77tI6+3mdTb8ioDE5DFMgSEgK9exM3OGesSfnO06VmJEzQgNNhGmHvssuzFjmZcvZbykejgIKmV97jrlJi5jtqCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc78077032so340523439f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 04:27:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713094023; x=1713698823;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eUbouy2oNNu8eN3BipV2iCaoziEuCexrXqKmN558sqY=;
+        b=BtC3hRwSiyR7ZYGKdN9yht8A2gzDoq1PncOd8BI4b/1S4GHLktPycJ7CyPUSQmQYpi
+         aLube4EBy/iMIOTJoAyrzBgmVs6+G2jPpOCyIG7MIPZOVAS+H9sLFjcNgDjm4HelSIUh
+         sjrYQ2mLHTHUR5pq36T/QYxnIQiGzcT3LftwQLAdMBz4pPlWRvGDEe9P1G5czHuS4bAi
+         0sZ/18S4hs6NpoXhihUnBaZdIgXXj7ph5Pw2RzQQkfPXpLDodaVDQl1FvfOt7WR0/7Ps
+         yFdzAdHDil/M7HoDRUOKIEFnRlwRkB/1m6DQvuGu3wBCyH5JYlVeBXTryRz/2qMIGsU8
+         2ZcA==
+X-Forwarded-Encrypted: i=1; AJvYcCU449hwNP2QT0ii0rz/vv1EaYYjOUnef19AbnZBMKASEl+JV4fuS6PS9RA071TofBmWOZdOA0po1MKute6IDwKBb4sRvwEjkemcvoFx
+X-Gm-Message-State: AOJu0Yy/8BdoEdRUFi1Sbww9tiJKnKK0zCuUOxzWb+meCSZn0L7/zyyp
+	+233g911Wwae4Wl0icm40isU+dJUEeG70DsfHkhimV8wJ1g2o+hPRsgMLY8FEFTkvpKWz5PZTl1
+	6uj4yiYtawgww8a/KyAGPZ2DavoC+vKBWsImEd6fAHga3Emh6/blq8x0=
+X-Google-Smtp-Source: AGHT+IFZDqxjKodW1h4BsIA7GL78eyIQ+YTcgW+REk2q/S/k+H1pWhRuNWDz2Uf16+r7Ik7nCyICQb7ZyZRvNx/3SUwu3TkoLjHz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Justin Chen <justin.chen@broadcom.com>,
- bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-References: <20240412181631.3488324-1-justin.chen@broadcom.com>
-Subject: Re: [PATCH net] net: bcmasp: fix memory leak when bringing down if
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240412181631.3488324-1-justin.chen@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:miItyTf1xf3ZWEaZIOQ8qWrYaLIZIV63roPT3U86WeNrAhnG35l
- 0N/pZT/F0BjKk/7wD+8MzIQULDn4RXjOuiZG300XIFWlmNB6XQaFHUBtkx1PrBM46Ik2F90
- 5alPUYQFlYqPt6ZiWrPK3p/1Ij7mhKkNTAzoytZyjaxEb3oBAo5rtc1XcEwzXhbA0XAg0Rr
- OY9UDkKkJGNzaUsFUe13w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:GIlrxNOERsg=;zur1JOD68uS+ZeqZSZo/HCSPoDE
- gLgUzmFjZ+9AQc4RtpNSjhEUNHU7IMWSYfXnhFUrbeHgfZMApdScXNHaV2rrQgG82dMZkAyWm
- PIRpFd1kEq2VjT0MtyNPYkc5797ZtvGoNcniNXiRcforFh38dEnlmrKqUiDJU/8WFVm67r82m
- Tx939w55VY6vP4WKX/LEYkrj7nS3awW6lL9REEK07L7d7IwecofGsgRVRJxvE6ueBncCL+n0+
- YyczTsHrdBoSv7upeGvZ2wb9/EJhwinRX+J06ZUPU9jMo85YpAyVWPp3+Zk1KzsVj2k66WAZ1
- z6AlCHkZJlplJ3HRIa46RsPQt4up0G3IVuzct902Q5Zv0wdLulRMmc97sAFznFy6mm/BTEGA4
- LtYaICdmIUcKqm1gWf32vkUMGF/sZl/Cd75KzywuLHrUE+PlD5UR14GMfC2ViKsSL8U76TZSy
- vtMZOTmTbrFK9FsvaY9daNshq++mAJ2HmEpAqYSQNbYenZXaSQoo8kVTisW9kmwQY2neLI1AY
- NKlARD3iDeyFcqUEeIbpD3cfTr2YTandFsn0pHk6hSWbByQcSLBZbSP8FBJAlCH5mzxvhnQfI
- UiHrwk6RksuLEhLgeapjgm0hDr4T6uR4KpfmduoJtBCea+ZbCpGV4otKnyLrkkZvMVly212kc
- C32LBSO3bf1Xi9bNFnnYYFYqgXMFYrLhURgC3QL57e0W/3nbNy/Wy1bMWfkWKWiWj4FWJ90ar
- uHzhBuaUtsjQJFmUIeFKuT1WiRNxfyV/gQfUxwt8V/8xTGTeV8quyXlLHP5XSNT9mYO55cv2n
- okvlX14CBScbKPmFvl+jSydplH++UOvJWd/nHXcj8jf+8=
+X-Received: by 2002:a05:6638:40a8:b0:482:ccc3:e7fe with SMTP id
+ m40-20020a05663840a800b00482ccc3e7femr259144jam.6.1713094022920; Sun, 14 Apr
+ 2024 04:27:02 -0700 (PDT)
+Date: Sun, 14 Apr 2024 04:27:02 -0700
+In-Reply-To: <20240414110952.2437-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b4106c06160cc803@google.com>
+Subject: Re: [syzbot] [pvrusb2?] [usb?] KASAN: slab-use-after-free Read in
+ pvr2_context_set_notify (3)
+From: syzbot <syzbot+d0f14b2d5a3d1587fbe7@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Can it be nicer to use the word =E2=80=9Cinterface=E2=80=9D instead of =E2=
-=80=9Cif=E2=80=9D
-in the summary phrase?
+Hello,
 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> When bringing down the TX rings we flush the rings but forget to
-> reclaimed the flushed packets. This lead to a memory leak since we
-> do not free the dma mapped buffers. =E2=80=A6
+Reported-and-tested-by: syzbot+d0f14b2d5a3d1587fbe7@syzkaller.appspotmail.com
 
-I find this change description improvable.
+Tested on:
 
-* How do you think about to avoid typos?
+commit:         9ed46da1 Add linux-next specific files for 20240412
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=177851eb180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8f5778cb7b9a7d
+dashboard link: https://syzkaller.appspot.com/bug?extid=d0f14b2d5a3d1587fbe7
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=174c9857180000
 
-* Would another imperative wording be more desirable?
-
-Regards,
-Markus
+Note: testing is done by a robot and is best-effort only.
 
