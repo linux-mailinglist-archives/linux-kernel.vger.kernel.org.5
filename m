@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-144249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02CA08A4394
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:50:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9508F8A4395
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:50:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 346361C21098
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:50:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B53B281D91
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 924FB134CD0;
-	Sun, 14 Apr 2024 15:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D677134CC6;
+	Sun, 14 Apr 2024 15:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OpARtQbT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqP0/h7e"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D16134CC7
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 15:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0551350DB
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 15:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713109804; cv=none; b=OUfx70Faw7M5X0vhpquaoFVOLN4xPIzzcUIQmB/CSYNu1lDpz4n3SP6Xn0iI57OnoCenRpyZsUWZCRsoInN4l0UmKeAj7dDDmsYlzNXPgUIdv1p7sehOb0OYREC6ZjQ7cSg4hwRgQd1xdk3qXjTxuFPz7vbQgU9fVNYB0DiD1GU=
+	t=1713109807; cv=none; b=oxmWwGeQwHLIs3cNVAGx/ywGG2FEG/d07r9jN+P6U/Z3JOg26AuI18xp7THLGtF2jtG87/ScDGAZuP0UI0ZWFkMTab5dQLxGWgrnBh+fhd0ni92KSl2B8NQ1JjLrwPXfPh9cI32wiFfOguphEXxp0CzJ9W6ElGtlmWozZZNgLQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713109804; c=relaxed/simple;
-	bh=OdvuLRFOyPbK9M1u502x2SaqLqdv5YEh3Og0kbbothY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A/LsKcc+dmHwM1M+pHiR7gkzWtdMapBaMrN1IBFjqSLbUGil9AoGg3l6XoeOaCDmePF5d/9Atm1Lzu4NyTFbRdqOgdlM3UeX1QY2QAAuiTV0mZbaFInRMZ88jGuoEnYqx9mWPZoGT9DDw4INCGB813CvNM08UGcP8G5VCHsTAuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OpARtQbT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60193C072AA;
-	Sun, 14 Apr 2024 15:50:01 +0000 (UTC)
+	s=arc-20240116; t=1713109807; c=relaxed/simple;
+	bh=F/dkFtRddbz2rD/46WKCGJKyqSMQqrDqq6p70dPALoU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mc4wHcP+aoziHFVPofeYUmzKGzvP5QMwgUsnwH13PBhAc7KPqirMlrs4I0ZpgYUadolnrukPKIwpxcuuytyeltOGOYkrP8ydqiarFOXZeYNNHi0Pf/fB0qciBEE9KDLjx23MeYGzsdR9HYAziOoV/mVukU4JTJ6s72NCAwVbbIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqP0/h7e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA2BBC32781;
+	Sun, 14 Apr 2024 15:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713109804;
-	bh=OdvuLRFOyPbK9M1u502x2SaqLqdv5YEh3Og0kbbothY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=OpARtQbTUsjfG/5pAejSz+e2ikl1HFSrtRp+fqeLMtqz/fvbm3o/p5BeA5P3pmtwL
-	 BG7ffpuii6HLP+zHKH7C6tMbZV9I4FCTt8NAUCUVX9NMzQeDHMthI4cPEnzC1QLIgC
-	 C0HUpgugz8pS0p8hBiBgq4i2GONU+bE18/STHJ2hFNfIFQS/mD25Lu4Ztk7Rs7KaNa
-	 HFVD26XlWz7ZaeGhhQDmJIO0UA5o5/riI0Zu74CiJVTh6GzEu3EXzllY9cpg40W2AX
-	 8KsaMucB8StkNMwTek4XHYSutGALlqtHN76V/U/D4dv+mC/1yv2zz8/gaE0nfWkfkv
-	 GeWQCT+tw/HoQ==
+	s=k20201202; t=1713109807;
+	bh=F/dkFtRddbz2rD/46WKCGJKyqSMQqrDqq6p70dPALoU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=oqP0/h7eEJrEgYeb8NzQBvwLwECJ7r0h/HXjOtMfK1LzqGbjm4ofY4LCtkKOFFA66
+	 5EnLYrlgyJd4hdhMB3ecGGJ06ij5Pdo+WbVIAZ2WHVSggRvGwEhmyrELoVO+eVfDtz
+	 RUmuMaDk09pemnJOdeSbvR05o8ehVIcZKIXNquoU7pgLiYdARra5YF9umqzKjzZsPr
+	 0/qfwZD6WlwiHsqyjPO0JWrcRHOCOL4Cm8bl/fRqXV+PesJP3kHWTuyDu2qKdGwYej
+	 ZXQguBJkXdj4WSZq9EU6yWEown5ZBcO2gUEKPTgSZDvgxo/HgMJs6tdsP9OE4Cuzc6
+	 1gKaOIKxx3U3w==
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Arnd Bergmann <arnd@arndb.de>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -48,10 +49,12 @@ To: Arnd Bergmann <arnd@arndb.de>,
 	linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 1/2] eeprom: at25: drop unneeded MODULE_ALIAS
-Date: Sun, 14 Apr 2024 17:49:55 +0200
-Message-Id: <20240414154957.127113-1-krzk@kernel.org>
+Subject: [PATCH] mtd: mchp23k256: drop unneeded MODULE_ALIAS
+Date: Sun, 14 Apr 2024 17:49:56 +0200
+Message-Id: <20240414154957.127113-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240414154957.127113-1-krzk@kernel.org>
+References: <20240414154957.127113-1-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,18 +69,18 @@ the alias to be duplicated.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/misc/eeprom/at25.c | 1 -
+ drivers/mtd/devices/mchp23k256.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-index 65d49a6de1a7..595ceb9a7126 100644
---- a/drivers/misc/eeprom/at25.c
-+++ b/drivers/misc/eeprom/at25.c
-@@ -529,4 +529,3 @@ module_spi_driver(at25_driver);
- MODULE_DESCRIPTION("Driver for most SPI EEPROMs");
- MODULE_AUTHOR("David Brownell");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("spi:at25");
+diff --git a/drivers/mtd/devices/mchp23k256.c b/drivers/mtd/devices/mchp23k256.c
+index d533475fda15..cef5f9677d39 100644
+--- a/drivers/mtd/devices/mchp23k256.c
++++ b/drivers/mtd/devices/mchp23k256.c
+@@ -257,4 +257,3 @@ module_spi_driver(mchp23k256_driver);
+ MODULE_DESCRIPTION("MTD SPI driver for MCHP23K256 RAM chips");
+ MODULE_AUTHOR("Andrew Lunn <andre@lunn.ch>");
+ MODULE_LICENSE("GPL v2");
+-MODULE_ALIAS("spi:mchp23k256");
 -- 
 2.34.1
 
