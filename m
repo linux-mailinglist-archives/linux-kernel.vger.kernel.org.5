@@ -1,85 +1,85 @@
-Return-Path: <linux-kernel+bounces-144105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2E6E8A41D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:35:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 559828A41E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A161E281B9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:35:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7551F2146A
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B1822EE9;
-	Sun, 14 Apr 2024 10:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4BA364D6;
+	Sun, 14 Apr 2024 10:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TbVAWPZW"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ofepjH0w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E018A1AACB
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 10:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469F41D537;
+	Sun, 14 Apr 2024 10:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713090900; cv=none; b=YsHd4we4T7hnSTq1D1Nybg8vhUmMZ7eys8Y6uRwxTRWcRcOTlhjlFyttDl95w5RNMjp8H7ozigA7DxpgW+/kNWaBKH+1dMHDimFP53Hy6alforRkXza2tPkHlMH3ho8Q5GOXfxeCokgRjPh3aSFa5X0xkSJG3xYDl7bFuro2gc8=
+	t=1713091177; cv=none; b=tKnCSZOQDaPq8SEoz1xeCf8IQgRTNKthmHD0AwKDnWfI6qZhSOOQy7BmU+kq2+DPsVxG/SyiBZVp41SBtE/C/AZ3i/JbmXZv84asskmSavTt7/aRb/uUwn6Gd9lsVDpwx6Lzr9xzDWYsx6HU3orjfAiI2hwcvlwjveRbpcn3qaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713090900; c=relaxed/simple;
-	bh=ZN/2Rkys9GxS+NsmV9Oq0Mou1cdT+ldCxQlnc+6y1vY=;
+	s=arc-20240116; t=1713091177; c=relaxed/simple;
+	bh=JbtOUWHVC7wNzadBF8bYSYuSrVY77oLf7wqjRB8KLZE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GREboflD4fxWBG2o+ukbpJk20bvF5xt7xaUDTeyy3yC4xFGmpyUNqQHD6lL3NvMxtZp3kPYJ5r0UX09PtiG4SHBQ+6f+SoMkimHvjNEBIW4Rk0LdEBfCCzk2DXnqYDmaWfTFPZoEgkch8OuehGjJpIAX1SzRy8roQnynQcC5PXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TbVAWPZW; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-518e2283bd3so141735e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713090897; x=1713695697; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3UQ++gxwD9lwMiCPaVI4itHAEaPjf5P2ziIdw7YNOfg=;
-        b=TbVAWPZW99jP3BcNiP677lo1DMX1oAodpK5mNVpNgxzWVzIUrMLna3n4c6jHBjNjRU
-         Q8M1errvEFlQHPBG4TBwM/aFv0uElPUC50G1OqrIOnWy74ueKkquWYSgHtqFi7EGi0m8
-         Ju4nTuWqKjVgPu3FCFOl4QoHxL0qLt4rYferqAtydtyc+0i+ztZwklrstSOcG910W2x0
-         CDbkxRhtIbVNNxhcX5XbXndb/VZkAJtqChDA+3yltDkGtSrEZB+rq2WGW9VHvd5LBIpA
-         Vj4E7wQBUqERVFfqTLgbJHUpwnVh5MDk8XCSyK4jTClY9sA1xQo3GeRqFxNAZ6Lken/r
-         w/qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713090897; x=1713695697;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3UQ++gxwD9lwMiCPaVI4itHAEaPjf5P2ziIdw7YNOfg=;
-        b=W6lVysKCKE6zMj5F8lOZO3XshwAtvsNHqubBvuk3aZ5F92jhDNx7ot/Zo3KJCaUOhK
-         JcuTWfoSVo7uuzYyXyQ89hVT9gB6JBYt99Sq4Ir0Np/cEd48WUxbM/0WU2VPdrNdls8N
-         6P+HHOUrQgBFVVm98RJ2XfZpESY9BMeexW2NIpm6AQX1ItwmQjJ7msNZPb3iUSKp5jRS
-         72+bLuSxDRTzNR38Ft/1HliWeKQWljmHGLHlwcP/ytueQwxJAfCeNP7WHrhEwkGSBMoX
-         lKroD9rRteZVuIFMacgxMvxeIuOjhT/G/rCSUg8EikYJJ5lhpiAgSqgu7DXZSnEgFzFT
-         8PJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXpXc0KGwLCClZ52xhVAMEVZfY5q/dnPYxom0oZsze5PgzxEXhyrAAKGR3XAT4Ub6gAhEzlK7hhB5w76US31jcOQ1gmPJSPtadDZkhu
-X-Gm-Message-State: AOJu0YxaVk4IXJvKpIaUuELr1NETB7wHni82OvME06cnG8ua5IN1LQMa
-	rnBRVxOPwvq2wCGxJHiMfw7W49BdxjWWVvoo/Ne8c84O3wiJxCNQNujzOggu39w=
-X-Google-Smtp-Source: AGHT+IHRRIhsXhtPQpbnXWRN/evFQ9xpq1CsTuwyuPbVM1PmrjssVucapgd3lt6ANs4aSbJrf6z1aQ==
-X-Received: by 2002:ac2:53b3:0:b0:518:c2a5:5a3b with SMTP id j19-20020ac253b3000000b00518c2a55a3bmr1372919lfh.46.1713090896785;
-        Sun, 14 Apr 2024 03:34:56 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id ne33-20020a1709077ba100b00a51b26ba6c5sm4032596ejc.219.2024.04.14.03.34.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 03:34:56 -0700 (PDT)
-Date: Sun, 14 Apr 2024 13:34:52 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Robert Marko <robimarko@gmail.com>
-Cc: Hanna Hawa <hhhawa@amazon.com>, andriy.shevchenko@linux.intel.com,
-	wsa@kernel.org, linus.walleij@linaro.org, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-	dwmw@amazon.co.uk, benh@amazon.com, ronenk@amazon.com,
-	talel@amazon.com, jonnyc@amazon.com, hanochu@amazon.com,
-	farbere@amazon.com, itamark@amazon.com
-Subject: Re: [PATCH v5 2/2] i2c: Set i2c pinctrl recovery info from it's
- device pinctrl
-Message-ID: <ac51854b-09a6-4b79-b409-b950929655cb@moroto.mountain>
-References: <20221228164813.67964-1-hhhawa@amazon.com>
- <20221228164813.67964-3-hhhawa@amazon.com>
- <416340b6-33a9-4b9e-bdc5-c5a9cffb3055@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qfkWH7wfCOHXYxaCjGWiECTNRgjuy51xwlGT110PjwZz0Wre1mLfy5BSnpUanx3/p2hvrC/8m/kb2WO+jHPwAUlCeFfba3CSDy1vmdNRJCBlEpfNaytZ3IAFtzhxsagXnMsn1eF1qmIEl2kQozjF0qsg2oNb7toMmD5WpZvtNC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ofepjH0w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 963E6C072AA;
+	Sun, 14 Apr 2024 10:39:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713091176;
+	bh=JbtOUWHVC7wNzadBF8bYSYuSrVY77oLf7wqjRB8KLZE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ofepjH0wUf3Os10OXvzt5lHI9qsH/w9nNsvcYVyBhHvdV4m2cw1ohO/Vis0QJOZPT
+	 QNyIPOOSPN9/npG3/acx1bApWHvcRg4inaWGF7oI86g09jSvOtGs3JJuOQmxR5+DqK
+	 V/5DIXQc2ngSjOvui34lFC+GSfpozW/Y1/RcAEHh13yGpVo7SBlIDUUVXg8NY9TQw0
+	 pBiSrPRv47ciuhlJwVmwEsGvS1Jq7za0ry0lmYTjh0Gn3/rXYJWaXhUKZXdofrNYTe
+	 2JXfiqIDu/+DKNmMNI7krvG53xb65g67PP1mGaNc9TkDe1l4j5Xn0zP+PRvAt0VObl
+	 j1ne7+aCuG2ig==
+Date: Sun, 14 Apr 2024 11:39:26 +0100
+From: Simon Horman <horms@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Amit Pundir <amit.pundir@linaro.org>,
+	Xilin Wu <wuxilin123@gmail.com>, linux-bluetooth@vger.kernel.org,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v7 13/16] power: sequencing: implement the pwrseq core
+Message-ID: <20240414103926.GB645060@kernel.org>
+References: <20240410124628.171783-1-brgl@bgdev.pl>
+ <20240410124628.171783-14-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,59 +88,56 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <416340b6-33a9-4b9e-bdc5-c5a9cffb3055@gmail.com>
+In-Reply-To: <20240410124628.171783-14-brgl@bgdev.pl>
 
-On Thu, Apr 11, 2024 at 07:08:56PM +0200, Robert Marko wrote:
-> 
-> On 28. 12. 2022. 17:48, Hanna Hawa wrote:
-> > Currently the i2c subsystem rely on the controller device tree to
-> > initialize the pinctrl recovery information, part of the drivers does
-> > not set this field (rinfo->pinctrl), for example i2c DesignWare driver.
-> > 
-> > The pins information is saved part of the device structure before probe
-> > and it's done on pinctrl_bind_pins().
-> > 
-> > Make the i2c init recovery to get the device pins if it's not
-> > initialized by the driver from the device pins.
-> > 
-> > Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >   drivers/i2c/i2c-core-base.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> > index 7539b0740351..fb5644457452 100644
-> > --- a/drivers/i2c/i2c-core-base.c
-> > +++ b/drivers/i2c/i2c-core-base.c
-> > @@ -34,6 +34,7 @@
-> >   #include <linux/of.h>
-> >   #include <linux/of_irq.h>
-> >   #include <linux/pinctrl/consumer.h>
-> > +#include <linux/pinctrl/devinfo.h>
-> >   #include <linux/pm_domain.h>
-> >   #include <linux/pm_runtime.h>
-> >   #include <linux/pm_wakeirq.h>
-> > @@ -282,7 +283,9 @@ static void i2c_gpio_init_pinctrl_recovery(struct i2c_adapter *adap)
-> >   {
-> >   	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
-> >   	struct device *dev = &adap->dev;
-> > -	struct pinctrl *p = bri->pinctrl;
-> > +	struct pinctrl *p = bri->pinctrl ?: dev_pinctrl(dev->parent);
-> > +
-> > +	bri->pinctrl = p;
-> 
-> Hi Hanna,
-> I know this has already been merged, but setting bri->pinctrl breaks PXA
-> recovery.
+On Wed, Apr 10, 2024 at 02:46:25PM +0200, Bartosz Golaszewski wrote:
 
-This is patch is a year and half old so it's a bit late to just revert
-it...
+..
 
-What does "breaks" mean in this context?  Is there a NULL dereference?
-Do you have a stack trace?  It's really hard to get inspired to look at
-the code when the bug report is so vague...
+> +/**
+> + * pwrseq_device_register() - Register a new power sequencer.
+> + * @config: Configuration of the new power sequencing device.
+> + *
+> + * The config structure is only used during the call and can be freed after
+> + * the function returns. The config structure *must* have the parent device
+> + * as well as the match() callback and at least one target set.
+> + *
+> + * Returns:
+> + * Returns the address of the new pwrseq device or ERR_PTR() on failure.
+> + */
+> +struct pwrseq_device *
+> +pwrseq_device_register(const struct pwrseq_config *config)
+> +{
+> +	struct pwrseq_device *pwrseq;
+> +	int ret;
+> +
+> +	if (!config->parent || !config->match || !config->targets ||
+> +	    !config->targets[0])
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	pwrseq = kzalloc(sizeof(*pwrseq), GFP_KERNEL);
+> +	if (!pwrseq)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	pwrseq->dev.type = &pwrseq_device_type;
+> +	pwrseq->dev.bus = &pwrseq_bus;
+> +	pwrseq->dev.parent = config->parent;
+> +	device_set_node(&pwrseq->dev, dev_fwnode(config->parent));
+> +	dev_set_drvdata(&pwrseq->dev, config->drvdata);
+> +
+> +	pwrseq->id = ida_alloc(&pwrseq_ida, GFP_KERNEL);
+> +	if (pwrseq->id < 0) {
+> +		kfree(pwrseq);
 
-regards,
-dan carpenter
+Hi Bartosz,
+
+pwrseq is freed on the line above,
+so it should not be dereferenced on the line below.
+
+Flagged by Smatch.
+
+> +		return ERR_PTR(pwrseq->id);
+> +	}
+
+..
 
