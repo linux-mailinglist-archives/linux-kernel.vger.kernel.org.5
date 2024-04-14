@@ -1,259 +1,146 @@
-Return-Path: <linux-kernel+bounces-144104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8218E8A41D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:33:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E6E8A41D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:35:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 468BBB20EAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:33:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A161E281B9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B242E646;
-	Sun, 14 Apr 2024 10:33:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B1822EE9;
+	Sun, 14 Apr 2024 10:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xT07n4fN"
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TbVAWPZW"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA521AACB
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 10:33:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E018A1AACB
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 10:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713090784; cv=none; b=pFt/MMUGJBLo16NI5WS+dVqrxBIxDXXsuZGImnT1btItz4hpAFD3Tjpmb4YeXEt0GmXwlce0T905NRdBeUzR2+LNaCwNfE0Kdx9/P8UJTCGTICSbPpu2yVkISv45jcqx4lonVW5OehZR65TcOVrbVu0425/04k0VW+p9AnyNy0g=
+	t=1713090900; cv=none; b=YsHd4we4T7hnSTq1D1Nybg8vhUmMZ7eys8Y6uRwxTRWcRcOTlhjlFyttDl95w5RNMjp8H7ozigA7DxpgW+/kNWaBKH+1dMHDimFP53Hy6alforRkXza2tPkHlMH3ho8Q5GOXfxeCokgRjPh3aSFa5X0xkSJG3xYDl7bFuro2gc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713090784; c=relaxed/simple;
-	bh=GD2VZJ/Qqsxp3zuRDLUSfSvzp4vBjYYUvZyBFHVrN0s=;
+	s=arc-20240116; t=1713090900; c=relaxed/simple;
+	bh=ZN/2Rkys9GxS+NsmV9Oq0Mou1cdT+ldCxQlnc+6y1vY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J4rs7utUFy3Vtbhu5zLfoStWdMg385obfweiOBXDV7bjWStsXqYPwfc4N+QrcsHEFH9AShHuo4ejmghQOn5NaWHUZ4657j0QN3A8JjrOiG5576amQsWiP9kQc8N8kCbRiz3TAkdPyMQGWoIsH164FHRqvx59oaQkAsTt7BJedcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xT07n4fN; arc=none smtp.client-ip=209.85.160.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=GREboflD4fxWBG2o+ukbpJk20bvF5xt7xaUDTeyy3yC4xFGmpyUNqQHD6lL3NvMxtZp3kPYJ5r0UX09PtiG4SHBQ+6f+SoMkimHvjNEBIW4Rk0LdEBfCCzk2DXnqYDmaWfTFPZoEgkch8OuehGjJpIAX1SzRy8roQnynQcC5PXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TbVAWPZW; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-23333ef4a02so1722409fac.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:33:01 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-518e2283bd3so141735e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:34:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713090781; x=1713695581; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ezWv8Uk8r0iZzTSx1VI+aatOFO9g5HSxqsWTUv27XdY=;
-        b=xT07n4fN2MXFmrGmyS6NquXlcu85iBt+fCszcf7oYJAyZittCaFBKXk5fb/XHlucQ8
-         VD1frCRZknnC1V8pNk6YrfRB9oXGTi4AVxPvtTVogvD4bTL3NJjSOQMu0VDpUhCj+9Zx
-         KXr8hfPmTfMT50fvft6EikXQzea7UudlqB+zW4gTfhSiiy1FiaN59dqcm0oRz85ZmgT4
-         x6+6UxB/JRUsvh9d3PiN3alj4oOJcl+qPaKalwITnYsKXRjSWYSOzOM4xmIj3iyWfXu6
-         +wUIYGWtIXe8mnrrFpQQBEEsn/vINEju6PLW0xTwRbZ8dtdbAIPpiPvi7W+a+EUHxsjc
-         DF9Q==
+        d=linaro.org; s=google; t=1713090897; x=1713695697; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3UQ++gxwD9lwMiCPaVI4itHAEaPjf5P2ziIdw7YNOfg=;
+        b=TbVAWPZW99jP3BcNiP677lo1DMX1oAodpK5mNVpNgxzWVzIUrMLna3n4c6jHBjNjRU
+         Q8M1errvEFlQHPBG4TBwM/aFv0uElPUC50G1OqrIOnWy74ueKkquWYSgHtqFi7EGi0m8
+         Ju4nTuWqKjVgPu3FCFOl4QoHxL0qLt4rYferqAtydtyc+0i+ztZwklrstSOcG910W2x0
+         CDbkxRhtIbVNNxhcX5XbXndb/VZkAJtqChDA+3yltDkGtSrEZB+rq2WGW9VHvd5LBIpA
+         Vj4E7wQBUqERVFfqTLgbJHUpwnVh5MDk8XCSyK4jTClY9sA1xQo3GeRqFxNAZ6Lken/r
+         w/qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713090781; x=1713695581;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ezWv8Uk8r0iZzTSx1VI+aatOFO9g5HSxqsWTUv27XdY=;
-        b=b+KrOgetZnromIyuEC2L69aNk8e3uNTa5MRwxd8fHtcUucGvA+kCifsNOklZb6eLCZ
-         414K1zvqrXQHufXlhzffXKY/28kjpiaKbc9Z1djNEmmhK8wbSblt2nPYzazUu43HLOBM
-         Lt3AdR/EyvJsaVzyhJinPVA/WmfGA6ydpYGBXfPqX/wmw91+E+BW3hzKSfcQV4ByVFC0
-         DktVFj0cszcq83eKm2ICW+K6yZpJYVFxRwVY6NzAQj42JRNUNXJJ+G9M5PmshCaUA/1L
-         S71jXTVfIcuVVzTjN5di6zSeZWxD1PEK/MBvMC4IoE/C7tQL5OiINZpJyAwIkv66hAWX
-         iDuw==
-X-Forwarded-Encrypted: i=1; AJvYcCVABbtVrtypdo8I2Mu+ObSKgEAOw5+IAcElEeQYLUBFtumaqxsZEVdm06d8S98sQxY/yLWT97GE0QWGAJWAmtk/aVzOi+RAQJ4dMKU9
-X-Gm-Message-State: AOJu0YyOy5FRKzrAjRvn+bO+1NvQkBNWilzprYhf0X7FReCwCcQO7TiU
-	ciWctBhfEGjrTMK8gnObOooMfw4WFxvuFf6Li2jmPJCYUtY1CcO5RdTNbsirQQ==
-X-Google-Smtp-Source: AGHT+IGHvQOl59qxFzhWvb2JB596M3kORklxXhpjbwofS/WCy0scK/ufcS2lkNd5/pxWK7SME16DWg==
-X-Received: by 2002:a05:6871:60f:b0:229:87f6:ee8a with SMTP id w15-20020a056871060f00b0022987f6ee8amr8649408oan.30.1713090781146;
-        Sun, 14 Apr 2024 03:33:01 -0700 (PDT)
-Received: from thinkpad ([120.60.136.171])
-        by smtp.gmail.com with ESMTPSA id 1-20020a056a00072100b006ed045e3a70sm5391418pfm.25.2024.04.14.03.32.57
+        d=1e100.net; s=20230601; t=1713090897; x=1713695697;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3UQ++gxwD9lwMiCPaVI4itHAEaPjf5P2ziIdw7YNOfg=;
+        b=W6lVysKCKE6zMj5F8lOZO3XshwAtvsNHqubBvuk3aZ5F92jhDNx7ot/Zo3KJCaUOhK
+         JcuTWfoSVo7uuzYyXyQ89hVT9gB6JBYt99Sq4Ir0Np/cEd48WUxbM/0WU2VPdrNdls8N
+         6P+HHOUrQgBFVVm98RJ2XfZpESY9BMeexW2NIpm6AQX1ItwmQjJ7msNZPb3iUSKp5jRS
+         72+bLuSxDRTzNR38Ft/1HliWeKQWljmHGLHlwcP/ytueQwxJAfCeNP7WHrhEwkGSBMoX
+         lKroD9rRteZVuIFMacgxMvxeIuOjhT/G/rCSUg8EikYJJ5lhpiAgSqgu7DXZSnEgFzFT
+         8PJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXpXc0KGwLCClZ52xhVAMEVZfY5q/dnPYxom0oZsze5PgzxEXhyrAAKGR3XAT4Ub6gAhEzlK7hhB5w76US31jcOQ1gmPJSPtadDZkhu
+X-Gm-Message-State: AOJu0YxaVk4IXJvKpIaUuELr1NETB7wHni82OvME06cnG8ua5IN1LQMa
+	rnBRVxOPwvq2wCGxJHiMfw7W49BdxjWWVvoo/Ne8c84O3wiJxCNQNujzOggu39w=
+X-Google-Smtp-Source: AGHT+IHRRIhsXhtPQpbnXWRN/evFQ9xpq1CsTuwyuPbVM1PmrjssVucapgd3lt6ANs4aSbJrf6z1aQ==
+X-Received: by 2002:ac2:53b3:0:b0:518:c2a5:5a3b with SMTP id j19-20020ac253b3000000b00518c2a55a3bmr1372919lfh.46.1713090896785;
+        Sun, 14 Apr 2024 03:34:56 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id ne33-20020a1709077ba100b00a51b26ba6c5sm4032596ejc.219.2024.04.14.03.34.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 03:33:00 -0700 (PDT)
-Date: Sun, 14 Apr 2024 16:02:56 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 5/5] PCI: dwc: Add common send PME_Turn_Off message
- method
-Message-ID: <20240414103256.GB2294@thinkpad>
-References: <20240319-pme_msg-v5-0-af9ffe57f432@nxp.com>
- <20240319-pme_msg-v5-5-af9ffe57f432@nxp.com>
- <20240405062426.GB2953@thinkpad>
- <ZhALNGyNTAzN86GF@lizhi-Precision-Tower-5810>
- <20240406040131.GC2678@thinkpad>
- <ZhQJD7GjRpDwa6jI@lizhi-Precision-Tower-5810>
- <20240412170548.GB19020@thinkpad>
- <Zhmi0XEUFMIO9OLx@lizhi-Precision-Tower-5810>
+        Sun, 14 Apr 2024 03:34:56 -0700 (PDT)
+Date: Sun, 14 Apr 2024 13:34:52 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Robert Marko <robimarko@gmail.com>
+Cc: Hanna Hawa <hhhawa@amazon.com>, andriy.shevchenko@linux.intel.com,
+	wsa@kernel.org, linus.walleij@linaro.org, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	dwmw@amazon.co.uk, benh@amazon.com, ronenk@amazon.com,
+	talel@amazon.com, jonnyc@amazon.com, hanochu@amazon.com,
+	farbere@amazon.com, itamark@amazon.com
+Subject: Re: [PATCH v5 2/2] i2c: Set i2c pinctrl recovery info from it's
+ device pinctrl
+Message-ID: <ac51854b-09a6-4b79-b409-b950929655cb@moroto.mountain>
+References: <20221228164813.67964-1-hhhawa@amazon.com>
+ <20221228164813.67964-3-hhhawa@amazon.com>
+ <416340b6-33a9-4b9e-bdc5-c5a9cffb3055@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zhmi0XEUFMIO9OLx@lizhi-Precision-Tower-5810>
+In-Reply-To: <416340b6-33a9-4b9e-bdc5-c5a9cffb3055@gmail.com>
 
-On Fri, Apr 12, 2024 at 05:08:33PM -0400, Frank Li wrote:
-> On Fri, Apr 12, 2024 at 10:35:48PM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Apr 08, 2024 at 11:11:11AM -0400, Frank Li wrote:
-> > > On Sat, Apr 06, 2024 at 09:31:31AM +0530, Manivannan Sadhasivam wrote:
-> > > > On Fri, Apr 05, 2024 at 10:31:16AM -0400, Frank Li wrote:
-> > > > > On Fri, Apr 05, 2024 at 11:54:26AM +0530, Manivannan Sadhasivam wrote:
-> > > > > > On Tue, Mar 19, 2024 at 12:07:15PM -0400, Frank Li wrote:
-> > > > > > 
-> > > > > > PCI: dwc: Add generic MSG TLP support for sending PME_Turn_Off during system suspend
-> > > > > > 
-> > > > > > > Reserve space at end of first IORESOURCE_MEM window as message TLP MMIO
-> > > > > > > window. This space's size is 'region_align'.
-> > > > > > > 
-> > > > > > > Set outbound ATU map memory write to send PCI message. So one MMIO write
-> > > > > > > can trigger a PCI message, such as PME_Turn_Off.
-> > > > > > > 
-> > > > > > > Add common dwc_pme_turn_off() function.
-> > > > > > > 
-> > > > > > > Call dwc_pme_turn_off() to send out PME_Turn_Off message in general
-> > > > > > > dw_pcie_suspend_noirq() if there are not platform callback pme_turn_off()
-> > > > > > > exist.
-> > > > > > > 
-> > > > > > 
-> > > > > > How about:
-> > > > > > 
-> > > > > > "Instead of relying on the vendor specific implementations to send the
-> > > > > > PME_Turn_Off message, let's introduce a generic way of sending the message using
-> > > > > > the MSG TLP.
-> > > > > > 
-> > > > > > This is achieved by reserving a region for MSG TLP of size 'pci->region_align',
-> > > > > > at the end of the first IORESOURCE_MEM window of the host bridge. And then
-> > > > > > sending the PME_Turn_Off message during system suspend with the help of iATU.
-> > > > > > 
-> > > > > > It should be noted that this generic implementation is optional for the glue
-> > > > > > drivers and can be overridden by a custom 'pme_turn_off' callback."
-> > > > > > 
-> > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > > > > ---
-> > > > > > >  drivers/pci/controller/dwc/pcie-designware-host.c | 94 ++++++++++++++++++++++-
-> > > > > > >  drivers/pci/controller/dwc/pcie-designware.h      |  3 +
-> > > > > > >  2 files changed, 93 insertions(+), 4 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > > > > > > index 267687ab33cbc..d5723fce7a894 100644
-> > > > > > > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> > > > > > > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> > > > > > > @@ -393,6 +393,31 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)
-> > > > > > >  	return 0;
-> > > > > > >  }
-> > > > > > >  
-> > > > > > > +static void dw_pcie_host_request_msg_tlp_res(struct dw_pcie_rp *pp)
-> > > > > > > +{
-> > > > > > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > > > > > +	struct resource_entry *win;
-> > > > > > > +	struct resource *res;
-> > > > > > > +
-> > > > > > > +	win = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-> > > > > > > +	if (win) {
-> > > > > > > +		res = devm_kzalloc(pci->dev, sizeof(*res), GFP_KERNEL);
-> > > > > > > +		if (!res)
-> > > > > > > +			return;
-> > > > > > > +
-> > > > > > > +		/* Reserve last region_align block as message TLP space */
-> > > > > > > +		res->start = win->res->end - pci->region_align + 1;
-> > > > > > > +		res->end = win->res->end;
-> > > > > > 
-> > > > > > Don't you need to adjust the host bridge window size and end address?
-> > > > > 
-> > > > > Needn't. request_resource will reserve it from bridge window. Like malloc,
-> > > > > if you malloc to get a region of memory, which will never get by malloc
-> > > > > again utill you call free.
-> > > > > 
-> > > > 
-> > > > Hmm, will that modify the window->res->end address and size?
-> > > 
-> > > No. This windows already reported to pci system before this function. It is
-> > > not good to modify window-res-end. It just add child resource like below.
-> > > 
-> > > windows is root resource, which will create may child when call
-> > > request_resource.
-> > >           bridge -> windows
-> > > 		child1 -> msg
-> > > 		child2 -> pci ep1
-> > > 		child3 -> pci_ep2.
-> > > 		...
-> > > 
-> > > Although you see whole bridge window, 'msg' already used and put under root
-> > > resource,  new pci devices will never use 'msg' resource. 
-> > > 
-> > > If change windows->res->end here, I worry about it may broken resource
-> > > tree.
-> > > 
+On Thu, Apr 11, 2024 at 07:08:56PM +0200, Robert Marko wrote:
+> 
+> On 28. 12. 2022. 17:48, Hanna Hawa wrote:
+> > Currently the i2c subsystem rely on the controller device tree to
+> > initialize the pinctrl recovery information, part of the drivers does
+> > not set this field (rinfo->pinctrl), for example i2c DesignWare driver.
 > > 
-> > Hmm, I think your argument is fair. I was worrying that if someone try to
-> > map separately by referencing win->res->end, then they will see access
-> > violation.
-> 
-> It should be wrong if use it without request resource.
-> 
+> > The pins information is saved part of the device structure before probe
+> > and it's done on pinctrl_bind_pins().
 > > 
-> > But why can't you just allocate the resource using 'alloc_resource()' API
-> > instead of always allocating at the end?
+> > Make the i2c init recovery to get the device pins if it's not
+> > initialized by the driver from the device pins.
+> > 
+> > Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> >   drivers/i2c/i2c-core-base.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> > index 7539b0740351..fb5644457452 100644
+> > --- a/drivers/i2c/i2c-core-base.c
+> > +++ b/drivers/i2c/i2c-core-base.c
+> > @@ -34,6 +34,7 @@
+> >   #include <linux/of.h>
+> >   #include <linux/of_irq.h>
+> >   #include <linux/pinctrl/consumer.h>
+> > +#include <linux/pinctrl/devinfo.h>
+> >   #include <linux/pm_domain.h>
+> >   #include <linux/pm_runtime.h>
+> >   #include <linux/pm_wakeirq.h>
+> > @@ -282,7 +283,9 @@ static void i2c_gpio_init_pinctrl_recovery(struct i2c_adapter *adap)
+> >   {
+> >   	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
+> >   	struct device *dev = &adap->dev;
+> > -	struct pinctrl *p = bri->pinctrl;
+> > +	struct pinctrl *p = bri->pinctrl ?: dev_pinctrl(dev->parent);
+> > +
+> > +	bri->pinctrl = p;
 > 
-> Alloc will start from windows (for example: 0x8000_0000). 
-> 0x8000_0000 -> 0x8001_0000 will be allocated to 'msg'.
-> 
-> If ep1 want to get 1MB windows, 0x8010_0000 will return. There is a big
-> hole between 0x8001_0000 to 0x8010_0000.
-> 
-> I just want to reduce impact to existed system. So PCIe memory layout will
-> be kept the same w/o this patch.
-> 
-> There are not big difference between allocate resource and reserve resource
-> for 'msg'. Just little better friendly for exist system.
-> 
+> Hi Hanna,
+> I know this has already been merged, but setting bri->pinctrl breaks PXA
+> recovery.
 
-Ok. This sounds fine to me. Please add this information as a comment so that
-everyone will be aware of the reasoning.
+This is patch is a year and half old so it's a bit late to just revert
+it...
 
-- Mani
+What does "breaks" mean in this context?  Is there a NULL dereference?
+Do you have a stack trace?  It's really hard to get inspired to look at
+the code when the bug report is so vague...
 
-> Frank
-> 
-> > 
-> > - Mani
-> > 
-> > > > 
-> > > > > > 
-> > > > > > > +		res->name = "msg";
-> > > > > > > +		res->flags = win->res->flags | IORESOURCE_BUSY;
-> > > > > > > +
-> > > > > > 
-> > > > > > Shouldn't this resource be added back to the host bridge?
-> > > > > 
-> > > > > No, this resource will reserver for msg only for whole bridge life cycle.
-> > > > > Genenally alloc resource only happen at PCI devices probe. All pci space
-> > > > > will be fixed after system probe.
-> > > > > 
-> > > > 
-> > > > I don't think so. This resource still belongs to the host bridge, so we should
-> > > > add it back.
-> > > 
-> > > When add back?  It was reserved at bridge probe. When bridge remove, all
-> > > resource will released. 
-> > > 
-> > > > 
-> > > > - Mani
-> > > > 
-> > > > -- 
-> > > > மணிவண்ணன் சதாசிவம்
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
-
--- 
-மணிவண்ணன் சதாசிவம்
+regards,
+dan carpenter
 
