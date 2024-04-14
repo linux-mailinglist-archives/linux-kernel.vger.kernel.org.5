@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-144017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7CB78A40D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:16:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6037B8A40DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:16:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87A341F21490
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:16:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F5C01C20CC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFBE12BD0F;
-	Sun, 14 Apr 2024 07:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B727B2E859;
+	Sun, 14 Apr 2024 07:15:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L2t74mPG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fgBfhiVg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F0562868D;
-	Sun, 14 Apr 2024 07:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E515F2E631;
+	Sun, 14 Apr 2024 07:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713078944; cv=none; b=U2mlrCJzGNDt15KRXg+Ms3+VxfaObAHjEyWZClprrapVmsMAF/eAYvM4qdeKzGKz/DVWrdtKSst+Q7WuOAxi/PgzzhWrRq5WVmk0OFqdHZfPOaNVoBcPdkBbtwM/GO9dMXxXc09jJE9EVw8l81gmhsmvdWyjgxVOZvnPJQZQSRw=
+	t=1713078948; cv=none; b=jt83FRdOF+BOtPwe3klp02KvZsREEQlu0vhe/zyltsXKnB/sedirEkTIOs0BVWEThXPa7kZu1v+IZIXmb2tcmHKKaNkn5rXin0fygW2xCQUHuTuRV7wPwWqWaqCKyJ2WIW0xE42zcYIM1SFmOhhNebP9Wkq12WwcqKTAPwGZ5QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713078944; c=relaxed/simple;
-	bh=uD+ViLOa9S8ut1fdu47zbr3AGnB2izGuU5i0gc4OfAY=;
+	s=arc-20240116; t=1713078948; c=relaxed/simple;
+	bh=8d/9E0pz4G5hy6Wtr2AcynVmnL8LOYC286o2KeCuhKY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=dQt1laV5tJElGr9Qir/YUBvCemSv7br+6q9wSy+oAheZay3x/Gtmno7XrR6uIowbu6OskkWCbRsyM6RCbq5zKDwxTd5MS+jyAW6MS6mvsS6LYuBxqYV3DNdnw/8DC5u2dsc+F4x5kAy/saiZcCwJQYyiaBQWlnrZvRBKbPtcsVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L2t74mPG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B004C32781;
-	Sun, 14 Apr 2024 07:15:41 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=YeMfKDIZuHx56ZGtFGXoH5XXHIfRfU67140rn0DlmbErlQNluEmVB0m4cX9+8v62ABUySzkmBM0NWQGTBluJCmL6/kXPC4zGQPwMtqRizBfTXcTs0Wpqm2xWR/haFxKrSLYL9j4OZNWj6H3daisURFdGI8GLrZO4D6WjKp0UaPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fgBfhiVg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82739C32783;
+	Sun, 14 Apr 2024 07:15:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713078944;
-	bh=uD+ViLOa9S8ut1fdu47zbr3AGnB2izGuU5i0gc4OfAY=;
+	s=k20201202; t=1713078947;
+	bh=8d/9E0pz4G5hy6Wtr2AcynVmnL8LOYC286o2KeCuhKY=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=L2t74mPGBiOvi7SZmrw2Zd5cmuKDERFwSFI94FyJSyPATx/JFsaaiRv8ujBIier5R
-	 pMhzFsEl01Qn0yrivjsJ7G8zAAn2BDNoGbRCk7iaMqBBLogcwQhDzpr91mZnOHTlN4
-	 YLneMMiR26xlocl6L8RjetRsVEXfeDxeNXgcViVB0dRGnVc+w8TLyJsijHSBKwp8Vl
-	 QgyB+RGty58zZ3iLXGinHOBbzQeHxOP4uqEZHdkEjDAVm/bitGe1rwOQIJLt8OiBU7
-	 p9DtFQVUtYgEJ8CgzhJ4J1CC4iJ0yCkaOyiqI0V/GWFqmCx7mSTEke9Ktzr+vpCcpz
-	 YxmuNcgGqisZw==
+	b=fgBfhiVgYW8n3JEijNDA2fJGkn2ISoHMYTRrXFk7wnJBgG17uvTPJYmy96yK4zxFk
+	 jV3VDGtlbsU2jtekrdZMtbnHKyFob7JcZ4fYcAt+N4+l1NVmPGdjVdFJQPayiugrKI
+	 ulAy7OdbsBMJORs95/8pU+zg+gHqhBUWX1ulIYikWRlnVCF+hkwC6nWulyB7FZF6YI
+	 m9KeMr6mN6925yt7HVepjj4X9cMvJAxvQ8dEtKYxbOFeOSFp2Oyn/Weah/vOIBZc/D
+	 U3rB3cuGGM5ckwPSoQP2FEZ22IgqMF2XFvaUjt7U+F7I/QKXRULXVIkJvJvzgCbssv
+	 f9PdgtXYzv4Cw==
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Sun, 14 Apr 2024 09:15:17 +0200
-Subject: [PATCH 4/5] mmc: sdhci_am654: Constify struct sdhci_ops
+Date: Sun, 14 Apr 2024 09:15:18 +0200
+Subject: [PATCH 5/5] mmc: sdhci-s3c: Choose sdhci_ops based on variant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240414-mmc-const-sdhci-ops-v1-4-178539d68093@kernel.org>
+Message-Id: <20240414-mmc-const-sdhci-ops-v1-5-178539d68093@kernel.org>
 References: <20240414-mmc-const-sdhci-ops-v1-0-178539d68093@kernel.org>
 In-Reply-To: <20240414-mmc-const-sdhci-ops-v1-0-178539d68093@kernel.org>
 To: Adrian Hunter <adrian.hunter@intel.com>, 
@@ -64,61 +64,127 @@ To: Adrian Hunter <adrian.hunter@intel.com>,
 Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzk@kernel.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1685; i=krzk@kernel.org;
- h=from:subject:message-id; bh=uD+ViLOa9S8ut1fdu47zbr3AGnB2izGuU5i0gc4OfAY=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmG4KMj8KzBrNkHRumdl2yl7nMeq2VMN9nMd7Jp
- VuF8Mpro1KJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhuCjAAKCRDBN2bmhouD
- 16AbD/wNDEAPEB0gmb+3xBdMBEtR4LzHruYj/ZsrADoAJ3C9E+UQzK3hHINhq/uJvrzXiMDipM8
- hgHI2Og0p81JxX7wBUXc4ffpSIfCQpopMyUn1qJHQZWbZKdyrHMMo6KH/cKf77FA03VWxyX0ZZd
- //FBBlbSuCb3kJgshzBYtARueKCipvfTMVTT0xHHmRndCJrs9EapdfeIXZH+rPjNhV3qmRX4ut1
- eF6CheLsMFYmFpQueWu/jWsjRDRtAdc2fA0HPWVnBuviMfWGzDU2vwuHfjk2oA39Tg2EqnuqOEa
- dCivszHPLOw45c5swXdbrAhNvvbmTgS2h9rZQ2iyvd1thV2LAM3QQ+TTCJRhHmRNlTIp3YS6lWA
- enxqz/9jlemDZr84zE4nkUnVXXw4nrBVid8ZthjFGtfblJSbIwLPQMODRT36X3dfgcLzq0JEzUH
- 2VY2XdQXVySqW3Ed+Gu9ERtZHQS5BQP/5rxk8PE1aB0bLgJltcWDj2m1P0N5ia0TEK2X1XrCnDr
- inR0VfvMl70Z4ZPt3U4fajyuxGrbzEFe2aQhTEC06qH0nLpSW6hSh9UFqq2iluKTYd6RolrmtvR
- ZCRDAWAL30w1+75nE2p1cx3m0lExjQ4VtAlSbbDe4A0I/3T0PpXqHkBoGbe63e/B9MR7b2Wa+6V
- EbPnjpuSgvr4MKw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3953; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=8d/9E0pz4G5hy6Wtr2AcynVmnL8LOYC286o2KeCuhKY=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmG4KNEGtWvruYUf6SGR3nHCDUWZtm4j412LE5/
+ F82twc6hv6JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhuCjQAKCRDBN2bmhouD
+ 15rBEACGeEZsNqJuS09TnNJYJhcEqxUZYiX4Wr/cSuVS+EYl/fcHj1UgFB0XzsHq7WiiWX9yafm
+ CcMHEeNArIde/TftaknbmfZnxYfgczu+108mHMD184WNvBEjBZ3a4WnrodXSintAcffjElTMeTH
+ usMLT8tjC1xwCW90LoKnYeEPAlteDRImMlr+yVDeLWdpjT/BIld34gyT7HXcGM7MpZFw3i/Bs2p
+ Zoe1EjXUwGrv0adBiv2BVzRe3c4xV4dFA8MsMXa+vvsU1u5XUpSeOAlcNoQ++Yb6NLOneh0W7Y7
+ ZREbTKaWsGADx9W8rjlTKUE7N47V0je810fGMsGz8AA9ix3hK2Of2zq9q2Fwji1jnMvzKVHXAtY
+ Vmj7d7g4tLMYzGyO4RfwvDFu/5s4lBBkMJkVG7640C63wQWdZW7B8ZCNSxhpMFre3XLIqpHCEXF
+ 0N1derA/ocC08dG5/VyYLwrlVFO4YPZGS+aKLEOwL4jFvJ/cwJtCgxMCKaLL3mRigSBt07RRY2q
+ p0kSnN3vC8c5St6zjlrIpvE0MWHJx0vQ5Ds9pX0BtDwmPOataWBlS/h+am9KLGaAO9rmTLgVNoj
+ ua4SL6RS4UGAn22x3vgceQQe49c85ySrpSZ68aKLEesj2DabNcov8b8FuUYTiGbfRiIcjO6A9TY
+ Sp2q/NAGXxe2aTw==
 X-Developer-Key: i=krzk@kernel.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-The local struct sdhci_ops can be made const for code safety.
+The difference between old S3C64xx and newer Exynos4 SDHCI controller
+variants is in clock handling (the "no_divider" field in drvdata).
+Choose the proper sdhci_ops based on the variant instead of patching
+ops in probe, if Exynos4 is used.
+
+This allows making struct sdhci_ops const for code safety and probably
+opens further options in the future, as the dynamic pointer ops table is
+not anymore that dynamic.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/mmc/host/sdhci_am654.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mmc/host/sdhci-s3c.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-index ba36123e4ccc..17ad32cfc0c3 100644
---- a/drivers/mmc/host/sdhci_am654.c
-+++ b/drivers/mmc/host/sdhci_am654.c
-@@ -543,7 +543,7 @@ static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
- 	return 0;
+diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
+index 6493b0edba34..6c2a42c1819a 100644
+--- a/drivers/mmc/host/sdhci-s3c.c
++++ b/drivers/mmc/host/sdhci-s3c.c
+@@ -130,14 +130,16 @@ struct sdhci_s3c {
+  * struct sdhci_s3c_drv_data - S3C SDHCI platform specific driver data
+  * @sdhci_quirks: sdhci host specific quirks.
+  * @no_divider: no or non-standard internal clock divider.
++ * @ops: sdhci_ops to use for this variant
+  *
+  * Specifies platform specific configuration of sdhci controller.
+  * Note: A structure for driver specific platform data is used for future
+  * expansion of its usage.
+  */
+ struct sdhci_s3c_drv_data {
+-	unsigned int	sdhci_quirks;
+-	bool		no_divider;
++	unsigned int		sdhci_quirks;
++	bool			no_divider;
++	const struct sdhci_ops	*ops;
+ };
+ 
+ static inline struct sdhci_s3c *to_s3c(struct sdhci_host *host)
+@@ -412,7 +414,7 @@ static void sdhci_cmu_set_clock(struct sdhci_host *host, unsigned int clock)
+ 	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
  }
  
--static struct sdhci_ops sdhci_am654_ops = {
-+static const struct sdhci_ops sdhci_am654_ops = {
- 	.platform_execute_tuning = sdhci_am654_platform_execute_tuning,
- 	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
- 	.get_timeout_clock = sdhci_pltfm_clk_get_max_clock,
-@@ -573,7 +573,7 @@ static const struct sdhci_am654_driver_data sdhci_am654_drvdata = {
- 	.flags = IOMUX_PRESENT | FREQSEL_2_BIT | STRBSEL_4_BIT | DLL_PRESENT,
+-static struct sdhci_ops sdhci_s3c_ops = {
++static const struct sdhci_ops sdhci_s3c_ops_s3c6410 = {
+ 	.get_max_clock		= sdhci_s3c_get_max_clk,
+ 	.set_clock		= sdhci_s3c_set_clock,
+ 	.get_min_clock		= sdhci_s3c_get_min_clock,
+@@ -421,6 +423,15 @@ static struct sdhci_ops sdhci_s3c_ops = {
+ 	.set_uhs_signaling	= sdhci_set_uhs_signaling,
  };
  
--static struct sdhci_ops sdhci_j721e_8bit_ops = {
-+static const struct sdhci_ops sdhci_j721e_8bit_ops = {
- 	.platform_execute_tuning = sdhci_am654_platform_execute_tuning,
- 	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
- 	.get_timeout_clock = sdhci_pltfm_clk_get_max_clock,
-@@ -597,7 +597,7 @@ static const struct sdhci_am654_driver_data sdhci_j721e_8bit_drvdata = {
- 	.flags = DLL_PRESENT | DLL_CALIB,
++static const struct sdhci_ops sdhci_s3c_ops_exynos4 = {
++	.get_max_clock		= sdhci_cmu_get_max_clock,
++	.set_clock		= sdhci_cmu_set_clock,
++	.get_min_clock		= sdhci_cmu_get_min_clock,
++	.set_bus_width		= sdhci_set_bus_width,
++	.reset			= sdhci_reset,
++	.set_uhs_signaling	= sdhci_set_uhs_signaling,
++};
++
+ #ifdef CONFIG_OF
+ static int sdhci_s3c_parse_dt(struct device *dev,
+ 		struct sdhci_host *host, struct s3c_sdhci_platdata *pdata)
+@@ -560,7 +571,7 @@ static int sdhci_s3c_probe(struct platform_device *pdev)
+ 		pdata->cfg_gpio(pdev, pdata->max_width);
+ 
+ 	host->hw_name = "samsung-hsmmc";
+-	host->ops = &sdhci_s3c_ops;
++	host->ops = &sdhci_s3c_ops_s3c6410;
+ 	host->quirks = 0;
+ 	host->quirks2 = 0;
+ 	host->irq = irq;
+@@ -570,6 +581,7 @@ static int sdhci_s3c_probe(struct platform_device *pdev)
+ 	host->quirks |= SDHCI_QUIRK_NO_HISPD_BIT;
+ 	if (drv_data) {
+ 		host->quirks |= drv_data->sdhci_quirks;
++		host->ops = drv_data->ops;
+ 		sc->no_divider = drv_data->no_divider;
+ 	}
+ 
+@@ -617,16 +629,6 @@ static int sdhci_s3c_probe(struct platform_device *pdev)
+ 	/* HSMMC on Samsung SoCs uses SDCLK as timeout clock */
+ 	host->quirks |= SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK;
+ 
+-	/*
+-	 * If controller does not have internal clock divider,
+-	 * we can use overriding functions instead of default.
+-	 */
+-	if (sc->no_divider) {
+-		sdhci_s3c_ops.set_clock = sdhci_cmu_set_clock;
+-		sdhci_s3c_ops.get_min_clock = sdhci_cmu_get_min_clock;
+-		sdhci_s3c_ops.get_max_clock = sdhci_cmu_get_max_clock;
+-	}
+-
+ 	/* It supports additional host capabilities if needed */
+ 	if (pdata->host_caps)
+ 		host->mmc->caps |= pdata->host_caps;
+@@ -758,6 +760,7 @@ MODULE_DEVICE_TABLE(platform, sdhci_s3c_driver_ids);
+ #ifdef CONFIG_OF
+ static const struct sdhci_s3c_drv_data exynos4_sdhci_drv_data = {
+ 	.no_divider = true,
++	.ops = &sdhci_s3c_ops_exynos4,
  };
  
--static struct sdhci_ops sdhci_j721e_4bit_ops = {
-+static const struct sdhci_ops sdhci_j721e_4bit_ops = {
- 	.platform_execute_tuning = sdhci_am654_platform_execute_tuning,
- 	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
- 	.get_timeout_clock = sdhci_pltfm_clk_get_max_clock,
+ static const struct of_device_id sdhci_s3c_dt_match[] = {
 
 -- 
 2.34.1
