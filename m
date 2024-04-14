@@ -1,137 +1,115 @@
-Return-Path: <linux-kernel+bounces-144416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53BE48A4627
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:13:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDF9F8A462E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:39:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7752A1C20AF1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 23:13:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A3B0B20E62
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 23:39:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB6EF137763;
-	Sun, 14 Apr 2024 23:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AE3137747;
+	Sun, 14 Apr 2024 23:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rNS0PpVs"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="g16LOD72"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A35E20B0E
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E03B2110E
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713136423; cv=none; b=ZBueHryDsV+QlQhPM3hHOZ/00Hb0/bdIN8wYhPoBci4uNGrh2UkZkLZHlkp5fpX6WVxhkDaMdxyJXrfvLEETGIxVymJhfkwzBNMPqDCc3Rs11aFW0us+BT3kYHfbaWSzc8t6YcFRpokZoDv6c/HNZP2rOlXeFk2vYhP14IZEJDo=
+	t=1713137980; cv=none; b=SMT8LIsyBcVSmRS77IVhMD+sp09woDl06cmhuTl2DdzT/HKtVAyj2c/LAP1c/OMiDzBj3epgmYhOO7ZYQGchpgFIiAuBqgvETo69x20Ys8IvQ+mEIyxoZVH4qXkPM7AWdAJrQJ/A32pa7/0IyryBfAA0pbHCunv7CmRsxeBGpr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713136423; c=relaxed/simple;
-	bh=QMLfy/z4mNzK40DCutaIMBO2o0qIgTTudTT7w4FR7Lw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iMn6U1uvgFQmetJZxjYgjcz7T30hNhHftlr8jzsguQJwLmMbH/XyosS9xPeefHB7ACXeELBAVvh9y2MrUkRxqorFj/mnGBBMF5rj+/GAjw0Jlg7+1OouQuwfiKTepA+21XGobhM0xcO2M/0ICI64v5HAe/9bH6HnwSf1L97SW0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rNS0PpVs; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so3353861276.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 16:13:41 -0700 (PDT)
+	s=arc-20240116; t=1713137980; c=relaxed/simple;
+	bh=d7387m7Fe6KCeNNP+mZc6Jx4w5n/uhmA6p42y8z8dx8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L5Z1vwMaXbwQV/kIl66CCTKa5+uHyRkoW9etVIq3fofqPHiKZBMJTuqq1k619AbfExgjXiYNy2C2784wkkABiVFqKoS14XTjM6iWfdxrm4DpwOQFQexzBmMpFQG+wGyT0SjOV5N0YDDH+AvgpdVv5Zs/cnJFRU3Rlo6q473etmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=g16LOD72; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e477db7fbso3947377a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 16:39:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713136420; x=1713741220; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pc13QrE+mcMLNyC+/9mJ9l2G8Lqrng5Jebsz9BpHb4g=;
-        b=rNS0PpVs8WSj+IJV9gGvkhKbkLA0mdhUyeCP6vA1+g2EZkph1h7Y5R+UeVPKuM0IyD
-         0kd77m25UC4X38stNQAjV2kziMJ8r8GoMKU2JAuSX9Rtc3gzZBy7BS0yXaY80KDRdNjy
-         /Xpp/r3Qi//KBXrXwENl7VF7IB7X8AgOo4zjZuOrRC7LNCR+DzF3MW+YPXB7Q64mWyzH
-         2ri2Klkmlfq0YXV13m5f8fv/h6b8rNOVSQa3/Tc5iOXHHnkewASzCou+EqaA9bSgRDX4
-         OlpiZMn1970hWMxZEapM77Ai4hk92wR1LN5ZJR5F3lwsJnzN65KEsMgYsRhWIsu67E85
-         s5bw==
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1713137977; x=1713742777; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QT+4H6LMJlz+8DH7pQ8tCzWtRow/zNF+rdLqCVP9iDo=;
+        b=g16LOD72+fEeYu42z4lbPchAVxbPtJjVCVOyhxuxIkMZp96F7ffthtgdOORurqyjbc
+         dkqqTGrb5JXOhavS4WKgHlhG8F+99+shgBTGizENSxRZn/Wwe2kikqOLci7ksN5kILds
+         jeDg58tDYkrX/Ad6Y/fvWFoSCvk1LNEQQxoTAqjfR7N13U/ReSFCVmVSC+VhWdN7Bq1d
+         uexI5dDfxp0RS8xGYlIms1ErDQiTY1kBz1wJknOZRSEKcSJFh9DpHPdQAcHsFOWB5aqT
+         kUH49WPAXJYfxtqeNthrMaM13jZm5Fx6ueYbIMBusyJVy5eY/f1pYvgkvI5nAcCJ3NZy
+         Tb1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713136420; x=1713741220;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1713137977; x=1713742777;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Pc13QrE+mcMLNyC+/9mJ9l2G8Lqrng5Jebsz9BpHb4g=;
-        b=AIHjxduEHxreZq8O44ZokJMnSsYEwgeQOukiFdMRjCGOCacG7dEKpFfCAfVBgN2nCz
-         iXh/czrtDB+l/prbWwbu8XIDpBu54Q4wYZhCRr+ETOTSyZXUaA65XbEDH4KdTpWgU97I
-         aR5+UnGsEMMylD7aKQQ++w5P1gEIFkh2uXjk9iqEzyD8d51q/VltOV8XW3PWzZNS4bWW
-         OE049Fnp5nFsRE7u4Q2PwyI21YtOQXSljjTJ4nBoacZhC5p2IZ1QCy1K+QLFG0do8yna
-         bhWJURH4m2aZ/ueFAmoMgpXzNlWnevTrmWc6fZ/StnXC5PdDBI5JY8bnTUHbBzz0nXfg
-         /Dig==
-X-Forwarded-Encrypted: i=1; AJvYcCUHFC0t2dAiAnonRhcdLB+9UKAUxt2TH39GKXdkTojgqyrTJIrsxYUihBW1TNX8U3Uz7HWVLK/LoSzYZ0M/gkqtmxDKhpdBlBAEXewx
-X-Gm-Message-State: AOJu0YyPKLiLeKN9DkdNk2dzKx3m0an5bxqfzgVeTSSs7KumHlWe2M+O
-	nl2qCJZlMPJleRiVCb6QZc/vTsJ6uVJ/V9hLv67ZVmwIq7ILh5UnUaP1ndZXvnWDA6lfvIR5szK
-	QIwWPxH+Q9tPIMR8RvjIvEF3ZZI3PoJ2UrdOFDw==
-X-Google-Smtp-Source: AGHT+IHMfnCixFavyGFnOFgqpnrQIq3w30uiJ2YS1tM9ZRsbn/sGrT2sUyDk/RDov0yEDrEAI1leaOZQraIrNUN8HWM=
-X-Received: by 2002:a25:c83:0:b0:de1:5656:ba49 with SMTP id
- 125-20020a250c83000000b00de15656ba49mr3740557ybm.16.1713136420215; Sun, 14
- Apr 2024 16:13:40 -0700 (PDT)
+        bh=QT+4H6LMJlz+8DH7pQ8tCzWtRow/zNF+rdLqCVP9iDo=;
+        b=oAacKh3fjqkvbJWUzF3DUAWOoa4dP40w+mnZKALXZZi2VSWNLENXSeaXZOm8vu3IKw
+         SItVb/qgBTloiqUq3dnPoRVXIB5a3xdBClO1ua3eZeabXCm9Tg4n07rmn/ivbtQzNxUT
+         o4zogzbERjV5bFZjwgL9hYbwuXivRyyV4y9i7aTnKMqQa3VctjeM+JtpYpNXyFmfIRjx
+         5/6l/5LDBxbu2wpZpWavVNwLxLlzy6ZJiyqbLl0Xg88WE614ekhMG0BmFiYsZZmjvWZr
+         bdU3H1iRjb4MgPy1AGHSMVKXbwCGXsl2a4/cMwXoEWkZhlAa/xQFaCpQ8N6k2dkTXz5I
+         ZvSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV7D2giDUqD7oggwsGO4HyJ2iczPC8+PWpQX/A4g4dRTaZTMjmnzkudnHxey+pi5VigtQhXQ1cF04r3YAbWYQ0T+5uKJG/C21TT0CyV
+X-Gm-Message-State: AOJu0YxA7x0aLeaFCFPLNq43fHPcaLznpN6DO+XcfOwHTIRmsj+NzVq9
+	FPqWnj1XQ9PDCTuXQKNHg5ewe/Y/q/xaVDTZPiKif6MuM/NGBkY0QlGs2NDu1W0=
+X-Google-Smtp-Source: AGHT+IFb2HPMbxbzo+Z0wMa+oIFoQ5KEgnlxWzihlJ20RFpTeq9w5TDvQeaOwMubtpEelzwV72ysew==
+X-Received: by 2002:a50:d7d6:0:b0:56e:e76:6478 with SMTP id m22-20020a50d7d6000000b0056e0e766478mr5380764edj.31.1713137976751;
+        Sun, 14 Apr 2024 16:39:36 -0700 (PDT)
+Received: from debian.fritz.box. (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id d24-20020a056402401800b0057009a23d4dsm2495701eda.95.2024.04.14.16.39.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Apr 2024 16:39:36 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Alex Deucher <alexander.deucher@amd.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+	Hawking Zhang <Hawking.Zhang@amd.com>,
+	Lijo Lazar <lijo.lazar@amd.com>,
+	amd-gfx@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] drm/amdgpu: Add missing space to DRM_WARN() message
+Date: Mon, 15 Apr 2024 01:38:39 +0200
+Message-Id: <20240414233838.359190-1-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
- <20240414-arm-psci-system_reset2-vendor-reboots-v2-4-da9a055a648f@quicinc.com>
-In-Reply-To: <20240414-arm-psci-system_reset2-vendor-reboots-v2-4-da9a055a648f@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 15 Apr 2024 02:13:29 +0300
-Message-ID: <CAA8EJpoXrbdD5xVmuo-2b4-WwpSachcJ-abDtu4BS_qa-2A+OA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: Add PSCI SYSTEM_RESET2 types for qcm6490-idp
-To: Elliot Berman <quic_eberman@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Sebastian Reichel <sre@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vinod Koul <vkoul@kernel.org>, Andy Yan <andy.yan@rock-chips.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>, Melody Olvera <quic_molvera@quicinc.com>, 
-	Shivendra Pratap <quic_spratap@quicinc.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, linux-pm@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Sun, 14 Apr 2024 at 22:32, Elliot Berman <quic_eberman@quicinc.com> wrote:
->
-> Add nodes for the vendor-defined system resets. "bootloader" will cause
-> device to reboot and stop in the bootloader's fastboot mode. "edl" will
-> cause device to reboot into "emergency download mode", which permits
-> loading images via the Firehose protocol.
->
-> Co-developed-by: Shivendra Pratap <quic_spratap@quicinc.com>
-> Signed-off-by: Shivendra Pratap <quic_spratap@quicinc.com>
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> index e4bfad50a669..a966f6c8dd7c 100644
-> --- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-> @@ -126,6 +126,11 @@ debug_vm_mem: debug-vm@d0600000 {
->                 };
->         };
->
-> +       psci {
+s/,please/, please/
 
-Please use a label instead. Otherwise it looks as if you are adding
-new device node.
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +               mode-bootloader = <0x10001 0x2>;
-> +               mode-edl = <0 0x1>;
-> +       };
-> +
->         vph_pwr: vph-pwr-regulator {
->                 compatible = "regulator-fixed";
->                 regulator-name = "vph_pwr";
->
-> --
-> 2.34.1
->
->
-
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index 7753a2e64d41..3cba0e196ca8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -1455,7 +1455,7 @@ int amdgpu_device_resize_fb_bar(struct amdgpu_device *adev)
+ 
+ 	/* PCI_EXT_CAP_ID_VNDR extended capability is located at 0x100 */
+ 	if (!pci_find_ext_capability(adev->pdev, PCI_EXT_CAP_ID_VNDR))
+-		DRM_WARN("System can't access extended configuration space,please check!!\n");
++		DRM_WARN("System can't access extended configuration space, please check!!\n");
+ 
+ 	/* skip if the bios has already enabled large BAR */
+ 	if (adev->gmc.real_vram_size &&
 -- 
-With best wishes
-Dmitry
+2.39.2
+
 
