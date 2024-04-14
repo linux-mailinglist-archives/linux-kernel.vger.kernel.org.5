@@ -1,187 +1,235 @@
-Return-Path: <linux-kernel+bounces-144093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5998F8A41B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:08:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABE558A41BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:10:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69040B20F26
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:08:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57ECE28199B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFB625779;
-	Sun, 14 Apr 2024 10:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE41124B29;
+	Sun, 14 Apr 2024 10:10:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="AXrl34k4"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="fIYDoXSX"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B5C2C190;
-	Sun, 14 Apr 2024 10:07:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713089270; cv=none; b=DRedod4N2zAsEB6/E0p3+fMkWR1PokB7MNbWySLIdVDbumku53LgpiXLQz/IdI5KLr7Kob4Sewn3+hu3uu+cT6LLRV+VmyqeOpo81Xo9qGQX5rguP6rUOiEMo6VlphbVtGcAoBJIg9reTHrnQ0rKL3QK0zZg7dKzbPHNleihVO0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713089270; c=relaxed/simple;
-	bh=PYNxOTBDPas3DhTn/LjQCOuHCajbvwfrlkj0oizsSsc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZpnNq9rkZC/RBF2USipZ0DT/2HvSjjlwg7Mtr/V+2OnfzOr4xM7bbJTxsl22mhcvwz5Ml6N7JIU7tisXZFytiTjGDxqC3po41J5Qqem8bCERmI42BJD3OHI6T7FrSPUCIYPxmVi53cLLbcxkmpIt2Z+PMQ47lIvebspbiJA5CjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=AXrl34k4; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1713089245; x=1713694045; i=wahrenst@gmx.net;
-	bh=BcXnyFLSiecfEm9hOusCZzYCTA6xHvCbglcnW+Su5Vc=;
-	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
-	b=AXrl34k4NiaR2xaCHzeaEXjYxpdn6m+RgoiOMGSVaIIq+ebfvFIGsR9fkBn9Vtrb
-	 +gXCgsJ4X7Gy508BafjwLAEN60VUQ9cz4in8dYLRJmEmSNoaniKWwTPZKDkXjDgLc
-	 j7Wn7lcB30e1n80Wn4O55TY/eoPXZvUhbaHGJJKFsEW0oJmHlEt8hYSmjer7TulEX
-	 9zeG+Ir5+aYzW3JW7pW9p/OraVRmvi1b8jGbzh1Q9pxW4iprrhk2d8mQmq/3k3tdU
-	 7HfLZIps80ScP4PruUT1xDug+E+WxeaO/DVHccwpL2OoqrLkHVgNQPxCAfpE7ByZN
-	 zrq4lcDKgtckw/9eIw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MkHMZ-1sbI0L4Bq5-00kcXr; Sun, 14
- Apr 2024 12:07:25 +0200
-Message-ID: <fd77cfa2-9bd8-4393-95bd-eced676bf6d2@gmx.net>
-Date: Sun, 14 Apr 2024 12:07:23 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489B218AF4;
+	Sun, 14 Apr 2024 10:09:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713089401; cv=fail; b=PhEiNDcrBRQ+qQFHM3BFgTG0oEZ9duxLftnU58pe3ngNkzeqOcVEwf1lX3xANixyXXg/pod2mMm364+qUmqxh+3J67cUYQAB+x3P742E3u6IAx5R77j0JqM9DacJ+jc8IpCl4tQNXzebXs4I5aT84M6t9DBAdY4lYm7buETvS9g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713089401; c=relaxed/simple;
+	bh=VavTB5beKyf7KLMKtSMZJPxiMzoXBigaj9Co9mVK73Y=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZiJnAveiqIK775fMlsIWB3hgaoUjw910hysK/ox3I3VyLhlH1nPEeA+HEWUz54MwMv4sc4st3L2Chmk1p9AnTJjyj8/TULbCuRfQx8IguYXZV2BuIqYAm3kyPh23+/VXj3phlrFDkpXKoj7uNGvHRObZ/IUiHNQAVxohx2vWtN0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=fIYDoXSX; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43EA01pe004996;
+	Sun, 14 Apr 2024 03:09:46 -0700
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xfsjg1rdm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 14 Apr 2024 03:09:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8mLfRGiz2xpE24LBrPjfHEBZkoafgwR6D3CQaHRE1ZeuDGP/agq/PUGUZazPP0NVfijb7dmNwqIE9Ta+Kzk1EYdepAYlJfD5KG+1USUDPXfObNb4wo+ctBFSG1fgi5POn2bxhYLQJ5wH4QnhKapFCEC2Q/AUImh/fsXed8jVWkU/JSOpJMnEdc0GeuQr9n7jV0lbfkm3J3LZARbkfHckdRYjRQ4KX6q3dvLI9rmdiVlaOVdv6yCGo440uowX0CWFJzEvUXKNu5YoqVcDHpHKpgJ8SmvzhVfPXs5wZC5VtdHMKACgt8iYEI5eEcettChHuLFToIhD/ymAR4FgP0kmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VavTB5beKyf7KLMKtSMZJPxiMzoXBigaj9Co9mVK73Y=;
+ b=m4svmrc5ii/ggVTFfKKUo9yoQt1axeNr8dudmAYOhTK1icSJKk7KFeIpy6d4+C9iuXpiCnrpJObMSWUuAnd7WY1Y67gOS7wC01pkZ0bEgITfPGKYKEnDST4uipzuubt55Gmu8iB3Pf1Xbxnn1DhTAqoXeW6Bu9mU+upYlL6uh9farhdt9mJ7GUSjd3Mkj1Yyg7R5aSnHajQq+J0eLTOWuSZY/IMnzBAj+QfWpHgsSPibkuWPaCi8IxabJfKVZZi8aRq5Kq4gOvEVmnRoV0uCGK/WKE+CJ4kpIMcjyr0BalkoEJ1ON+q873VO6VLSnoX4zfls4Qes9U3P3fVEymDTRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VavTB5beKyf7KLMKtSMZJPxiMzoXBigaj9Co9mVK73Y=;
+ b=fIYDoXSXa/zM4vojKUn0Tgs2pYLVNJiP1ww7Ydbmt7iq6Yse8ZkCeKU5dStrGJwoztWgEGQYhjtI6QOCtzYZYS3EMd7Th+iVuyZAqm0zGKvwmwUpMy3vSjwmhKWuCM8glk0gFBmVmbRV89bGKyuuYpRp8wYz4mtstVD2J2S6REg=
+Received: from PH0PR18MB5002.namprd18.prod.outlook.com (2603:10b6:510:11d::12)
+ by DM6PR18MB3508.namprd18.prod.outlook.com (2603:10b6:5:28f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Sun, 14 Apr
+ 2024 10:09:41 +0000
+Received: from PH0PR18MB5002.namprd18.prod.outlook.com
+ ([fe80::8bf7:91cd:866c:68b0]) by PH0PR18MB5002.namprd18.prod.outlook.com
+ ([fe80::8bf7:91cd:866c:68b0%7]) with mapi id 15.20.7452.046; Sun, 14 Apr 2024
+ 10:09:41 +0000
+From: Linu Cherian <lcherian@marvell.com>
+To: James Clark <james.clark@arm.com>,
+        "suzuki.poulose@arm.com"
+	<suzuki.poulose@arm.com>
+CC: "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+        "coresight@lists.linaro.org"
+	<coresight@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        George Cherian <gcherian@marvell.com>,
+        Anil Kumar Reddy H
+	<areddy3@marvell.com>,
+        "mike.leach@linaro.org" <mike.leach@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>
+Subject: RE: [EXTERNAL] Re: [PATCH v7 2/7] coresight: tmc-etr: Add support to
+ use reserved trace memory
+Thread-Topic: [EXTERNAL] Re: [PATCH v7 2/7] coresight: tmc-etr: Add support to
+ use reserved trace memory
+Thread-Index: AQHacECxPyWnte/kREqCV8A8RzaH07FknyeAgAMnmXA=
+Date: Sun, 14 Apr 2024 10:09:41 +0000
+Message-ID: 
+ <PH0PR18MB500263D63DD07EF1C28017C8CE0A2@PH0PR18MB5002.namprd18.prod.outlook.com>
+References: <20240307033625.325058-1-lcherian@marvell.com>
+ <20240307033625.325058-3-lcherian@marvell.com>
+ <3c5c85d4-8657-4ee0-88fa-ee47dce4cc7c@arm.com>
+In-Reply-To: <3c5c85d4-8657-4ee0-88fa-ee47dce4cc7c@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR18MB5002:EE_|DM6PR18MB3508:EE_
+x-ms-office365-filtering-correlation-id: 2084e9e5-f519-4cd9-72aa-08dc5c6b0036
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ +o+l2aocjHk5/qPLQv9FO0VR8quXgBw48dJ3MIYwdXNTIoQa1ZRaBDpcEoVowI7uPkvnD7rmvtYafZnAhc+FFOgx6sYrEjUA6BENRYA+miRalnHSeRc3ESe0lZuh0DOlUC6nrKNK4Exd8cOYKufPMJYb5Xo4Enx5ctWF8gl5Bt/Jc5rU2O4pwz4j8qmEJjHBWjZDFGEG6MfoEyNUc/wNNbI8xc5BKAdh5o0G+BlR8Nr3/HriQfGLN3Qt4miiN010u6GoJ4+VotWsj7IfjaHDgkh0yzMH31SMBOjPClKbvzsER2d8n0WAYk7hTi2AhnxT3kWgDc/rNobP+orFMMNFzSw/FR8Tqvr/xT81k5SiibQjkDAaMYT7KohQi3liRWNndJECEyZqEVo48Q3P64/7zHHT9XN1FmUrQAgCQ54JD6ZBW1ihcjho01+cRwQRQIYKqVY47Hvr3t2e1D8oxw+aRQ7m0IYCQ8ayNI5Tm02p/A1+aGpuYIQErTEmPn1DtClriPjq/pYmKahkFRR/hqnGWCH56XawN4UZm+q1Wp720FxKjRsLMpQFocPxXLwoOTPog5oR9U68Tvc3fFnCJSMU4390hiq8M1I2sysCHCQ/G4s9mZF8X6WJe930fiPKh0okuFGnTngE7spPEmJms0FQXqeQy9FVe3kcnFMVmqkN0MbKjt5E8K1UmTt5LghEO3mKoYjAhZP1XXMB5zSP7PI6V5t6Fniz/aD0s4/t+TW8sZk=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB5002.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?VnM4MWwxZGZ6WHdwOUNlOXNhODBxVzY5NjFVVWVweUtpd2FEZjhCRXFFRzB6?=
+ =?utf-8?B?TTJNNnU5eVRYeGVENTE5Y0FvbkhVUG1aSGU1aHRSRU5FZ0VwSGpUdTgzWVRw?=
+ =?utf-8?B?cngxN29xWFBaQ0doMWVLckp6M3N2VFpzSlU2cTdaZTVtcVJseGpYSVJuemRm?=
+ =?utf-8?B?QzJOWTNId1VQbnBxOTRtSk9JQTRNL3l6WDQ5VzBYQkRHZ1BrMzl1b2g5eko4?=
+ =?utf-8?B?WW5XS2wwRmFZekgzeUFRNFprbDlqMzl4c3FXVXd0NUwzVUFEcENEMG1sbFRt?=
+ =?utf-8?B?TmNVYnBEc0dBZEt3NnpGTGxhODZDNURrMDJzWDFpM2ZJZ1FlcmNQRTNxL2p0?=
+ =?utf-8?B?MDB0bG5VSHpzUCtCZExDcjdzbHYrUkt4YmkyWmVYZElrS0dLWkZkdjlkekNv?=
+ =?utf-8?B?UDl1K1hNQm5SUFV2Y2x2UG1rUlJlOXlWUG9OZkNnOUNGbjZGQmw2SFBXV1FT?=
+ =?utf-8?B?dHJrdmdnSHV0eFh4UzZadFJkcEczQVhEUUZOTEpQN0xLUGNEYklZeHYvTnBN?=
+ =?utf-8?B?UENVclRKbjZHeElMM09pMzBKQXN2ZUN5YTliUjY4b3MyOEJtQnlTa1V4azEr?=
+ =?utf-8?B?cGVkU1RhcUpQcEs5dGY1T05wZGFsNlVYMFJKQ241UzdtLzBMY1psYjFNZFFZ?=
+ =?utf-8?B?TnVCdVBVU3B3eEFMdDhxOGNpYUhOM1pCY25qV0l1em1hSFArdnY0RzdhQW0x?=
+ =?utf-8?B?RjFMNVBrYklKNlpBL1NrUm14VjBqSHJDUUN4NmJTVHJXNjlKQnFIU29IdU1U?=
+ =?utf-8?B?SldUVEhxa0J3c3lJVS9UalUyOEJpSTY0TkxlYVZOYWowbVc1NjlDWnlybkFH?=
+ =?utf-8?B?dWxrWGNxays1RTB6dFZORHp0MDJ6U0FxN3dtWU1PSjdpQ044ZmVpOTc0dm4x?=
+ =?utf-8?B?M3Q2elc2Wldjcy9kLzM5RFo3c1lBM2NmMkhDcUFydEZXQ3lESzB5T01LNDdS?=
+ =?utf-8?B?NEYrOThhVWo4a2JQb0pnbFkzUHhRNlVNbGQ3NGpnR09aNXhRSzVQK2FRQXR2?=
+ =?utf-8?B?a3ZoamtETnJvdmFoa1Y2cE9oZzV0amUzZHpqSFlCOGFUUVY3M1Y3L3NLNFRE?=
+ =?utf-8?B?R3lqWWZVelpYSzljTGpGQStGdStxcFJjQzhHYW9lOHdNWDQ4STJXN3JrMGFB?=
+ =?utf-8?B?TmtZN1FjckVVbXhITUxmYmNXeEs1QTRsa1p5Y2ZneldRempaNkhtTkgwTDg1?=
+ =?utf-8?B?c3UwUEdjYWY0eHhEYXVGUjQrNTlERU9FaHhhcEFLTTV3REFYU1htYVlJanl4?=
+ =?utf-8?B?cnRFd0pLdTFZMDFMcWdwN0hoODdkVDBXWmVSUTllSzRYUFMwY2ZlZXBRenlB?=
+ =?utf-8?B?VXBQdzJ3SU9IZzg3ZXNLZlNqdHhSMEZQKys0ZzNVMEp3dGFZWlJDZXdQYzV3?=
+ =?utf-8?B?dkJnV2h5TTFWK3NRMXE1R0U5VEhlT1EvZVdxMjVvUGNlMnNOd0NIYTNkamlF?=
+ =?utf-8?B?WXhEMTVxaDZ3U08zTWd5VWZ3ODNVOEE1TGw3aXFubWtZWU5MMWZsdlNReHJU?=
+ =?utf-8?B?RDZwVWFDYk5ibjczay9wMlNnUUtCZmxSS0NvQkszV3BMZVFLVm0rREpwaWxk?=
+ =?utf-8?B?eXhzZUFsMCtHTm1mK2RYcjJyU2QydE02TDRPaGh4eFlFbmpMNFJOdXdOK0RK?=
+ =?utf-8?B?am5xdlJMaFNGcFpIZTF3Q0JNL1dkMlRjcklkdjNHOEM4aXh4bWhHeC9EUkFS?=
+ =?utf-8?B?bzd0SFR3WFB5ekdhMWI4Zzd3RXNFd3RRdjNuSzRxVll6dXR5Q1o0NU1uUmZz?=
+ =?utf-8?B?dW1uYTZlUWNLQVE3SzdDV1U4dW9zblV4RHVSWHdDSmpWc1ZUWm9hQlZGS2Zs?=
+ =?utf-8?B?Qzd4aU0ySWNCaFpyQnR1ZFZVTUN5S3J1TW90WmFacWJCV3htWE01Mm5kTVp6?=
+ =?utf-8?B?cW1tMzdvckRlNFZwR0U1Ymd3aHp5d0ltVzBTNWVHMHpRNDVMSlpSKzVMTHNN?=
+ =?utf-8?B?eXpBNVpjWDBSTHVhTUk5V0FVQ0NsMENCWjArRjVtWFI0TDczbWVwRG84VjNN?=
+ =?utf-8?B?WU1nYlpiN3Q0MWlKUjU3YVQ0b3ZHMDhKUEJTd0UzcEtncm42ZVY5NURROE5u?=
+ =?utf-8?B?Sm1idUN5aFY1ZGg1OFduSHA3OW92YlF1WHBObkMxTXpxMXZrbTlZRE9abXZ2?=
+ =?utf-8?Q?ETayiQX/t8wQuW8JUjWbw5vUw?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/6] Add support for BCM2712 SD card controller
-To: Andrea della Porta <andrea.porta@suse.com>,
- Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Adrian Hunter <adrian.hunter@intel.com>, Kamal Dasu
- <kamal.dasu@broadcom.com>, Al Cooper <alcooperx@gmail.com>,
- linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, Jonathan Bell <jonathan@raspberrypi.com>,
- Phil Elwell <phil@raspberrypi.com>
-References: <cover.1713036964.git.andrea.porta@suse.com>
-Content-Language: en-US
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <cover.1713036964.git.andrea.porta@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:accCx00poYGsvNcwQW0/34oRbtZyJ0evPPlSzcwec8RRGSsPtyL
- H8/yzIccKZRoXazP5Vorco9XbWGpZRbWwNDZ/I8xg3F7us6hcBusj0i3Gu5f3xS83sgaujI
- Kwvn2AG/sgbeHzNZEwEXEbUHp+pKoxo/by/mYab/eGqg6UXM+A6WFfnnX9jVq9Rmgz6x/gi
- pNbnG+q7hTDHFLJLi+uwg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jbo1m5rDERM=;opjDWYBWEtwH5Lex+q8wTD3WUsl
- qVKp2vcCJLptK1C8b1MDSIniJP9yVPydZ/XY6XCZyJoC2kTI7RrMG97ZBpgpo7AauVWkzOdQ8
- 6u8j/QbbJD266Avl37xxYavcbszqnXRa5NjPzJtO3fmPaq6HS5qCuyyUQ/ZFUPkDK1jLBpg6w
- tJr+QJ/1wuaAfAxziJoHCyAMYGVSvd4+iwZrCp1+M21x+3G9ypX52kSWHLHGCmpKvUjKDlVYM
- UUUDEaqjw4t5t1A7TRJQu33otVggqtVjR740XPT9SzqrdePwqE7g91MXMiQ30VJAus3Q7Q5eM
- +scKWV3/tKLfLQmZUn5q4mcyNsrlArCKImQdG3z/r2DwXpDx2GGmG47LdNek8HL0auYLInfDd
- tiGBdXTLLNA282dbQvz+EtMG6dUP0wisxX2Soz+WK/BbuYiJxsXB/HgKzkTFEbObtRfT0nplx
- 9sfP9ZVfHIJCH958kpy7yjuBbxtDKd9c3rHVXDQDE+wyzpP4xGdfAt1Jg0cZunPnHWQSThVQv
- k7flYjpdL9hFbiVav+0ldEjT5cJYWxU5aKMJk566fhcwUjs0gvkLszDnicLBKtGHz4pK0n/1m
- fLFI2YN6taln4gU24mX1nRRSGf/wiq+i219Re1eBBmtz4bbszjHKeRehARinA7MZTsc05cWYC
- B3kgaHHg9LCLKekT9PmarzNNZ/W0RpbmLMl59U8nviS03hPF9NoFIN50BjyOV6rbvuwVMJzhf
- MP0X+fYTmXR5R2GedhU5hqyJoBHWTEBMyXuxAP+XTJFaF4P0xh5dbfYxyDQSGCLnPpxAxLWG2
- CJR7fnkjB4Xg+sfcGA5IMJndBSbtEgLwrdsML7dNBZ7Z4=
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB5002.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2084e9e5-f519-4cd9-72aa-08dc5c6b0036
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Apr 2024 10:09:41.4182
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eKYtVKVprpCzIfRxj3RNXluoqaYKmutyl83pK9nj1tPD3XniYjnCl2IzTtWV3peTrYOXz3+hMT3AvkidsuHyww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB3508
+X-Proofpoint-GUID: 1tNlyHCW5VDwQ4nPLDFjcxm6SAF1oZrf
+X-Proofpoint-ORIG-GUID: 1tNlyHCW5VDwQ4nPLDFjcxm6SAF1oZrf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-13_11,2024-04-09_01,2023-05-22_02
 
-Hi Andrea,
-
-Am 14.04.24 um 00:14 schrieb Andrea della Porta:
-> Hi,
->
-> This patchset adds support for the SDHCI controller on Broadcom BCM2712
-> SoC in order to make it possible to boot (particularly) Raspberry Pi 5
-> from SD card. This work is heavily based on downstream contributions.
-since your goal is minimal Raspberry Pi 5 support, i suggest to use this
-as the subject for this patch.
-> Patch #1 and 2: introduce the dt binding definitions for, respectively,
-> the new pin cfg/mux controller and the SD host controller as a preparato=
-ry
-> step for the upcoming dts.
->
-> Patch #3: add a somewhat reasonable (*almost* bare-minimum) dts to be us=
-ed
-> to boot Rpi5 boards. Since till now there was no support at all for any
-> 2712 based chipset, both the SoC and board dts plus definitions for the
-> new Pin and SD host controller have been added.
-The patch still seems to contain a lot unnecessary stuff (Wifi, BT,
-SPI), please try to remove as much as possible for the minimal support
-(just boot via debug UART & SD card) in order to make review easier. Btw
-this patch must be after pinctrl & SDHCI support.
-> Patch #4: the driver supporting the pin controller. Based on [1] and
-> successive fix commits.
->
-> Patch #5: add SDHCI support. Based on [2] and the next 2 fix commits.
-> Drop the SD Express implementation for now, that will be added by patch
-> #6.
->
-> Patch #6: this patch offers SD Express support and can be considered tot=
-ally
-> optional. The callback plumbing is slightly different w.r.t. the downstr=
-eam
-> approach (see [3]), as explained in the patch comment. Not sure what is =
-the best,
-> any comment is highly appreciated.
-I don't think this should be necessary for minimal Raspberry Pi 5
-support. Maybe this should be addressed later.
-
-More important would be an additional patch which enables the necessary
-drivers in arm64/defconfig.
->
-> Tested succesfully on Raspberry Pi 5 using an SDxC card as the boot devi=
-ce.
->
-> Still untested:
-> - SD Express due to the lack of an Express capable card.
->    Also, it will need PCIe support first.
-> - card detection pin, since the sd was the booting and root fs device.
->
-> Many thanks,
-> Andrea
->
-> Links:
-> [1] - https://github.com/raspberrypi/linux/commit/d9b655314a826724538867=
-bf9b6c229d04c25d84
-> [2] - https://github.com/raspberrypi/linux/commit/e3aa070496e840e72a4dc3=
-84718690ea4125fa6a
-> [3] - https://github.com/raspberrypi/linux/commit/eb1df34db2a9a5b752eba4=
-0ee298c4ae87e26e87
->
-> Andrea della Porta (6):
->    dt-bindings: pinctrl: Add support for BCM2712 pin controller
->    dt-bindings: mmc: Add support for BCM2712 SD host controller
->    arm64: dts: broadcom: Add support for BCM2712
->    pinctrl: bcm: Add pinconf/pinmux controller driver for BCM2712
->    mmc: sdhci-brcmstb: Add BCM2712 support
->    mmc: sdhci-brcmstb: Add BCM2712 SD Express support
->
->   .../bindings/mmc/brcm,sdhci-brcmstb.yaml      |   51 +-
->   .../pinctrl/brcm,bcm2712-pinctrl.yaml         |   99 ++
->   arch/arm64/boot/dts/broadcom/Makefile         |    1 +
->   .../boot/dts/broadcom/bcm2712-rpi-5-b.dts     |  313 +++++
->   arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi |   81 ++
->   arch/arm64/boot/dts/broadcom/bcm2712.dtsi     |  841 +++++++++++
->   drivers/mmc/host/Kconfig                      |    1 +
->   drivers/mmc/host/sdhci-brcmstb.c              |  275 ++++
->   drivers/pinctrl/bcm/Kconfig                   |    9 +
->   drivers/pinctrl/bcm/Makefile                  |    1 +
->   drivers/pinctrl/bcm/pinctrl-bcm2712.c         | 1247 +++++++++++++++++
->   11 files changed, 2918 insertions(+), 1 deletion(-)
->   create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm2=
-712-pinctrl.yaml
->   create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
->   create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
->   create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712.dtsi
->   create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm2712.c
->
-
+SGkgSmFtZXMsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSmFtZXMg
+Q2xhcmsgPGphbWVzLmNsYXJrQGFybS5jb20+DQo+IFNlbnQ6IEZyaWRheSwgQXByaWwgMTIsIDIw
+MjQgMzoyNyBQTQ0KPiBUbzogTGludSBDaGVyaWFuIDxsY2hlcmlhbkBtYXJ2ZWxsLmNvbT47IHN1
+enVraS5wb3Vsb3NlQGFybS5jb20NCj4gQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFk
+ZWFkLm9yZzsgY29yZXNpZ2h0QGxpc3RzLmxpbmFyby5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdl
+ci5rZXJuZWwub3JnOyByb2JoK2R0QGtlcm5lbC5vcmc7DQo+IGtyenlzenRvZi5rb3psb3dza2kr
+ZHRAbGluYXJvLm9yZzsgY29ub3IrZHRAa2VybmVsLm9yZzsNCj4gZGV2aWNldHJlZUB2Z2VyLmtl
+cm5lbC5vcmc7IFN1bmlsIEtvdnZ1cmkgR291dGhhbQ0KPiA8c2dvdXRoYW1AbWFydmVsbC5jb20+
+OyBHZW9yZ2UgQ2hlcmlhbiA8Z2NoZXJpYW5AbWFydmVsbC5jb20+OyBBbmlsDQo+IEt1bWFyIFJl
+ZGR5IEggPGFyZWRkeTNAbWFydmVsbC5jb20+OyBtaWtlLmxlYWNoQGxpbmFyby5vcmc7DQo+IGxl
+by55YW5AbGluYXJvLm9yZw0KPiBTdWJqZWN0OiBbRVhURVJOQUxdIFJlOiBbUEFUQ0ggdjcgMi83
+XSBjb3Jlc2lnaHQ6IHRtYy1ldHI6IEFkZCBzdXBwb3J0IHRvDQo+IHVzZSByZXNlcnZlZCB0cmFj
+ZSBtZW1vcnkNCj4gDQo+IFByaW9yaXRpemUgc2VjdXJpdHkgZm9yIGV4dGVybmFsIGVtYWlsczog
+Q29uZmlybSBzZW5kZXIgYW5kIGNvbnRlbnQgc2FmZXR5DQo+IGJlZm9yZSBjbGlja2luZyBsaW5r
+cyBvciBvcGVuaW5nIGF0dGFjaG1lbnRzDQo+IA0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IA0KPiANCj4g
+T24gMDcvMDMvMjAyNCAwMzozNiwgTGludSBDaGVyaWFuIHdyb3RlOg0KPiA+IEFkZCBzdXBwb3J0
+IHRvIHVzZSByZXNlcnZlZCBtZW1vcnkgZm9yIGNvcmVzaWdodCBFVFIgdHJhY2UgYnVmZmVyLg0K
+PiA+DQo+ID4gSW50cm9kdWNlIGEgbmV3IEVUUiBidWZmZXIgbW9kZSBjYWxsZWQgRVRSX01PREVf
+UkVTUlYsIHdoaWNoIGJlY29tZXMNCj4gPiBhdmFpbGFibGUgd2hlbiBFVFIgZGV2aWNlIHRyZWUg
+bm9kZSBpcyBzdXBwbGllZCB3aXRoIGEgdmFsaWQgcmVzZXJ2ZWQNCj4gPiBtZW1vcnkgcmVnaW9u
+Lg0KPiA+DQo+ID4gRVRSX01PREVfUkVTUlYgY2FuIGJlIHNlbGVjdGVkIG9ubHkgYnkgZXhwbGlj
+aXQgdXNlciByZXF1ZXN0Lg0KPiA+DQo+ID4gJCBlY2hvIHJlc3J2DQo+ID4vc3lzL2J1cy9jb3Jl
+c2lnaHQvZGV2aWNlcy90bWNfZXRyPE4+L2J1Zl9tb2RlX3ByZWZlcnJlZA0KPiA+DQo+ID4gU2ln
+bmVkLW9mZi1ieTogQW5pbCBLdW1hciBSZWRkeSA8YXJlZGR5M0BtYXJ2ZWxsLmNvbT4NCj4gPiBT
+aWduZWQtb2ZmLWJ5OiBMaW51IENoZXJpYW4gPGxjaGVyaWFuQG1hcnZlbGwuY29tPg0KPiA+IC0t
+LQ0KPiA+IENoYW5nZWxvZyBmcm9tIHY2Og0KPiA+ICogUmVtb3ZlZCByZWR1bmRhbnQgZ290byBz
+dGF0ZW1lbnRzDQo+ID4gKiBTZXR0aW5nIG9mIGV0cl9idWYtPnNpemUgdG8gdGhlIHJlc2VydmVk
+IG1lbW9yeSBzaXplIGlzIGRvbmUNCj4gPiAgIGFmdGVyIHN1Y2Nlc3NmdWwgZG1hIG1hcCBpbnNp
+ZGUgdGhlIGFsbG9jIGZ1bmN0aW9uDQo+ID4gKiBSZW1vdmVkIHRoZSBzcGVjaWFsIGNhc2luZyBm
+b3IgRVRSX01PREVfUkVTUlYNCj4gPiAqIEZpeGVkIHRoZSB0YWIgc3BhY2luZyBpbiBzdHJ1Y3Qg
+dG1jX2RydmRhdGENCj4gPg0KPiA+ICAuLi4vaHd0cmFjaW5nL2NvcmVzaWdodC9jb3Jlc2lnaHQt
+dG1jLWNvcmUuYyAgfCA0NyArKysrKysrKysrKw0KPiA+ICAuLi4vaHd0cmFjaW5nL2NvcmVzaWdo
+dC9jb3Jlc2lnaHQtdG1jLWV0ci5jICAgfCA4MiArKysrKysrKysrKysrKysrKystDQo+ID4gIGRy
+aXZlcnMvaHd0cmFjaW5nL2NvcmVzaWdodC9jb3Jlc2lnaHQtdG1jLmggICB8IDI3ICsrKysrKw0K
+PiA+ICAzIGZpbGVzIGNoYW5nZWQsIDE1MyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0K
+PiA+DQo+IA0KPiBbLi4uXQ0KPiANCj4gPiAgc3RhdGljIGJvb2wgZXRyX2Nhbl91c2VfZmxhdF9t
+b2RlKHN0cnVjdCBldHJfYnVmX2h3ICpidWZfaHcsIHNzaXplX3QNCj4gPiBldHJfYnVmX3NpemUp
+IEBAIC04NzQsMTMgKzk0NywxMCBAQCBzdGF0aWMgc3RydWN0IGV0cl9idWYNCj4gKnRtY19hbGxv
+Y19ldHJfYnVmKHN0cnVjdCB0bWNfZHJ2ZGF0YSAqZHJ2ZGF0YSwNCj4gPiAgCWlmICghZXRyX2J1
+ZikNCj4gPiAgCQlyZXR1cm4gRVJSX1BUUigtRU5PTUVNKTsNCj4gPg0KPiA+IC0JZXRyX2J1Zi0+
+c2l6ZSA9IHNpemU7DQo+ID4gLQ0KPiANCj4gSGkgTGludSwNCj4gDQo+IE5vdCBzdXJlIGlmIHRo
+aXMgd2FzIGxlZnQgaW4gYnkgbWlzdGFrZT8gSXQncyBub3QgbWVudGlvbmVkIGluIHRoZSBjb21t
+aXQNCj4gbWVzc2FnZSBhbmQgaXQgZG9lc24ndCBzZWVtIHRvIG1hdGNoIHRoZSBkZXNjcmlwdGlv
+bi4NCj4gDQoNClllYWgsIHRoYXQgY2hhbmdlIHdhcyBieSBtaXN0YWtlLiBTb3JyeSBhYm91dCB0
+aGF0Lg0KDQo+IFBsZWFzZSBtYWtlIHN1cmUgdGhlIGN1cnJlbnQgdGVzdHMgcGFzcyBib3RoIHdp
+dGggYW5kIHdpdGhvdXQgYSByZXNlcnZlZA0KPiBidWZmZXIgZGVmaW5lZCBpbiB0aGUgRFQuIEkg
+Z2V0IGxvdHMgb2YgZmFpbHVyZXMgd2l0aCB0aGlzIHBhdGNoc2V0IGFwcGxpZWQgb24NCj4gTjFT
+RFAuIEVURiBzZWVtcyB0byB3b3JrIGJ1dCBFVFIgZG9lc24ndDoNCj4gDQoNCkFjay4NCg0KPiAg
+ICQgc3VkbyBwZXJmIHRlc3QgLXZ2diAiYXJtIGNvcmVzaWdodCINCj4gDQo+ICAgUmVjb3JkaW5n
+IHRyYWNlIChvbmx5IHVzZXIgbW9kZSkgd2l0aCBwYXRoOiBDUFUxID0+IHRtY19ldGYwDQo+ICAg
+Q29yZVNpZ2h0IHBhdGggdGVzdGluZyAoQ1BVMSAtPiB0bWNfZXRmMCk6IFBBU1MNCj4gDQo+ICAg
+UmVjb3JkaW5nIHRyYWNlIChvbmx5IHVzZXIgbW9kZSkgd2l0aCBwYXRoOiBDUFUxID0+IHRtY19l
+dHIwDQo+ICAgQ29yZVNpZ2h0IHBhdGggdGVzdGluZyAoQ1BVMSAtPiB0bWNfZXRyMCk6IEZBSUwN
+Cj4gICAuLi4NCj4gDQo+IERtZXNnOg0KPiAgIFsgMTkzOC42MjIwOTFdIGNvcmVzaWdodCB0bWNf
+ZXRyMDogVW5hYmxlIHRvIGFsbG9jYXRlIEVUUiBidWZmZXINCj4gDQo+ID4gIAkvKiBJZiB0aGVy
+ZSBpcyB1c2VyIGRpcmVjdGl2ZSBmb3IgYnVmZmVyIG1vZGUsIHRyeSB0aGF0IGZpcnN0ICovDQo+
+ID4gIAlpZiAoZHJ2ZGF0YS0+ZXRyX21vZGUgIT0gRVRSX01PREVfQVVUTykNCj4gPiAgCQlyYyA9
+IHRtY19ldHJfbW9kZV9hbGxvY19idWYoZHJ2ZGF0YS0+ZXRyX21vZGUsIGRydmRhdGEsDQo+ID4g
+IAkJCQkJICAgIGV0cl9idWYsIG5vZGUsIHBhZ2VzKTsNCj4gPiAtDQo+IA0KPiBXaGl0ZXNwYWNl
+IGNoYW5nZS4NCg0K
 
