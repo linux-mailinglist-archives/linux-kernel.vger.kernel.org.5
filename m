@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-144188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A55B8A42DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:12:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DD908A42E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:12:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB9361C20359
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:12:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B47AC281A1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5895C53809;
-	Sun, 14 Apr 2024 14:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E97F55C2E;
+	Sun, 14 Apr 2024 14:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nBNRNTfL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EtqZzgBR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAF923B1;
-	Sun, 14 Apr 2024 14:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F887446AF;
+	Sun, 14 Apr 2024 14:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713103929; cv=none; b=ouG3Gn4B+GNiTEIWIZD2yy32FBTxfuq78FbEt5ahIXesg+7t4ScUA1ACngDYJbc4TIhih+vN4dWbnyAkeexh9bttnJV/5NwZDnGRfpWMjynKixLFTI2NNm5RCozmYontatWv2TBIdTeufEaGqDXz2yJDcCo4Ir5BMd4U0GmQzuc=
+	t=1713103937; cv=none; b=DlMiJXxDaBF3dpIqmTcxo6z0MCiqIDoEcGZJEiDXlxI7UXD46UwzIK/SIoPW9IZVl/0mGCj8+fZ4zmScjAWLTMS+nyeAlfSfND//lArh4OQWryFkvgMDRX2CArX+pmaUAwk4cxcXytnwCBhn3Q+eFrZcD3Z+AGA1zq7sAik3SOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713103929; c=relaxed/simple;
-	bh=k4LfJkXpVNJ86Rs2HHoaJpZPnBniWCmio6LXUrTyBc4=;
+	s=arc-20240116; t=1713103937; c=relaxed/simple;
+	bh=qdIwjNuMH0LQJpcJiknIKRpygWmqOp4JwM7YzC65inM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sxHpdkYEQ8vEQuFapBo8rHcTLQuXmtFSRYkxOQAMHFT72gEbuVhNxzoelvjwqhya3oA2ClZsxr6ZfOYwMsKOpWVjwhagyusymprZk6qEMqt1p33RkAppyeCRI6EMBiMes6pVgFAOXqMK5WOgNanxZRVaiAP2WvXngf9EqWzTV+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nBNRNTfL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F06ADC072AA;
-	Sun, 14 Apr 2024 14:12:04 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=GQEODugNSiWEXHDc+QvlKJNEP26qMCLyv4028ral7Uh9EtJ1rtmeiLTh6658ppveynbwcfqhK3jiJPX8mvuiJ1b82bm73+YENR4/u3EQEz5UjF8c1UZp43O10SPiKkBPbc3qat2KIMKIGcQG/kPwLVqeyQEpHtglTzMgX0JIT6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EtqZzgBR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AA7DC32781;
+	Sun, 14 Apr 2024 14:12:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713103929;
-	bh=k4LfJkXpVNJ86Rs2HHoaJpZPnBniWCmio6LXUrTyBc4=;
+	s=k20201202; t=1713103936;
+	bh=qdIwjNuMH0LQJpcJiknIKRpygWmqOp4JwM7YzC65inM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=nBNRNTfLitg2WJmgtSZUHUPsZV0Tc68dB9zmlnZQjrmRp8Tkxn2j/1UGTZBf4tA7f
-	 vohaNH+hmlI92JZIfhm6beXj8QgxHtlJBoRcWWx6brLKcjgunVmNL0lML8pyKpAOZC
-	 Mn0xhJBrhc5kVgSdZovNeV7tCOVf+vYD4e3m9St2t03GY/3RtMIJdALPLQ5EHtBxeW
-	 d1t1XlqiBPhLcqZGqMaMV64fpqj3hqo8ZnS3s6KsgydRxIzQaQ0fHM6qqZBk2Oy0PY
-	 exLb5fcDojjl+oJroazwSbJGrbzmkqDZAMzftmBu1XzfeHtx88FG5XxQW9vstCQaIe
-	 2DZpoWwDV95oQ==
-Message-ID: <0f3eca3e-12f6-4cd1-8eb5-8e69ce50d7a3@kernel.org>
-Date: Sun, 14 Apr 2024 16:12:02 +0200
+	b=EtqZzgBRChVUtfJ3RHydXut8PLtmxXvDR/1KVTP4f3U+zviPQ99uyLcLxBCpww5Wz
+	 P+oYMBr4dEMNY2UrD8AaNhDRvA1IHiuyefqW2V15AbqYRKw7QdtZvC0Rs+elzfvib4
+	 r6rm+N+R+arTrM+w2wDchrOHxLo6X/EpteYSpcQlBUxPWNxPkUDjqjLdzFmtprdehE
+	 1PP258M3/XOkWN4g9SuxRI2LuswmBrAybWDq66JmsXUm3WNRWeL2/0kWQhKokt9rbf
+	 K4mxOEgwDqSYa4NQTc4hdiSSMuNvIEZNuxOpT7xOQMb6UvxMFsD5/Jvs/QQByxom08
+	 UqCCBHwPTlOBw==
+Message-ID: <40688eaa-9d85-4126-90f0-b8b7e746733f@kernel.org>
+Date: Sun, 14 Apr 2024 16:12:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,8 +49,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] dt-bindings: arm: bcm: add bindings for ASUS
- RT-AC3200
+Subject: Re: [PATCH 2/4] dt-bindings: arm: bcm: add bindings for ASUS
+ RT-AC5300
 To: arinc.unal@arinc9.com, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
  <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
@@ -60,7 +60,7 @@ To: arinc.unal@arinc9.com, Rob Herring <robh@kernel.org>,
 Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
- <20240414-for-soc-asus-rt-ac3200-ac5300-v1-1-118c90bae6e5@arinc9.com>
+ <20240414-for-soc-asus-rt-ac3200-ac5300-v1-2-118c90bae6e5@arinc9.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -106,14 +106,14 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-1-118c90bae6e5@arinc9.com>
+In-Reply-To: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-2-118c90bae6e5@arinc9.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 On 14/04/2024 13:46, Arınç ÜNAL via B4 Relay wrote:
 > From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> Add ASUS RT-AC3200 under BCM4709 based boards.
+> Add ASUS RT-AC5300 under BCM47094 based boards.
 > 
 
 Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
