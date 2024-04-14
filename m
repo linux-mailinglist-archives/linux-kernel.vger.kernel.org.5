@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-144166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4341E8A429B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:33:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AB6F8A429E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:34:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 031C6281AAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:33:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B2C81C20D9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6A4446BA;
-	Sun, 14 Apr 2024 13:33:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2113845036;
+	Sun, 14 Apr 2024 13:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="G40NE2go"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fgKNWTmc"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5160014292
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 13:33:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA3F2D61B
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 13:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713101590; cv=none; b=eO/cxHN+U17H5DHpD6NuXeUdTAppPTqESa6Vr22+cIv2K/zvcfPkUEfn/7JXS5V4AV62m4dNIM0LOpa2MeRtxInLjJ6BdgJWyXXcFqC7P69NyZbXOddpitEI5W5tblIGqeYRIn0YBTP7tI7IQcIbG2UaQS1MmayAjGxqpehNTkg=
+	t=1713101642; cv=none; b=fqPziL6SCFuhuLMUoibiL0e6CUGPaqPFbjqFzDijPZ7iMqcgohAs8Bf/GedDdMgDoDhKVpZP8K+itr9NEwvBW0qJjEQsHKsQAT/fwda+ceTl+6bamCAWEUiXJPmLYjX5bPfnKooT+x+e3Nk8AuzkSAwwPoe1w9kLGvPLGrSBtUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713101590; c=relaxed/simple;
-	bh=UGTdV60rTTa1/z7FjjcIkV8wA+snRkQpamMTF8dkDYI=;
+	s=arc-20240116; t=1713101642; c=relaxed/simple;
+	bh=An6iKG1WkKF6GBxeA9YxjpqSxkWheY5v1bnvn/ougbE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z9Iv3TsR/MI/EG6//E5FH/FXmTQeiiiOAwTXUVUOCCt1p+lDco29XFdkB77Aw7F81vPIUwRuugKXJpQmT7zlHlqq/zLxIxlgHMF1R2MwKUYKlnYbqu+8DUZ1sOjeUP/DtoMJqgUdSE5gNsAgg/K+LFOZ0wopykTa6iccaGiOZHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=G40NE2go; arc=none smtp.client-ip=209.85.208.43
+	 In-Reply-To:Content-Type; b=aIImpXlN0foQdD30o8pJPeL4GuJilkpHTLDcbD6Nc+GCIp10Wo5Thfn58AM0FFftZ4I6eY3sJOSHRvbsUV7xariG92trqS123qo89/C6nvao00jHEaCOrzVRvwAAX2xokGP7oVs6QWiU282kIj3P0nABVsypG2e4qgLio5czxoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fgKNWTmc; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so3094581a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:33:06 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d0c004b1so3050006e87.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713101585; x=1713706385; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713101639; x=1713706439; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tnz2Ub9YHRcyx+OTx0bhxWC9MSKU9cWV4v6zit2//m0=;
-        b=G40NE2goNpo6dO2BjwtnIijvgtFOQRH8v2CCVyhJE6KkXnbjK+nDwJmUl0JHfxcjGf
-         PXMFjLMSIBHvGRLwR8u85zICbOv+8Ybtjn3vmRJNk0ks6xKWAJTCdKUrlDG258uSUYwX
-         tLYNJUAIz/4nUCrHPlBn9/l9EO2HC24iwqBN2vIy/tYw9MMVytmyIvLh5uL2Y7hT3qN6
-         WwgjRBJQKUwfentHKl2QfEuOE1srY2rmR2lFzW68wmSZosfYTcXzGfOdV+Dw4L917cmT
-         6K8dRRJ5YHOUl0vrfz1Zd1SJIRSzz1Upaoqaf1br3TxBHG9s7fz7ko2Xzmg3yaaFtAuK
-         mDUQ==
+        bh=Zmx2K7nXKGr1mb31pDUL/AUJ3uwpgGyg9CR68PwOhTU=;
+        b=fgKNWTmcqxW3om7SfDkdkzAHWbWYvLNQwo6oUstY91a/f3HfPQAEVfqZCMlKBGw5eK
+         ASIfX88Ewm5ljRaLadLkOsTefg6FR9LHwp8MWpwiXEsxEF/HnMBcSH5KjowA6vYQOjUK
+         mP2CkaLOubtbW5OlvqSvnaPNxT1My2k2WpynsDMA+9YP4NkP0bDP5uEhRe3spPrq1I5r
+         25pdBAS68eCZPDGBtFFIGUd7LjwjRt3msi+v+odbs90QbAyBcMOiL6O+DEQgqSJznOag
+         fmpEmZDIBXrefv3j48vkRCJlCtNWMWhmI3hjuP3ewkNRjLDd6VJjx3HprJlkJyiD1Vel
+         qmAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713101585; x=1713706385;
+        d=1e100.net; s=20230601; t=1713101639; x=1713706439;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Tnz2Ub9YHRcyx+OTx0bhxWC9MSKU9cWV4v6zit2//m0=;
-        b=CknUb/dzsBm0AlS0/IW+I6kC5lLFmMuALWkz8lXUB87QW9VSsDpTSoV9ETfbx7KGbf
-         dmoiyo6iwtJLI6GmjWBltavuCH+MaM6x7mdji8RTBG0/W9AC6dizTxFxNesc+LpMlxYj
-         LokgyANDRC8UMYTfhmBxxk4SJgHEeW0uarNSQpAnL5pDl2hvlI+Dmp05lhNGX6eMfy/s
-         Gu7AgcNZzq/ZGPqr8gCazsPK7yBQsUYd/LmUvqM1YPwt/gDTgC41KIonck2Oiv6a5ZO0
-         nBzjqdaneb9bD0l8zMOQW7GgeKkO8B/sep7n2x783sopTop+YMXqFjzS3a6j6lO3UfLa
-         6DWw==
-X-Forwarded-Encrypted: i=1; AJvYcCXmvAygqGZzthOsvm7zYRm1cYOiA79LYYLwXs9WqhZY2UhsFPcBMWuxD1UsdTL8s19Ux8X6FeH3AMNmoYIGU/0Whf31BUaa+jChKK+F
-X-Gm-Message-State: AOJu0YyhOcd9RBNwvuetU2HmRdrwTP5pMKJ4MhpEwPOP79hpw7R8/tPn
-	fAo374W/UmO2N+6ivNDTCk6AKP6Ru5tGzYXItPAV4JvTqwphHuQRUBAM4yse0Eo=
-X-Google-Smtp-Source: AGHT+IEJdQEMXrX7+ib29PFiYSciihOFHgT5L3QfI75G1ws6jpvAjzBzQvbITHRCnun6+1TlduP/EA==
-X-Received: by 2002:a17:906:d932:b0:a52:223e:2d33 with SMTP id rn18-20020a170906d93200b00a52223e2d33mr4428762ejb.25.1713101585464;
-        Sun, 14 Apr 2024 06:33:05 -0700 (PDT)
+        bh=Zmx2K7nXKGr1mb31pDUL/AUJ3uwpgGyg9CR68PwOhTU=;
+        b=GvaOR8Zfw5C9VK93JSOS84QVUvJIq0SnEO+UttEcO+9jiHh02R/hCHPlrJeZjUfB4k
+         Z8Kc9ySloT9/FHscBJidP8z36yBaWTbKiV7OyCr/Rj1JGgNTAseDwU2amsTyjt7wI50l
+         9s7SWr2aZp2Apxq+T92QnQm2DGf8mltSxVoNbk5VjUgCXsjiP+J/p3V3bCSBROqn4nN0
+         hUEdUkO+OTIZVO0T6wm8T/ug7vReHXF6cIpfuIw1Nh+LxQsGVl1XDAO+x/FpNKEgbvBS
+         AOe3tIC7BE2Y+1cx4jIwQ98pPAEwbCUCG61xv6K3pSrHvErhwY7sgzwODSXgBNeAujvx
+         9mdA==
+X-Forwarded-Encrypted: i=1; AJvYcCVvMw2EbtrH4VU3srWFnmAV4xru/l4VA8F2Xbj7duhGSQ7I6d+ItdItRTHcy7U7WrEYcQ19f3dw6rmN8UHKP2+zvsORKlMLZZ0eJJpt
+X-Gm-Message-State: AOJu0YyJ78xUS3zv60NGNOCVyOtCEq/XJv/2X8oJJi072JhbPpgIPHgM
+	sClmo7iQwt5d4l5eP3IDh+iRxlYoinVmK6BTDDxnunSpxI/RoZoK9Bz15hPScMA=
+X-Google-Smtp-Source: AGHT+IHfC+76QQeWUT3awNBpD0AM4a8Ggq96foJ1q82UG0m/rymsBQ09VdSFbNOMQlhCAGu25I3U+w==
+X-Received: by 2002:a19:5f50:0:b0:513:cf5e:f2ad with SMTP id a16-20020a195f50000000b00513cf5ef2admr5030718lfj.60.1713101638816;
+        Sun, 14 Apr 2024 06:33:58 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id h14-20020a1709070b0e00b00a518c69c4e3sm4193934ejl.23.2024.04.14.06.33.04
+        by smtp.gmail.com with ESMTPSA id du6-20020a17090772c600b00a4e40e48f8dsm4207702ejc.185.2024.04.14.06.33.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Apr 2024 06:33:05 -0700 (PDT)
-Message-ID: <efd1eb32-afd6-4383-be45-89b0f71f118f@linaro.org>
-Date: Sun, 14 Apr 2024 15:33:02 +0200
+        Sun, 14 Apr 2024 06:33:58 -0700 (PDT)
+Message-ID: <b52410ae-878d-4c99-aaad-81d6cd61dd72@linaro.org>
+Date: Sun, 14 Apr 2024 15:33:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: Add Radxa ZERO 3W/3E
+Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: Add Radxa ZERO 3W/3E
 To: Jonas Karlman <jonas@kwiboo.se>, Heiko Stuebner <heiko@sntech.de>,
  Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -84,7 +84,7 @@ To: Jonas Karlman <jonas@kwiboo.se>, Heiko Stuebner <heiko@sntech.de>,
 Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20240414131529.1730506-1-jonas@kwiboo.se>
- <20240414131529.1730506-3-jonas@kwiboo.se>
+ <20240414131529.1730506-2-jonas@kwiboo.se>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -131,37 +131,39 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240414131529.1730506-3-jonas@kwiboo.se>
+In-Reply-To: <20240414131529.1730506-2-jonas@kwiboo.se>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 14/04/2024 15:15, Jonas Karlman wrote:
+> Add devicvetree binding documentation for Radxa ZERO 3W/3E boards.
+> 
 > The Radxa ZERO 3W/3E is an ultra-small, high-performance single board
 > computer based on the Rockchip RK3566, with a compact form factor and
 > rich interfaces.
 > 
-> The ZERO 3W and ZERO 3E are basically the same size and model, but
-> differ only in storage and network interfaces.
-> 
-> - eMMC (3W)
-> - SD-card (both)
-> - Ethernet (3E)
-> - WiFi/BT (3W)
-> 
-> This adds initial support for eMMC, SD-card, Ethernet, HDMI and USB.
-> 
 > Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 > ---
->  .../dts/rockchip/rk3566-radxa-zero-3e.dts     |  41 ++
->  .../dts/rockchip/rk3566-radxa-zero-3w.dts     |  26 +
->  .../boot/dts/rockchip/rk3566-radxa-zero3.dtsi | 443 ++++++++++++++++++
->  3 files changed, 510 insertions(+)
 
-How do you build your patches? That's rhetorical, because they cannot be
-built... Missing Makefile.
 
-Are you sure therefore that your dts pass dtbs_check? If this is not in
-Makefile, how did you run the command?
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
 Best regards,
 Krzysztof
