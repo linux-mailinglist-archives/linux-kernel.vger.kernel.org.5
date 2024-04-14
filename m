@@ -1,154 +1,259 @@
-Return-Path: <linux-kernel+bounces-144103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97F788A41D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:25:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8218E8A41D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:33:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C85C81C209D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:25:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 468BBB20EAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:33:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B849D2C1B6;
-	Sun, 14 Apr 2024 10:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68B242E646;
+	Sun, 14 Apr 2024 10:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7D708FK"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xT07n4fN"
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9628E286BD
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 10:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CA521AACB
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 10:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713090302; cv=none; b=K32PwOgZ6pgFrrewA6h5Vs97Pa1Zaz9fYy6H0pxoTrtQd0haAoxYB9irUEn1P7o/hrx4zfs2HcTrIowRyFbPHV2AgNSgKsoKmpQ0ZQMqJSnCQU9DLX/INQEA515POh4KP48tJcQUKeVm5ShdbfMoREGr/8sen57fkxWBQr/ce4E=
+	t=1713090784; cv=none; b=pFt/MMUGJBLo16NI5WS+dVqrxBIxDXXsuZGImnT1btItz4hpAFD3Tjpmb4YeXEt0GmXwlce0T905NRdBeUzR2+LNaCwNfE0Kdx9/P8UJTCGTICSbPpu2yVkISv45jcqx4lonVW5OehZR65TcOVrbVu0425/04k0VW+p9AnyNy0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713090302; c=relaxed/simple;
-	bh=JJZlIn2mvmHgMJDDfAZ1JdDcw/dwxd99aCw9whf/RG4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pmi7x+d2xu59HTHDh/tvfN6Sb0vVYyE75bJiOWY5cZwEtdQ7hCrHlqZBpMOITnauRTHhPClYnSipAQWwG0KaMiwulQtY5w+zjw+QNK7Z10JEe5BHBQCZiy4GtErdZS8SFfzBIUF4AKqZCN3KediLImkJJNfryNGkVDX0rdr5XCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c7D708FK; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ee12766586so1474586b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:24:59 -0700 (PDT)
+	s=arc-20240116; t=1713090784; c=relaxed/simple;
+	bh=GD2VZJ/Qqsxp3zuRDLUSfSvzp4vBjYYUvZyBFHVrN0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J4rs7utUFy3Vtbhu5zLfoStWdMg385obfweiOBXDV7bjWStsXqYPwfc4N+QrcsHEFH9AShHuo4ejmghQOn5NaWHUZ4657j0QN3A8JjrOiG5576amQsWiP9kQc8N8kCbRiz3TAkdPyMQGWoIsH164FHRqvx59oaQkAsTt7BJedcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xT07n4fN; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-23333ef4a02so1722409fac.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:33:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713090299; x=1713695099; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DADHOWnUNYP/9/v99Q0bIFc3ha7reMyzoz3vmz/f54w=;
-        b=c7D708FKLjINv5ZHjrsm/Oh3ovvic6LWDBIxRcwg/MRwH4PtpeMK0DiHpgE+DkqRn7
-         A0aAvQBxhDUmUJxhcsidt1J2J+RtNucdwjpy07Sb6iF/4UkIu3TgfRsTV0UN4bJ5Y5vA
-         IGorkrdSuFpij5OG6Yz+YSa0h83+3Dbl/Sl/CddW2KNUNYpEEsMWv3wOMgEZR+vvsY3J
-         O+YTGBGZ8RkSf/YhBaJA1djYAYPXNll/hYK/Q/FkjWphh8y1Ccen82aC7KO6++5oDvvc
-         /P6yNneh+0uYxZ3YkP67U7jDomgZJebI9xolURFTxMB1JBZyS99xRW5Ql8d/16RJA3Hd
-         KTaw==
+        d=linaro.org; s=google; t=1713090781; x=1713695581; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ezWv8Uk8r0iZzTSx1VI+aatOFO9g5HSxqsWTUv27XdY=;
+        b=xT07n4fN2MXFmrGmyS6NquXlcu85iBt+fCszcf7oYJAyZittCaFBKXk5fb/XHlucQ8
+         VD1frCRZknnC1V8pNk6YrfRB9oXGTi4AVxPvtTVogvD4bTL3NJjSOQMu0VDpUhCj+9Zx
+         KXr8hfPmTfMT50fvft6EikXQzea7UudlqB+zW4gTfhSiiy1FiaN59dqcm0oRz85ZmgT4
+         x6+6UxB/JRUsvh9d3PiN3alj4oOJcl+qPaKalwITnYsKXRjSWYSOzOM4xmIj3iyWfXu6
+         +wUIYGWtIXe8mnrrFpQQBEEsn/vINEju6PLW0xTwRbZ8dtdbAIPpiPvi7W+a+EUHxsjc
+         DF9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713090299; x=1713695099;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DADHOWnUNYP/9/v99Q0bIFc3ha7reMyzoz3vmz/f54w=;
-        b=FHdDPPvKz6abF8ygxlu/hr9EevEqkgMhshZNgbJlRPsm101igPfZyiX02wlgWx51zE
-         eVBEyHCY3eWsR/8mZ/csPpYr7Hb2+b1b9eH52yVtKQjMUNU5+KhV7e81JMXIX/OQ710/
-         JVbWoOuz4yyy/zs8oPnucVB0Vvj3zi3i5TTezDsyDHGhWzNSLPaVJaDL4nh1DuZzVx9Y
-         ZXTfSZUpYbYrZXQ5qTS7UZjgTrDu9MzjkBamJ28X7b37xEJDkpIgHRuFBc0aoX1RX387
-         oOoy7kpIIQCCd3N6DXhFLnQrJBrBHD2uEk1YDO6PK/MPq3+naAXUkYjZQWdu4K5tbS0u
-         VHFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWPqLeod0moOmsS1NW/goPxFym0yPXGBYXPY/Z0+n8T+hq22Oj3lyZ4aCQ+DCILIFVo0XokfPjU4TMMa3SC01A+OTcxoHMm/T/TNxSe
-X-Gm-Message-State: AOJu0YynJfXaCvUvIKgNsqBKYzulzgqKWzWRqliRS0cgt+vn5mHZ2YdV
-	WuwzhO5941+FhXjM56V0DRsZcXqR8MTyoLaEgpku2YUL3twT9TQi
-X-Google-Smtp-Source: AGHT+IFo+3A88+eErsb0hrFDYgsGA859sSv6X9J0eSGBHL9qSAzFushHa4YDibASL+DuNgxlqQFy3g==
-X-Received: by 2002:a05:6a20:3241:b0:1a9:9839:f209 with SMTP id hm1-20020a056a20324100b001a99839f209mr8824592pzc.0.1713090298867;
-        Sun, 14 Apr 2024 03:24:58 -0700 (PDT)
-Received: from localhost.localdomain ([2401:4900:1cb8:5ab4:8eca:a8e7:b24c:7514])
-        by smtp.gmail.com with ESMTPSA id k187-20020a636fc4000000b005d6a0b2efb3sm5233452pgc.21.2024.04.14.03.24.55
+        d=1e100.net; s=20230601; t=1713090781; x=1713695581;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ezWv8Uk8r0iZzTSx1VI+aatOFO9g5HSxqsWTUv27XdY=;
+        b=b+KrOgetZnromIyuEC2L69aNk8e3uNTa5MRwxd8fHtcUucGvA+kCifsNOklZb6eLCZ
+         414K1zvqrXQHufXlhzffXKY/28kjpiaKbc9Z1djNEmmhK8wbSblt2nPYzazUu43HLOBM
+         Lt3AdR/EyvJsaVzyhJinPVA/WmfGA6ydpYGBXfPqX/wmw91+E+BW3hzKSfcQV4ByVFC0
+         DktVFj0cszcq83eKm2ICW+K6yZpJYVFxRwVY6NzAQj42JRNUNXJJ+G9M5PmshCaUA/1L
+         S71jXTVfIcuVVzTjN5di6zSeZWxD1PEK/MBvMC4IoE/C7tQL5OiINZpJyAwIkv66hAWX
+         iDuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVABbtVrtypdo8I2Mu+ObSKgEAOw5+IAcElEeQYLUBFtumaqxsZEVdm06d8S98sQxY/yLWT97GE0QWGAJWAmtk/aVzOi+RAQJ4dMKU9
+X-Gm-Message-State: AOJu0YyOy5FRKzrAjRvn+bO+1NvQkBNWilzprYhf0X7FReCwCcQO7TiU
+	ciWctBhfEGjrTMK8gnObOooMfw4WFxvuFf6Li2jmPJCYUtY1CcO5RdTNbsirQQ==
+X-Google-Smtp-Source: AGHT+IGHvQOl59qxFzhWvb2JB596M3kORklxXhpjbwofS/WCy0scK/ufcS2lkNd5/pxWK7SME16DWg==
+X-Received: by 2002:a05:6871:60f:b0:229:87f6:ee8a with SMTP id w15-20020a056871060f00b0022987f6ee8amr8649408oan.30.1713090781146;
+        Sun, 14 Apr 2024 03:33:01 -0700 (PDT)
+Received: from thinkpad ([120.60.136.171])
+        by smtp.gmail.com with ESMTPSA id 1-20020a056a00072100b006ed045e3a70sm5391418pfm.25.2024.04.14.03.32.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 03:24:58 -0700 (PDT)
-From: sumadhura kalyan <opensourcecond@gmail.com>
-To: florian.fainelli@broadcom.com,
-	bcm-kernel-feedback-list@broadcom.com,
-	gregkh@linuxfoundation.org
-Cc: linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	sumadhura kalyan <opensourcecond@gmail.com>
-Subject: [PATCH] Replace function alignment of camel case by snake case.
-Date: Sun, 14 Apr 2024 15:54:42 +0530
-Message-Id: <20240414102443.98927-1-opensourcecond@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 14 Apr 2024 03:33:00 -0700 (PDT)
+Date: Sun, 14 Apr 2024 16:02:56 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 5/5] PCI: dwc: Add common send PME_Turn_Off message
+ method
+Message-ID: <20240414103256.GB2294@thinkpad>
+References: <20240319-pme_msg-v5-0-af9ffe57f432@nxp.com>
+ <20240319-pme_msg-v5-5-af9ffe57f432@nxp.com>
+ <20240405062426.GB2953@thinkpad>
+ <ZhALNGyNTAzN86GF@lizhi-Precision-Tower-5810>
+ <20240406040131.GC2678@thinkpad>
+ <ZhQJD7GjRpDwa6jI@lizhi-Precision-Tower-5810>
+ <20240412170548.GB19020@thinkpad>
+ <Zhmi0XEUFMIO9OLx@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zhmi0XEUFMIO9OLx@lizhi-Precision-Tower-5810>
 
-Issue found by checkpatch
+On Fri, Apr 12, 2024 at 05:08:33PM -0400, Frank Li wrote:
+> On Fri, Apr 12, 2024 at 10:35:48PM +0530, Manivannan Sadhasivam wrote:
+> > On Mon, Apr 08, 2024 at 11:11:11AM -0400, Frank Li wrote:
+> > > On Sat, Apr 06, 2024 at 09:31:31AM +0530, Manivannan Sadhasivam wrote:
+> > > > On Fri, Apr 05, 2024 at 10:31:16AM -0400, Frank Li wrote:
+> > > > > On Fri, Apr 05, 2024 at 11:54:26AM +0530, Manivannan Sadhasivam wrote:
+> > > > > > On Tue, Mar 19, 2024 at 12:07:15PM -0400, Frank Li wrote:
+> > > > > > 
+> > > > > > PCI: dwc: Add generic MSG TLP support for sending PME_Turn_Off during system suspend
+> > > > > > 
+> > > > > > > Reserve space at end of first IORESOURCE_MEM window as message TLP MMIO
+> > > > > > > window. This space's size is 'region_align'.
+> > > > > > > 
+> > > > > > > Set outbound ATU map memory write to send PCI message. So one MMIO write
+> > > > > > > can trigger a PCI message, such as PME_Turn_Off.
+> > > > > > > 
+> > > > > > > Add common dwc_pme_turn_off() function.
+> > > > > > > 
+> > > > > > > Call dwc_pme_turn_off() to send out PME_Turn_Off message in general
+> > > > > > > dw_pcie_suspend_noirq() if there are not platform callback pme_turn_off()
+> > > > > > > exist.
+> > > > > > > 
+> > > > > > 
+> > > > > > How about:
+> > > > > > 
+> > > > > > "Instead of relying on the vendor specific implementations to send the
+> > > > > > PME_Turn_Off message, let's introduce a generic way of sending the message using
+> > > > > > the MSG TLP.
+> > > > > > 
+> > > > > > This is achieved by reserving a region for MSG TLP of size 'pci->region_align',
+> > > > > > at the end of the first IORESOURCE_MEM window of the host bridge. And then
+> > > > > > sending the PME_Turn_Off message during system suspend with the help of iATU.
+> > > > > > 
+> > > > > > It should be noted that this generic implementation is optional for the glue
+> > > > > > drivers and can be overridden by a custom 'pme_turn_off' callback."
+> > > > > > 
+> > > > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > > > ---
+> > > > > > >  drivers/pci/controller/dwc/pcie-designware-host.c | 94 ++++++++++++++++++++++-
+> > > > > > >  drivers/pci/controller/dwc/pcie-designware.h      |  3 +
+> > > > > > >  2 files changed, 93 insertions(+), 4 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > > > index 267687ab33cbc..d5723fce7a894 100644
+> > > > > > > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > > > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > > > @@ -393,6 +393,31 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)
+> > > > > > >  	return 0;
+> > > > > > >  }
+> > > > > > >  
+> > > > > > > +static void dw_pcie_host_request_msg_tlp_res(struct dw_pcie_rp *pp)
+> > > > > > > +{
+> > > > > > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > > > > > > +	struct resource_entry *win;
+> > > > > > > +	struct resource *res;
+> > > > > > > +
+> > > > > > > +	win = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+> > > > > > > +	if (win) {
+> > > > > > > +		res = devm_kzalloc(pci->dev, sizeof(*res), GFP_KERNEL);
+> > > > > > > +		if (!res)
+> > > > > > > +			return;
+> > > > > > > +
+> > > > > > > +		/* Reserve last region_align block as message TLP space */
+> > > > > > > +		res->start = win->res->end - pci->region_align + 1;
+> > > > > > > +		res->end = win->res->end;
+> > > > > > 
+> > > > > > Don't you need to adjust the host bridge window size and end address?
+> > > > > 
+> > > > > Needn't. request_resource will reserve it from bridge window. Like malloc,
+> > > > > if you malloc to get a region of memory, which will never get by malloc
+> > > > > again utill you call free.
+> > > > > 
+> > > > 
+> > > > Hmm, will that modify the window->res->end address and size?
+> > > 
+> > > No. This windows already reported to pci system before this function. It is
+> > > not good to modify window-res-end. It just add child resource like below.
+> > > 
+> > > windows is root resource, which will create may child when call
+> > > request_resource.
+> > >           bridge -> windows
+> > > 		child1 -> msg
+> > > 		child2 -> pci ep1
+> > > 		child3 -> pci_ep2.
+> > > 		...
+> > > 
+> > > Although you see whole bridge window, 'msg' already used and put under root
+> > > resource,  new pci devices will never use 'msg' resource. 
+> > > 
+> > > If change windows->res->end here, I worry about it may broken resource
+> > > tree.
+> > > 
+> > 
+> > Hmm, I think your argument is fair. I was worrying that if someone try to
+> > map separately by referencing win->res->end, then they will see access
+> > violation.
+> 
+> It should be wrong if use it without request resource.
+> 
+> > 
+> > But why can't you just allocate the resource using 'alloc_resource()' API
+> > instead of always allocating at the end?
+> 
+> Alloc will start from windows (for example: 0x8000_0000). 
+> 0x8000_0000 -> 0x8001_0000 will be allocated to 'msg'.
+> 
+> If ep1 want to get 1MB windows, 0x8010_0000 will return. There is a big
+> hole between 0x8001_0000 to 0x8010_0000.
+> 
+> I just want to reduce impact to existed system. So PCIe memory layout will
+> be kept the same w/o this patch.
+> 
+> There are not big difference between allocate resource and reserve resource
+> for 'msg'. Just little better friendly for exist system.
+> 
 
-Signed-off-by: sumadhura kalyan <opensourcecond@gmail.com>
----
- .../vc04_services/vchiq-mmal/mmal-vchiq.h     | 29 +++++++------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+Ok. This sounds fine to me. Please add this information as a comment so that
+everyone will be aware of the reasoning.
 
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-index 09f030919d4e..98909fde978e 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.h
-@@ -42,8 +42,7 @@ struct vchiq_mmal_port_buffer {
- 
- struct vchiq_mmal_port;
- 
--typedef void (*vchiq_mmal_buffer_cb)(
--		struct vchiq_mmal_instance  *instance,
-+typedef void (*vchiq_mmal_buffer_cb)(struct vchiq_mmal_instance  *instance,
- 		struct vchiq_mmal_port *port,
- 		int status, struct mmal_buffer *buffer);
- 
-@@ -101,31 +100,25 @@ int vchiq_mmal_finalise(struct vchiq_mmal_instance *instance);
- /* Initialise a mmal component and its ports
-  *
-  */
--int vchiq_mmal_component_init(
--		struct vchiq_mmal_instance *instance,
--		const char *name,
--		struct vchiq_mmal_component **component_out);
-+int vchiq_mmal_component_init(struct vchiq_mmal_instance *instance,
-+			      const char *name, struct vchiq_mmal_component **component_out);
- 
--int vchiq_mmal_component_finalise(
--		struct vchiq_mmal_instance *instance,
--		struct vchiq_mmal_component *component);
-+int vchiq_mmal_component_finalise(struct vchiq_mmal_instance *instance,
-+				  struct vchiq_mmal_component *component);
- 
--int vchiq_mmal_component_enable(
--		struct vchiq_mmal_instance *instance,
--		struct vchiq_mmal_component *component);
-+int vchiq_mmal_component_enable(struct vchiq_mmal_instance *instance,
-+				struct vchiq_mmal_component *component);
- 
--int vchiq_mmal_component_disable(
--		struct vchiq_mmal_instance *instance,
--		struct vchiq_mmal_component *component);
-+int vchiq_mmal_component_disable(struct vchiq_mmal_instance *instance,
-+				 struct vchiq_mmal_component *component);
- 
- /* enable a mmal port
-  *
-  * enables a port and if a buffer callback provided enque buffer
-  * headers as appropriate for the port.
-  */
--int vchiq_mmal_port_enable(
--		struct vchiq_mmal_instance *instance,
--		struct vchiq_mmal_port *port,
-+int vchiq_mmal_port_enable(struct vchiq_mmal_instance *instance,
-+			   struct vchiq_mmal_port *port,
- 		vchiq_mmal_buffer_cb buffer_cb);
- 
- /* disable a port
+- Mani
+
+> Frank
+> 
+> > 
+> > - Mani
+> > 
+> > > > 
+> > > > > > 
+> > > > > > > +		res->name = "msg";
+> > > > > > > +		res->flags = win->res->flags | IORESOURCE_BUSY;
+> > > > > > > +
+> > > > > > 
+> > > > > > Shouldn't this resource be added back to the host bridge?
+> > > > > 
+> > > > > No, this resource will reserver for msg only for whole bridge life cycle.
+> > > > > Genenally alloc resource only happen at PCI devices probe. All pci space
+> > > > > will be fixed after system probe.
+> > > > > 
+> > > > 
+> > > > I don't think so. This resource still belongs to the host bridge, so we should
+> > > > add it back.
+> > > 
+> > > When add back?  It was reserved at bridge probe. When bridge remove, all
+> > > resource will released. 
+> > > 
+> > > > 
+> > > > - Mani
+> > > > 
+> > > > -- 
+> > > > மணிவண்ணன் சதாசிவம்
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
+
 -- 
-2.25.1
-
+மணிவண்ணன் சதாசிவம்
 
