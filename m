@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-144167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AB6F8A429E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:34:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92CDD8A42A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:34:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B2C81C20D9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:34:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1406D1F2139D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2113845036;
-	Sun, 14 Apr 2024 13:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D33F45036;
+	Sun, 14 Apr 2024 13:34:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fgKNWTmc"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EdrBSSQF"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA3F2D61B
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 13:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BA42D61B
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 13:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713101642; cv=none; b=fqPziL6SCFuhuLMUoibiL0e6CUGPaqPFbjqFzDijPZ7iMqcgohAs8Bf/GedDdMgDoDhKVpZP8K+itr9NEwvBW0qJjEQsHKsQAT/fwda+ceTl+6bamCAWEUiXJPmLYjX5bPfnKooT+x+e3Nk8AuzkSAwwPoe1w9kLGvPLGrSBtUI=
+	t=1713101688; cv=none; b=euaz8S+Am7vugktKsGndVm3mubY+fi42sIPMaGMnmuVQHVK/pWDWbxxVlM4FzzbxEQJSkFv9PHGA42iQ2+Y5/jW81RYhi27X6qobMgaO6hLPV4ZuSpgu+5tSIFb3xWPBD4IvnGWeZSzuOsk6uopXnD9pL5m43GKONEMPu2faY44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713101642; c=relaxed/simple;
-	bh=An6iKG1WkKF6GBxeA9YxjpqSxkWheY5v1bnvn/ougbE=;
+	s=arc-20240116; t=1713101688; c=relaxed/simple;
+	bh=BFwpUNbDE8oHK5OuttChp0ixMoA0D43yEsMBZL1TZ6A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aIImpXlN0foQdD30o8pJPeL4GuJilkpHTLDcbD6Nc+GCIp10Wo5Thfn58AM0FFftZ4I6eY3sJOSHRvbsUV7xariG92trqS123qo89/C6nvao00jHEaCOrzVRvwAAX2xokGP7oVs6QWiU282kIj3P0nABVsypG2e4qgLio5czxoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fgKNWTmc; arc=none smtp.client-ip=209.85.167.47
+	 In-Reply-To:Content-Type; b=Vcrak9/ZxWOSNfyqrKvolKW856Uc50ohsJhPQDbt28UZNcdta8WLqZVg34moSvM28ckZyKxWMo5ZFaU+Yogm/IddIDUDN0ZAB+cn/l4q9RxEOIZq84oVcQ0Cl+LfnwrF+dA8pH2eCARzQwsbW4LCBhURIwefeeMW3lVPYne+Z0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EdrBSSQF; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d0c004b1so3050006e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:34:00 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a51a80b190bso149254366b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:34:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713101639; x=1713706439; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713101685; x=1713706485; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zmx2K7nXKGr1mb31pDUL/AUJ3uwpgGyg9CR68PwOhTU=;
-        b=fgKNWTmcqxW3om7SfDkdkzAHWbWYvLNQwo6oUstY91a/f3HfPQAEVfqZCMlKBGw5eK
-         ASIfX88Ewm5ljRaLadLkOsTefg6FR9LHwp8MWpwiXEsxEF/HnMBcSH5KjowA6vYQOjUK
-         mP2CkaLOubtbW5OlvqSvnaPNxT1My2k2WpynsDMA+9YP4NkP0bDP5uEhRe3spPrq1I5r
-         25pdBAS68eCZPDGBtFFIGUd7LjwjRt3msi+v+odbs90QbAyBcMOiL6O+DEQgqSJznOag
-         fmpEmZDIBXrefv3j48vkRCJlCtNWMWhmI3hjuP3ewkNRjLDd6VJjx3HprJlkJyiD1Vel
-         qmAA==
+        bh=p9WRp/DXwTfjM7jCbPUfLIfu1BhKAQ/wCVJgQUHS27U=;
+        b=EdrBSSQFrl18h7H15E400s7Jx1HQh4zIS6yb8JfJXRAWJRQNx7RV9fUcOLxyj4J91D
+         FD3zuUo0khp5xkUAxi4LDyLhHCcgoZig03BWaemkDYHEZrtyoJURXGP2z6iJKGz02xYW
+         LuGINCrsPGsM0F0xKQ8IhMDYbDwzxdHGGOG0L5NyAm8xjVvkGu84P2wb2TAnEPARHyWg
+         QVPoDIpGBebsyHuA7UiWAB+q0WQyoxxPmENaudy4bHWckZ1+x1VqMydppBNCmohxVKuR
+         ywwzzioJ58QJaOusRmfKIwsDJinLCzZD/YHQbejotpLBfBqLDKVn0D0HoNGN8YDU4WA6
+         mnGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713101639; x=1713706439;
+        d=1e100.net; s=20230601; t=1713101685; x=1713706485;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Zmx2K7nXKGr1mb31pDUL/AUJ3uwpgGyg9CR68PwOhTU=;
-        b=GvaOR8Zfw5C9VK93JSOS84QVUvJIq0SnEO+UttEcO+9jiHh02R/hCHPlrJeZjUfB4k
-         Z8Kc9ySloT9/FHscBJidP8z36yBaWTbKiV7OyCr/Rj1JGgNTAseDwU2amsTyjt7wI50l
-         9s7SWr2aZp2Apxq+T92QnQm2DGf8mltSxVoNbk5VjUgCXsjiP+J/p3V3bCSBROqn4nN0
-         hUEdUkO+OTIZVO0T6wm8T/ug7vReHXF6cIpfuIw1Nh+LxQsGVl1XDAO+x/FpNKEgbvBS
-         AOe3tIC7BE2Y+1cx4jIwQ98pPAEwbCUCG61xv6K3pSrHvErhwY7sgzwODSXgBNeAujvx
-         9mdA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvMw2EbtrH4VU3srWFnmAV4xru/l4VA8F2Xbj7duhGSQ7I6d+ItdItRTHcy7U7WrEYcQ19f3dw6rmN8UHKP2+zvsORKlMLZZ0eJJpt
-X-Gm-Message-State: AOJu0YyJ78xUS3zv60NGNOCVyOtCEq/XJv/2X8oJJi072JhbPpgIPHgM
-	sClmo7iQwt5d4l5eP3IDh+iRxlYoinVmK6BTDDxnunSpxI/RoZoK9Bz15hPScMA=
-X-Google-Smtp-Source: AGHT+IHfC+76QQeWUT3awNBpD0AM4a8Ggq96foJ1q82UG0m/rymsBQ09VdSFbNOMQlhCAGu25I3U+w==
-X-Received: by 2002:a19:5f50:0:b0:513:cf5e:f2ad with SMTP id a16-20020a195f50000000b00513cf5ef2admr5030718lfj.60.1713101638816;
-        Sun, 14 Apr 2024 06:33:58 -0700 (PDT)
+        bh=p9WRp/DXwTfjM7jCbPUfLIfu1BhKAQ/wCVJgQUHS27U=;
+        b=aPTJGp/0ioRLtIV/uRjyget8ALnbzGSIXFifQB5lmthyL/L+8qWHvFppJjrgMfonsP
+         vBhYns6NM9E7PY/yX0R6sWZsvda/OTjKD2ZePGksznXToFAs95qnM1QVVmCRTYOTZrGZ
+         jKhaR1Swq96bNpn4BHfosYQMtH3d1p4ncUK12LUH+gx7loliy4j3nR7khsPm2+j32pCP
+         Y1nEXr/VKXR5hdGBBtcnmEfFi92mAaewDLb3mxZZLiGVFZURmPSAPT7Hf5cJkiJewFtR
+         Xy2dXFoOAI5OHajw77Sw/ZOaJvc12if1sX3TD4ZKaYBIv8E8MNfc5XUOR1y5SUe2Xijh
+         YwcA==
+X-Gm-Message-State: AOJu0YwIqw+947k35OrFT6EeDO39lgx5iVMzR+hPYkA2K2GK/uAa0uxX
+	9c/5ot2NdfQ9SEo1vmnQYjtSEcCei7L4OLkNFynCOk8XfY9LbnvXHXMLCRX3l5A=
+X-Google-Smtp-Source: AGHT+IGJ1MQFIQeX8NdATiEbi+puC1QKsoQXOyV3VT7/QE62EmBSeo7VJtdKT3Gze8ggEIwsxL2C+g==
+X-Received: by 2002:a50:8d1e:0:b0:56e:2e4d:884e with SMTP id s30-20020a508d1e000000b0056e2e4d884emr6906275eds.0.1713101685360;
+        Sun, 14 Apr 2024 06:34:45 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id du6-20020a17090772c600b00a4e40e48f8dsm4207702ejc.185.2024.04.14.06.33.57
+        by smtp.gmail.com with ESMTPSA id ew14-20020a056402538e00b0056fe8f3eec6sm3491110edb.62.2024.04.14.06.34.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Apr 2024 06:33:58 -0700 (PDT)
-Message-ID: <b52410ae-878d-4c99-aaad-81d6cd61dd72@linaro.org>
-Date: Sun, 14 Apr 2024 15:33:56 +0200
+        Sun, 14 Apr 2024 06:34:44 -0700 (PDT)
+Message-ID: <17922367-b742-4474-9426-e8a0b27423db@linaro.org>
+Date: Sun, 14 Apr 2024 15:34:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,15 +75,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: Add Radxa ZERO 3W/3E
-To: Jonas Karlman <jonas@kwiboo.se>, Heiko Stuebner <heiko@sntech.de>,
- Rob Herring <robh@kernel.org>,
+Subject: Re: [PATCH v2 0/4] DONOTMERGE: ep93xx-clk from ep93xx device tree
+ conversion
+To: nikita.shubin@maquefel.me, Michael Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240414131529.1730506-1-jonas@kwiboo.se>
- <20240414131529.1730506-2-jonas@kwiboo.se>
+ Conor Dooley <conor+dt@kernel.org>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Linus Walleij <linus.walleij@linaro.org>
+References: <20240408-ep93xx-clk-v2-0-9c5629dec2dd@maquefel.me>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -131,39 +132,16 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240414131529.1730506-2-jonas@kwiboo.se>
+In-Reply-To: <20240408-ep93xx-clk-v2-0-9c5629dec2dd@maquefel.me>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 14/04/2024 15:15, Jonas Karlman wrote:
-> Add devicvetree binding documentation for Radxa ZERO 3W/3E boards.
+On 14/04/2024 12:03, Nikita Shubin via B4 Relay wrote:
+> The goal is to recieve ACKs.
 > 
-> The Radxa ZERO 3W/3E is an ultra-small, high-performance single board
-> computer based on the Rockchip RK3566, with a compact form factor and
-> rich interfaces.
-> 
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> ---
 
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+Why? Entire point of previous discussion was that you split your patch
+so it can be merged. Not "not merged".
 
 Best regards,
 Krzysztof
