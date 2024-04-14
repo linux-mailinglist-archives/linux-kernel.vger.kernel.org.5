@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-144350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B838F8A44D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 21:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F1198A44D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 21:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 761E42815CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:13:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE2F52815BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:14:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41A0136652;
-	Sun, 14 Apr 2024 19:13:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2830113665A;
+	Sun, 14 Apr 2024 19:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iJ6Qu7w2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RpuM6fgg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 063791350CC;
-	Sun, 14 Apr 2024 19:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAFE135A58;
+	Sun, 14 Apr 2024 19:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713121980; cv=none; b=MxkYss/fK8IJaGCWJoUTMvZc/Qro6VDYt1yzq6OJChwSXei2ZEqqWPAdzUZxUris0lg52/+/FmdhUYs5FpATZqRIrINuufqCBvZiSS2/r0kQUppbYci7xKUid3gLT6p/z6WvxjoEPepA96/FSEZ82qjsNlJd41kbQEoww6T7aag=
+	t=1713122041; cv=none; b=PTV+TO+FNsrmsl53dQAXCFlVE55Xr1CAphYFDvvmAQpsHljMS9BHv3VZzLq8dJsqTkxj2ImLMQVsSiWGqgjnnU6VvHEpT0Iyz6tc8qwOoVZ1dVf1nv6YROse/Ia7y6Od5H4eUjn03gGdYIiytIudMVYoNbmxlXQGOmmcH/LNhkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713121980; c=relaxed/simple;
-	bh=b0H1pAKH9vb9A4ZCHP5SLMd9vtO8M7WUiunM9X1el7U=;
+	s=arc-20240116; t=1713122041; c=relaxed/simple;
+	bh=IzQmQzJ/44e6Ykp1zK8RGMuXE32qf5VUMiww5w88G3Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FfVpo2TSXUemqhDXkTW/WSxJWcvH6p0wk+mW4W2fuoJjym98ZQkiPsV5PCgl86V6eJG+mEcKNG4t10XNJEH33p+aA3FElrSd1AdRnsIjH5OdFZ4+Q/HQg28kJlD0oa4pkrFugbg5TUqBxe+7HDwGZGEl0ct35rqOO+zYk0tnkbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iJ6Qu7w2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA544C072AA;
-	Sun, 14 Apr 2024 19:12:54 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=mA5EtZpAebsx0mbGZNPCWQ6VJ6MftaWF+FDG8gz1YKSggz1zMbMK8KRkCi7a+wEK3jGjP3fLVPXz7SanDn2EY+oa6H21tTF9HxLvuITMe0aIdj1RWg+zZwY4/2kzyxpQRmaT4g4k00crWssmP7l12EDWzTy1h8/dIYItYlfConw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RpuM6fgg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E5AC072AA;
+	Sun, 14 Apr 2024 19:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713121979;
-	bh=b0H1pAKH9vb9A4ZCHP5SLMd9vtO8M7WUiunM9X1el7U=;
+	s=k20201202; t=1713122040;
+	bh=IzQmQzJ/44e6Ykp1zK8RGMuXE32qf5VUMiww5w88G3Q=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iJ6Qu7w2JPrmXgrO69rw2rXJFzaFAErACOeXtqray4lgfah7WLuxMEx7dVrLONEGy
-	 782e/0nRK+2vja8v05BeIcC5dHyYoTeDdbBd6YgjMSp1xoRRw4Vq+qY2ECAdlrlja/
-	 ARfg/lM25nVZTGk/URA4S6o+OblQ4aw60Mt9Z/iqKZAJzA6T2ZgsH9Soz2U964nXsp
-	 46oB8zKpI69h2fIkucJQ74Uvl91H+3dYudHu3zeh3ENhGWucM5FwJpmikbSq8yvT4e
-	 Yz1SY/h/H5mDOlmgKUCJDcdZ97QakcpTgciiz02pg993V/9rMg+Fnu3uNDlWo27L4N
-	 vsvtH74Weay+w==
-Message-ID: <e6cfe735-0a46-4c07-90ee-4ae25c921b03@kernel.org>
-Date: Sun, 14 Apr 2024 21:12:52 +0200
+	b=RpuM6fggqIZBqjQfr4OLqUnsuBTabSphyCPWRpcO198V2BEkPjSho4KGRdPEI8CL2
+	 LdJsGR9YdV4ImW+FQmSZ38HzlfALbwKVyyqA4wPKgp8ZoNll5WlyZCNxdW7HPy3rsr
+	 00bvJcD2cNN2xOqVx3J/3tmAXtu/7p0FP2vL4IjkoS6jMllNi37SlVw5xdoz//Jnl/
+	 aZgkfNj2IHYgeXOX3rkmyBFmKjCZPHf/aAZET1azhwgjRmyfUYedqAC8ygJJNAeG/I
+	 Zo/i71JxiZvKclUq8xdV3/KGZfwfyg7jU36nOyF+N49r0RgWaEAuRV9QktqEhO9lN/
+	 WcC/qtAbWP18A==
+Message-ID: <0bfb6543-9d14-4e2c-8513-468d73239c19@kernel.org>
+Date: Sun, 14 Apr 2024 21:13:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,19 +49,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
-To: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
- <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
- <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
- <85261d11-d6cb-4718-88d9-95a7efe5c0ab@arinc9.com>
+Subject: Re: [PATCH 4/4] ARM: dts: BCM5301X: remove earlycon on ASUS RT-AC3100
+ and ASUS RT-AC88U
+To: arinc.unal@arinc9.com, Florian Fainelli <florian.fainelli@broadcom.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240414-for-soc-asus-rt-ac3100-improvements-v1-0-0e40caf1a70a@arinc9.com>
+ <20240414-for-soc-asus-rt-ac3100-improvements-v1-4-0e40caf1a70a@arinc9.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -107,35 +106,19 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <85261d11-d6cb-4718-88d9-95a7efe5c0ab@arinc9.com>
+In-Reply-To: <20240414-for-soc-asus-rt-ac3100-improvements-v1-4-0e40caf1a70a@arinc9.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 14/04/2024 18:59, Arınç ÜNAL wrote:
->>> +	};
->>> +
->>> +	memory@0 {
->>> +		device_type = "memory";
->>> +		reg = <0x00000000 0x08000000>,
->>> +		      <0x88000000 0x08000000>;
->>> +	};
->>> +
->>> +	nvram@1c080000 {
->>> +		compatible = "brcm,nvram";
->>> +		reg = <0x1c080000 0x00180000>;
->>
->> Why is this outside of soc? Both soc node and soc DTSI?
+On 14/04/2024 19:01, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> I don't maintain the SoC device tree files so I don't know. The nvram node
-> doesn't exist on any of the device tree files included by this device tree.
+> Remove the earlycon boot argument. As Krzysztof pointed out, earlycon is
+> for debugging, not regular mainline usage.
+> 
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-There are two problems here:
-1. This looks like SoC component and such should not be in board DTS.
-Regardless whether you maintain something or not, you should not add
-incorrect code. Unless this is correct code, but then please share some
-details.
-
-2. You cannot have MMIO node outside of soc. That's a W=1 warning.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
