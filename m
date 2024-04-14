@@ -1,399 +1,181 @@
-Return-Path: <linux-kernel+bounces-143923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A3698A3FA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 01:45:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 205018A3FBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6E4D1F219B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:45:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71A43B21AB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 00:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7D258AA9;
-	Sat, 13 Apr 2024 23:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5A26FC2;
+	Sun, 14 Apr 2024 00:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BFyQpKOw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SvHnrc5P"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4E12901;
-	Sat, 13 Apr 2024 23:45:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9B81C36
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 00:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713051920; cv=none; b=SN1oAV+qgujOe3Q3LzncQqn08UyoCTFyhLjnXMYkiPKvLw96X7QwFFioqDGlAeAywe5tP9qjl4abs8ARh9bjQSrBGrRN/AMGv39Vm2Av6WPZzl/Wn6ChSeuWQ0f171Hla59cv6tLkxI36G/QGaCzfgNQhZMd0f2uk5+8rzeYB/Q=
+	t=1713052919; cv=none; b=d4uu4ANWODAR90dt2+guRPcL25FZl0uPjip7ZadKE12UP3Oovg/WRo7yhZFJV1fIi/KvsYai8IRew1vnXKj1vYHlnNfSiAIh+DjNKgtKDwzSi2ifkDXpxh35R6MJq/LAlIVAHoptsOwzJyLxG/LokY9b4dIxCG3Ld8CAhX+37QM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713051920; c=relaxed/simple;
-	bh=9hm8OrAg2N/WUuvSJDeD6ZbYkByijmv/zU3TAtzN+Tw=;
+	s=arc-20240116; t=1713052919; c=relaxed/simple;
+	bh=gowBcIVjkrIRCzpktT8xjhDtwrM/kyvyXvSUbC7DTEk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s9GCJzC6z64OX6bdC4i0lBB9Hgr6C6eRMC/qahAT3d8WJYShpFeeN+QSCrQA7Hfu4i4xkSFOPaYtCLP3D6TxMZkaOmUS6QQm7ogT+FkXavTRPfrVKM2PfPBuNyXEFIFdgYXcXzJe3fQkjZJkpBpgj/tBq5P43CKIpluYPGJORAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BFyQpKOw; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713051917; x=1744587917;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9hm8OrAg2N/WUuvSJDeD6ZbYkByijmv/zU3TAtzN+Tw=;
-  b=BFyQpKOwy1tbvjIshOkqUgB7Iu4UyP+pohepX12wm5EPAQ8UNhlQCHCX
-   7WarOLsok24OFdG++BfRQ1oCgODrZKD3e0G5UjmWSsPeoe+ggU88Oh6j+
-   ZY/ghYfOSgvMN+m2ac0dcAXGwBQHJ+IfqTfJHwy8th+VZl6avdanu42TW
-   VOPjJ/JucKDvyGvAJtm1LJE0cni9/uFxlfRu4OxAiD9ECjbiXtzAYldLl
-   npmUQ0zMWCWl0zpmXz2Qe+6An/2o/3Y23HLvjCgLGj97FNUhKa9uB722Q
-   BgCBex4zBK1TA55rKfEv7gxcljCnTIRNAHi5C30/ERX8uYrNpCQrxN+yh
-   w==;
-X-CSE-ConnectionGUID: 8qEQHBqiQTOgXtxgtJisOw==
-X-CSE-MsgGUID: EUIC1ngkQV+vWnRwG/rQ9Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11043"; a="19191134"
-X-IronPort-AV: E=Sophos;i="6.07,200,1708416000"; 
-   d="scan'208";a="19191134"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2024 16:45:17 -0700
-X-CSE-ConnectionGUID: r8838oHTSYyRFb6qMs8paw==
-X-CSE-MsgGUID: NsndFaTgRmm+2Be0y8gB7Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,200,1708416000"; 
-   d="scan'208";a="22134469"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa008.jf.intel.com with ESMTP; 13 Apr 2024 16:45:12 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rvn3V-00036q-1w;
-	Sat, 13 Apr 2024 23:45:09 +0000
-Date: Sun, 14 Apr 2024 07:44:36 +0800
-From: kernel test robot <lkp@intel.com>
-To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
-	kvmarm@lists.linux.dev
-Cc: oe-kbuild-all@lists.linux.dev, Steven Price <steven.price@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Joey Gouly <joey.gouly@arm.com>,
-	Alexandru Elisei <alexandru.elisei@arm.com>,
-	Christoffer Dall <christoffer.dall@arm.com>,
-	Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
-	Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: Re: [PATCH v2 33/43] arm64: rme: Enable PMU support with a realm
- guest
-Message-ID: <202404140723.GKwnJxeZ-lkp@intel.com>
-References: <20240412084309.1733783-34-steven.price@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RUTx8ZBH1ssQO2qHPKOF/4VqiloSfRPs0oW7ctHvtjT9f3kUWMTsTZRPHaiKTvirjXP5rahjHVdmBT5Cx6amh8XEVwcuSUzGSrdXixSZudQKZTgzLo5vfS+54/rpX39558wmioqM6y6UcoCSMoY3OhtA96fNW5zUGCPui5ingb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SvHnrc5P; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a2e5d86254so2021171a91.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 17:01:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713052917; x=1713657717; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WufJPRcDUlI9hWQPeCIELs5BadGAqcV8RB9i29rVPSE=;
+        b=SvHnrc5PjB6uA0SMwokl33HNXlBU0/6OIRX5ObpHKqUEHJt8YXLV3mOldXCvfe8rzK
+         ow5GaovOkzwqoyYFf1Gp0iyc7K2RsjqxefwT16o6KEtVyeogVyzePvgcDtr+d9oz/fjg
+         MQ2YjOsUrlHo6jJMRSQXfcYSPBdnVs3g0QxSuUEKpQWewalXzHg5e6emmhoy9F5nU45B
+         ggs5++SGZ7jhwFtBZZRgIvfyLJrryU3T155JedrF3xa5yUE/PdXRpkwKf4vg3Ht82xaX
+         naiZ6HlPXX18Y7fL8lb0+oqop99UEcFmpPJ/xY+F4MHtRlPhff6L6OpJrWHh5OD5MKye
+         SvGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713052917; x=1713657717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WufJPRcDUlI9hWQPeCIELs5BadGAqcV8RB9i29rVPSE=;
+        b=WkLDFq75jJMIN9ehMXC+JS6qP48sR195bpohSD3lfNuDWPsYLamg8m9U092wATMEx8
+         72GAlmiLeG6OzIliDZSRBdh3b6SbISY1ldgPD5nm7tzcoeMwGwecjFrJdIuO39VLrLUc
+         qZReTDgU5ZM0rjm6HVe7OaaD2LwBR0kCt0LASK+2wHK7t++hLgcu2GOgCzVul3SUkC2E
+         G6HEUSSid+6/hCGAo7FyaBJ4sNa5PpowfaOTpjyd6tudir7LArs8PFXGxde1nFfbZcuk
+         pUqZ9fz6R8XPxyaUSReRFcSHhpXMzsX868nr8KB91NErmQTGhqJrriaZ8QnzI1XKOzag
+         4gyA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDrx/0VjpEzLwauF2MirgmacN0VNwsTtlaJ+R0b7mDQ5naRcOINROZuVuF7caahlZAIUjLovWeiI9Pp0IgQpXyBF9yqRS3safcuHq1
+X-Gm-Message-State: AOJu0YyxICUmR6RPdQOwEIqMcl+/94/A6a9Vub6LnYTaGqQMTutkofc5
+	RUVXSjWe8djlii8sVtP2NVArVks1PShBkwQ4acMBvZaTYc9hScQkF8jBhg==
+X-Google-Smtp-Source: AGHT+IGrAqwuqHFxlxFTtEnyAqnda4cYfCPT+QePK4NluaOztQzsIE/j760N6Zrk/aFwQ0IZHsBe7A==
+X-Received: by 2002:a17:90a:7146:b0:2a5:be1a:6831 with SMTP id g6-20020a17090a714600b002a5be1a6831mr13029487pjs.19.1713052916728;
+        Sat, 13 Apr 2024 17:01:56 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id y12-20020a17090a154c00b002a52c2d82f0sm9077979pja.1.2024.04.13.17.01.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Apr 2024 17:01:55 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id C1C0418462BA3; Sun, 14 Apr 2024 07:01:52 +0700 (WIB)
+Date: Sun, 14 Apr 2024 07:01:52 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Eric Wagner <ewagner12@gmail.com>, Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>
+Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: Kernel 6.7 regression doesn't boot if using AMD eGPU
+Message-ID: <Zhsc8GZG6HhqCa6h@archie.me>
+References: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DhFDuHrGl5KsKvNz"
 Content-Disposition: inline
-In-Reply-To: <20240412084309.1733783-34-steven.price@arm.com>
-
-Hi Steven,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on kvmarm/next]
-[also build test ERROR on kvm/queue arm64/for-next/core linus/master v6.9-rc3 next-20240412]
-[cannot apply to kvm/linux-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Steven-Price/KVM-Prepare-for-handling-only-shared-mappings-in-mmu_notifier-events/20240412-170311
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm.git next
-patch link:    https://lore.kernel.org/r/20240412084309.1733783-34-steven.price%40arm.com
-patch subject: [PATCH v2 33/43] arm64: rme: Enable PMU support with a realm guest
-config: arm64-randconfig-r064-20240414 (https://download.01.org/0day-ci/archive/20240414/202404140723.GKwnJxeZ-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8b3b4a92adee40483c27f26c478a384cd69c6f05)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240414/202404140723.GKwnJxeZ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404140723.GKwnJxeZ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/arm64/kvm/arm.c:9:
-   In file included from include/linux/entry-kvm.h:6:
-   In file included from include/linux/resume_user_mode.h:8:
-   In file included from include/linux/memcontrol.h:21:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     509 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     516 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     528 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     537 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
->> arch/arm64/kvm/arm.c:1115:13: error: no member named 'irq_level' in 'struct kvm_pmu'
-    1115 |                         if (pmu->irq_level) {
-         |                             ~~~  ^
->> arch/arm64/kvm/arm.c:1117:5: error: call to undeclared function 'arm_pmu_set_phys_irq'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1117 |                                 arm_pmu_set_phys_irq(false);
-         |                                 ^
-   arch/arm64/kvm/arm.c:1224:4: error: call to undeclared function 'arm_pmu_set_phys_irq'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1224 |                         arm_pmu_set_phys_irq(true);
-         |                         ^
-   5 warnings and 3 errors generated.
+In-Reply-To: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
 
 
-vim +1115 arch/arm64/kvm/arm.c
+--DhFDuHrGl5KsKvNz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  1044	
-  1045	/**
-  1046	 * kvm_arch_vcpu_ioctl_run - the main VCPU run function to execute guest code
-  1047	 * @vcpu:	The VCPU pointer
-  1048	 *
-  1049	 * This function is called through the VCPU_RUN ioctl called from user space. It
-  1050	 * will execute VM code in a loop until the time slice for the process is used
-  1051	 * or some emulation is needed from user space in which case the function will
-  1052	 * return with return value 0 and with the kvm_run structure filled in with the
-  1053	 * required data for the requested emulation.
-  1054	 */
-  1055	int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
-  1056	{
-  1057		struct kvm_run *run = vcpu->run;
-  1058		int ret;
-  1059	
-  1060		if (run->exit_reason == KVM_EXIT_MMIO) {
-  1061			ret = kvm_handle_mmio_return(vcpu);
-  1062			if (ret)
-  1063				return ret;
-  1064		}
-  1065	
-  1066		vcpu_load(vcpu);
-  1067	
-  1068		if (run->immediate_exit) {
-  1069			ret = -EINTR;
-  1070			goto out;
-  1071		}
-  1072	
-  1073		kvm_sigset_activate(vcpu);
-  1074	
-  1075		ret = 1;
-  1076		run->exit_reason = KVM_EXIT_UNKNOWN;
-  1077		run->flags = 0;
-  1078		while (ret > 0) {
-  1079			bool pmu_stopped = false;
-  1080	
-  1081			/*
-  1082			 * Check conditions before entering the guest
-  1083			 */
-  1084			ret = xfer_to_guest_mode_handle_work(vcpu);
-  1085			if (!ret)
-  1086				ret = 1;
-  1087	
-  1088			if (ret > 0)
-  1089				ret = check_vcpu_requests(vcpu);
-  1090	
-  1091			/*
-  1092			 * Preparing the interrupts to be injected also
-  1093			 * involves poking the GIC, which must be done in a
-  1094			 * non-preemptible context.
-  1095			 */
-  1096			preempt_disable();
-  1097	
-  1098			/*
-  1099			 * The VMID allocator only tracks active VMIDs per
-  1100			 * physical CPU, and therefore the VMID allocated may not be
-  1101			 * preserved on VMID roll-over if the task was preempted,
-  1102			 * making a thread's VMID inactive. So we need to call
-  1103			 * kvm_arm_vmid_update() in non-premptible context.
-  1104			 */
-  1105			if (kvm_arm_vmid_update(&vcpu->arch.hw_mmu->vmid) &&
-  1106			    has_vhe())
-  1107				__load_stage2(vcpu->arch.hw_mmu,
-  1108					      vcpu->arch.hw_mmu->arch);
-  1109	
-  1110			kvm_pmu_flush_hwstate(vcpu);
-  1111	
-  1112			if (vcpu_is_rec(vcpu)) {
-  1113				struct kvm_pmu *pmu = &vcpu->arch.pmu;
-  1114	
-> 1115				if (pmu->irq_level) {
-  1116					pmu_stopped = true;
-> 1117					arm_pmu_set_phys_irq(false);
-  1118				}
-  1119			}
-  1120	
-  1121			local_irq_disable();
-  1122	
-  1123			kvm_vgic_flush_hwstate(vcpu);
-  1124	
-  1125			kvm_pmu_update_vcpu_events(vcpu);
-  1126	
-  1127			/*
-  1128			 * Ensure we set mode to IN_GUEST_MODE after we disable
-  1129			 * interrupts and before the final VCPU requests check.
-  1130			 * See the comment in kvm_vcpu_exiting_guest_mode() and
-  1131			 * Documentation/virt/kvm/vcpu-requests.rst
-  1132			 */
-  1133			smp_store_mb(vcpu->mode, IN_GUEST_MODE);
-  1134	
-  1135			if (ret <= 0 || kvm_vcpu_exit_request(vcpu, &ret)) {
-  1136				vcpu->mode = OUTSIDE_GUEST_MODE;
-  1137				isb(); /* Ensure work in x_flush_hwstate is committed */
-  1138				kvm_pmu_sync_hwstate(vcpu);
-  1139				if (static_branch_unlikely(&userspace_irqchip_in_use))
-  1140					kvm_timer_sync_user(vcpu);
-  1141				kvm_vgic_sync_hwstate(vcpu);
-  1142				local_irq_enable();
-  1143				preempt_enable();
-  1144				continue;
-  1145			}
-  1146	
-  1147			kvm_arm_setup_debug(vcpu);
-  1148			kvm_arch_vcpu_ctxflush_fp(vcpu);
-  1149	
-  1150			/**************************************************************
-  1151			 * Enter the guest
-  1152			 */
-  1153			trace_kvm_entry(*vcpu_pc(vcpu));
-  1154			guest_timing_enter_irqoff();
-  1155	
-  1156			if (vcpu_is_rec(vcpu))
-  1157				ret = kvm_rec_enter(vcpu);
-  1158			else
-  1159				ret = kvm_arm_vcpu_enter_exit(vcpu);
-  1160	
-  1161			vcpu->mode = OUTSIDE_GUEST_MODE;
-  1162			vcpu->stat.exits++;
-  1163			/*
-  1164			 * Back from guest
-  1165			 *************************************************************/
-  1166	
-  1167			kvm_arm_clear_debug(vcpu);
-  1168	
-  1169			/*
-  1170			 * We must sync the PMU state before the vgic state so
-  1171			 * that the vgic can properly sample the updated state of the
-  1172			 * interrupt line.
-  1173			 */
-  1174			kvm_pmu_sync_hwstate(vcpu);
-  1175	
-  1176			/*
-  1177			 * Sync the vgic state before syncing the timer state because
-  1178			 * the timer code needs to know if the virtual timer
-  1179			 * interrupts are active.
-  1180			 */
-  1181			kvm_vgic_sync_hwstate(vcpu);
-  1182	
-  1183			/*
-  1184			 * Sync the timer hardware state before enabling interrupts as
-  1185			 * we don't want vtimer interrupts to race with syncing the
-  1186			 * timer virtual interrupt state.
-  1187			 */
-  1188			if (static_branch_unlikely(&userspace_irqchip_in_use))
-  1189				kvm_timer_sync_user(vcpu);
-  1190	
-  1191			kvm_arch_vcpu_ctxsync_fp(vcpu);
-  1192	
-  1193			/*
-  1194			 * We must ensure that any pending interrupts are taken before
-  1195			 * we exit guest timing so that timer ticks are accounted as
-  1196			 * guest time. Transiently unmask interrupts so that any
-  1197			 * pending interrupts are taken.
-  1198			 *
-  1199			 * Per ARM DDI 0487G.b section D1.13.4, an ISB (or other
-  1200			 * context synchronization event) is necessary to ensure that
-  1201			 * pending interrupts are taken.
-  1202			 */
-  1203			if (ARM_EXCEPTION_CODE(ret) == ARM_EXCEPTION_IRQ) {
-  1204				local_irq_enable();
-  1205				isb();
-  1206				local_irq_disable();
-  1207			}
-  1208	
-  1209			guest_timing_exit_irqoff();
-  1210	
-  1211			local_irq_enable();
-  1212	
-  1213			/* Exit types that need handling before we can be preempted */
-  1214			if (!vcpu_is_rec(vcpu)) {
-  1215				trace_kvm_exit(ret, kvm_vcpu_trap_get_class(vcpu),
-  1216					       *vcpu_pc(vcpu));
-  1217	
-  1218				handle_exit_early(vcpu, ret);
-  1219			}
-  1220	
-  1221			preempt_enable();
-  1222	
-  1223			if (pmu_stopped)
-  1224				arm_pmu_set_phys_irq(true);
-  1225	
-  1226			/*
-  1227			 * The ARMv8 architecture doesn't give the hypervisor
-  1228			 * a mechanism to prevent a guest from dropping to AArch32 EL0
-  1229			 * if implemented by the CPU. If we spot the guest in such
-  1230			 * state and that we decided it wasn't supposed to do so (like
-  1231			 * with the asymmetric AArch32 case), return to userspace with
-  1232			 * a fatal error.
-  1233			 */
-  1234			if (vcpu_mode_is_bad_32bit(vcpu)) {
-  1235				/*
-  1236				 * As we have caught the guest red-handed, decide that
-  1237				 * it isn't fit for purpose anymore by making the vcpu
-  1238				 * invalid. The VMM can try and fix it by issuing  a
-  1239				 * KVM_ARM_VCPU_INIT if it really wants to.
-  1240				 */
-  1241				vcpu_clear_flag(vcpu, VCPU_INITIALIZED);
-  1242				ret = ARM_EXCEPTION_IL;
-  1243			}
-  1244	
-  1245			if (vcpu_is_rec(vcpu))
-  1246				ret = handle_rme_exit(vcpu, ret);
-  1247			else
-  1248				ret = handle_exit(vcpu, ret);
-  1249		}
-  1250	
-  1251		/* Tell userspace about in-kernel device output levels */
-  1252		if (unlikely(!irqchip_in_kernel(vcpu->kvm))) {
-  1253			kvm_timer_update_run(vcpu);
-  1254			kvm_pmu_update_run(vcpu);
-  1255		}
-  1256	
-  1257		kvm_sigset_deactivate(vcpu);
-  1258	
-  1259	out:
-  1260		/*
-  1261		 * In the unlikely event that we are returning to userspace
-  1262		 * with pending exceptions or PC adjustment, commit these
-  1263		 * adjustments in order to give userspace a consistent view of
-  1264		 * the vcpu state. Note that this relies on __kvm_adjust_pc()
-  1265		 * being preempt-safe on VHE.
-  1266		 */
-  1267		if (unlikely(vcpu_get_flag(vcpu, PENDING_EXCEPTION) ||
-  1268			     vcpu_get_flag(vcpu, INCREMENT_PC)))
-  1269			kvm_call_hyp(__kvm_adjust_pc, vcpu);
-  1270	
-  1271		vcpu_put(vcpu);
-  1272		return ret;
-  1273	}
-  1274	
+On Sat, Apr 13, 2024 at 06:04:12PM -0400, Eric Wagner wrote:
+> On my Thinkpad T14s G3 AMD (Ryzen 7 6850U) laptop connected to an AMD RX
+> 580 in Akitio Node Thunderbolt 3 eGPU. Booting with the eGPU connected
+> hangs on kernels 6.7 and 6.8, but worked on 6.6. For debugging, I find th=
+at
+> adding the kernel parameter amd_iommu=3Doff seems to fix the issue and al=
+lows
+> booting with the eGPU on 6.7.
+>=20
+> I tried bisecting the issue between 6.6 and 6.7 and ended up with:
+> "e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2 is the first bad commit" in the
+> attached. This seems to indicate an amd iommu issue.
+>=20
+> Two others also reported the same issue on AMD Ryzen 7 7840 with AMD RX
+> 6000 connected as eGPU (https://gitlab.freedesktop.org/drm/amd/-/issues/3=
+182
+> ).
+>=20
+> Let me know if you need more information.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Bisecting: 366 revisions left to test after this (roughly 9 steps)
+> [74e9347ebc5be452935fe4f3eddb150aa5a6f4fe] Merge tag 'loongarch-fixes-6.6=
+-3' of git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loong=
+son
+> Bisecting: 182 revisions left to test after this (roughly 8 steps)
+> [f6176471542d991137543af2ef1c18dae3286079] Merge tag 'mtd/fixes-for-6.6-r=
+c7' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
+> Bisecting: 87 revisions left to test after this (roughly 7 steps)
+> [fe3cfe869d5e0453754cf2b4c75110276b5e8527] Merge tag 'phy-fixes-6.6' of g=
+it://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy
+> Bisecting: 43 revisions left to test after this (roughly 6 steps)
+> [c76c067e488ccd55734c3e750799caf2c5956db6] s390/pci: Use dma-iommu layer
+> Bisecting: 27 revisions left to test after this (roughly 5 steps)
+> [aa5cabc4ce8e6b45d170d162dc54b1bac1767c47] Merge tag 'arm-smmu-updates' o=
+f git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into arm/smmu
+> Bisecting: 14 revisions left to test after this (roughly 4 steps)
+> [bbc70e0aec287e164344b1a071bd46466a4f29b3] iommu/dart: Remove the force_b=
+ypass variable
+> Bisecting: 9 revisions left to test after this (roughly 3 steps)
+> [e82c175e63229ea495a0a0b5305a98b5b6ee5346] Revert "iommu/vt-d: Remove unu=
+sed function"
+> Bisecting: 5 revisions left to test after this (roughly 2 steps)
+> [92bce97f0c341d3037b0f364b6839483f6a41cae] s390/pci: Fix reset of IOMMU s=
+oftware counters
+> Bisecting: 3 revisions left to test after this (roughly 2 steps)
+> [3613047280ec42a4e1350fdc1a6dd161ff4008cc] Merge tag 'v6.6-rc7' into core
+> Bisecting: 2 revisions left to test after this (roughly 1 step)
+> [f7da9c081517daba70f9f9342e09d7a6322ba323] iommu/tegra-smmu: Drop unneces=
+sary error check for for debugfs_create_dir()
+> Bisecting: 1 revision left to test after this (roughly 1 step)
+> [9e13ec61de2a51195b122a79461431d8cb99d7b5] iommu/virtio: Add __counted_by=
+ for struct viommu_request and use struct_size()
+> Bisecting: 0 revisions left to test after this (roughly 0 steps)
+> [6e6c6d6bc6c96c2477ddfea24a121eb5ee12b7a3] iommu: Avoid unnecessary cache=
+ invalidations
+> e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2 is the first bad commit
+> commit e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2
+> Merge: 6e6c6d6bc6 f7da9c0815 aa5cabc4ce 9e13ec61de e82c175e63 cedc811c76 =
+3613047280 92bce97f0c
+> Author: Joerg Roedel <jroedel@suse.de>
+> Date:   Fri Oct 27 09:13:40 2023 +0200
+>=20
+>     Merge branches 'iommu/fixes', 'arm/tegra', 'arm/smmu', 'virtio', 'x86=
+/vt-d', 'x86/amd', 'core' and 's390' into next
+>=20
+
+Also Cc: regressions ML.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--DhFDuHrGl5KsKvNz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZhsc7AAKCRD2uYlJVVFO
+o3cdAPoDuiz+svWmSHQ3KkcQxl7HN7HflVRo+sFdCU6PzHtpCwEAmCvj14Dl7qnO
+Qa2vk5I7HXJEpWRKVehg+WbWFv4qqAE=
+=vOFu
+-----END PGP SIGNATURE-----
+
+--DhFDuHrGl5KsKvNz--
 
