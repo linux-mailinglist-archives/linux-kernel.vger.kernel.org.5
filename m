@@ -1,107 +1,153 @@
-Return-Path: <linux-kernel+bounces-143928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC4028A3FC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:25:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9D758A3FC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:26:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CF67B21896
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 00:25:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 616CB2821C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 00:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6531846AF;
-	Sun, 14 Apr 2024 00:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="gMW+j/eE"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F8A28EB;
+	Sun, 14 Apr 2024 00:26:31 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D623FDB
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 00:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2934E4689
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 00:26:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713054300; cv=none; b=PM05RuxBWu5Nd+nMKxFC2WqY5l+tB7DEPrId5SYwUc2NHVqf1lJovCDjTuDj+eUfh3NpjC5o2r4K2KIFzYMFHZDjqwVOUXbyZAlMfgPyuOlwSn++to/9dmTZrjkRc+nEjmstoKL0EdL2r9WJRoL6wj9SbrIrZUtJiDkfcg7k+7w=
+	t=1713054390; cv=none; b=CQxSCYanxI2oM3V1dDt35nIYMEtkS+Sc23jsal9IZOkU3uy9Qc0ganrIGH9YU5dxd/fiZOueAqjcO5R2eED3TmN2p46Acchc3/109ryhgQaSHBQJqtfA7Gm2u2qmrHBtaYsUqXuqeLNBCFacXSqDnpqFnStgFswpcwMfs3dQvlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713054300; c=relaxed/simple;
-	bh=6cwz7sq9/Ry/X3YPf1XJMdD/vYMuqKwjtDLDys1bQog=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IJ5Ua0OIDabQF8crQ55lyPhqA+3/UZhPLbdVUCramakfLBhLMkcbw4aUhSe39R2yUS+rh7M6nRCjoPYKZiEUouyFbByI7D3jmddwMrqCU6sA2ZRFWV2wtQLzEEoLPJqoUV/Ia68LLfoBaDSyBe1hDzrpKtX/Bvy+aZebQJVQ4X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=gMW+j/eE; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43E0OBpU010410
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 13 Apr 2024 20:24:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1713054255; bh=qb/AK26peA9M1+LO1ejrXo5H1qOcrwEngc2lVcRQn9M=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=gMW+j/eEZZ227dKTw8qgb3SuQZg06xUa58esbWcXoX8dpUZB1en0reXXGStK9DAcq
-	 2NGcjQX+f5Uxytao5c/IPST/8CAmKWJQ8J6giqwWVbMycz+Bs3AkizauEhbKqhSYdN
-	 DxSIOVCkhv9XEe+HuIh81hyJ1XtcdtxK9wOdZWilsJ1GPXStJy9yi4B33K7Ic86xFj
-	 n7WqCj8j1P4UC/ednNZ22PYaGCw73K4CnGamuueyD9KjtGgqHil7hhIblz97bVYW+d
-	 0Ys+GZuvSoQtAVvgck4WiGfLlErZ9Tm9PdwdNLSM9aBxKsUrVPpzmw+NIFnS5NBnw5
-	 ycfENAmksYO9A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 611C115C0CB5; Sat, 13 Apr 2024 20:24:11 -0400 (EDT)
-Date: Sat, 13 Apr 2024 20:24:11 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Nam Cao <namcao@linutronix.de>
-Cc: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
-        Conor Dooley <conor@kernel.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <20240414002411.GG187181@mit.edu>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
- <20240413164318.7260c5ef@namcao>
+	s=arc-20240116; t=1713054390; c=relaxed/simple;
+	bh=2amr6wG99uO/mIM3nGfbYUX9VWalVE/e1WEzqM/t2oA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZvyXcUH28V18aXkmTAWkFry370btakuuhpaTCoJRCz8PrS9nyILbKjQ4nJ4/W0LeURNoz9UFeHLkHTmnPX+vZgFBWKHyRO2eUjts7+OsST2QxcjHfPtxejJA6esWMgA72zlaPWi8PbCaFeVN5hAWzuag4e5KVmdczoWpRStZ58I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36a14031548so21422695ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 17:26:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713054388; x=1713659188;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FsIqhJuQNmACm2Ng6LAS1JB1TTW5nlMwGw5jr/sCgBA=;
+        b=QXYVOYulBmBMME+iMm8R+a/1s9Tqz9xNd5lRzCcvxsnqFAEW6ok9GhPFZ6hma4KQLs
+         hskoHRoT4B5C5xuMTnnP9+aYDlBgV2srbVRIf/7dqkoTW6Hs+UA6SjUxAN7gfZydQfMD
+         6ekkWCUGLz+UxgXqonfKF1eqJU369rxeUouA1x3PTwxkvQq/c+V78pT8FXmfTTKfYlAt
+         uCQQgNGGWK08DuQMm/nhGV9nPhmX81fVccwq8mMx/MHmbGU6bmy2ebAuUw7qBrtVlHpQ
+         wztJ6W+BnvehVzWYksfQtJaVeNIBdEEImkkdA+mTooAMEgZ5e5POX6iSNwiL+zs3bR8Y
+         htaA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZcRTfD43O7bSfsSHzKHXV25jJTxGu/gH5v+t9Aryh7tnqfUpuvzpyIFxSb1yce2++A9kBIVUNAtMdxSWoGK6Kmt34WYONpK6QEMWz
+X-Gm-Message-State: AOJu0YwWxR8inQJ9BoGvChP2Xd4oJ607pBuDgLHthyZj90xEu32eZInK
+	zZ+bGf96Vnm8bay1kFr8EgtCxwaWz0r33CKmPlpqQjFqG2z+lrGEXv/sOBJ5f1lor+sHTci4p+f
+	3LWR2qpBPxWn1HYgFxVVRAdz0koxcz/KM1me24szpde9gr30eb+bSbeg=
+X-Google-Smtp-Source: AGHT+IGXSZRjxeasgIby8IVsdEwfLp48enTRZALg+PBa66YzSIy9ESl04YsfvOzSZg4pjfnNcKzkHoVfYcckRShj/tQRyp8YLS2E
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240413164318.7260c5ef@namcao>
+X-Received: by 2002:a05:6e02:1a6f:b0:369:f7ca:a361 with SMTP id
+ w15-20020a056e021a6f00b00369f7caa361mr478849ilv.1.1713054388468; Sat, 13 Apr
+ 2024 17:26:28 -0700 (PDT)
+Date: Sat, 13 Apr 2024 17:26:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004e50e40616038e72@google.com>
+Subject: [syzbot] [bluetooth?] WARNING in l2cap_chan_send
+From: syzbot <syzbot+b6919040d9958e2fc1ae@syzkaller.appspotmail.com>
+To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
+	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Apr 13, 2024 at 04:43:18PM +0200, Nam Cao wrote:
-> 
-> I have zero knowledge about file system, but I think it's an integer
-> overflow problem. The calculation of "dlimit" overflow and dlimit wraps
-> around, this leads to wrong comparison later on.
-> 
-> I guess that explains why your bisect and Conor's bisect results are
-> strange: the bug has been here for quite some time, but it only appears
-> when "dlimit" happens to overflow.
+Hello,
 
-So the problem with that theory is that for that to be the case
-buf_size would have to be invalid, and it's unclear how could have
-happened.  We can try to test that theory by putting something like
-this at the beginning of ext4_search_dir():
+syzbot found the following issue on:
 
-	if (buf_size < 0 || buf_size > dir->i_sb->s_blocksize) {
-		/* should never happen */
-		EXT4_ERROR_INODE(dir, "insane buf_size %d", buf_size);
-		WARN_ON(1)
-		return -EFSCORRUPTED;
-	}
+HEAD commit:    f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.o..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f69bd3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=b6919040d9958e2fc1ae
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Just to confirm, this file system is not one that has been fuzzed or
-is being dynamically modified while mounted, right?  Even if that were
-the case, looking at the stack trace, I don't see how this could have
-happened.  (I could imagine some scenario involving inline directoreis
-and fuzzed or dynamically modified file systems might be a potential
-problem=, or at least one that involve much more careful; code review,
-since that code is not as battle tested as other parts of ext4; but
-the stack trace reported at the beginning of this thread doesn't seem
-to indicate that inline directories were involved.)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-   	    	 		    - Ted
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/65d3f3eb786e/disk-f99c5f56.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/799cf7f28ff8/vmlinux-f99c5f56.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ab26c60c3845/bzImage-f99c5f56.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b6919040d9958e2fc1ae@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8027 at kernel/workqueue.c:2322 __queue_work+0xc6a/0xec0 kernel/workqueue.c:2321
+Modules linked in:
+CPU: 1 PID: 8027 Comm: syz-executor.4 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:__queue_work+0xc6a/0xec0 kernel/workqueue.c:2321
+Code: ff e8 3a e0 35 00 eb 21 e8 33 e0 35 00 eb 1a e8 2c e0 35 00 eb 13 e8 25 e0 35 00 90 0f 0b 90 e9 74 fd ff ff e8 17 e0 35 00 90 <0f> 0b 90 48 83 c4 68 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc
+RSP: 0018:ffffc9000305f4c0 EFLAGS: 00010083
+RAX: ffffffff815f103d RBX: ffff888022ff3c00 RCX: 0000000000040000
+RDX: ffffc90012785000 RSI: 0000000000016230 RDI: 0000000000016231
+RBP: 0000000000000000 R08: ffffffff815f0513 R09: 1ffff1100d0621be
+R10: dffffc0000000000 R11: ffffed100d0621bf R12: dffffc0000000000
+R13: ffff88802e5ad9c0 R14: ffff88802e5ad800 R15: 0000000000000008
+FS:  00007f9fcf6a96c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020001300 CR3: 0000000062a38000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ queue_work_on+0x14f/0x250 kernel/workqueue.c:2435
+ l2cap_chan_send+0x3d6/0x2680
+ l2cap_sock_sendmsg+0x1b4/0x2c0 net/bluetooth/l2cap_sock.c:1139
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmmsg+0x3b2/0x740 net/socket.c:2724
+ __do_sys_sendmmsg net/socket.c:2753 [inline]
+ __se_sys_sendmmsg net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0xa0/0xb0 net/socket.c:2750
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f9fce87de69
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9fcf6a90c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007f9fce9abf80 RCX: 00007f9fce87de69
+RDX: 00000000ffffff80 RSI: 0000000020004100 RDI: 0000000000000006
+RBP: 00007f9fce8ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000010040 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f9fce9abf80 R15: 00007ffd6dcb5768
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
