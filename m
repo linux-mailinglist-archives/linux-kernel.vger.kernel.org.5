@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-144012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5A2F8A40CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:57:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C799E8A40B4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84F721F21258
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:57:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D7291F213F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:54:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E171CD3B;
-	Sun, 14 Apr 2024 06:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD9EB1CAA8;
+	Sun, 14 Apr 2024 06:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=sirabella.org header.i=@sirabella.org header.b="gEiq5i92"
+	dkim=pass (1024-bit key) header.d=sirabella.org header.i=@sirabella.org header.b="H4lLj8Hl"
 Received: from sirabella.org (sirabella.org [207.246.81.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 987E66AA1;
-	Sun, 14 Apr 2024 06:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4966A134D1;
+	Sun, 14 Apr 2024 06:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.246.81.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713077818; cv=none; b=rwmzjCVdvUguWwHNtPunBF5gw6+WUiMFpUuxf4nIQrqZE/Eq5nmzz/c7w3g7FDzMBlAXNGoYCOuRPnpaHZPUAycwWJizkywaaMRe34KlYA8aqsYJCg+498wqhNNKBEH2yPWcLOu4IZfRuVRLtuSMTE2/bOlHUxoKsOEXfmjNcY4=
+	t=1713077647; cv=none; b=U0/zTBS+vxB83LXFrXoa4cj5Wt9dpEnC54uDu8JD8XYMc5e0/wEE2dijnUn7prOPQ+sx02YpT9i7LQyXEfoX6lDZLKHAsjs1Njb/Si0voRvJijzIq+BsgFmGa3T3SEOYjGYNAtE5GXvsVXdgmHGn/EWbenMWTXx9SMKVA8aPYcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713077818; c=relaxed/simple;
-	bh=9TKWLiX+ZGAnP/e+QhJf41rNF9FnSG7Nawm+9D7GiDg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EKwxdzlsSJAWM4CeVFtFVvM3v+M58QYx4Hnve+sHO77vtVIuMcxwSYNoEb6nPw6PXhDvaY3SPo19XV5SVQseR8KV8CVmFFGaUnf7Ef/WC1JvfpMu9HaDqVkBs4H1ZjwIBmLGKtzinx6gTQsVURYVeyv81h4Zmd8GbZkT1gc0Nyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sirabella.org; spf=pass smtp.mailfrom=sirabella.org; dkim=pass (1024-bit key) header.d=sirabella.org header.i=@sirabella.org header.b=gEiq5i92; arc=none smtp.client-ip=207.246.81.106
+	s=arc-20240116; t=1713077647; c=relaxed/simple;
+	bh=OwZXUAQIljzatfKc1kdDes2zT7NCe9QasY61Okvdqyw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NJj8Vxs98St4Z42TOeZPodaIA3aYATi+0LRDCGltPKGd/pvrVE8C+IcTzxh/Wk8z0X8mt4lILWjhaF9lBpqahkBCUA9FfXbYS2UAqBYdgpP/KtZXcmC7bbASPoCQqW3YsvgUkiwlzJI/QTpZNPu0jOnKAwIkvvSJP6eFWz2puug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sirabella.org; spf=pass smtp.mailfrom=sirabella.org; dkim=pass (1024-bit key) header.d=sirabella.org header.i=@sirabella.org header.b=H4lLj8Hl; arc=none smtp.client-ip=207.246.81.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sirabella.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sirabella.org
 From: Marco Sirabella <marco@sirabella.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sirabella.org;
-	s=mail; t=1713077492;
-	bh=l2H2ron2dMTeEoHZug+m+sVYP7hGlm0Wh9o8YAcI908=;
+	s=mail; t=1713077643;
+	bh=8yX+RfINII2LzHTSQoJ6+4gEiy7jn4rJ/Lmdru5TOLg=;
 	h=From:To:Cc:Subject:Date;
-	b=gEiq5i923kkJQGIKlOR5GCtkmbUjYpe6gHM7sfoSk+yW0LBZLvyoZN0s0nFtdL7e6
-	 iK9l2NNRF0gGgmDbS/xeTQptfFjArXCZ5H2VcJbu2AeEDA1UgoQavrtK+8ejNrzFCR
-	 6QL0JfolwZLDgu8k0WMpJ0rpcus6CwQPHZ4TtX0s=
+	b=H4lLj8HlA8NDExuL9R1n42gLottdqmOcQFqh5dqCUJJVOPrKOcKzBIfZqGIV40w5u
+	 lBfvoTtmv87+pL0xzskhD463GyG+QqthLRLfAm3D3cRGqXF3IBBXPWCURzaA42UuFT
+	 PrGEpTWCebVQ3KdMUEnVkoGmUlb/K9819bEtMNt0=
 To: linux-kernel@vger.kernel.org
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-gpio@vger.kernel.org,
+Cc: Mark Brown <broonie@kernel.org>,
+	linux-spi@vger.kernel.org,
 	linux-doc@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>,
 	Marco Sirabella <marco@sirabella.org>
-Subject: [PATCH] Documentation: Add additional missing arg to dev_gpiod_get examples
-Date: Sun, 14 Apr 2024 02:50:49 -0400
-Message-ID: <20240414065049.28981-1-marco@sirabella.org>
+Subject: [PATCH] Documentation: spi: Update gpio+bitbang instruction
+Date: Sun, 14 Apr 2024 02:53:05 -0400
+Message-ID: <20240414065305.9796-1-marco@sirabella.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,47 +55,47 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-in 39b2bbe3d715 (gpio: add flags argument to gpiod_get*() functions) a
-third argument was added to the function, apply that to examples found
-in the tree with a simple regex: gpiod_get\([^(,]*,[^(,]*\)
+The way to do this was changed in
+9b00bc7b901f (spi-gpio: Rewrite to use GPIO descriptors)
+and there's no real docs outlining this,
+update defunct #include "spi-gpio.c" instructions
 
 Signed-off-by: Marco Sirabella <marco@sirabella.org>
 ---
- Documentation/driver-api/pin-control.rst          | 2 +-
- Documentation/firmware-guide/acpi/enumeration.rst | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/spi/spi-gpio.c | 17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/driver-api/pin-control.rst b/Documentation/driver-api/pin-control.rst
-index 4639912dc9cc..bdb0a17d092b 100644
---- a/Documentation/driver-api/pin-control.rst
-+++ b/Documentation/driver-api/pin-control.rst
-@@ -1293,7 +1293,7 @@ So say that your driver is fetching its resources like this:
- 	struct gpio_desc *gpio;
+diff --git a/drivers/spi/spi-gpio.c b/drivers/spi/spi-gpio.c
+index 909cce109bba..8c5f88f01db2 100644
+--- a/drivers/spi/spi-gpio.c
++++ b/drivers/spi/spi-gpio.c
+@@ -44,22 +44,13 @@ struct spi_gpio {
+  * per transferred bit can make performance a problem, this code
+  * is set up so that you can use it in either of two ways:
+  *
+- *   - The slow generic way:  set up platform_data to hold the GPIO
++ *   - The generic way:  set up platform_data to hold the GPIO
+  *     numbers used for MISO/MOSI/SCK, and issue procedure calls for
+  *     each of them.  This driver can handle several such busses.
+  *
+- *   - The quicker inlined way:  only helps with platform GPIO code
+- *     that inlines operations for constant GPIOs.  This can give
+- *     you tight (fast!) inner loops, but each such bus needs a
+- *     new driver.  You'll define a new C file, with Makefile and
+- *     Kconfig support; the C code can be a total of six lines:
+- *
+- *		#define DRIVER_NAME	"myboard_spi2"
+- *		#define	SPI_MISO_GPIO	119
+- *		#define	SPI_MOSI_GPIO	120
+- *		#define	SPI_SCK_GPIO	121
+- *		#define	SPI_N_CHIPSEL	4
+- *		#include "spi-gpio.c"
++ *   - The inlined way:  manually set up and register a gpiod_lookup_table with
++ *     the appropriately labelled gpio pins "sck", "mosi", "miso" & an array
++ *     named "cs" before calling devm_spi_register_controller (XXX).
+  */
  
- 	pinctrl = devm_pinctrl_get_select_default(&dev);
--	gpio = devm_gpiod_get(&dev, "foo");
-+	gpio = devm_gpiod_get(&dev, "foo", GPIOD_ASIS);
- 
- Here we first request a certain pin state and then request GPIO "foo" to be
- used. If you're using the subsystems orthogonally like this, you should
-diff --git a/Documentation/firmware-guide/acpi/enumeration.rst b/Documentation/firmware-guide/acpi/enumeration.rst
-index 0165b09c0957..f9dcf15f7346 100644
---- a/Documentation/firmware-guide/acpi/enumeration.rst
-+++ b/Documentation/firmware-guide/acpi/enumeration.rst
-@@ -416,11 +416,11 @@ a code like this::
- 
- 	struct gpio_desc *irq_desc, *power_desc;
- 
--	irq_desc = gpiod_get(dev, "irq");
-+	irq_desc = gpiod_get(dev, "irq", GPIOD_IN);
- 	if (IS_ERR(irq_desc))
- 		/* handle error */
- 
--	power_desc = gpiod_get(dev, "power");
-+	power_desc = gpiod_get(dev, "power", GPIOD_IN);
- 	if (IS_ERR(power_desc))
- 		/* handle error */
- 
+ #ifndef DRIVER_NAME
 -- 
 2.43.2
 
