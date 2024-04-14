@@ -1,60 +1,61 @@
-Return-Path: <linux-kernel+bounces-144087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 163468A41A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:00:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB478A41C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:12:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45B351C20E88
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:00:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5058E1F21634
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E880B24B29;
-	Sun, 14 Apr 2024 09:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A602D04E;
+	Sun, 14 Apr 2024 10:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="YaPgL0LB"
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="afEGcyno"
+Received: from msa.smtpout.orange.fr (out-69.smtpout.orange.fr [193.252.22.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6CC1AACB;
-	Sun, 14 Apr 2024 09:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F532C848;
+	Sun, 14 Apr 2024 10:12:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.22.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713088797; cv=none; b=hOYb41iAmZtJxoedvEb9NdPFU2dL+2sWEwQXU5cKjhpxJjk6IBN5HDwPu1WsAQKyrtwuAxFU3r6b5IJlvdfaV8s3Pv0xNgVqYtMJAilmQCRVMCZKA/kVhUJHCK9vT/yj6DhnG+BPTckhKdpQTKm3DdrQSNMmEralDESRMtvgP+0=
+	t=1713089535; cv=none; b=r+423BN1qS8ouhxvCvbxeaX83GTMWkabUh4snLW33+O8VxJCj4wqnwE9xCgz3NGG5ncaJG2aO+ijutQTIfssWAypJqvwbCcWcGiDtkrxms5jJ1Be68g/xbSkLwg2jfmBQBYvujuNFGgWIzOnepEAA7Gvv7+8m6yTdOESJbIGG3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713088797; c=relaxed/simple;
+	s=arc-20240116; t=1713089535; c=relaxed/simple;
 	bh=lkq1lrzB9HxKNl03Hpci59UA0sfQ1vTlkLoKDGZGgc4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jQi27+QM3Ni/5porIh/nbXAnh2rYrtliDjMt0CXRynXQONyk9THfx8FRAq61WsYfxhwkalNweyIGweKWWfR38vNVnFiL4mcWbnP3oIfUZnNGq3yM/uzR9Z8YBsv33GK47X4UwJg+LEV9m0afuG2Y4x44TE9qdqwftcaLniid9tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=YaPgL0LB; arc=none smtp.client-ip=80.12.242.19
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qBP7LbsC8vT45iLRAZp9pn/eD9el8c+i4SDGhie22casHLOBoeU367DA7yjedBtzkIUnClaX2dEbdyhkUmOnazCmIzbqCUmOM4GjFEsLSrvFDOeZ8s++Vzbb05CdVLdPTQ2sYt69Dv29x66fYPn1VT8OIE2UbmcD3svcjdXPKBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=afEGcyno; arc=none smtp.client-ip=193.252.22.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Received: from fedora.home ([86.243.17.157])
 	by smtp.orange.fr with ESMTPA
-	id vwdGrlEDlSoxzvwdGrpuSk; Sun, 14 Apr 2024 11:58:43 +0200
+	id vwhervJ5FwSN5vwherU9fE; Sun, 14 Apr 2024 12:03:16 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1713088723;
+	s=t20230301; t=1713088996;
 	bh=vJwVeMXmnUN8m7oxlGG0PhRilSD1pyJWjsrWEGLWca8=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=YaPgL0LBOAlUN3v3MGzWg5qQRiFtebPEH7cCRm2gGLDPw4G4Oi7+izNrlJtrcJ4pC
-	 7Qp7zK/WwUIBc5ZL5LaUXYZr0456fzjGVQdrUiaSLMIlzIUpt/yQksJAnAnhxP/oN2
-	 g3UhZitgMeMSkqqEB9Gp/LAxEyzYk64DiFYPo/wt3/xbrV7tn8UoLgvMD29UjuJWq7
-	 XI39HBfbLyUq7ynOcSF6AceeoYbpMIlCYZEX39PAQ+TI2KGNPJeFVX+zA2gVZOFSsQ
-	 nH4KtopZJOga5ot5z6HUAzpP7WEA6BkVvtRLQmWldGOBnbt86gwDZutJXBHNZ0aJ/m
-	 Anc7CIDkHMj7A==
+	b=afEGcynoPMftMo0taM5DLQbyO5wId531Rxl3MdAcfn+qajL3mgP5c7PqKHAkz78s7
+	 ZQza+LIx3ob2WuE3j1pDK0ihGlBQ0hyKZvX2Q7nlO/phSkIR5+xPwbQZuqYHWG1E2v
+	 Q7BP0coNiSyuCCKuKixVvlKXtiHzaBX7bXO6zRKCWMzi9PlJEOM8kRqwNN98NS4xpN
+	 C0yiTasdHVeG3nkA18uBdDn3EiPgMcrfkQvcw3qnag0fkdnoL+ewoUsh2PWeRpw69/
+	 +Kw/7X6US5SNfVxdbV4soQuoGae1EGhYf1SJuNeJDprFewKdYDglyUk/EhBQT4aXZ2
+	 jcpClt8KvG7Ng==
 X-ME-Helo: fedora.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Apr 2024 11:58:43 +0200
+X-ME-Date: Sun, 14 Apr 2024 12:03:16 +0200
 X-ME-IP: 86.243.17.157
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Jiri Kosina <jikos@kernel.org>,
+To: akpm@linux-foundation.org,
+	Jiri Kosina <jikos@kernel.org>,
 	Benjamin Tissoires <bentiss@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
 	kernel-janitors@vger.kernel.org,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	linux-input@vger.kernel.org
 Subject: [PATCH RESEND] HID: sony: Remove usage of the deprecated ida_simple_xx() API
-Date: Sun, 14 Apr 2024 11:58:39 +0200
+Date: Sun, 14 Apr 2024 12:03:11 +0200
 Message-ID: <9b7684381f9d09a7cd5840caa2a160d7764d6403.1713088684.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.44.0
 Precedence: bulk
