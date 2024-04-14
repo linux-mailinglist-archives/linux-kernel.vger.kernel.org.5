@@ -1,296 +1,234 @@
-Return-Path: <linux-kernel+bounces-144123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE2148A4222
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:46:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227668A4225
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:50:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E42D281F4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:46:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C3041F213A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCAF44C89;
-	Sun, 14 Apr 2024 11:46:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702203D552;
+	Sun, 14 Apr 2024 11:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vi93Dh7p"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lD4EGefg"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D2A3613D;
-	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99CF2AD00;
+	Sun, 14 Apr 2024 11:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713095180; cv=none; b=aZDn5JF806aG1WnFCXFCwnqfxS8A1SGB09+5Q49BdavykoD+z5A5jtTP0eQRWyzf3XGiIs8wLkeuj1pyGArfUiyy0HGgztk69UN/CX24TojQ7QP2kWLqtwEPIyPKXBkvx+mvYQC6LZm7U6M0VeCKvGSJnDGoG6B3UddMLi8WXYg=
+	t=1713095423; cv=none; b=Hh5+GwYfwhBpAG4zdtiw2mIUxlxYmlb3eoQ1CTI8kMEYN5qek1hEP1nLCtunH33FnhG7rRqsMELYWgXbrZUK59tU327dorxonoOmCkPIAOsd9i1sGnY0Gn33qlEBH6xBr9j32yolREDbkvGcJTz08jtegfQwTVOew6lXvR7YwiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713095180; c=relaxed/simple;
-	bh=iOTbMvh8oo8qfCdUhfbJs9sLC03dXhPCXmOTbb7K93o=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jonq6PcImQk1NohhoaPZL/xbSUVppfpOEGBzkR36RRy3E9WNiSRbwdA+yu+bhNEu/S8AilCJEcMYGov0L3RnWmTtGyKozkl5cxYsYc++zmZNr6/Fvq4I4EODUd34YyfTIK2O1K9PYBBIIL7EO8EXiO57P84GTjPNTufdhp5RfUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vi93Dh7p; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C8C1C4AF0A;
-	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713095180;
-	bh=iOTbMvh8oo8qfCdUhfbJs9sLC03dXhPCXmOTbb7K93o=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=Vi93Dh7pqiV62TLmnkl5pjC6ixAoTE2eEiY4fJ4Mq7131zJ2rgIrMjixLGB/ei/Li
-	 ninoLsGd6HT4QAHkETwG2eTDtFB/BOrGkJKgZ4RwEq/dQ9RjrmN6FrYluQudHY0yMk
-	 BDdFs4zZrdkz+c3UjxGIhCfC5dk2SzKxIPX18zbTkya7hNJPM303oMCnQAppQ3rVPL
-	 j29CvjfEs3VrydUO0QV4awGwPVWyDEEwwx/6xKnvWbfRJArd4/YgTsX65Yej4Py8YI
-	 IcF5CL1NmqTwWdGWAMNYEm5QG9E+EowPHTpKTQlJWHCiXZY4UZub36L05/eILSHXji
-	 x5muPU0Zyu3CQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F967C05024;
-	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Sun, 14 Apr 2024 14:46:03 +0300
-Subject: [PATCH 4/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC5300
+	s=arc-20240116; t=1713095423; c=relaxed/simple;
+	bh=/hD0PfSvSP4V9l90av6Gfjj2pT9er7uKIGoX4dcehd8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DrNo1LZED6KJbIMyfIag22yojw91mJP9I8Xtg8aYwzTONsv7sgxxJzWjIfc+dd9ig6VCdXgigac2beDw5CSe1UJRiRv4EE0M5pwvN0pcZy40zld6b/ZdzNCNHn4EISfkOZQmy2DL4HwUGD7yIcfU1uxr/rRAe43GpIy+FNhaJ9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lD4EGefg; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713095422; x=1744631422;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/hD0PfSvSP4V9l90av6Gfjj2pT9er7uKIGoX4dcehd8=;
+  b=lD4EGefgaW4X8U7d2nYgoxPOqcMlFqOfyazpRodFUTgjmxMpY9uHb2o3
+   4WR3Vym49+xtT/JN09VPNlRNW2wdkfTiBt/V9Vcd961bhDk9Gtn1wkWEe
+   gspvWF6MewanW9aAXtbLN26Sb/NXrfEkX3RW0UINUYZ/5arl3Vtcu2rxL
+   mt4dc3PfpX7Ne0x/0s1tZH58zcFRgQ/Uztrskuq8EnXNNSoTraXPEvYbF
+   nucTfJbh9YhSwDTCWfTsvjy8kKi5Dwf1RWvTvu3cUrQaSoOdnHemghPyH
+   0Zjz4I9ycemKvU4KEQN+6yStAbzVqoOvEk8/1q56t8qt5CKRGvXHLqeIT
+   A==;
+X-CSE-ConnectionGUID: uKwQ0TApSCyFNXltpeTQmQ==
+X-CSE-MsgGUID: vCtaXAb5RcuYCzSRwo/eig==
+X-IronPort-AV: E=McAfee;i="6600,9927,11043"; a="25953660"
+X-IronPort-AV: E=Sophos;i="6.07,201,1708416000"; 
+   d="scan'208";a="25953660"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 04:50:21 -0700
+X-CSE-ConnectionGUID: ICWDPAndQumu+rkhCmrRvg==
+X-CSE-MsgGUID: o5Ev1fgsQyGm/DyOlsgjdw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,201,1708416000"; 
+   d="scan'208";a="52844165"
+Received: from dev-qz.sh.intel.com (HELO localhost) ([10.239.147.89])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 04:50:19 -0700
+From: qiang4.zhang@linux.intel.com
+To: Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Qiang Zhang <qiang4.zhang@intel.com>,
+	Stable@vger.kernel.org
+Subject: [PATCH v3] bootconfig: use memblock_free_late to free xbc memory to buddy
+Date: Sun, 14 Apr 2024 19:49:45 +0800
+Message-Id: <20240414114944.1012359-1-qiang4.zhang@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-4-118c90bae6e5@arinc9.com>
-References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
-In-Reply-To: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, 
- Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713095170; l=4826;
- i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=c/8HaPqKjp8S34BaI+MyH3eEMu3y9Wkl8uy/jpRF7IU=;
- b=oeOazBKHkZuyczClozvfl62Fuv/byhjHgqlTqXWQVV0zoK/ShxrfEE2bHePajqRHli1NGJ6c2
- CAocWOtD0G2BJh/noJ38ZuFL7d8ldKfwgBBZ0+61QnwmNelbT1141qc
-X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
- pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
-X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
- with auth_id=115
-X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
-Reply-To: arinc.unal@arinc9.com
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+From: Qiang Zhang <qiang4.zhang@intel.com>
 
-Add the device tree for ASUS RT-AC5300 which is an AC5300 router featuring
-5 Ethernet ports over the integrated Broadcom switch.
+On the time to free xbc memory in xbc_exit(), memblock may has handed
+over memory to buddy allocator. So it doesn't make sense to free memory
+back to memblock. memblock_free() called by xbc_exit() even causes UAF bugs
+on architectures with CONFIG_ARCH_KEEP_MEMBLOCK disabled like x86.
+Following KASAN logs shows this case.
 
-Hardware info:
-* Processor: Broadcom BCM4709C0 dual-core @ 1.4 GHz
-* Switch: BCM53012 in BCM4709C0
-* DDR3 RAM: 512 MB
-* Flash: 128 MB
-* 2.4GHz: BCM4366 4x4 single chip 802.11b/g/n SoC
-* 5GHz: BCM4366 4x4 two chips 802.11a/n/ac SoC
-* Ports: 4 LAN Ports, 1 WAN Port
+This patch fixes the xbc memory free problem by calling memblock_free()
+in early xbc init error rewind path and calling memblock_free_late() in
+xbc exit path to free memory to buddy allocator.
 
-Co-developed-by: Tom Brautaset <tbrautaset@gmail.com>
-Signed-off-by: Tom Brautaset <tbrautaset@gmail.com>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+[    9.410890] ==================================================================
+[    9.418962] BUG: KASAN: use-after-free in memblock_isolate_range+0x12d/0x260
+[    9.426850] Read of size 8 at addr ffff88845dd30000 by task swapper/0/1
+
+[    9.435901] CPU: 9 PID: 1 Comm: swapper/0 Tainted: G     U             6.9.0-rc3-00208-g586b5dfb51b9 #5
+[    9.446403] Hardware name: Intel Corporation RPLP LP5 (CPU:RaptorLake)/RPLP LP5 (ID:13), BIOS IRPPN02.01.01.00.00.19.015.D-00000000 Dec 28 2023
+[    9.460789] Call Trace:
+[    9.463518]  <TASK>
+[    9.465859]  dump_stack_lvl+0x53/0x70
+[    9.469949]  print_report+0xce/0x610
+[    9.473944]  ? __virt_addr_valid+0xf5/0x1b0
+[    9.478619]  ? memblock_isolate_range+0x12d/0x260
+[    9.483877]  kasan_report+0xc6/0x100
+[    9.487870]  ? memblock_isolate_range+0x12d/0x260
+[    9.493125]  memblock_isolate_range+0x12d/0x260
+[    9.498187]  memblock_phys_free+0xb4/0x160
+[    9.502762]  ? __pfx_memblock_phys_free+0x10/0x10
+[    9.508021]  ? mutex_unlock+0x7e/0xd0
+[    9.512111]  ? __pfx_mutex_unlock+0x10/0x10
+[    9.516786]  ? kernel_init_freeable+0x2d4/0x430
+[    9.521850]  ? __pfx_kernel_init+0x10/0x10
+[    9.526426]  xbc_exit+0x17/0x70
+[    9.529935]  kernel_init+0x38/0x1e0
+[    9.533829]  ? _raw_spin_unlock_irq+0xd/0x30
+[    9.538601]  ret_from_fork+0x2c/0x50
+[    9.542596]  ? __pfx_kernel_init+0x10/0x10
+[    9.547170]  ret_from_fork_asm+0x1a/0x30
+[    9.551552]  </TASK>
+
+[    9.555649] The buggy address belongs to the physical page:
+[    9.561875] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x45dd30
+[    9.570821] flags: 0x200000000000000(node=0|zone=2)
+[    9.576271] page_type: 0xffffffff()
+[    9.580167] raw: 0200000000000000 ffffea0011774c48 ffffea0012ba1848 0000000000000000
+[    9.588823] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+[    9.597476] page dumped because: kasan: bad access detected
+
+[    9.605362] Memory state around the buggy address:
+[    9.610714]  ffff88845dd2ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[    9.618786]  ffff88845dd2ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[    9.626857] >ffff88845dd30000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[    9.634930]                    ^
+[    9.638534]  ffff88845dd30080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[    9.646605]  ffff88845dd30100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[    9.654675] ==================================================================
+
+Cc: Stable@vger.kernel.org
+Signed-off-by: Qiang Zhang <qiang4.zhang@intel.com>
 ---
- arch/arm/boot/dts/broadcom/Makefile                |   1 +
- .../boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts  | 170 +++++++++++++++++++++
- 2 files changed, 171 insertions(+)
+v3:
+- add NULL pointer check in memblock_free_late() path.
 
-diff --git a/arch/arm/boot/dts/broadcom/Makefile b/arch/arm/boot/dts/broadcom/Makefile
-index c61fca514775..5881bcc95eba 100644
---- a/arch/arm/boot/dts/broadcom/Makefile
-+++ b/arch/arm/boot/dts/broadcom/Makefile
-@@ -72,6 +72,7 @@ dtb-$(CONFIG_ARCH_BCM_5301X) += \
- 	bcm4709-netgear-r8000.dtb \
- 	bcm4709-tplink-archer-c9-v1.dtb \
- 	bcm47094-asus-rt-ac3100.dtb \
-+	bcm47094-asus-rt-ac5300.dtb \
- 	bcm47094-asus-rt-ac88u.dtb \
- 	bcm47094-dlink-dir-885l.dtb \
- 	bcm47094-dlink-dir-890l.dtb \
-diff --git a/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts b/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts
-new file mode 100644
-index 000000000000..b7e55d4ce999
---- /dev/null
-+++ b/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts
-@@ -0,0 +1,170 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Author: Tom Brautaset <tbrautaset@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "bcm47094.dtsi"
-+#include "bcm5301x-nand-cs0-bch8.dtsi"
-+
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	compatible = "asus,rt-ac5300", "brcm,bcm47094", "brcm,bcm4708";
-+	model = "ASUS RT-AC5300";
-+
-+	chosen {
-+		bootargs = "console=ttyS0,115200 earlycon";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x00000000 0x08000000>,
-+		      <0x88000000 0x18000000>;
-+	};
-+
-+	nvram@1c080000 {
-+		compatible = "brcm,nvram";
-+		reg = <0x1c080000 0x00180000>;
-+
-+		et1macaddr: et1macaddr {
-+			#nvmem-cell-cells = <1>;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-lan {
-+			color = <LED_COLOR_ID_WHITE>;
-+			function = LED_FUNCTION_LAN;
-+			gpios = <&chipcommon 21 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-power {
-+			color = <LED_COLOR_ID_WHITE>;
-+			function = LED_FUNCTION_POWER;
-+			gpios = <&chipcommon 3 GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "default-on";
-+		};
-+
-+		led-wan-red {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_WAN;
-+			gpios = <&chipcommon 5 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		led-wps {
-+			color = <LED_COLOR_ID_WHITE>;
-+			function = LED_FUNCTION_WPS;
-+			gpios = <&chipcommon 19 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		button-reset {
-+			label = "Reset";
-+			linux,code = <KEY_RESTART>;
-+			gpios = <&chipcommon 11 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		button-wifi {
-+			label = "Wi-Fi";
-+			linux,code = <KEY_RFKILL>;
-+			gpios = <&chipcommon 20 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		button-wps {
-+			label = "WPS";
-+			linux,code = <KEY_WPS_BUTTON>;
-+			gpios = <&chipcommon 18 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+&usb2 {
-+	vcc-gpio = <&chipcommon 9 GPIO_ACTIVE_HIGH>;
-+};
-+
-+&usb3_phy {
-+	status = "okay";
-+};
-+
-+&gmac0 {
-+	nvmem-cells = <&et1macaddr 0>;
-+	nvmem-cell-names = "mac-address";
-+};
-+
-+&gmac1 {
-+	nvmem-cells = <&et1macaddr 1>;
-+	nvmem-cell-names = "mac-address";
-+};
-+
-+&gmac2 {
-+	nvmem-cells = <&et1macaddr 2>;
-+	nvmem-cell-names = "mac-address";
-+};
-+
-+&srab {
-+	status = "okay";
-+
-+	ports {
-+		port@0 {
-+			label = "lan4";
-+			nvmem-cells = <&et1macaddr 0>;
-+			nvmem-cell-names = "mac-address";
-+		};
-+
-+		port@1 {
-+			label = "lan3";
-+			nvmem-cells = <&et1macaddr 1>;
-+			nvmem-cell-names = "mac-address";
-+		};
-+
-+		port@2 {
-+			label = "lan2";
-+			nvmem-cells = <&et1macaddr 2>;
-+			nvmem-cell-names = "mac-address";
-+		};
-+
-+		port@3 {
-+			label = "lan1";
-+			nvmem-cells = <&et1macaddr 3>;
-+			nvmem-cell-names = "mac-address";
-+		};
-+
-+		port@4 {
-+			label = "wan";
-+			nvmem-cells = <&et1macaddr 4>;
-+			nvmem-cell-names = "mac-address";
-+		};
-+	};
-+};
-+
-+&nandcs {
-+	partitions {
-+		compatible = "fixed-partitions";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			label = "boot";
-+			reg = <0x00000000 0x00080000>;
-+			read-only;
-+		};
-+
-+		partition@80000 {
-+			label = "nvram";
-+			reg = <0x00080000 0x00180000>;
-+		};
-+
-+		partition@200000 {
-+			label = "firmware";
-+			reg = <0x00200000 0x07e00000>;
-+			compatible = "brcm,trx";
-+		};
-+	};
-+};
+v2:
+- add an early flag in xbc_free_mem() to free memory back to memblock in
+  xbc_init error path or put memory to buddy allocator in normal xbc_exit.
+---
+ include/linux/bootconfig.h |  7 ++++++-
+ lib/bootconfig.c           | 19 +++++++++++--------
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+index e5ee2c694401..3f4b4ac527ca 100644
+--- a/include/linux/bootconfig.h
++++ b/include/linux/bootconfig.h
+@@ -288,7 +288,12 @@ int __init xbc_init(const char *buf, size_t size, const char **emsg, int *epos);
+ int __init xbc_get_info(int *node_size, size_t *data_size);
+ 
+ /* XBC cleanup data structures */
+-void __init xbc_exit(void);
++void __init _xbc_exit(bool early);
++
++static inline void xbc_exit(void)
++{
++	_xbc_exit(false);
++}
+ 
+ /* XBC embedded bootconfig data in kernel */
+ #ifdef CONFIG_BOOT_CONFIG_EMBED
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index c59d26068a64..8841554432d5 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -61,9 +61,12 @@ static inline void * __init xbc_alloc_mem(size_t size)
+ 	return memblock_alloc(size, SMP_CACHE_BYTES);
+ }
+ 
+-static inline void __init xbc_free_mem(void *addr, size_t size)
++static inline void __init xbc_free_mem(void *addr, size_t size, bool early)
+ {
+-	memblock_free(addr, size);
++	if (early)
++		memblock_free(addr, size);
++	else if (addr)
++		memblock_free_late(__pa(addr), size);
+ }
+ 
+ #else /* !__KERNEL__ */
+@@ -73,7 +76,7 @@ static inline void *xbc_alloc_mem(size_t size)
+ 	return malloc(size);
+ }
+ 
+-static inline void xbc_free_mem(void *addr, size_t size)
++static inline void xbc_free_mem(void *addr, size_t size, bool early)
+ {
+ 	free(addr);
+ }
+@@ -904,13 +907,13 @@ static int __init xbc_parse_tree(void)
+  * If you need to reuse xbc_init() with new boot config, you can
+  * use this.
+  */
+-void __init xbc_exit(void)
++void __init _xbc_exit(bool early)
+ {
+-	xbc_free_mem(xbc_data, xbc_data_size);
++	xbc_free_mem(xbc_data, xbc_data_size, early);
+ 	xbc_data = NULL;
+ 	xbc_data_size = 0;
+ 	xbc_node_num = 0;
+-	xbc_free_mem(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
++	xbc_free_mem(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX, early);
+ 	xbc_nodes = NULL;
+ 	brace_index = 0;
+ }
+@@ -963,7 +966,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+ 	if (!xbc_nodes) {
+ 		if (emsg)
+ 			*emsg = "Failed to allocate bootconfig nodes";
+-		xbc_exit();
++		_xbc_exit(true);
+ 		return -ENOMEM;
+ 	}
+ 	memset(xbc_nodes, 0, sizeof(struct xbc_node) * XBC_NODE_MAX);
+@@ -977,7 +980,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+ 			*epos = xbc_err_pos;
+ 		if (emsg)
+ 			*emsg = xbc_err_msg;
+-		xbc_exit();
++		_xbc_exit(true);
+ 	} else
+ 		ret = xbc_node_num;
+ 
 -- 
-2.40.1
-
+2.39.2
 
 
