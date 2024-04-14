@@ -1,155 +1,182 @@
-Return-Path: <linux-kernel+bounces-144024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F80A8A40F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:35:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 571D28A40F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:34:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B97BE2822A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:35:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBF121F21419
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834D820B34;
-	Sun, 14 Apr 2024 07:35:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E32E208AD;
+	Sun, 14 Apr 2024 07:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CkZX4pyV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="USN+2HSB"
+Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8681EF01;
-	Sun, 14 Apr 2024 07:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA021D52D;
+	Sun, 14 Apr 2024 07:34:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713080113; cv=none; b=jhfvLqamUHK2kY9VNTqF3eDzI2Ftt7Mk7PJCXyk4ATUWzbhfebrsn7U3evEBCasV5X7hMYjOLUgof+yFrHFqx2o5nkJJAud896wkvTNslSlT069J3Xk/NQFMEtk1Bwm+rn/xaYJZicVY8yZ9ES2zMovoNurDDnN9NOe1vpRKumk=
+	t=1713080084; cv=none; b=K8r+9TuiEwW4rtfRsQPcQia5lrEXb8JsdB3o8zeeua/IvsaX0mmrjIjFg1HdnyQf6QX7HLyiXdvnOyIU3dOv0vWg3wo1tNjduvigTeNhfSuY0gjv27cJkpP1A5rSp6xQ5jB9j1B6O+OhRrKdJ14zTV464V1Z13c6UDChc/fDqdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713080113; c=relaxed/simple;
-	bh=3r6JYrqvdbon9DEhTY1H2+qNf7eZiRWdkYsZpzrESPk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P9c8pXGPHCQFn/kT++m1l0ssOR9MnSdW6Jo3axbb/KvhYfaw3m195eTQ+lBycNNt8+J8TbGykiRz825GHmhAv3VYw5SVWwFsbr7FyAJVfevmGHVIGRHkLrcJnSgXdowk154oO8h0E1DXUeJ8+gTx/ZqfRhwNA3jArBoxqeMKe08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CkZX4pyV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E552AC072AA;
-	Sun, 14 Apr 2024 07:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713080113;
-	bh=3r6JYrqvdbon9DEhTY1H2+qNf7eZiRWdkYsZpzrESPk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CkZX4pyVmQMjyHu1MkWMG+OmN+DpitNdvE+8Vnnpv2LwAkTUvDzAFWuF0QZM39J6H
-	 Ds3a5kvcM/VK28fYIC44oLB0Bdn+zUbgRasxe5aCWB4xUu/RgLtSeh5qZWnq/2e8FJ
-	 rTnb7E26SRg3O/Hr8+YjRqZvnQzlbsBhEdpfwJTzRcQc4vzX1fY1+RLch4UM3gsvOo
-	 lhHc3rEpR8JxFCgxftuFbGO+Ys7pTermVZbhFSEMwu4SjmoAKErzDXHDO+V07uYXeL
-	 1NKQmyuzEhmwb/N+lOun0QbkHzR0Hj54fWIETmay8j375CiTaSdfa1+arS37433DN9
-	 Fj6dSalTyF8Tw==
-Date: Sun, 14 Apr 2024 10:34:00 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>, Helge Deller <deller@gmx.de>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>, Will Deacon <will@kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [RFC PATCH 2/7] mm: vmalloc: don't account for number of nodes
- for HUGE_VMAP allocations
-Message-ID: <ZhuG6HxnXp036bKk@kernel.org>
-References: <20240411160526.2093408-1-rppt@kernel.org>
- <20240411160526.2093408-3-rppt@kernel.org>
- <9217c95a-39f6-49ce-9857-ee2eebdb7a16@csgroup.eu>
+	s=arc-20240116; t=1713080084; c=relaxed/simple;
+	bh=JqDEH4d03FYv1pbMhnBDI3uRW0/QRr0DbZrSbrdsEVs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=T4qbcFPqxjKJJUjL1z6+3oyPkm5oGHMQ+h03djHysa4OfOvhRwOz4L5b/WL6eDos85uHI3ExtuMzJ3RKte655bM2SgFjjggK0avsnJfwJnkeMGwdoEyYiGHCq2weucz63Hyjs18S36oj4d4pu9dLnu6TyEwuWoWNdknl4RBjNvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=USN+2HSB; arc=none smtp.client-ip=80.12.242.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id vuNirwhk0cHHHvuNirGmsW; Sun, 14 Apr 2024 09:34:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1713080075;
+	bh=w71WW/wIloXSDyf1TIRvwvHZz5mS+7JZkQXLMMZvJVw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=USN+2HSBsNWhZLPjoWqdJNgs84SCD59R98KFZlHv1Y8oab0Qo3sWY9RRwciNnnn5/
+	 ZQEZfg2ZEbsh9No6sfOtibyRbVZZDKU6SJJPMX97JjrJ/o465pgZRiRZiU0Depfwvh
+	 xdmS67jZ8Jr9EwrZ3DBIHKBI37iVrHrJREmgCXFdYKBhu5plpXYsqjmxC1qq0bWJra
+	 MCuDtGiecZ++3mJAOXhJ21HxJYJeaz4tln6KkEJXJ5K0Nd+Yi4V52hPdEJSAj49ias
+	 zHvvAoTXxDJnbOPPESYBb1O7Y3/jAwkXRqMtY2QhliffhM3hZ4ANKasefkaTOAQsvA
+	 VmAwcCq/qaFyg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 14 Apr 2024 09:34:35 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <57f240af-7e99-4bc1-a2c5-415441aa5f0b@wanadoo.fr>
+Date: Sun, 14 Apr 2024 09:34:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/6] mmc: sdhci-brcmstb: Add BCM2712 SD Express support
+To: Andrea della Porta <andrea.porta@suse.com>
+References: <cover.1713036964.git.andrea.porta@suse.com>
+ <a3d82e5a28fe53f1f61621d37d1695b0cd7655d2.1713036964.git.andrea.porta@suse.com>
+Content-Language: en-MW
+Cc: adrian.hunter@intel.com, alcooperx@gmail.com,
+ bcm-kernel-feedback-list@broadcom.com, conor+dt@kernel.org,
+ devicetree@vger.kernel.org, florian.fainelli@broadcom.com,
+ jonathan@raspberrypi.com, kamal.dasu@broadcom.com,
+ krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
+ linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+ phil@raspberrypi.com, robh@kernel.org, ulf.hansson@linaro.org
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <a3d82e5a28fe53f1f61621d37d1695b0cd7655d2.1713036964.git.andrea.porta@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9217c95a-39f6-49ce-9857-ee2eebdb7a16@csgroup.eu>
 
-On Fri, Apr 12, 2024 at 06:07:19AM +0000, Christophe Leroy wrote:
+Le 14/04/2024 Ã  00:14, Andrea della Porta a Ã©critÂ :
+> Broadcom BCM2712 SDHCI controller is SD Express capable. Add support
+> for sde capability where the implementation is based on downstream driver,
+> diverging from it in the way that init_sd_express callback is invoked:
+> in downstream the sdhci_ops structure has been augmented with a new
+> function ptr 'init_sd_express' that just propagate the call to the
+> driver specific callback so that the callstack from a structure
+> standpoint is mmc_host_ops -> sdhci_ops. The drawback here is in the
+> added level of indirection (the newly added init_sd_express is
+> redundant) and the sdhci_ops structure declaration has to be changed.
+> To overcome this the presented approach consist in patching the mmc_host_ops
+> init_sd_express callback to point directly to the custom function defined in
+> this driver (see struct brcmstb_match_priv).
 > 
-> 
-> Le 11/04/2024 à 18:05, Mike Rapoport a écrit :
-> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > 
-> > vmalloc allocations with VM_ALLOW_HUGE_VMAP that do not explictly
-> > specify node ID will use huge pages only if size_per_node is larger than
-> > PMD_SIZE.
-> > Still the actual allocated memory is not distributed between nodes and
-> > there is no advantage in such approach.
-> > On the contrary, BPF allocates PMD_SIZE * num_possible_nodes() for each
-> > new bpf_prog_pack, while it could do with PMD_SIZE'ed packs.
-> > 
-> > Don't account for number of nodes for VM_ALLOW_HUGE_VMAP with
-> > NUMA_NO_NODE and use huge pages whenever the requested allocation size
-> > is larger than PMD_SIZE.
-> 
-> Patch looks ok but message is confusing. We also use huge pages at PTE 
-> size, for instance 512k pages or 16k pages on powerpc 8xx, while 
-> PMD_SIZE is 4M.
+> Signed-off-by: Andrea della Porta <andrea.porta-IBi9RG/b67k@public.gmane.org>
+> ---
+>   drivers/mmc/host/Kconfig         |   1 +
+>   drivers/mmc/host/sdhci-brcmstb.c | 147 ++++++++++++++++++++++++++++++-
+>   2 files changed, 147 insertions(+), 1 deletion(-)
 
-Ok, I'll rephrase.
- 
-> Christophe
-> 
-> > 
-> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > ---
-> >   mm/vmalloc.c | 9 ++-------
-> >   1 file changed, 2 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 22aa63f4ef63..5fc8b514e457 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -3737,8 +3737,6 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
-> >   	}
-> >   
-> >   	if (vmap_allow_huge && (vm_flags & VM_ALLOW_HUGE_VMAP)) {
-> > -		unsigned long size_per_node;
-> > -
-> >   		/*
-> >   		 * Try huge pages. Only try for PAGE_KERNEL allocations,
-> >   		 * others like modules don't yet expect huge pages in
-> > @@ -3746,13 +3744,10 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
-> >   		 * supporting them.
-> >   		 */
-> >   
-> > -		size_per_node = size;
-> > -		if (node == NUMA_NO_NODE)
-> > -			size_per_node /= num_online_nodes();
-> > -		if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE)
-> > +		if (arch_vmap_pmd_supported(prot) && size >= PMD_SIZE)
-> >   			shift = PMD_SHIFT;
-> >   		else
-> > -			shift = arch_vmap_pte_supported_shift(size_per_node);
-> > +			shift = arch_vmap_pte_supported_shift(size);
-> >   
-> >   		align = max(real_align, 1UL << shift);
-> >   		size = ALIGN(real_size, 1UL << shift);
+..
 
--- 
-Sincerely yours,
-Mike.
+> +	if (brcmstb_priv->sde_pcie) {
+> +		struct of_changeset changeset;
+> +		static struct property okay_property = {
+> +			.name = "status",
+> +			.value = "okay",
+> +			.length = 5,
+> +		};
+> +
+> +		/* Enable the pcie controller */
+> +		of_changeset_init(&changeset);
+> +		ret = of_changeset_update_property(&changeset,
+> +						   brcmstb_priv->sde_pcie,
+> +						   &okay_property);
+> +		if (ret) {
+> +			dev_err(dev, "%s: failed to update property - %d\n", __func__,
+> +			       ret);
+> +			return -ENODEV;
+> +		}
+> +		ret = of_changeset_apply(&changeset);
+> +	}
+> +
+> +	dev_dbg(dev, "%s -> %d\n", __func__, ret);
+
+Is this really useful?
+
+> +	return ret;
+> +}
+> +
+
+..
+
+> @@ -468,6 +581,24 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>   	if (res)
+>   		goto err;
+>   
+> +	priv->sde_1v8 = devm_regulator_get_optional(&pdev->dev, "sde-1v8");
+> +	if (IS_ERR(priv->sde_1v8))
+> +		priv->flags &= ~BRCMSTB_PRIV_FLAGS_HAS_SD_EXPRESS;
+> +
+> +	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 2);
+> +	if (iomem) {
+> +		priv->sde_ioaddr = devm_ioremap_resource(&pdev->dev, iomem);
+> +		if (IS_ERR(priv->sde_ioaddr))
+> +			priv->sde_ioaddr = NULL;
+> +	}
+> +
+> +	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 3);
+> +	if (iomem) {
+> +		priv->sde_ioaddr2 = devm_ioremap_resource(&pdev->dev, iomem);
+> +		if (IS_ERR(priv->sde_ioaddr2))
+> +			priv->sde_ioaddr = NULL;
+
+sde_ioaddr2 ?
+
+> +	}
+> +
+>   	priv->pinctrl = devm_pinctrl_get(&pdev->dev);
+>   	if (IS_ERR(priv->pinctrl)) {
+>   			no_pinctrl = true;
+> @@ -478,8 +609,16 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>   			no_pinctrl = true;
+>   	}
+>   
+> -	if (no_pinctrl )
+> +	priv->pins_sdex = pinctrl_lookup_state(priv->pinctrl, "sd-express");
+> +	if (IS_ERR(priv->pins_sdex)) {
+> +			dev_dbg(&pdev->dev, "No pinctrl sd-express state\n");
+> +			no_pinctrl = true;
+
+Indentation looks too large.
+
+> +	}
+> +
+> +	if (no_pinctrl || !priv->sde_ioaddr || !priv->sde_ioaddr2) {
+>   		priv->pinctrl = NULL;
+> +		priv->flags &= ~BRCMSTB_PRIV_FLAGS_HAS_SD_EXPRESS;
+> +	}
+>   
+>   	/*
+>   	 * Automatic clock gating does not work for SD cards that may
+
+..
+
 
