@@ -1,49 +1,48 @@
-Return-Path: <linux-kernel+bounces-144336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20E9C8A44BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:50:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C6078A44BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5173D1C21173
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:50:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3D0BB22622
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B34E136649;
-	Sun, 14 Apr 2024 18:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A219137C5C;
+	Sun, 14 Apr 2024 18:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oPd6yaiK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OjvcFNH3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD03135A49;
-	Sun, 14 Apr 2024 18:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74254136671;
+	Sun, 14 Apr 2024 18:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713120500; cv=none; b=tCQpTaBHea3z3MBAPnBh7OL38PXstW+LVcXsrO4vhHaorbzyZP7f0T56LCA8OgwUbIgZAcfkn76tLXlyj88lfIdP9RRA1RUiRrunxlc21reJ1ZdDyt+hfLY4X97DFC7RfPmCPvz4uBoVcCzCSyu1Wl/u8R7QL8LCVWd4RdvK+xo=
+	t=1713120508; cv=none; b=k6e3/x4FtUbabPZsp7p3GvZyt3TEOUgQ5CcaOpo45T2ThTxLPz4dr1audYpQE29PBSUOL3aKv+P/Fh/VBI0ue/3vMHHgCPF1TyCGeddyKRtNnbY/cPKXNHCj7Yn7SkBhvP3v21lOalePMjDTukMgEO+QzIVjBlzbkN4MyrCmwqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713120500; c=relaxed/simple;
-	bh=n7wgW58QvGruDrxcgPHZ72/9XELas9m3qnwPa8llWsk=;
+	s=arc-20240116; t=1713120508; c=relaxed/simple;
+	bh=E3Lgb8V8RKpyH5zK9wcRNDE7dtQPH+EB6tyX8qozgKM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NAJZQv5nu79xzHONyfjzrZD9Jy/+Cfc/781ItXNip6LzdiKxucVfjEFyGVwuX7ScowBKgkrrdRD0yxnWPvLXJSsiQMa26GtPIuj9iA48k8iSQL0ApaFRC0mX/IDU26kUQcMaiC85hcYtKZUC4xY3A4ijEkR6kGP1tjHHVJeAExs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oPd6yaiK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D636C3277B;
-	Sun, 14 Apr 2024 18:48:13 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Jyjn8OIcoM7/mthXxhkGPaAtlKbbCdQg069XWdi7bJVZeL1HATAqMvtxWuFo56HcZekJHT8q9npbxnvqIrrpB5ZdxklZ6xd7y9YBkmC1iFtVeB6EDJqy049f6zIFvQWWDbxwI43CX8MtkyuO0+X7e38RzWGnkZfnPJVCNes84WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OjvcFNH3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F23B8C072AA;
+	Sun, 14 Apr 2024 18:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713120500;
-	bh=n7wgW58QvGruDrxcgPHZ72/9XELas9m3qnwPa8llWsk=;
+	s=k20201202; t=1713120508;
+	bh=E3Lgb8V8RKpyH5zK9wcRNDE7dtQPH+EB6tyX8qozgKM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=oPd6yaiKERZRfVPjEQ6paFa3Eued9/3Zifbwe7+YeE4e533+9/koXTx2XhCt6kRit
-	 EQgi+4+k7govpa6V9WlHHpvihWLlkvbrFif2qTCCV5ABSe9Qf+mIy1LQd7vR0s7G/O
-	 DWpNAjy6OMi7KvQgNR7Jx+cVOQelggwEvINbHWWlwEqh65rwhCHM+eF6CRn4RHqHBN
-	 qlMXJyQdEjJhVmNOooyGx4bgNEWpTD4o4gT99mG2Ct3oPuPpcHCHPDqGT6Am0+hEV+
-	 GcARU4SBUVRixOBB+8/l918GpHJe8hbVkU4v4L8V1TwfQDkmQQUzi6CoDaHaP7D681
-	 apGvQQcm4JetQ==
+	b=OjvcFNH3/nQWL33ZQOe+YPPlV/qcDPqGarfUwtM7Yt1eYuGdjnmLwv+CURMh55uFp
+	 Jc2TEdCB9JymQt2mr56Kqxt5wxBpjx1xhcOSr96BnvKbq/g1lc5ehYs2everX6eAS9
+	 7dkk2aFaP494U6uJjOzIt2vwx1xdoED96W0xYXHe7po4uLYFQDG771I1ZVSuCyWFxb
+	 9GVRf5pVyI7CypZgKaoAz+Vc8gHPhNiTdO8HN6b2Qg3Pcxs02QX98vUyZg8W0CZEMS
+	 Dus7lv2fEJxNLu2DUARmkv5tbIqIDyiEhDMbmWyv1J/PiRwMB9xokQfooY+BSKD8ox
+	 5IK3F0oxs0uYg==
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Sun, 14 Apr 2024 20:47:29 +0200
-Subject: [PATCH 04/14] ASoC: SOF: Constify stored pointer to
- snd_sof_dsp_ops
+Date: Sun, 14 Apr 2024 20:47:30 +0200
+Subject: [PATCH 05/14] ASoC: SOF: intel: pci-tng: Constify snd_sof_dsp_ops
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240414-n-const-ops-var-v1-4-8f53ee5d981c@kernel.org>
+Message-Id: <20240414-n-const-ops-var-v1-5-8f53ee5d981c@kernel.org>
 References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
 In-Reply-To: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
@@ -74,46 +73,58 @@ Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
  Krzysztof Kozlowski <krzk@kernel.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=865; i=krzk@kernel.org;
- h=from:subject:message-id; bh=n7wgW58QvGruDrxcgPHZ72/9XELas9m3qnwPa8llWsk=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHCTHoHVG8jIRMuSyEz6gw6s3WlC+CMzYEr3rQ
- MYLccCWoXGJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwkxwAKCRDBN2bmhouD
- 10RkD/9D3WRc5sgDCLrfb2gtoEJht5UdUfaYqmyCGnC4zF64/kGjFd3mRP0+XjHAYrAPJU2U0ev
- +aMgqK7guv6mDoeOaa1DIa9L+PQMlTnOwx/s5ZtUTvx/nSFrNhx4Yppt30QM3m0xsPtaKnc92HS
- mnvNs/dTZ4EcY9wd+VMwlxUEOOI9IJIGC5qZlh6f3eJuMx7q6Q68yiFUh/mCf2vQ4Q8cE7WK06S
- sxKQgICNKHgU5BO5szTlIoxYC9n7uu4Xlpdlf0VDPFPjsDLV+gK/bkpTkHirHXP6qRew9nqfg4t
- ilQ6oHvKLZ2rU/eyZD5bpFL06PLMMkFSNlAZVo4sSlXVpMG7/j/sQJUm4fWjTDIzIZi9Gzqp9Tl
- o4g6viiNkC49EkHiYKdtjsC3Ib3pczn2pmoTm6q6Vz8N2TCGcFS2CabtiKFKIdzkhRMMFi62u33
- 2JdLLGvqf0q205Ytt/yYUVQzkezPBRMeqESRUD5PqelX+RkYSaHz0ktt0Awm0Ox2QR4aV7dCohj
- JBTrq2cR56i3Z/RD43Yz1kqtX1sMVaiC00QKUBDnMp7DfMe6bBcfvKXpwHRNjnvSVD06XfLUkO0
- h5lIdUzl6YlPnPYCvpHKxiUWwDBc/i6Dy+gUZfz06k669fkV21AYu3fspJ4Kt64ccqjp0spzr+7
- ngqZjikSKjwv0iA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1218; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=E3Lgb8V8RKpyH5zK9wcRNDE7dtQPH+EB6tyX8qozgKM=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHCTIDy3Da7qtpblMGIwPzl1JuWlzNxlyq+NK4
+ zvMVQDu3geJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwkyAAKCRDBN2bmhouD
+ 170/D/0c3KsuAsTQcXYmaow+UH/9VU+H51CVHZL7moe4HJJNPIEb309ntaOE6QQO2G38wsFzY4s
+ IpSWVJFTkIYjPMP5t5u04Xj9C3k4nU+qhY2OZD4o/V2fTyhDFvSbzV4r9uqBxBnlOKmugO2KRBt
+ gTMAYU6cObX2/VnooacJ6Ce6N0c6Ggbkh4H5fXKB9FIxVgQBgGs5N0goiA9wSEzlg8+P8LFbKBM
+ WPiuiF9sHnDIZdiyMQfvayqN9IFBd0hb/9gOaOC/3tVMweNHCFkoXYUeFgJHuSZ7odpNpqZD90y
+ 18/hzaIeeCg/uQKBEFe6aiqVpnCK3JmT2hRCZmDlZvSuyDzQU1liykKWJkzmznaYNhcgwg6pWn4
+ ITWzbhb7KzteZt3yrOOqFIpYcZSWcbY55CoUX3hQB5vy2jyGT0uKBffZiFALermHpXMUUuMVp6R
+ cr9IKnJaPtaE8N0qAW0+hcxIkmacyLxSydN36onQfgk/bYWuml6gRlog5CcmeIa18g+pd99JOTf
+ D1Nh5orj5oE90J6Xv3qIaM5SmTtUkqFkQjqkF0H2VnLqJKBMZwEfJl9jB5dwkI0oAjs7I/wMSby
+ Wf2hC1rWk5D13Xz1fpKaYErRNd+cwQ1Tgq17b2jGuz5N/mqj3gjNTHRrm2jiKQNnxUBS1q+QwV9
+ IT2N8xI3TbDMUtg==
 X-Developer-Key: i=krzk@kernel.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-The core code does not modify the 'struct snd_sof_dsp_ops', stored in
-'struct sof_dev_desc'.  Make the pointer to 'struct snd_sof_dsp_ops'
-const to annotate this, make code a bit safer and allow individual
-drivers to also define this structure as const.
+'struct snd_sof_dsp_ops' is not modified by core code, so it can be made
+const for increased code safety.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- include/sound/sof.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/intel/pci-tng.c | 2 +-
+ sound/soc/sof/intel/shim.h    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 05213bb515a3..780c1a755917 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -166,7 +166,7 @@ struct sof_dev_desc {
- 	/* default firmware name */
- 	const char *default_fw_filename[SOF_IPC_TYPE_COUNT];
+diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+index c90173003c2b..d8a36d5a29f7 100644
+--- a/sound/soc/sof/intel/pci-tng.c
++++ b/sound/soc/sof/intel/pci-tng.c
+@@ -132,7 +132,7 @@ static int tangier_pci_probe(struct snd_sof_dev *sdev)
+ 	return ret;
+ }
  
--	struct snd_sof_dsp_ops *ops;
-+	const struct snd_sof_dsp_ops *ops;
- 	int (*ops_init)(struct snd_sof_dev *sdev);
- 	void (*ops_free)(struct snd_sof_dev *sdev);
+-struct snd_sof_dsp_ops sof_tng_ops = {
++const struct snd_sof_dsp_ops sof_tng_ops = {
+ 	/* device init */
+ 	.probe		= tangier_pci_probe,
+ 
+diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
+index 9515d753c816..18ce3d33fa80 100644
+--- a/sound/soc/sof/intel/shim.h
++++ b/sound/soc/sof/intel/shim.h
+@@ -196,7 +196,7 @@ struct sof_intel_dsp_desc {
+ 	int (*cl_init)(struct snd_sof_dev *sdev, int stream_tag, bool imr_boot);
  };
+ 
+-extern struct snd_sof_dsp_ops sof_tng_ops;
++extern const struct snd_sof_dsp_ops sof_tng_ops;
+ 
+ extern const struct sof_intel_dsp_desc tng_chip_info;
+ 
 
 -- 
 2.34.1
