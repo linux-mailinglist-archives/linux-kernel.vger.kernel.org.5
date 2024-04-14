@@ -1,119 +1,171 @@
-Return-Path: <linux-kernel+bounces-144413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD2408A45F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 00:26:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4A78A45F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 00:32:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62A161F21435
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:26:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 638C8B210B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:32:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FCD13775F;
-	Sun, 14 Apr 2024 22:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7838759B76;
+	Sun, 14 Apr 2024 22:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rothwell.id.au header.i=@rothwell.id.au header.b="WY6eyNg6"
-Received: from mail.rothwell.id.au (gimli.rothwell.id.au [103.230.158.156])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XNHVuFXM"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE296136E21;
-	Sun, 14 Apr 2024 22:26:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.230.158.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9761DFD9
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 22:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713133588; cv=none; b=ZjP1jOZ1RRmNwl+yoiLT+IUXqzddB42uCnUUtEJ3i/TTrbkBahZ54BA9VPSq2XrMSIfZzGL7ebNDBM5HAnDoJLtmYDDl+dTcEYgJqUJBHxePrdmpspKEIP1vntnibSVRNWxsbG2X8WreDLctPYCPtjYmfminQLSJwI3XZwcs3So=
+	t=1713133934; cv=none; b=nNIPGRnpAMe4abWbyMWkyq+W6TF+uSzloWMd1lt2qx76gm8e7Zl4IOqJ0fSgQnnmxYwq7o2qt5gGyTT7/wfnjB/rLxV0VOs1BwvgD01wsH2UX1+zSsOfujz0ACh2N0N0FfSEXZYihlM6Z3tuDcHJ1amAHJX16YPmysmBytd3CMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713133588; c=relaxed/simple;
-	bh=+ghWU8oi0+edXCpEfVT/DjC4E+tVj0hs8sTKXvlPtf0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=if4NwcQ1t5OIUypiTwwtBOOxeFPvNuF2DSK2DspMgNHtPy+ngKvbuDsvG6M6DbQdAvmlll8V8iDJcBUWcUuJBxQciBWVGrT8GxXJXhrV6ecY+Nrfzws/9L3MMcKps6bZt4c8L0EI/gXg2dUz1F+27ssHjJn3Ie0pxHqmteJbQUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rothwell.id.au; spf=pass smtp.mailfrom=rothwell.id.au; dkim=pass (2048-bit key) header.d=rothwell.id.au header.i=@rothwell.id.au header.b=WY6eyNg6; arc=none smtp.client-ip=103.230.158.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rothwell.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rothwell.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothwell.id.au;
-	s=201702; t=1713133115;
-	bh=Zex7vZfysAqqFpHFj6AZeIO2KXBBGaa1ARC2QHSXc74=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WY6eyNg6TN9czkOHxS+N5riRPXMqHUyhdFEwHOTONBBolw2rgaQfyeM8lbxX+anxx
-	 0/DOtaDgWNjHMrF3xLwFUZljv46CEOsOyU8qjCCjYu770DvRSerOJKRJ7PP+UifM3G
-	 Aq2kVJuSUz3oP1qp8kC2WNxuWZYCDmW6b6Ca5EQ2m9h2MqpZkReEmYCwEjzoZuWes1
-	 unjtT5l4BwPVvYg0k97WywfN2uPYcTRrOHBWif1WMPB8xAZqk9AaXVPle0Xy5hycBV
-	 Co6rn7ySrWmXySGJQ+6olpn5rFHOkfGiFbNtHUCAF6wHwgqKRmY4G+JpcoqZAuBoU5
-	 74jny6yFeHH2Q==
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.rothwell.id.au (Postfix) with ESMTPSA id 4VHl7X3MpBz8R;
-	Mon, 15 Apr 2024 08:18:32 +1000 (AEST)
-Date: Mon, 15 Apr 2024 08:18:30 +1000
-From: Stephen Rothwell <sfr@rothwell.id.au>
-To: Jean Delvare <jdelvare@suse.de>
-Cc: "Arnd Bergmann" <arnd@arndb.de>, "Stephen Rothwell"
- <sfr@canb.auug.org.au>, "Arnd Bergmann" <arnd@kernel.org>,
- linux-kbuild@vger.kernel.org, "Masahiro Yamada" <masahiroy@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>, "Greg Kroah-Hartman"
- <gregkh@suse.de>, "Nicolas Schier" <nicolas@fjasle.eu>, "Nick Desaulniers"
- <ndesaulniers@google.com>, "Bill Wendling" <morbo@google.com>, "Justin
- Stitt" <justinstitt@google.com>, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev, "Andrew Morton" <akpm@linux-foundation.org>
-Subject: Re: [PATCH 05/12] firmware: dmi-id: add a release callback function
-Message-ID: <20240415081830.3057ade1@oak>
-In-Reply-To: <20240413223857.7c01985f@endymion.delvare>
-References: <20240326144741.3094687-1-arnd@kernel.org>
-	<20240326145140.3257163-4-arnd@kernel.org>
-	<20240329134917.579c3557@endymion.delvare>
-	<63909b0a-7d76-418d-a54c-1061bd3b6e11@app.fastmail.com>
-	<20240408095943.48e6c0cc@endymion.delvare>
-	<28ba40ea-7f48-41b0-ae57-99a870e68fb8@app.fastmail.com>
-	<20240413223857.7c01985f@endymion.delvare>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1713133934; c=relaxed/simple;
+	bh=MnYksIqvb5FtaeoglclkXGEgkSgT6ycUtxodaz3XLgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=TUS37kKzar7sjQK1zwjljkqXTOqgRE7+8OoE946VkMJUNhHNZqNbjhxEII8BO8ZuWsX3F5JrbgAUZxFj+Av5c3BrkMIWsPFqDpF1jH+5GmZTfCTfGvG6u7QFH1eCRCTRhEBjTipjx27j3SnLLBHnhfB8sgYM4lFOvrJzXtR3C7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XNHVuFXM; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sun, 14 Apr 2024 18:32:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713133930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=KiyLn6RhoZasL+FS6LenVdQAJyHGH6C0x6+1YBj1+g4=;
+	b=XNHVuFXMPoDHtMGbDkL0Sa/VOnws7xo16dQBrDLMtK2N16jtoP3JqGfFwGbNA2jaX0JTgG
+	MY+YDGPBFK9yY161N9cTqHcLW2p7nU6yI368ey/f75Mqf5J2Lkap8BpLaGZ4x8Jh8rl0vW
+	plRrfGvrrs170Egck8gOa9nXD79w7mU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Johannes Berg <johannes.berg@intel.com>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: debugfs revoke broken?
+Message-ID: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/J+j9Uv/rB+H8SWjIizFhSRA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 
---Sig_/J+j9Uv/rB+H8SWjIizFhSRA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+I recently started seeing test failures like the following; from the
+"shutdown complete" line we're well after the point where we called
+debugfs_remove_recursive() - yet from the backtrace we were still able
+to call into debugfs.
 
-Hi Jean,
+And I see from the history the remove path has been getting tweaked,
+so...
 
-On Sat, 13 Apr 2024 22:38:57 +0200 Jean Delvare <jdelvare@suse.de> wrote:
->
-> Hmm, Stephen cleaned up the list of trees he pulls from 2 months ago.
-> Back then, I objected that I may use my tree again in the future, and I
-> thought he had added it back to the list, but maybe I misunderstood.
->=20
-> Stephen, can you check if you still pull from tree above, and if not,
-> add it back to the list? Thanks in advance.
+00091 ========= TEST   generic/001
+00091 
+00092 Setting up swapspace version 1, size = 2 GiB (2147479552 bytes)
+00092 no label, UUID=73a80295-2b03-4512-aae1-785187926ce3
+00092 Adding 2097148k swap on /dev/vde.  Priority:-2 extents:1 across:2097148k 
+00092 configuration error - unknown item 'NONEXISTENT' (notify administrator)
+00092 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
+00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
+00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
+00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
+00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
+00101 building 001... done
+00101 bcachefs (vdb): mounting version 1.7: mi_btree_bitmap
+00101 bcachefs (vdb): initializing new filesystem
+00101 bcachefs (vdb): going read-write
+00101 bcachefs (vdb): marking superblocks
+00101 bcachefs (vdb): initializing freespace
+00101 bcachefs (vdb): done initializing freespace
+00101 bcachefs (vdb): reading snapshots table
+00101 bcachefs (vdb): reading snapshots done
+00101 bcachefs (vdb): done starting filesystem
+00102 FSTYP         -- bcachefs
+00102 PLATFORM      -- Linux/aarch64 Debian-1103-bullseye-arm64-base-kvm 6.9.0-rc2-ktest-g2719f811ae24 #18142 SMP Sun Apr 14 16:26:05 NZST 2024
+00102 MKFS_OPTIONS  -- --encrypted --no_passphrase /dev/vdc
+00102 MOUNT_OPTIONS -- /dev/vdc /mnt/scratch
+00102 
+00102 bcachefs (vdc): mounting version 1.7: mi_btree_bitmap
+00102 bcachefs (vdc): initializing new filesystem
+00102 bcachefs (vdc): going read-write
+00102 bcachefs (vdc): marking superblocks
+00102 bcachefs (vdc): initializing freespace
+00102 bcachefs (vdc): done initializing freespace
+00102 bcachefs (vdc): reading snapshots table
+00102 bcachefs (vdc): reading snapshots done
+00102 bcachefs (vdc): done starting filesystem
+00102 bcachefs (vdc): shutting down
+00102 bcachefs (vdc): going read-only
+00102 bcachefs (vdc): finished waiting for writes to stop
+00102 bcachefs (vdc): flushing journal and stopping allocators, journal seq 3
+00102 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 5
+00102 bcachefs (vdc): shutdown complete, journal seq 6
+00102 bcachefs (vdc): marking filesystem clean
+00102 bcachefs (vdc): shutdown complete
+00102 bcachefs (vdb): shutting down
+00102 bcachefs (vdb): going read-only
+00102 bcachefs (vdb): finished waiting for writes to stop
+00102 bcachefs (vdb): flushing journal and stopping allocators, journal seq 6
+00102 bcachefs (vdb): flushing journal and stopping allocators complete, journal seq 7
+00102 bcachefs (vdb): shutdown complete, journal seq 8
+00102 bcachefs (vdb): marking filesystem clean
+00102 bcachefs (vdb): shutdown complete
+00102 Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
+00102 Mem abort info:
+00102   ESR = 0x0000000096000004
+00102   EC = 0x25: DABT (current EL), IL = 32 bits
+00102   SET = 0, FnV = 0
+00102   EA = 0, S1PTW = 0
+00102   FSC = 0x04: level 0 translation fault
+00102 Data abort info:
+00102   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+00102   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+00102   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+00102 user pgtable: 4k pages, 48-bit VAs, pgdp=000000011585c000
+00102 [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
+00102 Internal error: Oops: 0000000096000004 [#1] SMP
+00102 Modules linked in:
+00102 CPU: 7 PID: 1805 Comm: cat Not tainted 6.9.0-rc2-ktest-g2719f811ae24 #18142
+00102 Hardware name: linux,dummy-virt (DT)
+00102 pstate: 00001005 (nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+00102 pc : bch2_journal_seq_pins_to_text+0x100/0x208
+00102 lr : bch2_journal_seq_pins_to_text+0xf0/0x208
+00102 sp : ffff0000d6dd3c80
+00102 x29: ffff0000d6dd3c80 x28: ffff0000ca361f00 x27: 0000000000000000
+00102 x26: 0000000000000000 x25: ffff0000da0002c0 x24: ffff0000da0002f0
+00102 x23: ffff0000d50668c0 x22: ffff800080998950 x21: ffff0000da0002c0
+00102 x20: ffff0000c46165c0 x19: 0000000000000000 x18: 00000000fffffffe
+00102 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+00102 x14: ffffffffffffffff x13: ffff0000c0ada1df x12: ffff0000c0ada1d9
+00102 x11: 0000000000000000 x10: 0000000000000000 x9 : ffff800080400ec8
+00102 x8 : 0000000000000000 x7 : 20746e756f63203a x6 : 0000000000000000
+00102 x5 : 0000000000000020 x4 : 000000000000000d x3 : ffff0000c0ada1d0
+00102 x2 : 0000000000000010 x1 : ffff0000c0ada1d0 x0 : 0000000000000012
+00102 Call trace:
+00102  bch2_journal_seq_pins_to_text+0x100/0x208
+00102  bch2_journal_pins_read+0x48/0xd0
+00102  full_proxy_read+0x64/0xb8
+00102  vfs_read+0xd0/0x2d0
+00102  ksys_read+0x5c/0xe0
+00102  __arm64_sys_read+0x20/0x30
+00102  invoke_syscall.constprop.0+0x50/0xe0
+00102  do_el0_svc+0x44/0xc8
+00102  el0_svc+0x18/0x58
+00102  el0t_64_sync_handler+0xb8/0xc0
+00102  el0t_64_sync+0x14c/0x150
+00102 Code: f94002b3 eb15027f 54000180 d503201f (f9400a63) 
+00102 ---[ end trace 0000000000000000 ]---
+00102 Kernel panic - not syncing: Oops: Fatal exception
+00102 SMP: stopping secondary CPUs
+00102 Kernel Offset: disabled
+00102 CPU features: 0x0,00000003,80000008,4240500b
+00102 Memory Limit: none
+00102 ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+00107 ========= FAILED TIMEOUT generic.001 in 1200s
 
-I also misunderstood your position at the time.  I have now restored
-the dmi tree to linux-next.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/J+j9Uv/rB+H8SWjIizFhSRA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYcVjYACgkQAVBC80lX
-0GwWmQf+I+OtIbKE6pkPfebdfoH3KcsgRiBBVTIRuH7K668elAfMvPCxYnXK/YSM
-8lhrLeBvH/ZEpcfwrSVun4uTUoouGlLYbq9MP7DTWsgCIVdrJZ0H5koh8pT47C6G
-wybvmUvhXidlIiwV4DI14iSfMGcA9dddrBre4aE65NbUN3llGFtf6apMT/zvmE1W
-yV3sHVGTIPtX5EQ5BC49rkDeBiTAiAbZ/4OL42OZh8xNAmjkcuIWwRnUzSYSxtK7
-SKq0Jm39tK0cBNTlHt0dRTtLtRKIcmptJ1KYNTPvaGfTtPOUzK9nipmMc1EKd6oj
-59qM6ec+wLRn/7hwgPB2AuH3zuHP2Q==
-=ffFN
------END PGP SIGNATURE-----
-
---Sig_/J+j9Uv/rB+H8SWjIizFhSRA--
 
