@@ -1,145 +1,126 @@
-Return-Path: <linux-kernel+bounces-144353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CED708A44E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 21:32:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5A58A44F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 21:48:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158C61C20CD1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:32:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E8CAB21427
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 19:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B376C136997;
-	Sun, 14 Apr 2024 19:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27136136676;
+	Sun, 14 Apr 2024 19:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OmS1D4l4"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="dDG6L9lI"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5CF135A75;
-	Sun, 14 Apr 2024 19:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AE71DFF4;
+	Sun, 14 Apr 2024 19:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713123123; cv=none; b=Pd7HGHx5I/oCSnYPEOKJKLv4pTv1bhU3x8JeE8toxzjnKlXSB4Fse3RaP0+ubtduy2R3LI7JW9d83qEkp4SKldZzrKDdl3K6h1aO+aYQ6zMLFrK1kWg6ILdusZiHsgEb++kgqtnG4md2UfJgBswlOWgSpMTlDRXTXAMV+AMbsB0=
+	t=1713124128; cv=none; b=FCE7xlBXXNyIRc0aai2DmQCHpyww0eZHiD+o2j0oYs4Jc1zv+k7PxzdEtJZciIM5KzJKYacgEuaesTfdM7LOZ6UeJR9qOvjZYvbz0frVlyiPupGcOe8TW2thC39YvIO2aZelNG9qRWSwOFSJb4U0K6kfqtXKcQvrdZygBoXpHkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713123123; c=relaxed/simple;
-	bh=4hVe1msDqYXAoKQ28JxOMcWAKonmNm7OOzOK1/G9c6o=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=e1RF9Q8HL6KtKCw9Uu4tL3gd9XVWTLg+P66fWoCcEpZQWK+2ABowZHon2qYeGjGxNES0f2xUPr1/dHO7460QeFRdYiMI+ymGo2c1ohrr+KxrJYBMlF27fcNJ6IJdAzwWzZ3AYjXiS8GiBYxILA1aGpd4/AmSJZ6zpJIpfchWSMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OmS1D4l4; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43EJSY7l012744;
-	Sun, 14 Apr 2024 19:31:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=zKTLKTw5l0AX+U16UvtK38C4in2uHJEeDuYt0ZBJ/sk
-	=; b=OmS1D4l4wAnwoe3N5exr7FIYK5I7bnoDoy+2ekgNl42UwZyGrEotgl+3C/D
-	7vybfzSGZlqScgpsqZS6kqw1aaeldUdBN5d56SQ4RX0rS68ktKx6Q2xYgEyLL4cd
-	OxTtwSdzbL/ilF7oIx03xxnidl1Y+d3FfpHZcd2relC1Ec4AJIOXOrPZc7zo7dG2
-	JS6Rhe+/IMPnSOvgxT23lS1hxxEvchCQd5FtCDgiWrB2HoKM87bzAXPNhqfLG8sh
-	Tp6GU319QO3J3nbo+VzBU2Cwf0osytG8FB/7V1CX9TE1GLp/rxHtppugZMGXPhfG
-	Acc5yDmyxtwKEk/karcZlpfU6BQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xfh0wt9wj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 14 Apr 2024 19:31:40 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43EJVc7r023182
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 14 Apr 2024 19:31:39 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Sun, 14 Apr 2024 12:30:31 -0700
-From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Sun, 14 Apr 2024 12:30:27 -0700
-Subject: [PATCH v2 4/4] arm64: dts: qcom: Add PSCI SYSTEM_RESET2 types for
- qcm6490-idp
+	s=arc-20240116; t=1713124128; c=relaxed/simple;
+	bh=uSujPCydcBAksC0rSozBmnZc8KDhTQh1sz1wkKuA8dY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pu3Wy++IWVwAF6dwSkRa2ESU2DQeO5Li/ujO1wwR0NoYJK/TBk/9eS1kfiM3aUOiRvyuao1Jm73x7qJzapbN94Ls+c8EaFDlN272R8FTBES8gJFE8gBW2gZj+UMWfihFJIN5HU+LFkV+0FqdxZqQFQHE1cIi8PIpKvi7UN7ssU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=dDG6L9lI; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 12D4C512;
+	Sun, 14 Apr 2024 21:47:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713124079;
+	bh=uSujPCydcBAksC0rSozBmnZc8KDhTQh1sz1wkKuA8dY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dDG6L9lIHouBnxKYoM2mE97PSM5E8WkPnYHCuyB5sRXbeiQa/PcifjROHyl5+PiB0
+	 wylJFw2gM8RfUGKlisvkcceppYwV7//LgExaMcT/y7zrN9N1wBFoCQrIadMQG2fVtp
+	 oZsUxDlhmwTaL92GhEOmrwivrHjMdRyD7qGHPRFg=
+Date: Sun, 14 Apr 2024 22:48:35 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Alex Elder <elder@linaro.org>
+Cc: corbet@lwn.net, gregkh@linuxfoundation.org, workflows@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+Message-ID: <20240414194835.GA12561@pendragon.ideasonboard.com>
+References: <20240414170850.148122-1-elder@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240414-arm-psci-system_reset2-vendor-reboots-v2-4-da9a055a648f@quicinc.com>
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
-In-Reply-To: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Andy Yan
-	<andy.yan@rock-chips.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        "Mark
- Rutland" <mark.rutland@arm.com>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>
-CC: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Melody Olvera
-	<quic_molvera@quicinc.com>,
-        Shivendra Pratap <quic_spratap@quicinc.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Florian Fainelli
-	<florian.fainelli@broadcom.com>,
-        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Elliot Berman <quic_eberman@quicinc.com>
-X-Mailer: b4 0.12.4
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: vU-ZoGUfNMIciOgV6Xlw2HowjVpU46vB
-X-Proofpoint-GUID: vU-ZoGUfNMIciOgV6Xlw2HowjVpU46vB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-14_08,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 phishscore=0 mlxscore=0 adultscore=0
- mlxlogscore=850 impostorscore=0 lowpriorityscore=0 spamscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404140142
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240414170850.148122-1-elder@linaro.org>
 
-Add nodes for the vendor-defined system resets. "bootloader" will cause
-device to reboot and stop in the bootloader's fastboot mode. "edl" will
-cause device to reboot into "emergency download mode", which permits
-loading images via the Firehose protocol.
+Hi Alex,
 
-Co-developed-by: Shivendra Pratap <quic_spratap@quicinc.com>
-Signed-off-by: Shivendra Pratap <quic_spratap@quicinc.com>
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
----
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+Thank you for the patch.
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-index e4bfad50a669..a966f6c8dd7c 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -126,6 +126,11 @@ debug_vm_mem: debug-vm@d0600000 {
- 		};
- 	};
- 
-+	psci {
-+		mode-bootloader = <0x10001 0x2>;
-+		mode-edl = <0 0x1>;
-+	};
-+
- 	vph_pwr: vph-pwr-regulator {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vph_pwr";
+On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
+> Several times recently Greg KH has admonished that variants of WARN()
+> should not be used, because when the panic_on_warn kernel option is set,
+> their use can lead to a panic. His reasoning was that the majority of
+> Linux instances (including Android and cloud systems) run with this option
+> enabled. And therefore a condition leading to a warning will frequently
+> cause an undesirable panic.
+> 
+> The "coding-style.rst" document says not to worry about this kernel
+> option.  Update it to provide a more nuanced explanation.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>  Documentation/process/coding-style.rst | 21 +++++++++++----------
+>  1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+> index 9c7cf73473943..bce43b01721cb 100644
+> --- a/Documentation/process/coding-style.rst
+> +++ b/Documentation/process/coding-style.rst
+> @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
+>  to trigger easily, for example, by user space actions. pr_warn_once() is a
+>  possible alternative, if you need to notify the user of a problem.
+>  
+> -Do not worry about panic_on_warn users
+> -**************************************
+> +The panic_on_warn kernel option
+> +********************************
+>  
+> -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
+> -available kernel option, and that many users set this option. This is why
+> -there is a "Do not WARN lightly" writeup, above. However, the existence of
+> -panic_on_warn users is not a valid reason to avoid the judicious use
+> -WARN*(). That is because, whoever enables panic_on_warn has explicitly
+> -asked the kernel to crash if a WARN*() fires, and such users must be
+> -prepared to deal with the consequences of a system that is somewhat more
+> -likely to crash.
+> +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
+> +a WARN*() call whose condition holds leads to a kernel panic.  Many users
+> +(including Android and many cloud providers) set this option, and this is
+> +why there is a "Do not WARN lightly" writeup, above.
+> +
+> +The existence of this option is not a valid reason to avoid the judicious
+> +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
+> +issue warnings but do **not** cause the kernel to crash. Use these if you
+> +want to prevent such panics.
+
+Those options are not equivalent, they print a single message, which is
+much easier to ignore. WARN() is similar to -Werror in some sense, it
+pushes vendors to fix the warnings. I have used WARN() in the past to
+indicate usage of long-deprecated APIs that we were getting close to
+removing for instance. dev_warn() wouldn't have had the same effect.
+
+>  
+>  Use BUILD_BUG_ON() for compile-time assertions
+>  **********************************************
 
 -- 
-2.34.1
+Regards,
 
+Laurent Pinchart
 
