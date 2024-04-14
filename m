@@ -1,71 +1,66 @@
-Return-Path: <linux-kernel+bounces-144113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB8898A41FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:07:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93BA58A41F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:57:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7841A1F21307
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:07:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4450C281885
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:57:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D2A336122;
-	Sun, 14 Apr 2024 11:06:59 +0000 (UTC)
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180B52E633;
-	Sun, 14 Apr 2024 11:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A9D2E859;
+	Sun, 14 Apr 2024 10:57:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OtDbD5PH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B20D1E53F;
+	Sun, 14 Apr 2024 10:57:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713092818; cv=none; b=sAReVDLV7dsExiJ4Vp9BkkojsA8u+ruByHjxYf/DDKeFKxrlMM/MUbpJ2L0gVlQrARBRBb5F2C48exGpb1hqZHQvh9KxcDFDkN64tJycvycL9HzrIQN2X6KPZCEKld2PzRY6YOcDD7H1OLd1GsH7ENcaJ2zQPdkkg+p2coo0+3E=
+	t=1713092236; cv=none; b=C2dQK3CVxc4E5Q+8cRXmgeF7BJBpaPSMATfVhlYBXLwKjPufwmg4J2PuDgtD8g9up6aRorHZnasTa4JSKIgPeY2PD3HZDdPZoH3l2PyIYDW6nGKL8jzr9BxU3FRe1beiZuABWI4Jee4DQI0lE1orUAQrpoFtMGevn/0tNaXP2r0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713092818; c=relaxed/simple;
-	bh=miun8jVmCtQfWySsPIyXcoPjpOxTuPM88zBCy1XymS4=;
+	s=arc-20240116; t=1713092236; c=relaxed/simple;
+	bh=jDdtSOwj0MEVaChxqGUqHKbNJxVOuCR43DhquA3Tcpc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KuDnh7+LtdC8Qwrr64dsc5ab0Xid4KADNe8dz96FLo0emNbh1LjZY4jwaimxFlcTJfJHlihOLs6idtFxAWkKsIvpYh3/B1lJ76CdS+Q2zglzcyf8FnUmrQcRQYohNOherDzfru7ZHaXubHK8GmHRKPD4vsiyjQAl7kupmX7DaLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
-Received: (from willy@localhost)
-	by pcw.home.local (8.15.2/8.15.2/Submit) id 43EAukRc002592;
-	Sun, 14 Apr 2024 12:56:46 +0200
-Date: Sun, 14 Apr 2024 12:56:46 +0200
-From: Willy Tarreau <w@1wt.eu>
-To: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc: Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] tools/nolibc: add support for uname(2)
-Message-ID: <20240414105646.GA2236@1wt.eu>
-References: <20240414-nolibc-uname-v1-1-28a1fdbd5c64@weissschuh.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t4GSs2vN9xOp089E+3Szl33SBMJP+ZWJqRvP48f1pHKjjxm1ya/m+20SobLJ1sDYqzF4jh2xk5nj5XMPJih5an8qBYh4u5YvAHsQtUeYON3EyqC/AzJ17uwrskn2wr6uid1fRB4ZfyxiqGO3QBK4I/QNEIoJlByE6KB24sta2es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OtDbD5PH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66201C072AA;
+	Sun, 14 Apr 2024 10:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713092235;
+	bh=jDdtSOwj0MEVaChxqGUqHKbNJxVOuCR43DhquA3Tcpc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OtDbD5PHfEn1DXagyJX5JdaIIjeblstJ3kByjV7c9z7LBgGw2HZvOb1gkxxF5TIaS
+	 8RCe8nV4tohbyz7LTxFXhzu5Rcbk1fTPoQezXX97iBS46Y+Jz7RTv4YZEneGnnniTt
+	 Q3CR6GMiDsGB13SkqeguvQs0wh5f4DY7P8aZWIzo=
+Date: Sun, 14 Apr 2024 12:57:11 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: sumadhura kalyan <opensourcecond@gmail.com>
+Cc: florian.fainelli@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Replace function alignment of camel case by snake case.
+Message-ID: <2024041457-outshoot-voyage-3e5b@gregkh>
+References: <20240414102443.98927-1-opensourcecond@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240414-nolibc-uname-v1-1-28a1fdbd5c64@weissschuh.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20240414102443.98927-1-opensourcecond@gmail.com>
 
-Hi Thomas!
-
-On Sun, Apr 14, 2024 at 09:56:23AM +0200, Thomas Weißschuh wrote:
-> All supported kernels are assumed to use struct new_utsname.
-> This is validated in test_uname().
+On Sun, Apr 14, 2024 at 03:54:42PM +0530, sumadhura kalyan wrote:
+> Issue found by checkpatch
 > 
-> uname(2) can for example be used in ksft_min_kernel_version() from the
-> kernels selftest framework.
-> 
-> Link: https://lore.kernel.org/lkml/20240412123536.GA32444@redhat.com/
+> Signed-off-by: sumadhura kalyan <opensourcecond@gmail.com>
 
-I find it really annoying when other developers waste time trying to
-work around some missing trivial syscalls. I would have bet we already
-had this one, but obviously not.
-
-That's obviously an ack by me: Acked-by: Willy Tarreau <w@1wt.eu>
-
-Thank you!
-Willy
+Your subject line is wrong.
 
