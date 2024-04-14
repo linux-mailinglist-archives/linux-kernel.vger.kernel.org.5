@@ -1,115 +1,100 @@
-Return-Path: <linux-kernel+bounces-144218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0929E8A4346
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC718A4349
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 17:17:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B342A1F211FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:12:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A102A1F21030
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 15:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14FD13473B;
-	Sun, 14 Apr 2024 15:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C203F134740;
+	Sun, 14 Apr 2024 15:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b="PXAcft8C"
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [167.172.40.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jNdn/MJ/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F991134730
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 15:12:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.172.40.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01136224CC;
+	Sun, 14 Apr 2024 15:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713107545; cv=none; b=Em5+zcUEyZP2mtddirxZdH17wi6t1suq0/1XNVg4Xj6vb/BLvjvZOdl3CPgFgxBx63te1w3mOER4KQsyHQmWVos1asQnTTZKCrteYFqpZY3R7t3HZlESzszEGe9zu26rJ9O/G/pow0C8vCndZH/0wIOdP/0ATW566qMHbCEyMDM=
+	t=1713107814; cv=none; b=lpWqSUFt6NFinw8TUTolewAOohFcdb8gRS4IVf/sJXfaArIOIR8uUW9CYQs5T5dC7YVFUD5Q3qKHmMsSvMBu8NGN68RNlVLeoFUzz+EOT7yD+PrO8smD+7SHwq+M8VTRK+AetsClRdyGFc7jORMHI/JKx4y+yJFZjRQ2wCz4quE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713107545; c=relaxed/simple;
-	bh=O03YYebbtXhMIdOMbi6XgtmeLQkPYfnnUfyAiFpd18Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=erVK8ls9k+yAPvHKRQgALFV8+3KhBSSED5QDOB4qduo6Mt8HxVhJV1yznsC1hIki8dEZMFBQ+4oYQ7G8pLbn7F0QIO6QFx/40vdi4jDjGuCziI8slF7cvZcQyBjcKNgRIwJHTa184nHUqm7AwVVcoLus7Qzovua/x2w8k2G64vA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se; dkim=pass (2048-bit key) header.d=kwiboo.se header.i=@kwiboo.se header.b=PXAcft8C; arc=none smtp.client-ip=167.172.40.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kwiboo.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.kwiboo.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
- Message-ID: Date: Subject: Cc: To: From; q=dns/txt; s=fe-e1b5cab7be;
- t=1713107519; bh=gGzIdCw12QXG2TxloTRvkWREcbVU89z7DbBLoR6ZGJA=;
- b=PXAcft8C5jzX1iBhgHoO3sH5Sh38isq/WaBouSiFCichcZtGpGTY/aQGbVj5ipft69r/pC/do
- 5sGEqgLnKJ+0604bVB+v68DBqRi32QgGLrYrwuh3EjeCxxY1S7Ot66PjU2FY6NK5w4y75W1yAxd
- qf5kDWV7lkJ0G55VUXFpLB/ZYc10Dp1M+xZAw9WVT72kQDLYO16WVZTfefmGaPguXCwoHEvRGs7
- UUd1yfg4kkilAtT3VmoIaxVSuzzJ2lh7Vfb30MDi0g4Ak3Kv2dNQ6X9tMHHScMJJcsm9JhKqAhg
- lNqAJnlcORxKgv5+K8DqcFV1unePIxvkkAV6kFHSCRMA==
-From: Jonas Karlman <jonas@kwiboo.se>
-To: Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Sandy Huang <hjc@rock-chips.com>, Andy Yan
- <andy.yan@rock-chips.com>, David Airlie <airlied@gmail.com>, Daniel Vetter
- <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann
- <tzimmermann@suse.de>, Mark Yao <markyao0591@gmail.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, Jonas
- Karlman <jonas@kwiboo.se>, dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 3/3] dt-bindings: display: rockchip,dw-hdmi: Fix sound-dai-cells warning
-Date: Sun, 14 Apr 2024 15:11:29 +0000
-Message-ID: <20240414151135.1774981-4-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240414151135.1774981-1-jonas@kwiboo.se>
-References: <20240414151135.1774981-1-jonas@kwiboo.se>
+	s=arc-20240116; t=1713107814; c=relaxed/simple;
+	bh=dIaz9anlikHWba06YrDBAQby4aKTcYk2yTTCqB4q1Nk=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=q7zt4jVTKsf9ba9LEQLw9NU7hjmFjYeLdJSpkoHGkmNQoqDTyywfi+skkoShSPJG4sTy9s6Qc5m4mDe5S4820EdjBoKV3/ROFB9XU5p1wf8oMVkOTqjHNBIxNYfiRP4M5GlLgEPbRpLBSFJBzuxDOovDoENlLM2ClJz62au8IHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jNdn/MJ/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F080C072AA;
+	Sun, 14 Apr 2024 15:16:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713107813;
+	bh=dIaz9anlikHWba06YrDBAQby4aKTcYk2yTTCqB4q1Nk=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=jNdn/MJ/5g0fj4Nfa+HSXBkxY9wV+cXd2plYkREfO5At+xfdwBQ8KD+08pFxIX9es
+	 dIMbSEEG/UHDwYsD2Lsup+YmU100jFVlhYoeoCCkpU/LUwYg7D/PWV6nLJ11qQNH8g
+	 QSPoc6nyRRCBfmAsltUdJAccGj8+56iRRZSxo4ZT899A67QbH+8sA0HK296o3OV8+f
+	 zBh6wjHoAQyxUJq6ejX14RE+LugAito/ikjdYstKmUcOcSwaU6RaYwpydN71H9MpDj
+	 BbHKUwjCZhWZm6x3MBQj1hsn0ZyCZ4y75UAgpWFY4193PeReC6c9PTQ7ntCLkdEUHy
+	 NQGM++qWbK9DQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 167.172.40.54
-X-ForwardEmail-ID: 661bf23c99ce03c87699d74d
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sun, 14 Apr 2024 18:16:49 +0300
+Message-Id: <D0JY1B6C8LVF.3PD5CYKW5FNN7@kernel.org>
+Cc: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Peter
+ Huewe" <peterhuewe@gmx.de>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Rob Herring"
+ <robh@kernel.org>, "Krzysztof Kozlowski" <krzk+dt@kernel.org>, "Conor
+ Dooley" <conor+dt@kernel.org>, "Lukas Wunner" <lukas@wunner.de>, "Alexander
+ Sverdlin" <alexander.sverdlin@siemens.com>
+Subject: Re: [PATCH v2 1/1] dt-bindings: tpm: Add st,st33ktpm2xi2c
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Michael Haener" <michael.haener@siemens.com>,
+ <linux-integrity@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240414074440.23831-1-michael.haener@siemens.com>
+ <20240414074440.23831-2-michael.haener@siemens.com>
+In-Reply-To: <20240414074440.23831-2-michael.haener@siemens.com>
 
-The rockchip,dw-hdmi node can be used as a sound dai codec, however,
-dtbs_check may report the following issue:
+On Sun Apr 14, 2024 at 10:44 AM EEST, Michael Haener wrote:
+> Add the ST chip st33ktpm2xi2c to the supported compatible strings of the
+> TPM TIS I2C schema. The Chip is compliant with the TCG PC Client TPM
+> Profile specification.
+>
+> For reference, a datasheet is available at:
+> https://www.st.com/resource/en/data_brief/st33ktpm2xi2c.pdf
+>
+> Reviewed-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
+> Signed-off-by: Michael Haener <michael.haener@siemens.com>
+> ---
+>  Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml b=
+/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml
+> index 3ab4434b7352..af7720dc4a12 100644
+> --- a/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml
+> +++ b/Documentation/devicetree/bindings/tpm/tcg,tpm-tis-i2c.yaml
+> @@ -32,6 +32,7 @@ properties:
+>            - enum:
+>                - infineon,slb9673
+>                - nuvoton,npct75x
+> +              - st,st33ktpm2xi2c
+>            - const: tcg,tpm-tis-i2c
+> =20
+>        - description: TPM 1.2 and 2.0 chips with vendor-specific I=C2=B2C=
+ interface
 
-  hdmi@fe0a0000: Unevaluated properties are not allowed ('#sound-dai-cells' was unexpected)
-  from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip,dw-hdmi.yaml#
+I applied this version of the patch to my master (not yet mirrored
+to linux-next but eventually will).
 
-Add a reference to dai-common.yaml and add the #sound-dai-cells prop to
-resolve this warning.
-
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
----
-v2: New patch to fix #sound-dai-cells warning
----
- .../bindings/display/rockchip/rockchip,dw-hdmi.yaml           | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-index af638b6c0d21..3285fff54416 100644
---- a/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-+++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yaml
-@@ -15,6 +15,7 @@ description: |
- 
- allOf:
-   - $ref: ../bridge/synopsys,dw-hdmi.yaml#
-+  - $ref: /schemas/sound/dai-common.yaml#
- 
- properties:
-   compatible:
-@@ -124,6 +125,9 @@ properties:
-     description:
-       phandle to the GRF to mux vopl/vopb.
- 
-+  "#sound-dai-cells":
-+    const: 0
-+
- required:
-   - compatible
-   - reg
--- 
-2.43.2
-
+BR, Jarkko
 
