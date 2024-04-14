@@ -1,87 +1,121 @@
-Return-Path: <linux-kernel+bounces-144118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 152AA8A420C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B228A420F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:37:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49F01B20F4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:27:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B8F1B20F1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9935C36B1C;
-	Sun, 14 Apr 2024 11:27:05 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87439364DF;
+	Sun, 14 Apr 2024 11:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NIzC8sbF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MTeZcQiu"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F40364A1
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 11:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B96F1862C;
+	Sun, 14 Apr 2024 11:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713094025; cv=none; b=VsBZRxenJBSRWvBtkiNcRYL1qevnovvVgNeIH1qk7geqA+DPxLE/ZqtQODuLwJ4Rnm76JjMHVI1ZoOYdTico/kqvsFTsUSLLHd9R31KFHmDAIMLDA3tf6GMwZbzCTxWRAMGYuefl4QGsihfssWpFjT9BSC3UDl7wusK6ALvovTQ=
+	t=1713094650; cv=none; b=HHvz+LR9FNkyA7Q7eQr8QbbblYGWsKi0P5W+0Xz2KPrtdkwX3xx/29lmf9bPrI++Ie8GDSIysbxoaRGMKmQL6mIUh+ct4XXHg2VpZBMEo2tVRnPcFgv3UG29w3e31tBZ7G+AZbV3WSCSIUiSPMsm9qsjYCmda6YbN1QSh3Qik2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713094025; c=relaxed/simple;
-	bh=fkilD6RXXITJvunj7/Llw0NbNITB6YbE2nYjiH6+fU8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=lrK0wC98NJEIoVLz7J9wBCcyLjhuo5btu5WaCfPINtkOR6dTZgg6gkhC/u2on8uFW63GjV2R873VG6GplwN77tI6+3mdTb8ioDE5DFMgSEgK9exM3OGesSfnO06VmJEzQgNNhGmHvssuzFjmZcvZbykejgIKmV97jrlJi5jtqCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc78077032so340523439f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 04:27:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713094023; x=1713698823;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eUbouy2oNNu8eN3BipV2iCaoziEuCexrXqKmN558sqY=;
-        b=BtC3hRwSiyR7ZYGKdN9yht8A2gzDoq1PncOd8BI4b/1S4GHLktPycJ7CyPUSQmQYpi
-         aLube4EBy/iMIOTJoAyrzBgmVs6+G2jPpOCyIG7MIPZOVAS+H9sLFjcNgDjm4HelSIUh
-         sjrYQ2mLHTHUR5pq36T/QYxnIQiGzcT3LftwQLAdMBz4pPlWRvGDEe9P1G5czHuS4bAi
-         0sZ/18S4hs6NpoXhihUnBaZdIgXXj7ph5Pw2RzQQkfPXpLDodaVDQl1FvfOt7WR0/7Ps
-         yFdzAdHDil/M7HoDRUOKIEFnRlwRkB/1m6DQvuGu3wBCyH5JYlVeBXTryRz/2qMIGsU8
-         2ZcA==
-X-Forwarded-Encrypted: i=1; AJvYcCU449hwNP2QT0ii0rz/vv1EaYYjOUnef19AbnZBMKASEl+JV4fuS6PS9RA071TofBmWOZdOA0po1MKute6IDwKBb4sRvwEjkemcvoFx
-X-Gm-Message-State: AOJu0Yy/8BdoEdRUFi1Sbww9tiJKnKK0zCuUOxzWb+meCSZn0L7/zyyp
-	+233g911Wwae4Wl0icm40isU+dJUEeG70DsfHkhimV8wJ1g2o+hPRsgMLY8FEFTkvpKWz5PZTl1
-	6uj4yiYtawgww8a/KyAGPZ2DavoC+vKBWsImEd6fAHga3Emh6/blq8x0=
-X-Google-Smtp-Source: AGHT+IFZDqxjKodW1h4BsIA7GL78eyIQ+YTcgW+REk2q/S/k+H1pWhRuNWDz2Uf16+r7Ik7nCyICQb7ZyZRvNx/3SUwu3TkoLjHz
+	s=arc-20240116; t=1713094650; c=relaxed/simple;
+	bh=AY5Fivk8a0Rx9jrCmv12Ek/I0yWidCC0MhU+Nz89jG0=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=kPSpwgZAhkX6O9qaLoPZYFt/qGoAxh02MHcb+d+WV2fOMpZNyoXIfC5xI67r0mqBm1lURUCeXT17Lh/TiHTPisy3tZS87VQguB9C1ugfqVEPmgK9GcUNIrtD+RnkUnt1LHHkjZz+0e62xWmcLeWzY1USgV6+B5vhieg2HptNIm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=NIzC8sbF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MTeZcQiu; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sun, 14 Apr 2024 11:37:20 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713094641;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WR/76s3TsfNyIB8f1jn+YfZlCitYZdaIbEKAGruJNl0=;
+	b=NIzC8sbF5G31e+AA1g6XtpeRj3iznJQSAU43nrmni5AJNyzrIV6oosyhlMns0nn9qMBKV4
+	gFY5gmVrvS4dd7aX2LBqPlR8huADzDhnUbjxynX5aexWzOWgER5QBS4W+DdGVxsSZt7E0n
+	HIdcUI8IiFe9kOM/73zRN6t9nvjE83J/l1elb4xs5iUKiyLYfICxf4dENpuO52VUcHTI/W
+	l1+8tMQbfBY+qw4DkuOzj7Z0KaU4vCKsbxhexty40Gu6egLfpWI4X0fqCV1mWeiN0qk9mE
+	oT2ZEiwuV6UTcygMkls6JEuenKKyIjWQoERc6/HSIqvE62bNcmy9GflhaFxh/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713094641;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WR/76s3TsfNyIB8f1jn+YfZlCitYZdaIbEKAGruJNl0=;
+	b=MTeZcQiugw+dObMzPf52+7Cd10r9PJMXLJz5wbENn9hdOuZVRs8mJ1pVlKuEuzz14Z6UGY
+	+NSvY3cGN+3wIxDg==
+From: "tip-bot2 for Anup Patel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] irqchip/riscv-imsic: Fix boot time update effective
+ affinity warning
+Cc: Anup Patel <apatel@ventanamicro.com>, Thomas Gleixner <tglx@linutronix.de>,
+ x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20240413065210.315896-1-apatel@ventanamicro.com>
+References: <20240413065210.315896-1-apatel@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:40a8:b0:482:ccc3:e7fe with SMTP id
- m40-20020a05663840a800b00482ccc3e7femr259144jam.6.1713094022920; Sun, 14 Apr
- 2024 04:27:02 -0700 (PDT)
-Date: Sun, 14 Apr 2024 04:27:02 -0700
-In-Reply-To: <20240414110952.2437-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b4106c06160cc803@google.com>
-Subject: Re: [syzbot] [pvrusb2?] [usb?] KASAN: slab-use-after-free Read in
- pvr2_context_set_notify (3)
-From: syzbot <syzbot+d0f14b2d5a3d1587fbe7@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <171309464069.10875.16937650258122631172.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hello,
+The following commit has been merged into the irq/core branch of tip:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Commit-ID:     35d77eb7b974f62aaef5a0dc72d93ddb1ada4074
+Gitweb:        https://git.kernel.org/tip/35d77eb7b974f62aaef5a0dc72d93ddb1ada4074
+Author:        Anup Patel <apatel@ventanamicro.com>
+AuthorDate:    Sat, 13 Apr 2024 12:22:10 +05:30
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 14 Apr 2024 13:28:49 +02:00
 
-Reported-and-tested-by: syzbot+d0f14b2d5a3d1587fbe7@syzkaller.appspotmail.com
+irqchip/riscv-imsic: Fix boot time update effective affinity warning
 
-Tested on:
+Currently, the following warning is observed on the QEMU virt machine:
+genirq: irq_chip APLIC-MSI-d000000.aplic did not update eff. affinity mask of irq 12
 
-commit:         9ed46da1 Add linux-next specific files for 20240412
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=177851eb180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8f5778cb7b9a7d
-dashboard link: https://syzkaller.appspot.com/bug?extid=d0f14b2d5a3d1587fbe7
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=174c9857180000
+The above warning is because the IMSIC driver does not set the initial
+value of effective affinity in the interrupt descriptor. To address this,
+initialize the effective affinity in imsic_irq_domain_alloc().
 
-Note: testing is done by a robot and is best-effort only.
+Fixes: 027e125acdba ("irqchip/riscv-imsic: Add device MSI domain support for platform devices")
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240413065210.315896-1-apatel@ventanamicro.com
+
+---
+ drivers/irqchip/irq-riscv-imsic-platform.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqchip/irq-riscv-imsic-platform.c
+index 1e6dddf..11723a7 100644
+--- a/drivers/irqchip/irq-riscv-imsic-platform.c
++++ b/drivers/irqchip/irq-riscv-imsic-platform.c
+@@ -157,6 +157,7 @@ static int imsic_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
+ 			    handle_simple_irq, NULL, NULL);
+ 	irq_set_noprobe(virq);
+ 	irq_set_affinity(virq, cpu_online_mask);
++	irq_data_update_effective_affinity(irq_get_irq_data(virq), cpumask_of(vec->cpu));
+ 
+ 	return 0;
+ }
 
