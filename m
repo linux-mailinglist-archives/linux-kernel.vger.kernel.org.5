@@ -1,52 +1,51 @@
-Return-Path: <linux-kernel+bounces-144124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7DE8A421F
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:46:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE3F08A4220
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:46:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0331C2103B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:46:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86288281E1B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:46:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5A0446AC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45AD446AF;
 	Sun, 14 Apr 2024 11:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FgLcLWWB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i7UrGGbM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CEB31A8F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D8E36B0D;
 	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713095180; cv=none; b=Cb+55cy4+pdRmLhvd8WNaVKi7ElmgPKNQIMvxmwU8bjIHJsDBExZo5gv4EGlXGBK6j4JkurhJvuMxkYsNQ5ReRZUy0pM9E4P62/WDnP4fkFK+kwAV6TsU5NorLsau0SwSLETLLCIKP08bp6y6bt3WK4+KxE7ArzDfRyKcC0SLV8=
+	t=1713095180; cv=none; b=r44wp6mcrN+Keh9PCwagHCDJ0R8wWvq62hVICAcPcGhD53Oz2we5/POWIWn6HrHGouceB2qzaTl7hcqDzYwP/JGiTVNfUf5iQntgsliJZG4KohQua9qrS/wAl1ajAcIkMQADUU/1YCbNKCeCgrCy/5eV4rat5RmaYUBV3w0ckhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713095180; c=relaxed/simple;
-	bh=33wdznBHcrNrNHH/FVF4hi5/RJGXD7RBWwqYcSqj5MY=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=fbmX3jdL7dnAV9vkmCtheCqseBo+6MGPPl+Urew5wf7ZhcgufbvYhXePS2pPqhfC8nWRxjgnnCa/aSNaiD4kZc7332cqKMtgFo/qJZiXYtbwfiC8ipqvoJhO6u7m5o/s7CuxKjSYq/UNYjPU8kDp6VQ/uVYKNSC+wnHqachoH3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FgLcLWWB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 61BD4C072AA;
+	bh=bs/HBuzrWPto5XJNDcrs4aU2SIKT5lLppGTW+5D2DGQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=bkXCukMIs6/5hc8Jx5QAcYHloLRngV7dtYs7Uu9sXMtsYUCQWp2tzey2HMCOwhpeJNNO4J+qx5gMrJbx2E+uC7Asu6vfxPYGXcW35ZHl3aF3Srv951pD01fd54vbaoBy0zPvfVWDb0bDldOJX8DB9tPaMUB4u29UPqvWmtZk0/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i7UrGGbM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7526EC32781;
 	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1713095180;
-	bh=33wdznBHcrNrNHH/FVF4hi5/RJGXD7RBWwqYcSqj5MY=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=FgLcLWWBZ1CRpXx5aji/rmvcv9VzDLQAZUFr5J8VRKbJm4IoU9UJYMnjtUNEhEtQQ
-	 f+/XAfxH+15S2Hp0ZTadXWPKTbttrLe3tyABTcuX44Dbn7dKNrnJVrN92Hkqbrbhg0
-	 brgm4LDK43znlMrEL0coYdu35VL5afhDeHuHv+AWXSdZOmYE236bBVaQTpIZ4GheZC
-	 aeBfwTa0JoD4CIzVU649yDqeVKriKvr8kS8dgPn41sEq8JAFcFTQQnZfls7QgJyUZp
-	 QerX/kRVvq4l1UofwEHt0TgI88X8bepfX8DszxVddmOjdOxk2ZJjjA6opQyhuEISwk
-	 QzO4/l0aOohpw==
+	bh=bs/HBuzrWPto5XJNDcrs4aU2SIKT5lLppGTW+5D2DGQ=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=i7UrGGbMaJmtTjTJqW/rXnLGe0O8M2KxWgUqp4a1PE8CiCn/kgZdYpCzSIqAboPTO
+	 qb/4Gjm0qpy/G3qkzk2vM35vfk9+9im6qgVWuuNLzB4HNR04we11QaOG8qUU017De1
+	 lSp7pgzQD+uFCSlrM+C32gXMwuaWfqjo7VlfKvbwn+rotaq+kGJlM5xyQuNHbhUj1i
+	 4W3YRfwXzsjeMMuoJ4TYt27Wjjn1j99Yeg4ZTPkZbHJ81hCmSK4Vf/a36a8UH0UQ6A
+	 sCTmHYrZs3IXqt96dou1ELsGqZsCEPM6qha6KP8Kzz7NSDnjZIcJU3hGIT/C5YGopC
+	 6jdBTWPK0HPog==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D22FC4345F;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BEEDC04FF9;
 	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
 From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Subject: [PATCH 0/4] Document ASUS RT-AC3200 and ASUS RT-AC5300 and add
- device trees
-Date: Sun, 14 Apr 2024 14:45:59 +0300
-Message-Id: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
+Date: Sun, 14 Apr 2024 14:46:00 +0300
+Subject: [PATCH 1/4] dt-bindings: arm: bcm: add bindings for ASUS RT-AC3200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,9 +54,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAPfBG2YC/x3MTQrCQAxA4auUrA3E6dS/q4iLaZrRbDqSVBFK7
- 27o6vFt3goupuJw61Yw+aprmwPHQwf8KvNTUKcwJEqZMl2wNkNvjMU/jrZg4T4RRYY+MkwnqZw
- 4X88jxONtUvW3/++PbfsD8bV2/m8AAAA=
+Message-Id: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-1-118c90bae6e5@arinc9.com>
+References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
+In-Reply-To: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
 To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
  Conor Dooley <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, 
  Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>, 
@@ -67,11 +66,11 @@ Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713095170; l=956;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713095170; l=786;
  i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=33wdznBHcrNrNHH/FVF4hi5/RJGXD7RBWwqYcSqj5MY=;
- b=sIZCGgog3BeSnH4dfJhskcNWfY+9MZ+GaltlVyK4WmiTPZgTD5KZzwskCoUa3Axu/fzj0yKoh
- bxQtN2AQbQeCd/1QX8/jRVtc0VExaoehdw6zmaPjZC4Ou2pKWpfVjaA
+ bh=J/PDI/R4cOnHbY6bRpKkCzRdD8CWg4daS8qpi5rDqrw=;
+ b=l8rafI7epTQ7ehjEwBD9pTr0LJw/Xp+XYxzNkgVMlyAXyl8CV2wOdRRWiVO1poThyExoqabig
+ sp6JJOl4RHjBGT7QGxiAYu0I40n4E/Pmmn+FIEPurmPGkzkBO+XUtqA
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
 X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
@@ -79,31 +78,30 @@ X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
 X-Original-From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 Reply-To: arinc.unal@arinc9.com
 
-Hello.
+From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-This patch series documents the compatible strings for ASUS RT-AC3200 and
-ASUS RT-AC5300, and adds the device trees for them.
+Add ASUS RT-AC3200 under BCM4709 based boards.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
-Arınç ÜNAL (4):
-      dt-bindings: arm: bcm: add bindings for ASUS RT-AC3200
-      dt-bindings: arm: bcm: add bindings for ASUS RT-AC5300
-      ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
-      ARM: dts: BCM5301X: Add DT for ASUS RT-AC5300
+ Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../devicetree/bindings/arm/bcm/brcm,bcm4708.yaml  |   2 +
- arch/arm/boot/dts/broadcom/Makefile                |   2 +
- .../boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts   | 164 ++++++++++++++++++++
- .../boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts  | 170 +++++++++++++++++++++
- 4 files changed, 338 insertions(+)
----
-base-commit: 011d79ef1cfad701c2d8e7e80d8c77523af9c771
-change-id: 20240408-for-soc-asus-rt-ac3200-ac5300-5d6efc2c497b
+diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml
+index 4cc4e6754681..215bef740aca 100644
+--- a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml
++++ b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm4708.yaml
+@@ -53,6 +53,7 @@ properties:
+       - description: BCM4709 based boards
+         items:
+           - enum:
++              - asus,rt-ac3200
+               - asus,rt-ac87u
+               - buffalo,wxr-1900dhp
+               - linksys,ea9200
 
-Best regards,
 -- 
-Arınç ÜNAL <arinc.unal@arinc9.com>
+2.40.1
 
 
 
