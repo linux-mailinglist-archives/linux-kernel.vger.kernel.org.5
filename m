@@ -1,85 +1,91 @@
-Return-Path: <linux-kernel+bounces-144049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4852B8A413D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:34:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A950B8A4151
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:41:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2F021F2153B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:34:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D54EE1C210C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:41:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F151B95A;
-	Sun, 14 Apr 2024 08:34:20 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17E622619;
+	Sun, 14 Apr 2024 08:41:06 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA99C4689
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE301CAA8
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713083660; cv=none; b=rAJWk5/bzPIzGm7OItpOV83HPCu/jBeCiUCzu6Nm9aeLaDrifoUebYqHjbV0x36Jbp4rb2CPGWb4JiUPa6tYtjPJFjYcY4j9ZavYbP9ktYCJLiluyMhduv1s77BK0Ps8l2E+yw05Lh2H4HXKAYE3uhtrnhNArvD1B/7dnAGmLhQ=
+	t=1713084066; cv=none; b=AS5PqWsQvdZT4841MyouNwITOUEEWXrqKK1wXZS5smGT/rGpk4k4HCxIi0PVQ0gB6NIUgE9QUOG58U3pBu6b1QzCa11qNrV2Mhc/kJGlY3VtMs0zTIGnoAPrOex4JVHCl4Gkd+XwledZGsCgAVI4QvZnTn2j7Nizg67nkxps6jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713083660; c=relaxed/simple;
-	bh=ZmAIjSzcFfDjoTquD/K8a25ft89stMkxMjIVNSqucwU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kynAUr8TQlmEW94YUUCcNNnKre4QewLKUIXsbjKlQSoo+wEV7HEoKFXs2AzmSVGxgzWh7TcmoN02jX89EEZksCn3pfLbESxGHIXTb4Fckgnwc03pcEOcIFDVbpBwXaUpVeo54CTzbGG1C4PU6B4hbpBb9hXEFUFmOtGt/SjEK+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 280EE40E01FF;
-	Sun, 14 Apr 2024 08:34:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id sn3DNO4raZsw; Sun, 14 Apr 2024 08:34:03 +0000 (UTC)
-Received: from nazgul.tnic (unknown [212.23.229.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B340240E01C5;
-	Sun, 14 Apr 2024 08:33:51 +0000 (UTC)
-Date: Sun, 14 Apr 2024 10:36:26 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>,
-	Erhard Furtner <erhard_f@mailbox.org>, x86@kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	jpoimboe@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Breno Leitao <leitao@debian.org>
-Subject: Re: [bisected] Kernel v6.9-rc3 fails to boot on a Thinkpad T60 with
- MITIGATION_RETHUNK=y (regression from v6.8.5)
-Message-ID: <20240414083626.GAZhuViviWKudQ5Apm@fat_crate.local>
-References: <20240413024956.488d474e@yea>
- <ZhpOIeVq1KQXzjBp@archie.me>
- <68e3503c-5573-4d82-8fb0-5b955c212d67@leemhuis.info>
+	s=arc-20240116; t=1713084066; c=relaxed/simple;
+	bh=dZAnNFSFXpH82xQIjtfXvnRg328Zk2sD5+LoAz3HECw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=n9x8Owl9+razpuNZqN7TIntCtGASjoD1M5bcHoqi3ZdrWXGi5PK/WbwffTH3GcmETnH+QVEteui/XJEwXalwxleh3hnXVByMsUMt2g9HDsVsosLioHhUE7ib8HIzasIjsoNZeY1wBKeYX8aKYzDz3Vc4NlpYFCvedWW4fNuzrXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5d7d6b971so258825739f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 01:41:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713084064; x=1713688864;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7rLBkUcPmuLzb3F8ivPr5HzBIa58niQNYwzeMWHMDr4=;
+        b=e8Pr5SgDoveDbOOJsuj9oyMBrw5jz097oFkZ8Taavf4HmZ+Pd2XpFSvDAD/M1apc2/
+         +Rmnz2ePWSZN/VdMsKixLy3SFpJqp5CrkrpIheASOTLbdGltwoJ27bN8Ly7DVLbF+Q17
+         RIbsXRimdZz85sjxd86gsubjAVzN4izsTqqJ7aQpBVmqr5OWn4RDDsnCmiKMCxTHRoxF
+         qUhj1unhBZMw2h6bQEJhy4vsWzdqTx2KcMW/eXzwie6eeTXeSogj+EJjsosQM9s3S//F
+         c3cO0qfQ2DtSvUPKu1LWU1s35xu4+K3XD0bi3gYLmvdLRYZr1yxcNLAVUPXH3XiqWp5V
+         PaTg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+j/XidVCBo80R87M+YDoGujfp4zoIpVhec1+/zYxscA99RCOE5bk4k3PeOEiwxCoX9WSPO/b1CFPxs2Yuo7g8smaKvHJCmdtlPLId
+X-Gm-Message-State: AOJu0YwGAFmAlpz+aLsAh7CLTCopaqYiP9FLdICMiGornZxut6fFW8nn
+	JFQnOAN2afxzwecpGifhaT+fO+QQn0V41ZgIh+uFpMh2vkJhCT6O/x4iqXgytcCgDWxzR+7pAJa
+	UbRhZbibMvVT3wu0xe1QBw+cYsDswQc23vx1w1zvdQFc9coRGiRtrkBo=
+X-Google-Smtp-Source: AGHT+IGY7ePPYppgtdO3jmP9A+EE39pQbXeoHylEBaXuVHNz7j0jnXeYz7Rdw489ll2vV7cDrFRmcDCoGjq9frsx5BdPhmNy8v5Y
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <68e3503c-5573-4d82-8fb0-5b955c212d67@leemhuis.info>
+X-Received: by 2002:a05:6e02:1985:b0:36a:3dda:d71c with SMTP id
+ g5-20020a056e02198500b0036a3ddad71cmr508822ilf.5.1713084063013; Sun, 14 Apr
+ 2024 01:41:03 -0700 (PDT)
+Date: Sun, 14 Apr 2024 01:41:02 -0700
+In-Reply-To: <0000000000000946cf05f34e12c2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000bef2806160a776f@google.com>
+Subject: Re: [syzbot] [btrfs?] INFO: task hung in lock_extent
+From: syzbot <syzbot+eaa05fbc7563874b7ad2@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, fdmanana@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Apr 13, 2024 at 11:46:09AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> Boris there suggested: "perhaps we should make
-> CONFIG_MITIGATION_RETHUNK depend on !X86_32":
-> https://lore.kernel.org/all/20240403173059.GJZg2SUwS8MXw7CdwF@fat_crate.local/
-> 
-> But that did not happen afaics. Would it be wise to go down that path?
+syzbot suspects this issue was fixed by commit:
 
-Am looking at the whole thing. Stay tuned...
+commit b0ad381fa7690244802aed119b478b4bdafc31dd
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Mon Feb 12 16:56:02 2024 +0000
 
--- 
-Regards/Gruss,
-    Boris.
+    btrfs: fix deadlock with fiemap and extent locking
 
-https://people.kernel.org/tglx/notes-about-netiquette
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=101316f5180000
+start commit:   7521f258ea30 Merge tag 'mm-hotfixes-stable-2024-02-10-11-1..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=89a5d896b14c4565
+dashboard link: https://syzkaller.appspot.com/bug?extid=eaa05fbc7563874b7ad2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c0d1e0180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10aff5b8180000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: btrfs: fix deadlock with fiemap and extent locking
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
