@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-144279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFAC98A4412
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:39:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FACE8A4415
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:40:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAF341C203DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:39:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C94F81F2131B
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E7D135A73;
-	Sun, 14 Apr 2024 16:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9D0137C54;
+	Sun, 14 Apr 2024 16:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mvk23GC5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dXrIiOsz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D643136659;
-	Sun, 14 Apr 2024 16:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1CB413665C;
+	Sun, 14 Apr 2024 16:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713112640; cv=none; b=NaUiTbusIB4yjiDeK2667xjwxGA457Bu1UvUIw38bVIAfIz3BNlN7aW4qUmmKgmBAOVP8Gx9grNpkX+LVEJOJHEs+lXuXhL9adwpoTorDKauB2iYWbOrrni+urgIeZ5YjzQ+jFPAhOrMeUIXp9e3A8n7QF/vs6jWKNB981g94JU=
+	t=1713112646; cv=none; b=UqnZGX68yOFE5JdX4G4hxtH52H+mH5C1hVRfIZ0TKOW1fWxMBKB6BsNck1qjxTHe/tTZZ1//uAU0qXjx3PmKmtcst5UsXUaTAo7pliIRhgYCe8oJ+vixth/HX9o0ZP1dntWWTQeBy0Rv810nHxKDbAKU0F1T5/w+08O2GTWmr18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713112640; c=relaxed/simple;
-	bh=tv/dXn/1EbAmlxq0rha4TdMh0Fw2XbAyNvTO8VxWrfY=;
+	s=arc-20240116; t=1713112646; c=relaxed/simple;
+	bh=72zXnNjUdpDz3J1EN0eijgGIcKOy+AlM1twfomkwYnw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HPX8RooUODrghZ5K03q1eqqCEtlSt7PekQIl/CX8DMUuPyXhhUNP+B1UW1pWwZlLzC5FdMU2I/mV7nFsT892liyvcxsLUOz/R+wzvYM5WkT9Y/sLQhNIyam/YJ2gVKBcEeM/VTirHdMt69xp2I1ws1Ds/ClpUWvHQGqn18/wvDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mvk23GC5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 378A8C2BD10;
-	Sun, 14 Apr 2024 16:37:15 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=dg6vEMQrg7C83PjI4Uhsti2h3ZAz04BuE0bL6ef9H0qOg+GV+dCpo33/frP/FOHwujZNWPryuVcOxxLQTd5mGN2V9LiNC1plu99Z4ZgyNTO5zZxi5FOhsCQlIKpP//jdzROciadvZ3hbCLSloGOudGBiatzbgrMI5HWYxXecui8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dXrIiOsz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4791C2BD10;
+	Sun, 14 Apr 2024 16:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713112640;
-	bh=tv/dXn/1EbAmlxq0rha4TdMh0Fw2XbAyNvTO8VxWrfY=;
+	s=k20201202; t=1713112645;
+	bh=72zXnNjUdpDz3J1EN0eijgGIcKOy+AlM1twfomkwYnw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Mvk23GC5o/KR5hw1yWUHcOQ0JLquZS2XLwKhnOVYMKdirBuGyTwcfaN+spOOlHrFV
-	 a6cr5vzIwlqB5egzmrQwYLc6P1H2wfSvzfHvfKIBoeX1CEmuxxeFb56EI76gmNQaEI
-	 OBtOj7EPggVqyMDdUXVBH4BZMNlUSgmmFZwe2oEq+82xrXyFNF0ONBA5HfMU1NFNS5
-	 HTksyUGRMQnqSn/vCP90kw5M3HLyAelC6oth20SikqrU9jreuozYkWligLWjHHRHil
-	 W/yQCP+mrAw4PHkL1cQMy6q9N1hs/r2E7CDUcwFH23dAdsV6P24WfPebZwAzJaK1Dc
-	 bRckeg1m5mLVQ==
+	b=dXrIiOsz9ay3mhzrL0bubMJEsvHQSskCxSc06c5ZTEni37BPqr2c6mYd774iU0tOr
+	 GxPAoVYiCBZXnBAe/yPcIj3QKuXGvQ6W0IV0nDaVYiFtBkpffVet8oJjbAQ2iGCvFV
+	 5QFTpzVQIIpXYUs5OFkxbyYnr0JAPMRQUilCyJ2f9+97p4jJ10TCftHRwIJlw6GXSI
+	 lgk2GX3naud+nGW1UCxWEhGwLW+EAPXN1WU/obGv7XXEjPGL0mrTAWxUVGevztGKcJ
+	 12Mm8uoJKucU/1zoRqILuvpEtOsVrHPJBl7A0iO4oN5hCNt/trYabB2ABE5wPkwDTn
+	 aW8/fu4stLASA==
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Date: Sun, 14 Apr 2024 18:36:09 +0200
-Subject: [PATCH 11/18] backlight: ltv350qv: Constify lcd_ops
+Date: Sun, 14 Apr 2024 18:36:10 +0200
+Subject: [PATCH 12/18] backlight: otm3225a: Constify lcd_ops
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240414-video-backlight-lcd-ops-v1-11-9b37fcbf546a@kernel.org>
+Message-Id: <20240414-video-backlight-lcd-ops-v1-12-9b37fcbf546a@kernel.org>
 References: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
 In-Reply-To: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
 To: Lee Jones <lee@kernel.org>, 
@@ -67,20 +67,20 @@ Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, 
  linux-omap@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=749; i=krzk@kernel.org;
- h=from:subject:message-id; bh=tv/dXn/1EbAmlxq0rha4TdMh0Fw2XbAyNvTO8VxWrfY=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHAX8wDeoy2AroJzqYcLrxCU3NYrvz7HErxPGr
- bgi9VsTRwOJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwF/AAKCRDBN2bmhouD
- 1wjsD/9/W97+MJ3uicCNV/2XKOLdqkedzANr6kez8MtBavyVmvfC7h0iTZH5yIeMMNDuVPLg9xT
- ZWPrX9sav1psnR44KEwM0h1eamFmVqIBcO49w6A6yA2mEdaC5PI2UggRle/lrpMJfNx7z89k6HL
- yRZEGh1dG9p+OfIccTjIy2p3+e4nvjUA8eshh4buTQhZgD8k3e6P2fwE7zpVP3jUkabpT3I7g4z
- Brc6v1wX/cqVTD1A8f7kf7nF68Ocb5f/ZN7hxrFl+9ljz7aaNrLVswNe0EuA3sX22q4sqooOtRj
- x2DFZHEEJCICFDYwINUTGTYi7EbSz5Ne/o2zv6r1//DGOENjl100DakAHSx3mqoETEQv1ohC4HK
- yGsqQrCfUqH02396CosOrt/6DzZZnjXi7yrNUjW7CYeeBOC+cY/L+lOmi7uMVETNBaNz08HtntL
- xyXS9SnIZnlmBDh3wrdJgfrAKeYQJyCjc0pBm+IVcehLZgR9TbbBGo1NshoJ7Y4pMDN+EiaebtW
- PB/y2PzhKkgcvcZEQhO8OHrBMapLFrsW+Y637iBopoU3U5XfZ504XV7CouHJpbUO/ai+iIyQakX
- YaQ/v7cjq3l+OEHiFPm6iXt4ip1pXARzNmoevjl1yM1B8x+Ehfp7CMmB9A+lRahHdaJJmIz4I+L
- fPjRr4wPjGU4WZw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=758; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=72zXnNjUdpDz3J1EN0eijgGIcKOy+AlM1twfomkwYnw=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHAX9J08tTKsH8bkcCNd4a2dRxuCvVsUpu+71P
+ I+QwkzyLVqJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwF/QAKCRDBN2bmhouD
+ 18qjD/9DlmbHY7O5ZDXMXqLVupRiQYh+N52BSEI7d9Kys+JjEz9pSzZ7R13XxnW2RNYglgnf3Bx
+ mi+WTXOhSmpdotNq7WI2fXu1TsnvZC28i+Ufd+Uklk0yfsrJQKrnaD/vhiD21H1kBRH8/1b7NVv
+ XL+0lXf7IiMjsAcTwNdmhPviyhQi3euKNkJ6uuKl7GICNQAuf31JVxcYjkJslyENDjHa7NdVk2J
+ mnTwn0761xjqNvJz1pmZhXfmt9ViYzSYkkWY8HKZJQk0FaybDhqLZbMyjiTy/rM+AQCsCYuz9D7
+ gJPVODPPA+McpdaXqA1rD2Rs3q2OZ05kP4sS3HqOKPHDDmk0Boim2Y2aQZ3ZDz3W1ngm727yXXU
+ oBkRpSUfQXu5TQMxcMLxrnpbRfTHqwiHgrVKfCpVlBFyIZ0nPrnmhcAfluZDRKXzIXDPx4l39tb
+ v/lUuYX6+PDlzE9GYfzkvukCBwwNo0O5/UfU4cs48YRSurmiRasycBAn08y/eoWCkzSkHkq81PW
+ aNlvFMvEffamhCP/UY9zw74gcl9JVdLsVMA+rjzUbaV+YYTzxWmm1UuoCRwC/B5MpZ8S7rcYASz
+ pwzKWcsafIrf7fZt+7FpBfV+6MsIWe4yofB39Bk75+9sd+BO0JQLsQyHPUCjtZu6e9RXvbd4IQn
+ 5qUMsk9hRj/Sekg==
 X-Developer-Key: i=krzk@kernel.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
@@ -89,21 +89,21 @@ made const for increased code safety.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/video/backlight/ltv350qv.c | 2 +-
+ drivers/video/backlight/otm3225a.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/video/backlight/ltv350qv.c b/drivers/video/backlight/ltv350qv.c
-index d54f501e4285..cdc4c087f230 100644
---- a/drivers/video/backlight/ltv350qv.c
-+++ b/drivers/video/backlight/ltv350qv.c
-@@ -217,7 +217,7 @@ static int ltv350qv_get_power(struct lcd_device *ld)
- 	return lcd->power;
+diff --git a/drivers/video/backlight/otm3225a.c b/drivers/video/backlight/otm3225a.c
+index 4568020abf3c..efe52fa08b07 100644
+--- a/drivers/video/backlight/otm3225a.c
++++ b/drivers/video/backlight/otm3225a.c
+@@ -205,7 +205,7 @@ static int otm3225a_get_power(struct lcd_device *ld)
+ 	return dd->power;
  }
  
--static struct lcd_ops ltv_ops = {
-+static const struct lcd_ops ltv_ops = {
- 	.get_power	= ltv350qv_get_power,
- 	.set_power	= ltv350qv_set_power,
+-static struct lcd_ops otm3225a_ops = {
++static const struct lcd_ops otm3225a_ops = {
+ 	.set_power = otm3225a_set_power,
+ 	.get_power = otm3225a_get_power,
  };
 
 -- 
