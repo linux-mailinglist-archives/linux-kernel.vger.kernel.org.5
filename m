@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-144206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF6D48A4323
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:28:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F2768A4327
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:28:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11D6AB20FC3
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:28:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40FD5281B83
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2216F57308;
-	Sun, 14 Apr 2024 14:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92656E5ED;
+	Sun, 14 Apr 2024 14:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="BcZLp41Q"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="peDcyZz9"
 Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6E556B91;
-	Sun, 14 Apr 2024 14:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E5269D2B;
+	Sun, 14 Apr 2024 14:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713104662; cv=none; b=KGi50WMbjSXQOjwbB/T414vKo/FLovvDl8O5+abAA6GV9q2FGRQyVwgNDkjei+eixl8ANkG6rppnLGXdb8GEmu7XpB8alLukB9NX52ETSpVltZTRaA3vPHD3Da8RsJ7eFiTFiO/3S/Z8Y5EyKpOQZqMjacSO5umToaIaJC4qLPo=
+	t=1713104672; cv=none; b=K/C3MjUeKGZ3rcORBuY935n0+Q38tAOQQsVjVlR9QNfvBS3K2bWvc1EsMhesSwM51sgzsrtzukWSbRzJapZJ9y/HqUwj06RNX8GxGTbC2x2e66cy3gY8WdkB4mxvWUdNoRP11xeqeU3GHB1OpxbPxYbDBmu/hc1f0dPQ4WY6neU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713104662; c=relaxed/simple;
-	bh=OicPe2apnkmzCM/+kK6IVbj3lxMxl0Xb8XTydKxeN4s=;
+	s=arc-20240116; t=1713104672; c=relaxed/simple;
+	bh=ZOgujZJeGStPMm3IlJW187ZYbZDubo00HsvPHLTtRrk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Ae8nzTLZhzErwbdShg4iIZ0uWOoMKkqgTFHVF2WiFa2PSXb/g07RGxqlB2t7+WBvozQqq8Vb09KdE+lPanuyVxKbn40YMQ2jYD+YpiNvyfaBpj4Am8/+r9tHsS4Jk+33NbJMNLkCuqFazJTojjrga0jBV4Kc5dwEwvIV2WWnYXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=BcZLp41Q; arc=none smtp.client-ip=217.70.183.198
+	 In-Reply-To:To:Cc; b=RCA2f0r0GQK6cqUGuj6Vth/+pXHh3a2tBYpWJ8fzgW3DDZ8xOgqahT0yF6JxWJZbKXBSE4I1LZvESq1tsLPUQFEs0trHshvn8Gakr6ic5dNKaozt9oolO4Wjkvu6kBRIUcziGbGldawrQMxPN0qM6JoXDbzc+H/UlqYJ1wlrxIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=peDcyZz9; arc=none smtp.client-ip=217.70.183.198
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DF5A0C0005;
-	Sun, 14 Apr 2024 14:24:09 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CE944C0003;
+	Sun, 14 Apr 2024 14:24:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713104657;
+	t=1713104668;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/tlcaVBCjzFkXgUlW5LL6I3JDt7G63hJu0bJA/wNnpQ=;
-	b=BcZLp41QvjbW6Ak6cS3pF4RYNlqlQGmat/NRWOQ30AKnWMn2VtwbSrCYQFCoaJVKpuSdPY
-	8mLj37PFDUvI/L7BA5hgpHPTnsGNwfH+S8vyvAfzBTNzaN8xxLQGz4nC/wa7BWwMBOmlh5
-	LPe8sB9sp/RGnHIXKF++sjRXRiVfe/1dYBtfI652RZvMnVZd9+Sdw5oqpMTirLYeEiGRHA
-	GvZneEX7ygyxRep/ODtiIj5F4AAkgl2GoihkqopCrRrcmg2+yy8bU//HtEkKO3lQ8r4Bk3
-	bpHe8Z+tqI3z3oCP168rpBsGWPePn11MZsZqOnFX0R7OjPoOmavPcM+WL3g7uA==
+	bh=Z9570PIByLTohnxFL2DuYK+rFm412uwcSfs1u3hj/ts=;
+	b=peDcyZz9X0e/G+dTbEecKbvw5x3vk3aq1l7OS/exZMGLg3MmauxbzQ/2zfG9rfxqThJb2T
+	VmC94aF3PtT3sTLiDnmApW8pGk7rNn/ir0icDQyksTdykRb/jv/isfqlsMcBWJ5lxkhBXJ
+	E7otCiH+AmbSl60qKCQHLARVCoPqt4JKTlV2pK90j8/05EHkkTfRIqWTZCQD9hWh8nMCM4
+	T5vsEVEI9jmnel0558OjMO214t/gWgoTVJSzILM0qq60VJlFjuIZwzvK9fdRKjIuevDNHK
+	Se9xXfmSzpW4WwIaWWKG3OwuQOm7fIMC3J2UCKa3JCMPJMw5FjI+8Yiwy50gdw==
 From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Sun, 14 Apr 2024 16:22:04 +0200
-Subject: [PATCH net-next v8 15/17] net: pse-pd: Add PD692x0 PSE controller
- driver
+Date: Sun, 14 Apr 2024 16:22:05 +0200
+Subject: [PATCH net-next v8 16/17] dt-bindings: net: pse-pd: Add bindings
+ for TPS23881 PSE controller
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240414-feature_poe-v8-15-e4bf1e860da5@bootlin.com>
+Message-Id: <20240414-feature_poe-v8-16-e4bf1e860da5@bootlin.com>
 References: <20240414-feature_poe-v8-0-e4bf1e860da5@bootlin.com>
 In-Reply-To: <20240414-feature_poe-v8-0-e4bf1e860da5@bootlin.com>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -81,1298 +81,126 @@ X-GND-Sasl: kory.maincent@bootlin.com
 
 From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
 
-Add a new driver for the PD692x0 I2C Power Sourcing Equipment controller.
-This driver only support i2c communication for now.
+Add the TPS23881 I2C Power Sourcing Equipment controller device tree
+bindings documentation.
 
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
-Change in v2:
-- Drop of_match_ptr
-- Follow the "c33" PoE prefix naming change.
-- Remove unused delay_recv variable. Then, remove struct pd692x0_msg_content
-  which is similar to struct pd692x0_msg.
-- Fix a weird sleep loop.
-- Improve pd692x0_recv_msg for better readability.
-- Fix a warning reported by Simon on a pd692x0_fw_write_line call.
-
 Change in v3:
-- Fix few nit.
-- Change the return value of pd692x0_try_recv_msg function.
-- Replace a dev_err() function to dev_err_probe().
-- Replace pd692x0_update_matrix by the newly introduced setup_pi_matrix callback.
-- Follow new bindings of managers subnode description.
-- Update the pse ops with the newly introduced pi_enable, pi_is_enabled and
-  pi_disable ones.
-- Replace firmware version check by a softer one (< instead of =!).
-- Rearrange the probe function, which had wrong ordering on error case
-  between pcdcev registering and software version read.
-- Fixed the probe function in the case it is call two times. The status
-  won't be sent automatically on the second times so ask for it.
----
- drivers/net/pse-pd/Kconfig   |   11 +
- drivers/net/pse-pd/Makefile  |    1 +
- drivers/net/pse-pd/pd692x0.c | 1223 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 1235 insertions(+)
+- New patch.
 
-diff --git a/drivers/net/pse-pd/Kconfig b/drivers/net/pse-pd/Kconfig
-index 687dec49c1e1..e3a6ba669f20 100644
---- a/drivers/net/pse-pd/Kconfig
-+++ b/drivers/net/pse-pd/Kconfig
-@@ -20,4 +20,15 @@ config PSE_REGULATOR
- 	  Sourcing Equipment without automatic classification support. For
- 	  example for basic implementation of PoDL (802.3bu) specification.
- 
-+config PSE_PD692X0
-+	tristate "PD692X0 PSE controller"
-+	depends on I2C
-+	select FW_UPLOAD
-+	help
-+	  This module provides support for PD692x0 regulator based Ethernet
-+	  Power Sourcing Equipment.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called pd692x0.
-+
- endif
-diff --git a/drivers/net/pse-pd/Makefile b/drivers/net/pse-pd/Makefile
-index 1b8aa4c70f0b..9c12c4a65730 100644
---- a/drivers/net/pse-pd/Makefile
-+++ b/drivers/net/pse-pd/Makefile
-@@ -4,3 +4,4 @@
- obj-$(CONFIG_PSE_CONTROLLER) += pse_core.o
- 
- obj-$(CONFIG_PSE_REGULATOR) += pse_regulator.o
-+obj-$(CONFIG_PSE_PD692X0) += pd692x0.o
-diff --git a/drivers/net/pse-pd/pd692x0.c b/drivers/net/pse-pd/pd692x0.c
+Change in v4:
+- Rename the file to ti,tps23881 as it support only this version of the PSE
+  controller.
+
+Change in v7:
+- Add vpwr-supply property in the example.
+---
+ .../bindings/net/pse-pd/ti,tps23881.yaml           | 95 ++++++++++++++++++++++
+ 1 file changed, 95 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/net/pse-pd/ti,tps23881.yaml b/Documentation/devicetree/bindings/net/pse-pd/ti,tps23881.yaml
 new file mode 100644
-index 000000000000..6488b941703c
+index 000000000000..4147adb11e10
 --- /dev/null
-+++ b/drivers/net/pse-pd/pd692x0.c
-@@ -0,0 +1,1223 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Driver for the Microchip PD692X0 PoE PSE Controller driver (I2C bus)
-+ *
-+ * Copyright (c) 2023 Bootlin, Kory Maincent <kory.maincent@bootlin.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/firmware.h>
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/pse-pd/pse.h>
-+
-+#define PD692X0_PSE_NAME "pd692x0_pse"
-+
-+#define PD692X0_MAX_PIS	48
-+#define PD692X0_MAX_MANAGERS		12
-+#define PD692X0_MAX_MANAGER_PORTS	8
-+#define PD692X0_MAX_HW_PORTS	(PD692X0_MAX_MANAGERS * PD692X0_MAX_MANAGER_PORTS)
-+
-+#define PD69200_BT_PROD_VER	24
-+#define PD69210_BT_PROD_VER	26
-+#define PD69220_BT_PROD_VER	29
-+
-+#define PD692X0_FW_MAJ_VER	3
-+#define PD692X0_FW_MIN_VER	5
-+#define PD692X0_FW_PATCH_VER	5
-+
-+enum pd692x0_fw_state {
-+	PD692X0_FW_UNKNOWN,
-+	PD692X0_FW_OK,
-+	PD692X0_FW_BROKEN,
-+	PD692X0_FW_NEED_UPDATE,
-+	PD692X0_FW_PREPARE,
-+	PD692X0_FW_WRITE,
-+	PD692X0_FW_COMPLETE,
-+};
-+
-+struct pd692x0_msg {
-+	u8 key;
-+	u8 echo;
-+	u8 sub[3];
-+	u8 data[8];
-+	__be16 chksum;
-+} __packed;
-+
-+struct pd692x0_msg_ver {
-+	u8 prod;
-+	u8 maj_sw_ver;
-+	u8 min_sw_ver;
-+	u8 pa_sw_ver;
-+	u8 param;
-+	u8 build;
-+};
-+
-+enum {
-+	PD692X0_KEY_CMD,
-+	PD692X0_KEY_PRG,
-+	PD692X0_KEY_REQ,
-+	PD692X0_KEY_TLM,
-+	PD692X0_KEY_TEST,
-+	PD692X0_KEY_REPORT = 0x52
-+};
-+
-+enum {
-+	PD692X0_MSG_RESET,
-+	PD692X0_MSG_GET_SYS_STATUS,
-+	PD692X0_MSG_GET_SW_VER,
-+	PD692X0_MSG_SET_TMP_PORT_MATRIX,
-+	PD692X0_MSG_PRG_PORT_MATRIX,
-+	PD692X0_MSG_SET_PORT_PARAM,
-+	PD692X0_MSG_GET_PORT_STATUS,
-+	PD692X0_MSG_DOWNLOAD_CMD,
-+
-+	/* add new message above here */
-+	PD692X0_MSG_CNT
-+};
-+
-+struct pd692x0_priv {
-+	struct i2c_client *client;
-+	struct pse_controller_dev pcdev;
-+	struct device_node *np;
-+
-+	enum pd692x0_fw_state fw_state;
-+	struct fw_upload *fwl;
-+	bool cancel_request;
-+
-+	u8 msg_id;
-+	bool last_cmd_key;
-+	unsigned long last_cmd_key_time;
-+
-+	enum ethtool_c33_pse_admin_state admin_state[PD692X0_MAX_PIS];
-+};
-+
-+/* Template list of communication messages. The non-null bytes defined here
-+ * constitute the fixed portion of the messages. The remaining bytes will
-+ * be configured later within the functions. Refer to the "PD692x0 BT Serial
-+ * Communication Protocol User Guide" for comprehensive details on messages
-+ * content.
-+ */
-+static const struct pd692x0_msg pd692x0_msg_template_list[PD692X0_MSG_CNT] = {
-+	[PD692X0_MSG_RESET] = {
-+		.key = PD692X0_KEY_CMD,
-+		.sub = {0x07, 0x55, 0x00},
-+		.data = {0x55, 0x00, 0x55, 0x4e,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+	[PD692X0_MSG_GET_SYS_STATUS] = {
-+		.key = PD692X0_KEY_REQ,
-+		.sub = {0x07, 0xd0, 0x4e},
-+		.data = {0x4e, 0x4e, 0x4e, 0x4e,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+	[PD692X0_MSG_GET_SW_VER] = {
-+		.key = PD692X0_KEY_REQ,
-+		.sub = {0x07, 0x1e, 0x21},
-+		.data = {0x4e, 0x4e, 0x4e, 0x4e,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+	[PD692X0_MSG_SET_TMP_PORT_MATRIX] = {
-+		.key = PD692X0_KEY_CMD,
-+		.sub	 = {0x05, 0x43},
-+		.data = {   0, 0x4e, 0x4e, 0x4e,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+	[PD692X0_MSG_PRG_PORT_MATRIX] = {
-+		.key = PD692X0_KEY_CMD,
-+		.sub = {0x07, 0x43, 0x4e},
-+		.data = {0x4e, 0x4e, 0x4e, 0x4e,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+	[PD692X0_MSG_SET_PORT_PARAM] = {
-+		.key = PD692X0_KEY_CMD,
-+		.sub = {0x05, 0xc0},
-+		.data = {   0, 0xff, 0xff, 0xff,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+	[PD692X0_MSG_GET_PORT_STATUS] = {
-+		.key = PD692X0_KEY_REQ,
-+		.sub = {0x05, 0xc1},
-+		.data = {0x4e, 0x4e, 0x4e, 0x4e,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+	[PD692X0_MSG_DOWNLOAD_CMD] = {
-+		.key = PD692X0_KEY_PRG,
-+		.sub = {0xff, 0x99, 0x15},
-+		.data = {0x16, 0x16, 0x99, 0x4e,
-+			 0x4e, 0x4e, 0x4e, 0x4e},
-+	},
-+};
-+
-+static u8 pd692x0_build_msg(struct pd692x0_msg *msg, u8 echo)
-+{
-+	u8 *data = (u8 *)msg;
-+	u16 chksum = 0;
-+	int i;
-+
-+	msg->echo = echo++;
-+	if (echo == 0xff)
-+		echo = 0;
-+
-+	for (i = 0; i < sizeof(*msg) - sizeof(msg->chksum); i++)
-+		chksum += data[i];
-+
-+	msg->chksum = cpu_to_be16(chksum);
-+
-+	return echo;
-+}
-+
-+static int pd692x0_send_msg(struct pd692x0_priv *priv, struct pd692x0_msg *msg)
-+{
-+	const struct i2c_client *client = priv->client;
-+	int ret;
-+
-+	if (msg->key == PD692X0_KEY_CMD && priv->last_cmd_key) {
-+		int cmd_msleep;
-+
-+		cmd_msleep = 30 - jiffies_to_msecs(jiffies - priv->last_cmd_key_time);
-+		if (cmd_msleep > 0)
-+			msleep(cmd_msleep);
-+	}
-+
-+	/* Add echo and checksum bytes to the message */
-+	priv->msg_id = pd692x0_build_msg(msg, priv->msg_id);
-+
-+	ret = i2c_master_send(client, (u8 *)msg, sizeof(*msg));
-+	if (ret != sizeof(*msg))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int pd692x0_reset(struct pd692x0_priv *priv)
-+{
-+	const struct i2c_client *client = priv->client;
-+	struct pd692x0_msg msg, buf = {0};
-+	int ret;
-+
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_RESET];
-+	ret = pd692x0_send_msg(priv, &msg);
-+	if (ret) {
-+		dev_err(&client->dev,
-+			"Failed to reset the controller (%pe)\n", ERR_PTR(ret));
-+		return ret;
-+	}
-+
-+	msleep(30);
-+
-+	ret = i2c_master_recv(client, (u8 *)&buf, sizeof(buf));
-+	if (ret != sizeof(buf))
-+		return ret < 0 ? ret : -EIO;
-+
-+	/* Is the reply a successful report message */
-+	if (buf.key != PD692X0_KEY_REPORT || buf.sub[0] || buf.sub[1])
-+		return -EIO;
-+
-+	msleep(300);
-+
-+	ret = i2c_master_recv(client, (u8 *)&buf, sizeof(buf));
-+	if (ret != sizeof(buf))
-+		return ret < 0 ? ret : -EIO;
-+
-+	/* Is the boot status without error */
-+	if (buf.key != 0x03 || buf.echo != 0xff || buf.sub[0] & 0x1) {
-+		dev_err(&client->dev, "PSE controller error\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static bool pd692x0_try_recv_msg(const struct i2c_client *client,
-+				 struct pd692x0_msg *msg,
-+				 struct pd692x0_msg *buf)
-+{
-+	/* Wait 30ms before readback as mandated by the protocol */
-+	msleep(30);
-+
-+	memset(buf, 0, sizeof(*buf));
-+	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-+	if (buf->key)
-+		return 0;
-+
-+	msleep(100);
-+
-+	memset(buf, 0, sizeof(*buf));
-+	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-+	if (buf->key)
-+		return 0;
-+
-+	return 1;
-+}
-+
-+/* Implementation of I2C communication, specifically addressing scenarios
-+ * involving communication loss. Refer to the "Synchronization During
-+ * Communication Loss" section in the Communication Protocol document for
-+ * further details.
-+ */
-+static int pd692x0_recv_msg(struct pd692x0_priv *priv,
-+			    struct pd692x0_msg *msg,
-+			    struct pd692x0_msg *buf)
-+{
-+	const struct i2c_client *client = priv->client;
-+	int ret;
-+
-+	ret = pd692x0_try_recv_msg(client, msg, buf);
-+	if (!ret)
-+		goto out_success;
-+
-+	dev_warn(&client->dev,
-+		 "Communication lost, rtnl is locked until communication is back!");
-+
-+	ret = pd692x0_send_msg(priv, msg);
-+	if (ret)
-+		return ret;
-+
-+	ret = pd692x0_try_recv_msg(client, msg, buf);
-+	if (!ret)
-+		goto out_success2;
-+
-+	msleep(10000);
-+
-+	ret = pd692x0_send_msg(priv, msg);
-+	if (ret)
-+		return ret;
-+
-+	ret = pd692x0_try_recv_msg(client, msg, buf);
-+	if (!ret)
-+		goto out_success2;
-+
-+	return pd692x0_reset(priv);
-+
-+out_success2:
-+	dev_warn(&client->dev, "Communication is back, rtnl is unlocked!");
-+out_success:
-+	if (msg->key == PD692X0_KEY_CMD) {
-+		priv->last_cmd_key = true;
-+		priv->last_cmd_key_time = jiffies;
-+	} else {
-+		priv->last_cmd_key = false;
-+	}
-+
-+	return 0;
-+}
-+
-+static int pd692x0_sendrecv_msg(struct pd692x0_priv *priv,
-+				struct pd692x0_msg *msg,
-+				struct pd692x0_msg *buf)
-+{
-+	struct device *dev = &priv->client->dev;
-+	int ret;
-+
-+	ret = pd692x0_send_msg(priv, msg);
-+	if (ret)
-+		return ret;
-+
-+	ret = pd692x0_recv_msg(priv, msg, buf);
-+	if (ret)
-+		return ret;
-+
-+	if (msg->echo != buf->echo) {
-+		dev_err(dev,
-+			"Wrong match in message ID, expect %d received %d.\n",
-+			msg->echo, buf->echo);
-+		return -EIO;
-+	}
-+
-+	/* If the reply is a report message is it successful */
-+	if (buf->key == PD692X0_KEY_REPORT &&
-+	    (buf->sub[0] || buf->sub[1])) {
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct pd692x0_priv *to_pd692x0_priv(struct pse_controller_dev *pcdev)
-+{
-+	return container_of(pcdev, struct pd692x0_priv, pcdev);
-+}
-+
-+static int pd692x0_fw_unavailable(struct pd692x0_priv *priv)
-+{
-+	switch (priv->fw_state) {
-+	case PD692X0_FW_OK:
-+		return 0;
-+	case PD692X0_FW_PREPARE:
-+	case PD692X0_FW_WRITE:
-+	case PD692X0_FW_COMPLETE:
-+		dev_err(&priv->client->dev, "Firmware update in progress!\n");
-+		return -EBUSY;
-+	case PD692X0_FW_BROKEN:
-+	case PD692X0_FW_NEED_UPDATE:
-+	default:
-+		dev_err(&priv->client->dev,
-+			"Firmware issue. Please update it!\n");
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int pd692x0_pi_enable(struct pse_controller_dev *pcdev, int id)
-+{
-+	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
-+	struct pd692x0_msg msg, buf = {0};
-+	int ret;
-+
-+	ret = pd692x0_fw_unavailable(priv);
-+	if (ret)
-+		return ret;
-+
-+	if (priv->admin_state[id] == ETHTOOL_C33_PSE_ADMIN_STATE_ENABLED)
-+		return 0;
-+
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_SET_PORT_PARAM];
-+	msg.data[0] = 0x1;
-+	msg.sub[2] = id;
-+	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+	if (ret < 0)
-+		return ret;
-+
-+	priv->admin_state[id] = ETHTOOL_C33_PSE_ADMIN_STATE_ENABLED;
-+
-+	return 0;
-+}
-+
-+static int pd692x0_pi_disable(struct pse_controller_dev *pcdev, int id)
-+{
-+	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
-+	struct pd692x0_msg msg, buf = {0};
-+	int ret;
-+
-+	ret = pd692x0_fw_unavailable(priv);
-+	if (ret)
-+		return ret;
-+
-+	if (priv->admin_state[id] == ETHTOOL_C33_PSE_ADMIN_STATE_DISABLED)
-+		return 0;
-+
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_SET_PORT_PARAM];
-+	msg.data[0] = 0x0;
-+	msg.sub[2] = id;
-+	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+	if (ret < 0)
-+		return ret;
-+
-+	priv->admin_state[id] = ETHTOOL_C33_PSE_ADMIN_STATE_DISABLED;
-+
-+	return 0;
-+}
-+
-+static int pd692x0_pi_is_enabled(struct pse_controller_dev *pcdev, int id)
-+{
-+	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
-+	struct pd692x0_msg msg, buf = {0};
-+	int ret;
-+
-+	ret = pd692x0_fw_unavailable(priv);
-+	if (ret)
-+		return ret;
-+
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_GET_PORT_STATUS];
-+	msg.sub[2] = id;
-+	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (buf.sub[1]) {
-+		priv->admin_state[id] = ETHTOOL_C33_PSE_ADMIN_STATE_ENABLED;
-+		return 1;
-+	} else {
-+		priv->admin_state[id] = ETHTOOL_C33_PSE_ADMIN_STATE_DISABLED;
-+		return 0;
-+	}
-+}
-+
-+static int pd692x0_ethtool_get_status(struct pse_controller_dev *pcdev,
-+				      unsigned long id,
-+				      struct netlink_ext_ack *extack,
-+				      struct pse_control_status *status)
-+{
-+	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
-+	struct pd692x0_msg msg, buf = {0};
-+	int ret;
-+
-+	ret = pd692x0_fw_unavailable(priv);
-+	if (ret)
-+		return ret;
-+
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_GET_PORT_STATUS];
-+	msg.sub[2] = id;
-+	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Compare Port Status (Communication Protocol Document par. 7.1) */
-+	if ((buf.sub[0] & 0xf0) == 0x80 || (buf.sub[0] & 0xf0) == 0x90)
-+		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_DELIVERING;
-+	else if (buf.sub[0] == 0x1b || buf.sub[0] == 0x22)
-+		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_SEARCHING;
-+	else if (buf.sub[0] == 0x12)
-+		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_FAULT;
-+	else
-+		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_DISABLED;
-+
-+	if (buf.sub[1])
-+		status->c33_admin_state = ETHTOOL_C33_PSE_ADMIN_STATE_ENABLED;
-+	else
-+		status->c33_admin_state = ETHTOOL_C33_PSE_ADMIN_STATE_DISABLED;
-+
-+	priv->admin_state[id] = status->c33_admin_state;
-+
-+	return 0;
-+}
-+
-+static struct pd692x0_msg_ver pd692x0_get_sw_version(struct pd692x0_priv *priv)
-+{
-+	struct device *dev = &priv->client->dev;
-+	struct pd692x0_msg msg, buf = {0};
-+	struct pd692x0_msg_ver ver = {0};
-+	int ret;
-+
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_GET_SW_VER];
-+	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to get PSE version (%pe)\n", ERR_PTR(ret));
-+		return ver;
-+	}
-+
-+	/* Extract version from the message */
-+	ver.prod = buf.sub[2];
-+	ver.maj_sw_ver = (buf.data[0] << 8 | buf.data[1]) / 100;
-+	ver.min_sw_ver = ((buf.data[0] << 8 | buf.data[1]) / 10) % 10;
-+	ver.pa_sw_ver = (buf.data[0] << 8 | buf.data[1]) % 10;
-+	ver.param = buf.data[2];
-+	ver.build = buf.data[3];
-+
-+	return ver;
-+}
-+
-+struct pd692x0_manager {
-+	struct device_node *port_node[PD692X0_MAX_MANAGER_PORTS];
-+	int nports;
-+};
-+
-+struct pd692x0_matrix {
-+	u8 hw_port_a;
-+	u8 hw_port_b;
-+};
-+
-+static int
-+pd692x0_of_get_ports_manager(struct pd692x0_priv *priv,
-+			     struct pd692x0_manager *manager,
-+			     struct device_node *np)
-+{
-+	struct device_node *node;
-+	int ret, nports, i;
-+
-+	nports = 0;
-+	for_each_child_of_node(np, node) {
-+		u32 port;
-+
-+		if (!of_node_name_eq(node, "port"))
-+			continue;
-+
-+		ret = of_property_read_u32(node, "reg", &port);
-+		if (ret)
-+			goto out;
-+
-+		if (port >= PD692X0_MAX_MANAGER_PORTS || port != nports) {
-+			dev_err(&priv->client->dev,
-+				"wrong number or order of manager ports (%d)\n",
-+				port);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		of_node_get(node);
-+		manager->port_node[port] = node;
-+		nports++;
-+	}
-+
-+	manager->nports = nports;
-+	return 0;
-+
-+out:
-+	for (i = 0; i < nports; i++) {
-+		of_node_put(manager->port_node[i]);
-+		manager->port_node[i] = NULL;
-+	}
-+	of_node_put(node);
-+	return ret;
-+}
-+
-+static int
-+pd692x0_of_get_managers(struct pd692x0_priv *priv,
-+			struct pd692x0_manager manager[PD692X0_MAX_MANAGERS])
-+{
-+	struct device_node *managers_node, *node;
-+	int ret, nmanagers, i, j;
-+
-+	if (!priv->np)
-+		return -EINVAL;
-+
-+	nmanagers = 0;
-+	managers_node = of_get_child_by_name(priv->np, "managers");
-+	if (!managers_node)
-+		return -EINVAL;
-+
-+	for_each_child_of_node(managers_node, node) {
-+		u32 manager_id;
-+
-+		if (!of_node_name_eq(node, "manager"))
-+			continue;
-+
-+		ret = of_property_read_u32(node, "reg", &manager_id);
-+		if (ret)
-+			goto out;
-+
-+		if (manager_id >= PD692X0_MAX_MANAGERS ||
-+		    manager_id != nmanagers) {
-+			dev_err(&priv->client->dev,
-+				"wrong number or order of managers (%d)\n",
-+				manager_id);
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		ret = pd692x0_of_get_ports_manager(priv, &manager[manager_id],
-+						   node);
-+		if (ret)
-+			goto out;
-+
-+		nmanagers++;
-+	}
-+
-+	of_node_put(managers_node);
-+	return nmanagers;
-+
-+out:
-+	for (i = 0; i < nmanagers; i++) {
-+		for (j = 0; j < manager[i].nports; j++) {
-+			of_node_put(manager[i].port_node[j]);
-+			manager[i].port_node[j] = NULL;
-+		}
-+	}
-+
-+	of_node_put(node);
-+	of_node_put(managers_node);
-+	return ret;
-+}
-+
-+static int
-+pd692x0_set_port_matrix(const struct pse_pi_pairset *pairset,
-+			const struct pd692x0_manager *manager,
-+			int nmanagers, struct pd692x0_matrix *port_matrix)
-+{
-+	int i, j, port_cnt;
-+	bool found = false;
-+
-+	if (!pairset->np)
-+		return 0;
-+
-+	/* Look on every managers */
-+	port_cnt = 0;
-+	for (i = 0; i < nmanagers; i++) {
-+		/* Look on every ports of the manager */
-+		for (j = 0; j < manager[i].nports; j++) {
-+			if (pairset->np == manager[i].port_node[j]) {
-+				found = true;
-+				break;
-+			}
-+		}
-+		port_cnt += j;
-+
-+		if (found)
-+			break;
-+	}
-+
-+	if (!found)
-+		return -ENODEV;
-+
-+	if (pairset->pinout == ALTERNATIVE_A)
-+		port_matrix->hw_port_a = port_cnt;
-+	else if (pairset->pinout == ALTERNATIVE_B)
-+		port_matrix->hw_port_b = port_cnt;
-+
-+	return 0;
-+}
-+
-+static int
-+pd692x0_set_ports_matrix(struct pd692x0_priv *priv,
-+			 const struct pd692x0_manager *manager,
-+			 int nmanagers,
-+			 struct pd692x0_matrix port_matrix[PD692X0_MAX_PIS])
-+{
-+	struct pse_controller_dev *pcdev = &priv->pcdev;
-+	int i, ret;
-+
-+	/* Init Matrix */
-+	for (i = 0; i < PD692X0_MAX_PIS; i++) {
-+		port_matrix[i].hw_port_a = 0xff;
-+		port_matrix[i].hw_port_b = 0xff;
-+	}
-+
-+	/* Update with values for every PSE PIs */
-+	for (i = 0; i < pcdev->nr_lines; i++) {
-+		ret = pd692x0_set_port_matrix(&pcdev->pi[i].pairset[0],
-+					      manager, nmanagers,
-+					      &port_matrix[i]);
-+		if (ret) {
-+			dev_err(&priv->client->dev,
-+				"unable to configure pi %d pairset 0", i);
-+			return ret;
-+		}
-+
-+		ret = pd692x0_set_port_matrix(&pcdev->pi[i].pairset[1],
-+					      manager, nmanagers,
-+					      &port_matrix[i]);
-+		if (ret) {
-+			dev_err(&priv->client->dev,
-+				"unable to configure pi %d pairset 1", i);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int
-+pd692x0_write_ports_matrix(struct pd692x0_priv *priv,
-+			   const struct pd692x0_matrix port_matrix[PD692X0_MAX_PIS])
-+{
-+	struct pd692x0_msg msg, buf;
-+	int ret, i;
-+
-+	/* Write temporary Matrix */
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_SET_TMP_PORT_MATRIX];
-+	for (i = 0; i < PD692X0_MAX_PIS; i++) {
-+		msg.sub[2] = i;
-+		msg.data[0] = port_matrix[i].hw_port_b;
-+		msg.data[1] = port_matrix[i].hw_port_a;
-+
-+		ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* Program Matrix */
-+	msg = pd692x0_msg_template_list[PD692X0_MSG_PRG_PORT_MATRIX];
-+	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int pd692x0_setup_pi_matrix(struct pse_controller_dev *pcdev)
-+{
-+	struct pd692x0_manager manager[PD692X0_MAX_MANAGERS] = {0};
-+	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
-+	struct pd692x0_matrix port_matrix[PD692X0_MAX_PIS];
-+	int ret, i, j, nmanagers;
-+
-+	/* Should we flash the port matrix */
-+	if (priv->fw_state != PD692X0_FW_OK &&
-+	    priv->fw_state != PD692X0_FW_COMPLETE)
-+		return 0;
-+
-+	ret = pd692x0_of_get_managers(priv, manager);
-+	if (ret < 0)
-+		return ret;
-+
-+	nmanagers = ret;
-+	ret = pd692x0_set_ports_matrix(priv, manager, nmanagers, port_matrix);
-+	if (ret)
-+		goto out;
-+
-+	ret = pd692x0_write_ports_matrix(priv, port_matrix);
-+	if (ret)
-+		goto out;
-+
-+out:
-+	for (i = 0; i < nmanagers; i++) {
-+		for (j = 0; j < manager[i].nports; j++)
-+			of_node_put(manager[i].port_node[j]);
-+	}
-+	return ret;
-+}
-+
-+static const struct pse_controller_ops pd692x0_ops = {
-+	.setup_pi_matrix = pd692x0_setup_pi_matrix,
-+	.ethtool_get_status = pd692x0_ethtool_get_status,
-+	.pi_enable = pd692x0_pi_enable,
-+	.pi_disable = pd692x0_pi_disable,
-+	.pi_is_enabled = pd692x0_pi_is_enabled,
-+};
-+
-+#define PD692X0_FW_LINE_MAX_SZ 0xff
-+static int pd692x0_fw_get_next_line(const u8 *data,
-+				    char *line, size_t size)
-+{
-+	size_t line_size;
-+	int i;
-+
-+	line_size = min_t(size_t, size, PD692X0_FW_LINE_MAX_SZ);
-+
-+	memset(line, 0, PD692X0_FW_LINE_MAX_SZ);
-+	for (i = 0; i < line_size - 1; i++) {
-+		if (*data == '\r' && *(data + 1) == '\n') {
-+			line[i] = '\r';
-+			line[i + 1] = '\n';
-+			return i + 2;
-+		}
-+		line[i] = *data;
-+		data++;
-+	}
-+
-+	return -EIO;
-+}
-+
-+static enum fw_upload_err
-+pd692x0_fw_recv_resp(const struct i2c_client *client, unsigned long ms_timeout,
-+		     const char *msg_ok, unsigned int msg_size)
-+{
-+	/* Maximum controller response size */
-+	char fw_msg_buf[5] = {0};
-+	unsigned long timeout;
-+	int ret;
-+
-+	if (msg_size > sizeof(fw_msg_buf))
-+		return FW_UPLOAD_ERR_RW_ERROR;
-+
-+	/* Read until we get something */
-+	timeout = msecs_to_jiffies(ms_timeout) + jiffies;
-+	while (true) {
-+		if (time_is_before_jiffies(timeout))
-+			return FW_UPLOAD_ERR_TIMEOUT;
-+
-+		ret = i2c_master_recv(client, fw_msg_buf, 1);
-+		if (ret < 0 || *fw_msg_buf == 0) {
-+			usleep_range(1000, 2000);
-+			continue;
-+		} else {
-+			break;
-+		}
-+	}
-+
-+	/* Read remaining characters */
-+	ret = i2c_master_recv(client, fw_msg_buf + 1, msg_size - 1);
-+	if (strncmp(fw_msg_buf, msg_ok, msg_size)) {
-+		dev_err(&client->dev,
-+			"Wrong FW download process answer (%*pE)\n",
-+			msg_size, fw_msg_buf);
-+		return FW_UPLOAD_ERR_HW_ERROR;
-+	}
-+
-+	return FW_UPLOAD_ERR_NONE;
-+}
-+
-+static int pd692x0_fw_write_line(const struct i2c_client *client,
-+				 const char line[PD692X0_FW_LINE_MAX_SZ],
-+				 const bool last_line)
-+{
-+	int ret;
-+
-+	while (*line != 0) {
-+		ret = i2c_master_send(client, line, 1);
-+		if (ret < 0)
-+			return FW_UPLOAD_ERR_RW_ERROR;
-+		line++;
-+	}
-+
-+	if (last_line) {
-+		ret = pd692x0_fw_recv_resp(client, 100, "TP\r\n",
-+					   sizeof("TP\r\n") - 1);
-+		if (ret)
-+			return ret;
-+	} else {
-+		ret = pd692x0_fw_recv_resp(client, 100, "T*\r\n",
-+					   sizeof("T*\r\n") - 1);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return FW_UPLOAD_ERR_NONE;
-+}
-+
-+static enum fw_upload_err pd692x0_fw_reset(const struct i2c_client *client)
-+{
-+	const struct pd692x0_msg zero = {0};
-+	struct pd692x0_msg buf = {0};
-+	unsigned long timeout;
-+	char cmd[] = "RST";
-+	int ret;
-+
-+	ret = i2c_master_send(client, cmd, strlen(cmd));
-+	if (ret < 0) {
-+		dev_err(&client->dev,
-+			"Failed to reset the controller (%pe)\n",
-+			ERR_PTR(ret));
-+		return ret;
-+	}
-+
-+	timeout = msecs_to_jiffies(10000) + jiffies;
-+	while (true) {
-+		if (time_is_before_jiffies(timeout))
-+			return FW_UPLOAD_ERR_TIMEOUT;
-+
-+		ret = i2c_master_recv(client, (u8 *)&buf, sizeof(buf));
-+		if (ret < 0 ||
-+		    !memcmp(&buf, &zero, sizeof(buf)))
-+			usleep_range(1000, 2000);
-+		else
-+			break;
-+	}
-+
-+	/* Is the reply a successful report message */
-+	if (buf.key != PD692X0_KEY_TLM || buf.echo != 0xff ||
-+	    buf.sub[0] & 0x01) {
-+		dev_err(&client->dev, "PSE controller error\n");
-+		return FW_UPLOAD_ERR_HW_ERROR;
-+	}
-+
-+	/* Is the firmware operational */
-+	if (buf.sub[0] & 0x02) {
-+		dev_err(&client->dev,
-+			"PSE firmware error. Please update it.\n");
-+		return FW_UPLOAD_ERR_HW_ERROR;
-+	}
-+
-+	return FW_UPLOAD_ERR_NONE;
-+}
-+
-+static enum fw_upload_err pd692x0_fw_prepare(struct fw_upload *fwl,
-+					     const u8 *data, u32 size)
-+{
-+	struct pd692x0_priv *priv = fwl->dd_handle;
-+	const struct i2c_client *client = priv->client;
-+	enum pd692x0_fw_state last_fw_state;
-+	int ret;
-+
-+	priv->cancel_request = false;
-+	last_fw_state = priv->fw_state;
-+
-+	priv->fw_state = PD692X0_FW_PREPARE;
-+
-+	/* Enter program mode */
-+	if (last_fw_state == PD692X0_FW_BROKEN) {
-+		const char *msg = "ENTR";
-+		const char *c;
-+
-+		c = msg;
-+		do {
-+			ret = i2c_master_send(client, c, 1);
-+			if (ret < 0)
-+				return FW_UPLOAD_ERR_RW_ERROR;
-+			if (*(c + 1))
-+				usleep_range(10000, 20000);
-+		} while (*(++c));
-+	} else {
-+		struct pd692x0_msg msg, buf;
-+
-+		msg = pd692x0_msg_template_list[PD692X0_MSG_DOWNLOAD_CMD];
-+		ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+		if (ret < 0) {
-+			dev_err(&client->dev,
-+				"Failed to enter programming mode (%pe)\n",
-+				ERR_PTR(ret));
-+			return FW_UPLOAD_ERR_RW_ERROR;
-+		}
-+	}
-+
-+	ret = pd692x0_fw_recv_resp(client, 100, "TPE\r\n", sizeof("TPE\r\n") - 1);
-+	if (ret)
-+		goto err_out;
-+
-+	if (priv->cancel_request) {
-+		ret = FW_UPLOAD_ERR_CANCELED;
-+		goto err_out;
-+	}
-+
-+	return FW_UPLOAD_ERR_NONE;
-+
-+err_out:
-+	pd692x0_fw_reset(priv->client);
-+	priv->fw_state = last_fw_state;
-+	return ret;
-+}
-+
-+static enum fw_upload_err pd692x0_fw_write(struct fw_upload *fwl,
-+					   const u8 *data, u32 offset,
-+					   u32 size, u32 *written)
-+{
-+	struct pd692x0_priv *priv = fwl->dd_handle;
-+	char line[PD692X0_FW_LINE_MAX_SZ];
-+	const struct i2c_client *client;
-+	int ret, i;
-+	char cmd;
-+
-+	client = priv->client;
-+	priv->fw_state = PD692X0_FW_WRITE;
-+
-+	/* Erase */
-+	cmd = 'E';
-+	ret = i2c_master_send(client, &cmd, 1);
-+	if (ret < 0) {
-+		dev_err(&client->dev,
-+			"Failed to boot programming mode (%pe)\n",
-+			ERR_PTR(ret));
-+		return FW_UPLOAD_ERR_RW_ERROR;
-+	}
-+
-+	ret = pd692x0_fw_recv_resp(client, 100, "TOE\r\n", sizeof("TOE\r\n") - 1);
-+	if (ret)
-+		return ret;
-+
-+	ret = pd692x0_fw_recv_resp(client, 5000, "TE\r\n", sizeof("TE\r\n") - 1);
-+	if (ret)
-+		dev_warn(&client->dev,
-+			 "Failed to erase internal memory, however still try to write Firmware\n");
-+
-+	ret = pd692x0_fw_recv_resp(client, 100, "TPE\r\n", sizeof("TPE\r\n") - 1);
-+	if (ret)
-+		dev_warn(&client->dev,
-+			 "Failed to erase internal memory, however still try to write Firmware\n");
-+
-+	if (priv->cancel_request)
-+		return FW_UPLOAD_ERR_CANCELED;
-+
-+	/* Program */
-+	cmd = 'P';
-+	ret = i2c_master_send(client, &cmd, sizeof(char));
-+	if (ret < 0) {
-+		dev_err(&client->dev,
-+			"Failed to boot programming mode (%pe)\n",
-+			ERR_PTR(ret));
-+		return ret;
-+	}
-+
-+	ret = pd692x0_fw_recv_resp(client, 100, "TOP\r\n", sizeof("TOP\r\n") - 1);
-+	if (ret)
-+		return ret;
-+
-+	i = 0;
-+	while (i < size) {
-+		ret = pd692x0_fw_get_next_line(data, line, size - i);
-+		if (ret < 0) {
-+			ret = FW_UPLOAD_ERR_FW_INVALID;
-+			goto err;
-+		}
-+
-+		i += ret;
-+		data += ret;
-+		if (line[0] == 'S' && line[1] == '0') {
-+			continue;
-+		} else if (line[0] == 'S' && line[1] == '7') {
-+			ret = pd692x0_fw_write_line(client, line, true);
-+			if (ret)
-+				goto err;
-+		} else {
-+			ret = pd692x0_fw_write_line(client, line, false);
-+			if (ret)
-+				goto err;
-+		}
-+
-+		if (priv->cancel_request) {
-+			ret = FW_UPLOAD_ERR_CANCELED;
-+			goto err;
-+		}
-+	}
-+	*written = i;
-+
-+	msleep(400);
-+
-+	return FW_UPLOAD_ERR_NONE;
-+
-+err:
-+	strscpy_pad(line, "S7\r\n", sizeof(line));
-+	pd692x0_fw_write_line(client, line, true);
-+	return ret;
-+}
-+
-+static enum fw_upload_err pd692x0_fw_poll_complete(struct fw_upload *fwl)
-+{
-+	struct pd692x0_priv *priv = fwl->dd_handle;
-+	const struct i2c_client *client = priv->client;
-+	struct pd692x0_msg_ver ver;
-+	int ret;
-+
-+	priv->fw_state = PD692X0_FW_COMPLETE;
-+
-+	ret = pd692x0_fw_reset(client);
-+	if (ret)
-+		return ret;
-+
-+	ver = pd692x0_get_sw_version(priv);
-+	if (ver.maj_sw_ver < PD692X0_FW_MAJ_VER) {
-+		dev_err(&client->dev,
-+			"Too old firmware version. Please update it\n");
-+		priv->fw_state = PD692X0_FW_NEED_UPDATE;
-+		return FW_UPLOAD_ERR_FW_INVALID;
-+	}
-+
-+	ret = pd692x0_setup_pi_matrix(&priv->pcdev);
-+	if (ret < 0) {
-+		dev_err(&client->dev, "Error configuring ports matrix (%pe)\n",
-+			ERR_PTR(ret));
-+		priv->fw_state = PD692X0_FW_NEED_UPDATE;
-+		return FW_UPLOAD_ERR_HW_ERROR;
-+	}
-+
-+	priv->fw_state = PD692X0_FW_OK;
-+	return FW_UPLOAD_ERR_NONE;
-+}
-+
-+static void pd692x0_fw_cancel(struct fw_upload *fwl)
-+{
-+	struct pd692x0_priv *priv = fwl->dd_handle;
-+
-+	priv->cancel_request = true;
-+}
-+
-+static void pd692x0_fw_cleanup(struct fw_upload *fwl)
-+{
-+	struct pd692x0_priv *priv = fwl->dd_handle;
-+
-+	switch (priv->fw_state) {
-+	case PD692X0_FW_WRITE:
-+		pd692x0_fw_reset(priv->client);
-+		fallthrough;
-+	case PD692X0_FW_COMPLETE:
-+		priv->fw_state = PD692X0_FW_BROKEN;
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static const struct fw_upload_ops pd692x0_fw_ops = {
-+	.prepare = pd692x0_fw_prepare,
-+	.write = pd692x0_fw_write,
-+	.poll_complete = pd692x0_fw_poll_complete,
-+	.cancel = pd692x0_fw_cancel,
-+	.cleanup = pd692x0_fw_cleanup,
-+};
-+
-+static int pd692x0_i2c_probe(struct i2c_client *client)
-+{
-+	struct pd692x0_msg msg, buf = {0}, zero = {0};
-+	struct device *dev = &client->dev;
-+	struct pd692x0_msg_ver ver;
-+	struct pd692x0_priv *priv;
-+	struct fw_upload *fwl;
-+	int ret;
-+
-+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-+		dev_err(dev, "i2c check functionality failed\n");
-+		return -ENXIO;
-+	}
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->client = client;
-+	i2c_set_clientdata(client, priv);
-+
-+	ret = i2c_master_recv(client, (u8 *)&buf, sizeof(buf));
-+	if (ret != sizeof(buf)) {
-+		dev_err(dev, "Failed to get device status\n");
-+		return -EIO;
-+	}
-+
-+	/* Probe has been already run and the status dumped */
-+	if (!memcmp(&buf, &zero, sizeof(buf))) {
-+		/* Ask again the controller status */
-+		msg = pd692x0_msg_template_list[PD692X0_MSG_GET_SYS_STATUS];
-+		ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-+		if (ret < 0) {
-+			dev_err(dev, "Failed to get device status\n");
-+			return ret;
-+		}
-+	}
-+
-+	if (buf.key != 0x03 || buf.sub[0] & 0x01) {
-+		dev_err(dev, "PSE controller error\n");
-+		return -EIO;
-+	}
-+	if (buf.sub[0] & 0x02) {
-+		dev_err(dev, "PSE firmware error. Please update it.\n");
-+		priv->fw_state = PD692X0_FW_BROKEN;
-+	} else {
-+		ver = pd692x0_get_sw_version(priv);
-+		dev_info(&client->dev, "Software version %d.%02d.%d.%d\n",
-+			 ver.prod, ver.maj_sw_ver, ver.min_sw_ver,
-+			 ver.pa_sw_ver);
-+
-+		if (ver.maj_sw_ver < PD692X0_FW_MAJ_VER) {
-+			dev_err(dev, "Too old firmware version. Please update it\n");
-+			priv->fw_state = PD692X0_FW_NEED_UPDATE;
-+		} else {
-+			priv->fw_state = PD692X0_FW_OK;
-+		}
-+	}
-+
-+	priv->np = dev->of_node;
-+	priv->pcdev.nr_lines = PD692X0_MAX_PIS;
-+	priv->pcdev.owner = THIS_MODULE;
-+	priv->pcdev.ops = &pd692x0_ops;
-+	priv->pcdev.dev = dev;
-+	priv->pcdev.types = ETHTOOL_PSE_C33;
-+	ret = devm_pse_controller_register(dev, &priv->pcdev);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "failed to register PSE controller\n");
-+
-+	fwl = firmware_upload_register(THIS_MODULE, dev, dev_name(dev),
-+				       &pd692x0_fw_ops, priv);
-+	if (IS_ERR(fwl))
-+		return dev_err_probe(dev, PTR_ERR(fwl),
-+				     "failed to register to the Firmware Upload API\n");
-+	priv->fwl = fwl;
-+
-+	return 0;
-+}
-+
-+static void pd692x0_i2c_remove(struct i2c_client *client)
-+{
-+	struct pd692x0_priv *priv = i2c_get_clientdata(client);
-+
-+	firmware_upload_unregister(priv->fwl);
-+}
-+
-+static const struct i2c_device_id pd692x0_id[] = {
-+	{ PD692X0_PSE_NAME, 0 },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(i2c, pd692x0_id);
-+
-+static const struct of_device_id pd692x0_of_match[] = {
-+	{ .compatible = "microchip,pd69200", },
-+	{ .compatible = "microchip,pd69210", },
-+	{ .compatible = "microchip,pd69220", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, pd692x0_of_match);
-+
-+static struct i2c_driver pd692x0_driver = {
-+	.probe		= pd692x0_i2c_probe,
-+	.remove		= pd692x0_i2c_remove,
-+	.id_table	= pd692x0_id,
-+	.driver		= {
-+		.name		= PD692X0_PSE_NAME,
-+		.of_match_table = pd692x0_of_match,
-+	},
-+};
-+module_i2c_driver(pd692x0_driver);
-+
-+MODULE_AUTHOR("Kory Maincent <kory.maincent@bootlin.com>");
-+MODULE_DESCRIPTION("Microchip PD692x0 PoE PSE Controller driver");
-+MODULE_LICENSE("GPL");
++++ b/Documentation/devicetree/bindings/net/pse-pd/ti,tps23881.yaml
+@@ -0,0 +1,95 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/pse-pd/ti,tps23881.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: TI TPS23881 Power Sourcing Equipment controller
++
++maintainers:
++  - Kory Maincent <kory.maincent@bootlin.com>
++
++allOf:
++  - $ref: pse-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - ti,tps23881
++
++  reg:
++    maxItems: 1
++
++  '#pse-cells':
++    const: 1
++
++  channels:
++    description: each set of 8 ports can be assigned to one physical
++      channels or two for PoE4. This parameter describes the configuration
++      of the ports conversion matrix that establishes relationship between
++      the logical ports and the physical channels.
++    type: object
++
++    patternProperties:
++      '^channel@[0-7]$':
++        type: object
++        required:
++          - reg
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      ethernet-pse@20 {
++        compatible = "ti,tps23881";
++        reg = <0x20>;
++
++        channels {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          phys0: channel@0 {
++            reg = <0>;
++          };
++
++          phys1: channel@1 {
++            reg = <1>;
++          };
++
++          phys2: channel@2 {
++            reg = <2>;
++          };
++        };
++
++        pse-pis {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          pse_pi0: pse-pi@0 {
++            reg = <0>;
++            #pse-cells = <0>;
++            pairset-names = "alternative-a", "alternative-b";
++            pairsets = <&phys0>, <&phys1>;
++            polarity-supported = "MDI", "S";
++            vpwr-supply = <&vpwr1>;
++          };
++
++          pse_pi1: pse-pi@1 {
++            reg = <1>;
++            #pse-cells = <0>;
++            pairset-names = "alternative-a";
++            pairsets = <&phys2>;
++            polarity-supported = "MDI";
++            vpwr-supply = <&vpwr2>;
++          };
++        };
++      };
++    };
 
 -- 
 2.34.1
