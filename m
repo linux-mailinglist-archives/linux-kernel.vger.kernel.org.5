@@ -1,146 +1,155 @@
-Return-Path: <linux-kernel+bounces-144022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34D518A40EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:29:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F80A8A40F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:35:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FC261C20BB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:29:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B97BE2822A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05EB208A7;
-	Sun, 14 Apr 2024 07:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834D820B34;
+	Sun, 14 Apr 2024 07:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="chUpjni5"
-Received: from smtp.smtpout.orange.fr (smtp-26.smtpout.orange.fr [80.12.242.26])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CkZX4pyV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B59A1C6A8;
-	Sun, 14 Apr 2024 07:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.26
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8681EF01;
+	Sun, 14 Apr 2024 07:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713079740; cv=none; b=Y7tQV6CSEh4IhKaYjPdq5pOStOuHg/CnKOaKApSwYhqJM8Qch2UAcsYA/B1WbZo0gvF4mRYBBcefgYdRYGLlRaCHdCOzz8h08vEj9nKT20g1KCMXOE8TBc8hnLj4Zg5iin1E9EsgfxxWDRXiz/mPLU2bgcS3KoX0RA4fXm72tuk=
+	t=1713080113; cv=none; b=jhfvLqamUHK2kY9VNTqF3eDzI2Ftt7Mk7PJCXyk4ATUWzbhfebrsn7U3evEBCasV5X7hMYjOLUgof+yFrHFqx2o5nkJJAud896wkvTNslSlT069J3Xk/NQFMEtk1Bwm+rn/xaYJZicVY8yZ9ES2zMovoNurDDnN9NOe1vpRKumk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713079740; c=relaxed/simple;
-	bh=zxDtmr9cEt3OU2v2d+Z08dqlldGrpRufndtqdNYKnlk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=LYT17mmCiLd6/xUf2U0wYnBp4rj8Mapv87IC6zQLFEv6h66wZ1/t4X+0a9lcpzj4FKmgwAVNfFAyFxKpenlm0A8/hXjZtaoK4PyQOHSa8NHU1rYOq3Qp/Sgjrf+DfPBV5ufWgMHsQCu5aF+q/fd0xKke0ZX4JySDSsD0TpgZUNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=chUpjni5; arc=none smtp.client-ip=80.12.242.26
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id vuIGrbbZtReGpvuIHrYJio; Sun, 14 Apr 2024 09:28:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1713079735;
-	bh=sg8mnWXtf9g5Ie61S+7ZWPXichK4YHH1B5BtmQzPcp0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=chUpjni5ug14LifuErcTbkLCzLte4FPuoL4pJlu6lKeTCoAD+Y7Z1FTsMVx66miFQ
-	 VXWAxiwsaBWgHXkWWLLoesvYPoweacr23nndBiVD9QMrcc89XDLoGc48HrjCER2AM5
-	 VQnoejJQNVXlacqGEObUyhb1bN7boe8gX1L7uYN7TdipijICiRhlfwVtD/OdE8H88x
-	 Nq/x2Iq/Uzfy4pq9qjAaNDVzkCN8lNj7UsyGjCQKUBJc+PJyB1xmMg8uO7UzTay4+q
-	 WK4KXkbAKEVg1uwFVmvfnht2k44JQMorfe3Cdi4m20HKRQMtYKe2v8oxl8nZxfVqD/
-	 sQjtNZ0w+wFjA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Apr 2024 09:28:55 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <059f414d-096e-4a45-bde5-d984fddf96b6@wanadoo.fr>
-Date: Sun, 14 Apr 2024 09:28:52 +0200
+	s=arc-20240116; t=1713080113; c=relaxed/simple;
+	bh=3r6JYrqvdbon9DEhTY1H2+qNf7eZiRWdkYsZpzrESPk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P9c8pXGPHCQFn/kT++m1l0ssOR9MnSdW6Jo3axbb/KvhYfaw3m195eTQ+lBycNNt8+J8TbGykiRz825GHmhAv3VYw5SVWwFsbr7FyAJVfevmGHVIGRHkLrcJnSgXdowk154oO8h0E1DXUeJ8+gTx/ZqfRhwNA3jArBoxqeMKe08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CkZX4pyV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E552AC072AA;
+	Sun, 14 Apr 2024 07:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713080113;
+	bh=3r6JYrqvdbon9DEhTY1H2+qNf7eZiRWdkYsZpzrESPk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CkZX4pyVmQMjyHu1MkWMG+OmN+DpitNdvE+8Vnnpv2LwAkTUvDzAFWuF0QZM39J6H
+	 Ds3a5kvcM/VK28fYIC44oLB0Bdn+zUbgRasxe5aCWB4xUu/RgLtSeh5qZWnq/2e8FJ
+	 rTnb7E26SRg3O/Hr8+YjRqZvnQzlbsBhEdpfwJTzRcQc4vzX1fY1+RLch4UM3gsvOo
+	 lhHc3rEpR8JxFCgxftuFbGO+Ys7pTermVZbhFSEMwu4SjmoAKErzDXHDO+V07uYXeL
+	 1NKQmyuzEhmwb/N+lOun0QbkHzR0Hj54fWIETmay8j375CiTaSdfa1+arS37433DN9
+	 Fj6dSalTyF8Tw==
+Date: Sun, 14 Apr 2024 10:34:00 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>, Helge Deller <deller@gmx.de>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Will Deacon <will@kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [RFC PATCH 2/7] mm: vmalloc: don't account for number of nodes
+ for HUGE_VMAP allocations
+Message-ID: <ZhuG6HxnXp036bKk@kernel.org>
+References: <20240411160526.2093408-1-rppt@kernel.org>
+ <20240411160526.2093408-3-rppt@kernel.org>
+ <9217c95a-39f6-49ce-9857-ee2eebdb7a16@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] mmc: sdhci-brcmstb: Add BCM2712 support
-To: Andrea della Porta <andrea.porta@suse.com>
-References: <cover.1713036964.git.andrea.porta@suse.com>
- <7a75876def65f6282b7b3ca17ef8008c305d6c32.1713036964.git.andrea.porta@suse.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: adrian.hunter@intel.com, alcooperx@gmail.com,
- bcm-kernel-feedback-list@broadcom.com, conor+dt@kernel.org,
- devicetree@vger.kernel.org, florian.fainelli@broadcom.com,
- jonathan@raspberrypi.com, kamal.dasu@broadcom.com,
- krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- phil@raspberrypi.com, robh@kernel.org, ulf.hansson@linaro.org
-In-Reply-To: <7a75876def65f6282b7b3ca17ef8008c305d6c32.1713036964.git.andrea.porta@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <9217c95a-39f6-49ce-9857-ee2eebdb7a16@csgroup.eu>
 
-Le 14/04/2024 Ã  00:14, Andrea della Porta a Ã©critÂ :
-> Broadcom BCM2712 SoC has an SDHCI card controller using the SDIO CFG
-> register block present on other STB chips. Add support for BCM2712
-> SD capabilities of this chipset.
-> The silicon is SD Express capable but this driver port does not currently
-> include that feature yet.
-> Based on downstream driver by raspberry foundation maintained kernel.
+On Fri, Apr 12, 2024 at 06:07:19AM +0000, Christophe Leroy wrote:
 > 
-> Signed-off-by: Andrea della Porta <andrea.porta-IBi9RG/b67k@public.gmane.org>
-> ---
->   drivers/mmc/host/sdhci-brcmstb.c | 130 +++++++++++++++++++++++++++++++
->   1 file changed, 130 insertions(+)
+> 
+> Le 11/04/2024 à 18:05, Mike Rapoport a écrit :
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > 
+> > vmalloc allocations with VM_ALLOW_HUGE_VMAP that do not explictly
+> > specify node ID will use huge pages only if size_per_node is larger than
+> > PMD_SIZE.
+> > Still the actual allocated memory is not distributed between nodes and
+> > there is no advantage in such approach.
+> > On the contrary, BPF allocates PMD_SIZE * num_possible_nodes() for each
+> > new bpf_prog_pack, while it could do with PMD_SIZE'ed packs.
+> > 
+> > Don't account for number of nodes for VM_ALLOW_HUGE_VMAP with
+> > NUMA_NO_NODE and use huge pages whenever the requested allocation size
+> > is larger than PMD_SIZE.
+> 
+> Patch looks ok but message is confusing. We also use huge pages at PTE 
+> size, for instance 512k pages or 16k pages on powerpc 8xx, while 
+> PMD_SIZE is 4M.
 
-..
+Ok, I'll rephrase.
+ 
+> Christophe
+> 
+> > 
+> > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > ---
+> >   mm/vmalloc.c | 9 ++-------
+> >   1 file changed, 2 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index 22aa63f4ef63..5fc8b514e457 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -3737,8 +3737,6 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> >   	}
+> >   
+> >   	if (vmap_allow_huge && (vm_flags & VM_ALLOW_HUGE_VMAP)) {
+> > -		unsigned long size_per_node;
+> > -
+> >   		/*
+> >   		 * Try huge pages. Only try for PAGE_KERNEL allocations,
+> >   		 * others like modules don't yet expect huge pages in
+> > @@ -3746,13 +3744,10 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> >   		 * supporting them.
+> >   		 */
+> >   
+> > -		size_per_node = size;
+> > -		if (node == NUMA_NO_NODE)
+> > -			size_per_node /= num_online_nodes();
+> > -		if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE)
+> > +		if (arch_vmap_pmd_supported(prot) && size >= PMD_SIZE)
+> >   			shift = PMD_SHIFT;
+> >   		else
+> > -			shift = arch_vmap_pte_supported_shift(size_per_node);
+> > +			shift = arch_vmap_pte_supported_shift(size);
+> >   
+> >   		align = max(real_align, 1UL << shift);
+> >   		size = ALIGN(real_size, 1UL << shift);
 
-> +static void sdhci_brcmstb_set_power(struct sdhci_host *host, unsigned char mode,
-> +				  unsigned short vdd)
-> +{
-> +	if (!IS_ERR(host->mmc->supply.vmmc)) {
-> +		struct mmc_host *mmc = host->mmc;
-
-This would look nicer if mmc was defined at the beginning of the 
-function and used in the if (!IS_ERR()) test.
-
-> +
-> +		mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
-> +	}
-> +	sdhci_set_power_noreg(host, mode, vdd);
-> +}
-> +
->   static void sdhci_brcmstb_set_uhs_signaling(struct sdhci_host *host,
->   					    unsigned int timing)
->   {
-> @@ -168,6 +233,36 @@ static void sdhci_brcmstb_set_uhs_signaling(struct sdhci_host *host,
->   	sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
->   }
-
-..
-
-> @@ -354,6 +468,19 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
->   	if (res)
->   		goto err;
->   
-> +	priv->pinctrl = devm_pinctrl_get(&pdev->dev);
-> +	if (IS_ERR(priv->pinctrl)) {
-> +			no_pinctrl = true;
-> +	}
-
-Indentation looks to large here.
-No need to { }
-
-> +	priv->pins_default = pinctrl_lookup_state(priv->pinctrl, "default");
-> +	if (IS_ERR(priv->pins_default)) {
-> +			dev_dbg(&pdev->dev, "No pinctrl default state\n");
-> +			no_pinctrl = true;
-
-Indentation looks to large here.
-
-> +	}
-> +
-> +	if (no_pinctrl )
-> +		priv->pinctrl = NULL;
-> +
->   	/*
->   	 * Automatic clock gating does not work for SD cards that may
->   	 * voltage switch so only enable it for non-removable devices.
-
-..
-
+-- 
+Sincerely yours,
+Mike.
 
