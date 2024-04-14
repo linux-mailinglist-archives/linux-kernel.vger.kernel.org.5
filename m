@@ -1,130 +1,110 @@
-Return-Path: <linux-kernel+bounces-144048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF7288A413C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:31:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA08F8A413E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:35:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19C361C21247
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:31:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14FC7281AFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B7C1AAA5;
-	Sun, 14 Apr 2024 08:31:05 +0000 (UTC)
-Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC7A224EF;
+	Sun, 14 Apr 2024 08:35:03 +0000 (UTC)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91064442F
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4C4219F3
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 08:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713083465; cv=none; b=lBe01dhmzDdaB3janbBibkpKqSow7xc3nMEZiDZft9uj82EJOrRc9+pBdoXsfcYhkt0Dg/EInFPMKtDwcA67i0VCYEe7QwNwJ+EHkhaQY65L/GUIDIXWpYgccWyHb7xp9CjvbuCnWwAaPtguBto9cF6JmUQjZrOUeaiFV7dx1AI=
+	t=1713083703; cv=none; b=ZogDvrz/Kwy8RDv1XuMvoNdsDIbZzxwxoL5lpOYUasRYfGKcMBg28/vtgvSlkScV2PE1n6GZPVD/Ms5Yn83l0tDBZzJDPLK6EuW7iPq72MTIpUlKY8ZOwnQz5P8imsVTqQVybBCNZYyNxkrEw7zVU3cbpYz4o6+HSoLkuA8+dHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713083465; c=relaxed/simple;
-	bh=NnwDiBQtYVV7ljXU6v7Fyo8ljCpiD5v5/ka0GfK5V+I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CuBch7DLEDvlsZpE2V0s2UvMmGnHFETw5NCem+PaCu6xCVkbAQRSMYlVHI4GHvxbLTh4x1r91QO7S1TcJXh22boKHnWwimh+habXOq4BTby1m6fdw2pHmi1rZnOIgnrh6Y/krbXBHwRbnArWd1GjUXab5wzuRUj5bNKBnuSJDVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.67.190])
-	by sina.com (172.16.235.24) with ESMTP
-	id 661B943A00002B01; Sun, 14 Apr 2024 16:30:52 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 7145845089449
-X-SMAIL-UIID: A17B53C737FB4A6693E4633CBA172864-20240414-163052-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+d6282a21a27259b5f7e7@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] WARNING in hci_conn_set_handle
-Date: Sun, 14 Apr 2024 16:30:44 +0800
-Message-Id: <20240414083044.2191-1-hdanton@sina.com>
-In-Reply-To: <000000000000ec64cd0616084ae9@google.com>
-References: 
+	s=arc-20240116; t=1713083703; c=relaxed/simple;
+	bh=rODNJ0Ukhp6xqvTSkV55aTTmI0Z+BHUMDDSzoazWTg4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g0Zk86DU/KNROPvCMO6nLJ8TAvQP9WX0V4NXBQWPR/7F4B3APrQwhMjW/7y5wknXTMyNkfxCw4YeDpBpMobw63M4wbmtWDnjacRGz62qcuTv7JV/DuBmPQlOdUS+sDEaXdZypVPtBThfA5mvoNitcDJK7+jPea3vn3Kvo2Svmrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516d8764656so831125e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 01:35:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713083700; x=1713688500;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rODNJ0Ukhp6xqvTSkV55aTTmI0Z+BHUMDDSzoazWTg4=;
+        b=fzU3hQ1OHNDuXvkgZt6N5Gh2L79nQ2jfjGA54FFeAUAAIIOQ1IIJW19vpBFfHt7xPG
+         3HtE6HJrKbxCzE7KNeGpQDhkqOfNRYecRjcnrrJte51HogxLev+F4nhG518ecefDp/Uv
+         NB1ZJ/+cU5t8gcDy91YKgFIKvR5oGZ5e9M2HADFZ9R/7nSnH/QKeuP5G8RN0DUACnvrp
+         JdC9KQBnJ8MkQVYbBdeiHXDKpeQ0QmTml1KxOFjzoWQLI7vx86WmxzOFBwZ3m06l3NnQ
+         uvdBdINdFjeKG0fywO0a4IiIIbWDJRTtZ9Wd7CkfpD9h15eHstl10uclaY1zliDWMF45
+         9SBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVmYbV+n/5/x2skgFrDu/CNQgJbQItIizxnoqd39QRVQ7X9MVh4LtGtXNy6Bs+7YvwHSHQseGCDyfJ4ynUSyi4euFPwDjZaqxUZ1q6E
+X-Gm-Message-State: AOJu0Yy62B68DG7YtcVKHPl2ltjS8n00O/dSldPfHBNnDhPY50KT6QoX
+	miZyYYvKYHEm6rLnDlVHR+AvkzbyteOxaEXIACoFbl5J9VIdm+MuVHRnwA==
+X-Google-Smtp-Source: AGHT+IHUerSoHWBsGEYAfYQTKd/vCWDjdmSOFzRHu8Rk87rKdywP2XPry+/l30vZZvfgcddZaKXuMA==
+X-Received: by 2002:a2e:3a18:0:b0:2d4:25c5:df1e with SMTP id h24-20020a2e3a18000000b002d425c5df1emr3891400lja.5.1713083699832;
+        Sun, 14 Apr 2024 01:34:59 -0700 (PDT)
+Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
+        by smtp.gmail.com with ESMTPSA id gw7-20020a05600c850700b004146e58cc35sm14861616wmb.46.2024.04.14.01.34.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 14 Apr 2024 01:34:59 -0700 (PDT)
+Message-ID: <bd345f52-3435-4e40-975d-321f706857be@grimberg.me>
+Date: Sun, 14 Apr 2024 11:34:58 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/6] nvme-fabrics: short-circuit connect retries
+To: Keith Busch <kbusch@kernel.org>, Daniel Wagner <dwagner@suse.de>
+Cc: Christoph Hellwig <hch@lst.de>, James Smart <james.smart@broadcom.com>,
+ Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240409093510.12321-1-dwagner@suse.de>
+ <ZhiBzXBvjTeDuHbS@kbusch-mbp.dhcp.thefacebook.com>
+ <vbptto5zefkdadnpyhcjelfrsgadb2stjh3sole6n6mdd4h7dq@lrdxk5p5qh6w>
+ <ZhlSJcTwGVrlk8OP@kbusch-mbp.dhcp.thefacebook.com>
+Content-Language: he-IL, en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <ZhlSJcTwGVrlk8OP@kbusch-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, 13 Apr 2024 23:05:32 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    480e035fc4c7 Merge tag 'drm-next-2024-03-13' of https://gi..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=162d4723180000
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  480e035fc4c7
 
---- x/net/bluetooth/hci_event.c
-+++ y/net/bluetooth/hci_event.c
-@@ -6902,7 +6902,7 @@ static void hci_le_create_big_complete_e
- 					   struct sk_buff *skb)
- {
- 	struct hci_evt_le_create_big_complete *ev = data;
--	struct hci_conn *conn;
-+	struct hci_conn *conn, *next;
- 	__u8 i = 0;
- 
- 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
-@@ -6912,38 +6912,29 @@ static void hci_le_create_big_complete_e
- 		return;
- 
- 	hci_dev_lock(hdev);
--	rcu_read_lock();
--
- 	/* Connect all BISes that are bound to the BIG */
--	list_for_each_entry_rcu(conn, &hdev->conn_hash.list, list) {
-+	list_for_each_entry_safe(conn, next, &hdev->conn_hash.list, list) {
- 		if (bacmp(&conn->dst, BDADDR_ANY) ||
- 		    conn->type != ISO_LINK ||
- 		    conn->iso_qos.bcast.big != ev->handle)
- 			continue;
- 
--		if (hci_conn_set_handle(conn,
--					__le16_to_cpu(ev->bis_handle[i++])))
-+		if (hci_conn_set_handle(conn, __le16_to_cpu(ev->bis_handle[i++])))
- 			continue;
- 
- 		if (!ev->status) {
- 			conn->state = BT_CONNECTED;
- 			set_bit(HCI_CONN_BIG_CREATED, &conn->flags);
--			rcu_read_unlock();
- 			hci_debugfs_create_conn(conn);
- 			hci_conn_add_sysfs(conn);
- 			hci_iso_setup_path(conn);
--			rcu_read_lock();
- 			continue;
- 		}
- 
- 		hci_connect_cfm(conn, ev->status);
--		rcu_read_unlock();
- 		hci_conn_del(conn);
--		rcu_read_lock();
- 	}
- 
--	rcu_read_unlock();
--
- 	if (!ev->status && !i)
- 		/* If no BISes have been connected for the BIG,
- 		 * terminate. This is in case all bound connections
-@@ -6952,7 +6943,6 @@ static void hci_le_create_big_complete_e
- 		 */
- 		hci_cmd_sync_queue(hdev, hci_iso_term_big_sync,
- 				   UINT_PTR(ev->handle), NULL);
--
- 	hci_dev_unlock(hdev);
- }
- 
---
+On 12/04/2024 18:24, Keith Busch wrote:
+> On Fri, Apr 12, 2024 at 09:24:04AM +0200, Daniel Wagner wrote:
+>> On Thu, Apr 11, 2024 at 06:35:25PM -0600, Keith Busch wrote:
+>>> On Tue, Apr 09, 2024 at 11:35:04AM +0200, Daniel Wagner wrote:
+>>>> The first patch returns only kernel error codes now and avoids overwriting error
+>>>> codes later. Thje newly introduced helper for deciding if a reconnect should be
+>>>> attempted is the only place where we have the logic (and documentation).
+>>>>
+>>>> On the target side I've separate the nvme status from the dhchap status handling
+>>>> which made it a bit clearer. I was tempted to refactor the code in
+>>>> nvmet_execute_auth_send to avoid hitting the 80 chars limit but didn't came up
+>>>> with something nice yet. So let's keep this change at a minimum before any
+>>>> refactoring attempts.
+>>>>
+>>>> I've tested with blktests and also an real hardware for nvme-fc.
+>>> Thanks, series applied to nvme-6.9.
+>> Thanks! I have an updated version here which addresses some of Sagi's
+>> feedback, e.g. using only one helper function. Sorry I didn't send out
+>> it earlier, I got a bit side tracked in testing because of the 'funky'
+>> results with RDMA.
+>>
+>> Do you want me to send a complete fresh series or patches on top of this
+>> series? I'm fine either way.
+> Oh sorry, I didn't notice the discussion carried on after the "review"
+> tag. Please send me the update, I'll force push.
+
+I think that what we want is to have a special handling in the very specific
+connect failure when the host/ctrl credentials mismatch, because out of all
+the reasons to a connection failure, this _could_ be transient.
 
