@@ -1,149 +1,193 @@
-Return-Path: <linux-kernel+bounces-143991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E6898A407C
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:05:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBAC58A407F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0251C2103D
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:05:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97663B21509
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507BC1C68F;
-	Sun, 14 Apr 2024 06:05:36 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11CF1C68C;
+	Sun, 14 Apr 2024 06:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dVd/1JLG"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE66417BD2
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BAD1BF35
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713074735; cv=none; b=KUpH7ibflD8OnYI7cKGqkjLmXywGc/XWyjTdL3pMlyQmqPDN6DMScekWnN5kYXM/v3d4pWlFZXQ2kE1XDz3HH4VeY56xFRhhMMVfM3emEA951wt/Nx8WFKOpZDOINrsQtkIYMVxtwt3L+H0wClheuHcf0RP51S1AG+JG7fiNMuI=
+	t=1713074836; cv=none; b=m8whcgA7oYPak/zF/NPVMNDiqtFf/4iV6If57uoKz1yDMS+L2ZP/aasQi/3mSoPq7N/7Qe6q27+eGkpIU/zY0d0q4fcr9lAfMZPky7c9+0Va+ZYKOotuuuJk97TJS3OBhybeCgOUJU+AaYE9lCY36vEVIKZIyuaFgT7ldAPbjlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713074735; c=relaxed/simple;
-	bh=zo7Og31338CopKh2R/YOYA5f8mF/P11R4kqcSjOlZKo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WRglQ4HWQ9aI4nzOz14JQ1Ml2t/fur6vplE4pYywicvYnWjyDKpaxwuTw6n1OUOiUwGxL/8mbvojRqRXaOZVZJ2SfV5soOZB5u9mLUJFYkKRg9LPWMlvYUtA+0p7aeod8mBGOtHY1hUJOuhgwl7auz8K+QsijA7ltiWjmGg1Jjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36a3010f66bso22713765ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 23:05:33 -0700 (PDT)
+	s=arc-20240116; t=1713074836; c=relaxed/simple;
+	bh=rgUmJRNE583FfwwKk7ImcN7Q38hAoqx0XrUkO1ukD60=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jFs2F07z0BwNekIn4iZ0l8VjCz3k7I4nNZ1/bSVmBLpV55ytjlj1NWdahpsIGOwuIJqJtOKwBvV4rJ4D++ZE55KDZ05jY/r/NE1Wl2kfBFWl0xW4G+Ok0xLh88g8SPmaocFKVgxYG87e36Yac6MEUM+sAIt/stM6x9p66+o2DYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dVd/1JLG; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so350796566b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 23:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713074831; x=1713679631; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=birczs2n38bj+qt5ct4BeQZrHZlbkYfeLVY4PLvG/PE=;
+        b=dVd/1JLGtdaSD8GeGmiy1E/j175K0CLtYCiV7+QT2d/WzCQx395lMo0Yj0avJEq/rB
+         bjUjTJKlZLSLXjWIj/YEOnSi9vK9aKUZQYwbrbqbGXJwEnXrJlQYS4KynCNfLRJf2dKu
+         DNtTSpLvPJby2YDkzNPR81cVYvojOwiNd7jtG3nqOISI57DUCazlhX/LHxWj22BZXZZl
+         N7Ka8CJz2PFmy1i/MduMezlIgW3B8gWw4+VmEKhxwn8I0vldGN78GymplTrw0cOvnnZm
+         D5f4186i6CcG/OjvK2nn4lRY6bRVYcoYXDQensvbUVJFRmadjbk+FseG+2L0cQ/ON+cU
+         9Qlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713074733; x=1713679533;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e0DW2Ac97pJORKunSExiiidYU7ECcnw3EE/tmxmQZ2k=;
-        b=olhyxDN2UUj1DQ8NLv5gmB5czNL1wAKu4p3Ah7KI0XZkqmkJ/+SAiyxjO5n3fQZz45
-         cJLogs7fqL3iBVwVBLruuUiLujrq7yA+4+8IdmWiBE/kjqD9X4M/nH26E89AmpTAM/IT
-         TjCijaUz+x51npL5KsXGuoqwkk5rDebHuCPoAndg4W5d/5tqRfvkrimrmJ7B0wdyAtGm
-         rOjLUzRIW5KHLxpRgYr2a+Ywi51Ov+8a6wCpwW5/xV1stwmCDLw7JBo07hpP+igX+/dK
-         gr0esZ/XB8l8bxd6O1kEyuFIdhCcEL8N0/oqP1b1hjqkrlXSgkGNUn6SGP2+KWzw2wUO
-         BPRg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6m4FeKzTtspt8rdZVeb0JTZ/1Mhfn9TdPeN/2i4l7Ds9q8RYV9FsJTZZE5HBar4of0Z+I5s8p8ygNmKTU7wzVV83EwyyJMPQ8zh0g
-X-Gm-Message-State: AOJu0YwN8IYUpwiT/fzadj5tml8efHclhv2mOLL25HEJsobJul+eJQSz
-	+PIx408Qjx3Ju+DHwqAbxNJw0+ixF1FAGSj3RtgY82UMeJCJj4gT1B72hCpMuKzI2NfNmKPAjaZ
-	hZW85UB4oTpaVlXvhewSUqodCY8cy93fExkcfoZWijafDex4KnGzcJ7o=
-X-Google-Smtp-Source: AGHT+IFWaJNKWuVSQN6nExZrISaoepdsIfxsfgUuIMYsFfw+Y4uckFPsGI2KYFQFsWKUDo/9fSpCUlr3xy6XTQXjokxixu/fvnAS
+        d=1e100.net; s=20230601; t=1713074831; x=1713679631;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=birczs2n38bj+qt5ct4BeQZrHZlbkYfeLVY4PLvG/PE=;
+        b=LivrL+/YtWlFbYawhx5Y8Vg+usRpAPO+TUJHSEg+jEoCxwWDF+BDxMI4xzUB3ytu7L
+         Rn6GJPBoA7PDHnk2iKAVVNW/zOVQzxHSUf6srC4pb7bFBOIgIHZrEIW1fhPFbDohvFug
+         kFrEcdv2s1AyvebLCwlrVol8+yxZLpWDTIhK4MoS9RBr36RdGqpc3kqvLOBcLxKneYFy
+         WwZzKNLAGrClD8Fe0FxpKJNTKMLhcRKQBPdb2w6o1G3TX57215z38coSMJpeuHhOuIXT
+         B6L2NFifhU0wWrY3DD2yh1DbtHehny2jdZPaJxJKqua1R2AE//xk4G+b1z15KkyI7W1/
+         eYzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVAaMqHDulIHV2p4/44eS0SXwUmSbhdWl2vtnYBvRY6eR4VQO+Z5wALl+yN8XEXSoOovbiBJbv8IWESq83HeZBmoR9pomGFz1KJmew/
+X-Gm-Message-State: AOJu0Yy01ggIpx5Vxuwmdcbh9n32J3URQWyl7R0fjRPnHiB9kWd7ZHeO
+	TysmMz5uQoj7j9+7/6DGdjXXxrZ6R6NC+nwvY3fZBTU/81KDvTaoi1r2ehowPhs=
+X-Google-Smtp-Source: AGHT+IFRHLi+mC72P5wOlGYDKkwCG3kYJ/bZgR0nHp32C5KCLzYuDmgD3GZXevlyaJteLdQJXgpgpA==
+X-Received: by 2002:a17:907:72c8:b0:a52:51ce:3703 with SMTP id du8-20020a17090772c800b00a5251ce3703mr2468366ejc.2.1713074831322;
+        Sat, 13 Apr 2024 23:07:11 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id rs6-20020a170907036600b00a4e6626ae21sm3811546ejb.0.2024.04.13.23.07.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 13 Apr 2024 23:07:10 -0700 (PDT)
+Message-ID: <13b195e6-cbbd-4f74-a6fa-d874cb4aaa45@linaro.org>
+Date: Sun, 14 Apr 2024 08:07:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d98:b0:36b:147c:f7a9 with SMTP id
- h24-20020a056e021d9800b0036b147cf7a9mr103098ila.2.1713074732813; Sat, 13 Apr
- 2024 23:05:32 -0700 (PDT)
-Date: Sat, 13 Apr 2024 23:05:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ec64cd0616084ae9@google.com>
-Subject: [syzbot] [bluetooth?] WARNING in hci_conn_set_handle
-From: syzbot <syzbot+d6282a21a27259b5f7e7@syzkaller.appspotmail.com>
-To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] dt-bindings: hwmon: max31790: Add
+ maxim,pwmout-pin-as-tach-input property
+To: Chanh Nguyen <chanh@os.amperecomputing.com>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Justin Ledford
+ <justinledford@google.com>, devicetree@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ Open Source Submission <patches@amperecomputing.com>
+Cc: Phong Vo <phong@os.amperecomputing.com>,
+ Thang Nguyen <thang@os.amperecomputing.com>,
+ Quan Nguyen <quan@os.amperecomputing.com>
+References: <20240414042246.8681-1-chanh@os.amperecomputing.com>
+ <20240414042246.8681-4-chanh@os.amperecomputing.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240414042246.8681-4-chanh@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 14/04/2024 06:22, Chanh Nguyen wrote:
+> The max31790 supports six pins, which are dedicated PWM outputs. Any of the
+> six PWM outputs can also be configured to serve as tachometer inputs,
+> allowing for up to 12 tachometer fans to be monitored.
+> 
+> Add a new vendor-specific property, 'maxim,pwmout-pin-as-tach-input',
+> to allow PWMOUT to become a TACH input.
+> 
+> An array of six integers responds to six PWM channels for configuring
+> the PWM to TACH mode. When set to 0, the associated PWMOUT produces
+> a PWM waveform for control of fan speed. When set to 1, PWMOUT becomes
+> a TACH input.
+> 
+> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
+> ---
+> Changes in v2:
+>  - Update the vendor property name to "maxim,pwmout-pin-as-tach-input"   [Rob]
+>  - Update commit message                                                 [Krzysztof]
 
-syzbot found the following issue on:
+Please put binding before its user.
 
-HEAD commit:    480e035fc4c7 Merge tag 'drm-next-2024-03-13' of https://gi..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=138825a1180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e5b814e91787669
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6282a21a27259b5f7e7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f3e213180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=162d4723180000
+> ---
+>  .../devicetree/bindings/hwmon/maxim,max31790.yaml     | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
+> index a561e5a3e9e4..2d4f50bc7c41 100644
+> --- a/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
+> +++ b/Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
+> @@ -30,6 +30,16 @@ properties:
+>    resets:
+>      maxItems: 1
+>  
+> +  maxim,pwmout-pin-as-tach-input:
+> +    description: |
+> +      An array of six integers responds to six PWM channels for
+> +      configuring the pwm to tach mode.
+> +      When set to 0, the associated PWMOUT produces a PWM waveform for
+> +      control of fan speed. When set to 1, PWMOUT becomes a TACH input
+> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> +    maxItems: 6
+> +    minItems: 6
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5f73b6ef963d/disk-480e035f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/46c949396aad/vmlinux-480e035f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e3b4d0f5a5f8/bzImage-480e035f.xz
+tach-ch solves your case. You define which inputs should be used for tach.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6282a21a27259b5f7e7@syzkaller.appspotmail.com
+Best regards,
+Krzysztof
 
-------------[ cut here ]------------
-ida_free called for id=8192 which is not allocated.
-WARNING: CPU: 0 PID: 5073 at lib/idr.c:525 ida_free+0x370/0x420 lib/idr.c:525
-Modules linked in:
-CPU: 0 PID: 5073 Comm: kworker/u9:2 Not tainted 6.8.0-syzkaller-08073-g480e035fc4c7 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: hci0 hci_rx_work
-RIP: 0010:ida_free+0x370/0x420 lib/idr.c:525
-Code: 10 42 80 3c 28 00 74 05 e8 8d de 90 f6 48 8b 7c 24 40 4c 89 fe e8 c0 93 17 00 90 48 c7 c7 c0 e6 c6 8c 89 de e8 81 63 f0 f5 90 <0f> 0b 90 90 eb 3d e8 45 8f 2d f6 49 bd 00 00 00 00 00 fc ff df 4d
-RSP: 0018:ffffc90003a0f780 EFLAGS: 00010246
-RAX: d8e6756074d01200 RBX: 0000000000002000 RCX: ffff888022703c00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90003a0f880 R08: ffffffff8157cc12 R09: 1ffff92000741e90
-R10: dffffc0000000000 R11: fffff52000741e91 R12: ffffc90003a0f7c0
-R13: dffffc0000000000 R14: ffff88801fce00a0 R15: 0000000000000246
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f78c634e9c3 CR3: 0000000078b22000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- hci_conn_set_handle+0x193/0x270 net/bluetooth/hci_conn.c:1257
- hci_le_create_big_complete_evt+0x345/0xae0 net/bluetooth/hci_event.c:6924
- hci_event_func net/bluetooth/hci_event.c:7514 [inline]
- hci_event_packet+0xa53/0x1540 net/bluetooth/hci_event.c:7569
- hci_rx_work+0x3e8/0xca0 net/bluetooth/hci_core.c:4171
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa00/0x1770 kernel/workqueue.c:3335
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
