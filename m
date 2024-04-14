@@ -1,257 +1,192 @@
-Return-Path: <linux-kernel+bounces-144108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 695C78A41EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9254D8A41F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:52:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88B4CB212EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:48:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A25F4B210DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 10:52:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DD22E647;
-	Sun, 14 Apr 2024 10:48:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9232E646;
+	Sun, 14 Apr 2024 10:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aR2/29ts"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CWaP99Nr"
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5111E53F;
-	Sun, 14 Apr 2024 10:48:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CEA1CAB0
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 10:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713091703; cv=none; b=Tp913DViTThHBEvaD+kGeaoHHhG8sulhkGWAgaNx5AFO9ZFLyDepJwpsPCOdh0Nz+1/LuMpLPumvLg5wLwd3UN7ChQN/AcHC55bSH1zJmLVF29+E0y0bcoc59L6hF9EYga4KFXmH4y0N8FcBxNI7TGtH5YHGFrmRM5UMqq7OBp4=
+	t=1713091922; cv=none; b=F9jKV5c1BNo7BVbHTDFcM9eTBRg59Vhm3YJnX/QVlPx/9oA1z+m3Ceyl2ol8qHfyDBcbZszp/awDfO2yrqwfVymJEzb+YC2zEUCnxqSDh9I76HJs/Ctp35Yc5QggoHl1drV/HzRYC0dPCHCay893+V/qxxQeAL3wyWYfZMH9oho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713091703; c=relaxed/simple;
-	bh=ppeZY3dWzDAzZxs0tI8WOxOiEzHzWsZcatHCpGuDVA8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iskWKZ6TRlgrQfHf/QXb/PcMROZcGkUou2EEywUQuxjZrLLwgVufPPGLpu4yFtOFF89yGjXzzEVluVFNw8QkyWdclIjm5Vxawvi9v2EnS25Sm6X1RtB1T2BtRuuf+wZaTjR8A6n3LR9RwsTNMy5lBWsflRdK+gfXoVMH7oGGHMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aR2/29ts; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a44665605f3so229389566b.2;
-        Sun, 14 Apr 2024 03:48:21 -0700 (PDT)
+	s=arc-20240116; t=1713091922; c=relaxed/simple;
+	bh=Fskwbnc4cdeRPyqLU32Z5qy2jXRijiOAUXtekazEu2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UpvKcHkIcKo8QfrT5nuaKHPllJhqjWXeQFJcOHO1J04Nv9ydOHM+XQ8rwi7zvAZnVeGhY8rV34tkAC6cxVUXOGjHZpkzzO7ZZvjY4aOLY1dv1L6HahRYjYLuSKY46OhVg2ZatEfVPOORxc0wS7hA1iNWZf7o8KUmSdMLE6vj1mY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CWaP99Nr; arc=none smtp.client-ip=209.85.161.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5aa241232faso2079447eaf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:52:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713091700; x=1713696500; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x/mEm9VxMgunJVGx3eWq8zXkvnaXSuLo3RVjgAEd/rI=;
-        b=aR2/29tsjFwIgRzCoy7LhqvDZB6GE1o85HsJX4DHe8RXAZ70hxhrIdmzGxqA6rE3+p
-         xh/FCH+w61kz1vpxkMpXOIIWx++qLZWvGe7R4Sl2Irk0Kn9UbBPfDdipI/KS2xJ07m/N
-         a2YQ45ZWmHsN/hMbFGk3IMJAVUbw4p6eTObT07Pn9/PvSvTqajTxkzmnzIYAP1vjA9Vj
-         O6UW7vpzWqgNW+NgwjnaUZhSG3R44tW52jEd2KjQ32j8bdwBfXtUtD/dSIJ/h1Cmxotv
-         oMiZmiouJBL1AQFIIFI+lZU2KUSpzDtrseqYc5KvN4wTueuEgBiA4ZhJ148COegbNN/+
-         RZkg==
+        d=linaro.org; s=google; t=1713091920; x=1713696720; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=z86tADjA34jPDvp0sH69LSJjWH6CGCLDMrpq88/Jt4c=;
+        b=CWaP99NrQRXk3iFK/wgoPbgyUyGNFKCr4YFHVgLI5kt74TfD3aPIvUhRxQY35Y72gr
+         8US1fOCunZipK17hTN/LOMXEdlxau01EEf07VFTwJvlw3ts18vKMRyQ8LpQOU19oQYhD
+         lOQcO/ev3XiUEttz4LZOXi8DicZ9/bpTUpAO3tM5HiY3kYzQLnhKkZGlTKPb3+axyWtb
+         L7BbkVoyNfRPHCY+51XaJ4kWSuK5GRTPbpDr2N3drgzT7KO0mJ1PnbDSKJrQx04ySfmL
+         hcuq/+Ncj6C+V+qaDlmdU1nfDW3po9kZiKu3LAl4VWu1iSZY+uiCsB8KPQgDFlMt0MT1
+         1NZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713091700; x=1713696500;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x/mEm9VxMgunJVGx3eWq8zXkvnaXSuLo3RVjgAEd/rI=;
-        b=Y7guVblLjqZJNo9fYzBwbCYHLtePZNl0b5syzbcHUL05BUFSIz5nhpIU1ty+owZ/Xd
-         vsSBOUVqErQv4+IpOpaqEKmZjUqlzOFZzyd9MFpiBo+Q+XVP5yGq7cASsJmjxZsoU3DW
-         hpWjM+YD0xDE49aGo/jMUFbwzIA1VATLJNB1gV0Rm/PYpgooWQERM5s7Agv+bQNZiti+
-         aCwkOzF+1I9Lj4Z8KoiGo6seiK4H9qCtWMzDcuhO94rCD93lLvwrDbfjJvPxQwPAbjRu
-         tqznYSzGuJ4T5x7m+Q1VSc4eFWCXDGBKFgVE+HBvYl+d2pzQJey/8tWIZKV89Ilkq/5D
-         /NLg==
-X-Forwarded-Encrypted: i=1; AJvYcCVTiOVYNeXQlDdcJXneRPIgd/xBLupMF/2qfOVuwfVz+HBXQJDgb/UnJJYtlxqEpVb+EbXgihYyGgGkfCQe5uHasR5XD/s8ab8RCHbY
-X-Gm-Message-State: AOJu0Yw4yqCy1sz10c6l4GbZ9qs3nht5XFNv67CouQlx/v1zgcXUEwlP
-	svPLRGEwcWXsojWkgiVq83KEZsnwNhpJ8W/qlrb95F8V7aUCzn5S
-X-Google-Smtp-Source: AGHT+IHioJIDXt3U+RODv/eSjkVBLxKX703mo9NFte/m+z5JlwQDMaUrTXF1oC/MLZwQ0sZ4qwSY3g==
-X-Received: by 2002:a17:907:7244:b0:a52:3010:af03 with SMTP id ds4-20020a170907724400b00a523010af03mr5152756ejc.5.1713091700187;
-        Sun, 14 Apr 2024 03:48:20 -0700 (PDT)
-Received: from jernej-laptop.localnet (APN-123-252-50-gprs.simobil.net. [46.123.252.50])
-        by smtp.gmail.com with ESMTPSA id cr19-20020a170906d55300b00a46b4c09670sm4070532ejc.131.2024.04.14.03.48.18
+        d=1e100.net; s=20230601; t=1713091920; x=1713696720;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z86tADjA34jPDvp0sH69LSJjWH6CGCLDMrpq88/Jt4c=;
+        b=wd1TpUINdEFFzMhtmm9xkgxC9YlBgxgZ0v/TFqpgavCehMPAr5HKEG5PEsFzua/t9p
+         YNva1VXG9moA3sBdsm6hZb7+vY3qUcgY2nFnP9HfZkuoAlulx+45W+xW+ix701ZwWtgC
+         ZstZ+43rpTskkIshJGKnFICqvXY6yJsRU5BJ3ZsDsBgtWcUZ5+WawrYWdgiDTtJYR34b
+         VFHCNuHYOibKOWkQrgdmGfjal25zBAQSv861srfZrKn9VvJevqof1g8CSPO5AeHx+6V3
+         HFjyGyrXeTPjdIZRr4wiwzMURw+jkBrC1fpkdmNZarhCUIlREz/KpkPnYS0bsqUAF3rG
+         FD7g==
+X-Forwarded-Encrypted: i=1; AJvYcCUVn490mKzo/mgYAXliGGaEBPd0S771vqDLs4gmNNNtaXt54s8OvIbCivxyf3y9lxsTwK/qTlKVB7pIMbUO3AgDVhQSNrqY/7WQrUWg
+X-Gm-Message-State: AOJu0YxkomlIb5561OcN44a6kuvT6OQVDL71R+wXhYCjfvZucVK5gehx
+	6eZhyrxVyHUWM/YuCksJ6Qv8aLmznVQKE8+br7ati0vJKcjxPTTAg7SqwaEbOQ==
+X-Google-Smtp-Source: AGHT+IHG73jN0JyTXE5YMG9IYvVbYRtG5PEk5LWJ00N9WZxttyYSYCMKrPxspcM2aGpT1bTva1r7xA==
+X-Received: by 2002:a05:6808:218c:b0:3c5:eddb:47c1 with SMTP id be12-20020a056808218c00b003c5eddb47c1mr9182957oib.5.1713091919486;
+        Sun, 14 Apr 2024 03:51:59 -0700 (PDT)
+Received: from thinkpad ([120.60.136.171])
+        by smtp.gmail.com with ESMTPSA id im22-20020a170902bb1600b001dcfaf4db22sm5944167plb.2.2024.04.14.03.51.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 03:48:19 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Chen-Yu Tsai <wens@csie.org>, Samuel Holland <samuel@sholland.org>,
- John Watts <contact@jookia.org>
-Cc: linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
- John Watts <contact@jookia.org>
-Subject: Re: [PATCH v2] ASoC: sunxi: sun4i-i2s: Support 32-bit audio formats
-Date: Sun, 14 Apr 2024 12:48:17 +0200
-Message-ID: <1787594.VLH7GnMWUR@jernej-laptop>
-In-Reply-To: <20240403-sunxi_s32-v2-1-29ebf6ad590a@jookia.org>
-References: <20240403-sunxi_s32-v2-1-29ebf6ad590a@jookia.org>
+        Sun, 14 Apr 2024 03:51:59 -0700 (PDT)
+Date: Sun, 14 Apr 2024 16:21:48 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Jesper Nilsson <jesper.nilsson@axis.com>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Heiko Stuebner <heiko@sntech.de>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, Niklas Cassel <cassel@kernel.org>,
+	linux-arm-kernel@axis.com, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v12 8/8] PCI: endpoint: Remove "core_init_notifier" flag
+Message-ID: <20240414105148.GC2294@thinkpad>
+References: <20240327-pci-dbi-rework-v12-8-082625472414@linaro.org>
+ <20240412202216.GA14590@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240412202216.GA14590@bhelgaas>
 
-Dne sreda, 3. april 2024 ob 05:47:35 CEST je John Watts napisal(a):
-> The I2S cores used in the H3 onwards support 32-bit sample rates.
-> Support these by adding a per-variant PCM format list.
+On Fri, Apr 12, 2024 at 03:22:16PM -0500, Bjorn Helgaas wrote:
+> On Wed, Mar 27, 2024 at 02:43:37PM +0530, Manivannan Sadhasivam wrote:
+> > "core_init_notifier" flag is set by the glue drivers requiring refclk from
+> > the host to complete the DWC core initialization. Also, those drivers will
+> > send a notification to the EPF drivers once the initialization is fully
+> > completed using the pci_epc_init_notify() API. Only then, the EPF drivers
+> > will start functioning.
+> > 
+> > For the rest of the drivers generating refclk locally, EPF drivers will
+> > start functioning post binding with them. EPF drivers rely on the
+> > 'core_init_notifier' flag to differentiate between the drivers.
+> > Unfortunately, this creates two different flows for the EPF drivers.
+> > 
+> > So to avoid that, let's get rid of the "core_init_notifier" flag and follow
+> > a single initialization flow for the EPF drivers. This is done by calling
+> > the dw_pcie_ep_init_notify() from all glue drivers after the completion of
+> > dw_pcie_ep_init_registers() API. This will allow all the glue drivers to
+> > send the notification to the EPF drivers once the initialization is fully
+> > completed.
 > 
-> Signed-off-by: John Watts <contact@jookia.org>
-
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
-> ---
-> This patch enables support for 32-bit audio in the sunxi I2S driver.
+> Thanks for doing this!  I think this is a significantly nicer
+> solution than core_init_notifier was.
 > 
-> I have only tested this on the Allwinner T113 but I'm fairly
-> certain it will work on older boards.
-> ---
-> Changes in v2:
-> - Specify PCM formats for each variant instead of failing in hw_params
-> - Link to v1: https://lore.kernel.org/r/20240326-sunxi_s32-v1-1-899f71dcb1e6@jookia.org
-> ---
->  sound/soc/sunxi/sun4i-i2s.c | 33 ++++++++++++++++++++++++++++-----
->  1 file changed, 28 insertions(+), 5 deletions(-)
+> One question: both qcom and tegra194 call dw_pcie_ep_init_registers()
+> from an interrupt handler, but they register that handler in a
+> different order with respect to dw_pcie_ep_init().
 > 
-> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index a736f632bf0b..59830f2a0d30 100644
-> --- a/sound/soc/sunxi/sun4i-i2s.c
-> +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -156,6 +156,7 @@ struct sun4i_i2s;
->  /**
->   * struct sun4i_i2s_quirks - Differences between SoC variants.
->   * @has_reset: SoC needs reset deasserted.
-> + * @pcm_formats: available PCM formats
->   * @reg_offset_txdata: offset of the tx fifo.
->   * @sun4i_i2s_regmap: regmap config to use.
->   * @field_clkdiv_mclk_en: regmap field to enable mclk output.
-> @@ -175,6 +176,7 @@ struct sun4i_i2s;
->   */
->  struct sun4i_i2s_quirks {
->  	bool				has_reset;
-> +	snd_pcm_format_t		pcm_formats;
->  	unsigned int			reg_offset_txdata;	/* TX FIFO */
->  	const struct regmap_config	*sun4i_i2s_regmap;
->  
-> @@ -1092,8 +1094,18 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
->  	return 0;
->  }
->  
-> +static int sun4i_i2s_dai_startup(struct snd_pcm_substream *sub, struct snd_soc_dai *dai)
-> +{
-> +	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> +	struct snd_pcm_runtime *runtime = sub->runtime;
-> +
-> +	return snd_pcm_hw_constraint_mask64(runtime, SNDRV_PCM_HW_PARAM_FORMAT,
-> +					    i2s->variant->pcm_formats);
-> +}
-> +
->  static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
->  	.probe		= sun4i_i2s_dai_probe,
-> +	.startup	= sun4i_i2s_dai_startup,
->  	.hw_params	= sun4i_i2s_hw_params,
->  	.set_fmt	= sun4i_i2s_set_fmt,
->  	.set_sysclk	= sun4i_i2s_set_sysclk,
-> @@ -1101,9 +1113,10 @@ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
->  	.trigger	= sun4i_i2s_trigger,
->  };
->  
-> -#define SUN4I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | \
-> -			 SNDRV_PCM_FMTBIT_S20_LE | \
-> -			 SNDRV_PCM_FMTBIT_S24_LE)
-> +#define SUN4I_FORMATS_ALL (SNDRV_PCM_FMTBIT_S16_LE | \
-> +			   SNDRV_PCM_FMTBIT_S20_LE | \
-> +			   SNDRV_PCM_FMTBIT_S24_LE | \
-> +			   SNDRV_PCM_FMTBIT_S32_LE)
->  
->  static struct snd_soc_dai_driver sun4i_i2s_dai = {
->  	.capture = {
-> @@ -1111,14 +1124,14 @@ static struct snd_soc_dai_driver sun4i_i2s_dai = {
->  		.channels_min = 1,
->  		.channels_max = 8,
->  		.rates = SNDRV_PCM_RATE_8000_192000,
-> -		.formats = SUN4I_FORMATS,
-> +		.formats = SUN4I_FORMATS_ALL,
->  	},
->  	.playback = {
->  		.stream_name = "Playback",
->  		.channels_min = 1,
->  		.channels_max = 8,
->  		.rates = SNDRV_PCM_RATE_8000_192000,
-> -		.formats = SUN4I_FORMATS,
-> +		.formats = SUN4I_FORMATS_ALL,
->  	},
->  	.ops = &sun4i_i2s_dai_ops,
->  	.symmetric_rate = 1,
-> @@ -1340,8 +1353,12 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
->  	return 0;
->  }
->  
-> +#define SUN4I_FORMATS_A10 (SUN4I_FORMATS_ALL & ~SNDRV_PCM_FMTBIT_S32_LE)
-> +#define SUN4I_FORMATS_H3 SUN4I_FORMATS_ALL
-> +
->  static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
->  	.has_reset		= false,
-> +	.pcm_formats		= SUN4I_FORMATS_A10,
->  	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
->  	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
->  	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-> @@ -1360,6 +1377,7 @@ static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
->  
->  static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
->  	.has_reset		= true,
-> +	.pcm_formats		= SUN4I_FORMATS_A10,
->  	.reg_offset_txdata	= SUN4I_I2S_FIFO_TX_REG,
->  	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
->  	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-> @@ -1383,6 +1401,7 @@ static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
->   */
->  static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
->  	.has_reset		= true,
-> +	.pcm_formats		= SUN4I_FORMATS_A10,
->  	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
->  	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
->  	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-> @@ -1401,6 +1420,7 @@ static const struct sun4i_i2s_quirks sun8i_a83t_i2s_quirks = {
->  
->  static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
->  	.has_reset		= true,
-> +	.pcm_formats		= SUN4I_FORMATS_H3,
->  	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
->  	.sun4i_i2s_regmap	= &sun8i_i2s_regmap_config,
->  	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
-> @@ -1419,6 +1439,7 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
->  
->  static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
->  	.has_reset		= true,
-> +	.pcm_formats		= SUN4I_FORMATS_H3,
->  	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
->  	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
->  	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-> @@ -1437,6 +1458,7 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
->  
->  static const struct sun4i_i2s_quirks sun50i_h6_i2s_quirks = {
->  	.has_reset		= true,
-> +	.pcm_formats		= SUN4I_FORMATS_H3,
->  	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
->  	.sun4i_i2s_regmap	= &sun50i_h6_i2s_regmap_config,
->  	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
-> @@ -1455,6 +1477,7 @@ static const struct sun4i_i2s_quirks sun50i_h6_i2s_quirks = {
->  
->  static const struct sun4i_i2s_quirks sun50i_r329_i2s_quirks = {
->  	.has_reset		= true,
-> +	.pcm_formats		= SUN4I_FORMATS_H3,
->  	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
->  	.sun4i_i2s_regmap	= &sun50i_h6_i2s_regmap_config,
->  	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
-> 
-> ---
-> base-commit: 13227c2baa6b345451128828c9c2b0ec3868bd0d
-> change-id: 20240326-sunxi_s32-f2ab25b8e688
-> 
-> Best regards,
+> I don't know what actually starts the process that leads to the
+> interrupt, but if it's dw_pcie_ep_init(), then one of these (qcom, I
+> think) must be racy:
 > 
 
+Your analysis is correct. But there is no race observed as of now since the IRQ
+will only be enabled by configuring the endpoint using configfs interface and
+right now I use an init script to do that. By that time, the driver would've
+already probed completely.
 
+But there is a slight chance that if the driver gets loaded as a module and the
+userspace script starts configuring the endpoint interface using inotify watch
+or something similar, then race could occur since the IRQ handler may not be
+registered at that point.
 
+>   qcom_pcie_ep_probe
+>     dw_pcie_ep_init                                             <- A
+>     qcom_pcie_ep_enable_irq_resources
+>       devm_request_threaded_irq(qcom_pcie_ep_perst_irq_thread)  <- B
+> 
+>   qcom_pcie_ep_perst_irq_thread
+>     qcom_pcie_perst_deassert
+>       dw_pcie_ep_init_registers
+> 
+>   tegra_pcie_dw_probe
+>     tegra_pcie_config_ep
+>       devm_request_threaded_irq(tegra_pcie_ep_pex_rst_irq)      <- B
+>       dw_pcie_ep_init                                           <- A
+> 
+>   tegra_pcie_ep_pex_rst_irq
+>     pex_ep_event_pex_rst_deassert
+>       dw_pcie_ep_init_registers
+> 
+> Whatever the right answer is, I think qcom and tegra194 should both
+> order dw_pcie_ep_init() and the devm_request_threaded_irq() the same
+> way.
+> 
 
+Agree. The right way is to register the IRQ handler first and then do
+dw_pcie_ep_init(). I will fix it in the qcom driver.
+
+Thanks for spotting!
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
