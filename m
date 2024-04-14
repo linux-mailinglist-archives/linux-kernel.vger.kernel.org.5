@@ -1,525 +1,933 @@
-Return-Path: <linux-kernel+bounces-143924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAD3B8A3FB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 01:56:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0E68A3FBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:07:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816E028224D
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:56:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEC4D1C20F80
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 00:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97095823C;
-	Sat, 13 Apr 2024 23:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101DD1859;
+	Sun, 14 Apr 2024 00:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZV0yuJiR"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jqQnH0Aq"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91DF25822D
-	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 23:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B27136D;
+	Sun, 14 Apr 2024 00:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713052584; cv=none; b=HIew1IPYdFNvDbZQkRvtuYNWvMm2M5t/cU7NDYZE9/QLuP76wy0ltGew+hZBuD6h9uBuMwHEUyCyJyA2QAkz/YmoaIa0tP/1w3G/aUUJllGc+5/zyS9eDr5nqGrNC8EXaZujjgY4fQogD2CmOsfjwmB/Pwat7ywE9tK3DUPfx7A=
+	t=1713053238; cv=none; b=fg+hEWYfpHyrus56lAZrmIIYD58WphyxTCLkbv8Fi3UHj/dwvVCUhhDbLnD1drngraYfQQgDBbeIuEVntpCZX2mbs+nnWLKdBbFmFaXiPVK9sE7vYhjqbMvLy2QXaWAzkEHZ0YMN8anPkxjOPMJXGqg4oOfWCRRbKBNeTTVJtOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713052584; c=relaxed/simple;
-	bh=+rQKjsWKkF5WVIXm0tlmggLd86PgwjLOBVKIvi8IZY0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MJsGR8+CqAxtP/HQwnZ6Jj3Q+IvlTGorTvgdJIu5VO4cTx1blrfK0cikvN4YddDAt2H34Vp/QznjDlwFsQM+dAYaiGtfumhE7CAeT6r10Q8WNjdrX42BgZxBF0Ev3Htc5lalyRXgZFFN3eOFSYRiKJ2P88iStSMbbCLgoX5rnzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZV0yuJiR; arc=none smtp.client-ip=209.85.161.51
+	s=arc-20240116; t=1713053238; c=relaxed/simple;
+	bh=r2dOedoyB6oSK+NEaVmvFPgqzxvMfnnEoAN/d2FOYCI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nojJF/aaXhfxiBokhVkcPcqHnIuUymfGUDj3O3G6wScfQu3o/19/J6yiEluKaO1gVFvdh1rATdZEqIgSS2xREYgcWypeyjXNX+AsZXtP5Lep2UvPmfDPMsiKHtnBnEyP94mRemJWfftznkRM2S3LxjlRyJxjk+07a1vTHOgkIu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jqQnH0Aq; arc=none smtp.client-ip=209.85.214.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a4930d9c48so1033212eaf.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 16:56:22 -0700 (PDT)
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e3e56c9d2cso18374655ad.1;
+        Sat, 13 Apr 2024 17:07:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713052581; x=1713657381; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qlo8iiW9XzNbwgCxhCI3oz9F/KupitoTXB2VwtVn9QI=;
-        b=ZV0yuJiRUHCIFMlwW/0cQZpdIIx3nNuf9+ExR59LjmQlYqPeUYBl6crHfwxnv4nU7D
-         uVaQ4tYPayNF8xw31joWjK5IzDlnxtNwIIIvTWa1p42N2gLdjgkXV6vrZtfMu84oZghS
-         z1cwPjO/yDELVoohC57zhha2F/0UAF+/fHRcY1llL5XZYfcA/CD8ykgmklOeq0Q1qPpK
-         EMWjTdGbk9jFNoIYkQ9hkDQD/i7VsBjxg3/XQsT0c/hh644jN2ZwY+ywtFGr50TWaX7h
-         LRgx4sGN83yzYE7aZRSksauTg6z7xMNXTaqWKDw5YzBfPmFBiEO7iDRe3gw7jsvUxJoK
-         9Oag==
+        d=gmail.com; s=20230601; t=1713053235; x=1713658035; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Eh9TsfV8QUTIOV3TJA8DNUVXpmcwcvOIlKu862XChG4=;
+        b=jqQnH0AqkmfMrrMBJ1hFEeXvswaSb1g16Ogow70EIrm6IzNqUO/UVy8STDEiqHmcby
+         TQOvAPKzhIaGsd9cutWQSOKhzlkZu7HH5PQnvkNfRD5XJLI9z/ACTUzDVazI8hPcbQQE
+         /qmcV3cjQeEicgxxZSbZtBANal28Ml67oKin0OIAy0zPBBa4OOFgIDtLZJT3mM1IWIyx
+         6c0oxhdwk2UwCDGaXe3DesLYczVLhlbuc7W1VJ0syTMRGCXu8SfOpzJK3HclIz0ikjRT
+         Jn77Ly56up+ft2Lhza0Euys86Rzo9x0RsbXm8y17pb+EWY/gx/T0MSMte3pHddtkoOaG
+         1nRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713052581; x=1713657381;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qlo8iiW9XzNbwgCxhCI3oz9F/KupitoTXB2VwtVn9QI=;
-        b=Co3yC9+xzP1pUaFycuebRt/RqUNTEcUNocVE8WE+H59WCZbxK6pSS5yUx/YrhIZdZC
-         Q/KsfJd1M2kaTKxfzu+SjmxKhY5sE+dNyO/WMigf0ornM25wBOWz5icf8VgvD25Q7eg9
-         bvfIGsrAJSmQPJfV1CijT9EqjnX7YCyGE75tgb5DD2XuxF8MbzNwjei7usq5gp49CAKF
-         g+Vl+4TZBaf1X6iuiVAV3el+erTecJTr0H+zsQHPH9zymEGFplRsv9sYRNa4Vs40zuMR
-         Gu33VdNREyoZX+cBoMARcLgCWa0vPC85RNE/dqRC7xW8fFtTm3XSFgJUm1LRsgtndyhM
-         plgg==
-X-Gm-Message-State: AOJu0YzZg/MeCwZWbfHvAgzRixopNpbo5yFJv+Dl4XJ5MH2XLROF1y6k
-	8ekbx3uWJcSqExeoTcwgEi1WAJMD33CQDKe7AzBF5rmBUTL8G09NZGqeUohV
-X-Google-Smtp-Source: AGHT+IHZLfmH4vSy+8/9v9lUfqHzU8MYj0rSF/HuiKH+LCO8N1xSWPVyVEi/YRDpE7ZqFqyuslnwGw==
-X-Received: by 2002:a05:6808:2204:b0:3c6:394:2334 with SMTP id bd4-20020a056808220400b003c603942334mr7431610oib.2.1713052580988;
-        Sat, 13 Apr 2024 16:56:20 -0700 (PDT)
-Received: from SDF-ThinkCentre-M93p.localdomain (c-76-17-255-148.hsd1.mn.comcast.net. [76.17.255.148])
-        by smtp.googlemail.com with ESMTPSA id x64-20020a25ce43000000b00dc74258241fsm1375829ybe.45.2024.04.13.16.56.17
+        d=1e100.net; s=20230601; t=1713053235; x=1713658035;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Eh9TsfV8QUTIOV3TJA8DNUVXpmcwcvOIlKu862XChG4=;
+        b=FItsaLOO1d+47jq+rFS94KyJxnj0Jpk85bzBYyGrFLooHqXwOG2upTPzawf0DD7U2W
+         vKFZNHZtGJDh0Xl9wWcpuj90kKOPAp9/ll/wJ5oQ5P//FX3bwYPAP7NzWVSHuHAXqiwX
+         WtnIFVMt2KPKtYPQYXFWIGzJt69tKBzAe8AoJ8r3Qt1tQTe4OewIq6fnUjzg3aZyQNZm
+         Ub17E2L5baOFdTyUHXHNi+fl9NWq0uH/lGS33JQCpcy3DL03EleEWIZl0FUu4cd6hoWU
+         UlOeBlexK7DiPxMnOa82hBX3UF8ZfbMpI45JS1DME19nDhqSsUkCUKA103KylwsR2IsJ
+         hweA==
+X-Forwarded-Encrypted: i=1; AJvYcCVJxJaTchB5Owbw6Oz/BQwYYUPYA56+fwXGE+PKYsuKeeNS6wGtHJxivqWc4V3W7sVutdX1z7t0vLAX7K6Kv4QCbCmY07/iSBhyLrh/LTIhfvwvPkeZqDwtekdQemrZ2o1TYzvZH6c=
+X-Gm-Message-State: AOJu0YyMSx1dECmWdiYX7LlXzbP4mgk+Ad9awyWOhfDirgAOTlfdDyDs
+	+MUVeCy91QLfvjgMdsMc5YR9aOB6/5UgXjZLw58HPjNvgsVcJPSapdM+nQ==
+X-Google-Smtp-Source: AGHT+IHHVVW2DkJpusdvyxWwGnL4uS7ulabdsqHSS4M8/lHps5i6BVhX4VUdfFboAKUPSyOOj0SeLw==
+X-Received: by 2002:a17:903:950:b0:1e5:d021:cf58 with SMTP id ma16-20020a170903095000b001e5d021cf58mr6865098plb.36.1713053234892;
+        Sat, 13 Apr 2024 17:07:14 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id v13-20020a170902f0cd00b001e46939b250sm5154827pla.119.2024.04.13.17.07.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 16:56:20 -0700 (PDT)
-From: Shimrra Shai <shimmyshai00@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	Heiko Stuebner <heiko.stuebner@cherry.de>,
-	Max Schwarz <max.schwarz@online.de>,
-	Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>,
-	Niyas Sait <niyas.sait@huawei.com>,
-	Shimrra Shai <shimmyshai00@gmail.com>
-Subject: [PATCH 0/0] [v2] Add ACPI binding to Rockchip RK3xxx I2C bus
-Date: Sat, 13 Apr 2024 19:03:55 -0500
-Message-Id: <20240414000355.10984-1-shimmyshai00@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 13 Apr 2024 17:07:14 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 9140C18462BA4; Sun, 14 Apr 2024 07:07:10 +0700 (WIB)
+Date: Sun, 14 Apr 2024 07:07:10 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Kenneth Crudup <kenny@panix.com>,
+	Linux Power Management <linux-pm@vger.kernel.org>,
+	Linux Regressions <regressions@lists.linux.dev>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	"Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
+Cc: Youngmin Nam <youngmin.nam@samsung.com>,
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Kernels 6.8+ no longer resume fully after a hibernate
+Message-ID: <ZhseLvmpEyP23BRi@archie.me>
+References: <b702c59f-7a5b-48f5-a726-a4840ce05c3f@panix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="CAJphcl6COmIsNLl"
+Content-Disposition: inline
+In-Reply-To: <b702c59f-7a5b-48f5-a726-a4840ce05c3f@panix.com>
 
-Hi,
 
-This is a second version of the patch that I submitted a few weeks ago for
-adding an ACPI binding for I2C bringup on the Rockchip RK3xxx
-(specifically, RK3588) platforms for compatibility with the newfangled
-TianoCore EDK2 firmwares. This was previously discussed here:
+--CAJphcl6COmIsNLl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://lore.kernel.org/linux-kernel/20240321173447.15660-1-shimmyshai00@gmail.com/
+On Sat, Apr 13, 2024 at 10:20:49AM -0700, Kenneth Crudup wrote:
+>=20
+> I can't resume my system (Dell XPS 9320) after a hibernate in any 6.8 ker=
+nel
+> (incl. the recently-released 6.8.6); the resume apparently succeeds, but
+> things are non-responsive and I suspect it's the disk I/O system.
+>=20
+> I use a swapfile, if it matters.
+>=20
+> I've been trying to bisect this failure for a while with no success, but =
+in
+> the process I'd determined the 6.7 series fails in the same way and was
+> fixed sometime between v6.7.2 and v6.7.3.
+>=20
+> I had to reverse "good" and "bad" in the v6.7 bisection due to the "not
+> ancestor of" issue (so I may not have done it properly, but I've attached
+> the bisection log) but was able to allegedly track it to commit 9bd3dce27=
+b0
+> ("PM: sleep: Fix possible deadlocks in core system-wide PM code"), but
+> trying the kernel committed immediately before (and after) that didn't se=
+em
+> to make a difference.
+>=20
+> I did a SysRq-Crash to force a dump to pstore, which I've also attached.
+>=20
+> If there's anything else you'll need, let me know.
+>=20
+> -Kenny
+>=20
+> --=20
+> Kenneth R. Crudup / Sr. SW Engineer, Scott County Consulting, Orange Coun=
+ty
+> CA
 
-After some convo with the maintainer of the firmware, it was suggested I
-should have a kernel patch ready and approvable here before he can amend
-the ACPI tables in it. The following patch accepts an ACPI table entry for
-the I2C busses that looks like this:
+> Panic#1 Part3
+> <4>[   88.593926][    C0]  #6: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593928][    C0] , S:01
+> <4>[   88.593928][    C0]=20
+> <4>[   88.593928][    C0]  # expires at 9223372036854775807-9223372036854=
+775807 nsecs [in 7510344925955549779 to 7510344925955549779 nsecs]
+> <4>[   88.593929][    C0]  clock 2:
+> <4>[   88.593929][    C0]   .base:               pK-error
+> <4>[   88.593930][    C0]   .index:      2
+> <4>[   88.593930][    C0]   .resolution: 1 nsecs
+> <4>[   88.593930][    C0]   .get_time:   ktime_get_boottime
+> <4>[   88.593931][    C0]   .offset:     43530917696 nsecs
+> <4>[   88.593932][    C0] active timers:
+> <4>[   88.593932][    C0]  clock 3:
+> <4>[   88.593932][    C0]   .base:               pK-error
+> <4>[   88.593933][    C0]   .index:      3
+> <4>[   88.593933][    C0]   .resolution: 1 nsecs
+> <4>[   88.593933][    C0]   .get_time:   ktime_get_clocktai
+> <4>[   88.593935][    C0]   .offset:     1713027022323372591 nsecs
+> <4>[   88.593935][    C0] active timers:
+> <4>[   88.593935][    C0]  clock 4:
+> <4>[   88.593936][    C0]   .base:               pK-error
+> <4>[   88.593936][    C0]   .index:      4
+> <4>[   88.593936][    C0]   .resolution: 1 nsecs
+> <4>[   88.593937][    C0]   .get_time:   ktime_get
+> <4>[   88.593938][    C0]   .offset:     0 nsecs
+> <4>[   88.593938][    C0] active timers:
+> <4>[   88.593939][    C0]  clock 5:
+> <4>[   88.593939][    C0]   .base:               pK-error
+> <4>[   88.593939][    C0]   .index:      5
+> <4>[   88.593939][    C0]   .resolution: 1 nsecs
+> <4>[   88.593940][    C0]   .get_time:   ktime_get_real
+> <4>[   88.593941][    C0]   .offset:     1713027022323372591 nsecs
+> Panic#1 Part2
+> <4>[   88.593941][    C0] active timers:
+> <4>[   88.593941][    C0]  clock 6:
+> <4>[   88.593942][    C0]   .base:               pK-error
+> <4>[   88.593942][    C0]   .index:      6
+> <4>[   88.593942][    C0]   .resolution: 1 nsecs
+> <4>[   88.593943][    C0]   .get_time:   ktime_get_boottime
+> <4>[   88.593944][    C0]   .offset:     43530917696 nsecs
+> <4>[   88.593944][    C0] active timers:
+> <4>[   88.593944][    C0]  clock 7:
+> <4>[   88.593945][    C0]   .base:               pK-error
+> <4>[   88.593945][    C0]   .index:      7
+> <4>[   88.593945][    C0]   .resolution: 1 nsecs
+> <4>[   88.593946][    C0]   .get_time:   ktime_get_clocktai
+> <4>[   88.593947][    C0]   .offset:     1713027022323372591 nsecs
+> <4>[   88.593947][    C0] active timers:
+> <4>[   88.593947][    C0]   .expires_next   : 89320114349 nsecs
+> <4>[   88.593948][    C0]   .hres_active    : 1
+> <4>[   88.593949][    C0]   .nr_events      : 8987
+> <4>[   88.593949][    C0]   .nr_retries     : 5
+> <4>[   88.593949][    C0]   .nr_hangs       : 0
+> <4>[   88.593950][    C0]   .max_hang_time  : 0
+> <4>[   88.593950][    C0]   .nohz_mode      : 2
+> <4>[   88.593951][    C0]   .last_tick      : 85809000000 nsecs
+> <4>[   88.593951][    C0]   .tick_stopped   : 1
+> <4>[   88.593951][    C0]   .idle_jiffies   : 4294752997
+> <4>[   88.593952][    C0]   .idle_calls     : 18572
+> <4>[   88.593952][    C0]   .idle_sleeps    : 18226
+> <4>[   88.593953][    C0]   .idle_entrytime : 88552463842 nsecs
+> <4>[   88.593953][    C0]   .idle_waketime  : 88552463842 nsecs
+> <4>[   88.593954][    C0]   .idle_exittime  : 85808440225 nsecs
+> <4>[   88.593954][    C0]   .idle_sleeptime : 83693079684 nsecs
+> Panic#1 Part1
+> <4>[   88.593954][    C0]   .iowait_sleeptime: 98668015 nsecs
+> <4>[   88.593955][    C0]   .last_jiffies   : 4294752997
+> <4>[   88.593955][    C0]   .next_timer     : 91211000000
+> <4>[   88.593956][    C0]   .idle_expires   : 91211000000 nsecs
+> <4>[   88.593956][    C0] jiffies: 4294755742
+> <4>[   88.593957][    C0]=20
+> <4>[   88.593957][    C0] Tick Device: mode:     1
+> <4>[   88.593957][    C0] Broadcast device
+> <4>[   88.593958][    C0] Clock Event Device:=20
+> <4>[   88.593958][    C0] <NULL>
+> <4>[   88.593958][    C0] tick_broadcast_mask: 00000
+> <4>[   88.593959][    C0] tick_broadcast_oneshot_mask: 00000
+> <4>[   88.593960][    C0]=20
+> <4>[   88.593960][    C0] Tick Device: mode:     1
+> <4>[   88.593961][    C0] Per CPU device: 0
+> <4>[   88.593961][    C0] Clock Event Device:=20
+> <4>[   88.593961][    C0] lapic-deadline
+> <4>[   88.593962][    C0]  max_delta_ns:   1101273695516
+> <4>[   88.593963][    C0]  min_delta_ns:   1000
+> <4>[   88.593963][    C0]  mult:           16750372
+> <4>[   88.593963][    C0]  shift:          26
+> <4>[   88.593964][    C0]  mode:           3
+> <4>[   88.593964][    C0]  next_event:     89320114349 nsecs
+> <4>[   88.593964][    C0]  set_next_event: lapic_next_deadline
+> <4>[   88.593967][    C0]  shutdown:       lapic_timer_shutdown
+> <4>[   88.593968][    C0]  periodic:       lapic_timer_set_periodic
+> <4>[   88.593970][    C0]  oneshot:        lapic_timer_set_oneshot
+> <4>[   88.593971][    C0]  oneshot stopped: lapic_timer_shutdown
+> <4>[   88.593973][    C0]  event_handler:  hrtimer_interrupt
+> <4>[   88.593974][    C0]=20
+> <4>[   88.593974][    C0]  retries:        40
+> <4>[   88.593974][    C0] Wakeup Device: <NULL>
+> <4>[   88.593975][    C0]=20
+> Panic#1 Part23
+> <6>[   88.593216][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593218][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593219][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593221][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593222][    C0]  </TASK>
+> <6>[   88.593223][    C0] task:kworker/u40:81  state:I stack:0     pid:23=
+37  tgid:2337  ppid:2      flags:0x00004000
+> <6>[   88.593225][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593225][    C0] Call Trace:
+> <6>[   88.593226][    C0]  <TASK>
+> <6>[   88.593227][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593228][    C0]  schedule+0x34/0xb0
+> <6>[   88.593229][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593230][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593232][    C0]  kthread+0xf3/0x120
+> <6>[   88.593234][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593235][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593237][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593238][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593240][    C0]  </TASK>
+> <6>[   88.593241][    C0] task:kworker/u40:82  state:I stack:0     pid:23=
+38  tgid:2338  ppid:2      flags:0x00004000
+> <6>[   88.593242][    C0] Workqueue:  0x0 (events_power_efficient)
+> <6>[   88.593243][    C0] Call Trace:
+> <6>[   88.593244][    C0]  <TASK>
+> <6>[   88.593244][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593245][    C0]  ? __queue_delayed_work+0x57/0x90
+> <6>[   88.593247][    C0]  ? fb_flashcursor+0x120/0x160
+> <6>[   88.593249][    C0]  schedule+0x34/0xb0
+> <6>[   88.593250][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593252][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593253][    C0]  kthread+0xf3/0x120
+> Panic#1 Part22
+> <6>[   88.593255][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593256][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593258][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593259][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593261][    C0]  </TASK>
+> <6>[   88.593262][    C0] task:kworker/u40:83  state:I stack:0     pid:23=
+39  tgid:2339  ppid:2      flags:0x00004000
+> <6>[   88.593263][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593264][    C0] Call Trace:
+> <6>[   88.593265][    C0]  <TASK>
+> <6>[   88.593265][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593266][    C0]  schedule+0x34/0xb0
+> <6>[   88.593267][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593269][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593271][    C0]  kthread+0xf3/0x120
+> <6>[   88.593272][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593274][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593275][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593277][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593278][    C0]  </TASK>
+> <6>[   88.593280][    C0] task:kworker/u40:84  state:I stack:0     pid:23=
+40  tgid:2340  ppid:2      flags:0x00004000
+> <6>[   88.593281][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593281][    C0] Call Trace:
+> <6>[   88.593282][    C0]  <TASK>
+> <6>[   88.593282][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593284][    C0]  schedule+0x34/0xb0
+> <6>[   88.593285][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593286][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593288][    C0]  kthread+0xf3/0x120
+> <6>[   88.593290][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593291][    C0]  ret_from_fork+0x34/0x50
+> Panic#1 Part21
+> <6>[   88.593293][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593294][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593296][    C0]  </TASK>
+> <6>[   88.593297][    C0] task:kworker/u40:85  state:I stack:0     pid:23=
+41  tgid:2341  ppid:2      flags:0x00004000
+> <6>[   88.593298][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593299][    C0] Call Trace:
+> <6>[   88.593300][    C0]  <TASK>
+> <6>[   88.593300][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593301][    C0]  schedule+0x34/0xb0
+> <6>[   88.593302][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593304][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593306][    C0]  kthread+0xf3/0x120
+> <6>[   88.593307][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593309][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593310][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593312][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593313][    C0]  </TASK>
+> <6>[   88.593315][    C0] task:kworker/u40:86  state:I stack:0     pid:23=
+42  tgid:2342  ppid:2      flags:0x00004000
+> <6>[   88.593316][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593317][    C0] Call Trace:
+> <6>[   88.593317][    C0]  <TASK>
+> <6>[   88.593318][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593319][    C0]  schedule+0x34/0xb0
+> <6>[   88.593320][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593322][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593323][    C0]  kthread+0xf3/0x120
+> <6>[   88.593325][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593326][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593328][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593330][    C0]  ret_from_fork_asm+0x11/0x20
+> Panic#1 Part20
+> <6>[   88.593331][    C0]  </TASK>
+> <6>[   88.593332][    C0] task:kworker/u40:87  state:I stack:0     pid:23=
+43  tgid:2343  ppid:2      flags:0x00004000
+> <6>[   88.593333][    C0] Workqueue:  0x0 (kec)
+> <6>[   88.593334][    C0] Call Trace:
+> <6>[   88.593335][    C0]  <TASK>
+> <6>[   88.593335][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593336][    C0]  ? acpi_ec_close_event+0x29/0x50
+> <6>[   88.593338][    C0]  ? acpi_ec_event_handler+0x97/0x110
+> <6>[   88.593340][    C0]  schedule+0x34/0xb0
+> <6>[   88.593340][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593342][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593344][    C0]  kthread+0xf3/0x120
+> <6>[   88.593346][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593347][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593349][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593350][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593352][    C0]  </TASK>
+> <6>[   88.593353][    C0] task:kworker/u40:88  state:D stack:0     pid:23=
+44  tgid:2344  ppid:2      flags:0x00004000
+> <6>[   88.593354][    C0] Workqueue: events_unbound async_run_entry_fn
+> <6>[   88.593355][    C0] Call Trace:
+> <6>[   88.593356][    C0]  <TASK>
+> <6>[   88.593356][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593357][    C0]  ? select_idle_core.constprop.0+0x81/0x110
+> <6>[   88.593359][    C0]  schedule+0x34/0xb0
+> <6>[   88.593360][    C0]  schedule_timeout+0xe2/0xf0
+> <6>[   88.593361][    C0]  ? asm_sysvec_reschedule_ipi+0x1f/0x30
+> <6>[   88.593363][    C0]  wait_for_completion+0x7e/0x130
+> <6>[   88.593365][    C0]  dpm_wait_for_superior+0x128/0x150
+> <6>[   88.593366][    C0]  device_resume+0x58/0x2c0
+> <6>[   88.593368][    C0]  async_resume+0x1d/0x30
+> Panic#1 Part19
+> <6>[   88.593369][    C0]  async_run_entry_fn+0x2c/0x110
+> <6>[   88.593371][    C0]  process_one_work+0x169/0x280
+> <6>[   88.593372][    C0]  worker_thread+0x2f5/0x410
+> <6>[   88.593374][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593376][    C0]  kthread+0xf3/0x120
+> <6>[   88.593378][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593379][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593381][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593382][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593384][    C0]  </TASK>
+> <6>[   88.593385][    C0] task:kworker/u40:89  state:D stack:0     pid:23=
+45  tgid:2345  ppid:2      flags:0x00004000
+> <6>[   88.593386][    C0] Workqueue: events_unbound async_run_entry_fn
+> <6>[   88.593387][    C0] Call Trace:
+> <6>[   88.593388][    C0]  <TASK>
+> <6>[   88.593388][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593389][    C0]  ? select_idle_core.constprop.0+0x81/0x110
+> <6>[   88.593391][    C0]  schedule+0x34/0xb0
+> <6>[   88.593392][    C0]  schedule_timeout+0xe2/0xf0
+> <6>[   88.593393][    C0]  wait_for_completion+0x7e/0x130
+> <6>[   88.593394][    C0]  dpm_wait_for_superior+0x128/0x150
+> <6>[   88.593396][    C0]  device_resume+0x58/0x2c0
+> <6>[   88.593398][    C0]  async_resume+0x1d/0x30
+> <6>[   88.593399][    C0]  async_run_entry_fn+0x2c/0x110
+> <6>[   88.593400][    C0]  process_one_work+0x169/0x280
+> <6>[   88.593402][    C0]  worker_thread+0x2f5/0x410
+> <6>[   88.593404][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593406][    C0]  kthread+0xf3/0x120
+> <6>[   88.593407][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593409][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593411][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> Panic#1 Part18
+> <6>[   88.593412][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593414][    C0]  </TASK>
+> <6>[   88.593415][    C0] task:kworker/u40:90  state:I stack:0     pid:23=
+46  tgid:2346  ppid:2      flags:0x00004000
+> <6>[   88.593416][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593417][    C0] Call Trace:
+> <6>[   88.593417][    C0]  <TASK>
+> <6>[   88.593418][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593419][    C0]  schedule+0x34/0xb0
+> <6>[   88.593420][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593422][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593424][    C0]  kthread+0xf3/0x120
+> <6>[   88.593425][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593427][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593428][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593430][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593431][    C0]  </TASK>
+> <6>[   88.593433][    C0] task:kworker/u40:91  state:I stack:0     pid:23=
+47  tgid:2347  ppid:2      flags:0x00004000
+> <6>[   88.593434][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593435][    C0] Call Trace:
+> <6>[   88.593435][    C0]  <TASK>
+> <6>[   88.593436][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593437][    C0]  schedule+0x34/0xb0
+> <6>[   88.593438][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593440][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593441][    C0]  kthread+0xf3/0x120
+> <6>[   88.593443][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593445][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593446][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593448][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593449][    C0]  </TASK>
+> Panic#1 Part17
+> <6>[   88.593450][    C0] task:kworker/u40:92  state:I stack:0     pid:23=
+48  tgid:2348  ppid:2      flags:0x00004000
+> <6>[   88.593452][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593453][    C0] Call Trace:
+> <6>[   88.593453][    C0]  <TASK>
+> <6>[   88.593454][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593455][    C0]  schedule+0x34/0xb0
+> <6>[   88.593456][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593457][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593459][    C0]  kthread+0xf3/0x120
+> <6>[   88.593461][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593462][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593464][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593465][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593467][    C0]  </TASK>
+> <6>[   88.593468][    C0] task:kworker/u40:93  state:I stack:0     pid:23=
+49  tgid:2349  ppid:2      flags:0x00004000
+> <6>[   88.593469][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593470][    C0] Call Trace:
+> <6>[   88.593471][    C0]  <TASK>
+> <6>[   88.593471][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593472][    C0]  schedule+0x34/0xb0
+> <6>[   88.593473][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593475][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593477][    C0]  kthread+0xf3/0x120
+> <6>[   88.593478][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593480][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593481][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593483][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593484][    C0]  </TASK>
+> <6>[   88.593485][    C0] task:kworker/u40:94  state:I stack:0     pid:23=
+50  tgid:2350  ppid:2      flags:0x00004000
+> Panic#1 Part16
+> <6>[   88.593486][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593487][    C0] Call Trace:
+> <6>[   88.593488][    C0]  <TASK>
+> <6>[   88.593488][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593489][    C0]  schedule+0x34/0xb0
+> <6>[   88.593490][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593492][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593494][    C0]  kthread+0xf3/0x120
+> <6>[   88.593495][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593497][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593498][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593500][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593502][    C0]  </TASK>
+> <6>[   88.593503][    C0] task:kworker/u40:95  state:I stack:0     pid:23=
+51  tgid:2351  ppid:2      flags:0x00004000
+> <6>[   88.593504][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593505][    C0] Call Trace:
+> <6>[   88.593506][    C0]  <TASK>
+> <6>[   88.593506][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593507][    C0]  schedule+0x34/0xb0
+> <6>[   88.593508][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593510][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593512][    C0]  kthread+0xf3/0x120
+> <6>[   88.593513][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593515][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593516][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593518][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593519][    C0]  </TASK>
+> <6>[   88.593520][    C0] task:kworker/u40:96  state:I stack:0     pid:23=
+52  tgid:2352  ppid:2      flags:0x00004000
+> <6>[   88.593522][    C0] Workqueue:  0x0 (events_unbound)
+> Panic#1 Part15
+> <6>[   88.593523][    C0] Call Trace:
+> <6>[   88.593523][    C0]  <TASK>
+> <6>[   88.593523][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593525][    C0]  schedule+0x34/0xb0
+> <6>[   88.593525][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593527][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593529][    C0]  kthread+0xf3/0x120
+> <6>[   88.593531][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593532][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593534][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593535][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593537][    C0]  </TASK>
+> <6>[   88.593538][    C0] task:kworker/u40:97  state:I stack:0     pid:23=
+53  tgid:2353  ppid:2      flags:0x00004000
+> <6>[   88.593539][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593540][    C0] Call Trace:
+> <6>[   88.593540][    C0]  <TASK>
+> <6>[   88.593541][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593542][    C0]  schedule+0x34/0xb0
+> <6>[   88.593543][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593545][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593547][    C0]  kthread+0xf3/0x120
+> <6>[   88.593548][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593550][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593552][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593553][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593555][    C0]  </TASK>
+> <6>[   88.593556][    C0] task:kworker/u40:98  state:I stack:0     pid:23=
+54  tgid:2354  ppid:2      flags:0x00004000
+> <6>[   88.593557][    C0] Workqueue:  0x0 (kec)
+> <6>[   88.593557][    C0] Call Trace:
+> <6>[   88.593558][    C0]  <TASK>
+> <6>[   88.593559][    C0]  __schedule+0x2d2/0x1160
+> Panic#1 Part14
+> <6>[   88.593560][    C0]  ? acpi_ec_close_event+0x29/0x50
+> <6>[   88.593561][    C0]  ? acpi_ec_event_handler+0x97/0x110
+> <6>[   88.593563][    C0]  schedule+0x34/0xb0
+> <6>[   88.593564][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593566][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593568][    C0]  kthread+0xf3/0x120
+> <6>[   88.593569][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593571][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593572][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593574][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593575][    C0]  </TASK>
+> <6>[   88.593576][    C0] task:kworker/u40:99  state:D stack:0     pid:23=
+55  tgid:2355  ppid:2      flags:0x00004000
+> <6>[   88.593578][    C0] Workqueue: events_unbound async_run_entry_fn
+> <6>[   88.593579][    C0] Call Trace:
+> <6>[   88.593580][    C0]  <TASK>
+> <6>[   88.593580][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593581][    C0]  schedule+0x34/0xb0
+> <6>[   88.593582][    C0]  schedule_timeout+0xe2/0xf0
+> <6>[   88.593584][    C0]  wait_for_completion+0x7e/0x130
+> <6>[   88.593585][    C0]  dpm_wait_for_superior+0x128/0x150
+> <6>[   88.593586][    C0]  device_resume+0x58/0x2c0
+> <6>[   88.593588][    C0]  async_resume+0x1d/0x30
+> <6>[   88.593589][    C0]  async_run_entry_fn+0x2c/0x110
+> <6>[   88.593591][    C0]  process_one_work+0x169/0x280
+> <6>[   88.593593][    C0]  worker_thread+0x2f5/0x410
+> <6>[   88.593594][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593596][    C0]  kthread+0xf3/0x120
+> <6>[   88.593598][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593599][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593601][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> Panic#1 Part13
+> <6>[   88.593602][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593604][    C0]  </TASK>
+> <6>[   88.593605][    C0] task:kworker/u40:100 state:D stack:0     pid:23=
+56  tgid:2356  ppid:2      flags:0x00004000
+> <6>[   88.593607][    C0] Workqueue: events_unbound async_run_entry_fn
+> <6>[   88.593608][    C0] Call Trace:
+> <6>[   88.593609][    C0]  <TASK>
+> <6>[   88.593609][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593610][    C0]  schedule+0x34/0xb0
+> <6>[   88.593611][    C0]  schedule_timeout+0xe2/0xf0
+> <6>[   88.593613][    C0]  wait_for_completion+0x7e/0x130
+> <6>[   88.593614][    C0]  dpm_wait_for_superior+0x128/0x150
+> <6>[   88.593615][    C0]  device_resume+0x58/0x2c0
+> <6>[   88.593617][    C0]  async_resume+0x1d/0x30
+> <6>[   88.593618][    C0]  async_run_entry_fn+0x2c/0x110
+> <6>[   88.593620][    C0]  process_one_work+0x169/0x280
+> <6>[   88.593622][    C0]  worker_thread+0x2f5/0x410
+> <6>[   88.593623][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593625][    C0]  kthread+0xf3/0x120
+> <6>[   88.593627][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593628][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593630][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593631][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593633][    C0]  </TASK>
+> <6>[   88.593634][    C0] task:kworker/u40:101 state:D stack:0     pid:23=
+57  tgid:2357  ppid:2      flags:0x00004000
+> <6>[   88.593635][    C0] Workqueue: events_unbound async_run_entry_fn
+> <6>[   88.593636][    C0] Call Trace:
+> <6>[   88.593637][    C0]  <TASK>
+> <6>[   88.593637][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593639][    C0]  schedule+0x34/0xb0
+> <6>[   88.593639][    C0]  schedule_timeout+0xe2/0xf0
+> Panic#1 Part12
+> <6>[   88.593641][    C0]  wait_for_completion+0x7e/0x130
+> <6>[   88.593642][    C0]  dpm_wait_for_superior+0x128/0x150
+> <6>[   88.593644][    C0]  device_resume+0x58/0x2c0
+> <6>[   88.593645][    C0]  async_resume+0x1d/0x30
+> <6>[   88.593647][    C0]  async_run_entry_fn+0x2c/0x110
+> <6>[   88.593648][    C0]  process_one_work+0x169/0x280
+> <6>[   88.593650][    C0]  worker_thread+0x2f5/0x410
+> <6>[   88.593652][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593653][    C0]  kthread+0xf3/0x120
+> <6>[   88.593655][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593657][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593658][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593660][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593661][    C0]  </TASK>
+> <6>[   88.593662][    C0] task:kworker/u40:102 state:D stack:0     pid:23=
+58  tgid:2358  ppid:2      flags:0x00004000
+> <6>[   88.593664][    C0] Workqueue: events_unbound async_run_entry_fn
+> <6>[   88.593665][    C0] Call Trace:
+> <6>[   88.593665][    C0]  <TASK>
+> <6>[   88.593666][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593667][    C0]  schedule+0x34/0xb0
+> <6>[   88.593668][    C0]  schedule_timeout+0xe2/0xf0
+> <6>[   88.593669][    C0]  wait_for_completion+0x7e/0x130
+> <6>[   88.593670][    C0]  dpm_wait_for_superior+0x128/0x150
+> <6>[   88.593672][    C0]  device_resume+0x58/0x2c0
+> <6>[   88.593674][    C0]  async_resume+0x1d/0x30
+> <6>[   88.593675][    C0]  async_run_entry_fn+0x2c/0x110
+> <6>[   88.593676][    C0]  process_one_work+0x169/0x280
+> <6>[   88.593678][    C0]  worker_thread+0x2f5/0x410
+> <6>[   88.593680][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593682][    C0]  kthread+0xf3/0x120
+> Panic#1 Part11
+> <6>[   88.593683][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593685][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593686][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593688][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593689][    C0]  </TASK>
+> <6>[   88.593691][    C0] task:kworker/u40:103 state:D stack:0     pid:23=
+59  tgid:2359  ppid:2      flags:0x00004000
+> <6>[   88.593692][    C0] Workqueue: events_unbound async_run_entry_fn
+> <6>[   88.593693][    C0] Call Trace:
+> <6>[   88.593694][    C0]  <TASK>
+> <6>[   88.593694][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593696][    C0]  schedule+0x34/0xb0
+> <6>[   88.593696][    C0]  schedule_timeout+0xe2/0xf0
+> <6>[   88.593698][    C0]  wait_for_completion+0x7e/0x130
+> <6>[   88.593699][    C0]  dpm_wait_for_superior+0x128/0x150
+> <6>[   88.593701][    C0]  device_resume+0x58/0x2c0
+> <6>[   88.593702][    C0]  async_resume+0x1d/0x30
+> <6>[   88.593704][    C0]  async_run_entry_fn+0x2c/0x110
+> <6>[   88.593705][    C0]  process_one_work+0x169/0x280
+> <6>[   88.593707][    C0]  worker_thread+0x2f5/0x410
+> <6>[   88.593709][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593711][    C0]  kthread+0xf3/0x120
+> <6>[   88.593712][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593714][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593715][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593717][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593718][    C0]  </TASK>
+> <6>[   88.593720][    C0] task:kworker/u40:104 state:I stack:0     pid:23=
+60  tgid:2360  ppid:2      flags:0x00004000
+> <6>[   88.593721][    C0] Workqueue:  0x0 (nvme-reset-wq)
+> <6>[   88.593722][    C0] Call Trace:
+> Panic#1 Part10
+> <6>[   88.593722][    C0]  <TASK>
+> <6>[   88.593723][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593724][    C0]  schedule+0x34/0xb0
+> <6>[   88.593725][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593727][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593728][    C0]  kthread+0xf3/0x120
+> <6>[   88.593730][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593731][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593733][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593734][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593736][    C0]  </TASK>
+> <6>[   88.593737][    C0] task:kworker/u40:105 state:I stack:0     pid:23=
+61  tgid:2361  ppid:2      flags:0x00004000
+> <6>[   88.593739][    C0] Workqueue:  0x0 (events_unbound)
+> <6>[   88.593740][    C0] Call Trace:
+> <6>[   88.593740][    C0]  <TASK>
+> <6>[   88.593741][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593742][    C0]  ? flush_to_ldisc+0x67/0x1c0
+> <6>[   88.593744][    C0]  schedule+0x34/0xb0
+> <6>[   88.593745][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593747][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593749][    C0]  kthread+0xf3/0x120
+> <6>[   88.593750][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593752][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593753][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593755][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593756][    C0]  </TASK>
+> <6>[   88.593757][    C0] task:kworker/u40:106 state:I stack:0     pid:23=
+62  tgid:2362  ppid:2      flags:0x00004000
+> <6>[   88.593759][    C0] Call Trace:
+> <6>[   88.593759][    C0]  <TASK>
+> <6>[   88.593760][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593760][    C0]  ? finish_task_switch.isra.0+0x7d/0x230
+> Panic#1 Part9
+> <6>[   88.593762][    C0]  ? __schedule+0x2da/0x1160
+> <6>[   88.593763][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593765][    C0]  schedule+0x34/0xb0
+> <6>[   88.593766][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593768][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593770][    C0]  kthread+0xf3/0x120
+> <6>[   88.593771][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593773][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593774][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593776][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593777][    C0]  </TASK>
+> <6>[   88.593778][    C0] task:cec-DP-3        state:S stack:0     pid:23=
+63  tgid:2363  ppid:2      flags:0x00004000
+> <6>[   88.593779][    C0] Call Trace:
+> <6>[   88.593780][    C0]  <TASK>
+> <6>[   88.593780][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593781][    C0]  ? raw_spin_rq_unlock+0xf/0x30
+> <6>[   88.593784][    C0]  ? cec_s_conn_info+0xf0/0xf0 [cec]
+> <6>[   88.593788][    C0]  schedule+0x34/0xb0
+> <6>[   88.593789][    C0]  cec_thread_func+0x150/0x440 [cec]
+> <6>[   88.593793][    C0]  ? destroy_sched_domains_rcu+0x30/0x30
+> <6>[   88.593795][    C0]  ? cec_s_conn_info+0xf0/0xf0 [cec]
+> <6>[   88.593798][    C0]  kthread+0xf3/0x120
+> <6>[   88.593800][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593801][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593803][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593804][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593806][    C0]  </TASK>
+> <6>[   88.593807][    C0] task:kworker/1:3     state:I stack:0     pid:23=
+64  tgid:2364  ppid:2      flags:0x00004000
+> <6>[   88.593808][    C0] Call Trace:
+> Panic#1 Part8
+> <6>[   88.593809][    C0]  <TASK>
+> <6>[   88.593809][    C0]  __schedule+0x2d2/0x1160
+> <6>[   88.593810][    C0]  ? finish_task_switch.isra.0+0x7d/0x230
+> <6>[   88.593812][    C0]  ? __schedule+0x2da/0x1160
+> <6>[   88.593813][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593815][    C0]  schedule+0x34/0xb0
+> <6>[   88.593816][    C0]  worker_thread+0x1dc/0x410
+> <6>[   88.593818][    C0]  ? rescuer_thread+0x410/0x410
+> <6>[   88.593819][    C0]  kthread+0xf3/0x120
+> <6>[   88.593821][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593823][    C0]  ret_from_fork+0x34/0x50
+> <6>[   88.593824][    C0]  ? kthread_complete_and_exit+0x20/0x20
+> <6>[   88.593826][    C0]  ret_from_fork_asm+0x11/0x20
+> <6>[   88.593827][    C0]  </TASK>
+> <4>[   88.593828][    C0] Mem-Info:
+> <4>[   88.593830][    C0] active_anon:697 inactive_anon:52543 isolated_an=
+on:0
+> <4>[   88.593830][    C0]  active_file:487 inactive_file:663 isolated_fil=
+e:0
+> <4>[   88.593830][    C0]  unevictable:2634 dirty:0 writeback:0
+> <4>[   88.593830][    C0]  slab_reclaimable:7266 slab_unreclaimable:22623
+> <4>[   88.593830][    C0]  mapped:783 shmem:3149 pagetables:2953
+> <4>[   88.593830][    C0]  sec_pagetables:0 bounce:0
+> <4>[   88.593830][    C0]  kernel_misc_reclaimable:0
+> <4>[   88.593830][    C0]  free:7986878 free_pcp:2259 free_cma:0
+> <4>[   88.593833][    C0] Node 0 active_anon:2788kB inactive_anon:210172k=
+B active_file:1948kB inactive_file:2652kB unevictable:10536kB isolated(anon=
+):0kB isolated(file):0kB mapped:3132kB dirty:0kB writeback:0kB shmem:12596k=
+B shmem_thp:8192kB shmem_pmdmapped:0kB anon_thp:0kB writeback_tmp:0kB kerne=
+l_stack:11072kB pagetables:11812kB sec_pagetables:0kB all_unreclaimable? no
+> Panic#1 Part7
+> <4>[   88.593836][    C0] Node 0 DMA free:15360kB boost:0kB min:32kB low:=
+44kB high:56kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB ac=
+tive_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15=
+992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB fre=
+e_cma:0kB
+> <4>[   88.593840][    C0] lowmem_reserve[]: 0 1261 31611 31611
+> <4>[   88.593842][    C0] Node 0 DMA32 free:1356064kB boost:0kB min:2696k=
+B low:3988kB high:5280kB reserved_highatomic:0KB active_anon:0kB inactive_a=
+non:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB =
+present:1422044kB managed:1356076kB mlocked:0kB bounce:0kB free_pcp:0kB loc=
+al_pcp:0kB free_cma:0kB
+> <4>[   88.593844][    C0] lowmem_reserve[]: 0 0 30349 30349
+> <4>[   88.593846][    C0] Node 0 Normal free:30576088kB boost:0kB min:648=
+52kB low:95928kB high:127004kB reserved_highatomic:0KB active_anon:2788kB i=
+nactive_anon:210172kB active_file:1948kB inactive_file:2652kB unevictable:1=
+0536kB writepending:0kB present:31711232kB managed:31079872kB mlocked:0kB b=
+ounce:0kB free_pcp:9036kB local_pcp:9036kB free_cma:0kB
+> <4>[   88.593849][    C0] lowmem_reserve[]: 0 0 0 0
+> <4>[   88.593851][    C0] Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*=
+128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) =3D 15360kB
+> <4>[   88.593856][    C0] Node 0 DMA32: 8*4kB (UM) 8*8kB (UM) 6*16kB (UM)=
+ 7*32kB (UM) 4*64kB (UM) 7*128kB (UM) 7*256kB (UM) 6*512kB (UM) 4*1024kB (U=
+M) 3*2048kB (UM) 327*4096kB (UM) =3D 1356064kB
+> Panic#1 Part6
+> <4>[   88.593864][    C0] Node 0 Normal: 7758*4kB (UME) 6244*8kB (UME) 41=
+36*16kB (UME) 2970*32kB (UME) 1929*64kB (UME) 1075*128kB (UME) 516*256kB (U=
+ME) 218*512kB (UME) 136*1024kB (UME) 59*2048kB (UM) 7219*4096kB (U) =3D 305=
+76088kB
+> <4>[   88.593872][    C0] Node 0 hugepages_total=3D0 hugepages_free=3D0 h=
+ugepages_surp=3D0 hugepages_size=3D1048576kB
+> <4>[   88.593873][    C0] Node 0 hugepages_total=3D0 hugepages_free=3D0 h=
+ugepages_surp=3D0 hugepages_size=3D2048kB
+> <4>[   88.593874][    C0] 20259 total pagecache pages
+> <4>[   88.593875][    C0] 15960 pages in swap cache
+> <4>[   88.593875][    C0] Free swap  =3D 33261448kB
+> <4>[   88.593876][    C0] Total swap =3D 33554428kB
+> <4>[   88.593876][    C0] 8287317 pages RAM
+> <4>[   88.593876][    C0] 0 pages HighMem/MovableOnly
+> <4>[   88.593877][    C0] 174490 pages reserved
+> <4>[   88.593877][    C0] 0 pages hwpoisoned
+> <4>[   88.593878][    C0] Timer List Version: v0.9
+> <4>[   88.593878][    C0] HRTIMER_MAX_CLOCK_BASES: 8
+> <4>[   88.593879][    C0] now at 88575853437 nsecs
+> <4>[   88.593879][    C0]=20
+> <4>[   88.593880][    C0] cpu: 0
+> <4>[   88.593880][    C0]  clock 0:
+> <4>[   88.593880][    C0]   .base:               pK-error
+> <4>[   88.593881][    C0]   .index:      0
+> <4>[   88.593882][    C0]   .resolution: 1 nsecs
+> <4>[   88.593882][    C0]   .get_time:   ktime_get
+> <4>[   88.593884][    C0]   .offset:     0 nsecs
+> <4>[   88.593884][    C0] active timers:
+> <4>[   88.593885][    C0]  #0: <        pK-error>, watchdog_timer_fn
+> <4>[   88.593886][    C0] , S:01
+> <4>[   88.593886][    C0]=20
+> <4>[   88.593887][    C0]  # expires at 89320114349-89320114349 nsecs [in=
+ 744260912 to 744260912 nsecs]
+> Panic#1 Part5
+> <4>[   88.593888][    C0]  #1: <        pK-error>, tick_nohz_highres_hand=
+ler
+> <4>[   88.593890][    C0] , S:01
+> <4>[   88.593891][    C0]=20
+> <4>[   88.593891][    C0]  # expires at 91211000000-91211000000 nsecs [in=
+ 2635146563 to 2635146563 nsecs]
+> <4>[   88.593892][    C0]  #2: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593893][    C0] , S:01
+> <4>[   88.593894][    C0]=20
+> <4>[   88.593894][    C0]  # expires at 111644928000-111644928000 nsecs [=
+in 23069074563 to 23069074563 nsecs]
+> <4>[   88.593895][    C0]  #3: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593897][    C0] , S:01
+> <4>[   88.593897][    C0]=20
+> <4>[   88.593897][    C0]  # expires at 111644928000-111644928000 nsecs [=
+in 23069074563 to 23069074563 nsecs]
+> <4>[   88.593898][    C0]  #4: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593899][    C0] , S:01
+> <4>[   88.593899][    C0]=20
+> <4>[   88.593900][    C0]  # expires at 111644928000-111644928000 nsecs [=
+in 23069074563 to 23069074563 nsecs]
+> <4>[   88.593901][    C0]  #5: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593902][    C0] , S:01
+> <4>[   88.593902][    C0]=20
+> <4>[   88.593902][    C0]  # expires at 111644928000-111644928000 nsecs [=
+in 23069074563 to 23069074563 nsecs]
+> <4>[   88.593903][    C0]  #6: <        pK-error>, hrtimer_wakeup
+> <4>[   88.593904][    C0] , S:01
+> <4>[   88.593905][    C0]=20
+> <4>[   88.593905][    C0]  # expires at 1810465859021-1810465909021 nsecs=
+ [in 1721890005584 to 1721890055584 nsecs]
+> <4>[   88.593906][    C0]  clock 1:
+> <4>[   88.593906][    C0]   .base:               pK-error
+> <4>[   88.593907][    C0]   .index:      1
+> <4>[   88.593907][    C0]   .resolution: 1 nsecs
+> <4>[   88.593907][    C0]   .get_time:   ktime_get_real
+> Panic#1 Part4
+> <4>[   88.593908][    C0]   .offset:     1713027022323372591 nsecs
+> <4>[   88.593909][    C0] active timers:
+> <4>[   88.593909][    C0]  #0: <        pK-error>, sync_timer_callback
+> <4>[   88.593911][    C0] , S:01
+> <4>[   88.593911][    C0]=20
+> <4>[   88.593911][    C0]  # expires at 1713027679500000000-1713027679500=
+000000 nsecs [in 568600773972 to 568600773972 nsecs]
+> <4>[   88.593913][    C0]  #1: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593914][    C0] , S:01
+> <4>[   88.593914][    C0]=20
+> <4>[   88.593914][    C0]  # expires at 1713029451644928000-1713029451644=
+928000 nsecs [in 2340745701972 to 2340745701972 nsecs]
+> <4>[   88.593915][    C0]  #2: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593917][    C0] , S:01
+> <4>[   88.593917][    C0]=20
+> <4>[   88.593917][    C0]  # expires at 9223372036854775807-9223372036854=
+775807 nsecs [in 7510344925955549779 to 7510344925955549779 nsecs]
+> <4>[   88.593918][    C0]  #3: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593920][    C0] , S:01
+> <4>[   88.593920][    C0]=20
+> <4>[   88.593920][    C0]  # expires at 9223372036854775807-9223372036854=
+775807 nsecs [in 7510344925955549779 to 7510344925955549779 nsecs]
+> <4>[   88.593921][    C0]  #4: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593922][    C0] , S:01
+> <4>[   88.593922][    C0]=20
+> <4>[   88.593923][    C0]  # expires at 9223372036854775807-9223372036854=
+775807 nsecs [in 7510344925955549779 to 7510344925955549779 nsecs]
+> <4>[   88.593924][    C0]  #5: <        pK-error>, timerfd_tmrproc
+> <4>[   88.593925][    C0] , S:01
+> <4>[   88.593925][    C0]=20
+> <4>[   88.593925][    C0]  # expires at 9223372036854775807-9223372036854=
+775807 nsecs [in 7510344925955549779 to 7510344925955549779 nsecs]
 
-  Device (I2Cx) {
-    Name (_HID, "RKCP3001")
-    Name (_CID, "PRP0001")
-    Name (_UID, x)
-    Name (_CCA, 0)
+> # bad: [01e08e5d7656e660c8a4852191e1e133cbdb0a66] Linux 6.7.3
+> # good: [7bbf3b67cb49d0f8a20e64b7473923041b758211] Linux 6.7.2
+> git bisect start 'v6.7.3' 'v6.7.2'
+> # bad: [056fc740be000d39a7dba700a935f3bbfbc664e6] rxrpc, afs: Allow afs t=
+o pin rxrpc_peer objects
+> git bisect bad 056fc740be000d39a7dba700a935f3bbfbc664e6
+> # bad: [d1020ab1199e197c6504daf3a415d4f7465016ef] arm64: dts: qcom: sm815=
+0: fix USB SS wakeup
+> git bisect bad d1020ab1199e197c6504daf3a415d4f7465016ef
+> # bad: [b0028f333420a65a53a63978522db680b37379dd] nbd: always initialize =
+struct msghdr completely
+> git bisect bad b0028f333420a65a53a63978522db680b37379dd
+> # bad: [eaef4650fa2050147ca25fd7ee43bc0082e03c87] PM / devfreq: Fix buffe=
+r overflow in trans_stat_show
+> git bisect bad eaef4650fa2050147ca25fd7ee43bc0082e03c87
+> # bad: [9bd3dce27b01c51295b60e1433e1dadfb16649f7] PM: sleep: Fix possible=
+ deadlocks in core system-wide PM code
+> git bisect bad 9bd3dce27b01c51295b60e1433e1dadfb16649f7
+> # good: [6fb70694f8d1ac34e45246b0ac988f025e1e5b55] pipe: wakeup wr_wait a=
+fter setting max_usage
+> git bisect good 6fb70694f8d1ac34e45246b0ac988f025e1e5b55
+> # good: [73986e8d2808c24b88c7b36a081fb351d2bf6a30] ext4: allow for the la=
+st group to be marked as trimmed
+> git bisect good 73986e8d2808c24b88c7b36a081fb351d2bf6a30
+> # good: [22f7c9cb05cd5153100c859099da64982e9c1d1f] async: Introduce async=
+_schedule_dev_nocall()
+> git bisect good 22f7c9cb05cd5153100c859099da64982e9c1d1f
+> # first bad commit: [9bd3dce27b01c51295b60e1433e1dadfb16649f7] PM: sleep:=
+ Fix possible deadlocks in core system-wide PM code
 
-    Method (_CRS, 0x0, Serialized) {
-      Name (RBUF, ResourceTemplate() {
-        Memory32Fixed (ReadWrite, 0xfea90000, 0x1000)
-        Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 350 }
-        ClockInput (198000000, 1, Hz, Fixed, "\\_SB_.CRU_", PCLK_I2Cx)
-        ClockInput (198000000, 1, Hz, Fixed, "\\_SB_.CRU_", BCLK_I2Cx)
-      })
-      Return (RBUF)
-    }
-    Name (_DSD, Package () {
-      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-      Package () {
-        Package (2) { "compatible", Package (2) { "rockchip,rk3588-i2c", "rockchip,rk3399-i2c" } },
-        Package (2) { "i2c,clk-rate", 198000000 },
-        Package (2) { "rockchip,bclk", 198000000 },
-        Package (2) { "#address-cells", 1 },
-        Package (2) { "#size-cells", 0 },
-      }
-    })
-  }
+Also Cc: people in the culprit's signed-off chain and regressions mailing
+list.
 
-where "x" above in the name, _UID, and bindings should be replaced with the
-bus number (0..8). There was some debate about how to specify the clock
-rates in the first proposed version of this patch - in particular,
-regarding the inclusion of the "i2c,clk-rate" and "rockchip,bclk" settings
-in the _DSD section above. It was determined through correspondence with
-the firmware team that the reason for the inclusion of these settings was
-for compatibility with Microsoft Windows, but the kernel team here
-suggested it would be better to use ClockInput bindings, introduced as of
-ACPI 6.5. Hence, this patch is based on the assumption such bindings are
-available and is designed to fetch the clock rates from them. Note how the
-above example maintains both methods of specifying rates in parallel; this
-is also documented in the patch and it is noted that the _DSD settings
-should NOT be used in the kernel. The code to use ClockInput bindings is
-based off a base patch suggested by Niyas Sait, as in the linked thread.
+--=20
+An old man doll... just what I always wanted! - Clara
 
-Signed-off-by: Shimrra Shai <shimmyshai00@gmail.com>
----
+--CAJphcl6COmIsNLl
+Content-Type: application/pgp-signature; name="signature.asc"
 
- Documentation/firmware-guide/acpi/dsd/soc/general.rst | 32 +++++++++
- Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst | 59 +++++++++++++++++
- drivers/acpi/Makefile                                 |  1 +
- drivers/acpi/acpi_clk.c                               | 93 +++++++++++++++++++++++++++
- drivers/i2c/busses/i2c-rk3x.c                         | 79 ++++++++++++++++++++---
- include/linux/acpi.h                                  |  8 +++
- 6 files changed, 262 insertions(+), 10 deletions(-)
- 
-diff --git a/Documentation/firmware-guide/acpi/dsd/soc/general.rst b/Documentation/firmware-guide/acpi/dsd/soc/general.rst
-new file mode 100644
-index 000000000..9c287e838
---- /dev/null
-+++ b/Documentation/firmware-guide/acpi/dsd/soc/general.rst
-@@ -0,0 +1,32 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==========================================
-+System-on-Chip (SoC) facility descriptions
-+==========================================
-+
-+These documents describe how to create ACPI profiles for devices composed into
-+system-on-chip (SoC) architectures. Currently, we only describe the options
-+availed in the _DSD block for select platforms; other considerations are not
-+yet applied. The inspiration for these documents are based around the advent
-+(as of March 2024) of hefty, non-Apple ARM SoC systems such as the Rockchip
-+RK3588 and newer chips that have desktop-like performance and thus are prime
-+candidates for a UEFI-based desktop-like boot system with the goal being to
-+deliver the same user-friendly ease of loading operating systems as on the
-+Intel x86 sphere. Open-source UEFI-based firmware engines, such as TianoCore
-+[1], mean it is possible on such platforms for the open-source developer to
-+control both firmware and kernel simultaneously, which is not the case for
-+the situation with Intel-based PC boards where boards are provided with pre-
-+baked, vendor-selected and opaque firmwares.
-+
-+The description of ACPI usage here is not meant to suggest that ACPI replace
-+Device Tree altogether for such SoCs; rather, we recognize that given they
-+often will have a variety of applications that may include embedded usage where
-+that more hard-wired boot loader setups such as U-Boot still shine, the
-+maintenance of ACPI and DTB-based configuration options should be in parallel,
-+and it may be possible for the same firmware to deploy both options.
-+
-+References
-+==========
-+
-+[1] EDK2-RK3588 port of TianoCore EDK2 firmware.
-+    https://github.com/edk2-porting/edk2-rk3588
-diff --git a/Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst b/Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst
-new file mode 100644
-index 000000000..0e6c5df65
---- /dev/null
-+++ b/Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst
-@@ -0,0 +1,59 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=================
-+I2C buses on SoCs
-+=================
-+
-+This document describes the ACPI _DSD parameters currently being employed for
-+Inter-Integrated Circuit (I2C) buses in the Linux kernel. It is based off the
-+conventions used in the Rockchip RK3588 firmware project [1], which is also the
-+first SoC documented here.
-+
-+General considerations
-+======================
-+
-+For general use, we recommend indicating I2C busses in the ACPI firmware table
-+in the following manner. First, they should be named I2Cx, where "x" is the bus
-+index, and that index should also be used for the _UID component, e.g. on
-+Rockchip RK3588 (see below), we use:
-+
-+  Device (I2Cx) {
-+    Name (_HID, "RKCP3001")
-+    Name (_CID, "PRP0001")
-+    Name (_UID, x)
-+    Name (_CCA, 0)
-+
-+    ...
-+  }
-+
-+Interrupts should be specified in the usual ACPI manner. Likewise, as of ACPI
-+6.5, clock rates should be given in ClockInput resources. Parameters specific to
-+the Rockchip and I2C devices are indicated in the _DSD block as given below.
-+The parameters are a curated selection from the Device Tree Blob (DTB)
-+representation.
-+
-+_DSD parameters for different SoCs
-+==================================
-+
-+Rockchip RK3588
-+---------------
-+
-+The following parameters are indicated here for the I2C on Rockchip RK3588.
-+
-+- i2c,clk-rate 	Describe the pclk rate for the I2C bus, in Hz.
-+- rockchip,bclk	Describe the bclk rate for the I2C bus, in Hz.
-+
-+These two parameters describe the peripheral (pclk) and bus (bclk) clock rates
-+for the I2C bus. It is NOT recommended to use these clock rate parameters in the
-+kernel, as they are intended for compatibility with Microsoft Windows. They are
-+ONLY mentioned here for documentation's sake. Instead, the method mentioned
-+earlier should be used to provide the clock rates; in the current revisions of
-+the i2c-rk3x driver, the first clock resource appearing (resource 0) will be
-+treated as giving the bclk rate, and the second clock resource (resource 1)
-+appearing will be treated as giving the pclk rate.
-+
-+References
-+==========
-+
-+[1] EDK2-RK3588 port of TianoCore EDK2 firmware.
-+    https://github.com/edk2-porting/edk2-rk3588
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 8cc8c0d9c..26343ffce 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -48,6 +48,7 @@ acpi-$(CONFIG_PCI)		+= pci_root.o pci_link.o pci_irq.o
- obj-$(CONFIG_ACPI_MCFG)		+= pci_mcfg.o
- acpi-$(CONFIG_PCI)		+= acpi_lpss.o
- acpi-y				+= acpi_apd.o
-+acpi-y				+= acpi_clk.o
- acpi-y				+= acpi_platform.o
- acpi-y				+= acpi_pnp.o
- acpi-y				+= power.o
-diff --git a/drivers/acpi/acpi_clk.c b/drivers/acpi/acpi_clk.c
-new file mode 100644
-index 000000000..fbb1c4a4a
---- /dev/null
-+++ b/drivers/acpi/acpi_clk.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * drivers/acpi/acpi_clk.c - ACPI device clock resources support.
-+ *
-+ * (C) 2023 Niyas Sait <niyas.sait@huawei.com>
-+ * (C) 2024 Shimrra Shai <shimmyshai00@gmail.com>
-+ *
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/clk-provider.h>
-+#include <linux/clkdev.h>
-+
-+struct acpi_clk_lookup {
-+	u16 freq_div;
-+	u32 freq_num;
-+	u8 scale;
-+	u8 mode;
-+	int index;
-+	bool found;
-+	int n;
-+};
-+
-+static uint64_t calc_clock_rate(u32 freq_num, u16 freq_denom, u8 scale)
-+{
-+	uint32_t scale_factor[3] = { 1, 1000, 1000000 };
-+	uint64_t rate = 0;
-+
-+	if (scale < ARRAY_SIZE(scale_factor))
-+		rate = DIV_ROUND_UP(freq_num * scale_factor[scale], freq_denom);
-+
-+	return rate;
-+}
-+
-+static int acpi_populate_clk_lookup(struct acpi_resource *ares, void *data)
-+{
-+	struct acpi_clk_lookup *lookup = data;
-+	struct acpi_resource_clock_input *resource = &ares->data.clock_input;
-+
-+	if (ares->type != ACPI_RESOURCE_TYPE_CLOCK_INPUT)
-+		return 1;
-+
-+	if (lookup->n++ != lookup->index)
-+		return 1;
-+
-+	lookup->mode = resource->mode;
-+	lookup->freq_div = resource->frequency_divisor;
-+	lookup->freq_num = resource->frequency_numerator;
-+	lookup->scale = resource->scale;
-+	lookup->found = true;
-+
-+	return 1;
-+}
-+
-+struct clk *acpi_clk_register(struct acpi_device *adev, int index,
-+			      const char *name)
-+{
-+	struct acpi_clk_lookup lookup;
-+	struct list_head list;
-+	struct clk *clk;
-+	uint64_t rate;
-+	int ret;
-+
-+	INIT_LIST_HEAD(&list);
-+
-+	memset(&lookup, 0, sizeof(lookup));
-+	lookup.index = index;
-+
-+	ret = acpi_dev_get_resources(adev, &list, acpi_populate_clk_lookup,
-+				     &lookup);
-+	if (ret < 0)
-+		return ERR_PTR(-ENODEV);
-+
-+	acpi_dev_free_resource_list(&list);
-+
-+	/* register fixed clocks only */
-+	if (!lookup.found || lookup.mode != 0)
-+		return ERR_PTR(-EINVAL);
-+
-+	rate = calc_clock_rate(lookup.freq_num, lookup.freq_div, lookup.scale);
-+
-+	const char *regname = name;
-+
-+	if (name == NULL)
-+		regname = dev_name(&adev->dev);
-+
-+	clk = clk_register_fixed_rate(&adev->dev, regname, NULL, 0, rate);
-+	clk_register_clkdev(clk, regname, NULL);
-+
-+	return clk;
-+}
-+EXPORT_SYMBOL_GPL(acpi_clk_register);
-+
-diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-index 086fdf262..1aaf2daba 100644
---- a/drivers/i2c/busses/i2c-rk3x.c
-+++ b/drivers/i2c/busses/i2c-rk3x.c
-@@ -17,6 +17,7 @@
- #include <linux/io.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
-+#include <linux/acpi.h>
- #include <linux/spinlock.h>
- #include <linux/clk.h>
- #include <linux/wait.h>
-@@ -1235,6 +1236,15 @@ static const struct of_device_id rk3x_i2c_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rk3x_i2c_match);
- 
-+#ifdef CONFIG_ACPI
-+/* for RK3588 and at least when loaded with EDK2-RK3588 Tianocore firmware */
-+static const struct acpi_device_id rk3x_i2c_acpi_match[] = {
-+	{ .id = "RKCP3001", .driver_data = (kernel_ulong_t)&rk3399_soc_data },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, rk3x_i2c_acpi_match);
-+#endif
-+
- static int rk3x_i2c_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -1243,6 +1253,8 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 	int ret = 0;
- 	int bus_nr;
- 	u32 value;
-+	u64 value64;
-+	char name[64];
- 	int irq;
- 	unsigned long clk_rate;
- 
-@@ -1250,8 +1262,12 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 	if (!i2c)
- 		return -ENOMEM;
- 
--	match = of_match_node(rk3x_i2c_match, np);
--	i2c->soc_data = match->data;
-+	if (acpi_disabled) {
-+		match = of_match_node(rk3x_i2c_match, np);
-+		i2c->soc_data = match->data;
-+	} else {
-+		i2c->soc_data = device_get_match_data(&pdev->dev);
-+	}
- 
- 	/* use common interface to get I2C timing properties */
- 	i2c_parse_fw_timings(&pdev->dev, &i2c->t, true);
-@@ -1266,6 +1282,9 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 
- 	i2c->dev = &pdev->dev;
- 
-+	if (!acpi_disabled)
-+		ACPI_COMPANION_SET(&i2c->adap.dev, ACPI_COMPANION(&pdev->dev));
-+
- 	spin_lock_init(&i2c->lock);
- 	init_waitqueue_head(&i2c->wait);
- 
-@@ -1273,8 +1292,25 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 	if (IS_ERR(i2c->regs))
- 		return PTR_ERR(i2c->regs);
- 
--	/* Try to set the I2C adapter number from dt */
--	bus_nr = of_alias_get_id(np, "i2c");
-+	if (acpi_disabled) {
-+		/* Try to set the I2C adapter number from dt */
-+		bus_nr = of_alias_get_id(np, "i2c");
-+	} else {
-+		ret = acpi_dev_uid_to_integer(ACPI_COMPANION(&pdev->dev),
-+					      &value64);
-+		if (ret) {
-+			dev_err(&pdev->dev, "Cannot retrieve UID\n");
-+			return ret;
-+		}
-+
-+		if (value64 < INT_MAX) {
-+			bus_nr = (int) value64;
-+		} else {
-+			/* shouldn't happen!!! */
-+			dev_err(&pdev->dev, "Too big UID\n");
-+			return -EINVAL;
-+		}
-+	}
- 
- 	/*
- 	 * Switch to new interface if the SoC also offers the old one.
-@@ -1325,13 +1361,36 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, i2c);
- 
--	if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
--		/* Only one clock to use for bus clock and peripheral clock */
--		i2c->clk = devm_clk_get(&pdev->dev, NULL);
--		i2c->pclk = i2c->clk;
-+	if (acpi_disabled) {
-+		if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
-+			/* Only one clock to use for bus clock and peripheral
-+			 * clock
-+			 */
-+			i2c->clk = devm_clk_get(&pdev->dev, NULL);
-+			i2c->pclk = i2c->clk;
-+		} else {
-+			i2c->clk = devm_clk_get(&pdev->dev, "i2c");
-+			i2c->pclk = devm_clk_get(&pdev->dev, "pclk");
-+		}
- 	} else {
--		i2c->clk = devm_clk_get(&pdev->dev, "i2c");
--		i2c->pclk = devm_clk_get(&pdev->dev, "pclk");
-+		if (i2c->soc_data->calc_timings != rk3x_i2c_v0_calc_timings) {
-+			snprintf(name, sizeof(name), "rk3x-i2c[%d].bclk",
-+				 bus_nr);
-+			i2c->clk = acpi_clk_register(ACPI_COMPANION(&pdev->dev),
-+						     0, name);
-+
-+			snprintf(name, sizeof(name), "rk3x-i2c[%d].pclk",
-+				 bus_nr);
-+			i2c->pclk = acpi_clk_register(ACPI_COMPANION(&pdev->dev),
-+						      1, name);
-+		} else {
-+			/* NB: currently not expected w/UEFI firmware given
-+			 * these are not super performant RK3xxx
-+			 */
-+			dev_err(&pdev->dev,
-+				"ACPI not supported for this RK3xxx\n");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	if (IS_ERR(i2c->clk))
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 34829f2c5..13ca67d2c 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -32,6 +32,7 @@ struct irq_domain_ops;
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/fw_table.h>
-+#include <linux/clk-provider.h>
- 
- #include <acpi/acpi_bus.h>
- #include <acpi/acpi_drivers.h>
-@@ -1569,4 +1570,11 @@ static inline bool acpi_node_backed_by_real_pxm(int nid)
- }
- #endif
- 
-+/* Clock support */
-+
-+#ifdef CONFIG_ACPI
-+struct clk *acpi_clk_register(struct acpi_device *adev, int index,
-+			      const char *name);
-+#endif
-+
- #endif	/*_LINUX_ACPI_H*/
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZhseLgAKCRD2uYlJVVFO
+o75KAQC2E7NOXd2R/VfO11uBt7wzKBauT5h2QojIbBYn6+o7OgD/YtFz1MH1vpyd
+gSuQ+S19fbKi5Y8f/Gpl6A7Qa7JICwU=
+=sM4K
+-----END PGP SIGNATURE-----
+
+--CAJphcl6COmIsNLl--
 
