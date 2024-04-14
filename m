@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-144000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56F078A4097
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:22:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A13C58A409D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 08:25:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F1651C20F20
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:22:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52B11281D91
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825FA1CA82;
-	Sun, 14 Apr 2024 06:22:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91491CA87;
+	Sun, 14 Apr 2024 06:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O5WUGxAG"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Y9OpL61s"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B556A3C30
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E940A1C290
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 06:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713075745; cv=none; b=GL/Z/6pZLk7nPV0J3Fb8nK+3vDRObGU3DgpogJrqRiNkuyA3fGO9SG3jCeUdKW5xJ4Xn6wbykIGlldJmAXPqLPK/Q4CjH1F+bOjA/fIsZZMtAW+ARCbULemswJY2oD1MxW7bBK/HluI0V3fel+lOKp7heTrnKQjNCXgZuh9csao=
+	t=1713075909; cv=none; b=XnLlEJACcGhUC/dvf1FwQlqXWbDHYmJd7Yp6S/qwhTv7mADDGY6Fw3owQFVvFVS5sRSIsIw7oJNHE/khER0tHrVUv2bfkTATlV4nie0ujAQ918qyCXclv8a0rCG8NtUgrKKWzk8LsdMrywTCeBtaA/d0IJhYyxusZBLySisEO+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713075745; c=relaxed/simple;
-	bh=/EUXoIswG/2USlCjpQ1Daaq8DWiEhhNI96eY7ntZgV4=;
+	s=arc-20240116; t=1713075909; c=relaxed/simple;
+	bh=fgxHtb/5CHFFT/bsZ5y6bjmR0xlX39z2vR+5tdsWpak=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jcgsW6PjRbW6vjdkZrcg2dijs3LoS5Ygn8/Y2Et7VPbBjRe17yGp4ck0fAZvFZR4MTr8R1wnBrG+kYN1mDegal1juC/IBlbyh3Mlef8ZnCEO04mlPMb/65VMcZHbvpU2y6VUbKEbg42ChRZP1s5z6VB7WqJsfiDiqxB6G+yjmMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O5WUGxAG; arc=none smtp.client-ip=209.85.218.47
+	 In-Reply-To:Content-Type; b=o2cls5aTZP+WX4KmUyuj4aQOb82TYyrEnzDoQSZr9SuFJuZbQbQ5jgIOYHuikQxKnkgRQudz7QBVhJd88JF18FT65loKxLsEj1G0EYkNWLLvrYUexdkBPH3Sw33oiPlveuN4jjhiUb9lKcpmxDIyIsRKh+RfLAvUe/EoEuuBuKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Y9OpL61s; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a5252e5aa01so89202666b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 23:22:21 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so3505536a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 23:25:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713075740; x=1713680540; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1713075906; x=1713680706; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=ESZUR43YNISui6b6Za2luMgFmqRnPT4/h2xjqbBiFJo=;
-        b=O5WUGxAGR3YR5GnwKfTZlviCK0f8wO3u2UwIZxFMZRZSUWK9EVwhD+pQenWMEE3ivl
-         jqhi9fxj0qga2PH64L1ipC4bJNyz8jphhaiiJcC02hASNcDRuUVJFqQ+PXW9RdssSqGp
-         uXkthVB9p6Y9Pq+M2dl6TqXSipZ2aSEc5oFSUojxdvTXzs1q7ZhBA43BQQA5dzORKExU
-         P0Abr32Qhey31TLS0K29usLTXphrhZpDAH3Pzt6URspD+LQPoQ1Lo8OntFIrN5Lai4mo
-         dVqob+CG3FcdssUr0Zv1q7aJHbEk4JX0pqxE89bnoXv1Q9RF676we4aPFcKeL6caOFCI
-         3K2g==
+        bh=u/LWT/+84euic85Ih6MoO5wP5ADqT6fgnDeoK7fefwY=;
+        b=Y9OpL61sBAN+DYeY11J7JwuBLwgqgH3MHWJBVoSY3QftlMfS5vErQEM0Wu3pzR6Pzo
+         juMB6RpJ3jggNd41x3qOIJ3Ftf1dZVMsHPBm7EbxtVvAdz33vq/ozyP+DlS3b/raWH4+
+         eSkO1K4DwyTTBnuhEqsrT6mE18KopgETfkVaGTPBrtYSFJKYw44E5irkdfN9JoG80YRD
+         K8gnthXn8a9Qf0ySGHQsSs54fHE79KSsz0Ni6BMXvqogPgXk3kdM+NEvOKPKov8cyAYf
+         Mef8bdkQZ/9CHQcqRnu1/NbhBWsJG9u+1SNM/ZzvXbFgDDPkuItbZlz39q9UAG0FHgKK
+         fMlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713075740; x=1713680540;
+        d=1e100.net; s=20230601; t=1713075906; x=1713680706;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ESZUR43YNISui6b6Za2luMgFmqRnPT4/h2xjqbBiFJo=;
-        b=h+JmE2cFAOUFGiwZXhOhCgCgXJz+WXHqxspsBnIY3aBWSroAAxewYbU5N1dmoLSnWn
-         Cv4xxzqQRJrrIeZo8GCvbZiF4bbdwfDoD/H9eH9HAqSbYmpILWFbbMj3s9wd94m09Vc+
-         LZF/fDORmiwS5yJwGqW3uhgQK2pmk2wOld9Im0olgyPKNWIpd4a9E1C9qpoh6tDoqKkG
-         vfKC1RPDoA2PKUck4U2eFti+OBHQa4tew5GEVrRtX/9Y9bViKXSz3hPRj2MV7oHohnJe
-         ntT1S00hynV+LLS0aAOgrWf26j8uGwitb+Gi/tbqX/EC8lmbqGgikQC9z6LCWsPGr6d7
-         5hDw==
-X-Forwarded-Encrypted: i=1; AJvYcCX6HW9tX6ILlMD7HBM4t9+rOjejHOXSfVenowCvrS6M3GSzGD+krBQCC/a7Cn0fYcEy7fqBnP8QPJ3mp+6i4qJqmPFV7mW8P8Qvmlm6
-X-Gm-Message-State: AOJu0Yw618B9ORg+LJQ5uT7QxFA6H9M3UGJrKHYD4oKb88JThXNH4Tb3
-	azkJF17GFRZ5Cs38RXIzvsB3tNZGnMszTwXCOsWn+UKld2i0oJV+ffBbDWtclMk=
-X-Google-Smtp-Source: AGHT+IHIwbsWydwhkdHxy978rjebg/Tnh9VYuX0SIvSfQH5zKN6Uuqo+RVy1zq9eFq9H7Us1aeAg4Q==
-X-Received: by 2002:a17:907:9450:b0:a52:5df2:ab4c with SMTP id dl16-20020a170907945000b00a525df2ab4cmr464442ejc.16.1713075740007;
-        Sat, 13 Apr 2024 23:22:20 -0700 (PDT)
+        bh=u/LWT/+84euic85Ih6MoO5wP5ADqT6fgnDeoK7fefwY=;
+        b=l7GdDQjtHupPR86IT5GnrKY10q8InUBH3x+U09z6velzSyYWBnOlx+9d9AP2wZisro
+         1K64Vy0eMHt9XInRVVpjC0nQZkDaFQGC/UB+Jm/mmLevYoA4ZhRSe6xejBu3I/vc90Gj
+         muTXWBJTGp/4Dg5sT8w6FW+zS7aLV38GXwR5cD3tIIfClZ6mxdwGmNSrn+bHak+C2V9D
+         9Mn44Qsg8WM2AxlmVMeAQSrdZFgtizRXPyiqijcB8IsLfLVGSa26eUIa4Eawd+nSvEOh
+         ypSvC4HIGQZttMUgzyLp9Jl4Ta3UISITl4gngCUGPqMWGLH2sb8C9AY63+pHsPY5VOV/
+         ujnw==
+X-Forwarded-Encrypted: i=1; AJvYcCUavQPYkkidQ41YTTLPGmbJSuiCmEJGYgwBSV+CtYAUNJBIwVdLuA+vx1L1pqKkxe5m0n1/rQr/XVym30Ax/+7cWSh6jYHkeab/J9pI
+X-Gm-Message-State: AOJu0YxutsJE3w0SbKt3lJWLqq7//ygqGhOErTTLKf6ig6pffc/PPS7d
+	qdWm8cH+yvfL/mIt/87jLP50tfLv+pBTbJbDCaPgP5fEidU7ZH0SAJr5jfYV6Zw=
+X-Google-Smtp-Source: AGHT+IF2rO7bpFlt1tuC/ZxBAgzkzfXXnp+rcf4jvvRnSPP/wXVgHC17G1sOEk1odOTpWtBwPVJSyg==
+X-Received: by 2002:a17:906:71c7:b0:a52:3874:63bf with SMTP id i7-20020a17090671c700b00a52387463bfmr4079477ejk.59.1713075906113;
+        Sat, 13 Apr 2024 23:25:06 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id xa4-20020a170906fd8400b00a5252e69c7dsm1263393ejb.160.2024.04.13.23.22.18
+        by smtp.gmail.com with ESMTPSA id x13-20020a170906b08d00b00a51d073da7esm3818081ejy.82.2024.04.13.23.25.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 13 Apr 2024 23:22:19 -0700 (PDT)
-Message-ID: <99b45ee0-6762-4c94-b1f3-89769537e352@linaro.org>
-Date: Sun, 14 Apr 2024 08:22:17 +0200
+        Sat, 13 Apr 2024 23:25:05 -0700 (PDT)
+Message-ID: <0b006463-750a-40ad-8deb-4f1d43ecc102@linaro.org>
+Date: Sun, 14 Apr 2024 08:25:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] arm64: dts: broadcom: Add support for BCM2712
+Subject: Re: [PATCH 5/6] mmc: sdhci-brcmstb: Add BCM2712 support
 To: Andrea della Porta <andrea.porta@suse.com>,
  Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -92,7 +92,7 @@ To: Andrea della Porta <andrea.porta@suse.com>,
  linux-gpio@vger.kernel.org, Jonathan Bell <jonathan@raspberrypi.com>,
  Phil Elwell <phil@raspberrypi.com>
 References: <cover.1713036964.git.andrea.porta@suse.com>
- <0ab5a768d686cb634f7144da266c9246e9e90cb4.1713036964.git.andrea.porta@suse.com>
+ <7a75876def65f6282b7b3ca17ef8008c305d6c32.1713036964.git.andrea.porta@suse.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -139,579 +139,252 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <0ab5a768d686cb634f7144da266c9246e9e90cb4.1713036964.git.andrea.porta@suse.com>
+In-Reply-To: <7a75876def65f6282b7b3ca17ef8008c305d6c32.1713036964.git.andrea.porta@suse.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 14/04/2024 00:14, Andrea della Porta wrote:
+> Broadcom BCM2712 SoC has an SDHCI card controller using the SDIO CFG
+> register block present on other STB chips. Add support for BCM2712
+> SD capabilities of this chipset.
+> The silicon is SD Express capable but this driver port does not currently
+> include that feature yet.
+> Based on downstream driver by raspberry foundation maintained kernel.
+
+DTS and parts of this code look like you just send to us downstream
+code. Upstreaming does not work like this. Please consult your folks in
+Suse to explain you more how upstreaming process looks like.
+
+> 
 > Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
 > ---
->  arch/arm64/boot/dts/broadcom/Makefile         |   1 +
->  .../boot/dts/broadcom/bcm2712-rpi-5-b.dts     | 313 +++++++
->  arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi |  81 ++
->  arch/arm64/boot/dts/broadcom/bcm2712.dtsi     | 841 ++++++++++++++++++
->  4 files changed, 1236 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
->  create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
->  create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712.dtsi
+>  drivers/mmc/host/sdhci-brcmstb.c | 130 +++++++++++++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/broadcom/Makefile b/arch/arm64/boot/dts/broadcom/Makefile
-> index 8b4591ddd27c..92565e9781ad 100644
-> --- a/arch/arm64/boot/dts/broadcom/Makefile
-> +++ b/arch/arm64/boot/dts/broadcom/Makefile
-> @@ -6,6 +6,7 @@ DTC_FLAGS := -@
->  dtb-$(CONFIG_ARCH_BCM2835) += bcm2711-rpi-400.dtb \
->  			      bcm2711-rpi-4-b.dtb \
->  			      bcm2711-rpi-cm4-io.dtb \
-> +			      bcm2712-rpi-5-b.dtb \
->  			      bcm2837-rpi-3-a-plus.dtb \
->  			      bcm2837-rpi-3-b.dtb \
->  			      bcm2837-rpi-3-b-plus.dtb \
-> diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
-> new file mode 100644
-> index 000000000000..2ce180a54e5b
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
-> @@ -0,0 +1,313 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/dts-v1/;
+> diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+> index 9053526fa212..907a4947abe5 100644
+> --- a/drivers/mmc/host/sdhci-brcmstb.c
+> +++ b/drivers/mmc/host/sdhci-brcmstb.c
+> @@ -12,6 +12,8 @@
+>  #include <linux/of.h>
+>  #include <linux/bitops.h>
+>  #include <linux/delay.h>
+> +#include <linux/pinctrl/consumer.h>
+> +#include <linux/regulator/consumer.h>
+>  
+>  #include "sdhci-cqhci.h"
+>  #include "sdhci-pltfm.h"
+> @@ -30,15 +32,31 @@
+>  
+>  #define SDHCI_ARASAN_CQE_BASE_ADDR		0x200
+>  
+> +#define SDIO_CFG_CTRL				0x0
+> +#define  SDIO_CFG_CTRL_SDCD_N_TEST_EN		BIT(31)
+> +#define  SDIO_CFG_CTRL_SDCD_N_TEST_LEV		BIT(30)
 > +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/pwm/pwm.h>
-> +#include <dt-bindings/reset/raspberrypi,firmware-reset.h>
+> +#define SDIO_CFG_SD_PIN_SEL			0x44
+> +#define  SDIO_CFG_SD_PIN_SEL_MASK		0x3
+> +#define  SDIO_CFG_SD_PIN_SEL_SD			BIT(1)
+> +#define  SDIO_CFG_SD_PIN_SEL_MMC		BIT(0)
 > +
-> +#define spi0 _spi0
-> +#define uart0 _uart0
+> +#define SDIO_CFG_MAX_50MHZ_MODE			0x1ac
+> +#define  SDIO_CFG_MAX_50MHZ_MODE_STRAP_OVERRIDE	BIT(31)
+> +#define  SDIO_CFG_MAX_50MHZ_MODE_ENABLE		BIT(0)
 > +
-> +#include "bcm2712.dtsi"
+>  struct sdhci_brcmstb_priv {
+>  	void __iomem *cfg_regs;
+>  	unsigned int flags;
+>  	struct clk *base_clk;
+>  	u32 base_freq_hz;
+> +	struct pinctrl *pinctrl;
+> +	struct pinctrl_state *pins_default;
+>  };
+>  
+>  struct brcmstb_match_priv {
+>  	void (*hs400es)(struct mmc_host *mmc, struct mmc_ios *ios);
+> +	void (*cfginit)(struct sdhci_host *host);
+>  	struct sdhci_ops *ops;
+>  	const unsigned int flags;
+>  };
+> @@ -124,6 +142,42 @@ static void sdhci_brcmstb_hs400es(struct mmc_host *mmc, struct mmc_ios *ios)
+>  	writel(reg, host->ioaddr + SDHCI_VENDOR);
+>  }
+>  
+> +static void sdhci_bcm2712_set_clock(struct sdhci_host *host, unsigned int clock)
+> +{
+> +	u16 clk;
+> +	u32 reg;
+> +	bool is_emmc_rate = false;
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_brcmstb_priv *brcmstb_priv = sdhci_pltfm_priv(pltfm_host);
 > +
-> +#undef spi0
-> +#undef uart0
+> +	host->mmc->actual_clock = 0;
 > +
-> +/ {
-> +	compatible = "raspberrypi,5-model-b", "brcm,bcm2712";
-
-This patch did not pass basic tests. Like checkpatch.
-
-Please run scripts/checkpatch.pl and fix reported warnings. Then please
-run `scripts/checkpatch.pl --strict` and (probably) fix more warnings.
-Some warnings can be ignored, especially from --strict run, but the code
-here looks like it needs a fix. Feel free to get in touch if the warning
-is not clear.
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-
-> +	model = "Raspberry Pi 5";
+> +	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
 > +
-> +	/* Will be filled by the bootloader */
-> +	memory@0 {
-> +		device_type = "memory";
-> +		reg = <0 0 0x28000000>;
-> +	};
-> +
-> +	leds: leds {
-> +		compatible = "gpio-leds";
-> +
-> +		led_act: led-act {
-> +			label = "ACT";
-> +			gpios = <&gio_aon 9 GPIO_ACTIVE_LOW>;
-> +			default-state = "off";
-> +			linux,default-trigger = "mmc0";
-> +		};
-> +	};
-> +
-> +	sd_io_1v8_reg: sd_io_1v8_reg {
+> +	switch (host->mmc->ios.timing) {
+> +	case MMC_TIMING_MMC_HS400:
+> +	case MMC_TIMING_MMC_HS200:
+> +	case MMC_TIMING_MMC_DDR52:
+> +	case MMC_TIMING_MMC_HS:
+> +	is_emmc_rate = true;
+> +	break;
+> +	}
 
-Don't push to us downstream code. Please fix it first and adjust to
-match DTS coding style. Underscores are not allowed in node names.
-
-> +		compatible = "regulator-gpio";
-> +		regulator-name = "vdd-sd-io";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-boot-on;
-> +		regulator-always-on;
-> +		regulator-settling-time-us = <5000>;
-> +		gpios = <&gio_aon 3 GPIO_ACTIVE_HIGH>;
-> +		states = <1800000 0x1
-> +			  3300000 0x0>;
-
-Aren't these two tupples?
-
-> +		status = "okay";
-
-Why? Where is it disabled?
-
-> +	};
-> +
-> +	sd_vcc_reg: sd_vcc_reg {
-
-Underscores...
-
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc-sd";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-boot-on;
-> +		enable-active-high;
-> +		gpios = <&gio_aon 4 GPIO_ACTIVE_HIGH>;
-> +		status = "okay";
-
-Why?
-
-> +	};
-> +
-> +	wl_on_reg: wl_on_reg {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "wl-on-regulator";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		pinctrl-0 = <&wl_on_pins>;
-> +		pinctrl-names = "default";
-> +
-> +		gpio = <&gio 28 GPIO_ACTIVE_HIGH>;
-> +
-> +		startup-delay-us = <150000>;
-> +		enable-active-high;
-> +	};
-> +
-> +	clocks: clocks {
-> +	};
-
-Drop, useless.
-
-> +};
-> +
-> +// Add some labels to 2712 device
-> +
-> +// The system UART
-> +uart10: &_uart0 { status = "okay"; };
-> +
-> +// The system SPI for the bootloader EEPROM
-> +spi10: &_spi0 { status = "okay"; };
-
-Use standard coding style. Look at other recent platforms how it is done.
-
-&spi {
-	foo;
-};
+That's not indented correctly.
 
 > +
-> +#include "bcm2712-rpi.dtsi"
-
-This goes to the top.
-
-I must say this DTS is terrible to read.
-
+> +	reg = readl(brcmstb_priv->cfg_regs + SDIO_CFG_SD_PIN_SEL);
+> +	reg &= ~SDIO_CFG_SD_PIN_SEL_MASK;
+> +	if (is_emmc_rate)
+> +		reg |= SDIO_CFG_SD_PIN_SEL_MMC;
+> +	else
+> +		reg |= SDIO_CFG_SD_PIN_SEL_SD;
+> +	writel(reg, brcmstb_priv->cfg_regs + SDIO_CFG_SD_PIN_SEL);
 > +
-> +/* SDIO1 is used to drive the SD card */
-> +&sdio1 {
-> +	pinctrl-0 = <&emmc_sd_pulls>, <&emmc_aon_cd_pins>;
-> +	pinctrl-names = "default";
-> +	vqmmc-supply = <&sd_io_1v8_reg>;
-> +	vmmc-supply = <&sd_vcc_reg>;
-> +	bus-width = <4>;
-> +	sd-uhs-sdr50;
-> +	sd-uhs-ddr50;
-> +	sd-uhs-sdr104;
-> +	cd-gpios = <&gio_aon 5 GPIO_ACTIVE_LOW>;
-> +	//no-1-8-v;
-
-Do not add dead code to the kernel.
-
-> +	status = "okay";
-> +};
+> +	if (clock == 0)
+> +		return;
 > +
-> +&pinctrl_aon {
-> +	emmc_aon_cd_pins: emmc_aon_cd_pins {
-
-Again, no underscores.
-
-> +		function = "sd_card_g";
-> +		pins = "aon_gpio5";
-> +		bias-pull-up;
-> +	};
+> +	clk = sdhci_calc_clk(host, clock, &host->mmc->actual_clock);
+> +	sdhci_enable_clk(host, clk);
+> +}
 > +
-> +	/* Slight hack - only one PWM pin (status LED) is usable */
-> +	aon_pwm_1pin: aon_pwm_1pin {
-> +		function = "aon_pwm";
-> +		pins = "aon_gpio9";
-> +	};
-> +};
+>  static void sdhci_brcmstb_set_clock(struct sdhci_host *host, unsigned int clock)
+>  {
+>  	u16 clk;
+> @@ -139,6 +193,17 @@ static void sdhci_brcmstb_set_clock(struct sdhci_host *host, unsigned int clock)
+>  	sdhci_enable_clk(host, clk);
+>  }
+>  
+> +static void sdhci_brcmstb_set_power(struct sdhci_host *host, unsigned char mode,
+> +				  unsigned short vdd)
+> +{
+> +	if (!IS_ERR(host->mmc->supply.vmmc)) {
+> +		struct mmc_host *mmc = host->mmc;
 > +
-> +&pinctrl {
-> +	pwr_button_pins: pwr_button_pins {
-> +		function = "gpio";
-> +		pins = "gpio20";
-> +		bias-pull-up;
-> +	};
+> +		mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
+> +	}
+> +	sdhci_set_power_noreg(host, mode, vdd);
+> +}
 > +
-> +	wl_on_pins: wl_on_pins {
-> +		function = "gpio";
-> +		pins = "gpio28";
-> +	};
+>  static void sdhci_brcmstb_set_uhs_signaling(struct sdhci_host *host,
+>  					    unsigned int timing)
+>  {
+> @@ -168,6 +233,36 @@ static void sdhci_brcmstb_set_uhs_signaling(struct sdhci_host *host,
+>  	sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
+>  }
+>  
+> +static void sdhci_brcmstb_cfginit_2712(struct sdhci_host *host)
+> +{
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct sdhci_brcmstb_priv *brcmstb_priv = sdhci_pltfm_priv(pltfm_host);
+> +	u32 uhs_mask = (MMC_CAP_UHS_SDR50 | MMC_CAP_UHS_SDR104);
+> +	u32 hsemmc_mask = (MMC_CAP2_HS200_1_8V_SDR | MMC_CAP2_HS200_1_2V_SDR |
+> +			   MMC_CAP2_HS400_1_8V | MMC_CAP2_HS400_1_2V);
+> +	u32 reg;
 > +
-> +	bt_shutdown_pins: bt_shutdown_pins {
-> +		function = "gpio";
-> +		pins = "gpio29";
-> +	};
-> +
-> +	emmc_sd_pulls: emmc_sd_pulls {
-> +		pins = "emmc_cmd", "emmc_dat0", "emmc_dat1", "emmc_dat2", "emmc_dat3";
-> +		bias-pull-up;
-> +	};
-> +};
-> +
-> +/ {
-
-Why the heck this appears in the middle? This is top level section. I am
-sorry, but this DTS looks really poor and not like existing coding
-style. Please do not introduce some entirely different coding styles.
-
-
-> +	chosen: chosen {
-> +		bootargs = "reboot=w coherent_pool=1M 8250.nr_uarts=1 pci=pcie_bus_safe snd_bcm2835.enable_compat_alsa=0 snd_bcm2835.enable_hdmi=1";
-
-Not a DTS properties. Drop entire bootargs.
-
-> +		stdout-path = "serial10:115200n8";
-> +	};
-> +
-> +	pwr_button {
-
-Srsly...
-
-> +		compatible = "gpio-keys";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pwr_button_pins>;
-> +		status = "okay";
-
-???
-
-> +
-> +		pwr_key: pwr {
-
-OK, you definitely did not test it. The code looks worse and worse I
-keep looking, so I will stop.
-
-This did not pass basic internal review, checkpatch, basic tests.
-
-
-
-..
-
-> +
-> +		// Pad bank0 out to 32 entries
-> +		"", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-> +
-> +		"HDMI0_SCL", // AON_SGPIO_00
-> +		"HDMI0_SDA", // AON_SGPIO_01
-> +		"HDMI1_SCL", // AON_SGPIO_02
-> +		"HDMI1_SDA", // AON_SGPIO_03
-> +		"PMIC_SCL", // AON_SGPIO_04
-> +		"PMIC_SDA"; // AON_SGPIO_05
-> +};
-> +
-> +/ {
-> +	aliases {
-
-OK, now you are trolling us. It is third top-level node!
-
-Limited review follows.
-
-> +		blconfig = &blconfig;
-> +		blpubkey = &blpubkey;
-> +		console = &uart10;
-> +		mailbox = &mailbox;
-> +		mmc0 = &sdio1;
-> +		uart10 = &uart10;
-> +		serial10 = &uart10;
-> +		gpio1 = &gio;
-> +		gpio2 = &gio_aon;
-> +		gpio3 = &pinctrl;
-> +		gpio4 = &pinctrl_aon;
-> +	};
-> +
-> +	__overrides__ {
-
-?
-
-Drop
-
-> +		button_debounce = <&pwr_key>, "debounce-interval:0";
-> +		random = <&random>, "status";
-> +		sd_cqe = <&sdio1>, "supports-cqe?";
-> +		suspend = <&pwr_key>, "linux,code:0=205";
-> +		act_led_activelow = <&led_act>,"gpios:8";
-> +		act_led_trigger = <&led_act>, "linux,default-trigger";
-> +	};
-> +};
-> diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi b/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
-> new file mode 100644
-> index 000000000000..d04e39b9c0b6
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
-
-What is this file for?
-
-> @@ -0,0 +1,81 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <dt-bindings/power/raspberrypi-power.h>
-> +
-> +&soc {
-> +	firmware: firmware {
-> +		compatible = "raspberrypi,bcm2835-firmware", "simple-mfd";
-
-
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		mboxes = <&mailbox>;
-> +		dma-ranges;
-> +
-> +		firmware_clocks: clocks {
-> +			compatible = "raspberrypi,firmware-clocks";
-> +			#clock-cells = <1>;
-> +		};
-> +
-> +		reset: reset {
-> +			compatible = "raspberrypi,firmware-reset";
-> +			#reset-cells = <1>;
-> +		};
-> +	};
-> +
-> +	power: power {
-> +		compatible = "raspberrypi,bcm2835-power";
-> +		firmware = <&firmware>;
-> +		#power-domain-cells = <1>;
-> +	};
-> +
-> +	/* Define these notional regulators for use by overlays, etc. */
-> +	vdd_3v3_reg: fixedregulator_3v3 {
-
-W=2 warnings.
-
-> +		compatible = "regulator-fixed";
-> +		regulator-always-on;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-name = "3v3";
-> +	};
-> +
-> +	vdd_5v0_reg: fixedregulator_5v0 {
-
-W=2 warnings.
-
-> +		compatible = "regulator-fixed";
-> +		regulator-always-on;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-name = "5v0";
-> +	};
-> +};
-> +
-> +/ {
-> +	__overrides__ {
-> +		arm_freq;
-
-NAK, drop.
-
-> +	};
-> +};
-> +
-> +&rmem {
 > +	/*
-> +	 * RPi5's co-processor will copy the board's bootloader configuration
-> +	 * into memory for the OS to consume. It'll also update this node with
-> +	 * its placement information.
-> +	 */
-> +	blconfig: nvram@0 {
-> +		compatible = "raspberrypi,bootloader-config", "nvmem-rmem";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		reg = <0x0 0x0 0x0>;
-> +		no-map;
-> +		status = "disabled";
-> +	};
-> +	/*
-> +	 * RPi5 will copy the binary public key blob (if present) from the bootloader
-> +	 * into memory for use by the OS.
-> +	 */
-> +	blpubkey: nvram@1 {
-> +		compatible = "raspberrypi,bootloader-public-key", "nvmem-rmem";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		reg = <0x0 0x0 0x0>;
-> +		no-map;
-> +		status = "disabled";
-> +	};
+> +	* If we support a speed that requires tuning,
+> +	* then select the delay line PHY as the clock source.
+> +	*/
+> +	if ((host->mmc->caps & uhs_mask) || (host->mmc->caps2 & hsemmc_mask)) {
+> +		reg = readl(brcmstb_priv->cfg_regs + SDIO_CFG_MAX_50MHZ_MODE);
+> +		reg &= ~SDIO_CFG_MAX_50MHZ_MODE_ENABLE;
+> +		reg |= SDIO_CFG_MAX_50MHZ_MODE_STRAP_OVERRIDE;
+> +		writel(reg, brcmstb_priv->cfg_regs + SDIO_CFG_MAX_50MHZ_MODE);
+> +	}
+> +
+> +	if ((host->mmc->caps & MMC_CAP_NONREMOVABLE) ||
+> +	    (host->mmc->caps & MMC_CAP_NEEDS_POLL)) {
+> +		/* Force presence */
+> +		reg = readl(brcmstb_priv->cfg_regs + SDIO_CFG_CTRL);
+> +		reg &= ~SDIO_CFG_CTRL_SDCD_N_TEST_LEV;
+> +		reg |= SDIO_CFG_CTRL_SDCD_N_TEST_EN;
+> +		writel(reg, brcmstb_priv->cfg_regs + SDIO_CFG_CTRL);
+> +	}
+> +}
+> +
+>  static void sdhci_brcmstb_dumpregs(struct mmc_host *mmc)
+>  {
+>  	sdhci_dumpregs(mmc_priv(mmc));
+> @@ -200,6 +295,14 @@ static struct sdhci_ops sdhci_brcmstb_ops = {
+>  	.set_uhs_signaling = sdhci_set_uhs_signaling,
+>  };
+>  
+> +static struct sdhci_ops sdhci_brcmstb_ops_2712 = {
+> +	.set_clock = sdhci_bcm2712_set_clock,
+> +	.set_power = sdhci_brcmstb_set_power,
+> +	.set_bus_width = sdhci_set_bus_width,
+> +	.reset = sdhci_reset,
+> +	.set_uhs_signaling = sdhci_set_uhs_signaling,
 > +};
-> diff --git a/arch/arm64/boot/dts/broadcom/bcm2712.dtsi b/arch/arm64/boot/dts/broadcom/bcm2712.dtsi
-> new file mode 100644
-> index 000000000000..fd5a19f68b49
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/broadcom/bcm2712.dtsi
-> @@ -0,0 +1,841 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/soc/bcm2835-pm.h>
-> +#include <dt-bindings/phy/phy.h>
 > +
-> +/ {
-> +	compatible = "brcm,bcm2712", "brcm,bcm2711";
-
-Please run scripts/checkpatch.pl and fix reported warnings. Then please
-run `scripts/checkpatch.pl --strict` and (probably) fix more warnings.
-Some warnings can be ignored, especially from --strict run, but the code
-here looks like it needs a fix. Feel free to get in touch if the warning
-is not clear.
-
-> +	model = "BCM2712";
-
-Drop
-
-
-
+>  static struct sdhci_ops sdhci_brcmstb_ops_7216 = {
+>  	.set_clock = sdhci_brcmstb_set_clock,
+>  	.set_bus_width = sdhci_set_bus_width,
+> @@ -237,7 +340,13 @@ static struct brcmstb_match_priv match_priv_74165b0 = {
+>  	.ops = &sdhci_brcmstb_ops_74165b0,
+>  };
+>  
+> +static const struct brcmstb_match_priv match_priv_2712 = {
+> +	.cfginit = sdhci_brcmstb_cfginit_2712,
+> +	.ops = &sdhci_brcmstb_ops_2712,
+> +};
 > +
-> +	clk_27MHz: clk-27M {
+>  static const struct of_device_id __maybe_unused sdhci_brcm_of_match[] = {
+> +	{ .compatible = "brcm,bcm2712-sdhci", .data = &match_priv_2712 },
+>  	{ .compatible = "brcm,bcm7425-sdhci", .data = &match_priv_7425 },
+>  	{ .compatible = "brcm,bcm7445-sdhci", .data = &match_priv_7445 },
+>  	{ .compatible = "brcm,bcm7216-sdhci", .data = &match_priv_7216 },
+> @@ -314,11 +423,16 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>  	struct sdhci_brcmstb_priv *priv;
+>  	u32 actual_clock_mhz;
+>  	struct sdhci_host *host;
+> +	bool no_pinctrl = false;
+>  	struct clk *clk;
+>  	struct clk *base_clk = NULL;
+>  	int res;
+>  
+>  	match = of_match_node(sdhci_brcm_of_match, pdev->dev.of_node);
+> +	if (!match) {
 
-No upperscore letters.
+Why? This is not explained. Please do not add random pieces of code,
+just because downstream code makes mistakes. This should go otherway -
+downstream should be fixed, not upstream get downstream mistakes.
 
-> +		#clock-cells = <0>;
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <27000000>;
-> +		clock-output-names = "27MHz-clock";
-> +	};
+> +		dev_err(&pdev->dev, "fail to get matching of_match struct\n");
+> +		return -EINVAL;
+> +	}
+>  	match_priv = match->data;
+>  
+>  	dev_dbg(&pdev->dev, "Probe found match for %s\n",  match->compatible);
+> @@ -354,6 +468,19 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>  	if (res)
+>  		goto err;
+>  
+> +	priv->pinctrl = devm_pinctrl_get(&pdev->dev);
+> +	if (IS_ERR(priv->pinctrl)) {
+> +			no_pinctrl = true;
+> +	}
+> +	priv->pins_default = pinctrl_lookup_state(priv->pinctrl, "default");
+> +	if (IS_ERR(priv->pins_default)) {
+> +			dev_dbg(&pdev->dev, "No pinctrl default state\n");
+> +			no_pinctrl = true;
+> +	}
 > +
-> +	clk_108MHz: clk-108M {
-> +		#clock-cells = <0>;
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <108000000>;
-> +		clock-output-names = "108MHz-clock";
-> +	};
+> +	if (no_pinctrl )
+> +		priv->pinctrl = NULL;
 > +
-> +	soc: soc {
-> +		compatible = "simple-bus";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		ranges     = <0x7c000000  0x10 0x7c000000  0x04000000>;
-> +		/* Emulate a contiguous 30-bit address range for DMA */
-> +		dma-ranges = <0xc0000000  0x00 0x00000000  0x40000000>,
-> +			     <0x7c000000  0x10 0x7c000000  0x04000000>;
-> +
-> +		system_timer: timer@7c003000 {
-> +			compatible = "brcm,bcm2835-system-timer";
-> +			reg = <0x7c003000 0x1000>;
-> +			interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
-> +		     		     <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>,
-> +		     		     <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-> +			clock-frequency = <1000000>;
-> +		};
-> +
-> +		mailbox: mailbox@7c013880 {
-> +			compatible = "brcm,bcm2835-mbox";
-> +			reg = <0x7c013880 0x40>;
-> +			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-> +			#mbox-cells = <0>;
-> +		};
-> +
-> +		disp_intr: interrupt-controller@7c502000 {
-> +			compatible = "brcm,bcm2711-l2-intc", "brcm,l2-intc";
-> +			reg = <0x7c502000 0x30>;
-> +			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-> +			interrupt-controller;
-> +			#interrupt-cells = <1>;
-> +			status = "disabled";
-> +		};
-> +
-> +		dvp: clock@7c700000 {
-> +			compatible = "brcm,brcm2711-dvp";
-> +			reg = <0x7c700000 0x10>;
-> +			clocks = <&clk_108MHz>;
-> +			#clock-cells = <1>;
-> +			#reset-cells = <1>;
-> +		};
-> +
-> +		/*
-> +		 * This node is the provider for the enable-method for
-> +		 * bringing up secondary cores.
-> +		 */
-> +		local_intc: local_intc@7cd00000 {
+>  	/*
+>  	 * Automatic clock gating does not work for SD cards that may
+>  	 * voltage switch so only enable it for non-removable devices.
+> @@ -370,6 +497,9 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>  	    (host->mmc->caps2 & MMC_CAP2_HS400_ES))
+>  		host->mmc_host_ops.hs400_enhanced_strobe = match_priv->hs400es;
+>  
+> +	if(match_priv->cfginit)
 
-You really need to clean this up...
-
-
-> +			compatible = "brcm,bcm2836-l1-intc";
-> +			reg = <0x7cd00000 0x100>;
-> +		};
-> +
-> +		uart0: serial@7d001000 {
-> +			compatible = "arm,pl011", "arm,primecell";
-> +			reg = <0x7d001000 0x200>;
-> +			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk_uart>,
-> +				 <&clk_vpu>;
-> +			clock-names = "uartclk", "apb_pclk";
-> +			arm,primecell-periphid = <0x00241011>;
-> +			status = "disabled";
-> +		};
-> +
-> +		uart2: serial@7d001400 {
-> +			compatible = "arm,pl011", "arm,primecell";
-> +			reg = <0x7d001400 0x200>;
-> +			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk_uart>,
-> +				 <&clk_vpu>;
-> +			clock-names = "uartclk", "apb_pclk";
-> +			arm,primecell-periphid = <0x00241011>;
-> +			status = "disabled";
-> +		};
-> +
-> +		uart5: serial@7d001a00 {
-> +			compatible = "arm,pl011", "arm,primecell";
-> +			reg = <0x7d001a00 0x200>;
-> +			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk_uart>,
-> +				 <&clk_vpu>;
-> +			clock-names = "uartclk", "apb_pclk";
-> +			arm,primecell-periphid = <0x00241011>;
-> +			status = "disabled";
-> +		};
-> +
-> +		sdhost: mmc@7d002000 {
-> +			compatible = "brcm,bcm2835-sdhost";
-> +			reg = <0x7d002000 0x100>;
-> +			//interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-
-No dead code.
-
-
-..
-
-> +
-> +		random: rng@7d208000 {
-> +			compatible = "brcm,bcm2711-rng200";
-> +			reg = <0x7d208000 0x28>;
-> +			status = "okay";
-
-Drop.
-
-I just ignored the rest. Quality does not improve. This DTS is in very
-poor shape and not suitable for mainline submission.
-
-Please very carefully read DTS coding style and send DTS only after
-fixing all automation errors (all! so checkpatch, W=1, dtbs_check W=1)
-and after aligning this in 100% to DTS coding style.
+Not conforming to Linux coding style.
 
 Best regards,
 Krzysztof
