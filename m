@@ -1,178 +1,251 @@
-Return-Path: <linux-kernel+bounces-143946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D13098A3FF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 04:59:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D39B8A3FFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 05:06:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A849C1C210AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:59:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1A86B21581
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 03:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7FB168B8;
-	Sun, 14 Apr 2024 02:59:30 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5610A17547;
+	Sun, 14 Apr 2024 03:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nvYvfUGo"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6DFE2F32
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 02:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690DA168BE
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 03:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713063570; cv=none; b=p/VIaZhO0S5TDQHdiMtClZ6ozA6OsoMNh/NAsk0f3H5q+ScbjTOqK6JRL1rh8EjfE5jSbsgfyf86VIOqjYfiSckqVlgkVt15qw9TY2oVO/69vcGsqukHcfXYtrM/2eoKWOgw4E+Wh6gRr9VhDOpqvjSQ7dZUJ+MQkaSOqL7PQYY=
+	t=1713063991; cv=none; b=f7f/SXEGMV6gfQ1EhoDVlg389CfT6uZEoccpxFc5eFNz30un1HyT+MtD5qgTiRuQtQLRsRhQAI+L68e7xrKHNZCBCwl1j9H7nUzZ4kYwAtpnlcA10QaKbv/HXV0LqVLoSNwziz4PASfOBurwu4Knd6tqz+IwtZ2iBkmdzVKeZdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713063570; c=relaxed/simple;
-	bh=AE7ZJWNXV/MCO3rMxYd72/2rSEf9+jhoUWyebNuWQPo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=P+sR16bujJHDdqn7bsW/GCppYuYVLFLIhCLAppuAM3nkyMBHQdueoclw0+DduMlZU0w7EuZ0WqpELUG/sBCyK905Um6RlU4AnxYwVnlBLaY7r+6fEbZ2sA3PT7gE+bcFGorUaySYReEtaYRHzVJ0hlOi48GHtIxCzd7beYcIe5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36b0566ab2cso24345485ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 19:59:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713063568; x=1713668368;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dRv9ZZeoeVf2AJQDvrlgVkO/WDGkCJbxVjuTsvBx0zI=;
-        b=ttTEoCwUoXMjq7svY6uoYKuxnWFwKFNsxUe7bR973/wdwF6gW+BpBMRwb2BUn/qFoh
-         aFGqZowVm7HP2QrlVdHF8OgzTSsj2fgno8iLnZp3S8w6TTLJkk5Z6wnInBbQdm0xSzl8
-         ENJSNFBWCXGKhMdV506eUnZ+xmRF4+NbPOl6R84IOfIUsbW7NgltpDUJChTnZ7wzigyA
-         Rdvnxzw2TazLrcFxDeZfotW8Y5l8qLQEGT9Ce5NVKn3ftaVJpq40ctZsUZaQvHQojEHP
-         kFE/4Slmt/NiixauDm2mroLkwiAOrJctLwoKXOPRypQap2LhONSiMyyVy7OUTV0Kgpxa
-         Ooqw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/73v1urVlRgiCXIrVoReRWsrfpi/eEJWSBYNnp9/R4bb2QuTUkbSvbgRLctChjNrb+mJJfFv8+r+K04z6nAjVmfs6+R/aqnNGVIx/
-X-Gm-Message-State: AOJu0YwQJsTKVgZlc34HroQxaI895cFlKOMY2+2IVmkuvE32G0lhclwa
-	0pdVdeV+WDt9TMXz9P42vtqkV8SnnWvaGTv0kkzv7giE9kBarIL60dlPaEHyFhjWSAuRkoz54xs
-	U4Se/cFkTu+MeEG4ySXZWKmIaHLwIXGfxBf9IJ6B0GS6bNaj107Lj/vo=
-X-Google-Smtp-Source: AGHT+IEKXLwWPB9AQtKr/tF9WSBGHkclIh0Cz3oJefQJGKhBhSQFTLZkeYCPJDEhKHWf8metHFtvjnJuoFQ0Z37LvqJNEjYkA/v2
+	s=arc-20240116; t=1713063991; c=relaxed/simple;
+	bh=fNWcrz15k+GvLXStVubH5/gBJenA/4QM5ZlAl7nigfQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=LGk18HcdKTagWqhMJ/M5kaIJvLmvf4E4zxe83kybQc1v11PxZuWgNCt6KXT+JaQklsoBS5MfENPMYyW5Fcj2KAVfIoiRQbHJ5xtpw8+luDKUhx7FcBS6DLZjPL50uIq1oiMc/IftCvCFd7We7zWWnfywIBPTZRkU794F643cvik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nvYvfUGo; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713063989; x=1744599989;
+  h=date:from:to:cc:subject:message-id;
+  bh=fNWcrz15k+GvLXStVubH5/gBJenA/4QM5ZlAl7nigfQ=;
+  b=nvYvfUGo32BhqiOGUBcn94KzbAxpfN730q5r75ZaQygL2+YSNfQiYGbw
+   gy+w4P58PcdZVxzau5eYNJ9JEd/dfsq0rtyvt1u8q65+4CV6L3lcMYe5I
+   sQudqRFSdFnlEqPYGgC8FTilUyZsQDnbxdtlCJ8FEkutVQAiIKUAyXXPu
+   2caVQO6TlkUoOL2juLoO3+E77UN6jW2/GCLVUE4eSC7oY47J7Bmwt/FCF
+   nhYe5DqS0M3F34JILC+I1x6WqbK+e+tvNArzIWojN+WiN214dq0mOcx/m
+   3JKhALUak3Odi1z5x6kJJ83k7MSBuIsIW5uS5qEiSoXXJB99DRB855JEg
+   A==;
+X-CSE-ConnectionGUID: nyvx3DaWSQSM2XOxsljU8A==
+X-CSE-MsgGUID: m2Hek8ELRJaS/LhS4PU8pA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11043"; a="8654832"
+X-IronPort-AV: E=Sophos;i="6.07,200,1708416000"; 
+   d="scan'208";a="8654832"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2024 20:06:29 -0700
+X-CSE-ConnectionGUID: QFh1W/NQQL2lVyz5jDDDCA==
+X-CSE-MsgGUID: ONvfgDrgRLyfiHZ63DF2Nw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,200,1708416000"; 
+   d="scan'208";a="59003946"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 13 Apr 2024 20:06:28 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rvqCH-0003C2-22;
+	Sun, 14 Apr 2024 03:06:25 +0000
+Date: Sun, 14 Apr 2024 11:05:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2024.04.12a] BUILD SUCCESS
+ ecf0d768aacf7ee231aff016c1700252deddb747
+Message-ID: <202404141148.PL0UJj1t-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2195:b0:369:f7ca:a359 with SMTP id
- j21-20020a056e02219500b00369f7caa359mr544147ila.0.1713063567936; Sat, 13 Apr
- 2024 19:59:27 -0700 (PDT)
-Date: Sat, 13 Apr 2024 19:59:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000071dfbd061605b1bd@google.com>
-Subject: [syzbot] [arm?] BUG: unable to handle kernel paging request in huge_pte_alloc
-From: syzbot <syzbot+8b093786303cd0c2041d@syzkaller.appspotmail.com>
-To: catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.04.12a
+branch HEAD: ecf0d768aacf7ee231aff016c1700252deddb747  EXP cgroup/cpuset: Make cpuset hotplug processing synchronous
 
-syzbot found the following issue on:
+elapsed time: 1085m
 
-HEAD commit:    2c71fdf02a95 Merge tag 'drm-fixes-2024-04-09' of https://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b397ad180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3b59c588989b5f9a
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b093786303cd0c2041d
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16f55d29180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15a32e75180000
+configs tested: 159
+configs skipped: 3
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-2c71fdf0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/627c4a5b3fcb/vmlinux-2c71fdf0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/39628cd13511/Image-2c71fdf0.gz.xz
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8b093786303cd0c2041d@syzkaller.appspotmail.com
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                          axs101_defconfig   gcc  
+arc                          axs103_defconfig   gcc  
+arc                                 defconfig   gcc  
+arc                        nsim_700_defconfig   gcc  
+arc                   randconfig-001-20240414   gcc  
+arc                   randconfig-002-20240414   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-003-20240414   gcc  
+arm                         socfpga_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240414   gcc  
+arm64                 randconfig-003-20240414   gcc  
+arm64                 randconfig-004-20240414   gcc  
+csky                             alldefconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240414   gcc  
+csky                  randconfig-002-20240414   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240413   gcc  
+i386         buildonly-randconfig-001-20240414   gcc  
+i386         buildonly-randconfig-002-20240413   gcc  
+i386         buildonly-randconfig-003-20240413   clang
+i386         buildonly-randconfig-003-20240414   gcc  
+i386         buildonly-randconfig-004-20240413   clang
+i386         buildonly-randconfig-004-20240414   gcc  
+i386         buildonly-randconfig-005-20240413   clang
+i386         buildonly-randconfig-005-20240414   gcc  
+i386         buildonly-randconfig-006-20240413   clang
+i386         buildonly-randconfig-006-20240414   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240413   clang
+i386                  randconfig-002-20240413   gcc  
+i386                  randconfig-002-20240414   gcc  
+i386                  randconfig-003-20240413   clang
+i386                  randconfig-003-20240414   gcc  
+i386                  randconfig-004-20240413   gcc  
+i386                  randconfig-004-20240414   gcc  
+i386                  randconfig-005-20240413   clang
+i386                  randconfig-005-20240414   gcc  
+i386                  randconfig-006-20240413   clang
+i386                  randconfig-011-20240413   gcc  
+i386                  randconfig-012-20240413   clang
+i386                  randconfig-013-20240413   gcc  
+i386                  randconfig-013-20240414   gcc  
+i386                  randconfig-014-20240413   gcc  
+i386                  randconfig-014-20240414   gcc  
+i386                  randconfig-015-20240413   clang
+i386                  randconfig-016-20240413   gcc  
+i386                  randconfig-016-20240414   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240414   gcc  
+loongarch             randconfig-002-20240414   gcc  
+m68k                             alldefconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                         amcore_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      fuloong2e_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240414   gcc  
+nios2                 randconfig-002-20240414   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                       virt_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240414   gcc  
+parisc                randconfig-002-20240414   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     kmeter1_defconfig   gcc  
+powerpc                 mpc832x_rdb_defconfig   gcc  
+powerpc                      ppc64e_defconfig   gcc  
+powerpc                      ppc6xx_defconfig   gcc  
+powerpc               randconfig-003-20240414   gcc  
+powerpc                     tqm8560_defconfig   gcc  
+powerpc64             randconfig-002-20240414   gcc  
+powerpc64             randconfig-003-20240414   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                          lboxre2_defconfig   gcc  
+sh                          r7785rp_defconfig   gcc  
+sh                    randconfig-001-20240414   gcc  
+sh                    randconfig-002-20240414   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240414   gcc  
+sparc64               randconfig-002-20240414   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240414   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                       common_defconfig   gcc  
+xtensa                randconfig-001-20240414   gcc  
+xtensa                randconfig-002-20240414   gcc  
+xtensa                         virt_defconfig   gcc  
 
-Unable to handle kernel paging request at virtual address ffffffffc0000000
-Mem abort info:
-  ESR = 0x0000000096000006
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x06: level 2 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-swapper pgtable: 4k pages, 52-bit VAs, pgdp=00000000425f4000
-[ffffffffc0000000] pgd=1000000042ac9003, p4d=00000000429e0003, pud=00000000429e1003, pmd=0000000000000000
-Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 3176 Comm: syz-executor300 Not tainted 6.9.0-rc3-syzkaller-00023-g2c71fdf02a95 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 01400009 (nzcv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-pc : pud_alloc include/linux/mm.h:2819 [inline]
-pc : huge_pte_alloc+0xd4/0x358 arch/arm64/mm/hugetlbpage.c:280
-lr : copy_hugetlb_page_range+0x108/0x924 mm/hugetlb.c:5423
-sp : ffff8000890e3810
-x29: ffff8000890e3810 x28: ffff80008283c358 x27: fcf0000005e14980
-x26: 0000000000000000 x25: fbf0000005e15300 x24: f8f0000006360780
-x23: f8f0000006360780 x22: fcf0000005e14980 x21: 0000000021000000
-x20: 0000000020400000 x19: ffffffffc0000000 x18: ffff8000890e3ba8
-x17: 0000000000000000 x16: 1ede000000c4c181 x15: 0000000000000001
-x14: ffffffffffffffff x13: 0000000000000000 x12: ffff8000890e3ac8
-x11: 0000000020400000 x10: ffff8000890e3ba8 x9 : 0000000020400000
-x8 : 0000000000000000 x7 : 0000000000000102 x6 : 0000000040000000
-x5 : 0000000000000000 x4 : ffffffffc0000000 x3 : 0000000000200000
-x2 : f3f0000005f34f80 x1 : 0000000000000000 x0 : 0000000040000000
-Call trace:
- p4d_offset_lockless arch/arm64/include/asm/pgtable.h:965 [inline]
- p4d_offset arch/arm64/include/asm/pgtable.h:971 [inline]
- huge_pte_alloc+0xd4/0x358 arch/arm64/mm/hugetlbpage.c:279
- copy_hugetlb_page_range+0x108/0x924 mm/hugetlb.c:5423
- copy_page_range+0x1a0c/0x1a58 mm/memory.c:1355
- dup_mmap kernel/fork.c:747 [inline]
- dup_mm kernel/fork.c:1687 [inline]
- copy_mm+0x62c/0x7ac kernel/fork.c:1736
- copy_process+0xc30/0x1484 kernel/fork.c:2389
- kernel_clone+0x64/0x360 kernel/fork.c:2796
- __do_sys_clone+0x70/0xa8 kernel/fork.c:2939
- __se_sys_clone kernel/fork.c:2907 [inline]
- __arm64_sys_clone+0x20/0x2c kernel/fork.c:2907
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:48
- el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:152
- el0_svc+0x34/0xf8 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:598
-Code: aa010084 cb000084 b24c2c84 8b130c93 (f9400260) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	aa010084 	orr	x4, x4, x1
-   4:	cb000084 	sub	x4, x4, x0
-   8:	b24c2c84 	orr	x4, x4, #0xfff0000000000000
-   c:	8b130c93 	add	x19, x4, x19, lsl #3
-* 10:	f9400260 	ldr	x0, [x19] <-- trapping instruction
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
