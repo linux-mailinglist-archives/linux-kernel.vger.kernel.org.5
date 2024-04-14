@@ -1,181 +1,525 @@
-Return-Path: <linux-kernel+bounces-143925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205018A3FBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 02:02:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD3B8A3FB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 01:56:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71A43B21AB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 00:02:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816E028224D
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 23:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5A26FC2;
-	Sun, 14 Apr 2024 00:02:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97095823C;
+	Sat, 13 Apr 2024 23:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SvHnrc5P"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZV0yuJiR"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9B81C36
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 00:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91DF25822D
+	for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 23:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713052919; cv=none; b=d4uu4ANWODAR90dt2+guRPcL25FZl0uPjip7ZadKE12UP3Oovg/WRo7yhZFJV1fIi/KvsYai8IRew1vnXKj1vYHlnNfSiAIh+DjNKgtKDwzSi2ifkDXpxh35R6MJq/LAlIVAHoptsOwzJyLxG/LokY9b4dIxCG3Ld8CAhX+37QM=
+	t=1713052584; cv=none; b=HIew1IPYdFNvDbZQkRvtuYNWvMm2M5t/cU7NDYZE9/QLuP76wy0ltGew+hZBuD6h9uBuMwHEUyCyJyA2QAkz/YmoaIa0tP/1w3G/aUUJllGc+5/zyS9eDr5nqGrNC8EXaZujjgY4fQogD2CmOsfjwmB/Pwat7ywE9tK3DUPfx7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713052919; c=relaxed/simple;
-	bh=gowBcIVjkrIRCzpktT8xjhDtwrM/kyvyXvSUbC7DTEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RUTx8ZBH1ssQO2qHPKOF/4VqiloSfRPs0oW7ctHvtjT9f3kUWMTsTZRPHaiKTvirjXP5rahjHVdmBT5Cx6amh8XEVwcuSUzGSrdXixSZudQKZTgzLo5vfS+54/rpX39558wmioqM6y6UcoCSMoY3OhtA96fNW5zUGCPui5ingb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SvHnrc5P; arc=none smtp.client-ip=209.85.216.43
+	s=arc-20240116; t=1713052584; c=relaxed/simple;
+	bh=+rQKjsWKkF5WVIXm0tlmggLd86PgwjLOBVKIvi8IZY0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MJsGR8+CqAxtP/HQwnZ6Jj3Q+IvlTGorTvgdJIu5VO4cTx1blrfK0cikvN4YddDAt2H34Vp/QznjDlwFsQM+dAYaiGtfumhE7CAeT6r10Q8WNjdrX42BgZxBF0Ev3Htc5lalyRXgZFFN3eOFSYRiKJ2P88iStSMbbCLgoX5rnzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZV0yuJiR; arc=none smtp.client-ip=209.85.161.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a2e5d86254so2021171a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 17:01:57 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a4930d9c48so1033212eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 13 Apr 2024 16:56:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713052917; x=1713657717; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WufJPRcDUlI9hWQPeCIELs5BadGAqcV8RB9i29rVPSE=;
-        b=SvHnrc5PjB6uA0SMwokl33HNXlBU0/6OIRX5ObpHKqUEHJt8YXLV3mOldXCvfe8rzK
-         ow5GaovOkzwqoyYFf1Gp0iyc7K2RsjqxefwT16o6KEtVyeogVyzePvgcDtr+d9oz/fjg
-         MQ2YjOsUrlHo6jJMRSQXfcYSPBdnVs3g0QxSuUEKpQWewalXzHg5e6emmhoy9F5nU45B
-         ggs5++SGZ7jhwFtBZZRgIvfyLJrryU3T155JedrF3xa5yUE/PdXRpkwKf4vg3Ht82xaX
-         naiZ6HlPXX18Y7fL8lb0+oqop99UEcFmpPJ/xY+F4MHtRlPhff6L6OpJrWHh5OD5MKye
-         SvGg==
+        d=gmail.com; s=20230601; t=1713052581; x=1713657381; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qlo8iiW9XzNbwgCxhCI3oz9F/KupitoTXB2VwtVn9QI=;
+        b=ZV0yuJiRUHCIFMlwW/0cQZpdIIx3nNuf9+ExR59LjmQlYqPeUYBl6crHfwxnv4nU7D
+         uVaQ4tYPayNF8xw31joWjK5IzDlnxtNwIIIvTWa1p42N2gLdjgkXV6vrZtfMu84oZghS
+         z1cwPjO/yDELVoohC57zhha2F/0UAF+/fHRcY1llL5XZYfcA/CD8ykgmklOeq0Q1qPpK
+         EMWjTdGbk9jFNoIYkQ9hkDQD/i7VsBjxg3/XQsT0c/hh644jN2ZwY+ywtFGr50TWaX7h
+         LRgx4sGN83yzYE7aZRSksauTg6z7xMNXTaqWKDw5YzBfPmFBiEO7iDRe3gw7jsvUxJoK
+         9Oag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713052917; x=1713657717;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WufJPRcDUlI9hWQPeCIELs5BadGAqcV8RB9i29rVPSE=;
-        b=WkLDFq75jJMIN9ehMXC+JS6qP48sR195bpohSD3lfNuDWPsYLamg8m9U092wATMEx8
-         72GAlmiLeG6OzIliDZSRBdh3b6SbISY1ldgPD5nm7tzcoeMwGwecjFrJdIuO39VLrLUc
-         qZReTDgU5ZM0rjm6HVe7OaaD2LwBR0kCt0LASK+2wHK7t++hLgcu2GOgCzVul3SUkC2E
-         G6HEUSSid+6/hCGAo7FyaBJ4sNa5PpowfaOTpjyd6tudir7LArs8PFXGxde1nFfbZcuk
-         pUqZ9fz6R8XPxyaUSReRFcSHhpXMzsX868nr8KB91NErmQTGhqJrriaZ8QnzI1XKOzag
-         4gyA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDrx/0VjpEzLwauF2MirgmacN0VNwsTtlaJ+R0b7mDQ5naRcOINROZuVuF7caahlZAIUjLovWeiI9Pp0IgQpXyBF9yqRS3safcuHq1
-X-Gm-Message-State: AOJu0YyxICUmR6RPdQOwEIqMcl+/94/A6a9Vub6LnYTaGqQMTutkofc5
-	RUVXSjWe8djlii8sVtP2NVArVks1PShBkwQ4acMBvZaTYc9hScQkF8jBhg==
-X-Google-Smtp-Source: AGHT+IGrAqwuqHFxlxFTtEnyAqnda4cYfCPT+QePK4NluaOztQzsIE/j760N6Zrk/aFwQ0IZHsBe7A==
-X-Received: by 2002:a17:90a:7146:b0:2a5:be1a:6831 with SMTP id g6-20020a17090a714600b002a5be1a6831mr13029487pjs.19.1713052916728;
-        Sat, 13 Apr 2024 17:01:56 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id y12-20020a17090a154c00b002a52c2d82f0sm9077979pja.1.2024.04.13.17.01.55
+        d=1e100.net; s=20230601; t=1713052581; x=1713657381;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qlo8iiW9XzNbwgCxhCI3oz9F/KupitoTXB2VwtVn9QI=;
+        b=Co3yC9+xzP1pUaFycuebRt/RqUNTEcUNocVE8WE+H59WCZbxK6pSS5yUx/YrhIZdZC
+         Q/KsfJd1M2kaTKxfzu+SjmxKhY5sE+dNyO/WMigf0ornM25wBOWz5icf8VgvD25Q7eg9
+         bvfIGsrAJSmQPJfV1CijT9EqjnX7YCyGE75tgb5DD2XuxF8MbzNwjei7usq5gp49CAKF
+         g+Vl+4TZBaf1X6iuiVAV3el+erTecJTr0H+zsQHPH9zymEGFplRsv9sYRNa4Vs40zuMR
+         Gu33VdNREyoZX+cBoMARcLgCWa0vPC85RNE/dqRC7xW8fFtTm3XSFgJUm1LRsgtndyhM
+         plgg==
+X-Gm-Message-State: AOJu0YzZg/MeCwZWbfHvAgzRixopNpbo5yFJv+Dl4XJ5MH2XLROF1y6k
+	8ekbx3uWJcSqExeoTcwgEi1WAJMD33CQDKe7AzBF5rmBUTL8G09NZGqeUohV
+X-Google-Smtp-Source: AGHT+IHZLfmH4vSy+8/9v9lUfqHzU8MYj0rSF/HuiKH+LCO8N1xSWPVyVEi/YRDpE7ZqFqyuslnwGw==
+X-Received: by 2002:a05:6808:2204:b0:3c6:394:2334 with SMTP id bd4-20020a056808220400b003c603942334mr7431610oib.2.1713052580988;
+        Sat, 13 Apr 2024 16:56:20 -0700 (PDT)
+Received: from SDF-ThinkCentre-M93p.localdomain (c-76-17-255-148.hsd1.mn.comcast.net. [76.17.255.148])
+        by smtp.googlemail.com with ESMTPSA id x64-20020a25ce43000000b00dc74258241fsm1375829ybe.45.2024.04.13.16.56.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Apr 2024 17:01:55 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id C1C0418462BA3; Sun, 14 Apr 2024 07:01:52 +0700 (WIB)
-Date: Sun, 14 Apr 2024 07:01:52 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Eric Wagner <ewagner12@gmail.com>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>
-Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: Kernel 6.7 regression doesn't boot if using AMD eGPU
-Message-ID: <Zhsc8GZG6HhqCa6h@archie.me>
-References: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
+        Sat, 13 Apr 2024 16:56:20 -0700 (PDT)
+From: Shimrra Shai <shimmyshai00@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-rockchip@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	Heiko Stuebner <heiko.stuebner@cherry.de>,
+	Max Schwarz <max.schwarz@online.de>,
+	Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>,
+	Niyas Sait <niyas.sait@huawei.com>,
+	Shimrra Shai <shimmyshai00@gmail.com>
+Subject: [PATCH 0/0] [v2] Add ACPI binding to Rockchip RK3xxx I2C bus
+Date: Sat, 13 Apr 2024 19:03:55 -0500
+Message-Id: <20240414000355.10984-1-shimmyshai00@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="DhFDuHrGl5KsKvNz"
-Content-Disposition: inline
-In-Reply-To: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
+Hi,
 
---DhFDuHrGl5KsKvNz
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is a second version of the patch that I submitted a few weeks ago for
+adding an ACPI binding for I2C bringup on the Rockchip RK3xxx
+(specifically, RK3588) platforms for compatibility with the newfangled
+TianoCore EDK2 firmwares. This was previously discussed here:
 
-On Sat, Apr 13, 2024 at 06:04:12PM -0400, Eric Wagner wrote:
-> On my Thinkpad T14s G3 AMD (Ryzen 7 6850U) laptop connected to an AMD RX
-> 580 in Akitio Node Thunderbolt 3 eGPU. Booting with the eGPU connected
-> hangs on kernels 6.7 and 6.8, but worked on 6.6. For debugging, I find th=
-at
-> adding the kernel parameter amd_iommu=3Doff seems to fix the issue and al=
-lows
-> booting with the eGPU on 6.7.
->=20
-> I tried bisecting the issue between 6.6 and 6.7 and ended up with:
-> "e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2 is the first bad commit" in the
-> attached. This seems to indicate an amd iommu issue.
->=20
-> Two others also reported the same issue on AMD Ryzen 7 7840 with AMD RX
-> 6000 connected as eGPU (https://gitlab.freedesktop.org/drm/amd/-/issues/3=
-182
-> ).
->=20
-> Let me know if you need more information.
+https://lore.kernel.org/linux-kernel/20240321173447.15660-1-shimmyshai00@gmail.com/
 
-> Bisecting: 366 revisions left to test after this (roughly 9 steps)
-> [74e9347ebc5be452935fe4f3eddb150aa5a6f4fe] Merge tag 'loongarch-fixes-6.6=
--3' of git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loong=
-son
-> Bisecting: 182 revisions left to test after this (roughly 8 steps)
-> [f6176471542d991137543af2ef1c18dae3286079] Merge tag 'mtd/fixes-for-6.6-r=
-c7' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
-> Bisecting: 87 revisions left to test after this (roughly 7 steps)
-> [fe3cfe869d5e0453754cf2b4c75110276b5e8527] Merge tag 'phy-fixes-6.6' of g=
-it://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy
-> Bisecting: 43 revisions left to test after this (roughly 6 steps)
-> [c76c067e488ccd55734c3e750799caf2c5956db6] s390/pci: Use dma-iommu layer
-> Bisecting: 27 revisions left to test after this (roughly 5 steps)
-> [aa5cabc4ce8e6b45d170d162dc54b1bac1767c47] Merge tag 'arm-smmu-updates' o=
-f git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into arm/smmu
-> Bisecting: 14 revisions left to test after this (roughly 4 steps)
-> [bbc70e0aec287e164344b1a071bd46466a4f29b3] iommu/dart: Remove the force_b=
-ypass variable
-> Bisecting: 9 revisions left to test after this (roughly 3 steps)
-> [e82c175e63229ea495a0a0b5305a98b5b6ee5346] Revert "iommu/vt-d: Remove unu=
-sed function"
-> Bisecting: 5 revisions left to test after this (roughly 2 steps)
-> [92bce97f0c341d3037b0f364b6839483f6a41cae] s390/pci: Fix reset of IOMMU s=
-oftware counters
-> Bisecting: 3 revisions left to test after this (roughly 2 steps)
-> [3613047280ec42a4e1350fdc1a6dd161ff4008cc] Merge tag 'v6.6-rc7' into core
-> Bisecting: 2 revisions left to test after this (roughly 1 step)
-> [f7da9c081517daba70f9f9342e09d7a6322ba323] iommu/tegra-smmu: Drop unneces=
-sary error check for for debugfs_create_dir()
-> Bisecting: 1 revision left to test after this (roughly 1 step)
-> [9e13ec61de2a51195b122a79461431d8cb99d7b5] iommu/virtio: Add __counted_by=
- for struct viommu_request and use struct_size()
-> Bisecting: 0 revisions left to test after this (roughly 0 steps)
-> [6e6c6d6bc6c96c2477ddfea24a121eb5ee12b7a3] iommu: Avoid unnecessary cache=
- invalidations
-> e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2 is the first bad commit
-> commit e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2
-> Merge: 6e6c6d6bc6 f7da9c0815 aa5cabc4ce 9e13ec61de e82c175e63 cedc811c76 =
-3613047280 92bce97f0c
-> Author: Joerg Roedel <jroedel@suse.de>
-> Date:   Fri Oct 27 09:13:40 2023 +0200
->=20
->     Merge branches 'iommu/fixes', 'arm/tegra', 'arm/smmu', 'virtio', 'x86=
-/vt-d', 'x86/amd', 'core' and 's390' into next
->=20
+After some convo with the maintainer of the firmware, it was suggested I
+should have a kernel patch ready and approvable here before he can amend
+the ACPI tables in it. The following patch accepts an ACPI table entry for
+the I2C busses that looks like this:
 
-Also Cc: regressions ML.
+  Device (I2Cx) {
+    Name (_HID, "RKCP3001")
+    Name (_CID, "PRP0001")
+    Name (_UID, x)
+    Name (_CCA, 0)
 
---=20
-An old man doll... just what I always wanted! - Clara
+    Method (_CRS, 0x0, Serialized) {
+      Name (RBUF, ResourceTemplate() {
+        Memory32Fixed (ReadWrite, 0xfea90000, 0x1000)
+        Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive) { 350 }
+        ClockInput (198000000, 1, Hz, Fixed, "\\_SB_.CRU_", PCLK_I2Cx)
+        ClockInput (198000000, 1, Hz, Fixed, "\\_SB_.CRU_", BCLK_I2Cx)
+      })
+      Return (RBUF)
+    }
+    Name (_DSD, Package () {
+      ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+      Package () {
+        Package (2) { "compatible", Package (2) { "rockchip,rk3588-i2c", "rockchip,rk3399-i2c" } },
+        Package (2) { "i2c,clk-rate", 198000000 },
+        Package (2) { "rockchip,bclk", 198000000 },
+        Package (2) { "#address-cells", 1 },
+        Package (2) { "#size-cells", 0 },
+      }
+    })
+  }
 
---DhFDuHrGl5KsKvNz
-Content-Type: application/pgp-signature; name="signature.asc"
+where "x" above in the name, _UID, and bindings should be replaced with the
+bus number (0..8). There was some debate about how to specify the clock
+rates in the first proposed version of this patch - in particular,
+regarding the inclusion of the "i2c,clk-rate" and "rockchip,bclk" settings
+in the _DSD section above. It was determined through correspondence with
+the firmware team that the reason for the inclusion of these settings was
+for compatibility with Microsoft Windows, but the kernel team here
+suggested it would be better to use ClockInput bindings, introduced as of
+ACPI 6.5. Hence, this patch is based on the assumption such bindings are
+available and is designed to fetch the clock rates from them. Note how the
+above example maintains both methods of specifying rates in parallel; this
+is also documented in the patch and it is noted that the _DSD settings
+should NOT be used in the kernel. The code to use ClockInput bindings is
+based off a base patch suggested by Niyas Sait, as in the linked thread.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Shimrra Shai <shimmyshai00@gmail.com>
+---
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZhsc7AAKCRD2uYlJVVFO
-o3cdAPoDuiz+svWmSHQ3KkcQxl7HN7HflVRo+sFdCU6PzHtpCwEAmCvj14Dl7qnO
-Qa2vk5I7HXJEpWRKVehg+WbWFv4qqAE=
-=vOFu
------END PGP SIGNATURE-----
-
---DhFDuHrGl5KsKvNz--
+ Documentation/firmware-guide/acpi/dsd/soc/general.rst | 32 +++++++++
+ Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst | 59 +++++++++++++++++
+ drivers/acpi/Makefile                                 |  1 +
+ drivers/acpi/acpi_clk.c                               | 93 +++++++++++++++++++++++++++
+ drivers/i2c/busses/i2c-rk3x.c                         | 79 ++++++++++++++++++++---
+ include/linux/acpi.h                                  |  8 +++
+ 6 files changed, 262 insertions(+), 10 deletions(-)
+ 
+diff --git a/Documentation/firmware-guide/acpi/dsd/soc/general.rst b/Documentation/firmware-guide/acpi/dsd/soc/general.rst
+new file mode 100644
+index 000000000..9c287e838
+--- /dev/null
++++ b/Documentation/firmware-guide/acpi/dsd/soc/general.rst
+@@ -0,0 +1,32 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==========================================
++System-on-Chip (SoC) facility descriptions
++==========================================
++
++These documents describe how to create ACPI profiles for devices composed into
++system-on-chip (SoC) architectures. Currently, we only describe the options
++availed in the _DSD block for select platforms; other considerations are not
++yet applied. The inspiration for these documents are based around the advent
++(as of March 2024) of hefty, non-Apple ARM SoC systems such as the Rockchip
++RK3588 and newer chips that have desktop-like performance and thus are prime
++candidates for a UEFI-based desktop-like boot system with the goal being to
++deliver the same user-friendly ease of loading operating systems as on the
++Intel x86 sphere. Open-source UEFI-based firmware engines, such as TianoCore
++[1], mean it is possible on such platforms for the open-source developer to
++control both firmware and kernel simultaneously, which is not the case for
++the situation with Intel-based PC boards where boards are provided with pre-
++baked, vendor-selected and opaque firmwares.
++
++The description of ACPI usage here is not meant to suggest that ACPI replace
++Device Tree altogether for such SoCs; rather, we recognize that given they
++often will have a variety of applications that may include embedded usage where
++that more hard-wired boot loader setups such as U-Boot still shine, the
++maintenance of ACPI and DTB-based configuration options should be in parallel,
++and it may be possible for the same firmware to deploy both options.
++
++References
++==========
++
++[1] EDK2-RK3588 port of TianoCore EDK2 firmware.
++    https://github.com/edk2-porting/edk2-rk3588
+diff --git a/Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst b/Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst
+new file mode 100644
+index 000000000..0e6c5df65
+--- /dev/null
++++ b/Documentation/firmware-guide/acpi/dsd/soc/soc-i2c.rst
+@@ -0,0 +1,59 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=================
++I2C buses on SoCs
++=================
++
++This document describes the ACPI _DSD parameters currently being employed for
++Inter-Integrated Circuit (I2C) buses in the Linux kernel. It is based off the
++conventions used in the Rockchip RK3588 firmware project [1], which is also the
++first SoC documented here.
++
++General considerations
++======================
++
++For general use, we recommend indicating I2C busses in the ACPI firmware table
++in the following manner. First, they should be named I2Cx, where "x" is the bus
++index, and that index should also be used for the _UID component, e.g. on
++Rockchip RK3588 (see below), we use:
++
++  Device (I2Cx) {
++    Name (_HID, "RKCP3001")
++    Name (_CID, "PRP0001")
++    Name (_UID, x)
++    Name (_CCA, 0)
++
++    ...
++  }
++
++Interrupts should be specified in the usual ACPI manner. Likewise, as of ACPI
++6.5, clock rates should be given in ClockInput resources. Parameters specific to
++the Rockchip and I2C devices are indicated in the _DSD block as given below.
++The parameters are a curated selection from the Device Tree Blob (DTB)
++representation.
++
++_DSD parameters for different SoCs
++==================================
++
++Rockchip RK3588
++---------------
++
++The following parameters are indicated here for the I2C on Rockchip RK3588.
++
++- i2c,clk-rate 	Describe the pclk rate for the I2C bus, in Hz.
++- rockchip,bclk	Describe the bclk rate for the I2C bus, in Hz.
++
++These two parameters describe the peripheral (pclk) and bus (bclk) clock rates
++for the I2C bus. It is NOT recommended to use these clock rate parameters in the
++kernel, as they are intended for compatibility with Microsoft Windows. They are
++ONLY mentioned here for documentation's sake. Instead, the method mentioned
++earlier should be used to provide the clock rates; in the current revisions of
++the i2c-rk3x driver, the first clock resource appearing (resource 0) will be
++treated as giving the bclk rate, and the second clock resource (resource 1)
++appearing will be treated as giving the pclk rate.
++
++References
++==========
++
++[1] EDK2-RK3588 port of TianoCore EDK2 firmware.
++    https://github.com/edk2-porting/edk2-rk3588
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index 8cc8c0d9c..26343ffce 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -48,6 +48,7 @@ acpi-$(CONFIG_PCI)		+= pci_root.o pci_link.o pci_irq.o
+ obj-$(CONFIG_ACPI_MCFG)		+= pci_mcfg.o
+ acpi-$(CONFIG_PCI)		+= acpi_lpss.o
+ acpi-y				+= acpi_apd.o
++acpi-y				+= acpi_clk.o
+ acpi-y				+= acpi_platform.o
+ acpi-y				+= acpi_pnp.o
+ acpi-y				+= power.o
+diff --git a/drivers/acpi/acpi_clk.c b/drivers/acpi/acpi_clk.c
+new file mode 100644
+index 000000000..fbb1c4a4a
+--- /dev/null
++++ b/drivers/acpi/acpi_clk.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * drivers/acpi/acpi_clk.c - ACPI device clock resources support.
++ *
++ * (C) 2023 Niyas Sait <niyas.sait@huawei.com>
++ * (C) 2024 Shimrra Shai <shimmyshai00@gmail.com>
++ *
++ */
++
++#include <linux/acpi.h>
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
++
++struct acpi_clk_lookup {
++	u16 freq_div;
++	u32 freq_num;
++	u8 scale;
++	u8 mode;
++	int index;
++	bool found;
++	int n;
++};
++
++static uint64_t calc_clock_rate(u32 freq_num, u16 freq_denom, u8 scale)
++{
++	uint32_t scale_factor[3] = { 1, 1000, 1000000 };
++	uint64_t rate = 0;
++
++	if (scale < ARRAY_SIZE(scale_factor))
++		rate = DIV_ROUND_UP(freq_num * scale_factor[scale], freq_denom);
++
++	return rate;
++}
++
++static int acpi_populate_clk_lookup(struct acpi_resource *ares, void *data)
++{
++	struct acpi_clk_lookup *lookup = data;
++	struct acpi_resource_clock_input *resource = &ares->data.clock_input;
++
++	if (ares->type != ACPI_RESOURCE_TYPE_CLOCK_INPUT)
++		return 1;
++
++	if (lookup->n++ != lookup->index)
++		return 1;
++
++	lookup->mode = resource->mode;
++	lookup->freq_div = resource->frequency_divisor;
++	lookup->freq_num = resource->frequency_numerator;
++	lookup->scale = resource->scale;
++	lookup->found = true;
++
++	return 1;
++}
++
++struct clk *acpi_clk_register(struct acpi_device *adev, int index,
++			      const char *name)
++{
++	struct acpi_clk_lookup lookup;
++	struct list_head list;
++	struct clk *clk;
++	uint64_t rate;
++	int ret;
++
++	INIT_LIST_HEAD(&list);
++
++	memset(&lookup, 0, sizeof(lookup));
++	lookup.index = index;
++
++	ret = acpi_dev_get_resources(adev, &list, acpi_populate_clk_lookup,
++				     &lookup);
++	if (ret < 0)
++		return ERR_PTR(-ENODEV);
++
++	acpi_dev_free_resource_list(&list);
++
++	/* register fixed clocks only */
++	if (!lookup.found || lookup.mode != 0)
++		return ERR_PTR(-EINVAL);
++
++	rate = calc_clock_rate(lookup.freq_num, lookup.freq_div, lookup.scale);
++
++	const char *regname = name;
++
++	if (name == NULL)
++		regname = dev_name(&adev->dev);
++
++	clk = clk_register_fixed_rate(&adev->dev, regname, NULL, 0, rate);
++	clk_register_clkdev(clk, regname, NULL);
++
++	return clk;
++}
++EXPORT_SYMBOL_GPL(acpi_clk_register);
++
+diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+index 086fdf262..1aaf2daba 100644
+--- a/drivers/i2c/busses/i2c-rk3x.c
++++ b/drivers/i2c/busses/i2c-rk3x.c
+@@ -17,6 +17,7 @@
+ #include <linux/io.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
++#include <linux/acpi.h>
+ #include <linux/spinlock.h>
+ #include <linux/clk.h>
+ #include <linux/wait.h>
+@@ -1235,6 +1236,15 @@ static const struct of_device_id rk3x_i2c_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, rk3x_i2c_match);
+ 
++#ifdef CONFIG_ACPI
++/* for RK3588 and at least when loaded with EDK2-RK3588 Tianocore firmware */
++static const struct acpi_device_id rk3x_i2c_acpi_match[] = {
++	{ .id = "RKCP3001", .driver_data = (kernel_ulong_t)&rk3399_soc_data },
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, rk3x_i2c_acpi_match);
++#endif
++
+ static int rk3x_i2c_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -1243,6 +1253,8 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 	int ret = 0;
+ 	int bus_nr;
+ 	u32 value;
++	u64 value64;
++	char name[64];
+ 	int irq;
+ 	unsigned long clk_rate;
+ 
+@@ -1250,8 +1262,12 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 	if (!i2c)
+ 		return -ENOMEM;
+ 
+-	match = of_match_node(rk3x_i2c_match, np);
+-	i2c->soc_data = match->data;
++	if (acpi_disabled) {
++		match = of_match_node(rk3x_i2c_match, np);
++		i2c->soc_data = match->data;
++	} else {
++		i2c->soc_data = device_get_match_data(&pdev->dev);
++	}
+ 
+ 	/* use common interface to get I2C timing properties */
+ 	i2c_parse_fw_timings(&pdev->dev, &i2c->t, true);
+@@ -1266,6 +1282,9 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 
+ 	i2c->dev = &pdev->dev;
+ 
++	if (!acpi_disabled)
++		ACPI_COMPANION_SET(&i2c->adap.dev, ACPI_COMPANION(&pdev->dev));
++
+ 	spin_lock_init(&i2c->lock);
+ 	init_waitqueue_head(&i2c->wait);
+ 
+@@ -1273,8 +1292,25 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 	if (IS_ERR(i2c->regs))
+ 		return PTR_ERR(i2c->regs);
+ 
+-	/* Try to set the I2C adapter number from dt */
+-	bus_nr = of_alias_get_id(np, "i2c");
++	if (acpi_disabled) {
++		/* Try to set the I2C adapter number from dt */
++		bus_nr = of_alias_get_id(np, "i2c");
++	} else {
++		ret = acpi_dev_uid_to_integer(ACPI_COMPANION(&pdev->dev),
++					      &value64);
++		if (ret) {
++			dev_err(&pdev->dev, "Cannot retrieve UID\n");
++			return ret;
++		}
++
++		if (value64 < INT_MAX) {
++			bus_nr = (int) value64;
++		} else {
++			/* shouldn't happen!!! */
++			dev_err(&pdev->dev, "Too big UID\n");
++			return -EINVAL;
++		}
++	}
+ 
+ 	/*
+ 	 * Switch to new interface if the SoC also offers the old one.
+@@ -1325,13 +1361,36 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, i2c);
+ 
+-	if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
+-		/* Only one clock to use for bus clock and peripheral clock */
+-		i2c->clk = devm_clk_get(&pdev->dev, NULL);
+-		i2c->pclk = i2c->clk;
++	if (acpi_disabled) {
++		if (i2c->soc_data->calc_timings == rk3x_i2c_v0_calc_timings) {
++			/* Only one clock to use for bus clock and peripheral
++			 * clock
++			 */
++			i2c->clk = devm_clk_get(&pdev->dev, NULL);
++			i2c->pclk = i2c->clk;
++		} else {
++			i2c->clk = devm_clk_get(&pdev->dev, "i2c");
++			i2c->pclk = devm_clk_get(&pdev->dev, "pclk");
++		}
+ 	} else {
+-		i2c->clk = devm_clk_get(&pdev->dev, "i2c");
+-		i2c->pclk = devm_clk_get(&pdev->dev, "pclk");
++		if (i2c->soc_data->calc_timings != rk3x_i2c_v0_calc_timings) {
++			snprintf(name, sizeof(name), "rk3x-i2c[%d].bclk",
++				 bus_nr);
++			i2c->clk = acpi_clk_register(ACPI_COMPANION(&pdev->dev),
++						     0, name);
++
++			snprintf(name, sizeof(name), "rk3x-i2c[%d].pclk",
++				 bus_nr);
++			i2c->pclk = acpi_clk_register(ACPI_COMPANION(&pdev->dev),
++						      1, name);
++		} else {
++			/* NB: currently not expected w/UEFI firmware given
++			 * these are not super performant RK3xxx
++			 */
++			dev_err(&pdev->dev,
++				"ACPI not supported for this RK3xxx\n");
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	if (IS_ERR(i2c->clk))
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 34829f2c5..13ca67d2c 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -32,6 +32,7 @@ struct irq_domain_ops;
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/fw_table.h>
++#include <linux/clk-provider.h>
+ 
+ #include <acpi/acpi_bus.h>
+ #include <acpi/acpi_drivers.h>
+@@ -1569,4 +1570,11 @@ static inline bool acpi_node_backed_by_real_pxm(int nid)
+ }
+ #endif
+ 
++/* Clock support */
++
++#ifdef CONFIG_ACPI
++struct clk *acpi_clk_register(struct acpi_device *adev, int index,
++			      const char *name);
++#endif
++
+ #endif	/*_LINUX_ACPI_H*/
 
