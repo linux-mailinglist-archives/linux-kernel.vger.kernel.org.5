@@ -1,145 +1,147 @@
-Return-Path: <linux-kernel+bounces-144267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECFB38A43CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AB678A43D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 18:36:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2406E1C21BB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:34:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70D721C21BE7
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 16:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A691353F2;
-	Sun, 14 Apr 2024 16:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968E41353FF;
+	Sun, 14 Apr 2024 16:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eGDJfIl9"
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ejL/xz4E"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0B2F1CF92;
-	Sun, 14 Apr 2024 16:33:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68F8134CC6;
+	Sun, 14 Apr 2024 16:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713112432; cv=none; b=VWof/1YswA0vfc8yNPjX5h7nWJNIDMH8UF9f4q7h/0kCmt/Co+NvpFN6ZESdxS7eRZ7Ko2Hg8Pucmy0Lx8Si2g1f6r+LmvOYVDY0WNAxFpR5CWE3pu/3DsmLqjklu271Q6hFQ0hq7Tn8p1CVsjlyMsIFT9ZOGj4x/dxOIKLoPKE=
+	t=1713112584; cv=none; b=BpdZG3/bg64SjfPr0LTQhj88asrAKYpSVSrpY+tojKH/aAuHPhgV6kJCc6SpjEELigVf2+Dj/971sEygEUR5JV2CsGoFhb50iyOM2kjqTJg0rKeCe8ikXrk3lE0NnCZIoIJWaesubki1v50amKKEmpm5A8mTpTrmibZ1GFBJrF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713112432; c=relaxed/simple;
-	bh=dyXqlvW9YjzLdAkkWuX++ClIqo70zTkGtGKhUa4LQpM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=enCwX7TfjoMyR0wObIwY4xUjOaprwfCuZycOUv24RV22q6Q9yvc78q7Q4IVjg47YMXKjSVbUiRHuucJhc5bOfAOd2hDZQAKkLb+rqqfxufm3FUS7j88ftLYTrzY8t8bAxf4VN2c/EagVVuB7Wgh92X142ntLemTJixWiKoUPGLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eGDJfIl9; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78ec78c4fceso168077585a.0;
-        Sun, 14 Apr 2024 09:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713112430; x=1713717230; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eqL0WG5MvKc2cIq0z8Q5OhCeWqEk3epdhelny8K600w=;
-        b=eGDJfIl98CDRAq8WfVTN3Qx9tI2bVhkdRGExQy9y41Ji039X86T/4JByWDcOKWdCEH
-         KZhWUmb7ONMwJ3WOs+zy95Nx4l1u1OPanzdlTqrT5prKkM3Rtp9mmhd5i0U7bIdhdaAX
-         LxkHosc5Bja4tOBmHwsNPlD6qxkBOGqvEV/MEPixXVCwJNF1GzB1l8VqZ7qeVIvMw4+n
-         YiMo4HQBd3Ro8ye7M582H3Av7xidKvHrL2/N7eA7zbGI/wWj+SDq/8odlJWDQsbWr76K
-         wNzQtSm1kkxPwpxvfIxKyb2kcFH1mWsM53MeRLIqF29Od1R7jG5aLY4ajL9DEkyluC+2
-         mpyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713112430; x=1713717230;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eqL0WG5MvKc2cIq0z8Q5OhCeWqEk3epdhelny8K600w=;
-        b=omvQEdKjl0RVnAwEhMpk++rX+sVJnSfE4OUQhH5ytDBdjX8J2E1/vkpWlucSsQbbmS
-         jPTFz0K2QiPdZ+A/+5HkR+Ibi6c6vX6LrQjt2EGtyIdc83kYRfUheQ8sMFCY8wdUsA/z
-         KU+mhWv6y/s06KXxdTjmffhYkpxT+F3xoB9gVojAWfAxKpuKZvRbYpT7gP8iK7YpPEnZ
-         f7M6utN7FZCLnIUQvN4We3JEOUhehiv41JLcbpG6d0TZZVdmxuOjtfym2c1H+Nymdjby
-         fm1gMY0gc9I4hrw/GZO/13iGRJGIn1ILJfxvdL6I3z3YwDS9Lstb4rwo05BS9GLA7NG4
-         XdZw==
-X-Forwarded-Encrypted: i=1; AJvYcCWb0KOhPL6SmzOI7m7/uGt9QXNRK7pY0Inbvl4QZygbz3sRm+P/2dCkJwS5vGxQNARr0d2WPogE92Yncu2s1eLzlRDfITvUNpoEitmxmLRjOPn/6Y3aEGd1fVZT9tf2C6JQFtU7RCEEnAMOz/S7WmFPEVQC0SkOLkxIMwA1JT5Z
-X-Gm-Message-State: AOJu0YxT6jHPR0AZp0C2Jmt00yk+ISU8AiHEU9rzVbOByOma9dfXdZSw
-	OFbiiKlkJSYK51pJy3+JSTyMR2F4rknw+llSN+pyPmwpehRlQAA6
-X-Google-Smtp-Source: AGHT+IHTOBVsxm4/lXrUUUQxQfSI05H0EVLBNy41Bu3n+HJQTCm8ENB7o0ZDxOkgCjw16yeeKdkeYQ==
-X-Received: by 2002:a05:620a:191d:b0:78e:13f1:3040 with SMTP id bj29-20020a05620a191d00b0078e13f13040mr14999873qkb.22.1713112429649;
-        Sun, 14 Apr 2024 09:33:49 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id m12-20020ae9e70c000000b007883184574esm5208818qka.98.2024.04.14.09.33.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 09:33:49 -0700 (PDT)
-Date: Sun, 14 Apr 2024 12:33:48 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Kory Maincent <kory.maincent@bootlin.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
- Jay Vosburgh <j.vosburgh@gmail.com>, 
- Andy Gospodarek <andy@greyhouse.net>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, 
- UNGLinuxDriver@microchip.com, 
- Simon Horman <horms@kernel.org>, 
- Vladimir Oltean <vladimir.oltean@nxp.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Message-ID: <661c056cf26d6_3e7732294f3@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240414073315.5aa7adf0@kmaincent-XPS-13-7390>
-References: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
- <20240409-feature_ptp_netnext-v10-8-0fa2ea5c89a9@bootlin.com>
- <66175265992c8_2d6bc6294d8@willemb.c.googlers.com.notmuch>
- <20240414073315.5aa7adf0@kmaincent-XPS-13-7390>
-Subject: Re: [PATCH net-next v10 08/13] ptp: Add phc source and helpers to
- register specific PTP clock or get information
+	s=arc-20240116; t=1713112584; c=relaxed/simple;
+	bh=eNzOnZBoAvIfDYaYJCy+HYEyB3DpVs0pSukxdyTWkd0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=cKzCW/QTMD9Povmndnmjxzsn7Ko/00PT8MjdexHQuIX/CLDqVxxA+1nm+gQrGDLrcmo2dRFAMRLTbxuJMs8v+7GBvHMxFwoLz2DInDJtAzaUDuuBgiX0y3P5tQED3V/MwWkZJskbm7WK5E/FHow8H2iHI4Uns9+v4Q209whOeuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ejL/xz4E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EBC0C072AA;
+	Sun, 14 Apr 2024 16:36:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713112584;
+	bh=eNzOnZBoAvIfDYaYJCy+HYEyB3DpVs0pSukxdyTWkd0=;
+	h=From:Subject:Date:To:Cc:From;
+	b=ejL/xz4EMRQtIL8NFPoxCI7BA2WCz28U7xgpVypZZWpdJosTannIu+kkHbUgXlF1g
+	 XqUeOUUoyo2tBk188MJQ+ZD286korvAtpco7R0AqF+srxompcOH2o3bYxsARNS6+22
+	 RseGS5xk2EGB7dtHc+Xj1wdAcEymmLQKJ1hMPu+7fW1JYkuyu1D7EQzN5ZKj+XElcw
+	 WWy6zTNVcY6/fbR1xB7KfJjMt2I2uNzA3SQ5RIjYGVUWm8SWgMYhxdcLt1s+r9Vw6O
+	 A+VTqjum48dW4AS6DwV/smfJ7vZ+tY/j5sHdGeQqL4pXwWRs/u4dZ/bo9AXsBcBOze
+	 PLTo4g2+VwrzA==
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 00/18] backlight: Constify lcd_ops
+Date: Sun, 14 Apr 2024 18:35:58 +0200
+Message-Id: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAO4FHGYC/x3MTQqAIBBA4avErBswk/6uEi1KRxuKDI0IpLsnL
+ b/FewkiBaYIQ5Eg0M2R/ZFRlQXodT4cIZtskEIqoSqFNxvyuMx629mtF+7aoD8jyrYxnap7a5c
+ Ocn0Gsvz853F63w82aO77aQAAAA==
+To: Lee Jones <lee@kernel.org>, 
+ Daniel Thompson <daniel.thompson@linaro.org>, 
+ Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>, 
+ =?utf-8?q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>, 
+ Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
+ Alexander Shiyan <shc_work@mail.ru>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, 
+ linux-omap@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2295; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=eNzOnZBoAvIfDYaYJCy+HYEyB3DpVs0pSukxdyTWkd0=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmHAXysXFQnYyvdqcs/X5FakY9Fo/FHxiGQeytV
+ tdgafVxAeSJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhwF8gAKCRDBN2bmhouD
+ 1+6rD/9zrg4QyHTGfati6i4s8LnmC6E8hhyOIATO04pH9rEDIPq7D9+7QUXi1gCd8nsDda+rGGc
+ lrjLvf++q6aPw/5rfGmp7sRunrZAkttgq8TQnqGRBnsxZL9pi3GBfbuPxFXsdbTq3DmPUdS0Kwb
+ IixWqSiF/PI9K3KXRmadIw4DQnZ/z6z8JBr0n2KJmrlf6cPHCEP8s6h2vHC0I635LJ8j1eXC2wF
+ UTt19KZsqIV/J7/Lv0EtVygFY2UWHfHUs6crKGUt7Q6HKcsJeol6XWix5ecLTaM4DKkyARJ80Ed
+ Ci+mO1BdAlczTrKKMpx8k26i0S9/oXsaqKhId2eCzKvOdOKytvhTq46mV0rOxGERh4cv69LJm7r
+ ph5flgoJf/BX7/blXsoMhYX2JiIYYt4SNrfEuBVj25G+DygfCs/Dsc598z26dXnuBywCU/p99eQ
+ MYGszfHkvKZUeri7xCiNHnNPnJ4Wn68mLl97KD+AWqc3pGJiClfVzoh/D3Xd8gaHfqX2MUK2EGZ
+ eCJaeaujMjxs+w4MqfFK8sbQ0KrWnNWjYvdnku55wherHqChzpSxnNXiJmx0pHKCTcqHB8MgeXJ
+ 6FlQJOQLB0BJC13I1l5/2uZxryjSeZn5sJBV+3UJDR8Q3oSdbfFP1EpYtpEKbJHCil9AME85b3e
+ 3ZOQeRpuPIdNFOQ==
+X-Developer-Key: i=krzk@kernel.org; a=openpgp;
+ fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Kory Maincent wrote:
-> On Wed, 10 Apr 2024 23:00:53 -0400
-> Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-> 
-> > > +/**
-> > > + * netdev_ptp_clock_register() - register a PTP hardware clock driver for
-> > > + *				 a net device
-> > > + *
-> > > + * @info: Structure describing the new clock.
-> > > + * @dev:  Pointer of the net device
-> > > + */
-> > > +
-> > > +extern struct ptp_clock *
-> > > +netdev_ptp_clock_register(struct ptp_clock_info *info,
-> > > +			  struct net_device *dev);  
-> > 
-> > No need for explicit extern?
-> 
-> Indeed I don't think it is needed.
-> I am wondering why few other functions uses it (ptp_clock_register,
-> ptp_clock_event, ptp_clock_index). Do you know?
+Hi,
 
-Perhaps it predates the coding style rule
+Dependencies
+============
+All further patches depend on the first patch.  Therefore everything
+could go via backlight tree (please ack) or via cross-tree pulls. Or
+whatever maintainer choose, just coordinate this with backlight.
 
-    Do not use the ``extern`` keyword with function declarations as this makes
-    lines longer and isn't strictly necessary.
+Best regards,
+Krzysztof
 
+---
+Krzysztof Kozlowski (18):
+      backlight: Constify lcd_ops
+      backlight: ams369fg06: Constify lcd_ops
+      backlight: corgi_lcd: Constify lcd_ops
+      backlight: hx8357: Constify lcd_ops
+      backlight: ili922x: Constify lcd_ops
+      backlight: ili9320: Constify lcd_ops
+      backlight: jornada720_lcd: Constify lcd_ops
+      backlight: l4f00242t03: Constify lcd_ops
+      backlight: lms283gf05: Constify lcd_ops
+      backlight: lms501kf03: Constify lcd_ops
+      backlight: ltv350qv: Constify lcd_ops
+      backlight: otm3225a: Constify lcd_ops
+      backlight: platform_lcd: Constify lcd_ops
+      backlight: tdo24m: Constify lcd_ops
+      HID: picoLCD: Constify lcd_ops
+      fbdev: clps711x: Constify lcd_ops
+      fbdev: imx: Constify lcd_ops
+      fbdev: omap: lcd_ams_delta: Constify lcd_ops
+
+ drivers/hid/hid-picolcd_lcd.c            | 2 +-
+ drivers/video/backlight/ams369fg06.c     | 2 +-
+ drivers/video/backlight/corgi_lcd.c      | 2 +-
+ drivers/video/backlight/hx8357.c         | 2 +-
+ drivers/video/backlight/ili922x.c        | 2 +-
+ drivers/video/backlight/ili9320.c        | 2 +-
+ drivers/video/backlight/jornada720_lcd.c | 2 +-
+ drivers/video/backlight/l4f00242t03.c    | 2 +-
+ drivers/video/backlight/lcd.c            | 4 ++--
+ drivers/video/backlight/lms283gf05.c     | 2 +-
+ drivers/video/backlight/lms501kf03.c     | 2 +-
+ drivers/video/backlight/ltv350qv.c       | 2 +-
+ drivers/video/backlight/otm3225a.c       | 2 +-
+ drivers/video/backlight/platform_lcd.c   | 2 +-
+ drivers/video/backlight/tdo24m.c         | 2 +-
+ drivers/video/fbdev/clps711x-fb.c        | 2 +-
+ drivers/video/fbdev/imxfb.c              | 2 +-
+ drivers/video/fbdev/omap/lcd_ams_delta.c | 2 +-
+ include/linux/lcd.h                      | 6 +++---
+ 19 files changed, 22 insertions(+), 22 deletions(-)
+---
+base-commit: 9ed46da14b9b9b2ad4edb3b0c545b6dbe5c00d39
+change-id: 20240414-video-backlight-lcd-ops-276d8439ffb8
+
+Best regards,
+-- 
+Krzysztof Kozlowski <krzk@kernel.org>
 
 
