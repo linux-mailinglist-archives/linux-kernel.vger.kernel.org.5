@@ -1,236 +1,231 @@
-Return-Path: <linux-kernel+bounces-144421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C06498A4636
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:43:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D9808A463A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23F2A281A74
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 23:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 891141C212FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 23:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC40137763;
-	Sun, 14 Apr 2024 23:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EAE5137761;
+	Sun, 14 Apr 2024 23:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hi4oIKgR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="2U68kaLK"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130E8134CFA;
-	Sun, 14 Apr 2024 23:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713138176; cv=fail; b=rdC4N2OBgwG+qxLcpFjRIu3K6pw/wX6VQrp5K2PSR1VXTsGG/sXrIC1bX5NXEXDwsazH7UuJgo3IY0Vu4V4wdKPzHNXJNB2HhDk7WpzNdtZFLNlxpt1W1NAVBPHukZpZRfMcpotJ2PWxiElhwLFr0hFNnIW0yBcwH1phQ17excE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713138176; c=relaxed/simple;
-	bh=CfqXTlMPpCPf0cXCb/UGik9UiuOXQbLB/rYvpzz6rmg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=NsZdfC4ZR0aEqOzR6T+VZJ5dQQERUbkzvy5trcXrD1r/yJgrvYtcTZv4G37JBiszw1AzJHD0xr7sIHz+f2YmZmdz+Y3GAgnt5Vo2y93Hvvf3gU9+7bUY44gjbL63vMxSjgSx6D1C+EkZv7Mmy1IN9ay9HIhnJfaVe+XJ9KiaUhU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hi4oIKgR; arc=fail smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713138175; x=1744674175;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=CfqXTlMPpCPf0cXCb/UGik9UiuOXQbLB/rYvpzz6rmg=;
-  b=hi4oIKgRQgBU67sSlzM2V5tGoJ8lkJbe/GdJ5W4hCi98m1f8s8oUSNap
-   mXi4DUvUCl8FZBaDHY2kuxjy57st+I0PwG01z9DAeDDsTKpuzm5Wg5+VM
-   UtWqoXKO8jhY8q0GoDqdIlyT7tUdTNVhL4RoNM3XT7OsPjLHxyr9KTOLr
-   09InvB6iIzwAPUOZqiRnWaKvUe0NhmU2V7o4HkQZX86RN3oDRgWz/cdpS
-   SeLuID2g8WMjttsygYeyi3qRhWZta6e1J26Bf2tfXCEjBsWqs5JsPZ3Hw
-   T5YGQZrhUOi7c3GPmBs7ZOtHEC6cZnuMU7TZwkaScXCXwpSuzc+4isXM2
-   A==;
-X-CSE-ConnectionGUID: lzCCTzHOT/uYnqR+fcwySg==
-X-CSE-MsgGUID: /vooDNkSTNic/652BUvEcg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="25973965"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="25973965"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 16:42:54 -0700
-X-CSE-ConnectionGUID: IvhlNFRqQi+ivL2IYxQnxA==
-X-CSE-MsgGUID: UapjFBPOT/ydkgwlwoU2og==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="22323225"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Apr 2024 16:42:54 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 14 Apr 2024 16:42:53 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 14 Apr 2024 16:42:53 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 14 Apr 2024 16:42:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AsfCupmuDMdEkbe32QXD9m3/OJdf1Oko5j5SJ/xAJf/Fmfuy+zUYfTdafcJjjgX5u1VnnBxUh3vbE8KW6JyQjfLVHvN2c5Il1GEhJ4FGxHLxL80QsO0ojk37NdhBIM/3NKsX55jPfNbAISW7c/vJKo/R0tIOxiU22QZMrZbg4raLsG+9yihe1ljucWFqakYc+A6fEtaiz6HK3kp9e0Mv2+cakuAvBDP8OgIVkuA2ZFPJhoO4NSaM39GODs/NLTqWyKJidVF8v50RlvlT6jmJvLnD3aFosbAhfoevzGKiFwJiYg+sZ77GT1Qs6L6kKjF+Qnv5IhZeotnOvPJEbZcWIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RBqmYmmKzQ3kRUsgOIKpiadAgH1891ePDkx83ykHLqc=;
- b=PD5vQZLQAsY28RJ+AFBSTcyFPNJBw5UhxkYfQ5lW+kexj/ixQG3RCc8c/J3cANhXyAw9ljf1efzlDQSuBrfpGhFO+agOTv7qMee5RKpFghRZx1xfp653NACTcIcudrseCnCusdGlr3y+5sgClZFFt1JxPV5fNaNXclGydjoOCh5nthEWWiojtKORx8wH+fD7fw3XklA/QZd5nGUwAwT/44S89msDAgQOOyGAiQsGN3LcI2KnEsyNeqS/uWwZSj7F43+ix4wGbgy/penOu18UBNUoA5imO0EuyQlm5qo7SJ/FLz/rK5KrmQfawihshDRElkhPPJAviwgw4JnujZfvvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB6522.namprd11.prod.outlook.com (2603:10b6:510:212::12)
- by DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.49; Sun, 14 Apr
- 2024 23:42:51 +0000
-Received: from PH7PR11MB6522.namprd11.prod.outlook.com
- ([fe80::9e7c:ccbc:a71c:6c15]) by PH7PR11MB6522.namprd11.prod.outlook.com
- ([fe80::9e7c:ccbc:a71c:6c15%5]) with mapi id 15.20.7472.027; Sun, 14 Apr 2024
- 23:42:51 +0000
-Date: Sun, 14 Apr 2024 23:41:28 +0000
-From: Matthew Brost <matthew.brost@intel.com>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-CC: Jani Nikula <jani.nikula@linux.intel.com>, Joonas Lahtinen
-	<joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	<intel-gfx@lists.freedesktop.org>, <kernel-janitors@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH] drm/i915/guc: Remove usage of the deprecated
- ida_simple_xx() API
-Message-ID: <ZhxpqC9ynm34+00y@DUT025-TGLU.fm.intel.com>
-References: <7108c1871c6cb08d403c4fa6534bc7e6de4cb23d.1705245316.git.christophe.jaillet@wanadoo.fr>
- <ZbGlqD6zyyp4DsmH@DUT025-TGLU.fm.intel.com>
- <a788ee2e-ee51-476f-8aee-aa344f221f9c@wanadoo.fr>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a788ee2e-ee51-476f-8aee-aa344f221f9c@wanadoo.fr>
-X-ClientProxiedBy: SJ0PR03CA0111.namprd03.prod.outlook.com
- (2603:10b6:a03:333::26) To PH7PR11MB6522.namprd11.prod.outlook.com
- (2603:10b6:510:212::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0148134433
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:59:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713139165; cv=none; b=d5kjb6KZ8pjikUFIaTsYFOyfNbVI3pxqzxBrOunobLjxLyyeqmqRfkyfd4CWQXejzh3vRwBD6dfc8dE/p/6kubOMtTuCNX9HJWxtM46/Mg8bq/R5pqyE0VtpD05sUX4vC+gPNESW3OnyI8sLixQS1QLXcwL3tydCxHBwEGuJAmQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713139165; c=relaxed/simple;
+	bh=DVbhIAD4dD6zMv8y6fV1Wzg0o8HMaAj0cEuHgs2xF/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPSmbP1/KWm1VyKiUa3nAvdTH0CdzSezjEJx2zmWUy4qqcQd6Jgvx98HULAIAULaaWRRRGeDK7bx3Kdmz4KbKf0M4B1sAnTaUUfr1ltkIWf0Mlua090cv75eJsiHcJNsYZCw1hAMoaErqEJKBFJpX22FEbuKZjKu5vfE1I/Auf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=2U68kaLK; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so18964605ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 16:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1713139163; x=1713743963; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CGV27/0yG6UjQSbUj317jOwq2KsNUae71ElB8pdHdTg=;
+        b=2U68kaLKKBm/qwsuWIa9QTsZgVQpPSF29wkcBREdm3CAXPIEycHe1jvkj1ggwJ01so
+         peEhUMoP4U8ncuZpB01Cm5MBBJXOFFRphwqfiHoqHuLFPLDA/GCJ4LI8cAXNce69GCl2
+         rWjsK+ARhBB3GFq+qi9e5YI7S4zF8XDWFORkBZV8e8zH1T1bbeeV/U3j7hsXPhsyyfUs
+         68+F4PHaD18a0aRmYdBFu5zznk4l609Pir5IZzj2CFJas4M6PlsexvGMAh2thPg2nSbz
+         2Paa9EHzvbQfQcKOOM/6l72YhcByEmgEowKePe0GBulQooDzpS3QR0881+z9BE73hLrv
+         +T9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713139163; x=1713743963;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CGV27/0yG6UjQSbUj317jOwq2KsNUae71ElB8pdHdTg=;
+        b=q+LaUs4cspNaKJzFAxkYE0B4ooS+Btt5waXc7liARUwhIxtcscvzwyVuRsmn1F/gUV
+         woAa+7g5FeAfnuJZ6SijwkAudRXpDbA9RKJcI+NpdyQFhC0y+OLZ3qSbKrnUxGaQHDRL
+         rhmIMydw8Pvn31k4e+hzX9HXX5tzV1gr4y5TE86StnxgP7f4BYY3UsEtUTCPqEBNcMYT
+         1wp9DD4M3xU1Qkn6CwiCFQCLvlUfyYrLJfjOAHWQu1N711fvHnCNPwOZLf2OMaVW9ZmA
+         j9gU+A3XHMIGNgKe2z/FPx0zjYugtUnPt+u/SWvgBaGIhY3Sfp0AwbaLYfzih4NiNwGt
+         CMHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCcml2+fxgiOTOujiOOgiSXJLnLFHAZH4w7BE0YtxgJ7n/UcUug7hGz0Dt/ue1qeVrI+dXatiBfgJ9ld17+g6/atBr5zJGNkSkFMHB
+X-Gm-Message-State: AOJu0YyrdsRFB2Usqtn447pociK7rtsI8QWChlITZ3Ls9OcGXL7j6MP9
+	fX+eEinrA0hDsljQilLKwDkfMpI/RwRIluBttoQ8NH5qWaiJ8Tvj96IAqSoWTTE=
+X-Google-Smtp-Source: AGHT+IHFHu5EI4F4Qvvr4K46o+uEyBuZTAyTZ/KZLyxcZYs/+Nc6uhWqc94xlNok0j1ktZdLHFsdVQ==
+X-Received: by 2002:a17:903:4282:b0:1e4:60d4:916b with SMTP id ju2-20020a170903428200b001e460d4916bmr7028967plb.64.1713139162823;
+        Sun, 14 Apr 2024 16:59:22 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
+        by smtp.gmail.com with ESMTPSA id b9-20020a170902d50900b001dee4a22c2bsm6580711plg.34.2024.04.14.16.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Apr 2024 16:59:22 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rw9kk-00FqSa-30;
+	Mon, 15 Apr 2024 09:59:18 +1000
+Date: Mon, 15 Apr 2024 09:59:18 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: lipeifeng@oppo.com
+Cc: akpm@linux-foundation.org, zhengqi.arch@bytedance.com,
+	roman.gushchin@linux.dev, muchun.song@linux.dev, 21cnbao@gmail.com,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm/shrinker: add SHRINKER_NO_DIRECT_RECLAIM
+Message-ID: <Zhxt1uL+QPisq4rE@dread.disaster.area>
+References: <20240413015410.30951-1-lipeifeng@oppo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB6522:EE_|DS0PR11MB7529:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4bd77c1-c6f8-4089-9340-08dc5cdc992f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IC+J3nnhK/7ihjdGV+GPWbHM9SIGYrk+DsPalIfNVWYUrcwjV4kQK2juWTG659NLIhTOYkGs+3S1ja9A6imIlsvZ+CZM1jUAwetgdFY7XYlsLyj+3COOGDcTuceQpLi2uXbFKqsqgIcvXVN8xtR+LYztM/r7/EXU8/2eWD1KrrWW+Tk9e3Mg+gXfNZi3c2TS0uLcMjJ7PhQ6UgARgPGKEJE4hFHWjfBtNcku6Ob5R4m/BBdJIM2hA14lLudzoK2mSRUsRXCxvOGkKVgf8Y11keVrJt5YPnthugTI8T815ayyXMSkX7tnVEp3HSSdvQh/D1BbONJnBA8hA7Lb8OiPYuex+cP0pvMNBVNTZeBLoW0Vu0UR9zQFoGC/gAhFm55UYALC8Sy5hZ73MD9drBdv+ImHmxU9K+X9847wI+ZRGSJR8jr4Yxz2EblA2Zz2tRcYNpFvpCOB1I1AuzbwAe/8yrhZ+70IITV05triuivmAq5i86MsBl2xOVeXU9bK7aXyRVu3Iu9+uCvYcH2kDMNHvwSuJZvUV7BiX/PMPW9eikvL0Rbn5mW6Lmfj5+TmlzIbXOdxnnFyZsfRMIxiWDEG6pUUAwp4JNFgKV3gm+pdxIu9/W/MmOHGAQx0OiXl/eaDLEIoKB+2BqxJjmgWGohMBSTkFe1swqa2jSIu30DJEog=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6522.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?PZV/BXBiQEnUZdw2te0o3953fBHRSP+Kc/La2DSGm6at78LxhZrTLhG9tx?=
- =?iso-8859-1?Q?T/p0NH8Hnv+NH5sfTGD86wMGg8uGDBo66sFwi62AjPYWsB71MhF1kyjpKX?=
- =?iso-8859-1?Q?JlJQlHyCxZwW36IEIjo6+wKr9gBjKnBD+U9Yj2N412tifRnnnh9EnPV2Ow?=
- =?iso-8859-1?Q?iutebm7vrkIOFhAFPn8cmXT0Zk+v8zLGjqrosfvwVY5Z/oLtUynSeQeisG?=
- =?iso-8859-1?Q?0Q449huZpQ4uJ/UKxdOrVXRQPDxBbiTJnWQ+hryTNIZeg+cC+8DPVgR/ni?=
- =?iso-8859-1?Q?rWxR/g04Z1oZl/0qa9/aa5tWGFEu0eR7ivSbeC2SjzHOuCotAh8hHWHUSk?=
- =?iso-8859-1?Q?JV7rf3x3kRFjoeo5KQpAHc58o2wkuPdzcrzDhxyhrmLjTylfdjaTpwE7NA?=
- =?iso-8859-1?Q?tYDr9t6gE/iaGK1nJLdAX2uWQDf/k7kKXkUrRgzoME5fP6Kn5RMjFNSKrp?=
- =?iso-8859-1?Q?Jn05oPDBK9CEtp6y0Jc66Bzu3+8T52tuEqO2vRJK899c0Q6PDyiKwsah9x?=
- =?iso-8859-1?Q?TdV46xZYrJH8Ta4Y/30fQ67RtU1kSswchZ6HibuGvmMdV5MiaawRwdCAXe?=
- =?iso-8859-1?Q?V2keX28v8SJHMjWritCLK5u+aCRSeYrF8QhojK1PhQqq55ukS9FTt0nd0U?=
- =?iso-8859-1?Q?WqihlkY3HZDojh39/YLR7ecasNBBaDmSpticvo25GEB1Hb4vt1joR6E8H9?=
- =?iso-8859-1?Q?5wsV6t56+fckJVVt5dFz9/wotb/lGdasU2KrwWWxFmnht3H18P9W0La5bp?=
- =?iso-8859-1?Q?5X/NdllUpFwn8HrvOmH3raVW0420Yz+w/4ryp8V8EVPptXxioyPkC/xGtk?=
- =?iso-8859-1?Q?v5U1jqSCBvzIQ9CKdhyejszKXaJRVUPHaEWzqgsdaxx+CfB+f+Su5MqCMa?=
- =?iso-8859-1?Q?mXz/Tmn+6DrzVjtv0vSC/Iks1/ot3Jn0bAjiO+1DgU8b8MHGqghbGuH/0P?=
- =?iso-8859-1?Q?Cy9ENAeGD5tS6Df2pvB3ix0JCrXAbd4xtuaLGpBx952iILC3q+ocqliP7m?=
- =?iso-8859-1?Q?4zk82Vb9gtd42W8j7aaWCq7AXUQY4nzFGmaOFmxHRxjTgObts+0JxlSZMV?=
- =?iso-8859-1?Q?7sT/LR0dSPsU2shB/NAV5qJF/rLMT8t5H7uw250zD6di3oQYOTvTnuQIWN?=
- =?iso-8859-1?Q?DWJ43n9xvIjEy7QnJ2eU4md8i+j3IoM0kKT/tbWFXj0Dx0DvB6qkBSWB0w?=
- =?iso-8859-1?Q?TVNjV9lXzDr4G3kiyeNR21hccj7de7fH6CferVKCs+ES0AAJCv7xHc3cWZ?=
- =?iso-8859-1?Q?59/yHlMc/V2DHdwphAwAGR+G6LWgBRzlERkucw4nxLDe/k2XO28Km0mXQA?=
- =?iso-8859-1?Q?bVt8IQhicWV2rg2T+QxIOaqkCYp9ZSH0vlEOu/3PPye03hIV8A4rIklOK8?=
- =?iso-8859-1?Q?VaG+Yo6qUmZe2+MQ5FMoWtzGqF5xZcH886vEKd2LM8WmNp9zzF8+cRQaK6?=
- =?iso-8859-1?Q?3cbhmsZ7iH6un0fd/s8RhR7Uw0kqGpN4WUaUvjb/DKvZnDTigf8uDWFpGQ?=
- =?iso-8859-1?Q?QspxmyO8MjemG4nSDXms2aUohymo4d72prbMo3LmcOQ62o3rudH/wkvqgO?=
- =?iso-8859-1?Q?q4SUWyMJkW6hl95UBs5nB5K9jwdXau1/F82+N7cTGbZWLIBBfvxUeXghmN?=
- =?iso-8859-1?Q?W4oWEgtKkK5E/MK4Qns6HQxemRdwO1FeOLdH1GVcwlXn1od7CvQqjJgA?=
- =?iso-8859-1?Q?=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4bd77c1-c6f8-4089-9340-08dc5cdc992f
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6522.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Apr 2024 23:42:51.3813
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9ChlNg2XwGViZ6ztID0nzi7bP71SGVSe5VW6dg3wKNTSK8kAkrJD5erZUEAaOz3dn6qqOW3E6l9pNtIqHP1IwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7529
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240413015410.30951-1-lipeifeng@oppo.com>
 
-On Sun, Apr 14, 2024 at 10:26:35AM +0200, Christophe JAILLET wrote:
-> Le 25/01/2024 à 01:04, Matthew Brost a écrit :
-> > On Sun, Jan 14, 2024 at 04:15:34PM +0100, Christophe JAILLET wrote:
-> > > ida_alloc() and ida_free() should be preferred to the deprecated
-> > > ida_simple_get() and ida_simple_remove().
-> > > 
-> > > Note that the upper limit of ida_simple_get() is exclusive, but the one of
-> > > ida_alloc_range() is inclusive. So a -1 has been added when needed.
-> > > 
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > 
-> > Reviewed-by: Matthew Brost <matthew.brost@intel.com>
+On Sat, Apr 13, 2024 at 09:54:10AM +0800, lipeifeng@oppo.com wrote:
+> From: Peifeng Li <lipeifeng@oppo.com>
 > 
-> Hi,
-> 
-> polite reminder ;-)
-> 
+> In the case of insufficient memory, threads will be in direct_reclaim to
+> reclaim memory, direct_reclaim will call shrink_slab to run sequentially
+> each shrinker callback. If there is a lock-contention in the shrinker
+> callback,such as spinlock,mutex_lock and so on, threads may be likely to
+> be stuck in direct_reclaim for a long time, even if the memfree has reached
+> the high watermarks of the zone, resulting in poor performance of threads.
 
-Merged. Thanks for the patch.
+That's always been a problem. That's a shrinker implementation
+problem, not a shrinker infrastructure problem.
 
-Matt
+> Example 1: shrinker callback may wait for spinlock
+> static unsigned long mb_cache_shrink(struct mb_cache *cache,
+>                                      unsigned long nr_to_scan)
+> {
+>         struct mb_cache_entry *entry;
+>         unsigned long shrunk = 0;
+> 
+>         spin_lock(&cache->c_list_lock);
+>         while (nr_to_scan-- && !list_empty(&cache->c_list)) {
+>                 entry = list_first_entry(&cache->c_list,
+>                                          struct mb_cache_entry, e_list);
+>                 if (test_bit(MBE_REFERENCED_B, &entry->e_flags) ||
+>                     atomic_cmpxchg(&entry->e_refcnt, 1, 0) != 1) {
+>                         clear_bit(MBE_REFERENCED_B, &entry->e_flags);
+>                         list_move_tail(&entry->e_list, &cache->c_list);
+>                         continue;
+>                 }
+>                 list_del_init(&entry->e_list);
+>                 cache->c_entry_count--;
+>                 spin_unlock(&cache->c_list_lock);
+>                 __mb_cache_entry_free(cache, entry);
+>                 shrunk++;
+>                 cond_resched();
+>                 spin_lock(&cache->c_list_lock);
+>         }
+>         spin_unlock(&cache->c_list_lock);
+> 
+>         return shrunk;
+> }
 
-> CJ
+Yeah, we learnt a -long- time ago that using global locks in
+shrinkers that have -unbounded concurrency- is a really bad idea.
+This is just a poorly implemented shrinker implemenation because it
+doesn't take into account memory reclaim concurrency.
+
+This is, for example, why list_lru exists is tightly tied into
+the SHRINKER_NUMA_AWARE infrastructure - it gets rid of the need for
+global locks in reclaim lists that shrinkers traverse.
+
+> Example 2: shrinker callback may wait for mutex lock
+> static
+> unsigned long kbase_mem_evictable_reclaim_scan_objects(struct shrinker *s,
+> 		struct shrink_control *sc)
+> {
+> 	struct kbase_context *kctx;
+> 	struct kbase_mem_phy_alloc *alloc;
+> 	struct kbase_mem_phy_alloc *tmp;
+> 	unsigned long freed = 0;
 > 
-> > 
-> > > ---
-> > >   drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c | 13 ++++++-------
-> > >   1 file changed, 6 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-> > > index a259f1118c5a..73ce21ddf682 100644
-> > > --- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-> > > +++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
-> > > @@ -2156,11 +2156,10 @@ static int new_guc_id(struct intel_guc *guc, struct intel_context *ce)
-> > >   					      order_base_2(ce->parallel.number_children
-> > >   							   + 1));
-> > >   	else
-> > > -		ret = ida_simple_get(&guc->submission_state.guc_ids,
-> > > -				     NUMBER_MULTI_LRC_GUC_ID(guc),
-> > > -				     guc->submission_state.num_guc_ids,
-> > > -				     GFP_KERNEL | __GFP_RETRY_MAYFAIL |
-> > > -				     __GFP_NOWARN);
-> > > +		ret = ida_alloc_range(&guc->submission_state.guc_ids,
-> > > +				      NUMBER_MULTI_LRC_GUC_ID(guc),
-> > > +				      guc->submission_state.num_guc_ids - 1,
-> > > +				      GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
-> > >   	if (unlikely(ret < 0))
-> > >   		return ret;
-> > > @@ -2183,8 +2182,8 @@ static void __release_guc_id(struct intel_guc *guc, struct intel_context *ce)
-> > >   							   + 1));
-> > >   		} else {
-> > >   			--guc->submission_state.guc_ids_in_use;
-> > > -			ida_simple_remove(&guc->submission_state.guc_ids,
-> > > -					  ce->guc_id.id);
-> > > +			ida_free(&guc->submission_state.guc_ids,
-> > > +				 ce->guc_id.id);
-> > >   		}
-> > >   		clr_ctx_id_mapping(guc, ce->guc_id.id);
-> > >   		set_context_guc_id_invalid(ce);
-> > > -- 
-> > > 2.43.0
-> > > 
-> > 
-> > 
+> 	kctx = container_of(s, struct kbase_context, reclaim);
 > 
+> 	// MTK add to prevent false alarm
+> 	lockdep_off();
+
+That's just -broken-.
+
+If shrinkers are called from a context that they can't take locks
+because they might deadlock, then they must either use trylocks and
+abort (i.e. SHRINK_STOP) or use context flags provided by the
+allocation context (e.g. GFP_NOFS, memalloc_nofs_save()) to tell
+reclaim that context specific subsystem locks are held and the
+shrinker should not attempt to take them and/or run in this context.
+
+> 	mutex_lock(&kctx->jit_evict_lock);
+
+That's also wrong.
+
+Shrinkers must be non-blocking, otherwise the cause memory reclaim
+latencies that will result in unpredicatable memory allocation
+latencies and that makes anyone running applications with latency
+specific SLAs very unhappy.
+
+IOWs, this is a subsystem shrinker that is very poorly implemented
+and needs to be fixed before we do anything else.
+
+> In mobile-phone,threads are likely to be stuck in shrinker callback during
+> direct_reclaim, with example like the following:
+> <...>-2806    [004] ..... 866458.339840: mm_shrink_slab_start:
+> 			dynamic_mem_shrink_scan+0x0/0xb8 ... priority 2
+> <...>-2806    [004] ..... 866459.339933: mm_shrink_slab_end:
+> 			dynamic_mem_shrink_scan+0x0/0xb8 ...
+
+Yup, that's exactly the problem with blocking shrinkers - they can
+screw the whole system over because it stops memory allocation in
+it's tracks. Shrinkers must be non-blocking.
+
+> For the above reason, the patch introduces SHRINKER_NO_DIRECT_RECLAIM that
+> allows driver to set shrinker callback not to be called in direct_reclaim
+> unless sc->priority is 0.
+
+No, that's fundamentally flawed, too.
+
+Firstly, it doesn't avoid deadlocks, nor does it avoid lock
+contention under heavy memory pressure - it just hides these
+problems until we are critically low on memory. Which will happen
+much faster, because we aren't reclaiming memory from caches that
+hold memory that needs to be reclaimed. This isn't good.
+
+Further, it bypasses the mechanism we use to defer the shrinker
+work to a context where it can be executed safely (i.e. kswapd).
+Shrinkers that cannot run in the current context are supposed to
+return SHRINK_STOP to tell the shrink_slab infrastructure to
+accumulate the work for the next context that can run the reclaim
+rather than execute it.
+
+This allows kswapd to do the reclaim work instead of direct reclaim.
+It also ensures that all the memory pressure being applied to the
+shrinkers is actually actioned so we keep all the caches and memory
+usage in relative balance.
+
+IOWs, the choice of running the shrinker or not is controlled by two
+things:
+
+1. the shrinker implementation itself, and
+2. the reclaim context flags provided by the allocation that needs
+reclaim to be performed.
+
+Long story short: if a shrinker is causing direct reclaim problems
+because of poor locking design, latency and/or context specific
+deadlocks, then the subsystem and it's shrinker needs to be fixed.
+We should not be skipping direct reclaim just because a shrinker is
+really poorly implemented.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
