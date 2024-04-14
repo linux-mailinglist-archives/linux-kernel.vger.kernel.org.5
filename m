@@ -1,1157 +1,200 @@
-Return-Path: <linux-kernel+bounces-144404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 645B28A4580
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:51:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A65B8A456E
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:46:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D121282577
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4932280FF4
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B53F7136E3E;
-	Sun, 14 Apr 2024 20:51:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2BF3136985;
+	Sun, 14 Apr 2024 20:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="yMX6KNOF"
-Received: from mail-108-mta133.mxroute.com (mail-108-mta133.mxroute.com [136.175.108.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TgU2dkTk";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UP9jHp7j"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75868136649
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 20:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998E638F83;
+	Sun, 14 Apr 2024 20:46:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713127865; cv=none; b=ne2zlvyx9odHNtofaVEqgFeoHYecfxY3KKhNSYlahbSTQq6uZ4bmFFOZFognpBfPQORVDKCgM+oTMiiaA+eiYsroHe/twX20g3IppwgZky1080vxupFaurYkpL+khnEZ9BXaz1okFr16oLUCgQzL4uloHbYeurFHIBhc5XwsVAw=
+	t=1713127604; cv=none; b=eT+YdWZP8lL+Mi3mLiHVv/noizLCzogS0sWY0BdlPYpykJlFJgTgiODE36ORR1rmPX/6dsqgtNAWc1rUjhGAtBKeYSL8vJ0dH5uLHCyvYFOd7G/1KrJBGTMgDicQuxyTDu7R8CIJS1jvHDofuJsJWwM10oKUlpFQMLsnYe60ZBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713127865; c=relaxed/simple;
-	bh=zL5y4mHDSp32Nsbxv8qMLLfutsDt5dVzSFg8ZBKKMXA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ggmOhOacTyfjSEArG2RsgSrPDIVcoaQhz6HTc1/PTJfolyYgHhUQG87Bqjf9ZmZbzjD3w6AzRK3l4cWxq//kvAozJJCFxayvXpC7hvsUDoTxLpWqb+h9/yHPz9cRyV+/XT2QdYCVR5s1RE0uatTjjlLcPWuCyXRrHVD/ySQ412o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=yMX6KNOF; arc=none smtp.client-ip=136.175.108.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta133.mxroute.com (ZoneMTA) with ESMTPSA id 18ede5be11f0003bea.010
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Sun, 14 Apr 2024 20:45:47 +0000
-X-Zone-Loop: 05f8c9933ffc2a4c1d040c1b94dc01b14b4400eb1310
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=luigi311.com; s=x; h=Content-Transfer-Encoding:MIME-Version:References:
-	In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Q4JwVNXLPBAOCb/gSeu6dQ1D8uRsz5IizgDOLFAqWZw=; b=yMX6KNOFnZusdIBjJdOsM7Ggo3
-	b1krfti1IvrjsdCzn+TQc3jSUlR5izJ7e9ygj9XbiURv+qfCJvjVgYMryK02KJeDq5zbaihdE2uVZ
-	GwRwNV4u527gMba4LzYm7QaISD0hYvJVioVufPA6nh8i+LQjCxtEzcxzKyfMfURoaDu0BB0V9ofKr
-	jsC+DxdnbT6bicqBFMxxRsFDT9xgOoHR0cA0R3kJL+j0zsWuTRq9KZ1XVFXJpOcYvAAf2guxBPsDE
-	vKh0XufxTe4Bfoo4ryn+KuyaHNfB/d1rrQ0++fchLmBFaZQLBCUWtLeP6eb4BiUKMp6JE9TqdNzFv
-	9a6KYDjA==;
-From: git@luigi311.com
-To: linux-media@vger.kernel.org
-Cc: dave.stevenson@raspberrypi.com,
-	jacopo.mondi@ideasonboard.com,
-	mchehab@kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	sakari.ailus@linux.intel.com,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	pavel@ucw.cz,
-	phone-devel@vger.kernel.org,
-	Luis Garcia <git@luigi311.com>
-Subject: [PATCH v4 25/25] media: i2c: imx258: Convert to new CCI register access helpers
-Date: Sun, 14 Apr 2024 14:35:03 -0600
-Message-ID: <20240414203503.18402-26-git@luigi311.com>
-In-Reply-To: <20240414203503.18402-1-git@luigi311.com>
-References: <20240414203503.18402-1-git@luigi311.com>
+	s=arc-20240116; t=1713127604; c=relaxed/simple;
+	bh=XDvQz8Cb3JriCvXnVGnz6ggpgm/OLowXPtVOYaRL0fw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=Zahow7xV7Y2cHr3SB1Ro77S9UGWfbf0a1FibOAfFzzJhFxq4Lzt2IOTsvWB/lHJoHyotU0rmgbC5Yl4T/CYZ2X+1lhPwGmu6+fT7NW4jiMzHXRD/DdqVhBbQAwL0qch9CWzfEPMIf2ICe42DsuO0uaBhXvbLHVlhk6xAZqhjUeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TgU2dkTk; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UP9jHp7j; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sun, 14 Apr 2024 20:46:39 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713127600;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2Zq2qNCG7YYCKkCBpYl3nPheD8UbaNfedd0Pr1nDN0o=;
+	b=TgU2dkTkrj/04ljsW/tpyq67LfTvCle2gxEwrRj8ppTeQ3KlKEUK4ZYkIGlFHzEWFa8i9x
+	d86dQ+YPep9yZuukbMAzQpwKHepONmaal1W1AqGny0/cGBIv9z+/pIs4R8v2dTtkbkX8oN
+	Yc9vr/Ri1SAivF8dAeNFkbAdq/ErNfdklTju2Alyry1+dvotCnmE6CvZoQYzyXDNdF4Imx
+	RL+rs06NujDCowqgcvrYxFsksWE26827W7hVcFc63XpfzsZZREjdMVuGJbsFaMfX+oUXoi
+	1g8Ae+DzOyEEezyfAHeWuG8WEX9q9lPfP3tTNxKhXDbsVlxN5daZwGdt98oQmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713127600;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2Zq2qNCG7YYCKkCBpYl3nPheD8UbaNfedd0Pr1nDN0o=;
+	b=UP9jHp7jopD7I/XP2Ypu1bKs/RcIz2fQidjDlKy0OaWmxApEjiqRxb3KUo3CIs+0m6w+Oo
+	7XqC1Okf82rUF+CQ==
+From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: locking/core] locking/atomic/x86: Introduce arch_try_cmpxchg64_local()
+Cc: Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Waiman Long <longman@redhat.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240414161257.49145-1-ubizjak@gmail.com>
+References: <20240414161257.49145-1-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Id: personal@luigi311.com
+Message-ID: <171312759954.10875.1385994404712358986.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-From: Luis Garcia <git@luigi311.com>
+The following commit has been merged into the locking/core branch of tip:
 
-Use the new comon CCI register access helpers to replace the private
-register access helpers in the imx258 driver.
+Commit-ID:     d26e46f6bf329cfcc469878709baa41d3bfc7cc3
+Gitweb:        https://git.kernel.org/tip/d26e46f6bf329cfcc469878709baa41d3bfc7cc3
+Author:        Uros Bizjak <ubizjak@gmail.com>
+AuthorDate:    Sun, 14 Apr 2024 18:12:43 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sun, 14 Apr 2024 22:40:54 +02:00
 
-Signed-off-by: Luis Garcia <git@luigi311.com>
+locking/atomic/x86: Introduce arch_try_cmpxchg64_local()
+
+Introduce arch_try_cmpxchg64_local() for 64-bit and 32-bit targets
+to improve code using cmpxchg64_local().  On 64-bit targets, the
+generated assembly improves from:
+
+    3e28:	31 c0                	xor    %eax,%eax
+    3e2a:	4d 0f b1 7d 00       	cmpxchg %r15,0x0(%r13)
+    3e2f:	48 85 c0             	test   %rax,%rax
+    3e32:	0f 85 9f 00 00 00    	jne    3ed7 <...>
+
+to:
+
+    3e28:	31 c0                	xor    %eax,%eax
+    3e2a:	4d 0f b1 7d 00       	cmpxchg %r15,0x0(%r13)
+    3e2f:	0f 85 9f 00 00 00    	jne    3ed4 <...>
+
+where a TEST instruction after CMPXCHG is saved.  The improvements
+for 32-bit targets are even more noticeable, because double-word
+compare after CMPXCHG8B gets eliminated.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Waiman Long <longman@redhat.com>
+Link: https://lore.kernel.org/r/20240414161257.49145-1-ubizjak@gmail.com
 ---
- drivers/media/i2c/Kconfig  |   1 +
- drivers/media/i2c/imx258.c | 804 ++++++++++++++++---------------------
- 2 files changed, 346 insertions(+), 459 deletions(-)
+ arch/x86/include/asm/cmpxchg_32.h | 34 ++++++++++++++++++++++++++++++-
+ arch/x86/include/asm/cmpxchg_64.h |  6 +++++-
+ 2 files changed, 40 insertions(+)
 
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 56f276b920ab..6707b0c3c4eb 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -139,6 +139,7 @@ config VIDEO_IMX219
- 
- config VIDEO_IMX258
- 	tristate "Sony IMX258 sensor support"
-+	select V4L2_CCI_I2C
- 	help
- 	  This is a Video4Linux2 sensor driver for the Sony
- 	  IMX258 camera.
-diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-index 65846dff775e..8fc9750e5ec9 100644
---- a/drivers/media/i2c/imx258.c
-+++ b/drivers/media/i2c/imx258.c
-@@ -8,22 +8,20 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-+#include <media/v4l2-cci.h>
- #include <media/v4l2-ctrls.h>
- #include <media/v4l2-device.h>
- #include <media/v4l2-fwnode.h>
- #include <asm/unaligned.h>
- 
--#define IMX258_REG_VALUE_08BIT		1
--#define IMX258_REG_VALUE_16BIT		2
--
--#define IMX258_REG_MODE_SELECT		0x0100
-+#define IMX258_REG_MODE_SELECT		CCI_REG8(0x0100)
- #define IMX258_MODE_STANDBY		0x00
- #define IMX258_MODE_STREAMING		0x01
- 
--#define IMX258_REG_RESET		0x0103
-+#define IMX258_REG_RESET		CCI_REG8(0x0103)
- 
- /* Chip ID */
--#define IMX258_REG_CHIP_ID		0x0016
-+#define IMX258_REG_CHIP_ID		CCI_REG16(0x0016)
- #define IMX258_CHIP_ID			0x0258
- 
- /* V_TIMING internal */
-@@ -32,13 +30,11 @@
- #define IMX258_VTS_30FPS_VGA		0x034c
- #define IMX258_VTS_MAX			65525
- 
--#define IMX258_REG_VTS			0x0340
--
- /* HBLANK control - read only */
- #define IMX258_PPL_DEFAULT		5352
- 
- /* Exposure control */
--#define IMX258_REG_EXPOSURE		0x0202
-+#define IMX258_REG_EXPOSURE		CCI_REG16(0x0202)
- #define IMX258_EXPOSURE_OFFSET		10
- #define IMX258_EXPOSURE_MIN		4
- #define IMX258_EXPOSURE_STEP		1
-@@ -46,38 +42,38 @@
- #define IMX258_EXPOSURE_MAX		(IMX258_VTS_MAX - IMX258_EXPOSURE_OFFSET)
- 
- /* Analog gain control */
--#define IMX258_REG_ANALOG_GAIN		0x0204
-+#define IMX258_REG_ANALOG_GAIN		CCI_REG16(0x0204)
- #define IMX258_ANA_GAIN_MIN		0
- #define IMX258_ANA_GAIN_MAX		480
- #define IMX258_ANA_GAIN_STEP		1
- #define IMX258_ANA_GAIN_DEFAULT		0x0
- 
- /* Digital gain control */
--#define IMX258_REG_GR_DIGITAL_GAIN	0x020e
--#define IMX258_REG_R_DIGITAL_GAIN	0x0210
--#define IMX258_REG_B_DIGITAL_GAIN	0x0212
--#define IMX258_REG_GB_DIGITAL_GAIN	0x0214
-+#define IMX258_REG_GR_DIGITAL_GAIN	CCI_REG16(0x020e)
-+#define IMX258_REG_R_DIGITAL_GAIN	CCI_REG16(0x0210)
-+#define IMX258_REG_B_DIGITAL_GAIN	CCI_REG16(0x0212)
-+#define IMX258_REG_GB_DIGITAL_GAIN	CCI_REG16(0x0214)
- #define IMX258_DGTL_GAIN_MIN		0
- #define IMX258_DGTL_GAIN_MAX		4096	/* Max = 0xFFF */
- #define IMX258_DGTL_GAIN_DEFAULT	1024
- #define IMX258_DGTL_GAIN_STEP		1
- 
- /* HDR control */
--#define IMX258_REG_HDR			0x0220
-+#define IMX258_REG_HDR			CCI_REG8(0x0220)
- #define IMX258_HDR_ON			BIT(0)
--#define IMX258_REG_HDR_RATIO		0x0222
-+#define IMX258_REG_HDR_RATIO		CCI_REG8(0x0222)
- #define IMX258_HDR_RATIO_MIN		0
- #define IMX258_HDR_RATIO_MAX		5
- #define IMX258_HDR_RATIO_STEP		1
- #define IMX258_HDR_RATIO_DEFAULT	0x0
- 
- /* Test Pattern Control */
--#define IMX258_REG_TEST_PATTERN		0x0600
-+#define IMX258_REG_TEST_PATTERN		CCI_REG16(0x0600)
- 
--#define IMX258_CLK_BLANK_STOP		0x4040
-+#define IMX258_CLK_BLANK_STOP		CCI_REG8(0x4040)
- 
- /* Orientation */
--#define REG_MIRROR_FLIP_CONTROL		0x0101
-+#define REG_MIRROR_FLIP_CONTROL		CCI_REG8(0x0101)
- #define REG_CONFIG_MIRROR_HFLIP		0x01
- #define REG_CONFIG_MIRROR_VFLIP		0x02
- 
-@@ -89,14 +85,53 @@
- #define IMX258_PIXEL_ARRAY_WIDTH	4208U
- #define IMX258_PIXEL_ARRAY_HEIGHT	3120U
- 
--struct imx258_reg {
--	u16 address;
--	u8 val;
--};
-+/* regs */
-+#define IMX258_REG_PLL_MULT_DRIV                  CCI_REG8(0x0310)
-+#define IMX258_REG_IVTPXCK_DIV                    CCI_REG8(0x0301)
-+#define IMX258_REG_IVTSYCK_DIV                    CCI_REG8(0x0303)
-+#define IMX258_REG_PREPLLCK_VT_DIV                CCI_REG8(0x0305)
-+#define IMX258_REG_IOPPXCK_DIV                    CCI_REG8(0x0309)
-+#define IMX258_REG_IOPSYCK_DIV                    CCI_REG8(0x030b)
-+#define IMX258_REG_PREPLLCK_OP_DIV                CCI_REG8(0x030d)
-+#define IMX258_REG_PHASE_PIX_OUTEN                CCI_REG8(0x3030)
-+#define IMX258_REG_PDPIX_DATA_RATE                CCI_REG8(0x3032)
-+#define IMX258_REG_SCALE_MODE                     CCI_REG8(0x0401)
-+#define IMX258_REG_SCALE_MODE_EXT                 CCI_REG8(0x3038)
-+#define IMX258_REG_AF_WINDOW_MODE                 CCI_REG8(0x7bcd)
-+#define IMX258_REG_FRM_LENGTH_CTL                 CCI_REG8(0x0350)
-+#define IMX258_REG_CSI_LANE_MODE                  CCI_REG8(0x0114)
-+#define IMX258_REG_X_EVN_INC                      CCI_REG8(0x0381)
-+#define IMX258_REG_X_ODD_INC                      CCI_REG8(0x0383)
-+#define IMX258_REG_Y_EVN_INC                      CCI_REG8(0x0385)
-+#define IMX258_REG_Y_ODD_INC                      CCI_REG8(0x0387)
-+#define IMX258_REG_BINNING_MODE                   CCI_REG8(0x0900)
-+#define IMX258_REG_BINNING_TYPE_V                 CCI_REG8(0x0901)
-+#define IMX258_REG_FORCE_FD_SUM                   CCI_REG8(0x300d)
-+#define IMX258_REG_DIG_CROP_X_OFFSET              CCI_REG16(0x0408)
-+#define IMX258_REG_DIG_CROP_Y_OFFSET              CCI_REG16(0x040a)
-+#define IMX258_REG_DIG_CROP_IMAGE_WIDTH           CCI_REG16(0x040c)
-+#define IMX258_REG_DIG_CROP_IMAGE_HEIGHT          CCI_REG16(0x040e)
-+#define IMX258_REG_SCALE_M                        CCI_REG16(0x0404)
-+#define IMX258_REG_X_OUT_SIZE                     CCI_REG16(0x034c)
-+#define IMX258_REG_Y_OUT_SIZE                     CCI_REG16(0x034e)
-+#define IMX258_REG_X_ADD_STA                      CCI_REG16(0x0344)
-+#define IMX258_REG_Y_ADD_STA                      CCI_REG16(0x0346)
-+#define IMX258_REG_X_ADD_END                      CCI_REG16(0x0348)
-+#define IMX258_REG_Y_ADD_END                      CCI_REG16(0x034a)
-+#define IMX258_REG_EXCK_FREQ                      CCI_REG16(0x0136)
-+#define IMX258_REG_CSI_DT_FMT                     CCI_REG16(0x0112)
-+#define IMX258_REG_LINE_LENGTH_PCK                CCI_REG16(0x0342)
-+#define IMX258_REG_SCALE_M_EXT                    CCI_REG16(0x303a)
-+#define IMX258_REG_FRM_LENGTH_LINES               CCI_REG16(0x0340)
-+#define IMX258_REG_FINE_INTEG_TIME                CCI_REG8(0x0200)
-+#define IMX258_REG_PLL_IVT_MPY                    CCI_REG16(0x0306)
-+#define IMX258_REG_PLL_IOP_MPY                    CCI_REG16(0x030e)
-+#define IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H       CCI_REG16(0x0820)
-+#define IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L       CCI_REG16(0x0822)
- 
- struct imx258_reg_list {
- 	u32 num_of_regs;
--	const struct imx258_reg *regs;
-+	const struct cci_reg_sequence *regs;
- };
- 
- struct imx258_link_cfg {
-@@ -143,329 +178,264 @@ struct imx258_mode {
-  * To avoid further computation of clock settings, adopt the same per
-  * lane data rate when using 2 lanes, thus allowing a maximum of 15fps.
-  */
--static const struct imx258_reg mipi_1267mbps_19_2mhz_2l[] = {
--	{ 0x0136, 0x13 },
--	{ 0x0137, 0x33 },
--	{ 0x0301, 0x0A },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x03 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0xC6 },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x01 },
--	{ 0x0820, 0x09 },
--	{ 0x0821, 0xa6 },
--	{ 0x0822, 0x66 },
--	{ 0x0823, 0x66 },
-+static const struct cci_reg_sequence mipi_1267mbps_19_2mhz_2l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1333 },
-+	{ IMX258_REG_IVTPXCK_DIV, 10 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 3 },
-+	{ IMX258_REG_PLL_IVT_MPY, 198 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 1 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 1267 * 2 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mipi_1267mbps_19_2mhz_4l[] = {
--	{ 0x0136, 0x13 },
--	{ 0x0137, 0x33 },
--	{ 0x0301, 0x05 },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x03 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0xC6 },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x03 },
--	{ 0x0820, 0x13 },
--	{ 0x0821, 0x4C },
--	{ 0x0822, 0xCC },
--	{ 0x0823, 0xCC },
-+static const struct cci_reg_sequence mipi_1267mbps_19_2mhz_4l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1333 },
-+	{ IMX258_REG_IVTPXCK_DIV, 5 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 3 },
-+	{ IMX258_REG_PLL_IVT_MPY, 198 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 3 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 1267 * 4 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mipi_1272mbps_24mhz_2l[] = {
--	{ 0x0136, 0x18 },
--	{ 0x0137, 0x00 },
--	{ 0x0301, 0x0a },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x04 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0xD4 },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x01 },
--	{ 0x0820, 0x13 },
--	{ 0x0821, 0x4C },
--	{ 0x0822, 0xCC },
--	{ 0x0823, 0xCC },
-+static const struct cci_reg_sequence mipi_1272mbps_24mhz_2l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1800 },
-+	{ IMX258_REG_IVTPXCK_DIV, 10 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 4 },
-+	{ IMX258_REG_PLL_IVT_MPY, 212 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 1 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 1272 * 2 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mipi_1272mbps_24mhz_4l[] = {
--	{ 0x0136, 0x18 },
--	{ 0x0137, 0x00 },
--	{ 0x0301, 0x05 },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x04 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0xD4 },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x03 },
--	{ 0x0820, 0x13 },
--	{ 0x0821, 0xE0 },
--	{ 0x0822, 0x00 },
--	{ 0x0823, 0x00 },
-+static const struct cci_reg_sequence mipi_1272mbps_24mhz_4l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1800 },
-+	{ IMX258_REG_IVTPXCK_DIV, 5 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 4 },
-+	{ IMX258_REG_PLL_IVT_MPY, 212 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 3 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 1272 * 4 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mipi_640mbps_19_2mhz_2l[] = {
--	{ 0x0136, 0x13 },
--	{ 0x0137, 0x33 },
--	{ 0x0301, 0x05 },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x03 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0x64 },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x01 },
--	{ 0x0820, 0x05 },
--	{ 0x0821, 0x00 },
--	{ 0x0822, 0x00 },
--	{ 0x0823, 0x00 },
-+static const struct cci_reg_sequence mipi_640mbps_19_2mhz_2l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1333 },
-+	{ IMX258_REG_IVTPXCK_DIV, 5 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 3 },
-+	{ IMX258_REG_PLL_IVT_MPY, 100 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 1 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 640 * 2 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mipi_640mbps_19_2mhz_4l[] = {
--	{ 0x0136, 0x13 },
--	{ 0x0137, 0x33 },
--	{ 0x0301, 0x05 },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x03 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0x64 },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x03 },
--	{ 0x0820, 0x0A },
--	{ 0x0821, 0x00 },
--	{ 0x0822, 0x00 },
--	{ 0x0823, 0x00 },
-+static const struct cci_reg_sequence mipi_640mbps_19_2mhz_4l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1333 },
-+	{ IMX258_REG_IVTPXCK_DIV, 5 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 3 },
-+	{ IMX258_REG_PLL_IVT_MPY, 100 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 3 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 640 * 4 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mipi_642mbps_24mhz_2l[] = {
--	{ 0x0136, 0x18 },
--	{ 0x0137, 0x00 },
--	{ 0x0301, 0x05 },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x04 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0x6B },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x01 },
--	{ 0x0820, 0x0A },
--	{ 0x0821, 0x00 },
--	{ 0x0822, 0x00 },
--	{ 0x0823, 0x00 },
-+static const struct cci_reg_sequence mipi_642mbps_24mhz_2l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1800 },
-+	{ IMX258_REG_IVTPXCK_DIV, 5 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 4 },
-+	{ IMX258_REG_PLL_IVT_MPY, 107 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 1 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 642 * 2 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mipi_642mbps_24mhz_4l[] = {
--	{ 0x0136, 0x18 },
--	{ 0x0137, 0x00 },
--	{ 0x0301, 0x05 },
--	{ 0x0303, 0x02 },
--	{ 0x0305, 0x04 },
--	{ 0x0306, 0x00 },
--	{ 0x0307, 0x6B },
--	{ 0x0309, 0x0A },
--	{ 0x030B, 0x01 },
--	{ 0x030D, 0x02 },
--	{ 0x030E, 0x00 },
--	{ 0x030F, 0xD8 },
--	{ 0x0310, 0x00 },
--
--	{ 0x0114, 0x03 },
--	{ 0x0820, 0x0A },
--	{ 0x0821, 0x00 },
--	{ 0x0822, 0x00 },
--	{ 0x0823, 0x00 },
-+static const struct cci_reg_sequence mipi_642mbps_24mhz_4l[] = {
-+	{ IMX258_REG_EXCK_FREQ, 0x1800 },
-+	{ IMX258_REG_IVTPXCK_DIV, 5 },
-+	{ IMX258_REG_IVTSYCK_DIV, 2 },
-+	{ IMX258_REG_PREPLLCK_VT_DIV, 4 },
-+	{ IMX258_REG_PLL_IVT_MPY, 107 },
-+	{ IMX258_REG_IOPPXCK_DIV, 10 },
-+	{ IMX258_REG_IOPSYCK_DIV, 1 },
-+	{ IMX258_REG_PREPLLCK_OP_DIV, 2 },
-+	{ IMX258_REG_PLL_IOP_MPY, 216 },
-+	{ IMX258_REG_PLL_MULT_DRIV, 0 },
-+
-+	{ IMX258_REG_CSI_LANE_MODE, 3 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 642 * 4 },
-+	{ IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0 },
- };
- 
--static const struct imx258_reg mode_common_regs[] = {
--	{ 0x3051, 0x00 },
--	{ 0x6B11, 0xCF },
--	{ 0x7FF0, 0x08 },
--	{ 0x7FF1, 0x0F },
--	{ 0x7FF2, 0x08 },
--	{ 0x7FF3, 0x1B },
--	{ 0x7FF4, 0x23 },
--	{ 0x7FF5, 0x60 },
--	{ 0x7FF6, 0x00 },
--	{ 0x7FF7, 0x01 },
--	{ 0x7FF8, 0x00 },
--	{ 0x7FF9, 0x78 },
--	{ 0x7FFA, 0x00 },
--	{ 0x7FFB, 0x00 },
--	{ 0x7FFC, 0x00 },
--	{ 0x7FFD, 0x00 },
--	{ 0x7FFE, 0x00 },
--	{ 0x7FFF, 0x03 },
--	{ 0x7F76, 0x03 },
--	{ 0x7F77, 0xFE },
--	{ 0x7FA8, 0x03 },
--	{ 0x7FA9, 0xFE },
--	{ 0x7B24, 0x81 },
--	{ 0x6564, 0x07 },
--	{ 0x6B0D, 0x41 },
--	{ 0x653D, 0x04 },
--	{ 0x6B05, 0x8C },
--	{ 0x6B06, 0xF9 },
--	{ 0x6B08, 0x65 },
--	{ 0x6B09, 0xFC },
--	{ 0x6B0A, 0xCF },
--	{ 0x6B0B, 0xD2 },
--	{ 0x6700, 0x0E },
--	{ 0x6707, 0x0E },
--	{ 0x9104, 0x00 },
--	{ 0x4648, 0x7F },
--	{ 0x7420, 0x00 },
--	{ 0x7421, 0x1C },
--	{ 0x7422, 0x00 },
--	{ 0x7423, 0xD7 },
--	{ 0x5F04, 0x00 },
--	{ 0x5F05, 0xED },
--	{ 0x0112, 0x0A },
--	{ 0x0113, 0x0A },
--	{ 0x0342, 0x14 },
--	{ 0x0343, 0xE8 },
--	{ 0x0344, 0x00 },
--	{ 0x0345, 0x00 },
--	{ 0x0346, 0x00 },
--	{ 0x0347, 0x00 },
--	{ 0x0348, 0x10 },
--	{ 0x0349, 0x6F },
--	{ 0x034A, 0x0C },
--	{ 0x034B, 0x2F },
--	{ 0x0381, 0x01 },
--	{ 0x0383, 0x01 },
--	{ 0x0385, 0x01 },
--	{ 0x0387, 0x01 },
--	{ 0x0404, 0x00 },
--	{ 0x0408, 0x00 },
--	{ 0x0409, 0x00 },
--	{ 0x040A, 0x00 },
--	{ 0x040B, 0x00 },
--	{ 0x040C, 0x10 },
--	{ 0x040D, 0x70 },
--	{ 0x3038, 0x00 },
--	{ 0x303A, 0x00 },
--	{ 0x303B, 0x10 },
--	{ 0x300D, 0x00 },
--	{ 0x0350, 0x00 },
--	{ 0x0204, 0x00 },
--	{ 0x0205, 0x00 },
--	{ 0x020E, 0x01 },
--	{ 0x020F, 0x00 },
--	{ 0x0210, 0x01 },
--	{ 0x0211, 0x00 },
--	{ 0x0212, 0x01 },
--	{ 0x0213, 0x00 },
--	{ 0x0214, 0x01 },
--	{ 0x0215, 0x00 },
--	{ 0x7BCD, 0x00 },
--	{ 0x94DC, 0x20 },
--	{ 0x94DD, 0x20 },
--	{ 0x94DE, 0x20 },
--	{ 0x95DC, 0x20 },
--	{ 0x95DD, 0x20 },
--	{ 0x95DE, 0x20 },
--	{ 0x7FB0, 0x00 },
--	{ 0x9010, 0x3E },
--	{ 0x9419, 0x50 },
--	{ 0x941B, 0x50 },
--	{ 0x9519, 0x50 },
--	{ 0x951B, 0x50 },
--	{ 0x3030, 0x00 },
--	{ 0x3032, 0x00 },
--	{ 0x0220, 0x00 },
-+static const struct cci_reg_sequence mode_common_regs[] = {
-+	{ CCI_REG8(0x3051), 0x00 },
-+	{ CCI_REG8(0x6B11), 0xCF },
-+	{ CCI_REG8(0x7FF0), 0x08 },
-+	{ CCI_REG8(0x7FF1), 0x0F },
-+	{ CCI_REG8(0x7FF2), 0x08 },
-+	{ CCI_REG8(0x7FF3), 0x1B },
-+	{ CCI_REG8(0x7FF4), 0x23 },
-+	{ CCI_REG8(0x7FF5), 0x60 },
-+	{ CCI_REG8(0x7FF6), 0x00 },
-+	{ CCI_REG8(0x7FF7), 0x01 },
-+	{ CCI_REG8(0x7FF8), 0x00 },
-+	{ CCI_REG8(0x7FF9), 0x78 },
-+	{ CCI_REG8(0x7FFA), 0x00 },
-+	{ CCI_REG8(0x7FFB), 0x00 },
-+	{ CCI_REG8(0x7FFC), 0x00 },
-+	{ CCI_REG8(0x7FFD), 0x00 },
-+	{ CCI_REG8(0x7FFE), 0x00 },
-+	{ CCI_REG8(0x7FFF), 0x03 },
-+	{ CCI_REG8(0x7F76), 0x03 },
-+	{ CCI_REG8(0x7F77), 0xFE },
-+	{ CCI_REG8(0x7FA8), 0x03 },
-+	{ CCI_REG8(0x7FA9), 0xFE },
-+	{ CCI_REG8(0x7B24), 0x81 },
-+	{ CCI_REG8(0x6564), 0x07 },
-+	{ CCI_REG8(0x6B0D), 0x41 },
-+	{ CCI_REG8(0x653D), 0x04 },
-+	{ CCI_REG8(0x6B05), 0x8C },
-+	{ CCI_REG8(0x6B06), 0xF9 },
-+	{ CCI_REG8(0x6B08), 0x65 },
-+	{ CCI_REG8(0x6B09), 0xFC },
-+	{ CCI_REG8(0x6B0A), 0xCF },
-+	{ CCI_REG8(0x6B0B), 0xD2 },
-+	{ CCI_REG8(0x6700), 0x0E },
-+	{ CCI_REG8(0x6707), 0x0E },
-+	{ CCI_REG8(0x9104), 0x00 },
-+	{ CCI_REG8(0x4648), 0x7F },
-+	{ CCI_REG8(0x7420), 0x00 },
-+	{ CCI_REG8(0x7421), 0x1C },
-+	{ CCI_REG8(0x7422), 0x00 },
-+	{ CCI_REG8(0x7423), 0xD7 },
-+	{ CCI_REG8(0x5F04), 0x00 },
-+	{ CCI_REG8(0x5F05), 0xED },
-+	{IMX258_REG_CSI_DT_FMT, 0x0a0a},
-+	{IMX258_REG_LINE_LENGTH_PCK, 5352},
-+	{IMX258_REG_X_ADD_STA, 0},
-+	{IMX258_REG_Y_ADD_STA, 0},
-+	{IMX258_REG_X_ADD_END, 4207},
-+	{IMX258_REG_Y_ADD_END, 3119},
-+	{IMX258_REG_X_EVN_INC, 1},
-+	{IMX258_REG_X_ODD_INC, 1},
-+	{IMX258_REG_Y_EVN_INC, 1},
-+	{IMX258_REG_Y_ODD_INC, 1},
-+	{IMX258_REG_DIG_CROP_X_OFFSET, 0},
-+	{IMX258_REG_DIG_CROP_Y_OFFSET, 0},
-+	{IMX258_REG_DIG_CROP_IMAGE_WIDTH, 4208},
-+	{IMX258_REG_SCALE_MODE_EXT, 0},
-+	{IMX258_REG_SCALE_M_EXT, 16},
-+	{IMX258_REG_FORCE_FD_SUM, 0},
-+	{IMX258_REG_FRM_LENGTH_CTL, 0},
-+	{IMX258_REG_ANALOG_GAIN, 0},
-+	{IMX258_REG_GR_DIGITAL_GAIN, 256},
-+	{IMX258_REG_R_DIGITAL_GAIN, 256},
-+	{IMX258_REG_B_DIGITAL_GAIN, 256},
-+	{IMX258_REG_GB_DIGITAL_GAIN, 256},
-+	{IMX258_REG_AF_WINDOW_MODE, 0},
-+	{ CCI_REG8(0x94DC), 0x20 },
-+	{ CCI_REG8(0x94DD), 0x20 },
-+	{ CCI_REG8(0x94DE), 0x20 },
-+	{ CCI_REG8(0x95DC), 0x20 },
-+	{ CCI_REG8(0x95DD), 0x20 },
-+	{ CCI_REG8(0x95DE), 0x20 },
-+	{ CCI_REG8(0x7FB0), 0x00 },
-+	{ CCI_REG8(0x9010), 0x3E },
-+	{ CCI_REG8(0x9419), 0x50 },
-+	{ CCI_REG8(0x941B), 0x50 },
-+	{ CCI_REG8(0x9519), 0x50 },
-+	{ CCI_REG8(0x951B), 0x50 },
-+	{IMX258_REG_PHASE_PIX_OUTEN, 0},
-+	{IMX258_REG_PDPIX_DATA_RATE, 0},
-+	{IMX258_REG_HDR, 0},
- };
- 
--static const struct imx258_reg mode_4208x3120_regs[] = {
--	{ 0x0900, 0x00 },
--	{ 0x0901, 0x11 },
--	{ 0x0401, 0x00 },
--	{ 0x0405, 0x10 },
--	{ 0x040E, 0x0C },
--	{ 0x040F, 0x30 },
--	{ 0x034C, 0x10 },
--	{ 0x034D, 0x70 },
--	{ 0x034E, 0x0C },
--	{ 0x034F, 0x30 },
-+static const struct cci_reg_sequence mode_4208x3120_regs[] = {
-+	{IMX258_REG_BINNING_MODE, 0},
-+	{IMX258_REG_BINNING_TYPE_V, 0x11},
-+	{IMX258_REG_SCALE_MODE, 0},
-+	{IMX258_REG_SCALE_M, 16},
-+	{IMX258_REG_DIG_CROP_IMAGE_HEIGHT, 3120},
-+	{IMX258_REG_X_OUT_SIZE, 4208},
-+	{IMX258_REG_Y_OUT_SIZE, 3120},
- };
- 
--static const struct imx258_reg mode_2104_1560_regs[] = {
--	{ 0x0900, 0x01 },
--	{ 0x0901, 0x12 },
--	{ 0x0401, 0x01 },
--	{ 0x0405, 0x20 },
--	{ 0x040E, 0x06 },
--	{ 0x040F, 0x18 },
--	{ 0x034C, 0x08 },
--	{ 0x034D, 0x38 },
--	{ 0x034E, 0x06 },
--	{ 0x034F, 0x18 },
-+static const struct cci_reg_sequence mode_2104_1560_regs[] = {
-+	{IMX258_REG_BINNING_MODE, 1},
-+	{IMX258_REG_BINNING_TYPE_V, 0x12},
-+	{IMX258_REG_SCALE_MODE, 1},
-+	{IMX258_REG_SCALE_M, 32},
-+	{IMX258_REG_DIG_CROP_IMAGE_HEIGHT, 1560},
-+	{IMX258_REG_X_OUT_SIZE, 2104},
-+	{IMX258_REG_Y_OUT_SIZE, 1560},
- };
- 
--static const struct imx258_reg mode_1048_780_regs[] = {
--	{ 0x0900, 0x01 },
--	{ 0x0901, 0x14 },
--	{ 0x0401, 0x01 },
--	{ 0x0405, 0x40 },
--	{ 0x040E, 0x03 },
--	{ 0x040F, 0x0C },
--	{ 0x034C, 0x04 },
--	{ 0x034D, 0x18 },
--	{ 0x034E, 0x03 },
--	{ 0x034F, 0x0C },
-+static const struct cci_reg_sequence mode_1048_780_regs[] = {
-+	{IMX258_REG_BINNING_MODE, 1},
-+	{IMX258_REG_BINNING_TYPE_V, 0x14},
-+	{IMX258_REG_SCALE_MODE, 1},
-+	{IMX258_REG_SCALE_M, 64},
-+	{IMX258_REG_DIG_CROP_IMAGE_HEIGHT, 780},
-+	{IMX258_REG_X_OUT_SIZE, 1048},
-+	{IMX258_REG_Y_OUT_SIZE, 780},
- };
- 
- struct imx258_variant_cfg {
--	const struct imx258_reg *regs;
-+	const struct cci_reg_sequence *regs;
- 	unsigned int num_regs;
- };
- 
--static const struct imx258_reg imx258_cfg_regs[] = {
--	{ 0x3052, 0x00 },
--	{ 0x4E21, 0x14 },
--	{ 0x7B25, 0x00 },
-+static const struct cci_reg_sequence imx258_cfg_regs[] = {
-+	{ CCI_REG8(0x3052), 0x00 },
-+	{ CCI_REG8(0x4E21), 0x14 },
-+	{ CCI_REG8(0x7B25), 0x00 },
- };
- 
- static const struct imx258_variant_cfg imx258_cfg = {
-@@ -473,10 +443,10 @@ static const struct imx258_variant_cfg imx258_cfg = {
- 	.num_regs = ARRAY_SIZE(imx258_cfg_regs),
- };
- 
--static const struct imx258_reg imx258_pdaf_cfg_regs[] = {
--	{ 0x3052, 0x01 },
--	{ 0x4E21, 0x10 },
--	{ 0x7B25, 0x01 },
-+static const struct cci_reg_sequence imx258_pdaf_cfg_regs[] = {
-+	{ CCI_REG8(0x3052), 0x01 },
-+	{ CCI_REG8(0x4E21), 0x10 },
-+	{ CCI_REG8(0x7B25), 0x01 },
- };
- 
- static const struct imx258_variant_cfg imx258_pdaf_cfg = {
-@@ -677,6 +647,7 @@ static const struct imx258_mode supported_modes[] = {
- struct imx258 {
- 	struct v4l2_subdev sd;
- 	struct media_pad pad;
-+	struct regmap *regmap;
- 
- 	const struct imx258_variant_cfg *variant_cfg;
- 
-@@ -717,80 +688,6 @@ static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
- 	return container_of(_sd, struct imx258, sd);
+diff --git a/arch/x86/include/asm/cmpxchg_32.h b/arch/x86/include/asm/cmpxchg_32.h
+index 9e0d330..9dedc13 100644
+--- a/arch/x86/include/asm/cmpxchg_32.h
++++ b/arch/x86/include/asm/cmpxchg_32.h
+@@ -64,6 +64,11 @@ static __always_inline bool __try_cmpxchg64(volatile u64 *ptr, u64 *oldp, u64 ne
+ 	return __arch_try_cmpxchg64(ptr, oldp, new, LOCK_PREFIX);
  }
  
--/* Read registers up to 2 at a time */
--static int imx258_read_reg(struct imx258 *imx258, u16 reg, u32 len, u32 *val)
--{
--	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
--	struct i2c_msg msgs[2];
--	u8 addr_buf[2] = { reg >> 8, reg & 0xff };
--	u8 data_buf[4] = { 0, };
--	int ret;
--
--	if (len > 4)
--		return -EINVAL;
--
--	/* Write register address */
--	msgs[0].addr = client->addr;
--	msgs[0].flags = 0;
--	msgs[0].len = ARRAY_SIZE(addr_buf);
--	msgs[0].buf = addr_buf;
--
--	/* Read data from register */
--	msgs[1].addr = client->addr;
--	msgs[1].flags = I2C_M_RD;
--	msgs[1].len = len;
--	msgs[1].buf = &data_buf[4 - len];
--
--	ret = i2c_transfer(client->adapter, msgs, ARRAY_SIZE(msgs));
--	if (ret != ARRAY_SIZE(msgs))
--		return -EIO;
--
--	*val = get_unaligned_be32(data_buf);
--
--	return 0;
--}
--
--/* Write registers up to 2 at a time */
--static int imx258_write_reg(struct imx258 *imx258, u16 reg, u32 len, u32 val)
--{
--	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
--	u8 buf[6];
--
--	if (len > 4)
--		return -EINVAL;
--
--	put_unaligned_be16(reg, buf);
--	put_unaligned_be32(val << (8 * (4 - len)), buf + 2);
--	if (i2c_master_send(client, buf, len + 2) != len + 2)
--		return -EIO;
--
--	return 0;
--}
--
--/* Write a list of registers */
--static int imx258_write_regs(struct imx258 *imx258,
--			     const struct imx258_reg *regs, u32 len)
--{
--	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
--	unsigned int i;
--	int ret;
--
--	for (i = 0; i < len; i++) {
--		ret = imx258_write_reg(imx258, regs[i].address, 1,
--					regs[i].val);
--		if (ret) {
--			dev_err_ratelimited(
--				&client->dev,
--				"Failed to write reg 0x%4.4x. error = %d\n",
--				regs[i].address, ret);
--
--			return ret;
--		}
--	}
--
--	return 0;
--}
--
- /* Get bayer order based on flip setting. */
- static u32 imx258_get_format_code(const struct imx258 *imx258)
- {
-@@ -828,28 +725,20 @@ static int imx258_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
- 	return 0;
- }
- 
--static int imx258_update_digital_gain(struct imx258 *imx258, u32 len, u32 val)
-+static int imx258_update_digital_gain(struct imx258 *imx258, u32 val)
- {
- 	int ret;
- 
--	ret = imx258_write_reg(imx258, IMX258_REG_GR_DIGITAL_GAIN,
--				IMX258_REG_VALUE_16BIT,
--				val);
-+	ret = cci_write(imx258->regmap, IMX258_REG_GR_DIGITAL_GAIN, val, NULL);
- 	if (ret)
- 		return ret;
--	ret = imx258_write_reg(imx258, IMX258_REG_GB_DIGITAL_GAIN,
--				IMX258_REG_VALUE_16BIT,
--				val);
-+	ret = cci_write(imx258->regmap, IMX258_REG_GB_DIGITAL_GAIN, val, NULL);
- 	if (ret)
- 		return ret;
--	ret = imx258_write_reg(imx258, IMX258_REG_R_DIGITAL_GAIN,
--				IMX258_REG_VALUE_16BIT,
--				val);
-+	ret = cci_write(imx258->regmap, IMX258_REG_R_DIGITAL_GAIN, val, NULL);
- 	if (ret)
- 		return ret;
--	ret = imx258_write_reg(imx258, IMX258_REG_B_DIGITAL_GAIN,
--				IMX258_REG_VALUE_16BIT,
--				val);
-+	ret = cci_write(imx258->regmap, IMX258_REG_B_DIGITAL_GAIN, val, NULL);
- 	if (ret)
- 		return ret;
- 	return 0;
-@@ -891,53 +780,45 @@ static int imx258_set_ctrl(struct v4l2_ctrl *ctrl)
- 
- 	switch (ctrl->id) {
- 	case V4L2_CID_ANALOGUE_GAIN:
--		ret = imx258_write_reg(imx258, IMX258_REG_ANALOG_GAIN,
--				IMX258_REG_VALUE_16BIT,
--				ctrl->val);
-+		ret = cci_write(imx258->regmap, IMX258_REG_ANALOG_GAIN,
-+				ctrl->val, NULL);
- 		break;
- 	case V4L2_CID_EXPOSURE:
--		ret = imx258_write_reg(imx258, IMX258_REG_EXPOSURE,
--				IMX258_REG_VALUE_16BIT,
--				ctrl->val);
-+		ret = cci_write(imx258->regmap, IMX258_REG_EXPOSURE,
-+				ctrl->val, NULL);
- 		break;
- 	case V4L2_CID_DIGITAL_GAIN:
--		ret = imx258_update_digital_gain(imx258, IMX258_REG_VALUE_16BIT,
--				ctrl->val);
-+		ret = imx258_update_digital_gain(imx258, ctrl->val);
- 		break;
- 	case V4L2_CID_TEST_PATTERN:
--		ret = imx258_write_reg(imx258, IMX258_REG_TEST_PATTERN,
--				IMX258_REG_VALUE_16BIT,
--				ctrl->val);
-+		ret = cci_write(imx258->regmap, IMX258_REG_TEST_PATTERN,
-+				ctrl->val, NULL);
- 		break;
- 	case V4L2_CID_WIDE_DYNAMIC_RANGE:
- 		if (!ctrl->val) {
--			ret = imx258_write_reg(imx258, IMX258_REG_HDR,
--					       IMX258_REG_VALUE_08BIT,
--					       IMX258_HDR_RATIO_MIN);
-+			ret = cci_write(imx258->regmap, IMX258_REG_HDR,
-+					IMX258_HDR_RATIO_MIN, NULL);
- 		} else {
--			ret = imx258_write_reg(imx258, IMX258_REG_HDR,
--					       IMX258_REG_VALUE_08BIT,
--					       IMX258_HDR_ON);
-+			ret = cci_write(imx258->regmap, IMX258_REG_HDR,
-+					IMX258_HDR_ON, NULL);
- 			if (ret)
- 				break;
--			ret = imx258_write_reg(imx258, IMX258_REG_HDR_RATIO,
--					       IMX258_REG_VALUE_08BIT,
--					       BIT(IMX258_HDR_RATIO_MAX));
-+			ret = cci_write(imx258->regmap, IMX258_REG_HDR_RATIO,
-+					BIT(IMX258_HDR_RATIO_MAX), NULL);
- 		}
- 		break;
- 	case V4L2_CID_VBLANK:
--		ret = imx258_write_reg(imx258, IMX258_REG_VTS,
--				       IMX258_REG_VALUE_16BIT,
--				       imx258->cur_mode->height + ctrl->val);
-+		ret = cci_write(imx258->regmap, IMX258_REG_FRM_LENGTH_LINES,
-+				imx258->cur_mode->height + ctrl->val, NULL);
- 		break;
- 	case V4L2_CID_VFLIP:
- 	case V4L2_CID_HFLIP:
--		ret = imx258_write_reg(imx258, REG_MIRROR_FLIP_CONTROL,
--				       IMX258_REG_VALUE_08BIT,
--				       (imx258->hflip->val ?
--					REG_CONFIG_MIRROR_HFLIP : 0) |
--				       (imx258->vflip->val ?
--					REG_CONFIG_MIRROR_VFLIP : 0));
-+		ret = cci_write(imx258->regmap, REG_MIRROR_FLIP_CONTROL,
-+				(imx258->hflip->val ?
-+				 REG_CONFIG_MIRROR_HFLIP : 0) |
-+				(imx258->vflip->val ?
-+				 REG_CONFIG_MIRROR_VFLIP : 0),
-+				NULL);
- 		break;
- 	default:
- 		dev_info(&client->dev,
-@@ -1147,8 +1028,7 @@ static int imx258_start_streaming(struct imx258 *imx258)
- 	const struct imx258_link_freq_config *link_freq_cfg;
- 	int ret, link_freq_index;
- 
--	ret = imx258_write_reg(imx258, IMX258_REG_RESET, IMX258_REG_VALUE_08BIT,
--			       0x01);
-+	ret = cci_write(imx258->regmap, IMX258_REG_RESET, 0x01, NULL);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to reset sensor\n", __func__);
- 		return ret;
-@@ -1162,30 +1042,30 @@ static int imx258_start_streaming(struct imx258 *imx258)
- 	link_freq_cfg = &imx258->link_freq_configs[link_freq_index];
- 
- 	reg_list = &link_freq_cfg->link_cfg[imx258->lane_mode_idx].reg_list;
--	ret = imx258_write_regs(imx258, reg_list->regs, reg_list->num_of_regs);
-+	ret = cci_multi_reg_write(imx258->regmap, reg_list->regs, reg_list->num_of_regs, NULL);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to set plls\n", __func__);
- 		return ret;
- 	}
- 
--	ret = imx258_write_regs(imx258, mode_common_regs,
--				ARRAY_SIZE(mode_common_regs));
-+	ret = cci_multi_reg_write(imx258->regmap, mode_common_regs,
-+				  ARRAY_SIZE(mode_common_regs), NULL);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to set common regs\n", __func__);
- 		return ret;
- 	}
- 
--	ret = imx258_write_regs(imx258, imx258->variant_cfg->regs,
--				imx258->variant_cfg->num_regs);
-+	ret = cci_multi_reg_write(imx258->regmap, imx258->variant_cfg->regs,
-+				  imx258->variant_cfg->num_regs, NULL);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to set variant config\n",
- 			__func__);
- 		return ret;
- 	}
- 
--	ret = imx258_write_reg(imx258, IMX258_CLK_BLANK_STOP,
--			       IMX258_REG_VALUE_08BIT,
--			       !!(imx258->csi2_flags & V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK));
-+	ret = cci_write(imx258->regmap, IMX258_CLK_BLANK_STOP,
-+			!!(imx258->csi2_flags & V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK),
-+			NULL);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to set clock lane mode\n", __func__);
- 		return ret;
-@@ -1193,7 +1073,7 @@ static int imx258_start_streaming(struct imx258 *imx258)
- 
- 	/* Apply default values of current mode */
- 	reg_list = &imx258->cur_mode->reg_list;
--	ret = imx258_write_regs(imx258, reg_list->regs, reg_list->num_of_regs);
-+	ret = cci_multi_reg_write(imx258->regmap, reg_list->regs, reg_list->num_of_regs, NULL);
- 	if (ret) {
- 		dev_err(&client->dev, "%s failed to set mode\n", __func__);
- 		return ret;
-@@ -1205,9 +1085,8 @@ static int imx258_start_streaming(struct imx258 *imx258)
- 		return ret;
- 
- 	/* set stream on register */
--	return imx258_write_reg(imx258, IMX258_REG_MODE_SELECT,
--				IMX258_REG_VALUE_08BIT,
--				IMX258_MODE_STREAMING);
-+	return cci_write(imx258->regmap, IMX258_REG_MODE_SELECT,
-+			 IMX258_MODE_STREAMING, NULL);
- }
- 
- /* Stop streaming */
-@@ -1217,8 +1096,8 @@ static int imx258_stop_streaming(struct imx258 *imx258)
- 	int ret;
- 
- 	/* set stream off register */
--	ret = imx258_write_reg(imx258, IMX258_REG_MODE_SELECT,
--		IMX258_REG_VALUE_08BIT, IMX258_MODE_STANDBY);
-+	ret = cci_write(imx258->regmap, IMX258_REG_MODE_SELECT,
-+			IMX258_MODE_STANDBY, NULL);
- 	if (ret)
- 		dev_err(&client->dev, "%s failed to set stream\n", __func__);
- 
-@@ -1316,10 +1195,10 @@ static int imx258_identify_module(struct imx258 *imx258)
- {
- 	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
- 	int ret;
--	u32 val;
-+	u64 val;
- 
--	ret = imx258_read_reg(imx258, IMX258_REG_CHIP_ID,
--			      IMX258_REG_VALUE_16BIT, &val);
-+	ret = cci_read(imx258->regmap, IMX258_REG_CHIP_ID,
-+		       &val, NULL);
- 	if (ret) {
- 		dev_err(&client->dev, "failed to read chip id %x\n",
- 			IMX258_CHIP_ID);
-@@ -1327,7 +1206,7 @@ static int imx258_identify_module(struct imx258 *imx258)
- 	}
- 
- 	if (val != IMX258_CHIP_ID) {
--		dev_err(&client->dev, "chip id mismatch: %x!=%x\n",
-+		dev_err(&client->dev, "chip id mismatch: %x!=%llx\n",
- 			IMX258_CHIP_ID, val);
- 		return -EIO;
- 	}
-@@ -1507,6 +1386,13 @@ static int imx258_probe(struct i2c_client *client)
- 	if (!imx258)
- 		return -ENOMEM;
- 
-+	imx258->regmap = devm_cci_regmap_init_i2c(client, 16);
-+	if (IS_ERR(imx258->regmap)) {
-+		ret = PTR_ERR(imx258->regmap);
-+		dev_err(&client->dev, "failed to initialize CCI: %d\n", ret);
-+		return ret;
-+	}
++static __always_inline bool __try_cmpxchg64_local(volatile u64 *ptr, u64 *oldp, u64 new)
++{
++	return __arch_try_cmpxchg64(ptr, oldp, new,);
++}
 +
- 	ret = imx258_get_regulators(imx258, client);
- 	if (ret)
- 		return dev_err_probe(&client->dev, ret,
--- 
-2.44.0
-
+ #ifdef CONFIG_X86_CMPXCHG64
+ 
+ #define arch_cmpxchg64 __cmpxchg64
+@@ -72,6 +77,8 @@ static __always_inline bool __try_cmpxchg64(volatile u64 *ptr, u64 *oldp, u64 ne
+ 
+ #define arch_try_cmpxchg64 __try_cmpxchg64
+ 
++#define arch_try_cmpxchg64_local __try_cmpxchg64_local
++
+ #else
+ 
+ /*
+@@ -150,6 +157,33 @@ static __always_inline bool arch_try_cmpxchg64(volatile u64 *ptr, u64 *oldp, u64
+ }
+ #define arch_try_cmpxchg64 arch_try_cmpxchg64
+ 
++#define __arch_try_cmpxchg64_emu_local(_ptr, _oldp, _new)		\
++({									\
++	union __u64_halves o = { .full = *(_oldp), },			\
++			   n = { .full = (_new), };			\
++	bool ret;							\
++									\
++	asm volatile(ALTERNATIVE("call cmpxchg8b_emu",			\
++				 "cmpxchg8b %[ptr]", X86_FEATURE_CX8)	\
++		     CC_SET(e)						\
++		     : CC_OUT(e) (ret),					\
++		       [ptr] "+m" (*(_ptr)),				\
++		       "+a" (o.low), "+d" (o.high)			\
++		     : "b" (n.low), "c" (n.high), "S" (_ptr)		\
++		     : "memory");					\
++									\
++	if (unlikely(!ret))						\
++		*(_oldp) = o.full;					\
++									\
++	likely(ret);							\
++})
++
++static __always_inline bool arch_try_cmpxchg64_local(volatile u64 *ptr, u64 *oldp, u64 new)
++{
++	return __arch_try_cmpxchg64_emu_local(ptr, oldp, new);
++}
++#define arch_try_cmpxchg64_local arch_try_cmpxchg64_local
++
+ #endif
+ 
+ #define system_has_cmpxchg64()		boot_cpu_has(X86_FEATURE_CX8)
+diff --git a/arch/x86/include/asm/cmpxchg_64.h b/arch/x86/include/asm/cmpxchg_64.h
+index c1d6cd5..5e24130 100644
+--- a/arch/x86/include/asm/cmpxchg_64.h
++++ b/arch/x86/include/asm/cmpxchg_64.h
+@@ -20,6 +20,12 @@
+ 	arch_try_cmpxchg((ptr), (po), (n));				\
+ })
+ 
++#define arch_try_cmpxchg64_local(ptr, po, n)				\
++({									\
++	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
++	arch_try_cmpxchg_local((ptr), (po), (n));			\
++})
++
+ union __u128_halves {
+ 	u128 full;
+ 	struct {
 
