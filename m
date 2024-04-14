@@ -1,79 +1,125 @@
-Return-Path: <linux-kernel+bounces-143980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5D6E8A4056
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:44:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8871B8A4059
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 06:51:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CDF6281D86
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 04:44:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249EE1C20C2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 04:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F7919478;
-	Sun, 14 Apr 2024 04:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3888A1AAD7;
+	Sun, 14 Apr 2024 04:51:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Cwbtfyr1"
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vtjb0F8o"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81BEC1B962
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 04:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE1517993;
+	Sun, 14 Apr 2024 04:51:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713069847; cv=none; b=MOj1YVHrxBR0UNbgj0CLrwl65yWHvFoL+2KPk/5Rm65v3gYVL7PHX5a8fGq/sNeuVGSxoILw2TTAO9U8i1jBvPYAMy677L3TqNUOqL1u6FtB+3li29OpmSNzfNR+7X/AynNDclCdERKvSmV/Ag0SAWE610YP1G74CZvRj7/5N/s=
+	t=1713070308; cv=none; b=qkM0LmlJrRSUlblR4EZ4Rz3aiEGn5Zqn4whLH5IV6lWP3oEToGYD/vwD+e+D4PoJULCrqShVFPF20gb6c9e+C8UXdNpTL/3kKY/b3bALvsH4nH4yfyHlh27CFoAs575oLE92KKNu8Uo3qd+RVM4rELzfO56SqeAnbhfkAXPmaGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713069847; c=relaxed/simple;
-	bh=tIfkFFUmRxOOPV0VC/F7xum0M9JLZCTctS00A2bwfX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rZi4V+ny7FeY2KspRnsu1XGJD4v5s1vd/7f/MEkRj8A08GwenL17pNXt+PJTazf4J3cBBxpYISXr5h2Ji1zaglvBECDzUK4wPTHbm2KqUB+NoPcLGrfBMBAabKPwal6gYoxuEmQmjyu9ZwkUZVzx1d73pydISEl5h96H8m6bsNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Cwbtfyr1; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 13 Apr 2024 21:43:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713069843;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=otHS0atHsgTcQr9IUlutnpMjbK203rMss46uXgTySWc=;
-	b=Cwbtfyr19KBz3dnt2TrYVx25k1AFtXX63eAFtNfEEYBbfqXnyk1wql9ITU/pLXT7ohj/7f
-	yuUlGewtbkN/GjeWkgvbCGiK8OPyr3OUlsStxTij1hhFX9c5wxSB31FvCf3/cq/VH++X3b
-	5lYwq8WSFXKN3/SaH1fvlbgW7j3ZxKI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Yu Zhao <yuzhao@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com>, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in __mod_memcg_lruvec_state
-Message-ID: <ay26fatdqt2k3ub7awzdxsrxrchb7ckwyefilvgotu74ojoxlx@twomhinrtlzi>
-References: <0000000000007545d00615188a03@google.com>
- <20240403180752.f95e1b77e033b5e03164c160@linux-foundation.org>
- <CAJD7tkakCEg9zkwCrBr8GyObO7b9KOD6rUgyqniFN+YTCePd0A@mail.gmail.com>
- <CAOUHufZPLEmrh0x43k2ysqvwYwEotGk8Bw=fwyO9aLXXv0aM9Q@mail.gmail.com>
- <CAJD7tkbMR1AdKz3GquHym1MGROgpMcjiubKQ2oOzmpObTHd9Tw@mail.gmail.com>
+	s=arc-20240116; t=1713070308; c=relaxed/simple;
+	bh=8X4dc5siRz0W2BoOe5zqxSL1SIvb3vj6iJzc5qSEHSg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FMpCkpkhF6nshaHSUiiV8sBi8J8M2ZXDX/3mQG6RcwCVFEzlRIQ50rjlkHAR6LIqpUs3sWlc75CfbytSTAl6u2HlVnfe1vBuZF1f3tHn2VcIwNmwLyMb/IsWT9lpQQ9A0VzVvtAlr0vnAQIq8RbM/y1MDwYfKnXGICobdyTjJqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vtjb0F8o; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a469dffbdfeso68717366b.0;
+        Sat, 13 Apr 2024 21:51:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713070305; x=1713675105; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w+N9vswaqvUmkMmtjOB6fGa/yUUPk5BvqUVmQlzZ7pw=;
+        b=Vtjb0F8opthji/6t9mn/bcpfRakw6TIC0W7U/QLIMXic1xhomDOZcE+g6mJR2+qtog
+         GsEmN7WAUovjXgZFgvhKrCeGxrwzExmBstR3W9ToaXCi1mmKVcWW0sbmqsI8dFvYO0yR
+         2M/ZJZE7/baPjPOVyegNuESsoh8xaj1JF8p1TW/9eiYoYRCZAGHID/sb/3TwCmyjLkol
+         tCsp7dEXKfhUJ3qmAYGloghKZ4qOsqnRK9ong9ru9hBpO/L1kRV7zu7NCxaycpVrsQZY
+         KbslC5P8gGFdOhIJvMM6EkkpCUMKmjQXFRoKrTolbTIgn6vfInK1PGEVdEJBwt55gRt+
+         tYUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713070305; x=1713675105;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w+N9vswaqvUmkMmtjOB6fGa/yUUPk5BvqUVmQlzZ7pw=;
+        b=JnkGweesKhp0aBvMAvngdQh8n8PxZc342Y08sIs/0oGpta1IkhqfS+002TlVWuit+J
+         V42PaNJVkSDpgfqkWyBExjY2+cUpiTk8fWSO+cdZn5zMMQMO+ZWCUbrFbAHbPxT5JRg0
+         FGqUnVZr0KZzVXIvZ/dIK4zmh/MslfO+i8jQ06vP31mJiv9OEG6PtylH7ia1vP0ER8Ut
+         arzFBAvwyKupo3oTa0PrA4sZGwjr/sgQ3wkDUF3PW0O5FRFnR1LgzpdwrZh5DJgqp3P9
+         7YtyphL/IPouzPR14+0756BBg7p8TNGstWpp1+1CyBC2hY9whPH7E+J5re8Y2ZOwic2D
+         rNGQ==
+X-Gm-Message-State: AOJu0YyI7ObFyt5z/ZPVFGmz6Tj+0qNIzbgAX8vudFNJMvOdgWPj+CTu
+	HXARdwpqZP0DGbQkgnxS1ctFLYBaGPMJYlrUYLq0eU34SLmE7zUFf4e/QEfa
+X-Google-Smtp-Source: AGHT+IGV1kDHNDOc955MM+JtWe5YozJc4VIo07sG5GvAsItftiA/JTEiRWHQOmwoj/5j8R6pFFvAew==
+X-Received: by 2002:a50:c2c2:0:b0:56f:e1af:58ab with SMTP id u2-20020a50c2c2000000b0056fe1af58abmr5225812edf.4.1713070304850;
+        Sat, 13 Apr 2024 21:51:44 -0700 (PDT)
+Received: from dmitrii-TM1701.. ([87.200.40.246])
+        by smtp.gmail.com with ESMTPSA id dh5-20020a0564021d2500b0056e3e0394absm3234933edb.68.2024.04.13.21.51.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Apr 2024 21:51:44 -0700 (PDT)
+From: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	jolsa@kernel.org,
+	haoluo@google.com,
+	sdf@google.com,
+	kpsingh@kernel.org,
+	john.fastabend@gmail.com,
+	yonghong.song@linux.dev,
+	song@kernel.org,
+	eddyz87@gmail.com,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	khazhy@chromium.org,
+	vmalik@redhat.com,
+	ndesaulniers@google.com,
+	ncopa@alpinelinux.org,
+	dxu@dxuuu.xyz,
+	Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+Subject: [PATCH] bpf: btf: include linux/types.h for u32
+Date: Sun, 14 Apr 2024 07:51:24 +0300
+Message-Id: <20240414045124.3098560-1-dmitrii.bundin.a@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkbMR1AdKz3GquHym1MGROgpMcjiubKQ2oOzmpObTHd9Tw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 04, 2024 at 09:47:34PM -0700, Yosry Ahmed wrote:
-[...]
-> >
-> > Probably an RT build where _irqsave doesn't disable IRQ?
-> 
-> Yeah, that's possible. I don't have enough familiarity with RT to know
-> for sure. Perhaps lruvec->lru_lock needs to be changed to a
-> raw_spinlock_t? I am not sure if that's the correct course of action.
+Inclusion of the header linux/btf_ids.h relies on indirect inclusion of
+the header linux/types.h. Including it directly on the top level helps
+to avoid potential problems if linux/types.h hasn't been included
+before.
 
-The kernel config does not have CONFIG_PREEMPT_RT enabled. However I
-have not idea how irqs are getting enabled to raise this warning.
+Signed-off-by: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+---
+ include/linux/btf_ids.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index e24aabfe8ecc..c0e3e1426a82 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -3,6 +3,8 @@
+ #ifndef _LINUX_BTF_IDS_H
+ #define _LINUX_BTF_IDS_H
+ 
++#include <linux/types.h> /* for u32 */
++
+ struct btf_id_set {
+ 	u32 cnt;
+ 	u32 ids[];
+-- 
+2.34.1
+
 
