@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-144013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD3698A40D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:15:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591718A40D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 460A4282304
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:15:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FD331C20CBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8263A1CFB5;
-	Sun, 14 Apr 2024 07:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BF720B20;
+	Sun, 14 Apr 2024 07:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SPUr2G0Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yweem3i9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34871BF27;
-	Sun, 14 Apr 2024 07:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E25A4208A9;
+	Sun, 14 Apr 2024 07:15:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713078930; cv=none; b=sLWZYfn/KjYS0Yzexj+d2UY6PmfsVY48AdzVXDANxP81BbTBSxYks63RHcbJWzTT6GBqL50F8Hb8EQwZWvKAhygbB0vHyBlAUYXCczMn6Kp5WNAaDOtudPMbvLmqi52wfKAL5SMOfRu+BC52xn0OlSIU8hd3wcgGQaDWCn+byg4=
+	t=1713078934; cv=none; b=NiQ8538aW/Xunwnrjni45Bo8+XkB9/wa+LBmqddPfYTXbBH8ZcT6ALsh3TokdUNkabAq9CLwY66Ckhxn+b58WvVftene51gBcRIUoXtoRGWOQAjsB7UTmlMkxuLJJ1gQuDolRiqnOI4ctrFv+swdfgyeP+w4OAbxL7lWq3Qgkfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713078930; c=relaxed/simple;
-	bh=5Yz1nVCv0nq+UtmqXiY80Lpfc5iAmOs/i9m5Q1XSGYM=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=t9nkKwT3FVVs2VRQWAy72ZN56+P/vyLB0w0wzqahhMXU/Z538lzpRzMGtNEKYwY9WTP2LjGtNhUtp+mTk8OkpD57HGRv4k9QglN28r6C7tW9YAXaEJYELVresc4C5W8rzh7+jua+eSIPbyXjnrYIupQxRYUBSIANpdW8fMIqw10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SPUr2G0Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 602B3C072AA;
-	Sun, 14 Apr 2024 07:15:26 +0000 (UTC)
+	s=arc-20240116; t=1713078934; c=relaxed/simple;
+	bh=FSDsyMrRocq18g4fLSqC6+AUZYzqe2fK9hdMDuAh6QE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=HSyoRIGOsmzgn+ZAZB2xg1AK0/t0+53U7dQl+IAHZnajkwxEWj7ozotJD4ByGpUqaFMSE+Sz8u+pU9Bt80zKBbxv7rLQ5eA5ZzUPlq1THbB/CoKnKQaA44vH9XJfP+XAa+Ki/acTuIKPJcgVS7RMeshnTGtQ0nIMudSvYaHl8/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yweem3i9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B35D9C32783;
+	Sun, 14 Apr 2024 07:15:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713078930;
-	bh=5Yz1nVCv0nq+UtmqXiY80Lpfc5iAmOs/i9m5Q1XSGYM=;
-	h=From:Subject:Date:To:Cc:From;
-	b=SPUr2G0YBVOtUxl1p9uNe69PJA/FyfWWXsRTIRAF96U28G4FWmDpLMmlVcU/JAVWU
-	 4lfPwzLIC2LiBk/1vdfvwbd/Tq7w3jriogUan0LtrAHy0c6oOhKx3xipa6cWUD81Sx
-	 nzlr+SDWp0W0fXVRH+PRAEY3IftoeyGVLHCeaTDsKz7iM52lQaExiO3MW6vMeSJyIW
-	 x7aYvR/9ag7IrIBXVQpsXnCRqhgwMpf5QRLPR1ONRcxPZZc+dzfekNlJekcTSiO2/h
-	 hJncNfGofdhi9DYkxspJc7HlX9lK1eQGm+PzTHhAH6+sQQsd3WJ74EgFk5Q6p3T9ey
-	 a6ytsCZmZdHIA==
+	s=k20201202; t=1713078933;
+	bh=FSDsyMrRocq18g4fLSqC6+AUZYzqe2fK9hdMDuAh6QE=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=Yweem3i9k23kIpTiylQql9UeaoUhbg9HuJLnI1sI7Qs0MgjbmkcBeecOsDbO1FEXG
+	 6yjkZHPAUWPcexJeHHLWYAtWl3n+1iSkiJI6G0G7a/415bWfE3828c+c/jCDTaltp9
+	 RjFeIXh+aMl+mZGYREy7xyVDORE76zz7UPqoJLg2N3wD/Hih8WGlZsTbPxdERVEk9m
+	 fdi4LGydC1UajTkHTB0eyho/eMcYE2CnEm3TJmL31E+oiLWoNnbZJDpd5ddiCJ/VAH
+	 h4QMSZki2hpNga/roAiBcrLXzqrX8iBYmp7sGBRpYVEd+E7mpMb39VH4pYgJg6YvyZ
+	 //B2L9Sh7wtIw==
 From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 0/5] mmc: Constify struct sdhci_ops
-Date: Sun, 14 Apr 2024 09:15:13 +0200
-Message-Id: <20240414-mmc-const-sdhci-ops-v1-0-178539d68093@kernel.org>
+Date: Sun, 14 Apr 2024 09:15:14 +0200
+Subject: [PATCH 1/5] mmc: sdhci-esdhc-mcf: Constify struct sdhci_ops
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,9 +51,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAIGCG2YC/x3MMQqAMAxA0atIZgO1Vi1eRRwkRs1gK42IIN7d4
- viG/x9QTsIKffFA4ktUYsioygJom8LKKHM2WGOdcZXDfSekGPREnTcSjIci+aZrrfe1MQ5yeSR
- e5P6vw/i+H5afL9llAAAA
+Message-Id: <20240414-mmc-const-sdhci-ops-v1-1-178539d68093@kernel.org>
+References: <20240414-mmc-const-sdhci-ops-v1-0-178539d68093@kernel.org>
+In-Reply-To: <20240414-mmc-const-sdhci-ops-v1-0-178539d68093@kernel.org>
 To: Adrian Hunter <adrian.hunter@intel.com>, 
  Angelo Dureghello <adureghello@baylibre.com>, 
  Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, 
@@ -64,51 +64,45 @@ To: Adrian Hunter <adrian.hunter@intel.com>,
 Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzk@kernel.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=900; i=krzk@kernel.org;
- h=from:subject:message-id; bh=5Yz1nVCv0nq+UtmqXiY80Lpfc5iAmOs/i9m5Q1XSGYM=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmG4KGpwo3MQMpaueS5sff6HJfUHltgmd5b8Ngw
- AL3dyIcjx2JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhuChgAKCRDBN2bmhouD
- 1xNkD/9dqB/A4vqS2TB+V9/YUwMA5YX9804MJF4yZWtu16nDSvOtHAFp684aheSj4D3lllcdFIe
- NnDH9toG2nHWzYFcGcahC7/lYkVPedyU/ReQOD93HfD22VnOJdczdQiGxk/JW2ZbRzrqXyTBqwq
- YMIMF2YnTs7E9dIkBKPBHYvjBjQ8IS/WOlPp6FSKize8B4Z/rlCiAooOyXaMykRG6SyyzJKnrk4
- JmzZnGa0KQxbTfZQE5/gbmJuIwVGXy9OpfqMEMHV3PCvOugTmZMvQMj6kmo8GMjN6fahFJ/zwRh
- k7mZGikZowTQhqZ+nHpitnIlOECzzzR3d3VFswLQnbY2Exx0/yDsh0dAeOwaQVSuXr+tV1n6/EI
- cZRSvqOV5/coieHCAPqney0U6l7eBMCLQsXapADqU+RrfnYeCegIC/jmxeM5IZHlvQN4PkY0G/E
- E3kp50IY3+BHj2CEjV3IVHDk65N8dELEAmqi07o7+brHQAO933sW7BcsDZ37kH2k7vsvn1Lrbme
- b2oAS5Pm2XqDM/90YVCjXgIvpwRAPLUmF89mZvXmQ2w43eL85EfIPhmz4lVnAADuwtx2fC7i3nf
- hgO6x9zFvJMF6fvyh8a/PUT61j/q4sh9jolMyIA5WhHpRJHeqdmjJklVcWv//O8JqvB5pmvTnSD
- NIs1THbKlD/cfnQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=797; i=krzk@kernel.org;
+ h=from:subject:message-id; bh=FSDsyMrRocq18g4fLSqC6+AUZYzqe2fK9hdMDuAh6QE=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmG4KJY/tl2Saj2U2DZ2YxrHCZv3dN/g6ktqpxk
+ 423BMPWqEKJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZhuCiQAKCRDBN2bmhouD
+ 177xD/96a+pBFWX3uU4APgT7ya9+7pUYqrDvrDZezeiEu3NGdVD0o29a/S+Mxyh92BjF4oV9VmE
+ TGMBjIZF2PbTc3I/YB5aRMSWlMJSP4IgTlGm197JZ/seqeQyAOK8Tc5J8PhRlA0QNsBr9mjqpeE
+ fsVw21ffJcQKxkK3/5tlPpjLcUPvwYrf+nc4d3iaFDGPIRqFp6vw7ckRea1EJsx7EhJ91uThbmk
+ cnbez1s4ycgieVDz3B2N/OKIehaz5lM5MM1GJrPCdN+m9d8UWAkbKZnjQ0a3qlQuRMYF4qA3nle
+ EEoZ8Apt0rDKHjPP4FbBNgDVyIeKrUmY8Z6n1hMejG9PLFnXR0QTcwCYyTwxYA2eWTfAt2tm7BD
+ 3JQDbypdM4sgHyi0RzFRre/JfB+4Nuu/UpD7oXza0p55DrEx8Sx1BL5hJXpxyssRQwMZMva6SnA
+ OdSDkJLUql0bWGidIdzegMEHDa+yYO2dN766Qvy4o4kX7pG8vGl0JBeCz6j5B/5sMuz2J0pIDMV
+ F3uf2eSdU6IdwFlGWzuUOjlZ5mB1396v1Y0JG6VdLF09uxZx5l3a5/IghFyHi0/0+OyTr1NHjqF
+ wk5hWOxe8gT2x5yfxALM3+Vav9NWp+lvGK5VrIhjzL0IiZp/brHXDGkG/HPoJk/8KFZbtEXJFF6
+ ukmn8TMymrQ3Gmw==
 X-Developer-Key: i=krzk@kernel.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Hi,
-
 The local struct sdhci_ops can be made const for code safety.
-No dependencies.
 
-Best regards,
-Krzysztof
-
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
-Krzysztof Kozlowski (5):
-      mmc: sdhci-esdhc-mcf: Constify struct sdhci_ops
-      mmc: sdhci-omap: Constify struct sdhci_ops
-      mmc: sdhci-sprd: Constify struct sdhci_ops
-      mmc: sdhci_am654: Constify struct sdhci_ops
-      mmc: sdhci-s3c: Choose sdhci_ops based on variant
+ drivers/mmc/host/sdhci-esdhc-mcf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/mmc/host/sdhci-esdhc-mcf.c |  2 +-
- drivers/mmc/host/sdhci-omap.c      |  2 +-
- drivers/mmc/host/sdhci-s3c.c       | 31 +++++++++++++++++--------------
- drivers/mmc/host/sdhci-sprd.c      |  2 +-
- drivers/mmc/host/sdhci_am654.c     |  6 +++---
- 5 files changed, 23 insertions(+), 20 deletions(-)
----
-base-commit: f67245b3062cdc225b37003085bdb2916e1670b6
-change-id: 20240414-mmc-const-sdhci-ops-c85762883004
+diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-esdhc-mcf.c
+index c97363e2d86c..3ad87322f6a5 100644
+--- a/drivers/mmc/host/sdhci-esdhc-mcf.c
++++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
+@@ -335,7 +335,7 @@ static void esdhc_mcf_copy_to_bounce_buffer(struct sdhci_host *host,
+ 				data->blksz * data->blocks);
+ }
+ 
+-static struct sdhci_ops sdhci_esdhc_ops = {
++static const struct sdhci_ops sdhci_esdhc_ops = {
+ 	.reset = esdhc_mcf_reset,
+ 	.set_clock = esdhc_mcf_pltfm_set_clock,
+ 	.get_max_clock = esdhc_mcf_pltfm_get_max_clock,
 
-Best regards,
 -- 
-Krzysztof Kozlowski <krzk@kernel.org>
+2.34.1
 
 
