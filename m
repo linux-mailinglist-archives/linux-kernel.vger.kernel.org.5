@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-144360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C48B8A44FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:06:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9D8E8A4501
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 22:14:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFD5E1F21231
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:06:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED4411C20C0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 20:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D432136983;
-	Sun, 14 Apr 2024 20:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E3513698F;
+	Sun, 14 Apr 2024 20:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p9taQmLM"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IwelWVQ6"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E345136674
-	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 20:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 171A813698D;
+	Sun, 14 Apr 2024 20:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713125200; cv=none; b=P4Pkty3mIS3SgIwsaO6ugTRUxBRNjFvR+sKhDPL8hgTH3zPGDq03Xpij77QpoytDeKQfM1MjDZt/haPjTaMMGE5b6uI5JE1IykUcgszNqKtHdZhPwIGM4tXgmzlm2MaRoUXFzLJbZ7IjGvweY4Nhb11TrXumgkZbfW+P5DAZksY=
+	t=1713125676; cv=none; b=SXWD1H3gUmMzx63CyvfPtYMEN9LP6v1LZhUtEidHuZckLOUDhYW+6CkQvEZIv9oUOputnhNrlKOgDC9s2BiIUrtKst+8vAlqxRPsLpCdqo/pCP/L5m5Fh6Nn6jfDoNLalVF0kihoLucSEyCGH2DcSlek30mudCoIyZibICJNuiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713125200; c=relaxed/simple;
-	bh=hzkgcZA9rBCEReGXZ1BToaXOkkZ7G0AlopjcOW1W828=;
+	s=arc-20240116; t=1713125676; c=relaxed/simple;
+	bh=PccxBh7zo/tvz64Ww80Rk/YO/brWUZ3Re7wd2ekGWQk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WRWQleViik3/b4vkXI1KnuAbmImMh+F2XF3x/K2HVO1lOio6aXPWooyb0lndSlhIpGdGW94Z2TenByzEkqWOCcve4JtjgZBNZgfBdrfQ/Tu35MmSBfjjJHa6GvwR7XexpvcaUyfeD8xxwJFwWGqzWlsqXIGExNC1hKVTgv+1Hyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p9taQmLM; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d5facf3161so102156539f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 13:06:38 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=RmJZEfwDT4B7kfmZWoWjzhj8ogrxaCo06xFrVgCbDZRYA0HEU1HcQUVt95Nliu1jJgGeon11KygBvzSMh/v+Dl/k0rJPEXS9MBgaS90ElteOKRmk2kkCMURzsikn7FkhknbxmurnleyUIsaMex+cqn12CgORHam5pB4RUM7CZIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IwelWVQ6; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-518bad5f598so941716e87.2;
+        Sun, 14 Apr 2024 13:14:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713125198; x=1713729998; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1713125671; x=1713730471; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=kGfHknOus/9GyhBjzld26etB6pXH4O6fe07dtnoZtJ8=;
-        b=p9taQmLMAbweGVGw2WbKZCQH+F4zxzErR/7ExCSFyL3BzXCcsikiKLb2/30kj09EV9
-         QTysgWThyhDyOxbp4OHO5CQd1EM++jv4Zrd2AkTd6woJketYxe6gve9O5KMSAKvNPoZq
-         88ygNnVJ84PSU7OpaI+EHzLGnj8LXwkKtlaYF5M6Fg2gffLoF0FFtX+qIRKf1ZYo3sBT
-         FDFOxPkQVXd1wNjHOIEddZmu1Su89+NOsN1xWteFfkAg1MQYMByKvosTduwk+g0h4lhl
-         JmVnjR6kQ7q7ulUmR/lECOC3NgoR/DeRSWwPvfMGh8B47wJYnE6uU/PddkG98+RcLxEm
-         Lh4w==
+        bh=CQqN6YrToit4xX74oO1hdA+XGzZL0o4Rxaz/inovTzQ=;
+        b=IwelWVQ6/YrNfPIGWgBrCRf04eQ7Zgs8/y4A3HyhX798J6LzQhxU61iFC277qkiNp2
+         Oq5087Yy1BwloLykwtwVZ8bGDanip0LtzzBdklVjXVYcZ8X3dxTb6qva2kGttP/uqUau
+         kbKsoHYrnEpZX6VcEnWmjjPOGEw83lQ65g+WY/Tf5aUP5eU7VGE1tqFx9uv4tsOuStSG
+         XYBwy6LKidyWqVqaowxrBTCfBaIpQBmoypXWNkxjG3X/YKULf8mp4YAJRZB0ngYxePH1
+         mdDsApR0akDx+B5yBkbd21bgcpC9FDO3ILsbsQhIsAF3a9mgRfEWKpDaYn9PkZv2Y+hW
+         UYwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713125198; x=1713729998;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1713125671; x=1713730471;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kGfHknOus/9GyhBjzld26etB6pXH4O6fe07dtnoZtJ8=;
-        b=IOxmBdXNcCuAoAvLFTRGtGRliBBpV63OxpEALf/EPwT9fIB+wTVsnIBw+z0tCf4+X6
-         xNwWl6kPXq4NjrUeHsFQK+KTGsBNwHgUpp7WvnIoFMk//eMD1HqffjNw12e0t1o1WWl3
-         6rZJ/cfEsjvLRWmDQ1ud8bnH0RABG1Nfmppmeydnm6nfve+2rUg3w5F6bppZrSGI1tQ+
-         Hk5kTz2O8A+jidqSm81zNkALzS53t4kKYycuGrsUv33PfcqFd9ankXI0DbXc5ogouBvT
-         NERdiwMm+rcGxALjrp1hEon4OTm1Vm4C9govkybupNSOyUgCjLXYhKzPL8F7AiNLoZ4O
-         jK9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXuI17xLmJ1PNy+lO7fVY89jbDGun8M/HgemxOWo+H6w/x75LvcMRykK6YSoOYE/tg+1RweWv3Ht55pSLhKw+ePs2p62++6dnD2tMll
-X-Gm-Message-State: AOJu0YyHgG4Dj4beDZIPwM/64XRXhWE5bK08gRI05rauFzskkW45MEd7
-	kMY20oVjbmXQx34HyyE13NHZsRdYc8UiGckba7ygJXRdJWhj6vUlz3osaRH4rRU=
-X-Google-Smtp-Source: AGHT+IFYXBbtD/IOrHO3NdgNVg838YIoDuvznQyBmKua3T+35A6viwq+2YM1ZoNyhKdqyzpbde7pFg==
-X-Received: by 2002:a05:6602:3942:b0:7d6:8f9:107f with SMTP id bt2-20020a056602394200b007d608f9107fmr12803844iob.12.1713125198204;
-        Sun, 14 Apr 2024 13:06:38 -0700 (PDT)
-Received: from [10.211.55.3] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.gmail.com with ESMTPSA id v6-20020a056638250600b00482fa014961sm767397jat.138.2024.04.14.13.06.37
+        bh=CQqN6YrToit4xX74oO1hdA+XGzZL0o4Rxaz/inovTzQ=;
+        b=areH0/gN2LC0/NA4USfXb0ues4HDanXaIQkR3nN1aVSiJhFh6EBs34QWKbpa+7xXvA
+         hMZXtGXWizv+dCEmZpgzCo259IM6CTyHUmDLup6NObDB93TCyN+9/C5h1l2m0fHXIWf8
+         Aj4vbK1Qn7CzBO+oUIlvvXP6xU1O1crQchaEGO6qMIwlBl+3l3P/oydmEFpGBZa/iRCz
+         h6v99qohQYOlO4M24I3EuOHVCqlFtJSeZLjfBsA1BKt2C2IsoIEC5xXUs0qoOOx1etBK
+         IDARv15dSicGGarLdSl2MrRa0M04DYHWder9gxt0cF1W0mgg+j6/2eDFyf+joZS5QzGc
+         4ttw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGmLLPpWoNjE7wtE9InAIVvL1ftrbSR4zNfITkV4TgVO6e1mtzChEwrE6ea1NeAY92EEtO98vgeD6cJz/uh+YYgH58PHEMj/jSApZQyC2pG37vI3y5dFDFcA/NBN86/OSBYq+yBFui7UVMUOzOwtaxFGiN8Zv7qkfsIiQ4adQPrpf/9Q==
+X-Gm-Message-State: AOJu0Yz1XmxOhkBRgi8aiKoorQ2SR36SlfeKsdJBv3ulH7IZB+fCjwc/
+	DHmwcdIaheLzMefPeabsF0GHFvGCuXNFF5OY/9kkpqvXUiKUeHek
+X-Google-Smtp-Source: AGHT+IEd27NZXiLTF0O+mBYFf7M2dCfew/0+9Hq+7Czir7Cp2Phg+ZLekld8YXy1PrP2QyKSSrCizg==
+X-Received: by 2002:a19:ca55:0:b0:513:cae8:4406 with SMTP id h21-20020a19ca55000000b00513cae84406mr4555882lfj.48.1713125670723;
+        Sun, 14 Apr 2024 13:14:30 -0700 (PDT)
+Received: from [172.27.138.193] (c7.campus.utcluj.ro. [193.226.6.226])
+        by smtp.gmail.com with ESMTPSA id n22-20020aa7c796000000b0056feeb85ed0sm3451030eds.19.2024.04.14.13.14.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Apr 2024 13:06:37 -0700 (PDT)
-Message-ID: <ddb55ce5-59ca-4d95-b9a7-196bd583903c@linaro.org>
-Date: Sun, 14 Apr 2024 15:06:36 -0500
+        Sun, 14 Apr 2024 13:14:30 -0700 (PDT)
+Message-ID: <dfa86da4-7d2d-4d7e-ac50-86d3713f44d9@gmail.com>
+Date: Sun, 14 Apr 2024 23:14:28 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,95 +75,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+Subject: Re: [PATCH v5 5/5] iio: adc: ad7192: Add AD7194 support
+To: David Lechner <dlechner@baylibre.com>
+Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alexandru.tachici@analog.com, lars@metafoo.de, jic23@kernel.org,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ lgirdwood@gmail.com, broonie@kernel.org, andy@kernel.org,
+ nuno.sa@analog.com, marcelo.schmitt@analog.com, bigunclemax@gmail.com,
+ okan.sahin@analog.com, fr0st61te@gmail.com, alisa.roman@analog.com,
+ marcus.folkesson@gmail.com, schnelle@linux.ibm.com, liambeguin@gmail.com
+References: <20240413151152.165682-1-alisa.roman@analog.com>
+ <20240413151152.165682-6-alisa.roman@analog.com>
+ <CAMknhBFzUeW5+rs_GgCZCiit=eW04VHyCnt-__jXLnO3Z29ksA@mail.gmail.com>
 Content-Language: en-US
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Alex Elder <elder@linaro.org>
-Cc: corbet@lwn.net, gregkh@linuxfoundation.org, workflows@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240414170850.148122-1-elder@linaro.org>
- <20240414194835.GA12561@pendragon.ideasonboard.com>
-From: Alex Elder <alex.elder@linaro.org>
-In-Reply-To: <20240414194835.GA12561@pendragon.ideasonboard.com>
+From: Alisa-Dariana Roman <alisadariana@gmail.com>
+In-Reply-To: <CAMknhBFzUeW5+rs_GgCZCiit=eW04VHyCnt-__jXLnO3Z29ksA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/14/24 2:48 PM, Laurent Pinchart wrote:
-> Hi Alex,
-> 
-> Thank you for the patch.
-> 
-> On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
->> Several times recently Greg KH has admonished that variants of WARN()
->> should not be used, because when the panic_on_warn kernel option is set,
->> their use can lead to a panic. His reasoning was that the majority of
->> Linux instances (including Android and cloud systems) run with this option
->> enabled. And therefore a condition leading to a warning will frequently
->> cause an undesirable panic.
+On 13.04.2024 23:05, David Lechner wrote:
+> On Sat, Apr 13, 2024 at 10:13 AM Alisa-Dariana Roman
+> <alisadariana@gmail.com> wrote:
 >>
->> The "coding-style.rst" document says not to worry about this kernel
->> option.  Update it to provide a more nuanced explanation.
+>> Unlike the other AD719Xs, AD7194 has configurable differential
+>> channels. The user can dynamically configure them in the devicetree.
 >>
->> Signed-off-by: Alex Elder <elder@linaro.org>
+>> Also modify config AD7192 description for better scaling.
+>>
+>> Moved ad7192_chip_info struct definition to allow use of callback
+>> function parse_channels().
+> 
+> It looks like this no longer needs to be moved in this revision.
+> 
+>>
+>> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 >> ---
->>   Documentation/process/coding-style.rst | 21 +++++++++++----------
->>   1 file changed, 11 insertions(+), 10 deletions(-)
->>
->> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
->> index 9c7cf73473943..bce43b01721cb 100644
->> --- a/Documentation/process/coding-style.rst
->> +++ b/Documentation/process/coding-style.rst
->> @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
->>   to trigger easily, for example, by user space actions. pr_warn_once() is a
->>   possible alternative, if you need to notify the user of a problem.
->>   
->> -Do not worry about panic_on_warn users
->> -**************************************
->> +The panic_on_warn kernel option
->> +********************************
->>   
->> -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
->> -available kernel option, and that many users set this option. This is why
->> -there is a "Do not WARN lightly" writeup, above. However, the existence of
->> -panic_on_warn users is not a valid reason to avoid the judicious use
->> -WARN*(). That is because, whoever enables panic_on_warn has explicitly
->> -asked the kernel to crash if a WARN*() fires, and such users must be
->> -prepared to deal with the consequences of a system that is somewhat more
->> -likely to crash.
->> +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
->> +a WARN*() call whose condition holds leads to a kernel panic.  Many users
->> +(including Android and many cloud providers) set this option, and this is
->> +why there is a "Do not WARN lightly" writeup, above.
+>>   drivers/iio/adc/Kconfig  |  11 ++-
+>>   drivers/iio/adc/ad7192.c | 140 ++++++++++++++++++++++++++++++++++++---
+>>   2 files changed, 138 insertions(+), 13 deletions(-)
+
+..
+
+> 
+>> +       if (!ad7194_channels)
+>> +               return -ENOMEM;
 >> +
->> +The existence of this option is not a valid reason to avoid the judicious
->> +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
->> +issue warnings but do **not** cause the kernel to crash. Use these if you
->> +want to prevent such panics.
+>> +       indio_dev->channels = ad7194_channels;
+>> +       indio_dev->num_channels = num_channels;
+>> +
+>> +       device_for_each_child_node(dev, child) {
+>> +               *ad7194_channels = ad7194_chan_diff;
+>> +               ad7194_channels->scan_index = index++;
+>> +               ret = ad7192_parse_channel(child, ad7194_channels);
+>> +               if (ret) {
+>> +                       fwnode_handle_put(child);
+>> +                       return ret;
+>> +               }
+>> +               ad7194_channels++;
+>> +       }
+>> +
+>> +       *ad7194_channels = ad7194_chan_temp;
+>> +       ad7194_channels->scan_index = index++;
+>> +       ad7194_channels->address = AD7194_CH_TEMP;
+>> +       ad7194_channels++;
 > 
-> Those options are not equivalent, they print a single message, which is
-> much easier to ignore. WARN() is similar to -Werror in some sense, it
-> pushes vendors to fix the warnings. I have used WARN() in the past to
-> indicate usage of long-deprecated APIs that we were getting close to
-> removing for instance. dev_warn() wouldn't have had the same effect.
+> nit: It would seem more natural to have all voltage channels
+> altogether rather than having the temperature channel in between.
 
-Honestly, I feel somewhat the same way--that WARN() has a use
-that differs from dev_warn().  E.g., in places where something
-"won't happen" (but conceivably could if someone was developing
-a future change and violated an assumption).
+I wrote the channels like this to match the other chips:
 
-Nevertheless, if panic_on_warn is used in Android and cloud
-scenarios as Greg says, he's right that it affects many, many
-systems.  Perhaps it's better to more strongly discourage the
-use of that option?
+static const struct iio_chan_spec ad7193_channels[] = {
+	AD7193_DIFF_CHANNEL(0, 1, 2, AD7193_CH_AIN1P_AIN2M),
+	AD7193_DIFF_CHANNEL(1, 3, 4, AD7193_CH_AIN3P_AIN4M),
+	AD7193_DIFF_CHANNEL(2, 5, 6, AD7193_CH_AIN5P_AIN6M),
+	AD7193_DIFF_CHANNEL(3, 7, 8, AD7193_CH_AIN7P_AIN8M),
+	AD719x_TEMP_CHANNEL(4, AD7193_CH_TEMP),
+	AD7193_DIFF_CHANNEL(5, 2, 2, AD7193_CH_AIN2P_AIN2M),
+	AD7193_CHANNEL(6, 1, AD7193_CH_AIN1),
+	AD7193_CHANNEL(7, 2, AD7193_CH_AIN2),
+	AD7193_CHANNEL(8, 3, AD7193_CH_AIN3),
+	AD7193_CHANNEL(9, 4, AD7193_CH_AIN4),
+	AD7193_CHANNEL(10, 5, AD7193_CH_AIN5),
+	AD7193_CHANNEL(11, 6, AD7193_CH_AIN6),
+	AD7193_CHANNEL(12, 7, AD7193_CH_AIN7),
+	AD7193_CHANNEL(13, 8, AD7193_CH_AIN8),
+	IIO_CHAN_SOFT_TIMESTAMP(14),
+};
 
-I saw this "don't worry about it" message and felt it at least
-ought to be toned down. The broader question of whether WARN()
-should generally not be used might need some more discussion.
-
-					-Alex
-
->>   Use BUILD_BUG_ON() for compile-time assertions
->>   **********************************************
-> 
+Kind regards,
+Alisa-Dariana Roman
 
 
