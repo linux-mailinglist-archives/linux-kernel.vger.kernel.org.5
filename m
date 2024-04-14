@@ -1,241 +1,246 @@
-Return-Path: <linux-kernel+bounces-144019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EBB88A40DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:21:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3BB38A40E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 09:26:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29B5C1F2134E
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:21:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA9C01C20B76
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 07:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB2C1EF01;
-	Sun, 14 Apr 2024 07:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E542D1DA2F;
+	Sun, 14 Apr 2024 07:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="G5vdpaEH"
-Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y8gIqeIe"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D34EACE;
-	Sun, 14 Apr 2024 07:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD7DF1CD18
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 07:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713079274; cv=none; b=CLl8FgXdBBYW300eZiwvDZK8sfv11KLmZl6iymbcPAYHI0jsj4uEmDtg4iXYeqh/ay5JwsTFmAhQv9AGGz+C67CzsO50au2gPSFMGVmuRhbWe1o6uXhxJ2eJZNH8Giu/ZcsGIumleViUY/Jr18Jnth9In0ixvWMjgjmnZrY7orE=
+	t=1713079606; cv=none; b=E7ZbimocqWLm2PWWVTUn+6pDryUzfY+LNaQicak7/rL0SaNLyS2JdjmIbdDWhNAfPKHE6OISUtnf1PLLSxMkftxwFps2Z+wVgHQuZUS7pnmCd6WfrteR3rsgAgkj+vPMalNL94HPzbfq0ZcJODfxbhiSSmHhwW5Vm42HTyZv0FI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713079274; c=relaxed/simple;
-	bh=LffLWXbtrO8JQrVOEfI+ZVrSsRAK0cusnGbM3eJq/es=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=cCWZuK1I6HZTr2A2IbpSPEVX9maj+VpBEMRiJwwArwbDjpZhftpX935cMq+IrvaoOboHZSOnYzG825wEFGR75H0y9CD0ztU6uyuT/HkII7XyS4cJiS624+z+hoZYdsw6dQKpsZhIKqBx6x/lYcKtcakggVWXoD/Q3+Kgnc/mAz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=G5vdpaEH; arc=none smtp.client-ip=80.12.242.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id vu9Xri76MUEo7vu9YrFcTz; Sun, 14 Apr 2024 09:19:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1713079195;
-	bh=HcKjhMiD/D1TvETHVyrW4OtEDwfkxXYGFLmr6OM5lX8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=G5vdpaEHpJGN+C1v8XPSeNstGe8DdVLj57FyMhZY6BrpI9LOYflZile28IB43SWPm
-	 rnyixRiouyggiFlEUVncy0hWFoCweS8qWPl+0Ih2oXSGEgCqT+NFFnm3ASpOTqZ532
-	 9xVwMCqlBPdENLaw+3vXwxg/swzgvr8tj/wsjMg2oaPXxhoT8iSqXJU4EAcNWQ+dPo
-	 981uouKuhVykrQvgpn55J2Do4jQtURkVh2dGjbibR5QwIlu1sRtfdwhBBuY7yt3Kh2
-	 dmDzQYk2TsTwLYaiANIwJPMU5NBgXoRKI8Dtnh3PlEyx/aEF2TSx4HreqlQAc1zPrB
-	 2gDvrZs97RwvA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 14 Apr 2024 09:19:54 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <66b11910-c6e2-401c-a293-441f6d85bb90@wanadoo.fr>
-Date: Sun, 14 Apr 2024 09:19:46 +0200
+	s=arc-20240116; t=1713079606; c=relaxed/simple;
+	bh=xI5Gbr2rCi3Mb27l1vgiiapamtdRKmlSIW1MzIVMBkI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=YnWW2jSV7cr/etlhqH424xdQOxyacc7QBjv8aU93jaX8d/StZqLnUfPWmp872ketUuvJf2Sxg6nrS6E3nnp0oYAvqozzd8ZiNysqA0brCDxrVHttwfNBzVUs0j3eOPf15aDdLIbS3dOjbVZAkN3jjS+1Ctmqx22FTJc6nsuuT5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y8gIqeIe; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713079604; x=1744615604;
+  h=date:from:to:cc:subject:message-id;
+  bh=xI5Gbr2rCi3Mb27l1vgiiapamtdRKmlSIW1MzIVMBkI=;
+  b=Y8gIqeIeeqsQh1EHOKmDk1PChjdgufWLxmJDpgkGktSrukNkOK4dRE55
+   lNdnL2hpG/kjBPMExa9OdCjkYLhBeMDKKge9vwPaXUtX9s1gntqmJEeG1
+   tlnIkUuSjZM5TIvUJyMmfPzO1Qy0xFwz0DU5bwUq7knifx7Bh9t9B4Gqm
+   /GIp3Q/P/pugrxv5srnngvW7kw81d0NO3/fUFIORwOi3Rees2Pboywk5L
+   9rNf5V7rSvLcKuiilqxpRQHpYpK1zo6eCUa8NyMys4vBWDyUic0O9DLZa
+   t8VWyy+earXF8sA5UyTlP4M4XnH7Dvv/YyOqAVuK4BUbORNK+7tHENPOX
+   g==;
+X-CSE-ConnectionGUID: oTBEba/QT/2c3pZ7YCK+cA==
+X-CSE-MsgGUID: vNXcz54RTwukBd9c2+XzUg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11043"; a="19087929"
+X-IronPort-AV: E=Sophos;i="6.07,200,1708416000"; 
+   d="scan'208";a="19087929"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 00:26:43 -0700
+X-CSE-ConnectionGUID: s2584dY+RJmgKIVvN86Mwg==
+X-CSE-MsgGUID: KvSdrCPRQrGGaxXo5zIoyw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,200,1708416000"; 
+   d="scan'208";a="52786555"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by fmviesa001.fm.intel.com with ESMTP; 14 Apr 2024 00:26:42 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rvuG7-0003T4-2w;
+	Sun, 14 Apr 2024 07:26:39 +0000
+Date: Sun, 14 Apr 2024 15:25:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
+ 5fd10857f13187de9227063ed4a42ebdc45c12b3
+Message-ID: <202404141556.sCn2GKYL-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] pinctrl: bcm: Add pinconf/pinmux controller driver
- for BCM2712
-To: Andrea della Porta <andrea.porta@suse.com>,
- Ulf Hansson <ulf.hansson@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Adrian Hunter <adrian.hunter@intel.com>, Kamal Dasu
- <kamal.dasu@broadcom.com>, Al Cooper <alcooperx@gmail.com>,
- linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-gpio@vger.kernel.org, Jonathan Bell <jonathan@raspberrypi.com>,
- Phil Elwell <phil@raspberrypi.com>
-References: <cover.1713036964.git.andrea.porta@suse.com>
- <8fb5dde9404875777587c867e7bdb4f691ab83f2.1713036964.git.andrea.porta@suse.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <8fb5dde9404875777587c867e7bdb4f691ab83f2.1713036964.git.andrea.porta@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Le 14/04/2024 à 00:14, Andrea della Porta a écrit :
-> Add a pincontrol driver for BCM2712. BCM2712 allows muxing GPIOs
-> and setting configuration on pads.
-> 
-> Originally-by: Jonathan Bell <jonathan@raspberrypi.com>
-> Originally-by: Phil Elwell <phil@raspberrypi.com>
-> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
-> ---
->   drivers/pinctrl/bcm/Kconfig           |    9 +
->   drivers/pinctrl/bcm/Makefile          |    1 +
->   drivers/pinctrl/bcm/pinctrl-bcm2712.c | 1247 +++++++++++++++++++++++++
->   3 files changed, 1257 insertions(+)
->   create mode 100644 drivers/pinctrl/bcm/pinctrl-bcm2712.c
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 5fd10857f13187de9227063ed4a42ebdc45c12b3  rcu/tree: Reduce wake up for synchronize_rcu() common case
 
-..
+elapsed time: 1345m
 
-> +static int bcm2712_pmx_get_function_groups(struct pinctrl_dev *pctldev,
-> +		unsigned selector,
-> +		const char * const **groups,
-> +		unsigned * const num_groups)
-> +{
-> +	struct bcm2712_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
+configs tested: 154
+configs skipped: 4
 
-Missing empty new line.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +	/* every pin can do every function */
-> +	*groups = pc->gpio_groups;
-> +	*num_groups = pc->pctl_desc.npins;
-> +
-> +	return 0;
-> +}
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arc                   randconfig-001-20240414   gcc  
+arc                   randconfig-002-20240414   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                         assabet_defconfig   clang
+arm                                 defconfig   clang
+arm                       imx_v6_v7_defconfig   clang
+arm                        mvebu_v5_defconfig   gcc  
+arm                   randconfig-001-20240414   clang
+arm                   randconfig-002-20240414   clang
+arm                   randconfig-003-20240414   gcc  
+arm                   randconfig-004-20240414   clang
+arm                           stm32_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240414   gcc  
+arm64                 randconfig-002-20240414   clang
+arm64                 randconfig-003-20240414   gcc  
+arm64                 randconfig-004-20240414   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240414   gcc  
+csky                  randconfig-002-20240414   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240414   clang
+hexagon               randconfig-002-20240414   clang
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240413   gcc  
+i386         buildonly-randconfig-002-20240413   gcc  
+i386         buildonly-randconfig-003-20240413   clang
+i386         buildonly-randconfig-004-20240413   clang
+i386         buildonly-randconfig-005-20240413   clang
+i386         buildonly-randconfig-006-20240413   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240413   clang
+i386                  randconfig-002-20240413   gcc  
+i386                  randconfig-003-20240413   clang
+i386                  randconfig-004-20240413   gcc  
+i386                  randconfig-005-20240413   clang
+i386                  randconfig-006-20240413   clang
+i386                  randconfig-011-20240413   gcc  
+i386                  randconfig-012-20240413   clang
+i386                  randconfig-013-20240413   gcc  
+i386                  randconfig-014-20240413   gcc  
+i386                  randconfig-015-20240413   clang
+i386                  randconfig-016-20240413   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch                 loongson3_defconfig   gcc  
+loongarch             randconfig-001-20240414   gcc  
+loongarch             randconfig-002-20240414   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                       bvme6000_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     cu1830-neo_defconfig   gcc  
+mips                         rt305x_defconfig   clang
+mips                        vocore2_defconfig   clang
+nios2                            alldefconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240414   gcc  
+nios2                 randconfig-002-20240414   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240414   gcc  
+parisc                randconfig-002-20240414   gcc  
+parisc64                            defconfig   gcc  
+powerpc                      acadia_defconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     ep8248e_defconfig   gcc  
+powerpc               randconfig-001-20240414   clang
+powerpc               randconfig-002-20240414   clang
+powerpc               randconfig-003-20240414   gcc  
+powerpc64             randconfig-001-20240414   clang
+powerpc64             randconfig-002-20240414   gcc  
+powerpc64             randconfig-003-20240414   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240414   clang
+riscv                 randconfig-002-20240414   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240414   clang
+s390                  randconfig-002-20240414   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240414   gcc  
+sh                    randconfig-002-20240414   gcc  
+sh                           se7724_defconfig   gcc  
+sh                            shmin_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                       sparc64_defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240414   gcc  
+sparc64               randconfig-002-20240414   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240414   gcc  
+um                    randconfig-002-20240414   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240414   gcc  
+xtensa                randconfig-002-20240414   gcc  
 
-..
-
-> +static int bcm2712_pinconf_get(struct pinctrl_dev *pctldev,
-> +			unsigned pin, unsigned long *config)
-> +{
-> +	struct bcm2712_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
-> +	enum pin_config_param param = pinconf_to_config_param(*config);
-> +	u32 arg;
-> +
-> +	switch (param) {
-> +	case PIN_CONFIG_BIAS_DISABLE:
-> +		arg = (bcm2712_pull_config_get(pc, pin) == BCM2712_PULL_NONE);
-> +		break;
-> +	case PIN_CONFIG_BIAS_PULL_DOWN:
-> +		arg = (bcm2712_pull_config_get(pc, pin) == BCM2712_PULL_DOWN);
-> +		break;
-> +	case PIN_CONFIG_BIAS_PULL_UP:
-> +		arg = (bcm2712_pull_config_get(pc, pin) == BCM2712_PULL_UP);
-> +		break;
-> +	default:
-> +		return -ENOTSUPP;
-> +	}
-> +
-> +	*config = pinconf_to_config_packed(param, arg);
-> +
-> +	return -ENOTSUPP;
-
-Strange.
-
-	return 0;
-?
-
-> +}
-> +
-> +static int bcm2712_pinconf_set(struct pinctrl_dev *pctldev,
-> +			       unsigned int pin, unsigned long *configs,
-> +			       unsigned int num_configs)
-> +{
-> +	struct bcm2712_pinctrl *pc = pinctrl_dev_get_drvdata(pctldev);
-> +	u32 param, arg;
-> +	int i;
-> +
-> +	for (i = 0; i < num_configs; i++) {
-> +		param = pinconf_to_config_param(configs[i]);
-> +		arg = pinconf_to_config_argument(configs[i]);
-> +
-> +		switch (param) {
-> +		case PIN_CONFIG_BIAS_DISABLE:
-> +			bcm2712_pull_config_set(pc, pin, BCM2712_PULL_NONE);
-> +			break;
-> +		case PIN_CONFIG_BIAS_PULL_DOWN:
-> +			bcm2712_pull_config_set(pc, pin, BCM2712_PULL_DOWN);
-> +			break;
-> +		case PIN_CONFIG_BIAS_PULL_UP:
-> +			bcm2712_pull_config_set(pc, pin, BCM2712_PULL_UP);
-> +			break;
-> +		default:
-> +			return -ENOTSUPP;
-> +		}
-> +	} /* for each config */
-
-This comment is not really usefull, IMHO.
-
-> +
-> +	return 0;
-> +}
-
-..
-
-> +static int bcm2712_pinctrl_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	//struct device_node *np = dev->of_node;
-> +	const struct bcm_plat_data *pdata;
-> +	//const struct of_device_id *match;
-> +	struct bcm2712_pinctrl *pc;
-> +	const char **names;
-> +	int num_pins, i;
-> +
-> +	pdata = device_get_match_data(&pdev->dev);
-> +	if (!pdata)
-> +		return -EINVAL;
-> +
-> +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
-> +	if (!pc)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, pc);
-> +	pc->dev = dev;
-> +	spin_lock_init(&pc->lock);
-> +
-> +	//pc->base = devm_of_iomap(dev, np, 0, NULL);
-
-Any use for this commented code? (and variable declarations above)
-
-CJ
-
-> +	pc->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (WARN_ON(IS_ERR(pc->base))) {
-> +		//dev_err(dev, "could not get IO memory\n");
-> +		return PTR_ERR(pc->base);
-> +	}
-> +
-> +	pc->pctl_desc = *pdata->pctl_desc;
-> +	num_pins = pc->pctl_desc.npins;
-> +	names = devm_kmalloc_array(dev, num_pins, sizeof(const char *),
-> +				   GFP_KERNEL);
-> +	if (!names)
-> +		return -ENOMEM;
-> +	for (i = 0; i < num_pins; i++)
-> +		names[i] = pc->pctl_desc.pins[i].name;
-> +	pc->gpio_groups = names;
-> +	pc->pin_regs = pdata->pin_regs;
-> +	pc->pin_funcs = pdata->pin_funcs;
-> +	pc->pctl_dev = devm_pinctrl_register(dev, &pc->pctl_desc, pc);
-> +	if (IS_ERR(pc->pctl_dev))
-> +		return PTR_ERR(pc->pctl_dev);
-> +
-> +	pc->gpio_range = *pdata->gpio_range;
-> +	pinctrl_add_gpio_range(pc->pctl_dev, &pc->gpio_range);
-> +
-> +	return 0;
-> +}
-
-..
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
