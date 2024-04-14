@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-144126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61FFB8A4221
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE2148A4222
 	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 13:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDD831F212E9
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E42D281F4D
 	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 11:46:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCD644C92;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCAF44C89;
 	Sun, 14 Apr 2024 11:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S4uxBjSf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vi93Dh7p"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D5636AFE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D2A3613D;
 	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713095180; cv=none; b=nIUh380C3BaTPZTqRwWK4FBSjg2Sbcbv+uflz8l/IAvjUxt0xxrXPDB+T6qavPk9wIYZgL9eMFKbnzlZAwir652UwiUjMU4ufiNK/kWFpBPm4nv4MH/QnE7Y00pSIQmqXMHZ2Af7BEoZks1ynbaQgFsyt00yOSzkbH4h9wKUSio=
+	t=1713095180; cv=none; b=aZDn5JF806aG1WnFCXFCwnqfxS8A1SGB09+5Q49BdavykoD+z5A5jtTP0eQRWyzf3XGiIs8wLkeuj1pyGArfUiyy0HGgztk69UN/CX24TojQ7QP2kWLqtwEPIyPKXBkvx+mvYQC6LZm7U6M0VeCKvGSJnDGoG6B3UddMLi8WXYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713095180; c=relaxed/simple;
-	bh=t9MfZ4rLzme8utGyGg7SMq9zmAStci3nf1jIgxZxZfw=;
+	bh=iOTbMvh8oo8qfCdUhfbJs9sLC03dXhPCXmOTbb7K93o=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=gnhBiDgFbGuJApM8UiVYFtCOUDvI+Z0HRoeOy8ahHrSuZ/bbZUa94HlbNd1NA+yDapljBOt1RXnFXnv6Xd1vczfjqURChCh0WLhgxMaHS3w1qcW9fbD3zggg5+8cGDXwLtiFoOjFIPHdFd+czDWLE/EIjllmGgGZTH03PI1DG1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S4uxBjSf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 857A3C4AF09;
+	 In-Reply-To:To:Cc; b=jonq6PcImQk1NohhoaPZL/xbSUVppfpOEGBzkR36RRy3E9WNiSRbwdA+yu+bhNEu/S8AilCJEcMYGov0L3RnWmTtGyKozkl5cxYsYc++zmZNr6/Fvq4I4EODUd34YyfTIK2O1K9PYBBIIL7EO8EXiO57P84GTjPNTufdhp5RfUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vi93Dh7p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C8C1C4AF0A;
 	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1713095180;
-	bh=t9MfZ4rLzme8utGyGg7SMq9zmAStci3nf1jIgxZxZfw=;
+	bh=iOTbMvh8oo8qfCdUhfbJs9sLC03dXhPCXmOTbb7K93o=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=S4uxBjSfzIqucfrt0Hu6i6I2d5ldkWCKg0xDVv54abznyAejFyxZBTBd1GD/dsbX+
-	 ipn6m9hEJeNaM/tfQGcGXufVmUvvmbNZAO7MUxnNFApB+OlB2tdQlAEEVexDzh+fFR
-	 Quo/xMmNxtpjgRmYBA+iIEKF+AsAGmx+kwsxvdA+YTG4vYUSJKcxv5q/eJv9V4SoCo
-	 i9X3RxFq2v3UU7VI8+NjtiiGu8PadWmalL9IWoz25ynP0toJ3MFpAhTTi+D9VAt9vN
-	 tI13Xd1UB4zy+0qKPQzIMbHZLO9n5VctQV8PozKshbMVAKLi9jAWZx5JiU8BbSAi0D
-	 w5yuqi+uPUuCQ==
+	b=Vi93Dh7pqiV62TLmnkl5pjC6ixAoTE2eEiY4fJ4Mq7131zJ2rgIrMjixLGB/ei/Li
+	 ninoLsGd6HT4QAHkETwG2eTDtFB/BOrGkJKgZ4RwEq/dQ9RjrmN6FrYluQudHY0yMk
+	 BDdFs4zZrdkz+c3UjxGIhCfC5dk2SzKxIPX18zbTkya7hNJPM303oMCnQAppQ3rVPL
+	 j29CvjfEs3VrydUO0QV4awGwPVWyDEEwwx/6xKnvWbfRJArd4/YgTsX65Yej4Py8YI
+	 IcF5CL1NmqTwWdGWAMNYEm5QG9E+EowPHTpKTQlJWHCiXZY4UZub36L05/eILSHXji
+	 x5muPU0Zyu3CQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 757D4C001CC;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F967C05024;
 	Sun, 14 Apr 2024 11:46:20 +0000 (UTC)
 From: =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL_via_B4_Relay?= <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Sun, 14 Apr 2024 14:46:02 +0300
-Subject: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
+Date: Sun, 14 Apr 2024 14:46:03 +0300
+Subject: [PATCH 4/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC5300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,7 +54,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
+Message-Id: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-4-118c90bae6e5@arinc9.com>
 References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
 In-Reply-To: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
 To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
@@ -66,11 +66,11 @@ Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713095170; l=4685;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713095170; l=4826;
  i=arinc.unal@arinc9.com; s=arinc9-patatt; h=from:subject:message-id;
- bh=MAxATdfObwh2SOncdJYjGodR/vN2WwSuPYVRn0aQlKc=;
- b=PRe1/NIrZOatc4df/JLRUaxU1oPuCPspVNZkusgetwENt9wtS5yT8DeJTqOa1/XvUueKLITPe
- JpZiX7gsvJhDBSHyzoM8s2WF0bQyEaXXR4DKu/pFZvc6uZlcO9YPxTU
+ bh=c/8HaPqKjp8S34BaI+MyH3eEMu3y9Wkl8uy/jpRF7IU=;
+ b=oeOazBKHkZuyczClozvfl62Fuv/byhjHgqlTqXWQVV0zoK/ShxrfEE2bHePajqRHli1NGJ6c2
+ CAocWOtD0G2BJh/noJ38ZuFL7d8ldKfwgBBZ0+61QnwmNelbT1141qc
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=VmvgMWwm73yVIrlyJYvGtnXkQJy9CvbaeEqPQO9Z4kA=
 X-Endpoint-Received: by B4 Relay for arinc.unal@arinc9.com/arinc9-patatt
@@ -80,16 +80,16 @@ Reply-To: arinc.unal@arinc9.com
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-Add the device tree for ASUS RT-AC3200 which is an AC3200 router featuring
+Add the device tree for ASUS RT-AC5300 which is an AC5300 router featuring
 5 Ethernet ports over the integrated Broadcom switch.
 
 Hardware info:
-* Processor: Broadcom BCM4709A0 dual-core @ 1.0 GHz
-* Switch: BCM53012 in BCM4709A0
-* DDR3 RAM: 256 MB
+* Processor: Broadcom BCM4709C0 dual-core @ 1.4 GHz
+* Switch: BCM53012 in BCM4709C0
+* DDR3 RAM: 512 MB
 * Flash: 128 MB
-* 2.4GHz: BCM43602 3x3 single chip 802.11b/g/n SoC
-* 5GHz: BCM43602 3x3 two chips 802.11a/n/ac SoC
+* 2.4GHz: BCM4366 4x4 single chip 802.11b/g/n SoC
+* 5GHz: BCM4366 4x4 two chips 802.11a/n/ac SoC
 * Ports: 4 LAN Ports, 1 WAN Port
 
 Co-developed-by: Tom Brautaset <tbrautaset@gmail.com>
@@ -97,27 +97,27 @@ Signed-off-by: Tom Brautaset <tbrautaset@gmail.com>
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
  arch/arm/boot/dts/broadcom/Makefile                |   1 +
- .../boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts   | 164 +++++++++++++++++++++
- 2 files changed, 165 insertions(+)
+ .../boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts  | 170 +++++++++++++++++++++
+ 2 files changed, 171 insertions(+)
 
 diff --git a/arch/arm/boot/dts/broadcom/Makefile b/arch/arm/boot/dts/broadcom/Makefile
-index 7099d9560033..c61fca514775 100644
+index c61fca514775..5881bcc95eba 100644
 --- a/arch/arm/boot/dts/broadcom/Makefile
 +++ b/arch/arm/boot/dts/broadcom/Makefile
-@@ -64,6 +64,7 @@ dtb-$(CONFIG_ARCH_BCM_5301X) += \
- 	bcm47081-luxul-xap-1410.dtb \
- 	bcm47081-luxul-xwr-1200.dtb \
- 	bcm47081-tplink-archer-c5-v2.dtb \
-+	bcm4709-asus-rt-ac3200.dtb \
- 	bcm4709-asus-rt-ac87u.dtb \
- 	bcm4709-buffalo-wxr-1900dhp.dtb \
- 	bcm4709-linksys-ea9200.dtb \
-diff --git a/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts b/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts
+@@ -72,6 +72,7 @@ dtb-$(CONFIG_ARCH_BCM_5301X) += \
+ 	bcm4709-netgear-r8000.dtb \
+ 	bcm4709-tplink-archer-c9-v1.dtb \
+ 	bcm47094-asus-rt-ac3100.dtb \
++	bcm47094-asus-rt-ac5300.dtb \
+ 	bcm47094-asus-rt-ac88u.dtb \
+ 	bcm47094-dlink-dir-885l.dtb \
+ 	bcm47094-dlink-dir-890l.dtb \
+diff --git a/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts b/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts
 new file mode 100644
-index 000000000000..8640dda211ae
+index 000000000000..b7e55d4ce999
 --- /dev/null
-+++ b/arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts
-@@ -0,0 +1,164 @@
++++ b/arch/arm/boot/dts/broadcom/bcm47094-asus-rt-ac5300.dts
+@@ -0,0 +1,170 @@
 +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 +/*
 + * Author: Tom Brautaset <tbrautaset@gmail.com>
@@ -125,14 +125,14 @@ index 000000000000..8640dda211ae
 +
 +/dts-v1/;
 +
-+#include "bcm4709.dtsi"
++#include "bcm47094.dtsi"
 +#include "bcm5301x-nand-cs0-bch8.dtsi"
 +
 +#include <dt-bindings/leds/common.h>
 +
 +/ {
-+	compatible = "asus,rt-ac3200", "brcm,bcm4709", "brcm,bcm4708";
-+	model = "ASUS RT-AC3200";
++	compatible = "asus,rt-ac5300", "brcm,bcm47094", "brcm,bcm4708";
++	model = "ASUS RT-AC5300";
 +
 +	chosen {
 +		bootargs = "console=ttyS0,115200 earlycon";
@@ -141,20 +141,26 @@ index 000000000000..8640dda211ae
 +	memory@0 {
 +		device_type = "memory";
 +		reg = <0x00000000 0x08000000>,
-+		      <0x88000000 0x08000000>;
++		      <0x88000000 0x18000000>;
 +	};
 +
 +	nvram@1c080000 {
 +		compatible = "brcm,nvram";
 +		reg = <0x1c080000 0x00180000>;
 +
-+		et0macaddr: et0macaddr {
++		et1macaddr: et1macaddr {
 +			#nvmem-cell-cells = <1>;
 +		};
 +	};
 +
 +	leds {
 +		compatible = "gpio-leds";
++
++		led-lan {
++			color = <LED_COLOR_ID_WHITE>;
++			function = LED_FUNCTION_LAN;
++			gpios = <&chipcommon 21 GPIO_ACTIVE_LOW>;
++		};
 +
 +		led-power {
 +			color = <LED_COLOR_ID_WHITE>;
@@ -172,7 +178,7 @@ index 000000000000..8640dda211ae
 +		led-wps {
 +			color = <LED_COLOR_ID_WHITE>;
 +			function = LED_FUNCTION_WPS;
-+			gpios = <&chipcommon 14 GPIO_ACTIVE_LOW>;
++			gpios = <&chipcommon 19 GPIO_ACTIVE_LOW>;
 +		};
 +	};
 +
@@ -188,13 +194,13 @@ index 000000000000..8640dda211ae
 +		button-wifi {
 +			label = "Wi-Fi";
 +			linux,code = <KEY_RFKILL>;
-+			gpios = <&chipcommon 4 GPIO_ACTIVE_LOW>;
++			gpios = <&chipcommon 20 GPIO_ACTIVE_LOW>;
 +		};
 +
 +		button-wps {
 +			label = "WPS";
 +			linux,code = <KEY_WPS_BUTTON>;
-+			gpios = <&chipcommon 7 GPIO_ACTIVE_LOW>;
++			gpios = <&chipcommon 18 GPIO_ACTIVE_LOW>;
 +		};
 +	};
 +};
@@ -208,17 +214,17 @@ index 000000000000..8640dda211ae
 +};
 +
 +&gmac0 {
-+	nvmem-cells = <&et0macaddr 0>;
++	nvmem-cells = <&et1macaddr 0>;
 +	nvmem-cell-names = "mac-address";
 +};
 +
 +&gmac1 {
-+	nvmem-cells = <&et0macaddr 1>;
++	nvmem-cells = <&et1macaddr 1>;
 +	nvmem-cell-names = "mac-address";
 +};
 +
 +&gmac2 {
-+	nvmem-cells = <&et0macaddr 2>;
++	nvmem-cells = <&et1macaddr 2>;
 +	nvmem-cell-names = "mac-address";
 +};
 +
@@ -227,32 +233,32 @@ index 000000000000..8640dda211ae
 +
 +	ports {
 +		port@0 {
-+			label = "wan";
-+			nvmem-cells = <&et0macaddr 0>;
++			label = "lan4";
++			nvmem-cells = <&et1macaddr 0>;
 +			nvmem-cell-names = "mac-address";
 +		};
 +
 +		port@1 {
-+			label = "lan1";
-+			nvmem-cells = <&et0macaddr 1>;
++			label = "lan3";
++			nvmem-cells = <&et1macaddr 1>;
 +			nvmem-cell-names = "mac-address";
 +		};
 +
 +		port@2 {
 +			label = "lan2";
-+			nvmem-cells = <&et0macaddr 2>;
++			nvmem-cells = <&et1macaddr 2>;
 +			nvmem-cell-names = "mac-address";
 +		};
 +
 +		port@3 {
-+			label = "lan3";
-+			nvmem-cells = <&et0macaddr 3>;
++			label = "lan1";
++			nvmem-cells = <&et1macaddr 3>;
 +			nvmem-cell-names = "mac-address";
 +		};
 +
 +		port@4 {
-+			label = "lan4";
-+			nvmem-cells = <&et0macaddr 4>;
++			label = "wan";
++			nvmem-cells = <&et1macaddr 4>;
 +			nvmem-cell-names = "mac-address";
 +		};
 +	};
