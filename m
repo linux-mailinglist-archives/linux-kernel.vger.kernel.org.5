@@ -1,234 +1,97 @@
-Return-Path: <linux-kernel+bounces-144142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 731508A425B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:58:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A0BD8A4261
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 14:59:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF0371F2154B
-	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:58:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06B101C20DF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 14 Apr 2024 12:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1FEB40879;
-	Sun, 14 Apr 2024 12:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A9D31A94;
+	Sun, 14 Apr 2024 12:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GT/+E+jn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="BhDRRFxR"
+Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F07328DB;
-	Sun, 14 Apr 2024 12:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFA3445BFA
+	for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 12:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.239
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713099522; cv=none; b=J03Qa2fOD0vVTBiC/EvhQ7UfJb3UJiW0Dob3gaiADmh4h0KADqqvTU47Z4BlAzOUe5gTt7+/Y58OZg6g/2EdPn6Rjtx52Y6oVYSQfTvScZ0kzNnexN1n+SS0EzNtIFPMq2yhvaW8xnNc2jqODDew7lXp/FkPUwgPx4Lr4BliIQA=
+	t=1713099527; cv=none; b=BbHWQA4gANgNQuYQwtbcGlU9rhS0YF6KTsndfjlniszwO3/ur9LZo5Cyji4wnzLVLlfngW0fybumIlqeDgHwDse8TRRMHWvE7lJMXvjFvywR1cXWPbHPqQ6JYllAKwxfjqzpU45ZT4dzX/VjBK+mPzHvWvSfYTtUGHTo0edUQQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713099522; c=relaxed/simple;
-	bh=Dglaxi1KNrwFgr/1nxOZSoJL+0HYaCytdvsFrqk3eqg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=swVX+qgX9nrXdpEwWuzTqVNnMYdgGKxtpe+cVBv5vEG//VOLygNc+CiyCUKkd8dL7sq96ckqAHElTTmdiojjuZ22d25pFNkrfq4zGP5ncZVpq4PJ3LVctS3udttWGIE2xNclbiPaw7A82Dye0Fbu3aQTImVSZKJFeclAkGbyh84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GT/+E+jn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA03C2BD11;
-	Sun, 14 Apr 2024 12:58:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713099521;
-	bh=Dglaxi1KNrwFgr/1nxOZSoJL+0HYaCytdvsFrqk3eqg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GT/+E+jn5fMakzrkvyugKEgqFdhwWOUO6N8lTXjnMsK6cZslpQF8ReP8qPLHyCYa0
-	 PmEyak9/lQTRED8zqgV2urPd7kQoaeuScTttsTicBoDFa3I3v22hiumlvOJrPOqVY0
-	 xR0rooCqecH5oCg/L4Vr3Cg+zYP8iGFj8sWARaCwo/P4V875Up0oAlLjF9Irptsevo
-	 rYYjuESDJPGGrWj0LqmNLdWBywEBJSQ8N9VHpsRm79S1QT0PhAA+V0fcTxicGrJsRD
-	 EkRffNs2umwKFUXtDt+b6BDX09gXPhAJXJiAk7NJGDVdVAjFkWgNSxa6Q3w9mfUS36
-	 HJQrzzyG0vy1w==
-Date: Sun, 14 Apr 2024 21:58:37 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: qiang4.zhang@linux.intel.com
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, Qiang Zhang <qiang4.zhang@intel.com>,
- Stable@vger.kernel.org
-Subject: Re: [PATCH v3] bootconfig: use memblock_free_late to free xbc
- memory to buddy
-Message-Id: <20240414215837.de2ce64370c2a2abaeafe46b@kernel.org>
-In-Reply-To: <20240414114944.1012359-1-qiang4.zhang@linux.intel.com>
-References: <20240414114944.1012359-1-qiang4.zhang@linux.intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713099527; c=relaxed/simple;
+	bh=sMxhbU6dM25nPdtxdNoi8c5Ojz30tMNpbM+n7PY3KlU=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=Fdzny8nHP+CH4Eo3Z48cnEs0nGkMm48yAjq+3C3CpIa2IMC8pvBU/8VV9bX/0cRINHS3tfvftbUFKWE9bUR7tkVxtz6gXjaF6nfEIIDGPBrEerQks5l4XFX6aXF94E5sBYjwA526k0mDjdkefdeq/G2V9ok0/B4DhRPH0rsJXmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=BhDRRFxR; arc=none smtp.client-ip=203.205.221.239
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1713099520; bh=Aa+9sN7eYARka6Ggy8Em6MwZUzzHlAIQfLmCZvygc9Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=BhDRRFxRwwd11ASjYIs0cD4xfWvo6C0Pp1iujVn9gSI722b/vyZnzyMrzRO4/WR93
+	 0Cnh+bPtiCPmnLKFKOceeRvoqV3rWScHErgvlsw5c3E3DFYQhsYJJuTjlBgALbaC6Q
+	 FKqHrafLb9Fy8I3LQxauJl7IMUlnwRlLmDYx9QaM=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc6-0.qq.com (NewEsmtp) with SMTP
+	id EA69D298; Sun, 14 Apr 2024 20:58:38 +0800
+X-QQ-mid: xmsmtpt1713099518tqpcya88w
+Message-ID: <tencent_79835DC09931CFA58DEC258D8DA51200DD07@qq.com>
+X-QQ-XMAILINFO: NSTsyPg8kQQYPafq0PxPC8aD8BvsfSvExymQI6nfTgUQ3m5giO63IXER+Zudqw
+	 6QUTyIHSks2UgWx4pEvYwykZzHGkKnoVVjWY/Mk8ZY6r+o71UtEbrI/+amyMoGUw94+ARuvwbAFH
+	 pdNU6vtNz9G0OyZFY9jtE27MqDt/+9B+R00dGIEfOLiFLIbBQETqMBC3bqF/Zh3naRzmkHOt17qj
+	 ik53NfVlekj8VugvAx5k8nPKTVF9eZl0Ue4fPAO1I/hp/XRupEOT7TJFBk1bB+WM69WsYUsb6BtJ
+	 zBcXUnMS0gWLNsWatjjx6+ujNdLEnfpBY9mD27z9RNlnZdoM+2ySQNVx85GO4Wd6RYRQeKryz/og
+	 JvaEcOcO3EYK+pcGJhKBOnxSZyia9VZIN7oy9HsMF6ogvEqCbwmTjiRC/c7TblzqSkvzLZYXBRY8
+	 wdjgJmGFz8u8t7+ETS6kn9ch0EeEoWz6LD+adEIBV6xoq6MlW5WiACVtE0ru4Fr5WAV9jh9ACSbL
+	 eTUOFCiCNbyFXW+qtzqH14OnSchxxoy9fmOEgATh+QidJ6FD8Mw+rns2b2Xtpakwv3W5D3lmWq05
+	 qHjQA8Y0DCYxXnYHCq5ZscgfTSxNieG58Ihh3FGZLCEGle+BAxblyLXb4KoYVPdHUIax0DrJSzQk
+	 2h/qCcQkSkqhCsCqNATcxABpebOzH4M6UUa1H++voLBdiaugcOcCQ7/V7j7vnaFyAn82rZ4Il9Xl
+	 w3p5hPXPT5IVD5rL67/NJZNJVKsVgIHbC7N2y3WvMN39qCzBACr4C/7LeTSGaGkxbsQUyZdXFGWr
+	 0hsMOwzs725RY9HpXus2yVvlXNrhTvW7vWKprvd+dciAb7A3TXSDJ1jOCVAHrCPcgR1ugEgyk8Mn
+	 s1FQx15024CJCw3Q+flAr+jnNweED+j2QpwJTYSkQjYSkSR5Fy3rAtuw/nbxl1x9UrCKpnToTHEM
+	 Z27EUtPgY=
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+d0f14b2d5a3d1587fbe7@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [pvrusb2?] KASAN: slab-use-after-free Read in pvr2_context_set_notify (2)
+Date: Sun, 14 Apr 2024 20:58:39 +0800
+X-OQ-MSGID: <20240414125838.3707504-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000bb465d061606e827@google.com>
+References: <000000000000bb465d061606e827@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sun, 14 Apr 2024 19:49:45 +0800
-qiang4.zhang@linux.intel.com wrote:
+please test uaf in pvr2_context_set_notify
 
-> From: Qiang Zhang <qiang4.zhang@intel.com>
-> 
-> On the time to free xbc memory in xbc_exit(), memblock may has handed
-> over memory to buddy allocator. So it doesn't make sense to free memory
-> back to memblock. memblock_free() called by xbc_exit() even causes UAF bugs
-> on architectures with CONFIG_ARCH_KEEP_MEMBLOCK disabled like x86.
-> Following KASAN logs shows this case.
-> 
-> This patch fixes the xbc memory free problem by calling memblock_free()
-> in early xbc init error rewind path and calling memblock_free_late() in
-> xbc exit path to free memory to buddy allocator.
-> 
-> [    9.410890] ==================================================================
-> [    9.418962] BUG: KASAN: use-after-free in memblock_isolate_range+0x12d/0x260
-> [    9.426850] Read of size 8 at addr ffff88845dd30000 by task swapper/0/1
-> 
-> [    9.435901] CPU: 9 PID: 1 Comm: swapper/0 Tainted: G     U             6.9.0-rc3-00208-g586b5dfb51b9 #5
-> [    9.446403] Hardware name: Intel Corporation RPLP LP5 (CPU:RaptorLake)/RPLP LP5 (ID:13), BIOS IRPPN02.01.01.00.00.19.015.D-00000000 Dec 28 2023
-> [    9.460789] Call Trace:
-> [    9.463518]  <TASK>
-> [    9.465859]  dump_stack_lvl+0x53/0x70
-> [    9.469949]  print_report+0xce/0x610
-> [    9.473944]  ? __virt_addr_valid+0xf5/0x1b0
-> [    9.478619]  ? memblock_isolate_range+0x12d/0x260
-> [    9.483877]  kasan_report+0xc6/0x100
-> [    9.487870]  ? memblock_isolate_range+0x12d/0x260
-> [    9.493125]  memblock_isolate_range+0x12d/0x260
-> [    9.498187]  memblock_phys_free+0xb4/0x160
-> [    9.502762]  ? __pfx_memblock_phys_free+0x10/0x10
-> [    9.508021]  ? mutex_unlock+0x7e/0xd0
-> [    9.512111]  ? __pfx_mutex_unlock+0x10/0x10
-> [    9.516786]  ? kernel_init_freeable+0x2d4/0x430
-> [    9.521850]  ? __pfx_kernel_init+0x10/0x10
-> [    9.526426]  xbc_exit+0x17/0x70
-> [    9.529935]  kernel_init+0x38/0x1e0
-> [    9.533829]  ? _raw_spin_unlock_irq+0xd/0x30
-> [    9.538601]  ret_from_fork+0x2c/0x50
-> [    9.542596]  ? __pfx_kernel_init+0x10/0x10
-> [    9.547170]  ret_from_fork_asm+0x1a/0x30
-> [    9.551552]  </TASK>
-> 
-> [    9.555649] The buggy address belongs to the physical page:
-> [    9.561875] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x45dd30
-> [    9.570821] flags: 0x200000000000000(node=0|zone=2)
-> [    9.576271] page_type: 0xffffffff()
-> [    9.580167] raw: 0200000000000000 ffffea0011774c48 ffffea0012ba1848 0000000000000000
-> [    9.588823] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-> [    9.597476] page dumped because: kasan: bad access detected
-> 
-> [    9.605362] Memory state around the buggy address:
-> [    9.610714]  ffff88845dd2ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [    9.618786]  ffff88845dd2ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [    9.626857] >ffff88845dd30000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> [    9.634930]                    ^
-> [    9.638534]  ffff88845dd30080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> [    9.646605]  ffff88845dd30100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> [    9.654675] ==================================================================
-> 
-> Cc: Stable@vger.kernel.org
-> Signed-off-by: Qiang Zhang <qiang4.zhang@intel.com>
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git a788e53c05ae
 
-Looks good to me.
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+index 1764674de98b..e93bca93ce4c 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
+@@ -267,9 +267,9 @@ static void pvr2_context_exit(struct pvr2_context *mp)
+ void pvr2_context_disconnect(struct pvr2_context *mp)
+ {
+ 	pvr2_hdw_disconnect(mp->hdw);
+-	mp->disconnect_flag = !0;
+ 	if (!pvr2_context_shutok())
+ 		pvr2_context_notify(mp);
++	mp->disconnect_flag = !0;
+ }
+ 
+ 
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks!
-
-> ---
-> v3:
-> - add NULL pointer check in memblock_free_late() path.
-> 
-> v2:
-> - add an early flag in xbc_free_mem() to free memory back to memblock in
->   xbc_init error path or put memory to buddy allocator in normal xbc_exit.
-> ---
->  include/linux/bootconfig.h |  7 ++++++-
->  lib/bootconfig.c           | 19 +++++++++++--------
->  2 files changed, 17 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-> index e5ee2c694401..3f4b4ac527ca 100644
-> --- a/include/linux/bootconfig.h
-> +++ b/include/linux/bootconfig.h
-> @@ -288,7 +288,12 @@ int __init xbc_init(const char *buf, size_t size, const char **emsg, int *epos);
->  int __init xbc_get_info(int *node_size, size_t *data_size);
->  
->  /* XBC cleanup data structures */
-> -void __init xbc_exit(void);
-> +void __init _xbc_exit(bool early);
-> +
-> +static inline void xbc_exit(void)
-> +{
-> +	_xbc_exit(false);
-> +}
->  
->  /* XBC embedded bootconfig data in kernel */
->  #ifdef CONFIG_BOOT_CONFIG_EMBED
-> diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-> index c59d26068a64..8841554432d5 100644
-> --- a/lib/bootconfig.c
-> +++ b/lib/bootconfig.c
-> @@ -61,9 +61,12 @@ static inline void * __init xbc_alloc_mem(size_t size)
->  	return memblock_alloc(size, SMP_CACHE_BYTES);
->  }
->  
-> -static inline void __init xbc_free_mem(void *addr, size_t size)
-> +static inline void __init xbc_free_mem(void *addr, size_t size, bool early)
->  {
-> -	memblock_free(addr, size);
-> +	if (early)
-> +		memblock_free(addr, size);
-> +	else if (addr)
-> +		memblock_free_late(__pa(addr), size);
->  }
->  
->  #else /* !__KERNEL__ */
-> @@ -73,7 +76,7 @@ static inline void *xbc_alloc_mem(size_t size)
->  	return malloc(size);
->  }
->  
-> -static inline void xbc_free_mem(void *addr, size_t size)
-> +static inline void xbc_free_mem(void *addr, size_t size, bool early)
->  {
->  	free(addr);
->  }
-> @@ -904,13 +907,13 @@ static int __init xbc_parse_tree(void)
->   * If you need to reuse xbc_init() with new boot config, you can
->   * use this.
->   */
-> -void __init xbc_exit(void)
-> +void __init _xbc_exit(bool early)
->  {
-> -	xbc_free_mem(xbc_data, xbc_data_size);
-> +	xbc_free_mem(xbc_data, xbc_data_size, early);
->  	xbc_data = NULL;
->  	xbc_data_size = 0;
->  	xbc_node_num = 0;
-> -	xbc_free_mem(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
-> +	xbc_free_mem(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX, early);
->  	xbc_nodes = NULL;
->  	brace_index = 0;
->  }
-> @@ -963,7 +966,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
->  	if (!xbc_nodes) {
->  		if (emsg)
->  			*emsg = "Failed to allocate bootconfig nodes";
-> -		xbc_exit();
-> +		_xbc_exit(true);
->  		return -ENOMEM;
->  	}
->  	memset(xbc_nodes, 0, sizeof(struct xbc_node) * XBC_NODE_MAX);
-> @@ -977,7 +980,7 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
->  			*epos = xbc_err_pos;
->  		if (emsg)
->  			*emsg = xbc_err_msg;
-> -		xbc_exit();
-> +		_xbc_exit(true);
->  	} else
->  		ret = xbc_node_num;
->  
-> -- 
-> 2.39.2
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
