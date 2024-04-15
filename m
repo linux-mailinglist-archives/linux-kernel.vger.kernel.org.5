@@ -1,174 +1,220 @@
-Return-Path: <linux-kernel+bounces-144910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 392FA8A4C84
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:28:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BADA8A4CA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:37:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8563BB237E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:28:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 032EC1F21770
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A8B59B40;
-	Mon, 15 Apr 2024 10:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE725C600;
+	Mon, 15 Apr 2024 10:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="O0LCBjKZ"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2087.outbound.protection.outlook.com [40.107.7.87])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fikHU574"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0BB58AD1;
-	Mon, 15 Apr 2024 10:28:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713176909; cv=fail; b=OBTYLbHlawoOPpLzkZKaGICGq7LkA7pQDRvYftzthJLWjPryCgmyPvDc/FVn95PuBorv4rOF+alrF5hjjI1v7RPf0SPeYOOoJBPAeVLAxQib2mTU6d+bbJhZtKOWuh+OqTG+gwkZAMMilMrLVbewBEOT6HOCA1yxArhqrjj7qvY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713176909; c=relaxed/simple;
-	bh=wEKbzjGVLq1Q/4LaOSsV588Gx4OL/cLpZ0eZ5B/2MyE=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=jcGPQJOjSglbZgZgB4dUfo17u6n+HW53P455zP+Q53of1a8ypzRXR/HKlyc3YkfHwN1cm7i4eQr6kQ1tTehlP6X/keVGtMlaEgVLrjloWMJD25Bp+Wd6UFSlQ8lfz6PApsoM6cFBG6AaQCNLpkcC52sWBSTmwDx7OGaa3Lv+Lhs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=O0LCBjKZ; arc=fail smtp.client-ip=40.107.7.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TBDcNELDNy2eXyq1hCXdzg/e4qSAMstiX4onUTximEouysTOfgoBTfRO74mG9HuS+9pig5kxTNG1vGcY7VjBDRVfBJE9fBy8sgLs5/Ll8gm929odGmiYEzVCmDAzI5Oep4B7o8zaKBaBVT8wRFBYuqo7uhnbEPf5zzaiATAYSuY0MoPO4RwfOqhJHar6ZeFRmiWMzuOjZ5qhrvEqC57PgQZ9zAyLmXFqu9ee1k4+xPT2WmkQDni3eoS91aRwZD7/u1s0V8MuknilNyYo/LKehu3ijKUSIS38+PadhItoh2rDbp1y6LciiLfKtlMKvL1OfIszR0HhqLDiDT7dqv88Vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DS8xZlJ0aMm73UmUIvpcSW9ZGy5YuyyuSPsRl/3thiQ=;
- b=bdw7xkJ5J0PVaYmAWCUJD5dbzy7XtyORJtx1vWBmM7kQSY8eO5B7Bue38vD6m6epn2HDmfzYFO5WqtorJicsEP2CponhGQHGBtBPvHh4MNRQw05FLdbp+I9AhKiIUN6Psuo97wS26aIF4jSdha7yxL/NG54oqFwzLAiie7mMAJMLpE/tS8enojCz+82Ct+I0IGJNO8wWseCRXiCyDcdP14+Z9q8Al1EbbBLlocENw5+jCI9YLGallgqcQHZ8xBtXV6iefJqDEip37xWOvI1bPQpOFolMmIy+BhFP23Pt5EZHKWtg8N4H5j9R6dK09JYmeLxvAs2w6J199nBBjYjXPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DS8xZlJ0aMm73UmUIvpcSW9ZGy5YuyyuSPsRl/3thiQ=;
- b=O0LCBjKZCFYnV6v42vl2grS5qr41ABXuqIOweSwaQLTu6YJPAd1ZOD6wv5V/H7P+Ko9ah20/JpzHD5Z7EPH90wWlHpBDIPZr9Xx3oeqHa76iOuQD0Pme06SxYaHQiHrnC3LO1+4B6rG8WzTgy0Xw6A+5e00RLOPLU+qykG8LuEg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB7895.eurprd04.prod.outlook.com (2603:10a6:20b:2a3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 10:28:23 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7452.041; Mon, 15 Apr 2024
- 10:28:23 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de
-Cc: kernel@pengutronix.de,
-	festevam@gmail.com,
-	xiaoning.wang@nxp.com,
-	linux-imx@nxp.com,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] dt-bindings: net: nxp,dwmac-imx: allow nvmem cells property
-Date: Mon, 15 Apr 2024 18:36:21 +0800
-Message-Id: <20240415103621.1644735-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0151.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::31) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B585B666
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713177435; cv=none; b=P4VsEJG4VWR1NcAN9AQyWSviW55WdaJz9q+k1CTIbl9nLjlXRxGadgFPaZJU6x2bOzdmwxAdrC9V/TAfpkIHSNjDoh8zzCYf2ZR32nE/HO5Nd3O+wRSpKKdh1MsOcRhn+qMQ0Waf3ltMw8sQ5IN+wkl6744U34H/keuP/rkDjoE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713177435; c=relaxed/simple;
+	bh=GpuCppNdjgHd4PxtxjqQ7/SR447EOkzCMuzdv5ywiIg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AIRwJtkH5tt5EE7DRKb37dJc+Un7CN7fK++vL6ZZu2RVH8JjJ1Va82PJw9vtFo9Hajjc4IBv+RgXfpANJcwCrA7kRpyBlleMcArsy0lxFM/Of6WhwxOczk5Gl/EeS2n1mMz1yfKMX3aAurTQIFEFZkvJAIYl1psnMNrLPoggm+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fikHU574; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FAPRoa018171;
+	Mon, 15 Apr 2024 10:36:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : reply-to : from :
+ in-reply-to : content-type : content-transfer-encoding; s=pp1;
+ bh=EfpN42utemMCNxxgWsct835ziKCBcRAU7y23Kj9YijA=;
+ b=fikHU574aI7/uJdBlHJiN3Ub83cbHl9gRFGwrzMG+XigoopwrJHMwNhVx6sY4Fz1qkD4
+ cvHJrnDG8dFd4oik4waP8UvULh8xPfGHuzY2RiVmp0n/XdaN+kCnGnR1NcpXfHlb3yGv
+ ypLs+Dse03731+5bPh7cVRGgeuW2I6XZbmXP8YAc6axp00yN/M4OMpiUjefC3TK5lFxi
+ ufkV/vPg8F7MQvOYz0KS6LlqFltBZ+YscmG9MBk1hQgbjhVnPIqICwZin9PuWXnCPWn9
+ AEqWWK6/1D6GmvYdT+10100Ou2YMUMdKYNUqDD8sOHeRQ1Rj9kNWljTMIRW/zuv8xfz8 nA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xgyg98cmw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 10:36:47 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43FAYeDi032733;
+	Mon, 15 Apr 2024 10:36:46 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xgyg98cmq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 10:36:46 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43F7bXvq011164;
+	Mon, 15 Apr 2024 10:36:45 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg7326v8b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 10:36:45 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43FAahZ146268876
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 10:36:45 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B772E5810A;
+	Mon, 15 Apr 2024 10:36:41 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 41F5758102;
+	Mon, 15 Apr 2024 10:36:37 +0000 (GMT)
+Received: from [9.204.206.228] (unknown [9.204.206.228])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 15 Apr 2024 10:36:36 +0000 (GMT)
+Message-ID: <e8cafcdf-a1aa-4ff1-b614-7c6fd4fa9716@linux.ibm.com>
+Date: Mon, 15 Apr 2024 16:06:35 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB7895:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7167738d-9bec-4a84-d52e-08dc5d36c705
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	P03QLMoBSwGVj8DWv6fyBVxWqwt0ndy4as24UsdV50DzEG+HQuka0ZVcFRH+6WkUzPLzpgt7VMcB7ntuJJ7RZC2XThJ/sq8Z3hbk/tap8OnjVDX3JKkx452VX3fmuzr1wp/IkuUuK6rWPcqVbCcnDHVMZtgWF8KolRkg4YJlNFoxMnLFfs/CyHO/QWNfEKtJqNqYPXff+/N+/GmhLt7LqMO90+9/EWPD1D9b2BCMPy5bRGb5rd+hf7LT3szJVpYeLV1hV722vHfrl/l7R3m1ckt/5x9Ds3+ciinktj6um+P0qlTWvNz56baXf1G/W8MJ6D1ndVHpSJDfj/1eAtAyf7+DzxOpo/ucR/V3ZIZ0QcYS/CWpr0Dq0E7bmrfpbFHdLZ8FFOBLvrO+/QpMmKntIcupfrm8I3svGWibDgSD7yfLnJRtoIjuukVuAWfVlgLvM4COaS7adoOo6ThqId1lF70EK7N2usX8AM0xd3AnMpJLDK2wmPlYdTHffY5k0upGaVQNs1vZfJ/uLKaAU9WaGV2408WZmMKWiLMovCJUm67LmkxNF/WqHB1waba4vVKb2guNq7Ls/byEFvLwhTDg+t6JRUWzcV2EnlReQF5sW3umnHXtzvEbBGo9B9zKJmz7LZw5QsM8kTyBqNivpOecdhCZPPpPUhlZpDI9kzjRfvtLm10mrYASibjkaxf/AcECirkjhgCkLV+xjveyA7IJp0imlZfhD+YgYOhOEQttj4g=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(52116005)(7416005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?5evUoYYQO5g0ISF1Zv2FVhzZF5slwvGGMYGG8v50nRw3Sc7C9p/GdLfKnQuT?=
- =?us-ascii?Q?37MWX0V3mVkhh3VKcLzE2eATnOiAtPvP9ah7n9+0LQj+TG2IiDfD9V5cP9Rn?=
- =?us-ascii?Q?GKqSFcwqC9Q+GvPDvQ7FuwLqc3hpHnGr8Big9f/Q8dHk0w69blgz2ArDc5IC?=
- =?us-ascii?Q?yjSkf57b0YhW+OwSdyyMZNzhMlDQnmZohKArz8dTkeSx4JXytf+mX3AKdiiZ?=
- =?us-ascii?Q?nw5bcg0vKlPrwalcMXMu12V7PiYcz5A5hP9EwshgRo0vvWQU985AlAZGsHwt?=
- =?us-ascii?Q?JYPI6nqkLjFJmAMEQASCu616lotI3/fHNaHGc2l621N5wUib94PJgZmtCMXR?=
- =?us-ascii?Q?eeNX+Mk/k91Z+qtZLjIOCUUVr9+C8ROzXvFCkXanAsvmNp5m3RlMySluR1qy?=
- =?us-ascii?Q?mok9tjQPV6GZFpAw/asFaVF39QQ1Qs+oMYY+JaokLIZLkXe7dgU4umW18Abq?=
- =?us-ascii?Q?Qp4h7BzcQ4BUvIqEazjMwgJKSNeJuQ/zpSXB59svxbOqr8Pb2F1nGfFm5LYd?=
- =?us-ascii?Q?seo/nVi/lv6d7TC7fHeElz2zTaBt8goPvz28mYTZWPyBb4kQ/BGeCSLrwlvS?=
- =?us-ascii?Q?NtFyTj7RBsKUb4vgAHG0fr0QWGxDYDZPaMh9R5hI/mr+6BGmwyk3T3fqZJBa?=
- =?us-ascii?Q?oN0a3U/8/BqSN8DIogDeRG0YvF26ywfB8GK7ZHoTproTwsRZ7C9+OWIWPMR/?=
- =?us-ascii?Q?mrjIuwGrpzbNZ8cN6674HuDmNj8D25LO7NmVIjOlIIM+wuAlt4RmH90z8kEQ?=
- =?us-ascii?Q?TR4UQ595fURZMRr3bb3XoQNxXI3P/5X+Xo2hx+nxmjI5YgMn96OUH2+oYion?=
- =?us-ascii?Q?uX+IMT6EDb7mbArCo2wUL1VEorBztjyelRnM3RuuVHX6NqxvQPDd2eIlL+Cb?=
- =?us-ascii?Q?3ACL4P632RThneXvEYYF6XoBRjUzwv0/Qh6zfb3OfeMb4Z4840l99vAiNZEv?=
- =?us-ascii?Q?FwkRh8pPAe7ut4ktor6rv2zKviea10o+Eckh0pwJE6ZgoJbcVRewbTd9h/eb?=
- =?us-ascii?Q?GEXOtvmPjUGU6i7WmQHnpaKr2MmMwM4ofl1neHxNSC3++j4HjQML8zwLPX0I?=
- =?us-ascii?Q?9vJTNZqOJE4fWZe/RxxDzPDNYCBrHrDQj7iPpPG8nNpiDy9Gov2m9O6nsY03?=
- =?us-ascii?Q?1wSYd0xzWv4fo9oaIoaao7AwUiA1122/a75WZsksJawDn1AAXq7gnTsxQVQB?=
- =?us-ascii?Q?QS7wBIlTHR61rCl/n3uXd1+U83SCRB9eQRzTlNsV5nY+PsdlwYDzXQF1CBOo?=
- =?us-ascii?Q?E4klw5D1zzPylO/JTZyKR9BeCcRomybOnadFzuzMP6KxuZKFyX75uXviTEu9?=
- =?us-ascii?Q?lVInU6ncWAn5mIpXjvm6TPBKRZxDb2rSItEmtTICJWJt2ZMUOmftzaJWaUNm?=
- =?us-ascii?Q?sH/OCxhEzpZ6blY78CY72fWlsszm7M9x9hLJQSpkR+4P4ngDoCpfk7OW4K4D?=
- =?us-ascii?Q?lUDPmHk3K8wgk/NFcgIIKM4ZJCdaypAcdI7Mey/oAW94VrRpNBaCJDx3K8au?=
- =?us-ascii?Q?NXn6T/t14ebkjLwXjUWHLPVWr6FgY4I7+/pGhTS/lcNuWM7nWFBTihLi+jSz?=
- =?us-ascii?Q?Z+ACPTOl1QpRgYaUJzkCDytoB8jPd2KVmGiQSYbd?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7167738d-9bec-4a84-d52e-08dc5d36c705
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 10:28:23.3066
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rpBAJiGPCqZxnbcs+SSz9/eVNNtMAmAfCvcAFClRBY2ochjZEjRWaXyLa0wBwKlvLmxJMx5mBNivWoC+SOMO4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7895
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
+ affinity changes
+Content-Language: en-US
+To: Ze Gao <zegao2021@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+References: <20240313085817.48892-1-zegao@tencent.com>
+ <65b1691d-8d90-4057-8ad0-da546a0ac8a1@linux.ibm.com>
+ <CAD8CoPDajt_EciU0x8G_BocajfaJrQ1FKLYkp_nLSfF9+9FJVw@mail.gmail.com>
+Reply-To: CAD8CoPDajt_EciU0x8G_BocajfaJrQ1FKLYkp_nLSfF9+9FJVw@mail.gmail.com
+From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+In-Reply-To: <CAD8CoPDajt_EciU0x8G_BocajfaJrQ1FKLYkp_nLSfF9+9FJVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: gDILjrd7M6Dme5LExKbokBNLJvz94ECt
+X-Proofpoint-GUID: KCrjA7QRXu_6C3KaUVffYq2HZohQwMf9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_08,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 suspectscore=0
+ bulkscore=0 adultscore=0 clxscore=1015 spamscore=0 mlxlogscore=999
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404150070
 
-From: Peng Fan <peng.fan@nxp.com>
+On 15/04/24 11:10, Ze Gao wrote:
+> On Sat, Apr 13, 2024 at 12:59 AM Madadi Vineeth Reddy
+> <vineethr@linux.ibm.com> wrote:
+>>
+>> Hi Ze Gao,
+>>
+>> On 13/03/24 14:28, Ze Gao wrote:
+>>> We observered select_idle_sibling() is likely to return the *target* cpu
+>>> early which is likely to be the previous cpu this task is running on even
+>>> when it's actually not within the affinity list newly set, from where after
+>>> we can only rely on select_fallback_rq() to choose one for us at its will
+>>> (the first valid mostly for now).
+>>>
+>>> However, the one chosen by select_fallback_rq() is highly likely not a
+>>> good enough candidate, sometimes it has to rely on load balancer to kick
+>>> in to place itself to a better cpu, which adds one or more unnecessary
+>>> migrations in no doubt. For example, this is what I get when I move task
+>>> 3964 to cpu 23-24 where cpu 23 has a cpu bound work pinned already:
+>>>
+>>>         swapper       0 [013]   959.791829: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=13 dest_cpu=23
+>>> kworker/24:2-mm    1014 [024]   959.806148: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=23 dest_cpu=24
+>>>
+>>
+>> I am able to reproduce this scenario of having an extra migration through load balance
+>> swapper       0 [031] 398764.057232: sched:sched_migrate_task: comm=loop pid=178687 prio=120 orig_cpu=31 dest_cpu=33
+>> ksoftirqd/0  13 [000] 398764.356138: sched:sched_migrate_task: comm=loop pid=178687 prio=120 orig_cpu=33 dest_cpu=34
+>>
+>> I wrote a simple c program that blocks for few seconds, meanwhile I taskset it to CPUs 33,34 while I already have a
+>> busy task running on CPU 33.
+>>
+>>> The thing is we can actually do better if we do checks early and take more
+>>> advantages of the *target* in select_idle_sibling(). That is, we continue
+>>> the idle cpu selection if *target* fails the test of cpumask_test_cpu(
+>>> *target*, p->cpus_ptr). By doing so, we are likely to pick a good candidate,
+>>> especially when the newly allowed cpu set shares some cpu resources with
+>>> *target*.
+>>>
+>>> And with this change, we clearly see the improvement when I move task 3964
+>>> to cpu 25-26 where cpu 25 has a cpu bound work pinned already.
+>>>
+>>>         swapper       0 [027]  4249.204658: sched:sched_migrate_task: comm=stress-ng-cpu pid=3964 prio=120 orig_cpu=27 dest_cpu=26
+>>
+>> But after applying this patch, The extra migration is still happening as CPU 33 is still chosen by try_to_wake_up.
+>>
+>> On placing some perf probes and testing,
+>>     migration/57     304 [057] 12216.988491:       sched:sched_migrate_task: comm=loop pid=11172 prio=120 orig_cpu=57 dest_cpu=4
+>>          swapper       0 [004] 12226.989065: probe:select_idle_sibling_L124: (c0000000001bafc0) i=-1 recent_used_cpu=-1 prev_aff=-1
+>>          swapper       0 [004] 12226.989071:       probe:select_fallback_rq: (c0000000001a2e38) cpu=4
+>>          swapper       0 [004] 12226.989074:       sched:sched_migrate_task: comm=loop pid=11172 prio=120 orig_cpu=4 dest_cpu=33
+>>          swapper       0 [000] 12227.007768:       sched:sched_migrate_task: comm=loop pid=11172 prio=120 orig_cpu=33 dest_cpu=34
+>>
+>> It is observed that, select_fallback_rq is still taken in this scenario as default target is returned at the end of select_idle_sibling
+>> which was CPU 4.
+> 
+> After second thoughts, it indeed could happen if CPU 4 shares nothing
+> with CPU 33(34),
+> for example, in different numa nodes.
+> 
+> IOW, it cannot benefit from select_idle_siblings() and has to rely on
+> select_fallback_rq
+> as the last resort. Just like what I said in the changelog, this patch
+> aims to improve rq
+> selection for cases where the newly allowed cpu set shares some cpu
+> resources with
+> the old cpu set.
 
-Allow nvmem-cells and nvmem-cell-names to get mac_address from onchip
-fuse.
+Right. In power 10(where I tested), LLC is smaller being at SMT4 small core
+level. So, I think there are less chances of affined CPUs to share resources
+with the old CPU set.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+I also ran schbench and hackbench just to make sure that there is no regression
+in powerpc. Luckily there is no regression.
 
-diff --git a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-index 4c01cae7c93a..87bc4416eadf 100644
---- a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-+++ b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
-@@ -66,6 +66,10 @@ properties:
-       Should be phandle/offset pair. The phandle to the syscon node which
-       encompases the GPR register, and the offset of the GPR register.
- 
-+  nvmem-cells: true
-+
-+  nvmem-cell-names: true
-+
-   snps,rmii_refclk_ext:
-     $ref: /schemas/types.yaml#/definitions/flag
-     description:
--- 
-2.37.1
+Tested-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+
+Thanks and Regards
+Madadi Vineeth Reddy
+
+> 
+> Sorry for not being able to recall all details immediately, since this
+> thread has been inactive
+> for a long while and receives no feedback from sched folks.
+> 
+> Best,
+> Ze
+> 
+>> In most of my testing, default target is returned at the end of the function due to the initial checks. It's possible that there would
+>> be cases where we can get optimal CPU before we reach end of the select_idle_sibling function but it would be interesting to know if the
+>> extra time spent in finding an optimal cpu have an impact instead of returning it earlier if in most of the times we are returning the
+>> default target at the end.
+>>
+>> Thanks and Regards
+>> Madadi Vineeth Reddy
+>>
+>>>
+>>> Note we do the same check for *prev* in select_idle_sibling() as well.
+>>>
+>>> Signed-off-by: Ze Gao <zegao@tencent.com>
+>>> ---
+>>
 
 
