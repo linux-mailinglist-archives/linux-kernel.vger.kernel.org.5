@@ -1,107 +1,144 @@
-Return-Path: <linux-kernel+bounces-144841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32DDE8A4B9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:37:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C75738A4BB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:38:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C94F81F21159
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:37:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33180B21E44
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D500495CC;
-	Mon, 15 Apr 2024 09:36:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFFB4EB34;
+	Mon, 15 Apr 2024 09:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L9gHXsUg"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WL3mGK96"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8EE44C61
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:36:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A54164F5F8;
+	Mon, 15 Apr 2024 09:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713173810; cv=none; b=WUsY4zspuS2X0bq7Etkhr5UpxAkCOVq8gphXK6+VK0ZLul1o67LZ2Cub0O7XsbS+e0avlJWJYNylDUIwNM5kW9oeYS4xc3C9fAN8K1qJBQR54Ix/VsWBG3xnvtCIrvJOSw9bsBPfrN3kvXvWDhXstuJ1CWMAofzQNS933KFk1Fo=
+	t=1713173842; cv=none; b=pbQqkCTcje0HWDFhbzBqrEPHQx2b6HeINO5CanXLwM1bWOq8S/AnvHg5BTywTq4oVZIuv+g0aAFyPgGm1ErLhRzdEm94U+Ul/rOa5tgZ6AN6nuIdm1RQ4edWwkTcKC3acHEGvQH6tctxRJuQeFS9aX2K8LCuDJ1qnv/+zJYjQHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713173810; c=relaxed/simple;
-	bh=sYu9CYOIKB5l1TfXf/Jun3yt971AqlY1Oe53lKaH+04=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AGcxPoSjAKKlJfr/ReerA5WrjdONoqsxNDTO6qLVIkU8pogwMaLVLYHJXxjf8oYn4htuWIrq2KmEBnXCRpHzrqwxZdWvQvh0z3s7mg7lF9ldvFxyrP6OEEcDNzIKAGvGJqCDFvbcKWGC90BLTzHKmZKfnjwi4yf3GfzB6tKADaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L9gHXsUg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713173808;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sYu9CYOIKB5l1TfXf/Jun3yt971AqlY1Oe53lKaH+04=;
-	b=L9gHXsUgUiY/YUql7ZLO8f4k/d1UkVAij95YEbgZNhpcj3LMJ3/BicD2kHljCqZnZjhqMc
-	qlQC0vzJzgVEASQeMrPB9sO79qN/nZZoHoaKVmWSN7rj7wLHkMuC3P2WgcDRMn2TSPL++r
-	C+p5RKmbyJZSYTHRLulLBure/p3/IgA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-606-oBTifECQPOeWkCFebJTwbA-1; Mon, 15 Apr 2024 05:36:46 -0400
-X-MC-Unique: oBTifECQPOeWkCFebJTwbA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343e00c8979so2311634f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:36:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713173805; x=1713778605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sYu9CYOIKB5l1TfXf/Jun3yt971AqlY1Oe53lKaH+04=;
-        b=AhipM7eepyhVQtxeVIxQdzVra3n5a9PKQNmGQbsSDivf7zGC1jrbb2fxw1/2E17WGI
-         PVEimN9l1JCH69Pnf6dleKu2WJK8ctBVlzdvC2X9aQpWLPcuW+gBLdtKMoiBYtx2tWBT
-         Os+xhbEt70lhDEYHR7+KDRu8UERL0c9IrbnfWl5NyWlyklbWPbFpnXVb6S9NWgRu4yjr
-         8M8W003qSC4JvQNWIBNH72mLeMnp7VUKlk5voZppPhtY/o2UVX6go/bp2A7mwIMcuVKh
-         6iC7Fh/B44jiIaS9bb6UpzS+Zk0aTEbrsfvY7t9bMk9wHLMaaRI+ZIpsh5qT3zisL8kJ
-         wp5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWXr8f+XdPd0sDIb/Hz33xsMKEtRwofOLyz8EoBTwLbXg2L8Ahuin/4rP/K0Xxv4EqwFaJVc3GXhJIoRkpKEITQTEhKLvgSr1Wp2/JC
-X-Gm-Message-State: AOJu0YyanCTgh5wYCV+EVO+uvMPUxnQLujZVqHV/qQV8xSaPF5gQzSBW
-	7vy0Rg2RdhenS4wuIQPwJiIYzxHBZZRiwXuWLA3Tr2ilWF8djugslZEVp/3ud7XUsgP9ZFUCeXs
-	wYghJXnA3Z88U+74f2iTI2ffSn4U6p/4CWtjyjxWteQxlrUlwsD/lLgcJnoORRo/gjQHVdTj3Lv
-	qo/srW0dErfevx61dPgWEVUXCBu1xmj5/vxZbd
-X-Received: by 2002:adf:fecf:0:b0:343:7116:815e with SMTP id q15-20020adffecf000000b003437116815emr6536021wrs.67.1713173805487;
-        Mon, 15 Apr 2024 02:36:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG9VyZ4cL1gMt5C3Rm1mGMeCbp0ev+ZnK3ISZDwjaOKhsE/5f1c9W3T/BTch/CNZkcUDNliLoFPQCPyAXOe+kI=
-X-Received: by 2002:adf:fecf:0:b0:343:7116:815e with SMTP id
- q15-20020adffecf000000b003437116815emr6536002wrs.67.1713173805166; Mon, 15
- Apr 2024 02:36:45 -0700 (PDT)
+	s=arc-20240116; t=1713173842; c=relaxed/simple;
+	bh=iWSAcKBzCT/GfR3CUsNAvXWE2GqvA4i8aFyoJ/HJFOE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q2lNb9r/DxUP93+ofQORD7YKXJKeRsJoE/3dIqBgHS5rsnw59UpuUAiIXByBpnqgJJMx/UNjjt62ks4laRvVeCLv82IiHSQ4JB5dYZ8nLxD0+Up5pAjZ/soNov6lJiecpVMDpS8YICWGIy2cEgqWycZTJy7RywZeMzDIt2RR+4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=WL3mGK96; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=gJURSN8ZhZs54MX6UPe8WS991KHmcU3CMSr/wsPBYas=; b=WL3mGK96b4dqocWg2WT6S+o3Lh
+	6R4hcBA6RfcHuQQK7isTyMyXCwDos8Q1HdHKBvnc80dazhTsMKZZh+HOA+2p3MytoMgm0z79fe1lO
+	6VNzmYAbfQ0K4rY/gTJDrpu5Cj+twK8P8H6r2xTaYF5wANkZ19gJAqZM8x7uwfcFkyoEWlipCNTWk
+	6fylSl1gmglon4eNg+zb/yC04zTO/2Lfq8d+LNZPMMi03er3jB/2uzdVHk4Db9ls69FN+sjSeErGv
+	ir1OIAWRPD8gvlVd9eQwbdsiTncbhidLvva928W/3FSV8BR+sXBV2NxpcV2Vc46i56RkcJA4zwnpr
+	gpLaCNRw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwIlk-0000000FOjV-0IDN;
+	Mon, 15 Apr 2024 09:36:56 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id B1DC030040C; Mon, 15 Apr 2024 11:36:55 +0200 (CEST)
+Date: Mon, 15 Apr 2024 11:36:55 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 07/15] mm/execmem, arch: convert remaining overrides
+ of module_alloc to execmem
+Message-ID: <20240415093655.GH40213@noisy.programming.kicks-ass.net>
+References: <20240411160051.2093261-1-rppt@kernel.org>
+ <20240411160051.2093261-8-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229025759.1187910-1-stevensd@google.com> <20240229025759.1187910-9-stevensd@google.com>
- <15865985-4688-4b7e-9f2d-89803adb8f5b@collabora.com> <CAD=HUj72-0hkmsyGXj4+qiGkT5QZqskkPLbmuQPqjHaZofCbJQ@mail.gmail.com>
-In-Reply-To: <CAD=HUj72-0hkmsyGXj4+qiGkT5QZqskkPLbmuQPqjHaZofCbJQ@mail.gmail.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Mon, 15 Apr 2024 11:36:33 +0200
-Message-ID: <CABgObfbvkuCHT0sFFdJbGHBD7k=QbU9c=kA4xYE4j4S2Mu46ZA@mail.gmail.com>
-Subject: Re: [PATCH v11 8/8] KVM: x86/mmu: Handle non-refcounted pages
-To: David Stevens <stevensd@chromium.org>
-Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>, Sean Christopherson <seanjc@google.com>, 
-	Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
-	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411160051.2093261-8-rppt@kernel.org>
 
-On Mon, Apr 15, 2024 at 9:29=E2=80=AFAM David Stevens <stevensd@chromium.or=
-g> wrote:
-> Sean, is there any path towards getting this series merged, or is it
-> blocked on cleaning up the issues in KVM code raised by Christoph?
+On Thu, Apr 11, 2024 at 07:00:43PM +0300, Mike Rapoport wrote:
 
-I think after discussing that we can proceed. The series is making
-things _more_ consistent in not using refcounts at all for the
-secondary page tables, and Sean even had ideas on how to avoid the
-difference between 32- and 64-bit versions.
+> +static struct execmem_info execmem_info __ro_after_init = {
+> +	.ranges = {
+> +		[EXECMEM_DEFAULT] = {
+> +			.flags = EXECMEM_KASAN_SHADOW,
+> +			.alignment = MODULE_ALIGN,
+> +		},
+> +	},
+> +};
+>  
+> +struct execmem_info __init *execmem_arch_setup(void)
+>  {
+> +	unsigned long start, offset = 0;
+>  
+> +	if (kaslr_enabled())
+> +		offset = get_random_u32_inclusive(1, 1024) * PAGE_SIZE;
+>  
+> +	start = MODULES_VADDR + offset;
+> +	execmem_info.ranges[EXECMEM_DEFAULT].start = start;
+> +	execmem_info.ranges[EXECMEM_DEFAULT].end = MODULES_END;
+> +	execmem_info.ranges[EXECMEM_DEFAULT].pgprot = PAGE_KERNEL;
+>  
+> +	return &execmem_info;
+>  }
 
-Paolo
+struct execmem_info __init *execmem_arch_setup(void)
+{
+	unsigned long offset = 0;
 
+	if (kaslr_enabled())
+		offset = get_random_u32_inclusive(1, 1024) * PAGE_SIZE;
+
+	execmem_info = (struct execmem_info){
+		.ranges = {
+			[EXECMEM_DEFAULT] = {
+				.start     = MODULES_VADDR + offset,
+				.end       = MODULES_END,
+				.pgprot    = PAGE_KERNEL,
+				.flags     = EXECMEM_KASAN_SHADOW,
+				.alignment = 1,
+			},
+		},
+	};
+
+	return &execmem_info;
+}
 
