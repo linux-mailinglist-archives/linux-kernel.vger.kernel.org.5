@@ -1,128 +1,142 @@
-Return-Path: <linux-kernel+bounces-145355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FE878A53BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:30:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 879E28A540C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:33:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7202B1C2109A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:30:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1505AB23615
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:33:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BF647FBA6;
-	Mon, 15 Apr 2024 14:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAE378C74;
+	Mon, 15 Apr 2024 14:30:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4HBXHyS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b51JChLb"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A5A78C66
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5660B78676
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:30:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713191315; cv=none; b=sIAsLrxy+EnZaiw9ON29hUgjNwR4UngUnwSoHPl4GLX3mOfuCIasUgTbNQxQlcplUUa4GJL9Xy8O9MDVFyE4E7DJZY03fsIxIJHy2hsKgCmWCvjA8j1EwwG1hun/GXOHKy2FjpNfmKL6dw5BgkErXrErXuLrj/ak50gcHA9Om/0=
+	t=1713191434; cv=none; b=tVyL4uHNMyQdJAXvYKLh/KpEwCE4OcN/8SzjDgs7Z/BLsllXZKIpZ92OY1g1UVMMA+t90AnvVu2D5oYikHITDobcWQOZMxhEXqR0JOHU9YMUNhGrRrDE5zsYAEECc3gD/ABAULz+idBWItPzzhWqrWmgrHXbTJMqALY4yIHmKxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713191315; c=relaxed/simple;
-	bh=1Lhv9gLnAifLjYx3xN6adWho72EkGtzNAUVNZL+CwHk=;
+	s=arc-20240116; t=1713191434; c=relaxed/simple;
+	bh=w0eyMKWTZscv6UqDhMkbwu1ZzxZ2alXxQgYF7I9Bdck=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MuPuVGc5Tr0uEKRcWvTl0gIH+ergnCrmk5q2q7XdFFExuXjbMikfn+w7hPn5gTB8b0N5EQTq7uaaIiowPvWLetNNdCOlo/IM/xfJjTt2Q2/2MKQQl2F0ZQi59GLIhdT9l413+pGyHE3wCQKTzk6Z4djwepNFtXC1FtOqSbp+GjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4HBXHyS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F3C7C2BD10;
-	Mon, 15 Apr 2024 14:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713191315;
-	bh=1Lhv9gLnAifLjYx3xN6adWho72EkGtzNAUVNZL+CwHk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=D4HBXHySCrkcr2Q1hwU29Jas5uax9lJqJeQnF9N0zydMyaB6+dbYy7RMgbuCiuWEm
-	 6Ej3YRkCLBhkYj+f3eYOpbnDEQxEGw5lxee4IpQGPc2XHVQv9iIElkH92kLjpkTleI
-	 uRR/ntEQc6x0jiA68DPCywOWHvt6i1Vo1jBqappSEsYLywFaMbKyRNqOcyURcr/ncf
-	 3Ohm0GuJ4fp6QBkyGl/AggTpUxZCtQEh31VTo+ZFfsYbAma3/fJ69zkyleRuEmw862
-	 QWnmqfzb1KDj6AeUtB7W02pvKGky47M4Tb+yjdXx1vuljxwlRRmMEebrlEvtp4gZKH
-	 Eg1EPfd5H35ow==
-Date: Mon, 15 Apr 2024 16:28:28 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Ilya Denisyev <dev@elkcl.ru>
-Cc: David Woodhouse <dwmw2@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>, 
-	Fabian Frederick <fabf@skynet.be>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Wedson Almeida Filho <walmeida@microsoft.com>, KaiGai Kohei <kaigai@ak.jp.nec.com>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] jffs2: prevent xattr node from overflowing the eraseblock
-Message-ID: <20240415-anspielen-gelyncht-d2f0efd6569e@brauner>
-References: <20240412155357.237803-1-dev@elkcl.ru>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e4rI293/o49lD8Yy8hkwLMYJvKA9DN9sM4RGclQWxlPYM9SBlRFr0jVrm9qTnAHsnFqN1eKvNUNTR6I3lltbEKz813IFz9jgumgB3HcMEeY4b0TaXrnwa0w0Sp+wCkitRT7nJLz6/8UiElOAIVx/Tk1Sa35WLScZ9ElDMc870RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b51JChLb; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed054f282aso2231637b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:30:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713191432; x=1713796232; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OxkgnUs+kBMGiJuwP3wApGOJHNIKCPg1iHNxfXmCeQ8=;
+        b=b51JChLblAplOCpHPCa8aFKsxcMYksSLpP3NNgs+5FofdUnoS69edN68R6nX5FTGX2
+         SARdyjpMBxPSWbK9VXixmZL+U3DSlJcsrMX5/mPvWGGNSxu23uR+cSQiyXcClx7nNXFh
+         //OQ9SoTyMlwzYSj/DCAPR46zFBdHZHXZQpef6gRfGGQbe33khHRghODpjc3cBGWshtu
+         AJ8pBemlkcPBxrN+YShrnSExk5NA8VWrimGyNqR2TaVXevi6ujfiaLdNFV+hPQCwYnct
+         WeOv+MZ5+9e0fX+Wl4cfJq40nZFPPcRRIy1xqWKLaiUbGliubm1u98lPJBtACy5acV7C
+         pjug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713191432; x=1713796232;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OxkgnUs+kBMGiJuwP3wApGOJHNIKCPg1iHNxfXmCeQ8=;
+        b=bGg0ajgEA9YuK5ms63BaSHitJV8zyIq+7c2gitd6alIObljIEqReW58yxZNpKHKox0
+         cd69eEcrzfLuaiwE+DUzx1tISaIa8hqhSvszPHVWALXTMMG0LATXap+TI+U4eiT0brO0
+         PrCifmwPTuhPf/6zOWzKT3aK5sgzWzlHF4rTsshdZkSVVB/te0mqkav4hZTUHUk3i5AU
+         kNWWJYPO6T97g7dkYpn+ydlktKWdUXBbzdwpkDZOKmbs/BZ8mgmWvXSKkqUexqO2xfLN
+         tb5Qwk3vygh7V3BjPUcH9jeHk8ehdN/1JbDJuxEm/wGh/LjW7nw2AqGOe4FBO6OpY/JJ
+         4iyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXVM+jkD8soW6bKMcHpqFLS4sYRwh68K+22Pnvin+rOlHoPbAiTMm38UMbM8qJ6bWh8vi1WCLApZT7HcRcL+lIaPWwqAR+vKI6bFtJN
+X-Gm-Message-State: AOJu0YykP7o85SNQdg8olf/WVr1cfRbxFaF5S8xXxXd3vpzRc44m0Vz9
+	IcqKxVN8KNFBp3cL9ZMCdHC3S2IdZe4unQ8fgX1ZkS8XJp0Tywpg
+X-Google-Smtp-Source: AGHT+IEqcAqUqtYh/KP0MdkXTBsdUaAq3tHbRzSrrLSYR8NONpFCq0LMvNa0Lrr1mOr33eSJRtzz6g==
+X-Received: by 2002:a05:6a00:22c2:b0:6ed:def7:6acb with SMTP id f2-20020a056a0022c200b006eddef76acbmr11091850pfj.14.1713191431494;
+        Mon, 15 Apr 2024 07:30:31 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id y21-20020aa78055000000b006ecfc3a5f2dsm7257230pfm.46.2024.04.15.07.30.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 07:30:31 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id B36CA1846908B; Mon, 15 Apr 2024 21:30:26 +0700 (WIB)
+Date: Mon, 15 Apr 2024 21:30:26 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com,
+	pekka.paalanen@collabora.com, thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH 1/3] drm: drm_blend.c: Add precision in
+ drm_rotation_simplify kernel doc
+Message-ID: <Zh06AuQ80Zm6LqXw@archie.me>
+References: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
+ <20240409-google-drm-doc-v1-1-033d55cc8250@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Nd2Ooc566udnyVEp"
+Content-Disposition: inline
+In-Reply-To: <20240409-google-drm-doc-v1-1-033d55cc8250@bootlin.com>
+
+
+--Nd2Ooc566udnyVEp
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240412155357.237803-1-dev@elkcl.ru>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 06:53:54PM +0300, Ilya Denisyev wrote:
-> Add a check to make sure that the requested xattr node size is no larger
-> than the eraseblock minus the cleanmarker.
-> 
-> Unlike the usual inode nodes, the xattr nodes aren't split into parts
-> and spread across multiple eraseblocks, which means that a xattr node
-> must not occupy more than one eraseblock. If the requested xattr value is
-> too large, the xattr node can spill onto the next eraseblock, overwriting
-> the nodes and causing errors such as:
-> 
-> jffs2: argh. node added in wrong place at 0x0000b050(2)
-> jffs2: nextblock 0x0000a000, expected at 0000b00c
-> jffs2: error: (823) do_verify_xattr_datum: node CRC failed at 0x01e050, 
-> read=0xfc892c93, calc=0x000000
-> jffs2: notice: (823) jffs2_get_inode_nodes: Node header CRC failed 
-> at 0x01e00c. {848f,2fc4,0fef511f,59a3d171}
-> jffs2: Node at 0x0000000c with length 0x00001044 would run over the 
-> end of the erase block
-> jffs2: Perhaps the file system was created with the wrong erase size?
-> jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found
-> at 0x00000010: 0x1044 instead
-> 
-> This breaks the filesystem and can lead to KASAN crashes such as:
-> 
-> BUG: KASAN: slab-out-of-bounds in jffs2_sum_add_kvec+0x125e/0x15d0
-> Read of size 4 at addr ffff88802c31e914 by task repro/830
-> CPU: 0 PID: 830 Comm: repro Not tainted 6.9.0-rc3+ #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-> BIOS Arch Linux 1.16.3-1-1 04/01/2014
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0xc6/0x120
->  print_report+0xc4/0x620
->  ? __virt_addr_valid+0x308/0x5b0
->  kasan_report+0xc1/0xf0
->  ? jffs2_sum_add_kvec+0x125e/0x15d0
->  ? jffs2_sum_add_kvec+0x125e/0x15d0
->  jffs2_sum_add_kvec+0x125e/0x15d0
->  jffs2_flash_direct_writev+0xa8/0xd0
->  jffs2_flash_writev+0x9c9/0xef0
->  ? __x64_sys_setxattr+0xc4/0x160
->  ? do_syscall_64+0x69/0x140
->  ? entry_SYSCALL_64_after_hwframe+0x76/0x7e
->  [...]
-> 
-> Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
-> 
-> Fixes: aa98d7cf59b5 ("[JFFS2][XATTR] XATTR support on JFFS2 (version. 5)")
-> Signed-off-by: Ilya Denisyev <dev@elkcl.ru>
-> ---
->  fs/jffs2/xattr.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-> index 00224f3a8d6e..9509b33f7675 100644
-> --- a/fs/jffs2/xattr.c
-> +++ b/fs/jffs2/xattr.c
-> @@ -1110,6 +1110,9 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
->  		return rc;
->  
->  	request = PAD(sizeof(struct jffs2_raw_xattr) + strlen(xname) + 1 + size);
-> +	if (request > c->sector_size - c->cleanmarker_size)
+On Tue, Apr 09, 2024 at 12:04:05PM +0200, Louis Chauvet wrote:
+> diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
+> index 6e74de833466..8d4b317eb9d7 100644
+> --- a/drivers/gpu/drm/drm_blend.c
+> +++ b/drivers/gpu/drm/drm_blend.c
+> @@ -321,6 +321,11 @@ EXPORT_SYMBOL(drm_plane_create_rotation_property);
+>   * transforms the hardware supports, this function may not
+>   * be able to produce a supported transform, so the caller should
+>   * check the result afterwards.
+> + *
+> + * If the rotation is not fully supported, this function will add a rota=
+tion of 180
+> + * (ROTATE_90 would become ROTATE_270) and add a reflection on X and Y.
+> + * The resulting transformation is the same (REFLECT_X | REFLECT_Y | ROT=
+ATE_180
+> + * is a no-op), but some unsupported flags are removed.
+>   */
+>  unsigned int drm_rotation_simplify(unsigned int rotation,
+>  				   unsigned int supported_rotations)
+>=20
 
-Can this overflow? I.e. can c->sector_size be smaller than c->cleanmarker_size?
+The wording LGTM, thanks!
+
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--Nd2Ooc566udnyVEp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh06AgAKCRD2uYlJVVFO
+o0l/AQD4NUxDF1Iqicep1DXiZGPvZhf1jPwez0pMPAHHpKhKxAEAwpEufXVwnGPh
+Pn+pnPga4IpjnDY7/8jcKtpeg+/lkwo=
+=CuX8
+-----END PGP SIGNATURE-----
+
+--Nd2Ooc566udnyVEp--
 
