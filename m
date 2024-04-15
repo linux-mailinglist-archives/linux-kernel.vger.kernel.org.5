@@ -1,169 +1,107 @@
-Return-Path: <linux-kernel+bounces-144871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51D148A4C07
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:55:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B39A8A4C09
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:56:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AB0C1C21D6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:55:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F29F1F22873
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BB547A7F;
-	Mon, 15 Apr 2024 09:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C17A47F4B;
+	Mon, 15 Apr 2024 09:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="gyjukiG6"
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="N2D1JOId"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F4043383AB;
-	Mon, 15 Apr 2024 09:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.152.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F8942047;
+	Mon, 15 Apr 2024 09:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713174949; cv=none; b=NVHp5LnH+4uvdOoVlJlyv51yZQ3qBM+jsuYTtIGRtqFEQumllY/xFfpp2blqcoi8u+zGUF5mAwKPxK48q1ym9c8AGjq7ftfko/0+xvZGszm55XQ5V4p94rrOGOlz+UNNlesjVbAN7RHSe6H/V1udyAAaVHDympMbDbNwoNYjpoc=
+	t=1713174989; cv=none; b=G8noFHuo17pewF/RfHtQ8pE6lsJcgNHlSo1sXBJRgnMTEnqnNmMeByktSimKOeTc9B83qa6L0B61U+CI1ejs2WHjJwFRGqiMFj44cXqXuUWbCHaaXspd+FvAyCJmFaSh0VGgBjtAp1L5h29kSjWT947dsS6CL8Ya9ha40F9ha6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713174949; c=relaxed/simple;
-	bh=wgnWob0U0it2pt49v4HUo2NpgVz49OnBg25dDc4SfVo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WDRPZoF1anvNwvrYba+CBrL39vu/pKR2XmFn5lvj/LXJjOO4fnswtpPweJHo9w6g0Z2a/Qjj4rCicnSuC8qmcS0MDXBSfxJn5gHbOfUCwBgr90c9+tTGoMsSqgZpM/yA+583QSrTyryK7zgXQow4HyyJ0fP4WAlG35lQfC3DXyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=gyjukiG6; arc=none smtp.client-ip=67.231.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43F5v4hC010751;
-	Mon, 15 Apr 2024 04:55:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=dD2f35q/bj7/4mecENnnmx6W7Luy5F3/B8pXNDHxuXc=; b=
-	gyjukiG65Lp60cgWIK1Pv1R16O+wj4+jepOwsjp5chQr8QisKAAUbH1RdULUIA/I
-	GM1q9WIzPgICAWNMjyRafpHIRl2yyo6QStZl/EqmD+rsaLXOeU9SCBBTR2rUddJw
-	/q95XJUvpxAhx40ACMSSajaZv0IuPLnzQoEVAuw7QcAGltjQV6wwY/EFo/WI5jgX
-	Pdd7zpO2koPB1xfR/X10hE/oUgV7txmdOEP+y5mKfFd7XSZOXVaIBhqRsEOW+/ZA
-	6bWYxleR9xBk0JNrDsRAzLMEZfWboQG9CJa3XqZCFbDnuiOy6T1OD5wHcV86I6KT
-	ZjNUOF2h26SWTp1h3byFaQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3xfpfhsc61-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 04:55:36 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
- 2024 10:55:34 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.9 via Frontend Transport; Mon, 15 Apr 2024 10:55:34 +0100
-Received: from [198.61.64.201] (LONN2DGDQ73.ad.cirrus.com [198.61.64.201])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 2E119820244;
-	Mon, 15 Apr 2024 09:55:34 +0000 (UTC)
-Message-ID: <335eb6d4-424e-43e5-8990-3d87ad579e7c@opensource.cirrus.com>
-Date: Mon, 15 Apr 2024 10:55:33 +0100
+	s=arc-20240116; t=1713174989; c=relaxed/simple;
+	bh=w9nJd1Yyg629O9/LcumIOIpNJlnLkq60aaUGSc5j7wY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iCTScIiXx5Epk/GVulwu6FqtKpHBFYNzkL4CEsovZBkVF3GqlTqXv13IMbZUZ5Nc5LzYmgJlsCcLBy7HVZs8sU+QBsW9aVqQEdnEO8XsLU+0Loh0Wh5WCJyhsrkzV7q6a+75BDDFBbZs7Vgfyu4q/EtagMjcjC2WeSzMFgicfPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=N2D1JOId; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43F9uG5M062313;
+	Mon, 15 Apr 2024 04:56:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713174976;
+	bh=ebNW8pq7U1s+pcNdkGclNKb7uVEz2W19YON2XIEij9c=;
+	h=From:To:CC:Subject:Date;
+	b=N2D1JOIdDFWvnkw81n5WXlly26z8PytvVH5QaeMH4ZVLRMy7YS+q55eteXpvx9kj+
+	 JXOuYhQcjluabXvBQ6Tckq7/h3FYCnq1Kbn58odedwnrD933N3R8mSfVyFHh2eA8ZE
+	 IN2gJbPfTyRvdF26RGkGgT6UIkKVugJwVCamm968=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43F9uGKc119947
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 15 Apr 2024 04:56:16 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 15
+ Apr 2024 04:56:16 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 15 Apr 2024 04:56:16 -0500
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (udit-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.18])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43F9uCqv074231;
+	Mon, 15 Apr 2024 04:56:13 -0500
+From: Udit Kumar <u-kumar1@ti.com>
+To: <nm@ti.com>, <vigneshr@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <francesco@dolcini.it>
+CC: <kristo@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Udit Kumar
+	<u-kumar1@ti.com>
+Subject: [PATCH v2 0/2] Fix UART pin type and macro type
+Date: Mon, 15 Apr 2024 15:26:03 +0530
+Message-ID: <20240415095605.3547933-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix internal speakers for Legion
- Y9000X 2022 IAH7
-To: ArcticLampyrid <ArcticLampyrid@outlook.com>, <james.schulman@cirrus.com>,
-        <david.rhodes@cirrus.com>, <rf@opensource.cirrus.com>
-CC: <patches@opensource.cirrus.com>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
-Content-Language: en-GB
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-In-Reply-To: <TYCP286MB25352F3E995FED9CCE90F1F6C40B2@TYCP286MB2535.JPNP286.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: gCCHhkjIpZ91svqh6lWf59MI3n11FZnv
-X-Proofpoint-GUID: gCCHhkjIpZ91svqh6lWf59MI3n11FZnv
-X-Proofpoint-Spam-Reason: safe
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi,
+This series fixes UART pin mux for J784s4-evm and am69.
+Along with replacing pin mux macro of J784S4 SOC instead of J721S2.
 
-On 13/04/2024 14:07, ArcticLampyrid wrote:
-> This fixes the sound not working from internal speakers on
-> Lenovo Legion Y9000X 2022 IAH7 models.
->
-> Signed-off-by: ArcticLampyrid <ArcticLampyrid@outlook.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->   sound/pci/hda/cs35l41_hda_property.c | 17 +++++++++++++++++
->   sound/pci/hda/patch_realtek.c        |  1 +
->   2 files changed, 18 insertions(+)
->
-> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-> index 8fb688e41..244e41d51 100644
-> --- a/sound/pci/hda/cs35l41_hda_property.c
-> +++ b/sound/pci/hda/cs35l41_hda_property.c
-> @@ -109,6 +109,7 @@ static const struct cs35l41_config cs35l41_config_table[] = {
->   	{ "10431F1F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, -1, 0, 0, 0, 0 },
->   	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
->   	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
-> +	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+Test logs
+https://gist.github.com/uditkumarti/a28ec171732e32c16b2666c27093c115
 
-According to the ACPI that I have access to, this is not correct - the 
-Speaker ID is on index 2 not index 1.
-Index 1 has a reference to the interrupt line. Therefore this should be:
+For fixes, these errors should be caught during review but missed due to
+cross reference is taken from tool's output.
+Note to self, don't always rely on tool's output while reviewing the patch.
 
-	{ "17AA386E", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
 
->   	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
->   	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
->   	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-> @@ -414,6 +415,21 @@ static int lenovo_legion_no_acpi(struct cs35l41_hda *cs35l41, struct device *phy
->   	return 0;
->   }
->   
-> +/*
-> + * Some devices just have a single interrupt line for multiple amps, for which we
-> + * should just register the interrupt for the first amp. Otherwise, we would meet EBUSY
-> + * when registering the interrupt for the second amp.
-> + */
-> +static int single_interrupt_dsd_config(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
-> +			       const char *hid)
-> +{
-> +	generic_dsd_config(cs35l41, physdev, id, hid);
-> +	if (id != 0x40) {
-> +		cs35l41->hw_cfg.gpio2.func = CS35L41_NOT_USED;
-> +	}
-> +	return 0;
-> +}
-> +
+Change logs:
+Changes in v2:
+Splitting patch series into two as refactoring and fixes,
+This series is for fixes, refactoring will be sent later
+Link of v1: https://lore.kernel.org/all/20240415063329.3286600-1-u-kumar1@ti.com/
 
-According to the schematics I have access to, both amps have a reset 
-line. The reason for any issue you see may be
-because you have assigned the speaker id for the interrupt gpio in ACPI 
-as mentioned above.
 
-Thanks,
+Udit Kumar (2):
+  arm64: dts: ti: k3-j784s4-evm: Fix UART pin type and macro type
+  arm64: dts: ti: k3-am69-sk: Fix UART pin type and macro type
 
-Stefan
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts    | 12 ++++++------
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts |  8 ++++----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
->   struct cs35l41_prop_model {
->   	const char *hid;
->   	const char *ssid;
-> @@ -500,6 +516,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
->   	{ "CSC3551", "10431F1F", generic_dsd_config },
->   	{ "CSC3551", "10431F62", generic_dsd_config },
->   	{ "CSC3551", "10433A60", generic_dsd_config },
-> +	{ "CSC3551", "17AA386E", single_interrupt_dsd_config },
->   	{ "CSC3551", "17AA386F", generic_dsd_config },
->   	{ "CSC3551", "17AA3877", generic_dsd_config },
->   	{ "CSC3551", "17AA3878", generic_dsd_config },
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index cdcb28aa9..ac729187f 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -10382,6 +10382,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->   	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
->   	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
->   	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
-> +	SND_PCI_QUIRK(0x17aa, 0x386e, "Legion Y9000X 2022 IAH7", ALC287_FIXUP_CS35L41_I2C_2),
->   	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
->   	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_YOGA7_14ARB7_I2C),
->   	SND_PCI_QUIRK(0x17aa, 0x3877, "Lenovo Legion 7 Slim 16ARHA7", ALC287_FIXUP_CS35L41_I2C_2),
+-- 
+2.34.1
+
 
