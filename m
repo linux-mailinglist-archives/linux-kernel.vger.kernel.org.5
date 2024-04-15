@@ -1,447 +1,156 @@
-Return-Path: <linux-kernel+bounces-144435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB73A8A4666
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:52:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C9B48A466F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:07:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C3D4B2196F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 00:52:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5751C21271
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A824C81;
-	Mon, 15 Apr 2024 00:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A003BE6C;
+	Mon, 15 Apr 2024 01:07:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="tqTW97c+"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GFYRa/iS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103123FDB
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 00:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB44134AC;
+	Mon, 15 Apr 2024 01:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713142352; cv=none; b=QmiwMJgxcCTNUxm1RO3RU1JEWOKxzk/111W2RP/HJNG2MJ5U0GQLCSX5XCx0TXd7ITpVut0JsjPYUpgQMalMbVuo1XYBdLPGBoWYsz203mxmiyMBTe7+enuAIog+maJjlbRrBDlpKHIHZXwg8x8/kvHS/xpaw611uEQ5BXeMav8=
+	t=1713143225; cv=none; b=ruw7+UFLXt97caJ2Ppdtcfqi1IBJNg6lZNgZ7Uv3TKyjw5/BZY4RR8flFT9iGJW01xPQ1JvgAmh+iJ0/d0XQ1v0XKRthalfe2UMoTV09YofybYlJ+u3p/3g/ZW5qdb7BeeUw9j3robRCobFWKl4IOeE6pf4va8JfDgXwCAqyaUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713142352; c=relaxed/simple;
-	bh=x8QuhzgQZpncS/DND0zG+7pb/T12A59Ohh01QtL7sDA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S1qBiV+bVxT+gVnkaOO2l6b5heeE74pP7Q524sJsk2u6YbHp1tmOSiDXZ9ibWMUgCYjEngvLIqpPPFjBMUItIxu0zKhqfFXcg1iThuSrkbS5yLn6I6jJ75jlJvfzyOKBcqU2gfgqompN+Zm5VKXXsGb8Bq90YujieME3CfzS+D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=tqTW97c+; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id AE2BD2C0240;
-	Mon, 15 Apr 2024 12:52:26 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1713142346;
-	bh=HdY0NeCX8eosOApuP6Ccr5tvaNQk2NJ05iaKCs7bg7w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tqTW97c+OXmjPMJe/umojGrFxGwN2B/8no8xLOFLyZfOMKCixrPKeyYa47NrSDQGO
-	 /bXFtlqf1cAcP1uZ07qtgSpXUVSOg8DoM5mhVrFnO3MYXX77RLH62fiUuiM5cDVbZw
-	 Mg6Rn6zAk0stCsiaKjSdXQCpXjPzEkDTbPVdMyFwcOnU6jVt4NyTMoSzXGlpF5dfG2
-	 k7LVZag2Y+h0Pc8ZTAcr2oxFRUfVAmMjuheiWotRCBUw+biheoPEKxGeOf6FpuhXl8
-	 aE+s3RnEhlnX5/zoa2c9nQ/puNVOpm1piZDf7TT9a5VkCS2Vvs4RR48+Ve7aeKkrs0
-	 fkrUrwT0UXUOg==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B661c7a4a0000>; Mon, 15 Apr 2024 12:52:26 +1200
-Received: from aryans-dl.ws.atlnz.lc (aryans-dl.ws.atlnz.lc [10.33.22.38])
-	by pat.atlnz.lc (Postfix) with ESMTP id 6943013ED0C;
-	Mon, 15 Apr 2024 12:52:26 +1200 (NZST)
-Received: by aryans-dl.ws.atlnz.lc (Postfix, from userid 1844)
-	id 663C22A00BE; Mon, 15 Apr 2024 12:52:26 +1200 (NZST)
-From: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-To: andi.shyti@kernel.org
-Cc: aryan.srivastava@alliedtelesis.co.nz,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] i2c: octeon: Add block-mode r/w
-Date: Mon, 15 Apr 2024 12:52:13 +1200
-Message-ID: <20240415005213.3477671-1-aryan.srivastava@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20230905102234.nlaeskxbbvu74co2@zenone.zhora.eu>
-References: <20230905102234.nlaeskxbbvu74co2@zenone.zhora.eu>
+	s=arc-20240116; t=1713143225; c=relaxed/simple;
+	bh=bJNrSYB09b8z+tlGP3CjyvyKkpqB54wXqUvtpor+eRE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fab8r3aG2oSSAJNCT0ky10E/O+a4dondcvHcydSHrwitMVgeRbFRzkW/GAgRn/XkJeJhSXHew17yayLigW86QRFQbuBA1HaeraLe1/JprXcRcyC4VhJC7nkPZwyjRLZh2A8kBVBEsz9C4SA+QWwxTx1YTQn01LFWF85t/0qgmjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GFYRa/iS; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713143224; x=1744679224;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=bJNrSYB09b8z+tlGP3CjyvyKkpqB54wXqUvtpor+eRE=;
+  b=GFYRa/iSvrEJJg30AqDw5/TmoiR/fnClp2y8GRbBgtOHLi1JdFVYc5Nv
+   84dcOsaF0OLl9s5BNOLaXJo2xMG3btIrndExF8BGxzo2scsxotdaRDjLk
+   DvlLEVziLm4KdghgoixEoqeGBgc+nsO1Fi4vY0H3Musam8u9ZhwpnufIP
+   m91aNThm7INy4KqVAsNJWzl6ihyG06L/aUT+ohnrAyeCEyn3dvpD9w5+R
+   ZQKat0nqYqR+cffP0Y/hdIcn9gHgmWF1gIDguHjAApYxN2lXdU9KwvJex
+   K342M90ge53BBVuUAiaNjcWd0NTBboSAltc2UKAXSVlHdMmSY1e6kGuHB
+   w==;
+X-CSE-ConnectionGUID: eS5frwSiTtO5yb7eqme1YQ==
+X-CSE-MsgGUID: 0M0U979cSeOD7ZSQkpwVug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="12294494"
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="12294494"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 18:07:03 -0700
+X-CSE-ConnectionGUID: B260IZR8SfOOnFPYEYIjdA==
+X-CSE-MsgGUID: u+xe5U4QTd+frt1uiy8XBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="22333842"
+Received: from xiongzha-mobl1.ccr.corp.intel.com (HELO [10.124.244.162]) ([10.124.244.162])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 18:06:59 -0700
+Message-ID: <9469faf7-1659-4436-848f-53ec01d967f2@linux.intel.com>
+Date: Mon, 15 Apr 2024 09:06:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=661c7a4a a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=raytVjVEu-sA:10 a=ypzmiDo2Z2DPeK6oHa8A:9 a=3ZKOabzyN94A:10
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 00/41] KVM: x86/pmu: Introduce passthrough vPM
+To: Sean Christopherson <seanjc@google.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
+ kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <ZhgX6BStTh05OfEd@google.com>
+ <f6f714ef-eb58-4aa9-9c4d-12bfe29c383b@linux.intel.com>
+ <Zhl-JFk5hw-hlyGi@google.com>
+Content-Language: en-US
+From: "Zhang, Xiong Y" <xiong.y.zhang@linux.intel.com>
+In-Reply-To: <Zhl-JFk5hw-hlyGi@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add support for block mode read/write operations on
-Thunderx chips.
 
-When attempting r/w operations of greater then 8 bytes
-block mode is used, instead of performing a series of
-8 byte reads.
 
-Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
----
-Changes in v2:
-- comment style and formatting.
+On 4/13/2024 2:32 AM, Sean Christopherson wrote:
+> On Fri, Apr 12, 2024, Xiong Y Zhang wrote:
+>>>> 2. NMI watchdog
+>>>>    the perf event for NMI watchdog is a system wide cpu pinned event, it
+>>>>    will be stopped also during vm running, but it doesn't have
+>>>>    attr.exclude_guest=1, we add it in this RFC. But this still means NMI
+>>>>    watchdog loses function during VM running.
+>>>>
+>>>>    Two candidates exist for replacing perf event of NMI watchdog:
+>>>>    a. Buddy hardlock detector[3] may be not reliable to replace perf event.
+>>>>    b. HPET-based hardlock detector [4] isn't in the upstream kernel.
+>>>
+>>> I think the simplest solution is to allow mediated PMU usage if and only if
+>>> the NMI watchdog is disabled.  Then whether or not the host replaces the NMI
+>>> watchdog with something else becomes an orthogonal discussion, i.e. not KVM's
+>>> problem to solve.
+>> Make sense. KVM should not affect host high priority work.
+>> NMI watchdog is a client of perf and is a system wide perf event, perf can't
+>> distinguish a system wide perf event is NMI watchdog or others, so how about
+>> we extend this suggestion to all the system wide perf events ?  mediated PMU
+>> is only allowed when all system wide perf events are disabled or non-exist at
+>> vm creation.
+> 
+> What other kernel-driven system wide perf events are there?
+does "kernel-driven" mean perf events created through perf_event_create_kernel_counter() like nmi_watchdog and kvm perf events ?
+User can create system wide perf event through "perf record -e {} -a" also, I call it as user-driven system wide perf events.
+Perf subsystem doesn't distinguish "kernel-driven" and "user-driven" system wide perf events.
+> 
+>> but NMI watchdog is usually enabled, this will limit mediated PMU usage.
+> 
+> I don't think it is at all unreasonable to require users that want optimal PMU
+> virtualization to adjust their environment.  And we can and should document the
+> tradeoffs and alternatives, e.g. so that users that want better PMU results don't
+> need to re-discover all the "gotchas" on their own.
+> 
+> This would even be one of the rare times where I would be ok with a dmesg log.
+> E.g. if KVM is loaded with enable_mediated_pmu=true, but there are system wide
+> perf events, pr_warn() to explain the conflict and direct the user at documentation
+> explaining how to make their system compatible with mediate PMU usage.> 
+>>>> 3. Dedicated kvm_pmi_vector
+>>>>    In emulated vPMU, host PMI handler notify KVM to inject a virtual
+>>>>    PMI into guest when physical PMI belongs to guest counter. If the
+>>>>    same mechanism is used in passthrough vPMU and PMI skid exists
+>>>>    which cause physical PMI belonging to guest happens after VM-exit,
+>>>>    then the host PMI handler couldn't identify this PMI belongs to
+>>>>    host or guest.
+>>>>    So this RFC uses a dedicated kvm_pmi_vector, PMI belonging to guest
+>>>>    has this vector only. The PMI belonging to host still has an NMI
+>>>>    vector.
+>>>>
+>>>>    Without considering PMI skid especially for AMD, the host NMI vector
+>>>>    could be used for guest PMI also, this method is simpler and doesn't
+>>>
+>>> I don't see how multiplexing NMIs between guest and host is simpler.  At best,
+>>> the complexity is a wash, just in different locations, and I highly doubt it's
+>>> a wash.  AFAIK, there is no way to precisely know that an NMI came in via the
+>>> LVTPC.
+>> when kvm_intel.pt_mode=PT_MODE_HOST_GUEST, guest PT's PMI is a multiplexing
+>> NMI between guest and host, we could extend guest PT's PMI framework to
+>> mediated PMU. so I think this is simpler.
+> 
+> Heh, what do you mean by "this"?  Using a dedicated IRQ vector, or extending the
+> PT framework of multiplexing NMI?
+here "this" means "extending the PT framework of multiplexing NMI".
 
-Changes in v3:
-- comment style and formatting.
-
-Changes in v4:
-- Refactoring common code.
-- Additional comments.
----
- drivers/i2c/busses/i2c-octeon-core.c     | 196 +++++++++++++++++++----
- drivers/i2c/busses/i2c-octeon-core.h     |  14 ++
- drivers/i2c/busses/i2c-thunderx-pcidrv.c |   4 +
- 3 files changed, 185 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-octeon-core.c b/drivers/i2c/busses/i2=
-c-octeon-core.c
-index 845eda70b8ca..1ba4ac24b02a 100644
---- a/drivers/i2c/busses/i2c-octeon-core.c
-+++ b/drivers/i2c/busses/i2c-octeon-core.c
-@@ -130,6 +130,25 @@ static void octeon_i2c_hlc_disable(struct octeon_i2c=
- *i2c)
- 	octeon_i2c_ctl_write(i2c, TWSI_CTL_ENAB);
- }
-=20
-+static void octeon_i2c_block_enable(struct octeon_i2c *i2c)
-+{
-+	if (i2c->block_enabled || !TWSI_BLOCK_CTL(i2c))
-+		return;
-+
-+	i2c->block_enabled =3D true;
-+	octeon_i2c_writeq_flush(TWSI_MODE_STRETCH
-+		| TWSI_MODE_BLOCK_MODE, i2c->twsi_base + TWSI_MODE(i2c));
-+}
-+
-+static void octeon_i2c_block_disable(struct octeon_i2c *i2c)
-+{
-+	if (!i2c->block_enabled || !TWSI_BLOCK_CTL(i2c))
-+		return;
-+
-+	i2c->block_enabled =3D false;
-+	octeon_i2c_writeq_flush(TWSI_MODE_STRETCH, i2c->twsi_base + TWSI_MODE(i=
-2c));
-+}
-+
- /**
-  * octeon_i2c_hlc_wait - wait for an HLC operation to complete
-  * @i2c: The struct octeon_i2c
-@@ -268,6 +287,7 @@ static int octeon_i2c_start(struct octeon_i2c *i2c)
- 	u8 stat;
-=20
- 	octeon_i2c_hlc_disable(i2c);
-+	octeon_i2c_block_disable(i2c);
-=20
- 	octeon_i2c_ctl_write(i2c, TWSI_CTL_ENAB | TWSI_CTL_STA);
- 	ret =3D octeon_i2c_wait(i2c);
-@@ -485,40 +505,53 @@ static int octeon_i2c_hlc_write(struct octeon_i2c *=
-i2c, struct i2c_msg *msgs)
- 	return ret;
- }
-=20
--/* high-level-controller composite write+read, msg0=3Daddr, msg1=3Ddata =
-*/
--static int octeon_i2c_hlc_comp_read(struct octeon_i2c *i2c, struct i2c_m=
-sg *msgs)
-+/* Process hlc transaction */
-+static int octeon_i2c_hlc_cmd_send(struct octeon_i2c *i2c, u64 cmd)
- {
--	int i, j, ret =3D 0;
--	u64 cmd;
--
--	octeon_i2c_hlc_enable(i2c);
-+	octeon_i2c_hlc_int_clear(i2c);
-+	octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
-=20
--	cmd =3D SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
--	/* SIZE */
--	cmd |=3D (u64)(msgs[1].len - 1) << SW_TWSI_SIZE_SHIFT;
--	/* A */
--	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+	return octeon_i2c_hlc_wait(i2c);
-+}
-=20
--	if (msgs[0].flags & I2C_M_TEN)
-+/* Construct and send i2c transaction core cmd */
-+static int octeon_i2c_hlc_cmd(struct octeon_i2c *i2c, struct i2c_msg msg=
-, u64 cmd)
-+{
-+	if (msg.flags & I2C_M_TEN)
- 		cmd |=3D SW_TWSI_OP_10_IA;
- 	else
- 		cmd |=3D SW_TWSI_OP_7_IA;
-=20
--	if (msgs[0].len =3D=3D 2) {
-+	if (msg.len =3D=3D 2) {
- 		u64 ext =3D 0;
-=20
- 		cmd |=3D SW_TWSI_EIA;
--		ext =3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
--		cmd |=3D (u64)msgs[0].buf[1] << SW_TWSI_IA_SHIFT;
-+		ext =3D (u64)msg.buf[0] << SW_TWSI_IA_SHIFT;
-+		cmd |=3D (u64)msg.buf[1] << SW_TWSI_IA_SHIFT;
- 		octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
- 	} else {
--		cmd |=3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-+		cmd |=3D (u64)msg.buf[0] << SW_TWSI_IA_SHIFT;
- 	}
-=20
--	octeon_i2c_hlc_int_clear(i2c);
--	octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
-+	return octeon_i2c_hlc_cmd_send(i2c, cmd);
-+}
-=20
--	ret =3D octeon_i2c_hlc_wait(i2c);
-+/* high-level-controller composite write+read, msg0=3Daddr, msg1=3Ddata =
-*/
-+static int octeon_i2c_hlc_comp_read(struct octeon_i2c *i2c, struct i2c_m=
-sg *msgs)
-+{
-+	int i, j, ret =3D 0;
-+	u64 cmd;
-+
-+	octeon_i2c_hlc_enable(i2c);
-+
-+	cmd =3D SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
-+	/* SIZE */
-+	cmd |=3D (u64)(msgs[1].len - 1) << SW_TWSI_SIZE_SHIFT;
-+	/* A */
-+	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+
-+	/* Send core command */
-+	ret =3D octeon_i2c_hlc_cmd(i2c, msgs[0], cmd);
- 	if (ret)
- 		goto err;
-=20
-@@ -579,10 +612,7 @@ static int octeon_i2c_hlc_comp_write(struct octeon_i=
-2c *i2c, struct i2c_msg *msg
- 	if (set_ext)
- 		octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
-=20
--	octeon_i2c_hlc_int_clear(i2c);
--	octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
--
--	ret =3D octeon_i2c_hlc_wait(i2c);
-+	ret =3D octeon_i2c_hlc_cmd_send(i2c, cmd);
- 	if (ret)
- 		goto err;
-=20
-@@ -594,6 +624,106 @@ static int octeon_i2c_hlc_comp_write(struct octeon_=
-i2c *i2c, struct i2c_msg *msg
- 	return ret;
- }
-=20
-+/**
-+ * high-level-controller composite block write+read, msg0=3Daddr, msg1=3D=
-data
-+ * Used in the case where the i2c xfer is for greater than 8 bytes of re=
-ad data.
-+ */
-+static int octeon_i2c_hlc_block_comp_read(struct octeon_i2c *i2c, struct=
- i2c_msg *msgs)
-+{
-+	int len, ret =3D 0;
-+	u64 cmd =3D 0;
-+
-+	octeon_i2c_hlc_enable(i2c);
-+	octeon_i2c_block_enable(i2c);
-+
-+	/* Write (size - 1) into block control register */
-+	len =3D msgs[1].len - 1;
-+	octeon_i2c_writeq_flush((u64)(len), i2c->twsi_base + TWSI_BLOCK_CTL(i2c=
-));
-+
-+	/* Prepare core command */
-+	cmd =3D SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
-+	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+
-+	/* Send core command */
-+	ret =3D octeon_i2c_hlc_cmd(i2c, msgs[0], cmd);
-+	if (ret)
-+		return ret;
-+
-+	cmd =3D __raw_readq(i2c->twsi_base + SW_TWSI(i2c));
-+	if ((cmd & SW_TWSI_R) =3D=3D 0)
-+		return octeon_i2c_check_status(i2c, false);
-+
-+	/* read data in FIFO */
-+	octeon_i2c_writeq_flush(TWSI_BLOCK_STS_RESET_PTR, i2c->twsi_base + TWSI=
-_BLOCK_STS(i2c));
-+	for (int i =3D 0; i < len; i +=3D 8) {
-+		u64 rd =3D __raw_readq(i2c->twsi_base + TWSI_BLOCK_FIFO(i2c));
-+		for (int j =3D 7; j >=3D 0; j--)
-+			msgs[1].buf[i + (7 - j)] =3D (rd >> (8 * j)) & 0xff;
-+	}
-+
-+	octeon_i2c_block_disable(i2c);
-+	return ret;
-+}
-+
-+/**
-+ * high-level-controller composite block write+write, m[0]len<=3D2, m[1]=
-len<=3D1024
-+ * Used in the case where the i2c xfer is for greater than 8 bytes of wr=
-ite data.
-+ */
-+static int octeon_i2c_hlc_block_comp_write(struct octeon_i2c *i2c, struc=
-t i2c_msg *msgs)
-+{
-+	bool set_ext =3D false;
-+	int len, ret =3D 0;
-+	u64 cmd, ext =3D 0;
-+
-+	octeon_i2c_hlc_enable(i2c);
-+	octeon_i2c_block_enable(i2c);
-+
-+	/* Write (size - 1) into block control register */
-+	len =3D msgs[1].len - 1;
-+	octeon_i2c_writeq_flush((u64)(len), i2c->twsi_base + TWSI_BLOCK_CTL(i2c=
-));
-+
-+	/* Prepare core command */
-+	cmd =3D SW_TWSI_V | SW_TWSI_SOVR;
-+	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+
-+	if (msgs[0].flags & I2C_M_TEN)
-+		cmd |=3D SW_TWSI_OP_10_IA;
-+	else
-+		cmd |=3D SW_TWSI_OP_7_IA;
-+
-+	if (msgs[0].len =3D=3D 2) {
-+		cmd |=3D SW_TWSI_EIA;
-+		ext |=3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-+		set_ext =3D true;
-+		cmd |=3D (u64)msgs[0].buf[1] << SW_TWSI_IA_SHIFT;
-+	} else {
-+		cmd |=3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-+	}
-+
-+	/* Write msg into FIFO buffer */
-+	octeon_i2c_writeq_flush(TWSI_BLOCK_STS_RESET_PTR, i2c->twsi_base + TWSI=
-_BLOCK_STS(i2c));
-+	for (int i =3D 0; i < len; i +=3D 8) {
-+		u64 buf =3D 0;
-+		for (int j =3D 7; j >=3D 0; j--)
-+			buf |=3D (msgs[1].buf[i + (7 - j)] << (8 * j));
-+		octeon_i2c_writeq_flush(buf, i2c->twsi_base + TWSI_BLOCK_FIFO(i2c));
-+	}
-+	if (set_ext)
-+		octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
-+
-+	/* Send command to core (send data in FIFO) */
-+	ret =3D octeon_i2c_hlc_cmd_send(i2c, cmd);
-+	if (ret)
-+		return ret;
-+
-+	cmd =3D __raw_readq(i2c->twsi_base + SW_TWSI(i2c));
-+	if ((cmd & SW_TWSI_R) =3D=3D 0)
-+		return octeon_i2c_check_status(i2c, false);
-+
-+	octeon_i2c_block_disable(i2c);
-+	return ret;
-+}
-+
- /**
-  * octeon_i2c_xfer - The driver's master_xfer function
-  * @adap: Pointer to the i2c_adapter structure
-@@ -619,13 +749,21 @@ int octeon_i2c_xfer(struct i2c_adapter *adap, struc=
-t i2c_msg *msgs, int num)
- 		if ((msgs[0].flags & I2C_M_RD) =3D=3D 0 &&
- 		    (msgs[1].flags & I2C_M_RECV_LEN) =3D=3D 0 &&
- 		    msgs[0].len > 0 && msgs[0].len <=3D 2 &&
--		    msgs[1].len > 0 && msgs[1].len <=3D 8 &&
-+		    msgs[1].len > 0 &&
- 		    msgs[0].addr =3D=3D msgs[1].addr) {
--			if (msgs[1].flags & I2C_M_RD)
--				ret =3D octeon_i2c_hlc_comp_read(i2c, msgs);
--			else
--				ret =3D octeon_i2c_hlc_comp_write(i2c, msgs);
--			goto out;
-+			if (msgs[1].len <=3D 8) {
-+				if (msgs[1].flags & I2C_M_RD)
-+					ret =3D octeon_i2c_hlc_comp_read(i2c, msgs);
-+				else
-+					ret =3D octeon_i2c_hlc_comp_write(i2c, msgs);
-+				goto out;
-+			} else if (msgs[1].len <=3D 1024 && TWSI_BLOCK_CTL(i2c)) {
-+				if (msgs[1].flags & I2C_M_RD)
-+					ret =3D octeon_i2c_hlc_block_comp_read(i2c, msgs);
-+				else
-+					ret =3D octeon_i2c_hlc_block_comp_write(i2c, msgs);
-+				goto out;
-+			}
- 		}
- 	}
-=20
-diff --git a/drivers/i2c/busses/i2c-octeon-core.h b/drivers/i2c/busses/i2=
-c-octeon-core.h
-index 9bb9f64fdda0..81fcf413c890 100644
---- a/drivers/i2c/busses/i2c-octeon-core.h
-+++ b/drivers/i2c/busses/i2c-octeon-core.h
-@@ -85,6 +85,11 @@
- #define TWSI_INT_SDA		BIT_ULL(10)
- #define TWSI_INT_SCL		BIT_ULL(11)
-=20
-+#define TWSI_MODE_STRETCH		BIT_ULL(1)
-+#define TWSI_MODE_BLOCK_MODE		BIT_ULL(2)
-+
-+#define TWSI_BLOCK_STS_RESET_PTR	BIT_ULL(0)
-+#define TWSI_BLOCK_STS_BUSY		BIT_ULL(1)
- #define I2C_OCTEON_EVENT_WAIT 80 /* microseconds */
-=20
- /* Register offsets */
-@@ -92,11 +97,19 @@ struct octeon_i2c_reg_offset {
- 	unsigned int sw_twsi;
- 	unsigned int twsi_int;
- 	unsigned int sw_twsi_ext;
-+	unsigned int twsi_mode;
-+	unsigned int twsi_block_ctl;
-+	unsigned int twsi_block_sts;
-+	unsigned int twsi_block_fifo;
- };
-=20
- #define SW_TWSI(x)	(x->roff.sw_twsi)
- #define TWSI_INT(x)	(x->roff.twsi_int)
- #define SW_TWSI_EXT(x)	(x->roff.sw_twsi_ext)
-+#define TWSI_MODE(x)	(x->roff.twsi_mode)
-+#define TWSI_BLOCK_CTL(x)	(x->roff.twsi_block_ctl)
-+#define TWSI_BLOCK_STS(x)	(x->roff.twsi_block_sts)
-+#define TWSI_BLOCK_FIFO(x)	(x->roff.twsi_block_fifo)
-=20
- struct octeon_i2c {
- 	wait_queue_head_t queue;
-@@ -110,6 +123,7 @@ struct octeon_i2c {
- 	void __iomem *twsi_base;
- 	struct device *dev;
- 	bool hlc_enabled;
-+	bool block_enabled;
- 	bool broken_irq_mode;
- 	bool broken_irq_check;
- 	void (*int_enable)(struct octeon_i2c *);
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busse=
-s/i2c-thunderx-pcidrv.c
-index a77cd86fe75e..abde98117d7e 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -165,6 +165,10 @@ static int thunder_i2c_probe_pci(struct pci_dev *pde=
-v,
- 	i2c->roff.sw_twsi =3D 0x1000;
- 	i2c->roff.twsi_int =3D 0x1010;
- 	i2c->roff.sw_twsi_ext =3D 0x1018;
-+	i2c->roff.twsi_mode =3D 0x1038;
-+	i2c->roff.twsi_block_ctl =3D 0x1048;
-+	i2c->roff.twsi_block_sts =3D 0x1050;
-+	i2c->roff.twsi_block_fifo =3D 0x1058;
-=20
- 	i2c->dev =3D dev;
- 	pci_set_drvdata(pdev, i2c);
---=20
-2.43.2
-
+thanks
+> 
 
