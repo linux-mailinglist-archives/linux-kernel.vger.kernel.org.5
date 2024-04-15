@@ -1,52 +1,73 @@
-Return-Path: <linux-kernel+bounces-144817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBB758A4B1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:07:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAFE88A4B19
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:06:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27117B244F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:07:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6702A283B72
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B873C46B;
-	Mon, 15 Apr 2024 09:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F853C087;
+	Mon, 15 Apr 2024 09:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="J3fXMbIX"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="K2y0UCaA"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337013FB2F;
-	Mon, 15 Apr 2024 09:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB0A23774
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713172018; cv=none; b=NakJJ4VpNrmi6QI8sYvRnT/aPsRWRVcA/1UQm94Q1RM4NkuwdVVLqRpv3L+lxjCgJ2ssaSmYvREclHEPZ89k4M3ngYGvDgnTTKNbRYhCCw5sX9KyGMrQBJ3bO70FlQcY2hZJSmUAwsBW/OiXglOAQ9PWlaZVD2pBeOeVPzuYPRM=
+	t=1713171999; cv=none; b=dlTnpWaUxfR6HFWE4zSga2+r01MOIDZaIz+WCHZUuqHdGnEAkAnapIOWk1Y5pgudvT/3+zk6mTNwAqx6XE1sCsyNyd/lfDPTiMwzKm/IpCq0Ev1DZUW3ctnpWU1tuuuWGrJRPmi+G3bx9s+aJHb+70Xq371ETS7DFgrmfPfdkcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713172018; c=relaxed/simple;
-	bh=Y5nbs45jMBNKDqjA80WR2kWn52G0oSM52UyubBPrLFI=;
+	s=arc-20240116; t=1713171999; c=relaxed/simple;
+	bh=SwgpO4YQWdvbI0vVe0TBO0b37BYnsUM314dFrnGo/S0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fMGx8c5IpmFWaOQz+/I9mD5xmKL2BMgMo5jogZkoSgLCu8sI8qPq2kKW5JSl2BdYJRXWYIUN/TpwK7hn3zUmB3e90xOEf7l9OziT6q9DmH0WuMfzvShPLHq8MTf2v/Uku97tGeH0kRBugmVzH5vVTdNMsXixB64/rKCqvLCHrqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=J3fXMbIX; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1713171993; x=1713776793; i=wahrenst@gmx.net;
-	bh=iVvbXiK9+4jKmBby/qHuymH4wqCDuhTpZTWgpimbGeE=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=J3fXMbIX9LLAGfD6kfwfvHdiXn8RckqgxmHO85GPsonO5ej/Z2fAbLl+z0xhAjjV
-	 UpmO4PStxqhXUxk5VzRr3a7xN7U/l7y+PCOSlqmEHKCIbns7ISHnXM1FXDVxGDjb3
-	 wmzbJqbasVshbXhwMXU+t12ffal2mhGSfJgjGxKygxy8zjDtjLY0au02CoWhNbaW5
-	 p+z3HR+cDRIvjWjiSqQBbA0C1J8g9IJ1nykcg1DJwawHo1yssLSq0Errdpc1V5mMD
-	 hep0waXtf8J+B1h0HBp7AZ4t8HmG196nlN/978NT82eeyfBIwgCEcEJegA2uGCc0M
-	 mBiuNV44cekCurVd6w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ma24s-1sH6RJ39MK-00VzWL; Mon, 15
- Apr 2024 11:06:33 +0200
-Message-ID: <48414875-187d-4afe-ae87-6431b845eaca@gmx.net>
-Date: Mon, 15 Apr 2024 11:06:32 +0200
+	 In-Reply-To:Content-Type; b=tigrjzJpSacpnSmAqXMyGm4MdNoY2Q7fDyu2qKblBxEwF+5yz6T/zfiP1hF/wtWMVXjw2UjyCgCOxUTRNDYwZSAbgkiIR+R7HrfRjom7ukPdXU2fVjXHsvPLK6MZsk6wTf2t4XaMflnhKrKzTjja454BJzvPLgmkoPVXvxQTk5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=K2y0UCaA; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a5200afe39eso363208566b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1713171995; x=1713776795; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+WfufnjkFLuKt8mgR0uon21xMcAu2tPaD6DqiB7Iflk=;
+        b=K2y0UCaARaTxLmjZMHjA9cx+156xdMsZ/VeUgbEd0qoJtPdpUxMnW+3z8H9bnoqe3J
+         ukEfW5MVfHkL3HuUCxZBNvD4iP1Z9Gkdb5W1dRjXm05kgQkboGRtWU/qm5N7MYQPJlDl
+         ZxEvi+EyA7OBbwdvwIfZG4ct/Knv9iNjyFAa+AZX8hlid1UGLg4bN1QFJA3svmwsgVZ/
+         hxqK5Sb7eSj5tnKqhJm0i703RA2wREEQhhEZeVgf+yjeVM7k3PE8o5RmzBYqcYhtxj3f
+         cZQla6hkLkfWB03+oHcvATnRXcDNgikg6iaCyxrotzd4LfuEgyMBuD3Iqq+LJEiDVjnP
+         aJLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713171995; x=1713776795;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+WfufnjkFLuKt8mgR0uon21xMcAu2tPaD6DqiB7Iflk=;
+        b=ZqQokEs0UuZ8ganpR2On3omwJYgrZN/O5KHC8I9JFE4rpA95kv7BRMXZZz6QFag4WN
+         AEZq2wz9FXK2kTZPp8ccPxGdaVa7qLV8uIlgymnHrVSqakcwETnq7xps0v6qDaHb115U
+         qZErYtf1btxUYC0eIe3v9E2klLZjfVV2weFSBElDpQ4e5e20DiSB0BDu2dahFSlVrPBx
+         pnNvxiTWJ2WCMvtDE+r0i7iVHL62TytKIVhrFt9DFw0TwlmFSazmwrtKNKWYkTzyhwxs
+         izw91PsLRB3z1jgFtH+yDJd5P8ZK4p/E9ffAJ/WVE/PhCfeZPJCChOyH9WGmoGJt3zuu
+         qztQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUQtvTkhC1rW9aNYeKYvPcbX++A0L4MpglRmHNCOuB1Y6f+fiHYTEeovIhm0twjXrIoShbKZH4Y1NL87av2jwYV3F/aslXegpyw7Z/O
+X-Gm-Message-State: AOJu0Yzn6uoFRF8tvig4DZnNu+v2OT3tXf+s6SFDmx7e1GaIT6hMMeG8
+	Vm9E8Y08A12UD+tnx5TGH9RPO4DGBghisMUeWFTOGgep/sb7OXxIgQyCouY2Wjk=
+X-Google-Smtp-Source: AGHT+IG9Os75CE2mZeTq4ynaVMOKZR0K1Da/JMGlDSPMt3uTOA+A8muKztNGs7OdjmfiZ183zyUO4w==
+X-Received: by 2002:a17:907:3605:b0:a52:54f7:bb01 with SMTP id bk5-20020a170907360500b00a5254f7bb01mr4672944ejc.53.1713171994933;
+        Mon, 15 Apr 2024 02:06:34 -0700 (PDT)
+Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
+        by smtp.gmail.com with ESMTPSA id zh17-20020a170906881100b00a5271ae4458sm623641ejb.16.2024.04.15.02.06.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 02:06:34 -0700 (PDT)
+Message-ID: <a6ad34d3-9cce-4178-8271-0e09ced2b6f4@suse.com>
+Date: Mon, 15 Apr 2024 11:06:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,131 +75,57 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] arm64: dts: broadcom: Add support for BCM2712
-To: Phil Elwell <phil@raspberrypi.com>
-Cc: Andrea della Porta <andrea.porta@suse.com>, Rob Herring
- <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Jonathan Bell <jonathan@raspberrypi.com>,
- Ulf Hansson <ulf.hansson@linaro.org>, Adrian Hunter
- <adrian.hunter@intel.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, linux-kernel@vger.kernel.org,
- Al Cooper <alcooperx@gmail.com>, linux-mmc@vger.kernel.org,
- Kamal Dasu <kamal.dasu@broadcom.com>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <cover.1713036964.git.andrea.porta@suse.com>
- <0ab5a768d686cb634f7144da266c9246e9e90cb4.1713036964.git.andrea.porta@suse.com>
- <d7b884dd-9b70-41c3-ac2a-66b54c26d08a@gmx.net>
- <CAMEGJJ2R-WEqs+LgqMwDQJ_QHF840RYAqVGkbWxBs70anv6M4w@mail.gmail.com>
+Subject: Re: [PATCH] usb: cdc-wdm: close race between read and workqueue
+To: =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+ Aleksander Morgado <aleksandermj@chromium.org>
+Cc: oneukum@suse.com, linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
+ linux@roeck-us.net, linux-kernel@vger.kernel.org, ejcaruso@chromium.org
+References: <385a3519-b45d-48c5-a6fd-a3fdb6bec92f@chromium.org>
+ <87mspvi0lk.fsf@miraculix.mork.no>
 Content-Language: en-US
-From: Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <CAMEGJJ2R-WEqs+LgqMwDQJ_QHF840RYAqVGkbWxBs70anv6M4w@mail.gmail.com>
+From: Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <87mspvi0lk.fsf@miraculix.mork.no>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wbkUfb+3POtV/dyswIWfamIRka73DquA3dHwWh7g3oVut6k3jDB
- xDufkZUndxr7JICIELbkyCObezpt8CpmOf2AGwgwAhyDBtKqRlF+Wdzz4daHswBE45CAott
- p1PFmv9Pp2EqbwzvrSp68LkvDMtAknucXe1Azi6NuKNkNC/JDWA9yZ+n2iHKeDvGdIYwejh
- XiHOh9KqW6pnd6NE+Jlbw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7tHIbPC4OPE=;0o3Qmm8vlD26+gY5h7dXTZ9iQi1
- zj0OK3X3lReB4XHePGLPIK9wdIbP7X4j2VoFizl/ccS+yL4hb9oRt9smL5ZlUY+vqOdGmSP7j
- 0sbG9K7r9KzSS5NCQ/SEWBQ+l1vqGudz9ZawGrmzICjlB4+JYpKM9w0CVcFt/Aah5zDLCEaH2
- HaxlTbcBcuWPRVGlnaYcpNnpp3drvpRQSLlTvqmKwuHt5YsTRHjC1Sen5e8L2QMYuh1R+MEKL
- sJGLlGYS/lsj9yVocB7RMdEPNIAF13HmGJ7E5dTGRrOTelYmJ21NCTcCfXa8Ak4Gaf0YAMXZ7
- VEVYSL3y5qEYVk4cqHEK+YxnX3cRZu6t9EpfYtAWw4S9YqbaXy+oK3PCOUkgaTjQuwtWlD+IY
- HlEohfSXso/PQnkVuRG4XtwTN9Hsch4sbHShTA0/F4MgvCPy9ixW2uw5CsI5Mu7J2X79jnH7M
- AhUOv7EObhjKKBPnpzAYpyKEg51ZLBAr1cNXtlRkfHnPGZQrPqT132BeJokMQF3lNtJvi6QAE
- pqtbzcRHtE3z+WD/r/roW1/wvtTfsOZIoGtK59qh7MQiWHkwQtRboe2YrYSzB+qUYPc/z6CuN
- oZkmKF1YJjajqlMAIE1VgXrhFGbli3mTSnvDZsWAVLs539XVaHIYHFzEkuSZcdhDMiWi0ByEV
- V6qGE+xXW+it6EgjNWQSlgxcGdToO5pNiRJakn+VXKX2CkYwOAtrBd9b9GsJqvJ+U9F0k7G5L
- doZ5ES2CVfyd1VFjJBDYw06ULf8H+D/JRg0yJrnjuXBC2h8EZ4Xfz+UEqOsAEuKBEQFxoqEmu
- u2+T1wt9huhjy3uB2dBeCErCyJnUiu2CJZ6L9GV/UI/4s=
+Content-Transfer-Encoding: 8bit
 
-Hi Phil,
+On 15.04.24 08:47, Bjørn Mork wrote:
 
-Am 15.04.24 um 10:52 schrieb Phil Elwell:
-> Stefan,
->
->
-> On Mon, 15 Apr 2024 at 09:20, Stefan Wahren <wahrenst@gmx.net> wrote:
->> Hi Phil,
->>
->> Am 14.04.24 um 00:14 schrieb Andrea della Porta:
->>> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
->>> ---
->>>    arch/arm64/boot/dts/broadcom/Makefile         |   1 +
->>>    .../boot/dts/broadcom/bcm2712-rpi-5-b.dts     | 313 +++++++
->>>    arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi |  81 ++
->>>    arch/arm64/boot/dts/broadcom/bcm2712.dtsi     | 841 +++++++++++++++=
-+++
->>>    4 files changed, 1236 insertions(+)
->>>    create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
->>>    create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
->>>    create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712.dtsi
->>>
->>> diff --git a/arch/arm64/boot/dts/broadcom/Makefile b/arch/arm64/boot/d=
-ts/broadcom/Makefile
->>> index 8b4591ddd27c..92565e9781ad 100644
->>> --- a/arch/arm64/boot/dts/broadcom/Makefile
->>> +++ b/arch/arm64/boot/dts/broadcom/Makefile
->>> @@ -6,6 +6,7 @@ DTC_FLAGS :=3D -@
->>>    dtb-$(CONFIG_ARCH_BCM2835) +=3D bcm2711-rpi-400.dtb \
->>>                              bcm2711-rpi-4-b.dtb \
->>>                              bcm2711-rpi-cm4-io.dtb \
->>> +                           bcm2712-rpi-5-b.dtb \
->>>                              bcm2837-rpi-3-a-plus.dtb \
->>>                              bcm2837-rpi-3-b.dtb \
->>>                              bcm2837-rpi-3-b-plus.dtb \
->>> diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts b/arch/a=
-rm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
->>> new file mode 100644
->>> index 000000000000..2ce180a54e5b
->>> --- /dev/null
->>> +++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
->>> @@ -0,0 +1,313 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/dts-v1/;
->>> +
->>> +#include <dt-bindings/gpio/gpio.h>
->>> +#include <dt-bindings/interrupt-controller/irq.h>
->>> +#include <dt-bindings/pwm/pwm.h>
->>> +#include <dt-bindings/reset/raspberrypi,firmware-reset.h>
->>> +
->>> +#define spi0 _spi0
->>> +#define uart0 _uart0
->>> +
->>> +#include "bcm2712.dtsi"
->>> +
->>> +#undef spi0
->>> +#undef uart0
->>> +
->>> +/ {
->>> +     compatible =3D "raspberrypi,5-model-b", "brcm,bcm2712";
->>> +     model =3D "Raspberry Pi 5";
->>> +
->>>
->> according to this downstream commit [1] it's just called "Raspberry Pi
->> 5" without Model B, but the filename and the compatible says something
->> different. Is there still a chance to get this consistent or is it too
->> late because the firmware expect the compatible?
->>
->> [1] -
->> https://github.com/raspberrypi/linux/commit/99e359d2f2da2c820fd2a30b1ad=
-08b32c9549adb
-> Nothing cares about the compatible string, but the product name was
-> changed too late for the firmware, which expects the current DTB file
-> name.
-should i send a pull request to address the compatible? This would avoid
-a little bit confusion in the upstreaming process, because
-devicetree/bindings/arm/bcm/bcm2835.yaml needs to be updated as well.
+> I'm not sure I understand what problem that patch is supposed to fix.
+> Which means that everything I write could be completely wrong...
 
-Best regards
->   I'm happy with the naming as it stands, since we use Pi 4 to
-> refer to all the BCM2711-based devices, and Pi 5 can include CM5.
->
-> Phil
+wdm_in_callback() can schedule service_outs_intr(), which can call
+service_outstanding_interrupt(), which sets WDM_RESPONDING and submits
+desc->response.
+That is not problematic in itself, but wdm_read() also calls
+service_outstanding_interrupt(), which can lead to teh same URB
+being submitted twice (which caused me to write the patch)
+or, apparently, in this case, it leads to discarding a buffer
+by resubmitting and completing an URB.
+
+> But to me it looks like the described issue is exactly what you should
+> expect if that change ever triggers.  I believe we must resubmit the
+
+Yes, it does.
+
+> urb from service_outstanding_interrupt(). That's why it was added. See
+> the explanation Robert wrote when introducing it:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/usb/class/cdc-wdm.c?id=c1da59dad0ebd3f9bd238f3fff82b1f7ffda7829
+
+Well, the explanation is correct in that we must read
+data available. However, if the RESPONDING flag is set
+and the URB submitted, we are already doing so.
+
+> As for the XMM behaviour: it's been a long time since I tried any of
+> those, but AFAIR one the major differences compared to Qualcomm was the
+> strict queue handling in the firmware.  This caused a number of problems
+> where the cdc-wdm driver wanted to skip a message for some reason.  So
+> I'm not surprised that a bug like this is triggered by one of those
+> modems. That's probably the only thing they are good for :-)
+
+I am not sure where exactly the issue lies here. Suggestions for
+debugging?
+
+	Regards
+		Oliver
 
 
