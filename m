@@ -1,137 +1,148 @@
-Return-Path: <linux-kernel+bounces-145892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E59638A5C71
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:50:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4B28A5C50
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:42:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96B3B2818B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:50:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 202BE1C2212D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90100156974;
-	Mon, 15 Apr 2024 20:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B6A156672;
+	Mon, 15 Apr 2024 20:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b="Bsfv5Qfs"
-Received: from mr3.vodafonemail.de (mr3.vodafonemail.de [145.253.228.163])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wj4sjHtB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE6F7F7FF;
-	Mon, 15 Apr 2024 20:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.253.228.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32671DFEB;
+	Mon, 15 Apr 2024 20:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713214209; cv=none; b=R4Zfah8VbVaa2SJqecUSXp5bzBvfa8yCts4qCev7IUEAJssDjLN+uzBwAePNosVhR8U7XSBqb+bWf44TmGl3+2SoqsrVhGChGaBS0cZEUCcojapTHr0kEJJ5Waf6f/rXvr+F/oH9li68URpFCDeyecswkU7qQAPaGSRLlGp8yQo=
+	t=1713213745; cv=none; b=BCYD5zMXwPLXXkzkyZGkYuc+A6M2Ssi18sSHGTe8N44f2X1JHg0tSzKuCKZvlDGcKBEzZKCiagc1sLWHWwqdye/hYWhltj4gUnHfjwgsO7jC/FArQKP9u7GQpzwVhTG+8QxDL2qOPpSIfcON00i/l6qc/0KyXXkbHkHsDjydMmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713214209; c=relaxed/simple;
-	bh=gAWfBjMv/u1hM1ri7vb4WcKTVN9s+CRx5IVlFNsdewU=;
-	h=Message-ID:From:To:Cc:References:In-Reply-To:Subject:Date:
-	 MIME-Version:Content-Type; b=DnoTX85xAwo01nKZhzY5x775pnkjZIkG9bX9B5uJV2rYcNpJyOASWD3xt0abzhWGCiWUJbbKIb7+otGLw8y6STL36TWgCQc6LE7pFdMGjtzKIws8iaT74PxsN2e6oiynhixX1LWc7jbq9MJ3MKyJvM1s9oueYaFA0Cw1aljU+Iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de; spf=pass smtp.mailfrom=nexgo.de; dkim=pass (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b=Bsfv5Qfs; arc=none smtp.client-ip=145.253.228.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nexgo.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nexgo.de;
-	s=vfde-mb-mr2-23sep; t=1713214198;
-	bh=sdWOScoNOqhnKs7wXEoboT4q95JQ4ewNRcGo/88he5M=;
-	h=Message-ID:From:To:References:In-Reply-To:Subject:Date:
-	 Content-Type:X-Mailer:From;
-	b=Bsfv5QfsBPQjeBsyl3aUbwapcSPbTKuD4IMziRyplvzfZKp4VflHnCEegQxmAouMF
-	 YReqiqSToV1MAqPEfmVGew4sJje9nW1D4W9b3+gziaOkU4F4ay01HG6EBC6LL9lxxd
-	 souZnilJjfzKPHSr1r4oU+btY/YaaxgroOnUUfig=
-Received: from smtp.vodafone.de (unknown [10.0.0.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by mr3.vodafonemail.de (Postfix) with ESMTPS id 4VJK6t6Ftwz1yVn;
-	Mon, 15 Apr 2024 20:49:58 +0000 (UTC)
-Received: from H270 (p54805648.dip0.t-ipconnect.de [84.128.86.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.vodafone.de (Postfix) with ESMTPSA id 4VJK6h4LtKz9thr;
-	Mon, 15 Apr 2024 20:49:45 +0000 (UTC)
-Message-ID: <2ECD48ACEA9540C083E6B797CFD18027@H270>
-From: "Stefan Kanthak" <stefan.kanthak@nexgo.de>
-To: "Eric Biggers" <ebiggers@kernel.org>,
-	<linux-crypto@vger.kernel.org>
-Cc: <linux-kernel@vger.kernel.org>
-References: <20240411162359.39073-1-ebiggers@kernel.org> <20240411162359.39073-5-ebiggers@kernel.org>
-In-Reply-To: <20240411162359.39073-5-ebiggers@kernel.org>
-Subject: Re: [PATCH v2 4/4] crypto: x86/sha256-ni - simplify do_4rounds
-Date: Mon, 15 Apr 2024 22:41:07 +0200
-Organization: Me, myself & IT
+	s=arc-20240116; t=1713213745; c=relaxed/simple;
+	bh=WWhd2MD/OkFbRlau85vf2fAlZdF/HP4MEvIE/7EhBhU=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=DbNGQKgInJgfZZFBzX1S1fO5rhTRg7q6KlxO/yquxLy60+C9W9Diqzch+SfYZ2Jhgl4Kjit438tQbH3z0YVdsuAWjGbwfuX3oM3baohM/fiwmsD+q4U3Jwl76FAuBqLDENviA+lSLDssYSf+2W3VJCRwmD37+brit/G7tGnoj0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wj4sjHtB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02994C113CC;
+	Mon, 15 Apr 2024 20:42:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713213745;
+	bh=WWhd2MD/OkFbRlau85vf2fAlZdF/HP4MEvIE/7EhBhU=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+	b=Wj4sjHtBhAMSpn9QrQVOe/FnRHXl6bY7gsAH30+kmK8fv9Q49lsN3/r9N5vUWl+Y+
+	 1esmu9NZpOthDadc94K3gzkrqI7r/V5uaJJLmGY9Ja67pT3DO0Fwa2IsRRASrC3D8Q
+	 to3550cYpk92uzlJfkKCKldmWvx8ge2K+Dhf9zzLmR/NB1e57WSAFhd/eJcjV92Yh+
+	 17COv7mXIdPrZ9za4KN6/GqUL3ZjbDir0xxoUVzNV9VwrqZa41QWRWGd/nmd5UfvY3
+	 PtNpdqCjDgxoZ0f1MwahQuprxaupBYVmwON/zTWVs+5MYM+AkmigqtHlEvX0QbWz2r
+	 aURugM/OjgHyQ==
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Windows Mail 6.0.6002.18197
-X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.24158
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-size: 2536
-X-purgate-ID: 155817::1713214194-6CFF7A4B-F57EC3D5/0/0
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [kpsingh:static_calls] [security] 9e15595ed0:
+ Kernel_panic-not_syncing:lsm_static_call_init-Ran_out_of_static_slots
+From: KP Singh <kpsingh@kernel.org>
+In-Reply-To: <A9568514-FCB3-4715-9794-696383B2B7E8@kernel.org>
+Date: Mon, 15 Apr 2024 22:42:20 +0200
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Kees Cook <keescook@chromium.org>,
+ Song Liu <song@kernel.org>,
+ Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+ kernel test robot <oliver.sang@intel.com>,
+ linux-kernel@vger.kernel.org,
+ linux-security-module@vger.kernel.org,
+ lkp@intel.com,
+ oe-lkp@lists.linux.dev
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CD57788C-C9D6-4BA8-8352-90EBB6600D39@kernel.org>
+References: <202404151225.ce542e38-lkp@intel.com>
+ <757538DA-07A4-4332-BAFA-B864BFD06A76@kernel.org>
+ <30876b80-c437-4916-b982-97c1a95c0747@I-love.SAKURA.ne.jp>
+ <CAHC9VhS=hQuvv+Sw6cc2HwzcLApO7Rc3dAnqHytyzBpC1rokFA@mail.gmail.com>
+ <CACYkzJ4G7hO0DNSBy4wpJG1PSgNkifuYcfOeTTpyVBtBtWvQSg@mail.gmail.com>
+ <A9568514-FCB3-4715-9794-696383B2B7E8@kernel.org>
+To: Paul Moore <paul@paul-moore.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-"Eric Biggers" <ebiggers@kernel.org> wrote:
 
-> Instead of loading the message words into both MSG and \m0 and then
-> adding the round constants to MSG, load the message words into \m0 and
-> the round constants into MSG and then add \m0 to MSG.  This shortens the
-> source code slightly.  It changes the instructions slightly, but it
-> doesn't affect binary code size and doesn't seem to affect performance.
 
-At last the final change: write the macro straightforward and SIMPLE,
-closely matching NIST.FIPS.180-4.pdf and their order of operations.
+> On 15 Apr 2024, at 17:47, KP Singh <kpsingh@kernel.org> wrote:
+>=20
+>=20
 
-@@ ...
-+.macro  sha256  m0 :req, m1 :req, m2 :req, m3 :req
-+.if \@ < 4
-+        movdqu  \@*16(DATA_PTR), \m0
-+        pshufb  SHUF_MASK, \m0          # \m0 = {w(\@*16), w(\@*16+1), w(\@*16+2), w(\@*16+3)}
-+.else
-+                                        # \m0 = {w(\@*16-16), w(\@*16-15), w(\@*16-14), w(\@*16-13)}
-+                                        # \m1 = {w(\@*16-12), w(\@*16-11), w(\@*16-10), w(\@*16-9)}
-+                                        # \m2 = {w(\@*16-8),  w(\@*16-7),  w(\@*16-6),  w(\@*16-5)}
-+                                        # \m3 = {w(\@*16-4),  w(\@*16-3),  w(\@*16-2),  w(\@*16-1)}
-+        sha256msg1 \m1, \m0
-+        movdqa     \m3, TMP
-+        palignr    $4, \m2, TMP
-+        paddd      TMP, \m0
-+        sha256msg2 \m3, \m0             # \m0 = {w(\@*16), w(\@*16+1), w(\@*16+2), w(\@*16+3)}
-+.endif
-+        movdqa      (\@-8)*16(SHA256CONSTANTS), MSG
-+        paddd       \m0, MSG
-+        sha256rnds2 STATE0, STATE1      # STATE1 = {f', e', b', a'}
-+        punpckhqdq  MSG, MSG
-+        sha256rnds2 STATE1, STATE0      # STATE0 = {f", e", b", a"},
-+                                        # STATE1 = {h", g", d", c"}
-+.endm
+[...]
 
-JFTR: you may simplify this further using .altmacro and generate \m0 to \m3
-      as MSG%(4-\@&3), MSG%(5-\@&3), MSG%(6-\@&3) and MSG%(7-\@&3) within
-      the macro, thus getting rid of its 4 arguments.
+>> <penguin-kernel@i-love.sakura.ne.jp> wrote:
+>>> On 2024/04/15 17:26, KP Singh wrote:
+>>>> This seems like an odd config which does not enable STATIC_CALL, I =
+am going to
+>>>> make CONFIG_SECURITY depend on CONFIG_STATIC_CALL and make the =
+dependency explicit.
+>>>=20
+>>> If CONFIG_SECURITY depends on CONFIG_STATIC_CALL, architectures =
+which do not
+>>> support CONFIG_STATIC_CALL can no longer use LSM ? That sounds a bad =
+dependency.
+>>=20
+>> Agreed.  If the arch doesn't support static calls we need a fallback
+>> solution for the LSM that is no worse than what we have now, and
+>> preferably would still solve the issue of the BPF hooks active even
+>> where this is no BPF program attached.
+>=20
+> Actually I take it back, when CONFIG_STATIC_CALL is not available, the =
+implementation falls back to an indirect call. This crash is unrelated, =
+I will debug further and post back.
 
-@@ ...
-+.rept 4                                 # 4*4*4 rounds
-+        sha256  MSG0, MSG1, MSG2, MSG3
-+        sha256  MSG1, MSG2, MSG3, MSG0
-+        sha256  MSG2, MSG3, MSG0, MSG1
-+        sha256  MSG3, MSG0, MSG1, MSG2
-+.endr
+ Apparently, when I smoke tested, I had CONFIG_IMA disabled so did not =
+hit the bug. Well, now IMA is an LSM, so the following fixes it:
 
-Now that all code written by Tim Chen and Sean Gulley is gone,
-remove their copyright notice and insert your and my name instead.
+kpsingh@kpsingh:~/projects/linux$ git diff
+diff --git a/include/linux/lsm_count.h b/include/linux/lsm_count.h
+index dbb3c8573959..77803d117a30 100644
+--- a/include/linux/lsm_count.h
++++ b/include/linux/lsm_count.h
+@@ -78,6 +78,12 @@
+ #define BPF_LSM_ENABLED
+ #endif
 
-regards
-Stefan
++#if IS_ENABLED(CONFIG_IMA)
++#define IMA_ENABLED 1,
++#else
++#define IMA_ENABLED
++#endif
++
+ #if IS_ENABLED(CONFIG_SECURITY_LANDLOCK)
+ #define LANDLOCK_ENABLED 1,
+ #else
+@@ -103,6 +109,7 @@
+                LOCKDOWN_ENABLED        \
+                SAFESETID_ENABLED       \
+                BPF_LSM_ENABLED         \
++               IMA_ENABLED             \
+                LANDLOCK_ENABLED)
 
-PS: see <https://skanthak.homepage.t-online.de/fips-180.html>
-    (which I still polish) not just for this implementation.
 
-PPS: if MASM had a counter like \@, I'd used it there.
+We don't need a CONFIG_STATIC_CALL dependency, th static_call code =
+nicely falls back.
+
+- KP
+
+>=20
+> - KP
+>=20
+>>=20
+>> --=20
+>> paul-moore.com
+>=20
+
 
