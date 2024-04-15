@@ -1,60 +1,57 @@
-Return-Path: <linux-kernel+bounces-145099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FDFE8A4F8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:49:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734B98A4F8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:50:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44E1E1F22712
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:49:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30D0A283FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DECB7441C;
-	Mon, 15 Apr 2024 12:49:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59AA7442E;
+	Mon, 15 Apr 2024 12:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPo5HY63"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYin6wo5"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFC8973186;
-	Mon, 15 Apr 2024 12:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE259745C4;
+	Mon, 15 Apr 2024 12:49:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185351; cv=none; b=VG3GDYRsXLeosIp6SzDt35YN/c64pbGkK90XsJTuuCG74np5rrW4YEksomFqMQmvo5FCfXXOkZuJbhtERY0XYjXjB0T3UzBHe6jwJIbwd+SdRKWF8KgXTFwabLIHgMijCQoXhmQeiYalcxd3M08kI/nwbPd8n9/Z6mJ9XqljNxM=
+	t=1713185354; cv=none; b=n0Zo6HNeZEP9nTEKMSv6ESpQltOFYYL5ypFm+8F0tFYbPU0gIw3L+74s4ejILXxgR/XhYznffT/2Wuk2WOIiAM6hxW62GCzFytqpx5CaCbivQ6OHVI06KK+ywP/758rOw28pB51uJ2G7uaqbrXYtLgDRDLgSWLt3KCPVo0mQbYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185351; c=relaxed/simple;
-	bh=5YcmAJEaJy+2NLkAu6FGCcCQHDR3gKDPyGyZkrrlNqM=;
+	s=arc-20240116; t=1713185354; c=relaxed/simple;
+	bh=ght8BJNX6A/j7rHJE4Dh6XP/NEcplQcXuxyvyVAkquU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mgEYqnh7ooTd+mP+rJf+pMVT6QHtxW2KzAW4Yl2wnT0AVgXf1AXLWGEKHKjGafJ84cu98c9h92ZkCqFQkEopDEHAYyAd6jXVb5orLKlsZOMWucOAkCr1ialZWCqgDlYnU4uA3FTPvT++FBIMGUIGWHdxHXGWmib8Yf4OiQ/MQ8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPo5HY63; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D575C32783;
-	Mon, 15 Apr 2024 12:49:09 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WltVdhuJFPxo0K9hqjKbTC/AGuL0bHGFNDPogsNE9pDceCyCqwwFwxqhEXXdn70Zj5XB4R27eG47+D8DvunVX3TsmegEH8hAhwWbRxc93C+v4CGOihgA/XhaSvOiAOLA6XfuutqpAJpqkpt77bspCBfFVCLpRWR4Gld8KmWRRyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tYin6wo5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2492C4AF07;
+	Mon, 15 Apr 2024 12:49:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185351;
-	bh=5YcmAJEaJy+2NLkAu6FGCcCQHDR3gKDPyGyZkrrlNqM=;
+	s=k20201202; t=1713185353;
+	bh=ght8BJNX6A/j7rHJE4Dh6XP/NEcplQcXuxyvyVAkquU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BPo5HY63dNyLkm+LKadPncTqWlme7qI5zf0jWoL+TcvRoLF3vF62CqnzI0L13MkeZ
-	 2cOIyRHb1T6l6ynUbVm5D45UgclGiBgF1GqETHyjN1Gmv4HKjLvktf3XvT3Ms7cZ28
-	 SkIzIgdxHAPeSv2qbDaq/aaHeZWOEBFtr7t3PZINEFADnHcIFt4df0YJe1CpHiUCLR
-	 BdOZ1d96FMS1pRbInpnhmv3H2e/Cv/VL3iSRFw0FktBbYBPhnwNWY9I/nnSfl0ieKw
-	 9jiOn8/aXgWMwkm7VoFh/7q+VOJ8Sd308fXzubdCdhmBgobsukfqMU5KyTdGas2vtA
-	 mSlSfoQTJlHKg==
+	b=tYin6wo5RwN3uC0kDLQsC73txuDy4EMT/wIhVhTOOR1oLFkp9sgAB85pl0+aC5ZHY
+	 MgZHHEF2HfFLcDcHqI+IZmK3R4VvPBl0aJQAcL0gYFqZ9UES4Z39oYDIwyOHjaNzwP
+	 n/x2euL9UobdyAzvO2iYr42+c8OG6fNd8Yjim/KylR2rleqSeYT0Fu90euhCphYhBN
+	 faBVHdGWBRvdbaOLZcPDxd1C+79M0Y38+MMEg7k3fxZE/RYSlBn61U3mo7AVVvLlI3
+	 WTbGZ6Z4DbTFDxib987Hg+GJpKMZW1NXhfHHQQxHREL2fIrnsIR9tE/Vraew3ATEeC
+	 GsKa7DRlPO39A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	song@kernel.org,
-	daniel@iogearbox.net,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 03/15] bpf: put uprobe link's path and task in release callback
-Date: Mon, 15 Apr 2024 06:02:43 -0400
-Message-ID: <20240415100311.3126785-3-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 04/15] OSS: dmasound/paula: Mark driver struct with __refdata to prevent section mismatch
+Date: Mon, 15 Apr 2024 06:02:44 -0400
+Message-ID: <20240415100311.3126785-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415100311.3126785-1-sashal@kernel.org>
 References: <20240415100311.3126785-1-sashal@kernel.org>
@@ -64,59 +61,51 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.6
 Content-Transfer-Encoding: 8bit
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit e9c856cabefb71d47b2eeb197f72c9c88e9b45b0 ]
+[ Upstream commit 755795cd3da053b0565085d9950c44d7b6cba5c4 ]
 
-There is no need to delay putting either path or task to deallocation
-step. It can be done right after bpf_uprobe_unregister. Between release
-and dealloc, there could be still some running BPF programs, but they
-don't access either task or path, only data in link->uprobes, so it is
-safe to do.
+As described in the added code comment, a reference to .exit.text is ok
+for drivers registered via module_platform_driver_probe(). Make this
+explicit to prevent the following section mismatch warning
 
-On the other hand, doing path_put() in dealloc callback makes this
-dealloc sleepable because path_put() itself might sleep. Which is
-problematic due to the need to call uprobe's dealloc through call_rcu(),
-which is what is done in the next bug fix patch. So solve the problem by
-releasing these resources early.
+	WARNING: modpost: sound/oss/dmasound/dmasound_paula: section mismatch in reference: amiga_audio_driver+0x8 (section: .data) -> amiga_audio_remove (section: .exit.text)
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20240328052426.3042617-1-andrii@kernel.org
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+that triggers on an allmodconfig W=1 build.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Message-ID: <c216a129aa88f3af5c56fe6612a472f7a882f048.1711748999.git.u.kleine-koenig@pengutronix.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/oss/dmasound/dmasound_paula.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 7ac6c52b25ebc..45de8a4923e21 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3142,6 +3142,9 @@ static void bpf_uprobe_multi_link_release(struct bpf_link *link)
- 
- 	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
- 	bpf_uprobe_unregister(&umulti_link->path, umulti_link->uprobes, umulti_link->cnt);
-+	if (umulti_link->task)
-+		put_task_struct(umulti_link->task);
-+	path_put(&umulti_link->path);
+diff --git a/sound/oss/dmasound/dmasound_paula.c b/sound/oss/dmasound/dmasound_paula.c
+index 0ba8f0c4cd99a..3a593da09280d 100644
+--- a/sound/oss/dmasound/dmasound_paula.c
++++ b/sound/oss/dmasound/dmasound_paula.c
+@@ -725,7 +725,13 @@ static void __exit amiga_audio_remove(struct platform_device *pdev)
+ 	dmasound_deinit();
  }
  
- static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
-@@ -3149,9 +3152,6 @@ static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
- 	struct bpf_uprobe_multi_link *umulti_link;
- 
- 	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
--	if (umulti_link->task)
--		put_task_struct(umulti_link->task);
--	path_put(&umulti_link->path);
- 	kvfree(umulti_link->uprobes);
- 	kfree(umulti_link);
- }
+-static struct platform_driver amiga_audio_driver = {
++/*
++ * amiga_audio_remove() lives in .exit.text. For drivers registered via
++ * module_platform_driver_probe() this is ok because they cannot get unbound at
++ * runtime. So mark the driver struct with __refdata to prevent modpost
++ * triggering a section mismatch warning.
++ */
++static struct platform_driver amiga_audio_driver __refdata = {
+ 	.remove_new = __exit_p(amiga_audio_remove),
+ 	.driver = {
+ 		.name	= "amiga-audio",
 -- 
 2.43.0
 
