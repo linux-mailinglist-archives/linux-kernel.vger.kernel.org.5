@@ -1,126 +1,100 @@
-Return-Path: <linux-kernel+bounces-144671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A97C8A4907
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:29:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B6E98A490A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:29:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A8E51F21B4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:29:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7558B1C22833
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD472C6B9;
-	Mon, 15 Apr 2024 07:29:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 477A7241E1;
+	Mon, 15 Apr 2024 07:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="F1fWXgBG"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IYJgU3uZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1522C1A7
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70776225DA;
+	Mon, 15 Apr 2024 07:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713166145; cv=none; b=pE50Drvzz++CJ4hBizkOmSOf3oXq7OMkQyhdLg4+25vuqyYv6aiYEoo6IBxSjgTFdB0tixp0qu4M9aFP1va/MOKm47+jX0IzqBK95eqyCiiYGZ88gMy5zAJCKHhNXFh2AzH755yehFmhpGF2lArTGk+xxF7UI8QO/Vt9IrwRZ98=
+	t=1713166187; cv=none; b=UyOt48iATpAo9aime8EwgLKHC+//mE2g83HCiAPgoU1uv9KQ1XlpWqo97QWhxU5pxTrvzMaVMvQ7hBMfsEuLL7IvTXuloszWhVd9lqUS/JmXsElLc09b/EU/l4bK67+xstc9YFheF/mEA6XqbFAwC3QLghAHyZ39h7Ly7xk1g8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713166145; c=relaxed/simple;
-	bh=du0W4qpqs7iigYAyvC1Db2y4iMsMSpAINvx2wlgvTEM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jUwwgo3gWy8/mBOnO2H9/6HiD4lKPryV9I+FNHAKqdm7qf4vDQEI3ybOCvh5FK+M1DEJRG5QHrSFHHm+5SMOpyTyaOe5Yjjfl3uWWCWVhl8bPN3RSiik8iCFxaT3oZjjdQFGGynU1KfNSsUHi5W1yPtTdyApBcw7DTbd/Rgum7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=F1fWXgBG; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d487659bso3432473e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 00:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713166142; x=1713770942; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=du0W4qpqs7iigYAyvC1Db2y4iMsMSpAINvx2wlgvTEM=;
-        b=F1fWXgBGIep+W3E0eMbHNfYX9nn/htFXcxbVcd9p+j8vcTIaF9NQziTFFiDQuG+tIj
-         WgNSqsO5JTpPVE5trV9YqjweDXknwRKh50suWzEr3+3UlTueNMm0y4kwne4dSsZIBWcy
-         f7kBp/vXz5VaHhNNkiC+D5q8SpeBNO5S9gGBA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713166142; x=1713770942;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=du0W4qpqs7iigYAyvC1Db2y4iMsMSpAINvx2wlgvTEM=;
-        b=snXRDIriNzSFj5YdmrioSjMdhUXLe+dDNe1pF0K6ZCpToOW2Uyp49n2tr4c1mJKNH3
-         g1kvV/1iEKb4x8j+25w5QX2iWTSMdhQYv+SrPL+OIY4xHgibXDhupDcD2gys76GJxBoG
-         z3ppZ3zTIAP9dVypPxZ7/S2tRlMgrjFbws9qtJ2IYPpHMb/No9P2O1a6T5C8v5AaEXV/
-         O1Kg+7LIp0vctBuczsDZPNLj7vUrs5V9WmVZs/RnYlNkiZBJYOnBy+YaQBjHq3zphjvN
-         vsrWqvCShuY79y0Bc9cE6imcAUgGe6vF7QhuH2BYUwvFy3dloeHDu/rIh/jbOwK72urj
-         djtw==
-X-Forwarded-Encrypted: i=1; AJvYcCWdlpHnjnWsKU6fib0ut2DnOPc3jzaib4BZB8emkwFVOqFZTVrboimAdpxnBFGUOWIcAeAI6eCKJN0VC2MTM26S1NkxBvBacUdTQX80
-X-Gm-Message-State: AOJu0Yx+l4vPsK49wb7ku8Zdr2R+UGTDNKZ1iKqWF+c6yu377XZSVJwU
-	l4EkdawIRa6bwUvIBznSVLujeExmAPhjq50RGFwMdfUeJF8WNxbKRjrXdtihh1HwM13yzjEtMJZ
-	t/q3ImVrunCHzDujFNN8/qv9ZrM0VO8YWshGL
-X-Google-Smtp-Source: AGHT+IERO5rG8jweS1bNqQ1EXQ2ssIePQAJ4H8RW/7zN4PAfCchdCg5YM+BZHb/VI06OVCMrIz/XiyTQ8yMwuhxGerw=
-X-Received: by 2002:a19:7008:0:b0:513:5a38:f545 with SMTP id
- h8-20020a197008000000b005135a38f545mr5926585lfc.62.1713166141844; Mon, 15 Apr
- 2024 00:29:01 -0700 (PDT)
+	s=arc-20240116; t=1713166187; c=relaxed/simple;
+	bh=pNT+Wb97jz0djjk250DiFv0ubERcVS2s71OhTbkpiK0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EauGUsJN0QOSmWq69GnzwSkDQIflhrlgWFFeXly7Zc2qgS3urOxPvd+ajltx33jFYLSUd6WuMODv7KqN1RpoZODrTtD2PgtnyMhqeF1DdQVd5ivsPaMPwRVL/4ax0qTcChUQTVmX8anYQCi8X8ZIjQGjGCFinzV+AFRecWmoRFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IYJgU3uZ; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713166187; x=1744702187;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pNT+Wb97jz0djjk250DiFv0ubERcVS2s71OhTbkpiK0=;
+  b=IYJgU3uZ3Cud/6uY1EEoPEGqehNrF6z13xV+gZpOvWgj8rWHiECny7+/
+   ft19pCrnQOaJmbE8oy4gEvi2vlD68U2OKm3rRkqlvWFnJVtRhdLk5OcNM
+   xOetbuDziDQBowyBvowaYmPiGUDkdRqrwHC/uO7TJ3vcUu09XVQa7N1hM
+   0GnJTKabiOuzeza+FX67kgMq5GdW/AQx+Egh6I+xdGlUzJXdn1S4Csy2K
+   rTblYlJ6+HR0kt8mAuD6Xe3yxaAp/wlqr1eieBmzKkLi2frSAyTpZ1pQ+
+   kQtDz9t2wWi89u4ZwVpBCEx4SVUcp+45M/xixaPBlMAfYmyPHIh1OMTTy
+   A==;
+X-CSE-ConnectionGUID: yLmgyO5ISsGgyz6NcDLjiQ==
+X-CSE-MsgGUID: uOy8ixJvTbuOYgG2Y2R99g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="19687963"
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="19687963"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 00:29:46 -0700
+X-CSE-ConnectionGUID: 8vrFKyI5Qg6H6yjpzR9dig==
+X-CSE-MsgGUID: A4aD3a0QSHSmY85TlJuscw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="21824858"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 00:29:43 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 17A4B11F8AF;
+	Mon, 15 Apr 2024 10:29:41 +0300 (EEST)
+Date: Mon, 15 Apr 2024 07:29:41 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, tomi.valkeinen@ideasonboard.com,
+	Hans de Goede <hdegoede@redhat.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] media: v4l: Don't turn on privacy LED if streamon
+ fails
+Message-ID: <ZhzXZUyY4Rc4z71y@kekkonen.localdomain>
+References: <20240410114712.661186-1-sakari.ailus@linux.intel.com>
+ <20240412174621.GA5444@pendragon.ideasonboard.com>
+ <ZhzUHs7lpdeMa22l@kekkonen.localdomain>
+ <20240415071812.GA25078@pendragon.ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229025759.1187910-1-stevensd@google.com> <20240229025759.1187910-9-stevensd@google.com>
- <15865985-4688-4b7e-9f2d-89803adb8f5b@collabora.com>
-In-Reply-To: <15865985-4688-4b7e-9f2d-89803adb8f5b@collabora.com>
-From: David Stevens <stevensd@chromium.org>
-Date: Mon, 15 Apr 2024 16:28:50 +0900
-Message-ID: <CAD=HUj72-0hkmsyGXj4+qiGkT5QZqskkPLbmuQPqjHaZofCbJQ@mail.gmail.com>
-Subject: Re: [PATCH v11 8/8] KVM: x86/mmu: Handle non-refcounted pages
-To: Dmitry Osipenko <dmitry.osipenko@collabora.com>, Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, 
-	Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
-	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415071812.GA25078@pendragon.ideasonboard.com>
 
-On Fri, Apr 5, 2024 at 1:03=E2=80=AFAM Dmitry Osipenko
-<dmitry.osipenko@collabora.com> wrote:
->
-> Hi David,
->
-> On 2/29/24 05:57, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
-> >
-> > Handle non-refcounted pages in __kvm_faultin_pfn. This allows the
-> > host to map memory into the guest that is backed by non-refcounted
-> > struct pages - for example, the tail pages of higher order non-compound
-> > pages allocated by the amdgpu driver via ttm_pool_alloc_page.
-> >
-> > Signed-off-by: David Stevens <stevensd@chromium.org>
->
-> This patch has a problem on v6.8 kernel. Pierre-Eric of AMD found that
-> Qemu crashes with "kvm bad address" error when booting Ubuntu 23.10 ISO
-> with a disabled virtio-gpu and I was able to reproduce it. Pierre-Eric
-> said this problem didn't exist with v6.7 kernel and using v10 kvm
-> patches. Could you please take a look at this issue?
+On Mon, Apr 15, 2024 at 10:18:12AM +0300, Laurent Pinchart wrote:
+> > Maybe because a large majority is GPIO-controlled?
+> 
+> GPIOs can fail, in particular when they're on I2C GPIO expanders.
 
-This failure is due to a minor conflict with:
+Sure, but gpiod_set_value() return type is also void.
 
-Fixes: d02c357e5bfa ("KVM: x86/mmu: Retry fault before acquiring
-mmu_lock if mapping is changing")
+It just works... right?
 
-My patch series makes __kvm_faultin_pfn no longer take a reference to
-the page associated with the returned pfn. That conflicts with the
-call to kvm_release_pfn_clean added to kvm_faultin_pfn, since there is
-no longer a reference to release. Replacing that call with
-kvm_set_page_accessed fixes the failure.
-
-Sean, is there any path towards getting this series merged, or is it
-blocked on cleaning up the issues in KVM code raised by Christoph? I'm
-no longer working on the same projects I was when I first started
-trying to upstream this code 3-ish years ago, so if there is a
-significant amount of work left to upstream this, I need to pass
-things on to someone else.
-
--David
+-- 
+Sakari Ailus
 
