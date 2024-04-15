@@ -1,161 +1,210 @@
-Return-Path: <linux-kernel+bounces-144650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECE168A48CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7967B8A48CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:16:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A777628236E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:15:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3479F284514
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E76AC224DC;
-	Mon, 15 Apr 2024 07:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="luW4KWpA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C19D225D4;
+	Mon, 15 Apr 2024 07:16:02 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A9920DD3;
-	Mon, 15 Apr 2024 07:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5C520DC4;
+	Mon, 15 Apr 2024 07:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713165349; cv=none; b=Oy5V190DowNRnqRNCzreuJZIahiGY8Mh0L7ZOLaoYHYDx44op5WF0lGWjoYc7anMguMdwdjbP+9yEiXHLQpoqWcgaBaiFfnmfJRrE3k9cfqxqXS2s4eA3GLoLyzdAXFCBBOhGZmywCZS1wDrP2sES1u9qhnnuhDKK2mxu7tlgis=
+	t=1713165362; cv=none; b=X3NYpW33POma4c1SWQgPJfnSULSRsXt66rtzm/jOMTAC5iR0/VvrKu3uVDqcMNHTKYw5Ay6l9oSF+rnbxZl+0kJY+8EtDf5EfjMjBvMf91TZpUfdJYY8lvijIlscx0wPJpjzW8ZjAJkusCFaGzWFR4UPQBrdPcuQVp8D+bnFsso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713165349; c=relaxed/simple;
-	bh=6cH2Uu4HCsDWucsxgs3vSFvjIgYCW2Exz0TqF+z3wAE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P0sdvdWw16DTY5x5aFA6vYKjxQpWDh2N5XawIyUB/rchxy/DlYx7nARUj02XkU7ATmPadsM847xkrKJI/J7nXmWLOtsAcLY82iC7RE7wEWEw2c4erkgTnru5SIS/V9zyBQCyXBG1heBUPnGBT6rzQ6rr7vFgFjwjpuK7ofZICw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=luW4KWpA; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713165348; x=1744701348;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6cH2Uu4HCsDWucsxgs3vSFvjIgYCW2Exz0TqF+z3wAE=;
-  b=luW4KWpAqIfECmKpcpMJ4rRhEQwV1bwWOcFN/6CHuvYBq8wXyKh8cCRG
-   1uhW/as7WgjC0ynd7IHs6DwqbBEYUglvtIRWZ+ZsGyAMwRnzkD3uLVFGk
-   qvH/OZ8fEiT1mDl3CrFG1n5qkn2VYzyt8MC5CttnWGXZdYe/hmu1/gRj+
-   AW433Y1PV8iv6UN0ROnsMW/u2QLM4ZJATS81LTifVReiHmHD0IGI72I9N
-   GxRkeNz3keVGpNyLbdsbpGxvjkxWd/W/VGv++EGeFcx2pancdq7rvEMtq
-   Qgt2oJgB10uvsGyOKoNgxwCAZx0NEAWB44/COHa1UK3r5oo6CVkha0/Nq
-   g==;
-X-CSE-ConnectionGUID: eQPiDdHMSV+82qZjSo987A==
-X-CSE-MsgGUID: AJU4H9m0T8iIpbLBrccAbg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="8405338"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="8405338"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 00:15:48 -0700
-X-CSE-ConnectionGUID: bvtdr4X8T0OxFWnTbU1k8Q==
-X-CSE-MsgGUID: tmq31PqqTP+FCGYAutUjug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="22398955"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 00:15:45 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 8F7DF11F8AF;
-	Mon, 15 Apr 2024 10:15:42 +0300 (EEST)
-Date: Mon, 15 Apr 2024 07:15:42 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, tomi.valkeinen@ideasonboard.com,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] media: v4l: Don't turn on privacy LED if streamon
- fails
-Message-ID: <ZhzUHs7lpdeMa22l@kekkonen.localdomain>
-References: <20240410114712.661186-1-sakari.ailus@linux.intel.com>
- <20240412174621.GA5444@pendragon.ideasonboard.com>
+	s=arc-20240116; t=1713165362; c=relaxed/simple;
+	bh=QMcq1DhjSKdHb6qqoxA+QfgDkKOTwt2YbMawmdiDzV8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dN8DNdFhY4nYYeUIeA7TP+4yaWDCO+BuNXcGCdA0LHG1q05eK/X3t6LqD20SFWyc3dt/Olm4NalqhsbjD+ol8fpX1IRZqVZuJjbQsd5Xq3U0Ke2KKtzNa+no1ns/sdWWmJZy8bKyfLSAGhFxoGtGmyulnNuFWTBbxbCn1VtPx/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BC0EC113CC;
+	Mon, 15 Apr 2024 07:16:00 +0000 (UTC)
+Date: Mon, 15 Apr 2024 03:15:56 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Dongliang Cui <dongliang.cui@unisoc.com>
+Cc: <axboe@kernel.dk>, <mhiramat@kernel.org>,
+ <mathieu.desnoyers@efficios.com>, <ebiggers@kernel.org>,
+ <ke.wang@unisoc.com>, <hongyu.jin.cn@gmail.com>, <niuzhiguo84@gmail.com>,
+ <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <cuidongliang390@gmail.com>
+Subject: Re: [PATCH RESEND] block: Add ioprio to block_rq tracepoint
+Message-ID: <20240415031556.5788238e@rorschach.local.home>
+In-Reply-To: <20240415060710.1199009-1-dongliang.cui@unisoc.com>
+References: <20240415060710.1199009-1-dongliang.cui@unisoc.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412174621.GA5444@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Laurent,
+On Mon, 15 Apr 2024 14:07:10 +0800
+Dongliang Cui <dongliang.cui@unisoc.com> wrote:
 
-On Fri, Apr 12, 2024 at 08:46:21PM +0300, Laurent Pinchart wrote:
-> Hi Sakari,
-> 
-> Thank you for the patch.
-> 
-> On Wed, Apr 10, 2024 at 02:47:12PM +0300, Sakari Ailus wrote:
-> > Turn on the privacy LED only if streamon succeeds. This can be done after
-> > enabling streaming on the sensor.
-> > 
-> > Fixes: b6e10ff6c23d ("media: v4l2-core: Make the v4l2-core code enable/disable the privacy LED if present")
-> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > ---
-> >  drivers/media/v4l2-core/v4l2-subdev.c | 22 ++++++++++++----------
-> >  1 file changed, 12 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> > index 4c6198c48dd6..012b757eac9f 100644
-> > --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> > +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> > @@ -412,15 +412,6 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
-> >  	if (WARN_ON(!!sd->enabled_streams == !!enable))
-> >  		return 0;
-> >  
-> > -#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> > -	if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> > -		if (enable)
-> > -			led_set_brightness(sd->privacy_led,
-> > -					   sd->privacy_led->max_brightness);
-> > -		else
-> > -			led_set_brightness(sd->privacy_led, 0);
-> > -	}
-> > -#endif
-> >  	ret = sd->ops->video->s_stream(sd, enable);
-> >  
-> >  	if (!enable && ret < 0) {
-> > @@ -428,9 +419,20 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
-> >  		ret = 0;
-> >  	}
-> >  
-> > -	if (!ret)
-> > +	if (!ret) {
-> >  		sd->enabled_streams = enable ? BIT(0) : 0;
-> >  
-> > +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> > +		if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> > +			if (enable)
-> > +				led_set_brightness(sd->privacy_led,
-> > +						   sd->privacy_led->max_brightness);
-> > +			else
-> > +				led_set_brightness(sd->privacy_led, 0);
-> > +		}
-> > +#endif
-> 
-> This means that the LED will be turned slightly after the camera is
-> enabled. I don't think it's an issue in practice. Another possibly more
+> Sometimes we need to track the processing order of requests with
+> ioprio set. So the ioprio of request can be useful information.
+>=20
+> Example=EF=BC=9A
+>=20
+> block_rq_insert: 8,0 WS 4096 () 16573296 + 8 rt,4 [highpool[1]]
+> block_rq_issue: 8,0 WS 4096 () 16573296 + 8 rt,4 [kworker/7:0H]
+> block_rq_complete: 8,0 WS () 16573296 + 8 rt,4 [0]
 
-That's what I'd think as well. Typically even the exposure time is much,
-much longer than what it takes to get here.
+Note, it's up to the subsystem to take trace event patches.
 
-> important concern is that we should maybe check the return value of
-> led_set_brightness(), and fail .s_stream() when we can't enable the
-> privacy LED at stream on time. In that case, it would be best to keep
-> turning the privacy LED on before calling .s_stream(). It should still
-> be turned off only after calling .s_stream() though.
+>=20
+> Signed-off-by: Dongliang Cui <dongliang.cui@unisoc.com>
+> ---
+>  include/linux/blktrace_api.h |  2 ++
+>  include/trace/events/block.h | 63 ++++++++++++++++++++++--------------
+>  kernel/trace/blktrace.c      | 11 +++++++
+>  3 files changed, 51 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+> index 122c62e561fc..adb0333efbdb 100644
+> --- a/include/linux/blktrace_api.h
+> +++ b/include/linux/blktrace_api.h
+> @@ -112,6 +112,8 @@ struct compat_blk_user_trace_setup {
+> =20
+>  void blk_fill_rwbs(char *rwbs, blk_opf_t opf);
+> =20
+> +void blk_fill_ioprio(u32 ioprio, char *ioprio_class, u32 *ioprio_value);
+> +
+>  static inline sector_t blk_rq_trace_sector(struct request *rq)
+>  {
+>  	/*
+> diff --git a/include/trace/events/block.h b/include/trace/events/block.h
+> index 0e128ad51460..1d41fade160a 100644
+> --- a/include/trace/events/block.h
+> +++ b/include/trace/events/block.h
+> @@ -10,7 +10,8 @@
+>  #include <linux/buffer_head.h>
+>  #include <linux/tracepoint.h>
+> =20
+> -#define RWBS_LEN	8
+> +#define RWBS_LEN		8
+> +#define IOPRIO_CLASS_LEN	8
+> =20
+>  #ifdef CONFIG_BUFFER_HEAD
+>  DECLARE_EVENT_CLASS(block_buffer,
+> @@ -79,11 +80,13 @@ TRACE_EVENT(block_rq_requeue,
+>  	TP_ARGS(rq),
+> =20
+>  	TP_STRUCT__entry(
+> -		__field(  dev_t,	dev			)
+> -		__field(  sector_t,	sector			)
+> -		__field(  unsigned int,	nr_sector		)
+> -		__array(  char,		rwbs,	RWBS_LEN	)
+> -		__dynamic_array( char,	cmd,	1		)
+> +		__field(  dev_t,	dev				)
+> +		__field(  sector_t,	sector				)
+> +		__field(  unsigned int,	nr_sector			)
+> +		__array(  char,		rwbs,	RWBS_LEN		)
+> +		__array(  char,		ioprio_class, IOPRIO_CLASS_LEN	)
+> +		__field(  unsigned int, ioprio_value			)
+> +		__dynamic_array( char,	cmd,	1			)
+>  	),
+> =20
+>  	TP_fast_assign(
+> @@ -92,14 +95,16 @@ TRACE_EVENT(block_rq_requeue,
+>  		__entry->nr_sector =3D blk_rq_trace_nr_sectors(rq);
+> =20
+>  		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
+> +		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_va=
+lue);
+>  		__get_str(cmd)[0] =3D '\0';
+>  	),
+> =20
+> -	TP_printk("%d,%d %s (%s) %llu + %u [%d]",
+> +	TP_printk("%d,%d %s (%s) %llu + %u %s,%u [%d]",
+>  		  MAJOR(__entry->dev), MINOR(__entry->dev),
+>  		  __entry->rwbs, __get_str(cmd),
+>  		  (unsigned long long)__entry->sector,
+> -		  __entry->nr_sector, 0)
+> +		  __entry->nr_sector, __entry->ioprio_class,
+> +		  __entry->ioprio_value, 0)
+>  );
 
-The return type of led_set_brightness() is void. Maybe because a large
-majority is GPIO-controlled?
 
--- 
-Regards,
+> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+> index d5d94510afd3..e55aa49f94db 100644
+> --- a/kernel/trace/blktrace.c
+> +++ b/kernel/trace/blktrace.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/list.h>
+>  #include <linux/blk-cgroup.h>
+> +#include <linux/ioprio.h>
+> =20
+>  #include "../../block/blk.h"
+> =20
+> @@ -26,6 +27,9 @@
+> =20
+>  #include "trace_output.h"
+> =20
+> +/* Type of ioprio */
+> +static char *classes[] =3D {"none", "rt", "be", "idle"};
+> +
+>  #ifdef CONFIG_BLK_DEV_IO_TRACE
+> =20
+>  static unsigned int blktrace_seq __read_mostly =3D 1;
+> @@ -1914,5 +1918,12 @@ void blk_fill_rwbs(char *rwbs, blk_opf_t opf)
+>  }
+>  EXPORT_SYMBOL_GPL(blk_fill_rwbs);
+> =20
+> +void blk_fill_ioprio(u32 ioprio, char *ioprio_class, u32 *ioprio_value)
+> +{
+> +	memcpy(ioprio_class, classes[(ioprio >> IOPRIO_CLASS_SHIFT) & 0x3], IOP=
+RIO_CLASS_LEN);
+> +	*ioprio_value =3D ioprio & 0xff;
+> +}
+> +EXPORT_SYMBOL_GPL(blk_fill_ioprio);
+> +
+>  #endif /* CONFIG_EVENT_TRACING */
+> =20
 
-Sakari Ailus
+Instead of doing:
+
+		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_value=
+);
+
+
+Why not do:
+
+	__field(	int,	ioprio_class	)
+
+[..]
+
+	__entry->ioprio_class =3D rq->ioprio >> IOPRIO_CLASS_SHIFT & 0x3;
+
+[..]
+
+	TP_printk("%d,%d %s (%s) %llu + %u %s,%u [%d]",
+		  MAJOR(__entry->dev), MINOR(__entry->dev),
+		  __entry->rwbs, __get_str(cmd),
+		  (unsigned long long)__entry->sector,
+		  __entry->nr_sector,
+		  __print_symbolic(ioclass,
+			{ 0, "none" }, { 1, "rt" }, { 2, "bt" }, { 3, "idle" }),
+		  __entry->ioprio_value, 0)
+);
+
+ ?
+
+Then you don't need to save a string into the buffer, and just print
+the mapping on reading of the buffer.
+
+-- Steve
 
