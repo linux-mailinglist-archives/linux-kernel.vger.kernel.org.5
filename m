@@ -1,61 +1,55 @@
-Return-Path: <linux-kernel+bounces-145137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA418A5005
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FE78A5009
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C7661F226FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:59:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DDA41F227EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD08129A7C;
-	Mon, 15 Apr 2024 12:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5569312A174;
+	Mon, 15 Apr 2024 12:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N0acz5BB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PHrVFIEi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B141292D4;
-	Mon, 15 Apr 2024 12:50:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829DB129A7A;
+	Mon, 15 Apr 2024 12:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185416; cv=none; b=BUSTMhjjYlCcqX7bE5OnKnYhC/Rlz08ERJa8CQ8WASjji4H1LiWUcaMNab/QImqgfPVUKG4BJAvTzTW97LoJW3hyqucLgup+ndanrGrkOxkHqssxWON0IZhMvHNfz6v2OfFBRBtaL9etVJXAWKWaxtz8MdKRe4RIW9DaeXjpky0=
+	t=1713185417; cv=none; b=Uy8+ESwfntE/w4lXm9Qr8WBwzjWL/GmWHpkXeNslJ9qClANj8HDycSwZa/Q+R0zJE8/xrdYMaJbWlLZOpfDqkw00tRyje8xeG4TvE4PmnJIzTw1/z+DpcnoZ2hY5nEq2Hp3romfO8u01FW2/pzmdcc6Qaoa9KjdXXVrrAOUuYJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185416; c=relaxed/simple;
-	bh=ftxJqgX69soHvcqIvZXogCEx+JQf63AW2r5jUdaXeHs=;
+	s=arc-20240116; t=1713185417; c=relaxed/simple;
+	bh=ez+9pHNThV4Qwno6XjpGOuiqDEvbUby8kRZAvhEvGOI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VbCSRaZgkoEniXjZXe8pOsaKicVIUDx3e3UuofQl75bSUDpkTzhBBWY9RluobNerRR4OOszEfFnNex+hpBEF/4xtRlX8fziLMnj5doMoj32cdFmZ+/fIH90EjCI20ELCNHpxgHEeENp5IMdMx209E71kUB4HsPSGFCjiPFJM3mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N0acz5BB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE80BC4AF09;
-	Mon, 15 Apr 2024 12:50:14 +0000 (UTC)
+	 MIME-Version; b=F+F+mRUbx6pDcvvTr/6kkjBCwsCGIxg+OfWxfA1O+MRG4gV97fne9XUNgZC+fLBXAiBOdjql3yfdSKoNR6aKykm4fvbGD0gUpMJ1K3JC7cMZw8CnNsj/OeEwlgYM/Ur5Pi9zMOxLazGH1a6l021+L9PlXwVUSoh43az14KGh8zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PHrVFIEi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A456EC2BD11;
+	Mon, 15 Apr 2024 12:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185416;
-	bh=ftxJqgX69soHvcqIvZXogCEx+JQf63AW2r5jUdaXeHs=;
+	s=k20201202; t=1713185417;
+	bh=ez+9pHNThV4Qwno6XjpGOuiqDEvbUby8kRZAvhEvGOI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N0acz5BB/ou6au8xVvHmKO5DFoSvImqODXgmv84wfpNKHEUGMkEvd4Xpi196w2ho4
-	 YegOGIwoT+w9XKbYrojoD8PuhDZ3BskVJT+iVO8EwIepxGWAyZ6Vdku+hJO7xN3c7A
-	 NIWMTm1ssyPprnst1Wio+8DJGffj8EQazPLZ1U9Jw6SWkp8qsW+VGTZM03TPFULqCR
-	 Kd3B6MYkRYN9i9PSbtKJAaSQ6CHgvlq01e8CxIJyx1KGpYO8RjXOE/pQyTbOxnRF4O
-	 v8ea0APoeM/6ZN2/N0q4umpdenZxQ37sgXCr6V4mmTkODssT86xn55cvKOTDp7BaHy
-	 KwueiyVAn5mfA==
+	b=PHrVFIEi/Jop+gegrcvYz97xOR/jaQtd7CT/nitgVyqoAz2SMLqtFnPPewD3DRPb0
+	 UzZLakYAMwGVDaleSQH3OcelS6l+JW/eiPM8wB0pO6PC2xlMEk3ZbmNAsqc5dMA7gh
+	 FmzVZJurTw1hYmloXLhpz2kPWx2gsHioK9XpMVWuLo96GATaZGXL+4aVTM9a7uHHMW
+	 bYnJXsZRnchc9wpVR5GccFU+AW/7mI3fmAWKeAVweDAdPBmKoW42hZdUaCDs67E/uu
+	 oBgb6VehAf7OGy0xrSp7mG+LUDtWMJ9l3zwtGQjkxPVDHWIL51aTfmatPJq0insgDu
+	 DTitlvC8e6jZA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Phil Elwell <phil@raspberrypi.com>,
-	Maarten Vanraes <maarten@rmail.be>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Jeff Layton <jlayton@kernel.org>,
+	Hans de Goede <hdegoede@redhat.com>,
 	Sasha Levin <sashal@kernel.org>,
-	opendmb@gmail.com,
-	florian.fainelli@broadcom.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 09/12] net: bcmgenet: Reset RBUF on first open
-Date: Mon, 15 Apr 2024 06:03:44 -0400
-Message-ID: <20240415100358.3127162-9-sashal@kernel.org>
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 10/12] vboxsf: explicitly deny setlease attempts
+Date: Mon, 15 Apr 2024 06:03:45 -0400
+Message-ID: <20240415100358.3127162-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415100358.3127162-1-sashal@kernel.org>
 References: <20240415100358.3127162-1-sashal@kernel.org>
@@ -70,81 +64,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.27
 Content-Transfer-Encoding: 8bit
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Jeff Layton <jlayton@kernel.org>
 
-[ Upstream commit 0a6380cb4c6b5c1d6dad226ba3130f9090f0ccea ]
+[ Upstream commit 1ece2c43b88660ddbdf8ecb772e9c41ed9cda3dd ]
 
-If the RBUF logic is not reset when the kernel starts then there
-may be some data left over from any network boot loader. If the
-64-byte packet headers are enabled then this can be fatal.
+vboxsf does not break leases on its own, so it can't properly handle the
+case where the hypervisor changes the data. Don't allow file leases on
+vboxsf.
 
-Extend bcmgenet_dma_disable to do perform the reset, but not when
-called from bcmgenet_resume in order to preserve a wake packet.
-
-N.B. This different handling of resume is just based on a hunch -
-why else wouldn't one reset the RBUF as well as the TBUF? If this
-isn't the case then it's easy to change the patch to make the RBUF
-reset unconditional.
-
-See: https://github.com/raspberrypi/linux/issues/3850
-See: https://github.com/raspberrypi/firmware/issues/1882
-
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-Signed-off-by: Maarten Vanraes <maarten@rmail.be>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Link: https://lore.kernel.org/r/20240319-setlease-v1-1-5997d67e04b3@kernel.org
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ fs/vboxsf/file.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 89c8ddc6565ae..b91faa7973218 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -3299,7 +3299,7 @@ static void bcmgenet_get_hw_addr(struct bcmgenet_priv *priv,
- }
+diff --git a/fs/vboxsf/file.c b/fs/vboxsf/file.c
+index 2307f8037efc3..118dedef8ebe8 100644
+--- a/fs/vboxsf/file.c
++++ b/fs/vboxsf/file.c
+@@ -218,6 +218,7 @@ const struct file_operations vboxsf_reg_fops = {
+ 	.release = vboxsf_file_release,
+ 	.fsync = noop_fsync,
+ 	.splice_read = filemap_splice_read,
++	.setlease = simple_nosetlease,
+ };
  
- /* Returns a reusable dma control register value */
--static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
-+static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv, bool flush_rx)
- {
- 	unsigned int i;
- 	u32 reg;
-@@ -3324,6 +3324,14 @@ static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
- 	udelay(10);
- 	bcmgenet_umac_writel(priv, 0, UMAC_TX_FLUSH);
- 
-+	if (flush_rx) {
-+		reg = bcmgenet_rbuf_ctrl_get(priv);
-+		bcmgenet_rbuf_ctrl_set(priv, reg | BIT(0));
-+		udelay(10);
-+		bcmgenet_rbuf_ctrl_set(priv, reg);
-+		udelay(10);
-+	}
-+
- 	return dma_ctrl;
- }
- 
-@@ -3387,8 +3395,8 @@ static int bcmgenet_open(struct net_device *dev)
- 
- 	bcmgenet_set_hw_addr(priv, dev->dev_addr);
- 
--	/* Disable RX/TX DMA and flush TX queues */
--	dma_ctrl = bcmgenet_dma_disable(priv);
-+	/* Disable RX/TX DMA and flush TX and RX queues */
-+	dma_ctrl = bcmgenet_dma_disable(priv, true);
- 
- 	/* Reinitialize TDMA and RDMA and SW housekeeping */
- 	ret = bcmgenet_init_dma(priv);
-@@ -4259,7 +4267,7 @@ static int bcmgenet_resume(struct device *d)
- 			bcmgenet_hfb_create_rxnfc_filter(priv, rule);
- 
- 	/* Disable RX/TX DMA and flush TX queues */
--	dma_ctrl = bcmgenet_dma_disable(priv);
-+	dma_ctrl = bcmgenet_dma_disable(priv, false);
- 
- 	/* Reinitialize TDMA and RDMA and SW housekeeping */
- 	ret = bcmgenet_init_dma(priv);
+ const struct inode_operations vboxsf_reg_iops = {
 -- 
 2.43.0
 
