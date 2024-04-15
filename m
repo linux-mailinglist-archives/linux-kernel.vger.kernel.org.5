@@ -1,145 +1,177 @@
-Return-Path: <linux-kernel+bounces-145823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34E598A5B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:49:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9438A5B67
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:49:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6FD11F210E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10221C20E92
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69119159567;
-	Mon, 15 Apr 2024 19:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17D815991E;
+	Mon, 15 Apr 2024 19:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c4ECtoC7"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bLS/tGNy"
+Received: from mail-io1-f74.google.com (mail-io1-f74.google.com [209.85.166.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F099E15666B
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDB1156979
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713210004; cv=none; b=lbAe3R2QI637sHHoNArwfYXP/jFiFsMYSGJzGNLU5NkUXK/b6neMLNAn+G0kZbYyMFZQqM6QhlFBgAIDEVneNj+FlPkH0GHlW7GKKxvluEVcn6evGSKGeNaLOqZC6RbPFU3JdlYvBc0ljXv6CnwGGTpfG0idcswev16sX3f5PEY=
+	t=1713210029; cv=none; b=GnD7dD0FX7PRz8e3fLBhjrZyjCn6av6Pz6tZX/ShiuwFPCWYxzEO+cP90wK1QMddVIEHpPRpehkdiP0vpxNtIDTBfrfEqm+R4l62KpRko+NtvPR93b4AFdkWNlp2s8GAdulecRLcfupPsAEvEDeVqPbMuCdkMT1yapwlVru4e98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713210004; c=relaxed/simple;
-	bh=oLw1Yo8/eaqjN1EPHHKDjW5h66jbiS/C8MlDodlUxck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XcZyQKk9IYskU3/luwf58mn+NxgWxtqvwoZNDAXLMmnwhCDhBVLAD92I1QgpxjzdVwwTLXYe/CxawITY8cSx+4mYFEPmPWbMJjplegJCR5hjt04SQ5+ABv+TBIusYUqHDlZIgiuvhQ4v00utrZc0syRMJ7odlK0Zdmzv9aL5BMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=c4ECtoC7; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5176f217b7bso6248314e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:40:02 -0700 (PDT)
+	s=arc-20240116; t=1713210029; c=relaxed/simple;
+	bh=HnQrke53HbieJQg1K+HmxDC5DcgHzycPVXayX92Uel0=;
+	h=Date:In-Reply-To:Mime-Version:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=BO3Wbr3GKCoiuaUZ0Y7Ph1iD7xA4RbYV4auFHdKm4BxnyHJWxGAS7EghAOpW9DBF44jP8P65b7KnWHqEqnnIYj37ECM+ERWGmxaL00bGMchU5kuMEKQ9ZoLuzSQbcKi9RuQewoN4WKuUCLhTO/JxatI/DONTeno3eE6Nh44hVlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bLS/tGNy; arc=none smtp.client-ip=209.85.166.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com
+Received: by mail-io1-f74.google.com with SMTP id ca18e2360f4ac-7d5e2b1cfabso385066139f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:40:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713210001; x=1713814801; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t7tsrnDTZbk4SPKL6+qy7+cpPN7/TAFHKqUJ8Ysh/C4=;
-        b=c4ECtoC7zON9uvTdTS7SyksGYu/Uda1RIKjrsT6qdwIef9IWrfcvZ8oUVH5gaWP3mI
-         ODKSRbVKn3Hq4Er7u4tUS0ljLA74BvQTy8CWbbMgvsg+u4upXPkVQfAdvNk7fpj3ZNc2
-         g+6IrNX8EGIODFPcGlxaVPIw2nLCdW9pFMKoyr5I6IVitcI9p2emwTyiwGOXz4l3Bqbs
-         Ojo0Sz79l75ROgrfSDIOlednW/iRF3AL80XFirkZKNg1geEenCjW8H3kdCviu0cV6Jbe
-         nLK9R+IxOK9DODl6yHc4j+XuM7xk2kglDNQAIhCMvB1BoUUd3Ku/CMXGiyGwpjsKcALE
-         6APA==
+        d=google.com; s=20230601; t=1713210026; x=1713814826; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=taYfEAMhWxZKhDVEpiZhlMgSXjBrsWj8geaLNIGWoBE=;
+        b=bLS/tGNySaiyrIyV7Ze0eNjuUOx5/KpUk4xcIxQgTNZkaZ6mQwsXLlD8eCVdZTd/K5
+         1zURDk2OGz+Bpv/xYUV00LhUDp8DWvF6Wo3P/dt5E6ktAQaLScHF6iRXZ/4VHPtQOurh
+         Yu83Cbk5q8HMgjJeVMrr+/vD0f+P8YrM5O7PRdDNs1zLYV+7F5kZrQNUAZ5MT/XsYapG
+         uOqbEXH6lXqSPuB4OieEaWoXcCl/b/MtRlyWLd+GJb5HBXjvCKMLA62tnw6oj9fKbV6i
+         WR1aYTHmLTo9jG9guV/aMPGZwYauhD72iG96dwIc/7s9V7lQXgquL2EUo7JlcQ3ex1zV
+         rMfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713210001; x=1713814801;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1713210026; x=1713814826;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t7tsrnDTZbk4SPKL6+qy7+cpPN7/TAFHKqUJ8Ysh/C4=;
-        b=TdtubKWyQw3ZJFXRIpN0n95YCMjs9vI+jSRuazK18Zq8AaYX5AZ9mbs4FOr/OinUeX
-         i3it9CvcezdD2AMzoW7GzcfPQGno11PGoqrjbPD0sKj7zgyP3GuONHkUpkouZ7hHDOW9
-         u7i4zwUaDKWmQYsm1l1TIcTRuVEXyAXNglP6ZzTV0/ItsWjqB09qQ73bpXDUqsqvY2ZH
-         NqB2QlBu5hAjNg+O5OyhAJDT8OvVRzc1yX2BDFXkubxGpXrbNh7deDyPNjrNTrN/azXU
-         WndoM372ErqqDX+GhspfGDPtHsWdEv/EEaHowqaf3EIPNtTm/Pngo5xQT4/9BKhaMAUS
-         kd/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXZWoJJxEcqzaW1TLvzcScWhITjRqrxcebsJz/HY1188/+B1dd139m36lPtPA1p7oA6A//aFY+i61wpdqvaXqvVO85Dx6WnK37qXEti
-X-Gm-Message-State: AOJu0Yx3d09fQcT+eXuljFkV4QqcOWP/5volzOMWnv7Z90M7wJ+D9Abx
-	SeWzVDIAYsEeKkqjrz25wxF+95wsfDHKtnshWijitoO83Yqb0lZYT2icMPm69dM=
-X-Google-Smtp-Source: AGHT+IEvWyaU3DDSHRGhHKAWLIUQW7NovoNH7LtXjxt2ZC08B71s/35oMI48FkGtZAuiQS+3TCw9ug==
-X-Received: by 2002:a05:6512:2247:b0:515:d176:dfd1 with SMTP id i7-20020a056512224700b00515d176dfd1mr10519441lfu.56.1713210001060;
-        Mon, 15 Apr 2024 12:40:01 -0700 (PDT)
-Received: from [172.30.205.18] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id v23-20020a05651203b700b00515bad4cd0asm1332203lfp.155.2024.04.15.12.39.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 12:40:00 -0700 (PDT)
-Message-ID: <90b9da5e-8a2b-4a0d-bee8-bb21c74cb355@linaro.org>
-Date: Mon, 15 Apr 2024 21:39:56 +0200
+        bh=taYfEAMhWxZKhDVEpiZhlMgSXjBrsWj8geaLNIGWoBE=;
+        b=oFlWHJ3zuXl+xZWJRqYyPuINjRP+y5pKk+q5psGNwaM2syQJcEBQhOME58NqbcQgIO
+         Uq6OArlQ2CqI30jUjVivzcfm3GpnPj4zGCTXoMoJmsTYWqYCN0MD8MKBgikSqfO7Orwb
+         6Jf0BeSOgtavDkS7NwpWu1s0xhVPoNDKrwGP579M6NCInHGhH7gvAnhzNexCPDiiokIq
+         s/PuFDjpFx/CWdd4HyYpTJe5p/WzHYCvSXD3uMmApMNQLJ3iz3Anlu4BLb9SqxRnQ5nK
+         qNXBJwMMt28a4Y3ok/DMqlnQA0TB+Etal9l2kDDfsBH1kSQpHyBOsRIaFuzuyZFyk7g5
+         tBVg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKyEYx35KBqKqKI71AORMvVPQ81Qz4PcCjudpGIWXluKLTan1Mmkebx+k17MB1BYl/v89o1BBWYDhu/t4j6/qPbBJByonaamly5RvR
+X-Gm-Message-State: AOJu0Yx7KPt2aghEvAH5EBT+WO/QKnAteUW/t2IfnFKjvQjut6fuaOtW
+	sHlVTJUj1PXOAZvKh9vyMOTbUHGl0NhQ4BkkENNwKAjVPH5mEbI9ZR5kgr+Tb1t0BSiI58Bv8m0
+	P0Aaz8FoUnPEr+m1xeseosA==
+X-Google-Smtp-Source: AGHT+IGUqapQXFj2hPWnTQ4fKWHkr8XUX4Eacrb1Di5Og6Xvq8008PLajdkB1V4vRSdttFUHw7IRCbM2YDH38IdHzw==
+X-Received: from coltonlewis-kvm.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:14ce])
+ (user=coltonlewis job=sendgmr) by 2002:a05:6638:34ab:b0:482:fc24:b74c with
+ SMTP id t43-20020a05663834ab00b00482fc24b74cmr472110jal.0.1713210026131; Mon,
+ 15 Apr 2024 12:40:26 -0700 (PDT)
+Date: Mon, 15 Apr 2024 19:40:24 +0000
+In-Reply-To: <86sezss5cm.wl-maz@kernel.org> (message from Marc Zyngier on Thu,
+ 11 Apr 2024 08:53:13 +0100)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] firmware: psci: Read and use vendor reset types
-To: Elliot Berman <quic_eberman@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Sebastian Reichel <sre@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Andy Yan <andy.yan@rock-chips.com>, Lorenzo Pieralisi
- <lpieralisi@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
- Melody Olvera <quic_molvera@quicinc.com>,
- Shivendra Pratap <quic_spratap@quicinc.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Florian Fainelli <florian.fainelli@broadcom.com>, linux-pm@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
- <20240414-arm-psci-system_reset2-vendor-reboots-v2-3-da9a055a648f@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240414-arm-psci-system_reset2-vendor-reboots-v2-3-da9a055a648f@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Message-ID: <gsnth6g2qus7.fsf@coltonlewis-kvm.c.googlers.com>
+Subject: Re: [PATCH v3] KVM: arm64: Add early_param to control WFx trapping
+From: Colton Lewis <coltonlewis@google.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: kvm@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, 
+	suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, 
+	will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 
+Thanks for the review Marc.
 
+Marc Zyngier <maz@kernel.org> writes:
 
-On 4/14/24 21:30, Elliot Berman wrote:
-> SoC vendors have different types of resets and are controlled through
-> various registers. For instance, Qualcomm chipsets can reboot to a
-> "download mode" that allows a RAM dump to be collected. Another example
-> is they also support writing a cookie that can be read by bootloader
-> during next boot. PSCI offers a mechanism, SYSTEM_RESET2, for these
-> vendor reset types to be implemented without requiring drivers for every
-> register/cookie.
-> 
-> Add support in PSCI to statically map reboot mode commands from
-> userspace to a vendor reset and cookie value using the device tree.
-> 
-> Reboot mode framework is close but doesn't quite fit with the
-> design and requirements for PSCI SYSTEM_RESET2. Some of these issues can
-> be solved but doesn't seem reasonable in sum:
->   1. reboot mode registers against the reboot_notifier_list, which is too
->      early to call SYSTEM_RESET2. PSCI would need to remember the reset
->      type from the reboot-mode framework callback and use it
->      psci_sys_reset.
->   2. reboot mode assumes only one cookie/parameter is described in the
->      device tree. SYSTEM_RESET2 uses 2: one for the type and one for
->      cookie.
->   3. psci cpuidle driver already registers a driver against the
->      arm,psci-1.0 compatible. Refactoring would be needed to have both a
->      cpuidle and reboot-mode driver.
-> 
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> ---
+> On Wed, 10 Apr 2024 18:54:37 +0100,
+> Colton Lewis <coltonlewis@google.com> wrote:
+>> +
+>> +enum kvm_interrupt_passthrough {
+>> +	KVM_INTERRUPT_PASSTHROUGH_DEFAULT,
+>> +	KVM_INTERRUPT_PASSTHROUGH_ALWAYS,
+>> +	KVM_INTERRUPT_PASSTHROUGH_NEVER,
 
-[...]
+> What does this mean? This is not dealing with interrupts, this is
+> supposed to deal with the behaviour of specific instructions
+> (WFI/WFE). The notion of "passthrough" is really odd as well. Finally,
+> both ALWAYS and NEVER are wrong -- the architecture makes no such
+> guarantee.
 
-> +arch_initcall(psci_init_system_reset2_modes);
+Looking at this, I did let the language get away from me by mixing up
+interrupts and the instructions dealing with them.
 
-Perhaps this could be called from \/
+"Passthrough" is not a technical term but has pervaded some of my
+internal conversations about this and I've just been using it to mean
+the opposite of trapping. That can be easily swapped.
 
-Konrad
+I understand always and never are not what the architecture guarantees,
+but was trying to capture what KVM code is attempting to do. I could
+just drop it entirely.
 
-> +
->   int __init psci_dt_init(void)
->   {
->   	struct device_node *np;
-> 
+So the enum values could be named something like:
+
+KVM_WFX_TRAP
+KVM_WFX_NOTRAP
+KVM_WFX_NOTRAP_SINGLE_TASK (default option)
+
+>> -	if (single_task_running())
+>> +	if ((kvm_interrupt_passthrough == KVM_INTERRUPT_PASSTHROUGH_ALWAYS
+>> +	     && kvm_vgic_global_state.has_gicv4) ||
+>> +	    (kvm_interrupt_passthrough == KVM_INTERRUPT_PASSTHROUGH_DEFAULT
+>> +	     && single_task_running()))
+
+> Why is this affecting both WFI and WFE? They are very different and
+> lumping them together makes little sense.
+
+It's true they are different, but I couldn't think of any cases where
+you would want trapping for one to be different than for the other. The
+current behavior also assumes trapping should be the same for both.
+
+Are you suggesting separate controls for the two?
+
+>> @@ -2654,6 +2658,30 @@ static int __init early_kvm_mode_cfg(char *arg)
+>>   }
+>>   early_param("kvm-arm.mode", early_kvm_mode_cfg);
+
+>> +static int __init early_kvm_interrupt_passthrough_cfg(char *arg)
+>> +{
+>> +	if (!arg)
+>> +		return -EINVAL;
+>> +
+>> +	if (strcmp(arg, "always") == 0) {
+>> +		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_ALWAYS;
+>> +		return 0;
+>> +	}
+>> +
+>> +	if (strcmp(arg, "never") == 0) {
+>> +		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_NEVER;
+>> +		return 0;
+>> +	}
+>> +
+>> +	if (strcmp(arg, "default") == 0) {
+>> +		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_DEFAULT;
+>> +		return 0;
+>> +	}
+>> +
+>> +	return -EINVAL;
+>> +}
+>> +early_param("kvm-arm.interrupt-passthrough",  
+>> early_kvm_interrupt_passthrough_cfg);
+>> +
+
+> Again, this is not dealing with interrupts. This is dealing with the
+> *potential* trapping of instructions in certain circumstances.
+
+Understood. Should be something like "kvm-arm.wfx-instruction-trapping".
+
+>>   enum kvm_mode kvm_get_mode(void)
+>>   {
+>>   	return kvm_mode;
+
+> Finally, this needs to be documented.
+
+Right, in Documentation/admin-guide/kernel-parameters.txt
 
