@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-145784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A84F78A5AC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:36:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8968A5ACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:37:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54CFF284303
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:36:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CDA31F21182
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:37:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86097159591;
-	Mon, 15 Apr 2024 19:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC2815AAD8;
+	Mon, 15 Apr 2024 19:34:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BRrz7r2a"
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QYMJSCyQ"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A301586FE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47FEA1591F8
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209672; cv=none; b=IWHqirfRIp3r0hF3D78JqFAqjB1Mt4QC8V9+vzc26EvGe2IOxomflTBH0+izogXIAUShXAY5ddFrdYfMqw5CC+nZtS+ghF7gpgB7vBYLYZ9QrelGHsOLw/VKS0fO/J8Bj0ZCpfRGieXRo3grhhjJx2Bq34jcVuNUDq5EcxsMxtM=
+	t=1713209675; cv=none; b=ic7qR4ze1S+2OJYampcJMsC5bv4sGAg3vQXqNcuG1T0EBDAJqrhcNbFNMT8NR7w07/zCzcNcgOoQj38Kf7DOcvOXBU9qwk29dku6uWHtAGSjy+Bcw92b9BhwO/B+oIqjQyIbhrX9RAgC9cgh+hAxqKEXUUz8lKCHtXDgRebN/9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209672; c=relaxed/simple;
-	bh=32n42m9fdIyR+hNVCJy47MhHZfKMG1kvIiYpYvj18tM=;
+	s=arc-20240116; t=1713209675; c=relaxed/simple;
+	bh=pkDHUvzM/3se4qU8yUrUNq79FeC7MKupjn4wDvpoFwE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=h6o/4JDit1inGEew6cHB44O8KR8XLk7pF5TnAFG5feigy7iT+IaoU6yxjHdIBl0PcjzwC490rzpdXSC0ZedlaEkZ4LuEgpWD4DkvI1uaznECwv78nhlnaYAU48GhGB3iz3cMkAjg4k8IoH7BbcP99FcWSenqnPE60SQ0mX60rN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=BRrz7r2a; arc=none smtp.client-ip=209.85.222.173
+	 In-Reply-To:To:Cc; b=Em4qTJmRUOfs2LIN/u5nzSgMFPwoAlZdS/LbPGU8gfhVoSVqeZDPkgBecXM0Qxa30JZiZCTnrFzhxS8nB6wcWqYB6iLG8hYn2UNvKlSRThg5WC8Us70CkYRrZN96AqcSb+Ig0aELL5NArsC11UYLIaSYM2/AUO6p+QtqVrgQpLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QYMJSCyQ; arc=none smtp.client-ip=209.85.161.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78d5e7998a0so283663485a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:34:30 -0700 (PDT)
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5aa318db8a0so2414931eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:34:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713209669; x=1713814469; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1713209670; x=1713814470; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xRTXUwBhcFkchUD68etf7Ns4ncGhFtPLbimlhLL9HW4=;
-        b=BRrz7r2aDK2PPekfkNvI8RRNowCL/eQjOyqwfG5qTX2qjmtuHB4WT2N7YxaV/xRrD9
-         tYBGKKHTYdNYLEDISZigulVt/re7uYAfY20oeJC3hIShcTRrFW75p+Nvm7gZOwBpHmof
-         +QkCyQRYkF9Ib7fIdEfpLgX5/Ihkk8zhQ/Unw=
+        bh=vq+7mr1szAOvpscJpegvOEKeeaK/lFJAotzxeoFP90w=;
+        b=QYMJSCyQu2pYKBMrqNgWiQMA1aCst9SYKIqikmRxzmY52VuUPd47LQSHB4A8FAOoNe
+         GoRnjaDRfZtd4YOqjawhovTXVtgjpUb2DcL7wuwLMUKLzVpuak6Macw9bONnoK0mGYFs
+         DHrrqPs4QTJykLWjzpi3FrcxPl4AUXNIhzyr0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713209669; x=1713814469;
+        d=1e100.net; s=20230601; t=1713209670; x=1713814470;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xRTXUwBhcFkchUD68etf7Ns4ncGhFtPLbimlhLL9HW4=;
-        b=ikj9Xn5G/tnz3sUgqD90XgazWhTxvCqg/sIT4oyXRf+wIbTyoLGsSG5CT51NTiziGs
-         CT0Fm/spweiaMpCh1fBE+bzaPyV4meHwWYaeqBUkprXzxKWUQCqCAvK93miN8A0nF4lI
-         GZ9nJH7atuRWZjwcwjHGkJqVur/KeAFLA7MvgSH0R1qvbqoqpaorNmb3GzB7Y4TTgHRO
-         XY7qBsCVxs+9kteddKNZlHax+MiIAa4vyf6mG9FsUnWtz1GBdJ/ZdImo2reIBLSiTcAU
-         tmW3xJjzNg/TOcoyfviSbvmunrDXbc4KO3sD+SLfoqHf6SzLIZ4j0lFShZW0wlnAjiax
-         FK1w==
-X-Forwarded-Encrypted: i=1; AJvYcCXIZvRWVza4+7yAh2ZGuJvY9fu4bFuzby4ZuLv93J6m5vG1Dbks8lv4nx3zDCWdcz7y7BEyu3C8dheRwnT2CRTrzbqE3lKg/2Rm4gnE
-X-Gm-Message-State: AOJu0YzKEHFPvVRj9zZI6pas9O/f4wSGK9jZeKYKQaN04dCMYxJiR31x
-	9msyue9EriF2DlGBPE5IFHZSqYrmU69DhmsL1a/M6id2yqem4cWAjnsevinvHw==
-X-Google-Smtp-Source: AGHT+IEcDB670miUV6x3+CTDpPjHVUs4fSa2Vf0AT5UVwIYIhxKgJdBP21+/uHglj+bsAouxmzkrbw==
-X-Received: by 2002:a05:620a:370b:b0:78d:77f2:573b with SMTP id de11-20020a05620a370b00b0078d77f2573bmr14232523qkb.52.1713209669333;
-        Mon, 15 Apr 2024 12:34:29 -0700 (PDT)
+        bh=vq+7mr1szAOvpscJpegvOEKeeaK/lFJAotzxeoFP90w=;
+        b=o6M6agtTqEkGAGBNOhR/+6vk/aevysXgqOJ84WTpA5xUaCZ77LzG2R4rrJJ1M7pSz2
+         eYQCn9iloH838lwGcGbuIAV3Xxag2wAqEHB/nZ5rSO4Sos8U5N20mOCilY982Vf89GI9
+         SAfzYGAopcrclcWTSR8vx+rBx8NosUS5t8IDsXUiEHDf078ZVCKL6aEFVJgnOrsF5xM8
+         D13Tfo7OLjLw7Z4te6VYz8ZeCQ9O8OlZ6/u1XgMy1RFmj8/oYfjGnPz/vAEc/7VcuA5r
+         ifKQdao7k5cLKTloXRobVxfOhajAa3VQiIteLlMwx2ywfqd3MKzWGpzD/LhdXHaNOyiT
+         +/JA==
+X-Forwarded-Encrypted: i=1; AJvYcCXKh2DahTYnmM93gBYRtQqmVZ8IMqL5VfFq4I09cFKtazq5L2736EQcmWrRug8JkDn+wMSxTpc8xPVCWiRKYKxK1yxy00NLlSnvD0eh
+X-Gm-Message-State: AOJu0YzDI98/8tygLc9WM2YRqNODuuvL8JfzSwYefnmp3zfS4jM5bdPL
+	VSvQgNkvhIxFTaRxZO9i7f9C1hsqZ8c1pyGAIdqxst3v901cpuFfRcsiNxj6Sg==
+X-Google-Smtp-Source: AGHT+IFDs72yHh14dMP/v3LcOXYq1AzGZaPkrHXx/btoSixg8uGduMLiI7a2hIPG7rGea4VcIV3D3Q==
+X-Received: by 2002:a05:6870:9a97:b0:22a:2e6:b82e with SMTP id hp23-20020a0568709a9700b0022a02e6b82emr13491647oab.38.1713209670403;
+        Mon, 15 Apr 2024 12:34:30 -0700 (PDT)
 Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id s26-20020ae9f71a000000b0078d3b54eb76sm6718055qkg.78.2024.04.15.12.34.28
+        by smtp.gmail.com with ESMTPSA id s26-20020ae9f71a000000b0078d3b54eb76sm6718055qkg.78.2024.04.15.12.34.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 12:34:28 -0700 (PDT)
+        Mon, 15 Apr 2024 12:34:29 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 15 Apr 2024 19:34:19 +0000
-Subject: [PATCH 02/35] media: stb0899: Remove unreacheable code
+Date: Mon, 15 Apr 2024 19:34:20 +0000
+Subject: [PATCH 03/35] media: uvcvideo: Refactor iterators
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240415-fix-cocci-v1-2-477afb23728b@chromium.org>
+Message-Id: <20240415-fix-cocci-v1-3-477afb23728b@chromium.org>
 References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
 In-Reply-To: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
 To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
@@ -120,32 +120,76 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
  Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.12.4
 
-chip_id is an unsigned number, it can never be < 0
+Avoid using the iterators after the list_for_each() constructs.
+This patch should be a NOP, but makes cocci, happier:
 
-Fixes cocci check:
-drivers/media/dvb-frontends/stb0899_drv.c:1280:8-15: WARNING: Unsigned expression compared with zero: chip_id > 0
+drivers/media/usb/uvc/uvc_ctrl.c:1861:44-50: ERROR: invalid reference to the index variable of the iterator on line 1850
+drivers/media/usb/uvc/uvc_ctrl.c:2195:17-23: ERROR: invalid reference to the index variable of the iterator on line 2179
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/dvb-frontends/stb0899_drv.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/media/dvb-frontends/stb0899_drv.c b/drivers/media/dvb-frontends/stb0899_drv.c
-index 2f4d8fb400cd..222b5476ebfd 100644
---- a/drivers/media/dvb-frontends/stb0899_drv.c
-+++ b/drivers/media/dvb-frontends/stb0899_drv.c
-@@ -1277,11 +1277,6 @@ static int stb0899_get_dev_id(struct stb0899_state *state)
- 	dprintk(state->verbose, FE_ERROR, 1, "Demodulator Core ID=[%s], Version=[%d]", (char *) &demod_str, demod_ver);
- 	CONVERT32(STB0899_READ_S2REG(STB0899_S2FEC, FEC_CORE_ID_REG), (char *)&fec_str);
- 	fec_ver = STB0899_READ_S2REG(STB0899_S2FEC, FEC_VER_ID_REG);
--	if (! (chip_id > 0)) {
--		dprintk(state->verbose, FE_ERROR, 1, "couldn't find a STB 0899");
--
--		return -ENODEV;
--	}
- 	dprintk(state->verbose, FE_ERROR, 1, "FEC Core ID=[%s], Version=[%d]", (char*) &fec_str, fec_ver);
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index e59a463c2761..a4a987913430 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -1850,16 +1850,18 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
+ 	list_for_each_entry(entity, &chain->entities, chain) {
+ 		ret = uvc_ctrl_commit_entity(chain->dev, entity, rollback,
+ 					     &err_ctrl);
+-		if (ret < 0)
++		if (ret < 0) {
++			if (ctrls)
++				ctrls->error_idx =
++					uvc_ctrl_find_ctrl_idx(entity, ctrls,
++							       err_ctrl);
+ 			goto done;
++		}
+ 	}
  
- 	return 0;
+ 	if (!rollback)
+ 		uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
+ done:
+-	if (ret < 0 && ctrls)
+-		ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
+-							  err_ctrl);
+ 	mutex_unlock(&chain->ctrl_mutex);
+ 	return ret;
+ }
+@@ -2165,7 +2167,7 @@ static int uvc_ctrl_init_xu_ctrl(struct uvc_device *dev,
+ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+ 	struct uvc_xu_control_query *xqry)
+ {
+-	struct uvc_entity *entity;
++	struct uvc_entity *entity, *iter;
+ 	struct uvc_control *ctrl;
+ 	unsigned int i;
+ 	bool found;
+@@ -2175,16 +2177,16 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+ 	int ret;
+ 
+ 	/* Find the extension unit. */
+-	found = false;
+-	list_for_each_entry(entity, &chain->entities, chain) {
+-		if (UVC_ENTITY_TYPE(entity) == UVC_VC_EXTENSION_UNIT &&
+-		    entity->id == xqry->unit) {
+-			found = true;
++	entity = NULL;
++	list_for_each_entry(iter, &chain->entities, chain) {
++		if (UVC_ENTITY_TYPE(iter) == UVC_VC_EXTENSION_UNIT &&
++		    iter->id == xqry->unit) {
++			entity = iter;
+ 			break;
+ 		}
+ 	}
+ 
+-	if (!found) {
++	if (!entity) {
+ 		uvc_dbg(chain->dev, CONTROL, "Extension unit %u not found\n",
+ 			xqry->unit);
+ 		return -ENOENT;
 
 -- 
 2.44.0.683.g7961c838ac-goog
