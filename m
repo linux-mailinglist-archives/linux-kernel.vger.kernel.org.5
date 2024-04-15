@@ -1,247 +1,300 @@
-Return-Path: <linux-kernel+bounces-145433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D648A5617
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:13:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 517148A5619
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:15:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DA741F2274F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:13:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2B851F228B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B76763F8;
-	Mon, 15 Apr 2024 15:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0B677F22;
+	Mon, 15 Apr 2024 15:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UifWs3O7"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ECtzN1Ou";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="YQIvGD7n"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B1117602B
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 15:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713194000; cv=none; b=MlNnjpICUkNLjkXNJ8gF3eK0wJgp+HB0SkVWTJrKunQ7qTRB23fRutNfhTGuXv5SBo8++9bSES9j0Hd0F76R97YS80v0ad9Q0QtkKtbImqumAMlXMaEdB9kcGUYLPOZjtpXjz5CzOY6Ep3Iyc9J6Wjg7u7GXtsBSskuQDeAZr6U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713194000; c=relaxed/simple;
-	bh=qXJOIKsH2LqlPch+CyyvhJkG9+3I3bqP5ksLs/ZkTE0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uvb5XdeMBpWsWaqR90+RGISzUVU7z162SJNfoqw/G5nOYEORj+DoKRL2AvsVAdbC1TJIfxNI4vinFEh38IH6OsJVf082HF17bddGOUnT0wfQDCmYsOWf9DUxZNt7QbvygeL+FVAL+7PvLTw648/stNdniPz7CqREn65EfyU8WvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UifWs3O7; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713193998;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=U5V2/IPdbVemRFSaFXpBbw8BTi79cJQSk0FhNqmrP7g=;
-	b=UifWs3O7dElVjhRmeXoD7RvN13Z0Snuch5QLqwSLIrIIF9gm7Xk6FcIuk70TPj0CZOzZfl
-	wpS87bciYpwHdWthvY6C2eEeXFcsI+CdqbSVxfl6eWLSJNPhmwWx3waxV6a/HR9nwRCKvZ
-	vjjulCV+803XLjbfQEIoe1y51cRwPFI=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-513-AlncZa8BPB-sqk0_Ka-RGg-1; Mon, 15 Apr 2024 11:13:16 -0400
-X-MC-Unique: AlncZa8BPB-sqk0_Ka-RGg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-34619c30076so2469960f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:13:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713193995; x=1713798795;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U5V2/IPdbVemRFSaFXpBbw8BTi79cJQSk0FhNqmrP7g=;
-        b=mgRa+UQnYTdog1BK47ZofrfGjhGB0aYDkzM4YvswoCaq3A7Y+j3rYFYm3FxkRNiQCw
-         6d6FCt8uVaGFUlW253KMwGBunJJ8jkZg3/E+SEG9zLX9BTQc4cOnG1mmhWAeabtwsYJZ
-         bBIQjPvr3VP7B1MjGbH8ADDnJsfWulnYStDKokRcdn/mluOlbqGEpNcKhdDSjGfmU/WZ
-         KMzdVHTDtB1UNjMuMsRN0imIuypj281eBv9EfdNCFKyHYfuTFDU/XS4byIUF0TO+YWrU
-         7FojnyoASz9iDsNucHBT8uaR4WWG3cORBqOTNkjMjl7HczYPb9MyiE0ElAYXUqPVyy2E
-         1LAA==
-X-Forwarded-Encrypted: i=1; AJvYcCV211DK+12GTIETheXryka6DsebnVShKT8Cib9PTOgyUWdja1O+QP4qRBiOl/b66/6SnYYRPz13Kldm+x2bcDxidly4ggdBtzP5F1ua
-X-Gm-Message-State: AOJu0YwCmcGRLcBYoYYH18rcibRi0ksra7y29lxvSaU0JCoXM8JMtLSS
-	ZiUMNXDT1CVEXfsL6tIYq7YCK+45KwM5jk0aJJQk5S4xeZGOw7SDzAu7BrC1VQk220uuvm5m/wo
-	OyxdijPdkv5c0syFeJV5GRbyStaUKZ0J7FA7jjCFuXhUoSYRe/ZfqAsjXpke8ug==
-X-Received: by 2002:adf:ee04:0:b0:343:9934:a28e with SMTP id y4-20020adfee04000000b003439934a28emr5970766wrn.35.1713193995130;
-        Mon, 15 Apr 2024 08:13:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFqMeEM6DbqyHxTvGWYpGoQkFzPjCgdAw4TvSMmU8s7vb5q48BBbW7qM77gdNJecL462t+pGA==
-X-Received: by 2002:adf:ee04:0:b0:343:9934:a28e with SMTP id y4-20020adfee04000000b003439934a28emr5970750wrn.35.1713193994735;
-        Mon, 15 Apr 2024 08:13:14 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
-        by smtp.gmail.com with ESMTPSA id z4-20020a5d6404000000b00343b09729easm12390017wru.69.2024.04.15.08.13.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 08:13:14 -0700 (PDT)
-Message-ID: <5b1f986d-e8e2-4ca0-8377-6325076c84fa@redhat.com>
-Date: Mon, 15 Apr 2024 17:13:13 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966407602B;
+	Mon, 15 Apr 2024 15:14:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713194099; cv=fail; b=tC9BNx21RQCtRfo8qWReTQfuPnZtdEsdttpjYSuGzy+c6AcaqYxT8SKJXoEaETL2T2qI/8eVLTKE8u0V77DEa/LhN/aHnjwJpKFmX1WX0WtmUtwgewzk8KhtO9syBaIHGErkHJ809lTGIA4yhJdnspXv21A0NInQPoupN+dvO84=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713194099; c=relaxed/simple;
+	bh=7KN7R9suh+GzhFjWIQ4fls0b5Zyr6X8s/WFR53/dUB0=;
+	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=O1Gzu9SYJwGuOgSHSVDQU9qDcFaNiEVZEfmBfj+fRYRSFsCToZzP5MM4IfoVEskAqVWhfE8VXdHvTTBTi8/0iiSpw6Y5iu9UkegiqACqmupqji7wYeO+N+kDS3HyP3rWgniXgb8oWaB4dQYiNQ6ZkC2T1KHhqqL7IcVCAiQDTuk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ECtzN1Ou; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=YQIvGD7n; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FDY5JR017791;
+	Mon, 15 Apr 2024 15:14:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ cc : subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=mNO6SrKYtu8IiiATnEJDIHkDbFIitOnbZHMB3357QQ0=;
+ b=ECtzN1OuO4d58lLAhstg9EszLOP6/Kqjqk34YA6ur8w+qtWIW8ryMM37wpg8mBOOl12K
+ hVNRnrSxnut/WWaBUzrEuucJnevCjfwumRahpfW9GbpL8WTV0RHq+DPvTlMAHr/YpTrB
+ VRV8TRvsHiukvoU8q036NvYbQjv1V059b4yqysitdrZ8T5uWK3D70oj9HyI0IioWzHvj
+ Amma7ux6R8taSdrkvDrDg9+jWxkZvtWQP7L+YF3vXxwzuCfJZwnz2VQovTocbOszUguu
+ feAQU/WViI5k9OkbNkM3hvop+gC4hkyTlSI5V4gbIoasNBJeG7H/mPIKt6KZrKBVB/N4 ow== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfhnub2nh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 15:14:16 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43FESgmt014453;
+	Mon, 15 Apr 2024 15:14:15 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xfggc5g03-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 15:14:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KeySMdnBr+PPTb2Q8/XccGdjmoeVfUFvCKqIUpsZomKoYRRt+VXxpbej16HBTbA34h22WAw1lu2P1eOMjtkx9cmMwjEvYabQjmtsd2vfAPsODMh5IdAuQgxQ8PsI0Tw/6MgKEPpwnbINSw6L5vMljTqcAm50+Qd+e0gX+NubEilHc0yUkohDwNV3YuduMhmFu9qj9v1ZhDBTmTeU2jbsNjgWAEqYgM/JpUmm4wV9p07hwv62PyNbumr0orkrRb/BgfF1T030lv7KF1GlRox1cw91H1d7UfuTMdT2SDqFfQmpiivaSGB8bH+z04DRqkyvA9+kTiO3uYptm7XBKyX84A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mNO6SrKYtu8IiiATnEJDIHkDbFIitOnbZHMB3357QQ0=;
+ b=HJ57G3pP0OzfRFo+bzRpsdyO+SJFBnLqd5BVl4tJjx3qOsLR8AV0ig1HorwIijVG4pXhYNE4/0w9755I8QmM9wo9gZ6vbCPQQIzG0aLI5pMKHii4xhtsmM32QEUIaphp1tSLh+iXcHmjzzhW1DVqtQN0uj2itQV0ilrx7i86vHBpXtgqp0VyGCIpwFi6UTLfU0V1GDIdbT6C+jwcIopKt08EMlmzYe4K+iNEL2wu1EVSAKaFOi6MvV9fH+DTL605ScNQwAaaEyzetHuNP3HemfSxSvBTxrZJzMJA7JTEU4nX0hZCeIhPf9kOmmDBCjJNjo31Rzcoc+/n+TbNvDOhKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mNO6SrKYtu8IiiATnEJDIHkDbFIitOnbZHMB3357QQ0=;
+ b=YQIvGD7nCIcUrx84Z6KJjkN8onpD+CR1s1Ux9AGD8QO8Fr2RQ2dTwAMVypZEQ6wV/P8N6Gzt47bbDjKttzW/XP+YvK2LvwSBk7bSk2Gw8c8Ggujl49jcg7o+TNDH+KT/QwqL7w2/VByPYmPfEBpoULPu1mvj4HIpnjB60cKLNUo=
+Received: from SN4PR10MB5622.namprd10.prod.outlook.com (2603:10b6:806:209::18)
+ by BLAPR10MB4996.namprd10.prod.outlook.com (2603:10b6:208:30c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
+ 2024 15:14:12 +0000
+Received: from SN4PR10MB5622.namprd10.prod.outlook.com
+ ([fe80::1481:809a:af18:ac44]) by SN4PR10MB5622.namprd10.prod.outlook.com
+ ([fe80::1481:809a:af18:ac44%5]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
+ 15:14:12 +0000
+Message-ID: <2af16cb4-32ed-4b91-872b-f0cc9ed92e59@oracle.com>
+Date: Mon, 15 Apr 2024 17:14:05 +0200
+User-Agent: Mozilla Thunderbird
+Cc: alexandre.chartre@oracle.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com,
+        pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de,
+        konrad.wilk@oracle.com, peterz@infradead.org,
+        gregkh@linuxfoundation.org, seanjc@google.com,
+        dave.hansen@linux.intel.com, nik.borisov@suse.com, kpsingh@kernel.org,
+        longman@redhat.com, bp@alien8.de, pbonzini@redhat.com
+Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
+ by BHI
+Content-Language: en-US
+To: Chao Gao <chao.gao@intel.com>, Andrew Cooper <andrew.cooper3@citrix.com>
+References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
+ <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com>
+ <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
+ <d47dcc77-3c8b-4f78-954a-a64d3a905224@citrix.com>
+ <ZhfGHpAz7W7d/pSa@chao-email>
+ <95902795-0c2c-43cc-8d87-89302a2eed2b@oracle.com>
+From: Alexandre Chartre <alexandre.chartre@oracle.com>
+Autocrypt: addr=alexandre.chartre@oracle.com; keydata=
+ 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
+ swLliy6PdpST
+In-Reply-To: <95902795-0c2c-43cc-8d87-89302a2eed2b@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P265CA0081.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:8::21) To SN4PR10MB5622.namprd10.prod.outlook.com
+ (2603:10b6:806:209::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Zi Yan <ziy@nvidia.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Yang Shi <shy828301@gmail.com>,
- Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>,
- linux-kernel@vger.kernel.org
-References: <20240411153232.169560-1-zi.yan@sent.com>
- <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
- <2C698A64-268C-4E43-9EDE-6238B656A391@nvidia.com>
- <bc8effda-6ff4-458d-a3ee-0d6f25cd41e0@redhat.com>
- <BBA893A5-1463-482E-8475-384BAD1AC6FD@nvidia.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <BBA893A5-1463-482E-8475-384BAD1AC6FD@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR10MB5622:EE_|BLAPR10MB4996:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a9625c4-54d3-47bc-4bb9-08dc5d5eb449
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	B5wgLmSKwUZfVT3CTQtT9vMrSpZG+BBV9tMct9jkbj8wWjcxOEnMqwCoDbSh58SqnVBJzKSEdbN2d7Fy+g+MSAScnNcHMz+PYf9Ml8wMz/SDI/HcIio/bLQXb4sw8q8VAggzFukItHnsX74rjc3lySvknGbAMahCuxeYwhaCjrNIGxFfZTfJxaFVFlN8x41ZKXHKdt7d+xkSGqSLn+IZuPa3kh/9MVVDqa0ZPOb6YR5tNojYZMDydyfdDhDqMo3z3t0HXRjhTHBFz2RPCnCI8yIXgYe6yFD3g4nhammTSdqI7mgfzPh9FSqDZrvMQIkpqT9ayDR0+bJwltrIHbCWjlKS/xlKgRfEM7+NxaxyaC9tPqDumfwJ0nIHUF3NNd4v+iO0g23MRoiR2T4jYyxpUGMcD2OE29xroIPMBA4zSgkrZHjGjRU6GiINNxpmpzlM71AHBCt9CDTKmF8y/y5WImpKOMhIUYSnmUEAUKGU1wkV2LqWcZd1IsJ3M43etx/GjQotSXG3z5RAFX6BmFfdEEEsNuuTvEniJaKc/BKcEF1UbButi+FoYFYZUggsP2UAx9bv1VuJpBN9KAQPICOAnNM8AH125ZzMYmPG30D2PjYeHr5TTZZol5aTFClyLPXzYjuPH8GSyEM03cRQQcc6r/jh1ywBY2VXY4IIZaSgFQQ=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR10MB5622.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?WmZYQm1NUVFGUkN3dTNmRlBjRDVPTEJ6N2xjYmUrWFhFR3ppN3prSmNhSFph?=
+ =?utf-8?B?NDJ4YS9MUnR2WGdxSDdFVngxbVFDS0lwMFhNdlA5MGVNSFFnRUdaT3BSdm1F?=
+ =?utf-8?B?SXZWcU92bGVWRnFETDFKcWNrUmk1c2cycFZMMU5NTFBtclI2UFQ2NWJnbHhp?=
+ =?utf-8?B?TFBQT2ZvNS9hdXQwRXpyZmhOK1dlWUs5czRoTDl2OERqQk9CQzk4MW1JdkFz?=
+ =?utf-8?B?Y1ZxcTJVL2x3M2ZSU1A1UEVIMkRqME9tQmVvbk9uamxudWtMZm5TOXNXMUZZ?=
+ =?utf-8?B?Ny9MSlRTajlMbnhwb1FYcTcrZzFGTndER1E5VUVycm9SN09TUTZ6K09QendQ?=
+ =?utf-8?B?dExONHZMcDMySzBDWlYyQlJTMTdtWm1xejh2TXNDRWR4cFVkV2liRDN1VWs4?=
+ =?utf-8?B?UGRHakpTMWRHcGV5NFhlamx5Y0FiYXdLRm5mZW9xRkRKN0dJT2JhVEtjTE5L?=
+ =?utf-8?B?QmNKMVA3V2hzQlozRithc3FRVXpjSXJuSDdUS3grUlY2TkRnY2IyT2xHNlJt?=
+ =?utf-8?B?OE9CVjRYQlhTK1Q2S0Q3N3VmVGpBL05PRVN0U3RRSGpSYmRqQ29YMGtYSzZq?=
+ =?utf-8?B?MzBBNm54ZnFyaGoyOXhPdGw1Vk1NMkJyYXB5YnoyaU9EblJXb3plbk9TV1M1?=
+ =?utf-8?B?K0oveW5Da0xhc2ErMFhPdFliSGs2ak5mN1pyVlRpYyt2bXJ0YXMvaGtJKzAy?=
+ =?utf-8?B?TlFiMlpTWjRxMVl5cXNjMDVyRWlrcXY3NGZzazJ3K1FrMDZjU0o2ejVQcG1L?=
+ =?utf-8?B?WXNMM2hwNkRIRVV6OUZxNm95dExQaDZudC9VMEx0emVJUGVkUU9WcEZ1NDd3?=
+ =?utf-8?B?RlVBU2V3T0d5eVo3aEVJV2EyZ2JhUEV2cEh2aU9NOWEzRVRVTEZ0LzdrbHZH?=
+ =?utf-8?B?eEVHVkNCWmcvcHlaai9IN2Fpb2cvVFAzZ2F4WldiNzJCMWt3TnZCMjJiellu?=
+ =?utf-8?B?eGtmYUlTd3o0eDBtZjVoTnI4WlR4Y05rekk1a0RtZ0ZFZDFmMGZ0SERyUm53?=
+ =?utf-8?B?bTRHUVVIclZQTWhWOTdqMXF1SnBvOGU0alJDbU5sUUs1SDF5cmFiYlRtcmlt?=
+ =?utf-8?B?NW9iOTFSSjlBVnRTMUUxdE1MT1NJNStJVk1jNlBHQkJOZER5bWFRMVJNeUhl?=
+ =?utf-8?B?MWMrUTYzTXJ0L3M0eUtEbWx5YmFOZHZIcWtsVXdaTCtBaEhOYm9uOHUxeHNC?=
+ =?utf-8?B?aWtCUEF3TkRLNGlLcnRGaHpJU0ZreXZscDUwam96ODhHYzFqQS9oVG13MTg5?=
+ =?utf-8?B?bDRaSTYvZHFpeWY4djNCSloxVFF5SDIrN2RqSGFmSzJRRUIvaG1pWU1IcWV6?=
+ =?utf-8?B?OHdOaTVQc0w1cm5SSkI1bGRaR005ZmpPVVRmMjZ4cnNGZnZNVFpsM0ZnNkpF?=
+ =?utf-8?B?c3N5dWtCUXVxNUVMdThOQ0tpUDNBODh4amJYcGdLWEVOalFrcUk2aXMybXJP?=
+ =?utf-8?B?MmhWR3FDeXU3Y0pJWDB6aXQwVDlOT21SS2lIc2VXVGhvOXR2MjRMOWh2aWtK?=
+ =?utf-8?B?eGtJUDl4ZlFvSWpUNCtQWWxwSWtHWTlIMVVoeDIvOTdZbzdLL0IzYXZBRllI?=
+ =?utf-8?B?cWROU2h5WTZHZ2QvcU81enFXcGNMekt4TDRWellDeG9YUjJCM1crcUhaNUUx?=
+ =?utf-8?B?NG40ZVUwOW5WQStQelZGNFYyVmJ4cE1hUCtvN2pZQUJkYkVVN0tTMzBDLzVq?=
+ =?utf-8?B?dHVtTDRBSU55MFNNSjh3QmZoaUptQ0NYcnZEZHloQUhoYklHZ3NZZitOOVdR?=
+ =?utf-8?B?OEdBRHBnckdkbjNRbFRWc2hHZDBMRVcxMDNGNnVxVjNvTGtwbFRHQ2djOWNW?=
+ =?utf-8?B?M0VIVmwvMXJPRVRjb1FndkZxVGpHWkRxM3drcXkrbW5wQkRlRUVkL3hCeXFy?=
+ =?utf-8?B?UDZiMS95LzkxRXBwRGRIN3FZTTFsdCtxYXUrbUtyMWY5c0tzUE5WU29zaHFR?=
+ =?utf-8?B?aUl5d2F3TER3M0hlTTM4aFhBUG1aN296MWxMVVJlSCtyd3JRci92ZnNsbk50?=
+ =?utf-8?B?OFcvVGxIVUVlOFI5d2FQUC9yNlVBVzgrNmhQOXRVMGx2TWYvamFwTGloVjhk?=
+ =?utf-8?B?RXV5SlpBclV6aXJZS3E4bGlPYmU1YkxDYnY1aGtKcEtVckNPcDl2dERLcFpW?=
+ =?utf-8?B?aUlNZi9idmYzYXpJaG5UdDZPcXJZdk4xTVJjZXZ1Z0NLUi9rQW94di9sbkp1?=
+ =?utf-8?B?aHc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	PIYRj0/bkcWi9Adn6zErub4ZMgCCzkRFT/P6qUa/gpqlngYOXy7wgLjLAmAM21ZzkOyywBhjoxcnaC8zQjTUtCg/x8tmZ+9JfTAigsZAk1gl+S8H9cy7nFwDjCOfgX2r9j9mbWMHjl+VRixBV0KsRaqG2u95OK6iqtfFkpsjup58yWz8BZKWQhmI7ZhaYFvP6M5PncEuvGUwyXzkNJiuntlRcdddI9vmghFjIdvmqZs94z3wGtnFw7/iIUWjTTJy6bMQWgt7xlhasYIgtFe5DjHSiiINDTpjcOVG5NCT/SFqSW1TaTF8PlFHSclrA+9jn3PJiNW/4NmsTEBN4TbLKf8yFmx52NcTshvRnW8JONWCawXeuS4DMq1KI2l3CoZj6+8VzTPFxwOXV0sKWhRYCr04TVhSA+6MtEyNjZP4cSBeC/4t6b+fD0P8B29mILRIsZE5MS7CvmZvQ8lTPpJzpBCvByLbgjbgfmWxr2eu/qrEaUyYjz93nikv/VuPbD7T90uEelm1QUxjSZyoSafSpS5hwRx0Dw54iHtEMlpwbq+g+0L9yTQnlFRqhj9FkCs6QXM0cnePpYGaOZl+oz30Iwrg5NtDQ4HDUgsFSNIsZzc=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a9625c4-54d3-47bc-4bb9-08dc5d5eb449
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR10MB5622.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 15:14:12.3592
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0H0TNVGus6lrTHwamrIzB0q8+Z5ahiq/mWKg0v/QW45Az9RjpZlrvYAoRCce7dAP6+h9YeXturwpT+/dbyaj5bwUVbNlOjXCIIpxD9ZwpQg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4996
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_12,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404150099
+X-Proofpoint-GUID: PjMT1sC5CcGKWyfxT51DdJJigAZBtWp-
+X-Proofpoint-ORIG-GUID: PjMT1sC5CcGKWyfxT51DdJJigAZBtWp-
 
-On 12.04.24 23:06, Zi Yan wrote:
-> On 12 Apr 2024, at 15:32, David Hildenbrand wrote:
+
+On 4/11/24 15:20, Alexandre Chartre wrote:
 > 
->> On 12.04.24 16:35, Zi Yan wrote:
->>> On 11 Apr 2024, at 11:46, David Hildenbrand wrote:
+> On 4/11/24 13:14, Chao Gao wrote:
+>>>> The problem is that we can end up with a guest running extra BHI
+>>>> mitigations
+>>>> while this is not needed. Could we inform the guest that eIBRS is not
+>>>> available
+>>>> on the system so a Linux guest doesn't run with extra BHI mitigations?
 >>>
->>>> On 11.04.24 17:32, Zi Yan wrote:
->>>>> From: Zi Yan <ziy@nvidia.com>
->>>>>
->>>>> In __folio_remove_rmap(), a large folio is added to deferred split list
->>>>> if any page in a folio loses its final mapping. It is possible that
->>>>> the folio is unmapped fully, but it is unnecessary to add the folio
->>>>> to deferred split list at all. Fix it by checking folio mapcount before
->>>>> adding a folio to deferred split list.
->>>>>
->>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>>> ---
->>>>>     mm/rmap.c | 9 ++++++---
->>>>>     1 file changed, 6 insertions(+), 3 deletions(-)
->>>>>
->>>>> diff --git a/mm/rmap.c b/mm/rmap.c
->>>>> index 2608c40dffad..d599a772e282 100644
->>>>> --- a/mm/rmap.c
->>>>> +++ b/mm/rmap.c
->>>>> @@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->>>>>     		enum rmap_level level)
->>>>>     {
->>>>>     	atomic_t *mapped = &folio->_nr_pages_mapped;
->>>>> -	int last, nr = 0, nr_pmdmapped = 0;
->>>>> +	int last, nr = 0, nr_pmdmapped = 0, mapcount = 0;
->>>>>     	enum node_stat_item idx;
->>>>>      	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
->>>>> @@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->>>>>     			break;
->>>>>     		}
->>>>>    -		atomic_sub(nr_pages, &folio->_large_mapcount);
->>>>> +		mapcount = atomic_sub_return(nr_pages,
->>>>> +					     &folio->_large_mapcount) + 1;
->>>>
->>>> That becomes a new memory barrier on some archs. Rather just re-read it below. Re-reading should be fine here.
+>>> Well, that's why Intel specified some MSRs at 0x5000xxxx.
+>>
+>> Yes. But note that there is a subtle difference. Those MSRs are used for guest
+>> to communicate in-used software mitigations to the host. Such information is
+>> stable across migration. Here we need the host to communicate that eIBRS isn't
+>> available to the guest. this isn't stable as the guest may be migrated from
+>> a host without eIBRS to one with it.
+>>
 >>>
->>> Would atomic_sub_return_relaxed() work? Originally I was using atomic_read(mapped)
->>> below, but to save an atomic op, I chose to read mapcount here.
+>>> Except I don't know anyone currently interested in implementing them,
+>>> and I'm still not sure if they work correctly for some of the more
+>>> complicated migration cases.
 >>
->> Some points:
->>
->> (1) I suggest reading about atomic get/set vs. atomic RMW vs. atomic
->> RMW that return a value -- and how they interact with memory barriers.
->> Further, how relaxed variants are only optimized on some architectures.
->>
->> atomic_read() is usually READ_ONCE(), which is just an "ordinary" memory
->> access that should not be refetched. Usually cheaper than most other stuff
->> that involves atomics.
+>> Looks you have the same opinion on the Intel-defined virtual MSRs as Sean.
+>> If we all agree the issue here and the effectivenss problem of the short
+>> BHB-clearing sequence need to be resolved and don't think the Intel-defined
+>> virtual MSRs can handle all cases correctly, we have to define a better
+>> interface through community collaboration as Sean suggested.
 > 
-> I should have checked the actual implementation instead of being fooled
-> by the name. Will read about it. Thanks.
+> Another solution could be to add cpus to cpu_vuln_whitelist with BHI_NO.
+> (e.g. explicitly add cpus which have eIBRS). That way, the kernel will
+> figure out the right mitigation on the host and guest.
 > 
->>
->> (2) We can either use folio_large_mapcount() == 0 or !atomic_read(mapped)
->> to figure out if the folio is now completely unmapped.
->>
->> (3) There is one fundamental issue: if we are not batch-unmapping the whole
->> thing, we will still add the folios to the deferred split queue. Migration
->> would still do that, or if there are multiple VMAs covering a folio.
->>
->> (4) We should really avoid making common operations slower only to make
->> some unreliable stats less unreliable.
->>
->>
->> We should likely do something like the following, which might even be a bit
->> faster in some cases because we avoid a function call in case we unmap
->> individual PTEs by checking _deferred_list ahead of time
->>
->> diff --git a/mm/rmap.c b/mm/rmap.c
->> index 2608c40dffad..356598b3dc3c 100644
->> --- a/mm/rmap.c
->> +++ b/mm/rmap.c
->> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->>                   * page of the folio is unmapped and at least one page
->>                   * is still mapped.
->>                   */
->> -               if (folio_test_large(folio) && folio_test_anon(folio))
->> -                       if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
->> -                               deferred_split_folio(folio);
->> +               if (folio_test_large(folio) && folio_test_anon(folio) &&
->> +                   (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped) &&
->> +                   atomic_read(mapped) &&
->> +                   data_race(list_empty(&folio->_deferred_list)))
-> 
-> data_race() might not be needed, as Ryan pointed out[1]
 
-Right, I keep getting confused by that. Likely we should add data_race() 
-only if we get actual reports.
+More precisely we could something like this (this is just an example, obviously
+the list is clearly incomplete):
 
--- 
-Cheers,
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 754d91857d63..80477170ccc0 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1182,6 +1182,24 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
+         VULNWL_INTEL(ATOM_TREMONT_L,            NO_EIBRS_PBRSB),
+         VULNWL_INTEL(ATOM_TREMONT_D,            NO_ITLB_MULTIHIT | NO_EIBRS_PBRSB),
+  
++       /*
++        * The following Intel CPUs are affected by BHI, but they don't have
++        * the eIBRS feature. In that case, the default Spectre v2 mitigations
++        * are enough to also mitigate BHI. We mark these CPUs with NO_BHI so
++        * that X86_BUG_BHI doesn't get set and no extra BHI mitigation is
++        * enabled.
++        *
++        * This avoids guest VMs from enabling extra BHI mitigation when this
++        * is not needed. For guest, X86_BUG_BHI is never set for CPUs which
++        * don't have the eIBRS feature. But this doesn't happen in guest VMs
++        * as the virtualization can hide the eIBRS feature.
++        */
++       VULNWL_INTEL(IVYBRIDGE_X,               NO_BHI),
++       VULNWL_INTEL(HASWELL_X,                 NO_BHI),
++       VULNWL_INTEL(BROADWELL_X,               NO_BHI),
++       VULNWL_INTEL(SKYLAKE_X,                 NO_BHI),
++       VULNWL_INTEL(SKYLAKE_X,                 NO_BHI),
++
+         /* AMD Family 0xf - 0x12 */
+         VULNWL_AMD(0x0f,        NO_MELTDOWN | NO_SSB | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_BHI),
+         VULNWL_AMD(0x10,        NO_MELTDOWN | NO_SSB | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_BH
 
-David / dhildenb
 
+alex.
 
