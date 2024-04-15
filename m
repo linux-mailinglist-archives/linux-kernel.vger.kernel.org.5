@@ -1,344 +1,506 @@
-Return-Path: <linux-kernel+bounces-145523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C801B8A5762
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:14:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83A318A5736
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:11:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D35828592D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:14:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6DF51C22977
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:11:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1700584A5C;
-	Mon, 15 Apr 2024 16:13:12 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA74F80C03;
+	Mon, 15 Apr 2024 16:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="UD4u7RiQ"
+Received: from mail.mainlining.org (mainlining.org [94.241.141.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A308062E;
-	Mon, 15 Apr 2024 16:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9483E80046;
+	Mon, 15 Apr 2024 16:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.241.141.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197591; cv=none; b=M37w2uPz+K431nxDFbFDSDBAq4a0rllXbNBcipYR+r1woNESKyfXZAAB/OWeiOSuuZGb9uWn9ayJtaC9Mp1qkheqRe0jLDtMARGcoMyJ9XwePj4Gn1+i1fWMCWF05YFluVft18LlzGz8TVMU+5fQi2BYgNQD3Y2qRLIAVP14bis=
+	t=1713197481; cv=none; b=L9Xx53W5bw6PLwJKJTWYgaI4+sXAYXe1a3D/yF/mI887swLUJwxkYb4Z8XKUXmXUb7F42f/Pf5RhNshqnuY7Hv5dYQRIoIPfwD64Y3x8k1cWYp8yXwopYEeqBMzrfrpJDzs4mN8b2Gry6pdkfHxK0iUv7WAb6NVucZhbbZZMGKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197591; c=relaxed/simple;
-	bh=pEmknL2/6lnmt81ftfpClFRTiK0Me9ZoDCWCf4uH/Yg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bYNShQvQha3MCGd2McF3XO4Q1tfQscwQuOvS+5JOf4OHjM2fV06hU3n7LvsEUnJi/4PboLxFTlEy786AsVJiu69xMZ5q7Rv+moXSRUHXD9qeD1dtpMdAmp8JoNPrA/SRC5vd5odSaC0OPTNyudz7eMj2A70on7Govvp6UiuSEYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4VJBcR3Q1qz9xGnS;
-	Mon, 15 Apr 2024 23:56:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 57CCE1405E3;
-	Tue, 16 Apr 2024 00:12:56 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwDn0iaZUR1m4n9HBg--.16529S9;
-	Mon, 15 Apr 2024 17:12:55 +0100 (CET)
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: corbet@lwn.net,
-	zohar@linux.ibm.com,
-	dmitry.kasatkin@gmail.com,
-	eric.snowberg@oracle.com,
-	paul@paul-moore.com,
-	jmorris@namei.org,
-	serge@hallyn.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	wufan@linux.microsoft.com,
-	pbrobinson@gmail.com,
-	zbyszek@in.waw.pl,
-	hch@lst.de,
-	mjg59@srcf.ucam.org,
-	pmatilai@redhat.com,
-	jannh@google.com,
-	dhowells@redhat.com,
-	jikos@kernel.org,
-	mkoutny@suse.com,
-	ppavlu@suse.com,
-	petr.vorel@gmail.com,
-	mzerqung@0pointer.de,
-	kgold@linux.ibm.com,
-	Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH v2 7/9] ima: Use digest caches for measurement
+	s=arc-20240116; t=1713197481; c=relaxed/simple;
+	bh=f146FF+WI/o35KCCFTLt43epAmIWYp+fcu5cws731ic=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=FNw/hyUJ71PmNk4LpSMBbvG6W/eYWTn+/PLXQ4ROPCMcFNAiuI4A/MCSQR3ghTnPkdct3QkNtqgzoguDE3uX8BEkB6dtm9+hxhVBvinEkIXWpq4aZP+jiD4MGQrHzLAnv7yVeoN0PJGg/AVVws6u70U+jp0hmyyyrkq6DtDx/os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=UD4u7RiQ; arc=none smtp.client-ip=94.241.141.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+Received: from david-ryuzu.localdomain (ipbcc3a836.dynamic.kabel-deutschland.de [188.195.168.54])
+	by mail.mainlining.org (Postfix) with ESMTPSA id 8A558E20AF;
+	Mon, 15 Apr 2024 16:11:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mainlining.org;
+	s=psm; t=1713197471;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Iz36PtCFN7oUoO4KwjFHJcJtW5hVGeHAgAE4GO3+PDw=;
+	b=UD4u7RiQOEN6AyjqMdJ9Y3HL9OUCj1KS33y5rLrub/eSkGCFsDECd3tiHkGoTNyRp52yF9
+	XKkCP1oeOy8k5FS1wWs3+sl8PGRZGslGbKmSlEbNSxw87H/1yTwWS/cC3Lkh6t64VDsv7Z
+	39cpiCLrutoKfWxKEnUO1GFF/SQUeGioCor7g3rEnU6Q6WvV1ECWMILavheahfSFok6vFC
+	usJWgdg62DXHLq3wtvOJ5iTjwzEztrv4c0eyYvgmeU3OtxHQM3gUAAomBS2haPOb0xL3uZ
+	jRYdA25nUpZEi1Da9L9pMr005h0EWQqH8Oxypyle8srbwvmUE/IysK0HqAsciA==
+From: David Wronek <david@mainlining.org>
 Date: Mon, 15 Apr 2024 18:10:42 +0200
-Message-Id: <20240415161044.2572438-8-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240415161044.2572438-1-roberto.sassu@huaweicloud.com>
-References: <20240415161044.2572438-1-roberto.sassu@huaweicloud.com>
+Subject: [PATCH v2 2/2] drm/panel: Add driver for EDO RM69380 OLED panel
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwDn0iaZUR1m4n9HBg--.16529S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3ZrWxuw1fArW3ArWxWr4xXrb_yoWDZF1fpa
-	9IgF1UKr1kZFy7Cr1fA3ZruF4Fk3yktF4UJ398Xw1akFs8Xr1jywnYkr1UZFy3JrWjva4x
-	ta1jgw1UAw1qyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPqb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x02
-	67AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I
-	80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCj
-	c4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4
-	kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E
-	5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZV
-	WrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY
-	1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67
-	AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26rxl6s0DYxBIdaVFxhVjvjDU0xZFpf9x
-	07j7GYLUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAOBF1jj5h14wAAs3
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240415-raydium-rm69380-driver-v2-2-524216461306@mainlining.org>
+References: <20240415-raydium-rm69380-driver-v2-0-524216461306@mainlining.org>
+In-Reply-To: <20240415-raydium-rm69380-driver-v2-0-524216461306@mainlining.org>
+To: Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ Konrad Dybcio <konradybcio@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+ phone-devel@vger.kernel.org, David Wronek <david@mainlining.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713197467; l=12303;
+ i=david@mainlining.org; s=20240121; h=from:subject:message-id;
+ bh=f146FF+WI/o35KCCFTLt43epAmIWYp+fcu5cws731ic=;
+ b=8FHvipBkbhmJJlNTQkm1FNqBx+tQz0CZTVKYLiyik8Oc8pAseHIVDxgtm0Vva82kBcel35nAX
+ 4+ERID+oKm3AVubBUd/xJE+6dpg3AdxP6J7x+eCcf3vsrPaCQvu/+4H
+X-Developer-Key: i=david@mainlining.org; a=ed25519;
+ pk=PJIYyFK3VrK6x+9W6ih8IGSJ5dxRXHiYay+gG1qQzqs=
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+Add support for the 2560x1600@90Hz OLED panel by EDO bundled with a
+Raydium RM69380 controller, as found on the Lenovo Xiaoxin Pad Pro 2021.
 
-Introduce a new measurement style using digest caches, which can be
-performed exclusively on non-standard PCRs, to avoid ambiguity.
-
-While a measurement on the standard PCR means that a file was accessed and
-had the measured data, a measurement with the digest cache means only that
-the calculated file digest was not found in any of the measured digest
-lists (any digest list used for the search must be measured, otherwise IMA
-wouldn't use it).
-
-The new measurement style does not tell: whether or not the file was
-actually accessed (since its measurement is skipped even if it was); in
-which sequence files were accessed. So, one has to guess that the system
-might have possibly accessed any of the files whose digest is in the
-measured digest lists, in any order.
-
-However, it has the following benefits: the IMA measurement list can be
-much shorter, system performance can be much better due to less PCR extend
-operations (see the performance evaluation in the digest_cache LSM
-documentation); the PCR can be predictable as long as the set of measured
-digest lists does not change (which obviously happens during software
-updates).
-
-The PCR can be predictable because the digest_cache LSM has a prefetching
-mechanism that reads digest lists in a deterministic order, until it
-finds the digest list containing the digest calculated by IMA from an
-accessed file. If IMA measures digest lists, the PCR is extended in a
-deterministic order too.
-
-Predictable PCR means that a TPM key can be made dependent on specific PCR
-values (or a OR of them, depending on the key policy). Accessing a file
-with an unknown digest immediately makes that TPM key unusable, requiring a
-reboot to use it again.
-
-This mechanism can be used for the so called implicit remote attestation,
-where the ability of a system to respond to challenges based on the private
-part of the TPM key means that the system has the expected PCR values
-(which would mean that the integrity of the system is ok). This is opposed
-to the explicit remote attestation, where a system has to send all its
-measurements, to prove to a remote party about its integrity.
-
-If the IMA policy allows the usage of digest caches for the current file
-access (except for DIGEST_LIST_CHECK hook, not supported), call the newly
-introduced function ima_digest_cache_update_allowed_usage(), to make a
-final decision on whether or not a digest cache can be used for measurement
-and/or appraisal.
-
-First, call digest_cache_get() to get a digest cache from the file being
-accessed. Second, perform a lookup of the calculated file digest in the
-digest cache. Third, retrieve the allowed usage from the integrity metadata
-flags of the digest list and AND it with the allowed usage from the policy.
-
-If any of the previous step fails, set the allowed usage to zero.
-
-Finally, pass the allowed usage to ima_store_measurement() and, if it has
-the IMA_DIGEST_CACHE_MEASURE_DATA flag set, behave as if the file was
-successfully added to the IMA measurement list (i.e. set the IMA_MEASURED
-flag and the PCR flag from the value specified in the matching policy
-rule), but actually don't do it.
-
-Finally, release the digest cache reference acquired with
-digest_cache_get(), by calling digest_cache_put().
-
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: David Wronek <david@mainlining.org>
 ---
- security/integrity/ima/ima.h              |  3 +-
- security/integrity/ima/ima_api.c          | 15 +++++++-
- security/integrity/ima/ima_digest_cache.c | 47 +++++++++++++++++++++++
- security/integrity/ima/ima_digest_cache.h |  9 +++++
- security/integrity/ima/ima_main.c         | 14 ++++++-
- 5 files changed, 84 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/panel/Kconfig                 |  14 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ drivers/gpu/drm/panel/panel-raydium-rm69380.c | 366 ++++++++++++++++++++++++++
+ 3 files changed, 381 insertions(+)
 
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index 337b3b76b28d..865137dfcf22 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -381,7 +381,8 @@ void ima_store_measurement(struct ima_iint_cache *iint, struct file *file,
- 			   const unsigned char *filename,
- 			   struct evm_ima_xattr_data *xattr_value,
- 			   int xattr_len, const struct modsig *modsig, int pcr,
--			   struct ima_template_desc *template_desc);
-+			   struct ima_template_desc *template_desc,
-+			   u64 allowed_usage);
- int process_buffer_measurement(struct mnt_idmap *idmap,
- 			       struct inode *inode, const void *buf, int size,
- 			       const char *eventname, enum ima_hooks func,
-diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-index f0a1ce10afe8..0bbe19e33584 100644
---- a/security/integrity/ima/ima_api.c
-+++ b/security/integrity/ima/ima_api.c
-@@ -345,7 +345,8 @@ void ima_store_measurement(struct ima_iint_cache *iint, struct file *file,
- 			   const unsigned char *filename,
- 			   struct evm_ima_xattr_data *xattr_value,
- 			   int xattr_len, const struct modsig *modsig, int pcr,
--			   struct ima_template_desc *template_desc)
-+			   struct ima_template_desc *template_desc,
-+			   u64 allowed_usage)
- {
- 	static const char op[] = "add_template_measure";
- 	static const char audit_cause[] = "ENOMEM";
-@@ -369,6 +370,18 @@ void ima_store_measurement(struct ima_iint_cache *iint, struct file *file,
- 	if (iint->measured_pcrs & (0x1 << pcr) && !modsig)
- 		return;
+diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+index 154f5bf82980..5b3eeb93b1a2 100644
+--- a/drivers/gpu/drm/panel/Kconfig
++++ b/drivers/gpu/drm/panel/Kconfig
+@@ -542,6 +542,20 @@ config DRM_PANEL_RAYDIUM_RM692E5
+ 	  Say Y here if you want to enable support for Raydium RM692E5-based
+ 	  display panels, such as the one found in the Fairphone 5 smartphone.
  
-+	/*
-+	 * If digest cache usage was authorized with the IMA policy, the digest
-+	 * list the digest cache was populated from was measured, and the file
-+	 * digest was found in the digest cache, mark the file as successfully
-+	 * measured.
-+	 */
-+	if (allowed_usage & IMA_DIGEST_CACHE_MEASURE_DATA) {
-+		iint->flags |= IMA_MEASURED;
-+		iint->measured_pcrs |= (0x1 << pcr);
-+		return;
-+	}
++config DRM_PANEL_RAYDIUM_RM69380
++	tristate "Raydium RM69380-based DSI panel"
++	depends on BACKLIGHT_CLASS_DEVICE
++	depends on DRM_DISPLAY_DP_HELPER
++	depends on DRM_DISPLAY_HELPER
++	depends on DRM_MIPI_DSI
++	depends on OF
++	help
++	  Say Y here if you want to enable support for Raydium RM69380-based
++	  display panels.
 +
- 	result = ima_alloc_init_template(&event_data, &entry, template_desc);
- 	if (result < 0) {
- 		integrity_audit_msg(AUDIT_INTEGRITY_PCR, inode, filename,
-diff --git a/security/integrity/ima/ima_digest_cache.c b/security/integrity/ima/ima_digest_cache.c
-index 0b0fd26cc0d7..013c69f265d8 100644
---- a/security/integrity/ima/ima_digest_cache.c
-+++ b/security/integrity/ima/ima_digest_cache.c
-@@ -43,3 +43,50 @@ void ima_digest_cache_store_allowed_usage(struct file *file,
- 		pr_debug("Cannot set verification mask for %s, ret: %d, ignoring\n",
- 			 file_dentry(file)->d_name.name, rc);
- }
++	  This panel controller can be found in the Lenovo Xiaoxin Pad Pro 2021
++	  in combination with an EDO OLED panel.
 +
-+/**
-+ * ima_digest_cache_update_allowed_usage - Update digest cache allowed usage
-+ * @file: Digest list file descriptor
-+ * @iint: Inode integrity metadata
-+ * @allowed_usage: Digest cache allowed usage to update
-+ *
-+ * Update the digest cache allowed usage obtained from the IMA policy. First,
-+ * retrieve the digest cache for the passed inode, and do a lookup of the
-+ * calculated digest. If the digest is found, update the digest cache allowed
-+ * usage with the allowed usage from integrity metadata flags, previously stored
-+ * in the digest cache itself with ima_digest_cache_store_allowed_usage().
+ config DRM_PANEL_RONBO_RB070D30
+ 	tristate "Ronbo Electronics RB070D30 panel"
+ 	depends on OF
+diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+index 24a02655d726..e2a2807d4ef0 100644
+--- a/drivers/gpu/drm/panel/Makefile
++++ b/drivers/gpu/drm/panel/Makefile
+@@ -55,6 +55,7 @@ obj-$(CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN) += panel-raspberrypi-touchscreen
+ obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM67191) += panel-raydium-rm67191.o
+ obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
+ obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM692E5) += panel-raydium-rm692e5.o
++obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM69380) += panel-raydium-rm69380.o
+ obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
+ obj-$(CONFIG_DRM_PANEL_SAMSUNG_ATNA33XC20) += panel-samsung-atna33xc20.o
+ obj-$(CONFIG_DRM_PANEL_SAMSUNG_DB7430) += panel-samsung-db7430.o
+diff --git a/drivers/gpu/drm/panel/panel-raydium-rm69380.c b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
+new file mode 100644
+index 000000000000..253b9a1c2800
+--- /dev/null
++++ b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
+@@ -0,0 +1,366 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree.
++ * Copyright (c) 2024 David Wronek <david@mainlining.org>
 + */
-+void ima_digest_cache_update_allowed_usage(struct file *file,
-+					   struct ima_iint_cache *iint,
-+					   u64 *allowed_usage)
++
++#include <linux/backlight.h>
++#include <linux/delay.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_graph.h>
++#include <linux/regulator/consumer.h>
++
++#include <drm/drm_mipi_dsi.h>
++#include <drm/drm_modes.h>
++#include <drm/drm_panel.h>
++#include <drm/drm_probe_helper.h>
++
++struct rm69380_panel {
++	struct drm_panel panel;
++	struct mipi_dsi_device *dsi[2];
++	struct regulator_bulk_data supplies[2];
++	struct gpio_desc *reset_gpio;
++	bool prepared;
++};
++
++static inline
++struct rm69380_panel *to_rm69380_panel(struct drm_panel *panel)
 +{
-+	struct digest_cache *digest_cache, *found_cache;
-+	u64 *iint_allowed_usage;
-+	digest_cache_found_t found;
-+
-+	digest_cache = digest_cache_get(file_dentry(file));
-+	if (!digest_cache) {
-+		*allowed_usage = 0;
-+		return;
-+	}
-+
-+	found = digest_cache_lookup(file_dentry(file), digest_cache,
-+				    iint->ima_hash->digest,
-+				    iint->ima_hash->algo);
-+	if (!found) {
-+		*allowed_usage = 0;
-+		goto out;
-+	}
-+
-+	/* AND what is allowed by the policy, and what IMA verified. */
-+	found_cache = digest_cache_from_found_t(found);
-+	iint_allowed_usage = digest_cache_verif_get(found_cache, "ima");
-+	if (!iint_allowed_usage) {
-+		*allowed_usage = 0;
-+		goto out;
-+	}
-+
-+	*allowed_usage &= *iint_allowed_usage;
-+out:
-+	digest_cache_put(digest_cache);
++	return container_of(panel, struct rm69380_panel, panel);
 +}
-diff --git a/security/integrity/ima/ima_digest_cache.h b/security/integrity/ima/ima_digest_cache.h
-index f2534a01bb18..cb47c15e975d 100644
---- a/security/integrity/ima/ima_digest_cache.h
-+++ b/security/integrity/ima/ima_digest_cache.h
-@@ -12,10 +12,19 @@
- #ifdef CONFIG_SECURITY_DIGEST_CACHE
- void ima_digest_cache_store_allowed_usage(struct file *file,
- 					  struct ima_iint_cache *iint);
-+void ima_digest_cache_update_allowed_usage(struct file *file,
-+					   struct ima_iint_cache *iint,
-+					   u64 *allowed_usage);
- #else
- static inline void
- ima_digest_cache_store_allowed_usage(struct file *file,
- 				     struct ima_iint_cache *iint)
- { }
- 
-+static inline void
-+ima_digest_cache_update_allowed_usage(struct file *file,
-+				      struct ima_iint_cache *iint,
-+				      u64 *allowed_usage)
-+{ }
 +
- #endif /* CONFIG_SECURITY_DIGEST_CACHE */
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 7c968cdb5678..0ff5de9bef70 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -223,6 +223,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 	bool violation_check;
- 	enum hash_algo hash_algo;
- 	unsigned int allowed_algos = 0;
-+	u64 digest_cache_usage = 0;
- 
- 	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
- 		return 0;
-@@ -233,7 +234,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 	 */
- 	action = ima_get_action(file_mnt_idmap(file), inode, cred, secid,
- 				mask, func, &pcr, &template_desc, NULL,
--				&allowed_algos, NULL);
-+				&allowed_algos, &digest_cache_usage);
- 	violation_check = ((func == FILE_CHECK || func == MMAP_CHECK ||
- 			    func == MMAP_CHECK_REQPROT) &&
- 			   (ima_policy_flag & IMA_MEASURE));
-@@ -364,10 +365,19 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 	if (!pathbuf)	/* ima_rdwr_violation possibly pre-fetched */
- 		pathname = ima_d_path(&file->f_path, &pathbuf, filename);
- 
-+	/*
-+	 * For now we don't support nested verification with digest caches.
-+	 * Since we allow IMA policy rules without func=, we have to enforce
-+	 * this restriction here.
-+	 */
-+	if (rc == 0 && digest_cache_usage && func != DIGEST_LIST_CHECK)
-+		ima_digest_cache_update_allowed_usage(file, iint,
-+						      &digest_cache_usage);
++static void rm69380_reset(struct rm69380_panel *ctx)
++{
++	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++	usleep_range(15000, 16000);
++	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++	usleep_range(10000, 11000);
++	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
++	msleep(30);
++}
 +
- 	if (action & IMA_MEASURE)
- 		ima_store_measurement(iint, file, pathname,
- 				      xattr_value, xattr_len, modsig, pcr,
--				      template_desc);
-+				      template_desc, digest_cache_usage);
- 	if (rc == 0 && (action & IMA_APPRAISE_SUBMASK)) {
- 		rc = ima_check_blacklist(iint, modsig, pcr);
- 		if (rc != -EPERM) {
++static int rm69380_on(struct rm69380_panel *ctx)
++{
++	struct mipi_dsi_device *dsi = ctx->dsi[0];
++	struct device *dev = &dsi->dev;
++	int ret;
++
++	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
++	if (ctx->dsi[1])
++		ctx->dsi[1]->mode_flags |= MIPI_DSI_MODE_LPM;
++
++	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd4);
++	mipi_dsi_dcs_write_seq(dsi, 0x00, 0x80);
++	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd0);
++	mipi_dsi_dcs_write_seq(dsi, 0x48, 0x00);
++	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x26);
++	mipi_dsi_dcs_write_seq(dsi, 0x75, 0x3f);
++	mipi_dsi_dcs_write_seq(dsi, 0x1d, 0x1a);
++	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x00);
++	mipi_dsi_dcs_write_seq(dsi, 0x53, 0x28);
++	mipi_dsi_dcs_write_seq(dsi, 0xc2, 0x08);
++	mipi_dsi_dcs_write_seq(dsi, 0x35, 0x00);
++	mipi_dsi_dcs_write_seq(dsi, 0x51, 0x07, 0xff);
++
++	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
++	if (ret < 0) {
++		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
++		return ret;
++	}
++	msleep(20);
++
++	ret = mipi_dsi_dcs_set_display_on(dsi);
++	if (ret < 0) {
++		dev_err(dev, "Failed to set display on: %d\n", ret);
++		return ret;
++	}
++	msleep(36);
++
++	return 0;
++}
++
++static int rm69380_off(struct rm69380_panel *ctx)
++{
++	struct mipi_dsi_device *dsi = ctx->dsi[0];
++	struct device *dev = &dsi->dev;
++	int ret;
++
++	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
++	if (ctx->dsi[1])
++		ctx->dsi[1]->mode_flags &= ~MIPI_DSI_MODE_LPM;
++
++	ret = mipi_dsi_dcs_set_display_off(dsi);
++	if (ret < 0) {
++		dev_err(dev, "Failed to set display off: %d\n", ret);
++		return ret;
++	}
++	msleep(35);
++
++	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
++	if (ret < 0) {
++		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
++		return ret;
++	}
++	msleep(20);
++
++	return 0;
++}
++
++static int rm69380_prepare(struct drm_panel *panel)
++{
++	struct rm69380_panel *ctx = to_rm69380_panel(panel);
++	struct device *dev = &ctx->dsi[0]->dev;
++	int ret;
++
++	if (ctx->prepared)
++		return 0;
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
++	if (ret < 0) {
++		dev_err(dev, "Failed to enable regulators: %d\n", ret);
++		return ret;
++	}
++
++	rm69380_reset(ctx);
++
++	ret = rm69380_on(ctx);
++	if (ret < 0) {
++		dev_err(dev, "Failed to initialize panel: %d\n", ret);
++		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++		regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int rm69380_unprepare(struct drm_panel *panel)
++{
++	struct rm69380_panel *ctx = to_rm69380_panel(panel);
++	struct device *dev = &ctx->dsi[0]->dev;
++	int ret;
++
++	if (!ctx->prepared)
++		return 0;
++
++	ret = rm69380_off(ctx);
++	if (ret < 0)
++		dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
++
++	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++	regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
++
++	ctx->prepared = false;
++	return 0;
++}
++
++static const struct drm_display_mode rm69380_mode = {
++	.clock = (2560 + 32 + 12 + 38) * (1600 + 20 + 4 + 8) * 90 / 1000,
++	.hdisplay = 2560,
++	.hsync_start = 2560 + 32,
++	.hsync_end = 2560 + 32 + 12,
++	.htotal = 2560 + 32 + 12 + 38,
++	.vdisplay = 1600,
++	.vsync_start = 1600 + 20,
++	.vsync_end = 1600 + 20 + 4,
++	.vtotal = 1600 + 20 + 4 + 8,
++	.width_mm = 248,
++	.height_mm = 155,
++	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
++};
++
++static int rm69380_get_modes(struct drm_panel *panel,
++					struct drm_connector *connector)
++{
++	return drm_connector_helper_get_modes_fixed(connector, &rm69380_mode);
++}
++
++static const struct drm_panel_funcs rm69380_panel_funcs = {
++	.prepare = rm69380_prepare,
++	.unprepare = rm69380_unprepare,
++	.get_modes = rm69380_get_modes,
++};
++
++static int rm69380_bl_update_status(struct backlight_device *bl)
++{
++	struct mipi_dsi_device *dsi = bl_get_data(bl);
++	u16 brightness = backlight_get_brightness(bl);
++	int ret;
++
++	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
++
++	ret = mipi_dsi_dcs_set_display_brightness_large(dsi, brightness);
++	if (ret < 0)
++		return ret;
++
++	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
++
++	return 0;
++}
++
++static int rm69380_bl_get_brightness(struct backlight_device *bl)
++{
++	struct mipi_dsi_device *dsi = bl_get_data(bl);
++	u16 brightness;
++	int ret;
++
++	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
++
++	ret = mipi_dsi_dcs_get_display_brightness_large(dsi, &brightness);
++	if (ret < 0)
++		return ret;
++
++	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
++
++	return brightness;
++}
++
++static const struct backlight_ops rm69380_bl_ops = {
++	.update_status = rm69380_bl_update_status,
++	.get_brightness = rm69380_bl_get_brightness,
++};
++
++static struct backlight_device *
++rm69380_create_backlight(struct mipi_dsi_device *dsi)
++{
++	struct device *dev = &dsi->dev;
++	const struct backlight_properties props = {
++		.type = BACKLIGHT_RAW,
++		.brightness = 2047,
++		.max_brightness = 2047,
++	};
++
++	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
++					      &rm69380_bl_ops, &props);
++}
++
++static int rm69380_probe(struct mipi_dsi_device *dsi)
++{
++	struct mipi_dsi_host *dsi_sec_host;
++	struct rm69380_panel *ctx;
++	struct device *dev = &dsi->dev;
++	struct device_node *dsi_sec;
++	int ret, i;
++
++	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++
++	ctx->supplies[0].supply = "vddio";
++	ctx->supplies[1].supply = "avdd";
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ctx->supplies),
++				      ctx->supplies);
++	if (ret < 0)
++		return dev_err_probe(dev, ret, "Failed to get regulators\n");
++
++	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(ctx->reset_gpio))
++		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
++				     "Failed to get reset-gpios\n");
++
++	dsi_sec = of_graph_get_remote_node(dsi->dev.of_node, 1, -1);
++
++	if (dsi_sec) {
++		dev_dbg(dev, "Using Dual-DSI\n");
++
++		const struct mipi_dsi_device_info info = { "RM69380", 0,
++							   dsi_sec };
++
++		dev_dbg(dev, "Found second DSI `%s`\n", dsi_sec->name);
++
++		dsi_sec_host = of_find_mipi_dsi_host_by_node(dsi_sec);
++		of_node_put(dsi_sec);
++		if (!dsi_sec_host) {
++			return dev_err_probe(dev, -EPROBE_DEFER,
++					     "Cannot get secondary DSI host\n");
++		}
++
++		ctx->dsi[1] =
++			mipi_dsi_device_register_full(dsi_sec_host, &info);
++		if (IS_ERR(ctx->dsi[1])) {
++			return dev_err_probe(dev, PTR_ERR(ctx->dsi[1]),
++					     "Cannot get secondary DSI node\n");
++		}
++
++		dev_dbg(dev, "Second DSI name `%s`\n", ctx->dsi[1]->name);
++		mipi_dsi_set_drvdata(ctx->dsi[1], ctx);
++	} else {
++		dev_dbg(dev, "Using Single-DSI\n");
++	}
++
++	ctx->dsi[0] = dsi;
++	mipi_dsi_set_drvdata(dsi, ctx);
++
++	drm_panel_init(&ctx->panel, dev, &rm69380_panel_funcs,
++		       DRM_MODE_CONNECTOR_DSI);
++	ctx->panel.prepare_prev_first = true;
++
++	ctx->panel.backlight = rm69380_create_backlight(dsi);
++	if (IS_ERR(ctx->panel.backlight))
++		return dev_err_probe(dev, PTR_ERR(ctx->panel.backlight),
++				     "Failed to create backlight\n");
++
++	drm_panel_add(&ctx->panel);
++
++	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
++		if (!ctx->dsi[i])
++			continue;
++
++		dev_dbg(&ctx->dsi[i]->dev, "Binding DSI %d\n", i);
++
++		ctx->dsi[i]->lanes = 4;
++		ctx->dsi[i]->format = MIPI_DSI_FMT_RGB888;
++		ctx->dsi[i]->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
++					  MIPI_DSI_CLOCK_NON_CONTINUOUS;
++
++		ret = mipi_dsi_attach(ctx->dsi[i]);
++		if (ret < 0) {
++			drm_panel_remove(&ctx->panel);
++			return dev_err_probe(dev, ret,
++					     "Failed to attach to DSI%d\n", i);
++		}
++	}
++
++	return 0;
++}
++
++static void rm69380_remove(struct mipi_dsi_device *dsi)
++{
++	struct rm69380_panel *ctx = mipi_dsi_get_drvdata(dsi);
++	int i;
++	int ret;
++
++	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
++		if (!ctx->dsi[i])
++			continue;
++
++		ret = mipi_dsi_detach(ctx->dsi[i]);
++		if (ret < 0)
++			dev_err(&dsi->dev, "Failed to detach from DSI%d host: %d\n", i, ret);
++	}
++
++	drm_panel_remove(&ctx->panel);
++}
++
++static const struct of_device_id rm69380_of_match[] = {
++	{ .compatible = "lenovo,j716f-edo-rm69380" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, rm69380_of_match);
++
++static struct mipi_dsi_driver rm69380_panel_driver = {
++	.probe = rm69380_probe,
++	.remove = rm69380_remove,
++	.driver = {
++		.name = "panel-raydium-rm69380",
++		.of_match_table = rm69380_of_match,
++	},
++};
++module_mipi_dsi_driver(rm69380_panel_driver);
++
++MODULE_AUTHOR("David Wronek <david@mainlining.org");
++MODULE_DESCRIPTION("DRM driver for Raydium RM69380-equipped DSI panels");
++MODULE_LICENSE("GPL");
+
 -- 
-2.34.1
+2.44.0
 
 
