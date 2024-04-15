@@ -1,107 +1,142 @@
-Return-Path: <linux-kernel+bounces-144854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3C0C8A4BD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AAEA8A4BD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:48:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88641284E99
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:47:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B758282C4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC72E4CE1B;
-	Mon, 15 Apr 2024 09:47:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SLM/wjQI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0442A481D8;
-	Mon, 15 Apr 2024 09:47:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A7244C61;
+	Mon, 15 Apr 2024 09:48:21 +0000 (UTC)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9237D3FB2F;
+	Mon, 15 Apr 2024 09:48:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713174443; cv=none; b=ayysjmiB4P2EgzqRwL8wdo79NLP/3CLCXpea376mq+9a9Ul9EW+mFkUTl5mLeU/lJdgjc7xBrppxNT0W/5kXC/X5evDuyqifCrvJYdjqhym7Hhf9C6XgpMsSsXuapmdv4kVqyMZMqXtzw9/I6smM62pNBb0ExrhSvd5m8blmsXA=
+	t=1713174501; cv=none; b=AgaznI5231ncORR1pBrSfQKD+2vqnHJIGku3MyrpVoRJvz2r8sZavVGSEoMOt+rtNMFxVR1rYWXhruH3aSh3x5R3IL2GgCr0rF67xCrqEg3XGfN8cvGEELP96aM5dqRaOmUfuU/DRi3ET4M/fXD+PBmFJTd2OufhlaTRnB4Zx7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713174443; c=relaxed/simple;
-	bh=b0FQxsbCgCzCZdXSzRBeyPJvArlWcYQJsyXBEM3fAlA=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=qP4ap2tUv/RJ9vKwgzpMWlGAFu7sw5PAiPx2dG3qOch53iNni7Aih+RTducc6Q6c64n3Ji0BIoDd91U3nyP8kKr4xfjOh9e8C0dr7KxrEBn+khOJ5KRR5xNVQ6EmoU3FFVidU5KHeD6lUMEK9I0XsHNQN5Zhsyf4OYuo5TgDGEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SLM/wjQI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41666C113CC;
-	Mon, 15 Apr 2024 09:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713174442;
-	bh=b0FQxsbCgCzCZdXSzRBeyPJvArlWcYQJsyXBEM3fAlA=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=SLM/wjQII2paCS4pC4cBhfQNGEVDFdfURyHeUayFWaiE2+D6NvavEMcojDphgrkHn
-	 E6Fez1ZR68P+OBVzgULD1VJ+aNw5xV36f4N/ZZsY/b3WYEJM7j2gGpz6ejb8QBROqv
-	 D+KpKj1Rew3XOWNWVjpBKYN5xtYYqQqWC1BQV/S0w5Sdna3qNc9h2RMaJVtBkMBVwC
-	 RVkUWQoVKLWxW0OhMoKsOJ8JeRKgA35eMYNbRpVV9KCSiKqRwuesFRTP/cpTlSr5HP
-	 6kBkoAN15EAb/nigY/CUAWWBHsSSUIdolmjdL91diuZLeJ1EAEfKkIZVYobV50NkA/
-	 WLmT/Z5lrDejQ==
-Date: Mon, 15 Apr 2024 04:47:21 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713174501; c=relaxed/simple;
+	bh=/3tgachGlba0xQYbgA3XnWnpLu/EQzU489/T8ZTP2eg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=di6uqa6+Lway6k5Fj/NPpIQRrH5nKMMZfFQIJVdpkW9xpsKEHBazZvROpQRxgR0s9At/O9ivwfVXlg3HTl44nCzf5iRqimeDy6YJBGpvqqBWR33Kdn9KrArWpnG9jG0KPUlmvD4VZOeOsbP+mmDXp9lZwZDaN/L75x4jt1PyrlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+X-IronPort-AV: E=Sophos;i="6.07,202,1708354800"; 
+   d="scan'208";a="201479136"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 15 Apr 2024 18:48:17 +0900
+Received: from renesas-deb12.cephei.uk (unknown [10.226.93.74])
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 81BA64006DE8;
+	Mon, 15 Apr 2024 18:48:13 +0900 (JST)
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+To: Sergey Shtylyov <s.shtylyov@omp.ru>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Paul Barker <paul.barker.ct@bp.renesas.com>,
+	=?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	netdev@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [net-next RFC v3 0/7] Improve GbEth performance on Renesas RZ/G2L and related SoCs
+Date: Mon, 15 Apr 2024 10:47:57 +0100
+Message-Id: <20240415094804.8016-1-paul.barker.ct@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: matthias.bgg@gmail.com, broonie@kernel.org, 
- linux-mediatek@lists.infradead.org, jejb@linux.ibm.com, 
- linux-arm-kernel@lists.infradead.org, alim.akhtar@samsung.com, 
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
- devicetree@vger.kernel.org, peter.wang@mediatek.com, lgirdwood@gmail.com, 
- bvanassche@acm.org, Conor Dooley <conor.dooley@microchip.com>, 
- martin.petersen@oracle.com, avri.altman@wdc.com, stanley.chu@mediatek.com, 
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- chu.stanley@gmail.com
-In-Reply-To: <20240415075406.47543-7-angelogioacchino.delregno@collabora.com>
-References: <20240415075406.47543-1-angelogioacchino.delregno@collabora.com>
- <20240415075406.47543-7-angelogioacchino.delregno@collabora.com>
-Message-Id: <171317443759.1944979.15878384209932309700.robh@kernel.org>
-Subject: Re: [PATCH v3 6/8] dt-bindings: ufs: mediatek,ufs: Document MT8195
- compatible
+Content-Transfer-Encoding: 8bit
 
+This series aims to improve performance of the GbEth IP in the Renesas
+RZ/G2L SoC family and the RZ/G3S SoC, which use the ravb driver. Along
+the way, we do some refactoring and ensure that napi_complete_done() is
+used in accordance with the NAPI documentation for both GbEth and R-Car
+code paths.
 
-On Mon, 15 Apr 2024 09:54:04 +0200, AngeloGioacchino Del Regno wrote:
-> Add the new mediatek,mt8195-ufshci string.
-> This SoC's UFSHCI controller is compatible with MT8183.
-> 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  Documentation/devicetree/bindings/ufs/mediatek,ufs.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Much of the performance improvement comes from enabling SW IRQ
+Coalescing for all SoCs using the GbEth IP, and NAPI Threaded mode for
+single core SoCs using the GbEth IP. These can be enabled/disabled at
+runtime via sysfs, but our goal is to set sensible defaults which get
+good performance on the affected SoCs.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+The rest of the performance improvement comes from using a page pool to
+allocate RX buffers, and reducing the allocation size from >8kB to 2kB.
 
-yamllint warnings/errors:
+The overall performance impact of this patch series seen in testing with
+iperf3 is as follows (see patches 5-7 for more detailed results):
+  * RZ/G2L:
+    * TCP TX: +1.8% bandwidth
+    * TCP RX: +1% bandwidth at 47% less CPU load
+    * UDP RX: +1% bandwidth at 26% less CPU load
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/ufs/mediatek,ufs.example.dtb: ufs@ff3c0000: compatible:0: 'mediatek,mt8183-ufshci' is not one of ['mediatek,mt8192-ufshci', 'mediatek,mt8195-ufshci']
-	from schema $id: http://devicetree.org/schemas/ufs/mediatek,ufs.yaml#
+  * RZ/G2UL:
+    * TCP TX: +37% bandwidth
+    * TCP RX: +43% bandwidth
+    * UDP TX: -8% bandwidth
+    * UDP RX: +32500% bandwidth (!)
 
-doc reference errors (make refcheckdocs):
+  * RZ/G3S:
+    * TCP TX: +25% bandwidth
+    * TCP RX: +76% bandwidth
+    * UDP TX: -9% bandwidth
+    * UDP RX: +37900% bandwidth (!)
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240415075406.47543-7-angelogioacchino.delregno@collabora.com
+  * RZ/Five:
+    * TCP TX: +18% bandwidth
+    * TCP RX: +212% bandwidth
+    * UDP TX: +2% bandwidth
+    * UDP RX: +inf bandwidth (test no longer crashes)
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+There is no significant impact on bandwidth or CPU load in testing on
+RZ/G2H or R-Car M3N.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Fixing the crash in UDP RX testing for RZ/Five is a cumulative effect of
+patches 1, 2, 5 & 6 so this is very difficult to break out as a bugfix
+for backporting.
 
-pip3 install dtschema --upgrade
+This series depends on my recent ravb bugfix patches [1] which are not
+yet merged.
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+[1]: https://lore.kernel.org/all/20240412100024.2296-1-paul.barker.ct@bp.renesas.com/
+
+Changes v2->v3:
+  * Incorporated feedback on RFC v2 from Sergey.
+  * Split out bugfixes and rebased. This changed the order of what was
+    the first 5 patches of v2 and things look a little different so I've
+    not picked up Reviewed-by tags from v2.
+  * Further refactoring and tidy up of RX ring refill and
+    ravb_rx_gbeth().
+  * Switched to using a page pool to allocate RX buffers.
+  * Re-tested and provided updated performance figures.
+
+Changes v1->v2:
+  * Marked as RFC as the series depends on unmerged patches.
+  * Refactored R-Car code paths as well as GbEth code paths.
+  * Updated references to the patches this series depends on.
+
+Paul Barker (7):
+  net: ravb: Simplify poll & receive functions
+  net: ravb: Align poll function with NAPI docs
+  net: ravb: Refactor RX ring refill
+  net: ravb: Refactor GbEth RX code path
+  net: ravb: Enable SW IRQ Coalescing for GbEth
+  net: ravb: Use NAPI threaded mode on 1-core CPUs with GbEth IP
+  net: ravb: Allocate RX buffers via page pool
+
+ drivers/net/ethernet/renesas/ravb.h      |  13 +-
+ drivers/net/ethernet/renesas/ravb_main.c | 430 +++++++++++------------
+ 2 files changed, 221 insertions(+), 222 deletions(-)
+
+-- 
+2.39.2
 
 
