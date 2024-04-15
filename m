@@ -1,149 +1,114 @@
-Return-Path: <linux-kernel+bounces-145172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9ABC8A505F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:07:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C94DE8A4E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB0581C22C15
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:07:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84F6828114F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D021384A1;
-	Mon, 15 Apr 2024 12:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B1DA69946;
+	Mon, 15 Apr 2024 12:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ufMqb1Uw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b="Vjofp4AR"
+Received: from outbound9.mail.transip.nl (outbound9.mail.transip.nl [136.144.136.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE952137C5F;
-	Mon, 15 Apr 2024 12:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1196BB39;
+	Mon, 15 Apr 2024 12:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.136.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185481; cv=none; b=CmJ2nFFt99UzBjOhZdP1uQmSjy53t9iI6oW3EYv+rJ2KB3B2W/lB5VRTJ+HRaERLMUoeXrliVTYPzepjEHx6C0WqsBh+ny3KY+dzcUYpxu2brsb/PnFMK9AO8tHcaW3FwFcMcrUQTqkNY7Oxn1E8MzbAYWLJ7UiCpIbSytKZvsA=
+	t=1713182676; cv=none; b=eAne1aqBnxvRYd0IpI1eqzeVLCAgCejIwJuiTnE/KjWRg/WvPDvUd5wuse+FYOgj7P3dsqaJd79WP9xAHE3FdojwMCqlpmH1rkwl1Tnivb/Z9spwLk5Z7sI0Dmc2Wz01iwyNEo7aQMfVmu0nLhzpKT2lgu/lKJV7vseDRop0SgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185481; c=relaxed/simple;
-	bh=8X2R5O/GFd4ytGluhks2ZfMyhi5lmo/xAi/dGG6/gkI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ej8/cmg2f2G/MWj+Q//X57LI0RYtMsBUSnMl52SbfcCfiJZY/JEKFmL4yYri6fjJjXb+YrBq/FZ4bvBkQvWToPJsadI2rOZBxeu0En6WK9U82huBaDT9anqb+3Pbf8pXQt9H9Jj2DnFCdkXWUtS2diok1bc/KYIwlZIYL7mNG6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ufMqb1Uw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB60DC2BD11;
-	Mon, 15 Apr 2024 12:51:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185481;
-	bh=8X2R5O/GFd4ytGluhks2ZfMyhi5lmo/xAi/dGG6/gkI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ufMqb1Uw9ge6WRN58UgoIUYFHi+gkNcAjmrEaooWsoUaI1zCrd0XuaewGepSSTfWC
-	 OZwQsVKlSh+a0jKaKlL5J61WBoAaXYN/8fHlzkmPdmVisLZUEvN9z+vWXkbcL5W8JO
-	 j1tx+aekrxDEIEze1wJOH1KFNd9Brb5yihoTheTmoiMHUpNNNamEU+e/v7mYBq+iBo
-	 WjmZl7QN2D60jTgXAQXo2dVsssE55ndzd5qhLxrJRiQJpyoFgKXEK7NuluoRByAuzv
-	 lYwHYk5DmfpZVpY7R/7SgjfjGUGAYr6oJFYhbpj++qkvEDzJ7iWHhIp1zlZUldjo8v
-	 oVJoyXPNvxLSw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Adam Goldman <adamg@pobox.com>,
-	Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Sasha Levin <sashal@kernel.org>,
-	linux1394-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 4.19 4/4] firewire: ohci: mask bus reset interrupts between ISR and bottom half
-Date: Mon, 15 Apr 2024 06:05:17 -0400
-Message-ID: <20240415100520.3127870-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240415100520.3127870-1-sashal@kernel.org>
-References: <20240415100520.3127870-1-sashal@kernel.org>
+	s=arc-20240116; t=1713182676; c=relaxed/simple;
+	bh=nie7cPNROHKZ5ttu20WSAASaT3lPTeH5P0IxePoJuPs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ZgOZaVZPRUAeG421GbAWOdm46JCUQ/BIL+nwNUqyMjfzHYiW5kpRWXRTnXNTHte1NzYT8u6qcJj6C+VACHJHcehkaXCCfX4H4F+L3J8apUlm9VhRucz8SXlUEpCihThf2WvWmy5ZXCZ5ZP3CNC4owl4hqK8TPbC+x5+c1O79Ark=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org; spf=pass smtp.mailfrom=herrie.org; dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b=Vjofp4AR; arc=none smtp.client-ip=136.144.136.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=herrie.org
+Received: from submission4.mail.transip.nl (unknown [10.103.8.155])
+	by outbound9.mail.transip.nl (Postfix) with ESMTP id 4VJ5HH0gFPzTPNkM;
+	Mon, 15 Apr 2024 13:56:27 +0200 (CEST)
+Received: from herrie-desktop.. (110-31-146-85.ftth.glasoperator.nl [85.146.31.110])
+	by submission4.mail.transip.nl (Postfix) with ESMTPA id 4VJ5HG1N88znTZy;
+	Mon, 15 Apr 2024 13:56:26 +0200 (CEST)
+From: Herman van Hazendonk <github.com@herrie.org>
+To: "Bjorn Andersson " <andersson@kernel.org>
+Cc: benwolsieffer@gmail.com,
+	chris.chapuis@gmail.com,
+	Herman van Hazendonk <me@herrie.org>,
+	Herman van Hazendonk <github.com@herrie.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: phy: qcom,usb-hs-phy: Add compatible
+Date: Mon, 15 Apr 2024 13:56:02 +0200
+Message-Id: <20240415115603.1523974-1-github.com@herrie.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <>
+References: <>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.312
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: ClueGetter at submission4.mail.transip.nl
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=transip-a; d=herrie.org; t=1713182186; h=from:subject:to:cc:
+ references:in-reply-to:date:mime-version;
+ bh=GCn4MctOklijAimZP/GbpYzFdmp5YzqVGKFzoeYARW0=;
+ b=Vjofp4ARu7vEEvDbcNyEoCL/dQsfhTCVynR0GjMy995c1BTda0A0qwFeC6rJh5XY/EqUPl
+ Y1bMvUvc42SZhIojymAIKKFqCODLHnSh5zF79tOhUmA/GVH3yfOlwQ6miFfCCvDw4GQeDm
+ 0DNXbVbnijWj+ZNDbbPhSdG4jEl7hacn7QmMqy/P9etW4MDxtQ03gs3VLQaAkAqbgq1MiY
+ RtRewzoHiWZqOwml5n4LkhK8Xr8WF2xdG2LwJ/IrxUHGFdSCVru7f08lSfV/dxoWO14GMb
+ N3F/3WKQOT7UQDcCF2tfM58QGxCEmEsjSCPMfT4AFhmCd8k1JjzAbaXsgF+x3Q==
+X-Report-Abuse-To: abuse@transip.nl
 
-From: Adam Goldman <adamg@pobox.com>
+From: Herman van Hazendonk <me@herrie.org>
 
-[ Upstream commit 752e3c53de0fa3b7d817a83050b6699b8e9c6ec9 ]
+Adds qcom,usb-hs-phy-msm8660 compatible
 
-In the FireWire OHCI interrupt handler, if a bus reset interrupt has
-occurred, mask bus reset interrupts until bus_reset_work has serviced and
-cleared the interrupt.
+Used by HP Touchpad (tenderloin) for example.
 
-Normally, we always leave bus reset interrupts masked. We infer the bus
-reset from the self-ID interrupt that happens shortly thereafter. A
-scenario where we unmask bus reset interrupts was introduced in 2008 in
-a007bb857e0b26f5d8b73c2ff90782d9c0972620: If
-OHCI_PARAM_DEBUG_BUSRESETS (8) is set in the debug parameter bitmask, we
-will unmask bus reset interrupts so we can log them.
-
-irq_handler logs the bus reset interrupt. However, we can't clear the bus
-reset event flag in irq_handler, because we won't service the event until
-later. irq_handler exits with the event flag still set. If the
-corresponding interrupt is still unmasked, the first bus reset will
-usually freeze the system due to irq_handler being called again each
-time it exits. This freeze can be reproduced by loading firewire_ohci
-with "modprobe firewire_ohci debug=-1" (to enable all debugging output).
-Apparently there are also some cases where bus_reset_work will get called
-soon enough to clear the event, and operation will continue normally.
-
-This freeze was first reported a few months after a007bb85 was committed,
-but until now it was never fixed. The debug level could safely be set
-to -1 through sysfs after the module was loaded, but this would be
-ineffectual in logging bus reset interrupts since they were only
-unmasked during initialization.
-
-irq_handler will now leave the event flag set but mask bus reset
-interrupts, so irq_handler won't be called again and there will be no
-freeze. If OHCI_PARAM_DEBUG_BUSRESETS is enabled, bus_reset_work will
-unmask the interrupt after servicing the event, so future interrupts
-will be caught as desired.
-
-As a side effect to this change, OHCI_PARAM_DEBUG_BUSRESETS can now be
-enabled through sysfs in addition to during initial module loading.
-However, when enabled through sysfs, logging of bus reset interrupts will
-be effective only starting with the second bus reset, after
-bus_reset_work has executed.
-
-Signed-off-by: Adam Goldman <adamg@pobox.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
 ---
- drivers/firewire/ohci.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 9807a885e698c..a4912650544fa 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -2066,6 +2066,8 @@ static void bus_reset_work(struct work_struct *work)
- 
- 	ohci->generation = generation;
- 	reg_write(ohci, OHCI1394_IntEventClear, OHCI1394_busReset);
-+	if (param_debug & OHCI_PARAM_DEBUG_BUSRESETS)
-+		reg_write(ohci, OHCI1394_IntMaskSet, OHCI1394_busReset);
- 
- 	if (ohci->quirks & QUIRK_RESET_PACKET)
- 		ohci->request_generation = generation;
-@@ -2132,12 +2134,14 @@ static irqreturn_t irq_handler(int irq, void *data)
- 		return IRQ_NONE;
- 
- 	/*
--	 * busReset and postedWriteErr must not be cleared yet
-+	 * busReset and postedWriteErr events must not be cleared yet
- 	 * (OHCI 1.1 clauses 7.2.3.2 and 13.2.8.1)
- 	 */
- 	reg_write(ohci, OHCI1394_IntEventClear,
- 		  event & ~(OHCI1394_busReset | OHCI1394_postedWriteErr));
- 	log_irqs(ohci, event);
-+	if (event & OHCI1394_busReset)
-+		reg_write(ohci, OHCI1394_IntMaskClear, OHCI1394_busReset);
- 
- 	if (event & OHCI1394_selfIDComplete)
- 		queue_work(selfid_workqueue, &ohci->bus_reset_work);
+diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+index f042d6af1594..1faf1da9f583 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,usb-hs-phy.yaml
+@@ -15,6 +15,7 @@ if:
+       contains:
+         enum:
+           - qcom,usb-hs-phy-apq8064
++          - qcom,usb-hs-phy-msm8660
+           - qcom,usb-hs-phy-msm8960
+ then:
+   properties:
+@@ -42,6 +43,7 @@ properties:
+           - qcom,usb-hs-phy-apq8064
+           - qcom,usb-hs-phy-msm8226
+           - qcom,usb-hs-phy-msm8916
++          - qcom,usb-hs-phy-msm8660
+           - qcom,usb-hs-phy-msm8960
+           - qcom,usb-hs-phy-msm8974
+       - const: qcom,usb-hs-phy
 -- 
-2.43.0
+2.40.1
 
 
