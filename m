@@ -1,140 +1,124 @@
-Return-Path: <linux-kernel+bounces-144900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFFE98A4C58
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:15:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC428A4C56
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:15:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67F5B289516
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:15:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0409CB24092
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6134C50A78;
-	Mon, 15 Apr 2024 10:14:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B678C4D9E5;
+	Mon, 15 Apr 2024 10:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="CMyLI6s+"
-Received: from rcdn-iport-8.cisco.com (rcdn-iport-8.cisco.com [173.37.86.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="FZssINlV"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1675A4E1CC;
-	Mon, 15 Apr 2024 10:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.37.86.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5860E3BBF0
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713176097; cv=none; b=uOJ1Shi+TQsxz7fx6HSTj11BoI+kjgWz9mgLzM4NPo9lQgwOZ5Af4NmEgFKW3gDWe0gHknfZAXT8WkBZqhksdQi5vOU7yPI3eL9QfDxI5mTpXDBToE67Hy1RF9TSAP41h6X+wImRhadSdD3dvJB+x5zQj9g4vKm5qm84tndzHvU=
+	t=1713176094; cv=none; b=AYHKnT6DTyLzrcPv+JqgkHh4IZF1q5A+XRIxkzysEjLRApcAB6jNvVziYTo46qK0gd/RAFFLFcZ3M2Rsxse6lF19Tq7ijtSsJ+Qkj4dgu3hkNm3qgnW8peyfdFrvtdZrZhH0L3hnPo02EY9xfn/FMvXGc48Pn1VoEUdN3uC4o+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713176097; c=relaxed/simple;
-	bh=RqAEBdXkuhhoWsHmsOHKzOs4fXtCaTOFoBogX3Q8SOU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KieW9jcysYUgLETm6+Af5QhQxgpvxiQbBmKSjY+Qn8ZCzMbEtwEkBoAPHwaJIsbWjQfuteMffzcuRbzXD33X7ZH4RaM2JgIuGfqT8qsWOcKTq4cfcqKVtPVn8JhaKPBq2uEdG3sihOQAImKKc9XfwyQOUAunLRNnDKbm4qrdlOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com; spf=pass smtp.mailfrom=cisco.com; dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b=CMyLI6s+; arc=none smtp.client-ip=173.37.86.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cisco.com
+	s=arc-20240116; t=1713176094; c=relaxed/simple;
+	bh=C9sQZgU41qox3cdQNRYM+VmJ0KsaHwAs5oL/6SV1szk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aGIGDpiChbqV3iUADHouc7k5DaMtbt38HsRLHy/AbmbBjR2yA+1BgGjCrybHNBP7GMWVnkxIg+9mqYwMQUPYRhQNWIv8/cRmtLyORMN6KZ2UMDb99IdJ9j/aobqa0Q9q8H7/wAYPIY6yiV/PiLRCYnvfEIWCMvnehiHyI78X6dU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=FZssINlV; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41551500a7eso16468495e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 03:14:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=cisco.com; i=@cisco.com; l=1361; q=dns/txt; s=iport;
-  t=1713176096; x=1714385696;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=MDwG+Mia5B8PCehRdAN2ame1UKYXToOdUZOyoXacjTc=;
-  b=CMyLI6s+UV8vRtptoapS7yrC/f9FWiAp8BWDkNlvVUseZwEpFSfUAjjU
-   q47Gn5TbeqTI+P2fGRKsVErnywJl6gLgTB5mu/D3oi/JltuJJg+Y52TNY
-   XSU5moGOirMTrzoZ7mubS/qQvuSbDyiY0vep994mAx52MU6Ni64gBLGSJ
-   U=;
-X-CSE-ConnectionGUID: 2YZZw2mRRBasH7Yf+OkTyQ==
-X-CSE-MsgGUID: IQXdst5ATaaixhnSd/ND9w==
-X-IPAS-Result: =?us-ascii?q?A0AwAQBB/RxmmJtdJa1agliDQFZBSJY9i3OSGIElA1YPA?=
- =?us-ascii?q?QEBDzETBAEBhQaIGQImNAkOAQIEAQEBAQMCAwEBAQEBAQEBBgEBBQEBAQIBB?=
- =?us-ascii?q?wUUAQEBAQEBAQEeGQUQDieFbQ2GXDYBRoE9ARKDAAGCXwIBsiCCLIEB3i+Ba?=
- =?us-ascii?q?hiBMI0HhWQnG4FJRIEVg2iKZCIEhiB+mk9KgSMDWSERAVUTDhQPDBoCGxQNJ?=
- =?us-ascii?q?CMCKT4DCQoQAhYDHRQELhEJCyYDKgY5AhIMBgYGWyAWCQQjAwgEA1ADIHARA?=
- =?us-ascii?q?wQaBAsHdYM5BBNEAxCBMgaKDIIJgQwCBSEpgXeBERiDCUuCDwKCe4E5AwkDB?=
- =?us-ascii?q?wVJQAMLGA1IESw1Bg4bBkFuB5x2AYJ/AT1RTIFob5JOkgGBMp85hB2MDpUfG?=
- =?us-ascii?q?jOEBYFWpFgBiByQRiCCNKFOhGOBZDqBW00jFYMiCUkZD445H4JklgsjNTsCB?=
- =?us-ascii?q?wsBAQMJimgBAQ?=
-IronPort-Data: A9a23:dLWsB68h2Xi5nE7aIP9lDrUDXX6TJUtcMsCJ2f8bNWPcYEJGY0x3n
- TFKCmyAPvuNYDCnfdh+Ptuy8EoGucOEndRkHgBuqH1EQiMRo6IpJzg2wmQcns+2BpeeJK6yx
- 5xGMrEsFOhtEzmE4E/ra+C9xZVF/fngbqLmD+LZMTxGSwZhSSMw4TpugOdRbrRA2bBVOCvT/
- 4utyyHjEAX9gWIsbjtJs/vrRC5H5ZwehhtJ5jTSWtgT1LPuvyF9JI4SI6i3M0z5TuF8dgJtb
- 7+epF0R1jqxEyYFUrtJoJ6iGqE5auK60Ty1t5Zjc/PKbi6uCcAF+v1T2PI0MS+7gtgS9jx74
- I0lWZeYEW/FMkBQ8QgQe0EwLs1wAUFJ0OX2E0qg68mp9WfPaFuz8vstK0IKLLRNr46bAUkWn
- RAZACoGYhbGjOWszffnDOJtnc8kasLsOevzuFk5kmqfVqlgEMuFGviXjTNb9G9YasRmA/3ea
- tAfbidHZxXbaBoJMVASYH47tL751yihLW0F9jp5o4IW2ljf1xAs+YTkOdvFetqxSYJzsheH8
- zeuE2PRWUxCa4fFllJp6EmEgu7JgDO+W48IErC83uBljUfVxWEJDhASE1yhrpGRjk+4RsIaK
- EYJ+y4ihbY9+VbtTdTnWRC85nmesXY0XdtbFOkz8ymDyKPP5wvfC3VsZjhIdNwvsuc1SCYs2
- 1vPmMnmbRRquaacSXOH8aa8rj6oPyURa2gYakc5oRAt+dLvpsQ4iQjCC4olG6+uhdqzEjb1q
- 9yXkMQgr+8iv/wUjaCBx3rOmBLzl5aKaQ0J9zyCCwpJ8ThFTIKiYoWp733S4vBBMJuVQzG9U
- J4sxpj2AAcmU8vlqcCdfNjhCo1F8BpsDdExqURkE59k/DO39jv/O4tR+zp5YkxuN67omAMFg
- meM4Gu9B7cKYBNGiJObharqU6zGKoC7SLzYugj8NIYmX3SIXFbvENtSTUCRxXvxt0MnjLsyP
- 5yWGe71Ui9BUP02kGTnGbZGuVPO+szY7T6ILXwc50n2uYdymFbEIVv4GALXMbBntv/sTPv9q
- Y4HaKNmNCmzoMWlP3GIqtRMRbz7BXM6Hpvx49dGbfKOJxEuGWcqTZfsLUAJJeRYc1Buvr6Qp
- BmVAxYAoHKm3C2vAVvRMBhLNuiwNauTWFpmZ0TAy37yhSh6CWtuhY9CH6YKkU4Pr7UynaEsF
- 6BUJK1twJ1nE1z6xtjUVrGlxKQKSfhhrVvm0/aNCNTnQ6Ndeg==
-IronPort-HdrOrdr: A9a23:uXUJsai+e5f0n8HOuCSP8DQgCXBQXtUji2hC6mlwRA09TyVXra
- yTdZMgpH3JYVkqNk3I9errBEDiewK+yXcK2+gs1N6ZNWGMhILCFu5fBOXZrgEIMheOk9K1rZ
- 0BT0C7Y+eAamSTSq3BkW2FL+o=
-X-Talos-CUID: =?us-ascii?q?9a23=3AQ8WlVWjDH9P/ktlyZR8dSzm9LjJuKEzv/miKJnW?=
- =?us-ascii?q?CI29yaOKkRxy3+591qp87?=
-X-Talos-MUID: =?us-ascii?q?9a23=3AZrj4Jw0dPVumrBuRD5zkw+eXAjUjwp2eBFsRzLw?=
- =?us-ascii?q?6ssCFJSx2ADvaqhjmXdpy?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="6.07,203,1708387200"; 
-   d="scan'208";a="199966856"
-Received: from rcdn-core-4.cisco.com ([173.37.93.155])
-  by rcdn-iport-8.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 10:13:47 +0000
-Received: from sjc-ads-1541.cisco.com (sjc-ads-1541.cisco.com [171.70.59.233])
-	by rcdn-core-4.cisco.com (8.15.2/8.15.2) with ESMTP id 43FADkp5026282;
-	Mon, 15 Apr 2024 10:13:47 GMT
-From: Valerii Chernous <vchernou@cisco.com>
-To: Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Cc: xe-linux-external@cisco.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts/Makefile.build: fix ext mod subdirs build with separate src,build dirs
-Date: Mon, 15 Apr 2024 03:13:44 -0700
-Message-Id: <20240415101345.3807776-1-vchernou@cisco.com>
-X-Mailer: git-send-email 2.35.6
+        d=suse.com; s=google; t=1713176090; x=1713780890; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ch7nAOdYuE5TTx7zosaZVjyYvnMuu77K7uAtyFJG1J4=;
+        b=FZssINlVL/D9xt6U/cHtfuZAcLUnsydZx03U7MJ/jpQjkAMn3wZlR/gfU8hny7ZrtR
+         5Hvv4a7IEwqlSqg3Zb0n05GsXTYmGoiP1DH+qZVVfgUtN5fg7b+4V1imxsYXp/ugRBM4
+         Hh5hhVWt6I/0nKLnvKNzxHVR6GtLp8IayRseaF244SgsnT3wAG59u8fswU0sq+WE0ide
+         zIqpF1AfPwU6CSLDiEy6KHpCd1cYRkHGCQwHJem7EHv2B1XmhjrEJZv7Fi8IX5HTtiNZ
+         Kylj184cjGVC2OSEFzf7mCA1Q/sxJGLVLJhZXuDx/rv9RaYMtWgvDoo1hlWI0pPwbZdz
+         svRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713176090; x=1713780890;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ch7nAOdYuE5TTx7zosaZVjyYvnMuu77K7uAtyFJG1J4=;
+        b=cgNEoMExN5/DZNLzFjre6wSIQzxDMbc0J1aIzSzeT/+Jns+JocIJaX9gHHCmju5BRu
+         F8Xg1NWzh6YIbtwRIdstnaJO65DbqyuRCK6T740eNAL5dO72Gv6dy1K7bNe0V7zsXDVc
+         3DqOCYxdHN1YC6m8x3PT/sY59iyVRM0JynhZz9KNYmYrO43HXJ7r5crrCMKnByQDpFtH
+         yrHPMmcYY9+ZpeXiRlPKxMZhhKo1HrMxjsaNoxlBYTPoOvaXLJq1g5zqpOSjLjomekVw
+         YFkngYB8a0bmYzYMfpNph8yt8NU30i2/xMIqbUMnyAP4bBDrTvxetjmUQund4R4taC62
+         +P5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUcbdj5r2RNMGiHk0BVWTl5sGUi7zZXipSBkhVNPkZWR9cc/WBAz3zIXINKaiPr36CgcVKeCRmpsKkudxHw7Ob5YzZeaRMcGQDKkEIf
+X-Gm-Message-State: AOJu0YxI3Y8bNsGgV/80sXuPBOQKBFdSl9ivfgMIUbrbkjjH6Sl341We
+	9yMJM2GVdLrB9OS2YWNEt/CAE8k3Pn6+88xkY+nhkIVlAdrMjf7zJm4QJsQYYAk=
+X-Google-Smtp-Source: AGHT+IHjhZnZ/UpFBsH2kTHC9OVKKMcAQN8weN22/XUZrv3wNhDL0ai2lMmulhKpKNELcofiW9Zl6w==
+X-Received: by 2002:a05:600c:1c19:b0:418:6138:6777 with SMTP id j25-20020a05600c1c1900b0041861386777mr1473992wms.31.1713176089744;
+        Mon, 15 Apr 2024 03:14:49 -0700 (PDT)
+Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
+        by smtp.gmail.com with ESMTPSA id h15-20020a05600c314f00b00417ee886977sm13425859wmo.4.2024.04.15.03.14.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 03:14:49 -0700 (PDT)
+Message-ID: <c35f98be-23a3-41c3-bee5-f394ce504545@suse.com>
+Date: Mon, 15 Apr 2024 12:14:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: cdc-wdm: close race between read and workqueue
+To: =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+ Oliver Neukum <oneukum@suse.com>
+Cc: Aleksander Morgado <aleksandermj@chromium.org>,
+ linux-usb@vger.kernel.org, gregkh@linuxfoundation.org, linux@roeck-us.net,
+ linux-kernel@vger.kernel.org, ejcaruso@chromium.org
+References: <385a3519-b45d-48c5-a6fd-a3fdb6bec92f@chromium.org>
+ <87mspvi0lk.fsf@miraculix.mork.no>
+ <a6ad34d3-9cce-4178-8271-0e09ced2b6f4@suse.com>
+ <878r1fht93.fsf@miraculix.mork.no>
+Content-Language: en-US
+From: Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <878r1fht93.fsf@miraculix.mork.no>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 171.70.59.233, sjc-ads-1541.cisco.com
-X-Outbound-Node: rcdn-core-4.cisco.com
 
-The change allow to build external modules with nested makefiles.
-Current unofficial way(using "src" variable) allow to build
-external(out of tree) kernel module with separating source and build
-artifacts dirs but with nested makefiles it doesn't work properly.
-Build system trap to recursion inside makefiles, articafts output dir
-path grow with each iteration until exceed max path len and build failed
-This fix update "src" var during processing subdirs and resolve
-recursion issue
-Usage example:
-make -C KERNEL_SOURCE_TREE M=BUILD_OUT_DIR src=EXT_MOD_SRC_DIR modules
+On 15.04.24 11:26, Bjørn Mork wrote:
+> Oliver Neukum <oneukum@suse.com> writes:
+>> On 15.04.24 08:47, Bjørn Mork wrote:
+>>
+>>> urb from service_outstanding_interrupt(). That's why it was added. See
+>>> the explanation Robert wrote when introducing it:
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/usb/class/cdc-wdm.c?id=c1da59dad0ebd3f9bd238f3fff82b1f7ffda7829
+>>
+>> Well, the explanation is correct in that we must read
+>> data available. However, if the RESPONDING flag is set
+>> and the URB submitted, we are already doing so.
+> 
+> Sounds reasonable.  Except that the bug proves we didn't.
 
-Cc: Valerii Chernous <vchernou@cisco.com>
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Valerii Chernous <vchernou@cisco.com>
----
- scripts/Makefile.build | 1 +
- 1 file changed, 1 insertion(+)
+Why? I am afraid I do not get that part.
+  
+> If you are right that service_outstanding_interrupt can race againts
+> itself (and I don't doubt that), then I guess this could also happen
+> between failure to submit the URB and clearing the flag?
 
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index a293950e2e07..75ea9052ea4a 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -490,6 +490,7 @@ $(single-subdir-goals): $(single-subdirs)
- PHONY += $(subdir-ym)
- $(subdir-ym):
- 	$(Q)$(MAKE) $(build)=$@ \
-+	$(if $(findstring command line,$(origin src)),src=$(patsubst $(obj)/%,$(src)/%,$@)) \
- 	need-builtin=$(if $(filter $@/built-in.a, $(subdir-builtin)),1) \
- 	need-modorder=$(if $(filter $@/modules.order, $(subdir-modorder)),1) \
- 	$(filter $@/%, $(single-subdir-goals))
--- 
-2.35.6
+Yes, it can. In fact in this case the behavior should not change.
+I am afraid we have a misunderstanding. It seems to me that in the
+unchanged driver the result of service_outstanding_interrupt()
+is undefined.
+Please explain.
+
+	Regards
+		Oliver
+
 
 
