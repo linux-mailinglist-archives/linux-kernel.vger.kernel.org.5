@@ -1,113 +1,135 @@
-Return-Path: <linux-kernel+bounces-145594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DB208A5847
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 877A78A584C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:57:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFA511C21114
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:55:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7E6A1C20DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93665824BD;
-	Mon, 15 Apr 2024 16:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B4E82891;
+	Mon, 15 Apr 2024 16:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lB9Kcq9O"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MccKqy+j"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9774060EF9;
-	Mon, 15 Apr 2024 16:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83ADE1E87C;
+	Mon, 15 Apr 2024 16:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713200124; cv=none; b=PnB/NPXH6MYOrOZIHPA8yk2kssFUeyozf3oTNrVcm2+03qpExJsxK3GevEUIqkXnekqtUonyvYDpg99cJ82J5Suq30SpIgheIj4aA2VJiScMCYM6uD6oi6MYF5X6apNE1K4UnIscd0xK0EMticI1+ldd7wtVZuzaUXJn6jNp3Fc=
+	t=1713200217; cv=none; b=ifxaveP4Li3OV0aRI1w2VHqPCQi0U4TB7P/2jw/nwe1qkmJET68nUxfNVYhEu6+TsMG7Of4ygdeqdl7YSQXiteRvvHINM91MlPCNekijV5fi7X/fFsbB04jgEgPghxuA/lJLhgvpWkOxP3GyKc2AJ7RcvKSQc5oOZpEZgk7f73U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713200124; c=relaxed/simple;
-	bh=be7oRZUQ/S2JdRwQpojUowfgGOLGjxhk1XnzAepAj+Y=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=WKL+2zwgeDz3VdqpBqtOXoQKFp/f8rWpKqAD5imKA53CIrRGnPegWLbV33R5BKbzaamKOzbSSjScckpldYBcmmh5mejw+UGJ7Zl+Ww5kWV5A+oy9vi7FztTCCpT7ZEgfbGKqrc/29r17ZkBaZR4hMMk6rtcy2u9QLEqaUyYkKWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lB9Kcq9O; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-2343ae31a9bso1267307fac.1;
-        Mon, 15 Apr 2024 09:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713200122; x=1713804922; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UdGYstXTWazjEUKLUsBnEYFaautc2holTmAavrds7D8=;
-        b=lB9Kcq9OMwPiA4li0uAv0r9aU9AgM8ma/n/XRoEODbLkCpwgw6ar5kxcoHj2Co3zXS
-         CbeTuOgw7vDh97HlMm7+eshaIoJyV8IOw3quOd+aOCQSJ6QlC9HdenDaqc5WzbCcLRvK
-         VYEN3r89M+4AjawNxjVvQIx8SnX2ZIPINc2YdYnXbB+hiPN0ZvYbd+PRf8+7yzOim2rU
-         xcmlQ8U8vCtcXp5RQOiDmoaMlp3Yj6YK1mwUirgtJKwLeUpepf3dYWZ2agKguZELaEDp
-         Xc64JYk6bGICtBYLTLg5x6gdL1qxQk5gpYfc2durs4cZGzVGVTXAF+FFU5uMBQPedbJQ
-         FsVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713200122; x=1713804922;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UdGYstXTWazjEUKLUsBnEYFaautc2holTmAavrds7D8=;
-        b=L7cFO80vzXlLLNTXJsep8bnyPKeG5WluXIHcu85YOwH93M1iijviqCyUMdicCiTsEs
-         Kqww9smQZPad3fTaVV/nUqaksWtEeYs2rMWPPSWdlRJWx/4oVLmApJpr09Stc/V5jrAd
-         v5DsWHnzSyctw4NNGXdaf5eiNPIiFLrLTZucyS2xITuSzzK4nnr/r2yOv8ymWEyJkTAb
-         U80dOQOwmC5Cxrc7cbv8qLHJUnJRDKpLBEqrEOLBOkltCdbpjB8WRjUsufVX8zz/Spwf
-         Wjoaf1jk9y01hBqwTsjCXAQlSEylNwfY0yGR2JYEXKuQ2ShqAqkOmzXXduOci9vntPjj
-         f8TA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRkjH8Ytt+chxV618Grk24VYC40OneJzS1hc4Jdj7iJVSf1XkMMqKslJ2PINYH55lUNzTWua9lvjpzjueI0xTqDKe2Sl1GYbvymyp8JxpedUo2TD5sKw/drjBXpoGDSL/4Wtb7ziVnvP8Z
-X-Gm-Message-State: AOJu0YyFGBBQcBRRLzSjW2+UzmQ37TZNL3NUtRPMH3WPTsK+p21CB9UK
-	767OPjbAM1wqeZEXHcHuxVmEBB0qTDnDO4X4X0sTzvjIR8/hk3XcOAHbiL1cpwbLQKQjtLGpzDL
-	67Miephj9ELI9JSi3QQo+zFI6mzg=
-X-Google-Smtp-Source: AGHT+IGjX7KYAV9eE37M28bewt12iuGzeq8YwJK8fQBwnQEX1Wettngrgbu04fOvzpTUF3ZgrV3yW8ss3XJMUbm/Y0o=
-X-Received: by 2002:a05:6870:b619:b0:22b:a8f3:36b7 with SMTP id
- cm25-20020a056870b61900b0022ba8f336b7mr12841925oab.55.1713200122720; Mon, 15
- Apr 2024 09:55:22 -0700 (PDT)
+	s=arc-20240116; t=1713200217; c=relaxed/simple;
+	bh=23t1wc48Z7qjQUHxpMlFdirQHFa5WZ1akQpPogYgwdY=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=kfbjbBIfZfrB3sNiMQM2sVlF2I5gPg8p67JCpI3YZuMFFir6nuk21/ECker07BHT2tL+Nt7SauzVJHbJpjAe9KTo5oS7JCTy/pRfm8g7kIxpix2elgx4vfR9Y/Nz4cPUeBwblGOgnxjtIac1GhPwQ9eVFUgkZ1esEpNe/HT127o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MccKqy+j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D98E6C113CC;
+	Mon, 15 Apr 2024 16:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713200217;
+	bh=23t1wc48Z7qjQUHxpMlFdirQHFa5WZ1akQpPogYgwdY=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=MccKqy+jcxO65ZEPHizfb5Mc96hbY4jAZG12g4jT1jFG0LEcycDbLg+MgwFLFWnDL
+	 /Ncsg9MFSrkB5HmunRJkncqZEk6X8fEu7lu7j8tR0QUHG0D8uhJXWMA8+xDERhlkRR
+	 9NjK9IoQmQgkfX2h39J9neHr1UALtTptyC0FYchJuHuEGfVqX2CWEUIYULXv4Vcd7s
+	 tmRXsqeY2pmaaxonCgtROnJF0DeESWve2rr17M1A/uXUkdfpwzdyjK3ivJOFa86Wjy
+	 ZIC7j+T8gBHzjDN0NHXpMZiFaNhpAGb0/U59q764Gxm93RwO0e2o9va4ZexYVk5Uhh
+	 wYEsnpGSnVE/g==
+Date: Mon, 15 Apr 2024 11:56:55 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Gatlin Newhouse <gatlin.newhouse@gmail.com>
-Date: Mon, 15 Apr 2024 09:55:11 -0700
-Message-ID: <CAN1+aZxiJVdMUd8q5w+Xo9EmHc9hhFzRyzEmgJ7eb5eNi+PD=g@mail.gmail.com>
-Subject: Re: [PATCH 3/6] [v3] kbuild: turn on -Wrestrict by default
-To: arnd@kernel.org
-Cc: akpm@linux-foundation.org, arnd@arndb.de, 
-	Kees Cook <keescook@chromium.org>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, masahiroy@kernel.org, 
-	Nathan Chancellor <nathan@kernel.org>, nicolas@fjasle.eu
-Content-Type: text/plain; charset="UTF-8"
+From: Rob Herring <robh@kernel.org>
+To: Christophe Roullier <christophe.roullier@foss.st.com>
+Cc: Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, 
+ Eric Dumazet <edumazet@google.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Paolo Abeni <pabeni@redhat.com>, devicetree@vger.kernel.org, 
+ Jakub Kicinski <kuba@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Mark Brown <broonie@kernel.org>, Jose Abreu <joabreu@synopsys.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20240411143658.1049706-1-christophe.roullier@foss.st.com>
+References: <20240411143658.1049706-1-christophe.roullier@foss.st.com>
+Message-Id: <171292930694.2308702.12108714635472172661.robh@kernel.org>
+Subject: Re: [PATCH 00/11] Series to deliver Ethernets for STM32MP13
 
-> All known -Wrestrict warnings are addressed now, so don't disable the warning
-> any more.
 
-I've done some testing of a similar patch with gcc versions 8 to 13 and clang
-versions 12 to 15 for x86_64 allmodconfig builds and found no issues building.
-
-Tested-by: Gatlin Newhouse <gatlin.newhouse@gmail.com>
-
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  scripts/Makefile.extrawarn | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-> index 8b3f5b62b837..95466a04d51b 100644
-> --- a/scripts/Makefile.extrawarn
-> +++ b/scripts/Makefile.extrawarn
-> @@ -98,7 +98,6 @@ else
->  # Suppress them by using -Wno... except for W=1.
->  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
->  KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
-> -KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
->  KBUILD_CFLAGS += $(call cc-disable-warning, packed-not-aligned)
->  KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow)
->  KBUILD_CFLAGS += $(call cc-disable-warning, format-truncation)
+On Thu, 11 Apr 2024 16:36:47 +0200, Christophe Roullier wrote:
+> STM32MP13 is STM32 SOC with 2 GMACs instances
+> This board have 2 RMII phy:
+>   -Ethernet1: RMII with crystal
+>   -Ethernet2: RMII without crystal
+> Rework dwmac glue to simplify management for next stm32
+> Add support for PHY regulator
+> 
+> Christophe Roullier (11):
+>   dt-bindings: net: add STM32MP13 compatible in documentation for stm32
+>   dt-bindings: net: add phy-supply property for stm32
+>   net: ethernet: stmmac: rework glue to simplify management for next
+>     stm32
+>   net: ethernet: stmmac: add management of stm32mp13 for stm32
+>   net: ethernet: stmmac: stm32: update config management for phy wo
+>     cristal
+>   net: ethernet: stm32: clean the way to manage wol irqwake
+>   net: ethernet: stmmac: stm32: support the phy-supply regulator binding
+>   ARM: dts: stm32: add ethernet1 and ethernet2 support on stm32mp13
+>   ARM: dts: stm32: add ethernet1/2 RMII pins for STM32MP13F-DK board
+>   ARM: dts: stm32: add ethernet1 and ethernet2 for STM32MP135F-DK board
+>   ARM: multi_v7_defconfig: Add MCP23S08 pinctrl support
+> 
+>  .../devicetree/bindings/net/stm32-dwmac.yaml  |  83 ++++++-
+>  arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi   |  71 ++++++
+>  arch/arm/boot/dts/st/stm32mp131.dtsi          |  31 +++
+>  arch/arm/boot/dts/st/stm32mp133.dtsi          |  30 +++
+>  arch/arm/boot/dts/st/stm32mp135f-dk.dts       |  48 ++++
+>  arch/arm/configs/multi_v7_defconfig           |   1 +
+>  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 235 ++++++++++++------
+>  7 files changed, 421 insertions(+), 78 deletions(-)
+> 
 > --
-> 2.39.2
->
+> 2.25.1
+> 
+> 
+> 
 
---
-Gatlin Newhouse
+
+My bot found new DTB warnings on the .dts files added or changed in this
+series.
+
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not. No need to reply
+unless the platform maintainer has comments.
+
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
+
+  pip3 install dtschema --upgrade
+
+
+New warnings running 'make CHECK_DTBS=y st/stm32mp135f-dk.dtb' for 20240411143658.1049706-1-christophe.roullier@foss.st.com:
+
+arch/arm/boot/dts/st/stm32mp135f-dk.dtb: adc@48003000: 'ethernet@5800e000' does not match any of the regexes: '^adc@[0-9]+$', 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/iio/adc/st,stm32-adc.yaml#
+
+
+
+
+
 
