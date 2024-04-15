@@ -1,58 +1,56 @@
-Return-Path: <linux-kernel+bounces-146013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F6FB8A5E9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:43:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1E818A5EA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:43:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 709541C2119A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:43:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F37428505D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F4E159904;
-	Mon, 15 Apr 2024 23:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB9415A48D;
+	Mon, 15 Apr 2024 23:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z3seQHi3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cd2+qi1s"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478941598FD;
-	Mon, 15 Apr 2024 23:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF25158DB0;
+	Mon, 15 Apr 2024 23:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713224593; cv=none; b=k3j7rmjzyAL6PxUYv1J0+DACpKjdwX25YX9cevRPcE38SoXgSmqoa/HCXXxJWH8mcQ+5MDxz2RtJ27tXeJKapMzacr/vpVaN3i90jW0ersxMhRkOgwfJueYdtQk6pKQuGHBhOW2DqCUWTIJJeWo/wK7zgjaqXgwmpxJLVEW9zuU=
+	t=1713224596; cv=none; b=mF+X699dzbIMyLBknzt7rX6mXyGyl+x4MElxk4fbtQvB5G30nLhhL2hKn9qogF3GAqQshNtYb8n23/g2blmL1r/k/VQwNza/oXL2DF7viHzgKq9QJ2IyeumNrER5ecx+sUc02y7UGTgrQMxNONOSc2vJVnKDLuB3ILp3+3hwkNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713224593; c=relaxed/simple;
-	bh=nSVDjyOsaXPwEFf4Masm5f7IC2GELOaFx6Wn5p9UtNU=;
+	s=arc-20240116; t=1713224596; c=relaxed/simple;
+	bh=X9nCD4qkBQfBS8dnQLJRtmMUHEovcEJatZMQOk0SGew=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Aq2W1Gdf6/S0m4ds6hHxkb1nzWDk/cfpQeXA9C3r6sHeOe769humK1KriRYGX2U7wTumJOlygGQ2r9etxIs8+E/j2v2KVWdggWPsb7V8Qim2r4SQJpElhV6DPt5cVDrad+8YyUa6wWS2TElLqPVh87p0DXsk/JpZCTCeWWRXIKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z3seQHi3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA69CC2BD11;
-	Mon, 15 Apr 2024 23:43:10 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WZagyP0tCltT5Hu5/vlG2mU7YcGaYFqnJAhde6q8i5yXR6dyPe4icAiOizpIl+2JT+qW23kHHq/CExbXe+GLR3P9Ecxy99qcC5Gs5pA37uZb0AfPcEOUDmSPyO1c4YJivYjENhXoWRO9tpb4Ij+q9cYZdt3gp7gWROMMc4dzuww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cd2+qi1s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4386CC32781;
+	Mon, 15 Apr 2024 23:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713224592;
-	bh=nSVDjyOsaXPwEFf4Masm5f7IC2GELOaFx6Wn5p9UtNU=;
+	s=k20201202; t=1713224596;
+	bh=X9nCD4qkBQfBS8dnQLJRtmMUHEovcEJatZMQOk0SGew=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Z3seQHi3ftMKwRqU1M7bzr4We4qvJ0rgVoKLjTO6uSZMYA9OTTMGwEcZ6fbbQmtVI
-	 3kZrpyOVGeMd1TV5CNkaKmf3EDQdH56J2g/BhGeTLTkLkphvYI0Hp8BjKlChM8YHhB
-	 VYmbfFBE5vakqfGEqI0AdtqI522g93wZtfF8yld2Rvxk8jLWanTgzZeqgYshcnDGxD
-	 2qeiHOK6RHUTib9We9MNRF8GkZ7gGCWmq2T9EUhFAHpzxAi/Zw7hRoiZ+LhUTiARik
-	 etb0lJoqnKmXlsKLvk2tJE1WDDDIuwRb6LP45RmEWi2167JQ0ml/2OPthCej6amcxL
-	 lYN+YZOv8RfjQ==
+	b=Cd2+qi1sdibVeoUlXsaxLhCQyPBmi8pKhJTauFRkTwlSLupXQeLatImiezIBSeoYT
+	 BFKeqIl55DJcit5pEpIi6WZgVviA5ayYgwHUlcRaV64kyi6MAN3utg8r3dKHoNdgqa
+	 NSmnd2Hyt10sfgl2KR1DutTaF8cb0Ihp2FqcIjHrlCMLR2bdB8oVmNKeIcmyDdQMfc
+	 L0JEhYsitvzJe4lxVxZXiFwRHqnP30vC/DGCXkKoDEvh7iRr9p/bqZjeifQn57X20u
+	 gP+FJ4HVsIF3RrD32yYZrVQvM/p5gJyca0PXpbn0t2MgwwS1nYFJ6t780AmTxif0Ix
+	 zarBZuunsxE3A==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, 
- Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, John Watts <contact@jookia.org>
-Cc: linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-In-Reply-To: <20240403-sunxi_s32-v2-1-29ebf6ad590a@jookia.org>
-References: <20240403-sunxi_s32-v2-1-29ebf6ad590a@jookia.org>
-Subject: Re: [PATCH v2] ASoC: sunxi: sun4i-i2s: Support 32-bit audio
- formats
-Message-Id: <171322459009.1659018.15608590783585175158.b4-ty@kernel.org>
-Date: Tue, 16 Apr 2024 08:43:10 +0900
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, 
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org, 
+ kernel-janitors@vger.kernel.org
+In-Reply-To: <b32e80cf-b385-40cd-b8ec-77ec73e07530@moroto.mountain>
+References: <b32e80cf-b385-40cd-b8ec-77ec73e07530@moroto.mountain>
+Subject: Re: [PATCH] regmap: kunit: Fix an NULL vs IS_ERR() check
+Message-Id: <171322459456.1659174.4759607099482706461.b4-ty@kernel.org>
+Date: Tue, 16 Apr 2024 08:43:14 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,20 +61,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Wed, 03 Apr 2024 14:47:35 +1100, John Watts wrote:
-> The I2S cores used in the H3 onwards support 32-bit sample rates.
-> Support these by adding a per-variant PCM format list.
+On Mon, 15 Apr 2024 13:34:54 +0300, Dan Carpenter wrote:
+> The kunit_device_register() function returns error pointers, not NULL.
+> Passing an error pointer to get_device() will lead to an Oops.  Also
+> get_device() returns the same device you passed to it.  Fix it!  ;)
 > 
 > 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
 Thanks!
 
-[1/1] ASoC: sunxi: sun4i-i2s: Support 32-bit audio formats
-      commit: 863f94ac5f4481a7c5665e8152d551701ac71bf3
+[1/1] regmap: kunit: Fix an NULL vs IS_ERR() check
+      commit: 991b5e2aad870828669ca105f424ef1b2534f820
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
