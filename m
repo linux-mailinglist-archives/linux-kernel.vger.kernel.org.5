@@ -1,145 +1,197 @@
-Return-Path: <linux-kernel+bounces-144504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD0F68A4731
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:11:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF868A4733
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:11:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 406A6B2178C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:11:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAAF51C21230
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7C81BC5C;
-	Mon, 15 Apr 2024 03:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="iloX4UQs"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753DA1BF2A;
+	Mon, 15 Apr 2024 03:11:50 +0000 (UTC)
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8990D1C36;
-	Mon, 15 Apr 2024 03:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6631C36;
+	Mon, 15 Apr 2024 03:11:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.216.63.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713150660; cv=none; b=MAaCk9PRsrL8EcqsrHs5M5FBA8gyV3I7m5sv5bukNM6HoqGFp7OclCOvcM7fcOIA2qMRmyxLG6d58WWtsPy7GnY1F4yhanI2eULq2OhtjV7vMw2cIGhlbammkUyV9pFsxXZ9ecrm5HZOwsfomOdOpEilWrA/zsqzwOaXf3VBh9Q=
+	t=1713150710; cv=none; b=rpEi3uher3z2Teck2ojwNj/VKnzQx3aS24w+JQcNMAde0onkRwpzEk7jK9g4Xec4bmVEMCkoDhgNezWRWXIRaFM31d8DNpzG4CD8PcQdw12ZO2m1GRZtdm/rdSwKH6a2aGjLtmhUPV0ZGH9IP5KyZ7yFOt88ETfKz6rQIkBg8Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713150660; c=relaxed/simple;
-	bh=2xbDomiE2fYJtnYXzFi1xEOb9zkKPcg78vF9lQ046v8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EmhPGMzQkwdrB4/my+kc7drHggrtel+l495UbkRSRwrRoW45KmlC+tEJ9z3+qMHQq811AeDvUYq2SbNDTbO6/fAupnA1s1hTi31CYRCzD6jrmHV8RESzMM2UT2FyIZpcHyLXB905bcie1Metnkqb2XrRiwPnQvQ9BXv9FVu5ZLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=iloX4UQs; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713150654;
-	bh=qSnf+d1n+OBKJUrMhpmC9CVNe7ddtIfDiIUXPowluKY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=iloX4UQslnccIlH7yZB0igk1a4D0snDLRX0hg3aroFl5C0XJQbKbk6dkiuBi+Tfde
-	 xCofm5iCSm2zTLHvge9eacGQd3M4dmbkzMT/Q2wvHR7zbzN3hXgEEeYZz/hAc/Qqh7
-	 ud77vwUJqHfrKO+0u9oLBG2lO7WR2/bQPbtUMftDnXHv8VP5Qvp5Lx5VnF73l/xoa1
-	 xTKltKf/D7+j/YgOdvpsJ52uHWetmNbeuWEX/zZtxVQACwCyDyJI6wjR/BXTh7Ww1A
-	 G+5Nw8QWr94GuB6YynhyUF9v0gTlO8KPGjvWZljvFsksaIY5qGyroMoCrzJ+pSr2Qx
-	 6tlW4a+M+8DvA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	s=arc-20240116; t=1713150710; c=relaxed/simple;
+	bh=3IvHce7lNC4S84RHDCeuNMMstEMBuQo+9+JntyZZ1Zs=;
+	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=mM7ZeXIPSrppvAEplCHA1wb9pKVykMdAuWXE07TEU+G6Jv6KnDuffp89RNnN1gTBFodiYCMVv3qMVqfXlvqpY89Tbpw0qEx4Zd0SSKJ26tl11CH7LShwSoovnBXWqJ0OoTn0pc04kwjl08KeoKorAP0CEplzzZveswYEV4gyv/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=63.216.63.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VHscs5LyTz4wcb;
-	Mon, 15 Apr 2024 13:10:53 +1000 (AEST)
-Date: Mon, 15 Apr 2024 13:10:53 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Nikita Travkin <nikita@trvn.ru>,
- Simon Glass <sjg@chromium.org>
-Subject: linux-next: manual merge of the drivers-x86 tree with the arm64
- tree
-Message-ID: <20240415131053.10724106@canb.auug.org.au>
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4VHsdk2fWSz6G3wZ;
+	Mon, 15 Apr 2024 11:11:38 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.99.176])
+	by mse-fl1.zte.com.cn with SMTP id 43F3BMeA060726;
+	Mon, 15 Apr 2024 11:11:22 +0800 (+08)
+	(envelope-from xu.xin16@zte.com.cn)
+Received: from mapi (xaxapp01[null])
+	by mapi (Zmail) with MAPI id mid32;
+	Mon, 15 Apr 2024 11:11:23 +0800 (CST)
+Date: Mon, 15 Apr 2024 11:11:23 +0800 (CST)
+X-Zmail-TransId: 2af9661c9adb5fc-0b588
+X-Mailer: Zmail v1.0
+Message-ID: <20240415111123924s9IbQkgHF8S4yZv4su8LI@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/B3+yDKgiGJ4JZrgKQwZBM67";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0
+From: <xu.xin16@zte.com.cn>
+To: <v-songbaohua@oppo.com>, <mhocko@kernel.org>, <ryan.roberts@arm.com>,
+        <david@redhat.com>
+Cc: <roman.gushchin@linux.dev>, <shakeel.butt@linux.dev>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <ran.xiaokai@zte.com.cn>,
+        <xu.xin16@zte.com.cn>, <yang.yang29@zte.com.cn>,
+        <lu.zhongjun@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIXSBtbTogdGhwOiBtYWtlcyB0aGUgbWVtY2cgVEhQIGRlZmVycmVkIHNwbGl0IHNocmlua2VyIGF3YXJlIG9mCgogbm9kZV9pZA==?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl1.zte.com.cn 43F3BMeA060726
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 661C9AEA.001/4VHsdk2fWSz6G3wZ
 
---Sig_/B3+yDKgiGJ4JZrgKQwZBM67
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
 
-Hi all,
+Since commit 87eaceb3faa5 ("mm: thp: make deferred split shrinker
+memcg aware"), the THP deferred split queue is per memcg but not
+per mem_cgroup_per_node. This has two aspects of impact:
 
-Today's linux-next merge of the drivers-x86 tree got a conflict in:
+Impact1: for kswapd reclaim
+=====================
+  kswapd
+    balance_pgdat
+      kswapd_shrink_node
+        shrink_node(pgdat, sc);
+          shrink_node_memcgs(pgdat, sc);
+            shrink_slab(sc->gfp_mask, pgdat->node_id, memcg...);
+  the parameter "pgdat->node_id"  does not take effectct for
+  THP deferred_split_shrinker, as the deferred_split_queue of
+  specified memcg is not for a certain numa node but for all the nodes.
+  We want to makes the memcg THP deferred split shrinker aware of
+  node_id.
 
-  MAINTAINERS
+Impact2: thp-deferred_split shrinker debugfs interface
+=========================================
+   for the "count" file:
+   <cgroup inode id> <objects on node 0> <objects on node 1>
+     the output is acctually the sum of all numa nodes.
+   for the "scan" file:
+   <cgroup inode id> <numa id> <number of objects to scan>
+     Also the "numa id" input does not take effect here.
 
-between commit:
+This patch makes memcg deferred_split_queue per mem_cgroup_per_node
+so try to conform to semantic logic.
 
-  7a23b027ec17 ("arm64: boot: Support Flat Image Tree")
+Reviewed-by: Lu Zhongjun <lu.zhongjun@zte.com.cn>
+Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Cc: xu xin <xu.xin16@zte.com.cn>
+Cc: Yang Yang <yang.yang29@zte.com.cn>
+---
+ include/linux/memcontrol.h |  7 +++----
+ mm/huge_memory.c           |  6 +++---
+ mm/memcontrol.c            | 11 +++++------
+ 3 files changed, 11 insertions(+), 13 deletions(-)
 
-from the arm64 tree and commit:
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 394fd0a887ae..7282861d5a5d 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -130,6 +130,9 @@ struct mem_cgroup_per_node {
+ 	bool			on_tree;
+ 	struct mem_cgroup	*memcg;		/* Back pointer, we cannot */
+ 						/* use container_of	   */
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	struct deferred_split deferred_split_queue;
++#endif
+ };
 
-  363c8aea2572 ("platform: Add ARM64 platform directory")
+ struct mem_cgroup_threshold {
+@@ -327,10 +330,6 @@ struct mem_cgroup {
+ 	struct list_head event_list;
+ 	spinlock_t event_list_lock;
 
-from the drivers-x86 tree.
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	struct deferred_split deferred_split_queue;
+-#endif
+-
+ #ifdef CONFIG_LRU_GEN_WALKS_MMU
+ 	/* per-memcg mm_struct list */
+ 	struct lru_gen_mm_list mm_list;
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 9859aa4f7553..338d071070a6 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -774,7 +774,7 @@ struct deferred_split *get_deferred_split_queue(struct folio *folio)
+ 	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+ 	if (memcg)
+-		return &memcg->deferred_split_queue;
++		return &memcg->nodeinfo[pgdat->node_id]->deferred_split_queue;
+ 	else
+ 		return &pgdat->deferred_split_queue;
+ }
+@@ -3305,7 +3305,7 @@ static unsigned long deferred_split_count(struct shrinker *shrink,
 
---=20
-Cheers,
-Stephen Rothwell
+ #ifdef CONFIG_MEMCG
+ 	if (sc->memcg)
+-		ds_queue = &sc->memcg->deferred_split_queue;
++		ds_queue = &sc->memcg->nodeinfo[sc->nid]->deferred_split_queue;
+ #endif
+ 	return READ_ONCE(ds_queue->split_queue_len);
+ }
+@@ -3322,7 +3322,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
 
-diff --cc MAINTAINERS
-index c62233533f1f,3fb0fa67576d..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -3091,13 -3063,16 +3103,23 @@@ F:	drivers/mmc/host/sdhci-of-arasan.
-  N:	zynq
-  N:	xilinx
- =20
- +ARM64 FIT SUPPORT
- +M:	Simon Glass <sjg@chromium.org>
- +L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- +S:	Maintained
- +F:	arch/arm64/boot/Makefile
- +F:	scripts/make_fit.py
- +
-+ ARM64 PLATFORM DRIVERS
-+ M:	Hans de Goede <hdegoede@redhat.com>
-+ M:	Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-+ R:	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-+ L:	platform-driver-x86@vger.kernel.org
-+ S:	Maintained
-+ Q:	https://patchwork.kernel.org/project/platform-driver-x86/list/
-+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drive=
-rs-x86.git
-+ F:	drivers/platform/arm64/
-+=20
-  ARM64 PORT (AARCH64 ARCHITECTURE)
-  M:	Catalin Marinas <catalin.marinas@arm.com>
-  M:	Will Deacon <will@kernel.org>
+ #ifdef CONFIG_MEMCG
+ 	if (sc->memcg)
+-		ds_queue = &sc->memcg->deferred_split_queue;
++		ds_queue = &sc->memcg->nodeinfo[sc->nid]->deferred_split_queue;
+ #endif
 
---Sig_/B3+yDKgiGJ4JZrgKQwZBM67
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index fabce2b50c69..cdf9f5fa3b8e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5445,7 +5445,11 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+ 		kfree(pn);
+ 		return 1;
+ 	}
+-
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	spin_lock_init(&pn->deferred_split_queue.split_queue_lock);
++	INIT_LIST_HEAD(&pn->deferred_split_queue.split_queue);
++	pn->deferred_split_queue.split_queue_len = 0;
++#endif
+ 	lruvec_init(&pn->lruvec);
+ 	pn->memcg = memcg;
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYcmr0ACgkQAVBC80lX
-0GzAlgf8Cfg6Uqrf2Z+DdeyBq0Akv2mBMmwNKsx3FHAUEtiZcH2EzWx3vRRlfVMh
-NlNgQXbPhoyyvFPqKorO/kxGla/PhHQ8lHWd1J0L00zXzzKhKuLz3Uck5NZKXew5
-t0AdRB/rz9R1XMQgMTG305QzdutRd9LHAcmO0pWhNQaSskmgzaFlVn5E5SR+ugCx
-WsSFWFjw7jj4jx6JykeLlqPzx5mR0m+drjQUNyM6yhhyQmNeupuA18aHWVYyMd4D
-jLrREeypcvjdLL9KSZr73JfsR7DMUyAU7Glnza5XszM0a5ySee9AVTdCgELJ18TW
-Ahw2UWXJUDY5mAUVypRKpz39pdPaiQ==
-=HXo0
------END PGP SIGNATURE-----
-
---Sig_/B3+yDKgiGJ4JZrgKQwZBM67--
+@@ -5545,11 +5549,6 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+ 	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
+ 		memcg->cgwb_frn[i].done =
+ 			__WB_COMPLETION_INIT(&memcg_cgwb_frn_waitq);
+-#endif
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	spin_lock_init(&memcg->deferred_split_queue.split_queue_lock);
+-	INIT_LIST_HEAD(&memcg->deferred_split_queue.split_queue);
+-	memcg->deferred_split_queue.split_queue_len = 0;
+ #endif
+ 	lru_gen_init_memcg(memcg);
+ 	return memcg;
+-- 
+2.15.2
 
