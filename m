@@ -1,86 +1,442 @@
-Return-Path: <linux-kernel+bounces-145486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C39F8A56C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B7FC8A56C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDA1E1C2144F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:49:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 958191C211E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961B67C090;
-	Mon, 15 Apr 2024 15:49:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="joCh/hq9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF15B29414
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 15:49:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BB57CF16;
+	Mon, 15 Apr 2024 15:53:39 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE86876033
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 15:53:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713196148; cv=none; b=FYl4q8L/que1U7pcP0VPDUVbn9Tgg6teaykaqM3ka9MLXVZbnNqR+5PtnrHNQJ85WxqXsIU5cf9BD43GELMLCLOHY22UhsTOcSGkt8TEKBdn2tzxx+sNUIKlv26oT3rjNvsIrrSaoKzfll/nyqskpX0ZEHzeAeCARr5KDPlC8+c=
+	t=1713196418; cv=none; b=U2y4xX2Et57KDLD8C1S+473NQ+njVKkTb9RJNl1mGQynhxOxg6LMsHqeIobFUUk7XQdx9jU//kp8H/vQw+50syIgJlaPzzul+9ghiRAJL1MDA1r2alV4GD2h7rMMsvqdVB6DmzbFQdjcgWWmcxXlCFA1GbcsA9ejTBkc/ZDfh2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713196148; c=relaxed/simple;
-	bh=BJXjB4r8u0vb4Jwuxwghtyi9WRN5rvURICx0OP1Z1io=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=f7p2CJIr9rkrhQvuEfavkTDUv0VYbW9gLynKiEPgNf3mfWPGANRt6IhrypUi0U80UbAjB52szs4I1Z3/o+xNIGASgxahFk+z6wl0TdA2dAWz/vUtRQjVpSNQ7dFGZTQUlsG2NajqWurgxM1tzndwH9doanvfFu7HIb4n7Hw/gGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=joCh/hq9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F75CC113CC;
-	Mon, 15 Apr 2024 15:49:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713196147;
-	bh=BJXjB4r8u0vb4Jwuxwghtyi9WRN5rvURICx0OP1Z1io=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=joCh/hq9tOzj6rQAF98jynVX4S0K+b70h1HXUwyOAd9QJgy1Y+AQInX4fkHj+qVHA
-	 QnletxDqJLaMlTKAI9gq0/9GwL70u4G1LyHSKCRflUhmI1b3uLOtOkeiicJ9alf2Pl
-	 am7MlrbTF/aB4fOa72+vRYSXuOayo+NSGvqMTOZulHBD5hi9a6VuS9qRK3iMRV/WoB
-	 QadCiTi6dOMmLq1iTlNb7ySDygToYF+YWn9rq5lV4mjjPx56kuM4fRfj8uguk/F5HW
-	 1T/kn2bXe9lWxAX4ro8rjgAH4BoX7ggwa/ukXdlIkn1zyQLC1HcfftexYuQxer1wc1
-	 SdNjx4mImwP2A==
-From: Pratyush Yadav <pratyush@kernel.org>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,  Pratyush Yadav
- <pratyush@kernel.org>,  Miquel Raynal <miquel.raynal@bootlin.com>,
-  Richard Weinberger <richard@nod.at>,  Vignesh Raghavendra
- <vigneshr@ti.com>,  linux-kernel@vger.kernel.org,
-  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v1 2/6] mtd: spi-nor: get rid of non-power-of-2 page
- size handling
-In-Reply-To: <20240412134405.381832-3-mwalle@kernel.org> (Michael Walle's
-	message of "Fri, 12 Apr 2024 15:44:01 +0200")
-References: <20240412134405.381832-1-mwalle@kernel.org>
-	<20240412134405.381832-3-mwalle@kernel.org>
-Date: Mon, 15 Apr 2024 17:49:04 +0200
-Message-ID: <mafs05xwi8w3z.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713196418; c=relaxed/simple;
+	bh=WsCRMZ7944AS0Foa432ukUPTzwC3hLU2iidKruvFSGg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E9DKSO7NG4+aI3pABIUVChQfJrcGJdKLcr3bNnZGcYR8BN37Q/zjj5ujoMobKD17DDsQnJckm78NiVrpZlvTMLLhqv6tCm5xo6RKvSoyJN14Nwx93z/z9YUF8sufUuiJv95HAinMM986b71kfxdVNdwoOe+G6pSKq474FfBXUNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90CC32F4;
+	Mon, 15 Apr 2024 08:54:03 -0700 (PDT)
+Received: from [10.57.75.121] (unknown [10.57.75.121])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 327903F64C;
+	Mon, 15 Apr 2024 08:53:33 -0700 (PDT)
+Message-ID: <c880ba19-93ab-492b-a720-7272a1f8756d@arm.com>
+Date: Mon, 15 Apr 2024 16:53:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Mark Rutland
+ <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Muchun Song <muchun.song@linux.dev>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240215121756.2734131-1-ryan.roberts@arm.com>
+ <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
+ <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
+ <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
+ <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
+ <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
+ <dbc5083b-bf8c-4869-8dc7-5fbf2c88cce8@arm.com>
+ <f2aad459-e19c-45e2-a7ab-35383e8c3ba5@redhat.com>
+ <4fba71aa-8a63-4a27-8eaf-92a69b2cff0d@arm.com>
+ <5a23518b-7974-4b03-bd6e-80ecf6c39484@redhat.com>
+ <81aa23ca-18b1-4430-9ad1-00a2c5af8fc2@arm.com>
+ <70a36403-aefd-4311-b612-84e602465689@redhat.com>
+ <f13d1e4d-1eea-4379-b683-4d736ad99c2c@arm.com>
+ <3e50030d-2289-4470-a727-a293baa21618@redhat.com>
+ <772de69a-27fa-4d39-a75d-54600d767ad1@arm.com>
+ <969dc6c3-2764-4a35-9fa6-7596832fb2a3@redhat.com>
+ <e0b34a1f-ef2e-484e-8d56-4901101dbdbf@arm.com>
+ <11b1c25b-3e20-4acf-9be5-57b508266c5b@redhat.com>
+ <89e04df9-6a2f-409c-ae7d-af1f91d0131e@arm.com>
+ <ecd6e3e5-8617-42bd-bed4-3f97577934f9@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ecd6e3e5-8617-42bd-bed4-3f97577934f9@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On 15/04/2024 16:22, David Hildenbrand wrote:
+> On 15.04.24 17:17, Ryan Roberts wrote:
+>> On 15/04/2024 15:58, David Hildenbrand wrote:
+>>> On 15.04.24 16:34, Ryan Roberts wrote:
+>>>> On 15/04/2024 15:23, David Hildenbrand wrote:
+>>>>> On 15.04.24 15:30, Ryan Roberts wrote:
+>>>>>> On 15/04/2024 11:57, David Hildenbrand wrote:
+>>>>>>> On 15.04.24 11:28, Ryan Roberts wrote:
+>>>>>>>> On 12/04/2024 21:16, David Hildenbrand wrote:
+>>>>>>>>>>
+>>>>>>>>>> Yes agreed - 2 types; "lockless walkers that later recheck under PTL" and
+>>>>>>>>>> "lockless walkers that never take the PTL".
+>>>>>>>>>>
+>>>>>>>>>> Detail: the part about disabling interrupts and TLB flush syncing is
+>>>>>>>>>> arch-specifc. That's not how arm64 does it (the hw broadcasts the
+>>>>>>>>>> TLBIs). But
+>>>>>>>>>> you make that clear further down.
+>>>>>>>>>
+>>>>>>>>> Yes, but disabling interrupts is also required for RCU-freeing of page
+>>>>>>>>> tables
+>>>>>>>>> such that they can be walked safely. The TLB flush IPI is arch-specific
+>>>>>>>>> and
+>>>>>>>>> indeed to sync against PTE invalidation (before generic GUP-fast).
+>>>>>>>>> [...]
+>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Could it be this easy? My head is hurting...
+>>>>>>>>>>>
+>>>>>>>>>>> I think what has to happen is:
+>>>>>>>>>>>
+>>>>>>>>>>> (1) pte_get_lockless() must return the same value as ptep_get() as
+>>>>>>>>>>> long as
+>>>>>>>>>>> there
+>>>>>>>>>>> are no races. No removal/addition of access/dirty bits etc.
+>>>>>>>>>>
+>>>>>>>>>> Today's arm64 ptep_get() guarantees this.
+>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> (2) Lockless page table walkers that later verify under the PTL can
+>>>>>>>>>>> handle
+>>>>>>>>>>> serious "garbage PTEs". This is our page fault handler.
+>>>>>>>>>>
+>>>>>>>>>> This isn't really a property of a ptep_get_lockless(); its a statement
+>>>>>>>>>> about a
+>>>>>>>>>> class of users. I agree with the statement.
+>>>>>>>>>
+>>>>>>>>> Yes. That's a requirement for the user of ptep_get_lockless(), such as
+>>>>>>>>> page
+>>>>>>>>> fault handlers. Well, mostly "not GUP".
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> (3) Lockless page table walkers that cannot verify under PTL cannot
+>>>>>>>>>>> handle
+>>>>>>>>>>> arbitrary garbage PTEs. This is GUP-fast. Two options:
+>>>>>>>>>>>
+>>>>>>>>>>> (3a) pte_get_lockless() can atomically read the PTE: We re-check
+>>>>>>>>>>> later if
+>>>>>>>>>>> the
+>>>>>>>>>>> atomically-read PTE is still unchanged (without PTL). No IPI for TLB
+>>>>>>>>>>> flushes
+>>>>>>>>>>> required. This is the common case. HW might concurrently set
+>>>>>>>>>>> access/dirty
+>>>>>>>>>>> bits,
+>>>>>>>>>>> so we can race with that. But we don't read garbage.
+>>>>>>>>>>
+>>>>>>>>>> Today's arm64 ptep_get() cannot garantee that the access/dirty bits are
+>>>>>>>>>> consistent for contpte ptes. That's the bit that complicates the current
+>>>>>>>>>> ptep_get_lockless() implementation.
+>>>>>>>>>>
+>>>>>>>>>> But the point I was trying to make is that GUP-fast does not actually
+>>>>>>>>>> care
+>>>>>>>>>> about
+>>>>>>>>>> *all* the fields being consistent (e.g. access/dirty). So we could spec
+>>>>>>>>>> pte_get_lockless() to say that "all fields in the returned pte are
+>>>>>>>>>> guarranteed
+>>>>>>>>>> to be self-consistent except for access and dirty information, which
+>>>>>>>>>> may be
+>>>>>>>>>> inconsistent if a racing modification occured".
+>>>>>>>>>
+>>>>>>>>> We *might* have KVM in the future want to check that a PTE is dirty, such
+>>>>>>>>> that
+>>>>>>>>> we can only allow dirty PTEs to be writable in a secondary MMU. That's not
+>>>>>>>>> there
+>>>>>>>>> yet, but one thing I was discussing on the list recently. Burried in:
+>>>>>>>>>
+>>>>>>>>> https://lkml.kernel.org/r/20240320005024.3216282-1-seanjc@google.com
+>>>>>>>>>
+>>>>>>>>> We wouldn't care about racing modifications, as long as MMU notifiers will
+>>>>>>>>> properly notify us when the PTE would lose its dirty bits.
+>>>>>>>>>
+>>>>>>>>> But getting false-positive dirty bits would be problematic.
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> This could mean that the access/dirty state *does* change for a given
+>>>>>>>>>> page
+>>>>>>>>>> while
+>>>>>>>>>> GUP-fast is walking it, but GUP-fast *doesn't* detect that change. I
+>>>>>>>>>> *think*
+>>>>>>>>>> that failing to detect this is benign.
+>>>>>>>>>
+>>>>>>>>> I mean, HW could just set the dirty/access bit immediately after the
+>>>>>>>>> check. So
+>>>>>>>>> if HW concurrently sets the bit and we don't observe that change when we
+>>>>>>>>> recheck, I think that would be perfectly fine.
+>>>>>>>>
+>>>>>>>> Yes indeed; that's my point - GUP-fast doesn't care about access/dirty (or
+>>>>>>>> soft-dirty or uffd-wp).
+>>>>>>>>
+>>>>>>>> But if you don't want to change the ptep_get_lockless() spec to explicitly
+>>>>>>>> allow
+>>>>>>>> this (because you have the KVM use case where false-positive dirty is
+>>>>>>>> problematic), then I think we are stuck with ptep_get_lockless() as
+>>>>>>>> implemented
+>>>>>>>> for arm64 today.
+>>>>>>>
+>>>>>>> At least regarding the dirty bit, we'd have to guarantee that if
+>>>>>>> ptep_get_lockless() returns a false-positive dirty bit, that the PTE recheck
+>>>>>>> would be able to catch that.
+>>>>>>>
+>>>>>>> Would that be possible?
+>>>>>>
+>>>>>> Hmm maybe. My head hurts. Let me try to work through some examples...
+>>>>>>
+>>>>>>
+>>>>>> Let's imagine for this example, a contpte block is 4 PTEs. Lat's say PTEs
+>>>>>> 0, 1,
+>>>>>> 2 and 3 initially contpte-map order-2 mTHP, FolioA. The dirty state is
+>>>>>> stored in
+>>>>>> PTE0 for the contpte block, and it is dirty.
+>>>>>>
+>>>>>> Now let's say there are 2 racing threads:
+>>>>>>
+>>>>>>      - ThreadA is doing a GUP-fast for PTE3
+>>>>>>      - ThreadB is remapping order-0 FolioB at PTE0
+>>>>>>
+>>>>>> (ptep_get_lockless() below is actaully arm64's ptep_get() for the sake of the
+>>>>>> example - today's arm64 ptep_get_lockless() can handle the below correctly).
+>>>>>>
+>>>>>> ThreadA                    ThreadB
+>>>>>> =======                    =======
+>>>>>>
+>>>>>> gup_pte_range()
+>>>>>>      pte1 = ptep_get_lockless(PTE3)
+>>>>>>        READ_ONCE(PTE3)
+>>>>>>                       mmap(PTE0)
+>>>>>>                         clear_pte(PTE0)
+>>>>>>                           unfold(PTE0 - PTE3)
+>>>>>>                             WRITE_ONCE(PTE0, 0)
+>>>>>>                             WRITE_ONCE(PTE1, 0)
+>>>>>>                             WRITE_ONCE(PTE2, 0)
+>>>>>>        READ_ONCE(PTE0) (for a/d) << CLEAN!!
+>>>>>>        READ_ONCE(PTE1) (for a/d)
+>>>>>>        READ_ONCE(PTE2) (for a/d)
+>>>>>>        READ_ONCE(PTE3) (for a/d)
+>>>>>>      <do speculative work with pte1 content>
+>>>>>>      pte2 = ptep_get_lockless(PTE3)
+>>>>>>        READ_ONCE(PTE3)
+>>>>>>        READ_ONCE(PTE0) (for a/d)
+>>>>>>        READ_ONCE(PTE1) (for a/d)
+>>>>>>        READ_ONCE(PTE2) (for a/d)
+>>>>>>        READ_ONCE(PTE3) (for a/d)
+>>>>>>      true = pte_same(pte1, pte2)
+>>>>>>                             WRITE_ONCE(PTE3, 0)
+>>>>>>                             TLBI
+>>>>>>                             WRITE_ONCE(PTE0, <orig & ~CONT>)
+>>>>>>                             WRITE_ONCE(PTE1, <orig & ~CONT>)
+>>>>>>                             WRITE_ONCE(PTE2, <orig & ~CONT>)
+>>>>>>                             WRITE_ONCE(PTE3, <orig & ~CONT>)
+>>>>>>                           WRITE_ONCE(PTE0, 0)
+>>>>>>                         set_pte_at(PTE0, <new>)
+>>>>>>
+>>>>>> This example shows how a *false-negative* can be returned for the dirty
+>>>>>> state,
+>>>>>> which isn't detected by the check.
+>>>>>>
+>>>>>> I've been unable to come up with an example where a *false-positive* can be
+>>>>>> returned for dirty state without the second ptep_get_lockless() noticing. In
+>>>>>> this second example, let's assume everything is the same execpt FolioA is
+>>>>>> initially clean:
+>>>>>>
+>>>>>> ThreadA                    ThreadB
+>>>>>> =======                    =======
+>>>>>>
+>>>>>> gup_pte_range()
+>>>>>>      pte1 = ptep_get_lockless(PTE3)
+>>>>>>        READ_ONCE(PTE3)
+>>>>>>                       mmap(PTE0)
+>>>>>>                         clear_pte(PTE0)
+>>>>>>                           unfold(PTE0 - PTE3)
+>>>>>>                             WRITE_ONCE(PTE0, 0)
+>>>>>>                             WRITE_ONCE(PTE1, 0)
+>>>>>>                             WRITE_ONCE(PTE2, 0)
+>>>>>>                             WRITE_ONCE(PTE3, 0)
+>>>>>>                             TLBI
+>>>>>>                             WRITE_ONCE(PTE0, <orig & ~CONT>)
+>>>>>>                             WRITE_ONCE(PTE1, <orig & ~CONT>)
+>>>>>>                             WRITE_ONCE(PTE2, <orig & ~CONT>)
+>>>>>>                             WRITE_ONCE(PTE3, <orig & ~CONT>)
+>>>>>>                           WRITE_ONCE(PTE0, 0)
+>>>>>>                         set_pte_at(PTE0, <new>)
+>>>>>>                       write to FolioB - HW sets PTE0's dirty
+>>>>>>        READ_ONCE(PTE0) (for a/d) << DIRTY!!
+>>>>>>        READ_ONCE(PTE1) (for a/d)
+>>>>>>        READ_ONCE(PTE2) (for a/d)
+>>>>>>        READ_ONCE(PTE3) (for a/d)
+>>>>>>      <do speculative work with pte1 content>
+>>>>>>      pte2 = ptep_get_lockless(PTE3)
+>>>>>>        READ_ONCE(PTE3)           << BUT THIS IS FOR FolioB
+>>>>>>        READ_ONCE(PTE0) (for a/d)
+>>>>>>        READ_ONCE(PTE1) (for a/d)
+>>>>>>        READ_ONCE(PTE2) (for a/d)
+>>>>>>        READ_ONCE(PTE3) (for a/d)
+>>>>>>      false = pte_same(pte1, pte2) << So this fails
+>>>>>>
+>>>>>> The only way I can see false-positive not being caught in the second
+>>>>>> example is
+>>>>>> if ThreadB subseuently remaps the original folio, so you have an ABA
+>>>>>> scenario.
+>>>>>> But these lockless table walkers are already suseptible to that.
+>>>>>>
+>>>>>> I think all the same arguments can be extended to the access bit.
+>>>>>>
+>>>>>>
+>>>>>> For me this is all getting rather subtle and difficult to reason about and
+>>>>>> even
+>>>>>> harder to spec in a comprehensible way. The best I could come up with is:
+>>>>>>
+>>>>>> "All fields in the returned pte are guarranteed to be self-consistent except
+>>>>>> for
+>>>>>> access and dirty information, which may be inconsistent if a racing
+>>>>>> modification
+>>>>>> occured. Additionally it is guranteed that false-positive access and/or dirty
+>>>>>> information is not possible if 2 calls are made and both ptes are the same.
+>>>>>> Only
+>>>>>> false-negative access and/or dirty information is possible in this scenario."
+>>>>>>
+>>>>>> which is starting to sound bonkers. Personally I think we are better off at
+>>>>>> this
+>>>>>> point, just keeping today's arm64 ptep_get_lockless().
+>>>>>
+>>>>> Remind me again, does arm64 perform an IPI broadcast during a TLB flush that
+>>>>> would sync against GUP-fast?
+>>>>
+>>>> No, the broadcast is in HW. There is no IPI.
+>>>
+>>> Okay ...
+>>>
+>>> I agree that the semantics are a bit weird, but if we could get rid of
+>>> ptep_get_lockless() on arm64, that would also be nice.
+>>>
+>>>
+>>> Something I've been thinking of ... just to share what I've had in mind. The two
+>>> types of users we currently have are:
+>>>
+>>> (1) ptep_get_lockless() followed by ptep_get() check under PTL.
+>>>
+>>> (2) ptep_get_lockless() followed by ptep_get() check without PTL.
+>>>
+>>> What if we had the following instead:
+>>>
+>>> (1) ptep_get_lockless() followed by ptep_get() check under PTL.
+>>>
+>>> (2) ptep_get_gup_fast() followed by ptep_get_gup_fast() check without
+>>>      PTL.
+>>>
+>>> And on arm64 let
+>>>
+>>> (1) ptep_get_lockless() be ptep_get()
+>>>
+>>> (2) ptep_get_gup_fast() be __ptep_get().
+>>>
+>>> That would mean, that (2) would not care if another cont-pte is dirty, because
+>>> we don't collect access+dirty bits. That way, we avoid any races with concurrent
+>>> unfolding etc. The only "problamtic" thing is that pte_mkdirty() -> set_ptes()
+>>> would have to set all cont-PTEs dirty, even if any of these already is dirty.
+>>
+>> I don't think the "problematic" thing is actually a problem; set_ptes() will
+>> always set the dirty bit to the same value for all ptes it covers (and if you do
+>> set_ptes() on a partial contpte block, it will be unfolded first). Although I
+>> suspect I've misunderstood what you meant there...
+> 
+> It's more code like that following that I am concerned about.
+> 
+> if (pte_dirty()) {
+>     /* Great, nothing to do */
+> } else
+>     mte_mkdirty();
+>     set_ptes();
+>     ...
+> }
 
-On Fri, Apr 12 2024, Michael Walle wrote:
+OK I see, so you're worried about uneccessary unfolding that the false-negative
+dirty reporting could cause? I think the best solution there would be for the
+core to use the clear_young_dirty_ptes(CYDP_CLEAR_DIRTY) API that Lance adds in
+his series at [1]. That would avoid any unfolding and just dirty all contpte
+block(s) touched by the range.
 
-> The Xilinx flashes were the only user of the page sized that were no
-> power of 2. Support for them were dropped, thus we can also get rid of
-> the special page size handling for it.
+[1] https://lore.kernel.org/linux-mm/20240413002219.71246-1-ioworker0@gmail.com/
 
-Looks like the Xilinx flashes are the only users of
-flash_info->page_size, and params->convert_addr (along with
-spi_nor_convert_addr()) so those should also be dropped.
+> 
+>>
+>> The potential problem I see with this is that the Arm ARM doesn't specify which
+>> PTE of a contpte block the HW stores a/d in. So the HW _could_ update them
+>> randomly and this could spuriously increase your check failure rate. In reality
+>> I believe most implementations will update the PTE for the address that caused
+>> the TLB to be populated. But in some cases, you could have eviction (due to
+>> pressure or explicit invalidation) followed by re-population due to faulting on
+>> a different page of the contpte block. In this case you would see this type of
+>> problem too.
+>>
+>> But ultimately, isn't this basically equivalent to ptep_get_lockless() returning
+>> potentially false-negatives for access and dirty? Just with a much higher chance
+>> of getting a false-negative. How is this helping?
+> 
+> You are performing an atomic read like GUP-fast wants you to. So there are no
+> races to worry about like on other architectures: HW might *set* the dirty bit
+> concurrently, but that's just fine.
 
-The patch looks good to me otherwise.
+But you can still see false-negatives for access and dirty...
 
-[...]
+> 
+> The whole races you describe with concurrent folding/unfolding/ ... are irrelevant.
 
--- 
-Regards,
-Pratyush Yadav
+And I think I convinced myself that you will only see false-negatives with
+today's arm64 ptep_get(). But an order or magnitude fewer than with your
+proposal (assuming 16 ptes per contpte block, and the a/d bits are in one of those).
+
+> 
+> To me that sounds ... much simpler ;) But again, just something I've been
+> thinking about.
+
+OK so this approach upgrades my "I'm fairly sure we never see false-positives"
+to "we definitely never see false-positives". But it certainly increases the
+quantity of false-negatives.
+
+> 
+> The reuse of pte_get_lockless() outside GUP code might not have been the wisest
+> choice.
+> 
+
+If you want to go down the ptep_get_gup_fast() route, you've still got to be
+able to spec it, and I think it will land pretty close to my most recent stab at
+respec'ing ptep_get_lockless() a couple of replies up on this thread.
+
+Where would your proposal leave the KVM use case? If you call it
+ptep_get_gup_fast() presumably you wouldn't want to use it for KVM? So it would
+be left with ptep_get()...
+
+Sorry this thread is getting so long. Just to summarise, I think there are
+currently 3 solutions on the table:
+
+  - ptep_get_lockless() remains as is
+  - ptep_get_lockless() wraps ptep_get()
+  - ptep_get_lockless() wraps __ptep_get() (and gets a gup_fast rename)
+
+Based on discussion so far, that's also the order of my preference.
+
+Perhaps its useful to enumerate why we dislike the current ptep_get_lockless()?
+I think its just the potential for looping in the face of concurrent modifications?
+
 
