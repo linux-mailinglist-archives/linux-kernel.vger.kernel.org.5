@@ -1,188 +1,143 @@
-Return-Path: <linux-kernel+bounces-144724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C17C58A49BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:04:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03B5B8A49BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C3C8285962
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:04:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3222A1C23423
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175E337719;
-	Mon, 15 Apr 2024 08:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D35F2E83F;
+	Mon, 15 Apr 2024 08:04:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="LeEyAzdY"
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABE937142
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713168265; cv=none; b=dzOFF8qOKdy9UWE6Bixxe5R+WuTHCxSVj9h8tlxnDvfC1xOcHizmCCWPZuZ32kb159JvtNxedHhTrTkFxjglxWTt4hw+r5zrvyczszz4Sm8JzO2zq7tfWWfKTeT8c0ltXh1sfc8aocUNiiSKdp1tBG/5YKSb9wt2nP8dXr8FDeQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713168265; c=relaxed/simple;
-	bh=+MLwVfz9rwOIvL4WZTuJ04Fbom+ZhHool4fp3bvKc7w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JLt+uJmwAghUAYRBO+zSwh+WncJ3ZOhRi/lDoSdqWisC9Dw4QIFFnCtVcMtR+OHpWMehNe8HgaA7BvYu3+M9kvwvKMUALIdyztYFRVVA3EX5Gl/HbPEFyh9maXVGLCL7gTzHA/ZIas0ex9CGm2mVLcyg7JOwfMtkOGWxJyoMlLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=LeEyAzdY; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe0bdf.dip0.t-ipconnect.de [79.254.11.223])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jAnhH0GF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 53B381C6467;
-	Mon, 15 Apr 2024 10:04:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1713168254;
-	bh=+MLwVfz9rwOIvL4WZTuJ04Fbom+ZhHool4fp3bvKc7w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LeEyAzdYwcq13HRMYuqXIIyo9/ut460vfm8roz0F/7rfRnwTWxQvRp0dhWHcb3I8d
-	 eamrRXPMFtjbMGiMyBSN2eO0uqNSDE1zcpRcGCiSaQ4ylYFbgh/w8DE4tqr6UYZ/qa
-	 owo9e8tiJUi8yJjpxZQxG1UI+D9ZzVn+mUmhyMrVOwuHb5JPLKv8BuzXgAxG12IgdG
-	 XlYD8h50fPB00iwvMbFyNsyViyYR+EHauP6cjJ76BHGXFGPyPAIvzKceDY2FeLKzyq
-	 qQ2YKYWgDzdK5xvlJ9f3/QODFaJ62YwJWx/gMQ/t3a6pHhCBbYQ775DNXKRLQH5sa7
-	 naM62itJcs1gg==
-Date: Mon, 15 Apr 2024 10:04:13 +0200
-From: Joerg Roedel <joro@8bytes.org>
-To: Eric Wagner <ewagner12@gmail.com>
-Cc: Will Deacon <will@kernel.org>,
-	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Vasant Hegde <vasant.hegde@amd.com>
-Subject: Re: Kernel 6.7 regression doesn't boot if using AMD eGPU
-Message-ID: <ZhzffQM5YA7HxzSX@8bytes.org>
-References: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B436E2E83C;
+	Mon, 15 Apr 2024 08:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713168258; cv=none; b=iL6Q89fDjV/REZj/Lk4D2wA6pBglq4UqwHZFRHjkatvIy3WuURs6tF3rQMHBuSMH30VSmtnpv3tn1IwJIOPOnrEJwQF2tdVt4dpsLt7ErLxgkkKsLbQ79Ih1wvWMswNB3TTtbD1LuXTP7CCH/I5B9fXH6YyspmN73mCpa7hlbY8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713168258; c=relaxed/simple;
+	bh=02XS78kOeC4BvdCppGzDA2dmEXYXQsSxj+2gfEv+FZU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XaF6lQBpPB5KnX6WB1UrNqwyPLhp0pcbevJzv7JW4UVPOkJjnw7sd2MCeucqyk0+ixsl/WksWdnZZeMf5sh4nlMANr7AY6498283NpxR7I2zN4IRqd6Ou6jz4zhBGNeC2c/5daJa57f7g0ne1WgT7y2DoCYhBjRPDzF9Zf5nuZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jAnhH0GF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86CAC4AF0A;
+	Mon, 15 Apr 2024 08:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713168258;
+	bh=02XS78kOeC4BvdCppGzDA2dmEXYXQsSxj+2gfEv+FZU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=jAnhH0GFY6O1f23O9v7nai3wlGsd1NsTJrhZZjSE/JT+GFTVvxLSBPC9iCpF/M4hS
+	 Jmh8Sw+n286LM4fSDgO5u/hLKvTEc/PdavPHsCSygoKcN4YzuWaClrCP+TUKhznVrS
+	 o7bj7xAg5mE+5bjBWvY4oK6fXA5GShex36nRLPDzPk2tGduRIMls5j/ZXhXaJ3FNcp
+	 rvhDAqf7eTwWTyYB2DxAtwjpZPrpx6gle57JMUpufjrQW31fanNWsEZSYTF86KCYRE
+	 29x2K/xGz7/BDOv6yhMqlV94VvyGzUa7SfvQfbjABOZtgKpIr6sQ3TujOHFVCWwUJa
+	 TM3ix5byqkKkg==
+Message-ID: <dcda2991-90bc-41eb-afa3-14a2071a6d19@kernel.org>
+Date: Mon, 15 Apr 2024 10:04:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: add ArmSoM
+To: Jianfeng Liu <liujianfeng1994@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org
+Cc: robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+ heiko@sntech.de, sfr@canb.auug.org.au, weizhao.ouyang@arm.com
+References: <20240413153633.801759-1-liujianfeng1994@gmail.com>
+ <20240413153633.801759-2-liujianfeng1994@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240413153633.801759-2-liujianfeng1994@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Also adding Vasant.
-On Sat, Apr 13, 2024 at 06:04:12PM -0400, Eric Wagner wrote:
-> On my Thinkpad T14s G3 AMD (Ryzen 7 6850U) laptop connected to an AMD RX 580 in
-> Akitio Node Thunderbolt 3 eGPU. Booting with the eGPU connected hangs on
-> kernels 6.7 and 6.8, but worked on 6.6. For debugging, I find that adding the
-> kernel parameter amd_iommu=off seems to fix the issue and allows booting with
-> the eGPU on 6.7.
+On 13/04/2024 17:36, Jianfeng Liu wrote:
+> Add vendor prefix for ArmSoM (https://www.armsom.org)
 
-Do you have any way of getting the boot log of the hang? It is hard to
-debug this without further data on where it hang and what happens
-before.
+I feel some lawsuits coming...
 
-Regards,
-
-	Joerg
 
 > 
-> I tried bisecting the issue between 6.6 and 6.7 and ended up with:
-> "e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2 is the first bad commit" in the
-> attached. This seems to indicate an amd iommu issue.
+> Signed-off-by: Jianfeng Liu <liujianfeng1994@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Two others also reported the same issue on AMD Ryzen 7 7840 with AMD RX 6000
-> connected as eGPU (https://gitlab.freedesktop.org/drm/amd/-/issues/3182).
-> 
-> Let me know if you need more information.
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index e4aeeb5fe..c6af4da94 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -151,6 +151,8 @@ patternProperties:
+>      description: ARM Ltd.
+>    "^armadeus,.*":
+>      description: ARMadeus Systems SARL
+> +  "^armsom,.*":
+> +    description: ArmSoM
 
-> Bisecting: 366 revisions left to test after this (roughly 9 steps)
-> [74e9347ebc5be452935fe4f3eddb150aa5a6f4fe] Merge tag 'loongarch-fixes-6.6-3' of git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson
-> Bisecting: 182 revisions left to test after this (roughly 8 steps)
-> [f6176471542d991137543af2ef1c18dae3286079] Merge tag 'mtd/fixes-for-6.6-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
-> Bisecting: 87 revisions left to test after this (roughly 7 steps)
-> [fe3cfe869d5e0453754cf2b4c75110276b5e8527] Merge tag 'phy-fixes-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy
-> Bisecting: 43 revisions left to test after this (roughly 6 steps)
-> [c76c067e488ccd55734c3e750799caf2c5956db6] s390/pci: Use dma-iommu layer
-> Bisecting: 27 revisions left to test after this (roughly 5 steps)
-> [aa5cabc4ce8e6b45d170d162dc54b1bac1767c47] Merge tag 'arm-smmu-updates' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into arm/smmu
-> Bisecting: 14 revisions left to test after this (roughly 4 steps)
-> [bbc70e0aec287e164344b1a071bd46466a4f29b3] iommu/dart: Remove the force_bypass variable
-> Bisecting: 9 revisions left to test after this (roughly 3 steps)
-> [e82c175e63229ea495a0a0b5305a98b5b6ee5346] Revert "iommu/vt-d: Remove unused function"
-> Bisecting: 5 revisions left to test after this (roughly 2 steps)
-> [92bce97f0c341d3037b0f364b6839483f6a41cae] s390/pci: Fix reset of IOMMU software counters
-> Bisecting: 3 revisions left to test after this (roughly 2 steps)
-> [3613047280ec42a4e1350fdc1a6dd161ff4008cc] Merge tag 'v6.6-rc7' into core
-> Bisecting: 2 revisions left to test after this (roughly 1 step)
-> [f7da9c081517daba70f9f9342e09d7a6322ba323] iommu/tegra-smmu: Drop unnecessary error check for for debugfs_create_dir()
-> Bisecting: 1 revision left to test after this (roughly 1 step)
-> [9e13ec61de2a51195b122a79461431d8cb99d7b5] iommu/virtio: Add __counted_by for struct viommu_request and use struct_size()
-> Bisecting: 0 revisions left to test after this (roughly 0 steps)
-> [6e6c6d6bc6c96c2477ddfea24a121eb5ee12b7a3] iommu: Avoid unnecessary cache invalidations
-> e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2 is the first bad commit
-> commit e8cca466a84a75f8ff2a7a31173c99ee6d1c59d2
-> Merge: 6e6c6d6bc6 f7da9c0815 aa5cabc4ce 9e13ec61de e82c175e63 cedc811c76 3613047280 92bce97f0c
-> Author: Joerg Roedel <jroedel@suse.de>
-> Date:   Fri Oct 27 09:13:40 2023 +0200
-> 
->     Merge branches 'iommu/fixes', 'arm/tegra', 'arm/smmu', 'virtio', 'x86/vt-d', 'x86/amd', 'core' and 's390' into next
-> 
->  Documentation/admin-guide/kernel-parameters.txt    |   9 +-
->  .../devicetree/bindings/iommu/arm,smmu.yaml        |   2 +
->  arch/arm/configs/multi_v7_defconfig                |   1 -
->  arch/arm/configs/tegra_defconfig                   |   1 -
->  arch/powerpc/kernel/iommu.c                        |  53 +-
->  arch/s390/include/asm/pci.h                        |  11 -
->  arch/s390/include/asm/pci_clp.h                    |   3 +
->  arch/s390/include/asm/pci_dma.h                    | 121 +--
->  arch/s390/pci/Makefile                             |   2 +-
->  arch/s390/pci/pci.c                                |  35 +-
->  arch/s390/pci/pci_bus.c                            |   5 -
->  arch/s390/pci/pci_debug.c                          |  12 +-
->  arch/s390/pci/pci_dma.c                            | 746 ---------------
->  arch/s390/pci/pci_event.c                          |  17 +-
->  arch/s390/pci/pci_sysfs.c                          |  19 +-
->  drivers/iommu/Kconfig                              |  15 +-
->  drivers/iommu/Makefile                             |   1 -
->  drivers/iommu/amd/Kconfig                          |   9 -
->  drivers/iommu/amd/Makefile                         |   1 -
->  drivers/iommu/amd/amd_iommu.h                      |  35 +-
->  drivers/iommu/amd/amd_iommu_types.h                |  52 +-
->  drivers/iommu/amd/init.c                           | 117 +--
->  drivers/iommu/amd/io_pgtable_v2.c                  |   8 +-
->  drivers/iommu/amd/iommu.c                          | 577 +++++-------
->  drivers/iommu/amd/iommu_v2.c                       | 996 ---------------------
->  drivers/iommu/apple-dart.c                         | 138 +--
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    |  71 +-
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        | 251 +++---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |  17 +-
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         |   2 +
->  drivers/iommu/arm/arm-smmu/qcom_iommu.c            |  45 +-
->  drivers/iommu/dma-iommu.c                          | 200 ++++-
->  drivers/iommu/exynos-iommu.c                       |  83 +-
->  drivers/iommu/fsl_pamu_domain.c                    |  41 +-
->  drivers/iommu/intel/debugfs.c                      | 215 ++++-
->  drivers/iommu/intel/iommu.c                        |  19 +-
->  drivers/iommu/intel/iommu.h                        |  14 +
->  drivers/iommu/iommu.c                              | 455 +++++-----
->  drivers/iommu/iommufd/selftest.c                   |  30 +-
->  drivers/iommu/iova.c                               |  95 +-
->  drivers/iommu/ipmmu-vmsa.c                         |  72 +-
->  drivers/iommu/msm_iommu.c                          |  35 +-
->  drivers/iommu/mtk_iommu.c                          |  35 +-
->  drivers/iommu/mtk_iommu_v1.c                       |  28 +-
->  drivers/iommu/omap-iommu.c                         |  69 +-
->  drivers/iommu/omap-iommu.h                         |   2 +-
->  drivers/iommu/rockchip-iommu.c                     |  59 +-
->  drivers/iommu/s390-iommu.c                         | 424 ++++++++-
->  drivers/iommu/sprd-iommu.c                         |  36 +-
->  drivers/iommu/sun50i-iommu.c                       |  80 +-
->  drivers/iommu/tegra-gart.c                         | 371 --------
->  drivers/iommu/tegra-smmu.c                         |  58 +-
->  drivers/iommu/virtio-iommu.c                       |   4 +-
->  drivers/memory/tegra/mc.c                          |  34 -
->  drivers/memory/tegra/tegra20.c                     |  28 -
->  include/linux/amd-iommu.h                          | 120 ---
->  include/linux/iommu.h                              |  38 +-
->  include/soc/tegra/mc.h                             |  26 -
->  58 files changed, 2138 insertions(+), 3905 deletions(-)
->  delete mode 100644 arch/s390/pci/pci_dma.c
->  delete mode 100644 drivers/iommu/amd/iommu_v2.c
->  delete mode 100644 drivers/iommu/tegra-gart.c
+Website says different name. Please use name from the website.
+
+
+
+>    "^arrow,.*":
+>      description: Arrow Electronics
+>    "^artesyn,.*":
+
+Best regards,
+Krzysztof
 
 
