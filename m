@@ -1,240 +1,149 @@
-Return-Path: <linux-kernel+bounces-144975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8EF8A4D73
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:17:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D35C8A4D7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:18:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87D10B230DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:17:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7FDF282BE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F185EE73;
-	Mon, 15 Apr 2024 11:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BED5DF0E;
+	Mon, 15 Apr 2024 11:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJepF66z"
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b7sJObNh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417BC5D497;
-	Mon, 15 Apr 2024 11:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B0C5CDE4;
+	Mon, 15 Apr 2024 11:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713179821; cv=none; b=SukBS8haSluXlC7Yl6nItohGcjsspKNW5iIlyxHTHO0o43n7h3dp0mnpXlGcdHowuKzz1xbe2/bYyFg6zItBNq3fSxO/VdaRFEtiwjR1miMyYdumNO4gUElMtVzi1PaXYF7yew2P6xtrPLAyLeokwuSFJE5huhyL1bZ/Ad3w+rA=
+	t=1713179881; cv=none; b=ClCaoCu7k2LKOvZYkHoM0TXPE2kIsny+WIUJkXfjP0NpGeRWYzMMUT1+hlbc0eiroS2U33BLRxlBIflvxpeGmSeR00ZeabfN0kQtFsRjkwZJB4CurBu/hoL2RCPKVuUhjyQTX+2Pj1C9i8DewcHmEkRaGvzK1MTvDLTeCKoCfHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713179821; c=relaxed/simple;
-	bh=X6660uQgxaGiaIQ8QGh4i6N24apbQOESikWJD5zAAJM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b1312F4QLRsKRh6vG5dThlywBdStEz2reC54/SrdoYNtSsRJlnR/xcey/LRIi4lvI8gdEX2dMLzaiWqybxey/mwI8nVH1pFDb8cI+B2v4EXxTsiyHzP763jApI0g1nMkEQ58ZG/ulGdkTo19tI7KFO5tUvM3M2I2Y95enyO/XGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJepF66z; arc=none smtp.client-ip=209.85.161.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5ac8c73cf88so1419267eaf.2;
-        Mon, 15 Apr 2024 04:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713179819; x=1713784619; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fBm8RL97F+4qf+V4jDEUa/P8XnHDDN6lRk7BTnH7EBg=;
-        b=NJepF66zd46UWpOHBrXKuhQwyc906emAw7KXVAYxC0RjFB5P9fCZGtxlmpk4YRXgs3
-         drzu9WBWXxgNksEOQjiOJYReUrRarCmZmwnssd4nXYGBWFnKuHP/41048BbNeZwgucna
-         C0mG3ZzVYd9jOnakOIilNmirZDD5WiFqA79sW000o4jIvCb1epQMII4OPm/Uo73y08LS
-         8rEgXn8Ccw45ugC2461pFd7k3BB+0DrU4NzRnpmZzoGKabP3A4oqyMB3yOMVpmuhK+6r
-         2MHcRE6PX3q0C0zjRzMom9HLuHbm6sywILcKJ0p7cJa0NQGqh0S9dex5OeFIACNYZaNG
-         2ApQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713179819; x=1713784619;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fBm8RL97F+4qf+V4jDEUa/P8XnHDDN6lRk7BTnH7EBg=;
-        b=NlRI+ybXZ2W4lQrHRTb+9qgO5oEQqARuSU22uzgVEUxGuJia0s2Z/ye8d6LRCpqeny
-         JbujpjNbo50F1QmGGfNWje2POFkrxPT9B7xJEoGT5QUBTLHYxFvovaKfOh+O848g2/0l
-         hDgr7OGdFIB3+XaKBRWHtoKM+Qy9W2lC+bhH3h/YM06bhxKGXkIJAnT7eCFaOrBfmb+q
-         0zFNTCGnYPCgxdg3jGYlJaqhAly9FmpYmX90gwPjtMAv3KVT7ucrYNHhaLdLJ4MjQ8x2
-         1ED0BuVtu5ZKSVqntx4T+pZAyFqdXriRo5ng3EXx+Zg5Xd7f+7MZnCf+u45eiFcgG7P6
-         izsA==
-X-Forwarded-Encrypted: i=1; AJvYcCU30yz7F+DbjU8g+mi3nvOeNpVKn87AWl9Io8F/s8Mx3oNQbC0zYimb9w6vQ5fLu9Xi+45xYvgBLmrvG7L4h5LxMQ2UQdpqqyMbf+GXo/9RuxEi+ZvwRKKcTujTGe1t0EjCMM8uYOJ1ClykLTRRXeLdmZOLq0Z16N+SAou3AvzuJg==
-X-Gm-Message-State: AOJu0Yz1m+YZUK2GKJlS/XymuIb3v7ujZBYg0ynn/sdbUauy+XvC/zQI
-	WozUyaP55e/yR/EXmqTI/oik70PyJrAl1ydfr/tYRG+9toeKGzAb
-X-Google-Smtp-Source: AGHT+IH35/Ea+3kQfyCxitEFQt0LWntwk8N74targm/HyvPhzvq+hRJ7l8zdT2FzJFYvsfun8aGwHg==
-X-Received: by 2002:a05:6358:378b:b0:186:431:d9be with SMTP id m11-20020a056358378b00b001860431d9bemr8044722rwe.19.1713179819254;
-        Mon, 15 Apr 2024 04:16:59 -0700 (PDT)
-Received: from libra05 ([143.248.188.128])
-        by smtp.gmail.com with ESMTPSA id q1-20020a634301000000b005e43cce33f8sm6768154pga.88.2024.04.15.04.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 04:16:59 -0700 (PDT)
-Date: Mon, 15 Apr 2024 20:16:54 +0900
-From: Yewon Choi <woni9911@gmail.com>
-To: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
-	"D. Wythe" <alibuda@linux.alibaba.com>,
-	Tony Lu <tonylu@linux.alibaba.com>,
-	Wen Gu <guwen@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: "Dae R. Jeong" <threeearcat@gmail.com>
-Subject: Re: net/smc: Buggy reordering scenario in smc socket
-Message-ID: <Zh0Mpr5fZqFUGzkb@libra05>
-References: <Zh0JLYHtd0i416XO@libra05>
- <CAFgxCDwA8Lv8LLwEpJur3FKs=Gkkc0KE=bx7Q1Do2+iwdAzoCw@mail.gmail.com>
+	s=arc-20240116; t=1713179881; c=relaxed/simple;
+	bh=xbwPOsnGsoYyx6s7tsEA96ZtYV1KAPcyDt1mPviubCA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qUJEzRCxGsk2j22aB5fchOLlylermIxXxUcbFEg3EmyDWDnUBM8C/fFsE6vLyJLXXV1gGLIHxrl7oei/PEvsrHvMXyhgDvBJA73Hf2Ru6ZNj5JkI4zLxGaBVlBK3/sW4rUolNVZtxIX1Jj5sWL/2RzI280LLip2JVrqrp2GcAqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b7sJObNh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779FEC113CC;
+	Mon, 15 Apr 2024 11:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713179881;
+	bh=xbwPOsnGsoYyx6s7tsEA96ZtYV1KAPcyDt1mPviubCA=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=b7sJObNhuPlwC7E9tsbcn6kFdb0aLm9fqi/0kVvxXbor/tAcypSh4mf3WkFajHTam
+	 EDS9kiYEOmKmXKGtn7tM8Vu7g4QjPUyV9EIyUUSc45AqiFamwltfUxG1LeUGw4//OW
+	 LFh3um2P9io5qsxrqaezixcspe91ICGGNcWMf61mdOIbMZCgN030D6tExEq5IvLl1W
+	 GNc+ru1M5+JTkiHvGlBgp3Z41Le/eVlypph53hUW+w5yBiZoi8Xe5z3gusmnAVdJ5j
+	 299O10/JsUv9Ltc0PCGfpmi7caSm8rRX97ZhQ0SVfKyuwsiZvj1kUMWJmf4acygee9
+	 fO7SMSW3mfL9Q==
+Message-ID: <d12c4998028014829713093ceccdbb521e34f05c.camel@kernel.org>
+Subject: Re: [PATCH v3] nfs: keep server info for remounts
+From: Jeff Layton <jlayton@kernel.org>
+To: Martin Kaiser <martin@kaiser.cx>, Anna Schumaker
+ <Anna.Schumaker@Netapp.com>,  Trond Myklebust
+ <trond.myklebust@hammerspace.com>, David Howells <dhowells@redhat.com>
+Cc: NeilBrown <neilb@suse.de>, Josef Bacik <josef@toxicpanda.com>, Chuck
+ Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Date: Mon, 15 Apr 2024 07:17:59 -0400
+In-Reply-To: <20240414170109.137696-1-martin@kaiser.cx>
+References: <20240414170109.137696-1-martin@kaiser.cx>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+	kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFgxCDwA8Lv8LLwEpJur3FKs=Gkkc0KE=bx7Q1Do2+iwdAzoCw@mail.gmail.com>
 
+On Sun, 2024-04-14 at 19:01 +0200, Martin Kaiser wrote:
+> With newer kernels that use fs_context for nfs mounts, remounts fail with
+> -EINVAL.
+>=20
+> $ mount -t nfs -o nolock 10.0.0.1:/tmp/test /mnt/test/
+> $ mount -t nfs -o remount /mnt/test/
+> mount: mounting 10.0.0.1:/tmp/test on /mnt/test failed: Invalid argument
+>=20
+> For remounts, the nfs server address and port are populated by
+> nfs_init_fs_context and later overwritten with 0x00 bytes by
+> nfs23_parse_monolithic. The remount then fails as the server address is
+> invalid.
+>=20
+> Fix this by not overwriting nfs server info in nfs23_parse_monolithic if
+> we're doing a remount.
+>=20
+> Fixes: f2aedb713c28 ("NFS: Add fs_context support.")
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  v3:
+>  - rebased against linux-next from 12th April 2024
+>=20
+>  v2:
+>  - rebased against linux-next from 26th February 2024
+>=20
+> Dear all,
+> I'm resending this patch again. The problem that I'm trying to fix is sti=
+ll
+> present in linux-next. Thanks in advance for any reviews and comments.
+>=20
+> I guess that we're taking this path for remounts
+>=20
+> do_remount
+>     fs_context_for_reconfigure
+>         alloc_fs_context
+>             init_fs_context =3D=3D nfs_init_fs_context
+>                fc->root is set for remounts
+>                ctx->nfs_server is populated
+>     parse_monolithic_mount_data
+>         nfs_fs_context_parse_monolithic
+>             nfs23_parse_monolithic
+>                ctx->nfs_server is overwritten with data from mount reques=
+t
+>=20
+> An alternative to checking for !is_remount_fc(fc) would be to check
+> if (ctx->nfs_server.addrlen =3D=3D 0)
+>=20
+> fs/nfs/fs_context.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/nfs/fs_context.c b/fs/nfs/fs_context.c
+> index d0a0956f8a13..cac1157be2c2 100644
+> --- a/fs/nfs/fs_context.c
+> +++ b/fs/nfs/fs_context.c
+> @@ -1112,9 +1112,12 @@ static int nfs23_parse_monolithic(struct fs_contex=
+t *fc,
+>  		ctx->acdirmax	=3D data->acdirmax;
+>  		ctx->need_mount	=3D false;
+> =20
+> -		memcpy(sap, &data->addr, sizeof(data->addr));
+> -		ctx->nfs_server.addrlen =3D sizeof(data->addr);
+> -		ctx->nfs_server.port =3D ntohs(data->addr.sin_port);
+> +		if (!is_remount_fc(fc)) {
+> +			memcpy(sap, &data->addr, sizeof(data->addr));
+> +			ctx->nfs_server.addrlen =3D sizeof(data->addr);
+> +			ctx->nfs_server.port =3D ntohs(data->addr.sin_port);
+> +		}
+> +
+>  		if (sap->ss_family !=3D AF_INET ||
+>  		    !nfs_verify_server_address(sap))
+>  			goto out_no_address;
 
-On Mon, Apr 15, 2024 at 8:02 PM Yewon Choi <woni9911@gmail.com> wrote:
-> Hello,
-> we suspect some buggy scenario due to memory reordering in concurrent
-> execution
-> of setsockopt() and sendmmsg().
->
-> (CPU 1) setsockopt():
->     case TCP_FASTOPEN_NO_COOKIE:
->         ...
->         smc_switch_to_fallback():
->             clcsock->file = sk.sk_socket->file; // (1)
->             clcsock->file->private_data = clcsock; // (2)
->
-> (CPU 2) __sys_sendmmsg():
->     sockfd_lookup_light():
->         sock_from_file():
->             sock = file->private_data; // (3)
->     ...
->     fput_light(sock->file, fput_needed): // (4)
->         fput():
->             refcount_dec_and_test(sock->file->f_count) // null-ptr-deref
->
-> There is no memory barrier between (1) and (2), so (1) might be reordered
-> after
-> (2) is written to memory. Then, execution order can be (2)->(3)->(4)->(1)
-> and (4) will read uninitialized value which may cause system crash.
->
->
-> This kind of reordering may happen in smc_ulp_init():
->
-> (CPU 1) smc_ulp_init():
->     ...
->     smcsock->file = tcp->file; // (5)
->         smcsock->file->private_data = smcsock; // (6)
->
-> Execution order can be (6)->(3)->(4)->(5), showing same symptom as above.
->
->
-> One possible solution seems to be adding release semantic in (2) and (6).
->
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index 4b52b3b159c0..37c23ef3e2d5 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -921,7 +921,7 @@ static int smc_switch_to_fallback(struct smc_sock
-> *smc, int reason_code)
->         trace_smc_switch_to_fallback(smc, reason_code);
->         if (smc->sk.sk_socket && smc->sk.sk_socket->file) {
->                 smc->clcsock->file = smc->sk.sk_socket->file;
-> -               smc->clcsock->file->private_data = smc->clcsock;
-> +               smp_store_release(&smc->clcsock->file->private_data,
-> smc->clcsock);
->                 smc->clcsock->wq.fasync_list =
->                         smc->sk.sk_socket->wq.fasync_list;
->                 smc->sk.sk_socket->wq.fasync_list = NULL;
-> @@ -3410,7 +3410,7 @@ static int smc_ulp_init(struct sock *sk)
->
->         /* replace tcp socket to smc */
->         smcsock->file = tcp->file;
-> -       smcsock->file->private_data = smcsock;
-> +       smp_store_release(&smcsock->file->private_data, smcsock);
->         smcsock->file->f_inode = SOCK_INODE(smcsock); /* replace inode
-> when sock_close */
->         smcsock->file->f_path.dentry->d_inode = SOCK_INODE(smcsock); /*
-> dput() in __fput */
->         tcp->file = NULL;
->
-> I think we don't need memory barrier between (3) and (4) because there are
-> critical section between (3) and (4), so lock(lock_sock/release_sock) will
-> do this.
->
->
-> Could you check these? If confirmed to be a bug, we will send a patch.
->
-> Best Regards,
-> Yewon Choi
->
-
-Additionally, we found that below line (1) in smc_ulp_init() triggers 
-kernel panic even when normaly executed. 
-
-smc_ulp_init():
-    ...
-    tcp->file = NULL; // (1)
-
-It can be triggered by simple system calls: 
-    int sk = socket(0xa, 0x1, 0)
-    setsockopt(sk, 0x6, 0x1f, "smc", sizeof("smc"))
-
-[350998.391059] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000018
-[350998.391980] Mem abort info:
-[350998.392288]   ESR = 0x0000000096000006
-[350998.392691]   EC = 0x25: DABT (current EL), IL = 32 bits
-[350998.393252]   SET = 0, FnV = 0
-[350998.393586]   EA = 0, S1PTW = 0
-[350998.396496]   FSC = 0x06: level 2 translation fault
-[350998.399755] Data abort info:
-[350998.400720]   ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
-[350998.402329]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[350998.404023]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[350998.405543] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000047e44000
-[350998.406735] [0000000000000018] pgd=080000004b288003, p4d=080000004b288003, pud=080000004aea9003, pmd=0000000000000000
-[350998.409243] Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-[350998.409996] Modules linked in:
-[350998.410404] CPU: 1 PID: 2936860 Comm: tls Not tainted 6.8.0-rc5-00163-gffd2cb6b718e-dirty #45
-[350998.411462] Hardware name: linux,dummy-virt (DT)
-[350998.412050] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[350998.412923] pc : fput+0x20/0x188
-[350998.413349] lr : __sys_setsockopt+0xb4/0xc0
-[350998.413889] sp : ffff800080443d90
-[350998.414325] x29: ffff800080443d90 x28: ffff0000051cc740 x27: 0000000000000000
-[350998.415218] x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
-[350998.416112] x23: 0000000000000004 x22: 00000000004613c8 x21: 000000000000001f
-[350998.417007] x20: 0000000000000006 x19: 0000000000000000 x18: 0000000000000001
-[350998.417909] x17: ffffc369333ee3cc x16: ffffc36933410ad8 x15: ffffc369335203a8
-[350998.418797] x14: ffffc36933520188 x13: ffffc36932426dc0 x12: ffffc36932426cf4
-[350998.419621] x11: ffffc36932426bec x10: ffffc36933522a34 x9 : 0000000fffffffe0
-[350998.420447] x8 : ffffc3693351ef8c x7 : ffff00000a790578 x6 : ffff00000a790558
-[350998.421273] x5 : ffff00000a790420 x4 : ffff0000051cc740 x3 : 0000000000000001
-[350998.422105] x2 : 0000000000000000 x1 : 0000000000000018 x0 : ffffffffffffffff
-[350998.422932] Call trace:
-[350998.423231]  fput+0x20/0x188
-[350998.423583]  __sys_setsockopt+0xb4/0xc0
-[350998.424041]  __arm64_sys_setsockopt+0x28/0x38
-[350998.424557]  invoke_syscall+0x48/0x114
-[350998.425006]  el0_svc_common+0x3c/0xe8
-[350998.425444]  do_el0_svc+0x20/0x2c
-[350998.425844]  el0_svc+0x34/0xb8
-[350998.426235]  el0t_64_sync_handler+0x13c/0x158
-[350998.426749]  el0t_64_sync+0x190/0x194
-[350998.427187] Code: aa0003f3 d503201f 92800000 91006261 (f8e00020) 
-[350998.427893] ---[ end trace 0000000000000000 ]---
-[350998.428460] Kernel panic - not syncing: Oops: Fatal exception
-[350998.429126] SMP: stopping secondary CPUs
-[350998.429617] Kernel Offset: 0x4368b2400000 from 0xffff800080000000
-[350998.430335] PHYS_OFFSET: 0x40000000
-[350998.430752] CPU features: 0x0,00000021,7002014a,2140720b
-[350998.431371] Memory Limit: none
-[350998.431741] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
-
-Could you check this, too?
-
-Yewon Choi
+Doesn't nfs4_parse_monolithic need the same fix?=20
+--=20
+Jeff Layton <jlayton@kernel.org>
 
