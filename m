@@ -1,399 +1,176 @@
-Return-Path: <linux-kernel+bounces-144507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526358A4737
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:14:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 648AB8A473D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:16:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D16851F22219
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:14:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D66FE1F221EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243881C6B9;
-	Mon, 15 Apr 2024 03:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GRivY9oO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC53E1BF2B;
+	Mon, 15 Apr 2024 03:16:08 +0000 (UTC)
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2090.outbound.protection.outlook.com [40.107.215.90])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294EA1EB3A;
-	Mon, 15 Apr 2024 03:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713150847; cv=none; b=p1myvpx7MNQgmrDhEg6JabCcOGxrgb0A0qKfcCR29cYnQrJrelllIZCGpuZwUGAEkp7H8GbpOifmX01wQ2Nx3G6X0mjmiZCjVtdB/PUUhlfNl7Fz8ItlvIo+m1HhQpMwOan1W8O1ZFK/FGLGxYC55jxtso2fvvaD8RRtDhrxRQc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713150847; c=relaxed/simple;
-	bh=e+3BShBbd4Hhf1J3QtuaioPJSDkni4jhxtYXepyXO38=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ArjH1A1C1J+ClRoP7sdl3D35IjQj0bG21DuHCI5vDRBx11+eAsKVfkP+wcedcCT7hYgXCSYfILNX8AYxbLajW6U5UgK1kOKHrHUEGXgTalEUGn6WqpuXp3di/X7re+mvsVyQYuaguGppsSROCHtmLYZDGKkJCxXZTYbEV98Qdr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GRivY9oO; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713150845; x=1744686845;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=e+3BShBbd4Hhf1J3QtuaioPJSDkni4jhxtYXepyXO38=;
-  b=GRivY9oONgel4+IE1Hw7F1v5BTpzp2nGyGYps3/+4dG96oBQc/FlmiBk
-   C1xH8PH663y3lawduGs/GQPEL6V9BdF5/XGbCnsMEgMIB5HmsWiADtG8S
-   O8nSI0UmQHbzdpv0Tyy6v6Kk4ewbS5YrwwAhqRPk/VHOJ2gJi3WqyWXse
-   fssRRIDb5ZaH6EakXvnsDVAlEvqCYVU/qrFwbVhmTgsKeLiY+b6mcdWQ8
-   2VKu0lDu9RtjNmKk/JXX+QnAVXcimHXrNcMSnGWhzLPsX+36D9EKGqnrK
-   iGDuUhEItWWig9DyoIOgwO2ZcNR871aHK1oANiqr0XQkJcmoYHB00k3vA
-   Q==;
-X-CSE-ConnectionGUID: Qw4svMm0QFOS4IsalQudzg==
-X-CSE-MsgGUID: 2dLhJ6vXSaacEsDgZgSpQw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="19083804"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="19083804"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 20:14:05 -0700
-X-CSE-ConnectionGUID: P8mKInsKTxmwCkoXvz1jTQ==
-X-CSE-MsgGUID: Pi7qP+d5SnqA4zkfEtiF7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="26452032"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 14 Apr 2024 20:13:59 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rwCmu-0003wi-34;
-	Mon, 15 Apr 2024 03:13:56 +0000
-Date: Mon, 15 Apr 2024 11:13:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
-	kvmarm@lists.linux.dev
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-	James Morse <james.morse@arm.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Joey Gouly <joey.gouly@arm.com>,
-	Alexandru Elisei <alexandru.elisei@arm.com>,
-	Christoffer Dall <christoffer.dall@arm.com>,
-	Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
-	Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
-	Steven Price <steven.price@arm.com>
-Subject: Re: [PATCH v2 09/14] arm64: Enable memory encrypt for Realms
-Message-ID: <202404151003.vkNApJiS-lkp@intel.com>
-References: <20240412084213.1733764-10-steven.price@arm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619BCEEBB;
+	Mon, 15 Apr 2024 03:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.90
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713150968; cv=fail; b=V9jI6d1I7WvbkSGeXHcZD56haoMrQEg9LvVP01yWW3Sb4bjJ4U3kssNC1rbR7/Q/oFKJQ3zqN8r9eOm/mfMHXqHxjNa+8jnsLir47dy7UOgu/QnFwV44gc50z5WcsXiimlA8Tn+aPxemfepfv3hvqUkU0dJNhEwZAmsjVpNmxBw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713150968; c=relaxed/simple;
+	bh=dTNLWWqeIwIn7i2Vt/4EKKVx0ZBs/Ml2r0puhlkmrSY=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=UXq6Q3V0tnVBsHMc/gWWGB0C08+VOBIfi1JSlAHSXQlKuvka113Jfjc18gO+2RhTS02rF4I4Pyw37g/YL3GKlWm+jYwZ4UqUsvM9u5nHJQxGjE8qOBwmoHnGkJiW4N0YSicC56ie+Kz3ofmOrpdItHMwJch+HcTAenjvlvZwLW4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wesion.com; spf=pass smtp.mailfrom=wesion.com; arc=fail smtp.client-ip=40.107.215.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wesion.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wesion.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MTZ/kAgtI8y+AmPwd7YKRseXWp6OIckvV+pIrPDyrSXLJbhhqpmTSLR1djA5Hh9m+POEa9guylLplLs18OwZKrPrLbdaEcHJFz7S30xWrb2hoy6a+khjsnRNyAgDEEKPkzV1ZG3s1oD6VIz7PGG2mVcyBfbxsS/Y5a0sbe8cLO8KkDnz9s1vR7j8jliSX56WuFyQhKfIJrx/VklFzt9q0Dg1Z0RLTKz6ugI/YCQz+WrMM3N3UTtwNZMxVuAJJAfTvmJDnf7BWr8rP6e3DcWltRpzJ4CqiPuPAk1Y8Vlvh61xpVaii3yb7bcTIWFponWKhci0vz8aFYaZVpKsA8hJpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eq9/Dgx21isESrbx0ZbihdPWfLhm5FjKlgqENbSSy2s=;
+ b=JvEDzwxL8B0ZhJsqJ7w21ZiQBV1nmItUCZU/3DfUAuHNb9GwfEaH17YfJQWckh4yNLrp7s5ZyhZ8rhdrkGFnLGx4jk1xfCvewxafwvj25T4sijDBE916bPHijqvEaOVhHLN7duwZ/0K7dzNtY2/v+YjvngWnWMh+wogiypzDFQ+Hk5xKOp4nosjeWq9ERhmZhFeCTZRZdsALQmsRjfEuHqrzzBAErZ8fEGLAyXRHVWK3Bh9+pk+7tmMdDDYs2U7oDvH1qIMvtyDX7EuQqLUxNXE6PTOr+uOXXFrE3I18dyZPo7X7W/HnzZw/FWQFVCAodRW5W7jypYb2Od0F3oSOiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wesion.com; dmarc=pass action=none header.from=wesion.com;
+ dkim=pass header.d=wesion.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wesion.com;
+Received: from TYZPR03MB7001.apcprd03.prod.outlook.com (2603:1096:400:26a::14)
+ by SEYPR03MB8128.apcprd03.prod.outlook.com (2603:1096:101:16d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Mon, 15 Apr
+ 2024 03:15:59 +0000
+Received: from TYZPR03MB7001.apcprd03.prod.outlook.com
+ ([fe80::c4f9:d4f1:c115:f1ca]) by TYZPR03MB7001.apcprd03.prod.outlook.com
+ ([fe80::c4f9:d4f1:c115:f1ca%6]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
+ 03:15:59 +0000
+From: Jacobe Zang <jacobe.zang@wesion.com>
+To: neil.armstrong@linaro.org,
+	airlied@gmail.com,
+	daniel@ffwll.ch,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: nick@khadas.com,
+	linux-amlogic@lists.infradead.org,
+	quic_jesszhan@quicinc.com,
+	sam@ravnborg.org,
+	thierry.reding@gmail.com,
+	dri-devel@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jacobe Zang <jacobe.zang@wesion.com>
+Subject: [PATCH v2 0/2] drm/panel: add Khadas TS050 V2 panel support
+Date: Mon, 15 Apr 2024 11:14:06 +0800
+Message-Id: <20240415031408.8150-1-jacobe.zang@wesion.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0264.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:455::15) To TYZPR03MB7001.apcprd03.prod.outlook.com
+ (2603:1096:400:26a::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412084213.1733764-10-steven.price@arm.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR03MB7001:EE_|SEYPR03MB8128:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7ee2896f-aaff-46d1-4f79-08dc5cfa5f72
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?uxe3uhpm/7pJVHgMXmjvz3F5WuHgBJhB7dvDLz51GhQRkXmbnOMe24MnrVXP?=
+ =?us-ascii?Q?4pZ6v0DaWk6nWwFhpXhQUeqfyecmrpzVtRkY2r3jThWyUsqP4JO1E3QnhOMy?=
+ =?us-ascii?Q?iFz7ptoR6NanUZd1SEs3Ie6eSiwaeQ/xf9S9wIPDl40/eio22axIl8yPV4Cr?=
+ =?us-ascii?Q?DkWJGFX/uv5jI9UZSIF7WJumqZpQX/G7SUgn4XOQqj7KmIDGp0evjVspDSu8?=
+ =?us-ascii?Q?u1zDhaRX9qQGsB7FpNklcZ53hoE7YlpQMwLJT6O5uml82uXjhcBev3aHO91U?=
+ =?us-ascii?Q?WxcjqVd5mfapqQZhGvqQXAy5vP1Nz+X6eSrolctiNsSScewbkvcOXP5HINix?=
+ =?us-ascii?Q?wJYyuz0Ka3VAbbG2dWgKAMI2dkP6rXe1ds4Yg75IPp+xk5J13B5jiskmeFKj?=
+ =?us-ascii?Q?RoHg/Q4ibRqPXELH17HAoXrWPzrnQ5FT26YPJc6abA+s//vk24+7GmudosXr?=
+ =?us-ascii?Q?8hGIaHvN9Ay4+l5JUFbnhCnFpQnczRm5Aj9tJavD/qx1gctUJdSc7aAnDl92?=
+ =?us-ascii?Q?+kacq27ChFkcykwjwaWya9x5YZ64XVSEBTmqn6zkut7yfE5P+ZzoMRIAnLU9?=
+ =?us-ascii?Q?Rz329W8x6rDasBTyMjctxQVWZzHd05voB2cqrcsuJyOCXFfcbuDc38IuqL84?=
+ =?us-ascii?Q?MMexjUH4eeBeE6c/kUUFcgw8qT2JIG0GLQz/LfCxZwzUyVh8uPPoaOcbQXT9?=
+ =?us-ascii?Q?crENSE2ohCyZD//5i6sj1ifqnnyw/VVj9JEyM/Cmb2nNB0IeweaBw4nGDR52?=
+ =?us-ascii?Q?brU1mbagQV2IPONRrIA10oYDVFXUyuDqU2QE5OT2MhtXQeuDUn0DDWpL1wXH?=
+ =?us-ascii?Q?va+vx6ZZdyw4lHGJcG4Sv/8XuZLhQs+XDgWYr7W4ZB/Q3jz5b9lda3RBuCJE?=
+ =?us-ascii?Q?FKxPoUlOeXGizC52aTX9IYUu9ar5ClnkEGvUQcITHxB/229owdNtuB8dEUkg?=
+ =?us-ascii?Q?Be1SCoHspmCAwt5igpnWqXxvJ+SQT4RrAHTD8IN1rc/8ZhKnSqZJrL0CAjZd?=
+ =?us-ascii?Q?87bBTTLx6YnJU0x9MbKCkeqveA4gI+rLJa7zOhewos8AiXH2VaymPDKhHxiK?=
+ =?us-ascii?Q?6xasXdpdqM+yPz2+JCbjo9FS9WKJLbJDKRKrTeWbHruvghjluexyKanBsrMb?=
+ =?us-ascii?Q?rZP44nZeWjEy0ORHJyDyUYRUmEg8gtHOhksr3cAw0kwagV2Rs3u+ZFPfBUI4?=
+ =?us-ascii?Q?wt2z3K7WpGfSsH5+kouBDhNcWjfsY0v59NVcyvLunn+LSMrklbVLO+pKHxzf?=
+ =?us-ascii?Q?eHlc5Z/3DeS0EEobIH5Y76XnVqQupxlwwSaOnZ1n5bYoQnt0J7wJCKbeO6b8?=
+ =?us-ascii?Q?WIEw9kPVG58o/kmtytcCHapJABJpZvmUW+erD0FQEngBWA=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB7001.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(52116005)(1800799015)(376005)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?uAHo8ntUYHKUvtuOpAH8TTWhY8ZPiSwNrt4pPRPb/4ZLsJQY6K0B7H5EXG7k?=
+ =?us-ascii?Q?CnMAiEHXD/zqDC25VtZld3yF9EjtJYxMYMOhTcn1K4rJ+KC1+j+j1OrA8JOd?=
+ =?us-ascii?Q?ZTba5AWZ5h+4YF7rd5Kr3fCw28jYeZX+vd1tqyROfkMhHvVjcT8ASQY8ndJ3?=
+ =?us-ascii?Q?FuYJQMe5uNuw9CR2Ih+LpgJZY6KfDwCcj+sKy46jduMH1hBSJIyexjNxRVMY?=
+ =?us-ascii?Q?bMMK7vsJKrIcvbTaAQ4wkah3aHSByuLI1XgDqjpzk5P1RFIU2gMEtgvavj7O?=
+ =?us-ascii?Q?j2zZXQshBBqCF53bbdNgQheikktqPhgRpO/Sw5OuTvrXc/U2EspnQoKMIL+i?=
+ =?us-ascii?Q?yha9hNFA8q/HZiAeIvFmo7XHCJnHjnqwUNdEFZUcHXIjTVs2s0RHvsVTnfjL?=
+ =?us-ascii?Q?UWck7+LkSuX+JWUB6z0iIx1+OE1ZZZc61kpxrBePNMT5OhZ2Z5Fd5b0vJicE?=
+ =?us-ascii?Q?Dm7J1B3lIqV/zQR5U7pvf03SCg95YQtfqEOJ7y6GoV2vWFYZtUQtKVg1l5IM?=
+ =?us-ascii?Q?3u/kMID4AxX79KYIBxEnrLSZPxUzOH5tM+IKu2tM6JZo0o4GodSxqPdL63Aw?=
+ =?us-ascii?Q?BVaSZ8AoQCpOPwXl2ok07Th2Y5A0uRSc2FM/xM5schkG1gf3WQinmMax7z+M?=
+ =?us-ascii?Q?AErFALB/9lHJADrPL2L4u100IDXCEkIGyogoCTXAViUTuqkZhC3hYDFObjOr?=
+ =?us-ascii?Q?zi6vZpNX0bZH/sCPdiWwFZbHiZWvtkCsEL5noxrY5Iu6Op+i54TqFCyuTcUF?=
+ =?us-ascii?Q?YnPZTcSozfe19YuAmfdnfPpgLOvOrBRKuaKKQ0l8BSuGTwHGXJw4x7zaZn75?=
+ =?us-ascii?Q?DFkcbc6g+7DZuW9Oto82wNQI+BFetV+xlj8cZ4eBJ93OKzLUCwihcGo6aNho?=
+ =?us-ascii?Q?CYwXHjKP+7y30oNI9+X2j5TBnHR+EZziZyJuEnPjZVXOkpd5IBhyGdRhVTbj?=
+ =?us-ascii?Q?UFeTHp5gvYQO8vXEPln9vTruNSST1y5uY65UTHeNB8tvtyx0zQA+IvSSZdZb?=
+ =?us-ascii?Q?uB3tQSAmRoJzNTvpAcYZmC8FKUWqSQA5AfGowR+i5qIhMkfhDKJMdzZsLPAG?=
+ =?us-ascii?Q?muY5Ae2mXGqyxsj19u/g3KgSJcxYEohIypQGVJBBpHwBESni1eSxKOUOAz0k?=
+ =?us-ascii?Q?tLxUvnKUgA71mAcdeU1Rz98RzC2LZ/QtZOHWpASrKKlF/1jp5n/af2ipO9i5?=
+ =?us-ascii?Q?NXcHkSOLg3kqdDbyYRPDv/FbHs926JGEixD0wvwWM4zddJzUIl6xWG65SHxb?=
+ =?us-ascii?Q?FJek4TqiG6qP8QEZEs1xOX7DkA5b6VOLjs/AJcskmfyV9MKCUlYT5nyIsePb?=
+ =?us-ascii?Q?Ip7jaNazblAkv4Xtz/FOYfWnmuNJP8xYdtCNFl/s/8ToSKL9rdfTtkva0V2j?=
+ =?us-ascii?Q?dWfZUzqiaxSzhppz33bK+uIYWZc3lypkZyniuKIvTgpZfwl67wGO2fCXqwFp?=
+ =?us-ascii?Q?n8kQqaTYxJXFyzWz1KoIlBe9UNQ7bODHi+13E4+31ixhaXcIBG4kYaz0jfT+?=
+ =?us-ascii?Q?SI7gmfoRSzBAkq+GL4Z8+CZEwZEeTsGOt2exQGRy9C6nCs1xRnO+oFRgmWBc?=
+ =?us-ascii?Q?E8p3CxGYvuWkzFc/qxWpq1LEAxG5QuPZlwfrau+H3/iGwTacnViB3D8Dln9/?=
+ =?us-ascii?Q?zA=3D=3D?=
+X-OriginatorOrg: wesion.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ee2896f-aaff-46d1-4f79-08dc5cfa5f72
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB7001.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 03:15:59.5709
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2dc3bd76-7ac2-4780-a5b7-6c6cc6b5af9b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ma04OcTN9TLxZiBpjwxho7LzDA39MTz62Dcv4cbPHXS04/d7EQ7B0Mz9JqR47zRdFhf0wl4LXyysciNefxFL+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR03MB8128
 
-Hi Steven,
+Changes from v1 at [1]:
+- Fix name from "newts050" to "ts050v2"
+- Add specific description about controller change 
 
-kernel test robot noticed the following build errors:
+[1]https://patchwork.kernel.org/project/linux-amlogic/list/?series=842707
 
-[auto build test ERROR on arm64/for-next/core]
-[also build test ERROR on kvmarm/next efi/next tip/irq/core linus/master v6.9-rc3 next-20240412]
-[cannot apply to arnd-asm-generic/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Jacobe Zang (2):
+  dt-bindings: panel-simple-dsi: add Khadas TS050 V2 panel bindings
+  drm/panel: add Khadas TS050 V2 panel support
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Steven-Price/arm64-rsi-Add-RSI-definitions/20240412-164852
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-patch link:    https://lore.kernel.org/r/20240412084213.1733764-10-steven.price%40arm.com
-patch subject: [PATCH v2 09/14] arm64: Enable memory encrypt for Realms
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20240415/202404151003.vkNApJiS-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8b3b4a92adee40483c27f26c478a384cd69c6f05)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240415/202404151003.vkNApJiS-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404151003.vkNApJiS-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/hv/hv.c:13:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     509 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     516 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     528 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     537 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
->> drivers/hv/hv.c:132:10: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     132 |                         ret = set_memory_decrypted((unsigned long)hv_cpu->post_msg_page, 1);
-         |                               ^
-   drivers/hv/hv.c:168:10: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     168 |                         ret = set_memory_decrypted((unsigned long)
-         |                               ^
->> drivers/hv/hv.c:218:11: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     218 |                                 ret = set_memory_encrypted((unsigned long)
-         |                                       ^
-   drivers/hv/hv.c:230:11: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     230 |                                 ret = set_memory_encrypted((unsigned long)
-         |                                       ^
-   drivers/hv/hv.c:239:11: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     239 |                                 ret = set_memory_encrypted((unsigned long)
-         |                                       ^
-   5 warnings and 5 errors generated.
---
-   In file included from drivers/hv/connection.c:16:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     509 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     516 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     528 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     537 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
->> drivers/hv/connection.c:236:8: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     236 |         ret = set_memory_decrypted((unsigned long)
-         |               ^
->> drivers/hv/connection.c:340:2: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     340 |         set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[0], 1);
-         |         ^
-   5 warnings and 2 errors generated.
---
-   In file included from drivers/hv/channel.c:14:
-   In file included from include/linux/mm.h:2208:
-   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     509 |                            item];
-         |                            ~~~~
-   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     516 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     528 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
-     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
-     537 |                            NR_VM_NUMA_EVENT_ITEMS +
-         |                            ~~~~~~~~~~~~~~~~~~~~~~
->> drivers/hv/channel.c:442:8: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     442 |         ret = set_memory_decrypted((unsigned long)kbuffer,
-         |               ^
->> drivers/hv/channel.c:531:3: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     531 |                 set_memory_encrypted((unsigned long)kbuffer,
-         |                 ^
-   drivers/hv/channel.c:848:8: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     848 |         ret = set_memory_encrypted((unsigned long)gpadl->buffer,
-         |               ^
-   5 warnings and 3 errors generated.
-
-
-vim +/set_memory_decrypted +132 drivers/hv/hv.c
-
-3e7ee4902fe699 drivers/staging/hv/Hv.c Hank Janssen      2009-07-13   96  
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19   97  int hv_synic_alloc(void)
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19   98  {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18   99  	int cpu, ret = -ENOMEM;
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  100  	struct hv_per_cpu_context *hv_cpu;
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  101  
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  102  	/*
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  103  	 * First, zero all per-cpu memory areas so hv_synic_free() can
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  104  	 * detect what memory has been allocated and cleanup properly
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  105  	 * after any failures.
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  106  	 */
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  107  	for_each_present_cpu(cpu) {
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  108  		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  109  		memset(hv_cpu, 0, sizeof(*hv_cpu));
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  110  	}
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  111  
-6396bb221514d2 drivers/hv/hv.c         Kees Cook         2018-06-12  112  	hv_context.hv_numa_map = kcalloc(nr_node_ids, sizeof(struct cpumask),
-597ff72f3de850 drivers/hv/hv.c         Jia-Ju Bai        2018-03-04  113  					 GFP_KERNEL);
-9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  114  	if (hv_context.hv_numa_map == NULL) {
-9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  115  		pr_err("Unable to allocate NUMA map\n");
-9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  116  		goto err;
-9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  117  	}
-9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  118  
-421b8f20d3c381 drivers/hv/hv.c         Vitaly Kuznetsov  2016-12-07  119  	for_each_present_cpu(cpu) {
-f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  120  		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  121  
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  122  		tasklet_init(&hv_cpu->msg_dpc,
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  123  			     vmbus_on_msg_dpc, (unsigned long) hv_cpu);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  124  
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  125  		if (ms_hyperv.paravisor_present && hv_isolation_type_tdx()) {
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  126  			hv_cpu->post_msg_page = (void *)get_zeroed_page(GFP_ATOMIC);
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  127  			if (hv_cpu->post_msg_page == NULL) {
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  128  				pr_err("Unable to allocate post msg page\n");
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  129  				goto err;
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  130  			}
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  131  
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24 @132  			ret = set_memory_decrypted((unsigned long)hv_cpu->post_msg_page, 1);
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  133  			if (ret) {
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  134  				pr_err("Failed to decrypt post msg page: %d\n", ret);
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  135  				/* Just leak the page, as it's unsafe to free the page. */
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  136  				hv_cpu->post_msg_page = NULL;
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  137  				goto err;
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  138  			}
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  139  
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  140  			memset(hv_cpu->post_msg_page, 0, PAGE_SIZE);
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  141  		}
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  142  
-faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  143  		/*
-faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  144  		 * Synic message and event pages are allocated by paravisor.
-faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  145  		 * Skip these pages allocation here.
-faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  146  		 */
-d3a9d7e49d1531 drivers/hv/hv.c         Dexuan Cui        2023-08-24  147  		if (!ms_hyperv.paravisor_present && !hv_root_partition) {
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  148  			hv_cpu->synic_message_page =
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  149  				(void *)get_zeroed_page(GFP_ATOMIC);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  150  			if (hv_cpu->synic_message_page == NULL) {
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  151  				pr_err("Unable to allocate SYNIC message page\n");
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  152  				goto err;
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  153  			}
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  154  
-faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  155  			hv_cpu->synic_event_page =
-faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  156  				(void *)get_zeroed_page(GFP_ATOMIC);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  157  			if (hv_cpu->synic_event_page == NULL) {
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  158  				pr_err("Unable to allocate SYNIC event page\n");
-68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  159  
-68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  160  				free_page((unsigned long)hv_cpu->synic_message_page);
-68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  161  				hv_cpu->synic_message_page = NULL;
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  162  				goto err;
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  163  			}
-faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  164  		}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  165  
-68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  166  		if (!ms_hyperv.paravisor_present &&
-e3131f1c81448a drivers/hv/hv.c         Dexuan Cui        2023-08-24  167  		    (hv_isolation_type_snp() || hv_isolation_type_tdx())) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  168  			ret = set_memory_decrypted((unsigned long)
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  169  				hv_cpu->synic_message_page, 1);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  170  			if (ret) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  171  				pr_err("Failed to decrypt SYNIC msg page: %d\n", ret);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  172  				hv_cpu->synic_message_page = NULL;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  173  
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  174  				/*
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  175  				 * Free the event page here so that hv_synic_free()
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  176  				 * won't later try to re-encrypt it.
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  177  				 */
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  178  				free_page((unsigned long)hv_cpu->synic_event_page);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  179  				hv_cpu->synic_event_page = NULL;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  180  				goto err;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  181  			}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  182  
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  183  			ret = set_memory_decrypted((unsigned long)
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  184  				hv_cpu->synic_event_page, 1);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  185  			if (ret) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  186  				pr_err("Failed to decrypt SYNIC event page: %d\n", ret);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  187  				hv_cpu->synic_event_page = NULL;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  188  				goto err;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  189  			}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  190  
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  191  			memset(hv_cpu->synic_message_page, 0, PAGE_SIZE);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  192  			memset(hv_cpu->synic_event_page, 0, PAGE_SIZE);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  193  		}
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  194  	}
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  195  
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  196  	return 0;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  197  
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  198  err:
-572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  199  	/*
-572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  200  	 * Any memory allocations that succeeded will be freed when
-572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  201  	 * the caller cleans up by calling hv_synic_free()
-572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  202  	 */
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  203  	return ret;
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  204  }
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  205  
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  206  
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  207  void hv_synic_free(void)
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  208  {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  209  	int cpu, ret;
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  210  
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  211  	for_each_present_cpu(cpu) {
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  212  		struct hv_per_cpu_context *hv_cpu
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  213  			= per_cpu_ptr(hv_context.cpu_context, cpu);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  214  
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  215  		/* It's better to leak the page if the encryption fails. */
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  216  		if (ms_hyperv.paravisor_present && hv_isolation_type_tdx()) {
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  217  			if (hv_cpu->post_msg_page) {
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24 @218  				ret = set_memory_encrypted((unsigned long)
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  219  					hv_cpu->post_msg_page, 1);
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  220  				if (ret) {
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  221  					pr_err("Failed to encrypt post msg page: %d\n", ret);
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  222  					hv_cpu->post_msg_page = NULL;
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  223  				}
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  224  			}
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  225  		}
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  226  
-68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  227  		if (!ms_hyperv.paravisor_present &&
-e3131f1c81448a drivers/hv/hv.c         Dexuan Cui        2023-08-24  228  		    (hv_isolation_type_snp() || hv_isolation_type_tdx())) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  229  			if (hv_cpu->synic_message_page) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  230  				ret = set_memory_encrypted((unsigned long)
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  231  					hv_cpu->synic_message_page, 1);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  232  				if (ret) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  233  					pr_err("Failed to encrypt SYNIC msg page: %d\n", ret);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  234  					hv_cpu->synic_message_page = NULL;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  235  				}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  236  			}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  237  
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  238  			if (hv_cpu->synic_event_page) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  239  				ret = set_memory_encrypted((unsigned long)
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  240  					hv_cpu->synic_event_page, 1);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  241  				if (ret) {
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  242  					pr_err("Failed to encrypt SYNIC event page: %d\n", ret);
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  243  					hv_cpu->synic_event_page = NULL;
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  244  				}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  245  			}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  246  		}
-193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  247  
-23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  248  		free_page((unsigned long)hv_cpu->post_msg_page);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  249  		free_page((unsigned long)hv_cpu->synic_event_page);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  250  		free_page((unsigned long)hv_cpu->synic_message_page);
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  251  	}
-37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  252  
-9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  253  	kfree(hv_context.hv_numa_map);
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  254  }
-2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  255  
+ .../display/panel/panel-simple-dsi.yaml       |    2 +
+ drivers/gpu/drm/panel/panel-khadas-ts050.c    | 1112 +++++++++--------
+ 2 files changed, 592 insertions(+), 522 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
