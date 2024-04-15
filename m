@@ -1,162 +1,116 @@
-Return-Path: <linux-kernel+bounces-145553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A68658A57C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:31:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584758A57B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:26:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3367A1F22BAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:31:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F17F282A8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31CE8174F;
-	Mon, 15 Apr 2024 16:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B75A80BF0;
+	Mon, 15 Apr 2024 16:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="WGAOoYrP"
-Received: from mail-108-mta44.mxroute.com (mail-108-mta44.mxroute.com [136.175.108.44])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nZ+gxhY1"
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9971E4B2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3389F80BFE
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713198672; cv=none; b=K/1X+U20Qfl0bvJti9Sbs35kqI3tXAxJ9L07QDUKDnn+Q+C1FYy9sRjagZqYzUl5E4+3xb2PwPtwwlRZvjQvTJTKWDswFj38Yyga7Au5XKWWfbDCLCyOT02nkNFnoU132kUHi9+RjqM8iR5G7d4tQTTy/ZBpLDywKZ/1e78EurY=
+	t=1713198403; cv=none; b=Jq2ySg9fLNbf4/ejrh2iUwOlOQCfvrFZNO+PGHZPN/dEGuAxDZZRlO5wo/Hh2ZF9eM6oXuyctWR6qEbsZSoSEW5zh59niZ6wbPUatKvhkH3jxYpUPSNzbD1w7aKPsfr14iffnU3yxkbI22srxA2DF5X+625fsprQ3F7GHLjlSwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713198672; c=relaxed/simple;
-	bh=hECP6aSG5NyyHc09a/D8NbQZI5fHlXRYAsk0oB3jcak=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cp8i5PLGHmyyj6aUY+HCMBUJW+LB3+sPvl5XNJgud5Oc3xFNyI6HlBUTojh6GVQkhUfUAG4bKpAxtXTfKd1iUH78TeOp0pS/erltWXLh/toe2Bps9zRqYPpwWsRVX03WkbaQutwWc//KeTba947bNPb7Dmmo+EN/3tzOD7712eI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=WGAOoYrP; arc=none smtp.client-ip=136.175.108.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta44.mxroute.com (ZoneMTA) with ESMTPSA id 18ee29461060003bea.012
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Mon, 15 Apr 2024 16:25:58 +0000
-X-Zone-Loop: 8a3335c4bb1ab2d6327c0b9729090ead1064b028757f
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-	From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=EeroMja+ZItjTmUV/LiM4Dif6wjYVEF3i+Px4jMWoko=; b=WGAOoYrPSrZIZpOzwO9/8m6IsT
-	jFgda5cI2L8O63zRp+jF5ly1Oc6cCuoPEQ+ZTMGLEPL6dkPyMjVHYXTd6V1Rx5uUn+xzx5BRk+n9a
-	qoCA2na8ZKWhNFdkwh1iaJZemj14U4uCi81jqisYPw+Orb5XcN26pwZRb4d7wWw0+I28Q1j3kS8Mq
-	S3mG52BRYTAyJQTWRo/rL2xmG1Ht6ie/3NYA07ZmK0m8ryEHvf0QAN5EOoZYS/Q6EE5jPuDq5EuYS
-	keRLp+VbKClX5vc6eLRe8O65EKbdYTiAaGZgvFnEXLEm1JkgzHmHwH7S3yh55ZGPOdhnwvg/N5QUq
-	LPokbfSA==;
-Message-ID: <e4d0d1a2-117e-4106-9674-f78165060e8e@luigi311.com>
-Date: Mon, 15 Apr 2024 10:25:53 -0600
+	s=arc-20240116; t=1713198403; c=relaxed/simple;
+	bh=TPnCz2wIas6s6nm4zl4kHicnrqDlbc3QFZUPUtZbe4k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q8V4NNsOCQhfKUMQrNZU6grsHlGkJoW5F8Ru0MtgeKHZU2oCbfnZsadk8m0KjNtuQFBhgtriiR+Jgdh5uSwp1Twjw95Y1C04l5jYf7e2KlDg00YigfLb4Cw6kNsXz2uOZMfCdbtiwgY9tL+jhxebrpg0YBo7f1rJ4sT+/cOBTjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nZ+gxhY1; arc=none smtp.client-ip=209.85.161.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a49261093cso1890505eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713198401; x=1713803201; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QKHTfr0tvl13h4ZA+OR/lP9gzZF3Fnqy/imumDFRLcI=;
+        b=nZ+gxhY1m3mhD3UrfIhn5CDg7S5qCFXvhWlgNO9Ckv8PPTkFmJCwMhQUx40+PyqJ56
+         /uszDEHZoTFaJtOn2StgYoTtBaU84GPDXS1PwbKzM4weKqUPA66n2nGR+KzKmOtIEiCM
+         v2O/sNCsCre+cgSsAvEnZBHZtcskEPOjTbzFI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713198401; x=1713803201;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QKHTfr0tvl13h4ZA+OR/lP9gzZF3Fnqy/imumDFRLcI=;
+        b=JGZki6G2y73OzvxqH2LxaDKR2Z9SY/nIvBCHyAfqClzyI3DZxIYRpTXFu5OtXEyckF
+         tePu+SyJQ/2PROnYZocTtlAOLVYezQMKM1+JIuZuLl0WMS98S6pmt5y4QOz/e/c4meXE
+         XwK8QOujZCjZVIUihTfyIcDY+EDCQlCoOfvi8ME1GQHgE9L3RWYzYXasQz5zwz8hDlOZ
+         AEQ+t71zwqkRkzVUSASWFZ42gNjLa6irW7JBdHTe0kx6URC1PaEMwbzN94idQCHWLj/R
+         RCTionui6vHNEjyIlCSUdOcl2qQhB/xrPVMeE/WoGPzLIHvf1DShQKnfraSL03QBQNs8
+         ljlg==
+X-Forwarded-Encrypted: i=1; AJvYcCWrTUhQENG27QwY+FyD5/G2oAk6VwC/cN45T/tftqSOR75ssoBFV6NKKPL0SAzdfpXXKEwCBEOHu+F1nMECNcb2ZZwR2YLoM/jNS49s
+X-Gm-Message-State: AOJu0YwFVvWLh8hQXR0oEwmkA8N82vDADhAha6zynZ4NBQ07rHda+PCA
+	2KzxgAncDlZaaUM2gSpk4NooK2XE731fG9xh/jW9mxtEJAv+p+qApabt5jubzA==
+X-Google-Smtp-Source: AGHT+IG5foknaEEd3MkXk9+LN5r3/huMB4/LsTYhpQfavkLppvPRN0r2oC8b83xw/nAjf+NuBYciog==
+X-Received: by 2002:a05:6358:c695:b0:183:e8d7:6f58 with SMTP id fe21-20020a056358c69500b00183e8d76f58mr7637642rwb.32.1713198401272;
+        Mon, 15 Apr 2024 09:26:41 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x124-20020a636382000000b005bdbe9a597fsm7238801pgb.57.2024.04.15.09.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 09:26:40 -0700 (PDT)
+Date: Mon, 15 Apr 2024 09:26:40 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Alex Elder <elder@linaro.org>,
+	corbet@lwn.net, workflows@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+Message-ID: <202404150919.042E6FF@keescook>
+References: <20240414170850.148122-1-elder@linaro.org>
+ <ZhzgTeEHFF19N3UZ@infradead.org>
+ <2024041544-fester-undead-7949@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 23/25] media: i2c: imx258: Add support for reset gpio
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
- jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- sakari.ailus@linux.intel.com, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, pavel@ucw.cz, phone-devel@vger.kernel.org,
- Ondrej Jirman <megous@megous.com>
-References: <20240414203503.18402-1-git@luigi311.com>
- <20240414203503.18402-24-git@luigi311.com>
- <Zh1PGuTjFlttNnLX@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-Content-Language: en-US
-From: Luis Garcia <git@luigi311.com>
-In-Reply-To: <Zh1PGuTjFlttNnLX@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Id: git@luigi311.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024041544-fester-undead-7949@gregkh>
 
-On 4/15/24 10:00, Tommaso Merciai wrote:
-> Hi Luis,
+On Mon, Apr 15, 2024 at 10:35:21AM +0200, Greg KH wrote:
+> On Mon, Apr 15, 2024 at 01:07:41AM -0700, Christoph Hellwig wrote:
+> > No, this advice is wronger than wrong.  If you set panic_on_warn you
+> > get to keep the pieces.  
+> > 
 > 
-> On Sun, Apr 14, 2024 at 02:35:01PM -0600, git@luigi311.com wrote:
->> From: Luis Garcia <git@luigi311.com>
->>
->> It was documented in DT, but not implemented.
-> 
-> Good catch :-)
-> 
->>
->> Signed-off-by: Ondrej Jirman <megous@megous.com>
->> Signed-off-by: Luis Garcia <git@luigi311.com>
->> ---
->>  drivers/media/i2c/imx258.c | 14 +++++++++++++-
->>  1 file changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
->> index f0bd72f241e4..5de71cb7c1ae 100644
->> --- a/drivers/media/i2c/imx258.c
->> +++ b/drivers/media/i2c/imx258.c
->> @@ -699,6 +699,7 @@ struct imx258 {
->>  	unsigned int csi2_flags;
->>  
->>  	struct gpio_desc *powerdown_gpio;
->> +	struct gpio_desc *reset_gpio;
->>  
->>  	/*
->>  	 * Mutex for serialized access:
->> @@ -1250,7 +1251,11 @@ static int imx258_power_on(struct device *dev)
->>  		regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
->>  	}
->>  
->> -	return ret;
->> +	gpiod_set_value_cansleep(imx258->reset_gpio, 0);
->> +
-> 
-> I think you can remove this new line here.
-> 
+> But don't add new WARN() calls please, just properly clean up and handle
+> the error.  And any WARN() that userspace can trigger ends up triggering
+> syzbot reports which also is a major pain, even if you don't have
+> panic_on_warn enabled.
 
-Done
+Here's what was more recently written on WARN:
 
->> +	usleep_range(400, 500);
->> +
->> +	return 0;
->>  }
->>  
->>  static int imx258_power_off(struct device *dev)
->> @@ -1260,6 +1265,7 @@ static int imx258_power_off(struct device *dev)
->>  
->>  	clk_disable_unprepare(imx258->clk);
->>  
->> +	gpiod_set_value_cansleep(imx258->reset_gpio, 1);
->>  	gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
->>  
->>  	regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
->> @@ -1573,6 +1579,12 @@ static int imx258_probe(struct i2c_client *client)
->>  	if (IS_ERR(imx258->powerdown_gpio))
->>  		return PTR_ERR(imx258->powerdown_gpio);
->>  
->> +	/* request optional reset pin */
->> +	imx258->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
->> +						     GPIOD_OUT_HIGH);
->> +	if (IS_ERR(imx258->reset_gpio))
->> +		return PTR_ERR(imx258->reset_gpio);
->> +
->>  	/* Initialize subdev */
->>  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
->>  
-> 
-> Looks good to me.
-> Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
->
+https://docs.kernel.org/process/deprecated.html#bug-and-bug-on
 
-Thanks!
- 
->> -- 
->> 2.44.0
->>
->>
+Specifically:
 
+- never use BUG*()
+- WARN*() should only be used for "expected to be unreachable" situations
+
+This, then, maps correctly to panic_on_warn: System owners may have set
+the panic_on_warn sysctl, to make sure their systems do not continue
+running in the face of "unreachable" conditions.
+
+As in, userspace should _never_ be able to reach a WARN(). If it can,
+either the logic leading to it needs to be fixed, or the WARN() needs to
+be changed to a pr_warn().
+
+-- 
+Kees Cook
 
