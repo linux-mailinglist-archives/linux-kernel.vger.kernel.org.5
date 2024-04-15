@@ -1,124 +1,184 @@
-Return-Path: <linux-kernel+bounces-145393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 324858A55AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:55:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CF258A55AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:56:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE437B23584
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:55:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 705721C21F15
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38C374BEB;
-	Mon, 15 Apr 2024 14:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B1276046;
+	Mon, 15 Apr 2024 14:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XYNWo0TZ"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EslYGgKj"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD8C4C618
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6292119
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713192944; cv=none; b=O/urNXwOCbMbUtOhg1ni8iuQ/dYwucV+/J09//v4ftP2tCGQ+c5dKxxcV7TOT7NGVKp24b2J7NqMVeIGCc6N/jWhnI6nLbI0KOm7q5+iztSfqi0lRePVRVu9rowl2K41gNluD0yYtkjt0lHxlQlqlXP8kIrGpTfIT3+JbjEDkgs=
+	t=1713192945; cv=none; b=Ypl3be971lkjIidIhBCDRg1X/jFh8B/JG5mVfuzdmnaPafepTwtHoy2zwJg5ve/XQtIvnQwuFey6Te+VgppDbHZcsj12gYGxnNQMSoSk4sw7UMPYJXmu8thKA71vwVn3MHqSCZWKPD20ulWjjzatjH4wbHh9JX2NyJUfVMgpCS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713192944; c=relaxed/simple;
-	bh=WDkHaDtxUMhuf+2FTTK9mP7/Ztpa7Ckmr7AB9otDlZQ=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=K8JIfheixgMZgtThFkW3yuUdCRMDI5PnXXQMbGMDg+HhOTAf5wtDaLWxDKk2fAxaQY9BlTxHssYQJQjpQlT+3iXsmpLqaUpG+R5/jDAEivCseJJyTH+p5Yk6uEBXk99TolorOz/LIJZBDZS0isw+ZYmJx5959uzJvLSmE53yuRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XYNWo0TZ; arc=none smtp.client-ip=209.85.167.54
+	s=arc-20240116; t=1713192945; c=relaxed/simple;
+	bh=9OWRJdkAv7cHnWuVRgo+tbzxoUOMQDC00S++Chf+Sns=;
+	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=GuGjJj8O4R1RByIjbDbk/ZF7G/WeLhRwZD6l5/OC6x2Mbbk2k1g7FkmHQjGmjGC4i8JDdhvDFCL7mcnLpCOHXzJ67ZbTutGGKJnyXZw2dQBNA9UiexLUPuIsZN6rxIvz6yKq13mWL3jRQR7Jgkfm3BsBXKhcWyzGG/ZBVyNuBuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EslYGgKj; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516d2600569so4094386e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:55:42 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-518d98b9620so1516174e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:55:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713192941; x=1713797741; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yPVyNDZXIVGtBPcXZSh5720WZSR/h3m9bCoSPbXJwY4=;
-        b=XYNWo0TZwkEpvINd6TEqSPVUqyPQEp3zp+9k3WkgU0UllR9xhh9z+Yentj8+LRue+8
-         BMxYy3h7ubTD7dbm4slBWqHcYH9XcqiTdFKZZTYkpFrplAdpJvgDecy3JTOy43WYzT1V
-         JMrSKG4nHubLlE45FBVV+1RQsX7MQQ4O7EO8hSf0lhwvVlSU7mXgg03cpP0CRC3pK37+
-         xRpKSckamF23C7q+l+afi8h+NwoXEaIhws7/RbA45oVqsOfF2vumChtNZL/Qd0I2/ke0
-         ja9PBDJNaLx8VfCS4GPENFRMCb7rHYPQxJhywUd3k7HtZIVJ1jg+fA3Hompyu9N8hbVV
-         h4Ag==
+        d=gmail.com; s=20230601; t=1713192942; x=1713797742; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dTVNNfo5/Y61rhM7u0Y0ocSrSY3U2WS9X7F9mo8CMy4=;
+        b=EslYGgKjR8I3tRXIkC8cIzcbwSJvKoNI0wd3WzmRQhQ7ZBRf7/CppQ6Y+p15ixWrfp
+         wuhVwARbslTXM/2iawl8t3m6edbzpEObpzsGhHDbYAD4GKI3hT+0IODCFKxMH/THG0UB
+         loWKyqotyC8iKSgRUameQ1xJEFPiFnIaqjlHeO/8MpDta15Z9MunKvwmDiWgbCx0vRee
+         yhYUCpilWc7iOvN9YuKBqgkwpXBEmvdy/+uRcLqfC1N1FeCemzSj4mYdEQ23Bl4K8LQs
+         q9jf0qhesi3oViq1BEZjB70ohyLUqIdsbmEsMSaLZQl7oZ4fV9GvobYasiYVcwlnhbmC
+         QlMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713192941; x=1713797741;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yPVyNDZXIVGtBPcXZSh5720WZSR/h3m9bCoSPbXJwY4=;
-        b=fr7Lp7mvlOcLbH1z73GMtoW3SwqKb5/ypmsYMRgM8/E8mL5Ey1RB+LK5RdLOeQ43bX
-         gCm6Ywolx4wsP4GVmkyqLVz+htfmtEYnW+0h2T79IrZbDX1UyLlVTOcyIAnoGxaywMRP
-         UORVcRr3LOf95imaKLtoGongm0z5xEETeYegyf7HKhAK7ceGlY+xd2cxxspcUL4CL2Bb
-         8XgttlhganhrjM5UjWpjmwg3RAeh1XxT6vIDX2CoMYTqsCMTFc11iPID/YM9lkAQd8VQ
-         aS1Y2maEzhIACONVEkqbyu9ZTPioLWOUkZYNwS8DpMgQbEufLkqkDzfXpk82OJnXE7TD
-         ZtHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVY8cPICB/KG2v6wtzqnKOCdMo3Ign0l7Wj22ufyAHigqRoyQuKn8Pgv1AA56LdOW7GoHEw8zK2paWrBsKSAw7bsvcpprIHtuzlKzhP
-X-Gm-Message-State: AOJu0YxTbKdj8Nh1FZlrOnqLwAr8neQo4btY6lIMsgEcM5YjsEVAj69C
-	vq0y1R2xf5vGsPt5ILhv5igmQ1g9/8XEicPQUb0YJkYtrZYffkfZOk/lULFB
-X-Google-Smtp-Source: AGHT+IHv0ugznvbPYFHNo5KQDouQtOZXFfgZyNbXLK8tVy6n3ZeCul/npbGQqk7sQaIUMAtS1H3SPQ==
-X-Received: by 2002:a19:e042:0:b0:512:f6a0:1311 with SMTP id g2-20020a19e042000000b00512f6a01311mr7719210lfj.47.1713192940445;
-        Mon, 15 Apr 2024 07:55:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713192942; x=1713797742;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dTVNNfo5/Y61rhM7u0Y0ocSrSY3U2WS9X7F9mo8CMy4=;
+        b=Gl/K8MLyumHT5DatQUImmiA7gnQmk9BSIGm0LLVmU1Cymr2ZHj48gCcoEW1f9UVy85
+         Ly+UrvyAzbY+IhY50n9dP7SUKo4txt5miHSn91WtiQ7SvXEOAiWDRV+xo09oSqK5cWVm
+         669z+NW5rM1+OE2qnt7eU2KGh+cYN/GQKgjGj1r+f2YFxqLgMNnLVIDQEvbYYwS4+EHa
+         D5VnAFnU7eoHE2dcBYxs+94dQK42DRHHA0e5A8X3sielCGw4q2x2n2I+tBxrGl8XYWkG
+         1lPPsu7Vy+TyN41/lfG1cOs8r6xf30Y0wa03enjW8S7dZyFocw7nmr0uo4npRXrD/5av
+         pGzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXO+26KIPPT7sZE565sW8lQL/CA2IwmFjjw4LgEwPnXVMJSfQfbiTRmdX94AQiIfx/chYXfB8w68aMTRgwbhc1Wf0UrJzUzJvxYfv13
+X-Gm-Message-State: AOJu0YwmE6AA0xQV9R16fSefAXbTOtlK/b+U2hlOXbFzz4lzI/EWqS6o
+	uU9VkyyvwGmlzI7KHK2BRMGaQvWPVBXZBSdOLONoSkiKAQDYUqvW877QQ1vj
+X-Google-Smtp-Source: AGHT+IEz8efraFklN0cHdU13zp8UbF4xXSaT8V02FypB+9ruwA2hWS9T97FhnXCMburIFEZFh119Gg==
+X-Received: by 2002:ac2:4d17:0:b0:518:d829:4bae with SMTP id r23-20020ac24d17000000b00518d8294baemr2757922lfi.32.1713192942140;
+        Mon, 15 Apr 2024 07:55:42 -0700 (PDT)
 Received: from rex.hwlab.vusec.net (lab-4.lab.cs.vu.nl. [192.33.36.4])
-        by smtp.gmail.com with ESMTPSA id s13-20020a056402520d00b0056bf6287f32sm4893415edd.26.2024.04.15.07.55.39
+        by smtp.gmail.com with ESMTPSA id s13-20020a056402520d00b0056bf6287f32sm4893415edd.26.2024.04.15.07.55.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 07:55:40 -0700 (PDT)
+        Mon, 15 Apr 2024 07:55:41 -0700 (PDT)
 From: Brian Johannesmeyer <bjohannesmeyer@gmail.com>
 To: Josh Poimboeuf <jpoimboe@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	Brian Johannesmeyer <bjohannesmeyer@gmail.com>
-Subject: [PATCH v2 0/7] Improve performance of 'faddr2line'
-Date: Mon, 15 Apr 2024 16:55:31 +0200
-Message-Id: <20240415145538.1938745-1-bjohannesmeyer@gmail.com>
+Subject: [PATCH v2 1/7] scripts/faddr2line: Reduce number of readelf calls to three
+Date: Mon, 15 Apr 2024 16:55:32 +0200
+Message-Id: <20240415145538.1938745-2-bjohannesmeyer@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240415145538.1938745-1-bjohannesmeyer@gmail.com>
+References: <20240415145538.1938745-1-bjohannesmeyer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This is the second attempt at submitting this. Version 1 can be found here:
-https://lore.kernel.org/lkml/20240311204019.1183634-1-bjohannesmeyer@gmail.com/.
+Rather than calling readelf several times for each invocation of
+__faddr2line, call readelf only three times at the beginning, and save its
+result for future use.
 
-I was looking at the performance of faddr2line and noticed that it spends
-most of its time performing two tasks:
-- (1) Making redundant calls to readelf and addr2line for each address
-  (e.g., it makes 7 readelf calls and 2 addr2line calls when converting 1
-address, and it makes 252 readelf calls and 51 addr2line calls when
-converting 50 addresses); and
-- (2) Calculating a symbol’s size by unnecessarily looping through every
-  symbol in a particular section.
+Signed-off-by: Brian Johannesmeyer <bjohannesmeyer@gmail.com>
+---
+ scripts/faddr2line | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-This patch series consists of the following parts:
-- Patches 1-2 reduce the total number of readelf calls to one,
-- Patches 3-4 make minor changes in preparation for the following patches,
-- Patches 5-6 reduce the total number of addr2line calls to one, and
-- Patch 7 modifies the symbol size calculation to only check two symbols.
-
-I evaluated the performance of the patch series by running faddr2line with
-a standard kernel image (X86_64 defconfig with CONFIG_DEBUG_INFO enabled).
-When converting only 1 address, the patch series gives a negligible
-speedup. When converting 50 addresses, however, it gives a 15x speedup.
-
-Changes vs. V1:
-- Correctly handle duplicate sym_names
-
-Brian Johannesmeyer (7):
-  scripts/faddr2line: Reduce number of readelf calls to three
-  scripts/faddr2line: Combine three readelf calls into one
-  scripts/faddr2line: Check vmlinux only once
-  scripts/faddr2line: Pass --addresses argument to addr2line
-  scripts/faddr2line: Invoke addr2line as a single long-running process
-  scripts/faddr2line: Remove call to addr2line from find_dir_prefix()
-  scripts/faddr2line: Check only two symbols when calculating symbol
-    size
-
- scripts/faddr2line | 110 ++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 84 insertions(+), 26 deletions(-)
-
+diff --git a/scripts/faddr2line b/scripts/faddr2line
+index 587415a52b6f..bf394bfd526a 100755
+--- a/scripts/faddr2line
++++ b/scripts/faddr2line
+@@ -87,7 +87,7 @@ command -v ${ADDR2LINE} >/dev/null 2>&1 || die "${ADDR2LINE} isn't installed"
+ find_dir_prefix() {
+ 	local objfile=$1
+ 
+-	local start_kernel_addr=$(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' |
++	local start_kernel_addr=$(echo "${ELF_SYMS}" | sed 's/\[.*\]//' |
+ 		${AWK} '$8 == "start_kernel" {printf "0x%s", $2}')
+ 	[[ -z $start_kernel_addr ]] && return
+ 
+@@ -103,6 +103,14 @@ find_dir_prefix() {
+ 	return 0
+ }
+ 
++run_readelf() {
++	local objfile=$1
++
++	ELF_FILEHEADER=$(${READELF} --file-header $objfile)
++	ELF_SECHEADERS=$(${READELF} --section-headers --wide $objfile)
++	ELF_SYMS=$(${READELF} --symbols --wide $objfile)
++}
++
+ __faddr2line() {
+ 	local objfile=$1
+ 	local func_addr=$2
+@@ -125,7 +133,7 @@ __faddr2line() {
+ 
+ 	# vmlinux uses absolute addresses in the section table rather than
+ 	# section offsets.
+-	local file_type=$(${READELF} --file-header $objfile |
++	local file_type=$(echo "${ELF_FILEHEADER}" |
+ 		${AWK} '$1 == "Type:" { print $2; exit }')
+ 	if [[ $file_type = "EXEC" ]] || [[ $file_type == "DYN" ]]; then
+ 		is_vmlinux=1
+@@ -143,8 +151,7 @@ __faddr2line() {
+ 		local sec_name
+ 
+ 		# Get the section size:
+-		sec_size=$(${READELF} --section-headers --wide $objfile |
+-			sed 's/\[ /\[/' |
++		sec_size=$(echo "${ELF_SECHEADERS}" | sed 's/\[ /\[/' |
+ 			${AWK} -v sec=$sym_sec '$1 == "[" sec "]" { print "0x" $6; exit }')
+ 
+ 		if [[ -z $sec_size ]]; then
+@@ -154,8 +161,7 @@ __faddr2line() {
+ 		fi
+ 
+ 		# Get the section name:
+-		sec_name=$(${READELF} --section-headers --wide $objfile |
+-			sed 's/\[ /\[/' |
++		sec_name=$(echo "${ELF_SECHEADERS}" | sed 's/\[ /\[/' |
+ 			${AWK} -v sec=$sym_sec '$1 == "[" sec "]" { print $2; exit }')
+ 
+ 		if [[ -z $sec_name ]]; then
+@@ -197,7 +203,7 @@ __faddr2line() {
+ 				found=2
+ 				break
+ 			fi
+-		done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v sec=$sym_sec '$7 == sec' | sort --key=2)
++		done < <(echo "${ELF_SYMS}" | sed 's/\[.*\]//' | ${AWK} -v sec=$sym_sec '$7 == sec' | sort --key=2)
+ 
+ 		if [[ $found = 0 ]]; then
+ 			warn "can't find symbol: sym_name: $sym_name sym_sec: $sym_sec sym_addr: $sym_addr sym_elf_size: $sym_elf_size"
+@@ -278,7 +284,7 @@ __faddr2line() {
+ 
+ 		DONE=1
+ 
+-	done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v fn=$sym_name '$8 == fn')
++	done < <(echo "${ELF_SYMS}" | sed 's/\[.*\]//' | ${AWK} -v fn=$sym_name '$8 == fn')
+ }
+ 
+ [[ $# -lt 2 ]] && usage
+@@ -291,7 +297,9 @@ LIST=0
+ [[ ! -f $objfile ]] && die "can't find objfile $objfile"
+ shift
+ 
+-${READELF} --section-headers --wide $objfile | ${GREP} -q '\.debug_info' || die "CONFIG_DEBUG_INFO not enabled"
++run_readelf $objfile
++
++echo "${ELF_SECHEADERS}" | ${GREP} -q '\.debug_info' || die "CONFIG_DEBUG_INFO not enabled"
+ 
+ DIR_PREFIX=supercalifragilisticexpialidocious
+ find_dir_prefix $objfile
 -- 
 2.34.1
 
