@@ -1,440 +1,176 @@
-Return-Path: <linux-kernel+bounces-145707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77C278A59D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:24:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 315648A59D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:24:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFC6DB22302
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:23:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54EE91C21144
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:24:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D0F13B2A2;
-	Mon, 15 Apr 2024 18:22:22 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0F313AA31;
+	Mon, 15 Apr 2024 18:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NsSJgFjj"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2C913A87E
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCA78248E;
+	Mon, 15 Apr 2024 18:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713205341; cv=none; b=OGsUgdmOSkCtqE0LUA2HfxafosvaaRFWudKAbyI4zOJ0YgvcDSmG884uA89nPoE/QdpC3/LSUtg1c3XAOyCRFsMvDM2h1sMW8PypDaAvaaCc4Lq7GbrN8svKz/KZipym051P46HjTNJD9GvuEL/hwStzXcl/5/tCa5CIEeeF84M=
+	t=1713205480; cv=none; b=CGfnzDQFN3JW4zoFCmviKV5tqa/p5AVULnXYfnU/vrTfYQTfCekUR4WFQIWO4IgDTzrNLtoN16dVDzV0ykCAcxbZrETRJX+60yzNrmfSnUCSOhQ6FUx7WcYFuosradi3hUEQjeokQ8NLWAPiaYYn4lSWCwT5a1u5hEFJG2YPsWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713205341; c=relaxed/simple;
-	bh=jHmdICpHVXd7A3KybVf/nFiDM9K4gw1sRPaRNAnXJE8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ctnYQ7z7xUCbX72kxBWBIaGlU9YdfXABeH6guXqSgWg3J+Zm5bNCKmYlrnJKE1aN00i3lQbzZlbCO+k7UgGqMplkgo5VPml8ybL7ZkBLw/HGoAF37BFBIHXNrOdckuSLSyg6tWL3N07n5tvD23jRxkBtYUX2Sm9w2NY4YuI9TEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d676654767so411390239f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:22:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713205339; x=1713810139;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8xMyAiycsDE0K9LFJ1bOdI5tgj79htq+mS7mEVZ4iek=;
-        b=EYJl5G6WHWRwqCUmrBdRayTMYendHE1VULwnK4Sg+bbe/dhsHFChvTzkAGxAT1rgfZ
-         +HbUGVTIHknwx353jhTFnT76RFp1kT43X6zGT0B6uxoPe0yeDZee+iwygwXd2qJmB4gX
-         vMistpXF7m6+dgOEFHx5rwKTobGLSgbkvWBM1FDeX2rrqON6VWF4HGRU3hQcqp6o6VX0
-         CCUbidQXmyTOHjnrlnTJGhqlalRKA5HaHZmG4P8OpzzPwZILzEJBjIkpkfhGHU4F0FXA
-         9W36rwsTNWFudzALM5xoP8DaABC6bcQ+1zElHh/puBfk2ampzCCP3VW4ggXgsYl+Xeer
-         QFrg==
-X-Forwarded-Encrypted: i=1; AJvYcCWZJqwZlik2Z4xmyLd3DsGBt3ztnU7pqQb+36sBbamTb41TFp6pIfZVoqG10Ei8AllwucbBIwBA8de8FIvz0ynCG7jof1jNW8NZv34y
-X-Gm-Message-State: AOJu0Yznq98ewmvri7Qq/Xz4z0riPLpV6jcX5F4Xvhig4Y2kHvtcky4j
-	b+AnW7kewx09gVGCpseIot1jkxXZVsdnm5DgCADL50G4vETFtSzLmYch1nTTHYkOhEP7NGeki9c
-	ZD7NKY6ZG6tV9MMqt21nxgnSBIe4difoXT7wOddiay2yC4cNlbYb1/1o=
-X-Google-Smtp-Source: AGHT+IHmMB7ZsLlxLEs8VYsrWH/ZQc3ctnBGUOKlwMDiST+35aJ9sf/ReAicoUOeSCsfGQM61PKthX6zK+0k+vgAnzk5iLWqdHwe
+	s=arc-20240116; t=1713205480; c=relaxed/simple;
+	bh=28tCFNWfOa62kT/fHhiqLn5DGFNs03W5X6G9MpqutxQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sSoaqLkk5iLAOifqEX2wQVdShl9Q48HsPLzPMGzNGRF1+qe+sYFf/5bVaXRWL9qX2vZheFvE4UnY7uEqvZ9J+I0EGApyACiY1N30/bB3R8ba8aL0f1F95bYD73PTz7MOhCR+JLIjmuRZf+8KgXWgVM+vimssJAHqxetyjACudZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NsSJgFjj; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FHUC6Z018202;
+	Mon, 15 Apr 2024 18:24:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Pk5kgDBBdJctcWhbsFxfoDWJNZ5HUnRBxsr6FJgfWQk=;
+ b=NsSJgFjj/nlfnSfiXcJP7G3M5TNmo/FZh5YGRbzTRPfnrMDGps/2+JjebWW1CkQQJr89
+ YIvqR6hvRA0B3VUcJnfnIEOtLbaBGR4HllfMqe1JdkXLYVuSxh30qbdttzwSTxD9fN+P
+ Ff0pkBckEwG3VGZkNrfR9h3FlgyrEXnG8CC/T9yqjP2RVbXL+0jHLMXT56p2d7toAuRv
+ /Besgzq9MMkwbUp1i9axNJy07/btxtbCQCPntVqGiQwatFtXLxaM07z3Su5K2RClPIaZ
+ XYp/aUh+I+W4tVZ9MKzc20ayNaWIcK/EFMvnQVQEzlebFlufYvQ4+THZ7o21p6QutCnX QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xh8c88502-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 18:24:30 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43FIOUsx003261;
+	Mon, 15 Apr 2024 18:24:30 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xh8c88500-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 18:24:30 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43FHAtsJ021350;
+	Mon, 15 Apr 2024 18:24:29 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg6kk943u-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 18:24:29 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43FIOO8h51773846
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 18:24:26 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2E1E42004D;
+	Mon, 15 Apr 2024 18:24:24 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 027CD20040;
+	Mon, 15 Apr 2024 18:24:23 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.55.218])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 15 Apr 2024 18:24:22 +0000 (GMT)
+Date: Mon, 15 Apr 2024 20:24:21 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV
+ and !skeys KVM guests
+Message-ID: <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240411161441.910170-1-david@redhat.com>
+ <20240411161441.910170-3-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2710:b0:482:eade:a878 with SMTP id
- m16-20020a056638271000b00482eadea878mr506698jav.1.1713205338611; Mon, 15 Apr
- 2024 11:22:18 -0700 (PDT)
-Date: Mon, 15 Apr 2024 11:22:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a2b48d061626b3ac@google.com>
-Subject: [syzbot] [bpf?] [net?] possible deadlock in swake_up_one
-From: syzbot <syzbot+c1571e01da4f845b858f@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411161441.910170-3-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 6GtmAc9B6K8dT-flaQntzbzZokvwdNLl
+X-Proofpoint-GUID: TdFM_63pvcjBbl31JkZc0XttxYHE-oxj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_15,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=691 impostorscore=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404150121
 
-Hello,
+On Thu, Apr 11, 2024 at 06:14:41PM +0200, David Hildenbrand wrote:
 
-syzbot found the following issue on:
+David, could you please clarify the below questions?
 
-HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1683dbcb180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
-dashboard link: https://syzkaller.appspot.com/bug?extid=c1571e01da4f845b858f
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10698467180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c80f4d180000
+> +static int __s390_unshare_zeropages(struct mm_struct *mm)
+> +{
+> +	struct vm_area_struct *vma;
+> +	VMA_ITERATOR(vmi, mm, 0);
+> +	unsigned long addr;
+> +	int rc;
+> +
+> +	for_each_vma(vmi, vma) {
+> +		/*
+> +		 * We could only look at COW mappings, but it's more future
+> +		 * proof to catch unexpected zeropages in other mappings and
+> +		 * fail.
+> +		 */
+> +		if ((vma->vm_flags & VM_PFNMAP) || is_vm_hugetlb_page(vma))
+> +			continue;
+> +		addr = vma->vm_start;
+> +
+> +retry:
+> +		rc = walk_page_range_vma(vma, addr, vma->vm_end,
+> +					 &find_zeropage_ops, &addr);
+> +		if (rc <= 0)
+> +			continue;
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/089e25869df5/disk-fe46a7dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/423b1787914f/vmlinux-fe46a7dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4c043e30c07d/bzImage-fe46a7dd.xz
+So in case an error is returned for the last vma, __s390_unshare_zeropage()
+finishes with that error. By contrast, the error for a non-last vma would
+be ignored?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c1571e01da4f845b858f@syzkaller.appspotmail.com
+> +
+> +		/* addr was updated by find_zeropage_pte_entry() */
+> +		rc = handle_mm_fault(vma, addr,
+> +				     FAULT_FLAG_UNSHARE | FAULT_FLAG_REMOTE,
+> +				     NULL);
+> +		if (rc & VM_FAULT_OOM)
+> +			return -ENOMEM;
 
-=====================================================
-WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected
-6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
------------------------------------------------------
-rcu_exp_gp_kthr/18 [HC0[0]:SC0[2]:HE0:SE0] is trying to acquire:
-ffff88802f1b4820 (&htab->buckets[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
-ffff88802f1b4820 (&htab->buckets[i].lock){+...}-{2:2}, at: sock_hash_delete_elem+0xcb/0x260 net/core/sock_map.c:939
+Heiko pointed out that rc type is inconsistent vs vm_fault_t returned by
+handle_mm_fault(). While fixing it up, I've got concerned whether is it
+fine to continue in case any other error is met (including possible future
+VM_FAULT_xxxx)?
 
-and this task is already holding:
-ffffffff8d7bc598 (&rcu_state.expedited_wq){-.-.}-{2:2}, at: finish_swait+0xc5/0x280 kernel/sched/swait.c:139
-which would create a new lock dependency:
- (&rcu_state.expedited_wq){-.-.}-{2:2} -> (&htab->buckets[i].lock){+...}-{2:2}
+> +		/*
+> +		 * See break_ksm(): even after handle_mm_fault() returned 0, we
+> +		 * must start the lookup from the current address, because
+> +		 * handle_mm_fault() may back out if there's any difficulty.
+> +		 *
+> +		 * VM_FAULT_SIGBUS and VM_FAULT_SIGSEGV are unexpected but
+> +		 * maybe they could trigger in the future on concurrent
+> +		 * truncation. In that case, the shared zeropage would be gone
+> +		 * and we can simply retry and make progress.
+> +		 */
+> +		cond_resched();
+> +		goto retry;
+> +	}
+> +
+> +	return rc;
+> +}
 
-but this new dependency connects a HARDIRQ-irq-safe lock:
- (&rcu_state.expedited_wq){-.-.}-{2:2}
-
-.. which became HARDIRQ-irq-safe at:
-  lock_acquire kernel/locking/lockdep.c:5754 [inline]
-  lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-  _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-  swake_up_one+0x1a/0x1b0 kernel/sched/swait.c:51
-  csd_do_func kernel/smp.c:133 [inline]
-  __flush_smp_call_function_queue+0x41f/0x8c0 kernel/smp.c:542
-  __sysvec_call_function_single+0x8c/0x3a0 arch/x86/kernel/smp.c:271
-  instr_sysvec_call_function_single arch/x86/kernel/smp.c:266 [inline]
-  sysvec_call_function_single+0x90/0xb0 arch/x86/kernel/smp.c:266
-  asm_sysvec_call_function_single+0x1a/0x20 arch/x86/include/asm/idtentry.h:709
-  trace_event_eval_update+0x1de/0xfe0 kernel/trace/trace_events.c:2916
-  trace_insert_eval_map kernel/trace/trace.c:6294 [inline]
-  eval_map_work_func+0x3d/0x50 kernel/trace/trace.c:10069
-  process_one_work+0x9a9/0x1a60 kernel/workqueue.c:3254
-  process_scheduled_works kernel/workqueue.c:3335 [inline]
-  worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
-  kthread+0x2c1/0x3a0 kernel/kthread.c:388
-  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-to a HARDIRQ-irq-unsafe lock:
- (&htab->buckets[i].lock){+...}-{2:2}
-
-.. which became HARDIRQ-irq-unsafe at:
-..
-  lock_acquire kernel/locking/lockdep.c:5754 [inline]
-  lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-  _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-  spin_lock_bh include/linux/spinlock.h:356 [inline]
-  sock_hash_delete_elem+0xcb/0x260 net/core/sock_map.c:939
-  ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-  __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-  __bpf_prog_run include/linux/filter.h:657 [inline]
-  bpf_prog_run include/linux/filter.h:664 [inline]
-  __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-  bpf_trace_run2+0x151/0x420 kernel/trace/bpf_trace.c:2420
-  __bpf_trace_contention_end+0xca/0x110 include/trace/events/lock.h:122
-  trace_contention_end+0xce/0x120 include/trace/events/lock.h:122
-  __mutex_lock_common kernel/locking/mutex.c:617 [inline]
-  __mutex_lock+0x19c/0x9c0 kernel/locking/mutex.c:752
-  futex_cleanup_begin kernel/futex/core.c:1091 [inline]
-  futex_exit_release+0x2a/0x220 kernel/futex/core.c:1143
-  exit_mm_release+0x19/0x30 kernel/fork.c:1652
-  exit_mm kernel/exit.c:542 [inline]
-  do_exit+0x865/0x2be0 kernel/exit.c:865
-  do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
-  __do_sys_exit_group kernel/exit.c:1038 [inline]
-  __se_sys_exit_group kernel/exit.c:1036 [inline]
-  __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
-  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-  do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
-  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-other info that might help us debug this:
-
- Possible interrupt unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&htab->buckets[i].lock);
-                               local_irq_disable();
-                               lock(&rcu_state.expedited_wq);
-                               lock(&htab->buckets[i].lock);
-  <Interrupt>
-    lock(&rcu_state.expedited_wq);
-
- *** DEADLOCK ***
-
-2 locks held by rcu_exp_gp_kthr/18:
- #0: ffffffff8d7bc598 (&rcu_state.expedited_wq){-.-.}-{2:2}, at: finish_swait+0xc5/0x280 kernel/sched/swait.c:139
- #1: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
- #1: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
- #1: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
- #1: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0xe4/0x420 kernel/trace/bpf_trace.c:2420
-
-the dependencies between HARDIRQ-irq-safe lock and the holding lock:
--> (&rcu_state.expedited_wq){-.-.}-{2:2} {
-   IN-HARDIRQ-W at:
-                    lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                    lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-                    __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                    _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-                    swake_up_one+0x1a/0x1b0 kernel/sched/swait.c:51
-                    csd_do_func kernel/smp.c:133 [inline]
-                    __flush_smp_call_function_queue+0x41f/0x8c0 kernel/smp.c:542
-                    __sysvec_call_function_single+0x8c/0x3a0 arch/x86/kernel/smp.c:271
-                    instr_sysvec_call_function_single arch/x86/kernel/smp.c:266 [inline]
-                    sysvec_call_function_single+0x90/0xb0 arch/x86/kernel/smp.c:266
-                    asm_sysvec_call_function_single+0x1a/0x20 arch/x86/include/asm/idtentry.h:709
-                    trace_event_eval_update+0x1de/0xfe0 kernel/trace/trace_events.c:2916
-                    trace_insert_eval_map kernel/trace/trace.c:6294 [inline]
-                    eval_map_work_func+0x3d/0x50 kernel/trace/trace.c:10069
-                    process_one_work+0x9a9/0x1a60 kernel/workqueue.c:3254
-                    process_scheduled_works kernel/workqueue.c:3335 [inline]
-                    worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
-                    kthread+0x2c1/0x3a0 kernel/kthread.c:388
-                    ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-                    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-   IN-SOFTIRQ-W at:
-                    lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                    lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-                    __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                    _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-                    swake_up_one+0x1a/0x1b0 kernel/sched/swait.c:51
-                    rcu_report_exp_rdp kernel/rcu/tree_exp.h:260 [inline]
-                    rcu_preempt_deferred_qs_irqrestore+0x592/0xb80 kernel/rcu/tree_plugin.h:506
-                    rcu_softirq_qs+0x1b/0x1c0 kernel/rcu/tree.c:246
-                    __do_softirq+0x71a/0x8de kernel/softirq.c:568
-                    run_ksoftirqd kernel/softirq.c:924 [inline]
-                    run_ksoftirqd+0x35/0x60 kernel/softirq.c:916
-                    smpboot_thread_fn+0x661/0xa10 kernel/smpboot.c:164
-                    kthread+0x2c1/0x3a0 kernel/kthread.c:388
-                    ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-                    ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                   lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-                   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                   _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-                   prepare_to_swait_event+0x1f/0x470 kernel/sched/swait.c:107
-                   synchronize_rcu_expedited_wait_once kernel/rcu/tree_exp.h:516 [inline]
-                   synchronize_rcu_expedited_wait kernel/rcu/tree_exp.h:570 [inline]
-                   rcu_exp_wait_wake+0x2a2/0x15e0 kernel/rcu/tree_exp.h:641
-                   kthread_worker_fn+0x305/0xab0 kernel/kthread.c:841
-                   kthread+0x2c1/0x3a0 kernel/kthread.c:388
-                   ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-                   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- }
- ... key      at: [<ffffffff946869c0>] __key.3+0x0/0x40
-
-the dependencies between the lock to be acquired
- and HARDIRQ-irq-unsafe lock:
--> (&htab->buckets[i].lock){+...}-{2:2} {
-   HARDIRQ-ON-W at:
-                    lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                    lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-                    __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-                    _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-                    spin_lock_bh include/linux/spinlock.h:356 [inline]
-                    sock_hash_delete_elem+0xcb/0x260 net/core/sock_map.c:939
-                    ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-                    __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-                    bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-                    __bpf_prog_run include/linux/filter.h:657 [inline]
-                    bpf_prog_run include/linux/filter.h:664 [inline]
-                    __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-                    bpf_trace_run2+0x151/0x420 kernel/trace/bpf_trace.c:2420
-                    __bpf_trace_contention_end+0xca/0x110 include/trace/events/lock.h:122
-                    trace_contention_end+0xce/0x120 include/trace/events/lock.h:122
-                    __mutex_lock_common kernel/locking/mutex.c:617 [inline]
-                    __mutex_lock+0x19c/0x9c0 kernel/locking/mutex.c:752
-                    futex_cleanup_begin kernel/futex/core.c:1091 [inline]
-                    futex_exit_release+0x2a/0x220 kernel/futex/core.c:1143
-                    exit_mm_release+0x19/0x30 kernel/fork.c:1652
-                    exit_mm kernel/exit.c:542 [inline]
-                    do_exit+0x865/0x2be0 kernel/exit.c:865
-                    do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
-                    __do_sys_exit_group kernel/exit.c:1038 [inline]
-                    __se_sys_exit_group kernel/exit.c:1036 [inline]
-                    __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
-                    do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-                    do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
-                    entry_SYSCALL_64_after_hwframe+0x6d/0x75
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5754 [inline]
-                   lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-                   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-                   _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-                   spin_lock_bh include/linux/spinlock.h:356 [inline]
-                   sock_hash_delete_elem+0xcb/0x260 net/core/sock_map.c:939
-                   ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-                   __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-                   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-                   __bpf_prog_run include/linux/filter.h:657 [inline]
-                   bpf_prog_run include/linux/filter.h:664 [inline]
-                   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-                   bpf_trace_run2+0x151/0x420 kernel/trace/bpf_trace.c:2420
-                   __bpf_trace_contention_end+0xca/0x110 include/trace/events/lock.h:122
-                   trace_contention_end+0xce/0x120 include/trace/events/lock.h:122
-                   __mutex_lock_common kernel/locking/mutex.c:617 [inline]
-                   __mutex_lock+0x19c/0x9c0 kernel/locking/mutex.c:752
-                   futex_cleanup_begin kernel/futex/core.c:1091 [inline]
-                   futex_exit_release+0x2a/0x220 kernel/futex/core.c:1143
-                   exit_mm_release+0x19/0x30 kernel/fork.c:1652
-                   exit_mm kernel/exit.c:542 [inline]
-                   do_exit+0x865/0x2be0 kernel/exit.c:865
-                   do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
-                   __do_sys_exit_group kernel/exit.c:1038 [inline]
-                   __se_sys_exit_group kernel/exit.c:1036 [inline]
-                   __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
-                   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-                   do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
-                   entry_SYSCALL_64_after_hwframe+0x6d/0x75
- }
- ... key      at: [<ffffffff949c67c0>] __key.0+0x0/0x40
- ... acquired at:
-   lock_acquire kernel/locking/lockdep.c:5754 [inline]
-   lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
-   _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
-   spin_lock_bh include/linux/spinlock.h:356 [inline]
-   sock_hash_delete_elem+0xcb/0x260 net/core/sock_map.c:939
-   ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
-   __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-   bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-   __bpf_prog_run include/linux/filter.h:657 [inline]
-   bpf_prog_run include/linux/filter.h:664 [inline]
-   __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-   bpf_trace_run2+0x151/0x420 kernel/trace/bpf_trace.c:2420
-   __bpf_trace_contention_end+0xca/0x110 include/trace/events/lock.h:122
-   trace_contention_end.constprop.0+0xe2/0x140 include/trace/events/lock.h:122
-   __pv_queued_spin_lock_slowpath+0x266/0xc80 kernel/locking/qspinlock.c:560
-   pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
-   queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
-   queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
-   do_raw_spin_lock+0x210/0x2c0 kernel/locking/spinlock_debug.c:116
-   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
-   _raw_spin_lock_irqsave+0x42/0x60 kernel/locking/spinlock.c:162
-   finish_swait+0xc5/0x280 kernel/sched/swait.c:139
-   synchronize_rcu_expedited_wait_once kernel/rcu/tree_exp.h:516 [inline]
-   synchronize_rcu_expedited_wait kernel/rcu/tree_exp.h:570 [inline]
-   rcu_exp_wait_wake+0x2db/0x15e0 kernel/rcu/tree_exp.h:641
-   kthread_worker_fn+0x305/0xab0 kernel/kthread.c:841
-   kthread+0x2c1/0x3a0 kernel/kthread.c:388
-   ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-   ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-
-stack backtrace:
-CPU: 1 PID: 18 Comm: rcu_exp_gp_kthr Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- print_bad_irq_dependency kernel/locking/lockdep.c:2626 [inline]
- check_irq_usage+0xe3c/0x1490 kernel/locking/lockdep.c:2865
- check_prev_add kernel/locking/lockdep.c:3138 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x248e/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
- _raw_spin_lock_bh+0x33/0x40 kernel/locking/spinlock.c:178
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- sock_hash_delete_elem+0xcb/0x260 net/core/sock_map.c:939
- ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x151/0x420 kernel/trace/bpf_trace.c:2420
- __bpf_trace_contention_end+0xca/0x110 include/trace/events/lock.h:122
- trace_contention_end.constprop.0+0xe2/0x140 include/trace/events/lock.h:122
- __pv_queued_spin_lock_slowpath+0x266/0xc80 kernel/locking/qspinlock.c:560
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
- queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- do_raw_spin_lock+0x210/0x2c0 kernel/locking/spinlock_debug.c:116
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
- _raw_spin_lock_irqsave+0x42/0x60 kernel/locking/spinlock.c:162
- finish_swait+0xc5/0x280 kernel/sched/swait.c:139
- synchronize_rcu_expedited_wait_once kernel/rcu/tree_exp.h:516 [inline]
- synchronize_rcu_expedited_wait kernel/rcu/tree_exp.h:570 [inline]
- rcu_exp_wait_wake+0x2db/0x15e0 kernel/rcu/tree_exp.h:641
- kthread_worker_fn+0x305/0xab0 kernel/kthread.c:841
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 1 PID: 18 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 1 PID: 18 Comm: rcu_exp_gp_kthr Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:warn_bogus_irq_restore+0x29/0x30 kernel/locking/irqflag-debug.c:10
-Code: 90 f3 0f 1e fa 90 80 3d 72 d0 b5 04 00 74 06 90 c3 cc cc cc cc c6 05 63 d0 b5 04 01 90 48 c7 c7 c0 b1 0c 8b e8 78 6b 7d f6 90 <0f> 0b 90 90 eb df 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 0018:ffffc90000177d38 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffffff8d7bc580 RCX: ffffffff814fafe9
-RDX: ffff888016ef9e00 RSI: ffffffff814faff6 RDI: 0000000000000001
-RBP: 0000000000000283 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000a42
-R13: ffffffff8f9e7034 R14: 0000000000000000 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055558bbfdca8 CR3: 000000000d57a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:151 [inline]
- _raw_spin_unlock_irqrestore+0x74/0x80 kernel/locking/spinlock.c:194
- synchronize_rcu_expedited_wait_once kernel/rcu/tree_exp.h:516 [inline]
- synchronize_rcu_expedited_wait kernel/rcu/tree_exp.h:570 [inline]
- rcu_exp_wait_wake+0x2db/0x15e0 kernel/rcu/tree_exp.h:641
- kthread_worker_fn+0x305/0xab0 kernel/kthread.c:841
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks!
 
