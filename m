@@ -1,239 +1,141 @@
-Return-Path: <linux-kernel+bounces-144519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CB568A4750
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:29:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD8E8A4753
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:40:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40ECE28362B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:29:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD85B1C2125A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:40:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4F11C69D;
-	Mon, 15 Apr 2024 03:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 197481CAAF;
+	Mon, 15 Apr 2024 03:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dt7OjQvf"
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hOTVlNb0"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E0E15E9B;
-	Mon, 15 Apr 2024 03:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C982A14F6C;
+	Mon, 15 Apr 2024 03:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713151788; cv=none; b=YL/2ih6udiWT54CIDZyaoDR6cyPuE1SQSWWvVssOe7LRqxMZxvjXi766INBNQ+sT0QuqXMZiarIM7LxLDjNdOLEqPSK7q7MRUwDZFOHgt4FSW7/ObROis1k+auGfV4PfVTjTz+P1zBxuI+1SF3pUswAL6e3vXrh3If3plFq32kc=
+	t=1713152446; cv=none; b=mlQEJdb8ENbELRTHKHBBq01z72/hVluQm1Cy582FiVKfCyMf/U3e0qDeas37SyYeQY0SEDKndvpRFgalDOilvgQYB1mlga223+l8SMyDTzIM28yqExRgYvEtuQSc8AZKPo4VO4mwowDimtUGwmU9jL4h92M+oP972iZDOEo9TZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713151788; c=relaxed/simple;
-	bh=RZbvyl0ZeKT9OnsFx1FJ8SDfBp9ix87p/F3HNGv9D2c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HbuISAEl252XXWQZ8ubC5gPmYcyF1EZYEUvhgcGX6Z84qB9Ij5xKx8DZb30mQno7CbeFS7sYvFu9LGVBV115W1aneX115PfJD72oR/b/yJLDuqG6vGYAt7S0KS9RgeZZWC+/al0Bxi5tt4X2Wqmrt1WOHcL8fz5r/4g1+gHf3cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dt7OjQvf; arc=none smtp.client-ip=209.85.217.41
+	s=arc-20240116; t=1713152446; c=relaxed/simple;
+	bh=uoiSB04cS6tScx9gjDFtZSP6QmmDYX9fKUEfSLp0Bn8=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=ss/lvvDHBR0hGJYzE5cy6UtDz9aqQoGCG0jJiuzi/K6X6mqZYmMveE1bvsA7Qv0lK8N3ijVuWvsFzOwQqBbfJbJ0+W6Fi0d+UYpjY2pudZjj2gjWe6eMRCVMkODeEDAtTbC0zOQQe4mdDSGz8mBkXdvuJquhol+YM0RWpaGobtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hOTVlNb0; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-479dd0261c8so1820827137.0;
-        Sun, 14 Apr 2024 20:29:46 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a51a7dc45easo289846466b.2;
+        Sun, 14 Apr 2024 20:40:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713151786; x=1713756586; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vB/wuwbKBLOFbdciQai/w0/3HaKtb8+rz1RVneK6E10=;
-        b=dt7OjQvfUJAEktMlmhaZlqxPZTKSWTaTbIjvr6yAF/kLUkNCycwty3zf3xI2EaSZd0
-         ARvrhsvkv0SO1Z9s0uGaX8NazI3wxPN0iSjS1tcSedf4JF+ZVSp6MFOkjAfkA2IL72Tv
-         GSByFU64XchLM0Ja3vWzn8DG01O7rai4pTvorPar6A03oREPtKJiPIO3rWvNTAvn3ELu
-         oS42ZMFxil2QLaRsnaJeJJityyOMWpf+sZQVQX7IcbslujWoWw6l+frTeVyDaorAJmuu
-         pCfYrZ/Qc4LjAgJ2HuJ1Jb5Fkncty1qAhqnyu46Yc4c2s2Uqv7NJpKnl5NlSsq56J+9b
-         GPHA==
+        d=gmail.com; s=20230601; t=1713152443; x=1713757243; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3VeyPBiF8j0H2LvGyy81ta84iw2Bubo2d/NBOWM4ciY=;
+        b=hOTVlNb0y579VajfMAJH2uNjWC6uF0koruNkIPxnE1/jSWRr35VAHm7IMyN4vCsol0
+         NsnI/wIDMpuBrp6rRe0DqT+qB7GgaHxi445gglHf+Y9P1IMtPVaTGEVepGh6hJoVDwAD
+         Cesthbf10TO2WLPaJpxHo5tyt87Au71sr3+zS96GW5kYCoxdweEsP5kVmL+PzwC1oLoZ
+         878nLzIke0C/ZLb4ASY1TvYsXAt+nORQE8NQRLSMqZXBUZRPAPe79zdnDLRl+1bKyxH3
+         zgea4hJhg1aKpzqic0r2nS6lwTBBjgVmffqr7lrirK97LwfX9nkhKY6Q7QdSNVycQV7W
+         lrDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713151786; x=1713756586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vB/wuwbKBLOFbdciQai/w0/3HaKtb8+rz1RVneK6E10=;
-        b=B62V/mYbUiJIqNPIja7ReKWNQAyEEgyYyUMBj4lkZzJZjbxsWsAmmvCFe/xcadiaYj
-         1YVRd0UjfyXtKVQUXchz7tg/n+y/t3S3ncZJSR4ouNP+iJQPGYz7yjQHRh9fiL8X8+pN
-         UIz/Bbz7HrAfsb+zWMSHEzzlvvzSzVnF3dfhBaosIdh3Hnvg5+nfaRx4ZdYJiUtRAZgI
-         mNOj8erIO7eYVTH/8CgEEmFpd/EQqaVs9CXzpTYlOpx3H6INLohlvtL+P0/o9d+pXl0v
-         3bY44D3maiI4UU0KG8q7jvTjrwA1JSD+K5mFbRPiquSRXVtpaaRva4TPg4ukwn9DOWoQ
-         nlYg==
-X-Forwarded-Encrypted: i=1; AJvYcCUnmCQVdb9lJ1RoBOycyaaJrsn2BYdLlRysBStIWjtx4je3F/Uz2E/2iCUjxCp3QAOV0fPaeBSvsORGX0brs3db/nMtZnsUJSnlGEj4UPPk4Bu0XlvcvjPZOB5u6NzBFOA906Qx8Q==
-X-Gm-Message-State: AOJu0YzLwpjaqqSH9JDSF13ukHGd+omwsOuKG4e7jdXwlEMZU1ngbfCh
-	C4tfVvWhkrbxZA0BuasO819WLI3hj571JoRCmIpivDjz7PlnyGvKbMdARNyWQ+VSEcMzWwT53sf
-	dABTuPuOY2GEhDYkiCA+X+DdzEW/Qn4rfmwk=
-X-Google-Smtp-Source: AGHT+IFs1Z2t8NroKjcqGtfbfkndIykue1SiysAI0d0DBCa1WkYW2TXIM4H+BsgApG55mawaIpkFFQJZry56SI+TfyY=
-X-Received: by 2002:a05:6102:50ab:b0:47a:62c5:6423 with SMTP id
- bl43-20020a05610250ab00b0047a62c56423mr7053825vsb.12.1713151785791; Sun, 14
- Apr 2024 20:29:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713152443; x=1713757243;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3VeyPBiF8j0H2LvGyy81ta84iw2Bubo2d/NBOWM4ciY=;
+        b=G5WEKd8Ez0lpNpiBLKdT2OjreVY32aaO0ZB/r9bbeJaChV7w8n3CmqXjIvRtJSMSkY
+         lasGRZVmeSIclqka4gek2Vf4IUnSH35hXsUlJEH8ajdcGhh1o1nmndvBqBNA2JR2Q3yv
+         uKgrsz4GNRMyAbQbYv8ZjTJSc7r5+KHkLRSa8dDKifwp8FF42uI4o8IYAbVzSM08czkm
+         N3cQnyC8t3lfAnp0ELfTN4ZjqOLvneY0AIInzV1/YMBSbduxcS9BS4Ffr9igps0LwMo1
+         BxZNzGl491ZFZHymtX7ghJn3fRHxpf+MsGq8bUyF+BwLlWOSgdJqdK0tlY7ooPyItmiK
+         SxjA==
+X-Gm-Message-State: AOJu0Yxl4M2+xWj6u+3LP0LzJYM4H/Dx+z0wciFrOSMtOpoP81fjzWo/
+	MP26iNjOz0qwhOp4qWnhwx3NDZLG4140m9JF2j+vfZLoVVgCSDLr3Ozxmw8Ltbia6QHrf1Kkm1n
+	egLn9Ll8P5h/0Z2UfGB65NNuabXcCdiJ1uOA=
+X-Google-Smtp-Source: AGHT+IFzJOiZsOExEQ/bFKy+OR9/lWZur+EoNHFuZcIlWzQcRpMT4Y1Jep6kZI81q77qVjqXkORGEqBNZO78d8Si0uc=
+X-Received: by 2002:a17:906:7804:b0:a51:b463:6b41 with SMTP id
+ u4-20020a170906780400b00a51b4636b41mr5489878ejm.61.1713152442640; Sun, 14 Apr
+ 2024 20:40:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415111123924s9IbQkgHF8S4yZv4su8LI@zte.com.cn>
-In-Reply-To: <20240415111123924s9IbQkgHF8S4yZv4su8LI@zte.com.cn>
-From: Barry Song <21cnbao@gmail.com>
-Date: Mon, 15 Apr 2024 15:29:34 +1200
-Message-ID: <CAGsJ_4y5+3jKx78-TWh_3jWoXQW4mmx=uKHbBSHWpvMj1eYW7A@mail.gmail.com>
-Subject: Re: [PATCH] mm: thp: makes the memcg THP deferred split shrinker
- aware of node_id
-To: xu.xin16@zte.com.cn, yang.shi@linux.alibaba.com
-Cc: v-songbaohua@oppo.com, mhocko@kernel.org, ryan.roberts@arm.com, 
-	david@redhat.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, ran.xiaokai@zte.com.cn, 
-	yang.yang29@zte.com.cn, lu.zhongjun@zte.com.cn
+From: Sam Sun <samsun1006219@gmail.com>
+Date: Mon, 15 Apr 2024 11:40:31 +0800
+Message-ID: <CAEkJfYPYF-nNB2oiXfXwjPG0VVB2Bd8Q8kAq+74J=R+4HkngWw@mail.gmail.com>
+Subject: [PATCH net v1] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
+To: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, j.vosburgh@gmail.com, andy@greyhouse.net, 
+	davem@davemloft.net, Eric Dumazet <edumazet@google.com>, kuba@kernel.org, 
+	pabeni@redhat.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 3:11=E2=80=AFPM <xu.xin16@zte.com.cn> wrote:
->
-> From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
->
-> Since commit 87eaceb3faa5 ("mm: thp: make deferred split shrinker
-> memcg aware"), the THP deferred split queue is per memcg but not
-> per mem_cgroup_per_node. This has two aspects of impact:
->
-> Impact1: for kswapd reclaim
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->   kswapd
->     balance_pgdat
->       kswapd_shrink_node
->         shrink_node(pgdat, sc);
->           shrink_node_memcgs(pgdat, sc);
->             shrink_slab(sc->gfp_mask, pgdat->node_id, memcg...);
->   the parameter "pgdat->node_id"  does not take effectct for
->   THP deferred_split_shrinker, as the deferred_split_queue of
->   specified memcg is not for a certain numa node but for all the nodes.
->   We want to makes the memcg THP deferred split shrinker aware of
->   node_id.
->
-> Impact2: thp-deferred_split shrinker debugfs interface
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->    for the "count" file:
->    <cgroup inode id> <objects on node 0> <objects on node 1>
->      the output is acctually the sum of all numa nodes.
->    for the "scan" file:
->    <cgroup inode id> <numa id> <number of objects to scan>
->      Also the "numa id" input does not take effect here.
->
-> This patch makes memcg deferred_split_queue per mem_cgroup_per_node
-> so try to conform to semantic logic.
+In function bond_option_arp_ip_targets_set(), if newval->string is an
+empty string, newval->string+1 will point to the byte after the
+string, causing an out-of-bound read.
 
-This seems to be a correct fix to me,  + Yang Shi, the original author of
-commit 87eaceb3faa5.
+BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
+Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
+CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc1/0x5e0 mm/kasan/report.c:475
+ kasan_report+0xbe/0xf0 mm/kasan/report.c:588
+ strlen+0x7d/0xa0 lib/string.c:418
+ __fortify_strlen include/linux/fortify-string.h:210 [inline]
+ in4_pton+0xa3/0x3f0 net/core/utils.c:130
+ bond_option_arp_ip_targets_set+0xc2/0x910
+drivers/net/bonding/bond_options.c:1201
+ __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
+ __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:792
+ bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
+ bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c:156
+ dev_attr_store+0x54/0x80 drivers/base/core.c:2366
+ sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
+ kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
+ call_write_iter include/linux/fs.h:2020 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x96a/0xd80 fs/read_write.c:584
+ ksys_write+0x122/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+---[ end trace ]---
 
->
-> Reviewed-by: Lu Zhongjun <lu.zhongjun@zte.com.cn>
-> Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-> Cc: xu xin <xu.xin16@zte.com.cn>
-> Cc: Yang Yang <yang.yang29@zte.com.cn>
-> ---
->  include/linux/memcontrol.h |  7 +++----
->  mm/huge_memory.c           |  6 +++---
->  mm/memcontrol.c            | 11 +++++------
->  3 files changed, 11 insertions(+), 13 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 394fd0a887ae..7282861d5a5d 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -130,6 +130,9 @@ struct mem_cgroup_per_node {
->         bool                    on_tree;
->         struct mem_cgroup       *memcg;         /* Back pointer, we canno=
-t */
->                                                 /* use container_of      =
-  */
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +       struct deferred_split deferred_split_queue;
-> +#endif
->  };
->
->  struct mem_cgroup_threshold {
-> @@ -327,10 +330,6 @@ struct mem_cgroup {
->         struct list_head event_list;
->         spinlock_t event_list_lock;
->
-> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -       struct deferred_split deferred_split_queue;
-> -#endif
-> -
->  #ifdef CONFIG_LRU_GEN_WALKS_MMU
->         /* per-memcg mm_struct list */
->         struct lru_gen_mm_list mm_list;
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 9859aa4f7553..338d071070a6 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -774,7 +774,7 @@ struct deferred_split *get_deferred_split_queue(struc=
-t folio *folio)
->         struct pglist_data *pgdat =3D NODE_DATA(folio_nid(folio));
->
->         if (memcg)
-> -               return &memcg->deferred_split_queue;
-> +               return &memcg->nodeinfo[pgdat->node_id]->deferred_split_q=
-ueue;
->         else
->                 return &pgdat->deferred_split_queue;
->  }
-> @@ -3305,7 +3305,7 @@ static unsigned long deferred_split_count(struct sh=
-rinker *shrink,
->
->  #ifdef CONFIG_MEMCG
->         if (sc->memcg)
-> -               ds_queue =3D &sc->memcg->deferred_split_queue;
-> +               ds_queue =3D &sc->memcg->nodeinfo[sc->nid]->deferred_spli=
-t_queue;
->  #endif
->         return READ_ONCE(ds_queue->split_queue_len);
->  }
-> @@ -3322,7 +3322,7 @@ static unsigned long deferred_split_scan(struct shr=
-inker *shrink,
->
->  #ifdef CONFIG_MEMCG
->         if (sc->memcg)
-> -               ds_queue =3D &sc->memcg->deferred_split_queue;
-> +               ds_queue =3D &sc->memcg->nodeinfo[sc->nid]->deferred_spli=
-t_queue;
->  #endif
->
->         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index fabce2b50c69..cdf9f5fa3b8e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5445,7 +5445,11 @@ static int alloc_mem_cgroup_per_node_info(struct m=
-em_cgroup *memcg, int node)
->                 kfree(pn);
->                 return 1;
->         }
-> -
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +       spin_lock_init(&pn->deferred_split_queue.split_queue_lock);
-> +       INIT_LIST_HEAD(&pn->deferred_split_queue.split_queue);
-> +       pn->deferred_split_queue.split_queue_len =3D 0;
-> +#endif
->         lruvec_init(&pn->lruvec);
->         pn->memcg =3D memcg;
->
-> @@ -5545,11 +5549,6 @@ static struct mem_cgroup *mem_cgroup_alloc(struct =
-mem_cgroup *parent)
->         for (i =3D 0; i < MEMCG_CGWB_FRN_CNT; i++)
->                 memcg->cgwb_frn[i].done =3D
->                         __WB_COMPLETION_INIT(&memcg_cgwb_frn_waitq);
-> -#endif
-> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -       spin_lock_init(&memcg->deferred_split_queue.split_queue_lock);
-> -       INIT_LIST_HEAD(&memcg->deferred_split_queue.split_queue);
-> -       memcg->deferred_split_queue.split_queue_len =3D 0;
->  #endif
->         lru_gen_init_memcg(memcg);
->         return memcg;
-> --
-> 2.15.2
->
+Fix it by adding a check of string length before using it.
 
-Thanks
-Barry
+Reported-by: Yue Sun <samsun1006219@gmail.com>
+Signed-off-by: Yue Sun <samsun1006219@gmail.com>
+---
+ drivers/net/bonding/bond_options.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/bonding/bond_options.c
+b/drivers/net/bonding/bond_options.c
+index 4cdbc7e084f4..db8d99ca1de0 100644
+--- a/drivers/net/bonding/bond_options.c
++++ b/drivers/net/bonding/bond_options.c
+@@ -1214,7 +1214,8 @@ static int bond_option_arp_ip_targets_set(struct
+bonding *bond,
+     __be32 target;
+
+     if (newval->string) {
+-        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
++        if (!(strlen(newval->string)) ||
++            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NULL)) {
+             netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
+                    &target);
+             return ret;
+-- 
+2.34.1
 
