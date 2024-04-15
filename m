@@ -1,95 +1,80 @@
-Return-Path: <linux-kernel+bounces-145708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 315648A59D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:24:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883D18A59E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54EE91C21144
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:24:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B8601F2269C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0F313AA31;
-	Mon, 15 Apr 2024 18:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70E318286A;
+	Mon, 15 Apr 2024 18:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="NsSJgFjj"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NmgyfuC1"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCA78248E;
-	Mon, 15 Apr 2024 18:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E1B74416
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:28:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713205480; cv=none; b=CGfnzDQFN3JW4zoFCmviKV5tqa/p5AVULnXYfnU/vrTfYQTfCekUR4WFQIWO4IgDTzrNLtoN16dVDzV0ykCAcxbZrETRJX+60yzNrmfSnUCSOhQ6FUx7WcYFuosradi3hUEQjeokQ8NLWAPiaYYn4lSWCwT5a1u5hEFJG2YPsWA=
+	t=1713205688; cv=none; b=CAg2pY61PATPdRkyfOhYMvvmKSvs7q/4gV7fAlea/y5H2FQf0gfVRvozmBWdaf2eBJmRfLOv+/kE3mAWyfdUW4CosGpfLXom0SnqZJE3k+QzHyi+VCku4j8Q997T93olBKfiWD+WojruNUmjw2j2NxyVkbhUgHdRGKFOCbrThqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713205480; c=relaxed/simple;
-	bh=28tCFNWfOa62kT/fHhiqLn5DGFNs03W5X6G9MpqutxQ=;
+	s=arc-20240116; t=1713205688; c=relaxed/simple;
+	bh=yGckecM7nkvF3DdzkM8ETKHZuGBv7a5askO74zHWEvk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sSoaqLkk5iLAOifqEX2wQVdShl9Q48HsPLzPMGzNGRF1+qe+sYFf/5bVaXRWL9qX2vZheFvE4UnY7uEqvZ9J+I0EGApyACiY1N30/bB3R8ba8aL0f1F95bYD73PTz7MOhCR+JLIjmuRZf+8KgXWgVM+vimssJAHqxetyjACudZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=NsSJgFjj; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FHUC6Z018202;
-	Mon, 15 Apr 2024 18:24:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Pk5kgDBBdJctcWhbsFxfoDWJNZ5HUnRBxsr6FJgfWQk=;
- b=NsSJgFjj/nlfnSfiXcJP7G3M5TNmo/FZh5YGRbzTRPfnrMDGps/2+JjebWW1CkQQJr89
- YIvqR6hvRA0B3VUcJnfnIEOtLbaBGR4HllfMqe1JdkXLYVuSxh30qbdttzwSTxD9fN+P
- Ff0pkBckEwG3VGZkNrfR9h3FlgyrEXnG8CC/T9yqjP2RVbXL+0jHLMXT56p2d7toAuRv
- /Besgzq9MMkwbUp1i9axNJy07/btxtbCQCPntVqGiQwatFtXLxaM07z3Su5K2RClPIaZ
- XYp/aUh+I+W4tVZ9MKzc20ayNaWIcK/EFMvnQVQEzlebFlufYvQ4+THZ7o21p6QutCnX QQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xh8c88502-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 18:24:30 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43FIOUsx003261;
-	Mon, 15 Apr 2024 18:24:30 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xh8c88500-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 18:24:30 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43FHAtsJ021350;
-	Mon, 15 Apr 2024 18:24:29 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg6kk943u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 18:24:29 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43FIOO8h51773846
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Apr 2024 18:24:26 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2E1E42004D;
-	Mon, 15 Apr 2024 18:24:24 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 027CD20040;
-	Mon, 15 Apr 2024 18:24:23 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.55.218])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 15 Apr 2024 18:24:22 +0000 (GMT)
-Date: Mon, 15 Apr 2024 20:24:21 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sroWyGwaEExAb8SY0FtpBe7Zscl4yOnZVWhBGTu3oWlqKYibKXZTufT1iliPE9r1wj30/AIGkuB0ZzMVOw08KaetzliCQYkiYYnwyrWTm1YSvk5pUsoZoQHwF/+jOpTGqR+4RvAHcuiJ+7PujI4tUOIB3VGnuAlEPtJi7ldIqrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NmgyfuC1; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-61ae4743d36so7091537b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:28:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713205686; x=1713810486; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gzpn2mqeQXvBfqEE8KRrKxdSsji4vYUEQ7aPRX98tS0=;
+        b=NmgyfuC10DljioU+wrJT+em9vn+PSk7VspOUKXRLURLBkV7kED4Zpzsbbpsl/8vXcS
+         LtyS0X8kqt8emW68qYYL80CPa2CtSZIXDnOyH03JubWHU7bfpTq85cyU4wBuco2B6/JL
+         iCTCORCEa0ckANXTDssPgpxaEDFjY75uPk7EYzaXr0cMaIxS6o/l7N77mw0pNuh6yoD9
+         HzfjDeGMwLg04nvL/oCOmMTzr0wzg+r2nBqJvxLgV878JNavftDLQXdfEIgWZWLAtoak
+         IwACpc3DgrdCFu1kHm68GCrPVGJE7aS4iVFehOf4jxYTLTYMuvaHOkZEcykkTzIt5dOW
+         TxDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713205686; x=1713810486;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gzpn2mqeQXvBfqEE8KRrKxdSsji4vYUEQ7aPRX98tS0=;
+        b=gnjUtjIo/enS7HmOZeJxjYlBkI98Ap8Pet2oxEsovRhnMRrRbPhdUPjE9WXqpYeS/A
+         aJrGMvK4b6B5JoZMOtpxW4cTTMJ4fD689U92NVywGetrHRMKW7/r83S6gGoH3886zQ0g
+         eI0ITXV8DGM3B1PLJX55LEXAKryIUMAI6Cfu5QqLv2D2cRsH76uBfrVf+VZ3una8+wFA
+         uFb8NqKqr2B9yN2ESjvP+DxGJWANAE1dsk8JPxoLrBX5vHlJSs1cbv/wuYv2hesR/uTX
+         NtnPJtHW6lBsYy07GQpresDSKl9dEyJWcUdmi4pT943ov6VG1RXk2KCflUpJ+6v3Ivk4
+         Gn/w==
+X-Gm-Message-State: AOJu0YyzDK6FajRPRlAbkpu5uzOsufIQTWA8IV7xQq+W3Vx8y70FVKeZ
+	16TGOybZu124ArtuCUfgwyb93OWEvs1obfjG9D18X1UG3CSQSlxF
+X-Google-Smtp-Source: AGHT+IHCFw2fCgotXxAD9pFn9CQpn+mNHke37zPPOoQGGqkFVjBFZeisk/EqoUiYbmPkNLuTriL6UA==
+X-Received: by 2002:a0d:e6cd:0:b0:618:9470:bb2f with SMTP id p196-20020a0de6cd000000b006189470bb2fmr6114961ywe.30.1713205686294;
+        Mon, 15 Apr 2024 11:28:06 -0700 (PDT)
+Received: from fedora ([2600:1700:2f7d:1800::23])
+        by smtp.gmail.com with ESMTPSA id y15-20020a81ca4f000000b0061ada21ac4dsm324395ywk.25.2024.04.15.11.28.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 11:28:05 -0700 (PDT)
+Date: Mon, 15 Apr 2024 11:28:02 -0700
+From: Vishal Moola <vishal.moola@gmail.com>
+To: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV
- and !skeys KVM guests
-Message-ID: <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240411161441.910170-1-david@redhat.com>
- <20240411161441.910170-3-david@redhat.com>
+	akpm@linux-foundation.org, willy@infradead.org,
+	linmiaohe@huawei.com, jane.chu@oracle.com, muchun.song@linux.dev,
+	nao.horiguchi@gmail.com, osalvador@suse.de
+Subject: Re: [PATCH v2 1/2] mm/hugetlb: convert dissolve_free_huge_pages() to
+ folios
+Message-ID: <Zh1xslaqduUr4MHF@fedora>
+References: <20240412182139.120871-1-sidhartha.kumar@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -98,79 +83,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240411161441.910170-3-david@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6GtmAc9B6K8dT-flaQntzbzZokvwdNLl
-X-Proofpoint-GUID: TdFM_63pvcjBbl31JkZc0XttxYHE-oxj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-15_15,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 phishscore=0
- mlxlogscore=691 impostorscore=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404150121
+In-Reply-To: <20240412182139.120871-1-sidhartha.kumar@oracle.com>
 
-On Thu, Apr 11, 2024 at 06:14:41PM +0200, David Hildenbrand wrote:
+On Fri, Apr 12, 2024 at 11:21:38AM -0700, Sidhartha Kumar wrote:
+> Allows us to rename dissolve_free_huge_pages() to
+> dissolve_free_hugetlb_folio(). Convert one caller to pass in a folio
+> directly and use page_folio() to convert the caller in mm/memory-failure.
+>
+> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> ---
+> 
+> v1 -> v2:
+> 	- Change additional comments which reference hugepages to
+> 	  hugetlb folios per Miaohe Lin. 
+> 	- introduce patch 2
+> 
+>  include/linux/hugetlb.h |  4 ++--
+>  mm/hugetlb.c            | 17 ++++++++---------
+>  mm/memory-failure.c     |  8 ++++----
+>  3 files changed, 14 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 3f3e628802792..f4191b10345d6 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -861,7 +861,7 @@ static inline int hstate_index(struct hstate *h)
+>  	return h - hstates;
+>  }
+>  
+> -extern int dissolve_free_huge_page(struct page *page);
+> +extern int dissolve_free_hugetlb_folio(struct folio *folio);
 
-David, could you please clarify the below questions?
+You could drop the extern here as we don't need it anymore. Aside from that
+LGTM.
 
-> +static int __s390_unshare_zeropages(struct mm_struct *mm)
-> +{
-> +	struct vm_area_struct *vma;
-> +	VMA_ITERATOR(vmi, mm, 0);
-> +	unsigned long addr;
-> +	int rc;
-> +
-> +	for_each_vma(vmi, vma) {
-> +		/*
-> +		 * We could only look at COW mappings, but it's more future
-> +		 * proof to catch unexpected zeropages in other mappings and
-> +		 * fail.
-> +		 */
-> +		if ((vma->vm_flags & VM_PFNMAP) || is_vm_hugetlb_page(vma))
-> +			continue;
-> +		addr = vma->vm_start;
-> +
-> +retry:
-> +		rc = walk_page_range_vma(vma, addr, vma->vm_end,
-> +					 &find_zeropage_ops, &addr);
-> +		if (rc <= 0)
-> +			continue;
-
-So in case an error is returned for the last vma, __s390_unshare_zeropage()
-finishes with that error. By contrast, the error for a non-last vma would
-be ignored?
-
-> +
-> +		/* addr was updated by find_zeropage_pte_entry() */
-> +		rc = handle_mm_fault(vma, addr,
-> +				     FAULT_FLAG_UNSHARE | FAULT_FLAG_REMOTE,
-> +				     NULL);
-> +		if (rc & VM_FAULT_OOM)
-> +			return -ENOMEM;
-
-Heiko pointed out that rc type is inconsistent vs vm_fault_t returned by
-handle_mm_fault(). While fixing it up, I've got concerned whether is it
-fine to continue in case any other error is met (including possible future
-VM_FAULT_xxxx)?
-
-> +		/*
-> +		 * See break_ksm(): even after handle_mm_fault() returned 0, we
-> +		 * must start the lookup from the current address, because
-> +		 * handle_mm_fault() may back out if there's any difficulty.
-> +		 *
-> +		 * VM_FAULT_SIGBUS and VM_FAULT_SIGSEGV are unexpected but
-> +		 * maybe they could trigger in the future on concurrent
-> +		 * truncation. In that case, the shared zeropage would be gone
-> +		 * and we can simply retry and make progress.
-> +		 */
-> +		cond_resched();
-> +		goto retry;
-> +	}
-> +
-> +	return rc;
-> +}
-
-Thanks!
+Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
