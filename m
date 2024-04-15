@@ -1,101 +1,128 @@
-Return-Path: <linux-kernel+bounces-145981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C1E78A5DD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:51:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5538A5DDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB423283AA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:51:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC40A1C216CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996D7158859;
-	Mon, 15 Apr 2024 22:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A24C158DB0;
+	Mon, 15 Apr 2024 22:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nDFCuUeS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jv8dZKAe"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9140F1B80F;
-	Mon, 15 Apr 2024 22:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227A01B80F;
+	Mon, 15 Apr 2024 22:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713221478; cv=none; b=fKscdowQkbarc7ILmFe81LpuGDY5pNBtPi4jWtSt8PbUBkQFUKp3s8EKZlIvXxbN7eEQWXqPk53n95i5YFFvJGOOH/cuvNI5PWFhQQgwf0MAXhuLiyrfYXOkRp0EQauaAHdJ1cQSnK4gRsO2fVo7apZ9+eXKgEdx/sVd1PojQcI=
+	t=1713221503; cv=none; b=gkg0mpF6ESCFctkCNM92WzMOCI9mqMakL5rOLUQIIHXmNPqq+Dba2zbzRbEEom0ym2PPbX7VM0nTcN0AfqTgO2yZ4pH/RLGmeMJFJfwkqHVmfYf3mdkwluekwb+m94XXGqS5GhE7mKf6ysHRmzcpsHoBbetxjSA/LKvR3iEWmr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713221478; c=relaxed/simple;
-	bh=NHyNdJP4kIYQm6I4Mu8rr7Xbs16DH+isQARC18Kfx7E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SfXKKAlwi6kQQGMsnPWlg9GZPH81aC8Irpwi8kEdeTVj4TNECzNgLZNxh2a2PBrgCLWR10HUN5cVOFJzV3pUF7j1K7E2vPf3JN/X0Lsh6yL92b/ig9z9zgPdYtW1yFDrdKO0ziaQMMsk+VI3zwdtbmKpPsrnKVWtZ5d9UTDMCmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nDFCuUeS; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713221478; x=1744757478;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NHyNdJP4kIYQm6I4Mu8rr7Xbs16DH+isQARC18Kfx7E=;
-  b=nDFCuUeSuxGABE3ulBQoASazT9IdnDDxeJtiyUaUANNJw5dK9IE0GDby
-   OGjYMStCkBn8C6FbkXrVLSxy93zuj+/5gaD6ZXVopNMP2NBAnn3UhlNUo
-   2cJG9/288o1SqRtHjiVn+APPG1B3Y0InTOh31iA1UQcrm1iFmVMAI5O5P
-   Xt5uYAZAH9WIbS+QcSjYGSsRiLDVOV0O5/EtwWbzPBzcryNwFCH47O8BR
-   KZD6epIm2+jZiZrn7ahD0b0Lr0mL9GXjbtL+M9Ilxsl+pX3trI6WLeWz7
-   /UOkBzWGtQq6KolkdgoYqecI5cLI1d4CrrZedBTINq5pmHLN9HZfRojKK
-   w==;
-X-CSE-ConnectionGUID: Ftb4W3ElRhmhvdZVB1VUDA==
-X-CSE-MsgGUID: Cunge7YWSI6mKdQifWmnpg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8491719"
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="8491719"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 15:51:17 -0700
-X-CSE-ConnectionGUID: Nv0HIZNbSuCtZ487mEP9zw==
-X-CSE-MsgGUID: ySKigc9tTQeMm+wPBX9uvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="22140454"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 15:51:16 -0700
-Date: Mon, 15 Apr 2024 15:51:16 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 097/130] KVM: x86: Split core of hypercall emulation
- to helper function
-Message-ID: <20240415225116.GT3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <d6547bd0c1eccdfb4a4908e330cc56ad39535f5e.1708933498.git.isaku.yamahata@intel.com>
- <73394dea-81d9-469c-b94f-6d58bfca186a@linux.intel.com>
+	s=arc-20240116; t=1713221503; c=relaxed/simple;
+	bh=210MiktY9ffZFXiFwX3XKrZn/rqxu8+UIHYBzztKE80=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=O7DRg1QVy8/sHGFcWTzQngne1ZXDihtRzZU86oI8Gv9i+5UniOBKerFAAOThfj0jzS5/8VZIJrH76/khPB5VuPqB/CCf+5ow+ugT4pnkjir031Jglx/ONgHyCtc21LmCYdIvHbrYVfZVaDNNgRORGXsEyrUiSiYdG46VDk8bYA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jv8dZKAe; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d0c004b1so4937876e87.2;
+        Mon, 15 Apr 2024 15:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713221500; x=1713826300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=63WuSgSRy34JNOa9pVcP0sGLwbzNT5xJkZeCbwGkCUE=;
+        b=Jv8dZKAeOd7N++mj5aVTg0b+uwwW6TInljFgYMkN+gJF2svxVZXZfyRtZ1A1lYZ0qs
+         InuJNbFaI65WrSXYTUI2PvnOPnv/brCxLC1n8wNSCStCA6UNrHAzYrw6EH1698sUvurp
+         x8TNNmjnyUJzBTOH15Ry47c7NqUjVDfkNx90gSkrzU4Ug2KNdtLz8Xms+c5n91c2eF2l
+         8BL8rXfQciDwpaEZN897z1u4Z7QsgASytTXISoQ4jB8VcPUoqhtcPJlrWqRKYC2Awfw+
+         SDY8QGFdP6YxEA7IdDO3pjooicse1JUCcPTrCbTOv1moNbIjqC4UgC+sZHrEykN13OaB
+         mzcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713221500; x=1713826300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=63WuSgSRy34JNOa9pVcP0sGLwbzNT5xJkZeCbwGkCUE=;
+        b=JZCg24s7kQ91ejvfbsssxLTm021IgSbVmCUZLK0V29ZeDSBvGeDl0VIeZZY4GGZvjZ
+         mUH7iZbQX5bTy2pntZyLZlWhhFW/47cC0cAXZ+wIg9v00Ucl+y6VoBMlDDJ2gm5NzqwP
+         Lvduk4SrLFyh3YPefNWKz328ouQSvATTnbsN+vqf9UA5L2mYqbb6i2KYmcFIb+oK2XA0
+         zxGm98Aa30hlODxml6FDm23AiwSBKibeGA8gYe6HbNlEJiwn7VrHPpPx/HmOEo6b4zjz
+         Un78RCwh0GOdO1ZvoaWP3pQchsJAM/gz9AkZ1hhIl2eF0WoVNM6hfyJlUkfEjtZOBcyw
+         Vbtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUlace++9rH8nZSN6uXURIcQScC1hG7bFPT8cUE+T+m9SfxhssyOAzRsF5wbYl1TgP6ZM6/INhXSilC5oN61p9f+G2FitXLEPBiD2t0i1isgkSfrzoeeliJJ+TpUTir6gAsS0RkXkwLR/HiMwElOIA/J6GP6D6liUvlaJCm4LHAeIBa9+4bumwvLksOz1S6udFHK8HGZ79I2Nk7I2Zk5WP6b/vL8DsmaSh/mfhmXUTRZvNvs9bKOyVrrOmSzxGyH+7oG0KkYV7PYfMyghkNQE82gGGeamhZ
+X-Gm-Message-State: AOJu0YxG1yqHiIW1/4yakwJDtoVS4IqhJX/wrDLsMmfJCK/rLx73dO6G
+	KixQzcgxQG45iaFOya2dBh7a01M/oCg/cY869TDUHIq492gUetAKoNluSMYbYj4I9WbtjZxSR6M
+	0QQEn58KAAF5iA5UKdyGYS3Uu0pKLlw==
+X-Google-Smtp-Source: AGHT+IF8RFFMQuN5vGtuRwBPhuh0oAZccy2g38TQjUdEv5QNHmaH/Tohq78D8IN9/9jH1PsE9dc35dj2/YRmRw43rn8=
+X-Received: by 2002:a19:5f1e:0:b0:516:b07a:5b62 with SMTP id
+ t30-20020a195f1e000000b00516b07a5b62mr8309996lfb.54.1713221500147; Mon, 15
+ Apr 2024 15:51:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <73394dea-81d9-469c-b94f-6d58bfca186a@linux.intel.com>
+References: <20240328163424.2781320-1-dhowells@redhat.com> <20240328163424.2781320-2-dhowells@redhat.com>
+ <39de1e2ac2ae6a535e23faccd304d7c5459054a2.camel@kernel.org> <2345944.1713186234@warthog.procyon.org.uk>
+In-Reply-To: <2345944.1713186234@warthog.procyon.org.uk>
+From: Steve French <smfrench@gmail.com>
+Date: Mon, 15 Apr 2024 17:51:30 -0500
+Message-ID: <CAH2r5msFoGAE79pS5bEt5T8a60LU82mdjNdpfe0bG4YpvY8t-g@mail.gmail.com>
+Subject: Re: [PATCH 01/26] cifs: Fix duplicate fscache cookie warnings
+To: David Howells <dhowells@redhat.com>
+Cc: Jeff Layton <jlayton@kernel.org>, Christian Brauner <christian@brauner.io>, 
+	Gao Xiang <hsiangkao@linux.alibaba.com>, Dominique Martinet <asmadeus@codewreck.org>, 
+	Matthew Wilcox <willy@infradead.org>, Marc Dionne <marc.dionne@auristor.com>, 
+	Paulo Alcantara <pc@manguebit.com>, Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev, 
+	linux-cachefs@redhat.com, linux-afs@lists.infradead.org, 
+	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	ceph-devel@vger.kernel.org, v9fs@lists.linux.dev, 
+	linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org, 
+	linux-mm@kvack.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Steve French <sfrench@samba.org>, Shyam Prasad N <nspmangalore@gmail.com>, 
+	Rohith Surabattula <rohiths.msft@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 09, 2024 at 05:28:05PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+Should this be merged independently (and sooner? in rc5?)
 
-> > +int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-> > +{
-> > +	unsigned long nr, a0, a1, a2, a3, ret;
-> > +	int op_64_bit;
-> 
-> Can it be opportunistically changed to bool type, as well as the argument
-> type of "op_64_bit" in __kvm_emulate_hypercall()?
+On Mon, Apr 15, 2024 at 8:04=E2=80=AFAM David Howells <dhowells@redhat.com>=
+ wrote:
+>
+> Jeff Layton <jlayton@kernel.org> wrote:
+>
+> > > +struct cifs_fscache_inode_key {
+> > > +
+> > > +   __le64  uniqueid;       /* server inode number */
+> > > +   __le64  createtime;     /* creation time on server */
+> > > +   u8      type;           /* S_IFMT file type */
+> > > +} __packed;
+> > > +
+> >
+> > Interesting. So the uniqueid of the inode is not unique within the fs?
+> > Or are the clients are mounting shares that span multiple filesystems?
+> > Or, are we looking at a situation where the uniqueid is being quickly
+> > reused for new inodes after the original inode is unlinked?
+>
+> The problem is that it's not unique over time.  creat(); unlink(); creat(=
+);
+> may yield a repeat of the uniqueid.  It's like i_ino in that respect.
+>
+> David
+>
 
-Yes. We can also fix kvm_pv_send_ipi(op_64_bit).
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+
+--=20
+Thanks,
+
+Steve
 
