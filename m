@@ -1,108 +1,97 @@
-Return-Path: <linux-kernel+bounces-145721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E91D98A5A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:38:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E198A5A05
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F8E41C21073
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:38:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D8411F2163F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2808115575A;
-	Mon, 15 Apr 2024 18:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1166155736;
+	Mon, 15 Apr 2024 18:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QdWD1EKV"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hWLCh0LP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DE941C66;
-	Mon, 15 Apr 2024 18:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E240E41C66;
+	Mon, 15 Apr 2024 18:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713206279; cv=none; b=B00aEgu7IXGQegkKtHvc4JHbGFa3/5qAPqWeLgf17iXlupuXaCCMvD6tEakwzb95gDD2SIbmzAV8uDHTFpPyqqIF77RHypeTdEUR4rLRwBUO/zBZymLLRCaQN4HWINXc2PtmcoefHtdeK6kUIm1cXr9cHyj3jUASR9mUO5QTN+Q=
+	t=1713206429; cv=none; b=H0FLcMtpdys3qMzigjaiZolXOD6ApbtOH+HzJQEe0n4tZdQpKI69JwcAi7rI/4tZQm35UlQLZiSTqKaU9j2Uw0PpaOPErdVGiPAZs5AMGK4S+T73j6aOiM4LKzVtgpZEyQBFdgUq/PZPVExZUuAQMBLeKw8vnwlLvyeCuouvPxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713206279; c=relaxed/simple;
-	bh=U29sDrgbhhdXj+npBt1jlHxYJTm07oduug5LWw9LWsU=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Ui3zK6B7hXImESGtMPr5l9E3udaBpA/uM/Yp2rAk4IuDSIHA0g+Yblo9w/7mUBAiYs6JSygPl2TSKfi7woJTIVJGfDHG6a65WEoy6Cv3bgqkyEPFntPkaXRho9TIXMF8kzWZ3u/8eMfgdNbBqQRI3oU6k8HmpubGW/F4u7TUHe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QdWD1EKV; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713206276;
-	bh=U29sDrgbhhdXj+npBt1jlHxYJTm07oduug5LWw9LWsU=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=QdWD1EKVTObBT2wXUT8lnEtSx9LXzcJYzfDirIso9e+V2B3BAnLOae0svdRihqC8t
-	 EQXyFBqlA5DD+hNEctLOlMdxDBkbwxb39cJYshUjVkycsxTu/RSUOEDORweWMJVt2B
-	 iZU8vEBb9GEM15dJUTjrBEzvZiP3qQ1lJnzKATDxseIYPZfOd6M3bLC2RB4XZAiovD
-	 uRpJxdm/26pM9DIDzpQuw8oNMevbXimZfth+9hMVJ0J4Yrm0bD3AjRSUOhvNMTVm6u
-	 UAPOmswX4Dcmx6Da+ehimEAAf34zk4PDFax5jJFZobC5yNQ+gi8MubJUhVvLwOuEhV
-	 VS67pw1BuZO5A==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 334C13781107;
-	Mon, 15 Apr 2024 18:37:51 +0000 (UTC)
-Message-ID: <01247791-7841-4530-bde3-5db3fbd1770d@collabora.com>
-Date: Mon, 15 Apr 2024 23:38:28 +0500
+	s=arc-20240116; t=1713206429; c=relaxed/simple;
+	bh=kgowzD5fH9d5m5BdHrdoSAm9Nv8Ny5qyh36nwbqfVJU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=kBVbwGzHZS2VtTolcmYpv/mUtxVGD0D3NlzAcNZF3IZ/2MdKUFjvfEv/1QZNYvug5a0YQ93FZVQuLvlVZK6k7uFweRTXYS9JQ6eenL6VaFGwM8z5i2fyo7FC8Q7Ul1r7U7SLlns+j0M+9iuLI02G9oxyZ+iCDQychTAw4eRCfpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hWLCh0LP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6AF4AC32781;
+	Mon, 15 Apr 2024 18:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713206428;
+	bh=kgowzD5fH9d5m5BdHrdoSAm9Nv8Ny5qyh36nwbqfVJU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=hWLCh0LPmuKPaERfjBv0puRjxeizWuCM4pfy2PtEWKbpolywviYo7FmIyvqL4uJqQ
+	 AJoFgBe30f2dE+O8SCA1BKsa4woQj2QGAx7EcZhOymwDh3NnVnZz3/qLMhO8uo1Fkf
+	 8EdEkNCu/n4tuKPUdDTIlRoHSzt7+IHMifwcKdBk2OhFBWXL994ufpLUY5HsozuLpx
+	 MZvxk7zs+LYPFDVPp1ZC96Gyj96g9IN9ZgaJkwS4ytoXEa3/u0zazdshmezGrzrcAe
+	 5eyQKmNu8OuwnUb1k4uJQ/aulAlWM8lUns4e+d4dtudtRaY/sEh4j0t/Dtc6uorJ1a
+	 SAUaASD3waicQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5D8BCC395FE;
+	Mon, 15 Apr 2024 18:40:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Sebastian Reichel <sre@kernel.org>, Mike Looijmans
- <mike.looijmans@topic.nl>, kernel@collabora.com,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org
-Subject: Re: [PATCH 2/2] selftests: power_supply: Make it POSIX-compliant
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Shuah Khan <shuah@kernel.org>
-References: <20240415-supply-selftest-posix-sh-v1-0-328f008d698d@collabora.com>
- <20240415-supply-selftest-posix-sh-v1-2-328f008d698d@collabora.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240415-supply-selftest-posix-sh-v1-2-328f008d698d@collabora.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3 0/4] net: dqs: optimize if stall threshold is not
+ set
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171320642837.24301.3642985390319068381.git-patchwork-notify@kernel.org>
+Date: Mon, 15 Apr 2024 18:40:28 +0000
+References: <20240411192241.2498631-1-leitao@debian.org>
+In-Reply-To: <20240411192241.2498631-1-leitao@debian.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+ edumazet@google.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-On 4/15/24 8:32 PM, Nícolas F. R. A. Prado wrote:
-> There is one use of bash specific syntax in the script. Change it to the
-> equivalent POSIX syntax. This doesn't change functionality and allows
-> the test to be run on shells other than bash.
-> 
-> Reported-by: Mike Looijmans <mike.looijmans@topic.nl>
-> Closes: https://lore.kernel.org/all/efae4037-c22a-40be-8ba9-7c1c12ece042@topic.nl/
-> Fixes: 4a679c5afca0 ("selftests: Add test to verify power supply properties")
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Hello:
 
-> ---
->  tools/testing/selftests/power_supply/test_power_supply_properties.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/power_supply/test_power_supply_properties.sh b/tools/testing/selftests/power_supply/test_power_supply_properties.sh
-> index df272dfe1d2a..a66b1313ed88 100755
-> --- a/tools/testing/selftests/power_supply/test_power_supply_properties.sh
-> +++ b/tools/testing/selftests/power_supply/test_power_supply_properties.sh
-> @@ -23,7 +23,7 @@ count_tests() {
->  	total_tests=0
->  
->  	for i in $SUPPLIES; do
-> -		total_tests=$(("$total_tests" + "$NUM_TESTS"))
-> +		total_tests=$((total_tests + NUM_TESTS))
->  	done
->  
->  	echo "$total_tests"
-> 
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
+On Thu, 11 Apr 2024 12:22:28 -0700 you wrote:
+> Here are four patches aimed at enhancing the Dynamic Queue Limit (DQL)
+> subsystem within the networking stack.
+> 
+> The first two commits involve code refactoring, while the third patch
+> introduces the actual change. The fourth patch just improves the cache
+> locality.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v3,1/4] net: dql: Avoid calling BUG() when WARN() is enough
+    https://git.kernel.org/netdev/net-next/c/4854b463c4b2
+  - [net-next,v3,2/4] net: dql: Separate queue function responsibilities
+    https://git.kernel.org/netdev/net-next/c/cbe481a1b741
+  - [net-next,v3,3/4] net: dql: Optimize stall information population
+    https://git.kernel.org/netdev/net-next/c/721f076b62cb
+  - [net-next,v3,4/4] net: dqs: make struct dql more cache efficient
+    https://git.kernel.org/netdev/net-next/c/4ba67ef3a1fb
+
+You are awesome, thank you!
 -- 
-BR,
-Muhammad Usama Anjum
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
