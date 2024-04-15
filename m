@@ -1,94 +1,110 @@
-Return-Path: <linux-kernel+bounces-145659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3710D8A5917
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:26:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF9868A591E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:28:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E08381F2182B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:26:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89AC328402D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3284083CB1;
-	Mon, 15 Apr 2024 17:26:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7BF883CA0;
+	Mon, 15 Apr 2024 17:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="o+UJcLmz"
-Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sGIwbl9h"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D9182D93;
-	Mon, 15 Apr 2024 17:26:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0235B79945;
+	Mon, 15 Apr 2024 17:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713201991; cv=none; b=YXoTpZTEcf85XOW/79ZMGQSfp9DXgg3CXzQURBLOEYyHBuwi+vzi9oba7c7GlGOwTdWg2bMAVxszaDHatkmKRA2wQvV2jPwUz3jFKlxnFMwwfJcy0J7DjmNcZ97KBOJOKL16AGAa0E8lCmtYpiPVbgsehIMUIBEPcfYfmzOmcwY=
+	t=1713202131; cv=none; b=bnDozMz8xsq/v4/wGomE3IZTYwTdBQ1aGf/X/JiefZWEYQy90fzL5QFrFOexW/oOKiAiZ3gv5sgJUm0GchN2tzrK8wEpLWyxfBAqQNPKSRtPqztN3Wfj4W0lsb1gzpbLJhC6tKhw82u+NxUqvgbK17m4NXrbZLSeCPcXd1Ij/lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713201991; c=relaxed/simple;
-	bh=gdtpSZeek4WxRDYyyqJtK/AcbBU0P9+7sC1xniRLlV4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h63L0EMumDmI9o5Ik1+Jcw7ECysEFOkqV/w4+vGh542iAu6jEd7FAvEjuYXuOEGLfVQIc0KqnapAbyfxypn9g4otqYT3DK+EOYIYYHDK5RGC4xYT3FpsgFTueIAisycA/xnz8Jk0dkB98wnKa5DJmSOMSpRUldTBURe8joxMiXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=o+UJcLmz; arc=none smtp.client-ip=199.89.1.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VJDc5485CzlgTHp;
-	Mon, 15 Apr 2024 17:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1713201988; x=1715793989; bh=yEI0tBPFIPNtNRdhFblfE9OP
-	YM2lTomLnreEVEQMdKA=; b=o+UJcLmzCjA0xhxvZ7J+CEQqPpOzjv7ohgodgvep
-	gCW5SC/+QL4Ggcg84XY2YPtsc962fU+MA70o/o2oEnd4ja7bQRzB30w04K6uX0oR
-	OnHDkcm5B7l2OdHmunNvnNJjEigxdTNrJqDtOYNs1KLfJWeDFMEIiK5kU0/7KFAw
-	oINbLdpgbLR7dNlsxnxd/AobV61tw1qwU5j2mNU5xSGTjYq+2tw7uv0omxo9YJSv
-	0UwdONM4qfK4keZfJPM9YPwziewUAlRyxARH5nvEGHqR4AB7Cj07iMJb3WYnONFq
-	f91rdUXOTCV9E7Ooq4uTqPrWsYRQP4PDneAiA13F4WLF/Q==
-X-Virus-Scanned: by MailRoute
-Received: from 009.lax.mailroute.net ([127.0.0.1])
- by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id msOUn97a8RmL; Mon, 15 Apr 2024 17:26:28 +0000 (UTC)
-Received: from [100.96.154.26] (unknown [104.132.0.90])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VJDc31rlczlgTsK;
-	Mon, 15 Apr 2024 17:26:27 +0000 (UTC)
-Message-ID: <48043100-a817-4ca2-a141-60e3ab9cbfef@acm.org>
-Date: Mon, 15 Apr 2024 10:26:26 -0700
+	s=arc-20240116; t=1713202131; c=relaxed/simple;
+	bh=a0HibWUnzie92ICHAhBye5rj+VFjkkx03juTDWDh/Ec=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=iYq/g/joDNQ+BrAhXOBbWAYRs6dQ1h/dsLZ0IKKNyPWw9wlYAVDb6CxOkYfMgT3j8Wl3tievF1601gXF2B7tUjCU2s6OAV8KbxK0NcurOFcjAY21mp6rh2IgBtcXrLYhWbLXayDKqKn/lj1nBt1Wu1J8+YQAamKrC1MejofWL2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sGIwbl9h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A77C113CC;
+	Mon, 15 Apr 2024 17:28:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713202130;
+	bh=a0HibWUnzie92ICHAhBye5rj+VFjkkx03juTDWDh/Ec=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=sGIwbl9hpyaYtBQKxvJwQVyMA8NHskJJz4jxoakHv+SX3/ieldj+E3nJMETdR35Gu
+	 wKHloHIUuK06kFzSYekj1QctMLCGJ5DPuam0tWdsGXnGGva8OEUD6SZ6sewvvuOOca
+	 otFy0M/cu4zhxUDUgy1d24JXH3zmurfFkD5kjcG8ZXucCwSrJbhwotvSKkbhGbs4z5
+	 lh61ZKtVNkVKKePxpGjvxxVQbaw66TJkWYTqP4LJnTZjcUEct8gfdbevh/OhZsCOxN
+	 GpBWbjiBpNku2djAmLRaotKGb3Knq3ntCsFTD3NeoNk42nwpVvcMB/mPNAhVP72D2B
+	 iasWcXKynd/FQ==
+Date: Mon, 15 Apr 2024 12:28:49 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers: scsi: fix shift-out-of-bounds in
- sg_build_indirect
-To: Sam Sun <samsun1006219@gmail.com>, linux-kernel@vger.kernel.org,
- martin.petersen@oracle.com
-Cc: linux-scsi@vger.kernel.org, xrivendell7@gmail.com,
- syzkaller-bugs@googlegroups.com
-References: <CAEkJfYNguDt47=KnEUX7tLwx_46ggBx3Oh3-3dAcZxqndL_OWQ@mail.gmail.com>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <CAEkJfYNguDt47=KnEUX7tLwx_46ggBx3Oh3-3dAcZxqndL_OWQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: David Wronek <david@mainlining.org>
+Cc: Maxime Ripard <mripard@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ Sam Ravnborg <sam@ravnborg.org>, phone-devel@vger.kernel.org, 
+ Daniel Vetter <daniel@ffwll.ch>, Neil Armstrong <neil.armstrong@linaro.org>, 
+ David Airlie <airlied@gmail.com>, Konrad Dybcio <konradybcio@kernel.org>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, 
+ ~postmarketos/upstreaming@lists.sr.ht
+In-Reply-To: <20240415-raydium-rm69380-driver-v2-1-524216461306@mainlining.org>
+References: <20240415-raydium-rm69380-driver-v2-0-524216461306@mainlining.org>
+ <20240415-raydium-rm69380-driver-v2-1-524216461306@mainlining.org>
+Message-Id: <171320212822.3814448.5491461859724968091.robh@kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: display: panel: Add Raydium
+ RM69380
 
-On 4/14/24 20:14, Sam Sun wrote:
-> -    num = scatter_elem_sz;
-> +    num = max(scatter_elem_sz, PAGE_SIZE);
 
-Shouldn't the following statements be modified instead of the above
-statement? I think these are the only statements that can cause
-scatter_elem_sz to become smaller than PAGE_SIZE:
+On Mon, 15 Apr 2024 18:10:41 +0200, David Wronek wrote:
+> Raydium RM69380 is a display driver IC used to drive OLED DSI panels.
+> Add a dt-binding for it.
+> 
+> Signed-off-by: David Wronek <david@mainlining.org>
+> ---
+>  .../bindings/display/panel/raydium,rm69380.yaml    | 91 ++++++++++++++++++++++
+>  1 file changed, 91 insertions(+)
+> 
 
-	scatter_elem_sz = ret_sz;
-	scatter_elem_sz_prev = ret_sz;
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Thanks,
+yamllint warnings/errors:
 
-Bart.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml:
+Error in referenced schema matching $id: http://devicetree.org/schemas/display/panel/panel-common-dual.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/raydium,rm69380.example.dtb: panel@0: False schema does not allow {'compatible': ['lenovo,j716f-edo-rm69380', 'raydium,rm69380'], 'reg': [[0]], 'avdd-supply': [[4294967295]], 'vddio-supply': [[4294967295]], 'reset-gpios': [[4294967295, 75, 1]], 'ports': {'#address-cells': [[1]], '#size-cells': [[0]], 'port@0': {'reg': [[0]], 'endpoint': {'remote-endpoint': [[4294967295]]}}, 'port@1': {'reg': [[1]], 'endpoint': {'remote-endpoint': [[4294967295]]}}}, '$nodename': ['panel@0']}
+	from schema $id: http://devicetree.org/schemas/display/panel/raydium,rm69380.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240415-raydium-rm69380-driver-v2-1-524216461306@mainlining.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
