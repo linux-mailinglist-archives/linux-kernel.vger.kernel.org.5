@@ -1,349 +1,260 @@
-Return-Path: <linux-kernel+bounces-145781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F15E8A5AB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:35:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 289618A5ABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:36:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24231284375
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:35:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D237C2842A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C651156882;
-	Mon, 15 Apr 2024 19:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31B791591E4;
+	Mon, 15 Apr 2024 19:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ZjeyPuOM"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2075.outbound.protection.outlook.com [40.107.21.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="K0lumSqE"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C27157E6F;
-	Mon, 15 Apr 2024 19:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209656; cv=fail; b=nABBhD0su7cli39N9ilMOiKFjVxbwlzcwK5qmhr+eyE402tf5eKvEDf5t+qyUMbDNakWlkIwg5nBEGNLsG0CLDjhVeIcfEhPBzlFKl0JJq9MWH5oXvvfuqziXmLoWAtfbtxICKWpMhZUcaJU2cseWaNTyWhK64jB1kGcC2G8qiA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209656; c=relaxed/simple;
-	bh=T5eM7jGli++Q0uN2S+ZvsPFpy84pD1uEfNuEA+XWxBA=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=o5rHAFAaQeMUmlbgp3l9n/WG2Pi/PImrHL9ahWkC0VePkDg9W3fFAHo/6XTZRiw4tOdNu6wGeLAvhZXwIybwyyoG4zu7hH3+zsbg0py15XCWWJZIFkrjQz/c7roiWKYP09A0tOar9V032punKwix72xdosDbw9Mo62uzgzzd+nM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ZjeyPuOM; arc=fail smtp.client-ip=40.107.21.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WEt4sNSihD5ZDx1VnhXvNru6lXpHLF64bpRR17gsMJAZcmjlkD4NJNsGwXKqj6JJkQPztYoakj/vUyAMYIxfnNRBbVNOR1aexH8bjiGT5EL+sSK5UP4KZYo+LZvqwzcqhVkLuXb/fYfgVJmHVnoyBgs51u/yfMklSfEw9/6n8HuKXFfkYHTyOr0Z2AAo9fGmih8V+Y//ug4Uv12kleNfAK/r06tApKK/4+biaRihS0SQjaTNFyRg0sCFKfMbAZ6GW60Avxu++6D6prDSz+SzW1+Opq+84dH31+Cc4NDbEYkbNgDOTwHYFvuVP4soeZciMcLZFbUOhKvegxB5bF5+Nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=szb01cgagiGs7LgbVEcXCjvASrOLIDPOofiqOm+8tQ4=;
- b=Bh2dfNR9Rvhi4FvZvMmvQmlecRI1phl/0LwgziO5UmSRx6zCMKksGJRiLobCCwp6ClbvPkoxsrgUqrzMI3+SKE3YJesgc8DsRa4ke0n6ji5s45thl8xoHIIc1N9f/j9CXst29agsOfcrlNKjjnE6w7ZzHf11+wwtE3B51lSS5sRsf/2tj+fhBSVLRlExYTFYptzawOyDiwACQsHaGkb69bb5nxdJ/T/9IAky+2DHFEdlkbr6H9UFTIxVHHcoYUMwQJ8ew3qM4oMiiYUnewwOQi4LJYGTjx0PKtmZ7oW+NvxjyzIOqzlDPxxLqoQM6SGD381LqTZZy5rVSMOrlOKeEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=szb01cgagiGs7LgbVEcXCjvASrOLIDPOofiqOm+8tQ4=;
- b=ZjeyPuOMURJXfjNb1deisLOZT0Lpcp7uGjgdteCV5M0sYwuC0ICD2k6AtQrCc5yftRCOhNl9rs/XQhAboaQrg82HOzPm7vOPyCkYr2qbxl5vKsECAdZTN2592wGMrUr05ENnSpLdfOA9441eiAniBIXlGc8NRBcNM6t7IC5h1oI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PA2PR04MB10279.eurprd04.prod.outlook.com (2603:10a6:102:406::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.43; Mon, 15 Apr
- 2024 19:34:11 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
- 19:34:11 +0000
-From: Frank Li <Frank.Li@nxp.com>
-Date: Mon, 15 Apr 2024 15:33:29 -0400
-Subject: [PATCH v6 5/5] PCI: dwc: Add generic MSG TLP support for sending
- PME_Turn_Off when system suspend
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240415-pme_msg-v6-5-56dad968ad3a@nxp.com>
-References: <20240415-pme_msg-v6-0-56dad968ad3a@nxp.com>
-In-Reply-To: <20240415-pme_msg-v6-0-56dad968ad3a@nxp.com>
-To: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>, 
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Frank Li <Frank.Li@nxp.com>
-X-Mailer: b4 0.13-dev-e586c
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713209628; l=6259;
- i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
- bh=T5eM7jGli++Q0uN2S+ZvsPFpy84pD1uEfNuEA+XWxBA=;
- b=aRstxW3H3QIp5/DrFXUvQCYxpTwwTi3aPojUX/ZFd/ummGxc1M4egr/RNDp4llAAdarDjm0yw
- onZ7zl5aCWBAK/w2bnv62f1ZLEYNGv39X9aL8KP/5QrA88pSxrk/Lwa
-X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
- pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
-X-ClientProxiedBy: SJ0PR13CA0102.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::17) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBAC9156891
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:34:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713209670; cv=none; b=ENluZRHeexUVqBzAQZXTTbnj6H2AOpBJ7vnGAa5iTzDdrvKqr3Rjewn86ru3UN9aeJzf2rrDVrADKeEOb6HvTagU+aSgHMdIxn/0tltP36C5w0uYXP35qsExSo/ivnFYyaQSdZfv8grmdCT5RqhO6/+oXTToLQLOCkXS1bpjoHU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713209670; c=relaxed/simple;
+	bh=UekzSX0SyrJbSpQih772GalO6UK9pV3IciKpVtRnL0A=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=tBllv7dmZ8Qe9zVQxfdiKCwRL6Exm/1w7OcMoqDgZvj0ZGj71PYS7nhHvPjsMSVj0+nHy8iQOGQVii896OcFkmIKuBVY6rL/afb5xq39SOOvu2UDql7W3Hgm++8nuPKyIb21TMbnMbGTLRP2KC5hvKppfTpaBceA2T6Q5TdE5YE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=K0lumSqE; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78d743f3654so344981585a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713209667; x=1713814467; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZLiSazBe5qq6aytzV8pgTe0eeceVkA2qBLGwhoGTF24=;
+        b=K0lumSqEqfauxh7HFSIY/Q9vKAf6kik/ehERB3KK9GULuJGphzr9vLk/5lvfFa6+TV
+         5CAYik1GuA60J1gqa291vYxMLvrJZ5ulOVtiKSICe13h7gkVJ3nXtTh5XRKjrcoXrwN6
+         kUyrSN4DKRUyLhlZklNxcRXWhRM1zC8RXTSm8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713209667; x=1713814467;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZLiSazBe5qq6aytzV8pgTe0eeceVkA2qBLGwhoGTF24=;
+        b=E5x02sH9EETcxH+q7pfdipGzDPf40q/nNfrx3DDVYEwjM5dAs11lpR41ac5c7CQQti
+         CEPg3hPUzNm3ssWuYkCf4Pl4+3525+we5tcC8g6tXdscZeUIdUt2mVxs62FrZLPFbRFM
+         8CeQegs5xWQg8dVH/+5X9nUmasj+UeEKSqhiEB1L1QBkfh3/DFa+7xa5qde9ty5kBqXn
+         Uo214Mmfy12R75Q5YaVltVNqvi+T0CueJ8Pog4mjEp2JAM10zHOYwJdOAOXnlmOXLPX1
+         QVvAWXDSr1a5cnfmo4gdKG9lsm5sT435UnGnWTYB+85Hjvqcam/Af44iW+LfIo8rn6Xo
+         T5VA==
+X-Forwarded-Encrypted: i=1; AJvYcCVgudKj1BZNT+h21ZEY7LPAGpKEXn6kzih4eL0Lk/+MbqojuKGx5zVGQ6btBKjvEmki1CG3OXSFENeZ84Euv8PufPkzwoALee9GAnYw
+X-Gm-Message-State: AOJu0Yxfo1yAnsUHsgAP5JShnIpVe7/K7W3CF5zZh9eAoT0w31PZbBkr
+	plMGnnkrjHhSqRyfUxPJ/jK6ZQ1wUGbgCSzMLCW6Gy50x0iJLbjdVwb+QGZgAQ==
+X-Google-Smtp-Source: AGHT+IGvWYgXqLe5y5GC/0+2akeF6DX70yb8YGk/07FW2C+kK/AaKQ5m7NmDH3z9fR+ddjVPeAolxA==
+X-Received: by 2002:a05:620a:8211:b0:78d:549a:c098 with SMTP id ow17-20020a05620a821100b0078d549ac098mr12303538qkn.19.1713209666868;
+        Mon, 15 Apr 2024 12:34:26 -0700 (PDT)
+Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
+        by smtp.gmail.com with ESMTPSA id s26-20020ae9f71a000000b0078d3b54eb76sm6718055qkg.78.2024.04.15.12.34.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 12:34:26 -0700 (PDT)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH 00/35] media: Fix coccinelle warning/errors
+Date: Mon, 15 Apr 2024 19:34:17 +0000
+Message-Id: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA2PR04MB10279:EE_
-X-MS-Office365-Filtering-Correlation-Id: a019d729-429f-4868-fd8c-08dc5d8306c9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VnzkHrzpJNivn5AdsutqWLftdPAweTPqTzPuqVy5SPOCn81WW2t0XXjHFUbfF68/TQSlfXRLtdWcChasPC1PvrzBdFctIwJhRrW/+a/Wy7K46j3Q1qGrqGmnNIvH9npaHZ/N/R7bdNcfEvGuFg5XRq39odvuudfH/xU2bEMzBfE6fjhVIn7ySptYp/DyoXd9tmClRPjt0JFXySNgDFDDvjnGXwIl/YDlOvH0TsGeewF5u8zMGrUow1pcU6GF13x3C8aah5qGu5xUfvlvyhkYH1dRFF/eGKgKYGdMINHv1kviJQsihUB3JPzIb88Rz4688/c83Iu9Nux4YXgRp5yJh/b5eudT8JTLYY8QDt9ZRfYuzb7RWLW2TbOv53N7n4UYsGvP/Q+CClF58I+mdUgugQsWYhdBSKHXQDJ9llXnFEHmPb1+Vm2w5nJT+zUTQPWX/N8LjnIPwMi9WNFXQrlpHUjms8vf+gAKznJWfhT25t1CiJfT49MNCWVjOueLQhPGaogepL4lFyrGVZruCY0UNMdK8JUqWXnzWwEAwptJT4Iq8SM+nNGmfrzFGFRPL/HwPH5S+hft0CiZIQo/kpZYfJvV7VKRxk95YlYSC1/Ll6omRJOSyH0p+A33ei2Tlhpr0E9X+xz37mOsgQkQp8/8i/W2DH3GVQwpodCAzW0OskdF3u2Hzk42zzn+EKHlDMOVCyWJp6GfhZOJkU/+ab269plrniZU0NHbYDIEkhUG0I4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005)(7416005)(52116005)(38350700005)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?REF3ZW4zY0F2cnE4NEM0aC9PUmt5K2dLTjRaUGsvZStROHBKNEtyWWZyL3Nl?=
- =?utf-8?B?ZkM4VlErWlZDZ1lOc1EvUjFucDl2eGZGUENUbzVPbEJCVEpLdXMyUmpJbzhI?=
- =?utf-8?B?eVRnZXZhU3RlNHFTTHg5RmlXSWhuc3NnOXFuZnFMbDJmWm9oVU5vODQyd1lU?=
- =?utf-8?B?L0RCNFZiR2Z0SHVKZzN2RXFlUTJLUUNIdXRXbGI0UWdVMUJIYklaL3FwT2Jt?=
- =?utf-8?B?a2o1TGs0Q2N1KzROR1R5ZUVHV29FdkJFUlJaZjZjYmIyNmYycjQyKzNSOUtx?=
- =?utf-8?B?cWgrNXlLSUJiWTE2OEJydDZtSkpldnlyZWJINEpTN1NSWU90RGhYNUZHRlI1?=
- =?utf-8?B?d0IrWEc5cFQrc2ozTElrb2N4VkM3OHUrVmhjbmxBeDVSL3pRSXU1SVgyL2w0?=
- =?utf-8?B?UTAzU2txcWdMSTd1OHQ1TmNDLzBXNkNnNXY2NlQ1RVBYU2N3azJnZU1ZSUJt?=
- =?utf-8?B?MlYwaFdNME1ob3g1dkhkeSsyU0RqOVhBWkk1alZYVGxZM01UZlNJamcyNThX?=
- =?utf-8?B?Y1plRHVJSlV4cFBZbTJmK1dKZjlJV2NXKzl0L0RwVW5JY1ROM1phWU5EWFRo?=
- =?utf-8?B?cUxRa0FWQnc2NGgwOG0ydklIc1pPVkJSeG5RcVpvRjhvdXloclpJdUZpMmk5?=
- =?utf-8?B?eXNENWtCbDMrQ0tMUjJpSmxkSEMxWDJuQTBmN3FtdmV0ZFliN1pMRmJQVEpB?=
- =?utf-8?B?M0JOR1U5Qm91ZlJXQjdhTHRUSVVKKzlyRHVzUGtwQWRjZkFFekI2NUkzVHA1?=
- =?utf-8?B?TE5MVFFrYkJ0SEVncDZQcGlMelhmc09sNExMRGhGcGNzNG5PZnRIeVlvQlk1?=
- =?utf-8?B?dm1mZDlQMy91d1p4NnZUUWZEN3ZvV2pEbk1QOU9pRHlwN0pNcXRtdEhBR0g0?=
- =?utf-8?B?bys2c2k0eG5mUUlYTXYwYlVZRitrK3grNGJRbk1RQXpMcDVWaHFqYnJKOVRJ?=
- =?utf-8?B?NWJPbGowYUREWDVXQ0ptQkthTEp5MkI1aGx3dXdIVk1LbHEzMTF3T1R3TkN3?=
- =?utf-8?B?eUFCc1pTblpOSW9QSGwxdUlrVitDeHRqcmJVMHNCU044dE1XWFdIT3VlRytx?=
- =?utf-8?B?TEdLcnhURXc1U1BjMURRenBBR0FPMnFpQUR6ODczZEpaTTEvVk9FcVlUYWV6?=
- =?utf-8?B?TnV3OFUzYnQxWlIrUEFZREVoZHM2V3I5a2tFK2EzaEY3RWd1cEpVZkIyZHpn?=
- =?utf-8?B?ODdXRUpocXQ4VDU4Q1BWejk4SXBnVU8rSFpkYnFjSlg1NUVuczZGZXNKU25S?=
- =?utf-8?B?Y2VPZzdMd20zb21sY0VTWm5BQkZmS2grODlNM3JWNUl3RnppUFcrVlN0RFRN?=
- =?utf-8?B?VW5Kb1pLaTJyaENNVGVXNklGQjF5Vy9qYVdWZS9reDZCbUJhSXA3NjlwaS82?=
- =?utf-8?B?a0ZrYk9GcTRuTmtYczdUcTFWeFd6bVdsREZWMUJaSVJnWnc4MmQ5UHplTnRW?=
- =?utf-8?B?dHRtOTM5SHR1MkdkN1Y1ODBua2o4WG1QSTZ5TG1oeTR0NGt3bnFNejhnUW9F?=
- =?utf-8?B?Y1ZyeFJQYU4rS0hUV0phTTZpMCtFdUlIa2dBZUttZXJoUjBkNUVxeVdzd0JK?=
- =?utf-8?B?cTN1MGp2L0NRME1tbm56THlzaytmQTRrRExXS0Y1YTczb2kzeDlDREkzSDJQ?=
- =?utf-8?B?TXl0Q2NDZzFlcjdrYnZJZDR1dnZGOU5IZWVuS0IvcmpaQVZsOHdyaUhGNzZ4?=
- =?utf-8?B?c0JVN1d1b1d3VjBFcGE0ZjBGWFI1azUxZEdON1hjaEJYdWZoSmVUZ1ZhK0Ru?=
- =?utf-8?B?ck1iUUZjcGVUWkVPVVRNbGI0WU9lcEJGbjdWWkFKSEVZb0xvWThGKzdRT3NT?=
- =?utf-8?B?SUZpY0xOSEZMVlYrdUVaaW53cFdUd1hLdzUzYnNNNVFDWHlqRDFzcyt6OW5i?=
- =?utf-8?B?OWdVcjNyblZlcmt1R2l0dThNaXRRY2NjYUZweWJKZjBkamFjK0VheGxiSzUr?=
- =?utf-8?B?ZXRML3UzS2NURTd6Skg5U2NKUDl6b2MvbE1aYjcxWitDV3dneFJEUklHYUEv?=
- =?utf-8?B?aENzODAyTDduZ3B1TFFOblBxc2lwUWxocnpRbjBIM2l1ZVVIamJHajY5ZGpT?=
- =?utf-8?B?NDlqWFdKRkU5UFhObDdXRldEQ2FnK1dlSWNZNjQrZ3YxVjllTFJNZjhVdVZX?=
- =?utf-8?Q?Im9Q=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a019d729-429f-4868-fd8c-08dc5d8306c9
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 19:34:11.7238
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zgEOQmaRJINeTMfGUR/2iPj+zmuwPe5WSJzQFJxsFEFsdHjaE1WkdYS3whxIjqRaQCAmk/5kAenbEJruxtAOiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR04MB10279
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADqBHWYC/x2MQQqAIBAAvyJ7bkE3K+gr0UF0rb1oKEQg/T3pO
+ MwwDSoX4QqralD4lio5dTCDAn+6dDBK6AykyWprJozyoM/eC1KII0ciN8cFen8V7vJ/bfv7fpq
+ I9bZbAAAA
+To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
+ Hugues Fruchet <hugues.fruchet@foss.st.com>, 
+ Alain Volmat <alain.volmat@foss.st.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, 
+ Sakari Ailus <sakari.ailus@linux.intel.com>, 
+ Thierry Reding <thierry.reding@gmail.com>, 
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Sowjanya Komatineni <skomatineni@nvidia.com>, 
+ Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>, 
+ Abylay Ospan <aospan@netup.ru>, 
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
+ Dmitry Osipenko <digetx@gmail.com>, 
+ Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
+ Vikash Garodia <quic_vgarodia@quicinc.com>, 
+ Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
+ Sylvain Petinot <sylvain.petinot@foss.st.com>, 
+ Jacopo Mondi <jacopo+renesas@jmondi.org>, 
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
+ =?utf-8?q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>, 
+ Pavel Machek <pavel@ucw.cz>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev, 
+ linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+ Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.4
 
-Instead of relying on the vendor specific implementations to send the
-PME_Turn_Off message, let's introduce a generic way of sending the message
-using the MSG TLP.
+After this set is applied, these are the only warnings left:
+drivers/media/pci/ivtv/ivtv-fileops.c:223:4-10: preceding lock on line 267
+drivers/media/pci/ivtv/ivtv-fileops.c:230:3-9: preceding lock on line 267
+drivers/media/pci/ivtv/ivtv-fileops.c:236:4-10: preceding lock on line 267
+drivers/media/pci/ivtv/ivtv-fileops.c:245:3-9: preceding lock on line 267
+drivers/media/pci/ivtv/ivtv-fileops.c:251:3-9: preceding lock on line 267
+drivers/media/pci/ivtv/ivtv-fileops.c:257:3-9: preceding lock on line 267
+drivers/media/pci/ivtv/ivtv-fileops.c:272:3-9: preceding lock on line 267
+drivers/media/pci/ivtv/ivtv-fileops.c:598:4-10: preceding lock on line 627
+drivers/media/pci/ivtv/ivtv-fileops.c:598:4-10: preceding lock on line 689
+drivers/media/pci/ivtv/ivtv-fileops.c:606:3-9: preceding lock on line 627
+drivers/media/pci/ivtv/ivtv-fileops.c:606:3-9: preceding lock on line 689
+drivers/media/pci/ivtv/ivtv-fileops.c:648:3-9: preceding lock on line 627
+drivers/media/pci/ivtv/ivtv-fileops.c:648:3-9: preceding lock on line 689
+drivers/media/pci/ivtv/ivtv-fileops.c:692:4-10: preceding lock on line 689
+drivers/media/dvb-core/dvb_frontend.c:2897:1-7: preceding lock on line 2776
+drivers/media/dvb-core/dvb_frontend.c:2897:1-7: preceding lock on line 2786
+drivers/media/dvb-core/dvb_frontend.c:2897:1-7: preceding lock on line 2809
+drivers/media/dvb-frontends/stv090x.c:799:1-7: preceding lock on line 768
+drivers/media/usb/go7007/go7007-i2c.c:125:1-7: preceding lock on line 61
+drivers/media/rc/imon.c:1167:1-7: preceding lock on line 1153
+drivers/media/pci/cx18/cx18-scb.h:261:22-29: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:77:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:85:5-16: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:154:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:171:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:180:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:189:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:201:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:220:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_cmds.h:230:5-16: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:764:5-15: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1008:43-60: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1014:36-46: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1041:5-15: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1088:39-51: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1093:5-22: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1144:4-8: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1239:4-8: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1267:5-9: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/qcom/venus/hfi_helper.h:1272:4-13: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/common/siano/smscoreapi.h:619:5-13: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/common/siano/smscoreapi.h:669:6-13: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/common/siano/smscoreapi.h:1049:4-8: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/common/siano/smscoreapi.h:1055:4-8: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/dvb-frontends/mxl5xx_defs.h:171:4-8: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/dvb-frontends/mxl5xx_defs.h:182:4-8: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/allegro-dvt/nal-hevc.h:102:14-22: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/media/platform/xilinx/xilinx-dma.h:100:19-22: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+drivers/staging/media/atomisp/pci/atomisp_tpg.h:30:18-22: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
 
-This is achieved by reserving a region for MSG TLP of size
-'pci->region_align', at the end of the first IORESOURCE_MEM window of the
-host bridge. And then sending the PME_Turn_Off message during system
-suspend with the help of iATU.
+CI tested:
+https://gitlab.freedesktop.org/linux-media/media-staging/-/commit/055b5211c68e721c3a7090be5373cf44859da1a7/pipelines?ref=ribalda%2Ftest-cocci
 
-The reserve space at end is a little bit better than alloc_resource()
-because the below reasons.
-- alloc_resource() will allocate space at begin of IORESOURCE_MEM window.
-There will be a hole when first Endpoint Device (EP) try to alloc a bigger
-space then 'region_align' size.
-- Keep EP device's IORESOURCE_MEM space unchange with/without this patch.
-
-It should be noted that this generic implementation is optional for the
-glue drivers and can be overridden by a custom 'pme_turn_off' callback.
-
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/pci/controller/dwc/pcie-designware-host.c | 94 ++++++++++++++++++++++-
- drivers/pci/controller/dwc/pcie-designware.h      |  3 +
- 2 files changed, 93 insertions(+), 4 deletions(-)
+Ricardo Ribalda (35):
+      media: pci: mgb4: Refactor struct resources
+      media: stb0899: Remove unreacheable code
+      media: uvcvideo: Refactor iterators
+      media: uvcvideo: Use max() macro
+      media: go7007: Use min and max macros
+      media: stm32-dcmipp: Remove redundant printk
+      media: staging: sun6i-isp: Remove redundant printk
+      media: dvb-frontends: tda18271c2dd: Remove casting during div
+      media: v4l: async: refactor v4l2_async_create_ancillary_links
+      staging: media: tegra-video: Use swap macro
+      media: s2255: Use refcount_t instead of atomic_t for num_channels
+      media: platform: mtk-mdp3: Use refcount_t for job_count
+      media: common: saa7146: Use min macro
+      media: dvb-frontends: drx39xyj: Use min macro
+      media: netup_unidvb: Use min macro
+      media: au0828: Use min macro
+      media: flexcop-usb: Use min macro
+      media: gspca: cpia1: Use min macro
+      media: stk1160: Use min macro
+      media: tegra-vde: Refactor timeout handling
+      media: venus: Use div64_u64
+      media: i2c: st-mipid02: Use the correct div function
+      media: dvb-frontends: tda10048: Use the right div
+      media: tc358746: Use the correct div_ function
+      media: venus: Use the correct div_ function
+      media: venus: Refator return path
+      media: dib0700: Refator return path
+      media: usb: cx231xx: Refator return path
+      media: i2c: rdacm20: Refator return path
+      media: i2c: et8ek8: Refator return path
+      media: cx231xx: Refator return path
+      media: si4713: Refator return path
+      media: ttpci: Refator return path
+      media: hdpvr: Refator return path
+      media: venus: Refator return path
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 3a9cb4be22ab2..5001cdf220123 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -398,6 +398,31 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)
- 	return 0;
- }
- 
-+static void dw_pcie_host_request_msg_tlp_res(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct resource_entry *win;
-+	struct resource *res;
-+
-+	win = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-+	if (win) {
-+		res = devm_kzalloc(pci->dev, sizeof(*res), GFP_KERNEL);
-+		if (!res)
-+			return;
-+
-+		/* Reserve last region_align block as message TLP space */
-+		res->start = win->res->end - pci->region_align + 1;
-+		res->end = win->res->end;
-+		res->name = "msg";
-+		res->flags = win->res->flags | IORESOURCE_BUSY;
-+
-+		if (!devm_request_resource(pci->dev, win->res, res))
-+			pp->msg_res = res;
-+		else
-+			devm_kfree(pci->dev, res);
-+	}
-+}
-+
- int dw_pcie_host_init(struct dw_pcie_rp *pp)
- {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-@@ -484,6 +509,16 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
- 
- 	dw_pcie_iatu_detect(pci);
- 
-+	/*
-+	 * Allocate the resource for MSG TLP before programming the iATU outbound window in
-+	 * dw_pcie_setup_rc(). Since the allocation depends on the value of 'region_align', this has
-+	 * to be done after dw_pcie_iatu_detect().
-+	 *
-+	 * Glue driver need set use_atu_msg before dw_pcie_host_init() if want MSG TLP feature.
-+	 */
-+	if (pp->use_atu_msg)
-+		dw_pcie_host_request_msg_tlp_res(pp);
-+
- 	ret = dw_pcie_edma_detect(pci);
- 	if (ret)
- 		goto err_free_msi;
-@@ -541,6 +576,11 @@ void dw_pcie_host_deinit(struct dw_pcie_rp *pp)
- 
- 	dw_pcie_edma_remove(pci);
- 
-+	if (pp->msg_res) {
-+		release_resource(pp->msg_res);
-+		devm_kfree(pci->dev, pp->msg_res);
-+	}
-+
- 	if (pp->has_msi_ctrl)
- 		dw_pcie_free_msi(pp);
- 
-@@ -702,6 +742,10 @@ static int dw_pcie_iatu_setup(struct dw_pcie_rp *pp)
- 		atu.pci_addr = entry->res->start - entry->offset;
- 		atu.size = resource_size(entry->res);
- 
-+		/* MSG TLB window resource reserve at one of end of IORESOURCE_MEM resource */
-+		if (pp->msg_res && pp->msg_res->parent == entry->res)
-+			atu.size -= resource_size(pp->msg_res);
-+
- 		ret = dw_pcie_prog_outbound_atu(pci, &atu);
- 		if (ret) {
- 			dev_err(pci->dev, "Failed to set MEM range %pr\n",
-@@ -733,6 +777,8 @@ static int dw_pcie_iatu_setup(struct dw_pcie_rp *pp)
- 		dev_warn(pci->dev, "Ranges exceed outbound iATU size (%d)\n",
- 			 pci->num_ob_windows);
- 
-+	pp->msg_atu_index = i;
-+
- 	i = 0;
- 	resource_list_for_each_entry(entry, &pp->bridge->dma_ranges) {
- 		if (resource_type(entry->res) != IORESOURCE_MEM)
-@@ -838,11 +884,48 @@ int dw_pcie_setup_rc(struct dw_pcie_rp *pp)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_setup_rc);
- 
-+/* Using message outbound ATU to send out PME_Turn_Off message for dwc PCIe controller */
-+static int dw_pcie_pme_turn_off(struct dw_pcie *pci)
-+{
-+	struct dw_pcie_ob_atu_cfg atu = { 0 };
-+	void __iomem *mem;
-+	int ret;
-+
-+	if (pci->num_ob_windows <= pci->pp.msg_atu_index)
-+		return -EINVAL;
-+
-+	if (!pci->pp.msg_res)
-+		return -EINVAL;
-+
-+	atu.code = PCIE_MSG_CODE_PME_TURN_OFF;
-+	atu.routing = PCIE_MSG_TYPE_R_BC;
-+	atu.type = PCIE_ATU_TYPE_MSG;
-+	atu.size = resource_size(pci->pp.msg_res);
-+	atu.index = pci->pp.msg_atu_index;
-+
-+	atu.cpu_addr = pci->pp.msg_res->start;
-+
-+	ret = dw_pcie_prog_outbound_atu(pci, &atu);
-+	if (ret)
-+		return ret;
-+
-+	mem = ioremap(atu.cpu_addr, pci->region_align);
-+	if (!mem)
-+		return -ENOMEM;
-+
-+	/* A dummy write is converted to a Msg TLP */
-+	writel(0, mem);
-+
-+	iounmap(mem);
-+
-+	return 0;
-+}
-+
- int dw_pcie_suspend_noirq(struct dw_pcie *pci)
- {
- 	u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
- 	u32 val;
--	int ret;
-+	int ret = 0;
- 
- 	/*
- 	 * If L1SS is supported, then do not put the link into L2 as some
-@@ -854,10 +937,13 @@ int dw_pcie_suspend_noirq(struct dw_pcie *pci)
- 	if (dw_pcie_get_ltssm(pci) <= DW_PCIE_LTSSM_DETECT_ACT)
- 		return 0;
- 
--	if (!pci->pp.ops->pme_turn_off)
--		return 0;
-+	if (pci->pp.ops->pme_turn_off)
-+		pci->pp.ops->pme_turn_off(&pci->pp);
-+	else
-+		ret = dw_pcie_pme_turn_off(pci);
- 
--	pci->pp.ops->pme_turn_off(&pci->pp);
-+	if (ret)
-+		return ret;
- 
- 	ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
- 				PCIE_PME_TO_L2_TIMEOUT_US/10,
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index 703b50bc5e0f1..dca5de4c6e877 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -341,6 +341,9 @@ struct dw_pcie_rp {
- 	struct pci_host_bridge  *bridge;
- 	raw_spinlock_t		lock;
- 	DECLARE_BITMAP(msi_irq_in_use, MAX_MSI_IRQS);
-+	bool			use_atu_msg;
-+	int			msg_atu_index;
-+	struct resource		*msg_res;
- };
- 
- struct dw_pcie_ep_ops {
+ drivers/media/common/saa7146/saa7146_hlp.c         |  8 +++----
+ drivers/media/dvb-frontends/drx39xyj/drxj.c        |  9 +++-----
+ drivers/media/dvb-frontends/stb0899_drv.c          |  5 -----
+ drivers/media/dvb-frontends/tda10048.c             |  3 +--
+ drivers/media/dvb-frontends/tda18271c2dd.c         |  4 ++--
+ drivers/media/i2c/et8ek8/et8ek8_driver.c           |  4 +++-
+ drivers/media/i2c/rdacm20.c                        |  5 ++++-
+ drivers/media/i2c/st-mipid02.c                     |  2 +-
+ drivers/media/i2c/tc358746.c                       |  3 +--
+ drivers/media/pci/mgb4/mgb4_core.c                 |  4 ++--
+ drivers/media/pci/mgb4/mgb4_regs.c                 |  2 +-
+ drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c  |  2 +-
+ drivers/media/pci/ttpci/budget-core.c              |  5 ++++-
+ .../media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c   | 10 ++++-----
+ .../media/platform/mediatek/mdp3/mtk-mdp3-core.c   |  6 ++---
+ .../media/platform/mediatek/mdp3/mtk-mdp3-core.h   |  2 +-
+ .../media/platform/mediatek/mdp3/mtk-mdp3-m2m.c    |  6 ++---
+ drivers/media/platform/nvidia/tegra-vde/h264.c     |  6 ++---
+ drivers/media/platform/qcom/venus/vdec.c           | 15 +++++++------
+ drivers/media/platform/qcom/venus/venc.c           | 19 +++++++++-------
+ .../platform/st/stm32/stm32-dcmipp/dcmipp-core.c   |  5 +----
+ drivers/media/radio/si4713/radio-usb-si4713.c      |  8 +++++--
+ drivers/media/usb/au0828/au0828-video.c            |  5 +----
+ drivers/media/usb/b2c2/flexcop-usb.c               |  5 +----
+ drivers/media/usb/cx231xx/cx231xx-i2c.c            | 16 +++++++++----
+ drivers/media/usb/cx231xx/cx231xx-video.c          | 10 +++++++--
+ drivers/media/usb/dvb-usb/dib0700_core.c           |  4 +++-
+ drivers/media/usb/go7007/go7007-fw.c               |  4 ++--
+ drivers/media/usb/gspca/cpia1.c                    |  6 ++---
+ drivers/media/usb/hdpvr/hdpvr-control.c            |  4 +++-
+ drivers/media/usb/s2255/s2255drv.c                 | 20 ++++++++---------
+ drivers/media/usb/stk1160/stk1160-video.c          | 10 ++-------
+ drivers/media/usb/uvc/uvc_ctrl.c                   | 26 ++++++++++++----------
+ drivers/media/v4l2-core/v4l2-async.c               |  8 +++----
+ drivers/staging/media/sunxi/sun6i-isp/sun6i_isp.c  |  1 -
+ drivers/staging/media/tegra-video/tegra20.c        |  9 ++------
+ 36 files changed, 132 insertions(+), 129 deletions(-)
+---
+base-commit: 71b3ed53b08d87212fbbe51bdc3bf44eb8c462f8
+change-id: 20240415-fix-cocci-2df3ef22a6f7
 
+Best regards,
 -- 
-2.34.1
+Ricardo Ribalda <ribalda@chromium.org>
 
 
