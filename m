@@ -1,136 +1,130 @@
-Return-Path: <linux-kernel+bounces-144553-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144554-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D81A8A47B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:50:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 951848A47B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:53:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89BD1F21D6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:50:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5FB61C2174B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E4263CF;
-	Mon, 15 Apr 2024 05:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82B26FB8;
+	Mon, 15 Apr 2024 05:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XSdrAQ/d"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ziDb84Nt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C77C463A5;
-	Mon, 15 Apr 2024 05:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060B35234;
+	Mon, 15 Apr 2024 05:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713160210; cv=none; b=ABl7221tmlRFfUHqdDrJGOKCucW0nyIpr/DvR7Gsjqsa9E7GpftAduEAPDU8SJNEsd79/F2eAJmPXblXN4o0N/LEZZ+7z5mu+ThCwQF/ZCguxTGUcn75s+oYwD0WfmjiMFPwFcTrt73IeXspoKNdLxXvWU/j1dbixAwo/XHK+KM=
+	t=1713160391; cv=none; b=X5sBkfVn+LJI/6JjHqHNmnj+2u/rJCBLSHPUEYZ/pU5WDmM7NLvTbCN3/E97wHDnxZ3j/2SIpO/ywVkjndE2Wjl3QFJJTEgkhBphFfnGy9E8Lr/KBG8NXAQYu0lwMHj3oEfeWrRinZrg3bH7MtQsJEnWsriqybFZlXpAsUvT7BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713160210; c=relaxed/simple;
-	bh=pKvbKUaHAMes2QG7XgOsRZ1u0RDB6CQVQg/r1585r5I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G4aMUjNs2c2z+iygEf4IeTmc4xQwnDkaXaSFkvRtnWJKmE1Mm3G9ykAcuvHOynVO8F6q+2itKULKqjyIT6pYc3zZtd4a3RGLWosE/LCkLBShCS/EVhZoi8AaD4F1kZ9zjQdSqFxPwUEhZnWA41fuzo7ggz3SxzA+ODvT68SMU0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XSdrAQ/d; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-518a56cdbceso1744318e87.0;
-        Sun, 14 Apr 2024 22:50:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713160207; x=1713765007; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hhge6ldXd4uNBh2q7E8muCHyp1IdQgnzbXqJxMF1SWA=;
-        b=XSdrAQ/dS5mq2N76cOp0DJwtkAzp4q9tmAY+V22Q+tjAFFUdVBbFg3EbFV93RFYHaf
-         agUWApFnd7gtPFy7nMIXChn7AAFZqHIgmIpNNtd2YUn2RmWzwevXMu1NVYzWMX+w9YUn
-         OjbCZ1EjvXh95qkGKIzWzhFN0c8xjjS3kN1NzExYLsdqoJCH51K4I3jxyPB46Z9lliVx
-         Ky68j8qQeyRe7FckqjxEJBPzETDZxg/7MamfcEcr9i61hYIOHO08hQLlWm+Q0Hh18iqZ
-         L2EUn+bCN7pM9ux24W1hI0nnN6+hwE8OCIPuPS9wLTO2rimXmw6kOedU3kaNpPHxw8YB
-         HZpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713160207; x=1713765007;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hhge6ldXd4uNBh2q7E8muCHyp1IdQgnzbXqJxMF1SWA=;
-        b=AyUVI5bpSfmxiEeTBU0BopeSpyZSOLt/AO+/1o8h9Zj/ersE44fmo2EaMRvUzvVPzI
-         WKeunva6wHVYiM/LGHhbe/TDHyAXOgZxb/GALXHb1FFW1KunkA0bXhF6a+TkImv1EEim
-         h3IntII/YGK843YYV5bWq7xEW5dS8qrQCFUxBbtx/3gXvUQafF6wLoEeCG2pZYStKltm
-         skfc5erAyOQzKrfiRtO0wX+y5I56t+/ITKi3Vx5zgx1cvqWEsvMzBrY+CjiujgLIYLuW
-         Gt8/YCx7WHyLXkzxuVNxfoh/BvocebXziBv9JNM5k8pTX/QyAIqPFN4V/8lP/Er3CWNJ
-         FWhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ8q9lkLhrisqZhmmB8zOTftx6Yer8RJC42i78O8u4Nl/ugs//S+/txal25LvuNooixbNivQZKJcYDEKw1I4kRIAsX7kP+9OWV5VOdKim2hz7iuxQenDydRIcCocHxqT6wZAJu4W9xR2QXeZaXxhH0nNq+pvQVh49L2HbJ8a8JPDu20Sihzng3
-X-Gm-Message-State: AOJu0Yyi1mO8uJwb3G8psR0ZGLZ15GRKH52uVpNFmp9RhWvSF+F0L5ky
-	BrOQRLtTRLzikv1A3VUwkDaEo+vE/qp8J0RxFLa/3AWUy9r334oc
-X-Google-Smtp-Source: AGHT+IFrjmHsLQTNbMprEYNHTpIYPuiDb4tXllTV5X7b8Y1tKYnQve4QfqiDMUgJEBAHnJ7NNCIDcQ==
-X-Received: by 2002:a05:6512:2158:b0:518:c9bb:ee96 with SMTP id s24-20020a056512215800b00518c9bbee96mr1855898lfr.53.1713160206607;
-        Sun, 14 Apr 2024 22:50:06 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:7426:df00::2? (drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:7426:df00::2])
-        by smtp.gmail.com with ESMTPSA id h16-20020a056512055000b00516d0933256sm1169909lfl.131.2024.04.14.22.50.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 14 Apr 2024 22:50:06 -0700 (PDT)
-Message-ID: <d3e555c2-e740-4aff-aac7-661877166399@gmail.com>
-Date: Mon, 15 Apr 2024 08:50:05 +0300
+	s=arc-20240116; t=1713160391; c=relaxed/simple;
+	bh=GPG1/kd4ZB9qwFI4gdErArU3/kBu8MPbHNQ9e6xNK0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kdEDVaCU+P7pBQAEZT5amEiAG/tC93nDwyBKmi+S0mV41FAGZkGkRayxhwfThN4qwhCj+mC9BQUQeEqiqyeCx/gkArol48akR0BuzlQ4pdyN4MS21Ij2JczgRraL4VczzrfFF4XYQd1KavYGaF8AjoYm/qfGERYq5AFHxlGiros=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ziDb84Nt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFE54C113CC;
+	Mon, 15 Apr 2024 05:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713160389;
+	bh=GPG1/kd4ZB9qwFI4gdErArU3/kBu8MPbHNQ9e6xNK0g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ziDb84Nte5ZeFl7xxXB1eJ9NDEBYvtdqzpCm7BFed9Rip2rCXNVNHs86e9sF+xPh8
+	 5CUGJqNJZ+fEXEF+ML2IWjdxQBBVVbKvEKV7GbX5E7L8aZAKgiQ3yfzenlFn6OKobZ
+	 ZTWLDT6O80MX3ovDIQrE4pmUGVAz9J9u/BwXX+S8=
+Date: Mon, 15 Apr 2024 07:53:05 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com, broonie@kernel.org, aleksandermj@google.com,
+	ejcaruso@google.com, oneukum@suse.com
+Subject: Re: [PATCH 5.10 000/294] 5.10.215-rc1 review
+Message-ID: <2024041507-landmine-cattle-c911@gregkh>
+References: <20240411095435.633465671@linuxfoundation.org>
+ <9ac4f94c-414e-4c12-bfe0-36aff3e318bc@roeck-us.net>
+ <2024041411-stencil-unscathed-bc65@gregkh>
+ <039f041e-ca03-4750-8d69-87aef0ad1752@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 2/6] dt-bindings: mfd: bd96801 PMIC core
-Content-Language: en-US, en-GB
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Wim Van Sebroeck <wim@linux-watchdog.org>,
- Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
- Fabio Aiuto <fabio.aiuto@engicam.com>
-References: <cover.1712920132.git.mazziesaccount@gmail.com>
- <ea49494429528cf8e60fa984ae1f523ddacd850c.1712920132.git.mazziesaccount@gmail.com>
- <b5eeaf10-e011-452b-840a-176c4f62cac4@linaro.org>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <b5eeaf10-e011-452b-840a-176c4f62cac4@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <039f041e-ca03-4750-8d69-87aef0ad1752@roeck-us.net>
 
-Morning Krzysztof,
-
-Thanks again for the review/help!
-
-On 4/14/24 00:33, Krzysztof Kozlowski wrote:
-> On 12/04/2024 13:21, Matti Vaittinen wrote
->> +
->> +  rohm,hw-timeout-ms:
->> +    description:
->> +      Watchdog timeout value(s). First walue is timeout limit. Second value is
->> +      optional value for 'too early' watchdog ping if window timeout mode is
->> +      to be used.
+On Sun, Apr 14, 2024 at 02:18:03PM -0700, Guenter Roeck wrote:
+> Hi Greg,
 > 
-> Standard property timeout-sec does not work for you? It should allow two
-> items as well.
+> On Sun, Apr 14, 2024 at 08:09:39AM +0200, Greg Kroah-Hartman wrote:
+> > On Sat, Apr 13, 2024 at 07:11:57AM -0700, Guenter Roeck wrote:
+> > > Hi,
+> > > 
+> > > On Thu, Apr 11, 2024 at 11:52:43AM +0200, Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 5.10.215 release.
+> > > > There are 294 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > > 
+> > > > Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> > > > Anything received after that time might be too late.
+> > > > 
+> > > > The whole patch series can be found in one patch at:
+> > > > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.215-rc1.gz
+> > > > or in the git tree and branch at:
+> > > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > > > and the diffstat can be found below.
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > greg k-h
+> > > > 
+> > > > -------------
+> > > [ ... ]
+> > > > 
+> > > > Oliver Neukum <oneukum@suse.com>
+> > > >     usb: cdc-wdm: close race between read and workqueue
+> > > > 
+> > > 
+> > > Just in case it has not been reported yet:
+> > > 
+> > > This patch is causing connection failures (timeouts) on all
+> > > Chromebooks using the cdc-wdm driver for cellular modems, with
+> > > all kernel branches where this patch has been applied.
+> > > Reverting it fixes the problem.
+> > > 
+> > > I am copying some of the Google employees involved in identifying
+> > > the regression in case additional feedback is needed.
+> > 
+> > Can you all respond to Oliver on the linux-usb list where this was
+> > originally submitted to work it out?  This commit has been in the tree
+> > for almost a month now with no reported problems that I can see.
+> > 
+> 
+> Who knows, maybe only a certain type of usb cellular modems using cdc-wdm
+> is affected. Either case, the problem was found less than two days after
+> the stable tree merges into ChromeOS, and it took only about a week from
+> there to identify the offending patch. I think that was actually an amazing
+> job, given the size of those merges and because the failure is not absolute
+> but results in unreliable tests due to timeouts.
 
-I don't think so. We need sub-second units. Furthermore, the timeout-sec 
-(if I understand it correctly) updates the "timeout policy", which tells 
-the expected ping-interval. This can be different from the "HW 
-heart-beat" which tells the HW's ping expectation. Hence the "hw-" prefix.
+It is an amazing job, and I wasn't trying to be snarky, I was trying to
+say that "that's odd, normally usb problems are found very quickly by
+lots of people and you should let the author know about this as there's
+nothing I can do about it through this stable report".
 
-> Missing allOf 
+I see the post on linux-usb now, thanks.
 
-This just about summarizes my feelings when I try write the bindings. XD 
-I do feel completely lost. Hence I do really appreciate someone like you 
-taking the time to help me through ^^;
-
-Enjoy the Seattle!
-
-Yours,
-	-- Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+greg k-h
 
