@@ -1,69 +1,56 @@
-Return-Path: <linux-kernel+bounces-145545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE9F8A57A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:23:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A68658A57C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:31:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA1FC1F21137
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:23:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3367A1F22BAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDB380055;
-	Mon, 15 Apr 2024 16:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31CE8174F;
+	Mon, 15 Apr 2024 16:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Vzpt0IrT"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="WGAOoYrP"
+Received: from mail-108-mta44.mxroute.com (mail-108-mta44.mxroute.com [136.175.108.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C351E535
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9971E4B2
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713198196; cv=none; b=L6KexF+5JeKtm2Ee2nUPLQzBDJ6fbE6dEUlRzNPVogotHrR7ZYbdiXPiWc4drnQHSlVTWWF4zOCdlVnUHOv54X0FWXUPKhwo93RALNpSIgey1wIMmhgOq4aOClNvoLderrpEw0cyjItDPegU3/AmdAHoKGkKi5aYBAequf+s0ro=
+	t=1713198672; cv=none; b=K/1X+U20Qfl0bvJti9Sbs35kqI3tXAxJ9L07QDUKDnn+Q+C1FYy9sRjagZqYzUl5E4+3xb2PwPtwwlRZvjQvTJTKWDswFj38Yyga7Au5XKWWfbDCLCyOT02nkNFnoU132kUHi9+RjqM8iR5G7d4tQTTy/ZBpLDywKZ/1e78EurY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713198196; c=relaxed/simple;
-	bh=IztYwKZ/VaVkKmnd9d5+3jv+XxvhkFJkenC+M8BvwQU=;
-	h=Content-Type:Message-ID:Date:MIME-Version:To:Cc:From:Subject; b=X6EVpxqrAHMEwMGi9RJ7n64ZP3VV3PmEOUi/e6fHHUkxXAh/SpE4ToAY2HfA3cWM39Z9CZFE5Vp8PGlNtnulEFmC0DeGd8QqJQHLEPCfcEP5iICjGB9ri4BI6naZvTm2kSZ/uGQubDO+8jpdbpdnB79IXuZuMdKJT2eiRngLUlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Vzpt0IrT; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so179982a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:23:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1713198194; x=1713802994; darn=vger.kernel.org;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=0/Z51JDqeCMIYAogMv4e7mjxOubQ/EaWsQPKXTj8RQ4=;
-        b=Vzpt0IrT4UmI/8l2V4DdwEdp8olYOeS0Ax+R9NARoHlKti3i30gfSyDvqaZbDySlj4
-         I2J52A41IUNsNq8PT4HZzyX4XI1iQEvIDX+XclN/NipNIbS/btZnTbTj6nTSc5u8d8V2
-         efrCFrdGCiDK2H7s1/1sTtESSZUxLyWdn/kdM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713198194; x=1713802994;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0/Z51JDqeCMIYAogMv4e7mjxOubQ/EaWsQPKXTj8RQ4=;
-        b=FGgB3qiaC85BdFLqcX8BoKlx3MyLJLkwJa0zFk3DArxWhH3tb+AYsTDEVIsAbwTRkL
-         +pdtPMrK0ExGuYHj49Ua63XYeK9fRd46f7ty1QE8NpONDMlplNmFioGoo7A0qZulN8UB
-         dC1GTtyQMkxTO6fzF3fl6safSQ1f47zBNKutbULokGWIzlfDGFn96bLydw8EPZpKWJeO
-         d80wdeT1OJTLmqY9qIJbNJKoeTcdsX/oYmfXdMc4Vm81arJ+7nBotQPp/ypn7EzuNEsF
-         RAgfbfGYuabcKfJVyVkLGYezMYQOzyRGsgbMC7va2+aSe68yLWHQUdcV0ZjQdQrZVh/6
-         K/Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCWHGibzYI8Bd0yMGgkjRPFQn5XTRa0HRjzw0YP6DWK01f2zP6nNtgzS9Na7v1Bcfh2XbQteNBrThgMLquW2Caxw2GfYInvp2jI1zlLH
-X-Gm-Message-State: AOJu0YzNpTub7QnzNwoIVGetdw2ZN+qQJtdN+C4NudPw1El6xXqlUnyz
-	dbIwC3RriLyfd53M3Z5aB3RlyGgUVGLjo1T9fZroRHhkfgCQrzKJg/eTCfNeMNY=
-X-Google-Smtp-Source: AGHT+IGGW7en+6bXWtgxTwQRzlAn+FGmigqcoxLVLENAYPJ4AFSUjBaYrm1Wyp93UhbyFXXF7OuKDg==
-X-Received: by 2002:a17:902:da8c:b0:1e2:c544:9bb0 with SMTP id j12-20020a170902da8c00b001e2c5449bb0mr12201217plx.0.1713198193865;
-        Mon, 15 Apr 2024 09:23:13 -0700 (PDT)
-Received: from [172.20.9.236] ([209.37.221.130])
-        by smtp.gmail.com with ESMTPSA id b11-20020a170902650b00b001e509d4d6ddsm8293062plk.1.2024.04.15.09.23.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 09:23:13 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------9zKQTgrVK4VJRn8QITeFZYlg"
-Message-ID: <c03e09c7-e9a5-4e64-b146-40c14c68bfd5@linuxfoundation.org>
-Date: Mon, 15 Apr 2024 10:23:12 -0600
+	s=arc-20240116; t=1713198672; c=relaxed/simple;
+	bh=hECP6aSG5NyyHc09a/D8NbQZI5fHlXRYAsk0oB3jcak=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cp8i5PLGHmyyj6aUY+HCMBUJW+LB3+sPvl5XNJgud5Oc3xFNyI6HlBUTojh6GVQkhUfUAG4bKpAxtXTfKd1iUH78TeOp0pS/erltWXLh/toe2Bps9zRqYPpwWsRVX03WkbaQutwWc//KeTba947bNPb7Dmmo+EN/3tzOD7712eI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=WGAOoYrP; arc=none smtp.client-ip=136.175.108.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta44.mxroute.com (ZoneMTA) with ESMTPSA id 18ee29461060003bea.012
+ for <linux-kernel@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Mon, 15 Apr 2024 16:25:58 +0000
+X-Zone-Loop: 8a3335c4bb1ab2d6327c0b9729090ead1064b028757f
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+	From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=EeroMja+ZItjTmUV/LiM4Dif6wjYVEF3i+Px4jMWoko=; b=WGAOoYrPSrZIZpOzwO9/8m6IsT
+	jFgda5cI2L8O63zRp+jF5ly1Oc6cCuoPEQ+ZTMGLEPL6dkPyMjVHYXTd6V1Rx5uUn+xzx5BRk+n9a
+	qoCA2na8ZKWhNFdkwh1iaJZemj14U4uCi81jqisYPw+Orb5XcN26pwZRb4d7wWw0+I28Q1j3kS8Mq
+	S3mG52BRYTAyJQTWRo/rL2xmG1Ht6ie/3NYA07ZmK0m8ryEHvf0QAN5EOoZYS/Q6EE5jPuDq5EuYS
+	keRLp+VbKClX5vc6eLRe8O65EKbdYTiAaGZgvFnEXLEm1JkgzHmHwH7S3yh55ZGPOdhnwvg/N5QUq
+	LPokbfSA==;
+Message-ID: <e4d0d1a2-117e-4106-9674-f78165060e8e@luigi311.com>
+Date: Mon, 15 Apr 2024 10:25:53 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,114 +58,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 23/25] media: i2c: imx258: Add support for reset gpio
+To: Tommaso Merciai <tomm.merciai@gmail.com>
+Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
+ jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+ sakari.ailus@linux.intel.com, devicetree@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, pavel@ucw.cz, phone-devel@vger.kernel.org,
+ Ondrej Jirman <megous@megous.com>
+References: <20240414203503.18402-1-git@luigi311.com>
+ <20240414203503.18402-24-git@luigi311.com>
+ <Zh1PGuTjFlttNnLX@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
 Content-Language: en-US
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest fixes update for Linux 6.9-rc5
-
-This is a multi-part message in MIME format.
---------------9zKQTgrVK4VJRn8QITeFZYlg
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Luis Garcia <git@luigi311.com>
+In-Reply-To: <Zh1PGuTjFlttNnLX@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Id: git@luigi311.com
 
-Hi Linus,
+On 4/15/24 10:00, Tommaso Merciai wrote:
+> Hi Luis,
+> 
+> On Sun, Apr 14, 2024 at 02:35:01PM -0600, git@luigi311.com wrote:
+>> From: Luis Garcia <git@luigi311.com>
+>>
+>> It was documented in DT, but not implemented.
+> 
+> Good catch :-)
+> 
+>>
+>> Signed-off-by: Ondrej Jirman <megous@megous.com>
+>> Signed-off-by: Luis Garcia <git@luigi311.com>
+>> ---
+>>  drivers/media/i2c/imx258.c | 14 +++++++++++++-
+>>  1 file changed, 13 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+>> index f0bd72f241e4..5de71cb7c1ae 100644
+>> --- a/drivers/media/i2c/imx258.c
+>> +++ b/drivers/media/i2c/imx258.c
+>> @@ -699,6 +699,7 @@ struct imx258 {
+>>  	unsigned int csi2_flags;
+>>  
+>>  	struct gpio_desc *powerdown_gpio;
+>> +	struct gpio_desc *reset_gpio;
+>>  
+>>  	/*
+>>  	 * Mutex for serialized access:
+>> @@ -1250,7 +1251,11 @@ static int imx258_power_on(struct device *dev)
+>>  		regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+>>  	}
+>>  
+>> -	return ret;
+>> +	gpiod_set_value_cansleep(imx258->reset_gpio, 0);
+>> +
+> 
+> I think you can remove this new line here.
+> 
 
-Please pull the following kselftest fixes update for Linux 6.9-rc5.
+Done
 
-This kselftest fixes update for Linux 6.9-rc5 consists of a fix to
-kselftest harness to prevent infinite loop triggered in an assert
-in FIXTURE_TEARDOWN and a fix to a problem seen in being able to stop
-subsystem-enable tests when sched events are being traced.
+>> +	usleep_range(400, 500);
+>> +
+>> +	return 0;
+>>  }
+>>  
+>>  static int imx258_power_off(struct device *dev)
+>> @@ -1260,6 +1265,7 @@ static int imx258_power_off(struct device *dev)
+>>  
+>>  	clk_disable_unprepare(imx258->clk);
+>>  
+>> +	gpiod_set_value_cansleep(imx258->reset_gpio, 1);
+>>  	gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
+>>  
+>>  	regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
+>> @@ -1573,6 +1579,12 @@ static int imx258_probe(struct i2c_client *client)
+>>  	if (IS_ERR(imx258->powerdown_gpio))
+>>  		return PTR_ERR(imx258->powerdown_gpio);
+>>  
+>> +	/* request optional reset pin */
+>> +	imx258->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
+>> +						     GPIOD_OUT_HIGH);
+>> +	if (IS_ERR(imx258->reset_gpio))
+>> +		return PTR_ERR(imx258->reset_gpio);
+>> +
+>>  	/* Initialize subdev */
+>>  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+>>  
+> 
+> Looks good to me.
+> Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
+>
 
-diff is attached.
+Thanks!
+ 
+>> -- 
+>> 2.44.0
+>>
+>>
 
-thanks,
--- Shuah
-
-
-----------------------------------------------------------------
-The following changes since commit 224fe424c356cb5c8f451eca4127f32099a6f764:
-
-   selftests: dmabuf-heap: add config file for the test (2024-03-29 13:57:14 -0600)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-fixes-6.9-rc5
-
-for you to fetch changes up to 72d7cb5c190befbb095bae7737e71560ec0fcaa6:
-
-   selftests/harness: Prevent infinite loop due to Assert in FIXTURE_TEARDOWN (2024-04-04 10:50:53 -0600)
-
-----------------------------------------------------------------
-linux_kselftest-fixes-6.9-rc5
-
-This kselftest fixes update for Linux 6.9-rc5 consists of a fix to
-kselftest harness to prevent infinite loop triggered in an assert
-in FIXTURE_TEARDOWN and a fix to a problem seen in being able to stop
-subsystem-enable tests when sched events are being traced.
-
-----------------------------------------------------------------
-Shengyu Li (1):
-       selftests/harness: Prevent infinite loop due to Assert in FIXTURE_TEARDOWN
-
-Yuanhe Shu (1):
-       selftests/ftrace: Limit length in subsystem-enable tests
-
-  tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc | 6 +++---
-  tools/testing/selftests/kselftest_harness.h                     | 5 ++++-
-  2 files changed, 7 insertions(+), 4 deletions(-)
-
-----------------------------------------------------------------
-
-
-
---------------9zKQTgrVK4VJRn8QITeFZYlg
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux_kselftest-fixes-6.9-rc5.diff"
-Content-Disposition: attachment; filename="linux_kselftest-fixes-6.9-rc5.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Z0cmFjZS90ZXN0LmQvZXZl
-bnQvc3Vic3lzdGVtLWVuYWJsZS50YyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Z0cmFj
-ZS90ZXN0LmQvZXZlbnQvc3Vic3lzdGVtLWVuYWJsZS50YwppbmRleCBiMWVkZTYyNDk4NjYu
-LmI3YzhmMjljMDlhOSAxMDA2NDQKLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvZnRy
-YWNlL3Rlc3QuZC9ldmVudC9zdWJzeXN0ZW0tZW5hYmxlLnRjCisrKyBiL3Rvb2xzL3Rlc3Rp
-bmcvc2VsZnRlc3RzL2Z0cmFjZS90ZXN0LmQvZXZlbnQvc3Vic3lzdGVtLWVuYWJsZS50YwpA
-QCAtMTgsNyArMTgsNyBAQCBlY2hvICdzY2hlZDoqJyA+IHNldF9ldmVudAogCiB5aWVsZAog
-Ci1jb3VudD1gY2F0IHRyYWNlIHwgZ3JlcCAtdiBeIyB8IGF3ayAneyBwcmludCAkNSB9JyB8
-IHNvcnQgLXUgfCB3YyAtbGAKK2NvdW50PWBoZWFkIC1uIDEwMCB0cmFjZSB8IGdyZXAgLXYg
-XiMgfCBhd2sgJ3sgcHJpbnQgJDUgfScgfCBzb3J0IC11IHwgd2MgLWxgCiBpZiBbICRjb3Vu
-dCAtbHQgMyBdOyB0aGVuCiAgICAgZmFpbCAiYXQgbGVhc3QgZm9yaywgZXhlYyBhbmQgZXhp
-dCBldmVudHMgc2hvdWxkIGJlIHJlY29yZGVkIgogZmkKQEAgLTI5LDcgKzI5LDcgQEAgZWNo
-byAxID4gZXZlbnRzL3NjaGVkL2VuYWJsZQogCiB5aWVsZAogCi1jb3VudD1gY2F0IHRyYWNl
-IHwgZ3JlcCAtdiBeIyB8IGF3ayAneyBwcmludCAkNSB9JyB8IHNvcnQgLXUgfCB3YyAtbGAK
-K2NvdW50PWBoZWFkIC1uIDEwMCB0cmFjZSB8IGdyZXAgLXYgXiMgfCBhd2sgJ3sgcHJpbnQg
-JDUgfScgfCBzb3J0IC11IHwgd2MgLWxgCiBpZiBbICRjb3VudCAtbHQgMyBdOyB0aGVuCiAg
-ICAgZmFpbCAiYXQgbGVhc3QgZm9yaywgZXhlYyBhbmQgZXhpdCBldmVudHMgc2hvdWxkIGJl
-IHJlY29yZGVkIgogZmkKQEAgLTQwLDcgKzQwLDcgQEAgZWNobyAwID4gZXZlbnRzL3NjaGVk
-L2VuYWJsZQogCiB5aWVsZAogCi1jb3VudD1gY2F0IHRyYWNlIHwgZ3JlcCAtdiBeIyB8IGF3
-ayAneyBwcmludCAkNSB9JyB8IHNvcnQgLXUgfCB3YyAtbGAKK2NvdW50PWBoZWFkIC1uIDEw
-MCB0cmFjZSB8IGdyZXAgLXYgXiMgfCBhd2sgJ3sgcHJpbnQgJDUgfScgfCBzb3J0IC11IHwg
-d2MgLWxgCiBpZiBbICRjb3VudCAtbmUgMCBdOyB0aGVuCiAgICAgZmFpbCAiYW55IG9mIHNj
-aGVkdWxlciBldmVudHMgc2hvdWxkIG5vdCBiZSByZWNvcmRlZCIKIGZpCmRpZmYgLS1naXQg
-YS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rc2VsZnRlc3RfaGFybmVzcy5oIGIvdG9vbHMv
-dGVzdGluZy9zZWxmdGVzdHMva3NlbGZ0ZXN0X2hhcm5lc3MuaAppbmRleCA0ZmQ3MzVlNDhl
-ZTcuLjIzMGQ2Mjg4NDg4NSAxMDA2NDQKLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMv
-a3NlbGZ0ZXN0X2hhcm5lc3MuaAorKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rc2Vs
-ZnRlc3RfaGFybmVzcy5oCkBAIC0zODMsNiArMzgzLDcgQEAKIAkJRklYVFVSRV9EQVRBKGZp
-eHR1cmVfbmFtZSkgc2VsZjsgXAogCQlwaWRfdCBjaGlsZCA9IDE7IFwKIAkJaW50IHN0YXR1
-cyA9IDA7IFwKKwkJYm9vbCBqbXAgPSBmYWxzZTsgXAogCQltZW1zZXQoJnNlbGYsIDAsIHNp
-emVvZihGSVhUVVJFX0RBVEEoZml4dHVyZV9uYW1lKSkpOyBcCiAJCWlmIChzZXRqbXAoX21l
-dGFkYXRhLT5lbnYpID09IDApIHsgXAogCQkJLyogVXNlIHRoZSBzYW1lIF9tZXRhZGF0YS4g
-Ki8gXApAQCAtMzk5LDggKzQwMCwxMCBAQAogCQkJCV9tZXRhZGF0YS0+ZXhpdF9jb2RlID0g
-S1NGVF9GQUlMOyBcCiAJCQl9IFwKIAkJfSBcCisJCWVsc2UgXAorCQkJam1wID0gdHJ1ZTsg
-XAogCQlpZiAoY2hpbGQgPT0gMCkgeyBcCi0JCQlpZiAoX21ldGFkYXRhLT5zZXR1cF9jb21w
-bGV0ZWQgJiYgIV9tZXRhZGF0YS0+dGVhcmRvd25fcGFyZW50KSBcCisJCQlpZiAoX21ldGFk
-YXRhLT5zZXR1cF9jb21wbGV0ZWQgJiYgIV9tZXRhZGF0YS0+dGVhcmRvd25fcGFyZW50ICYm
-ICFqbXApIFwKIAkJCQlmaXh0dXJlX25hbWUjI190ZWFyZG93bihfbWV0YWRhdGEsICZzZWxm
-LCB2YXJpYW50LT5kYXRhKTsgXAogCQkJX2V4aXQoMCk7IFwKIAkJfSBcCg==
-
---------------9zKQTgrVK4VJRn8QITeFZYlg--
 
