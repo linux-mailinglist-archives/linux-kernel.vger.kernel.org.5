@@ -1,59 +1,61 @@
-Return-Path: <linux-kernel+bounces-145110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE6DE8A4FAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:52:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C9D88A4FB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:53:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31818B22A59
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:52:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC416284650
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:52:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2F37F7FA;
-	Mon, 15 Apr 2024 12:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 153C88062B;
+	Mon, 15 Apr 2024 12:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DUUD9smI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PzFcslSU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110BA70CDE;
-	Mon, 15 Apr 2024 12:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FD37FBB1;
+	Mon, 15 Apr 2024 12:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185375; cv=none; b=lRrWTNoAHqB5PxhndASMM2F7RGM5B6ktvnnYe2vkWv/Z/vdTYV78mgo/oL1eEvlwAepZ2LCnRFA+8dk9AFUvHmPBlfWJn8Gc7Ez8SR84Bw08QTOmksTPt7mG9Vs8EYSI1qgd7rhilCjDhGeePxhralU8QNzy4O0cW0wLjcyMBSE=
+	t=1713185377; cv=none; b=Ujro41LOysGtLbO+gGE2pC2tMrwEFIW7PCfT14izYp1Vg5lHXKOxtrid1Y5VMTr7ICeliIvPEnDTV0g/FNm7X+MwShHvi41mhKS0xs6CQit+I4jq0d5fVEt2ctus+zSAzW4lquD/adMu95/7AwnNEWWKhFcX82gdrCt5RLOwMdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185375; c=relaxed/simple;
-	bh=Hkbqg3u5DORmc+Id5+eWoE5zJPzeijN0PqbXK/gojgc=;
+	s=arc-20240116; t=1713185377; c=relaxed/simple;
+	bh=WRvMdukuWEZ4azfjyEAI2ItEKDT0/LHddLwGlrN5QPU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LohjloNM1yoT3L8mo1cZxHoFvsxGtZJcXzeyMc1rcF6ZPGYFxd4DpQ0JTNrqurzak++5R5tWNYvlhUCqiS9E2c0XDKdf2BjolWj3UmOEUBlH49DAvsEhTAAR3r9A+WtCGQ03vtu5EEa51uwp7zxRN2UjmFotcS6WH72Ieq36Ur4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DUUD9smI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15ABC4AF09;
-	Mon, 15 Apr 2024 12:49:33 +0000 (UTC)
+	 MIME-Version; b=SyyVz7Vu/tDRh05vFG1/3h1JTcWYHYPQn3NrH67IV5+2ONMk2/qgxtaPRVvaZQ7YAEQBxZd942kFx9wIpCBQ/oVOC7UwIODTFPToIMyqe7Z5o0TXUxTcS7CpUHFEEYjGx43Nrr5vReWV5mGY8ZfWVxY+V9n1r022/qGwU8DPl78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PzFcslSU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D3E2C32783;
+	Mon, 15 Apr 2024 12:49:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185374;
-	bh=Hkbqg3u5DORmc+Id5+eWoE5zJPzeijN0PqbXK/gojgc=;
+	s=k20201202; t=1713185376;
+	bh=WRvMdukuWEZ4azfjyEAI2ItEKDT0/LHddLwGlrN5QPU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DUUD9smItFfJBPVDR6qOLuglDxo/hWg7XEgGfDf2nlZxDI6UBYnuwJHVgme/W0qhV
-	 3MOBDW4A7n8fuPja5hU3KEYzmgjoWlq4sLXrHwzo0egg/hcMbCNVU4mA5BU5r/wxCm
-	 vT/Vob6jdHBPzAObbbNW6LAhtZWKu0zGsjU0NDDf9S1Rgf7u994Mp3dUoXgkVjN/v4
-	 FDBBpoCsE1GSDYD9jgS7yTkl4+rcylMXaLwH29317ShOi7nNBDjlc3lVmGNWC4Cynk
-	 YQRh6mXJYBVDyMFeI/con4JogQJ6C7ctdRjjrDk/T0VTd5OHFPgAFt/zd69a1GlZdW
-	 f7/Qs5+LV+4RA==
+	b=PzFcslSUI880sZbMzz25afSX3nGvJbXPzr0i9sIFyS8NKTC5JG9hAoLlD2O0HjSyZ
+	 5lm0CIZiL3TpfhrPRtfEpf0gWxOiU+CJZcBrwC4P+qb4DuAKTfyo1tkFpgi1m7mS3Q
+	 UlP+vvSe5iS7jeiyogTYPg4NGz/EvXjrNgVH8Fas169l1OlPK/b+Iz/KcHPridaC5P
+	 ZcGAgl4Xe9oXzy/aos2TYVa3h0wKTMNmD4/cE/+WDgxJd2hg2GC/VUl/m/jq8JiP4Z
+	 eI/H4vriLKqmV5x6q9lVsumUcCP+RPyQAhe7Z2ZlTqOJ9rDpSZb2fo36xMK6Kt3Yen
+	 BFInhgf2CXZDA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhang Yi <zhangyi@everest-semi.com>,
-	Mark Brown <broonie@kernel.org>,
+Cc: Phil Elwell <phil@raspberrypi.com>,
+	Maarten Vanraes <maarten@rmail.be>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	lgirdwood@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	zhuning0077@gmail.com,
-	linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 11/15] ASoC: codecs: ES8326: modify clock table
-Date: Mon, 15 Apr 2024 06:02:51 -0400
-Message-ID: <20240415100311.3126785-11-sashal@kernel.org>
+	opendmb@gmail.com,
+	florian.fainelli@broadcom.com,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 12/15] net: bcmgenet: Reset RBUF on first open
+Date: Mon, 15 Apr 2024 06:02:52 -0400
+Message-ID: <20240415100311.3126785-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415100311.3126785-1-sashal@kernel.org>
 References: <20240415100311.3126785-1-sashal@kernel.org>
@@ -68,82 +70,81 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.6
 Content-Transfer-Encoding: 8bit
 
-From: Zhang Yi <zhangyi@everest-semi.com>
+From: Phil Elwell <phil@raspberrypi.com>
 
-[ Upstream commit 4581468d071b64a2e3c2ae333fff82dc0391a306 ]
+[ Upstream commit 0a6380cb4c6b5c1d6dad226ba3130f9090f0ccea ]
 
-We got a digital microphone feature issue. And we fixed it by modifying
-the clock table. Also, we changed the marco ES8326_CLK_ON declaration
+If the RBUF logic is not reset when the kernel starts then there
+may be some data left over from any network boot loader. If the
+64-byte packet headers are enabled then this can be fatal.
 
-Signed-off-by: Zhang Yi <zhangyi@everest-semi.com>
-Link: https://msgid.link/r/20240402062043.20608-3-zhangyi@everest-semi.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Extend bcmgenet_dma_disable to do perform the reset, but not when
+called from bcmgenet_resume in order to preserve a wake packet.
+
+N.B. This different handling of resume is just based on a hunch -
+why else wouldn't one reset the RBUF as well as the TBUF? If this
+isn't the case then it's easy to change the patch to make the RBUF
+reset unconditional.
+
+See: https://github.com/raspberrypi/linux/issues/3850
+See: https://github.com/raspberrypi/firmware/issues/1882
+
+Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+Signed-off-by: Maarten Vanraes <maarten@rmail.be>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/es8326.c | 22 +++++++++++-----------
- sound/soc/codecs/es8326.h |  2 +-
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index fd1af97412bdd..a3dbeebaeb0c9 100644
---- a/sound/soc/codecs/es8326.c
-+++ b/sound/soc/codecs/es8326.c
-@@ -326,9 +326,9 @@ static const struct _coeff_div coeff_div_v3[] = {
- 	{125, 48000, 6000000, 0x04, 0x04, 0x1F, 0x2D, 0x8A, 0x0A, 0x27, 0x27},
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 2d7ae71287b14..855cbe349236b 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3282,7 +3282,7 @@ static void bcmgenet_get_hw_addr(struct bcmgenet_priv *priv,
+ }
  
- 	{128, 8000, 1024000, 0x60, 0x00, 0x05, 0x75, 0x8A, 0x1B, 0x1F, 0x7F},
--	{128, 16000, 2048000, 0x20, 0x00, 0x31, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
--	{128, 44100, 5644800, 0xE0, 0x00, 0x01, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
--	{128, 48000, 6144000, 0xE0, 0x00, 0x01, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
-+	{128, 16000, 2048000, 0x20, 0x00, 0x31, 0x35, 0x08, 0x19, 0x1F, 0x3F},
-+	{128, 44100, 5644800, 0xE0, 0x00, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
-+	{128, 48000, 6144000, 0xE0, 0x00, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
- 	{144, 8000, 1152000, 0x20, 0x00, 0x03, 0x35, 0x8A, 0x1B, 0x23, 0x47},
- 	{144, 16000, 2304000, 0x20, 0x00, 0x11, 0x35, 0x8A, 0x1B, 0x23, 0x47},
- 	{192, 8000, 1536000, 0x60, 0x02, 0x0D, 0x75, 0x8A, 0x1B, 0x1F, 0x7F},
-@@ -337,10 +337,10 @@ static const struct _coeff_div coeff_div_v3[] = {
+ /* Returns a reusable dma control register value */
+-static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
++static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv, bool flush_rx)
+ {
+ 	unsigned int i;
+ 	u32 reg;
+@@ -3307,6 +3307,14 @@ static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
+ 	udelay(10);
+ 	bcmgenet_umac_writel(priv, 0, UMAC_TX_FLUSH);
  
- 	{200, 48000, 9600000, 0x04, 0x04, 0x0F, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
- 	{250, 48000, 12000000, 0x04, 0x04, 0x0F, 0x2D, 0xCA, 0x0A, 0x27, 0x27},
--	{256, 8000, 2048000, 0x60, 0x00, 0x31, 0x35, 0x8A, 0x1B, 0x1F, 0x7F},
--	{256, 16000, 4096000, 0x20, 0x00, 0x01, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
--	{256, 44100, 11289600, 0xE0, 0x00, 0x30, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
--	{256, 48000, 12288000, 0xE0, 0x00, 0x30, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
-+	{256, 8000, 2048000, 0x60, 0x00, 0x31, 0x35, 0x08, 0x19, 0x1F, 0x7F},
-+	{256, 16000, 4096000, 0x20, 0x00, 0x01, 0x35, 0x08, 0x19, 0x1F, 0x3F},
-+	{256, 44100, 11289600, 0xE0, 0x01, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
-+	{256, 48000, 12288000, 0xE0, 0x01, 0x01, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
- 	{288, 8000, 2304000, 0x20, 0x00, 0x01, 0x35, 0x8A, 0x1B, 0x23, 0x47},
- 	{384, 8000, 3072000, 0x60, 0x02, 0x05, 0x75, 0x8A, 0x1B, 0x1F, 0x7F},
- 	{384, 16000, 6144000, 0x20, 0x02, 0x03, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
-@@ -349,10 +349,10 @@ static const struct _coeff_div coeff_div_v3[] = {
++	if (flush_rx) {
++		reg = bcmgenet_rbuf_ctrl_get(priv);
++		bcmgenet_rbuf_ctrl_set(priv, reg | BIT(0));
++		udelay(10);
++		bcmgenet_rbuf_ctrl_set(priv, reg);
++		udelay(10);
++	}
++
+ 	return dma_ctrl;
+ }
  
- 	{400, 48000, 19200000, 0xE4, 0x04, 0x35, 0x6d, 0xCA, 0x0A, 0x1F, 0x1F},
- 	{500, 48000, 24000000, 0xF8, 0x04, 0x3F, 0x6D, 0xCA, 0x0A, 0x1F, 0x1F},
--	{512, 8000, 4096000, 0x60, 0x00, 0x01, 0x35, 0x8A, 0x1B, 0x1F, 0x7F},
--	{512, 16000, 8192000, 0x20, 0x00, 0x30, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
--	{512, 44100, 22579200, 0xE0, 0x00, 0x00, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
--	{512, 48000, 24576000, 0xE0, 0x00, 0x00, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
-+	{512, 8000, 4096000, 0x60, 0x00, 0x01, 0x08, 0x19, 0x1B, 0x1F, 0x7F},
-+	{512, 16000, 8192000, 0x20, 0x00, 0x30, 0x35, 0x08, 0x19, 0x1F, 0x3F},
-+	{512, 44100, 22579200, 0xE0, 0x00, 0x00, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
-+	{512, 48000, 24576000, 0xE0, 0x00, 0x00, 0x2D, 0x48, 0x08, 0x1F, 0x1F},
- 	{768, 8000, 6144000, 0x60, 0x02, 0x11, 0x35, 0x8A, 0x1B, 0x1F, 0x7F},
- 	{768, 16000, 12288000, 0x20, 0x02, 0x01, 0x35, 0x8A, 0x1B, 0x1F, 0x3F},
- 	{768, 32000, 24576000, 0xE0, 0x02, 0x30, 0x2D, 0xCA, 0x0A, 0x1F, 0x1F},
-diff --git a/sound/soc/codecs/es8326.h b/sound/soc/codecs/es8326.h
-index 4234bbb900c45..dfef808673f4a 100644
---- a/sound/soc/codecs/es8326.h
-+++ b/sound/soc/codecs/es8326.h
-@@ -101,7 +101,7 @@
- #define ES8326_MUTE (3 << 0)
+@@ -3370,8 +3378,8 @@ static int bcmgenet_open(struct net_device *dev)
  
- /* ES8326_CLK_CTL */
--#define ES8326_CLK_ON (0x7e << 0)
-+#define ES8326_CLK_ON (0x7f << 0)
- #define ES8326_CLK_OFF (0 << 0)
+ 	bcmgenet_set_hw_addr(priv, dev->dev_addr);
  
- /* ES8326_CLK_INV */
+-	/* Disable RX/TX DMA and flush TX queues */
+-	dma_ctrl = bcmgenet_dma_disable(priv);
++	/* Disable RX/TX DMA and flush TX and RX queues */
++	dma_ctrl = bcmgenet_dma_disable(priv, true);
+ 
+ 	/* Reinitialize TDMA and RDMA and SW housekeeping */
+ 	ret = bcmgenet_init_dma(priv);
+@@ -4237,7 +4245,7 @@ static int bcmgenet_resume(struct device *d)
+ 			bcmgenet_hfb_create_rxnfc_filter(priv, rule);
+ 
+ 	/* Disable RX/TX DMA and flush TX queues */
+-	dma_ctrl = bcmgenet_dma_disable(priv);
++	dma_ctrl = bcmgenet_dma_disable(priv, false);
+ 
+ 	/* Reinitialize TDMA and RDMA and SW housekeeping */
+ 	ret = bcmgenet_init_dma(priv);
 -- 
 2.43.0
 
