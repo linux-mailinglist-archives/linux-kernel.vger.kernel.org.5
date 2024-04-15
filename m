@@ -1,135 +1,228 @@
-Return-Path: <linux-kernel+bounces-145595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 877A78A584C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:57:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D008E8A584E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7E6A1C20DD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:57:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86546281DCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46B4E82891;
-	Mon, 15 Apr 2024 16:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E4182892;
+	Mon, 15 Apr 2024 16:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MccKqy+j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pGp4TMgP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gYnkId0s";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pGp4TMgP";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="gYnkId0s"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83ADE1E87C;
-	Mon, 15 Apr 2024 16:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E747A8249B;
+	Mon, 15 Apr 2024 16:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713200217; cv=none; b=ifxaveP4Li3OV0aRI1w2VHqPCQi0U4TB7P/2jw/nwe1qkmJET68nUxfNVYhEu6+TsMG7Of4ygdeqdl7YSQXiteRvvHINM91MlPCNekijV5fi7X/fFsbB04jgEgPghxuA/lJLhgvpWkOxP3GyKc2AJ7RcvKSQc5oOZpEZgk7f73U=
+	t=1713200256; cv=none; b=oyT57DzVokxjFfyJgXkCD9IDKJ8DETy5jO8XfJJDSMCKdcrixRHNQZodC4DpCjtGNcG6oYqkISGrRF0WanZtK5xtGm3nDaGWQN2/h4tiA9mcPTPPigRkSvf5YW6cKFCiBvGouhPzAzSiks6EI0wjeYj0MLg5rpurkry987pEYe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713200217; c=relaxed/simple;
-	bh=23t1wc48Z7qjQUHxpMlFdirQHFa5WZ1akQpPogYgwdY=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=kfbjbBIfZfrB3sNiMQM2sVlF2I5gPg8p67JCpI3YZuMFFir6nuk21/ECker07BHT2tL+Nt7SauzVJHbJpjAe9KTo5oS7JCTy/pRfm8g7kIxpix2elgx4vfR9Y/Nz4cPUeBwblGOgnxjtIac1GhPwQ9eVFUgkZ1esEpNe/HT127o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MccKqy+j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D98E6C113CC;
-	Mon, 15 Apr 2024 16:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713200217;
-	bh=23t1wc48Z7qjQUHxpMlFdirQHFa5WZ1akQpPogYgwdY=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=MccKqy+jcxO65ZEPHizfb5Mc96hbY4jAZG12g4jT1jFG0LEcycDbLg+MgwFLFWnDL
-	 /Ncsg9MFSrkB5HmunRJkncqZEk6X8fEu7lu7j8tR0QUHG0D8uhJXWMA8+xDERhlkRR
-	 9NjK9IoQmQgkfX2h39J9neHr1UALtTptyC0FYchJuHuEGfVqX2CWEUIYULXv4Vcd7s
-	 tmRXsqeY2pmaaxonCgtROnJF0DeESWve2rr17M1A/uXUkdfpwzdyjK3ivJOFa86Wjy
-	 ZIC7j+T8gBHzjDN0NHXpMZiFaNhpAGb0/U59q764Gxm93RwO0e2o9va4ZexYVk5Uhh
-	 wYEsnpGSnVE/g==
-Date: Mon, 15 Apr 2024 11:56:55 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713200256; c=relaxed/simple;
+	bh=3Q2z3ZOcwk5PM/bVaMTg5cwLejXzcCrw952/vQ4w3t0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MQRi8pBBxNdrsn6gWcWJbon7OzJaq/ycnxUlbdrDtyoM1jH9kJXLCApqxWlZE4OUmfqttNJvL/2b6VNeXMrMuBj32DOBEJk5ga63hrACGbLi1jvDDvpvR+snyGyXs4i1ax+FfIxeqLhQzUe2LI7dZ3/vGzw0kkpTvg6m4SXiOjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pGp4TMgP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gYnkId0s; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pGp4TMgP; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=gYnkId0s; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from samweis (unknown [10.149.242.54])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A29C21CA1;
+	Mon, 15 Apr 2024 16:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713200252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bneK5TNfAqWoVhmF1+3QNHHN83grbJAdEO5Q6mIqQVw=;
+	b=pGp4TMgP+BTNF99QPFz8wB18knlOQsEaV5Bg0jDI0YslYEIDB3IIzdxtDUVNlY4ItLVxI+
+	VcmKYJPak7DyMQpZXJqVE0VCTpY5DpKUPKEia33V+44Yly4fopYNRkzF+upMMrz/pZxHER
+	TAVdZ/18O+jf37FdOY8l9zGQVWg5ewo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713200252;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bneK5TNfAqWoVhmF1+3QNHHN83grbJAdEO5Q6mIqQVw=;
+	b=gYnkId0sJPEMbzwpkT1n757CiaWEM/VYnUPzRpXnQ01NkNd693gmw5l/G5I+QQz0oLClnK
+	6qd23GbR3/OJeLDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1713200252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bneK5TNfAqWoVhmF1+3QNHHN83grbJAdEO5Q6mIqQVw=;
+	b=pGp4TMgP+BTNF99QPFz8wB18knlOQsEaV5Bg0jDI0YslYEIDB3IIzdxtDUVNlY4ItLVxI+
+	VcmKYJPak7DyMQpZXJqVE0VCTpY5DpKUPKEia33V+44Yly4fopYNRkzF+upMMrz/pZxHER
+	TAVdZ/18O+jf37FdOY8l9zGQVWg5ewo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1713200252;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bneK5TNfAqWoVhmF1+3QNHHN83grbJAdEO5Q6mIqQVw=;
+	b=gYnkId0sJPEMbzwpkT1n757CiaWEM/VYnUPzRpXnQ01NkNd693gmw5l/G5I+QQz0oLClnK
+	6qd23GbR3/OJeLDQ==
+Date: Mon, 15 Apr 2024 18:57:20 +0200
+From: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+To: Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc: Andy Gospodarek <andy@greyhouse.net>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] bonding: 802.3ad: Avoid packet loss when switching
+ aggregator
+Message-ID: <20240415185720.399e054f@samweis>
+In-Reply-To: <20447.1712795309@famine>
+References: <20240404114908.134034-1-tbogendoerfer@suse.de>
+	<21529.1712592371@famine>
+	<20240410175052.25ac7638@samweis>
+	<20447.1712795309@famine>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Christophe Roullier <christophe.roullier@foss.st.com>
-Cc: Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- Eric Dumazet <edumazet@google.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- "David S . Miller" <davem@davemloft.net>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Paolo Abeni <pabeni@redhat.com>, devicetree@vger.kernel.org, 
- Jakub Kicinski <kuba@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- Mark Brown <broonie@kernel.org>, Jose Abreu <joabreu@synopsys.com>, 
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20240411143658.1049706-1-christophe.roullier@foss.st.com>
-References: <20240411143658.1049706-1-christophe.roullier@foss.st.com>
-Message-Id: <171292930694.2308702.12108714635472172661.robh@kernel.org>
-Subject: Re: [PATCH 00/11] Series to deliver Ethernets for STM32MP13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.79 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.19)[-0.963];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_ZERO(0.00)[0];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[]
+X-Spam-Score: -3.79
+X-Spam-Flag: NO
 
+On Wed, 10 Apr 2024 17:28:29 -0700
+Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
 
-On Thu, 11 Apr 2024 16:36:47 +0200, Christophe Roullier wrote:
-> STM32MP13 is STM32 SOC with 2 GMACs instances
-> This board have 2 RMII phy:
->   -Ethernet1: RMII with crystal
->   -Ethernet2: RMII without crystal
-> Rework dwmac glue to simplify management for next stm32
-> Add support for PHY regulator
-> 
-> Christophe Roullier (11):
->   dt-bindings: net: add STM32MP13 compatible in documentation for stm32
->   dt-bindings: net: add phy-supply property for stm32
->   net: ethernet: stmmac: rework glue to simplify management for next
->     stm32
->   net: ethernet: stmmac: add management of stm32mp13 for stm32
->   net: ethernet: stmmac: stm32: update config management for phy wo
->     cristal
->   net: ethernet: stm32: clean the way to manage wol irqwake
->   net: ethernet: stmmac: stm32: support the phy-supply regulator binding
->   ARM: dts: stm32: add ethernet1 and ethernet2 support on stm32mp13
->   ARM: dts: stm32: add ethernet1/2 RMII pins for STM32MP13F-DK board
->   ARM: dts: stm32: add ethernet1 and ethernet2 for STM32MP135F-DK board
->   ARM: multi_v7_defconfig: Add MCP23S08 pinctrl support
-> 
->  .../devicetree/bindings/net/stm32-dwmac.yaml  |  83 ++++++-
->  arch/arm/boot/dts/st/stm32mp13-pinctrl.dtsi   |  71 ++++++
->  arch/arm/boot/dts/st/stm32mp131.dtsi          |  31 +++
->  arch/arm/boot/dts/st/stm32mp133.dtsi          |  30 +++
->  arch/arm/boot/dts/st/stm32mp135f-dk.dts       |  48 ++++
->  arch/arm/configs/multi_v7_defconfig           |   1 +
->  .../net/ethernet/stmicro/stmmac/dwmac-stm32.c | 235 ++++++++++++------
->  7 files changed, 421 insertions(+), 78 deletions(-)
-> 
-> --
-> 2.25.1
-> 
-> 
-> 
+> 	First, I'm not sure why your port is in WAITING state, unless
+> it's simply that your test is happening very quickly after the port is
+> added to the bond.  The standard (IEEE 802.1AX-2014 6.4.15) requires
+> ports to remain in WAITING state for 2 seconds when transitioning from
+> DETACHED to ATTACHED state (to limit thrashing when multiple ports are
+> added in a short span of time).
+>=20
+> 	You mention the issue happens when the aggregator changes; do
+> you have a detailed sequence of events that describe how the issue is
+> induced?
 
+setup is one Linux server with 2 dual port ethernet cards connected to
+a HP 5710 Flexfabric switch with two modules. Using MC-LAG is probably the
+key to trigger the issue, at least I couldn't reproduce without it.
 
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
+1. create bond0=20
+2. enslave 4 ports to it
+3. wait for link up
+4. do duplicate address detection
 
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
+most of the time this works without problems, but in the error case
+DAD fails with an ENOBUFS for the send call to the packet socket,
+which correlates with the tx dropped in the bond statistic counters.
 
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
+I've enabled debug print for the ad_agg_selection_logic() and in
+error case the look like this:
 
-  pip3 install dtschema --upgrade
+[ 4488.603417] bond0: (slave eth6): best Agg=3D1; P=3D1; a k=3D0; p k=3D1; =
+Ind=3D1; Act=3D0
+[ 4488.603428] bond0: (slave eth6): best ports 0000000019ca9537 slave 00000=
+000ee0c58b9
+[ 4488.603433] bond0: (slave eth6): Agg=3D1; P=3D1; a k=3D0; p k=3D1; Ind=
+=3D1; Act=3D0
+[ 4488.603437] bond0: (slave eth7): Agg=3D2; P=3D0; a k=3D0; p k=3D0; Ind=
+=3D0; Act=3D0
+[ 4488.603441] bond0: (slave eth8): Agg=3D3; P=3D0; a k=3D0; p k=3D0; Ind=
+=3D0; Act=3D0
+[ 4488.603444] bond0: (slave eth9): Agg=3D4; P=3D0; a k=3D0; p k=3D0; Ind=
+=3D0; Act=3D0
+[ 4488.603447] bond0: Warning: No 802.3ad response from the link partner fo=
+r any adapters in the bond
+[ 4488.603449] bond0: (slave eth6): LAG 1 chosen as the active LAG
+[ 4488.603452] bond0: (slave eth6): Agg=3D1; P=3D1; a k=3D0; p k=3D1; Ind=
+=3D1; Act=3D1
+[ 4488.610481] 8021q: adding VLAN 0 to HW filter on device bond0
+[ 4488.618756] bond0: (slave eth6): link status definitely up, 10000 Mbps f=
+ull duplex
+[ 4488.618795] bond0: (slave eth7): link status definitely up, 10000 Mbps f=
+ull duplex
+[ 4488.618831] bond0: (slave eth8): link status definitely up, 10000 Mbps f=
+ull duplex
+[ 4488.618836] bond0: active interface up!
+[ 4488.678822] ixgbe 0000:81:00.1 eth9: detected SFP+: 6
+[ 4488.706715] bond0: (slave eth6): best Agg=3D1; P=3D1; a k=3D15; p k=3D1;=
+ Ind=3D0; Act=3D0
+[ 4488.706726] bond0: (slave eth6): best ports 0000000019ca9537 slave 00000=
+000ee0c58b9
+[ 4488.706732] bond0: (slave eth6): Agg=3D1; P=3D1; a k=3D15; p k=3D1; Ind=
+=3D0; Act=3D0
+[ 4488.706737] bond0: (slave eth7): Agg=3D2; P=3D1; a k=3D0; p k=3D1; Ind=
+=3D1; Act=3D0
+[ 4488.706740] bond0: (slave eth8): Agg=3D3; P=3D1; a k=3D0; p k=3D1; Ind=
+=3D1; Act=3D0
+[ 4488.706744] bond0: (slave eth9): Agg=3D4; P=3D1; a k=3D0; p k=3D1; Ind=
+=3D1; Act=3D0
+[ 4488.706747] bond0: (slave eth6): LAG 1 chosen as the active LAG
+[ 4488.706750] bond0: (slave eth6): Agg=3D1; P=3D1; a k=3D15; p k=3D1; Ind=
+=3D0; Act=3D1
+[ 4488.814731] ixgbe 0000:81:00.1 eth9: NIC Link is Up 10 Gbps, Flow Contro=
+l: RX/TX
+[ 4488.826760] bond0: (slave eth9): link status definitely up, 10000 Mbps f=
+ull duplex
+[ 4488.914672] bond0: (slave eth7): best Agg=3D2; P=3D1; a k=3D15; p k=3D1;=
+ Ind=3D0; Act=3D0
+[ 4488.914682] bond0: (slave eth7): best ports 00000000413bcc63 slave 00000=
+000931f59f6
+[ 4488.914687] bond0: (slave eth6): Agg=3D1; P=3D1; a k=3D15; p k=3D1; Ind=
+=3D0; Act=3D0
+[ 4488.914692] bond0: (slave eth7): Agg=3D2; P=3D1; a k=3D15; p k=3D1; Ind=
+=3D0; Act=3D0
+[ 4488.914695] bond0: (slave eth8): Agg=3D3; P=3D1; a k=3D15; p k=3D1; Ind=
+=3D0; Act=3D0
+[ 4488.914698] bond0: (slave eth9): Agg=3D4; P=3D1; a k=3D0; p k=3D1; Ind=
+=3D1; Act=3D0
+[ 4488.914701] bond0: (slave eth7): LAG 2 chosen as the active LAG
+[ 4488.914704] bond0: (slave eth7): Agg=3D2; P=3D1; a k=3D15; p k=3D1; Ind=
+=3D0; Act=3D1
 
+I've added a debug statement to find out why Agg 2 is better than Agg 1 in
+this case and it's because Agg 2 has a partner (__agg_has_partner() is true)
+while Agg 1 doesn't.
 
-New warnings running 'make CHECK_DTBS=y st/stm32mp135f-dk.dtb' for 20240411143658.1049706-1-christophe.roullier@foss.st.com:
+Wouldn't it make sense to also check for slaves in COLLECTING|DISTRIBUTING
+state before switching to a new aggregator ?
 
-arch/arm/boot/dts/st/stm32mp135f-dk.dtb: adc@48003000: 'ethernet@5800e000' does not match any of the regexes: '^adc@[0-9]+$', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/iio/adc/st,stm32-adc.yaml#
+Thomas.
 
-
-
-
-
+--=20
+SUSE Software Solutions Germany GmbH
+HRB 36809 (AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Ivo Totev, Andrew McDonald, Werner Knoblich
 
