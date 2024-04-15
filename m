@@ -1,194 +1,329 @@
-Return-Path: <linux-kernel+bounces-145680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 641998A596E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:55:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CA318A596C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:55:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDB59B2234C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:55:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75FF1F22C13
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2841A13A406;
-	Mon, 15 Apr 2024 17:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADF8137757;
+	Mon, 15 Apr 2024 17:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="wzuL4wO7"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EFAKTbzn"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A698271B50
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769851E877
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713203695; cv=none; b=DUCWAYzYjVOdgaVezVbiP6lbT/bSgPnlWFQDpki++J/yO8Y4Pw6AA0URdz+/uDRNtbrFTmXtNVEeOEjKpVSiHFPvoRfbYImhasiM4uzuyJpFCKk7fn0Q5dMVEyz5/QnVFwr+6KlQMDnhQcRvSZ69HvY7KlXwQO4DIe09Hm+jnWE=
+	t=1713203694; cv=none; b=JFAe8IvMcSMYhZ3fqrXyoKlaf/v+dgf4/74jDIaXWBuJcbLMKZZ0CmGohOggS3mFDzpDvD9tervHw150rIFYAJkbq8PQg/25J+lnXSQ4vbc91XMPzblWUqINJdB4icnbCU7Qo22RDqTSfs09v/B2y373CgjzJQ6iv77I7p/odIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713203695; c=relaxed/simple;
-	bh=Wr/pDR3d/zKmmnQccwLePNG5XdVvSksoQYryiRcRuKY=;
+	s=arc-20240116; t=1713203694; c=relaxed/simple;
+	bh=bLPvMGBz6/NjmL2c52lMxC/NOmxKQ2zboTI9+GkeZi0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kzf+VFmPov+NvoRRix7ktDwheKVmq0sTfLsQH5+/kYlJReRkRp6PFchWp+69ZcoqlAingeGoVG2GQCBMlF7mYc1HTlOE2y48fgr1A2C4/z4Tbm/XVijzkq6Hxc11KIv34/0iEcwoYKIQ0hegwwtD+KJtBpVVutIwQEhJM0s5Zqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wzuL4wO7; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d82713f473so60755631fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:54:53 -0700 (PDT)
+	 To:Cc:Content-Type; b=E9K4gK3JpUw/XDueaczYYdAPsJnRojRThmVR+oFFBY0uA4raenmWiVL+EVnNJYTlia8Fd4wa5JGnFpmfnw/soXFwcoEgF40xMJmmN6GSiMc1gXQR9lAhPY6FF7y01bV/DLyTJb1BAfw1NBog03N92hgbo/go8RrBi8/6bT+STC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EFAKTbzn; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-516cbf3fe68so4347728e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:54:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713203692; x=1713808492; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713203690; x=1713808490; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=igNYJ1pXewB6u5NzWIC4GeGY+3kLjUQqImaU0uTKues=;
-        b=wzuL4wO7SvIb9fYmQlgYKC1GZYZ1jTAlcOHvwfjDLD8pfOjeBdKD/els/eaAi4IXYI
-         fs4nPZW9/lrhCT/egvAGGuouuasq6jWlVZDG8evznD+6d4N+sth5tAoY/ifMBVipg3VK
-         raDcOrSciN3gtdIA2Y4tZBDu4cCZQ0Fgxo/A2dNOQ25mgpZv4F9Dk/SkUOHpuJkZk3l+
-         resMrYqLCooXCqgOE6jvOJpbbruMrYr5x+wpbJlCaDdjQ1pUpEun1eD9ctH2BirICWZu
-         kj1f1/7bxkWH5/8UHGF+lfQC16ogM0lGQwEB6mS+oUt+HXkmcRAZsCpnjGokY+2rI+69
-         rXTg==
+        bh=D5yI4YGbKBikU8AcE9UGGcfp9pwh4H8/pFo+VhmnALw=;
+        b=EFAKTbznG+YIKj+rvo6Rv/99VzcWeEkgNJX9FaTsZIfEhKmcFcrV4NJzKfSFXvz/eB
+         KjtVLYU8nowOOoTEUp5oI1/nCtmMTXyrsTppu5XTGMWokFTQ88FOf5Od5jxlwTmL+13J
+         GmOOwDvTI8/IZesKMBUasu4/PdmCV1smWO4g1XXd/kYaz8JoeNrgddlHIEFg/XhOX635
+         1WhJ5PS1YgbbBTw7MqvdCvgof/8cR9HC/AVRH2Dlr+ZBVkBSVPBMBanTkBJr/4X11L1z
+         zBEWCi7FszQrNGQkz53Bd9tR4gxDFBXEqp86/tPPMXWhuyLodaTFIbxGwO/saHzLxT0s
+         woMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713203692; x=1713808492;
+        d=1e100.net; s=20230601; t=1713203690; x=1713808490;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=igNYJ1pXewB6u5NzWIC4GeGY+3kLjUQqImaU0uTKues=;
-        b=GAU1TO16JNLK9c+E4POMcyLjsJ79wMRlwc1Gq/9jWkZJgWJfggAKD+wRhlmP37LD7Y
-         o/6UmecjG/64Tr8NVUWuxEnik+iiS9rmv9o8x6icoJcw2PfggVUHR4FFNgaAAX+DuAE+
-         BLJdjslPHcoO8ONfJq42tRSYZm2yePaCHbH9eXvzId8QucH1DHa2ST+L+AYx2VEQb6EZ
-         j7tuwoMyG51KtOWXNkdaigTpjARuaQkUzGm3rg7iYnRP/3zqXvZKxrh9FCwDOMH7DLqO
-         hGoEKNm4nWkkOLY7fzVk6sc31HGmJBheV+w51YPlOdSr9M74amtw80iAkiVhgfGO34re
-         il+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWY02AzhNUH0NKIWMm6K7Y5jpsmxuU9hWWSSKKoISxp9ZpfMcL9iCf3DS6V5noIHtxc1t2csi09jp1T9PL4zzqLVmb5ibxA3mXevVxW
-X-Gm-Message-State: AOJu0Yy+aRSNYRuk4T8X4Ol8TUpVtZkzCxTl/lAEr29lmzJ4tph7vzl3
-	ui3qzk2CSWVSMqUSf+z5jkQARkl5MH0rgJC8/VHiLTxbZucWiGJ6Vb+pNt+FOKstZEEe2OxKuuF
-	X7ERgzFjcW1Gmr0x+iixNZXi7ikGrcvz25z5K
-X-Google-Smtp-Source: AGHT+IEGZ/QSN12QZ3Kvtifco1R7sEnyXPpjjrkwzoC0qp0JYVVV1PbYsE8fokyGM6XWM+LBozUeUxtGGTYsfAcg+5w=
-X-Received: by 2002:a05:651c:623:b0:2da:16fd:5c9b with SMTP id
- k35-20020a05651c062300b002da16fd5c9bmr7081458lje.9.1713203691518; Mon, 15 Apr
- 2024 10:54:51 -0700 (PDT)
+        bh=D5yI4YGbKBikU8AcE9UGGcfp9pwh4H8/pFo+VhmnALw=;
+        b=R9M96CCRZC8roPm6m2ZZNpJxiUCe7tsqpCbjVJFtmJicDG3aduf/XWFx31eRFLiSzY
+         HhrHbrjOOxsXskoAT5d04QQOgZuwbleMGdOm35PXllmdv6ozhDoyozVuqXZ8aqvUCXlp
+         vRcJ+RLck82scnO5nriA8Zu63qaOZiU25jCdJS4HFuf4/2pNYJHn2wcv3fTJYX4CXs14
+         05g2BcNhs5FxBxu6IdN9Ymm5aS5XX3z71GgqgExBYq04rjydOfdB1HwkBQhzB+H93WUl
+         g7J6LQkXINGdeUFdd2ZTbvA9hU1xMiN75gnJ/03eeQ8Sj1LxgSEGCFVs8ysdS3dNQUej
+         WIEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUAB0DOgWIQWod1JTP5G2TUB57X6NAZCYBc/U/NXs5J1m88cK6Dd1vY8eWAKt6quuh0IvFJJRqw5y0+xbQ1CXI653clxqEH+05x5s+5
+X-Gm-Message-State: AOJu0Yz1vWdqeE9sQdJ1DweWrVYMAsaxQ3iy3Mr/hBlQ2n/MJUCNGp3r
+	LzRMv/y0Qc41T107mQKmk3xp+L0sMSS/7M7Hf/ozlPfGS9JgTIysR1TFz5N27B98QcqMopVyfhf
+	O4x9DiE3Fej74GvYAt5WB8cXrSb0=
+X-Google-Smtp-Source: AGHT+IFnySQ7OQBwXRANZblJ5BSLCbR+oIRObEDkGHfVRnB9X/PiogR7rMPhTtVWXYXLGE39Qj4dY8it4GcT/uw7PdA=
+X-Received: by 2002:a05:6512:401b:b0:516:9e97:d3ee with SMTP id
+ br27-20020a056512401b00b005169e97d3eemr8377040lfb.53.1713203690360; Mon, 15
+ Apr 2024 10:54:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-24-xiong.y.zhang@linux.intel.com> <ZhhZush_VOEnimuw@google.com>
- <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com> <Zhn9TGOiXxcV5Epx@google.com>
- <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com> <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
- <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com> <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
- <Zh1mKoHJcj22rKy8@google.com>
-In-Reply-To: <Zh1mKoHJcj22rKy8@google.com>
-From: Mingwei Zhang <mizhang@google.com>
-Date: Mon, 15 Apr 2024 10:54:15 -0700
-Message-ID: <CAL715WJf6RdM3DQt995y4skw8LzTMk36Q2hDE34n3tVkkdtMMw@mail.gmail.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: Sean Christopherson <seanjc@google.com>
-Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, 
-	pbonzini@redhat.com, peterz@infradead.org, kan.liang@intel.com, 
-	zhenyuw@linux.intel.com, jmattson@google.com, kvm@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com, 
-	samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com
+References: <20240411153232.169560-1-zi.yan@sent.com> <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
+ <2C698A64-268C-4E43-9EDE-6238B656A391@nvidia.com> <bc8effda-6ff4-458d-a3ee-0d6f25cd41e0@redhat.com>
+ <BBA893A5-1463-482E-8475-384BAD1AC6FD@nvidia.com> <CAHbLzkrg7HpEf1_g4qpeGAR68dUKosSGihhnLRNcONnGVWdCJQ@mail.gmail.com>
+ <60049ec1-df14-4c3f-b3dd-5d771c2ceac4@redhat.com>
+In-Reply-To: <60049ec1-df14-4c3f-b3dd-5d771c2ceac4@redhat.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Mon, 15 Apr 2024 10:54:38 -0700
+Message-ID: <CAHbLzkpMjSUpB2gsYH+4kkEtPuyS4bP7ord+nSgR9xcp3fyVFQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+To: David Hildenbrand <david@redhat.com>
+Cc: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 10:38=E2=80=AFAM Sean Christopherson <seanjc@google=
-com> wrote:
+On Mon, Apr 15, 2024 at 8:40=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> On Mon, Apr 15, 2024, Mingwei Zhang wrote:
-> > On Mon, Apr 15, 2024 at 3:04=E2=80=AFAM Mi, Dapeng <dapeng1.mi@linux.in=
-tel.com> wrote:
-> > > On 4/15/2024 2:06 PM, Mingwei Zhang wrote:
-> > > > On Fri, Apr 12, 2024 at 9:25=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linu=
-x.intel.com> wrote:
-> > > >>>> It's necessary to clear the EVENTSELx MSRs for both GP and fixed=
- counters.
-> > > >>>> Considering this case, Guest uses GP counter 2, but Host doesn't=
- use it. So
-> > > >>>> if the EVENTSEL2 MSR is not cleared here, the GP counter 2 would=
- be enabled
-> > > >>>> unexpectedly on host later since Host perf always enable all val=
-idate bits
-> > > >>>> in PERF_GLOBAL_CTRL MSR. That would cause issues.
-> > > >>>>
-> > > >>>> Yeah,  the clearing for PMCx MSR should be unnecessary .
-> > > >>>>
-> > > >>> Why is clearing for PMCx MSR unnecessary? Do we want to leaking c=
-ounter
-> > > >>> values to the host? NO. Not in cloud usage.
-> > > >> No, this place is clearing the guest counter value instead of host
-> > > >> counter value. Host always has method to see guest value in a norm=
-al VM
-> > > >> if he want. I don't see its necessity, it's just a overkill and
-> > > >> introduce extra overhead to write MSRs.
-> > > >>
-> > > > I am curious how the perf subsystem solves the problem? Does perf
-> > > > subsystem in the host only scrubbing the selector but not the count=
-er
-> > > > value when doing the context switch?
-> > >
-> > > When context switch happens, perf code would schedule out the old eve=
-nts
-> > > and schedule in the new events. When scheduling out, the ENABLE bit o=
-f
-> > > EVENTSELx MSR would be cleared, and when scheduling in, the EVENTSELx
-> > > and PMCx MSRs would be overwritten with new event's attr.config and
-> > > sample_period separately.  Of course, these is only for the case when
-> > > there are new events to be programmed on the PMC. If no new events, t=
-he
-> > > PMCx MSR would keep stall value and won't be cleared.
-> > >
-> > > Anyway, I don't see any reason that PMCx MSR must be cleared.
-> > >
-> >
-> > I don't have a strong opinion on the upstream version. But since both
-> > the mediated vPMU and perf are clients of PMU HW, leaving PMC values
-> > uncleared when transition out of the vPMU boundary is leaking info
-> > technically.
->
-> I'm not objecting to ensuring guest PMCs can't be read by any entity that=
-'s not
-> in the guest's TCB, which is what I would consider a true leak.  I'm obje=
-cting
-> to blindly clearing all PMCs, and more specifically objecting to *KVM* cl=
-earing
-> PMCs when saving guest state without coordinating with perf in any way.
->
-> I am ok if we start with (or default to) a "safe" implementation that zer=
-oes all
-> PMCs when switching to host context, but I want KVM and perf to work toge=
-ther to
-> do the context switches, e.g. so that we don't end up with code where KVM=
- writes
-> to all PMC MSRs and that perf also immediately writes to all PMC MSRs.
-
-I am fully aligned with you on this.
-
->
-> One my biggest complaints with the current vPMU code is that the roles an=
+> On 13.04.24 00:29, Yang Shi wrote:
+> > On Fri, Apr 12, 2024 at 2:06=E2=80=AFPM Zi Yan <ziy@nvidia.com> wrote:
+> >>
+> >> On 12 Apr 2024, at 15:32, David Hildenbrand wrote:
+> >>
+> >>> On 12.04.24 16:35, Zi Yan wrote:
+> >>>> On 11 Apr 2024, at 11:46, David Hildenbrand wrote:
+> >>>>
+> >>>>> On 11.04.24 17:32, Zi Yan wrote:
+> >>>>>> From: Zi Yan <ziy@nvidia.com>
+> >>>>>>
+> >>>>>> In __folio_remove_rmap(), a large folio is added to deferred split=
+ list
+> >>>>>> if any page in a folio loses its final mapping. It is possible tha=
+t
+> >>>>>> the folio is unmapped fully, but it is unnecessary to add the foli=
+o
+> >>>>>> to deferred split list at all. Fix it by checking folio mapcount b=
+efore
+> >>>>>> adding a folio to deferred split list.
+> >>>>>>
+> >>>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> >>>>>> ---
+> >>>>>>     mm/rmap.c | 9 ++++++---
+> >>>>>>     1 file changed, 6 insertions(+), 3 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/mm/rmap.c b/mm/rmap.c
+> >>>>>> index 2608c40dffad..d599a772e282 100644
+> >>>>>> --- a/mm/rmap.c
+> >>>>>> +++ b/mm/rmap.c
+> >>>>>> @@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_r=
+map(struct folio *folio,
+> >>>>>>                     enum rmap_level level)
+> >>>>>>     {
+> >>>>>>             atomic_t *mapped =3D &folio->_nr_pages_mapped;
+> >>>>>> -  int last, nr =3D 0, nr_pmdmapped =3D 0;
+> >>>>>> +  int last, nr =3D 0, nr_pmdmapped =3D 0, mapcount =3D 0;
+> >>>>>>             enum node_stat_item idx;
+> >>>>>>             __folio_rmap_sanity_checks(folio, page, nr_pages, leve=
+l);
+> >>>>>> @@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_r=
+map(struct folio *folio,
+> >>>>>>                             break;
+> >>>>>>                     }
+> >>>>>>    -                atomic_sub(nr_pages, &folio->_large_mapcount);
+> >>>>>> +          mapcount =3D atomic_sub_return(nr_pages,
+> >>>>>> +                                       &folio->_large_mapcount) +=
+ 1;
+> >>>>>
+> >>>>> That becomes a new memory barrier on some archs. Rather just re-rea=
+d it below. Re-reading should be fine here.
+> >>>>
+> >>>> Would atomic_sub_return_relaxed() work? Originally I was using atomi=
+c_read(mapped)
+> >>>> below, but to save an atomic op, I chose to read mapcount here.
+> >>>
+> >>> Some points:
+> >>>
+> >>> (1) I suggest reading about atomic get/set vs. atomic RMW vs. atomic
+> >>> RMW that return a value -- and how they interact with memory barriers=
+.
+> >>> Further, how relaxed variants are only optimized on some architecture=
+s.
+> >>>
+> >>> atomic_read() is usually READ_ONCE(), which is just an "ordinary" mem=
+ory
+> >>> access that should not be refetched. Usually cheaper than most other =
+stuff
+> >>> that involves atomics.
+> >>
+> >> I should have checked the actual implementation instead of being foole=
 d
-> responsibilities between KVM and perf are poorly defined, which leads to =
-suboptimal
-> and hard to maintain code.
+> >> by the name. Will read about it. Thanks.
+> >>
+> >>>
+> >>> (2) We can either use folio_large_mapcount() =3D=3D 0 or !atomic_read=
+(mapped)
+> >>> to figure out if the folio is now completely unmapped.
+> >>>
+> >>> (3) There is one fundamental issue: if we are not batch-unmapping the=
+ whole
+> >>> thing, we will still add the folios to the deferred split queue. Migr=
+ation
+> >>> would still do that, or if there are multiple VMAs covering a folio.
+> >>>
+> >>> (4) We should really avoid making common operations slower only to ma=
+ke
+> >>> some unreliable stats less unreliable.
+> >>>
+> >>>
+> >>> We should likely do something like the following, which might even be=
+ a bit
+> >>> faster in some cases because we avoid a function call in case we unma=
+p
+> >>> individual PTEs by checking _deferred_list ahead of time
+> >>>
+> >>> diff --git a/mm/rmap.c b/mm/rmap.c
+> >>> index 2608c40dffad..356598b3dc3c 100644
+> >>> --- a/mm/rmap.c
+> >>> +++ b/mm/rmap.c
+> >>> @@ -1553,9 +1553,11 @@ static __always_inline void __folio_remove_rma=
+p(struct folio *folio,
+> >>>                   * page of the folio is unmapped and at least one pa=
+ge
+> >>>                   * is still mapped.
+> >>>                   */
+> >>> -               if (folio_test_large(folio) && folio_test_anon(folio)=
+)
+> >>> -                       if (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pm=
+dmapped)
+> >>> -                               deferred_split_folio(folio);
+> >>> +               if (folio_test_large(folio) && folio_test_anon(folio)=
+ &&
+> >>> +                   (level =3D=3D RMAP_LEVEL_PTE || nr < nr_pmdmapped=
+) &&
+> >>> +                   atomic_read(mapped) &&
+> >>> +                   data_race(list_empty(&folio->_deferred_list)))
+> >>
+> >> data_race() might not be needed, as Ryan pointed out[1]
+> >>
+> >>> +                       deferred_split_folio(folio);
+> >>>          }
+> >>>
+> >>> I also thought about handling the scenario where we unmap the whole
+> >>> think in smaller chunks. We could detect "!atomic_read(mapped)" and
+> >>> detect that it is on the deferred split list, and simply remove it
+> >>> from that list incrementing an THP_UNDO_DEFERRED_SPLIT_PAGE event.
+> >>>
+> >>> But it would be racy with concurrent remapping of the folio (might ha=
+ppen with
+> >>> anon folios in corner cases I guess).
+> >>>
+> >>> What we can do is the following, though:
+> >>>
+> >>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> >>> index dc30139590e6..f05cba1807f2 100644
+> >>> --- a/mm/huge_memory.c
+> >>> +++ b/mm/huge_memory.c
+> >>> @@ -3133,6 +3133,8 @@ void folio_undo_large_rmappable(struct folio *f=
+olio)
+> >>>          ds_queue =3D get_deferred_split_queue(folio);
+> >>>          spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+> >>>          if (!list_empty(&folio->_deferred_list)) {
+> >>> +               if (folio_test_pmd_mappable(folio))
+> >>> +                       count_vm_event(THP_UNDO_DEFERRED_SPLIT_PAGE);
+> >>>                  ds_queue->split_queue_len--;
+> >>>                  list_del_init(&folio->_deferred_list);
+> >>>          }
+> >>>
+> >>> Adding the right event of course.
+> >>>
+> >>>
+> >>> Then it's easy to filter out these "temporarily added to the list, bu=
+t never split
+> >>> before the folio was freed" cases.
+> >>
+> >> So instead of making THP_DEFERRED_SPLIT_PAGE precise, use
+> >> THP_DEFERRED_SPLIT_PAGE - THP_UNDO_DEFERRED_SPLIT_PAGE instead? That s=
+hould work.
+> >
+> > It is definitely possible that the THP on the deferred split queue are
+> > freed instead of split. For example, 1M is unmapped for a 2M THP, then
+> > later the remaining 1M is unmapped, or the process exits before memory
+> > pressure happens. So how come we can tell it is "temporarily added to
+> > list"? Then THP_DEFERRED_SPLIT_PAGE - THP_UNDO_DEFERRED_SPLIT_PAGE
+> > actually just counts how many pages are still on deferred split queue.
 >
-> Case in point, I'm pretty sure leaving guest values in PMCs _would_ leak =
-guest
-> state to userspace processes that have RDPMC permissions, as the PMCs mig=
-ht not
-> be dirty from perf's perspective (see perf_clear_dirty_counters()).
+> Not quite I think. I don't think we have a counter that counts how many
+> large folios on the deferred list were split. I think we only have
+> THP_SPLIT_PAGE.
+
+Yes, we just count how many THP were split regardless of why they got
+split. They may be split from a deferred split queue due to memory
+pressure, migration, etc.
+
 >
-> Blindly clearing PMCs in KVM "solves" that problem, but in doing so makes=
- the
-> overall code brittle because it's not clear whether KVM _needs_ to clear =
-PMCs,
-> or if KVM is just being paranoid.
+> We could have
+> * THP_DEFERRED_SPLIT_PAGE
+> * THP_UNDO_DEFERRED_SPLIT_PAGE
+> * THP_PERFORM_DEFERRED_SPLIT_PAGE
+>
+> Maybe that would catch more cases (not sure if all, though). Then, you
+> could tell how many are still on that list. THP_DEFERRED_SPLIT_PAGE -
+> THP_UNDO_DEFERRED_SPLIT_PAGE - THP_PERFORM_DEFERRED_SPLIT_PAGE.
+>
+> That could give one a clearer picture how deferred split interacts with
+> actual splitting (possibly under memory pressure), the whole reason why
+> deferred splitting was added after all.
 
-So once this rolls out, perf and vPMU are clients directly to PMU HW.
-Faithful cleaning (blind cleaning) has to be the baseline
-implementation, until both clients agree to a "deal" between them.
-Currently, there is no such deal, but I believe we could have one via
-future discussion.
+I'm not quite sure whether there is a solid usecase or not. If we
+have, we could consider this. But a simpler counter may be more
+preferred.
 
-Thanks.
--Mingwei
+>
+> > It may be useful. However the counter is typically used to estimate
+> > how many THP are partially unmapped during a period of time.
+>
+> I'd say it's a bit of an abuse of that counter; well, or interpreting
+> something into the counter that that counter never reliably represented.
+
+It was way more reliable than now.
+
+>
+> I can easily write a program that keeps sending your counter to infinity
+> simply by triggering that behavior in a loop, so it's all a bit shaky.
+
+I don't doubt that. But let's get back to reality. The counter used to
+stay reasonable and reliable with most real life workloads before
+mTHP. There may be over-counting, for example, when unmapping a
+PTE-mapped THP which was not on a deferred split queue before. But
+such a case is not common for real life workloads because the huge PMD
+has to be split by partial unmap for most cases. And the partial unmap
+will add the THP to deferred split queue.
+
+But now a common workload, for example, just process exit, may
+probably send the counter to infinity.
+
+>
+> Something like Ryans script makes more sense, where you get a clearer
+> picture of what's mapped where and how. Because that information can be
+> much more valuable than just knowing if it's mapped fully or partially
+> (again, relevant for handling with memory waste).
+
+Ryan's script is very helpful. But the counter has been existing and
+used for years, and it is a quick indicator and much easier to monitor
+in a large-scale fleet.
+
+If we think the reliability of the counter is not worth fixing, why
+don't we just remove it. No counter is better than a broken counter.
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
