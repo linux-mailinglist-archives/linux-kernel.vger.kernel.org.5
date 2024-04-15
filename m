@@ -1,84 +1,163 @@
-Return-Path: <linux-kernel+bounces-144802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C46D88A4AE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:53:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F8FC8A4AE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:53:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53DA5282D94
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A33F21C213D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DBD3C087;
-	Mon, 15 Apr 2024 08:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C3633BBD2;
+	Mon, 15 Apr 2024 08:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="KZuz/w9x"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4792110F;
-	Mon, 15 Apr 2024 08:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="SeFsdH17"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D763A1DA
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713171191; cv=none; b=K7YJOtreNqFVQnZTEMnuWHQ1uA1BsXxgqnNn2xmU86XwLJZqVVaL9datZNAeS+vIDa0RGvMIsSInSm1OAZjpyjx9NXMP4se7g9XXJsJK6tozT+NTIy3cJcTB8TTJG4eEpk6CQ5PXfZn5TLUBjuyAR0GN+5TqmCcN1MHc3s27m7Y=
+	t=1713171189; cv=none; b=MXZl77SEP9sdh3k6FtxcilucDKCQ08BHQTKr+5nq0CSu4DpSGcvo53ynt5+SVv7oyMk7oseMXHbAWQCiqdS9p3ncPvl07acbeUOUDp6mg47gzV5beaN84OLW/6ES3IJ52+cX08WeAjEfEvB7+x0gDCf0kun9Fh9gifX6ve5nXHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713171191; c=relaxed/simple;
-	bh=8oyoBvkStTpVskCvMWBdHyeZcZ4EnMx4KxN8q9qWTwA=;
-	h=Date:From:To:Cc:Subject:Content-Type:MIME-Version:Message-ID; b=YnxbEE3bJurIApR5PiyTjuWHdtMjG52Te3jEVuAT1kuMw9Ou1FWduceC1q6jmD+bzAKhrgrS9P/WqaDfF1gD2x1qZXp0tM8L+675g5+QafS6fkLkbPkbhM4nV1inydgCLMuN37u7MXKDp3O7WEiFgXnGpQhvrUvWUH29knyGBYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=KZuz/w9x reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-	Message-ID; bh=qYbmhSIlBOGpGAcKUkRPEkfru6Iubl4Z5Utz/vgD9RA=; b=K
-	Zuz/w9xejdqUrYW9PCpWbsFuGJ80b4KjeBjpFdiyw92gjAd97CVsp5jIv+kIrvlx
-	rNmJm6KxFUMSOYeSgt39YdP5DoNeDI0V2aXPm6kNGhLyQETy0YTUO6DHH1VT7Wsl
-	OSrooixKaGmiGR83pPtaP12KIX/GcXdVYK4ASjdfAU=
-Received: from congei42$163.com ( [159.226.94.118] ) by
- ajax-webmail-wmsvr-40-122 (Coremail) ; Mon, 15 Apr 2024 16:52:41 +0800
- (CST)
-Date: Mon, 15 Apr 2024 16:52:41 +0800 (CST)
-From: sicong <congei42@163.com>
-To: robdclark@gmail.com, quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org, 
-	sean@poorly.run, airlied@gmail.com, daniel@ffwll.ch
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Bug report: mdp5_crtc.c: use-after-free bug in mdp5_crtc_destroy
- due to race condition
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2024 www.mailtech.cn 163com
-X-NTES-SC: AL_Qu2aAf2cvkkt5ymdY+kfm0YUh+c7UMO5ufQh245eOpF8jDHp+jgFQWJiI0D36NmCMgW2uTm2dztV29t4WZJfeIIObVLBd41QF5OXHFqc9BGSSQ==
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+	s=arc-20240116; t=1713171189; c=relaxed/simple;
+	bh=bnWlog0y4bN4WZfNS47LmbCRbE8trcNL1TvxiAUYcAo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R2hTutJuaPtR4C0BSx3+R5EAOONcX/yUAq+tETYh7S17is+I7iAa/I5Izk/5Nda9b0XPSN610ZnX5ukFuxN6a/Y+YXgvN8HPR9qwHaGK6XnxJHCmWisfgUd3egHtqt7l/lJ0kuQAcrKzAwv+Tpl5ikriVjilzYnsS7d+6+lymgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=SeFsdH17; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so2690213276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1713171185; x=1713775985; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZZ1xbbcbi2PHmTU6OF8vjn6o1DKOJxbx1zIcDvksvVQ=;
+        b=SeFsdH17e1W9yTjRQTRTAiBgLmlZGxcMEUE3eZGSaWG212MDmRuYMxZAig42hmklPx
+         nfV7VcHB+oti6nSi/aEAsiZxKNBnrmIn46SayLGW2oOAQdr37k5NxigNWyEmqNCTbkML
+         zSTvFLpoXeUy2L0hsz/fqUGVrKzd2Mp7vXjI4IJAe+wcU5es4D1lq2ZJZ0Sx6m8PJ7Av
+         +oBPGy8zNiQizNStq9LRuCzg1t4ENNrw8BSxhMXqfunZo2Lc/7w12/KaLVMItOyDS0/Z
+         5vDLJM5YOTMI26fuua+LXC/YXiQXy3XbFtyNico3mm6idmJByjNmJzrrYwRLc7nvHSA/
+         gYZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713171185; x=1713775985;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZZ1xbbcbi2PHmTU6OF8vjn6o1DKOJxbx1zIcDvksvVQ=;
+        b=DbCe/+Ff4nuNxp9/Qu405fgwUrhCF+8cwPFRWdJOmln7wQbuumhfN63iUfsa+39co9
+         ksNYmsvSm1cNE/eyZziTE8MMi7wQYvuDgqviee10eDETGkXkRlN2rp30jUiFGebc4M2f
+         we85H4vb4vAQqvPjrwHNQsg50N3KkePYgF1uDln050/4kgK8G7zL5QHFb1IKLLipYXyY
+         XIJCm19wyS2kT66spxkI5s1NA221T8+GOd8Yobo6BJkpgdkPjRyEoSpWtnpd/5Sn9+2U
+         lV1fheDCw8lACKKlRcT0VYiXeNfwbz7pxPEmM86Q5Y18+3vc/ppnyNGpk4xA8sdH3b8e
+         UeBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXwBtfPJq5snS8p3nF7aPoCHeTPBwnv6a3I4De9vtlyEk++Pgx+K94OOlutUmwVdP5WymXjgwW5KFF8p/nNN1ouCFYba5sbFdhY3ZPw
+X-Gm-Message-State: AOJu0Yya3VSdLazjAbkvc55fo27QOxvTr1v72LyHSTfCIzM63zXgjvF5
+	I+TwDVtOXcDCc5jW4zJN/m4lIaoMFMuqTGynATsSbKVZDFY+8Z22puaPJ/4tFp3eqlHc5xPTTE9
+	oc9qxoPdSlsOtwJCTSU2kM7oesr5p+jv6ebEXfg==
+X-Google-Smtp-Source: AGHT+IFJbL090k1ujMdhoHBuRAuqn8RndPzBOrxsylJHE/9nowfFnHodh0UXrHCjiHc2lZ6BeIyZaM4TTcpqN8OFnWc=
+X-Received: by 2002:a25:9e05:0:b0:dcc:99b6:830b with SMTP id
+ m5-20020a259e05000000b00dcc99b6830bmr8838308ybq.19.1713171185683; Mon, 15 Apr
+ 2024 01:53:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <4221f7a6.ce68.18ee0f5636b.Coremail.congei42@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:_____wD3vxHZ6hxml_sXAA--.15036W
-X-CM-SenderInfo: 5frqwvrlusqiywtou0bp/1tbivhrB8mV4Iq35ZQAKsT
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+References: <cover.1713036964.git.andrea.porta@suse.com> <0ab5a768d686cb634f7144da266c9246e9e90cb4.1713036964.git.andrea.porta@suse.com>
+ <d7b884dd-9b70-41c3-ac2a-66b54c26d08a@gmx.net>
+In-Reply-To: <d7b884dd-9b70-41c3-ac2a-66b54c26d08a@gmx.net>
+From: Phil Elwell <phil@raspberrypi.com>
+Date: Mon, 15 Apr 2024 09:52:54 +0100
+Message-ID: <CAMEGJJ2R-WEqs+LgqMwDQJ_QHF840RYAqVGkbWxBs70anv6M4w@mail.gmail.com>
+Subject: Re: [PATCH 3/6] arm64: dts: broadcom: Add support for BCM2712
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: Andrea della Porta <andrea.porta@suse.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Jonathan Bell <jonathan@raspberrypi.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, linux-kernel@vger.kernel.org, 
+	Al Cooper <alcooperx@gmail.com>, linux-mmc@vger.kernel.org, 
+	Kamal Dasu <kamal.dasu@broadcom.com>, linux-arm-kernel@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-CgptZHA1X2NydGMuYzogdXNlLWFmdGVyLWZyZWUgYnVnIGluIG1kcDVfY3J0Y19kZXN0cm95IGR1
-ZSB0byByYWNlIGNvbmRpdGlvbgoKSW4gbWRwNV9jcnRjX2luaXQsICZtZHA1X2NydGMtPnVucmVm
-X2N1cnNvcl93b3JrIGlzIGJvdW5kIHdpdGggCnVucmVmX2N1cnNvcl93b3JrZXIuIFRoaXMgd29y
-ayB3aWxsIGJlIGNvbW1pdGVkIGJ5IGRybV9mbGlwX3dvcmtfY29tbWl0IApsb2NhdGVkIGluIG1k
-cDVfY3J0Y192YmxhbmtfaXJxLgoKSWYgd2UgY2FsbCBtZHA1X2NydGNfZGVzdHJveSB0byBtYWtl
-IGNsZWFudXAsIHRoZXJlIG1heSBiZSBhIHVuZmluaXNoZWQgd29yay4gClRoaXMgZnVuY3Rpb24g
-d2lsbCBjYWxsIGRybV9mbGlwX3dvcmtfY2xlYW51cCB0byBkZXN0cm95IHJlc291cmNlcyBhbGxv
-Y2F0ZWQgCmZvciB0aGUgZmxpcC13b3JrLiBIb3dldmVyLCBkcm1fZmxpcF93b3JrX2NsZWFudXAg
-d29ya3MgYXMgZm9sbG93aW5nOgpXQVJOX09OKCFsaXN0X2VtcHR5KCZ3b3JrLT5xdWV1ZWQpIHx8
-ICFsaXN0X2VtcHR5KCZ3b3JrLT5jb21taXRlZCkpOwoKQWZ0ZXIgbWRwNV9jcnRjX2Rlc3Ryb3kg
-Y2FsbCBrZnJlZSB0byByZWxlYXNlIHRoZSBvYmplY3QgIm1kcDVfY3J0YyIsIAombWRwNV9jcnRj
-LT51bnJlZl9jdXJzb3Jfd29yayB3aWxsIGdldCB1c2UtYWZ0ZXItZnJlZSBlcnJvci4KCkNQVSAw
-ICAgICAgICAgICAgICAgICAgICAgICAgICAJICAgICAgICBDUFUgMQogICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgfAl1bnJlZl9jdXJzb3Jfd29ya2VyCm1kcDVfY3J0
-Y19kZXN0cm95ICAgICAgICAgICAgfAprZnJlZShtZHA1X2NydGMpICAoZnJlZSkgICAgfAogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfAlnZXRfa21zKCZtZHA1X2Ny
-dGMtPmJhc2UpICh1c2UpCgpUaGlzIGJ1ZyBtYXkgYmUgZml4ZWQgYnkgYWRkaW5nIHRoZSBmb2xs
-b3dpbmcgaW5zdHJ1Y3Rpb25zIGluIGRybV9mbGlwX3dvcmtfY2xlYW51cC4KZmx1c2hfd29yaygm
-bWRwNV9jcnRjLT51bnJlZl9jdXJzb3Jfd29yaykKCkJlc3QgcmVnYXJkcywKU2ljb25nIEh1YW5n
-Cgo=
+Stefan,
+
+
+On Mon, 15 Apr 2024 at 09:20, Stefan Wahren <wahrenst@gmx.net> wrote:
+>
+> Hi Phil,
+>
+> Am 14.04.24 um 00:14 schrieb Andrea della Porta:
+> > Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> > ---
+> >   arch/arm64/boot/dts/broadcom/Makefile         |   1 +
+> >   .../boot/dts/broadcom/bcm2712-rpi-5-b.dts     | 313 +++++++
+> >   arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi |  81 ++
+> >   arch/arm64/boot/dts/broadcom/bcm2712.dtsi     | 841 ++++++++++++++++++
+> >   4 files changed, 1236 insertions(+)
+> >   create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+> >   create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
+> >   create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712.dtsi
+> >
+> > diff --git a/arch/arm64/boot/dts/broadcom/Makefile b/arch/arm64/boot/dts/broadcom/Makefile
+> > index 8b4591ddd27c..92565e9781ad 100644
+> > --- a/arch/arm64/boot/dts/broadcom/Makefile
+> > +++ b/arch/arm64/boot/dts/broadcom/Makefile
+> > @@ -6,6 +6,7 @@ DTC_FLAGS := -@
+> >   dtb-$(CONFIG_ARCH_BCM2835) += bcm2711-rpi-400.dtb \
+> >                             bcm2711-rpi-4-b.dtb \
+> >                             bcm2711-rpi-cm4-io.dtb \
+> > +                           bcm2712-rpi-5-b.dtb \
+> >                             bcm2837-rpi-3-a-plus.dtb \
+> >                             bcm2837-rpi-3-b.dtb \
+> >                             bcm2837-rpi-3-b-plus.dtb \
+> > diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+> > new file mode 100644
+> > index 000000000000..2ce180a54e5b
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+> > @@ -0,0 +1,313 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/dts-v1/;
+> > +
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +#include <dt-bindings/interrupt-controller/irq.h>
+> > +#include <dt-bindings/pwm/pwm.h>
+> > +#include <dt-bindings/reset/raspberrypi,firmware-reset.h>
+> > +
+> > +#define spi0 _spi0
+> > +#define uart0 _uart0
+> > +
+> > +#include "bcm2712.dtsi"
+> > +
+> > +#undef spi0
+> > +#undef uart0
+> > +
+> > +/ {
+> > +     compatible = "raspberrypi,5-model-b", "brcm,bcm2712";
+> > +     model = "Raspberry Pi 5";
+> > +
+> >
+> according to this downstream commit [1] it's just called "Raspberry Pi
+> 5" without Model B, but the filename and the compatible says something
+> different. Is there still a chance to get this consistent or is it too
+> late because the firmware expect the compatible?
+>
+> [1] -
+> https://github.com/raspberrypi/linux/commit/99e359d2f2da2c820fd2a30b1ad08b32c9549adb
+
+Nothing cares about the compatible string, but the product name was
+changed too late for the firmware, which expects the current DTB file
+name. I'm happy with the naming as it stands, since we use Pi 4 to
+refer to all the BCM2711-based devices, and Pi 5 can include CM5.
+
+Phil
 
