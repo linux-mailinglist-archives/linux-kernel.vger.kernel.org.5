@@ -1,122 +1,226 @@
-Return-Path: <linux-kernel+bounces-145970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A85B8A5DAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:19:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 844038A5DB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:27:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2C61B21371
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FD881F21CAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91413157A7D;
-	Mon, 15 Apr 2024 22:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26F9158217;
+	Mon, 15 Apr 2024 22:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="S/BLFsi2"
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h6ic+DeJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6179C154C11;
-	Mon, 15 Apr 2024 22:19:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1036682D93;
+	Mon, 15 Apr 2024 22:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713219564; cv=none; b=p1N1sx0pUTmgYec9tJ0Isl/x06GdJDv1RVzuMxsKtHe5EbOS7mdCxffcjXCvRbnzVsHDw2Zk83QT9nC+msosd2fd2R0D8LRWlsEkWw/dbZmRFmJcppfvLL2CbGDsV2Nrl2osCKdMUZc8mQL4dVcgAXaYwA9SEU+2i+49hxlH2JM=
+	t=1713220027; cv=none; b=iROfRU8+UAJrx9SrYTnXEqda/x4IdFwXcwlVmcB7T5Pw3a+rabqWZaSgHcgnAkOrAVXiFmiNoRRziGbly9J9ZmX5Cv4MX0578XjZKFr5uEXroxTIAjcTlpbtokrdpv9HBXjLNhxfjQ7OkTvcF21RM/EZjXSWsk3zHjA+8fejbIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713219564; c=relaxed/simple;
-	bh=PNvp7gmlHIY1h3LCNlaBN5CUutf9dFC3Ice5JZ8QJeI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uHQECMvdKw/4eciJyztfMbj9hcdtTZhTqMIVR59wXvDBUfrufdCZgPPfMa/M38lVYiqnWUSsmlYO+px58mrCFft9+MIsFJFCjGIP1AJioq81LqjJw6toy3aVWRWjrbRv5VB07va+6sB9RaXB2holrXlkKlAVPWiUfou8qSVGmEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=S/BLFsi2; arc=none smtp.client-ip=52.119.213.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1713219564; x=1744755564;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=o5xHlLkxJsRm7EFmKP4Jmd4YBjmBD9lf5st0GZDp2Z4=;
-  b=S/BLFsi218wJezY5vJs+bxpyR/uE8pE+PKod4JemzgEmgk5TX99gLB92
-   jxFalcdpXxETBXAU23MibDDa2Pn5ZDNg4y9+oJUW+VPJsVE3A5c+5fz3W
-   nU2BaIWjoNShJ4HPsjklnj+p7Ct8oC9MliQx+ZJea11JL9vt353lJa6m3
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.07,204,1708387200"; 
-   d="scan'208";a="647808149"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 22:19:22 +0000
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:12664]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.22.207:2525] with esmtp (Farcaster)
- id 66a8cb9e-2e2e-4cd7-8cf1-e3f8e5cba40e; Mon, 15 Apr 2024 22:19:21 +0000 (UTC)
-X-Farcaster-Flow-ID: 66a8cb9e-2e2e-4cd7-8cf1-e3f8e5cba40e
-Received: from EX19D046UWB003.ant.amazon.com (10.13.139.174) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 15 Apr 2024 22:19:21 +0000
-Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
- EX19D046UWB003.ant.amazon.com (10.13.139.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 15 Apr 2024 22:19:20 +0000
-Received: from dev-dsk-hailmo-2b-4e49cd2f.us-west-2.amazon.com (172.16.42.153)
- by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP Server id
- 15.2.1258.28 via Frontend Transport; Mon, 15 Apr 2024 22:19:20 +0000
-Received: by dev-dsk-hailmo-2b-4e49cd2f.us-west-2.amazon.com (Postfix, from userid 13307802)
-	id 561894151A; Mon, 15 Apr 2024 22:19:20 +0000 (UTC)
-From: Hailey Mothershead <hailmo@amazon.com>
-To: <herbert@gondor.apana.org.au>
-CC: <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <hailmo@amazon.com>
-Subject: [PATCH v2 2/2] crypto: aead,cipher - zeroize key buffer after use
-Date: Mon, 15 Apr 2024 22:19:15 +0000
-Message-ID: <20240415221915.20701-1-hailmo@amazon.com>
+	s=arc-20240116; t=1713220027; c=relaxed/simple;
+	bh=HEf/tRcjyvnch8G1vURup/zbc73d2ZJkc5OYcs0NKco=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JgaU0OpdehsZ7XpoARxv9DkqeEI2NQ2w1IooWPSm1BpSU+Tq5uGagM2EvnaP97KNA+isRalWtUpAwQPFFxbQmGk7oueCF9X0X+mQmavsv2LrgL4ZtzRetNqmuwH8oFwYm72x1gp93wR+Ay1OQ/CQtSpjYYk2vh6xt2R0SOvNcHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h6ic+DeJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5171CC113CC;
+	Mon, 15 Apr 2024 22:27:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713220026;
+	bh=HEf/tRcjyvnch8G1vURup/zbc73d2ZJkc5OYcs0NKco=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=h6ic+DeJpJjMdu+ZMBmBoT1mHXbZwxdPlCBsMhKa3rEEQur6u5Togj2/sh4qQlIQG
+	 q56pEWUGzu3goJ0NNv8vDm/8M7pOhoVMrDxSsC+xEECSfaF09lO2uQ8Fkx5LOmOesX
+	 k5mQ3pxDOBgbWzRh0xoKRQlP+RDTbcAeS+43UEsuwL3n91R0UyWzq0VMY6GALF0Bwd
+	 +fljv149smnODNlWw2PMYlgrKHxoJxOOJOVZPz7ZJWXabT0AXSj63AikAnlbYaIXcU
+	 K4YfYeOd7Vz9quMI5fyUJJNMm6kZ2KR1fkWzPDbWpJdmwYNaOxfWC5ldodwIvp3jci
+	 HsTy1DHc1tCpQ==
+Date: Mon, 15 Apr 2024 17:27:04 -0500
+From: Rob Herring <robh@kernel.org>
+To: Christophe Roullier <christophe.roullier@foss.st.com>
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/11] dt-bindings: net: add STM32MP13 compatible in
+ documentation for stm32
+Message-ID: <20240415222704.GA191094-robh@kernel.org>
+References: <20240411143658.1049706-1-christophe.roullier@foss.st.com>
+ <20240411143658.1049706-2-christophe.roullier@foss.st.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411143658.1049706-2-christophe.roullier@foss.st.com>
 
-I.G 9.7.B for FIPS 140-3 specifies that variables temporarily holding
-cryptographic information should be zeroized once they are no longer
-needed. Accomplish this by using kfree_sensitive for buffers that
-previously held the private key.
+On Thu, Apr 11, 2024 at 04:36:48PM +0200, Christophe Roullier wrote:
+> New STM32 SOC have 2 GMACs instances.
+> GMAC IP version is SNPS 4.20.
+> 
+> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+> ---
+>  .../devicetree/bindings/net/stm32-dwmac.yaml  | 80 +++++++++++++++++--
+>  1 file changed, 72 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+> index 857d58949b029..20f58eff6e6f9 100644
+> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+> @@ -22,18 +22,17 @@ select:
+>          enum:
+>            - st,stm32-dwmac
+>            - st,stm32mp1-dwmac
+> +          - st,stm32mp13-dwmac
+>    required:
+>      - compatible
+>  
+> -allOf:
+> -  - $ref: snps,dwmac.yaml#
+> -
+>  properties:
+>    compatible:
+>      oneOf:
+>        - items:
+>            - enum:
+>                - st,stm32mp1-dwmac
+> +              - st,stm32mp13-dwmac
+>            - const: snps,dwmac-4.20a
+>        - items:
+>            - enum:
+> @@ -74,13 +73,16 @@ properties:
+>  
+>    st,syscon:
+>      $ref: /schemas/types.yaml#/definitions/phandle-array
+> -    items:
+> -      - items:
 
-Signed-off-by: Hailey Mothershead <hailmo@amazon.com>
----
- crypto/aead.c   | 3 +--
- crypto/cipher.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+It is subtle, but the '-' there was significant...
 
-diff --git a/crypto/aead.c b/crypto/aead.c
-index 16991095270d..c4ece86c45bc 100644
---- a/crypto/aead.c
-+++ b/crypto/aead.c
-@@ -35,8 +35,7 @@ static int setkey_unaligned(struct crypto_aead *tfm, const u8 *key,
- 	alignbuffer = (u8 *)ALIGN((unsigned long)buffer, alignmask + 1);
- 	memcpy(alignbuffer, key, keylen);
- 	ret = crypto_aead_alg(tfm)->setkey(tfm, alignbuffer, keylen);
--	memset(alignbuffer, 0, keylen);
--	kfree(buffer);
-+	kfree_sensitive(buffer);
- 	return ret;
- }
- 
-diff --git a/crypto/cipher.c b/crypto/cipher.c
-index b47141ed4a9f..395f0c2fbb9f 100644
---- a/crypto/cipher.c
-+++ b/crypto/cipher.c
-@@ -34,8 +34,7 @@ static int setkey_unaligned(struct crypto_cipher *tfm, const u8 *key,
- 	alignbuffer = (u8 *)ALIGN((unsigned long)buffer, alignmask + 1);
- 	memcpy(alignbuffer, key, keylen);
- 	ret = cia->cia_setkey(crypto_cipher_tfm(tfm), alignbuffer, keylen);
--	memset(alignbuffer, 0, keylen);
--	kfree(buffer);
-+	kfree_sensitive(buffer);
- 	return ret;
- 
- }
--- 
-2.40.1
+> -          - description: phandle to the syscon node which encompases the glue register
+> -          - description: offset of the control register
+>      description:
+>        Should be phandle/offset pair. The phandle to the syscon node which
+> -      encompases the glue register, and the offset of the control register
+> +      encompases the glue register, the offset of the control register and
+> +      the mask to set bitfield in control register
+> +    items:
+> +      minItems: 2
+> +      items:
 
-memsets removed and first patch in series dropped.
+Now you removed it, so any number of <phandle offset mask> are allowed. 
+You need:
+
+items:
+  - minItems: 2
+    items:
+      - ...
+
+
+> +        - description: phandle to the syscon node which encompases the glue register
+> +        - description: offset of the control register
+> +        - description: field to set mask in register
+>  
+>    st,ext-phyclk:
+>      description:
+> @@ -108,6 +110,34 @@ required:
+>  
+>  unevaluatedProperties: false
+>  
+> +allOf:
+> +  - $ref: snps,dwmac.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - st,stm32mp1-dwmac
+> +              - st,stm32-dwmac
+> +    then:
+> +      properties:
+> +        st,syscon:
+> +          items:
+> +            minItems: 2
+
+You mean 'maxItems: 2' as 2 is already the min.
+
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - st,stm32mp13-dwmac
+> +    then:
+> +      properties:
+> +        st,syscon:
+> +          items:
+> +            minItems: 3
+> +
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/arm-gic.h>
+> @@ -168,3 +198,37 @@ examples:
+>             snps,pbl = <8>;
+>             phy-mode = "mii";
+>         };
+> +
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/stm32mp1-clks.h>
+> +    #include <dt-bindings/reset/stm32mp1-resets.h>
+> +    #include <dt-bindings/mfd/stm32h7-rcc.h>
+> +    //Example 4
+
+Not a useful comment.
+
+> +     ethernet3: ethernet@5800a000 {
+> +           compatible = "st,stm32mp13-dwmac", "snps,dwmac-4.20a";
+> +           reg = <0x5800a000 0x2000>;
+> +           reg-names = "stmmaceth";
+> +           interrupts-extended = <&intc GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>,
+> +                                 <&exti 68 IRQ_TYPE_LEVEL_HIGH>;
+> +           interrupt-names = "macirq",
+> +                             "eth_wake_irq";
+> +           clock-names = "stmmaceth",
+> +                         "mac-clk-tx",
+> +                         "mac-clk-rx",
+> +                         "eth-ck",
+> +                         "ptp_ref",
+> +                         "ethstp";
+> +           clocks = <&rcc ETHMAC>,
+> +                    <&rcc ETHTX>,
+> +                    <&rcc ETHRX>,
+> +                    <&rcc ETHCK_K>,
+> +                    <&rcc ETHPTP_K>,
+> +                    <&rcc ETHSTP>;
+> +           st,syscon = <&syscfg 0x4 0xff0000>;
+> +           snps,mixed-burst;
+> +           snps,pbl = <2>;
+> +           snps,axi-config = <&stmmac_axi_config_1>;
+> +           snps,tso;
+> +           phy-mode = "rmii";
+> +     };
+> -- 
+> 2.25.1
+> 
 
