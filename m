@@ -1,169 +1,375 @@
-Return-Path: <linux-kernel+bounces-144460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC8008A46A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:54:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15D8D8A46A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:55:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FDB0B2219D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:54:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96B731F218C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF193FBF0;
-	Mon, 15 Apr 2024 01:54:26 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3116E1171C;
+	Mon, 15 Apr 2024 01:55:04 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86D3639
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57EAB639;
+	Mon, 15 Apr 2024 01:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713146066; cv=none; b=TCFv/1Ntt5EifUAoPwRpzFBS/BddiYLXDUm+DhyJfGT31EQYwIQ9RKNsa+sKfvkHFRo3YJ4KrlC62S018eNqok8sEgwFK1m0z/YBkseXlOWMwuxLpgGu5ynHB09AmH2jJAcbeIiCbYitsf3U5qHoqv59cOhbcDuJ8W35ixkVi0A=
+	t=1713146103; cv=none; b=hiaOOLHN7w0r2D8PKvfJL3ccTYYbMBJCEC4LarPYS9Ij/5w5Ehm2tLn4wDUWUNolQyAF5kWaAzLRUzjXbWrY7e6xiSq9i5lWKRhPk7TRMxjvmZ1lUTUoC1t3jGVNPvMJeRgdjXWLxWq6lhN2E/b70IEBNbJRYN11XVgx0LwVSnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713146066; c=relaxed/simple;
-	bh=uiwR4bCfdUN49IoGIefYpNDodSs5vQxu8QswN81syDU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bxzn9FLUsuxNOVfeHezZdq8V7XYthAbc/am9hFVNX4Kx+xcT8YNsgGJmqJba7rptv7sSRggACzTOfIFFjIS/62vwTokQonyZTZIanhEhwvcdc9w561bkTnKyWgx/D0XuV92ypM0rThEEI6RFP8I0jk6Tw0/AP0FJQUiTnACiu1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d676654767so335864439f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 18:54:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713146064; x=1713750864;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=81j4LIGOaJ+dg2uPNOLKbQWXKsjbyohwLVK9toRJWjA=;
-        b=YiKarTX4N1uimbCjGHqVTP1uYWgioKDhqhOGU2J7URHcByt4V5w3PoKxaBsq59I0qK
-         Pm9qoZexUoTOP53myD5ws2xHw2Q3kZxKfY1f+qVfmhLI3S6VKGND+kMfuIwH+lf6Bu+Z
-         EV3+v3uDURVXkyKX1oIqap+KvqNxZ+M4X0jPrc68N7kEGwDAGn1OWILwbu1zbaki2gxy
-         CcMYG0LQi78m8UmHwTf9DWhgi7xaEdpEwUVeX0dpEM3LXCyAlAA+9BgXk0JDd74qJkZL
-         rPjoO989BMY58YGwbeDZsPeeCa5NoQwuILXjQcVBhLU5qWmat6Gnf6txu6N/er4Dv6EQ
-         SbTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV2CQgoEJDMQ45YPMK4Z9sKmb8rKrcVwq7eeZLc0x0N7OmoayYN5AFM5Q5FSNjxb0Kv5QR9IgHlypu9IiXRpUvnInBwD+hwgS2Xsbqq
-X-Gm-Message-State: AOJu0YyHjBnGnvHknov79lELdx8PAgQFpBo6o7Zg5ppH2vey/F4h4sau
-	ygAiU0KdlGBge761U7GXm0YSBhz9Z3CWswqlJxYpvGiw2Ow/5xPqf8llo0LeouieDhgchmPVEPl
-	FW5OSBD9NlAoWnENFRvpOSjYIZXobr1sl4KpgrayJDr45MterrcLczjA=
-X-Google-Smtp-Source: AGHT+IGZKrJxC7xxrA2mNycgWIsW/SvrKX0rVQgVfLpK77riPlwvSCZObpSy9aeqOcK0/fXfUiBWtYiSQfvUBrN7817GjtNebZSe
+	s=arc-20240116; t=1713146103; c=relaxed/simple;
+	bh=DpQeuB0z3AIkPjsarzCBqVmXPH4fK8PnzTpCF3lUDec=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nZVf3M2ZHHMN9pxRga7orL8Y9eisu4ZryYo2PMyFyt11mZqcm8qyLj1ig4JTS7N50+DYcOuhwkcrIY7d5nY4PYCpzzaquea9bVHTCwigUvcWZbXiU7yYbiM+P0GVRSkwqqtK4PktrQ4Li7mAzJlqhybRdNnVio99HxDN+emi84Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VHqst0Tq4z2CcSV;
+	Mon, 15 Apr 2024 09:52:02 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 119F61A0172;
+	Mon, 15 Apr 2024 09:54:58 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 09:54:57 +0800
+Message-ID: <8d7022f6-8fcc-469c-b43c-64fb30dc0595@huawei.com>
+Date: Mon, 15 Apr 2024 09:54:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8917:b0:482:fa6f:78f1 with SMTP id
- jc23-20020a056638891700b00482fa6f78f1mr269367jab.6.1713146063141; Sun, 14 Apr
- 2024 18:54:23 -0700 (PDT)
-Date: Sun, 14 Apr 2024 18:54:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008acb1e061618e68e@google.com>
-Subject: [syzbot] [input?] WARNING in bcm5974_start_traffic/usb_submit_urb (2)
-From: syzbot <syzbot+b064b5599f18f7ebb1e1@syzkaller.appspotmail.com>
-To: dmitry.torokhov@gmail.com, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, rydberg@bitmath.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    fec50db7033e Linux 6.9-rc3
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=14439bd3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=560f5db1d0b3f6d0
-dashboard link: https://syzkaller.appspot.com/bug?extid=b064b5599f18f7ebb1e1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c2c5bd180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13cbbf5b180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ab4d6cae2eca/disk-fec50db7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b67542cc5860/vmlinux-fec50db7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3eeebb470b79/Image-fec50db7.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b064b5599f18f7ebb1e1@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 0 PID: 6237 at drivers/usb/core/urb.c:504 usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-Modules linked in:
-CPU: 0 PID: 6237 Comm: udevd Not tainted 6.9.0-rc3-syzkaller-gfec50db7033e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-lr : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-sp : ffff80009f8b73b0
-x29: ffff80009f8b73f0 x28: ffff0000d4fee000 x27: 0000000000000001
-x26: ffff80008c6919e8 x25: ffff0000c8bd1fe0 x24: ffff0000c1d45a50
-x23: ffff80008c698500 x22: dfff800000000000 x21: 0000000000000002
-x20: 0000000000000cc0 x19: ffff0000c1d45a00 x18: 0000000000000008
-x17: 0000000000000000 x16: ffff80008ae6d1bc x15: 0000000000000001
-x14: 1fffe000367b9a02 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : b1573c5f9bab7600
-x8 : b1573c5f9bab7600 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff80009f8b6b18 x4 : ffff80008ef65000 x3 : ffff8000805e9200
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
- bcm5974_start_traffic+0xe0/0x154 drivers/input/mouse/bcm5974.c:799
- bcm5974_open+0x98/0x134 drivers/input/mouse/bcm5974.c:839
- input_open_device+0x170/0x29c drivers/input/input.c:654
- evdev_open_device drivers/input/evdev.c:400 [inline]
- evdev_open+0x308/0x4b4 drivers/input/evdev.c:487
- chrdev_open+0x3c8/0x4dc fs/char_dev.c:414
- do_dentry_open+0x778/0x12b4 fs/open.c:955
- vfs_open+0x7c/0x90 fs/open.c:1089
- do_open fs/namei.c:3642 [inline]
- path_openat+0x1f6c/0x2830 fs/namei.c:3799
- do_filp_open+0x1bc/0x3cc fs/namei.c:3826
- do_sys_openat2+0x124/0x1b8 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1432
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 5626
-hardirqs last  enabled at (5625): [<ffff8000803749b0>] __up_console_sem kernel/printk/printk.c:341 [inline]
-hardirqs last  enabled at (5625): [<ffff8000803749b0>] __console_unlock kernel/printk/printk.c:2731 [inline]
-hardirqs last  enabled at (5625): [<ffff8000803749b0>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3050
-hardirqs last disabled at (5626): [<ffff80008ae68608>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (2362): [<ffff800080031848>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (2360): [<ffff800080031814>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: bch_member.btree_allocated_bitmap
+Content-Language: en-US
+To: Kent Overstreet <kent.overstreet@linux.dev>
+CC: <linux-bcachefs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240413215723.1543569-1-kent.overstreet@linux.dev>
+ <d7e9f196-c3bd-47ca-87fb-b21f28f1680a@huawei.com>
+ <ciib47ljt667csv2m37wj2ci72tps3lvsjwedclpyl7qqoaic2@3tl2vbzh2osg>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <ciib47ljt667csv2m37wj2ci72tps3lvsjwedclpyl7qqoaic2@3tl2vbzh2osg>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+On 2024/4/15 9:30, Kent Overstreet wrote:
+> On Mon, Apr 15, 2024 at 09:12:11AM +0800, Hongbo Li wrote:
+>>
+>>
+>> On 2024/4/14 5:57, Kent Overstreet wrote:
+>>> For those interested, this is a good tour of the facilities for rolling
+>>> out new on disk format features.
+>>>
+>>> -- >8 --
+>>>
+>>> This adds a small (64 bit) per-device bitmap that tracks ranges that
+>>> have btree nodes, for accelerating btree node scan if it is ever needed.
+>>>
+>>> - New helpers, bch2_dev_btree_bitmap_marked() and
+>>>     bch2_dev_bitmap_mark(), for checking and updating the bitmap
+>>>
+>>> - Interior btree update path updates the bitmaps when required
+>>>
+>>> - The check_allocations pass has a new fsck_err check,
+>>>     btree_bitmap_not_marked
+>>>
+>>> - New on disk format version, mi_btree_mitmap, which indicates the new
+>>>     bitmap is present
+>>>
+>>> - Upgrade table lists the required recovery pass and expected fsck error
+>>>
+>>> - Btree node scan uses the bitmap to skip ranges if we're on the new
+>>>     version
+>>>
+>>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>>> ---
+>>>    fs/bcachefs/bcachefs_format.h       |  7 ++--
+>>>    fs/bcachefs/btree_gc.c              | 13 +++++++
+>>>    fs/bcachefs/btree_node_scan.c       |  9 +++--
+>>>    fs/bcachefs/btree_update_interior.c | 24 +++++++++++++
+>>>    fs/bcachefs/sb-downgrade.c          |  5 ++-
+>>>    fs/bcachefs/sb-errors_types.h       |  3 +-
+>>>    fs/bcachefs/sb-members.c            | 53 +++++++++++++++++++++++++++++
+>>>    fs/bcachefs/sb-members.h            | 21 ++++++++++++
+>>>    fs/bcachefs/sb-members_types.h      |  2 ++
+>>>    9 files changed, 131 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
+>>> index 9480f1b44f07..085987435a5e 100644
+>>> --- a/fs/bcachefs/bcachefs_format.h
+>>> +++ b/fs/bcachefs/bcachefs_format.h
+>>> @@ -578,7 +578,8 @@ struct bch_member {
+>>>    	__le64			nbuckets;	/* device size */
+>>>    	__le16			first_bucket;   /* index of first bucket used */
+>>>    	__le16			bucket_size;	/* sectors */
+>>> -	__le32			pad;
+>>> +	__u8			btree_bitmap_shift;
+>>> +	__u8			pad[3];
+>>>    	__le64			last_mount;	/* time_t */
+>>>    	__le64			flags;
+>>> @@ -587,6 +588,7 @@ struct bch_member {
+>>>    	__le64			errors_at_reset[BCH_MEMBER_ERROR_NR];
+>>>    	__le64			errors_reset_time;
+>>>    	__le64			seq;
+>>> +	__le64			btree_allocated_bitmap;
+>>>    };
+>>>    #define BCH_MEMBER_V1_BYTES	56
+>>> @@ -876,7 +878,8 @@ struct bch_sb_field_downgrade {
+>>>    	x(rebalance_work,		BCH_VERSION(1,  3))		\
+>>>    	x(member_seq,			BCH_VERSION(1,  4))		\
+>>>    	x(subvolume_fs_parent,		BCH_VERSION(1,  5))		\
+>>> -	x(btree_subvolume_children,	BCH_VERSION(1,  6))
+>>> +	x(btree_subvolume_children,	BCH_VERSION(1,  6))		\
+>>> +	x(mi_btree_bitmap,		BCH_VERSION(1,  7))
+>>>    enum bcachefs_metadata_version {
+>>>    	bcachefs_metadata_version_min = 9,
+>>> diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
+>>> index 10c41cf89212..a77c723a9cef 100644
+>>> --- a/fs/bcachefs/btree_gc.c
+>>> +++ b/fs/bcachefs/btree_gc.c
+>>> @@ -822,6 +822,7 @@ static int bch2_gc_mark_key(struct btree_trans *trans, enum btree_id btree_id,
+>>>    	struct bch_fs *c = trans->c;
+>>>    	struct bkey deleted = KEY(0, 0, 0);
+>>>    	struct bkey_s_c old = (struct bkey_s_c) { &deleted, NULL };
+>>> +	struct printbuf buf = PRINTBUF;
+>>>    	int ret = 0;
+>>>    	deleted.p = k->k->p;
+>>> @@ -842,11 +843,23 @@ static int bch2_gc_mark_key(struct btree_trans *trans, enum btree_id btree_id,
+>>>    	if (ret)
+>>>    		goto err;
+>>> +	if (mustfix_fsck_err_on(level && !bch2_dev_btree_bitmap_marked(c, *k),
+>>> +				c, btree_bitmap_not_marked,
+>>> +				"btree ptr not marked in member info btree allocated bitmap\n  %s",
+>>> +				(bch2_bkey_val_to_text(&buf, c, *k),
+>>> +				 buf.buf))) {
+>>> +		mutex_lock(&c->sb_lock);
+>>> +		bch2_dev_btree_bitmap_mark(c, *k);
+>>> +		bch2_write_super(c);
+>>> +		mutex_unlock(&c->sb_lock);
+>>> +	}
+>>> +
+>>>    	ret = commit_do(trans, NULL, NULL, 0,
+>>>    			bch2_key_trigger(trans, btree_id, level, old,
+>>>    					 unsafe_bkey_s_c_to_s(*k), BTREE_TRIGGER_gc));
+>>>    fsck_err:
+>>>    err:
+>>> +	printbuf_exit(&buf);
+>>>    	bch_err_fn(c, ret);
+>>>    	return ret;
+>>>    }
+>>> diff --git a/fs/bcachefs/btree_node_scan.c b/fs/bcachefs/btree_node_scan.c
+>>> index 20f2b37c4474..866bd278439f 100644
+>>> --- a/fs/bcachefs/btree_node_scan.c
+>>> +++ b/fs/bcachefs/btree_node_scan.c
+>>> @@ -205,8 +205,13 @@ static int read_btree_nodes_worker(void *p)
+>>>    				last_print = jiffies;
+>>>    			}
+>>> -			try_read_btree_node(w->f, ca, bio, buf,
+>>> -					    bucket * ca->mi.bucket_size + bucket_offset);
+>>> +			u64 sector = bucket * ca->mi.bucket_size + bucket_offset;
+>>> +
+>>> +			if (c->sb.version_upgrade_complete >= bcachefs_metadata_version_mi_btree_bitmap &&
+>>> +			    !bch2_dev_btree_bitmap_marked_sectors(ca, sector, btree_sectors(c)))
+>>> +				continue;
+>>> +
+>>> +			try_read_btree_node(w->f, ca, bio, buf, sector);
+>>>    		}
+>>>    err:
+>>>    	bio_put(bio);
+>>> diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+>>> index 593241b15aa8..12ce6287416f 100644
+>>> --- a/fs/bcachefs/btree_update_interior.c
+>>> +++ b/fs/bcachefs/btree_update_interior.c
+>>> @@ -21,6 +21,7 @@
+>>>    #include "keylist.h"
+>>>    #include "recovery_passes.h"
+>>>    #include "replicas.h"
+>>> +#include "sb-members.h"
+>>>    #include "super-io.h"
+>>>    #include "trace.h"
+>>> @@ -644,6 +645,26 @@ static int btree_update_nodes_written_trans(struct btree_trans *trans,
+>>>    	return 0;
+>>>    }
+>>> +static bool btree_update_new_nodes_marked_sb(struct btree_update *as)
+>>> +{
+>>> +	for_each_keylist_key(&as->new_keys, k)
+>>> +		if (!bch2_dev_btree_bitmap_marked(as->c, bkey_i_to_s_c(k)))
+>>> +			return false;
+>>> +	return true;
+>>> +}
+>>> +
+>>> +static void btree_update_new_nodes_mark_sb(struct btree_update *as)
+>>> +{
+>>> +	struct bch_fs *c = as->c;
+>>> +
+>>> +	mutex_lock(&c->sb_lock);
+>>> +	for_each_keylist_key(&as->new_keys, k)
+>>> +		bch2_dev_btree_bitmap_mark(c, bkey_i_to_s_c(k));
+>>> +
+>>> +	bch2_write_super(c);
+>>> +	mutex_unlock(&c->sb_lock);
+>>> +}
+>>> +
+>>>    static void btree_update_nodes_written(struct btree_update *as)
+>>>    {
+>>>    	struct bch_fs *c = as->c;
+>>> @@ -664,6 +685,9 @@ static void btree_update_nodes_written(struct btree_update *as)
+>>>    	if (ret)
+>>>    		goto err;
+>>> +	if (!btree_update_new_nodes_marked_sb(as))
+>>> +		btree_update_new_nodes_mark_sb(as);
+>>> +
+>>>    	/*
+>>>    	 * Wait for any in flight writes to finish before we free the old nodes
+>>>    	 * on disk:
+>>> diff --git a/fs/bcachefs/sb-downgrade.c b/fs/bcachefs/sb-downgrade.c
+>>> index 56ac8f35cdc3..90b06f8aa1df 100644
+>>> --- a/fs/bcachefs/sb-downgrade.c
+>>> +++ b/fs/bcachefs/sb-downgrade.c
+>>> @@ -51,7 +51,10 @@
+>>>    	  BCH_FSCK_ERR_subvol_fs_path_parent_wrong)		\
+>>>    	x(btree_subvolume_children,				\
+>>>    	  BIT_ULL(BCH_RECOVERY_PASS_check_subvols),		\
+>>> -	  BCH_FSCK_ERR_subvol_children_not_set)
+>>> +	  BCH_FSCK_ERR_subvol_children_not_set)			\
+>>> +	x(mi_btree_bitmap,					\
+>>> +	  BIT_ULL(BCH_RECOVERY_PASS_check_allocations),		\
+>>> +	  BCH_FSCK_ERR_btree_bitmap_not_marked)
+>>>    #define DOWNGRADE_TABLE()
+>>> diff --git a/fs/bcachefs/sb-errors_types.h b/fs/bcachefs/sb-errors_types.h
+>>> index d7d609131030..5b600c6d7aca 100644
+>>> --- a/fs/bcachefs/sb-errors_types.h
+>>> +++ b/fs/bcachefs/sb-errors_types.h
+>>> @@ -270,7 +270,8 @@
+>>>    	x(btree_ptr_v2_min_key_bad,				262)	\
+>>>    	x(btree_root_unreadable_and_scan_found_nothing,		263)	\
+>>>    	x(snapshot_node_missing,				264)	\
+>>> -	x(dup_backpointer_to_bad_csum_extent,			265)
+>>> +	x(dup_backpointer_to_bad_csum_extent,			265)	\
+>>> +	x(btree_bitmap_not_marked,				266)
+>>>    enum bch_sb_error_id {
+>>>    #define x(t, n) BCH_FSCK_ERR_##t = n,
+>>> diff --git a/fs/bcachefs/sb-members.c b/fs/bcachefs/sb-members.c
+>>> index 9b7a2f300182..d5937aba0910 100644
+>>> --- a/fs/bcachefs/sb-members.c
+>>> +++ b/fs/bcachefs/sb-members.c
+>>> @@ -1,6 +1,7 @@
+>>>    // SPDX-License-Identifier: GPL-2.0
+>>>    #include "bcachefs.h"
+>>> +#include "btree_cache.h"
+>>>    #include "disk_groups.h"
+>>>    #include "opts.h"
+>>>    #include "replicas.h"
+>>> @@ -378,3 +379,55 @@ void bch2_dev_errors_reset(struct bch_dev *ca)
+>>>    	bch2_write_super(c);
+>>>    	mutex_unlock(&c->sb_lock);
+>>>    }
+>>> +
+>>> +/*
+>>> + * Per member "range has btree nodes" bitmap:
+>>> + *
+>>> + * This is so that if we ever have to run the btree node scan to repair we don't
+>>> + * have to scan full devices:
+>>> + */
+>>> +
+>>> +bool bch2_dev_btree_bitmap_marked(struct bch_fs *c, struct bkey_s_c k)
+>>> +{
+>>> +	bkey_for_each_ptr(bch2_bkey_ptrs_c(k), ptr)
+>>> +		if (!bch2_dev_btree_bitmap_marked_sectors(bch2_dev_bkey_exists(c, ptr->dev),
+>>> +							  ptr->offset, btree_sectors(c)))
+>>> +			return false;
+>>> +	return true;
+>>> +}
+>>> +
+>>> +static void __bch2_dev_btree_bitmap_mark(struct bch_sb_field_members_v2 *mi, unsigned dev,
+>>> +				u64 start, unsigned sectors)
+>>> +{
+>>> +	struct bch_member *m = __bch2_members_v2_get_mut(mi, dev);
+>>> +	u64 bitmap = le64_to_cpu(m->btree_allocated_bitmap);
+>>> +
+>>> +	u64 end = start + sectors;
+>>> +
+>>> +	int resize = ilog2(roundup_pow_of_two(end)) - (m->btree_bitmap_shift + 6);
+>>> +	if (resize > 0) {
+>>> +		u64 new_bitmap = 0;
+>>> +
+>>> +		for (unsigned i = 0; i < 64; i++)
+>>> +			if (bitmap & BIT_ULL(i))
+>>> +				new_bitmap |= BIT_ULL(i >> resize);
+>>> +		bitmap = new_bitmap;
+>>> +		m->btree_bitmap_shift += resize;
+>>> +	}
+>>> +
+>>> +	for (unsigned bit = sectors >> m->btree_bitmap_shift;
+>>> +	     bit << m->btree_bitmap_shift < end;
+>>> +	     bit++)
+>>> +		bitmap |= BIT_ULL(bit);
+>>> +
+>>> +	m->btree_allocated_bitmap = cpu_to_le64(bitmap);
+>>> +}
+>>> +
+>>> +void bch2_dev_btree_bitmap_mark(struct bch_fs *c, struct bkey_s_c k)
+>>> +{
+>>> +	lockdep_assert_held(&c->sb_lock);
+>>> +
+>>> +	struct bch_sb_field_members_v2 *mi = bch2_sb_field_get(c->disk_sb.sb, members_v2);
+>>> +	bkey_for_each_ptr(bch2_bkey_ptrs_c(k), ptr)
+>>> +		__bch2_dev_btree_bitmap_mark(mi, ptr->dev, ptr->offset, btree_sectors(c));
+>>> +}
+>>> diff --git a/fs/bcachefs/sb-members.h b/fs/bcachefs/sb-members.h
+>>> index bc3bcfef7b3a..8bbad30a4370 100644
+>>> --- a/fs/bcachefs/sb-members.h
+>>> +++ b/fs/bcachefs/sb-members.h
+>>> @@ -3,6 +3,7 @@
+>>>    #define _BCACHEFS_SB_MEMBERS_H
+>>>    #include "darray.h"
+>>> +#include "bkey_types.h"
+>>>    extern char * const bch2_member_error_strs[];
+>>> @@ -234,6 +235,8 @@ static inline struct bch_member_cpu bch2_mi_to_cpu(struct bch_member *mi)
+>>>    			: 1,
+>>>    		.freespace_initialized = BCH_MEMBER_FREESPACE_INITIALIZED(mi),
+>>>    		.valid		= bch2_member_alive(mi),
+>>> +		.btree_bitmap_shift	= mi->btree_bitmap_shift,
+>>> +		.btree_allocated_bitmap = le64_to_cpu(mi->btree_allocated_bitmap),
+>>>    	};
+>>>    }
+>>> @@ -242,4 +245,22 @@ void bch2_sb_members_from_cpu(struct bch_fs *);
+>>>    void bch2_dev_io_errors_to_text(struct printbuf *, struct bch_dev *);
+>>>    void bch2_dev_errors_reset(struct bch_dev *);
+>>> +static inline bool bch2_dev_btree_bitmap_marked_sectors(struct bch_dev *ca, u64 start, unsigned sectors)
+>>> +{
+>>> +	u64 end = start + sectors;
+>>> +
+>>> +	if (end > 64 << ca->mi.btree_bitmap_shift)
+>>> +		return false;
+>>> +
+>>> +	for (unsigned bit = sectors >> ca->mi.btree_bitmap_shift;
+>>> +	     bit << ca->mi.btree_bitmap_shift < end;
+>>> +	     bit++)
+>>> +		if (!(ca->mi.btree_allocated_bitmap & BIT_ULL(bit)))
+>> Should it be transferred by le64_to_cpu?
+> 
+> no, ca->mi is bch_member_cpu, a different type that has everything in
+> native byte order
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Sorry, I made a mistake in reading it.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+```c
+struct bch_dev {
+..
+     struct bch_member_cpu   mi;
+..
+```
 
