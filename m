@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-145515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F36D8A5745
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D5128A5749
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2DA41C22BF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:12:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B08731C22BEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EC3882C8E;
-	Mon, 15 Apr 2024 16:11:55 +0000 (UTC)
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 542268175E;
+	Mon, 15 Apr 2024 16:12:19 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4520C8175E;
-	Mon, 15 Apr 2024 16:11:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4266B7FBA4;
+	Mon, 15 Apr 2024 16:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197514; cv=none; b=GqgFATNJ30Xw6T1GPO0u6vYOgVMuJSIqZndE7vmFgvAmQShI4NNfQmB54WpQJ2DEYRN92mkaXVZ/XOrMzDBR9h+UI2tyZPv4SGa/iAcYzH70dCF85Crb+BMWGqKcwYw+XlPW8Sdwd31xo9PRGUaEbiqoBxUNUet2lp2Oc3jxDpQ=
+	t=1713197538; cv=none; b=mty1yRby/HozNOWZL89yCQcTUKANeU0yZuC6szmLGmcaRB2NPEvJ6u1BvVxX8c2FAHkWUVVlfowU0d+JrZ4MXXTFbPcTlNHDD2Z/RrMA7WKgkQzNftPw3iWVszG5pwIe1wJ4uRKCsb6SYURuQzhhQTFt3buedJAPqhG9ecR6UIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197514; c=relaxed/simple;
-	bh=Qmnl4eIUFNBIMJkcZ6lG8jyypOm/wejoN+kXBSHxVZU=;
+	s=arc-20240116; t=1713197538; c=relaxed/simple;
+	bh=0tDFC0Rzwu0TnZ9tH4wkji+B1IUHRT8OEVZwyh0x3is=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r/Q+RXURF7LE6D+TX4XN5ly/pTYQx/6aeoJtwO0sPM+ZQE3LJMGHOtqLASTgZrp3cKeMcfxF+oMzMGe7FZQEc55+Qy7qDPN9NZhDqk4AisSMIgjAbJoQ9q7qcbvEtpLrFkp/OkLLvxvdz+WZsPGTXOmYU6YXy6bQpvXSX3Wg2MQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+	 MIME-Version; b=Vaqm1O70rLEsrnliK5Lde4Wz0R5qLzqKHm4JICDCSgnbo7tVmx/lriM1Yl+R0u+5GjP8HUonOUUX3WpaN8OICVF6eX3ctQhDXH6ICYQZK3Tm5TnD4j+h0cYB+/tc2HFdvRtOEVDKCbFp7CP8YulOuBThm1To344bC3EvmqFneRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4VJBTr1t71z9xrnb;
-	Mon, 15 Apr 2024 23:50:56 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4VJBbM3gdzz9v7Nb;
+	Mon, 15 Apr 2024 23:55:43 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 5C7FE1402A5;
-	Tue, 16 Apr 2024 00:11:49 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id AD9271405E1;
+	Tue, 16 Apr 2024 00:12:02 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwDn0iaZUR1m4n9HBg--.16529S4;
-	Mon, 15 Apr 2024 17:11:48 +0100 (CET)
+	by APP2 (Coremail) with SMTP id GxC2BwDn0iaZUR1m4n9HBg--.16529S5;
+	Mon, 15 Apr 2024 17:12:02 +0100 (CET)
 From: Roberto Sassu <roberto.sassu@huaweicloud.com>
 To: corbet@lwn.net,
 	zohar@linux.ibm.com,
@@ -64,9 +64,9 @@ Cc: linux-kernel@vger.kernel.org,
 	mzerqung@0pointer.de,
 	kgold@linux.ibm.com,
 	Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH v2 2/9] ima: Nest iint mutex for DIGEST_LIST_CHECK hook
-Date: Mon, 15 Apr 2024 18:10:37 +0200
-Message-Id: <20240415161044.2572438-3-roberto.sassu@huaweicloud.com>
+Subject: [RFC][PATCH v2 3/9] ima: Add digest_cache policy keyword
+Date: Mon, 15 Apr 2024 18:10:38 +0200
+Message-Id: <20240415161044.2572438-4-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240415161044.2572438-1-roberto.sassu@huaweicloud.com>
 References: <20240415161044.2572438-1-roberto.sassu@huaweicloud.com>
@@ -77,165 +77,351 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwDn0iaZUR1m4n9HBg--.16529S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ary8AFW5Wr1rGF4DKF1UGFg_yoW7Cr48pa
-	9rta4DJ3s8XFZ7ur4rta9rZryfKFykWFW8Gw45A3WvyFn8Xr1FqF18try29Fy5CrWFv3WI
-	vr4jgws8Z3Wjyr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
-	Av7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY
-	6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14
-	v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-	rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXw
-	CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-	W8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26rxl6s0DYxBIdaVFxhVjvjDU0xZFpf9x07j7
-	hLnUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAOBF1jj5h14AABs1
+X-CM-TRANSID:GxC2BwDn0iaZUR1m4n9HBg--.16529S5
+X-Coremail-Antispam: 1UD129KBjvAXoW3Aw1xtFyxKr15WryktryUGFg_yoW8Jw1kAo
+	Z3K39rJF48GFy3CayUCFnIyay8W3yrGwn7JFnYgr98Z3Z2vryUGasrWr1UZFW3ZF45Xa90
+	kw1xX3y8tFW8Jas3n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUO07kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr
+	Wl82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
+	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
+	WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
+	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7
+	AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wr
+	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI
+	0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW0oVCq3bIYCTnIWIevJa73UjIFyTuYvjxU
+	4R6zUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAOBF1jj5h14AACs2
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Invoking digest_cache_get() inside the iint->mutex critical region can
-cause deadlocks due to the fact that IMA can be recursively invoked for
-reading the digest list. The deadlock would occur if the digest_cache LSM
-attempts to read the same inode that is already locked by IMA.
+Add the 'digest_cache=' policy keyword, to enable the usage of digest
+caches for specific IMA actions and purpose.
 
-However, since the digest_cache LSM makes sure that the above situation
-never happens, as it checks the inodes, it is safe to call
-digest_cache_get() inside the critical region and nest the iint->mutex
-when the DIGEST_LIST_CHECK hook is executed.
+At the moment, it accepts only 'data' as value, as digest caches can be
+used only for measurement and appraisal of file data. In the future, it
+might be possible to use them for file metadata too.
 
-Add a lockdep subclass to the iint->mutex, that is 0 if the IMA hook
-executed is not DIGEST_LIST_CHECK, and 1 when it is. Since lockdep allows
-nesting with higher classes and subclasses, that effectively eliminates the
-warning about the unsafe lock.
+The 'digest_cache=' keyword can be specified for the subset of IMA hooks
+listed in ima_digest_cache_func_allowed(). In case the function is not
+specified in the policy, digest caches might not be available.
 
-Pass the new lockdep subclass (nested variable) from ima_inode_get() to
-ima_iint_init_always() and ima_iint_lockdep_annotate().
+POLICY_CHECK has been excluded for measurement, because policy changes must
+be visible in the IMA measurement list. For appraisal, instead, it might be
+useful to load custom policies in the initial ram disk (no security.ima
+xattr).
+
+Add the digest_cache_usage member to the ima_rule_entry structure, and set
+the flag IMA_DIGEST_CACHE_MEASURE_DATA if 'digest_cache=data' was specified
+for a measure rule, IMA_DIGEST_CACHE_APPRAISE_DATA for an appraise rule.
+
+Propagate the usage down to ima_match_policy() and ima_get_action(), so
+that process_measurement() can make the final decision on whether or not
+digest caches should be used to measure/appraise the file being evaluated.
+
+Since using digest caches changes the meaning of the IMA measurement list,
+which will include only digest lists and unknown files, enforce specifying
+'pcr=' with a non-standard value, when 'digest_cache=data' is specified in
+a measure rule.
+
+This removes the ambiguity on the meaning of the IMA measurement list.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- security/integrity/ima/ima.h      |  2 +-
- security/integrity/ima/ima_iint.c | 17 +++++++++++------
- security/integrity/ima/ima_main.c |  6 +++---
- 3 files changed, 15 insertions(+), 10 deletions(-)
+ Documentation/ABI/testing/ima_policy  |  5 +-
+ security/integrity/ima/ima.h          | 10 +++-
+ security/integrity/ima/ima_api.c      |  6 ++-
+ security/integrity/ima/ima_appraise.c |  2 +-
+ security/integrity/ima/ima_main.c     |  8 +--
+ security/integrity/ima/ima_policy.c   | 70 ++++++++++++++++++++++++++-
+ 6 files changed, 89 insertions(+), 12 deletions(-)
 
+diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+index 22237fec5532..887ac79f66eb 100644
+--- a/Documentation/ABI/testing/ima_policy
++++ b/Documentation/ABI/testing/ima_policy
+@@ -29,7 +29,7 @@ Description:
+ 				 [obj_user=] [obj_role=] [obj_type=]]
+ 			option:	[digest_type=] [template=] [permit_directio]
+ 				[appraise_type=] [appraise_flag=]
+-				[appraise_algos=] [keyrings=]
++				[appraise_algos=] [keyrings=] [digest_cache=]
+ 		  base:
+ 			func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK][MODULE_CHECK]
+ 				[FIRMWARE_CHECK]
+@@ -77,6 +77,9 @@ Description:
+ 			For example, "sha256,sha512" to only accept to appraise
+ 			files where the security.ima xattr was hashed with one
+ 			of these two algorithms.
++			digest_cache:= [data]
++			"data" means that the digest cache is used only
++			for file data measurement and/or appraisal.
+ 
+ 		  default policy:
+ 			# PROC_SUPER_MAGIC
 diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index cea4517e73ab..c9140a57b591 100644
+index c9140a57b591..337b3b76b28d 100644
 --- a/security/integrity/ima/ima.h
 +++ b/security/integrity/ima/ima.h
-@@ -216,7 +216,7 @@ static inline void ima_inode_set_iint(const struct inode *inode,
- }
+@@ -43,6 +43,10 @@ enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8, TPM_PCR10 = 10 };
  
- struct ima_iint_cache *ima_iint_find(struct inode *inode);
--struct ima_iint_cache *ima_inode_get(struct inode *inode);
-+struct ima_iint_cache *ima_inode_get(struct inode *inode, bool nested);
- void ima_inode_free(struct inode *inode);
- void __init ima_iintcache_init(void);
+ #define NR_BANKS(chip) ((chip != NULL) ? chip->nr_allocated_banks : 0)
  
-diff --git a/security/integrity/ima/ima_iint.c b/security/integrity/ima/ima_iint.c
-index e7c9c216c1c6..c98a30815c8a 100644
---- a/security/integrity/ima/ima_iint.c
-+++ b/security/integrity/ima/ima_iint.c
-@@ -39,9 +39,12 @@ struct ima_iint_cache *ima_iint_find(struct inode *inode)
-  * files both on overlayfs and on underlying fs, we need to annotate the iint
-  * mutex to avoid lockdep false positives related to IMA + overlayfs.
-  * See ovl_lockdep_annotate_inode_mutex_key() for more details.
-+ *
-+ * In addition to that, safely ignored nested locks for digest lists, since
-+ * the digest_cache LSM prevents circular dependencies.
-  */
- static inline void ima_iint_lockdep_annotate(struct ima_iint_cache *iint,
--					     struct inode *inode)
-+					     struct inode *inode, bool nested)
- {
- #ifdef CONFIG_LOCKDEP
- 	static struct lock_class_key ima_iint_mutex_key[IMA_MAX_NESTING];
-@@ -51,12 +54,13 @@ static inline void ima_iint_lockdep_annotate(struct ima_iint_cache *iint,
- 	if (WARN_ON_ONCE(depth < 0 || depth >= IMA_MAX_NESTING))
- 		depth = 0;
++/* Digest cache usage flags. */
++#define IMA_DIGEST_CACHE_MEASURE_DATA	0x0000000000000001
++#define IMA_DIGEST_CACHE_APPRAISE_DATA	0x0000000000000002
++
+ /* current content of the policy */
+ extern int ima_policy_flag;
  
--	lockdep_set_class(&iint->mutex, &ima_iint_mutex_key[depth]);
-+	lockdep_set_class_and_subclass(&iint->mutex, &ima_iint_mutex_key[depth],
-+				       nested);
- #endif
- }
- 
- static void ima_iint_init_always(struct ima_iint_cache *iint,
--				 struct inode *inode)
-+				 struct inode *inode, bool nested)
- {
- 	iint->ima_hash = NULL;
- 	iint->version = 0;
-@@ -69,7 +73,7 @@ static void ima_iint_init_always(struct ima_iint_cache *iint,
- 	iint->ima_creds_status = INTEGRITY_UNKNOWN;
- 	iint->measured_pcrs = 0;
- 	mutex_init(&iint->mutex);
--	ima_iint_lockdep_annotate(iint, inode);
-+	ima_iint_lockdep_annotate(iint, inode, nested);
- }
- 
- static void ima_iint_free(struct ima_iint_cache *iint)
-@@ -82,13 +86,14 @@ static void ima_iint_free(struct ima_iint_cache *iint)
- /**
-  * ima_inode_get - Find or allocate an iint associated with an inode
-  * @inode: Pointer to the inode
-+ * @nested: Whether or not the iint->mutex lock can be nested
+@@ -367,7 +371,8 @@ int ima_get_action(struct mnt_idmap *idmap, struct inode *inode,
+ 		   const struct cred *cred, u32 secid, int mask,
+ 		   enum ima_hooks func, int *pcr,
+ 		   struct ima_template_desc **template_desc,
+-		   const char *func_data, unsigned int *allowed_algos);
++		   const char *func_data, unsigned int *allowed_algos,
++		   u64 *digest_cache_usage);
+ int ima_must_measure(struct inode *inode, int mask, enum ima_hooks func);
+ int ima_collect_measurement(struct ima_iint_cache *iint, struct file *file,
+ 			    void *buf, loff_t size, enum hash_algo algo,
+@@ -398,7 +403,8 @@ int ima_match_policy(struct mnt_idmap *idmap, struct inode *inode,
+ 		     const struct cred *cred, u32 secid, enum ima_hooks func,
+ 		     int mask, int flags, int *pcr,
+ 		     struct ima_template_desc **template_desc,
+-		     const char *func_data, unsigned int *allowed_algos);
++		     const char *func_data, unsigned int *allowed_algos,
++		     u64 *digest_cache_usage);
+ void ima_init_policy(void);
+ void ima_update_policy(void);
+ void ima_update_policy_flags(void);
+diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+index b37d043d5748..f0a1ce10afe8 100644
+--- a/security/integrity/ima/ima_api.c
++++ b/security/integrity/ima/ima_api.c
+@@ -173,6 +173,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
+  * @template_desc: pointer filled in if matched measure policy sets template=
+  * @func_data: func specific data, may be NULL
+  * @allowed_algos: allowlist of hash algorithms for the IMA xattr
++ * @digest_cache_usage: Actions and purpose for which digest cache is allowed
   *
-  * Find an iint associated with an inode, and allocate a new one if not found.
-  * Caller must lock i_mutex.
-  *
-  * Return: An iint on success, NULL on error.
-  */
--struct ima_iint_cache *ima_inode_get(struct inode *inode)
-+struct ima_iint_cache *ima_inode_get(struct inode *inode, bool nested)
+  * The policy is defined in terms of keypairs:
+  *		subj=, obj=, type=, func=, mask=, fsmagic=
+@@ -190,7 +191,8 @@ int ima_get_action(struct mnt_idmap *idmap, struct inode *inode,
+ 		   const struct cred *cred, u32 secid, int mask,
+ 		   enum ima_hooks func, int *pcr,
+ 		   struct ima_template_desc **template_desc,
+-		   const char *func_data, unsigned int *allowed_algos)
++		   const char *func_data, unsigned int *allowed_algos,
++		   u64 *digest_cache_usage)
  {
- 	struct ima_iint_cache *iint;
+ 	int flags = IMA_MEASURE | IMA_AUDIT | IMA_APPRAISE | IMA_HASH;
  
-@@ -100,7 +105,7 @@ struct ima_iint_cache *ima_inode_get(struct inode *inode)
- 	if (!iint)
- 		return NULL;
+@@ -198,7 +200,7 @@ int ima_get_action(struct mnt_idmap *idmap, struct inode *inode,
  
--	ima_iint_init_always(iint, inode);
-+	ima_iint_init_always(iint, inode, nested);
+ 	return ima_match_policy(idmap, inode, cred, secid, func, mask,
+ 				flags, pcr, template_desc, func_data,
+-				allowed_algos);
++				allowed_algos, digest_cache_usage);
+ }
  
- 	inode->i_flags |= S_IMA;
- 	ima_inode_set_iint(inode, iint);
+ static bool ima_get_verity_digest(struct ima_iint_cache *iint,
+diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+index 3497741caea9..27ccc9a2c09f 100644
+--- a/security/integrity/ima/ima_appraise.c
++++ b/security/integrity/ima/ima_appraise.c
+@@ -81,7 +81,7 @@ int ima_must_appraise(struct mnt_idmap *idmap, struct inode *inode,
+ 	security_current_getsecid_subj(&secid);
+ 	return ima_match_policy(idmap, inode, current_cred(), secid,
+ 				func, mask, IMA_APPRAISE | IMA_HASH, NULL,
+-				NULL, NULL, NULL);
++				NULL, NULL, NULL, NULL);
+ }
+ 
+ static int ima_fix_xattr(struct dentry *dentry, struct ima_iint_cache *iint)
 diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 780627b0cde7..18285fc8ac07 100644
+index 18285fc8ac07..e3ca80098c4c 100644
 --- a/security/integrity/ima/ima_main.c
 +++ b/security/integrity/ima/ima_main.c
-@@ -248,7 +248,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
- 	inode_lock(inode);
+@@ -232,7 +232,7 @@ static int process_measurement(struct file *file, const struct cred *cred,
+ 	 */
+ 	action = ima_get_action(file_mnt_idmap(file), inode, cred, secid,
+ 				mask, func, &pcr, &template_desc, NULL,
+-				&allowed_algos);
++				&allowed_algos, NULL);
+ 	violation_check = ((func == FILE_CHECK || func == MMAP_CHECK ||
+ 			    func == MMAP_CHECK_REQPROT) &&
+ 			   (ima_policy_flag & IMA_MEASURE));
+@@ -489,11 +489,11 @@ static int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+ 	inode = file_inode(vma->vm_file);
+ 	action = ima_get_action(file_mnt_idmap(vma->vm_file), inode,
+ 				current_cred(), secid, MAY_EXEC, MMAP_CHECK,
+-				&pcr, &template, NULL, NULL);
++				&pcr, &template, NULL, NULL, NULL);
+ 	action |= ima_get_action(file_mnt_idmap(vma->vm_file), inode,
+ 				 current_cred(), secid, MAY_EXEC,
+ 				 MMAP_CHECK_REQPROT, &pcr, &template, NULL,
+-				 NULL);
++				 NULL, NULL);
  
- 	if (action) {
--		iint = ima_inode_get(inode);
-+		iint = ima_inode_get(inode, func == DIGEST_LIST_CHECK);
- 		if (!iint)
- 			rc = -ENOMEM;
+ 	/* Is the mmap'ed file in policy? */
+ 	if (!(action & (IMA_MEASURE | IMA_APPRAISE_SUBMASK)))
+@@ -972,7 +972,7 @@ int process_buffer_measurement(struct mnt_idmap *idmap,
+ 		security_current_getsecid_subj(&secid);
+ 		action = ima_get_action(idmap, inode, current_cred(),
+ 					secid, 0, func, &pcr, &template,
+-					func_data, NULL);
++					func_data, NULL, NULL);
+ 		if (!(action & IMA_MEASURE) && !digest)
+ 			return -ENOENT;
  	}
-@@ -699,7 +699,7 @@ static void ima_post_create_tmpfile(struct mnt_idmap *idmap,
- 		return;
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 7cfd1860791f..9e13b88b0ed5 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -122,6 +122,7 @@ struct ima_rule_entry {
+ 	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+ 	struct ima_rule_opt_list *label; /* Measure data grouped under this label */
+ 	struct ima_template_desc *template;
++	u64 digest_cache_usage;	/* Actions and purpose for which digest cache is allowed */
+ };
  
- 	/* Nothing to do if we can't allocate memory */
--	iint = ima_inode_get(inode);
-+	iint = ima_inode_get(inode, false);
- 	if (!iint)
- 		return;
+ /*
+@@ -726,6 +727,7 @@ static int get_subaction(struct ima_rule_entry *rule, enum ima_hooks func)
+  * @template_desc: the template that should be used for this rule
+  * @func_data: func specific data, may be NULL
+  * @allowed_algos: allowlist of hash algorithms for the IMA xattr
++ * @digest_cache_usage: Actions and purpose for which digest cache is allowed
+  *
+  * Measure decision based on func/mask/fsmagic and LSM(subj/obj/type)
+  * conditions.
+@@ -738,7 +740,8 @@ int ima_match_policy(struct mnt_idmap *idmap, struct inode *inode,
+ 		     const struct cred *cred, u32 secid, enum ima_hooks func,
+ 		     int mask, int flags, int *pcr,
+ 		     struct ima_template_desc **template_desc,
+-		     const char *func_data, unsigned int *allowed_algos)
++		     const char *func_data, unsigned int *allowed_algos,
++		     u64 *digest_cache_usage)
+ {
+ 	struct ima_rule_entry *entry;
+ 	int action = 0, actmask = flags | (flags << 1);
+@@ -783,6 +786,9 @@ int ima_match_policy(struct mnt_idmap *idmap, struct inode *inode,
+ 		if (template_desc && entry->template)
+ 			*template_desc = entry->template;
  
-@@ -731,7 +731,7 @@ static void ima_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
- 		return;
++		if (digest_cache_usage)
++			*digest_cache_usage |= entry->digest_cache_usage;
++
+ 		if (!actmask)
+ 			break;
+ 	}
+@@ -859,6 +865,30 @@ static int ima_appraise_flag(enum ima_hooks func)
+ 	return 0;
+ }
  
- 	/* Nothing to do if we can't allocate memory */
--	iint = ima_inode_get(inode);
-+	iint = ima_inode_get(inode, false);
- 	if (!iint)
- 		return;
++static bool ima_digest_cache_func_allowed(struct ima_rule_entry *entry)
++{
++	switch (entry->func) {
++	case NONE:
++	case FILE_CHECK:
++	case MMAP_CHECK:
++	case MMAP_CHECK_REQPROT:
++	case BPRM_CHECK:
++	case CREDS_CHECK:
++	case FIRMWARE_CHECK:
++	case POLICY_CHECK:
++	case MODULE_CHECK:
++	case KEXEC_KERNEL_CHECK:
++	case KEXEC_INITRAMFS_CHECK:
++		/* Exception: always add policy updates to measurement list! */
++		if (entry->action == MEASURE && entry->func == POLICY_CHECK)
++			return false;
++
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static void add_rules(struct ima_rule_entry *entries, int count,
+ 		      enum policy_rule_list policy_rule)
+ {
+@@ -1073,7 +1103,7 @@ enum policy_opt {
+ 	Opt_digest_type,
+ 	Opt_appraise_type, Opt_appraise_flag, Opt_appraise_algos,
+ 	Opt_permit_directio, Opt_pcr, Opt_template, Opt_keyrings,
+-	Opt_label, Opt_err
++	Opt_label, Opt_digest_cache, Opt_err
+ };
  
+ static const match_table_t policy_tokens = {
+@@ -1122,6 +1152,7 @@ static const match_table_t policy_tokens = {
+ 	{Opt_template, "template=%s"},
+ 	{Opt_keyrings, "keyrings=%s"},
+ 	{Opt_label, "label=%s"},
++	{Opt_digest_cache, "digest_cache=%s"},
+ 	{Opt_err, NULL}
+ };
+ 
+@@ -1245,6 +1276,18 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+ 	if (entry->action != MEASURE && entry->flags & IMA_PCR)
+ 		return false;
+ 
++	/* New-style measurements with digest cache cannot be on default PCR. */
++	if (entry->action == MEASURE &&
++	    (entry->digest_cache_usage & IMA_DIGEST_CACHE_MEASURE_DATA)) {
++		if (!(entry->flags & IMA_PCR) ||
++		    entry->pcr == CONFIG_IMA_MEASURE_PCR_IDX)
++			return false;
++	}
++
++	/* Digest caches can be used only for a subset of the IMA hooks. */
++	if (entry->digest_cache_usage && !ima_digest_cache_func_allowed(entry))
++		return false;
++
+ 	if (entry->action != APPRAISE &&
+ 	    entry->flags & (IMA_DIGSIG_REQUIRED | IMA_MODSIG_ALLOWED |
+ 			    IMA_CHECK_BLACKLIST | IMA_VALIDATE_ALGOS))
+@@ -1881,6 +1924,26 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+ 						 &(template_desc->num_fields));
+ 			entry->template = template_desc;
+ 			break;
++		case Opt_digest_cache:
++			ima_log_string(ab, "digest_cache", args[0].from);
++
++			result = -EINVAL;
++
++			if (!strcmp(args[0].from, "data")) {
++				switch (entry->action) {
++				case MEASURE:
++					entry->digest_cache_usage |= IMA_DIGEST_CACHE_MEASURE_DATA;
++					result = 0;
++					break;
++				case APPRAISE:
++					entry->digest_cache_usage |= IMA_DIGEST_CACHE_APPRAISE_DATA;
++					result = 0;
++					break;
++				default:
++					break;
++				}
++			}
++			break;
+ 		case Opt_err:
+ 			ima_log_string(ab, "UNKNOWN", p);
+ 			result = -EINVAL;
+@@ -2271,6 +2334,9 @@ int ima_policy_show(struct seq_file *m, void *v)
+ 		seq_puts(m, "digest_type=verity ");
+ 	if (entry->flags & IMA_PERMIT_DIRECTIO)
+ 		seq_puts(m, "permit_directio ");
++	if ((entry->digest_cache_usage & IMA_DIGEST_CACHE_MEASURE_DATA) ||
++	    (entry->digest_cache_usage & IMA_DIGEST_CACHE_APPRAISE_DATA))
++		seq_puts(m, "digest_cache=data ");
+ 	rcu_read_unlock();
+ 	seq_puts(m, "\n");
+ 	return 0;
 -- 
 2.34.1
 
