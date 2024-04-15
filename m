@@ -1,167 +1,130 @@
-Return-Path: <linux-kernel+bounces-144425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC1318A4646
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B54708A4645
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:11:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEA9E1C21485
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 00:11:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9B881C2146D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 00:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931F64C9F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7835D3FDB;
 	Mon, 15 Apr 2024 00:11:21 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFD8193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED3880B
 	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 00:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713139881; cv=none; b=RstfG2AZ9TiVVGEuNopn0BygEvhWWjWSwBQyiWDhOu3QLo9NveErkBTnn2ceNGv/hWnPdmu8vhc6pSp3DpWoNlb1GDnsPiQQFLoMPhWnU6UgV+oBnzCMcp5hfNSBCTZbWJZmvH7RTq4Ao6xv7KHUbb5Cx9oUT8zqawyl9r1npSw=
+	t=1713139881; cv=none; b=BlAPjvT8VdYjzX3kZJuuvsprvS80c+9Bqfg8rR+hKEGSKr969bFjSUVGtBwZggn//Rqy+wYGxaPpQPNvkCTtMSOVblWwFi/wk40A122NQFS8FOBF7HpbzHyKR0vE2OnhEXALWENZ//t+Ce2c362yqmwP/5HeM0fz18EJp/eTm1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713139881; c=relaxed/simple;
-	bh=C/Iu6C+EcnfYBh/f7HXhOOXESwUAXBibk9rsEmyREWw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kbaqcuXWiHA/D+/4urWpqCh3KQoZGwAEYF5yEWCQj9EubOT/ylGrW5nQfvicydrnql33RXYDAAGmc/+pBdbbtkcqq2j1J5C7SpDj23jEqGAxlKjRizX7AaJrsC4G2koO76SqqlpzD4DqhiEorhTyXb5WNARHh8u6eLiGEXQI1gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+	bh=l9ddVf1PpaKyr+dTMe31ZW699m56amTANDD3hQFjOkY=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=RpjMlYUrwLbN7FXJpezo68JJRIqEFZxsYDhkAT1MMFMvu/P6c/9xthn2hxxNV5BrVZH5IIkeG6/LEgdp4kfBaND3CKx4hT6d7PhJUrZUtts7h0ITosjijmNh5AebjpLMUlJIuzKY4jJS8zmJQxbdeAVO5/18/TpaGflZ7hQLDLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d63c6a2559so194646539f.1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d5dbc0e4b3so287000039f.1
         for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 17:11:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1713139879; x=1713744679;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EU0hVL6DfpMlcjjVDEdakS6ZSrs74/GbIpJ9Y08C8GI=;
-        b=Ia7PV3uzgzv8K2V4icEIHyhu3g9wf6al7xJyezvwzu2lOVwNgtlqaROuoy7TeXTgtg
-         S296InjnrA02sa4xlm019/dMvAltTpv0PsKuQLUTJ1ovzU8W6WMhUvCxOzKV8eL4GsW7
-         AqowHa878muu+vT5yw5DKW9AXO+wLacHm/g/xzMgF+ZUQJDMIM7Qh1gJQ64bUY/IaYZT
-         VpnAD8uPEMtJH7YuaiZC8qy2vRVnxHvjXmq9NqrmV2/IOwaIhh0G5RG/mc2rccx6EhsK
-         W/RBY5uo4L1yV1FRwgD3lOJ3/zRsZPTJLIEo1yYy6c/oQnd8xbVpaWzEBCYi6/wlwz4X
-         nl2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVtvjQTUynIW0MpuW+lvAZ58NwivgAMGM3eINA0e7888ccWrvuZFtjJooT2UFMo6E9cfLq9YQh/sGPLZ+DOl2tRYkeAPzokTV4AgE5e
-X-Gm-Message-State: AOJu0Yzk/9Y/L+NRDAHSnhFtqoioj9+6AiaqQ0FghUDAN4gLFh0JajaG
-	iMyoqBSB7ndYP7SVuyUNf2ZIabpDnPoM3dlEKEBcwy39CnTLvwF5MDVSrbVme/APIHie1XxMrEz
-	dKo9k88Nkm5Tg7cQMbGnSJzOR9jnZSP1aCgcvftc7w2KlWcrKhWxGtZ8=
-X-Google-Smtp-Source: AGHT+IEUm1UkcYM/sIzxXDzHrbNcEpR3pcZf4v+sdN5pTv9AT4AiMUbEOpRb9EeYJuCnjMrfVj551rccxhb3hSmgI4DyUrvieT8s
+        bh=Zj8Q27hfQkFnIkkQZ9MEhv/ti86Ke4zxb/l8cQKhYc0=;
+        b=aQTL26BIC1iF3lY8hKNaGZ+XJCvP8y+MOUAYT092mptaDDpq2gkSKcs+/ds3Ky3WcS
+         nW+rnF4HVGQAqDZ6yKf+bjDluQz5V+Qrie5t96uKIC0WvwUTs6zk4UR0q6av1RwXBQpr
+         LHLm15bnGGh4CTfVCG9kwfXu7LtDoA2b4iAPJ7906BjbggdXBzoPgiBFmC5xvIP4LShn
+         ywZAFOWrrYsVttEjdJzHOWdI4bk8BtaskW9e++Dn0imftov+bme1P/TYgTnCtLTkLn9o
+         dSaWZII58IMz3bBXb+mhvxWjzegbUKmWvulpIFNMQJyWVnDu7L7nsOo90vcu3rgNTkDG
+         JNeA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvKMsFFbaeYt9ZerGYBp6/JxXlbp78e/slGErMVLUfQU9GoC6vQopChp53f9KIgPMEmoh7VhnL24/3+WnvTM5HX5+pRbHFaVArrzLP
+X-Gm-Message-State: AOJu0YwncA5dg2CkIK3GC0xbnkAdXUFMOXrXZkT1eVmFY3Q7O3Jo/Dlx
+	zNA9osMCywO9wWecrVu3PyA/7SZgd6J0omJtozG/TR6Qz14DF9HSRZ+VdQjDV/NwSo5t7QMJVEa
+	NHmCo6FtyTG9KxI5o/3YxnW15lRTq0J2ERln1fiF5DTIMPFVMSQarB+U=
+X-Google-Smtp-Source: AGHT+IHGlcF9Tc0isnN9hmE5AFRJlQl26Gt/pYFcsP7YplbkIPM/EqkOGbd0+n6cNYnq8KjbsIYr3SoyXf7GSX2Tb0nnvKnmkVNY
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8504:b0:482:ead5:4f5d with SMTP id
- is4-20020a056638850400b00482ead54f5dmr321024jab.1.1713139878632; Sun, 14 Apr
+X-Received: by 2002:a05:6638:411c:b0:482:f1bb:d927 with SMTP id
+ ay28-20020a056638411c00b00482f1bbd927mr228594jab.3.1713139878852; Sun, 14 Apr
  2024 17:11:18 -0700 (PDT)
 Date: Sun, 14 Apr 2024 17:11:18 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000eab13906161775e8@google.com>
-Subject: [syzbot] [nilfs?] kernel BUG in submit_bh_wbc
-From: syzbot <syzbot+3a841e887ad90c07541a@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, konishi.ryusuke@gmail.com, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000ee06de0616177560@google.com>
+Subject: [syzbot] [mm?] WARNING in __hugetlb_cgroup_uncharge_folio
+From: syzbot <syzbot+4b8077a5fccc61c385a1@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13f8135b180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=3a841e887ad90c07541a
+HEAD commit:    a053fd3ca5d1 Add linux-next specific files for 20240409
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12926699180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cef4d00cd7fe38ca
+dashboard link: https://syzkaller.appspot.com/bug?extid=4b8077a5fccc61c385a1
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a7a983180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c5a29d180000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16f40ba9180000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/72ab73815344/disk-fe46a7dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2d6d6b0d7071/vmlinux-fe46a7dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/48e275e5478b/bzImage-fe46a7dd.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/12d8fad50ce0/mount_0.gz
-
-The issue was bisected to:
-
-commit 602ce7b8e1343b19c0cf93a3dd1926838ac5a1cc
-Author: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Fri Jan 27 13:22:02 2023 +0000
-
-    nilfs2: prevent WARNING in nilfs_dat_commit_end()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=128df913180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=118df913180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=168df913180000
+disk image: https://storage.googleapis.com/syzbot-assets/16fbf27c5977/disk-a053fd3c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cac2847d6c46/vmlinux-a053fd3c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c4f6c7891071/bzImage-a053fd3c.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3a841e887ad90c07541a@syzkaller.appspotmail.com
-Fixes: 602ce7b8e134 ("nilfs2: prevent WARNING in nilfs_dat_commit_end()")
+Reported-by: syzbot+4b8077a5fccc61c385a1@syzkaller.appspotmail.com
 
-NILFS (loop0): discard dirty block: blocknr=18446744073709551615, size=1024
-NILFS (loop0): nilfs_get_block (ino=18): a race condition while inserting a data block at offset=0
 ------------[ cut here ]------------
-kernel BUG at fs/buffer.c:2768!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 PID: 5056 Comm: syz-executor429 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+WARNING: CPU: 1 PID: 5385 at mm/hugetlb_cgroup.c:350 __hugetlb_cgroup_uncharge_folio+0x346/0x450 mm/hugetlb_cgroup.c:350
+Modules linked in:
+CPU: 1 PID: 5385 Comm: syz-executor.2 Not tainted 6.9.0-rc3-next-20240409-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:submit_bh_wbc+0x543/0x560 fs/buffer.c:2768
-Code: 07 7d ff be 00 10 00 00 48 c7 c7 80 f8 26 8e 4c 89 fa e8 f0 cd be 02 e9 98 fe ff ff e8 86 07 7d ff 90 0f 0b e8 7e 07 7d ff 90 <0f> 0b e8 76 07 7d ff 90 0f 0b e8 6e 07 7d ff 90 0f 0b e8 66 07 7d
-RSP: 0018:ffffc9000399f838 EFLAGS: 00010293
-RAX: ffffffff8217ecd2 RBX: 0000000000000000 RCX: ffff88807cfe3c00
+RIP: 0010:__hugetlb_cgroup_uncharge_folio+0x346/0x450 mm/hugetlb_cgroup.c:350
+Code: 89 df e8 dd 27 f6 ff 4c 89 33 48 83 c4 10 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 12 4e 91 ff eb e6 e8 0b 4e 91 ff 90 <0f> 0b 90 e9 3c fd ff ff 48 c7 c1 bc 18 ac 8f 80 e1 07 80 c1 03 38
+RSP: 0018:ffffc90004aa7238 EFLAGS: 00010293
+RAX: ffffffff8204d6f5 RBX: 0000000000000000 RCX: ffff88801177da00
 RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff8217e833 R09: 1ffff1100f095cae
-R10: dffffc0000000000 R11: ffffed100f095caf R12: 0000000000000000
-R13: ffff8880784ae570 R14: 0000000000000000 R15: 1ffff1100f095cae
-FS:  00005555917ee380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+RBP: 0000000000000001 R08: ffffffff8204d426 R09: 1ffffffff25ed8d2
+R10: dffffc0000000000 R11: fffffbfff25ed8d3 R12: 0000000000000001
+R13: ffffea0001a68000 R14: ffff88807b4fa000 R15: dffffc0000000000
+FS:  00007f1822b7f6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000066c7e0 CR3: 000000007f430000 CR4: 00000000003506f0
+CR2: 0000555568f05938 CR3: 000000007dcee000 CR4: 00000000003506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- submit_bh fs/buffer.c:2809 [inline]
- __bh_read fs/buffer.c:3074 [inline]
- bh_read_nowait include/linux/buffer_head.h:417 [inline]
- __block_write_begin_int+0x12d0/0x1a70 fs/buffer.c:2134
- __block_write_begin fs/buffer.c:2154 [inline]
- block_write_begin+0x9b/0x1e0 fs/buffer.c:2213
- nilfs_write_begin+0xa0/0x110 fs/nilfs2/inode.c:262
- generic_perform_write+0x322/0x640 mm/filemap.c:3930
- __generic_file_write_iter+0x1b8/0x230 mm/filemap.c:4022
- generic_file_write_iter+0xaf/0x310 mm/filemap.c:4051
- call_write_iter include/linux/fs.h:2108 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xa84/0xcb0 fs/read_write.c:590
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+ alloc_hugetlb_folio+0x1638/0x1970 mm/hugetlb.c:3252
+ hugetlb_mfill_atomic_pte+0xcad/0x1aa0 mm/hugetlb.c:6748
+ mfill_atomic_hugetlb mm/userfaultfd.c:600 [inline]
+ mfill_atomic mm/userfaultfd.c:772 [inline]
+ mfill_atomic_copy+0x13f0/0x1a50 mm/userfaultfd.c:868
+ userfaultfd_copy fs/userfaultfd.c:1724 [inline]
+ userfaultfd_ioctl+0x2950/0x7160 fs/userfaultfd.c:2123
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:907 [inline]
+ __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:893
  do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f3d6ccdd9f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc74baec58 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0073746e6576652e RCX: 00007f3d6ccdd9f9
-RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000005
-RBP: 652e79726f6d656d R08: 00000000000b15f8 R09: 00000000000b15f8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc74baee28 R14: 0000000000000001 R15: 0000000000000001
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+RIP: 0033:0x7f1821e7de69
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1822b7f0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f1821fabf80 RCX: 00007f1821e7de69
+RDX: 0000000020000080 RSI: 00000000c028aa03 RDI: 0000000000000006
+RBP: 00007f1821eca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f1821fabf80 R15: 00007ffe6f6b2888
  </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:submit_bh_wbc+0x543/0x560 fs/buffer.c:2768
-Code: 07 7d ff be 00 10 00 00 48 c7 c7 80 f8 26 8e 4c 89 fa e8 f0 cd be 02 e9 98 fe ff ff e8 86 07 7d ff 90 0f 0b e8 7e 07 7d ff 90 <0f> 0b e8 76 07 7d ff 90 0f 0b e8 6e 07 7d ff 90 0f 0b e8 66 07 7d
-RSP: 0018:ffffc9000399f838 EFLAGS: 00010293
-RAX: ffffffff8217ecd2 RBX: 0000000000000000 RCX: ffff88807cfe3c00
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff8217e833 R09: 1ffff1100f095cae
-R10: dffffc0000000000 R11: ffffed100f095caf R12: 0000000000000000
-R13: ffff8880784ae570 R14: 0000000000000000 R15: 1ffff1100f095cae
-FS:  00005555917ee380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000066c7e0 CR3: 000000007f430000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -171,7 +134,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
