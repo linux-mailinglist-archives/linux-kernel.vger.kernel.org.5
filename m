@@ -1,73 +1,51 @@
-Return-Path: <linux-kernel+bounces-144819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F9EF8A4B22
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:10:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEBAD8A4B29
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:11:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2CBE284676
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:10:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B26E1C2136E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:11:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A831F3C46B;
-	Mon, 15 Apr 2024 09:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DE93C488;
+	Mon, 15 Apr 2024 09:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ZZZSUQJ0"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="o8LwR7fh"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374663BBDE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F6E3BBF0;
+	Mon, 15 Apr 2024 09:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713172229; cv=none; b=ThshMkEuNixT5mE8RuNqQjUt7Ey27JHYsA3Z+prMXwBEVTCn3I+Qn2OVaTjh1POnx7BDdtJVuuXJNCP857vITK/8Ob2op7pBtqLfywDlaY3WrdhE/9mhV+JinVxVnEYB6PCoPA6xUSasezDzUgtLF6UzrzvM/giOtbsGUJwh9mA=
+	t=1713172267; cv=none; b=jy9hvr7OFf8NvHMKbX+uFaKPJz+sw+k9KhW97lD8RagxSl2+CC/VclycpKXffbxnWAC++7Hh9flmY4em0jnBy8GxsZfz+VG2PFnhNUsL7dbpK+iMUnqPw+waYPJ0X4n1/OF90GqtxkEeiBKDUp10bRzo3jGLGYsbhruA6hAFHgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713172229; c=relaxed/simple;
-	bh=fZt9c9X/Jc+Z+PWYJ4t8R4woVCVorw+BDVxxptvoH5c=;
+	s=arc-20240116; t=1713172267; c=relaxed/simple;
+	bh=5gS3HAEyiIt2xs4qyJW1Aavxa3MAFTLia1wWYFx0ySY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dad2mCO2FYwJzlREtqvmlAU6RuY0SLvqphfTlWZ3Y9TqFDzRUAcYFHEKo1pLtBtR0T/yBYgSzaBkWClmhMcqYOrJngW72yWtnokZ9HP64YQKYd+AGmV8h7pD2w3pPLGFU0/DPaQXUInhkOOHFozRuKcraSHay6c28z8HKHzQlV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ZZZSUQJ0; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-345606e8ac0so621650f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713172226; x=1713777026; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CMipTzrco8cuX1DyV3x6d9zPt5GQCAGmWbkRX0s3Bkk=;
-        b=ZZZSUQJ03c9MlL1ui6P6baX25LWjbkV2t/Tr+m6koC6TVUZRiS8xKQYkJSlQCcjS2C
-         JHZ4UhD++dHDfNscz88rSZn4ZEBN3WEb9ao5LyOjjz5+iMruZ/7Zm2oosrHSef4mtNN4
-         s4gLQ0Dt6901BpqfjG/oWiIvjWVr1qDXMCdtKLXQdLlFyqcVfARTXrRzQK9Q2GANRUxf
-         eD2csgR4vZKloLzlSDOYRgRUF1Pakd8rWHE4cz4cFqXhGEErKECnh4RsXFblohCBDtvp
-         VqHOH5u6/51eYfXBlyLVFeFqbGQzYU8l3VTHqRW/9ZAmherm5CvBRM6uRESNJ4uW1XxI
-         RZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713172226; x=1713777026;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CMipTzrco8cuX1DyV3x6d9zPt5GQCAGmWbkRX0s3Bkk=;
-        b=ss7Z7sEve8KxXbDiqsogjb5K9z+i8k1Qs7xB605Yj/nFCZ36IRtA6CMzYRyxlhIrjK
-         n7FB1Kj+5ro5gBCzJGnrTviJNHrX/3FVwxsVTEzp05BmTtM5wbNgYyxZ5790YuuFotqa
-         +aU0pL30RlyTfnJfAIZxrGmJpp3yZvdMJYqGH+c+7CW8XZOdTas+6IVJSX8/2DR3X7/K
-         SMfQTQ6dWNoazrbUISXFlH8ebUf0LpUbhwPoTZU6J7f5/DDPDPavlYK0v8Db/SQ97clI
-         rwqc6jjh9jHL4pKOlnTWh97XGEX3np3braSL2qVVGMqT6Uk/I9SM5MFo6kXxekFoXByq
-         d4qg==
-X-Forwarded-Encrypted: i=1; AJvYcCWkgZVZB8+JnIiJNk8migiDFT+jdgahJAswY1esmWD9yFepkEsNxLWzQYRwCddR10o9dxixeXXzPrEqxqiDqju7VzgRVVWOsZfQkE82
-X-Gm-Message-State: AOJu0YxX1KtCZh3jth8S/aKtY6NOoX6lhuVh6HDjpt5GhKJ0tXjn796F
-	imyEEQGZQGk6gPfch3L1l82DccRLYaIirBO3qGGAFi0ovRycd+KhV8jR0fsptPk=
-X-Google-Smtp-Source: AGHT+IFOI8wiMfFK+eh+wkDTy9pH4EpksT9wRNII+klZpSBWS3ghE8Ipz2Lv/Q5ZldsUWaH3Q3GfEg==
-X-Received: by 2002:a05:600c:3b1f:b0:416:7b2c:df05 with SMTP id m31-20020a05600c3b1f00b004167b2cdf05mr6832257wms.1.1713172226355;
-        Mon, 15 Apr 2024 02:10:26 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:b1f5:d56c:abf9:b394? ([2a01:e0a:999:a3a0:b1f5:d56c:abf9:b394])
-        by smtp.gmail.com with ESMTPSA id gw7-20020a05600c850700b004146e58cc35sm18937831wmb.46.2024.04.15.02.10.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 02:10:25 -0700 (PDT)
-Message-ID: <5eda3278-24bc-4c17-a741-523ad5ff79f7@rivosinc.com>
-Date: Mon, 15 Apr 2024 11:10:24 +0200
+	 In-Reply-To:Content-Type; b=pu3ucUgi5P80hRKn5CdFogLEY4Nr4jEbz7wMz1S8IvZtdy9TFFU22+uN3BAF6ILpUtUArRKY3oV/bpUnVNQN7yV6xFCHqqRk6DguI24I7P06W3gmPYQH4NR36YHted4ZmCR2jXHz0D6IWxSwQtG43cFqOVLj58CdM5vmzKOmD0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=o8LwR7fh; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5D9F22000B;
+	Mon, 15 Apr 2024 09:10:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1713172257;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CNj8sphrF2+SiBow5PBnuyEwJMzJ7P/0tyqEvIc9L8g=;
+	b=o8LwR7fhwk2bxkYUj6hwB6xXojxK5MYd25pyHNkg7m1olyQhS3e8QCDGXAPQf8656mP1GG
+	kD8lygC22LAXUoQlRWifQVPDzQl0xV3D1OswLLTYb99X88FVfS6ZuvJ662HC5pwrkc/+Pm
+	t7qICZZG7KPhK4KZtm/EvjAFcsk4OjsS2V6t5pAakMibAHZkbmX9Dgb178fUwPT8Tsf7w5
+	kBIZWKgIwSTYZxMEfv2tqqOZj+1YtP+m6HQeOh09EKdPUcNV5S2qnWT7JZguKdhmKJeLfY
+	p+S1nw6hicJOBRNgKpG2SVUlA+63NgKMZkzunAv6v/BaZ/7ubyJQyF9wdGyK4A==
+Message-ID: <00ba4593-d720-419a-a97d-37c402c91e44@arinc9.com>
+Date: Mon, 15 Apr 2024 12:10:43 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,124 +53,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/10] riscv: add ISA extension parsing for Zcmop
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Deepak Gupta <debug@rivosinc.com>, Conor Dooley <conor@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Anup Patel <anup@brainfault.org>, Shuah Khan <shuah@kernel.org>,
- Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, kvm@vger.kernel.org,
- kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-References: <20240410091106.749233-1-cleger@rivosinc.com>
- <20240410091106.749233-8-cleger@rivosinc.com>
- <ZhcFeVYUQJmBAKuv@debug.ba.rivosinc.com>
- <20240410-jawless-cavalry-a3eaf9c562a4@spud>
- <20240410-judgingly-appease-5df493852b70@spud>
- <ZhcTiakvfbjb2hon@debug.ba.rivosinc.com>
- <1287e6e9-cb8e-4a78-9195-ce29f1c4bace@rivosinc.com>
- <20240411-superglue-errant-b32e5118695f@wendy>
- <c86f9fa8-e273-4509-83fa-f21d3265d5c9@rivosinc.com>
- <20240411-backwater-opal-00c9aed2231e@wendy>
+Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
+To: Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
+ <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
+ <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
+ <85261d11-d6cb-4718-88d9-95a7efe5c0ab@arinc9.com>
+ <e6cfe735-0a46-4c07-90ee-4ae25c921b03@kernel.org>
+ <335cdd4b-7309-4633-9b4f-6487c72c395c@arinc9.com>
+ <07c9c5f5-c4b9-44d6-b909-5aa306f56898@kernel.org>
 Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20240411-backwater-opal-00c9aed2231e@wendy>
-Content-Type: text/plain; charset=UTF-8
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <07c9c5f5-c4b9-44d6-b909-5aa306f56898@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-
-
-On 11/04/2024 13:53, Conor Dooley wrote:
-> On Thu, Apr 11, 2024 at 11:08:21AM +0200, Clément Léger wrote:
->>>> If we consider to have potentially broken isa string (ie extensions
->>>> dependencies not correctly handled), then we'll need some way to
->>>> validate this within the kernel.
->>>
->>> No, the DT passed to the kernel should be correct and we by and large we
->>> should not have to do validation of it. What I meant above was writing
->>> the binding so that something invalid will not pass dtbs_check.
+On 15.04.2024 10:57, Krzysztof Kozlowski wrote:
+> On 14/04/2024 22:21, Arınç ÜNAL wrote:
+>> NVRAM is described as both flash device partition and memory mapped NVMEM.
+>> This platform stores NVRAM on flash but makes it also memory accessible.
 >>
->> Acked, I was mainly answering Deepak question about dependencies wrt to
->> using __RISCV_ISA_EXT_SUPERSET() which does not seems to be relevant
->> since we expect a correct isa string to be passed.
+>> As device partitions are described in board DTS, the nvram node must also
 > 
-> Ahh, okay.
+> Sorry, but we do not talk about partitions. Partitions are indeed board
+> property. But the piece of hardware, so NVMEM, is provided by SoC.
 > 
->> But as you stated, DT
->> validation clearly make sense. I think a lot of extensions strings would
->> benefit such support (All the Zv* depends on V, etc).
+>> be defined there as its address and size will be different by board. It has
+>> been widely described on at least bcm4709 and bcm47094 SoC board DTS files
+>> here.
 > 
-> I think it is actually as simple something like this, which makes it
-> invalid to have "d" without "f":
+> These not proper arguments. What you are saying here is that SoC does no
+> have nvram at address 0x1c08000. Instead you are saying there some sort
+> of bus going out of SoC to the board and on the board physically there
+> is some NVRAM sort of memory attached to this bus.
+
+Yes that is the case. NVRAM is stored on a partition on the flash. On the
+Broadcom NorthStar platform, the NAND flash base is 0x1c000000, the NOR
+flash base is 0x1e000000.
+
+For the board in this patch, the flash is a NAND flash. The NVRAM partition
+starts at address 0x00080000. Therefore, the NVRAM component's address is
+0x1c080000.
+
 > 
-> | diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> | index 468c646247aa..594828700cbe 100644
-> | --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> | +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> | @@ -484,5 +484,20 @@ properties:
-> |              Registers in the AX45MP datasheet.
-> |              https://www.andestech.com/wp-content/uploads/AX45MP-1C-Rev.-5.0.0-Datasheet.pdf
-> |  
-> | +allOf:
-> | +  - if:
-> | +      properties:
-> | +        riscv,isa-extensions:
-> | +          contains:
-> | +            const: "d"
-> | +          not:
-> | +            contains:
-> | +              const: "f"
-> | +    then:
-> | +      properties:
-> | +        riscv,isa-extensions:
-> | +          false
-> | +
-> | +
-> |  additionalProperties: true
-> |  ...
 > 
-> If you do have d without f, the checker will say:
-> cpu@2: riscv,isa-extensions: False schema does not allow ['i', 'm', 'a', 'd', 'c']
+>>
+>>>
+>>> 2. You cannot have MMIO node outside of soc. That's a W=1 warning.
+>>
+>> I was not able to spot a warning related to this with the command below.
+>> The source code directory is checked out on a recent soc/soc.git for-next
+>> tree. Please let me know the correct command to do this.
+>>
+>> $ make W=1 dtbs
+>> [...]
+>>     DTC     arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb
+>> arch/arm/boot/dts/broadcom/bcm5301x-nand-cs0.dtsi:10.18-19.5: Warning (avoid_unnecessary_addr_size): /nand-controller@18028000/nand@0: unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
+>>     also defined at arch/arm/boot/dts/broadcom/bcm5301x-nand-cs0-bch8.dtsi:13.9-17.3
+>>     also defined at arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts:137.9-160.3
+>> arch/arm/boot/dts/broadcom/bcm-ns.dtsi:24.28-47.4: Warning (unique_unit_address_if_enabled): /chipcommon-a-bus@18000000: duplicate unit-address (also used in node /axi@18000000)
+>> arch/arm/boot/dts/broadcom/bcm-ns.dtsi:323.22-328.4: Warning (unique_unit_address_if_enabled): /mdio@18003000: duplicate unit-address (also used in node /mdio-mux@18003000)
 > 
-> At least that's readable, even though not clear about what to do. I wish
+> Hm, indeed, that way it works. Actually should work if we allow soc@0
+> and memory@x, obviously.
 
-That looks really readable indeed but the messages that result from
-errors are not so informative.
+I was a bit confused with memory@x too.
 
-It tried playing with various constructs and found this one to yield a
-comprehensive message:
+> 
+> Anyway, it is outside of soc node and soc dtsi, which leads to previous
+> point - you claim that it is not physically in the SoC package. How is
+> it connected? If it is on the board, why does it have brcm compatible,
+> not some "ti,whatever-eeprom-nvram"?
 
-+allOf:
-+  - if:
-+      properties:
-+        riscv,isa-extensions:
-+          contains:
-+            const: zcf
-+          not:
-+            contains:
-+              const: zca
-+    then:
-+      properties:
-+        riscv,isa-extensions:
-+          items:
-+            anyOf:
-+              - const: zca
+I don't know what to tell you. I don't know this set of SoCs' dt-bindings.
+I am merely submitting a board device tree source file. It would be great
+if this didn't block this patch series and this conversation was further
+discussed with Rafal who maintains this set of SoCs' dt-bindings, from what
+I remember.
 
-arch/riscv/boot/dts/allwinner/sun20i-d1-dongshan-nezha-stu.dtb: cpu@0:
-riscv,isa-extensions:10: 'anyOf' conditional failed, one must be fixed:
-        'zca' was expected
-        from schema $id: http://devicetree.org/schemas/riscv/extensions.yaml
-
-Even though dt-bindings-check passed, not sure if this is totally a
-valid construct though...
-
-Thanks,
-
-Clément
-
-> the former could be said about the wall of text you get for /each/
-> undocumented entry in the string.
+Arınç
 
