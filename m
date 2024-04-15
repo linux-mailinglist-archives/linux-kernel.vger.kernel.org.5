@@ -1,101 +1,230 @@
-Return-Path: <linux-kernel+bounces-145427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 262918A5608
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 86EF68A560A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:08:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6480284E3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:07:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 305C7282B65
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:08:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33CFE78C6B;
-	Mon, 15 Apr 2024 15:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E75A762E0;
+	Mon, 15 Apr 2024 15:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="SBLSGHmK"
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="JufAHYJR"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C84C471B3B;
-	Mon, 15 Apr 2024 15:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F01C82119;
+	Mon, 15 Apr 2024 15:08:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713193657; cv=none; b=BbmsrImOm/ClJntHsvcQ0I/E5E64SvpDsVrFAhYVvOEaX1Quj0VrKWnMYrh/n/9GFH959wlL4tPjuPC9Nli4KfdZdAkxY9jC08sNwmhj6dJSQhURGu9/Gs50oKDhT1a9Uw/3/GLpYPG7dnBHgkA0yfZluGUC5F3DjpYU1KYfFA0=
+	t=1713193702; cv=none; b=LclPhULAewdU+SYaQzi2AFQ9hd/sG/ybn8G5lDu9D+ekXQeeKUgV2aPpYLkqW5FfSoEcgob9+tT9Z/S72pVexWgdnKkDKi1DP/hcA4xCRVoQuvzWq3qbNE2PjGM2FIH0+LvDzymxTU65v8s12iFmMLKWCgvSzEDJyO5VOBF0cUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713193657; c=relaxed/simple;
-	bh=emgz6QBKDimwdJBAJ7LQ7441HPWa2vqJvQcWuqrELQ8=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=TSYTAVOdg9H5qO6Jf+Zt0tAd3wrqP9OKMr0EBR8CXF8ikmq2Hy4AEd+cbGpD4oAFKxhjaod3xOXeCcl8WugfGJ2k+9b0RcyhyPoAlS/F9/2p0GO7fLaZVeN324u0zw/fIoo+jx9M4I+WFJOKDUxCfpr5/qkCmBL/DRJ4GkhVGu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=SBLSGHmK; arc=none smtp.client-ip=217.72.192.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713193633; x=1713798433; i=markus.elfring@web.de;
-	bh=emgz6QBKDimwdJBAJ7LQ7441HPWa2vqJvQcWuqrELQ8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=SBLSGHmKz2ARTmGyMPUv4aNk6Kv2dQPqVUSD6nmGNGP92hbXvHuf1dVZrK8essQj
-	 lBz+ZDBxOngb73DhFMzdiBREU1/+B3XtSR4vzRm7jsM21I83TANUjKRwGNbU9CBUt
-	 Bbk7wq4SFiAnMpVNRI0i5VxmskObA2lM2CNYsiWXSmdRie59zd/toQWE6L5oHi6Ki
-	 G/bFj30z99qqFBFwRByd0q+mRlbPGaWaQLGjPO75qvkP8Qo3/Qe2YchGG7rAw/VKz
-	 0i3iLRWr/L9NhOqVtHqTIvP5XPTBo/0s/hExvZbICpX4wrRmi8Tfhsn6RVzUky4BF
-	 B2LCYvfmjM/i1KcWTA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.80.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MCol0-1s5Dc10XuC-0095eM; Mon, 15
- Apr 2024 17:07:13 +0200
-Message-ID: <99598b98-8550-4dca-beea-4c2d61d46f78@web.de>
-Date: Mon, 15 Apr 2024 17:07:09 +0200
+	s=arc-20240116; t=1713193702; c=relaxed/simple;
+	bh=hWHk3OAeDSHeXmmwsMo6Ie1UzYURq55JZzQuZwoHz+s=;
+	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
+	 To:Date:Message-ID; b=oRnTzfWC2WevrU8Vp5URsAyZ5iHv+W7d7zcC5XwjW42YWf2nMIMONIzHHirKKdmywT1Ozn52hBiEKFKJ6ct6uq2T3tkq2D6GvKJyj3V8oIgUENN8GkNr3Vi5+k8qzmudxYtONvofYM6YVq2GOk0oL1erDGwMjeBYeBxQgz1mXHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=JufAHYJR; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust6594.18-1.cable.virginm.net [86.31.185.195])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id EC61B236;
+	Mon, 15 Apr 2024 17:07:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713193648;
+	bh=hWHk3OAeDSHeXmmwsMo6Ie1UzYURq55JZzQuZwoHz+s=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=JufAHYJRV5XwyCZiGltge2oCI08BK+ysqi+YSMdQnzRgNLHulH5BbqXcuni2QkdnR
+	 PrSf7TFQaGxzbY4p8yPYQDdD++K83lG6IkfxZ1Rppnz+ResPyrf2vrvxYZE7oOwjOo
+	 gJa5u1GSWEpAvoWHJp04t2AxpcQ+GNe9UKG/bJCU=
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Wenchao Hao <haowenchao2@huawei.com>, linux-scsi@vger.kernel.org,
- kernel-janitors@vger.kernel.org, "James E. J. Bottomley"
- <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Hongxiang Lou <louhongxiang@huawei.com>
-References: <20240307144311.73735-1-haowenchao2@huawei.com>
-Subject: Re: [PATCH v4 0/3] SCSI: Fix issues between removing device and error
- handle
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240307144311.73735-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:izUBwOSRW+Fblv0kjxF4VBtGny4pVfwwEQZR41GrApqty52fkLo
- pcNE+Hm7fo738bynpdceUAqqSpZEg6WAANQkO3/tC3hKfWYgjPHt7G9S6oUc7kz5febtJj7
- DvnfhYX+RB4XdOnZZpB5fDdBmJb1prTXYbUTI40wDCF9TtpMpRda/QUIJeT2BEFvKk9HJmx
- o7c0aSaaHUMVmKT03me6A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:GG8nbAqW1m4=;6W/vM4M4GzDaZ9VGuYjUyRMcB8a
- 1tu+Fm6SOAXcUPhDr+Phf3kvdIcY+uoAUkMGtmKI7gAREQ5Q2tTa0pxTdsRE4wox1cuZdV0VU
- W1JOqc1f1snWTNHiQHAAYZ+0OyUMFukAB2XJ1UFvR0YV7OFaQgatjYjBm3VC9OG2dpIgm94vS
- utp3NC9Q0yVxQnN3smCfGookJjxHjlsn0QfyEiktTsWfX4bSmS6Yovl+UIWC59ZYeppduMNY/
- YcBJ0BbEikdFCXovRKDDB2rhkwdk6TxW8vL24mrRuvWAvFAcr2H2amUqel74KXg0kWK+VuxHO
- XyOd2TVO9vDjzYFzC0pzQvmz/JOTGZ5jbpxa5f8o9wmfmpdPOoT6s7HXeDiU38ua5caj72SD5
- TSLxWNeiOUtKGf9E51IEGVmKlsrGTER3jKtkusXOj6VY7PbWiROZuqZl7O90mY1Ul2LC6TuYb
- kfEM7r8aWHrXCZBZ2RAcOG38y+D970FmQ/8h+Auo4hhcbv8m2++84up7DhegQZHrrQmWeZhfr
- UaQtCp+8/0T3EefoYP1XK25FY4jXVvYkqIFCPobFvMbjcAJ+68mgMs7ccM2uzTX0mrQ/AGvut
- lyLiXXr24BQWxufdbFfLw7xQqEOFH61LW/kvtWqzhbTesj+B8Vv6DabiPvwi2rfUlPk5BSyGs
- VjyfNBpCUIzkUY9VUGta284VdY4NjOte3uYjl+20U+nNF/hBIQRjrUI9aQRzaxnzXqsMTVgSD
- eVWU7GgzRS5n0qVUvAP9y8ba/aeSsO8jkN3gdZoW8nyg8Lh9LwbsNbu0oJ5GyAnxxV034w/ta
- brRlFv85TyvzUwjquphj+c30WAVN8AX2a0aKksvaIXRpI=
+In-Reply-To: <20240415114135.25473-2-chris.obbard@collabora.com>
+References: <20240415114135.25473-1-chris.obbard@collabora.com> <20240415114135.25473-2-chris.obbard@collabora.com>
+Subject: Re: [PATCH v1 1/1] arm64: dts: imx8mp-debix-model-a: Add HDMI output support
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: Daniel Scally <dan.scally@ideasonboard.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, kernel@collabora.com, Christopher Obbard <chris.obbard@collabora.com>, Conor Dooley <conor+dt@kernel.org>, Fabio Estevam <festevam@gmail.com>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Pengutronix Kernel Team <kernel@pengutronix.de>, Rob Herring <robh@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+To: Christopher Obbard <chris.obbard@collabora.com>, linux-kernel@vger.kernel.org
+Date: Mon, 15 Apr 2024 16:08:10 +0100
+Message-ID: <171319369093.2333277.9109576229211275635@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 
-=E2=80=A6
-> These issues are triggered because devices in removing would be skipped
-> when calling shost_for_each_device().
-=E2=80=A6
+Hi Chris,
 
-How do you think about to add the tag =E2=80=9CFixes=E2=80=9D to any of yo=
-ur patches?
 
-Regards,
-Markus
+Quoting Christopher Obbard (2024-04-15 12:41:27)
+> Enable the HDMI output on the Debix Model A SBC, using the HDMI encoder
+> present in the i.MX8MP SoC.
+
+Aha, you beat me to it. I have a commit locally (Dated 2022-09-06) but
+not sent because I didn't realise the HDMI support finally got upstream
+\o/
+
+> Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
+> ---
+>=20
+>  .../dts/freescale/imx8mp-debix-model-a.dts    | 47 +++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts b/arc=
+h/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
+> index 2c19766ebf09..29529c2ecac9 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-debix-model-a.dts
+> @@ -20,6 +20,18 @@ chosen {
+>                 stdout-path =3D &uart2;
+>         };
+> =20
+> +       hdmi-connector {
+> +               compatible =3D "hdmi-connector";
+> +               label =3D "hdmi";
+> +               type =3D "a";
+> +
+> +               port {
+> +                       hdmi_connector_in: endpoint {
+> +                               remote-endpoint =3D <&hdmi_tx_out>;
+> +                       };
+> +               };
+> +       };
+> +
+
+Interesting. My patch missed this. But it looks correct.
+
+
+>         leds {
+>                 compatible =3D "gpio-leds";
+>                 pinctrl-names =3D "default";
+> @@ -94,6 +106,28 @@ ethphy0: ethernet-phy@0 { /* RTL8211E */
+>         };
+>  };
+> =20
+> +&hdmi_pvi {
+> +       status =3D "okay";
+> +};
+> +
+> +&hdmi_tx {
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&pinctrl_hdmi>;
+> +       status =3D "okay";
+> +
+> +       ports {
+> +               port@1 {
+> +                       hdmi_tx_out: endpoint {
+> +                               remote-endpoint =3D <&hdmi_connector_in>;
+> +                       };
+> +               };
+> +       };
+> +};
+> +
+> +&hdmi_tx_phy {
+> +       status =3D "okay";
+> +};
+> +
+>  &i2c1 {
+>         clock-frequency =3D <400000>;
+>         pinctrl-names =3D "default";
+> @@ -241,6 +275,10 @@ &i2c6 {
+>         status =3D "okay";
+>  };
+> =20
+> +&lcdif3 {
+> +       status =3D "okay";
+> +};
+> +
+
+Except for the addition of the connector, the above matches my patch to
+here.
+
+
+>  &snvs_pwrkey {
+>         status =3D "okay";
+>  };
+
+
+But in my patch I have the following hunk here: (I haven't checked to
+see if this still applies on mainline, so take with a pinch of salt if
+it's not there!)
+
+
+ &iomuxc {
+ 	pinctrl-names =3D "default";
+-	pinctrl-0 =3D <&pinctrl_hog>;
+-
+-	pinctrl_hog: hoggrp {
+-		fsl,pins =3D <
+-			MX8MP_IOMUXC_HDMI_DDC_SCL__HDMIMIX_HDMI_SCL					0x400001c3
+-			MX8MP_IOMUXC_HDMI_DDC_SDA__HDMIMIX_HDMI_SDA					0x400001c3
+-			MX8MP_IOMUXC_HDMI_HPD__HDMIMIX_HDMI_HPD						0x40000019
+-			MX8MP_IOMUXC_HDMI_CEC__HDMIMIX_HDMI_CEC						0x40000019
+-		>;
+-	};
+
+ 	pinctrl_eqos: eqosgrp {
+ 		fsl,pins =3D <
+ 			MX8MP_IOMUXC_ENET_MDC__ENET_QOS_MDC							0x3
+ 			MX8MP_IOMUXC_ENET_MDIO__ENET_QOS_MDIO						0x3
+
+
+
+
+> @@ -358,6 +396,15 @@ MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16               =
+               0x19
+>                 >;
+>         };
+> =20
+> +       pinctrl_hdmi: hdmigrp {
+> +               fsl,pins =3D <
+> +                       MX8MP_IOMUXC_HDMI_DDC_SCL__HDMIMIX_HDMI_SCL      =
+               0x400001c3
+> +                       MX8MP_IOMUXC_HDMI_DDC_SDA__HDMIMIX_HDMI_SDA      =
+               0x400001c3
+> +                       MX8MP_IOMUXC_HDMI_HPD__HDMIMIX_HDMI_HPD          =
+               0x40000019
+> +                       MX8MP_IOMUXC_HDMI_CEC__HDMIMIX_HDMI_CEC          =
+               0x40000019
+> +               >;
+> +       };
+> +
+
+And my addition here is :
+
+
++	pinctrl_hdmi: hdmigrp {
++		fsl,pins =3D <
++			MX8MP_IOMUXC_HDMI_DDC_SCL__HDMIMIX_HDMI_SCL	0x1c3
++			MX8MP_IOMUXC_HDMI_DDC_SDA__HDMIMIX_HDMI_SDA	0x1c3
++			MX8MP_IOMUXC_HDMI_HPD__HDMIMIX_HDMI_HPD		0x19
++			MX8MP_IOMUXC_HDMI_CEC__HDMIMIX_HDMI_CEC		0x19
++		>;
++	};
++
+
+
+I haven't looked into what the 0x40000000 does yet, but just
+highlighting the difference from the version I've been using to make use
+of HDMI so far.
+
+Does anyone else know the impact here? Otherwise I'll try to find time
+to check this later. (For some undefined term of later...)
+
+--
+Kieran
+
+
+>         pinctrl_i2c1: i2c1grp {
+>                 fsl,pins =3D <
+>                         MX8MP_IOMUXC_I2C1_SCL__I2C1_SCL                  =
+               0x400001c2
+> --=20
+> 2.43.0
+>
 
