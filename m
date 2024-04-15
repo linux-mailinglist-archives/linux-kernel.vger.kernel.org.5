@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-145299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1BCD8A5249
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:52:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 801448A524D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:52:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28DBD1F227FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:52:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 329A42822BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:52:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A1076023;
-	Mon, 15 Apr 2024 13:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6CF76408;
+	Mon, 15 Apr 2024 13:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="tSxBej4Y"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="6GIBxY29"
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7867442F;
-	Mon, 15 Apr 2024 13:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44F5075815;
+	Mon, 15 Apr 2024 13:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713189110; cv=none; b=GfnTiA6VmnzlEot5Tn3NAO1EMM+E/yZXcNMpyEqgFkQE6Ke2w0AruLkUR/xhDWiwNWsRO2D/7Ehnbvfz7NX9ijQSyZhvYE4BENNK3aHpGVnEVxQooOskRo3ZH5zmciUs8tJFiiF1/sc/dTRajwIAv+hdTQKBW/nq29UbegIG/kI=
+	t=1713189112; cv=none; b=BCetkuFyDIg1FqGd+Njfv4doV/GbsyZJCcH52F2RI4K9S0qu9Ifh3Wr+v0lJ9csUK93ZH0xX5dh1GM4tsMFmE2W84q5AEA+ifeoDmxV0wZMKAwFLRM9xemHcO9UK2tq4510CSqt3IFBFL2/r8QRnBD2JMmw9fuFKEZ498+UVcU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713189110; c=relaxed/simple;
-	bh=0KJIq5Q+ZIIelBnyiMJFTamVtS1O5Lag9ZKrLVV5fv8=;
+	s=arc-20240116; t=1713189112; c=relaxed/simple;
+	bh=mV8OFqp0HBA+4TFJQzgX++xwHvZ0vXXitaj4vQc7TYI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cfGsJDix5kID0/SaINQ09i5ZfggfnUoXvFZ7iUsdW16T5RcWMHcvpvS6Ewmm62pW+xGguR3kkzblVx9xId/QBVvnRwucbm9b+m8hNEUoJ/JBBP+2YCm92dgLGri8vNhB6mX8/CUw1mnT0ZSNPwoESq9PG/hM4g+w6rMB7XCLS0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=tSxBej4Y; arc=none smtp.client-ip=185.132.182.106
+	 MIME-Version:Content-Type; b=UEgVtSiFxV7+Dr7oghUkWVtkYOnNO+ZP8eN3hPRc0MyCZwxwkFV276YDOhvGhbxOwg5d9kfER8EMjfxdwxuYAXLccFRIO9ZsrzW1UOzpuSZfVpNvsj70isX/4SMm/cukVbAZ9Et61Jh02OrAfOFDDugULqaSrVWNrT1lycXT/JY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=6GIBxY29; arc=none smtp.client-ip=185.132.182.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43FBMjbG004772;
-	Mon, 15 Apr 2024 15:51:38 +0200
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43FCEbqv013411;
+	Mon, 15 Apr 2024 15:51:40 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=j8IkHP4WnjuBkU+LCPf5A447SFa2M/YqCamK7zG7Rlg=; b=tS
-	xBej4YVmRuq6/w0+lkhSwieyZFyTSeN2x8+O7kKHmplEbDLqnF+w7lW//2QoWnYS
-	81NUO3/t0CpCG8HpfdbdzjGD1Jg7M5H14iCZ2PpG5vQhumC44XfU/QThZlWkVdTN
-	bTqVX5meGXeS+6diib+nBWfG3Rnvxbm6Uggsgqx4DS5BNEpthGHnKb5+Ldu7eH7N
-	xUSRduPxANkSyV7QzkMPUouby4UKxu1mn5e4f7oWa8F3e6mkr5qNkThovfsKSzEV
-	d4WoM99c/DOBDahXjKgRMOBjOD+znVe1qZGQdMJqkLopE25ZNuednCn/Jw4XYEHF
-	PFmwgJFqPdHfJE73sj0Q==
+	selector1; bh=Qh+d821k3hfgEZijAk5AUEPE177e4SfDnVA2TKafL5Q=; b=6G
+	IBxY29LyremTr+C97DwebPQbPfkYQ2kmePUcXBUxVW3Of8fDOhsIT/zvvZcA8WTV
+	+WRVMzz+4AkFuOYM9Zq2yoJg6pVrsCm4RYUkWtKGZs81C3xcj254Q7ZFFQiqrhVR
+	pS0xooKWuOiJBo6RGNCtEc8gevB+Rk6FNeEBcz+5jgT2RzuWJatXNNaukgs2ynL4
+	B7ujWhHx+m5P/uOPHOvHooh+AjOTkiFPUfLHQcjzvo5m0AdfTjjft5N4uf8JHTIA
+	f6MuOaJNpYJF9+8fYWBxkTr/AVTFjNJX8S2J+p04Y3eeXVSY3ih4myhI3xgUyeZp
+	xd2CdM9mr6wC0nwuNFuA==
 Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xffff860m-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xg3m0dtac-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 15:51:37 +0200 (MEST)
+	Mon, 15 Apr 2024 15:51:40 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 71F4040045;
-	Mon, 15 Apr 2024 15:51:34 +0200 (CEST)
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 137E440046;
+	Mon, 15 Apr 2024 15:51:37 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CBAEB212316;
-	Mon, 15 Apr 2024 15:50:50 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6B685216EE1;
+	Mon, 15 Apr 2024 15:50:51 +0200 (CEST)
 Received: from localhost (10.48.86.102) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 15 Apr
- 2024 15:50:50 +0200
+ 2024 15:50:51 +0200
 From: Antonio Borneo <antonio.borneo@foss.st.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -74,9 +74,9 @@ CC: Antonio Borneo <antonio.borneo@foss.st.com>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 08/11] ARM: dts: stm32: List exti parent interrupts on stm32mp151
-Date: Mon, 15 Apr 2024 15:49:23 +0200
-Message-ID: <20240415134926.1254428-9-antonio.borneo@foss.st.com>
+Subject: [PATCH v2 09/11] ARM: dts: stm32: List exti parent interrupts on stm32mp131
+Date: Mon, 15 Apr 2024 15:49:24 +0200
+Message-ID: <20240415134926.1254428-10-antonio.borneo@foss.st.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240216094758.916722-1-antonio.borneo@foss.st.com>
 References: <20240216094758.916722-1-antonio.borneo@foss.st.com>
@@ -97,19 +97,33 @@ X-Proofpoint-Virus-Version: vendor=baseguard
 Stop using the table inside the EXTI driver and list in DT the
 mapping between EXTI events and its parent interrupts.
 
-Convert the driver's table for stm32mp151 to the DT property
+By switching away from using the internal table, there is no need
+anymore to use the specific compatible "st,stm32mp13-exti", which
+was introduced to select the proper internal table.
+
+Convert the driver's table for stm32mp131 to the DT property
 interrupts-extended.
+Switch the compatible string to the generic "st,stm32mp1-exti", in
+place of the specific "st,stm32mp13-exti".
+
+Older DT using compatible "st,stm32mp13-exti" will still work as
+the driver remains backward compatible.
 
 Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
 ---
- arch/arm/boot/dts/st/stm32mp151.dtsi | 75 ++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 74 +++++++++++++++++++++++++++-
+ 1 file changed, 73 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp151.dtsi b/arch/arm/boot/dts/st/stm32mp151.dtsi
-index fa4cbd312e5a1..bcb3ed94b2656 100644
---- a/arch/arm/boot/dts/st/stm32mp151.dtsi
-+++ b/arch/arm/boot/dts/st/stm32mp151.dtsi
-@@ -1224,6 +1224,81 @@ exti: interrupt-controller@5000d000 {
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 3900f32da797b..c432fe109cbec 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1093,10 +1093,82 @@ rcc: rcc@50000000 {
+ 		};
+ 
+ 		exti: interrupt-controller@5000d000 {
+-			compatible = "st,stm32mp13-exti", "syscon";
++			compatible = "st,stm32mp1-exti", "syscon";
  			interrupt-controller;
  			#interrupt-cells = <2>;
  			reg = <0x5000d000 0x400>;
@@ -119,35 +133,35 @@ index fa4cbd312e5a1..bcb3ed94b2656 100644
 +				<&intc GIC_SPI 8   IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 9   IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 10  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 23  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 64  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 24  IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 65  IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 66  IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 67  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 40  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_10 */
-+				<&intc GIC_SPI 42  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 76  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 68  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 41  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_10 */
++				<&intc GIC_SPI 43  IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 77  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 127 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 78  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 1   IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
 +				<0>,
 +				<&intc GIC_SPI 3   IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,						/* EXTI_20 */
-+				<&intc GIC_SPI 31  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 33  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 72  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 95  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 37  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 32  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 34  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 73  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 93  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 38  IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 39  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 71  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 52  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_30 */
-+				<&intc GIC_SPI 53  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 82  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 40  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 72  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 53  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_30 */
++				<&intc GIC_SPI 54  IRQ_TYPE_LEVEL_HIGH>,
 +				<&intc GIC_SPI 83  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 84  IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
 +				<0>,
 +				<0>,
@@ -158,36 +172,33 @@ index fa4cbd312e5a1..bcb3ed94b2656 100644
 +				<0>,
 +				<0>,
 +				<0>,
++				<&intc GIC_SPI 96  IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
 +				<0>,
-+				<&intc GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 93  IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 92  IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
-+				<&intc GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_50 */
++				<&intc GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_50 */
 +				<0>,
-+				<&intc GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>,
-+				<&intc GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
++				<&intc GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>,
++				<0>,
 +				<0>,
 +				<0>,
 +				<0>,
 +				<0>,
 +				<0>,
 +				<0>,						/* EXTI_60 */
-+				<&intc GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
 +				<0>,
 +				<0>,
-+				<&intc GIC_SPI 144 IRQ_TYPE_LEVEL_HIGH>,
 +				<0>,
 +				<0>,
-+				<&intc GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH>,
-+				<0>,
-+				<&intc GIC_SPI 62  IRQ_TYPE_LEVEL_HIGH>,	/* EXTI_70 */
 +				<0>,
 +				<0>,
-+				<&intc GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH>;
++				<&intc GIC_SPI 63  IRQ_TYPE_LEVEL_HIGH>,
++				<0>,
++				<&intc GIC_SPI 98  IRQ_TYPE_LEVEL_HIGH>;	/* EXTI_70 */
  		};
  
  		syscfg: syscon@50020000 {
