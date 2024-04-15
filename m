@@ -1,208 +1,139 @@
-Return-Path: <linux-kernel+bounces-144630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7A478A4892
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:59:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E56E88A4897
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:00:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 061DC1C2268D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:59:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92BFD1F23187
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51E29200B7;
-	Mon, 15 Apr 2024 06:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DCE22612;
+	Mon, 15 Apr 2024 06:59:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="ShuwUXl4"
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CZ3dPOn8"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA821EB48
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2A72110F;
+	Mon, 15 Apr 2024 06:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713164387; cv=none; b=TFGKDG0XTJP4QEdpOD65cx8Tsn2bLTeVjMh1opJag6SPfQEOskAsk/OJYjmdN4CvlNNJA71M8DR+XKr75YSRN1r6iDT4bh72h1k4NlFmYjPxljLIAeJl0g8GRUhQdfUGtqexA86BaCEJE1PWLS9kdJUlr+vVWHNb8FUXx8iudjE=
+	t=1713164393; cv=none; b=LmBIaBrtb5qZB9GFMUuNQQI6NNTRx4C2a2pz9P08T3QAjwqcZAVxH0pmVB9PAmIk7XOiMNGkQmc8O+Y5Z07Ue4Bvesy94fRKQl1Ke3svIlJBgy1CBUZmF1E5mPJNaneH0vCpvQVlQDUr3YEa1HM64FOa5i3I0PnCam8bZGytjPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713164387; c=relaxed/simple;
-	bh=P/GOgv76XYdOW625BfkTbcSXUp/VGA45+3y1j8k3JUM=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TAAZc7vMH3OrZJ3kr0OXqJmbSg+NaL/2yrwuP5Oams/VZjzEvVZyYZnhxY0sM5s8GNW/JPSAYVPBJClF2UGLyWYsgCRhBK+kCu0GgpBNN226egCw9az61Li78uHQai7aogW+srJYYchGqPEi5KDdkK7HD/JU6i5t6Qv5h2QP7ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=ShuwUXl4; arc=none smtp.client-ip=185.125.188.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6EA1C3FE4D
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:59:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713164377;
-	bh=lKHaDBe06MqDE1Bp/z+A9rd/eujvLw5qYHlN415hVeo=;
-	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=ShuwUXl4uZF81sQMPq5rO8vf87HGUkxMFhn1ED9KcpvJMZjdDoBiBiOEp6tVp7THf
-	 yw2Co/wYFWkO1rzlbn6QYIr3Q1NaPS/ZHxwujUg1L1CV5332rukZiFXEjJitkGskTZ
-	 7FULOtq93zelyEOO8iZ+YYxx1f3hlI/TeR9jnQbq+8wRVGVsb9dXNh5Ij4GNhHi4tR
-	 oGvjDtztJrKxnSO9EQK9ge2lNXRiHG9giGByA6jpRBWUX4Pb545Dhh4QcNZtrmHYsk
-	 cNy/sjHILptYYzVjUQVSQalew21qRAg48v+vzC36NMdtmHTcj7NkNgJ60PMsYnuf22
-	 4ugT9+asg8RbA==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-43485632197so51323471cf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:59:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713164376; x=1713769176;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lKHaDBe06MqDE1Bp/z+A9rd/eujvLw5qYHlN415hVeo=;
-        b=lnmoCC5SeKnuAsY0sLP73yb4hglBeqYugyhZEsA06wal3mD+beCjsialm8HVP9z9G5
-         M3LEL2K7fdA0LxHZ0N5fslu8AEMCBr/BLOKXuE5sIVDCnAfkrssrdAP21Qy7jwkFPYUa
-         QQ/gcLzw64S3DuuKZnE3Xsj0Mn4iHr9I67O/GKh7t75UL+tgiWcv5lj1Be5OkQM9qhyw
-         GFQ3rbdlFN1EHbNf/2jAtIwE1V73AVTWX9pC+YoXaak4EW+K8iJOs58IE/EtSOyD+RXH
-         0wT/cMwldQ4kJxZsTHMJSf8v9Eb/UuaklErqLbSKBF0dxqp1aD3OtD4j6IArLEJbCty5
-         gWow==
-X-Forwarded-Encrypted: i=1; AJvYcCWLmCHAu8oiTjmDD5YHqOKiCdV1GKxeFwAW89d+Lf4IgL9ZKqNsWlWOR+vUVHOZcmrb7u8eO+H53/VT9i+zzzSaS9mMNZ14r6xsbH6F
-X-Gm-Message-State: AOJu0YwnyiVDQJPV0sw+S3BWAoos+CKTIgolaH0Xcptj2/oIfI8H4IxM
-	G2RDTUo4GHre6lafvB/dNEfVTuoqIfLvEDHZG52i/cerfr4FM2httPj8PxQ1VqGSbJaCNapVe5v
-	hyoxQvGHwo7TV+GA5lKlSeLpTUBmXjWGH/ZYx8eDoeZbDd31L1MY4cdItJW97KJpa/PXSVCCctq
-	U4aqJb/X6bFA5J8ziKncbF2HpCHMs2fHrsLpY4nER2usXLjPWD/NwgHKkR7b9k
-X-Received: by 2002:a05:622a:130b:b0:435:882c:e9be with SMTP id v11-20020a05622a130b00b00435882ce9bemr15844223qtk.14.1713164376031;
-        Sun, 14 Apr 2024 23:59:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHxW3rB/DranE5JdZ+lECe8KDvPGVPq2P08kjcc3eTf6ysUCyRRXXrL6oRK96huBjLRAVu1p7Vjx7lBTN3MIXQ=
-X-Received: by 2002:a05:622a:130b:b0:435:882c:e9be with SMTP id
- v11-20020a05622a130b00b00435882ce9bemr15844209qtk.14.1713164375747; Sun, 14
- Apr 2024 23:59:35 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 14 Apr 2024 23:59:35 -0700
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20240414174139.3001175-1-masahiroy@kernel.org>
-References: <20240414174139.3001175-1-masahiroy@kernel.org>
+	s=arc-20240116; t=1713164393; c=relaxed/simple;
+	bh=NCSWcMl4FzUtoQv8kYSRpYLCpVxJwO5V4c/PIkM/H5k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CZcIYd+HjrxyNlSAPF9v0kvsI7B9Onhcm251Akt6jbvLhVEFD8v9kiQvocw4qZ4DzSi7i3b/MhnrQSCn2WcivzpzCktSaSAIbC2bCOBq6XzJYtAwReKT5VIPltHOtQbSc7CCXoFd/1W1KR4eNwMK3WGFEYQfyjQjsVxcA/xJW4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CZ3dPOn8; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713164393; x=1744700393;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NCSWcMl4FzUtoQv8kYSRpYLCpVxJwO5V4c/PIkM/H5k=;
+  b=CZ3dPOn801zp3asqSZPD0QliT6LxgysBo053Eba/TXZGAv8M8xG4/Uy7
+   qS6+FQYv4RbSaqOgwFzMrw3RJ5gq1elCPryxT0HclCqeNKULXLRNk9Nao
+   gDfT7/uolfN4GmCNvY7WebaIBuR5a0qR6NAgV6bncxyr6jYArfjsfGvnB
+   AzLfxB2T+WiqPJ6k7PFweKnk2iG7EdSmLG8h1jEAWbr0+Y1bTPno8lBdf
+   aC2it3pTwbaNUzgLIylmghQJRln893ByYC9+I1vVJoo+UztKT21NhyKNa
+   3d/TNoqAP43NtsbQlXSVSEQ/2N6QfCifti6ACJCRNM3pVDNACnQAKZprh
+   w==;
+X-CSE-ConnectionGUID: F04C7IPkSxavgxRBgKa4/Q==
+X-CSE-MsgGUID: wpE2wiE7T/2hlPC0a/HZiw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="8452886"
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="8452886"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 23:59:52 -0700
+X-CSE-ConnectionGUID: V4v7JBRyT1+Xo7mAANy6uw==
+X-CSE-MsgGUID: JfdIo8QCSzyoMJ30W1Gyrg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="22292475"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orviesa007.jf.intel.com with SMTP; 14 Apr 2024 23:59:49 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 15 Apr 2024 09:59:48 +0300
+Date: Mon, 15 Apr 2024 09:59:48 +0300
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] usb: typec: ucsi: glink: use typec_set_orientation
+Message-ID: <ZhzQZB3zxyTlwGad@kuha.fi.intel.com>
+References: <20240411-ucsi-orient-aware-v2-0-d4b1cb22a33f@linaro.org>
+ <20240411-ucsi-orient-aware-v2-3-d4b1cb22a33f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Sun, 14 Apr 2024 23:59:35 -0700
-Message-ID: <CAJM55Z9x9AYVSqdKZTDXQ4EkJ=dDaA0vnDR4mBQ3+m-MwzdtXQ@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: buildtar: add comments about inconsistent package generation
-To: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org
-Cc: Albert Ou <aou@eecs.berkeley.edu>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411-ucsi-orient-aware-v2-3-d4b1cb22a33f@linaro.org>
 
-Masahiro Yamada wrote:
-> scripts/package/buildtar checks some kernel packages, and copies the
-> first image found. This may potentially produce an inconsistent (and
-> possibly wrong) package.
->
-> For instance, the for-loop for arm64 checks Image.{bz2,gz,lz4,lzma,lzo},
-> and vmlinuz.efi, then copies the first image found, which might be a
-> stale image.
->
-> When CONFIG_EFI_ZBOOT is enabled in the pristine source tree,
-> 'make ARCH=arm64 tar-pkg' will build and copy vmlinuz.efi. This is the
-> expected behavior.
->
-> If you build the kernel with CONFIG_EFI_ZBOOT, Image.gz will be created,
-> which will remain in the build directory unless you clean it. Even if
-> CONFIG_EFI_ZBOOT is turned on later, 'make ARCH=arm64 tar-pkg' will copy
-> stale Image.gz instead of the latest vmlinuz.efi, as Image.gz takes
-> precedence over vmlinuz.efi.
->
-> In summary, the code "[ -f ... ] && cp" does not consistently produce
-> the desired outcome.
->
-> The other package scripts are deterministic; scripts/package/mkdebian,
-> for example, chooses a copied kernel image based on CONFIG options.
->
-> I removed [ -f ... ] checks from x86, alpha, parisc, and the default
-> because they have a single kernel image to copy. If it is missing, it
-> should be an error.
->
-> I did not modify the code for mips, arm64, riscv. Instead, I left some
-> comments. Eventually, someone may fix the code, or at the very least,
-> it may discourage the copy-pasting of incorrect code.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Thu, Apr 11, 2024 at 07:49:55AM +0300, Dmitry Baryshkov wrote:
+> Use typec_set_orientation() instead of calling typec_switch_set()
+> manually. This way the rest of the typec framework and the userspace are
+> notified about the orientation change.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Hi Masahiro,
-
-Thanks for the patch. I wonder why arm64 and riscv is not just using
-KBUILD_IMAGE as the source path of the image to copy like some other
-architectures do. In any case:
-
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
 > ---
->
->  scripts/package/buildtar | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
->
-> diff --git a/scripts/package/buildtar b/scripts/package/buildtar
-> index 72c91a1b832f..ed8d9b496305 100755
-> --- a/scripts/package/buildtar
-> +++ b/scripts/package/buildtar
-> @@ -53,18 +53,24 @@ cp -v -- "${objtree}/vmlinux" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
->  #
->  # Install arch-specific kernel image(s)
->  #
-> +# Note:
-> +#   mips, arm64, and riscv copy the first image found. This may not produce
-> +#   the desired outcome because it may pick up a stale file remaining in the
-> +#   build tree.
-> +#
->  case "${ARCH}" in
->  	x86|i386|x86_64)
-> -		[ -f "${objtree}/arch/x86/boot/bzImage" ] && cp -v -- "${objtree}/arch/x86/boot/bzImage" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
-> +		cp -v -- "${objtree}/arch/x86/boot/bzImage" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
->  		;;
->  	alpha)
-> -		[ -f "${objtree}/arch/alpha/boot/vmlinux.gz" ] && cp -v -- "${objtree}/arch/alpha/boot/vmlinux.gz" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
-> +		cp -v -- "${objtree}/arch/alpha/boot/vmlinux.gz" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
->  		;;
->  	parisc*)
-> -		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
-> +		cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
->  		[ -f "${objtree}/lifimage" ] && cp -v -- "${objtree}/lifimage" "${tmpdir}/boot/lifimage-${KERNELRELEASE}"
->  		;;
->  	mips)
-> +		# Please note the following code may copy a stale file.
->  		if [ -f "${objtree}/arch/mips/boot/compressed/vmlinux.bin" ]; then
->  			cp -v -- "${objtree}/arch/mips/boot/compressed/vmlinux.bin" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
->  		elif [ -f "${objtree}/arch/mips/boot/compressed/vmlinux.ecoff" ]; then
-> @@ -86,6 +92,7 @@ case "${ARCH}" in
->  		fi
->  		;;
->  	arm64)
-> +		# Please note the following code may copy a stale file.
->  		for i in Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo vmlinuz.efi ; do
->  			if [ -f "${objtree}/arch/arm64/boot/${i}" ] ; then
->  				cp -v -- "${objtree}/arch/arm64/boot/${i}" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
-> @@ -94,6 +101,7 @@ case "${ARCH}" in
->  		done
->  		;;
->  	riscv)
-> +		# Please note the following code may copy a stale file.
->  		for i in Image.bz2 Image.gz Image; do
->  			if [ -f "${objtree}/arch/riscv/boot/${i}" ] ; then
->  				cp -v -- "${objtree}/arch/riscv/boot/${i}" "${tmpdir}/boot/vmlinux-${KERNELRELEASE}"
-> @@ -102,7 +110,7 @@ case "${ARCH}" in
->  		done
->  		;;
->  	*)
-> -		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
-> +		cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
->  		echo "" >&2
->  		echo '** ** **  WARNING  ** ** **' >&2
->  		echo "" >&2
-> --
-> 2.40.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>  drivers/usb/typec/ucsi/ucsi_glink.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
+> index d21f8cd2fe35..d279e2cf9bba 100644
+> --- a/drivers/usb/typec/ucsi/ucsi_glink.c
+> +++ b/drivers/usb/typec/ucsi/ucsi_glink.c
+> @@ -58,7 +58,6 @@ struct pmic_glink_ucsi {
+>  	struct device *dev;
+>  
+>  	struct gpio_desc *port_orientation[PMIC_GLINK_MAX_PORTS];
+> -	struct typec_switch *port_switch[PMIC_GLINK_MAX_PORTS];
+>  
+>  	struct pmic_glink_client *client;
+>  
+> @@ -198,9 +197,10 @@ static void pmic_glink_ucsi_connector_status(struct ucsi_connector *con)
+>  
+>  	orientation = gpiod_get_value(ucsi->port_orientation[con->num - 1]);
+>  	if (orientation >= 0) {
+> -		typec_switch_set(ucsi->port_switch[con->num - 1],
+> -				 orientation ? TYPEC_ORIENTATION_REVERSE
+> -				 : TYPEC_ORIENTATION_NORMAL);
+> +		typec_set_orientation(con->port,
+> +				      orientation ?
+> +				      TYPEC_ORIENTATION_REVERSE :
+> +				      TYPEC_ORIENTATION_NORMAL);
+>  	}
+>  }
+>  
+> @@ -378,11 +378,6 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
+>  			return dev_err_probe(dev, PTR_ERR(desc),
+>  					     "unable to acquire orientation gpio\n");
+>  		ucsi->port_orientation[port] = desc;
+> -
+> -		ucsi->port_switch[port] = fwnode_typec_switch_get(fwnode);
+> -		if (IS_ERR(ucsi->port_switch[port]))
+> -			return dev_err_probe(dev, PTR_ERR(ucsi->port_switch[port]),
+> -					"failed to acquire orientation-switch\n");
+>  	}
+>  
+>  	ucsi->client = devm_pmic_glink_register_client(dev,
+> 
+> -- 
+> 2.39.2
+
+-- 
+heikki
 
