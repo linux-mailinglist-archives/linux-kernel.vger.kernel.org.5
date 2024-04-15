@@ -1,113 +1,148 @@
-Return-Path: <linux-kernel+bounces-145629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B9A8A58C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:09:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3ECF8A58B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:08:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60B051F21A5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:09:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0165B1C22079
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:08:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4391272AE;
-	Mon, 15 Apr 2024 17:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957F684D2D;
+	Mon, 15 Apr 2024 17:05:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b="M54NEGVz"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eA4Y4x6L"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668818526C
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAACB83CD8;
+	Mon, 15 Apr 2024 17:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713200753; cv=none; b=odX0UV1QV1/2aLLMi4WHZDYkVyOXMRZFkYON/1SLHch7Un736krR4yhqo3NKetYc0hUtyWRkyeh6PYwHSZ6L6ODnk/FQuCCJ2SXyO23HyUAliwGjmU3eD0TybF3Brwffc2LoZ1ifWWL7wDQHFvl/S6h//NPOitWANsi4LS+qu78=
+	t=1713200726; cv=none; b=D4vR0jY7jASS66cIUiPvhMUynlacCLw48FpDomi3EDrtjqnh92neyxuBDFy+fzANysgZodViBbPfK6h/M+e/GK5gjOZhf1KdbtDMrGyuVQl9wYPXcB6Afs1PLIg2PrGmcGtRv63QvWGUGYI6dT1+AzPvetFtgaARQ1z4mwOZwvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713200753; c=relaxed/simple;
-	bh=0mJpgs4aUQEhIiZHyXeNH/EklJ0LtNa/zt00pTK4jZ4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YLM42CG6eK0zQw4aFqX6kL5s8BSn1OgiZN7JGBgHF6z4ZJO7Cmy3uVeg1RD1/1200K9+bJpFzask9RytjoV0lR1+n46OqWKRUWLiNhtDLu97xb6S4/zZRefE7SjcXomi395fonxn/tqd5qHUHzdRtx2jO9jMZ3aO05eKnEuEZ0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf; spf=pass smtp.mailfrom=kl.wtf; dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b=M54NEGVz; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kl.wtf
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=key1;
-	t=1713200750;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ptoV88Ij0/j9NhFFGW6zsh8KfISiHRwnC9zklzCEC5s=;
-	b=M54NEGVztU8esR0V50Z57mvarN+dZN/XS/51m37T9NlZ2lFFhUyXWSE9k53KPbRaqxUypZ
-	IA+FtEmMnA3YbalvGaBpMcEruXs1Qaj6GMsvDXL+IGwi0zlUWog0VxUreeYbBLPeEp2gJs
-	7lpqqc78KIF6/gdRfAcZIaC2F4AQ0y3CCUPUbkoSIEFBMxMCq5FY6wMXsoWRXl6yT/fIjv
-	6Y8rtCM0ZUcW9nJaPi6nqjgi4hQ1GQujWH0iLaWf8VR9aTpCMzCTHDTeVOSe4dsi+Hr59X
-	VE6SZ+XX3R9r9VfOusekSX2s3XBsERJrPtDsoVVUkckxE5MQXx/7TX5pJCEOfw==
-From: Kenny Levinsen <kl@kl.wtf>
-To: Jiri Kosina <jikos@kernel.org>,
-	Dmitry Torokhov <dtor@chromium.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Radoslaw Biernacki <rad@chromium.org>,
-	Lukasz Majczak <lma@chromium.org>
-Cc: Kenny Levinsen <kl@kl.wtf>
-Subject: [PATCH 3/3] HID: i2c-hid: Align i2c_hid_set_power() retry with HID descriptor read
-Date: Mon, 15 Apr 2024 19:04:13 +0200
-Message-ID: <20240415170517.18780-4-kl@kl.wtf>
-In-Reply-To: <20240415170517.18780-1-kl@kl.wtf>
-References: <20240415170517.18780-1-kl@kl.wtf>
+	s=arc-20240116; t=1713200726; c=relaxed/simple;
+	bh=brTfnO2VyUJAmFmt0xYsxELn1GfIqBydjJY5MAA2GwI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AZJ85qC0HBDw3r8J0cbDsDD19Con1J0u4NqUej0Xl7wSVVGFmg2MnW/4izSnPX2CceHFQUwIrH3CK8Bw518QCYq55bFdV8XkkH26qSJK/GGc8rwELB/XLp19CRGemip2i30yBHN1z9K2+/8jXI6HXkr3YQYqPK5KVKouSBNu15w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eA4Y4x6L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EB7C2BD10;
+	Mon, 15 Apr 2024 17:05:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713200726;
+	bh=brTfnO2VyUJAmFmt0xYsxELn1GfIqBydjJY5MAA2GwI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eA4Y4x6LpKDmJlhsFuCKUKDWszVPc0aMol9ibBC4zWuhXiukyHzmx+wctUQDy9YcO
+	 SgrxzhBVYrKzoib5nD4pxj58Yru3AKozTZkN+TvcG/88RKgokKwWdJ7ot3KrqKc7Eq
+	 DUMXngRm3Kt+F/W7nD5rsdsyrXI/SKwSE27eJw0RyuFsxXe2CY8Th13OWBhzodIeFI
+	 g3IfMeClHVfNPTzOpcIibEz/rTBRU3MdIzMovL+lADX98nFVYDJgBcU0E0gUS/Sp3y
+	 NkyrAJJ3bphAZ5D3Vr/0URqS2QdYx5P8qEukDaFoUJqWeYw/1mketQaU4aGKwRL5Ma
+	 kNnuFlXqLWYaw==
+Date: Mon, 15 Apr 2024 20:04:13 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>, Helge Deller <deller@gmx.de>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, x86@kernel.org
+Subject: Re: [RFC PATCH 5/7] x86/module: perpare module loading for ROX
+ allocations of text
+Message-ID: <Zh1eDU1L1FbFwZzT@kernel.org>
+References: <20240411160526.2093408-1-rppt@kernel.org>
+ <20240411160526.2093408-6-rppt@kernel.org>
+ <20240415104316.GI40213@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415104316.GI40213@noisy.programming.kicks-ass.net>
 
-Instead of retrying on any error, just retry on EREMOTEIO and simplify
-the retry handling a bit.
+On Mon, Apr 15, 2024 at 12:43:16PM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 11, 2024 at 07:05:24PM +0300, Mike Rapoport wrote:
+> > diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> > index 45a280f2161c..b4d6868df573 100644
+> > --- a/arch/x86/kernel/alternative.c
+> > +++ b/arch/x86/kernel/alternative.c
+> 
+> > @@ -504,17 +513,17 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+> >  		 *   patch if feature is *NOT* present.
+> >  		 */
+> >  		if (!boot_cpu_has(a->cpuid) == !(a->flags & ALT_FLAG_NOT)) {
+> > -			optimize_nops_inplace(instr, a->instrlen);
+> > +			optimize_nops_inplace(wr_instr, a->instrlen);
+> >  			continue;
+> >  		}
+> >  
+> > -		DPRINTK(ALT, "feat: %d*32+%d, old: (%pS (%px) len: %d), repl: (%px, len: %d) flags: 0x%x",
+> > +		DPRINTK(ALT, "feat: %d*32+%d, old: (%px (%px) len: %d), repl: (%px (%px), len: %d) flags: 0x%x",
+> >  			a->cpuid >> 5,
+> >  			a->cpuid & 0x1f,
+> > -			instr, instr, a->instrlen,
+> > -			replacement, a->replacementlen, a->flags);
+> > +			instr, wr_instr, a->instrlen,
+> > +			replacement, wr_replacement, a->replacementlen, a->flags);
+> 
+> I think this, and
 
-Signed-off-by: Kenny Levinsen <kl@kl.wtf>
----
- drivers/hid/i2c-hid/i2c-hid-core.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index ac661199d2c8..998e7aa140d7 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -395,21 +395,14 @@ static int i2c_hid_set_power(struct i2c_hid *ihid, int power_state)
- 	 * The call will get a return value (EREMOTEIO) but device will be
- 	 * triggered and activated. After that, it goes like a normal device.
- 	 */
--	if (power_state == I2C_HID_PWR_ON) {
-+	ret = i2c_hid_set_power_command(ihid, power_state);
-+	if (ret == -EREMOTEIO && power_state == I2C_HID_PWR_ON)
- 		ret = i2c_hid_set_power_command(ihid, I2C_HID_PWR_ON);
+I've found printing both address handy when I debugged it, but no strong
+feelings here.
  
--		/* Device was already activated */
--		if (!ret)
--			goto set_pwr_exit;
--	}
--
--	ret = i2c_hid_set_power_command(ihid, power_state);
- 	if (ret)
- 		dev_err(&ihid->client->dev,
- 			"failed to change power setting.\n");
+> >  
+> > -		memcpy(insn_buff, replacement, a->replacementlen);
+> > +		memcpy(insn_buff, wr_replacement, a->replacementlen);
+> >  		insn_buff_sz = a->replacementlen;
+> >  
+> >  		if (a->flags & ALT_FLAG_DIRECT_CALL) {
+> > @@ -528,11 +537,11 @@ void __init_or_module noinline apply_alternatives(struct alt_instr *start,
+> >  
+> >  		apply_relocation(insn_buff, a->instrlen, instr, replacement, a->replacementlen);
+> >  
+> > -		DUMP_BYTES(ALT, instr, a->instrlen, "%px:   old_insn: ", instr);
+> > +		DUMP_BYTES(ALT, wr_instr, a->instrlen, "%px:   old_insn: ", instr);
+> 
+> this, want to remain as is. 
+
+here wr_instr is the buffer to dump:
+
+DUMP_BYTES(type, buf, len, fmt, args...)
+
+rather than an address, which remained 'instr'.
  
--set_pwr_exit:
--
- 	/*
- 	 * The HID over I2C specification states that if a DEVICE needs time
- 	 * after the PWR_ON request, it should utilise CLOCK stretching.
+> >  		DUMP_BYTES(ALT, replacement, a->replacementlen, "%px:   rpl_insn: ", replacement);
+> >  		DUMP_BYTES(ALT, insn_buff, insn_buff_sz, "%px: final_insn: ", instr);
+> >  
+> > -		text_poke_early(instr, insn_buff, insn_buff_sz);
+> > +		text_poke_early(wr_instr, insn_buff, insn_buff_sz);
+> >  	}
+> >  
+> >  	kasan_enable_current();
+> 
+> The rationale being that we then print an address that can be correlated
+> to the kernel image (provided one either kills kaslr or adjusts for it).
+
 -- 
-2.44.0
-
+Sincerely yours,
+Mike.
 
