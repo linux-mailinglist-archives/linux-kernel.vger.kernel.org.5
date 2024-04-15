@@ -1,61 +1,57 @@
-Return-Path: <linux-kernel+bounces-145170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429CA8A505A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 479438A505D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:07:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6BCF1F2194A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:07:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC41D1F2109B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C650137C2F;
-	Mon, 15 Apr 2024 12:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44163137C52;
+	Mon, 15 Apr 2024 12:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N4Oug5pS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YiCB6CR2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7AE9137929;
-	Mon, 15 Apr 2024 12:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AC478274;
+	Mon, 15 Apr 2024 12:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185478; cv=none; b=bc2jNzeD1dABg2PSA3YUsxacjGOL+Gi5G2B+ADi2Epi+xyQ+rMi8FWmVGj9EGTk5JHu/UVBy8vYJaqkrK2z2b5gl24TSU3jKe+iRJ00AGUMUuuyxub4NOVSix2NLLP/xgw9nsrQKSl9cFV++y2gIcFIO3KtyZ1+Ifkxt2vSr6GM=
+	t=1713185480; cv=none; b=K+LtebfFdKmC3/I1Kc7EelzKte+fe8PjPQ2ro26dOvt2230YwJQHRmfA1vraJjxqlm5D32hhJKyCUnchQYzszgKzQDYf5fyuGfBYRClg8w4AYtvcRupeeJwg0cRP8sOs7IlsOchr80anJT9yGcy/BCsA1QsqG6BFxwYATx+N28M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185478; c=relaxed/simple;
-	bh=Oo0HmZn4HcaG5HvHayGYvJg3XC6Ow+32gUDsEVSw9QE=;
+	s=arc-20240116; t=1713185480; c=relaxed/simple;
+	bh=Oq1TE7fKDL0tTwriQuglnSGXXmyWjbZCAMSjs+69IWk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dehc2NovPgFiBuP4E6nt9fMbAHQiyp3XHHtYDka+EpVVs3CtBjtvnlYpAQy/MHD/jcs8wOKhpphCcv2gW0s3kQViUhWdiThTFE5CaenolhZIJRtZ/juzxJJ0WUO/IM3phmfh+trgtKdDpxI8OI+4/2/dBF2cMzo8hWUkL5MnG2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N4Oug5pS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7067C4AF09;
-	Mon, 15 Apr 2024 12:51:16 +0000 (UTC)
+	 MIME-Version; b=uzz0Vq7cavD3+GrR0/lWwrPCcylNN5WUhd4uJbnV/EJMDdfefAxtR4/QOS57MZs3qF4CNLc8+Z08zh6BUyw09DmgPHXbR34YwdyfFkrQPVKYGI8v0tYaJlTPfWwGLHXztcFgEvemmp5l8PQcDNnyvWhKE1Vgw1mxumvv9AAkGq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YiCB6CR2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 299C1C32783;
+	Mon, 15 Apr 2024 12:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185478;
-	bh=Oo0HmZn4HcaG5HvHayGYvJg3XC6Ow+32gUDsEVSw9QE=;
+	s=k20201202; t=1713185480;
+	bh=Oq1TE7fKDL0tTwriQuglnSGXXmyWjbZCAMSjs+69IWk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N4Oug5pSAtOYW5P5kZ7l7rob+nzCEwQrMJLWOhS4Y/cgaRi95Fr/gWY624jCTs1Wc
-	 RtLHw9oK4uUO3BsLJBELVmb1sqTUHpyUlIBaHmHOUM6aYL9PRZQZFrlKtSxgFhy9d0
-	 PMZLZuv6+2SHEQzS2iQsKJgiBsOPQVVNw8lWKTJSaJWgBta21zPxd2WqN3bCQArbMj
-	 Agz1MpPLB/1ze+Oirz+67iGzqZLq5p8cNndOgPYr7M1VAtLsEkUb0HwY36kCee/MMW
-	 FwfjTN9+Cgz2uaPnw/nLBLn02O7SC8xPbkiaulAf7I+fulh42NdCfu5t5BOmaXNZZ/
-	 FQs85XvZeoJGg==
+	b=YiCB6CR2Q3w+wCmdelauLRB3yjEeSRzD45QL7n7FfUNo7p0UY1CbvcUln6e9SZmlZ
+	 xNPiTdDWl8ayXV/9evMX5pk2TDDTsDJ6wR32z0SWDGgQ8+qc73En7UC2FFY2SL6F6U
+	 G9ZnO1YolklmtOuO50vtQJC0aKGpDqkQzVs0dYr2aucqVsOUgEQ2sTTnzFJW6OqHdU
+	 dITiVZlsPDbK93vR62eQPLtUgLV0xQtN+SqrYeoNiskDvjMLe74ooShTzK91G5A8Or
+	 4/3rxukPta+LTV4Kawm1ERTFra6t1InqR0wTdD7ekQbmLxtBY0InDCoNPs7jTtYE1E
+	 drCWG/A7K+dsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Phil Elwell <phil@raspberrypi.com>,
-	Maarten Vanraes <maarten@rmail.be>,
-	"David S . Miller" <davem@davemloft.net>,
+Cc: Chen Ni <nichen@iscas.ac.cn>,
+	Damien Le Moal <dlemoal@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	opendmb@gmail.com,
-	florian.fainelli@broadcom.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 2/4] net: bcmgenet: Reset RBUF on first open
-Date: Mon, 15 Apr 2024 06:05:15 -0400
-Message-ID: <20240415100520.3127870-2-sashal@kernel.org>
+	linus.walleij@linaro.org,
+	cassel@kernel.org,
+	linux-ide@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 3/4] ata: sata_gemini: Check clk_enable() result
+Date: Mon, 15 Apr 2024 06:05:16 -0400
+Message-ID: <20240415100520.3127870-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415100520.3127870-1-sashal@kernel.org>
 References: <20240415100520.3127870-1-sashal@kernel.org>
@@ -70,81 +66,36 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.312
 Content-Transfer-Encoding: 8bit
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Chen Ni <nichen@iscas.ac.cn>
 
-[ Upstream commit 0a6380cb4c6b5c1d6dad226ba3130f9090f0ccea ]
+[ Upstream commit e85006ae7430aef780cc4f0849692e266a102ec0 ]
 
-If the RBUF logic is not reset when the kernel starts then there
-may be some data left over from any network boot loader. If the
-64-byte packet headers are enabled then this can be fatal.
+The call to clk_enable() in gemini_sata_start_bridge() can fail.
+Add a check to detect such failure.
 
-Extend bcmgenet_dma_disable to do perform the reset, but not when
-called from bcmgenet_resume in order to preserve a wake packet.
-
-N.B. This different handling of resume is just based on a hunch -
-why else wouldn't one reset the RBUF as well as the TBUF? If this
-isn't the case then it's easy to change the patch to make the RBUF
-reset unconditional.
-
-See: https://github.com/raspberrypi/linux/issues/3850
-See: https://github.com/raspberrypi/firmware/issues/1882
-
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-Signed-off-by: Maarten Vanraes <maarten@rmail.be>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/ata/sata_gemini.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 8bbc5dcf8cb43..9fded8a862d46 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -2806,7 +2806,7 @@ static void bcmgenet_set_hw_addr(struct bcmgenet_priv *priv,
- }
- 
- /* Returns a reusable dma control register value */
--static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
-+static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv, bool flush_rx)
- {
- 	unsigned int i;
- 	u32 reg;
-@@ -2831,6 +2831,14 @@ static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
- 	udelay(10);
- 	bcmgenet_umac_writel(priv, 0, UMAC_TX_FLUSH);
- 
-+	if (flush_rx) {
-+		reg = bcmgenet_rbuf_ctrl_get(priv);
-+		bcmgenet_rbuf_ctrl_set(priv, reg | BIT(0));
-+		udelay(10);
-+		bcmgenet_rbuf_ctrl_set(priv, reg);
-+		udelay(10);
-+	}
+diff --git a/drivers/ata/sata_gemini.c b/drivers/ata/sata_gemini.c
+index 64b43943f6502..f7b4ed572ce02 100644
+--- a/drivers/ata/sata_gemini.c
++++ b/drivers/ata/sata_gemini.c
+@@ -200,7 +200,10 @@ int gemini_sata_start_bridge(struct sata_gemini *sg, unsigned int bridge)
+ 		pclk = sg->sata0_pclk;
+ 	else
+ 		pclk = sg->sata1_pclk;
+-	clk_enable(pclk);
++	ret = clk_enable(pclk);
++	if (ret)
++		return ret;
 +
- 	return dma_ctrl;
- }
+ 	msleep(10);
  
-@@ -2926,8 +2934,8 @@ static int bcmgenet_open(struct net_device *dev)
- 
- 	bcmgenet_set_hw_addr(priv, dev->dev_addr);
- 
--	/* Disable RX/TX DMA and flush TX queues */
--	dma_ctrl = bcmgenet_dma_disable(priv);
-+	/* Disable RX/TX DMA and flush TX and RX queues */
-+	dma_ctrl = bcmgenet_dma_disable(priv, true);
- 
- 	/* Reinitialize TDMA and RDMA and SW housekeeping */
- 	ret = bcmgenet_init_dma(priv);
-@@ -3682,7 +3690,7 @@ static int bcmgenet_resume(struct device *d)
- 		bcmgenet_power_up(priv, GENET_POWER_WOL_MAGIC);
- 
- 	/* Disable RX/TX DMA and flush TX queues */
--	dma_ctrl = bcmgenet_dma_disable(priv);
-+	dma_ctrl = bcmgenet_dma_disable(priv, false);
- 
- 	/* Reinitialize TDMA and RDMA and SW housekeeping */
- 	ret = bcmgenet_init_dma(priv);
+ 	/* Do not keep clocking a bridge that is not online */
 -- 
 2.43.0
 
