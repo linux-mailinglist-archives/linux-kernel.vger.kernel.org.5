@@ -1,169 +1,189 @@
-Return-Path: <linux-kernel+bounces-145408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A74608A55D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:00:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DCD58A55D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:00:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D789282679
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:00:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC01FB22E0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD387602A;
-	Mon, 15 Apr 2024 15:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2B3762D0;
+	Mon, 15 Apr 2024 15:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EKsYIaPL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vR8Iy/Um";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="EKsYIaPL";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vR8Iy/Um"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h+RGp9BL"
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB82878B50;
-	Mon, 15 Apr 2024 15:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E9A74E37;
+	Mon, 15 Apr 2024 15:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713193223; cv=none; b=Fdbe8dU8anWayI7Oy8iX+7qN1vDlJmXoLmZeJHnDi0iVPRyKl8UbCx6tExCJPXWiAwWi+jLSneWY8zNxp54dcFe3VedRxy+av7sW0ImTSJ05zQ1tVsNIorcAdTZ7qEZjBrmsrp0IhPQ9NlHER2dKA9Q2IEcf0hyxBtYgkroQD2Q=
+	t=1713193238; cv=none; b=obebo+p1dueGKO3HyeJa+5UGcSsITfpf07BS9+O6ASeoXKn/tixdOWiIwJAna+yTdIIEYHqxhSJP8QD149s0cQrUpgT90j81lNvsKmX+bnJ1uAg69J6i53VDpk2MLzrfdWZw4ynmWgs6En0igLqpepzVxbcDcFYSCOaosPuKODE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713193223; c=relaxed/simple;
-	bh=2WE10r71jQvyNYocCtd9QNiyivLI/QP6AtzHMGv8gVA=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=mCTrAk16HH3OiiS9X/KLYgdyTBC5jdI4M477Rysc0948MJGMSNrT1HAgziUaeY0xUEb1LEQlgyVqCDrgFlYpb3edtHlzdo4V31wR5TzQqCx0EkxTZC9QOFij6OmZ6QkdgSDl7X67QfBMLEMGmhGwcDJAdwqFEC03JzTwXOFAGS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EKsYIaPL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vR8Iy/Um; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=EKsYIaPL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vR8Iy/Um; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 00AAA5D124;
-	Mon, 15 Apr 2024 15:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713193220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WE10r71jQvyNYocCtd9QNiyivLI/QP6AtzHMGv8gVA=;
-	b=EKsYIaPLqd21jbpNul9XdzHzETWowkni3lMuKYJ82hW9pXlhqN/ZF8CcoQoU8jxpI+36/Q
-	iFV9piyGfxtoFlCZ/0hxYi4twQFeMfQD3/69pr1K9Li0HqhoCl381pAbE/FQ7VcuhnS89F
-	ekl1pPOf2ZnJfosPzCvGj9CWtFfpub0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713193220;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WE10r71jQvyNYocCtd9QNiyivLI/QP6AtzHMGv8gVA=;
-	b=vR8Iy/UmLidMgsQZNDzBRqZBLsxWjzgtNnOehE12VIfAqzKQHsQvjcyJKCVbDKs2U37jUj
-	KbVt1xgdKJ6YMdCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713193220; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WE10r71jQvyNYocCtd9QNiyivLI/QP6AtzHMGv8gVA=;
-	b=EKsYIaPLqd21jbpNul9XdzHzETWowkni3lMuKYJ82hW9pXlhqN/ZF8CcoQoU8jxpI+36/Q
-	iFV9piyGfxtoFlCZ/0hxYi4twQFeMfQD3/69pr1K9Li0HqhoCl381pAbE/FQ7VcuhnS89F
-	ekl1pPOf2ZnJfosPzCvGj9CWtFfpub0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713193220;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2WE10r71jQvyNYocCtd9QNiyivLI/QP6AtzHMGv8gVA=;
-	b=vR8Iy/UmLidMgsQZNDzBRqZBLsxWjzgtNnOehE12VIfAqzKQHsQvjcyJKCVbDKs2U37jUj
-	KbVt1xgdKJ6YMdCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 20C551368B;
-	Mon, 15 Apr 2024 15:00:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uI9EMQFBHWYlNAAAD6G6ig
-	(envelope-from <colyli@suse.de>); Mon, 15 Apr 2024 15:00:17 +0000
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1713193238; c=relaxed/simple;
+	bh=OJhWkXaiZfR5vxgWccVDhgB7L5539O3TT+m0W3wEVJQ=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=kWkyHePVTFG4IVaCZ0ytViBqJB8WDUiFezQT1gaAOK0zvTwXLie8NNo5T9ZG7pxqRlRc4aeeI6pUqnNqBEl2iyXR4iDW0cyCB25r/flSR1UK65axGEAbSAi/+EV1FjJHzDzcegJTuCwA3w91UWR6seXWu0a+up4lSs1Hfdxcr6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h+RGp9BL; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4dac3cbc8fdso1306176e0c.0;
+        Mon, 15 Apr 2024 08:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713193235; x=1713798035; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WS6Pv+eMPVF9jwN1/da6sM3EbXPOKQ+l4+JLzAo2+5s=;
+        b=h+RGp9BLkdMOdq5GQBRNkfjRnIMkpwJnIO6R9Z4W+gTlWhHDa72XUfnH4Q9g82aydR
+         pWaP2mF137KxIPyNb0Y9/K767+g27Kr8/YNus/Z/GGjS1BfGh5luxSQDU2AnafaIYVzP
+         L1Dz/xXK/a8idBQfZ/hzePyFkfr6yLlazOboQSfrMp5fxU6YgLe2PRqvLZiTNtMJMdT6
+         mjoVH/W04Es46vm53+xXJ9OofNOJem3iOMWSEyvyAdRVToyktMGPx04flfFN7/QJMHD6
+         ObCxYiGLyLJ8ujnHJMeriPagjhZ0I9sHIj0W3IOwD6J6iLdPbPEpShXC7Oha2aouk/HT
+         7AUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713193235; x=1713798035;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WS6Pv+eMPVF9jwN1/da6sM3EbXPOKQ+l4+JLzAo2+5s=;
+        b=a59QN9V5lOKyOGSG+VJcYlxdaHJdIXkvX4eqVhSuAHW/swxu6XoIHhXcn72+rP7qOw
+         o1Rph4e4LRNq/mrcMSKBMgfEDy9jLFYD42r/HBIQ7jlYsJ3MRAPvbjZSrbxzn5VFMBMT
+         A3MU/6HLSMcuSKZeu4J03Pkwjl3shxYrKTeI1/mVeLij3w8Nr/SXHLOK+lzfryKa5wNm
+         cPC+3K+dlG9IoktMHqx94Z2gjyjko0eo0TWeLE0y/yg6rdZReQBBNRrOCXIJCzCLEmWw
+         qmZ93yDyiKMs5TMWeFX7NamPlVkxAQksl24rUfMT6DFuGJMXRgta0AFDGlHkxJVtcEoz
+         iDhg==
+X-Forwarded-Encrypted: i=1; AJvYcCXVJe3NWGXyyZtYCtr5jw0zSyslno6YrZhd2vvsHxaqyXccZJYmTAx5NAdmeqXCAIOAB6XxCtQ9aqBeIsdjg1b8Z5SLOO4J/beGsuktncWMTPDZGjk2URW/jsIJCPDu8XL9MSVS
+X-Gm-Message-State: AOJu0Yxb0WIotI1BA5YCaYlnApje0tr9jXqTQUTAhtVb/4t1fqoC8bls
+	xoImD4DH5sMOkZPAyv2T0ul/ZN12HlNaoQVmCDS/KpyVmR3CxypA
+X-Google-Smtp-Source: AGHT+IGTheb8k3tpl64FvDV3BdvW1vuUvwO9iUTdUt2UdDwND0VjYngIDw7HpvBKpueW1xWnMDSlfA==
+X-Received: by 2002:a05:6122:209e:b0:4cd:b718:4b08 with SMTP id i30-20020a056122209e00b004cdb7184b08mr7269652vkd.11.1713193233032;
+        Mon, 15 Apr 2024 08:00:33 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id v13-20020a0cc60d000000b0069b75b8633dsm1963873qvi.67.2024.04.15.08.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 08:00:32 -0700 (PDT)
+Date: Mon, 15 Apr 2024 11:00:32 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Alexander Duyck <alexander.duyck@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Richard Gobert <richardbgobert@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ dsahern@kernel.org, 
+ aleksander.lobakin@intel.com, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <661d41106f996_c0c829445@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAKgT0UfB+3DTjK7vq1uvG-2xtA53pw03ygJhwSG8j1bPtmYU8A@mail.gmail.com>
+References: <20240412152120.115067-1-richardbgobert@gmail.com>
+ <20240412152120.115067-2-richardbgobert@gmail.com>
+ <661ad1136bc10_3be9a7294c2@willemb.c.googlers.com.notmuch>
+ <CAKgT0UfB+3DTjK7vq1uvG-2xtA53pw03ygJhwSG8j1bPtmYU8A@mail.gmail.com>
+Subject: Re: [PATCH net v1 1/2] net: gro: add flush check in
+ udp_gro_receive_segment
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] bcache: Remove usage of the deprecated ida_simple_xx()
- API
-From: Coly Li <colyli@suse.de>
-In-Reply-To: <4230d015-d9b6-4753-8957-717eab00d5cb@wanadoo.fr>
-Date: Mon, 15 Apr 2024 23:00:04 +0800
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- kernel-janitors@vger.kernel.org,
- Bcache Linux <linux-bcache@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <E93A4C68-B846-4BBC-8778-EAC3DF97507A@suse.de>
-References: <2f038df3860c2f44d5c7f5d06d03ca663cdbc651.1705235398.git.christophe.jaillet@wanadoo.fr>
- <y2c3dt325d4xzcknmwtyd6gungco6jqucz3fsrm6lsyjtiwpp4@ozmsw6vp67jk>
- <4230d015-d9b6-4753-8957-717eab00d5cb@wanadoo.fr>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
-X-Spam-Flag: NO
-X-Spam-Score: -3.75
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.75 / 50.00];
-	BAYES_HAM(-2.95)[99.80%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MV_CASE(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.994];
-	MIME_GOOD(-0.10)[text/plain];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[wanadoo.fr];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[wanadoo.fr];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
+Alexander Duyck wrote:
+> On Sat, Apr 13, 2024 at 11:38=E2=80=AFAM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > Richard Gobert wrote:
+> > > GRO-GSO path is supposed to be transparent and as such L3 flush che=
+cks are
+> > > relevant to all flows which call skb_gro_receive. This patch uses t=
+he same
+> > > logic and code from tcp_gro_receive but in the relevant flow path i=
+n
+> > > udp_gro_receive_segment.
+> > >
+> > > Fixes: 36707061d6ba ("udp: allow forwarding of plain (non-fragliste=
+d) UDP GRO packets")
+> > > Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
+> >
+> > Reviewed-by: Willem de Bruijn <willemb@google.com>
+> >
+> > > ---
+> > >  net/ipv4/udp_offload.c | 13 ++++++++++++-
+> > >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > > index 3498dd1d0694..1f4e08f43c4b 100644
+> > > --- a/net/ipv4/udp_offload.c
+> > > +++ b/net/ipv4/udp_offload.c
+> > > @@ -471,6 +471,7 @@ static struct sk_buff *udp_gro_receive_segment(=
+struct list_head *head,
+> > >       struct sk_buff *p;
+> > >       unsigned int ulen;
+> > >       int ret =3D 0;
+> > > +     int flush;
+> > >
+> > >       /* requires non zero csum, for symmetry with GSO */
+> > >       if (!uh->check) {
+> > > @@ -528,7 +529,17 @@ static struct sk_buff *udp_gro_receive_segment=
+(struct list_head *head,
+> > >                               skb_gro_postpull_rcsum(skb, uh,
+> > >                                                      sizeof(struct =
+udphdr));
+> > >
+> > > -                             ret =3D skb_gro_receive(p, skb);
+> > > +                             flush =3D NAPI_GRO_CB(p)->flush;
+> > > +
+> > > +                             if (NAPI_GRO_CB(p)->flush_id !=3D 1 |=
+|
+> > > +                                 NAPI_GRO_CB(p)->count !=3D 1 ||
+> > > +                                 !NAPI_GRO_CB(p)->is_atomic)
+> > > +                                     flush |=3D NAPI_GRO_CB(p)->fl=
+ush_id;
+> > > +                             else
+> > > +                                     NAPI_GRO_CB(p)->is_atomic =3D=
+ false;
+> > > +
+> > > +                             if (flush || skb_gro_receive(p, skb))=
 
+> > > +                                     ret =3D 1;
+> >
+> > UDP_L4 does not have the SKB_GSO_TCP_FIXEDID that uses is_atomic as
+> > input.
+> >
+> > And I still don't fully internalize the flush_id logic after staring
+> > at it for more than one coffee.
+> =
 
-> 2024=E5=B9=B44=E6=9C=8814=E6=97=A5 16:24=EF=BC=8CChristophe JAILLET =
-<christophe.jaillet@wanadoo.fr> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> Le 14/01/2024 =C3=A0 16:16, Coly Li a =C3=A9crit :
->> On Sun, Jan 14, 2024 at 01:30:16PM +0100, Christophe JAILLET wrote:
->>> ida_alloc() and ida_free() should be preferred to the deprecated
->>> ida_simple_get() and ida_simple_remove().
->>>=20
->>> Note that the upper limit of ida_simple_get() is exclusive, but the =
-one of
->>> ida_alloc_max() is inclusive. So a -1 has been added when needed.
->>>=20
->>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> It looks good to me. Add this patch into my testing directory.
->> Thanks.
->> Coly Li
->=20
-> Hi,
->=20
-> polite reminder ;-)
+> The flush_id field is there to indicate the difference between the
+> current IPv4 ID of the previous IP header. It is meant to be used in
+> conjunction with the is_atomic for the frame coalescing. Basically
+> after the second frame we can decide the pattern either incrementing
+> IPv4 ID or fixed, so on frames 3 or later we can decide to drop the
+> frame if it doesn't follow that pattern.
+> =
 
-Yes, this one is included in my recent performance testing :-)
+> > But even ignoring those, the flush signal of NAPI_GRO_CB(p)->flush
+> > set the network layer must be followed, so ACK. Thanks for the fix.
+> =
 
-Thank you.
+> I'm not sure about the placement of this code though. That is the one
+> thing that seems off to me. Specifically this seems like it should be
+> done before we start the postpull, not after. It should be something
+> that can terminate the flow before we attempt to aggregate the UDP
+> headers.
 
-Coly Li
+In principle agreed that we should conclude the flush checks before
+doing prep for coalescing.
 
+In practice it does not matter? NAPI_GRO_CB(skb)->csum will be ignored
+if the packet gets flushed.=
 
