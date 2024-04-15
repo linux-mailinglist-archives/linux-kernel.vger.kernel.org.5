@@ -1,190 +1,120 @@
-Return-Path: <linux-kernel+bounces-145330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F7BB8A52E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:18:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1FC08A52E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:18:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53E641C20B9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:17:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F40181C21F56
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A0C871730;
-	Mon, 15 Apr 2024 14:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64117757FC;
+	Mon, 15 Apr 2024 14:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="b9Q13URl"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="GxYCA+wE"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C313745D5
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5270574E11
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713190671; cv=none; b=bFP3LzZ6KhD2ydNHBGC88CJpsv+wcP4bMca6s6i06m3sMgE1/5aS6p45suXqbVBMFp6hqRMozSE3T1ZCCDJww2pEhXAgGxIHzFHd0Zvqiluj2jHhQU6BcszYu1WCh/11cW5ONvAYkcR2ja1WyvMCIrREg0Wcgssw9rO6rB+UYXI=
+	t=1713190690; cv=none; b=gXGmEzWDgOARzJJljSgY3N5ghCgM2gogU4jZjF3TDsVOKAT514B3V1jd2erN9HuEQqr4dGBFcWu5EvpqZvPKo1PG38ppA2JMtky5BnSculpJu1ecMOV3jGY4VOSGCzSaomdZu8d0iSQz1jmexPfs059i5VsKoDatfgC0FPab8ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713190671; c=relaxed/simple;
-	bh=7MAAuR4nAOglbJK96XVV97nD55IJBCwFc5+BwwC1NsQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=X2wwN8eJUTyp3y8CoYxJsuA+RCH62lnUiT+ROTV9YqOxH+ecTMGvRfezA4sKnXI24lPO29GF3LLx6GBdAOBLPJeThTOOUm4iWzAfyFG9cL2KijN8eaBeRrr2Eh77VqMvLtgkLvPXoYpAi0jF/nTQbcP5vDlp6qcJ5uo0nwNejeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=b9Q13URl; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240415141746euoutp019d4ccffad7161970cdd4b36046d67d30~GedWLxKV60482804828euoutp01Q
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:17:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240415141746euoutp019d4ccffad7161970cdd4b36046d67d30~GedWLxKV60482804828euoutp01Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713190666;
-	bh=zaHlAEoiDKROJY7VOEH6En1JrEsx1/tm4GCi694dG7o=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=b9Q13URlzeRiG4F0ITi/a/4+aFY0gCm05XCT180UqfbY28Z5TJVziXSjDq7RT8cFR
-	 8uv0kOp0UFK+eVSpDnC/xBsmFby2HlE5C9dfeB2im6rHhFB2x72MwxSlRxlFVSH5h2
-	 4zuR1GO513ZL1O1qTNIBNuKrrFVgOnCojSdD1Ni8=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240415141745eucas1p2243811eae4b291a2963c6a4190d087d0~GedVySrfo0944809448eucas1p2Q;
-	Mon, 15 Apr 2024 14:17:45 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 8A.58.09624.9073D166; Mon, 15
-	Apr 2024 15:17:45 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240415141745eucas1p2570fd7509a5d42276a70504803c9988f~GedVY0Akn0944409444eucas1p2O;
-	Mon, 15 Apr 2024 14:17:45 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240415141745eusmtrp230c0618bb0db5f6b21a686d02e3b0716~GedVX96FJ1064510645eusmtrp2f;
-	Mon, 15 Apr 2024 14:17:45 +0000 (GMT)
-X-AuditID: cbfec7f2-c11ff70000002598-82-661d370959d9
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id C0.4D.09010.9073D166; Mon, 15
-	Apr 2024 15:17:45 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240415141744eusmtip2cf1c1d1487a68e62858ad1ebd209a3b7~GedUvxdsZ2056220562eusmtip2U;
-	Mon, 15 Apr 2024 14:17:44 +0000 (GMT)
-Message-ID: <1dd9e3a1-29d0-4628-9b6a-b7e9fc09bf0f@samsung.com>
-Date: Mon, 15 Apr 2024 16:17:44 +0200
+	s=arc-20240116; t=1713190690; c=relaxed/simple;
+	bh=s7Xj9xi+J3VOaPxS9cliZyr2iTz57B5HKKp5IrSvKlo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mk4XgFkBBd7YthUjvKnmuWipSmLYC91r2w10aJeTvMJm6X+pbOod0+uYYSajt1oXckluRoa/vlOxsfJq9IlO5mZ2XDlvNHSKILb0pkDzUbVLLrkT7yrRaiwRtAvNXVYHYTH8Pwv76JTruRkAiTRkAwnhOO4Jov9K+fC/LMT9P78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=GxYCA+wE; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-61ad5f2c231so9366467b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:18:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1713190688; x=1713795488; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mqqqjCa8OZ82zdxbWAvkpK8zvR3ppQ2NndSIF2x4rXo=;
+        b=GxYCA+wEVdEIjjWzJWYg+WtDHHIliDSd8tKsr7BV7/MNn1GAfzIGGsjaYd1K1nC47x
+         vSDYX4sAGl3dWOguqWAOzQsiR3l2a5GCXoMgNM60CbTbnQU4DYOtkdtqEGzpNJ1M0YZG
+         uQw5KNJcmYoJdcaPUXYHVNp3fe+w7CGUJ/SPJ96v3rXFwkPh6f3QXK91XZOF32M12JQC
+         Ji8q8ysobl0MyXu0MqYf8ztHm+RuXlZSrC84cqaRtpeht1x8CxcwMPIAYXaT4Z+hGC7+
+         rVG2YJ4JyNKKpzlG7HNhuL8+NZugo/5Ayugwl9nKzsB0LSuLDrRKrkXS0JcMorbjGX6N
+         OF+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713190688; x=1713795488;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mqqqjCa8OZ82zdxbWAvkpK8zvR3ppQ2NndSIF2x4rXo=;
+        b=kXgqF8khCf0HGywzYdv//oe+ibgFMXHxZtTqVAc3wJLpvq7pq+S+BW3NKe2AKvebnl
+         IJyVEHdgWTn8mg8lSYPWAf5t28ueIUZLlECKBg5Fwp6uV590PzAFdF068agqJnXUU8sO
+         OKwEkaqUyMrdmX7RKktFXgoi3u+zrmdKUlfoTdxHHcPrpumaxliLPIyE7WxNwT9tSPQu
+         1jLsw8+5p9EdlucoQXL1R60uXk7kJAcp35zz5ZMpLiVFX49pPway0XgQKH7odYPF8Mfh
+         OXugxyRC5089coFC/omqlWFbTxso+uaylXUEZxTYxKIJ8W3nAKRwdQgWBETj8Eo7ufQF
+         9s2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV7WDUY5YfbZOOmfreuq8RjbNMr1O6QzcOR+azMdnLiWKe9nP/sqYBpMcqXoQwZomVDYmLG+RCpzYhSMw72k/IwrVL/pXcpucbtM9QC
+X-Gm-Message-State: AOJu0YydfsWIof8a/EaEX8vBQ1854Waq7UI2QBt1rcf0OgDOgpbRbKtu
+	cKdF5QiaGGMPhnQpVPQ7i2jqEwwKOC22A9qV11d5rMbA4ANRCA2OJPjkHFBTT8vB6rO1lv2XiDd
+	NUDsoK1EFID3dYby9sV1UYMtql9FtKOguogmz
+X-Google-Smtp-Source: AGHT+IFLkqpounEUU/2bE6dJh6q9whX/HjDtCGadHGTvaVHifyPAFZys4Iq+yJ+GbVJMCc2FKsEdAoulZVngTb0CJTg=
+X-Received: by 2002:a0d:eb02:0:b0:615:3996:5c86 with SMTP id
+ u2-20020a0deb02000000b0061539965c86mr9873358ywe.21.1713190688256; Mon, 15 Apr
+ 2024 07:18:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/15] tty: serial: switch from circ_buf to kfifo
-To: Jiri Slaby <jirislaby@kernel.org>, gregkh@linuxfoundation.org,
-	linux-amlogic@lists.infradead.org, "linux-arm-msm@vger.kernel.org"
-	<linux-arm-msm@vger.kernel.org>
-Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, Bjorn
-	Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
-	<khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
-	Blumenstingl <martin.blumenstingl@googlemail.com>
-Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djPc7qc5rJpBi+bTSy2ddhYNC9ez2bx
-	5tERZot3c2UsfrZvYbLomLydxWLBbG6LifvPsltc3jWHzeLM4l52i2OLTrJYvN95i9GBx+P9
-	jVZ2j6cTJrN7bFrVyeZx59oeNo/9c9ewe2xeUu/xeZNcAHsUl01Kak5mWWqRvl0CV8bld0eZ
-	Cx4KVFw7OpmpgfEwbxcjB4eEgInEiRccXYxcHEICKxgldly8ywjhfGGU+NB2mQnC+cwoMWHR
-	ShaYjnWvayHiyxkl/n7cyArhfGSUmL3/MHsXIycHr4CdxNEp3WwgNouAqsTD9/fYIOKCEidn
-	PmEBsUUF5CXu35oBVi8s4Cpx6c1bNpBBIgIrGSUuPLgG5jALnGSSuPu8EayKWUBc4taT+Uwg
-	NpuAoUTX2y6wqZxA217ff8sIUSMvsf3tHGaQZgmBfk6Jr18+soIkJARcJL7tusEEYQtLvDq+
-	hR3ClpH4v3M+E0RDO6PEgt/3oZwJjBINz28xQlRZS9w594sNFALMApoS63fpQ4QdJW7+7GeF
-	BAyfxI23ghBH8ElM2jadGSLMK9HRJgRRrSYx6/g6uLUHL1xinsCoNAspYGYheXMWkndmIexd
-	wMiyilE8tbQ4Nz212DAvtVyvODG3uDQvXS85P3cTIzCJnf53/NMOxrmvPuodYmTiYDzEKMHB
-	rCTC2yIsmybEm5JYWZValB9fVJqTWnyIUZqDRUmcVzVFPlVIID2xJDU7NbUgtQgmy8TBKdXA
-	ZP3y+L2jwa1NNjd83+5V7FNulOia1OLiM7kmdb/F08NSkw9ti8tYKHr019u/9n6MneemsfVG
-	FK2acmhy6ARf9eBezmN7KpvV2g4l+mgzLxPomv3jof0u7/RPmeKT8/1mzi+srfsZt2RR98X3
-	mcG1ZTZZwklPdZsn8j4Uk/m2qVtF+iDD/gsqN3u/LPZeZySeEb5a9eMToWM7FjZOq3GW+1h0
-	/vmCGxPTPj1aJvDScCKzzfI/2darXbdsyWra9+bqKfc7rOobN/8V2qE2SUI9693HST8mHazi
-	veb1Um8uh2fg+oC+S086ju57mLDB0vWciuj1tlU9cmcPZBzL+3TnrXc198dl04vPOnPqfI4s
-	Z1ZiKc5INNRiLipOBABzmhc10QMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsVy+t/xe7qc5rJpBr+2SFhs67CxaF68ns3i
-	zaMjzBbv5spY/GzfwmTRMXk7i8WC2dwWE/efZbe4vGsOm8WZxb3sFscWnWSxeL/zFqMDj8f7
-	G63sHk8nTGb32LSqk83jzrU9bB77565h99i8pN7j8ya5APYoPZui/NKSVIWM/OISW6VoQwsj
-	PUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYzL744yFzwUqLh2dDJTA+Nh3i5GDg4J
-	AROJda9ruxi5OIQEljJKfF90n6mLkRMoLiNxcloDK4QtLPHnWhcbRNF7RokTs1+zgCR4Bewk
-	jk7pZgOxWQRUJR6+v8cGEReUODnzCViNqIC8xP1bM9hBbGEBV4lLb96CDRIRWMkoMXH7SnYQ
-	h1ngNJPE6osPWaHuYJK49a8R7A5mAXGJW0/mg9lsAoYSXW+7wFZwAq1+ff8tI0SNmUTX1i4o
-	W15i+9s5zBMYhWYhuWQWklGzkLTMQtKygJFlFaNIamlxbnpusZFecWJucWleul5yfu4mRmDc
-	bjv2c8sOxpWvPuodYmTiYDzEKMHBrCTC2yIsmybEm5JYWZValB9fVJqTWnyI0RQYHBOZpUST
-	84GJI68k3tDMwNTQxMzSwNTSzFhJnNezoCNRSCA9sSQ1OzW1ILUIpo+Jg1OqgWniynX53Dv4
-	vms6v7pgkHE5fHLp5HWr3yjx1mhcXxdoMW1bluPiTWZLpy26VTJncuGv26+W3T1iKO27v7FU
-	3CHcwz+Or9DBrFz3xJa53QHfvPZ5RkX47Jq8q3viyhmaZfMV88+2zPb8wvpUZJp1gF2bd92k
-	b3duRZ8qtDKTmXSX24ax+YmLwLs8x4RbOa2T35399elzpbaZu5/6xM2Fux0EX056mnhrBn9X
-	2hPf2C1CqydMUOuQ7yxaO3f/03Nh35vEo7S15l8VyPJ/NOvZ/H3Z3h+fVvknhqpl8y/5f884
-	pcEl/tWP80+uHkiI283+dXO67icX+SiB5Gs//i/VTisru+j0OuU7P1/p1vOvNiYrsRRnJBpq
-	MRcVJwIAN2bmOGQDAAA=
-X-CMS-MailID: 20240415141745eucas1p2570fd7509a5d42276a70504803c9988f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae
-References: <20240405060826.2521-1-jirislaby@kernel.org>
-	<20240405060826.2521-13-jirislaby@kernel.org>
-	<CGME20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae@eucas1p2.samsung.com>
-	<91ac609b-0fae-4856-a2a6-636908d7ad3c@samsung.com>
-	<d70049d5-d0fe-465f-a558-45b6785f6014@kernel.org>
+References: <20240328-jag-sysctl_remset_misc-v1-0-47c1463b3af2@samsung.com>
+ <CGME20240328155911eucas1p23472e0c6505ca73df5c76fe019fdd483@eucas1p2.samsung.com>
+ <20240328-jag-sysctl_remset_misc-v1-2-47c1463b3af2@samsung.com> <20240415134406.5l6ygkl55yvioxgs@joelS2.panther.com>
+In-Reply-To: <20240415134406.5l6ygkl55yvioxgs@joelS2.panther.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Mon, 15 Apr 2024 10:17:57 -0400
+Message-ID: <CAHC9VhTE+85xLytWD8LYrmdV8xcXdi-Tygy5fVvokaLCfk9bUQ@mail.gmail.com>
+Subject: Re: [PATCH 2/7] security: Remove the now superfluous sentinel element
+ from ctl_table array
+To: Joel Granados <j.granados@samsung.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, 
+	Miaohe Lin <linmiaohe@huawei.com>, Naoya Horiguchi <naoya.horiguchi@nec.com>, 
+	John Johansen <john.johansen@canonical.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, David Howells <dhowells@redhat.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>, 
+	Atish Patra <atishp@atishpatra.org>, Anup Patel <anup@brainfault.org>, 
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Luis Chamberlain <mcgrof@kernel.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	io-uring@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 15.04.2024 15:28, Jiri Slaby wrote:
-> On 15. 04. 24, 14:58, Marek Szyprowski wrote:
->> On 05.04.2024 08:08, Jiri Slaby (SUSE) wrote:
->>> Switch from struct circ_buf to proper kfifo. kfifo provides much better
->>> API, esp. when wrap-around of the buffer needs to be taken into 
->>> account.
->>> Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for 
->>> example.
->>>
->>> Kfifo API can also fill in scatter-gather DMA structures, so it easier
->>> for that use case too. Look at lpuart_dma_tx() for example. Note that
->>> not all drivers can be converted to that (like atmel_serial), they
->>> handle DMA specially.
->>>
->>> Note that usb-serial uses kfifo for TX for ages.
->>>
->>> omap needed a bit more care as it needs to put a char into FIFO to 
->>> start
->>> the DMA transfer when OMAP_DMA_TX_KICK is set. In that case, we have to
->>> do kfifo_dma_out_prepare twice: once to find out the tx_size (to find
->>> out if it is worths to do DMA at all -- size >= 4), the second time for
->>> the actual transfer.
->>>
->>> All traces of circ_buf are removed from serial_core.h (and its struct
->>> uart_state).
->>>
->>> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
->>> ...
->>
->> This patch landed in linux-next as commit 1788cf6a91d9 ("tty: serial:
->> switch from circ_buf to kfifo"). Unfortunately it breaks UART operation
->> on thr Amlogic Meson based boards (drivers/tty/serial/meson_uart.c
->> driver) and Qualcomm RB5 board (drivers/tty/serial/qcom_geni_serial.c).
->> Once the init process is started, a complete garbage is printed to the
->> serial console. Here is an example how it looks:
+On Mon, Apr 15, 2024 at 9:44=E2=80=AFAM Joel Granados <j.granados@samsung.c=
+om> wrote:
 >
-> Oh my!
+> Hey
 >
-> Both drivers move the tail using both kfifo and uart_xmit_advance() 
-> interfaces. Bah. Does it help to remove that uart_xmit_advance() for 
-> both of them? (TX stats will be broken.)
->
-> Users of uart_port_tx() are not affected.
->
-> This is my fault when merging uart_xmit_advance() with this series.
+> This is the only patch that I have not seen added to the next tree.
+> I'll put this in the sysctl-next
+> https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/log/?h=
+=3Dsysctl-next
+> for testing. Please let me know if It is lined up to be upstream through
+> another path.
 
-Yes, removing uart_xmit_advance() from both drivers seems to be fixing 
-the console output.
+I was hoping to see some ACKs from the associated LSM maintainers, but
+it's minor enough I'll go ahead and pull it into the lsm/dev tree this
+week.  I'll send a note later when I do the merge.
 
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+--=20
+paul-moore.com
 
