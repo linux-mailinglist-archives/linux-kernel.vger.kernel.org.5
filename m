@@ -1,330 +1,186 @@
-Return-Path: <linux-kernel+bounces-145563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E4D38A57E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:36:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5773D8A57E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:37:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B69882828EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:36:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 793B51C22F28
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAECE82481;
-	Mon, 15 Apr 2024 16:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF0082484;
+	Mon, 15 Apr 2024 16:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KWWw0XX+"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fw72T1BL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3219682892
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF705823CE
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713198944; cv=none; b=Rxd2hgzk8+n1PQ1J3lYAp5E90BuVVAqSDJbb96wGe+aSWZD7lqR2JAzJql7CEqyr7H0AiT5HBq/WU+19CQJ/n4r9ZHqPeb0YnA+v4HiF3QoTziuOvCfMF0XM4otjJUgys3ziQc8t/jUGgi9OVlePRrEC3+pAHFsFJ2ldeTTJcmw=
+	t=1713199001; cv=none; b=gbrmZ9u8ACLh/o3H8TuUo2bBYbktt4BwSFKHGvsJNmPkwMRe8lFHfQ3B0hIEDx4ygynCjU6gnCsQyu46rC3IFD/NVFjP2tr42JS/77aQx9urAhodvVvQX7hfV9ttucP9rWQ1BMfPxHmPosi/fPktl8lW9nN/1RHJ66bwcpLI2Hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713198944; c=relaxed/simple;
-	bh=tEqZvV3FTwNDGdXGDfu5US6D8OLXShAXUJ74HD0l3yw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CJ72iiZcQRpHj+lBPa09qzWJtmOpgOmh3m45N5vKnB22EhpCj7y4vBRwoKZtimYUQ01GqixCDVdQ0wwwSH4aHYtzNl4sZecAqmFpYrrszpnUxhaglVHSskLTmZNiVjTT7zNEYaADzIyOFZjTN3QTbjV8Mrvql/VTRz1QFzYi87w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KWWw0XX+; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed11782727so2900600b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713198941; x=1713803741; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AJHOXE7W4iXMxi8stv8aQLFD0obJISw2P5aysbaDa0s=;
-        b=KWWw0XX+uRhxngnEB1gxEnR00m+vN8V9cxoyzeZ0ePPrVk+Yh9u3YLJrlE+Y+jPisW
-         uDJ1fvHE9KwRd9r1qgESRWqbyIBgfzfUoPeYN0xhDV5NMuYxHjFiN94VfVbQIRoduUN2
-         vseEgNBAC9pRk0e4510/tOMcTcPpmCGAcOjsg=
+	s=arc-20240116; t=1713199001; c=relaxed/simple;
+	bh=+QqbqSu1MMoSgiWlfiQTfvZcvD2ji/HRaDBIniV7kB0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=T3hCK6WeZAiEZP4IKWkJi5Fc79zQrK5Mvu8tXxEPr8RVexqmCZOzdpviU4e2hgNWWPWuI+d2n0KioGb1y9bUqq2ej5U40bDMNXrM2nvkp/V6cv4tvApPE/2BIxloCdHokGK+S1nqXPpsp3ui5IB2Q5f00ZyxgBVge8J5sXrtxF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fw72T1BL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713198998;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=atGkGHaiCSKARFp5t+MBXqAkwdjlgEs5Nciu/JvDSO4=;
+	b=fw72T1BLAX9DdwjxQqW+ZhVKoE78zNaHR4WEzMkWT6KbWSo1vB+VmCQSyVUSVzEg9z7uTI
+	Kxj9ul1uy9Kpy6ibmOyoskt5kiwpN10kuBBHhp+PMB5eaOfJ3t1q6tnFEsrjKW1iR3RFzV
+	y4yYWYrp+TI04cTGzX1ZMWmWYH3xBqA=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-487-uR_8D-gCNfWCasoWZODrDQ-1; Mon, 15 Apr 2024 12:36:35 -0400
+X-MC-Unique: uR_8D-gCNfWCasoWZODrDQ-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d9ebfd9170so30488481fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:36:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713198941; x=1713803741;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713198993; x=1713803793;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AJHOXE7W4iXMxi8stv8aQLFD0obJISw2P5aysbaDa0s=;
-        b=nrn8JGvTJnCyG0/0BldcWv9SvZk7NAVhlrVrIZV7RVygteTDOmr6EjXlOdLkYbmQO5
-         xnga1pFEY4c+C8ha1/f2djYIrrQqkSUAqYn8LIOP29PBek6945amYeFULmXa431cdEaY
-         SAE3pNfJyCL1DCFPvWe8UnVtw9aYDZyEY32FeWM5tTRUoYw0i4TGhaSXru+hGrP+NtZm
-         unfR0bDe3tjAxkImQ7dZj6CG4UetkoTYT5znQwNul4RtbVgMcv8MOgQwbasZTkL4RTvQ
-         zj6sAcA/TYp98zD2frdLjWwAphIwGvx7EPCubxbjczx8wXIiUsQtrEbIe4WQnlbUMF6x
-         F9sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXKUAfVfgmbC4dBHj9nZbdc34nV3hft1GXY5/K0RzlLy+7LfaL4PXF75qtFhl+9qNgXeWNtB8FBtsovJ/zntecevXKlxkD89BhDDunB
-X-Gm-Message-State: AOJu0Yx2/xXtP10PgsVpZLa/7fP/XCa9AQHfFmi5ooKqaGFuKSQy0Pjh
-	7Nltz0cfTUDEhTQv/KXk+FgagHS/hPZ80cG7SU8XvRttomcixdqRxCJCrbZhdQ==
-X-Google-Smtp-Source: AGHT+IGpxBiXitUV65X12uO9kCt9yTS7pqi2G5lLyGKRXo70DVpYj0l9hUD2hNlk3bYPsgQK0YTsXQ==
-X-Received: by 2002:a05:6a21:151a:b0:1a9:b3e9:a62c with SMTP id nq26-20020a056a21151a00b001a9b3e9a62cmr8978922pzb.48.1713198941478;
-        Mon, 15 Apr 2024 09:35:41 -0700 (PDT)
-Received: from localhost (15.4.198.104.bc.googleusercontent.com. [104.198.4.15])
-        by smtp.gmail.com with UTF8SMTPSA id b13-20020a630c0d000000b005dc4da2121fsm7213902pgl.6.2024.04.15.09.35.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 09:35:40 -0700 (PDT)
-From: jeffxu@chromium.org
-To: akpm@linux-foundation.org,
-	keescook@chromium.org,
-	jannh@google.com,
-	sroettger@google.com,
-	willy@infradead.org,
-	gregkh@linuxfoundation.org,
-	torvalds@linux-foundation.org,
-	usama.anjum@collabora.com,
-	corbet@lwn.net,
-	Liam.Howlett@oracle.com,
-	surenb@google.com,
-	merimus@google.com,
-	rdunlap@infradead.org
-Cc: jeffxu@google.com,
-	jorgelo@chromium.org,
-	groeck@chromium.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org,
-	pedro.falcato@gmail.com,
-	dave.hansen@intel.com,
-	linux-hardening@vger.kernel.org,
-	deraadt@openbsd.org,
-	Jeff Xu <jeffxu@chromium.org>
-Subject: [PATCH v10 5/5] selftest mm/mseal read-only elf memory segment
-Date: Mon, 15 Apr 2024 16:35:24 +0000
-Message-ID: <20240415163527.626541-6-jeffxu@chromium.org>
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-In-Reply-To: <20240415163527.626541-1-jeffxu@chromium.org>
-References: <20240415163527.626541-1-jeffxu@chromium.org>
+        bh=atGkGHaiCSKARFp5t+MBXqAkwdjlgEs5Nciu/JvDSO4=;
+        b=L6JPapuvhVgy0EiZ+3GlNU6YFiuHcv81nWngbUM359xNOvZftv86hqT7INY35mNgXE
+         nTtqQqHw7szFBOyv0AQ40nHrOaqU1HAdF9jz7lAfH8QVcaDXUHJosPwChA5bScQoaddQ
+         lZiRnajYaj7dL/QlRjvMcrA3HTnCCUqAXqRO/QVfzvprKPMxvuAAAEc0n5GndRhwsf4l
+         mGDNmJjWB6A2XT2aPQKaLICzEhY1BQ0cQdaZG3s7YLh6JrVvHyGqCRe20mGfuFPnUUCy
+         nFVcNmwDO3DbxmgqghwV9R1N+2/Ci/0ZnDOgdfzAFahFPyY2YUsG9HhunqZqP5TjkDym
+         Y4fQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8vDUacuAqeJPFjcb+AA5v1uskwNDYMig8x+f3plO+o9IFDVT3lGfvWVgZEIlGHGVHA1sHoUtFGLbNv1GR8NZs8nxSsiid5xdXoW5M
+X-Gm-Message-State: AOJu0YyTqtEro8gtQVYFrIPJYIU8PeIOIHPq/sTh0eCm4Ra0kN0mnDUH
+	9vILcN5tjEZYJ/7KyGL+W9v1fPQNycH6FEANmBA3rRZ8r4uXk1UZyv0PGv+LWtyognfDda5yLak
+	IpnSAbgYh2XaCdqhGV9ydpH3SUdrCuR7/Wu+xFPpKWmQsrNx9obfRoGbabTlGxA==
+X-Received: by 2002:a2e:9e96:0:b0:2d8:64c9:8d39 with SMTP id f22-20020a2e9e96000000b002d864c98d39mr8110591ljk.37.1713198993682;
+        Mon, 15 Apr 2024 09:36:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGyogDqJzKINArWAzh/dqhb2mlcc0D4Erk9dK0QoHKBU5jHaWEgiddtk2hMVtWNwF1AF8LfNg==
+X-Received: by 2002:a2e:9e96:0:b0:2d8:64c9:8d39 with SMTP id f22-20020a2e9e96000000b002d864c98d39mr8110575ljk.37.1713198993322;
+        Mon, 15 Apr 2024 09:36:33 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id bm15-20020a170906c04f00b00a46d9966ff8sm5774503ejb.147.2024.04.15.09.36.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 09:36:32 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: paulmck@kernel.org, Frederic Weisbecker <frederic@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, Peter Zijlstra
+ <peterz@infradead.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel
+ Fernandes <joel@joelfernandes.org>, Josh Triplett <josh@joshtriplett.org>,
+ Boqun Feng <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan
+ <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH 2/2] context_tracking, rcu: Rename RCU_DYNTICKS_IDX to
+ CT_DYNTICKS_IDX
+In-Reply-To: <af3eed7e-a889-4008-ba47-045483ab79fc@paulmck-laptop>
+References: <20240327112902.1184822-1-vschneid@redhat.com>
+ <20240327112902.1184822-3-vschneid@redhat.com>
+ <Zg6tYD-9AFPkOOsW@localhost.localdomain>
+ <1ef9d1f9-16a2-4ddc-abd5-6c3b7cde290f@paulmck-laptop>
+ <ZhZqX0YqlzPoOK2b@localhost.localdomain>
+ <af3eed7e-a889-4008-ba47-045483ab79fc@paulmck-laptop>
+Date: Mon, 15 Apr 2024 18:36:31 +0200
+Message-ID: <xhsmhjzky8tww.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Jeff Xu <jeffxu@chromium.org>
+On 10/04/24 12:19, Paul E. McKenney wrote:
+> On Wed, Apr 10, 2024 at 12:30:55PM +0200, Frederic Weisbecker wrote:
+>> Le Tue, Apr 09, 2024 at 12:53:03PM -0700, Paul E. McKenney a =C3=A9crit :
+>> > I am having a hard time getting too excited about the name.  I could
+>> > suggest CT_RCU_WATCHING_IDX, but that isn't exactly the shortest
+>> > possible name.
+>>
+>> I really like CT_RCU_WATCHING. It says everything. The _IDX isn't even
+>> needed after all. What do you think?
+>
+> Works for me!
+>
 
-Sealing read-only of elf mapping so it can't be changed by mprotect.
+Sounds good to me too, thanks for the suggestion :)
 
-Signed-off-by: Jeff Xu <jeffxu@chromium.org>
----
- tools/testing/selftests/mm/.gitignore |   1 +
- tools/testing/selftests/mm/Makefile   |   1 +
- tools/testing/selftests/mm/seal_elf.c | 183 ++++++++++++++++++++++++++
- 3 files changed, 185 insertions(+)
- create mode 100644 tools/testing/selftests/mm/seal_elf.c
+Now, what about ct_dynticks() & friends? I was about to do:
 
-diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/selftests/mm/.gitignore
-index 98eaa4590f11..0b9ab987601c 100644
---- a/tools/testing/selftests/mm/.gitignore
-+++ b/tools/testing/selftests/mm/.gitignore
-@@ -48,3 +48,4 @@ va_high_addr_switch
- hugetlb_fault_after_madv
- hugetlb_madv_vs_map
- mseal_test
-+seal_elf
-diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-index 95d10fe1b3c1..02392c426759 100644
---- a/tools/testing/selftests/mm/Makefile
-+++ b/tools/testing/selftests/mm/Makefile
-@@ -60,6 +60,7 @@ TEST_GEN_FILES += mrelease_test
- TEST_GEN_FILES += mremap_dontunmap
- TEST_GEN_FILES += mremap_test
- TEST_GEN_FILES += mseal_test
-+TEST_GEN_FILES += seal_elf
- TEST_GEN_FILES += on-fault-limit
- TEST_GEN_FILES += pagemap_ioctl
- TEST_GEN_FILES += thuge-gen
-diff --git a/tools/testing/selftests/mm/seal_elf.c b/tools/testing/selftests/mm/seal_elf.c
-new file mode 100644
-index 000000000000..61a2f1c94e02
---- /dev/null
-+++ b/tools/testing/selftests/mm/seal_elf.c
-@@ -0,0 +1,183 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <sys/mman.h>
-+#include <stdint.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <stdbool.h>
-+#include "../kselftest.h"
-+#include <syscall.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <assert.h>
-+#include <fcntl.h>
-+#include <assert.h>
-+#include <sys/ioctl.h>
-+#include <sys/vfs.h>
-+#include <sys/stat.h>
-+
-+/*
-+ * need those definition for manually build using gcc.
-+ * gcc -I ../../../../usr/include   -DDEBUG -O3  -DDEBUG -O3 seal_elf.c -o seal_elf
-+ */
-+#define FAIL_TEST_IF_FALSE(c) do {\
-+		if (!(c)) {\
-+			ksft_test_result_fail("%s, line:%d\n", __func__, __LINE__);\
-+			goto test_end;\
-+		} \
-+	} \
-+	while (0)
-+
-+#define SKIP_TEST_IF_FALSE(c) do {\
-+		if (!(c)) {\
-+			ksft_test_result_skip("%s, line:%d\n", __func__, __LINE__);\
-+			goto test_end;\
-+		} \
-+	} \
-+	while (0)
-+
-+
-+#define TEST_END_CHECK() {\
-+		ksft_test_result_pass("%s\n", __func__);\
-+		return;\
-+test_end:\
-+		return;\
-+}
-+
-+#ifndef u64
-+#define u64 unsigned long long
-+#endif
-+
-+/*
-+ * define sys_xyx to call syscall directly.
-+ */
-+static int sys_mseal(void *start, size_t len)
-+{
-+	int sret;
-+
-+	errno = 0;
-+	sret = syscall(__NR_mseal, start, len, 0);
-+	return sret;
-+}
-+
-+static void *sys_mmap(void *addr, unsigned long len, unsigned long prot,
-+	unsigned long flags, unsigned long fd, unsigned long offset)
-+{
-+	void *sret;
-+
-+	errno = 0;
-+	sret = (void *) syscall(__NR_mmap, addr, len, prot,
-+		flags, fd, offset);
-+	return sret;
-+}
-+
-+inline int sys_mprotect(void *ptr, size_t size, unsigned long prot)
-+{
-+	int sret;
-+
-+	errno = 0;
-+	sret = syscall(__NR_mprotect, ptr, size, prot);
-+	return sret;
-+}
-+
-+static bool seal_support(void)
-+{
-+	int ret;
-+	void *ptr;
-+	unsigned long page_size = getpagesize();
-+
-+	ptr = sys_mmap(NULL, page_size, PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-+	if (ptr == (void *) -1)
-+		return false;
-+
-+	ret = sys_mseal(ptr, page_size);
-+	if (ret < 0)
-+		return false;
-+
-+	return true;
-+}
-+
-+const char somestr[4096] = {"READONLY"};
-+
-+static void test_seal_elf(void)
-+{
-+	int ret;
-+	FILE *maps;
-+	char line[512];
-+	int size = 0;
-+	uintptr_t  addr_start, addr_end;
-+	char prot[5];
-+	char filename[256];
-+	unsigned long page_size = getpagesize();
-+	unsigned long long ptr = (unsigned long long) somestr;
-+	char *somestr2 = (char *)somestr;
-+
-+	/*
-+	 * Modify the protection of readonly somestr
-+	 */
-+	if (((unsigned long long)ptr % page_size) != 0)
-+		ptr = (unsigned long long)ptr & ~(page_size - 1);
-+
-+	ksft_print_msg("somestr = %s\n", somestr);
-+	ksft_print_msg("change protection to rw\n");
-+	ret = sys_mprotect((void *)ptr, page_size, PROT_READ|PROT_WRITE);
-+	FAIL_TEST_IF_FALSE(!ret);
-+	*somestr2 = 'A';
-+	ksft_print_msg("somestr is modified to: %s\n", somestr);
-+	ret = sys_mprotect((void *)ptr, page_size, PROT_READ);
-+	FAIL_TEST_IF_FALSE(!ret);
-+
-+	maps = fopen("/proc/self/maps", "r");
-+	FAIL_TEST_IF_FALSE(maps);
-+
-+	/*
-+	 * apply sealing to elf binary
-+	 */
-+	while (fgets(line, sizeof(line), maps)) {
-+		if (sscanf(line, "%lx-%lx %4s %*x %*x:%*x %*u %255[^\n]",
-+			&addr_start, &addr_end, &prot, &filename) == 4) {
-+			if (strlen(filename)) {
-+				/*
-+				 * seal the mapping if read only.
-+				 */
-+				if (strstr(prot, "r-")) {
-+					ret = sys_mseal((void *)addr_start, addr_end - addr_start);
-+					FAIL_TEST_IF_FALSE(!ret);
-+					ksft_print_msg("sealed: %lx-%lx %s %s\n",
-+						addr_start, addr_end, prot, filename);
-+					if ((uintptr_t) somestr >= addr_start &&
-+						(uintptr_t) somestr <= addr_end)
-+						ksft_print_msg("mapping for somestr found\n");
-+				}
-+			}
-+		}
-+	}
-+	fclose(maps);
-+
-+	ret = sys_mprotect((void *)ptr, page_size, PROT_READ | PROT_WRITE);
-+	FAIL_TEST_IF_FALSE(ret < 0);
-+	ksft_print_msg("somestr is sealed, mprotect is rejected\n");
-+
-+	TEST_END_CHECK();
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	bool test_seal = seal_support();
-+
-+	ksft_print_header();
-+	ksft_print_msg("pid=%d\n", getpid());
-+
-+	if (!test_seal)
-+		ksft_exit_skip("sealing not supported, check CONFIG_64BIT\n");
-+
-+	ksft_set_plan(1);
-+
-+	test_seal_elf();
-+
-+	ksft_finished();
-+	return 0;
-+}
--- 
-2.44.0.683.g7961c838ac-goog
+-static __always_inline int ct_dynticks(void)
++static __always_inline int ct_rcu_watching(void)
+ {
+-	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_DYNTICKS_M=
+ASK;
++	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_RCU_WATCHI=
+NG_MASK;
+ }
+
+.. but then realised that there's more siblings to the rcu_dynticks*()
+family;
+
+AFAICT dynticks_nesting could also get the rcu_watching prefix treatment,
+`rcu_dynticks_task_exit() -> rcu_watching_task_exit` doesn't sound as
+obvious though. The rcu_dyntick event probably can't be renamed either.
+
+I'm not sure how far to take the renaming; seeing things like:
+
+  notrace bool rcu_is_watching(void)
+  {
+          bool ret;
+
+          preempt_disable_notrace();
+          ret =3D !rcu_dynticks_curr_cpu_in_eqs();
+          preempt_enable_notrace();
+          return ret;
+  }
+  EXPORT_SYMBOL_GPL(rcu_is_watching);
+
+makes me think most of the rcu_*dynticks / rcu_*eqs stuff could get an
+rcu_watching facelift?
+
+Here are my current considerations for identifiers used in context_tracking
+in decreasing order of confidence:
+
+| Old                                   | New                              =
+                             |
+|---------------------------------------+----------------------------------=
+-----------------------------|
+| RCU_DYNTICKS_IDX                      | CT_RCU_WATCHING                  =
+                             |
+| RCU_DYNTICKS_MASK                     | CT_RCU_WATCHING_MASK             =
+                             |
+| context_tracking.dynticks_nesting     | context_tracking.rcu_watching_nes=
+ting                         |
+| context_tracking.dynticks_nmi_nesting | context_tracking.rcu_watching_nmi=
+_nesting [bit of a mouthful] |
+| rcu_dynticks_curr_cpu_in_eqs()        | rcu_watching_curr_cpu() [with an =
+added negation]              |
+|---------------------------------------+----------------------------------=
+-----------------------------|
+| TRACE_EVENT_RCU(rcu_dyntick,          | [Can't change?]                  =
+                             |
+|---------------------------------------+----------------------------------=
+-----------------------------|
+| rcu_dynticks_task_enter()             | rcu_watching_task_enter()        =
+                             |
+| rcu_dynticks_task_exit()              | rcu_watching_task_exit()         =
+                             |
+| rcu_dynticks_task_trace_enter()       | rcu_watching_task_trace_enter()  =
+                             |
+| rcu_dynticks_task_trace_exit()        | rcu_watching_task_trace_exit()   =
+                             |
+
+Thoughts?
 
 
