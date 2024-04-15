@@ -1,128 +1,101 @@
-Return-Path: <linux-kernel+bounces-145932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C72CC8A5CF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:27:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80AE58A5CF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:29:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BE671C2181C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:27:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10F62B20D56
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D19B157460;
-	Mon, 15 Apr 2024 21:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D388157468;
+	Mon, 15 Apr 2024 21:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hXy8eAQj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NbjY1I9B"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1A5156236;
-	Mon, 15 Apr 2024 21:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7DF823CE;
+	Mon, 15 Apr 2024 21:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713216433; cv=none; b=DyZXAnDuC+T6qQOYg0tzCpytq1qMAHS03/3F+rm/EWMZUmEcB3wAbODV7fvPQYaG0GL70fOKJ2UEU1Kam+rFrCpW7jTL6R8QwugKvIZwQFMXqPwFGgxSwVBXiIN8scJVzuo078A0ttPd6JPBQwf0AD2YY8rONNd2HlA7TyxWPXw=
+	t=1713216541; cv=none; b=RN44D5FKe6fGxDKlGpKqoP/iN4Ca2YoGCGdNyV2vtOHEiSr7MUnaSC1QFhW95tULLhMMUiujSo6BHqBwxgEi0nW5udnZouamhUtpxFDrWAS8eNNonBnVKDhqF0ItkFz9blRzmYwCZpGxyzJNVf0dVgF55TBaATu3WuaQQ7xKmU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713216433; c=relaxed/simple;
-	bh=AokiBwLoenA+AuAq05ya7tY/KjTt6b5eb9h8P1KVQgY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Smrx3I99aSmmZcix2r+KUrPqJRRWUY4EBAZLMp6V/PccuguRo1VJw0iE/1FrTbYbuGkOG+GKnn7JJhgUqANr1txGKw9K97YBh847pt95wBBNBd0ReIQujQAeI3/7uZ3CvfQtEFbqeOt0pI8VrlFPNZD9I5bl/HVQ0wO7WlbwWrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hXy8eAQj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C9AC113CC;
-	Mon, 15 Apr 2024 21:27:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713216433;
-	bh=AokiBwLoenA+AuAq05ya7tY/KjTt6b5eb9h8P1KVQgY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hXy8eAQj0AlY6mfR43iRJ6wS/B4Mn29gxVYqTjINDIeY7vknv4DS3h4gc4pDRJLUq
-	 uB1iJajd7UgRZ7Da4E2BzwyONCB1jPrkpDxaA01jy7sQbz4WuQreTY69KXFrZtxtU7
-	 t1AwZARUlS1IyHp3/w+trYZ2JH5XrcDvDnKpvJlJKyKgMJTGyZV9ZxlQjEQ2pPgCGa
-	 FeY9zkIYRVhknFX9GyEYSvm3upQRX61YNLdl2jQz94icifluufllDDRCdHdT61HzE3
-	 osRcwcH6S3/KK/Bei8f6d22RF+Qa1WXy+tnX1cni3hG61xlz534rwNjrKLvaAO4KzF
-	 kJqePPDycI82Q==
-Date: Mon, 15 Apr 2024 16:27:10 -0500
-From: Rob Herring <robh@kernel.org>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-	oxffffaa@gmail.com, kernel@sberdevices.ru
-Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: amlogic,meson-nand: support
- fields for boot ROM code
-Message-ID: <20240415212710.GA105671-robh@kernel.org>
-References: <20240410185409.2635622-1-avkrasnov@salutedevices.com>
- <20240410185409.2635622-2-avkrasnov@salutedevices.com>
+	s=arc-20240116; t=1713216541; c=relaxed/simple;
+	bh=tnp3Gy5QouPkq1ZPCN4tIf7ajUpjlx10BNU1uvCdm1w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LZ6d7bRsOXtqaGqefIDuEyYdDhzuV9P6I6ujWf9KzweWRTtlVj51D+b39Qzm2oA+xA064UiJTBhkuz8hJAhSwwpmc2VTWRBy0jY+wsxrrZdMTJF8oXiEi8AaSarW/ts36OlEsxZHY2WPPvY6aFsb/U/za/2pdcIrA+FSy8KbVSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NbjY1I9B; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713216540; x=1744752540;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tnp3Gy5QouPkq1ZPCN4tIf7ajUpjlx10BNU1uvCdm1w=;
+  b=NbjY1I9BLv/TH7w2c05nU+IpksXoEmoUsPO8zQjKWsbImR/Zln2rUsSW
+   I/toEjfyeyvgju5v9+sdfNaVJurtw42b2vmQ6qF5PoG1Oy/jUWvxIcoX0
+   wKbW3I8rAz/s8ZRpLVtwFncTXCSFcSm0SYY2aeKEI9LNVVh0rAYg7hoRq
+   F8TSP2jL58rIms7f9wSSdKpnWIMMh5oRop9RJkiEHSaw+zTjt4E1UJK6p
+   RA/ylH/oxSklADzuqHrVabuAoTZH4Y2Gr0iyojHoxul/9iRlbbwkRhUly
+   zoSSVb/PdfZkPj0QQGu2NvlyTN3aUR5ro8UqH0nj0d7+wKu5mYNjkqTdv
+   g==;
+X-CSE-ConnectionGUID: 7p0zlTKGQZyQHSnd77TBVQ==
+X-CSE-MsgGUID: mmgZyEKvQke32K8fj0ie3g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="11573450"
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="11573450"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 14:29:00 -0700
+X-CSE-ConnectionGUID: om3b2GjhTnaJonPR5+AUyQ==
+X-CSE-MsgGUID: Z3aD3ybBT1Gzg1V2Xdg4Ww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="52984360"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by orviesa002.jf.intel.com with ESMTP; 15 Apr 2024 14:28:59 -0700
+From: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To: hdegoede@redhat.com,
+	markgross@kernel.org,
+	ilpo.jarvinen@linux.intel.com,
+	andriy.shevchenko@linux.intel.com
+Cc: platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH] platform/x86: ISST: Add Granite Rapids-D to HPM CPU list
+Date: Mon, 15 Apr 2024 14:28:53 -0700
+Message-Id: <20240415212853.2820470-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410185409.2635622-2-avkrasnov@salutedevices.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 09:54:08PM +0300, Arseniy Krasnov wrote:
-> Boot ROM code on Meson requires that some pages on NAND must be written
-> in special mode: "short" ECC mode where each block is 384 bytes and
-> scrambling mode is on. Such pages located with the specified interval
-> within specified offset. Both interval and offset are located in the
-> device tree and used by driver if 'nand-is-boot-medium' is set for
-> NAND chip.
-> 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> index 57b6957c8415..838ae1847ef0 100644
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -64,11 +64,25 @@ patternProperties:
->          items:
->            maximum: 0
->  
-> +      amlogic,boot-pages:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM.
+Add Granite Rapids-D to hpm_cpu_ids, so that MSR 0x54 can be used.
 
-'the $driver drivers needs this information' is true for every property, 
-so it's redundant. You fail to say *what* the property represents or 
-defines.
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ drivers/platform/x86/intel/speed_select_if/isst_if_common.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +
-> +      amlogic,boot-page-step:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM (in pages).
+diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
+index 08df9494603c..30951f7131cd 100644
+--- a/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
++++ b/drivers/platform/x86/intel/speed_select_if/isst_if_common.c
+@@ -719,6 +719,7 @@ static struct miscdevice isst_if_char_driver = {
+ };
+ 
+ static const struct x86_cpu_id hpm_cpu_ids[] = {
++	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_D,	NULL),
+ 	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_X,	NULL),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X,	NULL),
+ 	{}
+-- 
+2.40.1
 
-Same issue here.
-
-> +
->      unevaluatedProperties: false
->  
->      dependencies:
->        nand-ecc-strength: [nand-ecc-step-size]
->        nand-ecc-step-size: [nand-ecc-strength]
-> +      amlogic,boot-pages: [nand-is-boot-medium, "amlogic,boot-page-step"]
-> +      amlogic,boot-page-step: [nand-is-boot-medium, "amlogic,boot-pages"]
->  
->  
->  required:
-> -- 
-> 2.35.0
-> 
 
