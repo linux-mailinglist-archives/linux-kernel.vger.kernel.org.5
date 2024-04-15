@@ -1,165 +1,229 @@
-Return-Path: <linux-kernel+bounces-145208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA66E8A50D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:17:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBBBD8A50D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:18:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31BA7B2445A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:17:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFBBB1C21466
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:18:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC07F7A141;
-	Mon, 15 Apr 2024 12:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0688594D;
+	Mon, 15 Apr 2024 12:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AiokVn3p"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="U3DZfTt2"
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61D60745E1
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D3084E1A
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185886; cv=none; b=fyN4xA2Cg0bqrjGhcT9IWPsaqgDUL8GJnZhw0tED+43fObrB9pQxL5vxkhbBi+SJJgFc4m0VO/ihEtciYWkqR+h7j43tL3VaQ8UqUo63zJOJhdrWwl4rk+Jp7vXuHE1xCDWvnJNfrboAuK64BzVN0inGdZ9qxKUGMTCuxC6iXG8=
+	t=1713185932; cv=none; b=dBbnGg7ukTB1TF5IgN/G1B4vDFIsmfC1BnpUZFbSYgvS8TCSopxplvbKx1uRf5OzHjSdYLffvnnIkoEvd1tOvBEEtK4qgH2a+ZxoTrk9KDJWHcwOkSvFCTJDmgpdgnXwTWtdfG2CqvS1QZ8T0QfIWV+/moQNCAmunFsPXyTXBmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185886; c=relaxed/simple;
-	bh=JuY8Z9SFKAjd485RmpEzDICfCQ5m1DLNGhij0gfh/6A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LGmb406IyZdON5a11rUL3keO8BGlPWOv/HMwPm97tcdAM45nYuYs+l+JDJdZx935RrK+tdb8H58ykXgzyGnYfsXubdNMxtWa3F8iOsCMZ0RRVOx3KbT1bCTbgaahUxvInbtFlEmJtrxwf4JpPXZom8NtlWgnUiIEIK1n5HscH8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AiokVn3p; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4167fce0a41so22649725e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713185883; x=1713790683; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tLf6fjTVo3wUpV33VREESp7KlEYlqmXsy5vGMydSZn8=;
-        b=AiokVn3p5J7rw6aHxKGQ4DO0ZtXqAG1EQ/RcKvpwk3/FaLLKAb5HVvqqxaAqie6oy7
-         AZlO1P6MdMUCEfya+KJEdzzVjP72OP17GzKVbNyVbgvea5G685QIT7f0NgKfn2QHYDH/
-         rZgaYT1LE0wcvSIJp7fgzD3d9RcCxocKDGaa8eFTwP9DJdRGiTyU7OAcs3kNIRKR99JZ
-         nXzqPcAFHxpRF94VNnGUnwKb9JgnzeFrs7TIKO/Sg4mt3vupA4sXxrjHVIF6ICMni3t7
-         95u5xfDfFY+jZdiv4njyD9hd3sTxdfQiKNSWNNJXm3BvGJl0Ru3Q0tq2ntg2822UzMrV
-         h1PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713185883; x=1713790683;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tLf6fjTVo3wUpV33VREESp7KlEYlqmXsy5vGMydSZn8=;
-        b=csHx4HLd5hNSyzVOvy7p4zUZUU4gDgBNyoE3HYUagN8huotrQ7qPx2M4d/3K9BH+56
-         iqBtahM2gpJPpIOcqI/OYMixZhF5KvAgIiKXsy8/K2iH2SBfHbdUoLlwcXvS6Cf1Uai/
-         Wj4MST762bdAHw6RmXEL06iWcpmJbB6aHa6ZjsWsh6VC87E1eZKgZmOlHh/9+qRsSLIH
-         syAKBov45SdHlEEF2HhEpO6p9bpbFs4Aor8+6rNeNVFpRvNvHqqyHLpS8SQJrlPWpalA
-         dJfbkeQM4VRl3wnT5FAQZ+Zt83fn7NOSbf/vbnw2yg+rt/4uFchtLOZ2+8hwBTloqFv7
-         YXeg==
-X-Forwarded-Encrypted: i=1; AJvYcCVQxZrtSLKXMd6Mn/Fh7iHtf4P47X9MqrUE9MPZFlRzOgc+UIa0TQuyETbNwa6jp4mY3wPkKUB3rG0sibSQXVH5J+9PhZ3Avt/dxayu
-X-Gm-Message-State: AOJu0Yxglcc8Tkz5gcDpfEGBlqJaHrJVHrAKFEUwRKBH5pRfQLIl9wE8
-	gt9W32K9r/T1bYYotGpj2tkVCnKRAlsfrSaUBMWJJa/f2MD8Esm4hxm7qpoSlmo=
-X-Google-Smtp-Source: AGHT+IEAm03/mAgN/wD9H5pLJe3fIVolEbWIhU988XB39qknEhlAzrxruGN5U/LF93zzxG0bYawaFQ==
-X-Received: by 2002:a5d:595b:0:b0:345:e750:6d6c with SMTP id e27-20020a5d595b000000b00345e7506d6cmr7277507wri.30.1713185882741;
-        Mon, 15 Apr 2024 05:58:02 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id f18-20020adfe912000000b00343d6c7240fsm12032238wrm.35.2024.04.15.05.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 05:58:02 -0700 (PDT)
-Date: Mon, 15 Apr 2024 13:58:00 +0100
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-	Helge Deller <deller@gmx.de>,
-	Bruno =?iso-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <bentiss@kernel.org>,
-	Alexander Shiyan <shc_work@mail.ru>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
-	linux-omap@vger.kernel.org
-Subject: Re: [PATCH 00/18] backlight: Constify lcd_ops
-Message-ID: <20240415125800.GO222427@aspen.lan>
-References: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
+	s=arc-20240116; t=1713185932; c=relaxed/simple;
+	bh=iziCxtBeQUgWvhE++plh/rlR2F6qXEUcQ5jrLIOpDfU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:In-Reply-To:
+	 Content-Type:References; b=Nrnr7TstDWMvIr/VzmSvcn1dJ0FyC4XrBtvhl9Nr3Y7zYQJBk9kYMDA1NdKqX4NcvZ9yy8Ff5BmvCqAG6rxXkFNJltmyy8iKijt7MLebAMh/kbCbXv7zQJatqnrLZecyIACbo8sr4bh+TfL2S6iztt1jRKw/VYgC74tdjJ5ZgVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=U3DZfTt2; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240415125848euoutp02406710cf51cf4a85ea3be87bd67c4f92~GdYZxAVra1053010530euoutp02a
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:58:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240415125848euoutp02406710cf51cf4a85ea3be87bd67c4f92~GdYZxAVra1053010530euoutp02a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1713185928;
+	bh=K7kgIzAF8cwrWU7cZnQZrJq9/UxYfRIxipy6YJIOOnc=;
+	h=Date:From:Subject:To:Cc:In-Reply-To:References:From;
+	b=U3DZfTt2tz636C6PK/TOxc5kdPqHBA+WgNL+c9f7jbLpkfE7TazfaTNa1XDFdbp4K
+	 OoNcBD9ppaVqFVCdTDnNa+PocIQQNt/VohmdBru9TOuKws3EYQ6SPCtNybhXcx7/Ii
+	 uvixRC/CXtAC7SbwwI43vAloRWJGzUYSBTHr2z0Y=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240415125848eucas1p2693e3902c12ef8668751a407d9d9f211~GdYZi7waQ1350713507eucas1p20;
+	Mon, 15 Apr 2024 12:58:48 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+	eusmges2new.samsung.com (EUCPMTA) with SMTP id 83.07.09875.8842D166; Mon, 15
+	Apr 2024 13:58:48 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae~GdYZAlLpo1350813508eucas1p25;
+	Mon, 15 Apr 2024 12:58:47 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240415125847eusmtrp2b598b357b551f9ce09ab776ff9f34d8a~GdYY-6IPH2471724717eusmtrp2U;
+	Mon, 15 Apr 2024 12:58:47 +0000 (GMT)
+X-AuditID: cbfec7f4-11bff70000002693-32-661d2488da1c
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id 89.6F.08810.7842D166; Mon, 15
+	Apr 2024 13:58:47 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240415125846eusmtip1044831a80b43d035463a2940376d5e6d~GdYYUHAow1109911099eusmtip1Q;
+	Mon, 15 Apr 2024 12:58:46 +0000 (GMT)
+Message-ID: <91ac609b-0fae-4856-a2a6-636908d7ad3c@samsung.com>
+Date: Mon, 15 Apr 2024 14:58:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
+User-Agent: Mozilla Thunderbird
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 12/15] tty: serial: switch from circ_buf to kfifo
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>, gregkh@linuxfoundation.org,
+	linux-amlogic@lists.infradead.org, "linux-arm-msm@vger.kernel.org"
+	<linux-arm-msm@vger.kernel.org>
+Cc: linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org, Bjorn
+	Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
+	<khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
+	Blumenstingl <martin.blumenstingl@googlemail.com>
+Content-Language: en-US
+In-Reply-To: <20240405060826.2521-13-jirislaby@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djP87odKrJpBtu2clls67CxaF68ns3i
+	zaMjzBbv5spY/GzfwmTRMXk7i8WC2dwWE/efZbe4vGsOm8WZxb3sFscWnWSxeL/zFqMDj8f7
+	G63sHk8nTGb32LSqk83jzrU9bB77565h99i8pN7j8ya5APYoLpuU1JzMstQifbsErozl3xYz
+	FhxQqtiw6iNrA2OLbBcjB4eEgInEvgmSXYxcHEICKxglXm+9zAjhfGGU6Dv3Csr5zCjR3TGX
+	uYuRE6zjaMNfZojEckaJD8svsEM4Hxklll1tAKviFbCT2P/zGxOIzSKgKvFg8go2iLigxMmZ
+	T1hAbFEBeYn7t2awg9hsAoYSXW+7wGqEBVwlLr15ywYyVERgE6PEzYcvwDYwC5xkkrj7vBGs
+	g1lAXOLWk/lgGzgFrCS+t35jhYjLSzRvnQ11azunxMMeawjbReLm7SNsELawxKvjW9ghbBmJ
+	/ztB5nCB1DNKLPh9H8qZwCjR8PwWI0SVtcSdc7/YQGHGLKApsX6XPkTYUeLmz35WSFDySdx4
+	KwhxA5/EpG3TmSHCvBIdbUIQ1WoSs46vg1t78MIl5gmMSrOQwmUWks9mIflmFsLeBYwsqxjF
+	U0uLc9NTi43yUsv1ihNzi0vz0vWS83M3MQKT2Ol/x7/sYFz+6qPeIUYmDsZDjBIczEoivC3C
+	smlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeVVT5FOFBNITS1KzU1MLUotgskwcnFINTIn/TW/5
+	/DDaavv4asTFHU1BRxweWISkse3w6PTanv4ztNg7duZy1ntlUg9khJIzzj3+Um+Yk5ld0Ci3
+	9whT8fWV3ou4j2jv+ijQrKWRq/ROmfHHj8f3XytIbZ/xuFftru7bXK3p71bxNnz0OpD6Yx3r
+	9NPepTO31f6J6VM/MXWWua3dqf7Jh+/aKisrHOzI/iX47Z2+pXqthkCSv9zKehPjFbVfXaOE
+	fbQcly642sK5WSg4IVEhzqRU/schx4Ifc5O0uROSV7z5ZhWw+mudaATvur/XSh5fM0p/vPvC
+	k+uKceIvlGafa1+kfHvbrnLVCL5/zDv35Jz++jHqzW6uTa5L2sq/ON09fnXXWmOGP0osxRmJ
+	hlrMRcWJADgPeZLRAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsVy+t/xu7rtKrJpBheWK1ts67CxaF68ns3i
+	zaMjzBbv5spY/GzfwmTRMXk7i8WC2dwWE/efZbe4vGsOm8WZxb3sFscWnWSxeL/zFqMDj8f7
+	G63sHk8nTGb32LSqk83jzrU9bB77565h99i8pN7j8ya5APYoPZui/NKSVIWM/OISW6VoQwsj
+	PUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYzl3xYzFhxQqtiw6iNrA2OLbBcjJ4eE
+	gInE0Ya/zF2MXBxCAksZJbZ9m8oMkZCRODmtgRXCFpb4c62LDaLoPaPE0pfbwIp4Bewk9v/8
+	xgRiswioSjyYvIINIi4ocXLmExYQW1RAXuL+rRnsIDabgKFE19susBphAVeJS2/egtkiApuA
+	Nn+JAFnALHCaSWL1xYdgm4UEMiQ2rH0CtoBZQFzi1pP5YDangJXE99ZvrBBxM4murV2MELa8
+	RPPW2cwTGIVmIbljFpL2WUhaZiFpWcDIsopRJLW0ODc9t9hQrzgxt7g0L10vOT93EyMwarcd
+	+7l5B+O8Vx/1DjEycTAeYpTgYFYS4W0Rlk0T4k1JrKxKLcqPLyrNSS0+xGgKDIyJzFKiyfnA
+	tJFXEm9oZmBqaGJmaWBqaWasJM7rWdCRKCSQnliSmp2aWpBaBNPHxMEp1cB0hMGP+ZL/w18K
+	+zrbqtRvJdlZC3688KT3cF6w8nzJJjWBrGXretofr7quLegUNmMeU7fM7TvaZw1rd67i0O70
+	e8Uw+Y9l9QSP9+zPzfWNJ6+RYog8EcwhcMFblMeh2n21hpjpjDli4Ut15KpPnb//c64Ok17W
+	PvsXNY2Bu5SKbiqapHSvyJX3/5Uad0rrCntR9udk4f7pjH+j8jM2JuRdZ2x7xlcv5+C9dfak
+	KwJv2eykvji8VfPb5qY042mSatjmGu5bxceePpUWdphxylz6juqS03rz0necFf7s1X5/2tNc
+	S/1j2VLGSscY/jKUTUx3X3UuVb387Ju/HD63T+hsi1ylI6XG67D5robxCiWW4oxEQy3mouJE
+	AEHZq4VjAwAA
+X-CMS-MailID: 20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae
+References: <20240405060826.2521-1-jirislaby@kernel.org>
+	<20240405060826.2521-13-jirislaby@kernel.org>
+	<CGME20240415125847eucas1p2bc180c35f40f9c490c713679871af9ae@eucas1p2.samsung.com>
 
-On Sun, Apr 14, 2024 at 06:35:58PM +0200, Krzysztof Kozlowski wrote:
-> Hi,
+Dear All,
+
+On 05.04.2024 08:08, Jiri Slaby (SUSE) wrote:
+> Switch from struct circ_buf to proper kfifo. kfifo provides much better
+> API, esp. when wrap-around of the buffer needs to be taken into account.
+> Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for example.
 >
-> Dependencies
-> ============
-> All further patches depend on the first patch.  Therefore everything
-> could go via backlight tree (please ack) or via cross-tree pulls. Or
-> whatever maintainer choose, just coordinate this with backlight.
-
-Thanks for the tidy up.
-
-I've added my Reviewed-by: to all the backlight patches (for Lee) and
-I'm happy with the other patches too... but I didn't want my R-b on the
-HID and fbdev patches to be confused for an ack.
-
-
-Daniel.
-
-
-> ---
-> Krzysztof Kozlowski (18):
->       backlight: Constify lcd_ops
->       backlight: ams369fg06: Constify lcd_ops
->       backlight: corgi_lcd: Constify lcd_ops
->       backlight: hx8357: Constify lcd_ops
->       backlight: ili922x: Constify lcd_ops
->       backlight: ili9320: Constify lcd_ops
->       backlight: jornada720_lcd: Constify lcd_ops
->       backlight: l4f00242t03: Constify lcd_ops
->       backlight: lms283gf05: Constify lcd_ops
->       backlight: lms501kf03: Constify lcd_ops
->       backlight: ltv350qv: Constify lcd_ops
->       backlight: otm3225a: Constify lcd_ops
->       backlight: platform_lcd: Constify lcd_ops
->       backlight: tdo24m: Constify lcd_ops
->       HID: picoLCD: Constify lcd_ops
->       fbdev: clps711x: Constify lcd_ops
->       fbdev: imx: Constify lcd_ops
->       fbdev: omap: lcd_ams_delta: Constify lcd_ops
+> Kfifo API can also fill in scatter-gather DMA structures, so it easier
+> for that use case too. Look at lpuart_dma_tx() for example. Note that
+> not all drivers can be converted to that (like atmel_serial), they
+> handle DMA specially.
 >
->  drivers/hid/hid-picolcd_lcd.c            | 2 +-
->  drivers/video/backlight/ams369fg06.c     | 2 +-
->  drivers/video/backlight/corgi_lcd.c      | 2 +-
->  drivers/video/backlight/hx8357.c         | 2 +-
->  drivers/video/backlight/ili922x.c        | 2 +-
->  drivers/video/backlight/ili9320.c        | 2 +-
->  drivers/video/backlight/jornada720_lcd.c | 2 +-
->  drivers/video/backlight/l4f00242t03.c    | 2 +-
->  drivers/video/backlight/lcd.c            | 4 ++--
->  drivers/video/backlight/lms283gf05.c     | 2 +-
->  drivers/video/backlight/lms501kf03.c     | 2 +-
->  drivers/video/backlight/ltv350qv.c       | 2 +-
->  drivers/video/backlight/otm3225a.c       | 2 +-
->  drivers/video/backlight/platform_lcd.c   | 2 +-
->  drivers/video/backlight/tdo24m.c         | 2 +-
->  drivers/video/fbdev/clps711x-fb.c        | 2 +-
->  drivers/video/fbdev/imxfb.c              | 2 +-
->  drivers/video/fbdev/omap/lcd_ams_delta.c | 2 +-
->  include/linux/lcd.h                      | 6 +++---
->  19 files changed, 22 insertions(+), 22 deletions(-)
-> ---
-> base-commit: 9ed46da14b9b9b2ad4edb3b0c545b6dbe5c00d39
-> change-id: 20240414-video-backlight-lcd-ops-276d8439ffb8
+> Note that usb-serial uses kfifo for TX for ages.
 >
-> Best regards,
-> --
-> Krzysztof Kozlowski <krzk@kernel.org>
+> omap needed a bit more care as it needs to put a char into FIFO to start
+> the DMA transfer when OMAP_DMA_TX_KICK is set. In that case, we have to
+> do kfifo_dma_out_prepare twice: once to find out the tx_size (to find
+> out if it is worths to do DMA at all -- size >= 4), the second time for
+> the actual transfer.
 >
+> All traces of circ_buf are removed from serial_core.h (and its struct
+> uart_state).
+>
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> ...
+
+This patch landed in linux-next as commit 1788cf6a91d9 ("tty: serial: 
+switch from circ_buf to kfifo"). Unfortunately it breaks UART operation 
+on thr Amlogic Meson based boards (drivers/tty/serial/meson_uart.c 
+driver) and Qualcomm RB5 board (drivers/tty/serial/qcom_geni_serial.c). 
+Once the init process is started, a complete garbage is printed to the 
+serial console. Here is an example how it looks:
+
+[    8.763154] Run /sbin/init as init process
+NT [   12.429776] platform cpufreq-dt: deferred probe pending: (reason 
+unknown)
+[   12.434259] platform regulator-vddcpu: deferred probe pending: 
+pwm-regulator: Failed to get PWM
+[[6if;9]Uigmkfl-tl ocretbo nrnee .[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[2l[1[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+[.. yteiigteiiilhtlgeet dvcs..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+[.. yteiigteiiilhtlgeet dvcs..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+[.. yteiigteiiilhtlgeet dvcs..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+[.. yteiigteiiilhtlgeet dvcs..[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+[.. yteiigteiiilhtlgeet dvcs..[  105.613420] debugfs: Directory 
+'ff800280.cec' with parent 'regmap' already present!
+[[6if;9]Uigmkfl-tl ocretbo nrnee .
+[.. trightlgeet ipthr ytm-dv5c7[Gmo [94m8[2h[0.
+.]Snhszn h nta opu vns(usses..[2l[11[[2 k;9?5[  105.638809] mc: Linux 
+media interface: v0.10
+[.. atn o dvt eflyppltd.[  105.707390] meson-vrtc ff8000a8.rtc: 
+registered as rtc0
+
+
+I found this patch by bisecting today's linux-next. I've checked the 
+changes in the related UART drivers and I don't see any obvious issues 
+though. Let me know if I can help debugging this issue somehow.
+
+I've trimmed recipient list due to my smtp server limitation.
+
+
+Best regards
+
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
 
