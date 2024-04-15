@@ -1,177 +1,119 @@
-Return-Path: <linux-kernel+bounces-145824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D9438A5B67
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DBD58A5B6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:50:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10221C20E92
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:49:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD50D1C20A26
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17D815991E;
-	Mon, 15 Apr 2024 19:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642BE15A4B1;
+	Mon, 15 Apr 2024 19:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bLS/tGNy"
-Received: from mail-io1-f74.google.com (mail-io1-f74.google.com [209.85.166.74])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIQEanwn"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDB1156979
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:40:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADF8158DDD;
+	Mon, 15 Apr 2024 19:40:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713210029; cv=none; b=GnD7dD0FX7PRz8e3fLBhjrZyjCn6av6Pz6tZX/ShiuwFPCWYxzEO+cP90wK1QMddVIEHpPRpehkdiP0vpxNtIDTBfrfEqm+R4l62KpRko+NtvPR93b4AFdkWNlp2s8GAdulecRLcfupPsAEvEDeVqPbMuCdkMT1yapwlVru4e98=
+	t=1713210041; cv=none; b=IewseuL4f4hOhEc6CyU6f8qC1M+iy95scE7V/q43i9pNNwHsm8jAqmVYasKXBSA/aWhCP3v6MUlBMn+RsJouFHxm6L8rxO+3ZJKDj2FjTvBuqWxthqjNWeYnrNwKspDzhTxTeKIOWHo5qpAxe1NlwDUG8Jgt8jU86fgcnh2M1YQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713210029; c=relaxed/simple;
-	bh=HnQrke53HbieJQg1K+HmxDC5DcgHzycPVXayX92Uel0=;
-	h=Date:In-Reply-To:Mime-Version:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=BO3Wbr3GKCoiuaUZ0Y7Ph1iD7xA4RbYV4auFHdKm4BxnyHJWxGAS7EghAOpW9DBF44jP8P65b7KnWHqEqnnIYj37ECM+ERWGmxaL00bGMchU5kuMEKQ9ZoLuzSQbcKi9RuQewoN4WKuUCLhTO/JxatI/DONTeno3eE6Nh44hVlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bLS/tGNy; arc=none smtp.client-ip=209.85.166.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com
-Received: by mail-io1-f74.google.com with SMTP id ca18e2360f4ac-7d5e2b1cfabso385066139f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:40:26 -0700 (PDT)
+	s=arc-20240116; t=1713210041; c=relaxed/simple;
+	bh=6Ttx8LXV+Esj2TgrBQzSuZueSQvIpovS42b8zl0f2oU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hKdzL+0fCf3fkpNU6a22g6X3Ge1qduG+seT5jt2wTgTpcpuxNpVwepKpvhK0YNmRK41C4g188ouWPp5dXMwnV6E+PzUx1IFiWPjQ0aSCLWVE/frkP/38zexEm20IhiZzNvtcT911obFPh4ZW97bNSzudiOZxLKBac2kS116gnv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BIQEanwn; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so3115473a12.1;
+        Mon, 15 Apr 2024 12:40:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713210026; x=1713814826; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=taYfEAMhWxZKhDVEpiZhlMgSXjBrsWj8geaLNIGWoBE=;
-        b=bLS/tGNySaiyrIyV7Ze0eNjuUOx5/KpUk4xcIxQgTNZkaZ6mQwsXLlD8eCVdZTd/K5
-         1zURDk2OGz+Bpv/xYUV00LhUDp8DWvF6Wo3P/dt5E6ktAQaLScHF6iRXZ/4VHPtQOurh
-         Yu83Cbk5q8HMgjJeVMrr+/vD0f+P8YrM5O7PRdDNs1zLYV+7F5kZrQNUAZ5MT/XsYapG
-         uOqbEXH6lXqSPuB4OieEaWoXcCl/b/MtRlyWLd+GJb5HBXjvCKMLA62tnw6oj9fKbV6i
-         WR1aYTHmLTo9jG9guV/aMPGZwYauhD72iG96dwIc/7s9V7lQXgquL2EUo7JlcQ3ex1zV
-         rMfg==
+        d=gmail.com; s=20230601; t=1713210040; x=1713814840; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nECW4dFQOyypWbzxFUAI8T3e9FduAl7Mv8A1PasfnEo=;
+        b=BIQEanwnivN5ovghwTHhvUaShv//9WVs8uTpZIB6B0CtCh9MgJ25xfYnjVJt6YnPsT
+         6qT7eOXFQcSu26x2t+/fVOyXQw1hG5f9fy6xc+lU6y6k4F+b7O2BV2PVXkQEVoWt5blL
+         +p5HYlEYnQ1GuUEqd0E073t8ynrKTSTFu4/pNtTTIGODrmm/Pa3Q0Xta8GEPpHa5pkpy
+         BydP+F0qbC7VGTNU6DiLHGy1y6UvwebPwDbI8ss9P65lHaxlNkwOFflIB8mUjlxsPy9L
+         jZPHJz04255DW9ID95fdBty/VI4PQoMqpv2yOZwoFLaZjpyMJ31DrqRHOi3ZUTiVoyAk
+         X0SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713210026; x=1713814826;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=taYfEAMhWxZKhDVEpiZhlMgSXjBrsWj8geaLNIGWoBE=;
-        b=oFlWHJ3zuXl+xZWJRqYyPuINjRP+y5pKk+q5psGNwaM2syQJcEBQhOME58NqbcQgIO
-         Uq6OArlQ2CqI30jUjVivzcfm3GpnPj4zGCTXoMoJmsTYWqYCN0MD8MKBgikSqfO7Orwb
-         6Jf0BeSOgtavDkS7NwpWu1s0xhVPoNDKrwGP579M6NCInHGhH7gvAnhzNexCPDiiokIq
-         s/PuFDjpFx/CWdd4HyYpTJe5p/WzHYCvSXD3uMmApMNQLJ3iz3Anlu4BLb9SqxRnQ5nK
-         qNXBJwMMt28a4Y3ok/DMqlnQA0TB+Etal9l2kDDfsBH1kSQpHyBOsRIaFuzuyZFyk7g5
-         tBVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKyEYx35KBqKqKI71AORMvVPQ81Qz4PcCjudpGIWXluKLTan1Mmkebx+k17MB1BYl/v89o1BBWYDhu/t4j6/qPbBJByonaamly5RvR
-X-Gm-Message-State: AOJu0Yx7KPt2aghEvAH5EBT+WO/QKnAteUW/t2IfnFKjvQjut6fuaOtW
-	sHlVTJUj1PXOAZvKh9vyMOTbUHGl0NhQ4BkkENNwKAjVPH5mEbI9ZR5kgr+Tb1t0BSiI58Bv8m0
-	P0Aaz8FoUnPEr+m1xeseosA==
-X-Google-Smtp-Source: AGHT+IGUqapQXFj2hPWnTQ4fKWHkr8XUX4Eacrb1Di5Og6Xvq8008PLajdkB1V4vRSdttFUHw7IRCbM2YDH38IdHzw==
-X-Received: from coltonlewis-kvm.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:14ce])
- (user=coltonlewis job=sendgmr) by 2002:a05:6638:34ab:b0:482:fc24:b74c with
- SMTP id t43-20020a05663834ab00b00482fc24b74cmr472110jal.0.1713210026131; Mon,
- 15 Apr 2024 12:40:26 -0700 (PDT)
-Date: Mon, 15 Apr 2024 19:40:24 +0000
-In-Reply-To: <86sezss5cm.wl-maz@kernel.org> (message from Marc Zyngier on Thu,
- 11 Apr 2024 08:53:13 +0100)
+        d=1e100.net; s=20230601; t=1713210040; x=1713814840;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nECW4dFQOyypWbzxFUAI8T3e9FduAl7Mv8A1PasfnEo=;
+        b=v4hG5REiQ2jaFZfy6c+eAOicHIRG3YDsp7KY1hIiH0nBkmOev24qQweOXNPJE0em9J
+         Z/lwDwiqncyKYjbOD+j8UKi0T4mMBhIld33/pahz8gNfSDOnS68eTA3U2V0Yo+KLoqye
+         WeXMGP92uACkjrtN07QrEXpRB0a+P4N4CuwiO+XIh9cp3kpMmV11h0qdMJWWZ4nIKDY/
+         E2tDnnwWm3r8dNxaCVZoioXRITbonqcrdgLrEJw4UDt8uoooKw5nmeNBL5KhHwXTuEzZ
+         IT1Qw0psG9hCp2sn+1/BExmzgLiKS/LA9pSdILDXdQdAzcvOv2ZGFhQ5ySRUbABVLRi+
+         1Zgw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlXubv2AxDMU3tsCID50Y7VOny7o5zkQqt8aY6TFbR0kA2fBGgt/b4VKTKxQJdDC72LewzK31zb2WDwkcmq8i3Vwi6CluojEsgs20+pR/vfygiszLOj9SJuE/XYncyKm33XT7aUKaxVvnATygj8GfAM67H4yGmg7xOsI2qqt64aPfvJh4ubJV05Epg7rqm
+X-Gm-Message-State: AOJu0YwIHEBZnT0oqAEZmcJ0tyUSqGRRqsbTH3cmWfv8+hI7pEBh1F9e
+	LKxhzv2SgKbih48nZ6/8iqDi0YGBq3IFFPkeohwC2nqdVPBr4wJO
+X-Google-Smtp-Source: AGHT+IHabfXmkdzNGpRUvJgw4CTICvVnL2aJzRBUWETYyo+U0ii4Iu4bvX10MY+jIFKKbTYhWmnTYA==
+X-Received: by 2002:a17:90a:f2ce:b0:2a2:e183:6306 with SMTP id gt14-20020a17090af2ce00b002a2e1836306mr9727764pjb.45.1713210039626;
+        Mon, 15 Apr 2024 12:40:39 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:fbbe:421b:9296:f28c])
+        by smtp.gmail.com with ESMTPSA id j1-20020a17090a588100b002a058af5e12sm9083064pji.12.2024.04.15.12.40.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 12:40:39 -0700 (PDT)
+Date: Mon, 15 Apr 2024 12:40:36 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Mark Pearson <mpearson-lenovo@squebb.ca>
+Cc: Peter Hutterer <peter.hutterer@redhat.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
+	ibm-acpi-devel@lists.sourceforge.net,
+	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Nitin Joshi1 <njoshi1@lenovo.com>,
+	Vishnu Sankar <vsankar@lenovo.com>
+Subject: Re: [PATCH 1/4] Input: Add trackpoint doubletap and system debug
+ info keycodes
+Message-ID: <Zh2CtKy1NfKfojzS@google.com>
+References: <mpearson-lenovo@squebb.ca>
+ <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
+ <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
+ <ZhR-WPx7dgKxziMb@google.com>
+ <f3342c0b-fb31-4323-aede-7fb02192cf44@redhat.com>
+ <ZhW3Wbn4YSGFBgfS@google.com>
+ <ZhXpZe1Gm5e4xP6r@google.com>
+ <92ee5cb2-565e-413c-b968-81393a9211c4@app.fastmail.com>
+ <ZhcogDESvZmUPEEf@google.com>
+ <91593303-4a6a-49c9-87a0-bb6f72f512a1@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-ID: <gsnth6g2qus7.fsf@coltonlewis-kvm.c.googlers.com>
-Subject: Re: [PATCH v3] KVM: arm64: Add early_param to control WFx trapping
-From: Colton Lewis <coltonlewis@google.com>
-To: Marc Zyngier <maz@kernel.org>
-Cc: kvm@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, 
-	suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, 
-	will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <91593303-4a6a-49c9-87a0-bb6f72f512a1@app.fastmail.com>
 
-Thanks for the review Marc.
+On Wed, Apr 10, 2024 at 10:48:10PM -0400, Mark Pearson wrote:
+> 
+> I have a stronger preference to keep the KEY_DOUBLECLICK - that one seems less controversial as a genuine new input event.
 
-Marc Zyngier <maz@kernel.org> writes:
+Please see my response to Peter's letter. I think it very much depends
+on how it will be used (associated with the pointer or standalone as it
+is now).
 
-> On Wed, 10 Apr 2024 18:54:37 +0100,
-> Colton Lewis <coltonlewis@google.com> wrote:
->> +
->> +enum kvm_interrupt_passthrough {
->> +	KVM_INTERRUPT_PASSTHROUGH_DEFAULT,
->> +	KVM_INTERRUPT_PASSTHROUGH_ALWAYS,
->> +	KVM_INTERRUPT_PASSTHROUGH_NEVER,
+For standalone application, recalling your statement that on Win you
+have this gesture invoke configuration utility I would argue for
+KEY_CONFIG for it.
 
-> What does this mean? This is not dealing with interrupts, this is
-> supposed to deal with the behaviour of specific instructions
-> (WFI/WFE). The notion of "passthrough" is really odd as well. Finally,
-> both ALWAYS and NEVER are wrong -- the architecture makes no such
-> guarantee.
+Thanks.
 
-Looking at this, I did let the language get away from me by mixing up
-interrupts and the instructions dealing with them.
-
-"Passthrough" is not a technical term but has pervaded some of my
-internal conversations about this and I've just been using it to mean
-the opposite of trapping. That can be easily swapped.
-
-I understand always and never are not what the architecture guarantees,
-but was trying to capture what KVM code is attempting to do. I could
-just drop it entirely.
-
-So the enum values could be named something like:
-
-KVM_WFX_TRAP
-KVM_WFX_NOTRAP
-KVM_WFX_NOTRAP_SINGLE_TASK (default option)
-
->> -	if (single_task_running())
->> +	if ((kvm_interrupt_passthrough == KVM_INTERRUPT_PASSTHROUGH_ALWAYS
->> +	     && kvm_vgic_global_state.has_gicv4) ||
->> +	    (kvm_interrupt_passthrough == KVM_INTERRUPT_PASSTHROUGH_DEFAULT
->> +	     && single_task_running()))
-
-> Why is this affecting both WFI and WFE? They are very different and
-> lumping them together makes little sense.
-
-It's true they are different, but I couldn't think of any cases where
-you would want trapping for one to be different than for the other. The
-current behavior also assumes trapping should be the same for both.
-
-Are you suggesting separate controls for the two?
-
->> @@ -2654,6 +2658,30 @@ static int __init early_kvm_mode_cfg(char *arg)
->>   }
->>   early_param("kvm-arm.mode", early_kvm_mode_cfg);
-
->> +static int __init early_kvm_interrupt_passthrough_cfg(char *arg)
->> +{
->> +	if (!arg)
->> +		return -EINVAL;
->> +
->> +	if (strcmp(arg, "always") == 0) {
->> +		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_ALWAYS;
->> +		return 0;
->> +	}
->> +
->> +	if (strcmp(arg, "never") == 0) {
->> +		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_NEVER;
->> +		return 0;
->> +	}
->> +
->> +	if (strcmp(arg, "default") == 0) {
->> +		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_DEFAULT;
->> +		return 0;
->> +	}
->> +
->> +	return -EINVAL;
->> +}
->> +early_param("kvm-arm.interrupt-passthrough",  
->> early_kvm_interrupt_passthrough_cfg);
->> +
-
-> Again, this is not dealing with interrupts. This is dealing with the
-> *potential* trapping of instructions in certain circumstances.
-
-Understood. Should be something like "kvm-arm.wfx-instruction-trapping".
-
->>   enum kvm_mode kvm_get_mode(void)
->>   {
->>   	return kvm_mode;
-
-> Finally, this needs to be documented.
-
-Right, in Documentation/admin-guide/kernel-parameters.txt
+-- 
+Dmitry
 
