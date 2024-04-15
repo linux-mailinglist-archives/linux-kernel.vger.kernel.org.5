@@ -1,267 +1,392 @@
-Return-Path: <linux-kernel+bounces-145017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FCE28A4E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:58:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF12B8A4E3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:58:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C17511F21A0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:58:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11FFD282229
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0E6664B7;
-	Mon, 15 Apr 2024 11:57:57 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5F86A031;
+	Mon, 15 Apr 2024 11:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b="UwHe80wt";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gnoonKqZ"
+Received: from flow4-smtp.messagingengine.com (flow4-smtp.messagingengine.com [103.168.172.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB6D66B50;
-	Mon, 15 Apr 2024 11:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F3AC66B50;
+	Mon, 15 Apr 2024 11:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713182276; cv=none; b=q6dSQy6WheR5guPc4Tu1w5oq6OCSTbjA6gQQftecF3SIHqAv3qLQWrsO/ULWPXKhBbS+rDcJyDSq1VP2ypJpUCAKTQ5Ybi2ZjLSyXBu89SBy98G51T1xrj2ivdD5EVj7A/eLe/wTbazc5kt+uoBrGBoTWP/0VZxqPaTwWhenAlA=
+	t=1713182283; cv=none; b=CbC+iNtvWZang7VERENXXRhYbhqZZvpKuzPfwk8M74kEbIbr+/YjnTz2rr4sOar6iJzj97IfJpLvsko0Vi95Ml9gD2GTDVm+naMDOr+OavouJqhkPWlqu0cBzLHw9ibqiyWS9JENmXyalndw+NJkSW8yExklGeFPf+Q1gMebiLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713182276; c=relaxed/simple;
-	bh=PNLuukF0Yp/9iaVTkZtZJkldxbjTYu/S2BxHnxSKgpc=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ff+hVvpU0q0uhOfjCIfW63uRXn6H0bk7tw9hdQfoWLbtGi179deYvqTOwLrKgg6ELHGlkfPzv2YwCZVaHqO+44r36j0eWA8UYDf8prpR6zV/bss/QeoFiisBK/R4Qcov6QkHQx3DYuVstzTzVoxAy692GURw4/4z5rG8LMA87tQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VJ5Gl2C5Qz6K6TF;
-	Mon, 15 Apr 2024 19:55:59 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id BAD821409EA;
-	Mon, 15 Apr 2024 19:57:52 +0800 (CST)
-Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 15 Apr
- 2024 12:57:52 +0100
-Date: Mon, 15 Apr 2024 12:57:50 +0100
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-CC: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Miguel Luis
-	<miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
-	<salil.mehta@huawei.com>, "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-	<linuxarm@huawei.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
-Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from
- acpi_processor_get_info()
-Message-ID: <20240415125750.000026af@huawei.com>
-In-Reply-To: <20240415101637.00007e49@huawei.com>
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
-	<20240412143719.11398-4-Jonathan.Cameron@huawei.com>
-	<CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
-	<ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk>
-	<87bk6ez4hj.ffs@tglx>
-	<ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
-	<878r1iyxkr.ffs@tglx>
-	<20240415094552.000008d7@Huawei.com>
-	<20240415101637.00007e49@huawei.com>
-Organization: Huawei Technologies R&D (UK) Ltd.
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
+	s=arc-20240116; t=1713182283; c=relaxed/simple;
+	bh=js2YN1Qo629boZLbSY3aVwQVI34D4FtKkj4pbWAjcWE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZCPc5GlYjKe9ZjLiSrqCW1/RkKFQ4g6UukPWed9GTPU22x6Uupp1hmjUVVz1fZSikXEBxffu77uXBB9ZGvves+AzDOnpaBz7L3TqosfYDErgCrLxAZuM1VmS/jM3ezzVN6kMVTO7MwxRTfqIVf5H34n+rQFyP2fHoEeI9yCjZLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se; spf=pass smtp.mailfrom=ragnatech.se; dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b=UwHe80wt; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gnoonKqZ; arc=none smtp.client-ip=103.168.172.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ragnatech.se
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailflow.nyi.internal (Postfix) with ESMTP id 14D9A200308;
+	Mon, 15 Apr 2024 07:57:59 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 15 Apr 2024 07:57:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ragnatech.se; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1713182279;
+	 x=1713185879; bh=fpeIFJt/e4VgY821sioo/9oXpbmdWuQxmoFZkYNqrJ0=; b=
+	UwHe80wt/CyBz6Ucar+bkTjPWe/Hb7Q/V52aR5SA7vMjC5LhXO1kCjl3B/sX5ecR
+	dAAF6MXDrMAeIaF9ippombXh6e89ZjdW9mWtixPuLGMVKuu4erq5X2OZoxEUlU2w
+	+ZrodEh3vgxd3O0ylgp2bkTtRTkYtJDm27TCbAydYpneHK5IadfztxP48r8H0mpg
+	ugZsJslR0fcjSMdbfYxR/U2hFY+ZzxLW35RGzPqe17rTR20DJJA6MbipSDuF1c3/
+	LcU9sDHhi7QPMyVNdZx8P5L5cIc5KLDaxvr+F5znoPapX4i+A3OymGhNkwh/L5Od
+	6E9c9cJRABS1fyNk4qZPTA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1713182279; x=
+	1713185879; bh=fpeIFJt/e4VgY821sioo/9oXpbmdWuQxmoFZkYNqrJ0=; b=g
+	noonKqZaIiFD+XfFjRy7dRmvZSGftzGjobKv/4JhYDt4lh3Lxlviu9NphBCNXe/j
+	10Xn6MrHNO9UIZ9lSUxX4wwDJsd2glIqQ+uU7BqbYJY/4lIEtdDcMYg5YnSbdpbL
+	Lzk1rw9ZyCCgQ7RU96ap48nEUzJU9951aAnGUocOgnNFYgJznwDZNdWfg9DDYOGn
+	4lr0Y0DOxj6umoq3cYiFX46YbsgKxVFdZCV6oxpUyKXoW8mq+HCR9M9Vf/TLhLnu
+	Z653l4fHMaru50akucIU8yIaBEMSPhYGxCYHyRof7qgyo6Did9NGgLGR7aOQUn3j
+	qgBZXi1XJeuuWpmdVgIvA==
+X-ME-Sender: <xms:RhYdZtvONupHr1X1EOMrW7RExqNYHceLYlIosk332v65--JpKiBkjQ>
+    <xme:RhYdZmfxCNuiMTecc4xdZ-qU0im8hpOJq66mMP3R5miS9kUKx-jO0hzt1G1VNlKdR
+    wY0IxWkT64tliNPdBY>
+X-ME-Received: <xmr:RhYdZgyrBSCXBxWSApbHbq6DDvknMtTJYB9ZNWI2xMk8m216tfS-yXaEBSyMSe4-7a66zZw1ndNfB11iVzumLGI3TRI9P3c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejvddggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefpihhk
+    lhgrshcuufpnuggvrhhluhhnugcuoehnihhklhgrshdrshhouggvrhhluhhnugdorhgvnh
+    gvshgrshesrhgrghhnrghtvggthhdrshgvqeenucggtffrrghtthgvrhhnpeefhfellefh
+    ffejgfefudfggeejlefhveehieekhfeulefgtdefueehffdtvdelieenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnihhklhgrshdrshhouggv
+    rhhluhhnugdorhgvnhgvshgrshesrhgrghhnrghtvggthhdrshgv
+X-ME-Proxy: <xmx:RhYdZkMIChbwxyeUCuI9GQf9KJE-Nq_jNwmkyOnAhCLiopfsAapZKA>
+    <xmx:RhYdZt96uVkVfrs-uHNthCJu-T0hguyQH1nIKchP8kZ2unmrpfXPKw>
+    <xmx:RhYdZkVH2AC3KG0gKCD5EGiMT06_nNDdILfRM2JLCtcy8A44HjEqbQ>
+    <xmx:RhYdZufnV6jpMK8lKr0zXWWJ94gOu_BfCAVRZiBkVLD4UnQNV14D7A>
+    <xmx:RhYdZmOjPaS_n-Mo8MF0qnBZjGsMToND_YRHNFu2ueQIqmkiHLXCZAhF>
+Feedback-ID: i80c9496c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Apr 2024 07:57:57 -0400 (EDT)
+Date: Mon, 15 Apr 2024 13:57:55 +0200
+From: Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>
+To: Paul Barker <paul.barker.ct@bp.renesas.com>
+Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC v3 3/7] net: ravb: Refactor RX ring refill
+Message-ID: <20240415115755.GH3156415@ragnatech.se>
+References: <20240415094804.8016-1-paul.barker.ct@bp.renesas.com>
+ <20240415094804.8016-4-paul.barker.ct@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240415094804.8016-4-paul.barker.ct@bp.renesas.com>
 
-On Mon, 15 Apr 2024 10:16:37 +0100
-Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
+Hi Paul,
 
-> On Mon, 15 Apr 2024 09:45:52 +0100
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+Thanks for your work, I really like this deduplication of code!
+
+On 2024-04-15 10:48:00 +0100, Paul Barker wrote:
+> To reduce code duplication, we add a new RX ring refill function which
+> can handle both the initial RX ring population (which was split between
+> ravb_ring_init() and ravb_ring_format()) and the RX ring refill after
+> polling (in ravb_rx()).
 > 
-> > On Sat, 13 Apr 2024 01:23:48 +0200
-> > Thomas Gleixner <tglx@linutronix.de> wrote:
-> >   
-> > > Russell!
-> > > 
-> > > On Fri, Apr 12 2024 at 22:52, Russell King (Oracle) wrote:    
-> > > > On Fri, Apr 12, 2024 at 10:54:32PM +0200, Thomas Gleixner wrote:      
-> > > >> > As for the cpu locking, I couldn't find anything in arch_register_cpu()
-> > > >> > that depends on the cpu_maps_update stuff nor needs the cpus_write_lock
-> > > >> > being taken - so I've no idea why the "make_present" case takes these
-> > > >> > locks.      
-> > > >> 
-> > > >> Anything which updates a CPU mask, e.g. cpu_present_mask, after early
-> > > >> boot must hold the appropriate write locks. Otherwise it would be
-> > > >> possible to online a CPU which just got marked present, but the
-> > > >> registration has not completed yet.      
-> > > >
-> > > > Yes. As far as I've been able to determine, arch_register_cpu()
-> > > > doesn't manipulate any of the CPU masks. All it seems to be doing
-> > > > is initialising the struct cpu, registering the embedded struct
-> > > > device, and setting up the sysfs links to its NUMA node.
-> > > >
-> > > > There is nothing obvious in there which manipulates any CPU masks, and
-> > > > this is rather my fundamental point when I said "I couldn't find
-> > > > anything in arch_register_cpu() that depends on ...".
-> > > >
-> > > > If there is something, then comments in the code would be a useful aid
-> > > > because it's highly non-obvious where such a manipulation is located,
-> > > > and hence why the locks are necessary.      
-> > > 
-> > > acpi_processor_hotadd_init()
-> > > ...
-> > >          acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
-> > > 
-> > > That ends up in fiddling with cpu_present_mask.
-> > > 
-> > > I grant you that arch_register_cpu() is not, but it might rely on the
-> > > external locking too. I could not be bothered to figure that out.
-> > >     
-> > > >> Define "real hotplug" :)
-> > > >> 
-> > > >> Real physical hotplug does not really exist. That's at least true for
-> > > >> x86, where the physical hotplug support was chased for a while, but
-> > > >> never ended up in production.
-> > > >> 
-> > > >> Though virtualization happily jumped on it to hot add/remove CPUs
-> > > >> to/from a guest.
-> > > >> 
-> > > >> There are limitations to this and we learned it the hard way on X86. At
-> > > >> the end we came up with the following restrictions:
-> > > >> 
-> > > >>     1) All possible CPUs have to be advertised at boot time via firmware
-> > > >>        (ACPI/DT/whatever) independent of them being present at boot time
-> > > >>        or not.
-> > > >> 
-> > > >>        That guarantees proper sizing and ensures that associations
-> > > >>        between hardware entities and software representations and the
-> > > >>        resulting topology are stable for the lifetime of a system.
-> > > >> 
-> > > >>        It is really required to know the full topology of the system at
-> > > >>        boot time especially with hybrid CPUs where some of the cores
-> > > >>        have hyperthreading and the others do not.
-> > > >> 
-> > > >> 
-> > > >>     2) Hot add can only mark an already registered (possible) CPU
-> > > >>        present. Adding non-registered CPUs after boot is not possible.
-> > > >> 
-> > > >>        The CPU must have been registered in #1 already to ensure that
-> > > >>        the system topology does not suddenly change in an incompatible
-> > > >>        way at run-time.
-> > > >> 
-> > > >> The same restriction would apply to real physical hotplug. I don't think
-> > > >> that's any different for ARM64 or any other architecture.      
-> > > >
-> > > > This makes me wonder whether the Arm64 has been barking up the wrong
-> > > > tree then, and whether the whole "present" vs "enabled" thing comes
-> > > > from a misunderstanding as far as a CPU goes.
-> > > >
-> > > > However, there is a big difference between the two. On x86, a processor
-> > > > is just a processor. On Arm64, a "processor" is a slice of the system
-> > > > (includes the interrupt controller, PMUs etc) and we must enumerate
-> > > > those even when the processor itself is not enabled. This is the whole
-> > > > reason there's a difference between "present" and "enabled" and why
-> > > > there's a difference between x86 cpu hotplug and arm64 cpu hotplug.
-> > > > The processor never actually goes away in arm64, it's just prevented
-> > > > from being used.      
-> > > 
-> > > It's the same on X86 at least in the physical world.    
-> > 
-> > There were public calls on this via the Linaro Open Discussions group,
-> > so I can talk a little about how we ended up here.  Note that (in my
-> > opinion) there is zero chance of this changing - it took us well over
-> > a year to get to this conclusion.  So if we ever want ARM vCPU HP
-> > we need to work within these constraints. 
-> > 
-> > The ARM architecture folk (the ones defining the ARM ARM, relevant ACPI
-> > specs etc, not the kernel maintainers) are determined that they want
-> > to retain the option to do real physical CPU hotplug in the future
-> > with all the necessary work around dynamic interrupt controller
-> > initialization, debug and many other messy corners.
-> > 
-> > Thus anything defined had to be structured in a way that was 'different'
-> > from that.
-> > 
-> > I don't mind the proposed flattening of the 2 paths if the ARM kernel
-> > maintainers are fine with it but it will remove the distinctions and
-> > we will need to be very careful with the CPU masks - we can't handle
-> > them the same as x86 does.
-> > 
-> > I'll get on with doing that, but do need input from Will / Catalin / James.
-> > There are some quirks that need calling out as it's not quite a simple
-> > as it appears from a high level.
-> > 
-> > Another part of that long discussion established that there is userspace
-> > (Android IIRC) in which the CPU present mask must include all CPUs
-> > at boot. To change that would be userspace ABI breakage so we can't
-> > do that.  Hence the dance around adding yet another mask to allow the
-> > OS to understand which CPUs are 'present' but not possible to online.
-> > 
-> > Flattening the two paths removes any distinction between calls that
-> > are for real hotplug and those that are for this online capable path.
-> > As a side note, the indicating bit for these flows is defined in ACPI
-> > for x86 from ACPI 6.3 as a flag in Processor Local APIC
-> > (the ARM64 definition is a cut and paste of that text).  So someone
-> > is interested in this distinction on x86. I can't say who but if
-> > you have a mantis account you can easily follow the history and it
-> > might be instructive to not everyone considering the current x86
-> > flow the right way to do it.  
+> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+> ---
+>  drivers/net/ethernet/renesas/ravb_main.c | 141 +++++++++--------------
+>  1 file changed, 52 insertions(+), 89 deletions(-)
 > 
-> Would a higher level check to catch that we are hitting undefined
-> territory on arm64 be acceptable? That might satisfy the constraint
-> that we should not have any software for arm64 that would run if
-> physical CPU HP is added to the arch in future.  Something like:
-> 
-> @@ -331,6 +331,13 @@ static int acpi_processor_get_info(struct acpi_device *device)
-> 
->         c = &per_cpu(cpu_devices, pr->id);
->         ACPI_COMPANION_SET(&c->dev, device);
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index 1ac599a044b2..baa01bd81f2d 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -317,35 +317,42 @@ static void ravb_ring_free(struct net_device *ndev, int q)
+>  	priv->tx_skb[q] = NULL;
+>  }
+>  
+> -static void ravb_rx_ring_format(struct net_device *ndev, int q)
+> +static u32
+> +ravb_rx_ring_refill(struct net_device *ndev, int q, u32 count, gfp_t gfp_mask)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+> +	const struct ravb_hw_info *info = priv->info;
+>  	struct ravb_rx_desc *rx_desc;
+> -	unsigned int rx_ring_size;
+>  	dma_addr_t dma_addr;
+> -	unsigned int i;
+> +	u32 i, entry;
+>  
+> -	rx_ring_size = priv->info->rx_desc_size * priv->num_rx_ring[q];
+> -	memset(priv->rx_ring[q].raw, 0, rx_ring_size);
+> -	/* Build RX ring buffer */
+> -	for (i = 0; i < priv->num_rx_ring[q]; i++) {
+> -		/* RX descriptor */
+> -		rx_desc = ravb_rx_get_desc(priv, q, i);
+> -		rx_desc->ds_cc = cpu_to_le16(priv->info->rx_max_desc_use);
+> -		dma_addr = dma_map_single(ndev->dev.parent, priv->rx_skb[q][i]->data,
+> -					  priv->info->rx_max_frame_size,
+> -					  DMA_FROM_DEVICE);
+> -		/* We just set the data size to 0 for a failed mapping which
+> -		 * should prevent DMA from happening...
+> -		 */
+> -		if (dma_mapping_error(ndev->dev.parent, dma_addr))
+> -			rx_desc->ds_cc = cpu_to_le16(0);
+> -		rx_desc->dptr = cpu_to_le32(dma_addr);
+> +	for (i = 0; i < count; i++) {
+> +		entry = (priv->dirty_rx[q] + i) % priv->num_rx_ring[q];
+> +		rx_desc = ravb_rx_get_desc(priv, q, entry);
+> +		rx_desc->ds_cc = cpu_to_le16(info->rx_max_desc_use);
 > +
-> +       if (!IS_ENABLED(CONFIG_ACPI_CPU_HOTPLUG_CPU) &&
-> +           (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id))) {
-> +               pr_err_once("Changing CPU present bit is not supported\n");
-> +               return -ENODEV;
-> +       }
+> +		if (!priv->rx_skb[q][entry]) {
+> +			priv->rx_skb[q][entry] = ravb_alloc_skb(ndev, info, gfp_mask);
+> +			if (!priv->rx_skb[q][entry])
+> +				break;
+> +			dma_addr = dma_map_single(ndev->dev.parent,
+> +						  priv->rx_skb[q][entry]->data,
+> +						  priv->info->rx_max_frame_size,
+> +						  DMA_FROM_DEVICE);
+> +			skb_checksum_none_assert(priv->rx_skb[q][entry]);
+> +			/* We just set the data size to 0 for a failed mapping
+> +			 * which should prevent DMA from happening...
+> +			 */
+> +			if (dma_mapping_error(ndev->dev.parent, dma_addr))
+> +				rx_desc->ds_cc = cpu_to_le16(0);
+> +			rx_desc->dptr = cpu_to_le32(dma_addr);
+> +		}
+> +		/* Descriptor type must be set after all the above writes */
+> +		dma_wmb();
+>  		rx_desc->die_dt = DT_FEMPTY;
+>  	}
+> -	rx_desc = ravb_rx_get_desc(priv, q, i);
+> -	rx_desc->dptr = cpu_to_le32((u32)priv->rx_desc_dma[q]);
+> -	rx_desc->die_dt = DT_LINKFIX; /* type */
 > +
-> 
-> This is basically lifting the check out of the acpi_processor_make_present()
-> call in this patch set.
-> 
-> With that in place before the new shared call I think we should be fine
-> wrt to the ARM Architecture requirements.
+> +	return i;
+>  }
+>  
+>  /* Format skb and descriptor buffer for Ethernet AVB */
+> @@ -353,6 +360,7 @@ static void ravb_ring_format(struct net_device *ndev, int q)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+>  	unsigned int num_tx_desc = priv->num_tx_desc;
+> +	struct ravb_rx_desc *rx_desc;
+>  	struct ravb_tx_desc *tx_desc;
+>  	struct ravb_desc *desc;
+>  	unsigned int tx_ring_size = sizeof(*tx_desc) * priv->num_tx_ring[q] *
+> @@ -364,8 +372,6 @@ static void ravb_ring_format(struct net_device *ndev, int q)
+>  	priv->dirty_rx[q] = 0;
+>  	priv->dirty_tx[q] = 0;
+>  
+> -	ravb_rx_ring_format(ndev, q);
+> -
+>  	memset(priv->tx_ring[q], 0, tx_ring_size);
+>  	/* Build TX ring buffer */
+>  	for (i = 0, tx_desc = priv->tx_ring[q]; i < priv->num_tx_ring[q];
+> @@ -379,6 +385,14 @@ static void ravb_ring_format(struct net_device *ndev, int q)
+>  	tx_desc->dptr = cpu_to_le32((u32)priv->tx_desc_dma[q]);
+>  	tx_desc->die_dt = DT_LINKFIX; /* type */
+>  
+> +	/* Regular RX descriptors have already been initialized by
+> +	 * ravb_rx_ring_refill(), we just need to initialize the final link
+> +	 * descriptor.
+> +	 */
+> +	rx_desc = ravb_rx_get_desc(priv, q, priv->num_rx_ring[q]);
+> +	rx_desc->dptr = cpu_to_le32((u32)priv->rx_desc_dma[q]);
+> +	rx_desc->die_dt = DT_LINKFIX; /* type */
+> +
 
-As discussed elsewhere in this thread, I'll push this into the arm64
-specific arch_register_cpu() definition.
+super-nit: Should you not move this addition up to where you removed the 
+call to ravb_rx_ring_format()? Before this change the order of things 
+are,
 
-> 
-> Jonathan
-> 
-> 
->         /*
-> > 
-> > Jonathan
-> > 
-> >   
-> > > 
-> > > Thanks,
-> > > 
-> > >         tglx
-> > >     
-> > 
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel  
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+    /* Init RX ring */
+    /* Init TX ring */
+    /* Set RX descriptor base address */
+    /* Set TX descriptor base address */
 
+
+While after it is,
+
+    /* Init TX ring */
+    /* Init RX ring */
+    /* Set RX descriptor base address */
+    /* Set TX descriptor base address */
+
+My OCD is itching ;-)
+
+>  	/* RX descriptor base address for best effort */
+>  	desc = &priv->desc_bat[RX_QUEUE_OFFSET + q];
+>  	desc->die_dt = DT_LINKFIX; /* type */
+> @@ -408,11 +422,9 @@ static void *ravb_alloc_rx_desc(struct net_device *ndev, int q)
+>  static int ravb_ring_init(struct net_device *ndev, int q)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+> -	const struct ravb_hw_info *info = priv->info;
+>  	unsigned int num_tx_desc = priv->num_tx_desc;
+>  	unsigned int ring_size;
+> -	struct sk_buff *skb;
+> -	unsigned int i;
+> +	u32 num_filled;
+>  
+>  	/* Allocate RX and TX skb rings */
+>  	priv->rx_skb[q] = kcalloc(priv->num_rx_ring[q],
+> @@ -422,13 +434,6 @@ static int ravb_ring_init(struct net_device *ndev, int q)
+>  	if (!priv->rx_skb[q] || !priv->tx_skb[q])
+>  		goto error;
+>  
+> -	for (i = 0; i < priv->num_rx_ring[q]; i++) {
+> -		skb = ravb_alloc_skb(ndev, info, GFP_KERNEL);
+> -		if (!skb)
+> -			goto error;
+> -		priv->rx_skb[q][i] = skb;
+> -	}
+> -
+>  	if (num_tx_desc > 1) {
+>  		/* Allocate rings for the aligned buffers */
+>  		priv->tx_align[q] = kmalloc(DPTR_ALIGN * priv->num_tx_ring[q] +
+> @@ -443,6 +448,13 @@ static int ravb_ring_init(struct net_device *ndev, int q)
+>  
+>  	priv->dirty_rx[q] = 0;
+>  
+> +	/* Populate RX ring buffer. */
+> +	ring_size = priv->info->rx_desc_size * priv->num_rx_ring[q];
+> +	memset(priv->rx_ring[q].raw, 0, ring_size);
+> +	num_filled = ravb_rx_ring_refill(ndev, q, priv->num_rx_ring[q], GFP_KERNEL);
+> +	if (num_filled != priv->num_rx_ring[q])
+> +		goto error;
+> +
+
+Here you also change the order, but it make sense here as you first deal 
+with all TX and then all RX ;-)
+
+>  	/* Allocate all TX descriptors. */
+>  	ring_size = sizeof(struct ravb_tx_desc) *
+>  		    (priv->num_tx_ring[q] * num_tx_desc + 1);
+> @@ -762,11 +774,9 @@ static struct sk_buff *ravb_get_skb_gbeth(struct net_device *ndev, int entry,
+>  static int ravb_rx_gbeth(struct net_device *ndev, int budget, int q)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+> -	const struct ravb_hw_info *info = priv->info;
+>  	struct net_device_stats *stats;
+>  	struct ravb_rx_desc *desc;
+>  	struct sk_buff *skb;
+> -	dma_addr_t dma_addr;
+>  	int rx_packets = 0;
+>  	u8  desc_status;
+>  	u16 desc_len;
+> @@ -854,32 +864,9 @@ static int ravb_rx_gbeth(struct net_device *ndev, int budget, int q)
+>  	}
+>  
+>  	/* Refill the RX ring buffers. */
+> -	for (; priv->cur_rx[q] - priv->dirty_rx[q] > 0; priv->dirty_rx[q]++) {
+> -		entry = priv->dirty_rx[q] % priv->num_rx_ring[q];
+> -		desc = &priv->rx_ring[q].desc[entry];
+> -		desc->ds_cc = cpu_to_le16(priv->info->rx_max_desc_use);
+> -
+> -		if (!priv->rx_skb[q][entry]) {
+> -			skb = ravb_alloc_skb(ndev, info, GFP_ATOMIC);
+> -			if (!skb)
+> -				break;
+> -			dma_addr = dma_map_single(ndev->dev.parent,
+> -						  skb->data,
+> -						  priv->info->rx_max_frame_size,
+> -						  DMA_FROM_DEVICE);
+> -			skb_checksum_none_assert(skb);
+> -			/* We just set the data size to 0 for a failed mapping
+> -			 * which should prevent DMA  from happening...
+> -			 */
+> -			if (dma_mapping_error(ndev->dev.parent, dma_addr))
+> -				desc->ds_cc = cpu_to_le16(0);
+> -			desc->dptr = cpu_to_le32(dma_addr);
+> -			priv->rx_skb[q][entry] = skb;
+> -		}
+> -		/* Descriptor type must be set after all the above writes */
+> -		dma_wmb();
+> -		desc->die_dt = DT_FEMPTY;
+> -	}
+> +	priv->dirty_rx[q] += ravb_rx_ring_refill(ndev, q,
+> +						 priv->cur_rx[q] - priv->dirty_rx[q],
+> +						 GFP_ATOMIC);
+>  
+>  	return rx_packets;
+>  }
+> @@ -888,11 +875,9 @@ static int ravb_rx_gbeth(struct net_device *ndev, int budget, int q)
+>  static int ravb_rx_rcar(struct net_device *ndev, int budget, int q)
+>  {
+>  	struct ravb_private *priv = netdev_priv(ndev);
+> -	const struct ravb_hw_info *info = priv->info;
+>  	struct net_device_stats *stats = &priv->stats[q];
+>  	struct ravb_ex_rx_desc *desc;
+>  	struct sk_buff *skb;
+> -	dma_addr_t dma_addr;
+>  	struct timespec64 ts;
+>  	int rx_packets = 0;
+>  	u8  desc_status;
+> @@ -964,31 +949,9 @@ static int ravb_rx_rcar(struct net_device *ndev, int budget, int q)
+>  	}
+>  
+>  	/* Refill the RX ring buffers. */
+> -	for (; priv->cur_rx[q] - priv->dirty_rx[q] > 0; priv->dirty_rx[q]++) {
+> -		entry = priv->dirty_rx[q] % priv->num_rx_ring[q];
+> -		desc = &priv->rx_ring[q].ex_desc[entry];
+> -		desc->ds_cc = cpu_to_le16(priv->info->rx_max_desc_use);
+> -
+> -		if (!priv->rx_skb[q][entry]) {
+> -			skb = ravb_alloc_skb(ndev, info, GFP_ATOMIC);
+> -			if (!skb)
+> -				break;	/* Better luck next round. */
+> -			dma_addr = dma_map_single(ndev->dev.parent, skb->data,
+> -						  priv->info->rx_max_frame_size,
+> -						  DMA_FROM_DEVICE);
+> -			skb_checksum_none_assert(skb);
+> -			/* We just set the data size to 0 for a failed mapping
+> -			 * which should prevent DMA  from happening...
+> -			 */
+> -			if (dma_mapping_error(ndev->dev.parent, dma_addr))
+> -				desc->ds_cc = cpu_to_le16(0);
+> -			desc->dptr = cpu_to_le32(dma_addr);
+> -			priv->rx_skb[q][entry] = skb;
+> -		}
+> -		/* Descriptor type must be set after all the above writes */
+> -		dma_wmb();
+> -		desc->die_dt = DT_FEMPTY;
+> -	}
+> +	priv->dirty_rx[q] += ravb_rx_ring_refill(ndev, q,
+> +						 priv->cur_rx[q] - priv->dirty_rx[q],
+> +						 GFP_ATOMIC);
+>  
+>  	return rx_packets;
+>  }
+> -- 
+> 2.39.2
+> 
+
+-- 
+Kind Regards,
+Niklas Söderlund
 
