@@ -1,193 +1,163 @@
-Return-Path: <linux-kernel+bounces-144775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78BDF8A4A94
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:42:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E8A8A4A97
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:42:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 805641C23602
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:42:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D122B1F23FD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:42:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09AC63E49E;
-	Mon, 15 Apr 2024 08:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BAE3B297;
+	Mon, 15 Apr 2024 08:41:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="hwbUmXLu"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="L+D8zPfb"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C304A383A3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FC23FE5D;
+	Mon, 15 Apr 2024 08:41:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170500; cv=none; b=ip1RgmUIrQ7pxjjoQsLeFRlAIVh3PmXVmT072hpHpqRZTXtxHxQ4bfpYQE8X/w0S9zvboQDVtV18hn0tk5R5Xi4OtxOpnzuAAFvKfsdzGLZ338nY+g9BtQYrW4L10LVAIzazUTDTLi2db07IGTb47TGbzyvlCq7cAF+RE5MjNX4=
+	t=1713170507; cv=none; b=hP1y2SnRI5FsI0PQaGy5AFqSroLMRXGhNZs5pCRG8t6idQa56KZ1QSoToYiqkKqBwHr38xpOrMdrNHikGrYNlnEIuSE8O/k/BZEAbIbG4gtuhx7mUM9UkB/2m3aIYm+HHoCNtm8E+Vsz1LcVCQdlBpJZOXU2ci9nVDn4R2FesV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170500; c=relaxed/simple;
-	bh=NFrR2exu6d6NexTbth3nKYMeBa96W+PF0xe/+85rGTE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r4C/HOkGXgGaSBA/YF2h6HXF6m7U4PbUmDmoGo1OYywsB398SAxB8nKIOTjOwNDCGqABmeZ2DpmvgsLsiDr1r/uZ0AhTTlP7ZsiMvvGU58NmJpDGH+Ow9FHqQMYxtH8Xa/JFpzfyrs+qtPiQ6CfxksO6Vto8oJUH1lyh9JQDU64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=hwbUmXLu; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-22efc6b8dc5so2148666fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:41:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1713170497; x=1713775297; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jVSyUCsRBJHReEwHJLY9AUjYGa31t9M8IXFXE6DP2gA=;
-        b=hwbUmXLuxKWfRKiLajsyQk/42oJOZ3pFvBzHhnQrGgREV5//YBvTikDu3JTmS+2o58
-         61Sd+s5DQNlNTIVpBzwhTzPDKaY4QWJ6Rj5ZtRxndLyQFMZj+zJcJ+rowQHY3VTkyK2Y
-         P9IA97lHYPJeE+fj3Evk9o7QvwwjubrRlIV+ZA8SsiNVUGlHLTg0ITBVgIl5PP7RLjhO
-         ULVUYp3dXhyZErE5P1f6Z/PEEIxAlMnwPyfAgzKWbtGJ6/FSyjxfVBEiG4I8BMFZI7QB
-         aj+CgJaU+2sCw47xasqjx5RWBHEwsSMK94u5a650QdcPIUhXMQ4AvcyBEJH3c9VajH5S
-         2wQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713170497; x=1713775297;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jVSyUCsRBJHReEwHJLY9AUjYGa31t9M8IXFXE6DP2gA=;
-        b=iZND8gVHbu2XJyt3wPJVmvl+LibhWNwdWJU/xde7ahsMYhQap3+cyX8I5Yg/C2//zX
-         0b4BSqwZ4zQx9GpE4kWkbMk7Vob6FeRCXo3Y0HBd+dDSaabk77BDHp2fnDWhbodltTVX
-         VzHhPpYBmCLGs6BcgNkb0UY0J3yxzCV4TLNdBh/OpwXPgtQVt89hdEC08z8oPy1CnHqS
-         JnAuT4F1eVsZj4+/ANf/UPP+ItuP1xNzF349ZOF3ZbsaPVhEubHO2BHVg7DDkQYK70HU
-         lvN6kFJfCvTGhf0LI/PXKU87435lPtXnZxd4kA4nSgOSZMbws0inegQHswJ8Irs+usv/
-         ujzA==
-X-Gm-Message-State: AOJu0Yzi4dVS27eNON7rST6MWlx9Yxllwk+OrrjarBoCzKEBTzGyUtul
-	83IJy17MX2ind5sltKevg4GhM65oAJzj9SQE60AnVZicjXpQP8eCDyx53CiQtx+xl/r7eZoPHdj
-	q
-X-Google-Smtp-Source: AGHT+IFLEEPCt9VyzH/L1QCrMmvcBH5qldAmYAh+iqUObe92I/ilLOhZ5GsT6F60/+szU0KPLSFuSA==
-X-Received: by 2002:a05:6870:9113:b0:22f:7513:f20a with SMTP id o19-20020a056870911300b0022f7513f20amr11633580oae.55.1713170497684;
-        Mon, 15 Apr 2024 01:41:37 -0700 (PDT)
-Received: from libai.bytedance.net ([61.213.176.11])
-        by smtp.gmail.com with ESMTPSA id k187-20020a636fc4000000b005d6a0b2efb3sm6575685pgc.21.2024.04.15.01.41.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 01:41:37 -0700 (PDT)
-From: zhenwei pi <pizhenwei@bytedance.com>
-To: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	virtualization@lists.linux.dev
-Cc: mst@redhat.com,
-	david@redhat.com,
-	jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	akpm@linux-foundation.org,
-	zhenwei pi <pizhenwei@bytedance.com>
-Subject: [RFC 3/3] virtio_balloon: introduce memory scan/reclaim info
-Date: Mon, 15 Apr 2024 16:41:13 +0800
-Message-Id: <20240415084113.1203428-4-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240415084113.1203428-1-pizhenwei@bytedance.com>
-References: <20240415084113.1203428-1-pizhenwei@bytedance.com>
+	s=arc-20240116; t=1713170507; c=relaxed/simple;
+	bh=7SORiU4shsWpZ0cGSl/ZJwxVqtAvvRLpEiZ0sdTzGuo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NiFaIkvaktuaYNXMzKqNnoTQvbYOHB1xU+/suM8w4Lzb1gjX4cl0TOh7Q1aEp+sv8x0jXsG8lKXOHdNZWecGX7n1xBgTHkKsl+TFDdBLX9q9p3QVlBGU1hUhAI7nWkoteNHr12IJtICq/hJV9RsLZ8HJyiSDJs5vt3zxRIO4iAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=L+D8zPfb; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43F3PK4C023259;
+	Mon, 15 Apr 2024 08:41:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=egqo3iTg7vXMcfRfDBzI5al7YP7luBSca8DUzS4Mp8A=;
+ b=L+D8zPfb6fU46rTtaTkxZ4nCRlftT+hXJZxP3BSbsbzb+4ZSxLuHkbAyQdXO+neP5ZZU
+ nAvJBcuuRyxW49kAqJITqjdiMODmkpEVA6eGkI3mkdRROeyKPiDhUH//SH9k8kXMVCTZ
+ iz+1a6kKNKfshw8iZg8+jTA2gwf8E4IfDn12EPeAucpwxRnIvJcAfgsFBQhKdRQ2Omwv
+ BfOb8VHS9fOXVKjfDV5gVRzhIbSXr0Jrs1+/dtVbdbzbs7kNnV5/GBbk6A6bMeX4ZJva
+ GeCCfkuib38WlvklNCcvviEIqXQujm9cs8vox8WANjIbIARyjofMrnvX6/DuMeMM5snv iQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xfhsd3ees-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 08:41:40 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43F8feVX029314;
+	Mon, 15 Apr 2024 08:41:40 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xfhsd3eem-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 08:41:40 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43F7UxAT011111;
+	Mon, 15 Apr 2024 08:41:39 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg7326cfr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 08:41:38 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43F8fXQF47907286
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 08:41:35 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7376020043;
+	Mon, 15 Apr 2024 08:41:33 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 808C620040;
+	Mon, 15 Apr 2024 08:41:32 +0000 (GMT)
+Received: from [9.171.17.66] (unknown [9.171.17.66])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 15 Apr 2024 08:41:32 +0000 (GMT)
+Message-ID: <c7f6be91-6591-4b00-95c3-48417bf98ac1@linux.ibm.com>
+Date: Mon, 15 Apr 2024 10:41:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 01/11] net/smc: decouple ism_client from SMC-D
+ DMB registration
+To: Wen Gu <guwen@linux.alibaba.com>, twinkler@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org
+References: <20240414040304.54255-1-guwen@linux.alibaba.com>
+ <20240414040304.54255-2-guwen@linux.alibaba.com>
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <20240414040304.54255-2-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: VyKdymiKN2yGTsfh4upxcjoyes97lM_-
+X-Proofpoint-ORIG-GUID: SoDffycIF7sHlVzV8EEaVAgQ31Cj4La0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_08,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 suspectscore=0 impostorscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2404010000 definitions=main-2404150057
 
-Expose memory scan/reclaim information to the host side via virtio
-balloon device.
 
-Now we have a metric to analyze the memory performance:
 
-y: counter increases
-n: counter does not changes
-h: the rate of counter change is high
-l: the rate of counter change is low
+On 14.04.24 06:02, Wen Gu wrote:
+> The struct 'ism_client' is specialized for s390 platform firmware ISM.
+> So replace it with 'void' to make SMCD DMB registration helper generic
+> for both Emulated-ISM and existing ISM.
+> 
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> ---
 
-OOM: VIRTIO_BALLOON_S_OOM_KILL
-STALL: VIRTIO_BALLOON_S_ALLOC_STALL
-ASCAN: VIRTIO_BALLOON_S_SCAN_ASYNC
-DSCAN: VIRTIO_BALLOON_S_SCAN_DIRECT
-ARCLM: VIRTIO_BALLOON_S_RECLAIM_ASYNC
-DRCLM: VIRTIO_BALLOON_S_RECLAIM_DIRECT
+Just a thought:
+The client concept is really specific to s390 platform firmware ISM.
+So wouldn't it be nice to do something like:
 
-- OOM[y], STALL[*], ASCAN[*], DSCAN[*], ARCLM[*], DRCLM[*]:
-  the guest runs under really critial memory pressure
-
-- OOM[n], STALL[h], ASCAN[*], DSCAN[l], ARCLM[*], DRCLM[l]:
-  the memory allocation stalls due to cgroup, not the global memory
-  pressure.
-
-- OOM[n], STALL[h], ASCAN[*], DSCAN[h], ARCLM[*], DRCLM[h]:
-  the memory allocation stalls due to global memory pressure. The
-  performance gets hurt a lot. A high ratio between DRCLM/DSCAN shows
-  quite effective memory reclaiming.
-
-- OOM[n], STALL[h], ASCAN[*], DSCAN[h], ARCLM[*], DRCLM[l]:
-  the memory allocation stalls due to global memory pressure.
-  the ratio between DRCLM/DSCAN gets low, the guest OS is thrashing
-  heavily, the serious case leads poor performance and difficult
-  trouble shooting. Ex, sshd may block on memory allocation when
-  accepting new connections, a user can't login a VM by ssh command.
-
-- OOM[n], STALL[n], ASCAN[h], DSCAN[n], ARCLM[l], DRCLM[n]:
-  the low ratio between ARCLM/ASCAN shows that the guest tries to
-  reclaim more memory, but it can't. Once more memory is required in
-  future, it will struggle to reclaim memory.
-
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
----
- drivers/virtio/virtio_balloon.c     |  9 +++++++++
- include/uapi/linux/virtio_balloon.h | 12 ++++++++++--
- 2 files changed, 19 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-index 4b9c9569f6e5..7b86514e99d4 100644
---- a/drivers/virtio/virtio_balloon.c
-+++ b/drivers/virtio/virtio_balloon.c
-@@ -372,6 +372,15 @@ static unsigned int update_balloon_stats(struct virtio_balloon *vb)
- 	stall += events[ALLOCSTALL_MOVABLE];
- 	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
- 
-+	update_stat(vb, idx++, VIRTIO_BALLOON_S_SCAN_ASYNC,
-+				pages_to_bytes(events[PGSCAN_KSWAPD]));
-+	update_stat(vb, idx++, VIRTIO_BALLOON_S_SCAN_DIRECT,
-+				pages_to_bytes(events[PGSCAN_DIRECT]));
-+	update_stat(vb, idx++, VIRTIO_BALLOON_S_RECLAIM_ASYNC,
-+				pages_to_bytes(events[PGSTEAL_KSWAPD]));
-+	update_stat(vb, idx++, VIRTIO_BALLOON_S_RECLAIM_DIRECT,
-+				pages_to_bytes(events[PGSTEAL_DIRECT]));
-+
- 	return idx;
+diff --git a/drivers/s390/net/ism_drv.c b/drivers/s390/net/ism_drv.c
+index 78cca4839a31..37dcdf2bc044 100644
+--- a/drivers/s390/net/ism_drv.c
++++ b/drivers/s390/net/ism_drv.c
+@@ -747,10 +747,9 @@ static int smcd_query_rgid(struct smcd_dev *smcd, struct smcd_gid *rgid,
+        return ism_query_rgid(smcd->priv, rgid->gid, vid_valid, vid);
  }
- 
-diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
-index 13d0c32ba27c..0875a9cccb01 100644
---- a/include/uapi/linux/virtio_balloon.h
-+++ b/include/uapi/linux/virtio_balloon.h
-@@ -73,7 +73,11 @@ struct virtio_balloon_config {
- #define VIRTIO_BALLOON_S_HTLB_PGFAIL   9  /* Hugetlb page allocation failures */
- #define VIRTIO_BALLOON_S_OOM_KILL      10 /* OOM killer invocations */
- #define VIRTIO_BALLOON_S_ALLOC_STALL   11 /* Stall count of memory allocatoin */
--#define VIRTIO_BALLOON_S_NR       12
-+#define VIRTIO_BALLOON_S_SCAN_ASYNC    12 /* Amount of memory scanned asynchronously */
-+#define VIRTIO_BALLOON_S_SCAN_DIRECT   13 /* Amount of memory scanned directly */
-+#define VIRTIO_BALLOON_S_RECLAIM_ASYNC 14 /* Amount of memory reclaimed asynchronously */
-+#define VIRTIO_BALLOON_S_RECLAIM_DIRECT 15 /* Amount of memory reclaimed directly */
-+#define VIRTIO_BALLOON_S_NR       16
- 
- #define VIRTIO_BALLOON_S_NAMES_WITH_PREFIX(VIRTIO_BALLOON_S_NAMES_prefix) { \
- 	VIRTIO_BALLOON_S_NAMES_prefix "swap-in", \
-@@ -87,7 +91,11 @@ struct virtio_balloon_config {
- 	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-allocations", \
- 	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
- 	VIRTIO_BALLOON_S_NAMES_prefix "oom-kill", \
--	VIRTIO_BALLOON_S_NAMES_prefix "alloc-stall" \
-+	VIRTIO_BALLOON_S_NAMES_prefix "alloc-stall", \
-+	VIRTIO_BALLOON_S_NAMES_prefix "scan-async", \
-+	VIRTIO_BALLOON_S_NAMES_prefix "scan-direct", \
-+	VIRTIO_BALLOON_S_NAMES_prefix "reclaim-async", \
-+	VIRTIO_BALLOON_S_NAMES_prefix "reclaim-direct" \
- }
- 
- #define VIRTIO_BALLOON_S_NAMES VIRTIO_BALLOON_S_NAMES_WITH_PREFIX("")
--- 
-2.34.1
 
+-static int smcd_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb,
+-                            struct ism_client *client)
++static int smcd_register_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
+ {
+-       return ism_register_dmb(smcd->priv, (struct ism_dmb *)dmb, client);
++       return ism_register_dmb(smcd->priv, (struct ism_dmb *)dmb, &smc_ism_client);
+ }
+
+ static int smcd_unregister_dmb(struct smcd_dev *smcd, struct smcd_dmb *dmb)
+
+--------------
+
+This is not a real patch, just a sketch, but I hope you
+get the idea.
+
+
+This may be a step in the direction of moving the ism_client concept from 
+net/smc/smc_ism.c to drivers/s390/net/ism*
+
+
+I know that there are several dependencies to consider. 
+And I haven't looked at the other patches in this series yet in detail, to see how you solve
+things like smcd_register_dev. Seems like smcd_register_dmb() is the only one of the smcd_ops
+that you need for loopback and uses ism_client.
+
+
+
+Wenjia, Gerd, and others what do you think?
 
