@@ -1,115 +1,258 @@
-Return-Path: <linux-kernel+bounces-146006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F26118A5E4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:30:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD29C8A5E4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:31:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9081F1F21E2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:30:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CCFF284D19
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC60159210;
-	Mon, 15 Apr 2024 23:30:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29711159204;
+	Mon, 15 Apr 2024 23:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a1M4u5aj"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YyRC99q/"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26829156F35;
-	Mon, 15 Apr 2024 23:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAF4158DDD
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 23:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713223805; cv=none; b=Ysl9LPmAtVjWs4Xh7/siH7PLxX/ehV0vT+i1hQUmZS/zYXY4zwjx5ClRJB+cE4d6Ky417ybUJ5fQsRne8O3QLvBgKGIKusfBFzGG9yVQKCKDWLUaCx6qwUlyc0Pm1/ZJYaSDThrRvge350Z3i8SXLGxxkmObkiI28G+XFRcrFxM=
+	t=1713223861; cv=none; b=nTEdv8bpFBO6TtXu6wOHxJ4f6nL8nzNVeNbN9sXIcA8MlI++vVeiFlDHjprGJkth6wvn84ddcSmjN+08+usX/K7OSoRaEVm5pmIROPgxXbW5kZWdx96B8rwMWY3YBSpmLvTcdkUa8VTKky5mqadfDPRrXugvgDZW3J+azlE7H1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713223805; c=relaxed/simple;
-	bh=oQ5kq1vqmdu6YkvfJ3XgQQy1TD59RlmvtSo47UANF+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RjlucaZg1ScXa1XMYtqdAuR2wjNX0muk5nY+VnaareXrxHnvaldq/A1BgS4eIVxrwkHtQdE0wNn6hC3mHNpfhmez2aeBJtAU8YCmDBIbHy34VAIjLK/x6BHFQcElGuHZfEpMxU4AmmUy2i8EMupI7UOCuYhPa8TmlyRBwSWGCeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a1M4u5aj; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed2dc03df6so3402419b3a.1;
-        Mon, 15 Apr 2024 16:30:03 -0700 (PDT)
+	s=arc-20240116; t=1713223861; c=relaxed/simple;
+	bh=+b/kNZ4RcVokUqEMiWdeS9E1tYrTetsBur7rJILc1qo=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=jnUNztev0aJ+LTmEpL+Uw+pawDdGQy5HkwBv9evdw4py9mBL8HjVdVY9VJ/9aoQxofk0729ROBKIK4PO8QaaozPLGt92+5fKWZ31hzfHGsOg4loTx5lpTmAFSyLhbAZzTZQFigJ+R8LPLyCIAfAsFBBQ72VZ/z4OA0j97ozaHuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YyRC99q/; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41550858cabso23855175e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713223803; x=1713828603; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FSEYM5JKOjoaWrt3+QgFKtBmTuxWyIo76LgkeQlZZck=;
-        b=a1M4u5ajnX11QLEFN5pMIQHMJRwal+S03QHIhIYsf3nCVG6Kc3bNlW4+AtlyhadCje
-         qWCUn8LVz3hHi0MdtGoknXMbamEBBuEJIKNPCOspKNHBodxtkKCGUNWxm1YqZoq4yuEd
-         IJXxMl4QCCrVjvDE5HU9RvFVwpLjU0yfaC/bpTZduFeVB5hQmVye8oksXeOiotgYuLSa
-         U+RFE0HMqRDS45xYre+f4IcE/x2yfbUHTuyFZ/EsWy7vuq+Rw6UUjkgZp9aKERqO+qjS
-         4Rz5QreYLECVeTyYTXnnNTSFxYQ5HVc4k3opmMWVr0+xoyhn1OTCLzCDS2BYiiFbtde/
-         Ip5w==
+        d=linaro.org; s=google; t=1713223856; x=1713828656; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sbgOogGrd7KneMj6zTYHK/GfLd8TwApJl8NSTb8SGlA=;
+        b=YyRC99q/bbnFHUilkatOkVNSaDlY7zYsVqOfSNLhik+gz28m7R2IOtIormtPWtFeS7
+         J32TEktrs/N9Xw8CI4dXGNYXGnnICHZBPs9PmMnSMXrx1NxorNqYUCTLxkg0VgL468+9
+         4Ttg9lVb2Nj6T5633hTFbjLJHAaiRVz+d2AjvbDSLI24raXZ9im33IMSHr5vTGlPVMHF
+         5XppQX1UoVjS00egvBRt5zfWv/4LZS6UUpYqSZ0qtYSQpcVDp8AQvdZza34XE0SgyRl0
+         MhjN5UyhMPMy61ts4cBfUkGEuNXB8zV+gsR14wyvX4J3ehW30EQPYpobFyGfT9LLEW8R
+         ZrIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713223803; x=1713828603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FSEYM5JKOjoaWrt3+QgFKtBmTuxWyIo76LgkeQlZZck=;
-        b=TjN6Ts8jLTzSaDPYovm/dkEZCQwQ2fIByGrEtMOWhN63jq16lq7TMcbDmYlFZvqssk
-         RwHN1bLpe2w4yFYbWvEaE6eIxJYyEwj45YqtXxUbDnEr6RY4Rkrj7XgQ3e38gwpxdnnN
-         gdhvmfYonadru9O9WVKZACp0iMsZLi3mmfwJ96EKc/CpY9TI42NKTIJefms0esRUbUTm
-         ygqwdCLt+Hmc2eNCxM1ni/IP7r/5nO4K7rffsFPcTtYH1R7rndwJZQuP/dSUDyE2Z+Qu
-         fGEv2Gg01z8KRnSYqKNgFAWAf+EoZyHl4DvrDg8Dz83bLlOGsQNmprcmPEdnm19Dn3BL
-         mcSA==
-X-Forwarded-Encrypted: i=1; AJvYcCV9Zu6Zw6Cgk6b4wlP5OndGJUeebK/D/AYysfA2E6rG9DS7oXgPVEGU+t9kUYg4rnvxAIMbiom32QizDUI+0KHDDk7Q0k/MDZgopv8PQxCjxzba6aRBJ9bKR9WU9rhjEyFFiR0FP2qR+G9r0kPfV9ElgoDp5AHMiL6SjBs7pK/+07zIO6B2XIcMpAK2qtrVyhLoGUOhGEX1BDfqWinkO3XDeLpzfQ==
-X-Gm-Message-State: AOJu0YxERZHBNhN29kELqDEu4SThWWHrOMCYW1+2t92aJBcja4g9YIOU
-	EMXw5q0fMq/3rtu5wC2NI0bS+B54guntCtSARQqBnSyukGGMTq5U
-X-Google-Smtp-Source: AGHT+IFirikLgnoHAWTaC/nN665LyYgkIFVQo7PulITNUZsSc3EElcMojy90I2rNO2Q+diEavf4nZQ==
-X-Received: by 2002:a05:6a21:3996:b0:1aa:2285:2cd0 with SMTP id ad22-20020a056a21399600b001aa22852cd0mr3880359pzc.23.1713223802937;
-        Mon, 15 Apr 2024 16:30:02 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:fbbe:421b:9296:f28c])
-        by smtp.gmail.com with ESMTPSA id u6-20020a17090adb4600b002a51dcecc49sm7540592pjx.38.2024.04.15.16.30.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 16:30:02 -0700 (PDT)
-Date: Mon, 15 Apr 2024 16:30:00 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: quic_fenglinw@quicinc.com, kernel@quicinc.com,
-	Andy Gross <agross@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v10 1/4] input: pm8xxx-vibrator: correct VIB_MAX_LEVELS
- calculation
-Message-ID: <Zh24eN9ZMZ6QhzeZ@google.com>
-References: <20240412-pm8xxx-vibrator-new-design-v10-0-0ec0ad133866@quicinc.com>
- <20240412-pm8xxx-vibrator-new-design-v10-1-0ec0ad133866@quicinc.com>
- <CAA8EJpp-awdTyfngeYyJaOObOWz=UCSK9U08TfFPA0v=8Naz=A@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1713223856; x=1713828656;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sbgOogGrd7KneMj6zTYHK/GfLd8TwApJl8NSTb8SGlA=;
+        b=LpV0rHeLUrUc7tIdiqlKkEV9+9jfXJDwL3/bGvNaq1vUEId+XXxDnU0u5vsiywY6/m
+         KC3itKeaa/UWYYDHjyPC7+RkZUNiIwUQdIJ1IXVAKf7GRrpiK/B68uPlc/jWBKaNTf3T
+         9UOeCug74AD+eUNz0Ve+msVJq5eq3ott9NTsXOtFgMEb2Frt3k7HdyQmwTuPq1Ocvctl
+         ZaeEuO2fRXUPeBuKkZMnYZeZpsnGXVD3Pz7mjO42y0ps+cHyREZKF4Xw/0keV+quUAC7
+         J5jE7VxW4GMUc7xzzUHN+iMhM0rcDYUW7BVe/sICXF5DvoBmKY+yD8/zeo+op76C14hq
+         x0jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVXSNgsPLRyVDITHif6Kh6bStFNdzoaslbG9gYix1NHuv97Pwb7s57t/DeUYxvA48VuPwpOQIv1J/udC3sN0862s5fmWOmYdKxltZOL
+X-Gm-Message-State: AOJu0Yy6nDzL6O4hud2mjSagMHhtlAWdnudQ+lO/Sc6rKrm5OCCzlxQT
+	n5M+z1GfVeFHchvTmm1k4h3chCZPtm84itryeGHEsl3pHuACdus3sdfcrUeGuPQ=
+X-Google-Smtp-Source: AGHT+IHg/fk42jw6rlYve+PtuNCjcIGhx+aS7sngMv/JYvGAT/GBkMZPb0po+xBYLkmZmcqsfyAR5Q==
+X-Received: by 2002:a05:600c:5128:b0:416:3de5:133d with SMTP id o40-20020a05600c512800b004163de5133dmr8063687wms.7.1713223855973;
+        Mon, 15 Apr 2024 16:30:55 -0700 (PDT)
+Received: from [172.20.10.2] ([37.169.26.183])
+        by smtp.gmail.com with ESMTPSA id s11-20020a5d69cb000000b00346bf37c97bsm12811551wrw.63.2024.04.15.16.30.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 16:30:55 -0700 (PDT)
+Message-ID: <64c765e4-698f-49d6-8d17-4b512c3dc8ec@linaro.org>
+Date: Tue, 16 Apr 2024 01:30:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpp-awdTyfngeYyJaOObOWz=UCSK9U08TfFPA0v=8Naz=A@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 1/3] dt-bindings: reset: Add Amlogic T7 Reset Controller
+To: Kelvin Zhang <kelvin.zhang@amlogic.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Zelong Dong <zelong.dong@amlogic.com>
+References: <20240329-t7-reset-v1-0-4c6e2e68359e@amlogic.com>
+ <20240329-t7-reset-v1-1-4c6e2e68359e@amlogic.com>
+ <927ad2cb-3b41-4eda-b930-856be64ae9ba@linaro.org>
+ <10650c59-96f2-4234-b5fd-aa8efec90e5b@linaro.org>
+ <579a1569-7bba-491f-ba5e-7cfcb34ccc1f@linaro.org>
+ <c7e243e3-3f61-4d63-8727-3837838bdfcc@linaro.org>
+ <48005005-54ad-473b-826d-23b0b3f3a52c@amlogic.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <48005005-54ad-473b-826d-23b0b3f3a52c@amlogic.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 07:21:16PM +0300, Dmitry Baryshkov wrote:
-> On Fri, 12 Apr 2024 at 15:36, Fenglin Wu via B4 Relay
-> <devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
-> >
-> > From: Fenglin Wu <quic_fenglinw@quicinc.com>
-> >
-> > The output voltage is inclusive hence the max level calculation is
-> > off-by-one-step. Correct it.
+On 15/04/2024 12:31, Kelvin Zhang wrote:
 > 
-> ... while we are at it also add a define for the step size instead of
-> using the magic value.
+> On 2024/4/13 02:03, Krzysztof Kozlowski wrote:
+>> [ EXTERNAL EMAIL ]
+>>
+>> On 12/04/2024 19:57, Krzysztof Kozlowski wrote:
+>>> On 12/04/2024 15:12, Neil Armstrong wrote:
+>>>> Hi,
+>>>>
+>>>> On 29/03/2024 20:39, Krzysztof Kozlowski wrote:
+>>>>> On 29/03/2024 10:17, Kelvin Zhang via B4 Relay wrote:
+>>>>>> From: Zelong Dong <zelong.dong@amlogic.com>
+>>>>>>
+>>>>>> Add a new compatible and the related header file
+>>>>>> for Amlogic T7 Reset Controller.
+>>>>>>
+>>>>>> Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
+>>>>>> Signed-off-by: Kelvin Zhang <kelvin.zhang@amlogic.com>
+>>>>>> ---
+>>>>>>    .../bindings/reset/amlogic,meson-reset.yaml        |   1 +
+>>>>>>    include/dt-bindings/reset/amlogic,t7-reset.h       | 197 +++++++++++++++++++++
+>>>>>>    2 files changed, 198 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml b/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml
+>>>>>> index f0c6c0df0ce3..fefe343e5afe 100644
+>>>>>> --- a/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml
+>>>>>> @@ -19,6 +19,7 @@ properties:
+>>>>>>          - amlogic,meson-a1-reset # Reset Controller on A1 and compatible SoCs
+>>>>>>          - amlogic,meson-s4-reset # Reset Controller on S4 and compatible SoCs
+>>>>>>          - amlogic,c3-reset # Reset Controller on C3 and compatible SoCs
+>>>>>> +      - amlogic,t7-reset # Reset Controller on T7 and compatible SoCs
+>>>>>>
+>>>>>
+>>>>> If there is going to be any resend, please drop the comment. It's not
+>>>>> really helpful and makes it trickier to read.
+>>>>>
+>>>>>>      reg:
+>>>>>>        maxItems: 1
+>>>>>> diff --git a/include/dt-bindings/reset/amlogic,t7-reset.h b/include/dt-bindings/reset/amlogic,t7-reset.h
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..ca4a832eeeec
+>>>>>> --- /dev/null
+>>>>>> +++ b/include/dt-bindings/reset/amlogic,t7-reset.h
+>>>>>> @@ -0,0 +1,197 @@
+>>>>>> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+>>>>>> +/*
+>>>>>> + * Copyright (c) 2024 Amlogic, Inc. All rights reserved.
+>>>>>> + */
+>>>>>> +
+>>>>>> +#ifndef _DT_BINDINGS_AMLOGIC_T7_RESET_H
+>>>>>> +#define _DT_BINDINGS_AMLOGIC_T7_RESET_H
+>>>>>> +
+>>>>>> +/* RESET0 */
+>>>>>> +/*                                        0-3     */
+>>>>>
+>>>>> I assume this matches existing drivers which do not use IDs but map the
+>>>>> binding to hardware value? I remember we talked about changing it, so if
+>>>>> something happened about this and it could be changed: please change.
+>>>>
+>>>> I'm not aware of such discussion, and I don't really see the issue...
+>>>> thoses are IDs, and yes they match the Hardware offsets, and ?
+>>>
+>>> Bindings are not for hardware offsets/values/addresses. It's just not a
+>>> binding.
+>>>
+>>> I quickly looked at your driver patch and it confirms: not a binding.
+>>> Binding constant is used by the driver and DTS consumer.
+>>>
+>>> I am really sure we had this talk in the past, but could be I think
+>>> about different platform. Since this is not a binding, I do not think
+>>> claiming there is any ABI here is reasonable. Feel free to store them
+>>> with other hardware values, like in DTS headers etc. We already moved to
+>>> DTS headers several such "non-binding" constants.
+>>
+>> Un-acked.
+>>
+>> I looked at my archives and we did talk about it and you were CCed:
+>>
+>> https://lore.kernel.org/linux-devicetree/c088e01c-0714-82be-8347-6140daf56640@linaro.org/
+>> simple-reset is an exception.
+>>
+>> So to recap:
+>> That's not a binding. Don't add some real values to binding headers
+>> because it is not a binding then.
 
-I adjusted the patch description as Dmitry suggested, and applied this
-patch. Please address Konrad's feedback on the other 2 and I will apply
-the rest.
+So what's exactly a binding then? random linear numbers that means nothing can be a binding
+but registers numbers can't be ? why ? I still don't understand, why this suddenly gets problematic ?
 
-Thank you.
+>>
+>> https://lore.kernel.org/linux-devicetree/CAK8P3a1APzs74YTcZ=m43G3zrmwJZKcYSTvV5eDDQX-37UY7Tw@mail.gmail.com/
+>> https://lore.kernel.org/linux-devicetree/CAK8P3a0fDJQvGLEtG0fxLkG08Fh9V7LEMPsx4AaS+2Ldo_xWxw@mail.gmail.com/
+>> https://lore.kernel.org/linux-devicetree/b60f5fd2-dc48-9375-da1c-ffcfe8292683@linaro.org/
+>> https://lore.kernel.org/linux-devicetree/418c5f0c-5279-41f5-3705-345ec9a97ea2@linaro.org/
+>> https://lore.kernel.org/all/201401111415.29395.arnd@arndb.de/
+>>
+> Got it. Will delete amlogic,t7-reset.h and use the hardware numbers
+> directly in the DT. >
+> Hi Neil,
+> As you know, Amlogic reset controller is divided into several groups: reset0, reset1, ..., resetN. I'd like to discuss the rationality of splitting the one device node of reset controller into device nodes according to the groups. Then we can use the bit number within the 'resets' property.
+> reset0: reset-controller@2000 {
+> ...
+> };
+> 
+> reset1: reset-controller@2004 {
+> ...
+> };
+> ...
+> 
+> What do you think?
 
--- 
-Dmitry
+No since you'll basically add a node per register, you need to add a node for the while reset HW function, another
+solution would be to split the phandle arguments in 2, the first first would be the reset bank, and the second one
+the reset line for the bank.
+
+But still it's a regression in readability to drop the macros, until gpios or pins the reset number doesn't mean anything per se.
+
+Neil
+
+
+Neil
+
+> Thanks!
+>>
+>> Best regards,
+>> Krzysztof
+>>
+
 
