@@ -1,105 +1,101 @@
-Return-Path: <linux-kernel+bounces-145987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58ADF8A5DEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:58:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E52398A5DF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:58:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 831921C20D71
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:58:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22F531C20EAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DAA515887C;
-	Mon, 15 Apr 2024 22:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC1A158A10;
+	Mon, 15 Apr 2024 22:58:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mCZYd0An"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="aeKZyowA"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CAC15749B;
-	Mon, 15 Apr 2024 22:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58B515749B;
+	Mon, 15 Apr 2024 22:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713221893; cv=none; b=KWoxA1FwuQX0N8cHfJUYkHpagLjggMwcOXS7d4ozpBbzdPwDqoLwCrpa2MDAXudzSnHyYaxL9Y0QJXnKJPI60dlqsaCddTWZPmIrWqCCDluqO1RsMnIcGTy53em1Pb7qUUmCMV+y36Y/hCb0FjHp1r2PtH02jNnBMhipyCJ3x8E=
+	t=1713221916; cv=none; b=M1EVYN3Eqs1Z27pSQgfE21jXtfhVbK+akUJ225kjMqw0IdKs9dTfLPIxTv3Ew67tIp2Zfb+QQqF/YUMuhg250EL66GpHDQMkRdf+l2cpchRlaPENk+XLz39K0o+sGgmi0TuZcvNZPc7IvsvjW7bYmki0818bJjC4o8a5oL5Se5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713221893; c=relaxed/simple;
-	bh=8xg3lHEX96OsyycWj5VvvgcPRZjhyPji75DsUK3pshc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mKYMp1boULu5yrmrkqb5DG9OkzqIs4spuLqtvsVITLdrXEoPNabfjbagileURQG0fx2cup3U9lMbMIN3QHHi5iMuQfMnL55XLCMg7VBIhBw67qJHypxtawfCg/doH7cgRMiS746ms0XW1HgNPVVqekYBnGToVVyNMcX8PndQX9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mCZYd0An; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713221892; x=1744757892;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8xg3lHEX96OsyycWj5VvvgcPRZjhyPji75DsUK3pshc=;
-  b=mCZYd0AnR+XNVAC9px23rgNjNSR1dSnmJWX8xujNzgJOsn3jh2B0kFs0
-   ljs4a1hI5rGeDkhl/m9Gk/kr5zMeTLSkMYUr3RjJ9H6y3pd80VDRKkvud
-   Lkckof+juKDoHvT9q1uqj372kM1rZbCyB25QvrZvhHebAGvx1QTzfk6nc
-   PaUSu/T/JrKWGof7EPHDmvv/YdpOxSsFfK15UNX2+IFGFDS2CuGl1HmZE
-   WiYS6IAnd6/Xfs+BEwiOHVXyZugJXr/Tbqr2ThdQpa9cQsZsTdNR5qcQr
-   a4ITjzA6PQa2ApzxUe9gEIVv2L082OorFRL8znSqDDJqup5pr6IbRZGIA
-   g==;
-X-CSE-ConnectionGUID: gWpQbf4nTze9JYXBzddsYw==
-X-CSE-MsgGUID: /Q8X/sZGSWqJPZ8BWbwC1A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8492593"
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="8492593"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 15:58:12 -0700
-X-CSE-ConnectionGUID: +ISCB+qZQs6Sn3NIeHcdNg==
-X-CSE-MsgGUID: RD7tPUfdT2G8JbQWCyRmxg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="22141432"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 15:58:12 -0700
-Date: Mon, 15 Apr 2024 15:58:11 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 098/130] KVM: TDX: Add a place holder to handle TDX
- VM exit
-Message-ID: <20240415225811.GU3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <88920c598dcb55c15219642f27d0781af6d0c044.1708933498.git.isaku.yamahata@intel.com>
- <4ccb3a98-d732-421e-a013-8912b46d8107@linux.intel.com>
+	s=arc-20240116; t=1713221916; c=relaxed/simple;
+	bh=IpupYfL+nfuZcj28IjJD67wn4hsG9soZoaZIShrcHAs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=oazRb89r/uYHyoo8K/nnFfv46C5UrdRYTv8QMzxCptEiAr/d4GTtTa6sIFkozrg4gJOsQSlDKuAShikPFH8Or00v4c8bS413lPvvaCpGBmzvTQZcsULoiDxlCe0seFxvmtRCwDuCRMvcZmG+7jFFT+ARoawaNkXmWedXnP7DPng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=aeKZyowA; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713221912;
+	bh=OFQdDAtGK6iSzxTP4mKGX09ugTslZhLrgmSY8Vqx5fA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=aeKZyowAIMP1yyAOz2Y1+tPUQ/q2HBQGOuYIUvhQ3jqikbZ3cZoCDoyedMiB6kYyc
+	 4IdlSIRKaSbb/rW+D4AMusKhGY/cV4sHHERaBp8XjjpoaU5IyzW9bp6xtYP4q7qJvl
+	 Gr6Y9u5Zh/bmaPYvTsmGAMK3s21nuwYi04WZGU2JPm9ejCPYvK5TwyVFPSEFSQhT+i
+	 9riJJe6IsffQEe3gIYdy7ZXZJlvoS1uI4AdZD0Hye8d+863sKgiRr1weHNrF229GOZ
+	 qbvIMpVTPnguyOnW70ERjQHGbtCq7bGvOBo8QGCctuihRxf9/5fqSxzw1nBoaNP9/G
+	 SpAgxOtqefjsg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VJMzC4g12z4wcC;
+	Tue, 16 Apr 2024 08:58:31 +1000 (AEST)
+Date: Tue, 16 Apr 2024 08:58:31 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Joel Granados <j.granados@samsung.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the sysctl tree
+Message-ID: <20240416085831.51b372a3@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4ccb3a98-d732-421e-a013-8912b46d8107@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/4qbQt+5BPr1N7CM/9M0Z1zz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Tue, Apr 09, 2024 at 06:36:01PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+--Sig_/4qbQt+5BPr1N7CM/9M0Z1zz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> > +		return 1;
-> > +
-> > +	/*
-> > +	 * TDH.VP.ENTRY
-> 
-> "TDH.VP.ENTRY" -> "TDH.VP.ENTER"
-> 
-> >   checks TD EPOCH which contend with TDH.MEM.TRACK and
-> > +	 * vcpu TDH.VP.ENTER.
-> Do you mean TDH.VP.ENTER on one vcpu can contend with TDH.MEM.TRACK and
-> TDH.VP.ENTER on another vcpu?
+Hi all,
 
-Yes.  The caller of TDH.MEM.TRACK() must ensure that other vCPUS go through
-inactive (not running vCPU) after TDH.MEM.TRACK().
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Commits
+
+  693d33b8fc7e ("sysctl: treewide: constify argument ctl_table_root::permis=
+sions(table)")
+  e423195d7930 ("sysctl: treewide: drop unused argument ctl_table_root::set=
+_ownership(table)")
+
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/4qbQt+5BPr1N7CM/9M0Z1zz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYdsRcACgkQAVBC80lX
+0GyhRQf/Y6uhuHgY5fsD6ZKa53QzpBxY0yhWYP+Yp1Qp0UXFk58bC+051bEFBGtB
+8BfLY0dOP54fq4LzdfePdZYWznQ//i6H2gyL3dbIUGYXpatJg6cjfWB3DqCP1oW6
+iq8clQcjC9HU4AO1yKXZNSRwhRUvJ01bS40Y/gKTnVdhCsEDVhaOuD19Mw+Ne5ls
+XgcGpve9IZzUT/0P2WE1UNH8WlL67Xnr1lb2Xii0hCFdXkwH52SR1/9/sO0U6PNE
+XY8B2oGhSKnfSu3+u+tYzTr+CWNxCcUYMKRXU6+MBsVco83L8R4zSeEhyvC+5e/B
+HFNIcwiWmjNOknC2bIdXCCMQb9ZS9A==
+=Gx63
+-----END PGP SIGNATURE-----
+
+--Sig_/4qbQt+5BPr1N7CM/9M0Z1zz--
 
