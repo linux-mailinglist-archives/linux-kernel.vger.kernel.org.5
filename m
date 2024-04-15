@@ -1,226 +1,98 @@
-Return-Path: <linux-kernel+bounces-145858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A08608A5BF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:04:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 834668A5BAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:54:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5678A28340A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:04:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 398761F25539
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC9A156669;
-	Mon, 15 Apr 2024 20:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RlfM4LcJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC3A160783;
+	Mon, 15 Apr 2024 19:47:28 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9316A15664A
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CFE15FCF1;
+	Mon, 15 Apr 2024 19:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713211455; cv=none; b=sMpwWkRbiPP9OPXuJcm7nQDqtKysZtb8k3mGbyl0CWr9Oklaq6OFAjfx9LU/2MRAUc20z4RgdwjTcOTg0eMNaTMziGBLPpEtOD4Fr2oqH6HluZF4A+K0y3DFKTD3GMeELx+NXMv3vzikyqU6zykJeWhLOgbAFg4n8L7xQn2RT9Q=
+	t=1713210448; cv=none; b=eyVWl5rS0iIVAGUviZ+ahcihGCXKbsjXwoXPOjbtkBrxQTPluCAMBSnnKM568gBQ3I6gVgXRBdq/+A8zd06jQNHjqVTVvf9aCIsyFagFbEFCniv/y1Yjbk9aaxsSUspa1eHvFPGtkocN8YfHSG1S/WGilAEoErUlKvu3MZtbKwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713211455; c=relaxed/simple;
-	bh=pr/4/oQR+r5R/l6P0ikxCsCgBmbd6uWclml/OEa3wn8=;
+	s=arc-20240116; t=1713210448; c=relaxed/simple;
+	bh=Z7URJ1t0qMuPn6d7VXFWku4XI3zKAESJQIWRDdzW2Ao=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lD91ThPMtecUp60WrjXI9m6daeZE9VgqoB6D8Zq9Gj3svsIKJy7ukxTI6xawxiyu5UOhettSJ7NhvEWnXA3VI7xy+QTZjLvLAqMEOTio+CXNwsamf98fJbPXNg+bGgJKQVmXERhSgSFi+M0viHoHNAXIBSf/oK6VkW8exN+njIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RlfM4LcJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713211452;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dfn+y1J1zY2Ja72aghi8awXYV9tGOwVsfBqRShbrfOE=;
-	b=RlfM4LcJWpRK3l2eWVJ8rZOy6AbRKLhvfE1M5jx+thmjwN7edcuC3QtwA4Hy1M8egi7tZ0
-	SXYgzSFOkRBME97PFUuOXN41Ke/CiJMJICh1k8LW4lTzGPGmNgcSSDcbbuBptFoh9ykMaY
-	1IkYsFMwb0sxgIqIIiIZpSbf+qYkxFw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-620-9efXX8AHOMmW2BIjYR2LjQ-1; Mon,
- 15 Apr 2024 16:04:07 -0400
-X-MC-Unique: 9efXX8AHOMmW2BIjYR2LjQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 764111C0513D;
-	Mon, 15 Apr 2024 20:04:06 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.4])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9C1312166B32;
-	Mon, 15 Apr 2024 20:04:05 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id BFE67401801CE; Mon, 15 Apr 2024 16:47:13 -0300 (-03)
-Date: Mon, 15 Apr 2024 16:47:13 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Leonardo Bras <leobras@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <Zh2EQVj5bC0z5R90@tpad>
-References: <20240328171949.743211-1-leobras@redhat.com>
- <ZgsXRUTj40LmXVS4@google.com>
- <ZhAAg8KNd8qHEGcO@tpad>
- <ZhAN28BcMsfl4gm-@google.com>
- <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
- <ZhQmaEXPCqmx1rTW@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mu1R581RPdMeQ7BAdI3TsQnwJoI7VltMAVkNoSRA5yTikiA7/2XNTJi3YHhg0J9gGOw9A+tcFR5abV8Sv/IuzCOQVm4XSxw4HW9aOhiHchusWp149eICeSGtK24uveDVxmJyxMer/lOuYnVdnSWdwa/cYevvxDdgSYesImFN4dI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id EFA6B1C0080; Mon, 15 Apr 2024 21:47:18 +0200 (CEST)
+Date: Mon, 15 Apr 2024 21:47:17 +0200
+From: Pavel Machek <pavel@denx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+Subject: Re: [PATCH 6.1 00/69] 6.1.87-rc1 review
+Message-ID: <Zh2ERQX46MbcTpPO@duo.ucw.cz>
+References: <20240415141946.165870434@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WwslkCFLxcagl3Fi"
+Content-Disposition: inline
+In-Reply-To: <20240415141946.165870434@linuxfoundation.org>
+
+
+--WwslkCFLxcagl3Fi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhQmaEXPCqmx1rTW@google.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 10:16:24AM -0700, Sean Christopherson wrote:
-> On Fri, Apr 05, 2024, Paul E. McKenney wrote:
-> > On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
-> > > On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
-> > > > rcuc wakes up (which might exceed the allowed latency threshold
-> > > > for certain realtime apps).
-> > > 
-> > > Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
-> > > a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
-> > > enter a guest, but the CPU never does (at least, not in the immediate future).
-> > > 
-> > > Or am I just not understanding how RCU's kthreads work?
-> > 
-> > It is quite possible that the current rcu_pending() code needs help,
-> > given the possibility of vCPU preemption.  I have heard of people doing
-> > nested KVM virtualization -- or is that no longer a thing?
-> 
-> Nested virtualization is still very much a thing, but I don't see how it is at
-> all unique with respect to RCU grace periods and quiescent states.  More below.
-> 
-> > But the help might well involve RCU telling the hypervisor that a given
-> > vCPU needs to run.  Not sure how that would go over, though it has been
-> > prototyped a couple times in the context of RCU priority boosting.
-> >
-> > > > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
-> > > > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
-> > > > > >     grace period started over than a second ago. If this value is bad,
-> > > > > >     I have no issue changing it.
-> > > > > 
-> > > > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
-> > > > > of what magic time threshold is used.  
-> > > > 
-> > > > Why? It works for this particular purpose.
-> > > 
-> > > Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
-> > > against edge cases, and I'm pretty sure we can do better with about the same amount
-> > > of effort/churn.
-> > 
-> > Beyond a certain point, we have no choice.  How long should RCU let
-> > a CPU run with preemption disabled before complaining?  We choose 21
-> > seconds in mainline and some distros choose 60 seconds.  Android chooses
-> > 20 milliseconds for synchronize_rcu_expedited() grace periods.
-> 
-> Issuing a warning based on an arbitrary time limit is wildly different than using
-> an arbitrary time window to make functional decisions.  My objection to the "assume
-> the CPU will enter a quiescent state if it exited a KVM guest in the last second"
-> is that there are plenty of scenarios where that assumption falls apart, i.e. where
-> _that_ physical CPU will not re-enter the guest.
-> 
-> Off the top of my head:
-> 
->  - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
->    will get false positives, and the *new* pCPU will get false negatives (though
->    the false negatives aren't all that problematic since the pCPU will enter a
->    quiescent state on the next VM-Enter.
-> 
->  - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
->    won't re-enter the guest.  And so the pCPU will get false positives until the
->    vCPU gets a wake event or the 1 second window expires.
-> 
->  - If the VM terminates, the pCPU will get false positives until the 1 second
->    window expires.
-> 
-> The false positives are solvable problems, by hooking vcpu_put() to reset
-> kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
-> scheduled in on a different pCPU, KVM would hook vcpu_load().
+Hi!
 
-Hi Sean,
+> This is the start of the stable review cycle for the 6.1.87 release.
+> There are 69 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-So this should deal with it? (untested, don't apply...).
+CIP testing did not find any problems here:
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 48f31dcd318a..be90d83d631a 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -477,6 +477,16 @@ static __always_inline void guest_state_enter_irqoff(void)
- 	lockdep_hardirqs_on(CALLER_ADDR0);
- }
- 
-+DECLARE_PER_CPU(unsigned long, kvm_last_guest_exit);
-+
-+/*
-+ * Returns time (jiffies) for the last guest exit in current cpu
-+ */
-+static inline unsigned long guest_exit_last_time(void)
-+{
-+	return this_cpu_read(kvm_last_guest_exit);
-+}
-+
- /*
-  * Exit guest context and exit an RCU extended quiescent state.
-  *
-@@ -488,6 +498,9 @@ static __always_inline void guest_state_enter_irqoff(void)
- static __always_inline void guest_context_exit_irqoff(void)
- {
- 	context_tracking_guest_exit();
-+
-+	/* Keeps track of last guest exit */
-+	this_cpu_write(kvm_last_guest_exit, jiffies);
- }
- 
- /*
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index fb49c2a60200..231d0e4d2cf1 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -110,6 +110,9 @@ static struct kmem_cache *kvm_vcpu_cache;
- static __read_mostly struct preempt_ops kvm_preempt_ops;
- static DEFINE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
- 
-+DEFINE_PER_CPU(unsigned long, kvm_last_guest_exit);
-+EXPORT_SYMBOL_GPL(kvm_last_guest_exit);
-+
- struct dentry *kvm_debugfs_dir;
- EXPORT_SYMBOL_GPL(kvm_debugfs_dir);
- 
-@@ -210,6 +213,7 @@ void vcpu_load(struct kvm_vcpu *vcpu)
- 	int cpu = get_cpu();
- 
- 	__this_cpu_write(kvm_running_vcpu, vcpu);
-+	__this_cpu_write(kvm_last_guest_exit, 0);
- 	preempt_notifier_register(&vcpu->preempt_notifier);
- 	kvm_arch_vcpu_load(vcpu, cpu);
- 	put_cpu();
-@@ -222,6 +226,7 @@ void vcpu_put(struct kvm_vcpu *vcpu)
- 	kvm_arch_vcpu_put(vcpu);
- 	preempt_notifier_unregister(&vcpu->preempt_notifier);
- 	__this_cpu_write(kvm_running_vcpu, NULL);
-+	__this_cpu_write(kvm_last_guest_exit, 0);
- 	preempt_enable();
- }
- EXPORT_SYMBOL_GPL(vcpu_put);
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+6.1.y
 
+No problems detected in Linux 5.15.156-rc1 (8d83652ef6bf), Linux
+6.6.28-rc1 (a4e5ff353287), Linux 6.8.7-rc1 (367141eaada2), either.
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--WwslkCFLxcagl3Fi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZh2ERQAKCRAw5/Bqldv6
+8m0iAJwJ/dkZ3f8DoCVwuSDyPH8YHnBxSgCgjoVCkPi8HMD7gp+rn7ONKDv+h4k=
+=F1K+
+-----END PGP SIGNATURE-----
+
+--WwslkCFLxcagl3Fi--
 
