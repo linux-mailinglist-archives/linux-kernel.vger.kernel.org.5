@@ -1,163 +1,120 @@
-Return-Path: <linux-kernel+bounces-145106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12088A4FA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:51:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DCCA8A4FED
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:57:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D3392841BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:51:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC4B5283E7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F70D78C7D;
-	Mon, 15 Apr 2024 12:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B2286AC4;
+	Mon, 15 Apr 2024 12:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6P43zqj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="t7rbZXZn"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D7778B4E;
-	Mon, 15 Apr 2024 12:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BA6745E7;
+	Mon, 15 Apr 2024 12:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185365; cv=none; b=hwPQOR/l08W97LTUB9cPVwd14/Wu5XSVsKlEpYQ/5YbFa3cwiWZ0D6KWZoTw0qCQWPgq9RLi8KV4UZcenbe0b8SlNhwyKPVnEiaKrHK4qofO9UdZxiwuVkZssl+s2Xc+XBojoV1/MzP64KnGdQ64LIOD4GNq/mdAHOw2I340eUk=
+	t=1713185410; cv=none; b=RGtw/cyPhNjBe9k313d0wCe9r/q/V39AjA2HU8Tdk8KfizgwfxWHOid7ZM/E5ZSE4fcPAmRcfpXfdAFCKA9+VUn/vxK1U7vSYQ5QIl9YfHt76DGIOxvCiks+d/u5Ktwa+aJrpfeMBNmWsz/ohf7+9pDszyEWZU6Gm+kk2fQrzBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185365; c=relaxed/simple;
-	bh=mG/unaVRY8IXRkgGUTAad+KiTdZfMmvpwe0Cqb6mEvI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mcAiLZAO+yfYwPYd2DghxBm4tUWUb9VwwE3hao0116WFxG+hsKCp7l07h+r6RPCU0Wq/by76NugkhFkjyLxGQAkXnM7GOIXRlsh6D6HkKJDrLwfMw/S2glF3z04nxlaqgKOO1o7WQh7PJ6o2a+NpCft7DQMpEcN0ME9HYAeat5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6P43zqj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF4BC113CC;
-	Mon, 15 Apr 2024 12:49:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185365;
-	bh=mG/unaVRY8IXRkgGUTAad+KiTdZfMmvpwe0Cqb6mEvI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n6P43zqjhFEoS3k2zPcvcA4l42Rk5bKdp/dfjcQbWesWR0snDA/kYVDGABF5CnJMQ
-	 gg7QO8WuOwz3p5cFaZp3dLfbVne4upDxGWGyjNP66LUKU44Ap78LRdfTtTtMPCwnQ+
-	 m9KKu5trkn48P5DTn+Zcymz0ftLQZ7ec303cfmDSh8nrzkC+QsH2fALlNOC6C6ms73
-	 WKnqqqV0lklMOYjtYll5zBuJwa5sKshpHuDUjXSPNc6/bmPOCFh9LiezXgwX31gAev
-	 /vgqKrwTR6/Kqg5SOrKYpQXIGi+qeT0PJf7621TtrwZvl2jSRs1Le2ydbHXR81QvoC
-	 jwDehTfxUe0QA==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v9 02/36] tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
-Date: Mon, 15 Apr 2024 21:49:20 +0900
-Message-Id: <171318536009.254850.3768213780834316975.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1713185410; c=relaxed/simple;
+	bh=RZViYOBc/68KZHjbxFjl/qF8BNCvvMPMaLqjwnNT1cQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ORgd+ENgck9aMYXi0anVyokS1rcB8TkB9CAB9qgfI4T+gSjuxO4K+bwESMqxlg/06g3Pe/ePp9heN15SsSlkdG9rLZpoImr2TVOxvvTeZ/QBf4uSMyhvPbB2ykoXczSy11X2JFLqp3p/7p+Lo89nb//opCZ8V0/6aHaJimx28Y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=t7rbZXZn; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: lukma@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id 012BD8801F;
+	Mon, 15 Apr 2024 14:50:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1713185402;
+	bh=zyHbMiyALYbzRNSRQ3bVjd+xXWkKyPH62uQ6mMp3z34=;
+	h=From:To:Cc:Subject:Date:From;
+	b=t7rbZXZnhhOiPAMBAd3KnAFH2Y/JIUtt2kInK9KgJfVnug9MAK1S/Jj1LvY+oxT3W
+	 xsIU8rzqkCkG88fq4MCy6ZUIYaJUZyf2QIOWjXjNCo52Yt0TndKFT4h3LjFvRjjMWz
+	 gjMmmc1QaKIzPpK0NDRq4jaVYL2+8EEUYIt6sdiPYLIuBIYIS/k1mffCPoXu+PStlA
+	 bjU7KLxDn55bT5wY/RHaYgOhOisEDtcZkLrKQk3q65G1t8nVdq9dicYzkb5vDp6pDa
+	 w7GvMW+Hzr9E3gZj3aDKU/2NqdTuEJjcZsEY2g9xRPGO48ImPGaIQ72Z8HuHelXjwC
+	 ujxFYu9WCLC4w==
+From: Lukasz Majewski <lukma@denx.de>
+To: netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Tristram.Ha@microchip.com,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Ravi Gunasekaran <r-gunasekaran@ti.com>,
+	Simon Horman <horms@kernel.org>,
+	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Murali Karicheri <m-karicheri2@ti.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Ziyang Xuan <william.xuanziyang@huawei.com>,
+	Shigeru Yoshida <syoshida@redhat.com>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+	linux-kernel@vger.kernel.org,
+	Lukasz Majewski <lukma@denx.de>
+Subject: [net-next PATCH v5 0/4] net: hsr: Add support for HSR-SAN (RedBOX)
+Date: Mon, 15 Apr 2024 14:49:24 +0200
+Message-Id: <20240415124928.1263240-1-lukma@denx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+This patch set provides v5 of HSR-SAN (RedBOX) as well as hsr_redbox.sh
+test script.
 
-Rename ftrace_regs_return_value to ftrace_regs_get_return_value as same as
-other ftrace_regs_get/set_* APIs.
+Applied on top of:
+Branch: net-next/main
+SHA1: 50aee97d1511
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
----
- Changes in v6:
-  - Moved to top of the series.
- Changes in v3:
-  - Newly added.
----
- arch/loongarch/include/asm/ftrace.h |    2 +-
- arch/powerpc/include/asm/ftrace.h   |    2 +-
- arch/s390/include/asm/ftrace.h      |    2 +-
- arch/x86/include/asm/ftrace.h       |    2 +-
- include/linux/ftrace.h              |    2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+Runs inside: Buildroot (2024.02.1+):
+SHA1: b31443e09cb7bb67b97ae6fb7614fe3a22889d50
 
-diff --git a/arch/loongarch/include/asm/ftrace.h b/arch/loongarch/include/asm/ftrace.h
-index de891c2c83d4..b43acfc5776c 100644
---- a/arch/loongarch/include/asm/ftrace.h
-+++ b/arch/loongarch/include/asm/ftrace.h
-@@ -70,7 +70,7 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs, unsigned long ip)
- 	regs_get_kernel_argument(&(fregs)->regs, n)
- #define ftrace_regs_get_stack_pointer(fregs) \
- 	kernel_stack_pointer(&(fregs)->regs)
--#define ftrace_regs_return_value(fregs) \
-+#define ftrace_regs_get_return_value(fregs) \
- 	regs_return_value(&(fregs)->regs)
- #define ftrace_regs_set_return_value(fregs, ret) \
- 	regs_set_return_value(&(fregs)->regs, ret)
-diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
-index 107fc5a48456..cfec6c5a47d0 100644
---- a/arch/powerpc/include/asm/ftrace.h
-+++ b/arch/powerpc/include/asm/ftrace.h
-@@ -61,7 +61,7 @@ ftrace_regs_get_instruction_pointer(struct ftrace_regs *fregs)
- 	regs_get_kernel_argument(&(fregs)->regs, n)
- #define ftrace_regs_get_stack_pointer(fregs) \
- 	kernel_stack_pointer(&(fregs)->regs)
--#define ftrace_regs_return_value(fregs) \
-+#define ftrace_regs_get_return_value(fregs) \
- 	regs_return_value(&(fregs)->regs)
- #define ftrace_regs_set_return_value(fregs, ret) \
- 	regs_set_return_value(&(fregs)->regs, ret)
-diff --git a/arch/s390/include/asm/ftrace.h b/arch/s390/include/asm/ftrace.h
-index 621f23d5ae30..1912b598d1b8 100644
---- a/arch/s390/include/asm/ftrace.h
-+++ b/arch/s390/include/asm/ftrace.h
-@@ -88,7 +88,7 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs,
- 	regs_get_kernel_argument(&(fregs)->regs, n)
- #define ftrace_regs_get_stack_pointer(fregs) \
- 	kernel_stack_pointer(&(fregs)->regs)
--#define ftrace_regs_return_value(fregs) \
-+#define ftrace_regs_get_return_value(fregs) \
- 	regs_return_value(&(fregs)->regs)
- #define ftrace_regs_set_return_value(fregs, ret) \
- 	regs_set_return_value(&(fregs)->regs, ret)
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index 897cf02c20b1..cf88cc8cc74d 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -58,7 +58,7 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
- 	regs_get_kernel_argument(&(fregs)->regs, n)
- #define ftrace_regs_get_stack_pointer(fregs) \
- 	kernel_stack_pointer(&(fregs)->regs)
--#define ftrace_regs_return_value(fregs) \
-+#define ftrace_regs_get_return_value(fregs) \
- 	regs_return_value(&(fregs)->regs)
- #define ftrace_regs_set_return_value(fregs, ret) \
- 	regs_set_return_value(&(fregs)->regs, ret)
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index b81f1afa82a1..d5df5f8fc35a 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -184,7 +184,7 @@ static __always_inline bool ftrace_regs_has_args(struct ftrace_regs *fregs)
- 	regs_get_kernel_argument(ftrace_get_regs(fregs), n)
- #define ftrace_regs_get_stack_pointer(fregs) \
- 	kernel_stack_pointer(ftrace_get_regs(fregs))
--#define ftrace_regs_return_value(fregs) \
-+#define ftrace_regs_get_return_value(fregs) \
- 	regs_return_value(ftrace_get_regs(fregs))
- #define ftrace_regs_set_return_value(fregs, ret) \
- 	regs_set_return_value(ftrace_get_regs(fregs), ret)
+Lukasz Majewski (4):
+  net: hsr: Provide RedBox support (HSR-SAN)
+  test: hsr: Move common code to hsr_common.sh file
+  test: hsr: Extract version agnostic information from ping command
+    output
+  test: hsr: Add test for HSR RedBOX (HSR-SAN) mode of operation
+
+ include/uapi/linux/if_link.h                  |  1 +
+ net/hsr/hsr_device.c                          | 36 ++++++-
+ net/hsr/hsr_device.h                          |  4 +-
+ net/hsr/hsr_forward.c                         | 85 ++++++++++++++--
+ net/hsr/hsr_framereg.c                        | 52 ++++++++++
+ net/hsr/hsr_framereg.h                        |  6 ++
+ net/hsr/hsr_main.h                            |  7 ++
+ net/hsr/hsr_netlink.c                         | 30 +++++-
+ net/hsr/hsr_slave.c                           |  1 +
+ tools/testing/selftests/net/hsr/hsr_common.sh | 97 +++++++++++++++++++
+ tools/testing/selftests/net/hsr/hsr_ping.sh   | 93 +-----------------
+ tools/testing/selftests/net/hsr/hsr_redbox.sh | 97 +++++++++++++++++++
+ 12 files changed, 403 insertions(+), 106 deletions(-)
+ create mode 100644 tools/testing/selftests/net/hsr/hsr_common.sh
+ create mode 100755 tools/testing/selftests/net/hsr/hsr_redbox.sh
+
+-- 
+2.20.1
 
 
