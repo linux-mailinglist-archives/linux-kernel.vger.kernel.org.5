@@ -1,231 +1,166 @@
-Return-Path: <linux-kernel+bounces-145460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C280A8A566D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:31:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FD5F8A566F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:31:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A2201F20641
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:31:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B783AB20ECF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1308779B84;
-	Mon, 15 Apr 2024 15:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D650178C8C;
+	Mon, 15 Apr 2024 15:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="TsZXhxB0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cpiQFj7B"
-Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O47FtMFg"
+Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63ACE60EF9;
-	Mon, 15 Apr 2024 15:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7E360EF9;
+	Mon, 15 Apr 2024 15:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713195056; cv=none; b=LQcWKaQKgVWeigwLyhA+9vHcP3+ijh5lreTIvmDz5j3BqEb8xQnpP+pLv7mYTG2OAKvcah3U4T3R5YRW6o444oWAYe6Bskl/euUWq2i/VY+NH75whMo4dCdsN43JM49kri+HEktMCrqIPfPAJiBuzaHZ1MnuIY9rjno4MLFS9uk=
+	t=1713195066; cv=none; b=s2o79elzHmoowYluw8Qtz7nq++jKIdZ7V7WSphQJ1mIFSF3NALh4U29bPm7U2pjs7SC6SFjeHD3KDlY8b9RPEtLYTUlZAcTOip+fhLBwGv+Ir4WIGOn1BSsYPZ+obkK3IPmoB5HXnz2SlppVB/jkXpvStSIWssd+L3ykNDnBWrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713195056; c=relaxed/simple;
-	bh=ysPz6mY/TRewOJKQOKl7aqCeiD9oIAf/7WjUQ5bJ3KM=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=qGW/8IDj0B8v5mchzvLatRzj/6tcS19AsR5oOcrELeihN8FhWzbmlW3FseiViwGpi2tgl8McO4TUqlDcdSijordSnzuTQfzdwe5T5+jZlrBW5lS5ARDnTT90Le7jjUAPdAmQ39efuXyKNWxbfwy7zBVxj2/hO5riyNFk6iBS72s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=TsZXhxB0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cpiQFj7B; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 502EF1140133;
-	Mon, 15 Apr 2024 11:30:53 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 15 Apr 2024 11:30:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713195053; x=1713281453; bh=uejkFuVJ7S
-	+uU6TPaZslbYYiwuH4wYboz0/NG64qH38=; b=TsZXhxB0sdEZtHCFU2Yk5LG6Z8
-	uPF+TwzaqPoUtKbWauOxtH4+C7Akzgsx5QnzHO/kv0LKj/qSf8bih/c+pcQNFDjw
-	wYSMWkh72PrhmvqCilDplOB9y/696LFvk3cp+KwxEEgGWcn9qCuVJDhDcfnzP2yz
-	q14czIgEWk0oTA4zx5+9zLTYqcF0sjID3GFHuYhAkuF4h2GHgK+MPTKxir/85HEn
-	WHEG5bFm9/lH+PJjJk1fI8XDea3tgoTFjjzKVwZVKXNsMipQEzvBh5+oXs8vk6Mt
-	KpSEKav49DHZqvbTztdSQwJSWU7ycEMRmkyQSkhdlfGzvD2kU2RHFTRsBjRw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1713195053; x=1713281453; bh=uejkFuVJ7S+uU6TPaZslbYYiwuH4
-	wYboz0/NG64qH38=; b=cpiQFj7BzVcn52N5NdGS8x9v4da+p4jMDv0g89gle0uu
-	lLhcb20aCQDPV044IkxkklRJHovV3p0CUwOo0vRYTvf9b9qgxYIAGKWKYCLpBzWL
-	PHMTmxA7TJa4kEdePJeLSKYAE34f6ROAIRh/R3fMeLpTS8peztpPOhNqgdPG4RG8
-	nExko+KcbxV1Vz/B1x7L4ODsWTyeOgRxcyDOv4ynZXdRILc+nmt5GCHB1PyRzD/d
-	+/IUBY+tm+0xlewekvLJKCNgZTFSKW1Qf4gaZtCaUzGK7Cia0c66WgXg50615dw5
-	U9wm3yoNYhZIqLnCD5Ip5yLn07zrQK4UiBErvEMzRQ==
-X-ME-Sender: <xms:K0gdZoXdDfe7FtOc-J9lmS_LYkQ4r-C8SBziw6hl9KI9pam2T0M2Ow>
-    <xme:K0gdZsnrfnpW5pDGNS-bt1Ov5khh39DOCFPnhWFQjmc7m2R2Yj_k0zu7NRyXFsXT5
-    f_MStLFYVHtgVY61eg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejvddgleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:K0gdZsZSjdLnThvcTEskcGolfQuQX_wm1oeDCLaHNnpFHD9Hy-TuUw>
-    <xmx:K0gdZnWO9eUGc5oDmLHQ4JErDP-uraTCveZiZPibXQ3jd5gQoGxGEQ>
-    <xmx:K0gdZimKqo26KcLeMT0lD25R6DvGRJwGTSYEQh-zwpVZ1SHiFCyruQ>
-    <xmx:K0gdZsdFcPYBvz_fOCox8EtZYvqpm11OBs7yV-lfOkaKSB64pUJ8_w>
-    <xmx:LUgdZhrptGBapc2P9s8b5mxNbcnHlMom_sSBuQFVaWQri9ajjMFzUk0u>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id B461EB6008D; Mon, 15 Apr 2024 11:30:51 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1713195066; c=relaxed/simple;
+	bh=wapBw4V2DrvpOosJ+DOFRqOAHFrTGV9V6EWZ/ocZ8Mo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qbouuTPmRKQ+IBnEg3a14bc2azKqyERiHnLPdBRDuNa5K0AfWl4ycdNJkz1JJz8A302jr7ULoMwDsX4uz/Cak9KZtwP75oxMtGwu/Pgn9ao3mJeiRgfgUiLQ/EYdFbM1RrbgbAWoyVOnWOo1yBtjoen4NLgwcMY44GjIkrwu3f0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O47FtMFg; arc=none smtp.client-ip=209.85.222.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-78ebcfcd3abso280314185a.1;
+        Mon, 15 Apr 2024 08:31:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713195063; x=1713799863; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=MdEQyvlBs8JPSR6sY8l1QfloixZaJaJWiIIgUApzqz8=;
+        b=O47FtMFg0FQ6z8ISm2QBhZ2pq4S3xMNURuiQTHLf8lzVjfm2g5gjDoxFWgClDuGLy+
+         +Ws+Bg+pGIwv+2D4tmzV+FUj992YPig3MsIZimqUHwK0k+2lHYgXu9Ioen6PekPbkQBQ
+         l0XXet7zu+/8vMj693RsF+x96DJeErAbtFTht9Ry2Enf0B3lgt0SJRPwudvAsUPpw4qP
+         JAXh4AcP+ziv+7eMJYMn7jin1L6fC3e6znPaoW72XWgAW4umbmIfICul+YnXt0CBH6Yf
+         3iRMKqEvCLfZjzqED1JFTLJeTzSsyPqjVescIsBjxqBVUkt3rTI2ttM5iuMK3JckKo74
+         40OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713195063; x=1713799863;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MdEQyvlBs8JPSR6sY8l1QfloixZaJaJWiIIgUApzqz8=;
+        b=BI0Hw9CHSCbqZ8RFPajSuUsK2bpx6VReun1ZEI2mlgVjWutkVhIrfJvdeaA8TP2KVr
+         fU3ub7Bxray0GYMMr69ee6g2T7isB9CNdlO4SNGqu7iAyqCvGr6XGY75QVC4sdnsvhD6
+         nVQWcGSB5liM5ZY4mnNfj2ICEOSlZ3weK51D4MxDaIzamj0o2WTNyQWtqLuUPlyLKyzf
+         9jid0dUwuY5G29Vqn2b9Uz59tRHsl7EHXwfXLkAr+he6woyAmOtqFmBwn4Pg5At0WDfB
+         bKWyKoD798s3pCMEI7/IiEbr4zPCqPvcaNn+2A8IgNen3uNfkNNVdlM6C8k7ZNK/gMkK
+         OvMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVpEaORe/uDJwibZG6y0rByLEJdTU/mRY6jD7Lf3Y966H8pQYRn0oRf7BaCKWLvqsXwvKtQgRhXEcpfJcm8ChsAu6GuL6JGvG11uv+oVbc6jymO+nl9faPFkEuA7/p4poYZ409n
+X-Gm-Message-State: AOJu0Yxon2Zd5BiPAwhkNYnIQ0SrR7cOHp93UIqwnkTcT1uwbtzRflug
+	CJcDDUwE0JjbiwoG04vCvaMEjesvqTj8bhP+U1Q6vh89LlTaDHVx
+X-Google-Smtp-Source: AGHT+IEhtLO+7hPlAs3otp/4TH5Ey3+BrrnBrw7Dd43SvvDnFqbEILnl6s8hx5eye4E29FtScbMAIw==
+X-Received: by 2002:a05:620a:4ad3:b0:78e:bf95:fba6 with SMTP id sq19-20020a05620a4ad300b0078ebf95fba6mr12625309qkn.60.1713195063533;
+        Mon, 15 Apr 2024 08:31:03 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id xx18-20020a05620a5d9200b0078d632edfd4sm6479151qkn.14.2024.04.15.08.30.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 08:31:02 -0700 (PDT)
+Message-ID: <459b31bd-64b3-4804-bc5a-c8ffd145e055@gmail.com>
+Date: Mon, 15 Apr 2024 08:30:55 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <61d0584f-dfe4-4d8c-a178-78f000d477d4@app.fastmail.com>
-In-Reply-To: <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-References: <20230120141002.2442-1-ysionneau@kalray.eu>
- <20230120141002.2442-31-ysionneau@kalray.eu>
- <f69adaf2-6582-c134-5671-4d6fd100fcf1@linaro.org>
- <c20b433f-97ef-7faa-5122-9949af41f2fb@kalrayinc.com>
-Date: Mon, 15 Apr 2024 17:30:31 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Yann Sionneau" <ysionneau@kalrayinc.com>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
- "Yann Sionneau" <ysionneau@kalray.eu>,
- "Jonathan Corbet" <corbet@lwn.net>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Marc Zyngier" <maz@kernel.org>,
- "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
- "Will Deacon" <will@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
- "Boqun Feng" <boqun.feng@gmail.com>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- "Kees Cook" <keescook@chromium.org>, "Oleg Nesterov" <oleg@redhat.com>,
- "Ingo Molnar" <mingo@redhat.com>, "Waiman Long" <longman@redhat.com>,
- "Aneesh Kumar" <aneesh.kumar@linux.ibm.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Paul Moore" <paul@paul-moore.com>, "Eric Paris" <eparis@redhat.com>,
- "Christian Brauner" <brauner@kernel.org>,
- "Paul Walmsley" <paul.walmsley@sifive.com>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Albert Ou" <aou@eecs.berkeley.edu>,
- "Jules Maselbas" <jmaselbas@kalray.eu>,
- "Guillaume Thouvenin" <gthouvenin@kalray.eu>,
- "Clement Leger" <clement@clement-leger.fr>,
- "Vincent Chardon" <vincent.chardon@elsys-design.com>,
- =?UTF-8?Q?Marc_Poulhi=C3=A8s?= <dkm@kataplop.net>,
- "Julian Vetter" <jvetter@kalray.eu>, "Samuel Jones" <sjones@kalray.eu>,
- "Ashley Lesdalons" <alesdalons@kalray.eu>,
- "Thomas Costis" <tcostis@kalray.eu>, "Marius Gligor" <mgligor@kalray.eu>,
- "Jonathan Borne" <jborne@kalray.eu>,
- "Julien Villette" <jvillette@kalray.eu>,
- "Luc Michel" <lmichel@kalray.eu>, "Louis Morhet" <lmorhet@kalray.eu>,
- "Julien Hascoet" <jhascoet@kalray.eu>,
- "Jean-Christophe Pince" <jcpince@gmail.com>,
- "Guillaume Missonnier" <gmissonnier@kalray.eu>,
- "Alex Michon" <amichon@kalray.eu>, "Huacai Chen" <chenhuacai@kernel.org>,
- "WANG Xuerui" <git@xen0n.name>,
- "Shaokun Zhang" <zhangshaokun@hisilicon.com>,
- "John Garry" <john.garry@huawei.com>,
- "Guangbin Huang" <huangguangbin2@huawei.com>,
- "Bharat Bhushan" <bbhushan2@marvell.com>,
- "Bibo Mao" <maobibo@loongson.cn>, "Atish Patra" <atishp@atishpatra.org>,
- "Jason A . Donenfeld" <Jason@zx2c4.com>, "Qi Liu" <liuqi115@huawei.com>,
- "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Mark Brown" <broonie@kernel.org>,
- "Janosch Frank" <frankja@linux.ibm.com>,
- "Alexey Dobriyan" <adobriyan@gmail.com>
-Cc: "Benjamin Mugnier" <mugnier.benjamin@gmail.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mm@kvack.org,
- Linux-Arch <linux-arch@vger.kernel.org>, linux-audit@redhat.com,
- linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH v2 30/31] kvx: Add power controller driver
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2 1/2] net: dsa: mt7530-mdio: read PHY address
+ of switch from device tree
+To: arinc.unal@arinc9.com, Daniel Golle <daniel@makrotopia.org>,
+ DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
+ Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+ mithat.guner@xeront.com, erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v2-0-1a7649c4d3b6@arinc9.com>
+ <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v2-1-1a7649c4d3b6@arinc9.com>
+Content-Language: en-US
+From: Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20240414-b4-for-netnext-mt7530-phy-addr-from-dt-and-simplify-core-ops-v2-1-1a7649c4d3b6@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 15, 2024, at 16:08, Yann Sionneau wrote:
-> On 1/22/23 12:54, Krzysztof Kozlowski wrote:
->> On 20/01/2023 15:10, Yann Sionneau wrote:
->>> From: Jules Maselbas <jmaselbas@kalray.eu>
->>>
->>> The Power Controller (pwr-ctrl) control cores reset and wake-up
->>> procedure.
->>> +
->>> +int __init kvx_pwr_ctrl_probe(void)
->>> +{
->>> +	struct device_node *ctrl;
->>> +
->>> +	ctrl = get_pwr_ctrl_node();
->>> +	if (!ctrl) {
->>> +		pr_err("Failed to get power controller node\n");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	if (!of_device_is_compatible(ctrl, "kalray,kvx-pwr-ctrl")) {
->>> +		pr_err("Failed to get power controller node\n");
->> No. Drivers go to drivers, not to arch directory. This should be a
->> proper driver instead of some fake stub doing its own driver matching.
->> You need to rework this.
->
-> I am working on a v3 patchset, therefore I am working on a solution for 
-> this "pwr-ctrl" driver that needs to go somewhere else than arch/kvx/.
->
-> The purpose of this "driver" is just to expose a void 
-> kvx_pwr_ctrl_cpu_poweron(unsigned int cpu) function, used by 
-> kernel/smpboot.c function __cpu_up() in order to start secondary CPUs in 
-> SMP config.
->
-> Doing this, on our SoC, requires writing 3 registers in a memory-mapped 
-> device named "power controller".
->
-> I made some researches in drivers/ but I am not sure yet what's a good 
-> place that fits what our device is doing (booting secondary CPUs).
->
-> * drivers/power/reset seems to be for resetting the entire SoC
->
-> * drivers/power/supply seems to be to control power supplies ICs/periph.
->
-> * drivers/reset seems to be for device reset
->
-> * drivers/pmdomain maybe ?
 
-Right, I don't think any of the above are appropriate
 
-> * drivers/soc ?
->
-> * drivers/platform ?
->
-> * drivers/misc ?
+On 4/13/2024 11:07 PM, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> 
+> Read the PHY address the switch listens on from the reg property of the
+> switch node on the device tree. This change brings support for MT7530
+> switches on boards with such bootstrapping configuration where the switch
+> listens on a different PHY address than the hardcoded PHY address on the
+> driver, 31.
+> 
+> As described on the "MT7621 Programming Guide v0.4" document, the MT7530
+> switch and its PHYs can be configured to listen on the range of 7-12,
+> 15-20, 23-28, and 31 and 0-4 PHY addresses.
+> 
+> There are operations where the switch PHY registers are used. For the PHY
+> address of the control PHY, transform the MT753X_CTRL_PHY_ADDR constant
+> into a macro and use it. The PHY address for the control PHY is 0 when the
+> switch listens on 31. In any other case, it is one greater than the PHY
+> address the switch listens on.
+> 
+> Reviewed-by: Daniel Golle <daniel@makrotopia.org>
+> Tested-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-Not drivers/misc, that is mainly for things with a user-space
-interface.
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-drivers/soc is mainly for drivers used by other drivers, but
-this would work, especially if you expect to have multiple
-SoC variants that all use the same architecture code but
-incompatible register layouts
-
-drivers/platform is really for things outside of the SoC
-that are used for managing the system, especially across
-architectures, so I don't think that is a good fit.
-
-Traditionally we had this code in arch/{arm,mips,powerpc,sh,x86}
-and we never created a drier subsystem for it since newer
-targets (arm64, riscv, newer arm, most x86) all use a method
-that is specified as part of the ISA or firmware interface.
-
-The question what you expect to see with future hardware
-iterations: if you think all arch/kvx/ hardware will use the
-same code for maybe at least the next five years, I would
-suggest you keep it in arch/kvx/kernel/smp.c, but if you
-know or expect other implementations to be needed, I can
-merge it as a driver through drivers/soc/.
-
-     Arnd
+I would go a step further and name phy_addr switch_mdio_addr, or 
+something along those lines to clearly denote this is not a per-port PHY 
+address neither a proper PHY device, but we've already had a similar 
+discussion before about spelling this out clearly as a "pseudo PHY"....
+-- 
+Florian
 
