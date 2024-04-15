@@ -1,125 +1,149 @@
-Return-Path: <linux-kernel+bounces-145696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82F0A8A59A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:20:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7083C8A59B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:21:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206711F22BBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:20:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26E421F211A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766D813A89E;
-	Mon, 15 Apr 2024 18:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B6F13AA54;
+	Mon, 15 Apr 2024 18:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="e+DlGRPF"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YbgowMOY"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2A6139CEE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C0513A89E;
+	Mon, 15 Apr 2024 18:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713205203; cv=none; b=QVU4sgNelyHAT/Rf3IWeaC9hDrDpZFTeVD0kQgPEUvORcW8oJLQjLxtyVEZ+SdJzb/g+Ib1Gp+uikfkb7XZ6agRKHofPZjKZt4U2hHTu0TaBGc9wvFn4Ci0xW6g+11rCmnzDL44dKo410qWTXtxCpRQgE/eFxNSVM+YxnkYXGo8=
+	t=1713205276; cv=none; b=S2qD6IT+4AajuEUlBv2zjTvSjFwXcVka8VR3UpUWOCIq0Cu03SNgvSy+rpU1sU8Ow6KmBsK9O0h0kHPCUuildLRnD1GVU/mVNC+PSwUdxgZtPbA9SDgrtRgFtXwdW/mHrYPNViuvKA0UM8U1y9FLdJ1WdrZz587V4rEJ+lrL8T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713205203; c=relaxed/simple;
-	bh=6bK9/EmLtsGWBkVVtivqidNz/Hm2f1PhZTOetEUlll4=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=fElOGqDrQccDuJbEpkdGaBg8R6vNGSnwyEq11gv2NSGyAkvv98cuR3Brvs31qlcaH4xSL5JIHt47Ff7V+ghV+sRI9FreIKzjExkGQi2688Oxu4Ewy7+cl7R7S2q9Vf6ej6Ao1zKXXrjQxeFz202cyKmwhlLul7O00ewDIHXbZco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=e+DlGRPF; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e5c7d087e1so20318125ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:20:02 -0700 (PDT)
+	s=arc-20240116; t=1713205276; c=relaxed/simple;
+	bh=Rc2DdJhNtXYERFfFXn8Tdq364UiaG6apBSUQyU5ObYg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NDLQy4r0EWRk6fKLrVHW8rKHr3gLeIQG3CV1/39mOJej5RQ+JftbqPJ9ZisBVpdaPx9mzNBerFAXbjIkNni3SD6l3RJsDpSSS36cssHbHR2OyXV+PunZkFpaQVyiZx+ke27UCtkhPNpdIl2GDNuIY/rP8lGIBcgpzBpX/Iu/m9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YbgowMOY; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5aa3f0fcd46so2264259eaf.1;
+        Mon, 15 Apr 2024 11:21:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713205201; x=1713810001; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XMYfsNuUq9BKvqfKjhxnbpLMRwsgeNj3FevT6pUpzBc=;
-        b=e+DlGRPFoGfqrQNnLCrhoOEIsMRLgVpmuZQuejIQuELfnDQh5ERKyLn2bJp70pJGPU
-         fZJ6voM2Vq55AhXYqmdDwxsN9m1u8OlPuEBUkPFtQPngYnLMp7+7Wff85dQWrf3vYBAP
-         PEwWttYXotfByQPfQaXO+YGUmSu1M8thlHiXwKSmQafrzjQfDpFlnqcFOeze7ARnE/kF
-         94Hu6tM7fWbGgxSaUlyIom7ZLF3w8M9zLapkTInu2bmvYnNL1AvncLHsnBCBXZckXcV3
-         mxneJrmUOYv9PBW5Ip3LAu/e1C9fxb3zD2HqLH3qSxtlUuPHPIn0dlnwZezx4ZBkX+f1
-         9yQA==
+        d=gmail.com; s=20230601; t=1713205274; x=1713810074; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y+sACIufw/w8GpGeE4sEiBMvaX1bCTXDGNvgc5Qvf6E=;
+        b=YbgowMOYlH2+ByQv0nskCQJOTHDxqZQFSI7ie5lDkwpJsZ3wurWRYXkcdy6HjCA0PK
+         0+vCGfOPZ7N2c7C5ytJv+zoIu/fBaz0GqDXDDg8Ja/Aa1jAduhu+y529zSVghkPkTrX/
+         XxmxLcPG9lueEhkVpH7tOQtfO6rMohg18zpw5uIIDAfIql4TpOoFF9SKFnCUWPvfj5Gh
+         DElByl3WYNH+xJQL5ccUC2lOuJglYvNdu1Psmrrt/8IyLHWJYt7fbmas/3yfEk65JlJj
+         1PFrnvENxIuQ53AYUjnwu22HlK1Q3z3bvEedfohe/zsdTW9xpMCLknlFIgD9CyWbfENm
+         RKFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713205201; x=1713810001;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XMYfsNuUq9BKvqfKjhxnbpLMRwsgeNj3FevT6pUpzBc=;
-        b=wZKg3qHadKRHgFD1/IS9LEG9lpbLf1PdOXd6gKT3Ix5x/G3aA9FXCj6leCPoXbA03z
-         l7a2YAQEyC2LuFeMRK6VIms61hBsl5lpGL7K9jOrNK6xbMY63iwkB7iBgv2EoZymB025
-         rjtA7P/OvO6/GoUOXHk2QG6pJ+Tck8UNyQaJ7rrDZypY5LS8OZGQSBeQgO0loHXvh+Ix
-         UbSpo7chuZ52SJRUYoiEnOUqGtGWINVou6XziMBil9aVjGYzF4wXs8oWsiibJ2JAVvEt
-         Lwt5T3O4B+34zt/aFaoL/t78XjBOtbSau451BlxGsG8F6QEEmV1dzV4xUQN9a0NkyXF+
-         5sJA==
-X-Forwarded-Encrypted: i=1; AJvYcCXqhhKAfMlU2LXRMjfAqHRID3B75xVJXlhwUZLzVaQHbCrn+gwP6pzLVyJb8HFEF3UrzWoUVP55+0aeezrGF0oqVndenfjBRYR3BA+R
-X-Gm-Message-State: AOJu0Yzl4KrnUdOKBJXgwvn2LjABbfvoi8A2NczNSdtSgigkuAf7MfQQ
-	2cYYr/JVHWDoiNjzY92C3lKYPGX9LcPm44matF+RGotNl3yr8jo7XQXiAjUJvmM=
-X-Google-Smtp-Source: AGHT+IFzrfkhu7oRgAgzvuYnIB9eEmIOMjOJI5EU0J1KJYpJ0UThV3k2FZqv7S67F8Ljyu0GZ8zduw==
-X-Received: by 2002:a17:903:11cc:b0:1e6:34f9:f730 with SMTP id q12-20020a17090311cc00b001e634f9f730mr4247720plh.52.1713205201209;
-        Mon, 15 Apr 2024 11:20:01 -0700 (PDT)
-Received: from localhost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id kz5-20020a170902f9c500b001e7b80b7c82sm412788plb.283.2024.04.15.11.20.00
+        d=1e100.net; s=20230601; t=1713205274; x=1713810074;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y+sACIufw/w8GpGeE4sEiBMvaX1bCTXDGNvgc5Qvf6E=;
+        b=RIkc0GruDy4Hns5qDDdS2gSgpcJVQlYBIKya8lX7VVusAsu2tm6pYzu1oDSQlPldBw
+         459pMV9qAap2GyQQndHlQrqjg+HDyRGOqe9UI+vK7aKnrFNNv4ZVdkQNqhgyIisX+rz7
+         pycP8MNA62vwq6LlGtTnQy+ytgEBshd7ECBC7Gt8bCjHpbBxDqtnuER2SbTw1q0712gR
+         wdGhnsoU8rCGdgwDFiRQ2G343FEjI0doJAlV6S76RwIil8mQKWKsMMqwnhSUziABee6L
+         3YBk2DMUCpcq2ZWEA3+NfpDl+Svyq5LrUXyjB0mAkX62u5C0GSw5vppPJjuaBJyky1H4
+         Zpqg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUY3xxwHZtl8eqLO+lrnCfnE4vuzOyEilCXlQ2k5AX5JiNgPqk4XR/if3JNy/btMZYHs70UQi0xb2W7x8a3wed1/Jbk6gIazQqAfBGAMwKRpjE83mcyU+1Oej/ybKOs0NyNeNJmI3mQvUGJojOH6gihEyoKih+a8KcyK2K6Kz7dS5o1Tm1Sk1mxxVHH44QeoIoq+8Y/g+5pxEQvnd4KBzIxLlfhPr3LUTcorOycZi7jZLi9+LrUy4px0nxYs8=
+X-Gm-Message-State: AOJu0YynaRoFabp5vxmBI3MbRJRhkwcROJL/scfYncGIzJEhjZ7kQtCN
+	VqJ0dx5EBk2HPeCvTSzI1GV6sJkI3tH2zV3oEEPw5VEcqCLIkXSZ
+X-Google-Smtp-Source: AGHT+IHWr/WeRMTapkOGUUH5erF0VV7fugiYX43aosyHD6DomWr2AEc2K79AjdmI5lspzTuJFUOGtQ==
+X-Received: by 2002:a05:6820:985:b0:5aa:67ac:856f with SMTP id cg5-20020a056820098500b005aa67ac856fmr10305071oob.4.1713205274176;
+        Mon, 15 Apr 2024 11:21:14 -0700 (PDT)
+Received: from nukework.lan (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
+        by smtp.gmail.com with ESMTPSA id x4-20020a056820104400b005a4dc7abc01sm2177494oot.11.2024.04.15.11.21.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 11:20:00 -0700 (PDT)
-Date: Mon, 15 Apr 2024 11:20:00 -0700 (PDT)
-X-Google-Original-Date: Mon, 15 Apr 2024 11:19:57 PDT (-0700)
-Subject:     Re: linux-next: manual merge of the rcu tree with the risc-v tree
-In-Reply-To: <b147ca95-c0e2-4729-b670-a1ee605369d2@paulmck-laptop>
-CC: Stephen Rothwell <sfr@canb.auug.org.au>, Paul Walmsley <paul@pwsan.com>,
-  leobras@redhat.com, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, yujie.liu@intel.com
-From: Palmer Dabbelt <palmer@rivosinc.com>
-To: paulmck@kernel.org
-Message-ID: <mhng-4dd659ce-865c-48c8-bf51-397804035d60@palmer-ri-x1c9a>
+        Mon, 15 Apr 2024 11:21:13 -0700 (PDT)
+From: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	linux-clk@vger.kernel.org
+Cc: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Subject: [PATCH v3 0/7] ipq9574: Enable PCI-Express support
+Date: Mon, 15 Apr 2024 13:20:45 -0500
+Message-Id: <20240415182052.374494-1-mr.nuke.me@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-On Sun, 14 Apr 2024 21:44:10 PDT (-0700), paulmck@kernel.org wrote:
-> On Mon, Apr 15, 2024 at 12:32:47PM +1000, Stephen Rothwell wrote:
->> Hi all,
->>
->> Today's linux-next merge of the rcu tree got a conflict in:
->>
->>   arch/riscv/include/asm/cmpxchg.h
->>
->> between commits:
->>
->>   07a0a41cb77d ("riscv/cmpxchg: Deduplicate cmpxchg() asm and macros")
->>   54280ca64626 ("riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2")
->>
->> from the risc-v tree and commit:
->>
->>   b5e49f1af563 ("riscv: Emulate one-byte cmpxchg")
->>
->> from the rcu tree.
->>
->> I fixed it up (I just used the former as the latter seems to no longer be
->> needed - I also undid the change to arch/riscv/Kconfig from the latter)
->> and can carry the fix as necessary. This is now fixed as far as linux-next
->> is concerned, but any non trivial conflicts should be mentioned to your
->> upstream maintainer when your tree is submitted for merging.  You may
->> also want to consider cooperating with the maintainer of the conflicting
->> tree to minimise any particularly complex conflicts.
->
-> Agreed, it looks to me like I should drop my RISC-V change in favor of
-> the native support.  Please let me know if I am mistaken.
->
-> If I do not hear otherwise, I will pull my commit out of -next in favor
-> of those two on my next rebase.
+There are four PCIe ports on IPQ9574, pcie0 thru pcie3. This series
+addresses pcie2, which is a gen3x2 port. The board I have only uses
+pcie2, and that's the only one enabled in this series.
 
-Sorry I forgot to send the shared tag.  We can pre-merge if you want, 
-I'm fine either way just let me know.
+I believe this makes sense as a monolithic series, as the individual
+pieces are not that useful by themselves.
 
->
-> 							Thanx, Paul
+In v2, I've had some issues regarding the dt schema checks. For
+transparency, I used the following test invocations to test v3:
+
+      make dt_binding_check     DT_SCHEMA_FILES=qcom,pcie.yaml:qcom,ipq8074-qmp-pcie-phy.yaml
+      make dtbs_check           DT_SCHEMA_FILES=qcom,pcie.yaml:qcom,ipq8074-qmp-pcie-phy.yaml
+
+
+Changes since v2:
+ - reworked resets in qcom,pcie.yaml to resolve dt schema errors
+ - constrained "reg" in qcom,pcie.yaml
+ - reworked min/max intems in qcom,ipq8074-qmp-pcie-phy.yaml
+ - dropped msi-parent for pcie node, as it is handled by "msi" IRQ
+
+Changes since v1:
+ - updated new tables in phy-qcom-qmp-pcie.c to use lowercase hex numbers
+ - reorganized qcom,ipq8074-qmp-pcie-phy.yaml to use a single list of clocks
+ - reorganized qcom,pcie.yaml to include clocks+resets per compatible
+ - Renamed "pcie2_qmp_phy" label to "pcie2_phy"
+ - moved "ranges" property of pcie@20000000 higher up
+
+Alexandru Gagniuc (7):
+  dt-bindings: clock: Add PCIe pipe related clocks for IPQ9574
+  clk: qcom: gcc-ipq9574: Add PCIe pipe clocks
+  dt-bindings: PCI: qcom: Add IPQ9574 PCIe controller
+  PCI: qcom: Add support for IPQ9574
+  dt-bindings: phy: qcom,ipq8074-qmp-pcie: add ipq9574 gen3x2 PHY
+  phy: qcom-qmp-pcie: add support for ipq9574 gen3x2 PHY
+  arm64: dts: qcom: ipq9574: add PCIe2 nodes
+
+ .../devicetree/bindings/pci/qcom,pcie.yaml    |  35 +++++
+ .../phy/qcom,ipq8074-qmp-pcie-phy.yaml        |  36 ++++-
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi         |  93 +++++++++++-
+ drivers/clk/qcom/gcc-ipq9574.c                |  76 ++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c        |  13 +-
+ drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
+ .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
+ include/dt-bindings/clock/qcom,ipq9574-gcc.h  |   4 +
+ 8 files changed, 400 insertions(+), 7 deletions(-)
+
+-- 
+2.40.1
+
 
