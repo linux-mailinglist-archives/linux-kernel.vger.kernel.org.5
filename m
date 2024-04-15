@@ -1,136 +1,107 @@
-Return-Path: <linux-kernel+bounces-145006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3928A4E0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:49:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E118A4E11
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:50:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49459B21D7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:49:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 283A9B21EBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9986657D3;
-	Mon, 15 Apr 2024 11:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC4564CEF;
+	Mon, 15 Apr 2024 11:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="m01cPoQ5"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KKOafp8Y"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9FA4E1C9;
-	Mon, 15 Apr 2024 11:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C705DF05
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713181771; cv=none; b=tzY3x+JmqR3/Ieko0RaqODZsoJ/ttXqGv+pjGE31sOUs1nC3+0eVL/w6W3SqECNjShHvkYudF5VIzkcs6MM9D3wwxWGB+MF/p1On5PjCwG3Y/mhPmIGbew3qxobc2dF5G1VMK7a2E2Ej4RBe4B2W/2HrEkOwhnXxCluwlwmJPkw=
+	t=1713181811; cv=none; b=Aw813nUU8RLuNRjYtb3gxeSpSoB9U9SGoD/1KOzh3D0xswUJD/xLyRHDz0Jtgaok/l4MvCcEiCG4GCKuQjCXOuLROakvuOa43eV9Y0CfC7GQ5MniakGH2RiumUF4YLGuZwY+QAfDjygYYSrOS+4It4YThYls/tivW5Z6mOu03OE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713181771; c=relaxed/simple;
-	bh=1AOxoQGdL0y1YWkk65R3laOqyKK3IrrdSTK7u4d2Zr0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CtoVjP7F4VbMKl4y4AUKSSm0DhAzwN4M2KhMTTz2HtOWii6n4dA7ASSLZpcxVBgEag1vAJFnaxV2qmt8x0Yw729OK2M3Rz1v92qUyg/AABz3yZVq6ChNCodtCe4DR70T9RnAFwn9TsScJgVzzmGJvYBCwZiDQ5QgB+YuFpVd56s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=m01cPoQ5; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43F5xMSH026547;
-	Mon, 15 Apr 2024 11:49:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yksTcyQz5NdCm7fE5UHkxvYbIpHPmZ0I6TTqMEmOh2s=;
- b=m01cPoQ5+I+dg51dtwiPS9lW/uZ00d+m2aFFjBd/K41uBeWrl2HB5VlbZWBzrenNW5jM
- xYkMP+RYvfLONrWZrWEvzLHVTgoQWRD94DQk64EDMXUapFSNFKFUPl6OjdwQ9e0fYzey
- Kq7W8AR9VbWatgV0mtSbPDrIPs8ZlRDox2ep9kuEGCwxnZt9IjUGbAw9595Ks7TD8ZQ4
- r3snJEVqlooqqcH75qaaUPU47TbjGzEU+dB0PPQxdvldFpFPYEg4hUi7Y7PfbTXzq5gY
- 3KVnAzXi3ohzsNpIkzf/vdPsg0B3ytPHocgN3hpV+hsq9XuWNPELLySS07aOXBbk4ptH JA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xgmufhd0r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 11:49:22 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43FBnMGI000544;
-	Mon, 15 Apr 2024 11:49:22 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xgmufhd0p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 11:49:22 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43F8Mbtq018157;
-	Mon, 15 Apr 2024 11:49:21 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg4csytm4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 11:49:21 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43FBnGw241615800
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Apr 2024 11:49:18 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0CD0620040;
-	Mon, 15 Apr 2024 11:49:16 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B5F902004B;
-	Mon, 15 Apr 2024 11:49:15 +0000 (GMT)
-Received: from [9.155.199.94] (unknown [9.155.199.94])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 15 Apr 2024 11:49:15 +0000 (GMT)
-Message-ID: <2a4ce6bc-49cc-45b8-ba15-82eb330f409f@linux.ibm.com>
-Date: Mon, 15 Apr 2024 13:49:15 +0200
+	s=arc-20240116; t=1713181811; c=relaxed/simple;
+	bh=prV9nxnS3R6i6443IUBNHL0DARIdtsZd5Aupy++qJc8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GtH9dHYdYIojsPD4vhd81mv2IEUwF4IpYsfsriuEa71X8qdtpvyx5Rkf4v+queuuX83MblZQpFhdEhmMxRGKXbcwwHjK1SC/1nzjWPsoAZ2mY8S7iEbGaUgkeOvVUZhHAN+24zrt2RMqbvy5ggVPVzqAiI0IMoP5n266n3At4eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KKOafp8Y; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713181808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=prV9nxnS3R6i6443IUBNHL0DARIdtsZd5Aupy++qJc8=;
+	b=KKOafp8Y/fQwWemZ9PDWvdUuK8ZYYscihufA+pElOi6ATGcDp2dDD9ZiYxvcmpUyPyXjp7
+	ccS6yVJvaYcGoN3KD3E/pB5I3xvtN5gDrMIH6RMau8RScWYTzjiwAImTYwuZw8eNV60U69
+	aJiaJH9gbKKl33ek1jXvposw0vravaA=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-27-tv-39asWM92laTG-3s48TA-1; Mon, 15 Apr 2024 07:50:07 -0400
+X-MC-Unique: tv-39asWM92laTG-3s48TA-1
+Received: by mail-yb1-f199.google.com with SMTP id 3f1490d57ef6-dbe9e13775aso5646156276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 04:50:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713181807; x=1713786607;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=prV9nxnS3R6i6443IUBNHL0DARIdtsZd5Aupy++qJc8=;
+        b=wgdrAafZLoOTWMq0zwP2oz/hbMacD+qEPxb+FzsG36qEaGAu7rG4NJ8p9GAVeRmN/Y
+         SeoDuFNx+ly0Gy/Jb6GWKsjPL0Oxbd4tmJoym1cyrf1yuEkhGrPNChCUFrFbj8Et0umC
+         LKS7+sN7H05Hbts9E5yM8e/N4d1MoDChwHwbpmMira7jwTEwxdlOBzhdHSK4XE4RYHOm
+         lHw3wImWzxcwK4DasGHqgC4VGTFVkKxPto+bm6DiU9/EKkW0mnM8swSjdf2jcqkPFJxu
+         ToAc7stXUR8Y25DLUKhQdvOs7qcJJDJ775s2S7WQzg/F6Z4AxEpamUp77fHjuf2b15Bp
+         7orw==
+X-Forwarded-Encrypted: i=1; AJvYcCU89u0Q5p0rjOF5RryMAYAOgvulkVtbFe32CCCJ6ztLkqaksJ7RSx/GRQsc/qdkhOWdHLwpNF6XSfuRnz9gBD75GE/Emt4cd1dZdj25
+X-Gm-Message-State: AOJu0Ywdd/NjVIeHoLz8oFLciJVCUTuSu8Y+Uo5g05S6syiuDw88/4RM
+	3mepcT81pyoeJqNycDYrPTls8KGoVpQI4rNPugH4XfIMXPqrPx0VS5/miY6Hbfh/9aEjhQfp6gE
+	QHWQ/jQdYRSHNXS2aBP9+87VNkup5NgkoRRa0t49XsLEqJpIAUgwsvWI+yCUVSw==
+X-Received: by 2002:a25:ea52:0:b0:dcd:128:ff3b with SMTP id o18-20020a25ea52000000b00dcd0128ff3bmr9325163ybe.38.1713181806941;
+        Mon, 15 Apr 2024 04:50:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGc8DAUXqr4v9jdSHsdvquE8Nb0gdhinACZCc+K+REKq3pdM+9wJB1BMZe4XTRCTmBbAHOz7w==
+X-Received: by 2002:a25:ea52:0:b0:dcd:128:ff3b with SMTP id o18-20020a25ea52000000b00dcd0128ff3bmr9325145ybe.38.1713181806597;
+        Mon, 15 Apr 2024 04:50:06 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id y16-20020a0cd990000000b006990499de91sm6101846qvj.51.2024.04.15.04.50.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 04:50:05 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Kyle Meyer <kyle.meyer@hpe.com>, linux-kernel@vger.kernel.org,
+ yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+ linux@rasmusvillemoes.dk, mingo@redhat.com, peterz@infradead.org,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com
+Cc: russ.anderson@hpe.com, dimitri.sivanich@hpe.com, steve.wahl@hpe.com,
+ Kyle Meyer <kyle.meyer@hpe.com>
+Subject: Re: [PATCH v2 1/2] cpumask: Add for_each_cpu_from()
+In-Reply-To: <20240410213311.511470-2-kyle.meyer@hpe.com>
+References: <20240410213311.511470-1-kyle.meyer@hpe.com>
+ <20240410213311.511470-2-kyle.meyer@hpe.com>
+Date: Mon, 15 Apr 2024 13:50:01 +0200
+Message-ID: <xhsmhsezm976e.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV and
- !skeys KVM guests
-To: David Hildenbrand <david@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-References: <20240411161441.910170-1-david@redhat.com>
- <20240411161441.910170-3-david@redhat.com>
- <ZhgRxB9qxz90tAwy@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <bd4d940e-5710-446f-9dc5-928e67920ec6@redhat.com>
-Content-Language: en-US
-From: Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <bd4d940e-5710-446f-9dc5-928e67920ec6@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AI57YoH12I_jlkm62ZRo3ZEH8w450S4k
-X-Proofpoint-ORIG-GUID: 2CGKmVpoTAvUdLJwz9fmS5uQQ6sZ3gzN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-15_08,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=847
- impostorscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1011
- suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404150077
+Content-Type: text/plain
 
+On 10/04/24 16:33, Kyle Meyer wrote:
+> Add for_each_cpu_from() as a generic cpumask macro.
+>
+> for_each_cpu_from() is the same as for_each_cpu(), except it starts at
+> @cpu instead of zero.
+>
+> Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
+> Acked-by: Yury Norov <yury.norov@gmail.com>
 
-Am 11.04.24 um 23:09 schrieb David Hildenbrand:
-> On 11.04.24 18:37, Alexander Gordeev wrote:
->> On Thu, Apr 11, 2024 at 06:14:41PM +0200, David Hildenbrand wrote:
->>
->> David, Christian,
->>
->>> Tested-by: Christian Borntraeger <borntraeger@linux.ibm.com>
->>
->> Please, correct me if I am wrong, but (to my understanding) the
->> Tested-by for v2 does not apply for this version of the patch?
-> 
-> I thought I'd removed it -- you're absolutely, this should be dropped. Hopefully Christian has time to retest.
+Reviewed-by: Valentin Schneider <vschneid@redhat.com>
 
-So I can confirm that this patch does continue fix the qemu memory consumption for a guest doing managedsave/start.
-A quick check of other aspects seems to be ok. We will have more coverage on the base functionality as soon as it hits next(via Andrew) as our daily CI will pick this up for lots of KVM tests.
 
