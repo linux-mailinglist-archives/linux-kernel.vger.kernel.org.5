@@ -1,148 +1,129 @@
-Return-Path: <linux-kernel+bounces-144653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F99D8A48D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:18:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53C9B8A48D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C87D51F23995
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:18:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8464F1C22E1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2AA224D4;
-	Mon, 15 Apr 2024 07:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D37820DD3;
+	Mon, 15 Apr 2024 07:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="eNYQa6g/"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GC+1MnKd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC63A22612;
-	Mon, 15 Apr 2024 07:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8958425601;
+	Mon, 15 Apr 2024 07:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713165506; cv=none; b=iHzArV1KVkRZHjpfVPOHucqanm7XtYjAJ+GLU5C1g7vTGyj0x6dN3N5aqITFjgMMAXPaBoeHq4462QivFm0rjaV5gwyqWvaUfb9Z5sqfqUvqNONktCkTVApeuo7kChj+dO9uGnzBu/qfTrklkK5pQ5PFxeT5FNQUqJ2cegeQSZQ=
+	t=1713165528; cv=none; b=VGK8hhr/3gP2B6wdbySw+1An7N/NOsyA5Gp9MEUYIT/KBczxZ4bzDrrH52mjtPtoe6PoObYaZESYKungWul/vlQQ04CWqeA4ce0PRbmbGazkc9Qwps5jcU8qc28CBwIXzzg4YQGRpO+DLAOwc6IqwbfrbfYT2iEOBk8loYFU0m8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713165506; c=relaxed/simple;
-	bh=dO+wwri8RKNTUotnubm3FEtVFSPmKseSMliGzOdZKYE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M8TzDADznNvniKHaEHtdREPQupUFhqMDNPTv2DupvI73MFWbg7aOJJTRwrxtMXZMZzWUI3GwSemI27ONdVGhDUntXnelSWmgLObkfpL4EWEAiG6t93x+zCtnqg//oRwAUl9k6Z36GAd+pEXW0sp1P/hFOFflmvx42Ctkug3aIKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=eNYQa6g/; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 57D4C5B2;
-	Mon, 15 Apr 2024 09:17:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713165455;
-	bh=dO+wwri8RKNTUotnubm3FEtVFSPmKseSMliGzOdZKYE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eNYQa6g/Ss6fgdbUooyY3CdWXFDF79FU7TE5n+lJqXz2UdInxYRqd3KzYLuutdg58
-	 O5/XMmkee91vt8+qk848SfNhkfilbfR1R5sbiZhV0llGb4FHSL8/OyceseEuvrU9L1
-	 e23kqLOaYIoquMau6aE8HxAJXUynFbrMgvqi+VDU=
-Date: Mon, 15 Apr 2024 10:18:12 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: linux-media@vger.kernel.org, tomi.valkeinen@ideasonboard.com,
-	Hans de Goede <hdegoede@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] media: v4l: Don't turn on privacy LED if streamon
- fails
-Message-ID: <20240415071812.GA25078@pendragon.ideasonboard.com>
-References: <20240410114712.661186-1-sakari.ailus@linux.intel.com>
- <20240412174621.GA5444@pendragon.ideasonboard.com>
- <ZhzUHs7lpdeMa22l@kekkonen.localdomain>
+	s=arc-20240116; t=1713165528; c=relaxed/simple;
+	bh=Ssi6F4ZX0iTPC1l/WPuJiSQSky5k3PTTtoixP0BwMMk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MOopsnulD66YScj4Lmg6HlVDuRXGT014eaTWatsraluML2XLhGca8gsvqbMO3FuV3vNYkys1pivODurQ7oT8fyW4BtL9IcxF/4HdzrNmzaJeyKaE5V2Y5HO1bNrlBPXj/5IKJpzHyTGYwSVU8HEAnew5GR1fZ/lqQPyS4r2irUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GC+1MnKd; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713165527; x=1744701527;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Ssi6F4ZX0iTPC1l/WPuJiSQSky5k3PTTtoixP0BwMMk=;
+  b=GC+1MnKdZxawE6aSrg4tiHQqfsPh4HDZX0mY0rCx8KTFebWAmM0DdF2F
+   J2Ah2hclbcZO35Dn5mBMgxxUdGg7lgYD+TBfk5IGy1dUu8T1xvt0aIQHg
+   5ZLNDsQD1j1z6dqyECxSe8AuS+Doc9H6DZeTumAdAYfN2G+MisK56CR+W
+   YWw9PoXyJobYfg3xHpO+KiS7YMJih7sRtXSr8nvcuarKn9JkiBfwrvSW3
+   RMbWZEbdIALfdl4cGwI2DC6FiZ6rCnW/kfeMg/NkWdMtKWPaq5S8fBJ5E
+   ea4o1zfeKujLTC8x3AyQ+iRWPgczUWyM1RpvEEsMc0u21q27MeS4JVda9
+   Q==;
+X-CSE-ConnectionGUID: 4zny9S4nTIuA6o2wIHd2aA==
+X-CSE-MsgGUID: 4OAEl765RnitY2RDxJYQ5Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="8405726"
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="8405726"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 00:18:47 -0700
+X-CSE-ConnectionGUID: RaB/amVCSfG4wFo3U11lnw==
+X-CSE-MsgGUID: cYNrgRcpS/CpewXNIUB+hg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="22399432"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.38.19])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 00:18:44 -0700
+Message-ID: <52c08a01-8357-44dd-b727-a06438ec6c30@intel.com>
+Date: Mon, 15 Apr 2024 10:18:39 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZhzUHs7lpdeMa22l@kekkonen.localdomain>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sdhci: Fix SD card detection issue
+To: Richard Clark <richard.xnu.clark@gmail.com>, ulf.hansson@linaro.org
+Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240415070620.133143-1-richard.xnu.clark@gmail.com>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20240415070620.133143-1-richard.xnu.clark@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 15, 2024 at 07:15:42AM +0000, Sakari Ailus wrote:
-> Hi Laurent,
+On 15/04/24 10:06, Richard Clark wrote:
+> The mmc_gpio_get_cd(...) will return 0 called from sdhci_get_cd(...), which means
+> the card is not present. Actually, the card detection pin is active low by default
+> according to the SDHCI psec, thus the card detection result is not correct, more
+
+SDHCI spec covers the SDHCI lines.  GPIO is separate.
+
+> specificly below if condition is true in mmc_rescan(...):
+> 	...
+> 	if (mmc_card_is_removable(host) && host->ops->get_cd &&
+> 		host->ops->get_cd(host) == 0) {
+> 		...
+> 		goto out;
+> 	}
+> The SD card device will have no chance to be created.
 > 
-> On Fri, Apr 12, 2024 at 08:46:21PM +0300, Laurent Pinchart wrote:
-> > Hi Sakari,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Wed, Apr 10, 2024 at 02:47:12PM +0300, Sakari Ailus wrote:
-> > > Turn on the privacy LED only if streamon succeeds. This can be done after
-> > > enabling streaming on the sensor.
-> > > 
-> > > Fixes: b6e10ff6c23d ("media: v4l2-core: Make the v4l2-core code enable/disable the privacy LED if present")
-> > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > ---
-> > >  drivers/media/v4l2-core/v4l2-subdev.c | 22 ++++++++++++----------
-> > >  1 file changed, 12 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> > > index 4c6198c48dd6..012b757eac9f 100644
-> > > --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> > > +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> > > @@ -412,15 +412,6 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
-> > >  	if (WARN_ON(!!sd->enabled_streams == !!enable))
-> > >  		return 0;
-> > >  
-> > > -#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> > > -	if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> > > -		if (enable)
-> > > -			led_set_brightness(sd->privacy_led,
-> > > -					   sd->privacy_led->max_brightness);
-> > > -		else
-> > > -			led_set_brightness(sd->privacy_led, 0);
-> > > -	}
-> > > -#endif
-> > >  	ret = sd->ops->video->s_stream(sd, enable);
-> > >  
-> > >  	if (!enable && ret < 0) {
-> > > @@ -428,9 +419,20 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
-> > >  		ret = 0;
-> > >  	}
-> > >  
-> > > -	if (!ret)
-> > > +	if (!ret) {
-> > >  		sd->enabled_streams = enable ? BIT(0) : 0;
-> > >  
-> > > +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> > > +		if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> > > +			if (enable)
-> > > +				led_set_brightness(sd->privacy_led,
-> > > +						   sd->privacy_led->max_brightness);
-> > > +			else
-> > > +				led_set_brightness(sd->privacy_led, 0);
-> > > +		}
-> > > +#endif
-> > 
-> > This means that the LED will be turned slightly after the camera is
-> > enabled. I don't think it's an issue in practice. Another possibly more
+> This commit fixes this detection issue via the MMC_CAP2_CD_ACTIVE_HIGH cap2 flag,
+> parsed from the 'cd-inverted' property of DT.
+
+What hardware / driver is it?
+
 > 
-> That's what I'd think as well. Typically even the exposure time is much,
-> much longer than what it takes to get here.
+> Signed-off-by: Richard Clark <richard.xnu.clark@gmail.com>
+> ---
+>  drivers/mmc/host/sdhci.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> > important concern is that we should maybe check the return value of
-> > led_set_brightness(), and fail .s_stream() when we can't enable the
-> > privacy LED at stream on time. In that case, it would be best to keep
-> > turning the privacy LED on before calling .s_stream(). It should still
-> > be turned off only after calling .s_stream() though.
-> 
-> The return type of led_set_brightness() is void.
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index c79f73459915..79f33a161ca8 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -2483,6 +2483,9 @@ static int sdhci_get_cd(struct mmc_host *mmc)
+>  	 * Try slot gpio detect, if defined it take precedence
+>  	 * over build in controller functionality
+>  	 */
+> +	if (!(mmc->caps2 & MMC_CAP2_CD_ACTIVE_HIGH))
+> +		gpio_cd = !gpio_cd;
 
-Oops :-S
+MMC_CAP2_CD_ACTIVE_HIGH is already handled in 
+mmc_gpiod_request_cd(), and this turns an error (gpio_cd < 0)
+into 0, which is not right.
 
-> Maybe because a large majority is GPIO-controlled?
+> +
+>  	if (gpio_cd >= 0)
+>  		return !!gpio_cd;
+>  
 
-GPIOs can fail, in particular when they're on I2C GPIO expanders.
-
--- 
-Regards,
-
-Laurent Pinchart
 
