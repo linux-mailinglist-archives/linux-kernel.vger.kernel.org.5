@@ -1,101 +1,114 @@
-Return-Path: <linux-kernel+bounces-145257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77F518A5184
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:35:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90EB28A5141
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:27:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3555128705F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:35:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 476ED1F21489
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98BAA1304A8;
-	Mon, 15 Apr 2024 13:22:34 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB19757EA;
+	Mon, 15 Apr 2024 13:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="ly2DVh5d"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01C912B159;
-	Mon, 15 Apr 2024 13:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC2374E0C
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713187354; cv=none; b=s+vB+abGjK/Zz73dVOIUWzSc1vc+ZB3IQrSuA2LWchetKWDsk59fXqQqkWwzvlh/0dIYJz8JsrTBZ0bSMsjs3zV9zm8mBwASG3wdvMDf52Lp/VsECBpD3KSrgseewl7OTsSCllpecPtBKtcsfn4okOAied/QfBNA9LdyZkN5vb8=
+	t=1713187204; cv=none; b=BfzISTZwM6iEL6W+gvhg1ktEg/F75jjBreI+f+yDT72rOvrtdd5tOIhsuNZ+qVqrILv2qKxfOviNTRrKPz4iwWbB+iE6D87v+QwERmJGzd6sJfeZ5d6hxCoGB+2nTXVVttqubTyYeqUpeOVHnQgu/2D1vfEpMq1Y7m4faY6WiKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713187354; c=relaxed/simple;
-	bh=SkOLbwh8Y/1ahy3sTkwTxlU8voml+EYZmkxpjBHGiIM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n/KbA+p1jskdmuaftGFBOWJ8S16uJnICo5jUYx074+KDAKNUNhM06+0OKX7jWYaDzQ86/w8Yb0gHcLDVxRNAdL3BsR0Pbt78jFBpsoRy286Rc4aKiiXzYzDRomOMjwPrCuWoiWmj8kdWdjhJ7dsAMq0fcvpJoT2kQP1VWEqmEjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VJ77r3Qddz1ynNM;
-	Mon, 15 Apr 2024 21:20:08 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id B728318002D;
-	Mon, 15 Apr 2024 21:22:29 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 21:22:29 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>
-Subject: [PATCH net-next v2 15/15] mm: page_frag: add a entry in MAINTAINERS for page_frag
-Date: Mon, 15 Apr 2024 21:19:40 +0800
-Message-ID: <20240415131941.51153-16-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240415131941.51153-1-linyunsheng@huawei.com>
-References: <20240415131941.51153-1-linyunsheng@huawei.com>
+	s=arc-20240116; t=1713187204; c=relaxed/simple;
+	bh=xdTgOzFrIrINaykwQW5f5NzvyMD3au3ek0a7qZ3i9fk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VDBUZSrgDi1aW+0Jn7YDMw4if6zcD4PnkDD25NOGTT8CeFTxpqT5E+/HSsusledhtzHZmwH843i9+HDUylS4mbt5agHk2FMmbKGikCvoJYizD4Zwrb8C4t4pCbM+7oPN8DeDxanzA/c1STpIaAzyE10rBwsKNlxM3tJTMqDikDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=ly2DVh5d; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d895e2c6efso40557541fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1713187201; x=1713792001; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SXmg35GKlfduv7MXmhtmlNfK7GX2Rv8iwiDs44M8/A8=;
+        b=ly2DVh5dlTjCL3gQnVXeKbGjAKC4t6dnPDYNPDY6vcU3SLeDyPJvnbZrrannOYIwsF
+         PpMYWWww8TIpXMXtLSxb5Mx2qbyLX6dz10RXd4uwLBFYqcyeJLhPes61wyG2WCiyeoIY
+         elimqGJMeCCNjSPMhvZ+IJaAJ39QZjyRd+B7YfSv6jOg1M+Xcvo9JJQJqHVRYnMHkOYy
+         AssW8jxJJ9u1zz5adcHnqBqhaZClRUSuySbvQLUZj0OmvuqMQ9zA1VZyMiOqvQCz/ErL
+         biqahfdnJiyd8WPKcCqC3Aq048cB2sYygKg452r/n5tIazsMzKRbT9EjtmsKmSNDGAfy
+         2ePw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713187201; x=1713792001;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SXmg35GKlfduv7MXmhtmlNfK7GX2Rv8iwiDs44M8/A8=;
+        b=LGwkzSA93jy8rfPhj2BxEEyrWdcATGJtuatp8iKdV+OL6E2q1VEZjPunwBN8DFjJSZ
+         p85B9VDoU+fRvSjJqXBxkSeKUGf5G0aMArdSR8XbW02CCytrUmGDPj52vle54uhOEK19
+         PTthaxIsDQgjy9076Pcm7dp9m4tQuNzugsiCIRApj/xjhSpAvBqKA6H5AzjlmZ2Q5+cg
+         h3IFEErGwxyU88JzHCpZwiinE3LutMNcPuI9sCmrlceKq+3y3IR8vi1S6iaXD7vkT2B1
+         Ev/Te/6HPu6fSORPSyhuHW+wqHgX/LaAEBtO5dqTGHeVTtPO+6vuqjGfDApcxooou62f
+         8Mug==
+X-Gm-Message-State: AOJu0Yz75qAtNomsrAlYjPq4mqbT41G8QoPqeYlc1WJEPpJ39cctv6Pb
+	lMPJTze55yRZo1BL61EUVhIVpLY7mDo9t3pG4HrywHJEdivdpEQQKmQEG8HquOg=
+X-Google-Smtp-Source: AGHT+IHC4az2rFSCiUuGCh3xwdRVNxly/Qg8h6dhI2uDrhLenj+lI0/6ysFeUkGc4sRDSnzFxzxDsA==
+X-Received: by 2002:a2e:9b1a:0:b0:2d8:b2e:7bf3 with SMTP id u26-20020a2e9b1a000000b002d80b2e7bf3mr5838228lji.0.1713187201312;
+        Mon, 15 Apr 2024 06:20:01 -0700 (PDT)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id j19-20020a05600c191300b0041663c75ef1sm16363175wmq.32.2024.04.15.06.20.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 06:20:00 -0700 (PDT)
+Date: Mon, 15 Apr 2024 15:19:59 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
+	Ajay Kaher <ajay.kaher@broadcom.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
+	Atish Patra <atishp@atishpatra.org>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, Will Deacon <will@kernel.org>, 
+	x86@kernel.org
+Subject: Re: [PATCH v6 13/24] RISC-V: KVM: Implement SBI PMU Snapshot feature
+Message-ID: <20240415-74754b02ead9b89dcaef6d3a@orel>
+References: <20240411000752.955910-1-atishp@rivosinc.com>
+ <20240411000752.955910-14-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411000752.955910-14-atishp@rivosinc.com>
 
-After this patchset, page_frag is a small subsystem/library
-on its own, so add a entry in MAINTAINERS for to indicate
-the new subsystem/library's maintainer, maillist, status and
-file lists of page_frag.
+On Wed, Apr 10, 2024 at 05:07:41PM -0700, Atish Patra wrote:
+> PMU Snapshot function allows to minimize the number of traps when the
+> guest access configures/access the hpmcounters. If the snapshot feature
+> is enabled, the hypervisor updates the shared memory with counter
+> data and state of overflown counters. The guest can just read the
+> shared memory instead of trap & emulate done by the hypervisor.
+> 
+> This patch doesn't implement the counter overflow yet.
+> 
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/kvm_vcpu_pmu.h |   7 ++
+>  arch/riscv/kvm/vcpu_pmu.c             | 121 +++++++++++++++++++++++++-
+>  arch/riscv/kvm/vcpu_sbi_pmu.c         |   3 +
+>  3 files changed, 130 insertions(+), 1 deletion(-)
+>
 
-Alexander is the orginal author of page_frag, add him in the
-MAINTAINERS too.
-
-CC: Alexander Duyck <alexander.duyck@gmail.com>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5ba3fe6ac09c..c34a4316ece4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16680,6 +16680,17 @@ F:	mm/page-writeback.c
- F:	mm/readahead.c
- F:	mm/truncate.c
- 
-+PAGE FRAG
-+M:	Alexander Duyck <alexander.duyck@gmail.com>
-+M:	Yunsheng Lin <linyunsheng@huawei.com>
-+L:	linux-mm@kvack.org
-+L:	netdev@vger.kernel.org
-+S:	Supported
-+F:	Documentation/mm/page_frags.rst
-+F:	include/linux/page_frag_cache.h
-+F:	mm/page_frag_cache.c
-+F:	mm/page_frag_test.c
-+
- PAGE POOL
- M:	Jesper Dangaard Brouer <hawk@kernel.org>
- M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
--- 
-2.33.0
-
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
