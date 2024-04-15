@@ -1,165 +1,146 @@
-Return-Path: <linux-kernel+bounces-145273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B30D8A51BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:40:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F05268A51C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:41:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACFA4B24128
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:40:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 912641F25993
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:41:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59595824BB;
-	Mon, 15 Apr 2024 13:32:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128D182891;
+	Mon, 15 Apr 2024 13:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="nU9w49NQ"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T7nxGIy5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E88208249B
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182F073511
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713187964; cv=none; b=JBdYPNEfz2HvRW4S+9FvR1hDs5IsBIiGVo15jwfjd3HvZ03BOgJmYIyyE3mepIM4x+l7fAZKrGE5MbhvUsby3rrAWSyUCFrpCbFANb/dD9jztXXyQDbEQCaVIlTo59o5uW909a+78hHQ0vaPHCb7jUXfY5Am/WHV7pYGCQr2PEM=
+	t=1713188146; cv=none; b=Jvk2wcxnCMsWfsLpm++ax3rCgr+SBeZMv6k10//xu/Wrt5atRuwgaeVrh4QQCSI4gSUyuYppSmLQ/fip5n+VvzKTVR9jFlicBz2NA/CnTiPSKmTTHeXDdK3hT2DktTv0i9pVFK+vspNokSHoF3VqA38DTsLhnsqvc82LKCTG0Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713187964; c=relaxed/simple;
-	bh=47KwHEpTElLjbNjsJm1t+l/GmTOAMw2E7SYcceePcgo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EvhSWXv/1KK2VjxCq3GCuhuI9XOkfNcaQAvuwcD3ExAyXCS3a551KHZcCQAH7x2uipR9iU4qwAA9bzFo2uhTRqJIm/3GpzJjA1+Nd/TT1jlIvm+Jrv397Pd/w6Cb5ZhdJWzW8CFhai8UX3GYpJejdxKGQV5oX3QewHY3edEiSBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=nU9w49NQ; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-417e327773cso20384815e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713187958; x=1713792758; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YfFnCtrCdaYweGdW7b/X7wLS8PykVIhbaLaFH/3RBKs=;
-        b=nU9w49NQHErlj7en2YVewwMkkuyN5GNZRdA5Pjb5N3S6X+hU/jqGHRnr+wZIPJn920
-         /yLtevOK7anbMssCvpBcu7UBJK+p9eCiI/f7RD2EgxKCDyCmoESvGna963VWvLDfRaUE
-         16rSPIJtwxATBv+9dxcnGbvPFmdJTeIegpF/zrXHLCAH/LWJJPuw2k6SS9pJrMZAz92y
-         IjNjTTpr1v0HHmC6cxothAk3m7P6rWIyv9fsOEZ3CM4OvwZqO1Tf0ws9t/2RFiA4Wx6H
-         FgMA9abW2KOUTkpy3GfhdSLlOpk5GKF3SJmJwHA8WjfyFcuubsGjfmmCluWrdCPe5hJc
-         y7JQ==
+	s=arc-20240116; t=1713188146; c=relaxed/simple;
+	bh=hQiFVvAS1mYRf5SJ+jRHKKdDZv4gfSbaYAAYGc2KT5Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j+OHgjKV4T4H87eSrEMHUeIz3q5NDurUDDQaiMgYwbcMziYQyhFDuj8kUiv/axsaR921pu25FKqPBBbgsHAEdkLPtcvx3LkUrjzHTdF5O3mdT1kuD8pGn54DF3mL1kukaQ6SCyHpfEvkBNw6k3uoUXwvhM/v5KjahbO4oiDkP30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T7nxGIy5; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713188144;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6socNntJ3nm9pcmvosaMuRgC2mHfgKc51tUJMcOdLxo=;
+	b=T7nxGIy5QgRuvPgG4XJnEX6xMt9jjKCpVK335vbjIHeMeTwHlFplNcfoOfzhkJyw3zO1QC
+	M0NylSSaMNZVE5/LN8HpFe1BUeW7FJESu0JmT3Qd/CGnoNANEzLw7VSwFlqUunGreTvBVs
+	1ZKTNiKAgxnTN6U0GaVJjfrDDtm+ujY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-19-41WbRaF-NCOI6_pPEKJCnQ-1; Mon, 15 Apr 2024 09:35:36 -0400
+X-MC-Unique: 41WbRaF-NCOI6_pPEKJCnQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a51aec8eb93so242821366b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:35:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713187958; x=1713792758;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YfFnCtrCdaYweGdW7b/X7wLS8PykVIhbaLaFH/3RBKs=;
-        b=kwsS/xFdQEQNvTFpxvVVyX5kaPrjlhXhgGb1SVXNM4eLjllP7aN4f26v+39UbGtNuR
-         /v01tf+uk723BozijCvM51FHI/WA2udxLROG9s1AyyHD0T50jN5AoyCNBeoAxDIWp0Lh
-         T7UwoJsmcVNPL65JqQ0493GnZlaokHr/UeHNKTi5af4FDVtwDIxvWy/bhG4Mtf1kyS1M
-         WO2U1Wb3Bv6285cNIVsq/NnYcZKfiX7tRG27O5dsBVY1dwSdUi4CXBkf9unyW5RCSPVp
-         Gq7oQHlPnBvERB4IAdTyUTjxJWrPpKRodGANIdMTr0syqBSEgajM7hku4umFc03U3gkr
-         j2cg==
-X-Gm-Message-State: AOJu0Ywf0cieReyuZM0ryDTkP8nPcLyakTqKUFWvw74q6T9m9p1lclLO
-	7fbsVCrrtqEnPbsgILHmrxLJXbh2JyDl98U9iAkCeBvk8t55wf2ixZYYUgBDqNw=
-X-Google-Smtp-Source: AGHT+IFoZFoMz1NB27raXr0+F36UbAh0bYI/huPwqdYpnuJ5dY1VU+ZBhab3Ez4blLLhX5Tys86QcQ==
-X-Received: by 2002:a05:600c:5115:b0:418:5e81:415f with SMTP id o21-20020a05600c511500b004185e81415fmr2552795wms.14.1713187958349;
-        Mon, 15 Apr 2024 06:32:38 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id g15-20020a05600c4ecf00b00414659ba8c2sm16357094wmq.37.2024.04.15.06.32.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 06:32:37 -0700 (PDT)
-Date: Mon, 15 Apr 2024 15:32:37 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
-	Ajay Kaher <ajay.kaher@broadcom.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Alexey Makhalov <alexey.amakhalov@broadcom.com>, 
-	Atish Patra <atishp@atishpatra.org>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, Will Deacon <will@kernel.org>, 
-	x86@kernel.org
-Subject: Re: [PATCH v6 22/24] KVM: riscv: selftests: Add a test for PMU
- snapshot functionality
-Message-ID: <20240415-f6d8638ff922ccd58d1abf41@orel>
-References: <20240411000752.955910-1-atishp@rivosinc.com>
- <20240411000752.955910-23-atishp@rivosinc.com>
+        d=1e100.net; s=20230601; t=1713188135; x=1713792935;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6socNntJ3nm9pcmvosaMuRgC2mHfgKc51tUJMcOdLxo=;
+        b=ISs2g6gGR0I+3iZL4/jmhckQDrmCX0ikuk3LfWjmXxfTNRBKEKnAsVFRFEEMuS5YfT
+         rOxn6pS9MEvn+j/soAHjhcqKGkJacX677w4thRDFe5mow5W6FgaQzujWgg/GlvXLCNAY
+         +FPWE68s2jL9xnTlAiCLp7kNf+g+HXc3MPAUEZu59g5Sk5DsbY6HyRKTOwoVQNIOE7/P
+         VTb0pxiRqrQcbG2Ob5RcSnpk3cIt82KoURR2UaDHaAFbmgs1tT6Axx8ZLZM/meZsLudP
+         tctGFvUln1f7BuE14D1C1kkA0pmkA55o8VtdOg5tNZTEYidpshiPhA2SLvTVXYKsasjm
+         Jw2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUFfmItJSirTdoLHquF836MYlYjGrlPyGKP0Qy9e95Qb05kfwTN9pNsJk9PCVGN9IYgsuxVJWSI/P3BHVChSsY7GWFA7Ei/xYFpA+0Z
+X-Gm-Message-State: AOJu0YzDMiRDmfwgHWLpOE6beD7hKFoCErKCOedYHV8KjvVPHFXisTUE
+	Vf/BqYK+pSg4b7W6cEcobWBAkioHq+GU+gP4yowo4w4t/NVNLb2ojAptQ8mFzvErncKYLQSpNJt
+	KeJeo5ysDMyTYIpbhrWw5/d5DL2PD8fLtJ/JOhhR3p3UYZ6Oe2oNjvjgLolsYedS2QuSHkUip
+X-Received: by 2002:a17:906:c10d:b0:a52:3e63:bf9e with SMTP id do13-20020a170906c10d00b00a523e63bf9emr6339710ejc.49.1713188135418;
+        Mon, 15 Apr 2024 06:35:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFMogIGpTHXJhvOEm+F2SlJApYBGd7bIz8KwBUMd2MDogeFiyFV+1AMp2c3KRl+1QSxUQ6fVg==
+X-Received: by 2002:a17:906:c10d:b0:a52:3e63:bf9e with SMTP id do13-20020a170906c10d00b00a523e63bf9emr6339692ejc.49.1713188135069;
+        Mon, 15 Apr 2024 06:35:35 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id di18-20020a170906731200b00a4e9359fbe8sm5469744ejc.44.2024.04.15.06.35.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 06:35:34 -0700 (PDT)
+Message-ID: <b8236348-476d-4c50-88ab-0409e4bf6bf0@redhat.com>
+Date: Mon, 15 Apr 2024 15:35:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411000752.955910-23-atishp@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] add FnLock LED class device to ideapad laptops
+To: Gergo Koteles <soyer@irl.hu>, Ike Panhc <ike.pan@canonical.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1712063200.git.soyer@irl.hu>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <cover.1712063200.git.soyer@irl.hu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 05:07:50PM -0700, Atish Patra wrote:
-> Verify PMU snapshot functionality by setting up the shared memory
-> correctly and reading the counter values from the shared memory
-> instead of the CSR.
+Hi,
+
+On 4/2/24 3:20 PM, Gergo Koteles wrote:
+> Hi All,
 > 
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  .../testing/selftests/kvm/include/riscv/sbi.h |  25 +++
->  .../selftests/kvm/lib/riscv/processor.c       |  12 ++
->  .../selftests/kvm/riscv/sbi_pmu_test.c        | 144 ++++++++++++++++++
->  3 files changed, 181 insertions(+)
+> This patch series adds a new LED_FUNCTION_FNLOCK define as "fnlock" and 
+> adds a new FnLock LED class device into the ideapad-laptop driver.
 > 
-> diff --git a/tools/testing/selftests/kvm/include/riscv/sbi.h b/tools/testing/selftests/kvm/include/riscv/sbi.h
-> index 6675ca673c77..1b995481a3fa 100644
-> --- a/tools/testing/selftests/kvm/include/riscv/sbi.h
-> +++ b/tools/testing/selftests/kvm/include/riscv/sbi.h
-> @@ -8,6 +8,12 @@
->  #ifndef SELFTEST_KVM_SBI_H
->  #define SELFTEST_KVM_SBI_H
->  
-> +/* SBI spec version fields */
-> +#define SBI_SPEC_VERSION_DEFAULT	0x1
-> +#define SBI_SPEC_VERSION_MAJOR_SHIFT	24
-> +#define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
-> +#define SBI_SPEC_VERSION_MINOR_MASK	0xffffff
-> +
->  /* SBI return error codes */
->  #define SBI_SUCCESS				 0
->  #define SBI_ERR_FAILURE				-1
-> @@ -33,6 +39,9 @@ enum sbi_ext_id {
->  };
->  
->  enum sbi_ext_base_fid {
-> +	SBI_EXT_BASE_GET_SPEC_VERSION = 0,
-> +	SBI_EXT_BASE_GET_IMP_ID,
-> +	SBI_EXT_BASE_GET_IMP_VERSION,
->  	SBI_EXT_BASE_PROBE_EXT = 3,
->  };
->  enum sbi_ext_pmu_fid {
-> @@ -60,6 +69,12 @@ union sbi_pmu_ctr_info {
->  	};
->  };
->  
-> +struct riscv_pmu_snapshot_data {
-> +	u64 ctr_overflow_mask;
-> +	u64 ctr_values[64];
-> +	u64 reserved[447];
-> +};
-> +
->  struct sbiret {
->  	long error;
->  	long value;
-> @@ -113,4 +128,14 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
->  
->  bool guest_sbi_probe_extension(int extid, long *out_val);
->  
-> +/* Make SBI version */
-> +static inline unsigned long sbi_mk_version(unsigned long major,
-> +					    unsigned long minor)
-> +{
-> +	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) << SBI_SPEC_VERSION_MAJOR_SHIFT
-> +		| (minor & SBI_SPEC_VERSION_MINOR_MASK));
+> This helps to display FnLock LED status in OSD or other places.
 
-Same parentheses comment as the other patch.
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Thanks,
-drew
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+
+> 
+> Best regards,
+> Gergo
+> 
+> Gergo Koteles (3):
+>   dt-bindings: leds: add LED_FUNCTION_FNLOCK
+>   platform/x86: ideapad-laptop: add fn_lock_get/set functions
+>   platform/x86: ideapad-laptop: add FnLock LED class device
+> 
+>  drivers/platform/x86/ideapad-laptop.c | 133 +++++++++++++++++++++++---
+>  include/dt-bindings/leds/common.h     |   1 +
+>  2 files changed, 123 insertions(+), 11 deletions(-)
+> 
+> 
+> base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+
 
