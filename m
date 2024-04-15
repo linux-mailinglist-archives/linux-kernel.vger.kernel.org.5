@@ -1,122 +1,150 @@
-Return-Path: <linux-kernel+bounces-144756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A697D8A4A41
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 714F78A4A43
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C21B1F263E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:25:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C1FF1F263B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D33374D3;
-	Mon, 15 Apr 2024 08:25:36 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63A212CCA0;
-	Mon, 15 Apr 2024 08:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4039F374F5;
+	Mon, 15 Apr 2024 08:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KZZ/4lGt"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D942B3839E;
+	Mon, 15 Apr 2024 08:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713169535; cv=none; b=RbJQs478ayxBkJIrzqVkF7sbgBJsXw6bYflFJ9UFYEbU12gAXwj1gCg6UekqVAwQ0q0IVgBUbYxe/dF+nzCYwjep6/ME7SH1zAjCJdx7zJ5NA0HBxtmm5R8U8gzrh6gr+sxjKwPeRNt5P14fvQgFr09uwrm+IL/xeuYVcuJo60A=
+	t=1713169541; cv=none; b=nYLbPx1juXOIcjmcOBYD4hqn7M3ni8Dg2KX5vNYQvG5qx6ZxoVyuAjKcY0WxJlbbbdbxSsG10FqVTVAe3MIObPACQCDwG8YiNQ/QJ1U3CKfmJrJYLZWYDvRASWYfD8VrWb0w0Dm02suThH9N+9gcg1Ee6OzdobU+sRPiqTH2vfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713169535; c=relaxed/simple;
-	bh=qDhIoA5X9Uayi7gC6/5PG+iuxYc1sZ9dQRoAKjmjsCk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R9E+Enu+9ZWEIepfvBHSUN4zZU4WwfuOgJTfPc/qZwRR4ePC8VRRvac6QLNOukZbd41O4P59tILjH07a+vjUDROdbbr6dvT83ApS+OG7jF+xB4aSznswhRbsrY+Zonnwl/Oc42+UM8GY3UlosiSSC1urHq4T0BuRiGbp4t5HuGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 118B52F;
-	Mon, 15 Apr 2024 01:26:02 -0700 (PDT)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C2B6A3F64C;
-	Mon, 15 Apr 2024 01:25:28 -0700 (PDT)
-Message-ID: <369b29bf-66d8-4876-ae0c-a35f3c46973e@arm.com>
-Date: Mon, 15 Apr 2024 13:55:25 +0530
+	s=arc-20240116; t=1713169541; c=relaxed/simple;
+	bh=ns4QpknxdZsUAAUIRXzTo+S6ANEZeLh9gJJwLTv3wkI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nihlVq1TiaAi83omqQWXaFqXLIF7Hmsvy3VZ85MzWVFmWHJQPdBjw37jcyIohI76jubtBnyAWgbL2tk7ciIogXYvYK5yt3Y5my3lbSP7Ntg/jHXPdblaoPYKN3iJMjzlq2kafYTLK+AxfS6r9U4FPVP4yZheaVEOp8+48dxjV40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=KZZ/4lGt; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6AFC65B2;
+	Mon, 15 Apr 2024 10:24:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713169492;
+	bh=ns4QpknxdZsUAAUIRXzTo+S6ANEZeLh9gJJwLTv3wkI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KZZ/4lGt0HgmdtsIoIUXLTeOP48QpzHxfYEz6Hx+zDmi3ILWQr//Yi+T01libb/AN
+	 y/G0Fb2U96Oe3GdLDdgVKG/A2AOQ9Yclfb81yyV18y43SmyOFlF0LhqNcW8UDV98jV
+	 cWHvKVSM9nl2ImxPqhV/ByYodjjduDIa8jp3Nw1Q=
+Date: Mon, 15 Apr 2024 11:25:29 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Alex Elder <elder@linaro.org>, corbet@lwn.net,
+	workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+Message-ID: <20240415082529.GD25078@pendragon.ideasonboard.com>
+References: <20240414170850.148122-1-elder@linaro.org>
+ <20240414194835.GA12561@pendragon.ideasonboard.com>
+ <2024041503-affidavit-stopwatch-72d7@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf test: Increase buffer size for Coresight basic tests
-Content-Language: en-US
-To: James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org
-Cc: Mike Leach <mike.leach@linaro.org>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240326113749.257250-1-james.clark@arm.com>
- <5a4023aa-af9b-48d2-84f3-a0b9b30dc54e@arm.com>
- <7f5c32dd-edc6-4b53-9cdd-780756f5536c@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <7f5c32dd-edc6-4b53-9cdd-780756f5536c@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2024041503-affidavit-stopwatch-72d7@gregkh>
 
+Hi Greg,
 
-
-On 4/12/24 13:52, James Clark wrote:
+On Mon, Apr 15, 2024 at 07:21:37AM +0200, Greg KH wrote:
+> On Sun, Apr 14, 2024 at 10:48:35PM +0300, Laurent Pinchart wrote:
+> > On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
+> > > Several times recently Greg KH has admonished that variants of WARN()
+> > > should not be used, because when the panic_on_warn kernel option is set,
+> > > their use can lead to a panic. His reasoning was that the majority of
+> > > Linux instances (including Android and cloud systems) run with this option
+> > > enabled. And therefore a condition leading to a warning will frequently
+> > > cause an undesirable panic.
+> > > 
+> > > The "coding-style.rst" document says not to worry about this kernel
+> > > option.  Update it to provide a more nuanced explanation.
+> > > 
+> > > Signed-off-by: Alex Elder <elder@linaro.org>
+> > > ---
+> > >  Documentation/process/coding-style.rst | 21 +++++++++++----------
+> > >  1 file changed, 11 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
+> > > index 9c7cf73473943..bce43b01721cb 100644
+> > > --- a/Documentation/process/coding-style.rst
+> > > +++ b/Documentation/process/coding-style.rst
+> > > @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
+> > >  to trigger easily, for example, by user space actions. pr_warn_once() is a
+> > >  possible alternative, if you need to notify the user of a problem.
+> > >  
+> > > -Do not worry about panic_on_warn users
+> > > -**************************************
+> > > +The panic_on_warn kernel option
+> > > +********************************
+> > >  
+> > > -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
+> > > -available kernel option, and that many users set this option. This is why
+> > > -there is a "Do not WARN lightly" writeup, above. However, the existence of
+> > > -panic_on_warn users is not a valid reason to avoid the judicious use
+> > > -WARN*(). That is because, whoever enables panic_on_warn has explicitly
+> > > -asked the kernel to crash if a WARN*() fires, and such users must be
+> > > -prepared to deal with the consequences of a system that is somewhat more
+> > > -likely to crash.
+> > > +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
+> > > +a WARN*() call whose condition holds leads to a kernel panic.  Many users
+> > > +(including Android and many cloud providers) set this option, and this is
+> > > +why there is a "Do not WARN lightly" writeup, above.
+> > > +
+> > > +The existence of this option is not a valid reason to avoid the judicious
+> > > +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
+> > > +issue warnings but do **not** cause the kernel to crash. Use these if you
+> > > +want to prevent such panics.
+> > 
+> > Those options are not equivalent, they print a single message, which is
+> > much easier to ignore. WARN() is similar to -Werror in some sense, it
+> > pushes vendors to fix the warnings. I have used WARN() in the past to
+> > indicate usage of long-deprecated APIs that we were getting close to
+> > removing for instance. dev_warn() wouldn't have had the same effect.
 > 
-> 
-> On 12/04/2024 08:04, Anshuman Khandual wrote:
->>
->>
->> On 3/26/24 17:07, James Clark wrote:
->>> These tests record in a mode that includes kernel trace but look for
->>> samples of a userspace process. This makes them sensitive to any kernel
->>> compilation options that increase the amount of time spent in the
->>> kernel. If the trace buffer is completely filled before userspace is
->>> reached then the test will fail. Double the buffer size to fix this.
->>
->> This is a valid concern to address, but just wondering how did we arrive
->> at the conclusion that doubling the buffer size i.e making that 8M will
->> solve the problem positively for vast number of kerne build scenarios ?
->>
-> 
-> Nobody else has reported anything yet, if it happens again we can always
-> increase it again if that is what the issue is. I had most of the kernel
-> debugging stuff turned on like memory debugging etc, which is probably
-> why I ran into it and 8MB fixed it for me. So I'm not sure if there is
-> much more that could be added.
+> If you want to reboot a box because someone called an "improper" api,
 
-Makes sense,
+I don't "want" to reboot. It came as a side effect when panic_on_warn
+was added, and worsened when its adoption increased. I won't argued for
+or against panic_on_warn, but WARN() serves some use cases today that I
+consider valid. If we want to discourage its usage, we need another API
+to cover those use cases.
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> then sure, use WARN(), but that feels like a really bad idea.  Just
+> remove the api and fix up all in-kernel users instead.  Why wait?
 
-> 
->>>
->>> The other tests in the same file aren't sensitive to this for various
->>> reasons, for example the iterate devices test filters by userspace
->>> trace only. But in order to keep coverage of all the modes, increase the
->>> buffer size rather than filtering by userspace for the basic tests.
->>>
->>> Fixes: d1efa4a0a696 ("perf cs-etm: Add separate decode paths for timeless and per-thread modes")
->>> Signed-off-by: James Clark <james.clark@arm.com>
->>> ---
->>>  tools/perf/tests/shell/test_arm_coresight.sh | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
->>> index 65dd85207125..3302ea0b9672 100755
->>> --- a/tools/perf/tests/shell/test_arm_coresight.sh
->>> +++ b/tools/perf/tests/shell/test_arm_coresight.sh
->>> @@ -188,7 +188,7 @@ arm_cs_etm_snapshot_test() {
->>>  
->>>  arm_cs_etm_basic_test() {
->>>  	echo "Recording trace with '$*'"
->>> -	perf record -o ${perfdata} "$@" -- ls > /dev/null 2>&1
->>> +	perf record -o ${perfdata} "$@" -m,8M -- ls > /dev/null 2>&1
->>>  
->>>  	perf_script_branch_samples ls &&
->>>  	perf_report_branch_samples ls &&
-> _______________________________________________
-> CoreSight mailing list -- coresight@lists.linaro.org
-> To unsubscribe send an email to coresight-leave@lists.linaro.org
+There are multiple use cases. One of them is to make sure no new user of
+the old, deprecated behaviour is introduced. This is especially
+important when driver development spans multiple kernel releases, the
+development can start before the API behaviour changes, with the driver
+merged after the API change. This is something we've done multiple times
+in V4L2.
+
+> If you want to show a traceback, then just print that out, but I've seen
+> that totally ignored as well, removing the api is usually the only way
+> to get people to actually notice, as then their builds break.
+
+Does your experience tell that tracebacks are routinely ignored during
+development too, not just in production ?
+
+-- 
+Regards,
+
+Laurent Pinchart
 
