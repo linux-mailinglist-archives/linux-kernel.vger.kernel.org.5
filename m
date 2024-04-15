@@ -1,106 +1,116 @@
-Return-Path: <linux-kernel+bounces-146016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A57888A5EAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:44:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FC848A5EB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:45:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A0E01F2262A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:44:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812831C21501
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5BF3159567;
-	Mon, 15 Apr 2024 23:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB994158DB0;
+	Mon, 15 Apr 2024 23:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hkYyBw88"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e1KR7WZg"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19EBC156974
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 23:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1EF158A23
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 23:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713224658; cv=none; b=ZyvkfMMLut+eIN0DRFfArMK78vcuQtE6IKDgfMgCw3UC0rE5wgsf2YmRnndllpQZ42quw4026pEB1Gb0ySDhy1hkvGrP1dqydKGo+A0PMSMjPww/R/zUYSPdQGG7hOl4Ffg9kgxKtXKS573YMFvhu8FqKT/ykVPHPuANX2oIABo=
+	t=1713224700; cv=none; b=LzFfavPI4pO1dEz4K+DANQZA8U9FDK2z3JktBkAG/QVVkFPPLQdhG++NQreT6Jx8xzoz4nIfbzBbiqekKbfCcY4AqRRXMiR7TV4pppaOQl6NrBLsxprF7MfyQZ1piDbbBcIXx/KjN7emrWgkQ3BjgcaX4qHOUpB28cyp1O3p14Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713224658; c=relaxed/simple;
-	bh=zpKurUMgjqar+MTlzO/Wp5wCc57TdsSBvHylHxkL37g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YgYn6IEKzxiBWokQZRMikKkpAso1K/EdmvTvj3Rz1uozxqo19AQGlxXIqb4fjAREsTBwmLkc1Pzu/eLhiMak/9cUJOJdH+eJH2i4gCBBBFNPTaLcbmw3+EMrGO0paCl2AtKePje8WHOmRzDSqkHgxbYt9WsqaJlLJ3eXyn7xF78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hkYyBw88; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA7A5C113CC;
-	Mon, 15 Apr 2024 23:44:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713224657;
-	bh=zpKurUMgjqar+MTlzO/Wp5wCc57TdsSBvHylHxkL37g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hkYyBw88h2Iu1OWyvZoIBr42/7CbVhy2dbC8h5jDNK63/5HFsOkZr7KQirmtnV0FQ
-	 zamkuIpQAwq1Etr04g//xYZEvcqtjMx8ngdZH+AjR5P8brKmS7Bn98IA2FRnZNTvUT
-	 c++dzi6ywKS36oc3mIy0pj6Z5CHNBvldA8WqrTgfqy9WPdFkUe2tfciqeqmRZpOfPK
-	 VvWuTufrZtZdoQ1tOWborxmSxuvvH0jsJFNJO+1+dOIlC4E17PegyifCUqFbeFP7K/
-	 frPpno4/OFlDnwP066wuNexlcU4aclAK/MudrPjIOHZGXMuCbRr4Pzj85inC1R1pW3
-	 ku4hJmH0LBatQ==
-Date: Mon, 15 Apr 2024 16:44:15 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 3/3] x86/bugs: Remove support for Spectre v2 LFENCE
- "retpolines"
-Message-ID: <20240415234415.6labhhhbllinzyvp@treble>
-References: <cover.1712944776.git.jpoimboe@kernel.org>
- <e5356c0e018cd0a96aabe719f685c237ac519403.1712944776.git.jpoimboe@kernel.org>
- <b0074626-8e98-4573-8047-08916fbb5537@citrix.com>
+	s=arc-20240116; t=1713224700; c=relaxed/simple;
+	bh=1yg3OygJVyqd8LdAwF5YHyIoztUiURYJApP0WPH4qMc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XkFvi9yBiktDFdX8ZFakRJYycQS12LwJtNjwQavWee6guV8ffbPWy9Lwmy9CNmVbn/emXLvvZHKCgyg+Jzapjt1QzR3crHemvAso+j6Sp9FuPBYHipCfyfvlHz5u3h0sc0xR5ChIRIictbjg8Tk3J2yZbs05T7SqIIFQYt7b/7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e1KR7WZg; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-518b9527c60so2519435e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:44:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713224697; x=1713829497; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1yg3OygJVyqd8LdAwF5YHyIoztUiURYJApP0WPH4qMc=;
+        b=e1KR7WZgxSWTzDtMhhuAeYu4wD0YCTK0GcGBVqNOfCRrvJPNbuE5WC50k/cpEqrK1C
+         vLVwgNmMgEvAyEZA0xN8kFcFAdCPkZ975rRLqHT0Dq2nya9FnotJNrxHe496fdtNVBYA
+         8i3QnK23PYzJamlwayJlTX0ukh6fxK7dEjqoBk/43mzLuQ5sdiwQJwwwVvhMA7bcJrWz
+         Sz0Ik8DtEN6bBj875VQ0Z2Oj5Vl+52nCKoQYjTCxBAAu/N28rmc2TuFeqgPaJlqezi8N
+         vMPiSZnYZg1ogMH44YawnaeDElcvyTKmlMzsrCeBkm7rxSKtuGgiA/4jwZU55txiHe1D
+         UGVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713224697; x=1713829497;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1yg3OygJVyqd8LdAwF5YHyIoztUiURYJApP0WPH4qMc=;
+        b=cR1b21arrewL0DzuH6hbvsVjQtfDtz0aM11kyMF1uyiQT4CKA6lxd7XY9KKGt2ePqM
+         hErNZnnzCLz8G17l8yqQ0UxniHgoy5tJYbWMuHJ8KAS6CIDHEiaXjzjpEIuis+ar9Oc+
+         bFwihBI/NmEhAaLTZDRqsYlrPjJlMgDrElCMLXCTfo8qeMEbpmGKy2wQ9vwav9AkLYm6
+         bEFtZWxZOLMSh6mD5gcjNkrwBwI7aDw9Fsw2itcNaPjUx1PU/KXrwdl0SoWF42zoaMjO
+         pNUwJY/sDlKV+NpX60WufuRqed1oJ0f9adD9YZm4DgmaMMGSUgcAr2dzisNQEkoTr4Ba
+         ADOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX28tUKazSEqdLYOob1jg+UclCnuwGA0f31KlAG8U2biNOH29YMnJvO0m11v67vaIW0MIUxa1mRjq1qeC84K4wrFpwELuzcNyh9g6ad
+X-Gm-Message-State: AOJu0YwnUqDNaK75CGgu3v1lW8dlGfkxrZ21TnyAxWy8h8nlpdTpNfIZ
+	7VVJHF/jJHp3GSTBY1OxqvR8YqUPemxuJ00nETs9lXJ7cpEHJzeHqW46bLRNbKs=
+X-Google-Smtp-Source: AGHT+IHBvH4Nm4RXQK0TC/6z2MuiS3bWVyCqwBvp8+QBi3zVVu7rpiLllbv39OJbDZlfvC4nAFlbTw==
+X-Received: by 2002:ac2:5dca:0:b0:515:b164:4112 with SMTP id x10-20020ac25dca000000b00515b1644112mr7286371lfq.68.1713224696673;
+        Mon, 15 Apr 2024 16:44:56 -0700 (PDT)
+Received: from ?IPV6:2a00:f41:c52:73b0:74d6:fe8a:b9f:ef94? ([2a00:f41:c52:73b0:74d6:fe8a:b9f:ef94])
+        by smtp.gmail.com with ESMTPSA id 27-20020a170906319b00b00a4739efd7cesm6068859ejy.60.2024.04.15.16.44.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 16:44:56 -0700 (PDT)
+Message-ID: <f4cbacca-c2e7-42e7-8ed9-dbc6bb59f1ce@linaro.org>
+Date: Tue, 16 Apr 2024 01:44:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] i2c: i2c-qcom-geni: Add support to share an I2C SE
+ from two subsystem
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>, andersson@kernel.org,
+ vkoul@kernel.org, andi.shyti@kernel.org, wsa@kernel.org,
+ linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+Cc: quic_vdadhani@quicinc.com
+References: <20240327101825.1142012-1-quic_msavaliy@quicinc.com>
+ <ccb312aa-3c4c-41bb-a3f4-b94971edb346@linaro.org>
+ <b7125064-4b20-438e-ac1d-7107d28b1bf9@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <b7125064-4b20-438e-ac1d-7107d28b1bf9@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b0074626-8e98-4573-8047-08916fbb5537@citrix.com>
 
-On Fri, Apr 12, 2024 at 09:49:33PM +0100, Andrew Cooper wrote:
-> On 12/04/2024 7:10 pm, Josh Poimboeuf wrote:
-> > I found several bugs where code assumes that X86_FEATURE_RETPOLINE
-> > actually means retpolines (imagine that!).
-> 
-> Yeah :(   One could also imagine a past where that was pointed out, or
-> just read about it in the archives.
-> 
-> >   In fact that feature also
-> > includes the original AMD LFENCE "retpolines", which aren't in fact
-> > retpolines.
-> >
-> > Really, those "retpolines" should just be removed.  They're already
-> > considered vulnerable due to the fact that the speculative window after
-> > the indirect branch can still be long enough to do multiple dependent
-> > loads.  And recent tooling makes such gadgets easier to find.
-> 
-> There are two Atom CPUs which are not repotline safe, and for which
-> Intel released a statement saying "use lfence/jmp" on these.
-> 
-> I'm still trying to find it...
 
-Any luck finding it?  The only thing I found [1] isn't exactly a ringing
-endorsement of LFENCE;JMP over retpolines.
 
-[1] https://www.intel.com/content/www/us/en/developer/articles/technical/software-security-guidance/technical-documentation/branch-history-injection.html
+On 4/2/24 08:21, Mukesh Kumar Savaliya wrote:
+> Thanks Konrad for detailed review. For dt-bindings sending a separate patch soon, rest comments tried to address and updated patch V2.
 
--- 
-Josh
+[...]
+
+>>> +    if (of_property_read_bool(pdev->dev.of_node, "qcom,shared-se")) {
+>>> +        gi2c->is_shared = true;
+>>> +        dev_info(&pdev->dev, "Multi-EE usecase with shared SE\n");
+>>
+>> How would this line be useful in my kernel log?
+>>
+> It informs that particular SE is shared between SEs from two subsystems, hence respective debug can happen accordingly in case of the issue.
+
+This amounts to "not very useful". As an end user, I couldn't care less
+about the nitty-gritty of firmware-hardware interactions, so long as the
+thing works. You must not spam the kernel log with debug messages, as it
+slows things down and makes actually useful messages harder to spot. If
+you want to keep it, use dev_dbg.
+
+Konrad
 
