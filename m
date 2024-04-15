@@ -1,132 +1,147 @@
-Return-Path: <linux-kernel+bounces-145927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4F708A5CDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CABD8A5CDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 508FAB2162B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:21:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03AD2B22EC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:22:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E18156969;
-	Mon, 15 Apr 2024 21:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55665156F5C;
+	Mon, 15 Apr 2024 21:22:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eh2NWqXU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EIRAVJFr"
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA59F156960;
-	Mon, 15 Apr 2024 21:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0E6823CE;
+	Mon, 15 Apr 2024 21:22:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713216084; cv=none; b=HIB0NwvX0bauJjVVT9CeZtjgA5fIHmRQ+LJAMYDFucq3S25Wlx2zaYucsFlwn/XPLiHMKQ53tgzXSEqk6NsP/E7Q+l+DEGJgramFmFLZnkjRJ69iaN+rnBrQjWkTIqfdE+8R/TwwzUNWfMJa4vJcX1yRUZV2b0Pxc+sGxaV9OsM=
+	t=1713216142; cv=none; b=SjP4kStnOuycC/8Dfo85uX5OmCGUJGhgs2YpAlEHC8aZb3bBZnuLW2mZ7WMjo7/ustnGfhGaeedjB1jIhjscVlzK5EeJLqk7KDAG00KfQgQjxwqg9YgEMovQ+qonHLHOiZpqx6b6peObas2AlM8WgY5KCDY7VBTuLCKtuRfGOmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713216084; c=relaxed/simple;
-	bh=GmW+UECxL2DLLcfHpk00erlt7Iyqya2qrKbwvHIfovM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GOjLOl5zK/sGSAS0whNAPmi9tkgN5+DQg1DkXxwSJilRIpg4wo8ADKhmxPiyF85u1lA4HWwBvQ5t5BeHsfp/72j5hKT2pnBXl2nv0YxMdCv9GIIRHzZy8byUvd1YcNW5t1k9bCQSJLaH3cOND3P3fFjqWzwunip6wvYVX5ziQr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eh2NWqXU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55C1AC113CC;
-	Mon, 15 Apr 2024 21:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713216083;
-	bh=GmW+UECxL2DLLcfHpk00erlt7Iyqya2qrKbwvHIfovM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eh2NWqXUfgiLT8ToWxvKvazqN+oC6EEHDHc7/A9+pvspFqXiKnMdgzRETs3avKJZx
-	 I3u7f+rW+uKpGkDSe0M9ZkEKEjJ9TQe8RaxbeoIkEWXiRKxXOJQg6pY5Ss+L4uqhur
-	 NVKmo8v1IAh3QgJPfCPgnip6XRfNVv86CnuCnRZgFh9CWHMsEE9TomysMMhhWBBdUX
-	 nFgTy8qR51vA5z+GyN6rABN/Lc7leJ7bXmEtNqNmfKcBiQXOdVRmvPWw56r5Drj918
-	 5xh8BTvCXGPr+qFYFXX50WCmtjdTDaxhnKOFOE5qodnPN0bXyV1PGRqQVr0zbw/1vR
-	 OL4qRxfyi0tRQ==
-Date: Mon, 15 Apr 2024 14:21:21 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Stefan Kanthak <stefan.kanthak@nexgo.de>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] crypto: x86/sha256-ni - simplify do_4rounds
-Message-ID: <20240415212121.GA5206@sol.localdomain>
-References: <20240411162359.39073-1-ebiggers@kernel.org>
- <20240411162359.39073-5-ebiggers@kernel.org>
- <2ECD48ACEA9540C083E6B797CFD18027@H270>
+	s=arc-20240116; t=1713216142; c=relaxed/simple;
+	bh=EREZQb+u2szcZMx5S4Ie0IWruozZBPGORbAKizIkkjU=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=RF6ou+d/eCBYuxphbDizVqRRgLZa7hpq3aB8o4Mfk5yEZM+d98JryOowCGMZDNMwRBZDGeo6aDPNmvR4CCnkCq1PZeMx0gMlcvzoHrwMIIlgkNha2scSKuPQEuHhnQXxdfAeReACrq8BkJRFqguruPctfaqZnC7dLc5WxhhYXLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EIRAVJFr; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6eb8ea5ac95so127761a34.2;
+        Mon, 15 Apr 2024 14:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713216140; x=1713820940; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9hW7xHZ+4MaleahcyQ0/yF2Di1GH718P8fg7DUap22k=;
+        b=EIRAVJFrovQZPKG9hPUC9gBqKE5kg+4yfd1ruaZWhSthhPj6sMTXaxm8TLCFsIX0Yb
+         3VQafB552iM6EFxfkg0XWK38sOIgQlfzqfWe1187uz5K++vgKeyoXKF42SkLqR+EQqTx
+         UkTf/2EdlfSnC8+amDORMprdZnuiDkWarIzAffOVzoSM3yWQINDVTU9MQwOt5EvP8xch
+         GIU9K4Odq5BIMZ27jyczKUPup4mhozG3tlYZD+g73q6JgbAML5KFtURyLalbHothuRac
+         mzjOTMMjtLGYowXWNBkPbqXD1xd2pJkG83prnbj7YEo3h9K+UeQ0vrmTY8+2K1LlSiOx
+         q8Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713216140; x=1713820940;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9hW7xHZ+4MaleahcyQ0/yF2Di1GH718P8fg7DUap22k=;
+        b=WZiAvcBzr5vcfB1aZv+bDZqoiJPJ4YdhQDtUeY5czGF8tGelJgspHwQlP3dPhq0oEp
+         JoEI7ej/K6IRu2aZ7YU7diSS1Vvl4QrScG8devUQUceAoWMDaRWMj7aTwhbI3hSIqNfQ
+         uGxrPghhcFKrWHsUZSo0ZLIT6g0odpkVpMWz8ryy64nNpXXafNtqtdsdlBMkppi2eOR/
+         wsOvS3wowkkb1/DpGLpWMNeP6dB5YHbxWZoSmEWSdoipJpOWghGTMC3waxV0poNN/6zT
+         3RduRR2xpv/2izGrV843IQfaOfY3k5xhhsZN/bzxC9YIqZJ+37oHa1VSlkRs5rbBqSiJ
+         6YpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXGt99hKD5kmRuJuwjyycVxz7XbmvbSK3I6arkLeXaNB9wCat1VZtj/sWpOXfyQ94yvojuogGIIAJUaW4fmls17zvSVBQBDNFtCmSlwRAuSzsLFbkvSS+dmM23qkM4Vmx6rG/+8Ar6ZnXSZM6S2LZ8c7B+lYoeSXCSp
+X-Gm-Message-State: AOJu0YwlKk5vg7PTOQO6zTKvGqrVzCt+wjXVbavKzxxainzuob/kwt2o
+	jKdgU5NTMCDt7RVUHRheZGIkw4eCVtUhgoYgnw9Rr9YGmC4ONlOo
+X-Google-Smtp-Source: AGHT+IF8u69eFhS3xy24WXWrPQyIFW+czruOl0/HOjx8mzpgYL8Nbbiw+coZaPpf4n68k/ghNFrXoQ==
+X-Received: by 2002:a05:6830:2648:b0:6eb:79fe:893 with SMTP id f8-20020a056830264800b006eb79fe0893mr5410416otu.2.1713216140472;
+        Mon, 15 Apr 2024 14:22:20 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id p7-20020a05620a056700b0078d69b5d671sm6824189qkp.100.2024.04.15.14.22.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 14:22:20 -0700 (PDT)
+Date: Mon, 15 Apr 2024 17:22:19 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <661d9a8bb862c_314dd2942c@willemb.c.googlers.com.notmuch>
+In-Reply-To: <6bfee126-36f4-4595-950e-058d93303362@quicinc.com>
+References: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
+ <20240412210125.1780574-2-quic_abchauha@quicinc.com>
+ <661ad4f0e3766_3be9a7294a1@willemb.c.googlers.com.notmuch>
+ <c992e03b-eee5-471a-9002-f35bdfa1be2d@quicinc.com>
+ <661d92391de45_30101294f2@willemb.c.googlers.com.notmuch>
+ <6bfee126-36f4-4595-950e-058d93303362@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v3 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ECD48ACEA9540C083E6B797CFD18027@H270>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 15, 2024 at 10:41:07PM +0200, Stefan Kanthak wrote:
-> "Eric Biggers" <ebiggers@kernel.org> wrote:
+> >>>>  static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+> >>>> -					 bool mono)
+> >>>> +					  u8 tstamp_type)
+> >>>>  {
+> >>>>  	skb->tstamp = kt;
+> >>>> -	skb->mono_delivery_time = kt && mono;
+> >>>> +
+> >>>> +	switch (tstamp_type) {
+> >>>> +	case CLOCK_REAL:
+> >>>> +		skb->tstamp_type = CLOCK_REAL;
+> >>>> +		break;
+> >>>> +	case CLOCK_MONO:
+> >>>> +		skb->tstamp_type = kt && tstamp_type;
+> >>>> +		break;
+> >>>> +	}
+> >>>
+> >>> Technically this leaves the tstamp_type undefined if (skb, 0, CLOCK_REAL)
+> >> Do you think i should be checking for valid value of tstamp before setting the tstamp_type ? Only then set it. 
+> > 
+> > A kt of 0 is interpreted as resetting the type. That should probably
+> > be maintained.
+> > 
+> > For SO_TIMESTAMPING, a mono delivery time of 0 does have some meaning.
+> > In __sock_recv_timestamp:
+> > 
+> >         /* Race occurred between timestamp enabling and packet
+> >            receiving.  Fill in the current time for now. */
+> >         if (need_software_tstamp && skb->tstamp == 0) {
+> >                 __net_timestamp(skb);
+> >                 false_tstamp = 1;
+> >         }
 > 
-> > Instead of loading the message words into both MSG and \m0 and then
-> > adding the round constants to MSG, load the message words into \m0 and
-> > the round constants into MSG and then add \m0 to MSG.  This shortens the
-> > source code slightly.  It changes the instructions slightly, but it
-> > doesn't affect binary code size and doesn't seem to affect performance.
-> 
-> At last the final change: write the macro straightforward and SIMPLE,
-> closely matching NIST.FIPS.180-4.pdf and their order of operations.
-> 
-> @@ ...
-> +.macro  sha256  m0 :req, m1 :req, m2 :req, m3 :req
-> +.if \@ < 4
-> +        movdqu  \@*16(DATA_PTR), \m0
-> +        pshufb  SHUF_MASK, \m0          # \m0 = {w(\@*16), w(\@*16+1), w(\@*16+2), w(\@*16+3)}
-> +.else
-> +                                        # \m0 = {w(\@*16-16), w(\@*16-15), w(\@*16-14), w(\@*16-13)}
-> +                                        # \m1 = {w(\@*16-12), w(\@*16-11), w(\@*16-10), w(\@*16-9)}
-> +                                        # \m2 = {w(\@*16-8),  w(\@*16-7),  w(\@*16-6),  w(\@*16-5)}
-> +                                        # \m3 = {w(\@*16-4),  w(\@*16-3),  w(\@*16-2),  w(\@*16-1)}
-> +        sha256msg1 \m1, \m0
-> +        movdqa     \m3, TMP
-> +        palignr    $4, \m2, TMP
-> +        paddd      TMP, \m0
-> +        sha256msg2 \m3, \m0             # \m0 = {w(\@*16), w(\@*16+1), w(\@*16+2), w(\@*16+3)}
-> +.endif
-> +        movdqa      (\@-8)*16(SHA256CONSTANTS), MSG
-> +        paddd       \m0, MSG
-> +        sha256rnds2 STATE0, STATE1      # STATE1 = {f', e', b', a'}
-> +        punpckhqdq  MSG, MSG
-> +        sha256rnds2 STATE1, STATE0      # STATE0 = {f", e", b", a"},
-> +                                        # STATE1 = {h", g", d", c"}
-> +.endm
-> 
-> JFTR: you may simplify this further using .altmacro and generate \m0 to \m3
->       as MSG%(4-\@&3), MSG%(5-\@&3), MSG%(6-\@&3) and MSG%(7-\@&3) within
->       the macro, thus getting rid of its 4 arguments.
-> 
-> @@ ...
-> +.rept 4                                 # 4*4*4 rounds
-> +        sha256  MSG0, MSG1, MSG2, MSG3
-> +        sha256  MSG1, MSG2, MSG3, MSG0
-> +        sha256  MSG2, MSG3, MSG0, MSG1
-> +        sha256  MSG3, MSG0, MSG1, MSG2
-> +.endr
+> Well in that case the above logic still resets the tstamp and sets the tstamp_type to CLOCK_REAL(value 0). 
+> Anyway the tstamp_type will be 0 to begin with. 
+> The logic is still inline with previous implementation, because previously if kt was 0 then kt && mono sets the tstamp_type (previously called as mono_delivery_time) to 0 (i.e SKB_CLOCK_REAL). 
 
-Could you please send a real patch, following
-Documentation/process/submitting-patches.rst?  It's hard to understand what
-you're proposing here.
-
-> Now that all code written by Tim Chen and Sean Gulley is gone,
-> remove their copyright notice and insert your and my name instead.
-
-Well, their code has been cleaned up.  We have to keep copyright notices around
-unless we're certain they can go.
-
-> 
-> regards
-> Stefan
-> 
-> PS: see <https://skanthak.homepage.t-online.de/fips-180.html>
->     (which I still polish) not just for this implementation.
-> 
-> PPS: if MASM had a counter like \@, I'd used it there.
-
-Thanks,
-
-- Eric
+Sorry, I got my defaults confused. If we maintain that a zero tstamp
+resets the type, then here should be no case with skb->tstamp 0 and
+skb->tstamp_type SKB_CLOCK_REAL (or SKB_CLOCK_TAI or whatever). I
+think it's preferable to make that obvious in the
+skb_set_delivery_time implementation, rather than depend on knowledge
+of its callers.
 
