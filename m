@@ -1,127 +1,124 @@
-Return-Path: <linux-kernel+bounces-145865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D338A5C16
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:12:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 928058A5C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:12:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 959E61F229AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:12:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 225EAB241AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B76156675;
-	Mon, 15 Apr 2024 20:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="nDtiKEuf"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322A5156675;
+	Mon, 15 Apr 2024 20:12:44 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A5D811E7
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B61156652;
+	Mon, 15 Apr 2024 20:12:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713211922; cv=none; b=Y95FbtVq/0pYRugrbfF5J3Q0Osv8uIMHdt1JsKUwRZMTBIxl0zksDDt1B+12TyDHg5KzOYa/svkdfMjr9pVXITo6FXdF/Qpr90i9NcHbFYkynPeJlDc3v9my6IsMvX2sPLG5B3Kle1AkBjul/lJZRXIBF4DAvhdvu6gbL5T62/8=
+	t=1713211963; cv=none; b=sSUBkyTe7y8FAFgCajOZY6opGTULkyP+1rBWhfvngWbaa77AMHgbwB2guvTrrpVQRCWzxv+N0uMwjSVIQQlGk2nw2IKBQsKtxGtwWanHCEpqNewU0SKVupVn/SSwEZAMPyxn+fleVYaXEa6dj9Cl/yXC1qfsq+6n35mA2V8EO68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713211922; c=relaxed/simple;
-	bh=LPqppHb1O7p7E9X/dU+VV0dAGADt1nStLitMbvldbZg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j+NDaM5+1vWEWtq3QiaZZ2pQDBIwyni4/d4P51rx0BRMIa3JkEqAAqlpnzxydoSZbiFYOGTWNvw6815TQCNJM3Ysp62rm5zkieColJKm612H3ppJPoS4cMXQQohmsHpOTfrAM2Yq+nEro+7CrdkpuchZlV0VNFJxs+k1+EU7R9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=nDtiKEuf; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so10816139f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713211918; x=1713816718; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L289PLVicNTtrl0nY8oRaDJ2XMnR0nkCspScxglzmU4=;
-        b=nDtiKEuf+DLyOwnK0eI03VItXPymRHbVIqbKDQDPofjSfTUcxbmyfVIGc1Df/5COWQ
-         Cr8gsA/H22tbnR93VLOX2bE4SRQfoYpSnnj5cPkGlclFhgiaDGr1ed44ZLb/dx5ThmKh
-         hL61ttrHS7t4n9zV7tWU83tz5iaL2Tg2ke5QYTg2ldFbi9u/DZi+242sMtrMrO1lO32r
-         lFrbjaGLnbqQ5rjEKC0tcRcyc/7qW1bB8qdCcP7YVNm9ekwvG36c5oIjDuyYf73NnGFW
-         Pm9DE10sC+Q68G36/wyNrKv9CqSV+Fjn0/IgmK6G4LDL7sslxisSgFw2I2Bqf54ZWyAP
-         TBHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713211918; x=1713816718;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L289PLVicNTtrl0nY8oRaDJ2XMnR0nkCspScxglzmU4=;
-        b=whFIG8tbHET12ABndnGXOT1V9BZTomjH2tMONqnroJreWakNG2vH75RdKXuJDgBl1Q
-         rslWYrESCiRj40sWtDIy1XCjnmdfV3WW9yXSmu5A++N6ebtaqHqwfByZrAMu9erRxKdd
-         MzYVfehMpdURLk5zILeDXO8ldnOJdAwsqSwOwD+y4Sye9ZUtGMpPB9RGqMGSdwR5kZii
-         hQj44CocujpN25njqXA4ppd8VoJ2fBhVSclQOuJmI/Wp8Dg2O7b/xcEadE8NUZEcwE9N
-         cythHgO0myqiuePCy1SF+usIKRvTofsaodbJ2XIDDBEO7U0VN/zaTftLjJfhl/WQaqpu
-         f7kA==
-X-Gm-Message-State: AOJu0Yy6s7uWoh4LUXk7yXI2CIpDPMj02R3Bod21jqGuLmxbwkMbkMmD
-	yDLC+f2C/AhYB/PLdHetP7DIlCpMsLlveqh1h7GJUCgt30IhChiwQqElXF+FKeFZyMXWiredyc/
-	0
-X-Google-Smtp-Source: AGHT+IHW+X8ftBqjv+MekE34Ny5ocp8uF8iREXL0lLJPVGigLLag1m5tKedZhfA794T4kNqAnm+z2g==
-X-Received: by 2002:a6b:c848:0:b0:7d9:9523:513f with SMTP id y69-20020a6bc848000000b007d99523513fmr2705945iof.1.1713211917947;
-        Mon, 15 Apr 2024 13:11:57 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id x11-20020a056638248b00b00482b484af1asm3328920jat.67.2024.04.15.13.11.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 13:11:57 -0700 (PDT)
-Message-ID: <898afc09-428f-4da2-a620-d7ca9f37133c@kernel.dk>
-Date: Mon, 15 Apr 2024 14:11:56 -0600
+	s=arc-20240116; t=1713211963; c=relaxed/simple;
+	bh=NuOPpB9j3aJ1Lio7+rBX0plGF9Yi2yGnbDVH1cBRp6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YgGe/6SiehLAnMnSaq1dDdIi2XoOBZODsXMa71juaH7aGzOZhtDrOjovq+8bagjZSjY1hzIwGQnFtcvXIRDA2H/UdZU0K4L5lqw4oemzASmhBmHFH7RPYyvY8UOAayKsglM6hfDRTvsWkODQcjxDaATDCrgL84aaiEUUZ5fm+7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0FF3140E00B2;
+	Mon, 15 Apr 2024 20:12:39 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id VWcs05e6tN85; Mon, 15 Apr 2024 20:12:33 +0000 (UTC)
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0B40740E0187;
+	Mon, 15 Apr 2024 20:12:24 +0000 (UTC)
+Date: Mon, 15 Apr 2024 22:12:19 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Waiman Long <longman@redhat.com>, x86@kernel.org
+Subject: Re: [tip: locking/core] locking/atomic/x86: Introduce
+ arch_try_cmpxchg64_local()
+Message-ID: <20240415201119.GBZh2J57f3aouPE_JR@fat_crate.local>
+References: <20240414161257.49145-1-ubizjak@gmail.com>
+ <171312759954.10875.1385994404712358986.tip-bot2@tip-bot2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 002/437] fs: add generic read/write iterator helpers
-Content-Language: en-US
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-kernel@vger.kernel.org
-References: <20240411153126.16201-1-axboe@kernel.dk>
- <20240411153126.16201-3-axboe@kernel.dk> <20240415195504.GU2118490@ZenIV>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240415195504.GU2118490@ZenIV>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <171312759954.10875.1385994404712358986.tip-bot2@tip-bot2>
 
-On 4/15/24 1:55 PM, Al Viro wrote:
-> On Thu, Apr 11, 2024 at 09:12:22AM -0600, Jens Axboe wrote:
+On Sun, Apr 14, 2024 at 08:46:39PM -0000, tip-bot2 for Uros Bizjak wrote:
+> The following commit has been merged into the locking/core branch of tip:
 > 
->> +/* generic read side helper for drivers converting to ->read_iter() */
->> +ssize_t vfs_read_iter(struct kiocb *iocb, struct iov_iter *to,
->> +		      ssize_t (*read)(struct file *, char __user *,
->> +				     size_t, loff_t *))
->> +{
->> +	return do_loop_readv(iocb->ki_filp, to, &iocb->ki_pos, 0, read);
->> +}
->> +EXPORT_SYMBOL(vfs_read_iter);
->> +
->> +/* generic write side helper for drivers converting to ->write_iter() */
->> +ssize_t vfs_write_iter(struct kiocb *iocb, struct iov_iter *from,
->> +		       ssize_t (*write)(struct file *, const char __user *,
->> +				       size_t, loff_t *))
->> +{
->> +	return do_loop_writev(iocb->ki_filp, from, &iocb->ki_pos, 0, write);
->> +}
->> +EXPORT_SYMBOL(vfs_write_iter);
+> Commit-ID:     d26e46f6bf329cfcc469878709baa41d3bfc7cc3
+> Gitweb:        https://git.kernel.org/tip/d26e46f6bf329cfcc469878709baa41d3bfc7cc3
+> Author:        Uros Bizjak <ubizjak@gmail.com>
+> AuthorDate:    Sun, 14 Apr 2024 18:12:43 +02:00
+> Committer:     Ingo Molnar <mingo@kernel.org>
+> CommitterDate: Sun, 14 Apr 2024 22:40:54 +02:00
 > 
-> Wait a minute; just what do you expect to happen if that ever gets called
-> for ITER_BVEC or ITER_XARRAY?
+> locking/atomic/x86: Introduce arch_try_cmpxchg64_local()
+> 
+> Introduce arch_try_cmpxchg64_local() for 64-bit and 32-bit targets
+> to improve code using cmpxchg64_local().  On 64-bit targets, the
+> generated assembly improves from:
+> 
+>     3e28:	31 c0                	xor    %eax,%eax
+>     3e2a:	4d 0f b1 7d 00       	cmpxchg %r15,0x0(%r13)
+>     3e2f:	48 85 c0             	test   %rax,%rax
+>     3e32:	0f 85 9f 00 00 00    	jne    3ed7 <...>
+> 
+> to:
+> 
+>     3e28:	31 c0                	xor    %eax,%eax
+>     3e2a:	4d 0f b1 7d 00       	cmpxchg %r15,0x0(%r13)
+>     3e2f:	0f 85 9f 00 00 00    	jne    3ed4 <...>
+> 
+> where a TEST instruction after CMPXCHG is saved.  The improvements
+> for 32-bit targets are even more noticeable, because double-word
+> compare after CMPXCHG8B gets eliminated.
+> 
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Link: https://lore.kernel.org/r/20240414161257.49145-1-ubizjak@gmail.com
+> ---
+>  arch/x86/include/asm/cmpxchg_32.h | 34 ++++++++++++++++++++++++++++++-
+>  arch/x86/include/asm/cmpxchg_64.h |  6 +++++-
+>  2 files changed, 40 insertions(+)
 
-do_loop_{readv,writev} need to look like the one io_uring had, which was
-just an augmented version of the fs/ version. At least for handling
-anything that is IOVEC/UBUF/BVEC. Outside of that, should not be
-callable for eg ITER_XARRAY, who would do that? We should probably add a
-check at the top of each just to vet the iter type and -EINVAL if it's
-not one of the supported ones. With a WARN_ON_ONCE(), I suspect.
+Ok, maybe I'm missing the point here or maybe the commit message doesn't
+explain but how does this big diffstat justify one less insn?
 
-I'll be posting the first patches separately again, I've made some local
-tweaks, with some drivers that can support it as-is. Just haven't gotten
-around to doing this weeks iteration on it yet.
+And no, 32-bit doesn't matter.
+
+This looks like too crazy micro-optimization to me to be worth the 40
+insertions.
+
+But I could be wrong and I'd gladly read explanations for why I am.
+
+Thx.
 
 -- 
-Jens Axboe
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
