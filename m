@@ -1,49 +1,57 @@
-Return-Path: <linux-kernel+bounces-145052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD8F58A4ECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:20:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3222C8A4ED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:21:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5611C2032D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:20:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDA7E1F23BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5136BFA8;
-	Mon, 15 Apr 2024 12:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E366BFB3;
+	Mon, 15 Apr 2024 12:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIkhGTKU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JvVnKv4A"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4F5679F3;
-	Mon, 15 Apr 2024 12:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340B8679F3;
+	Mon, 15 Apr 2024 12:20:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713183628; cv=none; b=SK6/ySBJbtqpDWfyomjdi+8jmAnI9O6Bq5D+nmV4H6bQCVYngroZW4/lBGlum0tmW6/R5kxf/GRU2Ds/ywfYQpTvVOCBEdURzqhdokGno08rUp+83+lE5BqeCSjrx785auQTfRk06k3QHUmryvng1KOQeWW50ZAwuNYaIc02kB4=
+	t=1713183646; cv=none; b=IsT6SNhZdGEaCbjx+rH1pVzKiUPwIgzgy3Igo/LYXjLFq9f6cJKUELaBGvTQvl1sgV/B+o65kyLX5CNG5W7cX1KWbSbYguBQa8lNtcpvqXidothEoFih6xtofLvKbFj0vtVdC6Dkp3vTnxZ0PtKTsQSektlkclGyIjMFjZvea5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713183628; c=relaxed/simple;
-	bh=NBLdQ6XHX+11K1mLdHEWYrHqv/ezuPgqZrayiybzpQs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=JjPIqH04P4j9ypR9vgaZ15vrLhC3u/1nYY2k67k8N4ZdL/qsSxd9KXlXcx/xaC2BIunKBkOyhcPdF5D4y4YqAcch2Eh+t7bwaVQ/lDIS91XP+7FDlSjuG7o7kZYi4nu1no/VveZcg9B1VOWTxh9L1fv3OUuRLqgs2wRuRFT2F2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hIkhGTKU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E9473C2BD10;
-	Mon, 15 Apr 2024 12:20:27 +0000 (UTC)
+	s=arc-20240116; t=1713183646; c=relaxed/simple;
+	bh=IW1/5zKnRf0vw8lfNR7D2qM5w54xu3yNJIPDeRFonXI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KPDvdPyIpvRuZY+D/rU6LujgfHBYtZ2I5aQmQp/lDC/czmnyqVqUl4Fe7+b/EnIzkkn7UZ0fQMXIUEKSlsfC9EPVOsQ68o8MouqWZ7VZ6yXjSrX4RWlBYPptehE/VrERXXHz6IYyo9YTL0qty4wCpgeIa9/ToG+usWxYC+A6Pp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JvVnKv4A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3B97C2BD11;
+	Mon, 15 Apr 2024 12:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713183628;
-	bh=NBLdQ6XHX+11K1mLdHEWYrHqv/ezuPgqZrayiybzpQs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hIkhGTKUtioBSKnvXCwWJ171ZA9euy19Gg4PTb6Qd9ML6JlPtDCKW1A0VjrHZ2Zhu
-	 Ds2PEui9OPeIFSkjCMDknnW+LPiowhJHWW3jFo8m0kAG2ei1IuLJT0kYYAMr8KcjXp
-	 v4iCAqx9R9YW91vXPk2bYydjFL9EEWWiYi+tbEKjUgXCSUDjBHe5MwLrWERarW0AfI
-	 lVsne17u1ThxkpsKXCl2kdcucdEpiX3cMy4rcqwf/A9u7fv/vqiDuppYSvhVY3Guuc
-	 frmyBT7BTFywXdQQiYrkzUliTAv6Baw5LOKWJ41OdmrCupYLmii7V3+/vA/2ac18QZ
-	 2riyRSvUuUvpw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D2442C43140;
-	Mon, 15 Apr 2024 12:20:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1713183645;
+	bh=IW1/5zKnRf0vw8lfNR7D2qM5w54xu3yNJIPDeRFonXI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JvVnKv4AsPCeRMiEg6D4oYpvvDe2nSTFgYOiHNrlrifk56E7NMCpMsX4UZmoLtQDL
+	 j/QBUMPyJLDS32sKkOTrl/BaPpq2HQvqkeBiddUjEyKw2lhz86S/N4QvJfiEFwxRTd
+	 ljrITaHn2FIm8du8d6QJKQCwvlbYFTWBRJJOKgsve0shOShydllGXvNmiZU3cUaZCY
+	 PFWjcIwP166IZvxjlRvVyy2i0oJoN1zQJvbmX/OfAr+egklRCgBXknOuZxbBdzl5G9
+	 rZZr7EP3uZ/ktq8b5/AuOAVy/GjXvaAMJFDJMxjY5yWnKVoPgqZlnFH2jdSCvrfoll
+	 Cc0ANhX7thanw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Kees Cook <keescook@chromium.org>,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/6] [v3] kbuild: enable more warnings by default
+Date: Mon, 15 Apr 2024 14:20:31 +0200
+Message-Id: <20240415122037.1983124-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,52 +59,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
- Ethernet driver
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171318362785.9918.8890821177952945239.git-patchwork-notify@kernel.org>
-Date: Mon, 15 Apr 2024 12:20:27 +0000
-References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
-In-Reply-To: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
-To: Julien Panis <jpanis@baylibre.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, linux@armlinux.org.uk, ast@kernel.org,
- daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
- sumit.semwal@linaro.org, christian.koenig@amd.com, horms@kernel.org,
- andrew@lunn.ch, rkannoth@marvell.com, naveenm@marvell.com,
- jacob.e.keller@intel.com, danishanwar@ti.com, yuehaibing@huawei.com,
- rogerq@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
 
-Hello:
+From: Arnd Bergmann <arnd@arndb.de>
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Hi Andrew,
 
-On Fri, 12 Apr 2024 17:38:31 +0200 you wrote:
-> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
-> 
-> The following features are implemented: NETDEV_XDP_ACT_BASIC,
-> NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
-> 
-> Zero-copy and non-linear XDP buffer supports are NOT implemented.
-> 
-> [...]
+All the warning fixes I sent for these warnings have been merged into
+mainline or linux-next, so let's turn them on by default.
 
-Here is the summary with links:
-  - [net-next,v9,1/3] net: ethernet: ti: Add accessors for struct k3_cppi_desc_pool members
-    https://git.kernel.org/netdev/net-next/c/cd8ff81f747f
-  - [net-next,v9,2/3] net: ethernet: ti: Add desc_infos member to struct k3_cppi_desc_pool
-    https://git.kernel.org/netdev/net-next/c/84d767a3c0b5
-  - [net-next,v9,3/3] net: ethernet: ti: am65-cpsw: Add minimal XDP support
-    https://git.kernel.org/netdev/net-next/c/8acacc40f733
+Since some of the bugfixes are still in flight in maintainer trees,
+I have rebased this on top of the mm/mm-nonmm-unstable branch
+for the purpose of merging these during the second half of the
+6.10 merge window.
 
-You are awesome, thank you!
+I did thorough testing of the changes on x86, arm64 and arm, as
+well as allmodconfig testing across all architectures and compilers.
+It is still likely that this will catch more warnings that show
+up in configurations I did not test, or in newly merged code,
+and I plan to send fixes for those as well.
+
+I also sent patches to enable -Wunused-const-variable and
+-Wtautological-constant-out-of-range-compare, but those still
+need additional bugfixes to get merged first.
+
+Arnd Bergmann (6):
+  [v3] kbuild: turn on -Wextra by default
+  [v3] kbuild: remove redundant extra warning flags
+  [v3] kbuild: turn on -Wrestrict by default
+  [v3] kbuild: enable -Wformat-truncation on clang
+  [v3] kbuild: enable -Wcast-function-type-strict unconditionally
+  [v3] kbuild: enable -Wstringop-truncation globally
+
+ scripts/Makefile.extrawarn | 30 +++++++++++-------------------
+ 1 file changed, 11 insertions(+), 19 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+2.39.2
 
-
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
