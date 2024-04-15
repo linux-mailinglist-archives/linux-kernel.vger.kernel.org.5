@@ -1,111 +1,98 @@
-Return-Path: <linux-kernel+bounces-144441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E43C88A4678
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:13:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A4BE8A467C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:13:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 218DD1C21696
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:13:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3262CB21FEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:13:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09071EEBB;
-	Mon, 15 Apr 2024 01:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwhSXh2g"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EE0E748A;
+	Mon, 15 Apr 2024 01:13:47 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4844C33CA;
-	Mon, 15 Apr 2024 01:13:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739F933CA
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713143601; cv=none; b=UsCeqBVowNJ+WFg539dEFnh2ZRUbpkzcp5bLLCYWiCdkJWc98zrrMVkUjCoP750aWithT0gbldpFZxi0vYNwR0cG3fvxdcTaQ275k/CZfsbNyh76ilDcbeEadqWUsZVJF6nmNgqwKri2/Np8Lt21u+p5ZXcObcdfP+lHUdr0F7A=
+	t=1713143626; cv=none; b=NX7fLZUbfclGURcA70LJXzKJuhZuvZieCB7jnEyOdoL67OXzLyT8IxspdkcmEqxZC6LZiuRGPYAf4k+H9SUdEUe70ZBem/7pYJI04n3sZdNlt98N26iHGPcXcokatEPsAo/NcvgrvH1yVR15FetLr6YVh2BqGZD7iej2qnKF3Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713143601; c=relaxed/simple;
-	bh=QRBzG3k475rXC32yv9vHf4vG7lInQufvLEzE9qpSQEw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nbK/R8bwe5H90dVbMk4BglF6i3mrr0Y3vx7gNaMb94qDuAv35pD5NsMTeYRqxQiVnnAVDfs16wo1iw/NioKvnUIAJOyyz1jba7RhQEW04eOYNTInSwDHBG6azFaRpcoJEUOpzvUBvFtYGPKVQzsZCKbPOcP5WMyV40cWKjBQqM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bwhSXh2g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63A01C072AA;
-	Mon, 15 Apr 2024 01:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713143600;
-	bh=QRBzG3k475rXC32yv9vHf4vG7lInQufvLEzE9qpSQEw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bwhSXh2gUy3hh3ei04ol69noq6VmNnbQbXrJzf74rTDD4RtAJb+ofkL0Urlfc67RC
-	 L2fBgjBnYp1ON7YywmkrVeonITTxym/imgSZzUq9IsMYc9/F5gwW+aeaWJf5d37IcQ
-	 amZLCWirB+EfrbBJkECe/UH3zMF6uhEx5gWEDH+SjJiLzqOGngC6c2Js4jDAFKH3+J
-	 tAqZGXPRPAlrwBnT9OdiTXSwtDg4ZibbHUt/Hv1X4aWwATZ6v3Kq/pryHXmes1zYva
-	 l2mDoWIMnBmVncJwDuDrdqZ2cJtxmzzsubJmWj2j1VzuUHrY9svUyuhXfW60jNwhu1
-	 kimOPViQgUruQ==
-Date: Mon, 15 Apr 2024 10:13:18 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Liao Chang <liaochang1@huawei.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-	oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com,
-	yuzenghui@huawei.com, tglx@linutronix.de, mark.rutland@arm.com,
-	ardb@kernel.org, anshuman.khandual@arm.com, miguel.luis@oracle.com,
-	joey.gouly@arm.com, ryan.roberts@arm.com, jeremy.linton@arm.com,
-	daniel.thompson@linaro.org, sumit.garg@linaro.org,
-	liwei391@huawei.com, peterz@infradead.org, jpoimboe@kernel.org,
-	ericchancf@google.com, kristina.martsenko@arm.com, robh@kernel.org,
-	scott@os.amperecomputing.com, songshuaishuai@tinylab.org,
-	shijie@os.amperecomputing.com, bhe@redhat.com,
-	akpm@linux-foundation.org, horms@kernel.org,
-	rmk+kernel@armlinux.org.uk, Jonathan.Cameron@huawei.com,
-	takakura@valinux.co.jp, dianders@chromium.org, swboyd@chromium.org,
-	frederic@kernel.org, reijiw@google.com, ruanjinjie@huawei.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev
-Subject: Re: [PATCH v2 5/9] arm64/cpufeature: Use alternatives to check
- enabled ARM64_HAS_NMI feature
-Message-ID: <Zhx/Ltwvue04nW7g@finisterre.sirena.org.uk>
-References: <20240411064858.3232574-1-liaochang1@huawei.com>
- <20240411064858.3232574-6-liaochang1@huawei.com>
+	s=arc-20240116; t=1713143626; c=relaxed/simple;
+	bh=LAMc7X54zX1UJXweD7V5kV7gftyCWvDPmgkXAmyHkd0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=CB1ANfsKrjyqqO+DB4ggAlsBkqQHAX7VYCqXnfQ8BGlvhrKSNyLTXbc0ZIFNEjJeM65skbkL4ye1vj/mXkEK0QV4mo+8e/TnFJOMMC6GRfsV44Jy5fe7xeR0eZWCBhdRUS7Nr4wi7a+kfm9F4P9aQsQLNFWXOjjOAV/IT+E4sTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d667dd202cso268738339f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 18:13:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713143624; x=1713748424;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OaB9cQsHbFhSbb/FCOGavc7IgtiKsRPBmnY5k4OM25U=;
+        b=Y7zXtppC14SBxYoe2ppGWq5XrkSLAFMlOSiL6g6yZtbeHuIbWmIcVLJIILWb8LyWoL
+         wiGBjXVYrp6Pv9c3fwrgNkCwQ+RC5bdKAfqSArIZ2xmMnpCktbd17Nk7TKNKcuSe0L8P
+         gBmUtVhGddpWyJNP/lnp6vuViGt0SymOMLP/URxtpua0jbMMb7d34aHIe/yecxwBKyN1
+         uzEPuZu13JYxIq7/Zcrby1C6Fq539MbcGlNgRE4LKPyJvnOuJkfrwJWQVviHMUzWGKxy
+         mQX2ikGWFLV/xC/LJu1xXSQ3gq/3RaVtKNQgWVAUbslKnIMgsj/QWHQjFrN6B5QR+jLR
+         Bgnw==
+X-Gm-Message-State: AOJu0Yybig0gmuz4QZ2kgSgA1fQm6e9CvLcBQmdZPHtj6+EqEjJSQPvd
+	BA9rC2i8BHMLqgW3EC9Wb4GnZ/3kC/z5lU0hhxvGChmZfhkX05t/DcFI7u2tOhFHLBaEK0ZRpdF
+	Ds/Q2mcKDbDIpTycfbRb/so92djrFtkVV87SpHtK8O+FcB8BiVJi8MJw=
+X-Google-Smtp-Source: AGHT+IGSBr8e1/rrFWRPS1ylpWaTRTCbC5G/OF+Q88Mbsexk817kngfFh5VvlII7dxxurSahPuJvSBT+4tm3UlbAouo/RPRuK7kB
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9q7t9ccwc0LV/xs5"
-Content-Disposition: inline
-In-Reply-To: <20240411064858.3232574-6-liaochang1@huawei.com>
-X-Cookie: You might have mail.
+X-Received: by 2002:a05:6638:410a:b0:482:fa6e:648c with SMTP id
+ ay10-20020a056638410a00b00482fa6e648cmr249532jab.3.1713143624649; Sun, 14 Apr
+ 2024 18:13:44 -0700 (PDT)
+Date: Sun, 14 Apr 2024 18:13:44 -0700
+In-Reply-To: <0000000000004f557c0615d47e6d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000032618c06161855cf@google.com>
+Subject: Re: [syzbot] [syzbot] [gfs2?] KASAN: slab-use-after-free Read in gfs2_invalidate_folio
+From: syzbot <syzbot+3a36aeabd31497d63f6e@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
---9q7t9ccwc0LV/xs5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+***
 
-On Thu, Apr 11, 2024 at 06:48:54AM +0000, Liao Chang wrote:
-> Due to the historical reasons, cpus_have_const_cap() is more complicated
-> than it needs to be. When CONFIG_ARM64_NMI=y the ARM64_HAS_NMI cpucap is
-> a strict boot cpu feature which is detected and patched early on the
-> boot cpu, which means no code depends on ARM64_HAS_NMI cpucap run in the
-> window between the ARM64_HAS_NMI cpucap is detected and alternative is
-> patched. So it would be nice to migrate caller over to
-> alternative_has_cap_likey().
+Subject: [syzbot] [gfs2?] KASAN: slab-use-after-free Read in gfs2_invalidate_folio
+Author: lizhi.xu@windriver.com
 
-Just squash this one in as well.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e8c39d0f57f3
 
---9q7t9ccwc0LV/xs5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYcfy0ACgkQJNaLcl1U
-h9B2fAf9FLOSU6IhdUrWK/jKkcubngbRQsfAVjBlRciZ9QqfohnuVIPnytzHSJCA
-FH/zUfJdMJoJjHH7+v055lX6TtFdDGZYWMzTKkg+CpOpCZs65yAWsIM6aRJoWhwP
-I2NRfsaxPSOGN2bz+OUggreon4SCxL7LlaGataZmzW94d6c/wc6mxdjb+N5UJnKB
-S7CdKWHTWRuNmHzaRWx78D5uIcbeoGQep++o2BXUYTONl/jBojVlPduzc69QKcK8
-SOJm8Shk6orS2Blfpf3po/NGkIHByWiNW2DoYPKhaTSa8KGQvDllDF9dUYFnJXR2
-77f1kMmKOmOqRF2NX6mqtJ/swneqXw==
-=2WWQ
------END PGP SIGNATURE-----
-
---9q7t9ccwc0LV/xs5--
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index 8cddf955ebc0..71ce8d1576cc 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -1007,6 +1007,7 @@ static void trans_drain(struct gfs2_trans *tr)
+ {
+ 	struct gfs2_bufdata *bd;
+ 	struct list_head *head;
++	struct buffer_head *bh;
+ 
+ 	if (!tr)
+ 		return;
+@@ -1022,6 +1023,8 @@ static void trans_drain(struct gfs2_trans *tr)
+ 	head = &tr->tr_databuf;
+ 	while (!list_empty(head)) {
+ 		bd = list_first_entry(head, struct gfs2_bufdata, bd_list);
++		bh = bd->bd_bh;
++		bh->b_private = NULL;
+ 		list_del_init(&bd->bd_list);
+ 		if (!list_empty(&bd->bd_ail_st_list))
+ 			gfs2_remove_from_ail(bd);
 
