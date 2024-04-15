@@ -1,112 +1,131 @@
-Return-Path: <linux-kernel+bounces-145536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 777618A5785
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:19:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E99808A5787
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:19:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CD521F21344
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:19:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898861F210FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:19:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D615C80635;
-	Mon, 15 Apr 2024 16:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1ED7F7C1;
+	Mon, 15 Apr 2024 16:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lOBwJbrm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="K/eeZLy/"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2A242072;
-	Mon, 15 Apr 2024 16:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5922D2E40F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197938; cv=none; b=q7VVSkmsO8MFhSeYx/kKk9rXBOYB+Q165STHHEAbNsJfkS+JK/lRkiSbytxk32/va/Kh5QhwUcKReIpxCA28xeFcnPizDmwNkCNQoAKohm603KTJR7Nb9t7vXKwQdbk4JamaSLtJiBN7EOllos9K+VtT79z2iYwHphUjwqoXEco=
+	t=1713197959; cv=none; b=XZJSQo5vsRN/IjyJ2axB3u9DxU4HU0deQyNCWfArIhgZpbeo1NTeoGMZaMeeAAMOQPxIn2LxC8s1nmZt1DHOiDMOV1DMuNZLS3ud2IU17zZNf3WhLfVi+q2raXphTX7N4wkmNdaI5A1CGtFjWzjPVc9Q0VLNcxt9X/SuDMKslNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197938; c=relaxed/simple;
-	bh=HRZ16pcKTsXfvuhSnVWDJ8KSOEd3+F59Kb2TPzi/bZE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=V5Tb4k4/d66aBrjfhxIpZ1NQ9dlyZmEWiMbn+iTXVqvQGcc94BBh1HvMG4Zke6Z6uLTItSdkKqGsSwB2oZtT37irJAQfO9Rh90jpWxwRJga4qlgliiKkSNHtyFkBpHPJ+gJsuTX+KnzNT5Nv5vDl71As+lrazlCd4n+ULuoUTx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lOBwJbrm; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43FFNNSG010273;
-	Mon, 15 Apr 2024 16:18:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=sZS5PybUDH+WqH6Sa8LywzS+Thk1uLag0/bFVQZopgY=; b=lO
-	BwJbrmnPXVU9u/Egkt8hJVnr1nt+D4hdseeSRvCl48NLaQAEv/Eu8sRxvQZ5Vklu
-	XtwLWEwtWUSTdgtyW+2uyH8dgColntQJW5AqQa+ssFjSiJr7tGhFsRwIqKQzQ4re
-	CKCVMYUGAMxV9DHRtOcGZu0c43fpNJ9XHPC2g6N8UwVS2U9Xkdma/ubp5sqomZBQ
-	qc2ZaYw6sdRD5WuDnGVd1IZ8chfuvssrki3nm4uIeDtITWO85ne7xDA8OzfXhSln
-	04OaEfI/Eo1TFiaAb/q7MZpg26Eex4xmUg7SL1U3K+Vab3efTSr7T0ZLDFJJIyCB
-	aTuyJevxiLr45SMPUW4A==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xh25ggx4a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 16:18:50 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43FGInwj023178
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 16:18:49 GMT
-Received: from [10.110.3.16] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
- 2024 09:18:48 -0700
-Message-ID: <b4c8a18c-286c-442f-a7e9-d4a0bb604083@quicinc.com>
-Date: Mon, 15 Apr 2024 09:18:48 -0700
+	s=arc-20240116; t=1713197959; c=relaxed/simple;
+	bh=sFWqj0MxFEzmV/dJCFfJa0tzV6KTqfIG57eNL/QetZw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ofYlSCKSSiulZ+f7DABbOeLt/0k1E+KjkbpfIevdercRJFIFoIWfT2PpquZr0XNz1twERW8QA4+uKVHLJ2Gb4hRFlwmMuSYw8O61DgGBrcTHwBwffKGJ1/42lCB0D/dIRzJrTQEthpRKSijoGTg7s8sShrjOXJvS3elS4TKF8jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K/eeZLy/; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3407543276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713197957; x=1713802757; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qqUuv9fxx4EarUb3kFRLC/klI4ssEw0WfUtLM6EuUlg=;
+        b=K/eeZLy/R+5MRoAxLpyOyLUYEQBpNvIyF4sBcAuHeZBcUlJiatjc3Vs2v8G+AHbbxU
+         RT5xMEfKzSIWm2B+NXUm3gEwp7y/RvO1kqm9teApZw3qc5tcA/EgPmuMh8bng22Qkeyq
+         FpZCKzqIRnkvNhvTQ5dLikYZ6pmnahb8oFUz3q29uh2fe/tVGzntPTysrJ5nUnS51WI8
+         mFyuZX+yEHQbHXrktwJupfxy7q3kD/rvj0j9TzjpoUPzly6N5ocIlQHcpkvTRw983hcM
+         sz5WrRVs/ps6fFIXJaatcRmnfM9PX8RNmz8/PAOkFLgvPRFUSyflvZNXG4fcCkrt+uCO
+         quYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713197957; x=1713802757;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qqUuv9fxx4EarUb3kFRLC/klI4ssEw0WfUtLM6EuUlg=;
+        b=Nr3X0SljvTwLnd6K5vVd5EdqccHqoTtv94S1nQJ+2624oARjB6lHQebulJ5mxG6JQY
+         4ZCm88EyTz7AFVY5HlXUhys4P6+knIqc1g8sTIILQia2UmSZUx+C0nFdi53/fUVkPISj
+         OjkL8A4u19Lk0hNwROmhigZcHONzhdc/HwSMLm2heO9kVkUkiY3jxBMzY7HWkJyO6U3o
+         xsejeQwE9aKzgIpcs9Du8ie+Cq7M+icZhyLxOpVtWSVhP6qNwTCQr6QCyOiTGpNLhRxC
+         ZNtrK8K1utrFMZZyEnzjKVGck2fP6g6fv6RlApH5m+rRVMprWEf50uCCihavvTsYeETM
+         zJbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVeqlPfLJkFkp6ONzR7QV6/TAS8nKHjJpKByiRxs33spaFkmijmuhKBy78xW0e+vxoDr9EYlK2HGPPOCmwXk9SEk0+6zB8deASu8pX+
+X-Gm-Message-State: AOJu0YxkWOe6irpH5hjmKDkhmsRkL7rSQkZd0/Y2xisV7FikPmld4TlA
+	S07COA5w5fatA1UmkgZ27EgVhGbpzpfZGEo9PNWzUDvy6itF3JshxnIfTDLlvaaEVolB2Y339TZ
+	SRW/h5SGgiVG5OgWo1pns9LDC/9BxNUiIGoDA
+X-Google-Smtp-Source: AGHT+IHQ1hSvcEI2XatWFIotdHbIdMS88GTemv+Jc97ykRM2AbU4LHYqkuGNtXF9fHUCT1K16Qwrmbue3o9cH+MwjAQ=
+X-Received: by 2002:a25:b10b:0:b0:de0:d515:259b with SMTP id
+ g11-20020a25b10b000000b00de0d515259bmr8502533ybj.59.1713197956946; Mon, 15
+ Apr 2024 09:19:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ath11k: Fix error handling in
- ath11k_wmi_p2p_noa_event()
-Content-Language: en-US
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo
-	<kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
-        Kang Yang
-	<quic_kangyang@quicinc.com>
-CC: <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        "Kalle
- Valo" <quic_kvalo@quicinc.com>,
-        <linux-wireless@vger.kernel.org>, <ath11k@lists.infradead.org>
-References: <6ee80f65f736db1646f6f201f60816cf35b6f3fe.1713180046.git.christophe.jaillet@wanadoo.fr>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <6ee80f65f736db1646f6f201f60816cf35b6f3fe.1713180046.git.christophe.jaillet@wanadoo.fr>
+References: <ZhhV3PKgEX9d7_vA@casper.infradead.org> <ZhhaRXHKk7w_hKgi@x1n>
+ <Zhhd-A7w1A8JUadM@casper.infradead.org> <ZhinCD-PoblxGFm0@casper.infradead.org>
+ <ZhkrY5tkxgAsL1GF@x1n> <CAJuCfpG7YkQ2giKiv07TetTn=QHK9x723vnLaTjDCaQjUvAavw@mail.gmail.com>
+ <ZhlCVOz7qaDtldfL@casper.infradead.org> <CAJuCfpGGUD6ev-KFhON2D2RqQRZSgjxFXvkNqeux-LrJw4L+iw@mail.gmail.com>
+ <ZhlQ_4Ve0vYNbWbl@casper.infradead.org> <CAJuCfpH3sKvczqRix6Q6QX9L4FsHQbmnyFXetvY+TzVUk38soA@mail.gmail.com>
+ <Zh1SMHdN9xK9N2U_@casper.infradead.org>
+In-Reply-To: <Zh1SMHdN9xK9N2U_@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 15 Apr 2024 09:19:06 -0700
+Message-ID: <CAJuCfpFjhfEYzG2zBNnE0Spv1=DbamKTc46ie0U3r7QniOnqRA@mail.gmail.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Peter Xu <peterx@redhat.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Lokesh Gidra <lokeshgidra@google.com>, 
+	Alistair Popple <apopple@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: su9nS6VNfgFs0jlq66M3IlcC0Ecc_HWC
-X-Proofpoint-ORIG-GUID: su9nS6VNfgFs0jlq66M3IlcC0Ecc_HWC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-15_13,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- spamscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 adultscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404150107
+Content-Transfer-Encoding: quoted-printable
 
-On 4/15/2024 4:23 AM, Christophe JAILLET wrote:
-> if (noa_descriptors > WMI_P2P_MAX_NOA_DESCRIPTORS), there is a mix of
-> return and goto. in such a case, 'ret' should be assigned an error code and
-> the 'td' should be freed to avoid a memory leak.
-> 
-> While at it, return 'ret' instead of 0 in case of error.
-> This is actually harmless, because the only caller does not handle the
-> return value.
+On Mon, Apr 15, 2024 at 9:13=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Mon, Apr 15, 2024 at 08:58:28AM -0700, Suren Baghdasaryan wrote:
+> > On Fri, Apr 12, 2024 at 8:19=E2=80=AFAM Matthew Wilcox <willy@infradead=
+org> wrote:
+> > >
+> > > On Fri, Apr 12, 2024 at 09:53:29AM -0500, Suren Baghdasaryan wrote:
+> > > > Unless vmf_anon_prepare() already explains why vma->anon_vma poses =
+a
+> > > > problem for per-vma locks, we should have an explanation there. Thi=
+s
+> > > > comment would serve that purpose IMO.
+> > >
+> > > I'll do you one better; here's some nice kernel-doc for
+> > > vmd_anon_prepare():
+> >
+> > I was looking at the find_tcp_vma(), which seems to be the only other
+> > place where lock_vma_under_rcu() is currently used. I think it's used
+> > there only for file-backed pages, so I don't think your change affects
+> > that usecase but this makes me think that we should have some kind of
+> > a warning for lock_vma_under_rcu() future users... Maybe your addition
+> > of mmap_assert_locked() inside __anon_vma_prepare() is enough. Please
+> > don't forget to include that assertion into your final patch.
+>
+> That's patch 1/3 on the git branch I pointed you to.
 
-in that case it would be preferable to change this to be a void function and
-not return anything. that would be consistent with most, if not all, of the
-other event handlers
+Ah, good!
 
+>
+> The tcp vma is not file backed, but I'm pretty sure that COW is not
+> something they want, so there's never an anon_vma.  It's for pages
+> that contain received TCP packets; ie it's mmaped TCP.
+
+I was following
+tcp_zerocopy_receive()->tcp_zerocopy_vm_insert_batch()->vm_insert_pages()->=
+insert_page_in_batch_locked()->validate_page_before_insert()
+which errors out for PageAnon(page). So, I assumed this path works on
+file-backed pages but I'm not familiar with this code at all.
 
