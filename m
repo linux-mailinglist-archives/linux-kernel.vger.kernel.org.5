@@ -1,110 +1,108 @@
-Return-Path: <linux-kernel+bounces-145114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D978A4FB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B3B58A4FB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:53:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B78E1F223F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:53:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 792571F2270E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:52:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D2081AB2;
-	Mon, 15 Apr 2024 12:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oBVvizSB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59EE280BFE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13BD58062A;
 	Mon, 15 Apr 2024 12:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h42Oc/7Z"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D303E73189
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185378; cv=none; b=l7GpKNZFhfAwYH7fXAbWIniMDGUqXG32CocWsAk9ma9a+Cr4ew3WH3R533Hjnt7ozEwhiP+G7FFd8g2NvX6aqU5EHi1mawVP7EC4dru0aghiCCX77GaWcjtonfOn+APLh7KqJgqBjhWprrJCe0h5fAcGo5JP9OwCHVOZW7V7knI=
+	t=1713185377; cv=none; b=AeIdjN1bC2rvEZ5ervd9d1mgRE6xDl8pDq4w97VNX1FVYubAJYbI9aBiQC6ekves4CH5WCVMDrydHn4S/w/nU1mbKgD/X0UMLtG/WeL5LYx9wWRA8XvsN9+F+KkpfNvNNbIAgA+QiFZ0Yadg3sfjMAOdVPjrg6OkDNQ2QC+Z25c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185378; c=relaxed/simple;
-	bh=Ky/M8O0rm7AMIWcFwVKGUXTVtEFqfb+EU9Ru8C9PH5M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QVhD/R+9+rWP76G8irexRZFtfqiNYZI5/sScF8lYaUfZxjLgj4ogqND0FQLYE0zooNwFvdWB3sUbWHknrpyCBqJPGGAzHaxEou5g22kD5yyRTqh4BZh/iqwPqGXZ9DyLR0l2SFvBNdvMzICMs2OnzruTAmVivW4bGi8dx7RvSk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oBVvizSB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 003A8C2BD10;
-	Mon, 15 Apr 2024 12:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185378;
-	bh=Ky/M8O0rm7AMIWcFwVKGUXTVtEFqfb+EU9Ru8C9PH5M=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oBVvizSBUMGrVT8rY3nQdZzju1MrHmb4eevqf16UecUF5/pf1RXMmrdwDkDSTYTUx
-	 1qRCVatyb3Hw8Njz1qJZlRQ06Ethvv56chp9wZJRS/YWiy36ozgfA7KSz2AN/ExAp8
-	 1TGFQzW5ZjUQ8Bhq5rnxnZkv2mQk86s9csI6XMavAwVYmjCVSDL2lMtHTROfG3uhVR
-	 mril2N+slpyyaP5QmPBuEsg0ktfYje3AZs2nC3WvNM/qRxb6VjdXgG+DEQXRidZR/+
-	 I/baYICOCSdBogfAvLhFoNx9jJQbd5HlKP6/JtBr3KsMl515cgEiuWgnRMt5+AKXzI
-	 2oNb8+i9y3EZg==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v9 03/36] x86: tracing: Add ftrace_regs definition in the header
-Date: Mon, 15 Apr 2024 21:49:30 +0900
-Message-Id: <171318537073.254850.18255104445724151465.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1713185377; c=relaxed/simple;
+	bh=7YIJFnYRyaWXrPlltVrIgYB7IVIKl7WksqYGlHILtZ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QXg7EJDu/t/VXtMFWOV7Bb+8xZJK3/8RwXIIxs4CDyYa/6G89Asf2zFbOt6S4Ro8u7Ky37qNLbTKXp35EYIqjsCRjQMjUBfNC+KdymMeVec8iThbaLLPEcquhNrsYZEG5+GoLTlbVNbZxe5OYsPpG8Tfvw5aMxu6fXtvJ/ELdZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h42Oc/7Z; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3465921600dso2839748f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:49:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713185374; x=1713790174; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7YIJFnYRyaWXrPlltVrIgYB7IVIKl7WksqYGlHILtZ0=;
+        b=h42Oc/7ZaIDppUj9LBgMtk36CPgay2mkB6FjNXTWYcpcJS1EKTHZhd4R9+wbPhLeeE
+         eD2LJR+pwSN2Pq+WKr+qvs7vl+wrkz8LglHmA/GzqpuHJYGw04yNLBSh01tyGL2NmhUU
+         CneZggItfMkbLqoAPtkpSmuxSNT+abgnRrzc1vDdwpH2mxUjjwu2FhyYEsr5MzJXmOQr
+         wAuAO3y6x2FKz+WUjzWFTejCqfHFlrneCAtGfAaVAODeKfE6dE7kQqrtxuC7YgHOEMvg
+         +/E1TYCT6bMulQep/bk33kTXywBOT3vueCWsfMJoq9KXZYF3tLacGVATaCWQvn6B/BVs
+         p1Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713185374; x=1713790174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7YIJFnYRyaWXrPlltVrIgYB7IVIKl7WksqYGlHILtZ0=;
+        b=Ro9whPOr9lccIkx+zzrFxgCiokxVNofudoKdMzOKrp9gC5vp42GAhw7VprImbgN8GN
+         4wH2RgVvadp5vV+RKptGb0l4M8/UZKebmOSX9PvmEEyh1KvucpVz9NIcfg0mhDEWVI6h
+         O/S0FS065wkS6B1g8R0tj0qFo+gpuRmONwGrxO5av7dby/PghZxZDyH6+jNUpRonIRas
+         DdEpEbSw06CxyFf63MG1k3CwK5Ptlq8WtRInYU9qM3STU3uxtZsmSjzq5D7sAHleg3bs
+         fFSnWxgAOcy1xAN2gF6bOh1be8regzaJArxhzIcQp17goilfKyLQvHvq1DK1yH+F7dvJ
+         jU/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWfU5eMbgz77AdAI5j3DMjH3J3HzO67c6Hh+Y3OOArUaU+7XmwWF+Fdnz6bkJxbJuCHqL2/nXNY17BxnKjVNdq8o7oYhbhtCDuXqeqR
+X-Gm-Message-State: AOJu0Yywwj2RbEjYxmzs6dDSHt+B0ShD0+uOX+An8EAKBI1nxCI3lyhn
+	by2Qv2aC8jihU3+4aSGJux7BMhxxGz2A8IOQyRvcRwYov6/35kQ/lIefB0/VcHs=
+X-Google-Smtp-Source: AGHT+IERNVIb7kkkXkEPWlxI4SlxeSXGIdHfAlszM7dr954BuhwHUlim2WOUoHyibBjW2LFxYJ6i9g==
+X-Received: by 2002:a5d:4e0a:0:b0:33d:fb3:9021 with SMTP id p10-20020a5d4e0a000000b0033d0fb39021mr6183299wrt.54.1713185374316;
+        Mon, 15 Apr 2024 05:49:34 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id p5-20020a5d4e05000000b0033b48190e5esm12005471wrt.67.2024.04.15.05.49.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 05:49:33 -0700 (PDT)
+Date: Mon, 15 Apr 2024 13:49:31 +0100
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	Bruno =?iso-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <bentiss@kernel.org>,
+	Alexander Shiyan <shc_work@mail.ru>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
+	linux-omap@vger.kernel.org
+Subject: Re: [PATCH 05/18] backlight: ili922x: Constify lcd_ops
+Message-ID: <20240415124931.GE222427@aspen.lan>
+References: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
+ <20240414-video-backlight-lcd-ops-v1-5-9b37fcbf546a@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240414-video-backlight-lcd-ops-v1-5-9b37fcbf546a@kernel.org>
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Sun, Apr 14, 2024 at 06:36:03PM +0200, Krzysztof Kozlowski wrote:
+> 'struct lcd_ops' is not modified by core backlight code, so it can be
+> made const for increased code safety.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Add ftrace_regs definition for x86_64 in the ftrace header to
-clarify what register will be accessible from ftrace_regs.
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v3:
-  - Add rip to be saved.
- Changes in v2:
-  - Newly added.
----
- arch/x86/include/asm/ftrace.h |    6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index cf88cc8cc74d..c88bf47f46da 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -36,6 +36,12 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
- 
- #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- struct ftrace_regs {
-+	/*
-+	 * On the x86_64, the ftrace_regs saves;
-+	 * rax, rcx, rdx, rdi, rsi, r8, r9, rbp, rip and rsp.
-+	 * Also orig_ax is used for passing direct trampoline address.
-+	 * x86_32 doesn't support ftrace_regs.
-+	 */
- 	struct pt_regs		regs;
- };
- 
-
+Daniel.
 
