@@ -1,131 +1,176 @@
-Return-Path: <linux-kernel+bounces-145537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E99808A5787
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:19:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F20908A578B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:19:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898861F210FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:19:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 206231C203A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1ED7F7C1;
-	Mon, 15 Apr 2024 16:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93414823B5;
+	Mon, 15 Apr 2024 16:19:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="K/eeZLy/"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YZN7k995"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5922D2E40F
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:19:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66877F7FD;
+	Mon, 15 Apr 2024 16:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197959; cv=none; b=XZJSQo5vsRN/IjyJ2axB3u9DxU4HU0deQyNCWfArIhgZpbeo1NTeoGMZaMeeAAMOQPxIn2LxC8s1nmZt1DHOiDMOV1DMuNZLS3ud2IU17zZNf3WhLfVi+q2raXphTX7N4wkmNdaI5A1CGtFjWzjPVc9Q0VLNcxt9X/SuDMKslNY=
+	t=1713197969; cv=none; b=AD4ZwUfu3Wxm63ylOy0QaX1VOwRFbB9Du3loXVdwJ5/njMI7VkIKEhV0Y0ORMMWhJbUBkzrWCwo6LB5kTRFXA2qI5CA8vgG5K6Q4/q6aeZGffwR/emFjp1+WlvbGp31A4RWWGOoqRv6hVSP60W/+4ODTeurN+iz8wC7WxFk6lDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197959; c=relaxed/simple;
-	bh=sFWqj0MxFEzmV/dJCFfJa0tzV6KTqfIG57eNL/QetZw=;
+	s=arc-20240116; t=1713197969; c=relaxed/simple;
+	bh=ceUpnS+eAL52LEzx3dIV9vtzMz89ZqI4TX/q8s7Nmhs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ofYlSCKSSiulZ+f7DABbOeLt/0k1E+KjkbpfIevdercRJFIFoIWfT2PpquZr0XNz1twERW8QA4+uKVHLJ2Gb4hRFlwmMuSYw8O61DgGBrcTHwBwffKGJ1/42lCB0D/dIRzJrTQEthpRKSijoGTg7s8sShrjOXJvS3elS4TKF8jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K/eeZLy/; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3407543276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713197957; x=1713802757; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qqUuv9fxx4EarUb3kFRLC/klI4ssEw0WfUtLM6EuUlg=;
-        b=K/eeZLy/R+5MRoAxLpyOyLUYEQBpNvIyF4sBcAuHeZBcUlJiatjc3Vs2v8G+AHbbxU
-         RT5xMEfKzSIWm2B+NXUm3gEwp7y/RvO1kqm9teApZw3qc5tcA/EgPmuMh8bng22Qkeyq
-         FpZCKzqIRnkvNhvTQ5dLikYZ6pmnahb8oFUz3q29uh2fe/tVGzntPTysrJ5nUnS51WI8
-         mFyuZX+yEHQbHXrktwJupfxy7q3kD/rvj0j9TzjpoUPzly6N5ocIlQHcpkvTRw983hcM
-         sz5WrRVs/ps6fFIXJaatcRmnfM9PX8RNmz8/PAOkFLgvPRFUSyflvZNXG4fcCkrt+uCO
-         quYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713197957; x=1713802757;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qqUuv9fxx4EarUb3kFRLC/klI4ssEw0WfUtLM6EuUlg=;
-        b=Nr3X0SljvTwLnd6K5vVd5EdqccHqoTtv94S1nQJ+2624oARjB6lHQebulJ5mxG6JQY
-         4ZCm88EyTz7AFVY5HlXUhys4P6+knIqc1g8sTIILQia2UmSZUx+C0nFdi53/fUVkPISj
-         OjkL8A4u19Lk0hNwROmhigZcHONzhdc/HwSMLm2heO9kVkUkiY3jxBMzY7HWkJyO6U3o
-         xsejeQwE9aKzgIpcs9Du8ie+Cq7M+icZhyLxOpVtWSVhP6qNwTCQr6QCyOiTGpNLhRxC
-         ZNtrK8K1utrFMZZyEnzjKVGck2fP6g6fv6RlApH5m+rRVMprWEf50uCCihavvTsYeETM
-         zJbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVeqlPfLJkFkp6ONzR7QV6/TAS8nKHjJpKByiRxs33spaFkmijmuhKBy78xW0e+vxoDr9EYlK2HGPPOCmwXk9SEk0+6zB8deASu8pX+
-X-Gm-Message-State: AOJu0YxkWOe6irpH5hjmKDkhmsRkL7rSQkZd0/Y2xisV7FikPmld4TlA
-	S07COA5w5fatA1UmkgZ27EgVhGbpzpfZGEo9PNWzUDvy6itF3JshxnIfTDLlvaaEVolB2Y339TZ
-	SRW/h5SGgiVG5OgWo1pns9LDC/9BxNUiIGoDA
-X-Google-Smtp-Source: AGHT+IHQ1hSvcEI2XatWFIotdHbIdMS88GTemv+Jc97ykRM2AbU4LHYqkuGNtXF9fHUCT1K16Qwrmbue3o9cH+MwjAQ=
-X-Received: by 2002:a25:b10b:0:b0:de0:d515:259b with SMTP id
- g11-20020a25b10b000000b00de0d515259bmr8502533ybj.59.1713197956946; Mon, 15
- Apr 2024 09:19:16 -0700 (PDT)
+	 To:Cc:Content-Type; b=co+/uMZpjd13WRIjhTfyK7l0+XVaXBjf9A0j6j0x6dcNUQhXy1/OE+vL+Y0JIEKJpKkMnLfnCcYPCspEhHGg7xlYph1iuHRZDV6BHA48Jy+U1BKTp1JQBRXckQPBahHordZaCESEeebtqVK0c8OgndV15yH/G6YWMQa5Ad3h1es=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YZN7k995; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35A45C32783;
+	Mon, 15 Apr 2024 16:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713197969;
+	bh=ceUpnS+eAL52LEzx3dIV9vtzMz89ZqI4TX/q8s7Nmhs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YZN7k995Uxxea0cJLwZLFIVIoQ7wp4CsvNgcQEJv0/H4PEK0Rj6G6ExZxAU5C2HZ9
+	 oetjXZtceZ0YEAvUxjxRwLvZYaJPbdijx0hAxdZEqI/RmU2mkVjdkegWRU67E9DiVT
+	 7nt7RCMikPwEBCK2HXe1kb6XWUZoGtkxnZwBj4DrXQL7BEqP87amqLDJ3tjA5Etmsk
+	 vuXruQZFUlOY8T5lDQ0klKgSJEEzwHGOTueOQ+F49KRvkMlM8WOjqotu/EkKMUxBfN
+	 yS6Hp96ZLU0ez8Yb3Y7Qwmuy0/Qbh7vCV6fGTkkQ5lXMzWxQslMwxSU9nne9ShPxgT
+	 KFFnVCiW9bcmA==
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a9ef9ba998so909881eaf.1;
+        Mon, 15 Apr 2024 09:19:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWV44e5W19QNmWFEKDZAZ+gBg/Kr1J/Xx641P91JrFsbt+ACE1zMbTGRrP79sCxHLPBpTIdom8KXmgHcNCf9sIWr7r3gpJjTccaOHcMx3K+kWlkMv45ylRlGpyrtAUgp9p+5LA/U/IZEOKUim9iMVsvW6flDacYhLqNMFZ4FHLEh4VmdClQIVoePRT72YmJUs8LCpqWiudsINToV9rkkw==
+X-Gm-Message-State: AOJu0YzdAOaEhP8vf2Aa7csFQNGhMjQxT+jnPrPlUt8+1rUL4Qol34ws
+	UU9iUlkcdL3AYDkUaVYXmT5BpRGJJznbXRMaxoH8rji7Cu2/LD1wlDfrm5vGCZqnSAjdR54ELxt
+	fb0onMVgnbeDC79Jccf9Swz5ArRM=
+X-Google-Smtp-Source: AGHT+IEqVqP3R2NEru8EpAnjfDnRpGPI8UMTqjQFs9k8o4nbg9Pkjqx5SymZn5/1h9ERQuYB6gnaTH60Zk0fAGLxeMg=
+X-Received: by 2002:a05:6870:9a97:b0:22e:514f:cd11 with SMTP id
+ hp23-20020a0568709a9700b0022e514fcd11mr11036260oab.1.1713197968510; Mon, 15
+ Apr 2024 09:19:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZhhV3PKgEX9d7_vA@casper.infradead.org> <ZhhaRXHKk7w_hKgi@x1n>
- <Zhhd-A7w1A8JUadM@casper.infradead.org> <ZhinCD-PoblxGFm0@casper.infradead.org>
- <ZhkrY5tkxgAsL1GF@x1n> <CAJuCfpG7YkQ2giKiv07TetTn=QHK9x723vnLaTjDCaQjUvAavw@mail.gmail.com>
- <ZhlCVOz7qaDtldfL@casper.infradead.org> <CAJuCfpGGUD6ev-KFhON2D2RqQRZSgjxFXvkNqeux-LrJw4L+iw@mail.gmail.com>
- <ZhlQ_4Ve0vYNbWbl@casper.infradead.org> <CAJuCfpH3sKvczqRix6Q6QX9L4FsHQbmnyFXetvY+TzVUk38soA@mail.gmail.com>
- <Zh1SMHdN9xK9N2U_@casper.infradead.org>
-In-Reply-To: <Zh1SMHdN9xK9N2U_@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 15 Apr 2024 09:19:06 -0700
-Message-ID: <CAJuCfpFjhfEYzG2zBNnE0Spv1=DbamKTc46ie0U3r7QniOnqRA@mail.gmail.com>
-Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Peter Xu <peterx@redhat.com>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Lokesh Gidra <lokeshgidra@google.com>, 
-	Alistair Popple <apopple@nvidia.com>
+References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
+ <20240412143719.11398-3-Jonathan.Cameron@huawei.com> <CAJZ5v0izN5naWY7sTi16whds9ubXkLpgqV2gePQs869BoJTCDA@mail.gmail.com>
+ <20240415164854.0000264f@Huawei.com> <CAJZ5v0hd+CNsnH9xY+UX0iy_AEaqUqJj4KdR=+yvtvy5FQEy5Q@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hd+CNsnH9xY+UX0iy_AEaqUqJj4KdR=+yvtvy5FQEy5Q@mail.gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 15 Apr 2024 18:19:17 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0j6gMaHamrCvrF8s+SgC0QVtG+naXhA4Dwg0t1YJvh4Uw@mail.gmail.com>
+Message-ID: <CAJZ5v0j6gMaHamrCvrF8s+SgC0QVtG+naXhA4Dwg0t1YJvh4Uw@mail.gmail.com>
+Subject: Re: [PATCH v5 02/18] ACPI: processor: Set the ACPI_COMPANION for the
+ struct cpu instance
+To: Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, x86@kernel.org, Russell King <linux@armlinux.org.uk>, 
+	Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, 
+	Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, linuxarm@huawei.com, 
+	justin.he@arm.com, jianyong.wu@arm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 9:13=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
+On Mon, Apr 15, 2024 at 6:16=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
 >
-> On Mon, Apr 15, 2024 at 08:58:28AM -0700, Suren Baghdasaryan wrote:
-> > On Fri, Apr 12, 2024 at 8:19=E2=80=AFAM Matthew Wilcox <willy@infradead=
-org> wrote:
-> > >
-> > > On Fri, Apr 12, 2024 at 09:53:29AM -0500, Suren Baghdasaryan wrote:
-> > > > Unless vmf_anon_prepare() already explains why vma->anon_vma poses =
-a
-> > > > problem for per-vma locks, we should have an explanation there. Thi=
-s
-> > > > comment would serve that purpose IMO.
-> > >
-> > > I'll do you one better; here's some nice kernel-doc for
-> > > vmd_anon_prepare():
+> On Mon, Apr 15, 2024 at 5:49=E2=80=AFPM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
 > >
-> > I was looking at the find_tcp_vma(), which seems to be the only other
-> > place where lock_vma_under_rcu() is currently used. I think it's used
-> > there only for file-backed pages, so I don't think your change affects
-> > that usecase but this makes me think that we should have some kind of
-> > a warning for lock_vma_under_rcu() future users... Maybe your addition
-> > of mmap_assert_locked() inside __anon_vma_prepare() is enough. Please
-> > don't forget to include that assertion into your final patch.
+> > On Fri, 12 Apr 2024 20:10:54 +0200
+> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> >
+> > > On Fri, Apr 12, 2024 at 4:38=E2=80=AFPM Jonathan Cameron
+> > > <Jonathan.Cameron@huawei.com> wrote:
+> > > >
+> > > > The arm64 specific arch_register_cpu() needs to access the _STA
+> > > > method of the DSDT object so make it available by assigning the
+> > > > appropriate handle to the struct cpu instance.
+> > > >
+> > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > ---
+> > > >  drivers/acpi/acpi_processor.c | 3 +++
+> > > >  1 file changed, 3 insertions(+)
+> > > >
+> > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_proc=
+essor.c
+> > > > index 7a0dd35d62c9..93e029403d05 100644
+> > > > --- a/drivers/acpi/acpi_processor.c
+> > > > +++ b/drivers/acpi/acpi_processor.c
+> > > > @@ -235,6 +235,7 @@ static int acpi_processor_get_info(struct acpi_=
+device *device)
+> > > >         union acpi_object object =3D { 0 };
+> > > >         struct acpi_buffer buffer =3D { sizeof(union acpi_object), =
+&object };
+> > > >         struct acpi_processor *pr =3D acpi_driver_data(device);
+> > > > +       struct cpu *c;
+> > > >         int device_declaration =3D 0;
+> > > >         acpi_status status =3D AE_OK;
+> > > >         static int cpu0_initialized;
+> > > > @@ -314,6 +315,8 @@ static int acpi_processor_get_info(struct acpi_=
+device *device)
+> > > >                         cpufreq_add_device("acpi-cpufreq");
+> > > >         }
+> > > >
+> > > > +       c =3D &per_cpu(cpu_devices, pr->id);
+> > > > +       ACPI_COMPANION_SET(&c->dev, device);
+> > >
+> > > This is also set for per_cpu(cpu_sys_devices, pr->id) in
+> > > acpi_processor_add(), via acpi_bind_one().
+> >
+> > Hi Rafael,
+> >
+> > cpu_sys_devices gets filled with a pointer to this same structure.
+> > The contents gets set in register_cpu() so at this point
+> > it doesn't point anywhere.  As a side note register_cpu()
+> > memsets to zero the value I set it to in the code above which isn't
+> > great, particularly as I want to use this in post_eject for
+> > arm64.
+> >
+> > We could make a copy of the handle and put it back after
+> > the memset in register_cpu() but that is also ugly.
+> > It's the best I've come up with to make sure this is still set
+> > come remove time but is rather odd.
+> > >
+> > > Moreover, there is some pr->id validation in acpi_processor_add(), so
+> > > it seems premature to use it here this way.
+> > >
+> > > I think that ACPI_COMPANION_SET() should be called from here on
+> > > per_cpu(cpu_sys_devices, pr->id) after validating pr->id (so the
+> > > pr->id validation should all be done here) and then NULL can be passe=
+d
+> > > as acpi_dev to acpi_bind_one() in acpi_processor_add().  Then, there
+> > > will be one physical device corresponding to the processor ACPI devic=
+e
+> > > and no confusion.
+> >
+> > I'm fairly sure this is pointing to the same device but agreed this
+> > is a tiny bit confusing. However we can't use cpu_sys_devices at this p=
+oint
+> > so I'm not immediately seeing a cleaner solution :(
 >
-> That's patch 1/3 on the git branch I pointed you to.
-
-Ah, good!
-
+> Well, OK.
 >
-> The tcp vma is not file backed, but I'm pretty sure that COW is not
-> something they want, so there's never an anon_vma.  It's for pages
-> that contain received TCP packets; ie it's mmaped TCP.
+> Please at least consider doing the pr->id validation checks before
+> setting the ACPI companion for &per_cpu(cpu_devices, pr->id).
+>
+> Also, acpi_bind_one() needs to be called on the "physical" devices
+> passed to ACPI_COMPANION_SET() (with NULL as the second argument) for
+> the reference counting and physical device lookup to work.
+>
+> Please also note that acpi_primary_dev_companion() should return
+> per_cpu(cpu_sys_devices, pr->id) for the processor ACPI device, which
+> depends on the order of acpi_bind_one() calls involving the same ACPI
+> device.
 
-I was following
-tcp_zerocopy_receive()->tcp_zerocopy_vm_insert_batch()->vm_insert_pages()->=
-insert_page_in_batch_locked()->validate_page_before_insert()
-which errors out for PageAnon(page). So, I assumed this path works on
-file-backed pages but I'm not familiar with this code at all.
+Of course, if the value set by ACPI_COMPANION_SET() is cleared
+subsequently, the above is not needed, but then using
+ACPI_COMPANION_SET() is questionable overall.
 
