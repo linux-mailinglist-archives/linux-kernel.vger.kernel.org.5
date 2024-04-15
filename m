@@ -1,177 +1,128 @@
-Return-Path: <linux-kernel+bounces-144793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E5B8A4AC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:48:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5B588A4ACD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:49:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E53591C212C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:48:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10561B25A16
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981383AC1F;
-	Mon, 15 Apr 2024 08:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE84E3CF58;
+	Mon, 15 Apr 2024 08:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="B7Q+iTC8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LUuephRa"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF63E38FA5;
-	Mon, 15 Apr 2024 08:47:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDFB3A1DA;
+	Mon, 15 Apr 2024 08:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170879; cv=none; b=i90zXNlS7RHsZeBqPKonIUa0zvtXXfe2E7N709qcKna+Spg2JTh86LpqY7Q9B3k+MsYxDzZxb95wfwbj77TGHC6nOGwAK1ydWXBBtVOaqDCJqAGFvgpMJVIT1IXo1J+pnfZ9sNiCqXQgfnWjQyVCeW4jBS/tseIaLilQpupOWkg=
+	t=1713170967; cv=none; b=nm2kpdMp+YFClwKjN4djE4mqwAeuLKR1inTHXziuD8drpEnjLKS85wzkjLQO/wTQs0PMcQPJcGmQF6k0Iqhj8UphiA1ksFeTFPpw3qcj6qT6leDLPV/ADygroo6C3/ZkpPgRG5UWKmUluYNcSUIxayYeD69QVvCTauCn0NINDA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170879; c=relaxed/simple;
-	bh=V4JD/K62Bn9Ujl7NQcNkcXzV/bT8ABt7vcbYkyDBR/Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q5udkU9uOxXRUeAaNaN0sIZt4hhJsIsp+zdl/Yxhdkw6b7FEidejPzWuZ0zktGiqOnIEr4TtTZwraJcyUI9srbwKH0Oof96OdVaBiCYubi8nQPxmhJDaSmJzroKfjF4jq5tf3XXOq0Sbs7pR4FidQhdLYWj/B5NHBAOZQNmMx3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=B7Q+iTC8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FF99C113CC;
-	Mon, 15 Apr 2024 08:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713170879;
-	bh=V4JD/K62Bn9Ujl7NQcNkcXzV/bT8ABt7vcbYkyDBR/Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B7Q+iTC88pZwHIypCPfw98m1VQRgmI7HbvnjK1W51yz/xvfbFWp4lZBwYjls8BdFx
-	 nq6wbzJwMF3tcBA3qxSzrq2kGn6DnUzth059UdG+6sx0jk7P+R267X5AOAoKc0DfJV
-	 HLoxC/fXTSZ20V0EJxiwHX3uaqZAe2SUQWB37+Lc=
-Date: Mon, 15 Apr 2024 10:47:56 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Johannes Berg <johannes.berg@intel.com>, linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: debugfs revoke broken?
-Message-ID: <2024041557-stereo-wafer-1551@gregkh>
-References: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
+	s=arc-20240116; t=1713170967; c=relaxed/simple;
+	bh=g6kpKgzAHMgSKzudjehksGcsUcrpnUB9QtZmpGZ9ZdU=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=j6kS89TFwYvGD2B1LSWbDsjTeb9kw+jkXH8V9HnxAIr69fFuhhNyzIS4u4rrUziCNaHt2ecEilzaOwlsFRgUjt53xrqdeZb9WN3ubrTKSdlJiE1+layPpYAWS3rup1awSBAYkbec5q6mQdAI/6vlJsDWQ4C6Idq3prmNkCurk4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LUuephRa; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43F7C5Wn018166;
+	Mon, 15 Apr 2024 08:49:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=gU29RZ0V3i24
+	VCBgtUmCcC2PIz+t/ZVqq7W32gQcB4o=; b=LUuephRag7nN6GAAlOEYIdMEJSbt
+	iLnuQUhbRr1V4kW+KW1qJtGjDXeyeRBP0juWwMS8GvYsIuMSUpiTJ2eVdgm03Gty
+	KJsm+uJ6A4KZslAtLxOCTvoZNf2puY7fYC4Hq/jjJUPBVUzFlkTonhVM31x3ya/B
+	VJApiCVJsUqI9ulY06BXFwGAVacMuLk4xG84Ob3O13sv3ppj/bp5iQBW09qjhE92
+	LrRT5vEa8stPV7Klo1Zvpw4H5lo9fRH4fbMVeZFVSZps7lcFXkhOdh0bgnQWQUYk
+	1S6wnoTHprDTuE7Zh/E/B7s+EpCYiAC8DbNviSiG0orjXTR8Hl0CWSEZ/A==
+Received: from aptaippmta02.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xgwqfgeyj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 08:49:23 +0000 (GMT)
+Received: from pps.filterd (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+	by APTAIPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43F8n89u005845;
+	Mon, 15 Apr 2024 08:49:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3xfk4kh5pq-1;
+	Mon, 15 Apr 2024 08:49:08 +0000
+Received: from APTAIPPMTA02.qualcomm.com (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43F8n7gL005840;
+	Mon, 15 Apr 2024 08:49:08 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+	by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 43F8n7Oh005839;
+	Mon, 15 Apr 2024 08:49:07 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+	id D245D5AF9; Mon, 15 Apr 2024 16:49:06 +0800 (CST)
+From: Qiang Yu <quic_qianyu@quicinc.com>
+To: mani@kernel.org, quic_jhugo@quicinc.com
+Cc: mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
+Subject: [PATCH v3 0/3] Add sysfs entry to EDL mode
+Date: Mon, 15 Apr 2024 16:49:02 +0800
+Message-Id: <1713170945-44640-1-git-send-email-quic_qianyu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: CAW1G567_-oDGaQHkKJjkUQu5lorpukZ
+X-Proofpoint-ORIG-GUID: CAW1G567_-oDGaQHkKJjkUQu5lorpukZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_08,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 mlxscore=0 mlxlogscore=778 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404150058
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
 
-On Sun, Apr 14, 2024 at 06:32:07PM -0400, Kent Overstreet wrote:
-> I recently started seeing test failures like the following; from the
-> "shutdown complete" line we're well after the point where we called
-> debugfs_remove_recursive() - yet from the backtrace we were still able
-> to call into debugfs.
-> 
-> And I see from the history the remove path has been getting tweaked,
-> so...
-> 
-> 00091 ========= TEST   generic/001
-> 00091 
-> 00092 Setting up swapspace version 1, size = 2 GiB (2147479552 bytes)
-> 00092 no label, UUID=73a80295-2b03-4512-aae1-785187926ce3
-> 00092 Adding 2097148k swap on /dev/vde.  Priority:-2 extents:1 across:2097148k 
-> 00092 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-> 00092 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-> 00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-> 00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-> 00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
-> 00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
-> 00101 building 001... done
-> 00101 bcachefs (vdb): mounting version 1.7: mi_btree_bitmap
-> 00101 bcachefs (vdb): initializing new filesystem
-> 00101 bcachefs (vdb): going read-write
-> 00101 bcachefs (vdb): marking superblocks
-> 00101 bcachefs (vdb): initializing freespace
-> 00101 bcachefs (vdb): done initializing freespace
-> 00101 bcachefs (vdb): reading snapshots table
-> 00101 bcachefs (vdb): reading snapshots done
-> 00101 bcachefs (vdb): done starting filesystem
-> 00102 FSTYP         -- bcachefs
-> 00102 PLATFORM      -- Linux/aarch64 Debian-1103-bullseye-arm64-base-kvm 6.9.0-rc2-ktest-g2719f811ae24 #18142 SMP Sun Apr 14 16:26:05 NZST 2024
-> 00102 MKFS_OPTIONS  -- --encrypted --no_passphrase /dev/vdc
-> 00102 MOUNT_OPTIONS -- /dev/vdc /mnt/scratch
-> 00102 
-> 00102 bcachefs (vdc): mounting version 1.7: mi_btree_bitmap
-> 00102 bcachefs (vdc): initializing new filesystem
-> 00102 bcachefs (vdc): going read-write
-> 00102 bcachefs (vdc): marking superblocks
-> 00102 bcachefs (vdc): initializing freespace
-> 00102 bcachefs (vdc): done initializing freespace
-> 00102 bcachefs (vdc): reading snapshots table
-> 00102 bcachefs (vdc): reading snapshots done
-> 00102 bcachefs (vdc): done starting filesystem
-> 00102 bcachefs (vdc): shutting down
-> 00102 bcachefs (vdc): going read-only
-> 00102 bcachefs (vdc): finished waiting for writes to stop
-> 00102 bcachefs (vdc): flushing journal and stopping allocators, journal seq 3
-> 00102 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 5
-> 00102 bcachefs (vdc): shutdown complete, journal seq 6
-> 00102 bcachefs (vdc): marking filesystem clean
-> 00102 bcachefs (vdc): shutdown complete
-> 00102 bcachefs (vdb): shutting down
-> 00102 bcachefs (vdb): going read-only
-> 00102 bcachefs (vdb): finished waiting for writes to stop
-> 00102 bcachefs (vdb): flushing journal and stopping allocators, journal seq 6
-> 00102 bcachefs (vdb): flushing journal and stopping allocators complete, journal seq 7
-> 00102 bcachefs (vdb): shutdown complete, journal seq 8
-> 00102 bcachefs (vdb): marking filesystem clean
-> 00102 bcachefs (vdb): shutdown complete
-> 00102 Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
-> 00102 Mem abort info:
-> 00102   ESR = 0x0000000096000004
-> 00102   EC = 0x25: DABT (current EL), IL = 32 bits
-> 00102   SET = 0, FnV = 0
-> 00102   EA = 0, S1PTW = 0
-> 00102   FSC = 0x04: level 0 translation fault
-> 00102 Data abort info:
-> 00102   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> 00102   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> 00102   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> 00102 user pgtable: 4k pages, 48-bit VAs, pgdp=000000011585c000
-> 00102 [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
-> 00102 Internal error: Oops: 0000000096000004 [#1] SMP
-> 00102 Modules linked in:
-> 00102 CPU: 7 PID: 1805 Comm: cat Not tainted 6.9.0-rc2-ktest-g2719f811ae24 #18142
-> 00102 Hardware name: linux,dummy-virt (DT)
-> 00102 pstate: 00001005 (nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-> 00102 pc : bch2_journal_seq_pins_to_text+0x100/0x208
-> 00102 lr : bch2_journal_seq_pins_to_text+0xf0/0x208
-> 00102 sp : ffff0000d6dd3c80
-> 00102 x29: ffff0000d6dd3c80 x28: ffff0000ca361f00 x27: 0000000000000000
-> 00102 x26: 0000000000000000 x25: ffff0000da0002c0 x24: ffff0000da0002f0
-> 00102 x23: ffff0000d50668c0 x22: ffff800080998950 x21: ffff0000da0002c0
-> 00102 x20: ffff0000c46165c0 x19: 0000000000000000 x18: 00000000fffffffe
-> 00102 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-> 00102 x14: ffffffffffffffff x13: ffff0000c0ada1df x12: ffff0000c0ada1d9
-> 00102 x11: 0000000000000000 x10: 0000000000000000 x9 : ffff800080400ec8
-> 00102 x8 : 0000000000000000 x7 : 20746e756f63203a x6 : 0000000000000000
-> 00102 x5 : 0000000000000020 x4 : 000000000000000d x3 : ffff0000c0ada1d0
-> 00102 x2 : 0000000000000010 x1 : ffff0000c0ada1d0 x0 : 0000000000000012
-> 00102 Call trace:
-> 00102  bch2_journal_seq_pins_to_text+0x100/0x208
-> 00102  bch2_journal_pins_read+0x48/0xd0
-> 00102  full_proxy_read+0x64/0xb8
-> 00102  vfs_read+0xd0/0x2d0
-> 00102  ksys_read+0x5c/0xe0
-> 00102  __arm64_sys_read+0x20/0x30
-> 00102  invoke_syscall.constprop.0+0x50/0xe0
-> 00102  do_el0_svc+0x44/0xc8
-> 00102  el0_svc+0x18/0x58
-> 00102  el0t_64_sync_handler+0xb8/0xc0
-> 00102  el0t_64_sync+0x14c/0x150
+Add EDL sysfs entry for mhi controller that provides edl_trigger callback.
+Add mhi_pci_generic_edl_trigger for qualcomm sdx55,sdx65 and sdx75 as
+edl_trigger callback.
 
-So this file was open when debugfs_remove() was called?
+v2->v3:
+1. Update Documentation/ABI/stable/sysfs-bus-mhi with description of
+   force_edl sysfs entry.
 
-Any chance you can bisect?  We just fixed some issues here in
-952c3fce297f ("debugfs: fix wait/cancellation handling during remove")
-that I thought should have handled this.  If you revert that commit,
-does things work again?  And/or what about commit 8c88a474357e
-("debugfs: add API to allow debugfs operations cancellation")?  Maybe we
-need to go back to not having completions at all in the debugfs remove
-path and just live with waiting for the files to be removed before
-continuing (which should at the least, resolve the issue you see here,
-while slowing things down a bit.)
+2. Add comments about edl_trigger callback in mhi_controller struct.
 
-thanks,
+3. Follow reverse christmas tree in mhi_pci_generic_edl_trigger.
 
-greg k-h
+4. Add a new API in MHI to allow controller to get CHDB address and avoid
+   duplicating the definition of CHDBOFF.
+
+v1->v2:
+1. Move all process needed by qualcomm sdx55,sdx65,sdx75 to enter EDL into
+   mhi_pci_generic_edl_trigger() as the callback to edl_trigger.
+
+2. MHI stack creates EDL sysfs entry to invoke edl_trigger callback so
+   that devices need different mechanism to enter EDL can provide its own
+   edl_trigger callabck .
+
+Qiang Yu (3):
+  bus: mhi: host: Add sysfs entry to force device to enter EDL
+  bus: mhi: host: Add a new API for getting channel doorbell address
+  bus: mhi: host: pci_generic: Add edl callback to enter EDL
+
+ Documentation/ABI/stable/sysfs-bus-mhi | 11 ++++++++
+ drivers/bus/mhi/host/init.c            | 35 +++++++++++++++++++++++++
+ drivers/bus/mhi/host/main.c            | 17 ++++++++++++
+ drivers/bus/mhi/host/pci_generic.c     | 47 ++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h                    |  9 +++++++
+ 5 files changed, 119 insertions(+)
+
+-- 
+2.7.4
+
 
