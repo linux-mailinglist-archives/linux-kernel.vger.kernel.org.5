@@ -1,43 +1,52 @@
-Return-Path: <linux-kernel+bounces-144767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC348A4A76
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 588778A4A6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E3961C21EC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:36:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EC7A1C21C46
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EAE63C087;
-	Mon, 15 Apr 2024 08:36:09 +0000 (UTC)
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41AEF3BBED;
-	Mon, 15 Apr 2024 08:36:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7139383A3;
+	Mon, 15 Apr 2024 08:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KP7JSEyY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08E538390;
+	Mon, 15 Apr 2024 08:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170168; cv=none; b=hrrB3Dh06WrJ2k/u77kpBM7KiV/zADY5SeXdhAPWcd6XM+VpopBfcYQa5CC1gxKu1hUV9AdAPxfRQj0Qb2D8DLlejx/r2BS5KP8B9TNRA/BTZuKaXhkf/lT7Rvjy9HFJEIX11CADLa7w0APF5gE4fzrLl8LTq0YHd8ij5nSuqjA=
+	t=1713170125; cv=none; b=SY0Jng38RA6H656jY+LiLbPqKnmA7ypTJEuvpsahHOe5WOMbM3UFxKUB1suxqAyP3Vn7oreWulUVNvbopa6AXsv9dJNsVkjLU+fhRi8lfy2BIrW2L/+1/sUrQHOF/VIMVHuM2IFjz/wQ8hm2B56S8V24kLE9UUDe07YAu/xIsv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170168; c=relaxed/simple;
-	bh=3pn1236NH8HERFeQ80zUKBBGeBNC3NuW3A04K3Vi/pY=;
+	s=arc-20240116; t=1713170125; c=relaxed/simple;
+	bh=/rzQxdBfFz+bhG2WYY4i5FmzNnju0GiDyWDfmfsDHuY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h9eWsKF4Jhzrgd+SGA9TD1+x2htjUjQ66Ir46QumPOReA+8ZS0MWxOIM0tN0W7Oc+Fgyw5FMv7+RyHR14JMTRI4caPu5nsOs39e6w0gzQnN27rhLRSvkVOEbhJOtp0u+fagwr9GWORAFUvVz9OaO/+JsdAEm/Asw7Sxs8ydsJ4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rwHob-0004hw-00; Mon, 15 Apr 2024 10:35:49 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 7D228C05B3; Mon, 15 Apr 2024 10:34:56 +0200 (CEST)
-Date: Mon, 15 Apr 2024 10:34:56 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] MIPS: Guard some macros with __ASSEMBLY__ in asm.h
-Message-ID: <ZhzmsE/jH3/sx0X6@alpha.franken.de>
-References: <20240326-asm-guard-v1-1-fe0c140a5aea@flygoat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PvYz/R3baQ3onuqeVEke+naEWBZdhzHdL7tgLbO6PyFGwztP1zrRS/nOhCvhGNGWvrmmsHPykYqK49+O5E+H54dk02uXGDDYX6KY6Qp/vrUxBoNvtG5z5yZIZzKXzzY8tHJO5NYA3IYH1vz7J+ewHMF0pOSN85xLaNQW9R7D4ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=KP7JSEyY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D712C113CC;
+	Mon, 15 Apr 2024 08:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713170124;
+	bh=/rzQxdBfFz+bhG2WYY4i5FmzNnju0GiDyWDfmfsDHuY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KP7JSEyYD+saYwrXxh+gBWZdx0VlJPh0B0scJvdhNXVkiSxW7b7596pTtkonqS+yC
+	 THNAttUnB/7GyEV/lsVBYHtftAbwGD2TTZjkxY89N01SVLudaGc0Wgg8xgWdDPfZ3S
+	 Kb/uNmRhYjYmiG4jwnl1MCyZXk1SaW7GQIfQbj94=
+Date: Mon, 15 Apr 2024 10:35:21 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Alex Elder <elder@linaro.org>, corbet@lwn.net,
+	workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+Message-ID: <2024041544-fester-undead-7949@gregkh>
+References: <20240414170850.148122-1-elder@linaro.org>
+ <ZhzgTeEHFF19N3UZ@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -46,57 +55,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240326-asm-guard-v1-1-fe0c140a5aea@flygoat.com>
+In-Reply-To: <ZhzgTeEHFF19N3UZ@infradead.org>
 
-On Tue, Mar 26, 2024 at 11:41:45AM +0000, Jiaxun Yang wrote:
-> There are some assembly macros with very generic naming
-> being defined asm.h. They are clashing with other macros
-> from C code.
+On Mon, Apr 15, 2024 at 01:07:41AM -0700, Christoph Hellwig wrote:
+> No, this advice is wronger than wrong.  If you set panic_on_warn you
+> get to keep the pieces.  
 > 
-> Guard them with __ASSEMBLY__ to prevent futher clashes.
-> 
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Link: https://lore.kernel.org/linux-mips/8d78894-dd89-9f4d-52bb-1b873c50be9c@linux-m68k.org/
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  arch/mips/include/asm/asm.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/mips/include/asm/asm.h b/arch/mips/include/asm/asm.h
-> index 2e99450f4228..87ff609b53fe 100644
-> --- a/arch/mips/include/asm/asm.h
-> +++ b/arch/mips/include/asm/asm.h
-> @@ -37,6 +37,7 @@
->  #define CFI_SECTIONS
->  #endif
->  
-> +#ifdef __ASSEMBLY__
->  /*
->   * LEAF - declare leaf routine
->   */
-> @@ -122,6 +123,8 @@ symbol		=	value
->  #define ASM_PRINT(string)
->  #endif
->  
-> +#endif /* __ASSEMBLY__ */
-> +
->  /*
->   * Stack alignment
->   */
-> 
-> ---
-> base-commit: 084c8e315db34b59d38d06e684b1a0dd07d30287
-> change-id: 20240326-asm-guard-dddeb2321d69
-> 
-> Best regards,
-> -- 
-> Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-applied to mips-next.
+But don't add new WARN() calls please, just properly clean up and handle
+the error.  And any WARN() that userspace can trigger ends up triggering
+syzbot reports which also is a major pain, even if you don't have
+panic_on_warn enabled.
 
-Thomas.
+And I think the "do not use panic_on_warn" recommendation has been
+ignored, given the huge use of it by vendors who have enabled it (i.e.
+all Samsung phones and cloud servers).
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+thanks,
+
+greg k-h
 
