@@ -1,218 +1,170 @@
-Return-Path: <linux-kernel+bounces-145472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0678C8A5693
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:35:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAA718A5695
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:36:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 299241C21370
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:35:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E8E4B214B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F5E78C78;
-	Mon, 15 Apr 2024 15:35:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BE579B99;
+	Mon, 15 Apr 2024 15:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Am8Cx9D1"
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="nsCdW1U5";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="s/cIWt86"
+Received: from fout5-smtp.messagingengine.com (fout5-smtp.messagingengine.com [103.168.172.148])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6B778C9B;
-	Mon, 15 Apr 2024 15:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBEB378C78;
+	Mon, 15 Apr 2024 15:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713195329; cv=none; b=MoHHRtvUNyDQJ9wmY5EjDkoF2hS+d4aAoL8wjFl2fTlk9SWGy3HybWV0S/WpteCaD5ZAHEct/7s1Z2ZKzGPZ5I4L96ltjOXQfiBpMkKAWWDKMM3HK/Nyc7ugIMI6Qs1OFxTjdDzqlN3UVQGeHsudkJChAl66h4ZBgR1XelDSPNg=
+	t=1713195354; cv=none; b=eyogk7nOrkATzI3LWM/hWLkw42uuk7SVV8UxUOVc7kT+k5GYnF2EI82pv23IleSM06Np5sNbqqDYUpe5dnotVHJvWiIxnyyOiueKxFvyz+bjKHYG+KZ4LxxpGVL0aMU1nTH451maWvMOwuJ1dslRYe/q3jS/S/Pn11cF8tiganc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713195329; c=relaxed/simple;
-	bh=53AOF03IbeEv9JvWKh4A18LWtIqZ7eTxXPEmrgCdYC0=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=Zj32m2GYLdByj2+mj+J+ttswoCC7ISOkV7gDDnNkLiygFhbqVcbacU0qeK06xyz5Ky1mdUUzwrHCSdx8us7A3vG2eHppCpzUWGIbzKkjve9tssJu9Oe3/xwW6JwanjVbIGWLU+jvYf9I29KhsIv3C5BlD8Le5lz2hUyDlW7gofY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Am8Cx9D1; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78d743f3654so323548685a.0;
-        Mon, 15 Apr 2024 08:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713195326; x=1713800126; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oadbbSFnpPAsw5LnkgDmwBlvZxtG9vRzbyBZLQ6hcaY=;
-        b=Am8Cx9D1l1L7DIiVZ5ys1lSJVy1dnRgU41sWLj7hkI73Y/8H0pcECxkJ25I9ebBGTP
-         c5F3P7XffP6OTEtPyf/NgAn+Tdf+bhuTrzENQdOYyoBuGw+zffjezKHelqyjm+Iorr/m
-         05D8zfYBdCzEnWlG8BIoj1eBdvhZvSf9mSCGJEb6el/6ZHnynImaq8urbpCVK1wkBD2V
-         9BjHkHaK4iOMdSLT5WXc7ifj4LqTNDDd0Dnm6cXjGLZtlLqhO+HJpcbfcyYBGKyEYkYk
-         rszRjGxy8nOAL/EEog9HgScEMKO5JocgcKaSPwytMr21zIIuBNd4pl/QiMJo829UjwMO
-         jTJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713195326; x=1713800126;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oadbbSFnpPAsw5LnkgDmwBlvZxtG9vRzbyBZLQ6hcaY=;
-        b=rrNzSdU9seiiSad/thRjiJtp89UbTHMYIfqrdHsQy6aeE2TsxAUmadqvWUNOT8gOCG
-         V5ywzeWZwLcFGT8pOoC+68cGc3HpXZymst9NII52lTKaEwgYSNnbqCDXiOY5yncU73H6
-         xLRHxMmPQJxljzxZL5ArSd1vHDdYrur5LN7UT2KCpP7zskafwgBnSMbUxk7i5MoNSnV4
-         ak8AxGtTD2oDQyszZX3+l3HF8AvWVwGP+yU1euhZmtqTnp0LYJ+7OXS86m5y3jtiAU/S
-         CgA2eiTu+ReRjI7FS9OslmNoB7n9JncBSbrsZoSwDdIoCkVEGwDELJfDALeOiQxjCT9z
-         bxlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXu4XBL3oC8xUNdBOn9H4vuZkrubv3sdJdnfVnt72Dan1tL6C395vgxAcAwZrxltomQ8R4SnrRiaFH3pRWcnL/VJW0nbi4zMdIyEOkKSBR8LbJcc8Cigcfklj8xqoDObyHkW0cx
-X-Gm-Message-State: AOJu0YyAVi0+7+LOSxFeCBWI02Uxwd1Io0KcJxKcq5tQqTwKiYyTpVWG
-	cLZo/R0DILYhm88UGjuzqVSgWddvc7iBVAD42WWsDUfHCdZYAQKU
-X-Google-Smtp-Source: AGHT+IEGoTUcnU0ybfnGeWzbsqwK78B0nhRietz7nUTtRT/2sVO9LnA5CHKgHB6Ruq9sZD3iCMB+XA==
-X-Received: by 2002:a05:620a:a97:b0:78d:607e:2194 with SMTP id v23-20020a05620a0a9700b0078d607e2194mr11479280qkg.3.1713195326463;
-        Mon, 15 Apr 2024 08:35:26 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id t12-20020a05620a004c00b0078d43da0be3sm6456078qkt.5.2024.04.15.08.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 08:35:26 -0700 (PDT)
-Date: Mon, 15 Apr 2024 11:35:25 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Alexander Duyck <alexander.duyck@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Richard Gobert <richardbgobert@gmail.com>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- dsahern@kernel.org, 
- aleksander.lobakin@intel.com, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-Message-ID: <661d493de4709_11ba729442@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAKgT0UfbSPO9hAiF1nKM-ZOfDD7Yq9i8M29JX-mwz_NnPQAj0g@mail.gmail.com>
-References: <20240412152120.115067-1-richardbgobert@gmail.com>
- <20240412152120.115067-2-richardbgobert@gmail.com>
- <661ad1136bc10_3be9a7294c2@willemb.c.googlers.com.notmuch>
- <CAKgT0UfB+3DTjK7vq1uvG-2xtA53pw03ygJhwSG8j1bPtmYU8A@mail.gmail.com>
- <661d41106f996_c0c829445@willemb.c.googlers.com.notmuch>
- <CAKgT0UfbSPO9hAiF1nKM-ZOfDD7Yq9i8M29JX-mwz_NnPQAj0g@mail.gmail.com>
-Subject: Re: [PATCH net v1 1/2] net: gro: add flush check in
- udp_gro_receive_segment
+	s=arc-20240116; t=1713195354; c=relaxed/simple;
+	bh=+Hr1RSEs61KbR8I+XiQic0F3lvj+u2G4lhHUoJS4y8s=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=quGtutM/NV1sXomgVEROG4VKJ0qHV7S52XKs7CNWhohi/O6vX1EVmSU9an2xGXpnztFfCbmepUgnRNfJTU5SMD0rJtzcA/v2aWYWYDThSMu68RIa52s1JxQvKmzHMtf28wPThUGnExsK+4wl4spx22HOFUo2hPx/dnvfE/SYUCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=nsCdW1U5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=s/cIWt86; arc=none smtp.client-ip=103.168.172.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id E4015138008C;
+	Mon, 15 Apr 2024 11:35:51 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 15 Apr 2024 11:35:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1713195351; x=1713281751; bh=NKyHVd6O5G
+	xyMIbK6qGm5hs8jJkIZEH0cqFINvkbpUA=; b=nsCdW1U51jfzeMkyZHn0Fbb0ao
+	ikCGQ2m8sEt8IzFsf2Y91pKjA743pr4et54buHMJ18+wfoUyu3+1T7yMo0N3EMsh
+	hWjPJIREZSzKTcUCEwZ+QOl5GTgcvtYkLYF8kUBxyhPLhWyBqgrc2SVV9U17rNDy
+	uauUhhaFKZCVAoxZz5Ay8zxq6zC5i36nA5JnhbLa/v7qbxKR6I4MkRKkYjADdOwu
+	4G7RGEeqWX6T097kMoVwWJ+r5PcR3IIsqplnh0PtQe2jVoqaDAISxlQPXrzetgBj
+	MnxKIeEe20mYTZhOWN/bDJRJ7r8ycT0+eC4hE62WUXfgrQ1hKQQ03IJMXb5Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1713195351; x=1713281751; bh=NKyHVd6O5GxyMIbK6qGm5hs8jJkI
+	ZEH0cqFINvkbpUA=; b=s/cIWt866OUPpq+SGeHRpY+cwbQKV7lcLczMsPVcaV/F
+	EDnq1h1asCSMTzxemSxR94D2ne4gbYsHdeW+1AE4cLr13usIaEG1EmVhoxDB3rve
+	7rnXELuXrBx6N01XziYoAIXPdiiVtB9/rEpj5wwnZEaUXRzeTtT3+8mjFrYxPvaf
+	noJ0OL90mNlKaBMKarEqwh4VwXAIXzOaRS+a7BEvH4XRSIRd621Izyrg2gW8Elfo
+	yj2nhZYxmIVYNuW5NkjZe5L1JDtE5GxMvxO1iDpmvKbT2qOwIJ4LwbFHFv10qZ3K
+	Gcog4XGLOGqSWPm2WqhKCJYrtYPFK11WR1PuT62lLw==
+X-ME-Sender: <xms:V0kdZl5-Ks5H4ZIMsueKvNzcseWUdcxlN1bHo3L0FXNmQAsoQ3hquA>
+    <xme:V0kdZi5ePkAR-UV1hDdBO-DisyYak1ddjUBzwzTSUMNH0IoJtrRPE_mkO6L2fNfZk
+    9Hx0bBdT-m6Ozfx9O8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejvddgledvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:V0kdZsfF8xA-hXd_nvSYSobS20nFGN0x9XjtFi1OVnyGUtW02lPinQ>
+    <xmx:V0kdZuJr02V0bjMWLu1OYgLN3jcRy0kJ6DD5ZaM4sJ1lo4Ma5OpIgA>
+    <xmx:V0kdZpK_jfoTK42y2-Lb5lgs7xKkOdfc1q9LaoaXqDQWTjQuEfBrNw>
+    <xmx:V0kdZnxZ9r8LEj0Ct9uR5wPh--IidebIgB3b5JmFA7rg4QgbW2ftZA>
+    <xmx:V0kdZn2NOqZbkoIdGySo0kb7whsiu5YeDLfPLZVeDsnKGEuee0WQkEjg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id E9918B6008D; Mon, 15 Apr 2024 11:35:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Message-Id: <e0cf6827-06c2-4212-848c-10d275c75546@app.fastmail.com>
+In-Reply-To: <875xwjcqpl.fsf@mail.lhotse>
+References: <20240410153212.127477-1-adrian.hunter@intel.com>
+ <87be83da-6102-483d-b1dc-a77eecc9f780@app.fastmail.com>
+ <c9f382b2-cd96-4ee3-ad68-95381d9e09c0@intel.com>
+ <a434248a-1e9f-4f4f-8f90-d36d8e979f53@csgroup.eu>
+ <ff9d7032-a3b6-4ecd-ac26-d7d4a06a5c7f@csgroup.eu>
+ <4d429a10-eb45-4262-8e74-69af810ef1ac@intel.com>
+ <dd6653b2-3a88-4b95-af13-c6fda5b27b39@app.fastmail.com>
+ <875xwjcqpl.fsf@mail.lhotse>
+Date: Mon, 15 Apr 2024 17:35:30 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Adrian Hunter" <adrian.hunter@intel.com>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>
+Cc: "Peter Zijlstra" <peterz@infradead.org>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>,
+ "John Stultz" <jstultz@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+ "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+ "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "x86@kernel.org" <x86@kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Ingo Molnar" <mingo@redhat.com>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Heiko Carstens" <hca@linux.ibm.com>,
+ "Nicholas Piggin" <npiggin@gmail.com>, "Borislav Petkov" <bp@alien8.de>,
+ "Andy Lutomirski" <luto@kernel.org>,
+ "Bjorn Helgaas" <bhelgaas@google.com>,
+ "Thomas Gleixner" <tglx@linutronix.de>,
+ "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
+ "Stephen Boyd" <sboyd@kernel.org>,
+ "Randy Dunlap" <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Sven Schnelle" <svens@linux.ibm.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
+Content-Type: text/plain
 
-Alexander Duyck wrote:
-> On Mon, Apr 15, 2024 at 8:00=E2=80=AFAM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > Alexander Duyck wrote:
-> > > On Sat, Apr 13, 2024 at 11:38=E2=80=AFAM Willem de Bruijn
-> > > <willemdebruijn.kernel@gmail.com> wrote:
-> > > >
-> > > > Richard Gobert wrote:
-> > > > > GRO-GSO path is supposed to be transparent and as such L3 flush=
- checks are
-> > > > > relevant to all flows which call skb_gro_receive. This patch us=
-es the same
-> > > > > logic and code from tcp_gro_receive but in the relevant flow pa=
-th in
-> > > > > udp_gro_receive_segment.
-> > > > >
-> > > > > Fixes: 36707061d6ba ("udp: allow forwarding of plain (non-fragl=
-isted) UDP GRO packets")
-> > > > > Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
-> > > >
-> > > > Reviewed-by: Willem de Bruijn <willemb@google.com>
-> > > >
-> > > > > ---
-> > > > >  net/ipv4/udp_offload.c | 13 ++++++++++++-
-> > > > >  1 file changed, 12 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> > > > > index 3498dd1d0694..1f4e08f43c4b 100644
-> > > > > --- a/net/ipv4/udp_offload.c
-> > > > > +++ b/net/ipv4/udp_offload.c
-> > > > > @@ -471,6 +471,7 @@ static struct sk_buff *udp_gro_receive_segm=
-ent(struct list_head *head,
-> > > > >       struct sk_buff *p;
-> > > > >       unsigned int ulen;
-> > > > >       int ret =3D 0;
-> > > > > +     int flush;
-> > > > >
-> > > > >       /* requires non zero csum, for symmetry with GSO */
-> > > > >       if (!uh->check) {
-> > > > > @@ -528,7 +529,17 @@ static struct sk_buff *udp_gro_receive_seg=
-ment(struct list_head *head,
-> > > > >                               skb_gro_postpull_rcsum(skb, uh,
-> > > > >                                                      sizeof(str=
-uct udphdr));
-> > > > >
-> > > > > -                             ret =3D skb_gro_receive(p, skb);
-> > > > > +                             flush =3D NAPI_GRO_CB(p)->flush;
-> > > > > +
-> > > > > +                             if (NAPI_GRO_CB(p)->flush_id !=3D=
- 1 ||
-> > > > > +                                 NAPI_GRO_CB(p)->count !=3D 1 =
-||
-> > > > > +                                 !NAPI_GRO_CB(p)->is_atomic)
-> > > > > +                                     flush |=3D NAPI_GRO_CB(p)=
-->flush_id;
-> > > > > +                             else
-> > > > > +                                     NAPI_GRO_CB(p)->is_atomic=
- =3D false;
-> > > > > +
-> > > > > +                             if (flush || skb_gro_receive(p, s=
-kb))
-> > > > > +                                     ret =3D 1;
-> > > >
-> > > > UDP_L4 does not have the SKB_GSO_TCP_FIXEDID that uses is_atomic =
-as
-> > > > input.
-> > > >
-> > > > And I still don't fully internalize the flush_id logic after star=
-ing
-> > > > at it for more than one coffee.
-> > >
-> > > The flush_id field is there to indicate the difference between the
-> > > current IPv4 ID of the previous IP header. It is meant to be used i=
-n
-> > > conjunction with the is_atomic for the frame coalescing. Basically
-> > > after the second frame we can decide the pattern either incrementin=
-g
-> > > IPv4 ID or fixed, so on frames 3 or later we can decide to drop the=
+On Mon, Apr 15, 2024, at 04:19, Michael Ellerman wrote:
+> "Arnd Bergmann" <arnd@arndb.de> writes:
+>> On Thu, Apr 11, 2024, at 11:27, Adrian Hunter wrote:
+>>> On 11/04/24 11:22, Christophe Leroy wrote:
+>>>
+>>> That is fragile because it depends on defined(__OPTIMIZE__),
+>>> so it should still be:
+>>
+>> If there is a function that is defined but that must never be
+>> called, I think we are doing something wrong.
+>
+> It's a pretty inevitable result of using IS_ENABLED(), which the docs
+> encourage people to use.
 
-> > > frame if it doesn't follow that pattern.
-> > >
-> > > > But even ignoring those, the flush signal of NAPI_GRO_CB(p)->flus=
-h
-> > > > set the network layer must be followed, so ACK. Thanks for the fi=
-x.
-> > >
-> > > I'm not sure about the placement of this code though. That is the o=
-ne
-> > > thing that seems off to me. Specifically this seems like it should =
-be
-> > > done before we start the postpull, not after. It should be somethin=
-g
-> > > that can terminate the flow before we attempt to aggregate the UDP
-> > > headers.
-> >
-> > In principle agreed that we should conclude the flush checks before
-> > doing prep for coalescing.
-> >
-> > In practice it does not matter? NAPI_GRO_CB(skb)->csum will be ignore=
-d
-> > if the packet gets flushed.
-> =
+Using IS_ENABLED() is usually a good idea, as it helps avoid
+adding extra #ifdef checks and just drops static functions as
+dead code, or lets you call extern functions that are conditionally
+defined in a different file.
 
-> I was referring more to the fact that this code is one of two
-> branches. So there is this path, and then the is_flist branch that
-> comes before this. I would think this logic would apply to both
-> wouldn't it? I am not familiar with the code so I cannot say for
-> certain if it does or doesn't. If it doesn't then yes. I suppose it
-> doesn't matter.
+The thing is that here it does not do either of those and
+adds more complexity than it avoids.
 
-With if_flist, all original segments are preserved in the frag_list,
-so can be sent out as is.
+> In this case it could easily be turned into a build error by just making
+> it an extern rather than a static inline.
+>
+> But I think Christophe's solution is actually better, because it's more
+> explicit, ie. this function should not be called and if it is that's a
+> build time error.
 
-Good point that that is no excuse for combining three or more
-segments where some have a fixed id and others an incrementing id.=
+I haven't seen a good solution here. Ideally we'd just define
+the functions unconditionally and have IS_ENABLED() take care
+of letting the compiler drop them silently, but that doesn't
+build because of missing struct members.
+
+I won't object to either an 'extern' declaration or the
+'BUILD_BUG_ON()' if you and others prefer that, both are better
+than BUG() here. I still think my suggestion would be a little
+simpler.
+
+     Arnd
 
