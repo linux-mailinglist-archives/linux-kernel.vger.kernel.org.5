@@ -1,149 +1,267 @@
-Return-Path: <linux-kernel+bounces-145672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CF618A5958
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1604B8A595C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:42:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 520631C22C2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:42:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F27F1C22F91
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7351339BA;
-	Mon, 15 Apr 2024 17:41:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B9F13A897;
+	Mon, 15 Apr 2024 17:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ATeo5rCl"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kOoyc7NQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5DD126F1F
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 847F912C46D;
+	Mon, 15 Apr 2024 17:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713202912; cv=none; b=mwJwyPyGgI84Ak893ceTDR0ZXythjqvLZuYj4XI2Jk+GP6sWqWCsPOwAEVmoXll7r4/vPWYQVDh97g3o6hA1vodz6ZOwzC4LYqiJ+bS9mCi4D46t6c28cSdTot3o+ohEyF5qHg9CYPhKI1EdqNbmDcE6AuPgd/Fahp/1sOhQhb4=
+	t=1713202916; cv=none; b=TEFnpP4ERCqjXe6kwDGX0nAr7lzQ+ec/cTjQe5s7oUbq5jQpXgiVhS6ssnh6Wd9gnLIHz8BrMcbA27RgEE7tbhDTkmDV9Bz1+lwFE/8i4Lg5rQu6ZaDVm+8uRlfZLk4xTYMY/U9hBpr9TphHoqEYWhL+LEIsKl8m7Mr+Xt353zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713202912; c=relaxed/simple;
-	bh=xDzP8JtH++TeG6a490HKNdr4gYMBp0MXFefRWtUa87E=;
+	s=arc-20240116; t=1713202916; c=relaxed/simple;
+	bh=Nd+cGKqlC3U+o3R2XM4AQmLSXWv3wXIXsvzYcQ1+Mo0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dF3sH//hwX3cRZHYaeFaZC+R/dbVB6gf25tI7nIfLPv5hHn+FxWp6BqILHSKyNBNiqX4U+s2kSFRxRxlvxzGK2La9IfEziBH1WffgPhCQqcTlk8MideP9ZYKb1NC2MPpaetSGvxVl56Gc9rIgVLdy/N99VZnT+ySt34NTR+Q23g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ATeo5rCl; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso3399558276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713202908; x=1713807708; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aYgIyvMvRWICpRScbQV/k/jY5uYOgDdkXOWDfquSjCo=;
-        b=ATeo5rClKw3FS7E6DymOTXcte5a7C45OqKGWyd6e8dONwLEwCz/K3oXTy9ighRjuyb
-         /EWaU+ANG8N0FjAh4xSL4jE/b6DyKGuqc/JEKMwCMDhQ1m4TAN6nH+s4xhebIdWii+Tj
-         736xA+AGi4CD1jCjE60s2Ofv5H5NXix9XXYEqveOMvhH0k989iVqpPcTEyUEJb3bdYsF
-         msR29IKkmevBqlFDs/NljGFHvC/K0+9pPjiTC6modLhyeROG3PqBk+stEQCDlHz0rsnS
-         U4XbnQnU+FNt6q187ERxC2ZVMwKP4TeCDc2Chrpe1K0KCDctKCkTw6rXzn/cJ6x4N80E
-         agdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713202908; x=1713807708;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aYgIyvMvRWICpRScbQV/k/jY5uYOgDdkXOWDfquSjCo=;
-        b=ghQ8zdR4NQKH4ZbsfZD4qlP2VLCy4RxZd8xhnLHR17FpDwTaEf2NDqtcP3mYiKmFsd
-         nbXlXD/dggMZaMfsrbvkxx0yFvNS2LyQmXb9Ky09Jl1Gbyz0QD3L9DiV7LMLCLN73EHp
-         XmrIOSO4OO/hTUi4x6YSVOR2Oy8pFwOEv77MaYb2bQXejt1eVXgW9HmF8ZQE9wpQQb6s
-         lYuH1ArxLE0njalUL1p9R1E9vQc4ZZBmkPdNlSuJZMct+9CKXWL5lpHuWneiXc7OOMv1
-         EQW/sfcwIxrv3ZF+ITlUOwHkNskSFtGl8lG/iiPa4G24FuPHCgHJezwGC3/KsNYLrtS7
-         Ut0A==
-X-Forwarded-Encrypted: i=1; AJvYcCVTud9/kdvNv2QgjAONS9gJ5ZxAurE07EUAHULFTnZCYESzatDzanXXZyjVyVD1HOx4dwsiSK6vdtE27ALkNDuYbLJ0VPC0kWzCfkby
-X-Gm-Message-State: AOJu0YzQApn+lIxa91mPFDygi/bM7gGshXTBpHwZlq5aebmbutsHpZnq
-	Z7+msWq0+a73mVJXPSJF0r103BqzMxW/0qORnv4ozdDNqBgw7pyhelOKHQ5/CP6+bvJ39hGEoz2
-	fcZfApL9kzbpHTMLdK6HInt45o/7fIgWUyROecQ==
-X-Google-Smtp-Source: AGHT+IHKpNfr2TaUgVv6Ugvchn9mUOD77xP6+GIEtmI5RLKRLLZLr1EmobTo6CX82MQ9pJIWGNHcl6abRXCvRtZsfeM=
-X-Received: by 2002:a25:80c6:0:b0:dcb:aa26:50fe with SMTP id
- c6-20020a2580c6000000b00dcbaa2650femr10533953ybm.15.1713202908173; Mon, 15
- Apr 2024 10:41:48 -0700 (PDT)
+	 To:Cc:Content-Type; b=ePShuOebNdOIq9FZGCeP6BhrCuT1deO0ziIoWIQUgMSwl3cg9z7fR4uP5Hx1TxLqnvM7h5cNgpRVRfcv1qmJmWj5MGszMQd3IRNeV6Ll9KAqurjvoaxxinKIUjgqWM+sf8TNAwl7XaYEZ3df0DKPWdn8QzWI8KkzPo0RUYr8f70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kOoyc7NQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24DEEC113CC;
+	Mon, 15 Apr 2024 17:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713202916;
+	bh=Nd+cGKqlC3U+o3R2XM4AQmLSXWv3wXIXsvzYcQ1+Mo0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kOoyc7NQkGPD3Do4tYzA2emGxOggCq9DabYmVX3J7MyZIH4S5cg5igbZI1WOG1KxG
+	 ChUhfLglw54vaJijOyY9eV4L96p3pdTIwMCCDbWRV8IJrmW/BK/qsU8kDnDli7Ghln
+	 xc08XuSEBl20zaRIqJHnr30EUV7BhGVMB1AekS0i74CDTpzDs+EcSceggZF5qLpJNO
+	 xy2IJ8mbugGVf/guxHY7Xi64GOQygXV3wgeDGLdEMaavSw7gTSbD/Z26kjCRQ8sZUj
+	 qwMymy/wMGb9uodV998OzR6OPpnvybgKqFA+fOCmLbN5d9fpfAKtW3QI23dO/D8/os
+	 gLK5S4BPIjPrg==
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-22ec8db3803so373374fac.1;
+        Mon, 15 Apr 2024 10:41:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWUbmHwVBrPusjWCoOQ8A9Uwh9JFES4bGDg2mMVyJCrgDAWWPf0kQoCL+f9Fo/ApXmMuj08JF8NGteEnRnUo8n6Fuh/MoZDFe/hrsN3hCNBJ3/Ulay+uylrx3tRHY3ZBmSAmyK+oMpZH3kdKmv6JoyOQAKnKCbDlk40vMLG3fzC+UQF90lsvEMWJgF+HgaxR180fK7tmjOeyKZoGhJSNg==
+X-Gm-Message-State: AOJu0YxEde9rFLe6KzDGjJxrdKVhKlIfO3FMIpYzvyNrJjgeWuERuOaD
+	7FcXg3bMeLORm8ZBcqxqZCl0zg2geNK/M7enpVtGEQuWOuyPbC6OSzVqg5yNyXJA/PiZbkLESrx
+	rUUv5Ps8SkBNPRc0A27liTEUwVIw=
+X-Google-Smtp-Source: AGHT+IFHL4CUA1EFC34zPjAiEkPOGMU0WfbEyDRpxS3+HBh/HZOHrvwKexgvTgQMN8REUusook+8615zLMm/41cNE1w=
+X-Received: by 2002:a05:6870:32d3:b0:22e:cfdd:b32c with SMTP id
+ r19-20020a05687032d300b0022ecfddb32cmr12214644oac.2.1713202915413; Mon, 15
+ Apr 2024 10:41:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412222857.3873079-1-robh@kernel.org> <Zh0vXinxy7woerJQ@hu-bjorande-lv.qualcomm.com>
- <CAA8EJpqL2T4bJZqtZ9KF=V2NLnFxUjouA6_Hu_H07DofifZaoQ@mail.gmail.com>
- <CAL_Jsq+q3OLEMT=d8=d9o1D9deKGQ5TAtZg_bgptDPQ1cWcctw@mail.gmail.com> <CAL_JsqKSz_WVTTi7+AgjgDzXAnAqaxXM3i2NUv93nZSpyuZK5g@mail.gmail.com>
-In-Reply-To: <CAL_JsqKSz_WVTTi7+AgjgDzXAnAqaxXM3i2NUv93nZSpyuZK5g@mail.gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 15 Apr 2024 20:41:36 +0300
-Message-ID: <CAA8EJporYZBfDoN6m0Wu2wGqq=Y+TskNCguMOHtDAz05eXS6LA@mail.gmail.com>
-Subject: Re: [PATCH] arm/arm64: dts: Drop "arm,armv8-pmuv3" compatible usage
-To: Rob Herring <robh@kernel.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>, soc@kernel.org, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Tsahee Zidenberg <tsahee@annapurnalabs.com>, Antoine Tenart <atenart@kernel.org>, 
-	Khuong Dinh <khuong@os.amperecomputing.com>, Liviu Dudau <liviu.dudau@arm.com>, 
-	Sudeep Holla <sudeep.holla@arm.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, 
-	Robert Richter <rric@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, "Paul J. Murphy" <paul.j.murphy@intel.com>, 
-	Daniele Alessandrelli <daniele.alessandrelli@intel.com>, Andrew Lunn <andrew@lunn.ch>, 
-	Gregory Clement <gregory.clement@bootlin.com>, 
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	=?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
-	Heiko Stuebner <heiko@sntech.de>, Orson Zhai <orsonzhai@gmail.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, linux-fsd@tesla.com, 
-	Michal Simek <michal.simek@amd.com>, devicetree@vger.kernel.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
-	linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-realtek-soc@lists.infradead.org, 
-	linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org
+References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
+ <20240412143719.11398-3-Jonathan.Cameron@huawei.com> <CAJZ5v0izN5naWY7sTi16whds9ubXkLpgqV2gePQs869BoJTCDA@mail.gmail.com>
+ <20240415164854.0000264f@Huawei.com> <CAJZ5v0hd+CNsnH9xY+UX0iy_AEaqUqJj4KdR=+yvtvy5FQEy5Q@mail.gmail.com>
+ <CAJZ5v0j6gMaHamrCvrF8s+SgC0QVtG+naXhA4Dwg0t1YJvh4Uw@mail.gmail.com>
+ <20240415175057.00002e11@Huawei.com> <20240415183454.000072f6@Huawei.com>
+In-Reply-To: <20240415183454.000072f6@Huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 15 Apr 2024 19:41:43 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0huAAa5UpK4kqR-Uz4ALfY-wQ-gv7CC8C-kx9UDFvCgUw@mail.gmail.com>
+Message-ID: <CAJZ5v0huAAa5UpK4kqR-Uz4ALfY-wQ-gv7CC8C-kx9UDFvCgUw@mail.gmail.com>
+Subject: Re: [PATCH v5 02/18] ACPI: processor: Set the ACPI_COMPANION for the
+ struct cpu instance
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linuxarm@huawei.com, linux-pm@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-acpi@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	Russell King <linux@armlinux.org.uk>, Miguel Luis <miguel.luis@oracle.com>, 
+	James Morse <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, justin.he@arm.com, jianyong.wu@arm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 15 Apr 2024 at 20:15, Rob Herring <robh@kernel.org> wrote:
+On Mon, Apr 15, 2024 at 7:35=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
 >
-> On Mon, Apr 15, 2024 at 12:05=E2=80=AFPM Rob Herring <robh@kernel.org> wr=
-ote:
-> >
-> > On Mon, Apr 15, 2024 at 11:52=E2=80=AFAM Dmitry Baryshkov
-> > <dmitry.baryshkov@linaro.org> wrote:
-> > >
-> > > On Mon, 15 Apr 2024 at 16:46, Bjorn Andersson <quic_bjorande@quicinc.=
-com> wrote:
-> > > >
-> > > > On Fri, Apr 12, 2024 at 05:28:51PM -0500, Rob Herring wrote:
-> > > > [..]
-> > > > >  arch/arm64/boot/dts/qcom/qcm2290.dtsi                | 2 +-
-> > > > >  arch/arm64/boot/dts/qcom/qdu1000.dtsi                | 2 +-
-> > > > >  arch/arm64/boot/dts/qcom/sdm630.dtsi                 | 2 +-
-> > > > >  arch/arm64/boot/dts/qcom/sdx75.dtsi                  | 2 +-
-> > > >
-> > > > Acked-by: Bjorn Andersson <andersson@kernel.org>
-> > >
-> > > Note, we'd need to override PMU compatibles in sdm636.dtsi and
-> > > sdm660.dtsi. Ideally it should come as the same patch.
-> >
-> > Uh, that's an A for reuse, but an F for readability... It's sdm632 as
-> > well. Will drop sdm630.
+> On Mon, 15 Apr 2024 17:50:57 +0100
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 >
-> Actually, aren't those Kryo cores just Cortex-A53 derivatives? So the
-> A53 PMU compatible is an improvement over the generic one still. We
-> can't just add kryo260-pmu compatibles because that breaks
-> compatibility. We could have a fallback, but then that introduces a
-> pattern we don't want.
+> > On Mon, 15 Apr 2024 18:19:17 +0200
+> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> >
+> > > On Mon, Apr 15, 2024 at 6:16=E2=80=AFPM Rafael J. Wysocki <rafael@ker=
+nel.org> wrote:
+> > > >
+> > > > On Mon, Apr 15, 2024 at 5:49=E2=80=AFPM Jonathan Cameron
+> > > > <Jonathan.Cameron@huawei.com> wrote:
+> > > > >
+> > > > > On Fri, 12 Apr 2024 20:10:54 +0200
+> > > > > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> > > > >
+> > > > > > On Fri, Apr 12, 2024 at 4:38=E2=80=AFPM Jonathan Cameron
+> > > > > > <Jonathan.Cameron@huawei.com> wrote:
+> > > > > > >
+> > > > > > > The arm64 specific arch_register_cpu() needs to access the _S=
+TA
+> > > > > > > method of the DSDT object so make it available by assigning t=
+he
+> > > > > > > appropriate handle to the struct cpu instance.
+> > > > > > >
+> > > > > > > Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > > > > > > ---
+> > > > > > >  drivers/acpi/acpi_processor.c | 3 +++
+> > > > > > >  1 file changed, 3 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acp=
+i_processor.c
+> > > > > > > index 7a0dd35d62c9..93e029403d05 100644
+> > > > > > > --- a/drivers/acpi/acpi_processor.c
+> > > > > > > +++ b/drivers/acpi/acpi_processor.c
+> > > > > > > @@ -235,6 +235,7 @@ static int acpi_processor_get_info(struct=
+ acpi_device *device)
+> > > > > > >         union acpi_object object =3D { 0 };
+> > > > > > >         struct acpi_buffer buffer =3D { sizeof(union acpi_obj=
+ect), &object };
+> > > > > > >         struct acpi_processor *pr =3D acpi_driver_data(device=
+);
+> > > > > > > +       struct cpu *c;
+> > > > > > >         int device_declaration =3D 0;
+> > > > > > >         acpi_status status =3D AE_OK;
+> > > > > > >         static int cpu0_initialized;
+> > > > > > > @@ -314,6 +315,8 @@ static int acpi_processor_get_info(struct=
+ acpi_device *device)
+> > > > > > >                         cpufreq_add_device("acpi-cpufreq");
+> > > > > > >         }
+> > > > > > >
+> > > > > > > +       c =3D &per_cpu(cpu_devices, pr->id);
+> > > > > > > +       ACPI_COMPANION_SET(&c->dev, device);
+> > > > > >
+> > > > > > This is also set for per_cpu(cpu_sys_devices, pr->id) in
+> > > > > > acpi_processor_add(), via acpi_bind_one().
+> > > > >
+> > > > > Hi Rafael,
+> > > > >
+> > > > > cpu_sys_devices gets filled with a pointer to this same structure=
+.
+> > > > > The contents gets set in register_cpu() so at this point
+> > > > > it doesn't point anywhere.  As a side note register_cpu()
+> > > > > memsets to zero the value I set it to in the code above which isn=
+'t
+> > > > > great, particularly as I want to use this in post_eject for
+> > > > > arm64.
+> > > > >
+> > > > > We could make a copy of the handle and put it back after
+> > > > > the memset in register_cpu() but that is also ugly.
+> > > > > It's the best I've come up with to make sure this is still set
+> > > > > come remove time but is rather odd.
+> > > > > >
+> > > > > > Moreover, there is some pr->id validation in acpi_processor_add=
+(), so
+> > > > > > it seems premature to use it here this way.
+> > > > > >
+> > > > > > I think that ACPI_COMPANION_SET() should be called from here on
+> > > > > > per_cpu(cpu_sys_devices, pr->id) after validating pr->id (so th=
+e
+> > > > > > pr->id validation should all be done here) and then NULL can be=
+ passed
+> > > > > > as acpi_dev to acpi_bind_one() in acpi_processor_add().  Then, =
+there
+> > > > > > will be one physical device corresponding to the processor ACPI=
+ device
+> > > > > > and no confusion.
+> > > > >
+> > > > > I'm fairly sure this is pointing to the same device but agreed th=
+is
+> > > > > is a tiny bit confusing. However we can't use cpu_sys_devices at =
+this point
+> > > > > so I'm not immediately seeing a cleaner solution :(
+> > > >
+> > > > Well, OK.
+> > > >
+> > > > Please at least consider doing the pr->id validation checks before
+> > > > setting the ACPI companion for &per_cpu(cpu_devices, pr->id).
+> > > >
+> > > > Also, acpi_bind_one() needs to be called on the "physical" devices
+> > > > passed to ACPI_COMPANION_SET() (with NULL as the second argument) f=
+or
+> > > > the reference counting and physical device lookup to work.
+> > > >
+> > > > Please also note that acpi_primary_dev_companion() should return
+> > > > per_cpu(cpu_sys_devices, pr->id) for the processor ACPI device, whi=
+ch
+> > > > depends on the order of acpi_bind_one() calls involving the same AC=
+PI
+> > > > device.
+> > >
+> > > Of course, if the value set by ACPI_COMPANION_SET() is cleared
+> > > subsequently, the above is not needed, but then using
+> > > ACPI_COMPANION_SET() is questionable overall.
+> >
+> > Agreed + smoothing over that by stashing and putting it back doesn't
+> > work because there is an additional call to acpi_bind_one() inbetween
+> > here and the one you reference.
+> >
+> > The arch_register_cpu() calls end up calling register_cpu() /
+> > device_register() / acpi_device_notify() / acpi_bind_one()
+> >
+> > With current code that fails (silently)
 
-I think it is believed that Gold cores are A73-derivatives.
+And that's why there is an explicit acpi_bind_one() invocation in
+acpi_processor_add().
 
---=20
-With best wishes
-Dmitry
+> > If I make sure the handle is set before register_cpu() then it
+> > succeeds, but we end up with duplicate sysfs files etc because we
+> > bind twice.
+
+Right, I should have recalled that earlier.
+
+> > I think the only way around this is larger reorganization of the
+> > CPU hotplug code to pull the arch_register_cpu() call to where
+> > the acpi_bind_one() call is.  However that changes a lot more than I'd =
+like
+> > (and I don't have it working yet).
+
+I see.
+
+> > Alternatively find somewhere else to stash the handle, or just add it a=
+s
+> > a parameter to arch_register_cpu(). Right now this feels the easier
+> > path to me. arch_register_cpu(int cpu, acpi_handle handle)
+> >
+> > Would that be a path you'd consider?
+>
+> Another option would be to do the per_cpu(processors, pr->id) =3D pr
+> a few lines earlier than currently and access that directly from the
+> arch_register_cpu() call.  Similarly remove that reference a bit later an=
+d
+> use it in arch_unregister_cpu().
+>
+> This seems like the simplest solution, but I may be missing something.
+
+This should work AFAICS, but I'd move the entire piece of code between
+BUG_ON() and setting per_cpu(processors, pr->id) inclusive:
+
+    BUG_ON(pr->id >=3D nr_cpu_ids);
+
+    /*
+     * Buggy BIOS check.
+     * ACPI id of processors can be reported wrongly by the BIOS.
+     * Don't trust it blindly
+     */
+    if (per_cpu(processor_device_array, pr->id) !=3D NULL &&
+        per_cpu(processor_device_array, pr->id) !=3D device) {
+        dev_warn(&device->dev,
+            "BIOS reported wrong ACPI id %d for the processor\n",
+            pr->id);
+        /* Give up, but do not abort the namespace scan. */
+        goto err;
+    }
+    /*
+     * processor_device_array is not cleared on errors to allow buggy BIOS
+     * checks.
+     */
+    per_cpu(processor_device_array, pr->id) =3D device;
+    per_cpu(processors, pr->id) =3D pr;
+
+into acpi_processor_get_info(), right after the point where pr->id is set.
 
