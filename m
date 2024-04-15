@@ -1,131 +1,148 @@
-Return-Path: <linux-kernel+bounces-144974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D0298A4D6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 789BA8A4D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E9B21C2116A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:16:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7CA81C21CAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2145EE76;
-	Mon, 15 Apr 2024 11:16:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9CguGD2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B29B627E8;
+	Mon, 15 Apr 2024 11:17:09 +0000 (UTC)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA1C5CDE4;
-	Mon, 15 Apr 2024 11:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0BD5D497;
+	Mon, 15 Apr 2024 11:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713179761; cv=none; b=MO+pw+NqHnyo1KAC2ffCjKCzPOjTeVMOuTO45cXG+k/OwCw+TrmcRarfyB5K5hI+WcAC2vtTCqfgLRzvq8r2uDIeS1SneAxHOSogKyxo7fn/S1ysMRAPu1cTruLAQnmVvv24ja+INp1rcOSdKWvelpGbRFDo2gcgrNk5s8oj19g=
+	t=1713179828; cv=none; b=VEwgKeD/ympvA58rr+EEXk41x0ndSPGIC5sN2303wF1Od6uRE9BOwCYdn5N1PPcLyDY+1aC0T+oFBpH+9MESdfH5Yq5hacqihC1gjZjZ6dd5Q4MxCXXamfz/Zjd3Wmh6VWm0P0lSk86fWd1ByTzicTJJ2boGj3xIit8KcLnHet4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713179761; c=relaxed/simple;
-	bh=pS+uyKgsyii1wjRg73vGWLVmn9HUda2om5l4QvZMNPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IAiPOrF8zeRHOAs+XFQ3YH/qleVFG+y97RYTelvhBKixMejeKBVlkQdo0zdkdEud/MX0R08HoxBdR569UWdiOUCtUgfVGkTwq3Kf8GsyVys9kcBWGy7CIe0GmvBe6cHh7oN5MFcbbdhZQ+ll0l6OD6JMlM/5TRBRgsch/8am3fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9CguGD2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 487CFC113CC;
-	Mon, 15 Apr 2024 11:15:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713179760;
-	bh=pS+uyKgsyii1wjRg73vGWLVmn9HUda2om5l4QvZMNPQ=;
-	h=Date:Subject:List-Id:To:Cc:References:From:In-Reply-To:From;
-	b=p9CguGD20UqvL+CtegaZxYrRV0MQfovjj0iJ/rNEUvEnlMliidcw1qwq9sZflSkP5
-	 YntfStOgSo3hm5LodJeJ4kVHFRTMRrmvshZpBnD3LJjSu5E6nCTn3e1i11d+O0bIgt
-	 vkxUFcCPd9q2c96hZASkrYmo49MsvGW+AtUTT4jl2sQtBtCb6tHB7K3IIo+L3AqZYT
-	 av44M6ECMSaXKIjkj7xoWMjjS9UuvBLUS19dexS3R6kjvg2AHQJacwuO4BH9rgDb4w
-	 owKwNX+6oNqVRR7xuV7uGjTSUa5WQTKIBf78w4xvF1PMECZ3pI4APEikTez0i/wcgh
-	 E52+HNhFWP3zA==
-Message-ID: <2fa0223f-7cac-4140-b667-886cbe3fb8f5@kernel.org>
-Date: Mon, 15 Apr 2024 06:14:22 -0500
+	s=arc-20240116; t=1713179828; c=relaxed/simple;
+	bh=OPrxxm549sdcK2roWgENrl0hX8PfxL3zKFt5RKh160M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H9F6GAW4mQAOBSou+7VEJFNZ+C0zDuSg0GO8bXJ5VB/+jLJJhqCFukfugYgeQTd+S7XhE/YOcq38GbrLruQSHFfZDfk8UMWQvQ/rapJJgbJ+43IasT7yi4OrczDgy2dgJ8zUxPDyhsD9vaQnqFjaqQjWh4LHNO+ld2FnGRREa1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-61ad5f2c231so6564727b3.2;
+        Mon, 15 Apr 2024 04:17:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713179824; x=1713784624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BDiun8fBl0neiQNLp2j8KsuRQma3u2I4LgI70HkeRT4=;
+        b=lxQcYuhPFq40+wpIrczNkGDcP839B3YLcaDlY4ffcC0UMm6S9yiy0WYv8B2Qb+hAo0
+         pLuEyOfrxCKbhRvXMw1dFCqt1vRgORAXZYRhz+v3uYP5qcMEi/eZo3bdbMpgvTJH+Bgg
+         gL7IO3VWYcQmRPPkVOf3TDJMR5ZfD3D8+DCC6ATUKwMSwNjZZVPVpkTO0+4oZ3H6O3Kh
+         BzU1MXa+wmlWU2YqdG2ZzqKMN9bKLGxUGJNb+lOKB0LuosEVHU0rZEZVtpl3U2eD0GFE
+         q8EW1IXHacy3IoKWk82bcrmOH4CNkusH3C7ZyxwcLkdW6jUvGQXMuLA8YyUeMK6rtUWA
+         yuVw==
+X-Forwarded-Encrypted: i=1; AJvYcCWMwc7xOpyG8AJrRDufcfUnYxXrzlWJSp+LLhM5njyUSjwAclcnfsN3gwbdoJvyjFXNCPmi9E0/Xof8YarKtbo42N4Zu1hVDKOzQLUm4psEhHw1ePmEL/FAyk7toHcgliWyJJdBVo0PcGM15wawUmMzxSzsqnCQU7ft/yIX1EGDWQLQXENmW0tSg9OGk3sTswal+niiYdM168BFiNxWoBr6ciHcy6rO
+X-Gm-Message-State: AOJu0YyXhG/giGLKTw49nc5DJOfUFiA/wIYbm+OIr6baGcaRLFQysttF
+	U+j4u7s8TRMT580uMd5uuUYgEIgDK/pxJp7V5IX7UWsEFNVG+73gnTDrQC+r
+X-Google-Smtp-Source: AGHT+IEy/EG30AHiiLyOIcVCuwjLV8jFb0Ff+EFNBNBwFjfWepPEWlyJ6uIw9f9UHCpoayc9YFIu0w==
+X-Received: by 2002:a05:690c:6011:b0:61a:cde6:6542 with SMTP id hf17-20020a05690c601100b0061acde66542mr2525701ywb.16.1713179824600;
+        Mon, 15 Apr 2024 04:17:04 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id i76-20020a816d4f000000b006145f80d24dsm2019004ywc.29.2024.04.15.04.17.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 04:17:03 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dd02fb9a31cso2464294276.3;
+        Mon, 15 Apr 2024 04:17:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUC6XR22uK9PgXQPyLIF/k31Y60AHayN5zLs/sH+fdEUjbIDbGo2eV0njmfJVLkL3qO0uhacvhizIY0m7Z7Pb2e7FRoi2utqk3wabdU3xdLVdoOOM7bzniluyRUNysKH29+3TZAEo4qUMqOwz2TXB9RXphzRdZaOGaCWukQbGcbkgfSP2OIsMKTTJRJziAC1tCKjCky1h7F7qLOxO+ffgk/pZK+VsTO
+X-Received: by 2002:a25:4b82:0:b0:de0:f753:ad25 with SMTP id
+ y124-20020a254b82000000b00de0f753ad25mr8758272yba.1.1713179822967; Mon, 15
+ Apr 2024 04:17:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm/arm64: dts: Drop "arm,armv8-pmuv3" compatible usage
-To: Rob Herring <robh@kernel.org>, soc@kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- Tsahee Zidenberg <tsahee@annapurnalabs.com>,
- Antoine Tenart <atenart@kernel.org>,
- Khuong Dinh <khuong@os.amperecomputing.com>,
- Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>, Ray Jui <rjui@broadcom.com>,
- Scott Branden <sbranden@broadcom.com>, Robert Richter <rric@kernel.org>,
- Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, "Paul J. Murphy"
- <paul.j.murphy@intel.com>,
- Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, =?UTF-8?Q?Andreas_F=C3=A4rber?=
- <afaerber@suse.de>, Heiko Stuebner <heiko@sntech.de>,
- Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
- <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>,
- Jisheng Zhang <jszhang@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>,
- linux-fsd@tesla.com, Michal Simek <michal.simek@amd.com>
-Cc: devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- imx@lists.linux.dev, linux-mediatek@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-realtek-soc@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org
-References: <20240412222857.3873079-1-robh@kernel.org>
-Content-Language: en-US
-From: Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <20240412222857.3873079-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240409175108.1512861-1-seanjc@google.com> <20240409175108.1512861-2-seanjc@google.com>
+ <20240413115324.53303a68@canb.auug.org.au> <87edb9d33r.fsf@mail.lhotse> <87bk6dd2l4.fsf@mail.lhotse>
+In-Reply-To: <87bk6dd2l4.fsf@mail.lhotse>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 15 Apr 2024 13:16:50 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWD+UKZAkiUQUJOeRkOoyT4cH1o8=Gu465=K-Ub7O4y9A@mail.gmail.com>
+Message-ID: <CAMuHMdWD+UKZAkiUQUJOeRkOoyT4cH1o8=Gu465=K-Ub7O4y9A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Sean Christopherson <seanjc@google.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>, linuxppc-dev@lists.ozlabs.org, 
+	linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, 
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/12/24 17:28, Rob Herring wrote:
-> The "arm,armv8-pmuv3" compatible is intended only for s/w models. Primarily,
-> it doesn't provide any detail on uarch specific events.
-> 
-> There's still remaining cases for CPUs without any corresponding PMU
-> definition and for big.LITTLE systems which only have a single PMU node
-> (there should be one per core type).
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> SoC Maintainers, Can you please apply this directly.
-> ---
->   arch/arm/boot/dts/broadcom/bcm2711.dtsi              | 4 ++--
->   arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi    | 2 +-
->   arch/arm64/boot/dts/amazon/alpine-v2.dtsi            | 2 +-
->   arch/arm64/boot/dts/apm/apm-storm.dtsi               | 2 +-
->   arch/arm64/boot/dts/arm/vexpress-v2f-1xv7-ca53x2.dts | 2 +-
->   arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi     | 2 +-
->   arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi  | 2 +-
->   arch/arm64/boot/dts/cavium/thunder-88xx.dtsi         | 2 +-
->   arch/arm64/boot/dts/cavium/thunder2-99xx.dtsi        | 2 +-
->   arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi       | 2 +-
->   arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi       | 2 +-
->   arch/arm64/boot/dts/freescale/fsl-ls2080a.dtsi       | 7 +++++++
->   arch/arm64/boot/dts/freescale/fsl-ls2088a.dtsi       | 7 +++++++
->   arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi       | 5 -----
->   arch/arm64/boot/dts/freescale/imx8dxl.dtsi           | 2 +-
->   arch/arm64/boot/dts/intel/keembay-soc.dtsi           | 2 +-
->   arch/arm64/boot/dts/intel/socfpga_agilex.dtsi        | 2 +-
+Hi Michael,
 
-For SoCFPGA,
+On Sat, Apr 13, 2024 at 11:38=E2=80=AFAM Michael Ellerman <mpe@ellerman.id.=
+au> wrote:
+> Michael Ellerman <mpe@ellerman.id.au> writes:
+> > Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> ...
+> >> On Tue,  9 Apr 2024 10:51:05 -0700 Sean Christopherson <seanjc@google.=
+com> wrote:
+> ...
+> >>> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> >>> index 8f6affd051f7..07ad53b7f119 100644
+> >>> --- a/kernel/cpu.c
+> >>> +++ b/kernel/cpu.c
+> >>> @@ -3207,7 +3207,8 @@ enum cpu_mitigations {
+> >>>  };
+> >>>
+> >>>  static enum cpu_mitigations cpu_mitigations __ro_after_init =3D
+> >>> -   CPU_MITIGATIONS_AUTO;
+> >>> +   IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) ? CPU_MITIGATIONS_AUTO=
+ :
+> >>> +                                                CPU_MITIGATIONS_OFF;
+> >>>
+> >>>  static int __init mitigations_parse_cmdline(char *arg)
+> >>>  {
+>
+> I think a minimal workaround/fix would be:
+>
+> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+> index 2b8fd6bb7da0..290be2f9e909 100644
+> --- a/drivers/base/Kconfig
+> +++ b/drivers/base/Kconfig
+> @@ -191,6 +191,10 @@ config GENERIC_CPU_AUTOPROBE
+>  config GENERIC_CPU_VULNERABILITIES
+>         bool
+>
+> +config SPECULATION_MITIGATIONS
+> +       def_bool y
+> +       depends on !X86
+> +
+>  config SOC_BUS
+>         bool
+>         select GLOB
 
-Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+Thanks, that works for me (on arm64), so
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
