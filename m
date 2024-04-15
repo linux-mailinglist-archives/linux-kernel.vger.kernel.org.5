@@ -1,121 +1,122 @@
-Return-Path: <linux-kernel+bounces-145688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1A28A5987
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1F0E8A598F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:07:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C10111F23CB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:03:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773F11F2312F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04968139563;
-	Mon, 15 Apr 2024 18:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A85E137C41;
+	Mon, 15 Apr 2024 18:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mPHtal9R"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iX6e8Xt0"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4A813666E
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 884EF84D24
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713204218; cv=none; b=TrC71IsebQ2mZjFSacb8Nuc1XiTbd/bfFGCHvNm9mlVISXUu1ucuGg6x1TGsp/MWnnP+7ryiCHM7xR88xc8CgNr0lk2VanDhpEWp/xziwazSKBCzOmVvqctp8uzjw1htVUtGuo2h0FWOU0B143in9YmwstTtsFfvQD7VW0ThD3U=
+	t=1713204421; cv=none; b=kyo4C+DlV8ygUxpLIux3HYkbs/IMTJmFKTRdufzlKYc+BDJ/6Z5//0OKwifBDZaE8woiJTQADWTnKWEAkfWlS/50Uj7hieRyV0VNKfCCqkrcaBwdq62EX/XsxcV6533ddKGLJNlomh9vtFJKz/u7+W0pIB1t9BT3HlWaypAQKT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713204218; c=relaxed/simple;
-	bh=BcJCX3fHeAVnvh1e1UFXd7YRxpAPcrKnknm/wTKHg8Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ppwZCAJMTo747ppuxIaQqYrvzUltHAhRI4eE2Nip68ofv9rJvGMc4JG9IjA2ZpUFkPoivyP6tb/JIx6ACYgKirsX4PH57HduxneJohIPfZbVsuJPC3Z9hJb6Uc9Bs33rqT0sWH/492vrhK4T2B8a/qiyIGUbwwea6n4lEeMblKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mPHtal9R; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1713204421; c=relaxed/simple;
+	bh=xj1SBpac8RAPPa4cYnNvnA8NLdzOnlNHsZUECbeclDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PTys4djVRJugIRqUyfC6tW9AaG/W+/fcVSKjkfd8/RDW+/87kSlj17fK5kX7lmpZgbx7ouTearDfyeMMO7TvMVVjq8V/T4r7Tv3KBlXk+LypMwFXuUXkPI/JZuUiIj7mQSeTGi49945VeHGHzdraSrNJfAqTzuNNBKKv64V8+d8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=iX6e8Xt0; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed01c63657so3163110b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:03:36 -0700 (PDT)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e6723c606dso10767015ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:07:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713204216; x=1713809016; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L4sux801NSFwuuMhJbH9Cvh1/+fruiCubgx731NNdqY=;
-        b=mPHtal9RNa/NSFLiejQWXf2EpGPAICt8ZprT6zTWJN/5lRMXGYsousZ3XXkdq8PAPN
-         bvSzjZYVloasa3Y16ficFTJs7ILzHNVSCBUlM3MxaGBM4+KvJiZkP9mn2X+r1q+Qcv3I
-         QrGc/xsVc+TsXndxSGaeWdf80th1sjSwsvZ6w=
+        d=chromium.org; s=google; t=1713204420; x=1713809220; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=hkvNj0SDmFhhMkw0sRd1k/aPAqSYVAFYS0V+mjg1+Ys=;
+        b=iX6e8Xt0Yu6OZ5FskbjoVWf5iLkystLO54c8DKnns6S/V6xNDjhly/cI6KuybJFvd4
+         1OOvpoHigs9r1kvP2OV+TrW9OG2k7mXxBel27CFwiKDoYOKUAIdh7VlqOkRg2ntIWPke
+         rsbGB+guFt2tTzsvDNPkd6m07blcl4iBB0tBs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713204216; x=1713809016;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L4sux801NSFwuuMhJbH9Cvh1/+fruiCubgx731NNdqY=;
-        b=skRqGDoMJT6R1kRGqsARYTeCupZ1/3VrcE9I8lPVb1YYMCX4semosRbECnBYMxMi2Y
-         Gif+cl3o0nokD38Ca+i8xit/rvc/u8MKSmWwwuldYh+lpO29kL207MTHhHoFXHEWukGU
-         u7bh/g/BH3VX1PwUHketRt/7yAPYpxeCHhQuHb7acPlKSdCyNeAJr4Lalpq1DSUbdfqw
-         Z/4tIqSVKA/B/6vRSOdFS5K/258mjGyEF0sOA39YrRyEQKc/6KHjyAcE3l89d0qA76rm
-         AWF3u25hTcLziKFNLekbGwaS4Mu9i3ypG2Jdlng7IS/ZdEPb4pSclPGt/GfaBTV7W5+c
-         L4/w==
-X-Gm-Message-State: AOJu0YyCSsZIUfCd7LqtMZBm5xFQHrV375FWHViiQiopIPwMSQTBxP1m
-	1Z/I2wSj+/LDfXiymDx9gjUH093YkhqCfXpSxGp8niWKvF8+XWPzTGBIJMXdrg==
-X-Google-Smtp-Source: AGHT+IFIWOUYwYEZlxNFBi0wlOTgNr/4Lo8wgfnaN7h0tXPTNOrYhumHaZQ1GyIfyPJrf/G0omoagQ==
-X-Received: by 2002:a05:6a21:47cb:b0:1a9:3cda:dc3c with SMTP id as11-20020a056a2147cb00b001a93cdadc3cmr9909409pzc.61.1713204216367;
-        Mon, 15 Apr 2024 11:03:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713204420; x=1713809220;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hkvNj0SDmFhhMkw0sRd1k/aPAqSYVAFYS0V+mjg1+Ys=;
+        b=lq42d+z13U0uYy2XMpJV7FnUCC7IiAqx0XpUi1OjcUtqC9XKcwn7LqHjdXIRCTnHq6
+         UOKIKKauzy8l/bC4jg4BQelW38nCVV9MjIKG9I+LaHmyk3jT3I2IkODjKaNOJSWA9hV/
+         B289P/DTgO1hC4epm+go2iOuWHlwARcxJeOHIx0aW3xtDvAstIxtVKIZB8wxOYfLylHX
+         ElvXbX+cnca74EZFAhTmwnsO88seY5qjGjyO+zuEgdjxfhPh1L4c4e84gBg2zSsUX+Jl
+         898W+hpb4MMF6Hl0ITfe0HoRPsaFxTrrHxYIpZeoeQWkRJruGeRdjy1EBOBkZL7sn5kl
+         PeGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUPBYBd52fGpyXqbORRRAHZwMQgJYyiouvVwwDFZM+WnbPPTdd1Aq1fPsmabABI7nB5FP2EzCwKrEzbrW+EWK6PbxMnThyzJWpSXN6j
+X-Gm-Message-State: AOJu0Yx3Nj+NW9HQn/0uNyINj3ynPJFNfQ9lqpk4crGeeuHN77RLteAN
+	BoUXErIX23JJO0UihfTvvfLPPEs4/OF/2wrWvcPN75W9Kn0YA8iYOfYsisBW7g==
+X-Google-Smtp-Source: AGHT+IEoSmiqVWll+WGGtai5I1QgX+KNmvNJiMmUzgaHJwAdK89iBoCnt3jFLPWk0W0gCtqyQ9HIoQ==
+X-Received: by 2002:a17:902:a3c5:b0:1e2:bd7d:5609 with SMTP id q5-20020a170902a3c500b001e2bd7d5609mr11793136plb.20.1713204419874;
+        Mon, 15 Apr 2024 11:06:59 -0700 (PDT)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fh39-20020a056a00392700b006e69a142458sm7452150pfb.213.2024.04.15.11.03.35
+        by smtp.gmail.com with ESMTPSA id b11-20020a170902650b00b001e509d4d6ddsm8398013plk.1.2024.04.15.11.06.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 11:03:35 -0700 (PDT)
+        Mon, 15 Apr 2024 11:06:59 -0700 (PDT)
+Date: Mon, 15 Apr 2024 11:06:58 -0700
 From: Kees Cook <keescook@chromium.org>
-To: linux-kernel@vger.kernel.org,
-	linux-toolchains@vger.kernel.org,
-	Vignesh Balasubramanian <vigbalas@amd.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu,
-	aneesh.kumar@kernel.org,
-	naveen.n.rao@linux.ibm.com,
-	ebiederm@xmission.com,
-	x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-mm@kvack.org,
-	bpetkov@amd.com,
-	jinisusan.george@amd.com,
-	matz@suse.de,
-	binutils@sourceware.org,
-	jhb@FreeBSD.org,
-	felix.willgerodt@intel.com
-Subject: Re: [PATCH 0/1] Replace the macro "ARCH_HAVE_EXTRA_ELF_NOTES" with kconfig
-Date: Mon, 15 Apr 2024 11:03:32 -0700
-Message-Id: <171320421021.253137.15736984105365154364.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240412062138.1132841-1-vigbalas@amd.com>
-References: <20240412062138.1132841-1-vigbalas@amd.com>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Joe Perches <joe@perches.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Andy Whitcroft <apw@canonical.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+	linux-hardening@vger.kernel.org, Finn Thain <fthain@linux-m68k.org>
+Subject: Re: [PATCH v4] checkpatch: add check for snprintf to scnprintf
+Message-ID: <202404151105.54B9DEABE8@keescook>
+References: <20240408-snprintf-checkpatch-v4-1-8697c96ac94b@google.com>
+ <48d593c1-c706-4af3-aacf-d1329a8b0d4b@wanadoo.fr>
+ <1a4554d39229c790c98bebb213bc9f2423cd32de.camel@perches.com>
+ <CAFhGd8rUz_wG+jkW=+17RpG2BQxaRMmZVk=g=G1FogMSeAD7jA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8rUz_wG+jkW=+17RpG2BQxaRMmZVk=g=G1FogMSeAD7jA@mail.gmail.com>
 
-On Fri, 12 Apr 2024 11:51:37 +0530, Vignesh Balasubramanian wrote:
-> This patch replaces the macro "ARCH_HAVE_EXTRA_ELF_NOTES" with kconfig
-> as discussed here
-> https://lore.kernel.org/lkml/CA+55aFxDk9_cmo4SPYMgG_WQ+_g5e_v6O-HEtQ_nTs-q1zjykg@mail.gmail.com/
-> It is a pre-requisite patch for the review
-> https://lore.kernel.org/lkml/20240314112359.50713-1-vigbalas@amd.com/
-> I have split this patch as suggested in the review comment
-> https://lore.kernel.org/lkml/87o7bg31jd.fsf@mail.lhotse/
+On Thu, Apr 11, 2024 at 03:10:57PM -0700, Justin Stitt wrote:
+> On Thu, Apr 11, 2024 at 1:56 PM Joe Perches <joe@perches.com> wrote:
+> > It could.
+> >
+> > # {v}snprintf uses that should likely be {v}scnprintf
+> >                 if ($line =~ /\b((v?)snprintf)\s*\(/) {
+> >                         WARN("SNPRINTF",
+> >                              "Prefer ${2}scnprintf over $1 - see: https://github.com/KSPP/linux/issues/105\n" . $herecurr);
+> >                 }
+> >
+> >
+> >
+> > Though I also think it's better to use lore rather than github
 > 
-> [...]
+> I am fine with making the UX change in v5 regarding using ${2} and $1
+> but I wish someone could have said something about the Github links
+> earlier, we already have a pattern going with these string api
+> changes:
+> 
+>      "Prefer strscpy over strcpy - see:
+> https://github.com/KSPP/linux/issues/88\n" . $herecurr);
+> }
 
-Applied to for-next/execve, thanks!
-
-[1/1] Replace macro "ARCH_HAVE_EXTRA_ELF_NOTES" with kconfig
-      https://git.kernel.org/kees/c/a9c3475dd67b
-
-Take care,
+KSPP isn't going anywhere -- we've used these links before and we can
+use them here too. I don't see any good reason to duplicate stuff into
+lore, etc.
 
 -- 
 Kees Cook
-
 
