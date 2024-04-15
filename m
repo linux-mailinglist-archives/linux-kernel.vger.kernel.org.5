@@ -1,98 +1,101 @@
-Return-Path: <linux-kernel+bounces-144443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A4BE8A467C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:13:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5C18A467E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:17:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3262CB21FEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:13:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CED91C217C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:17:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EE0E748A;
-	Mon, 15 Apr 2024 01:13:47 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359234C9F;
+	Mon, 15 Apr 2024 01:17:25 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739F933CA
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4DEF33CA
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713143626; cv=none; b=NX7fLZUbfclGURcA70LJXzKJuhZuvZieCB7jnEyOdoL67OXzLyT8IxspdkcmEqxZC6LZiuRGPYAf4k+H9SUdEUe70ZBem/7pYJI04n3sZdNlt98N26iHGPcXcokatEPsAo/NcvgrvH1yVR15FetLr6YVh2BqGZD7iej2qnKF3Q4=
+	t=1713143844; cv=none; b=p9C7JLodS2g7K4gMHpETz2DHyi73kURMI9IrlZd+ZWU0t6YPYtjQAJAINCqcUEWb6odWmOIIAWLYEtCc5sMeCthaHUoYSUL6Qn3+1vue/1Dq30iIb/Z+nt1NEAV7nHKMfiIINWCA7qndPLJpFMGKsAYMsZZRjaNNtzTGmY5O5Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713143626; c=relaxed/simple;
-	bh=LAMc7X54zX1UJXweD7V5kV7gftyCWvDPmgkXAmyHkd0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=CB1ANfsKrjyqqO+DB4ggAlsBkqQHAX7VYCqXnfQ8BGlvhrKSNyLTXbc0ZIFNEjJeM65skbkL4ye1vj/mXkEK0QV4mo+8e/TnFJOMMC6GRfsV44Jy5fe7xeR0eZWCBhdRUS7Nr4wi7a+kfm9F4P9aQsQLNFWXOjjOAV/IT+E4sTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d667dd202cso268738339f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 18:13:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713143624; x=1713748424;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OaB9cQsHbFhSbb/FCOGavc7IgtiKsRPBmnY5k4OM25U=;
-        b=Y7zXtppC14SBxYoe2ppGWq5XrkSLAFMlOSiL6g6yZtbeHuIbWmIcVLJIILWb8LyWoL
-         wiGBjXVYrp6Pv9c3fwrgNkCwQ+RC5bdKAfqSArIZ2xmMnpCktbd17Nk7TKNKcuSe0L8P
-         gBmUtVhGddpWyJNP/lnp6vuViGt0SymOMLP/URxtpua0jbMMb7d34aHIe/yecxwBKyN1
-         uzEPuZu13JYxIq7/Zcrby1C6Fq539MbcGlNgRE4LKPyJvnOuJkfrwJWQVviHMUzWGKxy
-         mQX2ikGWFLV/xC/LJu1xXSQ3gq/3RaVtKNQgWVAUbslKnIMgsj/QWHQjFrN6B5QR+jLR
-         Bgnw==
-X-Gm-Message-State: AOJu0Yybig0gmuz4QZ2kgSgA1fQm6e9CvLcBQmdZPHtj6+EqEjJSQPvd
-	BA9rC2i8BHMLqgW3EC9Wb4GnZ/3kC/z5lU0hhxvGChmZfhkX05t/DcFI7u2tOhFHLBaEK0ZRpdF
-	Ds/Q2mcKDbDIpTycfbRb/so92djrFtkVV87SpHtK8O+FcB8BiVJi8MJw=
-X-Google-Smtp-Source: AGHT+IGSBr8e1/rrFWRPS1ylpWaTRTCbC5G/OF+Q88Mbsexk817kngfFh5VvlII7dxxurSahPuJvSBT+4tm3UlbAouo/RPRuK7kB
+	s=arc-20240116; t=1713143844; c=relaxed/simple;
+	bh=U9JG8TZM3FnZ06qQJ0sxIT4Cybxdc176DamOpSNqkwo=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type; b=jTzvzEHQa5A/4KmimaCWVXcsUh2H+TgCSVKO0AhGNbLPHgmWhv7K71EIQK48V4u8YeIWnTqgmcCmXqzapRh0owJXeNFvQKz9sCIIkFGemZwplRAHaTeH1C4NO4uAm34xCU+8VQrAa3GKjI2U5YvMKheFjzdwc6ZpyWrpbiCked0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VHq2J4Zr6z1hwMy;
+	Mon, 15 Apr 2024 09:14:16 +0800 (CST)
+Received: from kwepemd500014.china.huawei.com (unknown [7.221.188.63])
+	by mail.maildlp.com (Postfix) with ESMTPS id 66AAD1A0172;
+	Mon, 15 Apr 2024 09:17:12 +0800 (CST)
+Received: from [10.67.121.2] (10.67.121.2) by kwepemd500014.china.huawei.com
+ (7.221.188.63) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 15 Apr
+ 2024 09:17:11 +0800
+Message-ID: <661C8017.1070203@hisilicon.com>
+Date: Mon, 15 Apr 2024 09:17:11 +0800
+From: Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:410a:b0:482:fa6e:648c with SMTP id
- ay10-20020a056638410a00b00482fa6e648cmr249532jab.3.1713143624649; Sun, 14 Apr
- 2024 18:13:44 -0700 (PDT)
-Date: Sun, 14 Apr 2024 18:13:44 -0700
-In-Reply-To: <0000000000004f557c0615d47e6d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000032618c06161855cf@google.com>
-Subject: Re: [syzbot] [syzbot] [gfs2?] KASAN: slab-use-after-free Read in gfs2_invalidate_folio
-From: syzbot <syzbot+3a36aeabd31497d63f6e@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To: Huisong Li <lihuisong@huawei.com>
+CC: <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <Jonathan.Cameron@Huawei.com>,
+	<liuyonglong@huawei.com>, <xuwei5@hisilicon.com>
+Subject: Re: [PATCH 1/2] soc: hisilicon: kunpeng_hccs: Add the check for obtaining
+ complete port attribute
+References: <20240403081935.24308-1-lihuisong@huawei.com> <20240403081935.24308-2-lihuisong@huawei.com>
+In-Reply-To: <20240403081935.24308-2-lihuisong@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd500014.china.huawei.com (7.221.188.63)
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hi Huisong,
 
-***
+On 2024/4/3 16:19, Huisong Li wrote:
+> The hccs_get_all_port_attr() is used to obtained the attribute of all
+> ports on a specified DIE from firmware. However, this interface doesn't
+> ensure whether firmware reports the complete attribute of all ports or not.
+> So this patch adds the check for this.
+> 
+> Signed-off-by: Huisong Li <lihuisong@huawei.com>
+> ---
+>  drivers/soc/hisilicon/kunpeng_hccs.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
+> index 9ff70b38e5e9..bb69a95b5f2d 100644
+> --- a/drivers/soc/hisilicon/kunpeng_hccs.c
+> +++ b/drivers/soc/hisilicon/kunpeng_hccs.c
+> @@ -556,6 +556,12 @@ static int hccs_get_all_port_attr(struct hccs_dev *hdev,
+>  		start_id = rsp_head.next_id;
+>  	}
+>  
+> +	if (left_buf_len != 0) {
+> +		dev_err(hdev->dev, "do not get the expected port number(%u) attribute.\n",
 
-Subject: [syzbot] [gfs2?] KASAN: slab-use-after-free Read in gfs2_invalidate_folio
-Author: lizhi.xu@windriver.com
+How about changing to "failed to get the expected port number(%u) attribute.\n"?
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e8c39d0f57f3
+Best Regards,
+Wei
 
-diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
-index 8cddf955ebc0..71ce8d1576cc 100644
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -1007,6 +1007,7 @@ static void trans_drain(struct gfs2_trans *tr)
- {
- 	struct gfs2_bufdata *bd;
- 	struct list_head *head;
-+	struct buffer_head *bh;
- 
- 	if (!tr)
- 		return;
-@@ -1022,6 +1023,8 @@ static void trans_drain(struct gfs2_trans *tr)
- 	head = &tr->tr_databuf;
- 	while (!list_empty(head)) {
- 		bd = list_first_entry(head, struct gfs2_bufdata, bd_list);
-+		bh = bd->bd_bh;
-+		bh->b_private = NULL;
- 		list_del_init(&bd->bd_list);
- 		if (!list_empty(&bd->bd_ail_st_list))
- 			gfs2_remove_from_ail(bd);
+> +			size);
+> +		return -EINVAL;
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> 
 
