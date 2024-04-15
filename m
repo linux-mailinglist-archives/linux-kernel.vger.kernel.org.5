@@ -1,238 +1,297 @@
-Return-Path: <linux-kernel+bounces-144912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBEC28A4C8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:29:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759958A4C8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B32A1C21F3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:29:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 011381F22670
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7FAB5A0F3;
-	Mon, 15 Apr 2024 10:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9D15B20F;
+	Mon, 15 Apr 2024 10:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TnH1Nvnn"
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b="wKvX/Wwc"
+Received: from SINPR02CU002.outbound.protection.outlook.com (mail-southeastasiaazon11021007.outbound.protection.outlook.com [52.101.133.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD1859B69
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713176975; cv=none; b=NjNzfVXnbA13j/spdkMF0o8uaRGnCkf5Ux7WrY9NKe/TIhVj51FS2ZKknLm06E16Ad9xPugZ+SMRHg8odnDfk4vp/HTz8eEMME/mdKy8XRq0wEEEwA0tHaB7ZqoYqxNFvJ9bmbVIP+9FSUr07C+EyeJDFfoKezghFKEuhBwmIac=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713176975; c=relaxed/simple;
-	bh=76ZZdVJJ6myI99pZLu7VEcOdF24dR7trRSqFyStvLBY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZwhPesAWXC6rlcPH2FsJR2rDyH26cSt/k++XezPDJjKVhfa/0uErlTegm5EZkY4E+MMkpkPcFU/RyqmqcWCSHNSI5bHJrmA4LU7tJ0TtCxTnHcwkvnq54UEKCCNvCEy64uQh9Uid0LN/b7hWIE5HIL9EwTV2672Bh/uECXexdPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TnH1Nvnn; arc=none smtp.client-ip=209.85.222.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78d743f3654so293020385a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 03:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713176971; x=1713781771; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/lehrUz7hWetCgF2KGx9B8DKUV7UgKBSK5jeKW82WGc=;
-        b=TnH1NvnnIxaa1aZrkObX8dw8NIiaj1Rmw1grGrPKI52mIv0BFOc2hFy7bEYnItBazm
-         AQnSYWFp8sXmabcPFSuWthxFhhRFDYGNNcHu8ImQACehXLUYQs+glWPpJxTEQAFf3coJ
-         JMqiF8vsaijH8H6bBovkK8MM1ALA1z+3Je5Wk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713176971; x=1713781771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/lehrUz7hWetCgF2KGx9B8DKUV7UgKBSK5jeKW82WGc=;
-        b=u5B7CS7IOQMf8m4n7kzSAnOBdQRJeZ2JhtMtKgzB1IKdV7XFYfBXLr7ZK7gjazXppc
-         YLWqOXANMwRQXCTgSeJxeR8ZcRjv8ba+dxuUXr9g/3H5MEs70M8/TZnZNhviVA7z/Rci
-         5EBe6cDcLfUbsPuWotXju6PJ+cb2FZyu1gVzXuGqOxvBfDrI8H1d2ygOHueh33Dzu77K
-         M1Bq6UDabUoDkKnb6JtKDhIAi1XqUtpGb8MbeTNWjgBcMxCCmyv5xva9JL3p3FJNnLUm
-         gWihX8B/tReolPTjGOh2Pvl9yuWOxOHSTyHJqhfZR7PG6lUdHmHM5YUVPU6MupMidvJp
-         29ww==
-X-Forwarded-Encrypted: i=1; AJvYcCUVv9XTmYHY1dj6YezB3ihceKNfULtm0/9e285ykgDRRlCYjRt/9fMbaGMih5WmgnWNKcpoPcNf0URiwJww1tfEjpHeJ4zzJp91f1NV
-X-Gm-Message-State: AOJu0YzgMOyCY3PLAGAbmqHglTeM7MN7K7fmYIGMgASUC0RJP00K+LyK
-	1wFpnNKqeljhRD/sKRfiPeJ0zYcoujtHD/62jQYw3qbxv0FSMsjWQMb/6ONd+lTT+ROnimaqFOA
-	=
-X-Google-Smtp-Source: AGHT+IEEWA3uCggiRxhkz2T/aNAu61IYcY8NjLKR+8r2GlkV9sSWYxdgXk3JLz1BhMp7xCkSdagmpA==
-X-Received: by 2002:a0c:e60c:0:b0:69b:2839:b477 with SMTP id z12-20020a0ce60c000000b0069b2839b477mr9769370qvm.27.1713176971227;
-        Mon, 15 Apr 2024 03:29:31 -0700 (PDT)
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com. [209.85.219.48])
-        by smtp.gmail.com with ESMTPSA id r10-20020a056214212a00b006994394017dsm2437155qvc.27.2024.04.15.03.29.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 03:29:31 -0700 (PDT)
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-69b137d09e3so15460806d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 03:29:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUi9KiTrnJYSqdfn6mcibyyKMnT6f3UHQxypGmdiMCKP8f2um8XHA9gSwaCgQcaB0Fxd8TbTsoqWNFzJFutlWZFDtr/I/61jBarIKi3
-X-Received: by 2002:ad4:4f41:0:b0:69b:5476:3220 with SMTP id
- eu1-20020ad44f41000000b0069b54763220mr9634610qvb.38.1713176970016; Mon, 15
- Apr 2024 03:29:30 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8E0101F2;
+	Mon, 15 Apr 2024 10:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.133.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713177123; cv=fail; b=Tl9UIaMPCiWfep76Fndgq/JKmF1aR1v79HZ/lHbcv5do99KGvO+Qi6VuR50wZg4TCKwMowK9Je5q6wYWgNAE0Nnqfy18oZEXcEMLdw5+ONds6Bi2iS946DPI9RKkvVRkEZ9uECpindQ8jAIs6Pg0VhRInxeHaKJFQUzDQbaG0BM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713177123; c=relaxed/simple;
+	bh=pjWjZKBDp/tkysmccU+clmRQPlxYOWeBt9QsM8IBgrA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=hVXiXu9eZROnki0aqxj9PXUYJ1NN1b03YaoiZLhuYklJSH8tiOqWu7lnjfRSKkHYI+y5VFAGNLcr3bkVbfH1ac1fn+tsgDh3xEEPIDgxvCGFwNYZaH/Rj0Am00pcYaBhu83yaJ7c0HatFW33FiYo24Cy4zt4+/bDv7vwT50yViU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com; spf=pass smtp.mailfrom=amlogic.com; dkim=pass (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b=wKvX/Wwc; arc=fail smtp.client-ip=52.101.133.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amlogic.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fLLWGqFDtRQTJeqwGXgAewKDXR2M/1GPLHez0UNPT3jNppMsrVCtFRS1+XOjAEvH+ojIcErD5kMx3nCTbtBKifHj2B57MtczjcUrVtcrnba89QoPeQC5Gs3SyEauyZz+owUdfUN8FD3+VmfAmAnSTY95VKrsf8Zl7LsvFGLhUx6YbPAfNEMZtnp+Kj0qKODcFCbHEEh+FGgZjDybAxbh4ErQJwE0fnf+QwSyantpsNTGjUyw9hK0/4RFqFTFPOe2q5yoEw1KO0HxNy6cPOqBIRsb1xF8G8/1t1zWylcMADGklwZAGokVAkbSh3Rke71DIXSJTObwB5+lS3amBdmQrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ds3L1mtXBJMHEFdXwN/fDYE5noDINJwrKk8MVbKSTfw=;
+ b=PuxDNc4u2INRJknlxXNIe459x7rA58b5zabjAkdXngE8VpSgqQqa1T1geLLb+ualMXx536ufEZatA136Gp7xyLiyMjH+Wmfony9jXBp9JXpTdTUh1Qj/TbhAmKlua9g1atEbW3zJ0NK0KG8JtFAI0tIOHo1eq65FndgeK7bACnj3oVnGkyDg2idoq5oUcmSkDPXitm6TDjmJY7Y/4CZ2HEie5DC+V1KRdCMClyCqAXJBgMK4tVu50FawjRsVeLMotO+V6KtCaYH4sn8FYgOYZ9tL6NJI0IcacFg2UGP7Mr5cBnRS8Zo+C4E0DVkEaole4kq8zdpiD39by1oR2l9GHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
+ dkim=pass header.d=amlogic.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ds3L1mtXBJMHEFdXwN/fDYE5noDINJwrKk8MVbKSTfw=;
+ b=wKvX/WwcjDeBlzn68ykvIPeLbdq8WanDuGUcasM9PtEGchJdFqqAwE99QDX+9GQo0aQIo8gvYrtlpNUnxJRwHO7fdppWu2FRQpzoC3t/Oz1aUdaplMQ+ZEkdQt0XCiBYMlR3FY7GeBoGWy5Q909f0jEgvYUhxxAFU4NJ8V2sTNujCrlMY7If7DxyEFAAy6TJJSkAJ2b+uRPVBpJn4LbytAnKYWmdDLlCGPgWr0A0t/g0VyY/gKIHJv5IaMGXrMO0Q06H/RJDf6z14vKockzJ0XztAlHXRER9WYuHCGaKhyBFETL6/PuJ/kRiWqaRUXadQxbr1enFrsmN3GdWNCpElQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amlogic.com;
+Received: from JH0PR03MB7384.apcprd03.prod.outlook.com (2603:1096:990:11::8)
+ by SEZPR03MB6958.apcprd03.prod.outlook.com (2603:1096:101:9f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
+ 2024 10:31:57 +0000
+Received: from JH0PR03MB7384.apcprd03.prod.outlook.com
+ ([fe80::8627:9243:4397:43c3]) by JH0PR03MB7384.apcprd03.prod.outlook.com
+ ([fe80::8627:9243:4397:43c3%6]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
+ 10:31:57 +0000
+Message-ID: <48005005-54ad-473b-826d-23b0b3f3a52c@amlogic.com>
+Date: Mon, 15 Apr 2024 18:31:46 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: reset: Add Amlogic T7 Reset Controller
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ neil.armstrong@linaro.org, Philipp Zabel <p.zabel@pengutronix.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Zelong Dong <zelong.dong@amlogic.com>
+References: <20240329-t7-reset-v1-0-4c6e2e68359e@amlogic.com>
+ <20240329-t7-reset-v1-1-4c6e2e68359e@amlogic.com>
+ <927ad2cb-3b41-4eda-b930-856be64ae9ba@linaro.org>
+ <10650c59-96f2-4234-b5fd-aa8efec90e5b@linaro.org>
+ <579a1569-7bba-491f-ba5e-7cfcb34ccc1f@linaro.org>
+ <c7e243e3-3f61-4d63-8727-3837838bdfcc@linaro.org>
+Content-Language: en-US
+From: Kelvin Zhang <kelvin.zhang@amlogic.com>
+In-Reply-To: <c7e243e3-3f61-4d63-8727-3837838bdfcc@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYCP286CA0095.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:2b4::18) To JH0PR03MB7384.apcprd03.prod.outlook.com
+ (2603:1096:990:11::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410-pack-v1-0-70f287dd8a66@chromium.org> <20240410-pack-v1-2-70f287dd8a66@chromium.org>
- <f7ca4107-0341-4631-8d8d-b9677782ac2f@xs4all.nl> <CANiDSCvkRWZXuG7dfw0WXvgT+LHQqG3fx9F1M2P0_9dkB9VOKA@mail.gmail.com>
- <3f8660b0-e29c-47e2-b877-10da058388f9@xs4all.nl>
-In-Reply-To: <3f8660b0-e29c-47e2-b877-10da058388f9@xs4all.nl>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 15 Apr 2024 12:29:13 +0200
-X-Gmail-Original-Message-ID: <CANiDSCuQoN0AKBDjYakHE6rhpBYymd_r8Gv-AEaOGiZmijN3Eg@mail.gmail.com>
-Message-ID: <CANiDSCuQoN0AKBDjYakHE6rhpBYymd_r8Gv-AEaOGiZmijN3Eg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] media: dvb: Fix dtvs_stats packing.
-To: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: JH0PR03MB7384:EE_|SEZPR03MB6958:EE_
+X-MS-Office365-Filtering-Correlation-Id: 85b34fca-25ba-44c6-83d0-08dc5d3746f0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?d0RTaXppWlZ2b0lHdzdHK3lKSnJiVGJqS05NZW1NUzVORzMzdlNrMWxlVWRq?=
+ =?utf-8?B?NmZZb0ZScVFOdVJLUlhQalVtbWpTM2ZIRnRSa3ZPWldYUElmZDFERkpaei90?=
+ =?utf-8?B?WXJWbGgvbC9ONldJRlppVm1MeUtqZVQzSExnazRmc2x0c3Z6cGxjRy90djU4?=
+ =?utf-8?B?MlZ4RVJkcGRYWXZ1K1czNUd4YTVhQ3RNYjNLRjQ2am1UbHVGUERKWEVCQkNW?=
+ =?utf-8?B?aXhIbmNZSnVHN09YQ1FMa3g4OUtWM0JOd29CR1A2VllhUHMyb1hOVUV1MlVv?=
+ =?utf-8?B?WElxQjQ0Z0JuUm0yNXhWM2J5ZXhsTjAzbTNNUy95bTRkMFhjaE81L0E2UnVm?=
+ =?utf-8?B?RENXYitDMmcvdVRJZlZMc1RVaTY0UjRHY1dwVU0vQUNac3JQZGViTy84MEor?=
+ =?utf-8?B?ZXNTTXd0Vzd5S0JIdlZJZVNlcmVFSW1tcWlmVUprZWpKWlRyVzdmSm1kWUZ4?=
+ =?utf-8?B?UzBoUUNGWWxra1VMVndweWNVT0t3Z3VidGRSZ1dQRzZEZjBFckhsS2ljN3dt?=
+ =?utf-8?B?Vk9BWW5uWjljRVM3dlcyWkZRczQwSHZQVTR3MUhyRzdGeHFTS0VWdWVyMWpS?=
+ =?utf-8?B?T1Izem9jeC95M0VKaVBqdWtXdzJhQitXMTN5OE5WMGNtY1psY0ZJQUhyS1Bu?=
+ =?utf-8?B?ZUxGeVhidFduVVRKUm84S3IwY3JoVFMwQy9Kcnk3cEhQNHRGelQ4enFZUWVM?=
+ =?utf-8?B?MUdSZkpvOTI5QkV0THhoc1dFNC9JL1BpVlM1VTJBdTVYMWZkeG1SOXhPbzlN?=
+ =?utf-8?B?akpMbWU5OG80bHhVS1VDSTZkaFQ0RklRL1NWWk55UFZiRStrWUlMWDArVGV3?=
+ =?utf-8?B?Kzc4d3NOWnpTWXh6RDFyN29YdGg0OUJXYm96Y1VTSTFzL2VkWjBSRHRGK1Jx?=
+ =?utf-8?B?bjIvdEd3ZkNjcW55TVdCN2JRbk1lRVdnU1hCekhvcFV5cmwzRmhWNExkeUdG?=
+ =?utf-8?B?eDZnOEVmWXNzdGwyamZZNnJZSjB2cElMK0tmVlM3OXRVSnZUNXkyZFZZQXVS?=
+ =?utf-8?B?alNLVjZSWEQrcXRCU0k0bDhzMktpaGdGK2o3dVNreWM1L05nVFlHZUZZY3Rr?=
+ =?utf-8?B?K2ZHQmJ4WllCKy93azVZUjhsa3pQaFkvZUpuVEk4em4yMnpIN1BaVG5xT2dP?=
+ =?utf-8?B?RnVRdjA0dnZDV2s0RThEdCtmbW9BaHpheVM0enE0WXJCa203amNQd0ZRa3Ix?=
+ =?utf-8?B?bEh1NHA4aHd0bTdrRGgvSllScHJVbFBXR2JmN1p5ajN0LzFUdjhYN3R4b0Vo?=
+ =?utf-8?B?djBWNEtOY3R2L2N1UGw2MDhPSEhzQTZJbjY5V2V0REgvYWlJMkg2ZDZjdUNP?=
+ =?utf-8?B?VnI3KzltcU5Obm5qcGliODM4M0FOT2lCVHZUeWt0Y1JNSmwvUlVNVjhLK1hP?=
+ =?utf-8?B?Nnl4c29wZjJ3WEVWVFMzRG1PSnY1d0I5UG1wTHFFdkptOVVOdDE2SnIyYThI?=
+ =?utf-8?B?aUppeUNpeXJtVjUranFKN1kzd2pwbWFaOVA3WldVdEVyb21aREZ0bEVqUmVG?=
+ =?utf-8?B?bXltdjRPS1c1UmRJejhvRlM4UDRzaUdsOHVTeStJQm1HczU0U00rYThlMHh3?=
+ =?utf-8?B?NU9MUHpnbFlZcTVFbFVMK2RzMWU2Z0RKbXBpTmkrWGhzMEVPZGx1M2ZWQ3Ey?=
+ =?utf-8?B?TUx6OTFaQXdrWFBFMzYxTGhaOEVmejJBQXpzR2VDVngvNmlGVDFsVjFuc09a?=
+ =?utf-8?B?NE1ZRVFhSE5rV05zOS8vejRmRnB1NjliUFFRa29QR1kra2haclBwMCtBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR03MB7384.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SHZOeWI1SU1rc01OaWJFZXAvZTV1UnFsQm1OYXVBZW96Z1ZSYWdMMEpsMFJ2?=
+ =?utf-8?B?MTF5OTZTRWE4YWZtMC9CaUE2VVBVVXRybGxXa0ZTSk1CZGxRWFVLTy84UXlI?=
+ =?utf-8?B?R0wycFNUeHNIUUFRTk5GUE5kK0lkT1V3ejdoQVRJN1JsSE0vWndkdVlvbDha?=
+ =?utf-8?B?am9uWGhwOUhXRmxNM0QzOWJWc2JaQXRUUC9SWHA1N2pmNkZQSVlyQURKNEcr?=
+ =?utf-8?B?enR4TU5PRUhLQ0RNYzJpWEpDR0RVeTRCQ0YvUE04eklpVXZ1WkNDOWRjUmtG?=
+ =?utf-8?B?eEFOQlJrZ2ZrRlhjYzRMRCs0cWVWK3RJUll0MFdjZ3dxMGhvaERYZzNFL0JC?=
+ =?utf-8?B?bU5KSVBPWW0wSlRHZHJzSzM5aWNQOGZVZ29rNE5pMVdnS1k4eisweWhJd0th?=
+ =?utf-8?B?VFc5cVFmNTlmbk9EdGlCaTcvak5oQlhNTnJMdExHaWszL2VPMWlNZ242VUFl?=
+ =?utf-8?B?SHlVUUZWWUVOdXZrNVJqbUhiaE8xL3BjSmxBQVV2RHNncFpaTW5jSWpJR3hj?=
+ =?utf-8?B?QXpIWlBmcmlPczlKZE55d1B1Uk54VW9BM3FFUXRBczIzSEV5SGdMWHcwelph?=
+ =?utf-8?B?NzhCRkNXZEJuaUo4clFwS2QwOStnQlBlelBsNGJNWStncFoxdmJZNUpJVDBZ?=
+ =?utf-8?B?L2YzeExodDJmUVY2V1Y5ZVh0TmR5ektHb2pLTjJxOG1DMmQ0Si9MOG9meXh6?=
+ =?utf-8?B?NUdEdzNKb2pGVktNWFg0Vm1EUktoOXdrdTFFdGZOQ3RubTBYME5DMm1Yb3dI?=
+ =?utf-8?B?cFZDMjR4Tm1DMHdxei9GdDdUUHV6dXNoWmt5OTVnVlBhSmdtNFpTUDlqYjkv?=
+ =?utf-8?B?SU9vTDdQZWw3aEU0M2NKQlNnUzBiamdnV1VIcS81RGIzWFRDQmZZU1ZzMk5T?=
+ =?utf-8?B?TkNxa2hwcGpxU2t4RmpBdStaM0hscW9US1hoWUY4U0JuMi9TUXRQbGVGR2Mx?=
+ =?utf-8?B?OVMzbGFJRVZibXJDOC92VG9adGsrdG42SjJUVUordTk5azF6RWVUSWlzSDNP?=
+ =?utf-8?B?Zm43eGUvaHhHbno1QXFaTWdRNjNGb09Ub24zY2NtV3VIVkJScVB6d21tUUpF?=
+ =?utf-8?B?RFFRNllXSldlR1hLYUN2MXYwNm1YSnpZa001TDY1M0ZvNWVEVEVFdU40Njlj?=
+ =?utf-8?B?UUdBV1o4eEtmSUg2c3EvR2RLdStBRXZIUlZ5RE9GNGxVZXFlYU8xVXJvNFl6?=
+ =?utf-8?B?TFdMb2t0VHVHa2lranViUVBtNllhb3FwSXZyZVR5dm1VTjlpNkpwTENXa0Q3?=
+ =?utf-8?B?NUpYYk1TZmZQa2xLZTJObVNXTnNDK244amJsZHdjbThITGtzb3cyVnFBemlO?=
+ =?utf-8?B?UlZKQTN1NUZOOWRsVkVKSDRHNEgzZWJnZGd1UHN0cVVTazhnL1B3VlZENENT?=
+ =?utf-8?B?bjE5T3p6QmYyU0ZwWUpMaWVTbXozWDFqRUtBVVphMHpkd3N3Y3ZSaDROdWw2?=
+ =?utf-8?B?NE1rTXZWSGVNTmZTM2c1YVJna0pkK0VmWkJITUM3anNmb2Zjdi9rbktSdUZ3?=
+ =?utf-8?B?cE9uaml0ditjbVJpWG9MQ2t4eXpiTS9BbUJ5czZGbTNkMmdpM2tBUS9EQmRX?=
+ =?utf-8?B?MHFmOENQTC80aTdhY2dNUiswUjczOHppdmRDMll4TjFrelpkenFJS2czR3Q4?=
+ =?utf-8?B?ckp6eEthaXZHYk42MjBTQ1Ewc1ZHcHdycjRjcnlMdDVWTWVlWHF0ZlNZQVph?=
+ =?utf-8?B?dlExZENZU0pyT3p6YUV2cUJMZWlUS3k0VndQbnBvS3BmWGI4eDBJNmlqRFFB?=
+ =?utf-8?B?SVNoRGxBMnZaUTRpSHVUN3VlQmtxKzc2djVoeVJaSll2K1V6Z3VnN1hTTlc2?=
+ =?utf-8?B?dnoyRVhNL3MyR3dGNzhoUGk1eDl4Z0VnOWVTQW4yWlp6eXdHL01QWWNQSklL?=
+ =?utf-8?B?bHdPQllaQ0ZzbkhoU0xDTkRPSGpCWUdVdXNmWWRFUHRuOUtSamRSWEVnM04w?=
+ =?utf-8?B?VDJzcitqNmlwSUVSM1FQT2kza0VSUEFTa2lJM0xoMjl3YmlUaXZ6LzFQeDk1?=
+ =?utf-8?B?TXNvampiNzg4NFJYL2htaVpjSEVocW00ZXdCcTNNKy9wbzAwdVZnWVdsKzRJ?=
+ =?utf-8?B?c1E1bVZtaTFGaXdnOC9iN3pYZjRCUGMwQnV1cnoyeWVlNFRlNGFhRllneUgy?=
+ =?utf-8?B?RXZhdU5nWTFVdVlIV1labGpYbHg2VDVuMExXMGpnNzBjWHNOYld1Uk1mVUpB?=
+ =?utf-8?B?TXc9PQ==?=
+X-OriginatorOrg: amlogic.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85b34fca-25ba-44c6-83d0-08dc5d3746f0
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR03MB7384.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 10:31:57.6081
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8Xr+vNb7UcoR4liksWm7yxw9Et3odT1e6SwBsCaE/wKaIzPzUXkqOh7h87fgbZgQ+r1EE+ffa5T0T2A2CPwoKT5SO3ZEtoBS8cO7Euk3gCs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB6958
 
-Hi Hans
 
-On Mon, 15 Apr 2024 at 11:51, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote=
-:
->
-> Hi Ricardo,
->
-> On 12/04/2024 17:00, Ricardo Ribalda wrote:
-> > Hi Hans
-> >
-> > On Fri, 12 Apr 2024 at 16:21, Hans Verkuil <hverkuil-cisco@xs4all.nl> w=
-rote:
-> >>
-> >> On 10/04/2024 14:24, Ricardo Ribalda wrote:
-> >>> The structure is packed, which requires that all its fields need to b=
-e
-> >>> also packed.
-> >>>
-> >>> ./include/uapi/linux/dvb/frontend.h:854:2: warning: field  within 'st=
-ruct dtv_stats' is less aligned than 'union dtv_stats::(anonymous at ./incl=
-ude/uapi/linux/dvb/frontend.h:854:2)' and is usually due to 'struct dtv_sta=
-ts' being packed, which can lead to unaligned accesses [-Wunaligned-access]
-> >>>
-> >>> Explicitly set the inner union as packed.
-> >>>
-> >>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> >>> ---
-> >>>  include/uapi/linux/dvb/frontend.h | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/include/uapi/linux/dvb/frontend.h b/include/uapi/linux/d=
-vb/frontend.h
-> >>> index 7e0983b987c2d..8d38c6befda8d 100644
-> >>> --- a/include/uapi/linux/dvb/frontend.h
-> >>> +++ b/include/uapi/linux/dvb/frontend.h
-> >>> @@ -854,7 +854,7 @@ struct dtv_stats {
-> >>>       union {
-> >>>               __u64 uvalue;   /* for counters and relative scales */
-> >>>               __s64 svalue;   /* for 0.001 dB measures */
-> >>> -     };
-> >>> +     }  __attribute__ ((packed));
-> >>>  } __attribute__ ((packed));
-> >>
-> >> This is used in the public API, and I think this change can cause ABI =
-changes.
-> >>
-> >> Can you compare the layouts? Also between gcc and llvm since gcc never=
- warned
-> >> about this.
-> >
-> > The pahole output looks the same in both cases:
-> >
-> > https://godbolt.org/z/oK4desv7Y
-> > vs
-> > https://godbolt.org/z/E36MjPr7v
-> >
-> > And it is also the same for all the compiler versions that I tried.
-> >
-> >
-> > struct dtv_stats {
-> > uint8_t                    scale;                /*     0     1 */
-> > union {
-> > uint64_t           uvalue;               /*     1     8 */
-> > int64_t            svalue;               /*     1     8 */
-> > };                                               /*     1     8 */
-> >
-> > /* size: 9, cachelines: 1, members: 2 */
-> > /* last cacheline: 9 bytes */
-> > } __attribute__((__packed__));
-> >
-> >
-> >
-> > struct dtv_stats {
-> > uint8_t scale; /* 0 1 */
-> > union {
-> > uint64_t uvalue; /* 1 8 */
-> > int64_t svalue; /* 1 8 */
-> > }; /* 1 8 */
-> >
-> > /* size: 9, cachelines: 1, members: 2 */
-> > /* last cacheline: 9 bytes */
-> > } __attribute__((__packed__));
-> >
-> >
-> >>
-> >> I'm not going to accept this unless it is clear that there are no ABI =
-changes.
-> >
-> > Is there something else that I can try?
->
-> No, that's what I needed. I also found some clang discussions here:
->
-> https://github.com/llvm/llvm-project/issues/55520
->
-> I propose that I add the following sentence to these three packing patche=
-s:
->
-> "Marking the inner union as 'packed' does not change the layout, since th=
-e
-> whole struct is already packed, it just silences the clang warning. See
-> also this llvm discussion: https://github.com/llvm/llvm-project/issues/55=
-520"
->
-> If you are OK with that, then I can add that to your patches.
+On 2024/4/13 02:03, Krzysztof Kozlowski wrote:
+> [ EXTERNAL EMAIL ]
+> 
+> On 12/04/2024 19:57, Krzysztof Kozlowski wrote:
+>> On 12/04/2024 15:12, Neil Armstrong wrote:
+>>> Hi,
+>>>
+>>> On 29/03/2024 20:39, Krzysztof Kozlowski wrote:
+>>>> On 29/03/2024 10:17, Kelvin Zhang via B4 Relay wrote:
+>>>>> From: Zelong Dong <zelong.dong@amlogic.com>
+>>>>>
+>>>>> Add a new compatible and the related header file
+>>>>> for Amlogic T7 Reset Controller.
+>>>>>
+>>>>> Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
+>>>>> Signed-off-by: Kelvin Zhang <kelvin.zhang@amlogic.com>
+>>>>> ---
+>>>>>    .../bindings/reset/amlogic,meson-reset.yaml        |   1 +
+>>>>>    include/dt-bindings/reset/amlogic,t7-reset.h       | 197 +++++++++++++++++++++
+>>>>>    2 files changed, 198 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml b/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml
+>>>>> index f0c6c0df0ce3..fefe343e5afe 100644
+>>>>> --- a/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/reset/amlogic,meson-reset.yaml
+>>>>> @@ -19,6 +19,7 @@ properties:
+>>>>>          - amlogic,meson-a1-reset # Reset Controller on A1 and compatible SoCs
+>>>>>          - amlogic,meson-s4-reset # Reset Controller on S4 and compatible SoCs
+>>>>>          - amlogic,c3-reset # Reset Controller on C3 and compatible SoCs
+>>>>> +      - amlogic,t7-reset # Reset Controller on T7 and compatible SoCs
+>>>>>
+>>>>
+>>>> If there is going to be any resend, please drop the comment. It's not
+>>>> really helpful and makes it trickier to read.
+>>>>
+>>>>>      reg:
+>>>>>        maxItems: 1
+>>>>> diff --git a/include/dt-bindings/reset/amlogic,t7-reset.h b/include/dt-bindings/reset/amlogic,t7-reset.h
+>>>>> new file mode 100644
+>>>>> index 000000000000..ca4a832eeeec
+>>>>> --- /dev/null
+>>>>> +++ b/include/dt-bindings/reset/amlogic,t7-reset.h
+>>>>> @@ -0,0 +1,197 @@
+>>>>> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
+>>>>> +/*
+>>>>> + * Copyright (c) 2024 Amlogic, Inc. All rights reserved.
+>>>>> + */
+>>>>> +
+>>>>> +#ifndef _DT_BINDINGS_AMLOGIC_T7_RESET_H
+>>>>> +#define _DT_BINDINGS_AMLOGIC_T7_RESET_H
+>>>>> +
+>>>>> +/* RESET0 */
+>>>>> +/*                                        0-3     */
+>>>>
+>>>> I assume this matches existing drivers which do not use IDs but map the
+>>>> binding to hardware value? I remember we talked about changing it, so if
+>>>> something happened about this and it could be changed: please change.
+>>>
+>>> I'm not aware of such discussion, and I don't really see the issue...
+>>> thoses are IDs, and yes they match the Hardware offsets, and ?
+>>
+>> Bindings are not for hardware offsets/values/addresses. It's just not a
+>> binding.
+>>
+>> I quickly looked at your driver patch and it confirms: not a binding.
+>> Binding constant is used by the driver and DTS consumer.
+>>
+>> I am really sure we had this talk in the past, but could be I think
+>> about different platform. Since this is not a binding, I do not think
+>> claiming there is any ABI here is reasonable. Feel free to store them
+>> with other hardware values, like in DTS headers etc. We already moved to
+>> DTS headers several such "non-binding" constants.
+> 
+> Un-acked.
+> 
+> I looked at my archives and we did talk about it and you were CCed:
+> 
+> https://lore.kernel.org/linux-devicetree/c088e01c-0714-82be-8347-6140daf56640@linaro.org/
+> simple-reset is an exception.
+> 
+> So to recap:
+> That's not a binding. Don't add some real values to binding headers
+> because it is not a binding then.
+> 
+> https://lore.kernel.org/linux-devicetree/CAK8P3a1APzs74YTcZ=m43G3zrmwJZKcYSTvV5eDDQX-37UY7Tw@mail.gmail.com/
+> https://lore.kernel.org/linux-devicetree/CAK8P3a0fDJQvGLEtG0fxLkG08Fh9V7LEMPsx4AaS+2Ldo_xWxw@mail.gmail.com/
+> https://lore.kernel.org/linux-devicetree/b60f5fd2-dc48-9375-da1c-ffcfe8292683@linaro.org/
+> https://lore.kernel.org/linux-devicetree/418c5f0c-5279-41f5-3705-345ec9a97ea2@linaro.org/
+> https://lore.kernel.org/all/201401111415.29395.arnd@arndb.de/
+> 
+Got it. Will delete amlogic,t7-reset.h and use the hardware numbers
+directly in the DT.
 
-That sounds great. Thanks!
+Hi Neil,
+As you know, Amlogic reset controller is divided into several groups: 
+reset0, reset1, ..., resetN. I'd like to discuss the rationality of 
+splitting the one device node of reset controller into device nodes 
+according to the groups. Then we can use the bit number within the 
+'resets' property.
+reset0: reset-controller@2000 {
+..
+};
 
->
-> Related to this: I added CEC and DVB support to the ABI checks in the bui=
-ld
-> scripts. And fixed a bunch of mistakes there (e.g. 'false=3Dtrue' where I=
- meant
-> to write 'fail=3Dtrue'!) that made the ABI checks useless.
+reset1: reset-controller@2004 {
+..
+};
+..
 
-Ferpect!, I will update it in media-ci
-
+What do you think?
 Thanks!
->
-> I updated the abi/* files accordingly as well.
->
-> Regards,
->
->         Hans
->
-> >
-> > Regards!
-> >
-> >>
-> >> Note that the ABI test in the build scripts only tests V4L2 at the mom=
-ent,
-> >> not the DVB API.
-> >>
-> >> Regards,
-> >>
-> >>         Hans
-> >>
-> >
-> >
->
-
-
---=20
-Ricardo Ribalda
+> 
+> Best regards,
+> Krzysztof
+> 
 
