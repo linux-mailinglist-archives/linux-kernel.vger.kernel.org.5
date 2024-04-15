@@ -1,195 +1,353 @@
-Return-Path: <linux-kernel+bounces-145490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F38C8A56D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:56:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 407898A56D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:57:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD56028286A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:56:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 995C2B21820
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C587F47B;
-	Mon, 15 Apr 2024 15:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179FD7BAF9;
+	Mon, 15 Apr 2024 15:57:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="fot2Tnww"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2050.outbound.protection.outlook.com [40.107.244.50])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gHawwHEK"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942E476033;
-	Mon, 15 Apr 2024 15:56:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713196609; cv=fail; b=mLQdYpq78VsnTVil03lnNaUoiLTpZTpWQrLvQ9b0ZqLOqN3/Q6qtBRQIfzOL0KYwhE1uVPISpT6AASDLEkKl+y+uEEofKRuY1PoHnX2u8JTp++eNL5qjlBnlaGyFQH0vum2GZtLpOtraPaDcND76MWKKO7AQGokJ+g1H8VAPoIY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713196609; c=relaxed/simple;
-	bh=A8gJJDK3ckNQwCmJtScOGM3iM6/mij226aCgzpddLbc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lpswz4EJuThpYTTIKJwU6E0TbN+0NMQle1ck8IKjomk+lDQW0Y1KW1tHTL9SnZBoBjgU76uY9CThXN2fbg+ucceZ+hdbbBqDc+PWbRwom+EPNsa2nTz+XlnHZqx7JPfo0OMUzGfT/Ea9haHgqOj40m1XwoFqSkeRmMpZGSZOGFE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=fot2Tnww; arc=fail smtp.client-ip=40.107.244.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fYplT16kLBjUrLt1PUOaeTBFXqAvxRkzuRbFk2z2blWxafz/iICEHFR1h4t8g/9VRwg4g4wPZBbzfRecMVvOdVB/UO1mQriMCs2u0ZtPpbZNuR/yFCANoHdihKIJgP0bZRfgrUgHpD6IaDokGWvhv6Ef6XKAy6HYqkjgaRXLwhZvCLJNUa9vZMaQAIFyMvqgHmLDusW6yeLqIgC7LIEOtZyR9KJYirnGvx4tHee8umLA+CrrszjI1vKIjuR23tCiXuf/gy2gxf8bwfu47ZhW/DLNvMcmrRWzmJ44juTdUlZbzPXGAowCYJatfbDbAEALEIh8CSV5BZmTQ0FQ56y33Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nr0NpQlpHEnXf3Igwg/UIz7DZlyLpFtioMokxC6G9jo=;
- b=QFuAQIIESo6MFJR+eNugN/0HVT+OY9PUpf2cmb3BPT3LScvtbqGSS9fI7Txy/ORdPPuAp/xbSXCVHKYOijT77xmpjgobvKNlQk7ZVeAVlWvQRhtQ2vFLaIFoZSGDs96Ef7NO9uMuMcvJrPwHVZkaDkoVdTHxpe7pnyWn+3yTGU9HpclbI5Zch1grdBm8Wb5ajocDRAgszekk0rF/l105cnqYMWRImfEAzIOcBvFVeu/OJzutanBsvQqapzMMQdml53GZkm600xdb4HqvrSnkRTdIxb/yYi8arhzgrGMCj0NqMO1SVg1QpIpqhKKF2JAJsRpX7a8E4wxFfzT8AW6nkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nr0NpQlpHEnXf3Igwg/UIz7DZlyLpFtioMokxC6G9jo=;
- b=fot2TnwwRb1+ScgMc3PYHP3/v+9yXXZ3Zle4NqgXNPOwdhU+JdeOZnHX5xShHjoVY7dgD95+VzyCG5LL8KFt3IFiu6SqYNSos2C5ZMpsxkqIIvLuF9l+5hnb+xzrmbnkqGbsVuMdCTo4L2KXNWmwmboTkcxJyM1P6kxbgQOAdrmraTn5JOWeo5/cB/g7QYKrhsw6gI0q2RoF2xwk5TbfvL6AJzsvq46iCiabFiz8dsSG2eO4x+CHXqGpkkipLrafd6QJGvjfEGwdkOAxD5EpKGjEPbnuTwyj4v+zp6DFhevDXgSxzhZXA91x7ngkq4aHX5WzJ560V1IcsJWWQ4RFMw==
-Received: from SJ0PR12MB5676.namprd12.prod.outlook.com (2603:10b6:a03:42e::8)
- by SJ0PR12MB5611.namprd12.prod.outlook.com (2603:10b6:a03:426::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 15:56:39 +0000
-Received: from SJ0PR12MB5676.namprd12.prod.outlook.com
- ([fe80::abdb:7990:cc95:89ce]) by SJ0PR12MB5676.namprd12.prod.outlook.com
- ([fe80::abdb:7990:cc95:89ce%7]) with mapi id 15.20.7452.046; Mon, 15 Apr 2024
- 15:56:38 +0000
-From: Besar Wicaksono <bwicaksono@nvidia.com>
-To: "acme@redhat.com" <acme@redhat.com>, "catalin.marinas@arm.com"
-	<catalin.marinas@arm.com>, "will@kernel.org" <will@kernel.org>,
-	"john.g.garry@oracle.com" <john.g.garry@oracle.com>, "james.clark@arm.com"
-	<james.clark@arm.com>, "mike.leach@linaro.org" <mike.leach@linaro.org>,
-	"peterz@infradead.org" <peterz@infradead.org>, "mingo@redhat.com"
-	<mingo@redhat.com>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
-	"alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
-	"jolsa@kernel.org" <jolsa@kernel.org>, "namhyung@kernel.org"
-	<namhyung@kernel.org>, "irogers@google.com" <irogers@google.com>,
-	"alisaidi@amazon.com" <alisaidi@amazon.com>, Vikram Sethi
-	<vsethi@nvidia.com>, Rich Wiley <rwiley@nvidia.com>, Yifei Wan
-	<YWan@nvidia.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-perf-users@vger.kernel.org"
-	<linux-perf-users@vger.kernel.org>, "linux-tegra@vger.kernel.org"
-	<linux-tegra@vger.kernel.org>, Thierry Reding <treding@nvidia.com>, Jon
- Hunter <jonathanh@nvidia.com>, Sean Kelley <skelley@nvidia.com>
-Subject: RE: [PATCH v1 0/3] arm64: Support Neoverse-V2 for Perf Arm SPE
-Thread-Topic: [PATCH v1 0/3] arm64: Support Neoverse-V2 for Perf Arm SPE
-Thread-Index: AQHaQzFqj8OB2Vjf/EipAzIhMbFp+bFqE+Dg
-Date: Mon, 15 Apr 2024 15:56:38 +0000
-Message-ID:
- <SJ0PR12MB5676F0DC2CFBBC96534CDD65A0092@SJ0PR12MB5676.namprd12.prod.outlook.com>
-References: <20240109192310.16234-1-bwicaksono@nvidia.com>
-In-Reply-To: <20240109192310.16234-1-bwicaksono@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR12MB5676:EE_|SJ0PR12MB5611:EE_
-x-ms-office365-filtering-correlation-id: 13358152-cac0-40d1-9435-08dc5d64a2ca
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Vu+bDQxIIkXHKjIJuH3GixMiOBVPVfl1ZmdLoQVNb/85n7q9p4Rw8E57W4D3lxZvtOE4b7G/YX1g23o9BiBh27CjXHERyrMSDF03Xw+WGk69amtSgXC3HroZw0JoUQ2naYJFUTsBQr9zRmylhcLpKDBzROTFUQxiEGRogDrz8JWzry7BL/sxL43VNBQMvLBYOGQfYyVQ1QHYYQY9pJ3aXpUGaxM64CMLEs/d3T8+BFXBKcRffNVkfeyLvx7Cmj5fuA2IwwGbER6g9tcHhv8/S0Oi/iV/m04185DCo4D952xX4fgHTLfN2Iq+8j1pDFzysRAkSqU8+mFA+khCWk0HxKrYu23tHPUcISmLl2jx2tInyz8S5wh+WYSLGHXjiZNldD9ABPcfDo7lOnUWYAxr6fJ4L8+2cvoeZ7DhT3YAiDCcI9tMSKJw7lyFWqsdVGjoOvgkp6Ar+KD5Ykai4L1ymUom07ILs4SR6irCKqHum90ZCSFOu2E7Hk8YRiVjYdNeKG8bJ4yiRSNettUxHUKxc2cmW63NkZJ5tYx8bZfaXeKBQjTXpZ/vT4/GFVRcTcidQaG3eKkXmW9R8yq9mVGORlt6qFdOfvg7+Mvh8p17coQ5izRKhAQFrut914hD3sv0zQa2cmC6jG1TqrJxtt281LLqcqBxSQMnbX5VR9bsR51Xo8V9/0KG3ZGwFS0E8E2A7nTgoQjz46BnssNp3pHDWsqoEiajH6zMOJHudGTm910=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR12MB5676.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015)(921011)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?bQecxJLuw78T7VM+EHRZEMV8Jp93XV1r2wawlVEmL8cdGp2VvO3ydKuA/vu/?=
- =?us-ascii?Q?Sx3iuiZK5ExaN36aySdcIdNV8oUiLSP0IbhOD0zEEwRlYPL0isK1R9IUAnKK?=
- =?us-ascii?Q?eLp1Tm8CjgFQrhzlS/J/+AzMv6tSHISEEVh4tWRidT99/+JnRZ7QdEgOwZfR?=
- =?us-ascii?Q?lbVAfeKJhgLwOvvYfK0JSEfOrthblL+hnuScgxtpgriX/IM5ab68/sczJHG7?=
- =?us-ascii?Q?byUiTHIwomrRzRMFRpP6CIwpitgAXGIURQ5RYI1yFzHx7MzQHUSvIONKATUt?=
- =?us-ascii?Q?Uen2geBb1V9cPJH3qXPOtHDVKvKEr84Ig//+vmddvi0PvTWoD4+3S08t2yZJ?=
- =?us-ascii?Q?l2RePbRiMbwRdSyqJf4bVndpoJD6CQ2UXJhGSOupa/rV+zRrVgwSVLk63S/9?=
- =?us-ascii?Q?92RJ/3lgQ/ok73g0ymC5PKktBc4Rdu2ka2ONkUpllAUIliFP4vm9KcjrhoqM?=
- =?us-ascii?Q?LobxQdrBD9TOQsLZHjopzZ9fNOUirq/DSbPxURDam5QU+H3F1HPlyK2rqZU7?=
- =?us-ascii?Q?HbQhMLupo0yutg0V9cLJuWXUDJx6tlQJcel2G9z5vq6u5VBdKtTIb5FNeOt2?=
- =?us-ascii?Q?JvRL93qdn6WD765Z5owyULLu7jqxbmb5tLCdOG7s4+uSOBukXRiENYCedyH3?=
- =?us-ascii?Q?m87+U+FFdGznHCqItauVpyF92T8yVzITRtS//EXMKfSvPmgD6MOaf2ouKaBk?=
- =?us-ascii?Q?t1dsx8fUxR1Z16lVj29p30dgcZOKSFue0EJ+pmEUF1cIHN41SOQlh1YqBMc/?=
- =?us-ascii?Q?1g4BkbaoAZTJ3mHyzB12mxxHAH0SRPyH98uJrtWHHNJgFe4fFO9yICPb7PIK?=
- =?us-ascii?Q?IE/FXRZnAIU1Mzy/g+QmLDvZOvv3ZJyRUVRWhb65RtWjzV1Zs2UFb9SBhlAG?=
- =?us-ascii?Q?5Lr5GwXJFWDhbYZ1PTCOGDi6pZgU/y5HPCYURiEFX7tHyaR4xm6S/owe0vxh?=
- =?us-ascii?Q?zbhukQnTm8H/gHqtpGUMRO/LKA6FWSxfh8D1M4D02r/lvk8GjcLk9BONebzm?=
- =?us-ascii?Q?V0aIyi7DNsIFMbJjHjgAKcHx6BYtNCTj//LgCeGDmGmsSYWtxfg1uzE9LEYl?=
- =?us-ascii?Q?I+bQsqNr0HMX9bPX2lDxlBuHqUaWRO2qnjNUoIBqfqwaQlyaqEnoz6PS9K9b?=
- =?us-ascii?Q?rjzIEBTXQyZb/dRd0D4WTpVN8qauIQxuYZd16gWXsN1ZtVvE/Mpjo5O/GpFg?=
- =?us-ascii?Q?tVorEfVYttjZzQ0veSI+Fatk3G4be4jgjp5Rr5H2qfsuir7gxpNquqYsZmf0?=
- =?us-ascii?Q?irDOxu8N2p8F9GVI8q2JSjC0TX+kW9hTaHDaI2P8nnL/MaVDCK16xEACS8AC?=
- =?us-ascii?Q?PRpM0kSp3zYIVxYk7XEbX4I1rFIdg0Rqp/oiTT04Xr3LtxhtjOv2BeFwtA6D?=
- =?us-ascii?Q?SgFwZI4KtJY8adR/qW/ckeDr4jytGwlUAyfs8ew95FNcZNb/cNSQj02vqvOu?=
- =?us-ascii?Q?/ap3IHvdWztR0s8mHDbKbI/a+j/Q5W3kSRovgeP1YWs5HIcJtPaTDUjUzlYf?=
- =?us-ascii?Q?g9Dzk/tZaKYHDAi0Rguf+LoetYZ2pUi9QN+j4mZcR65Z99q5SOw+k0JZbm/F?=
- =?us-ascii?Q?gt2jtGpGI348ZFxlLA6rN7xPV4H0vHZcxnbmm57E?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC2C1E535;
+	Mon, 15 Apr 2024 15:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713196661; cv=none; b=Z5egYbub3SFkOq1bEbElVMhlp6DgI7Jb2PT4JmJHhQ9Md3mOzafrIlBBz6iFc5EOVkW/VVtEhLxd+ZgZfx3Vxvu26sFUhFtJ4rOLrcTcas2t//1lulPNzn3msrMHs1LrdY90JqI5PMRIActkB77U0O00PmLMwKFEOYAjtmGyjj8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713196661; c=relaxed/simple;
+	bh=1VFPf/8L9loaEb3hWCEyFbiAGfd1d8Io/SEPciZW5jk=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=W3rrJxa/3HMh4pyAIkD2nmhZ70fbllg5qiDoHCUCsy32BgPPePmMxEVp59FEhusz+6dPiKGw2wiitClV2HebHsmScfJTCTM8exOO3bshu7goW9sFyPoocYILHgSNn3MtZXbBDN0P5KtR6kmhXBdZS6N1POH6J3IzKNIDSxCNpbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gHawwHEK; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713196659; x=1744732659;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=1VFPf/8L9loaEb3hWCEyFbiAGfd1d8Io/SEPciZW5jk=;
+  b=gHawwHEKvg5I4QkDsc9nNJP/onPXwJVFOVMmTGJNof7kjJuHYPkOAae5
+   Jz28S9wgZFWCY0xP6D3z5EVe9Frr46HQU3TEboSUnK4B6jqRJVuPAtfwl
+   5krjgyU1oya0oP+QyxExdaa6rkBt8uaxGMluRlIfdHGgOAfdMo6AcRtpa
+   k8CjOu7a8u3eEoGyJLNJH4TtpU+e2f/rGK3PdPe5oC4rwL70gDub1fe5A
+   fwUwrdOQuzkrHZOPR3BHYULyufkr1VCXSEayFAAuiAIhRX+30SHT4M1ik
+   5VShHlQcMxTmZ3dLxxhnYjOAaSWqs/6PITcZue1SNyD1RwtRN4LIxYpoQ
+   w==;
+X-CSE-ConnectionGUID: kGnz1jjBTWC5AzSMa1yP5A==
+X-CSE-MsgGUID: hhZxhdf/TaO42UfTOgJ9Mg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="19156643"
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="19156643"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 08:57:38 -0700
+X-CSE-ConnectionGUID: JTqYNy7lR/W6ya5NtXaxrQ==
+X-CSE-MsgGUID: 1tY8o3/9QoaKdWPxehmVoA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="22052435"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.33])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 08:57:35 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 15 Apr 2024 18:57:29 +0300 (EEST)
+To: Armin Wolf <W_Armin@gmx.de>
+cc: mlj@danelec.com, rafael.j.wysocki@intel.com, lenb@kernel.org, 
+    jdelvare@suse.com, linux@roeck-us.net, linux@weissschuh.net, 
+    ilpo.jarvinen@linux.intel.com, linux-acpi@vger.kernel.org, 
+    linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
+    platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH v4] ACPI: fan: Add hwmon support
+In-Reply-To: <20240414174743.8575-1-W_Armin@gmx.de>
+Message-ID: <67b4faf4-eadc-3375-62b4-aaad1b3af564@linux.intel.com>
+References: <20240414174743.8575-1-W_Armin@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR12MB5676.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13358152-cac0-40d1-9435-08dc5d64a2ca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 15:56:38.8509
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yqxZ7ll2wRfEfsjIQoH932ALF0SsnO12Bzb0aSIT9my8WzsnBqqk8aaXODIkuMkwamlzWe5xnjuMwaFd/LBkrQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5611
+Content-Type: text/plain; charset=US-ASCII
 
-Hi,
+On Sun, 14 Apr 2024, Armin Wolf wrote:
 
-Do we need any more feedback to this series?
+> Currently, the driver does only support a custom sysfs
+> to allow userspace to read the fan speed.
+> Add support for the standard hwmon interface so users
+> can read the fan speed with standard tools like "sensors".
+> 
+> Compile-tested only.
+> 
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+> Changes since v3:
+> - drop fault attrs
+> - rework initialization
+> 
+> Changes since v2:
+> - add support for fanX_target and power attrs
+> 
+> Changes since v1:
+> - fix undefined reference error
+> - fix fan speed validation
+> - coding style fixes
+> - clarify that the changes are compile-tested only
+> - add hwmon maintainers to cc list
+> 
+> The changes will be tested by Mikael Lund Jepsen from Danelec and
+> should be merged only after those tests.
+> ---
+>  drivers/acpi/Makefile    |   1 +
+>  drivers/acpi/fan.h       |   9 +++
+>  drivers/acpi/fan_core.c  |   4 +
+>  drivers/acpi/fan_hwmon.c | 170 +++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 184 insertions(+)
+>  create mode 100644 drivers/acpi/fan_hwmon.c
+> 
+> diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+> index 39ea5cfa8326..61ca4afe83dc 100644
+> --- a/drivers/acpi/Makefile
+> +++ b/drivers/acpi/Makefile
+> @@ -77,6 +77,7 @@ obj-$(CONFIG_ACPI_TINY_POWER_BUTTON)	+= tiny-power-button.o
+>  obj-$(CONFIG_ACPI_FAN)		+= fan.o
+>  fan-objs			:= fan_core.o
+>  fan-objs			+= fan_attr.o
+> +fan-$(CONFIG_HWMON)		+= fan_hwmon.o
+> 
+>  obj-$(CONFIG_ACPI_VIDEO)	+= video.o
+>  obj-$(CONFIG_ACPI_TAD)		+= acpi_tad.o
+> diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h
+> index f89d19c922dc..db25a3898af7 100644
+> --- a/drivers/acpi/fan.h
+> +++ b/drivers/acpi/fan.h
+> @@ -10,6 +10,8 @@
+>  #ifndef _ACPI_FAN_H_
+>  #define _ACPI_FAN_H_
+> 
+> +#include <linux/kconfig.h>
+> +
+>  #define ACPI_FAN_DEVICE_IDS	\
+>  	{"INT3404", }, /* Fan */ \
+>  	{"INTC1044", }, /* Fan for Tiger Lake generation */ \
+> @@ -57,4 +59,11 @@ struct acpi_fan {
+>  int acpi_fan_get_fst(struct acpi_device *device, struct acpi_fan_fst *fst);
+>  int acpi_fan_create_attributes(struct acpi_device *device);
+>  void acpi_fan_delete_attributes(struct acpi_device *device);
+> +
+> +#if IS_REACHABLE(CONFIG_HWMON)
+> +int devm_acpi_fan_create_hwmon(struct acpi_device *device);
+> +#else
+> +static inline int devm_acpi_fan_create_hwmon(struct acpi_device *device) { return 0; };
+> +#endif
+> +
+>  #endif
+> diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c
+> index ff72e4ef8738..7cea4495f19b 100644
+> --- a/drivers/acpi/fan_core.c
+> +++ b/drivers/acpi/fan_core.c
+> @@ -336,6 +336,10 @@ static int acpi_fan_probe(struct platform_device *pdev)
+>  		if (result)
+>  			return result;
+> 
+> +		result = devm_acpi_fan_create_hwmon(device);
+> +		if (result)
+> +			return result;
+> +
+>  		result = acpi_fan_create_attributes(device);
+>  		if (result)
+>  			return result;
+> diff --git a/drivers/acpi/fan_hwmon.c b/drivers/acpi/fan_hwmon.c
+> new file mode 100644
+> index 000000000000..0ae9017bdbae
+> --- /dev/null
+> +++ b/drivers/acpi/fan_hwmon.c
+> @@ -0,0 +1,170 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * fan_hwmon.c - hwmon interface for the ACPI Fan driver
+> + *
+> + * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/limits.h>
+> +#include <linux/units.h>
+> +
+> +#include "fan.h"
+> +
+> +/* Returned when the ACPI fan does not support speed reporting */
+> +#define FAN_SPEED_UNAVAILABLE	0xffffffff
+> +#define FAN_POWER_UNAVAILABLE	0xffffffff
+> +
+> +static struct acpi_fan_fps *acpi_fan_get_current_fps(struct acpi_fan *fan, u64 control)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < fan->fps_count; i++) {
+> +		if (fan->fps[i].control == control)
+> +			return &fan->fps[i];
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static umode_t acpi_fan_is_visible(const void *drvdata, enum hwmon_sensor_types type, u32 attr,
+> +				   int channel)
+> +{
+> +	const struct acpi_fan *fan = drvdata;
+> +	int i;
+> +
+> +	switch (type) {
+> +	case hwmon_fan:
+> +		switch (attr) {
+> +		case hwmon_fan_input:
+> +			return 0444;
+> +		case hwmon_fan_target:
+> +			/* When in fine grain control mode, not every fan control value
+> +			 * has an associated fan performance state.
+> +			 */
+> +			if (fan->fif.fine_grain_ctrl)
+> +				return 0;
+> +
+> +			return 0444;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	case hwmon_power:
+> +		switch (attr) {
+> +		case hwmon_power_input:
+> +			/* When in fine grain control mode, not every fan control value
+> +			 * has an associated fan performance state.
+> +			 */
+> +			if (fan->fif.fine_grain_ctrl)
+> +				return 0;
+> +
+> +			/* When all fan performance states contain no valid power data,
+> +			 * when the associated atttribute should not be created.
 
-Thanks,
-Besar
+attribute
 
-> -----Original Message-----
-> From: Besar Wicaksono <bwicaksono@nvidia.com>
-> Sent: Tuesday, January 9, 2024 1:23 PM
-> To: acme@redhat.com; catalin.marinas@arm.com; will@kernel.org;
-> john.g.garry@oracle.com; james.clark@arm.com; mike.leach@linaro.org;
-> peterz@infradead.org; mingo@redhat.com; mark.rutland@arm.com;
-> alexander.shishkin@linux.intel.com; jolsa@kernel.org; namhyung@kernel.org=
-;
-> irogers@google.com; alisaidi@amazon.com; Vikram Sethi
-> <vsethi@nvidia.com>; Richard Wiley <rwiley@nvidia.com>; Yifei Wan
-> <ywan@nvidia.com>
-> Cc: linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; l=
-inux-
-> perf-users@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding
-> <treding@nvidia.com>; Jonathan Hunter <jonathanh@nvidia.com>; Besar
-> Wicaksono <bwicaksono@nvidia.com>
-> Subject: [PATCH v1 0/3] arm64: Support Neoverse-V2 for Perf Arm SPE
->=20
-> This series support Neoverse-V2 CPU in Perf Arm SPE.
-> The first patch adds the Neoverse-V2 part number in kernel header.
-> The second patch syncs the kernel change to the tools header.
-> The third patch adds Neoverse-V2 into perf's Neoverse SPE data source lis=
-t.
->=20
-> Besar Wicaksono (3):
->   arm64: Add Neoverse-V2 part
->   tools headers arm64: Add Neoverse-V2 part
->   perf arm-spe: Add Neoverse-V2 to neoverse list
->=20
->  arch/arm64/include/asm/cputype.h       | 2 ++
->  tools/arch/arm64/include/asm/cputype.h | 2 ++
->  tools/perf/util/arm-spe.c              | 1 +
->  3 files changed, 5 insertions(+)
->=20
->=20
-> base-commit: d988c9f511af71a3445b6a4f3a2c67208ff8e480
+-- 
+ i.
+
+
+> +			 */
+> +			for (i = 0; i < fan->fps_count; i++) {
+> +				if (fan->fps[i].power != FAN_POWER_UNAVAILABLE)
+> +					return 0444;
+> +			}
+> +
+> +			return 0;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int acpi_fan_read(struct device *dev, enum hwmon_sensor_types type, u32 attr, int channel,
+> +			 long *val)
+> +{
+> +	struct acpi_device *adev = to_acpi_device(dev->parent);
+> +	struct acpi_fan *fan = dev_get_drvdata(dev);
+> +	struct acpi_fan_fps *fps;
+> +	struct acpi_fan_fst fst;
+> +	int ret;
+> +
+> +	ret = acpi_fan_get_fst(adev, &fst);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	switch (type) {
+> +	case hwmon_fan:
+> +		switch (attr) {
+> +		case hwmon_fan_input:
+> +			if (fst.speed == FAN_SPEED_UNAVAILABLE)
+> +				return -ENODATA;
+> +
+> +			if (fst.speed > LONG_MAX)
+> +				return -EOVERFLOW;
+> +
+> +			*val = fst.speed;
+> +			return 0;
+> +		case hwmon_fan_target:
+> +			fps = acpi_fan_get_current_fps(fan, fst.control);
+> +			if (!fps)
+> +				return -ENODATA;
+> +
+> +			*val = fps->speed;
+> +			return 0;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	case hwmon_power:
+> +		switch (attr) {
+> +		case hwmon_power_input:
+> +			fps = acpi_fan_get_current_fps(fan, fst.control);
+> +			if (!fps)
+> +				return -ENODATA;
+> +
+> +			if (fps->power == FAN_POWER_UNAVAILABLE)
+> +				return -ENODATA;
+> +
+> +			if (fps->power > LONG_MAX / MICROWATT_PER_MILLIWATT)
+> +				return -EOVERFLOW;
+> +
+> +			*val = fps->power * MICROWATT_PER_MILLIWATT;
+> +			return 0;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static const struct hwmon_ops acpi_fan_ops = {
+> +	.is_visible = acpi_fan_is_visible,
+> +	.read = acpi_fan_read,
+> +};
+> +
+> +static const struct hwmon_channel_info * const acpi_fan_info[] = {
+> +	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_TARGET),
+> +	HWMON_CHANNEL_INFO(power, HWMON_P_INPUT),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_chip_info acpi_fan_chip_info = {
+> +	.ops = &acpi_fan_ops,
+> +	.info = acpi_fan_info,
+> +};
+> +
+> +int devm_acpi_fan_create_hwmon(struct acpi_device *device)
+> +{
+> +	struct acpi_fan *fan = acpi_driver_data(device);
+> +	struct device *hdev;
+> +
+> +	hdev = devm_hwmon_device_register_with_info(&device->dev, "acpi_fan", fan,
+> +						    &acpi_fan_chip_info, NULL);
+> +
+> +	return PTR_ERR_OR_ZERO(hdev);
+> +}
 > --
-> 2.17.1
-
+> 2.39.2
+> 
 
