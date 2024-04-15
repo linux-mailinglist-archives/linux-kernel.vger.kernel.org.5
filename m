@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-145945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 431538A5D24
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:49:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56B2E8A5D29
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A3B41C2182C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:49:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0684B219FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA548157482;
-	Mon, 15 Apr 2024 21:49:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2FF1581F0;
+	Mon, 15 Apr 2024 21:49:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Ih11+7oN"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="x5p5X4uk"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A371EF1A
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093EB157A4D
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713217788; cv=none; b=Qq2XaZSKPqUZ2CDZaT9krj5xU0JONpikvpB15q4yDTNPFvv5KRH8UC6WINksQPcP4ybWP6wn6hAl6tiX0oAiXmUYbUGgUNYclK/SpZrThDA1Dtizpn03QTxSJHYOTQm+o6gROPXwiAxYHppE5D7zr61VIHod8NGs9mEMqtNostY=
+	t=1713217791; cv=none; b=PghKzfmBeTwrXW4gabxDv097tJbVWAqq77uDk5RKbkC9zzphOWkSJ2d/4hWvdRrmUnap5nED2kf/JWxID9MIGEWIPz442bi8MCmKYaLtWy9A/LSWosOWVqD8jfIJzMyX8mmcPzrVjkgcrUgJMcwlhlQ5VZnGwQ/7G9cXoivTXaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713217788; c=relaxed/simple;
-	bh=45acX4xwosl5WBJBU7nS1iX68G88AicLYKqxcAO7qpA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IND7FhBMFpKFcsWXbPKCMaL+toxM0jPlRZf32YwRKaFvz+CBiIQ+M4EFjHVZLuifHNdy2dRGlfGoFtDj7xnYDoDBMAJeoXWcff/jfv6K6PtxBV0U8UeJpyvtuJ8qAg3V1mnVSefuIEbvzD0R+RNccQz+qE4tEdqe8lhB1sV5ZF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Ih11+7oN; arc=none smtp.client-ip=46.235.227.194
+	s=arc-20240116; t=1713217791; c=relaxed/simple;
+	bh=4g04soJ3U4WMb4EDWjbft9oUxJ9c0JvI/mZOjFolm8M=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=DpxGq/YIpyi0Z9rQI2Tk/T/hcuQac7b0HAiRdEHQ7eEmI3wHYAzB6kro9AKMy52XtrIOB2I5NbkseirSjWtouLXD45Rh0iuOmqiv3qTzZpBkYKXDO/oM8abCka1FNs0K5FTi9GDHRnmjcVbV6JQ6N72OurPRcKfZWwnH90i9zLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=x5p5X4uk; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713217784;
-	bh=45acX4xwosl5WBJBU7nS1iX68G88AicLYKqxcAO7qpA=;
-	h=From:Subject:Date:To:Cc:From;
-	b=Ih11+7oNfQtYkZOk5taWHezfn/TioUO4lE/potESxOcziZ3FENfkC2ALkjxpVrSpW
-	 qQ21ctGAss7knP37rKb+fhhBgckrxiGIyJy4Pln0csiLGcCinicoyA4Y4P7E3aeepU
-	 yXCvNbH5nZlTnO4v2doKM8+1R7jAFJT0AxjrDJlSSpISJj51LfSKCn9HIXO5RRFuno
-	 xvYteTFOx4wT7topD1KsA0U0zkqowgKf0lU6bUiW1JkJDY8xxIwSkebFAVp+Bd7vDj
-	 lEaaKTP+3AofilMRApqVxkBqMswzU057pTzbobidHPV0IuLjxZry0nTOqe7iTaceRT
-	 EAXgYgqIrivvQ==
+	s=mail; t=1713217788;
+	bh=4g04soJ3U4WMb4EDWjbft9oUxJ9c0JvI/mZOjFolm8M=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=x5p5X4ukl+JICrkhr9rv1CfSskf0+n2Mb8k+7koCf2npy1rmPJ4ocZavT55LreUOR
+	 3n7Z2DI4ueqc2ozLAL+lsEdHVb/fL5f+Vagg99cq1gxMpDWy/TgnTXBRWp2njrTTHO
+	 NY5hwen3O4tGmKELuaBAJXF6/idFLdWAs0IGpGlw7stwlthuD+TT5QooiPf3K9g4sj
+	 4EbZgfY4ivG3Av4s/aD3/2wcwda4AfmB4Xmln9LESGxN4yh2NCmTtej7tn0QtLbGCh
+	 eWCjnblPNYIa6P1kaHAzwKKp0fJheC5WZDzdunvjhmbjXHa1MCnNYMgy73dnNIB5vU
+	 dhjbNTn6oPFSA==
 Received: from [192.168.42.226] (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 693CB3780016;
-	Mon, 15 Apr 2024 21:49:40 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B954937811CD;
+	Mon, 15 Apr 2024 21:49:44 +0000 (UTC)
 From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Subject: [PATCH v3 0/9] drm: Switch from dev_err to dev_err_probe for
- missing DSI host error path
-Date: Mon, 15 Apr 2024 17:49:28 -0400
-Message-Id: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
+Date: Mon, 15 Apr 2024 17:49:29 -0400
+Subject: [PATCH v3 1/9] drm/bridge: anx7625: Don't log an error when DSI
+ host can't be found
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,10 +59,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAOigHWYC/43NvQ6DIBiF4VsxzP0a+MQfOvU+mg6AoCRWGjDEx
- njvRaemSzu+Z3jOSqIJzkRyKVYSTHLR+SlHeSqIHuTUG3BdboIUOUWsQU5LU2MFnbEmwOh7mDx
- 00cHg4wy6tEJrpRW2DcnGMxjrlsO/3XMPLs4+vI67xPb1XzkxYIAcFZO2ZG3Lr9qPo1Q+yLP2D
- 7LrCT9F8UtEoEBpRWvBGeVCfovbtr0BuQ3geyABAAA=
+Message-Id: <20240415-anx7625-defer-log-no-dsi-host-v3-1-619a28148e5c@collabora.com>
+References: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
+In-Reply-To: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
 To: Andrzej Hajda <andrzej.hajda@intel.com>, 
  Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
  Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
@@ -85,71 +84,42 @@ Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
  linux-kernel@vger.kernel.org, 
  AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
  Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>
+ =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
 X-Mailer: b4 0.13.0
 
-This series changes every occurrence of the following pattern: 
+Given that failing to find a DSI host causes the driver to defer probe,
+make use of dev_err_probe() to log the reason. This makes the defer
+probe reason available and avoids alerting userspace about something
+that is not necessarily an error.
 
-	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
-	if (!dsi_host) {
-		dev_err(dev, "failed to find dsi host\n");
-		return -EPROBE_DEFER;
-	}
-
-into
-
-	dsi_host = of_find_mipi_dsi_host_by_node(dsi);
-	if (!dsi_host)
-		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
-
-This registers the defer probe reason (so it can later be printed by the
-driver core or checked on demand through the devices_deferred file in
-debugfs) and prevents errors to be spammed in the kernel log every time
-the driver retries to probe, unnecessarily alerting userspace about
-something that is a normal part of the boot process.
-
-I have omitted a Fixes: tag in the last patch, for the truly-nt35597
-panel, because it predates the dev_err_probe() helper.
-
-Changes in v3:
-- Added trailers
-- Rebased on next-20240415
-- Link to v2: https://lore.kernel.org/r/20240229-anx7625-defer-log-no-dsi-host-v2-0-00506941049a@collabora.com
-
-Changes in v2:
-- Added patches 2 onwards to fix all occurences of this pattern instead
-  of just for the anx7625 driver
-- Link to v1: https://lore.kernel.org/r/20240226-anx7625-defer-log-no-dsi-host-v1-1-242b1af31884@collabora.com
-
+Fixes: 269332997a16 ("drm/bridge: anx7625: Return -EPROBE_DEFER if the dsi host was not found")
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 ---
-Nícolas F. R. A. Prado (9):
-      drm/bridge: anx7625: Don't log an error when DSI host can't be found
-      drm/bridge: icn6211: Don't log an error when DSI host can't be found
-      drm/bridge: lt8912b: Don't log an error when DSI host can't be found
-      drm/bridge: lt9611: Don't log an error when DSI host can't be found
-      drm/bridge: lt9611uxc: Don't log an error when DSI host can't be found
-      drm/bridge: tc358775: Don't log an error when DSI host can't be found
-      drm/bridge: dpc3433: Don't log an error when DSI host can't be found
-      drm/panel: novatek-nt35950: Don't log an error when DSI host can't be found
-      drm/panel: truly-nt35597: Don't log an error when DSI host can't be found
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
- drivers/gpu/drm/bridge/analogix/anx7625.c     |  6 ++----
- drivers/gpu/drm/bridge/chipone-icn6211.c      |  6 ++----
- drivers/gpu/drm/bridge/lontium-lt8912b.c      |  6 ++----
- drivers/gpu/drm/bridge/lontium-lt9611.c       |  6 ++----
- drivers/gpu/drm/bridge/lontium-lt9611uxc.c    |  6 ++----
- drivers/gpu/drm/bridge/tc358775.c             |  6 ++----
- drivers/gpu/drm/bridge/ti-dlpc3433.c          | 17 +++++++++--------
- drivers/gpu/drm/panel/panel-novatek-nt35950.c |  6 ++----
- drivers/gpu/drm/panel/panel-truly-nt35597.c   |  6 ++----
- 9 files changed, 25 insertions(+), 40 deletions(-)
----
-base-commit: 6bd343537461b57f3efe5dfc5fc193a232dfef1e
-change-id: 20240226-anx7625-defer-log-no-dsi-host-c3f9ccbcb287
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 9d96d28d6fe8..02bf45005307 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -2066,10 +2066,8 @@ static int anx7625_setup_dsi_device(struct anx7625_data *ctx)
+ 	};
+ 
+ 	host = of_find_mipi_dsi_host_by_node(ctx->pdata.mipi_host_node);
+-	if (!host) {
+-		DRM_DEV_ERROR(dev, "fail to find dsi host.\n");
+-		return -EPROBE_DEFER;
+-	}
++	if (!host)
++		return dev_err_probe(dev, -EPROBE_DEFER, "fail to find dsi host.\n");
+ 
+ 	dsi = devm_mipi_dsi_device_register_full(dev, host, &info);
+ 	if (IS_ERR(dsi)) {
 
-Best regards,
 -- 
-Nícolas F. R. A. Prado <nfraprado@collabora.com>
+2.44.0
 
 
