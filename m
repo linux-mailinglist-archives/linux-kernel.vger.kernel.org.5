@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-144967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D12A58A4D44
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:05:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C6B8A4D4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:06:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 493721F269E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:05:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCB292813AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7775D477;
-	Mon, 15 Apr 2024 11:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765B25D47E;
+	Mon, 15 Apr 2024 11:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWov3ffj"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTYbjpyT"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8FC5C902
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6295D465
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:06:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713179116; cv=none; b=rwqN5JQw7UDLgQ+9H71CHmGCtvqzixZ2a9bkvoHqxW83EPrGnd0CdRB5RgdyKQxI256onIqUciPHew4IkrmSt0ihRpG1z8X0yWehtpkyJMUHG02YRgp6DiDtjOuB3qQptzb8X72F5W+VYZDxMwQBEuVIKGaguX3uuVoGADaXVtI=
+	t=1713179199; cv=none; b=YyhFuF5gauG9G92uVXiyB15KG6HyIPQIkcuFs3XL5Q3FFEV4m7cq6QZbmZ+cA0wFmkbQUipWkc2XL1PTPJBX82bRj7rIHS0D9fhv1dzyWv48zJzniHHKlAgYXZeuVm+v7y29w7bP4/7wkygn39yhIsMiTe+RZvJzVQeUZ1mowm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713179116; c=relaxed/simple;
-	bh=vEGNcExgq1q6KTiq7603D/QOBgwfN2PsiUGPRM9OCMA=;
+	s=arc-20240116; t=1713179199; c=relaxed/simple;
+	bh=/oMa1GL/kKnQW5NMnPve87tUJS/4H/Umomvj2AmkwHM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PrI0a43rW0srpNY9VK46jaqsHESrNEAujr3X+bgbcj9LNbxSZsjlHMBrO4Npu5hK1aU/qB7oP/cUEYgPIbyrNNjA0n4P3cx+KfoTBzd5SaaSgX/sp99KQzuopOmGZS+HWAOj+I6wZzqpVRvyO8UceliLjMYRweAHQNFheNkMbyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RWov3ffj; arc=none smtp.client-ip=209.85.208.46
+	 To:Cc:Content-Type; b=r6MDuQJ9LahvLZdlp0KVXddZ0Ja61LzgdnZ6z2vMokkiZWUEbpxOOu7LfQqUKGLRNSVxvDP+mcwnR+QoMHZTEpViDuZD4EwEzfNAlA4MXTAE4eHFwlHPSCekXNtTNnzjdMuirfstmIF52w1Jo4V/UnhhfWsWsECs15jWUx6in04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jTYbjpyT; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56fff9d2651so3045426a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 04:05:12 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so4891653a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 04:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713179111; x=1713783911; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713179193; x=1713783993; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B7zAijvyT25+v+BaKAPw5Dka/ozCLvFU0VnlfSAxSLI=;
-        b=RWov3ffj+Cu6oQVQ4bho1g6MvTRXF3ILqMPgSJ09i6CQuc7351lJYzTh18LcgWIJXQ
-         6ah6FUp9ATpIw4qex39OKJpG1LHpuNlwcSy8KO7aq0pEjmvNnTQ3kKunXu9AU6fNTYW/
-         xGVSM6bZ/UUEkHntKadaVmfZr+kJSWsGNkx14grA6u/AJJieZF2YuiVT0Z5PeDyulDR2
-         qvhWh9zZc3P/CaiSg84UOlf/WrFLYZnZ12UzLAWeWofKMB3guZhei1ZfME2Yk/ttJtqv
-         oy5+mo9zSABVErdvkrsy496e9FimtDwlM/Jvp0RvKwTI2t6FmBRju+VjiECy471zUe2D
-         FTag==
+        bh=5HOJ3qTLEUCMYQdoKHMuYV4Z4Tr5FAYEvCc3KkThVm0=;
+        b=jTYbjpyT5xNqggB6P3H6wn9qanTXOmQNuwqBu8QHahft4H01sumShUassQf1SPNFrk
+         p4s3keQlWWHVVFINslEpXnLLvh7kdrD8Ik5hjnGEFU4C5Ea4rbEvSUJYqBBbTK860xfE
+         gdQB9WV9J2bPm9eWUf8nPXQWhSolI0aEHS6zc4wxyo2agg4QrhvMIGc0W+cJFq5qaGRb
+         9tCZN+WmtT9CwLtZOxWluT++hibvtuar5OrR8Z3SYqo/PaFI2V/zsi8dHh0PDvFt7o3O
+         sMczXuMGWU1VwkHOzyG9M18QY78hmlSpmqkhXh3g6glmvob0zeP1AdfwrYhivREIPzk5
+         NqIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713179111; x=1713783911;
+        d=1e100.net; s=20230601; t=1713179193; x=1713783993;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B7zAijvyT25+v+BaKAPw5Dka/ozCLvFU0VnlfSAxSLI=;
-        b=wa0aiCpjafj0yN44F5LfrfvKhODdAUVcsax5JAGQTj5e3j3ilHgKn767B2/hXslVZY
-         q+QviWm1peVcf6pGKB6J4PylDwLozUcOPORaz1c63gZeG+ot4co6PCa0yFOK+rS8XcJa
-         cCPg22EJsCv3zK7VXtnHuzTVYAg2Ycz2gNhglgzhVqsvROfpB8UnRf20UZ+9S1kTG770
-         x3MglgkE5dmnTzbOHA0BKozBlGVp7KVeyvuBqY2fXj2fjOOmfxCgyM03W5atyzfFtMR9
-         ld0KkH08EjsDWnf5OtkAfoOLAD0rBrunW6XcOEe6WhUinIZ0Io+WZq5mtdG5MebQwBo8
-         PMnw==
-X-Gm-Message-State: AOJu0YyeojGR/rj32FPN+Ojcz6eIBPRhR3ZyLJlfjCd3LTzZcJdjXE8P
-	8CdXELkLtciH46HXpHpkVu6NLnc83cQ7OQ8UO6NpMnVsBUsVk+TRBwV1QD4EpU6eI4LmN8dD0Iq
-	eir+3DBi5PGZjz82GGq09vD3pcfE=
-X-Google-Smtp-Source: AGHT+IH7x/o9EK3Hcvhw0d6myCO6NK1BQ70rslx1yUh4gl0H4BMe6rc7x2b0uJWsjT2bt/8BK2HUvxxeeJJTAyROSkk=
-X-Received: by 2002:a50:9509:0:b0:56e:323b:d7e7 with SMTP id
- u9-20020a509509000000b0056e323bd7e7mr5855895eda.34.1713179111058; Mon, 15 Apr
- 2024 04:05:11 -0700 (PDT)
+        bh=5HOJ3qTLEUCMYQdoKHMuYV4Z4Tr5FAYEvCc3KkThVm0=;
+        b=rWsLgK7VUCElh9RVx0JPo/3n70F4DZSpeT+Q09Fx6uZDXFjjjIfD1R1g214ZlCoFh8
+         nqNAyffa45G6e7ANkwnOlH3eEfedMyrwEuoNp/wYbBjGK/kKGXUxw3T9tscNgiYXc/tg
+         RgE+//3Vmxundlw7HxmkXtB52cL5g/ewHwRzidBysNpXZPw4CazMwyP6MSlm0VF/h4lz
+         RZUjpDP1wZf/RWJ4nnMKrOIrujKFoM5r/R4CXFOvKwkej7FVRWvLPaWuKuqUJxwU5EZx
+         bNtJ7hYT+dp4wCwSfESZoHxYUpMSv7VPR1bpO3GPsi6sTN3DjOAuMBTide8TTsR195Ih
+         dTdg==
+X-Gm-Message-State: AOJu0YzqehOrxFkI9U3NeHQUzCEqLd4l5+qj850MYh8Vrs9ImvCuEArw
+	nfBCbd7/nLKCI5mvcNHMfPL+V8u9+op0NpcgX8I/RvxS9hZ5GqttfIOkMDGJxvVp5Plv2csAwFz
+	/G6BB0BYyu70Tmomhw5842Ti3AHA=
+X-Google-Smtp-Source: AGHT+IHqrBCxC1XEPHIZjzCth9iRYO/Ggjd0q8qY+ZAtZIa8kvW4Kiz32YsCZE5gMTCJqoCXUDCs6cgdiGmMmjmSAiQ=
+X-Received: by 2002:a50:cc9c:0:b0:570:1ea8:cce8 with SMTP id
+ q28-20020a50cc9c000000b005701ea8cce8mr3424202edi.38.1713179192917; Mon, 15
+ Apr 2024 04:06:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,29 +70,28 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240313085817.48892-1-zegao@tencent.com> <65b1691d-8d90-4057-8ad0-da546a0ac8a1@linux.ibm.com>
- <CAD8CoPDxgL+dkUM_6oAGuAT-GQVdfrckJB2yOjufvbFE14hBxg@mail.gmail.com> <7577582d-46e2-4fe4-8e41-e6521326c31d@linux.ibm.com>
-In-Reply-To: <7577582d-46e2-4fe4-8e41-e6521326c31d@linux.ibm.com>
+ <CAD8CoPDajt_EciU0x8G_BocajfaJrQ1FKLYkp_nLSfF9+9FJVw@mail.gmail.com> <e8cafcdf-a1aa-4ff1-b614-7c6fd4fa9716@linux.ibm.com>
+In-Reply-To: <e8cafcdf-a1aa-4ff1-b614-7c6fd4fa9716@linux.ibm.com>
 From: Ze Gao <zegao2021@gmail.com>
-Date: Mon, 15 Apr 2024 19:04:59 +0800
-Message-ID: <CAD8CoPCmBMwo13TEz2V0Bb9fSNBKR3uGWKFTHxQTnZ8BxQj36A@mail.gmail.com>
+Date: Mon, 15 Apr 2024 19:06:21 +0800
+Message-ID: <CAD8CoPDG0C3LmYiExOnQ+sjY=1xbGM5w0gX=h5QdhSaGaBLuNQ@mail.gmail.com>
 Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
  affinity changes
-To: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+To: CAD8CoPDajt_EciU0x8G_BocajfaJrQ1FKLYkp_nLSfF9+9FJVw@mail.gmail.com
 Cc: linux-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>, 
 	Ben Segall <bsegall@google.com>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
 	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ingo Molnar <mingo@redhat.com>, 
 	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
 	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Valentin Schneider <vschneid@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>
+	Valentin Schneider <vschneid@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Madadi Vineeth Reddy <vineethr@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 6:25=E2=80=AFPM Madadi Vineeth Reddy
+On Mon, Apr 15, 2024 at 6:36=E2=80=AFPM Madadi Vineeth Reddy
 <vineethr@linux.ibm.com> wrote:
 >
-> Hi Ze Gao,
->
-> On 15/04/24 07:33, Ze Gao wrote:
+> On 15/04/24 11:10, Ze Gao wrote:
 > > On Sat, Apr 13, 2024 at 12:59=E2=80=AFAM Madadi Vineeth Reddy
 > > <vineethr@linux.ibm.com> wrote:
 > >>
@@ -174,47 +173,43 @@ _task: comm=3Dloop pid=3D11172 prio=3D120 orig_cpu=3D33 dest_cpu=3D34
 o as default target is returned at the end of select_idle_sibling
 > >> which was CPU 4.
 > >
-> > My best guess is that you may have hit the code path for running tasks
-> > (taskset happens right after the task is woken up). Should that happen,
-> > the picking is done via:
+> > After second thoughts, it indeed could happen if CPU 4 shares nothing
+> > with CPU 33(34),
+> > for example, in different numa nodes.
 > >
-> >         dest_cpu =3D cpumask_any_and_distribute(cpu_valid_mask, ctx->ne=
-w_mask);
+> > IOW, it cannot benefit from select_idle_siblings() and has to rely on
+> > select_fallback_rq
+> > as the last resort. Just like what I said in the changelog, this patch
+> > aims to improve rq
+> > selection for cases where the newly allowed cpu set shares some cpu
+> > resources with
+> > the old cpu set.
 >
-> Yes, I verified that cpumask_any_and_distribute is hit.
+> Right. In power 10(where I tested), LLC is smaller being at SMT4 small co=
+re
+> level. So, I think there are less chances of affined CPUs to share resour=
+ces
+> with the old CPU set.
 >
-> >
-> > and it also makes sense that select_fallback_rq() returns 4 since that =
-happens
-> > before you change the affinities.
->
-> In this case, 4 is passed as an argument to select_fallback_rq(), it's no=
-t the return
-> value. It actually returns the first affined CPU which is 33 here.
->
-> Also, I see select_fallback_rq() happening after cpumask_any_and_distribu=
-te.
->
-> >
-> > you may need to rule out this case first :)
-> >
->
-> I am not sure on how to avoid hitting cpumask_any_and_distribute, Can you=
- explain how did you move the tasks in case
-> of stress-ng?
+> I also ran schbench and hackbench just to make sure that there is no regr=
+ession
+> in powerpc. Luckily there is no regression.
+> Tested-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
 
-Acutally there is no easy way to avoid taskset on the running task
-(maybe -l with a low load expectation which increases the chance
-the task sleeps). and then it is simple and stupid: let the trace be
-as much verbose as I can, and filter what I pay attention to.
+Thanks for the testing!
 
-Regards,
+Sincerely,
 Ze
 
 > Thanks and Regards
 > Madadi Vineeth Reddy
 >
-> > Regards,
+> >
+> > Sorry for not being able to recall all details immediately, since this
+> > thread has been inactive
+> > for a long while and receives no feedback from sched folks.
+> >
+> > Best,
 > > Ze
 > >
 > >> In most of my testing, default target is returned at the end of the fu=
