@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-145950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BECF8A5D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:50:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 492628A5D33
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:50:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D11C1C211FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:50:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD2CF28349F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26601586F3;
-	Mon, 15 Apr 2024 21:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6AD159906;
+	Mon, 15 Apr 2024 21:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="JUWafUjA"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xItB+Krt"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB686158203
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96261598FE
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713217808; cv=none; b=pXAnzO01SvSJJjB/jYtrbB2wmN4HnmqPVRgkz3YhJ3nqBGZu+U5+SwOHee5K+pUg4dv3p+hCm0jHuc/rDmAoaAL5k2TYiFRiVRvbmI/avOs0cP4YXvjeJmA8dk9JlhaSaG0zIUaHF1ZISgOT+sBzP06mBI/qDGb6T2Y6qiIxB9A=
+	t=1713217812; cv=none; b=I6vKKhTZOr+eACd5UwhLtcr9I1GPFHaQLOIF/MsdLMVnEVqAJM4tjFjcLfPxCN34VJNkBU0QBXHwk3T0KFSCV3zhWEnsAFVX2z5BAI10biP4UemHGa38Cra3pSlkK/xQO1auPQleEkcuNmVb60HekMYCh1TSB+qLnakqZX7E4tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713217808; c=relaxed/simple;
-	bh=0DbJMZzCSwBFdhJbT9iCo40kxXCX5FIuxjGa2VMhFxE=;
+	s=arc-20240116; t=1713217812; c=relaxed/simple;
+	bh=526F18CtfYEEqboFKch5J95lq5PrbYAvtBr25FpdHDw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hcGButZlxpyfSvZshhxRI20mrNpjoK32UpqgMhSuIqOfyc+9nCMBzur8OlakO4I2X2hneL84qgmZVXXhA1GgZL52p4RGXgtTR/jGw2Wru6cxJhWVFjBRok/Vjn6WB6JS2MEe1SE8tkFT2o/3nK3+FpEEcyvFhSjejFP5WcAr3J4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=JUWafUjA; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:To:Cc; b=YVgHLIu8TV6ENXKDfRFeBOozbTAFKkgQo7fXa/gVoGJ01rT98HguwT4dVXms1pHe6ujWikZp9wdkrVpCvmTNwHJT8aTSdGYJLhGYhMkQYBTcfdSNclXJNTceOb/RYKraMmwsP5eA762L0GEClrP3gDkYcezZ1vgWyVVpD6eDYMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xItB+Krt; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713217805;
-	bh=0DbJMZzCSwBFdhJbT9iCo40kxXCX5FIuxjGa2VMhFxE=;
+	s=mail; t=1713217809;
+	bh=526F18CtfYEEqboFKch5J95lq5PrbYAvtBr25FpdHDw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=JUWafUjA4Eqx/UeWahbyA4Tt43y5KNqa4zBAn/Zp5ZG7ZtfMDvsbh94gwfcu+vGVW
-	 M2ytP42JHhCZshY5OAtjf/tM+ZlvSz0xrn5MbxPqE7zquZX6QxIPveXB1V+CCZS+Hl
-	 prZZsnN5uJB3Ai1DAVwQgP08wJP86mjUjJ+OOY/H4aKH0wBLf+eEiMJy6aZaN0bEFa
-	 nExQixghSbjrvLv+Bd9SYl9CfL3ScreAiqQljJemqOXrjqOgNBb0oVEPR0APsZEL1b
-	 bEqN+kZXqysAn2bpeMJBqrfVHKvhLCp8m6RdNd9STQPF3+Oz/VYfEtu0otuG1ZwQeG
-	 6j7chXu0VdC2A==
+	b=xItB+Krtc9dRh5ur5snc44ZUCQA5jnsWAOz8j43JEVeuD46KtOExC/Id9Xduc15rR
+	 f2xZhZ/zxwKnlDCA+em9+zc37KbenmoWByGfHtyeY02LPkX7rlV18QqNRpBnYV3Ypk
+	 7k+s8WTpb4QeFbfugA+8MSVMhZ2BRypPS+5Vs/EML/L1f290u0UG5Md4MwmlCVAHXR
+	 +DR0vhwvZVRrw03GbTb9YN9eUJ/BupYRzA93dwaydKK+zJwVkWrRMitIBw32UWkAyA
+	 HqQul0xBlKGZledm6mEypMoZjQImfnvTDexCoMupwYFb/LRumQSQfVIo0XiBAS8YyS
+	 Jo/G2Nb+A20vA==
 Received: from [192.168.42.226] (zone.collabora.co.uk [167.235.23.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5589537820CD;
-	Mon, 15 Apr 2024 21:50:01 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7D4323780016;
+	Mon, 15 Apr 2024 21:50:05 +0000 (UTC)
 From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Mon, 15 Apr 2024 17:49:33 -0400
-Subject: [PATCH v3 5/9] drm/bridge: lt9611uxc: Don't log an error when DSI
+Date: Mon, 15 Apr 2024 17:49:34 -0400
+Subject: [PATCH v3 6/9] drm/bridge: tc358775: Don't log an error when DSI
  host can't be found
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -59,7 +59,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240415-anx7625-defer-log-no-dsi-host-v3-5-619a28148e5c@collabora.com>
+Message-Id: <20240415-anx7625-defer-log-no-dsi-host-v3-6-619a28148e5c@collabora.com>
 References: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
 In-Reply-To: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
 To: Andrzej Hajda <andrzej.hajda@intel.com>, 
@@ -92,29 +92,29 @@ make use of dev_err_probe() to log the reason. This makes the defer
 probe reason available and avoids alerting userspace about something
 that is not necessarily an error.
 
-Fixes: 0cbbd5b1a012 ("drm: bridge: add support for lontium LT9611UXC bridge")
+Fixes: b26975593b17 ("display/drm/bridge: TC358775 DSI/LVDS driver")
 Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 ---
- drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 6 ++----
+ drivers/gpu/drm/bridge/tc358775.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-index f4f593ad8f79..ab702471f3ab 100644
---- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-@@ -266,10 +266,8 @@ static struct mipi_dsi_device *lt9611uxc_attach_dsi(struct lt9611uxc *lt9611uxc,
- 	int ret;
+diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
+index 90a89d70d832..fea4f00a20f8 100644
+--- a/drivers/gpu/drm/bridge/tc358775.c
++++ b/drivers/gpu/drm/bridge/tc358775.c
+@@ -610,10 +610,8 @@ static int tc_attach_host(struct tc_data *tc)
+ 						};
  
- 	host = of_find_mipi_dsi_host_by_node(dsi_node);
+ 	host = of_find_mipi_dsi_host_by_node(tc->host_node);
 -	if (!host) {
 -		dev_err(dev, "failed to find dsi host\n");
--		return ERR_PTR(-EPROBE_DEFER);
+-		return -EPROBE_DEFER;
 -	}
 +	if (!host)
-+		return ERR_PTR(dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n"));
++		return dev_err_probe(dev, -EPROBE_DEFER, "failed to find dsi host\n");
  
  	dsi = devm_mipi_dsi_device_register_full(dev, host, &info);
  	if (IS_ERR(dsi)) {
