@@ -1,493 +1,177 @@
-Return-Path: <linux-kernel+bounces-144792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 504278A4AC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:47:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E5B8A4AC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CC9C1C212D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:47:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E53591C212C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECB339FE0;
-	Mon, 15 Apr 2024 08:47:23 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB62D3C46B
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:47:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981383AC1F;
+	Mon, 15 Apr 2024 08:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="B7Q+iTC8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF63E38FA5;
+	Mon, 15 Apr 2024 08:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170843; cv=none; b=K5TBtmjf0HHgmDnWfpdZpBx5Zs4ysCEFtwgFXsqkXNh1t3Twoji6RKHUkw7pNz2uHBlXL9M2fGvBgGvTmlc1GylauhJPFIcjfxrYwxRJQFf/j7NZeubkbKo/SIMAqECXgZoT+F1Ivz5sD1UWhgThHjwkDu7+1lrSAyLEXP9gu/I=
+	t=1713170879; cv=none; b=i90zXNlS7RHsZeBqPKonIUa0zvtXXfe2E7N709qcKna+Spg2JTh86LpqY7Q9B3k+MsYxDzZxb95wfwbj77TGHC6nOGwAK1ydWXBBtVOaqDCJqAGFvgpMJVIT1IXo1J+pnfZ9sNiCqXQgfnWjQyVCeW4jBS/tseIaLilQpupOWkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170843; c=relaxed/simple;
-	bh=XKen+w4bZ+G6kwL4QjBjxkEnbrKUDnWR/njohNdz+pw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LZL8yBQ73/ChoeipYAE75bqlnUOUG1x2PYpZSFNBma5gdKToXLqQQz1zuORYBslh62Kll6IhpaZADtR+yFSM7wKrsGvF0oifBEjQYLftLpn7bFC62xde05BqK7ygSmg0cLgDBZwbbD1XsNcDqbp4UWOYVbjSVA/nWzXDNDrCPxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ADAF51476;
-	Mon, 15 Apr 2024 01:47:47 -0700 (PDT)
-Received: from [10.57.75.121] (unknown [10.57.75.121])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36EC33F64C;
-	Mon, 15 Apr 2024 01:47:17 -0700 (PDT)
-Message-ID: <2c1eb3ba-3f76-4796-b076-307a72cddc76@arm.com>
-Date: Mon, 15 Apr 2024 09:47:15 +0100
+	s=arc-20240116; t=1713170879; c=relaxed/simple;
+	bh=V4JD/K62Bn9Ujl7NQcNkcXzV/bT8ABt7vcbYkyDBR/Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q5udkU9uOxXRUeAaNaN0sIZt4hhJsIsp+zdl/Yxhdkw6b7FEidejPzWuZ0zktGiqOnIEr4TtTZwraJcyUI9srbwKH0Oof96OdVaBiCYubi8nQPxmhJDaSmJzroKfjF4jq5tf3XXOq0Sbs7pR4FidQhdLYWj/B5NHBAOZQNmMx3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=B7Q+iTC8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FF99C113CC;
+	Mon, 15 Apr 2024 08:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713170879;
+	bh=V4JD/K62Bn9Ujl7NQcNkcXzV/bT8ABt7vcbYkyDBR/Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B7Q+iTC88pZwHIypCPfw98m1VQRgmI7HbvnjK1W51yz/xvfbFWp4lZBwYjls8BdFx
+	 nq6wbzJwMF3tcBA3qxSzrq2kGn6DnUzth059UdG+6sx0jk7P+R267X5AOAoKc0DfJV
+	 HLoxC/fXTSZ20V0EJxiwHX3uaqZAe2SUQWB37+Lc=
+Date: Mon, 15 Apr 2024 10:47:56 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Johannes Berg <johannes.berg@intel.com>, linux-bcachefs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: debugfs revoke broken?
+Message-ID: <2024041557-stereo-wafer-1551@gregkh>
+References: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/2] mm/madvise: optimize lazyfreeing with mTHP in
- madvise_free
-To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
-Cc: zokeefe@google.com, 21cnbao@gmail.com, shy828301@gmail.com,
- david@redhat.com, mhocko@suse.com, fengwei.yin@intel.com,
- xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com,
- peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240413002219.71246-1-ioworker0@gmail.com>
- <20240413002219.71246-2-ioworker0@gmail.com>
-Content-Language: en-GB
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240413002219.71246-2-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
 
-On 13/04/2024 01:22, Lance Yang wrote:
-> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
-> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
-> splitting if the large folio is fully mapped within the target range.
+On Sun, Apr 14, 2024 at 06:32:07PM -0400, Kent Overstreet wrote:
+> I recently started seeing test failures like the following; from the
+> "shutdown complete" line we're well after the point where we called
+> debugfs_remove_recursive() - yet from the backtrace we were still able
+> to call into debugfs.
 > 
-> If a large folio is locked or shared, or if we fail to split it, we just
-> leave it in place and advance to the next PTE in the range. But note that
-> the behavior is changed; previously, any failure of this sort would cause
-> the entire operation to give up. As large folios become more common,
-> sticking to the old way could result in wasted opportunities.
+> And I see from the history the remove path has been getting tweaked,
+> so...
 > 
-> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
-> the same size results in the following runtimes for madvise(MADV_FREE) in
-> seconds (shorter is better):
-> 
-> Folio Size |   Old    |   New    | Change
-> ------------------------------------------
->       4KiB | 0.590251 | 0.590259 |    0%
->      16KiB | 2.990447 | 0.185655 |  -94%
->      32KiB | 2.547831 | 0.104870 |  -95%
->      64KiB | 2.457796 | 0.052812 |  -97%
->     128KiB | 2.281034 | 0.032777 |  -99%
->     256KiB | 2.230387 | 0.017496 |  -99%
->     512KiB | 2.189106 | 0.010781 |  -99%
->    1024KiB | 2.183949 | 0.007753 |  -99%
->    2048KiB | 0.002799 | 0.002804 |    0%
-> 
-> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
-> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
-> 
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
+> 00091 ========= TEST   generic/001
+> 00091 
+> 00092 Setting up swapspace version 1, size = 2 GiB (2147479552 bytes)
+> 00092 no label, UUID=73a80295-2b03-4512-aae1-785187926ce3
+> 00092 Adding 2097148k swap on /dev/vde.  Priority:-2 extents:1 across:2097148k 
+> 00092 configuration error - unknown item 'NONEXISTENT' (notify administrator)
+> 00092 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
+> 00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
+> 00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
+> 00094 configuration error - unknown item 'NONEXISTENT' (notify administrator)
+> 00094 configuration error - unknown item 'PREVENT_NO_AUTH' (notify administrator)
+> 00101 building 001... done
+> 00101 bcachefs (vdb): mounting version 1.7: mi_btree_bitmap
+> 00101 bcachefs (vdb): initializing new filesystem
+> 00101 bcachefs (vdb): going read-write
+> 00101 bcachefs (vdb): marking superblocks
+> 00101 bcachefs (vdb): initializing freespace
+> 00101 bcachefs (vdb): done initializing freespace
+> 00101 bcachefs (vdb): reading snapshots table
+> 00101 bcachefs (vdb): reading snapshots done
+> 00101 bcachefs (vdb): done starting filesystem
+> 00102 FSTYP         -- bcachefs
+> 00102 PLATFORM      -- Linux/aarch64 Debian-1103-bullseye-arm64-base-kvm 6.9.0-rc2-ktest-g2719f811ae24 #18142 SMP Sun Apr 14 16:26:05 NZST 2024
+> 00102 MKFS_OPTIONS  -- --encrypted --no_passphrase /dev/vdc
+> 00102 MOUNT_OPTIONS -- /dev/vdc /mnt/scratch
+> 00102 
+> 00102 bcachefs (vdc): mounting version 1.7: mi_btree_bitmap
+> 00102 bcachefs (vdc): initializing new filesystem
+> 00102 bcachefs (vdc): going read-write
+> 00102 bcachefs (vdc): marking superblocks
+> 00102 bcachefs (vdc): initializing freespace
+> 00102 bcachefs (vdc): done initializing freespace
+> 00102 bcachefs (vdc): reading snapshots table
+> 00102 bcachefs (vdc): reading snapshots done
+> 00102 bcachefs (vdc): done starting filesystem
+> 00102 bcachefs (vdc): shutting down
+> 00102 bcachefs (vdc): going read-only
+> 00102 bcachefs (vdc): finished waiting for writes to stop
+> 00102 bcachefs (vdc): flushing journal and stopping allocators, journal seq 3
+> 00102 bcachefs (vdc): flushing journal and stopping allocators complete, journal seq 5
+> 00102 bcachefs (vdc): shutdown complete, journal seq 6
+> 00102 bcachefs (vdc): marking filesystem clean
+> 00102 bcachefs (vdc): shutdown complete
+> 00102 bcachefs (vdb): shutting down
+> 00102 bcachefs (vdb): going read-only
+> 00102 bcachefs (vdb): finished waiting for writes to stop
+> 00102 bcachefs (vdb): flushing journal and stopping allocators, journal seq 6
+> 00102 bcachefs (vdb): flushing journal and stopping allocators complete, journal seq 7
+> 00102 bcachefs (vdb): shutdown complete, journal seq 8
+> 00102 bcachefs (vdb): marking filesystem clean
+> 00102 bcachefs (vdb): shutdown complete
+> 00102 Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
+> 00102 Mem abort info:
+> 00102   ESR = 0x0000000096000004
+> 00102   EC = 0x25: DABT (current EL), IL = 32 bits
+> 00102   SET = 0, FnV = 0
+> 00102   EA = 0, S1PTW = 0
+> 00102   FSC = 0x04: level 0 translation fault
+> 00102 Data abort info:
+> 00102   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+> 00102   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> 00102   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> 00102 user pgtable: 4k pages, 48-bit VAs, pgdp=000000011585c000
+> 00102 [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
+> 00102 Internal error: Oops: 0000000096000004 [#1] SMP
+> 00102 Modules linked in:
+> 00102 CPU: 7 PID: 1805 Comm: cat Not tainted 6.9.0-rc2-ktest-g2719f811ae24 #18142
+> 00102 Hardware name: linux,dummy-virt (DT)
+> 00102 pstate: 00001005 (nzcv daif -PAN -UAO -TCO -DIT +SSBS BTYPE=--)
+> 00102 pc : bch2_journal_seq_pins_to_text+0x100/0x208
+> 00102 lr : bch2_journal_seq_pins_to_text+0xf0/0x208
+> 00102 sp : ffff0000d6dd3c80
+> 00102 x29: ffff0000d6dd3c80 x28: ffff0000ca361f00 x27: 0000000000000000
+> 00102 x26: 0000000000000000 x25: ffff0000da0002c0 x24: ffff0000da0002f0
+> 00102 x23: ffff0000d50668c0 x22: ffff800080998950 x21: ffff0000da0002c0
+> 00102 x20: ffff0000c46165c0 x19: 0000000000000000 x18: 00000000fffffffe
+> 00102 x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+> 00102 x14: ffffffffffffffff x13: ffff0000c0ada1df x12: ffff0000c0ada1d9
+> 00102 x11: 0000000000000000 x10: 0000000000000000 x9 : ffff800080400ec8
+> 00102 x8 : 0000000000000000 x7 : 20746e756f63203a x6 : 0000000000000000
+> 00102 x5 : 0000000000000020 x4 : 000000000000000d x3 : ffff0000c0ada1d0
+> 00102 x2 : 0000000000000010 x1 : ffff0000c0ada1d0 x0 : 0000000000000012
+> 00102 Call trace:
+> 00102  bch2_journal_seq_pins_to_text+0x100/0x208
+> 00102  bch2_journal_pins_read+0x48/0xd0
+> 00102  full_proxy_read+0x64/0xb8
+> 00102  vfs_read+0xd0/0x2d0
+> 00102  ksys_read+0x5c/0xe0
+> 00102  __arm64_sys_read+0x20/0x30
+> 00102  invoke_syscall.constprop.0+0x50/0xe0
+> 00102  do_el0_svc+0x44/0xc8
+> 00102  el0_svc+0x18/0x58
+> 00102  el0t_64_sync_handler+0xb8/0xc0
+> 00102  el0t_64_sync+0x14c/0x150
 
-This is looking close IMHO. Just one bug and suggestion below.
+So this file was open when debugfs_remove() was called?
 
+Any chance you can bisect?  We just fixed some issues here in
+952c3fce297f ("debugfs: fix wait/cancellation handling during remove")
+that I thought should have handled this.  If you revert that commit,
+does things work again?  And/or what about commit 8c88a474357e
+("debugfs: add API to allow debugfs operations cancellation")?  Maybe we
+need to go back to not having completions at all in the debugfs remove
+path and just live with waiting for the files to be removed before
+continuing (which should at the least, resolve the issue you see here,
+while slowing things down a bit.)
 
-> ---
->  include/linux/mm_types.h |   9 +++
->  include/linux/pgtable.h  |  42 +++++++++++
->  mm/internal.h            |  12 +++-
->  mm/madvise.c             | 147 ++++++++++++++++++++++-----------------
->  mm/memory.c              |   4 +-
->  5 files changed, 147 insertions(+), 67 deletions(-)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index c432add95913..3c224e25f473 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -1367,6 +1367,15 @@ enum fault_flag {
->  
->  typedef unsigned int __bitwise zap_flags_t;
->  
-> +/* Flags for clear_young_dirty_ptes(). */
-> +typedef int __bitwise cydp_t;
-> +
-> +/* make PTEs after pte_mkold() */
-> +#define CYDP_CLEAR_YOUNG		((__force cydp_t)BIT(0))
-> +
-> +/* make PTEs after pte_mkclean() */
-> +#define CYDP_CLEAR_DIRTY		((__force cydp_t)BIT(1))
-> +
->  /*
->   * FOLL_PIN and FOLL_LONGTERM may be used in various combinations with each
->   * other. Here is what they mean, and how to use them:
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index e2f45e22a6d1..d7958243f099 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -489,6 +489,48 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
->  }
->  #endif
->  
-> +#ifndef clear_young_dirty_ptes
-> +/**
-> + * clear_young_dirty_ptes - Mark PTEs that map consecutive pages of the
-> + *		same folio as old/clean.
-> + * @mm: Address space the pages are mapped into.
-> + * @addr: Address the first page is mapped at.
-> + * @ptep: Page table pointer for the first entry.
-> + * @nr: Number of entries to mark old/clean.
-> + * @flags: Flags to modify the PTE batch semantics.
-> + *
-> + * May be overridden by the architecture; otherwise, implemented by
-> + * get_and_clear/modify/set for each pte in the range.
-> + *
-> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-> + * some PTEs might be write-protected.
-> + *
-> + * Context: The caller holds the page table lock.  The PTEs map consecutive
-> + * pages that belong to the same folio.  The PTEs are all in the same PMD.
-> + */
-> +static inline void clear_young_dirty_ptes(struct mm_struct *mm,
+thanks,
 
-My suggestion to introduce clear_young_dirty_ptes() was so that we could
-*remove* mkold_ptes(). So I think it would be good to split that to a separate
-preparatory patch, where you change all the callers to call the new function and
-remove mkold_ptes().
-
-Additionally since many arches already override ptep_test_and_clear_young() (and
-that's what the default mkold_ptes() did, you might want to call that in the
-below loop if *only* CYDP_CLEAR_YOUNG is set to avoid the possibility of any
-regression. I know I only made this change for the swap-out series so what you
-have done may well be ok in practice - and certainly cleaner. It would be good
-to hear others' opinions.
-
-Note the existing mkold_ptes() takes a vma instead of mm (because that's what
-ptep_test_and_clear_young() takes). So suggest passing vma. You can get mm from
-vma->mm.
-
-> +					  unsigned long addr, pte_t *ptep,
-> +					  unsigned int nr, cydp_t flags)
-> +{
-> +	pte_t pte;
-> +
-> +	for (;;) {
-
-Suggestion:
-		if (flags == CYDP_CLEAR_YOUNG) {
-			ptep_test_and_clear_young(vma, addr, ptep);
-		else {
-
-> +		pte = ptep_get_and_clear(mm, addr, ptep);
-> +
-> +		if (flags | CYDP_CLEAR_YOUNG)
-
-bug: this needs to be bitwise and (&). Currently it will always evaluate to
-true. Same for next one.
-
-> +			pte = pte_mkold(pte);
-> +		if (flags | CYDP_CLEAR_DIRTY)
-> +			pte = pte_mkclean(pte);
-> +
-> +		set_pte_at(mm, addr, ptep, pte);
-
-		}
-
-> +		if (--nr == 0)
-> +			break;
-> +		ptep++;
-> +		addr += PAGE_SIZE;
-> +	}
-> +}
-> +#endif
-> +
->  static inline void ptep_clear(struct mm_struct *mm, unsigned long addr,
->  			      pte_t *ptep)
->  {
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 3c0f3e3f9d99..ab8fcdeaf6eb 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -134,6 +134,8 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
->   *		  first one is writable.
->   * @any_young: Optional pointer to indicate whether any entry except the
->   *		  first one is young.
-> + * @any_dirty: Optional pointer to indicate whether any entry except the
-> + *		  first one is dirty.
->   *
->   * Detect a PTE batch: consecutive (present) PTEs that map consecutive
->   * pages of the same large folio.
-> @@ -149,18 +151,20 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
->   */
->  static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
-> -		bool *any_writable, bool *any_young)
-> +		bool *any_writable, bool *any_young, bool *any_dirty)
->  {
->  	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
->  	const pte_t *end_ptep = start_ptep + max_nr;
->  	pte_t expected_pte, *ptep;
-> -	bool writable, young;
-> +	bool writable, young, dirty;
->  	int nr;
->  
->  	if (any_writable)
->  		*any_writable = false;
->  	if (any_young)
->  		*any_young = false;
-> +	if (any_dirty)
-> +		*any_dirty = false;
->  
->  	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
->  	VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
-> @@ -176,6 +180,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  			writable = !!pte_write(pte);
->  		if (any_young)
->  			young = !!pte_young(pte);
-> +		if (any_dirty)
-> +			dirty = !!pte_dirty(pte);
->  		pte = __pte_batch_clear_ignored(pte, flags);
->  
->  		if (!pte_same(pte, expected_pte))
-> @@ -193,6 +199,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  			*any_writable |= writable;
->  		if (any_young)
->  			*any_young |= young;
-> +		if (any_dirty)
-> +			*any_dirty |= dirty;
->  
->  		nr = pte_batch_hint(ptep, pte);
->  		expected_pte = pte_advance_pfn(expected_pte, nr);
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index d34ca6983227..b4103e2df346 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -321,6 +321,39 @@ static inline bool can_do_file_pageout(struct vm_area_struct *vma)
->  	       file_permission(vma->vm_file, MAY_WRITE) == 0;
->  }
->  
-> +static inline int madvise_folio_pte_batch(unsigned long addr, unsigned long end,
-> +					  struct folio *folio, pte_t *ptep,
-> +					  pte_t pte, bool *any_young,
-> +					  bool *any_dirty)
-> +{
-> +	int max_nr = (end - addr) / PAGE_SIZE;
-> +	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
-> +
-> +	return folio_pte_batch(folio, addr, ptep, pte, max_nr, fpb_flags, NULL,
-> +			       any_young, any_dirty);
-> +}
-> +
-> +static inline bool madvise_pte_split_folio(struct mm_struct *mm, pmd_t *pmd,
-> +					   unsigned long addr,
-> +					   struct folio *folio, pte_t **pte,
-> +					   spinlock_t **ptl)
-> +{
-> +	int err;
-> +
-> +	if (!folio_trylock(folio))
-> +		return false;
-> +
-> +	folio_get(folio);
-> +	pte_unmap_unlock(*pte, *ptl);
-> +	err = split_folio(folio);
-> +	folio_unlock(folio);
-> +	folio_put(folio);
-> +
-> +	*pte = pte_offset_map_lock(mm, pmd, addr, ptl);
-> +
-> +	return err == 0;
-> +}
-> +
->  static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  				unsigned long addr, unsigned long end,
->  				struct mm_walk *walk)
-> @@ -456,41 +489,30 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  		 * next pte in the range.
->  		 */
->  		if (folio_test_large(folio)) {
-> -			const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
-> -						FPB_IGNORE_SOFT_DIRTY;
-> -			int max_nr = (end - addr) / PAGE_SIZE;
->  			bool any_young;
->  
-> -			nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
-> -					     fpb_flags, NULL, &any_young);
-> -			if (any_young)
-> -				ptent = pte_mkyoung(ptent);
-> +			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-> +						     ptent, &any_young, NULL);
->  
->  			if (nr < folio_nr_pages(folio)) {
-> -				int err;
-> -
->  				if (folio_likely_mapped_shared(folio))
->  					continue;
->  				if (pageout_anon_only_filter && !folio_test_anon(folio))
->  					continue;
-> -				if (!folio_trylock(folio))
-> -					continue;
-> -				folio_get(folio);
-> +
->  				arch_leave_lazy_mmu_mode();
-> -				pte_unmap_unlock(start_pte, ptl);
-> -				start_pte = NULL;
-> -				err = split_folio(folio);
-> -				folio_unlock(folio);
-> -				folio_put(folio);
-> -				start_pte = pte =
-> -					pte_offset_map_lock(mm, pmd, addr, &ptl);
-> +				if (madvise_pte_split_folio(mm, pmd, addr,
-> +							    folio, &start_pte, &ptl))
-> +					nr = 0;
->  				if (!start_pte)
->  					break;
-> +				pte = start_pte;
->  				arch_enter_lazy_mmu_mode();
-> -				if (!err)
-> -					nr = 0;
->  				continue;
->  			}
-> +
-> +			if (any_young)
-> +				ptent = pte_mkyoung(ptent);
->  		}
->  
->  		/*
-> @@ -507,7 +529,8 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  			continue;
->  
->  		if (!pageout && pte_young(ptent)) {
-> -			mkold_ptes(vma, addr, pte, nr);
-> +			clear_young_dirty_ptes(mm, addr, pte, nr,
-> +					       CYDP_CLEAR_YOUNG);
->  			tlb_remove_tlb_entries(tlb, pte, nr, addr);
->  		}
->  
-> @@ -687,44 +710,51 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  			continue;
->  
->  		/*
-> -		 * If pmd isn't transhuge but the folio is large and
-> -		 * is owned by only this process, split it and
-> -		 * deactivate all pages.
-> +		 * If we encounter a large folio, only split it if it is not
-> +		 * fully mapped within the range we are operating on. Otherwise
-> +		 * leave it as is so that it can be marked as lazyfree. If we
-> +		 * fail to split a folio, leave it in place and advance to the
-> +		 * next pte in the range.
->  		 */
->  		if (folio_test_large(folio)) {
-> -			int err;
-> +			bool any_young, any_dirty;
->  
-> -			if (folio_likely_mapped_shared(folio))
-> -				break;
-> -			if (!folio_trylock(folio))
-> -				break;
-> -			folio_get(folio);
-> -			arch_leave_lazy_mmu_mode();
-> -			pte_unmap_unlock(start_pte, ptl);
-> -			start_pte = NULL;
-> -			err = split_folio(folio);
-> -			folio_unlock(folio);
-> -			folio_put(folio);
-> -			if (err)
-> -				break;
-> -			start_pte = pte =
-> -				pte_offset_map_lock(mm, pmd, addr, &ptl);
-> -			if (!start_pte)
-> -				break;
-> -			arch_enter_lazy_mmu_mode();
-> -			pte--;
-> -			addr -= PAGE_SIZE;
-> -			continue;
-> +			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-> +						     ptent, &any_young, &any_dirty);
-> +
-> +			if (nr < folio_nr_pages(folio)) {
-> +				if (folio_likely_mapped_shared(folio))
-> +					continue;
-> +
-> +				arch_leave_lazy_mmu_mode();
-> +				if (madvise_pte_split_folio(mm, pmd, addr,
-> +							    folio, &start_pte, &ptl))
-> +					nr = 0;
-> +				if (!start_pte)
-> +					break;
-> +				pte = start_pte;
-> +				arch_enter_lazy_mmu_mode();
-> +				continue;
-> +			}
-> +
-> +			if (any_young)
-> +				ptent = pte_mkyoung(ptent);
-> +			if (any_dirty)
-> +				ptent = pte_mkdirty(ptent);
->  		}
->  
-> +		if (folio_mapcount(folio) != folio_nr_pages(folio))
-> +			continue;
-> +
->  		if (folio_test_swapcache(folio) || folio_test_dirty(folio)) {
->  			if (!folio_trylock(folio))
->  				continue;
->  			/*
-> -			 * If folio is shared with others, we mustn't clear
-> -			 * the folio's dirty flag.
-> +			 * If we have a large folio at this point, we know it is
-> +			 * fully mapped so if its mapcount is the same as its
-> +			 * number of pages, it must be exclusive.
->  			 */
-> -			if (folio_mapcount(folio) != 1) {
-> +			if (folio_mapcount(folio) != folio_nr_pages(folio)) {
->  				folio_unlock(folio);
->  				continue;
->  			}
-> @@ -740,19 +770,10 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  		}
->  
->  		if (pte_young(ptent) || pte_dirty(ptent)) {
-> -			/*
-> -			 * Some of architecture(ex, PPC) don't update TLB
-> -			 * with set_pte_at and tlb_remove_tlb_entry so for
-> -			 * the portability, remap the pte with old|clean
-> -			 * after pte clearing.
-> -			 */
-> -			ptent = ptep_get_and_clear_full(mm, addr, pte,
-> -							tlb->fullmm);
-> -
-> -			ptent = pte_mkold(ptent);
-> -			ptent = pte_mkclean(ptent);
-> -			set_pte_at(mm, addr, pte, ptent);
-> -			tlb_remove_tlb_entry(tlb, pte, addr);
-> +			clear_young_dirty_ptes(mm, addr, pte, nr,
-> +					       CYDP_CLEAR_YOUNG |
-> +						       CYDP_CLEAR_DIRTY);
-> +			tlb_remove_tlb_entries(tlb, pte, nr, addr);
->  		}
->  		folio_mark_lazyfree(folio);
->  	}
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 76157b32faa8..b6fa5146b260 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -989,7 +989,7 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
->  			flags |= FPB_IGNORE_SOFT_DIRTY;
->  
->  		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr, flags,
-> -				     &any_writable, NULL);
-> +				     &any_writable, NULL, NULL);
->  		folio_ref_add(folio, nr);
->  		if (folio_test_anon(folio)) {
->  			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
-> @@ -1558,7 +1558,7 @@ static inline int zap_present_ptes(struct mmu_gather *tlb,
->  	 */
->  	if (unlikely(folio_test_large(folio) && max_nr != 1)) {
->  		nr = folio_pte_batch(folio, addr, pte, ptent, max_nr, fpb_flags,
-> -				     NULL, NULL);
-> +				     NULL, NULL, NULL);
->  
->  		zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, nr,
->  				       addr, details, rss, force_flush,
-
+greg k-h
 
