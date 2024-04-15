@@ -1,159 +1,110 @@
-Return-Path: <linux-kernel+bounces-144625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D7B8A4880
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:57:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A768A488A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB7E6281495
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:57:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F70A1F22F18
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D1E20317;
-	Mon, 15 Apr 2024 06:57:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186AB22EF3;
+	Mon, 15 Apr 2024 06:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UhHWN/fS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KTLWNF0d"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 920A522339;
-	Mon, 15 Apr 2024 06:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29AD224DC
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713164267; cv=none; b=i43o8jlnNuPgxa1b52DrrtJ+9VA5HcGQZJL8OiPh883cXRGnHyjrEgMOgT85aEZNR0b1+mDlACExFswAIW6M2FZvSGQd1MBjUWlbA3TWsDbIFILHCSmaVGD/xNxXZpTCjZNrQdIjg3HRTNG1LtlVFhpXoxiicN3GZv6MSc63hgo=
+	t=1713164302; cv=none; b=nQzQQVuVgDK8B6O5CQ4CuhnQHoUu+o+Ma3gcAdCVWH1uJZFM5BjsQwG4XfRRJdfAa8W6KQAhKSm24wpPp7b8iojFHAUcmtdhQNq5jkMz5reChDVditLx0vxg7nOVkkc5g0GuaoyiVMrB2SaB7LHO7qNmWukxaMbDCHqN3rC6GG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713164267; c=relaxed/simple;
-	bh=l/5ikTUlCuGMYa+EP5RPrvI2YkQPp2fXN7lr6jPgAes=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nVdy3o+V/OG3Et/Gv/biAjDBv/KeyUcJgmP0BWsu3h4wqxHq4FRu0Hs88fA3+Il7WoswxmUwgMpmnM5o36rkKN86jC+Rh1CU3RMqcWktWcVPIsrA5xSu3Ji1UOeEtXmTMCy+MdsNw17mfeKa9L6Hxj62+4xqNN3UKz3U1ErNAhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UhHWN/fS; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713164265; x=1744700265;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=l/5ikTUlCuGMYa+EP5RPrvI2YkQPp2fXN7lr6jPgAes=;
-  b=UhHWN/fS1Wph3+xF/dRu1LuXvYZTpmla2p+4YGsjIM9q10WWu/Vlb1MT
-   LlqtyLoQDO3fMt4CoMa2oe0g7b9oxbCnkfZfBT2kWT8Nz2htm+FvmWS8x
-   UGCmyHhoWrbZj13SEX7AYDMkwNumBjJ2rxD3y+qgy41gI7Vlg9TqUvL3i
-   8X05fsFe4ckPk04kQW/iZbNnrb0XJFzhnr8D0MXFAExOIps2MfJGbtPbb
-   MXQ4WQ2X12+dFkubcPBlH2QqqV/JiIcfQqkbyJkVpFGOyOiGShXMMkoUm
-   Ug+IYkRLNFcfwqPgti9JVF3N+WE9EiAU7QgS/46s8pnkAq5ybp6acFCEu
-   w==;
-X-CSE-ConnectionGUID: WkqBpKeSQb2kDd1salqHVw==
-X-CSE-MsgGUID: ae+opybOTBenKN77ZgUrAQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="12314998"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="12314998"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 23:57:45 -0700
-X-CSE-ConnectionGUID: X+lfE9tNT46Ge5WTo6sBHw==
-X-CSE-MsgGUID: NUC9EHOjQ2GzK59pRUztmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="21910448"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmviesa007.fm.intel.com with SMTP; 14 Apr 2024 23:57:42 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 15 Apr 2024 09:57:41 +0300
-Date: Mon, 15 Apr 2024 09:57:41 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] usb: typec: ucsi: add callback for connector
- status updates
-Message-ID: <ZhzP5bQe6zw1jmlu@kuha.fi.intel.com>
-References: <20240411-ucsi-orient-aware-v2-0-d4b1cb22a33f@linaro.org>
- <20240411-ucsi-orient-aware-v2-1-d4b1cb22a33f@linaro.org>
+	s=arc-20240116; t=1713164302; c=relaxed/simple;
+	bh=8zRocQO/rRgL1qKa5DTF7pfCxE7+mgM0HcYZDkfYtek=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=En8LjEYsntTsd3q60/hcMlK5xmllnPfZ+gA6sed+7mhxOBXZPrnYLRSOgqWwywcRR4ACLrw2V607Jh2kpMIHkM6O4DRUYzZ7a64YKEgEDH90hMMifPMe94rlkb+vU+ZkngBoknEreG83kEShy4wF80pyOdM2mDdO4dYZe+uWCsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KTLWNF0d; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713164299;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8zRocQO/rRgL1qKa5DTF7pfCxE7+mgM0HcYZDkfYtek=;
+	b=KTLWNF0dAahSHGxN+rWuXJcXreNmT2asKEMj4CThb2iNbYOLXROHrI9daAa0FveabApnqg
+	Hxjgw0O3xyb+hp/gn80Ol+UXwFJt9TsmbhI5Xqg2rrKLmokRCNlfIsGEFPe5+HtGZ7aRo5
+	oi0nh0pSU/8X30opbhn3si6lt6fTOL8=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-421-Q7iwMjKEPwCyHUzwvfdGlw-1; Mon, 15 Apr 2024 02:58:17 -0400
+X-MC-Unique: Q7iwMjKEPwCyHUzwvfdGlw-1
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5cfc2041cdfso1890929a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:58:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713164296; x=1713769096;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8zRocQO/rRgL1qKa5DTF7pfCxE7+mgM0HcYZDkfYtek=;
+        b=L8Or7okBanUIdOmEvGnxYtsrRLQiCikfwM6gzcM0veFzCzRT9h9b9ODPxF7RXdsCEQ
+         5EMZN/rHNGxxBIUJgVx7/uEmxIgzblIkd7WT59ozPWjeFlyravawMRKKwbtomriuee0T
+         uzX9SF3pQ9uOR7nxnzIrNiQ2eRZLd17rUUTA9LNnkVdRRYzMR4JNwTlIxn3vAFr8MvmK
+         9t01fr8xYRA9Hl6Le4BbOeV+1Jr1y6/HmnpTdDr2++FcfPFRJiu705Od1ywo7pngtd99
+         gKrt9equ4B7PgbKHqZ72k6x3FHZsrdkQSyEupshTn9laeozLg+8s4kzNu86eAy/Xw8cW
+         saOw==
+X-Forwarded-Encrypted: i=1; AJvYcCXs1edKDWTEqKNJuJHeqKumu1RELxxaJjeRnXntL5zB2huQLbQt2fjQLOenFsdfu9AC2+mmXmVqwIHkqYqoAmm8XTGRt6YGag2iaTxy
+X-Gm-Message-State: AOJu0Yw+5nJXtBnpULMSxV5YR2Kb8zlLk5gKYhUpqXEBmwP8xC1cbPts
+	sgDbdE6w9mCWrv7DAGi0WLlaLr0FU1ktl/0cuyDTt2wOgxWtr8pERidU+CVO64mBxL65TZiNDOr
+	Ne00CSyA8YGHZWWG45WNExiZVPbzZ/Qrih0Gh2vKiRdVyOgd5odP2dY5QBb1DSoXsqS0hmgb3ee
+	N/NRikFIFdbRIyEdRdY9N1V8xAorXxPdrewa3k
+X-Received: by 2002:a05:6a21:191:b0:1a9:6d96:c700 with SMTP id le17-20020a056a21019100b001a96d96c700mr8932592pzb.48.1713164296266;
+        Sun, 14 Apr 2024 23:58:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEfCe10Cxttrxe8F4OkPc7KjxC+SFTe/Z0SKvR0xbdRbE8/iQQiMdWF3kDr6DPf/3wtsnu4W5Rb/yh0o2uaUZk=
+X-Received: by 2002:a05:6a21:191:b0:1a9:6d96:c700 with SMTP id
+ le17-20020a056a21019100b001a96d96c700mr8932578pzb.48.1713164295965; Sun, 14
+ Apr 2024 23:58:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411-ucsi-orient-aware-v2-1-d4b1cb22a33f@linaro.org>
+References: <67c2edf49788c27d5f7a49fc701520b9fcf739b5.1713088999.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <67c2edf49788c27d5f7a49fc701520b9fcf739b5.1713088999.git.christophe.jaillet@wanadoo.fr>
+From: Jason Wang <jasowang@redhat.com>
+Date: Mon, 15 Apr 2024 14:58:04 +0800
+Message-ID: <CACGkMEtufa6MqWkcsZqHW8eQzj4b2wCh8zFMSAuHkxpWowLmdQ@mail.gmail.com>
+Subject: Re: [PATCH v2] vhost-vdpa: Remove usage of the deprecated
+ ida_simple_xx() API
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, Simon Horman <horms@kernel.org>, kvm@vger.kernel.org, 
+	virtualization@lists.linux.dev, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 07:49:53AM +0300, Dmitry Baryshkov wrote:
-> Allow UCSI glue driver to perform addtional work to update connector
-> status. For example, it might check the cable orientation.  This call is
-> performed after reading new connector statatus, so the platform driver
-> can peek at new connection status bits.
-> 
-> The callback is called both when registering the port and when the
-> connector change event is being handled.
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+On Sun, Apr 14, 2024 at 6:04=E2=80=AFPM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
+>
+> Note that the upper limit of ida_simple_get() is exclusive, but the one o=
+f
+> ida_alloc_max() is inclusive. So a -1 has been added when needed.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Reviewed-by: Simon Horman <horms@kernel.org>
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-> ---
->  drivers/usb/typec/ucsi/ucsi.c | 6 ++++++
->  drivers/usb/typec/ucsi/ucsi.h | 3 +++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 3106e69050cd..7ad544c968e4 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -1199,6 +1199,9 @@ static void ucsi_handle_connector_change(struct work_struct *work)
->  
->  	trace_ucsi_connector_change(con->num, &con->status);
->  
-> +	if (ucsi->ops->connector_status)
-> +		ucsi->ops->connector_status(con);
-> +
->  	role = !!(con->status.flags & UCSI_CONSTAT_PWR_DIR);
->  
->  	if (con->status.change & UCSI_CONSTAT_POWER_DIR_CHANGE) {
-> @@ -1588,6 +1591,9 @@ static int ucsi_register_port(struct ucsi *ucsi, struct ucsi_connector *con)
->  	}
->  	ret = 0; /* ucsi_send_command() returns length on success */
->  
-> +	if (ucsi->ops->connector_status)
-> +		ucsi->ops->connector_status(con);
-> +
->  	switch (UCSI_CONSTAT_PARTNER_TYPE(con->status.flags)) {
->  	case UCSI_CONSTAT_PARTNER_TYPE_UFP:
->  	case UCSI_CONSTAT_PARTNER_TYPE_CABLE_AND_UFP:
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index 2caf2969668c..3e1241e38f3c 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -16,6 +16,7 @@
->  
->  struct ucsi;
->  struct ucsi_altmode;
-> +struct ucsi_connector;
->  struct dentry;
->  
->  /* UCSI offsets (Bytes) */
-> @@ -59,6 +60,7 @@ struct dentry;
->   * @sync_write: Blocking write operation
->   * @async_write: Non-blocking write operation
->   * @update_altmodes: Squashes duplicate DP altmodes
-> + * @connector_status: Updates connector status, called holding connector lock
->   *
->   * Read and write routines for UCSI interface. @sync_write must wait for the
->   * Command Completion Event from the PPM before returning, and @async_write must
-> @@ -73,6 +75,7 @@ struct ucsi_operations {
->  			   const void *val, size_t val_len);
->  	bool (*update_altmodes)(struct ucsi *ucsi, struct ucsi_altmode *orig,
->  				struct ucsi_altmode *updated);
-> +	void (*connector_status)(struct ucsi_connector *con);
->  };
->  
->  struct ucsi *ucsi_create(struct device *dev, const struct ucsi_operations *ops);
-> 
-> -- 
-> 2.39.2
+Thanks
 
--- 
-heikki
 
