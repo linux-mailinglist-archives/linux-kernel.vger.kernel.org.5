@@ -1,67 +1,57 @@
-Return-Path: <linux-kernel+bounces-145105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DF458A4F9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:51:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD2C8A4FA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EA6C1C20F5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:51:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4ABE1F21493
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2E1A78C72;
-	Mon, 15 Apr 2024 12:49:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D7078676;
+	Mon, 15 Apr 2024 12:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rYS3VPhL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ujUxwP+a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1E678676;
-	Mon, 15 Apr 2024 12:49:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B313078C92;
+	Mon, 15 Apr 2024 12:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185365; cv=none; b=IEgY9owMZBWhOOAvckZ/Poiu29GCwujsddn0I3/CL3hFEUJ8iCPEeD0dmPbd0wSWHEQbzh1Ho3hT2+FW9AMxWnpc7Xnhnh5LnaniaK3MDF4fkmRNskuoDcXTuz1J/DssS2cUImtThD9Soz25qZKXBjXJVsogVspvW7EdE+1XqXc=
+	t=1713185367; cv=none; b=YbsI+/XVPzGQhJH3odEQG/FcHxtpFH+aENJ3zDjfbby69NtGmUw9ZTpeauEKQz2ovlcEhm2uqklkomw2osn+FhCDZHOnGUMU5ii0uUZvsY53YX5QaLk3865UB6gJ99gkL1n0lQYYO/lLeLhMWVjQoqpnRKvFzH6j7Skz6I6gT4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185365; c=relaxed/simple;
-	bh=6bzgEIhKA6CeQaTfg8ENrNbGmzaOmGDRBZQ5wVFTRJo=;
+	s=arc-20240116; t=1713185367; c=relaxed/simple;
+	bh=9WgubhEyjIntDb8goamQgfEtmkM2n3g7m1ut+oETaNg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ThZP/tyMV5POAmbfUHH1x9vhOwJb8dRy2dPVLUuHvcyaBvWvi0Hu9MZQwVYrVA7MLox434kShOPIU+6A11EmrNdTp57G/sH+5BhiNCINMVIXDltyibmDeBWF1SBIwbkpsHuTfC/WORnCEH/PU4O1mdUC51V/3xMNzxn3Wu27hUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rYS3VPhL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2542CC3277B;
-	Mon, 15 Apr 2024 12:49:23 +0000 (UTC)
+	 MIME-Version; b=FMNTZTveLVi9xCMXs+siK2UPcrufgEvuoJLGvhjaV6NE662w/tMfGkDUlCOdQKV2YvKD1m3vfIzmoNWrkl3gO02uIUno66EgPKLptH0JiRFshP3eEXwz+G4vmeK2mIpaMNLTZCkPEwCj2sZeyuiMVtlT25+7Sb0G3KnK/sbBaM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ujUxwP+a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F17C3277B;
+	Mon, 15 Apr 2024 12:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185365;
-	bh=6bzgEIhKA6CeQaTfg8ENrNbGmzaOmGDRBZQ5wVFTRJo=;
+	s=k20201202; t=1713185367;
+	bh=9WgubhEyjIntDb8goamQgfEtmkM2n3g7m1ut+oETaNg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rYS3VPhL570YLwluqOiBb5CJhLuWhVjviJje7E5CCIRDp5YvloO3UIwy0pPzdOUX2
-	 dRrJxdCUfBh+vV6lpjQc2PoMtKyHucCU8j1GJ9QumcCwzdepwKL0+3NkXwa2gRnZfz
-	 hv9NoigpNN2BkSqal0x760bk7vPzSbJJLkYes3Udx4WWyV2OakZjbVUQacwvyhcL/2
-	 bjIOWbdh4AtSXJSnQSm3F5HSGdT+ZSiNj0Q4npza9g9p2dSSBUaAii+tYttxa+5ZKm
-	 1NLzEsQR+TLzAImVjJlIRpUOLu5DDwKypybfBWniz+SmixooRbKdAymShKcSGw1jr1
-	 tzBjj/TB8tPlQ==
+	b=ujUxwP+a+Zjx8ptfATC1pk3sC4sSbnTbK5IhAJpea9+wZbNd6uXPS0DXKu6u0Kz8+
+	 qYmqzIwLPyFVQP7kL9ntERfT/Guvnnu5e6naakEwJN9TCljjn00FMXLAve/n5Chs5p
+	 3dFZ9IjyN79DmyyXqppNkt86kIQTf5/Rsq7IRIv8x0vAoVMNBVDvVMK/gm/J010AKe
+	 +S/5y3TXsctKZXY+LRMb+leu+VL6jasrX50JeoEXNN1A5tM+5skFYtkmfKUXafFvsQ
+	 j1W4vQYgntNBhkbtVINhz6YNWvsN379c3Kq6hucYADlrbFnr3Y1Pdqf85LSUJdotH3
+	 iFBYomjJZ8Oxw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Peter Wang <peter.wang@mediatek.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
+Cc: Takashi Iwai <tiwai@suse.de>,
+	syzbot+7fb05ccf7b3d2f9617b3@syzkaller.appspotmail.com,
 	Sasha Levin <sashal@kernel.org>,
-	jejb@linux.ibm.com,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	stanley.chu@mediatek.com,
-	quic_cang@quicinc.com,
-	avri.altman@wdc.com,
-	quic_nguyenb@quicinc.com,
-	manivannan.sadhasivam@linaro.org,
-	beanhuo@micron.com,
-	linux-scsi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.8 07/15] scsi: ufs: core: Fix MCQ mode dev command timeout
-Date: Mon, 15 Apr 2024 06:02:47 -0400
-Message-ID: <20240415100311.3126785-7-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 08/15] ALSA: line6: Zero-initialize message buffers
+Date: Mon, 15 Apr 2024 06:02:48 -0400
+Message-ID: <20240415100311.3126785-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415100311.3126785-1-sashal@kernel.org>
 References: <20240415100311.3126785-1-sashal@kernel.org>
@@ -76,41 +66,55 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.6
 Content-Transfer-Encoding: 8bit
 
-From: Peter Wang <peter.wang@mediatek.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 2a26a11e9c258b14be6fd98f8a85f20ac1fff66e ]
+[ Upstream commit c4e51e424e2c772ce1836912a8b0b87cd61bc9d5 ]
 
-When a dev command times out in MCQ mode, a successfully cleared command
-should cause a retry. However, because we currently return 0, the caller
-considers the command a success which causes the following error to be
-logged: "Invalid offset 0x0 in descriptor IDN 0x9, length 0x0".
+For shutting up spurious KMSAN uninit-value warnings, just replace
+kmalloc() calls with kzalloc() for the buffers used for
+communications.  There should be no real issue with the original code,
+but it's still better to cover.
 
-Retry if clearing the command was successful.
-
-Signed-off-by: Peter Wang <peter.wang@mediatek.com>
-Link: https://lore.kernel.org/r/20240328111244.3599-1-peter.wang@mediatek.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: syzbot+7fb05ccf7b3d2f9617b3@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/r/00000000000084b18706150bcca5@google.com
+Message-ID: <20240402063628.26609-1-tiwai@suse.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ufs/core/ufshcd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/usb/line6/driver.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 14a6a100fcdb0..4a07a18cf835d 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -3172,7 +3172,9 @@ static int ufshcd_wait_for_dev_cmd(struct ufs_hba *hba,
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index b67617b68e509..f4437015d43a7 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -202,7 +202,7 @@ int line6_send_raw_message_async(struct usb_line6 *line6, const char *buffer,
+ 	struct urb *urb;
  
- 		/* MCQ mode */
- 		if (is_mcq_enabled(hba)) {
--			err = ufshcd_clear_cmd(hba, lrbp->task_tag);
-+			/* successfully cleared the command, retry if needed */
-+			if (ufshcd_clear_cmd(hba, lrbp->task_tag) == 0)
-+				err = -EAGAIN;
- 			hba->dev_cmd.complete = NULL;
- 			return err;
- 		}
+ 	/* create message: */
+-	msg = kmalloc(sizeof(struct message), GFP_ATOMIC);
++	msg = kzalloc(sizeof(struct message), GFP_ATOMIC);
+ 	if (msg == NULL)
+ 		return -ENOMEM;
+ 
+@@ -688,7 +688,7 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+ 	int ret;
+ 
+ 	/* initialize USB buffers: */
+-	line6->buffer_listen = kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
++	line6->buffer_listen = kzalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
+ 	if (!line6->buffer_listen)
+ 		return -ENOMEM;
+ 
+@@ -697,7 +697,7 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+ 		return -ENOMEM;
+ 
+ 	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
+-		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
++		line6->buffer_message = kzalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+ 		if (!line6->buffer_message)
+ 			return -ENOMEM;
+ 
 -- 
 2.43.0
 
