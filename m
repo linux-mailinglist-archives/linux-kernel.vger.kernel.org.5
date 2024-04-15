@@ -1,192 +1,201 @@
-Return-Path: <linux-kernel+bounces-144464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C8358A46B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:03:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A918A46B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:03:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA8972828E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:03:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7425E1C218DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9515A12B72;
-	Mon, 15 Apr 2024 02:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F6E18E01;
+	Mon, 15 Apr 2024 02:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="KfhJzkf7"
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="evKEoJ1G"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6B55695
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E0341401F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:03:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713146589; cv=none; b=DQICjnzLlBvcQoAHkv300xcw9OKLHVjjnH3DbfXyorye96OxchtZn+/sDLFxPEly2lzI+c1mda23ArzxjxS5xWN9pTw/PdLqNr/a11zBuCIxbtrRkmXOdMZKipt5HuKpBGIq8nTwoFD/W8E0c3XSJT33F12eDutY6KQrgepZ6uw=
+	t=1713146608; cv=none; b=Vvza9av6Pk42wx1jtEqbhECs0ImV663ntY6BUOTs62Z7p3qxM4nzeYzaLswMi1iKX7n/uaCEJwwwWtwexf+b1wja8ZPbWL6KQltmKWfZly6AxvyLcfPB4N13ygP6kOcZRVe/d7yM8NrXQizIRQFAgtom8mRYmChUjJWsPQT0Uus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713146589; c=relaxed/simple;
-	bh=LLUxWlLv0vqmiHJ1UIZeaRzH8/vNgpEkiTxlBMPS6dI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lUeTybJXRd1XJAbSQ9Qu5BMfel1110O3mohAv2mjLpk1UADGffZqFu0vKLs7P+ERlp0vxVzRXdOXdKiOXuhWfmQIExvCKrTmwqtkNJcMLyuLABBgaNXmqeJmOQ8iZ5YV8CEHTPlbm7/A7ugp5XFzWr7Ifvl0F4TDGzToka2bcgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=KfhJzkf7; arc=none smtp.client-ip=209.85.214.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-1e411e339b8so21242985ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 19:03:06 -0700 (PDT)
+	s=arc-20240116; t=1713146608; c=relaxed/simple;
+	bh=fBFDZL9kz1r8fr1pqVMj87whn7xQxhhlhEAomRuHf58=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fQnjCEJpKVDgGi5HlLB7Vq7xxek8fTUPCs86kM+g5Jn2gk/esQDEG24qh/0rUiPjwWDTm7UpFrZDw8EtBJls+kxFlrflIEoGLRER/VrQdvhzg8q7i3EdA0trClXok6v1D0mWPkSLgRFrr/DavRsEe8OtEn3Ij4xb65C1tZVlZ/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=evKEoJ1G; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e2c1650d8so2223552a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 19:03:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1713146586; x=1713751386; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VsiaKifJOZA0qRUVE1+neEb+M+HY5irGf4D2Q2Uktwo=;
-        b=KfhJzkf7E731gNDQgo8qvjwBCVC+V9vUgkem78VvHQVjPhFGQ6m04QyhAMvwwzKHoF
-         Iebi0fUIXQKmSCuD9tPttTodF5EYWQAehf4HX2Qjr81x1hokV9l4Dyo3qGzm5KR92AAk
-         +tmuFJUPdhD4cBxGgjgkHDS+U7gZW0upxBvwzJhqlQuTzu25bvzssI4mlLot+c8v4VmL
-         pAQaJBvtDOUFEUNNr5IMw715Cy9ey9tS7OmU4W6jkJ6QN+53tviQs0+B2SOjcX3gjXq0
-         ykwiwfiyEur8CmTdqpTWyaTS9Nvms3hK6j5t8tWjrHv4pi9xUchMBpdlKywUGAmXqxbC
-         fI+A==
+        d=gmail.com; s=20230601; t=1713146604; x=1713751404; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n1vXtyWT8fXGggKvExKnj2HZSfdeJ3yoesmgjWoiN9Y=;
+        b=evKEoJ1GPpOiImWo+Q5cNsM9qUq/AtaQwpsY5FUbaieAG+Gl1EIA58royViGjmLWB/
+         C4Nhjbc+rlj0hinVck3xsXOtt8k5NVBxOniqYU8/QzSARIzVzV5OQdpRDTF5vx4DX+yG
+         K7nMjrOumHeOGXJMvaGM1lAb8LNjj7AV2rjVYkSsJ6T757IzlJNW0JVlUB1NsF3kmVdd
+         w502xZaZfhejeKUIqIYn12AVHfobQ7ofEy8nZ4mR1QswyGtdHcHGgh3cCgqPBXWJMfOh
+         CA3AhGKljv5QrhxqiOT7mkTIymlLfTyEvhRkEcDmmlZvY5+F2qHzhCm4R1jF6JKg7r5y
+         +dvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713146586; x=1713751386;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VsiaKifJOZA0qRUVE1+neEb+M+HY5irGf4D2Q2Uktwo=;
-        b=SOsgspb3LPtDnHwrXM6AsKkr3V5m79JY4uc4Sb6eF609zek9uPlXF1dUNKnP7HD0Qs
-         sQ8fhJ6BsopfHVjYfzcKtj9JVGeBkfGfv4VwX24K+cmrYDNfpqgMWdk5soikXS/VscYs
-         z1egTb/9110vOmklBy+yv3rdndiLZeuEHBKw/5cpKSr0+zJ/X/IHAHwXMBB2jPOCSU2Y
-         4R6Ef0/x9cJCz8U2JY12bQrxEppZqH9FeiZjSaiSBBaCjIy4jecU9FEMYuMWAiehWqVq
-         FC3PWHLIp6nMuGjRXr+0WQZNb+8e8UKeSsa6/nl102Qvl6bWcw5txA1nIky9jrKgUP7H
-         tc1A==
-X-Forwarded-Encrypted: i=1; AJvYcCUvMewyPbD41NyntBuZWtnfdoZmG6U0p8TcC+8YV9pXhsh9xq3oF9JsXg4CxYskfsAAD6UXIoCSMzMAtX80nhAB2Uirz93So9VHJXfC
-X-Gm-Message-State: AOJu0YwfU8HutiudVoxEGdubmdVhOSXdVjqorSHjhxhlBfYIVZ7EMeHG
-	gDuTorbBlRD2lBasdBjamS2Nm6Hyv7wOpWw42l5KPESwLWt5YT2lOo7TJnFkuDQ=
-X-Google-Smtp-Source: AGHT+IFh1gnp53lS1uAZMRwhtdRmABsUTOLGcITiE0+jq7U8vWTjdjGd9ie6v4eS5XIVfJrJ9KbAkQ==
-X-Received: by 2002:a17:902:db01:b0:1e2:bdfa:9c15 with SMTP id m1-20020a170902db0100b001e2bdfa9c15mr10660073plx.41.1713146585341;
-        Sun, 14 Apr 2024 19:03:05 -0700 (PDT)
-Received: from localhost.localdomain ([103.172.41.206])
-        by smtp.googlemail.com with ESMTPSA id y2-20020a17090264c200b001e205884ac6sm6897872pli.20.2024.04.14.19.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 19:03:04 -0700 (PDT)
-From: Lei Chen <lei.chen@smartx.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jason Wang <jasowang@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"Michael S. Tsirkin" <mst@redhat.com>
-Cc: Lei Chen <lei.chen@smartx.com>,
-	Willem de Bruijn <willemb@google.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v5] tun: limit printing rate when illegal packet received by tun dev
-Date: Sun, 14 Apr 2024 22:02:46 -0400
-Message-ID: <20240415020247.2207781-1-lei.chen@smartx.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1713146604; x=1713751404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n1vXtyWT8fXGggKvExKnj2HZSfdeJ3yoesmgjWoiN9Y=;
+        b=jfBXIQRtapSASkyXSmr3YbwaA/0iOiJ/nD2moC3ry6p30LmoJhvPQZ8n1NJYSfEaWN
+         8HdRlaJNDIZyZaedOc77GOLhUdpbbi0lxU6/W+1vjEV2bnkBElnpywyTrok0+KSjJqMR
+         rqqKjIebBtqi+fos7Tc7C6vl0Q/4tPvTTABgKdxIBoIcmi8TRc7t/U9EBakdYVy1COHR
+         02r/bwpYLTM5gGj82fBHtby54iOsLE18GNFnLdQSvu/T7K1bTwiQI3AX9MP01lYxGJp2
+         DWt3YNYfZxXLfv9cDLOFvm2aHXDCQxatzZ0L51kkLvnlDQZFzX89CysXoXMlM62sK+/m
+         bnow==
+X-Gm-Message-State: AOJu0YxJZ+/iUHrkstzJ1efUtdD7mBTVasO5XRj/ghHgFi7+yDfu51my
+	EVbOBsEBxORjnzGKqUs+lBP1a/ykxgtnrrFPqVjLxE1ENlMv5evq5bK8MFskIOVTLB5ZsgvoJKW
+	fcjZMe9UjUMpVRLrCI5/uH+bOoas=
+X-Google-Smtp-Source: AGHT+IEp20fAFSAGfwdzEgLx88JHUdcn0dllshXamkiTnZR2Xe1PO+8MZqKUMwwNTnnyfV/lFC9mdo1U7oH4PtcJpIg=
+X-Received: by 2002:a50:9f2b:0:b0:56e:355d:2ece with SMTP id
+ b40-20020a509f2b000000b0056e355d2ecemr5627069edf.30.1713146604197; Sun, 14
+ Apr 2024 19:03:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240313085817.48892-1-zegao@tencent.com> <65b1691d-8d90-4057-8ad0-da546a0ac8a1@linux.ibm.com>
+In-Reply-To: <65b1691d-8d90-4057-8ad0-da546a0ac8a1@linux.ibm.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Mon, 15 Apr 2024 10:03:12 +0800
+Message-ID: <CAD8CoPDxgL+dkUM_6oAGuAT-GQVdfrckJB2yOjufvbFE14hBxg@mail.gmail.com>
+Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
+ affinity changes
+To: 20240313085817.48892-1-zegao@tencent.com
+Cc: linux-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>, 
+	Ben Segall <bsegall@google.com>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Valentin Schneider <vschneid@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-vhost_worker will call tun call backs to receive packets. If too many
-illegal packets arrives, tun_do_read will keep dumping packet contents.
-When console is enabled, it will costs much more cpu time to dump
-packet and soft lockup will be detected.
+On Sat, Apr 13, 2024 at 12:59=E2=80=AFAM Madadi Vineeth Reddy
+<vineethr@linux.ibm.com> wrote:
+>
+> Hi Ze Gao,
+>
+> On 13/03/24 14:28, Ze Gao wrote:
+> > We observered select_idle_sibling() is likely to return the *target* cp=
+u
+> > early which is likely to be the previous cpu this task is running on ev=
+en
+> > when it's actually not within the affinity list newly set, from where a=
+fter
+> > we can only rely on select_fallback_rq() to choose one for us at its wi=
+ll
+> > (the first valid mostly for now).
+> >
+> > However, the one chosen by select_fallback_rq() is highly likely not a
+> > good enough candidate, sometimes it has to rely on load balancer to kic=
+k
+> > in to place itself to a better cpu, which adds one or more unnecessary
+> > migrations in no doubt. For example, this is what I get when I move tas=
+k
+> > 3964 to cpu 23-24 where cpu 23 has a cpu bound work pinned already:
+> >
+> >         swapper       0 [013]   959.791829: sched:sched_migrate_task: c=
+omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D13 dest_cpu=3D23
+> > kworker/24:2-mm    1014 [024]   959.806148: sched:sched_migrate_task: c=
+omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D23 dest_cpu=3D24
+> >
+>
+> I am able to reproduce this scenario of having an extra migration through=
+ load balance
+> swapper       0 [031] 398764.057232: sched:sched_migrate_task: comm=3Dloo=
+p pid=3D178687 prio=3D120 orig_cpu=3D31 dest_cpu=3D33
+> ksoftirqd/0  13 [000] 398764.356138: sched:sched_migrate_task: comm=3Dloo=
+p pid=3D178687 prio=3D120 orig_cpu=3D33 dest_cpu=3D34
+>
+> I wrote a simple c program that blocks for few seconds, meanwhile I tasks=
+et it to CPUs 33,34 while I already have a
+> busy task running on CPU 33.
+>
+> > The thing is we can actually do better if we do checks early and take m=
+ore
+> > advantages of the *target* in select_idle_sibling(). That is, we contin=
+ue
+> > the idle cpu selection if *target* fails the test of cpumask_test_cpu(
+> > *target*, p->cpus_ptr). By doing so, we are likely to pick a good candi=
+date,
+> > especially when the newly allowed cpu set shares some cpu resources wit=
+h
+> > *target*.
+> >
+> > And with this change, we clearly see the improvement when I move task 3=
+964
+> > to cpu 25-26 where cpu 25 has a cpu bound work pinned already.
+> >
+> >         swapper       0 [027]  4249.204658: sched:sched_migrate_task: c=
+omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D27 dest_cpu=3D26
+>
+> But after applying this patch, The extra migration is still happening as =
+CPU 33 is still chosen by try_to_wake_up.
+>
+> On placing some perf probes and testing,
+>     migration/57     304 [057] 12216.988491:       sched:sched_migrate_ta=
+sk: comm=3Dloop pid=3D11172 prio=3D120 orig_cpu=3D57 dest_cpu=3D4
+>          swapper       0 [004] 12226.989065: probe:select_idle_sibling_L1=
+24: (c0000000001bafc0) i=3D-1 recent_used_cpu=3D-1 prev_aff=3D-1
+>          swapper       0 [004] 12226.989071:       probe:select_fallback_=
+rq: (c0000000001a2e38) cpu=3D4
+>          swapper       0 [004] 12226.989074:       sched:sched_migrate_ta=
+sk: comm=3Dloop pid=3D11172 prio=3D120 orig_cpu=3D4 dest_cpu=3D33
+>          swapper       0 [000] 12227.007768:       sched:sched_migrate_ta=
+sk: comm=3Dloop pid=3D11172 prio=3D120 orig_cpu=3D33 dest_cpu=3D34
+>
+> It is observed that, select_fallback_rq is still taken in this scenario a=
+s default target is returned at the end of select_idle_sibling
+> which was CPU 4.
 
-net_ratelimit mechanism can be used to limit the dumping rate.
+My best guess is that you may have hit the code path for running tasks
+(taskset happens right after the task is woken up). Should that happen,
+the picking is done via:
 
-PID: 33036    TASK: ffff949da6f20000  CPU: 23   COMMAND: "vhost-32980"
- #0 [fffffe00003fce50] crash_nmi_callback at ffffffff89249253
- #1 [fffffe00003fce58] nmi_handle at ffffffff89225fa3
- #2 [fffffe00003fceb0] default_do_nmi at ffffffff8922642e
- #3 [fffffe00003fced0] do_nmi at ffffffff8922660d
- #4 [fffffe00003fcef0] end_repeat_nmi at ffffffff89c01663
-    [exception RIP: io_serial_in+20]
-    RIP: ffffffff89792594  RSP: ffffa655314979e8  RFLAGS: 00000002
-    RAX: ffffffff89792500  RBX: ffffffff8af428a0  RCX: 0000000000000000
-    RDX: 00000000000003fd  RSI: 0000000000000005  RDI: ffffffff8af428a0
-    RBP: 0000000000002710   R8: 0000000000000004   R9: 000000000000000f
-    R10: 0000000000000000  R11: ffffffff8acbf64f  R12: 0000000000000020
-    R13: ffffffff8acbf698  R14: 0000000000000058  R15: 0000000000000000
-    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
- #5 [ffffa655314979e8] io_serial_in at ffffffff89792594
- #6 [ffffa655314979e8] wait_for_xmitr at ffffffff89793470
- #7 [ffffa65531497a08] serial8250_console_putchar at ffffffff897934f6
- #8 [ffffa65531497a20] uart_console_write at ffffffff8978b605
- #9 [ffffa65531497a48] serial8250_console_write at ffffffff89796558
- #10 [ffffa65531497ac8] console_unlock at ffffffff89316124
- #11 [ffffa65531497b10] vprintk_emit at ffffffff89317c07
- #12 [ffffa65531497b68] printk at ffffffff89318306
- #13 [ffffa65531497bc8] print_hex_dump at ffffffff89650765
- #14 [ffffa65531497ca8] tun_do_read at ffffffffc0b06c27 [tun]
- #15 [ffffa65531497d38] tun_recvmsg at ffffffffc0b06e34 [tun]
- #16 [ffffa65531497d68] handle_rx at ffffffffc0c5d682 [vhost_net]
- #17 [ffffa65531497ed0] vhost_worker at ffffffffc0c644dc [vhost]
- #18 [ffffa65531497f10] kthread at ffffffff892d2e72
- #19 [ffffa65531497f50] ret_from_fork at ffffffff89c0022f
+        dest_cpu =3D cpumask_any_and_distribute(cpu_valid_mask, ctx->new_ma=
+sk);
 
-Fixes: ef3db4a59542 ("tun: avoid BUG, dump packet on GSO errors")
-Signed-off-by: Lei Chen <lei.chen@smartx.com>
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
-Changes from v4:
-https://lore.kernel.org/all/20240414081806.2173098-1-lei.chen@smartx.com/
- 1. Adjust code indentation
+and it also makes sense that select_fallback_rq() returns 4 since that happ=
+ens
+before you change the affinities.
 
-Changes from v3:
-https://lore.kernel.org/all/20240412065841.2148691-1-lei.chen@smartx.com/
- 1. Change patch target from net tun to tun.
- 2. Move change log below the seperator "---".
- 3. Remove escaped parentheses in the Fixes string.
+you may need to rule out this case first :)
 
-Changes from v2:
-https://lore.kernel.org/netdev/20240410042245.2044516-1-lei.chen@smartx.com/
- 1. Add net-dev to patch subject-prefix.
- 2. Add fix tag.
+Regards,
+Ze
 
-Changes from v1:
-https://lore.kernel.org/all/20240409062407.1952728-1-lei.chen@smartx.com/
- 1. Use net_ratelimit instead of raw __ratelimit.
- 2. Use netdev_err instead of pr_err to print more info abort net dev.
- 3. Adjust git commit message to make git am happy.
- drivers/net/tun.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
- drivers/net/tun.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 0b3f21cba552..92da8c03d960 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -2125,14 +2125,16 @@ static ssize_t tun_put_user(struct tun_struct *tun,
- 					    tun_is_little_endian(tun), true,
- 					    vlan_hlen)) {
- 			struct skb_shared_info *sinfo = skb_shinfo(skb);
--			pr_err("unexpected GSO type: "
--			       "0x%x, gso_size %d, hdr_len %d\n",
--			       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
--			       tun16_to_cpu(tun, gso.hdr_len));
--			print_hex_dump(KERN_ERR, "tun: ",
--				       DUMP_PREFIX_NONE,
--				       16, 1, skb->head,
--				       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
-+
-+			if (net_ratelimit()) {
-+				netdev_err(tun->dev, "unexpected GSO type: 0x%x, gso_size %d, hdr_len %d\n",
-+					   sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
-+					   tun16_to_cpu(tun, gso.hdr_len));
-+				print_hex_dump(KERN_ERR, "tun: ",
-+					       DUMP_PREFIX_NONE,
-+					       16, 1, skb->head,
-+					       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
-+			}
- 			WARN_ON_ONCE(1);
- 			return -EINVAL;
- 		}
--- 
-2.44.0
-
+> In most of my testing, default target is returned at the end of the funct=
+ion due to the initial checks. It's possible that there would
+> be cases where we can get optimal CPU before we reach end of the select_i=
+dle_sibling function but it would be interesting to know if the
+> extra time spent in finding an optimal cpu have an impact instead of retu=
+rning it earlier if in most of the times we are returning the
+> default target at the end.
+>
+> Thanks and Regards
+> Madadi Vineeth Reddy
+>
+> >
+> > Note we do the same check for *prev* in select_idle_sibling() as well.
+> >
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+>
 
