@@ -1,206 +1,155 @@
-Return-Path: <linux-kernel+bounces-145930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341EC8A5CEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:26:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7FD88A5CEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:26:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7ACC1F2268D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:26:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04E031C218B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC631157A4E;
-	Mon, 15 Apr 2024 21:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E25157470;
+	Mon, 15 Apr 2024 21:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GPJ9KN6N"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="j3ACQGsb"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60CF156236;
-	Mon, 15 Apr 2024 21:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99BF2156236;
+	Mon, 15 Apr 2024 21:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713216352; cv=none; b=UI2L3HPSv+zzlmMxNT2SIxhipvqab/U6Jsry0HPDM3UXW0aHBCktdVp3+ifDeGGmJLsKvHPs7KoG1h9hAVpGP+ASnWVJ+PCnfURQtw81TQ7U9lc3YsLv7EfTQ3BTfdRjUlLEGHQM56PDdiDGjDKfPg6IBjjBGiMj4v8wnpA33zg=
+	t=1713216405; cv=none; b=OxKN03NJ8CEzbCqYibPrT4bNF7lyMjtuVVfiB+6kPqF7Z51rLqMAq+q8aw6Vpv+rdIo2uoRUGmKpB2zdS/WRVz1o+0TPLsww4j/2Lwq8JKaU+H9y9b81xkDEWgIe05yeCRK2FWgql/WFcsUIqBVyDyisQP6NiCjAcKGRTHYfFwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713216352; c=relaxed/simple;
-	bh=xDX9qwIGAqnxwZvcmlu1AWdO+expzOyzESC+Fa4D8aE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qXlHoESN2Bm777Q3qEDHxa6GSach2FltB+KOo423iP7Ju3cFSzoespg8haBAaLbSFrvYNksZbRtEmiTOtNle4ZNZQG3XdhFGbWvomq/Z5hiEHzjH4Qx+KujUXw+VePMzWLbTiHGCqGZBCexFr0GYvQaw+KUIrRxoH/pi4nSEuJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GPJ9KN6N; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c70ef25e19so641711b6e.3;
-        Mon, 15 Apr 2024 14:25:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713216350; x=1713821150; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MnRyb1KC+1OBK62QHuW79588BJIAAupCpTaTbO7XI1c=;
-        b=GPJ9KN6NTAyYLzxxokgqxpDFNYq08tLfEorB1Y9ujzYPwgNKLJSVlHPJswHEZxE+dS
-         CbpKXd6SAGGht4ehPTkMfxaPI2pYqzCxOWRO6jqTJ07LAmY9OTGT27+t+yKamHX4/knw
-         ZTfmMchWBoVIfvprL2j667YtCueUfGALbGz5bZdsilF4cRPew1Ym15AVuYw/VC6UYPOJ
-         HcZVwoocCscuiTHQVwBCOwNOz7dI8oCjSmLK9Cylw6g0eRySVDaKQQ72oRHJobo35b9c
-         L8plfmrUbPmYKIs+YZqlH2UOPiX325ZPg1xNDAFNO2nu0LOgA/mHf7E+5G4gfyb6wJgS
-         nhwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713216350; x=1713821150;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MnRyb1KC+1OBK62QHuW79588BJIAAupCpTaTbO7XI1c=;
-        b=MdACqbEvaITeb246+bX7wi80dOQQeoBqx5Z6E5W43Acs1ZhV3H0M2IG3GkPDuS8X9Z
-         t21NTeYmugbHU7/Qde1ksIbTs/Pqy4d1X6cVFsLEpq5p/0tddnE5v4NSnl2QKnz7L/g7
-         ets2kI03JdJC3LftmkIFaRy5ox9HVMhSP4FtEiwMXhITyB8xo0yVYfEXqxm6KEfMKPjn
-         AWUhdEYbciXbnbhHxggw+eB3ywLw/2BhJjrJAuNxa0WhMTBoG2FhYiFY2m8geyvndKDl
-         0hIpOdiMxSISsLDim2Bjr7lOjGk1pqrMXbuTUuxFRaCkqHFZWrmz1UCbDU+A1TcnptOr
-         1klA==
-X-Forwarded-Encrypted: i=1; AJvYcCXmUmSlbY7xFZmbQlVH+SMGCJV1YHRu+IuaoI4n1zKvn2IPYPB1aHBOa+cbKMhrIqc9QPARlgJl1dlNJvBB3/QdukT0LVN9+24zSbQUPKbaIRe1MgY5lwegNA52RxloA6t+vg0SiGM7fU4SCv0GEm9UuX2rEaAj12SyrjNFpAqiVHBeGCRv648QifJd/FRdS7ckt1QOjFgFHq3P9G5fJfzTxYq7yxDcjlC8zLZ8aS1/woxqyHKN4eSnEoYJjvc=
-X-Gm-Message-State: AOJu0YyogEzsHbM+FT/Sjbkqh1rxLrP8UQ4NjbGGh9UXIKzeekmlzY1o
-	5pHdrTD5tDcKkl8sG9v/gq7vTP79uSsQydkDwhW9Mhj1OpE+3hPB
-X-Google-Smtp-Source: AGHT+IFVx8xuKRS2VgjDQ5gszpCC9VDV/CVDiERN6wC4LXmwFjfelkaJR7tB/uZCbmijCe/eZtORlA==
-X-Received: by 2002:a05:6808:2a69:b0:3c7:76c:c279 with SMTP id fu9-20020a0568082a6900b003c7076cc279mr6166827oib.14.1713216349788;
-        Mon, 15 Apr 2024 14:25:49 -0700 (PDT)
-Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id n4-20020aca2404000000b003c60db822e7sm1774266oic.4.2024.04.15.14.25.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 14:25:49 -0700 (PDT)
-Message-ID: <6726fa2b-f5fe-10fb-6aab-f76d61f0b3cd@gmail.com>
-Date: Mon, 15 Apr 2024 16:25:48 -0500
+	s=arc-20240116; t=1713216405; c=relaxed/simple;
+	bh=zJtKB7O3/WvCqOnP2/g5NcTJPMuxI5QmR9+UIN4j/Bw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OcxfaV5BUSd+Tnsx1U3bdrDnblBFos5HBGNn1ymG8mcdHV70gp+e8xLbEBdJ7XlrAFXygEmm/k1zFCG40x+EYpqZfnB/gdGSfXt2xBC+vHrcDSvkGSaIn4CtjxH0QTtri3FwaV3iYKderuMektOq9C/qBcOLg+DlpQk1Rg0ZVvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=j3ACQGsb; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43FKfUTV006457;
+	Mon, 15 Apr 2024 21:26:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=tOrMnghh2NCP6ZkuUqQk7otGncms/swKbAn60nOpyaQ=; b=j3
+	ACQGsbXKUGv9+CSTk2GRX0G03ICqYhvtvoJ5Vf1sVMZo87NZXtAb+JdQLVXpg6zF
+	+EFRgi4qjJqpKBPEMZ5ANaZIWzHlokVbRhpXfOt303PnJpFX1x/M6oyxe+rP+8E/
+	dXK3I8WACQpJq5Rm/XODe5tsHyQH9Nz7p0vYyoxOGirQmFYFq7nykMEFEo9yxzi/
+	eAktNFv2TAsM9HkrdoxPvbaN4vEZsivaIkXGytO3mgEb7MdbEXMFz8BZuzCQhknt
+	rVbaqLonQ4c9joqRear1CYwkaSbyRM6N4YfNQmRxDmcO2ryZTBg6lJdeSPziXymo
+	5FWlokwbjmWiWWLodBNg==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xhbg882gg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 21:26:16 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43FLQFB7026132
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 21:26:15 GMT
+Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
+ 2024 14:26:11 -0700
+Message-ID: <83dbc057-be42-41d6-95a3-af4b01d64afb@quicinc.com>
+Date: Mon, 15 Apr 2024 14:26:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 6/7] phy: qcom-qmp-pcie: add support for ipq9574 gen3x2
- PHY
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v3 1/2] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Manivannan Sadhasivam
- <manivannan.sadhasivam@linaro.org>, linux-arm-msm@vger.kernel.org,
- linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-clk@vger.kernel.org
-References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
- <20240415182052.374494-7-mr.nuke.me@gmail.com>
- <CAA8EJpqY1aDZMaeqBULEOD26UeGYbLd8RsA16jZw7zXJ7_oGPQ@mail.gmail.com>
-From: mr.nuke.me@gmail.com
-In-Reply-To: <CAA8EJpqY1aDZMaeqBULEOD26UeGYbLd8RsA16jZw7zXJ7_oGPQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
+ <20240412210125.1780574-2-quic_abchauha@quicinc.com>
+ <661ad4f0e3766_3be9a7294a1@willemb.c.googlers.com.notmuch>
+ <c992e03b-eee5-471a-9002-f35bdfa1be2d@quicinc.com>
+ <661d92391de45_30101294f2@willemb.c.googlers.com.notmuch>
+ <6bfee126-36f4-4595-950e-058d93303362@quicinc.com>
+ <661d9a8bb862c_314dd2942c@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <661d9a8bb862c_314dd2942c@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GXEKuWOz6boZJQfEpxUP9kMgRF79ZkN6
+X-Proofpoint-ORIG-GUID: GXEKuWOz6boZJQfEpxUP9kMgRF79ZkN6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_18,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
+ phishscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404150143
 
 
 
-On 4/15/24 15:10, Dmitry Baryshkov wrote:
-> On Mon, 15 Apr 2024 at 21:23, Alexandru Gagniuc <mr.nuke.me@gmail.com> wrote:
+On 4/15/2024 2:22 PM, Willem de Bruijn wrote:
+>>>>>>  static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+>>>>>> -					 bool mono)
+>>>>>> +					  u8 tstamp_type)
+>>>>>>  {
+>>>>>>  	skb->tstamp = kt;
+>>>>>> -	skb->mono_delivery_time = kt && mono;
+>>>>>> +
+>>>>>> +	switch (tstamp_type) {
+>>>>>> +	case CLOCK_REAL:
+>>>>>> +		skb->tstamp_type = CLOCK_REAL;
+>>>>>> +		break;
+>>>>>> +	case CLOCK_MONO:
+>>>>>> +		skb->tstamp_type = kt && tstamp_type;
+>>>>>> +		break;
+>>>>>> +	}
+>>>>>
+>>>>> Technically this leaves the tstamp_type undefined if (skb, 0, CLOCK_REAL)
+>>>> Do you think i should be checking for valid value of tstamp before setting the tstamp_type ? Only then set it. 
+>>>
+>>> A kt of 0 is interpreted as resetting the type. That should probably
+>>> be maintained.
+>>>
+>>> For SO_TIMESTAMPING, a mono delivery time of 0 does have some meaning.
+>>> In __sock_recv_timestamp:
+>>>
+>>>         /* Race occurred between timestamp enabling and packet
+>>>            receiving.  Fill in the current time for now. */
+>>>         if (need_software_tstamp && skb->tstamp == 0) {
+>>>                 __net_timestamp(skb);
+>>>                 false_tstamp = 1;
+>>>         }
 >>
->> Add support for the gen3x2 PCIe PHY on IPQ9574, ported form downstream
->> 5.4 kernel. Only the serdes and pcs_misc tables are new, the others
->> being reused from IPQ8074 and IPQ6018 PHYs.
->>
->> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->> ---
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
->>   .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
->>   2 files changed, 149 insertions(+), 1 deletion(-)
->>
+>> Well in that case the above logic still resets the tstamp and sets the tstamp_type to CLOCK_REAL(value 0). 
+>> Anyway the tstamp_type will be 0 to begin with. 
+>> The logic is still inline with previous implementation, because previously if kt was 0 then kt && mono sets the tstamp_type (previously called as mono_delivery_time) to 0 (i.e SKB_CLOCK_REAL). 
 > 
-> [skipped]
-> 
->> @@ -2448,7 +2542,7 @@ static inline void qphy_clrbits(void __iomem *base, u32 offset, u32 val)
->>
->>   /* list of clocks required by phy */
->>   static const char * const qmp_pciephy_clk_l[] = {
->> -       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux",
->> +       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux", "anoc", "snoc"
-> 
-> Are the NoC clocks really necessary to drive the PHY? I think they are
-> usually connected to the controllers, not the PHYs.
+> Sorry, I got my defaults confused. If we maintain that a zero tstamp
+> resets the type, then here should be no case with skb->tstamp 0 and
+> skb->tstamp_type SKB_CLOCK_REAL (or SKB_CLOCK_TAI or whatever). I
+> think it's preferable to make that obvious in the
+> skb_set_delivery_time implementation, rather than depend on knowledge
+> of its callers.
 
-The system will hang if these clocks are not enabled. They are also 
-attached to the PHY in the QCA 5.4 downstream kernel.
-
->>   };
->>
->>   /* list of regulators */
->> @@ -2499,6 +2593,16 @@ static const struct qmp_pcie_offsets qmp_pcie_offsets_v4x1 = {
->>          .rx             = 0x0400,
->>   };
->>
->> +static const struct qmp_pcie_offsets qmp_pcie_offsets_ipq9574 = {
->> +       .serdes         = 0,
->> +       .pcs            = 0x1000,
->> +       .pcs_misc       = 0x1400,
->> +       .tx             = 0x0200,
->> +       .rx             = 0x0400,
->> +       .tx2            = 0x0600,
->> +       .rx2            = 0x0800,
->> +};
->> +
->>   static const struct qmp_pcie_offsets qmp_pcie_offsets_v4x2 = {
->>          .serdes         = 0,
->>          .pcs            = 0x0a00,
->> @@ -2728,6 +2832,33 @@ static const struct qmp_phy_cfg sm8250_qmp_gen3x1_pciephy_cfg = {
->>          .phy_status             = PHYSTATUS,
->>   };
->>
->> +static const struct qmp_phy_cfg ipq9574_pciephy_gen3x2_cfg = {
->> +       .lanes                  = 2,
->> +
->> +       .offsets                = &qmp_pcie_offsets_ipq9574,
->> +
->> +       .tbls = {
->> +               .serdes         = ipq9574_gen3x2_pcie_serdes_tbl,
->> +               .serdes_num     = ARRAY_SIZE(ipq9574_gen3x2_pcie_serdes_tbl),
->> +               .tx             = ipq8074_pcie_gen3_tx_tbl,
->> +               .tx_num         = ARRAY_SIZE(ipq8074_pcie_gen3_tx_tbl),
->> +               .rx             = ipq6018_pcie_rx_tbl,
->> +               .rx_num         = ARRAY_SIZE(ipq6018_pcie_rx_tbl),
->> +               .pcs            = ipq6018_pcie_pcs_tbl,
->> +               .pcs_num        = ARRAY_SIZE(ipq6018_pcie_pcs_tbl),
->> +               .pcs_misc       = ipq9574_gen3x2_pcie_pcs_misc_tbl,
->> +               .pcs_misc_num   = ARRAY_SIZE(ipq9574_gen3x2_pcie_pcs_misc_tbl),
->> +       },
->> +       .reset_list             = ipq8074_pciephy_reset_l,
->> +       .num_resets             = ARRAY_SIZE(ipq8074_pciephy_reset_l),
->> +       .vreg_list              = NULL,
->> +       .num_vregs              = 0,
->> +       .regs                   = pciephy_v4_regs_layout,
-> 
-> So, is it v4 or v5?
-
-Please give me a day or so to go over my notes and give you a more 
-coherent explanation of why this versioning was chosen. I am only 
-working from the QCA 5.4 downstream sources. I don't have any 
-documentation for the silicon
-
-Alex
-> 
->> +
->> +       .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
->> +       .phy_status             = PHYSTATUS,
->> +};
->> +
->>   static const struct qmp_phy_cfg sm8250_qmp_gen3x2_pciephy_cfg = {
->>          .lanes                  = 2,
->>
-> 
-> 
-> 
-> --
-> With best wishes
-> Dmitry
+Noted!. I will do the same as part of the next patchset. 
 
