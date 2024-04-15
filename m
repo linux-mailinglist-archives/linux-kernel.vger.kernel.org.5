@@ -1,131 +1,105 @@
-Return-Path: <linux-kernel+bounces-144816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAFE88A4B19
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:06:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693278A4B20
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:09:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6702A283B72
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:06:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E07DFB24AEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F853C087;
-	Mon, 15 Apr 2024 09:06:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F893C062;
+	Mon, 15 Apr 2024 09:08:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="K2y0UCaA"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="chQsQvPp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB0A23774
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7413383A6;
+	Mon, 15 Apr 2024 09:08:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713171999; cv=none; b=dlTnpWaUxfR6HFWE4zSga2+r01MOIDZaIz+WCHZUuqHdGnEAkAnapIOWk1Y5pgudvT/3+zk6mTNwAqx6XE1sCsyNyd/lfDPTiMwzKm/IpCq0Ev1DZUW3ctnpWU1tuuuWGrJRPmi+G3bx9s+aJHb+70Xq371ETS7DFgrmfPfdkcA=
+	t=1713172132; cv=none; b=JnGmveDIvDN3n9Sx1XBwO4t22KrwpgqOqjRQLXzr8eAcDiuBV5hG3+t3c9vXqPqBZIc1RrTbrkibHLJ4MuV5oCcil+mg1UZo7Eqo7/OdALv3N9kr8FI12pdcFq71iI2NUpwtXWGnS5XZs1/wmIfPLy/lr7Hb+ih7Z3EpUqS9ujM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713171999; c=relaxed/simple;
-	bh=SwgpO4YQWdvbI0vVe0TBO0b37BYnsUM314dFrnGo/S0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tigrjzJpSacpnSmAqXMyGm4MdNoY2Q7fDyu2qKblBxEwF+5yz6T/zfiP1hF/wtWMVXjw2UjyCgCOxUTRNDYwZSAbgkiIR+R7HrfRjom7ukPdXU2fVjXHsvPLK6MZsk6wTf2t4XaMflnhKrKzTjja454BJzvPLgmkoPVXvxQTk5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=K2y0UCaA; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a5200afe39eso363208566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1713171995; x=1713776795; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+WfufnjkFLuKt8mgR0uon21xMcAu2tPaD6DqiB7Iflk=;
-        b=K2y0UCaARaTxLmjZMHjA9cx+156xdMsZ/VeUgbEd0qoJtPdpUxMnW+3z8H9bnoqe3J
-         ukEfW5MVfHkL3HuUCxZBNvD4iP1Z9Gkdb5W1dRjXm05kgQkboGRtWU/qm5N7MYQPJlDl
-         ZxEvi+EyA7OBbwdvwIfZG4ct/Knv9iNjyFAa+AZX8hlid1UGLg4bN1QFJA3svmwsgVZ/
-         hxqK5Sb7eSj5tnKqhJm0i703RA2wREEQhhEZeVgf+yjeVM7k3PE8o5RmzBYqcYhtxj3f
-         cZQla6hkLkfWB03+oHcvATnRXcDNgikg6iaCyxrotzd4LfuEgyMBuD3Iqq+LJEiDVjnP
-         aJLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713171995; x=1713776795;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+WfufnjkFLuKt8mgR0uon21xMcAu2tPaD6DqiB7Iflk=;
-        b=ZqQokEs0UuZ8ganpR2On3omwJYgrZN/O5KHC8I9JFE4rpA95kv7BRMXZZz6QFag4WN
-         AEZq2wz9FXK2kTZPp8ccPxGdaVa7qLV8uIlgymnHrVSqakcwETnq7xps0v6qDaHb115U
-         qZErYtf1btxUYC0eIe3v9E2klLZjfVV2weFSBElDpQ4e5e20DiSB0BDu2dahFSlVrPBx
-         pnNvxiTWJ2WCMvtDE+r0i7iVHL62TytKIVhrFt9DFw0TwlmFSazmwrtKNKWYkTzyhwxs
-         izw91PsLRB3z1jgFtH+yDJd5P8ZK4p/E9ffAJ/WVE/PhCfeZPJCChOyH9WGmoGJt3zuu
-         qztQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQtvTkhC1rW9aNYeKYvPcbX++A0L4MpglRmHNCOuB1Y6f+fiHYTEeovIhm0twjXrIoShbKZH4Y1NL87av2jwYV3F/aslXegpyw7Z/O
-X-Gm-Message-State: AOJu0Yzn6uoFRF8tvig4DZnNu+v2OT3tXf+s6SFDmx7e1GaIT6hMMeG8
-	Vm9E8Y08A12UD+tnx5TGH9RPO4DGBghisMUeWFTOGgep/sb7OXxIgQyCouY2Wjk=
-X-Google-Smtp-Source: AGHT+IG9Os75CE2mZeTq4ynaVMOKZR0K1Da/JMGlDSPMt3uTOA+A8muKztNGs7OdjmfiZ183zyUO4w==
-X-Received: by 2002:a17:907:3605:b0:a52:54f7:bb01 with SMTP id bk5-20020a170907360500b00a5254f7bb01mr4672944ejc.53.1713171994933;
-        Mon, 15 Apr 2024 02:06:34 -0700 (PDT)
-Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
-        by smtp.gmail.com with ESMTPSA id zh17-20020a170906881100b00a5271ae4458sm623641ejb.16.2024.04.15.02.06.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 02:06:34 -0700 (PDT)
-Message-ID: <a6ad34d3-9cce-4178-8271-0e09ced2b6f4@suse.com>
-Date: Mon, 15 Apr 2024 11:06:33 +0200
+	s=arc-20240116; t=1713172132; c=relaxed/simple;
+	bh=pzZhZpLPSuewVTIczsuOUqqpSFOIX99c+RIFP4sWCXs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Parc0I/zICQWAQjX40T3KgQMTLXrYhkWdU8JgJQOEubi5FIHdafvsy8jRODsYHZ1UAP87Gce1d6N2fL4cBAel/79d4QUAPAMykRC8Xtss37CW6PlEg/D33UD6CUdCoMMFVTdtcpJYmnYiwwkjNZrEAC4dW9p9GvthUVhqhkbxPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=chQsQvPp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3811DC113CC;
+	Mon, 15 Apr 2024 09:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713172132;
+	bh=pzZhZpLPSuewVTIczsuOUqqpSFOIX99c+RIFP4sWCXs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=chQsQvPpwYPBfVxtUAk2XrMDL/PtSyv/c7FHpwrt5ZKFlDTOYjsW8ov28gJQSM/WQ
+	 yPYW4YxD2qqJjqQdjstcUKicDIlsHjY4347pn4ALmLnLk3gQuAhHZ9/3cTmW3wpLQq
+	 m4JpYvsGyDFxB1lCjpc4SFU6jNARd1y1Ucw+qAk2zcjBqREzzwnWcOfGn37fJ90t9s
+	 53PJAoy/J1E4GUtHmljjstPJXQq+uI+ZPYL/WlAxzaFt6E9yoKGU6fjxSuA6Xd2D2e
+	 UuEF9d50+T2KN8EmpRnI5VU+F54/ikQm4tsxLRUaZ6O5JUH124VoN2kIPt98Vntdum
+	 qYj/MRKYNZlUg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rwIKX-000000007k0-3Ma6;
+	Mon, 15 Apr 2024 11:08:49 +0200
+Date: Mon, 15 Apr 2024 11:08:49 +0200
+From: Johan Hovold <johan@kernel.org>
+To: =?utf-8?Q?=C5=81ukasz?= Majczak <lma@chromium.org>
+Cc: Jiri Kosina <jikos@kernel.org>, Dmitry Torokhov <dtor@chromium.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Johan Hovold <johan+linaro@kernel.org>, linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Radoslaw Biernacki <rad@chromium.org>
+Subject: Re: [PATCH v2] HID: i2c-hid: wait for i2c touchpad deep-sleep to
+ power-up transition
+Message-ID: <ZhzuoWgA88CeenMC@hovoldconsulting.com>
+References: <20240405102436.3479210-1-lma@chromium.org>
+ <ZhOccGFkTFkUkRUI@hovoldconsulting.com>
+ <CAE5UKNqufWZfKLAXLcpBYKQpJEVt6jPD4Xtr=Nesh34VkNOETg@mail.gmail.com>
+ <ZhVix-HJrqQbiPrB@hovoldconsulting.com>
+ <CAE5UKNp3uS9cqDbQjcP3SbfxVi3wPFG4LtP6z=WU_V+M9x6LtQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: cdc-wdm: close race between read and workqueue
-To: =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
- Aleksander Morgado <aleksandermj@chromium.org>
-Cc: oneukum@suse.com, linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
- linux@roeck-us.net, linux-kernel@vger.kernel.org, ejcaruso@chromium.org
-References: <385a3519-b45d-48c5-a6fd-a3fdb6bec92f@chromium.org>
- <87mspvi0lk.fsf@miraculix.mork.no>
-Content-Language: en-US
-From: Oliver Neukum <oneukum@suse.com>
-In-Reply-To: <87mspvi0lk.fsf@miraculix.mork.no>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAE5UKNp3uS9cqDbQjcP3SbfxVi3wPFG4LtP6z=WU_V+M9x6LtQ@mail.gmail.com>
 
-On 15.04.24 08:47, Bjørn Mork wrote:
+On Thu, Apr 11, 2024 at 04:23:27PM +0200, Łukasz Majczak wrote:
+> > Sure, but what about other transactions that are initiated by the host
+> > (e.g. SET_POWER)?
+> >
+> Somehow it is problematic only on reboot and works just fine on
+> suspend/resume and
+> set_power.
+> I will dig more and try to find out what the difference is.
 
-> I'm not sure I understand what problem that patch is supposed to fix.
-> Which means that everything I write could be completely wrong...
+Sounds like it may be related to the i2c_hid_set_power() on shutdown()
+then as Kai-Heng pointed out.
 
-wdm_in_callback() can schedule service_outs_intr(), which can call
-service_outstanding_interrupt(), which sets WDM_RESPONDING and submits
-desc->response.
-That is not problematic in itself, but wdm_read() also calls
-service_outstanding_interrupt(), which can lead to teh same URB
-being submitted twice (which caused me to write the patch)
-or, apparently, in this case, it leads to discarding a buffer
-by resubmitting and completing an URB.
+That function already handles a similar retry for I2C_HID_PWR_ON during
+resume.
 
-> But to me it looks like the described issue is exactly what you should
-> expect if that change ever triggers.  I believe we must resubmit the
+> > Perhaps this hack at probe is enough for your use case, but is an
+> > incomplete hack and at a minimum you'd need to add a comment explaining
+> > why it is there.
+> >
+> You mean a comment in the code ?
 
-Yes, it does.
+Yes, if this turns out to be needed then there should be a comment
+explaining why it is there (and currently also as the delays you used
+seem specific for your particular platform).
 
-> urb from service_outstanding_interrupt(). That's why it was added. See
-> the explanation Robert wrote when introducing it:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/usb/class/cdc-wdm.c?id=c1da59dad0ebd3f9bd238f3fff82b1f7ffda7829
+But hopefully you can find a generic solution to this.
 
-Well, the explanation is correct in that we must read
-data available. However, if the RESPONDING flag is set
-and the URB submitted, we are already doing so.
-
-> As for the XMM behaviour: it's been a long time since I tried any of
-> those, but AFAIR one the major differences compared to Qualcomm was the
-> strict queue handling in the firmware.  This caused a number of problems
-> where the cdc-wdm driver wanted to skip a message for some reason.  So
-> I'm not surprised that a bug like this is triggered by one of those
-> modems. That's probably the only thing they are good for :-)
-
-I am not sure where exactly the issue lies here. Suggestions for
-debugging?
-
-	Regards
-		Oliver
-
+Johan
 
