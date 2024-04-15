@@ -1,133 +1,91 @@
-Return-Path: <linux-kernel+bounces-144914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D97B8A4C8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:33:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC2B08A4C93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:33:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 590471C210CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:33:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 573A4B21600
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:33:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0CB5B666;
-	Mon, 15 Apr 2024 10:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD29E5BAE4;
+	Mon, 15 Apr 2024 10:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLql3mnw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="CkssawNC"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CCF4EB20;
-	Mon, 15 Apr 2024 10:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1C5A4EB20;
+	Mon, 15 Apr 2024 10:33:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713177185; cv=none; b=mxElo/hYXccoISl7y6HV/DOmdJkgtHcI4KYWlKoku6/060nMq2x4Gnl7SzO6YkAuwE6IJStJ2yo6QA9Haa/H4Qd56iI0mIsz5wbrCArbf6bTS1fyniA3kokFBy40dLsHQliCr6YexKqpytJpi7AttXcXOZLSRQxJr5BkUQIGOgQ=
+	t=1713177219; cv=none; b=Lo+Y63KaaeQbfsG1mHezlemGK1b7wZGPIOM2TRDq8+fmU5mc/TtaIPwgNF7bl01zWqa9q23apUdppXQROVK2jDfHhBOiib44Q3ovPTp8j/NV/Sm8TxKpf7Oq8JMkOVjYGrt+I1fFIJ/iUAdzjryJUVoGmDJcQoY+rRZcpWckcBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713177185; c=relaxed/simple;
-	bh=XW/Ia1u/3MDd6pzWmjlOQCD4x4iG3aFM/KtrJwYeQZk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dT56NBSmwW+rzYJoGu/mgn+GUrlOy02J1O4DblKR/zBsN2auyytfj7JWuT+anF+ECFwITW6B6qPj3o8ne0E3DCsSPadNPk5HtQpD23QCXurS1PKqJ/uA4xgYPg33Vzf7DHauwJRsak2hGPiH57FsIisps7JEO8lhcU0cNQw0uGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLql3mnw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F646C113CC;
-	Mon, 15 Apr 2024 10:33:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713177185;
-	bh=XW/Ia1u/3MDd6pzWmjlOQCD4x4iG3aFM/KtrJwYeQZk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=nLql3mnwAM0W+FmQ1NlgqzGIRlfmRi+2VWlT/GcNdq91Y2N28CxzcSnaxyfNaqO+z
-	 faWvCajTWAd4th7d7GJRV5pDWG7H6Y3yWF/66TvqBJkR/KKv2sj3CbRz9Hh21d4en9
-	 fEm4B+ZaTgwhUOD2OKWHdvayHfoolEF7eCUnndYHdE7fMMzuzg1jaqn1ikUdC30Wwq
-	 68IMeuep7/ONiOI7GjW/PuKFD3vhm53Xouxwh9IZ9g2mdcQwq31VIfO/+ffNBEY2xa
-	 KSZvd6eHPIPY8vccFGxLsr8w61Xx1674Gecm9v2djzjp08Y6jcHL9InTna1chJ/fkk
-	 rQeGvgFrwfntg==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d895138ce6so35514071fa.0;
-        Mon, 15 Apr 2024 03:33:04 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXt/9d1JswxzctK3JFfcNOO9hY9oaivxnjCEmWL0C41mRVWDQ+XZAYHuhualMYpAwk6nQDVype4ShGjI5mc0+F8jF3lopP/O5O8tYiD5ReRJKkPxZthBKH4BBL1zkSJ7xNGrjr9zwAfc9n5
-X-Gm-Message-State: AOJu0Yz5/37LUC5E16Yl2dYGduyVxcGcMW4a+sVDRFAzu4ZpLzXOaBc+
-	kX6lvXT751Ea/PtsMnXHjymIyy9yJ19EW/Wt/0IqsrfnfzkWQ/HyQDGq5233Xf9qr0e5XqcTfKG
-	Qjgk//JS0vJSlS1tCfvfoqKn9pqs=
-X-Google-Smtp-Source: AGHT+IFd3P+rYqmJz+E++PdQUKllUqGh0DRXtaNZjHHPq96DmQhZyYk6LpnwtzbcVJpR1py2cdjwe6YfZoztey5gH+I=
-X-Received: by 2002:a2e:3c15:0:b0:2d4:6f33:2e59 with SMTP id
- j21-20020a2e3c15000000b002d46f332e59mr6272412lja.30.1713177183753; Mon, 15
- Apr 2024 03:33:03 -0700 (PDT)
+	s=arc-20240116; t=1713177219; c=relaxed/simple;
+	bh=W2hn6oSy7NPPiYXX+nat04fULWlvxHEI0Yi3NxOxZXc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZtdpdMBaXC+D88ks6RDgn0i1kO096imtmkFrvVflmNn/5dofVzTV5Gv4kOpU7knSw5G3SfAHUC1/tPHoBSQoEF8Jps7xhf+hcFMyyyIj0KH+nvWGE+WmNaL263g9pl6qxtodk6ZAaciAp95aipuoFwHEfEqvBP1o97iGZeQLJaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=CkssawNC; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713177210;
+	bh=W2hn6oSy7NPPiYXX+nat04fULWlvxHEI0Yi3NxOxZXc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=CkssawNC3pd5GY1wqRRvzB7farQ11Z1gI760kXcNFTT0vUPS/I/GNSJq+9VwvlF8E
+	 28DHDATLAMbc6qC0k77dWf4FbpwBQo5yKYf3Smi656iwZVau7HC9tEWA+KipV89O0S
+	 vLg7cBgrAqrD6rk+BjmX2oLiyLoEnZSQeslAnfXxUOzR5YO1X7O8ZbGrbbXfSBPll6
+	 TDmYkzZwEX18qxO845f0b3QfR05aCjGvVBMJvwKi5vt37TWcX2BOEukuRwG92DX+NV
+	 Q2VyoNRuMZgsgjmjHSwcVhW3JNIKA/q++1prxp5nja/9i+nYdEyfHfU2QkNdbah6TK
+	 kjBOY9Wr7/HCw==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8D790378000E;
+	Mon, 15 Apr 2024 10:33:29 +0000 (UTC)
+Message-ID: <f3deadf1-8bb1-422d-a7b6-d0e0de98484f@collabora.com>
+Date: Mon, 15 Apr 2024 12:33:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415101345.3807776-1-vchernou@cisco.com>
-In-Reply-To: <20240415101345.3807776-1-vchernou@cisco.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 15 Apr 2024 19:32:27 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ3VJN5Ga1aJnrpaPoPaKMCZR3dauo-SWaH9=y9zv1F5w@mail.gmail.com>
-Message-ID: <CAK7LNAQ3VJN5Ga1aJnrpaPoPaKMCZR3dauo-SWaH9=y9zv1F5w@mail.gmail.com>
-Subject: Re: [PATCH] scripts/Makefile.build: fix ext mod subdirs build with
- separate src,build dirs
-To: Valerii Chernous <vchernou@cisco.com>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, xe-linux-external@cisco.com, 
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8183-kukui: Drop bogus
+ output-enable property
+To: Chen-Yu Tsai <wenst@chromium.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240412075613.1200048-1-wenst@chromium.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20240412075613.1200048-1-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 15, 2024 at 7:14=E2=80=AFPM Valerii Chernous <vchernou@cisco.co=
-m> wrote:
->
-> The change allow to build external modules with nested makefiles.
-> Current unofficial way(using "src" variable) allow to build
-> external(out of tree) kernel module with separating source and build
-> artifacts dirs but with nested makefiles it doesn't work properly.
-> Build system trap to recursion inside makefiles, articafts output dir
-> path grow with each iteration until exceed max path len and build failed
-> This fix update "src" var during processing subdirs and resolve
-> recursion issue
-> Usage example:
-> make -C KERNEL_SOURCE_TREE M=3DBUILD_OUT_DIR src=3DEXT_MOD_SRC_DIR module=
-s
->
-> Cc: Valerii Chernous <vchernou@cisco.com>
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Valerii Chernous <vchernou@cisco.com>
+Il 12/04/24 09:56, Chen-Yu Tsai ha scritto:
+> The "output-enable" property is set on uart1's RTS pin. This is bogus
+> because the hardware does not actually have a controllable output
+> buffer. Secondly, the implementation incorrectly treats this property
+> as a request to switch the pin to GPIO output. This does not fit the
+> intended semantic of "output-enable" and it does not have any affect
+> either because the pin is muxed to the UART function, not the GPIO
+> function.
+> 
+> Drop the property.
+> 
+> Fixes: cd894e274b74 ("arm64: dts: mt8183: Add krane-sku176 board")
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-
-NACK.
-
-Please do not send hacks over again.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
-
-
-
-
-
-
-
-
-> ---
->  scripts/Makefile.build | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-> index a293950e2e07..75ea9052ea4a 100644
-> --- a/scripts/Makefile.build
-> +++ b/scripts/Makefile.build
-> @@ -490,6 +490,7 @@ $(single-subdir-goals): $(single-subdirs)
->  PHONY +=3D $(subdir-ym)
->  $(subdir-ym):
->         $(Q)$(MAKE) $(build)=3D$@ \
-> +       $(if $(findstring command line,$(origin src)),src=3D$(patsubst $(=
-obj)/%,$(src)/%,$@)) \
->         need-builtin=3D$(if $(filter $@/built-in.a, $(subdir-builtin)),1)=
- \
->         need-modorder=3D$(if $(filter $@/modules.order, $(subdir-modorder=
-)),1) \
->         $(filter $@/%, $(single-subdir-goals))
-> --
-> 2.35.6
->
-
-
---=20
-Best Regards
-Masahiro Yamada
 
