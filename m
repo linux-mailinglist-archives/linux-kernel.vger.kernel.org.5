@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-144773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71E6C8A4A90
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:41:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B9CF8A4A92
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:42:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A31DD1C21CB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:41:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A9CB2216C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8D73BBCA;
-	Mon, 15 Apr 2024 08:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 685153D56D;
+	Mon, 15 Apr 2024 08:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="UWvTNBwq"
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="FEMyBWQV"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD2A39AC9
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4294F3BBDC
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170494; cv=none; b=HTAiHgPoX0U5uuRdNWXQhTwf1UrJcmFL7Nx0BnEKdbc6sEpjGB1hwhTJx6nGq+jFXgWGp0l0OCwmrNdVeNXJYuk8opTgtD3UvBCCmE/wAHPlG7NZeh/NgJUpe5yumTFnI2hdKHzwV3Sz5zYchJYFnatNGEebzjEkU+h67SbJ4/I=
+	t=1713170496; cv=none; b=kovKBfCHwVZuYUsN4/VkTOEAswYu0E4v9ZCVBiOrnGQ/868EMr3XGiWfjQdwiULPVWhqj2IGG4MqUghT3QBC1Z+eQbnsiRjUewBeIIbeYUiYOcO0KknuNKcHDM/odznYOrzdEM7l4PUPxUOxJIh9l129Wm6N9dSl6Cl+pnZIe+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170494; c=relaxed/simple;
-	bh=7/Cb3EbaM1UDAA5Kb72FztigJLQVxjyacKvxcUVA7Ks=;
+	s=arc-20240116; t=1713170496; c=relaxed/simple;
+	bh=vZqUoc3gYd+I/LHSXlUpLfccZsnhlmnxJYwDUfMYSzk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PEqfT/DhuD9lN/IwaPK9UcEgZmeDRpQ7IVK4gCoTXqPX7DoSXcQxYqKHE9KNWHplwUqN7xuO1yXET6AlD9v7V+ixfgI2D2+IhS761vkT7i1uH/5TGpg6XOoTQge0SBoIIVB0e1e7VRUyLx+StyfxzvY/syC1/zIOjfw4CgwZcF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=UWvTNBwq; arc=none smtp.client-ip=209.85.166.175
+	 MIME-Version; b=o8JEGKGYMpXmw8LGxYdwpEhZGlFjU8lqqvz8xte1d07vzyZoG4GAFqhiCd0YoYL70nqrKuF9ptgNIwqgK7DJlKmA5vEXhx9b4KLrDnXnA14Tz75g/fcRduXESyaOhAgBD62LMa7lU+mCSKIsTVMCIZUPlyjPURBcKGhUsJZjuE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=FEMyBWQV; arc=none smtp.client-ip=209.85.161.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-36a38c13550so15206985ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:41:31 -0700 (PDT)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5aa3af24775so2267153eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1713170491; x=1713775291; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1713170494; x=1713775294; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=12B6L10PsA9Jh230IG9uEJXqT+JXXSEjbmkq482lFPs=;
-        b=UWvTNBwqEb30LmbkpjtvpeM+m7Wza2dUY909RQ9/cP8cXG879IXd1UUcYM6HI7QtBp
-         6MtFOura1H6LLbuXDiyTFiwIilD8qBoFkgQrvMHVVP3J6PKgQuezISQi+kKtirNDTePR
-         CS7k0CzY9SJH+fQbayXr4dMarh38Lmsi8zBbEKv6tPQnBdbX+ySLgrEQyjNb8tMi8e8Q
-         oX2F84MdRJNZFz1Oz422jPfqmcTuofy9ZBePBnGSVhYmAXxRUyAXnARj/uv/U7FAobrX
-         yZSfOBUU2EUEeD3l9+/pjVSg8Ha1q8HIH8Vpt/mAE88yChuleqS5vzD8PxGZmiedVZBe
-         AxZg==
+        bh=gn/fmyyLOBGP9D7Ah7/te94Cqx4P0YQuEb1tR3Gfsk4=;
+        b=FEMyBWQV2FrEQgQLSm8cNDYj8TnCQPIUWlJjso6vLNXBGGzGA8CueFFl6sE0DdsLLH
+         rSoK1RFxMX9b6f5YWfVWREGxq3hRBwqgC1OR69ZOPhTd8fP9re6lkNCqrULsjWX+4h3a
+         xMyJM1GCOBgKGmriMUgDcgyuujV9VfnEznnBA1Y2H8eTDIxtkevpsgZ82y0ZNaD9Wb+l
+         AXWFs4SWAz9cnnuh/vsbIuePzDCHroX7+R4udDcSxpP8nTh6Bxwqry7lROUvdTCFr+Iw
+         6KTmDyO+qowVOZIez5+jyuDsmm7iKeVQVt4FeJWHHX7FKF/aEEVNLsqVgzLbXacPmhtg
+         pePg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713170491; x=1713775291;
+        d=1e100.net; s=20230601; t=1713170494; x=1713775294;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=12B6L10PsA9Jh230IG9uEJXqT+JXXSEjbmkq482lFPs=;
-        b=EPCubo31DU9p2jwoQ5KfnI1gjyCO++Y0YeyutS7cgzyE+NXekZO/hDDpHxUaKUsitU
-         yu7SsxpaBr3WfeycntLeGxSLqeSo0UL3mTgZeohkVq7E3mLQvKC4ERDcP2//XN3pFDkK
-         CYFEhnrxK3t/QWH52gkn1fYhTOQ371ii7NlqXQWzz1P/AYiVsISM3AdrBK1DG0fVtiMJ
-         irbVh+XFMdCsnS9c8oe73/GvokrJTpphl2v2bT4FdRvIW7esrfUwvwoToFOCY9sItwY/
-         a9sb5YH+6YPLLbMgA7h3vsn3hvFfVSJDuSHWxltT8xw/BhDcx0cXkyDEV3mXh3DdBX58
-         hANA==
-X-Gm-Message-State: AOJu0Yy+j8NKuqXGYdVyMqLgAbsCNh3ziw2gSHyynYOyLZZxOlhazVoM
-	g21Ab8sJjLEvurr6u91h1VkC1Dkh4s/7OAw2mwqnsS8bjRlPhErROkqsYLZimtfsZ9xB+EDIUBW
-	T
-X-Google-Smtp-Source: AGHT+IHu3Id3boHE0EmOQ8pWwfFovlaejeViuBMnTD/yfIQaRW2940ghQ6qCZwrhul6FRmwhdLfOtQ==
-X-Received: by 2002:a92:cd81:0:b0:36b:214:bb21 with SMTP id r1-20020a92cd81000000b0036b0214bb21mr11364794ilb.25.1713170490833;
-        Mon, 15 Apr 2024 01:41:30 -0700 (PDT)
+        bh=gn/fmyyLOBGP9D7Ah7/te94Cqx4P0YQuEb1tR3Gfsk4=;
+        b=mvxcBhoL5GgOQnZSoxVvk5EjWnUpk9Rud3Vjx94W3iESSokseVbLaAckCNncrjJTEJ
+         9v9ao6ISsWyOxDL7WAcc8T7UuNaxuh8KFpnqWYSWYSJK2tyGB/J2NPVgaMru9F3jhNeM
+         sDLtpxUmGelKGKnGK5YHRzWtf9iLJmwAbcam+i6k9W19sUMusp7EdDGxHbfgXegp2hAV
+         C6XYa2afOqTXVI5eH+ZEKiT//WP/FkcntZrXARoMKtde4yfYzuIJYnTiPKl739/nEd7O
+         iEpVQypIycfoMBlNNjubt01fu1qRmyP8hlAyw0/YV/VdywAGTX8/vQEh+PeUHDpiHcrD
+         KdLw==
+X-Gm-Message-State: AOJu0YzE5Btb/2i1V/L8bXTwjblMhhe7iSlHZhsgPN38IcOpHCFD8KPA
+	L/15XIxTO8R2f3ujhijiKizXRnos1DG5suht81U9jPE5SDt4GzFdWaXmRBxuAYXEVL3qkfIbk9I
+	B
+X-Google-Smtp-Source: AGHT+IETdp6r2QsgZsbcC8cYUyAoKu02zRWiFTX/N1oYt3Eg7GPbdngrRxjNkXqYCiCkcAyLjTOyFg==
+X-Received: by 2002:a05:6358:1396:b0:183:6427:10b6 with SMTP id n22-20020a056358139600b00183642710b6mr10637354rwi.19.1713170494297;
+        Mon, 15 Apr 2024 01:41:34 -0700 (PDT)
 Received: from libai.bytedance.net ([61.213.176.11])
-        by smtp.gmail.com with ESMTPSA id k187-20020a636fc4000000b005d6a0b2efb3sm6575685pgc.21.2024.04.15.01.41.27
+        by smtp.gmail.com with ESMTPSA id k187-20020a636fc4000000b005d6a0b2efb3sm6575685pgc.21.2024.04.15.01.41.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 01:41:30 -0700 (PDT)
+        Mon, 15 Apr 2024 01:41:33 -0700 (PDT)
 From: zhenwei pi <pizhenwei@bytedance.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -76,9 +76,9 @@ Cc: mst@redhat.com,
 	xuanzhuo@linux.alibaba.com,
 	akpm@linux-foundation.org,
 	zhenwei pi <pizhenwei@bytedance.com>
-Subject: [RFC 1/3] virtio_balloon: introduce oom-kill invocations
-Date: Mon, 15 Apr 2024 16:41:11 +0800
-Message-Id: <20240415084113.1203428-2-pizhenwei@bytedance.com>
+Subject: [RFC 2/3] virtio_balloon: introduce memory allocation stall counter
+Date: Mon, 15 Apr 2024 16:41:12 +0800
+Message-Id: <20240415084113.1203428-3-pizhenwei@bytedance.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240415084113.1203428-1-pizhenwei@bytedance.com>
 References: <20240415084113.1203428-1-pizhenwei@bytedance.com>
@@ -90,56 +90,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When the guest OS runs under critical memory pressure, the guest
-starts to kill processes. A guest monitor agent may scan 'oom_kill'
-from /proc/vmstat, and reports the OOM KILL event. However, the agent
-may be killed and we will loss this critical event(and the later
-events).
-
-For now we can also grep for magic words in guest kernel log from host
-side. Rather than this unstable way, virtio balloon reports OOM-KILL
-invocations instead.
+Memory allocation stall counter represents the performance/latency of
+memory allocation, expose this counter to the host side by virtio
+balloon device via out-of-bound way.
 
 Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 ---
- drivers/virtio/virtio_balloon.c     | 2 ++
- include/uapi/linux/virtio_balloon.h | 6 ++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_balloon.c     | 19 ++++++++++++++++++-
+ include/uapi/linux/virtio_balloon.h |  6 ++++--
+ 2 files changed, 22 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-index 1f5b3dd31fcf..fd8daa742734 100644
+index fd8daa742734..4b9c9569f6e5 100644
 --- a/drivers/virtio/virtio_balloon.c
 +++ b/drivers/virtio/virtio_balloon.c
-@@ -352,6 +352,8 @@ static unsigned int update_balloon_stats(struct virtio_balloon *vb)
- 				pages_to_bytes(available));
- 	update_stat(vb, idx++, VIRTIO_BALLOON_S_CACHES,
- 				pages_to_bytes(caches));
-+	update_stat(vb, idx++, VIRTIO_BALLOON_S_OOM_KILL,
-+				events[OOM_KILL]);
+@@ -321,7 +321,7 @@ static unsigned int update_balloon_stats(struct virtio_balloon *vb)
+ 	unsigned long events[NR_VM_EVENT_ITEMS];
+ 	struct sysinfo i;
+ 	unsigned int idx = 0;
+-	long available;
++	long available, stall = 0;
+ 	unsigned long caches;
  
+ 	all_vm_events(events);
+@@ -355,6 +355,23 @@ static unsigned int update_balloon_stats(struct virtio_balloon *vb)
+ 	update_stat(vb, idx++, VIRTIO_BALLOON_S_OOM_KILL,
+ 				events[OOM_KILL]);
+ 
++	/* sum all the stall event */
++#ifdef CONFIG_ZONE_DMA
++	stall += events[ALLOCSTALL_DMA];
++#endif
++#ifdef CONFIG_ZONE_DMA32
++	stall += events[ALLOCSTALL_DMA32];
++#endif
++#ifdef CONFIG_HIGHMEM
++	stall += events[ALLOCSTALL_HIGH];
++#endif
++#ifdef CONFIG_ZONE_DEVICE
++	stall += events[ALLOCSTALL_DEVICE];
++#endif
++	stall += events[ALLOCSTALL_NORMAL];
++	stall += events[ALLOCSTALL_MOVABLE];
++	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
++
  	return idx;
  }
+ 
 diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
-index ddaa45e723c4..cde5547e64a7 100644
+index cde5547e64a7..13d0c32ba27c 100644
 --- a/include/uapi/linux/virtio_balloon.h
 +++ b/include/uapi/linux/virtio_balloon.h
-@@ -71,7 +71,8 @@ struct virtio_balloon_config {
- #define VIRTIO_BALLOON_S_CACHES   7   /* Disk caches */
+@@ -72,7 +72,8 @@ struct virtio_balloon_config {
  #define VIRTIO_BALLOON_S_HTLB_PGALLOC  8  /* Hugetlb page allocations */
  #define VIRTIO_BALLOON_S_HTLB_PGFAIL   9  /* Hugetlb page allocation failures */
--#define VIRTIO_BALLOON_S_NR       10
-+#define VIRTIO_BALLOON_S_OOM_KILL      10 /* OOM killer invocations */
-+#define VIRTIO_BALLOON_S_NR       11
+ #define VIRTIO_BALLOON_S_OOM_KILL      10 /* OOM killer invocations */
+-#define VIRTIO_BALLOON_S_NR       11
++#define VIRTIO_BALLOON_S_ALLOC_STALL   11 /* Stall count of memory allocatoin */
++#define VIRTIO_BALLOON_S_NR       12
  
  #define VIRTIO_BALLOON_S_NAMES_WITH_PREFIX(VIRTIO_BALLOON_S_NAMES_prefix) { \
  	VIRTIO_BALLOON_S_NAMES_prefix "swap-in", \
-@@ -83,7 +84,8 @@ struct virtio_balloon_config {
- 	VIRTIO_BALLOON_S_NAMES_prefix "available-memory", \
+@@ -85,7 +86,8 @@ struct virtio_balloon_config {
  	VIRTIO_BALLOON_S_NAMES_prefix "disk-caches", \
  	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-allocations", \
--	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures" \
-+	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
-+	VIRTIO_BALLOON_S_NAMES_prefix "oom-kill" \
+ 	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
+-	VIRTIO_BALLOON_S_NAMES_prefix "oom-kill" \
++	VIRTIO_BALLOON_S_NAMES_prefix "oom-kill", \
++	VIRTIO_BALLOON_S_NAMES_prefix "alloc-stall" \
  }
  
  #define VIRTIO_BALLOON_S_NAMES VIRTIO_BALLOON_S_NAMES_WITH_PREFIX("")
