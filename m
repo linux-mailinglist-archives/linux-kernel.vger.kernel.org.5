@@ -1,320 +1,206 @@
-Return-Path: <linux-kernel+bounces-145873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D45398A5C34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:27:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBFD88A5C36
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:28:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5FCED1F22A8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:27:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A6FDB221D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B595156898;
-	Mon, 15 Apr 2024 20:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2CA715698B;
+	Mon, 15 Apr 2024 20:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gibnX/Zv"
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Rwu7vvL3"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2088.outbound.protection.outlook.com [40.107.94.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1BB156895
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:27:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713212868; cv=none; b=msQuVpg0NTRMWx84C6AkD+qOLSzyjV4pHy8gp5WG02Pion2qloxq1+opqNNkRAxcc0VCAt4a8iCcSctMyRuw29Vw/26V82whtDtB/q0BdVahA3CWs+557UoltCVrTngG5224lAcusELZ9qwrnB7th8Xhcc2mKB+g6mD4qLBDZEE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713212868; c=relaxed/simple;
-	bh=YWWNLAuTWhqTxUfsMHMi21ZtDWl4VTUnXLF6UYpG08I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qUHZS8n8ZIBJZHu+l1Ysj/le8MHgoxvsb9hNMk8T5ElMiFcNZaAV/tFB6TGbzSItPGCDSaGOQ/KXuhFxiOuCI3CXbc+1QKYD8d+FxE0/hS9OmnakMuKJxDewXo9Shl6rkvCWcjnjcUGuksP7J/vfy/5rAoCYZCYV1IkyFinKDfc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gibnX/Zv; arc=none smtp.client-ip=209.85.160.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-2220a389390so1622574fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:27:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713212864; x=1713817664; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4RJIY+n1THl4Og3bwdrrfCfeqvoZNA/rwl+yUf6pHzc=;
-        b=gibnX/ZvgkQlZs179K/3oJ2ywkWUo9Wys5cmJj/lEJoKeZWezki4ID4MJ70G9sPhyI
-         HIFl3kqOj6eKK/GAwjpUheT0lm96meXnEZXPdar8K1A5ftqGzobLeTVs5ST9fAucBVhO
-         2/1MtrOTCal+FL5mJwUbGu2UAWsAdnNqjUWw8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713212864; x=1713817664;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4RJIY+n1THl4Og3bwdrrfCfeqvoZNA/rwl+yUf6pHzc=;
-        b=T2oggBGqIaY6MWMz1Jyf8Ih0JYY6pbgUTQ7GWlSaYF1ITpir+tQ34Z2g6QrqNiKQZV
-         8qyocqo4EiJql7RJ0sf6hubANQoxVEAJ3axv9AM8o/6BbiJy/4EzNF0I855Ws3kM/dgh
-         JNsDPIdRpIvVrNdJNYrq9jtA44qwAkuA9uMY3dOfVL2D7Zq1Od5hppeBfmn4ZpWoHPab
-         v/FDajMEnO+/Vr56lLkBQ5UE6xmQeM7VlM3TjDN6MxShTTX+kAURR/ncb8xS1eRWp3cb
-         1M3Jgbs1f6Ipjrm+OGs3wDW1MMiGvtaZZyuAfuLu4820fICjOYKQ1H2ZF4+elM3bRq9J
-         jwbw==
-X-Forwarded-Encrypted: i=1; AJvYcCVmIB3fyr05beob0ZpoMoqQh9e+dHn4ekAa8fNN8qz/muR+VCFXyKoOSKYGD4ClfGNhyCR+8uVf1s7sczFx/MzwlX6+S2aseq9BvKXU
-X-Gm-Message-State: AOJu0YxHmrqPEkLmyBEd/Rqk764SGNHfh2Q5X/aQYFWoHOSCyAsp1XK0
-	sM9VHdUIhEuotbyk2Ji/7HNmJPL4KJMg2+AWo5MBB0TRnPI1p5Z5CIsT8M0w/PMeh86qkLBI5TF
-	O66yhNBgRM7/LM8bVUKETjSscBEQqfnrdbnYi
-X-Google-Smtp-Source: AGHT+IGpgVPCV92d+R3UlsqTSLZBjek2VtqCidg00gg6yncTI8Fxx9kop3PSbTvCmdLmkjI54JVDIbqEx9QANbp9+sQ=
-X-Received: by 2002:a05:6870:249c:b0:235:b0b:87a6 with SMTP id
- s28-20020a056870249c00b002350b0b87a6mr134718oaq.13.1713212863040; Mon, 15 Apr
- 2024 13:27:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B79F15696D
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713212870; cv=fail; b=pUPIyD3Qrl6jgeI/S6U9bYcCrpyzdL+COVv8J4q15ToWIhkNiAsxM6lWL+YSOHoXZSCGGmsHBbfHzxJa/evSOEANKYGv6Q9g9uoI7Ck0mycHvsoNIdOHL2smuevnn/g45cGceiADJXN9LFELsKgxzKwSycngDjAk4dti+6JnD6w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713212870; c=relaxed/simple;
+	bh=luFd3UhV48orqDS0MtX0vVZuWWNZaqXYF7x2sLxz5Tw=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=MGE0OaOdbSkYv1y8aXc0WreSHvThZpcnIsP2kjpmgjM7MusC5wAPOiVol8ggX4DsUBMb/ojUJJVNOa58BiBKV0KxWAWsn20lLCuIFL7JAwxTpd7/rfEtY747EgAGiJZJKMrZ9IuNx14qAWBa0AYdKa5ntq47HpGiVoxj+70ustg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Rwu7vvL3; arc=fail smtp.client-ip=40.107.94.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ePIpuB9B1BkqpBDxB7J3aD0KgaOEo4iYZHtmAIDtHtWKLpWY9sMVSuYpu43Pj4d+iDE/ng2JLTfLIgagxpAIssXjix8l2aIRSa94zNO8RqM46S/gJtV7DLb2/jkFQIRJ+6RCQpAG46pSkcEMINc2CP9PkfDrcoInO85GBkvc9sfIvDhYesPWceGyNcd7qTSo5ZEwg/4stMegR50Fs1CH3xhks4/cD9Ut+0hej3+epT47yq4htX7PydQnm5Y29+oNKUYPHgkKe8uESC+Xp/Gi8vTV6SifSrs2pl9m84YXUle9D9+CBtypkyRf6xkvmVwswZQAkTO6B4AUQ16ctMY/cQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IvVUjPcv/t7Mfd+sRw/MfUZVszyj6sOC3R+54KtRAqY=;
+ b=YS6jYnu40UDrbAlWBMDuxBPJ12OFKjEN3PCcSB4/Xcl+z+ObYAdDP/4uO0uBGijO/X1pDeDlxzAnt9b2aTwGG8wJnF5IJxtgvTZR/tdPe5b3SyT7RiIAP0qUZ/OiYCCbjQQnHtpST+kiTDr5qIpddyXlLI6i08Eafigj8TJ0ifUECcgzeXWwZb/d0v5FetnFNDwcjW2ThSWf8pdTel+eaiyhDHG4qSqcUEmlYZ7pJQgBKhZXU/5gJj0mnR9IcIyL3MfSH0oB6ECAvz04i6xL6oa+ZMBqABkY1f0KCg/WZKYfFKe0VIGXHCYFGEMEbh5XOkDzAD+lh/M7SxjSMpSFhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IvVUjPcv/t7Mfd+sRw/MfUZVszyj6sOC3R+54KtRAqY=;
+ b=Rwu7vvL33t7xD+2H52+GG1jpr9AggBOalYR6iYq40Z5l16pnFrTvi6Z25VGNUFW83vxQj4e3xmPwLv+swvSTAYcOLoNHltP4YlnrzvLUncEiVh4UvJuWLgbYfqBHs2/W3+L4h926cx9H8EclZgGQ3gd0x5PX5tn4jMegDFaz4KI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by SA1PR12MB8859.namprd12.prod.outlook.com (2603:10b6:806:37c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
+ 2024 20:27:46 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::57f3:51f5:d039:ed24]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::57f3:51f5:d039:ed24%5]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
+ 20:27:46 +0000
+Message-ID: <36bdfb3c-2828-4188-88b1-b9d01b2a114f@amd.com>
+Date: Mon, 15 Apr 2024 15:27:42 -0500
+User-Agent: Mozilla Thunderbird
+From: "Moger, Babu" <babu.moger@amd.com>
+Subject: Re: [PATCH v1 01/31] x86/resctrl: Fix allocation of cleanest CLOSID
+ on platforms with no monitors
+Reply-To: babu.moger@amd.com
+To: James Morse <james.morse@arm.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+ shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com,
+ David Hildenbrand <david@redhat.com>, Rex Nie <rex.nie@jaguarmicro.com>,
+ Dave Martin <dave.martin@arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-2-james.morse@arm.com>
+Content-Language: en-US
+In-Reply-To: <20240321165106.31602-2-james.morse@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR03CA0092.namprd03.prod.outlook.com
+ (2603:10b6:5:333::25) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415163527.626541-1-jeffxu@chromium.org> <20240415163527.626541-4-jeffxu@chromium.org>
- <e1744539-a843-468a-9101-ce7a08669394@collabora.com>
-In-Reply-To: <e1744539-a843-468a-9101-ce7a08669394@collabora.com>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Mon, 15 Apr 2024 13:27:32 -0700
-Message-ID: <CABi2SkVnhcOpeA63XoKq97Uc_VyWdLUqYdOtUXxJ1fos5-Tq2g@mail.gmail.com>
-Subject: Re: [PATCH v10 3/5] selftest mm/mseal memory sealing
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com, 
-	sroettger@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
-	torvalds@linux-foundation.org, corbet@lwn.net, Liam.Howlett@oracle.com, 
-	surenb@google.com, merimus@google.com, rdunlap@infradead.org, 
-	jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
-	linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|SA1PR12MB8859:EE_
+X-MS-Office365-Filtering-Correlation-Id: 564e803b-8965-424f-b81b-08dc5d8a82d2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UFbnaXqt7l6KO+x7t0bGMF/UJwPell2lYXk560a2UCy7FeFhgAeCRhVHsFm7i+gm4zWtnkV2RJ8204QyhiuWOl/upKsi8HOY4NPgoB5V2LZAVAFuOxjqaIc29XO5fs4jcMfYe7no94nEUdHEIwdTMTc7mJIrkNIQCu0qnvVZjzzkMXGcbdO4H+0TOAL60JUxyWGjZcv9g0kDrbBX3mUWwPM0azrmzHqFAZ4edvypDNOoq048rb4qkagBJ3bkAjtYEvxCnAYVy+Fj616MrSm2vjLR85XEJitJDHXQYVx2YJ2a67BagEV2TcVkoj+c2V7FiUJpKSFln0IddeyLxCWO0eaJ9HaNcFU7O9mcCeJqFwJx7yV81K60GQbPm36+M2vfBd2xFVsPl4tx13KDAwPZrkTzZM8GCroq53zQkwRuSno40UpOToTnIM5LTElIMlr042xn4ZVUhJ/0RXzIeJDoxwwAxRyleFztiK8yxpmN79kbOLu6xnW6OzIsZRgWpj+zQOF/RHvgxQ/RV3vXX3XBk1F8EXjAMLxbL21sKEI0sytlb3gScAwk1tDifkaUITab3X37CCK05+rkbiyXw1sKeHk+cbZCwo1G7v9PkZ1gRdyGr0LONE3o5jEfgIP8/hfw5fGQu1JfauWKoL/N4+CqtM1b/BaKvIXP0+llMzloOL4=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?MFZZL1RPOWoxamZGT3psRlZnd2NiSk5SQzUwN0NhckxmNDBLa0VIdFY0RUF6?=
+ =?utf-8?B?ZGs4VWowQlZQREtQdXVEem1vUk4rcnI5VHZqMFk3RVRRQU01WDNkdFFLcGdy?=
+ =?utf-8?B?NjBML050NjFaR25oZzJOcHFkRWJPeXNjZ3l4bkkwVHZsY2lTQXcycC9Ua1h4?=
+ =?utf-8?B?dk16VC9FbXcyaTF5VHE5eGZUNlowYTRXYnBLT290cUFucUp2UURkUktoQkFN?=
+ =?utf-8?B?SjE5K2pGazE2T29qYUpsdStqem5DUU1zS0hlMHI3WUVWNGxqaVY4aW9qK0JN?=
+ =?utf-8?B?MEpKcnNrdmxNaVdUOGhZblFxRmkrQytIWW1TZGZiQXJFYVhrWDlkd05tT093?=
+ =?utf-8?B?S2dwbjNDNEZxRUxta3YwbWV1aFR3c0JoTllmblZjZW4ycWg4ZmdxNEdkN2hr?=
+ =?utf-8?B?RVVQUERPbUE0NXpBOEs1R3p2a1J6M0w3anpYdUdsK1pYM2hmN2JudnJxU3Iv?=
+ =?utf-8?B?SjlVVlo2Zm9qNGxTU0oycW9jcXdEeTIvNGJWcVJIT3hzT1FCUTluenJzZWVT?=
+ =?utf-8?B?ZnlsN1ZRN1QzdTZ0NVFtY0ZOM1NZT1BQYzR6NjdnWFpHRnArODBEQWp6eTlK?=
+ =?utf-8?B?dm9yendvOVRjR3h6K3M4b01mR2RxQnpGSWM3MTdqYjhJbHlsdDVQWDNJNmxB?=
+ =?utf-8?B?cFRVWFNFdll5dGNMZXJIZ09BTVh2UEZ6Z3pIbUNxTXBMWXBqaVM3Y2R3QnJJ?=
+ =?utf-8?B?RGpqQXlsSUVUVmxwTmJDaHU4RnJneUxtY2YrUGM1S2MxbndreDcxR3F6S05i?=
+ =?utf-8?B?WHI3NmtJTVIyU3IwbCtVTWJhK0xEN2NWZ1dpOUNDNmlLN2ZEb2Z6SW8xUUdC?=
+ =?utf-8?B?Z2FnQy92azRkUjZVR1dxZ1huaEIzWVZ5VVNCWnRtaG50bVQ0UXFqOFhJaEpD?=
+ =?utf-8?B?blBBRGhFaEQ1Ukc1YnVCZERBYkdRRXVNVXlWNEJtaTdyOEN0VGFGaC8wNGVU?=
+ =?utf-8?B?Q3dxWHRrOWhabDZ1Q2R3Rjd4dm9VRmJQdTdPZFYrUGdHRk5VQlpTblF0c0Jw?=
+ =?utf-8?B?bEVaU3RiVXN2YTdPL1VCQ056Vk1VdHNISGFiYjNKcWNraXpybXhKa0N4ZDc3?=
+ =?utf-8?B?RDUzNS9aemxmNnlFR2ZCMG84VkhjWEwxOTBNODZzaWxJZEhpcHd5RHRmaTRi?=
+ =?utf-8?B?aEJDSEJnNXVEQ0lKZEs4a1N1MTBvcnl2MTg2dGFQSjFBSVUvTElnbXd3MExB?=
+ =?utf-8?B?ck5mSkhKd0VtdnVkTTF4Rm5tdm1kdlVwNDRLOEZOYVp4dWFzQ3BRenNDTTds?=
+ =?utf-8?B?b042N0h0L0VFZE1ObVM2TEF6ckNMdGh4MVhaMCtGbWlZTU1hTFRRRGloVXJP?=
+ =?utf-8?B?aXdFVUt3U1BpeWhyYnM5ZmU5VHNKSmFzYjZVcitNQ0xTM1RBSGo5Q0llYSsw?=
+ =?utf-8?B?YXRxaDhOOTJVYzkwaGg0Y09FUnpmcS9LMEJ3WUlHVzBCYlFkS29HWENwdGFL?=
+ =?utf-8?B?bWFBazdyU0FicmJ2Sko0UGpCVUYwUzRtVEpYQVp2bk0rczRRcXFiVTRFMXZh?=
+ =?utf-8?B?VEtIMEQ4SlFXT3FielZiNFZmODQ0NEpTaStCZXhCdnJYWk9haTZYalorclNZ?=
+ =?utf-8?B?eWlNVUJBLy9weHI2bWROY2Y0Zk1vZXRLcDI0eWFhdDdmcjZld1cvU3BoclhB?=
+ =?utf-8?B?ajVvR3hWUDltalFhZEMyZVU4ZjhaSmJFejZEQy9rbmt3eCs5ajdSRlVWZHc5?=
+ =?utf-8?B?T2h4RmdDWnYvL29GVC9zVzRNZGI2TVJkWVYrKzY0aXlWcmtCZFlDZ3N2R21U?=
+ =?utf-8?B?K2wyWGd5NVhwQUN4OGtqRmpXb212d0hSRXdLK2gxNUJJL2kxQk1MZGszR3ZV?=
+ =?utf-8?B?aHZRczhGVzc0SnJEZVcxQnkyMURibFVNWmpOZm9jNjdFc2E2NDloZjJHakg5?=
+ =?utf-8?B?ZnNqQzBsYUhKYWh5VWRtUUh6c3gxRFpwbloyN0NsR3p1cEN1eVdYamNEb1pR?=
+ =?utf-8?B?OWw0NVJGTXdRSlVTTldCN3FEVCtzNlZRVDhNS2V4aG1WQVJnSWFkRkpGSE9E?=
+ =?utf-8?B?QzlxTnVIdS84bktBR3dJZlVHOGZkTTVvNkh4ZmMvU3pOUENka29QK1FGN0xQ?=
+ =?utf-8?B?a0IzYmxmMThxV2JJWEVseUREQ0hHMVhSYVl6UlVMQUN5WmkyMkg2RnJCVHZu?=
+ =?utf-8?Q?aL/s=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 564e803b-8965-424f-b81b-08dc5d8a82d2
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 20:27:46.2943
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y9XJ8YplQOjlXAKOqAwYDJa5P0eswjT+cj8yq2e3kxj+Ht0M526iRVPs/1GwI5e+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8859
 
-On Mon, Apr 15, 2024 at 11:32=E2=80=AFAM Muhammad Usama Anjum
-<usama.anjum@collabora.com> wrote:
->
-> Please fix following for this and fifth patch as well:
->
-> --> checkpatch.pl --codespell tools/testing/selftests/mm/mseal_test.c
->
-> WARNING: Macros with flow control statements should be avoided
-> #42: FILE: tools/testing/selftests/mm/mseal_test.c:42:
-> +#define FAIL_TEST_IF_FALSE(c) do {\
-> +               if (!(c)) {\
-> +                       ksft_test_result_fail("%s, line:%d\n", __func__,
-> __LINE__);\
-> +                       goto test_end;\
-> +               } \
-> +       } \
-> +       while (0)
->
-> WARNING: Macros with flow control statements should be avoided
-> #50: FILE: tools/testing/selftests/mm/mseal_test.c:50:
-> +#define SKIP_TEST_IF_FALSE(c) do {\
-> +               if (!(c)) {\
-> +                       ksft_test_result_skip("%s, line:%d\n", __func__,
-> __LINE__);\
-> +                       goto test_end;\
-> +               } \
-> +       } \
-> +       while (0)
->
-> WARNING: Macros with flow control statements should be avoided
-> #59: FILE: tools/testing/selftests/mm/mseal_test.c:59:
-> +#define TEST_END_CHECK() {\
-> +               ksft_test_result_pass("%s\n", __func__);\
-> +               return;\
-> +test_end:\
-> +               return;\
-> +}
->
-I tried to fix those warnings of checkpatch in the past, but no good
-solution. If I put the condition check in the test, the code will have
-too many "if" and decrease readability.  If there is a better
-solution, I'm happy to do that, suggestions are welcome.
 
->
-> On 4/15/24 9:35 PM, jeffxu@chromium.org wrote:
-> > From: Jeff Xu <jeffxu@chromium.org>
-> >
-> > selftest for memory sealing change in mmap() and mseal().
-> >
-> > Signed-off-by: Jeff Xu <jeffxu@chromium.org>
-> > ---
-> >  tools/testing/selftests/mm/.gitignore   |    1 +
-> >  tools/testing/selftests/mm/Makefile     |    1 +
-> >  tools/testing/selftests/mm/mseal_test.c | 1836 +++++++++++++++++++++++
-> >  3 files changed, 1838 insertions(+)
-> >  create mode 100644 tools/testing/selftests/mm/mseal_test.c
-> >
-> > diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/self=
-tests/mm/.gitignore
-> > index d26e962f2ac4..98eaa4590f11 100644
-> > --- a/tools/testing/selftests/mm/.gitignore
-> > +++ b/tools/testing/selftests/mm/.gitignore
-> > @@ -47,3 +47,4 @@ mkdirty
-> >  va_high_addr_switch
-> >  hugetlb_fault_after_madv
-> >  hugetlb_madv_vs_map
-> > +mseal_test
-> > diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selfte=
-sts/mm/Makefile
-> > index eb5f39a2668b..95d10fe1b3c1 100644
-> > --- a/tools/testing/selftests/mm/Makefile
-> > +++ b/tools/testing/selftests/mm/Makefile
-> > @@ -59,6 +59,7 @@ TEST_GEN_FILES +=3D mlock2-tests
-> >  TEST_GEN_FILES +=3D mrelease_test
-> >  TEST_GEN_FILES +=3D mremap_dontunmap
-> >  TEST_GEN_FILES +=3D mremap_test
-> > +TEST_GEN_FILES +=3D mseal_test
-> >  TEST_GEN_FILES +=3D on-fault-limit
-> >  TEST_GEN_FILES +=3D pagemap_ioctl
-> >  TEST_GEN_FILES +=3D thuge-gen
-> > diff --git a/tools/testing/selftests/mm/mseal_test.c b/tools/testing/se=
-lftests/mm/mseal_test.c
-> > new file mode 100644
-> > index 000000000000..06c780d1d8e5
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/mm/mseal_test.
-> > +static void __write_pkey_reg(u64 pkey_reg)
-> > +{
-> > +#if defined(__i386__) || defined(__x86_64__) /* arch */
-> > +     unsigned int eax =3D pkey_reg;
-> > +     unsigned int ecx =3D 0;
-> > +     unsigned int edx =3D 0;
-> > +
-> > +     asm volatile(".byte 0x0f,0x01,0xef\n\t"
-> > +                     : : "a" (eax), "c" (ecx), "d" (edx));
-> > +     assert(pkey_reg =3D=3D __read_pkey_reg());
-> Use ksft_exit_fail_msg instead of assert to stay inside TAP format if
-> condition is false and error is generated.
->
-I can remove the usage of assert() from the test.
 
-> > +int main(int argc, char **argv)
-> > +{
-> > +     bool test_seal =3D seal_support();
-> > +
-> > +     ksft_print_header();
-> > +
-> > +     if (!test_seal)
-> > +             ksft_exit_skip("sealing not supported, check CONFIG_64BIT=
-\n");
-> > +
-> > +     if (!pkey_supported())
-> > +             ksft_print_msg("PKEY not supported\n");
-> > +
-> > +     ksft_set_plan(80);
-> > +
-> > +     test_seal_addseal();
-> > +     test_seal_unmapped_start();
-> > +     test_seal_unmapped_middle();
-> > +     test_seal_unmapped_end();
-> > +     test_seal_multiple_vmas();
-> > +     test_seal_split_start();
-> > +     test_seal_split_end();
-> > +     test_seal_invalid_input();
-> > +     test_seal_zero_length();
-> > +     test_seal_twice();
-> > +
-> > +     test_seal_mprotect(false);
-> > +     test_seal_mprotect(true);
-> > +
-> > +     test_seal_start_mprotect(false);
-> > +     test_seal_start_mprotect(true);
-> > +
-> > +     test_seal_end_mprotect(false);
-> > +     test_seal_end_mprotect(true);
-> > +
-> > +     test_seal_mprotect_unalign_len(false);
-> > +     test_seal_mprotect_unalign_len(true);
-> > +
-> > +     test_seal_mprotect_unalign_len_variant_2(false);
-> > +     test_seal_mprotect_unalign_len_variant_2(true);
-> > +
-> > +     test_seal_mprotect_two_vma(false);
-> > +     test_seal_mprotect_two_vma(true);
-> > +
-> > +     test_seal_mprotect_two_vma_with_split(false);
-> > +     test_seal_mprotect_two_vma_with_split(true);
-> > +
-> > +     test_seal_mprotect_partial_mprotect(false);
-> > +     test_seal_mprotect_partial_mprotect(true);
-> > +
-> > +     test_seal_mprotect_two_vma_with_gap(false);
-> > +     test_seal_mprotect_two_vma_with_gap(true);
-> > +
-> > +     test_seal_mprotect_merge(false);
-> > +     test_seal_mprotect_merge(true);
-> > +
-> > +     test_seal_mprotect_split(false);
-> > +     test_seal_mprotect_split(true);
-> > +
-> > +     test_seal_munmap(false);
-> > +     test_seal_munmap(true);
-> > +     test_seal_munmap_two_vma(false);
-> > +     test_seal_munmap_two_vma(true);
-> > +     test_seal_munmap_vma_with_gap(false);
-> > +     test_seal_munmap_vma_with_gap(true);
-> > +
-> > +     test_munmap_start_freed(false);
-> > +     test_munmap_start_freed(true);
-> > +     test_munmap_middle_freed(false);
-> > +     test_munmap_middle_freed(true);
-> > +     test_munmap_end_freed(false);
-> > +     test_munmap_end_freed(true);
-> > +
-> > +     test_seal_mremap_shrink(false);
-> > +     test_seal_mremap_shrink(true);
-> > +     test_seal_mremap_expand(false);
-> > +     test_seal_mremap_expand(true);
-> > +     test_seal_mremap_move(false);
-> > +     test_seal_mremap_move(true);
-> > +
-> > +     test_seal_mremap_shrink_fixed(false);
-> > +     test_seal_mremap_shrink_fixed(true);
-> > +     test_seal_mremap_expand_fixed(false);
-> > +     test_seal_mremap_expand_fixed(true);
-> > +     test_seal_mremap_move_fixed(false);
-> > +     test_seal_mremap_move_fixed(true);
-> > +     test_seal_mremap_move_dontunmap(false);
-> > +     test_seal_mremap_move_dontunmap(true);
-> > +     test_seal_mremap_move_fixed_zero(false);
-> > +     test_seal_mremap_move_fixed_zero(true);
-> > +     test_seal_mremap_move_dontunmap_anyaddr(false);
-> > +     test_seal_mremap_move_dontunmap_anyaddr(true);
-> > +     test_seal_discard_ro_anon(false);
-> > +     test_seal_discard_ro_anon(true);
-> > +     test_seal_discard_ro_anon_on_rw(false);
-> > +     test_seal_discard_ro_anon_on_rw(true);
-> > +     test_seal_discard_ro_anon_on_shared(false);
-> > +     test_seal_discard_ro_anon_on_shared(true);
-> > +     test_seal_discard_ro_anon_on_filebacked(false);
-> > +     test_seal_discard_ro_anon_on_filebacked(true);
-> > +     test_seal_mmap_overwrite_prot(false);
-> > +     test_seal_mmap_overwrite_prot(true);
-> > +     test_seal_mmap_expand(false);
-> > +     test_seal_mmap_expand(true);
-> > +     test_seal_mmap_shrink(false);
-> > +     test_seal_mmap_shrink(true);
-> > +
-> > +     test_seal_merge_and_split();
-> > +     test_seal_zero_address();
-> > +
-> > +     test_seal_discard_ro_anon_on_pkey(false);
-> > +     test_seal_discard_ro_anon_on_pkey(true);
-> > +
-> > +     ksft_finished();
-> > +     return 0;
-> The return isn't needed as ksft_finished() calls exit() with right exit c=
-ode.
->
-Sure. I can remove "return 0"
+On 3/21/24 11:50, James Morse wrote:
+> commit 6eac36bb9eb0 ("x86/resctrl: Allocate the cleanest CLOSID by
+> searching closid_num_dirty_rmid") added a Kconfig option that causes
 
+This is not true. The Kconfig option is never added. It is added later in
+the series. There is also comment
+on this https://lore.kernel.org/lkml/ZhecyLQsGZ9Iv8wU@gmail.com/
+
+
+Shouldn't the Kconfig option added first before doing this change?
+
+> resctrl to search for the CLOSID with the fewest dirty cache lines when
+> creating a new control group. This depends on the values read from the
+> llc_occupancy counters.
+> 
+> This support missed that some platforms may not have these counters.
+> This causes a NULL pointer dereference when creating a new control
+> group as the array was not allocated by dom_data_init().
+> 
+> As this feature isn't necessary on platforms that don't have cache
+> occupancy monitors, add this to the check that occurs when a new
+> control group is allocated.
+> 
+> The existing code is not selected by any upstream platform, it makes
+> no sense to backport this patch to stable.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 011e17efb1a6..1767c1affa60 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -149,7 +149,8 @@ static int closid_alloc(void)
+>  
+>  	lockdep_assert_held(&rdtgroup_mutex);
+>  
+> -	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
+> +	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID) &&
+> +	    is_llc_occupancy_enabled()) {
+>  		cleanest_closid = resctrl_find_cleanest_closid();
+>  		if (cleanest_closid < 0)
+>  			return cleanest_closid;
+
+-- 
 Thanks
--Jeff
-
-- Jeff
-
-> > +}
->
-> --
-> BR,
-> Muhammad Usama Anjum
+Babu Moger
 
