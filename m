@@ -1,81 +1,85 @@
-Return-Path: <linux-kernel+bounces-145687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 378F88A5984
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A64A8A5988
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:03:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90CA3B221CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:03:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3DE7B2242A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96305137C2F;
-	Mon, 15 Apr 2024 18:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6974139D1D;
+	Mon, 15 Apr 2024 18:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YEU+ReTz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kCIUhwr8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB871E877
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BC213793F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713204195; cv=fail; b=n2fjjfiBQ0WnWDPibJ7e6TldTXaqFqc7uEQJu9v6xrU8UgVEVSpBiRrI2zidCS0suFolyKmeTkzn2d5StudIzr5lopywKfAIDpsWVwlf6QncDZBVDzFu1hBn+/hIuJlpXz2pBFAcPHqs1km7aGs8mI4MnSyYbmUWXQIlbj9K8lI=
+	t=1713204225; cv=fail; b=O1ITMkIWyUyxISr8N/GDOmW+ERF58kJdLKDEYByixDgmqmtB1zZF/jQm2VhJo6g71xP3FQNuRj5Ywbt0knssznGJqX7k//lTypVdWwR4OmmEEIKBNO6aXlEVok9SLSKN/HWC53vXg5BmQcHF3imdcrkVRYVZ/pjQ+HCy2RvZWfY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713204195; c=relaxed/simple;
-	bh=Gf7ya+vC9RurEq10AFAZG4DLV/YJxB5sKsGsKmV21lQ=;
+	s=arc-20240116; t=1713204225; c=relaxed/simple;
+	bh=BJFbFwkSFlaoYQyxMB5YJWlLo5IIv3N2u3ey0CbUw6U=;
 	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=KlZzZNk1MorDHImCKoXGIt6G86VK3j/fd73H4iP4P6GrMX6Ue2oXpPkLIYFDpyOtypubTm5hdsp1pE/j6ecM+A3NCZwHvdYUuEAjRm2ZBtwITuxOzGqg/EyPwPczKiNp5J5SQVedDgshNVOBllJ7P/t0UqLIFDZANq4Z+C43zTY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YEU+ReTz; arc=fail smtp.client-ip=192.198.163.14
+	 Content-Type:MIME-Version; b=cDWkUQRpBbHyHbLtZZ9QjAgVkQW3ZXZn1DSecWyKpQIRIAR3TZnJJqmlaoMVgOOoo0hyc4/PdML/UuSoI2ZIE7FEIXdiZNfd/78jn34SKMCAYqOPDZTdVnmSlBmD8mcpCDAh+tVgdsTbzVODdKECSqO4hbGyXzYwp+gk4liy3/o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kCIUhwr8; arc=fail smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713204193; x=1744740193;
+  t=1713204224; x=1744740224;
   h=message-id:date:subject:to:cc:references:from:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=Gf7ya+vC9RurEq10AFAZG4DLV/YJxB5sKsGsKmV21lQ=;
-  b=YEU+ReTzBiiH5pIpvqKOdZlgDDzu/eB7ltTYCmvVUcy3sVL0koj8Idy+
-   au5Eq+f3izKL4Qb8wPVPqwo9Gn4dqN/lj4C1h+GyyTfX5gBkI3RmMnSiL
-   wszhpOHEk1S6zw4XLa+FgaVSaYbLYPVNBlhWtoR2ctHoGt/MBaO2WhNGV
-   K4EXjCjnX5hi4APytrwYYDUrW5o0CBTKseb4l2QMnpgdRdyLxQ/LlIGqL
-   PMzh0iPwm5fpKFQGWQeW2uw4yPBTYngThYgKWC59xT31OMUVCBc51rbp2
-   zdtY9FKP4vajcCmAS+01JjQn2rSqEXrDyDYrFHwrnYg60h3eDZvD8llfd
-   Q==;
-X-CSE-ConnectionGUID: pwnzYqr5RUaHQhNLPV/fzQ==
-X-CSE-MsgGUID: /c/5NuOmT5ePWaqKY4uUJQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8829778"
+  bh=BJFbFwkSFlaoYQyxMB5YJWlLo5IIv3N2u3ey0CbUw6U=;
+  b=kCIUhwr8GUktdBVQ8eT39P6JIK6AwE+IUUJjS9jIyXOG12Ud3ioNLdif
+   oN61imqNZIoNtXXRxvGAVtUbduNxCg4KQupNGlmJ+yMkamc0wJGJojAJT
+   HA3gx8ONg7m3MFfJP7Dfr+fEqTfEFn9eFXYYO0TH6VhxfDNnrridi68Hj
+   IiCOp6er3XLnRT4pSRImJJ6FSasfkzZD5bqixDTvxf0gx4wKPzAzb8x6n
+   8qQOV2xnui73CWd0ca2Ir8T838yr+ydUWu6tNeYq3N4gOU7iAWzYmVjJq
+   CdNz3XW3e4DciPmO4TTGE0ISsP3Od3Dfg/2a5umtLiBuyVrCQCCGTEmfR
+   g==;
+X-CSE-ConnectionGUID: nXuRwRGlR5e8Q4ymr0XqTA==
+X-CSE-MsgGUID: SVwvhRi9Tlye+upskLVCtA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="9159364"
 X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="8829778"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 11:03:12 -0700
-X-CSE-ConnectionGUID: +I5cIiK0STCka4qPL1FW4A==
-X-CSE-MsgGUID: RzBMTq+NRlexuDgO1C2YXQ==
+   d="scan'208";a="9159364"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 11:03:43 -0700
+X-CSE-ConnectionGUID: slTp2O9mTPSTcB/1yohKDQ==
+X-CSE-MsgGUID: PC0YBoNGSCO2Ry8zB4zPDw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="59433462"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 11:03:12 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+   d="scan'208";a="21988807"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 11:03:43 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Apr 2024 11:03:11 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ 15.1.2507.35; Mon, 15 Apr 2024 11:03:41 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 11:03:11 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ 15.1.2507.35; Mon, 15 Apr 2024 11:03:41 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 11:03:41 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 11:03:10 -0700
+ 15.1.2507.35; Mon, 15 Apr 2024 11:03:41 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UfmaUIAQulvVWR+1WlZbHMRCOq9vofkh+aQiAcP+8ml5Thge9XP+EtoCZWsLKKTVIpuMQ/citK3r9sKECNM0UBXE/w4y4WBhpZ1Ch8kf11BkkP9IDY/8jNoD9fqE3NOMNl4Nil9uCNVQA+Xyj8+WRvJ1jGEKTNlWLQNVHx7Yf21/EDPCtSv2igRI2blIoR62/f55U9oOahOnKMmZinYnkkVo33rLtsoSQalJNEzaPEc/v7aG8PtszW/NP3hbkppnjKOXOgH73fL9+juw0jEfm8lG2XwhPP3QlTVZTM1o7LPA9K5RO8kXwQbhhb/xfVWjsSjHgZWJrzAhzlTWySmv1Q==
+ b=mvO4a9GPiDitQhlEjAyDoCF6S3+UsQ9U4lnCTkbUbQeCsUO5YO+a7VPBaJ+HA2UQIysGARf3217cwhCdtkw008V743/zeyZbCX/8iIyXaq0OITVlOd9HWlEWNsTTThEqwJYaTy0JA065I389PsSD4I5zG1Z0JlcA+0QZ/+bdV+OvvZhzEv4tJdO/VnfbHc3SYghiwU3rH0h+42N3022J4iloBFzsuRcZDgzhJzcD2SoqXvmPfnGLwtmv6CnwvtkEE4St2S3H49HrL4QnDrhXNkYIt8a7W9rtWVWBxujrfv+P1AMArc5EO2EW4HVYGGyeBYn245Um2MMKx+M0UvV/yQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g6fqittegDsTd3HDRhnjwS9MaKnrURaSJLvbTGimSYE=;
- b=GYVdCwO8rB/HrdATCmjYR850JnmWtF+9RHwIptWFL5OJHWat33Q6F3vx/hHhHCGbAOW81t9PLwKvUe12l2DqkXAr3DbnkCI+9YmHwD80KbhsErrpV7SP2tJ2Ru1MyexaiMPMCsl9Xr8YhDnFJnST7drsuYEHATjzHm55VgSW5RYn2S9e/k7Z8faVecq5t/Mjf8CeX8ZcgMz7stSBqcPmG1PzN1uAEdLPa7R2H+RJXsqdVlhydzq4TKl7wGHMvKwJB3R/36auQ24TpizGfh1GRhiROp3NgIfLW5Wk2DfzcUPmcvKEj4S3TUyHh6Z7ND+P5CS/gzNKLhNbwfGHuO2Eog==
+ bh=kCnQNkxJQ2sTCcJJHoIPG0SdMvXKIk8OTANhvnvc1/8=;
+ b=XHLWm1laVIpxis5kd9TXi/uQAPHj4d7l9HPeYJ2d0ntjTzcQCXr+e/neS9BS9Nm5h/6vgwOTEPlQiojcWdPRpd7DBkrxmDv3sZYoj3rzZ5bDN8mUJQpYQG98R7wnoACgZFnoL5VBTdv3r7XrtX5p7vJ1qMrMiJN79Lmx9F3NFHKRyzKaCImgvHz0UZalIsvD97jYsG2kGdLWEHdLch4cvwvCxfpmKNWqe+3tWrFzacJSYlwy2fx51O+5FcVT7U9rjeG8/cSiRZIz1Q9hPaps6bGsKxONgBauWdwgDJ1KusoC0J9KZ2X8AQ54sEeDZK4pfJIV3t5rWfAAQZy2w8J3Ng==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
@@ -85,16 +89,16 @@ Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
  by PH0PR11MB4854.namprd11.prod.outlook.com (2603:10b6:510:35::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.31; Mon, 15 Apr
- 2024 18:03:08 +0000
+ 2024 18:03:38 +0000
 Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
  ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
  ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7452.041; Mon, 15 Apr 2024
- 18:03:08 +0000
-Message-ID: <fe8e56bb-55bf-4130-876f-3047da182da1@intel.com>
-Date: Mon, 15 Apr 2024 11:03:05 -0700
+ 18:03:35 +0000
+Message-ID: <f287424f-c749-408e-92af-1717baf1718d@intel.com>
+Date: Mon, 15 Apr 2024 11:03:32 -0700
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 08/31] x86/resctrl: Move resctrl types to a separate
- header
+Subject: Re: [PATCH v1 30/31] x86/resctrl: Move the filesystem bits to headers
+ visible to fs/resctrl
 To: Dave Martin <Dave.Martin@arm.com>
 CC: James Morse <james.morse@arm.com>, <x86@kernel.org>,
 	<linux-kernel@vger.kernel.org>, Fenghua Yu <fenghua.yu@intel.com>, "Thomas
@@ -108,16 +112,18 @@ CC: James Morse <james.morse@arm.com>, <x86@kernel.org>,
 	<peternewman@google.com>, <dfustini@baylibre.com>, <amitsinght@marvell.com>,
 	David Hildenbrand <david@redhat.com>, Rex Nie <rex.nie@jaguarmicro.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-9-james.morse@arm.com>
- <0ba51259-cb7a-463e-aabd-f88bd0c4007b@intel.com>
- <ZhlegNN3zZ4Q1lk6@e133380.arm.com>
+ <20240321165106.31602-31-james.morse@arm.com>
+ <8f4a05d5-2040-4cf2-8c05-a190c25d64db@intel.com>
+ <ZhfznA2Sp3KFdjrA@e133380.arm.com>
+ <0baf690b-4ed4-4dad-9f50-e5df93d599fd@intel.com>
+ <ZhlfV446640jF/rd@e133380.arm.com>
 Content-Language: en-US
 From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <ZhlegNN3zZ4Q1lk6@e133380.arm.com>
+In-Reply-To: <ZhlfV446640jF/rd@e133380.arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P220CA0019.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:303:115::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
+X-ClientProxiedBy: MW4P220CA0018.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:303:115::23) To SJ2PR11MB7573.namprd11.prod.outlook.com
  (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -127,120 +133,162 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH0PR11MB4854:EE_
-X-MS-Office365-Filtering-Correlation-Id: e135b81e-2cb6-4016-70ff-08dc5d764e9b
+X-MS-Office365-Filtering-Correlation-Id: 1878998d-86e8-4ef6-f860-08dc5d765e8c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +SbWXJ4ydgFlbP0Boy7gcxYlZtllfn3RsAj7W1bL2C10CnolNM70chzMHrNOzUbrgkDy1hYA4s+AFwkNeMCxuhGbz5N1n/OTdTWhcTuLg3MDLXwqdzuVcKP1KquChlrj1KqxJcvGjIHYfsv/te3/nEwUYlgRsRjWH1XYTCyTCKAtwpvGrUqFZAUl3bSbJRQ19AHeggJN96/yF2O2ToDBI18kQmlZTvC0MrhInrV/CTDDG3SqbZfSkawxKi8KJH38cBeJCMGiHgUVGG5BjiYhqk65Iv3nPPs70bBSNJBcjf00R/j9iVfIARS61jyqkVU8aRpNm215jhhUwY1AAXNPXgOHllYXl+aH/QnsoJsgsdOFd0DhN6AmyedfzPq0QoCzk7FtgYECZXT91cEH5/KwqAX6GdKb5mdlE2lZeX8+ZJG96ch4mTHo1ruho8G2W4h7hjb1beyP1T7eAQvMBAFWELTkNg9w5sm4qwEJDofZXkpEGwb6ouD/yYKzlRQ7NsPT9hS9vn1wWA/EJTVaHbFMJpAhzscsryBHj++iBr4gh/oIfhfZgTlHwVtYKuql2J9QbDigVqteptacrDrr8JWgKaBLg2Gmeh8gT14erd9cFyZjSaH/F8ZhYWQrrrHbwYA56s3iPy4cbgrltWEP0r7X17g1hB1U+2Vy7MuVECNOENA=
+X-Microsoft-Antispam-Message-Info: RwkKWCcbtpv30mJoKLZWWyCopJ7ISxdTGOREvzrOmTYEp7h4EiV2qoHie9STSplcj/LDIdODVh74Jur5Jbr58IlF0q1Mlll7xT9F/JRw3q7MoIcTyPHJkuPHBs+ZIsmDUibPTVIvwiAainyviT2dvLiUUTiXdmF/LPtNR4YbFA48P0I2IIgXdfvdJDbQGc1Wu7lkBT9YuBYdphQYHiN+BRJTS9LsEGhRWSGL0yDoWlOH/UOaFH8ENyxh2jPkgOcpXGf68PiuIfmEZuHbL0Z+nNFr2jqxn42MJwvNdgNNpFmCqrsKxkX36ncyRSjIqjci/zWe9IJ7cSBf0Y3vjwS8RYGLMsckfyFYpyXSfT72J0U4lnz+XqHq4ga2PzA0LJfia5PYFf8yVBhpKZnHjSI2r7yJSbnaT+KeR4z8z2uze3bH5fbSjP6IPXGCq1G0e/NMxLPuvsmD7vaT8HwiViht8vJGgz92wDBvcxRlv3xB9pvl6rwU4wj1mu9wOKLUXU7iyB5WttvyMvkyVq1VyUHE2n+DcwNJNs0N2zmXMdM9zPcxFmiIFfK+iv5SYMvV0fSWD/RJ3RD2H24hemzVLvYh97/40Ve1PPO2GuaCOFvOhN6GhnPwJAtQj1B9c8lcrPHHMI72mPniKPC4Xg5rvw9NobNLymXYBTmB8jNE0l94PpA=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnRNbFBoZDdkNWhBa05KMTlYZ3lPRTJIMU1xR0l6NWFlNm1BYmJFbldxOFB1?=
- =?utf-8?B?ellwRlBPSzlGUm5nb3VkZnMxTW1IUUh3eGJZbmRUTW1JcVJNUTZTeGdIYkdp?=
- =?utf-8?B?b3I5cHhJSjRnQS9lNDBPeU1Wb2pQZnB5engrazdCcVcrZFVZQUVZUFY1dEhV?=
- =?utf-8?B?emswa1pKdmNqZEN4Q1UvamVMV2VpZUhCOGNMNDIzSU5xemVXSUdZdEVYUWhO?=
- =?utf-8?B?TDRQR25SN1ZmeDdYc0NhZlBRQTRZdHFncVhSSFplSHlON01ETmt2QlpzM3lM?=
- =?utf-8?B?RUUya2NvUFg2dXFsLzB6M2tERnczQVY0RTJTTmxUY2ZlWUQ3amNESExCOERn?=
- =?utf-8?B?SFd4eUx1TjE1eUZMVmpwZndjZ09iZHFZV0I3WWptNmZQVlNaRUo4d244V1JP?=
- =?utf-8?B?VnN2WGNXeVhJSi9oVVBvTEZNTDZQUkQweUNSWjNPL3h1eWRsRFptUnFKdlJG?=
- =?utf-8?B?STVQQjU0bWhpZU9YNTBsOS8vYUw5UDh0bXBySGdMMFBFT0xrSFd0ZEF2dkMz?=
- =?utf-8?B?d1pnaUdJMmpuMmcrc0ZOTnVGTXlvZHQvVXBJTjRzb0J4NjlBenc3RHNnbCsx?=
- =?utf-8?B?Y3lpVzZ6UnpxcXp0ajRWOW9Nd1huWnNXYklxWThxaFNyV1RndW9vdUEyUVpv?=
- =?utf-8?B?YjV6YS9tK2Y5R3VZMkdnb0g1c1I3VndzY3UxUVdYZ29vblpQWUlnWDNUZ25Y?=
- =?utf-8?B?c2xkdVBUSjBLR3k2VEtYaFFzaFpzd0ZmbWNWWDZxelA3aHhxdlhnVWM4M3R3?=
- =?utf-8?B?M3hhNkZTdlVkNGZBZ1VSeTBDYXRKSWF1M0F4SFZlSUpqTmN0azdYV2R2elky?=
- =?utf-8?B?S0xtT1dpUHpyTE9iUFVqa2Q0UkM5cktMMWgxU1BoZDFFYzNVKzBHcXQ5U0dC?=
- =?utf-8?B?M2k5NmpPd1IxL1NnWldnaGMvaWNJbWRNSDNhSlNKczEwSGNYZUtDV05aT0xE?=
- =?utf-8?B?eER2NFd1c2VUZ0V1ZUVoMVVja2pVekdNcUd3ZzR0UXNFRExnRUU3L2llSVQr?=
- =?utf-8?B?YnkveHJCcVF0UXBvdGFHdnY3RUZFL3I5SFEzaHMxNWdmT056SDN4K0l2Yyth?=
- =?utf-8?B?cDI5dC9lTWZuMWh6TERBajI2SGJ3WnZQQldHVzJ6QlZLNHZGM2ZTemtqUFVz?=
- =?utf-8?B?V040eDNNbVZiL2txcTliQk5hc1dxV1cyZDRmTkNXMENqUHh0czZsYVBWV0Ir?=
- =?utf-8?B?YWRNOTYwUDNtVWRLSGtvWmdxMVczMEFlOTkvZzkyV204K0NKU092ZGRxVkxY?=
- =?utf-8?B?eGF0aWJQYU1LRWYrN0tUcHZ6VFMyc3I3RjduNVNMejBZWExCRjdZYWZYT0pM?=
- =?utf-8?B?VURMYTRyVFBMRktDWW1tZGNjZ3Y2L1FYUXh5ZnhNRkdHNVNDV0lCaldhMzQy?=
- =?utf-8?B?UjR4SGx2NVo5SEFzcGhBdzV2Uzl6VDFIQit2Mzl0WmU1eUg4TFFYTVg0WS9j?=
- =?utf-8?B?eDRGaUJxSWJWZmVCcE43d1lwVU9YMmpGenFCdnNRcno0NmVHTEtLdGZDSzdT?=
- =?utf-8?B?dG5BMmUvUm0wdGlwaUVic25RaFhGKzcvRjhmaWNpeWpDTHhqRGhNeWhKMmx2?=
- =?utf-8?B?TExZcktaWmxtejJuNjJ5WTBqVnZNSmNpSUVybm9aTFNiYVBSamEzczEwTDNp?=
- =?utf-8?B?T0JMckUrRE9kMmR6UmxCNUcxbU5HTUtoTWVtRitUUlZKMFh5ZmVTdDdyenBx?=
- =?utf-8?B?REdlc1NjaG84bkFtNDUyT0lucFZzdTVIaEQxdTI5ZmFqZllRT2xKSWlwSDBm?=
- =?utf-8?B?NGdGZzFDRmd3TjJQd0JXR3BGWi9Bb245K3FnOHBiNStLcWdRWFRTR0FjR0Ni?=
- =?utf-8?B?eDkrZmlIMmk4dENZSy9MeTZwVHNtd0plRHJRVzFSZ2dZYWVVV2FLQURIeThs?=
- =?utf-8?B?UjZyU2F4RHVkRHNCNGJJaFFoNVRtWnRLbU0vZFBzQXJ2cmxqTGJGdE5MS3BV?=
- =?utf-8?B?Nk1lSmg2TkVxWFVEYzlzOUtmZGIvSklOcDZ1Zmk4VlB2SHRjbDBJTzhzNTF4?=
- =?utf-8?B?WDFvbEMwcEdkNmNwdzg3WUF1dnp0UjlXd3JwZlhqR0FCNHdUODdXTWNDZ29v?=
- =?utf-8?B?OTBOSS9JUThrR0xpbUhhU280Vzl6WGxwMmtjc0tsYkIwZVlHMGlrVTIzRGQ5?=
- =?utf-8?B?SzY0cGEwdGtXalVMVk8zb1g5bEllelduRjZPMG1CdFF6Y0h1c1B5dWpkZC95?=
- =?utf-8?B?UEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e135b81e-2cb6-4016-70ff-08dc5d764e9b
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d3dGM1BiVTVhYks4M2oxdVRYUERXK3dnU1ZYaVFiWVY2QktVcG1XbkpOM2Va?=
+ =?utf-8?B?cnFEc2V4QjNGRmwySnAzcDQ4cndBclJZdE1paHdTUVZJMGJ1WWJMaGdaNmpJ?=
+ =?utf-8?B?R2kvSDJtRjZuc1pLbEwwQ0Zma1AxdlhBdDBXaTd6YTVPNWx4bDI0OGZ2Tkw1?=
+ =?utf-8?B?eTJaV0FYSVJOakFqbDZmYWk2dCtLNzNTTDJtN0Fzdms3M01JT3JLc3dHRXdo?=
+ =?utf-8?B?T2trN1BiUEJvbUFKNkw4ODBndmtkZTkvTzVIZUpTTEpZa2N2RUtxVS9BRk5l?=
+ =?utf-8?B?QUsvUzRSNk44VnNrUkllWXhodURBZkFiOCtZZ3dnUXJIc0FMMXdvZERUNGVI?=
+ =?utf-8?B?OWJpMGxCb0JXWStpcmZiK3BUMGVIZEQ4WDRkOU1KY3djeDloL3hCU0tPSEs0?=
+ =?utf-8?B?TU5mMDlrNW41R2FSVEpxKzR1bk5PSEpkbVhSTjZVbEZmdm9HM2xMaGQ2cS92?=
+ =?utf-8?B?T1FuYkUwZE5PODdjOE5lNnVLY3NhbFB6d0tlL0I0ekVTb0FyczRDNUE3WStE?=
+ =?utf-8?B?Y21GVXd0QW5sMFJlNGY1ajlYMVVSL1ZqQlZ3RDBhZVdGejFUNEZrVUp0bk1k?=
+ =?utf-8?B?bVhGYXBadk4vY0pmSE1tOWZrK210RlFMS2FFT2NCaURRMXptdVdiNzZoOW9S?=
+ =?utf-8?B?LzQ0a2JGcGc2bTFMQ1duOFpxMzAyTFYyUi82RG1RVGRmTGpta1ZKTUlYalRU?=
+ =?utf-8?B?aFFzaFhGYTNERFF0VUFOendNWmxCMDBKY1lNZDQ4cmNhWXJXWklOUnk3b0Yx?=
+ =?utf-8?B?UWFiRTdRQmprRHFKWnJYMGdIUDAwSFBoMndyTXdNeGxVRTZRVDRtTUNsaUVZ?=
+ =?utf-8?B?SHpkd2RyN0w3eUdMU0x3MkhQR0pNcE1MYlQvK3RLc2JuaXRaL05UdjUzR29G?=
+ =?utf-8?B?aDZMU3BaRHdDU2RacktyVVhoaUNKdnZkWU8wL3RKbGlwS0k5NGlYVXJKQ05Z?=
+ =?utf-8?B?YVpTeGUweGh3a3RTQ1paeU1FMWx2OUdrWU5JdnR0TTRsMldsc3hFcnZwRzZV?=
+ =?utf-8?B?dHk4SVgrLzBWcnpncWdlaGxiaFRGVDFJZkN1SlpKQS96eTBIQnBWeTJJWWFq?=
+ =?utf-8?B?T0pIWithYkN6Zi9ZcUtSOG5QbWpJRElQTVpzZXlQVUNYN3ZYUFJKUGZ0Zmwv?=
+ =?utf-8?B?aHhlSC9TTTFONXlyaE91bE9kUEtkZnB0Q0V3aE9aRE54UFlIVDAvcXdBU05p?=
+ =?utf-8?B?UnExNytMVzFYQnAxSGZ1UlpEdFpRU25jaVZuaENSYzhGT29LWkc2SXQvMlJU?=
+ =?utf-8?B?N2dsazhHSjhDNmdMWHk2M1M1TS9Wand6OTArZk04NGptT2kvM3QyN2hDT1dX?=
+ =?utf-8?B?bHlna0V5dEdqVlA5ZEtaMnVwNWxUYTVucGxMZDlBN1VIalNlSzRpRnlLK0o3?=
+ =?utf-8?B?Zng0dFVKb2VwV1dqTFdNejhmaUJJWVpoa2hUajhoWlNrWGQzcEp6SXlFbmlH?=
+ =?utf-8?B?c1B6YnAwRk1IUUs4NWczODJpdVM2WGNBd3Z6YUJXRW1zYmdYcEF6cjd6cVU1?=
+ =?utf-8?B?UkIxZ1NkUk9EM3lmc1JmVkVaNHhNNzVyWlpLak95UmhuVG41TkRNUUk5V3l6?=
+ =?utf-8?B?MTlhSHFkQ00wOE1nd285OTAxUzNiRktHa1hEOERGdlZGbUpPL0FSbXQ5NXJr?=
+ =?utf-8?B?UGFmbkUyNE82ZnJySlY5cmZ5SWNwUEl2QTV6QzN2RERMcU42NHJEMmwzbzJK?=
+ =?utf-8?B?OTFVc1E3U1B5bW56YW16QlZXMUJBL0JqVkVxNXp6TmYxZ0JVbFJTdEtrWXVy?=
+ =?utf-8?B?NUVNaXRvZzZ2QlluNjltdkp4L2k0NFAySklIZ2xVaG0wQldXcXh0aDRqYito?=
+ =?utf-8?B?bWcyTWJRWGxwS1dSUGk0bjhhVXY2MEFxQlp0cFpPT1hyL09GSjM0UTlXZjRq?=
+ =?utf-8?B?aHcyTlRWRVl4RUF4Wk9tcUVMbS9Zbm9aYnFPUnFrejNvTzdlSVNlVnVHWGRU?=
+ =?utf-8?B?Nm9rZlFWSm1QTFY2Q0RyQlZ3WXFyMDh2Y3N4cUQzRHgzc0pZUlZmSzIwZnU0?=
+ =?utf-8?B?WVF6V2ovNnF5SkFKYVlrTDdpc1hPeE5CWW1UT01Zc2hSY1FTSXF1MDVqREI3?=
+ =?utf-8?B?ZzVJZVZNMGRMVEpzbjlNeFUvL29wZThXRXdUdERIT0J6MUJaRUdCTFV6V2N1?=
+ =?utf-8?B?TTRwb2s0cjY3VzVBdGJGZzVyd2Q5L2E5VzJLcEtETzJ5TmFvVW1qNjIySW4y?=
+ =?utf-8?B?Tnc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1878998d-86e8-4ef6-f860-08dc5d765e8c
 X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 18:03:08.7441
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 18:03:35.5119
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YYZS/qrzKiQ6VJFN6N8jWKXOaMSLqqD84UCKPop/u2U0eznridO4ROGCbTjA1PJb9YwW31+MgNAI+fyu4zkTmhWT59P6DX+jM6pYMJR8C1I=
+X-MS-Exchange-CrossTenant-UserPrincipalName: iGYVCSo2Xd8OK94pVlNNxn9UxG/FJoTWDAuuoq+7/97tQNho6JFuAeu3QitaYU+tUFuwBpCBDpKlOoMLqxHSAgyyvGos9CiN9Q7K5G8tXAQ=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4854
 X-OriginatorOrg: intel.com
 
 Hi Dave,
 
-On 4/12/2024 9:17 AM, Dave Martin wrote:
-> On Mon, Apr 08, 2024 at 08:18:00PM -0700, Reinette Chatre wrote:
->> On 3/21/2024 9:50 AM, James Morse wrote:
->>> To avoid sticky problems in the mpam glue code, move the resctrl
->>> enums into a separate header.
+On 4/12/2024 9:20 AM, Dave Martin wrote:
+> On Thu, Apr 11, 2024 at 10:43:55AM -0700, Reinette Chatre wrote:
+>> Hi Dave,
 >>
->> Could you please elaborate so that "sticky problems in the mpam glue code" is
->> specific about what problems are avoided?
-> 
-> Maybe just delete the the sticky clause, and leave:
-> 
-> 	Move the resctrl enums into a separate header.
-> 
-> ...since the next paragraph explains the rationale?
-
-In the x86 area changelogs start with a context paragraph to
-provide reader with foundation to parse the subsequent problem and
-solution statements (that are also expected to be in separate
-paragraphs in that order). 
-
->>> This lets the arch code declare prototypes that use these enums without
->>> creating a loop via asm<->linux resctrl.h The same logic applies to the
->>> monitor-configuration defines, move these too.
+>> On 4/11/2024 7:28 AM, Dave Martin wrote:
+>>> On Mon, Apr 08, 2024 at 08:42:00PM -0700, Reinette Chatre wrote:
+>>>> Hi James,
+>>>>
+>>>> On 3/21/2024 9:51 AM, James Morse wrote:
+>>>> ..
+>>>>> diff --git a/include/linux/resctrl_types.h b/include/linux/resctrl_types.h
+>>>>> index 4788bd95dac6..fe0b10b589c0 100644
+>>>>> --- a/include/linux/resctrl_types.h
+>>>>> +++ b/include/linux/resctrl_types.h
+>>>>> @@ -7,6 +7,36 @@
+>>>>>  #ifndef __LINUX_RESCTRL_TYPES_H
+>>>>>  #define __LINUX_RESCTRL_TYPES_H
+>>>>>  
+>>>>> +#define CQM_LIMBOCHECK_INTERVAL	1000
+>>>>> +
+>>>>> +#define MBM_CNTR_WIDTH_BASE		24
+>>>>> +#define MBM_OVERFLOW_INTERVAL		1000
+>>>>> +#define MAX_MBA_BW			100u
+>>>>> +#define MBA_IS_LINEAR			0x4
+>>>>> +
+>>>>> +/* rdtgroup.flags */
+>>>>> +#define	RDT_DELETED		1
+>>>>> +
+>>>>> +/* rftype.flags */
+>>>>> +#define RFTYPE_FLAGS_CPUS_LIST	1
+>>>>> +
+>>>>> +/*
+>>>>> + * Define the file type flags for base and info directories.
+>>>>> + */
+>>>>> +#define RFTYPE_INFO			BIT(0)
+>>>>> +#define RFTYPE_BASE			BIT(1)
+>>>>> +#define RFTYPE_CTRL			BIT(4)
+>>>>> +#define RFTYPE_MON			BIT(5)
+>>>>> +#define RFTYPE_TOP			BIT(6)
+>>>>> +#define RFTYPE_RES_CACHE		BIT(8)
+>>>>> +#define RFTYPE_RES_MB			BIT(9)
+>>>>> +#define RFTYPE_DEBUG			BIT(10)
+>>>>> +#define RFTYPE_CTRL_INFO		(RFTYPE_INFO | RFTYPE_CTRL)
+>>>>> +#define RFTYPE_MON_INFO			(RFTYPE_INFO | RFTYPE_MON)
+>>>>> +#define RFTYPE_TOP_INFO			(RFTYPE_INFO | RFTYPE_TOP)
+>>>>> +#define RFTYPE_CTRL_BASE		(RFTYPE_BASE | RFTYPE_CTRL)
+>>>>> +#define RFTYPE_MON_BASE			(RFTYPE_BASE | RFTYPE_MON)
+>>>>> +
+>>>>>  /* Reads to Local DRAM Memory */
+>>>>>  #define READS_TO_LOCAL_MEM		BIT(0)
+>>>>>  
+>>>>
+>>>> Not all these new seem to belong in this file. Could you please confirm?
+>>>>
+>>>> For example:
+>>>> Earlier in series it was mentioned that struct rdtgroup is private to the
+>>>> fs so having RDT_DELETED is unexpected as it implies access to struct rdtgroup.
+>>>>
+>>>> CQM_LIMBOCHECK_INTERVAL seems private to the fs code, so too
+>>>> RFTYPE_FLAGS_CPUS_LIST.
+>>>>
+>>>> Reinette
+>>>>
 >>>
->>> The maintainers entry for these headers was missed when resctrl.h
->>> was created. Add a wildcard entry to match both resctrl.h and
->>> resctrl_types.h.
+>>> I'll flag this for James to review.
 >>>
->>> Signed-off-by: James Morse <james.morse@arm.com>
+>>> These have to be moved out of the x86 private headers, but you're right
+>>> that some of them seem logically private to the resctrl core.
+>>>
+>>> I guess some of these could move to fs/resctrl/internal.h?
 >>
->> ..
+>> It looks to me that way.
 >>
->>> diff --git a/include/linux/resctrl_types.h b/include/linux/resctrl_types.h
->>> new file mode 100644
->>> index 000000000000..4788bd95dac6
->>> --- /dev/null
->>> +++ b/include/linux/resctrl_types.h
->>> @@ -0,0 +1,68 @@
->>> +/* SPDX-License-Identifier: GPL-2.0 */
->>> +/*
->>> + * Copyright (C) 2024 Arm Ltd.
->>> + * Based on arch/x86/kernel/cpu/resctrl/internal.h
->>> + */
+>>>
+>>> OTOH, might it be preferable to keep all the flag definitions for a
+>>> given member together for ease of maintenance, even if some are for
+>>> resctrl internal use only?
 >>
->> Could this header please explain how this file is intended to be used?
->> What is it intended to contain?
+>> Indeed, those RFTYPE flags really seem to be fs code but I agree that
+>> architectures' use of RFTYPE_RES_CACHE and RFTYPE_RES_MB does make this
+>> complicated and having these in a central place is reasonable to me.
 >>
 >> Reinette
 > 
-> Maybe something like the following?
-> 
->  * Resctrl types and constants needed for inline function definitions in
->  * the arch-specific <asm/resctrl.h> headers.
-> 
+> Maybe we could split these into two groups, and clearly comment the ones
+> that have no user outside resctrl as internal use only?
 
-ok.
+Another option to consider, which I think you hinted about earlier, is
+to add an enum that maps to the RFTYPE_RES_CACHE and RFTYPE_RES_MB
+flags. Just like, for example, RDTCTRL_GROUP maps to RFTYPE_CTRL.
+The new enum can then be used similar to enum rdt_group_type to pick the
+appropriate files based on RFTYPE_RES_CACHE or RFTYPE_RES_MB. 
 
-Reinette
+> 
+> That's not as clean as removing those definitions from a shared header,
+> but at least would help document the issue until/unless a better
+> solution is found...
+> 
+> Cheers
+> ---Dave
 
