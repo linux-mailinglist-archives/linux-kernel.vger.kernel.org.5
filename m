@@ -1,178 +1,282 @@
-Return-Path: <linux-kernel+bounces-145770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FEF88A5A92
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:32:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E4978A5A9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:33:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E13B41F2343A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:32:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6A191F235D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98877156644;
-	Mon, 15 Apr 2024 19:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E04E156655;
+	Mon, 15 Apr 2024 19:33:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CC8eOsYt"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lyUe+HpK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F95713AA22;
-	Mon, 15 Apr 2024 19:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D48715624B;
+	Mon, 15 Apr 2024 19:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209550; cv=none; b=TnZJZiuqL8If/T3Tza4cYA2DipvxShjUmZo0DOYYXzv3eaeSxwGlDuBWyNBGyO9fKh5kl98TIbTM86z6wUSeoGQ+z2hKv7mB2Jz0ZZpiVKGiSJZ5JoXMN0NW9c+J1gTZv+4/FQOElo7I4H7zu4uBWBMhDoW3sqhlcbVU/N7SJOg=
+	t=1713209586; cv=none; b=XkVa/AoRlHr7f4glDS1S63ah9WdUq3iWSrXPJ6fL0JDmUh+QAXuObPv22R4i32k2zFMq+LFjf4XTZaFISV74SZopUsTn11axB5fpusHrR8aMOs/V6e6L7DnxlKav6piDRMw2SDTjVE8iTtzx/M1k7Ghm4EZbYVb6WsHnHDUm6ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209550; c=relaxed/simple;
-	bh=0VPKlFuoyuYr0HpXEhpfS2WZF705amdVfc3Dht5CDcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LlA3XidD91l0ZEWY1N4tNeTSa2+dXb1z294FO5Wp7FSurdWZRsGccusXQW3mlKQFJ9c/DOOF+lqH0blyrYr9vw3lLxTiSMKVdyvjVcjnp/4Kn0rmP1MaFDlEGft3LafXRspWkfoiuxMquH3HyJCSmISC+Z/vY5hcdt/fuHPclmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CC8eOsYt; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e4c4fb6af3so19466275ad.0;
-        Mon, 15 Apr 2024 12:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713209549; x=1713814349; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b0+MOt3vSWNQouVSTzHujQlq5+ecBPB0jEZqFyyUync=;
-        b=CC8eOsYta/gDJbCiy/VLbbB+vq/wcbWV0XQbF8qv1+XG+qSzc2T7QgJC35aai10mHe
-         QaW/pOEA4QjenwHs9qE8mQmxozwjFptSFt/skx+nL0JUvHTVLW1LI6V27Nzt262XoK6p
-         D3gGT1P78efbHhBcOlGQoVIJbJhWaYkRNeq+YcPJBtpFFaKUUCuPeO3duLDjDna75Uyw
-         yM6NBfATd+fYfAc6dCRbF4RL6teiudXf2Kl5iP3aZJ3BN4jVHQCXuG6V6E/TJ5Zlfy3z
-         YIe4oqZQdQsyBViiXltLD3SMtpcseRg5j12cVsFYBjAgliw9tcJnYRHSHXcO2z1MvBhE
-         o7fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713209549; x=1713814349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b0+MOt3vSWNQouVSTzHujQlq5+ecBPB0jEZqFyyUync=;
-        b=XVc6dNDACuGuLWOmyH8Qu/hXxUPFNeisMhRiwgVQlb8EJeGmEHTd3meOUd4WLeNGuv
-         d5hTBmx1npgXWUuN3Bcys3J8SB9xuaUsTZM9AdXMUWMm4IfslaeuGltLL7pBFWloEAW2
-         dkKgEta/n5cw7iBgUDARcaDLSXa291mXBpyNmzrCUW4MFwWwA0AV/zL+WlY9Dm4XbA7X
-         KZ3J+9lFWk+Ulq2ch9F85Cx1CJZtsmtHmLMxx5VDlx9t6YkDczF8Kw4sKZm3bEpvqGw1
-         J/ctGxLIJDcqQ047hZM21VCWYgTTik81L49m69SgpVy9azR5dbEQMnXSp577K2jXe7fP
-         xDyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWJjwHhn8iXpQb26UC+HxWJoddjiGRAYY+nrHAkgwN4akOZcnaEs7kIDVhqq7pl+/kuvNat23c0CFuyZCOTy3VOYGpQVozvt7xxMTc+IT2Fu1UD9HakqOYZbjutUEmVzTzl++uxDLjOAy6cjO37H+EW2paSZr2rAEfBbNPkYf2aOSM5mEHEGvadR6eunJTv
-X-Gm-Message-State: AOJu0Ywwk6jhXZeepXtrTtonkF/NFMMsprOnwaufdhGqeoIniRug9UhE
-	rrbvDoeR0005xs2UZHMPUU4Judh6g/bJUWZARzhl72cPaz2t1AbA
-X-Google-Smtp-Source: AGHT+IFFGBYX7GrgIkithXjMOEcbpKE8/IR7l+wZD008b+p7zqgJ8+k53Kd1ZAZbZR/LHaAS+oLqAw==
-X-Received: by 2002:a17:902:bd42:b0:1e4:6253:2f15 with SMTP id b2-20020a170902bd4200b001e462532f15mr2727plx.16.1713209548567;
-        Mon, 15 Apr 2024 12:32:28 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:fbbe:421b:9296:f28c])
-        by smtp.gmail.com with ESMTPSA id z13-20020a170903018d00b001e22860c32asm8227094plg.143.2024.04.15.12.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 12:32:28 -0700 (PDT)
-Date: Mon, 15 Apr 2024 12:32:25 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Peter Hutterer <peter.hutterer@redhat.com>
-Cc: Mark Pearson <mpearson-lenovo@squebb.ca>, hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com, hmh@hmh.eng.br,
-	ibm-acpi-devel@lists.sourceforge.net,
-	platform-driver-x86@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org, njoshi1@lenovo.com,
-	vsankar@lenovo.com
-Subject: Re: [PATCH 1/4] Input: Add trackpoint doubletap and system debug
- info keycodes
-Message-ID: <Zh2AySQR93GNvoaL@google.com>
-References: <mpearson-lenovo@squebb.ca>
- <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
- <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
- <ZhR-WPx7dgKxziMb@google.com>
- <f3342c0b-fb31-4323-aede-7fb02192cf44@redhat.com>
- <ZhW3Wbn4YSGFBgfS@google.com>
- <ZhXpZe1Gm5e4xP6r@google.com>
- <5fe3b171-afc0-47de-802c-28470ce40674@redhat.com>
+	s=arc-20240116; t=1713209586; c=relaxed/simple;
+	bh=ewtXcxBi/g3Mukc+04qUVmTRw+lNYQSgV7Jr/0/OlJY=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=svmx7+tY6K7SGRkB25vEr2ihXb70FxbrIMqTCCvztpuA8/LpJo6yH2V249AnY5PDn8KqzPXn6u4N/tzEE4FwQkXFGiV+GManMvmPejHPfcyCfYnudlWkRIYGpDyPdoCNV2OQTs1mtxp6e+DZWoAHFSOAEfODH4o/NNkmngRP/dE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lyUe+HpK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 642A6C113CC;
+	Mon, 15 Apr 2024 19:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713209585;
+	bh=ewtXcxBi/g3Mukc+04qUVmTRw+lNYQSgV7Jr/0/OlJY=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=lyUe+HpKGXX11vc8OBrG6w5xItlzUB09LNaodC8u19LlI8Az0WK8PcikXJnU9GsoH
+	 6iPSr711P5BgP7pJyxj0dSb1AKwhxeir3oKAxDUrYQl5NWynYoR8Xm+eCupCJedCvV
+	 ggB1hfsYo/QWJuwfiq7I5TpFj4a4R7ZNVvf478xK4Zv0J0XbQmatJtqQhp+fKH5MBg
+	 lq8n30eICioepzN//K3BO3ODbO08Bha/SjEF+XZYmpTMVuquhkGE3HiW3WilQIYm+3
+	 qyhbw9nBD4hzNpaVJIwQfHbXx+MwN1qanfuq8O62xvE99+ScHpNqBah1c6Et3YiyOm
+	 MtMG/6MC+V1wA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5fe3b171-afc0-47de-802c-28470ce40674@redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 15 Apr 2024 22:32:57 +0300
+Message-Id: <D0KY3YSZCLTG.24OGZPYS4AKDY@kernel.org>
+Cc: <linux-security-module@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+ <bpf@vger.kernel.org>, <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
+ <linux-integrity@vger.kernel.org>, <wufan@linux.microsoft.com>,
+ <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
+ <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
+ <dhowells@redhat.com>, <jikos@kernel.org>, <mkoutny@suse.com>,
+ <ppavlu@suse.com>, <petr.vorel@gmail.com>, <mzerqung@0pointer.de>,
+ <kgold@linux.ibm.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v4 03/14] digest_cache: Add securityfs interface
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
+ <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>,
+ <akpm@linux-foundation.org>, <shuah@kernel.org>,
+ <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+ <mic@digikod.net>
+X-Mailer: aerc 0.17.0
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <20240415142436.2545003-4-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240415142436.2545003-4-roberto.sassu@huaweicloud.com>
 
-On Wed, Apr 10, 2024 at 02:32:56PM +1000, Peter Hutterer wrote:
-> On 10/04/2024 11:20, Dmitry Torokhov wrote:
-> > On Tue, Apr 09, 2024 at 02:47:05PM -0700, Dmitry Torokhov wrote:
-> > > On Tue, Apr 09, 2024 at 03:23:52PM +1000, Peter Hutterer wrote:
-> > > > On 09/04/2024 09:31, Dmitry Torokhov wrote:
-> > > > > Hi Mark,
-> > > > > 
-> > > > > On Sun, Mar 24, 2024 at 05:07:58PM -0400, Mark Pearson wrote:
-> > > > > > Add support for new input events on Lenovo laptops that need exporting to
-> > > > > > user space.
-> > > > > > 
-> > > > > > Lenovo trackpoints are adding the ability to generate a doubletap event.
-> > > > > > Add a new keycode to allow this to be used by userspace.
-> > > > > 
-> > > > > What is the intended meaning of this keycode? How does it differ from
-> > > > > the driver sending BTN_LEFT press/release twice?
-> > > > > > 
-> > > > > > Lenovo support is using FN+N with Windows to collect needed details for
-> > > > > > support cases. Add a keycode so that we'll be able to provide similar
-> > > > > > support on Linux.
-> > > > > 
-> > > > > Is there a userspace consumer for this?
-> > > > 
-> > > > Funnily enough XKB has had a keysym for this for decades but it's not
-> > > > hooked up anywhere due to the way it's pointer keys accessibility
-> > > > feature was implemented. Theory is that most of userspace just needs
-> > > > to patch the various pieces together for the new evdev code + keysym,
-> > > > it's not really any different to handling a volume key (except this
-> > > > one needs to be assignable).
-> > > 
-> > > What is the keysym? If we can make them relatable to each other that
-> > > would be good. Or maybe we could find a matching usage from HID usage
-> > > tables...
-> 
-> There's a set of  XK_Pointer_ keysyms defined in X11/keysym.h,
-> including XK_Pointer_DblClick1 and XK_Pointer_DblClickDefault.
-> Unfortunately they're not hooked up to anything atm, see this draft
-> MR:
-> https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config/-/merge_requests/659
-> Because they're not hooked up anywhere they'll also need to be hooked
-> into the client space, same as the various XF86FooBar symbols we've
-> added over the years.
-> 
-> If we were to add KEY_DOUBLECLICK we can patch xkeyboard-config to
-> bind that to the existing XK_Pointer_DblClickDefault symbol (it would
-> get XF86DoubleClick assigned by the current automated scripts), so in
-> theory that key would work like any other key with that symbol
-> assigned.
-> 
-> > I was looking through the existing codes and I see:
-> > 
-> > #define KEY_INFO		0x166	/* AL OEM Features/Tips/Tutorial */
-> > 
-> > We also have KEY_VENDOR used in a few drivers/plafrom/x86, including
-> > thinkkpad_acpi.c and I wonder if it would be suitable for this vendor
-> > specific debug info collection application (which I honestly doubt will
-> > materialize).
-> 
-> fwiw, I suggested KEY_DOUBLECLICK because that is the action the user
-> takes. Whether that starts a particular application is mostly a
-> question of configuration, defaulting to something that emulates a
-> double-click seems prudent though. And if someone wants to remap that
-> to the compose key that'd be trivial too then.
+On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Add the digest_cache_path file in securityfs, to let root change/read the
+> default path (file or directory) from where digest lists are looked up.
+>
+> An RW semaphore prevents the default path from changing while
+> digest_list_new() and read_default_path() are executed, so that those rea=
+d
+> a stable value. Multiple digest_list_new() and read_default_path() calls,
+> instead, can be done in parallel, since they are the readers.
+>
+> Changing the default path does not affect digest caches created with the
+> old path.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  security/digest_cache/Kconfig    |  4 ++
+>  security/digest_cache/Makefile   |  2 +-
+>  security/digest_cache/internal.h |  1 +
+>  security/digest_cache/main.c     | 10 +++-
+>  security/digest_cache/secfs.c    | 87 ++++++++++++++++++++++++++++++++
+>  5 files changed, 102 insertions(+), 2 deletions(-)
+>  create mode 100644 security/digest_cache/secfs.c
+>
+> diff --git a/security/digest_cache/Kconfig b/security/digest_cache/Kconfi=
+g
+> index e53fbf0779d6..dfabe5d6e3ca 100644
+> --- a/security/digest_cache/Kconfig
+> +++ b/security/digest_cache/Kconfig
+> @@ -14,3 +14,7 @@ config DIGEST_LIST_DEFAULT_PATH
+>  	default "/etc/digest_lists"
+>  	help
+>  	  Default directory where digest_cache LSM expects to find digest lists=
+.
+> +
+> +	  It can be changed at run-time, by writing the new path to the
+> +	  securityfs interface. Digest caches created with the old path are
+> +	  not affected by the change.
+> diff --git a/security/digest_cache/Makefile b/security/digest_cache/Makef=
+ile
+> index 48848c41253e..1330655e33b1 100644
+> --- a/security/digest_cache/Makefile
+> +++ b/security/digest_cache/Makefile
+> @@ -4,4 +4,4 @@
+> =20
+>  obj-$(CONFIG_SECURITY_DIGEST_CACHE) +=3D digest_cache.o
+> =20
+> -digest_cache-y :=3D main.o
+> +digest_cache-y :=3D main.o secfs.o
+> diff --git a/security/digest_cache/internal.h b/security/digest_cache/int=
+ernal.h
+> index 5f04844af3a5..bbf5eefe5c82 100644
+> --- a/security/digest_cache/internal.h
+> +++ b/security/digest_cache/internal.h
+> @@ -49,6 +49,7 @@ struct digest_cache_security {
+> =20
+>  extern struct lsm_blob_sizes digest_cache_blob_sizes;
+>  extern char *default_path_str;
+> +extern struct rw_semaphore default_path_sem;
+> =20
+>  static inline struct digest_cache_security *
+>  digest_cache_get_security(const struct inode *inode)
+> diff --git a/security/digest_cache/main.c b/security/digest_cache/main.c
+> index 14dba8915e99..661c8d106791 100644
+> --- a/security/digest_cache/main.c
+> +++ b/security/digest_cache/main.c
+> @@ -18,6 +18,9 @@ static struct kmem_cache *digest_cache_cache __read_mos=
+tly;
+> =20
+>  char *default_path_str =3D CONFIG_DIGEST_LIST_DEFAULT_PATH;
+> =20
+> +/* Protects default_path_str. */
+> +struct rw_semaphore default_path_sem;
+> +
+>  /**
+>   * digest_cache_alloc_init - Allocate and initialize a new digest cache
+>   * @path_str: Path string of the digest list
+> @@ -274,9 +277,12 @@ struct digest_cache *digest_cache_get(struct dentry =
+*dentry)
+> =20
+>  	/* Serialize accesses to inode for which the digest cache is used. */
+>  	mutex_lock(&dig_sec->dig_user_mutex);
+> -	if (!dig_sec->dig_user)
+> +	if (!dig_sec->dig_user) {
+> +		down_read(&default_path_sem);
+>  		/* Consume extra reference from digest_cache_create(). */
+>  		dig_sec->dig_user =3D digest_cache_new(dentry);
+> +		up_read(&default_path_sem);
+> +	}
+> =20
+>  	if (dig_sec->dig_user)
+>  		/* Increment ref. count for reference returned to the caller. */
+> @@ -386,6 +392,8 @@ static const struct lsm_id digest_cache_lsmid =3D {
+>   */
+>  static int __init digest_cache_init(void)
+>  {
+> +	init_rwsem(&default_path_sem);
+> +
+>  	digest_cache_cache =3D kmem_cache_create("digest_cache_cache",
+>  					       sizeof(struct digest_cache),
+>  					       0, SLAB_PANIC,
+> diff --git a/security/digest_cache/secfs.c b/security/digest_cache/secfs.=
+c
+> new file mode 100644
+> index 000000000000..d3a37bf3588e
+> --- /dev/null
+> +++ b/security/digest_cache/secfs.c
+> @@ -0,0 +1,87 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
+> + *
+> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> + *
+> + * Implement the securityfs interface of the digest_cache LSM.
+> + */
+> +
+> +#define pr_fmt(fmt) "DIGEST CACHE: "fmt
+> +#include <linux/security.h>
+> +
+> +#include "internal.h"
+> +
+> +static struct dentry *default_path_dentry;
+> +
+> +/**
+> + * write_default_path - Write default path
+> + * @file: File descriptor of the securityfs file
+> + * @buf: User space buffer
+> + * @datalen: Amount of data to write
+> + * @ppos: Current position in the file
+> + *
+> + * This function sets the new default path where digest lists can be fou=
+nd.
+> + * Can be either a regular file or a directory.
+> + *
+> + * Return: Length of path written on success, a POSIX error code otherwi=
+se.
+> + */
+> +static ssize_t write_default_path(struct file *file, const char __user *=
+buf,
+> +				  size_t datalen, loff_t *ppos)
+> +{
+> +	char *new_default_path_str;
+> +
+> +	new_default_path_str =3D memdup_user_nul(buf, datalen);
+> +	if (IS_ERR(new_default_path_str))
+> +		return PTR_ERR(new_default_path_str);
+> +
+> +	down_write(&default_path_sem);
+> +	kfree_const(default_path_str);
+> +	default_path_str =3D new_default_path_str;
+> +	up_write(&default_path_sem);
+> +	return datalen;
+> +}
+> +
+> +/**
+> + * read_default_path - Read default path
+> + * @file: File descriptor of the securityfs file
+> + * @buf: User space buffer
+> + * @datalen: Amount of data to read
+> + * @ppos: Current position in the file
+> + *
+> + * This function returns the current default path where digest lists can=
+ be
+> + * found. Can be either a regular file or a directory.
+> + *
+> + * Return: Length of path read on success, a POSIX error code otherwise.
+> + */
+> +static ssize_t read_default_path(struct file *file, char __user *buf,
+> +				 size_t datalen, loff_t *ppos)
+> +{
+> +	int ret;
+> +
+> +	down_read(&default_path_sem);
+> +	ret =3D simple_read_from_buffer(buf, datalen, ppos, default_path_str,
+> +				      strlen(default_path_str) + 1);
+> +	up_read(&default_path_sem);
+> +	return ret;
+> +}
+> +
+> +static const struct file_operations default_path_ops =3D {
+> +	.open =3D generic_file_open,
+> +	.write =3D write_default_path,
+> +	.read =3D read_default_path,
+> +	.llseek =3D generic_file_llseek,
+> +};
+> +
+> +static int __init digest_cache_path_init(void)
+> +{
+> +	default_path_dentry =3D securityfs_create_file("digest_cache_path", 066=
+0,
+> +						     NULL, NULL,
+> +						     &default_path_ops);
+> +	if (IS_ERR(default_path_dentry))
+> +		return -EFAULT;
 
-I think whether to create and use KEY_DOUBLECLICK is very much depends
-if we associate this with the pointer somehow, or if we keep it as a
-completely separate action.
+Nit: when overwriting error value with another error value it would be
+best to document it with an inline comment. Otherwise, it is fine.
 
-If we continue with KEY_DOUBLECLICK then we need to try and define what
-exactly it means to the applications. Actually same goes if we want
-another new keycode.
+> +
+> +	return 0;
+> +}
+> +
+> +late_initcall(digest_cache_path_init);
 
-As far as easy remapping, I think one can map this to KEY_RESERVED and
-then remap to whatever they want, you do not need to have a new keycode
-for that.
 
-Thanks.
-
--- 
-Dmitry
+BR, Jarkko
 
