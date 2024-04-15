@@ -1,147 +1,226 @@
-Return-Path: <linux-kernel+bounces-145837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E641C8A5BA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A08608A5BF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A351A285474
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:53:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5678A28340A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4A215F31D;
-	Mon, 15 Apr 2024 19:47:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC9A156669;
+	Mon, 15 Apr 2024 20:04:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZAeaetk4"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RlfM4LcJ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E821915E5DF
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9316A15664A
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713210439; cv=none; b=m/ImlteMP/MwQF6crp4Ne8lGRd+/lGGk6BoxFOS8EzSrdnjRCF/PHvZriHYL9LHoE53Eaq+tzF7cvSF3UKONfvl0LMaEimwESDE2g2Xa6QO4II2dnpmpe5OBTDVuvMuaZ8zX3r/RPR/sgien61wUNx6v7iwvH6CamDuEXMgy4rI=
+	t=1713211455; cv=none; b=sMpwWkRbiPP9OPXuJcm7nQDqtKysZtb8k3mGbyl0CWr9Oklaq6OFAjfx9LU/2MRAUc20z4RgdwjTcOTg0eMNaTMziGBLPpEtOD4Fr2oqH6HluZF4A+K0y3DFKTD3GMeELx+NXMv3vzikyqU6zykJeWhLOgbAFg4n8L7xQn2RT9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713210439; c=relaxed/simple;
-	bh=EFZMygEZ5gxZXFRwxYGXefaLQZcRDsVuFTWNa8wxK5A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uny1Cu06qntQyVMJv9GaMO+BwCyggFvujMKe7nImtMBj5GtEjsNBhPWfr4oyfpQc8zHhSwHsldQ2pcCqR6bbFLZewUlHaI0nzCpWgZxaVbrOutWPIPRVdbqTXQ3HjSBR3Bt3XoSjYVA5Q58k7ecgIRK+1FAlyldgQ1FKcqyhXjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZAeaetk4; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-518c59b41ccso2132581e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713210436; x=1713815236; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FbsGbbIdpP0nYrgFFND/WuAQtLVhF7S4V4B8K1xyJ58=;
-        b=ZAeaetk4kqgwvFkNnInhhHjpplyoka8Wr6HuILZdGny+kMAx9sRjU95A8KBIcMtzEn
-         SgNS/T17eXPIl3zshB/R6hRyXGozYYqaPdDARqj79AX+bEn5hP9rxAObs3I11wLEhEeB
-         fulb2Ej8T1xWGpd2ScP9RFTYHYJJTY8gNbiU+UvzkbAuLa7PY1uaabCrhiijUX6BeegB
-         zNIcTLfMduJ9AcLOEur8I9ufdW0oDOst9VMgr5wqLf9A/tyoJXVmcAtFQoZcSOWW480K
-         pVnUPeMe56CbpjNwDmZ28ZsapJ+6qpQeIPH4MM15o/PxiAXHEaNMYagSENXiQAfTKMRk
-         LPxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713210436; x=1713815236;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FbsGbbIdpP0nYrgFFND/WuAQtLVhF7S4V4B8K1xyJ58=;
-        b=pW4upIGn2cfb9qVdFmwEzs5xW/W1yoSP3ca7AioZqzK7uEcGoh3K6olwM95GnxZF8c
-         cM4RAPt/yzD6s5XeYhd/bvyeOZfVnuh+ns6Ct9CxqFcFf8sGsNWaWgwmmZAX+mjzxLld
-         QYqgxxgZIkuX4gwnXuRQxDPH5gQJwDe4UcxsMMhIbOJu7VAEDYPIHa3VRfvmmwFFHcCW
-         8aJ52qw+4rt62iPpcgYuYuGYPznL2BGTbLIO17oOnpm4fQ0EIrf1AmsuP2sRb0asCWnb
-         9lPzZGzaUavyRtprrA1HYAXyRK9f6PQ1yDReKsNqO6VvCaIlol9a35nhwMT/JmvYqdt5
-         LxaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCURJwjxpiUltnPhZKaQczsr7PM6x6lwJH1AkazVvVAJI638qnKIQE17lQWGc3nPdjU2SQy9yfbzVdrytOtznMZH40EkIr+9CcJ2d4J6
-X-Gm-Message-State: AOJu0Yxg+X3oezwF8g+U5FoCeIV5rFUAp6SMaRJuBp8UktinE+apv02I
-	f+u0bAdgpULJa2ZSKEAMppvKnqeTMMIp2fa738Cq2NM9EAFZgT5ZwJv7iaQF2Cs=
-X-Google-Smtp-Source: AGHT+IFvj4dlZTtUkZthyV9lygQW3pdDOk2CpHBOggluFdI+nVVKU2ePFZDk29BmxKjrmYLHQN0VRA==
-X-Received: by 2002:ac2:4c52:0:b0:518:93b6:99f8 with SMTP id o18-20020ac24c52000000b0051893b699f8mr6980622lfk.14.1713210436053;
-        Mon, 15 Apr 2024 12:47:16 -0700 (PDT)
-Received: from [172.30.205.18] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id bi22-20020a0565120e9600b00518a2206654sm789809lfb.77.2024.04.15.12.47.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 12:47:15 -0700 (PDT)
-Message-ID: <ea0275bb-5520-41cb-be7e-71c00aa8fabf@linaro.org>
-Date: Mon, 15 Apr 2024 21:47:12 +0200
+	s=arc-20240116; t=1713211455; c=relaxed/simple;
+	bh=pr/4/oQR+r5R/l6P0ikxCsCgBmbd6uWclml/OEa3wn8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lD91ThPMtecUp60WrjXI9m6daeZE9VgqoB6D8Zq9Gj3svsIKJy7ukxTI6xawxiyu5UOhettSJ7NhvEWnXA3VI7xy+QTZjLvLAqMEOTio+CXNwsamf98fJbPXNg+bGgJKQVmXERhSgSFi+M0viHoHNAXIBSf/oK6VkW8exN+njIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RlfM4LcJ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713211452;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfn+y1J1zY2Ja72aghi8awXYV9tGOwVsfBqRShbrfOE=;
+	b=RlfM4LcJWpRK3l2eWVJ8rZOy6AbRKLhvfE1M5jx+thmjwN7edcuC3QtwA4Hy1M8egi7tZ0
+	SXYgzSFOkRBME97PFUuOXN41Ke/CiJMJICh1k8LW4lTzGPGmNgcSSDcbbuBptFoh9ykMaY
+	1IkYsFMwb0sxgIqIIiIZpSbf+qYkxFw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-620-9efXX8AHOMmW2BIjYR2LjQ-1; Mon,
+ 15 Apr 2024 16:04:07 -0400
+X-MC-Unique: 9efXX8AHOMmW2BIjYR2LjQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 764111C0513D;
+	Mon, 15 Apr 2024 20:04:06 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 9C1312166B32;
+	Mon, 15 Apr 2024 20:04:05 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id BFE67401801CE; Mon, 15 Apr 2024 16:47:13 -0300 (-03)
+Date: Mon, 15 Apr 2024 16:47:13 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Message-ID: <Zh2EQVj5bC0z5R90@tpad>
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad>
+ <ZhAN28BcMsfl4gm-@google.com>
+ <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+ <ZhQmaEXPCqmx1rTW@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 2/4] input: pm8xxx-vibrator: refactor to support new
- SPMI vibrator
-To: quic_fenglinw@quicinc.com, kernel@quicinc.com,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240412-pm8xxx-vibrator-new-design-v10-0-0ec0ad133866@quicinc.com>
- <20240412-pm8xxx-vibrator-new-design-v10-2-0ec0ad133866@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240412-pm8xxx-vibrator-new-design-v10-2-0ec0ad133866@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhQmaEXPCqmx1rTW@google.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-
-
-On 4/12/24 14:36, Fenglin Wu via B4 Relay wrote:
-> From: Fenglin Wu <quic_fenglinw@quicinc.com>
+On Mon, Apr 08, 2024 at 10:16:24AM -0700, Sean Christopherson wrote:
+> On Fri, Apr 05, 2024, Paul E. McKenney wrote:
+> > On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
+> > > On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
+> > > > rcuc wakes up (which might exceed the allowed latency threshold
+> > > > for certain realtime apps).
+> > > 
+> > > Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
+> > > a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
+> > > enter a guest, but the CPU never does (at least, not in the immediate future).
+> > > 
+> > > Or am I just not understanding how RCU's kthreads work?
+> > 
+> > It is quite possible that the current rcu_pending() code needs help,
+> > given the possibility of vCPU preemption.  I have heard of people doing
+> > nested KVM virtualization -- or is that no longer a thing?
 > 
-> Currently, vibrator control register addresses are hard coded,
-> including the base address and offsets, it's not flexible to
-> support new SPMI vibrator module which is usually included in
-> different PMICs with different base address. Refactor it by using
-> the base address defined in devicetree.
+> Nested virtualization is still very much a thing, but I don't see how it is at
+> all unique with respect to RCU grace periods and quiescent states.  More below.
 > 
-> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
-> ---
+> > But the help might well involve RCU telling the hypervisor that a given
+> > vCPU needs to run.  Not sure how that would go over, though it has been
+> > prototyped a couple times in the context of RCU priority boosting.
+> >
+> > > > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> > > > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> > > > > >     grace period started over than a second ago. If this value is bad,
+> > > > > >     I have no issue changing it.
+> > > > > 
+> > > > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> > > > > of what magic time threshold is used.  
+> > > > 
+> > > > Why? It works for this particular purpose.
+> > > 
+> > > Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
+> > > against edge cases, and I'm pretty sure we can do better with about the same amount
+> > > of effort/churn.
+> > 
+> > Beyond a certain point, we have no choice.  How long should RCU let
+> > a CPU run with preemption disabled before complaining?  We choose 21
+> > seconds in mainline and some distros choose 60 seconds.  Android chooses
+> > 20 milliseconds for synchronize_rcu_expedited() grace periods.
+> 
+> Issuing a warning based on an arbitrary time limit is wildly different than using
+> an arbitrary time window to make functional decisions.  My objection to the "assume
+> the CPU will enter a quiescent state if it exited a KVM guest in the last second"
+> is that there are plenty of scenarios where that assumption falls apart, i.e. where
+> _that_ physical CPU will not re-enter the guest.
+> 
+> Off the top of my head:
+> 
+>  - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
+>    will get false positives, and the *new* pCPU will get false negatives (though
+>    the false negatives aren't all that problematic since the pCPU will enter a
+>    quiescent state on the next VM-Enter.
+> 
+>  - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
+>    won't re-enter the guest.  And so the pCPU will get false positives until the
+>    vCPU gets a wake event or the 1 second window expires.
+> 
+>  - If the VM terminates, the pCPU will get false positives until the 1 second
+>    window expires.
+> 
+> The false positives are solvable problems, by hooking vcpu_put() to reset
+> kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
+> scheduled in on a different pCPU, KVM would hook vcpu_load().
 
-[...]
+Hi Sean,
 
->   static const struct pm8xxx_regs pm8058_regs = {
-> -	.drv_addr = 0x4A,
-> +	.drv_offset = 0,
->   	.drv_mask = 0xf8,
+So this should deal with it? (untested, don't apply...).
 
-Since you're nearby anyway:
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 48f31dcd318a..be90d83d631a 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -477,6 +477,16 @@ static __always_inline void guest_state_enter_irqoff(void)
+ 	lockdep_hardirqs_on(CALLER_ADDR0);
+ }
+ 
++DECLARE_PER_CPU(unsigned long, kvm_last_guest_exit);
++
++/*
++ * Returns time (jiffies) for the last guest exit in current cpu
++ */
++static inline unsigned long guest_exit_last_time(void)
++{
++	return this_cpu_read(kvm_last_guest_exit);
++}
++
+ /*
+  * Exit guest context and exit an RCU extended quiescent state.
+  *
+@@ -488,6 +498,9 @@ static __always_inline void guest_state_enter_irqoff(void)
+ static __always_inline void guest_context_exit_irqoff(void)
+ {
+ 	context_tracking_guest_exit();
++
++	/* Keeps track of last guest exit */
++	this_cpu_write(kvm_last_guest_exit, jiffies);
+ }
+ 
+ /*
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index fb49c2a60200..231d0e4d2cf1 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -110,6 +110,9 @@ static struct kmem_cache *kvm_vcpu_cache;
+ static __read_mostly struct preempt_ops kvm_preempt_ops;
+ static DEFINE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
+ 
++DEFINE_PER_CPU(unsigned long, kvm_last_guest_exit);
++EXPORT_SYMBOL_GPL(kvm_last_guest_exit);
++
+ struct dentry *kvm_debugfs_dir;
+ EXPORT_SYMBOL_GPL(kvm_debugfs_dir);
+ 
+@@ -210,6 +213,7 @@ void vcpu_load(struct kvm_vcpu *vcpu)
+ 	int cpu = get_cpu();
+ 
+ 	__this_cpu_write(kvm_running_vcpu, vcpu);
++	__this_cpu_write(kvm_last_guest_exit, 0);
+ 	preempt_notifier_register(&vcpu->preempt_notifier);
+ 	kvm_arch_vcpu_load(vcpu, cpu);
+ 	put_cpu();
+@@ -222,6 +226,7 @@ void vcpu_put(struct kvm_vcpu *vcpu)
+ 	kvm_arch_vcpu_put(vcpu);
+ 	preempt_notifier_unregister(&vcpu->preempt_notifier);
+ 	__this_cpu_write(kvm_running_vcpu, NULL);
++	__this_cpu_write(kvm_last_guest_exit, 0);
+ 	preempt_enable();
+ }
+ EXPORT_SYMBOL_GPL(vcpu_put);
 
-GENMASK(7, 3)
-
->   	.drv_shift = 3,
->   	.drv_en_manual_mask = 0xfc,
->   };
->   
->   static struct pm8xxx_regs pm8916_regs = {
-> -	.enable_addr = 0xc046,
-> +	.enable_offset = 0x46,
->   	.enable_mask = BIT(7),
-> -	.drv_addr = 0xc041,
-> -	.drv_mask = 0x1F,
-> +	.drv_offset = 0x41,
-> +	.drv_mask = 0x1f,
-
-GENMASK(4, 0)
-
-[...]
-
->   
-> +	error = fwnode_property_read_u32(pdev->dev.fwnode, "reg", &reg_base);
-> +	if (error < 0) {
-> +		dev_err(&pdev->dev, "Failed to read reg address, rc=%d\n", error);
-> +		return error;
-
-return dev_err_probe() instead
-
-Konrad
 
