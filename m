@@ -1,562 +1,288 @@
-Return-Path: <linux-kernel+bounces-145755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1589B8A5A67
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:13:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E968A5A6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:14:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C090F281C38
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:13:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B87C1F22D19
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:14:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813B9155A3C;
-	Mon, 15 Apr 2024 19:12:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F99156231;
+	Mon, 15 Apr 2024 19:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sfU4pnDx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ijNU2v8W"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A31D15575F;
-	Mon, 15 Apr 2024 19:12:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4127B219EA
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713208377; cv=none; b=B+5tnJ/kqE6ymRqOjZDqDdYPdikrB9IoGiqU7LMmSqnlfBz+zR01gZgmUqw45mvo7Xvl+xFbBvhKexwX6wWhw2uJpbxP3CcYRihPEDOVKhPTpP8Is2goYvq/JDbv3RkkpWSqjzrzaBx0EI1Nw0VflKadJ4JUU7T9i78HkPau5kg=
+	t=1713208450; cv=none; b=j7WDoT74bJaFGGUnEp8YsHW+8FI1o51t/f5GUgXpTi76sdjKHVjdgdDUZKfQXMdk0Q412HfXFo+ddLYOL8QBpc9h6glI4skQkQtofSdiKayxvuAl9nYchFUh86Yev+3QL6RGBnH67T1/K/D3YOzgDKZHIBXDwhQVYeP+LRDnslI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713208377; c=relaxed/simple;
-	bh=ICp5rmxWe7FWUej/nnllTpqvza8bTHzvopCLeKc0cP0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=XA6V5AaHFPZXGc8TNy+sLIS2apGpRoLP9YyIsI+YnNQkYA0zo0FcDHIy5o3WONvBtCeVyBAamQrB1IdoVtsS8uAeN0qHwNcr9meiSgLyEbFaHH5Bs3S0EUZyugUzWdh9H5Ak29AKC9y9PAgpPpmOwzKOvJ06O1G5bSi79YWYk4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sfU4pnDx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50021C113CC;
-	Mon, 15 Apr 2024 19:12:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713208376;
-	bh=ICp5rmxWe7FWUej/nnllTpqvza8bTHzvopCLeKc0cP0=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=sfU4pnDxix7rjkQ5ba0XZzLb6qF6f0VRbPvUMohFLBoc1ZN2I9jmJ3ND/wW5hBliV
-	 sAww3Z7NXBawQTu3D17NMkCo69kSnQTFaJZJnayaoNXErbQ9fVFgJAriMClv8u+Wqh
-	 TGu1MCxBUDTllmMZYTAtI/lCZQWZgHF/nMyeyO+JlqqaIRcrLQa09JPBgy1l4NOXuM
-	 P4rCjyohxy2HsOjsX9rznnaCEcyvDMUF/jUhlyThFfSVRU/oUD+1qjhMe4RG4nQRAF
-	 n3Z/hlXsQt9TAb3DyMKx1djuEBnzO9kzRGorosNOhmQOJfl82RwqU7D7yhAWPh0TuU
-	 4kSnsf71DCaSg==
+	s=arc-20240116; t=1713208450; c=relaxed/simple;
+	bh=55Pl/vF5UQBIoZhpH0JLS80dLgybZ4QhMUjXOji3+XE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BxxBAMZx2n/FwT9X//c7NaM2ShQJ9McAHwcRuBzOMTLQ83Cl0XlbyBGg26GrYNOEmkCGwYkscg0rE2013Jcgq/PcxexrmK5l9fTB/VRzOrrUgelCNnaRU+4DEOvEiFWIXp8aUQQU1d4yJFW7018z6VZp6vQTc3Usu4mFxhO60ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ijNU2v8W; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713208448;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bMAt0oAbaTmcnLSElf/SBdLJ4dVXqKvD9eBFf4mhfOU=;
+	b=ijNU2v8WO3YNshY+4sdhmDZjvS6pdvk6vksc/ODRc9nNYrsK4LSHT+/BeDcsoEjoC7IPRd
+	7Iybx1Q3XeUqgJ70DwEczPJD2jd5wmthB98d3UavxGsUqeHns0itzRLpfBKq9/yU/vYHbn
+	4ntNSSeJu2L7jv6ssIVKA+OsFinDm2s=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-617-Y2MqCdLzMZO9qyUfqMfCdA-1; Mon, 15 Apr 2024 15:14:06 -0400
+X-MC-Unique: Y2MqCdLzMZO9qyUfqMfCdA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-416542ed388so11820535e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:14:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713208445; x=1713813245;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bMAt0oAbaTmcnLSElf/SBdLJ4dVXqKvD9eBFf4mhfOU=;
+        b=DofEP2vLMj+cvjzoa/Zgt6ZFBrmBhcpugnnEk6y37JZQzy67YF+UGM3zX8QSXetQzo
+         ibWdPaTn3UN8KvfZ8yQHEvEUbJR++U9055k15VjfBOE+4+vdR9tUiz3PN6YY5rbseJJ0
+         S9vNbidK9LKddzzKsNqc4rMyq+kAePupKcYAXPnJVU06ogbgWaakhQl8wrylTfdZUByR
+         ipc8ebslHnVKBxIkMiDd9Xe+u+/sJ8SJcTKT7RYdIEDhXPKAgFVQuFV2IqN4XzOZkB0H
+         U1WacZMI04mB/g04pF8Ylx+OoxAwI7+f6/HDwMq//pUZfxaWg/X7hdspyEigM1G7rOu6
+         z8mQ==
+X-Gm-Message-State: AOJu0YyVHXmMVKxA1nRCPDdDfatVRmYqz4UZP8rXWe7DEO3+UZe9uEF2
+	dMTFO4+NdG9FWswWg2B4heBkhkT+jhJwykih2TsU8a8AgHmHQGTMDZFP8YTXLYCADnGlsvtNOlJ
+	qVwQOkv0B3zOe0uMAOpqf9elWXFASgvNprnFnisJ+MqS/3VbAgJPkwxCmXfnkLg==
+X-Received: by 2002:a05:600c:4ed4:b0:417:caa8:c3f4 with SMTP id g20-20020a05600c4ed400b00417caa8c3f4mr9281079wmq.34.1713208445567;
+        Mon, 15 Apr 2024 12:14:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNACX+5g4v7h9bZKcNb840TnSltslTev61FDz0PyU5OepqWDJ4QOJiQHGkHdSUyQUaUBHVTw==
+X-Received: by 2002:a05:600c:4ed4:b0:417:caa8:c3f4 with SMTP id g20-20020a05600c4ed400b00417caa8c3f4mr9281051wmq.34.1713208445135;
+        Mon, 15 Apr 2024 12:14:05 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
+        by smtp.gmail.com with ESMTPSA id s12-20020a05600c45cc00b00417e8be070csm15550664wmo.9.2024.04.15.12.14.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 12:14:04 -0700 (PDT)
+Message-ID: <8533cb18-42ff-42bc-b9e5-b0537aa51b21@redhat.com>
+Date: Mon, 15 Apr 2024 21:14:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 15 Apr 2024 22:12:50 +0300
-Message-Id: <D0KXOKCTA0ZN.LWGRWL76XBQR@kernel.org>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
- <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
- <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
- <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-X-Mailer: aerc 0.17.0
-References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
- <20240410182558.41467-15-haitao.huang@linux.intel.com>
- <D0JBFRTGWZV9.3TRHOTV0SCGV@kernel.org>
- <op.2l95o5tawjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2l95o5tawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV and
+ !skeys KVM guests
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>, Heiko Carstens
+ <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Peter Xu <peterx@redhat.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+ linux-s390@vger.kernel.org
+References: <20240411161441.910170-1-david@redhat.com>
+ <20240411161441.910170-3-david@redhat.com>
+ <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon Apr 15, 2024 at 8:32 PM EEST, Haitao Huang wrote:
-> On Sat, 13 Apr 2024 16:34:17 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
-=20
-> wrote:
->
-> > On Wed Apr 10, 2024 at 9:25 PM EEST, Haitao Huang wrote:
-> >> To run selftests for EPC cgroup:
-> >>
-> >> sudo ./run_epc_cg_selftests.sh
-> >>
-> >> To watch misc cgroup 'current' changes during testing, run this in a
-> >> separate terminal:
-> >>
-> >> ./watch_misc_for_tests.sh current
-> >>
-> >> With different cgroups, the script starts one or multiple concurrent S=
-GX
-> >> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
-> >> test case, which loads an enclave of EPC size equal to the EPC capacit=
-y
-> >> available on the platform. The script checks results against the
-> >> expectation set for each cgroup and reports success or failure.
-> >>
-> >> The script creates 3 different cgroups at the beginning with following
-> >> expectations:
-> >>
-> >> 1) SMALL - intentionally small enough to fail the test loading an
-> >> enclave of size equal to the capacity.
-> >> 2) LARGE - large enough to run up to 4 concurrent tests but fail some =
-if
-> >> more than 4 concurrent tests are run. The script starts 4 expecting at
-> >> least one test to pass, and then starts 5 expecting at least one test
-> >> to fail.
-> >> 3) LARGER - limit is the same as the capacity, large enough to run lot=
-s =20
-> >> of
-> >> concurrent tests. The script starts 8 of them and expects all pass.
-> >> Then it reruns the same test with one process randomly killed and
-> >> usage checked to be zero after all processes exit.
-> >>
-> >> The script also includes a test with low mem_cg limit and LARGE sgx_ep=
-c
-> >> limit to verify that the RAM used for per-cgroup reclamation is charge=
-d
-> >> to a proper mem_cg. For this test, it turns off swapping before start,
-> >> and turns swapping back on afterwards.
-> >>
-> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> >> ---
-> >> V11:
-> >> - Remove cgroups-tools dependency and make scripts ash compatible. =20
-> >> (Jarkko)
-> >> - Drop support for cgroup v1 and simplify. (Michal, Jarkko)
-> >> - Add documentation for functions. (Jarkko)
-> >> - Turn off swapping before memcontrol tests and back on after
-> >> - Format and style fixes, name for hard coded values
-> >>
-> >> V7:
-> >> - Added memcontrol test.
-> >>
-> >> V5:
-> >> - Added script with automatic results checking, remove the interactive
-> >> script.
-> >> - The script can run independent from the series below.
-> >> ---
-> >>  tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
-> >>  .../selftests/sgx/run_epc_cg_selftests.sh     | 275 +++++++++++++++++=
-+
-> >>  .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
-> >>  3 files changed, 302 insertions(+)
-> >>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
-> >>  create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.s=
-h
-> >>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.s=
-h
-> >>
-> >> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh =20
-> >> b/tools/testing/selftests/sgx/ash_cgexec.sh
-> >> new file mode 100755
-> >> index 000000000000..cfa5d2b0e795
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
-> >> @@ -0,0 +1,16 @@
-> >> +#!/usr/bin/env sh
-> >> +# SPDX-License-Identifier: GPL-2.0
-> >> +# Copyright(c) 2024 Intel Corporation.
-> >> +
-> >> +# Start a program in a given cgroup.
-> >> +# Supports V2 cgroup paths, relative to /sys/fs/cgroup
-> >> +if [ "$#" -lt 2 ]; then
-> >> +    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
-> >> +    exit 1
-> >> +fi
-> >> +# Move this shell to the cgroup.
-> >> +echo 0 >/sys/fs/cgroup/$1/cgroup.procs
-> >> +shift
-> >> +# Execute the command within the cgroup
-> >> +exec "$@"
-> >> +
-> >> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh =20
-> >> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> >> new file mode 100755
-> >> index 000000000000..dd56273056fc
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> >> @@ -0,0 +1,275 @@
-> >> +#!/usr/bin/env sh
-> >> +# SPDX-License-Identifier: GPL-2.0
-> >> +# Copyright(c) 2023, 2024 Intel Corporation.
-> >> +
-> >> +TEST_ROOT_CG=3Dselftest
-> >> +TEST_CG_SUB1=3D$TEST_ROOT_CG/test1
-> >> +TEST_CG_SUB2=3D$TEST_ROOT_CG/test2
-> >> +# We will only set limit in test1 and run tests in test3
-> >> +TEST_CG_SUB3=3D$TEST_ROOT_CG/test1/test3
-> >> +TEST_CG_SUB4=3D$TEST_ROOT_CG/test4
-> >> +
-> >> +# Cgroup v2 only
-> >> +CG_ROOT=3D/sys/fs/cgroup
-> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB1
-> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB2
-> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB3
-> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB4
-> >> +
-> >> +# Turn on misc and memory controller in non-leaf nodes
-> >> +echo "+misc" >  $CG_ROOT/cgroup.subtree_control && \
-> >> +echo "+memory" > $CG_ROOT/cgroup.subtree_control && \
-> >> +echo "+misc" >  $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
-> >> +echo "+memory" > $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
-> >> +echo "+misc" >  $CG_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
-> >> +if [ $? -ne 0 ]; then
-> >> +    echo "# Failed setting up cgroups, make sure misc and memory =20
-> >> cgroups are enabled."
-> >> +    exit 1
-> >> +fi
-> >> +
-> >> +CAPACITY=3D$(grep "sgx_epc" "$CG_ROOT/misc.capacity" | awk '{print $2=
-}')
-> >> +# This is below number of VA pages needed for enclave of capacity =20
-> >> size. So
-> >> +# should fail oversubscribed cases
-> >> +SMALL=3D$(( CAPACITY / 512 ))
-> >> +
-> >> +# At least load one enclave of capacity size successfully, maybe up t=
-o =20
-> >> 4.
-> >> +# But some may fail if we run more than 4 concurrent enclaves of =20
-> >> capacity size.
-> >> +LARGE=3D$(( SMALL * 4 ))
-> >> +
-> >> +# Load lots of enclaves
-> >> +LARGER=3D$CAPACITY
-> >> +echo "# Setting up limits."
-> >> +echo "sgx_epc $SMALL" > $CG_ROOT/$TEST_CG_SUB1/misc.max && \
-> >> +echo "sgx_epc $LARGE" >  $CG_ROOT/$TEST_CG_SUB2/misc.max && \
-> >> +echo "sgx_epc $LARGER" > $CG_ROOT/$TEST_CG_SUB4/misc.max
-> >> +if [ $? -ne 0 ]; then
-> >> +    echo "# Failed setting up misc limits."
-> >> +    exit 1
-> >> +fi
-> >> +
-> >> +clean_up()
-> >> +{
-> >> +    sleep 2
-> >> +    rmdir $CG_ROOT/$TEST_CG_SUB2
-> >> +    rmdir $CG_ROOT/$TEST_CG_SUB3
-> >> +    rmdir $CG_ROOT/$TEST_CG_SUB4
-> >> +    rmdir $CG_ROOT/$TEST_CG_SUB1
-> >> +    rmdir $CG_ROOT/$TEST_ROOT_CG
-> >> +}
-> >> +
-> >> +timestamp=3D$(date +%Y%m%d_%H%M%S)
-> >> +
-> >> +test_cmd=3D"./test_sgx -t unclobbered_vdso_oversubscribed"
-> >> +
-> >> +PROCESS_SUCCESS=3D1
-> >> +PROCESS_FAILURE=3D0
-> >> +
-> >> +# Wait for a process and check for expected exit status.
-> >> +#
-> >> +# Arguments:
-> >> +#	$1 - the pid of the process to wait and check.
-> >> +#	$2 - 1 if expecting success, 0 for failure.
-> >> +#
-> >> +# Return:
-> >> +#	0 if the exit status of the process matches the expectation.
-> >> +#	1 otherwise.
-> >> +wait_check_process_status() {
-> >> +    pid=3D$1
-> >> +    check_for_success=3D$2
-> >> +
-> >> +    wait "$pid"
-> >> +    status=3D$?
-> >> +
-> >> +    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq 0=
- =20
-> >> ]; then
-> >> +        echo "# Process $pid succeeded."
-> >> +        return 0
-> >> +    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status -ne=
- =20
-> >> 0 ]; then
-> >> +        echo "# Process $pid returned failure."
-> >> +        return 0
-> >> +    fi
-> >> +    return 1
-> >> +}
-> >> +
-> >> +# Wait for a set of processes and check for expected exit status
-> >> +#
-> >> +# Arguments:
-> >> +#	$1 - 1 if expecting success, 0 for failure.
-> >> +#	remaining args - The pids of the processes
-> >> +#
-> >> +# Return:
-> >> +#	0 if exit status of any process matches the expectation.
-> >> +#	1 otherwise.
-> >> +wait_and_detect_for_any() {
-> >> +    check_for_success=3D$1
-> >> +
-> >> +    shift
-> >> +    detected=3D1 # 0 for success detection
-> >> +
-> >> +    for pid in $@; do
-> >> +        if wait_check_process_status "$pid" "$check_for_success"; the=
-n
-> >> +            detected=3D0
-> >> +            # Wait for other processes to exit
-> >> +        fi
-> >> +    done
-> >> +
-> >> +    return $detected
-> >> +}
-> >> +
-> >> +echo "# Start unclobbered_vdso_oversubscribed with SMALL limit, =20
-> >> expecting failure..."
-> >> +# Always use leaf node of misc cgroups
-> >> +# these may fail on OOM
-> >> +./ash_cgexec.sh $TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log =
-=20
-> >> 2>&1
-> >> +if [ $? -eq 0 ]; then
-> >> +    echo "# Fail on SMALL limit, not expecting any test passes."
-> >> +    clean_up
-> >> +    exit 1
-> >> +else
-> >> +    echo "# Test failed as expected."
-> >> +fi
-> >> +
-> >> +echo "# PASSED SMALL limit."
-> >> +
-> >> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with=
- =20
-> >> LARGE limit,
-> >> +        expecting at least one success...."
-> >> +
-> >> +pids=3D""
-> >> +for i in 1 2 3 4; do
-> >> +    (
-> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd =20
-> >> >cgtest_large_positive_$timestamp.$i.log 2>&1
-> >> +    ) &
-> >> +    pids=3D"$pids $!"
-> >> +done
-> >> +
-> >> +
-> >> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
-> >> +    echo "# PASSED LARGE limit positive testing."
-> >> +else
-> >> +    echo "# Failed on LARGE limit positive testing, no test passes."
-> >> +    clean_up
-> >> +    exit 1
-> >> +fi
-> >> +
-> >> +echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with=
- =20
-> >> LARGE limit,
-> >> +        expecting at least one failure...."
-> >> +pids=3D""
-> >> +for i in 1 2 3 4 5; do
-> >> +    (
-> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd =20
-> >> >cgtest_large_negative_$timestamp.$i.log 2>&1
-> >> +    ) &
-> >> +    pids=3D"$pids $!"
-> >> +done
-> >> +
-> >> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
-> >> +    echo "# PASSED LARGE limit negative testing."
-> >> +else
-> >> +    echo "# Failed on LARGE limit negative testing, no test fails."
-> >> +    clean_up
-> >> +    exit 1
-> >> +fi
-> >> +
-> >> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with=
- =20
-> >> LARGER limit,
-> >> +        expecting no failure...."
-> >> +pids=3D""
-> >> +for i in 1 2 3 4 5 6 7 8; do
-> >> +    (
-> >> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd =20
-> >> >cgtest_larger_$timestamp.$i.log 2>&1
-> >> +    ) &
-> >> +    pids=3D"$pids $!"
-> >> +done
-> >> +
-> >> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
-> >> +    echo "# Failed on LARGER limit, at least one test fails."
-> >> +    clean_up
-> >> +    exit 1
-> >> +else
-> >> +    echo "# PASSED LARGER limit tests."
-> >> +fi
-> >> +
-> >> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with=
- =20
-> >> LARGER limit,
-> >> +      randomly kill one, expecting no failure...."
-> >> +pids=3D""
-> >> +for i in 1 2 3 4 5 6 7 8; do
-> >> +    (
-> >> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd =20
-> >> >cgtest_larger_kill_$timestamp.$i.log 2>&1
-> >> +    ) &
-> >> +    pids=3D"$pids $!"
-> >> +done
-> >> +random_number=3D$(awk 'BEGIN{srand();print int(rand()*5)}')
-> >> +sleep $((random_number + 1))
-> >> +
-> >> +# Randomly select a process to kill
-> >> +# Make sure usage counter not leaked at the end.
-> >> +RANDOM_INDEX=3D$(awk 'BEGIN{srand();print int(rand()*8)}')
-> >> +counter=3D0
-> >> +for pid in $pids; do
-> >> +    if [ "$counter" -eq "$RANDOM_INDEX" ]; then
-> >> +        PID_TO_KILL=3D$pid
-> >> +        break
-> >> +    fi
-> >> +    counter=3D$((counter + 1))
-> >> +done
-> >> +
-> >> +kill $PID_TO_KILL
-> >> +echo "# Killed process with PID: $PID_TO_KILL"
-> >> +
-> >> +any_failure=3D0
-> >> +for pid in $pids; do
-> >> +    wait "$pid"
-> >> +    status=3D$?
-> >> +    if [ "$pid" !=3D "$PID_TO_KILL" ]; then
-> >> +        if [ $status -ne 0 ]; then
-> >> +	    echo "# Process $pid returned failure."
-> >> +            any_failure=3D1
-> >> +        fi
-> >> +    fi
-> >> +done
-> >> +
-> >> +if [ $any_failure -ne 0 ]; then
-> >> +    echo "# Failed on random killing, at least one test fails."
-> >> +    clean_up
-> >> +    exit 1
-> >> +fi
-> >> +echo "# PASSED LARGER limit test with a process randomly killed."
-> >> +
-> >> +MEM_LIMIT_TOO_SMALL=3D$((CAPACITY - 2 * LARGE))
-> >> +
-> >> +echo "$MEM_LIMIT_TOO_SMALL" > $CG_ROOT/$TEST_CG_SUB2/memory.max
-> >> +if [ $? -ne 0 ]; then
-> >> +    echo "# Failed creating memory controller."
-> >> +    clean_up
-> >> +    exit 1
-> >> +fi
-> >> +
-> >> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with=
- =20
-> >> LARGE EPC limit,
-> >> +        and too small RAM limit, expecting all failures...."
-> >> +# Ensure swapping off so the OOM killer is activated when mem_cgroup =
-=20
-> >> limit is hit.
-> >> +swapoff -a
-> >> +pids=3D""
-> >> +for i in 1 2 3 4; do
-> >> +    (
-> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd =20
-> >> >cgtest_large_oom_$timestamp.$i.log 2>&1
-> >> +    ) &
-> >> +    pids=3D"$pids $!"
-> >> +done
-> >> +
-> >> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
-> >> +    echo "# Failed on tests with memcontrol, some tests did not fail.=
-"
-> >> +    clean_up
-> >> +    swapon -a
-> >> +    exit 1
-> >> +else
-> >> +    swapon -a
-> >> +    echo "# PASSED LARGE limit tests with memcontrol."
-> >> +fi
-> >> +
-> >> +sleep 2
-> >> +
-> >> +USAGE=3D$(grep '^sgx_epc' "$CG_ROOT/$TEST_ROOT_CG/misc.current" | awk=
- =20
-> >> '{print $2}')
-> >> +if [ "$USAGE" -ne 0 ]; then
-> >> +    echo "# Failed: Final usage is $USAGE, not 0."
-> >> +else
-> >> +    echo "# PASSED leakage check."
-> >> +    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
-> >> +fi
-> >> +clean_up
-> >> +echo "# done."
-> >> diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh =20
-> >> b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-> >> new file mode 100755
-> >> index 000000000000..1c9985726ace
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-> >> @@ -0,0 +1,11 @@
-> >> +#!/usr/bin/env sh
-> >> +# SPDX-License-Identifier: GPL-2.0
-> >> +# Copyright(c) 2023, 2024 Intel Corporation.
-> >> +
-> >> +if [ -z "$1" ]; then
-> >> +    echo "No argument supplied, please provide 'max', 'current', or =
-=20
-> >> 'events'"
-> >> +    exit 1
-> >> +fi
-> >> +
-> >> +watch -n 1 'find /sys/fs/cgroup -wholename "*/test*/misc.'$1'" -exec =
-\
-> >> +    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
-> >
-> > I'll compile the kernel with this and see what happens!
-> >
-> > Have you tried to run the test suite from top-level? This is just a
-> > sanity check. I've few times forgot to do this so thus asking :-)
-> >
-> > BR, Jarkko
-> >
->
-> I added following on =20
-> https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v11_plus
-> Please update to run from top-level.
->
-> --- a/tools/testing/selftests/sgx/Makefile
-> +++ b/tools/testing/selftests/sgx/Makefile
-> @@ -20,7 +20,8 @@ ENCL_LDFLAGS :=3D -Wl,-T,test_encl.lds,--build-id=3Dnon=
-e
->
->   ifeq ($(CAN_BUILD_X86_64), 1)
->   TEST_CUSTOM_PROGS :=3D $(OUTPUT)/test_sgx
-> -TEST_FILES :=3D $(OUTPUT)/test_encl.elf
-> +TEST_FILES :=3D $(OUTPUT)/test_encl.elf ash_cgexec.sh
-> +TEST_PROGS :=3D run_epc_cg_selftests.sh
->
->   all: $(TEST_CUSTOM_PROGS) $(OUTPUT)/test_encl.elf
->   endif
->
-> ...
->
-> index dd56273056fc..ba0451fc16bc 100755
-> --- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> @@ -2,6 +2,14 @@
->   # SPDX-License-Identifier: GPL-2.0
->   # Copyright(c) 2023, 2024 Intel Corporation.
->
-> +
-> +# Kselftest framework requirement - SKIP code is 4.
-> +ksft_skip=3D4
-> +if [ "$(id -u)" -ne 0 ]; then
-> +    echo "SKIP: SGX Cgroup tests need root priviledges."
-> +    exit $ksft_skip
-> +fi
-> +
->   TEST_ROOT_CG=3Dselftest
->
-> Thanks
-> Haitao
+On 15.04.24 20:24, Alexander Gordeev wrote:
+> On Thu, Apr 11, 2024 at 06:14:41PM +0200, David Hildenbrand wrote:
+> 
+> David, could you please clarify the below questions?
 
-OK, I'll move this mail to my TODO folder and try to get it
-tested asap.
+Sure, let me take a look if we're still missing to handle some corner cases correctly.
 
-BR, Jarkko
+> 
+>> +static int __s390_unshare_zeropages(struct mm_struct *mm)
+>> +{
+>> +	struct vm_area_struct *vma;
+>> +	VMA_ITERATOR(vmi, mm, 0);
+>> +	unsigned long addr;
+>> +	int rc;
+>> +
+>> +	for_each_vma(vmi, vma) {
+>> +		/*
+>> +		 * We could only look at COW mappings, but it's more future
+>> +		 * proof to catch unexpected zeropages in other mappings and
+>> +		 * fail.
+>> +		 */
+>> +		if ((vma->vm_flags & VM_PFNMAP) || is_vm_hugetlb_page(vma))
+>> +			continue;
+>> +		addr = vma->vm_start;
+>> +
+>> +retry:
+>> +		rc = walk_page_range_vma(vma, addr, vma->vm_end,
+>> +					 &find_zeropage_ops, &addr);
+>> +		if (rc <= 0)
+>> +			continue;
+> 
+> So in case an error is returned for the last vma, __s390_unshare_zeropage()
+> finishes with that error. By contrast, the error for a non-last vma would
+> be ignored?
+
+Right, it looks a bit off. walk_page_range_vma() shouldn't fail
+unless find_zeropage_pte_entry() would fail -- which would also be
+very unexpected.
+
+To handle it cleanly in case we would ever get a weird zeropage where we
+don't expect it, we should probably just exit early.
+
+Something like the following (not compiled, addressing the comment below):
+
+
+ From b97cd17a3697ac402b07fe8d0033f3c10fbd6829 Mon Sep 17 00:00:00 2001
+From: David Hildenbrand <david@redhat.com>
+Date: Mon, 15 Apr 2024 20:56:20 +0200
+Subject: [PATCH] fixup
+
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+  arch/s390/mm/gmap.c | 13 ++++++++-----
+  1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index 9233b0acac89..3e3322a9cc32 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -2618,7 +2618,8 @@ static int __s390_unshare_zeropages(struct mm_struct *mm)
+  	struct vm_area_struct *vma;
+  	VMA_ITERATOR(vmi, mm, 0);
+  	unsigned long addr;
+-	int rc;
++	vm_fault_t rc;
++	int zero_page;
+  
+  	for_each_vma(vmi, vma) {
+  		/*
+@@ -2631,9 +2632,11 @@ static int __s390_unshare_zeropages(struct mm_struct *mm)
+  		addr = vma->vm_start;
+  
+  retry:
+-		rc = walk_page_range_vma(vma, addr, vma->vm_end,
+-					 &find_zeropage_ops, &addr);
+-		if (rc <= 0)
++		zero_page = walk_page_range_vma(vma, addr, vma->vm_end,
++						&find_zeropage_ops, &addr);
++		if (zero_page < 0)
++			return zero_page;
++		else if (!zero_page)
+  			continue;
+  
+  		/* addr was updated by find_zeropage_pte_entry() */
+@@ -2656,7 +2659,7 @@ static int __s390_unshare_zeropages(struct mm_struct *mm)
+  		goto retry;
+  	}
+  
+-	return rc;
++	return 0;
+  }
+  
+  static int __s390_disable_cow_sharing(struct mm_struct *mm)
+-- 
+2.44.0
+
+
+
+> 
+>> +
+>> +		/* addr was updated by find_zeropage_pte_entry() */
+>> +		rc = handle_mm_fault(vma, addr,
+>> +				     FAULT_FLAG_UNSHARE | FAULT_FLAG_REMOTE,
+>> +				     NULL);
+>> +		if (rc & VM_FAULT_OOM)
+>> +			return -ENOMEM;
+> 
+> Heiko pointed out that rc type is inconsistent vs vm_fault_t returned by
+
+Right, let's use another variable for that.
+
+> handle_mm_fault(). While fixing it up, I've got concerned whether is it
+> fine to continue in case any other error is met (including possible future
+> VM_FAULT_xxxx)?
+
+Such future changes would similarly break break_ksm(). Staring at it, I do wonder
+if break_ksm() should be handling VM_FAULT_HWPOISON ... very likely we should
+handle it and fail -- we might get an MC while copying from the source page.
+
+VM_FAULT_HWPOISON on the shared zeropage would imply a lot of trouble, so
+I'm not concerned about that for the case here, but handling it in the future
+would be cleaner.
+
+Note that we always retry the lookup, so we won't just skip a zeropage on unexpected
+errors.
+
+We could piggy-back on vm_fault_to_errno(). We could use
+vm_fault_to_errno(rc, FOLL_HWPOISON), and only continue (retry) if the rc is 0 or
+-EFAULT, otherwise fail with the returned error.
+
+But I'd do that as a follow up, and also use it in break_ksm() in the same fashion.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
