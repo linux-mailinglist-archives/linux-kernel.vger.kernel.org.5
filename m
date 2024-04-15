@@ -1,120 +1,91 @@
-Return-Path: <linux-kernel+bounces-145331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1FC08A52E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:18:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86D4F8A52EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:18:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F40181C21F56
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C1DA2852D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64117757FC;
-	Mon, 15 Apr 2024 14:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1667757E1;
+	Mon, 15 Apr 2024 14:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="GxYCA+wE"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b="Kq8Hix0p"
+Received: from outbound6.mail.transip.nl (outbound6.mail.transip.nl [136.144.136.128])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5270574E11
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:18:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33F873175;
+	Mon, 15 Apr 2024 14:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.136.128
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713190690; cv=none; b=gXGmEzWDgOARzJJljSgY3N5ghCgM2gogU4jZjF3TDsVOKAT514B3V1jd2erN9HuEQqr4dGBFcWu5EvpqZvPKo1PG38ppA2JMtky5BnSculpJu1ecMOV3jGY4VOSGCzSaomdZu8d0iSQz1jmexPfs059i5VsKoDatfgC0FPab8ZQ=
+	t=1713190706; cv=none; b=lpHs7pw221YsYRYAMZbK3XO7RNwzF0WcDSaItLTd54ZeVPdk/S17mdbnxjCYH1ojYZHwYCAb09iuUNku5TdxI7heOGddhbh4FwK3gXQoW9cbIqRBf0pzkKQT9RfwgDez6c0XGN2Wa3l3X1OfI7TH1BeijlABBG60zCLKLoft0wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713190690; c=relaxed/simple;
-	bh=s7Xj9xi+J3VOaPxS9cliZyr2iTz57B5HKKp5IrSvKlo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mk4XgFkBBd7YthUjvKnmuWipSmLYC91r2w10aJeTvMJm6X+pbOod0+uYYSajt1oXckluRoa/vlOxsfJq9IlO5mZ2XDlvNHSKILb0pkDzUbVLLrkT7yrRaiwRtAvNXVYHYTH8Pwv76JTruRkAiTRkAwnhOO4Jov9K+fC/LMT9P78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=GxYCA+wE; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-61ad5f2c231so9366467b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1713190688; x=1713795488; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mqqqjCa8OZ82zdxbWAvkpK8zvR3ppQ2NndSIF2x4rXo=;
-        b=GxYCA+wEVdEIjjWzJWYg+WtDHHIliDSd8tKsr7BV7/MNn1GAfzIGGsjaYd1K1nC47x
-         vSDYX4sAGl3dWOguqWAOzQsiR3l2a5GCXoMgNM60CbTbnQU4DYOtkdtqEGzpNJ1M0YZG
-         uQw5KNJcmYoJdcaPUXYHVNp3fe+w7CGUJ/SPJ96v3rXFwkPh6f3QXK91XZOF32M12JQC
-         Ji8q8ysobl0MyXu0MqYf8ztHm+RuXlZSrC84cqaRtpeht1x8CxcwMPIAYXaT4Z+hGC7+
-         rVG2YJ4JyNKKpzlG7HNhuL8+NZugo/5Ayugwl9nKzsB0LSuLDrRKrkXS0JcMorbjGX6N
-         OF+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713190688; x=1713795488;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mqqqjCa8OZ82zdxbWAvkpK8zvR3ppQ2NndSIF2x4rXo=;
-        b=kXgqF8khCf0HGywzYdv//oe+ibgFMXHxZtTqVAc3wJLpvq7pq+S+BW3NKe2AKvebnl
-         IJyVEHdgWTn8mg8lSYPWAf5t28ueIUZLlECKBg5Fwp6uV590PzAFdF068agqJnXUU8sO
-         OKwEkaqUyMrdmX7RKktFXgoi3u+zrmdKUlfoTdxHHcPrpumaxliLPIyE7WxNwT9tSPQu
-         1jLsw8+5p9EdlucoQXL1R60uXk7kJAcp35zz5ZMpLiVFX49pPway0XgQKH7odYPF8Mfh
-         OXugxyRC5089coFC/omqlWFbTxso+uaylXUEZxTYxKIJ8W3nAKRwdQgWBETj8Eo7ufQF
-         9s2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV7WDUY5YfbZOOmfreuq8RjbNMr1O6QzcOR+azMdnLiWKe9nP/sqYBpMcqXoQwZomVDYmLG+RCpzYhSMw72k/IwrVL/pXcpucbtM9QC
-X-Gm-Message-State: AOJu0YydfsWIof8a/EaEX8vBQ1854Waq7UI2QBt1rcf0OgDOgpbRbKtu
-	cKdF5QiaGGMPhnQpVPQ7i2jqEwwKOC22A9qV11d5rMbA4ANRCA2OJPjkHFBTT8vB6rO1lv2XiDd
-	NUDsoK1EFID3dYby9sV1UYMtql9FtKOguogmz
-X-Google-Smtp-Source: AGHT+IFLkqpounEUU/2bE6dJh6q9whX/HjDtCGadHGTvaVHifyPAFZys4Iq+yJ+GbVJMCc2FKsEdAoulZVngTb0CJTg=
-X-Received: by 2002:a0d:eb02:0:b0:615:3996:5c86 with SMTP id
- u2-20020a0deb02000000b0061539965c86mr9873358ywe.21.1713190688256; Mon, 15 Apr
- 2024 07:18:08 -0700 (PDT)
+	s=arc-20240116; t=1713190706; c=relaxed/simple;
+	bh=KsjfUPGlpRzaRp0MgK7YOyBeifgjIE37Gi21vj0GW8A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NcpcC354fZJfALoI2vjVCp7sh7zxm0f8cmnUNAvDQgPnAvRd/y7BKzvudZGdshlOGJ4G5FqtvuVDSgkMKy19Bqs4V4v6qWIbcPVX4DCf9xePdNtnu25vnb9cxxbZT21ArtDdaYb681//0j7lQlHG2gpqPEOvnCCujGWCIBs6PfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org; spf=pass smtp.mailfrom=herrie.org; dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b=Kq8Hix0p; arc=none smtp.client-ip=136.144.136.128
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=herrie.org
+Received: from submission6.mail.transip.nl (unknown [10.103.8.157])
+	by outbound6.mail.transip.nl (Postfix) with ESMTP id 4VJ8Qy3hCFzwLJF8;
+	Mon, 15 Apr 2024 16:18:18 +0200 (CEST)
+Received: from herrie-desktop.. (110-31-146-85.ftth.glasoperator.nl [85.146.31.110])
+	by submission6.mail.transip.nl (Postfix) with ESMTPA id 4VJ8Qw0tNWz12Ly6;
+	Mon, 15 Apr 2024 16:18:16 +0200 (CEST)
+From: Herman van Hazendonk <github.com@herrie.org>
+To: andersson@kernel.org
+Cc: benwolsieffer@gmail.com,
+	chris.chapuis@gmail.com,
+	Herman van Hazendonk <github.com@herrie.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] pinctrl: qcom-ssbi: add support for PM8901
+Date: Mon, 15 Apr 2024 16:18:13 +0200
+Message-Id: <20240415141814.1983384-1-github.com@herrie.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328-jag-sysctl_remset_misc-v1-0-47c1463b3af2@samsung.com>
- <CGME20240328155911eucas1p23472e0c6505ca73df5c76fe019fdd483@eucas1p2.samsung.com>
- <20240328-jag-sysctl_remset_misc-v1-2-47c1463b3af2@samsung.com> <20240415134406.5l6ygkl55yvioxgs@joelS2.panther.com>
-In-Reply-To: <20240415134406.5l6ygkl55yvioxgs@joelS2.panther.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 15 Apr 2024 10:17:57 -0400
-Message-ID: <CAHC9VhTE+85xLytWD8LYrmdV8xcXdi-Tygy5fVvokaLCfk9bUQ@mail.gmail.com>
-Subject: Re: [PATCH 2/7] security: Remove the now superfluous sentinel element
- from ctl_table array
-To: Joel Granados <j.granados@samsung.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, 
-	Miaohe Lin <linmiaohe@huawei.com>, Naoya Horiguchi <naoya.horiguchi@nec.com>, 
-	John Johansen <john.johansen@canonical.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, David Howells <dhowells@redhat.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
-	Jens Axboe <axboe@kernel.dk>, Pavel Begunkov <asml.silence@gmail.com>, 
-	Atish Patra <atishp@atishpatra.org>, Anup Patel <anup@brainfault.org>, 
-	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Luis Chamberlain <mcgrof@kernel.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
-	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	io-uring@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: ClueGetter at submission6.mail.transip.nl
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=transip-a; d=herrie.org; t=1713190696; h=from:subject:to:cc:date:
+ mime-version; bh=4LHW9kxjWfO5y9vNvAIQy58sYhzSG2Pz9C7+L2RBBBA=;
+ b=Kq8Hix0pHcXXF2GwFOfclW1BS9wkAVu7TL5ChHqO1NzWCPOmyslVdqvOD/bmVWGpJBk/25
+ ZXDdSR0Nnla9XLQnTkoi79m3Hgdqyxt+crElakM0Xb3Z47XS7cur4lhFdR1PUFJxR3kaMZ
+ lVRmhy5FrP/OMFkpBkiuuEOcLuZk1t75VXM8Q5lhAigF6ks0D3eZbmz2RELdugzVcFhFaC
+ o31oEvqBZBdpl2gC86OwoLoVfkCUsm2aXftVCItun6kyNBIkwGWIGyoMpj+r08GYYMVeBA
+ zhT5eEkgVE/jA91KGviYAfrrrlxyLX7jz4iIi2RUHbRr1Bti+W2KsykeueMQuA==
+X-Report-Abuse-To: abuse@transip.nl
 
-On Mon, Apr 15, 2024 at 9:44=E2=80=AFAM Joel Granados <j.granados@samsung.c=
-om> wrote:
->
-> Hey
->
-> This is the only patch that I have not seen added to the next tree.
-> I'll put this in the sysctl-next
-> https://git.kernel.org/pub/scm/linux/kernel/git/sysctl/sysctl.git/log/?h=
-=3Dsysctl-next
-> for testing. Please let me know if It is lined up to be upstream through
-> another path.
+The PM8901 is used alongside the APQ8060/MSM8660 on the APQ8060 Dragonboard
+and HP TouchPad. It works the same as all others, so just add the
+compatible string for this variant.
 
-I was hoping to see some ACKs from the associated LSM maintainers, but
-it's minor enough I'll go ahead and pull it into the lsm/dev tree this
-week.  I'll send a note later when I do the merge.
+Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+---
+ drivers/pinctrl/qcom/pinctrl-ssbi-mpp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---=20
-paul-moore.com
+diff --git a/drivers/pinctrl/qcom/pinctrl-ssbi-mpp.c b/drivers/pinctrl/qcom/pinctrl-ssbi-mpp.c
+index 3aee6835a2de..82221d0c813b 100644
+--- a/drivers/pinctrl/qcom/pinctrl-ssbi-mpp.c
++++ b/drivers/pinctrl/qcom/pinctrl-ssbi-mpp.c
+@@ -808,6 +808,7 @@ static const struct of_device_id pm8xxx_mpp_of_match[] = {
+ 	{ .compatible = "qcom,pm8038-mpp", .data = (void *) 6 },
+ 	{ .compatible = "qcom,pm8058-mpp", .data = (void *) 12 },
+ 	{ .compatible = "qcom,pm8821-mpp", .data = (void *) 4 },
++	{ .compatible = "qcom,pm8901-mpp", .data = (void *) 4 },
+ 	{ .compatible = "qcom,pm8917-mpp", .data = (void *) 10 },
+ 	{ .compatible = "qcom,pm8921-mpp", .data = (void *) 12 },
+ 	{ },
 
