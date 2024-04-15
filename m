@@ -1,105 +1,101 @@
-Return-Path: <linux-kernel+bounces-144528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6498A4775
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:44:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572918A4777
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:44:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86ABC2828DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:44:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97954B219F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81D86441F;
-	Mon, 15 Apr 2024 04:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CFA79E4;
+	Mon, 15 Apr 2024 04:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="MUWtcC4T"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hql6mJai"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD92C7FF;
-	Mon, 15 Apr 2024 04:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287BB63C1;
+	Mon, 15 Apr 2024 04:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713156243; cv=none; b=YI1Ho6v36paxLpY+fY9ujwSwGbCOHJKn0lOEeyxMcvVSTLgKGzm6S32VMA+jmxCpXI5B1g222A8E6R4zHoYTzx7yfhzroW1fhfY28ITo4ZVpZKc8/l4POwEhBu3yClatPLxhdRh8QvPR3ghQ1GFACBeThWzExTFhOCnfOAjerwg=
+	t=1713156253; cv=none; b=n6rpZ1iVDirvq3Q5Io0m910I4i99+2ulnLJAqeZhp0TpH7aHhZGiZsoq6U5fF1+JoB9XDD7W8XiJd1kKkh2DnAFyK+nIXYCiFwnBI2IhrqTj/L/PYvQvGRCoFGptk0H1suw47LhFxWK1A67gQs7Ykz4Jq/+Zy17IAoZGS6tdrk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713156243; c=relaxed/simple;
-	bh=tROPoDs+YNbSfu3wO/cTBkEiIrCv0Tw11lrQXucmUuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=GcwTFwbP4aJ0k5ZlFTUmQaVYyR/6NAgtlR0suwPL/MFbadW15Qs8XwquwQRSrz0CU4i2Xrv2XKTnvECCyU8unJrQ6tb1WBuK6FXo4IFoXX+rNGJ+oAh0v1LWe+A6pRpGEGWdH/x9pYgIzcvseVnHTMxp3hFDfq91sRKzReGC+HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=MUWtcC4T; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713156240;
-	bh=twty4K0CrsvQFb+F8K7zbMVF5RZ8yUMk6kgIDGLm//g=;
-	h=Date:From:To:Cc:Subject:From;
-	b=MUWtcC4TnFFNSt05Kvaan1FvOL7kqAERpIwnRo7YgQUyzytjR30oCNnAStLOhcJxF
-	 cRHU1CDS3vP6ZOrFen9sWmy0b+1MR2dpI2QK8p9amzI/5CyP9uCqkEbjtjA5v+u9SO
-	 /WoCNpfU2u6t+UUeNnTDwYcKgweQTIci9D9StLp5D42jliWzKiJExW/RcN3g1SoGv1
-	 3354niw2BW5NapiJJMGXBvyqfiUJ6ZbP5PXIW4DM2PZPxxwlcZ7wBf7fw0CEq7rNCz
-	 njS64PGyxZ4d387VIftooHrWfOKBcPZnuNuxBbD5DgWiVtAcHqKktcAOmrPOILy8JI
-	 CvYDV4WO9W4MQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VHvhH2bpnz4wcb;
-	Mon, 15 Apr 2024 14:43:59 +1000 (AEST)
-Date: Mon, 15 Apr 2024 14:43:58 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Shuah Khan <shuah@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, Peter
- Zijlstra <peterz@infradead.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the kselftest tree
-Message-ID: <20240415144358.086d0a74@canb.auug.org.au>
+	s=arc-20240116; t=1713156253; c=relaxed/simple;
+	bh=vZ4Y9rzHzuTAME5FLTs29rLfQFyi3HdmzoeeAzJchPc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=el/mETaY1tHhNADjM7J3lbIDnVQ4HIUJwWOwkwl1zL8WAV8Ag6KTxkiCyl8mNUKr2O4yAoK07cPUYaGOO7ofd/1oaj2ZaD524q7VygEIwQvdADEE6fiARPj/CL1LWGFZp4/QtnnyYvaSVvpXbtp/j8kA5IAQhWep/xX5YPRqxEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hql6mJai; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90D14C113CC;
+	Mon, 15 Apr 2024 04:44:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713156252;
+	bh=vZ4Y9rzHzuTAME5FLTs29rLfQFyi3HdmzoeeAzJchPc=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Hql6mJaiLst9dQjXchdQd4TdX2v+TlT1PzJlnfWJcmjrAZcfBvLLE61TKyQhyvwkJ
+	 aoxaSIsghwzucmGqS+Dn2oYFLdUEZXdhG43Caijf/TyQeHeHfEBu/OmddORO8aDGcx
+	 pbfndGFXcVvNDtScOH8S5SqEGTLlO62JCShZcgP6iSeDv/qhu6od2zrQRqdBM+SxsR
+	 wTO44oO6oq1nI7urdXSpqaUIJWMiyMqGKf+I2kkdp+/hkooMOTmOs+olGERFUDpeg2
+	 Z4tWLQiGlFUs36b9bAB5YMU2z6Kc+tFwlhJT65JtstDsrBtES5rAyjavf5j0EQi/9J
+	 d4yl3str4w+Mg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 839E4CE105C; Sun, 14 Apr 2024 21:44:10 -0700 (PDT)
+Date: Sun, 14 Apr 2024 21:44:10 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Yujie Liu <yujie.liu@intel.com>
+Subject: Re: linux-next: manual merge of the rcu tree with the risc-v tree
+Message-ID: <b147ca95-c0e2-4729-b670-a1ee605369d2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240415123247.0d27eb39@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dJhLPS3dA0bTEv+rMm2UAMQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415123247.0d27eb39@canb.auug.org.au>
 
---Sig_/dJhLPS3dA0bTEv+rMm2UAMQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 15, 2024 at 12:32:47PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the rcu tree got a conflict in:
+> 
+>   arch/riscv/include/asm/cmpxchg.h
+> 
+> between commits:
+> 
+>   07a0a41cb77d ("riscv/cmpxchg: Deduplicate cmpxchg() asm and macros")
+>   54280ca64626 ("riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2")
+> 
+> from the risc-v tree and commit:
+> 
+>   b5e49f1af563 ("riscv: Emulate one-byte cmpxchg")
+> 
+> from the rcu tree.
+> 
+> I fixed it up (I just used the former as the latter seems to no longer be
+> needed - I also undid the change to arch/riscv/Kconfig from the latter)
+> and can carry the fix as necessary. This is now fixed as far as linux-next
+> is concerned, but any non trivial conflicts should be mentioned to your
+> upstream maintainer when your tree is submitted for merging.  You may
+> also want to consider cooperating with the maintainer of the conflicting
+> tree to minimise any particularly complex conflicts.
 
-Hi all,
+Agreed, it looks to me like I should drop my RISC-V change in favor of
+the native support.  Please let me know if I am mistaken.
 
-The following commit is also in the tip tree as a different commit
-(but the same patch):
+If I do not hear otherwise, I will pull my commit out of -next in favor
+of those two on my next rebase.
 
-  398d99519758 ("selftests/perf_events: Test FASYNC with watermark wakeups.=
-")
-
-This is commit
-
-  e224d1c1fb93 ("selftests/perf_events: Test FASYNC with watermark wakeups")
-
-in the tip tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dJhLPS3dA0bTEv+rMm2UAMQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYcsI4ACgkQAVBC80lX
-0GzdoAgAh3hZWsCcTnjNQsxnepxurpAfHLbTYhKAvGVuTC/PXZzAwfiQxl9Q1O8e
-vlJhGC45i7txPGr0E8qPr3UKN5lEGRiykWdbfRn6MhklFUSk6mfZ42DSPsJVrxX5
-6R0k1+W9f6vp2B6vRVCCzwWba2W1ngDnpjw+myEUD3iM9N8Z6kGLArBdqSMDTVBV
-6M1QlsWB26PXTACHt0PCNPVmk8e1u2K4xWG+7bPVuUrWZNtlPkmdqPASfMddrPUX
-yxq5mlDawL8UmEwnafG0jJivWh8ZNc4QBHOujHwJEaXgTJYQbD/VCFopG5eqhNOG
-a9tn9Z2l10zvdM+l98N70+/XlO1lTg==
-=D67R
------END PGP SIGNATURE-----
-
---Sig_/dJhLPS3dA0bTEv+rMm2UAMQ--
+							Thanx, Paul
 
