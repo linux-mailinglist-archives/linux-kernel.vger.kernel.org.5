@@ -1,298 +1,162 @@
-Return-Path: <linux-kernel+bounces-145378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBEC58A5543
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:43:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8608F8A52FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71A8F282547
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0083A1F217E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5CC4745C9;
-	Mon, 15 Apr 2024 14:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4A37581B;
+	Mon, 15 Apr 2024 14:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="S3ry4WMq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dvSHlq4f"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF25F2119;
-	Mon, 15 Apr 2024 14:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875C471B4F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713192151; cv=none; b=S7IcDrPh8NkeFJD6zJChixJClPW1bqb8Uy5vyHgmOikEINwVcrWDUUb6TNuSO19uPBLrHOnxJLbQVor4FdiwkPOOvuzhpbnkOMue8X8cjNgOwpSCuYD9pnNUugloXikeK4WYnP84u7C2WC1zvF2MYlqplZ1E2Nlcdf5ObloXT/A=
+	t=1713190937; cv=none; b=L3shrYBx9QAKU9cT69m0YUaCwi8CTWHDR2gxTQN4a2xalUnZOCni2ouDFFRw2JVqxpkqqEPyhjmPHC3NuLmffjGJusLMtjjm6Z2vrod6+eeyvbJzUvu5o55gjbkbD6m8N13Oe0549qqhVVQmIFzmJ1uARqNeZ0tkrPSFi1f38gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713192151; c=relaxed/simple;
-	bh=AEE/kAal8msykZr8wNUqNNDQTT2i4kApJdMfbwhU2vY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ThAd27sc35+/O3miq9w4/vxbxUezzL2IqqdFGpTczTUWI6xxow2yeSB7fzz5YXELbHE/+Jt5yvF4xkeSoSbCnB0e0nFSPEqpIfdBinxdXRXW7PpVCVbSr2h4RBPUrJxBbYAajMHgn4npVlhengd44NTdU3WLRMyMIAoXXC2UcNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=S3ry4WMq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09243C113CC;
-	Mon, 15 Apr 2024 14:42:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713192151;
-	bh=AEE/kAal8msykZr8wNUqNNDQTT2i4kApJdMfbwhU2vY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=S3ry4WMqNoI/OJVr0ckb7xoE1DO7VpqLLHUkgbonOeBZKbc3+5ZHZmNLuv0xadSg1
-	 1T6vMVWNfYFGXx3LzmQ8M2JpLxEmYXaHGTvBTP4vWcybc9n7B/ZBFIvS3zhjOpkOec
-	 mo37WDuEhP5xuaW/fXi/Qw83agdVIgyhGg5gAImk=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH 5.15 00/45] 5.15.156-rc1 review
-Date: Mon, 15 Apr 2024 16:21:07 +0200
-Message-ID: <20240415141942.235939111@linuxfoundation.org>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713190937; c=relaxed/simple;
+	bh=N6BsmOpUFv1NdzAIhR7wG4F9QbFYaKztoAW+/nHUQH4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QPIcpMSCq5IS5QHvf9ULvzcxkux7krvA1vn1Y27psqG8Oy3165ML+VEo24gtUBobWiWpsFaebusofHxiWd20tVWirbNC1sJx9SyNaLCmJlojjViB3Hsk3K6g03OwOAMajinsjt3JXBz2SYoLpbDP2oWkLbmHNyREolS58LwrUsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dvSHlq4f; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713190934;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=1PbOJBRpspxdDa6pRJjCuw+ncvorVUgjMaFCtffqZ+Q=;
+	b=dvSHlq4ffl9La6scN3ja6neyqrTkmRvMbdijqJyANEVsfbidiQGhGNQb815FooC27p1FNq
+	cwNGx5babAkcrg3M+2h3HhbkCPZmXHP5k8cEyp7LhcF58PYNoMNlE8Tiv3p+BMoING5Fv8
+	qwaRIVbL644ii/9QoHe/kCcs/wI44sA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-426-raBmtOY5N0me97bPJFbSdw-1; Mon, 15 Apr 2024 10:22:12 -0400
+X-MC-Unique: raBmtOY5N0me97bPJFbSdw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-417c5cc7c96so12202225e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:22:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713190931; x=1713795731;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1PbOJBRpspxdDa6pRJjCuw+ncvorVUgjMaFCtffqZ+Q=;
+        b=g0wuJ+dSWcAxksP0hfqXKo4kipp/h4NatpybnNKMvfMNICj2ukb9+hWP7Pxh1udW2X
+         fSyWLCVbZvCfSMFo4ZFpf0tJgGiWaG9N+gMCO8iC3oiv06NnWrhJKvIoUKdZeX/ApeGE
+         GH8hMUsdd22GcaG9/VRhJsRhNaKFORwqxgHbJFEQDzjGmRHCJ+QVy4sVTQ+xL/QImYDi
+         On2+capa/+5mciG0jrj3/R4w2eIdNUsh4ZuTOMVPPsWfJzma/9BLiQdHshlLG1yDpmnC
+         hlv5nZEs9j8X9qtlHrWbPMt1Q9OWy1qfLNGHTagabyBeNBc/ZzZrP7lKr6GDBBYAGPVH
+         2sdw==
+X-Gm-Message-State: AOJu0YzCpgVgwZTkedlbEEzaiO6/7ljOaCBg4WlZ5YzJq/DqC9JiP/I3
+	MUqBQvzqP5Sm2iyzpTcAiZSwUeP+ffGr9nRbka0ot4SOJk5wtpaaGDgvvZ6GeSOhqKyH3Oi1yUY
+	Rua3q6RKLjC3AnrzS8cV5fHATO07BYyFZYuTHvqQx3mYNfgBQUtIkXY1FUOQ4/g==
+X-Received: by 2002:a05:600c:1c81:b0:418:7401:b15f with SMTP id k1-20020a05600c1c8100b004187401b15fmr1322461wms.38.1713190931721;
+        Mon, 15 Apr 2024 07:22:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGDak1eTKoWVr2U+6dT5ZcLn1063lRhwGMlTXR2A2YuvZAJE2t6UbWSYNg3COoiiV+lBsHBiw==
+X-Received: by 2002:a05:600c:1c81:b0:418:7401:b15f with SMTP id k1-20020a05600c1c8100b004187401b15fmr1322438wms.38.1713190931354;
+        Mon, 15 Apr 2024 07:22:11 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
+        by smtp.gmail.com with ESMTPSA id q12-20020a05600c46cc00b00417bab31bd2sm16449015wmo.26.2024.04.15.07.22.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 07:22:10 -0700 (PDT)
+Message-ID: <513a9e86-6159-43dd-8b70-f903637f2cd0@redhat.com>
+Date: Mon, 15 Apr 2024 16:22:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.156-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.15.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.15.156-rc1
-X-KernelTest-Deadline: 2024-04-17T14:19+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] KVM: s390x: selftests: Add shared zeropage test
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>, Thomas Huth <thuth@redhat.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>
+References: <20240412084329.30315-1-david@redhat.com>
+ <Zh03fI2oA0UkE0Kp@tuxmaker.boeblingen.de.ibm.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <Zh03fI2oA0UkE0Kp@tuxmaker.boeblingen.de.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This is the start of the stable review cycle for the 5.15.156 release.
-There are 45 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+On 15.04.24 16:19, Alexander Gordeev wrote:
+> On Fri, Apr 12, 2024 at 10:43:29AM +0200, David Hildenbrand wrote:
+> Hi David,
+>>   tools/testing/selftests/kvm/Makefile          |   1 +
+>>   .../kvm/s390x/shared_zeropage_test.c          | 110 ++++++++++++++++++
+>>   2 files changed, 111 insertions(+)
+>>   create mode 100644 tools/testing/selftests/kvm/s390x/shared_zeropage_test.c
+> 
+> Tested-by: Alexander Gordeev <agordeev@linux.ibm.com>
 
-Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
-Anything received after that time might be too late.
+Thanks Alexander, especially also for discovering that nasty ifdef bug!
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.156-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-and the diffstat can be found below.
+-- 
+Cheers,
 
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.15.156-rc1
-
-Ville Syrjälä <ville.syrjala@linux.intel.com>
-    drm/i915/cdclk: Fix CDCLK programming order when pipes are active
-
-Josh Poimboeuf <jpoimboe@kernel.org>
-    x86/bugs: Replace CONFIG_SPECTRE_BHI_{ON,OFF} with CONFIG_MITIGATION_SPECTRE_BHI
-
-Josh Poimboeuf <jpoimboe@kernel.org>
-    x86/bugs: Remove CONFIG_BHI_MITIGATION_AUTO and spectre_bhi=auto
-
-Josh Poimboeuf <jpoimboe@kernel.org>
-    x86/bugs: Clarify that syscall hardening isn't a BHI mitigation
-
-Josh Poimboeuf <jpoimboe@kernel.org>
-    x86/bugs: Fix BHI handling of RRSBA
-
-Ingo Molnar <mingo@kernel.org>
-    x86/bugs: Rename various 'ia32_cap' variables to 'x86_arch_cap_msr'
-
-Josh Poimboeuf <jpoimboe@kernel.org>
-    x86/bugs: Cache the value of MSR_IA32_ARCH_CAPABILITIES
-
-Josh Poimboeuf <jpoimboe@kernel.org>
-    x86/bugs: Fix BHI documentation
-
-Daniel Sneddon <daniel.sneddon@linux.intel.com>
-    x86/bugs: Fix return type of spectre_bhi_state()
-
-Arnd Bergmann <arnd@arndb.de>
-    irqflags: Explicitly ignore lockdep_hrtimer_exit() argument
-
-Adam Dunlap <acdunlap@google.com>
-    x86/apic: Force native_apic_mem_read() to use the MOV instruction
-
-John Stultz <jstultz@google.com>
-    selftests: timers: Fix abs() warning in posix_timers test
-
-Sean Christopherson <seanjc@google.com>
-    x86/cpu: Actually turn off mitigations by default for SPECULATION_MITIGATIONS=n
-
-Namhyung Kim <namhyung@kernel.org>
-    perf/x86: Fix out of range data
-
-Gavin Shan <gshan@redhat.com>
-    vhost: Add smp_rmb() in vhost_vq_avail_empty()
-
-Ville Syrjälä <ville.syrjala@linux.intel.com>
-    drm/client: Fully protect modes[] with dev->mode_config.mutex
-
-Boris Burkov <boris@bur.io>
-    btrfs: qgroup: correctly model root qgroup rsv in convert
-
-Jacob Pan <jacob.jun.pan@linux.intel.com>
-    iommu/vt-d: Allocate local memory for page request queue
-
-Arnd Bergmann <arnd@arndb.de>
-    tracing: hide unused ftrace_event_id_fops
-
-David Arinzon <darinzon@amazon.com>
-    net: ena: Fix incorrect descriptor free behavior
-
-David Arinzon <darinzon@amazon.com>
-    net: ena: Wrong missing IO completions check order
-
-David Arinzon <darinzon@amazon.com>
-    net: ena: Fix potential sign extension issue
-
-Michal Luczaj <mhal@rbox.co>
-    af_unix: Fix garbage collector racing against connect()
-
-Kuniyuki Iwashima <kuniyu@amazon.com>
-    af_unix: Do not use atomic ops for unix_sk(sk)->inflight.
-
-Arınç ÜNAL <arinc.unal@arinc9.com>
-    net: dsa: mt7530: trap link-local frames regardless of ST Port State
-
-Daniel Machon <daniel.machon@microchip.com>
-    net: sparx5: fix wrong config being used when reconfiguring PCS
-
-Cosmin Ratiu <cratiu@nvidia.com>
-    net/mlx5: Properly link new fs rules into the tree
-
-Eric Dumazet <edumazet@google.com>
-    netfilter: complete validation of user input
-
-Jiri Benc <jbenc@redhat.com>
-    ipv6: fix race condition between ipv6_get_ifaddr and ipv6_del_addr
-
-Arnd Bergmann <arnd@arndb.de>
-    ipv4/route: avoid unused-but-set-variable warning
-
-Arnd Bergmann <arnd@arndb.de>
-    ipv6: fib: hide unused 'pn' variable
-
-Geetha sowjanya <gakula@marvell.com>
-    octeontx2-af: Fix NIX SQ mode and BP config
-
-Kuniyuki Iwashima <kuniyu@amazon.com>
-    af_unix: Clear stale u->oob_skb.
-
-Eric Dumazet <edumazet@google.com>
-    geneve: fix header validation in geneve[6]_xmit_skb
-
-Eric Dumazet <edumazet@google.com>
-    xsk: validate user input for XDP_{UMEM|COMPLETION}_FILL_RING
-
-Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-    u64_stats: Disable preemption on 32bit UP+SMP PREEMPT_RT during updates.
-
-Ilya Maximets <i.maximets@ovn.org>
-    net: openvswitch: fix unwanted error log on timeout policy probing
-
-Dan Carpenter <dan.carpenter@linaro.org>
-    scsi: qla2xxx: Fix off by one in qla_edif_app_getstats()
-
-Arnd Bergmann <arnd@arndb.de>
-    nouveau: fix function cast warning
-
-Alex Constantino <dreaming.about.electric.sheep@gmail.com>
-    Revert "drm/qxl: simplify qxl_fence_wait"
-
-Frank Li <Frank.Li@nxp.com>
-    arm64: dts: imx8-ss-conn: fix usdhc wrong lpcg clock order
-
-Nini Song <nini.song@mediatek.com>
-    media: cec: core: remove length check of Timer Status
-
-Dmitry Antipov <dmantipov@yandex.ru>
-    Bluetooth: Fix memory leak in hci_req_sync_complete()
-
-Steven Rostedt (Google) <rostedt@goodmis.org>
-    ring-buffer: Only update pages_touched when a new page is touched
-
-Sven Eckelmann <sven@narfation.org>
-    batman-adv: Avoid infinite loop trying to resize local TT
-
-
--------------
-
-Diffstat:
-
- Documentation/admin-guide/hw-vuln/spectre.rst      |  22 +-
- Documentation/admin-guide/kernel-parameters.txt    |  12 +-
- Makefile                                           |   4 +-
- arch/arm64/boot/dts/freescale/imx8-ss-conn.dtsi    |  12 +-
- arch/x86/Kconfig                                   |  21 +-
- arch/x86/events/core.c                             |   1 +
- arch/x86/include/asm/apic.h                        |   3 +-
- arch/x86/kernel/cpu/bugs.c                         |  82 ++++----
- arch/x86/kernel/cpu/common.c                       |  48 ++---
- drivers/gpu/drm/drm_client_modeset.c               |   3 +-
- drivers/gpu/drm/i915/display/intel_cdclk.c         |   7 +-
- drivers/gpu/drm/i915/display/intel_cdclk.h         |   3 +
- .../gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c    |   7 +-
- drivers/gpu/drm/qxl/qxl_release.c                  |  50 ++++-
- drivers/iommu/intel/svm.c                          |   2 +-
- drivers/media/cec/core/cec-adap.c                  |  14 --
- drivers/net/dsa/mt7530.c                           | 229 ++++++++++++++++++---
- drivers/net/dsa/mt7530.h                           |   5 +
- drivers/net/ethernet/amazon/ena/ena_com.c          |   2 +-
- drivers/net/ethernet/amazon/ena/ena_netdev.c       |  35 ++--
- .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |  22 +-
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |   3 +-
- .../net/ethernet/microchip/sparx5/sparx5_port.c    |   4 +-
- drivers/net/geneve.c                               |   4 +-
- drivers/scsi/qla2xxx/qla_edif.c                    |   2 +-
- drivers/vhost/vhost.c                              |  14 +-
- fs/btrfs/qgroup.c                                  |   2 +
- include/linux/dma-fence.h                          |   7 +
- include/linux/irqflags.h                           |   2 +-
- include/linux/u64_stats_sync.h                     |  42 ++--
- include/net/addrconf.h                             |   4 +
- include/net/af_unix.h                              |   2 +-
- include/net/ip_tunnels.h                           |  33 +++
- kernel/cpu.c                                       |   3 +-
- kernel/trace/ring_buffer.c                         |   6 +-
- kernel/trace/trace_events.c                        |   4 +
- net/batman-adv/translation-table.c                 |   2 +-
- net/bluetooth/hci_request.c                        |   4 +-
- net/ipv4/netfilter/arp_tables.c                    |   4 +
- net/ipv4/netfilter/ip_tables.c                     |   4 +
- net/ipv4/route.c                                   |   4 +-
- net/ipv6/addrconf.c                                |   7 +-
- net/ipv6/ip6_fib.c                                 |   7 +-
- net/ipv6/netfilter/ip6_tables.c                    |   4 +
- net/openvswitch/conntrack.c                        |   5 +-
- net/unix/af_unix.c                                 |   8 +-
- net/unix/garbage.c                                 |  35 +++-
- net/unix/scm.c                                     |   8 +-
- net/xdp/xsk.c                                      |   2 +
- tools/testing/selftests/timers/posix_timers.c      |   2 +-
- 50 files changed, 556 insertions(+), 256 deletions(-)
-
+David / dhildenb
 
 
