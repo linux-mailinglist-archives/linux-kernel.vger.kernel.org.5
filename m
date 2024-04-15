@@ -1,214 +1,102 @@
-Return-Path: <linux-kernel+bounces-144499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50A848A4721
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:53:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1B18A4725
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:55:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 738651C20AC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:53:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED62F1C20AA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C7F18E11;
-	Mon, 15 Apr 2024 02:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="rLaIgVX5"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2069.outbound.protection.outlook.com [40.107.94.69])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900EB1BC46;
+	Mon, 15 Apr 2024 02:55:29 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8056214F6C;
-	Mon, 15 Apr 2024 02:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713149608; cv=fail; b=M13ZWQ3fJsEGyBN98tZpEgyrc+AZHIx74ThehtQKa7oovhnAYpfhqv6hlNRpN9dnDfc71WXZgW7Lu6ySQW/+ZGeAiMhbdzjNjg757O9afYUGqKeSsnbs63sjLJadTTIvWvJLTepiCDrkENDs5yyvBPyq/II4c4tB44WoyQqYwmQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713149608; c=relaxed/simple;
-	bh=EK12v9fWIoNBggwn1B1OIoyj6xgqIBtOuNKNSaK15K8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XImy26t8nlDGrUCvtpmE+mfR51+qE/Vmc6C5dABg++AbGLO/4SRTQahHQTpvDYpvpM0BE0yrmc+LM6z7r+K16Rm7+AC/hcE3UTDhTGm1iQrJFeB1YhrRkmJMGu/ypQZiKSODwxn20BJy2iEgTC/JQpQ1eIkWFNHABlhbBxmlsDY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=rLaIgVX5; arc=fail smtp.client-ip=40.107.94.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dfg+L6UULEyfiPvHpC019PXyqMzE3+I9xqkcXfEDbWbeZABtHMRV8OC5qLIIIZl5S6g00bU+3zrkijxLgBRHaUekgGVwLT+AqL18OkIxDPrdPRMTnlEjDO9Ictq2oKggZMkeCl4FkHGaWwG4NHt3AmlZmO4bAzrXwfwa0eWVOpNNj0hmozs5ZUa54rJiqYdxnNNLgpVAA6wrboIyLVqp7HURgMBA8okX6/3bo+ja4yDae2cGjs2qS2KSwW2CaCziiKTiNul48LWB0OR2gCLJUReIBnRSCgBirxckAq9o3Xh1BBJZ//ThKcGaKjawZvu68rBsTzvKrq7hb/vmrMDWUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I7Ga2StHzT7WBG8qZLiEy3hqjb2+q+1StvHJOtGBKrw=;
- b=FhGrxgRC55M/3sFGU3PpzK95znGYV1xO/S/Tce3RIB3nQqhT90IfpBoGupYpDRGXbcDoC3so+g0KcprAv2E6r1cHCnjDOD3dk6WowPt3EKNp+mitA4tq9aSTtu3EZclOprkbmoL3SjjfW7hvjR+wv16Pz/4S12+dh8t0DrcAgxKjYtcso7jrNPIaHWRv3ADr5n1V6fZuHZuYIsL1G/yPjasZiGDDGC+h6RdKFb04fwrgoYMJvHxh9lJ7D65dNpL2meGitLlSPFald2f0XKTHgVk0+QWCnBaRlW3haMtDUqILBisUPunQrkHNT0AIZZxKMZHAUh77m7YoezmPAScNSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I7Ga2StHzT7WBG8qZLiEy3hqjb2+q+1StvHJOtGBKrw=;
- b=rLaIgVX50eshLwDmYWmKH9y5zA/i/JEiQiC7gzLvaitRPTgX/JXeT4D4DS5FWKa7MDDLKaNotImjlSjmxwgZGQnBW/6j5R0BbG92F8FyBxy3YG0DX3XJgZMxyb+bd0FHRq+jZsA6ZpGZ/yYHF6Dwj6u6MlkiYU5UJggiCYe4CT4=
-Received: from CO6PR12MB5489.namprd12.prod.outlook.com (2603:10b6:303:139::18)
- by CH3PR12MB7692.namprd12.prod.outlook.com (2603:10b6:610:145::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.43; Mon, 15 Apr
- 2024 02:53:24 +0000
-Received: from CO6PR12MB5489.namprd12.prod.outlook.com
- ([fe80::5f4:a2a9:3d28:3282]) by CO6PR12MB5489.namprd12.prod.outlook.com
- ([fe80::5f4:a2a9:3d28:3282%4]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
- 02:53:24 +0000
-From: "Lin, Wayne" <Wayne.Lin@amd.com>
-To: Jeff Mahoney <jeffm@suse.com>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] drm/mst: Fix NULL pointer dereference in
- drm_dp_add_payload_part2 (again)
-Thread-Topic: [PATCH] drm/mst: Fix NULL pointer dereference in
- drm_dp_add_payload_part2 (again)
-Thread-Index: AQHajToj/A4qJVKMkk+X0nDH4FXk6rFlYJwAgANEBBY=
-Date: Mon, 15 Apr 2024 02:53:24 +0000
-Message-ID:
- <CO6PR12MB5489C2D62025CDFDC71C3C21FC092@CO6PR12MB5489.namprd12.prod.outlook.com>
-References: <20240413002252.30780-1-jeffm@suse.com>
- <c55d8329-6d59-4821-89f2-6b50fa9dc6a7@suse.com>
-In-Reply-To: <c55d8329-6d59-4821-89f2-6b50fa9dc6a7@suse.com>
-Accept-Language: en-US, zh-TW
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=True;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2024-04-15T02:53:23.170Z;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO6PR12MB5489:EE_|CH3PR12MB7692:EE_
-x-ms-office365-filtering-correlation-id: 8aff853e-9ca5-4e5e-4898-08dc5cf737b9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- sSyjJmvAt1BIChb/rjl8pzT8XazPCc3A2VNJZZFoEljOMShU5R+oBt9QuNOoIltrmSHjy0Rrj+9K9xQVGH8mK0HEyI+9Smwn6DPY3dSmsW/R8MvYO0UMAT+HZ+kARy5EPgg0/JKHayVORioSnNM95xYzvYRpS7jxClhTPS1LSQKMiX+QJIDCcHZd4bIrMyHTXlcRqotEi+S8+3E006BHgj5reWNH+ZEwGQ/9n3FppFj2Q6kUhq1VcdjsDeN/uVdR/rFfbeH/EA5WVV/ZYPLXVbskEIzcoqoIL5YarUij7krn8dXweKUKa00CDDcEqDoIieBCYQ2Ec3ysYurY/9aKH316+FZD+AZMKyZF0rak5DwTTkLt3anpdP9EpaDcUA6TfwrV2I+pC4KzFuuRMiLirYeO5VOVwl7+g5NnqadoYWq5S/KS3bAZS6Cofriyow0uaKPVy0Uv33YB7TbPeOlkxYvTxA/aoKfUbBdhuA5iJuJ49L78Q7mMMuXcc8iQuujprG0ZkuoxetY/kDJVq9H9/ZuBFuZ9OarP0ZnkyF0kiItgpefYKOgQqZfNnwFuFWiBb//KIdVjB6J5QtlAMLyzWR5Tn9vVjvrGNMHHbc+dM3kAcTGJmwINMkaCR8SR9lg1d/H4PEeJSIa+/qU8leer5jFswaC1j4A+Lnn9lEcByAI=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5489.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?rWa7IyP6VoDmw1KwyP4UpZgPM5+tpOEtKA6B1hic1SyfbQ8hG5sKVPJh5y+o?=
- =?us-ascii?Q?LleKW3Ci9dfOUPKhMY3ACyrcQ5TGG1zMAajPsfDb1OrMpu1nUVQ7vQrq8H6Y?=
- =?us-ascii?Q?Tmem+op9fZ3os3NbBlYpthdX5Q7EnkOpERhBE3kWoy1Od5FTKEkDZjiEg4Xy?=
- =?us-ascii?Q?E9crc+6KlbG8zRCNtETuU9ffDUAL1L2GVRXmQ8eKB3XXTXW/3wLORPKNqNoN?=
- =?us-ascii?Q?0N0+yMWUHTpmz2mvZ/q/+/2uTQ8xchYnVGpACeZvmM7qimsIXV00K0noRIWi?=
- =?us-ascii?Q?IY2sDfVjGh/KgcLayWyfBm587aSIMT2AG9Rg5uS5O8uTQAR83zpGJPqnpqhK?=
- =?us-ascii?Q?62m6ni6O9LJoz7Ng0DxtzRFDI8Op4oiRBdO8OAVrdqhv6xHLmKDP89ANvxDu?=
- =?us-ascii?Q?SV0kGGLIjgzZ+2osOQe58ueGSxgAMAZLFrrNOrNnLMTpmt4GHUGoWPc94Ggf?=
- =?us-ascii?Q?9IcprPW9YSVK/TRTVw831HGMRqyKxu2mwFyd+5B6pqjjtDsQqdZ+ianYw5LI?=
- =?us-ascii?Q?rHIpj8wKPWIMVa0Ajn0/jyYwPxRc2TwZaXaWLXBtLdN3xQqyxEsv1vnKwjE0?=
- =?us-ascii?Q?WyrUIoNbSFPFcavwlRltkGIy4rTJfiPNuDvmbPmPRLkQnyC5/V6Um9Xz3xp6?=
- =?us-ascii?Q?eKJG3n6BZBZABQAReEcCUtF8k4dAoomWjQZPJAX8OlHa9CB07KbW9aVD7oai?=
- =?us-ascii?Q?GMEc9FU2lYIq1HSmV108Xb4bRX+uaWIiLueNEXUW64iuGSjKRC2UAnP/YGhB?=
- =?us-ascii?Q?4n1ktibZJfyjR0pUtsOZk5C/U99vxT9XT9YURy3+gBazS+c6yhhI/srJElIF?=
- =?us-ascii?Q?AA0VhgPCjAr8VfgGQFmjzsPasHESvuR6BY8r0wbVBRLvf+UAoJTJS3ZoDIjz?=
- =?us-ascii?Q?5rkUOPlsYGKWA4UUiBTJgSQvgohZJv7LiM8/G/Xcy9R79cMntI0YBIUJ9HH+?=
- =?us-ascii?Q?2StsjRvfOldctA83SC4U/xvRx1LMqnQA+OybZ5Bz2ycC806ShKAkQ/ijg9z1?=
- =?us-ascii?Q?IA3nU8yhEmaaMfo95/F8Ha4/tr1HutWy52sVqjiTuJtwcS5UtNGSxlDseQ01?=
- =?us-ascii?Q?6/2xi/qdZH1X9NLfBw5KXAYl2uf+IWaZM9qXj5Iz+xzlAfwMWk88BNw2R97E?=
- =?us-ascii?Q?02dumA2VFzVmVe4TuWqT52YGF++evKWNI/Gv66QPYjNXR5jlg2G5d7sTSiyn?=
- =?us-ascii?Q?thOmNIG9sGUMvp5Lny2l3v4whQ+hBHswFqu3nqf7oXuQxKivVL5+hkLn9qI/?=
- =?us-ascii?Q?0prHKJrtZtMDNPOzjlbmMehLE8PraEnBA4gpNz8IcsUWXfLa9CqYA6MQNdgg?=
- =?us-ascii?Q?ayygxsJhCbpmZTSxPheY3ukicDoJKhkXShC5DOCITXZgSEkvOOEwC24OCnYh?=
- =?us-ascii?Q?lwjXzzI+JiwbFf+c8vSCQAF1PuyamLdVIgKrUWiz+pBTmy+DT5inTGZ/x4ea?=
- =?us-ascii?Q?GLmUMDomC8Z96bXQXmNC8QbZIUG+GpPbNhsWkvTQodMKjkinFqG88Ai2sKci?=
- =?us-ascii?Q?YPdjBbi037wT2mjKyk4oMVATeRvXtJ7cWKY0SjjJ1Jsq8InLSmGgmyhEKXIy?=
- =?us-ascii?Q?7pQ2ar65Ndhv2W8efaM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E088B14F6C;
+	Mon, 15 Apr 2024 02:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713149729; cv=none; b=r8hRZnatesnH8c4E6C9zl/NvbshKzWUh8qpHHYLD4S+3rQttVdhLGItRwvQq/jOiyz1cj/5QEL9djwHKRtM5D8YH6VkFnAwEeeVCQmwiXCJ2GxxQs+3F0AXaYakfIePa64s3J+sTEicgI075XOKOvVJoYw43mwtGJC2mXDY2GzA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713149729; c=relaxed/simple;
+	bh=RPuddjlM3XrY9Du0GUl5WtMe7Q8iXCsEHOKgJCXqSb0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=IvBPKG4CHUO47b48t3A+FeIVSe112vb7cEFNIBJjFl4EDEPNl5u3GW0ALzRZxijQSgEWq1NbPNr7G/MuP+90+ZzbtFbvRcpS/lx5TPkhJx1pJ5L0cufZyv2ZBgBudneDEnLL6gsJ1n0tuv0YK2Si/RxpP5Nfc49TJSkqO75ZgmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VHsCc1nwsz1hwPX;
+	Mon, 15 Apr 2024 10:52:28 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 19049140383;
+	Mon, 15 Apr 2024 10:55:24 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 10:55:23 +0800
+Message-ID: <66546f2a-1fab-4115-8ff5-27e8aec276f1@huawei.com>
+Date: Mon, 15 Apr 2024 10:55:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5489.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8aff853e-9ca5-4e5e-4898-08dc5cf737b9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 02:53:24.1232
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: N+ma3X1Ll/anI2PAHGfu0Sb0/SIPRr5B03KJ6rY3EuKvUivk0NLnAO0HFS8OBBUyafgRM6z+67HSZvSAOFJkzA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7692
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: remove unneeded semicolon
+Content-Language: en-US
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	<kent.overstreet@linux.dev>
+CC: <bfoster@redhat.com>, <linux-bcachefs@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Abaci Robot <abaci@linux.alibaba.com>
+References: <20240415023557.5851-1-jiapeng.chong@linux.alibaba.com>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240415023557.5851-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-[Public]
+I remember other people also submit this likely patch:
 
-Hi Jeff,
+https://lore.kernel.org/linux-bcachefs/20240103010720.39784-1-yang.lee@linux.alibaba.com/
 
-I have a patch sent for this before but not yet get reviewed. Will ping aga=
-in.
-https://patchwork.freedesktop.org/series/130852/
+https://lore.kernel.org/linux-bcachefs/20240103095942.3982021-1-lihongbo22@huawei.com/
 
-Thanks!
-
-Regards,
-Wayne
-
-________________________________________
-From: Jeff Mahoney <jeffm@suse.com>
-Sent: Saturday, April 13, 2024 08:57
-To: Lin, Wayne; dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org; David Airlie; Daniel Vetter; stable@vger.=
-kernel.org
-Subject: Re: [PATCH] drm/mst: Fix NULL pointer dereference in drm_dp_add_pa=
-yload_part2 (again)
-
-As a follow up, I read through the original thread before sending this
-and my understanding is that this message probably shouldn't be getting
-printed in the first place.  I've turned on KMS, ATOMIC, STATE, and DP
-debugging to see what shakes out.  I have a KVM on my desk that I use to
-switch between systems fairly frequently.  I'm speculating that the
-connecting and disconnecting is related, so I'm hopeful I can trigger it
-quickly.
-
--Jeff
-
-On 4/12/24 20:22, Jeff Mahoney wrote:
-> Commit 54d217406afe (drm: use mgr->dev in drm_dbg_kms in
-> drm_dp_add_payload_part2) appears to have been accidentially reverted as
-> part of commit 5aa1dfcdf0a42 (drm/mst: Refactor the flow for payload
-> allocation/removement).
->
-> I've been seeing NULL pointer dereferences in drm_dp_add_payload_part2
-> due to state->dev being NULL in the debug message printed if the payload
-> allocation has failed.
->
-> This commit restores mgr->dev to avoid the Oops.
->
-> Fixes: 5aa1dfcdf0a42 ("drm/mst: Refactor the flow for payload allocation/=
-removement")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+On 2024/4/15 10:35, Jiapeng Chong wrote:
+> No functional modification involved.
+> 
+> ./fs/bcachefs/super.c:1128:59-60: Unneeded semicolon.
+> ./fs/bcachefs/super.c:1133:59-60: Unneeded semicolon.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8755
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->   drivers/gpu/drm/display/drm_dp_mst_topology.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gpu/=
-drm/display/drm_dp_mst_topology.c
-> index 03d528209426..3dc966f25c0c 100644
-> --- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> @@ -3437,7 +3437,7 @@ int drm_dp_add_payload_part2(struct drm_dp_mst_topo=
-logy_mgr *mgr,
->
->       /* Skip failed payloads */
->       if (payload->payload_allocation_status !=3D DRM_DP_MST_PAYLOAD_ALLO=
-CATION_DFP) {
-> -             drm_dbg_kms(state->dev, "Part 1 of payload creation for %s =
-failed, skipping part 2\n",
-> +             drm_dbg_kms(mgr->dev, "Part 1 of payload creation for %s fa=
-iled, skipping part 2\n",
->                           payload->port->connector->name);
->               return -EIO;
->       }
-
---
-Jeff Mahoney
-VP Engineering, Linux Systems
+>   fs/bcachefs/super.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+> index 8daf80a38d60..234f19ea8f30 100644
+> --- a/fs/bcachefs/super.c
+> +++ b/fs/bcachefs/super.c
+> @@ -1125,12 +1125,12 @@ static int bch2_dev_in_fs(struct bch_sb_handle *fs,
+>   
+>   		prt_bdevname(&buf, fs->bdev);
+>   		prt_char(&buf, ' ');
+> -		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));;
+> +		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));
+>   		prt_newline(&buf);
+>   
+>   		prt_bdevname(&buf, sb->bdev);
+>   		prt_char(&buf, ' ');
+> -		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));;
+> +		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));
+>   		prt_newline(&buf);
+>   
+>   		if (!opts->no_splitbrain_check)
 
