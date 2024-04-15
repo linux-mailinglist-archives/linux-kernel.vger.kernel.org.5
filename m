@@ -1,148 +1,130 @@
-Return-Path: <linux-kernel+bounces-145887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A4E8A5C5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:45:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D924C8A5C5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:46:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D85071C21ABE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:45:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EDF61F2327C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:46:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B12156893;
-	Mon, 15 Apr 2024 20:45:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8806815696D
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B107D156972;
+	Mon, 15 Apr 2024 20:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iOt0FiRv"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89FC06CDC2;
+	Mon, 15 Apr 2024 20:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713213933; cv=none; b=Gq0k0Ld9Sz6XqbXirt3pDWtetT9mBEgcwx0J2OG3/UePYHL4UWgSwFv3MclJKZDAVrYWscg7i4KhonFzNDwcW/cJOZFFyXyqPFKV81eIN9q1dfQPoJVX44ZPFgBRdRZOJ3eUknkEQhc+fGh89/VVqEj7NiItL456FxW4zeXncZE=
+	t=1713213993; cv=none; b=AMAqpr3hVu9Cx5tuUaNN91dtqSVWvNtYVCgMAGyJO0j2l5740fxB/R2ZmsKsGCuQINQR7Gy7Mo2MZwPFcHUjLEuDWO5bT755VH03KvEbgByP3I31lNOWjlu0Vcwpnvkqck+wiydMlDa7BL373IClHWjcAvKXPaXUiEn/U3zFPk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713213933; c=relaxed/simple;
-	bh=+/0jeKaYaUP3m3VXXQbnAijrqhupY0+Ukk/QTQkBTqo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nr45/shI8LkloZBWPA9KWcLXyyYcA09QbGBQrMrJ/DSQ7ZkVyQBbK2yKHO/gKP3FZ5T34Lmx61vX3b/gFLxt/y2EU2HsTeYiGPyieZ+iOlGMzaGiDU6QqRYaQHmkEKnbC/L7FV3L3XTPVMyRIOpSsd+4udTsvipVzrd692ace2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69FFF2F4;
-	Mon, 15 Apr 2024 13:45:52 -0700 (PDT)
-Received: from pluto (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0B583F738;
-	Mon, 15 Apr 2024 13:45:22 -0700 (PDT)
-Date: Mon, 15 Apr 2024 21:45:20 +0100
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: sudeep.holla@arm.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] firmware: arm_scmi: power_control: support suspend
- command
-Message-ID: <Zh2R4FZPmVOigfT9@pluto>
-References: <20240415101141.1591112-1-peng.fan@oss.nxp.com>
+	s=arc-20240116; t=1713213993; c=relaxed/simple;
+	bh=DXWvgmZ3OBUiLaT3J5TtSgfTI4GViAYB4pLbra/t6SQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VtVpYB9mddgSkXoyip5B7/6M1y7bUyhIQoEGMgLGMQudORMngcdg+U8Z0+5askb2D4ASImTC8twI5an+Dz1P81TrFKvTrDEBwgGNoSq5nJakkC0/Q/sbOYf017ZcIFpDPMuYhiqsYyIwIqSdFsGaO/G1W61AwKMs6jTK9Prw8L4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iOt0FiRv; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-417f5268b12so32009635e9.1;
+        Mon, 15 Apr 2024 13:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713213990; x=1713818790; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JQH1fnHdxuhfyl8z9lLAyiPd+rF+Qf9RWJEuMIgG794=;
+        b=iOt0FiRvRjSCpc1AZp7qDi5IzJC71f6WzgNt0Rht4ZxeHHE0QOaVpjE5+RNClXDLqq
+         /8M6KBYRP0S/wv6SixaJ0sKL2+9ccZa2HDn6cjfCpTRiNRlb5NQAIgXCyTy1BrsZuRI/
+         U5N+4NL9c7IA02tJ9T+bpmVnWP5ynz9pQQ4H5/BKAE1wS3oXy43mBk4AJSa56QOncT6a
+         MpTpyQ0z1Bq2Glk7S1bnKSK2ypdgHrGKfi/1zwAZsvnIEGPdh0sUL6QKXiEAk6fWE0yA
+         7F79rC600GkqVGL8LxTP6IE1m6zbwTRF62Fo1COMiA0zA3ZZslhBjx5yizTFpqYt1cZT
+         CBUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713213990; x=1713818790;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JQH1fnHdxuhfyl8z9lLAyiPd+rF+Qf9RWJEuMIgG794=;
+        b=YPzKdYjUAoco9Fy5BzCVM5U5MBH70ls01xylfn/R0/weRg0mjQnP3Bg+1oSAwO4X7m
+         VOFyaiZdf6IeEEZukYhkSLnweNjnf1eM8QEk8NtVFlwO+kp0jf1MUgpETnu2NW9KbZ2g
+         OzD0PWqqahHBQ7Shswo6d35qSrjPeF0TL+VczlHW9fC7ouj+xfxwA4Y4XFnYPplzirZT
+         DNLGknjMI4bGCZ2EqsxxiiulDAIlBQ7KC3eqVv1DZs8IMobIDBCQXDLIAHOAToDGd/wK
+         XW7aWEpq22+vEIH84f3xgI+1YzmkABFJhkRYa2xwveOsS99oxLww5+/ROOWMhHItVSWG
+         A5Tw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOUI47TwyTWhrsff18GcgyEWzwNsUuqqTnLZg4Ce3hBIUqtLr2+qOgwcsiChE3rCxuc0oyvIx6nSKibZogfZ8JCI9SulGeWIg7gBULx35V3BlpUCs2Y0mWxCyZh/7VW0oHRYUhP63F+ATzvdniDS8fo2rxy5uvm36cnTavW0E1ilKutmrR5QMiS5fOUYEFD/Axh/D4lR9jiLrRIFQR4YMD
+X-Gm-Message-State: AOJu0YyagyNuW/9Bxxuf9DhWYghIqZG7T/GYaYaZfyAp32EQzf4OfUvO
+	QikVry3EO8i64FKrL2DKEUJDqUpx6CeCKdkk3hbnvDXnJvMDGFIg
+X-Google-Smtp-Source: AGHT+IHz0wOP7okRZmGKnlB9cgbQaWoJFhJdoBH0pyaqWvuNkIdpW8kz8KDqkPKRxlBdxvcDsLAroQ==
+X-Received: by 2002:a05:600c:4f87:b0:418:1e10:ab6f with SMTP id n7-20020a05600c4f8700b004181e10ab6fmr7029506wmq.35.1713213989864;
+        Mon, 15 Apr 2024 13:46:29 -0700 (PDT)
+Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
+        by smtp.gmail.com with ESMTPSA id j20-20020a5d4534000000b003434f526cb5sm12938715wra.95.2024.04.15.13.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 13:46:29 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Aren Moynihan <aren@peacevolution.org>
+Cc: Aren Moynihan <aren@peacevolution.org>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Ondrej Jirman <megi@xff.cz>,
+ Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= <u.kleine-koenig@pengutronix.de>,
+ linux-iio@vger.kernel.org, phone-devel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ Willow Barraco <contact@willowbarraco.fr>
+Subject:
+ Re: [PATCH 1/4] dt-bindings: iio: light: stk33xx: add regulator for vdd
+ supply
+Date: Mon, 15 Apr 2024 22:46:28 +0200
+Message-ID: <2319549.ElGaqSPkdT@jernej-laptop>
+In-Reply-To: <20240414175716.958831-1-aren@peacevolution.org>
+References:
+ <20240414175300.956243-1-aren@peacevolution.org>
+ <20240414175716.958831-1-aren@peacevolution.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415101141.1591112-1-peng.fan@oss.nxp.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-On Mon, Apr 15, 2024 at 06:11:41PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Support System suspend notification. Using a work struct to call
-> pm_suspend. There is no way to pass suspend level to pm_suspend,
-> so use MEM as of now.
-> 
+Dne nedelja, 14. april 2024 ob 19:57:13 GMT +2 je Aren Moynihan napisal(a):
+> Signed-off-by: Aren Moynihan <aren@peacevolution.org>
 
-Hi Peng,
+Commit message cannot be empty.
 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+Best regards,
+Jernej
+
 > ---
->  .../firmware/arm_scmi/scmi_power_control.c    | 20 ++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/iio/light/stk33xx.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/light/stk33xx.yaml b/Documentation/devicetree/bindings/iio/light/stk33xx.yaml
+> index f6e22dc9814a..db35e239d4a8 100644
+> --- a/Documentation/devicetree/bindings/iio/light/stk33xx.yaml
+> +++ b/Documentation/devicetree/bindings/iio/light/stk33xx.yaml
+> @@ -29,6 +29,7 @@ properties:
+>    interrupts:
+>      maxItems: 1
+>  
+> +  vdd-supply: true
+>    proximity-near-level: true
+>  
+>  required:
 > 
 
-This LGTM in general, the only obsservation here is that while on
-shutdown by issuing a orderly_reboot() we in fact ask PID_1 to start a
-shutdown from userspace, when triggering a system suspend with pm_suspend()
-we do not involve userspace in the process, but I dont think there is another
-way indeed.
 
-Thanks,
-Cristian
 
-> diff --git a/drivers/firmware/arm_scmi/scmi_power_control.c b/drivers/firmware/arm_scmi/scmi_power_control.c
-> index 6eb7d2a4b6b1..beafca9957c7 100644
-> --- a/drivers/firmware/arm_scmi/scmi_power_control.c
-> +++ b/drivers/firmware/arm_scmi/scmi_power_control.c
-> @@ -50,6 +50,7 @@
->  #include <linux/reboot.h>
->  #include <linux/scmi_protocol.h>
->  #include <linux/slab.h>
-> +#include <linux/suspend.h>
->  #include <linux/time64.h>
->  #include <linux/timer.h>
->  #include <linux/types.h>
-> @@ -90,6 +91,7 @@ struct scmi_syspower_conf {
->  	struct notifier_block reboot_nb;
->  
->  	struct delayed_work forceful_work;
-> +	struct work_struct suspend_work;
->  };
->  
->  #define userspace_nb_to_sconf(x)	\
-> @@ -249,6 +251,9 @@ static void scmi_request_graceful_transition(struct scmi_syspower_conf *sc,
->  	case SCMI_SYSTEM_WARMRESET:
->  		orderly_reboot();
->  		break;
-> +	case SCMI_SYSTEM_SUSPEND:
-> +		schedule_work(&sc->suspend_work);
-> +		break;
->  	default:
->  		break;
->  	}
-> @@ -277,7 +282,8 @@ static int scmi_userspace_notifier(struct notifier_block *nb,
->  	struct scmi_system_power_state_notifier_report *er = data;
->  	struct scmi_syspower_conf *sc = userspace_nb_to_sconf(nb);
->  
-> -	if (er->system_state >= SCMI_SYSTEM_POWERUP) {
-> +	if (er->system_state >= SCMI_SYSTEM_MAX ||
-> +	    er->system_state == SCMI_SYSTEM_POWERUP) {
->  		dev_err(sc->dev, "Ignoring unsupported system_state: 0x%X\n",
->  			er->system_state);
->  		return NOTIFY_DONE;
-> @@ -315,6 +321,16 @@ static int scmi_userspace_notifier(struct notifier_block *nb,
->  	return NOTIFY_OK;
->  }
->  
-> +static void scmi_suspend_work_func(struct work_struct *work)
-> +{
-> +	struct scmi_syspower_conf *sc =
-> +		container_of(work, struct scmi_syspower_conf, suspend_work);
-> +
-> +	pm_suspend(PM_SUSPEND_MEM);
-> +
-> +	sc->state = SCMI_SYSPOWER_IDLE;
-> +}
-> +
->  static int scmi_syspower_probe(struct scmi_device *sdev)
->  {
->  	int ret;
-> @@ -338,6 +354,8 @@ static int scmi_syspower_probe(struct scmi_device *sdev)
->  	sc->userspace_nb.notifier_call = &scmi_userspace_notifier;
->  	sc->dev = &sdev->dev;
->  
-> +	INIT_WORK(&sc->suspend_work, scmi_suspend_work_func);
-> +
->  	return handle->notify_ops->devm_event_notifier_register(sdev,
->  							   SCMI_PROTOCOL_SYSTEM,
->  					 SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
-> -- 
-> 2.37.1
-> 
+
 
