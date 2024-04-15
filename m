@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-144923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB2288A4CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:40:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1C28A4CAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:42:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2276E1C20F13
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:40:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE90C1F22603
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C535C8EE;
-	Mon, 15 Apr 2024 10:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3670F5CDC0;
+	Mon, 15 Apr 2024 10:42:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Elta5SQ9"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tI3fWkm5"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8DD5B691;
-	Mon, 15 Apr 2024 10:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29525C8E4;
+	Mon, 15 Apr 2024 10:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713177633; cv=none; b=gXMlrdCo9Ys7Rn+hSpRLkHX/PRZVMDixAwpq2PKYg07AhorWDSltUpa4W9qIDM8W6R1Q1t/R3l0z22RKo4Hgsx37wk7jZsLfNuqM2jJkFp/cHIcxRDkuiXQxhBA9vI9M2qEdXRz51rCFeVn5E2ogA/JmFhKthCSoZVtXaElsnsc=
+	t=1713177742; cv=none; b=QBIT1ObkMsJFRxyeK1bbzUJhd8Qcjoy4XRwSfehy9wVm5NDcWAtq2j9/WOlATJ8XvSTKay7tUEMhtBLWFB+PvsmKlO47nyWlD+DAgoZf8FCWMJeSA+qZZaKXlwFp5FihrAooQgqjLgkkrUMUio0Ik09bvOAeYtmqHFKmYkkUPjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713177633; c=relaxed/simple;
-	bh=fUNRMT40GKK0rii+qbnXmgY0J3JBenBg6zUwQ2WVDew=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iyFAO+Gr//+g7aRu8kJY2qmIBG1hpIdCi4lZisN+ddbXgeEFYHB0hXspm6JvupB83WL96O0xy6XpZYMskuu+PwxgpbbL1csCBB3NUJHwXgYAElMgzBXZxhAkHGa7P1INPS/RXGcXa7MdoSc9xI2yp8q0HeUNY3xLhI2gFo4ng+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Elta5SQ9; arc=none smtp.client-ip=46.235.227.194
+	s=arc-20240116; t=1713177742; c=relaxed/simple;
+	bh=JU0clfcq1cMxIdqJ2EHKrD4JQDvSeh45WWp5DuJ44ic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=eDdUt6axkgYnofJm/tVj7pktkoWoo8QcUfAXCHyOPfGFo2M13u0Yl9OmK0YRb5sGizxO3JPuAhOgBkl6LNe7K4qHpOGSVbDjDbhlQe19Dk/uFEsMi07dvtByTApMl851ck6yLHD69CADMZlYrZleSkwbhHI3G7NxrlQjtzuekLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tI3fWkm5; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713177629;
-	bh=fUNRMT40GKK0rii+qbnXmgY0J3JBenBg6zUwQ2WVDew=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Elta5SQ9I7l6Drg1gQy04pS7uxEpU8tL++tVeNeIzJ423BEjoJ/qyrahkWD3Z4oHQ
-	 PCjS5GfMzIJP98Yte6jda5895UX0Doe8aCmk2qj0dB0mCNDI0+OxOScsWIJ2qSGEjE
-	 RW8UHVcjFiBORzwYQodXOh5CZwSxiwqNCxRYzzU1ROe4uVwdeI6V4IesgbTBb8+kSt
-	 EScT6pQLVSxqzU2TqbIvMjNVdFrwfNJP2+jera9owBcOdUvWklJrJxSBQgF8/fysCW
-	 kIzqMHB4ih/ZWiAuo3amqnE7zR9gZxImedkD7bIIeP61hzNeiLH3MHSoMea9XMqnpo
-	 WQZnOW8PsEGyg==
+	s=mail; t=1713177738;
+	bh=JU0clfcq1cMxIdqJ2EHKrD4JQDvSeh45WWp5DuJ44ic=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=tI3fWkm55Yey3VIvKAiA1RNCWRc448yXVO7slBMfKfPobI7jf8aJyW63i8pE7Lt9y
+	 02FthLrVr7UB7YA2CH1hWqytdzL435uTnnnOiP5UuRRhXU04EvKT6SZv2GYINLn5tu
+	 BVZrnrTaqSo+Y5w+iCpMhdImF2Sc1TncmrIaDTkXZpypxgv+lG7GlF4PHEO+wIkILX
+	 KqvbTNjAobv26Mf52qmjNwmHQoshLzI0n4rAE+zr4ezS9G7SZ7ukviOOzLqnXT6rxq
+	 0Y2ZPAKUEH01/FMv46XdWfQg4x7jVaq7Wc2he3MSvguv4vTwVqRywCmnCh0HuRqF2w
+	 mzPzaB687B9mw==
 Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0BD19378000E;
-	Mon, 15 Apr 2024 10:40:25 +0000 (UTC)
-Message-ID: <2c16d81c-f955-4fa3-b291-3ca403dca45b@collabora.com>
-Date: Mon, 15 Apr 2024 12:40:25 +0200
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5792C378000E;
+	Mon, 15 Apr 2024 10:42:15 +0000 (UTC)
+Message-ID: <938ae032-3b4c-4293-8882-e6be231b0c5a@collabora.com>
+Date: Mon, 15 Apr 2024 12:42:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,61 +56,75 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm/arm64: dts: Drop "arm,armv8-pmuv3" compatible usage
-To: Rob Herring <robh@kernel.org>, soc@kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
+Subject: Re: [PATCH v3 3/4] dt-bindings: PCI: host-bridges: switch from
+ deprecated pci-bus.yaml
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Hector Martin <marcan@marcan.st>,
+ Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+ Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
  Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Dinh Nguyen <dinguyen@kernel.org>,
- Tsahee Zidenberg <tsahee@annapurnalabs.com>,
- Antoine Tenart <atenart@kernel.org>,
- Khuong Dinh <khuong@os.amperecomputing.com>,
- Liviu Dudau <liviu.dudau@arm.com>, Sudeep Holla <sudeep.holla@arm.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>, Ray Jui <rjui@broadcom.com>,
- Scott Branden <sbranden@broadcom.com>, Robert Richter <rric@kernel.org>,
- Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, "Paul J. Murphy"
- <paul.j.murphy@intel.com>,
- Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
- Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Jim Quinlan <jim2101024@gmail.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>, Will Deacon <will@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Srikanth Thokala <srikanth.thokala@intel.com>,
+ Ryder Lee <ryder.lee@mediatek.com>, Jianjun Wang
+ <jianjun.wang@mediatek.com>,
+ Sergio Paracuellos <sergio.paracuellos@gmail.com>,
  Matthias Brugger <matthias.bgg@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
+ Daire McNamara <daire.mcnamara@microchip.com>,
  Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, =?UTF-8?Q?Andreas_F=C3=A4rber?=
- <afaerber@suse.de>, Heiko Stuebner <heiko@sntech.de>,
- Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
- <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>,
- Jisheng Zhang <jszhang@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>,
- linux-fsd@tesla.com, Michal Simek <michal.simek@amd.com>
-Cc: devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- imx@lists.linux.dev, linux-mediatek@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-realtek-soc@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org
-References: <20240412222857.3873079-1-robh@kernel.org>
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>,
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Shawn Lin <shawn.lin@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>,
+ Jingoo Han <jingoohan1@gmail.com>,
+ Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+ Michal Simek <michal.simek@amd.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Magnus Damm <magnus.damm@gmail.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Mark Kettenis <kettenis@openbsd.org>, Tom Joseph <tjoseph@cadence.com>,
+ Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+ Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org
+References: <20240413151617.35630-1-krzysztof.kozlowski@linaro.org>
+ <20240413151617.35630-3-krzysztof.kozlowski@linaro.org>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Content-Language: en-US
-In-Reply-To: <20240412222857.3873079-1-robh@kernel.org>
+In-Reply-To: <20240413151617.35630-3-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Il 13/04/24 00:28, Rob Herring ha scritto:
-> The "arm,armv8-pmuv3" compatible is intended only for s/w models. Primarily,
-> it doesn't provide any detail on uarch specific events.
+Il 13/04/24 17:16, Krzysztof Kozlowski ha scritto:
+> dtschema package with core schemas deprecated pci-bus.yaml schema in
+> favor of pci-host-bridge.yaml.  Update all bindings to use the latter
+> one.
 > 
-> There's still remaining cases for CPUs without any corresponding PMU
-> definition and for big.LITTLE systems which only have a single PMU node
-> (there should be one per core type).
+> The difference between pci-bus.yaml and pci-host-bridge.yaml is only in
+> lack of "reg" property defined by the latter, which should not have any
+> effect here, because all these bindings define the "reg".
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-
-For MediaTek:
+> The change is therefore quite trivial, however it requires dtschema
+> package v2024.02 or newer.
+> 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be> # Renesas
+> Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
