@@ -1,205 +1,97 @@
-Return-Path: <linux-kernel+bounces-144982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F218A4D97
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DC28E8A4D9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:23:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E38711F23151
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:23:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 914051F23152
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F8C5634E2;
-	Mon, 15 Apr 2024 11:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H1NHa8/P"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8585FB93;
+	Mon, 15 Apr 2024 11:23:26 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFC31E896;
-	Mon, 15 Apr 2024 11:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B83657A3
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713180164; cv=none; b=K8YoW3jJYJSAfSN82R0soG/bSEkbLYFRvEHT98E9gsxnGZL1GcnwN0lcFsCmjxKiVlDD1EoiDNOq28GAR6IOCAaIhoLTlS4aFzEUrqs/C3ZibTuEHF0uhxD5lgjiFxjrsTuoBsYObzmffwfEMpqUG5XkCzaoZPebTZVQri+K9KU=
+	t=1713180205; cv=none; b=egzuErBBZ5YNER0u98hn/HOT6t3cHu1QKLA7aV5GiJh/rKXHUc1uqfc87K14CiyHWLPG+q8qTkXX8IIi/L4uRisF3JN7n8rAlKrpyKtopZYNVIU2qTUYzNqPM6S56o8LBLyXL7Ue/ipc3JpowQBbtHTxO4U3Jc7rgrcFka1qcoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713180164; c=relaxed/simple;
-	bh=Ejm1aCCripul0+6BjYzjMjeA/lB7dWZX4qNm0cAvPz4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N4GCqojaXil6yI0w+hgLNh2wW78NDNy3ujV9T7DAWy5tfXqcJ7xhOy1v5zNNR+YpQOevgFH8GcEXbUi0f/m7S73uCz2YDJ5bAAkGQBEpWz0WdqCXipXJ6qihamzxNsQWvoPh4U8dPBWfe6NKj+PBy7gosmB2C7BMhDJ+ivE4iEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H1NHa8/P; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516d3776334so3910140e87.1;
-        Mon, 15 Apr 2024 04:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713180161; x=1713784961; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zIkONmgy9ZJbqCprg1mRBojeyA5GhfKbRxcMnCu9Nn8=;
-        b=H1NHa8/PLtCVKTu8wTVaq+H5tbuAaL0iJQh6RvapTH4H/8r9e4LcjtEg2kNvDzgllv
-         pVma8yvpKoYS6WzzS9tp8k+5Nmqp5E/AGqbjFeI42FKL46aCd/YcA4JUt2BC7aE5Sb++
-         D1wJysCgPF2Te+QIaztm9DuYwd0wkvqGSHNqJ7T/+CokNL5aM55Tj+1qLxqeLvlK7j9c
-         E+qZuuRk28osSV6USg8rEsM+kAUHv+1q6+ZcRyXiqZhXRf1JcHuWRmt+UxM17s+Mgq70
-         H2Jti4JSdgaAbrBK76Xq/QJ1g2ZUvCdgvofSo1aGGUeyloSEbsnJG0WxuZZQ3r9sgTG8
-         5j6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713180161; x=1713784961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zIkONmgy9ZJbqCprg1mRBojeyA5GhfKbRxcMnCu9Nn8=;
-        b=Vc9T+hu7Z7ljj3+pExeDyr9lgbs42L9tL/jZ/HTgcP7CZzGC0sHuGvItcPYbKKql8i
-         vdQ7v/tdebhMblsKO5dw9uJuXXReTFt3Q3QPr5/L/KrayjMedRUm/Yn08m11u1gux6vA
-         u6vaO7yinBr5lr5TjJ2yhO4g0i0/GGWk5UhuAt1iI9cYTbQiThvql4E15GIZFZbndyVj
-         N+HUMPN0GMKROK47qmDc/Fu3nsyjfD6vIUj43dlQy/RJM6UqH+L+8F10Np1ROz5k8IyT
-         Ys9Ou7DX9/MmAOtftIwav77Z03n27GqldD7Le7pO+TUg6opm4mcWU/wCOA8oW9r+8RU9
-         wXXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIx5iGZvg/zFiZqhD2DF7b+WNguUz21OWAX39tdcWz6Fnxe+CvXihOIvqiWbC//L2TKDvdYGfDH/w7sDwkvqXtyM0L02zbf4eBilRi5NsvtyG1ZnWzr9Ih5teIY/yoiCVJzg2iEOx9Yytwf+NrPJsy59QR5FK89OAQr4u58Q==
-X-Gm-Message-State: AOJu0YzkBNgooD2g4fiTgn+hhiK3XqaWMWFTsk0Bj+fbRbDCLQz9nisl
-	Lz/DWk0RpLvGgrOatShTu1PZNaUYfwphT8bOLAVc2+hR4RsDGNL8
-X-Google-Smtp-Source: AGHT+IGsWH8hvkgWTnSmJZma8ocO18tq1tcLHnilXGa21I2AQO+Lmbt/Mi2Wcn2qRzx1DIlvjAyAyA==
-X-Received: by 2002:a19:915e:0:b0:516:d4c2:53eb with SMTP id y30-20020a19915e000000b00516d4c253ebmr6353557lfj.58.1713180160823;
-        Mon, 15 Apr 2024 04:22:40 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id k9-20020adff289000000b0033e45930f35sm11877262wro.6.2024.04.15.04.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 04:22:40 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 15 Apr 2024 13:22:38 +0200
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org,
-	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>
-Subject: Re: [PATCH v3 3/3] btf: Avoid weak external references
-Message-ID: <Zh0N_nJKgu43GvYY@krava>
-References: <20240415075837.2349766-5-ardb+git@google.com>
- <20240415075837.2349766-8-ardb+git@google.com>
+	s=arc-20240116; t=1713180205; c=relaxed/simple;
+	bh=CziQs7aMhj9OpqRoP90aag71n2YIwOeug3nO8I1cP8g=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=D1g8uDZJXy4agd8PRuA2F7SyN/KO/pdu6NWAR6ck7Gky5+iVTUchhIopF6ExbT0W2LohDgTT6veAzdZ4gBbiRMsEbHTzZ5yHAccCuYS7xh9lA3/65UbVoRYyfGdGWVAJrEP8fxad4dswpDTRDtOrv5gMHYPGeJfQpKLblY2zQo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-136-tjcp8qf9PhOVYCuOrOzRpw-1; Mon, 15 Apr 2024 12:23:17 +0100
+X-MC-Unique: tjcp8qf9PhOVYCuOrOzRpw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 15 Apr
+ 2024 12:22:41 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 15 Apr 2024 12:22:41 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Kees Cook' <keescook@chromium.org>, Justin Stitt <justinstitt@google.com>
+CC: Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong"
+	<djwong@kernel.org>, "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH] xfs: replace deprecated strncpy with strscpy_pad
+Thread-Topic: [PATCH] xfs: replace deprecated strncpy with strscpy_pad
+Thread-Index: AQHajCVvxad4w+xafUuF+MG1sYW+JbFpNItw
+Date: Mon, 15 Apr 2024 11:22:41 +0000
+Message-ID: <1a75240d27bb4f2abe3cfae49b2f7605@AcuMS.aculab.com>
+References: <20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com>
+ <202404090921.A203626A@keescook>
+ <CAFhGd8pr5XycTH1iCUgBodCOV8_WY_da=aH+WZGPXfuOY5_Zgg@mail.gmail.com>
+ <202404110829.D3A5A56@keescook>
+In-Reply-To: <202404110829.D3A5A56@keescook>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415075837.2349766-8-ardb+git@google.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-On Mon, Apr 15, 2024 at 09:58:41AM +0200, Ard Biesheuvel wrote:
-> From: Ard Biesheuvel <ardb@kernel.org>
-> 
-> If the BTF code is enabled in the build configuration, the start/stop
-> BTF markers are guaranteed to exist in the final link but not during the
-> first linker pass.
-> 
-> Avoid GOT based relocations to these markers in the final executable by
-> providing preliminary definitions that will be used by the first linker
-> pass, and superseded by the actual definitions in the subsequent ones.
-> 
-> Make the preliminary definitions dependent on CONFIG_DEBUG_INFO_BTF so
-> that inadvertent references to this section will trigger a link failure
-> if they occur in code that does not honour CONFIG_DEBUG_INFO_BTF.
-> 
-> Note that Clang will notice that taking the address of__start_BTF cannot
-> yield NULL any longer, so testing for that condition is no longer
-> needed.
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+RnJvbTogS2VlcyBDb29rDQo+IFNlbnQ6IDExIEFwcmlsIDIwMjQgMTY6MzINCj4gDQo+IE9uIFdl
+ZCwgQXByIDEwLCAyMDI0IGF0IDAxOjQ1OjIxUE0gLTA3MDAsIEp1c3RpbiBTdGl0dCB3cm90ZToN
+Cj4gPiBPbiBUdWUsIEFwciA5LCAyMDI0IGF0IDk6MjLigK9BTSBLZWVzIENvb2sgPGtlZXNjb29r
+QGNocm9taXVtLm9yZz4gd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+IC0gICAgIC8qIDEgbGFyZ2Vy
+IHRoYW4gc2JfZm5hbWUsIHNvIHRoaXMgZW5zdXJlcyBhIHRyYWlsaW5nIE5VTCBjaGFyICovDQo+
+ID4gPiA+IC0gICAgIG1lbXNldChsYWJlbCwgMCwgc2l6ZW9mKGxhYmVsKSk7DQo+ID4gPiA+ICAg
+ICAgIHNwaW5fbG9jaygmbXAtPm1fc2JfbG9jayk7DQo+ID4gPiA+IC0gICAgIHN0cm5jcHkobGFi
+ZWwsIHNicC0+c2JfZm5hbWUsIFhGU0xBQkVMX01BWCk7DQo+ID4gPiA+ICsgICAgIHN0cnNjcHlf
+cGFkKGxhYmVsLCBzYnAtPnNiX2ZuYW1lKTsNCj4gPiA+DQo+ID4gPiBJcyBzYnAtPnNiX2ZuYW1l
+IGl0c2VsZiBOVUwtdGVybWluYXRlZD8gVGhpcyBsb29rcyBsaWtlIGFub3RoZXIgY2FzZSBvZg0K
+PiA+ID4gbmVlZGluZyB0aGUgbWVtdG9zdHIoKSBoZWxwZXI/DQo+ID4gPg0KPiA+DQo+ID4gSSBz
+ZW50IGEgcGF0Y2ggWzFdLg0KPiA+DQo+ID4gT2J2aW91c2x5IGl0IGRlcGVuZHMgb24geW91ciBp
+bXBsZW1lbnRhdGlvbiBwYXRjaCBsYW5kaW5nIGZpcnN0OyB3aGF0DQo+ID4gdHJlZSBzaG91bGQg
+aXQgZ28gdG8/DQo+IA0KPiBUaGlzICJmbGF2b3IiIG9mIGNvbnZlcnNpb24gbWF5IG5lZWQgdG8g
+d2FpdCBhIHJlbGVhc2U/IFRoZXJlJ3Mgbm8NCj4gdXJnZW5jeSBvbiB0aGUgY29udmVyc2lvbiwg
+YW5kIHRoZXJlIGFyZSBwbGVudHkgbW9yZSB0byBkbyBmb3IgdGhpcw0KPiBjeWNsZS4gOykNCg0K
+SW4gdGhpcyBjYXNlOg0KCWNoYXIgbGFiZWxbc2l6ZW9mIChzYnAtPmZiX2ZuYW1lKSArIDFdOw0K
+CW1lbWNweShsYWJlbCwgc2JwLT5zYl9mbmFtZSwgc2l6ZW9mIChzYnAtPnNiX2ZuYW1lKSk7DQoJ
+bGFiZWxbc2l6ZW9mIChzYnAtPmZuYW1lKV0gPSAwOw0KaXMgcHJvYmFibHkgdGhlIGNsZWFyZXN0
+IGNvZGUuDQooaXQgaXMgWzEyXSAtIHNvIG5vIHBvaW50IGZhZmZpbmcgd2l0aCB0aGUgY29weS4p
+DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
+ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
+bzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  include/asm-generic/vmlinux.lds.h | 9 +++++++++
->  kernel/bpf/btf.c                  | 7 +++++--
->  kernel/bpf/sysfs_btf.c            | 6 +++---
->  3 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index e8449be62058..4cb3d88449e5 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -456,6 +456,7 @@
->   * independent code.
->   */
->  #define PRELIMINARY_SYMBOL_DEFINITIONS					\
-> +	PRELIMINARY_BTF_DEFINITIONS					\
->  	PROVIDE(kallsyms_addresses = .);				\
->  	PROVIDE(kallsyms_offsets = .);					\
->  	PROVIDE(kallsyms_names = .);					\
-> @@ -466,6 +467,14 @@
->  	PROVIDE(kallsyms_markers = .);					\
->  	PROVIDE(kallsyms_seqs_of_names = .);
->  
-> +#ifdef CONFIG_DEBUG_INFO_BTF
-> +#define PRELIMINARY_BTF_DEFINITIONS					\
-> +	PROVIDE(__start_BTF = .);					\
-> +	PROVIDE(__stop_BTF = .);
-> +#else
-> +#define PRELIMINARY_BTF_DEFINITIONS
-> +#endif
-> +
->  /*
->   * Read only Data
->   */
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 90c4a32d89ff..6d46cee47ae3 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -5642,8 +5642,8 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
->  	return ERR_PTR(err);
->  }
->  
-> -extern char __weak __start_BTF[];
-> -extern char __weak __stop_BTF[];
-> +extern char __start_BTF[];
-> +extern char __stop_BTF[];
->  extern struct btf *btf_vmlinux;
->  
->  #define BPF_MAP_TYPE(_id, _ops)
-> @@ -5971,6 +5971,9 @@ struct btf *btf_parse_vmlinux(void)
->  	struct btf *btf = NULL;
->  	int err;
->  
-> +	if (!IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
-> +		return ERR_PTR(-ENOENT);
-> +
->  	env = kzalloc(sizeof(*env), GFP_KERNEL | __GFP_NOWARN);
->  	if (!env)
->  		return ERR_PTR(-ENOMEM);
-> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
-> index ef6911aee3bb..fedb54c94cdb 100644
-> --- a/kernel/bpf/sysfs_btf.c
-> +++ b/kernel/bpf/sysfs_btf.c
-> @@ -9,8 +9,8 @@
->  #include <linux/sysfs.h>
->  
->  /* See scripts/link-vmlinux.sh, gen_btf() func for details */
-> -extern char __weak __start_BTF[];
-> -extern char __weak __stop_BTF[];
-> +extern char __start_BTF[];
-> +extern char __stop_BTF[];
->  
->  static ssize_t
->  btf_vmlinux_read(struct file *file, struct kobject *kobj,
-> @@ -32,7 +32,7 @@ static int __init btf_vmlinux_init(void)
->  {
->  	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
->  
-> -	if (!__start_BTF || bin_attr_btf_vmlinux.size == 0)
-> +	if (bin_attr_btf_vmlinux.size == 0)
->  		return 0;
->  
->  	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
-> -- 
-> 2.44.0.683.g7961c838ac-goog
-> 
 
