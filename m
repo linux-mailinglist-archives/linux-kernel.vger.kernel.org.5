@@ -1,134 +1,163 @@
-Return-Path: <linux-kernel+bounces-145023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5939B8A4E54
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:02:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70CB78A4E6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:04:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7E681F21C86
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:02:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5C77B20946
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AAF16A008;
-	Mon, 15 Apr 2024 12:02:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A5C67C53;
+	Mon, 15 Apr 2024 12:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mRTtDkr0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="ereQHwXE"
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6464A679ED;
-	Mon, 15 Apr 2024 12:02:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A0D5B666
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:03:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713182564; cv=none; b=abihrJwNcZ5ZNVD3VKFNRyPFbiCRDrnIfTW+oMaRBAhRXwrjs2XtwpTkrqcKCbn7k6vqiijDKOaZSHrkCXCHIRonRlzbTHjBGMGQPXn7f3450jIqGpFFKiHYwTt2vsgzfjJjUu+v/Z/jELccyRqXwZDX+ytYkBfGHK6HPYuB9EU=
+	t=1713182634; cv=none; b=aA8JFIz1uB4Hp1rSXr3hPVlxtMkCBfsIsznvePiveRHjJ+QPEIIVBCQu2rEOApoiiCWdi7zimYoUSlKhhh+Urr521apqh3Gl7rYJsHt8clhCmf7Pb0pdFsvvyzi1aiZsVeIE9Pyhag04Fb4s9m64WzOV3Gbe5wRP/cRtNssvtSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713182564; c=relaxed/simple;
-	bh=NchaIwl0enMKrAZADevkzNL4pVQIaCSWH3SoIG+yOuo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dn/jlgw0VgokqBgH+CE5ptpK2OWqw8GN8W9d0JXbHDQHlDyu2Ku1xcXNhQDhxve2gyrIAB2XIn8gBkyZiuw4n8gQESJvOhLMSSyofhofu2nMfq2n+W/+OUqS/A2D4Bo+28IpLFWoUWDn9mMEf5zGbunWkLnHXL50s1KIYHjLT9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mRTtDkr0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCB75C2BD11;
-	Mon, 15 Apr 2024 12:02:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713182563;
-	bh=NchaIwl0enMKrAZADevkzNL4pVQIaCSWH3SoIG+yOuo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mRTtDkr0BCzbP+RDDyHgfeVPUsM9Gi2YfaRdVU+mGIlC50ZY5PwPARWJuuwoEGovK
-	 qJuIV1B1gLnkK7IKvSJqVKdd6eG93brhZeGjaDK+AoMaMVFkhC6p5uX4RdAexBioL1
-	 Ook+NV9X0aJL1u91pE7/aLKhXxSpuxVzAHGPScXbfEFD44EWe8YdYkpWUGdPK2nZKM
-	 VfWsdNhbgDYQeW8D/GxBNHKNCFBi3AtnjHq14GSlbP5yWcCAayZ5XwD/+HkuO9u+Lm
-	 1yfn0tYg6mmGI/S6q4w00NjX7AItSA4kq6If2Bwm8QRt3e+yRMgbCz/mZjfQanyw+3
-	 j073IdJlm/yRw==
-Date: Mon, 15 Apr 2024 17:32:37 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Qiang Yu <quic_qianyu@quicinc.com>
-Cc: quic_jhugo@quicinc.com, mhi@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_cang@quicinc.com, quic_mrana@quicinc.com
-Subject: Re: [PATCH v3 2/3] bus: mhi: host: Add a new API for getting channel
- doorbell address
-Message-ID: <20240415120237.GG7537@thinkpad>
-References: <1713170945-44640-1-git-send-email-quic_qianyu@quicinc.com>
- <1713170945-44640-3-git-send-email-quic_qianyu@quicinc.com>
+	s=arc-20240116; t=1713182634; c=relaxed/simple;
+	bh=XUdYqSmwVovBEI2SpQ5+Es9BsdYiZplIxqYD7Dd9rUI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OH6bzndXzO2x6BWlXj8YPG/k1qeATSQw5BA/nyJ0+BI3K/+JwmAnChsjXvncmUGp7DRiAoAaUIjiYtaQ+Dpg6sZyysvudy24ijTuQ0gxzuIS/rxwkFYpPheIT1uQxy6FddezTsiiEsUfxqFLB2Tj5ybWUaSg24CP/fMiHIsZ2u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=ereQHwXE; arc=none smtp.client-ip=209.85.160.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-2331bef249eso1302662fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1713182630; x=1713787430; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nUM9SS9JNPHB2GD0yvR5K/5tFBuL0BhdH0M+pWpbQJA=;
+        b=ereQHwXEWrlqFaVW5w9wnlvTObVZGGEY4MEJIa0J9co40F022QSKULc5iNhC+GDEzy
+         KMUgMTSTdPI6gNpsaOwb/siNe1/NXhdDmuyzmU1V98y6D04rtgxQNFnbxQzYn8Y01Sm0
+         srpCZWI2rSZNWDAveRsWQH5jMNDZcYw2uSvHcRvxpwYsDw2GrQtsEFcVSyDLqj4UIQX2
+         /Z/DbBwa9mkRpTabX+WdPfXmKn/IqjcHa94wwsn5jv3Iex/ZM/y/Nbl7vwcA+T9j2WcH
+         89TDkSF9HO8I3Aj9/5fjIRgJ0/u6J36bvE0ATdtuZqEX8SE3P7RT94ZGIu5Qrdud/Koi
+         HAtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713182630; x=1713787430;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nUM9SS9JNPHB2GD0yvR5K/5tFBuL0BhdH0M+pWpbQJA=;
+        b=Ity/PzD1hFe8/G7y2CFhaE8b/5mN6nhTowSNo8/iPNGD872hRw51euHjKP9EmMHO0G
+         iDiW1EXsd5zJ0u7/uPrYwj3pVOBeTi3mh2r3M7NHB2vHaF1a2U3y+CDacfVtjA2kQ04K
+         ITsN6hTERhUiBmuJTPCbfNcixXBNfSQaduOjow9Aarex7YmTy8+EdIXjgJBiIKb6nlPH
+         Soihq8CmQzhoP+KieiYro0+MDAdBwLVY9GGyj6AsBykigtc64NJG4y6MTwrc41OE1qlG
+         //StVqrloN0K0nLkEnHvyxcdemaKDRJ0V5aZUqjR2KD0ToAKxnbBa1IDGpA4F7LqNRRK
+         dwAw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbjk0aKKKRfn2jLmh/bqqzvQrOmQ8puhLyA4fjdGlPmQ9lca6GreS8c+TR+Y1X+LfbGnlbv7/7Piu6m6yD4TfU9FDrZcWrEMCTy83/
+X-Gm-Message-State: AOJu0YxZou6Y5vwHrusJZrIFZW9UM4Vo8ZvIxeb+Rwgn9N4UNHHskqer
+	kuTjTsTQmJ0JBfMh4ptJxRCVnU1k3wKCSMiefvwsOCxKBro3GPyCs+sQKCTfZmu6ORgmUuy00Hs
+	lNcGBqNO7DNVp7mer3GGlE13EE/v4SdBdOy2AgQ==
+X-Google-Smtp-Source: AGHT+IF+ysnzqvijegluvjiwQKxRcx13O9ZDpCztSQtH8QXKxsIagGyKK5PKiNKWo1TCoNguxXwOTSWqBx38mQ3RLEE=
+X-Received: by 2002:a05:6871:28a9:b0:220:8bd2:cd09 with SMTP id
+ bq41-20020a05687128a900b002208bd2cd09mr12160806oac.32.1713182629917; Mon, 15
+ Apr 2024 05:03:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1713170945-44640-3-git-send-email-quic_qianyu@quicinc.com>
+References: <20240414025826.64025-1-cuiyunhui@bytedance.com>
+ <20240414025826.64025-2-cuiyunhui@bytedance.com> <Zhzo_gWFiURs_geD@bogus>
+In-Reply-To: <Zhzo_gWFiURs_geD@bogus>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Mon, 15 Apr 2024 20:03:38 +0800
+Message-ID: <CAEEQ3wkzvOpahzPuoD7=aMG3srjdyCA21tnh-j9PvY3Qerk_hg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 2/3] riscv: cacheinfo: initialize
+ cacheinfo's level and type from ACPI PPTT
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org, bhelgaas@google.com, 
+	james.morse@arm.com, jhugo@codeaurora.org, jeremy.linton@arm.com, 
+	john.garry@huawei.com, Jonathan.Cameron@huawei.com, pierre.gondois@arm.com, 
+	tiantao6@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 04:49:04PM +0800, Qiang Yu wrote:
-> Some controllers may want to know the address of a certain doorbell. Hence
-> add a new API where we read CHDBOFF register to get the base address of
-> doorbell, so that the controller can calculate the address of the doorbell
-> it wants by adding additional offset.
-> 
-> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> ---
->  drivers/bus/mhi/host/main.c | 17 +++++++++++++++++
->  include/linux/mhi.h         |  7 +++++++
->  2 files changed, 24 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> index 15d657a..947b5ec 100644
-> --- a/drivers/bus/mhi/host/main.c
-> +++ b/drivers/bus/mhi/host/main.c
-> @@ -1691,3 +1691,20 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
->  	}
->  }
->  EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
-> +
-> +int mhi_get_channel_doorbell(struct mhi_controller *mhi_cntrl, u32 *chdb_offset)
+Hi Sudeep,
 
-s/mhi_get_channel_doorbell/mhi_get_channel_doorbell_offset
+On Mon, Apr 15, 2024 at 4:45=E2=80=AFPM Sudeep Holla <sudeep.holla@arm.com>=
+ wrote:
+>
+> On Sun, Apr 14, 2024 at 10:58:25AM +0800, Yunhui Cui wrote:
+> > Before cacheinfo can be built correctly, we need to initialize level
+> > and type. Since RSIC-V currently does not have a register group that
+> > describes cache-related attributes like ARM64, we cannot obtain them
+> > directly, so now we obtain cache leaves from the ACPI PPTT table
+> > (acpi_get_cache_info()) and set the cache type through split_levels.
+> >
+> > Suggested-by: Jeremy Linton <jeremy.linton@arm.com>
+> > Suggested-by: Sudeep Holla <sudeep.holla@arm.com>
+> > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> > ---
+> >  arch/riscv/kernel/cacheinfo.c | 23 +++++++++++++++++++++++
+> >  1 file changed, 23 insertions(+)
+> >
+> > diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinf=
+o.c
+> > index 30a6878287ad..ece92aa404e3 100644
+> > --- a/arch/riscv/kernel/cacheinfo.c
+> > +++ b/arch/riscv/kernel/cacheinfo.c
+> > @@ -6,6 +6,7 @@
+> >  #include <linux/cpu.h>
+> >  #include <linux/of.h>
+> >  #include <asm/cacheinfo.h>
+> > +#include <linux/acpi.h>
+> >
+> >  static struct riscv_cacheinfo_ops *rv_cache_ops;
+> >
+> > @@ -78,6 +79,28 @@ int populate_cache_leaves(unsigned int cpu)
+> >       struct device_node *prev =3D NULL;
+> >       int levels =3D 1, level =3D 1;
+> >
+> > +     if (!acpi_disabled) {
+> > +             int ret, idx, fw_levels, split_levels;
+> > +
+> > +             ret =3D acpi_get_cache_info(cpu, &fw_levels, &split_level=
+s);
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             /* must be set, so we can drop num_leaves assignment belo=
+w */
+>
+> I intentionally added this above comment to check and drop the below stat=
+ement
+> if it is already set. Please check if the value is already set when we ca=
+ll
+> into this function(which I think is the case).
+>
+> > +             this_cpu_ci->num_leaves =3D fw_levels + split_levels;
 
-> +{
-> +	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	void __iomem *base = mhi_cntrl->regs;
-> +	int ret;
-> +
-> +	/* Read channel db offset */
+Uh,got it. I understand that there is no need to add this line:
+"this_cpu_ci->num_leaves =3D fw_levels + split_levels; " , because in
+the Master core first it will:
+smp_prepare_cpus
+     ->init_cpu_topology
+          ->for_each_possible_cpu(cpu) {
+                 fetch_cache_info(cpu); //num_leaves and num_levels will be=
+ set
+Then store_cpu_topology->update_siblings_masks->detect_cache_attributes->po=
+pulate_cache_leaves().
 
-No need of this comment.
+Slave core will follow the logic of smp_callin->store_cpu_topology().
+It's the same after I tested it, so I plan to remove that line and
+update V3, what do you think?
 
-> +	ret = mhi_read_reg(mhi_cntrl, base, CHDBOFF, chdb_offset);
-> +	if (ret) {
-> +		dev_err(dev, "Unable to read CHDBOFF register\n");
-> +		return -EIO;
-> +	}
-> +
-> +	return 0;
-> +}
-
-Why can't you use this API in mhi_init_mmio()?
-
-> +EXPORT_SYMBOL_GPL(mhi_get_channel_doorbell);
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 8280545..1135142 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -816,4 +816,11 @@ int mhi_queue_skb(struct mhi_device *mhi_dev, enum dma_data_direction dir,
->   */
->  bool mhi_queue_is_full(struct mhi_device *mhi_dev, enum dma_data_direction dir);
->  
-> +/**
-> + * mhi_get_channel_doorbell - read channel doorbell offset register to get
-
-'Get the channel doorbell offset'
-
-> + *                            channel doorbell address
-> + * @mhi_cntrl: MHI controller
-> + * @chdb_offset: channel doorbell address
-
-s/channel doorbell address/Channel doorbell offset
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+Thanks,
+Yunhui
 
