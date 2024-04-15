@@ -1,58 +1,57 @@
-Return-Path: <linux-kernel+bounces-145150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F4E98A5027
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D2B8A502C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C04F81C22936
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:02:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7D3428995F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BDB12F388;
-	Mon, 15 Apr 2024 12:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63AA76026;
+	Mon, 15 Apr 2024 12:50:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpS8V3E/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ocAQeneK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B8F12EBCB;
-	Mon, 15 Apr 2024 12:50:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010887581B;
+	Mon, 15 Apr 2024 12:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185439; cv=none; b=aExFOtw7gn+nIVC9kdzqXTw5TG8eAcDpvk36qew0zWwhbD+DysAoLZloeJghNrT1o6Ce9D8Bcin8IpQlDhRMRPeTrAghbA68TNhgxyi5pCjdIFLZ1+SmdIDAYfgDMPPUX3pj55MjlhPB1sRHyh7H5/0bYzl86Jwg6PNDRP5QlXE=
+	t=1713185445; cv=none; b=RL1gxotVsRd6oLB60TpGmT3WLTgYzqQeaEHl6IhaAC7XBpj+R9qq/+VzGN1fMTZi1Su/KG3LdaAthceh+FQJBsQrFZhEUFCj0B0DSLzdbSAD2ZFGJBKshTniVTrZJZvkRCvFte8DYHXwKtcfa32ukaMz86o/az10I3Zc/h5lC2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185439; c=relaxed/simple;
-	bh=nw55+VOpSKCFU5z9iBHcAaveAuSjI2mNzuzQYI+vTic=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vyq7UP+UD1XtoA3AaN6bdT+wqRBLO77QSwBfktB9WLtVf39Gzl5h7FAZYYl3sLRoZWCguffCnoPG70g3W0LcCM1aXCL1/MuxMakmNnDzM7fp0Taxx/6uWuFVEIIfEIWuFPuD3U/SQQutEDCHCpLk9vogdzGI2sO//uj80yzed34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpS8V3E/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A090C2BD11;
-	Mon, 15 Apr 2024 12:50:38 +0000 (UTC)
+	s=arc-20240116; t=1713185445; c=relaxed/simple;
+	bh=9WgubhEyjIntDb8goamQgfEtmkM2n3g7m1ut+oETaNg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qc8SvhYc/nA4nOr8766llZnjrBnFvrDS/aTzauryy8TG1uwKeDxrGAVvJ+Ut4fK5gzOhyPxA07Ay+jPF3WLqiGO9aPMhrvIl8LM6VECZjvWJymOePddZnhykrdHmcw4/RVKSihY195/C9DivGUBjaiX+YqQJ7O6hHF38VBGHmu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ocAQeneK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF86BC113CC;
+	Mon, 15 Apr 2024 12:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185439;
-	bh=nw55+VOpSKCFU5z9iBHcAaveAuSjI2mNzuzQYI+vTic=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IpS8V3E/ksNs5LVkc3FELoZLfTt2hzqJyjrB5Q/qnGSAARxI3BJ/K0TE8ZVREP3QZ
-	 S+HJCuNFiUu5HuGMhCpUJmb8jhPyZyv2qLEuJbr8T5CgVyrDerzOnfd5r6r3EeJmQk
-	 xhUVkn8lZg86P0+19QpeGDslfFvmHlKljupo15gQG3So2N5p3gq9sT/D3S08IJMniS
-	 F4Pe2CfRzvVY3aeJfPMRNo7JfDeaD5KgbTbK4G5dDgv8UIAFP96Q3tGfL2K3PqyxNp
-	 hWj79sgMMdxIpXHvVXqDV3KrBhTK1xi+sJ//gS1qW6hBDqNrGimRcp1V6eMM0vlhci
-	 cpph7I1BzalHw==
+	s=k20201202; t=1713185444;
+	bh=9WgubhEyjIntDb8goamQgfEtmkM2n3g7m1ut+oETaNg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ocAQeneKpzKhpF99Tt/dEaC7PxMcQsj/vF/dL/kHf8Z1Iws/J6ivQHe4iveyGR3UM
+	 2xBGkiIzASN0AbQsqXYxwFu303Ye0uxV0Mr1RU+68vCcA6HIlfZvbJJ9fpO15qGgrC
+	 IxQD57wiBWoICprZrQsyJ0aHSqysjbbENNRQQcv7eaDBDTzXdRhPZgK2PdTFcMXm74
+	 /TVjr7ec+PaQ7bP7lx701VJBnPtza3cXC/6TjlTNxujccwbMulw91OvWT0AgGds6sl
+	 BcWZh1BGrCsoND9+H4wnylUPFSQ3DHpY2Z4Td8M3b5HRUlmSx6r4JRMiRkJ2Qc8rdv
+	 HiipbGnBGutwg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Adam Goldman <adamg@pobox.com>,
-	Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+Cc: Takashi Iwai <tiwai@suse.de>,
+	syzbot+7fb05ccf7b3d2f9617b3@syzkaller.appspotmail.com,
 	Sasha Levin <sashal@kernel.org>,
-	linux1394-devel@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 6.1 6/6] firewire: ohci: mask bus reset interrupts between ISR and bottom half
-Date: Mon, 15 Apr 2024 06:04:27 -0400
-Message-ID: <20240415100433.3127434-6-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 1/4] ALSA: line6: Zero-initialize message buffers
+Date: Mon, 15 Apr 2024 06:04:43 -0400
+Message-ID: <20240415100449.3127574-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240415100433.3127434-1-sashal@kernel.org>
-References: <20240415100433.3127434-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,88 +60,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.86
+X-stable-base: Linux 5.15.155
 Content-Transfer-Encoding: 8bit
 
-From: Adam Goldman <adamg@pobox.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 752e3c53de0fa3b7d817a83050b6699b8e9c6ec9 ]
+[ Upstream commit c4e51e424e2c772ce1836912a8b0b87cd61bc9d5 ]
 
-In the FireWire OHCI interrupt handler, if a bus reset interrupt has
-occurred, mask bus reset interrupts until bus_reset_work has serviced and
-cleared the interrupt.
+For shutting up spurious KMSAN uninit-value warnings, just replace
+kmalloc() calls with kzalloc() for the buffers used for
+communications.  There should be no real issue with the original code,
+but it's still better to cover.
 
-Normally, we always leave bus reset interrupts masked. We infer the bus
-reset from the self-ID interrupt that happens shortly thereafter. A
-scenario where we unmask bus reset interrupts was introduced in 2008 in
-a007bb857e0b26f5d8b73c2ff90782d9c0972620: If
-OHCI_PARAM_DEBUG_BUSRESETS (8) is set in the debug parameter bitmask, we
-will unmask bus reset interrupts so we can log them.
-
-irq_handler logs the bus reset interrupt. However, we can't clear the bus
-reset event flag in irq_handler, because we won't service the event until
-later. irq_handler exits with the event flag still set. If the
-corresponding interrupt is still unmasked, the first bus reset will
-usually freeze the system due to irq_handler being called again each
-time it exits. This freeze can be reproduced by loading firewire_ohci
-with "modprobe firewire_ohci debug=-1" (to enable all debugging output).
-Apparently there are also some cases where bus_reset_work will get called
-soon enough to clear the event, and operation will continue normally.
-
-This freeze was first reported a few months after a007bb85 was committed,
-but until now it was never fixed. The debug level could safely be set
-to -1 through sysfs after the module was loaded, but this would be
-ineffectual in logging bus reset interrupts since they were only
-unmasked during initialization.
-
-irq_handler will now leave the event flag set but mask bus reset
-interrupts, so irq_handler won't be called again and there will be no
-freeze. If OHCI_PARAM_DEBUG_BUSRESETS is enabled, bus_reset_work will
-unmask the interrupt after servicing the event, so future interrupts
-will be caught as desired.
-
-As a side effect to this change, OHCI_PARAM_DEBUG_BUSRESETS can now be
-enabled through sysfs in addition to during initial module loading.
-However, when enabled through sysfs, logging of bus reset interrupts will
-be effective only starting with the second bus reset, after
-bus_reset_work has executed.
-
-Signed-off-by: Adam Goldman <adamg@pobox.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Reported-by: syzbot+7fb05ccf7b3d2f9617b3@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/r/00000000000084b18706150bcca5@google.com
+Message-ID: <20240402063628.26609-1-tiwai@suse.de>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firewire/ohci.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/usb/line6/driver.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
-index 667ff40f39353..7d94e1cbc0ed3 100644
---- a/drivers/firewire/ohci.c
-+++ b/drivers/firewire/ohci.c
-@@ -2049,6 +2049,8 @@ static void bus_reset_work(struct work_struct *work)
+diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+index b67617b68e509..f4437015d43a7 100644
+--- a/sound/usb/line6/driver.c
++++ b/sound/usb/line6/driver.c
+@@ -202,7 +202,7 @@ int line6_send_raw_message_async(struct usb_line6 *line6, const char *buffer,
+ 	struct urb *urb;
  
- 	ohci->generation = generation;
- 	reg_write(ohci, OHCI1394_IntEventClear, OHCI1394_busReset);
-+	if (param_debug & OHCI_PARAM_DEBUG_BUSRESETS)
-+		reg_write(ohci, OHCI1394_IntMaskSet, OHCI1394_busReset);
+ 	/* create message: */
+-	msg = kmalloc(sizeof(struct message), GFP_ATOMIC);
++	msg = kzalloc(sizeof(struct message), GFP_ATOMIC);
+ 	if (msg == NULL)
+ 		return -ENOMEM;
  
- 	if (ohci->quirks & QUIRK_RESET_PACKET)
- 		ohci->request_generation = generation;
-@@ -2115,12 +2117,14 @@ static irqreturn_t irq_handler(int irq, void *data)
- 		return IRQ_NONE;
+@@ -688,7 +688,7 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+ 	int ret;
  
- 	/*
--	 * busReset and postedWriteErr must not be cleared yet
-+	 * busReset and postedWriteErr events must not be cleared yet
- 	 * (OHCI 1.1 clauses 7.2.3.2 and 13.2.8.1)
- 	 */
- 	reg_write(ohci, OHCI1394_IntEventClear,
- 		  event & ~(OHCI1394_busReset | OHCI1394_postedWriteErr));
- 	log_irqs(ohci, event);
-+	if (event & OHCI1394_busReset)
-+		reg_write(ohci, OHCI1394_IntMaskClear, OHCI1394_busReset);
+ 	/* initialize USB buffers: */
+-	line6->buffer_listen = kmalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
++	line6->buffer_listen = kzalloc(LINE6_BUFSIZE_LISTEN, GFP_KERNEL);
+ 	if (!line6->buffer_listen)
+ 		return -ENOMEM;
  
- 	if (event & OHCI1394_selfIDComplete)
- 		queue_work(selfid_workqueue, &ohci->bus_reset_work);
+@@ -697,7 +697,7 @@ static int line6_init_cap_control(struct usb_line6 *line6)
+ 		return -ENOMEM;
+ 
+ 	if (line6->properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
+-		line6->buffer_message = kmalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
++		line6->buffer_message = kzalloc(LINE6_MIDI_MESSAGE_MAXLEN, GFP_KERNEL);
+ 		if (!line6->buffer_message)
+ 			return -ENOMEM;
+ 
 -- 
 2.43.0
 
