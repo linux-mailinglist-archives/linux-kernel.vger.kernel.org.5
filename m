@@ -1,143 +1,253 @@
-Return-Path: <linux-kernel+bounces-144820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEBAD8A4B29
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:11:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43BAF8A4B32
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:16:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B26E1C2136E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:11:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02C902823B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DE93C488;
-	Mon, 15 Apr 2024 09:11:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="o8LwR7fh"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C48A3DB97;
+	Mon, 15 Apr 2024 09:16:46 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F6E3BBF0;
-	Mon, 15 Apr 2024 09:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69488383A6;
+	Mon, 15 Apr 2024 09:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713172267; cv=none; b=jy9hvr7OFf8NvHMKbX+uFaKPJz+sw+k9KhW97lD8RagxSl2+CC/VclycpKXffbxnWAC++7Hh9flmY4em0jnBy8GxsZfz+VG2PFnhNUsL7dbpK+iMUnqPw+waYPJ0X4n1/OF90GqtxkEeiBKDUp10bRzo3jGLGYsbhruA6hAFHgg=
+	t=1713172606; cv=none; b=tYdap9L6BMq4smz9ah5w2kaEkymSwBpU6gJPen6S0+O4VSlLV44B1s2rn3en+2oAKlpupPAPsUL0APCX7pzXKR7qiLp4ZDfaOzrQsRUf2ojr6iiuj/hwxELz2WWeTjCfP6LM5M3ey+CPoPYlhZKyg/9BNOuZr4KWVoAbFwHFjC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713172267; c=relaxed/simple;
-	bh=5gS3HAEyiIt2xs4qyJW1Aavxa3MAFTLia1wWYFx0ySY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pu3ucUgi5P80hRKn5CdFogLEY4Nr4jEbz7wMz1S8IvZtdy9TFFU22+uN3BAF6ILpUtUArRKY3oV/bpUnVNQN7yV6xFCHqqRk6DguI24I7P06W3gmPYQH4NR36YHted4ZmCR2jXHz0D6IWxSwQtG43cFqOVLj58CdM5vmzKOmD0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=o8LwR7fh; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5D9F22000B;
-	Mon, 15 Apr 2024 09:10:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1713172257;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CNj8sphrF2+SiBow5PBnuyEwJMzJ7P/0tyqEvIc9L8g=;
-	b=o8LwR7fhwk2bxkYUj6hwB6xXojxK5MYd25pyHNkg7m1olyQhS3e8QCDGXAPQf8656mP1GG
-	kD8lygC22LAXUoQlRWifQVPDzQl0xV3D1OswLLTYb99X88FVfS6ZuvJ662HC5pwrkc/+Pm
-	t7qICZZG7KPhK4KZtm/EvjAFcsk4OjsS2V6t5pAakMibAHZkbmX9Dgb178fUwPT8Tsf7w5
-	kBIZWKgIwSTYZxMEfv2tqqOZj+1YtP+m6HQeOh09EKdPUcNV5S2qnWT7JZguKdhmKJeLfY
-	p+S1nw6hicJOBRNgKpG2SVUlA+63NgKMZkzunAv6v/BaZ/7ubyJQyF9wdGyK4A==
-Message-ID: <00ba4593-d720-419a-a97d-37c402c91e44@arinc9.com>
-Date: Mon, 15 Apr 2024 12:10:43 +0300
+	s=arc-20240116; t=1713172606; c=relaxed/simple;
+	bh=7uUdH6IqglZuu1KJkkRyekmwh3BALeRKUnZiueHAmzc=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bQqPv0RL/tPjDgcA8uLWn+aaLUs4OdzXGpQoP81DH0/vrXBJv5e0aanqyDfh4L9v5JRt5A/8dwOjLSM7vx77KeAlnLy8pqAqyGvjuDMTax6eN+3USDfTqd3YLe51AsahpMvuS5HW+NAQIV+mqW+rn7qk/juUkfgxpbc7YFCmXpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VJ1dD5Bpbz6K8x1;
+	Mon, 15 Apr 2024 17:11:44 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2F8F7140DAF;
+	Mon, 15 Apr 2024 17:16:39 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 15 Apr
+ 2024 10:16:38 +0100
+Date: Mon, 15 Apr 2024 10:16:37 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+CC: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Miguel Luis
+	<miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	<linuxarm@huawei.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
+Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from
+ acpi_processor_get_info()
+Message-ID: <20240415101637.00007e49@huawei.com>
+In-Reply-To: <20240415094552.000008d7@Huawei.com>
+References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
+	<20240412143719.11398-4-Jonathan.Cameron@huawei.com>
+	<CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
+	<ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk>
+	<87bk6ez4hj.ffs@tglx>
+	<ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
+	<878r1iyxkr.ffs@tglx>
+	<20240415094552.000008d7@Huawei.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] ARM: dts: BCM5301X: Add DT for ASUS RT-AC3200
-To: Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, Rafal Milecki <zajec5@gmail.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: Tom Brautaset <tbrautaset@gmail.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240414-for-soc-asus-rt-ac3200-ac5300-v1-0-118c90bae6e5@arinc9.com>
- <20240414-for-soc-asus-rt-ac3200-ac5300-v1-3-118c90bae6e5@arinc9.com>
- <a88385a4-afad-4bd8-afc1-37e185e781f4@kernel.org>
- <85261d11-d6cb-4718-88d9-95a7efe5c0ab@arinc9.com>
- <e6cfe735-0a46-4c07-90ee-4ae25c921b03@kernel.org>
- <335cdd4b-7309-4633-9b4f-6487c72c395c@arinc9.com>
- <07c9c5f5-c4b9-44d6-b909-5aa306f56898@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <07c9c5f5-c4b9-44d6-b909-5aa306f56898@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 15.04.2024 10:57, Krzysztof Kozlowski wrote:
-> On 14/04/2024 22:21, Arınç ÜNAL wrote:
->> NVRAM is described as both flash device partition and memory mapped NVMEM.
->> This platform stores NVRAM on flash but makes it also memory accessible.
->>
->> As device partitions are described in board DTS, the nvram node must also
+On Mon, 15 Apr 2024 09:45:52 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+
+> On Sat, 13 Apr 2024 01:23:48 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
 > 
-> Sorry, but we do not talk about partitions. Partitions are indeed board
-> property. But the piece of hardware, so NVMEM, is provided by SoC.
+> > Russell!
+> > 
+> > On Fri, Apr 12 2024 at 22:52, Russell King (Oracle) wrote:  
+> > > On Fri, Apr 12, 2024 at 10:54:32PM +0200, Thomas Gleixner wrote:    
+> > >> > As for the cpu locking, I couldn't find anything in arch_register_cpu()
+> > >> > that depends on the cpu_maps_update stuff nor needs the cpus_write_lock
+> > >> > being taken - so I've no idea why the "make_present" case takes these
+> > >> > locks.    
+> > >> 
+> > >> Anything which updates a CPU mask, e.g. cpu_present_mask, after early
+> > >> boot must hold the appropriate write locks. Otherwise it would be
+> > >> possible to online a CPU which just got marked present, but the
+> > >> registration has not completed yet.    
+> > >
+> > > Yes. As far as I've been able to determine, arch_register_cpu()
+> > > doesn't manipulate any of the CPU masks. All it seems to be doing
+> > > is initialising the struct cpu, registering the embedded struct
+> > > device, and setting up the sysfs links to its NUMA node.
+> > >
+> > > There is nothing obvious in there which manipulates any CPU masks, and
+> > > this is rather my fundamental point when I said "I couldn't find
+> > > anything in arch_register_cpu() that depends on ...".
+> > >
+> > > If there is something, then comments in the code would be a useful aid
+> > > because it's highly non-obvious where such a manipulation is located,
+> > > and hence why the locks are necessary.    
+> > 
+> > acpi_processor_hotadd_init()
+> > ...
+> >          acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
+> > 
+> > That ends up in fiddling with cpu_present_mask.
+> > 
+> > I grant you that arch_register_cpu() is not, but it might rely on the
+> > external locking too. I could not be bothered to figure that out.
+> >   
+> > >> Define "real hotplug" :)
+> > >> 
+> > >> Real physical hotplug does not really exist. That's at least true for
+> > >> x86, where the physical hotplug support was chased for a while, but
+> > >> never ended up in production.
+> > >> 
+> > >> Though virtualization happily jumped on it to hot add/remove CPUs
+> > >> to/from a guest.
+> > >> 
+> > >> There are limitations to this and we learned it the hard way on X86. At
+> > >> the end we came up with the following restrictions:
+> > >> 
+> > >>     1) All possible CPUs have to be advertised at boot time via firmware
+> > >>        (ACPI/DT/whatever) independent of them being present at boot time
+> > >>        or not.
+> > >> 
+> > >>        That guarantees proper sizing and ensures that associations
+> > >>        between hardware entities and software representations and the
+> > >>        resulting topology are stable for the lifetime of a system.
+> > >> 
+> > >>        It is really required to know the full topology of the system at
+> > >>        boot time especially with hybrid CPUs where some of the cores
+> > >>        have hyperthreading and the others do not.
+> > >> 
+> > >> 
+> > >>     2) Hot add can only mark an already registered (possible) CPU
+> > >>        present. Adding non-registered CPUs after boot is not possible.
+> > >> 
+> > >>        The CPU must have been registered in #1 already to ensure that
+> > >>        the system topology does not suddenly change in an incompatible
+> > >>        way at run-time.
+> > >> 
+> > >> The same restriction would apply to real physical hotplug. I don't think
+> > >> that's any different for ARM64 or any other architecture.    
+> > >
+> > > This makes me wonder whether the Arm64 has been barking up the wrong
+> > > tree then, and whether the whole "present" vs "enabled" thing comes
+> > > from a misunderstanding as far as a CPU goes.
+> > >
+> > > However, there is a big difference between the two. On x86, a processor
+> > > is just a processor. On Arm64, a "processor" is a slice of the system
+> > > (includes the interrupt controller, PMUs etc) and we must enumerate
+> > > those even when the processor itself is not enabled. This is the whole
+> > > reason there's a difference between "present" and "enabled" and why
+> > > there's a difference between x86 cpu hotplug and arm64 cpu hotplug.
+> > > The processor never actually goes away in arm64, it's just prevented
+> > > from being used.    
+> > 
+> > It's the same on X86 at least in the physical world.  
 > 
->> be defined there as its address and size will be different by board. It has
->> been widely described on at least bcm4709 and bcm47094 SoC board DTS files
->> here.
+> There were public calls on this via the Linaro Open Discussions group,
+> so I can talk a little about how we ended up here.  Note that (in my
+> opinion) there is zero chance of this changing - it took us well over
+> a year to get to this conclusion.  So if we ever want ARM vCPU HP
+> we need to work within these constraints. 
 > 
-> These not proper arguments. What you are saying here is that SoC does no
-> have nvram at address 0x1c08000. Instead you are saying there some sort
-> of bus going out of SoC to the board and on the board physically there
-> is some NVRAM sort of memory attached to this bus.
+> The ARM architecture folk (the ones defining the ARM ARM, relevant ACPI
+> specs etc, not the kernel maintainers) are determined that they want
+> to retain the option to do real physical CPU hotplug in the future
+> with all the necessary work around dynamic interrupt controller
+> initialization, debug and many other messy corners.
+> 
+> Thus anything defined had to be structured in a way that was 'different'
+> from that.
+> 
+> I don't mind the proposed flattening of the 2 paths if the ARM kernel
+> maintainers are fine with it but it will remove the distinctions and
+> we will need to be very careful with the CPU masks - we can't handle
+> them the same as x86 does.
+> 
+> I'll get on with doing that, but do need input from Will / Catalin / James.
+> There are some quirks that need calling out as it's not quite a simple
+> as it appears from a high level.
+> 
+> Another part of that long discussion established that there is userspace
+> (Android IIRC) in which the CPU present mask must include all CPUs
+> at boot. To change that would be userspace ABI breakage so we can't
+> do that.  Hence the dance around adding yet another mask to allow the
+> OS to understand which CPUs are 'present' but not possible to online.
+> 
+> Flattening the two paths removes any distinction between calls that
+> are for real hotplug and those that are for this online capable path.
+> As a side note, the indicating bit for these flows is defined in ACPI
+> for x86 from ACPI 6.3 as a flag in Processor Local APIC
+> (the ARM64 definition is a cut and paste of that text).  So someone
+> is interested in this distinction on x86. I can't say who but if
+> you have a mantis account you can easily follow the history and it
+> might be instructive to not everyone considering the current x86
+> flow the right way to do it.
 
-Yes that is the case. NVRAM is stored on a partition on the flash. On the
-Broadcom NorthStar platform, the NAND flash base is 0x1c000000, the NOR
-flash base is 0x1e000000.
+Would a higher level check to catch that we are hitting undefined
+territory on arm64 be acceptable? That might satisfy the constraint
+that we should not have any software for arm64 that would run if
+physical CPU HP is added to the arch in future.  Something like:
 
-For the board in this patch, the flash is a NAND flash. The NVRAM partition
-starts at address 0x00080000. Therefore, the NVRAM component's address is
-0x1c080000.
+@@ -331,6 +331,13 @@ static int acpi_processor_get_info(struct acpi_device *device)
 
+        c = &per_cpu(cpu_devices, pr->id);
+        ACPI_COMPANION_SET(&c->dev, device);
++
++       if (!IS_ENABLED(CONFIG_ACPI_CPU_HOTPLUG_CPU) &&
++           (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id))) {
++               pr_err_once("Changing CPU present bit is not supported\n");
++               return -ENODEV;
++       }
++
+
+This is basically lifting the check out of the acpi_processor_make_present()
+call in this patch set.
+
+With that in place before the new shared call I think we should be fine
+wrt to the ARM Architecture requirements.
+
+Jonathan
+
+
+        /*
+> 
+> Jonathan
 > 
 > 
->>
->>>
->>> 2. You cannot have MMIO node outside of soc. That's a W=1 warning.
->>
->> I was not able to spot a warning related to this with the command below.
->> The source code directory is checked out on a recent soc/soc.git for-next
->> tree. Please let me know the correct command to do this.
->>
->> $ make W=1 dtbs
->> [...]
->>     DTC     arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dtb
->> arch/arm/boot/dts/broadcom/bcm5301x-nand-cs0.dtsi:10.18-19.5: Warning (avoid_unnecessary_addr_size): /nand-controller@18028000/nand@0: unnecessary #address-cells/#size-cells without "ranges" or child "reg" property
->>     also defined at arch/arm/boot/dts/broadcom/bcm5301x-nand-cs0-bch8.dtsi:13.9-17.3
->>     also defined at arch/arm/boot/dts/broadcom/bcm4709-asus-rt-ac3200.dts:137.9-160.3
->> arch/arm/boot/dts/broadcom/bcm-ns.dtsi:24.28-47.4: Warning (unique_unit_address_if_enabled): /chipcommon-a-bus@18000000: duplicate unit-address (also used in node /axi@18000000)
->> arch/arm/boot/dts/broadcom/bcm-ns.dtsi:323.22-328.4: Warning (unique_unit_address_if_enabled): /mdio@18003000: duplicate unit-address (also used in node /mdio-mux@18003000)
+> > 
+> > Thanks,
+> > 
+> >         tglx
+> >   
 > 
-> Hm, indeed, that way it works. Actually should work if we allow soc@0
-> and memory@x, obviously.
-
-I was a bit confused with memory@x too.
-
 > 
-> Anyway, it is outside of soc node and soc dtsi, which leads to previous
-> point - you claim that it is not physically in the SoC package. How is
-> it connected? If it is on the board, why does it have brcm compatible,
-> not some "ti,whatever-eeprom-nvram"?
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-I don't know what to tell you. I don't know this set of SoCs' dt-bindings.
-I am merely submitting a board device tree source file. It would be great
-if this didn't block this patch series and this conversation was further
-discussed with Rafal who maintains this set of SoCs' dt-bindings, from what
-I remember.
-
-Arınç
 
