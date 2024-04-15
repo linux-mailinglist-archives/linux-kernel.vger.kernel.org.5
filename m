@@ -1,116 +1,245 @@
-Return-Path: <linux-kernel+bounces-145151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF2688A5029
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B63E8A5026
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78B4C2891C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:02:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F3721C20925
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8152B12F5AC;
-	Mon, 15 Apr 2024 12:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B97B112F369;
+	Mon, 15 Apr 2024 12:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="lmXE0cQY"
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hQqenmxx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31F812DD99
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:50:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D200912E1D9;
+	Mon, 15 Apr 2024 12:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185439; cv=none; b=rEKwZp6IgVpfYh1vARlI5v8DNdkEX/MzwH4yrIkeYjSqjUbjh84x3CqvnDWo1a7Rp2iBgWiU6pnARfCGC/MONR7rrz2nnKZ1+bIkwdvGglwCkaLMywFk0x99dWVAdc5UNBD9pu9QGuH9MteeksnjPmzNl/Y/j0SN3vPm9oBgWyo=
+	t=1713185438; cv=none; b=orJDddiEJHA9zQ07UJ6p6w1/vOk0XhSfjDdn5MHx1ih2/NS8oGDXs214Q91T1jEjZVfEhY+Sn+CgzcNV7UJYJ27ExUgSEQrE3Q85jcPS/jhzd2731htqMdHO6QALmc/aMM8bR3j33qS+sqNOHczpFDBd6u7qUBE5RC7dCCfYA4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185439; c=relaxed/simple;
-	bh=znhcYwJUYzGOpFXGP2YmPF3F/RJw3xsB03Ht+bpAY+8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VEbfhUyt4Y+dqLhEkQ2kcVMmRmewF+aUL04xXjVdHhwmv8qCZyphRDN1BxSBF4lxO0hvkgvGAmlrFLNbRO08NCGt5TDWfjDmPTjuEJj8AEAgT3P4Bu9rKO5w7TB3jslSE1RrCuM48EmNNDKsK4jYiBWnVfC3518IaggAWDXH5Ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=lmXE0cQY; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id D3C19411E0
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:50:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1713185435;
-	bh=ReRzghlopjwKf7ZFoLym1/k3KhnDB0D5vdDpSWeIHhM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=lmXE0cQYn8tcuqpIitJE84XI3rsx1bM+HIoK2PhLjB2384c0CbuETjv0x1o4rVjeq
-	 yB9h7C28QJZuD0ao3Wg+V1oXh4P+FXjhqDJj9OzH33T1y/XlyRHA1ocjyQc6Qyo3m5
-	 csDTliq5OeeMXU5Y22Hf0XAIJ0Wl3PdJprzUpVwFWDlga1KLVdViBb2MDpSJvDiFX8
-	 gty2KMyivq7teGcHuv79w2hodfZvApGXUwHf6cEQD+/Z6jzD5UYV5CBEc0BdJiV+eg
-	 Brl8OvHH9Fau0GAxcWrK5LCFyisscAdZaTonYslL5E01p7mqMzkGOy93iMy5Sw9Ufb
-	 5Ow+gBlVwvuug==
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a46938e24dbso53767666b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:50:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713185435; x=1713790235;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ReRzghlopjwKf7ZFoLym1/k3KhnDB0D5vdDpSWeIHhM=;
-        b=sVWxcOPgVfA02dkg/0aGxAzE07R/oeZavCyXPVjF/Qcc2V/FW8tCJzfqZjFMY87exO
-         hwrI7ONjgfy/7lOu6A/r1+wh0SfAQrDiIbQ03XOX8LwfSDKXoZrv1c6IA0MjMfR58Ar8
-         n4s1Iu0FnbMiHiV3a0/9Yp5nq2P0lrrJXNWmDLIrTlyQY46UCzDM5V954dEcvDIAYh5j
-         LmZ45ymvqsspLwceBxqxmzmlg+TXzLrrUpJEthoTXTeGmI/GKI0Wdl0mJel9nh2QHiXV
-         Vy+LkpQpgTBJJzhmpVsAHIHF09QHIvZ52Co2eey5zs6WoR+jjrlm+6IUIBwvrxAPagzO
-         UTgg==
-X-Forwarded-Encrypted: i=1; AJvYcCVq5PinJIbfCItyKklLLmCFRtQemqIn2WS9LnIHCfEePRqX70mfo5gN00w3KwsIBbKFd8QOBCHSH0PqKBRNn/TRj2zui4hZQg7Jqbhi
-X-Gm-Message-State: AOJu0YymJ+KCKaezMMf3BjMtxTMkgNwfrpq0D17yjF4MvEtPN9YGaiCn
-	LuMz7GO8KdEWEzrpsmpbF5vRdU7oFEOHFMUflyFpTBDtCGLeAwESP4fGgmP3A4JV1fJPZO0L7uK
-	eCtsTyQPnSNxRykyqkfE9DHDxpsdgJELCHBwmKkoPZwrwVjOqgCdgubig64HHNK9YlNnci8Qn6z
-	yLy9BbxEME4bR2
-X-Received: by 2002:a17:906:6a04:b0:a52:55b2:ac40 with SMTP id qw4-20020a1709066a0400b00a5255b2ac40mr3424824ejc.3.1713185435355;
-        Mon, 15 Apr 2024 05:50:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEl2HDhIy+WQcJGTsKSEGLwyKxvTqmVqEld+FSqkIKcpUnlu0ruSuJZgCJL0RGW8urzg1aMlQ==
-X-Received: by 2002:a17:906:6a04:b0:a52:55b2:ac40 with SMTP id qw4-20020a1709066a0400b00a5255b2ac40mr3424805ejc.3.1713185434966;
-        Mon, 15 Apr 2024 05:50:34 -0700 (PDT)
-Received: from bojack.fritz.box (197-53-142-46.pool.kielnet.net. [46.142.53.197])
-        by smtp.gmail.com with ESMTPSA id bz2-20020a1709070aa200b00a51a9eccf2asm5455573ejc.125.2024.04.15.05.50.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 05:50:34 -0700 (PDT)
-From: Hannah Peuckmann <hannah.peuckmann@canonical.com>
-To: linux-riscv@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Emil Renner Berthing <kernel@esmil.dk>,
-	Conor Dooley <conor@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Walker Chen <walker.chen@starfivetech.com>,
-	Hal Feng <hal.feng@starfivetech.com>,
-	Xingyu Wu <xingyu.wu@starfivetech.com>
-Subject: [PATCH v1 0/2] riscv: dts: starfive: visionfive 2: Remove non-existing hardware
-Date: Mon, 15 Apr 2024 14:50:31 +0200
-Message-Id: <20240415125033.86909-1-hannah.peuckmann@canonical.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1713185438; c=relaxed/simple;
+	bh=OxU5Qdy/S03nyrb3IpkyfdM0xFyVAyEfc31WiC4iEWM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=XRPt4or0um+hcxXhts5Kc6q1WW/fk4uya0CGRmFAm3OKS6wZgxMTEwaBHL5H+SMAKS2sDrBhdAyLR+4f55EpShIzLrT+2Y+2ByDZrnh795OJhkNySR/PI10MRiHin3FL97/HRhQrXEOletgfjv9GsKxk9su3Yk9jYz3dAE87xiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hQqenmxx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779B2C32783;
+	Mon, 15 Apr 2024 12:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713185438;
+	bh=OxU5Qdy/S03nyrb3IpkyfdM0xFyVAyEfc31WiC4iEWM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hQqenmxxG9cLKAMPWbG2hcvJ9hjThCprSmDU0Avm9cbqwR7clBKyFS744+hlVYyNY
+	 WLUGiMVk46URjDsrBJ0WEOFkkHIV8uup43yuBYt5i7VaHEb0KRW4URMGoz4kTT0T7C
+	 o4iYgHGJ4mYZ4tWop6ZJVh5+0+bYqtk4ImSHrAg/XETFV5uT8MZ3Cd8zcL/0MF6zWt
+	 KVkNaMeq98DZPwJ3YoCYz4yD8X8hoOkgqdqO0qLD1GA51PupfkTgWK6K4QQPPiKO6m
+	 kiBdR6SCFHSkhEuqhQQIxUsjeFtGc+dkSfEvNxpHa9EuH1tt/80elQYCIaDqSwj3ki
+	 4FF55HS80nMAg==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v9 08/36] function_graph: Remove logic around ftrace_graph_entry and return
+Date: Mon, 15 Apr 2024 21:50:32 +0900
+Message-Id: <171318543205.254850.1420437462860854437.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-This series fixes the device tree for the VisionFive 2 which has nodes for
-non-existing hardware which should have been left to overlays. It also results
-in error on boot when both both the TDM and I2S drivers tries to claim GPIO 44.
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Hannah Peuckmann (2):
-  riscv: dts: starfive: visionfive 2: Remove non-existing TDM hardware
-  riscv: dts: starfive: visionfive 2: Remove non-existing I2S hardware
+The function pointers ftrace_graph_entry and ftrace_graph_return are no
+longer called via the function_graph tracer. Instead, an array structure is
+now used that will allow for multiple users of the function_graph
+infrastructure. The variables are still used by the architecture code for
+non dynamic ftrace configs, where a test is made against them to see if
+they point to the default stub function or not. This is how the static
+function tracing knows to call into the function graph tracer
+infrastructure or not.
 
- .../jh7110-starfive-visionfive-2.dtsi         | 98 -------------------
- 1 file changed, 98 deletions(-)
+Two new stub functions are made. entry_run() and return_run(). The
+ftrace_graph_entry and ftrace_graph_return are set to them respectively
+when the function graph tracer is enabled, and this will trigger the
+architecture specific function graph code to be executed.
 
--- 
-2.40.1
+This also requires checking the global_ops hash for all calls into the
+function_graph tracer.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ Changes in v2:
+  - Fix typo and make lines shorter than 76 chars in the description.
+  - Remove unneeded return from return_run() function.
+---
+ kernel/trace/fgraph.c          |   67 +++++++++-------------------------------
+ kernel/trace/ftrace.c          |    2 -
+ kernel/trace/ftrace_internal.h |    2 -
+ 3 files changed, 15 insertions(+), 56 deletions(-)
+
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index b9a2399b75ee..6f3ba8e113c1 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -145,6 +145,17 @@ add_fgraph_index_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
+ 	t->ret_stack[offset] |= (bitmap << FGRAPH_INDEX_SHIFT);
+ }
+ 
++/* ftrace_graph_entry set to this to tell some archs to run function graph */
++static int entry_run(struct ftrace_graph_ent *trace)
++{
++	return 0;
++}
++
++/* ftrace_graph_return set to this to tell some archs to run function graph */
++static void return_run(struct ftrace_graph_ret *trace)
++{
++}
++
+ /*
+  * @offset: The index into @t->ret_stack to find the ret_stack entry
+  * @index: Where to place the index into @t->ret_stack of that entry
+@@ -675,7 +686,6 @@ extern void ftrace_stub_graph(struct ftrace_graph_ret *);
+ /* The callbacks that hook a function */
+ trace_func_graph_ret_t ftrace_graph_return = ftrace_stub_graph;
+ trace_func_graph_ent_t ftrace_graph_entry = ftrace_graph_entry_stub;
+-static trace_func_graph_ent_t __ftrace_graph_entry = ftrace_graph_entry_stub;
+ 
+ /* Try to assign a return stack array on FTRACE_RETSTACK_ALLOC_SIZE tasks. */
+ static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
+@@ -758,46 +768,6 @@ ftrace_graph_probe_sched_switch(void *ignore, bool preempt,
+ 	}
+ }
+ 
+-static int ftrace_graph_entry_test(struct ftrace_graph_ent *trace)
+-{
+-	if (!ftrace_ops_test(&global_ops, trace->func, NULL))
+-		return 0;
+-	return __ftrace_graph_entry(trace);
+-}
+-
+-/*
+- * The function graph tracer should only trace the functions defined
+- * by set_ftrace_filter and set_ftrace_notrace. If another function
+- * tracer ops is registered, the graph tracer requires testing the
+- * function against the global ops, and not just trace any function
+- * that any ftrace_ops registered.
+- */
+-void update_function_graph_func(void)
+-{
+-	struct ftrace_ops *op;
+-	bool do_test = false;
+-
+-	/*
+-	 * The graph and global ops share the same set of functions
+-	 * to test. If any other ops is on the list, then
+-	 * the graph tracing needs to test if its the function
+-	 * it should call.
+-	 */
+-	do_for_each_ftrace_op(op, ftrace_ops_list) {
+-		if (op != &global_ops && op != &graph_ops &&
+-		    op != &ftrace_list_end) {
+-			do_test = true;
+-			/* in double loop, break out with goto */
+-			goto out;
+-		}
+-	} while_for_each_ftrace_op(op);
+- out:
+-	if (do_test)
+-		ftrace_graph_entry = ftrace_graph_entry_test;
+-	else
+-		ftrace_graph_entry = __ftrace_graph_entry;
+-}
+-
+ static DEFINE_PER_CPU(unsigned long *, idle_ret_stack);
+ 
+ static void
+@@ -939,18 +909,12 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 			ftrace_graph_active--;
+ 			goto out;
+ 		}
+-
+-		ftrace_graph_return = gops->retfunc;
+-
+ 		/*
+-		 * Update the indirect function to the entryfunc, and the
+-		 * function that gets called to the entry_test first. Then
+-		 * call the update fgraph entry function to determine if
+-		 * the entryfunc should be called directly or not.
++		 * Some archs just test to see if these are not
++		 * the default function
+ 		 */
+-		__ftrace_graph_entry = gops->entryfunc;
+-		ftrace_graph_entry = ftrace_graph_entry_test;
+-		update_function_graph_func();
++		ftrace_graph_return = return_run;
++		ftrace_graph_entry = entry_run;
+ 
+ 		ret = ftrace_startup(&graph_ops, FTRACE_START_FUNC_RET);
+ 	}
+@@ -986,7 +950,6 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
+ 	if (!ftrace_graph_active) {
+ 		ftrace_graph_return = ftrace_stub_graph;
+ 		ftrace_graph_entry = ftrace_graph_entry_stub;
+-		__ftrace_graph_entry = ftrace_graph_entry_stub;
+ 		ftrace_shutdown(&graph_ops, FTRACE_STOP_FUNC_RET);
+ 		unregister_pm_notifier(&ftrace_suspend_notifier);
+ 		unregister_trace_sched_switch(ftrace_graph_probe_sched_switch, NULL);
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index da1710499698..fef833f63647 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -235,8 +235,6 @@ static void update_ftrace_function(void)
+ 		func = ftrace_ops_list_func;
+ 	}
+ 
+-	update_function_graph_func();
+-
+ 	/* If there's no change, then do nothing more here */
+ 	if (ftrace_trace_function == func)
+ 		return;
+diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
+index 5012c04f92c0..19eddcb91584 100644
+--- a/kernel/trace/ftrace_internal.h
++++ b/kernel/trace/ftrace_internal.h
+@@ -42,10 +42,8 @@ ftrace_ops_test(struct ftrace_ops *ops, unsigned long ip, void *regs)
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ extern int ftrace_graph_active;
+-void update_function_graph_func(void);
+ #else /* !CONFIG_FUNCTION_GRAPH_TRACER */
+ # define ftrace_graph_active 0
+-static inline void update_function_graph_func(void) { }
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+ 
+ #else /* !CONFIG_FUNCTION_TRACER */
 
 
