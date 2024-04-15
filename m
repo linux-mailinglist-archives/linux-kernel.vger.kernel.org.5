@@ -1,105 +1,138 @@
-Return-Path: <linux-kernel+bounces-144991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536F38A4DC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 121638A4DC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:35:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03F3C1F22EA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:34:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B96F91F230FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 312C65FDA5;
-	Mon, 15 Apr 2024 11:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5289B60B9D;
+	Mon, 15 Apr 2024 11:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kLRtvHHa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="diDvEDDe"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71ADC5D471;
-	Mon, 15 Apr 2024 11:34:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99B205D8F6
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713180852; cv=none; b=hHNFsiJdhy18uAbGhAO7rmjN5/IuCSvA9grlCn1zQwwwG51I4u/RmbtzwzekIoTJggbz1Am66AzMnRWaY6tOL5HS49MXIQpTP/j+qio+n7xCatCnwX9U0T28vlgO6R+p5PSEYWoLSqGwQWNb+J7To1oMF3a9yfbvSJx9dQO5LRo=
+	t=1713180903; cv=none; b=bTDQa8OoRSR8TBGV0IhpJ4IFtLEGKBQ2C7t3KDU3RF6l7gcjyJDO4H8xkBFuYed0N+cox6VSj51CwF8wxNmllfmUIXOpsRIq2tBCn1vCvu6Sd/tywiYy2oB4hYkpqpB7NP0lIZRxIegaPQpnjm8mksMTQ+4Dk4jpn5VU1/HaImY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713180852; c=relaxed/simple;
-	bh=oycB9jVK6ip6bCA4Sd9xG74IVTqjPYQ5vyKfl8Zcb0A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tIEjiPvcuDWnp3n8+/kOI+0VdjhtfCocRzdqMCkXT4xMvBmF16EpEGbtuPHGCcRlvcro/98lTePnjXrQ9lp+zvV+rUkJ1gmjADjM8Il5jzunSWpl/NrlpqBm25jJtBfZJYKPJw7D1Pmn/DHPqVvVSoVYby9D6eyCB8rTllD/cFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kLRtvHHa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD21FC113CC;
-	Mon, 15 Apr 2024 11:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713180852;
-	bh=oycB9jVK6ip6bCA4Sd9xG74IVTqjPYQ5vyKfl8Zcb0A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kLRtvHHasimQPboHjCm1YlNvCKY3nYOhMISk8CX1qpFl8fF4vpi92qdMLz49DNMCX
-	 nHycHCqZh8BRMw/Y56AGbN7aVgDFH6OuN7SBZ4FbmVDiQp4OFjU3hJf0ntpb3saYpu
-	 MJ3JzMZcLQ4Og4NhYR3Pz1VJ1OFdZWvZhUnhjyGcJ1khHzD1OzmZgCDNOeGDF5171K
-	 3ux5jx0shSBODXRjhd2q1/XwcBSetNs+ZiBAy2BY/kdbhm9XGZ4QRjvLMTKfZt+k20
-	 ldtvFur0rdY5xqmAHo9ovMmrHvsarY7tJ29xGyUpxpJDM1JeAmU/zisfTbwREraEQ8
-	 Cb0XDL4Tpg+4g==
-Received: by mercury (Postfix, from userid 1000)
-	id AB9D6106071D; Mon, 15 Apr 2024 13:34:09 +0200 (CEST)
-Date: Mon, 15 Apr 2024 13:34:09 +0200
-From: Sebastian Reichel <sre@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the battery-fixes tree
-Message-ID: <rpzxcmnsbrnclkxbcwvw26hclysaes5ldfe3h36vjmdqd4llce@yi2kgzyml6ga>
-References: <20240415080406.51d34d53@canb.auug.org.au>
+	s=arc-20240116; t=1713180903; c=relaxed/simple;
+	bh=oxHCtuxwyM7cOnha78fodnI8/2nPA9V0tYQAbM8xax8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ChjomqYl/UmTmSYTxz+hQbAJ4CTa73SUz8doi9c7VmyUGC1bJHfYjnKSrd0rBOnNu/r/xE6SFAHekyA5CkAC963q+pVwAfFH50s972dupDUKmlhP2ZpilSlI+SUdlnP6eg1KoxOtC/0wdoJsU2kb7Qxm3Fwn0/iGJj8uEvgajvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=diDvEDDe; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713180900;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=u36oSuZ9892J7+6mnaPBiCYYNXIpRi7HFPb44PW/B8k=;
+	b=diDvEDDebmdI+1SW9jJvAQBpOSduQV6+/RZBf7TaVYhIeNgNrW1EIwcnTyVLMU2kriQ+Yh
+	WNmyf4UIIvpJ5aP7l8MjdWEGbeqNmMU15I0Y4oH2BkyZSfoSjjZcZhgJvUMv/b1DYbzFoY
+	ro7XYadjh71Pvc0GgVO7y2kSV4Cs89c=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-235-tgvuqcLcPsGQ3JJWJejAAw-1; Mon, 15 Apr 2024 07:34:57 -0400
+X-MC-Unique: tgvuqcLcPsGQ3JJWJejAAw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9E87D8059E0;
+	Mon, 15 Apr 2024 11:34:56 +0000 (UTC)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.193.251])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 6C45C1C0666D;
+	Mon, 15 Apr 2024 11:34:53 +0000 (UTC)
+From: Valentin Schneider <vschneid@redhat.com>
+To: dccp@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rt-users@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	mleitner@redhat.com,
+	David Ahern <dsahern@kernel.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Tomas Glozar <tglozar@redhat.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v5 0/2] tcp/dcpp: Un-pin tw_timer
+Date: Mon, 15 Apr 2024 13:34:34 +0200
+Message-ID: <20240415113436.3261042-1-vschneid@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="roull5pmgfldsfla"
-Content-Disposition: inline
-In-Reply-To: <20240415080406.51d34d53@canb.auug.org.au>
-
-
---roull5pmgfldsfla
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
 Hi,
 
-On Mon, Apr 15, 2024 at 08:04:06AM +1000, Stephen Rothwell wrote:
-> Commit
->=20
->   bcbdcffd94ce ("power: supply: mt6360_charger: Fix of_match for usb-otg-=
-vbus regulator")
->=20
-> is missing a Signed-off-by from its committer.
+This is v5 of the series where the tw_timer is un-pinned to get rid of
+interferences in isolated CPUs setups.
 
-Thanks, fixed.
+The first patch is a new one stemming from Jakub's bug reported. It's there
+mainly to make the reviewing a bit easier, but as it changes behaviour it should
+be squashed with the second one.
 
--- Sebastian
+Revisions
+=========
 
---roull5pmgfldsfla
-Content-Type: application/pgp-signature; name="signature.asc"
+v4 -> v5
+++++++++
 
------BEGIN PGP SIGNATURE-----
+o Rebased against latest Linus' tree
+o Converted tw_timer into a delayed work following Jakub's bug report on v4
+  http://lore.kernel.org/r/20240411100536.224fa1e7@kernel.org
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmYdEKIACgkQ2O7X88g7
-+pqyXQ/9EhJAbp2UtiD1FxXZbOOSiZxwTw6x03kE2vpCpC3sk3NZCh6kgtLThp/v
-wC5Z3aLvm/tW0NPOSBklteECdmLxlS6EwYJhOuxSWyB4rB4h+ZB84DOyES3s4ZYC
-3iLFnidQFUoaD/tyiQkeCvwyjelGN+he3DdWvDZ+fVPNR/Ej5zjUTcOVieXjNLfO
-7cIMq0mbsNQAH5HwJ3gSmkfTBJ3ygx1uPC8oBJSdeYRhGzrb1AIah12Z+L05mfBE
-D1IZGoJvFQpGME+UV4i+z9Cx8xS8gDHTFn3qSU7XZud8KJdXpP43897yCJPviI4d
-/jR1gdMGA83kY+g3fNX4toBVqaSLvZyTwqDPhKzMx20ZmZWlWPfe9874vyjZyijt
-HLHvNAxs7aJlx1qWY09C6BGW1LtqVsdx4MSsdz3esS86vTR9b8BvxEY6mXiJq5Jt
-oDdXzq/6OQGEygSN5yCzPUNaDSZrsR311p2zRUgti2LQ+onyxGyUX1fCAm5pkfp+
-pG+IZI0zEgoTPfg17M20fct5rAuoJbd72D2ITVbdvo6SfvP8B8G0el3PCSFnwIHC
-Zd5BhYz6dilwcwMt6kZQjOgJ72yu7WogE9pQwxZYASAJniIm0HLUSIAyjqef3hrS
-T1owAAG8JnbhFW8kpIk7NSdeCvhVb1Cdwy22bKVxCA5sn9SF6OI=
-=LX8V
------END PGP SIGNATURE-----
+v3 -> v4
+++++++++
 
---roull5pmgfldsfla--
+o Rebased against latest Linus' tree
+o Added ehash lock usage to serialize scheduling vs descheduling of the tw_timer
+  (Paolo)
+
+v2 -> v3
+++++++++
+
+o Dropped bh_disable patch
+o Rebased against latest Linus' tree
+
+RFCv1 -> v2
+++++++++
+
+o Added comment in inet_twsk_deschedule_put() to highlight the race
+o Added bh_disable patch
+
+Valentin Schneider (2):
+  SQUASH: tcp/dcpp: Convert timewait timer into a delayed_work
+  tcp/dcpp: Un-pin tw_timer
+
+ include/net/inet_timewait_sock.h              |  8 +-
+ net/dccp/minisocks.c                          |  9 +--
+ net/ipv4/inet_diag.c                          |  2 +-
+ net/ipv4/inet_timewait_sock.c                 | 73 +++++++++++++------
+ net/ipv4/tcp_ipv4.c                           |  2 +-
+ net/ipv4/tcp_minisocks.c                      |  9 +--
+ net/ipv6/tcp_ipv6.c                           |  2 +-
+ .../selftests/bpf/progs/bpf_iter_tcp4.c       |  2 +-
+ .../selftests/bpf/progs/bpf_iter_tcp6.c       |  2 +-
+ 9 files changed, 69 insertions(+), 40 deletions(-)
+
+--
+2.43.0
+
 
