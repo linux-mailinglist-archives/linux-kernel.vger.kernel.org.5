@@ -1,188 +1,309 @@
-Return-Path: <linux-kernel+bounces-144542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C4A8A4794
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:25:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ADBB8A4797
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D42E1F21C95
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:25:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED69A1F21AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC468613D;
-	Mon, 15 Apr 2024 05:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692356139;
+	Mon, 15 Apr 2024 05:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="XBtOKg+4";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="oJcr9262"
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="COA6bK+U"
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB8F33C5;
-	Mon, 15 Apr 2024 05:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713158693; cv=fail; b=rBfCztJ9u8V8pfYeFPdbVecsNOcxda+VsNU2YT6vw4LAfhWJ2mtww47WgofrLjnG+qGm15VRp3R5doSPcRjRrir0Bo1PLfEbdNLwjVrjvExr2X+qAGFYdaK7Ri3MYIijsucTkKXjp+3UxrMKDxWdk/0Kw+yldLpvA+oFHTWlDRk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713158693; c=relaxed/simple;
-	bh=lNnpa92EIjU9sfqirh/18ZrUd5TAIegk+zKI82EWsfA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=E8uMRXsr34VDxsbB9UwaN7HIWfeXmjFHyBC4vgRdCvzJPc9HYOmis4mGb/4/6VzbWE2Ck5c3eka/gXovry4+ljrbLPeYXEc89QtlhwmLpOJLW48KwY2BVbpWOxnOR/ExauyB1Y8Mh7HrlRVkMQfuXnjo9Ha+dDaGnnJRt1Yd7O0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=XBtOKg+4; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=oJcr9262; arc=fail smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1713158691; x=1744694691;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=lNnpa92EIjU9sfqirh/18ZrUd5TAIegk+zKI82EWsfA=;
-  b=XBtOKg+4lKcJXShUQ5CVPnve8aYCLaJTeYWUgoTCnwTMuvH/JhAnJvji
-   oY/A49mErpIj3zkJVOrCAGOjuUpOyjsUzV+aDoTNDHWKXacOeoK1auz1Y
-   PMwWGMIlLrf3EEO1B8dJBBiZIEi4N79FlswkZ4yYGcAzO94LN+SHQ3z7N
-   G0Ourg4AiT91xzVhvA7SLc5Fztlm5xa5GtD32hWr+Yjn9bOldjhbdpVYe
-   HEaGnTXrpNEmwEh9vnJp0PSUYFmX16OqlEZ/5ZUSJzkdw6KqP+6GaW4Cu
-   zSj/gRdvZur2NgIsKBFhUYgPN9RSSe4TpbtSgplCvPW5uJ68GxEudhYDP
-   A==;
-X-CSE-ConnectionGUID: fyutBs0lTR6CIr7SQ42+vQ==
-X-CSE-MsgGUID: plsT9vp6QH6XmOdizL/KPA==
-X-IronPort-AV: E=Sophos;i="6.07,202,1708358400"; 
-   d="scan'208";a="13976160"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 15 Apr 2024 13:24:45 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NzbXYTnAbe0JrrpfctgDW5N717lfkcZsqV9Qh3gDKUDnQNoeAmEwyL3pB+YPwB3NA0fM9IoePNiM2oIwCaKwW6UgXRWb5lDpLGTbHq055byUHqXw231L6F75zklXpKeaciRignyf/LIoy6wHT+8tqavo3MChUwadEPHC+p2IGgACCDjdNWxPhO+jAaiH4AcrHWJQDSz0P5u+PRVl97yJ9ulFzyUVYJHIV9Aftyo2hUQv5KAh3AlNZnH8uq39OtpC6w+ewcekCviIlWTmp3f0mMZYCMHhZsOkkuRQzQSpsEwu7ZlY4c0jVzOnuq3wq9PY62F7ppVCv9jHEbJShmQB1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lNnpa92EIjU9sfqirh/18ZrUd5TAIegk+zKI82EWsfA=;
- b=WKXVdEqkXH3qmPVJOCIIiQ+KYNap5xXLS9AL9nQBwKvLCMY9rbMuvUp485Oa4R4NgjaPKdvS48qLxw5i4/zTH0haiH1yDZkqY0qHcSsBp8lF9G/4ftuTUYTu6ZmNgCbZEKCFLG3Uc1VZn8e94Wk8w+77pR/BxuP4LfSgI8pZVxLcDKuXFPGxIjk69o1bcxDF1yzChmAeib443x0MDexlWGsLeTMjsbDPaNzpPVKQ5YBrPwi4tOLWyDrsqDnkxD3m83FKN5w9o/qww34HLLsYJHWhKaMDMGHyIFkGEM5ZenS3r1/3b5lC43egbPQgfVU3LT5cO4PgRIu/yjMhcoT3vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF5C33C5;
+	Mon, 15 Apr 2024 05:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713158975; cv=none; b=Lvr2KOsQcA5BKCzgBYZnO+laeTvVyGdeGufJWcOSWcimI1641DNfweNsj/RqMLIA9Fg8O1+G5PUfIktrhYl5xTw1M3gPjkq9UDJWKogBxVx0tQPUZACRTGvhTOhafoWgaGwyuFFPq6+fcfEKKb+akm7bIV2QrO437w20ysh8Szs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713158975; c=relaxed/simple;
+	bh=UpCMuHkepQajdVg62XPJny0xX87yZKEpf4poRd7fJeg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S2U8RwHGhmAD244VWTkUO1jk8ZVHpyxWC1UCNBCHQbusPvKDbxkAprzNEd88wn9VQQ16Q45xhGS/AtMpnwEdnmQ0yME92OJdbgHDVm/9+2Co0GqxEwrR+yyyddsROUT+w0MI0/yR3UDCbNaHgnrCXc5gUOH4LVqCGPKYm6WsmHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=COA6bK+U; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a528e7f2b6so1947192a91.0;
+        Sun, 14 Apr 2024 22:29:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lNnpa92EIjU9sfqirh/18ZrUd5TAIegk+zKI82EWsfA=;
- b=oJcr9262iFO4Kj2slP1GSwjjalvLYExFRdPhOfLbpuUhnrhbUTq141r8TqvcnGpsAX3lV18p71+yUEMZj1qPQGAjubLhYqNlKXUAo5Y+A8QpAOozMKJWTehb2oDNXQ7kEPnvu06B85D7EU4KAJ8I5aKpCQBJ3xbTAK6cQrdanfI=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by DM8PR04MB7926.namprd04.prod.outlook.com (2603:10b6:8:4::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.50; Mon, 15 Apr 2024 05:24:43 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::117f:b6cf:b354:c053]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::117f:b6cf:b354:c053%7]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
- 05:24:42 +0000
-From: Naohiro Aota <Naohiro.Aota@wdc.com>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-CC: David Sterba <dsterba@suse.com>, Qu Wenruo <wqu@suse.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Hiroshi Takekawa
-	<sian@big.or.jp>, Chris Mason <clm@fb.com>, Josef Bacik
-	<josef@toxicpanda.com>, LKML <linux-kernel@vger.kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: btrfs: sanity tests fails on 6.8.3
-Thread-Topic: btrfs: sanity tests fails on 6.8.3
-Thread-Index: AQHajulvzM78/SQ7+UymYN5WynqSQrFoyNuAgAADwgA=
-Date: Mon, 15 Apr 2024 05:24:42 +0000
-Message-ID: <igqfzsnyclopilimyy27ualcf2g5g44x3ru5v3tkjpb3ukgabs@2yuc57sxoxvv>
-References: <20240415.125625.2060132070860882181.sian@big.or.jp>
- <bd8492f4-a12e-48ae-8ea6-a9d4596a6f72@leemhuis.info>
-In-Reply-To: <bd8492f4-a12e-48ae-8ea6-a9d4596a6f72@leemhuis.info>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|DM8PR04MB7926:EE_
-x-ms-office365-filtering-correlation-id: 47cb501a-5c83-4ae6-6c73-08dc5d0c5af5
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- UbSrKYgYqqtLD/lQVHfIQ2w4U3+W4oVxoZceMfGmynLVmaouBi59uYjn31k4qLpBpfrn/6/xf2OKzxdnRA1egcVsj/lis1jlJ7jUWvM2LVgu4CL+w1uPTJiTsJVobbl0JH/a2nBpfOclw/vgcg3rW1UhFBKRjEwMfUVtI+p5F0znG9488TbL/JWtLGfrhmJKh4NRbUEAaBmPeGzaZIS93xlJZFtyYizgO4sc2wRzEZLqVhUFeAr3vM9bqjYYEc9b5u4JenWmMIzPaPxQNe54f8BEZUAfXUc45UVL/7JkQl6zBfKN8ZwVFKp8gXwJC8qQeGRaoMfjhLmsiDDQRY1dUanf0aPomilyEqRxkXSSq/q9IeQTh9bSdOyNkXB4UPCmrvWeM2xGL6SgsK+scbaIfZDqROfKxTYaTvO+b0IJ9/bMqWXUFXMskXf5KUi4W+u8tkwKiKkCLIzqpeN9iNNiotEAZkLYElPRZ9pEQzEKQqz43W4WcXDXVeVzX11vT7wU2sq1sjqIocMmaAJu7xx/2QB+1XunvnvOI93Rle23Qy+qB7lUveR6BO5qkwS3Ip/p5rNyLAVM8hWFYJBC5K7Ogib1Myy3JIgQcTsIg8a2SgJ4k+z+qMcKBv1EiQFPKivlYoiyZ+vYvqRJb+w0DWWaBG0Bris3bShwRrE3OYvw6e1KwzUUF0F9eC/HrGE2DSK65uikc1CoSnLRcn2qI5QYs2j+udlb09sDyXFrLglVuLU=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?BPIJESZGcY/D3ZXbCPrFuhYNSdxz7cvbPwTwZwKmChTJwyyNzwgkb706Rgea?=
- =?us-ascii?Q?3D9q5UtiKD8tKikOTLkTBlR2Y9QJkVnYOmYFvrR/DZ0Inc2jGC9oHSOGjXpX?=
- =?us-ascii?Q?Z7z4mSQ3bM3/V/+SavpvriS+97HnJnEVDdw2HlP8VXx9BTFAktnsScGZEiVD?=
- =?us-ascii?Q?p+cQwnafKN7znw8c+ay2IR5kgCZfDwnmparjKIBV5iO4SEHCHMp6UDkz77he?=
- =?us-ascii?Q?ZRS0NBYjpkYf10pR3tmUvVNum+5JmKuBG54gXfcqpJUUXJgpQwrR9xvLY/o+?=
- =?us-ascii?Q?lChjntosZufpeNPLpRvDYmEBpukpQlyVIDWzeG2rhHtYXWY57ietEqW7xkvT?=
- =?us-ascii?Q?XE9NedQHabJfhGoS+InovVSiqcoAS86w+T/k8kWaFANyOkatDrWpiFpGCQ5o?=
- =?us-ascii?Q?ke/QMuJNT9uJMlHCjux4HQLbyhVjE6Gx8nH/wZq8udhf83j9Hgk6qPoWVcLn?=
- =?us-ascii?Q?JlVtPug/+BeQeZ9oojYVHST+bly4BE8tjg/nSqnTnuaaU/pMzp54Q+UTk5xT?=
- =?us-ascii?Q?mFmSlMKZpDbjqo2YXtKfnoLgtGCkQu+46Hzp0a48AwNDglYhqP3JyU9lAOuC?=
- =?us-ascii?Q?Vm0job/aIYaB89CbXfYNtm3j8RWIsq+aOPPtVSBNZnT8NMSN0pey8uiT5vtd?=
- =?us-ascii?Q?i00sLEx5JPMytwdpbOuaG+ncZnWxt2jMtSsXe+Q75/mt/iw9RDojYRsnyRWA?=
- =?us-ascii?Q?p+MTrqtrVNAP5W8nw1JhKDacbz/jAjvvIS97jdDPl+8FRCDetmpDiNgorcbD?=
- =?us-ascii?Q?/zjBQwAPC6FlIPlVT4yQXFQdlIAX2wlJaBU6p49pG4FOQpEJIuPFM9IEb+iL?=
- =?us-ascii?Q?yLCdQ/EPr9+rSmPQW2tIDUDVP7NT5COEhXx2AcP5iJz6fszHZePPwOkvsYVp?=
- =?us-ascii?Q?zQyB5WpbzhCVSwf+gjF52oYrseuPYbJvC8C1RB2r7Dqmpr9g+MQMJR+lmP6f?=
- =?us-ascii?Q?JiOTSSnzf15CN1XHgYTb26zF87oDC+GbHfrqHUjGAZN6JMeHGTbOPz9fR3uA?=
- =?us-ascii?Q?McPHTAco4r4bcfLL4KSfjVUBTjQ2Ap6+WA3xQFs5ayQuZyBLTh2zsm+l/K8N?=
- =?us-ascii?Q?1jTeVAPlIoZrN2olU/3S04EoTq7RlK0tf0k6wE6NYS2+RN6h2SPGqOdJGKp8?=
- =?us-ascii?Q?nodo09RYBCGmvYvRdG/8Wwfw5dxEiyJOb3XFHZwxnjjhNe48fBpO32P3svxa?=
- =?us-ascii?Q?E0k8OrBaHIVPIzPLJ/ncX8Dp6DsL/7/hL34aglU7v4XCotXNrSj0iqVTXcM/?=
- =?us-ascii?Q?YKNK4WcnYcOGjgPjaTbQARWVfRJGrdjBzfEI9oRACsfE4EcBk+euf9n+PT0x?=
- =?us-ascii?Q?OVf2TR4oByZe9OdjkGMd0WdnLOcqmtCB+SXvJtkdt/r22cuSM7NwvhtvOJXg?=
- =?us-ascii?Q?3COgKA/jtIWtQf8TpowwrYs4/sSDCf7I87zytfWISlQV699uO9ReaLLLuH2z?=
- =?us-ascii?Q?3XvBJlbmEJueq3bP9cNeT74suwQxZV2+OjBjdNS8G8X3IcB+L/FD8g5SHjFz?=
- =?us-ascii?Q?O6EUIhc4LsfQV4EGNo/oBgGtU+lcIU1YJIOmJRdR6iEMATY7T7k5+aFgVGDM?=
- =?us-ascii?Q?CcbT8lqndBgBby8oV7xkIhjWi4vOapIUFksgiLnZn2Ih+zDdi64yejKc122o?=
- =?us-ascii?Q?VA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <5E15175306DAAC4183F98E3DF4B5E07F@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20230601; t=1713158973; x=1713763773; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oH9+g2LiJ7hE+BmM60E94BIQlPkF9NnGngny+sqtXio=;
+        b=COA6bK+Umr3eZObrZDY8r3IIZIJHD4mGWlyu6DCfV2a9YxlISwVn74BRRoJhFB0QuJ
+         icc/nSc3uPjqs4rO6rhvE2DcovfE/WPmPt6eIoUFwz9ktoqXQ8PejQeofmZurpMtDae4
+         VE3SacsLC2fmRyx2mCoYGHMPQvnxLiK6R0KIMQLPFhTLlUotzseJmZQeDwC30uvlYhgr
+         K6RPk7hj3/MGwIlHTiI1taI48hIzv3ouGcKo9zBONb4Rt0ydaMw9TYYM76t5+4tb4CKF
+         2FbGDTi2IOMSSRB71WaYa+k05VZ1ItZBp0w2w/UgtHLcTcya2di/eLfTJAFiRrxKEgPe
+         /YPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713158973; x=1713763773;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oH9+g2LiJ7hE+BmM60E94BIQlPkF9NnGngny+sqtXio=;
+        b=po6vxasDBr9aFVaitt47plxDeX1yGHKdxr2kEbLbKjHa3zXNG3SSe2edtIP6x39RIl
+         nk/ZyYW9XOxaey81hznHMUo4ltX6DWB2xxItV7A9kNNYP7WH5o7kSwx/kpAFjBd1kX0D
+         k45OidE3BnyJlbFyVUz6kAkonUtZXPPEvqPEgQaO3byfeFqzlvPyRf+KwC8FyImIM+w9
+         tk2L/kYF78klOWm7EZ+Qey9WT7+eYMkJJg2d5AGjMTumZa3mZpdwP4FnGJ6gp3rQvMhI
+         hFREIDNRdBGfR+Pk0BpgXWiinuM4eZDiQlzL0XoWiJMOo/ULqcVo9cP81tPH3xD3liev
+         ljkA==
+X-Forwarded-Encrypted: i=1; AJvYcCXrrxmf0nR5NQEwF+M7Nngd8V3EEUZS7x8w3iwR/Q8cx4d8M2vJGtqUhZYYRWP69YFFpFTlnURBVdIhJZ+S/iJNOaPDG6ScaGl6D/HhE8KIU2lfpRPJpg8G00oPdQriffnsbaXIROGMQ3He8Z9lLS9tI0A/kXVcGjMR0iEhRew6
+X-Gm-Message-State: AOJu0Yyt5G7KLsVOPu/JqkwtdFEFeMNwi51jqtrQ/uAuSrc/4EaPKbfL
+	Go8Zcq6Z5haj/ADtIiyX89ni0zFca5x4y1+io5b/a1Y+mIczaad+HyoZk57gT7xD4Sl7n0wbrkk
+	GVC73WdljcMh4EleWXfKrJlqBW2o=
+X-Google-Smtp-Source: AGHT+IHKH/DnDVNEyAUbf+ZobgfwfRon2sOSX7mDNvX2ZdhP8EGjIUYn6XK+AMsRNq8Av1nvSCIFf8pqDvmocgj5FcM=
+X-Received: by 2002:a17:90a:c205:b0:2a5:2177:9b41 with SMTP id
+ e5-20020a17090ac20500b002a521779b41mr6463184pjt.22.1713158973331; Sun, 14 Apr
+ 2024 22:29:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	lmOBow6GW4RA9b2e5I09Q6kSgZbvuI3BPcpo98Kk6O7Ged43LKfqQTo1I/thoRpRp1C3qQfMmevA2F9tVTB6OMkw7T5TZO1azntTf7WL1KAr768Z5HMpAAARlY+XA3gpRGhhMJOPR8ggZWzV5c922iCo9EYYy3A55G0zeDSSaPrKiCo4MWmr17U6cv4HIQ1tnzjcmnrHilox1eGOqMZi+AqsFLYSZ1KD5tKHueiZRM0+QpSgGxDxWNRsdEkMA88UHyRUsVflR5vXtgnIjyxtjOxEBF+wfKtN+Z32T4OBnL8QosMQFNvz/MV6Ql62Kia+N6I7M67yrijCMJJSPrzsZp6Zww3+zgtdrW49wSEJo2d8feuuMzL0PEhd3ibkwhwUErJSxv/PoJ5SQBGEpbs6ZfH2pHRPe1dY8WMMx3vjMYrvczy16pPy6smUYJppSkx9HOdi2D145B32CYENDJyaVKwifeAUWmO/CNdHvGh4CpWdRv/EwcQb8fSsROYpr64TRkPXDsNF0AC1/Cucbgs5WuDnAFkogkTzKEpTOh4Xn0Gc9hhc4W36Wy5WD7oCB6ER9N2200VkquuxLZhiJU4mXfifWgKXUy9zqHgPOx5AaSiQxh5B1Yjw4FvHE0FT0ysP
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47cb501a-5c83-4ae6-6c73-08dc5d0c5af5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 05:24:42.6254
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UzDC6OjLpjQCkGxw0oqHIXCJzOrMv0iX627aQaZQBUWn0sgiQeFxVYbtAjIJlxLtUZcQJJg71gK2bfx8u1rTog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB7926
+References: <20240329133458.323041-2-valla.francesco@gmail.com>
+ <20240329133458.323041-3-valla.francesco@gmail.com> <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
+ <9f5ad308-f2a0-47be-85f3-d152bc98099a@hartkopp.net> <CAMZ6RqKGKcYd4hAM8AVV72t78H-Kt92NXowx6Q+YCw=AuSxKuw@mail.gmail.com>
+ <64586257-3cf6-4c10-a30b-200b1ecc5e80@hartkopp.net>
+In-Reply-To: <64586257-3cf6-4c10-a30b-200b1ecc5e80@hartkopp.net>
+From: Vincent Mailhol <vincent.mailhol@gmail.com>
+Date: Mon, 15 Apr 2024 14:29:21 +0900
+Message-ID: <CAMZ6RqKJH-Qmh4uXHj5Opj4PxDX=JDEBRR8gzsCuQ6pKHz1MfA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] Documentation: networking: document ISO 15765-2:2016
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Francesco Valla <valla.francesco@gmail.com>, Marc Kleine-Budde <mkl@pengutronix.de>, 
+	linux-can@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Simon Horman <horms@kernel.org>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, fabio@redaril.me
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Apr 15, 2024 at 07:11:15AM +0200, Linux regression tracking (Thorst=
-en Leemhuis) wrote:
-> [adding the authors of the two commits mentioned as well as the Btrfs
-> maintainers and the regressions & stable list to the list of recipients]
->=20
-> On 15.04.24 05:56, Hiroshi Takekawa wrote:
-> >=20
-> > Module loading fails with CONFIG_BTRFS_FS_RUN_SANITY_TESTS enabled on
-> > 6.8.3-6.8.6.
-> >=20
-> > Bisected:
-> > Reverting these commits, then module loading succeeds.
-> > 70f49f7b9aa3dfa70e7a2e3163ab4cae7c9a457a
->=20
-> FWIW, that is a linux-stable commit-id for 41044b41ad2c8c ("btrfs: add
-> helper to get fs_info from struct inode pointer") [v6.9-rc1, v6.8.3
-> (70f49f7b9aa3df)]
->=20
-> > 86211eea8ae1676cc819d2b4fdc8d995394be07d
+On Mon. 15 Apr. 2024 at 05:22, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+> On 14.04.24 06:03, Vincent Mailhol wrote:
+> >
+> > This doesn't remove the fact that I think that this naming convention
+> > is stupid because of the RAS syndrome, but I acknowledge that CAN CC
+> > is now the official denomination and thus, that we should adopt it in
+> > our documentation as well.
+> >
+>
+> ;-)
+>
+>
+> >>> Add a space between ISO and the number. Also, update the year:
+> >>>
+> >>>     ISO 15765-2:2024
+> >>>
+> >>
+> >> Interesting! Didn't know there's already a new version.
+> >>
+> >> Will check this out whether we really support ISO 15765-2:2024 ...
+> >>
+> >> Do you have the standard at hand right now or should we leave this as
+> >> ISO15765-2:2016 until we know?
+> >
+> > I have access to the newer revisions. But I never really invested time
+> > into reading that standard (neither the 2016 nor the 2024 versions).
+> >
+> > Regardless, here is a verbatim extract from the Foreworld section of
+> > ISO 15765-2:2024
+> >
+> >    This fourth edition cancels and replaces the third edition (ISO
+> >    15765-2:2016), which has been technically revised.
+> >
+> >    The main changes are as follows:
+> >
+> >      - restructured the document to achieve compatibility with OSI
+> >        7-layers model;
+> >
+> >      - introduced T_Data abstract service primitive interface to
+> >        achieve compatibility with ISO 14229-2;
+> >
+> >      - moved all transport layer protocol-related information to Clause 9;
+> >
+> >      - clarification and editorial corrections
+> >
+>
+> Yes, I've checked the release notes on the ISO website too.
+> This really looks like editorial stuff that has nothing to do with the
+> data protocol and its segmentation.
 
-It looks like the stable tree lacks this commit, which is necessary for the
-commit above.
+This is also my feeling. Short story, I think it is reasonable to
+quote ISO 15765-2:2024 instead of ISO 15765-2:2016 in this document.
 
-b2136cc288fc ("btrfs: tests: allocate dummy fs_info and root in test_find_d=
-elalloc()")=
+> >>>
+> >>> Here, I would suggest the C99 designated field initialization:
+> >>>
+> >>>     struct sockaddr_can addr = {
+> >>>             .can_family = AF_CAN;
+> >>>             .can_ifindex = if_nametoindex("can0");
+> >>>             .tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG;
+> >>>             .tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG;
+> >>>     };
+> >
+> > Typo in my previous message: the designated initializers are not
+> > separated by colon ";" but by comma ",". So it should have been:
+> >
+> >    struct sockaddr_can addr = {
+> >          .can_family = AF_CAN,
+> >          .can_ifindex = if_nametoindex("can0"),
+> >          .tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG,
+> >          .tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG,
+> >    };
+> >
+> >>> Well, this is just a suggestion, feel free to reject it if you do not like it.
+> >>
+> >> At least I don't like it.
+> >>
+> >> These values are usually interactively given on the command line:
+> >>
+> >>   >            .can_ifindex = if_nametoindex("can0");
+> >>   >            .tp.tx_id = 0x18DA42F1 | CAN_EFF_FLAG;
+> >>   >            .tp.rx_id = 0x18DAF142 | CAN_EFF_FLAG;
+> >>
+> >> So have it in a static field initialization leads to a wrong path IMO.
+> >
+> > There is no such limitation that C99 designated initializers should
+> > only work with variables which have static storage duration. In my
+> > suggested example, nothing is static.
+> >
+> > I see this as the same thing as below example:
+> >
+> >    int foo(void);
+> >
+> >    int bar()
+> >    {
+> >            int i = foo();
+> >    }
+> >
+> >    int baz()
+> >    {
+> >            int i;
+> >
+> >            i = foo();
+> >    }
+> >
+> > In bar(), the fact that the variable i is initialized at declaration
+> > does not mean that it is static. In both examples, the variable i uses
+> > automatic storage duration.
+> >
+> > Here, my preference goes to bar(), but I recognize that baz() is also
+> > perfectly fine. Replace the int type by the struct sockaddr_can type
+> > and the scalar initialization by designated initializers and you
+> > should see the connection.
+>
+> Oh, sorry. Maybe I expressed myself wrong.
+>
+> IMHO your way to work with an initializer is correct from the C standpoint.
+>
+> But I think this is pretty unusual for a code example when an
+> application programmer starts to work with ISO-TP.
+>
+> You usually get most of these values from the command line an fill the
+> struct _by hand_ - and not with a static initialization.
+>
+> That was my suggestion.
+
+OK. I get your point of view, which I think is a fair argument. So
+let's keep it as is.
+
+Just to conclude the debate, in real life, how to write it would
+depend on the situation.
+
+You may for example receive the values as function parameters:
+
+  static int tp_bind(const char* ifname, canid_t rx_id, canid_t tx_id)
+  {
+          int s;
+          struct sockaddr_can addr = {
+                  .can_family = AF_CAN,
+                  .can_ifindex = if_nametoindex(ifname),
+                  .tp.rx_id = rx_id,
+                  .tp.tx_id = tx_id,
+          };
+          int ret;
+
+          s = socket(PF_CAN, SOCK_DGRAM, CAN_ISOTP);
+          if (s < 0)
+                  exit(1);
+
+          ret = bind(s, (struct sockaddr *)&addr, sizeof(addr));
+          if (ret < 0)
+                  exit(1);
+
+          return s;
+  }
+
+Or, if you get the values from the command line, you could have an
+hybrid approach:
+
+          int s;
+          struct sockaddr_can addr = {
+                  .can_family = AF_CAN,
+          };
+          char ifname[IF_NAMESIZE];
+          canid_t rx_id, tx_id;
+          int ret;
+
+          /* Parse command line and fill ifname, rx_id and tx_id */
+          addr.can_ifindex = if_nametoindex(ifname);
+          addr.tp.rx_id = rx_id;
+          addr.tp.tx_id = tx_id;
+
+          s = socket(PF_CAN, SOCK_DGRAM, CAN_ISOTP);
+          if (s < 0)
+                  exit(1);
+
+          ret = bind(s, (struct sockaddr *)&addr, sizeof(addr));
+          if (ret < 0)
+                  exit(1);
+
+In the end, there is not enough context to decide which one is best.
+And, I diverged too much. Francesco, keep the original.
+
+> >
+> > ** Different topic **
+> >
+> > While replying on this, I encountered something which made me worry a bit:
+> >
+> > The type of sockaddr_can.can_ifindex is a signed int:
+> >
+> >    https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/can.h#L243
+> >
+> > But if_nametoindex() returns an unsigned int:
+> >
+> >     https://man7.org/linux/man-pages/man3/if_nametoindex.3.html
+> >
+> > Shouldn't sockaddr_can.can_ifindex also be declared as an unsigned int?
+> >
+>
+> The if_index derives from struct netdevice.if_index
+>
+> https://elixir.bootlin.com/linux/v6.8.6/source/include/linux/netdevice.h#L2158
+>
+> which is an int.
+
+Ack.
+
+> I don't think this would have an effect in real world to change
+> sockaddr_can.can_ifindex to an unsigned int.
+>
+> I wonder if it is more critical to existing user space code to change it
+> to unsigned int or to leave it as-is ...
+
+The only impact is the warnings if compiled with the zealous flags
+which warn on conversion between signed and unsigned, which would
+normally be a sufficient reason to change. But, I understand that this
+if_index is also a signed int at other locations in the kernel, so
+let's keep it as such in our code.
+
+> Best regards,
+> Oliver
 
