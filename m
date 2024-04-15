@@ -1,223 +1,183 @@
-Return-Path: <linux-kernel+bounces-145413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A0AC8A55E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:02:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C866E8A55DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 162D4284844
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD871F2308C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4EF76046;
-	Mon, 15 Apr 2024 15:02:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B45776044;
+	Mon, 15 Apr 2024 15:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="mswWHUGn"
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2065.outbound.protection.outlook.com [40.107.96.65])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d5wajOPE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BED78297;
-	Mon, 15 Apr 2024 15:02:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713193330; cv=fail; b=UdvcK86k6rZuUes/eJ5hZHUOZcjVjsBZW1uYiDjwKcABCubisvXjoJkZTt2bSscdyMbE/OXurqPkmuANcJwwbLyiW+G8uU0fxtR/vsH4laICXFAZDcuiOQDEe+HsJElRZXauQ/MV/KguOy07cp/4WRzzr31OW+kFjXo1j/DjgcM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713193330; c=relaxed/simple;
-	bh=Quak7+xrfhBCwXK4ypDW87esPqc11Bm4y0kFzXMmzv4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=P//qs6IA96ytrtBmg/eOIqI29KllgUqFbfkb6R6HzWFMEqcUetuGMaphMRAqpR1KnEo0Y3Me/lcgtAxVC+jdtZkidqufhkz0Z9tALDrGLO2UOWM0OnU9oxShqQrxc9oy+wonbKVNqtNvI2kVJeaOsa9Ayb6z4qympsbeh/rgy2c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=mswWHUGn; arc=fail smtp.client-ip=40.107.96.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XiharTUf2kEjQ7vVSZWsROz8XyrAc9iRKvuW1SukbhhDJepqAz7S/LRo9h28uaTN1iSuXiM1wVZuVeDqUhyFQmE/V0HAceitFn/JvjwYYo5t2sEnvclD3Ee+KtP2syuqE2FalYFVGRBW26X5jh9OerH+09FTg8igr3AtFn+dkcoLi4tPDp262CJhqvCh/MDKCtg6CohvDZXaXTBAn0BtVgnxqzk7Eln0gI+QFJ6w+/xzvl1N9xXsf/ySLRdXOLvKBwM273gp7IORatSNmzb1Q71wohD0i3efy0+RtlLsSye4KNHfTkp9bvY3Sy3mXjjP8qzyJT0NLQwXNapvI07OVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b6BlnOG8Q6IOKH/nzKw5ikmdfZ3Ln7R243PBduCvGdM=;
- b=RKUDPD4Kmlt2qvZXvlVXoLjYTEJor+Y8IMIgQGlcNtGW11NV1HOl2foWaQQ6RMVpT98d9UOF5iP/4UI6n6EFBVZN/+YDpl5+U8cEkiEuJcopbLCe8KiJuEjucbgbc7yKIsZExkYQnW26DdbMoCotq2xP7fjeOStt30LsqiuRBbLPVF0JyxMjlYeYth5USh/ZduSZWCxyz1A3yf5sUnL0sohCZ1TwYZlhgiHHM7E2h2lFzS44rPsejxJTJsuSgSd3abOPGAijL1lj2qVNip0KXkrH2YGbIgAVXU1wxmnzItwUpyGEsMZ8u4mf66sgi5L6jFqPiA/vTVMB/MSHkyBgJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b6BlnOG8Q6IOKH/nzKw5ikmdfZ3Ln7R243PBduCvGdM=;
- b=mswWHUGnsBM1t433F6tVZ2Ez8XQ2xrMgwHYgISCson9OMluzs9gxmOiaCLWxP+bFka/8hhohwnCWEOeoca6QXyl7s4/KjRCvRAKAovqxvXkNX0p5Fh4JT+qymCgtvJAGaOmj9KCu9yPNMub4i1jXoQ1rSBwgpmggi5diVK2U21E=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
- by SA1PR12MB8597.namprd12.prod.outlook.com (2603:10b6:806:251::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 15 Apr
- 2024 15:02:02 +0000
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::e7a:5022:4b7d:ade1]) by SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::e7a:5022:4b7d:ade1%7]) with mapi id 15.20.7409.042; Mon, 15 Apr 2024
- 15:02:02 +0000
-Date: Mon, 15 Apr 2024 23:01:40 +0800
-From: Huang Rui <ray.huang@amd.com>
-To: "Yuan, Perry" <Perry.Yuan@amd.com>
-Cc: "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
-	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
-	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
-	"Petkov, Borislav" <Borislav.Petkov@amd.com>,
-	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
-	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
-	"oleksandr@natalenko.name" <oleksandr@natalenko.name>,
-	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
-	"Meng, Li (Jassmine)" <Li.Meng@amd.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 6/8] cpufreq: amd-pstate: get transition delay and
- latency value from ACPI tables
-Message-ID: <Zh1BVDUkSSeHOvmP@amd.com>
-References: <cover.1711335714.git.perry.yuan@amd.com>
- <ee3c290dcdce4a746fbd882d37e9a45504a5ae3d.1711335714.git.perry.yuan@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ee3c290dcdce4a746fbd882d37e9a45504a5ae3d.1711335714.git.perry.yuan@amd.com>
-X-ClientProxiedBy: SG2PR04CA0201.apcprd04.prod.outlook.com
- (2603:1096:4:187::23) To SJ2PR12MB8690.namprd12.prod.outlook.com
- (2603:10b6:a03:540::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A211D524
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 15:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713193319; cv=none; b=fRQSsnPHoFNyYFEsG4Ib+KYCsByckLe7GeGlGoV6NrgqliJUhSAdWv1uGrudfdz0kb3E6z2UkPmz3XgMCCIMb2ZlgvlDAj/BERjSFN5tkz2C9ArX8SKvvdPqD4ScHBICeUHpuox6/AR/oKNs8zT8DkDnuUu5PgG8Ae0ndKoXKOw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713193319; c=relaxed/simple;
+	bh=sIiFyXwqbhaN2h69y2E+rbEJLjROIneYsPH1WX9xh84=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E6iU4c5cSd7HJ52f3rikXNosrCT0+k1k7of8W2rX5djCQ2KXiKecCUlYtPVDkWrOaRI9rZHyfLWf7LwRKieFQFqYoZxC07aWqA8gb347TZWCSfs+bx8qRM0GcvPClB2YeiWD0GX7rEjiNrdb1SLKjqqut9gamjrakP7uMln2Qkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d5wajOPE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713193317;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=zwjBbQo6C7j6xP7+cDacBB/+QuPqifcUdRYibqKmYA0=;
+	b=d5wajOPEVoo6uacNunS7eMkH0GVSBfQjIgcsL3j+s/yRPu73KeCNvriGy7CHo/xXwNFlZZ
+	cVRZQTnXvgq0WzpPtz4R4yxJE1SfRIvGXAdEkQREskFlrc3wMwHJUSWE8P3VvFUSmWePud
+	58EWonEsEIC5+7UHADRMqrvHAwdWaAc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-680-9ymtmfl1OWC_FKI9pEuRZA-1; Mon, 15 Apr 2024 11:01:53 -0400
+X-MC-Unique: 9ymtmfl1OWC_FKI9pEuRZA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343c6bb1f21so2271255f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:01:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713193312; x=1713798112;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zwjBbQo6C7j6xP7+cDacBB/+QuPqifcUdRYibqKmYA0=;
+        b=uW3uRj+FDJUO/oj0K+Uzm8OvEnoX8f5OA5o+eCv+WjNbCA605HmllZihc1FCeFKUZQ
+         UMAQy/hIet1JrDhFSoyoS4s2yYkTQasuOYgjeVRtM8VREertyvvFh3oXw2ebzj2bnT4J
+         RywlC+SvNBRqDvz7dlu/1gE05H6zCM7tABNf79XJYj7jy2C4rrrUZ22xYYQr9RYNjwIU
+         e2lZstK2N5ApCSF/sNq7IMLEv1WMnf6Yv/191mPsjWflwxisDuSM1pK/6wimm+p8GW1k
+         RUbgHHBysC8v0wsQRyuNIAAEIcd0CjwJi1Y1yHrBpikZSCbp+mWuPdjXFaoF945BXCTs
+         gk+A==
+X-Forwarded-Encrypted: i=1; AJvYcCUEDoNz40g+GWWor6GOeZ+lMDEvjXf4WPad1KOi5f7vAcEe6YGzXPVMZSsCeF94IFTxeIDbKolI0Aaqh/WYsdhhDBPb/L8ScbwiP0rl
+X-Gm-Message-State: AOJu0YxQ9kIkJSuVLv9hMLJ0EZdhkaRItERKPiN+Pow55YEYc89RQCXr
+	gLH0F7dHYvsgWkgZ5r53Hu3M4gwWUO7NYOXEz7rmHreG1xBLMU/+G9YU1uGhMJAYzMonwN61syr
+	8ZhGrSySoJiNzrtk2P9WGsFwYgTiUhUQE16LIIiKXZ6FCJ0T9aX8Tw8Bx0IAIYQ==
+X-Received: by 2002:a5d:6749:0:b0:346:bb52:25a1 with SMTP id l9-20020a5d6749000000b00346bb5225a1mr7167267wrw.33.1713193311923;
+        Mon, 15 Apr 2024 08:01:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IESay4aKO0ZgPPO7ryxLsiEvDZn+lExNAZU8G+nuJuuajPSqAAIfF3Ob1/AhUDMhrDyLw/M9A==
+X-Received: by 2002:a5d:6749:0:b0:346:bb52:25a1 with SMTP id l9-20020a5d6749000000b00346bb5225a1mr7167243wrw.33.1713193311544;
+        Mon, 15 Apr 2024 08:01:51 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
+        by smtp.gmail.com with ESMTPSA id b13-20020a5d4d8d000000b003432d61d6b7sm12232617wru.51.2024.04.15.08.01.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 08:01:51 -0700 (PDT)
+Message-ID: <ee1ac0fb-daf7-4aea-b07e-f8879b6b860b@redhat.com>
+Date: Mon, 15 Apr 2024 17:01:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|SA1PR12MB8597:EE_
-X-MS-Office365-Filtering-Correlation-Id: f2c2e897-b42a-4146-2a51-08dc5d5d01ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	+EJufukMZkreYCZ36dHRq84jnpqrUaJCnxMzIfJv2wdEIMQbPvGZxN7S8bBQCZ2hUNbN7jScn0u00nogl9l/RZoSHV6lUqfbWcdD76yFslFPNLe9AfEsda/E0ShfYcEnNllGIiHd1sigg4WlAyGRkcJ6RAEoHnIK+I3gDbfWEOydRAdNKmtpXCajHTRWdxvA23PHO+gdPTLv+2B7gesbvyDnFf6L0PDwFd5IYwd+jQhlU+Rek7i2iuaASgYYVtlAaTUWDEv7drb54ZmxX730cQK+HGtRm2Rp7OmdxTQyORLjjq+s1QeNU+v52y1Hx3VIqv7shbuiXUw1I806aZmI2xG+EoBiagBNzBJTYxhjGP7Xyyce+/QQY+5kHDwiY4ElubRf1qd0EeFaJBq8LC67mMAYEkwYCkrbYEI0yxX67774BOlxkwigP9rc+gayQa0R5TJl6504+fz+xybBov0ryEEEQK42yvIaiIPfqZBSWG1+EGFIrmFVI2I0TlRynBHEtKAqYNHerlopynvvzbNKTuejW4V7fD8CzlPCwaqDE5VnFrX2R5iEvNHp1hniaaQEdN96JeU6jo+bXZLETjkDMbV/9xaHKI3T7SvAnRWQ30DOB8oGSsVLnAHFVck8XNIG5Jjka8mO7Hp7lR8BL5AUMPz2g5/ELYO/cY4ojayW2M4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+U1DslTXGb4WAyXG1smSRk11h7KlLxqV/EmKcgtQkHkdwYd2+XzKYQgEnUAV?=
- =?us-ascii?Q?eOnI2KsPsmk1KoWhKmfmw57fLYRz5urYtz/I2a2tHRSD9Zzb943LlktXz9Je?=
- =?us-ascii?Q?Q3BQ+cC97t+bCnsxB4UyNkQ74Hk44ebATTyNvC2O5P978LrTTICuko2ze1nI?=
- =?us-ascii?Q?1pUSjW3MuuChkKHdZDqeMIUfOh4ZIkam8ldKzHgvsRGwDnmIiAYEK3YGSuAv?=
- =?us-ascii?Q?CbB4xUrfqxVTtFlqWa/e6rf5bTs+TRnZJKSKLq1/4KUmmVXsr3+CPXrAU8Yg?=
- =?us-ascii?Q?G7lPt2aZE4V1trBhlt4cQrxGCgoOzWA56/PAtJgEV/M6dNdzcEEGqElas0S0?=
- =?us-ascii?Q?uuPRabX98+u7yWB34Q9AujNuZX7Rwth0fd7NMNqYSpOPI4pKgcsTejXTc4/v?=
- =?us-ascii?Q?fhJPBLyXW+jmBLhxm7mlLsr/zhJ/DwrMBMoPc9jwH65FMxWuWhRH8+4yuvup?=
- =?us-ascii?Q?4l9m4EhSWfP44YVkYu9vVGXznZOOqiXEx1/gXyPQQ4fgcEfwMiTX1bB8Jl6c?=
- =?us-ascii?Q?XccIwOX1h7h9WvbUwQvC+69gW4gA3pYimDqWjTNzZ6cJ8RdCW9E+DxPndewV?=
- =?us-ascii?Q?fGYti/42L5cOWJB94VzY8TkdStMNSc0K+OQj6B7JI7OS92RtJJ8+OxVDj5OK?=
- =?us-ascii?Q?q/YN43qMT+Kk0N2oZ+N8WJxoBY7weWWyAS50jYX+TpLh8xrq8j6JTJfBtKTL?=
- =?us-ascii?Q?QDajD9GBIWFVzo/TUYBpaP4isvPmlWxHYsC7bVTUD/tleusd8ZQdZmwuIZyu?=
- =?us-ascii?Q?SnmZIJYQnNkf/Gs4RLAsWAFRtjS8TcnzZGosM+RkZ/slGLX8mtXXWmwnEr3k?=
- =?us-ascii?Q?UMGGWkigiZvXXd+bdTc9YxP0voQVg3GA9RuLpb8xfTwGqFrtxxxECBJk5ExR?=
- =?us-ascii?Q?FFdzTTd3nrwxgDmiRQY3wMohKdjDh4IZqQmYds5mamnITmv9d3pxqDhjDOXD?=
- =?us-ascii?Q?qzDa4yjmFPuK1QsNNAoXxGzOL1nz39S3P7mpkDq7eFmftCqcHYE2bO+igkVn?=
- =?us-ascii?Q?2vMf7PzOmI/UlmHgqRhgZ6JCNLMgKKVsNbmVeB2tWEC0DLbCTyTFCIjO/bOf?=
- =?us-ascii?Q?A+ZuZ0+QI2bcD4Be8Mvxp7xc3pxwx8pm2+nTnK/4dfPmyC+mX/Acj7ljyeQS?=
- =?us-ascii?Q?k+uZmeS9J3mfl7lVU/wA19i70tXYdNS2BGgVXUvHboZaXLgRgmyXj31QMRQi?=
- =?us-ascii?Q?/8hdtTwvbpXF9Vip5kLX9wO6cILRYd6OyNnL3YKIYxdqOkhEw81Gq1BGhUJt?=
- =?us-ascii?Q?eUHUUuHRwUuPdAvywmF6ljlMxr5R+F9O6rMoUW+GBGBdnc++ZM9Vqw6qWou5?=
- =?us-ascii?Q?KEKDJIKVj1KBtYxbrtYl5h3vkDzO7oI1jutNi1Frd1rDReaTE7oCVIT99TVi?=
- =?us-ascii?Q?Kn2FJTPYQofxXKTGLLP8PQ0u2GPVOQ+RA/0PqaJqeYRsVXWfGTeu7lgWl1vQ?=
- =?us-ascii?Q?Ay1LCdOjsoq0nb1TNpDPaNIZlHcng9l5rT5yS5TRJ+fsnc81exYxvwQc52Vy?=
- =?us-ascii?Q?6dv+XbvGsTTV3UHj6ZwKndDkXdYfgZDjneFYNcaZnyWJ+Mr2z8WdSom3e9oP?=
- =?us-ascii?Q?DbzMl76Wrji5RVzXTayCjg9lcNUr8TSKVS3qUMXG?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2c2e897-b42a-4146-2a51-08dc5d5d01ef
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 15:02:02.7381
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gm8lbv3z1BTVM1RU9McfHX//yij/lW4AJR94mN1vkGawvGmres/wG5YA+TA+FeOYQxdvNG1OSU7gsX2joV0JIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8597
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/3] Improve memory statistics for virtio balloon
+To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, virtualization@lists.linux.dev
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+ akpm@linux-foundation.org
+References: <20240415084113.1203428-1-pizhenwei@bytedance.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240415084113.1203428-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 11:03:26AM +0800, Yuan, Perry wrote:
-> Make pstate driver initially retrieve the P-state transition delay and
-> latency values from the BIOS ACPI tables which has more reasonable
-> delay and latency values according to the platform design and
-> requirements.
+On 15.04.24 10:41, zhenwei pi wrote:
+> Hi,
 > 
-> Previously there values were hardcoded at specific value which may
-> have conflicted with platform and it might not reflect the most
-> accurate or optimized setting for the processor.
+> When the guest runs under critial memory pressure, the guest becomss
+> too slow, even sshd turns D state(uninterruptible) on memory
+> allocation. We can't login this VM to do any work on trouble shooting.
 > 
-> [054h 0084   8]                Preserve Mask : FFFFFFFF00000000
-> [05Ch 0092   8]                   Write Mask : 0000000000000001
-> [064h 0100   4]              Command Latency : 00000FA0
-> [068h 0104   4]          Maximum Access Rate : 0000EA60
-> [06Ch 0108   2]      Minimum Turnaround Time : 0000
+> Guest kernel log via virtual TTY(on host side) only provides a few
+> necessary log after OOM. More detail memory statistics are required,
+> then we can know explicit memory events and estimate the pressure.
 > 
-> Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> Tested-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+> I'm going to introduce several VM counters for virtio balloon:
+> - oom-kill
+> - alloc-stall
+> - scan-async
+> - scan-direct
+> - reclaim-async
+> - reclaim-direct
 
-Acked-by: Huang Rui <ray.huang@amd.com>
+IIUC, we're only exposing events that are already getting provided via 
+all_vm_events(), correct?
 
-> ---
->  drivers/cpufreq/amd-pstate.c | 34 ++++++++++++++++++++++++++++++++--
->  1 file changed, 32 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 6708c436e1a2..ec049b62b366 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -756,6 +756,36 @@ static void amd_pstate_update_limits(unsigned int cpu)
->  	mutex_unlock(&amd_pstate_driver_lock);
->  }
->  
-> +/**
-> + * Get pstate transition delay time from ACPI tables that firmware set
-> + * instead of using hardcode value directly.
-> + */
-> +static u32 amd_pstate_get_transition_delay_us(unsigned int cpu)
-> +{
-> +	u32 transition_delay_ns;
-> +
-> +	transition_delay_ns = cppc_get_transition_latency(cpu);
-> +	if (transition_delay_ns == CPUFREQ_ETERNAL)
-> +		return AMD_PSTATE_TRANSITION_DELAY;
-> +
-> +	return transition_delay_ns / NSEC_PER_USEC;
-> +}
-> +
-> +/**
-> + * Get pstate transition latency value from ACPI tables that firmware
-> + * set instead of using hardcode value directly.
-> + */
-> +static u32 amd_pstate_get_transition_latency(unsigned int cpu)
-> +{
-> +	u32 transition_latency;
-> +
-> +	transition_latency = cppc_get_transition_latency(cpu);
-> +	if (transition_latency  == CPUFREQ_ETERNAL)
-> +		return AMD_PSTATE_TRANSITION_LATENCY;
-> +
-> +	return transition_latency;
-> +}
-> +
->  /**
->   * amd_pstate_init_freq: Initialize the max_freq, min_freq,
->   *                       nominal_freq and lowest_nonlinear_freq for
-> @@ -848,8 +878,8 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
->  		goto free_cpudata1;
->  	}
->  
-> -	policy->cpuinfo.transition_latency = AMD_PSTATE_TRANSITION_LATENCY;
-> -	policy->transition_delay_us = AMD_PSTATE_TRANSITION_DELAY;
-> +	policy->cpuinfo.transition_latency = amd_pstate_get_transition_latency(policy->cpu);
-> +	policy->transition_delay_us = amd_pstate_get_transition_delay_us(policy->cpu);
->  
->  	policy->min = min_freq;
->  	policy->max = max_freq;
-> -- 
-> 2.34.1
-> 
+In that case, I don't really see a major issue. Some considerations:
+
+(1) These new events are fairly Linux specific.
+
+PSWPIN and friends are fairly generic, but HGTLB is also already fairly 
+Linux specific already. OOM-kills don't really exist on Windows, for 
+example. We'll have to be careful of properly describing what the 
+semantics are.
+
+(2) How should we handle if Linux ever stops supporting a certain event 
+(e.g., major reclaim rework). I assume, simply return nothing like we 
+currently would for VIRTIO_BALLOON_S_HTLB_PGALLOC without 
+CONFIG_HUGETLB_PAGE.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
