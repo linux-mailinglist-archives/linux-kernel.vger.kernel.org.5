@@ -1,90 +1,156 @@
-Return-Path: <linux-kernel+bounces-144674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AECEF8A490D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:31:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3144D8A4912
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ECFF1F23FBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:31:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCB2828446A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050D02C1B8;
-	Mon, 15 Apr 2024 07:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDA625774;
+	Mon, 15 Apr 2024 07:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ewYPnQNm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RSS59ZAS"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3A12C1A2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEC52D058;
+	Mon, 15 Apr 2024 07:31:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713166298; cv=none; b=AQHVc+t/eHYFCQvWr0VHKM1v4MMC3DX4GEbXp6K7LuSaishjO/Y/XCfBjcuGglYkQZeO3JoJaBD52y9YvSZspbYg3I/hVZf4X+U+ewRtv5HmUvjctDgPDpPxlscJ7Tt1vcksEuhOcTF3gb50hs+UVGImYlZMjzvC9n9VLnNd7Ok=
+	t=1713166318; cv=none; b=tWAVd7H/obtFNmK69vxyTOr6iWYBkqlYW5XcA20/QvpjxkUfQ25FT4SEIky+V399xLnKbMrsn6XQhNk8Q7uKh/IUdBJfvNVy2Ho1iEce2FDRILTFZomWb9R5N8NLKQnMYdhiAWmEXBzwxPqktsihWUcpYffTAhQfQ60OhG3P02U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713166298; c=relaxed/simple;
-	bh=bRZvZp6AkbOsDdblOV4GxuvFlmTw5UsTFNthgidjX1M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gDx3yijvdzoCk6J/T41kQ73HD7erA6H0M4B/ylkJzxU0Vm5P8+tuUGkL1FhJS4YW9zpU3EFKGEALzFL/RXlm7PABFnD18QxUzOkyNrIyjilDB3nUZ56PQxb5vGbxlfWmCVE+XntXUKHNSdq7mg9zXyQ7FBx+a7UloF8ROAnTX4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ewYPnQNm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E0D7C2BD11;
-	Mon, 15 Apr 2024 07:31:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713166297;
-	bh=bRZvZp6AkbOsDdblOV4GxuvFlmTw5UsTFNthgidjX1M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ewYPnQNmpxPtDuBwc+XopJT4q2ihEQ7DTkxT3PZyBu9Kg61LPL70hAexgJuP5UeYB
-	 a+U2jLbabJLkN3ALz0gvUHptdRyVfC3YHzJzjWa8cG/SGKjtd6CXKRfhDYEw7EYfil
-	 +cJDXBaPU6me0o8trAfpJrG4kMm6j+pUWWwmIQXs=
-Date: Mon, 15 Apr 2024 09:31:35 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 0/2] uio: Convert to platform remove callback returning
- void
-Message-ID: <2024041517-helper-suitable-0e42@gregkh>
-References: <cover.1709933231.git.u.kleine-koenig@pengutronix.de>
- <g4bpnb64ylia6rlhqbjm5xctuy3uu6wnfu5sxuqkrze24y72od@e3tpnrwwl75t>
+	s=arc-20240116; t=1713166318; c=relaxed/simple;
+	bh=RiMMGXA23rt3N/5UddmduV4dDe775hQfb8LLkY3/0Gg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EMeLb1lDL3vrfVx6RR98MJyqfhUyhr6HuJqbIm6BeiTxg7JodQ2b2G0Dmbdy6fSy6HGR2kC8nCaePEHRWCP49e3NHBA2N8OiqIs0QCitjc4LRceJClY/qlOFuQ8RUcF/3LW9iVNCT+9F8qmqDNdtuZcrwg+i80qSb8W00/5fp8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RSS59ZAS; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c709e5e4f9so1023751b6e.3;
+        Mon, 15 Apr 2024 00:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713166316; x=1713771116; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fyAUoqBvIOKTY3LdJCpcnCDojqj4JBfKWFR06e36DaU=;
+        b=RSS59ZASpatW3v7wMh06zmn8h4gzBMsbwcm5b33oqlx49NNgMRAeiKGFyNzJ1EEVdC
+         TsPGMJ5qn/khdN+YtV7wgsuh3IfbSFeTm7IhOjJeMo7xb67mcUL0oOYZdElnCxbbZSKn
+         cQUigmI/MUhqW8BkdQaBvovPKTZGfTI0q0ppiJElAlMoGgjCAO2GKl83uGmY/TBspAqO
+         V7GSzKZW6B0453CEgBq6SX0GapaNrA8EoFswrqUAgFBiIXnbRxvP8Z3aaceGpF8RDQvS
+         iZtstwj+lrg1w+qylCwZFnRpnBZdpIDadigxYnXJ1wYe4QTIQvf9LcNPX7eroZ5/C1h2
+         A2uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713166316; x=1713771116;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fyAUoqBvIOKTY3LdJCpcnCDojqj4JBfKWFR06e36DaU=;
+        b=C8iibwI2GDAf3dwCe4styRCJ7+T7YU132Vfxud9JPqIoLt39OdvFEFYAlyRRZhF9MX
+         69PUvy97oYVMz/vk1LRymsZ9diUmuCN1OH+GKFEMksW321HONMo6ma/tlvC2/1UcLZpH
+         jFGSTlULr8wwyNjeTQI2Vf8djmRKNzzsgLGrqIRz9GYFquhPLeozZol2kY9Zy1/7/vHA
+         eAyN6mt0UVglC7iEJOOfNa6Jz4NOuk4I9mhPKHqC1MNHY1VTmQtAbi0FFjSm1RxgV/me
+         kmXNb6549wqEv29evJ5sZqlIPHDUqkY7IK2FJZ2ecLCiOzFAkzB+RCHL9KhOQ8hTCSkS
+         5wLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWY8DXVAr/fchcRvV94G4Rx4uHZGU4tz6LNKCl0487rGxRYHqfp985wSn+jlxuEzMt4pxx06h+STB88UojUe3MUXZt329DDLyf+nyp/NjbXFzXtG1IB55ZuDDeAKwXkdprQ0SEbsnL+8FQi1tWyL7vA8ZXjUqKtnWhp7J1iY7cP8FGYrOzY5b2kMqe76Wq0b2k/OA054IiE/lmDUnLEKrrw7/pdGEGZwNhMrHhvQ8TKp0e4jpnFMqfV+ULbyxNAbBc9gGRNzw==
+X-Gm-Message-State: AOJu0YzR5o/NBHxudyw4YGwh10QvTQel2OSzcsAKRzOay/UDoMVyjG+l
+	jogPvC6RceRrvF7CauLR/CKBwy4c2WKrFiMlZLTg+KuBjquQmxDaf3L8MxAA0Gx/HM5Ck4Giyxq
+	DT8ohRxSZCxbTI/hZghGxlS3rfB0=
+X-Google-Smtp-Source: AGHT+IG+mHEf+9pMHePulndcOmqJAFoy+0e8uxd+TwOgPTDj/IhKU2JtlX/85TmoPDDzrhRzFX9Fs3nWYPxdgLlCL2I=
+X-Received: by 2002:a05:6870:ac26:b0:233:b575:4b4a with SMTP id
+ kw38-20020a056870ac2600b00233b5754b4amr10413015oab.36.1713166316068; Mon, 15
+ Apr 2024 00:31:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <g4bpnb64ylia6rlhqbjm5xctuy3uu6wnfu5sxuqkrze24y72od@e3tpnrwwl75t>
+References: <20240413151617.35630-1-krzysztof.kozlowski@linaro.org> <20240413151617.35630-4-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240413151617.35630-4-krzysztof.kozlowski@linaro.org>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Mon, 15 Apr 2024 09:31:47 +0200
+Message-ID: <CAMhs-H9ADfuDkFcD==7x+VaN2q92JV1gxuyrWvfNYK1psEnrQA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] dt-bindings: PCI: mediatek,mt7621-pcie: switch
+ from deprecated pci-bus.yaml
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>, 
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>, Ray Jui <rjui@broadcom.com>, 
+	Scott Branden <sbranden@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, Jim Quinlan <jim2101024@gmail.com>, 
+	Nicolas Saenz Julienne <nsaenz@kernel.org>, Will Deacon <will@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Srikanth Thokala <srikanth.thokala@intel.com>, 
+	Ryder Lee <ryder.lee@mediatek.com>, Jianjun Wang <jianjun.wang@mediatek.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Daire McNamara <daire.mcnamara@microchip.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Marek Vasut <marek.vasut+renesas@gmail.com>, 
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Shawn Lin <shawn.lin@rock-chips.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>, 
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>, Michal Simek <michal.simek@amd.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Mark Kettenis <kettenis@openbsd.org>, 
+	Tom Joseph <tjoseph@cadence.com>, Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>, 
+	Jiaxun Yang <jiaxun.yang@flygoat.com>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>, linux-pci@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-rpi-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 09:19:00AM +0200, Uwe Kleine-König wrote:
-> Hello,
-> 
-> On Fri, Mar 08, 2024 at 10:31:00PM +0100, Uwe Kleine-König wrote:
-> > this series converts the two platform drivers below drivers/uio that
-> > make use of .remove() to use .remove_new() instead.
-> > 
-> > See commit 5c5a7680e67b ("platform: Provide a remove callback that
-> > returns no value") for an extended explanation and the eventual goal.
-> > The TL;DR; is to make it harder for driver authors to leak resources
-> > without noticing. The drivers here get it right though and so can be
-> > converted trivially.
-> > 
-> > This is merge window material. The two patches are independent of each
-> > other so they can be applied individually if necessary. But I assume
-> > and suggest that Greg will pick them up together.
-> > 
-> > [..]
-> > 
-> > Uwe Kleine-König (2):
-> >   uio: fsl_elbc_gpcm: Convert to platform remove callback returning void
-> >   uio: pruss: Convert to platform remove callback returning void
-> 
-> The commit 1019fa4839c9 ("uio: pruss: Remove this driver") (currently in
-> next) makes the pruss patch obsolete. The fsl_elbc_gpcm patch was
-> applied.
+Hi Krzysztof,
 
-Yes, that's why I only applied one, sorry if I didn't let you know.
+On Sat, Apr 13, 2024 at 5:16=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> dtschema package with core schemas deprecated pci-bus.yaml schema in
+> favor of individual schemas per host, device and pci-pci.
+>
+> Switch Mediatek MT7621 PCIe host bridge binding to this new schema.
+>
+> This requires dtschema package newer than v2024.02 to work fully.
+> v2024.02 will partially work: with a warning.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> ---
+>
+> Important: This depends on change recently merged to dtschema, however
+> no release was yet made with mentioned change.
+> Therefore this patch probably should wait a bit. Previous patches do not
+> depend anyhow on future release, so they can be taken as is.
 
-greg k-h
+Does this mean that we should set DT_SCHEMA_MIN_VERSION to 2024.02 in
+Documentation/devicetree/bindings/Makefile then before merging this
+patch?
+
+>
+> Changes in v3:
+> 1. None
+>
+> Changes in v2:
+> 1. New patch
+> 2. Split mediatek,mt7621-pcie to separate patch as it uses
+>    pci-pci-bridge schema.
+> ---
+>  .../devicetree/bindings/pci/mediatek,mt7621-pcie.yaml         | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+
+Thanks,
+    Sergio Paracuellos
 
