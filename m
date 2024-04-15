@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-144859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013E08A4BE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:49:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B373B8A4BE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:49:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82C091F22E9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:49:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66B5A286D21
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0BE156B8F;
-	Mon, 15 Apr 2024 09:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FF75786D;
+	Mon, 15 Apr 2024 09:48:41 +0000 (UTC)
 Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494F355E7B;
-	Mon, 15 Apr 2024 09:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B036F5733B;
+	Mon, 15 Apr 2024 09:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713174517; cv=none; b=gzwMqw6HRpLHiS5lf1O6CyQvKPU3pgWOl4poY0Txy8MhniaOg67ya7j24mT37N+gNGiSG4BUoNpHqe+V1IFI+ZMw++jaFqrosW17FfRwWKLR3GRlAVz4GLp2RWTrIbn2+mRhkAkFr1h0cngKKjFhAUr2BKogQnusyr/I+YIR4mE=
+	t=1713174521; cv=none; b=CnuFnJ/NevPbi4ZiNLMdjZ5s88Nh7/R4bgMUSz1ll5zkm3q9lrbzH3Ohx2P/pxUvGOilgG1tA1+MccxLSLm3eTdbT9riiNpIP78Nqzk2C2Qxlg2tscSyCH321vcDbVi5CJ/9ttHNhO5Gjup6L2yxdwC2z+g2SOT/dkGPQ6uPQis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713174517; c=relaxed/simple;
-	bh=GUKzBRLx8vQMPtz9yQAWhMU1XT4emqE0dhvCfEhN4HM=;
+	s=arc-20240116; t=1713174521; c=relaxed/simple;
+	bh=0a8sFtUoHMxGNk6So9B9U41s6UQbV0WO1sQRMmFABA4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IEunvdi+/0Mhx1om0q4TdQaar/7A796zfFGhSDbhdILAMzRzx67zqVUKs3uRAwY6ECP1nY0jbCM8ZGK320JYBBnXYtAoj0NRGjp4qP4jrMkOsc9ZWySXJByqbPZzFJKB+rBUFDO5bUVPwPYXLu+i44IYxRnx6z50wXNGvI6XNw8=
+	 MIME-Version; b=GKLl+cP1fo0rFd+r9Xf5ruEhzL7kjOkAK+K0QgIaxfPRLEuKGIZlITXRUE0T/6/0g6CNrX/EaB9Rhx+s1BH5dUmYsQFE3Wb+c7qvUIXPIHOpN3B64gNcdOnS4sS9JOwHTKsxYrRZgCpwxqujK02bHbQJ0tsB7ndueZz+2py9ps4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
 X-IronPort-AV: E=Sophos;i="6.07,202,1708354800"; 
-   d="scan'208";a="205432166"
+   d="scan'208";a="205432172"
 Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 15 Apr 2024 18:48:35 +0900
+  by relmlie6.idc.renesas.com with ESMTP; 15 Apr 2024 18:48:39 +0900
 Received: from renesas-deb12.cephei.uk (unknown [10.226.93.74])
-	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 30AE04006DE8;
-	Mon, 15 Apr 2024 18:48:30 +0900 (JST)
+	by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9386E4006DE8;
+	Mon, 15 Apr 2024 18:48:35 +0900 (JST)
 From: Paul Barker <paul.barker.ct@bp.renesas.com>
 To: Sergey Shtylyov <s.shtylyov@omp.ru>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -45,9 +45,9 @@ Cc: Paul Barker <paul.barker.ct@bp.renesas.com>,
 	netdev@vger.kernel.org,
 	linux-renesas-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [net-next RFC v3 4/7] net: ravb: Refactor GbEth RX code path
-Date: Mon, 15 Apr 2024 10:48:01 +0100
-Message-Id: <20240415094804.8016-5-paul.barker.ct@bp.renesas.com>
+Subject: [net-next RFC v3 5/7] net: ravb: Enable SW IRQ Coalescing for GbEth
+Date: Mon, 15 Apr 2024 10:48:02 +0100
+Message-Id: <20240415094804.8016-6-paul.barker.ct@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240415094804.8016-1-paul.barker.ct@bp.renesas.com>
 References: <20240415094804.8016-1-paul.barker.ct@bp.renesas.com>
@@ -59,101 +59,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We can reduce code duplication in ravb_rx_gbeth() and add comments to
-make the code flow easier to understand.
+Software IRQ Coalescing is required to improve network stack performance
+in the RZ/G2L SoC family and the RZ/G3S SoC, i.e. the SoCs which use the
+GbEth IP.
+
+This patch gives the following improvements during testing with iperf3:
+
+  * RZ/G2L:
+    * TCP RX: same bandwidth with -6% CPU load (76% -> 71%)
+    * UDP RX: same bandwidth with -10% CPU load (99% -> 89%)
+
+  * RZ/G2UL:
+    * UDP RX: +4200% bandwidth (1.23Mbps -> 53Mbps)
+
+  * RZ/G3S:
+    * UDP RX: +425% bandwidth (1.23Mbps -> 6.46Mbps)
+
+The improvement of UDP RX bandwidth for the single core SoCs (RZ/G2UL &
+RZ/G3S) is particularly critical.
 
 Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
 ---
- drivers/net/ethernet/renesas/ravb_main.c | 70 ++++++++++++------------
- 1 file changed, 35 insertions(+), 35 deletions(-)
+ drivers/net/ethernet/renesas/ravb.h      | 1 +
+ drivers/net/ethernet/renesas/ravb_main.c | 4 ++++
+ 2 files changed, 5 insertions(+)
 
+diff --git a/drivers/net/ethernet/renesas/ravb.h b/drivers/net/ethernet/renesas/ravb.h
+index 71de2a7aa27c..9c6392ade2f1 100644
+--- a/drivers/net/ethernet/renesas/ravb.h
++++ b/drivers/net/ethernet/renesas/ravb.h
+@@ -1054,6 +1054,7 @@ struct ravb_hw_info {
+ 	u32 rx_max_desc_use;
+ 	u32 rx_desc_size;
+ 	unsigned aligned_tx: 1;
++	unsigned needs_irq_coalesce:1;	/* Needs software IRQ coalescing */
+ 
+ 	/* hardware features */
+ 	unsigned internal_delay:1;	/* AVB-DMAC has internal delays */
 diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index baa01bd81f2d..12618171f6d5 100644
+index 12618171f6d5..26b70b996bd3 100644
 --- a/drivers/net/ethernet/renesas/ravb_main.c
 +++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -818,47 +818,47 @@ static int ravb_rx_gbeth(struct net_device *ndev, int budget, int q)
- 				stats->rx_missed_errors++;
- 		} else {
- 			die_dt = desc->die_dt & 0xF0;
--			switch (die_dt) {
--			case DT_FSINGLE:
--				skb = ravb_get_skb_gbeth(ndev, entry, desc);
-+			skb = ravb_get_skb_gbeth(ndev, entry, desc);
-+			if (die_dt == DT_FSINGLE || die_dt == DT_FSTART) {
-+				/* Start of packet:
-+				 * Set initial data length.
-+				 */
- 				skb_put(skb, desc_len);
+@@ -2663,6 +2663,7 @@ static const struct ravb_hw_info gbeth_hw_info = {
+ 	.tx_counters = 1,
+ 	.carrier_counters = 1,
+ 	.half_duplex = 1,
++	.needs_irq_coalesce = 1,
+ };
+ 
+ static const struct of_device_id ravb_match_table[] = {
+@@ -2937,6 +2938,9 @@ static int ravb_probe(struct platform_device *pdev)
+ 	if (info->nc_queues)
+ 		netif_napi_add(ndev, &priv->napi[RAVB_NC], ravb_poll);
+ 
++	if (info->needs_irq_coalesce)
++		netdev_sw_irq_coalesce_default_on(ndev);
 +
-+				/* Save this SKB if the packet spans multiple
-+				 * descriptors.
-+				 */
-+				if (die_dt == DT_FSTART)
-+					priv->rx_1st_skb = skb;
-+			} else {
-+				/* Continuing a packet:
-+				 * Move data into the saved SKB.
-+				 */
-+				skb_copy_to_linear_data_offset(priv->rx_1st_skb,
-+							       priv->rx_1st_skb->len,
-+							       skb->data,
-+							       desc_len);
-+				skb_put(priv->rx_1st_skb, desc_len);
-+				dev_kfree_skb(skb);
-+
-+				/* Set skb to point at the whole packet so that
-+				 * we only need one code path for finishing a
-+				 * packet.
-+				 */
-+				skb = priv->rx_1st_skb;
-+			}
-+
-+			if (die_dt == DT_FSINGLE || die_dt == DT_FEND) {
-+				/* Finishing a packet:
-+				 * Determine protocol & checksum, hand off to
-+				 * NAPI and update our stats.
-+				 */
- 				skb->protocol = eth_type_trans(skb, ndev);
- 				if (ndev->features & NETIF_F_RXCSUM)
- 					ravb_rx_csum_gbeth(skb);
-+				stats->rx_bytes += skb->len;
- 				napi_gro_receive(&priv->napi[q], skb);
- 				rx_packets++;
--				stats->rx_bytes += desc_len;
--				break;
--			case DT_FSTART:
--				priv->rx_1st_skb = ravb_get_skb_gbeth(ndev, entry, desc);
--				skb_put(priv->rx_1st_skb, desc_len);
--				break;
--			case DT_FMID:
--				skb = ravb_get_skb_gbeth(ndev, entry, desc);
--				skb_copy_to_linear_data_offset(priv->rx_1st_skb,
--							       priv->rx_1st_skb->len,
--							       skb->data,
--							       desc_len);
--				skb_put(priv->rx_1st_skb, desc_len);
--				dev_kfree_skb(skb);
--				break;
--			case DT_FEND:
--				skb = ravb_get_skb_gbeth(ndev, entry, desc);
--				skb_copy_to_linear_data_offset(priv->rx_1st_skb,
--							       priv->rx_1st_skb->len,
--							       skb->data,
--							       desc_len);
--				skb_put(priv->rx_1st_skb, desc_len);
--				dev_kfree_skb(skb);
--				priv->rx_1st_skb->protocol =
--					eth_type_trans(priv->rx_1st_skb, ndev);
--				if (ndev->features & NETIF_F_RXCSUM)
--					ravb_rx_csum_gbeth(priv->rx_1st_skb);
--				stats->rx_bytes += priv->rx_1st_skb->len;
--				napi_gro_receive(&priv->napi[q],
--						 priv->rx_1st_skb);
--				rx_packets++;
--				break;
- 			}
- 		}
- 	}
+ 	/* Network device register */
+ 	error = register_netdev(ndev);
+ 	if (error)
 -- 
 2.39.2
 
