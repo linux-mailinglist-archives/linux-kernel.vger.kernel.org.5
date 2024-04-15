@@ -1,143 +1,106 @@
-Return-Path: <linux-kernel+bounces-145857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2BB8A5BEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:01:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F24698A5BF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:04:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A16581F26883
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:01:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FFAE282FDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA2E15667B;
-	Mon, 15 Apr 2024 20:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B520915666E;
+	Mon, 15 Apr 2024 20:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pOd14QbR"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a2+kMCpI"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FD3156225
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6A9156655
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 20:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713211252; cv=none; b=Pws6Nu1K6quWBdVEixUsn8gVWXEwTuA/0KhTSx1ot4fHj+Wac14i+g8X4kRzSmpUy5t3y1yLTFerS29AEN+EUdRqqTwIsaVnWEOnYSVfblRTmhAH1+afaPRrR/GKFAfohVTvF61CUtLnhIybgZ/qmBW8WcRdac1e48SROyBpXr0=
+	t=1713211470; cv=none; b=nIUh8tNeoGM+eWRIWi4m4F/kvJIRJeYGcf1ldicW8lJHRYN7HNXKkXT44w34lXqYcRZQOhQoV3AGkYrsaStZvx8T/kptune3X+UDdPbPvx9ko7trcEKJOYlZY55Qru2gNmlADIkX4KLqMkX4PubVa7dgc0ZWOTDUzd2ZWaepsgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713211252; c=relaxed/simple;
-	bh=Wng/zjvzq6AH7/m1b0joVL/p8BnUv1nNNKBDl6nF7sY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JCUGTDIzZhdM+SFO3yCKCzUQq314gZEljEE7lInsYCuTUY/TGZ6caiq0yvJlOHi/RTn0GUuWj3wZ/SDtnXlnHdt62xYknCRy8DOWIGDoinK436oWMv0fBVaZae2sCIrTMpdLGYNgZ/7fsdTWbdXJIMqGH32udIRVhxvihnoq0iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pOd14QbR; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <617e2577-8de2-4fde-bbfe-2d6280c48c29@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713211248;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0SJ/k5TZL9DMkDb6OS5NjYq8QZGa3dXX1/Ar8kH56co=;
-	b=pOd14QbRT99LhYEk7rHt2FDGGGkJZco+GAC6Y9PWAlKTh3I//gxLAAKKq0TjqfuN5xy+Hb
-	obfsgalSovughcoaw1ZPnVR0iRjO7IM1kAmqIptIIyuLtfpx14bKNG3T5jPEmwigXS5yfK
-	JUGW32P7QwW5J7wem8Tco4LTO2a9zDs=
-Date: Mon, 15 Apr 2024 13:00:42 -0700
+	s=arc-20240116; t=1713211470; c=relaxed/simple;
+	bh=HKevHeXkZGuoEWykBFrnnyLmHY+4admTUN+lZ7NyEtc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DuGjlRUubpriigSxWYJQ/WJRzcU0AZbErvcDHaLrW/CYHt25NRLtwPWM2eP3Dhyzv2/nzZ775fNjE4rVTa04b5/8B4RanuJaCEJcv+CZRt4uq3JiBnWJhThzOgAwmZ5dT7pPFovGQu53Cw9lwfMy97sRpqAkDy5QGV3ps7m8XbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a2+kMCpI; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-ddaad2aeab1so3044339276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713211467; x=1713816267; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=x+n4yDNeHcrTCJc7XCA965ghIKCFi6oK1ygO6iYz34Q=;
+        b=a2+kMCpIIVUrD/mzkxfLOFdfjNSVCTHrvIByBROGwHnn8ZyCZCe4K/QxjDGPx9A3yx
+         mHX/UG2DygM/BznGHKBgqdN0M4wrOf830WA6PajdZa7lNamXACjNSpz6TdaYbOz3h6lR
+         RJ4/qpr70Jsi5boycQTlvJKEM/LmHY8Ry18EGIa6JWizEunDhBTuyaIvdUE9lArlXOhX
+         itvNy8l76aSpUqQaEKOTBZtAGOtxqP6/eNSq0rYoij6oayP/+gjP6yFgAcDEpv77QR9l
+         vQI4IswKAzFbwZ4Vh8QWlBVreTDMxOq9zWEUBekG56C1cnWEuWkOJPleqLWsyuDpCFzP
+         d9tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713211467; x=1713816267;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x+n4yDNeHcrTCJc7XCA965ghIKCFi6oK1ygO6iYz34Q=;
+        b=qAHMG0kzK98H+TarE5okFan/I18l96ES/WQ/BHSN/jjBTErudUcKZrvVAok8BjQvlc
+         mDoAKc6dto4Aiq7vH693O/SombV56+zP8YD0NM7bq2+P6iHIBJP4ja5zgyDPToMOvA/A
+         eJuP57K6wk7JTrcv93ZA/Wr8Bg/XTymw+9wwdjPbXnlqdvdIyFTLCFoVLZNdYvTngzuN
+         Z6Jvo0cwhZqa67E2I6WYkIeuNpgbP5ikmTZRKgqvq+02dlsp977j2TCBorSIx+G1MGPN
+         FnzCS/bNy6MhMYht7z5DOOCqG3fRvnMw2BZ0lxQyDa81dCufHjlVse5vkNgOKpDrmd+L
+         cf6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVf3NjYvqaI6Vl8IJTT5EPNVpkxjxXxu5OXyi9dYVe37QFYSfzSISHReBIVWLN0Eu0Y0ShM2C8giTFAm3/zlbp6ZapW3rRjnvnOVBJE
+X-Gm-Message-State: AOJu0Yyxndvudx3aa6JJFT5xe4PaK1vao0EPV8/NJBB7jUSaId4qoAY1
+	fAhNxSx9qYNk1I+jYu1bViXrY432zM8ktLqgiKfh4w0kAtKkW/KnHOaBDyHrkjgLiiHMqn3g+80
+	754NCHjRKKZBTBZOw0WYlikxj4UFSn1pWTMiB3w==
+X-Google-Smtp-Source: AGHT+IFgChYQoIbtXVFNn5dpONcRCuNNKjt9lSve7LdO+2SQ5EoJ4jqt3753eEsEcQ7mld6BIqWcJDJtBnxGz7Zk5/k=
+X-Received: by 2002:a25:2e0d:0:b0:dc6:dd80:430e with SMTP id
+ u13-20020a252e0d000000b00dc6dd80430emr9293179ybu.27.1713211467602; Mon, 15
+ Apr 2024 13:04:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v3 2/2] net: Add additional bit to support
- userspace timestamp type
-To: Abhishek Chauhan <quic_abchauha@quicinc.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: kernel@quicinc.com, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-References: <20240412210125.1780574-1-quic_abchauha@quicinc.com>
- <20240412210125.1780574-3-quic_abchauha@quicinc.com>
- <661ad7d4c65da_3be9a7294e@willemb.c.googlers.com.notmuch>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <661ad7d4c65da_3be9a7294e@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240415182052.374494-1-mr.nuke.me@gmail.com> <20240415182052.374494-3-mr.nuke.me@gmail.com>
+In-Reply-To: <20240415182052.374494-3-mr.nuke.me@gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 15 Apr 2024 23:04:16 +0300
+Message-ID: <CAA8EJpq-UOd4dcuLyEvJNW4zckSGq1LSdq4eDMWPHX_98U8F=A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] clk: qcom: gcc-ipq9574: Add PCIe pipe clocks
+To: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Lorenzo Pieralisi <lpieralisi@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Kishon Vijay Abraham I <kishon@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-phy@lists.infradead.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/13/24 12:07 PM, Willem de Bruijn wrote:
->> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
->> index a83a2120b57f..b6346c21c3d4 100644
->> --- a/include/linux/skbuff.h
->> +++ b/include/linux/skbuff.h
->> @@ -827,7 +827,8 @@ enum skb_tstamp_type {
->>    *	@tstamp_type: When set, skb->tstamp has the
->>    *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
->>    *		skb->tstamp has the (rcv) timestamp at ingress and
->> - *		delivery_time at egress.
->> + *		delivery_time at egress or skb->tstamp defined by skb->sk->sk_clockid
->> + *		coming from userspace
->>    *	@napi_id: id of the NAPI struct this skb came from
->>    *	@sender_cpu: (aka @napi_id) source CPU in XPS
->>    *	@alloc_cpu: CPU which did the skb allocation.
->> @@ -955,7 +956,7 @@ struct sk_buff {
->>   	/* private: */
->>   	__u8			__mono_tc_offset[0];
->>   	/* public: */
->> -	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
->> +	__u8			tstamp_type:2;	/* See SKB_MONO_DELIVERY_TIME_MASK */
->>   #ifdef CONFIG_NET_XGRESS
->>   	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
->>   	__u8			tc_skip_classify:1;
-> 
-> A quick pahole for a fairly standard .config that I had laying around
-> shows a hole after this list of bits, so no huge concerns there from
-> adding a bit:
-> 
->             __u8               slow_gro:1;           /*     3: 4  1 */
->             __u8               csum_not_inet:1;      /*     3: 5  1 */
-> 
->             /* XXX 2 bits hole, try to pack */
-> 
->             __u16              tc_index;             /*     4     2 */
-> 
->> @@ -1090,10 +1091,10 @@ struct sk_buff {
->>    */
->>   #ifdef __BIG_ENDIAN_BITFIELD
->>   #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7)
->> -#define TC_AT_INGRESS_MASK		(1 << 6)
->> +#define TC_AT_INGRESS_MASK		(1 << 5)
-> 
-> Have to be careful when adding a new 2 bit tstamp_type with both bits
-> set, that this does not incorrectly get interpreted as MONO.
-> 
-> I haven't looked closely at the BPF API, but hopefully it can be
-> extensible to return the specific type. If it is hardcoded to return
-> either MONO or not, then only 0x1 should match, not 0x3.
+On Mon, 15 Apr 2024 at 21:21, Alexandru Gagniuc <mr.nuke.me@gmail.com> wrote:
+>
+> The IPQ9574 has four PCIe "pipe" clocks. These clocks are required by
+> PCIe PHYs. Port the pipe clocks from the downstream 5.4 kernel.
+>
+> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+> ---
+>  drivers/clk/qcom/gcc-ipq9574.c | 76 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 76 insertions(+)
 
-Good point. I believe it is the best to have bpf to consider both bits in 
-tstamp_type:2 in filter.c to avoid the 0x3 surprise in the future. The BPF API 
-can be extended to support SKB_CLOCK_TAI.
 
-Regardless, in bpf_convert_tstamp_write(), it still needs to clear both bits in 
-tstamp_type when it is at ingress. Right now it only clears the mono bit.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Then it may as well consider both tstamp_type:2 bits in 
-bpf_convert_tstamp_read() and bpf_convert_tstamp_type_read(). e.g. 
-bpf_convert_tstamp_type_read(), it should be a pretty straight forward change 
-because the SKB_CLOCK_* enum value should be a 1:1 mapping to the BPF_SKB_TSTAMP_*.
-
-> 
->>   #else
->>   #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
->> -#define TC_AT_INGRESS_MASK		(1 << 1)
->> +#define TC_AT_INGRESS_MASK		(1 << 2)
->>   #endif
->>   #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
->>   
-
+-- 
+With best wishes
+Dmitry
 
