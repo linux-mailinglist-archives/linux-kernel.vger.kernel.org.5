@@ -1,248 +1,392 @@
-Return-Path: <linux-kernel+bounces-145759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B1758A5A70
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:15:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14AB48A5A71
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:16:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68DCFB21FAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:15:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF50D281F24
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE469155A52;
-	Mon, 15 Apr 2024 19:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15B4155A57;
+	Mon, 15 Apr 2024 19:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M47oWl9M"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gVp3QeQn"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2065.outbound.protection.outlook.com [40.107.93.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6810CB656
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713208531; cv=none; b=n+ujQkyhLjm8xEQdM702cdlUikQxI2j5QeFaa+FOOPcTU15iiZQkpnYJS+/mZ0GQIodtNWZNF+d40t8EMGTPxtvkQpEC0kqo4Ii89pCwR0KPGD1lou1bQF537qTE7Wv0KrmBUJ5Ce3pVaz6sQ9cQhgR72rrqBTlsWUOBJ+Xfkv0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713208531; c=relaxed/simple;
-	bh=sS5bwsq/P3NSc86p4xD4KVMCnlJfUqYZprAYaDAq9II=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HWmNF7aQjt7IYdGPWvtN8IDyI32uGs8d4jSqOgo7XIYDpdgngnIIMcMM9Ewxq+tWnRPo0AAEa7UnFaulglj+uDf7DZhqXv7O1MXLLGNKvRwrfxxHgC4j4/8+1G7Vt7mOaUubYBYyGi/Ws2Tb5KqAIp8EtsloeW8fDfD9QLzNUCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M47oWl9M; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713208529;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=+fl4YekS370NcpAxHdEz/bCgYFnF1wkEkXC2Kv4cg2k=;
-	b=M47oWl9Mtap+A9kEoO8V7qvPAtuipLmodnchWZt9VcZe7gHvuXFVy20YpquIakthrkvXsX
-	qEqsUEXu4prKkrwA1z4Mp73TTMbqU32xbf4peAn/5qvzDb4C1FOe9hU4DfRbMvrxAnKdwO
-	Y4Qe80M061vXfU9p0NzigeivM50Nr3k=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-627-fsds1x3KN_Ke2AeIAdAEog-1; Mon, 15 Apr 2024 15:15:27 -0400
-X-MC-Unique: fsds1x3KN_Ke2AeIAdAEog-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-345c686ba9bso2763920f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:15:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713208527; x=1713813327;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+fl4YekS370NcpAxHdEz/bCgYFnF1wkEkXC2Kv4cg2k=;
-        b=RzhbAXz/3bCpNT4mUcVDqgUEdCV021FjWzaPGDf/X3GNT+rjJwAKCNnphCq9UfKwkG
-         m2JY4pCD9SGWzw3zYy1ss1DAaRCTI2mH0R3zZBBXNFj1HVKSdMXDTvLPBE7f6k9gBRUv
-         zbIGzXQZeRKwhYU88VJ2r74vvdMVy8CHNVNygodk6VY39iScfkurIq+Jx3PswVCmtDs/
-         4Xt3H/jVxhsWi4icZjee5H8Lzfu4ekKje6Qf+OtoSmh1uSRQ3BYsvYnJdaveRJHQTCwa
-         8D/D2zXHIeZeN7QUt6JaEx0eIeVpyL6Ggmuke4+nbtjAswBPr+h0djMalPUnokyduEGB
-         PvAw==
-X-Forwarded-Encrypted: i=1; AJvYcCVdfmFArR6sdGxBuhKvwmEAneKA723sfu4jgArSjzEjvowP1pkh6oxCer/qjUhjrGofTuv2g8tjIIogzmY30N5u0MFREZRoejStUGeV
-X-Gm-Message-State: AOJu0Yyg+rI1SdDCJMSrkAOqtuKwdfPkrYWUQ2JtbZ1QdHiJNguwN+La
-	t6Ix+1n8Ek5Zn8moZO4QbzrvSFrxJ4VcJfNo+2+UBi6t0bxTmSCup1Oa0c6BWlFdjyMDYLA5eyd
-	gtTr7qT77bkhnfb99UZhrptOR4lzExtYkitv+ai0JyjfwFC7CZXb7DozBMmDiPA==
-X-Received: by 2002:adf:ab03:0:b0:346:758e:5f29 with SMTP id q3-20020adfab03000000b00346758e5f29mr7759900wrc.60.1713208526798;
-        Mon, 15 Apr 2024 12:15:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF+Ulrp+8Swv1A+UUfh1bARerfIKoWvOT4VvOeYfs32V6QCUl9TMR5E+cvECdOeHHY18kkZmg==
-X-Received: by 2002:adf:ab03:0:b0:346:758e:5f29 with SMTP id q3-20020adfab03000000b00346758e5f29mr7759886wrc.60.1713208526410;
-        Mon, 15 Apr 2024 12:15:26 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
-        by smtp.gmail.com with ESMTPSA id i10-20020adffc0a000000b003456c693fa4sm12812933wrr.93.2024.04.15.12.15.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 12:15:26 -0700 (PDT)
-Message-ID: <11e9143f-67c6-4d7a-827b-dd04043b6fa4@redhat.com>
-Date: Mon, 15 Apr 2024 21:15:25 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53BBB656
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713208598; cv=fail; b=bqJ+Uif4io6LCA+dyaRapAa2eBbiwETTD6a5nAwv5kE3//MrZ6J0ItKvbL/vevW8GZTRuW4IiT+tWoM/q0bUNL+MPKCOBGf7k2JiGP4pFkfmyerg45R6S484hmeDdetQVbYxl7ReqqD2M97yhVnyK9bRwqTFuAbbb9+xkgUP5DI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713208598; c=relaxed/simple;
+	bh=m5xULQFdMshEEIW7LxYTyCfO5+fLkFXjTJf/exQJ9ck=;
+	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=YKmelSmlM1JUKPUfcks2A8P49MeStU1d7atyeI4lYbdcIba6qAFoFFq5A9dh6DT+zi0TwOuT1dJEnqH04zjDjcW8C6ByrF2hWR6tYCrWtzZjokC20c5v4lgHa3o2rEMPRNMXTpwYqfhRUn9FuE9CT7S8EblYfRPVmEMlscr61Z0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=gVp3QeQn; arc=fail smtp.client-ip=40.107.93.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W63JSBhwjKaAnjheN7+NgUMrEaxKD8tS9BAaRzBn2gFtejTV2qcLSHoqobURPZ2+JBrAcOee+ZFMRlVZSY6Wwa0asNDRDmK/eLzdqem4rZT7AdTx1POlg5cK8MgP/AhZlQtLyzoSFCpeSf4djmXWitk/AFmSjuEOFaVbIFIC+VEjHxaMhMsxQ8mnwHbMr57O4mZPcz9jv+6E8U/B8mjU6yjOvmCj2hZ5ripR1TsbWI/DGSkb7+txhy3PrHduKlN88BEhVyGBA/QOvrRcSBnDEqzxmmMS6vofJbhUKNbofMwppBEATFOKS7NMyFcYAi5O0aS1axv84oZlSVu0KrMHTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y9VEXK8ZUYo67wOptYY7w/xaWhBE//N7iSz1F+CHxv8=;
+ b=YQecHCXWSBuOjmmnjKMd1VQjGKQ51nmtnfMNF3nFKx/S6KrPAs5D+IHvDlGirpw9QAoXDIqps/ogeKUgK56Q52MdNL/1HeZ/KnL8qcMpJccFJtlB0qi+0NLOPOaEflcgj5VCtzLLFx9AcQY7BXcKov3J+DrUCiEOfJ46oQuv4uG8V5B5elGfs/MIAy51SwdQrVmqSIFH/8DIUBb8EPSWoAX6Pb7MHTQk1x+cIkT6wA0j/PNt5EvOHZFkIg/8MTythQL41NNm7vvUxiTnOqZNoPl6qOvPQ2tmxi3CpVGzqbV68Cgr2bgA0DmL+ZZZ0AGEYgx7jf4X1d4MeRJTKpUbKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y9VEXK8ZUYo67wOptYY7w/xaWhBE//N7iSz1F+CHxv8=;
+ b=gVp3QeQnnGkRfeOESKrSuyAZysvq/3pYBxidAeSo6DzzvzpT/emKOQbuPil5JteCO1qxSPLPRri5Jg8sFdSZnFtuBPUgw1sgzLzNh5EsGqO0A+VEVuTmJdZavwE9YWcXOdVp/MxDp/Y40ygtRPomiTp6lauRAIJzv8Q7N6R2xVQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by PH7PR12MB7819.namprd12.prod.outlook.com (2603:10b6:510:27f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
+ 2024 19:16:27 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::bf0:d462:345b:dc52]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::bf0:d462:345b:dc52%6]) with mapi id 15.20.7452.046; Mon, 15 Apr 2024
+ 19:16:27 +0000
+Message-ID: <e286883d-40ef-d749-26a8-7ec6fbd81eae@amd.com>
+Date: Mon, 15 Apr 2024 14:16:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 13/14] x86/sev: Hide SVSM attestation entries if not
+ running under an SVSM
+From: Tom Lendacky <thomas.lendacky@amd.com>
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, x86@kernel.org, linux-coco@lists.linux.dev,
+ svsm-devel@coconut-svsm.dev
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Dan Williams <dan.j.williams@intel.com>, Michael Roth
+ <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
+ Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
+References: <cover.1711405593.git.thomas.lendacky@amd.com>
+ <67893f352bc54de61160bfe251cba0bdf0431f37.1711405593.git.thomas.lendacky@amd.com>
+ <1f6f4477-0f2a-434a-8c89-3b5d51d61581@linux.intel.com>
+ <19d69960-e548-a2e6-87d9-c463f2851613@amd.com>
+Content-Language: en-US
+In-Reply-To: <19d69960-e548-a2e6-87d9-c463f2851613@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR02CA0114.namprd02.prod.outlook.com
+ (2603:10b6:5:1b4::16) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] mm: zswap: calculate limits only when updated
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
- Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240405053510.1948982-1-yosryahmed@google.com>
- <20240405053510.1948982-3-yosryahmed@google.com>
- <20240405152619.GA866431@cmpxchg.org>
- <CAJD7tkaSCvgs-yKXeAVoW14_LhtCrL3N9hu9xA41GCvz+RvWBw@mail.gmail.com>
- <7aec7b98-db81-4238-bdd6-afb69679f852@redhat.com>
- <CAJD7tkaa3P7dQys+LhuDe8kqWsUqf7PDB8Q+07+wnQ513-6NLg@mail.gmail.com>
- <69dcd33b-e8de-4927-93dd-d4ea22834a18@redhat.com>
- <CAJD7tkb5D6Y5OMTzpHefYgSXbw7GdPtfjSp2=nBGjJFk99GP_A@mail.gmail.com>
- <f18ecb84-31a5-4767-a8df-0c0b8be82d81@redhat.com>
- <CAJD7tkYMM9oDQYsWPcQNctRRH52+oM-3cUhxV+_7Qg1NNZx4cg@mail.gmail.com>
- <d4b5033a-34fd-44ed-ab57-ea2b4ed01468@redhat.com>
- <CAJD7tkacCA5JQpis=Y6zGVx+uMnwCBk3jUDA8Nch2qXnR1qrgw@mail.gmail.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAJD7tkacCA5JQpis=Y6zGVx+uMnwCBk3jUDA8Nch2qXnR1qrgw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|PH7PR12MB7819:EE_
+X-MS-Office365-Filtering-Correlation-Id: 503b5594-6227-4802-ca62-08dc5d808c19
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	E4H+/7HR7jnMCCuTZiHd7FRHAVCzWy7Er73rKTTu8bCgZ8bUOvQRPgXgRn1fbboPuZIEuhUiV6vh9R24yLWNwGAKHKNAmXXUbFXH1pcDeK8uufT+QKmKSbz4m3BQ5ixUgZLugEysQu3fwF1sfx3GSSygkUEqk1JASojoKnMCtYSjiUVFNkqSQnDFdVztK8vClt0vGe7uOpOnJlDmNkmBPiqi6Ux3QVW2xGatHrAmDNpl73ng82d8ShWSmARDO//1cy7TwKs8kumSYUzOEgVi1rSKydlby9Wn3OAveTzPk780QtBb1cYK+KLc6hdQ3P7Addz2Pg+jnVia3SHp+QwwOttZscfBGWiW/zy0ITvjH2AveAzEOb3sm115R/6LbvbI50jG6Acxpz/Wt5ka9Qa99TreVhY9s0SnNcxlOwF3RJo3Lpy3j+ruFWYmfDYml+R8W9KgufB7l9i4w8WFlFi5nnJzQ/srBfmESiYBD7xQbq2BF0Vk0vKRqnQgcjuqozXxLWqKPljhfxluN1tBpoeDOIiAr/nsIYTrYMijao8tYU4XmeeKyEj4ciOUTqxnChZd0fJyZZOZ2ueZesMD3BRWaEfBNpjgmb8dW6r9b7SgeOhlSDcsrINWTqm/TOhvoyLhs7tcbI8TQkx4LLIilZrdk2KFiHBUKkCMy1jUMeKPw3g=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OGpiVGRWV3E3NVdsTGkrcFJDbjN4ZUtMc2cwZFZUbDhZL3RtelhjaUZlYlE4?=
+ =?utf-8?B?TWk1WnJlMElvSHQ0SG1kN3NzM3hJdFd2VzlLVUN2eUVyNUFISG1UQUdpcEky?=
+ =?utf-8?B?VW9wNEhreGRSekl2YklEMUppLzR1RUc2Z2tkRFVRazA1amRDVm9nSFdKWEQr?=
+ =?utf-8?B?TUlCWnRNKzYwM0VUdURkWm9nL3AvMWZkVWlzcDVnOHBUMXJxSE1YNmRua051?=
+ =?utf-8?B?aHBvQnJnL2Iwb3hGVDJoU004OGN0bUxBb0c5bjJBVzliZWJkaXpUTmNSOVlC?=
+ =?utf-8?B?amo4b0RGbkUvTnorUDJ1blVVdlJZaTVsbFE2eHg1WTh5UjB5ZU1mQXBKQWZM?=
+ =?utf-8?B?QW1WdkhjY3ZGRWNKd0VqU0JRTXhhWjlTaU4xU0U2clUveFJKZ3Nma3VVcGZs?=
+ =?utf-8?B?SUw0U0dCQjIzaUwwa0VuQXhlODN5Rm0wZzMxZnowY0R2ME5FS0sxLzJHZzJZ?=
+ =?utf-8?B?c05YaURGa3RyOU9hUWcrNzZ2dkg3TmNGR0FBQ1RQNUNBMHhJRW05V0ljanp4?=
+ =?utf-8?B?ejJBZnhFUmdwK2NlMlVreEtVdXc1OGliMFRESWdhUk1PVUhYa1lFYkwrV0hn?=
+ =?utf-8?B?ZldpR24xN3h3cjFSVUxDQjg4R0dhblNwd2gra3lFcDl3cnNUTGdxWk15STRz?=
+ =?utf-8?B?UEY5Z1N4c1JRb0dsMkdxWnhuUVY1NU9aTk1FVWNwM2NJQXNKTExaRUI2RFZZ?=
+ =?utf-8?B?dnM0OEdHYUFnSjF6V3FTSW85ZjVaL3VVdnNETjUxYVNnL1E3dTlnRFJTWEk1?=
+ =?utf-8?B?N2VjWVRnSHVVbXFQYWZuWUdJeXZ1L1RvTzhja0x1MkQzN3crbTgzMEt1ZTVD?=
+ =?utf-8?B?QjlCa3p4ZEdUOVhRZXBPVjhncDNHUzVjczRpaTg2OVdmWTVaaXRFWXY5akVt?=
+ =?utf-8?B?QzBiR2dLbzZQOEdwcUlPQVNWUkVCcTlwU0pSZG9OdmdVVjg1bVp6dUtpQ1Ns?=
+ =?utf-8?B?ZkJoc3pTRFJoUzJDT294OFNUV0xIbDgyWVIvazkxYTk0UGkzdXRxeG1rK2ti?=
+ =?utf-8?B?Yy9ZVzRzVGVnaU16czNRSjRUV0pia0QxNnVGTHEwT1VscUEyM0wzNjVLMFJT?=
+ =?utf-8?B?eG1kN0NzVzc0QUxTQ0QvOWNtMGgxVFUwak5OVnI3NFVpYmRzcFpESlNBb1Fr?=
+ =?utf-8?B?YlVsNkFuaGU1T3hxUE5jRTJFTlJWVUtUaWJLZCtFT0xaM2xCY29JZHVidE11?=
+ =?utf-8?B?UVh2aWNvREFhVEVRa3l0YTJDNVk0cGhXSHdGLzVOU21IS0NDSFBGb1pXQXA0?=
+ =?utf-8?B?bTIwVWpwV2RsMkRIZHhKT3ZMVmVrZWRmR1BieEo2bzFPWFJaL1BJWm5aR2JV?=
+ =?utf-8?B?bmpyeEhNcXgwS3JLSlZlZjk3WWx0dHNqSy9VN2ZXS0ZGMnFaZWNCTkh3a2FI?=
+ =?utf-8?B?WXB0MDZxWWUrOEdWb3JzRHJ1blV5UGY2Mk0yYWdlbXVPZm5NcjhSaUcvWEtS?=
+ =?utf-8?B?VW1DcjA0dUFEVENmUFluOVZ5QjNmMDRqU2tNbzJCd2U3ZjBWUnNiL29tUjhp?=
+ =?utf-8?B?RHA0NStHZkdUN2FDWHNpQVNQTDBEbEJmcmdOZW5sWWMyM0NKamZEeFFnYjF6?=
+ =?utf-8?B?anpvVGtIRk9nVHlrZWRpZksxSHFTTytBN0hSRDlIUEJJWnZydjEyQys2V1dw?=
+ =?utf-8?B?YjRKK3cwaHlCMzJyTytiMjcyWU5ZVGdQZGtCeG5BdDZaMEdXYmtTK3czd2tO?=
+ =?utf-8?B?OGVLVEw5M3JacTY4MkZ3QkFyMU44VExHMmNmaU9rRmZISGJKNjVBeUM2d1l1?=
+ =?utf-8?B?SG1LeFQzMVVhME1TdlZncSt6VVJHSWRZRC85bnhHcVZzanN4M0FqeWJZK0po?=
+ =?utf-8?B?WWdhdXdIMjg0Q2hZS1BneUlkdEFSTC85cXJyV2lOWWx6MmNKbGY2TzhRNllM?=
+ =?utf-8?B?V0lVZ3lIaGVqakMyMTZWeHlHVHZEc2FSaHhwQW44dGhxeHJTY3pFZE1aOTRw?=
+ =?utf-8?B?anBrZDQ2d3FCZVNKSEhKeFRhcnRwaE9LNGpGKzlBY0hJa1hJUmNWdVpQV3Iv?=
+ =?utf-8?B?bU5BcVMzU1BiWDdsWW12WGdmdEk1eWNDZzVRR2w3TjNQYXRQcnhMaUtiMmI1?=
+ =?utf-8?B?dVJqVkltQW5NZExnc2U5VUNLOWhsT1EzZjZHZnRmVGNlNnF1RnBMMWNqelA5?=
+ =?utf-8?Q?SZ4uYqPN/VkJWLwmHIo5qC6lv?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 503b5594-6227-4802-ca62-08dc5d808c19
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 19:16:26.9934
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HCo5GzsRttcGruGt/nx65eBCo0qrBE5LCIOmg2RJzKhf8TFIU2sXl5j0JX6cLoXZX/LsHNAnW4O3wG7WpLQfNA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7819
 
-On 15.04.24 20:30, Yosry Ahmed wrote:
-> On Mon, Apr 15, 2024 at 8:10 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 13.04.24 03:05, Yosry Ahmed wrote:
->>> On Fri, Apr 12, 2024 at 12:48 PM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 10.04.24 02:52, Yosry Ahmed wrote:
->>>>> [..]
->>>>>>> Do we need a separate notifier chain for totalram_pages() updates?
->>>>>>
->>>>>> Good question. I actually might have the requirement to notify some arch
->>>>>> code (s390x) from virtio-mem when fake adding/removing memory, and
->>>>>> already wondered how to best wire that up.
->>>>>>
->>>>>> Maybe we can squeeze that into the existing notifier chain, but needs a
->>>>>> bit of thought.
->>>>>
->>>>
->>>> Sorry for the late reply, I had to think about this a bit.
->>>>
->>>>> Do you mean by adding new actions (e.g. MEM_FAKE_ONLINE,
->>>>> MEM_FAKE_OFFLINE), or by reusing the existing actions (MEM_ONLINE,
->>>>> MEM_OFFLINE, etc).
->>>>
->>>> At least for virtio-mem, I think we could have a MEM_ONLINE/MEM_OFFLINE
->>>> that prepare the whole range belonging to the Linux memory block
->>>> (/sys/devices/system/memory/memory...) to go online, and then have
->>>> something like MEM_SOFT_ONLINE/MEM_SOFT_OFFLINE or
->>>> ENABLE_PAGES/DISABLE_PAGES ... notifications when parts become usable
->>>> (!PageOffline, handed to the buddy) or unusable (PageOffline, removed
->>>> from the buddy).
->>>>
->>>> There are some details to be figured out, but it could work.
->>>>
->>>> And as virtio-mem currently operates in pageblock granularity (e.g., 2
->>>> MiB), but frequently handles multiple contiguous pageblocks within a
->>>> Linux memory block, it's not that bad.
->>>>
->>>>
->>>> But the issue I see with ballooning is that we operate here often on
->>>> page granularity. While we could optimize some cases, we might get quite
->>>> some overhead from all the notifications. Alternatively, we could send a
->>>> list of pages, but it won't win a beauty contest.
->>>>
->>>> I think the main issue is that, for my purpose (virtio-mem on s390x), I
->>>> need to notify about the exact memory ranges (so I can reinitialize
->>>> stuff in s390x code when memory gets effectively re-enabled). For other
->>>> cases (total pages changing), we don't need the memory ranges, but only
->>>> the "summary" -- or a notification afterwards that the total pages were
->>>> just changed quite a bit.
+On 4/12/24 10:52, Tom Lendacky wrote:
+> On 4/9/24 13:12, Kuppuswamy Sathyanarayanan wrote:
+>> On 3/25/24 3:26 PM, Tom Lendacky wrote:
+>>> Config-fs provides support to hide individual attribute entries. Using
+>>> this support, base the display of the SVSM related entries on the 
+>>> presence
+>>> of an SVSM.
 >>>
+>>> Cc: Joel Becker <jlbec@evilplan.org>
+>>> Cc: Christoph Hellwig <hch@lst.de>
+>>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+>>> ---
+>>>   arch/x86/coco/core.c        |  4 ++++
+>>>   drivers/virt/coco/tsm.c     | 14 ++++++++++----
+>>>   include/linux/cc_platform.h |  8 ++++++++
+>>>   3 files changed, 22 insertions(+), 4 deletions(-)
 >>>
->>> Thanks for shedding some light on this. Although I am not familiar
->>> with ballooning, sending notifications on page granularity updates
->>> sounds terrible. It seems like this is not as straightforward as I had
->>> anticipated.
->>>
->>> I was going to take a stab at this, but given that the motivation is a
->>> minor optimization on the zswap side, I will probably just give up :)
+
 >>
->> Oh no, so I have to do the work! ;)
+>> Any comment about the following query? I think introducing a CC flag 
+>> for this use
+>> case is over kill.
 >>
->>>
->>> For now, I will drop this optimization from the series for now, and I
->>> can revisit it if/when notifications for totalram_pages() are
->>> implemented at some point. Please CC me if you do so for the s390x use
->>> case :)
->>
->> I primarily care about virtio-mem resizing VM memory and adjusting
->> totalram_pages(), memory ballooning for that is rather a hack for that
->> use case ... so we're in agreement :)
->>
->> Likely we'd want two notification mechanisms, but no matter how I look
->> at it, it's all a bit ugly.
+>> https://lore.kernel.org/lkml/6b90b223-46e0-4e6d-a17c-5caf72e3c949@linux.intel.com/
 > 
-> I am assuming you mean one with exact memory ranges for your s390x use
-> case, and one high-level mechanism for totalram_pages() updates -- or
-> did I miss the point?
-
-No, that's it.
-
+> If you don't think TDX will be able to make use of the SVSM attribute I 
+> can look at adding a callback. But I was waiting to see if anyone else 
+> had comments, for or against, before re-doing it all.
 > 
-> I am interested to see how page granularity updates would be handled
-> in this case. Perhaps they are only relevant for the high-level
-> mechanism? In that case, I suppose we can batch updates and notify
-> once when a threshold is crossed or something.
 
-Yes, we'd batch updates.
+What about something like this (applied on top of patch 13):
 
--- 
-Cheers,
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index efa0f648f754..d07be9d05cd0 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -12,7 +12,6 @@
+  
+  #include <asm/coco.h>
+  #include <asm/processor.h>
+-#include <asm/sev.h>
+  
+  enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
+  u64 cc_mask __ro_after_init;
+@@ -79,9 +78,6 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
+  	case CC_ATTR_GUEST_STATE_ENCRYPT:
+  		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
+  
+-	case CC_ATTR_GUEST_SVSM_PRESENT:
+-		return snp_get_vmpl();
+-
+  	/*
+  	 * With SEV, the rep string I/O instructions need to be unrolled
+  	 * but SEV-ES supports them through the #VC handler.
+diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
+index 0d2c9926a97c..68c881a50026 100644
+--- a/drivers/virt/coco/sev-guest/sev-guest.c
++++ b/drivers/virt/coco/sev-guest/sev-guest.c
+@@ -1036,6 +1036,17 @@ static int sev_report_new(struct tsm_report *report, void *data)
+  	return 0;
+  }
+  
++static bool sev_tsm_visibility(enum tsm_type type)
++{
++	/* Check for SVSM-related attributes */
++	switch (type) {
++	case TSM_TYPE_SERVICE_PROVIDER:
++		return snp_get_vmpl();
++	default:
++		return false;
++	}
++}
++
+  static struct tsm_ops sev_tsm_ops = {
+  	.name = KBUILD_MODNAME,
+  	.report_new = sev_report_new,
+@@ -1126,7 +1137,8 @@ static int __init sev_guest_probe(struct platform_device *pdev)
+  	/* Set the privlevel_floor attribute based on the current VMPL */
+  	sev_tsm_ops.privlevel_floor = snp_get_vmpl();
+  
+-	ret = tsm_register(&sev_tsm_ops, snp_dev, &tsm_report_extra_type);
++	ret = tsm_register(&sev_tsm_ops, snp_dev, &tsm_report_extra_type,
++			   sev_tsm_visibility);
+  	if (ret)
+  		goto e_free_cert_data;
+  
+diff --git a/drivers/virt/coco/tdx-guest/tdx-guest.c b/drivers/virt/coco/tdx-guest/tdx-guest.c
+index 1253bf76b570..0fd8e60d7bee 100644
+--- a/drivers/virt/coco/tdx-guest/tdx-guest.c
++++ b/drivers/virt/coco/tdx-guest/tdx-guest.c
+@@ -301,7 +301,7 @@ static int __init tdx_guest_init(void)
+  		goto free_misc;
+  	}
+  
+-	ret = tsm_register(&tdx_tsm_ops, NULL, NULL);
++	ret = tsm_register(&tdx_tsm_ops, NULL, NULL, NULL);
+  	if (ret)
+  		goto free_quote;
+  
+diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
+index d30471874e87..e73840aed13d 100644
+--- a/drivers/virt/coco/tsm.c
++++ b/drivers/virt/coco/tsm.c
+@@ -16,6 +16,7 @@ static struct tsm_provider {
+  	const struct tsm_ops *ops;
+  	const struct config_item_type *type;
+  	void *data;
++	tsm_visibility_t visibility;
+  } provider;
+  static DECLARE_RWSEM(tsm_rwsem);
+  
+@@ -64,10 +65,13 @@ static struct tsm_report_state *to_state(struct tsm_report *report)
+  	return container_of(report, struct tsm_report_state, report);
+  }
+  
+-static bool provider_visibility(const struct config_item *item,
+-				const struct configfs_attribute *attr)
++static bool service_provider_visibility(const struct config_item *item,
++					const struct configfs_attribute *attr)
+  {
+-	return cc_platform_has(CC_ATTR_GUEST_SVSM_PRESENT);
++	if (!provider.visibility)
++		return true;
++
++	return provider.visibility(TSM_TYPE_SERVICE_PROVIDER);
+  }
+  
+  static int try_advance_write_generation(struct tsm_report *report)
+@@ -150,7 +154,7 @@ static ssize_t tsm_report_service_provider_store(struct config_item *cfg,
+  
+  	return len;
+  }
+-CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_provider, provider_visibility);
++CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_provider, service_provider_visibility);
+  
+  static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
+  					     const char *buf, size_t len)
+@@ -171,7 +175,7 @@ static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
+  
+  	return len;
+  }
+-CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_guid, provider_visibility);
++CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_guid, service_provider_visibility);
+  
+  static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg,
+  							 const char *buf, size_t len)
+@@ -192,7 +196,7 @@ static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg
+  
+  	return len;
+  }
+-CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_manifest_version, provider_visibility);
++CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_manifest_version, service_provider_visibility);
+  
+  static ssize_t tsm_report_inblob_write(struct config_item *cfg,
+  				       const void *buf, size_t count)
+@@ -339,7 +343,8 @@ static ssize_t tsm_report_manifestblob_read(struct config_item *cfg, void *buf,
+  
+  	return tsm_report_read(report, buf, count, TSM_MANIFEST);
+  }
+-CONFIGFS_BIN_ATTR_VISIBLE_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX, provider_visibility);
++CONFIGFS_BIN_ATTR_VISIBLE_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX,
++			     service_provider_visibility);
+  
+  #define TSM_DEFAULT_ATTRS() \
+  	&tsm_report_attr_generation, \
+@@ -449,7 +454,8 @@ static struct configfs_subsystem tsm_configfs = {
+  };
+  
+  int tsm_register(const struct tsm_ops *ops, void *priv,
+-		 const struct config_item_type *type)
++		 const struct config_item_type *type,
++		 tsm_visibility_t visibility)
+  {
+  	const struct tsm_ops *conflict;
+  
+@@ -468,6 +474,7 @@ int tsm_register(const struct tsm_ops *ops, void *priv,
+  	provider.ops = ops;
+  	provider.data = priv;
+  	provider.type = type;
++	provider.visibility = visibility;
+  	return 0;
+  }
+  EXPORT_SYMBOL_GPL(tsm_register);
+@@ -480,6 +487,7 @@ int tsm_unregister(const struct tsm_ops *ops)
+  	provider.ops = NULL;
+  	provider.data = NULL;
+  	provider.type = NULL;
++	provider.visibility = NULL;
+  	return 0;
+  }
+  EXPORT_SYMBOL_GPL(tsm_unregister);
+diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+index f1b4266c1484..cb0d6cd1c12f 100644
+--- a/include/linux/cc_platform.h
++++ b/include/linux/cc_platform.h
+@@ -90,14 +90,6 @@ enum cc_attr {
+  	 * Examples include TDX Guest.
+  	 */
+  	CC_ATTR_HOTPLUG_DISABLED,
+-
+-	/**
+-	 * @CC_ATTR_GUEST_SVSM_PRESENT: Guest is running under an SVSM
+-	 *
+-	 * The platform/OS is running as a guest/virtual machine and is
+-	 * running under a Secure VM Service Module (SVSM).
+-	 */
+-	CC_ATTR_GUEST_SVSM_PRESENT,
+  };
+  
+  #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
+diff --git a/include/linux/tsm.h b/include/linux/tsm.h
+index 27cc97fe8dcd..5aaf626d178d 100644
+--- a/include/linux/tsm.h
++++ b/include/linux/tsm.h
+@@ -74,7 +74,20 @@ extern const struct config_item_type tsm_report_default_type;
+  /* publish @privlevel, @privlevel_floor, and @auxblob attributes */
+  extern const struct config_item_type tsm_report_extra_type;
+  
++/*
++ * Used to indicate the attribute group type to the visibility callback to
++ * avoid the callback having to examine the attribute name.
++ */
++enum tsm_type {
++	TSM_TYPE_SERVICE_PROVIDER,
++
++	TSM_TYPE_MAX
++};
++
++typedef bool (*tsm_visibility_t)(enum tsm_type type);
++
+  int tsm_register(const struct tsm_ops *ops, void *priv,
+-		 const struct config_item_type *type);
++		 const struct config_item_type *type,
++		 tsm_visibility_t visibility);
+  int tsm_unregister(const struct tsm_ops *ops);
+  #endif /* __TSM_H */
 
-David / dhildenb
-
+> Thanks,
+> Tom
+> 
 
