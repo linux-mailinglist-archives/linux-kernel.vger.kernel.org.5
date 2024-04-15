@@ -1,130 +1,466 @@
-Return-Path: <linux-kernel+bounces-145589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB4AC8A5827
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:51:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B3B8A5826
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:51:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9028E287E6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:51:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47E631C221D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E2982482;
-	Mon, 15 Apr 2024 16:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DF48248E;
+	Mon, 15 Apr 2024 16:50:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b="x1hNRCz5";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b="RfNT7Hox"
-Received: from fallback21.i.mail.ru (fallback21.i.mail.ru [79.137.243.75])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Rbgn2uGE"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EE7824AE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.75
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A6C82481
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713199860; cv=none; b=sRN0RGmoAvmGJurgM5cVj5g8lVgHsLc+LPM46w4RYbSyk16akUfDQtyZ8ezCuxIWOG1OiHgSR4GfJWfz/FEftk7j58kDKRuHWZRpRgiHk6xOI2PG010n0KfW/UIclPtztHd+KyXIo3NF4o3+qY8axmzTp+b4+n0oGSVHC82qEI0=
+	t=1713199855; cv=none; b=HteTe+XbbehFs2B8BS+OmBJg5iIyqUEiLwOd/NQt/yEqJ5B9G3IA1yxIAvbwZg4RGd29/2yr9xMXSLzT49UquH583tqCbgmu/MBDbgXNs4xLwtgc1pVbzgmpkVwO4YTChVOcwlyMBNbFnAgLeomkc7QfleD9SvqHp0W4UCRi0Ls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713199860; c=relaxed/simple;
-	bh=DN8I7aYLAe1BKjklfvsZ+vgINtbE+zdFo5Fjro1Pf80=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q1IA2ijmx7iy2Wa74DvH3e9GVqWegLmUhiGpj1bdFrhvxW+dxVENesvkbyvR8Ye7Q/9T2fY3t/a790IJ8mrQkgglRMvvIMUELVxRTWHIm3sQuFxUlaadziZ6yidtyMyuy9dLdWzNnDd7eZMHXBm0AqHNmdFoN7U+5RyCRZ3b9Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=elkcl.ru; spf=pass smtp.mailfrom=elkcl.ru; dkim=pass (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b=x1hNRCz5; dkim=pass (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b=RfNT7Hox; arc=none smtp.client-ip=79.137.243.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=elkcl.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=elkcl.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=elkcl.ru; s=mailru;
-	h=Sender:Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=fU4Jb+HjcUIRnkvmA6oZd00NQJEftaoLs9sEK5mizZM=;
-	t=1713199858;x=1713289858; 
-	b=x1hNRCz5X7bUtiUbK8/kbAB43bBBE64rtM375csfRVvCAXpAWrEDDDWFUlcHwK7Fz3Gd6zVbImdHjAWAgYnzMzugtqc8pUQh3vt42OxDdB52MzBN+6fYId+JKuVME6XD1dxSUd+tbRpx8WaGH0VIVl3Mh9K2s7JYetyDa+EvYb0=;
-Received: from [10.12.4.17] (port=48894 helo=smtp46.i.mail.ru)
-	by fallback21.i.mail.ru with esmtp (envelope-from <pub@elkcl.ru>)
-	id 1rwPXd-006Ps2-6y
-	for linux-kernel@vger.kernel.org; Mon, 15 Apr 2024 19:50:49 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=elkcl.ru;
-	s=mailru; h=Sender:Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To
-	:Cc:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
-	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
-	bh=fU4Jb+HjcUIRnkvmA6oZd00NQJEftaoLs9sEK5mizZM=; t=1713199849; x=1713289849; 
-	b=RfNT7Hox7Skrm4QhyQOviSuMn0UlVvhX9RQhe1zS5RKWeYRf8nBQ+fKFWrOpDtTTHkKykEQngq0
-	BiMjwyu92VSTV/yrdWwEiAHrJYdwOT2VzZ/fC0PcedRqSVfuDe+vxXHqvZDJVqTcUqZ1Ey30OMWYa
-	dM4W8z0yMEbNAZvtiRs=;
-Received: by smtp46.i.mail.ru with esmtpa (envelope-from <pub@elkcl.ru>)
-	id 1rwPXH-00000000gYc-2w35; Mon, 15 Apr 2024 19:50:28 +0300
-Message-ID: <74f2b16a-dd48-4306-b28b-ad5ba77d8bfe@elkcl.ru>
-Date: Mon, 15 Apr 2024 19:50:23 +0300
+	s=arc-20240116; t=1713199855; c=relaxed/simple;
+	bh=uneBj15HcdtC02CZZBXyKX70iq4SoZi7QfZCmxoTLHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=epJIX37vmc+9cG+l5s0JXyU7YK3n5U56PmVdJR2RaI2PYG8jnUXoprnEsVKz4J1HeAF4hzjkEp0Y4k+0n3rYZ0txICzAc/T6KUuKlrDblaAB9T0OTACI6jj1EkAnwCSXdYqQEHZchdcmXCY88kxSxbZ///aGla7TcYqn4ribuJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Rbgn2uGE; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516cdb21b34so4387525e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:50:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713199851; x=1713804651; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=m5XcThWMs6mWSUjgCvvr8NgRb/oJmLpUWiiTlWRZ6KY=;
+        b=Rbgn2uGEAx+foWRcMQNQzxpaUCQqA0a3TwRZ+3QtWigPTzqP0jW8kl5BklMrTENTAK
+         vi3ZmxJXQEzrVa2NRre4y+8FcB2pyCqCguKKFpVy0F1f4Er1tJRHMpoQpEtJYonwr1P4
+         Jzput5a0K0TuPVF8x6xOa20EAJU/KvRFDuFO4julNVAKcJM3c01M9qmd3aUanPvs6dQt
+         s5KaBVARr6LyssNKQ+zle3TR8zwXAS9pmWHKDHF+gzRp4QDYM0tDo6PJd5TZratZjY9u
+         8e/arOuMuG1g2ZIGrfeNqrdpdoe8kwGaXdu80aTG3zcsCzMpXhaZSVs7nv2DwGK2pXHb
+         nbkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713199851; x=1713804651;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m5XcThWMs6mWSUjgCvvr8NgRb/oJmLpUWiiTlWRZ6KY=;
+        b=dxQrvzM7ROz7RYHVxNV8u5OtkOdWsehe6yY+Pbdv0n/ifSIaKTWK7V9xeJLxD54UeI
+         ojHV5f79qOG+FKQiNBW2GcJ3/38JLJ0XihoYQq5GbvIdbjowleA8/41rQoBByppeEI4e
+         hZlrj7Xs4QWkmlbXWoEPSuB1aeAiC9fsOoRAnthFQB8/M2Ds+DbmzXE3oqY8g9yb6Vv6
+         2beUhko0LCTB9jMBdTNj7gwKFEeN35LTetzlRgrhQLFSfIrhg7RbMGrr6b5/QB/BSBjm
+         KOYnTQqPo0nVIdGGpY8UhZox/Kg3dujG1Ok83ytqDTpLGZL1GYCWhVjKuRk/H+7jxnc6
+         hbGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVzuK2VMPWPtHKXys5U3nkn/tmdQNzt7sDlYaOt41lVLjyp3aNrpnwvOkBiB90GratTCnNTYaV83vkEVhthMyd4vecdAOa1bn3d3/1U
+X-Gm-Message-State: AOJu0YwlTrwMeh9KlaSTM8GmaSu4NwvTyP1A6AUEFiOZntT6KB013Doo
+	SafvYlL6jAUZ8Q8ubCqJ/gOQeVhZfA0bS+r3oYIq3HxTrpNACRm7P9roNVtVPuXCXC6T5+SH1gI
+	6
+X-Google-Smtp-Source: AGHT+IEdwA/pMzyAMLFTn/8nW8+Oydx4hunuvhfJcxp0i8eRBXOMemOurfFPArRKEQUSEO+ngoJ6zA==
+X-Received: by 2002:a05:6512:473:b0:516:9f1a:929d with SMTP id x19-20020a056512047300b005169f1a929dmr6353141lfd.1.1713199851184;
+        Mon, 15 Apr 2024 09:50:51 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id p18-20020a05651238d200b00516d200cba9sm632735lft.58.2024.04.15.09.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 09:50:50 -0700 (PDT)
+Date: Mon, 15 Apr 2024 19:50:49 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: David Wronek <david@mainlining.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, Konrad Dybcio <konradybcio@kernel.org>, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] drm/panel: Add driver for EDO RM69380 OLED panel
+Message-ID: <yccnqb63gp5svx76rudfnphecpatkpwgp2wlfenojebulrigma@xfztf3ox6q7d>
+References: <20240415-raydium-rm69380-driver-v2-0-524216461306@mainlining.org>
+ <20240415-raydium-rm69380-driver-v2-2-524216461306@mainlining.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Linux)
-Subject: Re: [PATCH] jffs2: prevent xattr node from overflowing the eraseblock
-To: Christian Brauner <brauner@kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Richard Weinberger
- <richard@nod.at>, Zhihao Cheng <chengzhihao1@huawei.com>,
- Fabian Frederick <fabf@skynet.be>, Nick Desaulniers
- <ndesaulniers@google.com>, Wedson Almeida Filho <walmeida@microsoft.com>,
- KaiGai Kohei <kaigai@ak.jp.nec.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20240412155357.237803-1-dev@elkcl.ru>
- <20240415-anspielen-gelyncht-d2f0efd6569e@brauner>
-From: Ilya Denisyev <dev@elkcl.ru>
-Content-Language: en-US
-In-Reply-To: <20240415-anspielen-gelyncht-d2f0efd6569e@brauner>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Sender: pub@elkcl.ru
-X-Mailru-Src: smtp
-X-4EC0790: 10
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D31116567C8E3CFDFF0E1C6585A2586D0D182A05F538085040B179075AD4DF425F3DE06ABAFEAF6705DB7E7932B9893A00AA6517558154513EABAB3F2802300857
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE70A10A23A3B64B805EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637B24541F05F0BFC9F8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8E0CA407E709CDC0B2168C34F444F38000FFCE30886D58649CC7F00164DA146DAFE8445B8C89999728AA50765F7900637D0FEED2715E18529389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8062BEEFFB5F8EA3EF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C17119E5299B287EE03F1AB874ED890284AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C3F841116EA1ACDE45BA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CF3D321E7403792E342EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE788761406820A3098731C566533BA786AA5CC5B56E945C8DA
-X-C1DE0DAB: 0D63561A33F958A5CF9135D71564AE835002B1117B3ED6968B55D18063B74FD2FB820E9FE7BD014C823CB91A9FED034534781492E4B8EEAD2609375A3A81E2DDBDAD6C7F3747799A
-X-C8649E89: 1C3962B70DF3F0ADBF74143AD284FC7177DD89D51EBB7742424CF958EAFF5D571004E42C50DC4CA955A7F0CF078B5EC49A30900B95165D34C1E32F4AD4B2486BFADDC33E07DB661C86FD219ECB6969EA373161ADC8ED28D39A2BF46180FC39FC1D7E09C32AA3244CE12BF5A6A205140D77DD89D51EBB7742D02FDEF4547DCF12EA455F16B58544A20C45C0626CB26EE85DA084F8E80FEBD339673C7991D68BBF964550E41902C4E4
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojOezlh5vAwsobvGokhiVzuQ==
-X-Mailru-Sender: 7971DA0162A9842A75A8A63AE98D4FF4B1116962D713EEE2F7A6B01B8567BB205D9139C693FB2D64A3EAC56F6A374A44CA0B8C118E355A7C54A42CAEBACFBF7EF55A8A299F926F354FD7C49A7833DCB4162D03413E14ADD05FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4DB7CCFC93CF1872E1F5AB46BAD9C4C2824EE53346298E5F768F3CF0E9FE49B69B93F16B0BC5AAA4D3F0385E0E8F24350CE799FB3747367313663FF99FD3DECAF
-X-7FA49CB5: 0D63561A33F958A5E064310A5C150CE13A2144CCB36E24738FE85C49224433F58941B15DA834481FA18204E546F3947C1DAA61796BF5227BF6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F790063770DAEE4257ABEBB3389733CBF5DBD5E9B5C8C57E37DE458BD96E472CDF7238E0725E5C173C3A84C37795E77BD711CB3535872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojOezlh5vAwsoE9piz475brg==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415-raydium-rm69380-driver-v2-2-524216461306@mainlining.org>
 
-On 15.04.2024 17:28, Christian Brauner wrote:
-> Can this overflow? I.e. can c->sector_size be smaller than c->cleanmarker_size?
+On Mon, Apr 15, 2024 at 06:10:42PM +0200, David Wronek wrote:
+> Add support for the 2560x1600@90Hz OLED panel by EDO bundled with a
+> Raydium RM69380 controller, as found on the Lenovo Xiaoxin Pad Pro 2021.
+> 
+> Signed-off-by: David Wronek <david@mainlining.org>
+> ---
+>  drivers/gpu/drm/panel/Kconfig                 |  14 +
+>  drivers/gpu/drm/panel/Makefile                |   1 +
+>  drivers/gpu/drm/panel/panel-raydium-rm69380.c | 366 ++++++++++++++++++++++++++
+>  3 files changed, 381 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 154f5bf82980..5b3eeb93b1a2 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -542,6 +542,20 @@ config DRM_PANEL_RAYDIUM_RM692E5
+>  	  Say Y here if you want to enable support for Raydium RM692E5-based
+>  	  display panels, such as the one found in the Fairphone 5 smartphone.
+>  
+> +config DRM_PANEL_RAYDIUM_RM69380
+> +	tristate "Raydium RM69380-based DSI panel"
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	depends on DRM_DISPLAY_DP_HELPER
+> +	depends on DRM_DISPLAY_HELPER
+> +	depends on DRM_MIPI_DSI
+> +	depends on OF
+> +	help
+> +	  Say Y here if you want to enable support for Raydium RM69380-based
+> +	  display panels.
+> +
+> +	  This panel controller can be found in the Lenovo Xiaoxin Pad Pro 2021
+> +	  in combination with an EDO OLED panel.
+> +
+>  config DRM_PANEL_RONBO_RB070D30
+>  	tristate "Ronbo Electronics RB070D30 panel"
+>  	depends on OF
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index 24a02655d726..e2a2807d4ef0 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -55,6 +55,7 @@ obj-$(CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN) += panel-raspberrypi-touchscreen
+>  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM67191) += panel-raydium-rm67191.o
+>  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
+>  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM692E5) += panel-raydium-rm692e5.o
+> +obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM69380) += panel-raydium-rm69380.o
+>  obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
+>  obj-$(CONFIG_DRM_PANEL_SAMSUNG_ATNA33XC20) += panel-samsung-atna33xc20.o
+>  obj-$(CONFIG_DRM_PANEL_SAMSUNG_DB7430) += panel-samsung-db7430.o
+> diff --git a/drivers/gpu/drm/panel/panel-raydium-rm69380.c b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
+> new file mode 100644
+> index 000000000000..253b9a1c2800
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
+> @@ -0,0 +1,366 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree.
+> + * Copyright (c) 2024 David Wronek <david@mainlining.org>
+> + */
+> +
+> +#include <linux/backlight.h>
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_graph.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +#include <drm/drm_probe_helper.h>
+> +
+> +struct rm69380_panel {
+> +	struct drm_panel panel;
+> +	struct mipi_dsi_device *dsi[2];
+> +	struct regulator_bulk_data supplies[2];
+> +	struct gpio_desc *reset_gpio;
+> +	bool prepared;
+> +};
+> +
+> +static inline
+> +struct rm69380_panel *to_rm69380_panel(struct drm_panel *panel)
+> +{
+> +	return container_of(panel, struct rm69380_panel, panel);
+> +}
+> +
+> +static void rm69380_reset(struct rm69380_panel *ctx)
+> +{
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> +	usleep_range(15000, 16000);
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> +	usleep_range(10000, 11000);
+> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> +	msleep(30);
+> +}
+> +
+> +static int rm69380_on(struct rm69380_panel *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi[0];
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +	if (ctx->dsi[1])
+> +		ctx->dsi[1]->mode_flags |= MIPI_DSI_MODE_LPM;
+> +
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd4);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x00, 0x80);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd0);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x48, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x26);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x75, 0x3f);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x1d, 0x1a);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x00);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x53, 0x28);
+> +	mipi_dsi_dcs_write_seq(dsi, 0xc2, 0x08);
+> +	mipi_dsi_dcs_write_seq(dsi, 0x35, 0x00);
 
-I'm pretty sure that it can't. As far as I know, c->sector_size is at 
-least the MTD eraseblock size[1] or even bigger in the case of 
-DataFlash[2]. The cleanmarker is either the size of the smallest JFFS2 
-node[3] (currently 12 bytes), 0 bytes for certain flash types (like 
-NAND, where it's stored out of band[4]) or apparently at most the MTD 
-writesize (which, as far as I understand, is not larger than the 
-erasesize) for Intel Sibley[5].
+mipi_dsi_dcs_set_tear_on(dsi, MIPI_DSI_DCS_TEAR_MODE_VBLANK);
 
-Considering that any JFFS2 node must fit inside one block and that the 
-cleanmarker is the smallest node there is (if it's even a proper node), 
-it shouldn't overflow, otherwise JFFS2 won't work in the first place.
+> +	mipi_dsi_dcs_write_seq(dsi, 0x51, 0x07, 0xff);
 
+ret = mipi_dsi_dcs_set_display_brightness_large(dsi, 0x7ff);
 
-[1] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/fs.c#L539
+> +
+> +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(20);
+> +
+> +	ret = mipi_dsi_dcs_set_display_on(dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set display on: %d\n", ret);
+> +		return ret;
+> +	}
+> +	msleep(36);
+> +
+> +	return 0;
+> +}
 
-[2] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/wbuf.c#L1253
+[skipped]
 
-[3] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/fs.c#L557
+> +
+> +static const struct drm_display_mode rm69380_mode = {
+> +	.clock = (2560 + 32 + 12 + 38) * (1600 + 20 + 4 + 8) * 90 / 1000,
+> +	.hdisplay = 2560,
+> +	.hsync_start = 2560 + 32,
+> +	.hsync_end = 2560 + 32 + 12,
+> +	.htotal = 2560 + 32 + 12 + 38,
+> +	.vdisplay = 1600,
+> +	.vsync_start = 1600 + 20,
+> +	.vsync_end = 1600 + 20 + 4,
+> +	.vtotal = 1600 + 20 + 4 + 8,
+> +	.width_mm = 248,
+> +	.height_mm = 155,
+> +	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
 
-[4] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/wbuf.c#L1190
+Nit: DRM_MODE_TYPE_PREFERRED will be set by
+drm_connector_helper_get_modes_fixed(), so it can be dropped here.
 
-[5] https://elixir.bootlin.com/linux/v6.9-rc4/source/fs/jffs2/wbuf.c#L1296
+> +};
+> +
+> +static int rm69380_get_modes(struct drm_panel *panel,
+> +					struct drm_connector *connector)
+> +{
+> +	return drm_connector_helper_get_modes_fixed(connector, &rm69380_mode);
+> +}
+> +
+> +static const struct drm_panel_funcs rm69380_panel_funcs = {
+> +	.prepare = rm69380_prepare,
+> +	.unprepare = rm69380_unprepare,
+> +	.get_modes = rm69380_get_modes,
+> +};
+> +
+> +static int rm69380_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	u16 brightness = backlight_get_brightness(bl);
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_set_display_brightness_large(dsi, brightness);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +
+> +	return 0;
+> +}
+> +
+> +static int rm69380_bl_get_brightness(struct backlight_device *bl)
+> +{
+> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
+> +	u16 brightness;
+> +	int ret;
+> +
+> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
+> +
+> +	ret = mipi_dsi_dcs_get_display_brightness_large(dsi, &brightness);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
+> +
+> +	return brightness;
+> +}
+> +
+> +static const struct backlight_ops rm69380_bl_ops = {
+> +	.update_status = rm69380_bl_update_status,
+> +	.get_brightness = rm69380_bl_get_brightness,
+> +};
+> +
+> +static struct backlight_device *
+> +rm69380_create_backlight(struct mipi_dsi_device *dsi)
+> +{
+> +	struct device *dev = &dsi->dev;
+> +	const struct backlight_properties props = {
+> +		.type = BACKLIGHT_RAW,
+> +		.brightness = 2047,
+> +		.max_brightness = 2047,
+> +	};
+> +
+> +	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
+> +					      &rm69380_bl_ops, &props);
+> +}
+> +
+> +static int rm69380_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct mipi_dsi_host *dsi_sec_host;
+> +	struct rm69380_panel *ctx;
+> +	struct device *dev = &dsi->dev;
+> +	struct device_node *dsi_sec;
+> +	int ret, i;
+> +
+> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +
+> +	ctx->supplies[0].supply = "vddio";
+> +	ctx->supplies[1].supply = "avdd";
+> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ctx->supplies),
+> +				      ctx->supplies);
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret, "Failed to get regulators\n");
+> +
+> +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(ctx->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
+> +				     "Failed to get reset-gpios\n");
+> +
+> +	dsi_sec = of_graph_get_remote_node(dsi->dev.of_node, 1, -1);
+> +
+> +	if (dsi_sec) {
+> +		dev_dbg(dev, "Using Dual-DSI\n");
+> +
+> +		const struct mipi_dsi_device_info info = { "RM69380", 0,
+> +							   dsi_sec };
+> +
+> +		dev_dbg(dev, "Found second DSI `%s`\n", dsi_sec->name);
+> +
+> +		dsi_sec_host = of_find_mipi_dsi_host_by_node(dsi_sec);
+> +		of_node_put(dsi_sec);
+> +		if (!dsi_sec_host) {
+> +			return dev_err_probe(dev, -EPROBE_DEFER,
+> +					     "Cannot get secondary DSI host\n");
+> +		}
+> +
+> +		ctx->dsi[1] =
+> +			mipi_dsi_device_register_full(dsi_sec_host, &info);
 
+Either you should be using devm_mipi_dsi_device_register_full() here or
+you should call mipi_dsi_device_unregister() in the error and remove
+paths. I'd suggest the former.
 
----
+> +		if (IS_ERR(ctx->dsi[1])) {
+> +			return dev_err_probe(dev, PTR_ERR(ctx->dsi[1]),
+> +					     "Cannot get secondary DSI node\n");
+> +		}
+> +
+> +		dev_dbg(dev, "Second DSI name `%s`\n", ctx->dsi[1]->name);
+> +		mipi_dsi_set_drvdata(ctx->dsi[1], ctx);
+> +	} else {
+> +		dev_dbg(dev, "Using Single-DSI\n");
+> +	}
+> +
+> +	ctx->dsi[0] = dsi;
+> +	mipi_dsi_set_drvdata(dsi, ctx);
+> +
+> +	drm_panel_init(&ctx->panel, dev, &rm69380_panel_funcs,
+> +		       DRM_MODE_CONNECTOR_DSI);
+> +	ctx->panel.prepare_prev_first = true;
+> +
+> +	ctx->panel.backlight = rm69380_create_backlight(dsi);
+> +	if (IS_ERR(ctx->panel.backlight))
+> +		return dev_err_probe(dev, PTR_ERR(ctx->panel.backlight),
+> +				     "Failed to create backlight\n");
+> +
+> +	drm_panel_add(&ctx->panel);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
+> +		if (!ctx->dsi[i])
+> +			continue;
+> +
+> +		dev_dbg(&ctx->dsi[i]->dev, "Binding DSI %d\n", i);
+> +
+> +		ctx->dsi[i]->lanes = 4;
+> +		ctx->dsi[i]->format = MIPI_DSI_FMT_RGB888;
+> +		ctx->dsi[i]->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
+> +					  MIPI_DSI_CLOCK_NON_CONTINUOUS;
+> +
+> +		ret = mipi_dsi_attach(ctx->dsi[i]);
+> +		if (ret < 0) {
+> +			drm_panel_remove(&ctx->panel);
+> +			return dev_err_probe(dev, ret,
+> +					     "Failed to attach to DSI%d\n", i);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void rm69380_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct rm69380_panel *ctx = mipi_dsi_get_drvdata(dsi);
+> +	int i;
+> +	int ret;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
+> +		if (!ctx->dsi[i])
+> +			continue;
+> +
+> +		ret = mipi_dsi_detach(ctx->dsi[i]);
+> +		if (ret < 0)
+> +			dev_err(&dsi->dev, "Failed to detach from DSI%d host: %d\n", i, ret);
+> +	}
+> +
+> +	drm_panel_remove(&ctx->panel);
+> +}
+> +
+> +static const struct of_device_id rm69380_of_match[] = {
+> +	{ .compatible = "lenovo,j716f-edo-rm69380" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, rm69380_of_match);
+> +
+> +static struct mipi_dsi_driver rm69380_panel_driver = {
+> +	.probe = rm69380_probe,
+> +	.remove = rm69380_remove,
+> +	.driver = {
+> +		.name = "panel-raydium-rm69380",
+> +		.of_match_table = rm69380_of_match,
+> +	},
+> +};
+> +module_mipi_dsi_driver(rm69380_panel_driver);
+> +
+> +MODULE_AUTHOR("David Wronek <david@mainlining.org");
+> +MODULE_DESCRIPTION("DRM driver for Raydium RM69380-equipped DSI panels");
+> +MODULE_LICENSE("GPL");
+> 
+> -- 
+> 2.44.0
+> 
 
-Best regards,
-
-Ilya
-
+-- 
+With best wishes
+Dmitry
 
