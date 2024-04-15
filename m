@@ -1,198 +1,206 @@
-Return-Path: <linux-kernel+bounces-145929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB0AA8A5CE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:25:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 341EC8A5CEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:26:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00849B21BD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:25:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7ACC1F2268D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A39A156F53;
-	Mon, 15 Apr 2024 21:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC631157A4E;
+	Mon, 15 Apr 2024 21:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2Du+09d"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GPJ9KN6N"
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E41156236;
-	Mon, 15 Apr 2024 21:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60CF156236;
+	Mon, 15 Apr 2024 21:25:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713216341; cv=none; b=g+kit+MfDcDj1AWxxjI+L0WEqCn6nkA77gZvnJDq1aKKFFLn9lSmgMg7CFTyCIaI3iSfSAbUPKMwinPrNCPbvUwTm0SGgeXFBlECrydKgfVttnpoh3ho1hjzgWlid7wSCatr2TAWLgo49CJn4zxMdj7uTmlKkRzXpp9v8MSaomY=
+	t=1713216352; cv=none; b=UI2L3HPSv+zzlmMxNT2SIxhipvqab/U6Jsry0HPDM3UXW0aHBCktdVp3+ifDeGGmJLsKvHPs7KoG1h9hAVpGP+ASnWVJ+PCnfURQtw81TQ7U9lc3YsLv7EfTQ3BTfdRjUlLEGHQM56PDdiDGjDKfPg6IBjjBGiMj4v8wnpA33zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713216341; c=relaxed/simple;
-	bh=m2bnyXoPve6kFs+KbC7IXQMTZpUcBMgtxbv/xYm98h0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Gb+UcK/AUrLJ9y9KVmd2a2L6c1WHaWyI1IFOprPPNUPQeVti96weX8SdCQLnbi5KgTnsQTmu2hpi1Ka8KdMk3KKb09BkJXWW9cdr0UwZZUfQai823ZSwIYC4ZzKLBq9Vb1Fg2ZGz6IukOsoMEUuG0ddJa0pHNWoyq0ztnrhZ1C8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O2Du+09d; arc=none smtp.client-ip=209.85.221.44
+	s=arc-20240116; t=1713216352; c=relaxed/simple;
+	bh=xDX9qwIGAqnxwZvcmlu1AWdO+expzOyzESC+Fa4D8aE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qXlHoESN2Bm777Q3qEDHxa6GSach2FltB+KOo423iP7Ju3cFSzoespg8haBAaLbSFrvYNksZbRtEmiTOtNle4ZNZQG3XdhFGbWvomq/Z5hiEHzjH4Qx+KujUXw+VePMzWLbTiHGCqGZBCexFr0GYvQaw+KUIrRxoH/pi4nSEuJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GPJ9KN6N; arc=none smtp.client-ip=209.85.167.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-343c891bca5so2412173f8f.2;
-        Mon, 15 Apr 2024 14:25:39 -0700 (PDT)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c70ef25e19so641711b6e.3;
+        Mon, 15 Apr 2024 14:25:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713216338; x=1713821138; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I6Ar2yG1hipbO/wSAi/ZjpkXRjk4zWz8MUQpTTF6vT8=;
-        b=O2Du+09dXNpJsUWjh3iFtMzAWPX5ne7+7MnCYAm9z7C1u5vfUzD3TVChhT80wEDBMn
-         JAQCWBPEg9B7Fqjz/oG4qidmafIzXRmaT4OmGgRE7UQtzC3/Xpwh5s9pxHea3p1nQO4D
-         /ZCHS13XxGc2OWlHKCL9vdOgAI3sxTLb5QspirwJtLEFi3SISwAJp5Yc8g9bS6K8y31E
-         kKV7oiZhdVVFPLxLwSgNvyCR5mecW9mCATQ0IMDz/Bb05AzrFXL+ogRIIfhsCCVExBPF
-         cpbrcJevZrrJAyoiop9k8ZavvFay9E2nMi9EjrwqVxc1W+4WBpW6cDMq6jFCdFrvXfPd
-         vvMw==
+        d=gmail.com; s=20230601; t=1713216350; x=1713821150; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MnRyb1KC+1OBK62QHuW79588BJIAAupCpTaTbO7XI1c=;
+        b=GPJ9KN6NTAyYLzxxokgqxpDFNYq08tLfEorB1Y9ujzYPwgNKLJSVlHPJswHEZxE+dS
+         CbpKXd6SAGGht4ehPTkMfxaPI2pYqzCxOWRO6jqTJ07LAmY9OTGT27+t+yKamHX4/knw
+         ZTfmMchWBoVIfvprL2j667YtCueUfGALbGz5bZdsilF4cRPew1Ym15AVuYw/VC6UYPOJ
+         HcZVwoocCscuiTHQVwBCOwNOz7dI8oCjSmLK9Cylw6g0eRySVDaKQQ72oRHJobo35b9c
+         L8plfmrUbPmYKIs+YZqlH2UOPiX325ZPg1xNDAFNO2nu0LOgA/mHf7E+5G4gfyb6wJgS
+         nhwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713216338; x=1713821138;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I6Ar2yG1hipbO/wSAi/ZjpkXRjk4zWz8MUQpTTF6vT8=;
-        b=jsySIBO+/Z2+eDyw+LFerltOa2kQW8Gs7mML2M/hTUlo48/aQWOzxLeS27MI3lBqJ6
-         aGT3bF3l58kXazvIQQdFDFtsQ6MAshPp9W0A0BT+iHF3XVBPVyhrE5JhWAjoabJ/3Cl+
-         larJh47W9NFA9UR2I58Ww4dJuprQ+SE6EfnXotGh4L8V477fuQ0SwOSKVMRAD8e1lHeb
-         UtP5mRxgQSKKqaxlGmu1r0j/gQxb05jsG/I905BOI5FKp3M8Mxyi4dzBC7oHERizDec4
-         kfsGYVr6/IQUDRbTJ4/btWdP0C9S1J+pLHavZpS0+ogBOB9WlRq3+/YiKVMZFS+mHf03
-         +RdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVT1M1n33fBMqsRRQE3+1BosXL1n4fqHJe3B6ka31YDZxSlYrrpNLLRHq78ZlaDE7MA1UGzHu4K7X3+zsUfJzOT5Fmt8i4Q9oW4ebSiVd07cUohM0J0N893vQp/JquL11n7RlfLnDS92KfeXxHLNJPexTYcMc9ZgVLRhFtT5DyTN+tNYAlPPXHMTCYEOC7xCieh0XdtXUZroZ+ntg==
-X-Gm-Message-State: AOJu0Yz6z1JTf25aKq7NcPmTzkQkr2bDlaTHhLifgnau7MmKod4dEBAL
-	3MKA/D/JWxgjvfjDfCTEIJLvDLMEin4AR0/I6T6VM8Fy3xmje6b8
-X-Google-Smtp-Source: AGHT+IHVDq4wHkTRDLnml3w8/vY76YStJGi0lNRDZ+kQK8Q3T8+RWX2Nxrxp2FGdXz1LeKjvjVxvOA==
-X-Received: by 2002:adf:cc89:0:b0:348:b435:273e with SMTP id p9-20020adfcc89000000b00348b435273emr161943wrj.48.1713216337895;
-        Mon, 15 Apr 2024 14:25:37 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id e3-20020a5d5943000000b00346c169362esm12606521wri.23.2024.04.15.14.25.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 14:25:37 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
- Frank Oltmanns <frank@oltmanns.dev>
-Cc: Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
- Purism Kernel Team <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, stable@vger.kernel.org,
- Diego Roversi <diegor@tiscali.it>, Erico Nunes <nunes.erico@gmail.com>
-Subject:
- Re: [PATCH v4 0/5] Pinephone video out fixes (flipping between two frames)
-Date: Mon, 15 Apr 2024 23:25:35 +0200
-Message-ID: <3799968.kQq0lBPeGt@jernej-laptop>
-In-Reply-To: <87frw2a2e4.fsf@oltmanns.dev>
-References:
- <20240310-pinephone-pll-fixes-v4-0-46fc80c83637@oltmanns.dev>
- <87frw2a2e4.fsf@oltmanns.dev>
+        d=1e100.net; s=20230601; t=1713216350; x=1713821150;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MnRyb1KC+1OBK62QHuW79588BJIAAupCpTaTbO7XI1c=;
+        b=MdACqbEvaITeb246+bX7wi80dOQQeoBqx5Z6E5W43Acs1ZhV3H0M2IG3GkPDuS8X9Z
+         t21NTeYmugbHU7/Qde1ksIbTs/Pqy4d1X6cVFsLEpq5p/0tddnE5v4NSnl2QKnz7L/g7
+         ets2kI03JdJC3LftmkIFaRy5ox9HVMhSP4FtEiwMXhITyB8xo0yVYfEXqxm6KEfMKPjn
+         AWUhdEYbciXbnbhHxggw+eB3ywLw/2BhJjrJAuNxa0WhMTBoG2FhYiFY2m8geyvndKDl
+         0hIpOdiMxSISsLDim2Bjr7lOjGk1pqrMXbuTUuxFRaCkqHFZWrmz1UCbDU+A1TcnptOr
+         1klA==
+X-Forwarded-Encrypted: i=1; AJvYcCXmUmSlbY7xFZmbQlVH+SMGCJV1YHRu+IuaoI4n1zKvn2IPYPB1aHBOa+cbKMhrIqc9QPARlgJl1dlNJvBB3/QdukT0LVN9+24zSbQUPKbaIRe1MgY5lwegNA52RxloA6t+vg0SiGM7fU4SCv0GEm9UuX2rEaAj12SyrjNFpAqiVHBeGCRv648QifJd/FRdS7ckt1QOjFgFHq3P9G5fJfzTxYq7yxDcjlC8zLZ8aS1/woxqyHKN4eSnEoYJjvc=
+X-Gm-Message-State: AOJu0YyogEzsHbM+FT/Sjbkqh1rxLrP8UQ4NjbGGh9UXIKzeekmlzY1o
+	5pHdrTD5tDcKkl8sG9v/gq7vTP79uSsQydkDwhW9Mhj1OpE+3hPB
+X-Google-Smtp-Source: AGHT+IFVx8xuKRS2VgjDQ5gszpCC9VDV/CVDiERN6wC4LXmwFjfelkaJR7tB/uZCbmijCe/eZtORlA==
+X-Received: by 2002:a05:6808:2a69:b0:3c7:76c:c279 with SMTP id fu9-20020a0568082a6900b003c7076cc279mr6166827oib.14.1713216349788;
+        Mon, 15 Apr 2024 14:25:49 -0700 (PDT)
+Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
+        by smtp.gmail.com with ESMTPSA id n4-20020aca2404000000b003c60db822e7sm1774266oic.4.2024.04.15.14.25.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 14:25:49 -0700 (PDT)
+Message-ID: <6726fa2b-f5fe-10fb-6aab-f76d61f0b3cd@gmail.com>
+Date: Mon, 15 Apr 2024 16:25:48 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 6/7] phy: qcom-qmp-pcie: add support for ipq9574 gen3x2
+ PHY
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Manivannan Sadhasivam
+ <manivannan.sadhasivam@linaro.org>, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-clk@vger.kernel.org
+References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
+ <20240415182052.374494-7-mr.nuke.me@gmail.com>
+ <CAA8EJpqY1aDZMaeqBULEOD26UeGYbLd8RsA16jZw7zXJ7_oGPQ@mail.gmail.com>
+From: mr.nuke.me@gmail.com
+In-Reply-To: <CAA8EJpqY1aDZMaeqBULEOD26UeGYbLd8RsA16jZw7zXJ7_oGPQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Dne sreda, 3. april 2024 ob 17:31:47 GMT +2 je Frank Oltmanns napisal(a):
-> Dear clk and sunxi-ng maintainers,
+
+
+On 4/15/24 15:10, Dmitry Baryshkov wrote:
+> On Mon, 15 Apr 2024 at 21:23, Alexandru Gagniuc <mr.nuke.me@gmail.com> wrote:
+>>
+>> Add support for the gen3x2 PCIe PHY on IPQ9574, ported form downstream
+>> 5.4 kernel. Only the serdes and pcs_misc tables are new, the others
+>> being reused from IPQ8074 and IPQ6018 PHYs.
+>>
+>> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+>> ---
+>>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
+>>   .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
+>>   2 files changed, 149 insertions(+), 1 deletion(-)
+>>
 > 
-> Patches 1-4 have been reviewed and there are no pending issues. If there
-> is something else you need me to do to get this applied, please let me
-> know.
-
-Sorry for late patch merge. Patch 1-2 are applied as a fix to 6.9, the rest
-will go to 6.10.
-
-Best regards,
-Jernej
-
+> [skipped]
 > 
-> Thanks,
->   Frank
+>> @@ -2448,7 +2542,7 @@ static inline void qphy_clrbits(void __iomem *base, u32 offset, u32 val)
+>>
+>>   /* list of clocks required by phy */
+>>   static const char * const qmp_pciephy_clk_l[] = {
+>> -       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux",
+>> +       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux", "anoc", "snoc"
 > 
-> On 2024-03-10 at 14:21:10 +0100, Frank Oltmanns <frank@oltmanns.dev> wrote:
-> > On some pinephones the video output sometimes freezes (flips between two
-> > frames) [1]. It seems to be that the reason for this behaviour is that
-> > PLL-MIPI is outside its limits, and the GPU is not running at a fixed
-> > rate.
-> >
-> > In this patch series I propose the following changes:
-> >   1. sunxi-ng: Adhere to the following constraints given in the
-> >      Allwinner A64 Manual regarding PLL-MIPI:
-> >       * M/N <= 3
-> >       * (PLL_VIDEO0)/M >= 24MHz
-> >       * 500MHz <= clockrate <= 1400MHz
-> >
-> >   2. Remove two operating points from the A64 DTS OPPs, so that the GPU
-> >      runs at a fixed rate of 432 MHz.
-> >
-> > Note, that when pinning the GPU to 432 MHz the issue [1] completely
-> > disappears for me. I've searched the BSP and could not find any
-> > indication that supports the idea of having the three OPPs. The only
-> > frequency I found in the BPSs for A64 is 432 MHz, which has also proven
-> > stable for me.
-> >
-> > I very much appreciate your feedback!
-> >
-> > [1] https://gitlab.com/postmarketOS/pmaports/-/issues/805
-> >
-> > Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-> > ---
-> > Changes in v4:
-> > - sunxi-ng: common: Address review comments.
-> > - Link to v3: https://lore.kernel.org/r/20240304-pinephone-pll-fixes-v3-0-94ab828f269a@oltmanns.dev
-> >
-> > Changes in v3:
-> > - dts: Pin GPU to 432 MHz.
-> > - nkm and a64: Move minimum and maximum rate handling to the common part
-> >   of the sunxi-ng driver.
-> > - Removed st7703 patch from series.
-> > - Link to v2: https://lore.kernel.org/r/20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev
-> >
-> > Changes in v2:
-> > - dts: Increase minimum GPU frequency to 192 MHz.
-> > - nkm and a64: Add minimum and maximum rate for PLL-MIPI.
-> > - nkm: Use the same approach for skipping invalid rates in
-> >   ccu_nkm_find_best() as in ccu_nkm_find_best_with_parent_adj().
-> > - nkm: Improve names for ratio struct members and hence get rid of
-> >   describing comments.
-> > - nkm and a64: Correct description in the commit messages: M/N <= 3
-> > - Remove patches for nm as they were not needed.
-> > - st7703: Rework the commit message to cover more background for the
-> >   change.
-> > - Link to v1: https://lore.kernel.org/r/20231218-pinephone-pll-fixes-v1-0-e238b6ed6dc1@oltmanns.dev
-> >
-> > ---
-> > Frank Oltmanns (5):
-> >       clk: sunxi-ng: common: Support minimum and maximum rate
-> >       clk: sunxi-ng: a64: Set minimum and maximum rate for PLL-MIPI
-> >       clk: sunxi-ng: nkm: Support constraints on m/n ratio and parent rate
-> >       clk: sunxi-ng: a64: Add constraints on PLL-MIPI's n/m ratio and parent rate
-> >       arm64: dts: allwinner: a64: Run GPU at 432 MHz
-> >
-> >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  8 --------
-> >  drivers/clk/sunxi-ng/ccu-sun50i-a64.c         | 14 +++++++++-----
-> >  drivers/clk/sunxi-ng/ccu_common.c             | 19 +++++++++++++++++++
-> >  drivers/clk/sunxi-ng/ccu_common.h             |  3 +++
-> >  drivers/clk/sunxi-ng/ccu_nkm.c                | 21 +++++++++++++++++++++
-> >  drivers/clk/sunxi-ng/ccu_nkm.h                |  2 ++
-> >  6 files changed, 54 insertions(+), 13 deletions(-)
-> > ---
-> > base-commit: dcb6c8ee6acc6c347caec1e73fb900c0f4ff9806
-> > change-id: 20231218-pinephone-pll-fixes-0ccdfde273e4
-> >
-> > Best regards,
+> Are the NoC clocks really necessary to drive the PHY? I think they are
+> usually connected to the controllers, not the PHYs.
+
+The system will hang if these clocks are not enabled. They are also 
+attached to the PHY in the QCA 5.4 downstream kernel.
+
+>>   };
+>>
+>>   /* list of regulators */
+>> @@ -2499,6 +2593,16 @@ static const struct qmp_pcie_offsets qmp_pcie_offsets_v4x1 = {
+>>          .rx             = 0x0400,
+>>   };
+>>
+>> +static const struct qmp_pcie_offsets qmp_pcie_offsets_ipq9574 = {
+>> +       .serdes         = 0,
+>> +       .pcs            = 0x1000,
+>> +       .pcs_misc       = 0x1400,
+>> +       .tx             = 0x0200,
+>> +       .rx             = 0x0400,
+>> +       .tx2            = 0x0600,
+>> +       .rx2            = 0x0800,
+>> +};
+>> +
+>>   static const struct qmp_pcie_offsets qmp_pcie_offsets_v4x2 = {
+>>          .serdes         = 0,
+>>          .pcs            = 0x0a00,
+>> @@ -2728,6 +2832,33 @@ static const struct qmp_phy_cfg sm8250_qmp_gen3x1_pciephy_cfg = {
+>>          .phy_status             = PHYSTATUS,
+>>   };
+>>
+>> +static const struct qmp_phy_cfg ipq9574_pciephy_gen3x2_cfg = {
+>> +       .lanes                  = 2,
+>> +
+>> +       .offsets                = &qmp_pcie_offsets_ipq9574,
+>> +
+>> +       .tbls = {
+>> +               .serdes         = ipq9574_gen3x2_pcie_serdes_tbl,
+>> +               .serdes_num     = ARRAY_SIZE(ipq9574_gen3x2_pcie_serdes_tbl),
+>> +               .tx             = ipq8074_pcie_gen3_tx_tbl,
+>> +               .tx_num         = ARRAY_SIZE(ipq8074_pcie_gen3_tx_tbl),
+>> +               .rx             = ipq6018_pcie_rx_tbl,
+>> +               .rx_num         = ARRAY_SIZE(ipq6018_pcie_rx_tbl),
+>> +               .pcs            = ipq6018_pcie_pcs_tbl,
+>> +               .pcs_num        = ARRAY_SIZE(ipq6018_pcie_pcs_tbl),
+>> +               .pcs_misc       = ipq9574_gen3x2_pcie_pcs_misc_tbl,
+>> +               .pcs_misc_num   = ARRAY_SIZE(ipq9574_gen3x2_pcie_pcs_misc_tbl),
+>> +       },
+>> +       .reset_list             = ipq8074_pciephy_reset_l,
+>> +       .num_resets             = ARRAY_SIZE(ipq8074_pciephy_reset_l),
+>> +       .vreg_list              = NULL,
+>> +       .num_vregs              = 0,
+>> +       .regs                   = pciephy_v4_regs_layout,
 > 
+> So, is it v4 or v5?
 
+Please give me a day or so to go over my notes and give you a more 
+coherent explanation of why this versioning was chosen. I am only 
+working from the QCA 5.4 downstream sources. I don't have any 
+documentation for the silicon
 
-
-
+Alex
+> 
+>> +
+>> +       .pwrdn_ctrl             = SW_PWRDN | REFCLK_DRV_DSBL,
+>> +       .phy_status             = PHYSTATUS,
+>> +};
+>> +
+>>   static const struct qmp_phy_cfg sm8250_qmp_gen3x2_pciephy_cfg = {
+>>          .lanes                  = 2,
+>>
+> 
+> 
+> 
+> --
+> With best wishes
+> Dmitry
 
