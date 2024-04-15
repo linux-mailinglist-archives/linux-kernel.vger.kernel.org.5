@@ -1,214 +1,155 @@
-Return-Path: <linux-kernel+bounces-145063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DF838A4EF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:24:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B15548A4EFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:26:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA372282171
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:24:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2C5D1C20ED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DC06CDD3;
-	Mon, 15 Apr 2024 12:24:03 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAA76BFA3;
+	Mon, 15 Apr 2024 12:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S5x+FvSr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 432196BB48;
-	Mon, 15 Apr 2024 12:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1638D679E2
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713183843; cv=none; b=IukvQuhA8iLTTgBP88v6fUXkvq7z+8XrBzBBzRY9kVShewRR2nr9FSD5cxe/LcNSTQzxoNWIDTL/yaf0+ejEELjTCbJ9UUa/F7xBjJatMqQ2TPl45M+RMJ/VYd+K9JfH1zzCfuE5l0iz+Xx38pHN7Wqge4RIs2EN80aNqdyR8Io=
+	t=1713183955; cv=none; b=J/ieS4u990vhzbSFgGzhMmAxNCdrIR3/ys6WGvmR8QHV82fLsWIWZdjkQ2gIry3oBU8qcl8kv7Wc2VWZzwF3eywUWQmbesABdH8nvJrci0VBjsE16xPDWln+rflqNZy6d6BPSLyQacbWxdsdP3X1PptI+vBpLlalNRfcMNm+Pp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713183843; c=relaxed/simple;
-	bh=Ot6LYru/GwpS7tDhLGOixb+GsRfLIumFbU16Nr8dmbI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kvp7KQpbnNFIdl+SntbDF75AFscJdVCcwoA/HJZ9ZwV3K+Kl77o12GvUUWxaz8XBE2LSkSBE95y9wDO8d18JNb4/0qIjtrKSFYwqDIbdVSh13Mbgk3CNECB3g4Wgboz5mF5gwzePlphCeGMzRYGSqN5IITtNR2gmSzKEBbQNs8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3550DC113CC;
-	Mon, 15 Apr 2024 12:24:01 +0000 (UTC)
-Message-ID: <a0c8faf3-0043-4eed-9e5d-b1a50d7405f1@xs4all.nl>
-Date: Mon, 15 Apr 2024 14:23:59 +0200
+	s=arc-20240116; t=1713183955; c=relaxed/simple;
+	bh=L1V0jRuSiUbCxImGX5gLQ66xX5kwC8N2gF7cCPTzXv8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jJtZmtgINi5XpacjY+LYhCutOpVsuM1vkG7c07JEl6a7xM2KtRdzTZucKrfnYAgzJBhpQsh4jcIQi3DqbsTpzU+u5L3GKF1aCA2UsQSn66h5vlc4xw9Rp8EWG+zFZZT/8rAUXuzhdXJi1FFYDu9TigRYdvvM/UxRlD+eUTG4DCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S5x+FvSr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713183952;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xi1nc+JsCBSl9tDY1rQ0F/hUsrd+06AFpIRijMer3uU=;
+	b=S5x+FvSrBUnJ+m5T7q0GXwWpS7CY1UUFL3u+6kDU4HXSMZMzOTOB16npOVFsBvE0K064WN
+	sUBlAyjDIBLHmJLmLUcugKeWw/0QYYjcPO8MOAwrGbsT5IoRqATFOXYvdxjDVpmLgXynZA
+	qWAjIijUuDl+pWJH3PBciIBexE9FJrU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-75-eTFHdXHtPr6tar0TtmvQyQ-1; Mon,
+ 15 Apr 2024 08:25:45 -0400
+X-MC-Unique: eTFHdXHtPr6tar0TtmvQyQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8DB933C02764;
+	Mon, 15 Apr 2024 12:25:44 +0000 (UTC)
+Received: from localhost (unknown [10.22.8.61])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 882BB2026D06;
+	Mon, 15 Apr 2024 12:25:43 +0000 (UTC)
+Date: Mon, 15 Apr 2024 09:25:42 -0300
+From: "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To: Pavel Machek <pavel@ucw.cz>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	linux-rt-users <linux-rt-users@vger.kernel.org>,
+	stable-rt <stable-rt@vger.kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Carsten Emde <C.Emde@osadl.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Daniel Wagner <daniel.wagner@suse.com>,
+	Tom Zanussi <tom.zanussi@linux.intel.com>,
+	Clark Williams <williams@redhat.com>,
+	Mark Gross <markgross@kernel.org>, Pavel Machek <pavel@denx.de>,
+	Jeff Brady <jeffreyjbrady@gmail.com>
+Subject: Re: [ANNOUNCE] 5.10.213-rt105
+Message-ID: <Zh0cxp0i-jO7Lisp@uudg.org>
+References: <ZgFy9au0Gvkzr6gZ@uudg.org>
+ <ZhzdqyqZrjhXs7ZJ@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] media: usb: siano: Fix allocation of urbs
-Content-Language: en-US, nl
-To: Ricardo Ribalda <ribalda@chromium.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>,
- Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>,
- Lars-Peter Clausen <lars@metafoo.de>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-input@vger.kernel.org
-References: <20240415-smatch-v2-1-65215936d398@chromium.org>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20240415-smatch-v2-1-65215936d398@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gOSc9cJjPjL7deDu"
+Content-Disposition: inline
+In-Reply-To: <ZhzdqyqZrjhXs7ZJ@duo.ucw.cz>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On 15/04/2024 14:12, Ricardo Ribalda wrote:
-> USB urbs must be allocated with usb_alloc_urb. Quoting the manual
-> 
-> Only use this function (usb_init_urb) if you _really_ understand what you
-> are doing.
-> 
-> Fix the following smatch error:
-> 
-> drivers/media/usb/siano/smsusb.c:53:38: warning: array of flexible structures
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
-> Changes in v2: Thanks Hans
-> - Only leave 1/6, the other ones are in another PR
-> - Fix the return tag and NULLify the urbs on return
-> - Link to v1: https://lore.kernel.org/r/20240410-smatch-v1-0-785d009a852b@chromium.org
-> ---
->  drivers/media/usb/siano/smsusb.c | 36 ++++++++++++++++++++++++++----------
->  1 file changed, 26 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/media/usb/siano/smsusb.c b/drivers/media/usb/siano/smsusb.c
-> index 723510520d09..2e25b970946a 100644
-> --- a/drivers/media/usb/siano/smsusb.c
-> +++ b/drivers/media/usb/siano/smsusb.c
-> @@ -40,7 +40,7 @@ struct smsusb_urb_t {
->  	struct smscore_buffer_t *cb;
->  	struct smsusb_device_t *dev;
->  
-> -	struct urb urb;
-> +	struct urb *urb;
->  
->  	/* For the bottom half */
->  	struct work_struct wq;
-> @@ -160,7 +160,7 @@ static int smsusb_submit_urb(struct smsusb_device_t *dev,
->  	}
->  
->  	usb_fill_bulk_urb(
-> -		&surb->urb,
-> +		surb->urb,
->  		dev->udev,
->  		usb_rcvbulkpipe(dev->udev, dev->in_ep),
->  		surb->cb->p,
-> @@ -168,9 +168,9 @@ static int smsusb_submit_urb(struct smsusb_device_t *dev,
->  		smsusb_onresponse,
->  		surb
->  	);
-> -	surb->urb.transfer_flags |= URB_FREE_BUFFER;
-> +	surb->urb->transfer_flags |= URB_FREE_BUFFER;
->  
-> -	return usb_submit_urb(&surb->urb, GFP_ATOMIC);
-> +	return usb_submit_urb(surb->urb, GFP_ATOMIC);
->  }
->  
->  static void smsusb_stop_streaming(struct smsusb_device_t *dev)
-> @@ -178,7 +178,7 @@ static void smsusb_stop_streaming(struct smsusb_device_t *dev)
->  	int i;
->  
->  	for (i = 0; i < MAX_URBS; i++) {
-> -		usb_kill_urb(&dev->surbs[i].urb);
-> +		usb_kill_urb(dev->surbs[i].urb);
->  		if (dev->surbs[i].wq.func)
->  			cancel_work_sync(&dev->surbs[i].wq);
->  
-> @@ -338,6 +338,8 @@ static void smsusb_term_device(struct usb_interface *intf)
->  	struct smsusb_device_t *dev = usb_get_intfdata(intf);
->  
->  	if (dev) {
-> +		int i;
-> +
->  		dev->state = SMSUSB_DISCONNECTED;
->  
->  		smsusb_stop_streaming(dev);
-> @@ -346,6 +348,11 @@ static void smsusb_term_device(struct usb_interface *intf)
->  		if (dev->coredev)
->  			smscore_unregister_device(dev->coredev);
->  
-> +		for (i = 0; i < MAX_URBS; i++) {
-> +			usb_free_urb(dev->surbs[i].urb);
-> +			dev->surbs[i].urb = NULL;
 
-You don't need to assign to NULL here...
+--gOSc9cJjPjL7deDu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +		}
-> +
->  		pr_debug("device 0x%p destroyed\n", dev);
->  		kfree(dev);
+On Mon, Apr 15, 2024 at 09:56:27AM +0200, Pavel Machek wrote:
+> Hi!
+>=20
+> > I'm pleased to announce the 5.10.213-rt105 stable release.
+> >=20
+> > This release is an update to the new stable 5.10.213 version and no ext=
+ra
+> > changes have been performed.
+>=20
+> Thanks for release.
+>=20
+> I see v5.10.214-rt106-rc1 is out there and now v5.10.215-rt107-rc1,
+> but I don't see v5.10.214-rt106 (which would be useful to me).
 
-..since here the whole dev struct is freed.
+Hi Pavel!
 
->  	}
-> @@ -390,6 +397,7 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
->  	void *mdev;
->  	int i, rc;
->  	int align = 0;
-> +	int n_urb = 0;
->  
->  	/* create device object */
->  	dev = kzalloc(sizeof(struct smsusb_device_t), GFP_KERNEL);
-> @@ -461,16 +469,18 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
->  	dev->coredev->is_usb_device = true;
->  
->  	/* initialize urbs */
-> -	for (i = 0; i < MAX_URBS; i++) {
-> -		dev->surbs[i].dev = dev;
-> -		usb_init_urb(&dev->surbs[i].urb);
-> +	for (n_urb = 0; n_urb < MAX_URBS; n_urb++) {
-> +		dev->surbs[n_urb].dev = dev;
-> +		dev->surbs[n_urb].urb = usb_alloc_urb(0, GFP_KERNEL);
-> +		if (!dev->surbs[n_urb].urb)
-> +			goto free_urbs;
->  	}
->  
->  	pr_debug("smsusb_start_streaming(...).\n");
->  	rc = smsusb_start_streaming(dev);
->  	if (rc < 0) {
->  		pr_err("smsusb_start_streaming(...) failed\n");
-> -		goto err_unregister_device;
-> +		goto free_urbs;
->  	}
->  
->  	dev->state = SMSUSB_ACTIVE;
-> @@ -478,13 +488,19 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
->  	rc = smscore_start_device(dev->coredev);
->  	if (rc < 0) {
->  		pr_err("smscore_start_device(...) failed\n");
-> -		goto err_unregister_device;
-> +		goto free_urbs;
->  	}
->  
->  	pr_debug("device 0x%p created\n", dev);
->  
->  	return rc;
->  
-> +free_urbs:
-> +	for (i = 0; i < n_urb; i++) {
-> +		usb_free_urb(dev->surbs[n_urb].urb);
-> +		dev->surbs[n_urb].urb = NULL;
+I submitted v5.10.214-rt106-rc1 to kernelci around 2 weeks ago and there
+were more build problems than usual, though I didn't observe problems in my
+local tests. So I decided to run a few more local tests before releasing th=
+is
+kernel. Based on the current results I will probably release
+v5.10.214-rt106 in the next few hours.
 
-This should use index 'i', right? Not 'n_urb'.
+As for v5.10.215-rt107, there were a few printk changes that I decided to
+submit to kernelci as soon as possible, given the HW diversity available
+there.
 
-I'll wait for v3 :-)
+Best regards,
+Luis
+=20
+> Is it a mistake or should I plan for v5.10.215-rt107?
+>=20
+> Thanks and best regards,
+> 								Pavel
+> --=20
+> People of Russia, stop Putin before his war on Ukraine escalates.
 
-Regards,
 
-	Hans
+---end quoted text---
 
-> +	}
-> +
->  err_unregister_device:
->  	smsusb_term_device(intf);
->  #ifdef CONFIG_MEDIA_CONTROLLER_DVB
-> 
-> ---
-> base-commit: 34d7bf1c8e59f5fbf438ee32c96389ebe41ca2e8
-> change-id: 20240410-smatch-8f235d50753d
-> 
-> Best regards,
+--gOSc9cJjPjL7deDu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEk1QGSZlyjTHUZNFA85SkI/jmfCYFAmYdHMYACgkQ85SkI/jm
+fCYbow//ceRSONcoqY3ExwTMNRxulYIWVkeP9I1Z9k0EdgXCsNqC+hlN9gGYmAkt
+6g4QT7vLTdtr84CEsJQ8+hrOl72TlllC4mAgxwOpIUIxh0KQqu9E8VW6qyMbzv9f
+Oq0s/6rt7jRSwDIxEKnIZJWF4E9NtvVzERtmX3I3UC+scZIrHSe/4Ui+dnR++XOh
+kmiUTR3hQGofhKO674WJXf304yDoZe5J9h1NzFdw1tmKG6lY8Gx1tys7vLaBlA5Q
+czmW2gS+S5o6/UjAqajNP5cwXxnFZIhLTwJ0yNEiPYauF5i7b2AEv3WdWjPERCWJ
+ceMUMOOmR3jwTaBEL10TxeOCLSSAXj10cg8AiFyYJIvSFnYIJPW9Mg2k4VBdyUyV
+r6xz9gfjUntfAfwuLyAK2vBtgK9u+RqQVgkedmagmJZ8kXA0EKz4feB1DSMMBS6d
+4LahZlFLHNmFWSOlN1Yw51pc9qn8mz20dEG6eRzgS9uWZawPXY2Otmy4XMVr5YgN
+4pZaLT0imyINFoO1Z3MiAgbk8J4rt5viosugL0Jr0zlaFVJcypOzX1Ni86wce6l9
++uztTNlJgFsm5RyKgL/FRLbHpNqE+UmADALiI4v/0TG3ZYKaCeRx9BLVXGfpDPJA
+WfejCcs2ZfYIYu22w81PoQocAUpPrS1OexE1mCiOd+f0iQzue/o=
+=2fPT
+-----END PGP SIGNATURE-----
+
+--gOSc9cJjPjL7deDu--
 
 
