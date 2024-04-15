@@ -1,262 +1,267 @@
-Return-Path: <linux-kernel+bounces-145016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB238A4E35
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FCE28A4E39
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:58:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A3DD1F215C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:57:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C17511F21A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD1567A1A;
-	Mon, 15 Apr 2024 11:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="FTq9H99p"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0E6664B7;
+	Mon, 15 Apr 2024 11:57:57 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF1067A0E;
-	Mon, 15 Apr 2024 11:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713182253; cv=fail; b=OkJ2NyeSF594tL5iwX5NY8Xv9fCaf0dbUCqVSrpMlECik3jzCREOWA8c9Wl9a0Ta5QrNERlzRMjI7Ea6a87Wn/NkGs9xp2JFZOX83zYb3Zumlp7zRaBZsXr/IL/KsmzLE7lrYGmI65z+Gx5oM8ssFEgdyxhygTxMBa/uW0V/oMQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713182253; c=relaxed/simple;
-	bh=/zdwYg/5s/D8jGiF8hBGmOYM76b31dm1orTzZ7Zr94g=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=lhYaXowBJiCDFPGptAsYHYDglijqPawZXChdE+bnzhum/uKpOblRaxzQt1+oqhODDgsIvgwScMADVKfEVqP+3bvZ8ZQacgLJ7rMro5DytMnjWKg02pci4TBdZkz5eBV81CtqtqNPd7CMEzZC+jt2p944NpzaBZsjPK4w79zKubM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=FTq9H99p; arc=fail smtp.client-ip=40.107.223.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MWLce5aaSM6dnN0+VkugxBcmITpCS5+5E21q/njDKWsEOYr3IpBvoqjGiHf9R6B79OUNO7y/QI0sMZcr8ct/zRIvp2tDZ+Wi1fMXdPfF/fhZ63JtJuIu8CfiK5BxJL1xhnjzv4lQNcZNO4ZVke49MvDbgbNG4Gm6de89jCD3eVWpNXX0fjPBRrdj9hEsYRhkjLAm0I1Fc0VC1Ye7VG7hh8lAB/pD9RHoLtTBkEGeGQ5mNDqgzq/vl7ot3VwojXa49zUR6f1PwOuyU+DZ1HTrfM84IMnikTEZzNhF71MbLhOS9W3ycQNdPwz5MN/VObigxeqDppRhnkVrbBWj7eMAHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wCptlZIQCcMDtQueiVhSHWTr0JI0xAPMCUZZHpBZEhY=;
- b=mVeGT5fwO7ie9L8of9iNghubC4ke+py9K29qL69wDdDNbJ8TxBb8y9MmZQ1Mp+FASCVoE7zdj/eJiAQHNCyFZDLDBouQvztXxRzCvPGIBcXUDu8iV/3bTV6xQNuciWp6jNSeWw5I6/pOie0i9si9oPlka4PXUpb+8YfFYA/JY0kun5FW0yvkEkp9h+ixLuu7gSUEu3Ni1CiG0h4L65wZU4InK5n2IJQcfKG5emkG+fC4jQlJqbehlvnMCaWa0dWtKlmCEveovjulqQoOXpzdb+zh8ViTKe4bk+GnUYXIbolaTpVm3Md1azlufcbrj5n1Pk5c57LNExevIMFh+zag6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wCptlZIQCcMDtQueiVhSHWTr0JI0xAPMCUZZHpBZEhY=;
- b=FTq9H99p+vwossLsSoaCBoxLZ9AWY7VA/6j3rqPaden0ZnEdnMMLBdONV2f6NOUk2vaNtybKWg+9wWD9tOlJnFDs+sO/EKOfCCpouSZwyBCP5jLmWWAk8k+5CWgSRfzEp7xjyoQXiZC1bEuCezkXmSOGL8ti7rKcyQOFXUUjzmI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by SJ0PR12MB6902.namprd12.prod.outlook.com (2603:10b6:a03:484::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 11:57:27 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
- 11:57:27 +0000
-Message-ID: <aab5ec51-fcff-44f2-a4f5-2979bd776a03@amd.com>
-Date: Mon, 15 Apr 2024 13:57:21 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
-To: zhiguojiang <justinjiang@vivo.com>, "T.J. Mercier" <tjmercier@google.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-References: <20240327022903.776-1-justinjiang@vivo.com>
- <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
- <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com>
- <23375ba8-9558-4886-9c65-af9fe8e8e8b6@amd.com>
- <CABdmKX2Kf4ZmVzv3LGTz2GyP-9+rAtFY9hSAxdkrwK8mG0gDvQ@mail.gmail.com>
- <e55cad9b-a361-4d27-a351-f6a4f5b8b734@vivo.com>
- <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
- <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0371.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f8::7) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB6D66B50;
+	Mon, 15 Apr 2024 11:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713182276; cv=none; b=q6dSQy6WheR5guPc4Tu1w5oq6OCSTbjA6gQQftecF3SIHqAv3qLQWrsO/ULWPXKhBbS+rDcJyDSq1VP2ypJpUCAKTQ5Ybi2ZjLSyXBu89SBy98G51T1xrj2ivdD5EVj7A/eLe/wTbazc5kt+uoBrGBoTWP/0VZxqPaTwWhenAlA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713182276; c=relaxed/simple;
+	bh=PNLuukF0Yp/9iaVTkZtZJkldxbjTYu/S2BxHnxSKgpc=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ff+hVvpU0q0uhOfjCIfW63uRXn6H0bk7tw9hdQfoWLbtGi179deYvqTOwLrKgg6ELHGlkfPzv2YwCZVaHqO+44r36j0eWA8UYDf8prpR6zV/bss/QeoFiisBK/R4Qcov6QkHQx3DYuVstzTzVoxAy692GURw4/4z5rG8LMA87tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VJ5Gl2C5Qz6K6TF;
+	Mon, 15 Apr 2024 19:55:59 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id BAD821409EA;
+	Mon, 15 Apr 2024 19:57:52 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 15 Apr
+ 2024 12:57:52 +0100
+Date: Mon, 15 Apr 2024 12:57:50 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+CC: "Russell King (Oracle)" <linux@armlinux.org.uk>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Miguel Luis
+	<miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	<linuxarm@huawei.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
+Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from
+ acpi_processor_get_info()
+Message-ID: <20240415125750.000026af@huawei.com>
+In-Reply-To: <20240415101637.00007e49@huawei.com>
+References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
+	<20240412143719.11398-4-Jonathan.Cameron@huawei.com>
+	<CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
+	<ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk>
+	<87bk6ez4hj.ffs@tglx>
+	<ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
+	<878r1iyxkr.ffs@tglx>
+	<20240415094552.000008d7@Huawei.com>
+	<20240415101637.00007e49@huawei.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SJ0PR12MB6902:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8d75ea0c-7748-45e5-6e2b-08dc5d43383d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	F4TrhYJNUUSQGf6JV4ZTBZA7hcNjA+Nd3JQCtL/eEa+Az+2GVHC6RxMGcBp39S7zrcWjuslbQgFxfMcsW3xwt7satv5+VrUfvAH6opK4BuSPBcYbZGuBg8I7XCZNM152YstAVvkY2hdIGm3/vpHSt2c8LQW4JCK7IEOE3ts7pkA/8cbX3YQj7Eyf+nogggC4AmcjmIqePX3guB974hGbwS0Jl1BgPFTb1pNLhuEZxySfSG+wMFmxaScvxL4CJWBVE3TBYL24iHms7KhKo/g10Ag0qM2+tx7oZrW475zDJsnjv7AMe2wKe4n+anJ7nHZ0TQUy/6+FopM6yGuvFAWwdgdrFK+txdGFVcNDdn9mdHvBkQoFexPXFee0lcV90gGm3ab8P8KyzGkdM+qaGXxi//Kp0P7w3ubJ1kYtcHPh2Tp7LP81S9tb6FVWWmDXFL3rnb4P8AWGGFB38k1wQApPvSiIukGnBwpDrugxMpDi8/a2zlz/8TY9Ahycmd/JTN0LL+WrzsmA9rR8JBNXlcoioXwQgq6GB9D4XTf19VeNVaa5G5YngHasEOun0F/5G+nPrtHQKxJl7o1ZUDLRCt/Qsdlo4GjOB3t+3/ximVGigRPNJtitiyzF9wLnDnNswvTlLMpYGjuYRmH92PC+rLa/m2p4SMLmj5uUw0A4IQdS1xY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WWJuNjh3eEpSQk9FSkJPNWVOYjJBL1l0L2lHOGtqa1AzU0NQeFFRRUVMRGdZ?=
- =?utf-8?B?RTNWK1ZFQUVDMUN5ejZSR2lKTjFuRWtlSUFSalM4dDN3MkFNTkZ1Y094cDJu?=
- =?utf-8?B?dWxIdXRDWkVxRFBteE80QnUreTIyWTQrc3krSTJJOENVYW9UbWI5TlgrTG9x?=
- =?utf-8?B?Q2FaQmxRa1ZjQWVIeThTdThjdC9mM2Z0UjJkTGtIU2pubk5oVzIwWWc3N29L?=
- =?utf-8?B?SE44djMwdFlPWktyVmhpT2g3aFlrUTg2cGtYbzZlbnZqTElsbE1MU1JUQk91?=
- =?utf-8?B?dFQ4MGQ0aXRIRThoQjRvRGFmQ0wyZzJmRUxOU0RPaTh2dHpIcGpvL2kyUmcw?=
- =?utf-8?B?TDRuRnVaNStiY2N1TGZZdGpmV1owSlM1eVlpUWcwd2lQbU5GN21weSt1Q3J2?=
- =?utf-8?B?NXZPRzlZRjlnbGMxc1dyOHhjeFpJUHF4Y3gwa0R4dVJQeHJyZ2doamVvNkNw?=
- =?utf-8?B?SmNLaU0rOElnTHNCRUNrbXp0Q0ZkZU5sODYzU0dKeWkwZ2FZcDhKNStXNmlV?=
- =?utf-8?B?Y0VBODBaUGFaUmtQL1RhRmsxaFUwc0FVR2hqcTlyRVhCK0xMNGRpQUxoK0J3?=
- =?utf-8?B?b091dlRDV2hNN3JvTmFMMTh4ekhEcCszbi8vdEczT29kVFRmQVV3ekFmWC9I?=
- =?utf-8?B?RTZGUkxsenpMSCs0aTcyekRtR2xNdW8wVCtPdDQraUZNS00rZ29sUHVLR0JW?=
- =?utf-8?B?QXFrOHRKVy8xVDVwb1VYaDBnUldXVEQ1RG9PZ0ZZS3BTTmt4cGpNQjRMWEVp?=
- =?utf-8?B?T1EzY2hsYWVuVjNJRE55NG02eEhFMUNxSUNJWmNON1VNQkxqMzlVd2hzTXN0?=
- =?utf-8?B?NytrdU1DaU5HVW9IUk5XQkl6dHJmZE02MVFCUzdLbUJXdktyRUJFSkRVLzNV?=
- =?utf-8?B?L0gxZGQ4endQdVR4WVR0NmI4citsUWc1eHZPanNlcG5jWFdsNzY3OEIzTlZa?=
- =?utf-8?B?WElMYXZQaXBETzJQT0dFWHYvRXRiNXQzUm81V3BFMFFjM3UxU0VEVHk2NGFT?=
- =?utf-8?B?cGJTSDVFUXpXWlh4cS95MUFnQXptUXl3bGRGVHY4cDVHb0drZWpXa3J4ZEI4?=
- =?utf-8?B?NXlFSTdKVkVPR0pxcEwydG9ESkV4anBuU2V6aVBoWWNiaHFuTkZLd1B0NGZJ?=
- =?utf-8?B?Vm5VUGdTc3dLK091UGFMZDBMY0pyMFplaVBCb3B2VnNFNjdvU2Zld0dDbGMw?=
- =?utf-8?B?OHdiakVRNk5udEJKL3djNmM2Mm91Y0Z1NkhsWkZTenBRaUJseXpwR2tRc2FY?=
- =?utf-8?B?aWhESVZ3RWtvOFl6WGFMZ2VrcG9OeGxVazlHUzM0TE9CTHlXNmNLaW5sWWhM?=
- =?utf-8?B?ZFVmVzNOeDJCZm1DNU9GVHlweHlIODF0QXI1d3lzcm5HcTJnVjY4N3dxOEhF?=
- =?utf-8?B?R1dOUTRiOTFscWFMLzFVRnE5YjhHbEdOV1A0eDkvUEJwWlBSaWYyNEUxMDlh?=
- =?utf-8?B?WHBMMXVPMHNMdThtMFZ4WWV2UXYySHdmeVJZcnRzL1Rta3JWVG5ZSzQ4WkdG?=
- =?utf-8?B?ZlZjekhYTzlZQzBuTVVKb0lSNWgzbWFvaW5YZGJZL1BNbXN0YjB4cWZWSy92?=
- =?utf-8?B?UVFPb2xuNXJMV3dMUGZKTVNRcnM2cFJxYkV5V2hGaW4vL0ZTMnBNejhTaTJk?=
- =?utf-8?B?alcwc0RjblVZNjl0MDBpSVJ2YnhqdjYvV1g3eVVmRUxhNEJ4bHhtWmd0QWxa?=
- =?utf-8?B?b0lBRllPTkY1WHFRaXRmNFpYb0VRM0s0QUhQQ25LQ2hQMkhxU0ZMUGFRUktH?=
- =?utf-8?B?WC9VMWcxeGJZSFNyalAwdzRURFlkSjlqN2owZzBXSHpHQ1NZSUxZWUN6Tkk0?=
- =?utf-8?B?QVZzYzVveUw4NlZjMmVsT09iOGFFQ0crS3pidzVvNDJxR1prbnVtVmt5bjdQ?=
- =?utf-8?B?MGFtbysvbmRtdFhUS2tqUnM4MGJCS0twa0htU1lic08zNUZnRktpeHgvblVP?=
- =?utf-8?B?YzFJNkUwTk93VUkyQmRkMVlwdHZVdDdXQ3djbmJFOFpPQ1RQSHFhSlZpN0Rr?=
- =?utf-8?B?a3JtSjJKbElneUQ1bnJCLzgxdHFtTHpoYVRqNTA5TDdBTjdGV05iSCtKZjAx?=
- =?utf-8?B?R3QwRjRpZ0RFWENaM3pUK3RvaHZQWDRjTjdkN0hPc1RnWXBUUnp1Z3Jra0xR?=
- =?utf-8?Q?DK8w=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d75ea0c-7748-45e5-6e2b-08dc5d43383d
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 11:57:27.2398
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LUJbTjPRugKdwb6Z+b4bzSqDksVPd3GgZALUnjcTv8MsVagYVu1P1hxQ+xWwKEsG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6902
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Am 15.04.24 um 12:35 schrieb zhiguojiang:
-> 在 2024/4/12 14:39, Christian König 写道:
->> [Some people who received this message don't often get email from 
->> christian.koenig@amd.com. Learn why this is important at 
->> https://aka.ms/LearnAboutSenderIdentification ]
->>
->> Am 12.04.24 um 08:19 schrieb zhiguojiang:
->>> [SNIP]
->>> -> Here task 2220 do epoll again where internally it will get/put then
->>> start to free twice and lead to final crash.
->>>
->>> Here is the basic flow:
->>>
->>> 1. Thread A install the dma_buf_fd via dma_buf_export, the fd refcount
->>> is 1
->>>
->>> 2. Thread A add the fd to epoll list via epoll_ctl(EPOLL_CTL_ADD)
->>>
->>> 3. After use the dma buf, Thread A close the fd, then here fd refcount
->>> is 0,
->>>   and it will run __fput finally to release the file
->>
->> Stop, that isn't correct.
->>
->> The fs layer which calls dma_buf_poll() should make sure that the file
->> can't go away until the function returns.
->>
->> Then inside dma_buf_poll() we add another reference to the file while
->> installing the callback:
->>
->>                         /* Paired with fput in dma_buf_poll_cb */
->>                         get_file(dmabuf->file);
-> Hi,
->
-> The problem may just occurred here.
->
-> Is it possible file reference count already decreased to 0 and fput 
-> already being in progressing just before calling 
-> get_file(dmabuf->file) in dma_buf_poll()?
+On Mon, 15 Apr 2024 10:16:37 +0100
+Jonathan Cameron <Jonathan.Cameron@huawei.com> wrote:
 
-No, exactly that isn't possible.
+> On Mon, 15 Apr 2024 09:45:52 +0100
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> 
+> > On Sat, 13 Apr 2024 01:23:48 +0200
+> > Thomas Gleixner <tglx@linutronix.de> wrote:
+> >   
+> > > Russell!
+> > > 
+> > > On Fri, Apr 12 2024 at 22:52, Russell King (Oracle) wrote:    
+> > > > On Fri, Apr 12, 2024 at 10:54:32PM +0200, Thomas Gleixner wrote:      
+> > > >> > As for the cpu locking, I couldn't find anything in arch_register_cpu()
+> > > >> > that depends on the cpu_maps_update stuff nor needs the cpus_write_lock
+> > > >> > being taken - so I've no idea why the "make_present" case takes these
+> > > >> > locks.      
+> > > >> 
+> > > >> Anything which updates a CPU mask, e.g. cpu_present_mask, after early
+> > > >> boot must hold the appropriate write locks. Otherwise it would be
+> > > >> possible to online a CPU which just got marked present, but the
+> > > >> registration has not completed yet.      
+> > > >
+> > > > Yes. As far as I've been able to determine, arch_register_cpu()
+> > > > doesn't manipulate any of the CPU masks. All it seems to be doing
+> > > > is initialising the struct cpu, registering the embedded struct
+> > > > device, and setting up the sysfs links to its NUMA node.
+> > > >
+> > > > There is nothing obvious in there which manipulates any CPU masks, and
+> > > > this is rather my fundamental point when I said "I couldn't find
+> > > > anything in arch_register_cpu() that depends on ...".
+> > > >
+> > > > If there is something, then comments in the code would be a useful aid
+> > > > because it's highly non-obvious where such a manipulation is located,
+> > > > and hence why the locks are necessary.      
+> > > 
+> > > acpi_processor_hotadd_init()
+> > > ...
+> > >          acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
+> > > 
+> > > That ends up in fiddling with cpu_present_mask.
+> > > 
+> > > I grant you that arch_register_cpu() is not, but it might rely on the
+> > > external locking too. I could not be bothered to figure that out.
+> > >     
+> > > >> Define "real hotplug" :)
+> > > >> 
+> > > >> Real physical hotplug does not really exist. That's at least true for
+> > > >> x86, where the physical hotplug support was chased for a while, but
+> > > >> never ended up in production.
+> > > >> 
+> > > >> Though virtualization happily jumped on it to hot add/remove CPUs
+> > > >> to/from a guest.
+> > > >> 
+> > > >> There are limitations to this and we learned it the hard way on X86. At
+> > > >> the end we came up with the following restrictions:
+> > > >> 
+> > > >>     1) All possible CPUs have to be advertised at boot time via firmware
+> > > >>        (ACPI/DT/whatever) independent of them being present at boot time
+> > > >>        or not.
+> > > >> 
+> > > >>        That guarantees proper sizing and ensures that associations
+> > > >>        between hardware entities and software representations and the
+> > > >>        resulting topology are stable for the lifetime of a system.
+> > > >> 
+> > > >>        It is really required to know the full topology of the system at
+> > > >>        boot time especially with hybrid CPUs where some of the cores
+> > > >>        have hyperthreading and the others do not.
+> > > >> 
+> > > >> 
+> > > >>     2) Hot add can only mark an already registered (possible) CPU
+> > > >>        present. Adding non-registered CPUs after boot is not possible.
+> > > >> 
+> > > >>        The CPU must have been registered in #1 already to ensure that
+> > > >>        the system topology does not suddenly change in an incompatible
+> > > >>        way at run-time.
+> > > >> 
+> > > >> The same restriction would apply to real physical hotplug. I don't think
+> > > >> that's any different for ARM64 or any other architecture.      
+> > > >
+> > > > This makes me wonder whether the Arm64 has been barking up the wrong
+> > > > tree then, and whether the whole "present" vs "enabled" thing comes
+> > > > from a misunderstanding as far as a CPU goes.
+> > > >
+> > > > However, there is a big difference between the two. On x86, a processor
+> > > > is just a processor. On Arm64, a "processor" is a slice of the system
+> > > > (includes the interrupt controller, PMUs etc) and we must enumerate
+> > > > those even when the processor itself is not enabled. This is the whole
+> > > > reason there's a difference between "present" and "enabled" and why
+> > > > there's a difference between x86 cpu hotplug and arm64 cpu hotplug.
+> > > > The processor never actually goes away in arm64, it's just prevented
+> > > > from being used.      
+> > > 
+> > > It's the same on X86 at least in the physical world.    
+> > 
+> > There were public calls on this via the Linaro Open Discussions group,
+> > so I can talk a little about how we ended up here.  Note that (in my
+> > opinion) there is zero chance of this changing - it took us well over
+> > a year to get to this conclusion.  So if we ever want ARM vCPU HP
+> > we need to work within these constraints. 
+> > 
+> > The ARM architecture folk (the ones defining the ARM ARM, relevant ACPI
+> > specs etc, not the kernel maintainers) are determined that they want
+> > to retain the option to do real physical CPU hotplug in the future
+> > with all the necessary work around dynamic interrupt controller
+> > initialization, debug and many other messy corners.
+> > 
+> > Thus anything defined had to be structured in a way that was 'different'
+> > from that.
+> > 
+> > I don't mind the proposed flattening of the 2 paths if the ARM kernel
+> > maintainers are fine with it but it will remove the distinctions and
+> > we will need to be very careful with the CPU masks - we can't handle
+> > them the same as x86 does.
+> > 
+> > I'll get on with doing that, but do need input from Will / Catalin / James.
+> > There are some quirks that need calling out as it's not quite a simple
+> > as it appears from a high level.
+> > 
+> > Another part of that long discussion established that there is userspace
+> > (Android IIRC) in which the CPU present mask must include all CPUs
+> > at boot. To change that would be userspace ABI breakage so we can't
+> > do that.  Hence the dance around adding yet another mask to allow the
+> > OS to understand which CPUs are 'present' but not possible to online.
+> > 
+> > Flattening the two paths removes any distinction between calls that
+> > are for real hotplug and those that are for this online capable path.
+> > As a side note, the indicating bit for these flows is defined in ACPI
+> > for x86 from ACPI 6.3 as a flag in Processor Local APIC
+> > (the ARM64 definition is a cut and paste of that text).  So someone
+> > is interested in this distinction on x86. I can't say who but if
+> > you have a mantis account you can easily follow the history and it
+> > might be instructive to not everyone considering the current x86
+> > flow the right way to do it.  
+> 
+> Would a higher level check to catch that we are hitting undefined
+> territory on arm64 be acceptable? That might satisfy the constraint
+> that we should not have any software for arm64 that would run if
+> physical CPU HP is added to the arch in future.  Something like:
+> 
+> @@ -331,6 +331,13 @@ static int acpi_processor_get_info(struct acpi_device *device)
+> 
+>         c = &per_cpu(cpu_devices, pr->id);
+>         ACPI_COMPANION_SET(&c->dev, device);
+> +
+> +       if (!IS_ENABLED(CONFIG_ACPI_CPU_HOTPLUG_CPU) &&
+> +           (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id))) {
+> +               pr_err_once("Changing CPU present bit is not supported\n");
+> +               return -ENODEV;
+> +       }
+> +
+> 
+> This is basically lifting the check out of the acpi_processor_make_present()
+> call in this patch set.
+> 
+> With that in place before the new shared call I think we should be fine
+> wrt to the ARM Architecture requirements.
 
-If a function gets a dma_buf pointer or even more general any reference 
-counted pointer which has already decreased to 0 then that is a major 
-bug in the caller of that function.
+As discussed elsewhere in this thread, I'll push this into the arm64
+specific arch_register_cpu() definition.
 
-BTW: It's completely illegal to work around such issues by using 
-file_count() or RCU functions. So when you suggest stuff like that it 
-will immediately face rejection.
-
-Regards,
-Christian.
-
->
->>
->> This reference is only dropped after the callback is completed in
->> dma_buf_poll_cb():
->>
->>         /* Paired with get_file in dma_buf_poll */
->>         fput(dmabuf->file);
->>
->> So your explanation for the issue just seems to be incorrect.
->>
->>>
->>> 4. Here Thread A not do epoll_ctl(EPOLL_CTL_DEL) manunally, so it
->>> still resides in one epoll_list.
->>>   Although __fput will call eventpoll_release to remove the file from
->>> binded epoll list,
->>>   but it has small time window where Thread B jumps in.
->>
->> Well if that is really the case then that would then be a bug in
->> epoll_ctl().
->>
->>>
->>> 5. During the small window, Thread B do the poll action for
->>> dma_buf_fd, where it will fget/fput for the file,
->>>   this means the fd refcount will be 0 -> 1 -> 0, and it will call
->>> __fput again.
->>>   This will lead to __fput twice for the same file.
->>>
->>> 6. So the potenial fix is use get_file_rcu which to check if file
->>> refcount already zero which means under free.
->>>   If so, we just return and no need to do the dma_buf_poll.
->>
->> Well to say it bluntly as far as I can see this suggestion is completely
->> nonsense.
->>
->> When the reference to the file goes away while dma_buf_poll() is
->> executed then that's a massive bug in the caller of that function.
->>
->> Regards,
->> Christian.
->>
->>>
->>> Here is the race condition:
->>>
->>> Thread A Thread B
->>> dma_buf_export
->>> fd_refcount is 1
->>> epoll_ctl(EPOLL_ADD)
->>> add dma_buf_fd to epoll list
->>> close(dma_buf_fd)
->>> fd_refcount is 0
->>> __fput
->>> dma_buf_poll
->>> fget
->>> fput
->>> fd_refcount is zero again
->>>
->>> Thanks
->>>
->>
->
+> 
+> Jonathan
+> 
+> 
+>         /*
+> > 
+> > Jonathan
+> > 
+> >   
+> > > 
+> > > Thanks,
+> > > 
+> > >         tglx
+> > >     
+> > 
+> > 
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel  
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
 
