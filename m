@@ -1,90 +1,183 @@
-Return-Path: <linux-kernel+bounces-144788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA63C8A4AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AC488A4ABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68892B26529
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:46:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F868B267EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D789F3B18D;
-	Mon, 15 Apr 2024 08:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6273A29A;
+	Mon, 15 Apr 2024 08:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lDZIzck4"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g9J160ZM"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162DE39856;
-	Mon, 15 Apr 2024 08:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E07839856;
+	Mon, 15 Apr 2024 08:46:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170783; cv=none; b=eH5+F8qXSOI3CpO2eTSf8joiDn0zzRHLWzApi69SUmup6fJ+swljFSJjnnpUdD8HzRd2/aDkNtgMNZEZWtjH/vZyygirbw5MUsrByFzFYHJeCgaQSHKewU0fQBVZgdee6h6AWAvaGYLN1TFPTRb8Ceh2s0jBnZlWRmaQo94++dM=
+	t=1713170800; cv=none; b=WF/lTAGLb1z8PqcPG5PszJErRfImsBNYQ7Br/sbrZTbh4iVx2q+4s+ETV0qiAdlrrD4iq15DjvIE8kvwjrdLh/5y0erAiTNsD19TpHA2ldgaXXteomsX58oqptavLbD//58qjytdM7qGcoa0pLIKaEIWWfe01l5TmPnVUNeT7oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170783; c=relaxed/simple;
-	bh=cPXg3aPIXYU2ij/Q5bT/qYLiuY6yQzabqRA3oLzr0x4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HtLtTdj1HLyPJrz+L97iM8jET9RgsUavYzxn97w5IvZDoPsIuhANIfVHh7oYJNzrDVE3bW3xX9rBrI099ihMpVy9NAnv95xemRR9qp1rtygY91XLPdH7ZBnLCmBUVHPfgyS7dx5cL5UJYSUbi/xhQ8Uvx03o+589LFjj1yhipB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=lDZIzck4; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=/YX6USCWJSVZiip4uuo05Pgl5yLVCXv3+OwpmFbpW20=; b=lDZIzck4gsUveDH5ZPPkHWpRM2
-	7AXDgH2y/ktk2EAWhjpS5SYvHXyJo6YJ/5XM/qYf/0XFrOTVtUr9/wEzl1SUkEQpgI7893ycyIp1m
-	oy9HC2kVOJ6AHE1PcFvU1ThJ2MNVnkZRFRMEOeqACfTP7Ex2f1BxP1Ev4o5C3M8Ce8rHeJ5xLHAMu
-	smr3AQqcLzLrszlF/6D1vxW3rq2nwYGz3RKjeOHwtD5P40WiI7cvImvL4pt5zca7tDUpJoOmOjuCr
-	x5vjv/GOz+j4sp/y4an+SQaVQPnM+kT4EvaedTp5ekyO8fzwl4l9J7wODdtEalKFK2YF7DgQzsfqM
-	ohpcAmbA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwHym-00000007b7Y-22mH;
-	Mon, 15 Apr 2024 08:46:20 +0000
-Date: Mon, 15 Apr 2024 01:46:20 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Alex Elder <elder@linaro.org>,
-	corbet@lwn.net, workflows@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
-Message-ID: <ZhzpXOUeldwAzXxY@infradead.org>
-References: <20240414170850.148122-1-elder@linaro.org>
- <ZhzgTeEHFF19N3UZ@infradead.org>
- <2024041544-fester-undead-7949@gregkh>
+	s=arc-20240116; t=1713170800; c=relaxed/simple;
+	bh=hNjwK61PymYGMym9JB2yblANAf//SgH2Jxb5etpvbwU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G9BGiq87D3yC5eqVRSKh+qkAkanxG92Vn+wt4xOsybF4LrXUyR54B/QnZWzJV/3nn4NIMUq6twefM2BZC4oFkklDr6zZnvfifNlHfBnj5tEXABPzOjIGAwsUH/OHnoubSrYdj5s+aL9YPImHr8dx7usdefYE2ZDuv3XJReK1NFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g9J160ZM; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so469175766b.1;
+        Mon, 15 Apr 2024 01:46:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713170797; x=1713775597; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DyOplWo1OhQ7jIS9GC6myR7jZ2q+QwmocYxZHOEBOww=;
+        b=g9J160ZM0hMWRLqBA/1OpbCW/+yyQBOL3zDIWCPn4nVakMKYDcWn5OAVGPMSmJmH4s
+         gCNpOvnrb9zwNhg911g8YgHtsSwS6pPol2s6ibp9bKnJ3EfyYiby6Gj3dqRscYvVCkbX
+         eYqV3OoeweQ2MQyf/DAw7uQpTkxR4zq2M8XLp5uTPOhoCEpufOabJ9UoZGMthsMJcRZF
+         A1x7nInQQk6tSdUai5xknQTjkiGBeuS0K3ucimCavx44zVt+kAgAxI1+UM7BTA1LzCY6
+         fDTRO3xlbgvWAcYzCqQznSW9ChPWlVjwzKG2KDJACAYyh/2S4WEEK4GwEECkEjD2EXPt
+         xMfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713170797; x=1713775597;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DyOplWo1OhQ7jIS9GC6myR7jZ2q+QwmocYxZHOEBOww=;
+        b=CsHsaGaXSG1Vsq+8+K7IKNG7H3aEDJWQrxIbOMOkpCbQpID1uR9gheYq7kuWOj3P8X
+         gPlxY9y5LdS2cK5TLmJJ3K0z7ZMNxCvh1WZVOzbvnhHWGuE8Zya0sjHVMMRlakB1Kt2f
+         vuGnc+5Vg93OlUVxoxW3ObeZdP2AOzu0FSED8jlBxKiYr4v6bZWvzSz3mLPp063fTStn
+         Qy1WK5l3SNJZZpv3SA1mLZqy6CQHblsXKhvJGYW9Vi8K9AT1qtU8w415yDlu9Bo6GjsK
+         n6yHZnpfkzFhcHnkXmLGSOu5zAHp0mdPx2sRTfRvLv2xPFHQVi9WEc2pbr4KsutZzO4S
+         hbMw==
+X-Forwarded-Encrypted: i=1; AJvYcCV4W2vKzRN0QAc7dxfwa50qHUwpgrDGNiV/ULXQ7EKZHoYKRSpMH7cxCE5NZxl1hi7ax83E/9ksRZsobVBwHsrJA0T5OIep
+X-Gm-Message-State: AOJu0YwOC3FQjQ/3WUSwqT9kpVDBVB43PRmUQNs+7A1QaFj5/CLZ3DDb
+	ybi+F5EG5vXQdLj5tNJxFT6HVkURHJCC7viEBhprcyyBF3ZJQ2H9c3jzAfx3DmEUUL1JN5WsZif
+	3E6eCkL+G4gXAmaE/dt8iiKMzKvg=
+X-Google-Smtp-Source: AGHT+IHqdMvIxs/inPslV4MHpewRNPeg8c79P8yGPObfWab8REKuhNGr+8S/hKaSWAe7bykMi7l/THd96lqjXbUub4g=
+X-Received: by 2002:a17:906:f2cb:b0:a52:5b0f:7f99 with SMTP id
+ gz11-20020a170906f2cb00b00a525b0f7f99mr3006372ejb.6.1713170796627; Mon, 15
+ Apr 2024 01:46:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024041544-fester-undead-7949@gregkh>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <CAEkJfYPYF-nNB2oiXfXwjPG0VVB2Bd8Q8kAq+74J=R+4HkngWw@mail.gmail.com>
+ <ZhzYCZyfsWgYWxIe@Laptop-X1>
+In-Reply-To: <ZhzYCZyfsWgYWxIe@Laptop-X1>
+From: Sam Sun <samsun1006219@gmail.com>
+Date: Mon, 15 Apr 2024 16:46:24 +0800
+Message-ID: <CAEkJfYOebGdmKLtn4HXHJ2-CMzig=M+Sc7T0d6ghZcXY_iY5YA@mail.gmail.com>
+Subject: Re: [PATCH net v1] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, j.vosburgh@gmail.com, 
+	andy@greyhouse.net, davem@davemloft.net, Eric Dumazet <edumazet@google.com>, 
+	kuba@kernel.org, pabeni@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 10:35:21AM +0200, Greg KH wrote:
-> On Mon, Apr 15, 2024 at 01:07:41AM -0700, Christoph Hellwig wrote:
-> > No, this advice is wronger than wrong.  If you set panic_on_warn you
-> > get to keep the pieces.  
-> > 
-> 
-> But don't add new WARN() calls please, just properly clean up and handle
-> the error.  And any WARN() that userspace can trigger ends up triggering
-> syzbot reports which also is a major pain, even if you don't have
-> panic_on_warn enabled.
+On Mon, Apr 15, 2024 at 3:32=E2=80=AFPM Hangbin Liu <liuhangbin@gmail.com> =
+wrote:
+>
+> On Mon, Apr 15, 2024 at 11:40:31AM +0800, Sam Sun wrote:
+> > In function bond_option_arp_ip_targets_set(), if newval->string is an
+> > empty string, newval->string+1 will point to the byte after the
+> > string, causing an out-of-bound read.
+> >
+> > BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
+> > Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
+> > CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04=
+/01/2014
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+> >  print_address_description mm/kasan/report.c:364 [inline]
+> >  print_report+0xc1/0x5e0 mm/kasan/report.c:475
+> >  kasan_report+0xbe/0xf0 mm/kasan/report.c:588
+> >  strlen+0x7d/0xa0 lib/string.c:418
+> >  __fortify_strlen include/linux/fortify-string.h:210 [inline]
+> >  in4_pton+0xa3/0x3f0 net/core/utils.c:130
+> >  bond_option_arp_ip_targets_set+0xc2/0x910
+> > drivers/net/bonding/bond_options.c:1201
+> >  __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
+> >  __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:79=
+2
+> >  bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
+> >  bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c=
+:156
+> >  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
+> >  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
+> >  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
+> >  call_write_iter include/linux/fs.h:2020 [inline]
+> >  new_sync_write fs/read_write.c:491 [inline]
+> >  vfs_write+0x96a/0xd80 fs/read_write.c:584
+> >  ksys_write+0x122/0x250 fs/read_write.c:637
+> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
+> >  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> > ---[ end trace ]---
+> >
+> > Fix it by adding a check of string length before using it.
+> >
+> > Reported-by: Yue Sun <samsun1006219@gmail.com>
+>
+> Not sure if there is a need to add Reported-by yourself if you are the au=
+thor.
+>
+> Also you need a Fixes tag if the patch target is net tree.
 
-Important distinction here:  WARN_ON_ONCE is for internal error
-checking and absolutely intentional, and does not replace error
-handling, that's why it passes the error value through.  OF course
-it should not be trigger by user action.
+Sorry for missing the Fixes tag, I will add it to patch. I am also not
+sure if I should add Reported-by here, since it's my first time to
+commit a patch for linux.
 
-> And I think the "do not use panic_on_warn" recommendation has been
-> ignored, given the huge use of it by vendors who have enabled it (i.e.
-> all Samsung phones and cloud servers).
+> > Signed-off-by: Yue Sun <samsun1006219@gmail.com>
+> > ---
+> >  drivers/net/bonding/bond_options.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/bonding/bond_options.c
+> > b/drivers/net/bonding/bond_options.c
+> > index 4cdbc7e084f4..db8d99ca1de0 100644
+> > --- a/drivers/net/bonding/bond_options.c
+> > +++ b/drivers/net/bonding/bond_options.c
+> > @@ -1214,7 +1214,8 @@ static int bond_option_arp_ip_targets_set(struct
+> > bonding *bond,
+> >      __be32 target;
+> >
+> >      if (newval->string) {
+> > -        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) =
+{
+> > +        if (!(strlen(newval->string)) ||
+> > +            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NULL)=
+) {
+> >              netdev_err(bond->dev, "invalid ARP target %pI4 specified\n=
+",
+> >                     &target);
+>
+> Do we need to init target first if !(strlen(newval->string)) ?
+>
+Good question. I think we don't need to init target first, since in
+original logic in4_pton() also leave target untouched if any error
+occurs. If !(strlen(newval->string)), bond_option_arp_ip_targets_set()
+just ret and target is still untouched. But I am not sure about it.
 
-Sucks for them.
+If anyone finds other problems, please let me know.
 
+Thanks,
+Yue
+> Thanks
+> Hangbin
+> >              return ret;
+> > --
+> > 2.34.1
 
