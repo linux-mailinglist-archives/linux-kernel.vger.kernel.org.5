@@ -1,139 +1,167 @@
-Return-Path: <linux-kernel+bounces-146937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC3768A6D39
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB358A70B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:00:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F17A287043
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:02:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59991286479
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0246512C7FA;
-	Tue, 16 Apr 2024 14:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35ABD133297;
+	Tue, 16 Apr 2024 15:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uh97x9WI"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EB8iPRfD"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8438112838C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10600131730
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713276145; cv=none; b=VOx4yQp0xOC0mN1p6Z0Z92y529wX+MCa2OVYDaWki8yj3bzlQmUx2Y+eBFTkIwYPawlm7zTfXs/HiZVtYSg9SGbvvUCXGSso1UJUDdGbRpxWGf3p9t9qDfRoMwmOnU/nUV7lNYWuaWDbhPWYxMkPyi5VIXwgQ1LIJIzx8DTAFGw=
+	t=1713282872; cv=none; b=oazVf2UYHL/Xve/GgQYmU5+y1q0VhAkzCD3T7+HX5KGwDdPs9+N+ajTk8o6upkrkNZsA6sFiWsiew3QZOhQXTs8H++ZUQKx1AqDIHtFt5TaLzzZIfCKpgKcW5wiHd3KSx1wVoZniHMREW5b3Ig5lxiTFYqCfFffEYNcLbHL8UzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713276145; c=relaxed/simple;
-	bh=aq4WULx4oU8PWVFDbyE/q2y5CCkeP+pW40hjR/O5U5U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H49sMVkjZLJcNKjRoDJu7tP2OHgrWoOxbr2BtWsG1xhdKSVsVX/MtL0KhOFv3lgt3JRZKhFd6JXQ7S81u1LtMZlUKwUhZLUv89ikCVfDHXSTh5OIZesgO/RNnETqbvjtDlShfARF6bmbm/0SohoejltrEreAo9mXD/6irtx8OzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uh97x9WI; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713276141; x=1744812141;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=aq4WULx4oU8PWVFDbyE/q2y5CCkeP+pW40hjR/O5U5U=;
-  b=Uh97x9WIl++ht0zyMbTpQPbvj36eY5TMOV4i/MwDNNfrIfvAwtZNCJt4
-   YuH/OZ4me1n830KU1n/pcTJgyGOahYSiXMtVjZIBxS/hNiYjyP+6moK3c
-   AS85KTWkxzXjwaRSH3RJ9KgmOvjAg4YPq0yqsO0E+jQduq5HOF1ksa0EL
-   L4aC/vXt1FLJBeln9E2z4zab4z34Go+pMKSD4VrH/CrKhY3oLuxiUL/hL
-   Vf7Ri28rjUFiAZt7RtJT8OmMtSz7zKw70oqI4K1gu4rGFgmOQ4izt43TT
-   Vs60JduCY24xDvVHs5e8QcTdL9GXj2Tu3ZY143xDyftcxsc7ocl7AbRfS
-   g==;
-X-CSE-ConnectionGUID: zkCGrFwqRt+OfZIlxB58lA==
-X-CSE-MsgGUID: 4h46HzEZTKiQ23ntU18uhQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="31194925"
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="31194925"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 07:02:20 -0700
-X-CSE-ConnectionGUID: icVMWAgLTwW81gHbqyIMKg==
-X-CSE-MsgGUID: WApQUCbISDWHDcL4/0VG6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="22744751"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 07:02:17 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rwjO1-00000004iJI-0sDY;
-	Tue, 16 Apr 2024 17:02:13 +0300
-Date: Tue, 16 Apr 2024 17:02:12 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: "Xu, Baojun" <baojun.xu@ti.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-	"perex@perex.cz" <perex@perex.cz>,
-	"pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>,
-	"Lu, Kevin" <kevin-lu@ti.com>,
-	"Ding, Shenghao" <shenghao-ding@ti.com>,
-	"Navada Kanyana, Mukund" <navada@ti.com>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
-	"yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-	"broonie@kernel.org" <broonie@kernel.org>,
-	"soyer@irl.hu" <soyer@irl.hu>,
-	"13916275206@139.com" <13916275206@139.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v2 1/3] ALSA: hda/tas2781: Modification
- for add tas2781 driver for SPI
-Message-ID: <Zh6E5PzTfxawXVbT@smile.fi.intel.com>
-References: <20240409024816.1180-1-baojun.xu@ti.com>
- <20240409024816.1180-2-baojun.xu@ti.com>
- <ZhU8fCOLOlu4azGL@smile.fi.intel.com>
- <9287a3c1a2384cacad92652fdd1cac2e@ti.com>
+	s=arc-20240116; t=1713282872; c=relaxed/simple;
+	bh=NBX22NzAV2D33/9WevgMcwY9UIk9hlcXx60fYqEoTf8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rdds9EASwmanYI9tHfsDN6ujFsxCulOm08go6VBIkkQmTwvuj1btDoFbWknneAgR5q/15PkBAs0CKyEsHdwfms9sXJpVxVUwGApRGFRPXJBdEddkFzfdfCrx7JyKnypPvvZlijg6G9+Q32xJcDisq2GD9dLTVNx+RX/zQtLD+ks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EB8iPRfD; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e5c7d087e1so29362595ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:54:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713282870; x=1713887670; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=I3CbqEVdCbWeZaOCjzLjzDTuSiZuxL3hZ8odrscUk2Q=;
+        b=EB8iPRfDwRIp0ive8VqaEkpG/vryjbLOdMmFKIPU4pDW29jbCMRdHq49Bb7MQBKsUO
+         aCbdPtWsG4yIV4WXSC+enqF8ZDNk7QxUCz6VjDAc6ExqB/EaxSIzWileq2bPy2MZ68CG
+         boS1nB3XMOSkTtiu/F/8Bm8xO1oXWxEyyLDAeroHVa4Zh+9QDfgDTmkIKcYM4J+xr4UL
+         k8vXSRnYa9Fdp3e5D01PDDYvbhHr6kIEvJyss6RyCKOL9rqzhKYhPqP6igAXC+Gd9uUv
+         /C1kiX2IkIkmFCqsmQvDCVrHcrBftvUqkDD5BIh9YUvqNSQ7pDypra9zhvOHlSoLvsSZ
+         R11Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713282870; x=1713887670;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I3CbqEVdCbWeZaOCjzLjzDTuSiZuxL3hZ8odrscUk2Q=;
+        b=gdIPXKK5Kwo91F8L5LYuVa3b0l6nDimorX9thEegC1/hcYB3pe/1sQePjfuYnNASvf
+         bvq2YC7zUB72c0u5ZtsEkiBtfsD6SLitEcQQsaEQ5BeazW93XbRb+93jSCzdkpXAs95y
+         YdooB5/K01FScsfsTekdRDDEJCD1loANiGeRMBTbpyfb9Ua6x6NSTGSg5f4q077w8vnK
+         0Mr/kFDvuU/SA3SINlySHa1yZhULm5lLkU7iqtS5papiBAgfdXh0LqA7uOgQOORM3ULH
+         1rHtSi/e2sb5UjHWm+FvGIGlT4tt5oxjiu3RZpZLjTzKqnFu8mXz9J/MAEOoW+Xm9YP7
+         laXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWO00ckFxlcrkjbh0PQmxd583jiYwDptDLRa6Cochww907KqGoNdDRST6I0EgGYwiPuCEQcwBiKOZw/sCKEO85STQQmMrygbKpCTESf
+X-Gm-Message-State: AOJu0YyVxgmPvcUm8HcG0Y8vX79SRkvjlDzeeGIWQGG/FIQ8X9/k4Uhu
+	kYXejiKyCi7EJXB8T9dee638iK9nbtFy+gIrgFVFhfzG6ikUpzkn9TnBcLscSac=
+X-Google-Smtp-Source: AGHT+IF84lscKCKBm2lowk+hN2Zdtfz4iAdfwocwbawEyeIb+vu86YJ348uVkLyfaajJ3OZlMUKxgQ==
+X-Received: by 2002:a17:902:fc44:b0:1e1:1d5:f857 with SMTP id me4-20020a170902fc4400b001e101d5f857mr13761677plb.34.1713282870357;
+        Tue, 16 Apr 2024 08:54:30 -0700 (PDT)
+Received: from [10.36.51.174] ([24.75.208.155])
+        by smtp.gmail.com with ESMTPSA id n13-20020a170902e54d00b001dc01efaec2sm9939360plf.168.2024.04.16.08.54.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 08:54:29 -0700 (PDT)
+Message-ID: <1f94ee56-7f8e-453b-ab86-f640b298d81c@linaro.org>
+Date: Mon, 15 Apr 2024 17:24:50 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9287a3c1a2384cacad92652fdd1cac2e@ti.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] dt-bindings: power: Extend battery chemistry with
+ capacitor
+To: Mike Looijmans <mike.looijmans@topic.nl>, linux-pm@vger.kernel.org
+Cc: Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.b2a893bc-f00b-47cf-ae07-b37ec1bace22@emailsignatures365.codetwo.com>
+ <20240415081305.316107-1-mike.looijmans@topic.nl>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240415081305.316107-1-mike.looijmans@topic.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 07:45:21AM +0000, Xu, Baojun wrote:
-> > From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Sent: 09 April 2024 21:02
-> > On Tue, Apr 09, 2024 at 10: 48: 13AM +0800, Baojun Xu wrote:
-> > On Tue, Apr 09, 2024 at 10:48:13AM +0800, Baojun Xu wrote:
-
-..
-
-> > > @@ -39,6 +39,7 @@ snd-hda-scodec-cs35l56-spi-objs :=  cs35l56_hda_spi.o
-> > >  snd-hda-cs-dsp-ctls-objs :=          hda_cs_dsp_ctl.o
-> > >  snd-hda-scodec-component-objs :=     hda_component.o
-> > >  snd-hda-scodec-tas2781-i2c-objs :=   tas2781_hda_i2c.o
-> > > +snd-hda-scodec-tas2781-spi-objs :=   tas2781_hda_spi.o tas2781_spi_fwlib.o
-> > 
-> > Actually these 'objs' has to be 'y', can you fix it in the prerequisite patch?
+On 15/04/2024 10:13, Mike Looijmans wrote:
+> Another technology to store energy is a (super)capacitor.
 > 
-> Do you mean set CONFIG_SND_HDA_SCODEC_TAS2781_SPI=y in .config?
-
-No. I mean the Kconfig syntax in use. -objs is for user space tools. Kernel
-code should use -y in this case.
-
-> It's m now.
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> ---
 > 
-> > Also wondering why fwlib is only a requirement for SPI. How does I²C work?
+> (no changes since v1)
 > 
-> Because in I2C mode, one probed device driver will support all devices,
-> firmware binary is only one file, include all of devices.
-> But in SPI mode, multi driver probed, so we use single firmware binary for
-> every spi device.
+>  Documentation/devicetree/bindings/power/supply/battery.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/power/supply/battery.yaml b/Documentation/devicetree/bindings/power/supply/battery.yaml
+> index 491488e7b970..a22c97dfad88 100644
+> --- a/Documentation/devicetree/bindings/power/supply/battery.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/battery.yaml
+> @@ -44,6 +44,7 @@ properties:
+>        - const: lithium-ion-polymer
+>        - const: lithium-ion-iron-phosphate
+>        - const: lithium-ion-manganese-oxide
+> +      - const: capacitor
 
-But does I²C version still need the firmware? Can't the FW handling be factored
-out to a single module for both?
+Please keep some sort of order... everyone insists on adding to the end
+of the lists...
 
--- 
-With Best Regards,
-Andy Shevchenko
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
+Best regards,
+Krzysztof
 
 
