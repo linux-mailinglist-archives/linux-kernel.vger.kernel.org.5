@@ -1,59 +1,84 @@
-Return-Path: <linux-kernel+bounces-144807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2578A4AF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:56:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0C148A4B01
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:58:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C33F81C218E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:56:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98067284582
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CCE83BBD7;
-	Mon, 15 Apr 2024 08:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YFhDwcgj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA543A1B9;
-	Mon, 15 Apr 2024 08:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DA63BBF0;
+	Mon, 15 Apr 2024 08:57:56 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D01D63BB25;
+	Mon, 15 Apr 2024 08:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713171387; cv=none; b=KOtWTS+0If+PLFudLwIR5aOo4qBWQE9nxTg4kIduEfEjXHTUwZvq1H+0Tl2WiVvuR+po2zr4cPmO8pj74pDYC93Y0lkIYtJDwEWEwjIwQRrnykxQjJt7Qc+FI3q1rC9DN5e5LunpEPm0AHNjrNuNOlbX9LW7WzJdlzgFT5km83A=
+	t=1713171476; cv=none; b=pt8A/MTvPtZ+oB70UEOA4vM0Xw0Lx9I257V3H3VdYXl+a1JFo1485+pX/eNyUF31ghFCuSw74PjYAIaoOV4OLt/BCv8XCyn6Gskmt/WjI0WVmUOa+Mxen062I678vDgfLLEeB+mbdvc3+/fI2oxsUrttN21rCSexyH1WZlVHYY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713171387; c=relaxed/simple;
-	bh=xWZtjC+LQfFxNMLejVEiu5/vf0PJkwCqqsJP733tOOo=;
+	s=arc-20240116; t=1713171476; c=relaxed/simple;
+	bh=y17O9lADy1koeCNGu1Oe7+FyvbVjW2CQKFJ5vnc/bJk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EvwJyfHH2yhDXTlUNiuqLBrtZpPdlGViEcyiXhLA0Y5xk3X0SsSVjSvMuAnLVUX1spHjA2V/VGNm40C7+x8YLurb+GDUjTqoQUgH1IQchJLR7CB3nl859fjpQnzC3YNMktKMUKKFiaQRxWdm4QiDViSPVaPmzHPfmqnVSyel3qE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YFhDwcgj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2129DC113CC;
-	Mon, 15 Apr 2024 08:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713171387;
-	bh=xWZtjC+LQfFxNMLejVEiu5/vf0PJkwCqqsJP733tOOo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YFhDwcgj7mJNrdS4Avb1A4655SIRw512jZx0p+Si/0YEJHhNyB4JiGp9LVuS0ETPr
-	 CuB3LYCGQEAPbx/TUri5NtyDkktkk+zX4EadcA0TYcI+AMn6u7JuJbW7UjbMvlSCPS
-	 Hkq8+zUuAVEJwR2GivqSOR1CFoXX8P+q5jCJMMk+7WpLCaUukU3KcrnhvUOBcgBJwl
-	 1T8fl/M/hFfBmGAxaszp3aAExgc29dS80XsEp6kiEjZoiZCXrZbzDHkS63HldraQq5
-	 QP0eASsxdNxF8nHrPwBvxefpEHeEr5iYPdrrKxnL1/mS/sUf3eqlBeb+yUu3MXj2IE
-	 PmMdDdX5KcmKw==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rwI8W-000000007Yv-3xrJ;
-	Mon, 15 Apr 2024 10:56:25 +0200
-Date: Mon, 15 Apr 2024 10:56:24 +0200
-From: Johan Hovold <johan@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/52] USB: serial: store owner from modules with
- usb_serial_register_drivers()
-Message-ID: <ZhzruFpJPfORWqYv@hovoldconsulting.com>
-References: <20240328-module-owner-usb-serial-v1-0-bc46c9ffbf56@linaro.org>
- <20240328-module-owner-usb-serial-v1-1-bc46c9ffbf56@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ny2kBMLj5rh7luH0Vl2mG1y2ZAPnkk0MLgXY8BDkVedg/WnVs8m78aBFzqovagbYpc6AZE1c8HsdbOgUlPvv2lt4NoCUbt9XaaGKFbbroH1Xr6s/Gwb5W21Tae2wzCbFjV2Kj2SHQY/Mdw/3A52pNimag8gkAWE//t88PCjXbBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D38C2F;
+	Mon, 15 Apr 2024 01:58:22 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E68D3F64C;
+	Mon, 15 Apr 2024 01:57:48 -0700 (PDT)
+Date: Mon, 15 Apr 2024 09:57:45 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Rob Herring <robh@kernel.org>
+Cc: soc@kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Tsahee Zidenberg <tsahee@annapurnalabs.com>,
+	Antoine Tenart <atenart@kernel.org>,
+	Khuong Dinh <khuong@os.amperecomputing.com>,
+	Liviu Dudau <liviu.dudau@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Robert Richter <rric@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Li Yang <leoyang.li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	"Paul J. Murphy" <paul.j.murphy@intel.com>,
+	Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+	Heiko Stuebner <heiko@sntech.de>, Orson Zhai <orsonzhai@gmail.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>, linux-fsd@tesla.com,
+	Michal Simek <michal.simek@amd.com>, devicetree@vger.kernel.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev, linux-mediatek@lists.infradead.org,
+	linux-tegra@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-realtek-soc@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH] arm/arm64: dts: Drop "arm,armv8-pmuv3" compatible usage
+Message-ID: <ZhzsCYu4PEYaQFaF@bogus>
+References: <20240412222857.3873079-1-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,55 +87,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240328-module-owner-usb-serial-v1-1-bc46c9ffbf56@linaro.org>
+In-Reply-To: <20240412222857.3873079-1-robh@kernel.org>
 
-On Thu, Mar 28, 2024 at 11:05:39PM +0100, Krzysztof Kozlowski wrote:
-> Modules registering driver with usb_serial_register_drivers() might
-> forget to set .owner field.  The field is used by some of other kernel
-> parts for reference counting (try_module_get()), so it is expected that
-> drivers will set it.
+On Fri, Apr 12, 2024 at 05:28:51PM -0500, Rob Herring wrote:
+> The "arm,armv8-pmuv3" compatible is intended only for s/w models. Primarily,
+> it doesn't provide any detail on uarch specific events.
 > 
-> Solve the problem by moving this task away from the drivers to the core
-> amba bus code, just like we did for platform_driver in
-
-"amba"
-
-> commit 9447057eaff8 ("platform_device: use a macro instead of
-> platform_driver_register").
+> There's still remaining cases for CPUs without any corresponding PMU
+> definition and for big.LITTLE systems which only have a single PMU node
+> (there should be one per core type).
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  drivers/usb/serial/usb-serial.c | 12 +++++++-----
->  include/linux/usb/serial.h      |  7 +++++--
->  2 files changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/usb-serial.c b/drivers/usb/serial/usb-serial.c
-> index f1e91eb7f8a4..a659f2096a1a 100644
-> --- a/drivers/usb/serial/usb-serial.c
-> +++ b/drivers/usb/serial/usb-serial.c
-> @@ -1459,17 +1459,18 @@ static void usb_serial_deregister(struct usb_serial_driver *device)
->  }
->  
->  /**
-> - * usb_serial_register_drivers - register drivers for a usb-serial module
-> + * __usb_serial_register_drivers - register drivers for a usb-serial module
->   * @serial_drivers: NULL-terminated array of pointers to drivers to be registered
-> + * @owner: owning module/driver
+> SoC Maintainers, Can you please apply this directly.
+> ---
+>  arch/arm/boot/dts/broadcom/bcm2711.dtsi              | 4 ++--
+>  arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi    | 2 +-
+>  arch/arm64/boot/dts/amazon/alpine-v2.dtsi            | 2 +-
+>  arch/arm64/boot/dts/apm/apm-storm.dtsi               | 2 +-
+>  arch/arm64/boot/dts/arm/vexpress-v2f-1xv7-ca53x2.dts | 2 +-
+>  arch/arm64/boot/dts/broadcom/northstar2/ns2.dtsi     | 2 +-
+>  arch/arm64/boot/dts/broadcom/stingray/stingray.dtsi  | 2 +-
+>  arch/arm64/boot/dts/cavium/thunder-88xx.dtsi         | 2 +-
+>  arch/arm64/boot/dts/cavium/thunder2-99xx.dtsi        | 2 +-
+>  arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi       | 2 +-
+>  arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi       | 2 +-
+>  arch/arm64/boot/dts/freescale/fsl-ls2080a.dtsi       | 7 +++++++
+>  arch/arm64/boot/dts/freescale/fsl-ls2088a.dtsi       | 7 +++++++
+>  arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi       | 5 -----
+>  arch/arm64/boot/dts/freescale/imx8dxl.dtsi           | 2 +-
+>  arch/arm64/boot/dts/intel/keembay-soc.dtsi           | 2 +-
+>  arch/arm64/boot/dts/intel/socfpga_agilex.dtsi        | 2 +-
+>  arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi        | 2 +-
+>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi         | 2 +-
+>  arch/arm64/boot/dts/mediatek/mt8516.dtsi             | 2 +-
+>  arch/arm64/boot/dts/nvidia/tegra210.dtsi             | 2 +-
+>  arch/arm64/boot/dts/qcom/qcm2290.dtsi                | 2 +-
+>  arch/arm64/boot/dts/qcom/qdu1000.dtsi                | 2 +-
+>  arch/arm64/boot/dts/qcom/sdm630.dtsi                 | 2 +-
+>  arch/arm64/boot/dts/qcom/sdx75.dtsi                  | 2 +-
+>  arch/arm64/boot/dts/realtek/rtd16xx.dtsi             | 2 +-
+>  arch/arm64/boot/dts/rockchip/rk3368.dtsi             | 2 +-
+>  arch/arm64/boot/dts/sprd/sc9860.dtsi                 | 2 +-
+>  arch/arm64/boot/dts/sprd/sc9863a.dtsi                | 2 +-
+>  arch/arm64/boot/dts/synaptics/berlin4ct.dtsi         | 2 +-
+>  arch/arm64/boot/dts/tesla/fsd.dtsi                   | 2 +-
+>  arch/arm64/boot/dts/xilinx/zynqmp.dtsi               | 2 +-
+>  32 files changed, 44 insertions(+), 35 deletions(-)
+>
 
-Just "module"
+[...]
 
->   * @name: name of the usb_driver for this set of @serial_drivers
->   * @id_table: list of all devices this @serial_drivers set binds to
->   *
->   * Registers all the drivers in the @serial_drivers array, and dynamically
->   * creates a struct usb_driver with the name @name and id_table of @id_table.
->   */
-> -int usb_serial_register_drivers(struct usb_serial_driver *const serial_drivers[],
-> -				const char *name,
-> -				const struct usb_device_id *id_table)
-> +int __usb_serial_register_drivers(struct usb_serial_driver *const serial_drivers[],
-> +				  struct module *owner, const char *name,
-> +				  const struct usb_device_id *id_table)
+> diff --git a/arch/arm64/boot/dts/arm/vexpress-v2f-1xv7-ca53x2.dts b/arch/arm64/boot/dts/arm/vexpress-v2f-1xv7-ca53x2.dts
+> index 8db4243a4947..9115c99d0dc0 100644
+> --- a/arch/arm64/boot/dts/arm/vexpress-v2f-1xv7-ca53x2.dts
+> +++ b/arch/arm64/boot/dts/arm/vexpress-v2f-1xv7-ca53x2.dts
+> @@ -102,7 +102,7 @@ timer {
+>  	};
+>
+>  	pmu {
+> -		compatible = "arm,armv8-pmuv3";
+> +		compatible = "arm,cortex-a53-pmu";
+>  		interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
+>  			     <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+>  	};
 
-Johan
+(For vexpress related change)
+
+Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+
+--
+Regards,
+Sudeep
 
