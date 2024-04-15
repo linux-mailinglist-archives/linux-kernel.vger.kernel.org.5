@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-145250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5872F8A5172
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:33:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32E3C8A5174
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:33:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF65EB234AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:33:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88549B22C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:33:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33ACB129E9F;
-	Mon, 15 Apr 2024 13:22:19 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4A312AAD7;
+	Mon, 15 Apr 2024 13:22:20 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C82129E6D;
-	Mon, 15 Apr 2024 13:22:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087A7129A99;
+	Mon, 15 Apr 2024 13:22:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713187338; cv=none; b=J0vR7JWONgYwylRqKClUojaS1mj+4HwsJ51gKKPODYZsdVu+cYxVhcOj/oBcLQzSkngVS6fo7dStvBCg4fPlSkfpX0ITtWT7Jj3amCyfniGwof4D0g/DAtVwFFUlRE323ppDulTuDjnk7lRWKw/ATU+eQC4bQiT7jPONy1CUxhw=
+	t=1713187339; cv=none; b=dFAtK/lriYMHGH64988k4DeN1HudCdQ8A07i1rzKsBmIC/WHGAD1EkCeBlv/VkLEWYoJo+751lP8gHx5Wjkh0pNYA5f7hnoamFqtQtEEOGLXa2tyIHXz6AUU0e8lViJYzCCL9XQqnPpH0IKAZNPn27r0aYApYFsBviRVXEcd70E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713187338; c=relaxed/simple;
-	bh=X6NPrzPSXigXQjpjhvytUi+UP0PZWhvVUdbGdOHDUTQ=;
+	s=arc-20240116; t=1713187339; c=relaxed/simple;
+	bh=S3+R4GR54Egj1XPpy0lLWijQ8y0m54mAman9hLnQH60=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EkpOnMWIj5OZnv9ANFwqpbUHwhobnhucDrEywjftS6m/LE/OoysBZmn8mcZM2fMjWiw4ml+vwYRPrrQ+V7zQejT9zOIzvcgH/IBCMym/NTTVwQG1bDVY5BqK3qZq0TLDA+9eQBQ8dDvFTDnFfy4aBqvQ4y69aDhjAd8oc8rSloY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+	 MIME-Version:Content-Type; b=SvsBEXFJvugMO4tl3RBO7cG/Gwp3HxsfhMy0yfD9U9kHkQQ+gLtxiT90mgRDG23eSpDp7Uv5IzVJykjXgIp9Tc1t7HflJWOGn8Ncr4M3CpYcF7/93llRXk5j74kWtucAKjkdBjKstbuheuJQxkjXwMh14uiAOnbeVCXm5aBjV1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VJ7983ZXkz1wryw;
-	Mon, 15 Apr 2024 21:21:16 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VJ76v2HPmz1fxcp;
+	Mon, 15 Apr 2024 21:19:19 +0800 (CST)
 Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 333DD140410;
-	Mon, 15 Apr 2024 21:22:14 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 15A9818002D;
+	Mon, 15 Apr 2024 21:22:16 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 21:22:13 +0800
+ 15.1.2507.35; Mon, 15 Apr 2024 21:22:15 +0800
 From: Yunsheng Lin <linyunsheng@huawei.com>
 To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
 CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
 	<linyunsheng@huawei.com>, Alexander Duyck <alexander.duyck@gmail.com>, Andrew
  Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-Subject: [PATCH net-next v2 09/15] mm: page_frag: reuse MSB of 'size' field for pfmemalloc
-Date: Mon, 15 Apr 2024 21:19:34 +0800
-Message-ID: <20240415131941.51153-10-linyunsheng@huawei.com>
+Subject: [PATCH net-next v2 10/15] mm: page_frag: reuse existing bit field of 'va' for pagecnt_bias
+Date: Mon, 15 Apr 2024 21:19:35 +0800
+Message-ID: <20240415131941.51153-11-linyunsheng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20240415131941.51153-1-linyunsheng@huawei.com>
 References: <20240415131941.51153-1-linyunsheng@huawei.com>
@@ -60,87 +60,182 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpemm500005.china.huawei.com (7.185.36.74)
 
-The '(PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)' case is for the
-system with page size less than 32KB, which is 0x8000 bytes
-requiring 16 bits space, change 'size' to 'size_mask' to avoid
-using the MSB, and change 'pfmemalloc' field to reuse the that
-MSB, so that we remove the orginal space needed by 'pfmemalloc'.
-
-For another case, the MSB of 'offset' is reused for 'pfmemalloc'.
+As alignment of 'va' is always aligned with the order of the
+page allocated, we can reuse the LSB bits for the pagecount
+bias, and remove the orginal space needed by 'pagecnt_bias'.
+Also limit the 'fragsz' to be at least the size of
+'usigned int' to match the limited pagecnt_bias.
 
 Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 ---
- include/linux/page_frag_cache.h | 13 ++++++++-----
- mm/page_frag_cache.c            |  5 +++--
- 2 files changed, 11 insertions(+), 7 deletions(-)
+ include/linux/page_frag_cache.h | 20 +++++++----
+ mm/page_frag_cache.c            | 63 +++++++++++++++++++--------------
+ 2 files changed, 50 insertions(+), 33 deletions(-)
 
 diff --git a/include/linux/page_frag_cache.h b/include/linux/page_frag_cache.h
-index fe5faa80b6c3..40a7d6da9ef0 100644
+index 40a7d6da9ef0..a97a1ac017d6 100644
 --- a/include/linux/page_frag_cache.h
 +++ b/include/linux/page_frag_cache.h
-@@ -12,15 +12,16 @@ struct page_frag_cache {
- 	void *va;
+@@ -9,7 +9,18 @@
+ #define PAGE_FRAG_CACHE_MAX_ORDER	get_order(PAGE_FRAG_CACHE_MAX_SIZE)
+ 
+ struct page_frag_cache {
+-	void *va;
++	union {
++		void *va;
++		/* we maintain a pagecount bias, so that we dont dirty cache
++		 * line containing page->_refcount every time we allocate a
++		 * fragment. As 'va' is always aligned with the order of the
++		 * page allocated, we can reuse the LSB bits for the pagecount
++		 * bias, and its bit width happens to be indicated by the
++		 * 'size_mask' below.
++		 */
++		unsigned long pagecnt_bias;
++
++	};
  #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
  	__u16 offset;
--	__u16 size;
-+	__u16 size_mask:15;
-+	__u16 pfmemalloc:1;
- #else
--	__u32 offset;
-+	__u32 offset:31;
-+	__u32 pfmemalloc:1;
+ 	__u16 size_mask:15;
+@@ -18,10 +29,6 @@ struct page_frag_cache {
+ 	__u32 offset:31;
+ 	__u32 pfmemalloc:1;
  #endif
- 	/* we maintain a pagecount bias, so that we dont dirty cache line
- 	 * containing page->_refcount every time we allocate a fragment.
- 	 */
- 	unsigned int		pagecnt_bias;
--	bool pfmemalloc;
+-	/* we maintain a pagecount bias, so that we dont dirty cache line
+-	 * containing page->_refcount every time we allocate a fragment.
+-	 */
+-	unsigned int		pagecnt_bias;
  };
  
  static inline void page_frag_cache_init(struct page_frag_cache *nc)
-@@ -43,7 +44,9 @@ static inline void *__page_frag_alloc_va_align(struct page_frag_cache *nc,
- 					       gfp_t gfp_mask,
- 					       unsigned int align)
- {
--	nc->offset = ALIGN(nc->offset, align);
-+	unsigned int offset = nc->offset;
-+
-+	nc->offset = ALIGN(offset, align);
- 
- 	return page_frag_alloc_va(nc, fragsz, gfp_mask);
- }
-@@ -53,7 +56,7 @@ static inline void *page_frag_alloc_va_align(struct page_frag_cache *nc,
+@@ -56,7 +63,8 @@ static inline void *page_frag_alloc_va_align(struct page_frag_cache *nc,
  					     gfp_t gfp_mask,
  					     unsigned int align)
  {
--	WARN_ON_ONCE(!is_power_of_2(align));
-+	WARN_ON_ONCE(!is_power_of_2(align) || align >= PAGE_SIZE);
+-	WARN_ON_ONCE(!is_power_of_2(align) || align >= PAGE_SIZE);
++	WARN_ON_ONCE(!is_power_of_2(align) || align >= PAGE_SIZE ||
++		     fragsz < sizeof(unsigned int));
  
  	return __page_frag_alloc_va_align(nc, fragsz, gfp_mask, align);
  }
 diff --git a/mm/page_frag_cache.c b/mm/page_frag_cache.c
-index 50511d8522d0..8d93029116e1 100644
+index 8d93029116e1..5f7f96c88163 100644
 --- a/mm/page_frag_cache.c
 +++ b/mm/page_frag_cache.c
-@@ -32,7 +32,8 @@ static struct page *__page_frag_cache_refill(struct page_frag_cache *nc,
- 		   __GFP_NOWARN | __GFP_NORETRY | __GFP_NOMEMALLOC;
- 	page = alloc_pages_node(NUMA_NO_NODE, gfp_mask,
- 				PAGE_FRAG_CACHE_MAX_ORDER);
--	nc->size = page ? PAGE_FRAG_CACHE_MAX_SIZE : PAGE_SIZE;
-+	nc->size_mask = page ? PAGE_FRAG_CACHE_MAX_SIZE - 1 : PAGE_SIZE - 1;
-+	VM_BUG_ON(page && nc->size_mask != PAGE_FRAG_CACHE_MAX_SIZE - 1);
- #endif
+@@ -18,8 +18,8 @@
+ #include <linux/page_frag_cache.h>
+ #include "internal.h"
+ 
+-static struct page *__page_frag_cache_refill(struct page_frag_cache *nc,
+-					     gfp_t gfp_mask)
++static bool __page_frag_cache_refill(struct page_frag_cache *nc,
++				     gfp_t gfp_mask)
+ {
+ 	struct page *page = NULL;
+ 	gfp_t gfp = gfp_mask;
+@@ -38,9 +38,26 @@ static struct page *__page_frag_cache_refill(struct page_frag_cache *nc,
  	if (unlikely(!page))
  		page = alloc_pages_node(NUMA_NO_NODE, gfp, 0);
-@@ -86,7 +87,7 @@ void *page_frag_alloc_va(struct page_frag_cache *nc, unsigned int fragsz,
+ 
+-	nc->va = page ? page_address(page) : NULL;
++	if (unlikely(!page)) {
++		nc->va = NULL;
++		return false;
++	}
++
++	nc->va = page_address(page);
+ 
+-	return page;
++#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
++	VM_BUG_ON(nc->pagecnt_bias & nc->size_mask);
++	page_ref_add(page, nc->size_mask - 1);
++	nc->pagecnt_bias |= nc->size_mask;
++#else
++	VM_BUG_ON(nc->pagecnt_bias & (PAGE_SIZE - 1));
++	page_ref_add(page, PAGE_SIZE - 2);
++	nc->pagecnt_bias |= (PAGE_SIZE - 1);
++#endif
++
++	nc->pfmemalloc = page_is_pfmemalloc(page);
++	nc->offset = 0;
++	return true;
+ }
+ 
+ void page_frag_cache_drain(struct page_frag_cache *nc)
+@@ -65,38 +82,31 @@ EXPORT_SYMBOL(__page_frag_cache_drain);
+ void *page_frag_alloc_va(struct page_frag_cache *nc, unsigned int fragsz,
+ 			 gfp_t gfp_mask)
+ {
+-	unsigned int size, offset;
++	unsigned long size_mask;
++	unsigned int offset;
+ 	struct page *page;
++	void *va;
+ 
+ 	if (unlikely(!nc->va)) {
+ refill:
+-		page = __page_frag_cache_refill(nc, gfp_mask);
+-		if (!page)
++		if (!__page_frag_cache_refill(nc, gfp_mask))
+ 			return NULL;
+-
+-		/* Even if we own the page, we do not use atomic_set().
+-		 * This would break get_page_unless_zero() users.
+-		 */
+-		page_ref_add(page, PAGE_FRAG_CACHE_MAX_SIZE);
+-
+-		/* reset page count bias and offset to start of new frag */
+-		nc->pfmemalloc = page_is_pfmemalloc(page);
+-		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
+-		nc->offset = 0;
+ 	}
  
  #if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
  	/* if size can vary use size else just use PAGE_SIZE */
--	size = nc->size;
-+	size = nc->size_mask + 1;
+-	size = nc->size_mask + 1;
++	size_mask = nc->size_mask;
  #else
- 	size = PAGE_SIZE;
+-	size = PAGE_SIZE;
++	size_mask = PAGE_SIZE - 1;
  #endif
+ 
++	va = (void *)((unsigned long)nc->va & ~size_mask);
+ 	offset = nc->offset;
+-	if (unlikely(offset + fragsz > size)) {
+-		page = virt_to_page(nc->va);
+ 
+-		if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
++	if (unlikely(offset + fragsz > (size_mask + 1))) {
++		page = virt_to_page(va);
++
++		if (!page_ref_sub_and_test(page, nc->pagecnt_bias & size_mask))
+ 			goto refill;
+ 
+ 		if (unlikely(nc->pfmemalloc)) {
+@@ -105,12 +115,11 @@ void *page_frag_alloc_va(struct page_frag_cache *nc, unsigned int fragsz,
+ 		}
+ 
+ 		/* OK, page count is 0, we can safely set it */
+-		set_page_count(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
++		set_page_count(page, size_mask);
++		nc->pagecnt_bias |= size_mask;
+ 
+-		/* reset page count bias and offset to start of new frag */
+-		nc->pagecnt_bias = PAGE_FRAG_CACHE_MAX_SIZE + 1;
+ 		offset = 0;
+-		if (unlikely(fragsz > size)) {
++		if (unlikely(fragsz > (size_mask + 1))) {
+ 			/*
+ 			 * The caller is trying to allocate a fragment
+ 			 * with fragsz > PAGE_SIZE but the cache isn't big
+@@ -127,7 +136,7 @@ void *page_frag_alloc_va(struct page_frag_cache *nc, unsigned int fragsz,
+ 	nc->pagecnt_bias--;
+ 	nc->offset = offset + fragsz;
+ 
+-	return nc->va + offset;
++	return va + offset;
+ }
+ EXPORT_SYMBOL(page_frag_alloc_va);
+ 
 -- 
 2.33.0
 
