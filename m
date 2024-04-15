@@ -1,198 +1,612 @@
-Return-Path: <linux-kernel+bounces-145819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D4E88A5B50
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:48:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 263AA8A5B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:48:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FD3288036
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:48:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D05CC288434
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:48:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6277C15747B;
-	Mon, 15 Apr 2024 19:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1626B15688B;
+	Mon, 15 Apr 2024 19:36:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VfNJHtKd"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rfx3ucTG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3584F156C41;
-	Mon, 15 Apr 2024 19:35:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8F015624B;
+	Mon, 15 Apr 2024 19:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209743; cv=none; b=hzLE5LGuCmPOzOqJ1Hlt8yTmPIlgLvEMA+7NEQK7osjoBM5/gWYz/mSqdgnNqjhox3nJ4KleWv1AYOyR7yClimdzYXSFKK47Q7wHY8ohirmOMFNBfi2gbkWHTkBJ1Qh5Y2EtDk8+ksO7BRi1VicqPW5va9iufBtF3nQNrrpccFo=
+	t=1713209799; cv=none; b=s8iZ6KjcezRkH/RJdWI41pHG6JfqdDvSX6CwsAKNql65zrAuqFuPrJLSWE65lBg5kR1BCHp1ysPTDbtnyZSQnvfDAOtg23ZVE1ZPgD5681Yxm8P56/3aFZvFeCdgr1lvRTJYFjlsrUAda67Fvd6whwiKjuRXlnsdEcWmpc/SEYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209743; c=relaxed/simple;
-	bh=8EX9vmvsTGxNX9SVhHyJdmgIv/WnqRU21dYjDwHUtF8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EpwBxtcF2A1N9fI4kTUkakuGEjrPuq26srbTIMMF4kP+FfYTMHDLbc0n7wCI/hPQe/WihGIS1o5uZ1oZK0N7J3hNWPE0nx3uujk5OVo1MWmqMXwWA/lES8CqlW6wbpM8929kggO5cN6rhIE3qIrShlQ2iEM0eJWwFUaKbFeq/xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VfNJHtKd; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1990508a12.0;
-        Mon, 15 Apr 2024 12:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713209741; x=1713814541; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sd4qBFIurZa5789oJ4pvkqFdJ4TBJxMcpEKz1P+zoD0=;
-        b=VfNJHtKdZzNq0qT03dOryB/36fl2YhvWuS3bFQlk85Mhh5MyPuwhHIbFJjcNqoKwH5
-         MM9FQacihPkzwvJL09B2UsiRyABjEZ1g4T0mGPzoOATtCw+Wjm4v6GzHVj6mDVvtfmT6
-         i1tbMxTCy6lE9fSMKhWwrBkvAX8PDuIyTUtONP6s0AmydgE2yuPH8XjTB1d4V0IHpMmA
-         RNPRydbG55ffASmwOxQjqrVx8fdW8nm2g2wQ+lX09JKOwVRjNEErB3zyIhSKi7qT4vlY
-         IQp1VxLVHaCZcim/PPg3du68YS+GYw3YJdXvTUp70Z6y3F98xZs1TrWURU6Aa97M9ZUI
-         q6hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713209741; x=1713814541;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sd4qBFIurZa5789oJ4pvkqFdJ4TBJxMcpEKz1P+zoD0=;
-        b=q68BpWwzSzwBNhXe5DKH9D23/R4x22DJTPFEgylAFdsn5na1PvHprPp1+X4TVOht/v
-         Zjm1pIfWQU/w9XlShMO3a+HYs/Gm3idk5XNpcNI+NsCEuC6Yu4CR5SFl0QHEuaogll4d
-         rzWARl78e4vQn3QN5Esny0GdUSMBb+J6N6qFV9LfzvvZCX1R4E94k/44dJB65UM35qC6
-         Heg6K08bmCjgOL0kSh9mCy2l3cqugwCnNH1X2qENIibkAjfybLnjy/BCpePtI+Pys/6r
-         HyyxG/pUrsn0NUM8ERgJnuvw8VmPpQ4RsoBMF8IPRLawYvTJCTp9fasySfdSfiYgMciW
-         ZT5A==
-X-Forwarded-Encrypted: i=1; AJvYcCUyQSCnvK71f9K6zqMmjflzlvYBgFtj+CcMsYAaqRMpQ9VP4P5Id+M9p/wXO/4ztDesSHgMK+aO8wt7xFL9UsuzXH2yIrQe9ANEdny/+uCIBoikWFu/7IHKs+/TdjSGzP7PWJvZsiwYyY9M18zVVmtodi7KXaXKtmYKe/B2kqTVuuqXhC/rFigxK8rLBMsq
-X-Gm-Message-State: AOJu0Yw6oTT7EK4cqkOq4/HiJslfghyWfBkBxYgSh5ZQT4j2E60znFKD
-	lt7L16V8TrJNuFXSKSjwM5QXPQ4z4vcCX9+O6sePvhwdKdmKmZVg
-X-Google-Smtp-Source: AGHT+IFabnZRTyhqLVGYWMvVkqnmtYHiS7EWkfO/PgwPKxuTL3HJma9hI1ZyOLqgDvF7jruScYa42g==
-X-Received: by 2002:a17:90a:c8e:b0:2a0:3dc3:8a8b with SMTP id v14-20020a17090a0c8e00b002a03dc38a8bmr7471492pja.47.1713209741258;
-        Mon, 15 Apr 2024 12:35:41 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:fbbe:421b:9296:f28c])
-        by smtp.gmail.com with ESMTPSA id y15-20020a17090a600f00b0029c49ed3974sm7383306pji.37.2024.04.15.12.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 12:35:40 -0700 (PDT)
-Date: Mon, 15 Apr 2024 12:35:38 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Mark Pearson <mpearson-lenovo@squebb.ca>,
-	Peter Hutterer <peter.hutterer@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-	ibm-acpi-devel@lists.sourceforge.net,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Nitin Joshi1 <njoshi1@lenovo.com>,
-	Vishnu Sankar <vsankar@lenovo.com>
-Subject: Re: [PATCH 1/4] Input: Add trackpoint doubletap and system debug
- info keycodes
-Message-ID: <Zh2BiqQdM7_n-Ih4@google.com>
-References: <mpearson-lenovo@squebb.ca>
- <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
- <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
- <ZhR-WPx7dgKxziMb@google.com>
- <f3342c0b-fb31-4323-aede-7fb02192cf44@redhat.com>
- <ZhW3Wbn4YSGFBgfS@google.com>
- <ZhXpZe1Gm5e4xP6r@google.com>
- <92ee5cb2-565e-413c-b968-81393a9211c4@app.fastmail.com>
- <ZhcogDESvZmUPEEf@google.com>
- <411e6353-16ef-455b-98fa-2d38bb7bf9bd@redhat.com>
+	s=arc-20240116; t=1713209799; c=relaxed/simple;
+	bh=5C/llpeNEkzzHAtRPM9Y08mKmxzjzK3Sawz80BrLe4E=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=jXTCxZrWI8UZvOY7H4DYuvDEwaaMI/89r4HnNnL00e3qblD0R1uhsRpyZd4cP0+qkFVwqF4L37kyDMTp4j+HIiPP1jZJs5engELB2oOFFSQnH2RWmeHIEKmzD636GDbQzqs9ew9+63FRh+w3Ans1wuCts9+nBhWL2jXdEzN9C9w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rfx3ucTG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EDF8C113CC;
+	Mon, 15 Apr 2024 19:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713209799;
+	bh=5C/llpeNEkzzHAtRPM9Y08mKmxzjzK3Sawz80BrLe4E=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=rfx3ucTGbCWOSce9lbxZ9QRZ/PUyl0PKpHQUPhL191FxZJQcwQnvDl8jmqqPMifOJ
+	 zFjXfr7ztjjQuEUWxxMdcsQi2+E4KYufKsVe2cZBivGxXS2U9PLJtmUPNix63r5Btr
+	 gA1OjhZT0xbAa7hZouQrXA67roJkovxfoLf8/o1xSGC31vkPAM4XzXOqRjy3G3rhS0
+	 xfew5F9r+w0bx9VeOxf8UvXJghKpaq1+yevQxZ8WG8efKotQDsS8OEjHg2UVCEYXdv
+	 zVt4b/GfnB2Ybw13GjGcZ4xrTUoBUUEkeSukeFjECZGuTydx/4UaUqF7UGTOhAXN5k
+	 qZ1QQjkrbqQoQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <411e6353-16ef-455b-98fa-2d38bb7bf9bd@redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 15 Apr 2024 22:36:30 +0300
+Message-Id: <D0KY6ORXBNXP.1EVHFHMS89OK6@kernel.org>
+Cc: <linux-security-module@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+ <bpf@vger.kernel.org>, <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
+ <linux-integrity@vger.kernel.org>, <wufan@linux.microsoft.com>,
+ <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
+ <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
+ <dhowells@redhat.com>, <jikos@kernel.org>, <mkoutny@suse.com>,
+ <ppavlu@suse.com>, <petr.vorel@gmail.com>, <mzerqung@0pointer.de>,
+ <kgold@linux.ibm.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v4 04/14] digest_cache: Add hash tables and operations
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
+ <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>,
+ <akpm@linux-foundation.org>, <shuah@kernel.org>,
+ <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+ <mic@digikod.net>
+X-Mailer: aerc 0.17.0
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <20240415142436.2545003-5-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240415142436.2545003-5-roberto.sassu@huaweicloud.com>
 
-On Thu, Apr 11, 2024 at 02:30:35PM +0200, Hans de Goede wrote:
-> Hi Dmitry,
-> 
-> On 4/11/24 2:02 AM, Dmitry Torokhov wrote:
-> > On Tue, Apr 09, 2024 at 10:17:05PM -0400, Mark Pearson wrote:
-> >> Hi Dmitry
-> >>
-> >> On Tue, Apr 9, 2024, at 9:20 PM, Dmitry Torokhov wrote:
-> >>> On Tue, Apr 09, 2024 at 02:47:05PM -0700, Dmitry Torokhov wrote:
-> >>>> On Tue, Apr 09, 2024 at 03:23:52PM +1000, Peter Hutterer wrote:
-> >>>>> On 09/04/2024 09:31, Dmitry Torokhov wrote:
-> >>>>>> Hi Mark,
-> >>>>>>
-> >>>>>> On Sun, Mar 24, 2024 at 05:07:58PM -0400, Mark Pearson wrote:
-> >>>>>>> Add support for new input events on Lenovo laptops that need exporting to
-> >>>>>>> user space.
-> >>>>>>>
-> >>>>>>> Lenovo trackpoints are adding the ability to generate a doubletap event.
-> >>>>>>> Add a new keycode to allow this to be used by userspace.
-> >>>>>>
-> >>>>>> What is the intended meaning of this keycode? How does it differ from
-> >>>>>> the driver sending BTN_LEFT press/release twice?
-> >>>>>>>
-> >>>>>>> Lenovo support is using FN+N with Windows to collect needed details for
-> >>>>>>> support cases. Add a keycode so that we'll be able to provide similar
-> >>>>>>> support on Linux.
-> >>>>>>
-> >>>>>> Is there a userspace consumer for this?
-> >>>>>
-> >>>>> Funnily enough XKB has had a keysym for this for decades but it's not
-> >>>>> hooked up anywhere due to the way it's pointer keys accessibility
-> >>>>> feature was implemented. Theory is that most of userspace just needs
-> >>>>> to patch the various pieces together for the new evdev code + keysym,
-> >>>>> it's not really any different to handling a volume key (except this
-> >>>>> one needs to be assignable).
-> >>>>
-> >>>> What is the keysym? If we can make them relatable to each other that
-> >>>> would be good. Or maybe we could find a matching usage from HID usage
-> >>>> tables...
-> >>>
-> >>> I was looking through the existing codes and I see:
-> >>>
-> >>> #define KEY_INFO		0x166	/* AL OEM Features/Tips/Tutorial */
-> >>>
-> >>> We also have KEY_VENDOR used in a few drivers/plafrom/x86, including
-> >>> thinkkpad_acpi.c and I wonder if it would be suitable for this vendor
-> >>> specific debug info collection application (which I honestly doubt will
-> >>> materialize).
-> >>>
-> >>
-> >> That's a somewhat disappointing note on your doubts, is that based on
-> >> anything? Just wondering what we've done to deserve that criticism.
-> > 
-> > Sorry, this was not meant as a criticism really, but you mentioned
-> > yourself that there isn't anything in the works yet, you just have some
-> > plans.
-> > 
-> > For such a project to succeed Lenovo needs to invest into selling
-> > devices with Linux as a primary operating system, and it has to be
-> > consumer segment (or small business, because for corporate they
-> > typically roll their own support channels). The case of retrofitting
-> > Linux onto a that device originally came with Windows OS rarely gets
-> > much if any response from the normal support channels.
-> > 
-> > Is this something that is actually happening?
-> 
-> Yes, Lenovo is actually offering Fedora as an OS choice when
-> ordering ThinkPads directly from their website in many countries
-> including when ordering as a consumer.
+On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Add a linked list of hash tables to the digest cache, one per algorithm,
+> containing the digests extracted from digest lists.
+>
+> The number of hash table slots is determined by dividing the number of
+> digests to add to the average depth of the collision list defined with
+> CONFIG_DIGEST_CACHE_HTABLE_DEPTH (currently set to 30). It can be changed
+> in the kernel configuration.
+>
+> Add digest_cache_htable_init() and digest_cache_htable_add(), to be calle=
+d
+> by digest list parsers, in order to allocate the hash tables and to add
+> extracted digests.
+>
+> Add digest_cache_htable_free(), to let the digest_cache LSM free the hash
+> tables at the time a digest cache is freed.
+>
+> Add digest_cache_htable_lookup() to search a digest in the hash table of =
+a
+> digest cache for a given algorithm.
+>
+> Add digest_cache_lookup() to the public API, to let users of the
+> digest_cache LSM search a digest in a digest cache and, in a subsequent
+> patch, to search it in the digest caches for each directory entry.
+>
+> Return the digest cache containing the digest, as a different type,
+> digest_cache_found_t to avoid it being accidentally put. Also, introduce
+> digest_cache_from_found_t() to explicitly convert it back to a digest cac=
+he
+> for further use (e.g. retrieving verification data, introduced later).
+>
+> Finally, add digest_cache_hash_key() to compute the hash table key from t=
+he
+> first two bytes of the digest (modulo the number of slots).
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  include/linux/digest_cache.h     |  34 +++++
+>  security/digest_cache/Kconfig    |  11 ++
+>  security/digest_cache/Makefile   |   2 +-
+>  security/digest_cache/htable.c   | 250 +++++++++++++++++++++++++++++++
+>  security/digest_cache/internal.h |  43 ++++++
+>  security/digest_cache/main.c     |   3 +
+>  6 files changed, 342 insertions(+), 1 deletion(-)
+>  create mode 100644 security/digest_cache/htable.c
+>
+> diff --git a/include/linux/digest_cache.h b/include/linux/digest_cache.h
+> index e79f94a60b0f..4872700ac205 100644
+> --- a/include/linux/digest_cache.h
+> +++ b/include/linux/digest_cache.h
+> @@ -11,12 +11,39 @@
+>  #define _LINUX_DIGEST_CACHE_H
+> =20
+>  #include <linux/fs.h>
+> +#include <crypto/hash_info.h>
+> =20
+>  struct digest_cache;
+> =20
+> +/**
+> + * typedef digest_cache_found_t - Digest cache reference as numeric valu=
+e
+> + *
+> + * This new type represents a digest cache reference that should not be =
+put.
+> + */
+> +typedef unsigned long digest_cache_found_t;
+> +
+> +/**
+> + * digest_cache_from_found_t - Convert digest_cache_found_t to digest ca=
+che ptr
+> + * @found: digest_cache_found_t value
+> + *
+> + * Convert the digest_cache_found_t returned by digest_cache_lookup() to=
+ a
+> + * digest cache pointer, so that it can be passed to the other functions=
+ of the
+> + * API.
+> + *
+> + * Return: Digest cache pointer.
+> + */
+> +static inline struct digest_cache *
+> +digest_cache_from_found_t(digest_cache_found_t found)
+> +{
+> +	return (struct digest_cache *)found;
+> +}
+> +
+>  #ifdef CONFIG_SECURITY_DIGEST_CACHE
+>  struct digest_cache *digest_cache_get(struct dentry *dentry);
+>  void digest_cache_put(struct digest_cache *digest_cache);
+> +digest_cache_found_t digest_cache_lookup(struct dentry *dentry,
+> +					 struct digest_cache *digest_cache,
+> +					 u8 *digest, enum hash_algo algo);
+> =20
+>  #else
+>  static inline struct digest_cache *digest_cache_get(struct dentry *dentr=
+y)
+> @@ -28,5 +55,12 @@ static inline void digest_cache_put(struct digest_cach=
+e *digest_cache)
+>  {
+>  }
+> =20
+> +static inline digest_cache_found_t
+> +digest_cache_lookup(struct dentry *dentry, struct digest_cache *digest_c=
+ache,
+> +		    u8 *digest, enum hash_algo algo)
+> +{
+> +	return 0UL;
+> +}
+> +
+>  #endif /* CONFIG_SECURITY_DIGEST_CACHE */
+>  #endif /* _LINUX_DIGEST_CACHE_H */
+> diff --git a/security/digest_cache/Kconfig b/security/digest_cache/Kconfi=
+g
+> index dfabe5d6e3ca..71017954e5c5 100644
+> --- a/security/digest_cache/Kconfig
+> +++ b/security/digest_cache/Kconfig
+> @@ -18,3 +18,14 @@ config DIGEST_LIST_DEFAULT_PATH
+>  	  It can be changed at run-time, by writing the new path to the
+>  	  securityfs interface. Digest caches created with the old path are
+>  	  not affected by the change.
+> +
+> +config DIGEST_CACHE_HTABLE_DEPTH
+> +	int
+> +	default 30
+> +	help
+> +	  Desired average depth of the collision list in the digest cache
+> +	  hash tables.
+> +
+> +	  A smaller number will increase the amount of hash table slots, and
+> +	  make the search faster. A bigger number will decrease the number of
+> +	  hash table slots, but make the search slower.
+> diff --git a/security/digest_cache/Makefile b/security/digest_cache/Makef=
+ile
+> index 1330655e33b1..7e00c53d8f55 100644
+> --- a/security/digest_cache/Makefile
+> +++ b/security/digest_cache/Makefile
+> @@ -4,4 +4,4 @@
+> =20
+>  obj-$(CONFIG_SECURITY_DIGEST_CACHE) +=3D digest_cache.o
+> =20
+> -digest_cache-y :=3D main.o secfs.o
+> +digest_cache-y :=3D main.o secfs.o htable.o
+> diff --git a/security/digest_cache/htable.c b/security/digest_cache/htabl=
+e.c
+> new file mode 100644
+> index 000000000000..d2d5d8f5e5b1
+> --- /dev/null
+> +++ b/security/digest_cache/htable.c
+> @@ -0,0 +1,250 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
+> + *
+> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> + *
+> + * Implement hash table operations for the digest cache.
+> + */
+> +
+> +#define pr_fmt(fmt) "DIGEST CACHE: "fmt
 
-Ah, very nice, I was not aware of this.
+For easier grepping from kernel tree i'd suggest to name this accordingly i=
+e.
+just "digest_cache".
 
-> 
-> And unlike other vendor's Linux preloads which often use a kernel
-> with downstream laptop specific changes these laptops are running
-> unmodified Fedora kernels, which themselves are almost pristine
-> upstream kernels.
-> 
-> Lenovo (Mark) has been really good the last couple of years in
-> making sure that their hw just works with mainline kernels without
-> any downstream vendor specific patches.
-> 
-> >> That aside, I guess KEY_INFO or KEY_VENDOR could be a good fit (I
-> >> personally don't think KEY_CONFIG matches well), but I would be
-> >> worried about clashing with existing functionality.
-> 
-> Using KEY_INFO / KEY_VENDOR works for me too. So maybe we should
-> just go with one of those 2 ?
+> +#include "internal.h"
+> +
+> +/**
+> + * digest_cache_hash_key - Compute hash key
+> + * @digest: Digest cache
+> + * @num_slots: Number of slots in the hash table
+> + *
+> + * This function computes a hash key based on the first two bytes of the
+> + * digest and the number of slots of the hash table.
+> + *
+> + * Return: Hash key.
+> + */
+> +static inline unsigned int digest_cache_hash_key(u8 *digest,
+> +						 unsigned int num_slots)
+> +{
+> +	/* Same as ima_hash_key() but parametrized. */
+> +	return (digest[0] | digest[1] << 8) % num_slots;
+> +}
+> +
+> +/**
+> + * lookup_htable - Lookup a hash table
+> + * @digest_cache: Digest cache
+> + * @algo: Algorithm of the desired hash table
+> + *
+> + * This function searches the hash table for a given algorithm in the di=
+gest
+> + * cache.
+> + *
+> + * Return: A hash table if found, NULL otherwise.
+> + */
+> +static struct htable *lookup_htable(struct digest_cache *digest_cache,
+> +				    enum hash_algo algo)
+> +{
+> +	struct htable *h;
+> +
+> +	list_for_each_entry(h, &digest_cache->htables, next)
+> +		if (h->algo =3D=3D algo)
+> +			return h;
+> +
+> +	return NULL;
+> +}
+> +
+> +/**
+> + * digest_cache_htable_init - Allocate and initialize the hash table
+> + * @digest_cache: Digest cache
+> + * @num_digests: Number of digests to add to the digest cache
+> + * @algo: Algorithm of the digests
+> + *
+> + * This function allocates and initializes the hash table for a given al=
+gorithm.
+> + * The number of slots depends on the number of digests to add to the di=
+gest
+> + * cache, and the constant CONFIG_DIGEST_CACHE_HTABLE_DEPTH stating the =
+desired
+> + * average depth of the collision list.
+> + *
+> + * Return: Zero on success, a POSIX error code otherwise.
+> + */
+> +int digest_cache_htable_init(struct digest_cache *digest_cache, u64 num_=
+digests,
+> +			     enum hash_algo algo)
+> +{
+> +	struct htable *h;
+> +	int i;
+> +
+> +	h =3D lookup_htable(digest_cache, algo);
+> +	if (h)
+> +		return 0;
+> +
+> +	h =3D kmalloc(sizeof(*h), GFP_KERNEL);
+> +	if (!h)
+> +		return -ENOMEM;
+> +
+> +	h->num_slots =3D DIV_ROUND_UP(num_digests,
+> +				    CONFIG_DIGEST_CACHE_HTABLE_DEPTH);
+> +	h->slots =3D kmalloc_array(h->num_slots, sizeof(*h->slots), GFP_KERNEL)=
+;
+> +	if (!h->slots) {
+> +		kfree(h);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	for (i =3D 0; i < h->num_slots; i++)
+> +		INIT_HLIST_HEAD(&h->slots[i]);
+> +
+> +	h->num_digests =3D 0;
+> +	h->algo =3D algo;
+> +
+> +	list_add_tail(&h->next, &digest_cache->htables);
+> +
+> +	pr_debug("Initialized hash table for digest list %s, digests: %llu, slo=
+ts: %u, algo: %s\n",
+> +		 digest_cache->path_str, num_digests, h->num_slots,
+> +		 hash_algo_name[algo]);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * digest_cache_htable_add - Add a new digest to the digest cache
+> + * @digest_cache: Digest cache
+> + * @digest: Digest to add
+> + * @algo: Algorithm of digest
+> + *
+> + * This function, invoked by a digest list parser, adds a digest extract=
+ed
+> + * from a digest list to the digest cache.
+> + *
+> + * Return: Zero on success, a POSIX error code otherwise.
+> + */
+> +int digest_cache_htable_add(struct digest_cache *digest_cache, u8 *diges=
+t,
+> +			    enum hash_algo algo)
+> +{
+> +	struct htable *h;
+> +	struct digest_cache_entry *entry;
+> +	unsigned int key;
+> +	int digest_len;
+> +
+> +	h =3D lookup_htable(digest_cache, algo);
+> +	if (!h) {
+> +		pr_debug("No hash table for algorithm %s was found in digest cache %s,=
+ initialize one\n",
+> +			 hash_algo_name[algo], digest_cache->path_str);
+> +		return -ENOENT;
+> +	}
+> +
+> +	digest_len =3D hash_digest_size[algo];
+> +
+> +	entry =3D kmalloc(sizeof(*entry) + digest_len, GFP_KERNEL);
+> +	if (!entry)
+> +		return -ENOMEM;
+> +
+> +	memcpy(entry->digest, digest, digest_len);
+> +
+> +	key =3D digest_cache_hash_key(digest, h->num_slots);
+> +	hlist_add_head(&entry->hnext, &h->slots[key]);
+> +	h->num_digests++;
+> +	pr_debug("Added digest %s:%*phN to digest cache %s, num of %s digests: =
+%llu\n",
+> +		 hash_algo_name[algo], digest_len, digest,
+> +		 digest_cache->path_str, hash_algo_name[algo], h->num_digests);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * digest_cache_htable_lookup - Search a digest in the digest cache
+> + * @dentry: Dentry of the file whose digest is looked up
+> + * @digest_cache: Digest cache
+> + * @digest: Digest to search
+> + * @algo: Algorithm of the digest to search
+> + *
+> + * This function searches the passed digest and algorithm in the passed =
+digest
+> + * cache.
+> + *
+> + * Return: Zero if the digest is found, -ENOENT if not.
+> + */
+> +int digest_cache_htable_lookup(struct dentry *dentry,
+> +			       struct digest_cache *digest_cache, u8 *digest,
+> +			       enum hash_algo algo)
+> +{
+> +	struct digest_cache_entry *entry;
+> +	struct htable *h;
+> +	unsigned int key;
+> +	int digest_len;
+> +	int search_depth =3D 0;
+> +
+> +	h =3D lookup_htable(digest_cache, algo);
+> +	if (!h)
+> +		return -ENOENT;
+> +
+> +	digest_len =3D hash_digest_size[algo];
+> +	key =3D digest_cache_hash_key(digest, h->num_slots);
+> +
+> +	hlist_for_each_entry(entry, &h->slots[key], hnext) {
+> +		if (!memcmp(entry->digest, digest, digest_len)) {
+> +			pr_debug("Cache hit at depth %d for file %s, digest %s:%*phN in diges=
+t cache %s\n",
+> +				 search_depth, dentry->d_name.name,
+> +				 hash_algo_name[algo], digest_len, digest,
+> +				 digest_cache->path_str);
+> +
+> +			return 0;
+> +		}
+> +
+> +		search_depth++;
+> +	}
+> +
+> +	pr_debug("Cache miss for file %s, digest %s:%*phN in digest cache %s\n"=
+,
+> +		 dentry->d_name.name, hash_algo_name[algo], digest_len, digest,
+> +		 digest_cache->path_str);
+> +	return -ENOENT;
+> +}
+> +
+> +/**
+> + * digest_cache_lookup - Search a digest in the digest cache
+> + * @dentry: Dentry of the file whose digest is looked up
+> + * @digest_cache: Digest cache
+> + * @digest: Digest to search
+> + * @algo: Algorithm of the digest to search
+> + *
+> + * This function calls digest_cache_htable_lookup() to search a digest i=
+n the
+> + * passed digest cache, obtained with digest_cache_get().
+> + *
+> + * It returns the digest cache reference as the digest_cache_found_t typ=
+e, to
+> + * avoid that the digest cache is accidentally put. The digest_cache_fou=
+nd_t
+> + * type can be converted back to a digest cache pointer, by
+> + * calling digest_cache_from_found_t().
+> + *
+> + * Return: A positive digest_cache_found_t if the digest is found, zero =
+if not.
+> + */
+> +digest_cache_found_t digest_cache_lookup(struct dentry *dentry,
+> +					 struct digest_cache *digest_cache,
+> +					 u8 *digest, enum hash_algo algo)
+> +{
+> +	int ret;
+> +
+> +	ret =3D digest_cache_htable_lookup(dentry, digest_cache, digest, algo);
+> +	return (!ret) ? (digest_cache_found_t)digest_cache : 0UL;
+> +}
+> +EXPORT_SYMBOL_GPL(digest_cache_lookup);
+> +
+> +/**
+> + * digest_cache_htable_free - Free the hash tables
+> + * @digest_cache: Digest cache
+> + *
+> + * This function removes all digests from all hash tables in the digest =
+cache,
+> + * and frees the memory.
+> + */
+> +void digest_cache_htable_free(struct digest_cache *digest_cache)
+> +{
+> +	struct htable *h, *h_tmp;
+> +	struct digest_cache_entry *p;
+> +	struct hlist_node *q;
+> +	int i;
+> +
+> +	list_for_each_entry_safe(h, h_tmp, &digest_cache->htables, next) {
+> +		for (i =3D 0; i < h->num_slots; i++) {
+> +			hlist_for_each_entry_safe(p, q, &h->slots[i], hnext) {
+> +				hlist_del(&p->hnext);
+> +				pr_debug("Removed digest %s:%*phN from digest cache %s\n",
+> +					 hash_algo_name[h->algo],
+> +					 hash_digest_size[h->algo], p->digest,
+> +					 digest_cache->path_str);
+> +				kfree(p);
+> +			}
+> +		}
+> +
+> +		list_del(&h->next);
+> +		kfree(h->slots);
+> +		kfree(h);
+> +	}
+> +}
+> diff --git a/security/digest_cache/internal.h b/security/digest_cache/int=
+ernal.h
+> index bbf5eefe5c82..f6ffeaa25288 100644
+> --- a/security/digest_cache/internal.h
+> +++ b/security/digest_cache/internal.h
+> @@ -16,8 +16,40 @@
+>  /* Digest cache bits in flags. */
+>  #define INIT_IN_PROGRESS	0	/* Digest cache being initialized. */
+> =20
+> +/**
+> + * struct digest_cache_entry - Entry of a digest cache hash table
+> + * @hnext: Pointer to the next element in the collision list
+> + * @digest: Stored digest
+> + *
+> + * This structure represents an entry of a digest cache hash table, stor=
+ing a
+> + * digest.
+> + */
+> +struct digest_cache_entry {
+> +	struct hlist_node hnext;
+> +	u8 digest[];
+> +} __packed;
 
-It looks like Mark's preference is KEY_VENDOR, so let's go with it?
+Please correct me if I'm wrong but I don't think __packed has any use
+here as the definition of hlist_node is:
 
-Thanks.
 
--- 
-Dmitry
+struct hlist_node {
+	struct hlist_node *next, **pprev;
+};
+
+It is naturally aligned to begin with.
+
+
+> +
+> +/**
+> + * struct htable - Hash table
+> + * @next: Next hash table in the linked list
+> + * @slots: Hash table slots
+> + * @num_slots: Number of slots
+> + * @num_digests: Number of digests stored in the hash table
+> + * @algo: Algorithm of the digests
+> + *
+> + * This structure is a hash table storing digests of file data or metada=
+ta.
+> + */
+> +struct htable {
+> +	struct list_head next;
+> +	struct hlist_head *slots;
+> +	unsigned int num_slots;
+> +	u64 num_digests;
+> +	enum hash_algo algo;
+> +};
+> +
+>  /**
+>   * struct digest_cache - Digest cache
+> + * @htables: Hash tables (one per algorithm)
+>   * @ref_count: Number of references to the digest cache
+>   * @path_str: Path of the digest list the digest cache was created from
+>   * @flags: Control flags
+> @@ -25,6 +57,7 @@
+>   * This structure represents a cache of digests extracted from a digest =
+list.
+>   */
+>  struct digest_cache {
+> +	struct list_head htables;
+>  	atomic_t ref_count;
+>  	char *path_str;
+>  	unsigned long flags;
+> @@ -84,4 +117,14 @@ struct digest_cache *digest_cache_create(struct dentr=
+y *dentry,
+>  					 struct path *digest_list_path,
+>  					 char *path_str, char *filename);
+> =20
+> +/* htable.c */
+> +int digest_cache_htable_init(struct digest_cache *digest_cache, u64 num_=
+digests,
+> +			     enum hash_algo algo);
+> +int digest_cache_htable_add(struct digest_cache *digest_cache, u8 *diges=
+t,
+> +			    enum hash_algo algo);
+> +int digest_cache_htable_lookup(struct dentry *dentry,
+> +			       struct digest_cache *digest_cache, u8 *digest,
+> +			       enum hash_algo algo);
+> +void digest_cache_htable_free(struct digest_cache *digest_cache);
+> +
+>  #endif /* _DIGEST_CACHE_INTERNAL_H */
+> diff --git a/security/digest_cache/main.c b/security/digest_cache/main.c
+> index 661c8d106791..0b201af6432c 100644
+> --- a/security/digest_cache/main.c
+> +++ b/security/digest_cache/main.c
+> @@ -48,6 +48,7 @@ static struct digest_cache *digest_cache_alloc_init(cha=
+r *path_str,
+> =20
+>  	atomic_set(&digest_cache->ref_count, 1);
+>  	digest_cache->flags =3D 0UL;
+> +	INIT_LIST_HEAD(&digest_cache->htables);
+> =20
+>  	pr_debug("New digest cache %s (ref count: %d)\n",
+>  		 digest_cache->path_str, atomic_read(&digest_cache->ref_count));
+> @@ -63,6 +64,8 @@ static struct digest_cache *digest_cache_alloc_init(cha=
+r *path_str,
+>   */
+>  static void digest_cache_free(struct digest_cache *digest_cache)
+>  {
+> +	digest_cache_htable_free(digest_cache);
+> +
+>  	pr_debug("Freed digest cache %s\n", digest_cache->path_str);
+>  	kfree(digest_cache->path_str);
+>  	kmem_cache_free(digest_cache_cache, digest_cache);
+
+
+BR, Jarkko
 
