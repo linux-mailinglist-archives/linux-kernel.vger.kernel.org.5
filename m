@@ -1,79 +1,129 @@
-Return-Path: <linux-kernel+bounces-145376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1FB38A551F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:42:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 612C38A5567
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:44:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F308282B5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:42:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 931511C221D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE62762CD;
-	Mon, 15 Apr 2024 14:41:09 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4BE371B32;
+	Mon, 15 Apr 2024 14:44:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YtBpYTUZ"
+Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F363BBE1
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861D81D52B
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713192068; cv=none; b=fKOCCbipoAopF+C6ktrBoHBOeOuj4mZwLDi9g7Ne2o/CZvVSFiGtlodhdJBzyekXRzfsqJsLauFstLtxnXBOnL/xWfTMs4uPD4fBk4H4pi55VybSla9Q3UUIZi3sslUVyL7TAVCN9gdDzYtadSENpY2kQHeC+7kklECxS/Irt14=
+	t=1713192244; cv=none; b=i7URrc8gqVVGpZeN3NLCBESYlU3LZU/6dqMJRL6cNwL3y/U56yGerETWSueRoV08bx084LyIF89irKNrUkC4KTf0sJwBBIRCUbJ2/qG5LV/WE7Kr1ly888P5b8qx2iDVG/Xzaz1s6bJLwgsnZQJlzgS5XAWA2qau73gV/agSZG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713192068; c=relaxed/simple;
-	bh=m+HdDt86hIVHu8K5Kb8QTBfIr0zwmXUnaLGV+V+Lq9g=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Eb8xx5LovOvzk1ZWejxM68ZilY5LdMAOOOCI5cDgZsFw+0NhTRKJYeO/SM3WElYB686YmKsDCbbDgtkwxUyt3RJyIHLjrXtlZLPTE9B93oH8KIzqkuRNnVM98um/ogaveAZnrAPjybiyo3EQ/BZjJJw1VLViD1r/6v68rrQMz+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d663e01e24so354919339f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:41:07 -0700 (PDT)
+	s=arc-20240116; t=1713192244; c=relaxed/simple;
+	bh=KehpfQl+nFVwyeBbKTZT+XW0EbxiUmM5b6iOnH+si1k=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=thii35psp6ZFwtBtLmAdo3IA/hDR/Vg7/tN0xQ3agkOqGrCZuMO8pT6nZyO24lJWJcHRaJg/ShtVKED7jWG33NMn0Dg+oLuueYIw21qbS9Nnxr92lLbbvkH2RyJXN0IPDP4OTiNGLPIPdKe2UCriSMNy31TUnV0n5K9WeWlTdyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YtBpYTUZ; arc=none smtp.client-ip=209.85.128.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com
+Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-41634d6c008so10896105e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713192241; x=1713797041; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0bmcD1dsKmxdOPG1Zb6XlpeF2OhOoXu9RprsqunU6bk=;
+        b=YtBpYTUZMBbri/hmJ5zxlLFpf7YBqdISk+18XFkh+nFFjaeOsNfXfLmswIdU8UnoTh
+         EVO8YaKQSjN3PFoQNbplnaPRLqFMAR3mrmU8WaDBB+TDSxrbTZIAk+8jm1sj3fG6WItn
+         j7V70Y2siCesj6mcdo187WBOJrcfVLu4RfImvEve8vkia11SQLFgUvV32fU1n++XMpj1
+         oiHeYUG6mt5rVtjF8hkj7RHxl6pZCMOrlkUDvT47lP0WcXqc9XXygNmry8PUyPOSO6wk
+         iJckUWhfXJazU5/LGqfFaj0pjm5gL+ideoyXozsAfhCDwzmMtTVaADokMjOtxEwRHdJu
+         pV4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713192067; x=1713796867;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m+HdDt86hIVHu8K5Kb8QTBfIr0zwmXUnaLGV+V+Lq9g=;
-        b=fagNQFQMqRGz5ujX9H7Pzn6wzeH74AP6TmMx6jSXJDZlany4mHYlfTtwmRj/NFk4Ts
-         6X7CNpsq0dbst9aFnftYLhATZbLG6izUjreB3jCg0BfORJGDwTgzD7e0ltNFtohZUsSz
-         AA+njvV73nQkfZHJPEoAIsUXoTgEjWDi4wq2npNN2V5EOrhiyhHCxueyRtTZO62pECEV
-         TYdcEwVeU4EdtpVNmn1t6nEGmNmxzRCeuNY/p/l7hwNtgCXbau+bBnv+X4n2UoIek232
-         6CmGF44ecRn7cr9FscHe1+MXyVn4WZQTOL6c77pR5rpqeM/9zVN1m6zGoqpRJaHQcAm0
-         fjUQ==
-X-Gm-Message-State: AOJu0YxTLkmGJuMnPhTyIDnhAHxObYqoc2RsOUyVCu97+HqvI3SSbBcZ
-	m+CIsyhmHm5+ujdDU+0UCjbD+3xNBYGN7AhPiTSYekWikzgMjj6OanBWNdXPd3Oly1duQCeoaeX
-	HpQnsWfoLr775QvU9D3j1VOnGL5+2qa1QWME7PjwQhPE6YIEf3Leo9FE=
-X-Google-Smtp-Source: AGHT+IFNjNumE/WdzKBUfKsFw3/dL1afZQp7XmDqdwFbiMedemz6Ym+ze6536DieN7xt8E+/EA2OvbxW7Sps/1nhjYWtYeystSiK
+        d=1e100.net; s=20230601; t=1713192241; x=1713797041;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0bmcD1dsKmxdOPG1Zb6XlpeF2OhOoXu9RprsqunU6bk=;
+        b=qO64sHqnht57xxrbRIWj0PYlZXCSvwecrTP2RWDobJhu5Ogjme0bYIgpTY5tffA547
+         AQK5OKR1l0l6CMKlxPAjamhz0zuu2ytd+lnMCVlMK43QSFfnFPbNR3xrDtR6V/8Ee9Y+
+         uGEElVIhMTWalcLr1XEhH3WL8LuU/XVcFAxDAuHQLnVO2cQxuYE7xC0/GqE28D/vrqlC
+         QfR9eLSZVswA/M6bmIADD5hZ6IoSpLUbmGvD188KrNN82Gt9T2zx1js3QFfa/Jvu+KiB
+         Mt5v8BMHXj+P/5DXEyUONzzT4vBzQnSiyq1WGpO0ObouBW6IUenP0eR3hHbBdFsUgPvv
+         SdJg==
+X-Forwarded-Encrypted: i=1; AJvYcCWteCG6SsF052+EYJAJO0KD1qOu0ZckZS3d7ADYkWjfi+yG0XCSlhjM9x0mQmNFP1UJ0cblBzUb9VT6WTOUkDLXgAoMaiKmPYGg8jDu
+X-Gm-Message-State: AOJu0YwgBAZF1QWoRHYHhGYpfJ0+/FTM5G5tKMyNbHYMtyixP1tpnh6o
+	WSbWsHFgFDPk8RXz6pzgn5yt6bQ2ODBVVeCQUKM4e6x7ba3bk9jRva4GBrC0wpputhm4D54kNvb
+	d92vOfpaZBg==
+X-Google-Smtp-Source: AGHT+IFEmFS1HiEMaFINlIUIUMR/6wAm50IL2RKmWT9wBF0Ao1Ak+ndSv5qjpwOV71WeC8xHyrbagpOvd2bt2Q==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a05:600c:458d:b0:416:a53f:38fd with SMTP
+ id r13-20020a05600c458d00b00416a53f38fdmr32504wmo.1.1713192240874; Mon, 15
+ Apr 2024 07:44:00 -0700 (PDT)
+Date: Mon, 15 Apr 2024 14:43:54 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:130f:b0:482:b67c:4573 with SMTP id
- r15-20020a056638130f00b00482b67c4573mr615933jad.5.1713192066867; Mon, 15 Apr
- 2024 07:41:06 -0700 (PDT)
-Date: Mon, 15 Apr 2024 07:41:06 -0700
-In-Reply-To: <000000000000346bbd0613dc4396@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000093f45c0616239cf3@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [usb?] WARNING in usbnet_start_xmit/usb_submit_urb
- (2)
-From: syzbot <syzbot+d693c07c6f647e0388d3@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACk9HWYC/x3MQQqAIBBA0avErBtIS5CuEi2ixhoqDackiO6et
+ HyL/x8QikwCbfFApMTCwWeosoBxGfxMyFM26Eo3VaMMrmlHoc2dJKegDyjXFFANxjhbK2ethtw ekRzf/7fr3/cDxrlkFWcAAAA=
+X-Mailer: b4 0.14-dev
+Message-ID: <20240415-kvm-selftests-no-sudo-v1-1-95153ad5f470@google.com>
+Subject: [PATCH] KVM: selftests: Avoid assuming "sudo" exists
+From: Brendan Jackman <jackmanb@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>
+Cc: kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+I ran into a failure running this test on a minimal rootfs.
 
-***
+Can be fixed by just skipping the "sudo" in case we are already root.
 
-Subject: Re: [syzbot] [usb?] WARNING in usbnet_start_xmit/usb_submit_urb (2)
-Author: n.zhandarovich@fintech.ru
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-Test if this issue wasn't a fluke.
+diff --git a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
+index 7cbb409801eea..0e56822e8e0bf 100755
+--- a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
++++ b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.sh
+@@ -13,10 +13,21 @@ NX_HUGE_PAGES_RECOVERY_RATIO=$(cat /sys/module/kvm/parameters/nx_huge_pages_reco
+ NX_HUGE_PAGES_RECOVERY_PERIOD=$(cat /sys/module/kvm/parameters/nx_huge_pages_recovery_period_ms)
+ HUGE_PAGES=$(cat /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages)
+ 
++# If we're already root, the host might not have sudo.
++if [ $(whoami) == "root" ]; then
++	function maybe_sudo () {
++		"$@"
++	}
++else
++	function maybe_sudo () {
++		sudo "$@"
++	}
++fi
++
+ set +e
+ 
+ function sudo_echo () {
+-	echo "$1" | sudo tee -a "$2" > /dev/null
++	echo "$1" | maybe_sudo tee -a "$2" > /dev/null
+ }
+ 
+ NXECUTABLE="$(dirname $0)/nx_huge_pages_test"
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
+---
+base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
+change-id: 20240415-kvm-selftests-no-sudo-1a55f831f882
+
+Best regards,
+-- 
+Brendan Jackman <jackmanb@google.com>
+
 
