@@ -1,238 +1,102 @@
-Return-Path: <linux-kernel+bounces-145021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9691F8A4E4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65BF68A4E4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:02:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 204D51F216F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:00:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B611F21AB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5A6B679ED;
-	Mon, 15 Apr 2024 12:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A8DB692FC;
+	Mon, 15 Apr 2024 12:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PLJGMoKu"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i+4ur96n"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0ED26BFA8
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46364487A5;
+	Mon, 15 Apr 2024 12:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713182430; cv=none; b=TjvudOI5J3KCqL2UUMRvyyUDsOdksuGSS8Dq9uYAYSvr2Zjm6YRndYDqAnfl0KEywvRJm/c74uibRK19F3X2LCa62AV2I3GrbR06DK0oOf5nZSo/0KAb4FzA9y5TV71LzC9Sn3osSm/11iWlrwhzsIDBab6LpIvxyHyFtZogGNk=
+	t=1713182509; cv=none; b=RbELkUmqHtOReXY968/2CzwSIAkWKngzGPC83ukyHEkCXEDJ7VZ/pUzARnpjQXehjEejFn5f7JA4xARrzvlG/L+tK/iyHl1EVh07XdwYyRNux8fLqWpK+mBMnyBB9rZrbeBY12RP2B3xFftHfozoZ5PUL+uGA4/2lOQ4n20g7v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713182430; c=relaxed/simple;
-	bh=FtCbo2FIfg5VTMuCbMaZx+mizFTYLMvWC/gcY6zEBVE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F8VlOAW/Nn5Cm7xkKoOy3EllqF5LCnoMKO+JpdoW1QVqBORSvvug999KKufmhBXASBuZCs7apWrDy6l708QCO1z+P5gASzG+tnFXNXPKK6wvfDkITBCcBl75MY03REK1QjCOHQ5l0TBdzoxyb257kMPvu9Ql6DfR7A7x3JJ2mu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PLJGMoKu; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713182424;
-	bh=FtCbo2FIfg5VTMuCbMaZx+mizFTYLMvWC/gcY6zEBVE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=PLJGMoKuQ+3X9Iw1hvJe5e/NFJp64nSWk4vHsQfJL4XX7u9RYInm/R1bpjqMzQe2W
-	 E7S6BsRA1qkcLnocDGb0wFBAuzPVCsb33o+1DY9FLOnm+xdYXiM7vCufWnjS0b+12X
-	 ro4mWCyyf9cGfthdRTZfjOuDpibjSozKAfw+Jzu8zWfPxZQzWftehPKimYcm9RMe4X
-	 MkSDdzRNG4f0snM+OFQKES6W4VbnzjiznUTCbSyhnY6fHCNqqVYjiFR4XUWUa7SGqa
-	 XwZzSDSBO/tE33HmLrMfGYBkqjiNUCj8fw7qMHNDPYkjXylooAkhdtKU1nC0RGP8w+
-	 A3lwWyZ2KA77A==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4F7E2378000E;
-	Mon, 15 Apr 2024 12:00:23 +0000 (UTC)
-Date: Mon, 15 Apr 2024 15:00:21 +0300
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 3/3] drm/fourcc: Add documentation around
- drm_format_info
-Message-ID: <20240415150021.13d9b637.pekka.paalanen@collabora.com>
-In-Reply-To: <20240409-google-drm-doc-v1-3-033d55cc8250@bootlin.com>
-References: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
-	<20240409-google-drm-doc-v1-3-033d55cc8250@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1713182509; c=relaxed/simple;
+	bh=U2+6Lr79GsLFHQ315u6tpD82JiM5TTUkPMj3699+nDk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nmxUYs/r9vvMo8qhn92vfIZy+nTwdEeoOxq843/eG3gcHnryXayOcqmHV7qYzzJ7jfwX1ndDjIPS9OmEacia6o/IFRnDZ5PRHM7lvY6pHoBxxmGIEkuYHuRK7H8+LhmvlHwlatG2vBCProWu6wzkKmhcTylAp48uvqTeQq0JmQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i+4ur96n; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so3315781a12.3;
+        Mon, 15 Apr 2024 05:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713182506; x=1713787306; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U2+6Lr79GsLFHQ315u6tpD82JiM5TTUkPMj3699+nDk=;
+        b=i+4ur96nNGg+tNb25L7MiN6Sctc71e84SFTsQGXeumJPbdR8KSlHTsk5y92WCNDIjJ
+         xUNnP6mJru9DXT5sKJVMXZK4olAMfOD6FZvZjNNyKxNKeH1qGXGfxBXh371j9lBTyC/W
+         1CW8D8w4BaXJjeN2P+jSRlkcWX7zuXpiveoCyWZEWDOzDqjj4dWHms36Kh9rhdLQL8hc
+         358+WSArOniPQjTOFX8uDS5FLfeQeQtikFgkOr/26jjs81BYbw50peoAEI0JdAfDsY0L
+         qFtWXsUEqfDdTO90hVyuqO+SXgAQTH98LMneJHk+Ll9h67LCbXOgRRyVHt5Oge3PzJRT
+         zYDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713182506; x=1713787306;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U2+6Lr79GsLFHQ315u6tpD82JiM5TTUkPMj3699+nDk=;
+        b=bmJ/Yz7vVO/vsTITeOF+9+UWuElZsjj5Inv0GBRMXknzHkde0Wf+wcb08sOIfbeBwf
+         MLi0S7kfdiDC0jIxPpEPuITeSsemCcMW7Cr56JZQCj/X1P0y6tkfprDY1eCPYOkoFJ1i
+         lFTbKP0Ypa9xfkdpQvSNxgOaDx0TKHi/SlAQ9rA8KVidwJq203sAorI9GxVfhh73upVv
+         +8wGD8tDbZGlQ9YcwGJGcz1uPt7VRrA3/p3CkuyGV/4ICyh3cwdBqz3HVTnSbUufqj9N
+         9t3hB+8Tke+G61oJM5AgEUBA9TKftb5utM0On7UESEUKXifps1Fb4c1ei+eF9f1pMPP0
+         IXvg==
+X-Forwarded-Encrypted: i=1; AJvYcCUe0ACynUXj4Ki2SpyOqUF9iTEIkzwIzBzqQVG3YsfxlTSGmjMfS6K2O4XEFKgi88Yny3X3M/UFnr18uZ1Gu2bKXHopg9ckbu+JCxApHfHBDX67nncOqg8Ee/SICmkEAqStCNq9H6igN0q9AumllzCfp8xRNeELh9cON5tYOWEZU+OBGEQa
+X-Gm-Message-State: AOJu0YwFhX3XNttKGcMbhz9+aqhuK7YI5nYa2E76Ji0xLjLf/IHdK03D
+	QpmJt6OCc3GVuJWWePEf80Jh1sOOxUCo3iMkZqjPae7AnNgYvUQPWMLC3CO6EDsC5bm/khSJ0pP
+	yV5Fbs4Qo8uSj399uYZ7D+FgVfyGs7pkKCwA=
+X-Google-Smtp-Source: AGHT+IGbhRTjcHd2K4ztbjm7oGGgtAEi1sZPmlLlZI6mWHz2v6XhYVkLuyaUclom/SQylPmkWyk1n/jJ4ZnyEo2KLtg=
+X-Received: by 2002:a17:906:eec3:b0:a51:c84b:f17b with SMTP id
+ wu3-20020a170906eec300b00a51c84bf17bmr7285354ejb.69.1713182506478; Mon, 15
+ Apr 2024 05:01:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//3ENGSCnsAF3Vk.9Cy9Ro/h";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_//3ENGSCnsAF3Vk.9Cy9Ro/h
-Content-Type: text/plain; charset=US-ASCII
+References: <20240415100713.483399-1-colin.i.king@gmail.com>
+In-Reply-To: <20240415100713.483399-1-colin.i.king@gmail.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Mon, 15 Apr 2024 20:01:09 +0800
+Message-ID: <CAL+tcoBO2SPNYE+oRSkqk+YWRK0OiG5xj3uNZ448-AWMsG1A0g@mail.gmail.com>
+Subject: Re: [PATCH][next] net/handshake: remove redundant assignment to
+ variable ret
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Chuck Lever <chuck.lever@oracle.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	kernel-tls-handshake@lists.linux.dev, netdev@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 09 Apr 2024 12:04:07 +0200
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+On Mon, Apr 15, 2024 at 6:08=E2=80=AFPM Colin Ian King <colin.i.king@gmail.=
+com> wrote:
+>
+> The variable is being assigned an value and then is being re-assigned
+> a new value in the next statement. The assignment is redundant and can
+> be removed.
+>
+> Cleans up clang scan build warning:
+> net/handshake/tlshd.c:216:2: warning: Value stored to 'ret' is never
+> read [deadcode.DeadStores]
+>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-> Let's provide more details about the drm_format_info structure because
-> its content may not be straightforward for someone not used to video
-> formats and drm internals.
->=20
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  include/drm/drm_fourcc.h | 45 ++++++++++++++++++++++++++++++++++++++----=
----
->  1 file changed, 38 insertions(+), 7 deletions(-)
->=20
-> diff --git a/include/drm/drm_fourcc.h b/include/drm/drm_fourcc.h
-> index ccf91daa4307..66cc30e28f79 100644
-> --- a/include/drm/drm_fourcc.h
-> +++ b/include/drm/drm_fourcc.h
-> @@ -58,6 +58,44 @@ struct drm_mode_fb_cmd2;
-> =20
->  /**
->   * struct drm_format_info - information about a DRM format
-> + *
-> + * A drm_format_info describes how planes and pixels are stored in memor=
-y.
-> + *
-> + * Some format like YUV can have multiple planes, counted in @num_planes=
- It
-> + * means that a full pixel can be stored in multiple non-continuous buff=
-ers.
-> + * For example, NV12 is a YUV format using two planes: one for the Y val=
-ues and
-> + * one for the UV values.
-> + *
-> + * On each plane, the "pixel" unit can be different in case of subsampli=
-ng. For
-> + * example with the NV12 format, a pixel in the UV plane is used for fou=
-r pixels
-> + * in the Y plane.
-> + * The fields @hsub and @vsub are the relation between the size of the m=
-ain
-> + * plane and the size of the subsampled planes in pixels:
-> + *	plane[0] width =3D hsub * plane[1] width
-> + *	plane[0] height =3D vsub * plane[1] height
-
-This makes it sound like plane[1] would be the one determining the
-image size. It is plane[0] that determines the image size (I don't know
-of a format that would have it otherwise), and vsub and hsub are used
-as divisors. It's in their name, too: horizontal/vertical sub-sampling.
-
-This is important for images with odd dimensions. If plane[1]
-determined the image size, it would be impossible to have odd sized
-NV12 images, for instance.
-
-Odd dimensions also imply something about rounding the size of the
-sub-sampled planes. I guess the rounding is up, not down?
-
-> + *
-> + * In some formats, pixels are not independent in memory. It can be a pa=
-cked
-
-"Independent in memory" sounds to me like it describes sub-sampling:
-some pixel components are shared between multiple pixels. Here you seem
-to refer to just packing: one pixel's data may take a fractional number
-of bytes.
-
-> + * representation to store more pixels per byte (for example P030 uses 4=
- bytes
-> + * for three 10 bit pixels). It can also be used to represent tiled form=
-ats,
-
-s/tiled/block/
-
-Tiling is given by format modifiers rather than formats.
-
-> + * where a continuous buffer in memory can represent a rectangle of pixe=
-ls (for
-> + * example, in DRM_FORMAT_Y0L0, a buffer of 8 bytes represents a 2x2 pix=
-el
-> + * region of the picture).
-> + *	The field @char_per_block is the size of a block on a specific plane,=
- in
-> + *	bytes.
-> + *	The fields @block_w and @block_h are the size of a block in pixels.
-> + *
-> + * The older format representation (which only uses @cpp, kept for histo=
-rical
-
-Move the paren to: representation which only uses @cpp (kept
-
-so that the sentence is still understandable if one skips the
-parenthesised part.
-
-> + * reasons because there are a lot of places in drivers where it's used)=
- is
-> + * assuming that a block is always 1x1 pixel.
-> + *
-> + * To keep the compatibility with older format representations and treat=
- block
-> + * and non-block formats in the same way one should use:
-> + *	- @char_per_block to access the size of a block on a specific plane, =
-in
-> + *	bytes.
-> + *	- drm_format_info_block_width() to access the width of a block of a
-> + *	specific plane, in pixels.
-> + *	- drm_format_info_block_height() to access the height of a block of a
-> + *	specific plane, in pixels.
->   */
->  struct drm_format_info {
->  	/** @format: 4CC format identifier (DRM_FORMAT_*) */
-> @@ -97,13 +135,6 @@ struct drm_format_info {
->  		 * formats for which the memory needed for a single pixel is not
->  		 * byte aligned.
->  		 *
-> -		 * @cpp has been kept for historical reasons because there are
-> -		 * a lot of places in drivers where it's used. In drm core for
-> -		 * generic code paths the preferred way is to use
-> -		 * @char_per_block, drm_format_info_block_width() and
-> -		 * drm_format_info_block_height() which allows handling both
-> -		 * block and non-block formats in the same way.
-> -		 *
->  		 * For formats that are intended to be used only with non-linear
->  		 * modifiers both @cpp and @char_per_block must be 0 in the
->  		 * generic format table. Drivers could supply accurate
->=20
-
-Other than that, sounds fine to me.
-
-Perhaps one thing to clarify is that chroma sub-sampling and blocks are
-two different things. Chroma sub-sampling is about the resolution of
-the chroma (image). Blocks are about packing multiple pixels' components
-into a contiguous addressable block of memory. Blocks could appear
-inside a separate sub-sampled UV plane, for example.
-
-
-Thanks,
-pq
-
---Sig_//3ENGSCnsAF3Vk.9Cy9Ro/h
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmYdFtUACgkQI1/ltBGq
-qqd1Dg/7BbEa30DJPOqyRDllOe5Ct0+mOio7v37ZwOF10plS1JNUyH+ELn+bIGcs
-NBAHqCC+vEHAgpKAKkwOmVFd8oBpXQ6C5Ze92T5msUCSjdexEQZs9Jh6sZkk8x4W
-p2avkgqETfiEapWQgmvRSGx3JNBN0REE3KtBqCf5tcKZtJejcXpjDcTMWelT1vf9
-gKtc2WveEvcz1Fo8DceojYkvSaNQIWhNx+6LMQuE08od9fCxBub3kVAArWG++Vxy
-2RmMipBfDW/Ere1e/ZqlLa6KMTMboavwYolgAOeTtoIhO0ayWyEBm5AORL+9LHiw
-E+Dh5rjGlGMXD7+iab0hy8DCuK2UMxAnaJHawCQicVgW0EUvNio9usUX/oNJvNwZ
-o2zHAxl70VZ/3H+yLeL88dj9GK4lgiS/olPc333V2zrjteCKRIP1RtXbUgyeztm/
-R02pEVJZu0YghHDJqCUtbVBkUHq/y/TqEzTh2DurmOAAWVaVaAcToxUA9SptM1e4
-tLuVN+CKI0UJwE1+S1x3uSGcHAIJV93lE0+BMONu8kRWOarAusrlBbQvPUoZNxSh
-ngwA0yZ0t5Fdt0EScRL2a9Jw8sTfQa3IQkoqs5QMZcoH+9fG8A4zwMFpaC/S1fai
-KlwZWYmj7IW1fI59iKDIvn7YZiIByQhn8dqzbvcTL3cC+JmyVRs=
-=/Wnb
------END PGP SIGNATURE-----
-
---Sig_//3ENGSCnsAF3Vk.9Cy9Ro/h--
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
 
