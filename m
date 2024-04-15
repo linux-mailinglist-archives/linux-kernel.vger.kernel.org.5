@@ -1,237 +1,113 @@
-Return-Path: <linux-kernel+bounces-146025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 600A28A5EF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:56:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3242E8A5F06
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:58:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1701428266B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:55:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 600881C21370
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:58:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942E21598E7;
-	Mon, 15 Apr 2024 23:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59846159906;
+	Mon, 15 Apr 2024 23:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m7wzbM6s"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LJeDRkHk"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4B42E852;
-	Mon, 15 Apr 2024 23:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC54F1591F4;
+	Mon, 15 Apr 2024 23:58:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713225349; cv=none; b=GcOFeRVRJpuSG1qCPUOaR/AHcoDNbMFib6onW2vQCRsj/sdw3gi0At2WFImD/pd3qE3HpdsVBK3sgVLmm+wBgGBG9Q2Ashcf1Mu1qr8N2rImgR+FyhC6pd5JwYHk4l09Djbr016XYMIpIJidwyMPoaJ/oCxH3Xp+YGICmzuwUgE=
+	t=1713225496; cv=none; b=HSLbJP0gpf9P3MNodv/FhdpEjz6vYv+JtI8zHo9oIRC9wm/nc2k+C4fxYTDbGtRjrMeCdJcQ2oRNPk19wUdzG7W3YoclMQ7ZWcGU2GxMeEaGIeDyv3AEXYR/2MOL6RKCaxkzqGoVWy2h0R4sHGX7ea01Hjj5Wd3NhoBjCBFz+k0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713225349; c=relaxed/simple;
-	bh=ssXTNs9V5Lx8hobADsdoVzqxP9h4vHdkG9DvcyPJLg4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sOXUAQxEu0nPiRE2P86UHU+wiNhIXQBlzY/WA9avTqANfBse95z7A9VeP6Bl/x6BsRY6b/DhB5LbuPWl8SVlztLSGm6dIaDRBJPj4ltJFtOp1g4oO/HI0DGP94k2x5OaeObG504SJK0VMxue7gWEMTQ6qKHSHm1nO1ZiN6r8iBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m7wzbM6s; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6eb8ae9b14eso483075a34.0;
-        Mon, 15 Apr 2024 16:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713225347; x=1713830147; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sq974b3zN56bT5SWz19uBa19EDT0KaB/lKfvgwpSeWA=;
-        b=m7wzbM6sgOGs/Lschnkgbq78P7Bf6iNSCi+pFE5cA1nYE4t2NBpQbF/jaagqiYUTAi
-         ln+B6snUIgGJYFlGPN/4uDcnihA4JTckHFlTrgCz52mlkCU+QgynPwySyTuok6w1J2AY
-         5+jW+PujnirmqGRi2xMyseJxNtcHRGeZ2jtWI1GP4cQ/BaSIUkUlu34eaole9dsqc2L0
-         i5Ad0ImZ6Dz68sgaaISUwzMPyxsaYgLXitMB+7z4Bqkcv1iisULpt8SxhygDvOuZUfCe
-         MBiDJOE9IsCely15yXU2xEumG7Bb5263RmQ+F+BLREJ201ZRPcFD2NwWe8Uy9eHz7nAf
-         BtPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713225347; x=1713830147;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sq974b3zN56bT5SWz19uBa19EDT0KaB/lKfvgwpSeWA=;
-        b=D8Ojbpk63uR/DFBWzaKpshMXzViASCYttah6A7jv6bIO7C9ki5ZQkefypORdPlTOLW
-         0t8yv0WdSpKwyMRuELhfhBtaG2+rzsbhARztXG/UlUnrVv8Fx0Fi++LnWgeDEVS65APT
-         odY7eR6XxgBQYkoR0rjBosJcx6V/F/BaP44JzmluddoQrXfaZL5bY2zybT/sBl2tX6pe
-         lYPrzYZTZovpwgT48aQhI1OadnsGzn9eOhXahbl6VltBluva5W9evBvUSngeP9h5LFTf
-         7xDeBrjVzO0vOMFxOy4lIn7uBfOXpo1kOHoC4K7cb+1++Xy9cL8Ck4R54KP7v03sGBI3
-         xhRA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/mZgf6f8+PrkANANTKzXxXQMmlx1xhYNoDos42F9EJVIkXoemEKV5daj1D/aNm6VOzshcuqpCGyLiSbJOmFDOxFRXKpn5BUaBe45d
-X-Gm-Message-State: AOJu0YwkZY6uuVNNLHriCzzkIdUE421E82XpniqRj8U23kkILp0SET4y
-	cY8eMll0NYh2PdDVVHxhhz8xvLtjzyOtI9gKkRNiLKf2a1/V2XBH
-X-Google-Smtp-Source: AGHT+IHiucEWzxrRlC1n9ieu3IXs01n8gYsLVmIpRDvJmbOzZKxfnYKgNFMKy4lMB4emzn4mC2HidA==
-X-Received: by 2002:a9d:7388:0:b0:6eb:8136:bf3e with SMTP id j8-20020a9d7388000000b006eb8136bf3emr3516020otk.21.1713225347283;
-        Mon, 15 Apr 2024 16:55:47 -0700 (PDT)
-Received: from [192.168.0.128] ([98.97.103.43])
-        by smtp.googlemail.com with ESMTPSA id o65-20020a634144000000b005dc36761ad1sm7769686pga.33.2024.04.15.16.55.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 16:55:46 -0700 (PDT)
-Message-ID: <b03bca93fba5a1c1a1bef3db89df11fbc755670b.camel@gmail.com>
-Subject: Re: [PATCH net-next v2 05/15] mm: page_frag: use initial zero
- offset for page_frag_alloc_align()
-From: Alexander H Duyck <alexander.duyck@gmail.com>
-To: Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
- kuba@kernel.org,  pabeni@redhat.com
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Andrew Morton
-	 <akpm@linux-foundation.org>, linux-mm@kvack.org
-Date: Mon, 15 Apr 2024 16:55:45 -0700
-In-Reply-To: <20240415131941.51153-6-linyunsheng@huawei.com>
-References: <20240415131941.51153-1-linyunsheng@huawei.com>
-	 <20240415131941.51153-6-linyunsheng@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1713225496; c=relaxed/simple;
+	bh=S9uHbUvF9BAPlZALEKSXUhEc5OPZdpFJasa6wIfrH+k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kskPvacPR/Sv9UBY+2wv2Hqlm717KVNe/n0YeqllBSpsTDOO5NJx8s19vdY6i5Ydl5E74CGkhaNA5tlRhWx49KbjDSrU1ZmmrRvZ7ZYSZouPlXJn2BReNTZiOSIS+bZnPxssjywir5PKIaAlDHAEGKBrsw3O+YpgVUDqFgiYFck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LJeDRkHk; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713225495; x=1744761495;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=S9uHbUvF9BAPlZALEKSXUhEc5OPZdpFJasa6wIfrH+k=;
+  b=LJeDRkHk9X3jVgvff9mbBOcz92AOwteL6C3kyBj/SpfNrYTPgpB4SX+Z
+   jNVJ+W6PTPI7ZRNRqMXg+DPevhpCzqEBRUB/sSEaHpF6aFO6ofYy/N3tQ
+   lPXuVzGRkRYg6kNOKwI4Sfp88PIY/1wtHhCm5dBBffK0N7DTYddgAp7FU
+   txOifcJ5ujMMKi76UJXVPqAhoq92mpCNXqGQ/T3Zi+4I7mSUqXS3Zg/bi
+   7fS6TWTqFGZpRTjY9v/0bbxH63vdei+qBVnA4xJNYn5tOhO1ZMIvdocDJ
+   jjL8HwZvsRlS6k+KtTr1scVzf48Q1ewaWsnIzul5/GNqSyBuLqyeHHKA2
+   g==;
+X-CSE-ConnectionGUID: 3bmwH6AQTx+9ZZcBzIHQNQ==
+X-CSE-MsgGUID: ku+fAmcLQDeqKANxhfG8gw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8559772"
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="8559772"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 16:58:14 -0700
+X-CSE-ConnectionGUID: MqQeaqcQTACYunSUN7XgrQ==
+X-CSE-MsgGUID: 2AlKMFcsRAG/Hni17fvJ5A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="21975192"
+Received: from sj-4150-psse-sw-opae-dev3.sj.intel.com ([10.233.115.74])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 16:58:14 -0700
+From: Peter Colberg <peter.colberg@intel.com>
+To: Wu Hao <hao.wu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Moritz Fischer <mdf@kernel.org>,
+	Xu Yilun <yilun.xu@intel.com>,
+	linux-fpga@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Russ Weight <russ.weight@linux.dev>,
+	Marco Pagani <marpagan@redhat.com>,
+	Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+	Peter Colberg <peter.colberg@intel.com>
+Subject: [PATCH v2] fpga: dfl: remove unused function is_dfl_feature_present
+Date: Mon, 15 Apr 2024 19:57:43 -0400
+Message-ID: <20240415235743.3045-1-peter.colberg@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2024-04-15 at 21:19 +0800, Yunsheng Lin wrote:
-> We are above to use page_frag_alloc_*() API to not just
-> allocate memory for skb->data, but also use them to do
-> the memory allocation for skb frag too. Currently the
-> implementation of page_frag in mm subsystem is running
-> the offset as a countdown rather than count-up value,
-> there may have several advantages to that as mentioned
-> in [1], but it may have some disadvantages, for example,
-> it may disable skb frag coaleasing and more correct cache
-> prefetching
->=20
-> We have a trade-off to make in order to have a unified
-> implementation and API for page_frag, so use a initial zero
-> offset in this patch, and the following patch will try to
-> make some optimization to aovid the disadvantages as much
-> as possible.
->=20
-> 1. https://lore.kernel.org/all/f4abe71b3439b39d17a6fb2d410180f367cadf5c.c=
-amel@gmail.com/
->=20
-> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
->  mm/page_frag_cache.c | 31 ++++++++++++++-----------------
->  1 file changed, 14 insertions(+), 17 deletions(-)
->=20
-> diff --git a/mm/page_frag_cache.c b/mm/page_frag_cache.c
-> index 64993b5d1243..dc864ee09536 100644
-> --- a/mm/page_frag_cache.c
-> +++ b/mm/page_frag_cache.c
-> @@ -65,9 +65,8 @@ void *__page_frag_alloc_align(struct page_frag_cache *n=
-c,
->  			      unsigned int fragsz, gfp_t gfp_mask,
->  			      unsigned int align_mask)
->  {
-> -	unsigned int size =3D PAGE_SIZE;
-> +	unsigned int size, offset;
->  	struct page *page;
-> -	int offset;
-> =20
->  	if (unlikely(!nc->va)) {
->  refill:
-> @@ -75,10 +74,6 @@ void *__page_frag_alloc_align(struct page_frag_cache *=
-nc,
->  		if (!page)
->  			return NULL;
-> =20
-> -#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-> -		/* if size can vary use size else just use PAGE_SIZE */
-> -		size =3D nc->size;
-> -#endif
->  		/* Even if we own the page, we do not use atomic_set().
->  		 * This would break get_page_unless_zero() users.
->  		 */
-> @@ -87,11 +82,18 @@ void *__page_frag_alloc_align(struct page_frag_cache =
-*nc,
->  		/* reset page count bias and offset to start of new frag */
->  		nc->pfmemalloc =3D page_is_pfmemalloc(page);
->  		nc->pagecnt_bias =3D PAGE_FRAG_CACHE_MAX_SIZE + 1;
-> -		nc->offset =3D size;
-> +		nc->offset =3D 0;
->  	}
-> =20
-> -	offset =3D nc->offset - fragsz;
-> -	if (unlikely(offset < 0)) {
-> +#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-> +	/* if size can vary use size else just use PAGE_SIZE */
-> +	size =3D nc->size;
-> +#else
-> +	size =3D PAGE_SIZE;
-> +#endif
-> +
-> +	offset =3D ALIGN(nc->offset, -align_mask);
+The function is_dfl_feature_present was added but never used.
 
-I am not sure if using -align_mask here with the ALIGN macro is really
-to your benefit. I would be curious what the compiler is generating.
+Fixes: 5b57d02a2f94 ("fpga: dfl: add feature device infrastructure")
+Signed-off-by: Peter Colberg <peter.colberg@intel.com>
+Reviewed-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+---
+v2:
+- Do not wrap commit reference and move to Fixes: tag.
+---
+ drivers/fpga/dfl.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Again, I think you would be much better off with:
-	offset =3D __ALIGN_KERNEL_MASK(nc->offset, ~align_mask);
-
-That will save you a number of conversions as the use of the ALIGN
-macro gives you:
-	offset =3D (nc->offset + (-align_mask - 1)) & ~(-align_mask -
-1);
-
-whereas what I am suggesting gives you:
-	offset =3D (nc->offset + ~align_mask) & ~(~align_mask));
-
-My main concern is that I am not sure the compiler will optimize around
-the combination of bit operations and arithmetic operations. It seems
-much cleaner to me to stick to the bitwise operations for the alignment
-than to force this into the vhost approach which requires a power of 2
-aligned mask.
-
-Also the old code was aligning on the combination of offset AND fragsz.
-This new logic is aligning on offset only. Do we run the risk of
-overwriting blocks of neighbouring fragments if two users of
-napi_alloc_frag_align end up passing arguments that have different
-alignment values?
-
-> +	if (unlikely(offset + fragsz > size)) {
->  		page =3D virt_to_page(nc->va);
-> =20
->  		if (!page_ref_sub_and_test(page, nc->pagecnt_bias))
-> @@ -102,17 +104,13 @@ void *__page_frag_alloc_align(struct page_frag_cach=
-e *nc,
->  			goto refill;
->  		}
-> =20
-> -#if (PAGE_SIZE < PAGE_FRAG_CACHE_MAX_SIZE)
-> -		/* if size can vary use size else just use PAGE_SIZE */
-> -		size =3D nc->size;
-> -#endif
->  		/* OK, page count is 0, we can safely set it */
->  		set_page_count(page, PAGE_FRAG_CACHE_MAX_SIZE + 1);
-> =20
->  		/* reset page count bias and offset to start of new frag */
->  		nc->pagecnt_bias =3D PAGE_FRAG_CACHE_MAX_SIZE + 1;
-> -		offset =3D size - fragsz;
-> -		if (unlikely(offset < 0)) {
-> +		offset =3D 0;
-> +		if (unlikely(fragsz > size)) {
-
-This check can probably be moved now. It was placed here to optimize
-things as a check of offset < 0 was a single jump command based on the
-signed flag being set as a result of the offset calculation.
-
-It might make sense to pull this out of here and instead place it at
-the start of this block after the initial check with offset + fragsz >
-size since that would shorten the need to carry the size variable.
-
->  			/*
->  			 * The caller is trying to allocate a fragment
->  			 * with fragsz > PAGE_SIZE but the cache isn't big
-> @@ -127,8 +125,7 @@ void *__page_frag_alloc_align(struct page_frag_cache =
-*nc,
->  	}
-> =20
->  	nc->pagecnt_bias--;
-> -	offset &=3D align_mask;
-> -	nc->offset =3D offset;
-> +	nc->offset =3D offset + fragsz;
-> =20
->  	return nc->va + offset;
->  }
+diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+index 1d724a28f00a..5063d73b0d82 100644
+--- a/drivers/fpga/dfl.h
++++ b/drivers/fpga/dfl.h
+@@ -437,11 +437,6 @@ void __iomem *dfl_get_feature_ioaddr_by_id(struct device *dev, u16 id)
+ 	return NULL;
+ }
+ 
+-static inline bool is_dfl_feature_present(struct device *dev, u16 id)
+-{
+-	return !!dfl_get_feature_ioaddr_by_id(dev, id);
+-}
+-
+ static inline
+ struct device *dfl_fpga_pdata_to_parent(struct dfl_feature_platform_data *pdata)
+ {
+-- 
+2.44.0
 
 
