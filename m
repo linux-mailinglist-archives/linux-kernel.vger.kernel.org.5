@@ -1,118 +1,94 @@
-Return-Path: <linux-kernel+bounces-144491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 979818A4703
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:33:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB37B8A470A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:36:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36C961F21B0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:33:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C8E282A2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816D51C6B9;
-	Mon, 15 Apr 2024 02:33:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF30A179AE;
+	Mon, 15 Apr 2024 02:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="PB/ibbAv"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="W9sSTuDB"
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3D561BF37;
-	Mon, 15 Apr 2024 02:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B76AEEBB;
+	Mon, 15 Apr 2024 02:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713148379; cv=none; b=A0rxAGeB2K2N2zjcWv0CjHEtEWq1fhFUFYRoxiCEGdkCH1CW/w5LDs9ZRQ14t3+NnMnDRu6N7ngz/kRDiU3iL0inA48tdVMCe0HBnFstlIQOOi8vJByxk2/UXxOohlU4y9WbEgGws4RQ5TqwnXawqxRVb/dO+ZJ1YuPEoekPcdI=
+	t=1713148570; cv=none; b=sKtzkC2tt6lc+qOcdSm0/5TrlmGiDANk5gcGRPQL6x9sylaCcOuIEgmS1O5oIRPQ9HSWnRUQTjx3fKIOQBYuqWAyvoUGgqzY+3dYb4ycZLCaJVG9f1BcAODXZpYRkZF+/mGOrTU3Ptr5DvI/gwMS5TC86FH2UsRjjVYftfRiVFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713148379; c=relaxed/simple;
-	bh=mPjr4V35iAleldslzQLkcJPCY9RS6IJeKiBC6PEarE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=QDWJcYParF+jqTnwOUmy3ylyWvzj/+Cbcv0T4ExFfOr1kR5sOJ1ryXAjwQkGOuGylxkpG3L10mnXl/chGm1gfj8p9ZiAcIQylwTykdDqonrJXLtH5EFFWma8DWE2ysg5N/CmxqBpev6sk/OXbevd1Rf5WzMo8+NnDEDLDkSnZMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=PB/ibbAv; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713148372;
-	bh=H0zlDhdJnuDtI6dEcV1Mj+Y/YJcSXzNO+hJ6qKa8+yU=;
-	h=Date:From:To:Cc:Subject:From;
-	b=PB/ibbAvQgI7udim9xxr1q/UnShCS5KhL9bv9/ow/j/5bigU2G3wNIFnv5+CYa9lx
-	 LIMv7QrMVMOpwXXJBskdZ8vVa7+cv/0xtZbRkC2Jppj40TUuprxBa+v4aFBk1BdfZx
-	 YmXPHC95LohMV6Z57bi7TTIKBQRvAV1OofSJJwPKcTyrTh9cjhKq1wrWar5eMOVB7G
-	 a7OmrW2d0vuREkC7qLLjV4RW9Z6x1A7OS1icEjkdnk0Om9jdZK8oxxqy27DWKaZHP9
-	 NmsjbUqIsAtnOx1wDZZGAbsGXkt/PKjPFXgcg4FnAji9gB3GxBkyLc0NiZ75qsQSam
-	 YXE3XNvdMNqsQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VHrmx1g59z4wcr;
-	Mon, 15 Apr 2024 12:32:49 +1000 (AEST)
-Date: Mon, 15 Apr 2024 12:32:47 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: "Paul E. McKenney" <paulmck@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
-Cc: Leonardo Bras <leobras@redhat.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Palmer Dabbelt <palmer@rivosinc.com>, Yujie
- Liu <yujie.liu@intel.com>
-Subject: linux-next: manual merge of the rcu tree with the risc-v tree
-Message-ID: <20240415123247.0d27eb39@canb.auug.org.au>
+	s=arc-20240116; t=1713148570; c=relaxed/simple;
+	bh=dbzr0d3uw93R8sYczA87dg45wWEMVdoUDx3xH9kEPPA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CBj8sFg2swkPl1PmL1pfV7D11hYSfVJTY7mV/n5J/H++ExYCb2eYERhq4gsVSeOsPu2gpeQZD27ypTL6vsiQyXNy/77rtouHrgNK8FOi/3mWPogDmRgZABGMxKDxKLyE4kNskSn6OoyNbj4RqzeJYkgRJcaYfT3hIJbb3bwzv84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=W9sSTuDB; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713148566; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=jXj9IyjFEQKk7sQGSRZQTX/9hn7/xp4LmkOm86YK5Fo=;
+	b=W9sSTuDBw9xpbmOEPkYWmX2y8aYjizNUUCKpWZmzgTWqVxexyrP50XKNVTiEW7Lz8ib/PKTks1rzA1BwqC7vj0AVImNM0f9+JTwepPH8ySOVgQjqWu13psTX64we2jvZtwNkC8iy0IoOKpQhoq57qvqtJKjy2H3qwGUe/i+9S78=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W4TyvUo_1713148559;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W4TyvUo_1713148559)
+          by smtp.aliyun-inc.com;
+          Mon, 15 Apr 2024 10:36:05 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: kent.overstreet@linux.dev
+Cc: bfoster@redhat.com,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] bcachefs: remove unneeded semicolon
+Date: Mon, 15 Apr 2024 10:35:57 +0800
+Message-Id: <20240415023557.5851-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6_AXiiHatTihk3suI47_m1t";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 
---Sig_/6_AXiiHatTihk3suI47_m1t
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+No functional modification involved.
 
-Hi all,
+/fs/bcachefs/super.c:1128:59-60: Unneeded semicolon.
+/fs/bcachefs/super.c:1133:59-60: Unneeded semicolon.
 
-Today's linux-next merge of the rcu tree got a conflict in:
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8755
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ fs/bcachefs/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  arch/riscv/include/asm/cmpxchg.h
+diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
+index 8daf80a38d60..234f19ea8f30 100644
+--- a/fs/bcachefs/super.c
++++ b/fs/bcachefs/super.c
+@@ -1125,12 +1125,12 @@ static int bch2_dev_in_fs(struct bch_sb_handle *fs,
+ 
+ 		prt_bdevname(&buf, fs->bdev);
+ 		prt_char(&buf, ' ');
+-		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));;
++		bch2_prt_datetime(&buf, le64_to_cpu(fs->sb->write_time));
+ 		prt_newline(&buf);
+ 
+ 		prt_bdevname(&buf, sb->bdev);
+ 		prt_char(&buf, ' ');
+-		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));;
++		bch2_prt_datetime(&buf, le64_to_cpu(sb->sb->write_time));
+ 		prt_newline(&buf);
+ 
+ 		if (!opts->no_splitbrain_check)
+-- 
+2.20.1.7.g153144c
 
-between commits:
-
-  07a0a41cb77d ("riscv/cmpxchg: Deduplicate cmpxchg() asm and macros")
-  54280ca64626 ("riscv/cmpxchg: Implement cmpxchg for variables of size 1 a=
-nd 2")
-
-from the risc-v tree and commit:
-
-  b5e49f1af563 ("riscv: Emulate one-byte cmpxchg")
-
-from the rcu tree.
-
-I fixed it up (I just used the former as the latter seems to no longer be
-needed - I also undid the change to arch/riscv/Kconfig from the latter)
-and can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/6_AXiiHatTihk3suI47_m1t
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYckc8ACgkQAVBC80lX
-0GxC2gf+JNExjXUcrttlNnOwyZXsicjF4f2W2MBiIqqqOvnUs5Q9cQp+Ufb7+4C8
-XTw1+7a93rbdbTk4RLnJRQ+E8xDPAQubfrk0RwoGWeLNqsiTDMuqIHTFqN4Wi1QX
-HloJX/0KR4uPPt2nivLOC/JQF41+0NTB6GP3yWP4dcXM2DXjxL7XaHYLhaaQwLzZ
-c6C8Hy+GRgt55uYqybQ59w12aTQ6ULYhlg8YuzD1AAVYwMAm4hnpAY5bH1UIKcEO
-0qRXkKwWXnzM+wJF2iHHc/aA4SmHEGvm6pGE8S1rHVXsFyOa7ZZsD/ZuDGwJdTXk
-v0lZrxeQ7Y/H1MpTabV+bErHoyrRnA==
-=V3Jf
------END PGP SIGNATURE-----
-
---Sig_/6_AXiiHatTihk3suI47_m1t--
 
