@@ -1,118 +1,120 @@
-Return-Path: <linux-kernel+bounces-144690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E95188A493F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:42:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AD448A4943
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:43:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C4A0B25A9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:42:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9A632817D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94B56374F5;
-	Mon, 15 Apr 2024 07:41:57 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546EF28DD2;
+	Mon, 15 Apr 2024 07:43:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="eryD4r6k"
+Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F60374C4
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1968B38389;
+	Mon, 15 Apr 2024 07:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713166917; cv=none; b=pcBloSV2JRUAs5wCjedYVJSZxrVGBtfhefnDS5yqBc70xsh7ZFLKoXam/7OlkDni17NzjTIsNy+n3Dl93EGHAcwhrWgbFhsPgij9bDNWCBkWW0/kfHCPraCsYcQFNR6HySGdpvR3cRaSKC+r2/9CJS2bW5Wg5UNWb/BXsel+8Hw=
+	t=1713167018; cv=none; b=W0yWPbzMjDMxGzA7IvH0Vo7pqqOwIAQ04j4/cRx97Fk79pqi5h6dksY5qipTunelc+KGivMjlH+udXh2gbz88A+U5pu0AMhm3xMlWuAnXoVe+cvROlLLnukR1RuGhCpUoGaih+TJQ9gNj9wfo8Gm0O6U0/nJHKHNc6pkIPgc8lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713166917; c=relaxed/simple;
-	bh=SsSiodcH/hkzQJOSbPGU6e4kOgrztHohBQiyWyMxvRY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fe2Dg9VM2VNwzru0Y0Mp8GOX9EpoF4D3g7k7F6GlGMnl2qrBZOYXs8i2xXXRTVG1eMu2/+7yTml2wNCRY/KBelH/Nwz2QDcXtOtI4ChghoCJvUeK1HitN4pkRAYs2FThrypVIph18sum/xb7b0nofKrerxUWPjbhjaFWv0niNrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rwGyP-0002fT-2w; Mon, 15 Apr 2024 09:41:53 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rwGyO-00CNli-Lw; Mon, 15 Apr 2024 09:41:52 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rwGyO-001Qpi-1v;
-	Mon, 15 Apr 2024 09:41:52 +0200
-Date: Mon, 15 Apr 2024 09:41:52 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 0/2] uio: Convert to platform remove callback returning
- void
-Message-ID: <svxqalqrcc3iskr34osrx5g6itbbypcsojbzmvknv53gr56yzc@ucalmaxjoi5b>
-References: <cover.1709933231.git.u.kleine-koenig@pengutronix.de>
- <g4bpnb64ylia6rlhqbjm5xctuy3uu6wnfu5sxuqkrze24y72od@e3tpnrwwl75t>
- <2024041517-helper-suitable-0e42@gregkh>
+	s=arc-20240116; t=1713167018; c=relaxed/simple;
+	bh=SfL54Q7DzvB74BgN0DZ2PxYEquQ2XlEdK13OFlmH4jI=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=TsXKXl7F24kUuxAT7mGuW8PcmqinCz7n++MSbn6wZvAivPWh14FEJqTWSDNc/TMi/4+792aNkYXC8HGQ4/ubVpFuzbpWuqfWl78FB9kipOfwwHeB2jxnbckA73fHWkOoxxBYcQ/2khD1/7lxCTI2jPWyw//M1GI+ZS85IaJ7iQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=eryD4r6k; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713166994; x=1713771794; i=markus.elfring@web.de;
+	bh=Ehw3JP9/jH11oJR68DQOEghJBea6xoCh7eHWITgqHRM=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
+	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=eryD4r6kmxWCnkLLaPtDkiFoBn4OIfitiMN4abV05fl8tNgD2k9xI8qIF6wmU2fM
+	 5Qk+Kwvs29iv33OOKUKVBnc1q96JO1eK+ybtB/FQCkrbw8r/7gKSrCPHQfHOVjBHj
+	 dwfO2VrUin92HOM2N4uDB0EuWZY5GrnZoV6tt77/WwvizHP6+OaU3/kMwQ16YIEyi
+	 cTGkwk2sxBaP0juO3kLKcPM6l8UwXLjsqxD36BwrBLwR2LVMPuc2VAG2ojIYF1+3C
+	 gasuNuKMVhOVmjaN1VDgJmf036H8mBNDPZHV+K3g9chcH51Id+xw7RnWmMw4vkCxG
+	 t0UXS7ElfAHoUM8Wuw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.80.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MLzin-1sE4zj2557-00Hz6h; Mon, 15
+ Apr 2024 09:43:14 +0200
+Message-ID: <ee6022b8-3aeb-4e6e-99f5-2668dd344e0a@web.de>
+Date: Mon, 15 Apr 2024 09:42:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6rheskpp2l3vatfp"
-Content-Disposition: inline
-In-Reply-To: <2024041517-helper-suitable-0e42@gregkh>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---6rheskpp2l3vatfp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [0/2] powerpc/powernv/vas: Adjustments for two function
+ implementations
+From: Markus Elfring <Markus.Elfring@web.de>
+To: linuxppc-dev@lists.ozlabs.org, kernel-janitors@vger.kernel.org,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Nicholas Piggin <npiggin@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+References: <7be66990-de9e-488b-ad6d-fafd1c7bb34c@web.de>
+Content-Language: en-GB
+In-Reply-To: <7be66990-de9e-488b-ad6d-fafd1c7bb34c@web.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:clWA/QkEMk1zwMQrfsyv96T78gaWC3LvgzWJUo1bf0wfhW8Ib83
+ dTf4utj1Tw3KMQwJMwkvi+LGtQt2GBBMU6UbPuBwVyePLDUe3W71tPDnKSa9VsvT3sqgU2D
+ caERPxmHaL4CoVKIpUQiXoj+F2s2abtVqYEeEsw4j8HcEgYEFMKkhherMm4g5b+S9nrXboa
+ OH2uBab55WhqqaOsclLAA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:QIo4Ksqsr9g=;4Gg95QXmFO+zKJrVU0tNrlb2pZ5
+ pO2yecCe36GJ78zuRFCpoCTROCAj9WCi7BuNDbDJ8y3kj82gVfEVqGPTCAS9GhAIR73fpgduD
+ 4/mrWvqX9oWV5fXBI5/7mtZPuCuFJNcQgvX05PjCnK5Ti7OVvamI/rnfoLPUtd5rcl86mrXPZ
+ jCHidQabVd49+ww84TFn+RgP3m8gp+FtgtkXjAi7WKLpBhwNrqa83EBoMxIlpmCeqToWEKJvp
+ cxxY+u1c5Pw+C3/WDfXEhLb7BqufYxSpeAxhjnro2kKQmuHqkMVxyR7Hvyahbflt0A4phQDzI
+ Gju1dKIO9H2W3Jr13NHRhzlwBg+0kPGUwtpgbxMQIamMXl35j3ubfoJHMGNkjVuis695Eju8M
+ zv/DqNwtjWDYq1D9bTY5wITMIBNRTQ3a0BeAvpbjjiTq6rkKpz+4p9aKxOWE9t2EJEH3yyDkI
+ OcD5mbSvFK08kIYHkFglwGAUwBP6I060u9mzW6dRtvEzqYCN7mOxEplcB1PMJMLVelyOdraK+
+ Q5DnPfai0rumhfVNlngBon1Xp1APjwQwjdey8Q7s8Atb+UD/xTVcTps4BPT62puVFic8rRwml
+ myVjvlVIsxz0IZ/GsfkfgLLILxTxeqRFYtYMVKchA4CwgUFF+QpiMhxyXLru/wjsbWc06mm1w
+ DVk+a+F+hJ2dujOr+bsfc3sU958bOK+zpA/o8ZUIk51OmpVDqz8Kk4l5j+lbKu+PCOpcbuaCb
+ ZAnA8S0crAjSHJ4c923RO7mEJUjzCyXPOkUK9E+5PbOqY4bp6KsKr+Y4j0QQjHOeSscgHgoyp
+ xpECGR9p6xaDhBT7yMYifcVH2JwfnoPiZs7tpLrvq0e6A=
 
-Hello Greg,
+> A few update suggestions were taken into account
+> from static source code analysis.
+>
+> Markus Elfring (2):
 
-On Mon, Apr 15, 2024 at 09:31:35AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Apr 15, 2024 at 09:19:00AM +0200, Uwe Kleine-K=F6nig wrote:
-> > > Uwe Kleine-K=F6nig (2):
-> > >   uio: fsl_elbc_gpcm: Convert to platform remove callback returning v=
-oid
-> > >   uio: pruss: Convert to platform remove callback returning void
-> >=20
-> > The commit 1019fa4839c9 ("uio: pruss: Remove this driver") (currently in
-> > next) makes the pruss patch obsolete. The fsl_elbc_gpcm patch was
-> > applied.
->=20
-> Yes, that's why I only applied one, sorry if I didn't let you know.
+I would appreciate a bit more information about the reasons
+why this patch series was rejected.
 
-Everything's fine on my end. Given I monitor next now with the goal to
-change struct platform_driver::remove after the upcoming merge window, I
-noticed myself. My message was only informational, no blame intended.
 
-Best regards
-Uwe
+>   One function call less in vas_window_alloc() after error detection
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/1f1c21cf-c34c-418c=
+-b00c-8e6474f12612@web.de/
 
---6rheskpp2l3vatfp
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+>   Return directly after a failed kasprintf() in map_paste_region()
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYc2j8ACgkQj4D7WH0S
-/k7DKgf/YRqtlVamYYFNQ2ED7EJ/JLkWMMjyGE8q3fYiU/k5DJP27O9yB4LhoUEZ
-kQMfLYw/efMWK6hmDWvuR9NiBFxXqWFGOZYucx47+4AMDeiUXj3yn8ul2CGSVEae
-00dq2fnuUrWRmmPaFPkQri/BxnNK/463mhEpe53Eg83UsPyF4DElx9tgB4HAkMaI
-GnBhY7RdpUENChXa+QedqgzjW3mf2gNKmSyLXbKmSC/9ctKzKCQZFQthCgMEuBVq
-kt29/AjZK3K6rZAe2rBKqUuUZFJxZTFRedSIKGr2BjUE/K9PXtfnMnIOqN2hWKfW
-0n9+PqAkGHq0I2L62MS47hcf7Pfz4g==
-=urgc
------END PGP SIGNATURE-----
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/f46f04bc-613c-4e98=
+-b602-4c5120556b09@web.de/
 
---6rheskpp2l3vatfp--
+
+>  arch/powerpc/platforms/powernv/vas-window.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+
+
+Regards,
+Markus
 
