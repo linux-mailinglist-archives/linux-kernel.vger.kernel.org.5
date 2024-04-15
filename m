@@ -1,319 +1,143 @@
-Return-Path: <linux-kernel+bounces-144488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA0368A46F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:28:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 489588A46F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 04:31:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E843B22D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:28:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 734011C2198C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB7417758;
-	Mon, 15 Apr 2024 02:28:19 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D10615E9B;
+	Mon, 15 Apr 2024 02:31:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hMmklDCG"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4714C9F
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6BC360;
+	Mon, 15 Apr 2024 02:31:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713148099; cv=none; b=YSELfNiSZRe5rFgHrBAXXvjpKC0PKI8c7mlcXOcy2jpxIYcIhvEjJtlJfx1h37C4eKp8YSdoCMMi6BKVOLLhvYpn5YKuLJ81mupXbEXK5N4ft9mXMmxK471osQ0IWkz8YLyYFlmFZ4t3rJAY4YUYnUpmTHdalFRosxRrAV4LJno=
+	t=1713148293; cv=none; b=gKkX/TLNs6qBswOSbl8X/afKFKwG2AKJ31AVOkWGISnsuHEnpfyerwIpWunnbRPlWmN+v8icc8gNCJWT/pvEJO/3nzm4U7Tb01Ex6M0+R/eTEO7AgneIzRar8g1dVxD8Zos5UepcrpwxqYZNDrb38VkAEjB624bWGHRhxt32CwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713148099; c=relaxed/simple;
-	bh=Cio18tSKuF/8euwAPGekhlyQd88E7BpLqga+zxfPc48=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=VtkPA4hp9MuZRRQWpeSWDwhNDP/xLTmpoi21vYE4cGIgw0xGYIBJnHnmpUCEMm0fP+go3B12eVUrZLEtO5qhyTI6eO6wsX+SGEW+1F6tBJzgWXK8q0vXkznL8s5vWWBj1/M2gP/hjwFrYIdrRYs9NY1lNTIFIIWmrbYH/nSgY8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d5d7d6b971so324653939f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 19:28:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713148097; x=1713752897;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=waGhkYO2YB//zJMzb8XaEyUj7MB1CN5OmHFF1KBcXK8=;
-        b=Q8XQXx22/vLFsFV1Y12yZEp4rGB3BCinIYpVJusmmAVBwgpIxDytKllPmm3239Z3kW
-         XAUI5rs+8UwVmMlgWVPhfA51GjD/OqiUy1izAF6J2Rsc7xm2dIKGmScT8ctBXLMGFlOp
-         qaxt0f6o8H/xdAiuxpn5Bbej/+XFR64RPxi0QYWAZBMobZmF9GTbZpPxbgfxX7eHvV/f
-         Bzx28eWrJC74qRTdSIp1MM7XvFOv37SUVxBNEt9DAtVQLJ4f0zJf7Yb9h6xAPb2xEW7p
-         /5hL1cX/lZMlrTrXoUqd82w1DULVrOEkvHfV/cREAtAnaN3Wk7+jkWXEBIArRhrm8Us2
-         IYiA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4ovjbDJ1exqtcZNVWn48gxGmwjdBO3CNl7XrDGnZj+74q6bcdDSJzAWB8jeHBONJNbf2pYEPNIi29Z5BXG0jEpayQLMxvsjUs/v/k
-X-Gm-Message-State: AOJu0YxSRIF0CLWPS3jYHeAL1WmewPT3c3Df5pxl6x7niA/lNzBHTCrx
-	xnO2qpISssr3A9EoT5qhkw9fTQge9EIGu54fvz4a+n12wt5raTqU+NVZD2+3gmNH5nXxBFc21ca
-	ior0BD1FxmSrLm9yt37JOpvGuHkAHKoNhtW0w0vr4llHJzpgIIUecUOo=
-X-Google-Smtp-Source: AGHT+IFxXw2ygp9bjH5rqRCSkOklQS/GaMClPTsB1b+4o+YTRt+xrIGsH7pG3sQQsd1ogrehTiXwpExceTePCkKLHh3kh6SATozg
+	s=arc-20240116; t=1713148293; c=relaxed/simple;
+	bh=+0ulUZtaDsN9UyxD9v9KKPRsr2CjjkBptTxXXA+yj9c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=KGiboetig0FWUmTA5I+Qg1z/6/li/n/taQh9TYWEffx0kBv3F6ZSbK9fbe58W5jCUb0vdckMQm5Ms8sAvphEI+UG/IW+G1pd0ucGuYwGrQ+nI1moXhfEJDK77g+5qiQI5oy+LLseLMxOZs+mpw0xFRXl3KGFvLvUSQY9yb3Efok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hMmklDCG; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43EMpVtt014538;
+	Mon, 15 Apr 2024 02:31:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : references : cc : reply-to : from :
+ in-reply-to : content-type : content-transfer-encoding; s=pp1;
+ bh=5JCIQECFpl2gtzJRAM8eyjuVFRNA4fKWOwV1H23eQxI=;
+ b=hMmklDCGYuCbw6yLMoUgQIltnTYUDGtamSyOytV6rbcmjAPbnC29PVIGySDg6H6jVvkE
+ +Vflkn1mcRYIPkZue32+KOwTwCU5fIp7qAfeJAC1oRngEIJnLVleUCKYCye2Aa0UQ/u6
+ 2aH4X3cvj0I0P6+87elL9SpGf4GiM5NgRnYAdOvexeF5y6KZaj+xvyhWaIvEhxCA2KUJ
+ v7zfl0txFsX6XBCZMVtbYQirH5usktwheaYQ3Zo1hsnkqfEj740MxzEt+JtZGfUkdIp5
+ Y29Xu0vk+Et7TBr3JnTGvkIr8xMsAh1UCma/V+gD8mDJ0W3E4+ioxbu4yt0uPjO5VjRW HQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xfj6gtt16-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 02:31:17 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43F2VGCI012674;
+	Mon, 15 Apr 2024 02:31:16 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xfj6gtt12-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 02:31:16 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43F2Euwa015836;
+	Mon, 15 Apr 2024 02:31:15 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg5vkw7v4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 02:31:15 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43F2VCKX24707502
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 15 Apr 2024 02:31:14 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 45F7158060;
+	Mon, 15 Apr 2024 02:31:12 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9E67F58059;
+	Mon, 15 Apr 2024 02:31:06 +0000 (GMT)
+Received: from [9.43.85.113] (unknown [9.43.85.113])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 15 Apr 2024 02:31:06 +0000 (GMT)
+Message-ID: <1b9fcded-3048-4fa9-b388-34543a44b025@linux.ibm.com>
+Date: Mon, 15 Apr 2024 08:01:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2111:b0:482:e924:beca with SMTP id
- n17-20020a056638211100b00482e924becamr420554jaj.5.1713148096691; Sun, 14 Apr
- 2024 19:28:16 -0700 (PDT)
-Date: Sun, 14 Apr 2024 19:28:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c051d80616195f15@google.com>
-Subject: [syzbot] [bpf?] possible deadlock in get_page_from_freelist
-From: syzbot <syzbot+a7f061d2d16154538c58@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf sched: Rename switches to count and add usage
+ description, options for latency
+To: peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        namhyung@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com, acme@redhat.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240328090005.8321-1-vineethr@linux.ibm.com>
+Content-Language: en-US
+Cc: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+Reply-To: 20240328090005.8321-1-vineethr@linux.ibm.com
+From: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+In-Reply-To: <20240328090005.8321-1-vineethr@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: drLZDNFPaOze2YHFwByvnqLEPcugPjkY
+X-Proofpoint-ORIG-GUID: -hCQ37uNhq2UjEd6nXhZUROgvijcbXT_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_01,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ adultscore=0 mlxscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 clxscore=1011 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404150016
 
-Hello,
+On 28/03/24 14:30, Madadi Vineeth Reddy wrote:
+> Rename 'Switches' to 'Count' and document metrics shown for perf
+> sched latency output. Also add options possible with perf sched
+> latency.
+> 
+> Initially, after seeing the output of 'perf sched latency', the term
+> 'Switches' seemed like it's the number of context switches-in for a
+> particular task, but upon going through the code, it was observed that
+> it's actually keeping track of number of times a delay was calculated so
+> that it is used in calculation of the average delay.
+> 
+> Actually, the switches here is a subset of number of context switches-in
+> because there are some cases where the count is not incremented in
+> switch-in handler 'add_sched_in_event'. For example when a task is
+> switched-in while it's state is not ready to run(!= THREAD_WAIT_CPU).
+> 
+> commit d9340c1db3f5 ("perf sched: Display time in milliseconds, reorganize
+> output") changed it from the original count to switches.
+> 
+> So, renamed switches to count to make things a bit more clearer and
+> added the metrics description of latency in the document.
+> 
+> Signed-off-by: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+> ---
 
-syzbot found the following issue on:
+Hi Arnaldo,
+Any comments on this patch?
 
-HEAD commit:    7efd0a74039f Merge tag 'ata-6.9-rc4' of git://git.kernel.o.=
-.
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=3D1358aeed180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3D285be8dd6baeb43=
-8
-dashboard link: https://syzkaller.appspot.com/bug?extid=3Da7f061d2d16154538=
-c58
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Deb=
-ian) 2.40
+Thanks and Regards
+Madadi Vineeth Reddy
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc=
-7510fe41f/non_bootable_disk-7efd0a74.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/39eb4e17e7f0/vmlinux-=
-7efd0a74.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b9a08c36e0ca/bzI=
-mage-7efd0a74.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:
-Reported-by: syzbot+a7f061d2d16154538c58@syzkaller.appspotmail.com
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-WARNING: possible circular locking dependency detected
-6.9.0-rc3-syzkaller-00355-g7efd0a74039f #0 Not tainted
-------------------------------------------------------
-syz-executor.2/7645 is trying to acquire lock:
-ffff88807ffd7d58 (&zone->lock){-.-.}-{2:2}, at: rmqueue_buddy mm/page_alloc=
-c:2730 [inline]
-ffff88807ffd7d58 (&zone->lock){-.-.}-{2:2}, at: rmqueue mm/page_alloc.c:291=
-1 [inline]
-ffff88807ffd7d58 (&zone->lock){-.-.}-{2:2}, at: get_page_from_freelist+0x4b=
-9/0x3780 mm/page_alloc.c:3314
-
-but task is already holding lock:
-ffff88802c8739f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem+0xc8/0xdd0=
- kernel/bpf/lpm_trie.c:324
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&trie->lock){-.-.}-{2:2}:
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline=
-]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-       trie_delete_elem+0xb0/0x7e0 kernel/bpf/lpm_trie.c:451
-       ___bpf_prog_run+0x3e51/0xabd0 kernel/bpf/core.c:1997
-       __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
-       bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
-       __bpf_prog_run include/linux/filter.h:657 [inline]
-       bpf_prog_run include/linux/filter.h:664 [inline]
-       __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
-       bpf_trace_run2+0x151/0x420 kernel/trace/bpf_trace.c:2420
-       __bpf_trace_contention_end+0xca/0x110 include/trace/events/lock.h:12=
-2
-       trace_contention_end.constprop.0+0xea/0x170 include/trace/events/loc=
-k.h:122
-       __pv_queued_spin_lock_slowpath+0x266/0xc80 kernel/locking/qspinlock.=
-c:560
-       pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [in=
-line]
-       queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inlin=
-e]
-       queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
-       do_raw_spin_lock+0x210/0x2c0 kernel/locking/spinlock_debug.c:116
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline=
-]
-       _raw_spin_lock_irqsave+0x42/0x60 kernel/locking/spinlock.c:162
-       rmqueue_bulk mm/page_alloc.c:2131 [inline]
-       __rmqueue_pcplist+0x5a8/0x1b00 mm/page_alloc.c:2826
-       rmqueue_pcplist mm/page_alloc.c:2868 [inline]
-       rmqueue mm/page_alloc.c:2905 [inline]
-       get_page_from_freelist+0xbaa/0x3780 mm/page_alloc.c:3314
-       __alloc_pages+0x22b/0x2460 mm/page_alloc.c:4575
-       __alloc_pages_node include/linux/gfp.h:238 [inline]
-       alloc_pages_node include/linux/gfp.h:261 [inline]
-       alloc_slab_page mm/slub.c:2175 [inline]
-       allocate_slab mm/slub.c:2338 [inline]
-       new_slab+0xcc/0x3a0 mm/slub.c:2391
-       ___slab_alloc+0x66d/0x1790 mm/slub.c:3525
-       __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3610
-       __slab_alloc_node mm/slub.c:3663 [inline]
-       slab_alloc_node mm/slub.c:3835 [inline]
-       __do_kmalloc_node mm/slub.c:3965 [inline]
-       __kmalloc_node_track_caller+0x367/0x470 mm/slub.c:3986
-       kmalloc_reserve+0xef/0x2c0 net/core/skbuff.c:599
-       __alloc_skb+0x164/0x380 net/core/skbuff.c:668
-       alloc_skb include/linux/skbuff.h:1313 [inline]
-       nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:748 [inline]
-       nsim_dev_trap_report drivers/net/netdevsim/dev.c:805 [inline]
-       nsim_dev_trap_report_work+0x2a4/0xc80 drivers/net/netdevsim/dev.c:85=
-0
-       process_one_work+0x9a9/0x1ac0 kernel/workqueue.c:3254
-       process_scheduled_works kernel/workqueue.c:3335 [inline]
-       worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
-       kthread+0x2c1/0x3a0 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
--> #0 (&zone->lock){-.-.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline=
-]
-       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
-       rmqueue_buddy mm/page_alloc.c:2730 [inline]
-       rmqueue mm/page_alloc.c:2911 [inline]
-       get_page_from_freelist+0x4b9/0x3780 mm/page_alloc.c:3314
-       __alloc_pages+0x22b/0x2460 mm/page_alloc.c:4575
-       __alloc_pages_node include/linux/gfp.h:238 [inline]
-       alloc_pages_node include/linux/gfp.h:261 [inline]
-       __kmalloc_large_node+0x7f/0x1a0 mm/slub.c:3911
-       __do_kmalloc_node mm/slub.c:3954 [inline]
-       __kmalloc_node.cold+0x5/0x5f mm/slub.c:3973
-       kmalloc_node include/linux/slab.h:648 [inline]
-       bpf_map_kmalloc_node+0x98/0x4a0 kernel/bpf/syscall.c:422
-       lpm_trie_node_alloc kernel/bpf/lpm_trie.c:291 [inline]
-       trie_update_elem+0x1ef/0xdd0 kernel/bpf/lpm_trie.c:333
-       bpf_map_update_value+0x2c1/0x6c0 kernel/bpf/syscall.c:203
-       map_update_elem+0x623/0x910 kernel/bpf/syscall.c:1641
-       __sys_bpf+0xab9/0x4b40 kernel/bpf/syscall.c:5648
-       __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
-       __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
-       __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5765
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&trie->lock);
-                               lock(&zone->lock);
-                               lock(&trie->lock);
-  lock(&zone->lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.2/7645:
- #0: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire inc=
-lude/linux/rcupdate.h:329 [inline]
- #0: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock includ=
-e/linux/rcupdate.h:781 [inline]
- #0: ffffffff8d7b0e20 (rcu_read_lock){....}-{1:2}, at: bpf_map_update_value=
-+0x24b/0x6c0 kernel/bpf/syscall.c:202
- #1: ffff88802c8739f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem+0xc8/=
-0xdd0 kernel/bpf/lpm_trie.c:324
-
-stack backtrace:
-CPU: 1 PID: 7645 Comm: syz-executor.2 Not tainted 6.9.0-rc3-syzkaller-00355=
--g7efd0a74039f #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16=
-2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
- rmqueue_buddy mm/page_alloc.c:2730 [inline]
- rmqueue mm/page_alloc.c:2911 [inline]
- get_page_from_freelist+0x4b9/0x3780 mm/page_alloc.c:3314
- __alloc_pages+0x22b/0x2460 mm/page_alloc.c:4575
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- __kmalloc_large_node+0x7f/0x1a0 mm/slub.c:3911
- __do_kmalloc_node mm/slub.c:3954 [inline]
- __kmalloc_node.cold+0x5/0x5f mm/slub.c:3973
- kmalloc_node include/linux/slab.h:648 [inline]
- bpf_map_kmalloc_node+0x98/0x4a0 kernel/bpf/syscall.c:422
- lpm_trie_node_alloc kernel/bpf/lpm_trie.c:291 [inline]
- trie_update_elem+0x1ef/0xdd0 kernel/bpf/lpm_trie.c:333
- bpf_map_update_value+0x2c1/0x6c0 kernel/bpf/syscall.c:203
- map_update_elem+0x623/0x910 kernel/bpf/syscall.c:1641
- __sys_bpf+0xab9/0x4b40 kernel/bpf/syscall.c:5648
- __do_sys_bpf kernel/bpf/syscall.c:5767 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5765 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5765
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fdb1c27de69
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 =
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fdb1d0210c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007fdb1c3abf80 RCX: 00007fdb1c27de69
-RDX: 0000000000000020 RSI: 0000000020001400 RDI: 0000000000000002
-RBP: 00007fdb1c2ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fdb1c3abf80 R15: 00007ffe7cd30f08
- </TASK>
-loop2: detected capacity change from 0 to 512
-ext4: Unknown parameter '=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD3;=EF=BF=BD{\C	_r=EF=BF=BD=EF=BF=BD=EF=BF=BDf=EF=BF=BDgD=19Z*=
-=EF=BF=BD=EF=BF=BD=D7=92=EF=BF=BDMd=EF=BF=BD;=EF=BF=BDs=EF=BF=BD8)V=1B=EF=
-=BF=BDZ=EF=BF=BD-#=EF=BF=BD=EF=BF=BDS%=19=EF=BF=BDSY=EF=BF=BDE`1t=10AS=EF=
-=BF=BD>=EF=BF=BD>=EF=BF=BD=EF=BF=BD=EF=BF=BD=0Ed]=EF=BF=BDx=EF=BF=BD=EF=BF=
-=BDh'
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
