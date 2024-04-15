@@ -1,141 +1,107 @@
-Return-Path: <linux-kernel+bounces-144840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76BE28A4B91
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:35:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32DDE8A4B9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6C391C20F9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:35:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C94F81F21159
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:37:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035B23FE2A;
-	Mon, 15 Apr 2024 09:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D500495CC;
+	Mon, 15 Apr 2024 09:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f2Kqu/nS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L9gHXsUg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FE493FB99;
-	Mon, 15 Apr 2024 09:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8EE44C61
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713173724; cv=none; b=B0ctOp7hmkvb2BtPp8AvIMJZjE7FzB4Q9AT1TE8tYsTzfgKoXYVgMuvYcu51AkkUa9QPetLIqbj8tpBR8VB5GvsUsyDM8PjuvVFLg0c8CoeJCyt8fuSeVjEf0mR0qZIyst+/BJas7cLni6Myp4mC7sm7U0eu/nUW3xKuFZ7nI0M=
+	t=1713173810; cv=none; b=WUsY4zspuS2X0bq7Etkhr5UpxAkCOVq8gphXK6+VK0ZLul1o67LZ2Cub0O7XsbS+e0avlJWJYNylDUIwNM5kW9oeYS4xc3C9fAN8K1qJBQR54Ix/VsWBG3xnvtCIrvJOSw9bsBPfrN3kvXvWDhXstuJ1CWMAofzQNS933KFk1Fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713173724; c=relaxed/simple;
-	bh=wBSd5Y+TxWHD4LOFHSfb4cgjJpmNUSVnhOraR697swQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sL7jBQcTSXvxiHJ3DW5lnm5LdfaTNbapQAqT5Ec/65vyyeGKmy3MPYwlz/9NQEu1mM8QKwZ+nX0CIo4ilp/WCLCQat3/lIOVOAzcPUweuc1WEARS8qwh3YDwbaH6GdIRATqHidw8/BS9g220/QGkJsqhkh3pM8oBuk5F37B6Wbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f2Kqu/nS; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713173723; x=1744709723;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wBSd5Y+TxWHD4LOFHSfb4cgjJpmNUSVnhOraR697swQ=;
-  b=f2Kqu/nSbHxB8YNuz6SC2yWQhFN+yPcROnOCgzZr4G/II6QeEAX5TBmm
-   TrGAr6jh3kq43DbNLGr5PVDyxr7QToBMwc1Sw/gqWEXwiAPbG2/r1o5Cf
-   QzhPgsqJjc61/vBvdNyj71yH78om99Qiw9QO/2F0pVLc60AK5E69Tf2mi
-   VdFlSan0oy5uh52kTfwYS2AqWpK4iDFlBdUyTuUUFntPSXjbAagwOuWqV
-   ZxAbrSSZgVeQB8uziZXCx3vGbY5IVD1FHaB1jd15SrBobNuUMSkEncaQm
-   yWM2pNak0xKRdwtStkSKxgZQpHJvMDPoPKkpqfBmlKHyc7BHBPFsHRkgk
-   A==;
-X-CSE-ConnectionGUID: 2JGKiuuwTkSZ17MqBdHPTg==
-X-CSE-MsgGUID: mElYACCuSS+NXX44BZzKdw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="19945547"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="19945547"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 02:35:22 -0700
-X-CSE-ConnectionGUID: GnbRCkgnSgGpFl3/1d/tYw==
-X-CSE-MsgGUID: tS21odWISD2AIiblLYPrkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="52807041"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.38.19])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 02:35:19 -0700
-Message-ID: <ba32a2ca-e482-45c2-b381-f8371b8da4be@intel.com>
-Date: Mon, 15 Apr 2024 12:35:14 +0300
+	s=arc-20240116; t=1713173810; c=relaxed/simple;
+	bh=sYu9CYOIKB5l1TfXf/Jun3yt971AqlY1Oe53lKaH+04=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AGcxPoSjAKKlJfr/ReerA5WrjdONoqsxNDTO6qLVIkU8pogwMaLVLYHJXxjf8oYn4htuWIrq2KmEBnXCRpHzrqwxZdWvQvh0z3s7mg7lF9ldvFxyrP6OEEcDNzIKAGvGJqCDFvbcKWGC90BLTzHKmZKfnjwi4yf3GfzB6tKADaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L9gHXsUg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713173808;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sYu9CYOIKB5l1TfXf/Jun3yt971AqlY1Oe53lKaH+04=;
+	b=L9gHXsUgUiY/YUql7ZLO8f4k/d1UkVAij95YEbgZNhpcj3LMJ3/BicD2kHljCqZnZjhqMc
+	qlQC0vzJzgVEASQeMrPB9sO79qN/nZZoHoaKVmWSN7rj7wLHkMuC3P2WgcDRMn2TSPL++r
+	C+p5RKmbyJZSYTHRLulLBure/p3/IgA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-606-oBTifECQPOeWkCFebJTwbA-1; Mon, 15 Apr 2024 05:36:46 -0400
+X-MC-Unique: oBTifECQPOeWkCFebJTwbA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-343e00c8979so2311634f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:36:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713173805; x=1713778605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sYu9CYOIKB5l1TfXf/Jun3yt971AqlY1Oe53lKaH+04=;
+        b=AhipM7eepyhVQtxeVIxQdzVra3n5a9PKQNmGQbsSDivf7zGC1jrbb2fxw1/2E17WGI
+         PVEimN9l1JCH69Pnf6dleKu2WJK8ctBVlzdvC2X9aQpWLPcuW+gBLdtKMoiBYtx2tWBT
+         Os+xhbEt70lhDEYHR7+KDRu8UERL0c9IrbnfWl5NyWlyklbWPbFpnXVb6S9NWgRu4yjr
+         8M8W003qSC4JvQNWIBNH72mLeMnp7VUKlk5voZppPhtY/o2UVX6go/bp2A7mwIMcuVKh
+         6iC7Fh/B44jiIaS9bb6UpzS+Zk0aTEbrsfvY7t9bMk9wHLMaaRI+ZIpsh5qT3zisL8kJ
+         wp5A==
+X-Forwarded-Encrypted: i=1; AJvYcCWXr8f+XdPd0sDIb/Hz33xsMKEtRwofOLyz8EoBTwLbXg2L8Ahuin/4rP/K0Xxv4EqwFaJVc3GXhJIoRkpKEITQTEhKLvgSr1Wp2/JC
+X-Gm-Message-State: AOJu0YyanCTgh5wYCV+EVO+uvMPUxnQLujZVqHV/qQV8xSaPF5gQzSBW
+	7vy0Rg2RdhenS4wuIQPwJiIYzxHBZZRiwXuWLA3Tr2ilWF8djugslZEVp/3ud7XUsgP9ZFUCeXs
+	wYghJXnA3Z88U+74f2iTI2ffSn4U6p/4CWtjyjxWteQxlrUlwsD/lLgcJnoORRo/gjQHVdTj3Lv
+	qo/srW0dErfevx61dPgWEVUXCBu1xmj5/vxZbd
+X-Received: by 2002:adf:fecf:0:b0:343:7116:815e with SMTP id q15-20020adffecf000000b003437116815emr6536021wrs.67.1713173805487;
+        Mon, 15 Apr 2024 02:36:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG9VyZ4cL1gMt5C3Rm1mGMeCbp0ev+ZnK3ISZDwjaOKhsE/5f1c9W3T/BTch/CNZkcUDNliLoFPQCPyAXOe+kI=
+X-Received: by 2002:adf:fecf:0:b0:343:7116:815e with SMTP id
+ q15-20020adffecf000000b003437116815emr6536002wrs.67.1713173805166; Mon, 15
+ Apr 2024 02:36:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sdhci: Fix SD card detection issue
-To: richard clark <richard.xnu.clark@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>, Jon Hunter <jonathanh@nvidia.com>
-Cc: ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240415070620.133143-1-richard.xnu.clark@gmail.com>
- <52c08a01-8357-44dd-b727-a06438ec6c30@intel.com>
- <CAJNi4rOyuXdHOifib6kX0Wdb5O5LXPEm9nsvEMe-jbCz9GyQww@mail.gmail.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAJNi4rOyuXdHOifib6kX0Wdb5O5LXPEm9nsvEMe-jbCz9GyQww@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240229025759.1187910-1-stevensd@google.com> <20240229025759.1187910-9-stevensd@google.com>
+ <15865985-4688-4b7e-9f2d-89803adb8f5b@collabora.com> <CAD=HUj72-0hkmsyGXj4+qiGkT5QZqskkPLbmuQPqjHaZofCbJQ@mail.gmail.com>
+In-Reply-To: <CAD=HUj72-0hkmsyGXj4+qiGkT5QZqskkPLbmuQPqjHaZofCbJQ@mail.gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 15 Apr 2024 11:36:33 +0200
+Message-ID: <CABgObfbvkuCHT0sFFdJbGHBD7k=QbU9c=kA4xYE4j4S2Mu46ZA@mail.gmail.com>
+Subject: Re: [PATCH v11 8/8] KVM: x86/mmu: Handle non-refcounted pages
+To: David Stevens <stevensd@chromium.org>
+Cc: Dmitry Osipenko <dmitry.osipenko@collabora.com>, Sean Christopherson <seanjc@google.com>, 
+	Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
+	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
+	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-+Nvidia guys
+On Mon, Apr 15, 2024 at 9:29=E2=80=AFAM David Stevens <stevensd@chromium.or=
+g> wrote:
+> Sean, is there any path towards getting this series merged, or is it
+> blocked on cleaning up the issues in KVM code raised by Christoph?
 
-On 15/04/24 11:11, richard clark wrote:
-> On Mon, Apr 15, 2024 at 3:18 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 15/04/24 10:06, Richard Clark wrote:
->>> The mmc_gpio_get_cd(...) will return 0 called from sdhci_get_cd(...), which means
->>> the card is not present. Actually, the card detection pin is active low by default
->>> according to the SDHCI psec, thus the card detection result is not correct, more
->>
->> SDHCI spec covers the SDHCI lines.  GPIO is separate.
->>
->>> specificly below if condition is true in mmc_rescan(...):
->>>       ...
->>>       if (mmc_card_is_removable(host) && host->ops->get_cd &&
->>>               host->ops->get_cd(host) == 0) {
->>>               ...
->>>               goto out;
->>>       }
->>> The SD card device will have no chance to be created.
->>>
->>> This commit fixes this detection issue via the MMC_CAP2_CD_ACTIVE_HIGH cap2 flag,
->>> parsed from the 'cd-inverted' property of DT.
->>
->> What hardware / driver is it?
-> sdhci-tegra on Orin.
->>>
->>> Signed-off-by: Richard Clark <richard.xnu.clark@gmail.com>
->>> ---
->>>  drivers/mmc/host/sdhci.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>>
->>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
->>> index c79f73459915..79f33a161ca8 100644
->>> --- a/drivers/mmc/host/sdhci.c
->>> +++ b/drivers/mmc/host/sdhci.c
->>> @@ -2483,6 +2483,9 @@ static int sdhci_get_cd(struct mmc_host *mmc)
->>>        * Try slot gpio detect, if defined it take precedence
->>>        * over build in controller functionality
->>>        */
->>> +     if (!(mmc->caps2 & MMC_CAP2_CD_ACTIVE_HIGH))
->>> +             gpio_cd = !gpio_cd;
->>
->> MMC_CAP2_CD_ACTIVE_HIGH is already handled in
->> mmc_gpiod_request_cd(), and this turns an error (gpio_cd < 0)
->> into 0, which is not right.
-> 
-> But in case of 'cd-inverted' is not specified, the gpio CD pin return
-> 0 which will be explained as card is not present.
->>
->>> +
->>>       if (gpio_cd >= 0)
->>>               return !!gpio_cd;
->>>
->>
+I think after discussing that we can proceed. The series is making
+things _more_ consistent in not using refcounts at all for the
+secondary page tables, and Sean even had ideas on how to avoid the
+difference between 32- and 64-bit versions.
+
+Paolo
 
 
