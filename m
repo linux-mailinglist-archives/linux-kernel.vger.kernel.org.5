@@ -1,141 +1,189 @@
-Return-Path: <linux-kernel+bounces-144455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B94EA8A469B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:40:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE728A469A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA9F41C216BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:39:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE51FB20D54
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBFED29E;
-	Mon, 15 Apr 2024 01:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D5CD29E;
+	Mon, 15 Apr 2024 01:39:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cdiz6SHg"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tsyY0Xar"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2055.outbound.protection.outlook.com [40.107.92.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509E74C9F
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:39:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713145194; cv=none; b=DZRdKWye8/o9H9P3/gdXi3FQdjtiwjISk9IfGCFU6Dk/NUmbGscYMx9kyVpdC4ryYqRLHgh+0cs/87wliv9FWtsDLSDisS8WS8R1SXhjt73TzRR765+Wg4vghSSsjUoCXidqkk+ODIHWTq80caQU77NVavXMt1O7QlBV/DWy7Ms=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713145194; c=relaxed/simple;
-	bh=HUEvqBRuByY66qC0pSqA1h8TLgqdNGRv8dQuJSw34YI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p5o4vmFtSbTpL1kd+Ne6eD47D3zRK25Y2kSZXq1N85V9PGFa7C3RSErbAxPYxbAM/lRqFkbY4cIpdaHpZ3lzciDhhtDwRLHRW7TNPi+TJ2VESb0nDTEvAHroEyFSi+D89ug/JPaCcPgy+BdYGweHhP23ASaj4dIZCFqhR3kM9ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cdiz6SHg; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713145194; x=1744681194;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HUEvqBRuByY66qC0pSqA1h8TLgqdNGRv8dQuJSw34YI=;
-  b=Cdiz6SHgyGHuyZqsPtoC913CnPTnubDSbk4kzbqQMSLVIOUiKUWVBdMx
-   5sQUVjl9NOglzP/K72/FdfMram3+OSIVkRiqx8b/fEoTDOEMSM1sRq2q1
-   hTBOrSRoyaR9qSkqlZgBs0V/IrIMaj2v0lDtuxjAh58JLdMDJpmUEWfh1
-   SiPS4kp+ncWJm2VQznyzY8ewaWonZ+1R5cxP8CHMDyQqyuoH+43cRv/nO
-   Ge41q5mOYNY5W7x9Uc6GFMOAmn8aNHkjTvbbfDAyU645EhJkFNPv5Ut1C
-   ivdmEbEas58ljwwMjXXyphBmgd9ykWbOR5R8gVJ6XdHQEBVI4cB4OW382
-   A==;
-X-CSE-ConnectionGUID: CK1DfORGRXKEzsIfAYIZWQ==
-X-CSE-MsgGUID: b2H2XObtRO6gb2evk4heIQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="8641425"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="8641425"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 18:39:53 -0700
-X-CSE-ConnectionGUID: FavOMW5pRPiK2jC/zquw0Q==
-X-CSE-MsgGUID: AOp5kS1cTr6QVD4Ly8P4/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="21855545"
-Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa007.fm.intel.com with ESMTP; 14 Apr 2024 18:39:51 -0700
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: iommu@lists.linux.dev
-Cc: Kevin Tian <kevin.tian@intel.com>,
-	Yi Liu <yi.l.liu@intel.com>,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 1/1] iommu/vt-d: Remove caching mode check before device TLB flush
-Date: Mon, 15 Apr 2024 09:38:35 +0800
-Message-Id: <20240415013835.9527-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9BA4A24;
+	Mon, 15 Apr 2024 01:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713145164; cv=fail; b=HfT0qtEJ7Q8ju4y1AsLSdvi8yho1L3F14LpuaA77tnyBSYuerMi9PbUhqpqq1u7I0Ep0L4Y/q1adjHPzG5CIR3NBKXMLY4rZ9sHAYgPcyFiNUayrjAcn5vPTdB9w06oNTEofXVatphZwVO6WMwTCSoH/++b/dMSUlycH2EISBEQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713145164; c=relaxed/simple;
+	bh=sWjUQv9nMPt1eH/AqUcQ9PoVU1YXrubpCfjISlxBmgw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Ouu4oBZdVv6LGhdU2LpIVNvpWVbDRfDz9ARX346ihRKmMryDRDTyqLu+oR+4dRmzzSYrDga60s+yktWwwjifb6BtoZ8fUA3A4Za5q5ztS5cecsf8+WQezNoDhKwlx8KTCS+wIdXLnY5zQfAJnqzjERDdf5i9lvZH36R/phpapss=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tsyY0Xar; arc=fail smtp.client-ip=40.107.92.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Js4BdayIV8cNmmw3OYB8yHlcpJMs6GTnZl9fcgXa3KchVYkfOIAvCnQ8ug64nsBW7/CMKdIr1v+xJ0z2m9pTP5KeAtHGowaJETqUC8mF5EMeF/QASZv2+JxUjfYFsbxHbipp2AJVsLe1GUZ/0f+p6bHljCQyYi3akPWlGccsjdzpt5T7RlfItBqrXqDACj7ktbzzwyNJhi1sU+7Ez44WjRogTOhv2hTKY+GIvEoML6HAX/r4pqsJmvxd6IFURnjngrTbstKqjSIbqQqqIkxhDMBmYvbCAKTJow5llTVWIFQCKzLRti5xkCRa2p89GDLRJHZ47kynVoWqNzjK8ePi3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aVJCBLUkeqZj/vAvNvAotM7q7KnVww5+PZmXzb7qpX8=;
+ b=Uhxk0km1I+kUrJx8EzrWObSpxj6V9ybjtD1kwdh/TiIsbzLlgM3X8uBDCx+wdzi7NO5uxKcR/VsEoTkkPXcl9ehZVlEkhWlKfZWxz/QrbuRsJnTLcDiOLf7wCO9TXMVPbH1473/TFOuUDQulaqp+gxSlCvzYZqNiYvyIy9G8WlAscIveEfCJcnMxGFTj5G3Q7+bNLBomDgMNGMXC6LhkUwvN0LvyHqFYWkXocgjb1T188FYJs9pqN4GZgUJyGnhcUVVl8hKMhZWFJXYKyriiSnNGwWupX3Y54aWfLIX+E/jW9ljDn/ACrUU6o9iaoaMoRyizO5Mmb69ckvkxg7EynA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aVJCBLUkeqZj/vAvNvAotM7q7KnVww5+PZmXzb7qpX8=;
+ b=tsyY0XarKkOdgLh/Hikoug2W7ne65BhX+HPeth9vlxzOZrYikggfNmIJUTkYXhq9SEBDsAXaejQeF0NZGUbFr9qTWMSDwRn/3qY+TzJdUwoJsYqTC8N986lxZmJ6HgvLCfcA9kPEp5V2QJUnPwIVjVxTmzIsFhRpC/2tCLZXngY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
+ by SJ1PR12MB6028.namprd12.prod.outlook.com (2603:10b6:a03:489::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Mon, 15 Apr
+ 2024 01:39:19 +0000
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::e7a:5022:4b7d:ade1]) by SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::e7a:5022:4b7d:ade1%7]) with mapi id 15.20.7409.042; Mon, 15 Apr 2024
+ 01:39:19 +0000
+Date: Mon, 15 Apr 2024 09:38:58 +0800
+From: Huang Rui <ray.huang@amd.com>
+To: "Yuan, Perry" <Perry.Yuan@amd.com>
+Cc: "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
+	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
+	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
+	"Petkov, Borislav" <Borislav.Petkov@amd.com>,
+	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
+	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
+	"oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
+	"Meng, Li (Jassmine)" <Li.Meng@amd.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 2/8] cpufreq: amd-pstate: Document the units for freq
+ variables in amd_cpudata
+Message-ID: <ZhyFMiYffSEBcJKi@amd.com>
+References: <cover.1711335714.git.perry.yuan@amd.com>
+ <87c6aeb265a0281b3abebd07ba2069d80da21944.1711335714.git.perry.yuan@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87c6aeb265a0281b3abebd07ba2069d80da21944.1711335714.git.perry.yuan@amd.com>
+X-ClientProxiedBy: SG2P153CA0027.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::14)
+ To SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|SJ1PR12MB6028:EE_
+X-MS-Office365-Filtering-Correlation-Id: 034dbc8b-55da-4630-dc43-08dc5cecde43
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	3bbc4WHuifo8TUJMtr15vvotkp5hDLgb8tBpvGq7JYGgjQ62SDzpov0zqbdyrdzxIuh2ZCpzxCnHswXBa3e0iWFmzUE/VtuZwwCPyhUkz+E7inB0I3IEIdQA1azXzsxTiYBDDiHhgNCsjme4rLTaSUDPMD0/SHcigymZEaIJbqDXLVSO8buCeDul6Ea580v+dFGoq+cKs9m39/cfhpl2sNsozYLKeXJmTshYfB9cArbcBj4z0R1fRlBhPfZlNSbB6c5jKfM1jMT4oVVy5Yx4LqPZDfvtpPZLOYZ5uNokmo0p9GlVMITcMEQXWzfQUrSh5ixE+ao/u3bCWue/liw23c96XnTxKFxWItGEMEE51FfSragKjgrqGgTaSAlHUpzMqEIuoKDINDsFQk3AcO5lnObZbkQgR4LZXL/8P1vw6ioDM9auTTcL5DylIPGakvElz5OLH94IIcMi6A0E2L9sLgLdisbmgvYUMgyZMiR2exPuMQPSnNG9ht1prhRHtG9cGIbC+fgrsoI9NKQrmNtz1OPfokiqGZ+ob9UldQ6j04qsrxHCmzIJKgxENgH+RmuwTKcxfzWM0LuT9YpLAeR5QnPyEpSZejizw9y0uaZuNju6xFeqsX8cPf8JADlUeY4i6YR4saqdACp+g1LrnfRBpD8c0CaqWWCsD6d8Qr3zR4c=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?kxWM+Dsb4VoCsHRsjOYgzy0+pcd8ioZVKvSAdI8oyDtFrv8rpeEce269qak+?=
+ =?us-ascii?Q?1lCsq74YN9Z4eF+cn2OVsurNF8+TyEP9NdswOm6Wszw+TsVlXx2ePB/6Ws9i?=
+ =?us-ascii?Q?KhSOTzT6ebneUQ1djT1BSRpcGNOKV7Gf8pC/DOvWW/yQCOGFzJYD2Vhx6eEX?=
+ =?us-ascii?Q?EYW5D+BKuuQmP+/0tlBGB2oAIws0dGNOBDboPv127wXChDFWx3wuIeUUylMv?=
+ =?us-ascii?Q?ZYq8xi33Iktz5pYRUJI+lBxEHkJpXVecoycEWqQ4qkxxgTlSPNXRps9g+gQ1?=
+ =?us-ascii?Q?kp/gqWTmsqT5JNrM2h9u5PAt5wyNVgA7jPqyk3O4lZnR9b9K4xCSYNJfphlf?=
+ =?us-ascii?Q?aLSjzl+8s4/uzCbYK42tw9AGZtXkn3RkmhjvyOWm6knX+ARXBVr2unCCljSC?=
+ =?us-ascii?Q?ygLC8vjHfI0aOOBrC49UHmcHRt3ywnZOsZMrEAKEqGyXinfFaBWeKtF3qlYQ?=
+ =?us-ascii?Q?L+qVezeyuIds+dQrxbzKEuLiRJpOMZNf2IIWyFZawRzU1ESeR1CPhm5RwMSx?=
+ =?us-ascii?Q?ATz478gF6oeE9bPZr3t4mbp11vjg4Z4PwoLZ/MmcbRlwmA3PLL1hjaBrlaO0?=
+ =?us-ascii?Q?E6D0d/6NwsOWltAm7WHYEZDLaVvuGcA3aX+wo6wlJtkrdB+lN+qQLadgPPAU?=
+ =?us-ascii?Q?LmXdSZQYrE1KcmaAzUGQ5j9wvvt3WoNQIwFX20afz+ZsPvq0pwznLh5pGNfD?=
+ =?us-ascii?Q?8nTlfx0n9xGTYMzBxZFQPlGTlqaWG33JzUJDOTaz7ls9RwHlu+J+UBSJ0gW6?=
+ =?us-ascii?Q?k2u2nyQfmc9CfSXbP9JcZh9AQX84V2Bcfqq3ViTDSvhymqStftGsNXwiEJzK?=
+ =?us-ascii?Q?vDmNMzDjm5v/3o8Md62WXgx9WdWsnbXT6/MdNTWWdKK5Ss9jg3FJC4gEcvdT?=
+ =?us-ascii?Q?J1jyIX30vPJG5vzIXamDerXUsJhrSiwN1KZeRTfCKjXr/e6HqJc70hcPlmqo?=
+ =?us-ascii?Q?vcvkKYdnxUx0JF0omFl+4302MnNa4eCG/uP42YTk312F4o0nnw/VpBSPui3Q?=
+ =?us-ascii?Q?Qzgw7Lp8O2G9A7dbXpqfALY+43EDwGHmo3zCa0tWa6KVNJ5+AogQ+8fJYcIp?=
+ =?us-ascii?Q?1wYtbSSeFnuzMU8thYsic94wBamD8Ps7TCosujqxy5ubYszjIBFxfaEkcSpp?=
+ =?us-ascii?Q?L+1XBerkgv5wniqk/3pGz+vWwJ7U8OrqYFjAumL9jw5+8tLmmWS/9/pMLy6f?=
+ =?us-ascii?Q?KB0ftffcFlPunPLCVfJMOLgojF/fVSrv7fIs19wG9NEDfLqL92TB/n/zocnU?=
+ =?us-ascii?Q?+0DOjaurMpgeij0dQyKK+6IqVFdP4oKtfhqBMkT9j2RiAdCmIUFqsSTdleZV?=
+ =?us-ascii?Q?vwdpg06rwHrF0+78ondDUQw9IUxU972MjoHfLYTWv/z4OXESOkebWWWNeSs8?=
+ =?us-ascii?Q?1G9dRlXwM1fsdRn9JRMB2I+LrNAzGEww7A5zkVWY72riB/OVl+Qrux5/SpHM?=
+ =?us-ascii?Q?JJFEkMZpP4lz8Y0zlknrEXQ2ei7f1E68XuwmoiGwNbotwe7qwjF5u6RZ/xUw?=
+ =?us-ascii?Q?z5PRK6X2pWnDhCQ7J4/vLDbD45WFU1wVJQFKvX7gQWx/4IduA5twCdsUL52F?=
+ =?us-ascii?Q?Xdr2oK/kJN3pcywZbD1rZilio2xTaS+v3Yb8pWjx?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 034dbc8b-55da-4630-dc43-08dc5cecde43
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 01:39:19.2369
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sNs1lfjdfaGFbJfF+AFRT0bZPcQLKuZJuj3KI5yq0MPoLKtwngkl8ndf13V9lPMPJwbqZFjppQhasvr1T7FSsQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6028
 
-The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
-implementation caches not-present or erroneous translation-structure
-entries except for the first-stage translation. The caching mode is
-irrelevant to the device TLB, therefore there is no need to check it
-before a device TLB invalidation operation.
+On Mon, Mar 25, 2024 at 11:03:22AM +0800, Yuan, Perry wrote:
+> From: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+> 
+> The min_limit_freq, max_limit_freq, min_freq, max_freq, nominal_freq
+> and the lowest_nominal_freq members of struct cpudata store the
+> frequency value in khz to be consistent with the cpufreq
+> core. Update the comment to document this.
+> 
+> Reviewed-by: Li Meng <li.meng@amd.com>
+> Tested-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
+> Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+> ---
 
-Remove two caching mode checks before device TLB invalidation in the
-driver. The removal of these checks doesn't change the driver's behavior
-in critical map/unmap paths. Hence, there is no functionality or
-performance impact, especially since commit <29b32839725f> ("iommu/vt-d:
-Do not use flush-queue when caching-mode is on") has already disabled
-flush-queue for caching mode. Therefore, caching mode will never call
-intel_flush_iotlb_all().
+Acked-by: Huang Rui <ray.huang@amd.com>
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
----
- drivers/iommu/intel/iommu.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-Change log:
-v3:
- - It turned out that the removals don't change the driver's behavior,
-   hence change it from a fix patch to a cleanup one.
- - No functionality changes.
-v2: https://lore.kernel.org/lkml/20240410055823.264501-1-baolu.lu@linux.intel.com/
- - Squash two patches into a single one.
- - No functionality changes.
-v1: https://lore.kernel.org/linux-iommu/20240407144232.190355-1-baolu.lu@linux.intel.com/
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index a7ecd90303dc..f0a67e9d9faf 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -1501,11 +1501,7 @@ static void iommu_flush_iotlb_psi(struct intel_iommu *iommu,
- 	else
- 		__iommu_flush_iotlb_psi(iommu, did, pfn, pages, ih);
- 
--	/*
--	 * In caching mode, changes of pages from non-present to present require
--	 * flush. However, device IOTLB doesn't need to be flushed in this case.
--	 */
--	if (!cap_caching_mode(iommu->cap) || !map)
-+	if (!map)
- 		iommu_flush_dev_iotlb(domain, addr, mask);
- }
- 
-@@ -1579,8 +1575,7 @@ static void intel_flush_iotlb_all(struct iommu_domain *domain)
- 			iommu->flush.flush_iotlb(iommu, did, 0, 0,
- 						 DMA_TLB_DSI_FLUSH);
- 
--		if (!cap_caching_mode(iommu->cap))
--			iommu_flush_dev_iotlb(dmar_domain, 0, MAX_AGAW_PFN_WIDTH);
-+		iommu_flush_dev_iotlb(dmar_domain, 0, MAX_AGAW_PFN_WIDTH);
- 	}
- 
- 	if (dmar_domain->nested_parent)
--- 
-2.34.1
-
+>  include/linux/amd-pstate.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
+> index 212f377d615b..ab7e82533718 100644
+> --- a/include/linux/amd-pstate.h
+> +++ b/include/linux/amd-pstate.h
+> @@ -51,15 +51,15 @@ struct amd_aperf_mperf {
+>   * 		  priority.
+>   * @min_limit_perf: Cached value of the perf corresponding to policy->min
+>   * @max_limit_perf: Cached value of the perf corresponding to policy->max
+> - * @min_limit_freq: Cached value of policy->min
+> - * @max_limit_freq: Cached value of policy->max
+> - * @max_freq: the frequency that mapped to highest_perf
+> - * @min_freq: the frequency that mapped to lowest_perf
+> - * @nominal_freq: the frequency that mapped to nominal_perf
+> - * @lowest_nonlinear_freq: the frequency that mapped to lowest_nonlinear_perf
+> + * @min_limit_freq: Cached value of policy->min (in khz)
+> + * @max_limit_freq: Cached value of policy->max (in khz)
+> + * @max_freq: the frequency (in khz) that mapped to highest_perf
+> + * @min_freq: the frequency (in khz) that mapped to lowest_perf
+> + * @nominal_freq: the frequency (in khz) that mapped to nominal_perf
+> + * @lowest_nonlinear_freq: the frequency (in khz) that mapped to lowest_nonlinear_perf
+>   * @cur: Difference of Aperf/Mperf/tsc count between last and current sample
+>   * @prev: Last Aperf/Mperf/tsc count value read from register
+> - * @freq: current cpu frequency value
+> + * @freq: current cpu frequency value (in khz)
+>   * @boost_supported: check whether the Processor or SBIOS supports boost mode
+>   * @hw_prefcore: check whether HW supports preferred core featue.
+>   * 		  Only when hw_prefcore and early prefcore param are true,
+> -- 
+> 2.34.1
+> 
 
