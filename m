@@ -1,147 +1,119 @@
-Return-Path: <linux-kernel+bounces-145557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3A638A57D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3BA18A57C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:29:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F70E283FD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:33:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E9C8285D63
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DFC82494;
-	Mon, 15 Apr 2024 16:32:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE9C82482;
+	Mon, 15 Apr 2024 16:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="aa8DdZTB"
-Received: from mail-108-mta33.mxroute.com (mail-108-mta33.mxroute.com [136.175.108.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b5fDZqy3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260661CD23
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859777F7FF
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713198767; cv=none; b=AnDflAW+pPyVu7pwaOHKA2Pk3sNZ8SHAMAUrGT+RWH4JNLeOWglBgAhllXRJhXY9Ni4Oj7jpPhLfgIEKCSeyxzYLjhkiXFs93czy31SGJ4SXrLcNVwFEn4h+4MtlFj4XWXTBYst6bkvP2KljMswUfJibnno2Gs9PpA+yDKCpoPk=
+	t=1713198579; cv=none; b=JGFxmqUwGRHhUpoHKvFe03QFFvmTNWQCFdd80WTsq7nQum4UOvr6CNmd95bhsPzFFWmxuyL2xfFG0v0miY4YN9UAlQoj0Vlwfhm61IS18iyNuYy/o6hiPjcGw3Bi7gThEU8Uvt9J2uf8eXv5GRVXPbxEIwtsfObkxB37i4nZnAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713198767; c=relaxed/simple;
-	bh=+exoGmCOK4B2TtxLi9b/ila3bGXOXu85jVJIdxsj6mg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aROcCyyzZoJhdPIvyfVHJoXhgHKDvEo500IJSW44MCR/7a0ZMe5XbQ9qaSA/OQYeOpTOlbTMWjYjRYPTEJIZUBFmQ0B2gxbjwZZT8lrIzDqdx30rknQBhZD4SbzKpsKO1vegtPVZRJ6XT6JBMLwiXIky0UCLtK0hrrdod99Uyzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=aa8DdZTB; arc=none smtp.client-ip=136.175.108.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta33.mxroute.com (ZoneMTA) with ESMTPSA id 18ee295d2890003bea.011
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Mon, 15 Apr 2024 16:27:33 +0000
-X-Zone-Loop: c34f974572cfb78ac6c768e94899715187bea3e007ad
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-	From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=V2Nn7Jrr3tkjyvXhAtGFNC4qmjJ+nKbbMNdFT82JTT0=; b=aa8DdZTBpjNxd1bP/EKMfyI4Mx
-	tIOkjezMnyxWR4TLiN5ypsnhdPM8o8RLVeO6ccjvkoeBGt47xkRYnNm/6kUsUZfiQlnCf2OE8jiM1
-	qSh3nLgateh6NXvemhs0tKo0inFmmT2jghc3e7qVCId6N3SJauot80rEyAhkQJZDYvCbjp9AR1Uod
-	NKDy7tlTDeGT3k8NKdCxNiOapt2TCuLKPnhlSq+0s1gS8e+ZOEvyQxthDDRedP3NUjdA4E6qJ7h6A
-	k8zPSBuVoMfbKHG5i0uRNxY/v9UG6f5rSHgpJttbrZ8jEGyNjBxyNr6wkTPstyIjrVGKyKSELG353
-	FFRtmd4Q==;
-Message-ID: <656bf349-38bf-44b7-936c-58f424613a49@luigi311.com>
-Date: Mon, 15 Apr 2024 10:27:28 -0600
+	s=arc-20240116; t=1713198579; c=relaxed/simple;
+	bh=FCDa/fftBhU5eLi18mr7YJBDUgoS72YVYx/S2TMPhD4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E90/bznoxVP+0q5lLdUpjqWOiuXkF24QFQL/IFWjBABihdracr3JU6hijb4o8F6tXlx1+Brs5CVSvZ7RCa2ZOb4Zq8simKs1GcI2BI/4CETV9u2dcFtMPuz2qIfcjYxwCdoc3/5m5Wg+GEm29I7QJzbf4GntYXENK+T2AGyvXiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b5fDZqy3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713198577;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FCDa/fftBhU5eLi18mr7YJBDUgoS72YVYx/S2TMPhD4=;
+	b=b5fDZqy3alrsJUhuZfshlTPaDxLlIA4P2GyMEbuCwKwQB4aPlZ5cJrTSZDMVMB/CltVzrI
+	6bVxdOr1BitqPJyKikA783SmUI09tVY+OLG7QEmTvugIm6pPTLdBEVUY4wPQgSDfWvw+y2
+	UeAXZNf4vF6de1X4QtxR+TllLvLgc7A=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-76-AUOsd1H9Ore82GscJWM5Fw-1; Mon, 15 Apr 2024 12:29:32 -0400
+X-MC-Unique: AUOsd1H9Ore82GscJWM5Fw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8140E805B9D;
+	Mon, 15 Apr 2024 16:29:31 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.182])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 4C4B7480F02;
+	Mon, 15 Apr 2024 16:29:29 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 15 Apr 2024 18:28:05 +0200 (CEST)
+Date: Mon, 15 Apr 2024 18:27:58 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	John Stultz <jstultz@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+	Eric Biederman <ebiederm@xmission.com>
+Subject: Re: [PATCH] posix-timers: Handle returned errors poperly in
+ [i]timer_delete()
+Message-ID: <20240415162758.GB27124@redhat.com>
+References: <20240415130023.GA27124@redhat.com>
+ <87a5luvhix.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 24/25] media:i2c: imx258: Use v4l2_link_freq_to_bitmap
- helper
-To: Tommaso Merciai <tomm.merciai@gmail.com>
-Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
- jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- sakari.ailus@linux.intel.com, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, pavel@ucw.cz, phone-devel@vger.kernel.org
-References: <20240414203503.18402-1-git@luigi311.com>
- <20240414203503.18402-25-git@luigi311.com>
- <Zh1FUQOt9n/tO3er@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-Content-Language: en-US
-From: Luis Garcia <git@luigi311.com>
-In-Reply-To: <Zh1FUQOt9n/tO3er@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Id: git@luigi311.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a5luvhix.fsf@somnus>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On 4/15/24 09:18, Tommaso Merciai wrote:
-> Hi Luis,
-> 
-> On Sun, Apr 14, 2024 at 02:35:02PM -0600, git@luigi311.com wrote:
->> From: Luis Garcia <git@luigi311.com>
->>
->> Use the v4l2_link_freq_to_bitmap() helper to figure out which
->> driver-supported link freq can be used on a given system.
->>
->> Signed-off-by: Luis Garcia <git@luigi311.com>
->> Reviewed-by: Pavel Machek <pavel@ucw.cz>
->> ---
->>  drivers/media/i2c/imx258.c | 12 ++++++++++++
->>  1 file changed, 12 insertions(+)
->>
->> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
->> index 5de71cb7c1ae..65846dff775e 100644
->> --- a/drivers/media/i2c/imx258.c
->> +++ b/drivers/media/i2c/imx258.c
->> @@ -693,6 +693,7 @@ struct imx258 {
->>  	/* Current mode */
->>  	const struct imx258_mode *cur_mode;
->>  
->> +	unsigned long link_freq_bitmap;
->>  	const struct imx258_link_freq_config *link_freq_configs;
->>  	const s64 *link_freq_menu_items;
->>  	unsigned int lane_mode_idx;
->> @@ -1552,6 +1553,17 @@ static int imx258_probe(struct i2c_client *client)
->>  		return ret;
->>  	}
->>  
->> +	ret = v4l2_link_freq_to_bitmap(&client->dev,
->> +				       ep.link_frequencies,
->> +				       ep.nr_of_link_frequencies,
->> +				       imx258->link_freq_menu_items,
->> +				       ARRAY_SIZE(link_freq_menu_items_19_2),
->> +				       &imx258->link_freq_bitmap);
->> +	if (ret) {
->> +		dev_err(&client->dev, "Link frequency not supported\n");
->> +		goto error_endpoint_free;
->> +	}
->> +
->>  	/* Get number of data lanes */
->>  	switch (ep.bus.mipi_csi2.num_data_lanes) {
->>  	case 2:
-> 
-> Looks good to me.
-> 
-> ps:
-> Maybe a good plan for the future would be to use: dev_err_probe
-> (instead of dev_err into probe function)
-> 
-> But this I think is somenthing for next improvements. :)
-> 
-> Thanks & Regards,
-> Tommaso
-> 
+Anna-Maria, I can't really answer, I don't understand this code today ;)
+That said, let me try to explain my opinion,
 
-Perfect, can i go ahead and add in your reviewed by looks like
-you didnt add it here.
+On 04/15, Anna-Maria Behnsen wrote:
+>
+> Oleg Nesterov <oleg@redhat.com> writes:
+>
+> > On 04/15, Anna-Maria Behnsen wrote:
+> >>
+> >> timer_delete_hook() returns -EINVAL when the clock or the timer_del
+> >> callback of the clock does not exist. This return value is not handled by
+> >> the callsites timer_delete() and itimer_delete().
+> >
+> > IIUC this shouldn't happen? timer_delete_hook() WARN()s in this case,
+> > not sure we need to return this error to userspace...
+>
+> This shouldn't happen, right.
+>
+> Even if we do not return this error to userspace, is it valid to proceed
+> with the rest of the callsites?
 
->> -- 
->> 2.44.0
->>
->>
+Well, I'd say that nothing is safe after we hit the kernel problem.
+
+But lets suppose we return EINVAL and skip list_del(&timer->list)/etc.
+How can this help? What can userspace do to resolve this problem? Is it
+better to "leak" this timer? I dunno.
+
+> When it is fine to just ignore the
+> -EINVAL return, then I would propose just to add a comment to the code.
+
+Agreed!
+
+Oleg.
 
 
