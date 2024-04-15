@@ -1,165 +1,150 @@
-Return-Path: <linux-kernel+bounces-145320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1C5A8A52A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:05:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0906C8A52AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:07:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3C4E1C21EE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:05:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC2841F22E62
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66045745C9;
-	Mon, 15 Apr 2024 14:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jpzx8k0X"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B97745C9;
+	Mon, 15 Apr 2024 14:07:51 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A0DD74420;
-	Mon, 15 Apr 2024 14:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771081BF2A;
+	Mon, 15 Apr 2024 14:07:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713189936; cv=none; b=KSbGRzHbl7Ei3IJtOI6+NgekFDiOytgd6WivQpUin0bpD4eQb7WemNG9BRtNKm3783j4HW8ywSbyyBtotWoR35i8H0Xodd9qpI8cx60Vv8RetcIr3LkyXMd7oGxEoSEDe6L8b/xMYI68ieQbpaBXECNANGaAPi4QpJE7UzsB9D4=
+	t=1713190071; cv=none; b=Kzz+pEGr2pcjA0gBGAYpaY+gxfciGibvsPfl7YiVcCrqnGQHbGYeDCA2LBefrsLx/y2d+10Perjs3+dFNAPp/a8RFDBVfxD5VijOy9I2TKp4hEV3W7dhcrAVYuwaYMUyLHJjvE1haVEMbxvVKW03NZ6ud5K28XxRoKWHQcRa+mY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713189936; c=relaxed/simple;
-	bh=C2RaXFcuh6uhrQqFZdquLpLy57EbGKkPUni9Jf4Km8E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gQPDm4x5IosXjz312JCq5OUHq9IJV2631BLzYVNQDkl5TG8QANgKSyMDhsIKA8weBO5ZXyIAtG34F88QZGUvwT765EHIhMNcDInMJzxpxPOAKIMBlix0Zkn69KeUkcs1Lr9q1JCf3vROxUvd2aSA3l9VKT++PUyEkP3HIuMVd+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jpzx8k0X; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso3121476a12.3;
-        Mon, 15 Apr 2024 07:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713189929; x=1713794729; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ce+RZRNdvY2/c7BMbLG8IKG8g7W50m+r0bqN56BPld4=;
-        b=jpzx8k0XvsE30XWjgOnfcrzTqufdwG0YJLdCGuWsWyorExU7YcQ5d1dQXT4ynOw2uY
-         IxAhq3MiH5qaRTcWmgyg5XRpN95GW9pAnY440FKkbp0I2luXggqwvvnlP+gMUoXWY3BZ
-         Hldh1RGHlbD57FcYBpFhBZ9pVx3CQx5LbHZG/AW0lWr2qLrAoBKcjZY8KkvmZGTOD+sr
-         YTC5eefT7+fedTPXGLIrwQbUHvddnw3NDsWmzfHRFDeLpAlg3MKX25Upflgw8yA7Eogb
-         oQPV2Gs2a+OIiyvJsBXbxe1UTZ38eNqIgoznRoAoxRAAKSwBnfKIzTWrUAaheJK66VVQ
-         C/+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713189929; x=1713794729;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ce+RZRNdvY2/c7BMbLG8IKG8g7W50m+r0bqN56BPld4=;
-        b=nWFvHhGZ7DdEJY3mIMW5wwJsT55+DTkXwZo1hrX6OSV4M+qcNQBiibY2l/bRP1dLY5
-         YXM7Fi/FOGBTEmyqiLogQ7ep6pTtoV/bogHKzwH6ElM5t8X37vdXlWB9OKMjAYHQz5wA
-         MJp28yifH40vbVCoKQxemMmCxlYeiDYtNkHOeon65+uzg7NkzN9uqAvJWS5ubzbn1vGC
-         ipa9kNQzGq6lHP4QW79dX/gAy83xh5ZDOzuN/bkMLALKHu0lVmMi2qWi8wkoAB9QQQGS
-         RVwW1ovU/lzpkbVbQMc7SRlTG+xbeGiEhgw2PTpadLSrQQkON6xGkTsPQbI5Vl8l4f4I
-         TDWw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFkolld2GFSqzusotWP8OWhiy852shbAkkZ4sdOoL1vqM9DqmpzM3oaP2asPDb7EZzUK5ci+5EDywlfrsoaXqCBddOwNGzw3AVmhDZx++InNs+ZNMs0Ziz4RkDXD3oHUtWbC2gAFBUComXH4Ztat1IAvz7ArN9iHOZO3DoNx8j487LzhGhwoZ6OYiUVllvkIDbbSpiZsn2mfm8M92xUwwa
-X-Gm-Message-State: AOJu0Yy0FZY007OVcR8AAdQuqipFhgID2qZDOl+X3VE0RilWqSAM6FzT
-	yR//VpNJd0o6w5zME25rCSat/DrAYB4zSfSZNLm+CnrT6eeHuDpMgC+PayWuabZOFSDiuE80S0h
-	DyfFN0kgLanOaCSeiMIvGqSyZChQ=
-X-Google-Smtp-Source: AGHT+IH86wMUY1Sjlbl77b74h8OkFHcq+fDgDK9uWIRulsSWUGwrIz3dHKroKOaN9XoU6ownWtnCcV0AOUGrp658hc4=
-X-Received: by 2002:a17:906:1355:b0:a4a:3441:2e2a with SMTP id
- x21-20020a170906135500b00a4a34412e2amr6807358ejb.55.1713189929060; Mon, 15
- Apr 2024 07:05:29 -0700 (PDT)
+	s=arc-20240116; t=1713190071; c=relaxed/simple;
+	bh=rVw3WR3vnvoKRUGWlATN6GtsCo5hNU+A41jtTzBfEC8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=LPvCcrwsb9oaQQGvr1WBJzXk3vyEerIdT7GRlMmNIUdnHQ9CS+h+uvebyJ91y2KqDfu9PKddNRLRybLP3tyhNUGAIeea5kQEEsPf/QfnJJBH98isOzKDoytxzlFxJWVFFAJn+A9llsVDc6ZpZWmkYMiFqbW95LvNYvKtrSWyqLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VJ87M3fxSz2CcMm;
+	Mon, 15 Apr 2024 22:04:47 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id ECC361A016C;
+	Mon, 15 Apr 2024 22:07:43 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 22:07:43 +0800
+Message-ID: <96557c0e-7db4-856c-40eb-e51ca138883b@huawei.com>
+Date: Mon, 15 Apr 2024 22:07:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240414175300.956243-1-aren@peacevolution.org>
- <20240414175716.958831-1-aren@peacevolution.org> <20240414175716.958831-2-aren@peacevolution.org>
-In-Reply-To: <20240414175716.958831-2-aren@peacevolution.org>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 15 Apr 2024 17:04:53 +0300
-Message-ID: <CAHp75VdZavToGYqLYnkKYt53HXoQxXnRER5Cn5b2==gWTvkAWQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] iio: light: stk3310: Implement vdd supply and power
- it off during suspend
-To: Aren Moynihan <aren@peacevolution.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Liam Girdwood <lgirdwood@gmail.com>, 
-	Mark Brown <broonie@kernel.org>, Ondrej Jirman <megi@xff.cz>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	linux-iio@vger.kernel.org, phone-devel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	Willow Barraco <contact@willowbarraco.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2] ext4: fix race condition between buffer write and
+ page_mkwrite
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>
+CC: Matthew Wilcox <willy@infradead.org>, Theodore Ts'o <tytso@mit.edu>,
+	<linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<jun.nie@linaro.org>, <ebiggers@kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com>, Baokun Li
+	<libaokun1@huawei.com>
+References: <20230530134405.322194-1-libaokun1@huawei.com>
+ <20230604030445.GF1128744@mit.edu> <20230604210821.GA1257572@mit.edu>
+ <ZH1BN+H1/Sa4eLQ4@casper.infradead.org>
+ <20230605091655.24vl5fjesfskt3o5@quack3>
+ <20230605122141.4njwwx3mrapqhvt4@quack3>
+ <ZH33ZzwyLFY48tfA@casper.infradead.org>
+ <20230605150855.7oaiplp7r57dcww3@quack3>
+ <49d5b109-7cc3-6717-b3c6-6858310aa3ba@huawei.com>
+ <20240415123405.htw6vqbzsb3speor@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240415123405.htw6vqbzsb3speor@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Sun, Apr 14, 2024 at 8:57=E2=80=AFPM Aren Moynihan <aren@peacevolution.o=
-rg> wrote:
+On 2024/4/15 20:34, Jan Kara wrote:
+> On Mon 15-04-24 12:28:01, Baokun Li wrote:
+>> On 2023/6/5 23:08, Jan Kara wrote:
+>>> On Mon 05-06-23 15:55:35, Matthew Wilcox wrote:
+>>>> On Mon, Jun 05, 2023 at 02:21:41PM +0200, Jan Kara wrote:
+>>>>> On Mon 05-06-23 11:16:55, Jan Kara wrote:
+>>>>>> Yeah, I agree, that is also the conclusion I have arrived at when thinking
+>>>>>> about this problem now. We should be able to just remove the conversion
+>>>>>> from ext4_page_mkwrite() and rely on write(2) or truncate(2) doing it when
+>>>>>> growing i_size.
+>>>>> OK, thinking more about this and searching through the history, I've
+>>>>> realized why the conversion is originally in ext4_page_mkwrite(). The
+>>>>> problem is described in commit 7b4cc9787fe35b ("ext4: evict inline data
+>>>>> when writing to memory map") but essentially it boils down to the fact that
+>>>>> ext4 writeback code does not expect dirty page for a file with inline data
+>>>>> because ext4_write_inline_data_end() should have copied the data into the
+>>>>> inode and cleared the folio's dirty flag.
+>>>>>
+>>>>> Indeed messing with xattrs from the writeback path to copy page contents
+>>>>> into inline data xattr would be ... interesting. Hum, out of good ideas for
+>>>>> now :-|.
+>>>> Is it so bad?  Now that we don't have writepage in ext4, only
+>>>> writepages, it seems like we have a considerably more benign locking
+>>>> environment to work in.
+>>> Well, yes, without ->writepage() it might be *possible*. But still rather
+>>> ugly. The problem is that in ->writepages() i_size is not stable. Thus also
+>>> whether the inode data is inline or not is not stable. We'd need inode_lock
+>>> for that but that is not easily doable in the writeback path - inode lock
+>>> would then become fs_reclaim unsafe...
+>>>
+>>> 								Honza
+>> Hi Honza!
+>> Hi Ted!
+>> Hi Matthew!
+>>
+>> Long time later came back to this, because while discussing another similar
+>> ABBA problem with Hou Tao, he mentioned VM_FAULT_RETRY, and then I
+>> thought that this could be used to solve this problem as well.
+>>
+>> The general idea is that if we see a file with inline data in
+>> ext4_page_mkwrite(),
+>> we release the mmap_lock and grab the inode_lock to convert the inline data,
+>> and then return VM_FAULT_RETRY to retry to get the mmap_lock.
+>>
+>> The code implementation is as follows, do you have any thoughts?
+> So the problem with this is that VM_FAULT_RETRY is not always an option -
+> in particular the caller has to set FAULT_FLAG_ALLOW_RETRY to indicate it
+> is prepared to handle VM_FAULT_RETRY return. See how
+> maybe_unlock_mmap_for_io() is carefully checking this.
+Yes, at least we need to check for FAULT_FLAG_RETRY_NOWAIT.
+> There are callers
+> (most notably some get_user_pages() users) that don't set
+> FAULT_FLAG_ALLOW_RETRY so the escape through VM_FAULT_RETRY is sadly not a
+> reliable solution.
+It is indeed sad.  I'm going to go learn more about the code for
+FAULT_FLAG_ALLOW_RETRY.
+> My long-term wish is we were always allowed to use VM_FAULT_RETRY and that
+> was actually what motivated some get_user_pages() cleanups I did couple
+> years ago. But dealing with all the cases in various drivers was too
+> difficult and I've run out of time. Now maybe it would be worth it to
+> revisit this since things have changed noticeably and maybe now it would be
+> easier to achive the goal...
 >
-> From: Ondrej Jirman <megi@xff.cz>
->
-> VDD power input can be used to completely power off the chip during
-> system suspend. Do so if available.
+> 								Honza
+That sounds like a great idea. I will try to get the history on it and
+then come back.
 
-..
-
->  #include <linux/iio/events.h>
->  #include <linux/iio/iio.h>
->  #include <linux/iio/sysfs.h>
-
-> +#include <linux/regulator/consumer.h>
-
-Move it to be ordered and add a blank line to separate iio/*.h group.
-
-..
-
-> +       data->vdd_reg =3D devm_regulator_get_optional(&client->dev, "vdd"=
-);
-> +       if (IS_ERR(data->vdd_reg)) {
-> +               ret =3D PTR_ERR(data->vdd_reg);
-> +               if (ret =3D=3D -ENODEV)
-> +                       data->vdd_reg =3D NULL;
-
-> +               else
-
-Redundant 'else' when you follow the pattern "check for error condition fir=
-st".
-
-> +                       return dev_err_probe(&client->dev, ret,
-> +                                            "get regulator vdd failed\n"=
-);
-> +       }
-
-..
-
-> +       if (data->vdd_reg) {
-> +               ret =3D regulator_enable(data->vdd_reg);
-> +               if (ret)
-> +                       return dev_err_probe(&client->dev, ret,
-> +                                            "regulator vdd enable failed=
-\n");
-> +
-> +               usleep_range(1000, 2000);
-
-fsleep()
-
-> +       }
-
-..
-
->         stk3310_set_state(iio_priv(indio_dev), STK3310_STATE_STANDBY);
-> +       if (data->vdd_reg)
-> +               regulator_disable(data->vdd_reg);
-
-I forgot to check the order of freeing resources, be sure you have no
-devm_*() releases happening before this call.
-
-..
-
-> +               usleep_range(1000, 2000);
-
-fsleep()
-
---=20
+Thank you very much for your patient explanation!
+-- 
 With Best Regards,
-Andy Shevchenko
+Baokun Li
+.
 
