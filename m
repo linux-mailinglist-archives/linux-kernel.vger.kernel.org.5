@@ -1,133 +1,142 @@
-Return-Path: <linux-kernel+bounces-145977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBCAB8A5DCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:46:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 925E68A5DCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:48:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7CF81C21121
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:46:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ACB8283B12
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB151581FE;
-	Mon, 15 Apr 2024 22:46:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DBF158217;
+	Mon, 15 Apr 2024 22:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FniSMvHY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kHbzJNbX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC00B156225;
-	Mon, 15 Apr 2024 22:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546F8156225;
+	Mon, 15 Apr 2024 22:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713221193; cv=none; b=DSGZX4mSw+4oYQev62zB/q8P/Vx8+KzAkaVQAj+KkfvR9Dp6w+WmFDypYXKCzji5nysKJven8Are2JNwOTA2IArAVdIJYDVILG9/0IOwZbTjPnju1qXKu+ptfp0Dc9/ROqrz1LSRRDc7LeNfEy9aR7Wm7JB+mfHGDya004MtOYc=
+	t=1713221311; cv=none; b=GGDyruO16hP6xJMB64meA4wOcAPCw2v0Ckim+MVYEJmr+WgU9FPMy/e50o4A/l+VtE5biBnLTBk7ypV686CyZ6MIRPIAohEkGbvyC6hnRlg7Afx/IVreAUoQW9u+VIBpbjbHZS6Vql0dgKXsZpo8GJvv2fvH8UkcuQQ6tQJ3/2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713221193; c=relaxed/simple;
-	bh=CUDoHqW/SodLI3NlqkpBmXp7dZ2wMZ3arGRmHuXeJ98=;
+	s=arc-20240116; t=1713221311; c=relaxed/simple;
+	bh=nUQM7IIu77cfAfVW2e5v/L0PLjdgIG4WZ2e/s/EVWNY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kchFqsU98sgVjYmo39cIgFJANycJ7GEB0mjpil5nLexAy4tgQr0vrLoq/4DTin4rtr1TPA4Yl9N1reKkRvfDqjcvPTE/qKJf5j3HzpKRYOAzKfG+b6Tg1US7vvsGl72qPBZB/Vpd53L07mnzxPVASGedj+V58nxIgiIiNRaKK54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FniSMvHY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C48C2BD11;
-	Mon, 15 Apr 2024 22:46:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713221192;
-	bh=CUDoHqW/SodLI3NlqkpBmXp7dZ2wMZ3arGRmHuXeJ98=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FniSMvHYQvG1sKJwHy9qHb23jRSntAZPZaX1Yv3VSxhVv8C8P66Fb8CmctAZ5dJs1
-	 +bkWbl6zrh9hZ8HrQJe0C400qGZJxkW5uJCcyST3vpCPr9V3YD5e5TSmvJDMLhDzkg
-	 qg+c1pw2TWSGVOBUdNxoeWbuD6Z8ZhD+ZeE0urholQNWZ+c7bmI0qaQqO59ksGp/Mt
-	 1uA4Y/9PKc1WISZt/FSpV/HVI/opkuBfhGhyX4ypZ4ZYm202ivKO1DWt3nVDCi7DIN
-	 5aCGfVVg/XUr3DoXD/M+7RW33ycsf3v6np/MlIbpn8svRMA69T0gmE2ruzj+H6wgd0
-	 eo9DFM7l6urgg==
-Date: Mon, 15 Apr 2024 15:46:29 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Stefan Kanthak <stefan.kanthak@nexgo.de>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] crypto: x86/sha256-ni - simplify do_4rounds
-Message-ID: <20240415224629.GB5206@sol.localdomain>
-References: <20240411162359.39073-1-ebiggers@kernel.org>
- <20240411162359.39073-5-ebiggers@kernel.org>
- <2ECD48ACEA9540C083E6B797CFD18027@H270>
- <20240415212121.GA5206@sol.localdomain>
- <65E53E4DD09F41CDA7EBCBD970E23C23@H270>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WQjjCXVRRLKPv7Z+MY3R8n3FjfnLa/z5WYm6MTR4dyy/KP501ZDuS/CFJgog3lqRj2Fnqa9dVphYkTrlIEvMsj0lWeawH361VQYj8zpkA6PJaFudhVYWemk46JSAsyt7o3Nhnj0AYg3KQ+APiOSiUO1dbpobAPIq3dM8Zcpprn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kHbzJNbX; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713221310; x=1744757310;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nUQM7IIu77cfAfVW2e5v/L0PLjdgIG4WZ2e/s/EVWNY=;
+  b=kHbzJNbXyTvz2acu6/1PjW3JyIWbSG3eWG3XkbxbBK8pqdEimCRlUCse
+   HpGFiWQL//HQumEVklDTNwGoxrH5dvNfFuhwQMSDbzx+OEtuA1qgvwEoH
+   LX5dAUKiEFc8Eb+mupJwwWFBtMUxEPfH40Xj6NfTSkGrTKDJCtjzPsJSa
+   8hNsBvLz1E0Z7Rpqcta/BueM6BIZVpQrKZELxNibOOF9FaNgnu1mxmQPm
+   OA1nT1x5w7MP4/GBTAtTeD8ODNPHEEQ2gPwcxkYkD7R5pgGCHAlu0ddgu
+   IGy0cTGeLniksIjGIPPLPU7uVNQMTBIXSjJ8JVqqUCoWmYJL5GxZOohS6
+   Q==;
+X-CSE-ConnectionGUID: hlD6TPjMTJe7nKX8iW+eRQ==
+X-CSE-MsgGUID: Vm0E9kw/TAWyx0YTS3KdJw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="20025755"
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="20025755"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 15:48:29 -0700
+X-CSE-ConnectionGUID: 1JIoJDmsTKW3GcwmcbntJw==
+X-CSE-MsgGUID: QDqeAMD/QsegfQkS7B7ytg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="22142145"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 15:48:29 -0700
+Date: Mon, 15 Apr 2024 15:48:28 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 087/130] KVM: TDX: handle vcpu migration over logical
+ processor
+Message-ID: <20240415224828.GS3039520@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <b9fe57ceeaabe650f0aecb21db56ef2b1456dcfe.1708933498.git.isaku.yamahata@intel.com>
+ <0c3efffa-8dd5-4231-8e90-e0241f058a20@intel.com>
+ <20240412214201.GO3039520@ls.amr.corp.intel.com>
+ <Zhm5rYA8eSWIUi36@google.com>
+ <20240413004031.GQ3039520@ls.amr.corp.intel.com>
+ <Zh0wGQ_FfPRENgb0@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <65E53E4DD09F41CDA7EBCBD970E23C23@H270>
+In-Reply-To: <Zh0wGQ_FfPRENgb0@google.com>
 
-On Tue, Apr 16, 2024 at 12:04:56AM +0200, Stefan Kanthak wrote:
-> "Eric Biggers" <ebiggers@kernel.org> wrote:
-> 
-> > On Mon, Apr 15, 2024 at 10:41:07PM +0200, Stefan Kanthak wrote:
-> [...]
-> >> At last the final change: write the macro straightforward and SIMPLE,
-> >> closely matching NIST.FIPS.180-4.pdf and their order of operations.
-> >> 
-> >> @@ ...
-> >> +.macro  sha256  m0 :req, m1 :req, m2 :req, m3 :req
-> >> +.if \@ < 4
-> >> +        movdqu  \@*16(DATA_PTR), \m0
-> >> +        pshufb  SHUF_MASK, \m0          # \m0 = {w(\@*16), w(\@*16+1), w(\@*16+2), w(\@*16+3)}
-> >> +.else
-> >> +                                        # \m0 = {w(\@*16-16), w(\@*16-15), w(\@*16-14), w(\@*16-13)}
-> >> +                                        # \m1 = {w(\@*16-12), w(\@*16-11), w(\@*16-10), w(\@*16-9)}
-> >> +                                        # \m2 = {w(\@*16-8),  w(\@*16-7),  w(\@*16-6),  w(\@*16-5)}
-> >> +                                        # \m3 = {w(\@*16-4),  w(\@*16-3),  w(\@*16-2),  w(\@*16-1)}
-> >> +        sha256msg1 \m1, \m0
-> >> +        movdqa     \m3, TMP
-> >> +        palignr    $4, \m2, TMP
-> >> +        paddd      TMP, \m0
-> >> +        sha256msg2 \m3, \m0             # \m0 = {w(\@*16), w(\@*16+1), w(\@*16+2), w(\@*16+3)}
-> >> +.endif
-> >> +        movdqa      (\@-8)*16(SHA256CONSTANTS), MSG
-> >> +        paddd       \m0, MSG
-> >> +        sha256rnds2 STATE0, STATE1      # STATE1 = {f', e', b', a'}
-> >> +        punpckhqdq  MSG, MSG
-> >> +        sha256rnds2 STATE1, STATE0      # STATE0 = {f", e", b", a"},
-> >> +                                        # STATE1 = {h", g", d", c"}
-> >> +.endm
-> >> 
-> >> JFTR: you may simplify this further using .altmacro and generate \m0 to \m3
-> >>       as MSG%(4-\@&3), MSG%(5-\@&3), MSG%(6-\@&3) and MSG%(7-\@&3) within
-> >>       the macro, thus getting rid of its 4 arguments.
-> >> 
-> >> @@ ...
-> >> +.rept 4                                 # 4*4*4 rounds
-> >> +        sha256  MSG0, MSG1, MSG2, MSG3
-> >> +        sha256  MSG1, MSG2, MSG3, MSG0
-> >> +        sha256  MSG2, MSG3, MSG0, MSG1
-> >> +        sha256  MSG3, MSG0, MSG1, MSG2
-> >> +.endr
+On Mon, Apr 15, 2024 at 06:49:35AM -0700,
+Sean Christopherson <seanjc@google.com> wrote:
+
+> On Fri, Apr 12, 2024, Isaku Yamahata wrote:
+> > On Fri, Apr 12, 2024 at 03:46:05PM -0700,
+> > Sean Christopherson <seanjc@google.com> wrote:
 > > 
-> > Could you please send a real patch, following
-> > Documentation/process/submitting-patches.rst?  It's hard to understand what
-> > you're proposing here.
+> > > On Fri, Apr 12, 2024, Isaku Yamahata wrote:
+> > > > On Fri, Apr 12, 2024 at 09:15:29AM -0700, Reinette Chatre <reinette.chatre@intel.com> wrote:
+> > > > > > +void tdx_mmu_release_hkid(struct kvm *kvm)
+> > > > > > +{
+> > > > > > +	while (__tdx_mmu_release_hkid(kvm) == -EBUSY)
+> > > > > > +		;
+> > > > > >  }
+> > > > > 
+> > > > > As I understand, __tdx_mmu_release_hkid() returns -EBUSY
+> > > > > after TDH.VP.FLUSH has been sent for every vCPU followed by
+> > > > > TDH.MNG.VPFLUSHDONE, which returns TDX_FLUSHVP_NOT_DONE.
+> > > > > 
+> > > > > Considering earlier comment that a retry of TDH.VP.FLUSH is not
+> > > > > needed, why is this while() loop here that sends the
+> > > > > TDH.VP.FLUSH again to all vCPUs instead of just a loop within
+> > > > > __tdx_mmu_release_hkid() to _just_ resend TDH.MNG.VPFLUSHDONE?
+> > > > > 
+> > > > > Could it be possible for a vCPU to appear during this time, thus
+> > > > > be missed in one TDH.VP.FLUSH cycle, to require a new cycle of
+> > > > > TDH.VP.FLUSH?
+> > > > 
+> > > > Yes. There is a race between closing KVM vCPU fd and MMU notifier release hook.
+> > > > When KVM vCPU fd is closed, vCPU context can be loaded again.
+> > > 
+> > > But why is _loading_ a vCPU context problematic?
+> > 
+> > It's nothing problematic.  It becomes a bit harder to understand why
+> > tdx_mmu_release_hkid() issues IPI on each loop.  I think it's reasonable
+> > to make the normal path easy and to complicate/penalize the destruction path.
+> > Probably I should've added comment on the function.
 > 
-> 1) I replace your macro (which unfortunately follows Tim Chens twisted code)
->    COMPLETELY with a clean and simple implementation: message schedule first,
->    update of state variables last.
->    You don't need ".if \i >= 12 && \i < 60"/".if \i >= 4 && \i < 52" at all!
-
-It's probably intentional that the code does the message schedule computations a
-bit ahead of time.  This might improve performance by reducing the time spent
-waiting for the message schedule.
-
-It would be worth trying a few different variants on different CPUs and seeing
-how they actually perform in practice, though.
-
+> By "problematic", I meant, why can that result in a "missed in one TDH.VP.FLUSH
+> cycle"?  AFAICT, loading a vCPU shouldn't cause that vCPU to be associated from
+> the TDX module's perspective, and thus shouldn't trigger TDX_FLUSHVP_NOT_DONE.
 > 
-> 2) I replace the .irp which invokes your macro with a .rept: my macro uses \@
->    instead of an argument for the round number.
-> 
-> <https://sourceware.org/binutils/docs/as.html#Macro>
+> I.e. looping should be unnecessary, no?
 
-The \@ feature is a bit obscure and maybe is best avoided.
+The loop is unnecessary with the current code.
 
-- Eric
+The possible future optimization is to reduce destruction time of Secure-EPT
+somehow.  One possible option is to release HKID while vCPUs are still alive and
+destruct Secure-EPT with multiple vCPU context.  Because that's future
+optimization, we can ignore it at this phase.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
