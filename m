@@ -1,112 +1,138 @@
-Return-Path: <linux-kernel+bounces-144907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5DD98A4C7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D21B8A4C7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:27:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7138D283435
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:27:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59503281460
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921EC5822D;
-	Mon, 15 Apr 2024 10:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E47A58139;
+	Mon, 15 Apr 2024 10:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T9am22Xo"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Cl4V3bw/"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF8758200;
-	Mon, 15 Apr 2024 10:26:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA15C5812A
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:27:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713176811; cv=none; b=bhro7OO0n+9zkn9u6EqPFDllLKEt3iSkhjnsL2Fikjo+Fltvgl3WjSiDnPXOCsLRXNO6Nvdwfiz7YU3RfLillxRsFJxxmNd8S6cjRa7ciomMmGm5R13epKCNb0GZica1tUpMmG2sWSTs50Xsc4JSInv/3+JcGobLNy17UC8edgg=
+	t=1713176832; cv=none; b=CnOmg0t3HOMw/0Hc5wuDyQct+/Hxp6g6uXkwxB0PXcuOLvwkeInwKuDpERIjYBbexN5ds4YIJ6cQXLuEJgZVKxRz+GaaYSLhlrNwwt/wk4z0S5aTpLCdnowcKvIXirAJ/AWpHRaPsilOVFgM1o8sMLoVOUy+NLrf9sqTSE4GMrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713176811; c=relaxed/simple;
-	bh=KBwUxaJXLkJmwZy66zxwcAFRHzuP/1lN/GXZFCVYFok=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Bs4+4scbQakkeLasMzkavEBv2o+lWacWaBQkuuZ67h4IQlQ7Xpklo4l7Cz+g3/z2Yar4Ki2o+1Jw6EGVlJOKs3tIiXWNlGs43G9LvxRMK4z20iRGXnZNuDciYx82DMe5KkAZ5icWQp36XeKswgLMRSDKG2QdRp1v/UYkhhVXbqw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T9am22Xo; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2da0b3f7ad3so33149121fa.1;
-        Mon, 15 Apr 2024 03:26:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713176809; x=1713781609; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RpWGqEEM4uqV8fQ9PN2exXNk8aXKdE5yEA9kmzOz8To=;
-        b=T9am22XoaO/EuI4f2nbqHEemISW9NCH64eKQ7bM9cvkaNiIE1guH5yshuXJ/4skiQz
-         vmYQDdWTM/MXmmWuWkZS7eD57COOazSGx9hMOY5UuZeFl5a7GBXtFIbd1gFrctqV4BrR
-         T2c8MvUPzsnLCwDCR07ydNTvuOLRqtnGv1IYjPKToMrurE61S7C+TveuqUTzpCrwdO6D
-         GQuWTg8v6VMBTNSCZqTixq89YIZ5QezkJZufL+vbBCuGGmsGZSerg6qrBhXt5byZTh3o
-         EL1GNTm3izZieBJloT49QG1wmtEi9MYB4Z5SDAhhmwroOSP5jOV0Sf1OCHRVrAWBAj3J
-         Niig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713176809; x=1713781609;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RpWGqEEM4uqV8fQ9PN2exXNk8aXKdE5yEA9kmzOz8To=;
-        b=IpZ8gSoGrkneqYSmIRupe/zk/dP0Z0koM4SH3qUGPNw48hn4iiMmkFlMOxb4qFIpaY
-         ERV+J7MtAuOWy+OJamB/VVDiwYBgAEqENCI0uhpJZxE4CmRkPRHAeKwqu6rNUeXJIUeq
-         /UYlpUtuvo4ReSBtDrPnbHxx2tGHGOBXWZM77xMOzghyuhAtwK2sSsydlXFmTynM3VwS
-         BO3Vl1BvjTutA0CixMi5a0ai1y4XaSN8TJgZGHAsLQ6cw+Mt4Rd+jsKeWKH4KXrnUBlL
-         QQlzTDPJCv+gv60mj6y3u1JdPx9F7RehLCSEDwC4c+gaQFqMJFv1msUy9ImLA9FQfLMq
-         I/Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCW6xdPKZeqTnweleMdnS6xHhJpqVtZskH35I30G3AclEGsU64X3SVWI0X0vNeQz8/CCHDqzXgPL3a6n10aeKPhtEqeinqXRhYRUFgFn
-X-Gm-Message-State: AOJu0YzQ1CD9HcJbUxxnIx1eId4kyNSMvN3G7WgmGBou1GDok6vonRd4
-	Q0XTODY6+Wj4iFk1Dwp83wEj3YJJXoa9tJ9CrMwR8YYlAmRJIk+D7HxiIm45
-X-Google-Smtp-Source: AGHT+IHnLHZYuqmR4gx+ZMSPlRsNFwpxH12fglKrUu8NHuUrEAOGbdQhmU7KA8S2PVxjQRJCUCLPXQ==
-X-Received: by 2002:a2e:be04:0:b0:2d8:da4c:5909 with SMTP id z4-20020a2ebe04000000b002d8da4c5909mr6026750ljq.51.1713176808672;
-        Mon, 15 Apr 2024 03:26:48 -0700 (PDT)
-Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
-        by smtp.gmail.com with ESMTPSA id j7-20020a05600c1c0700b004187d900766sm361859wms.43.2024.04.15.03.26.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 03:26:48 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Lee Jones <lee@kernel.org>
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] mfd: timberdale: remove redundant assignment to variable err
-Date: Mon, 15 Apr 2024 11:26:32 +0100
-Message-Id: <20240415102632.484411-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713176832; c=relaxed/simple;
+	bh=4666bQ5C7Q5rqF8FqPbc+Mmrfwwnhga/7n6qezH6Z68=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l8naLp4dYGAfX2NVVAf5qshX2Ns5L5UDAJm8BLAtXM8pMo7FuBFTzYpL70X4Yxw8QiX+4Gpkx7BPdwUr+pm0OTeOkB/EFC2kzdBtGxPM4UJx3qeaW0kGCVsdN2+3PXePMdaBXCXEayHPMPBv3IH3omEFySzCFZjVzeq17WKxo48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Cl4V3bw/; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=qrOKfC3vNeV6cJvML6qpei/ma+54N48f+DUN+SqAsWo=; b=Cl4V3bw/qj0KOyCFEI21RVAkyB
+	RB24GlF6+j/0k31OguZjdWDLwp0XmghSGP1QNY7qazglnYw5piRk3DbIw5OUe+XP2owpL+wGshdED
+	bnYMYgZU4MiM8If2jKdIcr5hxwXOTaCye02R9MiuYW/3mHc0A3X6nUpnMLfxVY2VYIXGlxUr2+Fbx
+	kGRkN+5Ye+1bVaK1qwCvQWqoSbw+rBTCN7cQviZ5FvScjslr5MoUeFd+GHuNmktQi5N8wDeeDqwvU
+	6d/F8orP71l0jcqAULXJLfW5EtOcBwqzLiuGPc125JMPED6nwAOXIH3+Mso83yG8fKElPsigNmz1n
+	rhzUlQKQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36548)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rwJYE-00060O-2O;
+	Mon, 15 Apr 2024 11:27:02 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rwJYE-00027g-BR; Mon, 15 Apr 2024 11:27:02 +0100
+Date: Mon, 15 Apr 2024 11:27:02 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: Mark Rutland <mark.rutland@arm.com>, Kees Cook <keescook@chromium.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	syzbot <syzbot+cb76c2983557a07cdb14@syzkaller.appspotmail.com>,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [hardening?] [mm?] BUG: bad usercopy in fpa_set
+Message-ID: <Zh0A9p/l8lmIrunk@shell.armlinux.org.uk>
+References: <0000000000004cf5c205faf1c7f3@google.com>
+ <dcf54740-7cc3-4017-ad1b-8626a22fc15e@I-love.SAKURA.ne.jp>
+ <Zg1/1xbmrY4yDfhO@shell.armlinux.org.uk>
+ <ZhztQ9CvDm3UPgE9@FVFF77S0Q05N>
+ <c5a3598d-16dd-4aeb-904e-2084fafef9fe@I-love.SAKURA.ne.jp>
+ <Zhz3EEsnGSOgnYWA@shell.armlinux.org.uk>
+ <2ab55fd1-7eb0-488e-93ea-660fa05ee43a@I-love.SAKURA.ne.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ab55fd1-7eb0-488e-93ea-660fa05ee43a@I-love.SAKURA.ne.jp>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-The variable err is being assigned -ENODEV and then err is being
-re-assigned the same error value via the error exit label err_mfd.
-The assignment is redundant and can be removed.
+On Mon, Apr 15, 2024 at 06:58:30PM +0900, Tetsuo Handa wrote:
+> On 2024/04/15 18:44, Russell King (Oracle) wrote:
+> > On Mon, Apr 15, 2024 at 06:38:33PM +0900, Tetsuo Handa wrote:
+> >> On 2024/04/15 18:02, Mark Rutland wrote:
+> >>>   08626a6056aad824 ("arm: Implement thread_struct whitelist for hardened usercopy")
+> >>>
+> >>> That commit says that all accesses are bounce-buffered and bypass the check,
+> >>> but AFAICT the fpa_set() code hasn't changed since then, so either that was
+> >>> wrong or the user_regset_copyin() code has changed.
+> >>
+> >> Then, can we go with https://lkml.kernel.org/r/0b49d91b-511f-449e-b7c3-93b2ccce6c49@I-love.SAKURA.ne.jp ?
+> > 
+> > Have you visited that URL? It doesn't point to an email containing a
+> > patch, so sorry, I don't know what patch you're referring to.
+> > 
+> 
+> Containing a link to a diff. ;-)
+> 
+> diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
+> index c421a899fc84..347611ae762f 100644
+> --- a/arch/arm/kernel/ptrace.c
+> +++ b/arch/arm/kernel/ptrace.c
+> @@ -583,10 +583,15 @@ static int fpa_set(struct task_struct *target,
+>  		   const void *kbuf, const void __user *ubuf)
+>  {
+>  	struct thread_info *thread = task_thread_info(target);
+> +	const unsigned int pos0 = pos;
+> +	char buf[sizeof(struct user_fp)];
+> +	int ret;
+>  
+> -	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+> -		&thread->fpstate,
+> -		0, sizeof(struct user_fp));
+> +	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+> +				 buf, 0, sizeof(struct user_fp));
+> +	if (!ret)
+> +		memcpy(&thread->fpstate, buf, pos - pos0);
+> +	return ret;
+>  }
+>  
+>  #ifdef CONFIG_VFP
 
-Cleans up clang scan build warning:
-drivers/mfd/timberdale.c:768:3: warning: Value stored to 'err' is
-never read [deadcode.DeadStores]
+No, not unless there is really no other option. It's hacking around the
+issue, creating two copy operations of the data (one onto the stack)
+rather than solving it properly - and I will not put up with that kind
+of mentality - it's a completely broken approach to open source
+software. If there is a problem, always fix it using the correct fix,
+never try to sticky-plaster around a problem.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/mfd/timberdale.c | 1 -
- 1 file changed, 1 deletion(-)
+It seems there is a way for architectures to tell the code what is
+safe to write to, and it seems that a misunderstanding meant this
+wasn't implemented. So let's see whether it's possible to fix that
+first.
 
-diff --git a/drivers/mfd/timberdale.c b/drivers/mfd/timberdale.c
-index 07e5aa10a146..a41e9a3e2064 100644
---- a/drivers/mfd/timberdale.c
-+++ b/drivers/mfd/timberdale.c
-@@ -765,7 +765,6 @@ static int timb_probe(struct pci_dev *dev,
- 	default:
- 		dev_err(&dev->dev, "Unknown IP setup: %d.%d.%d\n",
- 			priv->fw.major, priv->fw.minor, ip_setup);
--		err = -ENODEV;
- 		goto err_mfd;
- 	}
- 
 -- 
-2.39.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
