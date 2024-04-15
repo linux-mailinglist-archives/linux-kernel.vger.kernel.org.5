@@ -1,39 +1,65 @@
-Return-Path: <linux-kernel+bounces-145266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874858A51A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:38:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB3438A51B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:39:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A56861C2275B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:38:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 191441C22818
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0EF75808;
-	Mon, 15 Apr 2024 13:30:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E8574C1D
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D977F7F6;
+	Mon, 15 Apr 2024 13:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="HdNiGgHY"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2E07F7E3;
+	Mon, 15 Apr 2024 13:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713187853; cv=none; b=IdsuB5vz3RDLeNgyp6YwOLwxpwTwRJIMVnCivSaKs9TCO6oGhPY4r2a/Dr6PALtjrRK/EuIAi10vcQpT0neARzzIxcog5H7V+L9+DcbzmOcPB58OCF+WkthOa7mVvj5ts3rHsUi1BezdR+cNk92SnDfxRQ5drxjGLhcdPa8JW9w=
+	t=1713187905; cv=none; b=AaneojalEIedUkrxVjnrYQowUA7c+SRwXit53v/O4Lg2vigehVL1Sb1H57v1CUhVfexGQAykTwPh2tXD0tI7GJL6zyLnhxzUSx7xZlFXz5LTr3MSv9ErS5NwWPPsKJBxJiprQ82CKcG4GvinrnBQm+0CS/wB/cGYHz9PxELmzKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713187853; c=relaxed/simple;
-	bh=wzGJXnZK4tkTIIZKeYdm2D4b9Gxuci08+sJBb0Tx5W0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y1B7o9HO8biXEepr9hhZJBPWD4qt/q9ll4j1t3a+BRNIPuBjbM9dKfBReIoN4p2/GmS9Mra6b28z1t64f6/KKA1FHSOLV0yD6iiEZl0d+fUJzjIW6+9cH+JAZDe5A6NmEhxzvGcUe7ymWg0NYru/FTC4KaqbECWd6FL8dP3pZxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFA232F4;
-	Mon, 15 Apr 2024 06:31:19 -0700 (PDT)
-Received: from [10.57.75.121] (unknown [10.57.75.121])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F7523F738;
-	Mon, 15 Apr 2024 06:30:49 -0700 (PDT)
-Message-ID: <772de69a-27fa-4d39-a75d-54600d767ad1@arm.com>
-Date: Mon, 15 Apr 2024 14:30:48 +0100
+	s=arc-20240116; t=1713187905; c=relaxed/simple;
+	bh=KkPyxTFMiUPTu/EeDsJJp5beF1fBZCRUeC4IMLbejTE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Z2HlrY2tDfy3xy+mV6jZ+txD1sZM13XjAt+0/XZQUDTENN7eSdbw1KHU6XOcz19FVyLjEY41XvA5Tde9hd4qsRt+OO/YmN9rfjH9rn65hmaQj8qjURLL0EWZnkeqPb799EyDc0nZ/trb9SQPA6wT0cCe1PCzfzQC8XzQjJigYR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=HdNiGgHY; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43F6nokl020159;
+	Mon, 15 Apr 2024 08:31:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	PODMain02222019; bh=1NJcAo3U9LsyvaqFbXPecrsCzqfre2QNbxquk49f8MM=; b=
+	HdNiGgHYeNXAepHA8IHW4FgMZ2mbHScXxrq4GvGkm3VgDSEoZwP4sj+TFhxPEuXW
+	X1iseqei+2XC9RlH7WTQ/0xj65GfFzcYaazjmCI4knc+GLLcG3xTtAWh+jhYbiIP
+	o4unFA0hQ0KSlLtS1y1RwHKzS3rRy7j1k79MSfFpE4v6jwwACh8ksYGco98KS4DF
+	WnnvCdEkFkrtAoP9WEuxdkpPQNrJ0vqi8OP/0z0P620KT2HwOXQGvTUA53AndXKf
+	FayLtNgj6vlsiebSeK2vBIm33KMSdC3xAEfPhGmGpxkx450j4aSAvHNFx9FEtJZr
+	EDQVS/2F0hO40l2q4M7ZAw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xfqey9fxt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 08:31:23 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
+ 2024 14:31:21 +0100
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
+ via Frontend Transport; Mon, 15 Apr 2024 14:31:21 +0100
+Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 17697820244;
+	Mon, 15 Apr 2024 13:31:21 +0000 (UTC)
+Message-ID: <99ba78fa-1d09-4072-849b-f994c87c1db6@opensource.cirrus.com>
+Date: Mon, 15 Apr 2024 14:31:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,245 +67,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
+Subject: Re: [PATCH] regmap: kunit: Fix an NULL vs IS_ERR() check
+To: Dan Carpenter <dan.carpenter@linaro.org>
+CC: Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+References: <b32e80cf-b385-40cd-b8ec-77ec73e07530@moroto.mountain>
 Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Mark Rutland
- <mark.rutland@arm.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Will Deacon <will@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muchun Song <muchun.song@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215121756.2734131-1-ryan.roberts@arm.com>
- <0ae22147-e1a1-4bcb-8a4c-f900f3f8c39e@redhat.com>
- <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
- <de143212-49ce-4c30-8bfa-4c0ff613f107@redhat.com>
- <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
- <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
- <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
- <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
- <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
- <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
- <dbc5083b-bf8c-4869-8dc7-5fbf2c88cce8@arm.com>
- <f2aad459-e19c-45e2-a7ab-35383e8c3ba5@redhat.com>
- <4fba71aa-8a63-4a27-8eaf-92a69b2cff0d@arm.com>
- <5a23518b-7974-4b03-bd6e-80ecf6c39484@redhat.com>
- <81aa23ca-18b1-4430-9ad1-00a2c5af8fc2@arm.com>
- <70a36403-aefd-4311-b612-84e602465689@redhat.com>
- <f13d1e4d-1eea-4379-b683-4d736ad99c2c@arm.com>
- <3e50030d-2289-4470-a727-a293baa21618@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <3e50030d-2289-4470-a727-a293baa21618@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <b32e80cf-b385-40cd-b8ec-77ec73e07530@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: 4tDq8_KeDrmZJQtAfhwhroJOkMY1XBhN
+X-Proofpoint-ORIG-GUID: 4tDq8_KeDrmZJQtAfhwhroJOkMY1XBhN
+X-Proofpoint-Spam-Reason: safe
 
-On 15/04/2024 11:57, David Hildenbrand wrote:
-> On 15.04.24 11:28, Ryan Roberts wrote:
->> On 12/04/2024 21:16, David Hildenbrand wrote:
->>>>
->>>> Yes agreed - 2 types; "lockless walkers that later recheck under PTL" and
->>>> "lockless walkers that never take the PTL".
->>>>
->>>> Detail: the part about disabling interrupts and TLB flush syncing is
->>>> arch-specifc. That's not how arm64 does it (the hw broadcasts the TLBIs). But
->>>> you make that clear further down.
->>>
->>> Yes, but disabling interrupts is also required for RCU-freeing of page tables
->>> such that they can be walked safely. The TLB flush IPI is arch-specific and
->>> indeed to sync against PTE invalidation (before generic GUP-fast).
->>> [...]
->>>
->>>>>>
->>>>>> Could it be this easy? My head is hurting...
->>>>>
->>>>> I think what has to happen is:
->>>>>
->>>>> (1) pte_get_lockless() must return the same value as ptep_get() as long as
->>>>> there
->>>>> are no races. No removal/addition of access/dirty bits etc.
->>>>
->>>> Today's arm64 ptep_get() guarantees this.
->>>>
->>>>>
->>>>> (2) Lockless page table walkers that later verify under the PTL can handle
->>>>> serious "garbage PTEs". This is our page fault handler.
->>>>
->>>> This isn't really a property of a ptep_get_lockless(); its a statement about a
->>>> class of users. I agree with the statement.
->>>
->>> Yes. That's a requirement for the user of ptep_get_lockless(), such as page
->>> fault handlers. Well, mostly "not GUP".
->>>
->>>>
->>>>>
->>>>> (3) Lockless page table walkers that cannot verify under PTL cannot handle
->>>>> arbitrary garbage PTEs. This is GUP-fast. Two options:
->>>>>
->>>>> (3a) pte_get_lockless() can atomically read the PTE: We re-check later if the
->>>>> atomically-read PTE is still unchanged (without PTL). No IPI for TLB flushes
->>>>> required. This is the common case. HW might concurrently set access/dirty
->>>>> bits,
->>>>> so we can race with that. But we don't read garbage.
->>>>
->>>> Today's arm64 ptep_get() cannot garantee that the access/dirty bits are
->>>> consistent for contpte ptes. That's the bit that complicates the current
->>>> ptep_get_lockless() implementation.
->>>>
->>>> But the point I was trying to make is that GUP-fast does not actually care
->>>> about
->>>> *all* the fields being consistent (e.g. access/dirty). So we could spec
->>>> pte_get_lockless() to say that "all fields in the returned pte are guarranteed
->>>> to be self-consistent except for access and dirty information, which may be
->>>> inconsistent if a racing modification occured".
->>>
->>> We *might* have KVM in the future want to check that a PTE is dirty, such that
->>> we can only allow dirty PTEs to be writable in a secondary MMU. That's not there
->>> yet, but one thing I was discussing on the list recently. Burried in:
->>>
->>> https://lkml.kernel.org/r/20240320005024.3216282-1-seanjc@google.com
->>>
->>> We wouldn't care about racing modifications, as long as MMU notifiers will
->>> properly notify us when the PTE would lose its dirty bits.
->>>
->>> But getting false-positive dirty bits would be problematic.
->>>
->>>>
->>>> This could mean that the access/dirty state *does* change for a given page
->>>> while
->>>> GUP-fast is walking it, but GUP-fast *doesn't* detect that change. I *think*
->>>> that failing to detect this is benign.
->>>
->>> I mean, HW could just set the dirty/access bit immediately after the check. So
->>> if HW concurrently sets the bit and we don't observe that change when we
->>> recheck, I think that would be perfectly fine.
->>
->> Yes indeed; that's my point - GUP-fast doesn't care about access/dirty (or
->> soft-dirty or uffd-wp).
->>
->> But if you don't want to change the ptep_get_lockless() spec to explicitly allow
->> this (because you have the KVM use case where false-positive dirty is
->> problematic), then I think we are stuck with ptep_get_lockless() as implemented
->> for arm64 today.
+On 15/04/2024 11:34, Dan Carpenter wrote:
+> The kunit_device_register() function returns error pointers, not NULL.
+> Passing an error pointer to get_device() will lead to an Oops.  Also
+> get_device() returns the same device you passed to it.  Fix it!  ;)
 > 
-> At least regarding the dirty bit, we'd have to guarantee that if
-> ptep_get_lockless() returns a false-positive dirty bit, that the PTE recheck
-> would be able to catch that.
+> Fixes: 7b7982f14315 ("regmap: kunit: Create a struct device for the regmap")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>   drivers/base/regmap/regmap-kunit.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Would that be possible?
+> diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
+> index 44265dc2313d..9c5314785fc2 100644
+> --- a/drivers/base/regmap/regmap-kunit.c
+> +++ b/drivers/base/regmap/regmap-kunit.c
+> @@ -1925,10 +1925,10 @@ static int regmap_test_init(struct kunit *test)
+>   	test->priv = priv;
+>   
+>   	dev = kunit_device_register(test, "regmap_test");
+> -	priv->dev = get_device(dev);
+> -	if (!priv->dev)
+> -		return -ENODEV;
+> +	if (IS_ERR(dev))
+> +		return PTR_ERR(dev);
+>   
+> +	priv->dev = get_device(dev);
+>   	dev_set_drvdata(dev, test);
+>   
+>   	return 0;
 
-Hmm maybe. My head hurts. Let me try to work through some examples...
-
-
-Let's imagine for this example, a contpte block is 4 PTEs. Lat's say PTEs 0, 1,
-2 and 3 initially contpte-map order-2 mTHP, FolioA. The dirty state is stored in
-PTE0 for the contpte block, and it is dirty.
-
-Now let's say there are 2 racing threads:
-
-  - ThreadA is doing a GUP-fast for PTE3
-  - ThreadB is remapping order-0 FolioB at PTE0
-
-(ptep_get_lockless() below is actaully arm64's ptep_get() for the sake of the
-example - today's arm64 ptep_get_lockless() can handle the below correctly).
-
-ThreadA					ThreadB
-=======					=======
-
-gup_pte_range()
-  pte1 = ptep_get_lockless(PTE3)
-    READ_ONCE(PTE3)
-					mmap(PTE0)
-					  clear_pte(PTE0)
-					    unfold(PTE0 - PTE3)
-					      WRITE_ONCE(PTE0, 0)
-					      WRITE_ONCE(PTE1, 0)
-					      WRITE_ONCE(PTE2, 0)
-    READ_ONCE(PTE0) (for a/d) << CLEAN!!
-    READ_ONCE(PTE1) (for a/d)
-    READ_ONCE(PTE2) (for a/d)
-    READ_ONCE(PTE3) (for a/d)
-  <do speculative work with pte1 content>
-  pte2 = ptep_get_lockless(PTE3)
-    READ_ONCE(PTE3)
-    READ_ONCE(PTE0) (for a/d)
-    READ_ONCE(PTE1) (for a/d)
-    READ_ONCE(PTE2) (for a/d)
-    READ_ONCE(PTE3) (for a/d)
-  true = pte_same(pte1, pte2)
-					      WRITE_ONCE(PTE3, 0)
-					      TLBI
-					      WRITE_ONCE(PTE0, <orig & ~CONT>)
-					      WRITE_ONCE(PTE1, <orig & ~CONT>)
-					      WRITE_ONCE(PTE2, <orig & ~CONT>)
-					      WRITE_ONCE(PTE3, <orig & ~CONT>)
-					    WRITE_ONCE(PTE0, 0)
-					  set_pte_at(PTE0, <new>)
-
-This example shows how a *false-negative* can be returned for the dirty state,
-which isn't detected by the check.
-
-I've been unable to come up with an example where a *false-positive* can be
-returned for dirty state without the second ptep_get_lockless() noticing. In
-this second example, let's assume everything is the same execpt FolioA is
-initially clean:
-
-ThreadA					ThreadB
-=======					=======
-
-gup_pte_range()
-  pte1 = ptep_get_lockless(PTE3)
-    READ_ONCE(PTE3)
-					mmap(PTE0)
-					  clear_pte(PTE0)
-					    unfold(PTE0 - PTE3)
-					      WRITE_ONCE(PTE0, 0)
-					      WRITE_ONCE(PTE1, 0)
-					      WRITE_ONCE(PTE2, 0)
-					      WRITE_ONCE(PTE3, 0)
-					      TLBI
-					      WRITE_ONCE(PTE0, <orig & ~CONT>)
-					      WRITE_ONCE(PTE1, <orig & ~CONT>)
-					      WRITE_ONCE(PTE2, <orig & ~CONT>)
-					      WRITE_ONCE(PTE3, <orig & ~CONT>)
-					    WRITE_ONCE(PTE0, 0)
-					  set_pte_at(PTE0, <new>)
-					write to FolioB - HW sets PTE0's dirty
-    READ_ONCE(PTE0) (for a/d) << DIRTY!!
-    READ_ONCE(PTE1) (for a/d)
-    READ_ONCE(PTE2) (for a/d)
-    READ_ONCE(PTE3) (for a/d)
-  <do speculative work with pte1 content>
-  pte2 = ptep_get_lockless(PTE3)
-    READ_ONCE(PTE3)           << BUT THIS IS FOR FolioB
-    READ_ONCE(PTE0) (for a/d)
-    READ_ONCE(PTE1) (for a/d)
-    READ_ONCE(PTE2) (for a/d)
-    READ_ONCE(PTE3) (for a/d)
-  false = pte_same(pte1, pte2) << So this fails
-
-The only way I can see false-positive not being caught in the second example is
-if ThreadB subseuently remaps the original folio, so you have an ABA scenario.
-But these lockless table walkers are already suseptible to that.
-
-I think all the same arguments can be extended to the access bit.
-
-
-For me this is all getting rather subtle and difficult to reason about and even
-harder to spec in a comprehensible way. The best I could come up with is:
-
-"All fields in the returned pte are guarranteed to be self-consistent except for
-access and dirty information, which may be inconsistent if a racing modification
-occured. Additionally it is guranteed that false-positive access and/or dirty
-information is not possible if 2 calls are made and both ptes are the same. Only
-false-negative access and/or dirty information is possible in this scenario."
-
-which is starting to sound bonkers. Personally I think we are better off at this
-point, just keeping today's arm64 ptep_get_lockless().
-
-Thanks,
-Ryan
-
+Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
