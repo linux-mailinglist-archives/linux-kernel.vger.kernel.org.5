@@ -1,180 +1,268 @@
-Return-Path: <linux-kernel+bounces-145072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F58C8A4F15
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:34:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 562DF8A4F17
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:34:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15C81B20BBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:34:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 087751F21C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:34:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47726CDBD;
-	Mon, 15 Apr 2024 12:33:55 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4781FA1;
+	Mon, 15 Apr 2024 12:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iPdgdq6f";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mMow96Fi";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iPdgdq6f";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mMow96Fi"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5445D3EA7B
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345EF3EA7B;
+	Mon, 15 Apr 2024 12:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713184435; cv=none; b=BZOAHqNNXg2u8RC+rPKAh5diVenjVd0qBPITglbxDU/ccj7UusuUh0GUsUuOmAoObZP9TLr1HMbyYGR/2gtuEhhZcG07Ur5wpgu9EuywFO6wymwIxYCTi/ya88lWWdpiqZ32tZQK93MlHvA1mDbgdWPOoUaGocQ5j4+7Pz/q+Ps=
+	t=1713184450; cv=none; b=XvT2kxxsbjftesYzXcm1A32ANfLe4HI66rBI0j0vErWMqo0rOkf6ifW2z0yWf9kq3ftZGc1Mvayrd50Xx4Gqo1Uc1zIjybXQxTLBuIkc7QIP/Ow0KrQAitomxvbyXXrGg6ufk32gbrxM4AuYCEzXRBbXNtsJjh9psgP+PCLW62Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713184435; c=relaxed/simple;
-	bh=cBp62E+s56Nui16EPkkeS4pd+YkHG4mqujvuBihrTjQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RszDfr+uGQxWWadivlndGWlWeB2N62Y2h20M7Lo/dEynTfMwlH77D5/In1yckze4Kz/DylIvPinonLGsYscip47iOLuf8y5nJUaFqMGQSfitEKepLKryjcKt1eyjkVpLnn72KK8MBVLYURLx3PnKpYNkI53gcq8uJQGxKb0iL5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VJ65D4v2gz1wrP8;
-	Mon, 15 Apr 2024 20:32:48 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id 57469180063;
-	Mon, 15 Apr 2024 20:33:46 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 20:33:45 +0800
-Message-ID: <e30f3d21-6957-a5fd-d61f-44d7d52f63cb@huawei.com>
-Date: Mon, 15 Apr 2024 20:33:44 +0800
+	s=arc-20240116; t=1713184450; c=relaxed/simple;
+	bh=XISiyAtFHq95w6NCfaJwm5kMhLqyG50dLNVMF8JyFh0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lYZY32gSheJnlBAqwPSchw8Ux4YP8cls5zXsWEINsrHtkEpzVGbDENaayrQJ6Inoxvovo43ne04xM2dKINmJsR/TGAtEHA+XzBgsOLJpBJjOtNxf9gsuk1e3MMaPncxnfZP0SuwJkpFjjCX20d/SJhirr/Q+R5pYppE7ND4pBGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iPdgdq6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mMow96Fi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iPdgdq6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mMow96Fi; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 438473538E;
+	Mon, 15 Apr 2024 12:34:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713184446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
+	b=iPdgdq6f0/qUkhtm/RFw4S3ZS2j0E6xwp33LssCW8rjplPIWeqAMmtZcPEjXGI4W5u4qIV
+	Ud64zCrRJJwfcDfgIgR2DaFUHYJ7D32xoUkjpVNTUXFX87yv4Th0tfw18+QyBNddbZvqlL
+	O8Rwq68slm2jPGKFdhFoKvPGGr7XyYs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713184446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
+	b=mMow96FiaICW5zQpHM4MQE57bjTTIfpgyig1sWRo2jgFEq91i2o9G8NtMaMmVEZYTcZd8e
+	w4FL62nO61xG10AQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1713184446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
+	b=iPdgdq6f0/qUkhtm/RFw4S3ZS2j0E6xwp33LssCW8rjplPIWeqAMmtZcPEjXGI4W5u4qIV
+	Ud64zCrRJJwfcDfgIgR2DaFUHYJ7D32xoUkjpVNTUXFX87yv4Th0tfw18+QyBNddbZvqlL
+	O8Rwq68slm2jPGKFdhFoKvPGGr7XyYs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1713184446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
+	b=mMow96FiaICW5zQpHM4MQE57bjTTIfpgyig1sWRo2jgFEq91i2o9G8NtMaMmVEZYTcZd8e
+	w4FL62nO61xG10AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 375C71386E;
+	Mon, 15 Apr 2024 12:34:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PImCDb4eHWYTfwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 15 Apr 2024 12:34:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D6100A0834; Mon, 15 Apr 2024 14:34:05 +0200 (CEST)
+Date: Mon, 15 Apr 2024 14:34:05 +0200
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+	adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+	linux-kernel@vger.kernel.org, jun.nie@linaro.org,
+	ebiggers@kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+	yukuai3@huawei.com,
+	syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] ext4: fix race condition between buffer write and
+ page_mkwrite
+Message-ID: <20240415123405.htw6vqbzsb3speor@quack3>
+References: <20230530134405.322194-1-libaokun1@huawei.com>
+ <20230604030445.GF1128744@mit.edu>
+ <20230604210821.GA1257572@mit.edu>
+ <ZH1BN+H1/Sa4eLQ4@casper.infradead.org>
+ <20230605091655.24vl5fjesfskt3o5@quack3>
+ <20230605122141.4njwwx3mrapqhvt4@quack3>
+ <ZH33ZzwyLFY48tfA@casper.infradead.org>
+ <20230605150855.7oaiplp7r57dcww3@quack3>
+ <49d5b109-7cc3-6717-b3c6-6858310aa3ba@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [RFC PATCH 0/3] mm: convert mm's rss stats into
- lazy_percpu_counter
-Content-Language: en-US
-To: Jan Kara <jack@suse.cz>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <dennisszhou@gmail.com>, <shakeelb@google.com>,
-	<surenb@google.com>, <kent.overstreet@linux.dev>, <mhocko@suse.cz>,
-	<vbabka@suse.cz>, <yuzhao@google.com>, <yu.ma@intel.com>,
-	<wangkefeng.wang@huawei.com>, <sunnanyong@huawei.com>
-References: <20240412092441.3112481-1-zhangpeng362@huawei.com>
- <20240412135333.btd6e7wfprg4cmx2@quack3>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <20240412135333.btd6e7wfprg4cmx2@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <49d5b109-7cc3-6717-b3c6-6858310aa3ba@huawei.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[a158d886ca08a3fecca4];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,infradead.org,mit.edu,vger.kernel.org,dilger.ca,gmail.com,linaro.org,kernel.org,huawei.com,syzkaller.appspotmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 
-On 2024/4/12 21:53, Jan Kara wrote:
+On Mon 15-04-24 12:28:01, Baokun Li wrote:
+> On 2023/6/5 23:08, Jan Kara wrote:
+> > On Mon 05-06-23 15:55:35, Matthew Wilcox wrote:
+> > > On Mon, Jun 05, 2023 at 02:21:41PM +0200, Jan Kara wrote:
+> > > > On Mon 05-06-23 11:16:55, Jan Kara wrote:
+> > > > > Yeah, I agree, that is also the conclusion I have arrived at when thinking
+> > > > > about this problem now. We should be able to just remove the conversion
+> > > > > from ext4_page_mkwrite() and rely on write(2) or truncate(2) doing it when
+> > > > > growing i_size.
+> > > > OK, thinking more about this and searching through the history, I've
+> > > > realized why the conversion is originally in ext4_page_mkwrite(). The
+> > > > problem is described in commit 7b4cc9787fe35b ("ext4: evict inline data
+> > > > when writing to memory map") but essentially it boils down to the fact that
+> > > > ext4 writeback code does not expect dirty page for a file with inline data
+> > > > because ext4_write_inline_data_end() should have copied the data into the
+> > > > inode and cleared the folio's dirty flag.
+> > > > 
+> > > > Indeed messing with xattrs from the writeback path to copy page contents
+> > > > into inline data xattr would be ... interesting. Hum, out of good ideas for
+> > > > now :-|.
+> > > Is it so bad?  Now that we don't have writepage in ext4, only
+> > > writepages, it seems like we have a considerably more benign locking
+> > > environment to work in.
+> > Well, yes, without ->writepage() it might be *possible*. But still rather
+> > ugly. The problem is that in ->writepages() i_size is not stable. Thus also
+> > whether the inode data is inline or not is not stable. We'd need inode_lock
+> > for that but that is not easily doable in the writeback path - inode lock
+> > would then become fs_reclaim unsafe...
+> > 
+> > 								Honza
+> Hi Honza!
+> Hi Ted!
+> Hi Matthew!
+> 
+> Long time later came back to this, because while discussing another similar
+> ABBA problem with Hou Tao, he mentioned VM_FAULT_RETRY, and then I
+> thought that this could be used to solve this problem as well.
+> 
+> The general idea is that if we see a file with inline data in
+> ext4_page_mkwrite(),
+> we release the mmap_lock and grab the inode_lock to convert the inline data,
+> and then return VM_FAULT_RETRY to retry to get the mmap_lock.
+> 
+> The code implementation is as follows, do you have any thoughts?
 
-> On Fri 12-04-24 17:24:38, Peng Zhang wrote:
->> From: ZhangPeng <zhangpeng362@huawei.com>
->>
->> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
->> percpu_counter"), the rss_stats have converted into percpu_counter,
->> which convert the error margin from (nr_threads * 64) to approximately
->> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
->> performance regression on fork/exec/shell. Even after commit
->> 14ef95be6f55 ("kernel/fork: group allocation/free of per-cpu counters
->> for mm struct"), the performance of fork/exec/shell is still poor
->> compared to previous kernel versions.
->>
->> To mitigate performance regression, we use lazy_percpu_counter[1] to
->> delay the allocation of percpu memory for rss_stats. After lmbench test,
->> we will get 3% ~ 6% performance improvement for lmbench
->> fork_proc/exec_proc/shell_proc after conversion.
->>
->> The test results are as follows:
->>
->>               base           base+revert        base+lazy_percpu_counter
->>
->> fork_proc    427.4ms        394.1ms  (7.8%)    413.9ms  (3.2%)
->> exec_proc    2205.1ms       2042.2ms (7.4%)    2072.0ms (6.0%)
->> shell_proc   3180.9ms       2963.7ms (6.8%)    3010.7ms (5.4%)
->>
->> This solution has not been fully evaluated and tested. The main idea of
->> this RFC patch series is to get the community's opinion on this approach.
-> Thanks! I like the idea and in fact I wanted to do something similar (just
-> never got to it). Thread [2] has couple of good observations regarding this
-> problem. Couple of thoughts regarding your approach:
->
-> 1) I think switching to pcpu counter when update rate exceeds 256 updates/s
-> is not a great fit for RSS because the updates are going to be frequent in
-> some cases but usually they will all happen from one thread. So I think it
-> would make more sense to move the decision of switching to pcpu mode from
-> the counter itself into the callers and just switch on clone() when the
-> second thread gets created.
->
-> 2) I thought that for RSS lazy percpu counters, we could directly use
-> struct percpu_counter and just make it that if 'counters' is NULL, the
-> counter is in atomic mode (count is used as atomic_long_t), if counters !=
-> NULL, we are in pcpu mode.
+So the problem with this is that VM_FAULT_RETRY is not always an option -
+in particular the caller has to set FAULT_FLAG_ALLOW_RETRY to indicate it
+is prepared to handle VM_FAULT_RETRY return. See how
+maybe_unlock_mmap_for_io() is carefully checking this. There are callers
+(most notably some get_user_pages() users) that don't set
+FAULT_FLAG_ALLOW_RETRY so the escape through VM_FAULT_RETRY is sadly not a
+reliable solution.
 
-Thanks for your reply!
-Agree with your thoughts, I'll implement it in the next version.
+My long-term wish is we were always allowed to use VM_FAULT_RETRY and that
+was actually what motivated some get_user_pages() cleanups I did couple
+years ago. But dealing with all the cases in various drivers was too
+difficult and I've run out of time. Now maybe it would be worth it to
+revisit this since things have changed noticeably and maybe now it would be
+easier to achive the goal...
 
-> 3) In [2] Mateusz had a good observation that the old RSS counters actually
-> used atomic operations only in rare cases so even lazy pcpu counters are
-> going to have worse performance for singlethreaded processes than the old
-> code. We could *almost* get away with non-atomic updates to counter->count
-> if it was not for occasional RSS updates from unrelated tasks. So it might
-> be worth it to further optimize the counters as:
->
-> struct rss_counter_single {
-> 	void *state;			/* To detect switching to pcpu mode */
-> 	atomic_long_t counter_atomic;	/* Used for foreign updates */
-> 	long counter;			/* Used by local updates */
-> }
->
-> struct rss_counter {
-> 	union {
-> 		struct rss_counter_single single;
-> 		/* struct percpu_counter needs to be modified to have
-> 		 * 'counters' first to avoid issues for different
-> 		 * architectures or with CONFIG_HOTPLUG_CPU enabled */
-> 		struct percpu_counter pcpu;
-> 	}
-> }
->
-> But I'm not sure this complexity is worth it so I'd do it as a separate
-> patch with separate benchmarking if at all.
->
-> 								Honza
+								Honza
 
-Agreed. Single-threaded processes don't need atomic operations, and
-this scenario needs to be thoroughly tested.
-I'll try to implement it in another patch series after I finish the
-basic approach.
-
-> [2] https://lore.kernel.org/all/ZOPSEJTzrow8YFix@snowbird/
->
->> [1] https://lore.kernel.org/linux-iommu/20230501165450.15352-8-surenb@google.com/
->>
->> Kent Overstreet (1):
->>    Lazy percpu counters
->>
->> ZhangPeng (2):
->>    lazy_percpu_counter: include struct percpu_counter in struct
->>      lazy_percpu_counter
->>    mm: convert mm's rss stats into lazy_percpu_counter
->>
->>   include/linux/lazy-percpu-counter.h |  88 +++++++++++++++++++
->>   include/linux/mm.h                  |   8 +-
->>   include/linux/mm_types.h            |   4 +-
->>   include/trace/events/kmem.h         |   4 +-
->>   kernel/fork.c                       |  12 +--
->>   lib/Makefile                        |   2 +-
->>   lib/lazy-percpu-counter.c           | 131 ++++++++++++++++++++++++++++
->>   7 files changed, 232 insertions(+), 17 deletions(-)
->>   create mode 100644 include/linux/lazy-percpu-counter.h
->>   create mode 100644 lib/lazy-percpu-counter.c
->>
->> -- 
->> 2.25.1
->>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 537803250ca9..e044c11c9cf6 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -6056,15 +6056,36 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>      if (unlikely(IS_IMMUTABLE(inode)))
+>          return VM_FAULT_SIGBUS;
+> 
+> +    /*
+> +     * The ext4 writeback code does not expect dirty page for a file with
+> +     * inline data, so inline data needs to be converted. But it needs to
+> +     * hold the inode_lock when converting, and trying to lock the inode
+> +     * while holding the mmap_lock may result in an ABBA deadlock. So here
+> +     * we release the mmap_lock for conversion and retry after conversion.
+> +     * Only one retry is allowed to avoid endless loops.
+> +     * Acquire xattr_sem to avoid race with inline data conversion.
+> +     */
+> +    down_read(&EXT4_I(inode)->xattr_sem);
+> +    if (ext4_has_inline_data(inode)) {
+> +        up_read(&EXT4_I(inode)->xattr_sem);
+> +
+> +        if (!fault_flag_allow_retry_first(vmf->flags))
+> +            return VM_FAULT_SIGBUS;
+> +
+> +        release_fault_lock(vmf);
+> +
+> +        inode_lock(inode);
+> +        ext4_convert_inline_data(inode);
+> +        inode_unlock(inode);
+> +        return VM_FAULT_RETRY;
+> +    }
+> +    up_read(&EXT4_I(inode)->xattr_sem);
+> +
+>      sb_start_pagefault(inode->i_sb);
+>      file_update_time(vma->vm_file);
+> 
+>      filemap_invalidate_lock_shared(mapping);
+> 
+> -    err = ext4_convert_inline_data(inode);
+> -    if (err)
+> -        goto out_ret;
+> -
+>      /*
+>       * On data journalling we skip straight to the transaction handle:
+>       * there's no delalloc; page truncated will be checked later; the
+> 
+> -- 
+> With Best Regards,
+> Baokun Li
+> .
+> 
 -- 
-Best Regards,
-Peng
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
