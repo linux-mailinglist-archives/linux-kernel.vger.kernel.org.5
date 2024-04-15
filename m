@@ -1,265 +1,241 @@
-Return-Path: <linux-kernel+bounces-145175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 410B28A5068
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F3138A5064
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:08:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB7B32860D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:08:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15139285BA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E29139588;
-	Mon, 15 Apr 2024 12:51:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE6E78C81;
+	Mon, 15 Apr 2024 12:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X2KOyKSr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HQqrKs+S"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0E573163;
-	Mon, 15 Apr 2024 12:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4158C73163;
+	Mon, 15 Apr 2024 12:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185503; cv=none; b=JHCFBclIMFrqJB5INbP/C7vTsAeQoPMUaZlsQ2vViKYhgrp9AtnLrEacl4FgCGTd727tepvSTfpc5fYcQKn6kYeqe7wwSNcLT3h1VqT5o1B5yQs/dctW0grloSma2ATp8Mqwqi+fAUbqkfPx6CTc+mXe2IVRRL1HUA9Mw1lH3u8=
+	t=1713185498; cv=none; b=NC+xLbwiHwiWHL9AZUNW8lGUnYOSWyH9CLu3iYyUX6458Se3efMz8tkB82kqiNwO8lFitvXc7NzlgUFNAPlshC+ODot4pfzeDj9dq5q+s8nRY92MyokNDl33xl9otYPcUR+oXVjiIbB9+eFf5Mm3nTz1fYdQTi3o7ePYt2yqHV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185503; c=relaxed/simple;
-	bh=jYX09rpdrm93G+82PrvfVTaDeGwVFz87SiF1eL4uh4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SPNvGCgYOzPmCLL+wACLZmu+o7fPu56/k8BBnS3IFTMuolw9IP9zyOboNnHV8O6A2T53gRyyTutmtGNvKHykrNrhAkDwR7fZUhTzZsYZnvTUBOawo7wtclMdfWX/iaoMVNEuIg/n6QGqXZy7jiHbgQu0P5GCft+rNalPctzPiNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X2KOyKSr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CEC8C113CC;
-	Mon, 15 Apr 2024 12:51:43 +0000 (UTC)
+	s=arc-20240116; t=1713185498; c=relaxed/simple;
+	bh=cyQB+nzI5io0btkPERC0oL8fWVahvmm7TT6YJby8cHk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L6M+TPjyUiHP6+2MSPcBqgxsLa45UwWgVy8d+7w4k9FuiQdJJTviZbsuZpKLS3RsMmDjoItQrp9CFf1yhdvyZlkKOu5FIeC4mjOPmRD7wb5DlThZIsV8LLx8mvRs4if/FpFtIlHSsxFG+NKQVlv3j0E85M6jE3jXV/SCJslG6GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HQqrKs+S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C55D8C113CC;
+	Mon, 15 Apr 2024 12:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185503;
-	bh=jYX09rpdrm93G+82PrvfVTaDeGwVFz87SiF1eL4uh4c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=X2KOyKSrplY3TQ4q9SahVWs6oObdsfm/oET5Ojm9a/yiX+Vr9aBmPSpc14PXj5UCK
-	 ntBzkaUVg5iooN/jydrxGrgMMl7jipjzJRfJs3MrizMt2uW8+9fGeuDEZxjmkRUi1m
-	 ZAqN4D+rTd34QSKZdRStpxcrZNhbDMhTJMfo15qa1/ype+RgrIaS2/Sx4sViDooTQ9
-	 UERyYrIsubkhpyGYFPYCnFqCG71NMOvoA2LDeMeaG9CT2/ncoYfFWyejLUphbcOYkn
-	 y8gZWT7SA55m7VvRNk2WK94Y5/T4GKaVyeX+CcwR3Wyw3p84a9VR4xy1i7LFDW9HpO
-	 v84WXL6ILkZfA==
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a9ef9ba998so844111eaf.1;
-        Mon, 15 Apr 2024 05:51:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXypDsMF8kshtuXYczEur+J57TQDYT9rm+NuIYmKjy9FNI3lFyAvg6n0GwB5zvDt0tau0xPRFKF3zJDsrHJJ6UpGeEpBl/kgiVUU03GzK+c27XoqzZQ2/zK1aRFAFxUfwsGWigF4JZVCP63qOaiirNOD/xbXE1T2FEGCVpFguW5xXWsoRqQ7aFA4df5ol4SLQxweABTmZQMwbpbB7p8kQ==
-X-Gm-Message-State: AOJu0YwOcVnmcxATbirisS35WWH0GwR6AlxppOKXSuSsy8AZ/qkb1d1R
-	Dx1hyUhyVuABiCvrgb8cGIw+6iJ3w1RY/ioNrFWdMS4uoFfdPcHzVUkS8Ssllsw4fwUnOHptY3b
-	jUVDn0zXt4tFa1ExnzE5oWna6ogQ=
-X-Google-Smtp-Source: AGHT+IG+/b2KS0keTNCgqFOHM9Mj89KNmkEnREchLeL6HLDGedvTzVt6H4r3tff+PQXQyqWIrKyVcHggoANlbHCH0sE=
-X-Received: by 2002:a05:6870:7a6:b0:22e:e006:e5ae with SMTP id
- en38-20020a05687007a600b0022ee006e5aemr11158428oab.0.1713185502514; Mon, 15
- Apr 2024 05:51:42 -0700 (PDT)
+	s=k20201202; t=1713185497;
+	bh=cyQB+nzI5io0btkPERC0oL8fWVahvmm7TT6YJby8cHk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=HQqrKs+SbPbRPha33MJYfsS8cYh/JNlWDMr+fuApxnjLWlu35hVX3FRwI/DeFj3Lr
+	 k6gOuFT2c6Y8aLC1XohddWJPGvo4hIN3eVdGeukJlWatSyjI03kqho0MKeHY/8zEWo
+	 CoSyxY0UqxuX63R+xsR+CExVduBw2qHwmDKj5RzMuJ4L3qyZjXDdCpYPxlaK0cWeYP
+	 qbp+92nJndHb0JldG10xxahYZJ2fBz7gnS90TEllHuCHJA78qMmmqJmWFc3X5sEckN
+	 uYxhWg5vDzXghuoLPQp/lB8W1w68AAHRAToGi7U2Wff1DY2VdfasnwpAm1l/khhsLI
+	 zvAdmJx1xQC7Q==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v9 13/36] function_graph: Use a simple LRU for fgraph_array index number
+Date: Mon, 15 Apr 2024 21:51:31 +0900
+Message-Id: <171318549135.254850.10548833007838101346.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
- <20240412143719.11398-4-Jonathan.Cameron@huawei.com> <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
- <ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk> <87bk6ez4hj.ffs@tglx> <e80bfa8cb9b74997a4214e531366c71d@huawei.com>
-In-Reply-To: <e80bfa8cb9b74997a4214e531366c71d@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 15 Apr 2024 14:51:27 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hgABc=c6L4ctTHZ+5afeQTM1-bXhxthEKGxs8hG8R=YQ@mail.gmail.com>
-Message-ID: <CAJZ5v0hgABc=c6L4ctTHZ+5afeQTM1-bXhxthEKGxs8hG8R=YQ@mail.gmail.com>
-Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
-To: Salil Mehta <salil.mehta@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, "Russell King (Oracle)" <linux@armlinux.org.uk>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Jonathan Cameron <jonathan.cameron@huawei.com>, 
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, 
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, 
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, "x86@kernel.org" <x86@kernel.org>, 
-	Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Linuxarm <linuxarm@huawei.com>, 
-	"justin.he@arm.com" <justin.he@arm.com>, "jianyong.wu@arm.com" <jianyong.wu@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 15, 2024 at 1:51=E2=80=AFPM Salil Mehta <salil.mehta@huawei.com=
-> wrote:
->
-> Hello,
->
-> >  From: Thomas Gleixner <tglx@linutronix.de>
-> >  Sent: Friday, April 12, 2024 9:55 PM
-> >
-> >  On Fri, Apr 12 2024 at 21:16, Russell King (Oracle) wrote:
-> >  > On Fri, Apr 12, 2024 at 08:30:40PM +0200, Rafael J. Wysocki wrote:
-> >  >> Say acpi_map_cpu) / acpi_unmap_cpu() are turned into arch calls.
-> >  >> What's the difference then?  The locking, which should be fine if I=
-'m
-> >  >> not mistaken and need_hotplug_init that needs to be set if this cod=
-e
-> >  >> runs after the processor driver has loaded AFAICS.
-> >  >
-> >  > It is over this that I walked away from progressing this code, becau=
-se
-> >  > I don't think it's quite as simple as you make it out to be.
-> >  >
-> >  > Yes, acpi_map_cpu() and acpi_unmap_cpu() are already arch
-> >  implemented
-> >  > functions, so Arm64 can easily provide stubs for these that do nothi=
-ng.
-> >  > That never caused me any concern.
-> >  >
-> >  > What does cause me great concern though are the finer details. For
-> >  > example, above you seem to drop the evaluation of _STA for the
-> >  > "make_present" case - I've no idea whether that is something that
-> >  > should be deleted or not (if it is something that can be deleted, th=
-en
-> >  > why not delete it now?)
-> >  >
-> >  > As for the cpu locking, I couldn't find anything in
-> >  > arch_register_cpu() that depends on the cpu_maps_update stuff nor
-> >  > needs the cpus_write_lock being taken - so I've no idea why the
-> >  > "make_present" case takes these locks.
-> >
-> >  Anything which updates a CPU mask, e.g. cpu_present_mask, after early
-> >  boot must hold the appropriate write locks. Otherwise it would be poss=
-ible
-> >  to online a CPU which just got marked present, but the registration ha=
-s not
-> >  completed yet.
-> >
-> >  > Finally, the "pr->flags.need_hotplug_init =3D 1" thing... it's not
-> >  > obvious that this is required - remember that with Arm64's "enabled"
-> >  > toggling, the "processor" is a slice of the system and doesn't
-> >  > actually go away - it's just "not enabled" for use.
-> >  >
-> >  > Again, as "processors" in Arm64 are slices of the system, they have =
-to
-> >  > be fully described in ACPI before the OS boots, and they will be
-> >  > marked as being "present", which means they will be enumerated, and
-> >  > the driver will be probed. Any processor that is not to be used will
-> >  > not have its enabled bit set. It is my understanding that every
-> >  > processor will result in the ACPI processor driver being bound to it
-> >  > whether its enabled or not.
-> >  >
-> >  > The difference between real hotplug and Arm64 hotplug is that real
-> >  > hotplug makes stuff not-present (and thus unenumerable). Arm64
-> >  hotplug
-> >  > makes stuff not-enabled which is still enumerable.
-> >
-> >  Define "real hotplug" :)
-> >
-> >  Real physical hotplug does not really exist. That's at least true for =
-x86, where
-> >  the physical hotplug support was chased for a while, but never ended u=
-p in
-> >  production.
-> >
-> >  Though virtualization happily jumped on it to hot add/remove CPUs to/f=
-rom
-> >  a guest.
-> >
-> >  There are limitations to this and we learned it the hard way on X86. A=
-t the
-> >  end we came up with the following restrictions:
-> >
-> >      1) All possible CPUs have to be advertised at boot time via firmwa=
-re
-> >         (ACPI/DT/whatever) independent of them being present at boot ti=
-me
-> >         or not.
-> >
-> >         That guarantees proper sizing and ensures that associations
-> >         between hardware entities and software representations and the
-> >         resulting topology are stable for the lifetime of a system.
-> >
-> >         It is really required to know the full topology of the system a=
-t
-> >         boot time especially with hybrid CPUs where some of the cores
-> >         have hyperthreading and the others do not.
-> >
-> >
-> >      2) Hot add can only mark an already registered (possible) CPU
-> >         present. Adding non-registered CPUs after boot is not possible.
-> >
-> >         The CPU must have been registered in #1 already to ensure that
-> >         the system topology does not suddenly change in an incompatible
-> >         way at run-time.
-> >
-> >  The same restriction would apply to real physical hotplug. I don't thi=
-nk that's
-> >  any different for ARM64 or any other architecture.
->
->
-> There is a difference:
->
-> 1.   ARM arch does not allows for any processor to be NOT present. Hence,=
- because of
-> this restriction any of its related per-cpu components must be present an=
-d enumerated
-> at the boot time as well (exposed by firmware and ACPI). This means all t=
-he enumerated
-> processors will be marked as 'present' but they might exist in NOT enable=
-d (_STA.enabled=3D0)
-> state.
->
-> There was one clear difference and please correct me if I'm wrong here,  =
-for x86, the LAPIC
-> associated with the x86 core can be brought online later even after boot?
->
-> But for ARM Arch, processors and its corresponding per-cpu components lik=
-e redistributors
-> all need to be present and enumerated during the boot time. Redistributor=
-s are part of
-> ALWAYS-ON power domain.
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-OK
+Since the fgraph_array index is used for the bitmap on the shadow
+stack, it may leave some entries after a function_graph instance is
+removed. Thus if another instance reuses the fgraph_array index soon
+after releasing it, the fgraph may confuse to call the newer callback
+for the entries which are pushed by the older instance.
+To avoid reusing the fgraph_array index soon after releasing, introduce
+a simple LRU table for managing the index number. This will reduce the
+possibility of this confusion.
 
-So what exactly is the problem with this and what does
-acpi_processor_add() have to do with it?
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ Changes in v8:
+  - Add a WARN_ON_ONCE() if fgraph_lru_table[] is broken when releasing
+    index, and remove WARN_ON_ONCE() from unregister_ftrace_graph()
+  - Fix to release allocated index if register_ftrace_graph() fails.
+  - Add comments and code cleanup.
+ Changes in v5:
+  - Fix the underflow bug in fgraph_lru_release_index() and return 0
+    if the release is succeded.
+ Changes in v4:
+  - Newly added.
+---
+ kernel/trace/fgraph.c |   71 +++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 50 insertions(+), 21 deletions(-)
 
-Do you want the per-CPU structures etc. to be created from the
-acpi_processor_add() path?
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index aa9a4fac3373..7e73bc3eab8b 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -99,10 +99,48 @@ enum {
+ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+ int ftrace_graph_active;
+ 
+-static int fgraph_array_cnt;
+-
+ static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
+ 
++/* LRU index table for fgraph_array */
++static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
++static int fgraph_lru_next;
++static int fgraph_lru_last;
++
++/* Initialize fgraph_lru_table with unused index */
++static void fgraph_lru_init(void)
++{
++	int i;
++
++	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
++		fgraph_lru_table[i] = i;
++}
++
++/* Release the used index to the LRU table */
++static int fgraph_lru_release_index(int idx)
++{
++	if (idx < 0 || idx >= FGRAPH_ARRAY_SIZE ||
++	    WARN_ON_ONCE(fgraph_lru_table[fgraph_lru_last] != -1))
++		return -1;
++
++	fgraph_lru_table[fgraph_lru_last] = idx;
++	fgraph_lru_last = (fgraph_lru_last + 1) % FGRAPH_ARRAY_SIZE;
++	return 0;
++}
++
++/* Allocate a new index from LRU table */
++static int fgraph_lru_alloc_index(void)
++{
++	int idx = fgraph_lru_table[fgraph_lru_next];
++
++	/* No id is available */
++	if (idx == -1)
++		return -1;
++
++	fgraph_lru_table[fgraph_lru_next] = -1;
++	fgraph_lru_next = (fgraph_lru_next + 1) % FGRAPH_ARRAY_SIZE;
++	return idx;
++}
++
+ static inline int get_ret_stack_index(struct task_struct *t, int offset)
+ {
+ 	return t->ret_stack[offset] & FGRAPH_RET_INDEX_MASK;
+@@ -367,7 +405,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ 	if (index < 0)
+ 		goto out;
+ 
+-	for (i = 0; i < fgraph_array_cnt; i++) {
++	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+ 		struct fgraph_ops *gops = fgraph_array[i];
+ 
+ 		if (gops == &fgraph_stub)
+@@ -919,7 +957,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ {
+ 	int command = 0;
+ 	int ret = 0;
+-	int i;
++	int i = -1;
+ 
+ 	mutex_lock(&ftrace_lock);
+ 
+@@ -935,21 +973,16 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 		/* The array must always have real data on it */
+ 		for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
+ 			fgraph_array[i] = &fgraph_stub;
++		fgraph_lru_init();
+ 	}
+ 
+-	/* Look for an available spot */
+-	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+-		if (fgraph_array[i] == &fgraph_stub)
+-			break;
+-	}
+-	if (i >= FGRAPH_ARRAY_SIZE) {
++	i = fgraph_lru_alloc_index();
++	if (i < 0 || WARN_ON_ONCE(fgraph_array[i] != &fgraph_stub)) {
+ 		ret = -ENOSPC;
+ 		goto out;
+ 	}
+ 
+ 	fgraph_array[i] = gops;
+-	if (i + 1 > fgraph_array_cnt)
+-		fgraph_array_cnt = i + 1;
+ 	gops->idx = i;
+ 
+ 	ftrace_graph_active++;
+@@ -973,6 +1006,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 	if (ret) {
+ 		fgraph_array[i] = &fgraph_stub;
+ 		ftrace_graph_active--;
++		fgraph_lru_release_index(i);
+ 	}
+ out:
+ 	mutex_unlock(&ftrace_lock);
+@@ -982,25 +1016,20 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ void unregister_ftrace_graph(struct fgraph_ops *gops)
+ {
+ 	int command = 0;
+-	int i;
+ 
+ 	mutex_lock(&ftrace_lock);
+ 
+ 	if (unlikely(!ftrace_graph_active))
+ 		goto out;
+ 
+-	if (unlikely(gops->idx < 0 || gops->idx >= fgraph_array_cnt))
++	if (unlikely(gops->idx < 0 || gops->idx >= FGRAPH_ARRAY_SIZE ||
++		     fgraph_array[gops->idx] != gops))
+ 		goto out;
+ 
+-	WARN_ON_ONCE(fgraph_array[gops->idx] != gops);
++	if (fgraph_lru_release_index(gops->idx) < 0)
++		goto out;
+ 
+ 	fgraph_array[gops->idx] = &fgraph_stub;
+-	if (gops->idx + 1 == fgraph_array_cnt) {
+-		i = gops->idx;
+-		while (i >= 0 && fgraph_array[i] == &fgraph_stub)
+-			i--;
+-		fgraph_array_cnt = i + 1;
+-	}
+ 
+ 	ftrace_graph_active--;
+ 
 
-This plain won't work because acpi_processor_add(), as defined in the
-mainline kernel today (and the Jonathan's patches don't change that
-AFAICS), returns an error for processor devices with the "enabled" bit
-clear in _STA (it returns an error if the "present" bit is clear too,
-but that's obvious), so it only gets to calling arch_register_cpu() if
-*both* "present" and "enabled" _STA bits are set for the given
-processor device.
-
-That, BTW, is why I keep saying that from the ACPI CPU enumeration
-code perspective, there is no difference between "present" and
-"enabled".
-
-> 2.  Agreed regarding the topology. Are you suggesting that we must call a=
-rch_register_cpu()
-> during boot time for all the 'present' CPUs? Even if that's the case, we =
-might still want to defer
-> registration of the cpu device (register_cpu() API) with the Linux device=
- model. Later is what
-> we are doing to hide/unhide the CPUs from the user while STA.Enabled Bit =
-is toggled due to
-> CPU (un)plug action.
-
-There are two ways to approach this IMV, and both seem to be valid in princ=
-iple.
-
-One would be to treat CPUs with the "enabled" bit clear as not present
-and create all of the requisite data structures for them when they
-become available (in analogy with the "real hot-add" case).
-
-The alternative one is to create all of the requisite data structures
-for the CPUs that you find during boot, but register CPU devices for
-those having the "enabled" _STA bit set.
-
-It looks like you have chosen the second approach, which is fine with
-me (although personally, I would rather choose the first one), but
-then your arch code needs to arrange for the requisite CPU data
-structures etc. to be set up before acpi_processor_add() gets called
-because, as per the above, the latter just rejects CPUs with the
-"enabled" _STA bit clear.
-
-Thanks!
 
