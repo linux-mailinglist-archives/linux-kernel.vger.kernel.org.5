@@ -1,419 +1,196 @@
-Return-Path: <linux-kernel+bounces-145404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B34A8A55C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:58:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3550C8A55CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:59:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AECE41C225B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:58:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69B06B21175
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8741574C02;
-	Mon, 15 Apr 2024 14:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61663757E5;
+	Mon, 15 Apr 2024 14:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C84mWOEe"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wOQItSH6"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2078.outbound.protection.outlook.com [40.107.96.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6669D60EF9
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713193129; cv=none; b=XmoEqjeJiWKHAcDYXclHM0j8oBfHlQF38J7Hw7ALO7clrk60gmKlk7vdTL/4Y6vtuhozEs5lJjFAqJZdI16E91lDWJvyJpPzZRjq3C/cdGrm0f7R7evMwhY4TCqkbw5WgGK58r7j7AJdk/dgQAOQtMeY4nlyvyue7oa+Y4hEpc8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713193129; c=relaxed/simple;
-	bh=rKrEKZ8BvpoLO6DHAqow8DeAKQF/vh9S6XGT5IRvE+8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZFUf46UdZ4p19BN35vrasQQQBvoPZJPhImyjha08kqyJdfL6wRwzpDbTpZufjVBXI5TxMm07f7dW5NZP93t0IEywlEHHBMYgf27/N2MpwbeJvkml1KAg7iwyHLXy7jOrfUCUP9VoltxbDrg9K3zCW1RF1bXOInnlmuPfvt6b+1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C84mWOEe; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713193125;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=XR6bfGt5nwAAveLt+vXF9nePixU+6Vt49K5aFsP/vSI=;
-	b=C84mWOEenKLRcJA0ZAgla/C4W6A6sPD05STBN7PaLK/bg+FequFPPv5xbg7zl0FhPl+ff2
-	qF3zfMXWyY+epx9eoBe37zmGxkoqQIOIN/4Xr1LkVCkSHmBSZ9F2D/FhGs9uSYrXJHPfKP
-	16lDKF9ho9vGeXhQ61YbX01JAQLK61U=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-70-sAeui6fbNXyAwicb4QEBJQ-1; Mon, 15 Apr 2024 10:58:43 -0400
-X-MC-Unique: sAeui6fbNXyAwicb4QEBJQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3455cbdea2cso1911569f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:58:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713193122; x=1713797922;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XR6bfGt5nwAAveLt+vXF9nePixU+6Vt49K5aFsP/vSI=;
-        b=Bu44l6V9lDF8mLGJw7pJReHYg8MszhB+0dTz5L3LnfzJFqCLhOBZaIVeEAgjEAO6/r
-         NHriZHXv7JFoCONVFMHQI0y3WyfGVkWb8kUgMzB5lJYUyulzuzghBOskAv7lYa76lvGr
-         0n6PNxvgNsywD4MbeyV54MBl9mRzTso8c5ZkI37JifmwtaAE5EEDzKkDJEY07B6AqMMe
-         vN+QyOJPgSk7Tk4JDCGG/o1DfnXPtHRD5d82ycU16mEzDH95ccbH9BWnyWaeY6Nd3j+L
-         5uf/TSxe5jn2C9wC91tzXQdGLe/2Y1mnjYkX7DCYZ/+tBFnUe6wEj6qQyFpiCMVxi+tA
-         EUQg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmCisjNVCzA6g1a5EGk0iNrhpfhS1geJNp6lqb2/Aj9a8UaCCMNTkYY+6nXltz6ITaCqMiwM4n4Nhz6ym6vRmGM1KEzT+kRISnyYC2
-X-Gm-Message-State: AOJu0Yy0OO1RkiqR8WN3s6YrwcZu1ap4nrhy4CznnhvhYW/+GHodh8fG
-	I1XPbL2jvVQEhRU9kd1C98ob9C2101M6NK7gu+fi6bBboEUY3QVXM7W00nZZ8qzNwBmoLRsqDj7
-	vpc12lBMNPQ71TW93nLmocIiaKq2ubZF9yAIKRrv7Uvan7B0ZBdKPjcZY/ZblIw==
-X-Received: by 2002:a05:6000:1841:b0:345:811b:466e with SMTP id c1-20020a056000184100b00345811b466emr8950300wri.26.1713193122514;
-        Mon, 15 Apr 2024 07:58:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH7EnFTJwMV4yknQcrF7a652CoJ4BGsKN1Xq47fxDc/COqwUBRpSRdK3QG/bNekSvn6HOhS0w==
-X-Received: by 2002:a05:6000:1841:b0:345:811b:466e with SMTP id c1-20020a056000184100b00345811b466emr8950275wri.26.1713193122063;
-        Mon, 15 Apr 2024 07:58:42 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
-        by smtp.gmail.com with ESMTPSA id g17-20020a5d6991000000b0034615862c64sm12342114wru.110.2024.04.15.07.58.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 07:58:41 -0700 (PDT)
-Message-ID: <11b1c25b-3e20-4acf-9be5-57b508266c5b@redhat.com>
-Date: Mon, 15 Apr 2024 16:58:40 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A80474400;
+	Mon, 15 Apr 2024 14:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.78
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713193184; cv=fail; b=NDZ7bLTWshbz65zLrVW9HH0dvc6yiyf+LhvOxEXUHdvaDEOMYyqrOPr1dPOHVu2Go1aYYPjU+Imh1SvmS32zhiVEfbqQ9PEHobitX5ySgBbCvEIa29oa7CVKxe3cDD2v/Rbv12ne5QtmWjjsr0hzb3XxoeAonETA/3btOl7dWrc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713193184; c=relaxed/simple;
+	bh=X6DADybGQMFI7ACbTSmFVuzV/rtXehVLiYPJpQlBbqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ui1YwIkoq6s8jrnCQ8Ve+yoVNjDi36rO31eoF62G6RVfAewI5Pe+Yl6bBf7VJeztUoI+q3NVmLi7j++q4/2fw6autbknx2cW5EYHbqL42nN2f+xdNoHyXYlWcnrdM9+yLyeWRrLNzuoxPSVu048FpPyAocvr6OEePFyBCTG6EQE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wOQItSH6; arc=fail smtp.client-ip=40.107.96.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y9N5RbEDSO66Oo4uq6zAqfyoQdSjUkR87ZrYm5gw7KXFiQK9XrZWd8+98sjRqZ3gPbbWQFk0JDt94tEN2DraYAgtNX65A9iyTRaTygECdqprRxGVjCtJTwZCJZjgh2CWlrXheJ51ROzFAf7v3cd1GhjjsE29aPibqoI2lTzmURPePqf0di5F4KJqJcb/31lU4rLgKrgE0nxkkr+giMlc1FILZpFBdmrcNk55N2MkbiThE0CZE613rOfBOXTu5oXFJ5WFVKi3aikti107FpQdpoK5Ryadr2l2BwAFoZbFwJkdk4Rd4tKAgoI1YkGETf/kKjgQnUgoaqQDFrFKheiLYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MMRyVaPRm3rZqm/QF26Y1YmDs+KBjRQGYJrrF9hhjDY=;
+ b=TpKsOTnlBlVDvqIkT+9XDB2AXiM4urvt8kgiSacT/nC1rVMHP/zyqXbJdB6mVX3J5BBqsk91Bo7lNv6lCo0hGG+7a58zowE7cYkveX3cjWNwSg0nlbJc+sbgOEndp3RM3uOIzo0GRXFWl1cLAeDTcYZdodoUWJLyXfvdNPQy8UExcmVA7eJrpVHOsSdXrgdP4Kslz+kRaAteKUAkhYVddLcLngspcrRwDIONRHpjYB1KKJX3zIGNoyYQMtW3edMCz3pn84xLYholopF7x8SfFpo9jnAoungc8fbtXaVpwZuN2jFLiinrFdK+HJyHC8rus4wjgqml4ZcgYdjV4Y6mqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MMRyVaPRm3rZqm/QF26Y1YmDs+KBjRQGYJrrF9hhjDY=;
+ b=wOQItSH6txVLl/zV6n/hqmS+MCU7z5f8MzVJBCDKyy/ppW30EVyZbRAMLwS9T3LG+un9XniJN/t/fMBRs82hzAJgm9sZncT7CfjF4pswiNSyehhISYd6jigaklxHl6NAVTsgnweqJfoaMAGknnW1juUlf03jvQLpGZaWgCyEQeQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
+ by PH8PR12MB6964.namprd12.prod.outlook.com (2603:10b6:510:1bf::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
+ 2024 14:59:37 +0000
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::e7a:5022:4b7d:ade1]) by SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::e7a:5022:4b7d:ade1%7]) with mapi id 15.20.7409.042; Mon, 15 Apr 2024
+ 14:59:37 +0000
+Date: Mon, 15 Apr 2024 22:59:14 +0800
+From: Huang Rui <ray.huang@amd.com>
+To: "Yuan, Perry" <Perry.Yuan@amd.com>
+Cc: "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
+	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
+	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
+	"Petkov, Borislav" <Borislav.Petkov@amd.com>,
+	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
+	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
+	"oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
+	"Meng, Li (Jassmine)" <Li.Meng@amd.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 5/8] cpufreq: amd-pstate: Bail out if
+ min/max/nominal_freq is 0
+Message-ID: <Zh1AwtnewmweX3zr@amd.com>
+References: <cover.1711335714.git.perry.yuan@amd.com>
+ <c2809391c877dd5842389aaf87bf2b5fce5dc866.1711335714.git.perry.yuan@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c2809391c877dd5842389aaf87bf2b5fce5dc866.1711335714.git.perry.yuan@amd.com>
+X-ClientProxiedBy: SI2PR02CA0029.apcprd02.prod.outlook.com
+ (2603:1096:4:195::6) To SJ2PR12MB8690.namprd12.prod.outlook.com
+ (2603:10b6:a03:540::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
-To: Ryan Roberts <ryan.roberts@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muchun Song <muchun.song@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215121756.2734131-1-ryan.roberts@arm.com>
- <d8b3bcf2-495f-42bd-b114-6e3a010644d8@arm.com>
- <de143212-49ce-4c30-8bfa-4c0ff613f107@redhat.com>
- <374d8500-4625-4bff-a934-77b5f34cf2ec@arm.com>
- <c1218cdb-905b-4896-8e17-109700577cec@redhat.com>
- <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
- <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
- <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
- <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
- <dbc5083b-bf8c-4869-8dc7-5fbf2c88cce8@arm.com>
- <f2aad459-e19c-45e2-a7ab-35383e8c3ba5@redhat.com>
- <4fba71aa-8a63-4a27-8eaf-92a69b2cff0d@arm.com>
- <5a23518b-7974-4b03-bd6e-80ecf6c39484@redhat.com>
- <81aa23ca-18b1-4430-9ad1-00a2c5af8fc2@arm.com>
- <70a36403-aefd-4311-b612-84e602465689@redhat.com>
- <f13d1e4d-1eea-4379-b683-4d736ad99c2c@arm.com>
- <3e50030d-2289-4470-a727-a293baa21618@redhat.com>
- <772de69a-27fa-4d39-a75d-54600d767ad1@arm.com>
- <969dc6c3-2764-4a35-9fa6-7596832fb2a3@redhat.com>
- <e0b34a1f-ef2e-484e-8d56-4901101dbdbf@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <e0b34a1f-ef2e-484e-8d56-4901101dbdbf@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|PH8PR12MB6964:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07eef7e4-0122-46c1-4c73-08dc5d5caafa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UrqltS6wYpTbUsszb5dobj7vaPv0IykrWXXpWFVXSCk0psv9Sh/UfR5CGDWe8ueaoS/XBh98akkuPGzkPhbRK41UR00cnxpEk8R+Xz8iAFlTjo8ecUkWBgo/reT2P3xxjn/a7JInPDVbDFu4YSjuLg2mhf13mdRJHEJ1WIDSsrV4CVx3BtK2Z9gG2PeZxPWZMWfG7cSiOEEDwN06YES+B4Za8IN9eFqFYtmg9NYy0OKLuk6VIeqAjRcXB43UgCAPXKCss5utnEJj9+Oafi+SOgQ/upTRKmvWkD/fjQgnzFvuG1KbogI+7nWDaqBpqu/JyLB+jaWgISVWzei2Bfqr4nxBRUFqmxVcdL15S5rYO5fzq5gCLltc+9EzyKHNAIeg2EVy8t3pv33M6xPfhwx1BeRNj6HuIB45IcH+Kv7slb35JQb97ZkR6XJOCtzeYuv5aroVIpxQnVOsWmvQYskWk2f+dBBfdivEAFzW7GGhIAhFGBbn9ALzB2QNwocW/ahj03fKM5+WkeX+hJmASYId7TnEG4HwJKA6a3/Y9SCheloamsQXVa1X9glB4yVOX5sD2gUgnZ7un//FXLPtOCSG4TxhNr+BavZCut6W1Kiv5qRJ+Z1hUekdPJeECE7kO2w5IN79ZLROm1zClLwEkX9vX4gehFwQ+1YVrgRzZEfg4M4=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?NdKtTBljv7zQ2IJwjOTN6O9GjUhQQc5WVdGG9sx2RsnwKYMV7/vmyxH01/vI?=
+ =?us-ascii?Q?FOoKLBi1BvT4g8Yv8WUn8NuAG40UIGko4zGzEqdfe1CJ4C9id4DQ2v64WZKA?=
+ =?us-ascii?Q?gPex1L9QQRDVPI1w7uJy8uqdMfjizAd/vzvcObTo20pXR8zoROGJiwOBm+t+?=
+ =?us-ascii?Q?/H0cB2wdvJrr01WilmcEgekXqn3Gqdsvs/TsMPd6f3bTimJ4LvhjRqTrVPZk?=
+ =?us-ascii?Q?xFH75kBJ62uZCQuMuab1UD/EKd2W4HO5C+IQylA7dWAEFC94JilJ8wMW2XvX?=
+ =?us-ascii?Q?kMwuDJLduZixx9eeeVc6UFBlQZYyvzfUgQbur6sD2dvsVpMP0VKKLTR9izzq?=
+ =?us-ascii?Q?ZwrRf7b/HUyQ22cQwaFyE7hxcHzTtbBeEzZvnZW2zZ9u6dGNjC99/W3Bj65O?=
+ =?us-ascii?Q?XNrhu044FJG9UExBeRf2TYmakq5A1TWIhK9Hk9NHc3HFNp2MyYgK9d0f9cug?=
+ =?us-ascii?Q?peQacdjHjKj68639Oki6xXcFQ/l8bpBxyLWrTtaqfyhqs/z27P9JBxoHe20T?=
+ =?us-ascii?Q?iH427j6cY36YdG5/BR0GhtjTZXnWZzRMgc/lAuAcex9ObCFBRNBFlNuKr+A7?=
+ =?us-ascii?Q?rZdR+4YWdRBe9qhHUzhZWPu2pCsVSKnCG0p/vJTi8bFBAgBN5ce2hDt5s7o3?=
+ =?us-ascii?Q?+fDr10iqGI60osV9fWQbSB3QrM3+PxjZDcQJeNNjFDm6q7L/5ow0Pk25/HAI?=
+ =?us-ascii?Q?ICune0qwumKzKymkrIURAZZWQkXS0ERcPYDzmp9c0Thkhd1QAS+fPWhlSWbu?=
+ =?us-ascii?Q?kX+tTRKN0GcmT7j1SEJtOPNA/isRC9DSK2zuVL5JhtN+M0SC9S34oZ95NJ1a?=
+ =?us-ascii?Q?OpuyefZ8GVCcIMc03dcZnR4ijnVdrRwhaR9LG1Oa7g666k/qEGLvYgWCAWPD?=
+ =?us-ascii?Q?J6WtR5E7ihwVaF8MeYVnWFFLR27DTwJUJKu/nMOBJQ+/hRqW98TJmtedju4T?=
+ =?us-ascii?Q?cdlRuLnCfW1s1c7gitxxd5MwBVBDQwDWa7tCxNmtq2tGG6acEvTq2BYgTpmt?=
+ =?us-ascii?Q?QAuJQz/b7mn+kjcgHloydDWatuZz+NFNykLuwlmHYV5dblgr0TM9oQ6t1Nmn?=
+ =?us-ascii?Q?jF7kw+4km1lPtTciYNgQrrWm+E875EaZxGWwy0zuT8HadPl1qkypNr7ba+4p?=
+ =?us-ascii?Q?a+TjNUiHSGt5McmnESTfl2gj4fExQf0bFzna4t62ZOsJ3h0N5aTiZW5WYzkd?=
+ =?us-ascii?Q?6JKonZFKtkx7jD1yDm8oHkj9fDgfjNaC5PAyuw5egvZMwdhhVdXl5uqFlNOn?=
+ =?us-ascii?Q?QFpzognV3caT2fcmoYUzSnJU91lTTTVRE6n94wgEBEedSDm5p53m9fyzmcx4?=
+ =?us-ascii?Q?eOqtnLXLDJfezTsEW4DUKc3BMBCFTsR3c03slgDmteZ4yOHZmZE4tRAOUfv8?=
+ =?us-ascii?Q?esT2vbljgfG7WPGDlr4RH2+rSpkLZ3fratBR2l4tRRIVbW5Fl04KpnPwaa3j?=
+ =?us-ascii?Q?a1+aJq8vR48yQXjWiPuzGkb1MV67wI3wPO+Nj3qUuKlDw7poYq3/T8XUNXBV?=
+ =?us-ascii?Q?0oB5fV7lbBa8ccWGcz1Xp5x3Iqp7Rbme4Bz7WI3QvADHtbb+oZmvzc1Qe26J?=
+ =?us-ascii?Q?YL0QQD9tCFZ3/DcgAKCHHjN1MreeAFog5r9tunzb?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07eef7e4-0122-46c1-4c73-08dc5d5caafa
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 14:59:36.8664
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4O4i67jA9E6zHSBNRBTlfawZtYzMWrrhLawSDjv/DWX18ne3q+dEpjXhJh9w7wTIQkvQH+mctc1iSSCp2HqvrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6964
 
-On 15.04.24 16:34, Ryan Roberts wrote:
-> On 15/04/2024 15:23, David Hildenbrand wrote:
->> On 15.04.24 15:30, Ryan Roberts wrote:
->>> On 15/04/2024 11:57, David Hildenbrand wrote:
->>>> On 15.04.24 11:28, Ryan Roberts wrote:
->>>>> On 12/04/2024 21:16, David Hildenbrand wrote:
->>>>>>>
->>>>>>> Yes agreed - 2 types; "lockless walkers that later recheck under PTL" and
->>>>>>> "lockless walkers that never take the PTL".
->>>>>>>
->>>>>>> Detail: the part about disabling interrupts and TLB flush syncing is
->>>>>>> arch-specifc. That's not how arm64 does it (the hw broadcasts the TLBIs). But
->>>>>>> you make that clear further down.
->>>>>>
->>>>>> Yes, but disabling interrupts is also required for RCU-freeing of page tables
->>>>>> such that they can be walked safely. The TLB flush IPI is arch-specific and
->>>>>> indeed to sync against PTE invalidation (before generic GUP-fast).
->>>>>> [...]
->>>>>>
->>>>>>>>>
->>>>>>>>> Could it be this easy? My head is hurting...
->>>>>>>>
->>>>>>>> I think what has to happen is:
->>>>>>>>
->>>>>>>> (1) pte_get_lockless() must return the same value as ptep_get() as long as
->>>>>>>> there
->>>>>>>> are no races. No removal/addition of access/dirty bits etc.
->>>>>>>
->>>>>>> Today's arm64 ptep_get() guarantees this.
->>>>>>>
->>>>>>>>
->>>>>>>> (2) Lockless page table walkers that later verify under the PTL can handle
->>>>>>>> serious "garbage PTEs". This is our page fault handler.
->>>>>>>
->>>>>>> This isn't really a property of a ptep_get_lockless(); its a statement
->>>>>>> about a
->>>>>>> class of users. I agree with the statement.
->>>>>>
->>>>>> Yes. That's a requirement for the user of ptep_get_lockless(), such as page
->>>>>> fault handlers. Well, mostly "not GUP".
->>>>>>
->>>>>>>
->>>>>>>>
->>>>>>>> (3) Lockless page table walkers that cannot verify under PTL cannot handle
->>>>>>>> arbitrary garbage PTEs. This is GUP-fast. Two options:
->>>>>>>>
->>>>>>>> (3a) pte_get_lockless() can atomically read the PTE: We re-check later if
->>>>>>>> the
->>>>>>>> atomically-read PTE is still unchanged (without PTL). No IPI for TLB flushes
->>>>>>>> required. This is the common case. HW might concurrently set access/dirty
->>>>>>>> bits,
->>>>>>>> so we can race with that. But we don't read garbage.
->>>>>>>
->>>>>>> Today's arm64 ptep_get() cannot garantee that the access/dirty bits are
->>>>>>> consistent for contpte ptes. That's the bit that complicates the current
->>>>>>> ptep_get_lockless() implementation.
->>>>>>>
->>>>>>> But the point I was trying to make is that GUP-fast does not actually care
->>>>>>> about
->>>>>>> *all* the fields being consistent (e.g. access/dirty). So we could spec
->>>>>>> pte_get_lockless() to say that "all fields in the returned pte are
->>>>>>> guarranteed
->>>>>>> to be self-consistent except for access and dirty information, which may be
->>>>>>> inconsistent if a racing modification occured".
->>>>>>
->>>>>> We *might* have KVM in the future want to check that a PTE is dirty, such that
->>>>>> we can only allow dirty PTEs to be writable in a secondary MMU. That's not
->>>>>> there
->>>>>> yet, but one thing I was discussing on the list recently. Burried in:
->>>>>>
->>>>>> https://lkml.kernel.org/r/20240320005024.3216282-1-seanjc@google.com
->>>>>>
->>>>>> We wouldn't care about racing modifications, as long as MMU notifiers will
->>>>>> properly notify us when the PTE would lose its dirty bits.
->>>>>>
->>>>>> But getting false-positive dirty bits would be problematic.
->>>>>>
->>>>>>>
->>>>>>> This could mean that the access/dirty state *does* change for a given page
->>>>>>> while
->>>>>>> GUP-fast is walking it, but GUP-fast *doesn't* detect that change. I *think*
->>>>>>> that failing to detect this is benign.
->>>>>>
->>>>>> I mean, HW could just set the dirty/access bit immediately after the check. So
->>>>>> if HW concurrently sets the bit and we don't observe that change when we
->>>>>> recheck, I think that would be perfectly fine.
->>>>>
->>>>> Yes indeed; that's my point - GUP-fast doesn't care about access/dirty (or
->>>>> soft-dirty or uffd-wp).
->>>>>
->>>>> But if you don't want to change the ptep_get_lockless() spec to explicitly
->>>>> allow
->>>>> this (because you have the KVM use case where false-positive dirty is
->>>>> problematic), then I think we are stuck with ptep_get_lockless() as implemented
->>>>> for arm64 today.
->>>>
->>>> At least regarding the dirty bit, we'd have to guarantee that if
->>>> ptep_get_lockless() returns a false-positive dirty bit, that the PTE recheck
->>>> would be able to catch that.
->>>>
->>>> Would that be possible?
->>>
->>> Hmm maybe. My head hurts. Let me try to work through some examples...
->>>
->>>
->>> Let's imagine for this example, a contpte block is 4 PTEs. Lat's say PTEs 0, 1,
->>> 2 and 3 initially contpte-map order-2 mTHP, FolioA. The dirty state is stored in
->>> PTE0 for the contpte block, and it is dirty.
->>>
->>> Now let's say there are 2 racing threads:
->>>
->>>     - ThreadA is doing a GUP-fast for PTE3
->>>     - ThreadB is remapping order-0 FolioB at PTE0
->>>
->>> (ptep_get_lockless() below is actaully arm64's ptep_get() for the sake of the
->>> example - today's arm64 ptep_get_lockless() can handle the below correctly).
->>>
->>> ThreadA                    ThreadB
->>> =======                    =======
->>>
->>> gup_pte_range()
->>>     pte1 = ptep_get_lockless(PTE3)
->>>       READ_ONCE(PTE3)
->>>                      mmap(PTE0)
->>>                        clear_pte(PTE0)
->>>                          unfold(PTE0 - PTE3)
->>>                            WRITE_ONCE(PTE0, 0)
->>>                            WRITE_ONCE(PTE1, 0)
->>>                            WRITE_ONCE(PTE2, 0)
->>>       READ_ONCE(PTE0) (for a/d) << CLEAN!!
->>>       READ_ONCE(PTE1) (for a/d)
->>>       READ_ONCE(PTE2) (for a/d)
->>>       READ_ONCE(PTE3) (for a/d)
->>>     <do speculative work with pte1 content>
->>>     pte2 = ptep_get_lockless(PTE3)
->>>       READ_ONCE(PTE3)
->>>       READ_ONCE(PTE0) (for a/d)
->>>       READ_ONCE(PTE1) (for a/d)
->>>       READ_ONCE(PTE2) (for a/d)
->>>       READ_ONCE(PTE3) (for a/d)
->>>     true = pte_same(pte1, pte2)
->>>                            WRITE_ONCE(PTE3, 0)
->>>                            TLBI
->>>                            WRITE_ONCE(PTE0, <orig & ~CONT>)
->>>                            WRITE_ONCE(PTE1, <orig & ~CONT>)
->>>                            WRITE_ONCE(PTE2, <orig & ~CONT>)
->>>                            WRITE_ONCE(PTE3, <orig & ~CONT>)
->>>                          WRITE_ONCE(PTE0, 0)
->>>                        set_pte_at(PTE0, <new>)
->>>
->>> This example shows how a *false-negative* can be returned for the dirty state,
->>> which isn't detected by the check.
->>>
->>> I've been unable to come up with an example where a *false-positive* can be
->>> returned for dirty state without the second ptep_get_lockless() noticing. In
->>> this second example, let's assume everything is the same execpt FolioA is
->>> initially clean:
->>>
->>> ThreadA                    ThreadB
->>> =======                    =======
->>>
->>> gup_pte_range()
->>>     pte1 = ptep_get_lockless(PTE3)
->>>       READ_ONCE(PTE3)
->>>                      mmap(PTE0)
->>>                        clear_pte(PTE0)
->>>                          unfold(PTE0 - PTE3)
->>>                            WRITE_ONCE(PTE0, 0)
->>>                            WRITE_ONCE(PTE1, 0)
->>>                            WRITE_ONCE(PTE2, 0)
->>>                            WRITE_ONCE(PTE3, 0)
->>>                            TLBI
->>>                            WRITE_ONCE(PTE0, <orig & ~CONT>)
->>>                            WRITE_ONCE(PTE1, <orig & ~CONT>)
->>>                            WRITE_ONCE(PTE2, <orig & ~CONT>)
->>>                            WRITE_ONCE(PTE3, <orig & ~CONT>)
->>>                          WRITE_ONCE(PTE0, 0)
->>>                        set_pte_at(PTE0, <new>)
->>>                      write to FolioB - HW sets PTE0's dirty
->>>       READ_ONCE(PTE0) (for a/d) << DIRTY!!
->>>       READ_ONCE(PTE1) (for a/d)
->>>       READ_ONCE(PTE2) (for a/d)
->>>       READ_ONCE(PTE3) (for a/d)
->>>     <do speculative work with pte1 content>
->>>     pte2 = ptep_get_lockless(PTE3)
->>>       READ_ONCE(PTE3)           << BUT THIS IS FOR FolioB
->>>       READ_ONCE(PTE0) (for a/d)
->>>       READ_ONCE(PTE1) (for a/d)
->>>       READ_ONCE(PTE2) (for a/d)
->>>       READ_ONCE(PTE3) (for a/d)
->>>     false = pte_same(pte1, pte2) << So this fails
->>>
->>> The only way I can see false-positive not being caught in the second example is
->>> if ThreadB subseuently remaps the original folio, so you have an ABA scenario.
->>> But these lockless table walkers are already suseptible to that.
->>>
->>> I think all the same arguments can be extended to the access bit.
->>>
->>>
->>> For me this is all getting rather subtle and difficult to reason about and even
->>> harder to spec in a comprehensible way. The best I could come up with is:
->>>
->>> "All fields in the returned pte are guarranteed to be self-consistent except for
->>> access and dirty information, which may be inconsistent if a racing modification
->>> occured. Additionally it is guranteed that false-positive access and/or dirty
->>> information is not possible if 2 calls are made and both ptes are the same. Only
->>> false-negative access and/or dirty information is possible in this scenario."
->>>
->>> which is starting to sound bonkers. Personally I think we are better off at this
->>> point, just keeping today's arm64 ptep_get_lockless().
->>
->> Remind me again, does arm64 perform an IPI broadcast during a TLB flush that
->> would sync against GUP-fast?
+On Mon, Mar 25, 2024 at 11:03:25AM +0800, Yuan, Perry wrote:
+> The amd-pstate driver cannot work when the min_freq, nominal_freq or
+> the max_freq is zero. When this happens it is prudent to error out
+> early on rather than waiting failing at the time of the governor
+> initialization.
 > 
-> No, the broadcast is in HW. There is no IPI.
+> Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+> Tested-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
+> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+> ---
+>  drivers/cpufreq/amd-pstate.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 132330b4942f..6708c436e1a2 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -839,9 +839,11 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
+>  	nominal_freq = READ_ONCE(cpudata->nominal_freq);
+>  	lowest_nonlinear_freq = READ_ONCE(cpudata->lowest_nonlinear_freq);
+>  
+> -	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
+> -		dev_err(dev, "min_freq(%d) or max_freq(%d) value is incorrect\n",
+> -			min_freq, max_freq);
+> +	if (min_freq <= 0 || max_freq <= 0 ||
+> +	    nominal_freq <= 0 || min_freq > max_freq) {
+> +		dev_err(dev,
+> +			"min_freq(%d) or max_freq(%d) or nominal_freq (%d) value is incorrect\n",
+> +			min_freq, max_freq, nominal_freq);
 
-Okay ...
+I suggest that we add one comment to remind that should be the error of
+ACPI table or BIOS.
 
-I agree that the semantics are a bit weird, but if we could get rid of 
-ptep_get_lockless() on arm64, that would also be nice.
+>  		ret = -EINVAL;
+>  		goto free_cpudata1;
+>  	}
+> @@ -1299,9 +1301,11 @@ static int amd_pstate_epp_cpu_init(struct cpufreq_policy *policy)
+>  	max_freq = READ_ONCE(cpudata->max_freq);
+>  	nominal_freq = READ_ONCE(cpudata->nominal_freq);
+>  	lowest_nonlinear_freq = READ_ONCE(cpudata->lowest_nonlinear_freq);
+> -	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
+> -		dev_err(dev, "min_freq(%d) or max_freq(%d) value is incorrect\n",
+> -				min_freq, max_freq);
+> +	if (min_freq <= 0 || max_freq <= 0 ||
+> +	    nominal_freq <= 0 || min_freq > max_freq) {
+> +		dev_err(dev,
+> +			"min_freq(%d) or max_freq(%d) or nominal_freq(%d) value is incorrect\n",
+> +			min_freq, max_freq, nominal_freq);
 
+The same with above.
 
-Something I've been thinking of ... just to share what I've had in mind. 
-The two types of users we currently have are:
+With that fixed, patch is Acked-by: Huang Rui <ray.huang@amd.com>
 
-(1) ptep_get_lockless() followed by ptep_get() check under PTL.
-
-(2) ptep_get_lockless() followed by ptep_get() check without PTL.
-
-What if we had the following instead:
-
-(1) ptep_get_lockless() followed by ptep_get() check under PTL.
-
-(2) ptep_get_gup_fast() followed by ptep_get_gup_fast() check without
-     PTL.
-
-And on arm64 let
-
-(1) ptep_get_lockless() be ptep_get()
-
-(2) ptep_get_gup_fast() be __ptep_get().
-
-That would mean, that (2) would not care if another cont-pte is dirty, 
-because we don't collect access+dirty bits. That way, we avoid any races 
-with concurrent unfolding etc. The only "problamtic" thing is that 
-pte_mkdirty() -> set_ptes() would have to set all cont-PTEs dirty, even 
-if any of these already is dirty.
-
--- 
-Cheers,
-
-David / dhildenb
-
+Thanks,
+Ray
 
