@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-145530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D483B8A5771
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:16:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EC8F8A5773
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:16:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D375287EBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:16:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F0551C22A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C988061C;
-	Mon, 15 Apr 2024 16:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A7E80635;
+	Mon, 15 Apr 2024 16:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GiUzGe5z"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kAETQ/9N"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F12B811F8
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:14:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22E78005C
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197682; cv=none; b=HP9HDq33TdmxrcJ7cx/TZZ+kHc3umfB8WXpyL1D3qwfMXQqleD3waQ0Qb5KLkgVLEIVq5SFxITqeTT2Q0Sx0x5ANzIKWMQ16ikBXmCnNR8Qo8T6U1/lz9gaU+SehDoZn+3pjP9JoJoJTkQmKtdFLpR1IY3kZS5n75wo4qUsIUPQ=
+	t=1713197732; cv=none; b=kk4hv5RfHiK0eUsjNIPyNY4Z/QE97gQ2wkegUBz03wEl0jPj4ppO9IDk123BM4BtgsdXTToEfKNt7x+ULTOJljgeU+IYYDlCjA1N3dIWtf0DjwTyFo4wFarznOFhSdrSidk911ftxkgUOgU0LWDt6sNGAibkbg4yrOSBWsL7C/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197682; c=relaxed/simple;
-	bh=rquWVadfj6Yy0WoSxsb5IHBjslGBtA7x3EuuyCTZdjk=;
+	s=arc-20240116; t=1713197732; c=relaxed/simple;
+	bh=WzSpkbGGMe3CYE9+K1mdRBK4GHComNIeDDJxAv2hM+U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hNpmDQT8bJY0drzcOGLYXJ18F4rRiCThnvD816K7vTBh70jVzk/bI44/GeqS39xDylzaBLnZtWEqMPathmKHUu6dWHfvj/iDRFSbYKm32wZdpdUAe1OjS1lZey8vIF4jknlCkUkM7Xlc/ax+mvUbfxXErlRHp0N3mjvm+iewdTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GiUzGe5z; arc=none smtp.client-ip=209.85.214.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=Snnkn9JllKrzcW2VLLB11BqNBLq9a1KTmelTypqchqJE++FWsMDjhdU+M5t8xqe5aRs8PrnQRD2kiPQGc3Nf6kV0N2ipZDXdVH69b7Vxpl9WyG+YjQPFuHC8zQDPNFjOMHYKdXFImTL95NKwAqGBUrGvjPujKw2G5zIVMP/svcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kAETQ/9N; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e3c3aa8938so21257485ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:14:40 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e4bf0b3e06so34711425ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:15:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713197680; x=1713802480; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1713197730; x=1713802530; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ESjTQEjB6T8D9BX5RBjgYE4FpXh9kObuptxS+F5zuE8=;
-        b=GiUzGe5z34BY6zeJdhN3wvu0a7PYCIf7nq+L6SMWCrkLKL0xwDlp74JrEysCkeKn4y
-         /lOGr1I0d8rPqTFMlHRq2gPfVbMt0DUwV/jvOmJb/itGJNRXPk9v+yOWaNw6/xHHxrxx
-         qwvVsfU04DHg9KedMTBM6pFBfUhBb/DYlCyHs=
+        bh=N/OTM/TNgZYaTdlG3WL6hW/czPcQZOPIAEnHQ1yVQtQ=;
+        b=kAETQ/9NeyXIjHKMiqWjLUEowKO8rJXvv2lz1YE3cgH4kkOjREOz91LHzzFTuXkV5a
+         Vu9VHgf5ynTz1Ut83OeltVsDFzmzQRSzZf2oTrSVAqeKI6ifAHcCwfarkhQIRKns8dU9
+         4vhA6zDROi41d02zoPyVDqpals00KzoP8E8v8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713197680; x=1713802480;
+        d=1e100.net; s=20230601; t=1713197730; x=1713802530;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ESjTQEjB6T8D9BX5RBjgYE4FpXh9kObuptxS+F5zuE8=;
-        b=XY54+RzRbMz0y6iQcNH77/cHKpIqGcBoCVWVvGBonepNyL7ypLS3774d/Vg28u9F7J
-         3xv34d5UGoGkuhFMumR4QOXqMQvO2yP45dkBVOZq3Y9lrwermsPzmymAUn7OesW01gA/
-         iHw0j7iW/CHgPRT1nKrgGQLwivGCOYhT8RLCDE041wGcQiig0Q0e5NMFOP0isfQKV6pC
-         6J2bNIck13sKDqeRi2cXc/67vun1AruGsK0R6xjzWwbZCJeGUAdXECxc1pGvDXSISEVB
-         C00fdiX7/OIWOMFTxNedqwOLbFPWVsfAh+Qg4+hfRUYX5Tz9IZv6BxMnlG8HLPcBSg+J
-         Nwdw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNPDFQcaKX5kMccto1028dnnozsvKyIHZV2w3AxFxyNjDoiSgG0Ya6Qw7/B2BdX7OC/QvAav46Di7UWTOAcOgNbpyLA3t5o54Y2HTe
-X-Gm-Message-State: AOJu0YyJropNRWtjf7VR5agfbGd0GwufZorn7EQhMuoAXL7JzgZ2qyrB
-	H60SCevUPHHLa02KYbBn4vCmcMa5BO3HCs8ZY2k1A5je4cxlnqvsWKwlkSFUZg==
-X-Google-Smtp-Source: AGHT+IEe1jv52+Td77XuCCAwHJ71uxuy0azFMdvGaqzkxeNt/5dBr0b2bIK8CztJl0u2nID5zkc5Kw==
-X-Received: by 2002:a17:902:cf05:b0:1e5:a3b2:3da2 with SMTP id i5-20020a170902cf0500b001e5a3b23da2mr9918860plg.53.1713197679742;
-        Mon, 15 Apr 2024 09:14:39 -0700 (PDT)
+        bh=N/OTM/TNgZYaTdlG3WL6hW/czPcQZOPIAEnHQ1yVQtQ=;
+        b=bXDol9Ei7uxrhxoby1k7szYByQ7VBsYKfHRI0Ms1wHHDzuRyin5U4JkhyP4rAOYfAn
+         ka0j4PnReGJzzWbQ5o0CmfdhbzP9idzS3YhH08frkcH44uh1HFYFxi+2+94wyIAQKDIM
+         gGBQVk2lmhUyEj+wxzMWLVjNFX1N0VwcDqgdMJI1VTsURI6O8pwXkGDIml1xYONBOGE3
+         LiM5nwFkxHZvZ8IEwipX015uX7DrNhJnW8Rr8WpdteZb8imBjc8K4nPRow+LrEmtMyDn
+         oUw3zIl70EzJ6RO2jHYnGBT0qYegfEfBDQMccCIvLKSjwqQBZnKt4ff5v04s8Nar0bol
+         kxVA==
+X-Forwarded-Encrypted: i=1; AJvYcCX1iGZVw8OQefy6T4NVaibaC6rPqRQEPHCNPU4BI4fKJKPwzIyge28kiS7Vjh6QCfJ77833teVuebqI93SuElZjNUqrgP/MjNXCrT4r
+X-Gm-Message-State: AOJu0YzA7ib+VcU5ALT6iyZOTSoyXtYVAdVTjQJyCzZ4oDkvIgdvbBEp
+	JeD/DOXd5A+JgLR5zXpUZ0s28Nz6hMyFzDfjmHCOHdkSzxYzLnPG/D/z2IZqPw==
+X-Google-Smtp-Source: AGHT+IHNdY14933r3YscKRCbg0k9s+7qJOQMPfInMl+5wKcyeT6dy7Ze5rmmrLIF9aIlECD8W6yGTQ==
+X-Received: by 2002:a17:903:2310:b0:1e4:2879:3a38 with SMTP id d16-20020a170903231000b001e428793a38mr12867624plh.47.1713197730312;
+        Mon, 15 Apr 2024 09:15:30 -0700 (PDT)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g9-20020a170902934900b001e45c0d6be6sm8070099plp.246.2024.04.15.09.14.38
+        by smtp.gmail.com with ESMTPSA id z13-20020a170903408d00b001e4464902bcsm8132662plc.60.2024.04.15.09.15.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 09:14:38 -0700 (PDT)
-Date: Mon, 15 Apr 2024 09:14:38 -0700
+        Mon, 15 Apr 2024 09:15:29 -0700 (PDT)
+Date: Mon, 15 Apr 2024 09:15:29 -0700
 From: Kees Cook <keescook@chromium.org>
-To: Arnd Bergmann <arnd@kernel.org>,
-	Gatlin Newhouse <gatlin.newhouse@gmail.com>
+To: Arnd Bergmann <arnd@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
 	Arnd Bergmann <arnd@arndb.de>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Nathan Chancellor <nathan@kernel.org>,
 	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] [v3] kbuild: turn on -Wrestrict by default
-Message-ID: <202404150909.E703A96D0@keescook>
+Subject: Re: [PATCH 6/6] [v3] kbuild: enable -Wstringop-truncation globally
+Message-ID: <202404150915.AAC34D61@keescook>
 References: <20240415122037.1983124-1-arnd@kernel.org>
- <20240415122037.1983124-4-arnd@kernel.org>
+ <20240415122037.1983124-7-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,38 +84,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240415122037.1983124-4-arnd@kernel.org>
+In-Reply-To: <20240415122037.1983124-7-arnd@kernel.org>
 
-On Mon, Apr 15, 2024 at 02:20:34PM +0200, Arnd Bergmann wrote:
+On Mon, Apr 15, 2024 at 02:20:37PM +0200, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> All known -Wrestrict warnings are addressed now, so don't disable the warning
-> any more.
+> The remaining warnings of this type have been addressed, so it can
+> now be enabled by default, rather than only for W=1.
 
-Ah, great! Yes, I know Gatlin was also looking at this and doing a bunch
-of builds across compiler versions to verify this was ready to do too.
-Gatlin, are you able to provide a "Tested-by:" tag for this patch?
+Yeah, I know Gustavo had been working on these too. Yay!
 
--Kees
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 > 
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v3: no changes
+> v2: no changes
 > ---
 >  scripts/Makefile.extrawarn | 1 -
 >  1 file changed, 1 deletion(-)
 > 
 > diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-> index 8b3f5b62b837..95466a04d51b 100644
+> index 1d13cecc7cc7..17c511ddf48a 100644
 > --- a/scripts/Makefile.extrawarn
 > +++ b/scripts/Makefile.extrawarn
-> @@ -98,7 +98,6 @@ else
->  # Suppress them by using -Wno... except for W=1.
->  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
->  KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
-> -KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
->  KBUILD_CFLAGS += $(call cc-disable-warning, packed-not-aligned)
->  KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow)
->  KBUILD_CFLAGS += $(call cc-disable-warning, format-truncation)
+> @@ -108,7 +108,6 @@ else
+>  KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow-non-kprintf)
+>  KBUILD_CFLAGS += $(call cc-disable-warning, format-truncation-non-kprintf)
+>  endif
+> -KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+>  
+>  KBUILD_CFLAGS += -Wno-override-init # alias for -Wno-initializer-overrides in clang
+>  
 > -- 
 > 2.39.2
 > 
