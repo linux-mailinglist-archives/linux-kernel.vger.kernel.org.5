@@ -1,54 +1,42 @@
-Return-Path: <linux-kernel+bounces-144762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C85868A4A65
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F9C08A4A73
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:36:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 843CD282A77
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:33:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79C342845E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67040381C7;
-	Mon, 15 Apr 2024 08:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="uvkGJcsi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687942F52;
-	Mon, 15 Apr 2024 08:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B1B3A1C4;
+	Mon, 15 Apr 2024 08:36:03 +0000 (UTC)
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7682868D;
+	Mon, 15 Apr 2024 08:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170025; cv=none; b=qDo7dS36fF2b+UcBwKYRAqpO4WzzD2/1aKKrB9UlF3WYpL0VpnApreu6HRo4Uj2+VUIlSo7KhqjBJagr0LBDil/ek5wX74SmIvkUPFjU2cHzLoXUUTNM9CrD5RsXfj/iEDYKW/aEiS+8dcHP5cy2fRa86uKqJ9t3M71RYmWTyrk=
+	t=1713170162; cv=none; b=UOrxwggZnxMhr23Sm41RyHaZPFEfjIzwbt5+ykCgJRDnGw5BbxxSbryw2AMi2AyxePVYxVRL6FOBVAN6HtE65hO2sdhbOKgnTeGr42FPwCfDDcHhSsP89PVLeWuK75DiTU8CIumuKjY6dj7ESqOOSjl12sGAu5EY+9/rtqGk9/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170025; c=relaxed/simple;
-	bh=NPapd/95avKcGkL+zF4/m02fnaTGkOB2tCBiHzBKv7M=;
+	s=arc-20240116; t=1713170162; c=relaxed/simple;
+	bh=I0ov0M45VZjgvYYqhyn0aZOdOUazf6x4v6erec5mCa4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k8eiVz98ae+Bg5WNBEMsVaXNsYedZ/O1vLfM6mm+fplBNgXI/XbVVr7HgvsPZABJjPeNAptGze/iM42BZAhVGe9cLMrLa2lbDfJuvxoUWdKF0fLFu6QXQI/lDFiU2G0Srbw1rAt5fiKJwU0NCZZADZPATnZ61ULRLy9b9XfUBbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=uvkGJcsi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7EDEC113CC;
-	Mon, 15 Apr 2024 08:33:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713170025;
-	bh=NPapd/95avKcGkL+zF4/m02fnaTGkOB2tCBiHzBKv7M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uvkGJcsiNryIjOdLvq79Pl7lZD4Th8DSjU4LG0YnF6tORvXgk944uxgSnwKfJMGtZ
-	 Hv0NbzsI32xWS57nDOn9JWA7v0HUEDILLmBvTgnbaMWh2c4TnBes+zVV7SExNoHWhC
-	 5qFGnPFqU49d+rEgJCoDI0WZreANMlVCWdcpNEZU=
-Date: Mon, 15 Apr 2024 10:33:42 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Alex Elder <elder@linaro.org>, corbet@lwn.net,
-	workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
-Message-ID: <2024041511-goldmine-persevere-68f4@gregkh>
-References: <20240414170850.148122-1-elder@linaro.org>
- <20240414194835.GA12561@pendragon.ideasonboard.com>
- <2024041503-affidavit-stopwatch-72d7@gregkh>
- <20240415082529.GD25078@pendragon.ideasonboard.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OMUaALKKGguaiilBwPdDqFzf1yHt4dbhLqNUkigUpYqGkEUfgCSCht2uUVxnJGSkUTlmO4H9FhIu7OYrTSwjnppXKMQWxN82dpHaS+/XM2huv1lvHB+5CoS7f41sPFq62Fv+DsJkV6UqT9HRdjb4pABIcjXZLx4qv3D/1e86Rns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1rwHob-0004hn-00; Mon, 15 Apr 2024 10:35:49 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id B9E3CC04B7; Mon, 15 Apr 2024 10:34:26 +0200 (CEST)
+Date: Mon, 15 Apr 2024 10:34:26 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Songyang Li <leesongyang@outlook.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Octeon: Add PCIe link status check
+Message-ID: <ZhzmkuYJOTIVNVL9@alpha.franken.de>
+References: <TY3P286MB27542582C36379EB4A128DEFB4332@TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,95 +45,58 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240415082529.GD25078@pendragon.ideasonboard.com>
+In-Reply-To: <TY3P286MB27542582C36379EB4A128DEFB4332@TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM>
 
-On Mon, Apr 15, 2024 at 11:25:29AM +0300, Laurent Pinchart wrote:
-> Hi Greg,
+On Wed, Mar 20, 2024 at 11:22:00PM +0800, Songyang Li wrote:
+> The standard PCIe configuration read-write interface is used to
+> access the configuration space of the peripheral PCIe devices
+> of the mips processor after the PCIe link surprise down, it can
+> generate kernel panic caused by "Data bus error". So it is
+> necessary to add PCIe link status check for system protection.
+> When the PCIe link is down or in training, assigning a value
+> of 0 to the configuration address can prevent read-write behavior
+> to the configuration space of peripheral PCIe devices, thereby
+> preventing kernel panic.
 > 
-> On Mon, Apr 15, 2024 at 07:21:37AM +0200, Greg KH wrote:
-> > On Sun, Apr 14, 2024 at 10:48:35PM +0300, Laurent Pinchart wrote:
-> > > On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
-> > > > Several times recently Greg KH has admonished that variants of WARN()
-> > > > should not be used, because when the panic_on_warn kernel option is set,
-> > > > their use can lead to a panic. His reasoning was that the majority of
-> > > > Linux instances (including Android and cloud systems) run with this option
-> > > > enabled. And therefore a condition leading to a warning will frequently
-> > > > cause an undesirable panic.
-> > > > 
-> > > > The "coding-style.rst" document says not to worry about this kernel
-> > > > option.  Update it to provide a more nuanced explanation.
-> > > > 
-> > > > Signed-off-by: Alex Elder <elder@linaro.org>
-> > > > ---
-> > > >  Documentation/process/coding-style.rst | 21 +++++++++++----------
-> > > >  1 file changed, 11 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> > > > index 9c7cf73473943..bce43b01721cb 100644
-> > > > --- a/Documentation/process/coding-style.rst
-> > > > +++ b/Documentation/process/coding-style.rst
-> > > > @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
-> > > >  to trigger easily, for example, by user space actions. pr_warn_once() is a
-> > > >  possible alternative, if you need to notify the user of a problem.
-> > > >  
-> > > > -Do not worry about panic_on_warn users
-> > > > -**************************************
-> > > > +The panic_on_warn kernel option
-> > > > +********************************
-> > > >  
-> > > > -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
-> > > > -available kernel option, and that many users set this option. This is why
-> > > > -there is a "Do not WARN lightly" writeup, above. However, the existence of
-> > > > -panic_on_warn users is not a valid reason to avoid the judicious use
-> > > > -WARN*(). That is because, whoever enables panic_on_warn has explicitly
-> > > > -asked the kernel to crash if a WARN*() fires, and such users must be
-> > > > -prepared to deal with the consequences of a system that is somewhat more
-> > > > -likely to crash.
-> > > > +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
-> > > > +a WARN*() call whose condition holds leads to a kernel panic.  Many users
-> > > > +(including Android and many cloud providers) set this option, and this is
-> > > > +why there is a "Do not WARN lightly" writeup, above.
-> > > > +
-> > > > +The existence of this option is not a valid reason to avoid the judicious
-> > > > +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
-> > > > +issue warnings but do **not** cause the kernel to crash. Use these if you
-> > > > +want to prevent such panics.
-> > > 
-> > > Those options are not equivalent, they print a single message, which is
-> > > much easier to ignore. WARN() is similar to -Werror in some sense, it
-> > > pushes vendors to fix the warnings. I have used WARN() in the past to
-> > > indicate usage of long-deprecated APIs that we were getting close to
-> > > removing for instance. dev_warn() wouldn't have had the same effect.
-> > 
-> > If you want to reboot a box because someone called an "improper" api,
+> Signed-off-by: Songyang Li <leesongyang@outlook.com>
+> ---
+>  arch/mips/pci/pcie-octeon.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>  mode change 100644 => 100755 arch/mips/pci/pcie-octeon.c
 > 
-> I don't "want" to reboot. It came as a side effect when panic_on_warn
-> was added, and worsened when its adoption increased. I won't argued for
-> or against panic_on_warn, but WARN() serves some use cases today that I
-> consider valid. If we want to discourage its usage, we need another API
-> to cover those use cases.
-> 
-> > then sure, use WARN(), but that feels like a really bad idea.  Just
-> > remove the api and fix up all in-kernel users instead.  Why wait?
-> 
-> There are multiple use cases. One of them is to make sure no new user of
-> the old, deprecated behaviour is introduced. This is especially
-> important when driver development spans multiple kernel releases, the
-> development can start before the API behaviour changes, with the driver
-> merged after the API change. This is something we've done multiple times
-> in V4L2.
-> 
-> > If you want to show a traceback, then just print that out, but I've seen
-> > that totally ignored as well, removing the api is usually the only way
-> > to get people to actually notice, as then their builds break.
-> 
-> Does your experience tell that tracebacks are routinely ignored during
-> development too, not just in production ?
+> diff --git a/arch/mips/pci/pcie-octeon.c b/arch/mips/pci/pcie-octeon.c
+> old mode 100644
+> new mode 100755
+> index 2583e318e8c6..b080c7c6cc46
+> --- a/arch/mips/pci/pcie-octeon.c
+> +++ b/arch/mips/pci/pcie-octeon.c
+> @@ -230,12 +230,18 @@ static inline uint64_t __cvmx_pcie_build_config_addr(int pcie_port, int bus,
+>  {
+>  	union cvmx_pcie_address pcie_addr;
+>  	union cvmx_pciercx_cfg006 pciercx_cfg006;
+> +	union cvmx_pciercx_cfg032 pciercx_cfg032;
+>  
+>  	pciercx_cfg006.u32 =
+>  	    cvmx_pcie_cfgx_read(pcie_port, CVMX_PCIERCX_CFG006(pcie_port));
+>  	if ((bus <= pciercx_cfg006.s.pbnum) && (dev != 0))
+>  		return 0;
+>  
+> +	pciercx_cfg032.u32 =
+> +		cvmx_pcie_cfgx_read(pcie_port, CVMX_PCIERCX_CFG032(pcie_port));
+> +	if ((pciercx_cfg032.s.dlla == 0) || (pciercx_cfg032.s.lt == 1))
+> +		return 0;
+> +
+>  	pcie_addr.u64 = 0;
+>  	pcie_addr.config.upper = 2;
+>  	pcie_addr.config.io = 1;
+> -- 
+> 2.34.1
 
-Yes, we have done this in the past in some driver core apis and nothing
-ever changed until we actually deleted the apis.
+applied to mips-next.
 
-thanks,
+Thomas.
 
-greg k-h
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
 
