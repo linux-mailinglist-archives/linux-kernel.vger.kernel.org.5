@@ -1,138 +1,172 @@
-Return-Path: <linux-kernel+bounces-145069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6508A4F0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:31:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8DB38A4F0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:31:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 365712836F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:31:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30AF31F20583
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C5E6D1A1;
-	Mon, 15 Apr 2024 12:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB46C6CDCF;
+	Mon, 15 Apr 2024 12:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IA2k3c0V";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TUgzW5rl"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="uaUeMkCI"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9081FA1
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BB41FA1;
+	Mon, 15 Apr 2024 12:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713184256; cv=none; b=Gyf1Rst6XJFxK1RQl+eBXGMgb//L1juXY+Ab7cAIQoywQwk7VMqpkHB8h/MY7Yy5cud6t6OePP0gLgYAXDtJipFi0f5jvAcWXwo1wJ+d87PVFw3KvXGkIGSwn2h7mFR6+HwOlP45fRjvsLD5f+AqRZ/D9e3yHb5KZjww7Ewz/Zs=
+	t=1713184264; cv=none; b=ikY2jOCXWEqLyNN3zAS2ZH/y2QLqKMP2n0312QK53V/Lp6scPUrUL/OPjC+DmgXzBxyoHyDLDZfbMaPFlM+RhTsf4JLHPFsCIrEGeh/rt/83WF1CsFKMdUHxaLaYqNGxhEDdbIKGaHXuVqrhN8xW4NXV1+MhYqmX8rJ2YiV/LT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713184256; c=relaxed/simple;
-	bh=16igbDBxYxvU1x661QKxvfTSCMQD0ch6OYA44oQy3vM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CaiiWqwgwhsuXLmw7m2nxoNJIy3SygCUY/Tgg6KAMJROMobZ6OKFl9uM9ALPaXP1pBguJSeIW+TvSgVcVuL1olZ+CfW4PQVu44TysYxYEOT0Ou1FLq/ruXo0mcYIIF17BDWBvMi0+6sORxNAEUOtj9pd44TBtRl/iuG7LjLEM3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IA2k3c0V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TUgzW5rl; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713184246;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=31UKcuC29fhH2gQ7AFdErWb9xDpB3f6MYdu5CdzUIIQ=;
-	b=IA2k3c0VmYV/3qlHKG/q0IL16+qVecLW1kmkRnzkF8ZJQyMSpEQHQ03AhC+Qrf1qersnMn
-	OjmfGotp7DvX/pNtpnTxEqe0380WqVjMynm/cZit7Arlx3x4TlJP/BxcJxtKp8qr36bBgc
-	fPV/88gmDf3HBPqCmi0KZEYUYVvV0FicAHPTpDUyqsTDGXUCSZVB2G6bqekpvOmZKT0FII
-	0Q8mHybMXof9/JkcsB5ULGYMPreJwUDblsZebPW4V+2kRZGdDh1VqNgblUb0d6WagCLrSu
-	hpoFiiCXUn5dbOgiU8jDGWqlpCofehUb/Jm2h7cYY5aUe2McPU6PZ25WSa4dHA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713184246;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=31UKcuC29fhH2gQ7AFdErWb9xDpB3f6MYdu5CdzUIIQ=;
-	b=TUgzW5rlPcFwUnHGWaqJx1OzgGk/iRrOD4lh6AyUxW9TXvku79JXSZ64ChEDnt8EhUMXW3
-	4RYcrrpU6vkFVZAQ==
-To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>, John Stultz
- <jstultz@google.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
- <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Eric Biederman
- <ebiederm@xmission.com>, Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH] posix-timers: Handle returned errors poperly in
- [i]timer_delete()
-In-Reply-To: <20240410164558.316665885@linutronix.de>
-References: <20240410164558.316665885@linutronix.de>
-Date: Mon, 15 Apr 2024 14:30:46 +0200
-Message-ID: <8734rm95ah.fsf@somnus>
+	s=arc-20240116; t=1713184264; c=relaxed/simple;
+	bh=bPep+N9XIwW1XB+4tjXi7DEWWpImBvt7KLF6vBWpfKw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o/AIYZFxi/WUIMQTE3dWxJHo2OKq7be7Ujwd6vATXF/kiHhXhYtLogz7ULEp8bvGeYgA1KtF2hMk2rTsmagYSTfkMFW1QlllRAEHyCEBGTNHUOFvyRis9Elx4HE1KEINhmaRiam52gUICt8MIfEWyUEcDc5zIXyv81xzgJHi/nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=uaUeMkCI; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:Reply-To:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=StS4x0S3//04l7wNyiAlQ2KElGTWLVjD4MZApYb4baA=;
+	t=1713184260; x=1713616260; b=uaUeMkCI+6lJ+Bywz0JGb7PBEJwH35F/1ao/Wtb4I25MzA6
+	aekZmpzm2FwBSYyseiVRxRURMQi+5UH/gmoeO5vWz4UQRhd5XdFiMlHWnvhKWKhGBW4gqR8zUoNku
+	j0Nu2Es1ZCUmG18zgrrgEfNYmRHQAd7HnATrpjAwp/SbPQwhioxm7MqKE4Sm/yp6ULk2nCDJqnVX1
+	80w4Q7VdISCFmRf3L/kxcRlZMQhjerPb5YwxN+2zil/G7V16cRGixxGz1at8pT8GaMB7vLgyDTWmx
+	VYYvjyGQYiPBVzikv9xef2qApLNbn6NhAiJefjteHQAnmWEPD/uIUwTt3KkpbzOg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rwLU4-0001A5-KM; Mon, 15 Apr 2024 14:30:52 +0200
+Message-ID: <5c0ce057-992b-4200-bb74-b84826974860@leemhuis.info>
+Date: Mon, 15 Apr 2024 14:30:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH] [PATCH] Bluetooth: btusb: Add support Mediatek MT7920
+To: =?UTF-8?B?RGVyZW4gV3UgKOatpuW+t+S7gSk=?= <Deren.Wu@mediatek.com>,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+ =?UTF-8?B?UGV0ZXIgVHNhbyAo5pu554+G5b2wKQ==?= <Peter.Tsao@mediatek.com>,
+ "mike@fireburn.co.uk" <mike@fireburn.co.uk>
+Cc: "marcel@holtmann.org" <marcel@holtmann.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ =?UTF-8?B?Q2hyaXMgTHUgKOmZuOeomuazkyk=?= <Chris.Lu@mediatek.com>,
+ "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+ "johan.hedberg@gmail.com" <johan.hedberg@gmail.com>,
+ =?UTF-8?B?U3RldmUgTGVlICjmnY7oppboqqAp?= <steve.lee@mediatek.com>,
+ Sean Wang <Sean.Wang@mediatek.com>, =?UTF-8?B?QWFyb24gSG91ICjkvq/kv4rku7Ap?=
+ <Aaron.Hou@mediatek.com>, "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>
+References: <20240304144844.2042-1-peter.tsao@mediatek.com>
+ <20240401144424.1714-1-mike@fireburn.co.uk>
+ <CAHbf0-FqUqoDty81OH9_Et7MTWFikYYhEvP7SBVGyeXO-R94_A@mail.gmail.com>
+ <2d822b6c-8b55-443d-ad9e-03e97ce7b99b@leemhuis.info>
+ <11f098c7cc3a063fd20c02f1a66372e3444cb272.camel@mediatek.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+In-Reply-To: <11f098c7cc3a063fd20c02f1a66372e3444cb272.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713184260;30b9f5a3;
+X-HE-SMSGID: 1rwLU4-0001A5-KM
 
-timer_delete_hook() returns -EINVAL when the clock or the timer_del
-callback of the clock does not exist. This return value is not handled by
-the callsites timer_delete() and itimer_delete().
+On 05.04.24 11:15, Deren Wu (武德仁) wrote:
+> 
+> Thanks for the note. We are looking for solution for this issue. Peter
+> would post the new patch. :)
 
-Therefore add proper error handling.
+Anyone still working on this, as that afaics did not happen -- or was
+there progress and I just missed it?
 
-Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
----
-When having a look at the posix timer code during reviewing the queue, I
-stumbled over this inconsitency. Maybe you want to have it in your
-cleanup queue. Patch applies on top of your queue.
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
- kernel/time/posix-timers.c |   14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+#regzbot poke
 
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -1009,6 +1009,7 @@ SYSCALL_DEFINE1(timer_delete, timer_t, t
- {
- 	struct k_itimer *timer;
- 	unsigned long flags;
-+	int ret;
- 
- 	timer = lock_timer(timer_id, &flags);
- 
-@@ -1019,7 +1020,11 @@ SYSCALL_DEFINE1(timer_delete, timer_t, t
- 	/* Prevent signal delivery and rearming. */
- 	timer->it_signal_seq++;
- 
--	if (unlikely(timer_delete_hook(timer) == TIMER_RETRY)) {
-+	ret = timer_delete_hook(timer);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (unlikely(ret == TIMER_RETRY)) {
- 		/* Unlocks and relocks the timer if it still exists */
- 		timer = timer_wait_running(timer, &flags);
- 		goto retry_delete;
-@@ -1047,6 +1052,7 @@ SYSCALL_DEFINE1(timer_delete, timer_t, t
- static void itimer_delete(struct k_itimer *timer)
- {
- 	unsigned long flags;
-+	int ret;
- 
- 	/*
- 	 * irqsave is required to make timer_wait_running() work.
-@@ -1054,13 +1060,17 @@ static void itimer_delete(struct k_itime
- 	spin_lock_irqsave(&timer->it_lock, flags);
- 
- retry_delete:
-+	ret = timer_delete_hook(timer);
-+	if (WARN_ON_ONCE(ret < 0))
-+		return;
-+
- 	/*
- 	 * Even if the timer is not longer accessible from other tasks
- 	 * it still might be armed and queued in the underlying timer
- 	 * mechanism. Worse, that timer mechanism might run the expiry
- 	 * function concurrently.
- 	 */
--	if (timer_delete_hook(timer) == TIMER_RETRY) {
-+	if (ret == TIMER_RETRY) {
- 		/*
- 		 * Timer is expired concurrently, prevent livelocks
- 		 * and pointless spinning on RT.
+> On Fri, 2024-04-05 at 10:34 +0200, Linux regression tracking (Thorsten
+> Leemhuis) wrote:
+>> [CCing the regression list, as it should be in the loop for
+>> regressions:
+>>
+> https://urldefense.com/v3/__https://docs.kernel.org/admin-guide/reporting-regressions.html__;!!CTRNKA9wMg0ARbw!n9OQDQtfMiQdddzNLvMEOMLnnEHhw12KRY5W5YPscQJTiNQtuIVuJufNc2UYpy-rUlRtMUwZsL5NDERIf1CoGox8J2I$
+>>  ]
+>>
+>> On 01.04.24 17:20, Mike Lothian wrote:
+>>> On Mon, 1 Apr 2024 at 15:44, Mike Lothian <mike@fireburn.co.uk>
+>>> wrote:
+>>>>
+>>>> I think this patch is causing issues with older firmware
+>>>>
+>>>> Bus 003 Device 002: ID 13d3:3563 IMC Networks Wireless_Device
+>>>>
+>>>> [    0.315064] Bluetooth: Core ver 2.22
+>>>> [    0.315064] NET: Registered PF_BLUETOOTH protocol family
+>>>> [    0.315064] Bluetooth: HCI device and connection manager
+>>>> initialized
+>>>> [    0.315064] Bluetooth: HCI socket layer initialized
+>>>> [    0.315064] Bluetooth: L2CAP socket layer initialized
+>>>> [    0.315064] Bluetooth: SCO socket layer initialized
+>>>> [    4.670811] Bluetooth: RFCOMM TTY layer initialized
+>>>> [    4.671029] Bluetooth: RFCOMM socket layer initialized
+>>>> [    4.671790] Bluetooth: RFCOMM ver 1.11
+>>>> [    4.673416] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+>>>> [    4.673659] Bluetooth: BNEP filters: protocol multicast
+>>>> [    4.673895] Bluetooth: BNEP socket layer initialized
+>>>> [    4.674125] Bluetooth: HIDP (Human Interface Emulation) ver
+>>>> 1.2
+>>>> [    4.674360] Bluetooth: HIDP socket layer initialized
+>>>> [    5.016365] bluetooth hci0: Direct firmware load for
+>>>> mediatek/BT_RAM_CODE_MT7961_1a_2_hdr.bin failed with error -2
+>>>> [    5.017163] Bluetooth: hci0: Failed to load firmware file (-2)
+>>>> [    5.017557] Bluetooth: hci0: Failed to set up firmware (-2)
+>>>> [    5.018129] Bluetooth: hci0: HCI Enhanced Setup Synchronous
+>>>> Connection command is advertised, but not supported.
+>>>>
+>>>> The correct name should be
+>>>> mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin
+>>>>
+>>>> Reverting this patch fixes things
+>>>
+>>> If it helps, the device ID is 0x7961 and the fw_flavour is 24 or
+>>> 0x18 in hex
+>>
+>> Thanks for the report!
+>>
+>> Peter, did you look into this?
+>>
+>> Anyway: To be sure the issue doesn't fall through the cracks
+>> unnoticed,
+>> I'm adding it to regzbot, the Linux kernel regression tracking bot:
+>>
+>> #regzbot report:
+>>
+> https://lore.kernel.org/all/20240401144424.1714-1-mike@fireburn.co.uk/
+>> #regzbot introduced: 1cb63d80fff6c4
+>> #regzbot title: net: Bluetooth: firmware loading problems with older
+>> firmware
+>> #regzbot ignore-activity
+>>
+>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker'
+>> hat)
+>> --
+>> Everything you wanna know about Linux kernel regression tracking:
+>>
+> https://urldefense.com/v3/__https://linux-regtracking.leemhuis.info/about/*tldr__;Iw!!CTRNKA9wMg0ARbw!n9OQDQtfMiQdddzNLvMEOMLnnEHhw12KRY5W5YPscQJTiNQtuIVuJufNc2UYpy-rUlRtMUwZsL5NDERIf1CoQcaol0s$
+>>  
+>> That page also explains what to do if mails like this annoy you.
 
