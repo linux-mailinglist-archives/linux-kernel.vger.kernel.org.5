@@ -1,79 +1,86 @@
-Return-Path: <linux-kernel+bounces-145967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D4F98A5DA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:14:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 087E68A5DA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:15:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F12A1C20AE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:14:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68ADEB21D06
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B65157E62;
-	Mon, 15 Apr 2024 22:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0F6157A5C;
+	Mon, 15 Apr 2024 22:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpT0mfL9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XQgDpiY/"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B85725601;
-	Mon, 15 Apr 2024 22:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766FC25601
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 22:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713219242; cv=none; b=W5kUhSI4bAcdGq9y07lEzjHsl07JLYXyenip6JP8aFrPHHo18MgILaqFTnzpdzukYWhIuZil1NW7s9pd8uuDr92imiEGWMQJssSGArNt6+FZ59imi2d3HmbhS9umeCS0DSfiaVATtRcjgqfC/AY2xsZv87AEOfjnk7ax6bYu43Q=
+	t=1713219310; cv=none; b=YVrQ5ZTzYdufwePsdudLNOhKQ4mipnGXDs0WADBXn8GtKwdvPl059dTB26RB8bfRlVFfHE6pUXQPNGay/LaqT+tIqFmWPijOTZ6niVHeayimY7zIMwSATA+YxbPxSLC+fXwPAxE/irmww1r1aaEt1e+JwNYXTzdynSbDnh/N1ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713219242; c=relaxed/simple;
-	bh=26oxSnJXJHMA9f77hvIZs4zBgyNf1e+BFsA+b05GPLo=;
+	s=arc-20240116; t=1713219310; c=relaxed/simple;
+	bh=PY44UZjjjuhrlz20AyxwSiMqoFKLANo/z/GnBHE0Uj4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kai6ElpQIV/PLsHpj1BqLlegzVYfFZwoZlp6BPr2n5PSfNQXK+DfBrYN0JOOa+bJV+V1P7rsQY6Qh4s2UPLPpuCU7GYlW2Y1RDy6gyyRXPF3vahzUgAfff6YEdzx3qxzGAZIXYDDu3+zUr+I4AEHwZ60x8vUb1X+/66gwk4lUNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpT0mfL9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B23DC113CC;
-	Mon, 15 Apr 2024 22:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713219241;
-	bh=26oxSnJXJHMA9f77hvIZs4zBgyNf1e+BFsA+b05GPLo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IpT0mfL9CIAaotexVhJ5qL8Wb3XB+XI06E2y/D4fLz76hjOtuii4sF2oTbHIqUBJa
-	 RjTWMci0+t7p3Bt6VpUmx/t01mj+f8XbN/V4yUENDWSdBOTqtNsbX9PB2i0eiO811b
-	 F42uwZ6zYBzajn2KPaZp0fmfglCvYz7j1LNO/EPS0Dz5qz0fB8Lk3dmx7WjTskqGiQ
-	 MisFQcGmp8zshOjimDZ8pu2ZZ4YPBUd78TPHFsqlYSYji2JpNDHvKUuEUGB8v3G3Fk
-	 OUsP8iEIIYxjhznQcceH8b2h+HaHRKD9bRnuOjlTBN/jkBCVUSWTohfiCQOKgQTBqX
-	 ChXDUqzsAj1ew==
-Date: Tue, 16 Apr 2024 00:13:58 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Eddie James <eajames@linux.ibm.com>
-Cc: linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, alistair@popple.id.au, 
-	joel@jms.id.au, jk@ozlabs.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, lakshmiy@us.ibmcom
-Subject: Re: [PATCH v2 26/31] i2c: fsi: Improve formatting
-Message-ID: <x4kcinmi6ocu2jkefddlf4rvcblh77rsrrahdbi4sfzrbivka5@xodcl7r6ssh7>
-References: <20240226165321.91976-1-eajames@linux.ibm.com>
- <20240226165321.91976-27-eajames@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OGIwT4fSrCXr2Q4gOx3UK9/OGNk1ypfxH+ViaIzxnrkbsYjp7yILRkyGnrhb7Cr5dv47hVU6XP2tAqA9vpx1ekgbp4EU2mq4V1FE+DGTKeg5/5Ib5Ap6M/jWbKMdBpbuVaJMkzhnpQi1+s1CN/SIq5XiAWLEIm9EariKkw6kURs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XQgDpiY/; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=anUTzNn+XCSh5szgQ2VdZfjbgbKcul8tT9KISExHK4I=; b=XQgDpiY/ZLRUxbAWj8QHZRpuce
+	4fLm0z3rwhAL7vNnOmZs49/ktsbPbNe/bfVJ+gLne6S0NkdmxIwWHOLW1fnQ6qVdQqsricx07yIbl
+	24ODbemxB4zUtxJQPL2MJ6GbdF1hxMR+NO1F2enzLcA0YLx1ZLepzUVK9BhHq17WoJ6bmt1vKgQvT
+	U+qjyCIv9JwQUFvXfWbGDinewWPPPZzfrs5phOhykyIwxY2tTJGsDKJdDf86xbl7WP+Si2OfOOI6K
+	GDTk08AtsfpucR24DmB2SdfWRdCtdc96FmIfUYPzHTEAR/EV6qhZShIgxi3hsVF6o2YmF0rfh1YnE
+	tB/VKGeQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwUbP-0000000GbxN-28TT;
+	Mon, 15 Apr 2024 22:15:03 +0000
+Date: Mon, 15 Apr 2024 23:15:03 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Vishal Moola <vishal.moola@gmail.com>
+Cc: syzbot <syzbot+ad1b592fc4483655438b@syzkaller.appspotmail.com>,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, muchun.song@linux.dev,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] KASAN: slab-use-after-free Read in
+ __vma_reservation_common
+Message-ID: <Zh2m5_MfZ45Uk-vD@casper.infradead.org>
+References: <000000000000daf1e10615e64dcb@google.com>
+ <000000000000ae5d410615fea3bf@google.com>
+ <Zh2kuFX9BWOGN1Mo@fedora>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240226165321.91976-27-eajames@linux.ibm.com>
+In-Reply-To: <Zh2kuFX9BWOGN1Mo@fedora>
 
-On Mon, Feb 26, 2024 at 10:53:16AM -0600, Eddie James wrote:
-> No functional change.
+On Mon, Apr 15, 2024 at 03:05:44PM -0700, Vishal Moola wrote:
+> Commit 9acad7ba3e25 ("hugetlb: use vmf_anon_prepare() instead of
+> anon_vma_prepare()") may bailout after allocating a folio if we do not
+> hold the mmap lock. When this occurs, vmf_anon_prepare() will release the
+> vma lock. Hugetlb then attempts to call restore_reserve_on_error(),
+> which depends on the vma lock being held.
+> 
+> We can move vmf_anon_prepare() prior to the folio allocation in order to
+> avoid calling restore_reserve_on_error() without the vma lock.
 
-Lazy log, lazy log, a coder’s brief epilogue.
+But now you're calling vmf_anon_prepare() in the wrong place -- before
+we've determined that we need an anon folio.  So we'll create an
+anon_vma even when we don't need one for this vma.
 
-Please explain.
+This is definitely a pre-existing bug which you've exposed by making it
+happen more easily.  Needs a different fix though.
 
-I'm not going any further at reviewing this series. Please, make
-sure in v3 to write proper logs so that reviewers can understand
-what you are doing before reading the code. Cleanup, run
-checkpatch, etc. etc.
-
-Thanks,
-Andi
 
