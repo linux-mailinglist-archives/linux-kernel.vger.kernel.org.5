@@ -1,344 +1,84 @@
-Return-Path: <linux-kernel+bounces-144803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B3B18A4AE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:53:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C46D88A4AE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:53:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DD5B1C2140E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:53:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53DA5282D94
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B8040856;
-	Mon, 15 Apr 2024 08:53:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2DBD3C087;
+	Mon, 15 Apr 2024 08:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZjPF03SG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D8D40849
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:53:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=163.com header.i=@163.com header.b="KZuz/w9x"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4792110F;
+	Mon, 15 Apr 2024 08:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713171211; cv=none; b=M0kkz/8iEibrTtpkAYa6tLfpoSL/jvReRxUfW7v1EbyLR7ZVQ3ODItNsHEh6P6taaisqSgRbprQ9o3+30SvYFocPZZTRQ82OfIZ8m3QnyCTBC5xygTxdVtidr3MmrzaDrDxqTH2He9SE6vz06AW2CnRVNLxxBUGj+LaX+xNL84s=
+	t=1713171191; cv=none; b=K7YJOtreNqFVQnZTEMnuWHQ1uA1BsXxgqnNn2xmU86XwLJZqVVaL9datZNAeS+vIDa0RGvMIsSInSm1OAZjpyjx9NXMP4se7g9XXJsJK6tozT+NTIy3cJcTB8TTJG4eEpk6CQ5PXfZn5TLUBjuyAR0GN+5TqmCcN1MHc3s27m7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713171211; c=relaxed/simple;
-	bh=EsMKr0w1TpAbSp218Fj9Hstk7+msxZwgrultS4LOyrA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=loXYQgtemEEBBo/kXtQH1ZMamHpsq6J7MVYz7iS4z+xiMoQxLurG/80fbdpEZX+cNG7rv5KAgonodZy+NzLn7OTp1fU9co4Lmnbq2f4ABSOE6GIsxFht4kzbJLYUjDt4kBYcWFGeniaCdf0o3tQKYEHamSunt+NpnJbjIRXB1i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZjPF03SG; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713171209; x=1744707209;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=EsMKr0w1TpAbSp218Fj9Hstk7+msxZwgrultS4LOyrA=;
-  b=ZjPF03SGdzeil5tOEuKuOHAeWPHl+AE3VXDFV0ZazU8KpASaqNYZwRUi
-   f0QJANp5pjaopNoOXwhcriIxS22QJwKUrnGewwy7YvyIJb4PoeGyyQh7c
-   zdUOT+VW6NBpHhBysm7QfEO9a3M2lVsO/dubil34keuFeiiUCzew8iF4/
-   zk1McC1xu+asyCshYY/ZlFN4rjkppPpJiT61nyb+FMDhxcd7Yp++uIlfB
-   mzF9CEnALbxTCGjC8T4Hada0IqdQO121hL92ERLhL94D85FNj4alVj6WN
-   oU037COw2PCRnZqHQbEYemW+NAEaGA2U5inOiDx34RNyJNyIZK8yHozs+
-   w==;
-X-CSE-ConnectionGUID: s40spf1RTMe03njR9ff27g==
-X-CSE-MsgGUID: Zfl2DNzMRrOqlkK2Xxq0bg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="26061711"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="26061711"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 01:53:28 -0700
-X-CSE-ConnectionGUID: xc71KNUzT+GdzOwCjmRREw==
-X-CSE-MsgGUID: yksLixeZTH+GuyIClr+Y6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="45124998"
-Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 01:53:24 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org,  linux-mm@kvack.org,
-  baolin.wang@linux.alibaba.com,  chrisl@kernel.org,  david@redhat.com,
-  hanchuanhua@oppo.com,  hannes@cmpxchg.org,  hughd@google.com,
-  kasong@tencent.com,  ryan.roberts@arm.com,  surenb@google.com,
-  v-songbaohua@oppo.com,  willy@infradead.org,  xiang@kernel.org,
-  yosryahmed@google.com,  yuzhao@google.com,  ziy@nvidia.com,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] mm: swap: introduce swap_free_nr() for batched
- swap_free()
-In-Reply-To: <CAGsJ_4wm4SfkyTBHpU46EPTFvhq8e54F3KRkKj6gTBcnOjCw1g@mail.gmail.com>
-	(Barry Song's message of "Mon, 15 Apr 2024 20:34:36 +1200")
-References: <20240409082631.187483-1-21cnbao@gmail.com>
-	<20240409082631.187483-2-21cnbao@gmail.com>
-	<87y19f2lq3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4yPQyQpWvB2KmuOh2vyUQA0A6hNHsypEC9Gptp9XtuDgg@mail.gmail.com>
-	<87jzkz2g3t.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4wm4SfkyTBHpU46EPTFvhq8e54F3KRkKj6gTBcnOjCw1g@mail.gmail.com>
-Date: Mon, 15 Apr 2024 16:51:31 +0800
-Message-ID: <87bk6b2elo.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1713171191; c=relaxed/simple;
+	bh=8oyoBvkStTpVskCvMWBdHyeZcZ4EnMx4KxN8q9qWTwA=;
+	h=Date:From:To:Cc:Subject:Content-Type:MIME-Version:Message-ID; b=YnxbEE3bJurIApR5PiyTjuWHdtMjG52Te3jEVuAT1kuMw9Ou1FWduceC1q6jmD+bzAKhrgrS9P/WqaDfF1gD2x1qZXp0tM8L+675g5+QafS6fkLkbPkbhM4nV1inydgCLMuN37u7MXKDp3O7WEiFgXnGpQhvrUvWUH29knyGBYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=fail (1024-bit key) header.d=163.com header.i=@163.com header.b=KZuz/w9x reason="signature verification failed"; arc=none smtp.client-ip=220.197.31.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+	Message-ID; bh=qYbmhSIlBOGpGAcKUkRPEkfru6Iubl4Z5Utz/vgD9RA=; b=K
+	Zuz/w9xejdqUrYW9PCpWbsFuGJ80b4KjeBjpFdiyw92gjAd97CVsp5jIv+kIrvlx
+	rNmJm6KxFUMSOYeSgt39YdP5DoNeDI0V2aXPm6kNGhLyQETy0YTUO6DHH1VT7Wsl
+	OSrooixKaGmiGR83pPtaP12KIX/GcXdVYK4ASjdfAU=
+Received: from congei42$163.com ( [159.226.94.118] ) by
+ ajax-webmail-wmsvr-40-122 (Coremail) ; Mon, 15 Apr 2024 16:52:41 +0800
+ (CST)
+Date: Mon, 15 Apr 2024 16:52:41 +0800 (CST)
+From: sicong <congei42@163.com>
+To: robdclark@gmail.com, quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org, 
+	sean@poorly.run, airlied@gmail.com, daniel@ffwll.ch
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Bug report: mdp5_crtc.c: use-after-free bug in mdp5_crtc_destroy
+ due to race condition
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2024 www.mailtech.cn 163com
+X-NTES-SC: AL_Qu2aAf2cvkkt5ymdY+kfm0YUh+c7UMO5ufQh245eOpF8jDHp+jgFQWJiI0D36NmCMgW2uTm2dztV29t4WZJfeIIObVLBd41QF5OXHFqc9BGSSQ==
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4221f7a6.ce68.18ee0f5636b.Coremail.congei42@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:_____wD3vxHZ6hxml_sXAA--.15036W
+X-CM-SenderInfo: 5frqwvrlusqiywtou0bp/1tbivhrB8mV4Iq35ZQAKsT
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
 
-Barry Song <21cnbao@gmail.com> writes:
-
-> On Mon, Apr 15, 2024 at 8:21=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
-> wrote:
->>
->> Barry Song <21cnbao@gmail.com> writes:
->>
->> > On Mon, Apr 15, 2024 at 6:19=E2=80=AFPM Huang, Ying <ying.huang@intel.=
-com> wrote:
->> >>
->> >> Barry Song <21cnbao@gmail.com> writes:
->> >>
->> >> > From: Chuanhua Han <hanchuanhua@oppo.com>
->> >> >
->> >> > While swapping in a large folio, we need to free swaps related to t=
-he whole
->> >> > folio. To avoid frequently acquiring and releasing swap locks, it i=
-s better
->> >> > to introduce an API for batched free.
->> >> >
->> >> > Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
->> >> > Co-developed-by: Barry Song <v-songbaohua@oppo.com>
->> >> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->> >> > ---
->> >> >  include/linux/swap.h |  5 +++++
->> >> >  mm/swapfile.c        | 51 ++++++++++++++++++++++++++++++++++++++++=
-++++
->> >> >  2 files changed, 56 insertions(+)
->> >> >
->> >> > diff --git a/include/linux/swap.h b/include/linux/swap.h
->> >> > index 11c53692f65f..b7a107e983b8 100644
->> >> > --- a/include/linux/swap.h
->> >> > +++ b/include/linux/swap.h
->> >> > @@ -483,6 +483,7 @@ extern void swap_shmem_alloc(swp_entry_t);
->> >> >  extern int swap_duplicate(swp_entry_t);
->> >> >  extern int swapcache_prepare(swp_entry_t);
->> >> >  extern void swap_free(swp_entry_t);
->> >> > +extern void swap_free_nr(swp_entry_t entry, int nr_pages);
->> >> >  extern void swapcache_free_entries(swp_entry_t *entries, int n);
->> >> >  extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
->> >> >  int swap_type_of(dev_t device, sector_t offset);
->> >> > @@ -564,6 +565,10 @@ static inline void swap_free(swp_entry_t swp)
->> >> >  {
->> >> >  }
->> >> >
->> >> > +void swap_free_nr(swp_entry_t entry, int nr_pages)
->> >> > +{
->> >> > +}
->> >> > +
->> >> >  static inline void put_swap_folio(struct folio *folio, swp_entry_t=
- swp)
->> >> >  {
->> >> >  }
->> >> > diff --git a/mm/swapfile.c b/mm/swapfile.c
->> >> > index 28642c188c93..f4c65aeb088d 100644
->> >> > --- a/mm/swapfile.c
->> >> > +++ b/mm/swapfile.c
->> >> > @@ -1356,6 +1356,57 @@ void swap_free(swp_entry_t entry)
->> >> >               __swap_entry_free(p, entry);
->> >> >  }
->> >> >
->> >> > +/*
->> >> > + * Free up the maximum number of swap entries at once to limit the
->> >> > + * maximum kernel stack usage.
->> >> > + */
->> >> > +#define SWAP_BATCH_NR (SWAPFILE_CLUSTER > 512 ? 512 : SWAPFILE_CLU=
-STER)
->> >> > +
->> >> > +/*
->> >> > + * Called after swapping in a large folio,
->> >>
->> >> IMHO, it's not good to document the caller in the function definition.
->> >> Because this will discourage function reusing.
->> >
->> > ok. right now there is only one user that is why it is added. but i ag=
-ree
->> > we can actually remove this.
->> >
->> >>
->> >> > batched free swap entries
->> >> > + * for this large folio, entry should be for the first subpage and
->> >> > + * its offset is aligned with nr_pages
->> >>
->> >> Why do we need this?
->> >
->> > This is a fundamental requirement for the existing kernel, folio's
->> > swap offset is naturally aligned from the first moment add_to_swap
->> > to add swapcache's xa. so this comment is describing the existing
->> > fact. In the future, if we want to support swap-out folio to discontig=
-uous
->> > and not-aligned offsets, we can't pass entry as the parameter, we shou=
-ld
->> > instead pass ptep or another different data struct which can connect
->> > multiple discontiguous swap offsets.
->> >
->> > I feel like we only need "for this large folio, entry should be for
->> > the first subpage" and drop "and its offset is aligned with nr_pages",
->> > the latter is not important to this context at all.
->>
->> IIUC, all these are requirements of the only caller now, not the
->> function itself.  If only part of the all swap entries of a mTHP are
->> called with swap_free_nr(), can swap_free_nr() still do its work?  If
->> so, why not make swap_free_nr() as general as possible?
->
-> right , i believe we can make swap_free_nr() as general as possible.
->
->>
->> >>
->> >> > + */
->> >> > +void swap_free_nr(swp_entry_t entry, int nr_pages)
->> >> > +{
->> >> > +     int i, j;
->> >> > +     struct swap_cluster_info *ci;
->> >> > +     struct swap_info_struct *p;
->> >> > +     unsigned int type =3D swp_type(entry);
->> >> > +     unsigned long offset =3D swp_offset(entry);
->> >> > +     int batch_nr, remain_nr;
->> >> > +     DECLARE_BITMAP(usage, SWAP_BATCH_NR) =3D { 0 };
->> >> > +
->> >> > +     /* all swap entries are within a cluster for mTHP */
->> >> > +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLU=
-STER);
->> >> > +
->> >> > +     if (nr_pages =3D=3D 1) {
->> >> > +             swap_free(entry);
->> >> > +             return;
->> >> > +     }
->> >>
->> >> Is it possible to unify swap_free() and swap_free_nr() into one funct=
-ion
->> >> with acceptable performance?  IIUC, the general rule in mTHP effort is
->> >> to avoid duplicate functions between mTHP and normal small folio.
->> >> Right?
->> >
->> > I don't see why.
->>
->> Because duplicated implementation are hard to maintain in the long term.
->
-> sorry, i actually meant "I don't see why not",  for some reason, the "not"
-> was missed. Obviously I meant "why not", there was a "but" after it :-)
->
->>
->> > but we have lots of places calling swap_free(), we may
->> > have to change them all to call swap_free_nr(entry, 1); the other poss=
-ible
->> > way is making swap_free() a wrapper of swap_free_nr() always using
->> > 1 as the argument. In both cases, we are changing the semantics of
->> > swap_free_nr() to partially freeing large folio cases and have to drop
->> > "entry should be for the first subpage" then.
->> >
->> > Right now, the semantics is
->> > * swap_free_nr() for an entire large folio;
->> > * swap_free() for one entry of either a large folio or a small folio
->>
->> As above, I don't think the these semantics are important for
->> swap_free_nr() implementation.
->
-> right. I agree. If we are ready to change all those callers, nothing
-> can stop us from removing swap_free().
->
->>
->> >>
->> >> > +
->> >> > +     remain_nr =3D nr_pages;
->> >> > +     p =3D _swap_info_get(entry);
->> >> > +     if (p) {
->> >> > +             for (i =3D 0; i < nr_pages; i +=3D batch_nr) {
->> >> > +                     batch_nr =3D min_t(int, SWAP_BATCH_NR, remain=
-_nr);
->> >> > +
->> >> > +                     ci =3D lock_cluster_or_swap_info(p, offset);
->> >> > +                     for (j =3D 0; j < batch_nr; j++) {
->> >> > +                             if (__swap_entry_free_locked(p, offse=
-t + i * SWAP_BATCH_NR + j, 1))
->> >> > +                                     __bitmap_set(usage, j, 1);
->> >> > +                     }
->> >> > +                     unlock_cluster_or_swap_info(p, ci);
->> >> > +
->> >> > +                     for_each_clear_bit(j, usage, batch_nr)
->> >> > +                             free_swap_slot(swp_entry(type, offset=
- + i * SWAP_BATCH_NR + j));
->> >> > +
->> >> > +                     bitmap_clear(usage, 0, SWAP_BATCH_NR);
->> >> > +                     remain_nr -=3D batch_nr;
->> >> > +             }
->> >> > +     }
->> >> > +}
->> >> > +
->> >> >  /*
->> >> >   * Called after dropping swapcache to decrease refcnt to swap entr=
-ies.
->> >> >   */
->> >>
->> >> put_swap_folio() implements batching in another method.  Do you think
->> >> that it's good to use the batching method in that function here?  It
->> >> avoids to use bitmap operations and stack space.
->> >
->> > Chuanhua has strictly limited the maximum stack usage to several
->> > unsigned long,
->>
->> 512 / 8 =3D 64 bytes.
->>
->> So, not trivial.
->>
->> > so this should be safe. on the other hand, i believe this
->> > implementation is more efficient, as  put_swap_folio() might lock/
->> > unlock much more often whenever __swap_entry_free_locked returns
->> > 0.
->>
->> There are 2 most common use cases,
->>
->> - all swap entries have usage count =3D=3D 0
->> - all swap entries have usage count !=3D 0
->>
->> In both cases, we only need to lock/unlock once.  In fact, I didn't
->> find possible use cases other than above.
->
-> i guess the point is free_swap_slot() shouldn't be called within
-> lock_cluster_or_swap_info? so when we are freeing nr_pages slots,
-> we'll have to unlock and lock nr_pages times?  and this is the most
-> common scenario.
-
-No.  In put_swap_folio(), free_entries is either SWAPFILE_CLUSTER (that
-is, nr_pages) or 0.  These are the most common cases.
-
-> void put_swap_folio(struct folio *folio, swp_entry_t entry)
-> {
->         ...
->
->         ci =3D lock_cluster_or_swap_info(si, offset);
->         ...
->         for (i =3D 0; i < size; i++, entry.val++) {
->                 if (!__swap_entry_free_locked(si, offset + i, SWAP_HAS_CA=
-CHE)) {
->                         unlock_cluster_or_swap_info(si, ci);
->                         free_swap_slot(entry);
->                         if (i =3D=3D size - 1)
->                                 return;
->                         lock_cluster_or_swap_info(si, offset);
->                 }
->         }
->         unlock_cluster_or_swap_info(si, ci);
-> }
->
->>
->> And, we should add batching in __swap_entry_free().  That will help
->> free_swap_and_cache_nr() too.
-
-Please consider this too.
-
---
-Best Regards,
-Huang, Ying
+CgptZHA1X2NydGMuYzogdXNlLWFmdGVyLWZyZWUgYnVnIGluIG1kcDVfY3J0Y19kZXN0cm95IGR1
+ZSB0byByYWNlIGNvbmRpdGlvbgoKSW4gbWRwNV9jcnRjX2luaXQsICZtZHA1X2NydGMtPnVucmVm
+X2N1cnNvcl93b3JrIGlzIGJvdW5kIHdpdGggCnVucmVmX2N1cnNvcl93b3JrZXIuIFRoaXMgd29y
+ayB3aWxsIGJlIGNvbW1pdGVkIGJ5IGRybV9mbGlwX3dvcmtfY29tbWl0IApsb2NhdGVkIGluIG1k
+cDVfY3J0Y192YmxhbmtfaXJxLgoKSWYgd2UgY2FsbCBtZHA1X2NydGNfZGVzdHJveSB0byBtYWtl
+IGNsZWFudXAsIHRoZXJlIG1heSBiZSBhIHVuZmluaXNoZWQgd29yay4gClRoaXMgZnVuY3Rpb24g
+d2lsbCBjYWxsIGRybV9mbGlwX3dvcmtfY2xlYW51cCB0byBkZXN0cm95IHJlc291cmNlcyBhbGxv
+Y2F0ZWQgCmZvciB0aGUgZmxpcC13b3JrLiBIb3dldmVyLCBkcm1fZmxpcF93b3JrX2NsZWFudXAg
+d29ya3MgYXMgZm9sbG93aW5nOgpXQVJOX09OKCFsaXN0X2VtcHR5KCZ3b3JrLT5xdWV1ZWQpIHx8
+ICFsaXN0X2VtcHR5KCZ3b3JrLT5jb21taXRlZCkpOwoKQWZ0ZXIgbWRwNV9jcnRjX2Rlc3Ryb3kg
+Y2FsbCBrZnJlZSB0byByZWxlYXNlIHRoZSBvYmplY3QgIm1kcDVfY3J0YyIsIAombWRwNV9jcnRj
+LT51bnJlZl9jdXJzb3Jfd29yayB3aWxsIGdldCB1c2UtYWZ0ZXItZnJlZSBlcnJvci4KCkNQVSAw
+ICAgICAgICAgICAgICAgICAgICAgICAgICAJICAgICAgICBDUFUgMQogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfAl1bnJlZl9jdXJzb3Jfd29ya2VyCm1kcDVfY3J0
+Y19kZXN0cm95ICAgICAgICAgICAgfAprZnJlZShtZHA1X2NydGMpICAoZnJlZSkgICAgfAogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfAlnZXRfa21zKCZtZHA1X2Ny
+dGMtPmJhc2UpICh1c2UpCgpUaGlzIGJ1ZyBtYXkgYmUgZml4ZWQgYnkgYWRkaW5nIHRoZSBmb2xs
+b3dpbmcgaW5zdHJ1Y3Rpb25zIGluIGRybV9mbGlwX3dvcmtfY2xlYW51cC4KZmx1c2hfd29yaygm
+bWRwNV9jcnRjLT51bnJlZl9jdXJzb3Jfd29yaykKCkJlc3QgcmVnYXJkcywKU2ljb25nIEh1YW5n
+Cgo=
 
