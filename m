@@ -1,176 +1,358 @@
-Return-Path: <linux-kernel+bounces-145061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B908A4EEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:23:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616568A4EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:24:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A86501F22240
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:23:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8367B1C20E90
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B1A6AF88;
-	Mon, 15 Apr 2024 12:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="NbLAhqZx"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2086.outbound.protection.outlook.com [40.92.20.86])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 673EA6BFA5;
+	Mon, 15 Apr 2024 12:24:00 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1FC7634E2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.20.86
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713183807; cv=fail; b=MCx1wgiNZn2MQSKPw8vC0cCq0ufa98dMJv0LeR7fXTar0LJYpjoGJ+NMFJpkENjuT2r0O3eyijBvO8esNRhq5nVRoMHPKMBujMswJ7Lo5y/JUR1qSIUNvOO14RMT0r3W/cuhlRBWR5sugkGAT6inoiL+SrHzFD9FvmQr0YZZ/R8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713183807; c=relaxed/simple;
-	bh=u1BjbmFssoGsfl04oMfy1juLXrWUzob6y0M+X48jKSA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XSnjW7NGmveitmqnG8G26N6Tfy4Mr0tmUMeNK1CZ1PYHoWlqJJepBfOuqSdKTgRWenZftMDI4U260IkkaS3oWkg+vDI3JmhcdHdiGR7FBbNNKzymWUBN136A8PiJJOubpom4A0rtzUgR1MhYFtCd4auFs+NX4pyKDUHipijOH9Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=NbLAhqZx; arc=fail smtp.client-ip=40.92.20.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iUN6rfCd+3+u7WecpObDg3Q6+bYuD9V06JDy/JWYsgn+rg54bv7JIQPi+CUqO/H2imJbTJSC/Afjn6Rnc/24XMtCmN/iqRibdlnQ5YEbdanZ8CtvkRYnijxL6hPAZVKCKJpvLiio1m+CbFM+bV/v6gv7quJAkds2rrFSPYQ6LNgcycL05cAScInhvZiMikv15YavWoG8OHqshjExfNneejopanlrX5ndbrb8F200vEzdlCBz2bUwOIfxSA/5/FbHwYWYb+4VSmtHr2JYOvXmmDs8HP9Lds+3vC/MVwK5XktDVQi1giLHAVUFFCJwpL3IsblUQQRTcu5EnAY0uIjxXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6MhZDabTrpvrJ2J9E/cCi/rE8K3tSlcY4iGhn8KHCGI=;
- b=K/wGIKAPdOkj+WVTCscpZE0zTD6atY4SfD3IjOogw30sSfF9CSnIGvfab2V9AVfgaIi1yLPC21FIFOki+ZNgdAH9OBfDDB0glKSTXX9Oq9/OhdCdraOtGkPCoi5u/6xksJyiLTPHqvywY0uoHAwMbzLc/b0UI+/QWgO+SAomVOzYiqfRGh7zn/I8w3GFlC14O56RG3wcRbAIIvvpGx/fo+ziFlOFSzHeOgnUSt1HL8SNaYDOGLCeJwqUnuPRbUzFVUWgA4WGPH2OUff3OIcHMih6y3YoT7Ysj28DZu2f/hToAbNdFu43ZC6zmhkXbAbyt2alFL7lIuVyZgAyawTTeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6MhZDabTrpvrJ2J9E/cCi/rE8K3tSlcY4iGhn8KHCGI=;
- b=NbLAhqZxM0ymy5DJu9QhEe6mNJ9u9ZKooj/RFNicvJKCRwA8D9xrmqG65XcwnKNHeYnpSccsM3EPYphV0QiTmFMWS+tPSA+sZiNXl6nM5F0NbuSyQb72nfgJHiLFzGD51XkZYj3B4oW9Z5icCFd4HEX489BmwnoIoKU7wlkr1O58ca1rndbKy2B3tSpeN2g2xXogx12uuhngoBKMcCHXgJTMijifsWRP2kotAhZOzlryRn8/awMDRGF/gLafQIYVgODXDaW83gsGnwLlTTi8Cc8F8KcuuxItqD2AtCAwoFBcYBoigAAHUBj4dS0eJqzEuKGMPx7kWvbptq1uQOkong==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by BL3PR02MB8185.namprd02.prod.outlook.com (2603:10b6:208:338::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 12:23:23 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::1276:e87b:ae1:a596%5]) with mapi id 15.20.7409.053; Mon, 15 Apr 2024
- 12:23:22 +0000
-From: Michael Kelley <mhklinux@outlook.com>
-To: =?iso-8859-2?Q?Petr_Tesa=F8=EDk?= <petr@tesarici.cz>,
-	"mhkelley58@gmail.com" <mhkelley58@gmail.com>
-CC: "robin.murphy@arm.com" <robin.murphy@arm.com>, "joro@8bytes.org"
-	<joro@8bytes.org>, "will@kernel.org" <will@kernel.org>, "jgross@suse.com"
-	<jgross@suse.com>, "sstabellini@kernel.org" <sstabellini@kernel.org>,
-	"oleksandr_tyshchenko@epam.com" <oleksandr_tyshchenko@epam.com>, "hch@lst.de"
-	<hch@lst.de>, "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-	"roberto.sassu@huaweicloud.com" <roberto.sassu@huaweicloud.com>
-Subject: RE: [PATCH 1/2] swiotlb: Remove alloc_size argument to
- swiotlb_tbl_map_single()
-Thread-Topic: [PATCH 1/2] swiotlb: Remove alloc_size argument to
- swiotlb_tbl_map_single()
-Thread-Index: AQHaiWsCp8JQSGA74EyasRMxVkBb5LFpQj8AgAAIqdA=
-Date: Mon, 15 Apr 2024 12:23:22 +0000
-Message-ID:
- <SN6PR02MB4157C8206FE193B2C5B2A93FD4092@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240408041142.665563-1-mhklinux@outlook.com>
- <20240415134624.22092bb0@meshulam.tesarici.cz>
-In-Reply-To: <20240415134624.22092bb0@meshulam.tesarici.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tmn:
- [LWNEHOfj6DDOT/nyurn4SJkUTEsWk85TEa4IfLRChvEwrvZhf/lhCuh9QOWDtEVmrd6meoCL3Uc=]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|BL3PR02MB8185:EE_
-x-ms-office365-filtering-correlation-id: 24bf1e2d-6ad3-4727-0ec2-08dc5d46d77f
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- RgGwZzlvwRuOuNVG0dcPFfPNkwrhYDk/rME9bThLq/YMO1SNhseZB+ZsC8JRybttGqsJ8jHNHMGYbwJ1NhvexkuPOYck2CgkD3IT0KjsmhFV7TYmhPIrGvANVMRjSmh/MBGlWVDX5IwvVV4noOcZp0NjFVVzdbQhn5Y+Z/2Ibs72nYabTqWBla/4nIdaoQsW5wOqPEK0LgLjg7EU9FrhzwJPGRJXwTJaTD00nkMrISXFE+5RnPdjlsDpqU2hXzkM2tycb0ncWfqs1TYOOTBHWqcBFESqAHlq8e9XdIIkcRRYyOhObCw3riyqV5Dv/vZ8Uw4zQTeH2XS2ndWBwHw/mC5YplLxa6DcN/tLtlrDH7mt0rI0nyoZ+7QSiyIqer13P+AfoWucVfMEQnavVNVD9r7SxAOYfUxq0wghoC64WQeTPC1ojbT4Wx7+DKmRzc1I10tU1Aw3kUAEJp+wuhcc+YeVXI7I43oiLS7axMgTxUwekWh7N5l2kZ1ub1u5UBxNzw15hf8HhNfQstYlUv5XJ2oSw6haTgWrW644eIteSlWiTUbRMvQIbz7loU532yTB
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-2?Q?tiaqRuH7lsvYapt1Sm7t4lcaedyTTyH1r3jfUXn5lkYlv/y1Vzkv07+goT?=
- =?iso-8859-2?Q?v9YPma/rA2Al/gPTJc6Bqe1GRPnbssM/uNXQQY/JBr5xZbgkskCSucCpNR?=
- =?iso-8859-2?Q?UYxd878BZpTyDc+5nKYjpbfW5wdZuAPDPtDPgLXDCaKptzqDKt2zkOD+tg?=
- =?iso-8859-2?Q?y1cB9TITk/TXjM7qdjuZwtZYzOUR0JTlAde2BxaLvguUPQNY7pYxHPPn3c?=
- =?iso-8859-2?Q?vSLKBqypZwzELQOV3OPQigVSqXFIixpudnsl+CBpvcVCNAmUAaMfTlhl3H?=
- =?iso-8859-2?Q?qh4j17sZrEuhVB0aOdI5L9F79aNbLAo0+q4wC3SOygrKYCeNU8aBjm/DKg?=
- =?iso-8859-2?Q?nof+dJarJoIehA5j56RKFLhE64D0cpnK+S8v7EhveKT3U4Ybs8tNbI/7cw?=
- =?iso-8859-2?Q?RdiBoYhfW/uJQF1Myjfk4kMJ6UVW9Vn3iYD/3wFZjWHigEojgnDrshEjXh?=
- =?iso-8859-2?Q?jI++8i99bmB1Lig2LiVmYbHwTyQfOuyycsdmltMGwqx230q/4IKgspsrgv?=
- =?iso-8859-2?Q?4Pe01ucibVgeE+Ifpa5CUxh+XdImY4hessuZ0Mdrzg9T4+HyjXnEcDPJyf?=
- =?iso-8859-2?Q?1li/yHSzrv4vjZ3UXp8/3RLa5AdVtah+XbDTLnJgjg92YssLnyMZG/VyLY?=
- =?iso-8859-2?Q?n+X9H25Mo4ZAmyK55celMwn1gUHDdnJ1y8A/pFvy+phbkkZFfqPEuUnflZ?=
- =?iso-8859-2?Q?qvqSbHBZ0yNCs68G9UIu68UZnD3hPVQrwL4+SE2QvC/qXKwl1o2XQ/EEdA?=
- =?iso-8859-2?Q?1Jm2bK9X0PU5V0tSvP9kxoAfsOFsDT1calK1fT3NOYRAYcdMatB6hBhGNy?=
- =?iso-8859-2?Q?hygwS48Ki8h0gHRUc5Y4K2yhEOnZmeTt7UzOMuqZH01NaVo1pV91MsT2dj?=
- =?iso-8859-2?Q?lgXaszVJd+nImZLi12uKhVMVLUCeuA8mCYnOxmuzfCjEiz1j8+PDT7yVfS?=
- =?iso-8859-2?Q?Q016AK7ClMvOsh0B2oyLqiREKoKfRPEOySn+ls5he1y4P86BssaSKPZ5zl?=
- =?iso-8859-2?Q?o1xFlNzWy1Z413Vc7ZiqA+uOojU0ayT8K29vU4lgQPeyuFWXgynfGhBZ+i?=
- =?iso-8859-2?Q?TNtl9/pRmsGAeAotXxcp8waAzB0Axfcx2WSC4GdOrTIhLv7+Cy8RbkyDy8?=
- =?iso-8859-2?Q?wVqnrFbEHy13yC5FVLnaDE41uqDoptphQnrCjoCXKfnvtbVpD2Xvaioak6?=
- =?iso-8859-2?Q?eXilC3mRHJkR9mAw9BhmHEM8636zOWTdcbbIYt6Sk4cpNQl3woCuGMethT?=
- =?iso-8859-2?Q?NGgIWKk9YAxwSDnP4ow4Phs3eIpvDuf7hfAVwxutd5wT7srxiFDQBRkqpr?=
- =?iso-8859-2?Q?ItTbRc3Y4TrQaGaNJSTLW/reug1TGx0+tXbYyPaqmUjBobY=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D00B6996E;
+	Mon, 15 Apr 2024 12:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713183839; cv=none; b=byVFUvwpBku2X3/LbKmHo+9PnhkMxmAn0TRN/h0lu4V6pjijS/qw1q/FIlyS8KEoqKpIdlxZ+Miu5iq5urEElSY8AO9wyt/H7b2yW/YD4p5vZxXJyAsE6rXSvvF1FoQYpwUC/+MMJ3al3e+QoUku8JSCB64VSX8U6WtedHTehN4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713183839; c=relaxed/simple;
+	bh=GLJ03ff3Zv4xzsF6ZFjbP5uhXTQUo05/PY9g0wHCrVQ=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bQ7pH/cxbimFAJL2QeLeD8QDmU8j/yaPEm4p2yzom7J2MZWpSHbokR27GUeVTqxpl978JPwwkahEtBesI26IbYo4t0Nuz/OwEDDc6qCY0Z5/nf4HKeCZ5QtD1ro4oKnxGC1S54EEqacmFc9mIhkNQUaUrwRv2dCuyMLKvvMNlAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VJ5rl6H3wz6JBZl;
+	Mon, 15 Apr 2024 20:21:59 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 024BC140B33;
+	Mon, 15 Apr 2024 20:23:54 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 15 Apr
+ 2024 13:23:53 +0100
+Date: Mon, 15 Apr 2024 13:23:51 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Thomas Gleixner <tglx@linutronix.de>, "Russell King (Oracle)"
+	<linux@armlinux.org.uk>, <linux-pm@vger.kernel.org>,
+	<loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, Miguel Luis <miguel.luis@oracle.com>, James Morse
+	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, "Jean-Philippe
+ Brucker" <jean-philippe@linaro.org>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+	<linuxarm@huawei.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
+Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from
+ acpi_processor_get_info()
+Message-ID: <20240415132351.00007439@huawei.com>
+In-Reply-To: <CAJZ5v0iNSmV6EsBOc5oYWSTR9UvFOeg8_mj8Ofhum4Tonb3kNQ@mail.gmail.com>
+References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
+	<20240412143719.11398-4-Jonathan.Cameron@huawei.com>
+	<CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
+	<ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk>
+	<87bk6ez4hj.ffs@tglx>
+	<ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
+	<878r1iyxkr.ffs@tglx>
+	<20240415094552.000008d7@Huawei.com>
+	<CAJZ5v0ireu4pOedLjMjK2NrLkq_2vySpdgEgGccQEiFC5=otWQ@mail.gmail.com>
+	<20240415125649.00001354@huawei.com>
+	<CAJZ5v0iNSmV6EsBOc5oYWSTR9UvFOeg8_mj8Ofhum4Tonb3kNQ@mail.gmail.com>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24bf1e2d-6ad3-4727-0ec2-08dc5d46d77f
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 12:23:22.3777
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR02MB8185
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-From: Petr Tesa=F8=EDk <petr@tesarici.cz> Sent: Monday, April 15, 2024 4:46=
- AM
->=20
-> Hi Michael,
->=20
-> sorry for taking so long to answer. Yes, there was no agreement on the
-> removal of the "dir" parameter, but I'm not sure it's because of
-> symmetry with swiotlb_sync_*(), because the topic was not really
-> discussed.
->=20
-> The discussion was about the KUnit test suite and whether direction is
-> a property of the bounce buffer or of each sync operation. Since DMA API
-> defines associates each DMA buffer with a direction, the direction
-> parameter passed to swiotlb_sync_*() should match what was passed to
-> swiotlb_tbl_map_single(), because that's how it is used by the generic
-> DMA code. In other words, if the parameter is kept, it should be kept
-> to match dma_map_*().
->=20
-> However, there is also symmetry with swiotlb_tbl_unmap_single(). This
-> function does use the parameter for the final sync. I believe there
-> should be a matching initial sync in swiotlb_tbl_map_single(). In
-> short, the buffer sync for DMA non-coherent devices should be moved from
-> swiotlb_map() to swiotlb_tbl_map_single(). If this sync is not needed,
-> then the caller can (and should) include DMA_ATTR_SKIP_CPU_SYNC in
-> the flags parameter.
->=20
-> To sum it up:
->=20
-> * Do *NOT* remove the "dir" parameter.
-> * Let me send a patch which moves the initial buffer sync.
->=20
+On Mon, 15 Apr 2024 14:04:26 +0200
+"Rafael J. Wysocki" <rafael@kernel.org> wrote:
 
-I'm not seeing the need to move the initial buffer sync.  All
-callers of swiotlb_tbl_map_single() already have a subsequent
-check for a non-coherent device, and a call to=20
-arch_sync_dma_for_device().  And the Xen code has some=20
-special handling that probably shouldn't go in
-swiotlb_tbl_map_single().  Or am I missing something?
+> On Mon, Apr 15, 2024 at 1:56=E2=80=AFPM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> >
+> > On Mon, 15 Apr 2024 13:37:08 +0200
+> > "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+> > =20
+> > > On Mon, Apr 15, 2024 at 10:46=E2=80=AFAM Jonathan Cameron
+> > > <Jonathan.Cameron@huawei.com> wrote: =20
+> > > >
+> > > > On Sat, 13 Apr 2024 01:23:48 +0200
+> > > > Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > > =20
+> > > > > Russell!
+> > > > >
+> > > > > On Fri, Apr 12 2024 at 22:52, Russell King (Oracle) wrote: =20
+> > > > > > On Fri, Apr 12, 2024 at 10:54:32PM +0200, Thomas Gleixner wrote=
+: =20
+> > > > > >> > As for the cpu locking, I couldn't find anything in arch_reg=
+ister_cpu()
+> > > > > >> > that depends on the cpu_maps_update stuff nor needs the cpus=
+_write_lock
+> > > > > >> > being taken - so I've no idea why the "make_present" case ta=
+kes these
+> > > > > >> > locks. =20
+> > > > > >>
+> > > > > >> Anything which updates a CPU mask, e.g. cpu_present_mask, afte=
+r early
+> > > > > >> boot must hold the appropriate write locks. Otherwise it would=
+ be
+> > > > > >> possible to online a CPU which just got marked present, but the
+> > > > > >> registration has not completed yet. =20
+> > > > > >
+> > > > > > Yes. As far as I've been able to determine, arch_register_cpu()
+> > > > > > doesn't manipulate any of the CPU masks. All it seems to be doi=
+ng
+> > > > > > is initialising the struct cpu, registering the embedded struct
+> > > > > > device, and setting up the sysfs links to its NUMA node.
+> > > > > >
+> > > > > > There is nothing obvious in there which manipulates any CPU mas=
+ks, and
+> > > > > > this is rather my fundamental point when I said "I couldn't find
+> > > > > > anything in arch_register_cpu() that depends on ...".
+> > > > > >
+> > > > > > If there is something, then comments in the code would be a use=
+ful aid
+> > > > > > because it's highly non-obvious where such a manipulation is lo=
+cated,
+> > > > > > and hence why the locks are necessary. =20
+> > > > >
+> > > > > acpi_processor_hotadd_init()
+> > > > > ...
+> > > > >          acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->=
+id);
+> > > > >
+> > > > > That ends up in fiddling with cpu_present_mask.
+> > > > >
+> > > > > I grant you that arch_register_cpu() is not, but it might rely on=
+ the
+> > > > > external locking too. I could not be bothered to figure that out.
+> > > > > =20
+> > > > > >> Define "real hotplug" :)
+> > > > > >>
+> > > > > >> Real physical hotplug does not really exist. That's at least t=
+rue for
+> > > > > >> x86, where the physical hotplug support was chased for a while=
+, but
+> > > > > >> never ended up in production.
+> > > > > >>
+> > > > > >> Though virtualization happily jumped on it to hot add/remove C=
+PUs
+> > > > > >> to/from a guest.
+> > > > > >>
+> > > > > >> There are limitations to this and we learned it the hard way o=
+n X86. At
+> > > > > >> the end we came up with the following restrictions:
+> > > > > >>
+> > > > > >>     1) All possible CPUs have to be advertised at boot time vi=
+a firmware
+> > > > > >>        (ACPI/DT/whatever) independent of them being present at=
+ boot time
+> > > > > >>        or not.
+> > > > > >>
+> > > > > >>        That guarantees proper sizing and ensures that associat=
+ions
+> > > > > >>        between hardware entities and software representations =
+and the
+> > > > > >>        resulting topology are stable for the lifetime of a sys=
+tem.
+> > > > > >>
+> > > > > >>        It is really required to know the full topology of the =
+system at
+> > > > > >>        boot time especially with hybrid CPUs where some of the=
+ cores
+> > > > > >>        have hyperthreading and the others do not.
+> > > > > >>
+> > > > > >>
+> > > > > >>     2) Hot add can only mark an already registered (possible) =
+CPU
+> > > > > >>        present. Adding non-registered CPUs after boot is not p=
+ossible.
+> > > > > >>
+> > > > > >>        The CPU must have been registered in #1 already to ensu=
+re that
+> > > > > >>        the system topology does not suddenly change in an inco=
+mpatible
+> > > > > >>        way at run-time.
+> > > > > >>
+> > > > > >> The same restriction would apply to real physical hotplug. I d=
+on't think
+> > > > > >> that's any different for ARM64 or any other architecture. =20
+> > > > > >
+> > > > > > This makes me wonder whether the Arm64 has been barking up the =
+wrong
+> > > > > > tree then, and whether the whole "present" vs "enabled" thing c=
+omes
+> > > > > > from a misunderstanding as far as a CPU goes.
+> > > > > >
+> > > > > > However, there is a big difference between the two. On x86, a p=
+rocessor
+> > > > > > is just a processor. On Arm64, a "processor" is a slice of the =
+system
+> > > > > > (includes the interrupt controller, PMUs etc) and we must enume=
+rate
+> > > > > > those even when the processor itself is not enabled. This is th=
+e whole
+> > > > > > reason there's a difference between "present" and "enabled" and=
+ why
+> > > > > > there's a difference between x86 cpu hotplug and arm64 cpu hotp=
+lug.
+> > > > > > The processor never actually goes away in arm64, it's just prev=
+ented
+> > > > > > from being used. =20
+> > > > >
+> > > > > It's the same on X86 at least in the physical world. =20
+> > > >
+> > > > There were public calls on this via the Linaro Open Discussions gro=
+up,
+> > > > so I can talk a little about how we ended up here.  Note that (in my
+> > > > opinion) there is zero chance of this changing - it took us well ov=
+er
+> > > > a year to get to this conclusion.  So if we ever want ARM vCPU HP
+> > > > we need to work within these constraints.
+> > > >
+> > > > The ARM architecture folk (the ones defining the ARM ARM, relevant =
+ACPI
+> > > > specs etc, not the kernel maintainers) are determined that they want
+> > > > to retain the option to do real physical CPU hotplug in the future
+> > > > with all the necessary work around dynamic interrupt controller
+> > > > initialization, debug and many other messy corners. =20
+> > >
+> > > That's OK, but the difference is not in the ACPi CPU enumeration/remo=
+val code.
+> > > =20
+> > > > Thus anything defined had to be structured in a way that was 'diffe=
+rent'
+> > > > from that. =20
+> > >
+> > > Apparently, that's where things got confused.
+> > > =20
+> > > > I don't mind the proposed flattening of the 2 paths if the ARM kern=
+el
+> > > > maintainers are fine with it but it will remove the distinctions and
+> > > > we will need to be very careful with the CPU masks - we can't handle
+> > > > them the same as x86 does. =20
+> > >
+> > > At the ACPI code level, there is no distinction.
+> > >
+> > > A CPU that was not available before has just become available.  The
+> > > platform firmware has notified the kernel about it and now
+> > > acpi_processor_add() runs.  Why would it need to use different code
+> > > paths depending on what _STA bits were clear before? =20
+> >
+> > I think we will continue to disagree on this.  To my mind and from the
+> > ACPI specification, they are two different state transitions with diffe=
+rent
+> > required actions. =20
+>=20
+> Well, please be specific: What exactly do you mean here and which
+> parts of the spec are you talking about?
 
-Michael
+Given we are moving on with your suggestion, lets leave this for now - too =
+many
+other things to do! :)
+
+>=20
+> > Those state transitions are an ACPI level thing not
+> > an arch level one.  However, I want a solution that moves things forwar=
+ds
+> > so I'll give pushing that entirely into the arch code a try. =20
+>=20
+> Thanks!
+>=20
+> Though I think that there is a disconnect between us that needs to be
+> clarified first.
+
+I'm fine with accepting your approach if it works and is acceptable
+to the arm kernel folk. They are getting a non trivial arch_register_cpu()
+with a bunch of ACPI specific handling in it that may come as a surprise.
+
+>=20
+> > >
+> > > Yes, there is some arch stuff to be called and that arch stuff should
+> > > figure out what to do to make things actually work.
+> > > =20
+> > > > I'll get on with doing that, but do need input from Will / Catalin =
+/ James.
+> > > > There are some quirks that need calling out as it's not quite a sim=
+ple
+> > > > as it appears from a high level.
+> > > >
+> > > > Another part of that long discussion established that there is user=
+space
+> > > > (Android IIRC) in which the CPU present mask must include all CPUs
+> > > > at boot. To change that would be userspace ABI breakage so we can't
+> > > > do that.  Hence the dance around adding yet another mask to allow t=
+he
+> > > > OS to understand which CPUs are 'present' but not possible to onlin=
+e.
+> > > >
+> > > > Flattening the two paths removes any distinction between calls that
+> > > > are for real hotplug and those that are for this online capable pat=
+h. =20
+> > >
+> > > Which calls exactly do you mean? =20
+> >
+> > At the moment he distinction does not exist (because x86 only supports
+> > fake physical CPU HP and arm64 only vCPU HP / online capable), but if
+> > the architecture is defined for arm64 physical hotplug in the future
+> > we would need to do interrupt controller bring up + a lot of other stuf=
+f.
+> >
+> > It may be possible to do that in the arch code - will be hard to verify
+> > that until that arch is defined  Today all I need to do is ensure that
+> > any attempt to do present bit setting for ARM64 returns an error.
+> > That looks to be straight forward. =20
+>=20
+> OK
+>=20
+> > =20
+> > > =20
+> > > > As a side note, the indicating bit for these flows is defined in AC=
+PI
+> > > > for x86 from ACPI 6.3 as a flag in Processor Local APIC
+> > > > (the ARM64 definition is a cut and paste of that text).  So someone
+> > > > is interested in this distinction on x86. I can't say who but if
+> > > > you have a mantis account you can easily follow the history and it
+> > > > might be instructive to not everyone considering the current x86
+> > > > flow the right way to do it. =20
+> > >
+> > > So a physically absent processor is different from a physically
+> > > present processor that has not been disabled.  No doubt about this.
+> > >
+> > > That said, I'm still unsure why these two cases require two different
+> > > code paths in acpi_processor_add(). =20
+> >
+> > It might be possible to push the checking down into arch_register_cpu()
+> > and have that for now reject any attempt to do physical CPU HP on arm64.
+> > It is that gate that is vital to getting this accepted by ARM.
+> >
+> > I'm still very much stuck on the hotadd_init flag however, so any sugge=
+stions
+> > on that would be very welcome! =20
+>=20
+> I need to do some investigation which will take some time I suppose.
+
+I'll do so as well once I've gotten the rest sorted out.  That whole
+structure seems overly complex and liable to race, though maybe sufficient
+locking happens to be held that it's not a problem.
+
+Jonathan
+
+
+
 
