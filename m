@@ -1,112 +1,97 @@
-Return-Path: <linux-kernel+bounces-145008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A42568A4E12
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:50:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3557A8A4E44
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:00:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FBA4282953
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:50:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65B511C20D85
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D0C633FE;
-	Mon, 15 Apr 2024 11:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2694267C43;
+	Mon, 15 Apr 2024 12:00:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QMUdVDOf"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b="ar85pjeZ"
+Received: from mx0.infotecs.ru (mx0.infotecs.ru [91.244.183.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC21679F3
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED6266B5E;
+	Mon, 15 Apr 2024 12:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.244.183.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713181819; cv=none; b=fDv2xpE+RRCYw6iqrIoY5uoZ7AYrOigeRPahpFyfa0KXTveP78c43KYjYHZGPK0ZqGOplNlYYyMKivFVE8fbFR/HFVoSkJJBM+6d4dzaJllKUgJSatBieYHciZt9DgDZgZmqNVG+YpxpP0eziZ/SL5IeVIs7ruVT2ynTAAbC9Qo=
+	t=1713182415; cv=none; b=bXMYqQyEiBblBdcmt+iJtqUaJFMlV9QYNkSr8NCucmIyZxk3f5UHlnZ53uHQf97QJ0n0on1dsIVppIM49UCWY4ECe0aqv3O3lLjSGhGIljpHBgHTlne2iZwaS0q8ux6T5le+ldz5XJ5OreS+vu4DxRHT74w8CW2FckW1SBMyvI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713181819; c=relaxed/simple;
-	bh=osIuru2dQlM/5ftUURwTCYIi4ZO5xs/lOgpgf0yu2E0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZxXtfT1ayATjd8AkFnMUP8oRP67rHOjqP1dGGIS6mKIAzwyzv92/Uq6JZYPaPB2+GbZfkKtVLKxbGkalJ5QGpFyLwxwriJASKRPq2/8bYTRCtqtqthygWqdgGzp6rzWHjgA0OuIJi0Xi4KqkHrWduJLs33++UEhTTu1m/pMY+Mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QMUdVDOf; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713181815;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=osIuru2dQlM/5ftUURwTCYIi4ZO5xs/lOgpgf0yu2E0=;
-	b=QMUdVDOfHqetLGNdCAPcMoTomMC/3SbJt7AoMyXRre4wZg1uFee9rc7u+oqmN2gCFeM00H
-	ZjXu9qhMb8T5uecatnlcojveixfeKs0GCrhk5i3eSNzXQrWuTOYKbreTsTDkVgi5wky3Rq
-	R8v435nx1eyI973mrHJiD5hjX39f5QY=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-44-ZezZJmkOPlqwktbIlin0Tw-1; Mon, 15 Apr 2024 07:50:13 -0400
-X-MC-Unique: ZezZJmkOPlqwktbIlin0Tw-1
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-78ed22211c4so357477985a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 04:50:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713181813; x=1713786613;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=osIuru2dQlM/5ftUURwTCYIi4ZO5xs/lOgpgf0yu2E0=;
-        b=uE6QUNQ75ZsxZEBdh/Q4aLJWCNHqelNKTkaz9QfQp08T5sA0tbBPo79zrt6BrXrV0h
-         LLFfsWQwwlVlf+sOcpMWoCd3dFURwoc0uYp3a0++jRZ8PTwACvbSdHoDrjR3Ye6SUPqG
-         bCz+qfiMF8QOsyFfBsb2iT457zK3qNgBrPv73L0sQgHAFecFqCmlFSqfNMFoF5I1dkmn
-         Y65Sn3ThvkhTCGAf8Mal9SyYQ+gRjSxD7OSueR2umCNKZA7JT5KZzruBh/ZnvcQw4dAf
-         Xhotc7Hq1eDeTQT+9TkygpuM1XpTfeROMZNxZHB32R2zr7G5mSoBXHBsUENi1jJ9fxKq
-         53mA==
-X-Forwarded-Encrypted: i=1; AJvYcCUgIMqkMCF47bRAOH8Xe4iScysJoZ96PNkIiW3RYsyjoxLH4Rqzp1N3WsOl6dUezcUj5qzo9cnPyvOHKgud/iw0+vtLujyxnCD+dDEj
-X-Gm-Message-State: AOJu0YylmcXbPUI5f0jMsYHC3NDukd5wOLpEKBk5EpXqo9AFNjODD/uk
-	B3te2vrZsTTXLTvF+ji8F+NIt0IoGeKdYoh2HmsURZ0fjSugJ67lUzKTKE0kZFxdJkrkvRhBgJL
-	WBXqKsTMvDBH37Up8rIPQ1Re3r4+K0+rjAmJi3vHqWDttYXy9XXKpj3HKu59RTg==
-X-Received: by 2002:a37:ef18:0:b0:78d:751f:64c1 with SMTP id j24-20020a37ef18000000b0078d751f64c1mr10591136qkk.10.1713181813250;
-        Mon, 15 Apr 2024 04:50:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF7yK4XX2ZB+EwdeP/psUVE/QqwuKvXArIsjty0YhNRCR35MpLenystRwftGw3nnZcZQvthOQ==
-X-Received: by 2002:a37:ef18:0:b0:78d:751f:64c1 with SMTP id j24-20020a37ef18000000b0078d751f64c1mr10591117qkk.10.1713181812992;
-        Mon, 15 Apr 2024 04:50:12 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id q18-20020a05620a0c9200b0078ee7bad7a2sm1297863qki.3.2024.04.15.04.50.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 04:50:12 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Kyle Meyer <kyle.meyer@hpe.com>, linux-kernel@vger.kernel.org,
- yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
- linux@rasmusvillemoes.dk, mingo@redhat.com, peterz@infradead.org,
- juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com
-Cc: russ.anderson@hpe.com, dimitri.sivanich@hpe.com, steve.wahl@hpe.com,
- Kyle Meyer <kyle.meyer@hpe.com>
-Subject: Re: [PATCH v2 2/2] sched/topology: Optimize topology_span_sane()
-In-Reply-To: <20240410213311.511470-3-kyle.meyer@hpe.com>
-References: <20240410213311.511470-1-kyle.meyer@hpe.com>
- <20240410213311.511470-3-kyle.meyer@hpe.com>
-Date: Mon, 15 Apr 2024 13:50:08 +0200
-Message-ID: <xhsmhr0f69767.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1713182415; c=relaxed/simple;
+	bh=ZZUy1xI7pLJyHVR8GyZICsFTKD+f1gi5zCnPFjtGcvU=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=YyMpDR31Q69K/6+a1L4Yr98cbKXDvSzb22tQFrnAVbCe3VTlqU8QoayO5BTekk1n0N7Xf4sra7Q+eS6c/BHt8nb7movpfcaX87NJYNl2SwaTFXgqt0c2erggaxwjngT+3IpiG4gmhm7oaIxDVGbydmA39U8eyDKnXG44RsK5UWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru; spf=pass smtp.mailfrom=infotecs.ru; dkim=pass (1024-bit key) header.d=infotecs.ru header.i=@infotecs.ru header.b=ar85pjeZ; arc=none smtp.client-ip=91.244.183.115
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=infotecs.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infotecs.ru
+Received: from mx0.infotecs-nt (localhost [127.0.0.1])
+	by mx0.infotecs.ru (Postfix) with ESMTP id 3A53610064FA;
+	Mon, 15 Apr 2024 14:50:19 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx0.infotecs.ru 3A53610064FA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infotecs.ru; s=mx;
+	t=1713181819; bh=1JzukUDnPECi4/20s24sBuSFQzc/kxxeFzOxjMJdXG0=;
+	h=From:To:CC:Subject:Date:From;
+	b=ar85pjeZnGsrOwfMK049cSm+nZP5pwId99u45lPAkdVGAAyRNcG7itd0QclXlZJ8Q
+	 o8RRTzy7k/Nvw+ExGZmBG0Ey/hMf2cZor6CwQVdBnHQPknItQukuip5CSDg1Oy24IQ
+	 aGZsrs8f6x+dsT99AeuhDldtslCPZX2HI7pcYjb4=
+Received: from msk-exch-02.infotecs-nt (msk-exch-02.infotecs-nt [10.0.7.192])
+	by mx0.infotecs-nt (Postfix) with ESMTP id 36C553025FD4;
+	Mon, 15 Apr 2024 14:50:19 +0300 (MSK)
+From: Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>
+To: "stable@vger.kernel.org" <stable@vger.kernel.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>
+CC: Michal Ostrowski <mostrows@earthlink.net>, Guillaume Nault
+	<gnault@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: [PATCH 5.15/5.10/5.4/4.19 0/1] pppoe: Fix memory leak in
+ pppoe_sendmsg()
+Thread-Topic: [PATCH 5.15/5.10/5.4/4.19 0/1] pppoe: Fix memory leak in
+ pppoe_sendmsg()
+Thread-Index: AQHajysWljFSLnmM8Ee7tNlnszP9Ew==
+Date: Mon, 15 Apr 2024 11:50:18 +0000
+Message-ID: <20240415115015.3913760-1-Ilia.Gavrilov@infotecs.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-exclaimer-md-config: 208ac3cd-1ed4-4982-a353-bdefac89ac0a
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-KLMS-Rule-ID: 5
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2024/04/15 08:48:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2024/04/15 09:42:00 #24801259
+X-KLMS-AntiVirus-Status: Clean, skipped
 
-On 10/04/24 16:33, Kyle Meyer wrote:
-> Optimize topology_span_sane() by removing duplicate comparisons.
->
-> Since topology_span_sane() is called inside of for_each_cpu(), each
-> pervious CPU has already been compared against every other CPU. The
-> current CPU only needs to be compared against higher-numbered CPUs.
->
-> The total number of comparisons is reduced from N * (N - 1) to
-> N * (N - 1) / 2 on each non-NUMA scheduling domain level.
->
-> Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
-> Reviewed-by: Yury Norov <yury.norov@gmail.com>
-> Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+syzbot reports a memory leak in pppoe_sendmsg in 5.15, 5.10, 5.4 and 4.19
+stable releases. The problem has been fixed by the following patch which
+can be cleanly applied to the 5.15, 5.10, 5.4 and 4.19 branches.
 
-Reviewed-by: Valentin Schneider <vschneid@redhat.com>
+Found by InfoTeCS on behalf of Linux Verification Center
+(linuxtesting.org) with Syzkaller
 
+Gavrilov Ilia (1):
+  pppoe: Fix memory leak in pppoe_sendmsg()
+
+ drivers/net/ppp/pppoe.c | 23 +++++++++--------------
+ 1 file changed, 9 insertions(+), 14 deletions(-)
+
+--=20
+2.39.2
 
