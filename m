@@ -1,113 +1,99 @@
-Return-Path: <linux-kernel+bounces-145509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9D58A572C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:11:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5AAF8A574F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:13:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69F2D1F22A44
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:11:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34582B23519
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:13:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3869980055;
-	Mon, 15 Apr 2024 16:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACD183A0D;
+	Mon, 15 Apr 2024 16:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eD8xViws"
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DY8VYQg/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5F31E535;
-	Mon, 15 Apr 2024 16:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942E882891;
+	Mon, 15 Apr 2024 16:12:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197465; cv=none; b=DQW4IB8cc/vo0rhfTCCcsMdtPlT3ael7cLQT7vBu97Ijh3VlsJGrlDal6UkV9aPVHbskTD1+kzADQzX+NUbWd5sjLQhOZ+E+xjZ7CwCzME0A2cLyTq+u+8Cqq3vMzpIe4ZxcUHbs+FfJS6HYhthWW3atgGNCoFSkRp6IbcEiA2A=
+	t=1713197542; cv=none; b=V0hXWC914ILhnBsJN1pnVl1JYO2zWkvGDxVuWUpC9e1CQQQoCFZvSNWeKJNcbBkFT62ttMRqMY1R+leWYINzBbmJl+2s0CMBDwSRwSAfoheMYVTCczItKxYH1lorvko9zH+uWcvTbM6l+oNHe8KH7TH46B7B4KyFWatlvvQvfpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197465; c=relaxed/simple;
-	bh=Y9phrcuVghze5A3r/VgBvO2dKSPDGgDW7lzbSbW+qbA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ninF/TMSkgs7tSKljkOV66IGoV59cOktXCSZ4LS7aOEDtYsUiiQ0I+2baUobJHn2dvd3KIBcSuKAeBNvWn+h4E7Q642zsLUvFOWNxPnSuGPeDbUVRFpuYuplUyf2mtHpA9b+/mEgbzQpticVuBCkEEROA1bCMX0U7kJAtDnQSoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eD8xViws; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ecf3943040so2686983b3a.0;
-        Mon, 15 Apr 2024 09:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713197463; x=1713802263; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=idKY/AXCx9ADdtSZX2SyJbtyHMfNUkXAqrrB1Te8B8I=;
-        b=eD8xViwsM/O1KZpH3z7mI1bYXpVRuqc41iNzH6vp26bCpAkTwgNkcaqV5kP3q1tWZ6
-         RZ/+ep5w/1saB+wT+IdRB3bWjY/RLXgz6K5T+Bj7+75V4eGV94x3Q1A9hMZU6wxi6wrQ
-         V1mXWedp9iZWym6xN5rencJqMQn1CnWR0w/dII9RygzEB4jFumXbuPz7ZmG+0QMhmcx9
-         AXJUoTxbChgWwdZL02m7kFpL8KeMvesi5plf87+ZT87QYHjnNeMpeBKU9+HT/buA22dN
-         kiLjfZtbTacXc7ur+Y+pPPtHSJna/gVcd2oEoTC+q5P2AL6Rq920c+kvf2iocRsPS6pm
-         Uyyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713197463; x=1713802263;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=idKY/AXCx9ADdtSZX2SyJbtyHMfNUkXAqrrB1Te8B8I=;
-        b=FHF6uBARPiJSh2ia/zGc5hTyewCjBfM+o/XfaLJGNkjyTeOZH9sHeDBA/Dy32GUoU2
-         7f/BGqDKeJdNhzF5kv3V2RZu4v1UwdsdvEoMMvu2mBB4GIGJn8NCG8Xi2EUaoKxUa00o
-         spbiTHatElBpiCojvy1QKgpkx44fTF158SxFdRN8J/pKDBwrBfdkAKILIOTI95CzYkJF
-         KTRfhAWMJ9KSAXeiUNSuzcXRsJ56ocHmlWKkoTU3ms8iaD9i362upUvtZasF0AS36mK9
-         cXAGt9oealfXE/h7lW2MCapjVwnMSRCLhoYwiPRuiTn99RTIBqaqqV9UuMLdb66DttX2
-         ogUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWpyeyFsVX+5Q11mn4CEbTko/2c+H188d9+49Lqia9LL8XpzxBZq7XAqpGvyKL3LHEenCI4iNRPfiamtCQD8OZlkcACH22+FTjJw10NOCV+q97IaLsx/MZ43Ahu3kZ86+oztm6wD2HA
-X-Gm-Message-State: AOJu0Ywy8reK5oqhpael1RyCRpvZOkvmmhmJ2+L14EoRsjS2m+IkSNFF
-	MosdKzkuNJE+AzK8v0dsOmxqkjGcJV/+F2FuCrr20r8aX4dvrQsJoT/XEHiC
-X-Google-Smtp-Source: AGHT+IHCW5enMeqSxfKAKz6Q3Kx5ErcaMW7349ZcFBrKfz5bX7YYXC6EAqUVqihnGGZwN6vufHHUqw==
-X-Received: by 2002:a05:6a20:560d:b0:1a7:3095:b3b9 with SMTP id ir13-20020a056a20560d00b001a73095b3b9mr8753963pzc.22.1713197463496;
-        Mon, 15 Apr 2024 09:11:03 -0700 (PDT)
-Received: from dev0.. ([49.43.161.106])
-        by smtp.gmail.com with ESMTPSA id 6-20020a056a00070600b006eab6f3d8a9sm7414200pfl.207.2024.04.15.09.10.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 09:11:03 -0700 (PDT)
-From: Abhinav Jain <jain.abhinav177@gmail.com>
-To: mahesh@linux.ibm.com,
-	oohall@gmail.com,
-	bhelgaas@google.com,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	Abhinav Jain <jain.abhinav177@gmail.com>
-Subject: [PATCH] PCI/AER: Print error message as per the TODO
-Date: Mon, 15 Apr 2024 16:10:55 +0000
-Message-Id: <20240415161055.8316-1-jain.abhinav177@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1713197542; c=relaxed/simple;
+	bh=lf/eRIj/5j8u//ixELV2WwrUVkIcFMU4DZBF09ROLs4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aUc4bM3nQ53J+PkbWsXYlN01yxzZZcK66mY+0x/+Y7MOhc4lgRx9lX+p6NJooQOTwP4WVvi+eYY6zMF6rQE3DFDuCSULbtFPMdi9Xx+6FOjqslnTarU/v4TYL0CNeG1cdK804JxsDjSK+q3amf/NSdhEyG1v4QRMFQrFwJ2LPuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DY8VYQg/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F5DC113CC;
+	Mon, 15 Apr 2024 16:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713197542;
+	bh=lf/eRIj/5j8u//ixELV2WwrUVkIcFMU4DZBF09ROLs4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DY8VYQg/kDNpT3Ypyl8UjW7PsG4RSdEPOB6e3kuF2CNnSRuRavvwKX6f6RSqwoQ9b
+	 1HpcQ+crapieVK1m6Mj4P1xFow5OxmtSXkhNVWYYoENy+R9l2uTz8A4zGY+MnqA4w/
+	 l+0v5f+bymKN5I30nFS14A9YNgqxkH/IZXupSnyV/08Eawydb27eqtCQ5ADpvuRDjJ
+	 Rb5RYbes+mITOi+GjZwmWsvHlUqsFxq1+wCnToKsyRruUuy76FdQUySHmbNfcUeqK6
+	 QMGib7Xdse50YxBeKbcUtyq4EStoqGHUfzDGrAQikpu+KTz6nbmIb+Bdg6QdxOvSEK
+	 IRK4ia7EuCYKQ==
+Date: Mon, 15 Apr 2024 17:12:16 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Johan Jonker <jbx6244@gmail.com>
+Cc: hjc@rock-chips.com, heiko@sntech.de, andy.yan@rock-chips.com,
+	airlied@gmail.com, daniel@ffwll.ch,
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+	tzimmermann@suse.de, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, markyao0591@gmail.com,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] dt-bindings: display: add #sound-dai-cells
+ property to rockchip dw hdmi
+Message-ID: <20240415-even-credible-385b03941c85@spud>
+References: <3a035c16-75b5-471d-aa9d-e91c2bb9f8d0@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="AEo7oWbtHZPZ4TpT"
+Content-Disposition: inline
+In-Reply-To: <3a035c16-75b5-471d-aa9d-e91c2bb9f8d0@gmail.com>
 
-Add a pr_err() to print the add device error in find_device_iter()
 
-Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
----
- drivers/pci/pcie/aer.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--AEo7oWbtHZPZ4TpT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index ac6293c24976..0e1ad2998116 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -885,7 +885,8 @@ static int find_device_iter(struct pci_dev *dev, void *data)
- 		/* List this device */
- 		if (add_error_device(e_info, dev)) {
- 			/* We cannot handle more... Stop iteration */
--			/* TODO: Should print error message here? */
-+			pr_err("find_device_iter: Cannot handle more devices.
-+					Stopping iteration");
- 			return 1;
- 		}
- 
--- 
-2.34.1
+On Sat, Apr 13, 2024 at 05:38:05PM +0200, Johan Jonker wrote:
+> The Rockchip DWC HDMI TX Encoder can take one I2S input and transmit it
+> over the HDMI output. Add #sound-dai-cells (=3D 0) to the binding for it.
+>=20
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 
+Please send cover letters for multi-patch series, for all 3:
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Chees,
+Conor.
+
+--AEo7oWbtHZPZ4TpT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh1R4AAKCRB4tDGHoIJi
+0rvCAP9DMAtQlMI0B9a808d60hETrodKbxFqTBwuNCFIwujrSAEAuM+sNixMih38
+zXZd/R0HJhwIqi6+r0qVmT4pKU4+DQg=
+=qORJ
+-----END PGP SIGNATURE-----
+
+--AEo7oWbtHZPZ4TpT--
 
