@@ -1,184 +1,157 @@
-Return-Path: <linux-kernel+bounces-145501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3BB68A56FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:04:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 896C98A56FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:03:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47D7FB228A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:04:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284551F221DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331C27FBBE;
-	Mon, 15 Apr 2024 16:03:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B257F7FD;
+	Mon, 15 Apr 2024 16:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BApmuDAt"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HvR3tylh"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9A979DD5;
-	Mon, 15 Apr 2024 16:03:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B51762E0;
+	Mon, 15 Apr 2024 16:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197034; cv=none; b=IFoVLQpFpHZ4WYFea8INjLrnp/eI++Cw2NYq+lpRSd/CyvvoswoVkZLxj0mZlO9mZJhfANQEjg2rrHbz9DJNHCM85RPwxoLZNM0Zn9w3oOSG1TxR8ijczCXUuq37qiFjTVT7Q29JSJVMnNNpvLuVt1S2bV9YXp0C0AuUC3MoxOQ=
+	t=1713197006; cv=none; b=MWejwPvDGE71DXwy0vuv5epMeWYPyd5uY9jI8+fdC4wqaGcpVswqXqxAeuc6AmN0IovEkWcAwWVAdV4GNaSDRWrBRbCrSzUmASDQulcfqzhPfT5nGWb3+T9lPcZTopspcmRX4xZWZgOKY+EPOcgWMFqR+0AMuAP7MLG/Nlwyoh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197034; c=relaxed/simple;
-	bh=eRNqsnu2gggpUPFWgp9U5SWpDCENJohEVqbf6eu8y30=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=oBvEs7Kqtnl71qT7CdA7IWp3PtOuECgKMj4v9msHQsyPoGdsT0ztpb31ff3xoU0nLdhNeRxFPfkGwYGMJAIbh63mJKiE4mdhzk0cWgZOBXlska0x/OOJinzioqCTPBrQANd5J+u5EsRRJP2MRfrb9coxnNVga9t0oKocjNNTZiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BApmuDAt; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713197034; x=1744733034;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=eRNqsnu2gggpUPFWgp9U5SWpDCENJohEVqbf6eu8y30=;
-  b=BApmuDAtNAZ92w2IHlP1JVthdPcAWTHRuTV97fXabuO+GiSiq+o8lyuS
-   z/nQpMQLk8ffHqc3VWBvFNQco8iulXe+vJ4Dzqeu1/06ljoqkBFdOMrCH
-   njLjZv/GQrTfsRi4qRQIIxeSZIbY6ZCzQNuQMw1WxzDH12JroOrk1hZDu
-   Q9IlY2QNUoar9hmrbzh5yyVFPRh2+s6Yq8Fl3q6VD2yOgEsjjx7SRXIJP
-   nkP4YsL98AmaLg3MSQSjBigpVHfX/GaoyrEAfASeqqUc338SkR3Ihg8b7
-   vPKKpePQSgAPWJZmbpqyQtvo6rKBwA5E60WdgS4D7e7LUEoWnr37t6u4O
-   A==;
-X-CSE-ConnectionGUID: OO3W3y6OT82G3tK6N+7qbg==
-X-CSE-MsgGUID: 9rHW795JR26f0GnLN3l8HA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8703769"
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="8703769"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 09:03:14 -0700
-X-CSE-ConnectionGUID: cV6mMS5KT5+Khu71lQelUQ==
-X-CSE-MsgGUID: pEs01NjfSe+wVT96RpHFcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="26624362"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 09:03:09 -0700
-Received: from [10.213.164.211] (kliang2-mobl1.ccr.corp.intel.com [10.213.164.211])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 07FDE206D892;
-	Mon, 15 Apr 2024 09:03:06 -0700 (PDT)
-Message-ID: <ab2953b7-18fd-4b4c-a83b-ab243e2a21e1@linux.intel.com>
-Date: Mon, 15 Apr 2024 12:03:05 -0400
+	s=arc-20240116; t=1713197006; c=relaxed/simple;
+	bh=lIMvuAHwjLxn14xlI86pxUjympPvQM4ZFRtNHfmoXeI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WaSnWxknOMN/04YB3YjidW74rgm0vfSZg0hk2PuLVDQ6yoEXM6cybgwySU2rcQeC4T5p89Yf90jOVMzmMN+sgbeVG9E6XOrEx9N61OPOpOIwyKUoD0OFRwWavvCVmDOxykrvLied5WRLqWvY+4st8YS2n48aPTj6lM/4mpNGepU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HvR3tylh; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41885eeb104so842625e9.0;
+        Mon, 15 Apr 2024 09:03:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713197000; x=1713801800; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pr8I+VgFd75ZRE+zHJAA09qQ4BgEHQBbfn3jY2/hZUM=;
+        b=HvR3tylhe70yWSmMloY4s/Nh7QRiaLD/IKUhYZQacqmB75CNfG6EkBJfaEpc7fHPHA
+         qk0PesxtvHxSgcY0zLtK9njkc8cIu1yghYJRK5zZykS0ZJ+IT4u1liUFmOxWHuroB8VF
+         I9rthvh5MAN5GhH5sNiOz97gy8hQ+8lvVVeUxX/RqJBFpgI8aIlf+5SUpwy6ouFcaNUz
+         ez414Xpe52HqiOcbDnOhurF5hUgR7JrZqBRy7/OYx5vMdoEoETf5mcUXuVqqCmqX3Dyy
+         ShzJh35lCC2jZUvCcfN+ViMbzIZ2eTpVm6icQfLib1ZIGt+5BpcbsrRTcQJ6kVyflHBX
+         p1SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713197000; x=1713801800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pr8I+VgFd75ZRE+zHJAA09qQ4BgEHQBbfn3jY2/hZUM=;
+        b=r6OxmD2/HnCDpUsListSlOZ6fQpOMeLV8/bzr/e1K1+5PFh6vu0x5gL7MDDX0FWN4p
+         Pl2fD/ryHgt/01aTiwOvk6KSD0RKOJOqF+r/2ePH5FckKLYbtagWsK8rsfb4q/s7Mlt2
+         pk6Nkex/SAxACJ0UoKhb+7Qm3WATEJk7smgslOyboDE5d9zMOmgb5CFT4kpUOgTLqnWf
+         zlc9nlQ+1cULEB+UIAjsH4eStBSTNqZZUYIACtODO3H5+afJrePdqGV7DsRJS7yBseOu
+         r4SFvedafHKyaEU2hB+e1d4QPE+vcOdkaB2k/20/iHK0WSrNHnYNMUuRLwF1vfcpIjyW
+         kmcw==
+X-Forwarded-Encrypted: i=1; AJvYcCXitwUWxjRI/8TqIBCsdzO8Gf0zhfjweK6MalE3pxBeB40pvcwsrEHgHLOjKxYD5G4pMrgNFiWTrlzNFtT2OpTeN/OL4A6MeBYtAQk96Z/O0Yun5V6sY92MlAiaeRmAI2fZ3xW3Dw0S5A==
+X-Gm-Message-State: AOJu0YyykzTLVEyVKxhuZ69w59lAUfaI/vdGa3hHWHKwDScFQNmssX+A
+	g3V9x2laYbW8lLNb8iRdPp1C1lYeomblo/ffIbuC4NuXUunC1gvRVTZwHixzkLfu7mhO3zZmc6O
+	LMCUH6KAU7pyAlgM20XYCaSyTa0c=
+X-Google-Smtp-Source: AGHT+IGnudFnkfz6Z05cxCNhWfRT6AhTVVqFs+J3nN12T7rpgYsfp9y3+IWYL9AdGU/G7zlxCfw/2BIy9fnGAran+C8=
+X-Received: by 2002:a05:600c:1d0a:b0:418:5fb4:20ab with SMTP id
+ l10-20020a05600c1d0a00b004185fb420abmr2227743wms.5.1713197000036; Mon, 15 Apr
+ 2024 09:03:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 02/41] perf: Support guest enter/exit interfaces
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
- peterz@infradead.org, mizhang@google.com, kan.liang@intel.com,
- zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, jmattson@google.com,
- kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-3-xiong.y.zhang@linux.intel.com>
- <ZhgmrczGpccfU-cI@google.com>
- <23af8648-ca9f-41d2-8782-f2ffc3c11e9e@linux.intel.com>
- <ZhmIrQQVgblrhCZs@google.com>
- <2342a4e2-2834-48e2-8403-f0050481e59e@linux.intel.com>
-Content-Language: en-US
-In-Reply-To: <2342a4e2-2834-48e2-8403-f0050481e59e@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240412091600.2534693-1-peteryin.openbmc@gmail.com> <3eb80a2f21a96cc0fc275db60631f673bb14e77f.camel@codeconstruct.com.au>
+In-Reply-To: <3eb80a2f21a96cc0fc275db60631f673bb14e77f.camel@codeconstruct.com.au>
+From: Chia Hsing Yin <peteryin.openbmc@gmail.com>
+Date: Tue, 16 Apr 2024 00:03:08 +0800
+Message-ID: <CAPSyxFRj0twCJG6Lr5UZpznrUHyd_L0Reo=kZSFwCw3FNQ+x+A@mail.gmail.com>
+Subject: Re: [PATCH v5 00/12] Revise Meta(Facebook) Harma BMC(AST2600)
+To: Andrew Jeffery <andrew@codeconstruct.com.au>
+Cc: patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Sure thing, I will base on version 5 for future modifications.
 
+Thanks.
 
-On 2024-04-12 4:56 p.m., Liang, Kan wrote:
->> What if perf had a global knob to enable/disable mediate PMU support?  Then when
->> KVM is loaded with enable_mediated_true, call into perf to (a) check that there
->> are no existing !exclude_guest events (this part could be optional), and (b) set
->> the global knob to reject all new !exclude_guest events (for the core PMU?).
->>
->> Hmm, or probably better, do it at VM creation.  That has the advantage of playing
->> nice with CONFIG_KVM=y (perf could reject the enabling without completely breaking
->> KVM), and not causing problems if KVM is auto-probed but the user doesn't actually
->> want to run VMs.
-> I think it should be doable, and may simplify the perf implementation.
-> (The check in the schedule stage should not be necessary anymore.)
-> 
-> With this, something like NMI watchdog should fail the VM creation. The
-> user should either disable the NMI watchdog or use a replacement.
-> 
-> Thanks,
-> Kan
->> E.g. (very roughly)
->>
->> int x86_perf_get_mediated_pmu(void)
->> {
->> 	if (refcount_inc_not_zero(...))
->> 		return 0;
->>
->> 	if (<system wide events>)
->> 		return -EBUSY;
->>
->> 	<slow path with locking>
->> }
->>
->> void x86_perf_put_mediated_pmu(void)
->> {
->> 	if (!refcount_dec_and_test(...))
->> 		return;
->>
->> 	<slow path with locking>
->> }
-
-
-I think the locking should include the refcount check and system wide
-event check as well.
-It should be possible that two VMs are created very close.
-The second creation may mistakenly return 0 if there is no lock.
-
-I plan to do something as below (not test yet).
-
-+/*
-+ * Currently invoked at VM creation to
-+ * - Check whether there are existing !exclude_guest system wide events
-+ *   of PMU with PERF_PMU_CAP_MEDIATED_VPMU
-+ * - Set nr_mediated_pmu to prevent !exclude_guest event creation on
-+ *   PMUs with PERF_PMU_CAP_MEDIATED_VPMU
-+ *
-+ * No impact for the PMU without PERF_PMU_CAP_MEDIATED_VPMU. The perf
-+ * still owns all the PMU resources.
-+ */
-+int x86_perf_get_mediated_pmu(void)
-+{
-+	int ret = 0;
-+	mutex_lock(&perf_mediated_pmu_mutex);
-+	if (refcount_inc_not_zero(&nr_mediated_pmu_vms))
-+		goto end;
-+
-+	if (atomic_read(&nr_include_guest_events)) {
-+		ret = -EBUSY;
-+		goto end;
-+	}
-+	refcount_inc(&nr_mediated_pmu_vms);
-+end:
-+	mutex_unlock(&perf_mediated_pmu_mutex);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(x86_perf_get_mediated_pmu);
-+
-+void x86_perf_put_mediated_pmu(void)
-+{
-+	mutex_lock(&perf_mediated_pmu_mutex);
-+	refcount_dec(&nr_mediated_pmu_vms);
-+	mutex_unlock(&perf_mediated_pmu_mutex);
-+}
-+EXPORT_SYMBOL_GPL(x86_perf_put_mediated_pmu);
-
-
-Thanks,
-Kan
+On Mon, Apr 15, 2024 at 10:00=E2=80=AFAM Andrew Jeffery
+<andrew@codeconstruct.com.au> wrote:
+>
+> On Fri, 2024-04-12 at 17:15 +0800, Peter Yin wrote:
+> > Summary:
+> > Revise linux device tree entry related to Meta(Facebook) Harma
+> > specific devices connected to BMC(AST2600) SoC.
+> >
+> > Base on : https://lore.kernel.org/all/CACPK8XePx+PvDKzPMjPRn_g9z8yrtAmL=
+vP8Qbepm1AVjuCbaKw@mail.gmail.com/
+> >
+> > Change log:
+> >
+> > v4 -> v5
+> >   - Patch 0011 - Add retimer device
+> >   - Patch 0012 - Modify gpio line name
+> >
+> > v3 -> v4
+> >   - Patch 0010 - Revise node name
+> >   - fixed PDB temperature node name in Patch 0006
+> >
+> > v2 -> v3
+> >   - Patch 0007 - Revise max31790 address
+> >   - Patch 0008 - Harma: Add NIC Fru device
+> >   - Patch 0009 - Add ltc4286 device
+> >
+> > v1 -> v2
+> >   - Add infineon,slb9670 information for tpm.
+> >   - Patch 0006 - Add PDB temperature.
+> >
+> > v1
+> >   - Patch 0001 - Revise SGPIO line name.
+> >   - Patch 0002 - Mapping ttyS2 to UART4.
+> >   - Patch 0003 - Remove Vuart.
+> >   - Patch 0004 - Add cpu power good line name.
+> >   - Patch 0005 - Add spi-gpio.
+> >
+> > Peter Yin (12):
+> >   ARM: dts: aspeed: Harma: Revise SGPIO line name.
+> >   ARM: dts: aspeed: Harma: mapping ttyS2 to UART4.
+> >   ARM: dts: aspeed: Harma: Remove Vuart
+> >   ARM: dts: aspeed: Harma: Add cpu power good line name
+> >   ARM: dts: aspeed: Harma: Add spi-gpio
+> >   ARM: dts: aspeed: Harma: Add PDB temperature
+> >   ARM: dts: aspeed: Harma: Revise max31790 address
+> >   ARM: dts: aspeed: Harma: Add NIC Fru device
+> >   ARM: dts: aspeed: Harma: Add ltc4286 device
+> >   ARM: dts: aspeed: Harma: Revise node name
+> >   ARM: dts: aspeed: Harma: Add retimer device
+> >   ARM: dts: aspeed: Harma: Modify GPIO line name
+> >
+> >  .../dts/aspeed/aspeed-bmc-facebook-harma.dts  | 107 ++++++++++++++----
+> >  1 file changed, 85 insertions(+), 22 deletions(-)
+> >
+>
+> Joel had applied an earlier version of this series to his for-next
+> branch. I'm collecting patches targeting it while he's on leave. I've
+> updated the series he'd applied to the v5 you've posted here.
+>
+> Can you please post any further changes as patches on top? You can find
+> my branch here:
+>
+> https://github.com/amboar/linux/tree/for/bmc/dt-6.10
+>
+> Andrew
 
