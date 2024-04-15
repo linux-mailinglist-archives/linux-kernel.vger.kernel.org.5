@@ -1,166 +1,120 @@
-Return-Path: <linux-kernel+bounces-144866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F618A4BF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 476568A4BFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:52:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E95972882AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:51:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2FC82889F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6BA46424;
-	Mon, 15 Apr 2024 09:51:34 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAD245959;
+	Mon, 15 Apr 2024 09:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="H4m/cOlC"
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47AA40868;
-	Mon, 15 Apr 2024 09:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692B14E1A0
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713174693; cv=none; b=VoxzuI8Z5/EghP5H0bIE+DTxK0VmQjXnPd1KurtiKEEJjQQKJI8sKOvTwRnY3LQpmkquESPfPwLNs7ADOz+2lYN9ZVf5wbWmnxFLBnxLUI1F49IgI+Br7UQ1a5ErHAUn0c+XN1lJ3rtQ1oJdCjwM7m+LXiP4dM2ijXuorTzRHRQ=
+	t=1713174753; cv=none; b=lQm7lDfBp31cC93I1PhQVok0ZFdAKIUruxmZohqFlswSrKopkrCJ1TD5uRShEKhmd88d6X40vhGAxo2KsHZv2caiSPMw4ovm9DPHHk/msISrg2fPWOzwcAZJJtxx2Rbmsqz3KpgS7yL6W3o+n8OeUnnzDqVprnQqJzNKcST6RvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713174693; c=relaxed/simple;
-	bh=8lRDM+nAraAQJSBUKR+WqTVlUNZqbzoULQPWARmPl5I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fs4GJII25XsbSCIxrHUy3mLA1DL3av/HVGEGVG7s+gdZT9qxbrvtfRYMRk++hjif17v+UE2jYdyHT6nKqsDHyT1+xT4Hdb4UEO/llPDu6jT8FLu8OYKO4ez1O0qiD6mbc4zwFHv3BdVR2pZHVL9V3lfNRVenwVNxD6PwaSEyIz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F7FBC113CC;
-	Mon, 15 Apr 2024 09:51:32 +0000 (UTC)
-Message-ID: <3f8660b0-e29c-47e2-b877-10da058388f9@xs4all.nl>
-Date: Mon, 15 Apr 2024 11:51:30 +0200
+	s=arc-20240116; t=1713174753; c=relaxed/simple;
+	bh=wRVTJ0UbYbZDQRp6UEkosuQ5Xv/tRLFqmEIuhSEGVu4=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=j/GCWmwUfw++Xybri/j0LHXsYgK6K78xiRLfVT2ehvyBl3quqPoqqSHG1SZnuTMtRJUo20ebtjcGRtlIxfjJC4QRDiOdRB1IiuyPlQ6ifHxrgcKXZ2Dl1bbajuMS+JOQ3k1I31zB1w0dvk/lbx9wI4zqaTP9p1K+HXtKSDQp8/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=H4m/cOlC; arc=none smtp.client-ip=188.165.51.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1713174736; x=1713433936;
+	bh=c6ckz4hhAbktVZkF1RuxUbUmw/jaVAkQ7dsloKnHX8M=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=H4m/cOlCahXLO+0GLUL9cXxPqoObTqJqbMgZaX0TOJbG4YwQf5PO4XUDPkJ7/d85Y
+	 1z6MlUat8q+X7wyjRBLEpLI86mo77Iir0TCVWoiiyaVSK7GTVSITXAhnpFYJrx5G9L
+	 5VwJ7e2Vecmjew40OzAOwZ3W/RLVqQAbhRISYnsBhDpt+i91x37qze+C/S8arERy2v
+	 NARZhDhUhivIqHZ+LHnxFbfWJsXvzgWoNrEDFfHZF66n8uxgU1Um0Kg/G3c0ULZCQr
+	 dJds5xaHflmkLw+dKiWj2w/RIBKaJegRspfuavfuEWEshLTJNpskEsxbQAECMBfV3Y
+	 QNOmEt1kDxQRg==
+Date: Mon, 15 Apr 2024 09:51:47 +0000
+To: Alice Ryhl <aliceryhl@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v5 1/4] rust: uaccess: add userspace pointers
+Message-ID: <36c22716-ba41-46e0-8e18-991f1a14b208@proton.me>
+In-Reply-To: <CAH5fLgjT3hAdtdNeb7FgX491UhvMGa-JHevz_EqC=N4zVViBjw@mail.gmail.com>
+References: <20240415-alice-mm-v5-0-6f55e4d8ef51@google.com> <20240415-alice-mm-v5-1-6f55e4d8ef51@google.com> <2cae6fd4-906c-44ad-88be-0dfed090d07c@proton.me> <CAH5fLgjT3hAdtdNeb7FgX491UhvMGa-JHevz_EqC=N4zVViBjw@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] media: dvb: Fix dtvs_stats packing.
-Content-Language: en-US, nl
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240410-pack-v1-0-70f287dd8a66@chromium.org>
- <20240410-pack-v1-2-70f287dd8a66@chromium.org>
- <f7ca4107-0341-4631-8d8d-b9677782ac2f@xs4all.nl>
- <CANiDSCvkRWZXuG7dfw0WXvgT+LHQqG3fx9F1M2P0_9dkB9VOKA@mail.gmail.com>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <CANiDSCvkRWZXuG7dfw0WXvgT+LHQqG3fx9F1M2P0_9dkB9VOKA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ricardo,
-
-On 12/04/2024 17:00, Ricardo Ribalda wrote:
-> Hi Hans
-> 
-> On Fri, 12 Apr 2024 at 16:21, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
+On 15.04.24 11:44, Alice Ryhl wrote:
+> On Mon, Apr 15, 2024 at 11:37=E2=80=AFAM Benno Lossin <benno.lossin@proto=
+n.me> wrote:
 >>
->> On 10/04/2024 14:24, Ricardo Ribalda wrote:
->>> The structure is packed, which requires that all its fields need to be
->>> also packed.
->>>
->>> ./include/uapi/linux/dvb/frontend.h:854:2: warning: field  within 'struct dtv_stats' is less aligned than 'union dtv_stats::(anonymous at ./include/uapi/linux/dvb/frontend.h:854:2)' and is usually due to 'struct dtv_stats' being packed, which can lead to unaligned accesses [-Wunaligned-access]
->>>
->>> Explicitly set the inner union as packed.
->>>
->>> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
->>> ---
->>>  include/uapi/linux/dvb/frontend.h | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/include/uapi/linux/dvb/frontend.h b/include/uapi/linux/dvb/frontend.h
->>> index 7e0983b987c2d..8d38c6befda8d 100644
->>> --- a/include/uapi/linux/dvb/frontend.h
->>> +++ b/include/uapi/linux/dvb/frontend.h
->>> @@ -854,7 +854,7 @@ struct dtv_stats {
->>>       union {
->>>               __u64 uvalue;   /* for counters and relative scales */
->>>               __s64 svalue;   /* for 0.001 dB measures */
->>> -     };
->>> +     }  __attribute__ ((packed));
->>>  } __attribute__ ((packed));
+>> On 15.04.24 09:13, Alice Ryhl wrote:
+>>> +impl UserSlice {
+>>> +    /// Constructs a user slice from a raw pointer and a length in byt=
+es.
+>>> +    ///
+>>> +    /// Constructing a [`UserSlice`] performs no checks on the provide=
+d address and length, it can
+>>> +    /// safely be constructed inside a kernel thread with no current u=
+serspace process. Reads and
+>>> +    /// writes wrap the kernel APIs `copy_from_user` and `copy_to_user=
+`, which check the memory map
+>>> +    /// of the current process and enforce that the address range is w=
+ithin the user range (no
+>>> +    /// additional calls to `access_ok` are needed).
+>>> +    ///
+>>> +    /// Callers must be careful to avoid time-of-check-time-of-use (TO=
+CTOU) issues. The simplest way
+>>> +    /// is to create a single instance of [`UserSlice`] per user memor=
+y block as it reads each byte
+>>> +    /// at most once.
+>>> +    pub fn new(ptr: *mut c_void, length: usize) -> Self {
 >>
->> This is used in the public API, and I think this change can cause ABI changes.
+>> What would happen if I call this with a kernel pointer and then
+>> read/write to it? For example
 >>
->> Can you compare the layouts? Also between gcc and llvm since gcc never warned
->> about this.
-> 
-> The pahole output looks the same in both cases:
-> 
-> https://godbolt.org/z/oK4desv7Y
-> vs
-> https://godbolt.org/z/E36MjPr7v
-> 
-> And it is also the same for all the compiler versions that I tried.
-> 
-> 
-> struct dtv_stats {
-> uint8_t                    scale;                /*     0     1 */
-> union {
-> uint64_t           uvalue;               /*     1     8 */
-> int64_t            svalue;               /*     1     8 */
-> };                                               /*     1     8 */
-> 
-> /* size: 9, cachelines: 1, members: 2 */
-> /* last cacheline: 9 bytes */
-> } __attribute__((__packed__));
-> 
-> 
-> 
-> struct dtv_stats {
-> uint8_t scale; /* 0 1 */
-> union {
-> uint64_t uvalue; /* 1 8 */
-> int64_t svalue; /* 1 8 */
-> }; /* 1 8 */
-> 
-> /* size: 9, cachelines: 1, members: 2 */
-> /* last cacheline: 9 bytes */
-> } __attribute__((__packed__));
-> 
-> 
+>>       let mut arr =3D [MaybeUninit::uninit(); 64];
+>>       let ptr: *mut [MaybeUninit<u8>] =3D &mut arr;
+>>       let ptr =3D ptr.cast::<c_void>();
 >>
->> I'm not going to accept this unless it is clear that there are no ABI changes.
-> 
-> Is there something else that I can try?
-
-No, that's what I needed. I also found some clang discussions here:
-
-https://github.com/llvm/llvm-project/issues/55520
-
-I propose that I add the following sentence to these three packing patches:
-
-"Marking the inner union as 'packed' does not change the layout, since the
-whole struct is already packed, it just silences the clang warning. See
-also this llvm discussion: https://github.com/llvm/llvm-project/issues/55520"
-
-If you are OK with that, then I can add that to your patches.
-
-Related to this: I added CEC and DVB support to the ABI checks in the build
-scripts. And fixed a bunch of mistakes there (e.g. 'false=true' where I meant
-to write 'fail=true'!) that made the ABI checks useless.
-
-I updated the abi/* files accordingly as well.
-
-Regards,
-
-	Hans
-
-> 
-> Regards!
-> 
+>>       let slice =3D UserSlice::new(ptr, 64);
+>>       let (mut r, mut w) =3D slice.reader_writer();
 >>
->> Note that the ABI test in the build scripts only tests V4L2 at the moment,
->> not the DVB API.
+>>       r.read_raw(&mut arr)?;
+>>       // SAFETY: `arr` was initialized above.
+>>       w.write_slice(unsafe { MaybeUninit::slice_assume_init_ref(&arr) })=
+?;
 >>
->> Regards,
->>
->>         Hans
->>
-> 
-> 
+>> I think this would violate the exclusivity of `&mut` without any
+>> `unsafe` code. (the `unsafe` block at the end cannot possibly be wrong)
+>=20
+> This will fail with an EFAULT error. There is a check on the C side
+> that verifies that the address is in userspace. (The access_ok call.)
+
+I see, that makes a lot of sense.
+
+Regardless of whether you fix the nit about the guarantees section:
+
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+
+--=20
+Cheers,
+Benno
 
 
