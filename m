@@ -1,92 +1,92 @@
-Return-Path: <linux-kernel+bounces-145086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 884A28A4F59
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:43:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF5F8A4F5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:43:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB3261C20B9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:43:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42E081C210FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F846FE0A;
-	Mon, 15 Apr 2024 12:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AF874262;
+	Mon, 15 Apr 2024 12:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jnAvIARw";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="D0Y3NL3b";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xh5nqpx/";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="blzOp7YU"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="owR8QOdr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7Zv2qhRq";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="owR8QOdr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7Zv2qhRq"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B836466B5E
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46FEF73504
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713184948; cv=none; b=jksLONxglML21vmBa3y5Lijh1Aeu5vJiUEgtWD1v5BSUJf0skBxN48qUmMMob0wfqzsUA7gOdmwSr96TJ0+kLw312b3bYMDNYcvIjHCXKzDrqqF1ie9LN3ryUEcORiZB6RzGrNysWpNLWfIoWkj1/u9ZnoGHPykddikvhSn7PK8=
+	t=1713184955; cv=none; b=FOFkbBeqsEXh33L4rqEFiJk2FYh8YCHdGgOQ2fjPY6KVL91LU+rVt7d+U2APHHNmvio9jGwi3nfaskHUz8iLo9UrUYQXnSDmQDTrzQnbnl0Mp3nDHCme/DzYzseCXyEO/3ZBwmgIVOcg/cyatTsMDJcNz9o/TUMY/l7fff2yCAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713184948; c=relaxed/simple;
-	bh=Ifh6ApnL+yawazi13adk1In0Wqsy1DsDNCn55Kyl8vg=;
+	s=arc-20240116; t=1713184955; c=relaxed/simple;
+	bh=YCu3qszDNcuF08TqVRorHqjC5eRckipuWxl9dt59wdA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SXRk8+jn7twjbJOrDRHppJNAlw09Tp9VZKJvhwZvtRBZEwyEtWLuJ24yt+3WAOOBBnfVRPcqcxL4cjpIayJ+ZRg5BS1kx0qs6LVYC1wtwK8FcCaw/4DZxpM2xbc1gBnrZHA2HrlVNppM+qq72pkuBUxSVhUg9kIHIaBPAcmyf0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jnAvIARw; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=D0Y3NL3b; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xh5nqpx/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=blzOp7YU; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=PrkpSl2fZTjofzoT/DmQ+vgVa9+CwsFv9/llpzeiJ+wWPSMO9KsLOI9htQMM0zLGy0XUlLsdtn98OOMxsuXRBdaJRgv1mh7Rb2KnyqwHuixeBM3Y9/vCW6JSgS7HzFPsJLOVj/5kSvk8QZLzO/UnXTfIMLr3do8z9XfgJWEfElc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=owR8QOdr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7Zv2qhRq; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=owR8QOdr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7Zv2qhRq; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E053221B3D;
-	Mon, 15 Apr 2024 12:42:24 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9B8065CF89;
+	Mon, 15 Apr 2024 12:42:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
 	t=1713184945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Iiviuq0yKAjKpIGK5/9DS+JPikG3jUsUkAzFD/WjfGI=;
-	b=jnAvIARw23H9T6/9vZYq9mfsuVQavh5Nh7/yD9XuomOrM8EQn1Mk8ZK7QxaKJYbiWK2R9K
-	jySZNVDKu8D16VkJf6cZ2sANMwnBwap2xNAmNScZDEhKTiwUiCuAzhC0B6/CsU4SPv2R6W
-	UgkJuMfHILXZfipzFb29Nb9rGrETH3I=
+	bh=GdiU/hfpHxZK5zdo9tcxs2NHnlIFlMrR4vJ1/c1O4Xg=;
+	b=owR8QOdrUeedrSF+ZViK6TqHtSL80dBKVahI63UxXb00tWxERKgSqCvJYd6YMnwD+gcLA7
+	fc5Uipw/AJcpMO13ian/RjGFX8SXAOo6xTsHSQmTXYAgNlcD9iFTJXVGYIRwzGqY4EAptf
+	Vjy7JiPFPUcto3OqD9pIIVg2Z2U9M58=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
 	s=susede2_ed25519; t=1713184945;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Iiviuq0yKAjKpIGK5/9DS+JPikG3jUsUkAzFD/WjfGI=;
-	b=D0Y3NL3bzJF6MtYGnoShIEQH9djLLPF92fUV2nDeO6Mtx5FWFsLEKyEhpI53dSxB9vNLyt
-	9jEr2d55IpTbyECA==
-Authentication-Results: smtp-out1.suse.de;
+	bh=GdiU/hfpHxZK5zdo9tcxs2NHnlIFlMrR4vJ1/c1O4Xg=;
+	b=7Zv2qhRq1MbbbW863GhA58nJhiR79UxRGLf5/SaIvPyXWlUrV2XlSMWfBil0XtMN1+ecEM
+	Y9ZcV+raJUtz5oBw==
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1713184944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1713184945; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Iiviuq0yKAjKpIGK5/9DS+JPikG3jUsUkAzFD/WjfGI=;
-	b=xh5nqpx/PBEyTsOdy9JlKIUBBinwXZR/RUOAEKIv98LNLFQS8gauby0WmxiEkvTZWHwi8v
-	WHA5WYCHuiGF44q6q8xdUVwvrk+urBTUUpJPTa/5NeaKA7afABRSdNmv8yterQn6G6lTi8
-	X/a+6w/Z08PRdrYFh7l9gihjSOUfJnk=
+	bh=GdiU/hfpHxZK5zdo9tcxs2NHnlIFlMrR4vJ1/c1O4Xg=;
+	b=owR8QOdrUeedrSF+ZViK6TqHtSL80dBKVahI63UxXb00tWxERKgSqCvJYd6YMnwD+gcLA7
+	fc5Uipw/AJcpMO13ian/RjGFX8SXAOo6xTsHSQmTXYAgNlcD9iFTJXVGYIRwzGqY4EAptf
+	Vjy7JiPFPUcto3OqD9pIIVg2Z2U9M58=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1713184944;
+	s=susede2_ed25519; t=1713184945;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Iiviuq0yKAjKpIGK5/9DS+JPikG3jUsUkAzFD/WjfGI=;
-	b=blzOp7YUQVqR2R+t5eRAgh5l21xtlCzwwt9NXLVbrQsUQAcpa6eR5VDyt4QWw4lCCjSeK9
-	wYy3aarTTZIPAzDg==
+	bh=GdiU/hfpHxZK5zdo9tcxs2NHnlIFlMrR4vJ1/c1O4Xg=;
+	b=7Zv2qhRq1MbbbW863GhA58nJhiR79UxRGLf5/SaIvPyXWlUrV2XlSMWfBil0XtMN1+ecEM
+	Y9ZcV+raJUtz5oBw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB7D01386E;
-	Mon, 15 Apr 2024 12:42:24 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8930B1386E;
+	Mon, 15 Apr 2024 12:42:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id U05aMLAgHWYxAwAAD6G6ig
-	(envelope-from <dwagner@suse.de>); Mon, 15 Apr 2024 12:42:24 +0000
+	id +RvPH7EgHWY0AwAAD6G6ig
+	(envelope-from <dwagner@suse.de>); Mon, 15 Apr 2024 12:42:25 +0000
 From: Daniel Wagner <dwagner@suse.de>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Keith Busch <kbusch@kernel.org>,
@@ -96,9 +96,9 @@ Cc: Keith Busch <kbusch@kernel.org>,
 	linux-nvme@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v6 3/5] nvme: authentication error are always non-retryable
-Date: Mon, 15 Apr 2024 14:42:18 +0200
-Message-ID: <20240415124220.5433-4-dwagner@suse.de>
+Subject: [PATCH v6 4/5] nvme-fabrics: short-circuit reconnect retries
+Date: Mon, 15 Apr 2024 14:42:19 +0200
+Message-ID: <20240415124220.5433-5-dwagner@suse.de>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240415124220.5433-1-dwagner@suse.de>
 References: <20240415124220.5433-1-dwagner@suse.de>
@@ -136,128 +136,258 @@ X-Spamd-Result: default: False [-6.80 / 50.00];
 
 From: Hannes Reinecke <hare@suse.de>
 
-Any authentication errors are non-retryable, so use negative error codes
-to ensure they are not retried.
+Returning a nvme status from nvme_tcp_setup_ctrl() indicates that the
+association was established and we have received a status from the
+controller; consequently we should honour the DNR bit. If not any future
+reconnect attempts will just return the same error, so we can
+short-circuit the reconnect attempts and fail the connection directly.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Another reason not to retry reconnects is if the transport returns an
+negative error code.
+
 Signed-off-by: Hannes Reinecke <hare@suse.de>
+[dwagner: - extended nvme_should_reconnect]
 Signed-off-by: Daniel Wagner <dwagner@suse.de>
 ---
- drivers/nvme/host/core.c    |  6 +++---
- drivers/nvme/host/fabrics.c | 31 +++++++++++++------------------
- drivers/nvme/host/nvme.h    |  2 +-
- 3 files changed, 17 insertions(+), 22 deletions(-)
+ drivers/nvme/host/fabrics.c | 19 ++++++++++++++++++-
+ drivers/nvme/host/fabrics.h |  2 +-
+ drivers/nvme/host/fc.c      |  4 +---
+ drivers/nvme/host/rdma.c    | 19 ++++++++++++-------
+ drivers/nvme/host/tcp.c     | 22 ++++++++++++++--------
+ 5 files changed, 46 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 504dc352c458..66387bcca8ae 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -383,14 +383,14 @@ static inline enum nvme_disposition nvme_decide_disposition(struct request *req)
- 	if (likely(nvme_req(req)->status == 0))
- 		return COMPLETE;
- 
--	if ((nvme_req(req)->status & 0x7ff) == NVME_SC_AUTH_REQUIRED)
--		return AUTHENTICATE;
--
- 	if (blk_noretry_request(req) ||
- 	    (nvme_req(req)->status & NVME_SC_DNR) ||
- 	    nvme_req(req)->retries >= nvme_max_retries)
- 		return COMPLETE;
- 
-+	if ((nvme_req(req)->status & 0x7ff) == NVME_SC_AUTH_REQUIRED)
-+		return AUTHENTICATE;
-+
- 	if (req->cmd_flags & REQ_NVME_MPATH) {
- 		if (nvme_is_path_error(nvme_req(req)->status) ||
- 		    blk_queue_dying(req->q))
 diff --git a/drivers/nvme/host/fabrics.c b/drivers/nvme/host/fabrics.c
-index 1f0ea1f32d22..f7eaf9580b4f 100644
+index f7eaf9580b4f..d9a73b1b41c4 100644
 --- a/drivers/nvme/host/fabrics.c
 +++ b/drivers/nvme/host/fabrics.c
-@@ -428,12 +428,6 @@ static void nvmf_connect_cmd_prep(struct nvme_ctrl *ctrl, u16 qid,
-  * fabrics-protocol connection of the NVMe Admin queue between the
-  * host system device and the allocated NVMe controller on the
-  * target system via a NVMe Fabrics "Connect" command.
-- *
-- * Return:
-- *	0: success
-- *	> 0: NVMe error status code
-- *	< 0: Linux errno error code
-- *
-  */
- int nvmf_connect_admin_queue(struct nvme_ctrl *ctrl)
- {
-@@ -467,7 +461,7 @@ int nvmf_connect_admin_queue(struct nvme_ctrl *ctrl)
- 		if (result & NVME_CONNECT_AUTHREQ_ASCR) {
- 			dev_warn(ctrl->device,
- 				 "qid 0: secure concatenation is not supported\n");
--			ret = NVME_SC_AUTH_REQUIRED;
-+			ret = -EOPNOTSUPP;
- 			goto out_free_data;
- 		}
- 		/* Authentication required */
-@@ -475,14 +469,14 @@ int nvmf_connect_admin_queue(struct nvme_ctrl *ctrl)
- 		if (ret) {
- 			dev_warn(ctrl->device,
- 				 "qid 0: authentication setup failed\n");
--			ret = NVME_SC_AUTH_REQUIRED;
- 			goto out_free_data;
- 		}
- 		ret = nvme_auth_wait(ctrl, 0);
--		if (ret)
-+		if (ret) {
- 			dev_warn(ctrl->device,
--				 "qid 0: authentication failed\n");
--		else
-+				 "qid 0: authentication failed, error %d\n",
-+				 ret);
-+		} else
- 			dev_info(ctrl->device,
- 				 "qid 0: authenticated\n");
- 	}
-@@ -542,7 +536,7 @@ int nvmf_connect_io_queue(struct nvme_ctrl *ctrl, u16 qid)
- 		if (result & NVME_CONNECT_AUTHREQ_ASCR) {
- 			dev_warn(ctrl->device,
- 				 "qid 0: secure concatenation is not supported\n");
--			ret = NVME_SC_AUTH_REQUIRED;
-+			ret = -EOPNOTSUPP;
- 			goto out_free_data;
- 		}
- 		/* Authentication required */
-@@ -550,12 +544,13 @@ int nvmf_connect_io_queue(struct nvme_ctrl *ctrl, u16 qid)
- 		if (ret) {
- 			dev_warn(ctrl->device,
- 				 "qid %d: authentication setup failed\n", qid);
--			ret = NVME_SC_AUTH_REQUIRED;
--		} else {
--			ret = nvme_auth_wait(ctrl, qid);
--			if (ret)
--				dev_warn(ctrl->device,
--					 "qid %u: authentication failed\n", qid);
-+			goto out_free_data;
-+		}
-+		ret = nvme_auth_wait(ctrl, qid);
-+		if (ret) {
-+			dev_warn(ctrl->device,
-+				 "qid %u: authentication failed, error %d\n",
-+				 qid, ret);
- 		}
- 	}
- out_free_data:
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index d0ed64dc7380..9b8904a476b8 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -1122,7 +1122,7 @@ static inline int nvme_auth_negotiate(struct nvme_ctrl *ctrl, int qid)
+@@ -559,8 +559,25 @@ int nvmf_connect_io_queue(struct nvme_ctrl *ctrl, u16 qid)
  }
- static inline int nvme_auth_wait(struct nvme_ctrl *ctrl, int qid)
+ EXPORT_SYMBOL_GPL(nvmf_connect_io_queue);
+ 
+-bool nvmf_should_reconnect(struct nvme_ctrl *ctrl)
++/*
++ * Evaluate the status information returned by the transport in order to decided
++ * if a reconnect attempt should be scheduled.
++ *
++ * There are two cases where no reconnect attempt should be attempted:
++ *
++ * 1) The transport reports an negative status. There was an error (e.g. no
++ *    memory) on the host side and thus abort the operation.
++ *
++ * 2) The DNR bit is set and the specification states no further connect
++ *    attempts with the same set of paramenters should be attempted.
++ */
++bool nvmf_should_reconnect(struct nvme_ctrl *ctrl, int status)
  {
--	return NVME_SC_AUTH_REQUIRED;
-+	return -EPROTONOSUPPORT;
++	if (status < 0)
++		return false;
++	else if (status > 0 && (status & NVME_SC_DNR))
++		return false;
++
+ 	if (ctrl->opts->max_reconnects == -1 ||
+ 	    ctrl->nr_reconnects < ctrl->opts->max_reconnects)
+ 		return true;
+diff --git a/drivers/nvme/host/fabrics.h b/drivers/nvme/host/fabrics.h
+index 37c974c38dcb..602135910ae9 100644
+--- a/drivers/nvme/host/fabrics.h
++++ b/drivers/nvme/host/fabrics.h
+@@ -223,7 +223,7 @@ int nvmf_register_transport(struct nvmf_transport_ops *ops);
+ void nvmf_unregister_transport(struct nvmf_transport_ops *ops);
+ void nvmf_free_options(struct nvmf_ctrl_options *opts);
+ int nvmf_get_address(struct nvme_ctrl *ctrl, char *buf, int size);
+-bool nvmf_should_reconnect(struct nvme_ctrl *ctrl);
++bool nvmf_should_reconnect(struct nvme_ctrl *ctrl, int status);
+ bool nvmf_ip_options_match(struct nvme_ctrl *ctrl,
+ 		struct nvmf_ctrl_options *opts);
+ void nvmf_set_io_queues(struct nvmf_ctrl_options *opts, u32 nr_io_queues,
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index a5b29e9ad342..f0b081332749 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -3310,12 +3310,10 @@ nvme_fc_reconnect_or_delete(struct nvme_fc_ctrl *ctrl, int status)
+ 		dev_info(ctrl->ctrl.device,
+ 			"NVME-FC{%d}: reset: Reconnect attempt failed (%d)\n",
+ 			ctrl->cnum, status);
+-		if (status > 0 && (status & NVME_SC_DNR))
+-			recon = false;
+ 	} else if (time_after_eq(jiffies, rport->dev_loss_end))
+ 		recon = false;
+ 
+-	if (recon && nvmf_should_reconnect(&ctrl->ctrl)) {
++	if (recon && nvmf_should_reconnect(&ctrl->ctrl, status)) {
+ 		if (portptr->port_state == FC_OBJSTATE_ONLINE)
+ 			dev_info(ctrl->ctrl.device,
+ 				"NVME-FC{%d}: Reconnect attempt in %ld "
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 366f0bb4ebfc..821ab3e0fd3b 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -982,7 +982,8 @@ static void nvme_rdma_free_ctrl(struct nvme_ctrl *nctrl)
+ 	kfree(ctrl);
  }
- static inline void nvme_auth_free(struct nvme_ctrl *ctrl) {};
- #endif
+ 
+-static void nvme_rdma_reconnect_or_remove(struct nvme_rdma_ctrl *ctrl)
++static void nvme_rdma_reconnect_or_remove(struct nvme_rdma_ctrl *ctrl,
++					  int status)
+ {
+ 	enum nvme_ctrl_state state = nvme_ctrl_state(&ctrl->ctrl);
+ 
+@@ -992,7 +993,7 @@ static void nvme_rdma_reconnect_or_remove(struct nvme_rdma_ctrl *ctrl)
+ 		return;
+ 	}
+ 
+-	if (nvmf_should_reconnect(&ctrl->ctrl)) {
++	if (nvmf_should_reconnect(&ctrl->ctrl, status)) {
+ 		dev_info(ctrl->ctrl.device, "Reconnecting in %d seconds...\n",
+ 			ctrl->ctrl.opts->reconnect_delay);
+ 		queue_delayed_work(nvme_wq, &ctrl->reconnect_work,
+@@ -1104,10 +1105,12 @@ static void nvme_rdma_reconnect_ctrl_work(struct work_struct *work)
+ {
+ 	struct nvme_rdma_ctrl *ctrl = container_of(to_delayed_work(work),
+ 			struct nvme_rdma_ctrl, reconnect_work);
++	int ret;
+ 
+ 	++ctrl->ctrl.nr_reconnects;
+ 
+-	if (nvme_rdma_setup_ctrl(ctrl, false))
++	ret = nvme_rdma_setup_ctrl(ctrl, false);
++	if (ret)
+ 		goto requeue;
+ 
+ 	dev_info(ctrl->ctrl.device, "Successfully reconnected (%d attempts)\n",
+@@ -1120,7 +1123,7 @@ static void nvme_rdma_reconnect_ctrl_work(struct work_struct *work)
+ requeue:
+ 	dev_info(ctrl->ctrl.device, "Failed reconnect attempt %d\n",
+ 			ctrl->ctrl.nr_reconnects);
+-	nvme_rdma_reconnect_or_remove(ctrl);
++	nvme_rdma_reconnect_or_remove(ctrl, ret);
+ }
+ 
+ static void nvme_rdma_error_recovery_work(struct work_struct *work)
+@@ -1145,7 +1148,7 @@ static void nvme_rdma_error_recovery_work(struct work_struct *work)
+ 		return;
+ 	}
+ 
+-	nvme_rdma_reconnect_or_remove(ctrl);
++	nvme_rdma_reconnect_or_remove(ctrl, 0);
+ }
+ 
+ static void nvme_rdma_error_recovery(struct nvme_rdma_ctrl *ctrl)
+@@ -2169,6 +2172,7 @@ static void nvme_rdma_reset_ctrl_work(struct work_struct *work)
+ {
+ 	struct nvme_rdma_ctrl *ctrl =
+ 		container_of(work, struct nvme_rdma_ctrl, ctrl.reset_work);
++	int ret;
+ 
+ 	nvme_stop_ctrl(&ctrl->ctrl);
+ 	nvme_rdma_shutdown_ctrl(ctrl, false);
+@@ -2179,14 +2183,15 @@ static void nvme_rdma_reset_ctrl_work(struct work_struct *work)
+ 		return;
+ 	}
+ 
+-	if (nvme_rdma_setup_ctrl(ctrl, false))
++	ret = nvme_rdma_setup_ctrl(ctrl, false);
++	if (ret)
+ 		goto out_fail;
+ 
+ 	return;
+ 
+ out_fail:
+ 	++ctrl->ctrl.nr_reconnects;
+-	nvme_rdma_reconnect_or_remove(ctrl);
++	nvme_rdma_reconnect_or_remove(ctrl, ret);
+ }
+ 
+ static const struct nvme_ctrl_ops nvme_rdma_ctrl_ops = {
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index fdbcdcedcee9..3e0c33323320 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -2155,7 +2155,8 @@ static void nvme_tcp_teardown_io_queues(struct nvme_ctrl *ctrl,
+ 	nvme_tcp_destroy_io_queues(ctrl, remove);
+ }
+ 
+-static void nvme_tcp_reconnect_or_remove(struct nvme_ctrl *ctrl)
++static void nvme_tcp_reconnect_or_remove(struct nvme_ctrl *ctrl,
++		int status)
+ {
+ 	enum nvme_ctrl_state state = nvme_ctrl_state(ctrl);
+ 
+@@ -2165,13 +2166,14 @@ static void nvme_tcp_reconnect_or_remove(struct nvme_ctrl *ctrl)
+ 		return;
+ 	}
+ 
+-	if (nvmf_should_reconnect(ctrl)) {
++	if (nvmf_should_reconnect(ctrl, status)) {
+ 		dev_info(ctrl->device, "Reconnecting in %d seconds...\n",
+ 			ctrl->opts->reconnect_delay);
+ 		queue_delayed_work(nvme_wq, &to_tcp_ctrl(ctrl)->connect_work,
+ 				ctrl->opts->reconnect_delay * HZ);
+ 	} else {
+-		dev_info(ctrl->device, "Removing controller...\n");
++		dev_info(ctrl->device, "Removing controller (%d)...\n",
++			 status);
+ 		nvme_delete_ctrl(ctrl);
+ 	}
+ }
+@@ -2252,10 +2254,12 @@ static void nvme_tcp_reconnect_ctrl_work(struct work_struct *work)
+ 	struct nvme_tcp_ctrl *tcp_ctrl = container_of(to_delayed_work(work),
+ 			struct nvme_tcp_ctrl, connect_work);
+ 	struct nvme_ctrl *ctrl = &tcp_ctrl->ctrl;
++	int ret;
+ 
+ 	++ctrl->nr_reconnects;
+ 
+-	if (nvme_tcp_setup_ctrl(ctrl, false))
++	ret = nvme_tcp_setup_ctrl(ctrl, false);
++	if (ret)
+ 		goto requeue;
+ 
+ 	dev_info(ctrl->device, "Successfully reconnected (%d attempt)\n",
+@@ -2268,7 +2272,7 @@ static void nvme_tcp_reconnect_ctrl_work(struct work_struct *work)
+ requeue:
+ 	dev_info(ctrl->device, "Failed reconnect attempt %d\n",
+ 			ctrl->nr_reconnects);
+-	nvme_tcp_reconnect_or_remove(ctrl);
++	nvme_tcp_reconnect_or_remove(ctrl, ret);
+ }
+ 
+ static void nvme_tcp_error_recovery_work(struct work_struct *work)
+@@ -2295,7 +2299,7 @@ static void nvme_tcp_error_recovery_work(struct work_struct *work)
+ 		return;
+ 	}
+ 
+-	nvme_tcp_reconnect_or_remove(ctrl);
++	nvme_tcp_reconnect_or_remove(ctrl, 0);
+ }
+ 
+ static void nvme_tcp_teardown_ctrl(struct nvme_ctrl *ctrl, bool shutdown)
+@@ -2315,6 +2319,7 @@ static void nvme_reset_ctrl_work(struct work_struct *work)
+ {
+ 	struct nvme_ctrl *ctrl =
+ 		container_of(work, struct nvme_ctrl, reset_work);
++	int ret;
+ 
+ 	nvme_stop_ctrl(ctrl);
+ 	nvme_tcp_teardown_ctrl(ctrl, false);
+@@ -2328,14 +2333,15 @@ static void nvme_reset_ctrl_work(struct work_struct *work)
+ 		return;
+ 	}
+ 
+-	if (nvme_tcp_setup_ctrl(ctrl, false))
++	ret = nvme_tcp_setup_ctrl(ctrl, false);
++	if (ret)
+ 		goto out_fail;
+ 
+ 	return;
+ 
+ out_fail:
+ 	++ctrl->nr_reconnects;
+-	nvme_tcp_reconnect_or_remove(ctrl);
++	nvme_tcp_reconnect_or_remove(ctrl, ret);
+ }
+ 
+ static void nvme_tcp_stop_ctrl(struct nvme_ctrl *ctrl)
 -- 
 2.44.0
 
