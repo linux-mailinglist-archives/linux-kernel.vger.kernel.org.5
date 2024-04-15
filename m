@@ -1,110 +1,238 @@
-Return-Path: <linux-kernel+bounces-144627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16A768A488A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:58:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDDEE8A488D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:59:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F70A1F22F18
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:58:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 321F5B23A6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186AB22EF3;
-	Mon, 15 Apr 2024 06:58:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5C62C1B9;
+	Mon, 15 Apr 2024 06:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KTLWNF0d"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EcUdgbnE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29AD224DC
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:58:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C81F2940F;
+	Mon, 15 Apr 2024 06:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713164302; cv=none; b=nQzQQVuVgDK8B6O5CQ4CuhnQHoUu+o+Ma3gcAdCVWH1uJZFM5BjsQwG4XfRRJdfAa8W6KQAhKSm24wpPp7b8iojFHAUcmtdhQNq5jkMz5reChDVditLx0vxg7nOVkkc5g0GuaoyiVMrB2SaB7LHO7qNmWukxaMbDCHqN3rC6GG4=
+	t=1713164319; cv=none; b=Et41jJ/8iuRyDU/CsMhg8mwIc6UJ9ljMniHvHrOGeykLOv4UwMBm64TQepKgvSUC5G4jWPgyrnHxapabsP4sjg50tkztzTTvQQABvJTzzwcutmXFQTbOXLbJQyopQzPsnyCTGSpqkipPg/Hj+c6WddsTSIrY/vLRPkUrKgi07v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713164302; c=relaxed/simple;
-	bh=8zRocQO/rRgL1qKa5DTF7pfCxE7+mgM0HcYZDkfYtek=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=En8LjEYsntTsd3q60/hcMlK5xmllnPfZ+gA6sed+7mhxOBXZPrnYLRSOgqWwywcRR4ACLrw2V607Jh2kpMIHkM6O4DRUYzZ7a64YKEgEDH90hMMifPMe94rlkb+vU+ZkngBoknEreG83kEShy4wF80pyOdM2mDdO4dYZe+uWCsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KTLWNF0d; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713164299;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8zRocQO/rRgL1qKa5DTF7pfCxE7+mgM0HcYZDkfYtek=;
-	b=KTLWNF0dAahSHGxN+rWuXJcXreNmT2asKEMj4CThb2iNbYOLXROHrI9daAa0FveabApnqg
-	Hxjgw0O3xyb+hp/gn80Ol+UXwFJt9TsmbhI5Xqg2rrKLmokRCNlfIsGEFPe5+HtGZ7aRo5
-	oi0nh0pSU/8X30opbhn3si6lt6fTOL8=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-421-Q7iwMjKEPwCyHUzwvfdGlw-1; Mon, 15 Apr 2024 02:58:17 -0400
-X-MC-Unique: Q7iwMjKEPwCyHUzwvfdGlw-1
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5cfc2041cdfso1890929a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:58:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713164296; x=1713769096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8zRocQO/rRgL1qKa5DTF7pfCxE7+mgM0HcYZDkfYtek=;
-        b=L8Or7okBanUIdOmEvGnxYtsrRLQiCikfwM6gzcM0veFzCzRT9h9b9ODPxF7RXdsCEQ
-         5EMZN/rHNGxxBIUJgVx7/uEmxIgzblIkd7WT59ozPWjeFlyravawMRKKwbtomriuee0T
-         uzX9SF3pQ9uOR7nxnzIrNiQ2eRZLd17rUUTA9LNnkVdRRYzMR4JNwTlIxn3vAFr8MvmK
-         9t01fr8xYRA9Hl6Le4BbOeV+1Jr1y6/HmnpTdDr2++FcfPFRJiu705Od1ywo7pngtd99
-         gKrt9equ4B7PgbKHqZ72k6x3FHZsrdkQSyEupshTn9laeozLg+8s4kzNu86eAy/Xw8cW
-         saOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXs1edKDWTEqKNJuJHeqKumu1RELxxaJjeRnXntL5zB2huQLbQt2fjQLOenFsdfu9AC2+mmXmVqwIHkqYqoAmm8XTGRt6YGag2iaTxy
-X-Gm-Message-State: AOJu0Yw+5nJXtBnpULMSxV5YR2Kb8zlLk5gKYhUpqXEBmwP8xC1cbPts
-	sgDbdE6w9mCWrv7DAGi0WLlaLr0FU1ktl/0cuyDTt2wOgxWtr8pERidU+CVO64mBxL65TZiNDOr
-	Ne00CSyA8YGHZWWG45WNExiZVPbzZ/Qrih0Gh2vKiRdVyOgd5odP2dY5QBb1DSoXsqS0hmgb3ee
-	N/NRikFIFdbRIyEdRdY9N1V8xAorXxPdrewa3k
-X-Received: by 2002:a05:6a21:191:b0:1a9:6d96:c700 with SMTP id le17-20020a056a21019100b001a96d96c700mr8932592pzb.48.1713164296266;
-        Sun, 14 Apr 2024 23:58:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEfCe10Cxttrxe8F4OkPc7KjxC+SFTe/Z0SKvR0xbdRbE8/iQQiMdWF3kDr6DPf/3wtsnu4W5Rb/yh0o2uaUZk=
-X-Received: by 2002:a05:6a21:191:b0:1a9:6d96:c700 with SMTP id
- le17-20020a056a21019100b001a96d96c700mr8932578pzb.48.1713164295965; Sun, 14
- Apr 2024 23:58:15 -0700 (PDT)
+	s=arc-20240116; t=1713164319; c=relaxed/simple;
+	bh=MjpXaim/P8mM167opCuJ1D7Qz1gNtJb4q3g3a6eERx8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=d4qWpj22lMHTydYlUXBmhiIW1Syl/vFKZeJdMTGvLek3kQzl13SBdrfIzCzSaOquOXuSVrAhYti8A3nDM9zg5vOUKyfeBqfyOKDagwCB48zxUSooHfP//ZBNgLAmkSEuTCedo5GhrkcvrVxFRibrHUS9MVqQX9PVhNttRgAmth8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EcUdgbnE; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713164318; x=1744700318;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MjpXaim/P8mM167opCuJ1D7Qz1gNtJb4q3g3a6eERx8=;
+  b=EcUdgbnEjfFMn+TWuQXeQh+cfvCX6gWIRJ28EddqDEDXTWT7AGkNa6sN
+   /gqsZmdIRzlmwmbOuH469w3C7m0j5G40d/BV1h5yJkYAArMlhV4UgaB0K
+   XDhkVhCHak3TcaXo0N6z7og5jxawgswu+RqIubuQ+OEL5BXrz4q7HqyTm
+   WVyyq6LLssu0UNss6+glWA/y/WvTw0y2bxAPGYn6jTieT3SgoDidg2C1I
+   HOhcVyLWC3td3zceOQXUrWByohQrzWEZEJ+lBO6u0fTufwxwJX3bcjJyy
+   n2Mqk/YFlphe2fWniuISwbGtBDIx2CDgKH1KGqIKScAR8+RDCyIT81LlV
+   A==;
+X-CSE-ConnectionGUID: 9YgG5YTVS42JvNi2y78zNg==
+X-CSE-MsgGUID: XnoQWXhfSQuKsUoEo9R3Rw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="31016424"
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="31016424"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 23:58:38 -0700
+X-CSE-ConnectionGUID: ZvTG74JWSrGYcMRo7Rha4w==
+X-CSE-MsgGUID: cW8sPqsJSry5fDpGGROAeA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
+   d="scan'208";a="26620492"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.38.19])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 23:58:36 -0700
+Message-ID: <c6c041d4-d9ed-46bb-9e6e-b53dc9ac0002@intel.com>
+Date: Mon, 15 Apr 2024 09:58:31 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <67c2edf49788c27d5f7a49fc701520b9fcf739b5.1713088999.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <67c2edf49788c27d5f7a49fc701520b9fcf739b5.1713088999.git.christophe.jaillet@wanadoo.fr>
-From: Jason Wang <jasowang@redhat.com>
-Date: Mon, 15 Apr 2024 14:58:04 +0800
-Message-ID: <CACGkMEtufa6MqWkcsZqHW8eQzj4b2wCh8zFMSAuHkxpWowLmdQ@mail.gmail.com>
-Subject: Re: [PATCH v2] vhost-vdpa: Remove usage of the deprecated
- ida_simple_xx() API
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, Simon Horman <horms@kernel.org>, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: sdhci-of-dwcmshc: Add tuning support for Sophgo
+ CV1800B and SG200X
+To: Jisheng Zhang <jszhang@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>
+Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240414164112.2732-1-jszhang@kernel.org>
+Content-Language: en-US
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20240414164112.2732-1-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Apr 14, 2024 at 6:04=E2=80=AFPM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
->
-> Note that the upper limit of ida_simple_get() is exclusive, but the one o=
-f
-> ida_alloc_max() is inclusive. So a -1 has been added when needed.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> Reviewed-by: Simon Horman <horms@kernel.org>
+On 14/04/24 19:41, Jisheng Zhang wrote:
+> Implement the .platform_execute_tuning for Sophgo CV1800B and SG200X.
+> Some code is borrowed from sdhci-esdhc-imx.c. The tuning result is
+> similar as the one of SoC vendor's SDK.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+One comment, otherwise:
 
-Thanks
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 112 ++++++++++++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index ab4b964d4058..7b55acd9830c 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -66,6 +66,10 @@
+>  #define CV18XX_SDHCI_PHY_CONFIG			0x4c
+>  #define  CV18XX_PHY_TX_BPS			BIT(0)
+>  
+> +#define CV18XX_TUNE_MAX				128
+> +#define CV18XX_TUNE_STEP			1
+> +#define CV18XX_RETRY_TUNING_MAX			50
+> +
+>  /* Rockchip specific Registers */
+>  #define DWCMSHC_EMMC_DLL_CTRL		0x800
+>  #define DWCMSHC_EMMC_DLL_RXCLK		0x804
+> @@ -685,6 +689,113 @@ static void cv18xx_sdhci_reset(struct sdhci_host *host, u8 mask)
+>  	sdhci_writel(host, val, priv->vendor_specific_area1 + CV18XX_SDHCI_PHY_TX_RX_DLY);
+>  }
+>  
+> +static void cv18xx_sdhci_set_tap(struct sdhci_host *host, int tap)
+> +{
+> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> +	u16 clk;
+> +	u32 val;
+> +
+> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	clk &= ~SDHCI_CLOCK_CARD_EN;
+> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +
+> +	val = sdhci_readl(host, priv->vendor_specific_area1 + CV18XX_SDHCI_MSHC_CTRL);
+> +	val &= ~CV18XX_LATANCY_1T;
+> +	sdhci_writel(host, val, priv->vendor_specific_area1 + CV18XX_SDHCI_MSHC_CTRL);
+> +
+> +	val =  (FIELD_PREP(CV18XX_PHY_TX_DLY_MSK, 0) |
+> +		FIELD_PREP(CV18XX_PHY_TX_SRC_MSK, CV18XX_PHY_TX_SRC_INVERT_CLK_TX) |
+> +		FIELD_PREP(CV18XX_PHY_RX_DLY_MSK, tap));
+> +	sdhci_writel(host, val, priv->vendor_specific_area1 + CV18XX_SDHCI_PHY_TX_RX_DLY);
+> +
+> +	sdhci_writel(host, 0, priv->vendor_specific_area1 + CV18XX_SDHCI_PHY_CONFIG);
+> +
+> +	clk |= SDHCI_CLOCK_CARD_EN;
+> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+> +	mdelay(1);
+
+Did you consider usleep_range() instead of mdelay()?
+
+> +}
+> +
+> +static int cv18xx_retry_tuning(struct mmc_host *mmc, u32 opcode, int *cmd_error)
+> +{
+> +	int ret, retry = 0;
+> +
+> +	while (retry < CV18XX_RETRY_TUNING_MAX) {
+> +		ret = mmc_send_tuning(mmc, opcode, NULL);
+> +		if (ret)
+> +			return ret;
+> +		retry++;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void cv18xx_sdhci_post_tuning(struct sdhci_host *host)
+> +{
+> +	u32 val;
+> +
+> +	val = sdhci_readl(host, SDHCI_INT_STATUS);
+> +	val |= SDHCI_INT_DATA_AVAIL;
+> +	sdhci_writel(host, val, SDHCI_INT_STATUS);
+> +
+> +	sdhci_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
+> +}
+> +
+> +static int cv18xx_sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+> +{
+> +	int min, max, avg, ret;
+> +	int win_length, target_min, target_max, target_win_length;
+> +
+> +	min = max = 0;
+> +	target_win_length = 0;
+> +
+> +	sdhci_reset_tuning(host);
+> +
+> +	while (max < CV18XX_TUNE_MAX) {
+> +		/* find the mininum delay first which can pass tuning */
+> +		while (min < CV18XX_TUNE_MAX) {
+> +			cv18xx_sdhci_set_tap(host, min);
+> +			if (!cv18xx_retry_tuning(host->mmc, opcode, NULL))
+> +				break;
+> +			min += CV18XX_TUNE_STEP;
+> +		}
+> +
+> +		/* find the maxinum delay which can not pass tuning */
+> +		max = min + CV18XX_TUNE_STEP;
+> +		while (max < CV18XX_TUNE_MAX) {
+> +			cv18xx_sdhci_set_tap(host, max);
+> +			if (cv18xx_retry_tuning(host->mmc, opcode, NULL)) {
+> +				max -= CV18XX_TUNE_STEP;
+> +				break;
+> +			}
+> +			max += CV18XX_TUNE_STEP;
+> +		}
+> +
+> +		win_length = max - min + 1;
+> +		/* get the largest pass window */
+> +		if (win_length > target_win_length) {
+> +			target_win_length = win_length;
+> +			target_min = min;
+> +			target_max = max;
+> +		}
+> +
+> +		/* continue to find the next pass window */
+> +		min = max + CV18XX_TUNE_STEP;
+> +	}
+> +
+> +	cv18xx_sdhci_post_tuning(host);
+> +
+> +	/* use average delay to get the best timing */
+> +	avg = (target_min + target_max) / 2;
+> +	cv18xx_sdhci_set_tap(host, avg);
+> +	ret = mmc_send_tuning(host->mmc, opcode, NULL);
+> +
+> +	dev_dbg(mmc_dev(host->mmc), "tuning %s at 0x%x ret %d\n",
+> +		ret ? "failed" : "passed", avg, ret);
+> +
+> +	return ret;
+> +}
+> +
+>  static const struct sdhci_ops sdhci_dwcmshc_ops = {
+>  	.set_clock		= sdhci_set_clock,
+>  	.set_bus_width		= sdhci_set_bus_width,
+> @@ -721,6 +832,7 @@ static const struct sdhci_ops sdhci_dwcmshc_cv18xx_ops = {
+>  	.get_max_clock		= dwcmshc_get_max_clock,
+>  	.reset			= cv18xx_sdhci_reset,
+>  	.adma_write_desc	= dwcmshc_adma_write_desc,
+> +	.platform_execute_tuning = cv18xx_sdhci_execute_tuning,
+>  };
+>  
+>  static const struct sdhci_pltfm_data sdhci_dwcmshc_pdata = {
 
 
