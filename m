@@ -1,261 +1,278 @@
-Return-Path: <linux-kernel+bounces-144426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3766F8A4649
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:11:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2475A8A4651
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 02:22:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B0D21C21461
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 00:11:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C55AB212DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 00:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376ACD29E;
-	Mon, 15 Apr 2024 00:11:22 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83CA6ED8;
+	Mon, 15 Apr 2024 00:22:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=valvesoftware.com header.i=@valvesoftware.com header.b="CcgAb6vm"
+Received: from us-smtp-delivery-172.mimecast.com (us-smtp-delivery-172.mimecast.com [170.10.133.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF74FA38
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 00:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34AE1363
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 00:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713139881; cv=none; b=DxnWjKMff8ZQ+qJxo6yVoHQUMEYvipoYKL/LCZE5+YwbshU3zJD3bMjIUr+uy9BqRp8P5dAr+8wFUbTsKPmJxYG7nbnVC3ujjdlOElavGC24Nh9/BFJkgJta3DCy4b87tM2B7lllxYhPljoU7Gomqvd/pB5BrzYCOcualTa1+gg=
+	t=1713140519; cv=none; b=rNskJy7KHXW4HFJ/RQdSuzHif0qCXRNsltAUIq7CTEZ/sDGSHp+ZlHAX9DTMgEpoBLOP9/CAFonNsCy9V1uy8oDauumrDTXNFkRxSlYCl/N8kpk2j+iXVvslLaD/JscSngEU2vY7Y98yAVbr8fz1Tul9inQCRALzVw/joog+k0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713139881; c=relaxed/simple;
-	bh=y7sLsvC+sIsLPpOLvDRjnaMGEI7DDoGcr6wiZLTi7D0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mjMCfG9Z6m7QG2nzMwy8f+JHVBFDIp5BOASMpOse1uEYfLMbc/BtWqlnMSwL8N3PbbydCOGjfJC6wpZtvAP/fEFq1Nb/Ag/P6RhXtoQnZHTvpEvIsxBFNfKMmT/wnuoFV3ycVUlzxkGjmkLnXVhgCFcdUgDR11MeFHbdDUJ9Obc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc764c885bso338915539f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 17:11:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713139879; x=1713744679;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9jiKT8kTE1128KEvfOtgwJoNA14ICV6Re1oSVw8v94A=;
-        b=n0HzSEJrV6HXqlzomjNwW8erJWgQC0a92gG2vPxpFyKkVc4oVrr107WtiyW7Wyfsks
-         tGLLr/BJlll6XTD2mX1VVkhcoIObpL332iYMV3WSFzhWSVwzvzLtxebMK5EJ/NmQNL9S
-         TPIzZoy9bAXJnimuiZRhHgCvOM9VDy0bBG0plODnOU/Cy79NC1rdc3U7b0oN4w7QPsns
-         lIVL7F/PvgtTY0bSqFouLnRX315999QD9QJDoL6mb1PCcHn6vJsmoRo3DB4agt08xykM
-         4otKCMzCRQnLNydGEU//pAfUIzbWByGMIMQD6CLgwUAHIzqt9QJPUZPP4buzJ73znX+G
-         tjZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXIe1NO4jUonyK2ptBE+ellfF6vIkvnI67YN3Qb0tgcyvwErd/vj9knnve2q/cFGQ+o+G0umQS9wIFbEnOJTI5ac8yJLtS8fr+OkfRL
-X-Gm-Message-State: AOJu0Yy1HhoWf6ykLMN/FTzJ3HuZyLSnvNxfT/3+9n+X3pfZY9DLJ3+J
-	dA8SHjJH0CAUqTriR+q1FLve22CVThYjbiDFkT9KQ7BHoJEKEijrS+7mR8sCAKkEdgi9FJ4WRmt
-	CwGpcoxHTCECwpqn5UMcsS/mu3qR4zkLZMW5UklA/DXqveI4SiLf/uRU=
-X-Google-Smtp-Source: AGHT+IHnU2W5Tepq6j4kkQWoDzCwwPMiJCBd3BG8rHjbyQZcLrOSra26bYUeME/J2Sg0+54R4zH5NNn+KT3tYSETasXN3ZI1Becn
+	s=arc-20240116; t=1713140519; c=relaxed/simple;
+	bh=fxlv8FmJM5auEJL0Zvy87zZ+pJvT6TOixKP9qok45EQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Yl5Apm03wVhJx3DKZRBZcb7bShUc92Hs1TZw5z24O3AdG8sM3Uy5ao866uKRFEjLs8cQCnQaOpu4Q/SbDr3A8KTcd2JCpuwOOuLpg6fXzgoumFqAmquPK3UXWezfIVkHC/GU6OBF5iIo5QrhARkkriTZqjnghSW1OBI3VvZ4al4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=valvesoftware.com; spf=pass smtp.mailfrom=valvesoftware.com; dkim=pass (1024-bit key) header.d=valvesoftware.com header.i=@valvesoftware.com header.b=CcgAb6vm; arc=none smtp.client-ip=170.10.133.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=valvesoftware.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valvesoftware.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=valvesoftware.com;
+	s=mc20150811; t=1713140515;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WBZBlXLRr8bNCY1UIk6T1jSX979O1QOnktwa6Dz9jug=;
+	b=CcgAb6vmwOLA1ZGZ29Ala8T+avmq8clyj5vZwwwbSamalueVYL4rL9+TggsBxDV7ZXCtqn
+	vI4bdhDGiIlWZILWRxmP2QXK76W1e6uJUBWvZgtGBSZ/RDfnNhu8n6TGF9vy7oEXA8ZS7q
+	cZ6Zw6bbNZ/5U9O2wePjEaA3Fcmyt5c=
+Received: from smtp-01-blv1.valvesoftware.com
+ (smtp-01-blv1.valvesoftware.com [208.64.203.181]) by relay.mimecast.com
+ with ESMTP with STARTTLS (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384)
+ id us-mta-246-7O_j_iWVPoqthI1I-eYxHg-1; Sun, 14 Apr 2024 20:21:54 -0400
+X-MC-Unique: 7O_j_iWVPoqthI1I-eYxHg-1
+Received: from antispam.valve.org ([172.16.1.107])
+	by smtp-01-blv1.valvesoftware.com with esmtp (Exim 4.93)
+	(envelope-from <pgriffais@valvesoftware.com>)
+	id 1rwA6b-003F8U-Cl
+	for linux-kernel@vger.kernel.org; Sun, 14 Apr 2024 17:21:53 -0700
+Received: from antispam.valve.org (127.0.0.1) id h3hpi20171sh for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 17:21:53 -0700 (envelope-from <pgriffais@valvesoftware.com>)
+Received: from mail2.valvemail.org ([172.16.144.23])
+	by antispam.valve.org ([172.16.1.107]) (SonicWall 10.0.15.7233)
+	with ESMTP id o202404150021530031966-5; Sun, 14 Apr 2024 17:21:53 -0700
+Received: from [172.16.36.169] (172.16.36.169) by mail2.valvemail.org
+ (172.16.144.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Sun, 14 Apr
+ 2024 17:21:52 -0700
+Message-ID: <8f6e2d69-b4df-45f3-aed4-5190966e2dea@valvesoftware.com>
+Date: Sun, 14 Apr 2024 17:21:51 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:842a:b0:482:fc0f:e5a8 with SMTP id
- iq42-20020a056638842a00b00482fc0fe5a8mr198256jab.2.1713139879092; Sun, 14 Apr
- 2024 17:11:19 -0700 (PDT)
-Date: Sun, 14 Apr 2024 17:11:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f1ae1a06161775de@google.com>
-Subject: [syzbot] [xfs?] possible deadlock in xfs_ilock (2)
-From: syzbot <syzbot+c6d7bff58a2218f14632@syzkaller.appspotmail.com>
-To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    72374d71c315 Merge tag 'pull-sysfs-annotation-fix' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10639da3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=43fc40c117780e9b
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6d7bff58a2218f14632
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-72374d71.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0ea69c8c9aa6/vmlinux-72374d71.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/fcfb8e2b6b87/bzImage-72374d71.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c6d7bff58a2218f14632@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.9.0-rc3-syzkaller-00399-g72374d71c315 #0 Not tainted
-------------------------------------------------------
-syz-executor.0/6233 is trying to acquire lock:
-ffffffff8d9373c0 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:312 [inline]
-ffffffff8d9373c0 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3746 [inline]
-ffffffff8d9373c0 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3827 [inline]
-ffffffff8d9373c0 (fs_reclaim){+.+.}-{0:0}, at: __do_kmalloc_node mm/slub.c:3965 [inline]
-ffffffff8d9373c0 (fs_reclaim){+.+.}-{0:0}, at: __kmalloc+0xb5/0x440 mm/slub.c:3979
-
-but task is already holding lock:
-ffff888028971858 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_ilock+0x16a/0x420 fs/xfs/xfs_inode.c:208
-
-which lock already depends on the new lock.
+User-Agent: Mozilla Thunderbird
+Subject: Re: Increase Default vm_max_map_count to Improve Compatibility with
+ Modern Games
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, David Hildenbrand
+	<david@redhat.com>, Oleksandr Natalenko <oleksandr@natalenko.name>,
+	<linux-kernel@vger.kernel.org>, <vincentdelor@free.fr>, Andrew Morton
+	<akpm@linux-foundation.org>, <linux-mm@kvack.org>
+References: <566168554.272637693.1710968734203.JavaMail.root@zimbra54-e10.priv.proxad.net>
+ <13499186.uLZWGnKmhe@natalenko.name>
+ <1a91e772-4150-4d28-9c67-cb6d0478af79@redhat.com>
+ <ugjnhfiwuoslupkbmrrbbxxdosotzpqjfljebzj4dkuibmf6sr@kuew2qemsen4>
+From: "Pierre-Loup A. Griffais" <pgriffais@valvesoftware.com>
+In-Reply-To: <ugjnhfiwuoslupkbmrrbbxxdosotzpqjfljebzj4dkuibmf6sr@kuew2qemsen4>
+X-ClientProxiedBy: mail1.valvemail.org (172.16.144.22) To mail2.valvemail.org
+ (172.16.144.23)
+X-Mlf-DSE-Version: 6871
+X-Mlf-Rules-Version: s20240405180538; ds20230628172248;
+	di20240404161241; ri20160318003319; fs20240313174141
+X-Mlf-Smartnet-Version: 20210917223710
+X-Mlf-Envelope-From: pgriffais@valvesoftware.com
+X-Mlf-Version: 10.0.15.7233
+X-Mlf-License: BSV_C_AP____
+X-Mlf-UniqueId: o202404150021530031966
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: valvesoftware.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
 
-the existing dependency chain (in reverse order) is:
 
--> #1 (&xfs_dir_ilock_class){++++}-{3:3}:
-       down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
-       xfs_ilock+0x2ef/0x420 fs/xfs/xfs_inode.c:206
-       xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
-       xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
-       xfs_icwalk_ag+0xca6/0x1780 fs/xfs/xfs_icache.c:1713
-       xfs_icwalk+0x57/0x100 fs/xfs/xfs_icache.c:1762
-       xfs_reclaim_inodes_nr+0x182/0x250 fs/xfs/xfs_icache.c:1011
-       super_cache_scan+0x409/0x550 fs/super.c:227
-       do_shrink_slab+0x44f/0x11c0 mm/shrinker.c:435
-       shrink_slab+0x18a/0x1310 mm/shrinker.c:662
-       shrink_one+0x493/0x7c0 mm/vmscan.c:4774
-       shrink_many mm/vmscan.c:4835 [inline]
-       lru_gen_shrink_node+0x89f/0x1750 mm/vmscan.c:4935
-       shrink_node mm/vmscan.c:5894 [inline]
-       kswapd_shrink_node mm/vmscan.c:6704 [inline]
-       balance_pgdat+0x10d1/0x1a10 mm/vmscan.c:6895
-       kswapd+0x5ea/0xbf0 mm/vmscan.c:7164
-       kthread+0x2c1/0x3a0 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+On 4/12/24 10:18 AM, Liam R. Howlett wrote:
+>=20
+> Adding Pierre-Loup to cc list.
+>=20
+>=20
+> * David Hildenbrand <david@redhat.com> [691231 23:00]:
+>> On 02.04.24 09:34, Oleksandr Natalenko wrote:
+>>> Hello.
+>>>
+>>> On st=C5=99eda 20. b=C5=99ezna 2024 22:05:34, CEST vincentdelor@free.fr=
+ wrote:
+>>>> Hello,
+>>>>
+>>>> I am writing to highlight an issue impacting many Linux users, especia=
+lly those who enjoy modern gaming. The current default setting of `vm_max_m=
+ap_count` at 65530 has been linked to crashes or launch failures in several=
+ contemporary games.
+>>>>
+>>>> To address this, I have opened a detailed bug report (218616 =E2=80=93=
+ Increase Default vm_max_map_count to Improve Gaming Experience on Linux) a=
+vailable at: 218616 =E2=80=93 Increase Default vm_max_map_count to Improve =
+Gaming Experience on Linux (kernel.org) .
+>>>>
+>=20
+> This is change is getting more traction as distributions switch to a
+> higher number of VMAs.  I feel we need to educate them as to what this
+> really means and why it is unnecessary and wrong.
+>=20
+>>>>
+>>>> We have identified that several modern games such as Hogwarts Legacy, =
+Star Citizen, and others experience crashes or fail to start on Linux due t=
+o the default `vm_max_map_count` being set to 65530. These issues can be mi=
+tigated by increasing the `vm_max_map_count` value to over 1048576, which h=
+as been confirmed to resolve the crashes without introducing additional bug=
+s related to map handling.
+>>>>
+>>>> This issue affects a wide range of users and has been noted in distrib=
+utions like Fedora and Pop!_OS, which have already adjusted this value to a=
+ccommodate modern gaming requirements.
+>>>>
+>>>> For reference, here is the change for Fedora:
+>>>> https://fedoraproject.org/wiki/Changes/IncreaseVmMaxMapCount
+>>>>
+>>>> Here is a list of games affected by this low value in vm_max_map_count=
+ as reported to Valve:
+>>>>
+>>>> THE FINALS
+>>>> https://github.com/ValveSoftware/Proton/issues/7317#issuecomment-19748=
+37850
+>>>>
+>>>> Hogwarts Legacy
+>>>> https://github.com/ValveSoftware/Proton/issues/6510#issuecomment-14227=
+81100
+>>>>
+>>>> DayZ
+>>>> https://github.com/ValveSoftware/Proton/issues/3899#issuecomment-13043=
+97069
+>>>>
+>>>> Counter-Strike 2
+>>>> https://github.com/ValveSoftware/Proton/issues/2704#issuecomment-17051=
+99788
+>>>>
+>>>>
+>=20
+> Most of these do not have the vma information available anymore, if it
+> was there (expired pastebin links, etc).
+>=20
+> ...
+>=20
+>>>>
+>>>> **Affected Games:**
+>>>> - Hogwarts Legacy
+>>>> - Star Citizen
+>>>> - THE FINALS
+>>>> - DayZ
+>>>> - Counter-Strike 2
+>>>> - Payday 2
+>>>> - (and potentially others)
+>>>>
+>>>> **References:**
+>>>> - Fedora's change documentation: https://fedoraproject.org/wiki/Change=
+s/IncreaseVmMaxMapCount
+>>>> - Various user reports and confirmations on gaming performance improve=
+ment with increased `vm_max_map_count`.
+>=20
+> Absolutely not.  This will do nothing for performance.  The game may run
+> vs not run, but it won't get faster.
 
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
-       __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
-       fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3712
-       might_alloc include/linux/sched/mm.h:312 [inline]
-       slab_pre_alloc_hook mm/slub.c:3746 [inline]
-       slab_alloc_node mm/slub.c:3827 [inline]
-       __do_kmalloc_node mm/slub.c:3965 [inline]
-       __kmalloc+0xb5/0x440 mm/slub.c:3979
-       kmalloc include/linux/slab.h:632 [inline]
-       xfs_attr_shortform_list fs/xfs/xfs_attr_list.c:115 [inline]
-       xfs_attr_list_ilocked+0x8b7/0x1740 fs/xfs/xfs_attr_list.c:527
-       xfs_attr_list+0x1f9/0x2b0 fs/xfs/xfs_attr_list.c:547
-       xfs_vn_listxattr+0x11f/0x1c0 fs/xfs/xfs_xattr.c:314
-       vfs_listxattr+0xb7/0x140 fs/xattr.c:493
-       listxattr+0x69/0x190 fs/xattr.c:840
-       path_listxattr+0xc3/0x160 fs/xattr.c:864
-       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
-       __do_fast_syscall_32+0x75/0x120 arch/x86/entry/common.c:321
-       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
-       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+It's possible / likely the user was confused about the performance=20
+impact, here. The reason we make that change is to enable affected games=20
+to run at all, that would otherwise crash when they reach the limit.
 
-other info that might help us debug this:
+>=20
+> ...
+>=20
+>>
+>> Using a high VMA count usually implies that the application is doing
+>> something suboptimal. Having many VMAs can degrade performance of MM
+>> operations and result in memory waste.
+>>
+>> Running into VMA limits usually implies that the application is not
+>> optimized and should handle things differently. Likely, the memory alloc=
+ator
+>> is doing something "bad" (e.g., mmap()+munmap() instead of MADV_DONTNEED=
+)
+>> and should be optimized.
+>>
+>=20
+> To be clear, what you are doing here is akin to adding more memory to
+> your system when there is a memory leak.  This is not the solution you
+> should be pushing.  Ironically, this is using more memory and performing
+> worse than it should.  At best, the limit increase is a workaround for
+> buggy programs.
+>=20
+> At worst, you are enabling bad things to keep happening and normalising
+> poor programming choices.  Please put pressure on the applications that
+> clearly have issues.
 
- Possible unsafe locking scenario:
+We don't get to prescribe what those applications do. The fact of the=20
+matter is that there are several high-performance memory allocators in=20
+wide use by game applications that make heavy internal use of mmap(),=20
+and that using hundreds of thousands of different memory mappings is=20
+well supported on the platform those applications were written for. (or=20
+mapping regions with different permissions, which results in different=20
+regions after platform translation to Linux happens within Wine)
 
-       CPU0                    CPU1
-       ----                    ----
-  rlock(&xfs_dir_ilock_class);
-                               lock(fs_reclaim);
-                               lock(&xfs_dir_ilock_class);
-  lock(fs_reclaim);
+Pointing out that there exists one game that doesn't happen to do that=20
+is not terribly useful for the purpose of this discussion.
 
- *** DEADLOCK ***
+The problem statement seems pretty simple - distributions that want to=20
+support those usecases out of the box can make that change, like we've=20
+done for years on SteamOS. On those that don't, users of those=20
+applications will have to discover and learn to apply the change by hand=20
+after having a likely sub-par experience trying to get their game up and=20
+running.
 
-1 lock held by syz-executor.0/6233:
- #0: ffff888028971858 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_ilock+0x16a/0x420 fs/xfs/xfs_inode.c:208
+I've yet to hear a specific downside of making the change other than a=20
+real concern about DoS of kernel memory in another discussion - it seems=20
+to me like there is much lower hanging fruit for DoSing a Linux system=20
+you have shell access to, at the moment.
 
-stack backtrace:
-CPU: 2 PID: 6233 Comm: syz-executor.0 Not tainted 6.9.0-rc3-syzkaller-00399-g72374d71c315 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
- __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
- fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3712
- might_alloc include/linux/sched/mm.h:312 [inline]
- slab_pre_alloc_hook mm/slub.c:3746 [inline]
- slab_alloc_node mm/slub.c:3827 [inline]
- __do_kmalloc_node mm/slub.c:3965 [inline]
- __kmalloc+0xb5/0x440 mm/slub.c:3979
- kmalloc include/linux/slab.h:632 [inline]
- xfs_attr_shortform_list fs/xfs/xfs_attr_list.c:115 [inline]
- xfs_attr_list_ilocked+0x8b7/0x1740 fs/xfs/xfs_attr_list.c:527
- xfs_attr_list+0x1f9/0x2b0 fs/xfs/xfs_attr_list.c:547
- xfs_vn_listxattr+0x11f/0x1c0 fs/xfs/xfs_xattr.c:314
- vfs_listxattr+0xb7/0x140 fs/xattr.c:493
- listxattr+0x69/0x190 fs/xattr.c:840
- path_listxattr+0xc3/0x160 fs/xattr.c:864
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0x75/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
- entry_SYSENTER_compat_after_hwframe+0x84/0x8e
-RIP: 0023:0xf728a579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f5e7c5ac EFLAGS: 00000292 ORIG_RAX: 00000000000000e9
-RAX: ffffffffffffffda RBX: 00000000200000c0 RCX: 0000000000000000
-RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+Thanks,
+  - Pierre-Loup
 
+>=20
+> To put this into perspective, normal applications on Linux use in the
+> 100s.  Insane applications (chromium) use 1000 to 2000. The heavier user
+> is Android and that uses in the 1000s regularly (usually topping out at
+> around 3000). You are allowing one process to use over 65,530 vmas.
+>=20
+> Again, this is per process.
+>=20
+> Currently, if you run Wolfenstein II: The New Colossus (proton game),
+> there are 4 proton processes with 115, 104, 99, and 24 vmas.  I wanted a
+> newer example, but steam (or nvidia) is having A Day on my gaming PC and
+> won't start.
+>=20
+> You are enabling (and normalising across multiple popular distributions)
+> a change from less than 120 to 1048576.  That is an increas of ~870x
+> of virtual memory areas - not tiny chunks of memory, areas that can span
+> large amounts of memory.  Assuming the *best* scenario in the buggy
+> programs, you'd use 65531 vmas - that is still a multiple of 546x the
+> number used by wolfenstein's largest thread.
+>=20
+>> I don't think we should be raising the limit for everybody out there.
+>=20
+> If there is an underlying technical reason for needing this number of
+> vmas, then it isn't provided.  I'm going to guess it's DRM/anti-cheat
+> that needs fixing.
+>=20
+> I'd like the problem to please be fixed and not hide it.  You are at a
+> performance disadvantage with the current approach - and enabling others
+> to do the same.
+>=20
+> Thank you,
+> Liam
+>=20
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
