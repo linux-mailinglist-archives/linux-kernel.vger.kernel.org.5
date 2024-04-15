@@ -1,98 +1,100 @@
-Return-Path: <linux-kernel+bounces-145906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F868A5C9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 400D98A5CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:08:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7612E1C210C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:07:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71A291C2112C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:08:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3994157482;
-	Mon, 15 Apr 2024 21:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D98157470;
+	Mon, 15 Apr 2024 21:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="rdukYCQh"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gIQ+xICP"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBB8156C53;
-	Mon, 15 Apr 2024 21:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210D6823CE;
+	Mon, 15 Apr 2024 21:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713215218; cv=none; b=PfXHU36jjkHUx8fwNd1DsbbPknLMFXNgJf9Kh6sM5IS+tLFxsVYHzl+H8CXUUhgQc0rV3KSmq+aETHIhbpiv+rwSHvaTxbNPOwGa8aopDm/5KYuFYGpy9ZfN8ql+qaJxjVuH4s39MS8jG4zrRJ6lw89cTWwY8Jq7uS5RDHjkPQc=
+	t=1713215282; cv=none; b=U5Tw0PakOdzk5FYRso9Q83sh9T+TmgbJ6ukC6mSGI1a5pf/56HpmjSNLHplAlns5WEslIXqvXcCm6EirczlLAQZkpzNSLY6m0IIGidwyw433JjSKd00mgFCoX+TFWz5laf1y7+ru9b5PD9MKCypEVV5lSf/6+U526R5Fwb9bHEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713215218; c=relaxed/simple;
-	bh=QK/YnNEsRDQzA+VI9ZfCIug3P5VhevsltSl+SmjeDe0=;
-	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
-	 To:Date:Message-ID; b=hzNApZIFHBIzCRrVkeu1qlOh2GfZH1MGwgHOVmXbPfJxbTGYbfUry49ojrewFBsgfTXPRDf76xK7onjQrEAEePBYWoFQZAFzgr3uqDB5Z/xPElJIG+sO1lkwy9/toZ6f1tcDNhK1Tf9CH3BE0l77pJKDqQkGPrecjNZOe1O2qRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=fail (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=rdukYCQh reason="signature verification failed"; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (cpc89244-aztw30-2-0-cust6594.18-1.cable.virginm.net [86.31.185.195])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1F57F497;
-	Mon, 15 Apr 2024 23:06:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713215167;
-	bh=QK/YnNEsRDQzA+VI9ZfCIug3P5VhevsltSl+SmjeDe0=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=rdukYCQh9mMFKAPdTqd4jo4lB4a4B7xptpHd357YCY6nsrtHDE8p4O2e61Yb+mMxi
-	 yKJPDLBT5H6E9wcVtgSM3TW7Vas5B4YrUJkgnLXrP6kJ0tc0rBjudUOeDKylS3L9Le
-	 RHF8woqIolcFMRosZ1uhKhaSSd4+78XmA8SkQZdg=
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1713215282; c=relaxed/simple;
+	bh=TJCFkjZfjstSqTosq2ofApmwxwcsMnKCELg9tffipXQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B82P15maPpSE57AzApg6QAC6Fbab0j2ozNqXxsE8D4OpysdbEynggBmo3Ny5vIfrgRRf5VIDyEOnMb/IryKCfJy6YIaYereH3ShBDC2XagYc1vjv4goLUy+L+vkxlRuAGf9Ruk+qVSPz9CpZDHJkf9jEBDNdxcRNo9ISmbb/fVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gIQ+xICP; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=7+q5a4BFZOQ0nlwK9E3zO3DsPMAmGY9bri/gwPhuncQ=; b=gIQ+xICPtGPVXjX3/kXMEd3bNj
+	/YeR1j2Gj3QOsMBAqM9PLeuQnZVGqdwqlpSlIpfGUnx68Cywwdd04syLRbWGXZlHLsfdIu1EeLU7H
+	9YDDhNW15+gcofUs2psqkJaJdUarmJuAtcKaYHn3fAWYOfK3YwVu6WGQW2xPJObiwaqZ718LKlh9v
+	N07yL1LzBZzTW9NwAdCNFDW/A/Ye1fSf/onmNDQR52y85OsOG/kRWuhVbajPUx8NnQGSoLEEdoXRC
+	jwooLpl7PRhgSFwfuE1JxjYd8ua8dy1v5OF28kcJWNvVDDO8GVi8lV8uHqCYj8W7+no8qJUujWD5C
+	B/cTLbOA==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwTYH-00000009v3H-3nHt;
+	Mon, 15 Apr 2024 21:07:47 +0000
+Message-ID: <805af99c-4c78-4f2c-a15b-de69a4b8da99@infradead.org>
+Date: Mon, 15 Apr 2024 14:07:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240415-fix-cocci-v1-4-477afb23728b@chromium.org>
-References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org> <20240415-fix-cocci-v1-4-477afb23728b@chromium.org>
-Subject: Re: [PATCH 04/35] media: uvcvideo: Use max() macro
-From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev, linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
-To: Abylay Ospan <aospan@netup.ru>, Alain Volmat <alain.volmat@foss.st.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Benjamin Mugnier <benjamin.mugnier@foss.st.com>, Bjorn Andersson <andersson@kernel.org>, Bryan O'Donoghue <bryan.odonoghue@linaro.org>, Chen-Yu Tsai <wens@csie.org>, Dmitry Osipenko <digetx@gmail.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, Hans Verkuil <hverkuil@xs4all.nl>, Hugues Fruchet <hugues.fruchet@foss.st.com>, Jacopo Mondi <jacopo+renesas@jmondi.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, Martin Tuma <martin.tuma@digiteqautomotive.com>, Matthi
- as Brugger <matthias.bgg@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Niklas =?utf-8?q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>, Paul Kocialkowski <paul.kocialkowski@bootlin.com>, Pavel Machek <pavel@ucw.cz>, Ricardo Ribalda <ribalda@chromium.org>, Sakari Ailus <sakari.ailus@linux.intel.com>, Samuel Holland <samuel@sholland.org>, Sergey Kozlov <serjk@netup.ru>, Sowjanya Komatineni <skomatineni@nvidia.com>, Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, Sylvain Petinot <sylvain.petinot@foss.st.com>, Thierry Reding <thierry.reding@gmail.com>, Vikash Garodia <quic_vgarodia@quicinc.com>
-Date: Mon, 15 Apr 2024 22:06:49 +0100
-Message-ID: <171321520986.2333277.5902882675169324919@ping.linuxembedded.co.uk>
-User-Agent: alot/0.10
-
-Quoting Ricardo Ribalda (2024-04-15 20:34:21)
-> It makes the code slightly more clear and makes cocci incredibly happy:
->=20
-> drivers/media/usb/uvc/uvc_ctrl.c:839:22-23: WARNING opportunity for max()
->=20
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc=
-_ctrl.c
-> index a4a987913430..4b685f883e4d 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -836,7 +836,7 @@ static s32 uvc_get_le_value(struct uvc_control_mappin=
-g *mapping,
->         while (1) {
->                 u8 byte =3D *data & mask;
->                 value |=3D offset > 0 ? (byte >> offset) : (byte << (-off=
-set));
-> -               bits -=3D 8 - (offset > 0 ? offset : 0);
-> +               bits -=3D 8 - max(offset, 0);
-
-This looks semantically the same to me so:
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/14] lib: Add TLV parser
+To: Jarkko Sakkinen <jarkko@kernel.org>,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>, corbet@lwn.net,
+ paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+ akpm@linux-foundation.org, shuah@kernel.org, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com, mic@digikod.net
+Cc: linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+ linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
+ pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
+ pmatilai@redhat.com, jannh@google.com, dhowells@redhat.com,
+ jikos@kernel.org, mkoutny@suse.com, ppavlu@suse.com, petr.vorel@gmail.com,
+ mzerqung@0pointer.de, kgold@linux.ibm.com,
+ Roberto Sassu <roberto.sassu@huawei.com>
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <20240415142436.2545003-2-roberto.sassu@huaweicloud.com>
+ <D0KXTHHYLSX6.1IDLSEIVS9PA5@kernel.org>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <D0KXTHHYLSX6.1IDLSEIVS9PA5@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
->                 if (bits <=3D 0)
->                         break;
-> =20
->=20
-> --=20
-> 2.44.0.683.g7961c838ac-goog
->
+On 4/15/24 12:19 PM, Jarkko Sakkinen wrote:
+> On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
+>> From: Roberto Sassu <roberto.sassu@huawei.com>
+>>
+>> Add a parser of a generic TLV format:
+> 
+> What is TLV?
+
+type-length-value
+
+i.e., a descriptor that contains a value.
+
+IIUC.
+
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
