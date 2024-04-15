@@ -1,73 +1,70 @@
-Return-Path: <linux-kernel+bounces-144779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622818A4AA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:43:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9FBF8A4AA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:43:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 182222808F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:43:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDB221C21678
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35473A1DB;
-	Mon, 15 Apr 2024 08:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D07940853;
+	Mon, 15 Apr 2024 08:43:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="TWMOlasm"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2043.outbound.protection.outlook.com [40.107.15.43])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="EP/al6OQ"
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2069.outbound.protection.outlook.com [40.107.247.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A6036AF5;
-	Mon, 15 Apr 2024 08:42:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5460D3A8F9;
+	Mon, 15 Apr 2024 08:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.69
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170575; cv=fail; b=NrBIF1F3sja2HMqchKvbBgpUfrB21DmEClaAhuQzk7Gillrq8fYKEdnsOgtdGclXNSals4NCeM9tSyjAZcwKb2SQuOeIpwtW7Ey0kI75cP7ltUJNC16m8CVijH4PgyAv0wpUwisefKA8rqYkrCKA6HJaxddy/jHU+nSIxF3s/JY=
+	t=1713170579; cv=fail; b=EEbMI7YMLXvzSAKfKzp5ElcSVy0DvVbcMwBXDF6tC6928Xe9yhKMgh5TycVAHBhNQJR8tY6jftkceAk/mcVxSynVEh+LAlMyH/aJuKRrZShPsdEUcTFwuiTAzcb3UJvCPXwlGb2BSvVyf4ev/itHME/2taHlutDyFvDvPrHBUOQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170575; c=relaxed/simple;
-	bh=7SN1QTNvAPGvhvtiGRhG3T01HLVOVX485deXBX8UmJ4=;
-	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=d2/kSTqEzmiFtjxh66WfKKF2b2UO8lCgFCaXtphhPu11Mrzpb83zF6A3ooOPP7zVkHHWi08wLxMMoImQ/VyvO6JZB90e6LedIgcwl85iHWtv5BTIXwU2T3dNNrAtLPtSItWL4RsykIolKn6P6op20LsUHPTUrT+9hO2pc5XndPg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=TWMOlasm; arc=fail smtp.client-ip=40.107.15.43
+	s=arc-20240116; t=1713170579; c=relaxed/simple;
+	bh=RhCldLpWFoBisg6JxF8FQ42efMI/x7hxyuGNT8KbSHI=;
+	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
+	 To:Cc:MIME-Version; b=TwEllkVMXmkx292T/g3icFifvuqRuSvtKyURcSQhPyQsjiK9BsqW0FdFUGyIzNKrR/ZqoyLFn3NXc25UCm2z4VGiJ0ohsz396Uo18WM3S51z5IaypdIw6PTuyDEJOFsPba0PT1T+OvZRsNF8LJx/d9tQW0WmExEToFPvnSaiMXw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=EP/al6OQ; arc=fail smtp.client-ip=40.107.247.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HUqepOv9WIhgUUhC2ko6HGh7geAhQhDdMIqpVv9v6DSMjmJ2t+rN0h/3x3Z0HJRThn/LZ/F2Ujw1HuNVZ9nJnHYRkowr7CmyOP2Ck/TJGT8TrqLoLurBJ85Mn6k2qogkP9rBCkBz0iz51Iz1l/aLiSj8L49WTUyez7DkA0FCNDAKQvbtoWrtyJQIKQ7LqqUpry+5AbsxXKVwC+MtZr07qlxMTpMK/Pg+OAZeDbCI/kURDu60kySZtwsP4PJs23lrcc15LF4D4DeAFuy7SyHfAewmY9n0y3Cn4o3XUWckoYIMPIKr1GqE/IU9TMf2Kw1oG/2/puJc7ovJmN4Zq2zVLw==
+ b=TNk7i+YE7bKCjOzWQM6/OFAeBS9JyrKZ4pbVhkM4DIqwxNbEXnaPBqG9a8pSxR/cfdt0FzIipquEmYXbmkaS+IgfKLRV+r/okZgAmC7vwnmPb8mESz59TpyFLffUZLc5oqPMevzSmsj9XUA6X0XB/pRVP+QWe68EWaX3D797FMqJHO9U5smHZZqwssZgdxBfuNg+NwMVRqznV36UApymPBRndhZQ5/2SjO2UOgnXsMexwY1qSUJrC8F6TGwrn+/BqcE7dUfU8uuIf6zTtEGi6+byMk7Zm8nwhrwteCIRyLQLIPCjAOp/AfOv149O43yr869Zer0qrNhCfHt1duXODA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5sqX5vEz36r9rT14gd0J/Ij4icX4uS7xwO22zDGscog=;
- b=BNZyEwD+cYF2tvbsmJSgff7gCtn4t35GwF7iJQhpUoBgST9SyeJxK+Y4n7MvpC1q3rKn2BdVCBdhXTkIzS+F8uwJO8iZonI6jWGAPu3lqB8XFSTDJetcma+r0ZCZeexMVf1aqx7jeORBMSCTlgzk6BqbH0m9mwPpbVpJpriZ5AJE52PRXjk97K5P/SVK3AlPibnVJeXTqCnQMqTv7nhZmd2e/MukCXNXsHqTiN2wo5m/3Z8hTaWMcaKK0+QsUF2wEVTXYjdGTNvuudmd1imQe0f5XfB5dUC5nUcDNtgsjZG4j/Nbt0rVKyMez8wTEVbyY9HUjtn3OlLvXnSZXp+B1w==
+ bh=y32EPUygoezOrwpSdGDK5Cezq+RoDLA6Ci/XuseYkwM=;
+ b=eKj13Kwd94Qhfr58iaVlkeiEQPISRtLXhjRee5cbqsBEafmKf09CQVbtlYL3J9GUY1jvWqjiQNtXr7UpRIL5IT9jc7DuvRP+BHEZYFHxGJhd8ey2LT4H0ChB9i/KMW1kwLHyiWZwE78h/rUdttpvgrTHL8sLzTD164x3s5c4xGDA+wDbUzJ17rvZ8F8pBlqwQEhbDq/FcZoolDet1NLqHGuIMaIuNKk8Nr+5ImXa0ano88s8kJ1u6HAh8HaTMReHlWF2wQ4N1epmjomrodwAXVSNtmM3VdxIi7d8U5IBdbHCQZ9kotRJsJczt4UbI5jPrM1g8xSJ1pQeEcJnm8mdpg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5sqX5vEz36r9rT14gd0J/Ij4icX4uS7xwO22zDGscog=;
- b=TWMOlasmVnNzYPyPxamdnRvDljfquilvZHAE1aHnFaem/hkcjopVyYj00D/iJmB8iIZPMSZzXfBerHAISl/+89E8SF+5BYess9iJUeZxXSVYr9ZZ0amOe7iH0PB98S+D/XfoTOSQyOqR2xCUWCoryKomuMzkVz51vH9W/qj6Ce4=
+ bh=y32EPUygoezOrwpSdGDK5Cezq+RoDLA6Ci/XuseYkwM=;
+ b=EP/al6OQL8mP4oJZFsDGz1o0lgiGMtvKeusDxti31LVKQ89MirqywjwAQrHNPZtTbknJyQFFNcoCB50qC33m62JfKUS4vQvyo2VQ6vVLK1mtwrPRA6NxQPkBxO7RWo0sOOHgcWzjvubjRy6155BWoiVp74eXDQwInuL+v1bG9tQ=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DB9PR04MB8138.eurprd04.prod.outlook.com (2603:10a6:10:25c::8) with
+ by AM9PR04MB7506.eurprd04.prod.outlook.com (2603:10a6:20b:281::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 08:42:49 +0000
+ 2024 08:42:54 +0000
 Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
  ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7452.041; Mon, 15 Apr 2024
- 08:42:49 +0000
+ 08:42:54 +0000
 From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Subject: [PATCH v10 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Date: Mon, 15 Apr 2024 16:50:48 +0800
-Message-Id: <20240415-pinctrl-scmi-v10-0-59c6e7a586ee@nxp.com>
+Date: Mon, 15 Apr 2024 16:50:49 +0800
+Subject: [PATCH v10 1/4] firmware: arm_scmi: introduce helper
+ get_max_msg_size
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAGjqHGYC/3XRS2rDMBAG4KsUreuieVlSV71H6UKWpUbQOMEOJ
- iXk7pUDxbZKlzPwzT8j3dQUxxwn9fp0U2Oc85RPQylAPz+pcPDDZ2xyXxoKNRIgSHPOQ7iMX80
- UjrnhIJ0mw4lDqwo5jzHl62Pe+0epD3m6nMbvx/gZlu4/g2ZodKNTJIncAiTzNlzPL+F0VMuYG
- X8pa9BcUSzUu663re/EW95T2lCEilKhtnfceeP64O2e8koRqaJcKOhYEsk4NFWqrJSgXlgK7cC
- JaaOISbin7Yb+SW2XW60TZEIxQe+pWWlZuaKmUIpewPWAoX5hu6X159hCJQUbiayBLu2p21CoU
- 91yqwVDzD1551d6v99/AMV6UQ1/AgAA
+Message-Id: <20240415-pinctrl-scmi-v10-1-59c6e7a586ee@nxp.com>
+References: <20240415-pinctrl-scmi-v10-0-59c6e7a586ee@nxp.com>
+In-Reply-To: <20240415-pinctrl-scmi-v10-0-59c6e7a586ee@nxp.com>
 To: Sudeep Holla <sudeep.holla@arm.com>, 
  Cristian Marussi <cristian.marussi@arm.com>, Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
@@ -78,13 +75,13 @@ Cc: Dhruva Gole <d-gole@ti.com>,
  Andy Shevchenko <andy.shevchenko@gmail.com>, 
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
  devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
- Peng Fan <peng.fan@nxp.com>, Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+ Peng Fan <peng.fan@nxp.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713171061; l=7602;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713171061; l=2695;
  i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=7SN1QTNvAPGvhvtiGRhG3T01HLVOVX485deXBX8UmJ4=;
- b=Y5oZKhnv9yThKIk/lJO/akcyF7jHBfoDfuebBAF3az2pHSRqSdBSMxNflgRCDkFt5UOz0a0Wu
- Zuu1gq61BqvAZBTgC377WXhMBg/REFRxFm/vQ4v32tbR8y6HHt1S76L
+ bh=fC1f9Mz+AZ7lC+TNU94i2E/beyKrQPUiXgoBP0YzZ74=;
+ b=q5GWIty/C0+zNWWjGsIah4qVnecIS9Ayc3PFWTIfTzo9dwsUsAQQo+LAgNGgyPjWdAe4NVBgZ
+ lPug89jxOmvBEdjNO9GSpJkQX/WE9Vg3PT2WG31FWj4ndQrDSUsPE/8
 X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
  pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
 X-ClientProxiedBy: SG2PR02CA0011.apcprd02.prod.outlook.com
@@ -98,258 +95,135 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|DB9PR04MB8138:EE_
-X-MS-Office365-Filtering-Correlation-Id: fdf3a2ac-0396-44b9-d121-08dc5d2807a4
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM9PR04MB7506:EE_
+X-MS-Office365-Filtering-Correlation-Id: 455b1994-0774-4da6-138f-08dc5d280ab0
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	2As+tO3VPPbc5RR+nBvO1LKSV8edJHZvMOIhNTsFlijhUSLIWbK/jrf1Un4Z0gDOR9B0Z8mcb5eGfNRzJqW3UpuNJ5kKKvjVYaROgtpYIQuwADax/HGFfnQwVoRR++5IiiALl+uEsYqVTVvpXB5AssmApCc17dr0Jdxy8Qs49h/J0bBmqlzLbF0Gqd9oJtRLGUDuCaVWhhTYNeBvyB7VoJ2PGPb0unCoh28K/9SI0cnYN0OhW/nuV+k+CQMfhIKlg482P4IEpHEnTEJuAXHuZBG1ZXkg88+8CS14vPcbIAEpVNKBWhv/MLbONP3spwG8x6G9dLVbsbdfvfcR7oz3Cum0hFbFCrKlks86+x3BKUP0D9ackVDaYpK3a7ync+VT5DX/lZZgQ+t8ux7NdoZEV0gmiYHlpS3ToG/vcCd1E2zuBVSxtpZPqrau/enBKukpM+DTqiH+itk9EPbELxwGSDBnb1MTJIAailJzN7j//M8wkrqYTHZjS5kIUhEcaoQbYWOVNxIeNXfcycdEImWZCe+GFUxGDo5M9CNwXqjzFhYhwXRyNrNIcWBKIffUiXzR8Nagjpy0Yv+p8Doyiqh3BPvHxyFe34FGGsRAc0BDv2uZ5jJBxp62s+y6cLzmBZDEwTJ/Mco5qJ9cZcDrEq2JNk11pz++Wz+1+uzvbOn5Pdw=
+	1oW3xd2QTJQvQNf2tfx9vtAqhCKPvTYaU/DOrwApDn3fq3PBxKvrEAEoN9zfxBJeRO3N5JxISBED1OI75rxCGpO5o/QYG1wRwc4NqcAn2hjxAE9zNNrO7KDkHccf0Yp855V3Q2qoWCDpF1qH1+lEjYabbKD89wTQEObwMq339JZYTlMxK/gKXpdvcsi7k+QnY5oduNtAvBxPZmeWkdbgPm7S/8JSb2ahPxO+adhb4LHRTtetrHXCs+ZOAFOXMaV6YQoAmX+TghZo6LDCT0w6SiVcPGzsgzdYNZwMg7CypNgIYjdQuIg6rlgwwq4XQIE37R9Ckg8EZW4QUs1ECJN+b6beRP8KqbWfyye0gB2n8nflTHihtOuGPmT9RcIOUlatN3enKLJ7l0drGFWM2zrRmycAg6mOjTxq7R/PAttyhgko/LuGHCLt63r4QC+ZHVN6TlxcUUmXsEMRnOKPVmqYVth7xqbJb9mXqiDAdwwze+roBPE+qi0oualjv4EGpHkQ2LFQuSrXKliiiRGqwkToGOqep2Eh840lbIlb0oICfis2O1Avb1wIYH1wpYzDWJUmbi4lcIZSQtpPvC3KNIPNul9pFdETXQNVpvJUc7ZPCdjqvWpcc5luQ/XdvwMcdF2iGTXuv2u3grsVYAolGHeFDd0Pq+pGdZwjQnC6d9VZ2SairDx41nxUpax08MUf+CDTBefvkkZZLJJQJRJJrW7Ap2F/286YFiDdkyOPXHFke0Q=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(376005)(7416005)(1800799015)(366007)(38350700005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(52116005)(376005)(366007)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZVp1N0dCOXZ1R2JXVDNvQjhJSUhMMkZ1YnhEWUNxMzZ6b0U3c1Q2d1VwcmdC?=
- =?utf-8?B?MEc2MXdHbzdZK2NHaDRpWDJ6Zy8rNVhBcGpON2hyWGJuRGZJZWkyK3pvSUFY?=
- =?utf-8?B?bmFvdjQ5akpJZURpeUtsTUZuaE1lN0hTSWNaaytNZXlJcmpiZEZqcDJKbXJK?=
- =?utf-8?B?d2V6TW1rZG92ZWJucUpsNnNQeTBEU2o1MFZKZVArWXVOV0pEN043d2VtejZo?=
- =?utf-8?B?V1lGSWlaYUNKK3pUUkxDRWV0VzVVWnFVendsVUZNeGRoQkFyNTFWaEQ5eEQ5?=
- =?utf-8?B?dlplK1FHNzl1ZGNOSXFuSDhBbFJNREV0WW9uTGlhNVpqUU80b0k4T21zYjZP?=
- =?utf-8?B?WmVoakpBc3FCM0d2YXRvektzQkpLNGhrQ0FxSWpCek1xNyt0T3luRVRaMU9a?=
- =?utf-8?B?ZVF5bHUzTElIQU9iSEtVQ2wvYTBQOHZiWUpCc20wYmRNNUhiTm5sNVBVbitW?=
- =?utf-8?B?aXNvUnZKTlVjdWEvVXpYVlpHMk1adVlTQ0FlQUthUE5pbTRaMERTTXFkRDdR?=
- =?utf-8?B?Mm5qeTlzRTNOdnU1ZGFSNDA1d2RJdmdnWXFxQTdDa29SaTdJOWprSkwyZWFV?=
- =?utf-8?B?TVFYeHZIaGI1cW5XREV5eHE4ZGRZM0RpTnI1d1ZLUFBCazhhd0FFZytOUXZy?=
- =?utf-8?B?WjZ1Wm02WXMzVUVhdjRISVNkY0thTFNlU25DenQxVGE0aVU2RXRRMXJLUHk3?=
- =?utf-8?B?eWNWZ1dadS8yMUt3QnlGRUJPUzR1WTZhNHZNcEVYazNQNldLK0tsc2VlUXpV?=
- =?utf-8?B?QTBHbExvQnk1cVYrUWpBbm1GT1NNbmhKZHFxSVlNR3pUL0tOa0xWclVQcDQ0?=
- =?utf-8?B?aW5kdGhXN3hwUURBVHdnK3N4RDJPM0RpNHYvcGRkc2VzbjlyUDNLRXRrNFd2?=
- =?utf-8?B?bWRqMXRqWDRFQmltYThoL1RrZHE1MFUwMXVWUXFGTnFsZ0xjcmZEVm9tUERm?=
- =?utf-8?B?dUVmWFNwK0xHUXBVVlUwOUFmdVFxR2dTY3dCY1V4eXRnRnM3TFRaNkhYVk5Q?=
- =?utf-8?B?ZTNFck1JVXE0YmpiT1hNTXhESXFtcmJTQVd3alRTaDVsN3J3cU1aNGpGb3M5?=
- =?utf-8?B?M1JNOEdCMmZTZzlSWjhYODgyV3lhdXdUVDk1b1JCcDNQV0hZMmVYNVJheTE4?=
- =?utf-8?B?dXBic3VJYmpia3orVHZiL2hGYktmTVV3bHFhb1I0Y0s3ZGRNeXhySzVXazk2?=
- =?utf-8?B?SEJFMEJ1SFM3L2J6dENiWGkxd0RhY2MrMHN2bzVKaGNidnVyQ1dmWWdFUUxa?=
- =?utf-8?B?a09xYVJFM2hzaXlDbUFkSGZEc1AwclJOaFhSV3A0dHVMbzd0dUFiVEU1Yjkv?=
- =?utf-8?B?NmZVNGRXTStYMkxOVmRrbUJzYkx6aW45eDJUaFdJNk02cXdiM3ZnZHlNMkZt?=
- =?utf-8?B?YTdac1QySXU5ZWoySEo4QnZRZEdNK1E4Rzc4aGZxd3RFVC8zbmlrblZkbnFT?=
- =?utf-8?B?ZWRQeXZPc0dGUEpPWFhOaCtZdjI4ZlhYMU1ZUnZ0MVVHT0VmYnl1ZWxTSDFu?=
- =?utf-8?B?dWJZeFlORUl3Wk9NM2xacGFUeEpCYnRNUWNWVHMvS21TL2FHeCtBdVBtcVB2?=
- =?utf-8?B?N2xGL0Y1b21QaU9pZGxhelRGaTJHTlZFMGEyVVZLU1EyMWZoTGpnTHV5R0RZ?=
- =?utf-8?B?WFFia1FVRlFwaGk1UGd3UzFJdmpJWCtSOUdKS2ZTaXRkdnpBRDlPOHV1dmJy?=
- =?utf-8?B?N1NuSGZoQ3ZtUGlOcS9QYnpGSVJYRkY4R1ZPbTZVc3daMnorcjRsWUZad0t6?=
- =?utf-8?B?WVF5LzV2Z0tXNm9QZlh5MTNPcCt0Y3VjbUNtZkdhdUhPazg1NHRJRkR6dDAx?=
- =?utf-8?B?VWV3R0E2OHlaYzRtM3l5Z09IenpMVy9xczJZZE12Snk2M0k4SktRa3JtdEdq?=
- =?utf-8?B?Y2xXWGNkaUd5ZTJXZFcxcUdXbitFV1VJS3paa3p6aWQzTGdQaFV1REU0NXVR?=
- =?utf-8?B?QU1ReEVpNk9sSnRVaERDSHFUTTJYSUE4QTkyUFhpUjhLbFVSZE5vSmZId1ky?=
- =?utf-8?B?ZDZ5eC92dzNKQjRuT3ByMmxzLzFVQkFsbXZrY3VYSlgyRko0OXVzRk5yN1Aw?=
- =?utf-8?B?U1ZBaW9DOTBKNzB3b0ZxclBGRXJwR2NOSEo2Zys4TmV2Wm5tNHpldld0d3NX?=
- =?utf-8?Q?AMPUSX0uiYe8/RP+KO4SYxawm?=
+	=?utf-8?B?NkdRTFBwSlFmWUxZMi9RcDlnWFFyQTRyUTVCN0p6UFl1cGlPYnlobHBBSlZY?=
+ =?utf-8?B?ZzZVSi9MMVh2cjVWemZtMEF4MEx6c1B0QlFhRHpqZ3FaMWM3cmttbG1MMnFo?=
+ =?utf-8?B?a1lIUXZQb3hHd044Z3pocUluNHNMb1FwRE05VHUrVi9Ga0JWN1ZDYmxCd1N0?=
+ =?utf-8?B?Q04yUVpCRzZTVzNGYm5RV1d3blMvaUdDdHI1U0kyV282MjE1ZTJodkx3aCtT?=
+ =?utf-8?B?U2dPanRJNDVyT0tZQm5UczNrZGNNc0pLcUdnQ3ZwWm40Y3BpOEdrYy9GaWwy?=
+ =?utf-8?B?b0twTGtlUjBrZ3NUalo5ejN3RllRQmJoT3lYbkYwNDVxcml4ajRtSHFWMHR6?=
+ =?utf-8?B?dCtIcFFoRlNqMm15c3gvd3JSQWhlSTJUekdrOVRYWnNZd3diVkR5aWdvWHlI?=
+ =?utf-8?B?b2dHUVU2M0pLM212Z213YmJRak12ZWlDdjdPNEFFaFVxNndhMlQrRDZGWW1X?=
+ =?utf-8?B?ZmNWV3dhdXpEbFh2SU44ck41cXhpYXBnNFlRQUxvRmpWVFhxUld5cjNpeGN2?=
+ =?utf-8?B?eEJVeU4vTm9xUDVuOHRLMzFUM2twck9ObWpxWEpYQUtyZHZpNnFYYk4yZWpW?=
+ =?utf-8?B?MCttaUp3UnRBT09rNWRVbUNBZDdrYTUwejNZSVhLMFBadWF5Z2pyS21sL1Ux?=
+ =?utf-8?B?ZXV0a3VVQWFnMkp3NEl4WFdacUN2UVJxc2FIM2xlaFh4NzlaZGhaWXZnckNX?=
+ =?utf-8?B?NjVtZWM1bmNVZ2VlYnEvV2VnS2l3ajVGaGw4YSs5NGpHMXFEUVpCcGVnRzB2?=
+ =?utf-8?B?d2s4NVN4aFJXaUN2OFR4S3VhTEx0ZkhTMy95MysvZml6TmdpbitGS2Y2b3Jl?=
+ =?utf-8?B?RDNzZUxYQnZmenc2a2YrUEU5YTkzTUo3S1RLZk5md1p2ZGNyZkpXUVJDQ3VX?=
+ =?utf-8?B?SjFPOGkyNDhjdHMvSHRCWGRKSUwyNCtOR2dmZ2xCNS96RXp0RS9FTFoxTGZ4?=
+ =?utf-8?B?VkxVMmtRS1grZTZZa1l4QUVJUVBDVUo1MlpZR2VqdHgyM0Uya2lEVUYreTFX?=
+ =?utf-8?B?a2dmN0hzcHo5bUdXQVpSRjF4Y2dOSmc2SEFYS1hRelF0NFFuQjBHS2ZENWx3?=
+ =?utf-8?B?UGZiRzdoRGxvV2Q3YVFwWVl5b2QvQ2JkSnFSK0N6TjhwUXNPc0FvM3hoOFY5?=
+ =?utf-8?B?QXRZREtGQklTbCtIV0QyWmpZaUpUOEZQaXNyTzFOQUNiRlBKYjJEbXJ6WnVo?=
+ =?utf-8?B?OVk4cVhuWC85dEdsL3I2LysrNnI3VDkzZ28ydFV1RVdZT2Z2WmJkRWJqVndv?=
+ =?utf-8?B?UXNXYzdtWDhQUG9peWhhcHZGbXJwNDJFM1hSNHI3MTJneWxyemVMUTEzZnhM?=
+ =?utf-8?B?czhCTzN5RUtWaXFqQmxNa2VHbDNtYXpKaFc1djJqbUF2aEhFSFlreHZOWlZD?=
+ =?utf-8?B?WkFDS25TZmljY0d0dXBvSVRxdHpNQ1FDN3NQYlFwb05FRWQ1YyttV0V5QVNh?=
+ =?utf-8?B?SlJXSmM5ZkRpZlM3K1NEQ2tuTG9sd2hsamhYRXBhRC9IaWNzdjhCbzRyV1ZR?=
+ =?utf-8?B?d1Y1d3dRaTU4YmtqNFRZKzZWd2dZb3k0L1A5RUs1WUZlNEJYUVA5VXh4OVJ4?=
+ =?utf-8?B?NEVkTzhxb2RmWUtVbktzQjBpVG14Q2xPdDR1dEJLbUg5eUZxejBlSmtrWWpr?=
+ =?utf-8?B?M3d5OGNsZnpEZ3NFTEF3MFpidXdvS2h1YXdmTkMwbHkzbG9abUJjS2JmVnVI?=
+ =?utf-8?B?bVU3SFNOc0h0bEFrdU1VL1JTWXBOd2pBSW13VEZLN21WNnpDcGs4VzhsZmM5?=
+ =?utf-8?B?bTZjOUVta3ljSFlOUXlJVVFvMWpoMm1rM25BT0lzSk83b05HSUY1OVVwQUk4?=
+ =?utf-8?B?dXpudXkxcDEzcjJDRUp2OXZPUnY4RE5PVDBhTzU0dVpCUDVRb0ZzUVo4amEy?=
+ =?utf-8?B?STBYVEw1akNJUEcxajU1TnovYU1lNmhOck5YVytWeHFaTXZxa2xtbWdiVjU0?=
+ =?utf-8?B?TXMwd3ZiSGtadUZVNllEbE1Tc2k0OUhvRFJUaTBCVWFYZlJVSXdTL2owaEdy?=
+ =?utf-8?B?YmVMRVlRVUdCeHJyVis2ajI3ckNnT01Sa1JZN25kTjhMazMreTcwTGZFamtw?=
+ =?utf-8?B?QXlJbUNuenAxREhFZEZPcG5mZjBBRFV5dndZQmRxdi9WZlVjaFF1YW50TVMr?=
+ =?utf-8?Q?SrezFqf7Xfiqz/D26flwyhDKK?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fdf3a2ac-0396-44b9-d121-08dc5d2807a4
+X-MS-Exchange-CrossTenant-Network-Message-Id: 455b1994-0774-4da6-138f-08dc5d280ab0
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 08:42:49.2307
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 08:42:54.0925
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CoVbXIPoTrR6yRkdyIdc9JbFmuSW/kG5PnkPyjpBgWIHh3p1BcXEDZ2l1XCFMx74uLVioUFr8nExZVASNUeDQg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8138
+X-MS-Exchange-CrossTenant-UserPrincipalName: HGEMAkTUl2yEsZDfjGx72mVJlCiixm2WKAPwbx3uiZOC/A1MOwI2cw0J1rPzTMbmRsFKofGdrZw/cdJ/9laWqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7506
 
-This patchset is a rework from Oleksii's RFC v5 patchset
-https://lore.kernel.org/all/cover.1698353854.git.oleksii_moisieiev@epam.com/
+From: Peng Fan <peng.fan@nxp.com>
 
-This patchset introduces some changes based on RFC v5:
-- introduce helper get_max_msg_size
-- support compatible string
-- iterate the id_table
-- Support multiple configs in one command
-- Added i.MX support
-- Patch 5 firmware: arm_scmi: Add SCMI v3.2 pincontrol protocol basic support
-  is almost same as RFCv5 expect multiple configs support.
-- Patch 4 the dt-bindings includes compatible string to support i.MX
-- Rebased on 2023-12-15 linux-next/master
+When Agent sending data to SCMI server, the Agent driver could check
+the size to avoid protocol buffer overflow. So introduce the helper
+get_max_msg_size.
 
-If any comments from RFC v5 are missed, I am sorry in advance.
-
-This PINCTRL Protocol is following Version 3.2 SCMI Spec Beta release.
-
-On ARM-based systems, a separate Cortex-M based System Control Processor
-(SCP) provides control on pins, as well as with power, clocks, reset
-controllers. So implement the driver to support such cases.
-
-The i.MX95 Example as below:
-
-Configuration:
-The scmi-pinctrl driver can be configured using DT bindings.
-For example:
-/ {
-	sram0: sram@445b1000 {
-		compatible = "mmio-sram";
-		reg = <0x0 0x445b1000 0x0 0x400>;
-
-		#address-cells = <1>;
-		#size-cells = <1>;
-		ranges = <0x0 0x0 0x445b1000 0x400>;
-
-		scmi_buf0: scmi-sram-section@0 {
-			compatible = "arm,scmi-shmem";
-			reg = <0x0 0x80>;
-		};
-
-		scmi_buf1: scmi-sram-section@80 {
-			compatible = "arm,scmi-shmem";
-			reg = <0x80 0x80>;
-		};
-	};
-
-	firmware {
-		scmi {
-			compatible = "arm,scmi";
-			mboxes = <&mu2 5 0>, <&mu2 3 0>, <&mu2 3 1>;
-			shmem = <&scmi_buf0>, <&scmi_buf1>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			scmi_iomuxc: protocol@19 {
-				compatible = "fsl,imx95-scmi-pinctrl";
-				reg = <0x19>;
-			};
-		};
-	};
-};
-
-&scmi_iomuxc {
-	pinctrl_tpm3: tpm3grp {
-		fsl,pins = <
-			IMX95_PAD_GPIO_IO12__TPM3_CH2(0x51e)
-		>;
-	};
-};
-
-This patchset has been tested on i.MX95-19x19-EVK board.
-
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
-Changes in v10:
-- Convert the SCMI -EOPNOTSUPP to pinctrl expected -ENOTSUPP, see:
-  https://lore.kernel.org/all/CAHp75Vch7TzevZQK4CE_WSVOgUdzODkJXiv0=OuqrmDfgevV+A@mail.gmail.com/
-- Link to v9: https://lore.kernel.org/r/20240412-pinctrl-scmi-v9-0-b817344d3a9a@nxp.com
+ drivers/firmware/arm_scmi/driver.c    | 15 +++++++++++++++
+ drivers/firmware/arm_scmi/protocols.h |  2 ++
+ 2 files changed, 17 insertions(+)
 
-Changes in v9:
-- Rebased to next-20240410
-- Because "pinctrl: pinconf-generic: check error value EOPNOTSUPP" was
-  applied, so pinctrl-scmi.c not convert to err return value for
-  'pinctrl_ops->settings_get_one()'.
-- Add R-b for patch [1,2,4]/4 from Dhruva Gole
-- Link to v8: https://lore.kernel.org/r/20240405-pinctrl-scmi-v8-0-5fc8e33871bf@nxp.com
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 36e3eb50a8d4..a1e0e8fa4bb7 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1537,6 +1537,20 @@ static int scmi_common_extended_name_get(const struct scmi_protocol_handle *ph,
+ 	return ret;
+ }
+ 
++/**
++ * scmi_common_get_max_msg_size  - Get maximum message size
++ * @ph: A protocol handle reference.
++ *
++ * Return: Maximum message size for the current protocol.
++ */
++static int scmi_common_get_max_msg_size(const struct scmi_protocol_handle *ph)
++{
++	const struct scmi_protocol_instance *pi = ph_to_pi(ph);
++	struct scmi_info *info = handle_to_scmi_info(pi->handle);
++
++	return info->desc->max_msg_size;
++}
++
+ /**
+  * struct scmi_iterator  - Iterator descriptor
+  * @msg: A reference to the message TX buffer; filled by @prepare_message with
+@@ -1848,6 +1862,7 @@ static int scmi_protocol_msg_check(const struct scmi_protocol_handle *ph,
+ 
+ static const struct scmi_proto_helpers_ops helpers_ops = {
+ 	.extended_name_get = scmi_common_extended_name_get,
++	.get_max_msg_size = scmi_common_get_max_msg_size,
+ 	.iter_response_init = scmi_iterator_init,
+ 	.iter_response_run = scmi_iterator_run,
+ 	.protocol_msg_check = scmi_protocol_msg_check,
+diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
+index 317d3fb32676..3e91536a77a3 100644
+--- a/drivers/firmware/arm_scmi/protocols.h
++++ b/drivers/firmware/arm_scmi/protocols.h
+@@ -258,6 +258,7 @@ struct scmi_fc_info {
+  * @fastchannel_init: A common helper used to initialize FC descriptors by
+  *		      gathering FC descriptions from the SCMI platform server.
+  * @fastchannel_db_ring: A common helper to ring a FC doorbell.
++ * @get_max_msg_size: A common helper to get the maximum message size.
+  */
+ struct scmi_proto_helpers_ops {
+ 	int (*extended_name_get)(const struct scmi_protocol_handle *ph,
+@@ -277,6 +278,7 @@ struct scmi_proto_helpers_ops {
+ 				 struct scmi_fc_db_info **p_db,
+ 				 u32 *rate_limit);
+ 	void (*fastchannel_db_ring)(struct scmi_fc_db_info *db);
++	int (*get_max_msg_size)(const struct scmi_protocol_handle *ph);
+ };
+ 
+ /**
 
-Changes in v8:
-- For the devm_x, I still keep as it is to follow current SCMI style. In
-future we may follow cleanup.h, but it is not this patchset's goal.
-- Apply Cristian's change, and add tag
-- _pin -> pin to drop underscore
-- Add headers per Andy's comments
-- Drop casting for func->groups
-- Minor update for coding style
-- Link to v7: https://lore.kernel.org/r/20240402-pinctrl-scmi-v7-0-3ea519d12cf7@nxp.com
-
-Changes in v7:
-- Hope I not miss any comments. If any missed, please forgive. Since
-  i.MX95 SCMI firmware not support all the pinctrl features, I could only
-  do limited test.
-- Version set to 0x10000
-- Drop scmi_msg_func_set
-- Use get_all to replace flag[0,1], not support flag 2 as of now.
-- Add settings_get_one and settings_get_all ops to support get_all[false, true]
-- PINCTRL_SET_PERMISSIONS is not included in this patchset
-- Bail out if nr_pins is 0
-- Add check nr_functions and nr_groups if they are 0.
-- ext_name_flag changed to bool type
-- Drop unrelated comment
-- Use a central function for pin request and free
-- Coding style optimization
-- Use pinfunction to replace scmi_pinctrl_funcs
-- For the devm_x APIs comments from Andy, I not update in the x/arm_scmi/pinctrl.c,
-  because it is correct usage.
-- For included headers, I keep not change. I try to follow 80 max chars
-  for scmi driver, but with a few lines still exceed.
-- Link to v6: https://lore.kernel.org/r/20240323-pinctrl-scmi-v6-0-a895243257c0@nxp.com
-
-Changes in v6:
-- Update pinctrl driver following ARM SCMI 3.2 public release
-- Addressed Dan's comments, and followed Dan's suggestions, thanks.
-- Dropped R-b/T-b in patch 3/4 and patch 4/4,
-- Link to v5: https://lore.kernel.org/r/20240314-pinctrl-scmi-v5-0-b19576e557f2@nxp.com
-
-Changes in v5:
-- Rebased to linux-next next-20240313
-- Link to v4: https://lore.kernel.org/r/20240223-pinctrl-scmi-v4-0-10eb5a379274@nxp.com
-
-Changes in v4:
-- Rebased to next-20240222
-- Drop pinctrl-scmi-imx and compatible patches in V3
-- Add T-b and R-b collected from v3
-- Link to v3: https://lore.kernel.org/r/20240121-pinctrl-scmi-v3-0-8d94ba79dca8@nxp.com
-
-Changes in v3:
-- Add R-b for dt-binding patch
-- Use 80 chars per line to align with other scmi drivers
-- Add pinctrl_scmi_alloc_configs pinctrl_scmi_free_configs to replace
-  driver global config_value and config_type array to avoid in parrell
-  access issue. When num_configs is larger than 4, use alloc, else use
-  stack.
-- Drop the separate MAITAINERS entry for firmware scmi pinctrl
-- Use enum type, not u8 when referring the scmi or generic pin conf type
-- Drop scmi_pinctrl_config_get_all which is not used at all for now.
-- Update copyright year to 2024
-- Move the enum scmi_pinctrl_conf_type above pinctrl_proto_ops for consistency
-- Link to v2: https://lore.kernel.org/r/20240104-pinctrl-scmi-v2-0-a9bd86ab5a84@nxp.com
-
-Changes in v2:
- Added comments, and added R-b for Patch 1
- Moved the compatile string and i.MX patch to the end, marked NOT APPLY
- Patchset based on lore.kernel.org/all/20231221151129.325749-1-cristian.marussi@arm.com/
- Addressed the binding doc issue, dropped i.MX content.
- For the firmware pinctrl scmi driver, addressed the comments from Cristian
- For the pinctrl scmi driver, addressed comments from Cristian
-
- For the i.MX95 OEM stuff, I not have good idea, expect using compatbile
- string. Maybe the firmware public an protocol attribute to indicate it is
- VENDOR stuff or NXP use a new protocol id, not 0x19. But I think
- current pinctrl-scmi.c not able to support OEM config, should we extend
- it with some method? Anyway if patch 1-4 is good enough, they could
- be picked up first.
-
- Since I am only able to test the patch on i.MX95 which not support
- geneirc pinconf, only OEM configs are tested in my side.
-
----
-Peng Fan (4):
-      firmware: arm_scmi: introduce helper get_max_msg_size
-      dt-bindings: firmware: arm,scmi: support pinctrl protocol
-      firmware: arm_scmi: Add SCMI v3.2 pincontrol protocol basic support
-      pinctrl: Implementation of the generic scmi-pinctrl driver
-
- .../devicetree/bindings/firmware/arm,scmi.yaml     |  50 ++
- MAINTAINERS                                        |   1 +
- drivers/firmware/arm_scmi/Makefile                 |   3 +-
- drivers/firmware/arm_scmi/driver.c                 |  17 +
- drivers/firmware/arm_scmi/pinctrl.c                | 916 +++++++++++++++++++++
- drivers/firmware/arm_scmi/protocols.h              |   3 +
- drivers/pinctrl/Kconfig                            |  11 +
- drivers/pinctrl/Makefile                           |   1 +
- drivers/pinctrl/pinctrl-scmi.c                     | 572 +++++++++++++
- include/linux/scmi_protocol.h                      |  84 ++
- 10 files changed, 1657 insertions(+), 1 deletion(-)
----
-base-commit: ec3243f13db334437b5ce253be2fb23bcf35b490
-change-id: 20231215-pinctrl-scmi-4c5b0374f4c6
-
-Best regards,
 -- 
-Peng Fan <peng.fan@nxp.com>
+2.37.1
 
 
