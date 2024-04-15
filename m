@@ -1,160 +1,103 @@
-Return-Path: <linux-kernel+bounces-145572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 414A98A57F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:39:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 981718A57F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:38:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F297E283E98
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:39:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4C7C1C20A89
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BF585C59;
-	Mon, 15 Apr 2024 16:37:19 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAB78565A;
-	Mon, 15 Apr 2024 16:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C66E85260;
+	Mon, 15 Apr 2024 16:37:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="k+8pj30E"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D791984A23;
+	Mon, 15 Apr 2024 16:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713199038; cv=none; b=RH+4cAbzslut28Ua7jBrCQkBiaFWflya57rAp5psfjWf0s/HnzQtu3DYtpyXcufnbkhKS9eqH1rSYlA/wLuadrY2PNre4TlaxxsSUAl3X/ZXwU4ejMfFftXqpHT+oz6SsJkNw0BQ2iMYHSBybw4BKjSsV9SM8pAaqj0DG8LafBA=
+	t=1713199035; cv=none; b=GsQnqzfiQ8FQsVG9GEDddFMwyVdwXfFJizEwBzsKL8Mbd5E6EmcppDph6IVjn5Sfh8Rn11rkGQwH+iZ1T7atG8rXMDP9sUubIl4xDuiaZ0t2mms07QuSGtmySR0NYlYRK3zz7a9xENpbex6yhn10EfAJ4TEf0VphzNcetD4gREY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713199038; c=relaxed/simple;
-	bh=19zinLcYkEloXjm+foouTE9hbR4HLHMXAhAj7wsMfWw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p56eXRRXjPa/FJ/X/Cfm638TQqMt8czteZ0C67uEA60lgiqvnwHig6Hp3AAfvL2ecscsgTGE368ISQfLKSedCUn+++6HgOSe7/+H08/J0h/gnPaSW8vUUVfFlerZ07MmGkFbIM1OgJmRUECuf6xELPL6j+8Mxp+FUn3G4LFKfHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 51DE3150C;
-	Mon, 15 Apr 2024 09:37:45 -0700 (PDT)
-Received: from pluto.fritz.box (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96C703F64C;
-	Mon, 15 Apr 2024 09:37:14 -0700 (PDT)
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-clk@vger.kernel.org
-Cc: sudeep.holla@arm.com,
-	james.quinlan@broadcom.com,
-	f.fainelli@gmail.com,
-	vincent.guittot@linaro.org,
-	peng.fan@oss.nxp.com,
-	michal.simek@amd.com,
-	quic_sibis@quicinc.com,
-	quic_nkela@quicinc.com,
-	souvik.chakravarty@arm.com,
-	mturquette@baylibre.com,
-	sboyd@kernel.org,
-	Cristian Marussi <cristian.marussi@arm.com>
-Subject: [PATCH v3 5/5] clk: scmi: Add support for get/set duty_cycle operations
-Date: Mon, 15 Apr 2024 17:36:49 +0100
-Message-ID: <20240415163649.895268-6-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240415163649.895268-1-cristian.marussi@arm.com>
-References: <20240415163649.895268-1-cristian.marussi@arm.com>
+	s=arc-20240116; t=1713199035; c=relaxed/simple;
+	bh=vhYf6guI1O7u9dAK5aGWMDqew1wEZWHlWA172sd6erU=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=mSRx0xO1WjqKvrZ7ikN89Cmy8w0NbjGkCXVn+/+ALkiVs/ekC1UB2L4LINpn2f8e0k5KHNMzAK6LY2CqMZW76b1KtvH7772z/BVgxGDwAGJqIKHQSxgyqzOlVMxtgnbF0jNmcuKtlyum5HloooYGTV/QsxpcFFSUHPp1gEi+/Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=k+8pj30E; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713199018; x=1713803818; i=markus.elfring@web.de;
+	bh=rUHFv7hYTYZHryZJN+dw2KYFFC+hUd/h/JV+c50Rk6g=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=k+8pj30EHWFTg2vPtZtYGsvdlwlg6dA4NJhjDzZA/dLP7QemXa1OuFNOHHl55xP7
+	 D0fbvUIBN8l52Ql7+P28K0C/MUQzd0+pJ3wSXq7hENcpScghA5ea/D3OrdFMOXDGz
+	 EEdkLZ3O2R1MVMXfOYuksZ5xYiVWImow9MYCqM3BDBssWSmfcGGYPdo6kmiWgFmDX
+	 UItTrGdndzZgHznQDRYgCCgg8jwWf+7q+v/euuSjn5IMR0J1+zXeC9FhPdb98qJoj
+	 LQgmtCp+Cp7o+L74NbS7SCs0ryelB+3/P4XiGvOz8IlcmlGcZsSxgx70Iyvxm5iXP
+	 DIm8w82FjTZjkUTEig==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.80.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Md6y1-1sW0vR3Lsp-00aEKI; Mon, 15
+ Apr 2024 18:36:58 +0200
+Message-ID: <0f7821f8-63f2-4cf4-8865-1ae0aaf42897@web.de>
+Date: Mon, 15 Apr 2024 18:36:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: Zeng Heng <zengheng4@huawei.com>, linux-gpio@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Wei Li <liwei391@huawei.com>,
+ Wei Yongjun <weiyongjun1@huawei.com>, Xie XiuQi <xiexiuqi@huawei.com>
+References: <20240415105328.3651441-1-zengheng4@huawei.com>
+Subject: Re: [PATCH] pinctrl: devicetree: fix refcount leak in
+ pinctrl_dt_to_map()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240415105328.3651441-1-zengheng4@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:CXzh8Zjhgjw2ckngfzx4BF0HztIYni+4xFLEUVzEw8AscsoACLN
+ rQu7uyD2ZwHoTtPbFAviXKdUY81ROLPmCfibWAfSQTI8HYeCIUUrVJmVESlqal0gk/cDnGj
+ dbB3aXgEv2oz0pl5finSlISfesDTqt80AbrMtRGnVzHBwq73zieb8R5xLyQfNE07YltdkJz
+ AA+s8fV8EBFrH7xUOesrw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Aujf/A5q5vg=;d1vHN8azuLrGFggQg9H3eCGHuip
+ hFRL8CIohEdEgPciT3+yAOGxwW6oNcTWqo2CXNa3KTRivkNUmgoGA+oRyUE9oomiFImZ2yVg4
+ XsDHhtQBIZRKzf4WjzLGHseoz1EX6rlzkhkoAdwbrfWC7mbZzJo/YcUKkTzCqu6MZ+rhBy/uM
+ c6BNN1zK8QyG+xsIODu9JslW8u9XbUxpXooCVhJ6wgjF28YFhPpIdX15JrjcWtvPYKKbnMWef
+ hhx+4KFPwL64aIJt2nBx6fvbl2GnTDL2uGmtsP7t2Q4o/oo51WHsFn5U2URTcsjfI8xTN/aiU
+ NRphXf9J4AjM8uY5mDnT+JnZHwbv/tEIR0WF2IHl4DydJD02Cj6g0dtrXBIMlZGxM6KgVW+9B
+ t+po9J75Qgr3f3ElCjYCpxuj5v3RJshsg5GQ0kfHe3y1AMPmWWIgSedZqHJRT5v9Mxy2Nf6hv
+ mueEE01+H6/axTI5fyCbZuJymyofIimxIVWW5lOyXsOMh3F4lmg+A5RL1qCTGeuAE3rIEwGg8
+ NMgL4RPs+OG2Q7ZFeniEQq/QLH3r+NScwakSMZyK6a5p970tWHoOFiO2ZsuTMYeCimYj439eW
+ 73FN8xHgYBXaI4MD7O7UNXDqsXrl54ZRHWwUh2zygNFqCvTgX912BkG/HkJqP4Irb3m64TOwD
+ uA+8+GXO+xu09mI/jLnYij2M4j9484cAHRsle6iHbK7UbA6QM20yvaLESidNSx3VYnupw3hn3
+ 1TYttaHQa159LCRR7YCsIrT+RmKaiX64SeMn5ww3Idpr+com96B/spE6gcz1f4SqRmnq69xi2
+ R8E6PHeUez3bqRQEEwaJuY0q2pFT6L3ByZtqJ1P28mdLw=
 
-Provide the CLK framework callbacks related to get/set clock duty cycle if
-the related SCMI clock supports OEM extended configurations.
+>                   =E2=80=A6 Because the pinctrl_dt_free_maps() includes =
+the
+> droping operation, here we call it directly.
 
-CC: Michael Turquette <mturquette@baylibre.com>
-CC: Stephen Boyd <sboyd@kernel.org>
-CC: linux-clk@vger.kernel.org
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/clk/clk-scmi.c | 49 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+I find this change description improvable.
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index ce0f26ee632f..d86a02563f6c 100644
---- a/drivers/clk/clk-scmi.c
-+++ b/drivers/clk/clk-scmi.c
-@@ -22,6 +22,7 @@ enum scmi_clk_feats {
- 	SCMI_CLK_STATE_CTRL_SUPPORTED,
- 	SCMI_CLK_RATE_CTRL_SUPPORTED,
- 	SCMI_CLK_PARENT_CTRL_SUPPORTED,
-+	SCMI_CLK_DUTY_CYCLE_SUPPORTED,
- 	SCMI_CLK_FEATS_COUNT
- };
- 
-@@ -169,6 +170,45 @@ static int scmi_clk_atomic_is_enabled(struct clk_hw *hw)
- 	return !!enabled;
- }
- 
-+static int scmi_clk_get_duty_cycle(struct clk_hw *hw, struct clk_duty *duty)
-+{
-+	int ret;
-+	u32 val;
-+	struct scmi_clk *clk = to_scmi_clk(hw);
-+
-+	ret = scmi_proto_clk_ops->config_oem_get(clk->ph, clk->id,
-+						 SCMI_CLOCK_CFG_DUTY_CYCLE,
-+						 &val, NULL, false);
-+	if (!ret) {
-+		duty->num = val;
-+		duty->den = 100;
-+	} else {
-+		dev_warn(clk->dev,
-+			 "Failed to get duty cycle for clock ID %d\n", clk->id);
-+	}
-+
-+	return ret;
-+}
-+
-+static int scmi_clk_set_duty_cycle(struct clk_hw *hw, struct clk_duty *duty)
-+{
-+	int ret;
-+	u32 val;
-+	struct scmi_clk *clk = to_scmi_clk(hw);
-+
-+	/* SCMI OEM Duty Cycle is expressed as a percentage */
-+	val = (duty->num * 100) / duty->den;
-+	ret = scmi_proto_clk_ops->config_oem_set(clk->ph, clk->id,
-+						 SCMI_CLOCK_CFG_DUTY_CYCLE,
-+						 val, false);
-+	if (ret)
-+		dev_warn(clk->dev,
-+			 "Failed to set duty cycle(%u/%u) for clock ID %d\n",
-+			 duty->num, duty->den, clk->id);
-+
-+	return ret;
-+}
-+
- static int scmi_clk_ops_init(struct device *dev, struct scmi_clk *sclk,
- 			     const struct clk_ops *scmi_ops)
- {
-@@ -258,6 +298,12 @@ scmi_clk_ops_alloc(struct device *dev, unsigned long feats_key)
- 	if (feats_key & BIT(SCMI_CLK_PARENT_CTRL_SUPPORTED))
- 		ops->set_parent = scmi_clk_set_parent;
- 
-+	/* Duty cycle */
-+	if (feats_key & BIT(SCMI_CLK_DUTY_CYCLE_SUPPORTED)) {
-+		ops->get_duty_cycle = scmi_clk_get_duty_cycle;
-+		ops->set_duty_cycle = scmi_clk_set_duty_cycle;
-+	}
-+
- 	return ops;
- }
- 
-@@ -312,6 +358,9 @@ scmi_clk_ops_select(struct scmi_clk *sclk, bool atomic_capable,
- 	if (!ci->parent_ctrl_forbidden)
- 		feats_key |= BIT(SCMI_CLK_PARENT_CTRL_SUPPORTED);
- 
-+	if (ci->extended_config)
-+		feats_key |= BIT(SCMI_CLK_DUTY_CYCLE_SUPPORTED);
-+
- 	if (WARN_ON(feats_key >= db_size))
- 		return NULL;
- 
--- 
-2.44.0
+* How do you think about to avoid a typo?
 
+* Would another imperative wording be more desirable?
+
+Regards,
+Markus
 
