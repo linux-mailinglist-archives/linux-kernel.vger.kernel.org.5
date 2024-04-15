@@ -1,143 +1,203 @@
-Return-Path: <linux-kernel+bounces-144547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E0488A47A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:40:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0EB8A47A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:40:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 001301F21D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:40:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E24FC1C21489
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:40:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 065866125;
-	Mon, 15 Apr 2024 05:40:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C7A12B89;
+	Mon, 15 Apr 2024 05:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="PzYoFki4"
-Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ThjZ4zFZ"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AB04C8D;
-	Mon, 15 Apr 2024 05:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0455F510
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713159602; cv=none; b=PWGwGfSFgtfCwQ3mKWjnIiZokWdJMd3cEsecNHmFxY6/y7/U5IucAyOf8Wv4tty8dT/AGJY+Se4/MLMGk4PIwYQyySwOlsA78yCdSt6uHASWqmR+sgRFRrsxAjsfAShaiKhKy19+ulchV90vRK7OlN9RJjIfHGBD9boHcvD91K4=
+	t=1713159628; cv=none; b=aTSBZsXQlB9RdE0Rk6G4FuSV59is2l0nCBjt4VZk2FTOdYsyv6urk16fV4CJevbWYp8uHDeAgjLKw43+CeQGG+BnK4KuFSGSRkOObiqgfJirD8gAc8/XJ20DLxF1M+5Q9UWDS8qQiTv4s5Kr2gcmd/thHgOwgK3D3wa2S34AIwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713159602; c=relaxed/simple;
-	bh=ZF+VlMWof4THuXVKtLsY3NwOapkk05y8L6NMm7eH744=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J/Kq1pJXQtgvWO9T8bPprH7wfMy/eGA/7L43Aw+a19ncrnQRy5isLHKcAyJrCEDJDpaZKqXpXkTg8yRyvaBijFq7uAXq+D6y4k52/1zAE51jMySXBA/zywqxqFiA3oGDsCgaz6jI/GVp0MjRpWGrYevmCWR8mAArRjWvlGRLTSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=PzYoFki4; arc=none smtp.client-ip=80.12.242.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id wF4LrfRtmA2vSwF4LrsC4D; Mon, 15 Apr 2024 07:39:57 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1713159597;
-	bh=BY4nt4wdNHlCRY/QePQsMxBf9RDvOOCW1ziuSGFdVAU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=PzYoFki4L95iMHMRsC05dAMyOm0K3a5H1ePrbXEdjVOMPlIPB0/5qG78g9tam6Fih
-	 4BSmWLv4mCi/w/9Axj3MFw9C1NAi0i7Z94SE8I2ym1zrWtFenklV8Uu5mFzE8zUtUx
-	 Dwa4Jj2PYdWAMf9KL7QgHX4ZeK4K7aiiof+yvHQ7/lSfL/dVgqHN/Q770y/6hpw5Yk
-	 LMpPTw73RU8xvAggzbcty0l+4o6ELAMeSB4ivgU5laaq6ZKkKCZLwUgrhDgrP88+Kn
-	 jFEKNk2DsmOyulmsZ/FhOx4TeLnh84YZF3txrKybeD1Rttmi4AtjW3KJ7uv+Urlcd4
-	 8bdHGtBmp0FEg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 15 Apr 2024 07:39:57 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <4b23fab6-3241-4f97-bdef-ece53d24574a@wanadoo.fr>
-Date: Mon, 15 Apr 2024 07:39:53 +0200
+	s=arc-20240116; t=1713159628; c=relaxed/simple;
+	bh=xw6LiBTKtqdnubnlEIr89XeIYn/c664F4jw22gE1mTg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nyRDJ/9nxGwG1ZxeMX9UPHF+mW+tORsSn2aoFO5A1MdEy1Xf6XqtWJzggHmlC/FPlxVIguYFhTuk4ZlmNJG0hVD+vrWiAYy52z49j2VwsD2XXT4/6rXS0LFYO2OVxM1pCVfjqKKFh4azwtf6azIknL26vK/w1I41jZ5daP5J+d0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ThjZ4zFZ; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so4412017a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 22:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713159625; x=1713764425; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0GIEmjyvgTlzuiRbpI4eQnW0cbdSg6YrPHwvvZri8SY=;
+        b=ThjZ4zFZQnoa0XnnYm6DQ9Sa4y9GT93Ze4fxoi94M6qFlry+3y5ozoBiM7nNaKDFch
+         aRPBAu/anptzX/uHzo6zBc1mZ6dfFXf2gvgCHntJLF8qsOd3XmSbRq9/hC5kaTbdS/bp
+         meXlqm1Vo/jMh+Aq1jSk/IUoUB5GJaLsEasx5BnxDLywAH/X1Ln78rkEgoWvyOqUiIgt
+         bgsrmsFNI8Y60O+cncRUvUtTfaeNhm+XbiqSpClnlAP506XpqG43q6IO7d80dV3V/Q6/
+         bv9K2+cnSSQfFA3FI2Kcj+Q15Vjk6CG68o0dO3KDjx9SBy0q01FElbuYkZb/F4jlef3a
+         ixfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713159625; x=1713764425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0GIEmjyvgTlzuiRbpI4eQnW0cbdSg6YrPHwvvZri8SY=;
+        b=HbiVajuE3inONEiwbGkF9zDhS65EHHOIBb5za5gIhDVsFUtN5lqTK+PSdy2KmJyTTz
+         mps2tPKpa5+CjcJvGq06dgj6gwH1vAajS+X3U9eoJcJN2AtiuWHs2HOe+iSr7IJJd7oU
+         HVmdgNlzlv6tBYzy2/D9h4ZmBVoStYNYXLuPVneCBddGdsW71J1nkSo86xX1at2ajna7
+         +VQaddxFsYRoHo2Log/5hfeZLl1kXnbjVgv3q0Ix1OdLDQaZfi8qc1MbPEDCK027IcTj
+         lw+lEiYYuGaW6cZidBKb+f4lIlWxQmC3QsVMFUk9uAVNaSIGtEb6XPb4TT4KgOQPfZkO
+         vfZw==
+X-Gm-Message-State: AOJu0YxzdzfVb5X5+HgWtgZIES9/baxUqC8DUt+/KujgdriibXqMjlCs
+	ush+8mMqCsQ5iHsf48+5x3b5kw99NvviWMpk8ofBTvLs9Nk0xrQK8aoCs3YJMMSr8EMWXR5V4OM
+	iBoZKe4jTyTQnStqPrXfYp5pLwXM=
+X-Google-Smtp-Source: AGHT+IGKl6piHeSLVfDzjED+XhSZsu+H08nu6+un64kd5//BIdVALMViQF4wd4jMCiBPAp6fF3DjPgE2PwRi0g1wKRM=
+X-Received: by 2002:a50:cc9c:0:b0:570:1ea8:cce8 with SMTP id
+ q28-20020a50cc9c000000b005701ea8cce8mr2773032edi.38.1713159624881; Sun, 14
+ Apr 2024 22:40:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] drm/panel: Add driver for EDO RM69380 OLED panel
-To: david@mainlining.org
-Cc: airlied@gmail.com, christophe.jaillet@wanadoo.fr, conor+dt@kernel.org,
- daniel@ffwll.ch, devicetree@vger.kernel.org,
- dri-devel@lists.freedesktop.org, konradybcio@kernel.org, krzk+dt@kernel.org,
- linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
- marijn.suijten@somainline.org, mripard@kernel.org,
- neil.armstrong@linaro.org, quic_jesszhan@quicinc.com, robh@kernel.org,
- sam@ravnborg.org, tzimmermann@suse.de, ~postmarketos/upstreaming@lists.sr.ht
-References: <20240414-raydium-rm69380-driver-v1-0-5e86ba2490b5@mainlining.org>
- <20240414-raydium-rm69380-driver-v1-2-5e86ba2490b5@mainlining.org>
- <d0db78dd-c915-41f3-b1be-b30a0266741d@wanadoo.fr>
- <7529f14b292c7173d4a60a7dca8af92b@mainlining.org>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <7529f14b292c7173d4a60a7dca8af92b@mainlining.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240313085817.48892-1-zegao@tencent.com> <65b1691d-8d90-4057-8ad0-da546a0ac8a1@linux.ibm.com>
+In-Reply-To: <65b1691d-8d90-4057-8ad0-da546a0ac8a1@linux.ibm.com>
+From: Ze Gao <zegao2021@gmail.com>
+Date: Mon, 15 Apr 2024 13:40:13 +0800
+Message-ID: <CAD8CoPDajt_EciU0x8G_BocajfaJrQ1FKLYkp_nLSfF9+9FJVw@mail.gmail.com>
+Subject: Re: [PATCH] sched: Improve rq selection for a blocked task when its
+ affinity changes
+To: Madadi Vineeth Reddy <vineethr@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, Ze Gao <zegao@tencent.com>, 
+	Ben Segall <bsegall@google.com>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Valentin Schneider <vschneid@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le 15/04/2024 à 07:37, david-vu3DzTD92ROXwddmVfQv5g@public.gmane.org a 
-écrit :
-> W dniu 2024-04-14 22:22, Christophe JAILLET napisał(a):
->> Le 14/04/2024 à 17:22, David Wronek a écrit :
->>> Add support for the 2560x1600@90Hz OLED panel by EDO bundled with a
->>> Raydium RM69380 controller, as found on the Lenovo Xiaoxin Pad Pro 2021.
->>>
->>> Signed-off-by: David Wronek 
->>> <david-vu3DzTD92ROXwddmVfQv5g-XMD5yJDbdMReXY1tMh2IBg@public.gmane.org>
->>> ---
->>>   drivers/gpu/drm/panel/Kconfig                 |  14 +
->>>   drivers/gpu/drm/panel/Makefile                |   1 +
->>>   drivers/gpu/drm/panel/panel-raydium-rm69380.c | 378 
->>> ++++++++++++++++++++++++++
->>>   3 files changed, 393 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/panel/Kconfig 
->>> b/drivers/gpu/drm/panel/Kconfig
->>> index 154f5bf82980..84cbd838f57e 100644
->>> --- a/drivers/gpu/drm/panel/Kconfig
->>> +++ b/drivers/gpu/drm/panel/Kconfig
->>> @@ -542,6 +542,20 @@ config DRM_PANEL_RAYDIUM_RM692E5
->>>         Say Y here if you want to enable support for Raydium 
->>> RM692E5-based
->>>         display panels, such as the one found in the Fairphone 5 
->>> smartphone.
->>>   +config DRM_PANEL_RAYDIUM_RM69380
->>> +    tristate "Raydium RM69380-based DSI panel"
->>> +    depends on BACKLIGHT_CLASS_DEVICE
->>> +    depends on DRM_DISPLAY_DP_HELPER
->>> +    depends on DRM_DISPLAY_HELPER
->>> +    depends on DRM_MIPI_DSI
->>> +    depends on OF
->>> +    help
->>> +      Say Y here if you want to enable support for Raydium 
->>> RM69380-based
->>> +      display panels.
->>> +
->>> +      This panel controller can be found in the Lenovo Xiaoxin Pad 
->>> Pro 2021
->>> +      in combiantion with an EDO OLED panel.
->>
->> combination?
->>
-> 
-> Yes, this is just one of the examples where this driver IC can be found. 
-> It can also be used with panels other than those from EDO.
+On Sat, Apr 13, 2024 at 12:59=E2=80=AFAM Madadi Vineeth Reddy
+<vineethr@linux.ibm.com> wrote:
+>
+> Hi Ze Gao,
+>
+> On 13/03/24 14:28, Ze Gao wrote:
+> > We observered select_idle_sibling() is likely to return the *target* cp=
+u
+> > early which is likely to be the previous cpu this task is running on ev=
+en
+> > when it's actually not within the affinity list newly set, from where a=
+fter
+> > we can only rely on select_fallback_rq() to choose one for us at its wi=
+ll
+> > (the first valid mostly for now).
+> >
+> > However, the one chosen by select_fallback_rq() is highly likely not a
+> > good enough candidate, sometimes it has to rely on load balancer to kic=
+k
+> > in to place itself to a better cpu, which adds one or more unnecessary
+> > migrations in no doubt. For example, this is what I get when I move tas=
+k
+> > 3964 to cpu 23-24 where cpu 23 has a cpu bound work pinned already:
+> >
+> >         swapper       0 [013]   959.791829: sched:sched_migrate_task: c=
+omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D13 dest_cpu=3D23
+> > kworker/24:2-mm    1014 [024]   959.806148: sched:sched_migrate_task: c=
+omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D23 dest_cpu=3D24
+> >
+>
+> I am able to reproduce this scenario of having an extra migration through=
+ load balance
+> swapper       0 [031] 398764.057232: sched:sched_migrate_task: comm=3Dloo=
+p pid=3D178687 prio=3D120 orig_cpu=3D31 dest_cpu=3D33
+> ksoftirqd/0  13 [000] 398764.356138: sched:sched_migrate_task: comm=3Dloo=
+p pid=3D178687 prio=3D120 orig_cpu=3D33 dest_cpu=3D34
+>
+> I wrote a simple c program that blocks for few seconds, meanwhile I tasks=
+et it to CPUs 33,34 while I already have a
+> busy task running on CPU 33.
+>
+> > The thing is we can actually do better if we do checks early and take m=
+ore
+> > advantages of the *target* in select_idle_sibling(). That is, we contin=
+ue
+> > the idle cpu selection if *target* fails the test of cpumask_test_cpu(
+> > *target*, p->cpus_ptr). By doing so, we are likely to pick a good candi=
+date,
+> > especially when the newly allowed cpu set shares some cpu resources wit=
+h
+> > *target*.
+> >
+> > And with this change, we clearly see the improvement when I move task 3=
+964
+> > to cpu 25-26 where cpu 25 has a cpu bound work pinned already.
+> >
+> >         swapper       0 [027]  4249.204658: sched:sched_migrate_task: c=
+omm=3Dstress-ng-cpu pid=3D3964 prio=3D120 orig_cpu=3D27 dest_cpu=3D26
+>
+> But after applying this patch, The extra migration is still happening as =
+CPU 33 is still chosen by try_to_wake_up.
+>
+> On placing some perf probes and testing,
+>     migration/57     304 [057] 12216.988491:       sched:sched_migrate_ta=
+sk: comm=3Dloop pid=3D11172 prio=3D120 orig_cpu=3D57 dest_cpu=3D4
+>          swapper       0 [004] 12226.989065: probe:select_idle_sibling_L1=
+24: (c0000000001bafc0) i=3D-1 recent_used_cpu=3D-1 prev_aff=3D-1
+>          swapper       0 [004] 12226.989071:       probe:select_fallback_=
+rq: (c0000000001a2e38) cpu=3D4
+>          swapper       0 [004] 12226.989074:       sched:sched_migrate_ta=
+sk: comm=3Dloop pid=3D11172 prio=3D120 orig_cpu=3D4 dest_cpu=3D33
+>          swapper       0 [000] 12227.007768:       sched:sched_migrate_ta=
+sk: comm=3Dloop pid=3D11172 prio=3D120 orig_cpu=3D33 dest_cpu=3D34
+>
+> It is observed that, select_fallback_rq is still taken in this scenario a=
+s default target is returned at the end of select_idle_sibling
+> which was CPU 4.
 
-Hi, sorry if i was unclear.
+After second thoughts, it indeed could happen if CPU 4 shares nothing
+with CPU 33(34),
+for example, in different numa nodes.
 
-Is there a typo: s/combiantion/combination/ ?
+IOW, it cannot benefit from select_idle_siblings() and has to rely on
+select_fallback_rq
+as the last resort. Just like what I said in the changelog, this patch
+aims to improve rq
+selection for cases where the newly allowed cpu set shares some cpu
+resources with
+the old cpu set.
 
-CJ
+Sorry for not being able to recall all details immediately, since this
+thread has been inactive
+for a long while and receives no feedback from sched folks.
 
-> 
->>> +
->>>   config DRM_PANEL_RONBO_RB070D30
->>>       tristate "Ronbo Electronics RB070D30 panel"
->>>       depends on OF
-> 
-> Best regards,
-> David Wronek <david-vu3DzTD92ROXwddmVfQv5g@public.gmane.org>
-> 
-> 
+Best,
+Ze
 
+> In most of my testing, default target is returned at the end of the funct=
+ion due to the initial checks. It's possible that there would
+> be cases where we can get optimal CPU before we reach end of the select_i=
+dle_sibling function but it would be interesting to know if the
+> extra time spent in finding an optimal cpu have an impact instead of retu=
+rning it earlier if in most of the times we are returning the
+> default target at the end.
+>
+> Thanks and Regards
+> Madadi Vineeth Reddy
+>
+> >
+> > Note we do the same check for *prev* in select_idle_sibling() as well.
+> >
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+>
 
