@@ -1,237 +1,332 @@
-Return-Path: <linux-kernel+bounces-145066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC778A4F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:29:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8DA28A4F08
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:30:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FDAFB216C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:29:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EE982836F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D56E6BFBB;
-	Mon, 15 Apr 2024 12:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C4F6CDC5;
+	Mon, 15 Apr 2024 12:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SnX9GWE4"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b="hZtcPUmT";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="q5g1H2jy"
+Received: from flow4-smtp.messagingengine.com (flow4-smtp.messagingengine.com [103.168.172.139])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F40D679E2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058981FA1;
+	Mon, 15 Apr 2024 12:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713184179; cv=none; b=lcUgpRa4swdznfO/ejoQfBWh3o5jXEuIOSSrabBBHdSOXCZdQKhjQcqsyBBVsygBzXD7IBwl1LnTUmq0mxOhmJ9iGD3xhhrrSuEGuy7I+kSp9qgLkhPoBFjArYt5Nz+TqFImvJ6ySgsSgAEx9XAx+vJa1Zx+Ma77wZNIN4NXAew=
+	t=1713184228; cv=none; b=Fi5zPv0gdXg/9nExNcVJQoa8/8EGc0t0QB/cHDc8MS+wKKLSw0/dM48/3Xifq/3Ojju1p8chNxsjAMwtQc0S/EvYXO6+eIsTNb9hoCfe2pIPtVRm1zP8iHR/MKgJF3WAjeedU6DU1Z3cEwPf+WsbvEmV7geqNpxuf2OBhKt48qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713184179; c=relaxed/simple;
-	bh=5lhRyrzca4TjFgF2+b3ZcdjsSA8YOHY7wePS8t1m6qg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PedcIOtQiZp4cwugpBbqnaC/ARYcIyjRNNLsx/dAXpjojg1VfMQwmCailiEaIvvBuf0vLUU2BAOb+3C/rDWkqUwDzYuWHZzVDyS4NWfJ31ha/KG5F6zCBddakf4mMqO3hKb2ysoqGTZJB3lbUkx9Y7AGqvP0CLG0m0LxY7XbeAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SnX9GWE4; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6eb7ef71c03so446870a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713184175; x=1713788975; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BECndX+48cQN13aMuuHQd3FSCd8ubmNe5lelLwKHJ9Q=;
-        b=SnX9GWE48rZPD9JjKU+6DXAN4GRLlBjQPhDPZQNq5T0KRT0B59zTtSWkAiJGBECKsY
-         9uMXxuRR2BHEFfNHI1eL94BwuHWTIS/UPLlCICFwmn53Z9vTIQZ7On/6TS4U3jLOYhst
-         8buVbGjBitBVcnaRM6if9ce7kbcMosEJU0R/E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713184175; x=1713788975;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BECndX+48cQN13aMuuHQd3FSCd8ubmNe5lelLwKHJ9Q=;
-        b=G+PkGE4MsYDTexA+Wp/50QjOLVkT83zmmnbtfhah6EM3x5eET/w3u2QOsGtMOhNcFd
-         0QA8uDZzGGVTlzxu67SlXerT6JmscUHtK0EJnhMhXB7Gn8/EWT6LPi58V40vYkmQYFiZ
-         xdC8bHJmVponhFpCsiJWMjZxf6Fi1q/T6WBqjyeEsf9lzIvQk5ajtKrlahdoQ6+0XaNh
-         lEyOfOZjXjnWfRC8k4IPo0a7S3A16+mXYd/f+Ozn3Xh/5iluS9BoB6//Jw0M11NKZFbK
-         3lgpkIv/ib0vt8ohWPWAiWuKeaPgMmGTTjEwsaKKe3KYRtBBFxeKIqB51lMv7cM/RgEq
-         4ypg==
-X-Forwarded-Encrypted: i=1; AJvYcCVc7aHZQpFEn3NG9OI+ZRYS2cy+67HowtQUFs0rD0jg067hLkikwBSxAB7bXErLOyHFv1gxUhsU8gV0v/LyYpc/C4xlCg9Ixof+kAZ+
-X-Gm-Message-State: AOJu0YwixjPNOxU1Fn0McG8ggA1qld88yEg5oQb1yJowe5BUXpIZ80ix
-	O8eKtcoUm8WYSBoWR2RTsV1k4M8S+2udnZwiP9p29OMp9SO/NnywbxQnACvmCw==
-X-Google-Smtp-Source: AGHT+IFnzlmu0VuyTMTpmtRA1ipPdRGFpT7uNoJdSzFeilp7/o7vx5AB3UWUyblkfMXQZpGZY0vYPA==
-X-Received: by 2002:a05:6871:3389:b0:21e:f03b:8836 with SMTP id ng9-20020a056871338900b0021ef03b8836mr10892530oac.52.1713184175612;
-        Mon, 15 Apr 2024 05:29:35 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id i22-20020a05620a145600b0078d68b23254sm6270244qkl.107.2024.04.15.05.29.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 05:29:35 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 15 Apr 2024 12:29:34 +0000
-Subject: [PATCH v3] media: usb: siano: Fix allocation of urbs
+	s=arc-20240116; t=1713184228; c=relaxed/simple;
+	bh=V5KT7TbqjYhhCloJY4FO0tNLNuUkY0Ymu32XeS1Q4Ro=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iP2nGpZjqzy3dEw2EPDdc7wW0dLFIQmE5o6NGu0PToRfUx24hq60WeL9f4/RnHdWnw4EdmyT/wTSV/yyLuneS+X/E5ECNApPVgWU+C0Q8+448yIg6lcu+ZAhsl+VN0O3bkhVfpLQn2+kf0mtBiln1+iq44hv9iKDGMhK3SFLpuk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se; spf=pass smtp.mailfrom=ragnatech.se; dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b=hZtcPUmT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=q5g1H2jy; arc=none smtp.client-ip=103.168.172.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ragnatech.se
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailflow.nyi.internal (Postfix) with ESMTP id E94B5200316;
+	Mon, 15 Apr 2024 08:30:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Mon, 15 Apr 2024 08:30:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ragnatech.se; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1713184223;
+	 x=1713187823; bh=jOTWdAJBYKw6oDV99zOe8caj1/ll24Qdj4BKn1FTGUg=; b=
+	hZtcPUmTIWHVH0rx+WMD8Lfln15yVlRdKjdQXflwCnTwbsZ1RzylivD90v7QLHZU
+	yDPut+Ia+L3zpPQ9fpM3hRxlwmDw7erYXCa9GGwMKf7rDNcGzNru6coJbFSNpsS0
+	8Fo/w7gk1B9W9ZJ1X4ch02NmCWbnVXHYdKP4h6ONmOvPvx+9V1xGjMjz+y23ypVT
+	mY9CNrr+mTTHkyf6klGMR8DQo4xM3T+w2qdvGCgEt8GyLqT0OV6stUji3zikFiTB
+	7+sA3xafU8w9bBRgx0v7Abx3hR206v6rwdWmiT+aBzolpv3xqJFog8/2S3gSdLGK
+	1Sm6oJiuTM9hzShXLE9L1Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1713184223; x=
+	1713187823; bh=jOTWdAJBYKw6oDV99zOe8caj1/ll24Qdj4BKn1FTGUg=; b=q
+	5g1H2jy1Y98kiq9f2pqbsx4ZxyIQp0Oqf98oC+68gZNAKgF/Fs6IdC4/MVFkH0SZ
+	3CCUp6bLfRRgBZN0bwgJqUmYdrUPUsdTgJveF1j8cOyM15TzjfwN3WCgaYG86i2w
+	mdcZi6pYilE6IUkUrDBuS4wgLyFPLUMBTCYZ3P1RgkwdoIrYllzMNyIb1VxBtnY2
+	fTa6pFflPI2tv8nYjnijnnw2Krf/s5sMjpUx+5+MOfUEQC7uAMH+FgFQYHAgPgIU
+	6Am2ez33Vwqztad/gSFOpO97GQHOljzlWkPlpKOwrgam4VQe4rrfqNkJzP29S3u+
+	AKOR2pLlKDrUgoX2qsjZA==
+X-ME-Sender: <xms:3x0dZvqLMiH8VtXhx6dfTQjvPr0Fav-xmbDoMneh-AXNill519_Uiw>
+    <xme:3x0dZppRtqosM26RNg1NijBxSLB1plJRiILyaIZWYkIPHSQuobmum234sFjuqEyr3
+    UpOMnnd8YeqARfAKbw>
+X-ME-Received: <xmr:3x0dZsNySTqBYyiBTKzxpVaXqnPjdz-KgdVVgQidTV4jnY7yC2piwiqRjxvdgDYhETNnRxxowv2tdNS_jicmUwOtor-4VUk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejvddgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefpihhk
+    lhgrshcuufpnuggvrhhluhhnugcuoehnihhklhgrshdrshhouggvrhhluhhnugdorhgvnh
+    gvshgrshesrhgrghhnrghtvggthhdrshgvqeenucggtffrrghtthgvrhhnpeefhfellefh
+    ffejgfefudfggeejlefhveehieekhfeulefgtdefueehffdtvdelieenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnihhklhgrshdrshhouggv
+    rhhluhhnugdorhgvnhgvshgrshesrhgrghhnrghtvggthhdrshgv
+X-ME-Proxy: <xmx:3x0dZi57CPn26OBAisHhtbbun2mnh8m4Lzo_bmEtwtvD1o-uFsuekA>
+    <xmx:3x0dZu6K81VC_UApYCItaGOKMt7vt8IJfpn20u_D1D2Xh3_0RkSDFw>
+    <xmx:3x0dZqiX0l-QhOTRcMaj-K4L0RdfofpD24Va0DSuv18JrD1fLr-xYA>
+    <xmx:3x0dZg4UafJuHEW150CzCNaa33loPiiF8hVm7zI0kyV7xjAW_hfO7A>
+    <xmx:3x0dZlZ2H3H9ZJ0gQ6lqnH8WINUGRqpBEdWYucOqmrqufMGHPqiLUdD4>
+Feedback-ID: i80c9496c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Apr 2024 08:30:22 -0400 (EDT)
+Date: Mon, 15 Apr 2024 14:30:20 +0200
+From: Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>
+To: Paul Barker <paul.barker.ct@bp.renesas.com>
+Cc: Sergey Shtylyov <s.shtylyov@omp.ru>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC v3 3/7] net: ravb: Refactor RX ring refill
+Message-ID: <20240415123020.GJ3156415@ragnatech.se>
+References: <20240415094804.8016-1-paul.barker.ct@bp.renesas.com>
+ <20240415094804.8016-4-paul.barker.ct@bp.renesas.com>
+ <20240415115755.GH3156415@ragnatech.se>
+ <b1d0ca22-de75-4d76-90ba-62c2a57f4301@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240415-smatch-v3-1-ed3f23f9d5ee@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAK0dHWYC/2WMyw6CMBBFf4XM2jF9MFBc+R/GBdJCu4CaFhsN4
- d8tLIzR5bm55ywQTXAmwqlYIJjkovNTBnkooLPtNBh0OjMIJkpWcoZxbOfOouqFJE2sJqkhn+/
- B9O65hy7XzNbF2YfX3k18W/8SiSPDWpFmrGkVidu5s8GP7jEefRhgqyTxbdLHFMixIsGpkZWWj
- fox13V9A2jvzBPZAAAA
-To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>, 
- Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>, 
- Lars-Peter Clausen <lars@metafoo.de>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>, linux-media@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b1d0ca22-de75-4d76-90ba-62c2a57f4301@bp.renesas.com>
 
-USB urbs must be allocated with usb_alloc_urb. Quoting the manual
+On 2024-04-15 13:18:08 +0100, Paul Barker wrote:
+> On 15/04/2024 12:57, Niklas Söderlund wrote:
+> > Hi Paul,
+> > 
+> > Thanks for your work, I really like this deduplication of code!
+> > 
+> > On 2024-04-15 10:48:00 +0100, Paul Barker wrote:
+> >> To reduce code duplication, we add a new RX ring refill function which
+> >> can handle both the initial RX ring population (which was split between
+> >> ravb_ring_init() and ravb_ring_format()) and the RX ring refill after
+> >> polling (in ravb_rx()).
+> >>
+> >> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+> >> ---
+> >>  drivers/net/ethernet/renesas/ravb_main.c | 141 +++++++++--------------
+> >>  1 file changed, 52 insertions(+), 89 deletions(-)
+> >>
+> >> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> >> index 1ac599a044b2..baa01bd81f2d 100644
+> >> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> >> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> >> @@ -317,35 +317,42 @@ static void ravb_ring_free(struct net_device *ndev, int q)
+> >>  	priv->tx_skb[q] = NULL;
+> >>  }
+> >>  
+> >> -static void ravb_rx_ring_format(struct net_device *ndev, int q)
+> >> +static u32
+> >> +ravb_rx_ring_refill(struct net_device *ndev, int q, u32 count, gfp_t gfp_mask)
+> >>  {
+> >>  	struct ravb_private *priv = netdev_priv(ndev);
+> >> +	const struct ravb_hw_info *info = priv->info;
+> >>  	struct ravb_rx_desc *rx_desc;
+> >> -	unsigned int rx_ring_size;
+> >>  	dma_addr_t dma_addr;
+> >> -	unsigned int i;
+> >> +	u32 i, entry;
+> >>  
+> >> -	rx_ring_size = priv->info->rx_desc_size * priv->num_rx_ring[q];
+> >> -	memset(priv->rx_ring[q].raw, 0, rx_ring_size);
+> >> -	/* Build RX ring buffer */
+> >> -	for (i = 0; i < priv->num_rx_ring[q]; i++) {
+> >> -		/* RX descriptor */
+> >> -		rx_desc = ravb_rx_get_desc(priv, q, i);
+> >> -		rx_desc->ds_cc = cpu_to_le16(priv->info->rx_max_desc_use);
+> >> -		dma_addr = dma_map_single(ndev->dev.parent, priv->rx_skb[q][i]->data,
+> >> -					  priv->info->rx_max_frame_size,
+> >> -					  DMA_FROM_DEVICE);
+> >> -		/* We just set the data size to 0 for a failed mapping which
+> >> -		 * should prevent DMA from happening...
+> >> -		 */
+> >> -		if (dma_mapping_error(ndev->dev.parent, dma_addr))
+> >> -			rx_desc->ds_cc = cpu_to_le16(0);
+> >> -		rx_desc->dptr = cpu_to_le32(dma_addr);
+> >> +	for (i = 0; i < count; i++) {
+> >> +		entry = (priv->dirty_rx[q] + i) % priv->num_rx_ring[q];
+> >> +		rx_desc = ravb_rx_get_desc(priv, q, entry);
+> >> +		rx_desc->ds_cc = cpu_to_le16(info->rx_max_desc_use);
+> >> +
+> >> +		if (!priv->rx_skb[q][entry]) {
+> >> +			priv->rx_skb[q][entry] = ravb_alloc_skb(ndev, info, gfp_mask);
+> >> +			if (!priv->rx_skb[q][entry])
+> >> +				break;
+> >> +			dma_addr = dma_map_single(ndev->dev.parent,
+> >> +						  priv->rx_skb[q][entry]->data,
+> >> +						  priv->info->rx_max_frame_size,
+> >> +						  DMA_FROM_DEVICE);
+> >> +			skb_checksum_none_assert(priv->rx_skb[q][entry]);
+> >> +			/* We just set the data size to 0 for a failed mapping
+> >> +			 * which should prevent DMA from happening...
+> >> +			 */
+> >> +			if (dma_mapping_error(ndev->dev.parent, dma_addr))
+> >> +				rx_desc->ds_cc = cpu_to_le16(0);
+> >> +			rx_desc->dptr = cpu_to_le32(dma_addr);
+> >> +		}
+> >> +		/* Descriptor type must be set after all the above writes */
+> >> +		dma_wmb();
+> >>  		rx_desc->die_dt = DT_FEMPTY;
+> >>  	}
+> >> -	rx_desc = ravb_rx_get_desc(priv, q, i);
+> >> -	rx_desc->dptr = cpu_to_le32((u32)priv->rx_desc_dma[q]);
+> >> -	rx_desc->die_dt = DT_LINKFIX; /* type */
+> >> +
+> >> +	return i;
+> >>  }
+> >>  
+> >>  /* Format skb and descriptor buffer for Ethernet AVB */
+> >> @@ -353,6 +360,7 @@ static void ravb_ring_format(struct net_device *ndev, int q)
+> >>  {
+> >>  	struct ravb_private *priv = netdev_priv(ndev);
+> >>  	unsigned int num_tx_desc = priv->num_tx_desc;
+> >> +	struct ravb_rx_desc *rx_desc;
+> >>  	struct ravb_tx_desc *tx_desc;
+> >>  	struct ravb_desc *desc;
+> >>  	unsigned int tx_ring_size = sizeof(*tx_desc) * priv->num_tx_ring[q] *
+> >> @@ -364,8 +372,6 @@ static void ravb_ring_format(struct net_device *ndev, int q)
+> >>  	priv->dirty_rx[q] = 0;
+> >>  	priv->dirty_tx[q] = 0;
+> >>  
+> >> -	ravb_rx_ring_format(ndev, q);
+> >> -
+> >>  	memset(priv->tx_ring[q], 0, tx_ring_size);
+> >>  	/* Build TX ring buffer */
+> >>  	for (i = 0, tx_desc = priv->tx_ring[q]; i < priv->num_tx_ring[q];
+> >> @@ -379,6 +385,14 @@ static void ravb_ring_format(struct net_device *ndev, int q)
+> >>  	tx_desc->dptr = cpu_to_le32((u32)priv->tx_desc_dma[q]);
+> >>  	tx_desc->die_dt = DT_LINKFIX; /* type */
+> >>  
+> >> +	/* Regular RX descriptors have already been initialized by
+> >> +	 * ravb_rx_ring_refill(), we just need to initialize the final link
+> >> +	 * descriptor.
+> >> +	 */
+> >> +	rx_desc = ravb_rx_get_desc(priv, q, priv->num_rx_ring[q]);
+> >> +	rx_desc->dptr = cpu_to_le32((u32)priv->rx_desc_dma[q]);
+> >> +	rx_desc->die_dt = DT_LINKFIX; /* type */
+> >> +
+> > 
+> > super-nit: Should you not move this addition up to where you removed the 
+> > call to ravb_rx_ring_format()? Before this change the order of things 
+> > are,
+> > 
+> >     /* Init RX ring */
+> >     /* Init TX ring */
+> >     /* Set RX descriptor base address */
+> >     /* Set TX descriptor base address */
+> > 
+> > 
+> > While after it is,
+> > 
+> >     /* Init TX ring */
+> >     /* Init RX ring */
+> >     /* Set RX descriptor base address */
+> >     /* Set TX descriptor base address */
+> > 
+> > My OCD is itching ;-)
+> 
+> Since I'll need to re-spin this series anyway, I may as well tidy that
+> up :)
+> 
+> > 
+> >>  	/* RX descriptor base address for best effort */
+> >>  	desc = &priv->desc_bat[RX_QUEUE_OFFSET + q];
+> >>  	desc->die_dt = DT_LINKFIX; /* type */
+> >> @@ -408,11 +422,9 @@ static void *ravb_alloc_rx_desc(struct net_device *ndev, int q)
+> >>  static int ravb_ring_init(struct net_device *ndev, int q)
+> >>  {
+> >>  	struct ravb_private *priv = netdev_priv(ndev);
+> >> -	const struct ravb_hw_info *info = priv->info;
+> >>  	unsigned int num_tx_desc = priv->num_tx_desc;
+> >>  	unsigned int ring_size;
+> >> -	struct sk_buff *skb;
+> >> -	unsigned int i;
+> >> +	u32 num_filled;
+> >>  
+> >>  	/* Allocate RX and TX skb rings */
+> >>  	priv->rx_skb[q] = kcalloc(priv->num_rx_ring[q],
+> >> @@ -422,13 +434,6 @@ static int ravb_ring_init(struct net_device *ndev, int q)
+> >>  	if (!priv->rx_skb[q] || !priv->tx_skb[q])
+> >>  		goto error;
+> >>  
+> >> -	for (i = 0; i < priv->num_rx_ring[q]; i++) {
+> >> -		skb = ravb_alloc_skb(ndev, info, GFP_KERNEL);
+> >> -		if (!skb)
+> >> -			goto error;
+> >> -		priv->rx_skb[q][i] = skb;
+> >> -	}
+> >> -
+> >>  	if (num_tx_desc > 1) {
+> >>  		/* Allocate rings for the aligned buffers */
+> >>  		priv->tx_align[q] = kmalloc(DPTR_ALIGN * priv->num_tx_ring[q] +
+> >> @@ -443,6 +448,13 @@ static int ravb_ring_init(struct net_device *ndev, int q)
+> >>  
+> >>  	priv->dirty_rx[q] = 0;
+> >>  
+> >> +	/* Populate RX ring buffer. */
+> >> +	ring_size = priv->info->rx_desc_size * priv->num_rx_ring[q];
+> >> +	memset(priv->rx_ring[q].raw, 0, ring_size);
+> >> +	num_filled = ravb_rx_ring_refill(ndev, q, priv->num_rx_ring[q], GFP_KERNEL);
+> >> +	if (num_filled != priv->num_rx_ring[q])
+> >> +		goto error;
+> >> +
+> > 
+> > Here you also change the order, but it make sense here as you first deal 
+> > with all TX and then all RX ;-)
+> 
+> The placement here is because we can't call ravb_rx_ring_refill() until
+> priv->dirty_rx[q] has been zero'd.
+> 
+> The init order right now is actually:
+>   RX page pool
+>   RX buffers
+>   TX SKBs
+>   RX descriptors
+>   RX ring buffer
+>   TX descriptors
+> 
+> So maybe this should be re-ordered.
+> 
+> I considered breaking this all apart, so ravb_ring_init() would call
+> ravb_rx_ring_init()/ravb_tx_ring_init() and ravb_ring_format() would
+> call ravb_rx_ring_format()/ravb_tx_ring_format(). There are several
+> steps happening for TX & RX in both init and format stages. Does that
+> sound cleaner to you?
 
-Only use this function (usb_init_urb) if you _really_ understand what you
-are doing.
+I think that is a good idea. If you wish I think this can be done on-top 
+or break this first part of the series out to a cleanup set, this series 
+is quiet large already.
 
-Fix the following smatch error:
+> 
+> Thanks,
+> 
+> -- 
+> Paul Barker
 
-drivers/media/usb/siano/smsusb.c:53:38: warning: array of flexible structures
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-Changes in v3: Thanks Hans
-- Remove unneeded NULL assignment
-- Use the proper variable :)
-- Link to v2: https://lore.kernel.org/r/20240415-smatch-v2-1-65215936d398@chromium.org
 
-Changes in v2: Thanks Hans
-- Only leave 1/6, the other ones are in another PR
-- Fix the return tag and NULLify the urbs on return
-- Link to v1: https://lore.kernel.org/r/20240410-smatch-v1-0-785d009a852b@chromium.org
----
- drivers/media/usb/siano/smsusb.c | 34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/media/usb/siano/smsusb.c b/drivers/media/usb/siano/smsusb.c
-index 723510520d09..ba2c02e1070e 100644
---- a/drivers/media/usb/siano/smsusb.c
-+++ b/drivers/media/usb/siano/smsusb.c
-@@ -40,7 +40,7 @@ struct smsusb_urb_t {
- 	struct smscore_buffer_t *cb;
- 	struct smsusb_device_t *dev;
- 
--	struct urb urb;
-+	struct urb *urb;
- 
- 	/* For the bottom half */
- 	struct work_struct wq;
-@@ -160,7 +160,7 @@ static int smsusb_submit_urb(struct smsusb_device_t *dev,
- 	}
- 
- 	usb_fill_bulk_urb(
--		&surb->urb,
-+		surb->urb,
- 		dev->udev,
- 		usb_rcvbulkpipe(dev->udev, dev->in_ep),
- 		surb->cb->p,
-@@ -168,9 +168,9 @@ static int smsusb_submit_urb(struct smsusb_device_t *dev,
- 		smsusb_onresponse,
- 		surb
- 	);
--	surb->urb.transfer_flags |= URB_FREE_BUFFER;
-+	surb->urb->transfer_flags |= URB_FREE_BUFFER;
- 
--	return usb_submit_urb(&surb->urb, GFP_ATOMIC);
-+	return usb_submit_urb(surb->urb, GFP_ATOMIC);
- }
- 
- static void smsusb_stop_streaming(struct smsusb_device_t *dev)
-@@ -178,7 +178,7 @@ static void smsusb_stop_streaming(struct smsusb_device_t *dev)
- 	int i;
- 
- 	for (i = 0; i < MAX_URBS; i++) {
--		usb_kill_urb(&dev->surbs[i].urb);
-+		usb_kill_urb(dev->surbs[i].urb);
- 		if (dev->surbs[i].wq.func)
- 			cancel_work_sync(&dev->surbs[i].wq);
- 
-@@ -338,6 +338,8 @@ static void smsusb_term_device(struct usb_interface *intf)
- 	struct smsusb_device_t *dev = usb_get_intfdata(intf);
- 
- 	if (dev) {
-+		int i;
-+
- 		dev->state = SMSUSB_DISCONNECTED;
- 
- 		smsusb_stop_streaming(dev);
-@@ -346,6 +348,9 @@ static void smsusb_term_device(struct usb_interface *intf)
- 		if (dev->coredev)
- 			smscore_unregister_device(dev->coredev);
- 
-+		for (i = 0; i < MAX_URBS; i++)
-+			usb_free_urb(dev->surbs[i].urb);
-+
- 		pr_debug("device 0x%p destroyed\n", dev);
- 		kfree(dev);
- 	}
-@@ -390,6 +395,7 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
- 	void *mdev;
- 	int i, rc;
- 	int align = 0;
-+	int n_urb = 0;
- 
- 	/* create device object */
- 	dev = kzalloc(sizeof(struct smsusb_device_t), GFP_KERNEL);
-@@ -461,16 +467,18 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
- 	dev->coredev->is_usb_device = true;
- 
- 	/* initialize urbs */
--	for (i = 0; i < MAX_URBS; i++) {
--		dev->surbs[i].dev = dev;
--		usb_init_urb(&dev->surbs[i].urb);
-+	for (n_urb = 0; n_urb < MAX_URBS; n_urb++) {
-+		dev->surbs[n_urb].dev = dev;
-+		dev->surbs[n_urb].urb = usb_alloc_urb(0, GFP_KERNEL);
-+		if (!dev->surbs[n_urb].urb)
-+			goto free_urbs;
- 	}
- 
- 	pr_debug("smsusb_start_streaming(...).\n");
- 	rc = smsusb_start_streaming(dev);
- 	if (rc < 0) {
- 		pr_err("smsusb_start_streaming(...) failed\n");
--		goto err_unregister_device;
-+		goto free_urbs;
- 	}
- 
- 	dev->state = SMSUSB_ACTIVE;
-@@ -478,13 +486,19 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
- 	rc = smscore_start_device(dev->coredev);
- 	if (rc < 0) {
- 		pr_err("smscore_start_device(...) failed\n");
--		goto err_unregister_device;
-+		goto free_urbs;
- 	}
- 
- 	pr_debug("device 0x%p created\n", dev);
- 
- 	return rc;
- 
-+free_urbs:
-+	for (i = 0; i < n_urb; i++) {
-+		usb_free_urb(dev->surbs[i].urb);
-+		dev->surbs[i].urb = NULL;
-+	}
-+
- err_unregister_device:
- 	smsusb_term_device(intf);
- #ifdef CONFIG_MEDIA_CONTROLLER_DVB
 
----
-base-commit: 34d7bf1c8e59f5fbf438ee32c96389ebe41ca2e8
-change-id: 20240410-smatch-8f235d50753d
 
-Best regards,
 -- 
-Ricardo Ribalda <ribalda@chromium.org>
-
+Kind Regards,
+Niklas Söderlund
 
