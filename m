@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-145059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F5B8A4EE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:22:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65E1E8A4EE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:22:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3E771C21177
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:22:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C38F1F22690
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463736FE27;
-	Mon, 15 Apr 2024 12:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F70571723;
+	Mon, 15 Apr 2024 12:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZT1G/BPb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQpdE6Gu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D016FE13;
-	Mon, 15 Apr 2024 12:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD7670CAD;
+	Mon, 15 Apr 2024 12:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713183657; cv=none; b=DYKuooGkW0xZC8/a/G48PuOS0mevLqBwRXrq/jmKcpisZ1RaLI0UVc4EmA5goAS97A+BtBhSnUs0YlPnfyFH3AK4zhEO8QO6qGLhsOVHPhtAdVdM8Em0mkwTvDb4Yn8DiBSq0tbn63G2dCe8B7GBbR4oTvOSG+ifR6Z2hIGtt8w=
+	t=1713183659; cv=none; b=Q+N9J3nwy4fJ/sokrJU4GpcSeZtHylc2dYmPDu20/WsFHFOhgOG21bn5uilHUcI/fx/mET17IChxzpKYBDYKt92aXYciD0Wwp0GpUjwVw4bYEIWqGG7pwfN+B9WWX6a664zfIT+2VCxKS2PmvPAEeLIPpuHvIZelU5nAzfA5VOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713183657; c=relaxed/simple;
-	bh=9eX7Dorhxn5NmgYg6HTuaELf/+jBReTSX1vzE2y0wKY=;
+	s=arc-20240116; t=1713183659; c=relaxed/simple;
+	bh=rFheM71yjeyhsdNNlmFP4+aGuyKqpUtHIcDrzZ28OAI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sSxFzFGBFNUlkMGleD//nfahiwMVpWSqe+lLm4NbN9ApxMUFLDsG27Ry/Jib95cDPpAzgl4wXqpugEjIUdaWOu6dYmj2D00lq+EozlTQSsQ75mE5PUBK4KqYxDFfYo7N4rTsiz84v5IuuRXxDhLl4ScbM5p0KnMPmAF8Ra9yVrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZT1G/BPb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40002C2BD10;
-	Mon, 15 Apr 2024 12:20:55 +0000 (UTC)
+	 MIME-Version; b=e4ADMjHrM/gI0pNg7MOJdGlmaBMx18CBY0mRUonpuL0uIw89PhkI+v1sDjhB4xvqGQ+mV82Wr7sfCS+22HWVd9H2zdr4+7T1UTXD4z824UkMCrDiXk0x6voM+ZpGJJZDJ8fRXEncZabZvRJB+umV1P3ER2XEEo301f3fX4AsJIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQpdE6Gu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81A4FC4AF07;
+	Mon, 15 Apr 2024 12:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713183657;
-	bh=9eX7Dorhxn5NmgYg6HTuaELf/+jBReTSX1vzE2y0wKY=;
+	s=k20201202; t=1713183659;
+	bh=rFheM71yjeyhsdNNlmFP4+aGuyKqpUtHIcDrzZ28OAI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZT1G/BPbNSMh3ZCBNEwiAXm4fbRIwJ9kPZOjYGWNY/HkyZQSY0ruRxm6AWE+cYdQt
-	 KfrInn4GQEHhz0QTDxUF/nJdU2IV1zGjTozYC+/W2EhkiJhz663HgJd5BwRjLbWnMe
-	 0zlk+xB6SZg2spnt41CFG8IGmrOvJL+SQHQ0szlxenVHQpxyf1RT8k1TJLi8embn45
-	 gP7kSEDhccftWGh49Hc7541un1bFN5OY+u50M6j9/YXAvoPfWoiYmUUmvfLqv2AGWZ
-	 zF3IkXEH26G9g4zqJJ4UaF37EvcxoLNHXib5hFQB/ZPPSSQW6zra6fSRabdmjG2laj
-	 iwuWZnZpRxUSg==
+	b=eQpdE6GuxbEQNfuOyFt+EkGaz36CTj5VFlsD3OgUJGhuFsy9ntPntCbL7Gte3FBcY
+	 1kc8TnF7C28DHfBAPorUAdaOyRfq1pPxA5KrV59hyC/aMWMVSiIQRTf6mzdI2HIOIq
+	 oIci99l9WdfM/aSfPq+iF+58mVD1nEoKEyOFk+F1bX1rKCBzUuq7caFE5RGr0qkxwn
+	 JtKr7+oTM/eODyORqhiBBMkti4HoLHteI+MT6kjf5Lnm6xdW+LxaZ96BHzHQs5PdbC
+	 grhTAqAjwaJa31mr13JqPu1+HClA74HitSBcQJN5vC+7FpB68Kj8Ty2KyCfQUJJ9be
+	 X4n2O1ZkQ92sQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -49,9 +49,9 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	Kees Cook <keescook@chromium.org>,
 	linux-kbuild@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] [v3] kbuild: enable -Wcast-function-type-strict unconditionally
-Date: Mon, 15 Apr 2024 14:20:36 +0200
-Message-Id: <20240415122037.1983124-6-arnd@kernel.org>
+Subject: [PATCH 6/6] [v3] kbuild: enable -Wstringop-truncation globally
+Date: Mon, 15 Apr 2024 14:20:37 +0200
+Message-Id: <20240415122037.1983124-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240415122037.1983124-1-arnd@kernel.org>
 References: <20240415122037.1983124-1-arnd@kernel.org>
@@ -65,26 +65,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-All known function cast warnings are now addressed, so the warning can
-be enabled globally to catch new ones more quickly.
+The remaining warnings of this type have been addressed, so it can
+now be enabled by default, rather than only for W=1.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v3: no changes
+v2: no changes
 ---
  scripts/Makefile.extrawarn | 1 -
  1 file changed, 1 deletion(-)
 
 diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 202e26e6f29f..1d13cecc7cc7 100644
+index 1d13cecc7cc7..17c511ddf48a 100644
 --- a/scripts/Makefile.extrawarn
 +++ b/scripts/Makefile.extrawarn
-@@ -129,7 +129,6 @@ endif
- KBUILD_CFLAGS += $(call cc-disable-warning, pointer-to-enum-cast)
- KBUILD_CFLAGS += -Wno-tautological-constant-out-of-range-compare
- KBUILD_CFLAGS += $(call cc-disable-warning, unaligned-access)
--KBUILD_CFLAGS += $(call cc-disable-warning, cast-function-type-strict)
- KBUILD_CFLAGS += -Wno-enum-compare-conditional
- KBUILD_CFLAGS += -Wno-enum-enum-conversion
+@@ -108,7 +108,6 @@ else
+ KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow-non-kprintf)
+ KBUILD_CFLAGS += $(call cc-disable-warning, format-truncation-non-kprintf)
  endif
+-KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
+ 
+ KBUILD_CFLAGS += -Wno-override-init # alias for -Wno-initializer-overrides in clang
+ 
 -- 
 2.39.2
 
