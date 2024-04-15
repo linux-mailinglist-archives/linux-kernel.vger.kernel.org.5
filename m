@@ -1,113 +1,112 @@
-Return-Path: <linux-kernel+bounces-145535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D738A577E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:17:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 777618A5785
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:19:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75E031C22E03
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:17:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CD521F21344
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025A880C03;
-	Mon, 15 Apr 2024 16:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D615C80635;
+	Mon, 15 Apr 2024 16:18:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L9dJsEwQ"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lOBwJbrm"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B4D80BF0
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2A242072;
+	Mon, 15 Apr 2024 16:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197819; cv=none; b=jOk2eUmyOfm0cZzROuI7fcb9y8eYkqvsk8TfNeQR4dEGorhk0VX9gngzabj8D+ssufWT3oq+UWqSSFFAu84RfaSzZdY9TJFltidh9UMxLIFr7ubJtAy0vOgr2a+il2x2XA8alBI7tGbV3PL95AkTslw2/OsUPvqi0+ofSsXh2Qo=
+	t=1713197938; cv=none; b=q7VVSkmsO8MFhSeYx/kKk9rXBOYB+Q165STHHEAbNsJfkS+JK/lRkiSbytxk32/va/Kh5QhwUcKReIpxCA28xeFcnPizDmwNkCNQoAKohm603KTJR7Nb9t7vXKwQdbk4JamaSLtJiBN7EOllos9K+VtT79z2iYwHphUjwqoXEco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197819; c=relaxed/simple;
-	bh=Lh5jHfeqmoxBPj80NPylZDokwvnjtT1xO7DB/e/QTl0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NSMuO9TuMSYpVMMn5aq2RS12qi4J0ZuYBVrOswDuggjOfWFGMlfVYGPjy/mA74Fsa/FqyTW1CM5YHXzBcUCY3OU57q5EYhUJI0dQ8qlzl1d5Izs+kF4W3JnLEJxIzLMJ5vTWLCY9sOz6hzSM2cK4M8RNjbBIhMEB2qfXxtS5T9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L9dJsEwQ; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ead4093f85so2675973b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:16:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713197816; x=1713802616; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Wuy1kFscarp11LSwiP+LELXc8a3c+7S4sus+rZZCwg=;
-        b=L9dJsEwQZUV7UF5qrsYmxyjgq4bd65AnkhOcLxH/X3VD9C4Pn2pH+6HJ8amWZ8MxeP
-         ekAfUfaoHLLKytMXPdsLlxN0jdlh+QZRaDgPSp+gQlTxlCzFikPgXUun49QJZZ9tbawH
-         AY84nyuhPjNrglxxRweBq5O9lMb/h694Lmk8k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713197816; x=1713802616;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Wuy1kFscarp11LSwiP+LELXc8a3c+7S4sus+rZZCwg=;
-        b=h/T5mYuRHzftJ9JW3VsReAwRad6vfXPFNQNAB5WLBVlsGqOJ9ua0r30eZZjnNph2x+
-         nXv4qrKEjoEA8GWply5ZubFvNK388Dxfs9y37bM/9CM+RRLH68AQETorZ0Db7zRg3aji
-         6y4KAjWYO8ujZeA8R9Xcr+qtAu9ZFNP37dn/nJ/1cK+wlXtapjarXN6TtzjymNMkVGig
-         N1vJ98MH6i+cC1vgb4rOd5V/iNQ7ddWIzqC8d36VeBJ/dpHpP0F8+63NbQ7kHd971hse
-         L8FP4/+k2WW0Oyx1OuovzB6GKRDZMYtIigf4ooI6kAYSyWLylHPhwd/mtQtOa6B+gS1S
-         fFOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUerjqLQcM2AevQIJhaU+Yq8Ym8OkR5VHUl0f8TsxcG/Fe+v63WNd19KcqIMWq3d7KCmw+Af0Uwkb1jabebbKkyE5YR+bLz8y05hSSc
-X-Gm-Message-State: AOJu0YyBI2eQigsCOfzSTR7f22PSG7BxqmirwQX0ucU/7TVSqdYxofYq
-	cpxq9a1Z8D6KuLp9PQCEmHbMJD8l4CRmFmXOUK9lpuX772qYv+vTaT4MmjBnBQ==
-X-Google-Smtp-Source: AGHT+IGOZF6sdBlFUMf+8k4Lae5iNbktkJ7avY7Q4jWYEWVVyRkPV21G2LuPlS3REiioA0vSPOcfBg==
-X-Received: by 2002:a17:902:b906:b0:1e3:e256:44e0 with SMTP id bf6-20020a170902b90600b001e3e25644e0mr8045502plb.31.1713197816058;
-        Mon, 15 Apr 2024 09:16:56 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p16-20020a170902e75000b001e223b9eb25sm8109561plf.153.2024.04.15.09.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 09:16:55 -0700 (PDT)
-Date: Mon, 15 Apr 2024 09:16:55 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] [v3] kbuild: turn on -Wextra by default
-Message-ID: <202404150916.7FD484FD4@keescook>
-References: <20240415122037.1983124-1-arnd@kernel.org>
- <20240415122037.1983124-2-arnd@kernel.org>
+	s=arc-20240116; t=1713197938; c=relaxed/simple;
+	bh=HRZ16pcKTsXfvuhSnVWDJ8KSOEd3+F59Kb2TPzi/bZE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=V5Tb4k4/d66aBrjfhxIpZ1NQ9dlyZmEWiMbn+iTXVqvQGcc94BBh1HvMG4Zke6Z6uLTItSdkKqGsSwB2oZtT37irJAQfO9Rh90jpWxwRJga4qlgliiKkSNHtyFkBpHPJ+gJsuTX+KnzNT5Nv5vDl71As+lrazlCd4n+ULuoUTx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lOBwJbrm; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43FFNNSG010273;
+	Mon, 15 Apr 2024 16:18:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=sZS5PybUDH+WqH6Sa8LywzS+Thk1uLag0/bFVQZopgY=; b=lO
+	BwJbrmnPXVU9u/Egkt8hJVnr1nt+D4hdseeSRvCl48NLaQAEv/Eu8sRxvQZ5Vklu
+	XtwLWEwtWUSTdgtyW+2uyH8dgColntQJW5AqQa+ssFjSiJr7tGhFsRwIqKQzQ4re
+	CKCVMYUGAMxV9DHRtOcGZu0c43fpNJ9XHPC2g6N8UwVS2U9Xkdma/ubp5sqomZBQ
+	qc2ZaYw6sdRD5WuDnGVd1IZ8chfuvssrki3nm4uIeDtITWO85ne7xDA8OzfXhSln
+	04OaEfI/Eo1TFiaAb/q7MZpg26Eex4xmUg7SL1U3K+Vab3efTSr7T0ZLDFJJIyCB
+	aTuyJevxiLr45SMPUW4A==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xh25ggx4a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 16:18:50 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43FGInwj023178
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 16:18:49 GMT
+Received: from [10.110.3.16] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
+ 2024 09:18:48 -0700
+Message-ID: <b4c8a18c-286c-442f-a7e9-d4a0bb604083@quicinc.com>
+Date: Mon, 15 Apr 2024 09:18:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415122037.1983124-2-arnd@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: ath11k: Fix error handling in
+ ath11k_wmi_p2p_noa_event()
+Content-Language: en-US
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kalle Valo
+	<kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+        Kang Yang
+	<quic_kangyang@quicinc.com>
+CC: <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        "Kalle
+ Valo" <quic_kvalo@quicinc.com>,
+        <linux-wireless@vger.kernel.org>, <ath11k@lists.infradead.org>
+References: <6ee80f65f736db1646f6f201f60816cf35b6f3fe.1713180046.git.christophe.jaillet@wanadoo.fr>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <6ee80f65f736db1646f6f201f60816cf35b6f3fe.1713180046.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: su9nS6VNfgFs0jlq66M3IlcC0Ecc_HWC
+X-Proofpoint-ORIG-GUID: su9nS6VNfgFs0jlq66M3IlcC0Ecc_HWC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_13,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ spamscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 adultscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404150107
 
-On Mon, Apr 15, 2024 at 02:20:32PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 4/15/2024 4:23 AM, Christophe JAILLET wrote:
+> if (noa_descriptors > WMI_P2P_MAX_NOA_DESCRIPTORS), there is a mix of
+> return and goto. in such a case, 'ret' should be assigned an error code and
+> the 'td' should be freed to avoid a memory leak.
 > 
-> The -Wextra option controls a number of different warnings that differ
-> slightly by compiler version. Some are useful in general, others are
-> better left at W=1 or higher. Based on earlier work, the ones that
-> should be disabled by default are left for the higher warning levels
-> already, and a lot of the useful ones have no remaining output when
-> enabled.
-> 
-> Move the -Wextra option up into the set of default-enabled warnings
-> and just rely on the individual ones getting disabled as needed.
-> 
-> The -Wunused warning was always grouped with this, so turn it on
-> by default as well, except for the -Wunused-parameter warning that
-> really has no value at all for the kernel since many interfaces
-> have intentionally unused arguments.
-> 
-> Acked-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> While at it, return 'ret' instead of 0 in case of error.
+> This is actually harmless, because the only caller does not handle the
+> return value.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+in that case it would be preferable to change this to be a void function and
+not return anything. that would be consistent with most, if not all, of the
+other event handlers
 
--- 
-Kees Cook
 
