@@ -1,251 +1,255 @@
-Return-Path: <linux-kernel+bounces-145713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CF38A59EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:31:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A921E8A59EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:32:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 265231F214A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22C541F20F13
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539061482E0;
-	Mon, 15 Apr 2024 18:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6901B15359F;
+	Mon, 15 Apr 2024 18:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ANoLH6Zh"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTbfQH60"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48FF146A8E
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89D115357D;
+	Mon, 15 Apr 2024 18:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713205882; cv=none; b=ATh8fPya3xYAgfqUrllYze02/x2SfXurySu00JAdzmeQ0mMY7niReRfFZyck+oEicylKNGc0zuOTG6KXTd8x4a9AJlPYRFBJy+RJgNeALyOtjSZisMlvmfTxm+PJEhFXy4SsMeLXfFWVrqpUKfw77K8/ojgAWIPche3X+kIZrmk=
+	t=1713205930; cv=none; b=e+Gy8pg7+YoU7XR2P3W47xwNdLMG1m65xgOoCEDZRobsT3HaGUe+HDZbB/+q6vKfLWl5ajMp3yURusGp6LSdHtA+BncW+bL+GvKaQdPPmttUYU72cGm0xgOTP8o1Tj0l4s9saP4ZISnW8KNjB+EXLJJ1PmgPrXDmKugO0ZooV3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713205882; c=relaxed/simple;
-	bh=rbjN55/twTwEsELzNM2DrghMIjWahgL+CbSZGgK2kRk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r/uSYh/fIo4paWNrWZ7zf9eh6lsqF9kKRBDnCKmoTNRqt2fDgzoXhjd2LRmeInDXq3Oi83a+AoDu8IrWQpiCAd5jWUMhEDQFr39Ec9A9Gup+OJBZKlC8tfCyZerrwGWdYkTa4+pP+S4WEdJHjj4V64nEQuapsDVXcDuM6WZOPhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ANoLH6Zh; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713205878;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q4rTYTifbBACIVtjbPwoBhU+3Zfa37muzb1zYig/CPU=;
-	b=ANoLH6ZhCwWC5lr9CjQ9GWEAvzUEPzFY/8wtr50KjcvXmJdonWcxa/tL8oqIKoQPE90aRt
-	TmqgkBMJy1uB6bgQfGSKmLs8So2ICxcrfQ7QzFaIae+8/7U/BEwW/QUHvBbnLyykFWv3hW
-	VESdGk2YRC4/q0AkHC2A4+mTKqa5jng=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-339-IwMi2j-xO0iNImCkmXLnqA-1; Mon, 15 Apr 2024 14:31:17 -0400
-X-MC-Unique: IwMi2j-xO0iNImCkmXLnqA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a5199cc13b2so331391566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:31:17 -0700 (PDT)
+	s=arc-20240116; t=1713205930; c=relaxed/simple;
+	bh=ypB0M/yxYiVpSpTfJMOKUEFFxzQJxHzjaQ8flno2ylM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gphzp9iEOagu4t1TvcAJqHDcfCw0vazU+9i7qCno7GMqS4eD3cKNaywU1TdnGQDtTgZ1Dy6DpCn049/rsYtOYmBYD0e/vr+eeZoI2LbBAMYgtVjzM7xIOedoDNTxQ3NEpPf3epFwPOEHH+Nvz9uShthxVIOoIX1Mj5OFL21lvCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jTbfQH60; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d6e23253so3867970e87.1;
+        Mon, 15 Apr 2024 11:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713205927; x=1713810727; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7BObtzxYiY3PmGcxZPMQAa4vztvNYgpogv+uT8X9uMc=;
+        b=jTbfQH60SmGseWXDQtLxf5XdTaweEEvzHAOpU6DZmcotkHjiCWJrymFZ6a8gZZMeix
+         7Wrywp8drxxY+PUgY265IXhOHKrBcei6sBJH69nif+39cS9RVBYj0DCnzmZquoAM0g8l
+         pZPZCuNq+H0Eypim52p8YAM7goCykgO1QIHPu1/QlCkTXfvTOFrQq8WLgsxU+Osuf3P4
+         6RdXUjL3cuz8iRwPR3V9Yx1WdUuTEK7FZaSdRXVZbR0cq+7wrUs4WEdxyrOLc+uKSbMD
+         UCoMg5GZ3PKlcG/XoPAYypkVs9gZ/J/T4HGWfAeQTsv9epV/0ngC3Mn0mfv3uVCAL2U5
+         w9/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713205876; x=1713810676;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4rTYTifbBACIVtjbPwoBhU+3Zfa37muzb1zYig/CPU=;
-        b=QHj7NLOa0DtDlvu9zOU9I+7bWNPktEwtveMl53SqCVNsCUHzDHKAQE4ObyA274OVUY
-         ISb9J2oRUKfhAcQTH68tVaRKQ9a+6iqZIryXkNkPU9WA/74ANbsDBFi7oQToLcH2/LGe
-         IRR6G3gsPuKda+pQbD14/YrCijixod8m5aT5IpBGgC3k/Ld83PIIVQiF8n89tFbZOM33
-         rGUZoQnrqz5J4s/oUq93JhUBUEY/cx6GAV3EwkFP091TprAEjabxx8WC74GWT4ne1qpK
-         PgWVgM02Q2PL7NCaSRQKECuxLBjbVoY0CAkJd29x+CCuHAS15TSIlEKm7MDDi5/Wgvtz
-         Md5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUOCRHKqxmtzqdg1vkg8ISOCh3d86ph0Q4a6v9SwFNA56LodmIdkSyc8kFG2tVdozIZdpEUiPKxN4IrDCAKGSY24Mvx7vTc/c2KDdJG
-X-Gm-Message-State: AOJu0YxLY02euynpNbBomCfJCIP2Gvx572v1MMZfrEUiON3NNLMAFmYu
-	ij3NXifxDIFZGcath3fpaQKiJdu5ULACVUnbxotHzPiGsGF2EbnFqKoiaqABZPSdxntY9fWAM7c
-	5QvMq/cqlQAupIGK7zt4P0rIWaxM/Q5PpIjTrMl8Jf8gGJYwTD63Sa0ov3IhUWA==
-X-Received: by 2002:a17:906:33d6:b0:a51:d475:aca3 with SMTP id w22-20020a17090633d600b00a51d475aca3mr407782eja.16.1713205875741;
-        Mon, 15 Apr 2024 11:31:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHCe0pVnoTmOU35mmZssPwIWRigMO8z3xgUCoe03M0tTPC6sEo/k/+AE2hh+cdWdBxoyUxCKA==
-X-Received: by 2002:a17:906:33d6:b0:a51:d475:aca3 with SMTP id w22-20020a17090633d600b00a51d475aca3mr407768eja.16.1713205875380;
-        Mon, 15 Apr 2024 11:31:15 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id dm11-20020a170907948b00b00a51eed4f0d7sm5734728ejc.130.2024.04.15.11.31.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 11:31:15 -0700 (PDT)
-Message-ID: <fe2980e3-3204-4572-9c7c-1e960727e1d4@redhat.com>
-Date: Mon, 15 Apr 2024 20:31:14 +0200
+        d=1e100.net; s=20230601; t=1713205927; x=1713810727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7BObtzxYiY3PmGcxZPMQAa4vztvNYgpogv+uT8X9uMc=;
+        b=kyWBKjV1T9sneOuJ+o5eohDW1RJACT0q1r/M+DccJfTbDd9lrpnpWYYDov/+G1oO7K
+         GtdpVrDM1b8GIzl5/0c3dmzKtosbH1t6At69HsXhP7rxOzdZb8tzvPWMyz82EqWJWSjI
+         cu47VYPUYKm9fF/xiBfBcYIBgkG/Ja38JzrrAAHTA9Y41YmfNDhXUhUYgOx5ZfEFi98h
+         AIl6tE33HC7YhPkLQyTetr7WxdnqXyAvaSZR+VUffH0qQIk8vzutCBzA3y8pf07y4qmG
+         sj9NyI24TbjXTOk8+qhm+yxnpscxNKuL2Nd/+o0h9u5/DkA4ZfPdkYkRvedEK4ACZTOY
+         CODA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvnOef6IeCV9jZZf11VKzNvbtVmfODKr/5mNHyaZ7HcACam7C0v4Z1oIzTUfNd9KQFr6J28TV0lhK7h3htWLyVL5/o0QhmlFZ7dAAylNvK06XwZCKlW6rCvpOUi/b4Z14KfHC9YQ==
+X-Gm-Message-State: AOJu0YxJCnOCNJ/LjW1kWaOuXkwdAexUeGAfeOty3UFAn2ETAPdCtGd2
+	6NoyIKRGQUUkwiKM+YTRirj61vSj6CJLU9ktFuDmuCiYtpkp1GxO8btjJEoRib2sDt4yHj1uye6
+	/Ahka1x20gkAj2lswvE7p978CXoE=
+X-Google-Smtp-Source: AGHT+IELpdHs5oFeoJ4R5hMXIeoaGuXsJr1uljvlhUTakFT+LkeDspHihOeO/Bws+LtHWr6XekRPiGt1x2fxr1ncTWU=
+X-Received: by 2002:ac2:51a7:0:b0:518:bb6e:7985 with SMTP id
+ f7-20020ac251a7000000b00518bb6e7985mr4869628lfk.51.1713205926682; Mon, 15 Apr
+ 2024 11:32:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Logitech Anywhere 3SB support
-To: Benjamin Tissoires <bentiss@kernel.org>, kde@carewolf.com
-Cc: lains@riseup.net, hadess@hadess.net, jikos@kernel.org,
- benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
- linux-kernel@vger.kernel.org, Allan Sandfeld Jensen <allan.jensen@qt.io>
-References: <20240413095453.14816-1-kde@carewolf.com>
- <ntsifcsfo5i6xisxbgfjdpe4uenygqxrt3v5sceflgipznw6cb@gnhvkjmglrtg>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ntsifcsfo5i6xisxbgfjdpe4uenygqxrt3v5sceflgipznw6cb@gnhvkjmglrtg>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240415111123924s9IbQkgHF8S4yZv4su8LI@zte.com.cn> <CAGsJ_4y5+3jKx78-TWh_3jWoXQW4mmx=uKHbBSHWpvMj1eYW7A@mail.gmail.com>
+In-Reply-To: <CAGsJ_4y5+3jKx78-TWh_3jWoXQW4mmx=uKHbBSHWpvMj1eYW7A@mail.gmail.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Mon, 15 Apr 2024 11:31:55 -0700
+Message-ID: <CAHbLzkqwHiSb4e=soerK1qtA7FoJz8PEPXiCmnFx8i1Bhvp2-g@mail.gmail.com>
+Subject: Re: [PATCH] mm: thp: makes the memcg THP deferred split shrinker
+ aware of node_id
+To: Barry Song <21cnbao@gmail.com>
+Cc: xu.xin16@zte.com.cn, yang.shi@linux.alibaba.com, v-songbaohua@oppo.com, 
+	mhocko@kernel.org, ryan.roberts@arm.com, david@redhat.com, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	akpm@linux-foundation.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, ran.xiaokai@zte.com.cn, yang.yang29@zte.com.cn, 
+	lu.zhongjun@zte.com.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sun, Apr 14, 2024 at 8:30=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
+e:
+>
+> On Mon, Apr 15, 2024 at 3:11=E2=80=AFPM <xu.xin16@zte.com.cn> wrote:
+> >
+> > From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> >
+> > Since commit 87eaceb3faa5 ("mm: thp: make deferred split shrinker
+> > memcg aware"), the THP deferred split queue is per memcg but not
+> > per mem_cgroup_per_node. This has two aspects of impact:
+> >
+> > Impact1: for kswapd reclaim
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >   kswapd
+> >     balance_pgdat
+> >       kswapd_shrink_node
+> >         shrink_node(pgdat, sc);
+> >           shrink_node_memcgs(pgdat, sc);
+> >             shrink_slab(sc->gfp_mask, pgdat->node_id, memcg...);
+> >   the parameter "pgdat->node_id"  does not take effectct for
+> >   THP deferred_split_shrinker, as the deferred_split_queue of
+> >   specified memcg is not for a certain numa node but for all the nodes.
+> >   We want to makes the memcg THP deferred split shrinker aware of
+> >   node_id.
+> >
+> > Impact2: thp-deferred_split shrinker debugfs interface
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >    for the "count" file:
+> >    <cgroup inode id> <objects on node 0> <objects on node 1>
+> >      the output is acctually the sum of all numa nodes.
+> >    for the "scan" file:
+> >    <cgroup inode id> <numa id> <number of objects to scan>
+> >      Also the "numa id" input does not take effect here.
+> >
+> > This patch makes memcg deferred_split_queue per mem_cgroup_per_node
+> > so try to conform to semantic logic.
 
-On 4/15/24 5:54 PM, Benjamin Tissoires wrote:
-> [Ccing Hans as well for input]
-> 
-> On Apr 13 2024, kde@carewolf.com wrote:
->> From: Allan Sandfeld Jensen <allan.jensen@qt.io>
->>
-> 
-> FWIW, this patch neesd a commit description and signed-offs
-> 
->> ---
->>  drivers/hid/hid-ids.h            |  1 +
->>  drivers/hid/hid-logitech-dj.c    | 10 +++++++++-
->>  drivers/hid/hid-logitech-hidpp.c |  2 ++
->>  3 files changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
->> index 2235d78784b1..4b79c4578d32 100644
->> --- a/drivers/hid/hid-ids.h
->> +++ b/drivers/hid/hid-ids.h
->> @@ -849,6 +849,7 @@
->>  #define USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1	0xc539
->>  #define USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1_1	0xc53f
->>  #define USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_POWERPLAY	0xc53a
->> +#define USB_DEVICE_ID_LOGITECH_BOLT_RECEIVER		0xc548
->>  #define USB_DEVICE_ID_SPACETRAVELLER	0xc623
->>  #define USB_DEVICE_ID_SPACENAVIGATOR	0xc626
->>  #define USB_DEVICE_ID_DINOVO_DESKTOP	0xc704
->> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
->> index c358778e070b..92b41ae5a47c 100644
->> --- a/drivers/hid/hid-logitech-dj.c
->> +++ b/drivers/hid/hid-logitech-dj.c
->> @@ -120,6 +120,7 @@ enum recvr_type {
->>  	recvr_type_27mhz,
->>  	recvr_type_bluetooth,
->>  	recvr_type_dinovo,
->> +	recvr_type_bolt,
-> 
-> I am *really* hesitant in integrating the bolt receiver into
-> logitech-dj.ko:
-> - the bolt receiver is not capable of making the distinction between the
->   source of the events (so only one mouse/keyboard can be used at the
->   time)
-> - we still have a couple of outstanding and impossible to debug issues
->   with some high resolution mice connected over the unifying receiver,
->   and adding one more receiver makes me nervous
-> - I have a strong feeling by reading the code that the keyboard part
->   will fail (there is a comment "For the keyboard, we can reuse the same
->   report by using the second byte which is constant in the USB HID
->   report descriptor." though I can't seem to find this constant report
->   on the bolt receiver)
-> - what are the benefits of adding it?
-> - will it break fwupd?
+I used to have a similar patch before,
+https://lore.kernel.org/linux-mm/1569968203-64647-1-git-send-email-yang.shi=
+@linux.alibaba.com/
 
-FWIW I'm also not in favor of stretching drivers/hid/hid-logitech-dj.c
-even further to also support the new bolt stuff.
+But it was somehow lost in discussion.
 
-AFAIK the new bolt stuff is significantly different.
+I have no objection to this patch. However, I was thinking about using
+list_lru for deferred split queue, but I didn't have time to look
+deeper. Maybe we should try now?
 
-Allan, I see in your other reply that you are mainly after
-highres scrolling and since the bolt receiver does not do
-per paired device addressing I wonder if you cannot just
-get that by treating the bolt receiver as a wired HIDPP
-device and just directly listing it as such in
-hid-logitech-hidpp.c ?
-
-The whole purpose of hid-logitech-dj.c is to create 1 virtual
-hidpp devices per paired device and with bolt that is not
-possible, so I think that we should circumvent hid-logitech-dj.c
-for bolt and if we want to use any hidpp features do so
-by directly listing the receivers in hid-logitech-hidpp.c .
-
-Regards,
-
-Hans
-
-
-
-
-
-> 
->>  };
->>  
->>  struct dj_report {
->> @@ -1068,6 +1069,7 @@ static void logi_hidpp_recv_queue_notif(struct hid_device *hdev,
->>  		workitem.reports_supported |= STD_KEYBOARD;
->>  		break;
->>  	case 0x0f:
->> +	case 0x10:
->>  	case 0x11:
->>  		device_type = "eQUAD Lightspeed 1.2";
->>  		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
->> @@ -1430,7 +1432,8 @@ static int logi_dj_ll_parse(struct hid_device *hid)
->>  		dbg_hid("%s: sending a mouse descriptor, reports_supported: %llx\n",
->>  			__func__, djdev->reports_supported);
->>  		if (djdev->dj_receiver_dev->type == recvr_type_gaming_hidpp ||
->> -		    djdev->dj_receiver_dev->type == recvr_type_mouse_only)
->> +		    djdev->dj_receiver_dev->type == recvr_type_mouse_only ||
->> +		    djdev->dj_receiver_dev->type == recvr_type_bolt)
->>  			rdcat(rdesc, &rsize, mse_high_res_descriptor,
->>  			      sizeof(mse_high_res_descriptor));
->>  		else if (djdev->dj_receiver_dev->type == recvr_type_27mhz)
->> @@ -1773,6 +1776,7 @@ static int logi_dj_probe(struct hid_device *hdev,
->>  	case recvr_type_dj:		no_dj_interfaces = 3; break;
->>  	case recvr_type_hidpp:		no_dj_interfaces = 2; break;
->>  	case recvr_type_gaming_hidpp:	no_dj_interfaces = 3; break;
->> +	case recvr_type_bolt:		no_dj_interfaces = 4; break;
-> 
-> 4? The device I have here only has 3 (unless I misremember how this is
-> supposed to be working).
-> 
->>  	case recvr_type_mouse_only:	no_dj_interfaces = 2; break;
->>  	case recvr_type_27mhz:		no_dj_interfaces = 2; break;
->>  	case recvr_type_bluetooth:	no_dj_interfaces = 2; break;
->> @@ -1950,6 +1954,10 @@ static const struct hid_device_id logi_dj_receivers[] = {
->>  	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
->>  		USB_DEVICE_ID_LOGITECH_UNIFYING_RECEIVER_2),
->>  	 .driver_data = recvr_type_dj},
->> +	{ /* Logitech bolt receiver (0xc548) */
->> +	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
->> +		USB_DEVICE_ID_LOGITECH_BOLT_RECEIVER),
->> +	 .driver_data = recvr_type_bolt},
->>  
->>  	{ /* Logitech Nano mouse only receiver (0xc52f) */
->>  	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
->> diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
->> index 3c00e6ac8e76..509142982daa 100644
->> --- a/drivers/hid/hid-logitech-hidpp.c
->> +++ b/drivers/hid/hid-logitech-hidpp.c
->> @@ -4380,6 +4380,8 @@ static const struct hid_device_id hidpp_devices[] = {
->>  	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb023) },
->>  	{ /* MX Master 3S mouse over Bluetooth */
->>  	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb034) },
->> +	{ /* MX Anywhere 3SB mouse over Bluetooth */
->> +	  HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH, 0xb038) },
-> 
-> That I can accept, however know that there is a regression in bluez
-> 0.73[0] (but it should be fixed in 0.74)
-> 
-> Cheers,
-> Benjamin
-> 
-> 
-> [0] https://github.com/bluez/bluez/issues/778#issuecomment-2048870358
-> 
->>  	{}
->>  };
->>  
->> -- 
->> 2.39.2
->>
-> 
-
+>
+> This seems to be a correct fix to me,  + Yang Shi, the original author of
+> commit 87eaceb3faa5.
+>
+> >
+> > Reviewed-by: Lu Zhongjun <lu.zhongjun@zte.com.cn>
+> > Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> > Cc: xu xin <xu.xin16@zte.com.cn>
+> > Cc: Yang Yang <yang.yang29@zte.com.cn>
+> > ---
+> >  include/linux/memcontrol.h |  7 +++----
+> >  mm/huge_memory.c           |  6 +++---
+> >  mm/memcontrol.c            | 11 +++++------
+> >  3 files changed, 11 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 394fd0a887ae..7282861d5a5d 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -130,6 +130,9 @@ struct mem_cgroup_per_node {
+> >         bool                    on_tree;
+> >         struct mem_cgroup       *memcg;         /* Back pointer, we can=
+not */
+> >                                                 /* use container_of    =
+    */
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +       struct deferred_split deferred_split_queue;
+> > +#endif
+> >  };
+> >
+> >  struct mem_cgroup_threshold {
+> > @@ -327,10 +330,6 @@ struct mem_cgroup {
+> >         struct list_head event_list;
+> >         spinlock_t event_list_lock;
+> >
+> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -       struct deferred_split deferred_split_queue;
+> > -#endif
+> > -
+> >  #ifdef CONFIG_LRU_GEN_WALKS_MMU
+> >         /* per-memcg mm_struct list */
+> >         struct lru_gen_mm_list mm_list;
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 9859aa4f7553..338d071070a6 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -774,7 +774,7 @@ struct deferred_split *get_deferred_split_queue(str=
+uct folio *folio)
+> >         struct pglist_data *pgdat =3D NODE_DATA(folio_nid(folio));
+> >
+> >         if (memcg)
+> > -               return &memcg->deferred_split_queue;
+> > +               return &memcg->nodeinfo[pgdat->node_id]->deferred_split=
+_queue;
+> >         else
+> >                 return &pgdat->deferred_split_queue;
+> >  }
+> > @@ -3305,7 +3305,7 @@ static unsigned long deferred_split_count(struct =
+shrinker *shrink,
+> >
+> >  #ifdef CONFIG_MEMCG
+> >         if (sc->memcg)
+> > -               ds_queue =3D &sc->memcg->deferred_split_queue;
+> > +               ds_queue =3D &sc->memcg->nodeinfo[sc->nid]->deferred_sp=
+lit_queue;
+> >  #endif
+> >         return READ_ONCE(ds_queue->split_queue_len);
+> >  }
+> > @@ -3322,7 +3322,7 @@ static unsigned long deferred_split_scan(struct s=
+hrinker *shrink,
+> >
+> >  #ifdef CONFIG_MEMCG
+> >         if (sc->memcg)
+> > -               ds_queue =3D &sc->memcg->deferred_split_queue;
+> > +               ds_queue =3D &sc->memcg->nodeinfo[sc->nid]->deferred_sp=
+lit_queue;
+> >  #endif
+> >
+> >         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index fabce2b50c69..cdf9f5fa3b8e 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -5445,7 +5445,11 @@ static int alloc_mem_cgroup_per_node_info(struct=
+ mem_cgroup *memcg, int node)
+> >                 kfree(pn);
+> >                 return 1;
+> >         }
+> > -
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +       spin_lock_init(&pn->deferred_split_queue.split_queue_lock);
+> > +       INIT_LIST_HEAD(&pn->deferred_split_queue.split_queue);
+> > +       pn->deferred_split_queue.split_queue_len =3D 0;
+> > +#endif
+> >         lruvec_init(&pn->lruvec);
+> >         pn->memcg =3D memcg;
+> >
+> > @@ -5545,11 +5549,6 @@ static struct mem_cgroup *mem_cgroup_alloc(struc=
+t mem_cgroup *parent)
+> >         for (i =3D 0; i < MEMCG_CGWB_FRN_CNT; i++)
+> >                 memcg->cgwb_frn[i].done =3D
+> >                         __WB_COMPLETION_INIT(&memcg_cgwb_frn_waitq);
+> > -#endif
+> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -       spin_lock_init(&memcg->deferred_split_queue.split_queue_lock);
+> > -       INIT_LIST_HEAD(&memcg->deferred_split_queue.split_queue);
+> > -       memcg->deferred_split_queue.split_queue_len =3D 0;
+> >  #endif
+> >         lru_gen_init_memcg(memcg);
+> >         return memcg;
+> > --
+> > 2.15.2
+> >
+>
+> Thanks
+> Barry
+>
 
