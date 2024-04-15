@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-144924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C1C28A4CAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:42:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C07F8A4CB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:42:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE90C1F22603
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:42:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AD94B2138C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3670F5CDC0;
-	Mon, 15 Apr 2024 10:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD195D73A;
+	Mon, 15 Apr 2024 10:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tI3fWkm5"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="T2gNX3w6"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29525C8E4;
-	Mon, 15 Apr 2024 10:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B81D5CDF2;
+	Mon, 15 Apr 2024 10:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713177742; cv=none; b=QBIT1ObkMsJFRxyeK1bbzUJhd8Qcjoy4XRwSfehy9wVm5NDcWAtq2j9/WOlATJ8XvSTKay7tUEMhtBLWFB+PvsmKlO47nyWlD+DAgoZf8FCWMJeSA+qZZaKXlwFp5FihrAooQgqjLgkkrUMUio0Ik09bvOAeYtmqHFKmYkkUPjs=
+	t=1713177745; cv=none; b=pmuPgIDwxt5LZoAoyWFv/oj/V9nnLbpkZu0k67ViPNm0KBTrgQGWqbJ7mGbHUHmIhy64Ixju9x9XLjU6P27JaQ29BI7X9iZFYuHeHRdQ70tgdqBcCOzTfqvcMSz7b7OCA7s1MbZOmAUshT865rDzRW/aF/VcUUdLout3VriS8jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713177742; c=relaxed/simple;
-	bh=JU0clfcq1cMxIdqJ2EHKrD4JQDvSeh45WWp5DuJ44ic=;
+	s=arc-20240116; t=1713177745; c=relaxed/simple;
+	bh=2LE6BYHGaIkUEPfoSEEycHjkQxb7ScTXGb+1RjmYa40=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eDdUt6axkgYnofJm/tVj7pktkoWoo8QcUfAXCHyOPfGFo2M13u0Yl9OmK0YRb5sGizxO3JPuAhOgBkl6LNe7K4qHpOGSVbDjDbhlQe19Dk/uFEsMi07dvtByTApMl851ck6yLHD69CADMZlYrZleSkwbhHI3G7NxrlQjtzuekLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=tI3fWkm5; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=bqNto/6QRBE2DViegmRexk6nX1WOhhniALwrbwh/dM5re/qzDL02ve8Px5ReMflnJ4E4iExJ6mSCzoWLdNvQvz2/L7MMbDQIbntWRt+bRcpbtMeqxs06S6oSKF73jS3405kqRAF4eSBDT1gAwTafhw2+cRb3Xtl6m1PBge7LzFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=T2gNX3w6; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713177738;
-	bh=JU0clfcq1cMxIdqJ2EHKrD4JQDvSeh45WWp5DuJ44ic=;
+	s=mail; t=1713177742;
+	bh=2LE6BYHGaIkUEPfoSEEycHjkQxb7ScTXGb+1RjmYa40=;
 	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=tI3fWkm55Yey3VIvKAiA1RNCWRc448yXVO7slBMfKfPobI7jf8aJyW63i8pE7Lt9y
-	 02FthLrVr7UB7YA2CH1hWqytdzL435uTnnnOiP5UuRRhXU04EvKT6SZv2GYINLn5tu
-	 BVZrnrTaqSo+Y5w+iCpMhdImF2Sc1TncmrIaDTkXZpypxgv+lG7GlF4PHEO+wIkILX
-	 KqvbTNjAobv26Mf52qmjNwmHQoshLzI0n4rAE+zr4ezS9G7SZ7ukviOOzLqnXT6rxq
-	 0Y2ZPAKUEH01/FMv46XdWfQg4x7jVaq7Wc2he3MSvguv4vTwVqRywCmnCh0HuRqF2w
-	 mzPzaB687B9mw==
+	b=T2gNX3w6MCKpptHBDjWUa0QuL/mlCEZSlhCMsoGDBrxpKIvs4dHlqUnieB9UCpW29
+	 2PFQjmzexQqeqQZrqbnkudvAHehcY2FUeZdfBG4Vf7SyHFr8gBFQIoPaPpX2JgIUaI
+	 fbz7W4mutYJjKLayzskqfUkboqxrPq9cyFJUi31kqBp8AXncDR43OC4L+Hcrrler5w
+	 X9SgHm/WQ3bPyCE7mn19NgCIZiLAv1HUKzD4k8CwX8gujpSd8XJlRJOzQznsCjHGsB
+	 j/tysx8yw7KUuChgUEp5FARuoWlDit9S8ZQdm3htwcOPa6WbEIMOk0eR1LFbqOGBM4
+	 lFjD+q3xy5wkw==
 Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5792C378000E;
-	Mon, 15 Apr 2024 10:42:15 +0000 (UTC)
-Message-ID: <938ae032-3b4c-4293-8882-e6be231b0c5a@collabora.com>
-Date: Mon, 15 Apr 2024 12:42:13 +0200
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 0E156378042B;
+	Mon, 15 Apr 2024 10:42:18 +0000 (UTC)
+Message-ID: <4f1142a5-e231-401b-9b84-cc44d3800a7d@collabora.com>
+Date: Mon, 15 Apr 2024 12:42:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,8 +56,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/4] dt-bindings: PCI: host-bridges: switch from
- deprecated pci-bus.yaml
+Subject: Re: [PATCH v3 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
+ child node reg
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Bjorn Helgaas <bhelgaas@google.com>,
  Lorenzo Pieralisi <lpieralisi@kernel.org>,
@@ -102,27 +102,25 @@ To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
  linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org
 References: <20240413151617.35630-1-krzysztof.kozlowski@linaro.org>
- <20240413151617.35630-3-krzysztof.kozlowski@linaro.org>
+ <20240413151617.35630-2-krzysztof.kozlowski@linaro.org>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Content-Language: en-US
-In-Reply-To: <20240413151617.35630-3-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240413151617.35630-2-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Il 13/04/24 17:16, Krzysztof Kozlowski ha scritto:
-> dtschema package with core schemas deprecated pci-bus.yaml schema in
-> favor of pci-host-bridge.yaml.  Update all bindings to use the latter
-> one.
+> MT7621 PCI host bridge has children which are PCI root ports.  The
+> children have "reg" property, but do not explicitly define it.  Instead
+> they rely on pci-bus.yaml schema, but that one has "reg" without any
+> constraints.
 > 
-> The difference between pci-bus.yaml and pci-host-bridge.yaml is only in
-> lack of "reg" property defined by the latter, which should not have any
-> effect here, because all these bindings define the "reg".
+> Define the "reg" for the children, so the binding will be more specific
+> and later will allow dropping reference to deprecated pci-bus.yaml
+> schema.
 > 
-> The change is therefore quite trivial, however it requires dtschema
-> package v2024.02 or newer.
-> 
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be> # Renesas
 > Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Acked-by: Rob Herring <robh@kernel.org>
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
 
