@@ -1,149 +1,102 @@
-Return-Path: <linux-kernel+bounces-145218-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0389A8A5100
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:21:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D0048A5104
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:22:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 039AE1C21E2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:21:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB5C3B23119
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FCA12A16B;
-	Mon, 15 Apr 2024 13:04:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ImXb6uTd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7925112AAE4;
+	Mon, 15 Apr 2024 13:05:33 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107D01292D7;
-	Mon, 15 Apr 2024 13:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B56763EE;
+	Mon, 15 Apr 2024 13:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713186284; cv=none; b=SRtRrM3M0jhxCINofRuSa36FoY1wSuvQPV+lZL8juCCBMfdh8zr4AWNkKW9Ef30ERN739F40rPkEOOi8DcIR15Fw3iknM5uggtqSEZK7JMw4s9wstrzdWjvqMN1wmDrXdejHH0s6TrzMwmeija0fLnMRPfFjpIqXMVSgq+rj+dw=
+	t=1713186333; cv=none; b=beNTOfo4j/VE8mv9oLlk+h5nIAG4M7WSOcc9LhrwxPVcIYtargg7AuFc5xlXx1HtbXHWUD6N7aEFLJVK0YvjM9UazNYoyfSaI8VE2/kbeGcdNzHuqKYwjlnTDMtT2UBp5obcbwYF6T9RZXobHB6u9p3CuJaDAsL3XTJcTLOD/as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713186284; c=relaxed/simple;
-	bh=tr9yQ+4cpsOL+xDqeA+9j3kwvie9ouEBUsT3s2BSqh0=;
+	s=arc-20240116; t=1713186333; c=relaxed/simple;
+	bh=e9tGNm4v3nKmynIONtpDA6Y1cuJoNNasV3i92wHJLUI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BFwxrQ6RbIrV5Alb3GZc16jTT5SZvx2X9iCKGbgkAEO0CGT6icfbqYw7fp1pzC7jHYcs3v0NV3SFeQ3sgUw6xPLsVQIK3gRF31xGaw7+cgL1ufuypXcFaT94EEPNUJmCk3CHt+z5OO+IbRIL59M6y7kl6ZuGF5rmBnMRGZtEYiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ImXb6uTd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F057C2BD10;
-	Mon, 15 Apr 2024 13:04:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713186283;
-	bh=tr9yQ+4cpsOL+xDqeA+9j3kwvie9ouEBUsT3s2BSqh0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ImXb6uTdlDCasCuJVRBnQ/oQfhr22tFWdjclh8WLsJ51AFkxolDjzhT2GQlm/+p/N
-	 9lm5WzGsVB83N7l70F+8UV4g5QyTtAaKByZJWzsn10NHjWUs1BQNZz8O02ZqR5Jz7X
-	 11S1K2ml15QnwoaSdSOLTYvNBvTclOyqiO4t5U6YTE09luSAa3KTHP2MG6UdfVS1xq
-	 2gcKyRUnrIe0DlP28Iaka2T22JJBMh7r4Dy154gOf3CnUwBwjMrc7RXqZdv6/ve/u3
-	 NSrJwKZRbvGQvJXWd4UWknDa6x/n2J4tQn1LR3oRrmJAU17jqx4f3yq7sN6OoU5/6N
-	 s2Wurhmc8fQHw==
-Date: Mon, 15 Apr 2024 15:04:36 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: Andreas Dilger <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Nam Cao <namcao@linutronix.de>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
-	Jan Kara <jack@suse.cz>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, 
-	Ext4 Developers List <linux-ext4@vger.kernel.org>, Conor Dooley <conor@kernel.org>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <20240415-festland-unattraktiv-2b5953a6dbc9@brauner>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
- <20240413164318.7260c5ef@namcao>
- <22E65CA5-A2C0-44A3-AB01-7514916A18FC@dilger.ca>
- <20240414021555.GQ2118490@ZenIV>
- <887E261B-3C76-4CD9-867B-5D087051D004@dilger.ca>
- <87v84kujec.fsf@all.your.base.are.belong.to.us>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DaAFjRWTyk7g3p0pCYqzfwjt99CXPt7IFQCCsi6Vv55zPZa1sraR00gBdKfcU+i/xlej398VN8N7QEkNp6A6y6SAXmNKqbb2e1QYNXVKRHH1TT592nleDjJaXhYmtbhngHU9f4w3CtmO4j/mDkGmRf1HrNhRy8E8v8AldIidtzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+X-CSE-ConnectionGUID: pxfsBNFjSGGMA/+gcsiXkA==
+X-CSE-MsgGUID: 0abM+Rf3ScyRz1TfETM3IA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="8794833"
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="8794833"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 06:05:30 -0700
+X-CSE-ConnectionGUID: zyKL/BT3QWmfYv/DOdk9vQ==
+X-CSE-MsgGUID: WMeYX4HITFm+8UeMsF58cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="26704586"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 06:05:29 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy.shevchenko@gmail.com>)
+	id 1rwM1W-00000004PlW-2wXR;
+	Mon, 15 Apr 2024 16:05:26 +0300
+Date: Mon, 15 Apr 2024 16:05:26 +0300
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: William Breathitt Gray <wbg@kernel.org>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/1] gpio: sch: Switch to memory mapped IO accessors
+Message-ID: <Zh0mFrrmrO1zNmoN@smile.fi.intel.com>
+References: <20240410072102.1200869-1-andy.shevchenko@gmail.com>
+ <ZhpC3lLD-BHqJEZz@ishi>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87v84kujec.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <ZhpC3lLD-BHqJEZz@ishi>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Sun, Apr 14, 2024 at 04:08:11PM +0200, Björn Töpel wrote:
-> Andreas Dilger <adilger@dilger.ca> writes:
+On Sat, Apr 13, 2024 at 04:31:26AM -0400, William Breathitt Gray wrote:
+> On Wed, Apr 10, 2024 at 10:21:02AM +0300, Andy Shevchenko wrote:
+> > Convert driver to use memory mapped IO accessors.
+> > 
+> > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 > 
-> > On Apr 13, 2024, at 8:15 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >> 
-> >> On Sat, Apr 13, 2024 at 07:46:03PM -0600, Andreas Dilger wrote:
-> >> 
-> >>> As to whether the 0xfffff000 address itself is valid for riscv32 is
-> >>> outside my realm, but given that RAM is cheap it doesn't seem unlikely
-> >>> to have 4GB+ of RAM and want to use it all.  The riscv32 might consider
-> >>> reserving this page address from allocation to avoid similar issues in
-> >>> other parts of the code, as is done with the NULL/0 page address.
-> >> 
-> >> Not a chance.  *Any* page mapped there is a serious bug on any 32bit
-> >> box.  Recall what ERR_PTR() is...
-> >> 
-> >> On any architecture the virtual addresses in range (unsigned long)-512..
-> >> (unsigned long)-1 must never resolve to valid kernel objects.
-> >> In other words, any kind of wraparound here is asking for an oops on
-> >> attempts to access the elements of buffer - kernel dereference of
-> >> (char *)0xfffff000 on a 32bit box is already a bug.
-> >> 
-> >> It might be getting an invalid pointer, but arithmetical overflows
-> >> are irrelevant.
-> >
-> > The original bug report stated that search_buf = 0xfffff000 on entry,
-> > and I'd quoted that at the start of my email:
-> >
-> > On Apr 12, 2024, at 8:57 AM, Björn Töpel <bjorn@kernel.org> wrote:
-> >> What I see in ext4_search_dir() is that search_buf is 0xfffff000, and at
-> >> some point the address wraps to zero, and boom. I doubt that 0xfffff000
-> >> is a sane address.
-> >
-> > Now that you mention ERR_PTR() it definitely makes sense that this last
-> > page HAS to be excluded.
-> >
-> > So some other bug is passing the bad pointer to this code before this
-> > error, or the arch is not correctly excluding this page from allocation.
-> 
-> Yeah, something is off for sure.
-> 
-> (FWIW, I manage to hit this for Linus' master as well.)
-> 
-> I added a print (close to trace_mm_filemap_add_to_page_cache()), and for
-> this BT:
-> 
->   [<c01e8b34>] __filemap_add_folio+0x322/0x508
->   [<c01e8d6e>] filemap_add_folio+0x54/0xce
->   [<c01ea076>] __filemap_get_folio+0x156/0x2aa
->   [<c02df346>] __getblk_slow+0xcc/0x302
->   [<c02df5f2>] bdev_getblk+0x76/0x7a
->   [<c03519da>] ext4_getblk+0xbc/0x2c4
->   [<c0351cc2>] ext4_bread_batch+0x56/0x186
->   [<c036bcaa>] __ext4_find_entry+0x156/0x578
->   [<c036c152>] ext4_lookup+0x86/0x1f4
->   [<c02a3252>] __lookup_slow+0x8e/0x142
->   [<c02a6d70>] walk_component+0x104/0x174
->   [<c02a793c>] path_lookupat+0x78/0x182
->   [<c02a8c7c>] filename_lookup+0x96/0x158
->   [<c02a8d76>] kern_path+0x38/0x56
->   [<c0c1cb7a>] init_mount+0x5c/0xac
->   [<c0c2ba4c>] devtmpfs_mount+0x44/0x7a
->   [<c0c01cce>] prepare_namespace+0x226/0x27c
->   [<c0c011c6>] kernel_init_freeable+0x286/0x2a8
->   [<c0b97ab8>] kernel_init+0x2a/0x156
->   [<c0ba22ca>] ret_from_fork+0xe/0x20
-> 
-> I get a folio where folio_address(folio) == 0xfffff000 (which is
-> broken).
-> 
-> Need to go into the weeds here...
+> Acked-by: William Breathitt Gray <wbg@kernel.org>
 
-I don't see anything obvious that could explain this right away. Did you
-manage to reproduce this on any other architecture and/or filesystem?
+Pushed to my review and testing queue, thank you!
 
-Fwiw, iirc there were a bunch of fs/buffer.c changes that came in
-through the mm/ layer between v6.7 and v6.8 that might also be
-interesting. But really I'm poking in the dark currently.
+> A minor suggestion below, but I find this patch accepted as-is.
+> 
+> >  static int sch_gpio_probe(struct platform_device *pdev)
+> >  {
+> > +	struct device *dev = &pdev->dev;
+> 
+> In general I think this is a good variable to define to simplify all the
+> &pdev->dev appearing throughout this callback, but I'd rather have seen
+> it as its own patch so we could change all the other uses of &pdev->dev
+> at once without distracting from the memory-mapped I/O change of this
+> particular patch. Not really necessary, but maybe at some point in the
+> future a follow-up patch doing such a cleanup would be nice.
+
+I avoid making unneeded  churn on a line I have updated in this patch.
+That's why I introduced the local variable proactively. Yet, I can do
+another patch to clean up the driver based on the existence of this var.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
