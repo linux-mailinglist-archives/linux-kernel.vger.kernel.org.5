@@ -1,129 +1,103 @@
-Return-Path: <linux-kernel+bounces-144536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8EB98A4787
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:21:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 112C58A478D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:22:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 759412818F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:21:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8623DB21F8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3274C9B;
-	Mon, 15 Apr 2024 05:21:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF1B5221;
+	Mon, 15 Apr 2024 05:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="fzOuenNS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="KaFKkuYs"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57289F9C8;
-	Mon, 15 Apr 2024 05:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C5A1DFEA;
+	Mon, 15 Apr 2024 05:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713158503; cv=none; b=nb8SqY2QLWw16b/qbIXFKfO5W9MreY2uxg4DAmlYTQBYUrUDxSyLV+sZE+8l80+p5F9FEc7ui11lIoBFXfE4BciedNgBtqvktlHaT/qBoG0h1iDFXKAy4KML3rbmWRk78L4QIGbxC4Iyl4HzdutJuygtVTKOv5n7uK/hZvReb2Y=
+	t=1713158553; cv=none; b=ZPQ4A2We1/M8NNKvpqF6X23Mu/mjL/s2WCBdpziX5st6ZAJrEEzVGo+IEJQntfmByhE/ihVcn5eody03ogOhyI1f2X264Zxa8AQHkHdakK3L+1PNp2+PC/ELOOAksDrzJkHei4CgDcrJPnPoYSu/AQ1sYEKYpf2JZMoOLygYlps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713158503; c=relaxed/simple;
-	bh=nlsa6YgRAFchswkyn7KkmzAVbBm3XbY20uZqZXRwrnE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=exiapsBbAp0+ZZ3TfAwadstCrKAq8OPNuUR2+3SnbKQujCG4aB4oXX0oGLqjapncYW4rJvUrrwyPUxaUIn10poDHY6LXGlJyLbaks8qyEXF7VeHxbxmLaFPmjFO/lFLjX5uLsLkMR28/jJr0VKPH2G9GtxkOavdGTvbpfZ6o86o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=fzOuenNS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EF97C113CC;
-	Mon, 15 Apr 2024 05:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713158502;
-	bh=nlsa6YgRAFchswkyn7KkmzAVbBm3XbY20uZqZXRwrnE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fzOuenNSgx06ppXJccfIqUwcs1fhWSId1+Mz3jtnG34Ep+W9tUwIcwm91dFZqJYgD
-	 84sKXjWf9fJ3QY9u489oGiR33PkxTyyD4+I+0mfDnV/FNxNG4F/MxhC2hPl7LxtDWU
-	 DIKpgrRKfPy8i4BH7hjtnK4g1SjKZiJBu0UcFn5M=
-Date: Mon, 15 Apr 2024 07:21:37 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Alex Elder <elder@linaro.org>, corbet@lwn.net,
-	workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
-Message-ID: <2024041503-affidavit-stopwatch-72d7@gregkh>
-References: <20240414170850.148122-1-elder@linaro.org>
- <20240414194835.GA12561@pendragon.ideasonboard.com>
+	s=arc-20240116; t=1713158553; c=relaxed/simple;
+	bh=w1CD5sPVgT6NGtShw3akz+SpoAtihwISk9wLuMqIKbE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=MSAQDB8+pBWCU3GqZNrskhiv5cCRZ3Zk7eSuuzXSrWDl1j3xW+sJ65jxqihH7JYId2bJWuBcXAnJ1F/OTihGRh4n/JX/qx3WSnYJFp/NMdGW1SFAZEw5SfNXGUw0tm2Z60Vln3i6dQQ43nTFZm3Wq6LCTnyNFW1XPQk6gQ6y0pU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=KaFKkuYs; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713158549;
+	bh=8mrQmlCDpVg87B4ElQ2n1Es5kn5Xhsvl3ggWqslLfk0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=KaFKkuYsjmp1FVzMrAxyLQS4b54L4dfrtqCIBQ4glmlAINJDsLrtoPxHpbDvQtb4C
+	 OwlWCoGjHLwlwUmx/5I/qNngAvF344agD77bbZ4uEj3M1LRlIzqF7zM6F7CTPm/x6o
+	 w7toJcxIvrwrx37EM9r3FHZimEUST6jGcVR5TOJ+qUBaknhZNh2Qxdr3qsqUYPiDZp
+	 laktu1nvoy8hHup1Ko38n/6LVa2dsRsRh3PNDMzSqMz+ZCkE5lbxYj72xNLBT/c0IF
+	 3neArprE5xI/NfKh2TA7GImdfeZKKG7b7zsv0EVxf9vJH74/YhokWguizH7NszYEhK
+	 DV09EPf1z2wNg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VHwXh4nB5z4wcr;
+	Mon, 15 Apr 2024 15:22:28 +1000 (AEST)
+Date: Mon, 15 Apr 2024 15:22:27 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the char-misc tree
+Message-ID: <20240415152227.14c877a7@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240414194835.GA12561@pendragon.ideasonboard.com>
+Content-Type: multipart/signed; boundary="Sig_/SW81YG_z7wKiyoYGzFqHvaL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sun, Apr 14, 2024 at 10:48:35PM +0300, Laurent Pinchart wrote:
-> Hi Alex,
-> 
-> Thank you for the patch.
-> 
-> On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
-> > Several times recently Greg KH has admonished that variants of WARN()
-> > should not be used, because when the panic_on_warn kernel option is set,
-> > their use can lead to a panic. His reasoning was that the majority of
-> > Linux instances (including Android and cloud systems) run with this option
-> > enabled. And therefore a condition leading to a warning will frequently
-> > cause an undesirable panic.
-> > 
-> > The "coding-style.rst" document says not to worry about this kernel
-> > option.  Update it to provide a more nuanced explanation.
-> > 
-> > Signed-off-by: Alex Elder <elder@linaro.org>
-> > ---
-> >  Documentation/process/coding-style.rst | 21 +++++++++++----------
-> >  1 file changed, 11 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> > index 9c7cf73473943..bce43b01721cb 100644
-> > --- a/Documentation/process/coding-style.rst
-> > +++ b/Documentation/process/coding-style.rst
-> > @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
-> >  to trigger easily, for example, by user space actions. pr_warn_once() is a
-> >  possible alternative, if you need to notify the user of a problem.
-> >  
-> > -Do not worry about panic_on_warn users
-> > -**************************************
-> > +The panic_on_warn kernel option
-> > +********************************
-> >  
-> > -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
-> > -available kernel option, and that many users set this option. This is why
-> > -there is a "Do not WARN lightly" writeup, above. However, the existence of
-> > -panic_on_warn users is not a valid reason to avoid the judicious use
-> > -WARN*(). That is because, whoever enables panic_on_warn has explicitly
-> > -asked the kernel to crash if a WARN*() fires, and such users must be
-> > -prepared to deal with the consequences of a system that is somewhat more
-> > -likely to crash.
-> > +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
-> > +a WARN*() call whose condition holds leads to a kernel panic.  Many users
-> > +(including Android and many cloud providers) set this option, and this is
-> > +why there is a "Do not WARN lightly" writeup, above.
-> > +
-> > +The existence of this option is not a valid reason to avoid the judicious
-> > +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
-> > +issue warnings but do **not** cause the kernel to crash. Use these if you
-> > +want to prevent such panics.
-> 
-> Those options are not equivalent, they print a single message, which is
-> much easier to ignore. WARN() is similar to -Werror in some sense, it
-> pushes vendors to fix the warnings. I have used WARN() in the past to
-> indicate usage of long-deprecated APIs that we were getting close to
-> removing for instance. dev_warn() wouldn't have had the same effect.
+--Sig_/SW81YG_z7wKiyoYGzFqHvaL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If you want to reboot a box because someone called an "improper" api,
-then sure, use WARN(), but that feels like a really bad idea.  Just
-remove the api and fix up all in-kernel users instead.  Why wait?
+Hi all,
 
-If you want to show a traceback, then just print that out, but I've seen
-that totally ignored as well, removing the api is usually the only way
-to get people to actually notice, as then their builds break.
+After merging the char-misc tree, today's linux-next build (htmldocs)
+produced this warning:
 
-thanks,
+drivers/uio/uio.c:446: warning: expecting prototype for uio_interrupt(). Pr=
+ototype was for uio_interrupt_handler() instead
 
-greg k-h
+Introduced by commit
+
+  f8a27dfa4b82 ("uio: use threaded interrupts")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/SW81YG_z7wKiyoYGzFqHvaL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYcuZMACgkQAVBC80lX
+0GxzJAgAkC6eoma7paz3GMBkYNQ4qupcbEWv04XelRbdBWgp8Alj51IT9pcjRujn
+k2uFnvz1o34O58zhfniCcdUJtI1fkQ9InpgZFNO85TEMVjFp7FRSkVEElARUowS8
+Ixx7LarB107EZ7V3mfT7f7TzC6bPnM4PS/c0p8mlU8p5BMH1z5cnwPWlMcWz4Nq2
+emtTg8tdgb8CgtK5vU9DdZvFsAvMS1OTB5X33jM+7v1vS/vlHhA/edEcQdt4oj6F
+/2OhVfEWZ71awFx5JmFjFHuLs7EijH1ut6Z4HfzN1zM8G7567I9IfQfTPI28Lyjj
+s1fzavXuYrfXPEMVYHNxneSbfN03gA==
+=OGIh
+-----END PGP SIGNATURE-----
+
+--Sig_/SW81YG_z7wKiyoYGzFqHvaL--
 
