@@ -1,612 +1,399 @@
-Return-Path: <linux-kernel+bounces-144506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B353C8A4735
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:13:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526358A4737
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:14:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C1C0B21B5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:13:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D16851F22219
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74AD11BF31;
-	Mon, 15 Apr 2024 03:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243881C6B9;
+	Mon, 15 Apr 2024 03:14:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IuRPQN2J"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GRivY9oO"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2803AFC11;
-	Mon, 15 Apr 2024 03:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294EA1EB3A;
+	Mon, 15 Apr 2024 03:14:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713150803; cv=none; b=TquXhkLg+5H9+vZoPOtQAcCkkwXRSdLbQspjvXH42Re3vcMRevxGcKCXu0hNgxKPgwsYk/Sft8DWJd1OfvkrWSe7a8Deo7yI5sNqibdppKU4ZXrZBMQ5bnON+0jmqcschSuEWhsoJyAdxEgusA8Z4pDfyuE+OqWcYzL+NtFx5Ko=
+	t=1713150847; cv=none; b=p1myvpx7MNQgmrDhEg6JabCcOGxrgb0A0qKfcCR29cYnQrJrelllIZCGpuZwUGAEkp7H8GbpOifmX01wQ2Nx3G6X0mjmiZCjVtdB/PUUhlfNl7Fz8ItlvIo+m1HhQpMwOan1W8O1ZFK/FGLGxYC55jxtso2fvvaD8RRtDhrxRQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713150803; c=relaxed/simple;
-	bh=+hG8Q8PoTIXIuYyNyzUFs2W49Ytu7b0rirEweThLTLU=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=aGKtg0XbSsinE7EBWvv7Rk/rGvHQ4Fvy+3koqxI1jVyReJFlw0sdi3PDGUs93UxQr2ys/zilEXfdfCo5y/U8eldnNtnvK9RkQ3qiFvCQf1UCdCF1wKwdL1239ZJv71XmXRC99InSgIbJ6ujR70mY8XuoXY356yHZ2+6sKhV9OJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IuRPQN2J; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1713150847; c=relaxed/simple;
+	bh=e+3BShBbd4Hhf1J3QtuaioPJSDkni4jhxtYXepyXO38=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ArjH1A1C1J+ClRoP7sdl3D35IjQj0bG21DuHCI5vDRBx11+eAsKVfkP+wcedcCT7hYgXCSYfILNX8AYxbLajW6U5UgK1kOKHrHUEGXgTalEUGn6WqpuXp3di/X7re+mvsVyQYuaguGppsSROCHtmLYZDGKkJCxXZTYbEV98Qdr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GRivY9oO; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713150801; x=1744686801;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=+hG8Q8PoTIXIuYyNyzUFs2W49Ytu7b0rirEweThLTLU=;
-  b=IuRPQN2J2is5OaloaPw64cNUpdmCyF81pgLGAaT0l6C1xI8x9Z5Vqffs
-   JuNK9pVoZOjfHb7+eOTuPjaDWFsOBtxB83rC1PVAanAaDFch78R9eJUBx
-   z2O+Mt8ZYxi9eDre8FAv1c8Vchvsvu0lCZve7dRz2qdv99QcD29tAPnmS
-   rhtyYdFQxR2t5ZKJXvP9gv5h+Z+vfnliMfGe8wB9qDk/phvolDcs+fne3
-   jbQZ+EU7VGsOmu7GFbe954vS6h6zuAnNEzEoYu5rtpG8yaGaUGnrNGGKT
-   Aec8RWYLwFkksUme45ygt0/FNDRR3HA6WE9NtO25o3pyQFEvHEj5Dguj9
-   w==;
-X-CSE-ConnectionGUID: FfNqqJBCT9e0Na4EYNwovQ==
-X-CSE-MsgGUID: RYyJksE5RYCbvpGnsesyeg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="19083741"
+  t=1713150845; x=1744686845;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=e+3BShBbd4Hhf1J3QtuaioPJSDkni4jhxtYXepyXO38=;
+  b=GRivY9oONgel4+IE1Hw7F1v5BTpzp2nGyGYps3/+4dG96oBQc/FlmiBk
+   C1xH8PH663y3lawduGs/GQPEL6V9BdF5/XGbCnsMEgMIB5HmsWiADtG8S
+   O8nSI0UmQHbzdpv0Tyy6v6Kk4ewbS5YrwwAhqRPk/VHOJ2gJi3WqyWXse
+   fssRRIDb5ZaH6EakXvnsDVAlEvqCYVU/qrFwbVhmTgsKeLiY+b6mcdWQ8
+   2VKu0lDu9RtjNmKk/JXX+QnAVXcimHXrNcMSnGWhzLPsX+36D9EKGqnrK
+   iGDuUhEItWWig9DyoIOgwO2ZcNR871aHK1oANiqr0XQkJcmoYHB00k3vA
+   Q==;
+X-CSE-ConnectionGUID: Qw4svMm0QFOS4IsalQudzg==
+X-CSE-MsgGUID: 2dLhJ6vXSaacEsDgZgSpQw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="19083804"
 X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="19083741"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 20:13:20 -0700
-X-CSE-ConnectionGUID: 6Ay0YuS8RV28t9o2un3fcA==
-X-CSE-MsgGUID: NDuU2I7aROS81aBKK/3Gng==
+   d="scan'208";a="19083804"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 20:14:05 -0700
+X-CSE-ConnectionGUID: P8mKInsKTxmwCkoXvz1jTQ==
+X-CSE-MsgGUID: Pi7qP+d5SnqA4zkfEtiF7g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="21876485"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 14 Apr 2024 20:13:18 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
- <20240410182558.41467-15-haitao.huang@linux.intel.com>
- <D0JXP8HZLEQZ.3PHVXZI140VIH@kernel.org>
-Date: Sun, 14 Apr 2024 22:13:15 -0500
+   d="scan'208";a="26452032"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by orviesa003.jf.intel.com with ESMTP; 14 Apr 2024 20:13:59 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rwCmu-0003wi-34;
+	Mon, 15 Apr 2024 03:13:56 +0000
+Date: Mon, 15 Apr 2024 11:13:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
+	kvmarm@lists.linux.dev
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Joey Gouly <joey.gouly@arm.com>,
+	Alexandru Elisei <alexandru.elisei@arm.com>,
+	Christoffer Dall <christoffer.dall@arm.com>,
+	Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+	Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
+	Steven Price <steven.price@arm.com>
+Subject: Re: [PATCH v2 09/14] arm64: Enable memory encrypt for Realms
+Message-ID: <202404151003.vkNApJiS-lkp@intel.com>
+References: <20240412084213.1733764-10-steven.price@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2l81wdjdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D0JXP8HZLEQZ.3PHVXZI140VIH@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412084213.1733764-10-steven.price@arm.com>
 
-On Sun, 14 Apr 2024 10:01:03 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+Hi Steven,
 
-> On Wed Apr 10, 2024 at 9:25 PM EEST, Haitao Huang wrote:
->> To run selftests for EPC cgroup:
->>
->> sudo ./run_epc_cg_selftests.sh
->>
->> To watch misc cgroup 'current' changes during testing, run this in a
->> separate terminal:
->>
->> ./watch_misc_for_tests.sh current
->>
->> With different cgroups, the script starts one or multiple concurrent SGX
->> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
->> test case, which loads an enclave of EPC size equal to the EPC capacity
->> available on the platform. The script checks results against the
->> expectation set for each cgroup and reports success or failure.
->>
->> The script creates 3 different cgroups at the beginning with following
->> expectations:
->>
->> 1) SMALL - intentionally small enough to fail the test loading an
->> enclave of size equal to the capacity.
->> 2) LARGE - large enough to run up to 4 concurrent tests but fail some if
->> more than 4 concurrent tests are run. The script starts 4 expecting at
->> least one test to pass, and then starts 5 expecting at least one test
->> to fail.
->> 3) LARGER - limit is the same as the capacity, large enough to run lots  
->> of
->> concurrent tests. The script starts 8 of them and expects all pass.
->> Then it reruns the same test with one process randomly killed and
->> usage checked to be zero after all processes exit.
->>
->> The script also includes a test with low mem_cg limit and LARGE sgx_epc
->> limit to verify that the RAM used for per-cgroup reclamation is charged
->> to a proper mem_cg. For this test, it turns off swapping before start,
->> and turns swapping back on afterwards.
->>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> ---
->> V11:
->> - Remove cgroups-tools dependency and make scripts ash compatible.  
->> (Jarkko)
->> - Drop support for cgroup v1 and simplify. (Michal, Jarkko)
->> - Add documentation for functions. (Jarkko)
->> - Turn off swapping before memcontrol tests and back on after
->> - Format and style fixes, name for hard coded values
->>
->> V7:
->> - Added memcontrol test.
->>
->> V5:
->> - Added script with automatic results checking, remove the interactive
->> script.
->> - The script can run independent from the series below.
->> ---
->>  tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
->>  .../selftests/sgx/run_epc_cg_selftests.sh     | 275 ++++++++++++++++++
->>  .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
->>  3 files changed, 302 insertions(+)
->>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
->>  create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
->>
->> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh  
->> b/tools/testing/selftests/sgx/ash_cgexec.sh
->> new file mode 100755
->> index 000000000000..cfa5d2b0e795
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
->> @@ -0,0 +1,16 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2024 Intel Corporation.
->> +
->> +# Start a program in a given cgroup.
->> +# Supports V2 cgroup paths, relative to /sys/fs/cgroup
->> +if [ "$#" -lt 2 ]; then
->> +    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
->> +    exit 1
->> +fi
->> +# Move this shell to the cgroup.
->> +echo 0 >/sys/fs/cgroup/$1/cgroup.procs
->> +shift
->> +# Execute the command within the cgroup
->> +exec "$@"
->> +
->> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh  
->> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> new file mode 100755
->> index 000000000000..dd56273056fc
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> @@ -0,0 +1,275 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2023, 2024 Intel Corporation.
->> +
->> +TEST_ROOT_CG=selftest
->> +TEST_CG_SUB1=$TEST_ROOT_CG/test1
->> +TEST_CG_SUB2=$TEST_ROOT_CG/test2
->> +# We will only set limit in test1 and run tests in test3
->> +TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
->> +TEST_CG_SUB4=$TEST_ROOT_CG/test4
->> +
->> +# Cgroup v2 only
->> +CG_ROOT=/sys/fs/cgroup
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB1
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB2
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB3
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB4
->> +
->> +# Turn on misc and memory controller in non-leaf nodes
->> +echo "+misc" >  $CG_ROOT/cgroup.subtree_control && \
->> +echo "+memory" > $CG_ROOT/cgroup.subtree_control && \
->> +echo "+misc" >  $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> +echo "+memory" > $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> +echo "+misc" >  $CG_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed setting up cgroups, make sure misc and memory  
->> cgroups are enabled."
->> +    exit 1
->> +fi
->> +
->> +CAPACITY=$(grep "sgx_epc" "$CG_ROOT/misc.capacity" | awk '{print $2}')
->> +# This is below number of VA pages needed for enclave of capacity  
->> size. So
->> +# should fail oversubscribed cases
->> +SMALL=$(( CAPACITY / 512 ))
->> +
->> +# At least load one enclave of capacity size successfully, maybe up to  
->> 4.
->> +# But some may fail if we run more than 4 concurrent enclaves of  
->> capacity size.
->> +LARGE=$(( SMALL * 4 ))
->> +
->> +# Load lots of enclaves
->> +LARGER=$CAPACITY
->> +echo "# Setting up limits."
->> +echo "sgx_epc $SMALL" > $CG_ROOT/$TEST_CG_SUB1/misc.max && \
->> +echo "sgx_epc $LARGE" >  $CG_ROOT/$TEST_CG_SUB2/misc.max && \
->> +echo "sgx_epc $LARGER" > $CG_ROOT/$TEST_CG_SUB4/misc.max
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed setting up misc limits."
->> +    exit 1
->> +fi
->> +
->> +clean_up()
->> +{
->> +    sleep 2
->> +    rmdir $CG_ROOT/$TEST_CG_SUB2
->> +    rmdir $CG_ROOT/$TEST_CG_SUB3
->> +    rmdir $CG_ROOT/$TEST_CG_SUB4
->> +    rmdir $CG_ROOT/$TEST_CG_SUB1
->> +    rmdir $CG_ROOT/$TEST_ROOT_CG
->> +}
->> +
->> +timestamp=$(date +%Y%m%d_%H%M%S)
->> +
->> +test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
->> +
->> +PROCESS_SUCCESS=1
->> +PROCESS_FAILURE=0
->> +
->> +# Wait for a process and check for expected exit status.
->> +#
->> +# Arguments:
->> +#	$1 - the pid of the process to wait and check.
->> +#	$2 - 1 if expecting success, 0 for failure.
->> +#
->> +# Return:
->> +#	0 if the exit status of the process matches the expectation.
->> +#	1 otherwise.
->> +wait_check_process_status() {
->> +    pid=$1
->> +    check_for_success=$2
->> +
->> +    wait "$pid"
->> +    status=$?
->> +
->> +    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq 0  
->> ]; then
->> +        echo "# Process $pid succeeded."
->> +        return 0
->> +    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status -ne  
->> 0 ]; then
->> +        echo "# Process $pid returned failure."
->> +        return 0
->> +    fi
->> +    return 1
->> +}
->> +
->> +# Wait for a set of processes and check for expected exit status
->> +#
->> +# Arguments:
->> +#	$1 - 1 if expecting success, 0 for failure.
->> +#	remaining args - The pids of the processes
->> +#
->> +# Return:
->> +#	0 if exit status of any process matches the expectation.
->> +#	1 otherwise.
->> +wait_and_detect_for_any() {
->> +    check_for_success=$1
->> +
->> +    shift
->> +    detected=1 # 0 for success detection
->> +
->> +    for pid in $@; do
->> +        if wait_check_process_status "$pid" "$check_for_success"; then
->> +            detected=0
->> +            # Wait for other processes to exit
->> +        fi
->> +    done
->> +
->> +    return $detected
->> +}
->> +
->> +echo "# Start unclobbered_vdso_oversubscribed with SMALL limit,  
->> expecting failure..."
->> +# Always use leaf node of misc cgroups
->> +# these may fail on OOM
->> +./ash_cgexec.sh $TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log  
->> 2>&1
->> +if [ $? -eq 0 ]; then
->> +    echo "# Fail on SMALL limit, not expecting any test passes."
->> +    clean_up
->> +    exit 1
->> +else
->> +    echo "# Test failed as expected."
->> +fi
->> +
->> +echo "# PASSED SMALL limit."
->> +
->> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE limit,
->> +        expecting at least one success...."
->> +
->> +pids=""
->> +for i in 1 2 3 4; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_positive_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +
->> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> +    echo "# PASSED LARGE limit positive testing."
->> +else
->> +    echo "# Failed on LARGE limit positive testing, no test passes."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE limit,
->> +        expecting at least one failure...."
->> +pids=""
->> +for i in 1 2 3 4 5; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_negative_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> +    echo "# PASSED LARGE limit negative testing."
->> +else
->> +    echo "# Failed on LARGE limit negative testing, no test fails."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGER limit,
->> +        expecting no failure...."
->> +pids=""
->> +for i in 1 2 3 4 5 6 7 8; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd  
->> >cgtest_larger_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> +    echo "# Failed on LARGER limit, at least one test fails."
->> +    clean_up
->> +    exit 1
->> +else
->> +    echo "# PASSED LARGER limit tests."
->> +fi
->> +
->> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGER limit,
->> +      randomly kill one, expecting no failure...."
->> +pids=""
->> +for i in 1 2 3 4 5 6 7 8; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd  
->> >cgtest_larger_kill_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +random_number=$(awk 'BEGIN{srand();print int(rand()*5)}')
->> +sleep $((random_number + 1))
->> +
->> +# Randomly select a process to kill
->> +# Make sure usage counter not leaked at the end.
->> +RANDOM_INDEX=$(awk 'BEGIN{srand();print int(rand()*8)}')
->> +counter=0
->> +for pid in $pids; do
->> +    if [ "$counter" -eq "$RANDOM_INDEX" ]; then
->> +        PID_TO_KILL=$pid
->> +        break
->> +    fi
->> +    counter=$((counter + 1))
->> +done
->> +
->> +kill $PID_TO_KILL
->> +echo "# Killed process with PID: $PID_TO_KILL"
->> +
->> +any_failure=0
->> +for pid in $pids; do
->> +    wait "$pid"
->> +    status=$?
->> +    if [ "$pid" != "$PID_TO_KILL" ]; then
->> +        if [ $status -ne 0 ]; then
->> +	    echo "# Process $pid returned failure."
->> +            any_failure=1
->> +        fi
->> +    fi
->> +done
->> +
->> +if [ $any_failure -ne 0 ]; then
->> +    echo "# Failed on random killing, at least one test fails."
->> +    clean_up
->> +    exit 1
->> +fi
->> +echo "# PASSED LARGER limit test with a process randomly killed."
->> +
->> +MEM_LIMIT_TOO_SMALL=$((CAPACITY - 2 * LARGE))
->> +
->> +echo "$MEM_LIMIT_TOO_SMALL" > $CG_ROOT/$TEST_CG_SUB2/memory.max
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed creating memory controller."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE EPC limit,
->> +        and too small RAM limit, expecting all failures...."
->> +# Ensure swapping off so the OOM killer is activated when mem_cgroup  
->> limit is hit.
->> +swapoff -a
->> +pids=""
->> +for i in 1 2 3 4; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_oom_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> +    echo "# Failed on tests with memcontrol, some tests did not fail."
->> +    clean_up
->> +    swapon -a
->> +    exit 1
->> +else
->> +    swapon -a
->> +    echo "# PASSED LARGE limit tests with memcontrol."
->> +fi
->> +
->> +sleep 2
->> +
->> +USAGE=$(grep '^sgx_epc' "$CG_ROOT/$TEST_ROOT_CG/misc.current" | awk  
->> '{print $2}')
->> +if [ "$USAGE" -ne 0 ]; then
->> +    echo "# Failed: Final usage is $USAGE, not 0."
->> +else
->> +    echo "# PASSED leakage check."
->> +    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
->> +fi
->> +clean_up
->> +echo "# done."
->> diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh  
->> b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> new file mode 100755
->> index 000000000000..1c9985726ace
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> @@ -0,0 +1,11 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2023, 2024 Intel Corporation.
->> +
->> +if [ -z "$1" ]; then
->> +    echo "No argument supplied, please provide 'max', 'current', or  
->> 'events'"
->> +    exit 1
->> +fi
->> +
->> +watch -n 1 'find /sys/fs/cgroup -wholename "*/test*/misc.'$1'" -exec \
->> +    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
->
-> So this is what happens now:
->
-> jarkko@mustatorvisieni:~/linux-tpmdd> make -C  
-> tools/testing/selftests/sgx run_tests
-> make: Entering directory  
-> '/home/jarkko/linux-tpmdd/tools/testing/selftests/sgx'
-> TAP version 13
-> 1..1
-> # timeout set to 45
-> # selftests: sgx: test_sgx
-> # TAP version 13
-> # 1..16
-> # # Starting 16 tests from 1 test cases.
-> # #  RUN           enclave.unclobbered_vdso ...
-> # #            OK  enclave.unclobbered_vdso
-> # ok 1 enclave.unclobbered_vdso
-> # #  RUN           enclave.unclobbered_vdso_oversubscribed ...
-> # #            OK  enclave.unclobbered_vdso_oversubscribed
-> # ok 2 enclave.unclobbered_vdso_oversubscribed
-> # #  RUN           enclave.unclobbered_vdso_oversubscribed_remove ...
-> # # main.c:402:unclobbered_vdso_oversubscribed_remove:Creating an  
-> enclave with 98566144 bytes heap may take a while ...
-> # # main.c:457:unclobbered_vdso_oversubscribed_remove:Changing type of  
-> 98566144 bytes to trimmed may take a while ...
-> # # main.c:473:unclobbered_vdso_oversubscribed_remove:Entering enclave  
-> to run EACCEPT for each page of 98566144 bytes may take a while ...
-> # # main.c:494:unclobbered_vdso_oversubscribed_remove:Removing 98566144  
-> bytes from enclave may take a while ...
-> # #            OK  enclave.unclobbered_vdso_oversubscribed_remove
-> # ok 3 enclave.unclobbered_vdso_oversubscribed_remove
-> # #  RUN           enclave.clobbered_vdso ...
-> # #            OK  enclave.clobbered_vdso
-> # ok 4 enclave.clobbered_vdso
-> # #  RUN           enclave.clobbered_vdso_and_user_function ...
-> # #            OK  enclave.clobbered_vdso_and_user_function
-> # ok 5 enclave.clobbered_vdso_and_user_function
-> # #  RUN           enclave.tcs_entry ...
-> # #            OK  enclave.tcs_entry
-> # ok 6 enclave.tcs_entry
-> # #  RUN           enclave.pte_permissions ...
-> # #            OK  enclave.pte_permissions
-> # ok 7 enclave.pte_permissions
-> # #  RUN           enclave.tcs_permissions ...
-> # #            OK  enclave.tcs_permissions
-> # ok 8 enclave.tcs_permissions
-> # #  RUN           enclave.epcm_permissions ...
-> # #            OK  enclave.epcm_permissions
-> # ok 9 enclave.epcm_permissions
-> # #  RUN           enclave.augment ...
-> # #            OK  enclave.augment
-> # ok 10 enclave.augment
-> # #  RUN           enclave.augment_via_eaccept ...
-> # #            OK  enclave.augment_via_eaccept
-> # ok 11 enclave.augment_via_eaccept
-> # #  RUN           enclave.tcs_create ...
-> # #            OK  enclave.tcs_create
-> # ok 12 enclave.tcs_create
-> # #  RUN           enclave.remove_added_page_no_eaccept ...
-> # #            OK  enclave.remove_added_page_no_eaccept
-> # ok 13 enclave.remove_added_page_no_eaccept
-> # #  RUN           enclave.remove_added_page_invalid_access ...
-> # #            OK  enclave.remove_added_page_invalid_access
-> # ok 14 enclave.remove_added_page_invalid_access
-> # #  RUN            
-> enclave.remove_added_page_invalid_access_after_eaccept ...
-> # #            OK  enclave.remove_added_page_invalid_access_after_eaccept
-> # ok 15 enclave.remove_added_page_invalid_access_after_eaccept
-> # #  RUN           enclave.remove_untouched_page ...
-> # #            OK  enclave.remove_untouched_page
-> # ok 16 enclave.remove_untouched_page
-> # # PASSED: 16 / 16 tests passed.
-> # # Totals: pass:16 fail:0 xfail:0 xpass:0 skip:0 error:0
-> ok 1 selftests: sgx: test_sgx
->
-> Also cgroups tests are expected to run when invoking "run_tests".
->
-I can add the SGX cgroup tests to the "run_tests" target. But it will need  
-more than the 45secs given by the default timeout especially on platforms  
-with larger EPC. You will need run with --override-timeout
-(current SGX selftests also timeout for default 45 sec on a server with 4G  
-EPC).
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on arm64/for-next/core]
+[also build test ERROR on kvmarm/next efi/next tip/irq/core linus/master v6.9-rc3 next-20240412]
+[cannot apply to arnd-asm-generic/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Steven-Price/arm64-rsi-Add-RSI-definitions/20240412-164852
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+patch link:    https://lore.kernel.org/r/20240412084213.1733764-10-steven.price%40arm.com
+patch subject: [PATCH v2 09/14] arm64: Enable memory encrypt for Realms
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20240415/202404151003.vkNApJiS-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8b3b4a92adee40483c27f26c478a384cd69c6f05)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240415/202404151003.vkNApJiS-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404151003.vkNApJiS-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/hv/hv.c:13:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     509 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     516 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     528 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     537 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/hv/hv.c:132:10: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     132 |                         ret = set_memory_decrypted((unsigned long)hv_cpu->post_msg_page, 1);
+         |                               ^
+   drivers/hv/hv.c:168:10: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     168 |                         ret = set_memory_decrypted((unsigned long)
+         |                               ^
+>> drivers/hv/hv.c:218:11: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     218 |                                 ret = set_memory_encrypted((unsigned long)
+         |                                       ^
+   drivers/hv/hv.c:230:11: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     230 |                                 ret = set_memory_encrypted((unsigned long)
+         |                                       ^
+   drivers/hv/hv.c:239:11: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     239 |                                 ret = set_memory_encrypted((unsigned long)
+         |                                       ^
+   5 warnings and 5 errors generated.
+--
+   In file included from drivers/hv/connection.c:16:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     509 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     516 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     528 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     537 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/hv/connection.c:236:8: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     236 |         ret = set_memory_decrypted((unsigned long)
+         |               ^
+>> drivers/hv/connection.c:340:2: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     340 |         set_memory_encrypted((unsigned long)vmbus_connection.monitor_pages[0], 1);
+         |         ^
+   5 warnings and 2 errors generated.
+--
+   In file included from drivers/hv/channel.c:14:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:508:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     508 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     509 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:515:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     515 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     516 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:527:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     527 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     528 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:536:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     536 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     537 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/hv/channel.c:442:8: error: call to undeclared function 'set_memory_decrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     442 |         ret = set_memory_decrypted((unsigned long)kbuffer,
+         |               ^
+>> drivers/hv/channel.c:531:3: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     531 |                 set_memory_encrypted((unsigned long)kbuffer,
+         |                 ^
+   drivers/hv/channel.c:848:8: error: call to undeclared function 'set_memory_encrypted'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+     848 |         ret = set_memory_encrypted((unsigned long)gpadl->buffer,
+         |               ^
+   5 warnings and 3 errors generated.
 
 
-> I also wonder do we really want this:
->
-> diff --git a/config/x86_64/default b/config/x86_64/default
-> index 246b1f3df46..6c3d20af7b4 100644
-> --- a/config/x86_64/default
-> +++ b/config/x86_64/default
-> @@ -502,6 +502,7 @@ CONFIG_X86_INTEL_TSX_MODE_OFF=y
->  # CONFIG_X86_INTEL_TSX_MODE_ON is not set
->  # CONFIG_X86_INTEL_TSX_MODE_AUTO is not set
->  CONFIG_X86_SGX=y
-> +CONFIG_CGROUP_SGX_EPC=y
->  # CONFIG_X86_USER_SHADOW_STACK is not set
->  CONFIG_EFI=y
->  CONFIG_EFI_STUB=y
->
-> It is a small change but affects all of downstream, not just OpenSUSE.
->
-> I hard time projecting a situation where you wanted SGX but without
-> cgroups support so perhaps it would be a better idea to enable cgroups
-> unconditionally when SGX and cgroups are part of the kernel config?
->
-> Then downstream can just pick the patches and call it a day...
->
-> BR, Jarkko
->
+vim +/set_memory_decrypted +132 drivers/hv/hv.c
 
-I don't have issue to remove this config and conditionally compile in SGX  
-cgroup implementation when MISC is configured.
+3e7ee4902fe699 drivers/staging/hv/Hv.c Hank Janssen      2009-07-13   96  
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19   97  int hv_synic_alloc(void)
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19   98  {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18   99  	int cpu, ret = -ENOMEM;
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  100  	struct hv_per_cpu_context *hv_cpu;
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  101  
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  102  	/*
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  103  	 * First, zero all per-cpu memory areas so hv_synic_free() can
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  104  	 * detect what memory has been allocated and cleanup properly
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  105  	 * after any failures.
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  106  	 */
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  107  	for_each_present_cpu(cpu) {
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  108  		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  109  		memset(hv_cpu, 0, sizeof(*hv_cpu));
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  110  	}
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  111  
+6396bb221514d2 drivers/hv/hv.c         Kees Cook         2018-06-12  112  	hv_context.hv_numa_map = kcalloc(nr_node_ids, sizeof(struct cpumask),
+597ff72f3de850 drivers/hv/hv.c         Jia-Ju Bai        2018-03-04  113  					 GFP_KERNEL);
+9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  114  	if (hv_context.hv_numa_map == NULL) {
+9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  115  		pr_err("Unable to allocate NUMA map\n");
+9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  116  		goto err;
+9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  117  	}
+9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  118  
+421b8f20d3c381 drivers/hv/hv.c         Vitaly Kuznetsov  2016-12-07  119  	for_each_present_cpu(cpu) {
+f25a7ece08bdb1 drivers/hv/hv.c         Michael Kelley    2018-08-10  120  		hv_cpu = per_cpu_ptr(hv_context.cpu_context, cpu);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  121  
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  122  		tasklet_init(&hv_cpu->msg_dpc,
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  123  			     vmbus_on_msg_dpc, (unsigned long) hv_cpu);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  124  
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  125  		if (ms_hyperv.paravisor_present && hv_isolation_type_tdx()) {
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  126  			hv_cpu->post_msg_page = (void *)get_zeroed_page(GFP_ATOMIC);
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  127  			if (hv_cpu->post_msg_page == NULL) {
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  128  				pr_err("Unable to allocate post msg page\n");
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  129  				goto err;
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  130  			}
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  131  
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24 @132  			ret = set_memory_decrypted((unsigned long)hv_cpu->post_msg_page, 1);
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  133  			if (ret) {
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  134  				pr_err("Failed to decrypt post msg page: %d\n", ret);
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  135  				/* Just leak the page, as it's unsafe to free the page. */
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  136  				hv_cpu->post_msg_page = NULL;
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  137  				goto err;
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  138  			}
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  139  
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  140  			memset(hv_cpu->post_msg_page, 0, PAGE_SIZE);
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  141  		}
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  142  
+faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  143  		/*
+faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  144  		 * Synic message and event pages are allocated by paravisor.
+faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  145  		 * Skip these pages allocation here.
+faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  146  		 */
+d3a9d7e49d1531 drivers/hv/hv.c         Dexuan Cui        2023-08-24  147  		if (!ms_hyperv.paravisor_present && !hv_root_partition) {
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  148  			hv_cpu->synic_message_page =
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  149  				(void *)get_zeroed_page(GFP_ATOMIC);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  150  			if (hv_cpu->synic_message_page == NULL) {
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  151  				pr_err("Unable to allocate SYNIC message page\n");
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  152  				goto err;
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  153  			}
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  154  
+faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  155  			hv_cpu->synic_event_page =
+faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  156  				(void *)get_zeroed_page(GFP_ATOMIC);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  157  			if (hv_cpu->synic_event_page == NULL) {
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  158  				pr_err("Unable to allocate SYNIC event page\n");
+68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  159  
+68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  160  				free_page((unsigned long)hv_cpu->synic_message_page);
+68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  161  				hv_cpu->synic_message_page = NULL;
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  162  				goto err;
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  163  			}
+faff44069ff538 drivers/hv/hv.c         Tianyu Lan        2021-10-25  164  		}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  165  
+68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  166  		if (!ms_hyperv.paravisor_present &&
+e3131f1c81448a drivers/hv/hv.c         Dexuan Cui        2023-08-24  167  		    (hv_isolation_type_snp() || hv_isolation_type_tdx())) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  168  			ret = set_memory_decrypted((unsigned long)
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  169  				hv_cpu->synic_message_page, 1);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  170  			if (ret) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  171  				pr_err("Failed to decrypt SYNIC msg page: %d\n", ret);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  172  				hv_cpu->synic_message_page = NULL;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  173  
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  174  				/*
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  175  				 * Free the event page here so that hv_synic_free()
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  176  				 * won't later try to re-encrypt it.
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  177  				 */
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  178  				free_page((unsigned long)hv_cpu->synic_event_page);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  179  				hv_cpu->synic_event_page = NULL;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  180  				goto err;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  181  			}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  182  
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  183  			ret = set_memory_decrypted((unsigned long)
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  184  				hv_cpu->synic_event_page, 1);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  185  			if (ret) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  186  				pr_err("Failed to decrypt SYNIC event page: %d\n", ret);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  187  				hv_cpu->synic_event_page = NULL;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  188  				goto err;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  189  			}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  190  
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  191  			memset(hv_cpu->synic_message_page, 0, PAGE_SIZE);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  192  			memset(hv_cpu->synic_event_page, 0, PAGE_SIZE);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  193  		}
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  194  	}
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  195  
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  196  	return 0;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  197  
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  198  err:
+572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  199  	/*
+572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  200  	 * Any memory allocations that succeeded will be freed when
+572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  201  	 * the caller cleans up by calling hv_synic_free()
+572086325ce9a9 drivers/hv/hv.c         Michael Kelley    2018-08-02  202  	 */
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  203  	return ret;
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  204  }
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  205  
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  206  
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  207  void hv_synic_free(void)
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  208  {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  209  	int cpu, ret;
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  210  
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  211  	for_each_present_cpu(cpu) {
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  212  		struct hv_per_cpu_context *hv_cpu
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  213  			= per_cpu_ptr(hv_context.cpu_context, cpu);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  214  
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  215  		/* It's better to leak the page if the encryption fails. */
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  216  		if (ms_hyperv.paravisor_present && hv_isolation_type_tdx()) {
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  217  			if (hv_cpu->post_msg_page) {
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24 @218  				ret = set_memory_encrypted((unsigned long)
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  219  					hv_cpu->post_msg_page, 1);
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  220  				if (ret) {
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  221  					pr_err("Failed to encrypt post msg page: %d\n", ret);
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  222  					hv_cpu->post_msg_page = NULL;
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  223  				}
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  224  			}
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  225  		}
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  226  
+68f2f2bc163d44 drivers/hv/hv.c         Dexuan Cui        2023-08-24  227  		if (!ms_hyperv.paravisor_present &&
+e3131f1c81448a drivers/hv/hv.c         Dexuan Cui        2023-08-24  228  		    (hv_isolation_type_snp() || hv_isolation_type_tdx())) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  229  			if (hv_cpu->synic_message_page) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  230  				ret = set_memory_encrypted((unsigned long)
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  231  					hv_cpu->synic_message_page, 1);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  232  				if (ret) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  233  					pr_err("Failed to encrypt SYNIC msg page: %d\n", ret);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  234  					hv_cpu->synic_message_page = NULL;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  235  				}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  236  			}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  237  
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  238  			if (hv_cpu->synic_event_page) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  239  				ret = set_memory_encrypted((unsigned long)
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  240  					hv_cpu->synic_event_page, 1);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  241  				if (ret) {
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  242  					pr_err("Failed to encrypt SYNIC event page: %d\n", ret);
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  243  					hv_cpu->synic_event_page = NULL;
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  244  				}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  245  			}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  246  		}
+193061ea0a50c1 drivers/hv/hv.c         Tianyu Lan        2023-08-18  247  
+23378295042a4b drivers/hv/hv.c         Dexuan Cui        2023-08-24  248  		free_page((unsigned long)hv_cpu->post_msg_page);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  249  		free_page((unsigned long)hv_cpu->synic_event_page);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  250  		free_page((unsigned long)hv_cpu->synic_message_page);
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  251  	}
+37cdd991fac810 drivers/hv/hv.c         Stephen Hemminger 2017-02-11  252  
+9f01ec53458d9e drivers/hv/hv.c         K. Y. Srinivasan  2015-08-05  253  	kfree(hv_context.hv_numa_map);
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  254  }
+2608fb65310341 drivers/hv/hv.c         Jason Wang        2013-06-19  255  
 
-Thanks
-Haitao
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
