@@ -1,122 +1,77 @@
-Return-Path: <linux-kernel+bounces-144837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A518A4B84
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:32:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BE378A4B8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 823EE1C208D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:32:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBB9128212E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923783FBB0;
-	Mon, 15 Apr 2024 09:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sTO9CrGX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BBA3FBAE;
+	Mon, 15 Apr 2024 09:33:58 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45603F9EC;
-	Mon, 15 Apr 2024 09:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76EAF3C488
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713173566; cv=none; b=erlYRSmYPg/YwFaBVZoSLc8H9Mgm7CdmwG5UZBoXwKWBcxFNCFSeor4HPYMBGxqg82w/8aYP593ebkZ5vziz9EQhuHFgG4Jr87JKpxaPkl8sX1wzbG0UpdRD9Y6SHMkkVdjQZkFxSaUap/3Kvqz7QXzTQfv2XGfNVwb+yKjIui0=
+	t=1713173637; cv=none; b=oXVBsLdPc8aAfysELGGksOIyXUcJ1sFBiLtdqfYCRpu1oFukCNkqELTM+QikLc0Ucn2yqV90dqJKkND65dJJk6y7Tg365feyUeA5wzaG2K6Q7PHtiHZz8awEx0aXHVdwtJ4CXTZd8sPhf6UfNq0g/5i/yyZkVJXKy46o35jTTaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713173566; c=relaxed/simple;
-	bh=hrn2Cpax6bG0+tBLHhsKA6HphenkfmI0P4jCJ4Nb38M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ij+cZKUP4/tHwMtr4idJ0MMR93gosnI2Ye13YditzxejCiaDPv2mfOWJQ93rVJQALyAiQC4FOL5/+imkKoRuHX/Sd5MoPmhrARlZhihSjz08sAwQjDhCBJHmXaJbDCXkfGLi52+2WvraMAzOpwc6TvVmjkYzwNrduKXjaXMbetI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sTO9CrGX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E561C113CC;
-	Mon, 15 Apr 2024 09:32:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713173565;
-	bh=hrn2Cpax6bG0+tBLHhsKA6HphenkfmI0P4jCJ4Nb38M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sTO9CrGXjb2iRtX3VcwAqY0jWcf+Q8kFyy3K/cU6keDvqq2q+zQRd87m/PumOKSlT
-	 UBLIOMUwLtEuWI2s8KAcwm2cTc+LjwASPSsQbFDJYsNPwSCmCcHS+aqKQ6khKnprMX
-	 ynRp1SbmFTCpiRd2rbugH650wz7eqpi9X1RXpPZqEOYV8SE7fIxGeiNiHIJh4Uddmf
-	 m0pnLX8zhUU7G6253EQRUFvvD/4yyIEj25K+QzyOl/QmVhaDXVX7ZQU63mE0NJYkCD
-	 9n3g/uT4urnwhy5dPdmLylCaigrWWuJdsMKRI+nxWRi4Fd9zzdt/CWSDzewI8UC7yG
-	 1W6arDroYB4Dg==
-Date: Mon, 15 Apr 2024 11:32:42 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Shawn Sung <shawn.sung@mediatek.com>
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, dri-devel@lists.freedesktop.org, 
-	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org, 
-	"Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Subject: Re: [PATCH v5 1/9] drm/mediatek/uapi: Add
- DRM_MTK_GEM_CREATE_ENCRYPTED flag
-Message-ID: <20240415-ultramarine-oxpecker-of-completion-8a2298@houat>
-References: <20240403102701.369-1-shawn.sung@mediatek.com>
- <20240403102701.369-2-shawn.sung@mediatek.com>
+	s=arc-20240116; t=1713173637; c=relaxed/simple;
+	bh=iRjCKXHq4eV8ko+UGUOl678VdrZXKjD+o9oN5Pbqw+4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=VzXstXAQ9n/f2LMCBX6d+6l2feVFYGU2EO+W4XX5K/gWzqDh3dp2qvcsNcWd7/ENyf4Btd72DWsBWF/CLDBS4ALHxHW6GtkX/UsYwzXyGYYHUtCaE3TTWGwwAP5yL0k+75xfFFDw9Kn7nYCQiFwlxHzaM2cFj7LzpngwSR8cyfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c9aa481ce4so364620139f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:33:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713173635; x=1713778435;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRjCKXHq4eV8ko+UGUOl678VdrZXKjD+o9oN5Pbqw+4=;
+        b=II0hyCyRPohQyw8yBqzs2mOcfXh03j40h10ClcgZ4R10rwkMviMryNvgkQjeQLh8OY
+         9Et8qeZraDQowYVcIUcRwuaUjmOSq75MJJVrXBqHcHrQ1HeaalQ2eG88atk+11vyagGz
+         KCJJtcLpcQJurwLah963qR3r8ZtXoHaTheHsdMlCmM5de+gvHzmU36maqZb/lIDKZXAh
+         vHW75evl9FHHkgQv2/j0QAj0A5s/PO297tGu/u0/rxSI8nBy3xpqcxbKZBmGjtVXBusa
+         DcdiRgG6OF5ShLDostYBK+WGTDU3/5kRv3L2xXa0bgzEWlNFi8gPrtvFkstMLSolU08N
+         jDaQ==
+X-Gm-Message-State: AOJu0YzXFWNgTN+yl6N77Oni85fVTC0/YTnHE3j2QjmNkY/+Jw4yeMgh
+	eKBTIOgnHWha/dIZdzPGJO5fUucZY6VDLgLwWWUYYTRpLpcUVtim8X7HqPbE/QjxP6SWkV4jGt6
+	sFvlChHcnqgyPhA2G9o2ZtsBwIF9/XzSY2alKHAW1Qe+wOG6qKR3gYj4=
+X-Google-Smtp-Source: AGHT+IHqME2+/u9WWjgwEcjPOn+OzoaOW5kMm2QrjVfFcYe6/q7v/RecZpx6dMTwhUZgZw8fSgsmx0nNGkb69yEoKUdGA62ZUjv6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="hhxojz7wd43elnlw"
-Content-Disposition: inline
-In-Reply-To: <20240403102701.369-2-shawn.sung@mediatek.com>
+X-Received: by 2002:a05:6638:2593:b0:482:fa94:f7d7 with SMTP id
+ s19-20020a056638259300b00482fa94f7d7mr440981jat.2.1713173635744; Mon, 15 Apr
+ 2024 02:33:55 -0700 (PDT)
+Date: Mon, 15 Apr 2024 02:33:55 -0700
+In-Reply-To: <000000000000ec64cd0616084ae9@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ff53be06161f5165@google.com>
+Subject: Re: [syzbot] test
+From: syzbot <syzbot+d6282a21a27259b5f7e7@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
---hhxojz7wd43elnlw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+***
 
-Hi,
+Subject: test
+Author: mukattreyee@gmail.com
 
-On Wed, Apr 03, 2024 at 06:26:53PM +0800, Shawn Sung wrote:
-> From: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
->=20
-> Add DRM_MTK_GEM_CREATE_ENCRYPTED flag to allow user to allocate
-> a secure buffer to support secure video path feature.
->=20
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
-> ---
->  include/uapi/drm/mediatek_drm.h | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/include/uapi/drm/mediatek_drm.h b/include/uapi/drm/mediatek_=
-drm.h
-> index b0dea00bacbc4..e9125de3a24ad 100644
-> --- a/include/uapi/drm/mediatek_drm.h
-> +++ b/include/uapi/drm/mediatek_drm.h
-> @@ -54,6 +54,7 @@ struct drm_mtk_gem_map_off {
-> =20
->  #define DRM_MTK_GEM_CREATE		0x00
->  #define DRM_MTK_GEM_MAP_OFFSET		0x01
-> +#define DRM_MTK_GEM_CREATE_ENCRYPTED	0x02
-> =20
->  #define DRM_IOCTL_MTK_GEM_CREATE	DRM_IOWR(DRM_COMMAND_BASE + \
->  		DRM_MTK_GEM_CREATE, struct drm_mtk_gem_create)
-
-That flag doesn't exist in drm-misc-next, which tree is this based on?
-
-Maxime
-
---hhxojz7wd43elnlw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZhz0MwAKCRAnX84Zoj2+
-dn3gAYDXi9cjUdHf2aEBheomLq/GUTf8sVV73EPWmCbpiNi2jzl0oe8c+ikVUjWX
-5TiuHpwBgPVRTxUq5IhrqZvI3ysT+Lm44XxAlrk1rkAg3qZzilUjJKsvuAHAp7Qa
-7fpwnKIfLg==
-=wTVi
------END PGP SIGNATURE-----
-
---hhxojz7wd43elnlw--
+#syz test:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
