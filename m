@@ -1,162 +1,116 @@
-Return-Path: <linux-kernel+bounces-145337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8608F8A52FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:22:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2207A8A52FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:22:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0083A1F217E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:22:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DFAD1C21137
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:22:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4A37581B;
-	Mon, 15 Apr 2024 14:22:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04A0C762FF;
+	Mon, 15 Apr 2024 14:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dvSHlq4f"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aDJdQYJF"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875C471B4F
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE617602A;
+	Mon, 15 Apr 2024 14:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713190937; cv=none; b=L3shrYBx9QAKU9cT69m0YUaCwi8CTWHDR2gxTQN4a2xalUnZOCni2ouDFFRw2JVqxpkqqEPyhjmPHC3NuLmffjGJusLMtjjm6Z2vrod6+eeyvbJzUvu5o55gjbkbD6m8N13Oe0549qqhVVQmIFzmJ1uARqNeZ0tkrPSFi1f38gM=
+	t=1713190941; cv=none; b=L35fR8gN1BppqV/rRHS6jj2/orHorwau0XBRcELM0JXNHA8hs4KmZgRQIsvmZU3QRHd+gx9JNmDQtCs4tsy09adCQQWL2K+IJgdH4/olCMNA4vcMXTJ3iSkOxgENz7kVwAx9somjfB9tyRRmzJiPwnG8zBzuvONtMe7Giqax29M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713190937; c=relaxed/simple;
-	bh=N6BsmOpUFv1NdzAIhR7wG4F9QbFYaKztoAW+/nHUQH4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QPIcpMSCq5IS5QHvf9ULvzcxkux7krvA1vn1Y27psqG8Oy3165ML+VEo24gtUBobWiWpsFaebusofHxiWd20tVWirbNC1sJx9SyNaLCmJlojjViB3Hsk3K6g03OwOAMajinsjt3JXBz2SYoLpbDP2oWkLbmHNyREolS58LwrUsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dvSHlq4f; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713190934;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=1PbOJBRpspxdDa6pRJjCuw+ncvorVUgjMaFCtffqZ+Q=;
-	b=dvSHlq4ffl9La6scN3ja6neyqrTkmRvMbdijqJyANEVsfbidiQGhGNQb815FooC27p1FNq
-	cwNGx5babAkcrg3M+2h3HhbkCPZmXHP5k8cEyp7LhcF58PYNoMNlE8Tiv3p+BMoING5Fv8
-	qwaRIVbL644ii/9QoHe/kCcs/wI44sA=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-426-raBmtOY5N0me97bPJFbSdw-1; Mon, 15 Apr 2024 10:22:12 -0400
-X-MC-Unique: raBmtOY5N0me97bPJFbSdw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-417c5cc7c96so12202225e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:22:12 -0700 (PDT)
+	s=arc-20240116; t=1713190941; c=relaxed/simple;
+	bh=9Ir3scp8W23/upQsjLBGH5uBSSThzCEeVGhPNF50irY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sReDT4k8E7vXJhX5pSJk7o9+i1zuk4MeBOMvlKt3YuG0mnpEGZMQmxF+8FqUxd4W9zS8nlb6Rby3h3FCABecFBLpGbf01/4PTjmysGiqTG/p+JYbVHn7mDP413vO427DnVd7fAEscGsFgjAxxucLcjfvo/CrGf80EiiHMxomIgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aDJdQYJF; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-343f62d8124so2806276f8f.2;
+        Mon, 15 Apr 2024 07:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713190937; x=1713795737; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NBenbo5yQKESlQcuptjD7PXvm5EokMPUnv64i7h32sY=;
+        b=aDJdQYJFVOm2mQZxsfgXeVG5MYkL0Ysu2Ry5WT848l0jY+2I2CUa9IyI1v8Z2sxpwe
+         t2S5EUWRPhRn8XzB3xsMO2Pogr/ihOFbFVt5bMfq0ETyjMbMVLPbukUmXloaUTcGQ1NH
+         CnzC2mIRX53ImtrzQmapCDXDlrVUC+z3IAH+8fp888X7CwOzEGDtYBik4hMFIe6DeDgQ
+         mkMZmCNIf+uKAhvyWQMIW8oH9MiyNcF+4kOpS69qc3iBfhQm8bMSSfXL2xz0ORn32TC9
+         jmgJCoqLslVEeJb2Sa1L9bqIeuHflMCGnYsGH53ALyESLmkrhDZSPrEcfuiNfKJhYkYN
+         jxGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713190931; x=1713795731;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1713190937; x=1713795737;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1PbOJBRpspxdDa6pRJjCuw+ncvorVUgjMaFCtffqZ+Q=;
-        b=g0wuJ+dSWcAxksP0hfqXKo4kipp/h4NatpybnNKMvfMNICj2ukb9+hWP7Pxh1udW2X
-         fSyWLCVbZvCfSMFo4ZFpf0tJgGiWaG9N+gMCO8iC3oiv06NnWrhJKvIoUKdZeX/ApeGE
-         GH8hMUsdd22GcaG9/VRhJsRhNaKFORwqxgHbJFEQDzjGmRHCJ+QVy4sVTQ+xL/QImYDi
-         On2+capa/+5mciG0jrj3/R4w2eIdNUsh4ZuTOMVPPsWfJzma/9BLiQdHshlLG1yDpmnC
-         hlv5nZEs9j8X9qtlHrWbPMt1Q9OWy1qfLNGHTagabyBeNBc/ZzZrP7lKr6GDBBYAGPVH
-         2sdw==
-X-Gm-Message-State: AOJu0YzCpgVgwZTkedlbEEzaiO6/7ljOaCBg4WlZ5YzJq/DqC9JiP/I3
-	MUqBQvzqP5Sm2iyzpTcAiZSwUeP+ffGr9nRbka0ot4SOJk5wtpaaGDgvvZ6GeSOhqKyH3Oi1yUY
-	Rua3q6RKLjC3AnrzS8cV5fHATO07BYyFZYuTHvqQx3mYNfgBQUtIkXY1FUOQ4/g==
-X-Received: by 2002:a05:600c:1c81:b0:418:7401:b15f with SMTP id k1-20020a05600c1c8100b004187401b15fmr1322461wms.38.1713190931721;
-        Mon, 15 Apr 2024 07:22:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGDak1eTKoWVr2U+6dT5ZcLn1063lRhwGMlTXR2A2YuvZAJE2t6UbWSYNg3COoiiV+lBsHBiw==
-X-Received: by 2002:a05:600c:1c81:b0:418:7401:b15f with SMTP id k1-20020a05600c1c8100b004187401b15fmr1322438wms.38.1713190931354;
-        Mon, 15 Apr 2024 07:22:11 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
-        by smtp.gmail.com with ESMTPSA id q12-20020a05600c46cc00b00417bab31bd2sm16449015wmo.26.2024.04.15.07.22.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 07:22:10 -0700 (PDT)
-Message-ID: <513a9e86-6159-43dd-8b70-f903637f2cd0@redhat.com>
-Date: Mon, 15 Apr 2024 16:22:09 +0200
+        bh=NBenbo5yQKESlQcuptjD7PXvm5EokMPUnv64i7h32sY=;
+        b=FNeEGtkzkIJwNn11zO58ec5wHDWkEbUhPIVLxwqyI0zAiqHtyul2+CnNMXC3frJ+BU
+         l5jOhutQ97X6zXrdaSdfNNpaQAobWLAd6foUmA11k5FMAUJuJQ3l0p8CekjTkZbKuF3m
+         5jW2w0rd3EaiN+xg2gATuCJFJj6svPR4QlhaddUA5LD2uL34bu06YPfe0bmKUip+Gz0w
+         FLbpKPixUx9dNL8u7AVlpdx6QzxKGFEKnj8infeWY1K0xONpCQ36i3Cy9Dp9yfRPfaTB
+         ciH1DyEMpp73TaIfdfrVYElagSsnDw5VLQFOG0S4dXfBb0i503XRcwprWwU9J4+tzW2S
+         xKXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVZxuCHvr20AKT78hwPO1j/JBfvdCMTBlEwq5v+9YDE457bNQwVSeZJycbhIxF09IKuj+VfKQpU0JfsLr0xgDIN3ywjyMm+VbnLRQvGSS0=
+X-Gm-Message-State: AOJu0YwVzrp8jc3yaByW6NriziPXQEvqD4yO3j2I6zF692RFZw5cTrvy
+	bfrMVYtC2MzW6ZV9dfezwqCFtYG4xE61TZfqq8fi04FcZZVmT3Ll
+X-Google-Smtp-Source: AGHT+IHAzOowbhnnS1r8iOQS2XKcb1UW9ylxxkx+9LC1Cc9deOsVai8q8xm55TijMA3QQR8NySm2Zw==
+X-Received: by 2002:adf:e610:0:b0:33e:c389:69ff with SMTP id p16-20020adfe610000000b0033ec38969ffmr5612522wrm.68.1713190937035;
+        Mon, 15 Apr 2024 07:22:17 -0700 (PDT)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id k12-20020a5d6d4c000000b00343e392829dsm12185010wri.97.2024.04.15.07.22.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 07:22:15 -0700 (PDT)
+Date: Mon, 15 Apr 2024 15:22:15 +0100
+From: Stafford Horne <shorne@gmail.com>
+To: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jonas Bonn <jonas@southpole.se>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Andrew Davis <afd@ti.com>, linux-openrisc@vger.kernel.org
+Subject: Re: [PATCH] openrisc: Use do_kernel_power_off()
+Message-ID: <Zh04F8RP2vQsOiH8@antec>
+References: <20240331070230.2252922-1-shorne@gmail.com>
+ <rfbxtgppobtvtp2flghzpw7mzlrhnzwuk5gulwdauf5ecfkpa7@xk4qspf3mo3c>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] KVM: s390x: selftests: Add shared zeropage test
-To: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>, Thomas Huth <thuth@redhat.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>
-References: <20240412084329.30315-1-david@redhat.com>
- <Zh03fI2oA0UkE0Kp@tuxmaker.boeblingen.de.ibm.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <Zh03fI2oA0UkE0Kp@tuxmaker.boeblingen.de.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <rfbxtgppobtvtp2flghzpw7mzlrhnzwuk5gulwdauf5ecfkpa7@xk4qspf3mo3c>
 
-On 15.04.24 16:19, Alexander Gordeev wrote:
-> On Fri, Apr 12, 2024 at 10:43:29AM +0200, David Hildenbrand wrote:
-> Hi David,
->>   tools/testing/selftests/kvm/Makefile          |   1 +
->>   .../kvm/s390x/shared_zeropage_test.c          | 110 ++++++++++++++++++
->>   2 files changed, 111 insertions(+)
->>   create mode 100644 tools/testing/selftests/kvm/s390x/shared_zeropage_test.c
+On Sun, Apr 14, 2024 at 07:52:03PM +0200, Sebastian Reichel wrote:
+> Hi,
 > 
-> Tested-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> On Sun, Mar 31, 2024 at 08:02:28AM +0100, Stafford Horne wrote:
+> > After commit 14c5678720bd ("power: reset: syscon-poweroff: Use
+> > devm_register_sys_off_handler(POWER_OFF)") setting up of pm_power_off
+> > was removed from the driver, this causes OpenRISC platforms using
+> > syscon-poweroff to no longer shutdown.
+> > 
+> > The kernel now supports chained power-off handlers. Use
+> > do_kernel_power_off() that invokes chained power-off handlers.  All
+> > architectures have moved away from using pm_power_off except OpenRISC.
+> > 
+> > This patch migrates openrisc to use do_kernel_power_off() instead of the
+> > legacy pm_power_off().
+> > 
+> > Fixes: 14c5678720bd ("power: reset: syscon-poweroff: Use devm_register_sys_off_handler(POWER_OFF)")
+> > Signed-off-by: Stafford Horne <shorne@gmail.com>
+> > ---
+> 
+> Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-Thanks Alexander, especially also for discovering that nasty ifdef bug!
+Hello,
 
--- 
-Cheers,
+Thank you for the review.
 
-David / dhildenb
-
+-Stafford
 
