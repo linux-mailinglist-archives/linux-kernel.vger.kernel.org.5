@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-145730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23C708A5A1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:47:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 631348A5A22
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:47:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2A862819E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:47:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 180521F21436
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91032155A2F;
-	Mon, 15 Apr 2024 18:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0481E877;
+	Mon, 15 Apr 2024 18:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ozmr5t7/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A9IfzMpC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECC976033;
-	Mon, 15 Apr 2024 18:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E121553B9;
+	Mon, 15 Apr 2024 18:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713206816; cv=none; b=EnjHNsf4c5qUflUc34+1B8t57ewrptLK1ohQJcVbFMh0q5bSuDx0Uq851xbyVZPMBW1obf2zjBhX50oe7N8tvSJWQWhHD5CaFAnHFtFb5dIqXmnJyhv/3gm2GgSQ29fAltPUmxIqlsaDkTaDoEcHjZsfo/UtwLPdsJyeEViA8Us=
+	t=1713206834; cv=none; b=U1ZRb9jCWLly29h7LJ2NV1ONnp318GRf5ZiM/cwzEbEBlAnUSTTrBc/SNWKd75DuYVxeNIaOTV+UeuO43WVM7E9ZJswatLgyPFbplkmXvO3GBoPpReiwbfc58DVxUcEZT7a/8kjrNSfX+39ihF5V/4COZw2HCKyLU8N3Pwiuj04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713206816; c=relaxed/simple;
-	bh=VYwFK93QWXnZOcZLYRf1I9Noj1pc0NPj5LchFP/04ew=;
+	s=arc-20240116; t=1713206834; c=relaxed/simple;
+	bh=C2qyiGADw+gC+Ft/ZZHJ29hdNBa1l7Td5WbuGlH9vpg=;
 	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=aR/v8slJQZImuwxce4co1YPIKr/+ipobAkCgUtacA8V33tmAmtXbCZ2gf0rlqNKZjeJWUCUEcVT0NPvcMJWXm1j5yfrQ1YBR8llhin/4u+JfZ+VAUQocdLVMSGymxHP9ErXXX9OjE/1aBwUbe6/qWnG0apmYZqIlEvGvVg00Xc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ozmr5t7/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A29C2BD11;
-	Mon, 15 Apr 2024 18:46:55 +0000 (UTC)
+	 Message-Id:Subject; b=KD+/4vzG49HSG+y10WX/imaAAJvIciK3UtiL12RDfy+1fvW/d4qyQgrvxGAzIOYF0k13nPEHvyqVbKaDoHOKLSIynsUdRyemNH5Igvz0ucz/S6/U/I3LMuWBPDcg69Qykwdj7LQEDIcpaTN/e3LZt7L/zWJ33Wu+CMlZMsnG6so=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A9IfzMpC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 933C2C2BD11;
+	Mon, 15 Apr 2024 18:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713206816;
-	bh=VYwFK93QWXnZOcZLYRf1I9Noj1pc0NPj5LchFP/04ew=;
+	s=k20201202; t=1713206833;
+	bh=C2qyiGADw+gC+Ft/ZZHJ29hdNBa1l7Td5WbuGlH9vpg=;
 	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=ozmr5t7/BCBCWudh8SkridVru1QV8uBd9kDymgyP7D7km1kql9ofW0akhJyqCE+/5
-	 hHiRkrQ6AuP6xTa4MXNge6H+IZ+wro7obz0xbHsVakx+wsvBlSVb0LhTeNplZZFfea
-	 TCpinkVY8HR3Tx//EETbkwHJn5Yz3tw3PaKQxtO1tRg4aceLD7ENwsmNmVNOpRwDvq
-	 ApyEOfkXXJ6GvL7nLVnD2B8UAJ3jIC1uksx9fiCycAFBu+toCj9sd2LWAREj9GSwQZ
-	 60XUw5uJjTzxN7b/VpUOgPlwUH7E8U1SqzZ1Bh+7BcmRcXdToeQOUAroQRh0Qdq3Rm
-	 vcJAMZ/arIbvg==
-Date: Mon, 15 Apr 2024 13:46:53 -0500
+	b=A9IfzMpCmrBPoM0NqB4VTba0T3/IBkWc6VWPapKECLtZko/XloDRryQxIFfKq8O6Q
+	 WNRpa0O5w1+JRRXCTGDf+5Cr0lXPf76kDf2Ix5bo7TziOyYDJFLfHpsWMjcdgTxf4u
+	 5KLoM3bthozHti+qovaMGqaIP0he7HZQu1syN0uHNBe5lQhxZavAlqKjpJ1Q2GII5U
+	 VPqGqvs4TkdLt1pFJDRf1QzJcTmWnvbD7HpwboKee9/oOoKUb7gRWpkLytahqwZKaa
+	 7FEhzNKlrb2xKFdyGpv8NkF40Jdk3mMoF/JJYN0VcnwjcKbjRJA52V6rDPSs+VGdQB
+	 W8Y5jG5RnaV5Q==
+Date: Mon, 15 Apr 2024 13:47:10 -0500
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,39 +50,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
-To: Jianfeng Liu <liujianfeng1994@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, 
- krzk+dt@kernel.org, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, sfr@canb.auug.org.au, heiko@sntech.de, 
- weizhao.ouyang@arm.com, conor+dt@kernel.org
-In-Reply-To: <20240413153633.801759-1-liujianfeng1994@gmail.com>
-References: <20240413153633.801759-1-liujianfeng1994@gmail.com>
-Message-Id: <171320634254.4749.2865905152184927129.robh@kernel.org>
-Subject: Re: [PATCH v2 0/3] Add ArmSom Sige7 board
+To: Jonas Karlman <jonas@kwiboo.se>
+Cc: devicetree@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+In-Reply-To: <20240414151135.1774981-1-jonas@kwiboo.se>
+References: <20240414151135.1774981-1-jonas@kwiboo.se>
+Message-Id: <171320634867.4962.13146446067412634937.robh@kernel.org>
+Subject: Re: [PATCH v2 0/3] arm64: dts: rockchip: Add Radxa ZERO 3W/3E
 
 
-On Sat, 13 Apr 2024 23:36:30 +0800, Jianfeng Liu wrote:
+On Sun, 14 Apr 2024 15:11:26 +0000, Jonas Karlman wrote:
+> This series adds initial support for the Radxa ZERO 3W/3E boards.
+> 
+> The Radxa ZERO 3W/3E is an ultra-small, high-performance single board
+> computer based on the Rockchip RK3566, with a compact form factor and
+> rich interfaces.
+> 
+> Schematic for ZERO 3W and ZERO 3E can be found at:
+> https://dl.radxa.com/zero3/docs/hw/3w/radxa_zero_3w_v1110_schematic.pdf
+> https://dl.radxa.com/zero3/docs/hw/3e/radxa_zero_3e_v1200_schematic.pdf
+> 
 > Changes in v2:
->  - Add ArmSoM to vendor-prefixes
->  - Commit dt-bindings change first
->  - Fix commit message for dt-bindings
->  - Fix wrong devicetree node name "led_rgb_g" and "led_rgb_r"
->  - Link to v1: https://lore.kernel.org/all/20240413032328.784142-1-liujianfeng1994@gmail.com/
+> - Collect acked-by tag
+> - Add to Makefile
+> - Add patch to fix #sound-dai-cells warning
 > 
-> Jianfeng Liu (3):
->   dt-bindings: vendor-prefixes: add ArmSoM
->   dt-bindings: arm: rockchip: Add ArmSoM Sige7
->   arm64: dts: rockchip: Add ArmSom Sige7 board
+> Jonas Karlman (3):
+>   dt-bindings: arm: rockchip: Add Radxa ZERO 3W/3E
+>   arm64: dts: rockchip: Add Radxa ZERO 3W/3E
+>   dt-bindings: display: rockchip,dw-hdmi: Fix #sound-dai-cells warning
 > 
->  .../devicetree/bindings/arm/rockchip.yaml     |   5 +
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
->  .../boot/dts/rockchip/rk3588-armsom-sige7.dts | 725 ++++++++++++++++++
->  4 files changed, 733 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts
+>  .../devicetree/bindings/arm/rockchip.yaml     |   7 +
+>  .../display/rockchip/rockchip,dw-hdmi.yaml    |   4 +
+>  arch/arm64/boot/dts/rockchip/Makefile         |   2 +
+>  .../dts/rockchip/rk3566-radxa-zero-3e.dts     |  41 ++
+>  .../dts/rockchip/rk3566-radxa-zero-3w.dts     |  26 +
+>  .../boot/dts/rockchip/rk3566-radxa-zero3.dtsi | 443 ++++++++++++++++++
+>  6 files changed, 523 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3e.dts
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3w.dts
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3566-radxa-zero3.dtsi
 > 
 > --
-> 2.34.1
+> 2.43.2
 > 
 > 
 > 
@@ -102,12 +114,12 @@ make sure dt-schema is up to date:
   pip3 install dtschema --upgrade
 
 
-New warnings running 'make CHECK_DTBS=y rockchip/rk3588-armsom-sige7.dtb' for 20240413153633.801759-1-liujianfeng1994@gmail.com:
+New warnings running 'make CHECK_DTBS=y rockchip/rk3566-radxa-zero-3e.dtb rockchip/rk3566-radxa-zero-3w.dtb' for 20240414151135.1774981-1-jonas@kwiboo.se:
 
-arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts:44.20-49.5: ERROR (duplicate_label): /leds/led-0: Duplicate label 'led_rgb_g' on /leds/led-0 and /pinctrl/leds/led-rgb-g
-arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dts:51.20-56.5: ERROR (duplicate_label): /leds/led-1: Duplicate label 'led_rgb_r' on /leds/led-1 and /pinctrl/leds/led-rgb-r
-ERROR: Input tree has errors, aborting (use -f to force output)
-make[3]: *** [scripts/Makefile.lib:427: arch/arm64/boot/dts/rockchip/rk3588-armsom-sige7.dtb] Error 2
+arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3w.dtb: hdmi@fe0a0000: Unevaluated properties are not allowed ('#sound-dai-cells' was unexpected)
+	from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip,dw-hdmi.yaml#
+arch/arm64/boot/dts/rockchip/rk3566-radxa-zero-3e.dtb: hdmi@fe0a0000: Unevaluated properties are not allowed ('#sound-dai-cells' was unexpected)
+	from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip,dw-hdmi.yaml#
 
 
 
