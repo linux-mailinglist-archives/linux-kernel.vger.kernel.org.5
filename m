@@ -1,167 +1,113 @@
-Return-Path: <linux-kernel+bounces-145493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80C318A56E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:00:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B85F18A56F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:02:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99D381C21E17
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:00:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8D611C21EA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06C457F7EF;
-	Mon, 15 Apr 2024 16:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E3380031;
+	Mon, 15 Apr 2024 16:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iR5RKTz/"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="pIukbNHa"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED3D2837D;
-	Mon, 15 Apr 2024 16:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8437F47B;
+	Mon, 15 Apr 2024 16:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713196834; cv=none; b=nZMyIL1cKxW9MM3r8RlneDiX0VZvQu/3OgcxgaPEuo3Ryw13JMUtRkhZJGfN6YWztk1X6bR3ibP81myuqwsoddUCdRxp+uw8Kk60S6XdXfxYHhao6Y0drUms3/Zv6EUG/+6VaeZPdxVOHslPKgUP4/5csZc64AD75o5olQYjYBY=
+	t=1713196927; cv=none; b=uHGd3E3pQfJTtodqM7l7UjBgqhN7HAuuVOKVYq/mAkI80InTU1ewDLo9vZaGGugJua6u/vdsaHK5AVNvb21QVllmPBxpbexeydtwj20xz5a6Yo87a+z6fsF6HckIcNTgM+HP7fU6RI8BerDswxIleLY/xrutlhCEid7LsWjLJH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713196834; c=relaxed/simple;
-	bh=AIurx8M7UROIIHeLqraX05WDHOH/h7A8uObPQDPI2ng=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BP+wJzznuJihIcfA93AFlvinMyml+89RrE9SXZ87a5xHiC/JRXKDvXIKOpFgByJqGUWmyeNi0coiDVF+VhXSIkQaAFaY5s7/QZPlgYNAITNMpOirR23Is79qZ41SA/V7t0OVsmEqYJS6YCRIxc0qNu6Jz5KSFY4yFAEE3RrbzS0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iR5RKTz/; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2da01cb187cso61665341fa.0;
-        Mon, 15 Apr 2024 09:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713196830; x=1713801630; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WonYqSzvWT83jIX0IgNtkReYkS7CHkadpcuSarICRPQ=;
-        b=iR5RKTz/yrvZ9nCboAo1nWXktPhapgHwq0JWB5kPflUer7S2Z7FbX/d3BxqZPV6Cmt
-         Msyz1SIsXwgG4Y/0GMFxFX1OZXIrOgsCMZuG02PGvnGLQtML11+9yhopk7vaQEzyQuF+
-         iML4sO0SUkhgv/2S5mf191ce6u+gyS6E/2AqVoOUlns3jhqiOGKl7Y3FowQlUr5LDiGt
-         YKbTC9wvuBu+ibflf6cTlR0Xmr+DNkzEbzd9So0xC+xlcyZ1g39ovDk07OYmef5OImGr
-         MI6K2uXOBEoz8++cpEmZuTX9SUfbCtPZSEkn48K8Jnl6GgZ9gmi2tSwjaTXY1NRS3mvR
-         7S3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713196830; x=1713801630;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WonYqSzvWT83jIX0IgNtkReYkS7CHkadpcuSarICRPQ=;
-        b=Tk+e8xcTORGpYEffGGxiIv++pOGbQs2BPIdN1yDeMdGDO+0Gn2yPXLTJhPJ8P23vVc
-         7lYW7+NYWzqo5Tazm4WQ3nVMY35YHG8IvZSekeaCRYbvs7yXKPk04bP9Fcd50zENfxj8
-         CxL7njXzMNdmsd30WmbilXIOd3ec3fN7pGN+DFe+u/2wRcddDCoiofuwrV+RVnnMvlMh
-         Al6kKuCM7sMXZ1y+uAsfP7G0JZUJ5GovOkrXdTJt2t3N7W+aTUi5HJSLvf3k5ROfNwHQ
-         3LN6DjgqgjwQBI86vwYsN6ImfC1fI8x/cnwoaRJudOheO72N32um4eacFzE1/coBWl9P
-         k0RA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYWsDqROxSpRv//vZncK4w+sGCDLl7ShqwgU685pUFJq8M7gUPHt5MOixMaM6xPIoFa5vnWARtWZk2g+W+INBLEtU/6W9xBMVt+4d9BW4qI7rw0fq93bTYSXgZdCkjAMNY2t2HazRFBZfg9ARR9Z+5TR3gydRiP31X/+Aaq+3zlkLhgp1P
-X-Gm-Message-State: AOJu0YxlqHjGBBo1ha1PNAz7x9uGnTKQ5MO+PLCiYJVrvMNUfpAaGuQJ
-	p59W2HTKi58A/z9Bpt/bSQFQQPLNpTR7XauRcToizHDppIwtUWMD
-X-Google-Smtp-Source: AGHT+IFOUuLN0irhPLHYXZ6mYv7PuyHiv+G70JXmObZzyVsigzU8qLZr9NJrU7yz6GsEcOBavXFeVg==
-X-Received: by 2002:a05:651c:b0b:b0:2d4:7455:89f6 with SMTP id b11-20020a05651c0b0b00b002d4745589f6mr9666567ljr.40.1713196829400;
-        Mon, 15 Apr 2024 09:00:29 -0700 (PDT)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-57-233.cust.vodafonedsl.it. [188.217.57.233])
-        by smtp.gmail.com with ESMTPSA id n21-20020a170906701500b00a53d6b895ddsm783830ejj.200.2024.04.15.09.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 09:00:29 -0700 (PDT)
-Date: Mon, 15 Apr 2024 18:00:26 +0200
-From: Tommaso Merciai <tomm.merciai@gmail.com>
-To: git@luigi311.com
-Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
-	jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, sakari.ailus@linux.intel.com,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	pavel@ucw.cz, phone-devel@vger.kernel.org,
-	Ondrej Jirman <megous@megous.com>
-Subject: Re: [PATCH v4 23/25] media: i2c: imx258: Add support for reset gpio
-Message-ID: <Zh1PGuTjFlttNnLX@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20240414203503.18402-1-git@luigi311.com>
- <20240414203503.18402-24-git@luigi311.com>
+	s=arc-20240116; t=1713196927; c=relaxed/simple;
+	bh=/BGZa66OTjq9deqh1Znv9nfCC2KLBveMvqHZgba1FCE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bMb/fdQBKw2RpGxVsYc93A+gmd5cyKjo/X4XIvTLb3GKPs9zdKPHjNzYoz/Lfkb5ew0G9NToLRQ2OhLDP/7/os4jOEJHrlFU+p8sckhf0iKXz4X0Bq68M64aX27KdrGptllNxsNqghNFaaufPE2bSqWqIFdru+UbU10tz6LpuiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=pIukbNHa; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D08DB47C1D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1713196917; bh=v662RrsMqneLeLe6D1Sdsis1Ejt/Y1b5HbSUQwtNkOM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=pIukbNHa4VPK81NZ87bc5ZoEq7pEwTmv80ww3+YW/xltKBoqPfK+naBSCqGX18nv8
+	 XjprSRdzn1V9v6UAs62J3dMuhYBoGbY3oA0emwew3pBPLsiciFZzvKCCn6KSxCtW32
+	 0aNtuGSZmArvzNE0ZHZpeOVE+NniQmlUGds6lcbDCj3xA92+fxus3jJSPNjZmQ7DE3
+	 Ld5w0iMdjNPues541zoe/9+LeP3An71n4poDvyGuV2hrYJzvO/DnwE+s0Bp8opuNqI
+	 XKXC7VTVvoBBR4YBKWxP6SeYhRbCw6ISOydw3Kiu3Ykpy+Dbyrq8tavdelPUK7zilP
+	 O6Cgbv3GLTiiw==
+Received: from localhost (mdns.lwn.net [45.79.72.68])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id D08DB47C1D;
+	Mon, 15 Apr 2024 16:01:56 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Thorsten Leemhuis <linux@leemhuis.info>
+Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>, Petr
+ =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Subject: Re: [PATCH v2 0/6] docs: verify/bisect: fine tuning, testing fixes,
+ build host, order
+In-Reply-To: <cover.1712647788.git.linux@leemhuis.info>
+References: <cover.1712647788.git.linux@leemhuis.info>
+Date: Mon, 15 Apr 2024 10:01:55 -0600
+Message-ID: <87bk6awr64.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240414203503.18402-24-git@luigi311.com>
+Content-Type: text/plain
 
-Hi Luis,
+Thorsten Leemhuis <linux@leemhuis.info> writes:
 
-On Sun, Apr 14, 2024 at 02:35:01PM -0600, git@luigi311.com wrote:
-> From: Luis Garcia <git@luigi311.com>
-> 
-> It was documented in DT, but not implemented.
-
-Good catch :-)
-
-> 
-> Signed-off-by: Ondrej Jirman <megous@megous.com>
-> Signed-off-by: Luis Garcia <git@luigi311.com>
+> A quick series with various improvements for
+> Documentation/admin-guide/verify-bugs-and-bisect-regressions.rst after
+> receiving feedback on the text or seeing people struggle with certain
+> tasks.
+>
+> * The first two patches contains various fixes and some fine tuning.
+>
+> * The third is mainly a layout improvement that results in a somewhat
+>   large patch.
+>
+> * The fourth adds instructions for later testing of reverts, fixes, or
+>   newer versions. This was already hinted at; but during some early
+>   work on Documentation/admin-guide/reporting-issues.rst to better
+>   reconcile the two it seemed wise to cover this properly here.
+>
+> * The fifth patch briefly outlines how to build kernels on a different
+>   host; it came into being after a second user within one week asked for
+>   this. That also allowed the text to briefly cover cross-compilation.
+>
+> * The sixth makes users that face a regression within a stable series
+>   test that series first before they are told to test mainline.
 > ---
->  drivers/media/i2c/imx258.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-> index f0bd72f241e4..5de71cb7c1ae 100644
-> --- a/drivers/media/i2c/imx258.c
-> +++ b/drivers/media/i2c/imx258.c
-> @@ -699,6 +699,7 @@ struct imx258 {
->  	unsigned int csi2_flags;
->  
->  	struct gpio_desc *powerdown_gpio;
-> +	struct gpio_desc *reset_gpio;
->  
->  	/*
->  	 * Mutex for serialized access:
-> @@ -1250,7 +1251,11 @@ static int imx258_power_on(struct device *dev)
->  		regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
->  	}
->  
-> -	return ret;
-> +	gpiod_set_value_cansleep(imx258->reset_gpio, 0);
-> +
+>
+> Hi! While at it let me mention one more thing unrelated to the changes
+> that came up where I'm unsure if the current approach by the text was
+> a wise choice:
+>
+> * Should the document tell users to avoid mainline during merge windows?
+>
+> Some input from the community on this would be splendid.
+>
+> Ciao, Thorsten
+>
+> P.S.: Not totally sure, but I think this should go into 6.9 as this is
+> a new document; if not I guess it would be wise to pick the first two,
+> as they fix bugs.
 
-I think you can remove this new line here.
+Nobody seems to be complaining, so I've gone ahead and applied the set
+to docs-fixes.
 
-> +	usleep_range(400, 500);
-> +
-> +	return 0;
->  }
->  
->  static int imx258_power_off(struct device *dev)
-> @@ -1260,6 +1265,7 @@ static int imx258_power_off(struct device *dev)
->  
->  	clk_disable_unprepare(imx258->clk);
->  
-> +	gpiod_set_value_cansleep(imx258->reset_gpio, 1);
->  	gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
->  
->  	regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
-> @@ -1573,6 +1579,12 @@ static int imx258_probe(struct i2c_client *client)
->  	if (IS_ERR(imx258->powerdown_gpio))
->  		return PTR_ERR(imx258->powerdown_gpio);
->  
-> +	/* request optional reset pin */
-> +	imx258->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
-> +						     GPIOD_OUT_HIGH);
-> +	if (IS_ERR(imx258->reset_gpio))
-> +		return PTR_ERR(imx258->reset_gpio);
-> +
->  	/* Initialize subdev */
->  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
->  
+Thanks,
 
-Looks good to me.
-Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
-
-> -- 
-> 2.44.0
-> 
-> 
+jon
 
