@@ -1,287 +1,115 @@
-Return-Path: <linux-kernel+bounces-145715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C49C48A59F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FD448A59F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E6F31F2119E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:32:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B44D01F21122
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BC5154440;
-	Mon, 15 Apr 2024 18:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15AA1154452;
+	Mon, 15 Apr 2024 18:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XJAvGcDq"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DzCIWI7Z"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1F6153BF8;
-	Mon, 15 Apr 2024 18:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A11B656
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:33:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713205938; cv=none; b=UqbHviE4gaeZRESii6o9CDEo38m/4gd1tIHJzpQDab58l6oR5sVs0s39WJep96vwNf7KRtPiOxjmPWzqNqibQV0OdlEFbBJohExjCVgk3B1pBKH2rWgkbUvsx9M7UtDo0HTBPnG7NL0iiCzW5uqHxPMFdbRCpp/U/dIwigcNVWs=
+	t=1713205984; cv=none; b=s9oYskThAXiFWZhoBPZNbotbE7pIcjAVQBNXJH7TSSXIRAGT9p10Y/Ef185EPc5oeRJHIk4CSirr2E7KUrubhIp2NWOsK1UlxWUT2K8zkVV6IARjXEDiWDY62kZz1MNgZKu5xVJHYvgVcj2ZVrcHNfFBtsBuUATrusWWkeuq/xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713205938; c=relaxed/simple;
-	bh=p8eY082JkC3KPLbfUGfr481x8SEdz/YLHgqGEpwKKdg=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ixAOZ7jSpCoWPk5LyE3PGkoufqhZEWgpiEgPlVjQEouqMD7QmVaCY42vPRgPW5GyaI5j7WUwseTxZhECnAtUSbRgZ/Y8W43FPOZQcQB1SToXJnwZVBjBAMZhWk1pPAZrV0a82Ye9TImamiSfi1FBQfN1t71ZDmN7boa0VSIYzLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XJAvGcDq; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713205934;
-	bh=p8eY082JkC3KPLbfUGfr481x8SEdz/YLHgqGEpwKKdg=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=XJAvGcDqP0Vt+/a6ZRFb0h5+g8hgOaGIveEs1cMbQRBl/HGMq09mRCyIdSRVXp2t+
-	 ENn77R12rxPJQ/Lb1mz+StEHb9MNSEq/dKH8XjzyPhuTDEGURTxML/th7/UrMJpv5N
-	 jX4BXGtF7O9UOaonMufXeo96KpZwpGcA3tOBMX12eh98k/mNS1T+0kPZJX6BZlwUSm
-	 xNqyrnvQBvgej7aS79D0qvlyIUIA0umXkTxHgOdPVb0Ml2RJwPYZhQnWt0ubIwFPw4
-	 olR+R5Fozy0rTDurjH2xfpAJCea2xY20ILGEmSZJekpk/oLkal5DidGr4FkWHItcMZ
-	 R0Mq7SKaJherw==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 73D9937810F1;
-	Mon, 15 Apr 2024 18:32:09 +0000 (UTC)
-Message-ID: <e1744539-a843-468a-9101-ce7a08669394@collabora.com>
-Date: Mon, 15 Apr 2024 23:32:41 +0500
+	s=arc-20240116; t=1713205984; c=relaxed/simple;
+	bh=4+g0QffiScKf3lteB8iMkNUtNjxVHUDjNh9QfRjrXec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nupg4g67oCRMzk8RUy5gUVV2fABv7cW7widBuz53jbtlFC+vVlwYYzsUCrsGfaPuuUF3Rv3jEAiJqwVGQoOoVZ9jFJDIHpOEbGZQ3adrvJwnSxdR+Uz0In1bMPjE1ziY6yc0fzRy7cnu/FXwOTUoFp/uyhvA9vXnOQMW3qi9tJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DzCIWI7Z; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-61149e50602so22989777b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:33:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713205982; x=1713810782; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eNcHy+TzPeXZ42fji6L7sScXpSVOyjoITtnKJA+IyQI=;
+        b=DzCIWI7Zc48A4+zR1ijw1k8ub0tF2rS8nE/vvAoSreJmb1Y7htWR1PnEgFzivwtyra
+         Wj+w1+wL+kaa2C/pgT8BUaKJTlF+0UztJQUdSdRhTtcg/YL7Hed9mh14vM01pxnhWl77
+         w5coZNTlOv/qBjQmvAnWbVvPYfi+MLNN52c9oqx7yEhHL+6Bsq1GXVdLXYURpJh/FU3Q
+         iuxLNJU49AjDwB8XolJzjX8MLhDnMAIWjIwuxToKca88mgK4SHTAo/ksipT88xJx9hgu
+         qDRNcmSuhiz+6hKbPEdZClwTf6sWIxQ+KHDrfj6O1jbKjM0BihSr/chQb4ml70/U5kON
+         eKgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713205982; x=1713810782;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eNcHy+TzPeXZ42fji6L7sScXpSVOyjoITtnKJA+IyQI=;
+        b=WVFgKcKiDz3ulfFM054rTDiJbyaKJGKSx19YuwmbXSReUBmIzDvoi5s0RRGTYTptpU
+         M5ZtFVwgVkXQBGdc+5N1Dc0y3X6Twe7TMXdAee9SWC2np/4NqgSLwHEhrNMBltYHKS8e
+         erNo0qqY7+pl+1NF18HexrwLYBjUVCblZbK5ubuKLR4L8oQVE9iiBRi3YLl2Q2WYgpnx
+         wrAuOPPjcGY1jEzDOWw8lm6EQOyUXDkN3UEZyw9bLwiJrv04QxtHXtEArs01qQTDsg5s
+         kbnIpnQoStqffAQ2Zw+H03ra0trHl3dwU+zg5xw1yp2m7O9t/JLCw4JZNC9pEmm1JdT8
+         JIbw==
+X-Gm-Message-State: AOJu0YwhDhs3dbs9SKVgJ3/ejDS4OHuDOQLhKGpzx0bXymbx9mn8s48Q
+	doBDD67vdft2My7cDgihCRGyOiIxmofuPwMpetqSPp68Zss+I//A
+X-Google-Smtp-Source: AGHT+IFd41E0xJdFEcj79NR6aKf7SidRiPcSVcgBmo4FP5MGfmt/Q2iLAkLuDmynUN7XhOfNcDBFtA==
+X-Received: by 2002:a81:bc4d:0:b0:61a:db4d:5f16 with SMTP id b13-20020a81bc4d000000b0061adb4d5f16mr436941ywl.15.1713205982014;
+        Mon, 15 Apr 2024 11:33:02 -0700 (PDT)
+Received: from fedora ([2600:1700:2f7d:1800::23])
+        by smtp.gmail.com with ESMTPSA id i194-20020a0ddfcb000000b0061ab49c04e9sm1016739ywe.76.2024.04.15.11.33.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 11:33:01 -0700 (PDT)
+Date: Mon, 15 Apr 2024 11:32:59 -0700
+From: Vishal Moola <vishal.moola@gmail.com>
+To: Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	akpm@linux-foundation.org, willy@infradead.org,
+	linmiaohe@huawei.com, jane.chu@oracle.com, muchun.song@linux.dev,
+	nao.horiguchi@gmail.com, osalvador@suse.de
+Subject: Re: [PATCH v2 2/2] mm/hugetlb: rename dissolve_free_huge_pages() to
+ dissolve_free_hugetlb_folios()
+Message-ID: <Zh1y25IizELqexR2@fedora>
+References: <20240412182139.120871-1-sidhartha.kumar@oracle.com>
+ <20240412182139.120871-2-sidhartha.kumar@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, jeffxu@google.com,
- jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
- pedro.falcato@gmail.com, dave.hansen@intel.com,
- linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Subject: Re: [PATCH v10 3/5] selftest mm/mseal memory sealing
-To: jeffxu@chromium.org, akpm@linux-foundation.org, keescook@chromium.org,
- jannh@google.com, sroettger@google.com, willy@infradead.org,
- gregkh@linuxfoundation.org, torvalds@linux-foundation.org, corbet@lwn.net,
- Liam.Howlett@oracle.com, surenb@google.com, merimus@google.com,
- rdunlap@infradead.org
-References: <20240415163527.626541-1-jeffxu@chromium.org>
- <20240415163527.626541-4-jeffxu@chromium.org>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240415163527.626541-4-jeffxu@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412182139.120871-2-sidhartha.kumar@oracle.com>
 
-Please fix following for this and fifth patch as well:
-
---> checkpatch.pl --codespell tools/testing/selftests/mm/mseal_test.c
-
-WARNING: Macros with flow control statements should be avoided
-#42: FILE: tools/testing/selftests/mm/mseal_test.c:42:
-+#define FAIL_TEST_IF_FALSE(c) do {\
-+               if (!(c)) {\
-+                       ksft_test_result_fail("%s, line:%d\n", __func__,
-__LINE__);\
-+                       goto test_end;\
-+               } \
-+       } \
-+       while (0)
-
-WARNING: Macros with flow control statements should be avoided
-#50: FILE: tools/testing/selftests/mm/mseal_test.c:50:
-+#define SKIP_TEST_IF_FALSE(c) do {\
-+               if (!(c)) {\
-+                       ksft_test_result_skip("%s, line:%d\n", __func__,
-__LINE__);\
-+                       goto test_end;\
-+               } \
-+       } \
-+       while (0)
-
-WARNING: Macros with flow control statements should be avoided
-#59: FILE: tools/testing/selftests/mm/mseal_test.c:59:
-+#define TEST_END_CHECK() {\
-+               ksft_test_result_pass("%s\n", __func__);\
-+               return;\
-+test_end:\
-+               return;\
-+}
-
-
-On 4/15/24 9:35 PM, jeffxu@chromium.org wrote:
-> From: Jeff Xu <jeffxu@chromium.org>
+On Fri, Apr 12, 2024 at 11:21:39AM -0700, Sidhartha Kumar wrote:
+> dissolve_free_huge_pages() only uses folios internally, rename it to
+> dissolve_free_hugetlb_folios() and change the comments which reference it.
 > 
-> selftest for memory sealing change in mmap() and mseal().
-> 
-> Signed-off-by: Jeff Xu <jeffxu@chromium.org>
+> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 > ---
->  tools/testing/selftests/mm/.gitignore   |    1 +
->  tools/testing/selftests/mm/Makefile     |    1 +
->  tools/testing/selftests/mm/mseal_test.c | 1836 +++++++++++++++++++++++
->  3 files changed, 1838 insertions(+)
->  create mode 100644 tools/testing/selftests/mm/mseal_test.c
+>  include/linux/hugetlb.h | 4 ++--
+>  mm/hugetlb.c            | 2 +-
+>  mm/memory_hotplug.c     | 4 ++--
+>  3 files changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/selftests/mm/.gitignore
-> index d26e962f2ac4..98eaa4590f11 100644
-> --- a/tools/testing/selftests/mm/.gitignore
-> +++ b/tools/testing/selftests/mm/.gitignore
-> @@ -47,3 +47,4 @@ mkdirty
->  va_high_addr_switch
->  hugetlb_fault_after_madv
->  hugetlb_madv_vs_map
-> +mseal_test
-> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
-> index eb5f39a2668b..95d10fe1b3c1 100644
-> --- a/tools/testing/selftests/mm/Makefile
-> +++ b/tools/testing/selftests/mm/Makefile
-> @@ -59,6 +59,7 @@ TEST_GEN_FILES += mlock2-tests
->  TEST_GEN_FILES += mrelease_test
->  TEST_GEN_FILES += mremap_dontunmap
->  TEST_GEN_FILES += mremap_test
-> +TEST_GEN_FILES += mseal_test
->  TEST_GEN_FILES += on-fault-limit
->  TEST_GEN_FILES += pagemap_ioctl
->  TEST_GEN_FILES += thuge-gen
-> diff --git a/tools/testing/selftests/mm/mseal_test.c b/tools/testing/selftests/mm/mseal_test.c
-> new file mode 100644
-> index 000000000000..06c780d1d8e5
-> --- /dev/null
-> +++ b/tools/testing/selftests/mm/mseal_test.
-> +static void __write_pkey_reg(u64 pkey_reg)
-> +{
-> +#if defined(__i386__) || defined(__x86_64__) /* arch */
-> +	unsigned int eax = pkey_reg;
-> +	unsigned int ecx = 0;
-> +	unsigned int edx = 0;
-> +
-> +	asm volatile(".byte 0x0f,0x01,0xef\n\t"
-> +			: : "a" (eax), "c" (ecx), "d" (edx));
-> +	assert(pkey_reg == __read_pkey_reg());
-Use ksft_exit_fail_msg instead of assert to stay inside TAP format if
-condition is false and error is generated.
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index f4191b10345d6..9ad7b97069cda 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -862,7 +862,7 @@ static inline int hstate_index(struct hstate *h)
+>  }
+>  
+>  extern int dissolve_free_hugetlb_folio(struct folio *folio);
+> -extern int dissolve_free_huge_pages(unsigned long start_pfn,
+> +extern int dissolve_free_hugetlb_folios(unsigned long start_pfn,
+>  				    unsigned long end_pfn);
 
-> +int main(int argc, char **argv)
-> +{
-> +	bool test_seal = seal_support();
-> +
-> +	ksft_print_header();
-> +
-> +	if (!test_seal)
-> +		ksft_exit_skip("sealing not supported, check CONFIG_64BIT\n");
-> +
-> +	if (!pkey_supported())
-> +		ksft_print_msg("PKEY not supported\n");
-> +
-> +	ksft_set_plan(80);
-> +
-> +	test_seal_addseal();
-> +	test_seal_unmapped_start();
-> +	test_seal_unmapped_middle();
-> +	test_seal_unmapped_end();
-> +	test_seal_multiple_vmas();
-> +	test_seal_split_start();
-> +	test_seal_split_end();
-> +	test_seal_invalid_input();
-> +	test_seal_zero_length();
-> +	test_seal_twice();
-> +
-> +	test_seal_mprotect(false);
-> +	test_seal_mprotect(true);
-> +
-> +	test_seal_start_mprotect(false);
-> +	test_seal_start_mprotect(true);
-> +
-> +	test_seal_end_mprotect(false);
-> +	test_seal_end_mprotect(true);
-> +
-> +	test_seal_mprotect_unalign_len(false);
-> +	test_seal_mprotect_unalign_len(true);
-> +
-> +	test_seal_mprotect_unalign_len_variant_2(false);
-> +	test_seal_mprotect_unalign_len_variant_2(true);
-> +
-> +	test_seal_mprotect_two_vma(false);
-> +	test_seal_mprotect_two_vma(true);
-> +
-> +	test_seal_mprotect_two_vma_with_split(false);
-> +	test_seal_mprotect_two_vma_with_split(true);
-> +
-> +	test_seal_mprotect_partial_mprotect(false);
-> +	test_seal_mprotect_partial_mprotect(true);
-> +
-> +	test_seal_mprotect_two_vma_with_gap(false);
-> +	test_seal_mprotect_two_vma_with_gap(true);
-> +
-> +	test_seal_mprotect_merge(false);
-> +	test_seal_mprotect_merge(true);
-> +
-> +	test_seal_mprotect_split(false);
-> +	test_seal_mprotect_split(true);
-> +
-> +	test_seal_munmap(false);
-> +	test_seal_munmap(true);
-> +	test_seal_munmap_two_vma(false);
-> +	test_seal_munmap_two_vma(true);
-> +	test_seal_munmap_vma_with_gap(false);
-> +	test_seal_munmap_vma_with_gap(true);
-> +
-> +	test_munmap_start_freed(false);
-> +	test_munmap_start_freed(true);
-> +	test_munmap_middle_freed(false);
-> +	test_munmap_middle_freed(true);
-> +	test_munmap_end_freed(false);
-> +	test_munmap_end_freed(true);
-> +
-> +	test_seal_mremap_shrink(false);
-> +	test_seal_mremap_shrink(true);
-> +	test_seal_mremap_expand(false);
-> +	test_seal_mremap_expand(true);
-> +	test_seal_mremap_move(false);
-> +	test_seal_mremap_move(true);
-> +
-> +	test_seal_mremap_shrink_fixed(false);
-> +	test_seal_mremap_shrink_fixed(true);
-> +	test_seal_mremap_expand_fixed(false);
-> +	test_seal_mremap_expand_fixed(true);
-> +	test_seal_mremap_move_fixed(false);
-> +	test_seal_mremap_move_fixed(true);
-> +	test_seal_mremap_move_dontunmap(false);
-> +	test_seal_mremap_move_dontunmap(true);
-> +	test_seal_mremap_move_fixed_zero(false);
-> +	test_seal_mremap_move_fixed_zero(true);
-> +	test_seal_mremap_move_dontunmap_anyaddr(false);
-> +	test_seal_mremap_move_dontunmap_anyaddr(true);
-> +	test_seal_discard_ro_anon(false);
-> +	test_seal_discard_ro_anon(true);
-> +	test_seal_discard_ro_anon_on_rw(false);
-> +	test_seal_discard_ro_anon_on_rw(true);
-> +	test_seal_discard_ro_anon_on_shared(false);
-> +	test_seal_discard_ro_anon_on_shared(true);
-> +	test_seal_discard_ro_anon_on_filebacked(false);
-> +	test_seal_discard_ro_anon_on_filebacked(true);
-> +	test_seal_mmap_overwrite_prot(false);
-> +	test_seal_mmap_overwrite_prot(true);
-> +	test_seal_mmap_expand(false);
-> +	test_seal_mmap_expand(true);
-> +	test_seal_mmap_shrink(false);
-> +	test_seal_mmap_shrink(true);
-> +
-> +	test_seal_merge_and_split();
-> +	test_seal_zero_address();
-> +
-> +	test_seal_discard_ro_anon_on_pkey(false);
-> +	test_seal_discard_ro_anon_on_pkey(true);
-> +
-> +	ksft_finished();
-> +	return 0;
-The return isn't needed as ksft_finished() calls exit() with right exit code.
+Same comment as the prior patch.
 
-> +}
-
--- 
-BR,
-Muhammad Usama Anjum
+Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
