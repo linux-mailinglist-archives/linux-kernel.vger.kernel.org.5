@@ -1,140 +1,121 @@
-Return-Path: <linux-kernel+bounces-145221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C23AA8A510C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 878C68A5118
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:23:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF6471C2131A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:22:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B44151C21F3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BCE8664A;
-	Mon, 15 Apr 2024 13:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AF47828B;
+	Mon, 15 Apr 2024 13:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="pqBdIetp"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="V6hLvTiW"
+Received: from mout.web.de (mout.web.de [217.72.192.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB8C73511
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89A912C538;
+	Mon, 15 Apr 2024 13:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713186402; cv=none; b=HmI5jM6/3JuI3YeY0NOTykHwqGzf2oAOw9asppSgSAtFXcfy6o1D//ekkJARQIhdJVrfZQu5FmZs56a41JSLgGVupE0XsR+bRO3JkyUqIeXcfsKV8ihsKGmN3g1UtIVHxeiAw2XBpIDD+0OOZl8YrjL+kvrJh0uI3+/zCf6ggFY=
+	t=1713186483; cv=none; b=FS0aS6dEpgyDlRcdFt0uar93plSaz+jPdGnI8YsK1ufUqg3Vb1iJF6MgzEU06gpI2hFZozvaS8Qfk/yGpiHyGPjJ/qY58lw4SEGzbfg7ebHw2uG9aFplzsp59apVegXcz5v/OoEPnkVkKN/MZ5ESpAGhckoasCDWyPlU4mDcunE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713186402; c=relaxed/simple;
-	bh=ROXk9XS99J8mzxWv8tUd/6Kf37JaYFVRZLkuT1TMEa0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cAxftLlBqVnVcTfpRvQCefKwfmhf6Q5JAXtWWlG2GDgkeVziRkZpFplGTTNoINab66VshyVm1KPsMuR1yI+LEf6NjHNmsXRJOIHKoYNo1v0JB3/WLiCoSFbIoo/n3c6gsGtvceOiWZT6RaRD39rvwderTYRVLriq/J8xSW3Bf2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=pqBdIetp; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2da888330b1so11388511fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1713186397; x=1713791197; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0+QRCDHPbz+mQnU+rPEOfZ5PlBfWp32GZiq6bjgpQeA=;
-        b=pqBdIetp1ApKhfa07J5SnT+A8wbQo73Ivvy4FEhtJJpDDvhhoWZO/QEVa3Q8z6M5ul
-         qJxt7c8v8F8W4qaeKXAsOI48zUJ145oZcnAzXAqsw+8Xk/R9pZQVwgfISetCpNszOEiD
-         SZF7/GctaDrg3IZHXSae34s6pZLBiQEaP2I75G4luxMUhlqca216vlZ7bY4TVJW8aX+e
-         EkwduIBbbqeN5KW0ukJN0Y7/zA3dYWp8EgRy4l9MsUJV6A35J106u7OfczffMys31OkQ
-         4F2a639vPxfuPo8N1lGnvV4olcrCtbK0zn3/3vV2KTHToJ3E7wTq01WmIuDeFuDjfQju
-         qlOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713186397; x=1713791197;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0+QRCDHPbz+mQnU+rPEOfZ5PlBfWp32GZiq6bjgpQeA=;
-        b=v6DDqxSh+umJg4/WBxXI2ikW9zn2cNfgTch628ZoLGGp/A6e+q+9jn44Sv3AK4SFTh
-         2L1RivfegV0dgaBfZ6AHOk42RMkgUdHOWG3dM9u3rPW4PCfK4Tx9MdG2niYJPd++KagF
-         HxxoVyheX6hHDcTHNcZjkho/ZVKNvhwjJ/+6458E/vOzbsdoqaO0d2PBbYEKtYaVlgiZ
-         ZOi7wcPgcKJRsdappF/GP5cJpjmU+CTg644Ps8824bkYMxnE1KEa5EritkgpGnASkORb
-         BzfE3tKdoFxzuLbHGM5XP350JQ9Zh7NvLvoVU4d99Rh8PeUd9kkNpEFEdQwQsEceVINR
-         V9jg==
-X-Gm-Message-State: AOJu0YwEIxd/1Gxo61OlnjOh4ofQiIGuMVe9RU7vnFov63M76TCzdGfS
-	F11+4j5fbY5cfakEYjfZofAo/4MZBsIQB3Sk9Xooy1NxxYVFJ0rn9gmjyN7Fth8=
-X-Google-Smtp-Source: AGHT+IGFmVnC0mQLQib6YvAkM+B394OqmZQ8G1VQ5hm0jgJqcVKUD4C5OhCM3fHue9y8M9iXA9JCIw==
-X-Received: by 2002:a2e:be8b:0:b0:2d8:dd28:878e with SMTP id a11-20020a2ebe8b000000b002d8dd28878emr7797631ljr.2.1713186397221;
-        Mon, 15 Apr 2024 06:06:37 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id o4-20020a05600c510400b0041624ddff48sm19436126wms.28.2024.04.15.06.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 06:06:36 -0700 (PDT)
-Date: Mon, 15 Apr 2024 15:06:35 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Ajay Kaher <ajay.kaher@broadcom.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Alexey Makhalov <alexey.amakhalov@broadcom.com>, Anup Patel <anup@brainfault.org>, 
-	Atish Patra <atishp@atishpatra.org>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, Will Deacon <will@kernel.org>, 
-	x86@kernel.org
-Subject: Re: [PATCH v6 07/24] RISC-V: Use the minor version mask while
- computing sbi version
-Message-ID: <20240415-e229bb33ad53ce43e3534f5a@orel>
-References: <20240411000752.955910-1-atishp@rivosinc.com>
- <20240411000752.955910-8-atishp@rivosinc.com>
+	s=arc-20240116; t=1713186483; c=relaxed/simple;
+	bh=m0/I5+S6CSiilQW69yS2LbTSrey8p/oYlcMWnlsQ1J0=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=Anp6u6vQoun88I2pysGUkEjfkLQ4oY36X52EkMNBguQl0WUu1mnz21oIeFdrNjvGEwxo2UJT2MO32W2yPZ8ncFDV7M0ViBjgS3rIvhDNq/0Y30Axhhjn6XkzIUR3A1QNV+h0qxV+UkWHT/FLs2SiIIAdF4D1oK6j8DuvvFaEzSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=V6hLvTiW; arc=none smtp.client-ip=217.72.192.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713186419; x=1713791219; i=markus.elfring@web.de;
+	bh=4q1T+fveRZjMHTvoEUqhMQBqnsOLA8vdGMrLNev6YzI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=V6hLvTiWwBcQMJjgKssj/YRycNHHayc9GY/F/ZOJhV6qRMUb5S4a4ZlFaki16AIy
+	 0TQ3G9D//AyAV6nRCb2fqGz65SJaBC1+qkM5a7LHIksupkkbBNRQrt2DRsucDePoF
+	 xmut1bsz2bo3057UG4ShP+eZqmIywbu0Lym0cPQWdV2IPR29olwBN5oKMrvq5V3Id
+	 tmglOZQ/U11PL3fQoYhfeCpInOTznaBM3M0snzoKIV6GcxLFHyUx8xPlSfuSWMjGn
+	 d72KdnTb9v9RAKdh8lWoX7sSUAq0/25NX+kWfTXkixMKKiQPs6GuwAnDdaVMSy2lX
+	 BNv93auRRxUnjuDVCQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.80.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mq1CC-1sacXB10a2-00nOEZ; Mon, 15
+ Apr 2024 15:06:59 +0200
+Message-ID: <f1a38236-82fb-40e3-a7eb-bac913ba8f0f@web.de>
+Date: Mon, 15 Apr 2024 15:06:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411000752.955910-8-atishp@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+To: Guanrui Huang <guanrui.huang@linux.alibaba.com>,
+ linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ Marc Zyngier <maz@kernel.org>, Zenghui Yu <yuzenghui@huawei.com>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Shannon Zhao <shannon.zhao@linux.alibaba.com>,
+ Thomas Gleixner <tglx@linutronix.de>
+References: <20240412021556.101792-1-guanrui.huang@linux.alibaba.com>
+Subject: Re: [PATCH v3] irqchip/gic-v3-its: Fix double free on error
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240412021556.101792-1-guanrui.huang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:je1w6x2K7IgLg/YyCsujg70skuT5+UwFo/5EsgvyV0OKa75ON14
+ gLXr96eR4s/F1aoHi3GMFu9cpnRnrefuHQ4f5Gtoql6ONnBPdisIgpigWf5smwap4c2VUwX
+ 9fTijWZyBo/MiS1bL3BDAGJUkhZUqjwx1tKJJTbtZhTcLPcZPTPg849RRO+nekfa6sPfXAh
+ j4Dz5XiZVKnipOor0dWEA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:rm1SAKFwmZ8=;fwAliXKSJZyg6ImW72zUAywwFPP
+ ngNWHHnusHBQIVHgT+2fYTiGcLDsfgc7Jpn7QIidJLdANeBPzMvL/8ku0xm4iBB00kr2Yv7Xc
+ IDML4Z6UKRXaNx6HlN9jOAOQRbv7gVlFbqn/OPjhTkJubMtY3JheowwdCA0CWosGeB7Nz0Za1
+ ve26JZB3uuTkPF418kpZzW98NJ9DHlXhplm4hyY8Oyb8U0fjomdQCUJjFXzDu6lGkF9ma8IKy
+ 6neuqOa/BIIoxxoqM0b6w3OhDBhfHs1e94Za5FZtxscROW0uDDndGZoZcceTkxY2s1O+xcOlR
+ M1OSwLipi8gZtrGa3AX81vn762kIDj1ocNfPxcut9/XOueVhSX4oSo5Lg9HNdPswFWMhzuLew
+ sVRhWeHLGPvfoSte7uKAUK+QbhzFJqBjnL6BzbAiHlILBGQWkENV14cnnq0ZYXfkM2AUbez2n
+ 3EIEPC0Jw+LOlJRrQiJAUM2akKimJ1Qd+a3IJBOrzNoo/pfQdW8pvNoF3RdnpNnigZmnTOM20
+ LsO+04tfYuLAnRmqe86XLgoqr3M3/dlSSfOSkY3YAWoMAhLccgvCu8costpi5bjXxaPPGL55n
+ uBbDN3FTXRLOMY7i6pCfiXkR7VbP2uapW7NeBIqr+mkpoGqaaT1NfzXIuGbb9wPQw6y3wLmSI
+ COc90LcDdj/4vM9SKXbFL1AZPafPZRKkKl+BaahFV0IzlGO7yTbQBirmH7GzbGBVQR5n7WpMp
+ rEZMKUUjQcVbIhhqikZ6Vi350WkGD41xizgBbDFgeRvUT0HUDIBw8haLiE37y71rxR30wZcGj
+ PW+yBx+e1AwtQQaPZyEEOz9Ffre/ALat/P/OTXQdKZFac=
 
-On Wed, Apr 10, 2024 at 05:07:35PM -0700, Atish Patra wrote:
-> As per the SBI specification, minor version is encoded in the
-> lower 24 bits only. Make sure that the SBI version is computed
-> with the appropriate mask.
-> 
-> Currently, there is no minor version in use. Thus, it doesn't
-> change anything functionality but it is good to be compliant with
-> the specification.
-> 
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  arch/riscv/include/asm/sbi.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index f31650b10899..935b082d6a6c 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -367,8 +367,8 @@ static inline unsigned long sbi_minor_version(void)
->  static inline unsigned long sbi_mk_version(unsigned long major,
->  					    unsigned long minor)
->  {
-> -	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
-> -		SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
-> +	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) << SBI_SPEC_VERSION_MAJOR_SHIFT
-> +		| (minor & SBI_SPEC_VERSION_MINOR_MASK));
+> In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error
+> with i > 0, its_vpe_irq_domain_free may free bitmap and vprop_page,
+> and then there is a double free in its_vpe_irq_domain_alloc.
+>
+> Fix it by calling its_vpe_irq_domain_free directly, bitmap and
+> vprop_page will be freed in this function.
 
-The previous version had ((major & major_mask) << major_shift) | minor
-(parentheses around all the major bits before the OR). Now we have
-parentheses around everything, which aren't necessary, and no longer
-have them around all the major bits before the OR. We don't need the
-parentheses around the major bits, since shift has higher precedence
-than OR, but I'd probably keep them.
+I find this change description improvable.
 
-Otherwise,
+Would you like to add the tag =E2=80=9CFixes=E2=80=9D accordingly?
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
->  }
->  
->  int sbi_err_map_linux_errno(int err);
-> -- 
-> 2.34.1
-> 
+=E2=80=A6
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -4521,8 +4521,6 @@ static int its_vpe_irq_domain_alloc(struct irq_dom=
+ain *domain, unsigned int virq
+>  	struct page *vprop_page;
+>  	int base, nr_ids, i, err =3D 0;
+>
+> -	BUG_ON(!vm);
+=E2=80=A6
+
+Please improve the patch granularity.
+
+See also:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.9-rc4#n81
+
+Regards,
+Markus
 
