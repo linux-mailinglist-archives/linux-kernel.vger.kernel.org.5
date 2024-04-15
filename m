@@ -1,103 +1,126 @@
-Return-Path: <linux-kernel+bounces-145503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71FB18A570B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:06:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0348A5710
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:07:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A26A31C22044
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:06:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5443F2848BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED338061C;
-	Mon, 15 Apr 2024 16:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4697FBA3;
+	Mon, 15 Apr 2024 16:06:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kXktyWh2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="O8xv1am3"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621F179DD5;
-	Mon, 15 Apr 2024 16:06:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E45E8174F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197194; cv=none; b=DlkuTN76cGSwKLDWI3g+hbwG4MDmmtZNYAUqsyXWHp5XnYBppKxLZsrwwiKGpEY7xVT0Ynoz4VAJlQWpNFd2Wg/NL3I7H5Z9UkTnkfITsRR3ZNWLZA+FlJ8y9OxWTgq7y8IxdaZb5vddeCzZWFMNbtWhXwI7oCpAjjDipbh9BqU=
+	t=1713197202; cv=none; b=b6wBc/b5ski7sekxCzagdW707PP/tpr6iNZZd5y10eA0Z97ICayFlN2r/fBgeFCPba58MUvE52laFgNN4G435e0tVS0We0fxk/EnljUWSWS9e3I0L7S0wVmZ5qaR11Symed0m/K/rxdRRvY6fNv5TyugDqpH4mTa7ERdOmefguE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197194; c=relaxed/simple;
-	bh=63edPZGvTejQU5Y0eC42owDzMIedIHDtuS1pEqj8Sy8=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=QgQiduiyxSjSskZVRcgfCo8Sbr7oma4gGDGbwbc31Ira884RI8hJ06EG35zJFKy6msLAzfc5TDq9yiWWsi/IcHen4j29lFR2u91hCYyqKrj9DTl0LMoLOA4RzmqainikUO7tZM2mFPoaMz1Q5WgHMas8CMPb+MUN4cs48BEFSVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kXktyWh2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837A3C2BD10;
-	Mon, 15 Apr 2024 16:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713197193;
-	bh=63edPZGvTejQU5Y0eC42owDzMIedIHDtuS1pEqj8Sy8=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=kXktyWh2HUDWg2oZ4MgYYoWgziCuftsEglZ1213wbAkO8tOpP8WlxmEsgBD556d0K
-	 23riC/5P8StOGGomfCZaWLhvkoSUkqIe0hlPj6w9fSg5ecKTl//tq5hd9sjH44ZzRI
-	 PZgvmavzvvkMKzUY6+SHZWBuwgJhT9RABRIYHevLNPzIPfFwGOV6dMudGc5py5wDjB
-	 1ao8w7ybV2XzYTH7ys9z/zl+Ic3b9+C2JfbydhvY3w8Y91s0OEV4IJXa/KGa9nyspy
-	 KUfKultJ2lZ/MVgYPa8vPFg8BQ/hqQJmFIlV/9DUXstcePc/Px+A8NQYAd2GB+eVzW
-	 l+fXTwm3E2kDA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Christian Lamparter <christian.lamparter@isd.uni-stuttgart.de>,  Robert
- Marko <robimarko@gmail.com>,  <davem@davemloft.net>,
-  <edumazet@google.com>,  <kuba@kernel.org>,  <pabeni@redhat.com>,
-  <robh@kernel.org>,  <krzysztof.kozlowski+dt@linaro.org>,
-  <conor+dt@kernel.org>,  <jjohnson@kernel.org>,
-  <linux-wireless@vger.kernel.org>,  <netdev@vger.kernel.org>,
-  <devicetree@vger.kernel.org>,  <ath11k@lists.infradead.org>,
-  <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] wifi: ath11k: support DT ieee80211-freq-limit
- property to limit channels
-References: <20240412162510.29483-1-robimarko@gmail.com>
-	<20240412162510.29483-2-robimarko@gmail.com>
-	<4a1e0cb6-c319-4eb1-9bd1-5ff13eabfe1b@isd.uni-stuttgart.de>
-	<c7106c8e-0c99-4160-966e-b1a8ba5770ee@quicinc.com>
-Date: Mon, 15 Apr 2024 19:06:28 +0300
-In-Reply-To: <c7106c8e-0c99-4160-966e-b1a8ba5770ee@quicinc.com> (Jeff
-	Johnson's message of "Fri, 12 Apr 2024 13:53:02 -0700")
-Message-ID: <87ttk2y5iz.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1713197202; c=relaxed/simple;
+	bh=TbkoZcrC73ReILBlLCzDk8hBya5REumqV3/XGRD0RBM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A7XbET735NBV4hX/BC+Rjd9FjFKY540VcYxb1AlqokU8sggVSR/DN8dkup/s6pmMbdbtgQxbF5nmA0fkmbESq07arJ7C9DUVOt/Qwg93j8dTLIyq+sjfe1wmDTXkkoQTu3F7WDxyQtX+mAbuFPm8DReJNFBRjUD2jotT3mudpJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=O8xv1am3; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a484f772e2so1878352a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:06:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713197200; x=1713802000; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W9YkT2PBxlsTiQpc9k80Xb2w2qGzzlQLFXvx15ENFSo=;
+        b=O8xv1am3Lk+DQ59W9cNWa2OG2Fks5PZkZcv6Z6Pfi7Uv5Oy1Av7RnTmnxj3FUYOm5V
+         yx4o1he5W90asuV36XyOe0antbXBxeK6gi/EVqhCphP56lqegAsztJrs5wGp912uqAFQ
+         L131duRGarDG1vumEdOdHiU0czbOW9+JxRfTA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713197200; x=1713802000;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W9YkT2PBxlsTiQpc9k80Xb2w2qGzzlQLFXvx15ENFSo=;
+        b=pZ8M2p7yRVurbJcYi0CK+B1a6cG35hamYQz0IvGjzAGGjbZzKxoNPL0v1Df+a6esGe
+         G8LEBbFmP84IeYlXV1aWtKG7A97G6kdQVZegvatyPFnJjb5KQ77cRiJxPB2GWZDN3TBy
+         xJ5mi0YNyKMz5cpi/YGls8qSWJkO61fCUk0mFbZ31qjDPtebbtK24N6C9dknxFu87Aq/
+         Qmb4yK5o3uHm4Khldas9Odlm7aJgWdHD1IEtdlnbeU+YxvDEdcHjF8zuR3juwfFrsUvl
+         1ZDtMVKspS0hhKr43alWxJW24ccLAbtsLBqhMlPT8vmu9vq4pNKR/sNnKlAznE/JGjO3
+         umYg==
+X-Forwarded-Encrypted: i=1; AJvYcCXVKLQzixhe7CHVlsCllwk/jAbBAYF3ZOkx23k7xkPgMHYISHD3EsKChkr5L0KH15MWd6K1GX+cfVuPORGeRrueEyeutRoeYU732pI4
+X-Gm-Message-State: AOJu0Yx62O4CuPFzDVU9cVtjagA7uxDYkA8S28nILCRBlwfgGAb0d8sT
+	NU8Lowvsjr2AkHlZwefvVyx5JpPQEUuKYdpLDkbbKnFSYrhe2T4vBbT2cy/pQA==
+X-Google-Smtp-Source: AGHT+IEOd/x1N/CPtx25Nf+PUqf1rfZqa2mTy1XxaxcS7HXEzP+ucQDv/NhrafY/fDlqqKtbbV3LWA==
+X-Received: by 2002:a17:90b:3d3:b0:2a5:ba9d:a06b with SMTP id go19-20020a17090b03d300b002a5ba9da06bmr10113697pjb.5.1713197200332;
+        Mon, 15 Apr 2024 09:06:40 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id l6-20020a17090a49c600b002a46b925e99sm8796108pjm.18.2024.04.15.09.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 09:06:39 -0700 (PDT)
+Date: Mon, 15 Apr 2024 09:06:39 -0700
+From: Kees Cook <keescook@chromium.org>
+To: j.granados@samsung.com
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Miaohe Lin <linmiaohe@huawei.com>,
+	Naoya Horiguchi <naoya.horiguchi@nec.com>,
+	John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	David Howells <dhowells@redhat.com>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jens Axboe <axboe@kernel.dk>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Luis Chamberlain <mcgrof@kernel.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+	io-uring@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/7] security: Remove the now superfluous sentinel
+ element from ctl_table array
+Message-ID: <202404150906.C37D8D9DA1@keescook>
+References: <20240328-jag-sysctl_remset_misc-v1-0-47c1463b3af2@samsung.com>
+ <20240328-jag-sysctl_remset_misc-v1-2-47c1463b3af2@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328-jag-sysctl_remset_misc-v1-2-47c1463b3af2@samsung.com>
 
-Jeff Johnson <quic_jjohnson@quicinc.com> writes:
+On Thu, Mar 28, 2024 at 04:57:49PM +0100, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
+> 
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which will
+> reduce the overall build time size of the kernel and run time memory
+> bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> 
+> Remove the sentinel from all files under security/ that register a
+> sysctl table.
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 
-> On 4/12/2024 12:52 PM, Christian Lamparter wrote:
->> On 4/12/24 6:24 PM, Robert Marko wrote:
->>> The common DT property can be used to limit the available channels
->>> but ath11k has to manually call wiphy_read_of_freq_limits().
->>>
->>> Signed-off-by: Robert Marko <robimarko@gmail.com>
->> 
->> I've seen this before.
->> 
->> https://patchwork.kernel.org/project/linux-wireless/patch/ed266944c721de8dbf0fe35f387a3a71b2c84037.1686486468.git.chunkeey@gmail.com/
->> 
->> (dt-binding too. it has/had an ack)
->> https://patchwork.kernel.org/project/linux-wireless/patch/fc606d2550d047a53b4289235dd3c0fe23d5daac.1686486468.git.chunkeey@gmail.com/
->> 
->> sooo.... this is awkward.
->
-> Patchwork indicates Changes Requested
-> Any idea what changes Kalle is looking for?
-
-I can't remember anymore but most likely I assumed based on Krzysztof's
-comments there will be v3 and missed that Conor already had acked it.
-Sorry about that, I set Christian's patches to New state now so that
-they are back in queue. And I'll drop Robert patches. Does this sound ok
-to everyone?
+Acked-by: Kees Cook <keescook@chromium.org> # loadpin & yama
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Kees Cook
 
