@@ -1,154 +1,85 @@
-Return-Path: <linux-kernel+bounces-145434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 517148A5619
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:15:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D22D88A561E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:16:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2B851F228B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:15:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49F091F22A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0B677F22;
-	Mon, 15 Apr 2024 15:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1BF76F17;
+	Mon, 15 Apr 2024 15:16:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ECtzN1Ou";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="YQIvGD7n"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZZMghJYP"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2052.outbound.protection.outlook.com [40.107.96.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966407602B;
-	Mon, 15 Apr 2024 15:14:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A69E74422;
+	Mon, 15 Apr 2024 15:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713194099; cv=fail; b=tC9BNx21RQCtRfo8qWReTQfuPnZtdEsdttpjYSuGzy+c6AcaqYxT8SKJXoEaETL2T2qI/8eVLTKE8u0V77DEa/LhN/aHnjwJpKFmX1WX0WtmUtwgewzk8KhtO9syBaIHGErkHJ809lTGIA4yhJdnspXv21A0NInQPoupN+dvO84=
+	t=1713194206; cv=fail; b=mYLRxQNZarGmBN0dzv7hG7DZfXrT2o6m3j0yx/JR5u+cS/9NkRQFp3etqvvnw5A+UgzFYZGv5mbGshxD1GSXVDdyN4RHb1uF6QYRUU+6A7x+uSk+fPKvxohCtCqzHAuSjbpx5ai96m2/B5VKRnh9D++i1Ff76YAQmYM/ZhYNlvQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713194099; c=relaxed/simple;
-	bh=7KN7R9suh+GzhFjWIQ4fls0b5Zyr6X8s/WFR53/dUB0=;
-	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=O1Gzu9SYJwGuOgSHSVDQU9qDcFaNiEVZEfmBfj+fRYRSFsCToZzP5MM4IfoVEskAqVWhfE8VXdHvTTBTi8/0iiSpw6Y5iu9UkegiqACqmupqji7wYeO+N+kDS3HyP3rWgniXgb8oWaB4dQYiNQ6ZkC2T1KHhqqL7IcVCAiQDTuk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ECtzN1Ou; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=YQIvGD7n; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FDY5JR017791;
-	Mon, 15 Apr 2024 15:14:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- cc : subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=mNO6SrKYtu8IiiATnEJDIHkDbFIitOnbZHMB3357QQ0=;
- b=ECtzN1OuO4d58lLAhstg9EszLOP6/Kqjqk34YA6ur8w+qtWIW8ryMM37wpg8mBOOl12K
- hVNRnrSxnut/WWaBUzrEuucJnevCjfwumRahpfW9GbpL8WTV0RHq+DPvTlMAHr/YpTrB
- VRV8TRvsHiukvoU8q036NvYbQjv1V059b4yqysitdrZ8T5uWK3D70oj9HyI0IioWzHvj
- Amma7ux6R8taSdrkvDrDg9+jWxkZvtWQP7L+YF3vXxwzuCfJZwnz2VQovTocbOszUguu
- feAQU/WViI5k9OkbNkM3hvop+gC4hkyTlSI5V4gbIoasNBJeG7H/mPIKt6KZrKBVB/N4 ow== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfhnub2nh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Apr 2024 15:14:16 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43FESgmt014453;
-	Mon, 15 Apr 2024 15:14:15 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xfggc5g03-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Apr 2024 15:14:15 +0000
+	s=arc-20240116; t=1713194206; c=relaxed/simple;
+	bh=cvlnLHh0Qm3jNEMVy9w3tS138knQNuXKmNtrzIntf4U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Zfi0e//WU4P13UQSs5HiTQUT7eEL5Hn+OV7LUMnQv/AztG1q71XaGRspisWMRXOT0FaTRrQg4wseHAoYb069TsC3ytKbv37rsj12rODuY2AiTOc9I9dWZzWF8vtduJbK5N5CaUJ/oFPFeVCoHdy5+bc3tjJ4PkTyrVR7phfmXrM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ZZMghJYP; arc=fail smtp.client-ip=40.107.96.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KeySMdnBr+PPTb2Q8/XccGdjmoeVfUFvCKqIUpsZomKoYRRt+VXxpbej16HBTbA34h22WAw1lu2P1eOMjtkx9cmMwjEvYabQjmtsd2vfAPsODMh5IdAuQgxQ8PsI0Tw/6MgKEPpwnbINSw6L5vMljTqcAm50+Qd+e0gX+NubEilHc0yUkohDwNV3YuduMhmFu9qj9v1ZhDBTmTeU2jbsNjgWAEqYgM/JpUmm4wV9p07hwv62PyNbumr0orkrRb/BgfF1T030lv7KF1GlRox1cw91H1d7UfuTMdT2SDqFfQmpiivaSGB8bH+z04DRqkyvA9+kTiO3uYptm7XBKyX84A==
+ b=hG32xJP3+iqFNDu+2JgFw5BOxU9oP3lZaQado19yrsaf1bZzA8OdHE35gHHWsYtlAsSEs5VTGqitj4M5H97upLYJbadCMhbi/Uz1wtM5BXM1GONgdug1bgSUnBDF1ES+CXrO8rr+uxE/WWHnXjU7HZKPv7enNJ+7O4g5mUOzWzQ/QDe3puyD5A3RtCSu5zc5YP0STBko2FFB+DOrSC1KH2L+FakIllWapETIbOjDsnFz5paEcblKWVs+6QXtkstjCPKW9V8suiKaVyvMEy5eMwKNaQ77Pp5YEJxTAd7XjxAyamShGOYgrj2ebnHKFnBdYqqrlTAvgR7XsRl/jiPNXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mNO6SrKYtu8IiiATnEJDIHkDbFIitOnbZHMB3357QQ0=;
- b=HJ57G3pP0OzfRFo+bzRpsdyO+SJFBnLqd5BVl4tJjx3qOsLR8AV0ig1HorwIijVG4pXhYNE4/0w9755I8QmM9wo9gZ6vbCPQQIzG0aLI5pMKHii4xhtsmM32QEUIaphp1tSLh+iXcHmjzzhW1DVqtQN0uj2itQV0ilrx7i86vHBpXtgqp0VyGCIpwFi6UTLfU0V1GDIdbT6C+jwcIopKt08EMlmzYe4K+iNEL2wu1EVSAKaFOi6MvV9fH+DTL605ScNQwAaaEyzetHuNP3HemfSxSvBTxrZJzMJA7JTEU4nX0hZCeIhPf9kOmmDBCjJNjo31Rzcoc+/n+TbNvDOhKA==
+ bh=XRbMfvdnBqTIoaUlXziuJyhhppvbOfzqTJqo2dw+77M=;
+ b=aUczgsJPxdok2Eqq9URr7mEt+c38+T26VtLOSwgU6ZY3bFD9lXRvoVwvWWPzZbdRk4Wc3ci968AlG5YVGoEBZ9z4DgDwED7LY07OyZQ6PZC0ncJUuvU+AiSd6F0XUyIwbcKir9dkC4c8g4jRAZLu7OlLYVycq08oZBU9HE8pyDBobTpzCRdZ6055VhA0oqwBjSzoraZWydK7D5yV3mUlCP+ZmoBVEduVDv4GxQXdBX9eMEDv/8tVZUjoyhlS/7Zlz25fnfOkMz/bw1E7VonKLVKyeCDDOZS1cUHYbLq+3St6mlTlP8LMr3/VUvBxkoOjSBikDmumwaJwz94RtieZDQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mNO6SrKYtu8IiiATnEJDIHkDbFIitOnbZHMB3357QQ0=;
- b=YQIvGD7nCIcUrx84Z6KJjkN8onpD+CR1s1Ux9AGD8QO8Fr2RQ2dTwAMVypZEQ6wV/P8N6Gzt47bbDjKttzW/XP+YvK2LvwSBk7bSk2Gw8c8Ggujl49jcg7o+TNDH+KT/QwqL7w2/VByPYmPfEBpoULPu1mvj4HIpnjB60cKLNUo=
-Received: from SN4PR10MB5622.namprd10.prod.outlook.com (2603:10b6:806:209::18)
- by BLAPR10MB4996.namprd10.prod.outlook.com (2603:10b6:208:30c::12) with
+ bh=XRbMfvdnBqTIoaUlXziuJyhhppvbOfzqTJqo2dw+77M=;
+ b=ZZMghJYPd4y3pkZLN3Gcjh6HltNjKjuQUDqUUhDAr0ELpeuBG9flw66jcSRrc2EAry4jC6rwE+6DDUKTrUWrY0XCVGvfpMhw0rNA9WWn6KEPVAGpKvdv93hnmGhq2ykzUR0sw48Jo84xnvZJ44H/XTwdYHp2NmRHpyTJfzxrEiY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
+ by MN2PR12MB4303.namprd12.prod.outlook.com (2603:10b6:208:198::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 15:14:12 +0000
-Received: from SN4PR10MB5622.namprd10.prod.outlook.com
- ([fe80::1481:809a:af18:ac44]) by SN4PR10MB5622.namprd10.prod.outlook.com
- ([fe80::1481:809a:af18:ac44%5]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
- 15:14:12 +0000
-Message-ID: <2af16cb4-32ed-4b91-872b-f0cc9ed92e59@oracle.com>
-Date: Mon, 15 Apr 2024 17:14:05 +0200
-User-Agent: Mozilla Thunderbird
-Cc: alexandre.chartre@oracle.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com,
-        pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de,
-        konrad.wilk@oracle.com, peterz@infradead.org,
-        gregkh@linuxfoundation.org, seanjc@google.com,
-        dave.hansen@linux.intel.com, nik.borisov@suse.com, kpsingh@kernel.org,
-        longman@redhat.com, bp@alien8.de, pbonzini@redhat.com
-Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
- by BHI
-Content-Language: en-US
-To: Chao Gao <chao.gao@intel.com>, Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
- <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com>
- <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
- <d47dcc77-3c8b-4f78-954a-a64d3a905224@citrix.com>
- <ZhfGHpAz7W7d/pSa@chao-email>
- <95902795-0c2c-43cc-8d87-89302a2eed2b@oracle.com>
-From: Alexandre Chartre <alexandre.chartre@oracle.com>
-Autocrypt: addr=alexandre.chartre@oracle.com; keydata=
- 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
- swLliy6PdpST
-In-Reply-To: <95902795-0c2c-43cc-8d87-89302a2eed2b@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0081.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:8::21) To SN4PR10MB5622.namprd10.prod.outlook.com
- (2603:10b6:806:209::18)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.49; Mon, 15 Apr
+ 2024 15:16:42 +0000
+Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::e7a:5022:4b7d:ade1]) by SJ2PR12MB8690.namprd12.prod.outlook.com
+ ([fe80::e7a:5022:4b7d:ade1%7]) with mapi id 15.20.7409.042; Mon, 15 Apr 2024
+ 15:16:41 +0000
+Date: Mon, 15 Apr 2024 23:16:20 +0800
+From: Huang Rui <ray.huang@amd.com>
+To: "Yuan, Perry" <Perry.Yuan@amd.com>
+Cc: "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
+	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
+	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
+	"Petkov, Borislav" <Borislav.Petkov@amd.com>,
+	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
+	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
+	"oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
+	"Meng, Li (Jassmine)" <Li.Meng@amd.com>,
+	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 8/8] cpufreq: amd-pstate: Add quirk for the pstate
+ CPPC capabilities missing
+Message-ID: <Zh1ExGtyhGOsduOs@amd.com>
+References: <cover.1711335714.git.perry.yuan@amd.com>
+ <31afd5ae23f8b1d7c6a2f0efe593a368dee61224.1711335714.git.perry.yuan@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31afd5ae23f8b1d7c6a2f0efe593a368dee61224.1711335714.git.perry.yuan@amd.com>
+X-ClientProxiedBy: SG2P153CA0015.APCP153.PROD.OUTLOOK.COM (2603:1096::25) To
+ SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -156,145 +87,190 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN4PR10MB5622:EE_|BLAPR10MB4996:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a9625c4-54d3-47bc-4bb9-08dc5d5eb449
+X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|MN2PR12MB4303:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ceda8da-9046-469d-03be-08dc5d5f0dec
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	B5wgLmSKwUZfVT3CTQtT9vMrSpZG+BBV9tMct9jkbj8wWjcxOEnMqwCoDbSh58SqnVBJzKSEdbN2d7Fy+g+MSAScnNcHMz+PYf9Ml8wMz/SDI/HcIio/bLQXb4sw8q8VAggzFukItHnsX74rjc3lySvknGbAMahCuxeYwhaCjrNIGxFfZTfJxaFVFlN8x41ZKXHKdt7d+xkSGqSLn+IZuPa3kh/9MVVDqa0ZPOb6YR5tNojYZMDydyfdDhDqMo3z3t0HXRjhTHBFz2RPCnCI8yIXgYe6yFD3g4nhammTSdqI7mgfzPh9FSqDZrvMQIkpqT9ayDR0+bJwltrIHbCWjlKS/xlKgRfEM7+NxaxyaC9tPqDumfwJ0nIHUF3NNd4v+iO0g23MRoiR2T4jYyxpUGMcD2OE29xroIPMBA4zSgkrZHjGjRU6GiINNxpmpzlM71AHBCt9CDTKmF8y/y5WImpKOMhIUYSnmUEAUKGU1wkV2LqWcZd1IsJ3M43etx/GjQotSXG3z5RAFX6BmFfdEEEsNuuTvEniJaKc/BKcEF1UbButi+FoYFYZUggsP2UAx9bv1VuJpBN9KAQPICOAnNM8AH125ZzMYmPG30D2PjYeHr5TTZZol5aTFClyLPXzYjuPH8GSyEM03cRQQcc6r/jh1ywBY2VXY4IIZaSgFQQ=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR10MB5622.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	EOp8u7hwAdq/Omfaf26FZoZT47GyRjuJSZ2V2GKP73TjB46EQk6I4nL7ciRD3EusokJo0w+/CiGlGq+rIubKYEqrh2u/RL6rZUYksgTw+IYbFK78YA2NAXzLfOC8FZRYBLuh4N0V/S0rIvW/F3MwGvfjmfdNomVSNI/bupVkiWc1LNf9kC/w3rH183KpJvDftUlEEWCNDMGZS5fk1INnr1QP+HIco3W20YabaBxlVP3wW+se9X6tg0H6Es2cZHXDpYkv3DvAfKjsDkD3mR8ypdP0WfAIXlPu5SLW7Bi/shhRvDpQaGRz8UMNw4Y6CwPvmjnULMBrFPz+iN+eUzIi8C26b9tWAe7uehvVTItO5sSLVEnNZNN/67G6xnsICLU2VdbMgPDjSQFnG4MQdNVLOCq4Tyy1gQzx9+jfBHMwVsiRZQ9VTxWinIzMang6NeMPZI/fCNJrBDA3YzFDqM6YxiK81U3KDI+cto8vfDeOcFpteW6SvPQQpchX8R/sIrTOuDs2P3QmvCeRNOeowE4tK1OGtVIqQNieBG+0vtoKtOH9o7CezUcEb8CiIgjT1K9ee/jW79UWrtXBY6LWIE8FEECKj+3mjkMcX7XdHzWJQ8x8UowojycYbsbbK0gnM5aP+K3mHHfHJBSQAiwAndPpuCAd0fIO4cfRVTUCvtJI1IM=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?WmZYQm1NUVFGUkN3dTNmRlBjRDVPTEJ6N2xjYmUrWFhFR3ppN3prSmNhSFph?=
- =?utf-8?B?NDJ4YS9MUnR2WGdxSDdFVngxbVFDS0lwMFhNdlA5MGVNSFFnRUdaT3BSdm1F?=
- =?utf-8?B?SXZWcU92bGVWRnFETDFKcWNrUmk1c2cycFZMMU5NTFBtclI2UFQ2NWJnbHhp?=
- =?utf-8?B?TFBQT2ZvNS9hdXQwRXpyZmhOK1dlWUs5czRoTDl2OERqQk9CQzk4MW1JdkFz?=
- =?utf-8?B?Y1ZxcTJVL2x3M2ZSU1A1UEVIMkRqME9tQmVvbk9uamxudWtMZm5TOXNXMUZZ?=
- =?utf-8?B?Ny9MSlRTajlMbnhwb1FYcTcrZzFGTndER1E5VUVycm9SN09TUTZ6K09QendQ?=
- =?utf-8?B?dExONHZMcDMySzBDWlYyQlJTMTdtWm1xejh2TXNDRWR4cFVkV2liRDN1VWs4?=
- =?utf-8?B?UGRHakpTMWRHcGV5NFhlamx5Y0FiYXdLRm5mZW9xRkRKN0dJT2JhVEtjTE5L?=
- =?utf-8?B?QmNKMVA3V2hzQlozRithc3FRVXpjSXJuSDdUS3grUlY2TkRnY2IyT2xHNlJt?=
- =?utf-8?B?OE9CVjRYQlhTK1Q2S0Q3N3VmVGpBL05PRVN0U3RRSGpSYmRqQ29YMGtYSzZq?=
- =?utf-8?B?MzBBNm54ZnFyaGoyOXhPdGw1Vk1NMkJyYXB5YnoyaU9EblJXb3plbk9TV1M1?=
- =?utf-8?B?K0oveW5Da0xhc2ErMFhPdFliSGs2ak5mN1pyVlRpYyt2bXJ0YXMvaGtJKzAy?=
- =?utf-8?B?TlFiMlpTWjRxMVl5cXNjMDVyRWlrcXY3NGZzazJ3K1FrMDZjU0o2ejVQcG1L?=
- =?utf-8?B?WXNMM2hwNkRIRVV6OUZxNm95dExQaDZudC9VMEx0emVJUGVkUU9WcEZ1NDd3?=
- =?utf-8?B?RlVBU2V3T0d5eVo3aEVJV2EyZ2JhUEV2cEh2aU9NOWEzRVRVTEZ0LzdrbHZH?=
- =?utf-8?B?eEVHVkNCWmcvcHlaai9IN2Fpb2cvVFAzZ2F4WldiNzJCMWt3TnZCMjJiellu?=
- =?utf-8?B?eGtmYUlTd3o0eDBtZjVoTnI4WlR4Y05rekk1a0RtZ0ZFZDFmMGZ0SERyUm53?=
- =?utf-8?B?bTRHUVVIclZQTWhWOTdqMXF1SnBvOGU0alJDbU5sUUs1SDF5cmFiYlRtcmlt?=
- =?utf-8?B?NW9iOTFSSjlBVnRTMUUxdE1MT1NJNStJVk1jNlBHQkJOZER5bWFRMVJNeUhl?=
- =?utf-8?B?MWMrUTYzTXJ0L3M0eUtEbWx5YmFOZHZIcWtsVXdaTCtBaEhOYm9uOHUxeHNC?=
- =?utf-8?B?aWtCUEF3TkRLNGlLcnRGaHpJU0ZreXZscDUwam96ODhHYzFqQS9oVG13MTg5?=
- =?utf-8?B?bDRaSTYvZHFpeWY4djNCSloxVFF5SDIrN2RqSGFmSzJRRUIvaG1pWU1IcWV6?=
- =?utf-8?B?OHdOaTVQc0w1cm5SSkI1bGRaR005ZmpPVVRmMjZ4cnNGZnZNVFpsM0ZnNkpF?=
- =?utf-8?B?c3N5dWtCUXVxNUVMdThOQ0tpUDNBODh4amJYcGdLWEVOalFrcUk2aXMybXJP?=
- =?utf-8?B?MmhWR3FDeXU3Y0pJWDB6aXQwVDlOT21SS2lIc2VXVGhvOXR2MjRMOWh2aWtK?=
- =?utf-8?B?eGtJUDl4ZlFvSWpUNCtQWWxwSWtHWTlIMVVoeDIvOTdZbzdLL0IzYXZBRllI?=
- =?utf-8?B?cWROU2h5WTZHZ2QvcU81enFXcGNMekt4TDRWellDeG9YUjJCM1crcUhaNUUx?=
- =?utf-8?B?NG40ZVUwOW5WQStQelZGNFYyVmJ4cE1hUCtvN2pZQUJkYkVVN0tTMzBDLzVq?=
- =?utf-8?B?dHVtTDRBSU55MFNNSjh3QmZoaUptQ0NYcnZEZHloQUhoYklHZ3NZZitOOVdR?=
- =?utf-8?B?OEdBRHBnckdkbjNRbFRWc2hHZDBMRVcxMDNGNnVxVjNvTGtwbFRHQ2djOWNW?=
- =?utf-8?B?M0VIVmwvMXJPRVRjb1FndkZxVGpHWkRxM3drcXkrbW5wQkRlRUVkL3hCeXFy?=
- =?utf-8?B?UDZiMS95LzkxRXBwRGRIN3FZTTFsdCtxYXUrbUtyMWY5c0tzUE5WU29zaHFR?=
- =?utf-8?B?aUl5d2F3TER3M0hlTTM4aFhBUG1aN296MWxMVVJlSCtyd3JRci92ZnNsbk50?=
- =?utf-8?B?OFcvVGxIVUVlOFI5d2FQUC9yNlVBVzgrNmhQOXRVMGx2TWYvamFwTGloVjhk?=
- =?utf-8?B?RXV5SlpBclV6aXJZS3E4bGlPYmU1YkxDYnY1aGtKcEtVckNPcDl2dERLcFpW?=
- =?utf-8?B?aUlNZi9idmYzYXpJaG5UdDZPcXJZdk4xTVJjZXZ1Z0NLUi9rQW94di9sbkp1?=
- =?utf-8?B?aHc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	PIYRj0/bkcWi9Adn6zErub4ZMgCCzkRFT/P6qUa/gpqlngYOXy7wgLjLAmAM21ZzkOyywBhjoxcnaC8zQjTUtCg/x8tmZ+9JfTAigsZAk1gl+S8H9cy7nFwDjCOfgX2r9j9mbWMHjl+VRixBV0KsRaqG2u95OK6iqtfFkpsjup58yWz8BZKWQhmI7ZhaYFvP6M5PncEuvGUwyXzkNJiuntlRcdddI9vmghFjIdvmqZs94z3wGtnFw7/iIUWjTTJy6bMQWgt7xlhasYIgtFe5DjHSiiINDTpjcOVG5NCT/SFqSW1TaTF8PlFHSclrA+9jn3PJiNW/4NmsTEBN4TbLKf8yFmx52NcTshvRnW8JONWCawXeuS4DMq1KI2l3CoZj6+8VzTPFxwOXV0sKWhRYCr04TVhSA+6MtEyNjZP4cSBeC/4t6b+fD0P8B29mILRIsZE5MS7CvmZvQ8lTPpJzpBCvByLbgjbgfmWxr2eu/qrEaUyYjz93nikv/VuPbD7T90uEelm1QUxjSZyoSafSpS5hwRx0Dw54iHtEMlpwbq+g+0L9yTQnlFRqhj9FkCs6QXM0cnePpYGaOZl+oz30Iwrg5NtDQ4HDUgsFSNIsZzc=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a9625c4-54d3-47bc-4bb9-08dc5d5eb449
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR10MB5622.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?cyg+cc1JgcdKJKztSnmRRwkR6ckjA/8xc230DkgsYzC+RWiXTpa350NdLg7Y?=
+ =?us-ascii?Q?kF9J924JkU96s98Kczxku45vbcu6SjS+eNVk58fUFLmII+fKPqWjzZe9UN+j?=
+ =?us-ascii?Q?zFiaxrnwG4gElzg4aS2Hp5w9SAshta6rpjReoZcqnNdvy+ZlOf0XLhNniK3c?=
+ =?us-ascii?Q?YN84WrhfQZynpu1TaYo57nmknhs6ka9N9Gkywr3S7OFusItp4z53Uvw/YUYo?=
+ =?us-ascii?Q?7o5JOtlIsgEFq3HrTxdzfaeeGSkkYeExcZhyCEPzyq7kCCcyju9CICypmiUw?=
+ =?us-ascii?Q?lf7ilEeciGi8eGOYJbQpCugc/dMqbP98qaRGgc5oapiXf9tP74lFyD+h1GZh?=
+ =?us-ascii?Q?MlYeUKTpUAvpn6K7ZNHekdqSbQRQJeKEzSkyabbjXVvs9ixJj8wzz+l9xCHE?=
+ =?us-ascii?Q?fvf3tizlYcLXT4xqDxAIhpeCua3lIreb/CL9/CTLKUvkwBi+0UMNaVDqlhBF?=
+ =?us-ascii?Q?/qckKdFUU3BwGgsFkWCwPqODNdhTC3Ow3kbzXCuHjYQrLLG/x1ygDOANGrJR?=
+ =?us-ascii?Q?7QFCbBxGlb2ZhFy/wWiy5WXnl0q1/8Ic89pNkYlg7flfBLAOkzLbvD4SaD08?=
+ =?us-ascii?Q?nihKzT1pwtEujkvArstf35pD3dybsjPnKGAq03W15JN8NFNMWNuNW69qDVXV?=
+ =?us-ascii?Q?C6Y7fqPSTiQqEbt1c/zwDaBuOW3FiAv0c5VeT77geYsNP5NDXKVUxOnaHFK7?=
+ =?us-ascii?Q?l7WlTouru/mdIJoBCiU+3sJJ9UJjC9IkJ5Es0pA68UWAY2zvtHHgfJ3Br7S4?=
+ =?us-ascii?Q?sRZMHNAos7u1smyD70Zx5/QBHPOPcuJHrZeiLVTKOnNqP+wNkowC6enWneZD?=
+ =?us-ascii?Q?T58fuXGLm6dqwFUtfErQxovd9F809tfudb70/T6H3oak4wAKeDHSFR5FKNNx?=
+ =?us-ascii?Q?iYluJhTL3xWyYttfCfm4GxOrB56X7jRFC4xkJ5pkY3yhK+zVvNhSOa9ud55j?=
+ =?us-ascii?Q?5/q8pxNuNUNbA1rbeC7+Ck4ZHVp3AHBVvEH3DRNgmW/gkHcR+9KS35SrldRU?=
+ =?us-ascii?Q?UVyRcsuDNMIPutQUDHu9Iph5rP6ls73ecvwwtWqBkgwAtvfiuf0OkEzS/6xD?=
+ =?us-ascii?Q?Be45nL/1Bbv34HqSIQ4yCGzbXFlQ7+YR3XBucTQVBuUgGbaTikIKgd/W3SC7?=
+ =?us-ascii?Q?vhZxNk0VTGTvklq4A4ICzvtHVY/7Jy2Njp1lT2a8UhdhMt05yLOql479nZrb?=
+ =?us-ascii?Q?L5sKlBqk0Qd1oor+XWyRAu8ctBkG9E/z6uypVoMkDdU4R+OljKVWWpbHo89z?=
+ =?us-ascii?Q?oJdW67p7Q98lzL6ZPrS6egvjR8igWjvl+JCLlrOJI/WO8mJmtCsdhE0MQRYk?=
+ =?us-ascii?Q?pMOLwoiHzfc0tWh5qdpOox26WNXSEeyR1XXVL2rHs41f7HftP0oxGCZ8j5dn?=
+ =?us-ascii?Q?h9b4/ZA+g4G9CI6JyObap4g2ym5jZ6mO1mm4VSnZZlV1VsVWBVQyzA5wzbDl?=
+ =?us-ascii?Q?eMXEm3s9KiofV0BGObbED9B7oHHq6nxofKxsuOM+cgIhY+QHr7xau0wUeZJM?=
+ =?us-ascii?Q?kwttKtQQ4o9czcUVhl8AQNYhW7lltjSxB1Dzg+YiY2wHoUgJoAX8IV4Cxnse?=
+ =?us-ascii?Q?I3gyDAvJ/Dl53ux4lG/pcDQEJFdk7phlrABLgT6M?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ceda8da-9046-469d-03be-08dc5d5f0dec
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 15:14:12.3592
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 15:16:41.8303
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0H0TNVGus6lrTHwamrIzB0q8+Z5ahiq/mWKg0v/QW45Az9RjpZlrvYAoRCce7dAP6+h9YeXturwpT+/dbyaj5bwUVbNlOjXCIIpxD9ZwpQg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4996
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-15_12,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 bulkscore=0 spamscore=0 malwarescore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404150099
-X-Proofpoint-GUID: PjMT1sC5CcGKWyfxT51DdJJigAZBtWp-
-X-Proofpoint-ORIG-GUID: PjMT1sC5CcGKWyfxT51DdJJigAZBtWp-
+X-MS-Exchange-CrossTenant-UserPrincipalName: IxX7KrzN0+9UH3/e/KZqynxBJ4WDL4rdqmGkQoIClgMFI4Lz30jt7ziHIKzLPxH4nXelKqvP0xpOWPaWIJQxOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4303
 
-
-On 4/11/24 15:20, Alexandre Chartre wrote:
+On Mon, Mar 25, 2024 at 11:03:28AM +0800, Yuan, Perry wrote:
+> Add quirks table to get CPPC capabilities issue fixed by providing
+> correct perf or frequency values while driver loading.
 > 
-> On 4/11/24 13:14, Chao Gao wrote:
->>>> The problem is that we can end up with a guest running extra BHI
->>>> mitigations
->>>> while this is not needed. Could we inform the guest that eIBRS is not
->>>> available
->>>> on the system so a Linux guest doesn't run with extra BHI mitigations?
->>>
->>> Well, that's why Intel specified some MSRs at 0x5000xxxx.
->>
->> Yes. But note that there is a subtle difference. Those MSRs are used for guest
->> to communicate in-used software mitigations to the host. Such information is
->> stable across migration. Here we need the host to communicate that eIBRS isn't
->> available to the guest. this isn't stable as the guest may be migrated from
->> a host without eIBRS to one with it.
->>
->>>
->>> Except I don't know anyone currently interested in implementing them,
->>> and I'm still not sure if they work correctly for some of the more
->>> complicated migration cases.
->>
->> Looks you have the same opinion on the Intel-defined virtual MSRs as Sean.
->> If we all agree the issue here and the effectivenss problem of the short
->> BHB-clearing sequence need to be resolved and don't think the Intel-defined
->> virtual MSRs can handle all cases correctly, we have to define a better
->> interface through community collaboration as Sean suggested.
+> If CPPC capabilities are not defined in the ACPI tables or wrongly
+> defined by platform firmware, it needs to use quick to get those
+> issues fixed with correct workaround values to make pstate driver
+> can be loaded even though there are CPPC capabilities errors.
 > 
-> Another solution could be to add cpus to cpu_vuln_whitelist with BHI_NO.
-> (e.g. explicitly add cpus which have eIBRS). That way, the kernel will
-> figure out the right mitigation on the host and guest.
+> The workaround will match the broken BIOS which lack of CPPC capabilities
+> nominal_freq and lowest_freq definition in the ACPI table.
 > 
+> $ cat /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
+> 0
+> $ cat /sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq
+> 0
+> 
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+> Tested-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
+> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+> ---
+>  drivers/cpufreq/amd-pstate.c | 53 ++++++++++++++++++++++++++++++++++--
+>  include/linux/amd-pstate.h   |  6 ++++
+>  2 files changed, 57 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index ec049b62b366..59a2db225d98 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -67,6 +67,7 @@ static struct cpufreq_driver amd_pstate_epp_driver;
+>  static int cppc_state = AMD_PSTATE_UNDEFINED;
+>  static bool cppc_enabled;
+>  static bool amd_pstate_prefcore = true;
+> +static struct quirk_entry *quirks;
 
-More precisely we could something like this (this is just an example, obviously
-the list is clearly incomplete):
+If we set quirks as global pointer, while the amd-pstate is uninstalling,
+should we free the quirks as well?
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 754d91857d63..80477170ccc0 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1182,6 +1182,24 @@ static const __initconst struct x86_cpu_id cpu_vuln_whitelist[] = {
-         VULNWL_INTEL(ATOM_TREMONT_L,            NO_EIBRS_PBRSB),
-         VULNWL_INTEL(ATOM_TREMONT_D,            NO_ITLB_MULTIHIT | NO_EIBRS_PBRSB),
-  
-+       /*
-+        * The following Intel CPUs are affected by BHI, but they don't have
-+        * the eIBRS feature. In that case, the default Spectre v2 mitigations
-+        * are enough to also mitigate BHI. We mark these CPUs with NO_BHI so
-+        * that X86_BUG_BHI doesn't get set and no extra BHI mitigation is
-+        * enabled.
-+        *
-+        * This avoids guest VMs from enabling extra BHI mitigation when this
-+        * is not needed. For guest, X86_BUG_BHI is never set for CPUs which
-+        * don't have the eIBRS feature. But this doesn't happen in guest VMs
-+        * as the virtualization can hide the eIBRS feature.
-+        */
-+       VULNWL_INTEL(IVYBRIDGE_X,               NO_BHI),
-+       VULNWL_INTEL(HASWELL_X,                 NO_BHI),
-+       VULNWL_INTEL(BROADWELL_X,               NO_BHI),
-+       VULNWL_INTEL(SKYLAKE_X,                 NO_BHI),
-+       VULNWL_INTEL(SKYLAKE_X,                 NO_BHI),
-+
-         /* AMD Family 0xf - 0x12 */
-         VULNWL_AMD(0x0f,        NO_MELTDOWN | NO_SSB | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_BHI),
-         VULNWL_AMD(0x10,        NO_MELTDOWN | NO_SSB | NO_L1TF | NO_MDS | NO_SWAPGS | NO_ITLB_MULTIHIT | NO_MMIO | NO_BH
+Thanks,
+Ray
 
-
-alex.
+>  
+>  /*
+>   * AMD Energy Preference Performance (EPP)
+> @@ -111,6 +112,41 @@ static unsigned int epp_values[] = {
+>  
+>  typedef int (*cppc_mode_transition_fn)(int);
+>  
+> +static struct quirk_entry quirk_amd_7k62 = {
+> +	.nominal_freq = 2600,
+> +	.lowest_freq = 550,
+> +};
+> +
+> +static int __init dmi_matched_7k62_bios_bug(const struct dmi_system_id *dmi)
+> +{
+> +	/**
+> +	 * match the broken bios for family 17h processor support CPPC V2
+> +	 * broken BIOS lack of nominal_freq and lowest_freq capabilities
+> +	 * definition in ACPI tables
+> +	 */
+> +	if (boot_cpu_has(X86_FEATURE_ZEN2)) {
+> +		quirks = dmi->driver_data;
+> +		pr_info("Overriding nominal and lowest frequencies for %s\n", dmi->ident);
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dmi_system_id amd_pstate_quirks_table[] __initconst = {
+> +	{
+> +		.callback = dmi_matched_7k62_bios_bug,
+> +		.ident = "AMD EPYC 7K62",
+> +		.matches = {
+> +			DMI_MATCH(DMI_BIOS_VERSION, "5.14"),
+> +			DMI_MATCH(DMI_BIOS_RELEASE, "12/12/2019"),
+> +		},
+> +		.driver_data = &quirk_amd_7k62,
+> +	},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(dmi, amd_pstate_quirks_table);
+> +
+>  static inline int get_mode_idx_from_str(const char *str, size_t size)
+>  {
+>  	int i;
+> @@ -812,8 +848,16 @@ static int amd_pstate_init_freq(struct amd_cpudata *cpudata)
+>  	if (ret)
+>  		return ret;
+>  
+> -	min_freq = cppc_perf.lowest_freq * 1000;
+> -	nominal_freq = cppc_perf.nominal_freq * 1000;
+> +	if (quirks && quirks->lowest_freq)
+> +		min_freq = quirks->lowest_freq * 1000;
+> +	else
+> +		min_freq = cppc_perf.lowest_freq * 1000;
+> +
+> +	if (quirks && quirks->nominal_freq)
+> +		nominal_freq = quirks->nominal_freq * 1000;
+> +	else
+> +		nominal_freq = cppc_perf.nominal_freq * 1000;
+> +
+>  	nominal_perf = READ_ONCE(cpudata->nominal_perf);
+>  
+>  	highest_perf = READ_ONCE(cpudata->highest_perf);
+> @@ -1662,6 +1706,11 @@ static int __init amd_pstate_init(void)
+>  	if (cpufreq_get_current_driver())
+>  		return -EEXIST;
+>  
+> +	quirks = NULL;
+> +
+> +	/* check if this machine need CPPC quirks */
+> +	dmi_check_system(amd_pstate_quirks_table);
+> +
+>  	switch (cppc_state) {
+>  	case AMD_PSTATE_UNDEFINED:
+>  		/* Disable on the following configs by default:
+> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
+> index ab7e82533718..6b832153a126 100644
+> --- a/include/linux/amd-pstate.h
+> +++ b/include/linux/amd-pstate.h
+> @@ -128,4 +128,10 @@ static const char * const amd_pstate_mode_string[] = {
+>  	[AMD_PSTATE_GUIDED]      = "guided",
+>  	NULL,
+>  };
+> +
+> +struct quirk_entry {
+> +	u32 nominal_freq;
+> +	u32 lowest_freq;
+> +};
+> +
+>  #endif /* _LINUX_AMD_PSTATE_H */
+> -- 
+> 2.34.1
+> 
 
