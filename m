@@ -1,97 +1,138 @@
-Return-Path: <linux-kernel+bounces-145075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6357D8A4F2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:36:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6508A4F0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:31:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E23C1C211DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:36:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 365712836F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF9AC6F505;
-	Mon, 15 Apr 2024 12:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C5E6D1A1;
+	Mon, 15 Apr 2024 12:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b="vq/1QqC3"
-Received: from outbound6.mail.transip.nl (outbound6.mail.transip.nl [136.144.136.128])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IA2k3c0V";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TUgzW5rl"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7A66EB75;
-	Mon, 15 Apr 2024 12:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.144.136.128
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9081FA1
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713184594; cv=none; b=I4rImYyG3y8bI8HjYJgtwRU7CST+vxtQPQs1jaCiLcMZwYpSAJ1/aByMrIq1vu+/j4F1U/LBySLOlxhiBGX16C/o/o8vcSLSWw6EB+1VBQxwXsWPBGDuI5kuPdmg4nOIqpDCkrBuK61sD4KDrdY767ORNzP1T6Io74d3/k0JKtA=
+	t=1713184256; cv=none; b=Gyf1Rst6XJFxK1RQl+eBXGMgb//L1juXY+Ab7cAIQoywQwk7VMqpkHB8h/MY7Yy5cud6t6OePP0gLgYAXDtJipFi0f5jvAcWXwo1wJ+d87PVFw3KvXGkIGSwn2h7mFR6+HwOlP45fRjvsLD5f+AqRZ/D9e3yHb5KZjww7Ewz/Zs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713184594; c=relaxed/simple;
-	bh=jNxeHg+oTTWWtYZWMUwMdJnwrZpUbPV9n1Ea3y9Gocw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BIFI5fpOS/KSrkDpeNIsrXIzTcXhJvFnHCpUsTOd2SwRSGScx3DaX/zvURhi8qiyr1QShoIfz/CY4h42CgSL24vLr3ytQmr2DRcosohPjfuS1npYg7Qswd5/VqY7l5kYH2FV27jLfKe7cqYCFN2EHw+9gtd9i5FDhx+6Qgbl1jI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org; spf=pass smtp.mailfrom=herrie.org; dkim=pass (2048-bit key) header.d=herrie.org header.i=@herrie.org header.b=vq/1QqC3; arc=none smtp.client-ip=136.144.136.128
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=herrie.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=herrie.org
-Received: from submission5.mail.transip.nl (unknown [10.103.8.156])
-	by outbound6.mail.transip.nl (Postfix) with ESMTP id 4VJ62p2xxXzwLJDv;
-	Mon, 15 Apr 2024 14:30:42 +0200 (CEST)
-Received: from herrie-desktop.. (110-31-146-85.ftth.glasoperator.nl [85.146.31.110])
-	by submission5.mail.transip.nl (Postfix) with ESMTPA id 4VJ62n1SBpz7tDD;
-	Mon, 15 Apr 2024 14:30:41 +0200 (CEST)
-From: Herman van Hazendonk <github.com@herrie.org>
-To: andersson@kernel.org
-Cc: benwolsieffer@gmail.com,
-	chris.chapuis@gmail.com,
-	Herman van Hazendonk <github.com@herrie.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lee Jones <lee@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Satya Priya <quic_c_skakit@quicinc.com>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: mfd: qcom: pm8xxx: Add pm8901 compatible
-Date: Mon, 15 Apr 2024 14:30:38 +0200
-Message-Id: <20240415123038.1526386-1-github.com@herrie.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1713184256; c=relaxed/simple;
+	bh=16igbDBxYxvU1x661QKxvfTSCMQD0ch6OYA44oQy3vM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=CaiiWqwgwhsuXLmw7m2nxoNJIy3SygCUY/Tgg6KAMJROMobZ6OKFl9uM9ALPaXP1pBguJSeIW+TvSgVcVuL1olZ+CfW4PQVu44TysYxYEOT0Ou1FLq/ruXo0mcYIIF17BDWBvMi0+6sORxNAEUOtj9pd44TBtRl/iuG7LjLEM3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IA2k3c0V; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TUgzW5rl; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713184246;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=31UKcuC29fhH2gQ7AFdErWb9xDpB3f6MYdu5CdzUIIQ=;
+	b=IA2k3c0VmYV/3qlHKG/q0IL16+qVecLW1kmkRnzkF8ZJQyMSpEQHQ03AhC+Qrf1qersnMn
+	OjmfGotp7DvX/pNtpnTxEqe0380WqVjMynm/cZit7Arlx3x4TlJP/BxcJxtKp8qr36bBgc
+	fPV/88gmDf3HBPqCmi0KZEYUYVvV0FicAHPTpDUyqsTDGXUCSZVB2G6bqekpvOmZKT0FII
+	0Q8mHybMXof9/JkcsB5ULGYMPreJwUDblsZebPW4V+2kRZGdDh1VqNgblUb0d6WagCLrSu
+	hpoFiiCXUn5dbOgiU8jDGWqlpCofehUb/Jm2h7cYY5aUe2McPU6PZ25WSa4dHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713184246;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=31UKcuC29fhH2gQ7AFdErWb9xDpB3f6MYdu5CdzUIIQ=;
+	b=TUgzW5rlPcFwUnHGWaqJx1OzgGk/iRrOD4lh6AyUxW9TXvku79JXSZ64ChEDnt8EhUMXW3
+	4RYcrrpU6vkFVZAQ==
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>, John Stultz
+ <jstultz@google.com>, Peter Zijlstra <peterz@infradead.org>, Ingo Molnar
+ <mingo@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Eric Biederman
+ <ebiederm@xmission.com>, Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH] posix-timers: Handle returned errors poperly in
+ [i]timer_delete()
+In-Reply-To: <20240410164558.316665885@linutronix.de>
+References: <20240410164558.316665885@linutronix.de>
+Date: Mon, 15 Apr 2024 14:30:46 +0200
+Message-ID: <8734rm95ah.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: ClueGetter at submission5.mail.transip.nl
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=transip-a; d=herrie.org; t=1713184241; h=from:subject:to:cc:date:
- mime-version; bh=24iK7R241bVwFtU8XHYOGUwB4N3mqV9EFuOa+luzOCQ=;
- b=vq/1QqC3uNBHJv9T1gt6ln2doJiUzUwtffkGWloOt25ywaYIPxseX33IZBCPHElbJh4jOb
- FC/WgR5Y/Xgia8yJ3zIwzDMdSPuWvPKT9lSmJTlnGTcCdBV6hPPgv3BHpCj/+p6y/KyLlf
- 5iQG3/09vuSLwlfTVIGXYhxnXSR1HSekut/0/jOK1+nYEP1FwG8qiFYrWZQ2feK1nZGM4E
- bVFqsEKF+biVxar2FHLq8XETY1ua54y3lrh+TktARkYPXW84qJ3Gx/oz8rAQeAIvUzHHHm
- 6TtmHVA+cYk3/paxIW06CUMqMjmBP8xBC5ud/w44o2Ve+II1C5OkxDM6Ck+9ew==
-X-Report-Abuse-To: abuse@transip.nl
+Content-Type: text/plain
 
-Add missing compatible for the pm8901 model used in msm8660
-such as (HP TouchPad (tenderloin).
+timer_delete_hook() returns -EINVAL when the clock or the timer_del
+callback of the clock does not exist. This return value is not handled by
+the callsites timer_delete() and itimer_delete().
 
-Signed-off-by: Herman van Hazendonk <github.com@herrie.org>
+Therefore add proper error handling.
+
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 ---
- Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml | 1 +
- 1 file changed, 1 insertion(+)
+When having a look at the posix timer code during reviewing the queue, I
+stumbled over this inconsitency. Maybe you want to have it in your
+cleanup queue. Patch applies on top of your queue.
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-index 7fe3875a5996..63e18d6a9c21 100644
---- a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-+++ b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-@@ -19,6 +19,7 @@ properties:
-       - enum:
-           - qcom,pm8058
-           - qcom,pm8821
-+          - qcom,pm8901
-           - qcom,pm8921
-       - items:
-           - enum:
--- 
-2.40.1
+ kernel/time/posix-timers.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -1009,6 +1009,7 @@ SYSCALL_DEFINE1(timer_delete, timer_t, t
+ {
+ 	struct k_itimer *timer;
+ 	unsigned long flags;
++	int ret;
+ 
+ 	timer = lock_timer(timer_id, &flags);
+ 
+@@ -1019,7 +1020,11 @@ SYSCALL_DEFINE1(timer_delete, timer_t, t
+ 	/* Prevent signal delivery and rearming. */
+ 	timer->it_signal_seq++;
+ 
+-	if (unlikely(timer_delete_hook(timer) == TIMER_RETRY)) {
++	ret = timer_delete_hook(timer);
++	if (ret < 0)
++		return ret;
++
++	if (unlikely(ret == TIMER_RETRY)) {
+ 		/* Unlocks and relocks the timer if it still exists */
+ 		timer = timer_wait_running(timer, &flags);
+ 		goto retry_delete;
+@@ -1047,6 +1052,7 @@ SYSCALL_DEFINE1(timer_delete, timer_t, t
+ static void itimer_delete(struct k_itimer *timer)
+ {
+ 	unsigned long flags;
++	int ret;
+ 
+ 	/*
+ 	 * irqsave is required to make timer_wait_running() work.
+@@ -1054,13 +1060,17 @@ static void itimer_delete(struct k_itime
+ 	spin_lock_irqsave(&timer->it_lock, flags);
+ 
+ retry_delete:
++	ret = timer_delete_hook(timer);
++	if (WARN_ON_ONCE(ret < 0))
++		return;
++
+ 	/*
+ 	 * Even if the timer is not longer accessible from other tasks
+ 	 * it still might be armed and queued in the underlying timer
+ 	 * mechanism. Worse, that timer mechanism might run the expiry
+ 	 * function concurrently.
+ 	 */
+-	if (timer_delete_hook(timer) == TIMER_RETRY) {
++	if (ret == TIMER_RETRY) {
+ 		/*
+ 		 * Timer is expired concurrently, prevent livelocks
+ 		 * and pointless spinning on RT.
 
