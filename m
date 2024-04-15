@@ -1,130 +1,125 @@
-Return-Path: <linux-kernel+bounces-145529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D40838A576F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:16:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D483B8A5771
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:16:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 737931F238DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:16:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D375287EBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4327A82484;
-	Mon, 15 Apr 2024 16:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C988061C;
+	Mon, 15 Apr 2024 16:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NWK2Oe45"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GiUzGe5z"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DAEC811F8;
-	Mon, 15 Apr 2024 16:14:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F12B811F8
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197660; cv=none; b=dTpoMBxSzIrcoJqNYRVFpuVnR4Ai1qaqR9HxVl5HoEzRF+bE9w5R/U4Y0Q3SXuWUwQcS45lwJARQ8wlNu0UtqnQSMTnYRFu3efVg8se11hsSnLZnCd+XkKCs75WIJ0i860hmUW+lR79e8AYoNKuk+PoDTPYtSeM+rLRAaPY2gtw=
+	t=1713197682; cv=none; b=HP9HDq33TdmxrcJ7cx/TZZ+kHc3umfB8WXpyL1D3qwfMXQqleD3waQ0Qb5KLkgVLEIVq5SFxITqeTT2Q0Sx0x5ANzIKWMQ16ikBXmCnNR8Qo8T6U1/lz9gaU+SehDoZn+3pjP9JoJoJTkQmKtdFLpR1IY3kZS5n75wo4qUsIUPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197660; c=relaxed/simple;
-	bh=/ootUrK3FISZzlHY5cdyAk5UWo80W6lQ6cS8eI1Rc1c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iBaTmoj1jv7wFEgt/GRmxf1Zp4Mw0gbYNf6JMJEjw/B8/2KNBnc3vmEtgw6BLW+aExQCeprZCOqzjFe712e3hFl5FHluHoiPezS9ewnW4tHI6NbC+kxIT0LxvE0qGxsj0nAWGaEIYkATocQAg3ZnimpvboGFEnf81rwdukuPFDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NWK2Oe45; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso21135925ad.2;
-        Mon, 15 Apr 2024 09:14:19 -0700 (PDT)
+	s=arc-20240116; t=1713197682; c=relaxed/simple;
+	bh=rquWVadfj6Yy0WoSxsb5IHBjslGBtA7x3EuuyCTZdjk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hNpmDQT8bJY0drzcOGLYXJ18F4rRiCThnvD816K7vTBh70jVzk/bI44/GeqS39xDylzaBLnZtWEqMPathmKHUu6dWHfvj/iDRFSbYKm32wZdpdUAe1OjS1lZey8vIF4jknlCkUkM7Xlc/ax+mvUbfxXErlRHp0N3mjvm+iewdTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GiUzGe5z; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e3c3aa8938so21257485ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713197658; x=1713802458; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a+yP6zPxyPYg1tSQ7cI6u1fk4xG8ndbSRH117EG8ojI=;
-        b=NWK2Oe45aGtzj/+/P9MkhPNS6FZetmRm7pOOjTt+Hl7osHjjXMszYAPjFZ60ttuOHG
-         Fqq4RPI0CUe9I7ciWOiWt1oTf7xu/CHDY4HKWIatbprTAg4AHFfKgAb00lbsI06pCX0T
-         my+VkrdUkU59lmhGDuxfyPW2/I+MWsIzf7sIcuMpiB1FBo+H0+dq/FptQ3TRoi5l2kdZ
-         EF0M0n5kOihJCO6vqYFKb7iOPPfkzAklYrCWGI5Zg3HtZ+uwDbiPhSsU8DchZdUTeXnw
-         Ghh0stECG9PJGG/ZL7nk/Xa8/brDVypvuD/rT12OPxbtZs5cPLd5xAcBB8qQjPaXOH1i
-         11ew==
+        d=chromium.org; s=google; t=1713197680; x=1713802480; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ESjTQEjB6T8D9BX5RBjgYE4FpXh9kObuptxS+F5zuE8=;
+        b=GiUzGe5z34BY6zeJdhN3wvu0a7PYCIf7nq+L6SMWCrkLKL0xwDlp74JrEysCkeKn4y
+         /lOGr1I0d8rPqTFMlHRq2gPfVbMt0DUwV/jvOmJb/itGJNRXPk9v+yOWaNw6/xHHxrxx
+         qwvVsfU04DHg9KedMTBM6pFBfUhBb/DYlCyHs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713197658; x=1713802458;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a+yP6zPxyPYg1tSQ7cI6u1fk4xG8ndbSRH117EG8ojI=;
-        b=TPs22WifQ2XVHQknWaxbXSmjDylPGGxU8gantKqVtJvdSTgqPYhXj0s6OKSkWyFv/q
-         hUFsH0wNQugClfZmWhBjf43Vt6e8sPfk5ZNjyTL5/8mP6DVxUfYjTN/AEPYjMMjwSlDK
-         soZIugg4+CYvp/4LRJWOhDXQNpkQoiUCTDMoEjM4NbOqed1Nbw72+wdUUpm1RfCOY2e9
-         mQzUsAVfzKxu854A57YuTnkkBuIxznRKDpY7tDB64LphzcB5Sb0KqXTl1DgdCx+44ouJ
-         +SBJs4Ot+YcP3g7hfuMvzrm20LeFEKGngdSiBoCNZvertmNLnNwZ2JGY/8bVF/KsAkPc
-         poeg==
-X-Forwarded-Encrypted: i=1; AJvYcCUak/mlDhISt+f6rd0QJr4TdAFdh7G8PLp8HTyVcBB2mLMfHVbrQ0aVOv4XKdS5sHn8eGBK6v8Wqh5cVT3Rfu9nIgphXh6OWRXgXmICsXgiyYZYlrOB/Ks1cH/7sc1bDmCHkYv7jqCZZGso44w6
-X-Gm-Message-State: AOJu0Yx+n5pBB7pkZzT2sHC+6ycg8tf87/ZphkootI435lhQpDUca/zI
-	ehihaTgJ2/8+MtE9FIIpqVKCCnWbhIiClCRL8oZMcdkQoPIVk9SE
-X-Google-Smtp-Source: AGHT+IFvb2zxtTh0r5yK4c7ctMgmX0LTXNnnxkj5eirzpA3VrIkdKLJmugyMB2FbcKh8F9G+aHtJPw==
-X-Received: by 2002:a17:902:ce0e:b0:1e2:d4da:6c72 with SMTP id k14-20020a170902ce0e00b001e2d4da6c72mr15237696plg.0.1713197658542;
-        Mon, 15 Apr 2024 09:14:18 -0700 (PDT)
-Received: from dev0.. ([49.43.161.106])
-        by smtp.gmail.com with ESMTPSA id e2-20020a170902784200b001e797d4b8acsm1358664pln.174.2024.04.15.09.14.14
+        d=1e100.net; s=20230601; t=1713197680; x=1713802480;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ESjTQEjB6T8D9BX5RBjgYE4FpXh9kObuptxS+F5zuE8=;
+        b=XY54+RzRbMz0y6iQcNH77/cHKpIqGcBoCVWVvGBonepNyL7ypLS3774d/Vg28u9F7J
+         3xv34d5UGoGkuhFMumR4QOXqMQvO2yP45dkBVOZq3Y9lrwermsPzmymAUn7OesW01gA/
+         iHw0j7iW/CHgPRT1nKrgGQLwivGCOYhT8RLCDE041wGcQiig0Q0e5NMFOP0isfQKV6pC
+         6J2bNIck13sKDqeRi2cXc/67vun1AruGsK0R6xjzWwbZCJeGUAdXECxc1pGvDXSISEVB
+         C00fdiX7/OIWOMFTxNedqwOLbFPWVsfAh+Qg4+hfRUYX5Tz9IZv6BxMnlG8HLPcBSg+J
+         Nwdw==
+X-Forwarded-Encrypted: i=1; AJvYcCUNPDFQcaKX5kMccto1028dnnozsvKyIHZV2w3AxFxyNjDoiSgG0Ya6Qw7/B2BdX7OC/QvAav46Di7UWTOAcOgNbpyLA3t5o54Y2HTe
+X-Gm-Message-State: AOJu0YyJropNRWtjf7VR5agfbGd0GwufZorn7EQhMuoAXL7JzgZ2qyrB
+	H60SCevUPHHLa02KYbBn4vCmcMa5BO3HCs8ZY2k1A5je4cxlnqvsWKwlkSFUZg==
+X-Google-Smtp-Source: AGHT+IEe1jv52+Td77XuCCAwHJ71uxuy0azFMdvGaqzkxeNt/5dBr0b2bIK8CztJl0u2nID5zkc5Kw==
+X-Received: by 2002:a17:902:cf05:b0:1e5:a3b2:3da2 with SMTP id i5-20020a170902cf0500b001e5a3b23da2mr9918860plg.53.1713197679742;
+        Mon, 15 Apr 2024 09:14:39 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g9-20020a170902934900b001e45c0d6be6sm8070099plp.246.2024.04.15.09.14.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 09:14:18 -0700 (PDT)
-From: Abhinav Jain <jain.abhinav177@gmail.com>
-To: keescook@chromium.org,
-	tony.luck@intel.com,
-	gpiccoli@igalia.com,
-	linux-hardening@vger.kernel.org,
+        Mon, 15 Apr 2024 09:14:38 -0700 (PDT)
+Date: Mon, 15 Apr 2024 09:14:38 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Arnd Bergmann <arnd@kernel.org>,
+	Gatlin Newhouse <gatlin.newhouse@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Cc: skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	Abhinav Jain <jain.abhinav177@gmail.com>,
-	Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH] pstore/ram: Replace of_node_put with __free() for automatic cleanup
-Date: Mon, 15 Apr 2024 16:14:09 +0000
-Message-Id: <20240415161409.8375-1-jain.abhinav177@gmail.com>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH 3/6] [v3] kbuild: turn on -Wrestrict by default
+Message-ID: <202404150909.E703A96D0@keescook>
+References: <20240415122037.1983124-1-arnd@kernel.org>
+ <20240415122037.1983124-4-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240415122037.1983124-4-arnd@kernel.org>
 
-Add __free(device_node) to the parent_node struct declaration.
-Move declaration to initialization for ensuring scope sanity.
-Remove of_node_put from parent_node struct.
+On Mon, Apr 15, 2024 at 02:20:34PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> All known -Wrestrict warnings are addressed now, so don't disable the warning
+> any more.
 
-Suggested-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
----
- fs/pstore/ram.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Ah, great! Yes, I know Gatlin was also looking at this and doing a bunch
+of builds across compiler versions to verify this was ready to do too.
+Gatlin, are you able to provide a "Tested-by:" tag for this patch?
 
-diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
-index b1a455f42e93..14f2f4864e48 100644
---- a/fs/pstore/ram.c
-+++ b/fs/pstore/ram.c
-@@ -644,7 +644,6 @@ static int ramoops_parse_dt(struct platform_device *pdev,
- 			    struct ramoops_platform_data *pdata)
- {
- 	struct device_node *of_node = pdev->dev.of_node;
--	struct device_node *parent_node;
- 	struct resource *res;
- 	u32 value;
- 	int ret;
-@@ -704,14 +703,13 @@ static int ramoops_parse_dt(struct platform_device *pdev,
- 	 * we're not a child of "reserved-memory" and mimicking the
- 	 * expected behavior.
- 	 */
--	parent_node = of_get_parent(of_node);
-+	struct device_node *parent_node __free(device_node) = of_node_parent(of_node);
- 	if (!of_node_name_eq(parent_node, "reserved-memory") &&
- 	    !pdata->console_size && !pdata->ftrace_size &&
- 	    !pdata->pmsg_size && !pdata->ecc_info.ecc_size) {
- 		pdata->console_size = pdata->record_size;
- 		pdata->pmsg_size = pdata->record_size;
- 	}
--	of_node_put(parent_node);
- 
- 	return 0;
- }
+-Kees
+
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  scripts/Makefile.extrawarn | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+> index 8b3f5b62b837..95466a04d51b 100644
+> --- a/scripts/Makefile.extrawarn
+> +++ b/scripts/Makefile.extrawarn
+> @@ -98,7 +98,6 @@ else
+>  # Suppress them by using -Wno... except for W=1.
+>  KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
+>  KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
+> -KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
+>  KBUILD_CFLAGS += $(call cc-disable-warning, packed-not-aligned)
+>  KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow)
+>  KBUILD_CFLAGS += $(call cc-disable-warning, format-truncation)
+> -- 
+> 2.39.2
+> 
+
 -- 
-2.34.1
-
+Kees Cook
 
