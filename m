@@ -1,123 +1,171 @@
-Return-Path: <linux-kernel+bounces-145312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F341B8A5285
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:00:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2247D8A528D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:01:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFFAE28356D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:00:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C608C283B06
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CF374433;
-	Mon, 15 Apr 2024 14:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9B474425;
+	Mon, 15 Apr 2024 14:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FSbVVUT/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YYy7YDQ4"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4C773196;
-	Mon, 15 Apr 2024 14:00:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B26873189;
+	Mon, 15 Apr 2024 14:01:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713189630; cv=none; b=msfZHb0yKz0vEh4CmS6C4jg50Kesn1CucVEWeaMAihpUWm7Slw6l2TshPuyfc+h+Wrb3AHqYoRn86FbD0Ni11nLeeubc76SOrbaq4LmSGTEQT3AOGBZjkgIlX3GMsVHcwG7BxojOd80UgbAH31BzYsnzQnN08kE5u3zHWoytw/E=
+	t=1713189675; cv=none; b=dG8Oky7s2knWYGRKj/Fif93wlVtGclnJrhfowU+usyd2NqbjgNm901oj+bBTq1U+80ilR483qt/mt+cwprGxHha5aU8wxZki8+NpX38NHEN2RymONNBqdPXu05+e8xeSQvsYu8PcLh+Gu4fFURnWIFxJkUxwJIjf8mBIEaMfKPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713189630; c=relaxed/simple;
-	bh=vUMXX+OgsKDFjriUPXzBwg0hyHz5um7sSrP3ByWxMtA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TT+QTQ2M9v2g1FkQx0K5rUA/G6zVY87+axuWQv9DFWrRxgc5xF8UtohvOZDiUXGiDCXHHQ8sQU+2Z5AFejTd33AJmDc4PHV2VvHDvN0ey9rRMKPPQnpSh46t1Z8zfuCsNGNIcCclM7VppkOh+6mp8lvAmb+FXaYgBdpBXICzSYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FSbVVUT/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EE32C113CC;
-	Mon, 15 Apr 2024 14:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713189629;
-	bh=vUMXX+OgsKDFjriUPXzBwg0hyHz5um7sSrP3ByWxMtA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FSbVVUT/4O8CWWGyMHoZTZGbTja7KlLC+eTrlDIe7uQpHmiMUwxOMo9nNqqNtBHCM
-	 f0Yik9mTfrz/vmnMcHyrxCQ8WhYFMxN3fxIkqRNqPWxu0ZeIfqNcNEdZkkeMeGTOLX
-	 jIOWZp/+dDcXG/znc304kX2D2TjXDBJqVy9pI4MMQVSnG+1UX8FTfk96Gq7795b6Kx
-	 3EX6QiFGVPh0YCWMK+1VL8vr2s8cVUePkED2SMZYXUSRR/8Dlh3GDq1uk1fWqrdoCl
-	 fTSUvxJf/lxnj1lCskcjF47NmnYnbl9ztuqRhAZxknTZhTHnFDz4Qh56YhqQiNh48J
-	 7GQtk7v8ri9Ew==
-Date: Mon, 15 Apr 2024 19:30:15 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Jingoo Han <jingoohan1@gmail.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Jesper Nilsson <jesper.nilsson@axis.com>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, Niklas Cassel <cassel@kernel.org>,
-	linux-arm-kernel@axis.com, linux-rockchip@lists.infradead.org,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v12 2/8] PCI: dwc: ep: Add Kernel-doc comments for APIs
-Message-ID: <20240415140015.GJ7537@thinkpad>
-References: <20240327-pci-dbi-rework-v12-2-082625472414@linaro.org>
- <20240412195836.GA13344@bhelgaas>
+	s=arc-20240116; t=1713189675; c=relaxed/simple;
+	bh=lpBPkRDdCzQNZjrZ+c7eHd34o93n0pvgK/Pf7ypBlwA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ALRhmPXjajJNctqOiAWAC07ByQ3KWZnyRcJ2ArhErBRtdCrFyBE8SxN0jBpuJclX7q1UCxeaZUuYLAqioNRnLkE9zarTtCdj5lvhtezz+jWeB2Xv3RkbMF1h3B6Hvqyhb88b3SNEVQWxG+2sj4CjFYZNW/uieMwTuthI7yofDUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YYy7YDQ4; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-570175e8e6fso1991071a12.3;
+        Mon, 15 Apr 2024 07:01:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713189668; x=1713794468; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p24MW4lT8Qhns1Y9ZBylqR7BJKJfhrh/oDdc/sbfEQk=;
+        b=YYy7YDQ4ruW5DHpniNynHooTjnzHWdQpQJLKOP93yhJyq7ZSK1lguAXFxIGzSq7Tsl
+         ptEjrb15JY3BZJjco7y/jbqs4kBGBd+ZH4uePhscuD3wvzeRnc4aizIoTuHB8W2ARd7K
+         GJJkaqTra80UR5vMLcpyGf4ag09OxG3U+P5v3DWvJhSQbqh812o4vVB7p5Rn42VVsvbE
+         iK/DK3AFeerzGNLS/DN+g0cs+ctyfTh4Gi2BaOGU2YTqPJj3/NPvnZYNLcSkSUKsx7p2
+         wo8QPSwbjH3mF7CRLR5bAqqPzZuqb3AkZk0q94earTjvfwD6E3Tl8qE6l5pav6zsze0D
+         uNlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713189668; x=1713794468;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p24MW4lT8Qhns1Y9ZBylqR7BJKJfhrh/oDdc/sbfEQk=;
+        b=Dmuz3BcfW93mDntMQ86WIJkJOP3Xafq/Oz4IMFnUp+MVTC14BQm84z+q/lva/iCb9a
+         rpB+7xat+VcILl1rP846FHyXWMkLZ9r3ndcblSxkz5t361z1tEewJpcxxHiikZw/EFI5
+         aQc3EPBNRnFm0g+fSZ8aB5+bdE+9kRgiVVE76XzToK8h4ZJP4CH1NaxoyAhFmXNpOVeL
+         9/03cQC/JDWbkAkCAokudOJZLPqio7q0ZqHSBtVxWkWHGEdZFovYmC7ucDFmNU56yaxx
+         RwWLr9rYhe3BBjxXWSGueuSfJxuMo0nWGNQvkNUXc6//+sJh4FiJuzAuAFLtBkBVz4eA
+         Hb1A==
+X-Forwarded-Encrypted: i=1; AJvYcCU1yX8UW6RUZdPZbP2AZY9Yvf73ljjFgnH0PkA2GGgvbZlskk+dP4Z6VOPbssXKkHtaQGh0KZmSxS0MVpPv2ipoUes7BIVFEC495oWPIjte616Yj0pzUBRIb6NtXYpGcS3XvBBHWk8AVqaVcqG9pYnIKo/oDyP17ToasIqXJ9BEVZHJW90=
+X-Gm-Message-State: AOJu0YzlBJMcTsa/MPchpxgtkjSRRbogBRpEL0L4HbJzBQP7hlnz3SPY
+	+H5Ftun4oh687MIImh+BvTxyZOrbB4EkdmEYnSEu2Bmu1bK6AJvhWEp+o8Z+zBF3PX51k9Czzw3
+	vq4Bhby20paF1zDH2udi1XoOOP2w=
+X-Google-Smtp-Source: AGHT+IGC1BfZnQLhZFzAUp5MFPYOAUjH5/+Y5w23zzmSabgzkZplX8A2dmV0W5bVlElQTHiFmOsGdVmTzH1nBpvI8Ik=
+X-Received: by 2002:a17:907:b9d5:b0:a54:c130:21fd with SMTP id
+ xa21-20020a170907b9d500b00a54c13021fdmr983688ejc.13.1713189668195; Mon, 15
+ Apr 2024 07:01:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240412195836.GA13344@bhelgaas>
+References: <20240415-pinctrl-scmi-v10-0-59c6e7a586ee@nxp.com> <20240415-pinctrl-scmi-v10-4-59c6e7a586ee@nxp.com>
+In-Reply-To: <20240415-pinctrl-scmi-v10-4-59c6e7a586ee@nxp.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 15 Apr 2024 17:00:31 +0300
+Message-ID: <CAHp75VdoaL-66vDFeDWXg5V0XnL45F_JQZ_BNeaaOcSwQz5gnQ@mail.gmail.com>
+Subject: Re: [PATCH v10 4/4] pinctrl: Implementation of the generic
+ scmi-pinctrl driver
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Sudeep Holla <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Dhruva Gole <d-gole@ti.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	Peng Fan <peng.fan@nxp.com>, Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 02:58:36PM -0500, Bjorn Helgaas wrote:
-> On Wed, Mar 27, 2024 at 02:43:31PM +0530, Manivannan Sadhasivam wrote:
-> > All of the APIs are missing the Kernel-doc comments. Hence, add them.
-> 
-> > + * dw_pcie_ep_reset_bar - Reset endpoint BAR
-> 
-> Apparently this resets @bar for every function of the device, so it's
-> not just a single BAR?
-> 
+On Mon, Apr 15, 2024 at 11:43=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.c=
+om> wrote:
+>
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> scmi-pinctrl driver implements pinctrl driver interface and using
+> SCMI protocol to redirect messages from pinctrl subsystem SDK to
+> SCMI platform firmware, which does the changes in HW.
 
-Right. It should've been 'Reset endpoint BARs'. And the API name is also
-misleading, but that is not the scope of this series.
+Below are some cosmetics, but in general LGTM, thanks!
+Reviewed-by: Andy Shevchenko <andy@kernel.org>
 
-> > + * dw_pcie_ep_raise_intx_irq - Raise INTx IRQ to the host
-> > + * @ep: DWC EP device
-> > + * @func_no: Function number of the endpoint
-> > + *
-> > + * Return: 0 if success, errono otherwise.
-> 
-> s/errono/errno/ (another instance below)
-> 
+..
 
-ah, thanks for spotting. Since this series is already merged, I hope Krzysztof
-can ammend this.
+> +#include <linux/device.h>
+> +#include <linux/dev_printk.h>
 
-- Mani
+The second one is guaranteed to be included by the first one, so
+dev_printk.h can be removed.
 
--- 
-மணிவண்ணன் சதாசிவம்
+> +#include <linux/err.h>
+
++ errno.h as ENOTSUPP is defined there and surprisingly err.h doesn't
+include that.
+
++ mod_devicetable.h (for the ID table type definition)
+
+> +#include <linux/module.h>
+> +#include <linux/scmi_protocol.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+
+..
+
+> +/* Define num configs, if not large than 4 use stack, else use kcalloc *=
+/
+
+kcalloc()
+
+..
+
+> +       ret =3D pinctrl_ops->settings_get_one(pmx->ph, pin, PIN_TYPE, typ=
+e,
+> +                                           &config_value);
+> +       if (ret) {
+> +               /* Convert SCMI error code to PINCTRL expected error code=
+ */
+> +               if (ret =3D=3D -EOPNOTSUPP)
+> +                       ret =3D -ENOTSUPP;
+> +               return ret;
+> +       }
+
+It can be split as
+
+       ret =3D pinctrl_ops->settings_get_one(pmx->ph, pin, PIN_TYPE, type,
+                                           &config_value);
+       /* Convert SCMI error code to PINCTRL expected error code */
+       if (ret =3D=3D -EOPNOTSUPP)
+               return -ENOTSUPP;
+       if (ret)
+               return ret;
+
+..
+
+> +       ret =3D pinctrl_ops->settings_get_one(pmx->ph, group, GROUP_TYPE,=
+ type,
+> +                                           &config_value);
+> +       if (ret) {
+> +               /* Convert SCMI error code to PINCTRL expected error code=
+ */
+> +               if (ret =3D=3D -EOPNOTSUPP)
+> +                       ret =3D -ENOTSUPP;
+> +               return ret;
+> +       }
+
+As per above.
+
+--
+With Best Regards,
+Andy Shevchenko
 
