@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-145796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC3F8A5AEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:40:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 906A48A5AF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:40:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD937B230D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:40:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADEB01C20AB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F0D715E5A2;
-	Mon, 15 Apr 2024 19:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5908D15E200;
+	Mon, 15 Apr 2024 19:34:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AY/2PAVw"
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gtAXBN29"
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38C215DBAD
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1626715E1F7
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209686; cv=none; b=iL4Imkpkhitn1roAUwPFMF/Pawi3Q2FmgYuPdbjEm/pVZpVHzYqf08v0aBrlb5xeN82UT/0foP2u86CC+BG2gNYelgGEV6J8d7IQkn0KCgdkZZnwgmgfzQRQdWhprWWIjXQP6MLWmcF0NYgkt6mU5HXS7KnOrenPWB1HX/UYFyE=
+	t=1713209687; cv=none; b=UfOciqwGLtn02T4NmgNFFClqDIJHZvRAYsIZDxFEtK9t8ElnP9S812/7BS4mJBv75yNEDfDj9oqD1O6l589NfLugZlzmYgqyxTu8TFrwCqOKIadZKkx9d6hqhnkrzRpYHXmjWaP6kSWHGKDrKSGD2OPFKbiQVGGx5IFgFZsfRYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209686; c=relaxed/simple;
-	bh=vSxgRS5M3phaf64us4tF/P1BMReGwUyBbCQWgHsyXyQ=;
+	s=arc-20240116; t=1713209687; c=relaxed/simple;
+	bh=MUqVtQZnq5YrPZr6pNTFJQr9fKe11JNLTSYR8M7S0M0=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hAKZL2tJNXjQO/OvAYdEQl6FscnyYs3ayz/SJMuVrB7RnYpcGU1s2hGNFjfDhUilQXRoJoqE5ycfQgckwyblpB0ocGDbSM6NRJ0e0O8yjA3w6Pe8y3Js0yIlAiTzjd8KmadXbh9TG1ah91VdTKcLTOz+FCWPU63lE/aO4lCxZUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AY/2PAVw; arc=none smtp.client-ip=209.85.210.45
+	 In-Reply-To:To:Cc; b=UijsZvzFNLH/cYuM7Z4g2YIcPYsWSgNc0uU7nnxeOOJgBjn+L7X9f6YhRiJCzYrErwsei9FtBR6w/PguehMblqsUNggi4QDytpZub3A6V+GdbQTaPwQctsh8+DLAypbV9pFMzLf2LafgP3olT/wUbPiNGR+43RpxrLLC3CfumJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gtAXBN29; arc=none smtp.client-ip=209.85.210.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ea128e4079so2316117a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:34:44 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6eb7500abe3so894810a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:34:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713209684; x=1713814484; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1713209685; x=1713814485; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9NumvJIfF1EvDHzhvgph+fzItnp8SRnkGAbNB8M/eao=;
-        b=AY/2PAVwPVPHvVFchL3m36/jnIkqXPm8SJFJ95AtamNOHL5eS4Dl/ys+5Qn3A2rdVx
-         FrdrPNVZCa65ajOTA1+S/Vevr9yE2GwOhePrq4isVF/pTyQObNcFZoJhWxvZL2ePQFn9
-         pubkejZOe7gLnMkd/Qln8IU/DAcI3FYWSrpJg=
+        bh=9DQ62C5vkEz8a1t/8x1ghE+E9JYa6TkiF3DSBiMd/dY=;
+        b=gtAXBN299AOxQv4Ao9JEm1WX/KzKvP0EdCg041KDQu4xJxItcdHCWtt4XPPhaSR0iq
+         wNe8Xzz12jv01p/IiJxzzmbECfk2rPK1Ds+QEotxLbT0rPe6OXxb2b9aN6zokvxG4dtP
+         NEwAiBraf9xeCFASUHI6VjTxM9k1z8OHceBqo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713209684; x=1713814484;
+        d=1e100.net; s=20230601; t=1713209685; x=1713814485;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9NumvJIfF1EvDHzhvgph+fzItnp8SRnkGAbNB8M/eao=;
-        b=nqyrQGKEsl4Obp9vecAmOn858xwLz7hDwBzdPajNFrIFcHRBWh6Np82u2T5KxeFbyN
-         NhZZ7M5pNqD8G3Et8ETTD9TLIqhwSsT2FQvHfvv7DczfVWOSF8MOn1Lrb9lm7oVt86mu
-         sJmvyuO+Ed8oEMAaqqUDw/0ZwIfrk2VVneTWT4a3ZF4kl8uC4qCyUOA09QD8zO8Umrw4
-         TMqhDLL8SU5Ll2Lzc19d19oF/Q80OOa3Jz4XYsybLDsG4ssXquiYtm08NCdmSs6jynlx
-         sLgG103QOdKNF5ulUt2nsJSnsTIKTQA9Fi5PGsNdOVf+MCKKwU5tr1z/AHmWTpZN9S92
-         QFiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXXU6QHpWf0cZ+gYiGqtTyfXHCLbx+sUw4oR+A34/i84SgNRpjg8c9gnms2GcFRZquO8XTnfvAyNJ8f7m0OQNryrFcJJviWBoaP5cmh
-X-Gm-Message-State: AOJu0YzxxNnqoDoirXsIC9lLOsIEQSY7uNJhL5+/HVUW7+6wDIuKIe1+
-	nItOrPQdhzSGOl1e2N9bM58oPdSEwDWaP79fmQJFGFpXrnwvooELnm9vroh9Fg==
-X-Google-Smtp-Source: AGHT+IGDpQP0lGeeTbw+d3WHAnrIlvzGQRlawHZd8kFq+13/xBXNhp6Lzy5O5V8WuY+aqcrpA2RYcw==
-X-Received: by 2002:a9d:7991:0:b0:6eb:7c4f:d4d with SMTP id h17-20020a9d7991000000b006eb7c4f0d4dmr5274597otm.8.1713209683858;
-        Mon, 15 Apr 2024 12:34:43 -0700 (PDT)
+        bh=9DQ62C5vkEz8a1t/8x1ghE+E9JYa6TkiF3DSBiMd/dY=;
+        b=VzgCyL7/4l8lu2Vqt4N6PNis6vlOmhrplvciIrjC+2Y2+Fve7edSzljYV4ecGyE+b5
+         cUw1L0sp8KgRkBsfwcejkq8MCJWjN17jJWSgvPwFMhUUVBUgKz8iPAH3z+h20epky3or
+         5jFphiM5cZMZgqxPNWl0IfnZ1KynKcUnPK6W5qX2gvL+Rzzr1tXMNHWHOYsezDo+V6JE
+         j/tewDU9iRBz1IF9Z3OoIcvnDSWsh8lycp1IIZAHOeMz9u0N5964ZrplWoMmwfEBQKf2
+         EAbrkmUC6eWMwF7q6SrBwhBwS6nmhufYly10ilUnHZrxq4bCyJdgD5p8BNOCo0wBbp81
+         YeNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXVTCiK0FQZd3AkqiBOR2cCGsXxbvflFmlpoNmjOVGsuS1/rupIcZfq3WhqRyYJYWX/XrJGoEtvBhBy6xme8i31CqghrmBgbzMwsskZ
+X-Gm-Message-State: AOJu0Yz+oWJbYwGYy0HMLBBC0KCcYfP3rJI6M9Osz0XCEGtf8fP8oW5w
+	Rae1vWf/mxXSqzu2A61FXzIpYr1OCfWIkbh++LJqMc9mAx1EcE6QeKEr4Cvaxw==
+X-Google-Smtp-Source: AGHT+IEAF9806y97qmHJ2SnDYiOLkOnVwPWcqFC1NWaJsEOh0gdLwpHuhOdGRcF5Wy59Aixlf/05/w==
+X-Received: by 2002:a05:6830:100f:b0:6ea:ab3:5c1e with SMTP id a15-20020a056830100f00b006ea0ab35c1emr12447905otp.29.1713209685165;
+        Mon, 15 Apr 2024 12:34:45 -0700 (PDT)
 Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id s26-20020ae9f71a000000b0078d3b54eb76sm6718055qkg.78.2024.04.15.12.34.42
+        by smtp.gmail.com with ESMTPSA id s26-20020ae9f71a000000b0078d3b54eb76sm6718055qkg.78.2024.04.15.12.34.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 12:34:42 -0700 (PDT)
+        Mon, 15 Apr 2024 12:34:44 -0700 (PDT)
 From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 15 Apr 2024 19:34:31 +0000
-Subject: [PATCH 14/35] media: dvb-frontends: drx39xyj: Use min macro
+Date: Mon, 15 Apr 2024 19:34:32 +0000
+Subject: [PATCH 15/35] media: netup_unidvb: Use min macro
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240415-fix-cocci-v1-14-477afb23728b@chromium.org>
+Message-Id: <20240415-fix-cocci-v1-15-477afb23728b@chromium.org>
 References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
 In-Reply-To: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
 To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
@@ -120,53 +120,29 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
  Ricardo Ribalda <ribalda@chromium.org>
 X-Mailer: b4 0.12.4
 
-Simplifies the code.
+Simplify the code.
 
 Found by cocci:
-
-drivers/media/dvb-frontends/drx39xyj/drxj.c:1447:23-24: WARNING opportunity for min()
-drivers/media/dvb-frontends/drx39xyj/drxj.c:1662:21-22: WARNING opportunity for min()
-drivers/media/dvb-frontends/drx39xyj/drxj.c:1685:24-25: WARNING opportunity for min()
+drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c:138:26-27: WARNING opportunity for min()
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/dvb-frontends/drx39xyj/drxj.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/dvb-frontends/drx39xyj/drxj.c b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-index 19d8de400a68..d41ce75575bb 100644
---- a/drivers/media/dvb-frontends/drx39xyj/drxj.c
-+++ b/drivers/media/dvb-frontends/drx39xyj/drxj.c
-@@ -1444,8 +1444,7 @@ static int drxdap_fasi_read_block(struct i2c_device_addr *dev_addr,
+diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c b/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
+index 46676f2c89c7..1c885d620b75 100644
+--- a/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
++++ b/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
+@@ -135,7 +135,7 @@ static void netup_i2c_fifo_tx(struct netup_i2c *i2c)
+ 		(readw(&i2c->regs->tx_fifo.stat_ctrl) & 0x3f);
+ 	u32 msg_length = i2c->msg->len - i2c->xmit_size;
  
- 	/* Read block from I2C **************************************************** */
- 	do {
--		u16 todo = (datasize < DRXDAP_MAX_RCHUNKSIZE ?
--			      datasize : DRXDAP_MAX_RCHUNKSIZE);
-+		u16 todo = min(datasize, DRXDAP_MAX_RCHUNKSIZE);
- 
- 		bufx = 0;
- 
-@@ -1659,7 +1658,7 @@ static int drxdap_fasi_write_block(struct i2c_device_addr *dev_addr,
- 		   Address must be rewritten because HI is reset after data transport and
- 		   expects an address.
- 		 */
--		todo = (block_size < datasize ? block_size : datasize);
-+		todo = min(block_size, datasize);
- 		if (todo == 0) {
- 			u16 overhead_size_i2c_addr = 0;
- 			u16 data_block_size = 0;
-@@ -1681,9 +1680,7 @@ static int drxdap_fasi_write_block(struct i2c_device_addr *dev_addr,
- 				first_err = st;
- 			}
- 			bufx = 0;
--			todo =
--			    (data_block_size <
--			     datasize ? data_block_size : datasize);
-+			todo = min(data_block_size, datasize);
- 		}
- 		memcpy(&buf[bufx], data, todo);
- 		/* write (address if can do and) data */
+-	msg_length = (msg_length < fifo_space ? msg_length : fifo_space);
++	msg_length = min(msg_length, fifo_space);
+ 	while (msg_length--) {
+ 		data = i2c->msg->buf[i2c->xmit_size++];
+ 		writeb(data, &i2c->regs->tx_fifo.data8);
 
 -- 
 2.44.0.683.g7961c838ac-goog
