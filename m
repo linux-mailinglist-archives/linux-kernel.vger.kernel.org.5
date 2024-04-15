@@ -1,60 +1,67 @@
-Return-Path: <linux-kernel+bounces-145127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E755F8A4FE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:56:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682638A4FEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:57:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 239361C20EBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:56:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 228C5283F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822F586262;
-	Mon, 15 Apr 2024 12:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7176686657;
+	Mon, 15 Apr 2024 12:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Anf1e6SF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YxSSIfss"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C360885299;
-	Mon, 15 Apr 2024 12:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE527745F0;
+	Mon, 15 Apr 2024 12:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185405; cv=none; b=QQ4ZU1lAMchZB6M1yHdYmAe1lPPr0fN9WEoJfhU2+FhdH4i2FUyF11U9i7z9AwmpVlgX9KTRUtWaXiN93/bIC9Nsu8E2nntP202G2Mc1yb75GMyrvKLHUEkah1uVi3EVb/mHzpS8v2w8a99QUKKV96enG9ImXmguc/Izj+Y7yk4=
+	t=1713185410; cv=none; b=mghpIWIbC2QSBShLeIiBHumn89CNBVb5ydBTSbPK9ePT4nG5ubvyByFOaOY6JJwBVx4h7+qVlZzBYrfdc9AqcmFERco8bfDuDnYcRsVT2Wsmw2U/DKbzBIuDNsNBFGNmxIJUO3JhfLjVrC/GhyDzuQk6OI9Q/t9HYkUtY5i97yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185405; c=relaxed/simple;
-	bh=su8lAdbQyVsMoyVxYqoxXb5brRrfnJdJWAb+55IZgJc=;
+	s=arc-20240116; t=1713185410; c=relaxed/simple;
+	bh=ZJeH9mmRkzVeKciQNcI/iGRPUWnIOGpgJPuEVgETO3E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ck0J1IHYbXEdv02CN7XA7QC3z8fr3f3AhUm5xBWODw+Dw92sNs58YAvIQ+synZ+WBwWY/kPqP6zFLoggOmQqJdZpnZ6iDVvGu19f5NL5SH38FMhyBpgHBlX74OzNWb8XYOel7ikL3pj2+XoLDnJ92z4GmDNRPNBr3s8RiiRnokM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Anf1e6SF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CB1BC2BD10;
-	Mon, 15 Apr 2024 12:50:03 +0000 (UTC)
+	 MIME-Version; b=JQm5jxi2FCdmIEPowLXh2e8uFZ9SwOY52b1YS0LbEBi7Wl+sd0lckXXnhu2lle14ogQt8zXkbklrudf/AjqCZZ3+OjyTlXZgx54jifOvf+EZvRWhdN5zC92UEWRqQWCNoDk7oYPqCDQxfbmwi5hRtDqTFkQ7theVLCh0Stcm9Qc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YxSSIfss; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8C81C3277B;
+	Mon, 15 Apr 2024 12:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185405;
-	bh=su8lAdbQyVsMoyVxYqoxXb5brRrfnJdJWAb+55IZgJc=;
+	s=k20201202; t=1713185410;
+	bh=ZJeH9mmRkzVeKciQNcI/iGRPUWnIOGpgJPuEVgETO3E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Anf1e6SF6vUuhNdU1GO8akN0ICZc90BKW9PMQnStCE2Hm6BywZ+xCUamgmvn2AtF8
-	 gDAIvxJmtjtLjo5M1i55IEC726xybNb4dw0T82CaOgOoKtD50ZLS3KLMHXcCXQ8ES+
-	 aQQhSle41ic7014sFnU0hwu+rxTuhbjE4FkEUO1TlTi1aiyymYfLQCrQlyhUN4FcXu
-	 HtYyyNe0kM+jJrC7ZBRWgCx8Qm79HSlsKANFL/wVUOe6f+d6d7xLgPfqNmPincX842
-	 pXel2qS0Dnlb69jvtOAp/HM+Kqk3gy+GKeE9bdaOqc7g45sezOLlQtYbW+lZnkdvtb
-	 p2loF0RCQbRUA==
+	b=YxSSIfssIn4IdHKRU5fl+rFn04fO49FP64K01XBnX192z1aK78P2TeOF+fmWx0gmr
+	 AlR7X7/KKxuM+ueGGYdu7SaCEpTyDLPlUoWcQcfV4Ry2GHNnhdXI1vN+lI1j3VjEjS
+	 YkhQd4n2WBrcpa/l94ySRkWeyaUqDY+THuDrCxZpRYcWZFQjy3/vwFKqo3dmRPteJJ
+	 ddwYevbxCR1BO1cuDTQHf/T0yHQVY24KuTqjK6PK1IGRy6PU7aCSmPMMU+GgAeAhis
+	 aVAkEZxR80kk8gVGcWkeZDdHcSmRjMmAsiuEUXPBkvpO3n1oCxi/oq/M80SSyOP7q2
+	 wu/75liXeGu+g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yihang Li <liyihang9@huawei.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Jason Yan <yanaijie@huawei.com>,
+Cc: Peter Wang <peter.wang@mediatek.com>,
+	Bart Van Assche <bvanassche@acm.org>,
 	"Martin K . Petersen" <martin.petersen@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
 	jejb@linux.ibm.com,
-	yangxingui@huawei.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 05/12] scsi: libsas: Align SMP request allocation to ARCH_DMA_MINALIGN
-Date: Mon, 15 Apr 2024 06:03:40 -0400
-Message-ID: <20240415100358.3127162-5-sashal@kernel.org>
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	stanley.chu@mediatek.com,
+	quic_cang@quicinc.com,
+	avri.altman@wdc.com,
+	quic_nguyenb@quicinc.com,
+	beanhuo@micron.com,
+	manivannan.sadhasivam@linaro.org,
+	linux-scsi@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 06/12] scsi: ufs: core: Fix MCQ mode dev command timeout
+Date: Mon, 15 Apr 2024 06:03:41 -0400
+Message-ID: <20240415100358.3127162-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415100358.3127162-1-sashal@kernel.org>
 References: <20240415100358.3127162-1-sashal@kernel.org>
@@ -69,44 +76,41 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.27
 Content-Transfer-Encoding: 8bit
 
-From: Yihang Li <liyihang9@huawei.com>
+From: Peter Wang <peter.wang@mediatek.com>
 
-[ Upstream commit e675a4fd6d1f8990d3bed5dada3d20edfa000423 ]
+[ Upstream commit 2a26a11e9c258b14be6fd98f8a85f20ac1fff66e ]
 
-This series [1] reduced the kmalloc() minimum alignment on arm64 to 8 bytes
-(from 128). In libsas, this will cause SMP requests to be 8-byte aligned
-through kmalloc() allocation. However, for hisi_sas hardware, all command
-addresses must be 16-byte-aligned. Otherwise, the commands fail to be
-executed.
+When a dev command times out in MCQ mode, a successfully cleared command
+should cause a retry. However, because we currently return 0, the caller
+considers the command a success which causes the following error to be
+logged: "Invalid offset 0x0 in descriptor IDN 0x9, length 0x0".
 
-ARCH_DMA_MINALIGN represents the minimum (static) alignment for safe DMA
-operations, so use ARCH_DMA_MINALIGN as the alignment for SMP request.
+Retry if clearing the command was successful.
 
-Link: https://lkml.kernel.org/r/20230612153201.554742-1-catalin.marinas@arm.com [1]
-Signed-off-by: Yihang Li <liyihang9@huawei.com>
-Link: https://lore.kernel.org/r/20240328090626.621147-1-liyihang9@huawei.com
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-Reviewed-by: John Garry <john.g.garry@oracle.com>
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Peter Wang <peter.wang@mediatek.com>
+Link: https://lore.kernel.org/r/20240328111244.3599-1-peter.wang@mediatek.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libsas/sas_expander.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ufs/core/ufshcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-index 5c261005b74e4..f6e6db8b8aba9 100644
---- a/drivers/scsi/libsas/sas_expander.c
-+++ b/drivers/scsi/libsas/sas_expander.c
-@@ -135,7 +135,7 @@ static int smp_execute_task(struct domain_device *dev, void *req, int req_size,
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 8005373e20bae..344806330be16 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -3064,7 +3064,9 @@ static int ufshcd_wait_for_dev_cmd(struct ufs_hba *hba,
  
- static inline void *alloc_smp_req(int size)
- {
--	u8 *p = kzalloc(size, GFP_KERNEL);
-+	u8 *p = kzalloc(ALIGN(size, ARCH_DMA_MINALIGN), GFP_KERNEL);
- 	if (p)
- 		p[0] = SMP_REQUEST;
- 	return p;
+ 		/* MCQ mode */
+ 		if (is_mcq_enabled(hba)) {
+-			err = ufshcd_clear_cmd(hba, lrbp->task_tag);
++			/* successfully cleared the command, retry if needed */
++			if (ufshcd_clear_cmd(hba, lrbp->task_tag) == 0)
++				err = -EAGAIN;
+ 			hba->dev_cmd.complete = NULL;
+ 			return err;
+ 		}
 -- 
 2.43.0
 
