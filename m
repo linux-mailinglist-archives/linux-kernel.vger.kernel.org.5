@@ -1,118 +1,110 @@
-Return-Path: <linux-kernel+bounces-145269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB3438A51B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:39:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED1478A51AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 191441C22818
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:39:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A0F91C227EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D977F7F6;
-	Mon, 15 Apr 2024 13:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0A07D086;
+	Mon, 15 Apr 2024 13:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="HdNiGgHY"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hZFeOpk6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2E07F7E3;
-	Mon, 15 Apr 2024 13:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B7878C6F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 13:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713187905; cv=none; b=AaneojalEIedUkrxVjnrYQowUA7c+SRwXit53v/O4Lg2vigehVL1Sb1H57v1CUhVfexGQAykTwPh2tXD0tI7GJL6zyLnhxzUSx7xZlFXz5LTr3MSv9ErS5NwWPPsKJBxJiprQ82CKcG4GvinrnBQm+0CS/wB/cGYHz9PxELmzKo=
+	t=1713187898; cv=none; b=rH7n9xcGXjlC2xvNPbNrECYekpWc9gVwMfBwcdpORK3I8a2EpGEMTo6rYf5HKCDlqoF+FTRsBDaBelryfuNeHwSS3CvbN59ce2925NelIo0e6axgUbzuCMpQu7hpoP08CE9Vte8LOksQ80T+/GNz8NFVu2E04wtA6qUR+P5T4y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713187905; c=relaxed/simple;
-	bh=KkPyxTFMiUPTu/EeDsJJp5beF1fBZCRUeC4IMLbejTE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Z2HlrY2tDfy3xy+mV6jZ+txD1sZM13XjAt+0/XZQUDTENN7eSdbw1KHU6XOcz19FVyLjEY41XvA5Tde9hd4qsRt+OO/YmN9rfjH9rn65hmaQj8qjURLL0EWZnkeqPb799EyDc0nZ/trb9SQPA6wT0cCe1PCzfzQC8XzQjJigYR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=HdNiGgHY; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43F6nokl020159;
-	Mon, 15 Apr 2024 08:31:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	PODMain02222019; bh=1NJcAo3U9LsyvaqFbXPecrsCzqfre2QNbxquk49f8MM=; b=
-	HdNiGgHYeNXAepHA8IHW4FgMZ2mbHScXxrq4GvGkm3VgDSEoZwP4sj+TFhxPEuXW
-	X1iseqei+2XC9RlH7WTQ/0xj65GfFzcYaazjmCI4knc+GLLcG3xTtAWh+jhYbiIP
-	o4unFA0hQ0KSlLtS1y1RwHKzS3rRy7j1k79MSfFpE4v6jwwACh8ksYGco98KS4DF
-	WnnvCdEkFkrtAoP9WEuxdkpPQNrJ0vqi8OP/0z0P620KT2HwOXQGvTUA53AndXKf
-	FayLtNgj6vlsiebSeK2vBIm33KMSdC3xAEfPhGmGpxkx450j4aSAvHNFx9FEtJZr
-	EDQVS/2F0hO40l2q4M7ZAw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xfqey9fxt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 08:31:23 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
- 2024 14:31:21 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Mon, 15 Apr 2024 14:31:21 +0100
-Received: from [198.90.208.18] (ediswws06.ad.cirrus.com [198.90.208.18])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 17697820244;
-	Mon, 15 Apr 2024 13:31:21 +0000 (UTC)
-Message-ID: <99ba78fa-1d09-4072-849b-f994c87c1db6@opensource.cirrus.com>
-Date: Mon, 15 Apr 2024 14:31:21 +0100
+	s=arc-20240116; t=1713187898; c=relaxed/simple;
+	bh=RTcp4ChnIgmlmEcfEQU6EJGn9gnNOY6imrmIY/RWxas=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bS/AH7fLb69kQ72C2TrKYAjC4idNKKgYcCCsdVDxF0i8hCLwLCEf2JY5b6InP0FR7SVDtHCvEChuNGtyZa0pDjff+guGiZKmQJmK/3HeW3YmSt3u4U23nTxn18k+OU/9gzVwhXar+eTBxTuKLYLKre/PTV1zEcpq7yaNVwZb08U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hZFeOpk6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713187892;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Odozy2BLDSJ3flfmqEEsFw+Lc+xUdGcL/TjOYgEXfpE=;
+	b=hZFeOpk6NfU7lRxtbb4s6Du74vGjTaUXByloqj2JwtznCVYpIQhL8dC5ubh7iwuyAeN99r
+	IquDs2h8/++sMgshQltbypkbrdt2UwWemud7WvM0xPDvEqzvRceQcFe1PBAZMjK8q6zQC/
+	4TUulwT2axebIx3fMe+hE50B71mHUnU=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-692-o1aYcjk_MuGQ9AEmV87FQw-1; Mon, 15 Apr 2024 09:31:30 -0400
+X-MC-Unique: o1aYcjk_MuGQ9AEmV87FQw-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6ea10c8093eso394011a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:31:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713187887; x=1713792687;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Odozy2BLDSJ3flfmqEEsFw+Lc+xUdGcL/TjOYgEXfpE=;
+        b=JpXgmqjxTh+42IjgxAHOumCZoclPu1BgRk4i0EZtEJ0i20G6daMkuGQyvac6MQXnsg
+         wyvskBqR8j5ytodjpC52CsTyPrQjiI4hiZdLCCYhi4NE8w9omZV7o2Aoyq+ltmepBaZ6
+         ghLRbrL1xHZCwUMD8aug7ymL4JTp18hQfeuW0g82zupEHzGc0h7qxV34DeeJXbpcGQh5
+         u0uOoz4LsMjw0dojHFPzDisziKIj3/iFfU/JCYPrHHYpnSzD0vUE4GNENpmFnrGwmduU
+         PursEvUub1jCJ7sjnKD7imzp6NSnScOfIUXOkLE9ByBdOs1FLgxBj0kz+Plsw9f4Lya6
+         YI6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWNmiLQRxc0fOJz5rFBF+MQyiUibWYHuyHCF6DAmhWEgS+k3KBKkQfZZfeahqu707bduZR4gOkZmkw464pmgDTF7tHJC86XszX7YPch
+X-Gm-Message-State: AOJu0Yw4Oa751zd5TcA0oVilx2qdXbcDQL0EXlnd8RaIW/XTZRse3DhD
+	WacDfnobzOwwi4WxWM22wTrEqzz1E7vD049/scq9Kkqfdq7v77otqTPKLwIx/6IGnvNmWHdmMCA
+	5Hfthd2ZYux2aIaR0BDHwUNdbJFsXWXA81F8BXO1CcYOhMkbusPUv2JMZ8Jadng==
+X-Received: by 2002:a05:6830:108e:b0:6eb:7e33:3fbb with SMTP id y14-20020a056830108e00b006eb7e333fbbmr3038922oto.0.1713187886774;
+        Mon, 15 Apr 2024 06:31:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGsrdRJqSAOaya5H1or0iH1a+btPgQDm4zN+Ikilpc1533OpLXJHjXMg4zifVdXgL/6oVr8IA==
+X-Received: by 2002:a05:6830:108e:b0:6eb:7e33:3fbb with SMTP id y14-20020a056830108e00b006eb7e333fbbmr3038894oto.0.1713187886392;
+        Mon, 15 Apr 2024 06:31:26 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id v23-20020a05620a0a9700b0078ebb13a03csm6315948qkg.67.2024.04.15.06.31.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 06:31:26 -0700 (PDT)
+Date: Mon, 15 Apr 2024 09:31:24 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
+	lokeshgidra@google.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] userfaultfd: remove WRITE_ONCE when setting
+ folio->index during UFFDIO_MOVE
+Message-ID: <Zh0sLJfu19ij2rAV@x1n>
+References: <20240415020821.1152951-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] regmap: kunit: Fix an NULL vs IS_ERR() check
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-References: <b32e80cf-b385-40cd-b8ec-77ec73e07530@moroto.mountain>
-Content-Language: en-GB
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <b32e80cf-b385-40cd-b8ec-77ec73e07530@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: 4tDq8_KeDrmZJQtAfhwhroJOkMY1XBhN
-X-Proofpoint-ORIG-GUID: 4tDq8_KeDrmZJQtAfhwhroJOkMY1XBhN
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240415020821.1152951-1-surenb@google.com>
 
-On 15/04/2024 11:34, Dan Carpenter wrote:
-> The kunit_device_register() function returns error pointers, not NULL.
-> Passing an error pointer to get_device() will lead to an Oops.  Also
-> get_device() returns the same device you passed to it.  Fix it!  ;)
+On Sun, Apr 14, 2024 at 07:08:21PM -0700, Suren Baghdasaryan wrote:
+> When folio is moved with UFFDIO_MOVE it gets locked before the rmap and
+> index are modified. Due to the folio lock being already held, WRITE_ONCE()
+> is not needed when setting the folio index. Remove it.
 > 
-> Fixes: 7b7982f14315 ("regmap: kunit: Create a struct device for the regmap")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
->   drivers/base/regmap/regmap-kunit.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
-> index 44265dc2313d..9c5314785fc2 100644
-> --- a/drivers/base/regmap/regmap-kunit.c
-> +++ b/drivers/base/regmap/regmap-kunit.c
-> @@ -1925,10 +1925,10 @@ static int regmap_test_init(struct kunit *test)
->   	test->priv = priv;
->   
->   	dev = kunit_device_register(test, "regmap_test");
-> -	priv->dev = get_device(dev);
-> -	if (!priv->dev)
-> -		return -ENODEV;
-> +	if (IS_ERR(dev))
-> +		return PTR_ERR(dev);
->   
-> +	priv->dev = get_device(dev);
->   	dev_set_drvdata(dev, test);
->   
->   	return 0;
+> Reported-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Lokesh Gidra <lokeshgidra@google.com>
 
-Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+
+-- 
+Peter Xu
+
 
