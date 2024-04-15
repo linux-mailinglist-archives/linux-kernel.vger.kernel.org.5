@@ -1,80 +1,52 @@
-Return-Path: <linux-kernel+bounces-144815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40DB98A4B14
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:03:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB758A4B1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:07:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1E811F22815
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:03:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27117B244F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7734AECE;
-	Mon, 15 Apr 2024 09:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B873C46B;
+	Mon, 15 Apr 2024 09:06:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="W+Jwz14X"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="J3fXMbIX"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B9E45944
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:03:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337013FB2F;
+	Mon, 15 Apr 2024 09:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713171818; cv=none; b=ZEiuEL1o/fdlsSwiCSSGcrpSjMiu18uSzRxNcjia8hW21xpNNFO1z3RbObNpWlr8FDKKUVdPUDxijgh3GotuR/rMGtsqHmRydacwG5DZMVm7yVrJC2KFYN0Fsozwd3QtLQSPH857oo6UmVDobIP7Q872hVj0cPhZam7LYSraPc0=
+	t=1713172018; cv=none; b=NakJJ4VpNrmi6QI8sYvRnT/aPsRWRVcA/1UQm94Q1RM4NkuwdVVLqRpv3L+lxjCgJ2ssaSmYvREclHEPZ89k4M3ngYGvDgnTTKNbRYhCCw5sX9KyGMrQBJ3bO70FlQcY2hZJSmUAwsBW/OiXglOAQ9PWlaZVD2pBeOeVPzuYPRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713171818; c=relaxed/simple;
-	bh=IdA7HDUJdk3wBbS7HCQh1S2W+nwF7tdQmhHF55XBlCs=;
+	s=arc-20240116; t=1713172018; c=relaxed/simple;
+	bh=Y5nbs45jMBNKDqjA80WR2kWn52G0oSM52UyubBPrLFI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AtBThgwkmyE305QdaSMkvENQ5SP/OXO7SipIoWArVe+KVE5F9Up8kjohwKHdS8Pqf4o52NIgNM+yFmfaWAJu3M4Hkgg9+/zsvRGvtfL76DGCJT60Gwawqk5bPoHKjl9uQBoEa1ftrUXDZSVEmZkglAQ5w3MuWl0oWfct3JlzUUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=W+Jwz14X; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713171812;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AYKa4KTPniO6R7CGdMFUdNW1Z1y9QZTKRFmp+ZRDLRU=;
-	b=W+Jwz14XJGDiLRbFeCnRK+eGC1OYW33R9FZF+03eay7wiFZZOQNpeRYkcHJ8HunR9maoG4
-	3O2m7A0CsYpN5vzMOj8qwQBKQDqdnASwnKIu3Io4xyxx2zbTRtmri3mO18A5ftkimqbMJs
-	FdbmY7ytDNwvQAu0NNZ4HIoq5o0z1PQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-491-MNvlK1_xNIK1EHHcyiEuJg-1; Mon, 15 Apr 2024 05:03:28 -0400
-X-MC-Unique: MNvlK1_xNIK1EHHcyiEuJg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343e46df264so1642993f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:03:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713171808; x=1713776608;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AYKa4KTPniO6R7CGdMFUdNW1Z1y9QZTKRFmp+ZRDLRU=;
-        b=e7/7LPrFBTd0Jfj00tXGqy5qFdCqf2DAnzDWLmDvPtM0900NkDsjIc9sUkUgrqFjur
-         WL00pcNNquP8OKEHChDCYhnIYSsYO1giYp4sxVmNr0LGch7Nd2wfd3UQIaKxwGtLL6DD
-         JlLrWq+cpMrXinb4R47a6LNA3z86m9aAjVzrzs4leHUOVt29lXMb2MBR1AFnuhCCjX/F
-         qiXMFkTWUKAUf8vStb5e3B5HA2ViTNSuhXqKPUhnlayc5nC9PjCsg1ARuShpby1HKJY2
-         as3T7usGKvS7x47naq26WBayKgeNBdCu9aHuOP+xy+zY5brGslMvdSPZbKkl3PJAGeUE
-         Z7jA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1Ci9mS91iRd+RG+nRN1XuTWHHwYVN+9eXRU3nSB80C1pwkQQdA+tVGdGGOvis5OURkh5caLX+WiTkiaj+Fj6ePlbXELPWgH8iqxBD
-X-Gm-Message-State: AOJu0Yz+SXOs0WUZ0dUxQsQZBufKI9yVDpr6S1kSWx+N3rsZeVk6C1Jb
-	gkMscS7oOQ3ad4vZp3LBQiHgsgN/jzWKKPQ9KM1IW9/vTZL/Jd82CKDp4dEVO8Tpv/LB+vLtY72
-	qv6RlYWQAeeovvK5gMASnuKnFM1lNKoPNyh3D5ELn+VjKGDS3FpXM6Jgulb0EBg==
-X-Received: by 2002:adf:e591:0:b0:341:e358:7bee with SMTP id l17-20020adfe591000000b00341e3587beemr6359824wrm.39.1713171807858;
-        Mon, 15 Apr 2024 02:03:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHpwdZY2D2UwysYuZQw3OrScHwpqCJhWnmaPIklA/3flPX0PP7YVvECg4t0EjHiFSoANE2vtw==
-X-Received: by 2002:adf:e591:0:b0:341:e358:7bee with SMTP id l17-20020adfe591000000b00341e3587beemr6359799wrm.39.1713171807476;
-        Mon, 15 Apr 2024 02:03:27 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id u7-20020adfeb47000000b0033ec9ddc638sm11497808wrn.31.2024.04.15.02.03.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 02:03:26 -0700 (PDT)
-Message-ID: <ad01f30e-4944-44f6-9efa-8e04726d1486@redhat.com>
-Date: Mon, 15 Apr 2024 11:03:24 +0200
+	 In-Reply-To:Content-Type; b=fMGx8c5IpmFWaOQz+/I9mD5xmKL2BMgMo5jogZkoSgLCu8sI8qPq2kKW5JSl2BdYJRXWYIUN/TpwK7hn3zUmB3e90xOEf7l9OziT6q9DmH0WuMfzvShPLHq8MTf2v/Uku97tGeH0kRBugmVzH5vVTdNMsXixB64/rKCqvLCHrqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=J3fXMbIX; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1713171993; x=1713776793; i=wahrenst@gmx.net;
+	bh=iVvbXiK9+4jKmBby/qHuymH4wqCDuhTpZTWgpimbGeE=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=J3fXMbIX9LLAGfD6kfwfvHdiXn8RckqgxmHO85GPsonO5ej/Z2fAbLl+z0xhAjjV
+	 UpmO4PStxqhXUxk5VzRr3a7xN7U/l7y+PCOSlqmEHKCIbns7ISHnXM1FXDVxGDjb3
+	 wmzbJqbasVshbXhwMXU+t12ffal2mhGSfJgjGxKygxy8zjDtjLY0au02CoWhNbaW5
+	 p+z3HR+cDRIvjWjiSqQBbA0C1J8g9IJ1nykcg1DJwawHo1yssLSq0Errdpc1V5mMD
+	 hep0waXtf8J+B1h0HBp7AZ4t8HmG196nlN/978NT82eeyfBIwgCEcEJegA2uGCc0M
+	 mBiuNV44cekCurVd6w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ma24s-1sH6RJ39MK-00VzWL; Mon, 15
+ Apr 2024 11:06:33 +0200
+Message-ID: <48414875-187d-4afe-ae87-6431b845eaca@gmx.net>
+Date: Mon, 15 Apr 2024 11:06:32 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,101 +54,131 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm: nv04: Fix out of bounds access
-To: Mikhail Kobuk <m.kobuk@ispras.ru>
-Cc: Lyude Paul <lyude@redhat.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Ben Skeggs <bskeggs@redhat.com>,
- Francisco Jerez <currojerez@riseup.net>, dri-devel@lists.freedesktop.org,
- nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org, Fedor Pchelkin <pchelkin@ispras.ru>,
- Alexey Khoroshilov <khoroshilov@ispras.ru>, Karol Herbst <kherbst@redhat.com>
-References: <20240411110854.16701-1-m.kobuk@ispras.ru>
+Subject: Re: [PATCH 3/6] arm64: dts: broadcom: Add support for BCM2712
+To: Phil Elwell <phil@raspberrypi.com>
+Cc: Andrea della Porta <andrea.porta@suse.com>, Rob Herring
+ <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Jonathan Bell <jonathan@raspberrypi.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Adrian Hunter
+ <adrian.hunter@intel.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, linux-kernel@vger.kernel.org,
+ Al Cooper <alcooperx@gmail.com>, linux-mmc@vger.kernel.org,
+ Kamal Dasu <kamal.dasu@broadcom.com>, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-gpio@vger.kernel.org
+References: <cover.1713036964.git.andrea.porta@suse.com>
+ <0ab5a768d686cb634f7144da266c9246e9e90cb4.1713036964.git.andrea.porta@suse.com>
+ <d7b884dd-9b70-41c3-ac2a-66b54c26d08a@gmx.net>
+ <CAMEGJJ2R-WEqs+LgqMwDQJ_QHF840RYAqVGkbWxBs70anv6M4w@mail.gmail.com>
 Content-Language: en-US
-From: Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <20240411110854.16701-1-m.kobuk@ispras.ru>
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <CAMEGJJ2R-WEqs+LgqMwDQJ_QHF840RYAqVGkbWxBs70anv6M4w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wbkUfb+3POtV/dyswIWfamIRka73DquA3dHwWh7g3oVut6k3jDB
+ xDufkZUndxr7JICIELbkyCObezpt8CpmOf2AGwgwAhyDBtKqRlF+Wdzz4daHswBE45CAott
+ p1PFmv9Pp2EqbwzvrSp68LkvDMtAknucXe1Azi6NuKNkNC/JDWA9yZ+n2iHKeDvGdIYwejh
+ XiHOh9KqW6pnd6NE+Jlbw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:7tHIbPC4OPE=;0o3Qmm8vlD26+gY5h7dXTZ9iQi1
+ zj0OK3X3lReB4XHePGLPIK9wdIbP7X4j2VoFizl/ccS+yL4hb9oRt9smL5ZlUY+vqOdGmSP7j
+ 0sbG9K7r9KzSS5NCQ/SEWBQ+l1vqGudz9ZawGrmzICjlB4+JYpKM9w0CVcFt/Aah5zDLCEaH2
+ HaxlTbcBcuWPRVGlnaYcpNnpp3drvpRQSLlTvqmKwuHt5YsTRHjC1Sen5e8L2QMYuh1R+MEKL
+ sJGLlGYS/lsj9yVocB7RMdEPNIAF13HmGJ7E5dTGRrOTelYmJ21NCTcCfXa8Ak4Gaf0YAMXZ7
+ VEVYSL3y5qEYVk4cqHEK+YxnX3cRZu6t9EpfYtAWw4S9YqbaXy+oK3PCOUkgaTjQuwtWlD+IY
+ HlEohfSXso/PQnkVuRG4XtwTN9Hsch4sbHShTA0/F4MgvCPy9ixW2uw5CsI5Mu7J2X79jnH7M
+ AhUOv7EObhjKKBPnpzAYpyKEg51ZLBAr1cNXtlRkfHnPGZQrPqT132BeJokMQF3lNtJvi6QAE
+ pqtbzcRHtE3z+WD/r/roW1/wvtTfsOZIoGtK59qh7MQiWHkwQtRboe2YrYSzB+qUYPc/z6CuN
+ oZkmKF1YJjajqlMAIE1VgXrhFGbli3mTSnvDZsWAVLs539XVaHIYHFzEkuSZcdhDMiWi0ByEV
+ V6qGE+xXW+it6EgjNWQSlgxcGdToO5pNiRJakn+VXKX2CkYwOAtrBd9b9GsJqvJ+U9F0k7G5L
+ doZ5ES2CVfyd1VFjJBDYw06ULf8H+D/JRg0yJrnjuXBC2h8EZ4Xfz+UEqOsAEuKBEQFxoqEmu
+ u2+T1wt9huhjy3uB2dBeCErCyJnUiu2CJZ6L9GV/UI/4s=
 
-On 4/11/24 13:08, Mikhail Kobuk wrote:
-> When Output Resource (dcb->or) value is assigned in
-> fabricate_dcb_output(), there may be out of bounds access to
-> dac_users array in case dcb->or is zero because ffs(dcb->or) is
-> used as index there.
-> The 'or' argument of fabricate_dcb_output() must be interpreted as a
-> number of bit to set, not value.
-> 
-> Utilize macros from 'enum nouveau_or' in calls instead of hardcoding.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 2e5702aff395 ("drm/nouveau: fabricate DCB encoder table for iMac G4")
-> Fixes: 670820c0e6a9 ("drm/nouveau: Workaround incorrect DCB entry on a GeForce3 Ti 200.")
-> Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
+Hi Phil,
 
-Applied to drm-misc-fixes, thanks!
+Am 15.04.24 um 10:52 schrieb Phil Elwell:
+> Stefan,
+>
+>
+> On Mon, 15 Apr 2024 at 09:20, Stefan Wahren <wahrenst@gmx.net> wrote:
+>> Hi Phil,
+>>
+>> Am 14.04.24 um 00:14 schrieb Andrea della Porta:
+>>> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+>>> ---
+>>>    arch/arm64/boot/dts/broadcom/Makefile         |   1 +
+>>>    .../boot/dts/broadcom/bcm2712-rpi-5-b.dts     | 313 +++++++
+>>>    arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi |  81 ++
+>>>    arch/arm64/boot/dts/broadcom/bcm2712.dtsi     | 841 +++++++++++++++=
++++
+>>>    4 files changed, 1236 insertions(+)
+>>>    create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+>>>    create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712-rpi.dtsi
+>>>    create mode 100644 arch/arm64/boot/dts/broadcom/bcm2712.dtsi
+>>>
+>>> diff --git a/arch/arm64/boot/dts/broadcom/Makefile b/arch/arm64/boot/d=
+ts/broadcom/Makefile
+>>> index 8b4591ddd27c..92565e9781ad 100644
+>>> --- a/arch/arm64/boot/dts/broadcom/Makefile
+>>> +++ b/arch/arm64/boot/dts/broadcom/Makefile
+>>> @@ -6,6 +6,7 @@ DTC_FLAGS :=3D -@
+>>>    dtb-$(CONFIG_ARCH_BCM2835) +=3D bcm2711-rpi-400.dtb \
+>>>                              bcm2711-rpi-4-b.dtb \
+>>>                              bcm2711-rpi-cm4-io.dtb \
+>>> +                           bcm2712-rpi-5-b.dtb \
+>>>                              bcm2837-rpi-3-a-plus.dtb \
+>>>                              bcm2837-rpi-3-b.dtb \
+>>>                              bcm2837-rpi-3-b-plus.dtb \
+>>> diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts b/arch/a=
+rm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+>>> new file mode 100644
+>>> index 000000000000..2ce180a54e5b
+>>> --- /dev/null
+>>> +++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+>>> @@ -0,0 +1,313 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/dts-v1/;
+>>> +
+>>> +#include <dt-bindings/gpio/gpio.h>
+>>> +#include <dt-bindings/interrupt-controller/irq.h>
+>>> +#include <dt-bindings/pwm/pwm.h>
+>>> +#include <dt-bindings/reset/raspberrypi,firmware-reset.h>
+>>> +
+>>> +#define spi0 _spi0
+>>> +#define uart0 _uart0
+>>> +
+>>> +#include "bcm2712.dtsi"
+>>> +
+>>> +#undef spi0
+>>> +#undef uart0
+>>> +
+>>> +/ {
+>>> +     compatible =3D "raspberrypi,5-model-b", "brcm,bcm2712";
+>>> +     model =3D "Raspberry Pi 5";
+>>> +
+>>>
+>> according to this downstream commit [1] it's just called "Raspberry Pi
+>> 5" without Model B, but the filename and the compatible says something
+>> different. Is there still a chance to get this consistent or is it too
+>> late because the firmware expect the compatible?
+>>
+>> [1] -
+>> https://github.com/raspberrypi/linux/commit/99e359d2f2da2c820fd2a30b1ad=
+08b32c9549adb
+> Nothing cares about the compatible string, but the product name was
+> changed too late for the firmware, which expects the current DTB file
+> name.
+should i send a pull request to address the compatible? This would avoid
+a little bit confusion in the upstreaming process, because
+devicetree/bindings/arm/bcm/bcm2835.yaml needs to be updated as well.
 
-> ---
-> Changes in v2:
-> - Instead of checking ffs(dcb->or), adjust function calls to match
->    argument semantics
-> - Link to v1: https://lore.kernel.org/all/20240331064552.6112-1-m.kobuk@ispras.ru/
-> 
->   drivers/gpu/drm/nouveau/nouveau_bios.c | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/nouveau/nouveau_bios.c
-> index 479effcf607e..79cfab53f80e 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_bios.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
-> @@ -23,6 +23,7 @@
->    */
->   
->   #include "nouveau_drv.h"
-> +#include "nouveau_bios.h"
->   #include "nouveau_reg.h"
->   #include "dispnv04/hw.h"
->   #include "nouveau_encoder.h"
-> @@ -1677,7 +1678,7 @@ apply_dcb_encoder_quirks(struct drm_device *dev, int idx, u32 *conn, u32 *conf)
->   	 */
->   	if (nv_match_device(dev, 0x0201, 0x1462, 0x8851)) {
->   		if (*conn == 0xf2005014 && *conf == 0xffffffff) {
-> -			fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 1, 1, 1);
-> +			fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 1, 1, DCB_OUTPUT_B);
->   			return false;
->   		}
->   	}
-> @@ -1763,26 +1764,26 @@ fabricate_dcb_encoder_table(struct drm_device *dev, struct nvbios *bios)
->   #ifdef __powerpc__
->   	/* Apple iMac G4 NV17 */
->   	if (of_machine_is_compatible("PowerMac4,5")) {
-> -		fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 0, all_heads, 1);
-> -		fabricate_dcb_output(dcb, DCB_OUTPUT_ANALOG, 1, all_heads, 2);
-> +		fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 0, all_heads, DCB_OUTPUT_B);
-> +		fabricate_dcb_output(dcb, DCB_OUTPUT_ANALOG, 1, all_heads, DCB_OUTPUT_C);
->   		return;
->   	}
->   #endif
->   
->   	/* Make up some sane defaults */
->   	fabricate_dcb_output(dcb, DCB_OUTPUT_ANALOG,
-> -			     bios->legacy.i2c_indices.crt, 1, 1);
-> +			     bios->legacy.i2c_indices.crt, 1, DCB_OUTPUT_B);
->   
->   	if (nv04_tv_identify(dev, bios->legacy.i2c_indices.tv) >= 0)
->   		fabricate_dcb_output(dcb, DCB_OUTPUT_TV,
->   				     bios->legacy.i2c_indices.tv,
-> -				     all_heads, 0);
-> +				     all_heads, DCB_OUTPUT_A);
->   
->   	else if (bios->tmds.output0_script_ptr ||
->   		 bios->tmds.output1_script_ptr)
->   		fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS,
->   				     bios->legacy.i2c_indices.panel,
-> -				     all_heads, 1);
-> +				     all_heads, DCB_OUTPUT_B);
->   }
->   
->   static int
+Best regards
+>   I'm happy with the naming as it stands, since we use Pi 4 to
+> refer to all the BCM2711-based devices, and Pi 5 can include CM5.
+>
+> Phil
 
 
