@@ -1,96 +1,99 @@
-Return-Path: <linux-kernel+bounces-144946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DDA98A4D00
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:54:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 112378A4D06
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:54:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 222A62814F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:54:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF23428175A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39D35CDDB;
-	Mon, 15 Apr 2024 10:53:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sizdaTn6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986ED5EE73;
+	Mon, 15 Apr 2024 10:54:13 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5A4A633FE;
-	Mon, 15 Apr 2024 10:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D7E5FB85;
+	Mon, 15 Apr 2024 10:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713178408; cv=none; b=SoaA9dT7WStz/jbVMzUlyWyR+5c+Xvm8lSU75vGosG6+QvfiSaQdx2/XNyMpyqsxClXDm2CJjn8/Jh8JrQVHjOGBD8gmPBoJtPXHJhnowzfOA9jZSsPLGmmRNeFCJvZzuBBPzTwSm/nYTOb1U6q4hNsk5lamZb6W1QxbVnmniOg=
+	t=1713178453; cv=none; b=tZdsZ25HY8zosQqaqD1VGLaMfH62h6z/ehULadv5N8FE4wxFPk2RMy3reG3hASygC9fHpzsJTHnHGuzIwzYZbQXCBJlRN5WIm61wqYIegNGfKmB6zo2MZBW9EfkA0QMZ+6QzqqSnFk0UDammVs6BtjX1Y83Lc1pS4zQJ9ORWpOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713178408; c=relaxed/simple;
-	bh=n16Rf7nOq1DEONMcgohfBYEG6w/SaJXkIbcfwHV22Gk=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=kEm0d0548o+dGP463CSBtmPXZSzZZIqIac/vwAGEzpnxL86aIuftJuKlmxihSLyUbfq/UCFAYWSzq/DH5PLx1xpo3gkGyG2T6hSykW7PkpAwSvec3GbProA//aWIo1pSLm3aGig1CwfGH6j5q/6+QLrBylMqfY4Q2T3R4LekLkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sizdaTn6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94702C113CC;
-	Mon, 15 Apr 2024 10:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713178407;
-	bh=n16Rf7nOq1DEONMcgohfBYEG6w/SaJXkIbcfwHV22Gk=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=sizdaTn6QTdBMtS9oKoSIk8h954pH0J+Zvp15nqoEioNThGzCwir2iMMvlpkxgDGT
-	 Wbkl86+NvlBgLL5CR/C4sSC817sagZPT+L8KjCNSnccx1ajSDhy8CCEh2Kwdgu99Ob
-	 XVi+X4CaoZaACd5QdjxrEK8Fwtsm+h43VBO+z8xX+/MllHcY/pz3CmIyj8uZpwNwr2
-	 yEPC44Rh/nP0ZLK7DTTlJwezimVgW4G90FThqV5DbojZmluKic8IkWQO7obNHJB9hB
-	 q/FKhd8Z9onIe9EQPW8REYLVesnWsbIWiBBA4nVR/36gLzNaKYwv/lcwfoXULBMG0C
-	 HBm9+anPLQLig==
-From: Mark Brown <broonie@kernel.org>
-To: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20240414154859.126931-1-krzk@kernel.org>
-References: <20240414154859.126931-1-krzk@kernel.org>
-Subject: Re: [PATCH] spi: altera: Drop unneeded MODULE_ALIAS
-Message-Id: <171317840613.1652284.11599374071901058385.b4-ty@kernel.org>
-Date: Mon, 15 Apr 2024 19:53:26 +0900
+	s=arc-20240116; t=1713178453; c=relaxed/simple;
+	bh=u+i3N7jlLOD5vzYSaTLemnLG3D1CGWWLFttmuOAvoi0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ROuIshM/yP/g1x5kiWNsOXbqC5L38d2bjoFPFQuxeNYnJd6lYzhGEhRTnUOwVoqg5Lh/NUdsktRcInX+Lyfy5ZRqZkqO7Cqglts19S+erl1DXmPnQoDarmLB1VaaqcRfTm0JJPz3HV+mswFw+ku896PUfGqrHfg5QOEvoQAwWhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VJ3qv4VK0zwSHQ;
+	Mon, 15 Apr 2024 18:51:07 +0800 (CST)
+Received: from kwepemi500024.china.huawei.com (unknown [7.221.188.100])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8BC9E1402DE;
+	Mon, 15 Apr 2024 18:54:08 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by kwepemi500024.china.huawei.com
+ (7.221.188.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 15 Apr
+ 2024 18:54:07 +0800
+From: Zeng Heng <zengheng4@huawei.com>
+To: <linus.walleij@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, <xiexiuqi@huawei.com>,
+	<linux-gpio@vger.kernel.org>, <weiyongjun1@huawei.com>,
+	<dan.carpenter@linaro.org>, <liwei391@huawei.com>
+Subject: [PATCH] pinctrl: devicetree: fix refcount leak in pinctrl_dt_to_map()
+Date: Mon, 15 Apr 2024 18:53:28 +0800
+Message-ID: <20240415105328.3651441-1-zengheng4@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500024.china.huawei.com (7.221.188.100)
 
-On Sun, 14 Apr 2024 17:48:59 +0200, Krzysztof Kozlowski wrote:
-> The ID table already has respective entry and MODULE_DEVICE_TABLE and
-> creates proper alias for platform driver.  Having another MODULE_ALIAS
-> causes the alias to be duplicated.
-> 
-> 
+If we fail to allocate propname buffer, we need to drop the reference
+count we just took. Because the pinctrl_dt_free_maps() includes the
+droping operation, here we call it directly.
 
-Applied to
+Fixes: 91d5c5060ee2 ("pinctrl: devicetree: fix null pointer dereferencing in pinctrl_dt_to_map")
+Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Zeng Heng <zengheng4@huawei.com>
+---
+ drivers/pinctrl/devicetree.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: altera: Drop unneeded MODULE_ALIAS
-      commit: 770e3da3fe7ee7ffca745b7ac300ce39fe40f465
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/pinctrl/devicetree.c b/drivers/pinctrl/devicetree.c
+index df1efc2e5202..6a94ecd6a8de 100644
+--- a/drivers/pinctrl/devicetree.c
++++ b/drivers/pinctrl/devicetree.c
+@@ -220,14 +220,16 @@ int pinctrl_dt_to_map(struct pinctrl *p, struct pinctrl_dev *pctldev)
+ 	for (state = 0; ; state++) {
+ 		/* Retrieve the pinctrl-* property */
+ 		propname = kasprintf(GFP_KERNEL, "pinctrl-%d", state);
+-		if (!propname)
+-			return -ENOMEM;
++		if (!propname) {
++			ret = -ENOMEM;
++			goto err;
++		}
+ 		prop = of_find_property(np, propname, &size);
+ 		kfree(propname);
+ 		if (!prop) {
+ 			if (state == 0) {
+-				of_node_put(np);
+-				return -ENODEV;
++				ret = -ENODEV;
++				goto err;
+ 			}
+ 			break;
+ 		}
+-- 
+2.25.1
 
 
