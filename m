@@ -1,204 +1,154 @@
-Return-Path: <linux-kernel+bounces-145723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E9328A5A06
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:41:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0757A8A5A0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:41:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D60791F215E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:41:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF85E1F21A0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DD51553A5;
-	Mon, 15 Apr 2024 18:40:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5D8155728;
+	Mon, 15 Apr 2024 18:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="dDX0pBUr"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cM0e58fZ"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1488384D24
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5BF13A86A;
+	Mon, 15 Apr 2024 18:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713206454; cv=none; b=TjDV5MTJbuFcl+VMwj7yATcP5Sv3+UDHC7akyaGLPCMdupqnJ6DfmToed7sHlEZ4IPPKx2lRtHLplf+X+qh2EPeSpM/HSzFUep+WwCx+/cuBi+oNhQxgrBN3fPFHu7zqlY3+VUktFz4VIDw7KcuhoRS+6ZQflk726KPlzguN0fc=
+	t=1713206479; cv=none; b=DbSYpWwMCsrdKSxqciPciSQrb6/FjKrnMYxUrAC0AcZVAmmhpKJo98AE9LwBSrow/C6zmdPpB4DaORJCaSPsaPEeBbzUepd7Fy7iy0AIvMofawz8CDSatfazmYb8QUU3v+D1xKJgMPmzFqQB0MeChi7AVkgajWKetxtJvhF8wpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713206454; c=relaxed/simple;
-	bh=KbXImj/lEi6BVsCzjjZpNLCtZtSZ5+ezh8/zj35cE/w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rZxeOwRIi7jgE72LZp3rkYoiI6MwKk3ibaqVnULce2MeIXONWWFr29pVEZh5JWphwRbzrCH/fm9MhStt4nlFLXIFujLn4U846cFmIA8+Pd+sDulEusvCdti+XIi/ZJbKQ/Nspf67iqvf7vf//Cu6lBY9iNQZTt53YpZDgYlQoeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=dDX0pBUr; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61495e769bdso28584767b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 11:40:52 -0700 (PDT)
+	s=arc-20240116; t=1713206479; c=relaxed/simple;
+	bh=2ruptX+/9hWKb3oStP8xOxWrDxeGthrFWC5sxQMpkuE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wzs40hQDtLhh0BkpAIeOWn8+VBJjO6Y9RXNvIGWRNcKZ+oKHIUjKg/KUA80RLHO1dZSb2qLDyOLoeL03qUYRiM/K/l9iq9+VLnL2VYAIa3hjh9eqnb2TOCgxcI6dTYHm4EORug878baoy7PVJ8dWL8IRIf1glP3vhsyPFPDTJ+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cM0e58fZ; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3560859276.1;
+        Mon, 15 Apr 2024 11:41:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1713206452; x=1713811252; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BjRCBK5JMLNlFOWsOaXHq7Ony/dWmdFPQuPtnw6QEco=;
-        b=dDX0pBUrl8F/bbNGDVWYYNeDx2C+zT73pYLG0dJAtH7dPpKzW1WKd0ahANGXnVn8uL
-         +nfu52qf59SOecd7E/RfaoO9BaEoPpTJv9liChoNDxP4NaxOVfdg61EB0MwH55fFe1d3
-         ObeWu7p4XoFMO65cOGJewBZGFKxqxAGo5HG3toM6zLboaJqU3nUpuu0rQXOD5uNLUEYH
-         mWp63PgLFlkXpbkxrbaqkUy63m/UaccsT1q92SoXBozJWXC/NX/i68COY1ymClfTrQn/
-         ncgk/KqBlC1fU67pURStKsYnvpdt0J4NuL8JyALcZ/ODo1apzFOH+cEbqOyGlFYDKJ/g
-         oapA==
+        d=gmail.com; s=20230601; t=1713206477; x=1713811277; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ly6P13yPcMqifhtf+m3GgrmwXTdYjr1GqnuIG3EWkcI=;
+        b=cM0e58fZ4SmFx0VDLJTnD6PSir2Sz4GarUb2HxrPVI1/SWCOKJdG/Mh8g/VAxN9+bA
+         6/Fds0EENUi1ePlE18nwRl60QjAcydsCWn4QS3KjW93uKVE30A5inMyl+AK6jymrmT0o
+         T4feXAnR/vDhGCSCjI6Oq5TZSQyS6iOQA+fDGTnBdE1Ys8FvMSNa2JcquHmGaNeL61BO
+         1eaGj0PPoVNNARiOYuIWbUBeIusLduyUfR5h3MZWQF7GFgPzGiaGXLZuoxeB6ftKjI4h
+         UaVhgeouEwHyNIIQ+A+kkCca9RcY7YCf3CPZ7rDDFe/nplXvCU56ph3Wd4U15rrz3v50
+         n/4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713206452; x=1713811252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BjRCBK5JMLNlFOWsOaXHq7Ony/dWmdFPQuPtnw6QEco=;
-        b=caQUIcucPLAxef+HZc/ofZFrYkf0vJcDnoOAfGck4O4RjQvL8YiOvaz2b58DWofPKv
-         RR4Y9JjqthTmpEPnjiMsgZG90+A2IF4QtWrg7OgXxjNu1SiGXRv9xFr7YyssIV1MUx1w
-         ekt70J8KYdz4jI0RUs1wq4pUvYEb4dPRj8xaC44Avfpc4QvzVpA50Wm6L4ZvCrycvnMC
-         FLBUGAdrt90FEloLhmSvmpYS1DAymwLxXYPLj4c4ht3IfYQH8AZC3+6scNMkTNhx1yID
-         Ohtbcjz6ef85wG/gwijlp0LGRmu9aSBEicWoqHhAN0Ka5bJWBj0EF69OXbr8+IDPiF69
-         +v2g==
-X-Forwarded-Encrypted: i=1; AJvYcCXcRhX7uMfGCbwXWYknnDuOiaRxcR5K9tASClm3J09an1XR0BzKzg6ht0t3HzqRkHRBb7pi7Xa1xPNggi50T9zv6xaD4ax+o2ntwm1f
-X-Gm-Message-State: AOJu0YwczVRoi1b4pRQuOsuWBKZuLIXZ4FMw1cvIzTlDLFUvw8s131CJ
-	KAcdXtP+TIPb6/0mXG79dEib/od2+h6NwvxXBlEhD06nSvG9cpxq39wFih31cCECiMp3muxtAp+
-	DA+bF/2sX0NvRkLHy5eseINBwFF0ht2sM/ouDRw==
-X-Google-Smtp-Source: AGHT+IHYwF2QDIPPGH9DsXJ9kqTM3FIZjKNNK13+qvfKuo0pO8FZPMJxbFxZCN/0BIVtrdoZnB9M/ESo1x4RjOg642I=
-X-Received: by 2002:a81:5281:0:b0:618:ce10:2fcd with SMTP id
- g123-20020a815281000000b00618ce102fcdmr6566718ywb.26.1713206451984; Mon, 15
- Apr 2024 11:40:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713206478; x=1713811278;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ly6P13yPcMqifhtf+m3GgrmwXTdYjr1GqnuIG3EWkcI=;
+        b=UvcP4p9+fng7oYZxIkdo/PcZ+ssWz9vRSZqje90ktxEqf9uCK5wj+xYqXe/nZKwptl
+         1FDn+vk+tfjbTEBgEw57quMmQSYn81JH023F5gjTLoYrQ66R0WyPCO52AOzSB65VoNfu
+         13GleIbl7v/pQ9aDfZ74cF8sL4/IQMABSliSfqvZSX+Ovu8f3hmmcPVUeywA9wLoiS2p
+         hzDdbG5lnmU6GnILEB5qWN3GzEvRggj0zX8gisMpIIcVd7eQ55Ub0zjuGEOgGUUlfb4f
+         p5uMTAk0PpfT/rTi37B0T1jQ6gCM784XVJ88bwSsCzKnqBVKtRbEjbyN7yERXrSimNjJ
+         UqUA==
+X-Forwarded-Encrypted: i=1; AJvYcCWnb2M3oKxMyJ8ozp+otGhYa8mY6bbMKJillfzeq0sfy7UOjhXTWgWSrr9m/3+urUUYKVLh86/XJsXsvIkeUiTfUl8YvXzy9Qy9BCloqo8LxKgFyRCKo6REv/sgxeYULuOjQjvg
+X-Gm-Message-State: AOJu0YzVdBJCIvMVd0ARaXZiLDWJ7BEiwtoZm1o+E5RHm/CCvANy1cEn
+	X+JVvNUcrncmES1Is37LelrksT/pV5As3DUFbZJ42zRTQU2AwFEv
+X-Google-Smtp-Source: AGHT+IGP/uVgNEMB9YuK+XS3yWg0wA62IO4XRQxZjXZw4SOvexnDeJM5wnrRkLQHw7XO6StDLRwgRg==
+X-Received: by 2002:a25:b7ca:0:b0:dc2:421e:c943 with SMTP id u10-20020a25b7ca000000b00dc2421ec943mr8964930ybj.42.1713206477525;
+        Mon, 15 Apr 2024 11:41:17 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id l18-20020ad44532000000b0069cc3a02eebsm104859qvu.4.2024.04.15.11.41.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 11:41:16 -0700 (PDT)
+Message-ID: <1ba6c65e-5de7-4b42-85e6-979c8845abc4@gmail.com>
+Date: Mon, 15 Apr 2024 11:41:11 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
- <25703ec0-f985-4d5f-8bfa-0c070da5b570@huaweicloud.com> <CABWYdi0BQHB1_COkcSnr_JxDMJipHPbv3=FKOKqD5qED-j37Pg@mail.gmail.com>
-In-Reply-To: <CABWYdi0BQHB1_COkcSnr_JxDMJipHPbv3=FKOKqD5qED-j37Pg@mail.gmail.com>
-From: Ivan Babrou <ivan@cloudflare.com>
-Date: Mon, 15 Apr 2024 11:40:41 -0700
-Message-ID: <CABWYdi1_VXneXYTmww31C5VKZXOH7t_rVbAC+6BVVbOv=iL2aw@mail.gmail.com>
-Subject: Re: Incorrect BPF stats accounting for fentry on arm64
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.8 000/172] 6.8.7-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240415141959.976094777@linuxfoundation.org>
+Content-Language: en-US
+From: Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20240415141959.976094777@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 12, 2024 at 2:46=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com> w=
-rote:
->
-> On Thu, Apr 11, 2024 at 7:30=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud.c=
-om> wrote:
-> >
-> > On 4/12/2024 2:09 AM, Ivan Babrou wrote:
-> > > Hello,
-> > >
-> > > We're seeing incorrect data for bpf runtime stats on arm64. Here's an=
- example:
-> > >
-> > > $ sudo bpftool prog show id 693110
-> > > 693110: tracing  name __tcp_retransmit_skb  tag e37be2fbe8be4726  gpl
-> > > run_time_ns 2493581964213176 run_cnt 1133532 recursion_misses 1
-> > >      loaded_at 2024-04-10T22:33:09+0000  uid 62727
-> > >      xlated 312B  jited 344B  memlock 4096B  map_ids 8550445,8550441
-> > >      btf_id 8726522
-> > >      pids prometheus-ebpf(2224907)
-> > >
-> > > According to bpftool, this program reported 66555800ns of runtime at
-> > > one point and then it jumped to 2493581675247416ns just 53s later whe=
-n
-> > > we looked at it again. This is happening only on arm64 nodes in our
-> > > fleet on both v6.1.82 and v6.6.25.
-> > >
-> > > We have two services that are involved:
-> > >
-> > > * ebpf_exporter attaches bpf programs to the kernel and exports
-> > > prometheus metrics and opentelementry traces driven by its probes
-> > > * bpf_stats_exporter runs bpftool every 53s to capture bpf runtime me=
-trics
-> > >
-> > > The problematic fentry is attached to __tcp_retransmit_skb, but an
-> > > identical one is also attached to tcp_send_loss_probe, which does not
-> > > exhibit the same issue:
-> > >
-> > > SEC("fentry/__tcp_retransmit_skb")
-> > > int BPF_PROG(__tcp_retransmit_skb, struct sock *sk)
-> > > {
-> > >    return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_retransmi=
-t_skb);
-> > > }
-> > >
-> > > SEC("fentry/tcp_send_loss_probe")
-> > > int BPF_PROG(tcp_send_loss_probe, struct sock *sk)
-> > > {
-> > >    return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_send_loss=
-_probe);
-> > > }
-> > >
-> > > In handle_sk we do a map lookup and an optional ringbuf push. There i=
-s
-> > > no sleeping (I don't think it's even allowed on v6.1). It's
-> > > interesting that it only happens for the retransmit, but not for the
-> > > loss probe.
-> > >
-> > > The issue manifests some time after we restart ebpf_exporter and
-> > > reattach the probes. It doesn't happen immediately, as we need to
-> > > capture metrics 53s apart to produce a visible spike in metrics.
-> > >
-> > > There is no corresponding spike in execution count, only in execution=
- time.
-> > >
-> > > It doesn't happen deterministically. Some ebpf_exporter restarts show
-> > > it, some don't.
-> > >
-> > > It doesn't keep happening after ebpf_exporter restart. It happens onc=
-e
-> > > and that's it.
-> > >
-> > > Maybe recursion_misses plays a role here? We see none for
-> > > tcp_send_loss_probe. We do see some for inet_sk_error_report
-> > > tracepoint, but it doesn't spike like __tcp_retransmit_skb does.
-> > >
-> > > The biggest smoking gun is that it only happens on arm64.
-> > >
-> > > I'm happy to try out patches to figure this one out.
-> > >
-> >
-> > I guess the issue is caused by the not setting of x20 register
-> > when __bpf_prog_enter(prog) returns zero.
->
-> Yes, I think this is it. Your patch makes it match x86_64 and it seems lo=
-gical.
->
-> I'm building a kernel with it to put it into production to make sure.
 
-I let it simmer over the weekend. The issue kept happening on the
-control group, but the test group was fine. Please proceed with this
-patch.
 
-> > The following patch may help:
-> >
-> > --- a/arch/arm64/net/bpf_jit_comp.c
-> > +++ b/arch/arm64/net/bpf_jit_comp.c
-> > @@ -1905,15 +1905,15 @@ static void invoke_bpf_prog(struct jit_ctx *ctx=
-, struct bpf_tramp_link *l,
-> >
-> >          emit_call(enter_prog, ctx);
-> >
-> > +       /* save return value to callee saved register x20 */
-> > +       emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
-> > +
-> >          /* if (__bpf_prog_enter(prog) =3D=3D 0)
-> >           *         goto skip_exec_of_prog;
-> >           */
-> >          branch =3D ctx->image + ctx->idx;
-> >          emit(A64_NOP, ctx);
-> >
-> > -       /* save return value to callee saved register x20 */
-> > -       emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
-> > -
-> >          emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
-> >          if (!p->jited)
-> >                  emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx)=
-;
-> >
+On 4/15/2024 7:18 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.7 release.
+> There are 172 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.7-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
+
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
