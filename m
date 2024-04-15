@@ -1,247 +1,174 @@
-Return-Path: <linux-kernel+bounces-144921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB31E8A4C9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:36:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 392FA8A4C84
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:28:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2A84281361
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:36:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8563BB237E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:28:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6CF5B666;
-	Mon, 15 Apr 2024 10:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A8B59B40;
+	Mon, 15 Apr 2024 10:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="VEpl7yN9"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2050.outbound.protection.outlook.com [40.107.215.50])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="O0LCBjKZ"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2087.outbound.protection.outlook.com [40.107.7.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8884159155;
-	Mon, 15 Apr 2024 10:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0BB58AD1;
+	Mon, 15 Apr 2024 10:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.87
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713177340; cv=fail; b=pr76PUBHIy3625+3+jxFVWcrB4YlM53zSXOlOdRNctGWDTNlaChdCplBCtY6JzFytrdwHfsexLOA5QmQBhZw+8ZmTfV6YF4Bnb0I8pCNqMwNJzxj5uZEItzIPMj67kcLKnoZ5IZSu9n4SbAqPyEOuwwMbfGXgtaMOBSklxhUIGM=
+	t=1713176909; cv=fail; b=OBTYLbHlawoOPpLzkZKaGICGq7LkA7pQDRvYftzthJLWjPryCgmyPvDc/FVn95PuBorv4rOF+alrF5hjjI1v7RPf0SPeYOOoJBPAeVLAxQib2mTU6d+bbJhZtKOWuh+OqTG+gwkZAMMilMrLVbewBEOT6HOCA1yxArhqrjj7qvY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713177340; c=relaxed/simple;
-	bh=YEi0++mNY/RT1Mi2TVdPv4pdL1SEV4s11qtxCYe/UNc=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=lqciqiysuKiQ5kOKpRUwLMalCZYNsi+w6XIPGtXPA3uqRti2FZS9s3d91Yk+0a4ymEJb7US9GC7UiFsrE8R9nI4oYylsLrKSVAV1LNDSY8z6e8XFWU+CBjs9/llzcdfH64q+3Dm19Rnj61SsVBTSeUeGrf+VESN+SOb0A68BxBk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=VEpl7yN9; arc=fail smtp.client-ip=40.107.215.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
+	s=arc-20240116; t=1713176909; c=relaxed/simple;
+	bh=wEKbzjGVLq1Q/4LaOSsV588Gx4OL/cLpZ0eZ5B/2MyE=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=jcGPQJOjSglbZgZgB4dUfo17u6n+HW53P455zP+Q53of1a8ypzRXR/HKlyc3YkfHwN1cm7i4eQr6kQ1tTehlP6X/keVGtMlaEgVLrjloWMJD25Bp+Wd6UFSlQ8lfz6PApsoM6cFBG6AaQCNLpkcC52sWBSTmwDx7OGaa3Lv+Lhs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=O0LCBjKZ; arc=fail smtp.client-ip=40.107.7.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MG5st2MexJ/jDO+M7G4qw5744PJUtwQJKCywCqgotJnrcKxIJZJ8J7/mdKcPecvBzrlB9Qk1Kjtdtgd+AFo/HZOVg0HccBt+D0O/wROwL9yIcmM9G3c3FKadAxhSJ06s0dEwSZUp8RpPCv308ed2gufQqOrfFHiQLQ1kTU/EMIZcuY/MVINmfmmnSQL+5f7VgTAycFW3ZtHX/ph5zWrsBIiXMphVQxD6YbnWB9Rw5GxO6GTb3g/PLj4eEQSSb6UyUMcO/OEqF2fTeovbg82415MpzTRWCxI6zZEK9+74WD0Vz6Edf3kFhIID3HypZnCok4WqrvyXowlEg/QMvqYS/A==
+ b=TBDcNELDNy2eXyq1hCXdzg/e4qSAMstiX4onUTximEouysTOfgoBTfRO74mG9HuS+9pig5kxTNG1vGcY7VjBDRVfBJE9fBy8sgLs5/Ll8gm929odGmiYEzVCmDAzI5Oep4B7o8zaKBaBVT8wRFBYuqo7uhnbEPf5zzaiATAYSuY0MoPO4RwfOqhJHar6ZeFRmiWMzuOjZ5qhrvEqC57PgQZ9zAyLmXFqu9ee1k4+xPT2WmkQDni3eoS91aRwZD7/u1s0V8MuknilNyYo/LKehu3ijKUSIS38+PadhItoh2rDbp1y6LciiLfKtlMKvL1OfIszR0HhqLDiDT7dqv88Vg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oREWkNcx/M39UtvzuHoQg5IwB2MM7TwGSXLrQ/ThrkY=;
- b=hlvX5onMik5KzcCmRbOK7eowRQQUpLHevxvcTeArIzUm81kn8UK/NPotTXkiC5rMaIwoil3OhEUnaVumVc/fPZaw916VJfQO4Qu6T9fbAJS1GTRsWAGMYpXZ26scgESAQcJbTZUG/JsyTBdvLBjzqSYHHU7HQAqaozZCakhYuJIpf3P/zziSvug+BCY5YWaY1BOYDuVx89xlEO13ICxUWD4OQRpcN7a26eb5nnEkfZ2uSQ5XxVyK8E4B14JyRmjmtWWkAgBXartnjtjhxcNkQaA+I/6gH7jXrxGtyoJUXYya2lTNLFxbnU8I0yZu+p1VlIwDb5jX515JCAUYdwhjLQ==
+ bh=DS8xZlJ0aMm73UmUIvpcSW9ZGy5YuyyuSPsRl/3thiQ=;
+ b=bdw7xkJ5J0PVaYmAWCUJD5dbzy7XtyORJtx1vWBmM7kQSY8eO5B7Bue38vD6m6epn2HDmfzYFO5WqtorJicsEP2CponhGQHGBtBPvHh4MNRQw05FLdbp+I9AhKiIUN6Psuo97wS26aIF4jSdha7yxL/NG54oqFwzLAiie7mMAJMLpE/tS8enojCz+82Ct+I0IGJNO8wWseCRXiCyDcdP14+Z9q8Al1EbbBLlocENw5+jCI9YLGallgqcQHZ8xBtXV6iefJqDEip37xWOvI1bPQpOFolMmIy+BhFP23Pt5EZHKWtg8N4H5j9R6dK09JYmeLxvAs2w6J199nBBjYjXPg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oREWkNcx/M39UtvzuHoQg5IwB2MM7TwGSXLrQ/ThrkY=;
- b=VEpl7yN9LqEQp8leWNi7xVaZhEWPYcFgScpCPy9qiY0RsscC8QgEmTJ3Hdsvd//vDn33SdMismV7gblyHBYTZMWNy+/VsEbM/xHdNT2nguPf2gp3pOYnQxfpaL32PSmFprhuV/eS9//dZ6oWGo30Z4DEdF3+qGoDysLk0awJf7UUIf+PLQmJjQqESTC6wsiF7L5nxsEEBArF6czvXVLt69x7Bmuk8u2RGoLtHwktAdbEiAn4SP8M2qfgV5kZJlhw162d+c2eFfmFb9jfdR1GlAMr4qGuSzYi6mszCYYUCbkNLRfWYyfgxfe5M1lMtVXgp4LxKQBWNzs23b3rTJVF9g==
+ bh=DS8xZlJ0aMm73UmUIvpcSW9ZGy5YuyyuSPsRl/3thiQ=;
+ b=O0LCBjKZCFYnV6v42vl2grS5qr41ABXuqIOweSwaQLTu6YJPAd1ZOD6wv5V/H7P+Ko9ah20/JpzHD5Z7EPH90wWlHpBDIPZr9Xx3oeqHa76iOuQD0Pme06SxYaHQiHrnC3LO1+4B6rG8WzTgy0Xw6A+5e00RLOPLU+qykG8LuEg=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
- by JH0PR06MB6629.apcprd06.prod.outlook.com (2603:1096:990:31::6) with
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB7895.eurprd04.prod.outlook.com (2603:10a6:20b:2a3::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 10:35:34 +0000
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::ed24:a6cd:d489:c5ed]) by JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::ed24:a6cd:d489:c5ed%2]) with mapi id 15.20.7409.042; Mon, 15 Apr 2024
- 10:35:34 +0000
-Message-ID: <4fedd80c-d5b6-4478-bfd3-02d1ee1a26e5@vivo.com>
-Date: Mon, 15 Apr 2024 18:35:30 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dmabuf: fix dmabuf file poll uaf issue
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "T.J. Mercier" <tjmercier@google.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-References: <20240327022903.776-1-justinjiang@vivo.com>
- <5cf29162-a29d-4af7-b68e-aac5c862d20e@amd.com>
- <cc7defae-60c1-4cc8-aee5-475d4460e574@vivo.com>
- <23375ba8-9558-4886-9c65-af9fe8e8e8b6@amd.com>
- <CABdmKX2Kf4ZmVzv3LGTz2GyP-9+rAtFY9hSAxdkrwK8mG0gDvQ@mail.gmail.com>
- <e55cad9b-a361-4d27-a351-f6a4f5b8b734@vivo.com>
- <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
-From: zhiguojiang <justinjiang@vivo.com>
-In-Reply-To: <40ac02bb-efe2-4f52-a4f2-7b56d9b93d2c@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ 2024 10:28:23 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7452.041; Mon, 15 Apr 2024
+ 10:28:23 +0000
+From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	shawnguo@kernel.org,
+	s.hauer@pengutronix.de
+Cc: kernel@pengutronix.de,
+	festevam@gmail.com,
+	xiaoning.wang@nxp.com,
+	linux-imx@nxp.com,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] dt-bindings: net: nxp,dwmac-imx: allow nvmem cells property
+Date: Mon, 15 Apr 2024 18:36:21 +0800
+Message-Id: <20240415103621.1644735-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0016.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::17) To JH0PR06MB6849.apcprd06.prod.outlook.com
- (2603:1096:990:47::12)
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR01CA0151.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::31) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|JH0PR06MB6629:EE_
-X-MS-Office365-Filtering-Correlation-Id: a58e6b94-d9fe-45e9-148a-08dc5d37c7e1
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB7895:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7167738d-9bec-4a84-d52e-08dc5d36c705
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	PPJUp84GUcjlpZbQE5J/oadsIP/e3OiEZ6wb1gwc7UKC5oRf4oAyFC7kjCUNwpId9lKdoe1lVbTJgKE3QuLJZ2Stp/wn4x3oTacq5a2Ox2JbjiLsDDtOcYwxpijxTM0e1WH4nLWsZ14DQJj62DE4AvA9scjxZGu0onDn3mh5cw4OaPiph3PfU0YPUBhlZ6rf5sQ7OIiHIXYTfLa5CqyGRMVpUAdXiVQciU5m3s+fy7/Cm1b1xSLD3+ZMAikLFIVR+1Wa9CRSUgIhhsNkXBikEuxkE973XJOhjI9dknL/3SQ3FCJnliHtM6dtZj7WfeK1qZF/FgDw4GHI+m59MXTeFxYMbHJFvNa6CkseSvgiO0wpdS4T/MWyvZ7yVRRXOHLeXqGFuzarFjVo/nAsYtG7X3bmdpBdymrtELW/w4GUXN0jJZqRnqTBFV3x2CPiN7oItwQhMfIyw1f+vfZiOL2ZHdCaITM8L9J1syxcEfUwuo0yv9FVpwZ3w2z5MyuSKBQHeINnc//4QkINboh/djdNKwlBMOL98eNSYCAyYNuITlnAE0ifcA1UFAf8tKIO1LLGId/bnw6gaZr6eKQpSTC0+5J40N+1VI+4bCYvjV99o5+da480OWrUjEPo87O6InFdo9XRIL2X64wxexvYQywDUSTLV+DAXP59tYtd7Mk0jlnkInEw27W+ANqbJjbMLgMpkxmuDx7NbiTywd+qj6QIdaEP/skSi+N8cIFhbShcSRZTXruwqIA9Vkd+5w+/Vryb
+	P03QLMoBSwGVj8DWv6fyBVxWqwt0ndy4as24UsdV50DzEG+HQuka0ZVcFRH+6WkUzPLzpgt7VMcB7ntuJJ7RZC2XThJ/sq8Z3hbk/tap8OnjVDX3JKkx452VX3fmuzr1wp/IkuUuK6rWPcqVbCcnDHVMZtgWF8KolRkg4YJlNFoxMnLFfs/CyHO/QWNfEKtJqNqYPXff+/N+/GmhLt7LqMO90+9/EWPD1D9b2BCMPy5bRGb5rd+hf7LT3szJVpYeLV1hV722vHfrl/l7R3m1ckt/5x9Ds3+ciinktj6um+P0qlTWvNz56baXf1G/W8MJ6D1ndVHpSJDfj/1eAtAyf7+DzxOpo/ucR/V3ZIZ0QcYS/CWpr0Dq0E7bmrfpbFHdLZ8FFOBLvrO+/QpMmKntIcupfrm8I3svGWibDgSD7yfLnJRtoIjuukVuAWfVlgLvM4COaS7adoOo6ThqId1lF70EK7N2usX8AM0xd3AnMpJLDK2wmPlYdTHffY5k0upGaVQNs1vZfJ/uLKaAU9WaGV2408WZmMKWiLMovCJUm67LmkxNF/WqHB1waba4vVKb2guNq7Ls/byEFvLwhTDg+t6JRUWzcV2EnlReQF5sW3umnHXtzvEbBGo9B9zKJmz7LZw5QsM8kTyBqNivpOecdhCZPPpPUhlZpDI9kzjRfvtLm10mrYASibjkaxf/AcECirkjhgCkLV+xjveyA7IJp0imlZfhD+YgYOhOEQttj4g=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(52116005)(366007)(38350700005)(43062008);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(52116005)(7416005)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NnNER01GaFh4US9pNUZTeXBSMHFJLytKamYybkZUL3NJN0xzUWd0UDVlVFNG?=
- =?utf-8?B?YkhpTk9BL0dEYzVyZHZkME5zK2o4a1pqTzJCblZMaGcybHpYRVZSQjdBTFJD?=
- =?utf-8?B?V0txUkNhb1hqUW1XRVRQQVVQQmR1RldwRHQvSnhVM0d6YjJMS3JZNnFaK0Qy?=
- =?utf-8?B?bTJkV2tPZjJxZ3NDWDB3M2oxQzNnYjFzMHo4dkYzNTdVSVlDdWhkZkFsUFBp?=
- =?utf-8?B?Z3JvUTY0Z1B0N3JhUkc5VmRnZVZabzNPUTdoSnc5OHpmOWhCcXpSR1V4S1Fv?=
- =?utf-8?B?OU1POGwvM1dRaHVJWWpKQlc0dHNGeEhxaTFSRkFmVEZmV2VsSXM2WWJHRGRx?=
- =?utf-8?B?Vnh4TTVqQnBlejd3ajBpdEZ0VHJWaC9BaEJrRzVmZW9ZSXMzUG9icjNJcmkv?=
- =?utf-8?B?ZkNzM2tobWZ1ckdaN0Nndm9aNzFQNncrUHhxdzE1akNzQ3g3L2hYODRURTMx?=
- =?utf-8?B?SmM3OXkxcWc0Y0ZodzExQkUwd2hqdDBPcWp6UmxXZ2RSbEw3SkFvVEZxbm9F?=
- =?utf-8?B?MGFhWjd0R2VaOFJ3cUVCYS9raUc2U0lFa2VQazlkaDFaRDEwUmk3QW5VYXhO?=
- =?utf-8?B?RTAyOU40eFFhNUpOQ1kwOHVnQmZzQVJGSVphU1pKZUlhMkltQnhNa3J1NUNX?=
- =?utf-8?B?am02YUJNSkljY0ZXMHdyakprajd1VThDR09HOExoQnB6WDl4ekgxRUVrT1di?=
- =?utf-8?B?YkFkc3crUXNrelpsTVg1Tk5NMG12WWVtdStIdU5iTElYS0M3T2dybHl5NmJD?=
- =?utf-8?B?cWN3N2NLbVBpeTNVNFZOLzhQSUt1YlBhM2l2dEd4V1p6QStwakJHdVdyTEgz?=
- =?utf-8?B?cmZ5TVpMaFdGZW5JWllhODJDM3MwTHBON1NsS0lVYksvNHcySVpUdnYwY3RU?=
- =?utf-8?B?Z0lLM3BZUWRheEsreUF4THhkaER4VXJWTWlWc2FJK1pUdkNOekJUSTJ0M1V0?=
- =?utf-8?B?SGprU1FmU2J1OXBORmU2bXo0Wi9HejV5dGQ0M29PLzd6dzNsZEQwY2NlM1NN?=
- =?utf-8?B?L1JNem8zeGpVR2NXNW1Wck5tSTlTYUVsRFkyTDU5SlloRi9RSWNjNVFONThs?=
- =?utf-8?B?Qng3Q3NNdlhjeFVtYzBUSTd1MTlOdXRJR0RhSUpYb1JiRnhvUHFUbnhFdWlQ?=
- =?utf-8?B?TzZYVGJnajJXZ2xyS1pBbDJ2aklocncxRVBoK3dCWGVFOVB0ZTI5MDk4dHFk?=
- =?utf-8?B?c09BMkcybEhYWm9mTks0WnBkdjR0Y3pmTzdibllPSkorSUVFRjNTT1NUN3B0?=
- =?utf-8?B?VVp0Qm04RS9kMERlU1FWajcwY2QreVFOcmlKOWV4QWdseEJqMTBMd2VNV1pN?=
- =?utf-8?B?MUxPNjN2bWZkUFBJVHc3WHhRZlo3Z0xZVnE5UGpSeGJCYmpUTUJ6MGlzNkJE?=
- =?utf-8?B?SSs0eExCV1IxK0E0NC80ZGk1ZW5oUUcvQ2pLYXdZUGJ1Y3hiUExBdUdxUWcv?=
- =?utf-8?B?Sk1rdnRQeXF2eWxZTlhMdlVrdVVlRGV4YzZnb2U0SWFlWDdLTkhZc3cxRWtq?=
- =?utf-8?B?OXVOL3RUbGhOMmVLK1JCSjU0MFNWSExlUWtPZUUrZlFLdTFFeHAzclIreGVT?=
- =?utf-8?B?T2o2MGZkenZ0dlRNVEZ1QnFYZXdRZ1VoOWptUTZjaUJQbXhCc0tkVGxKalRw?=
- =?utf-8?B?bE5qTnNWb0MvQ09sN2RyMGo0c0VPV1BaQ1gxdnRnK1B4RGo4dU9mN2ZFSWxS?=
- =?utf-8?B?WEJlb2FwVllPMm1lVzFLaHFrSWVXV2hCRlVtYzhXRUhOTjRYMWhZaXdwY251?=
- =?utf-8?B?LzVIV21wTmZnb1poV0xUZjRMWFF1aVdRb1N3MytRamxtN3BRSXRqdDN3WWpN?=
- =?utf-8?B?c0dPVFdHNk1XemgxMHlZOFZNTkl3VzZRQU5meTRQU2YzWk4yUXJlb3VLVXUx?=
- =?utf-8?B?eENXay9WQmZKWFZUbUo3c3VUR2o3bnEyQzJtL0tYcEI2YUJDWlg5aHhlUjB5?=
- =?utf-8?B?cmxEMDdrdklvcEpoNXN3Q1hjcXlDa3U1TXVIREMxSFVQdVJaTHpOK2E5QU10?=
- =?utf-8?B?SWlySnFDOVFDMDVPMk5kcDBRV3FuWGNQZm1qVjkwT3hFaERmVVRkQkhjREVp?=
- =?utf-8?B?TFFub0JzOWgyeldUQ3E0c1FyRnVZS3hYK2ltK2h1VWJuS1BNYXN1S2k3TXFa?=
- =?utf-8?Q?XS6dJwW1X7Aj6+DS8/iQuHmFy?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a58e6b94-d9fe-45e9-148a-08dc5d37c7e1
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+	=?us-ascii?Q?5evUoYYQO5g0ISF1Zv2FVhzZF5slwvGGMYGG8v50nRw3Sc7C9p/GdLfKnQuT?=
+ =?us-ascii?Q?37MWX0V3mVkhh3VKcLzE2eATnOiAtPvP9ah7n9+0LQj+TG2IiDfD9V5cP9Rn?=
+ =?us-ascii?Q?GKqSFcwqC9Q+GvPDvQ7FuwLqc3hpHnGr8Big9f/Q8dHk0w69blgz2ArDc5IC?=
+ =?us-ascii?Q?yjSkf57b0YhW+OwSdyyMZNzhMlDQnmZohKArz8dTkeSx4JXytf+mX3AKdiiZ?=
+ =?us-ascii?Q?nw5bcg0vKlPrwalcMXMu12V7PiYcz5A5hP9EwshgRo0vvWQU985AlAZGsHwt?=
+ =?us-ascii?Q?JYPI6nqkLjFJmAMEQASCu616lotI3/fHNaHGc2l621N5wUib94PJgZmtCMXR?=
+ =?us-ascii?Q?eeNX+Mk/k91Z+qtZLjIOCUUVr9+C8ROzXvFCkXanAsvmNp5m3RlMySluR1qy?=
+ =?us-ascii?Q?mok9tjQPV6GZFpAw/asFaVF39QQ1Qs+oMYY+JaokLIZLkXe7dgU4umW18Abq?=
+ =?us-ascii?Q?Qp4h7BzcQ4BUvIqEazjMwgJKSNeJuQ/zpSXB59svxbOqr8Pb2F1nGfFm5LYd?=
+ =?us-ascii?Q?seo/nVi/lv6d7TC7fHeElz2zTaBt8goPvz28mYTZWPyBb4kQ/BGeCSLrwlvS?=
+ =?us-ascii?Q?NtFyTj7RBsKUb4vgAHG0fr0QWGxDYDZPaMh9R5hI/mr+6BGmwyk3T3fqZJBa?=
+ =?us-ascii?Q?oN0a3U/8/BqSN8DIogDeRG0YvF26ywfB8GK7ZHoTproTwsRZ7C9+OWIWPMR/?=
+ =?us-ascii?Q?mrjIuwGrpzbNZ8cN6674HuDmNj8D25LO7NmVIjOlIIM+wuAlt4RmH90z8kEQ?=
+ =?us-ascii?Q?TR4UQ595fURZMRr3bb3XoQNxXI3P/5X+Xo2hx+nxmjI5YgMn96OUH2+oYion?=
+ =?us-ascii?Q?uX+IMT6EDb7mbArCo2wUL1VEorBztjyelRnM3RuuVHX6NqxvQPDd2eIlL+Cb?=
+ =?us-ascii?Q?3ACL4P632RThneXvEYYF6XoBRjUzwv0/Qh6zfb3OfeMb4Z4840l99vAiNZEv?=
+ =?us-ascii?Q?FwkRh8pPAe7ut4ktor6rv2zKviea10o+Eckh0pwJE6ZgoJbcVRewbTd9h/eb?=
+ =?us-ascii?Q?GEXOtvmPjUGU6i7WmQHnpaKr2MmMwM4ofl1neHxNSC3++j4HjQML8zwLPX0I?=
+ =?us-ascii?Q?9vJTNZqOJE4fWZe/RxxDzPDNYCBrHrDQj7iPpPG8nNpiDy9Gov2m9O6nsY03?=
+ =?us-ascii?Q?1wSYd0xzWv4fo9oaIoaao7AwUiA1122/a75WZsksJawDn1AAXq7gnTsxQVQB?=
+ =?us-ascii?Q?QS7wBIlTHR61rCl/n3uXd1+U83SCRB9eQRzTlNsV5nY+PsdlwYDzXQF1CBOo?=
+ =?us-ascii?Q?E4klw5D1zzPylO/JTZyKR9BeCcRomybOnadFzuzMP6KxuZKFyX75uXviTEu9?=
+ =?us-ascii?Q?lVInU6ncWAn5mIpXjvm6TPBKRZxDb2rSItEmtTICJWJt2ZMUOmftzaJWaUNm?=
+ =?us-ascii?Q?sH/OCxhEzpZ6blY78CY72fWlsszm7M9x9hLJQSpkR+4P4ngDoCpfk7OW4K4D?=
+ =?us-ascii?Q?lUDPmHk3K8wgk/NFcgIIKM4ZJCdaypAcdI7Mey/oAW94VrRpNBaCJDx3K8au?=
+ =?us-ascii?Q?NXn6T/t14ebkjLwXjUWHLPVWr6FgY4I7+/pGhTS/lcNuWM7nWFBTihLi+jSz?=
+ =?us-ascii?Q?Z+ACPTOl1QpRgYaUJzkCDytoB8jPd2KVmGiQSYbd?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7167738d-9bec-4a84-d52e-08dc5d36c705
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 10:35:34.0680
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 10:28:23.3066
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hBRtQ+xFfGqb5M3au0AVIjVurho5rR6aPR/GshfjeY9yGWMRTmH4iAPOI69QGDxEVMbmy5vsJKEXOaB4938xYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6629
+X-MS-Exchange-CrossTenant-UserPrincipalName: rpBAJiGPCqZxnbcs+SSz9/eVNNtMAmAfCvcAFClRBY2ochjZEjRWaXyLa0wBwKlvLmxJMx5mBNivWoC+SOMO4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7895
 
+From: Peng Fan <peng.fan@nxp.com>
 
+Allow nvmem-cells and nvmem-cell-names to get mac_address from onchip
+fuse.
 
-在 2024/4/12 14:39, Christian König 写道:
-> [Some people who received this message don't often get email from 
-> christian.koenig@amd.com. Learn why this is important at 
-> https://aka.ms/LearnAboutSenderIdentification ]
->
-> Am 12.04.24 um 08:19 schrieb zhiguojiang:
->> [SNIP]
->> -> Here task 2220 do epoll again where internally it will get/put then
->> start to free twice and lead to final crash.
->>
->> Here is the basic flow:
->>
->> 1. Thread A install the dma_buf_fd via dma_buf_export, the fd refcount
->> is 1
->>
->> 2. Thread A add the fd to epoll list via epoll_ctl(EPOLL_CTL_ADD)
->>
->> 3. After use the dma buf, Thread A close the fd, then here fd refcount
->> is 0,
->>   and it will run __fput finally to release the file
->
-> Stop, that isn't correct.
->
-> The fs layer which calls dma_buf_poll() should make sure that the file
-> can't go away until the function returns.
->
-> Then inside dma_buf_poll() we add another reference to the file while
-> installing the callback:
->
->                         /* Paired with fput in dma_buf_poll_cb */
->                         get_file(dmabuf->file);
-Hi,
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The problem may just occurred here.
-
-Is it possible file reference count already decreased to 0 and fput 
-already being in progressing just before calling get_file(dmabuf->file) 
-in dma_buf_poll()?
-
->
-> This reference is only dropped after the callback is completed in
-> dma_buf_poll_cb():
->
->         /* Paired with get_file in dma_buf_poll */
->         fput(dmabuf->file);
->
-> So your explanation for the issue just seems to be incorrect.
->
->>
->> 4. Here Thread A not do epoll_ctl(EPOLL_CTL_DEL) manunally, so it
->> still resides in one epoll_list.
->>   Although __fput will call eventpoll_release to remove the file from
->> binded epoll list,
->>   but it has small time window where Thread B jumps in.
->
-> Well if that is really the case then that would then be a bug in
-> epoll_ctl().
->
->>
->> 5. During the small window, Thread B do the poll action for
->> dma_buf_fd, where it will fget/fput for the file,
->>   this means the fd refcount will be 0 -> 1 -> 0, and it will call
->> __fput again.
->>   This will lead to __fput twice for the same file.
->>
->> 6. So the potenial fix is use get_file_rcu which to check if file
->> refcount already zero which means under free.
->>   If so, we just return and no need to do the dma_buf_poll.
->
-> Well to say it bluntly as far as I can see this suggestion is completely
-> nonsense.
->
-> When the reference to the file goes away while dma_buf_poll() is
-> executed then that's a massive bug in the caller of that function.
->
-> Regards,
-> Christian.
->
->>
->> Here is the race condition:
->>
->> Thread A Thread B
->> dma_buf_export
->> fd_refcount is 1
->> epoll_ctl(EPOLL_ADD)
->> add dma_buf_fd to epoll list
->> close(dma_buf_fd)
->> fd_refcount is 0
->> __fput
->> dma_buf_poll
->> fget
->> fput
->> fd_refcount is zero again
->>
->> Thanks
->>
->
+diff --git a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+index 4c01cae7c93a..87bc4416eadf 100644
+--- a/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
++++ b/Documentation/devicetree/bindings/net/nxp,dwmac-imx.yaml
+@@ -66,6 +66,10 @@ properties:
+       Should be phandle/offset pair. The phandle to the syscon node which
+       encompases the GPR register, and the offset of the GPR register.
+ 
++  nvmem-cells: true
++
++  nvmem-cell-names: true
++
+   snps,rmii_refclk_ext:
+     $ref: /schemas/types.yaml#/definitions/flag
+     description:
+-- 
+2.37.1
 
 
