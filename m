@@ -1,150 +1,100 @@
-Return-Path: <linux-kernel+bounces-144508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B44178A4739
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:14:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574F88A473B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42E5AB22A9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:14:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 015431F22104
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC51A1C680;
-	Mon, 15 Apr 2024 03:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121D91BF37;
+	Mon, 15 Apr 2024 03:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nFKcCqyj"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PdLRgOU2"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B79179AE;
-	Mon, 15 Apr 2024 03:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFEAFC11;
+	Mon, 15 Apr 2024 03:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713150874; cv=none; b=dcpz63KQq+1vzIh3IxjwFwlX+rBE4X1LRp933up0VD7Wx4PkWhmPqCUp7dNf0prZ4rI5Ojfo1ncFHuIwHU7zc1hsWY4ZQ7rmfsld2L71Q+kmXyoo6U+a/0BkvcfCC9gFZyr6jYGn/Cquh7rPA698QGhqLll3+dkgzqNYWK/95Ok=
+	t=1713150919; cv=none; b=Ph+hOeEF/eQtBvCA43A44ePSStCvlsOnSLTFT4szAxf6UpcP5kHECBZHiY6o7xxGWTFJvDUv0jJKLgN0nmfz4XxHX2nlH6zavdN2qwNDgPdHWB4Ptk3YJ9mZdiiDxf2228A2KvESiUXJL/DcpS0ppdLTlotc9//1dMo00hfGgBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713150874; c=relaxed/simple;
-	bh=lHw0gdEyiCY7Mi3sAPf1DuaLoh7gDBT5neXVCqv7pTY=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=twFtjSadjmYAok5oV6BSu0T6b7TeTATwDp+Pn3wh8R9YDkGZfXLKM4FTSMyfpwNXwJ+0mxP/v9Ms//tpT2aIjFVd0C07sJEnu+92Ep/N1MmjMu/GhP1gntjJK3L3eqXlKZ/f+Vu7B5mcs0Ta6JFZW5VrUHiD7ZONehWt2e5H7us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nFKcCqyj; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4715991c32so341546666b.1;
-        Sun, 14 Apr 2024 20:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713150870; x=1713755670; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=O4EQFEyafzgbhZkzPTOOAT0aiBW1/kDcV3Vy9h4f6bA=;
-        b=nFKcCqyjIyZqkmPa447wIQSAUMPKm9Zk/Ewkz9Sia54cvKkIay8kru/ae3GcSVc1/U
-         5rbG6lUb7IjAT4wiG4j+8z7V0KE/J4VdEBwPLGXkxKPLYJrYbkapOqvKWg0MhKzqCjLq
-         XIvoKG2EgjTcNPGvuChYqWncQcN1/oUaj0TDVcVnxUDePnXRQO6ZfOsl1X1Uiq7pFtOE
-         FIYFHisFWnuAu6O310DVAdZ8FpvjXmaiRmTiItO4VjVHtNA4Tic4NnfW4qmLEKjg5Jmc
-         g6k3xIak6TWM+xvrerHvJzRNZun/bc1HnaziVurHGDvFWSPAX0kpSatwME5jAPCLecza
-         IJ0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713150870; x=1713755670;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O4EQFEyafzgbhZkzPTOOAT0aiBW1/kDcV3Vy9h4f6bA=;
-        b=k493VXsT8IVbckrqVKxBMNrjJaFGCWwXo3xfiRIXzTSlppcuoYgOyvwg72Mjku/ue2
-         FrSiyWvf9cmRjRO+AHoZ6GZZs2vuHfgp8ovtnY/bkFo3ZM492ZqTKPblDtLShgBKLUBH
-         Le0KF+Tb18ly3mINDiTr5R6ZtLq3H2bx7XqVeCWFvY6FrTHZOoYpawmP2GTnci7EFNNn
-         mUsCnJVBVHmxsbwDcZi+5z0OWZKbcQxaCAT5//cJ7gAG44SlE670Q0oUQJ1H4pqvzqcL
-         rlaXB+JpUnsfRZ57RTjPoABbTdamcfyKxOriQnR/plg3mDg3/V6GTbhIIvPSqsYXss2b
-         fIDg==
-X-Gm-Message-State: AOJu0YyzgmPVmSdzzBmpR1WHGbxmhiWWmqqwgWJGNQ3POp+KpWAnuPhM
-	XjmopLV9Vy4QQ8BK3w9pEkMVm7Pg/uLEIl+8yMOjir/DEa8d8wuZoslNcmt0P7MBwuQvwh0gXlR
-	5l28rmg/a8gHErGMfvXcwYB0HuMo5wu4G084=
-X-Google-Smtp-Source: AGHT+IHlGaESNILMFofR/Zg0+l3dFM0T+xlNWgwdqSRE503ObGRCL3qe3HZc/dQYg1JOWA51ZS1UHqFE1Z5UKW+Po7s=
-X-Received: by 2002:a17:906:6a09:b0:a52:2c4f:7831 with SMTP id
- qw9-20020a1709066a0900b00a522c4f7831mr7038807ejc.4.1713150870233; Sun, 14 Apr
- 2024 20:14:30 -0700 (PDT)
+	s=arc-20240116; t=1713150919; c=relaxed/simple;
+	bh=6A7i4BKRV2K8Hd11uqRXyWyCGbULTN3pcRLg5UbO2uc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GQSI5gRxavPUGzqjfLl06aJwZexPWDG/IyIQaGT3BqIwUY8pNbYfxWcZ/f+CP5OwECfsQ9kWpfdV3inAEXO4sbth2lPtEVpIIy6BYoiA/qj0NlwliEXyaggUIGnrbUYW7StDKfsAgtqHmEuQLGlp9JrsiQ5lG0nvfjKia93moMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PdLRgOU2; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713150906; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=kvKRBi2vy5d2TynLGK7fF4gLw2elcxxi2l75ttZ5EPg=;
+	b=PdLRgOU2BuywBkTbV4ej+/8d8z1AJIl8sJVLlcSN+LAspi4Ch555ZADuC1sFRxHNG67LPBADscSPoy0rHp/I1ROaNGeEpVN/a2limmVMVk4GhrJTtu4NcR5p3WTAAknB3phSm5gEAqU02cy8vMtRaQekDOzcSKeKyX+IYjUFn8M=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W4UB1AB_1713150898;
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W4UB1AB_1713150898)
+          by smtp.aliyun-inc.com;
+          Mon, 15 Apr 2024 11:15:06 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: elder@kernel.org
+Cc: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+	Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH] net: ipa: Remove unnecessary print function dev_err()
+Date: Mon, 15 Apr 2024 11:14:56 +0800
+Message-Id: <20240415031456.10805-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Sam Sun <samsun1006219@gmail.com>
-Date: Mon, 15 Apr 2024 11:14:18 +0800
-Message-ID: <CAEkJfYNguDt47=KnEUX7tLwx_46ggBx3Oh3-3dAcZxqndL_OWQ@mail.gmail.com>
-Subject: [PATCH] drivers: scsi: fix shift-out-of-bounds in sg_build_indirect
-To: linux-kernel@vger.kernel.org, martin.petersen@oracle.com
-Cc: linux-scsi@vger.kernel.org, xrivendell7@gmail.com, 
-	Bart Van Assche <bvanassche@acm.org>, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-The get_order(0) is undefined. If scatter_elem_sz is equal or below
-zero, the order returned will be 52, so that PAGE_SHIFT + order is 64,
-which is larger than 32 bits int range, causing shift-out-of bound.
-scatter_elem_sz equals or below zero is not allowed in the
-sg_build_indirect().
+The print function dev_err() is redundant because
+platform_get_irq_byname() already prints an error.
 
-UBSAN: shift-out-of-bounds in /home/sy/linux-original/drivers/scsi/sg.c:1902:13
-shift exponent 64 is too large for 32-bit type 'int'
-CPU: 1 PID: 8078 Comm: syz-executor748 Not tainted 6.7.0-rc7 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x136/0x150 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_shift_out_of_bounds+0x24b/0x430 lib/ubsan.c:387
- sg_build_indirect.cold+0x1b/0x20 drivers/scsi/sg.c:1902
- sg_build_reserve+0xc4/0x180 drivers/scsi/sg.c:2012
- sg_add_sfp drivers/scsi/sg.c:2194 [inline]
- sg_open+0xde4/0x1810 drivers/scsi/sg.c:350
- chrdev_open+0x269/0x770 fs/char_dev.c:414
- do_dentry_open+0x6d3/0x18d0 fs/open.c:948
- do_open fs/namei.c:3622 [inline]
- path_openat+0x1e1e/0x26d0 fs/namei.c:3779
- do_filp_open+0x1c9/0x410 fs/namei.c:3809
- do_sys_openat2+0x160/0x1c0 fs/open.c:1437
- do_sys_open fs/open.c:1452 [inline]
- __do_sys_openat fs/open.c:1468 [inline]
- __se_sys_openat fs/open.c:1463 [inline]
- __x64_sys_openat+0x140/0x1f0 fs/open.c:1463
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
----[ end trace ]---
+/drivers/net/ipa/ipa_interrupt.c:300:2-9: line 300 is redundant because platform_get_irq() already prints an error.
 
-Fix it by setting the minimum num to PAGE_SIZE, and change the type of
-scatter_elem_sz to uint.
-
-Reported-by: Yue Sun <samsun1006219@gmail.com>
-Reported by: xingwei lee <xrivendell7@gmail.com>
-Signed-off-by: Yue Sun <samsun1006219@gmail.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8756
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/scsi/sg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ipa/ipa_interrupt.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 9d7b7db75e4b..6199481be585 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -1586,7 +1586,7 @@ sg_remove_device(struct device *cl_dev, struct
-class_interface *cl_intf)
-     kref_put(&sdp->d_ref, sg_device_destroy);
- }
-
--module_param_named(scatter_elem_sz, scatter_elem_sz, int, S_IRUGO | S_IWUSR);
-+module_param_named(scatter_elem_sz, scatter_elem_sz, uint, S_IRUGO | S_IWUSR);
- module_param_named(def_reserved_size, def_reserved_size, int,
-            S_IRUGO | S_IWUSR);
- module_param_named(allow_dio, sg_allow_dio, int, S_IRUGO | S_IWUSR);
-@@ -1837,7 +1837,7 @@ sg_build_indirect(Sg_scatter_hold * schp, Sg_fd
-* sfp, int buff_size)
-     if (mx_sc_elems < 0)
-         return mx_sc_elems;    /* most likely -ENOMEM */
-
--    num = scatter_elem_sz;
-+    num = max(scatter_elem_sz, PAGE_SIZE);
-     if (unlikely(num != scatter_elem_sz_prev)) {
-         if (num < PAGE_SIZE) {
-             scatter_elem_sz = PAGE_SIZE;
+diff --git a/drivers/net/ipa/ipa_interrupt.c b/drivers/net/ipa/ipa_interrupt.c
+index c3e8784d51d9..c44ec05f71e6 100644
+--- a/drivers/net/ipa/ipa_interrupt.c
++++ b/drivers/net/ipa/ipa_interrupt.c
+@@ -291,16 +291,12 @@ void ipa_interrupt_deconfig(struct ipa *ipa)
+ /* Initialize the IPA interrupt structure */
+ struct ipa_interrupt *ipa_interrupt_init(struct platform_device *pdev)
+ {
+-	struct device *dev = &pdev->dev;
+ 	struct ipa_interrupt *interrupt;
+ 	int irq;
+ 
+ 	irq = platform_get_irq_byname(pdev, "ipa");
+-	if (irq <= 0) {
+-		dev_err(dev, "DT error %d getting \"ipa\" IRQ property\n", irq);
+-
++	if (irq <= 0)
+ 		return ERR_PTR(irq ? : -EINVAL);
+-	}
+ 
+ 	interrupt = kzalloc(sizeof(*interrupt), GFP_KERNEL);
+ 	if (!interrupt)
 -- 
-2.34.1
+2.20.1.7.g153144c
+
 
