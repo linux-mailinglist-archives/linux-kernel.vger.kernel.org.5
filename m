@@ -1,182 +1,202 @@
-Return-Path: <linux-kernel+bounces-145419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9804A8A55F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:05:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B8008A55EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:05:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB9F31C22049
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:05:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4B29280C7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E365E78C6B;
-	Mon, 15 Apr 2024 15:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B8D762D2;
+	Mon, 15 Apr 2024 15:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AmWLDqEP"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2049.outbound.protection.outlook.com [40.107.243.49])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UeVGYfBY"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B56D762EF;
-	Mon, 15 Apr 2024 15:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713193481; cv=fail; b=EUMALtTJMcBDWH7Ci7+H5gQQ7CTTs6160euITLSgy/R2qkCpJgqxp7SdnwqVecqhK1wDPHzmM6Oq4NcwieE/F8Z5FX5hsd8McM9xfTgZOKwJigiFvPjmjbiGQo+epZkdDsVQs/pXHrunYdMoC+is8uKk0+cu7KkbSXPVTSKPq2c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713193481; c=relaxed/simple;
-	bh=hxLRNF17RS2p9IYsaSsxnKSQ7ze8Ppv601IcALBnA8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ctwrmFY50rhQwssoCLCqnMV+r+/0mvr+8KlY8yHgD2+0rp8+0w+Ww7s4XVMpOh2SaBjQHt7OJLEkDx/VIGC1j2s+OVhy6DtYV+LSeZOAQ+VEUTUW4A9/TjFgEpVfXGUo9aGQOB4MJz84VIdJohlquxmJK3qy5mVxTOq7PvJxwVE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=AmWLDqEP; arc=fail smtp.client-ip=40.107.243.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GURRqsgZRZXvz4mzdnkq4wAFEYadMo183swF2rrRQ0FgKiaqPDsZg6gCxiVqYKQSUJGSov+TpO9QOZa7FOw85awig5K3Ri1WyZ58366swXAk7jMItamKAD9pm5o3aVZ2Nz1qhzV9qkNIBOmxrbAEU20ClGX9sh1x0gcQaCAuiSk3hpylTnExYDaGsXIocRnPozz/bxaKwKnao254JEDtVYWc2jqKS+LdOV3vvsB56oPM/lFi4HEh5aq/YyKESL0U6IFP8/AKISRAqiTaeF9u9WFLOjQWBsMz9lCJiTyEbhfstgvAKMv4oiHPBTZ9Mmqt+Qc31td4wFVVJnPSiPOKWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dwmJp1NT3U3z+4Xi0MPR1ldZzZrN2oXdc9EYSIB7XwQ=;
- b=IXtYX42JK+K43bNyzYK/UD08BWj7Fxs8v4jAjWO+0becbG17UaQPDYkCiBvSk4w9BlczbAVtWsT4A8bCjHM4i6Fg1EXnf5HbGkLL2EzmZDSazPQK97GP7tnYD5qSpnT3cqUqzL1/kPBbctKkpBaK9QJNH3hDSL1RqhcUkBBp9EfZ2uoekJUkOBT5oPUVg5i2ai2tqr4iCLc8Eq00M4lxvsTAzzspR7gg3RbTaCGmyfO1huQII8xXE0M4YEXIqli4CLxRixPW+SuPEwQP3R8BFV3ldyEZIA1pmV/kOUNUN2GRVjesy8rBzwvMx/JzrPA7U2jgMlxDZeMEUOyAXGhpLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dwmJp1NT3U3z+4Xi0MPR1ldZzZrN2oXdc9EYSIB7XwQ=;
- b=AmWLDqEP0z0NFTa7NguntPPTFA69F1ScQ2iOrIDLVPtf7Pm7qsSPDhAjyPMED1oIesP16NUNP3P3NCQsExJ6RJGI5RyeoxOCMul7jYKquzfptqSX5RhBNA2RS2ayJrRHMOVM1cLKzOmet2ROSfPbWOEuooTIP8HwxPG0QzfGkLY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
- by LV8PR12MB9205.namprd12.prod.outlook.com (2603:10b6:408:191::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 15:04:28 +0000
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::e7a:5022:4b7d:ade1]) by SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::e7a:5022:4b7d:ade1%7]) with mapi id 15.20.7409.042; Mon, 15 Apr 2024
- 15:04:28 +0000
-Date: Mon, 15 Apr 2024 23:04:04 +0800
-From: Huang Rui <ray.huang@amd.com>
-To: "Yuan, Perry" <Perry.Yuan@amd.com>
-Cc: "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
-	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
-	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
-	"Petkov, Borislav" <Borislav.Petkov@amd.com>,
-	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
-	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
-	"oleksandr@natalenko.name" <oleksandr@natalenko.name>,
-	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
-	"Meng, Li (Jassmine)" <Li.Meng@amd.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 7/8] cppc_acpi: print error message if CPPC is
- unsupported
-Message-ID: <Zh1B5IeK53G4A2B4@amd.com>
-References: <cover.1711335714.git.perry.yuan@amd.com>
- <bb32631f684446ae6380bdac0260ccd66290e222.1711335714.git.perry.yuan@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb32631f684446ae6380bdac0260ccd66290e222.1711335714.git.perry.yuan@amd.com>
-X-ClientProxiedBy: SI2PR01CA0040.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::14) To SJ2PR12MB8690.namprd12.prod.outlook.com
- (2603:10b6:a03:540::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6BDA71B3B
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 15:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713193470; cv=none; b=FGDiviB34Yz3wh5PW70UJwJvQZH/TjBjJtYt4sNPyF6+JBRsQTmiSTQHAjvSHxvkkUPTOu1LgMJPLznorRFhJkLZ+D9mfoHHizzG8oT+Cv0IbKtfmKbnciYHIcpqxetQco3RBTz//Nf+sFxhce50krTHG/Z3UvVQ7KLUhd8OPso=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713193470; c=relaxed/simple;
+	bh=qV66wvvmOe5Fbswwf7hLeYtfxUDbv3GqqcFIcO2m1Mc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FCERyarFsyq9X0XohvpZ1MW5xP3WSdMU2p/EIFZ0KpI2VdBtu7CNQnRwEjumJI8L54HaLSL/y500cPwULKn4QEXX508NM7OWL+ULvZPiB5nequdg0uqYkod2SZ8SWpP+tcIGbBCaSXwd+v8876Wif5opUN4OOsKJKGMalaq5yQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UeVGYfBY; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713193466;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=OnKKU4w8pIiCL4LleAZ3lUokUgFM4I1C3sXlHP3921Y=;
+	b=UeVGYfBYgQETqq1MsNLj+lWR9sOIAS9stV48RNcjB6kkZBRRX0GNcqHFFaCQ0G9MianTmS
+	C0X4OOJttL+0UyJUAK+morCxYaVHM1oMb4q40fLL1ZMLEJ2JBC8QlK1RomRa2q9EU5WwsZ
+	saXP7k01F4jrOgycrVPhhOxNZLb93fY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-694-qFH_el_UMbGyX7GhHUuYsg-1; Mon, 15 Apr 2024 11:04:25 -0400
+X-MC-Unique: qFH_el_UMbGyX7GhHUuYsg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-416a844695dso15874605e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:04:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713193464; x=1713798264;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OnKKU4w8pIiCL4LleAZ3lUokUgFM4I1C3sXlHP3921Y=;
+        b=Sup3En7qLo0264gkOzIA0ULY1ff+DxmYBSdKLwazAuQbVZcGMTdRJaJRT73p/EI29W
+         anRxrtsFLkt7COnL1K5hmwne++k6PqxTqg0cKQRd/THNnsboLRkyir4sg7xhaxGxXkfG
+         C60/xyyHYAO8kpY0tW4BLpkirr9EnjNREGljKfhTFncauebDZ865fucr8dT0I7UWOtkN
+         l2OiL9gnwiPSP3n/C/C6MdEWQY6RZ7FNF+aYr/efKzYb9mK2/MlCZjOeVK7OYpLHf1SY
+         IoPSQy2ZXuDYaSc/XtBk9yzlR5gzp0iSfFNXrnmLreHFGoMHTL03Z3UDqoltVzXVIciV
+         8aUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVg61yG4r+bU/7u+/XZ6pQSVyhvS+dI05Vd+YxldSA76m+ysFygaicDIsUZfDavOazoLrJs1thwMwlLWNZIHG+L6usDd/UYp5mkKhgk
+X-Gm-Message-State: AOJu0YzGUOie/5Fr9aBw0uvSvvQH9XIfmlRt8aLuUBwGC8BafAuAaV8q
+	MxCgDHfNmMkPHQe872S3jKNV9IeUoXxIuwx+h3oQF7BSumxzGsrAPjI5SA7ox+N8yCP07EjRPJ5
+	06+EKIiKqQY9Ha3vJCFgnh94HWJ8xJSNM/umbUeCZv2llWMGqqeGzDTxp37K0rw==
+X-Received: by 2002:a05:600c:3d08:b0:418:7e61:762f with SMTP id bh8-20020a05600c3d0800b004187e61762fmr744181wmb.26.1713193464153;
+        Mon, 15 Apr 2024 08:04:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGLydcIkZiRaJCv52H2BR/Q3j6VmgZyP5JqyGLevERU0MOjR72uKIXKgdzGwrFjquGYcc9npg==
+X-Received: by 2002:a05:600c:3d08:b0:418:7e61:762f with SMTP id bh8-20020a05600c3d0800b004187e61762fmr744155wmb.26.1713193463683;
+        Mon, 15 Apr 2024 08:04:23 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
+        by smtp.gmail.com with ESMTPSA id h15-20020a05600c314f00b00417ee886977sm14329551wmo.4.2024.04.15.08.04.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 08:04:23 -0700 (PDT)
+Message-ID: <9d13bfa5-cbdb-4942-937b-1793aaa85c58@redhat.com>
+Date: Mon, 15 Apr 2024 17:04:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|LV8PR12MB9205:EE_
-X-MS-Office365-Filtering-Correlation-Id: 654f5016-cf72-4af2-5be0-08dc5d5d58b1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	11OpsiJe5VQKgIkdzuPoGli4quFTcdbsqk7V3oWI2lzXgrOmUFKNbRFrUoCm1yKOZ0ou3JeFawz1MqUTJtJUnE40uNu16hnmNir/1OboSZd2QXQkiVlVqweYUWPbk+MPPMBq1E5i1bz95BI/VAmZjSroIV1r9DHJbR3IMAPcjOTBtVw+Jzj+q79CUdCEnoOKV8AIHHm1XMzf5O+9XNSZfj4FJOQMBBHTYRdqBZmfKrjUo0/6ig/XZiEv9ZADVkn4S7/CiLpqbLz2PYyjAUhux3gnjw3pTpP7amOWLujilkk1NTrZSt9vQptLm5YqkhIv0oFWv9Mc1QDdXnIIj4y562lrFuwFgXY9QuUkY9jpiADduV+uvqKUMuDgylpsWJx8mBcwlZSBGOXTiIJnRkAz0eKLJU3g49ek5PceQuqADC97eNu8j43cwiIxUjSf9FbJOU0S79aQ/tuVh803qOW4582SwFymu7ZlGBIw+0t4CxHVghh5LA4MWvygLWsSqbcbCPo1x2UfiLBdc8OnZ1jhF58GT3aD/WxE1Cl77+ffXcSOOaiPyV/rUyBxmhIaauOhpJ4APU8K8ber+djNyBDu6WAWJP3MMdf5koobIvn6nVouL0Vf7tcDdVDrutGi7qeayX/xYclA9iH49RifsWwGwbPi/mSp9Xf5maeDPqIKhrQ=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?eWCW6VrHW5NBPBptGNyK2M8qKyQVry30CvyiH0RugcRdaK/zGZEcBEurRONZ?=
- =?us-ascii?Q?47wWid00MM5lkbCgFbdsPqVPxpxABUwcNQctOKZ0TArpfywn0OLKP9Ip6TDP?=
- =?us-ascii?Q?JAWbmlodPmqAktP2QUygWq+tcDICDZhDddeb/0bfw/CDTjPdISn6zstrAiFm?=
- =?us-ascii?Q?aEXdGszRsr8jZs/kUkLRi55hf9iU4OEcSnvhLXjpw+SKnusLPc6l7am1KZbR?=
- =?us-ascii?Q?iUmJ0puuTIaqbUlCJSfRVRTSNM+b1LZFUiDLJqkopfRIzf5QHzETUoVt4rLF?=
- =?us-ascii?Q?REN7jZHKAZGBaBmIuTA2vF60/S+MDesRD5rE4wgDsq3a6dqjTH2T4m1BBgxy?=
- =?us-ascii?Q?vFmjMEwWKBaW6xZwg2yr1TCA54I7LQKdhV9GKDGc65aMeqdla9arJNitriEE?=
- =?us-ascii?Q?6Jli77umHASAlx542ULACT7/Gd+q6IlfIr2gvqEogF9ZBhjCCpnK8tyB+Cyf?=
- =?us-ascii?Q?ZGCaBCjGMpna4GjJ8sc8KekTcMIeIWQo8beCaIr1W9HkaBh2TpmE6s0jFXjd?=
- =?us-ascii?Q?LhUZq8VtQFRY5PDw8kFK/uPMgdiQ7vYwVtcAtDYHiqUKHcyKR0nl1J6nv62L?=
- =?us-ascii?Q?nH+Ij/BgJM7CB32pXMsCjxs7G0RNlzDekX+u9C3gjUTjrD/5Ikw2XmDb0iMN?=
- =?us-ascii?Q?kW57fGQfTuecYSpxkMh7yrpkk5aqshFn68x7QqJe+issrVGNFHiy0/9sP4Ka?=
- =?us-ascii?Q?MkQGV8/ilSJvm+3Q8LzTnpLp6/P/iv/r2BKoLZwppQHWlf1WukFbL+fDbsMv?=
- =?us-ascii?Q?Jho68K7pRchhr9Fze9EA3S0pfhtKAXCVOUIB6OIJXr3W2otshuaOf5T4WfVu?=
- =?us-ascii?Q?uRvvkNIKeiKqmV+YSgq0OpbjMS8Fjbq5cJaJSIUxYbOgPwDvJX0LJg/czzDt?=
- =?us-ascii?Q?2RteD8l8NhCiVz9UIdvhsNJaiWf5t0zOeatpZsG2zPfqzDFbCoYvNCn9Wajn?=
- =?us-ascii?Q?YCibF8nNwTUVUKMM//bnwiO/Ppj9kyYi+OKsFuQEDO9x8k4ESaFJH00b9jHi?=
- =?us-ascii?Q?ph2mtmbA/9qNNzXMaHOsEzusKW7krg8cL4K7nvzBZvfHieHNfefR7RFMs+sk?=
- =?us-ascii?Q?wzRrjtTyhN9PGDmN0q/yZ0bs6gff127u8QEBTOgogoybeYHdQZhCeHZ+HWg9?=
- =?us-ascii?Q?CZHB60s0vHKDTIUMNPEa2J/+v8CXe2Qbay846Oeyuxtd27GFrbEKMqrPVMhP?=
- =?us-ascii?Q?RQBJFkBRSTeDOI2WqeZnieXl68ifEheu2+t61l+nwA1u0gylU0sX2kAtwyP3?=
- =?us-ascii?Q?4Q+B554U+4kVOsmHGL+WUKnlVcvkOlcPqDoa2hZjv0nu9aWSZ8eS9hettOeX?=
- =?us-ascii?Q?PoWkWnX4t5Xakej1O1jvITAxcpUbzSvansfKUUHGqFGvQXaEZ6x/IDCQ1OGq?=
- =?us-ascii?Q?KNaoOmudyyg97yE0LVOwpSNK2l+V2JCvZUzDYj8HWaa+HK4ovnC1WEzKl2Ej?=
- =?us-ascii?Q?zezsWQeQE/F244p3udYoD7SpcipwPiRaysbTIQqFhdMVHP90e1Kdblyoqz79?=
- =?us-ascii?Q?kYbM+izs2yjEskH15U47LGJiTmRTrECDIxjoAe0LS0hkYtUBMcFBj5cdHRYU?=
- =?us-ascii?Q?eBBY1HIYSZv7bEwKZARIDCXHAxkBaR+g0wHvmruN?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 654f5016-cf72-4af2-5be0-08dc5d5d58b1
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 15:04:28.3713
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PylgMxPIXwdkQUFiqW/CqVV1zMCVNMw9WWc9TrsGT9DVZkNyZwblJUIR0Y4y9XiT2uz6irz/yqBZKr9pL3qMqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9205
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 1/3] virtio_balloon: introduce oom-kill invocations
+To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, virtualization@lists.linux.dev
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+ akpm@linux-foundation.org
+References: <20240415084113.1203428-1-pizhenwei@bytedance.com>
+ <20240415084113.1203428-2-pizhenwei@bytedance.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240415084113.1203428-2-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 25, 2024 at 11:03:27AM +0800, Yuan, Perry wrote:
-> The amd-pstate driver can fail when _CPC objects are not supported by
-> the CPU. However, the current error message is ambiguous (see below) and
-> there is no clear way for attributing the failure of the amd-pstate
-> driver to the lack of CPPC support.
+On 15.04.24 10:41, zhenwei pi wrote:
+> When the guest OS runs under critical memory pressure, the guest
+> starts to kill processes. A guest monitor agent may scan 'oom_kill'
+> from /proc/vmstat, and reports the OOM KILL event. However, the agent
+> may be killed and we will loss this critical event(and the later
+> events).
 > 
-> [    0.477523] amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+> For now we can also grep for magic words in guest kernel log from host
+> side. Rather than this unstable way, virtio balloon reports OOM-KILL
+> invocations instead.
 > 
-> Fix this by adding an debug message to notify the user if the amd-pstate
-> driver failed to load due to CPPC not be supported by the CPU
-> 
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-> Tested-by: Dhananjay Ugwekar <Dhananjay.Ugwekar@amd.com>
-> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
-
-Acked-by: Huang Rui <ray.huang@amd.com>
-
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 > ---
->  drivers/acpi/cppc_acpi.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>   drivers/virtio/virtio_balloon.c     | 2 ++
+>   include/uapi/linux/virtio_balloon.h | 6 ++++--
+>   2 files changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 4bfbe55553f4..3134101f31b6 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -686,8 +686,10 @@ int acpi_cppc_processor_probe(struct acpi_processor *pr)
->  
->  	if (!osc_sb_cppc2_support_acked) {
->  		pr_debug("CPPC v2 _OSC not acked\n");
-> -		if (!cpc_supported_by_cpu())
-> +		if (!cpc_supported_by_cpu()) {
-> +			pr_debug("CPPC is not supported by the CPU\n");
->  			return -ENODEV;
-> +		}
->  	}
->  
->  	/* Parse the ACPI _CPC table for this CPU. */
-> -- 
-> 2.34.1
-> 
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 1f5b3dd31fcf..fd8daa742734 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -352,6 +352,8 @@ static unsigned int update_balloon_stats(struct virtio_balloon *vb)
+>   				pages_to_bytes(available));
+>   	update_stat(vb, idx++, VIRTIO_BALLOON_S_CACHES,
+>   				pages_to_bytes(caches));
+> +	update_stat(vb, idx++, VIRTIO_BALLOON_S_OOM_KILL,
+> +				events[OOM_KILL]);
+>   
+>   	return idx;
+>   }
+> diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
+> index ddaa45e723c4..cde5547e64a7 100644
+> --- a/include/uapi/linux/virtio_balloon.h
+> +++ b/include/uapi/linux/virtio_balloon.h
+> @@ -71,7 +71,8 @@ struct virtio_balloon_config {
+>   #define VIRTIO_BALLOON_S_CACHES   7   /* Disk caches */
+>   #define VIRTIO_BALLOON_S_HTLB_PGALLOC  8  /* Hugetlb page allocations */
+>   #define VIRTIO_BALLOON_S_HTLB_PGFAIL   9  /* Hugetlb page allocation failures */
+> -#define VIRTIO_BALLOON_S_NR       10
+> +#define VIRTIO_BALLOON_S_OOM_KILL      10 /* OOM killer invocations */
+> +#define VIRTIO_BALLOON_S_NR       11
+>   
+>   #define VIRTIO_BALLOON_S_NAMES_WITH_PREFIX(VIRTIO_BALLOON_S_NAMES_prefix) { \
+>   	VIRTIO_BALLOON_S_NAMES_prefix "swap-in", \
+> @@ -83,7 +84,8 @@ struct virtio_balloon_config {
+>   	VIRTIO_BALLOON_S_NAMES_prefix "available-memory", \
+>   	VIRTIO_BALLOON_S_NAMES_prefix "disk-caches", \
+>   	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-allocations", \
+> -	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures" \
+> +	VIRTIO_BALLOON_S_NAMES_prefix "hugetlb-failures", \
+> +	VIRTIO_BALLOON_S_NAMES_prefix "oom-kill" \
+
+"oom-kills"
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
