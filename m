@@ -1,123 +1,199 @@
-Return-Path: <linux-kernel+bounces-144980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DC6A8A4D8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:22:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98EBC8A4D93
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:22:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD5B7B21704
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:22:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 395881F23149
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499CE60ED0;
-	Mon, 15 Apr 2024 11:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA025FB82;
+	Mon, 15 Apr 2024 11:22:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Yyl0jw8F"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WTl381cz"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2052.outbound.protection.outlook.com [40.107.93.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8384A5FB9D;
-	Mon, 15 Apr 2024 11:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713180110; cv=none; b=OKWcdSYpxHEJErXGOSllEI9ajlBynw2vFcky7YrYOmMF6HRRs2XRKu2RXTPA9JV+DTMKYJ/bA13v4if7mYR6Tji5BNSxN8RlCb0YkpheTrmwUs1Gj7u/h9gY2p7w2BZFi+kbdWRVT+3P2bk7vSxIME54soBzdfbemFVuJPbsk+g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713180110; c=relaxed/simple;
-	bh=zaeta5YRsGP9vG705wmBldVE6zWx2ubesmRsCMtwiKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zh1xmuQyDj2lN66LYGaoHxbcc2CnmhKiCMRnI9TLynlcoKRTJdH9/uOGU6TTNBNRY4R72ualtvG0D8VClU/w3HeZ2H0J4WysiiDnU5v6ycQq4ErebToXMns2FeVIZoOD3zx7qooR7ccryTLm1KbcsdURCcUhziXM59smAduSrgU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yyl0jw8F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90F5DC113CC;
-	Mon, 15 Apr 2024 11:21:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713180110;
-	bh=zaeta5YRsGP9vG705wmBldVE6zWx2ubesmRsCMtwiKM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yyl0jw8FOgIlaxoOAe3p2F9YP256URFG19ccbzwnvLP+nXPKhgD5ZpMounJJGJTGl
-	 W56F7hvPz3yssyAye//nUgEICHyExmh3si6KPUCTQVp+F3t+vLFGf9crAm/lbPZ/tG
-	 oYVox67bc7RG6kHrc53DAHLbGGYZcw0qIMfntJXAZfcS1WFZVqdlHmxrcw0KYz+okp
-	 Pkrupra89W8My0fKez1OycDL7lFi3BMj9x0gWr6hV/lLIp2y2H5n0Od+vGtF3NYO0c
-	 CRzHx1TYaq8LcPQqKjZbGk4YUzmaWnW59PnqFLEdHv4oY9iqpgJNXI7PCDHsTpTWV7
-	 4/moMdyU2qz2A==
-Date: Mon, 15 Apr 2024 13:21:47 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Jani Nikula <jani.nikula@intel.com>, 
-	Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Russell King <linux@armlinux.org.uk>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, Chen-Yu Tsai <wens@csie.org>, 
-	Samuel Holland <samuel@sholland.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Alexander Stein <alexander.stein@ew.tq-group.com>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev, linux-sunxi@lists.linux.dev, 
-	linux-mips@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 0/7] drm/display: Fix display helpers depends on fallouts
-Message-ID: <20240415-sloppy-invisible-crocodile-da4545@houat>
-References: <20240403-fix-dw-hdmi-kconfig-v1-0-afbc4a835c38@kernel.org>
- <117b0d3b-a60b-4bc0-9f2c-f0e4fffe634a@sirena.org.uk>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2341E896;
+	Mon, 15 Apr 2024 11:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713180157; cv=fail; b=ly0QcPepnL3pXQxhFv13EaUwxZ2E8bfY2rtCaig0s7FIt7tBdygaDWb7TTbdCQyMUXvcvKDSjd+XBn1uX2kGLMdcmBy/O9/Oqoq8sxnNAelCzLCEWyj2bMkFc2hSSYcctcZ8+ZMbtrGephXyYOsX9WKnQQAi7S+DtRA/jggKhUc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713180157; c=relaxed/simple;
+	bh=pQNEcgMeP5VHOMEhtli0Kx4MXsigE9saJoMi0VOE1Dk=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=klfsN86quWp2nSdk9PrSc2p3vbSizTpUW9SImndsJeB2Iq/8cg2S+fZIuJ6e1GDppadi3NHNlChLXbSI4Dj37tARud5p6kUL3RQnkwyW7W1TVmQ4kJV5cZFSuFrKbCdxuJSKJGMSEHxmz+jCZhjvTDwSCKBDLa+/iG7KQbdmVMk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WTl381cz; arc=fail smtp.client-ip=40.107.93.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K8jUcx2ZkSovekq9Zt40pKHxVOlDGdJkkJ+6WG5L70hWMnvLLjWwotEAFdE4prnluUZeEcCJKZSmJd5LA+bhcZmaCsN9Pq2werjf/VFGCFOSUmNoNBtJMZT/GpjRXK99jsnXLRD3OmSzaSYxNY35vjqGSICaNf1L4B0OqVYyz9PMv4rXd0HE295qq56msXtraJR9Zzf04AuXxdj49QCrdm5rthoQZCbJwnISxVz4lvt3ensrYOSbGIEhHC8KYIP3IaZXdC4xbuKwRzhGHBsxEHBv5WWQu8hEqwwct4ad4IOz3vBQMaOFPZ+9QukDo2GM9Eea9yjOgIAb3IMXkq5wJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZW0/tjjy1Ubg7/v8Q/h05Cbrn5Kh+CxkEitp9J56oE4=;
+ b=Fs1ZRPV3fg74D6hA2mk8/8kvHJ6YGLtgiJpyiW0y6U0z/RB5N1OPAO233CGotVuC4jEqRFL3IRtRe57muGwkpjyIo34p4+/7+C8DVTlL15R5c/w2CIWdVgBNq3l3kKVEDCrwaOGEgahQazZNm9M8d1OcYkBVw4F9O++LhibwFsMoKChKmZXlfw47MRfRLrOPtiqDwP30OMqMvVla9JUC0/dmN+LORw40gSJyhKwudIQy/Mo+5Gx0NKk5oO9LS0MY0dLihykBGhAz40yrQ4HfGSFpvE/AQ9ioiTdJyqJ+OHV2ISV3B3KEYd1eTukeNCKhlQITSy3v2vWwAIGVp6COUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZW0/tjjy1Ubg7/v8Q/h05Cbrn5Kh+CxkEitp9J56oE4=;
+ b=WTl381cz5HHAX37HJfkZYCqBuG+LMhDMZLV+zXRnDLnOvv2zjMchrSbkX149bx0cC2b/1cSkDxl0oKQmpePJn7/gBdhuGWGeMi9LrhxVV9gUiLRjjRXEVqSj9hsI9lLslZvV2KO31zkz7B05LU1iwCt6Sha9zu6tuoSmH8J9I5tCaGHsuKL7fB68S6n4GjH9qcp41ZCSM13VonNjvsxIlo1tlM3nDwvZAHIUobtBltlK/qeE1hhnmp4QoE6n5yAnJlax9WEk1qd3sBi0W+uS/KHlkq1Pr1EJQvf8VgEe2oikJUFxjNpIo29Qku7HxHjtG7pThgRziqzB/ORVuPDJQA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com (2603:10b6:510:1c1::18)
+ by PH7PR12MB5805.namprd12.prod.outlook.com (2603:10b6:510:1d1::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
+ 2024 11:22:31 +0000
+Received: from PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::780:77f6:e0af:5b5c]) by PH8PR12MB6674.namprd12.prod.outlook.com
+ ([fe80::780:77f6:e0af:5b5c%4]) with mapi id 15.20.7452.046; Mon, 15 Apr 2024
+ 11:22:29 +0000
+Message-ID: <86039c78-d05f-4bae-b2cb-55bbfca8f798@nvidia.com>
+Date: Mon, 15 Apr 2024 16:52:08 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] PCI: tegra194: Fix probe path for Endpoint mode
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+ bhelgaas@google.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+ linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kthota@nvidia.com, mmaddireddy@nvidia.com,
+ sagar.tv@gmail.com
+References: <20240412191402.GA10938@bhelgaas>
+Content-Language: en-US
+From: Vidya Sagar <vidyas@nvidia.com>
+In-Reply-To: <20240412191402.GA10938@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA0PR01CA0081.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:ae::8) To PH8PR12MB6674.namprd12.prod.outlook.com
+ (2603:10b6:510:1c1::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="wn4eudraeu4chaua"
-Content-Disposition: inline
-In-Reply-To: <117b0d3b-a60b-4bc0-9f2c-f0e4fffe634a@sirena.org.uk>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR12MB6674:EE_|PH7PR12MB5805:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9bc8dd16-27e8-4c80-6cb0-08dc5d3e5622
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	NuzLvFOx7JdgQfFmuZOvhdFEBLZkkptwpkjUq2RyVeNu24NLkMVKgai/Kaudh2eOSUWIt1/U2jGMuJ0eJNGf/jETeuPn9Rtmeq3cFLr0fxMM0sCqAW5wkapWEJvQkpGm6cGkhTB5LCnAsbDD6x3VcKPwP6g1oIcrNjAGfM+QGeYzMDOw2WJVA3RD7035Y/QHJXrKatgV8eAx8ldbhE1xn2s+CGYY8XhsNvZsIkBFYgWnutO6onm6b8YNG7dG6bj2UZgoTFZpk4nutYwsffyKRplIdonDAsz7c4geFI7UnAbqgMFavynF6+S9jl0V5ZYXcP1tNy8FyaA8A/TrXJ+n9/RklvXdHOXfRba6r8TOAFsaeFyjteJR7pug1jb+BtIincw8r5DkBO2c+RsHO4YSJ5k4mKq1Dcwenf2K4eUwciD9tmVMJfQlLvV1OtBkalN98MEGO3O40U0DE2dgwuIMdhet4Semp3XVYAFpJxRQeYqV9SbXcwVEG3GjJfxHP30vV4NgbvV7olP7BDGeL9dARVveGsodaF7NoVub2OKy5zVdsvugU9MKJueNVJkCiwvhvyI/WsTGLjbb/iqg2xUn1BhOqKjaiDavK8CdvU74wjQYkvXf56zfS0JYCFodve2LDecRqKN7L8gUGa40M4GN5ujNpBJVN47dW0vX7yHuXXY=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB6674.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?N3ZmMlJnMjM4Z0VsTE5mR1NMNEg1TkhUcXcrQkZCbkRZVXdDb0pFQlkyLzNu?=
+ =?utf-8?B?dFVlanJ1ekFUSFplMEVkRUkwVEdFeGVUVEt6Tlh3dnRRaGRtTE9iZTk4WElx?=
+ =?utf-8?B?ZXJhdG1waU5qVGhieVoySTQ3SmtKaUF1N1luZ1dkeFFmT2ZMVnppUXVITFkz?=
+ =?utf-8?B?YWZVdEw5RitBbngvNndCNXo5MzN4d3FXVjNXMjk4U1BYNUZQR1ErbVRhc3g0?=
+ =?utf-8?B?YXQ3cmIxZ29xbEt4RFBXdnErMzliRFF3OFNUMFF4SEtjOUQ0Y2xzSFFTTHpO?=
+ =?utf-8?B?aC8vTjJlTlR3SWcyZzlyZm5qeE13SDJkanFaeXVVRDVTN0haVzZWM25WK3JH?=
+ =?utf-8?B?YmFWNTcwbkdNUlpBdUF5c1d4RDVraVpkY2dheEhFajFGVEgvaVZNa3hQMEND?=
+ =?utf-8?B?UjhrS0ZkWGtnM0FYczFXODlmdlJ4TGg2dDc2NUFLQmw4bDlnRWdESmFleE1F?=
+ =?utf-8?B?cGxOTjQyRnVneXdDeGI5ZnA0cm9CT3U1aU1LTEYxWTNZQkkwRmM0OEM3bURI?=
+ =?utf-8?B?RjRJMkREdXppaUdjVmFpaU9BVW1CS2NQMExqd1dmMFhDOWpkOVY5MUhvWlRD?=
+ =?utf-8?B?V1ltWjg5NWE4Z3FyWSthSGczSXViZUtwVUE4Y3JxaGhhMk9idmVXNzlaa0E4?=
+ =?utf-8?B?dTExSnErNTNsVUlnOFJlTis2eTNVNHhZM0RBWlZnV0ovaEhDck9jV3dqWWZr?=
+ =?utf-8?B?RHpGQTEvMWtrNVVVa1NEOHMzYUxEUm0vZWtUZ0IvVmFjSmd4cHV4VjhqdWFV?=
+ =?utf-8?B?ZUZQRFdXZEdsRzRST25GTnczaC9qYzZzbWlWbHQ4eUI4VUd4dDMwSWljVTJ1?=
+ =?utf-8?B?V1IzMXk1eWxZUXZlZkl1WDJSemk3VzZrc0JZUFpWNkZoZHYxUDE4RVpqUUpG?=
+ =?utf-8?B?bDJkUEt4NEZ6aHRscTNXSks3MllwTWlNQlR4REJiTXpvUC8xcCtsQzN5OWZW?=
+ =?utf-8?B?OVRtbE0yenhOajF6V0dtSWhDSjNxdDhkbFNIRm9LWU5DcEN2VjhnOS9QRlM1?=
+ =?utf-8?B?K3gzMmNQUFFxdGRGTEs3REhBWFBXMFpKZ2FlVHVhd1V0eEhoRDdvVEhYMnlS?=
+ =?utf-8?B?ckdGZVd1NEM0L0dLcHRaTk1zSXJMR2pCWVN2TEdkUGZRS09GNzF3K0I3UUI2?=
+ =?utf-8?B?RUtuSmFYVEtMT0JJYk1WN3ZidzJSbjhDQWNjSjE1ZlRFVGJkRmxwS0RFMGc0?=
+ =?utf-8?B?aXpHR3RtTjUvRmNTTVdrSVlvSVgyRW4wdnpMalZpNHlhc3RxaUs5NXpGQ0NV?=
+ =?utf-8?B?azI0WkJVUXRTNmZvdE5PUFVuUzlzVmlWaTE3M2U0Ui9TZm1xVFNENU1tNldv?=
+ =?utf-8?B?Y2ZaVndDenJ5K1ZKNVluV3c0ZFpnUkNRWnNVMEs1L2tBQ1JUdUpvVVQvd0Rt?=
+ =?utf-8?B?dW0zTlF5Nlg4eTdRc0I4MWdWL1Y1QkhwUEl1RDdQcjFUTWlzRFhjSFlTbjQ5?=
+ =?utf-8?B?cFdzTVRScmU3Q2R5MmZyaXh6bzAyeE9mSmV5UVo0Z2xUbU12MGJMTGp5cS9W?=
+ =?utf-8?B?d3pLMDF6YVFRSUhaUURQU0ZOUGRoTEl0TzJtT2pUWkE5ajZvd0dBN0xUMy9P?=
+ =?utf-8?B?RDZDS2tzV3VuQmRVeG9zRzFaTGdidno5Y0FBL2x0dFdKM2xOZnI5U0dhVVdi?=
+ =?utf-8?B?QVRqY2ZlcVdJaTZwZDJqczNUZlNMUTNrWWtINnZZb3U0Z3ozek4yV2hWd3Va?=
+ =?utf-8?B?eHFpa3luUi9XRThybnhlZzZ1UFpPUlU5UTNqRkRvay9IVW9rZFQ2SXM3eFVo?=
+ =?utf-8?B?VmZ6YkFnTFMyN3pzanFYV0VUV0dWbUxEeG1TRFlUSmorb1dQNmpBWGJYMk5B?=
+ =?utf-8?B?L2lLYjl1SmdxaDlkSWF4U2IwRGkzeFRJMTRpTlNxTnc3TUM4L0IrQUZXNHQ2?=
+ =?utf-8?B?di9ROVM5U1RjRkQ0WHdVaGN6aUFXcUxPNjMvUnFMbHVnYnA4M1V3cjdkTjZ1?=
+ =?utf-8?B?RVhwRzFJc0pkU0dEUWhXdG13UG9ycWlIVCtpSFBpTnBuSGNzQUc5N3I2M25S?=
+ =?utf-8?B?UU01OEtyZHpiZGN1QTcyN1FMYXp0NkZSSFBVb25tbWZNL1pPV3ljcHkxSXl4?=
+ =?utf-8?B?N2tURVcwWUl1V1F6dGhPaVVHMmp6QmRqMENrOExKODV1SWFXemMvbC9IRmN5?=
+ =?utf-8?Q?Jjq0rzBZvcOCcNxpG6oRa+FXy?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bc8dd16-27e8-4c80-6cb0-08dc5d3e5622
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB6674.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 11:22:29.8325
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Iz7EOLLIKL37kO5owjT8H7NJMz/gNZRwNvixgFLiijEVurg0me6ZKIB1UOgvt20WnnV0s35H/F2GHk+IVBjlug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5805
 
+It was Jon Hunter (jonathanh@nvidia.com), who identified the issue.
+Credits to him.
+I'm merely upstreaming the fix.
 
---wn4eudraeu4chaua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks,
+Vidya Sagar
 
-Hi Mark
+On 13-04-2024 00:44, Bjorn Helgaas wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Mon, Apr 08, 2024 at 03:00:53PM +0530, Vidya Sagar wrote:
+>> Tegra194 PCIe probe path is taking failure path in success case for
+>> Endpoint mode. Return success from the switch case instead of going
+>> into the failure path.
+>>
+>> Fixes: c57247f940e8 ("PCI: tegra: Add support for PCIe endpoint mode in Tegra194")
+>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>> ---
+>> v2:
+>> * Added 'Fixes' and 'Reviewed-by' from Jon Hunter
+>>
+>>   drivers/pci/controller/dwc/pcie-tegra194.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+>> index 4bba31502ce1..1a8178dc899a 100644
+>> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+>> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+>> @@ -2273,11 +2273,14 @@ static int tegra_pcie_dw_probe(struct platform_device *pdev)
+>>                ret = tegra_pcie_config_ep(pcie, pdev);
+>>                if (ret < 0)
+>>                        goto fail;
+>> +             else
+>> +                     return 0;
+> Wow, how did you ever notice this?  It looks like this path would
+> previously have returned "ret" (which was most likely 0 for success)
+> but with an extra tegra_bpmp_put() that we shouldn't have done.
+>
+> Eagle eyes!
+>
+>>                break;
+>>
+>>        default:
+>>                dev_err(dev, "Invalid PCIe device type %d\n",
+>>                        pcie->of_data->mode);
+>> +             ret = -EINVAL;
+>>        }
+>>
+>>   fail:
+>> --
+>> 2.25.1
+>>
 
-On Wed, Apr 10, 2024 at 07:06:39PM +0100, Mark Brown wrote:
-> On Wed, Apr 03, 2024 at 12:56:18PM +0200, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > Here's a series addressing the various regressions that were reported
-> > after the Kconfig rework for the DRM display helpers.
-> >=20
-> > Let me know what you think,
-> > Maxime
->=20
-> Is there any news on getting the rest of this merged?  It's been more
-> than a week now and the Designware display controllers are all still
-> broken in -next, causing widespread breakage in CI.  For bisection
-> purposes it probably makes sense for the defconfig updates to go along
-> with the changes to the Kconfig for the driver...
-
-I was on holidays so I've admittedly hoped that it would be picked up /
-reviewed by the relevant maintainers.
-
-Aside from the changes on sunxi_defconfig, I haven't seen any review
-=66rom the relevant maintainers so I'm not sure how to merge this. Should
-we get an Acked-by from Arnd, Olof, Catalin or Will and merge everything
-through drm-misc?
-
-Maxime
-
-
---wn4eudraeu4chaua
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZh0NywAKCRAnX84Zoj2+
-dorNAX9YIzjToH375MPL7Ax5ZuueLWq41eVy07FoPTf31aMEQyEy/VR56sILKVLf
-TzYFX28BgODebjC3eC3QNfJYDoWKcB+vda0h0cCbUxE3QnqF2xMfORawm4oSmu2E
-dt3E8cNkCg==
-=f2Da
------END PGP SIGNATURE-----
-
---wn4eudraeu4chaua--
 
