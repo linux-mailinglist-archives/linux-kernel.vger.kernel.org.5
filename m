@@ -1,161 +1,123 @@
-Return-Path: <linux-kernel+bounces-144777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDBB18A4A9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:42:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F30F8A4A9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:43:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D7B8284748
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:42:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D25DB25480
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B0E3A1BA;
-	Mon, 15 Apr 2024 08:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C0A3BBEB;
+	Mon, 15 Apr 2024 08:42:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="YwurJmVr"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dCoAEPLg"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A893BBCA;
-	Mon, 15 Apr 2024 08:42:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CF43BBF8
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170556; cv=none; b=Z47Ifpjn4O42C8dicDvgdey1ykQ58I7OBrxVY94S73+r8xAIzrS34Tv27ectGqDif/qawIKUIc/nDLF3GVMX6GNryc2OIuJxfzfNUEBw2zMHzgwRCWamzZrhYmztOq8z5Mo4Zg+Z6o/uvJEHlnvMWU7kolaHOPRQhgfFoemKkvE=
+	t=1713170566; cv=none; b=RnN5j7P8xF24rcOSj7J6+KTKbdqkw+a1H80mypFn3OptzihqSznKM5CCLjfiaXehCAJCAlE11dUwqJAX9MWE5BsRfOyzDA0H86X+T+GsKBx5fxnKvKq7VavlfgY6zxrnMYcczENGld8v8YDrkqjD4an3aCDIgFSIPodGZDpb7jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713170556; c=relaxed/simple;
-	bh=R4RhSxKXlxRSRYlUtXmi2vUBrMvRbiLLEC4+h0KivfQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j1JVJshq4GvMeSDCD9gd4QGrGZl+71Mo/JsuDOz7yXtS3GUm39FH6Ok+Ao5D8+lTy8H8VoQDpxQJ30Zig6rh9eVorjQpBq0V50tuZhWsfNwGOfL1tslaYoaC/cf/pXfHGCXNjiZ4LErA59NUGc2m9pMh7uO2fB1iV+c/TY7kTWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=YwurJmVr; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B163F5B2;
-	Mon, 15 Apr 2024 10:41:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713170506;
-	bh=R4RhSxKXlxRSRYlUtXmi2vUBrMvRbiLLEC4+h0KivfQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YwurJmVrspapPm+kBHwP0RV3Q4ljefqSl+vnBSR0Yjn/liPfGDnARXb2YY0HLYAtl
-	 ROYFjB058LVmeTPkSM4s4IgfWgwfu5D/rxwVB742Lzc/jdcbO4WBeNGkAruaI9wvzC
-	 eiPZSWwr6eYEMjYEok1ouROhAD995bTKhLZrsqVU=
-Date: Mon, 15 Apr 2024 11:42:24 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Alex Elder <elder@linaro.org>, corbet@lwn.net,
-	workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
-Message-ID: <20240415084224.GE25078@pendragon.ideasonboard.com>
-References: <20240414170850.148122-1-elder@linaro.org>
- <20240414194835.GA12561@pendragon.ideasonboard.com>
- <2024041503-affidavit-stopwatch-72d7@gregkh>
- <20240415082529.GD25078@pendragon.ideasonboard.com>
- <2024041511-goldmine-persevere-68f4@gregkh>
+	s=arc-20240116; t=1713170566; c=relaxed/simple;
+	bh=lsNA25Hve1uKuZ0Fo31C4L3iCmQ0dq1xxEBRYOkQj3Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qsqi99j6AmT86uPdyxLlYqESXKOg0TroaM6t9ZZZl/0MeQT/FKZaSePrhkEgjU368YwBCTfXHI1D+qRlyReouCLGljqOrtQxQV6M1sl3fcIJ9lG58ErHVIqJIVUgb1Ws+yT2C7zjharrIPZg0lbUC8NEE9hRmQXOkUe0vCPLNdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dCoAEPLg; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a52aa665747so53325866b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 01:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1713170563; x=1713775363; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k1cz5najN+xwuJfZkkj9Amv0HLnPLbSM95zuUMKQZGI=;
+        b=dCoAEPLg0JhE8Azdmt9LMtQjIVhxTrTPz3JVVRT/khIuy7UUuHaqnUXfBBPBFwhyVx
+         srsjGixNEXYnSWrAkXCgpJnlhxDc5ohO6MuMvdyuPljD/+VVQ/j/+BDVra0v7YZOYrRK
+         NDhJrxMbpRI/0tm8hMxLxCxwy2VomqykCEAEkIBINqsTSj/R036vubI/AEGK+uIZPNBV
+         aIfBbWPsXWdphm93aS1xkT3TgkGAc8h4TWQ6COreyDdt4mdL/T09KQO1TOwPFLJPKDSI
+         +QtcUORC9Y9gk+S8H6QSg/kDZjF0Q35eiBhQUNXVxzIwSY5y7doiabVGLtQz9c6BV0YB
+         orXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713170563; x=1713775363;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k1cz5najN+xwuJfZkkj9Amv0HLnPLbSM95zuUMKQZGI=;
+        b=RiqUhxccpy+LoKAQ3K3tKGqE+wGQhqOb4+96f9mukXqg17OO56YmejZTMJyk7pFLuK
+         ZDQ+8PofdsokvVSIvpslUs1+LxLD9u23XQ9oEZgZWFQ4U7u88d2nlUTVMfLGsK/lE7Aj
+         0NZ2klscHphPkt+C1IDLKmMJp80qmwIUAbWtdQ0xVYWoYBiyTe37ISYidJmh+voPt+HQ
+         li93bc2UQZzgQcXziBW4HP+PmqtEJ4JsZp3qGEnjjdb1JEjDNgqu9slwEIBepC9dhOd/
+         8Z6sxzZJRYTSIsV6V+OyOsWh+JT5jY3rCgSPYkfTi8KCSCCVhimZda1zjybXdwJnCZSS
+         twCg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9YscF0csYdh/Dxbqe78lNOjwXv1quNphLHX0HyC4X5W4t4pbM0d+L24WG1ccgyR/K8fpsqf9sOlFer1ThSOJv4FmhwGiL/aEEL7NK
+X-Gm-Message-State: AOJu0YyWJWTUwfRl3g5GVUSJXuqaRTzKozzb7K3vR/ALg9YRz5DVeAJR
+	Bf2Ep7qxJg0LfHo2xKveFsKY0hqEYlVMG9cQHg7o7TNJFekHQuIFxXmEGRZYeeg=
+X-Google-Smtp-Source: AGHT+IGxmdMCD68BdG5qehJC80yGzVw2DjtHoP/u2mDoWGEYMTcotqFXQdRUe34dZrNc2lZtBY5u4Q==
+X-Received: by 2002:a17:906:3756:b0:a55:3240:ba3b with SMTP id e22-20020a170906375600b00a553240ba3bmr264616ejc.8.1713170563090;
+        Mon, 15 Apr 2024 01:42:43 -0700 (PDT)
+Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
+        by smtp.gmail.com with ESMTPSA id b24-20020a17090630d800b00a4e781bd30dsm5167412ejb.24.2024.04.15.01.42.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 01:42:42 -0700 (PDT)
+Message-ID: <6133bcab-ae0f-48f2-b223-2b74082a0552@suse.com>
+Date: Mon, 15 Apr 2024 10:42:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2024041511-goldmine-persevere-68f4@gregkh>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: cdc-wdm: close race between read and workqueue
+To: Aleksander Morgado <aleksandermj@chromium.org>, oneukum@suse.com,
+ bjorn@mork.no
+Cc: linux-usb@vger.kernel.org, gregkh@linuxfoundation.org,
+ linux@roeck-us.net, linux-kernel@vger.kernel.org, ejcaruso@chromium.org
+References: <20240314115132.3907-1-oneukum () suse ! com>
+ <385a3519-b45d-48c5-a6fd-a3fdb6bec92f@chromium.org>
+Content-Language: en-US
+From: Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <385a3519-b45d-48c5-a6fd-a3fdb6bec92f@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Apr 15, 2024 at 10:33:42AM +0200, Greg KH wrote:
-> On Mon, Apr 15, 2024 at 11:25:29AM +0300, Laurent Pinchart wrote:
-> > On Mon, Apr 15, 2024 at 07:21:37AM +0200, Greg KH wrote:
-> > > On Sun, Apr 14, 2024 at 10:48:35PM +0300, Laurent Pinchart wrote:
-> > > > On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
-> > > > > Several times recently Greg KH has admonished that variants of WARN()
-> > > > > should not be used, because when the panic_on_warn kernel option is set,
-> > > > > their use can lead to a panic. His reasoning was that the majority of
-> > > > > Linux instances (including Android and cloud systems) run with this option
-> > > > > enabled. And therefore a condition leading to a warning will frequently
-> > > > > cause an undesirable panic.
-> > > > > 
-> > > > > The "coding-style.rst" document says not to worry about this kernel
-> > > > > option.  Update it to provide a more nuanced explanation.
-> > > > > 
-> > > > > Signed-off-by: Alex Elder <elder@linaro.org>
-> > > > > ---
-> > > > >  Documentation/process/coding-style.rst | 21 +++++++++++----------
-> > > > >  1 file changed, 11 insertions(+), 10 deletions(-)
-> > > > > 
-> > > > > diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> > > > > index 9c7cf73473943..bce43b01721cb 100644
-> > > > > --- a/Documentation/process/coding-style.rst
-> > > > > +++ b/Documentation/process/coding-style.rst
-> > > > > @@ -1235,17 +1235,18 @@ example. Again: WARN*() must not be used for a condition that is expected
-> > > > >  to trigger easily, for example, by user space actions. pr_warn_once() is a
-> > > > >  possible alternative, if you need to notify the user of a problem.
-> > > > >  
-> > > > > -Do not worry about panic_on_warn users
-> > > > > -**************************************
-> > > > > +The panic_on_warn kernel option
-> > > > > +********************************
-> > > > >  
-> > > > > -A few more words about panic_on_warn: Remember that ``panic_on_warn`` is an
-> > > > > -available kernel option, and that many users set this option. This is why
-> > > > > -there is a "Do not WARN lightly" writeup, above. However, the existence of
-> > > > > -panic_on_warn users is not a valid reason to avoid the judicious use
-> > > > > -WARN*(). That is because, whoever enables panic_on_warn has explicitly
-> > > > > -asked the kernel to crash if a WARN*() fires, and such users must be
-> > > > > -prepared to deal with the consequences of a system that is somewhat more
-> > > > > -likely to crash.
-> > > > > +Note that ``panic_on_warn`` is an available kernel option. If it is enabled,
-> > > > > +a WARN*() call whose condition holds leads to a kernel panic.  Many users
-> > > > > +(including Android and many cloud providers) set this option, and this is
-> > > > > +why there is a "Do not WARN lightly" writeup, above.
-> > > > > +
-> > > > > +The existence of this option is not a valid reason to avoid the judicious
-> > > > > +use of warnings. There are other options: ``dev_warn*()`` and ``pr_warn*()``
-> > > > > +issue warnings but do **not** cause the kernel to crash. Use these if you
-> > > > > +want to prevent such panics.
-> > > > 
-> > > > Those options are not equivalent, they print a single message, which is
-> > > > much easier to ignore. WARN() is similar to -Werror in some sense, it
-> > > > pushes vendors to fix the warnings. I have used WARN() in the past to
-> > > > indicate usage of long-deprecated APIs that we were getting close to
-> > > > removing for instance. dev_warn() wouldn't have had the same effect.
-> > > 
-> > > If you want to reboot a box because someone called an "improper" api,
-> > 
-> > I don't "want" to reboot. It came as a side effect when panic_on_warn
-> > was added, and worsened when its adoption increased. I won't argued for
-> > or against panic_on_warn, but WARN() serves some use cases today that I
-> > consider valid. If we want to discourage its usage, we need another API
-> > to cover those use cases.
-> > 
-> > > then sure, use WARN(), but that feels like a really bad idea.  Just
-> > > remove the api and fix up all in-kernel users instead.  Why wait?
-> > 
-> > There are multiple use cases. One of them is to make sure no new user of
-> > the old, deprecated behaviour is introduced. This is especially
-> > important when driver development spans multiple kernel releases, the
-> > development can start before the API behaviour changes, with the driver
-> > merged after the API change. This is something we've done multiple times
-> > in V4L2.
-> > 
-> > > If you want to show a traceback, then just print that out, but I've seen
-> > > that totally ignored as well, removing the api is usually the only way
-> > > to get people to actually notice, as then their builds break.
-> > 
-> > Does your experience tell that tracebacks are routinely ignored during
-> > development too, not just in production ?
-> 
-> Yes, we have done this in the past in some driver core apis and nothing
-> ever changed until we actually deleted the apis.
 
-Let's keep WARN() + panic_on_warn then, it should help making people
-notice :-)
 
-Jokes aside, if we want to discourage new users of WARN() because of
-panic_on_warn, I'd like a WARN_NO_PANIC().
+On 15.04.24 07:42, Aleksander Morgado wrote:
 
--- 
-Regards,
+Hi,
 
-Laurent Pinchart
+> We are not aware of all the details involved in this patch,
+
+I had gotten bug reports about resubmitting an active URB.
+
+> but we had to revert it in all the different ChromeOS kernel versions where we had it cherry-picked, because it broke the MBIM communication with the Intel XMM based Fibocomm L850 modem. > Other modems shipped in Chromebooks like the QC based Fibocomm FM101 don't seem to be affected.
+
+That is odd.
+
+> Attached is an example output of mbimcli talking directly to the cdc-wdm port (i.e. without ModemManager or the mbim-proxy).
+
+Could you provide a working example, that is with another chipset? And, most important, dmesg for both cases with
+the log level set to maximum?
+
+> In the example, we are receiving a bunch of different messages from previous mbimcli runs. Looking at the timestamps, it looks as if we only receive a message right after we have sent one, e.g. after each "open request" we end up receiving responses for requests sent in earlier runs; or something along those lines.
+
+It looks like you are hitting the race later than my bug reporters, which means
+that the submission works and we do not overwrite the buffer.
+  
+> Is this bad behavior of this specific modem chipset, and if so, how can we workaround it? If you need any additional information or help to test new patches, let us know.
+
+Generally losing data is bad, so I cannot readily tell.
+Please provide data for the working case.
+
+	Regards
+		Oliver
+
 
