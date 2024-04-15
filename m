@@ -1,169 +1,233 @@
-Return-Path: <linux-kernel+bounces-145045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 410188A4EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:13:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1A7F8A4EAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:13:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2830B218AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:13:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EF631F22CA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5276EB40;
-	Mon, 15 Apr 2024 12:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE22A6EB5B;
+	Mon, 15 Apr 2024 12:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cg0KzrXc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ds5CiL9q"
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E976A005;
-	Mon, 15 Apr 2024 12:12:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C306BB50
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:12:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713183127; cv=none; b=doy6lfsJypX9WET+MGbe6CjlhmOqD/hBxW4fcbFWiudexytjbTn7E9OYeK6pEjGQ4N9+uWLR4giPGsQyE1RPfab9E5NAaDaJw+6lqj90Zex42WN0CpqNprusmMP0311qSdkBFRTflsQ9Zo1oZObxUawOM1M5ZgjUE9Opo7gIbX0=
+	t=1713183143; cv=none; b=gVarh7Jdp/rdFb1ikj/xvQLR2p2borYDviCnDgAAXGaEydTLuX6FGM0jx7EX/i46Jxm2ibBWsE8sI3c9+bFM5dFjgwnuMzZ23B/ud0ajfXCxMnZSzG0cmis5vsj/V/PKPlRl4vs7lmVZt16BCq5H1HACrhmz8rTvLbUyOy9aANg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713183127; c=relaxed/simple;
-	bh=49BXH0ae9TmsC+ZVdMQDanlSwY5xhkGJJZaqFTj7XJA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aQwzRYCk+p0XTiawHFaltf35Sq33sA0IMWK9eucdlq2dHVctFFaZH6Mw1WlxCoDPkbaFWMvervdozV9iLAupCfoZwJPjW49uaSgZciglh51fdEMhHjx0Ei9fd4upT47T8IycFg2E3lKoTkGseG3knAfkcMjuI45UMyU0uwIjRLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cg0KzrXc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D662C3277B;
-	Mon, 15 Apr 2024 12:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713183127;
-	bh=49BXH0ae9TmsC+ZVdMQDanlSwY5xhkGJJZaqFTj7XJA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cg0KzrXcO4+o1oyoPNMzpuTpiKH1aOwgXCKdUveLdMW39FtPzn/bXuUxi2bkFFKMc
-	 BwgHBko0f+Z5gulFsfxZJHVj6QJ8DNRqt8NV+e/5sQRlXZROA7WOqmtPhC0NmAjKxp
-	 ky5xMm5I5lG5EaN6bPmVvD7hDtLyljNws0U3jvGclknWBfAQjrCcfbqa72LctqNrKN
-	 SVX58dv3AHaANUxzSMn/SX0cpeXGewgyK8ovqfd2aAaUlqzg+fFTPRcA0NSFGXP1x7
-	 ZdmtkwtxdYYZp/XMurJ1NdrM4di6+XDAxJPtXI5s+QG7k0ZO1lU8QHYgZzMhH1ZxwP
-	 JUeJf81lhCPXw==
-Date: Mon, 15 Apr 2024 17:42:00 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Qiang Yu <quic_qianyu@quicinc.com>
-Cc: quic_jhugo@quicinc.com, mhi@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_cang@quicinc.com, quic_mrana@quicinc.com
-Subject: Re: [PATCH v3 3/3] bus: mhi: host: pci_generic: Add edl callback to
- enter EDL
-Message-ID: <20240415121200.GH7537@thinkpad>
-References: <1713170945-44640-1-git-send-email-quic_qianyu@quicinc.com>
- <1713170945-44640-4-git-send-email-quic_qianyu@quicinc.com>
+	s=arc-20240116; t=1713183143; c=relaxed/simple;
+	bh=jpEGID5lkfkjuCxhCPCs5p0pZvOXzvK9e8L9b2260ro=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=bqukCcibRX/zW7JXCQRV0MAuDIXX9GEMIWf9m+CcW/8mv5Q34ZbRRpe5fD9KodwxnmkQvctZz/OgJxIN/CxeU4oAJvZAUBsTimklnLAOoGxAjlORF/oNBLK9/7bYmaElKr663jFLCMHsyxYT5NE+0gU4QEdMM1k/3WRQHPh7wz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ds5CiL9q; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-78d555254b7so249411085a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713183140; x=1713787940; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p9LH5+Quj/dO3EfRtFe69jfS5pI4H/tFZnFgNTA9GTg=;
+        b=ds5CiL9qdvvvmMfOE2Iy7mhxuw6u5npt00jqav+4bRvbS8jJbTFtzytJQZLEN4rPC9
+         hkpx9lIXFVtxoXxdhLj/eF0+DGlmx8vZnVuGEwPfJ9qzDLkQqgCmXN584HoZjHIAsKfl
+         nQyUtdM2YIM6I5W1mKuFkLJWk+gVn+LJX9qs4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713183140; x=1713787940;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p9LH5+Quj/dO3EfRtFe69jfS5pI4H/tFZnFgNTA9GTg=;
+        b=wxEm+cf7HbqKSlfjcf3F80NGoM4vuM2NOhF4JU3dfQe9H9tZrNnYo50L48VFJ8csi/
+         REhqrBHVx5Vm8/PLCEJ+UF+r0LYPQyfwfsu/D2tTbHZ79Br+pCCQIwyeZynsJNMknWmI
+         z6GjZgGwum9eUJel5PGPbo2T4FfhaHbbCOXKF8YAHO9WM2SWOwChWuEB46BS+bASEX1L
+         DuSh/KX/igQDvEzrSCXyNIRm0iKRpxTrBuAhROuaFSSB8lsSXkV45QpzLNkrGhCg3Fzh
+         T5Ij4MjW6wywIwFMwAoJV+72hTmeqTG911f/328cbky5SNK99/0ByhZcB4hIeToWAipx
+         KjQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUNCGJg22mFxgszhLSPwfZt74HMvua8ZcKGhY6OJXOIpJ8SxQtA5wsvcM2zHqBbvzBmaM0q9oKG70uF8xoclKxExm/0rZh39N3RDvUY
+X-Gm-Message-State: AOJu0YzE29PgABWLQgJ1ifTcVIZ+rNpcE+fMhwQR1SWfcAumjWhFI4cB
+	0vRtpxErStbaiwE6W3ekOiiVEU9iJd/KfwLishCXhRsY7PoYVJ5QLclSHSe11g==
+X-Google-Smtp-Source: AGHT+IGoOB5EpPVrDU5h1An5CQbnM0qtEGwfyyRIU3ysE88/tylqkyBtrRRFK5M2LHc31lbhkElSCA==
+X-Received: by 2002:a05:620a:400b:b0:78d:37bf:74cf with SMTP id h11-20020a05620a400b00b0078d37bf74cfmr22270389qko.5.1713183140403;
+        Mon, 15 Apr 2024 05:12:20 -0700 (PDT)
+Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05620a0a8900b0078d5e60b52esm6213365qkg.114.2024.04.15.05.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 05:12:20 -0700 (PDT)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Mon, 15 Apr 2024 12:12:18 +0000
+Subject: [PATCH v2] media: usb: siano: Fix allocation of urbs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1713170945-44640-4-git-send-email-quic_qianyu@quicinc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240415-smatch-v2-1-65215936d398@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAKEZHWYC/2XMQQ7CIBCF4as0sxYz0JKiK+9hukCgZRYUA5VoG
+ u4uduvyf3n5dsgukctw7XZIrlCmuLYQpw6M1+viGNnWIFAMOHBkOejNeKZm0UsrcZS9hXZ+Jjf
+ T+4DuU2tPeYvpc7iF/9Y/onCGbFTSIl60kuJxMz7FQK9wjmmBqdb6BSzLZcafAAAA
+To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Yasunari Takiguchi <Yasunari.Takiguchi@sony.com>, 
+ Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>, 
+ Lars-Peter Clausen <lars@metafoo.de>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>, linux-media@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
+ Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.4
 
-On Mon, Apr 15, 2024 at 04:49:05PM +0800, Qiang Yu wrote:
+USB urbs must be allocated with usb_alloc_urb. Quoting the manual
 
-bus: mhi: host: pci_generic: Add support for triggering EDL mode in modems
+Only use this function (usb_init_urb) if you _really_ understand what you
+are doing.
 
-> Add mhi_pci_generic_edl_trigger as edl_trigger for some devices (eg. SDX65)
-> to enter EDL mode by writing the 0xEDEDEDED cookie to the channel 91
-> doorbell register and forcing an SOC reset afterwards.
-> 
+Fix the following smatch error:
 
-'Some of the MHI modems like SDX65 based ones are capable of entering the EDL
-mode as per the standard triggering mechanism defined in the MHI spec <enter
-spec version>. So let's add a common mhi_pci_generic_edl_trigger() function that
-triggers the EDL mode in the device when user writes to the <insert full sysfs
-entry here> file.'
+drivers/media/usb/siano/smsusb.c:53:38: warning: array of flexible structures
 
-> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> ---
->  drivers/bus/mhi/host/pci_generic.c | 47 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-> index 51639bf..cbf8a58 100644
-> --- a/drivers/bus/mhi/host/pci_generic.c
-> +++ b/drivers/bus/mhi/host/pci_generic.c
-> @@ -27,12 +27,19 @@
->  #define PCI_VENDOR_ID_THALES	0x1269
->  #define PCI_VENDOR_ID_QUECTEL	0x1eac
->  
-> +#define MHI_EDL_DB			91
-> +#define MHI_EDL_COOKIE			0xEDEDEDED
-> +
-> +/* Device can enter EDL by first setting edl cookie then issuing inband reset*/
-> +#define MHI_PCI_GENERIC_EDL_TRIGGER	BIT(0)
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+Changes in v2: Thanks Hans
+- Only leave 1/6, the other ones are in another PR
+- Fix the return tag and NULLify the urbs on return
+- Link to v1: https://lore.kernel.org/r/20240410-smatch-v1-0-785d009a852b@chromium.org
+---
+ drivers/media/usb/siano/smsusb.c | 36 ++++++++++++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 10 deletions(-)
 
-This is not needed as of now. Let the edl_trigger be bool for now. When vendors
-want to add their own methods of triggering EDL, we can extend it.
+diff --git a/drivers/media/usb/siano/smsusb.c b/drivers/media/usb/siano/smsusb.c
+index 723510520d09..2e25b970946a 100644
+--- a/drivers/media/usb/siano/smsusb.c
++++ b/drivers/media/usb/siano/smsusb.c
+@@ -40,7 +40,7 @@ struct smsusb_urb_t {
+ 	struct smscore_buffer_t *cb;
+ 	struct smsusb_device_t *dev;
+ 
+-	struct urb urb;
++	struct urb *urb;
+ 
+ 	/* For the bottom half */
+ 	struct work_struct wq;
+@@ -160,7 +160,7 @@ static int smsusb_submit_urb(struct smsusb_device_t *dev,
+ 	}
+ 
+ 	usb_fill_bulk_urb(
+-		&surb->urb,
++		surb->urb,
+ 		dev->udev,
+ 		usb_rcvbulkpipe(dev->udev, dev->in_ep),
+ 		surb->cb->p,
+@@ -168,9 +168,9 @@ static int smsusb_submit_urb(struct smsusb_device_t *dev,
+ 		smsusb_onresponse,
+ 		surb
+ 	);
+-	surb->urb.transfer_flags |= URB_FREE_BUFFER;
++	surb->urb->transfer_flags |= URB_FREE_BUFFER;
+ 
+-	return usb_submit_urb(&surb->urb, GFP_ATOMIC);
++	return usb_submit_urb(surb->urb, GFP_ATOMIC);
+ }
+ 
+ static void smsusb_stop_streaming(struct smsusb_device_t *dev)
+@@ -178,7 +178,7 @@ static void smsusb_stop_streaming(struct smsusb_device_t *dev)
+ 	int i;
+ 
+ 	for (i = 0; i < MAX_URBS; i++) {
+-		usb_kill_urb(&dev->surbs[i].urb);
++		usb_kill_urb(dev->surbs[i].urb);
+ 		if (dev->surbs[i].wq.func)
+ 			cancel_work_sync(&dev->surbs[i].wq);
+ 
+@@ -338,6 +338,8 @@ static void smsusb_term_device(struct usb_interface *intf)
+ 	struct smsusb_device_t *dev = usb_get_intfdata(intf);
+ 
+ 	if (dev) {
++		int i;
++
+ 		dev->state = SMSUSB_DISCONNECTED;
+ 
+ 		smsusb_stop_streaming(dev);
+@@ -346,6 +348,11 @@ static void smsusb_term_device(struct usb_interface *intf)
+ 		if (dev->coredev)
+ 			smscore_unregister_device(dev->coredev);
+ 
++		for (i = 0; i < MAX_URBS; i++) {
++			usb_free_urb(dev->surbs[i].urb);
++			dev->surbs[i].urb = NULL;
++		}
++
+ 		pr_debug("device 0x%p destroyed\n", dev);
+ 		kfree(dev);
+ 	}
+@@ -390,6 +397,7 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
+ 	void *mdev;
+ 	int i, rc;
+ 	int align = 0;
++	int n_urb = 0;
+ 
+ 	/* create device object */
+ 	dev = kzalloc(sizeof(struct smsusb_device_t), GFP_KERNEL);
+@@ -461,16 +469,18 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
+ 	dev->coredev->is_usb_device = true;
+ 
+ 	/* initialize urbs */
+-	for (i = 0; i < MAX_URBS; i++) {
+-		dev->surbs[i].dev = dev;
+-		usb_init_urb(&dev->surbs[i].urb);
++	for (n_urb = 0; n_urb < MAX_URBS; n_urb++) {
++		dev->surbs[n_urb].dev = dev;
++		dev->surbs[n_urb].urb = usb_alloc_urb(0, GFP_KERNEL);
++		if (!dev->surbs[n_urb].urb)
++			goto free_urbs;
+ 	}
+ 
+ 	pr_debug("smsusb_start_streaming(...).\n");
+ 	rc = smsusb_start_streaming(dev);
+ 	if (rc < 0) {
+ 		pr_err("smsusb_start_streaming(...) failed\n");
+-		goto err_unregister_device;
++		goto free_urbs;
+ 	}
+ 
+ 	dev->state = SMSUSB_ACTIVE;
+@@ -478,13 +488,19 @@ static int smsusb_init_device(struct usb_interface *intf, int board_id)
+ 	rc = smscore_start_device(dev->coredev);
+ 	if (rc < 0) {
+ 		pr_err("smscore_start_device(...) failed\n");
+-		goto err_unregister_device;
++		goto free_urbs;
+ 	}
+ 
+ 	pr_debug("device 0x%p created\n", dev);
+ 
+ 	return rc;
+ 
++free_urbs:
++	for (i = 0; i < n_urb; i++) {
++		usb_free_urb(dev->surbs[n_urb].urb);
++		dev->surbs[n_urb].urb = NULL;
++	}
++
+ err_unregister_device:
+ 	smsusb_term_device(intf);
+ #ifdef CONFIG_MEDIA_CONTROLLER_DVB
 
-> +
->  /**
->   * struct mhi_pci_dev_info - MHI PCI device specific information
->   * @config: MHI controller configuration
->   * @name: name of the PCI module
->   * @fw: firmware path (if any)
->   * @edl: emergency download mode firmware path (if any)
-> + * @edl_trigger: each bit represents a different way to enter EDL
+---
+base-commit: 34d7bf1c8e59f5fbf438ee32c96389ebe41ca2e8
+change-id: 20240410-smatch-8f235d50753d
 
-'capable of triggering EDL mode in the device (if supported)'
-
->   * @bar_num: PCI base address register to use for MHI MMIO register space
->   * @dma_data_width: DMA transfer word size (32 or 64 bits)
->   * @mru_default: default MRU size for MBIM network packets
-> @@ -44,6 +51,7 @@ struct mhi_pci_dev_info {
->  	const char *name;
->  	const char *fw;
->  	const char *edl;
-> +	unsigned int edl_trigger;
->  	unsigned int bar_num;
->  	unsigned int dma_data_width;
->  	unsigned int mru_default;
-> @@ -292,6 +300,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx75_info = {
->  	.name = "qcom-sdx75m",
->  	.fw = "qcom/sdx75m/xbl.elf",
->  	.edl = "qcom/sdx75m/edl.mbn",
-> +	.edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
->  	.config = &modem_qcom_v2_mhiv_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->  	.dma_data_width = 32,
-> @@ -302,6 +311,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
->  	.name = "qcom-sdx65m",
->  	.fw = "qcom/sdx65m/xbl.elf",
->  	.edl = "qcom/sdx65m/edl.mbn",
-> +	.edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
->  	.config = &modem_qcom_v1_mhiv_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->  	.dma_data_width = 32,
-> @@ -312,6 +322,7 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
->  	.name = "qcom-sdx55m",
->  	.fw = "qcom/sdx55m/sbl1.mbn",
->  	.edl = "qcom/sdx55m/edl.mbn",
-> +	.edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
->  	.config = &modem_qcom_v1_mhiv_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->  	.dma_data_width = 32,
-> @@ -928,6 +939,39 @@ static void health_check(struct timer_list *t)
->  	mod_timer(&mhi_pdev->health_check_timer, jiffies + HEALTH_CHECK_PERIOD);
->  }
->  
-> +static int mhi_pci_generic_edl_trigger(struct mhi_controller *mhi_cntrl)
-> +{
-> +	void __iomem *base = mhi_cntrl->regs;
-> +	void __iomem *edl_db;
-> +	int ret;
-> +	u32 val;
-> +
-> +	ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
-> +	if (ret) {
-> +		dev_err(mhi_cntrl->cntrl_dev, "Wake up device fail before trigger EDL\n");
-
-'Failed to wakeup the device'
-
-- Mani
-
+Best regards,
 -- 
-மணிவண்ணன் சதாசிவம்
+Ricardo Ribalda <ribalda@chromium.org>
+
 
