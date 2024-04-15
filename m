@@ -1,118 +1,232 @@
-Return-Path: <linux-kernel+bounces-145508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D148A5722
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:09:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB468A573A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:12:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02A96B225BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:09:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 026532853A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902D48005C;
-	Mon, 15 Apr 2024 16:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="i/xSNXwK"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B52824B5;
+	Mon, 15 Apr 2024 16:11:29 +0000 (UTC)
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6D47F7F2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:09:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA651E535;
+	Mon, 15 Apr 2024 16:11:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197346; cv=none; b=mV7ENgcbSt0rio8VvK8WrH5412MQK5Gn1J5sgTDE3fs+1xrpn62OfcLqjngFw515pH7A7M5mHCu4YrTe91MwZCzpQ4mJasRL2xXSG04r/dgZgLAdJFo6UV0ZMwVX8+2S3TP6xX3J+4ZZLuRt4OnH8jpMoXt9uTco3+hOu41XKcM=
+	t=1713197488; cv=none; b=Yi+AIIoJUwUnqWmAJ1xWXFahUkyQ6GGXNLgSG8snX7Rwv0/veDebvyOPXT9vXUD+gEs/gN/VR5lZojxAjkGlJmb6YLBTJl/q7vQs9odrGUZw0pwWQ1zw6lP6/tgu2TioF99nxAcV0TjQFY++F6cboKIf703pVAeahgGbI3CjKXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197346; c=relaxed/simple;
-	bh=E/HJYNCwsVkHpTWHtftb4kU3kk8lhl3wMS3rheRjiQI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gfj5/K/7UXmQcYqZNXvAKEZrWJ+mQd8EqCWURaB458A2yY2u96IvqSDMei9rQ9MPNESSZ3gIsl5nO0V1+g8jIDuoNs8KOv4S3M+7NnYhw636fR07isS11PQkNLc1bktNQDitROWJx/hY1BjBAGYMzs0dyTnMG7TuB9g1/Q5JVeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=i/xSNXwK; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2330f85c2ebso2304132fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1713197343; x=1713802143; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tTXFGU40TZUxrNmMPsS0SfAuCZx2k12qnJO4YGZoAlM=;
-        b=i/xSNXwKmgz8eeJqAA0Vy5lgSEoL5Yz3ZkqPn6KmTdTRPZRGrpI4aKHMgYRCDQUwpx
-         jKE20ag6ZO6dihmR+IlVZWwJnA/ccf6gEn3g7XlawGcfGtALPBjqeK1pw7xh+i7J9YTE
-         /09SdVf5B6pal4QYLEonXrzNe3I8zGsn9aon5IsozwE0/adjfPjAzLu+3s5W4csA7lts
-         KUvKNYUhKL5T3lfiQjYWaBoGtLnhkYGgzkxdRjuLH0nLJC0UKF/AlidtnyvIdumqhPqW
-         75OAKdDTBXG8J+Fl+CZl4rp3oWgNBc6k97O4Cvzwpdayhk1UxJyNtOYvRZBDMgmZ+FcR
-         H7Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713197343; x=1713802143;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tTXFGU40TZUxrNmMPsS0SfAuCZx2k12qnJO4YGZoAlM=;
-        b=Csn83jYCHN2RnVZBcwAv/Wqx3cHLHfmd3vM4N+a98xQE317YayvJifHawi3dbDHYpM
-         65rp0gpLqwbZrncGrV6BDCuevDgE2DTwXkggg6F2pGEnUnCLZRhSAaLnjutmCab3E3AM
-         sLmHEaLO0B4wB0LehUKL9sh86Xf5LP6jCvJB0AkqgWxjqC13JWvl9N6vjbjnPGPXSwuT
-         UfHeAGJ1Y4kWmK/ONbwl0vg/IY7RfLelfGe1ctPiMnbp0DVyBAFwIaMXqMQWDyoAwOfB
-         F8vCEKIKndnpahpG4gmzM49QawHlZyddsyzAFLMx6y+F9XgFI7zWvkkCLJ4eEcrU6rAL
-         FNxA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJ6CKKCgMUc8KVh/9vX/4Ta0LNTGWhD5N/tQIlgeSGgN4BdCA5IVgFKQMY2SCcfqul292LaMEyD0DP5C/EWhikp+Tv3nnRU04kQiuY
-X-Gm-Message-State: AOJu0Yxb2X+HZqXwRbwEwGlhFiYkNUW/nZye4azPMRH1cLryQHQIBBcg
-	mZMN4Ie1B5kE4yaxwywJoqDLSpiAtX/MbsuRXpBkCvN4WimsoeQIkDQ4KEtPBNc=
-X-Google-Smtp-Source: AGHT+IGsiA6KZ3pe9BtRhO+pbVOY45AuLQMOs+w2wDePMtUYoW4o4u2JX5C7mqkiROcVBcvSR1rGJA==
-X-Received: by 2002:a05:6871:7505:b0:22e:15fd:e247 with SMTP id ny5-20020a056871750500b0022e15fde247mr12653184oac.5.1713197343311;
-        Mon, 15 Apr 2024 09:09:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id ej2-20020ad45a42000000b0069b7bc51271sm1526012qvb.123.2024.04.15.09.09.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 09:09:02 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rwOtB-006BJP-JQ;
-	Mon, 15 Apr 2024 13:09:01 -0300
-Date: Mon, 15 Apr 2024 13:09:01 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Kevin Tian <kevin.tian@intel.com>, Shuah Khan <shuah@kernel.org>,
-	kernel@collabora.com, iommu@lists.linux.dev,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
-Message-ID: <20240415160901.GN223006@ziepe.ca>
-References: <20240325090048.1423908-1-usama.anjum@collabora.com>
- <45b4d209-675a-4b42-b62c-6644bafa36c0@collabora.com>
- <20240405001020.GB5792@ziepe.ca>
- <b7c437f5-ac70-4611-908d-b665d8e02679@collabora.com>
+	s=arc-20240116; t=1713197488; c=relaxed/simple;
+	bh=vrYz2NXhQnqxuh9h++AL0NeXjFJvJBO+eZJi+7eVy+o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LgDwbAjuWl2rzOBgLLw2wku90bJqwygwFUxBRnwSbvyrOf2rktXXJ5qIeJwGeQSH36HtbKogVWC6BB3HbWa4spImJrKFrcDst3DrCkENtcH/QXKbQzPvBHLC642CPRIluwts7YSvD0KKsQm4RZqQ20/ubdYtSTNGyxMQ9odJybI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4VJBTK2txrz9xrnb;
+	Mon, 15 Apr 2024 23:50:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 80F88140159;
+	Tue, 16 Apr 2024 00:11:22 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwDn0iaZUR1m4n9HBg--.16529S2;
+	Mon, 15 Apr 2024 17:11:21 +0100 (CET)
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: corbet@lwn.net,
+	zohar@linux.ibm.com,
+	dmitry.kasatkin@gmail.com,
+	eric.snowberg@oracle.com,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	wufan@linux.microsoft.com,
+	pbrobinson@gmail.com,
+	zbyszek@in.waw.pl,
+	hch@lst.de,
+	mjg59@srcf.ucam.org,
+	pmatilai@redhat.com,
+	jannh@google.com,
+	dhowells@redhat.com,
+	jikos@kernel.org,
+	mkoutny@suse.com,
+	ppavlu@suse.com,
+	petr.vorel@gmail.com,
+	mzerqung@0pointer.de,
+	kgold@linux.ibm.com,
+	Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [RFC][PATCH v2 0/9] ima: Integrate with digest_cache LSM
+Date: Mon, 15 Apr 2024 18:10:35 +0200
+Message-Id: <20240415161044.2572438-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b7c437f5-ac70-4611-908d-b665d8e02679@collabora.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:GxC2BwDn0iaZUR1m4n9HBg--.16529S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr45JF1xZF1DKrW8try7ZFb_yoW7try5pa
+	9Fg3W5tr1kZryxCr43Aa17CF4rKr95Ka17Gw4DJ34Yya15WF1jvw1Syry7uFy5Kr4Fqa17
+	tw42gr1UCw1qyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvlb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7
+	CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
+	F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4I
+	kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7Cj
+	xVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+	IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+	6r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2
+	IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+	x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvj
+	DU0xZFpf9x07jzE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAOBF1jj5x3EgAAsD
 
-On Sun, Apr 14, 2024 at 07:39:58PM +0500, Muhammad Usama Anjum wrote:
-> On 4/5/24 5:10 AM, Jason Gunthorpe wrote:
-> > On Mon, Mar 25, 2024 at 02:11:41PM +0500, Muhammad Usama Anjum wrote:
-> >> On 3/25/24 2:00 PM, Muhammad Usama Anjum wrote:
-> >>> Add FAULT_INJECTION_DEBUG_FS and FAILSLAB configurations which are
-> >>> needed by iommufd_fail_nth test.
-> >>>
-> >>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> >>> ---
-> >>> While building and running these tests on x86, defconfig had these
-> >>> configs enabled. But ARM64's defconfig doesn't enable these configs.
-> >>> Hence the config options are being added explicitly in this patch.
-> >> Please disregard this extra comment. Overall this patch is needed to enable
-> >> these config options of x86 and ARM both.
-> > 
-> > I picked this and the other patch up, thanks
-> Not sure why but I'm unable to find this patch in next and in your tree:
-> https://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd.git/log/?h=for-next
-> 
-> Maybe this patch was missed?
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-ah I made some mistakes, all sorted thanks
+One of the IMA shortcomings over the years has been the availability of
+reference digest values for appraisal. Recently, the situation improved
+and some Linux distributions are including file signatures.
 
-Jason
+The digest_cache LSM takes a different approach. Instead of requiring
+Linux distributions to include file signatures in their packages, it parses
+the digests from signed RPM package headers and exposes an API for
+integrity providers to query a digest.
+
+That enables Linux distributions to immediately gain the ability to do
+integrity checks with the existing packages, lowering the burden for
+software vendors.
+
+In addition, integrating IMA with the digest_cache LSMs has even more
+benefits.
+
+First, it allows generating a new-style masurement list including the RPM
+package headers and the unknown files, which improves system performance
+due to the lower usage of the TPM. The cost is the less accuracy of the
+information reported, which might not suitable for everyone.
+
+Second, performance improve for appraisal too. It has been found that
+verifying the signatures of only the RPM package headers and doing a digest
+lookup is much less computationally expensive than verifying individual
+file signatures.
+
+For reference, a preliminary performance evaluation has been published
+here:
+
+https://lore.kernel.org/linux-integrity/20240415142436.2545003-15-roberto.sassu@huaweicloud.com/
+
+
+Third, it makes a PCR predictable and suitable for TPM key sealing
+policies.
+
+Finally, it allows IMA to maintain a predictable PCR and to perform
+appraisal from the very beginning of the boot, in the initial ram disk
+(of course, it won't recognize automatically generated files, that don't
+exist in the RPM packages).
+
+
+Integration of IMA with the digest_cache LSM is straightforward.
+
+Patch 1 lets IMA know when the digest_cache LSM is reading a digest list,
+to populate a digest cache.
+
+Patch 2 allows nested IMA verification of digest lists read by the
+digest_cache LSM.
+
+Patch 3 allows the usage of digest caches with the IMA policy.
+
+Patch 4 introduces new boot-time built-in policies, to use digest caches
+from the very beginning (it allows measurement/appraisal from the initial
+ram disk).
+
+Patch 5 modifies existing boot-time built-in policies if the digest_cache
+LSM-specific policies have been selected at boot.
+
+Patch 6 attaches the verification result of the digest list to the digest
+cache being populated with that digest list.
+
+Patch 7-8 enable the usage of digest caches respectively for measurement
+and appraisal, at the condition that it is authorized with the IMA policy
+and that the digest list itself was measured and appraised too.
+
+Patch 9 subscribes to digest cache events and invalidates cached integrity
+results on digest cache reset (file or directory modification).
+
+Open points:
+- Mimi prefers to extend flags in ima_iint_cache, rather than passing the
+  parameter down to process_measurement() - will do in a next version
+- Prefetching of digest lists should not be done if there is no
+  measurement rule (not relevant for appraisal)
+
+Changelog
+
+v1:
+- Change digest_cache= policy keyword value from 'content' to 'data'
+  (suggested by Mimi)
+- Move digest_cache LSM integration code to ima_digest_cache.c (suggested
+  by Mimi)
+- Don't store digest cache pointer in integrity metadata
+- Rename 'digest_cache_mask' parameter of ima_get_action() and
+  ima_match_policy() to 'digest_cache_usage'
+- Rename 'digest_cache_mask' parameter of ima_store_measurement() and
+  ima_appraise_measurement() to 'allowed_usage'
+- Try digest cache method as first in ima_appraise_measurement() (suggested
+  by Mimi)
+- Introduce ima_digest_cache_change() to be called on digest cache reset
+- Subscribe to digest cache events
+- Add forgotten modification in ima_iint_lockdep_annotate() (reported by
+  Mimi)
+- Replace 'digest_cache_mask' member of the ima_rule_entry structure with
+  'digest_cache_usage' (suggested by Mimi)
+- Split patch introducing digest_cache LSM-specific boot-time built-in
+  policies and modifying existing rules
+- Add digest_cache LSM-specific boot-time built-in policies if the
+  digest_cache LSM is enabled in the kernel configuration
+- Rename IMA_DIGEST_CACHE_MEASURE_CONTENT and
+  IMA_DIGEST_CACHE_APPRAISE_CONTENT to IMA_DIGEST_CACHE_MEASURE_DATA and
+  IMA_DIGEST_CACHE_APPRAISE_DATA
+
+Roberto Sassu (9):
+  ima: Introduce hook DIGEST_LIST_CHECK
+  ima: Nest iint mutex for DIGEST_LIST_CHECK hook
+  ima: Add digest_cache policy keyword
+  ima: Add digest_cache_measure/appraise boot-time built-in policies
+  ima: Modify existing boot-time built-in policies with digest cache
+    policies
+  ima: Store allowed usage in digest cache based on integrity metadata
+    flags
+  ima: Use digest caches for measurement
+  ima: Use digest caches for appraisal
+  ima: Register to the digest_cache LSM notifier and process events
+
+ Documentation/ABI/testing/ima_policy          |   6 +-
+ .../admin-guide/kernel-parameters.txt         |  15 ++-
+ security/integrity/ima/Kconfig                |  10 ++
+ security/integrity/ima/Makefile               |   1 +
+ security/integrity/ima/ima.h                  |  22 +++-
+ security/integrity/ima/ima_api.c              |  21 ++-
+ security/integrity/ima/ima_appraise.c         |  32 +++--
+ security/integrity/ima/ima_digest_cache.c     | 123 ++++++++++++++++++
+ security/integrity/ima/ima_digest_cache.h     |  36 +++++
+ security/integrity/ima/ima_iint.c             |  17 ++-
+ security/integrity/ima/ima_main.c             |  46 +++++--
+ security/integrity/ima/ima_policy.c           | 122 ++++++++++++++++-
+ 12 files changed, 413 insertions(+), 38 deletions(-)
+ create mode 100644 security/integrity/ima/ima_digest_cache.c
+ create mode 100644 security/integrity/ima/ima_digest_cache.h
+
+-- 
+2.34.1
+
 
