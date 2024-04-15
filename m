@@ -1,114 +1,193 @@
-Return-Path: <linux-kernel+bounces-145908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F36D8A5CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:08:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D2E58A5CAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:08:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF35D28291A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:08:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7EBB284DEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA3915696E;
-	Mon, 15 Apr 2024 21:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BA615698A;
+	Mon, 15 Apr 2024 21:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gy8h3WNJ"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mh392K/+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE749823CE;
-	Mon, 15 Apr 2024 21:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BFB82D93;
+	Mon, 15 Apr 2024 21:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713215275; cv=none; b=i44X/z13TR+4KEzX1zL8NomWid4C1iI8NMJDIBxKkVuS59uKouQgLNk4Aw4+EOSEMHz8YUdbfB27FEkdiIHpjO+4s0zLENfcuWlcMoIfUaWLxihJZfRXt8YEkAhNRZRStqrmaH6OuzlaZV8jfsF6pcaf3KaXhUw7EjyQLiKBd3g=
+	t=1713215307; cv=none; b=ok8XugK9jxHNUCQZInjsFPjT66ymRkUsez5cEMZWVdy7YPR1LHfvgkXWz0B3T3NcTFarXr5j3Rnc1b2UUBgj4w+9iGCSK+SDJ9+NHRS3aU4EYF95YB6lrGiBEx0ihkTWluYs+qZ1cqObp9rn0/V5Z5/YiKX6v/hUgf+EmWB03AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713215275; c=relaxed/simple;
-	bh=dZGyHYW2YHPRCCg2XTiPDm+RfQJLoDRhsLPv4FfLvfc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u2ttbpbYZZWzLSybJNj7tgMJC6q128a5zwvqfT9+POMLXBEX6wA3ajLjMgJHSXwovZRTrZYB7wqLkSKnKVb1f5cW8oMadJWJLewvvotUOP6bZP6NzVxZ3DyH/n67+O9GcTaH9WIIW/OzvVZu1FtZv0dEjVHvnxvt+j3Gi61MQVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gy8h3WNJ; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2dac79e350cso1401271fa.2;
-        Mon, 15 Apr 2024 14:07:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713215272; x=1713820072; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dZGyHYW2YHPRCCg2XTiPDm+RfQJLoDRhsLPv4FfLvfc=;
-        b=Gy8h3WNJXAL/ZrOnZ/+bJlI5uylosvOjCidl+opQOJN/ZHTjJbl5rLfhjfX1F4IyX0
-         7vUKWGbZ2TnRnHdIW+jBhVhWr5Y5tACr4Ap5VGLySW6RrRaXTqJhAxosSLBHYzc1R6C3
-         eZZgtUWUvB5pf6DKQ6eiQfst3TY+/FlFnJ+RMj/GrulBGdjMtHMHw6gs2HwaUTgO0cAN
-         42iGxUK+n5JOcXwH0Aj/8WBMT2KYnWvh7OomU+pjlrvZq1jBjV6dnl6RQRZ3Q9/yHL/g
-         FsjY79qd7BBsu2y5yV7a4dH2ihZN4pkbuOMj2wuNwjDcXo6YiThruQBrU5Cf40MbqBhB
-         vMpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713215272; x=1713820072;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dZGyHYW2YHPRCCg2XTiPDm+RfQJLoDRhsLPv4FfLvfc=;
-        b=l9/HwAXSE6QVyOTZgQ6CCjIIYoePa9yi4Tfos/p0Z4RLmadDQf4DJHILtFUplcAwEa
-         sEs+AL9clGgYlwE56fupV9LwX0wzoCdymgGIDcS00jWFVIKfi5T5UdhYqMZm/51mnCF1
-         SatN3a9eqEWBm+uXCIVpIvJHNTCeWxDrGOMC+47s38j7hOSwlIIpYWBTs+k9romT+JLJ
-         WHpHd+5/BtNt4ScGwWHbtHlydRcQqnoj4sI66qKVtWJrLzOmJjCXkCkH4w7INczgr1lh
-         ydGSvY9tKWsM0jnF5OQ/6sHpSG2oa7RGLJJtSp+YHSEPlQ9oFIY+1UOg7eLcr2zNglV+
-         ZocA==
-X-Forwarded-Encrypted: i=1; AJvYcCXdaB5zj2ntMQKYis4NkpGOcpMfGOqIJ4TSK9qG6Rl5jVjwDR1lLpbXC9dtYNOR9x3vD3zpFgPMq+RwH9oYQBl6TNLylZHLeEpztg==
-X-Gm-Message-State: AOJu0Ywuw4I/VnJWFrg7n0e53xc8afsFWvd380uz0NgWK/rWkUfIW5gb
-	cv+5J8/DHvXq41EZbL8319NBI2/tuwXvNhaiUCsIEFaRCaqL6qbC7TfLh7GT
-X-Google-Smtp-Source: AGHT+IErQ/YHbW+POwBNnVs+xxSRp19T+6PTSAH/8LvETVMHLcYYh9s7DrvZ4rEKVLjZxM4vADHwAg==
-X-Received: by 2002:a2e:b94e:0:b0:2d5:9703:263f with SMTP id 14-20020a2eb94e000000b002d59703263fmr5617484ljs.44.1713215271826;
-        Mon, 15 Apr 2024 14:07:51 -0700 (PDT)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id m18-20020a05600c3b1200b0041668162b45sm20796813wms.26.2024.04.15.14.07.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 14:07:51 -0700 (PDT)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: linux-kernel@vger.kernel.org, Aren Moynihan <aren@peacevolution.org>
-Cc: Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Chen-Yu Tsai <wens@csie.org>, Pavel Machek <pavel@ucw.cz>,
- devicetree@vger.kernel.org, linux-sunxi@lists.linux.dev,
- Miles Alan <m@milesalan.com>, Samuel Holland <samuel@sholland.org>,
- linux-arm-kernel@lists.infradead.org, Ondrej Jirman <megi@xff.cz>,
- Aren Moynihan <aren@peacevolution.org>
-Subject:
- Re: [PATCH v3 2/2] arm64: dts: allwinner: pinephone: add multicolor LED node
-Date: Mon, 15 Apr 2024 23:07:50 +0200
-Message-ID: <3289584.44csPzL39Z@jernej-laptop>
-In-Reply-To: <3796126.kQq0lBPeGt@jernej-laptop>
-References:
- <20240317004116.1473967-1-aren@peacevolution.org>
- <20240317004116.1473967-2-aren@peacevolution.org>
- <3796126.kQq0lBPeGt@jernej-laptop>
+	s=arc-20240116; t=1713215307; c=relaxed/simple;
+	bh=YBb7sPjCuZy7QTFidxmPtSaTUjMukfRrUWRNfl89xUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PrxQOUvBiKtIKXWqdF8OZD/aRWad/pehxYK2fDKANRQuDBsGpakEEsGXSB7jLU//UpPremEAcT70uCugp2AYokI2BVL1c9xBg1T4Qr8TwyRRbTKwf9Q709Dh0OfImN6hhyPDM8pjSDUj6e9Mb/BB1EqdLx9nF4o3eTF+io7xH/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mh392K/+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E8FDC113CC;
+	Mon, 15 Apr 2024 21:08:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713215305;
+	bh=YBb7sPjCuZy7QTFidxmPtSaTUjMukfRrUWRNfl89xUs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mh392K/+eV4fnTxdDBL2hkZgVqtnZ+l5R6/Gy424hmIewmf56EAGgPSUnDww7XfrP
+	 h/EMGZlW+jRdJmL7bzI5SgyJO1/9KEeUdR6XjumPyAyEl5HX0ceRNNgU4jDGFB93HM
+	 nDWLDWEFtUG5bwvvexEm4emW2c7V3AwXnJjPb1TYSSLaxfpruUE26/0mzXuWyl+4ls
+	 rdkrG6isEK9o1Ttl20u8haKyBAQvTYBmZ+r/sxLQ4spO9P+fVYi4hFJkuvBARjttIK
+	 lBdfxrxLHkt2228D3f/jby+tFGjPNHCtJk3sEwVcPLpt/gUSFFIymS7nyE7NZtXuAh
+	 +owzyrxrKOWrw==
+Date: Mon, 15 Apr 2024 23:08:22 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH 2/2] context_tracking, rcu: Rename RCU_DYNTICKS_IDX to
+ CT_DYNTICKS_IDX
+Message-ID: <Zh2XRgIGDILD6u7Q@pavilion.home>
+References: <20240327112902.1184822-1-vschneid@redhat.com>
+ <20240327112902.1184822-3-vschneid@redhat.com>
+ <Zg6tYD-9AFPkOOsW@localhost.localdomain>
+ <1ef9d1f9-16a2-4ddc-abd5-6c3b7cde290f@paulmck-laptop>
+ <ZhZqX0YqlzPoOK2b@localhost.localdomain>
+ <af3eed7e-a889-4008-ba47-045483ab79fc@paulmck-laptop>
+ <xhsmhjzky8tww.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <xhsmhjzky8tww.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 
-Dne torek, 26. marec 2024 ob 23:44:39 GMT +2 je Jernej =C5=A0krabec napisal=
-(a):
-> Dne nedelja, 17. marec 2024 ob 01:39:29 CET je Aren Moynihan napisal(a):
-> > The red, green, and blue LEDs currently in the device tree represent a
-> > single RGB LED on the front of the PinePhone.
-> >=20
-> > Signed-off-by: Aren Moynihan <aren@peacevolution.org>
->=20
-> Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Le Mon, Apr 15, 2024 at 06:36:31PM +0200, Valentin Schneider a écrit :
+> On 10/04/24 12:19, Paul E. McKenney wrote:
+> > On Wed, Apr 10, 2024 at 12:30:55PM +0200, Frederic Weisbecker wrote:
+> >> Le Tue, Apr 09, 2024 at 12:53:03PM -0700, Paul E. McKenney a écrit :
+> >> > I am having a hard time getting too excited about the name.  I could
+> >> > suggest CT_RCU_WATCHING_IDX, but that isn't exactly the shortest
+> >> > possible name.
+> >>
+> >> I really like CT_RCU_WATCHING. It says everything. The _IDX isn't even
+> >> needed after all. What do you think?
+> >
+> > Works for me!
+> >
+> 
+> Sounds good to me too, thanks for the suggestion :)
+> 
+> Now, what about ct_dynticks() & friends? I was about to do:
+> 
+> -static __always_inline int ct_dynticks(void)
+> +static __always_inline int ct_rcu_watching(void)
+>  {
+> -	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_DYNTICKS_MASK;
+> +	return atomic_read(this_cpu_ptr(&context_tracking.state)) & CT_RCU_WATCHING_MASK;
+>  }
 
-Applied both, thanks!
+Yup!
 
-Best regards,
-Jernej
+> 
+> ... but then realised that there's more siblings to the rcu_dynticks*()
+> family;
 
+Ouch right, sorry I forgot there is so much of this namespace. But in case you're
+willing to clean that up:
 
+> 
+> AFAICT dynticks_nesting could also get the rcu_watching prefix treatment,
+> `rcu_dynticks_task_exit() -> rcu_watching_task_exit` doesn't sound as
 
+rcu_tasks_exit() ?
 
+But Paul, is there a reason why check_holdout_task() doesn't check
+ct_dynticks_cpu(task_cpu(t)) instead of maintaining this separate counter?
+
+> obvious though. The rcu_dyntick event probably can't be renamed either.
+
+I think we can rename trace_rcu_dyntick() to trace_rcu_watching()
+
+> 
+> I'm not sure how far to take the renaming; seeing things like:
+> 
+>   notrace bool rcu_is_watching(void)
+>   {
+>           bool ret;
+> 
+>           preempt_disable_notrace();
+>           ret = !rcu_dynticks_curr_cpu_in_eqs();
+>           preempt_enable_notrace();
+>           return ret;
+>   }
+>   EXPORT_SYMBOL_GPL(rcu_is_watching);
+> 
+> makes me think most of the rcu_*dynticks / rcu_*eqs stuff could get an
+> rcu_watching facelift?
+
+The eqs part can stay as-is. But the *dynticks* needs an update.
+
+> 
+> Here are my current considerations for identifiers used in context_tracking
+> in decreasing order of confidence:
+> 
+> | Old                                   | New                                                           |
+> |---------------------------------------+---------------------------------------------------------------|
+> | RCU_DYNTICKS_IDX                      | CT_RCU_WATCHING                                               |
+> | RCU_DYNTICKS_MASK                     | CT_RCU_WATCHING_MASK                                          |
+> | context_tracking.dynticks_nesting     | context_tracking.rcu_watching_nesting                         |
+
+This can be context_tracking.nesting (and yes one day we might need to lock up
+context_tracking.nesting and context_tracking.recursion together in a room and see
+who wins after a day or two).
+
+> | context_tracking.dynticks_nmi_nesting | context_tracking.rcu_watching_nmi_nesting [bit of a mouthful] |
+
+context_tracking.nmi_nesting
+
+> | rcu_dynticks_curr_cpu_in_eqs()        | rcu_watching_curr_cpu() [with an added negation]              |
+
+Nice!
+
+> |---------------------------------------+---------------------------------------------------------------|
+> | TRACE_EVENT_RCU(rcu_dyntick,          | [Can't change?]                                               |
+
+It can change. Officially trace events aren't ABI. Unoficially I wouldn't dare
+changing the sched switch trace event but this one is fine.
+
+> |---------------------------------------+---------------------------------------------------------------|
+> | rcu_dynticks_task_enter()             | rcu_watching_task_enter()> | |
+
+rcu_tasks_enter() ?
+
+> | rcu_dynticks_task_exit()              | rcu_watching_task_exit()                                      |
+
+rcu_tasks_exit() ?
+
+> | rcu_dynticks_task_trace_enter()       | rcu_watching_task_trace_enter()                               |
+
+rcu_tasks_trace_enter()?
+
+> | rcu_dynticks_task_trace_exit()        | rcu_watching_task_trace_exit()                                |
+
+rcu_tasks_trace_exit() ?
+
+Thanks.
+
+> 
+> Thoughts?
+> 
 
