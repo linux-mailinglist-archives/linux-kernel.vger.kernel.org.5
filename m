@@ -1,81 +1,50 @@
-Return-Path: <linux-kernel+bounces-144676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1AF8A4914
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:32:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C37128A4915
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:33:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D1628535D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:32:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F35471C20F39
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAEF125601;
-	Mon, 15 Apr 2024 07:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C76624B2A;
+	Mon, 15 Apr 2024 07:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a3le1Tgl"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="K46aGOps"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C222374E;
-	Mon, 15 Apr 2024 07:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC5E23763
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713166353; cv=none; b=AsEp62SurCFBJT74BmNdu1iVDnLlPOuBbcp4jf3EOZqKa1cA/ZlafO1rVObClMhixi0PQVzsKeWn5iX+1RuRukAwDbxWBWq8bhaaNk6ALk1XnD5Xtx7oL8e7rWnp4cAXZAmVjBRbsS7WqQQ4Y3zdcyD281mFSnTto8BBqE6ZWco=
+	t=1713166384; cv=none; b=qa2/+mynElCm6NmTYDk+fBBdXHwDU0MJPIW5hL1lf8pfn1I3fsTaiYCytvwfnA7Qge4UZz0YX3MuE20yPQ0aMSxcuoBq9C89UGyaptLrloDQyUPk18RpEZPEhaTydHM0Uw9F3FPB/acgtxmSXVIgB6MW1W/jXjgB4Vum2ft6H44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713166353; c=relaxed/simple;
-	bh=ds8rQwAgmdMOFBFo3sSml/CF/rMu8R1uc3x5Kf+BvfA=;
+	s=arc-20240116; t=1713166384; c=relaxed/simple;
+	bh=HulXt605iuUDWNZIZsCC+JKKUiQZcW1J0o0UnNGNdvs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qLOJeLI+ID6kSWHU2XLA7EupX7zrP5+UZfElMrc9lAvin3g1RuL0ZfCKA3FHlwnqoeZIPwoQlbGm9pp8CYQwL5j3X5vIkB4NSCdGzoY88fGhWsXnpYj6J6CmWro1YBlTzEfIJTcZvPakiUdAP3h7/NIftTRJxPo/qC+Rr3dH+Yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a3le1Tgl; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ed2dc03df6so2602282b3a.1;
-        Mon, 15 Apr 2024 00:32:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713166350; x=1713771150; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WUmnixeG+B3BoDinJmPWqoj2FRLDOu7Npt2WWfE76BE=;
-        b=a3le1TglTIUzRIUHnJ3lARVBhDrVlnnbcH8MKDeweI9pXnxO20A3Ir/soe6n8zwzQo
-         3Sr+wTzlbxtOe8dsw6OixEjz6RAok8SkCpNxJFQcMPv7Y7q62wEJFard+Ohs7Cl7n3sg
-         XUBSFlvuCt/lXr4s2VmKRql6IDVUAHWs4gMPtPqdlij17AR701SjxsW4SKcxL07ny8SG
-         5pNIJtraMLYs/f/zZmysCcU98qgAp1BME343Mpbr7Ai906TinkQnVgLX4Rop5ScVHkHY
-         8oRnmuKJq+GAVr+5JtgM1vPN8M1sXCtPkTRxb8Tgl41kvZutoZkXgoi5pwLVW83IEadR
-         wyHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713166350; x=1713771150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WUmnixeG+B3BoDinJmPWqoj2FRLDOu7Npt2WWfE76BE=;
-        b=KjervEOVMUN7XkpKmgpA26wFMLkXjfd/izY2ZbIr7hOpW8qyie1XHhqScCxWViq90Z
-         q8hlzHcjwql1bn1bLhrGqaspSlKjxIV29VbNhleb+boU26TVQUsjyYAFIxXAFSmUmCMy
-         dcx19Ap2tOB0tKt3WKq/gIf4CGyWHf6aeEO7a2CEpyH4pkO6jDn1Uc1qiyvGfDTaliVH
-         QvU7CnAhbn2myZOqpFBoDq3sqaHBOha6QM4cK5+adWZ5w74z4o9loRZG0CE5Y7YD2tcg
-         1ieyH3X/G020GT0WaczBNyto8CenWqAEBQcPkRfYiqsi46xgQ8wHuxlOjnI3U5Yj2xog
-         bzgg==
-X-Forwarded-Encrypted: i=1; AJvYcCU84hb4EzF+RmUiOHNOp/9cdOTwhoGc+Igwcr5oKM2746t+fY6++AKF40dEeqDSwrAEgETmh59hw6RmXS8IBweGDFKAf+Zo
-X-Gm-Message-State: AOJu0YzkjW87M91TR7KNutUh6zPdBn219z5TOQVtKQtvl5knefYaG53Z
-	Up914Pc3wJG0PrkKCDokbsK2HciqclxTz2hR0uSo/cbupDfQYDea
-X-Google-Smtp-Source: AGHT+IGvPzw/HWjG2isFtpVTIoEB+NaFp3rSdwicdBEOVfAu+7O9238npZ8ia53S77vObL7HZZ8Ydg==
-X-Received: by 2002:a05:6a00:1147:b0:6ee:1508:eda0 with SMTP id b7-20020a056a00114700b006ee1508eda0mr12879264pfm.18.1713166350099;
-        Mon, 15 Apr 2024 00:32:30 -0700 (PDT)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id z3-20020aa78883000000b006e5571be110sm6582831pfe.214.2024.04.15.00.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 00:32:29 -0700 (PDT)
-Date: Mon, 15 Apr 2024 15:32:25 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Sam Sun <samsun1006219@gmail.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-	Eric Dumazet <edumazet@google.com>, kuba@kernel.org,
-	pabeni@redhat.com
-Subject: Re: [PATCH net v1] drivers/net/bonding: Fix out-of-bounds read in
- bond_option_arp_ip_targets_set()
-Message-ID: <ZhzYCZyfsWgYWxIe@Laptop-X1>
-References: <CAEkJfYPYF-nNB2oiXfXwjPG0VVB2Bd8Q8kAq+74J=R+4HkngWw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hL4apzN6O+MJhlvcCH+Qnl13GBvh8m7MkArAxVv8jRODLFmXtJ0FiiyADqw7Xmns1/bDTNNxyyTrZ3DbNdn7Ai6DwAAdIKDrrEtu/JBhFSH6V0tegNZBetfqdiLpt8MVzaL+h6A6rDGfxnAIfiyyBRz+oBg54vJfaFZ2Yy73mKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=K46aGOps; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46CB6C113CC;
+	Mon, 15 Apr 2024 07:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713166383;
+	bh=HulXt605iuUDWNZIZsCC+JKKUiQZcW1J0o0UnNGNdvs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=K46aGOpsj6wmLaobqllJwK4TnGyGVXDuTVnR8nBLVeWjxALN0+QdN+IFw1JCVWPnJ
+	 GeeNTiCUxWcnXevgo/1tti3AkCZUYM5qP4d4RwEArlbOz4UOFYhxQ7Q6JELQsZt58B
+	 tnU/8GTYNH/CZ+NXJbTo83skk62F3bGhkieDydVY=
+Date: Mon, 15 Apr 2024 09:33:01 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: li.hao40@zte.com.cn
+Cc: jirislaby@kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] tty: hvc: wakeup hvc console immediately when needed
+Message-ID: <2024041531-caliber-overreach-2d4e@gregkh>
+References: <20240415152617552rmRLJBUV8aJ4lLJILh6-Z@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,79 +53,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEkJfYPYF-nNB2oiXfXwjPG0VVB2Bd8Q8kAq+74J=R+4HkngWw@mail.gmail.com>
+In-Reply-To: <20240415152617552rmRLJBUV8aJ4lLJILh6-Z@zte.com.cn>
 
-On Mon, Apr 15, 2024 at 11:40:31AM +0800, Sam Sun wrote:
-> In function bond_option_arp_ip_targets_set(), if newval->string is an
-> empty string, newval->string+1 will point to the byte after the
-> string, causing an out-of-bound read.
+On Mon, Apr 15, 2024 at 03:26:17PM +0800, li.hao40@zte.com.cn wrote:
+> From: Li Hao <li.hao40@zte.com.cn>
 > 
-> BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
-> Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
-> CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:364 [inline]
->  print_report+0xc1/0x5e0 mm/kasan/report.c:475
->  kasan_report+0xbe/0xf0 mm/kasan/report.c:588
->  strlen+0x7d/0xa0 lib/string.c:418
->  __fortify_strlen include/linux/fortify-string.h:210 [inline]
->  in4_pton+0xa3/0x3f0 net/core/utils.c:130
->  bond_option_arp_ip_targets_set+0xc2/0x910
-> drivers/net/bonding/bond_options.c:1201
->  __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
->  __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:792
->  bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
->  bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c:156
->  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
->  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
->  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
->  call_write_iter include/linux/fs.h:2020 [inline]
->  new_sync_write fs/read_write.c:491 [inline]
->  vfs_write+0x96a/0xd80 fs/read_write.c:584
->  ksys_write+0x122/0x250 fs/read_write.c:637
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> ---[ end trace ]---
+> Cancel the do_wakeup flag in hvc_struct, and change it to immediately
+> wake up tty when hp->n_outbuf is 0 in hvc_push().
 > 
-> Fix it by adding a check of string length before using it.
+> When we receive a key input character, the interrupt handling function
+> hvc_handle_interrupt() will be executed, and the echo thread
+> flush_to_ldisc() will be added to the queue.
 > 
-> Reported-by: Yue Sun <samsun1006219@gmail.com>
-
-Not sure if there is a need to add Reported-by yourself if you are the author.
-
-Also you need a Fixes tag if the patch target is net tree.
-
-> Signed-off-by: Yue Sun <samsun1006219@gmail.com>
-> ---
->  drivers/net/bonding/bond_options.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> If the user is currently using tcsetattr(), a hang may occur. tcsetattr()
+> enters kernel and waits for hp->n_outbuf to become 0 via
+> tty_wait_until_sent(). If the echo thread finishes executing before
+> reaching tty_wait_until_sent (for example, put_chars() takes too long),
+> it will cause while meeting the wakeup condition (hp->do_wakeup = 1),
+> tty_wait_until_sent() cannot be woken up (missed the tty_wakeup() of
+> this round's tty_poll). Unless the next key input character comes,
+> hvc_poll will be executed, and tty_wakeup() will be performed through
+> the do_wakeup flag.
 > 
-> diff --git a/drivers/net/bonding/bond_options.c
-> b/drivers/net/bonding/bond_options.c
-> index 4cdbc7e084f4..db8d99ca1de0 100644
-> --- a/drivers/net/bonding/bond_options.c
-> +++ b/drivers/net/bonding/bond_options.c
-> @@ -1214,7 +1214,8 @@ static int bond_option_arp_ip_targets_set(struct
-> bonding *bond,
->      __be32 target;
-> 
->      if (newval->string) {
-> -        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
-> +        if (!(strlen(newval->string)) ||
-> +            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NULL)) {
->              netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
->                     &target);
+> v1->v2:
+> Some fixes according to:
+> https://lore.kernel.org/all/75dff5cd-7b0e-4039-9157-8bf10cf7ba29@kernel.org/
+>     use tty_port_tty_wakeup() instead of tty_wakeup() to wake up tty
 
-Do we need to init target first if !(strlen(newval->string)) ?
+As per the documentation, the v1... stuff needs to go below the --- line
+so git will strip it away.
 
-Thanks
-Hangbin
->              return ret;
-> -- 
-> 2.34.1
+Please fix up and send a v3.
+
+thanks,
+
+greg k-h
 
