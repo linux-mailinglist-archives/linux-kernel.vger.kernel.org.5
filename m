@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-144848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 146208A4BBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:40:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E02988A4BBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5550285F74
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:40:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 787951F22EAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27244CB37;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F1F4CB23;
 	Mon, 15 Apr 2024 09:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JkO1gVdE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="flRFcoxI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4374436A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E40B42047;
 	Mon, 15 Apr 2024 09:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713174029; cv=none; b=rkBgidS8exx6FG20EVnbX/hxM+1AWtX77v9NoRoxBXwg/nb1iRi+FY7yjF2BfR+KtleHhYWsiaATYD6HUjJRvBW0Qe0mLK4JDVukeRH3u1Y2mi68epjswVkFNZEoL88V1/ZQJEBKFXQyoNIxn4xhLoXTC3tFu5HaG7Gy/TyMEaU=
+	t=1713174029; cv=none; b=g4ZvKz0bV+HRTF2+74QO6rQLTBbI8M6h4xbDxAw/JjaSjJLO5Syfqar5hWPNzMQcMuqCGAEwy3ndThUm8qIMhAgG2P+DOzoNDuQl60tQWRjfjaRVnr87gGib87plbYL4bEbDtwco5JcjGxYi0uVVxOkkTldOXDEAqabGG+uhLlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713174029; c=relaxed/simple;
-	bh=GG2kc0t91PzR/wlZyWCy6sMZqQDZhqAVjrWNR1GlAPc=;
+	bh=9Mnn6qyJVMs37l9u8VTN36rF0wfvTVLYBRGBvMamy+A=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gS98znlvyJh8KaLA43uqxDaygDtg2M0MhxUgYLAj5h8cYn3uBW27l9TjBJuQ29SYb64hhHH0SjH8tjl2QFjzie0/e/0iMGtA+JcAjdelDdf/s5KpYvx5O8Sr7MrYcfTKSdUZes/wPnDzMYVFHMVZLMXXvLENMZ8zO0CHnQA+FJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JkO1gVdE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 90A6EC32786;
+	 In-Reply-To:To:Cc; b=DygAySM4/dNKZCAKnriE3BfbsKUFD6CtYxr7hPHiJoZQBLZF/van/2sL5besem+pMgw0uNuUcyvpkag5KZjw/aBKtJAwORlq2TLmlgqzWCQ69lKuRFtgziJXfDUlRY5ArnAQQ8T1qnWjAItCS8RtkrE41X4U564sm22iQRXuZzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=flRFcoxI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A7798C4AF0A;
 	Mon, 15 Apr 2024 09:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1713174028;
-	bh=GG2kc0t91PzR/wlZyWCy6sMZqQDZhqAVjrWNR1GlAPc=;
+	bh=9Mnn6qyJVMs37l9u8VTN36rF0wfvTVLYBRGBvMamy+A=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=JkO1gVdEdG+n0JD0dsipDM8mF3O0fT9W/aaKJnFQj4gXpLZZXajKxVZFRrUatE61M
-	 Sa3gi4cFnpJRiQsfgpi7D30b/w7uaFLL5NbSWo74U7b5ITlYNDZ0YeP+2FSqdOucV1
-	 H8ePnoS3mA93x4cVMcp+I89Xl2F/zZyz9Z9rxe19SCg5St8f2MzorqEM/rPKfoXLhS
-	 QkuPN9WCvFttTFzx/G5pZ+4Pn45S0WrWuW5CsN/qAFLayG60xpbhbZOu+H936feyAz
-	 d+3AmMx7BtE6ZWQLicrSTyprkWVPQjxGvAOv85OCoXGCVDzV3K1TiaY/i57SDjhS8c
-	 j8q1RuWOaaCtg==
+	b=flRFcoxIV91g34Pq4akuS25YB5DW7Lb3U7zD+QF4lv9YQXp+EEpONqdbFvA1T6XEe
+	 QmuHQ3K8lBN12+9AatdPcO54w8A4uq+ggiXBh+lKNXKnRjZbw+d8QPbcLKc7B2jsLP
+	 XU1Y3pM/AEmvEPPIQPoCJcIz0bydGNvQ71+Ldqaup0j8BvnQkUFH2y/ZkC4i/f0O+v
+	 uA66jLSVSgMqMaO4rxBsrZBpuqr5O3KhVpmlwA/2v72m1tZBqGdFWFZKwivPwUa2wy
+	 jAmdc8JHiqCHYBPdnaGUsTKkKTUHCsNsgcc1+EYurajkDs3kWcEdgWS4cWWM8VUgXP
+	 /Can4b4sjP8Aw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7BD1EC54BB1;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 93B36C54BB3;
 	Mon, 15 Apr 2024 09:40:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,48 +51,37 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/4] flower: validate control flags
+Subject: Re: [PATCH net-next 12] gve: Correctly report software timestamping
+ capabilities
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171317402850.10544.12420137481628257630.git-patchwork-notify@kernel.org>
+ <171317402860.10544.14389784477150957793.git-patchwork-notify@kernel.org>
 Date: Mon, 15 Apr 2024 09:40:28 +0000
-References: <20240411105302.112091-1-ast@fiberby.net>
-In-Reply-To: <20240411105302.112091-1-ast@fiberby.net>
-To: =?utf-8?b?QXNiasO4cm4gU2xvdGggVMO4bm5lc2VuIDxhc3RAZmliZXJieS5uZXQ+?=@codeaurora.org
-Cc: netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
- louis.peens@corigine.com, yanguo.li@corigine.com, oss-drivers@corigine.com,
- taras.chornyi@plvision.eu, woojung.huh@microchip.com,
- UNGLinuxDriver@microchip.com, andrew@lunn.ch, f.fainelli@gmail.com,
- olteanv@gmail.com, ecree.xilinx@gmail.com, jhs@mojatatu.com,
- xiyou.wangcong@gmail.com, jiri@resnulli.us
+References: <20240412053245.3328123-1-jfraker@google.com>
+In-Reply-To: <20240412053245.3328123-1-jfraker@google.com>
+To: John Fraker <jfraker@google.com>
+Cc: netdev@vger.kernel.org, hramamurthy@google.com, shailend@google.com,
+ willemb@google.com, davem@davemloft.net, jeroendb@google.com,
+ kuba@kernel.org, junfeng.guo@intel.com, linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This patch was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Thu, 11 Apr 2024 10:52:53 +0000 you wrote:
-> I have reviewed the flower control flags code.
-> In all, but one (sfc), the flags field wasn't
-> checked properly for unsupported flags.
+On Thu, 11 Apr 2024 22:32:29 -0700 you wrote:
+> gve has supported software timestamp generation since its inception,
+> but has not advertised that support via ethtool. This patch correctly
+> advertises that support.
 > 
-> In this series I have only included a single example
-> user for each helper function. Once the helpers are in,
-> I will submit patches for all other drivers implementing
-> flower.
+> Signed-off-by: John Fraker <jfraker@google.com>
+> Reviewed-by: Harshitha Ramamurthy <hramamurthy@google.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v3,1/4] flow_offload: add control flag checking helpers
-    https://git.kernel.org/netdev/net-next/c/d11e63119432
-  - [net-next,v3,2/4] nfp: flower: fix check for unsupported control flags
-    https://git.kernel.org/netdev/net-next/c/e36245dacd2c
-  - [net-next,v3,3/4] net: prestera: flower: validate control flags
-    https://git.kernel.org/netdev/net-next/c/f8a5ea8c2a7f
-  - [net-next,v3,4/4] net: dsa: microchip: ksz9477: flower: validate control flags
-    https://git.kernel.org/netdev/net-next/c/d9a1249e715b
+  - [net-next,12] gve: Correctly report software timestamping capabilities
+    https://git.kernel.org/netdev/net-next/c/4ca78e61ec70
 
 You are awesome, thank you!
 -- 
