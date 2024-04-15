@@ -1,103 +1,74 @@
-Return-Path: <linux-kernel+bounces-144538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 112C58A478D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:22:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AE28A478C
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:22:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8623DB21F8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:22:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F88E1C2130A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF1B5221;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB656112;
 	Mon, 15 Apr 2024 05:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="KaFKkuYs"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Mk1QQI/a"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C5A1DFEA;
-	Mon, 15 Apr 2024 05:22:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E97D1EB3F;
+	Mon, 15 Apr 2024 05:22:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713158553; cv=none; b=ZPQ4A2We1/M8NNKvpqF6X23Mu/mjL/s2WCBdpziX5st6ZAJrEEzVGo+IEJQntfmByhE/ihVcn5eody03ogOhyI1f2X264Zxa8AQHkHdakK3L+1PNp2+PC/ELOOAksDrzJkHei4CgDcrJPnPoYSu/AQ1sYEKYpf2JZMoOLygYlps=
+	t=1713158554; cv=none; b=Gsyw5dVWungJTG9N76zu7XTac+OMVeMXp416UEUXQHR/cCuHeBnXUwPzY84ZrFeXopETwEk7NJSNOtODOIWMJQBowo+g4nK3DD/pZkJeQ9N/U815/Ibj4ZR4nmKsmV5xpkazKmslWc7xKpuTM8n+NZ7zNUfRVfHi33kmAkWA+wI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713158553; c=relaxed/simple;
-	bh=w1CD5sPVgT6NGtShw3akz+SpoAtihwISk9wLuMqIKbE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=MSAQDB8+pBWCU3GqZNrskhiv5cCRZ3Zk7eSuuzXSrWDl1j3xW+sJ65jxqihH7JYId2bJWuBcXAnJ1F/OTihGRh4n/JX/qx3WSnYJFp/NMdGW1SFAZEw5SfNXGUw0tm2Z60Vln3i6dQQ43nTFZm3Wq6LCTnyNFW1XPQk6gQ6y0pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=KaFKkuYs; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713158549;
-	bh=8mrQmlCDpVg87B4ElQ2n1Es5kn5Xhsvl3ggWqslLfk0=;
-	h=Date:From:To:Cc:Subject:From;
-	b=KaFKkuYsjmp1FVzMrAxyLQS4b54L4dfrtqCIBQ4glmlAINJDsLrtoPxHpbDvQtb4C
-	 OwlWCoGjHLwlwUmx/5I/qNngAvF344agD77bbZ4uEj3M1LRlIzqF7zM6F7CTPm/x6o
-	 w7toJcxIvrwrx37EM9r3FHZimEUST6jGcVR5TOJ+qUBaknhZNh2Qxdr3qsqUYPiDZp
-	 laktu1nvoy8hHup1Ko38n/6LVa2dsRsRh3PNDMzSqMz+ZCkE5lbxYj72xNLBT/c0IF
-	 3neArprE5xI/NfKh2TA7GImdfeZKKG7b7zsv0EVxf9vJH74/YhokWguizH7NszYEhK
-	 DV09EPf1z2wNg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VHwXh4nB5z4wcr;
-	Mon, 15 Apr 2024 15:22:28 +1000 (AEST)
-Date: Mon, 15 Apr 2024 15:22:27 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the char-misc tree
-Message-ID: <20240415152227.14c877a7@canb.auug.org.au>
+	s=arc-20240116; t=1713158554; c=relaxed/simple;
+	bh=PeGrG5LrpGE9sy+795bOMZBxA+0vVQWDOIsJTQsO370=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gINv2SjEBd6b9177OLx4iinh13EDPrdBlokBGjkCDycLvyoWLhtYfbl6E/nb0c6EQE3QT8BA8zNuLXW0yv6dmt3DmkK6fSLsBDwpcArdguzvFUOHJaDhF9B1BD3oKGgXciNMHy7I+W20KhPIVNbJtHLGgL2ZQjxKVebo7ivzty4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Mk1QQI/a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 314CBC113CC;
+	Mon, 15 Apr 2024 05:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1713158553;
+	bh=PeGrG5LrpGE9sy+795bOMZBxA+0vVQWDOIsJTQsO370=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Mk1QQI/aIZLeB+rprpwjIH3mIm4YAiY8Ze2FqlMtyPs7hy6zcG3KdzixlxEau9cfX
+	 Zehx+g9Uiunqba46VoMx+MrtH497ejIU6En2wy/F6YARU1CXcKOl47Y7tsJwJNjcOh
+	 DSVikfsQiqwd2b6RLIXbP1HJaUzXk7Yduf37BHTY=
+Date: Mon, 15 Apr 2024 07:22:28 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Alex Elder <elder@linaro.org>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: coding-style: don't encourage WARN*()
+Message-ID: <2024041510-tacky-childlike-fc6d@gregkh>
+References: <20240414170850.148122-1-elder@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/SW81YG_z7wKiyoYGzFqHvaL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240414170850.148122-1-elder@linaro.org>
 
---Sig_/SW81YG_z7wKiyoYGzFqHvaL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Apr 14, 2024 at 12:08:50PM -0500, Alex Elder wrote:
+> Several times recently Greg KH has admonished that variants of WARN()
+> should not be used, because when the panic_on_warn kernel option is set,
+> their use can lead to a panic. His reasoning was that the majority of
+> Linux instances (including Android and cloud systems) run with this option
+> enabled. And therefore a condition leading to a warning will frequently
+> cause an undesirable panic.
+> 
+> The "coding-style.rst" document says not to worry about this kernel
+> option.  Update it to provide a more nuanced explanation.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
 
-Hi all,
+Thanks for writing this up:
 
-After merging the char-misc tree, today's linux-next build (htmldocs)
-produced this warning:
-
-drivers/uio/uio.c:446: warning: expecting prototype for uio_interrupt(). Pr=
-ototype was for uio_interrupt_handler() instead
-
-Introduced by commit
-
-  f8a27dfa4b82 ("uio: use threaded interrupts")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/SW81YG_z7wKiyoYGzFqHvaL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYcuZMACgkQAVBC80lX
-0GxzJAgAkC6eoma7paz3GMBkYNQ4qupcbEWv04XelRbdBWgp8Alj51IT9pcjRujn
-k2uFnvz1o34O58zhfniCcdUJtI1fkQ9InpgZFNO85TEMVjFp7FRSkVEElARUowS8
-Ixx7LarB107EZ7V3mfT7f7TzC6bPnM4PS/c0p8mlU8p5BMH1z5cnwPWlMcWz4Nq2
-emtTg8tdgb8CgtK5vU9DdZvFsAvMS1OTB5X33jM+7v1vS/vlHhA/edEcQdt4oj6F
-/2OhVfEWZ71awFx5JmFjFHuLs7EijH1ut6Z4HfzN1zM8G7567I9IfQfTPI28Lyjj
-s1fzavXuYrfXPEMVYHNxneSbfN03gA==
-=OGIh
------END PGP SIGNATURE-----
-
---Sig_/SW81YG_z7wKiyoYGzFqHvaL--
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
