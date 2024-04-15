@@ -1,612 +1,212 @@
-Return-Path: <linux-kernel+bounces-145820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263AA8A5B57
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:48:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A688A5B5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D05CC288434
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:48:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00419B259A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1626B15688B;
-	Mon, 15 Apr 2024 19:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0831C158203;
+	Mon, 15 Apr 2024 19:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rfx3ucTG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lrh5KqxY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8F015624B;
-	Mon, 15 Apr 2024 19:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209799; cv=none; b=s8iZ6KjcezRkH/RJdWI41pHG6JfqdDvSX6CwsAKNql65zrAuqFuPrJLSWE65lBg5kR1BCHp1ysPTDbtnyZSQnvfDAOtg23ZVE1ZPgD5681Yxm8P56/3aFZvFeCdgr1lvRTJYFjlsrUAda67Fvd6whwiKjuRXlnsdEcWmpc/SEYk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209799; c=relaxed/simple;
-	bh=5C/llpeNEkzzHAtRPM9Y08mKmxzjzK3Sawz80BrLe4E=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=jXTCxZrWI8UZvOY7H4DYuvDEwaaMI/89r4HnNnL00e3qblD0R1uhsRpyZd4cP0+qkFVwqF4L37kyDMTp4j+HIiPP1jZJs5engELB2oOFFSQnH2RWmeHIEKmzD636GDbQzqs9ew9+63FRh+w3Ans1wuCts9+nBhWL2jXdEzN9C9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rfx3ucTG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EDF8C113CC;
-	Mon, 15 Apr 2024 19:36:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713209799;
-	bh=5C/llpeNEkzzHAtRPM9Y08mKmxzjzK3Sawz80BrLe4E=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=rfx3ucTGbCWOSce9lbxZ9QRZ/PUyl0PKpHQUPhL191FxZJQcwQnvDl8jmqqPMifOJ
-	 zFjXfr7ztjjQuEUWxxMdcsQi2+E4KYufKsVe2cZBivGxXS2U9PLJtmUPNix63r5Btr
-	 gA1OjhZT0xbAa7hZouQrXA67roJkovxfoLf8/o1xSGC31vkPAM4XzXOqRjy3G3rhS0
-	 xfew5F9r+w0bx9VeOxf8UvXJghKpaq1+yevQxZ8WG8efKotQDsS8OEjHg2UVCEYXdv
-	 zVt4b/GfnB2Ybw13GjGcZ4xrTUoBUUEkeSukeFjECZGuTydx/4UaUqF7UGTOhAXN5k
-	 qZ1QQjkrbqQoQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23246156659;
+	Mon, 15 Apr 2024 19:37:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713209878; cv=fail; b=dG8/nIrGMTBzgmTthrmB55nqd6LPVQPN5I+XXbeBrvrvE/Tu0Qa9xlAboALySNvZqK748DNg0CsnEJDH7MaGjxDCQ97+aKo4aVeRnVsL9xqFzxcV8JbPhvrmSnrgyTHyST7sppZnBz/xCZeFXqSznBykzArbujMKe1N/Bfk7xto=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713209878; c=relaxed/simple;
+	bh=iiZpkv45pfzCLCTR915wV7W4lNOs94pQyHFiNl/euoo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RkFcT58viN03U28QwXwqutpfvwPFF7JcuN2lReY6g62jyPMFU6n0xm1A/4dHEVdbAHmz7qEz/VJ/LCOUNTE7vNqrVyhH4Dwb4ULlrqBDhDSAg9U/mvSWnlO5zjYdf1/VGTZapd9yjSY9RWjcD4Ly8HHx7z8UQfXa2Ar+LNarIRE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lrh5KqxY; arc=fail smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713209877; x=1744745877;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=iiZpkv45pfzCLCTR915wV7W4lNOs94pQyHFiNl/euoo=;
+  b=lrh5KqxYH7cBVDNdJbImdelTOxBBFkn2oVQJe6IdvcelRntS8/GAyJSp
+   Z4PWVCEEUJ5dxU/QQQrnYhk7tpIp6HaLe8HfZuH7Mm7NIUj9toaQ3qtoL
+   fVpRCQ6QafIxSkdj0mzjgBUZwpdyjvQz54/2r++YT/9fW8q382tGzOA97
+   bck2q1gCEfMXHlUJKElOCAGy77doBbo33dLxTFrrqqJxQb8YLk0uboZGp
+   vBymVDQQUlHx3DbT2pp6Y4RjTeLyZ3+zFsw+rYY9ne5c0diDK5HqILrHo
+   wopeSHYlD4Fnn4k8qPd/rDj9W6ozRMMELKhBZjxXPHCN6OUP+OpuY0+nP
+   Q==;
+X-CSE-ConnectionGUID: Vng/gjrDTAK2JR8K1T4dig==
+X-CSE-MsgGUID: xnrcXKBiQJyYf6/t3U979g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="11564063"
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="11564063"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 12:37:56 -0700
+X-CSE-ConnectionGUID: 9eUWG+epRiK3vkyhu4b84g==
+X-CSE-MsgGUID: 39Wt7wHwRpebf2wHnb3CDA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="22090638"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 12:37:56 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 15 Apr 2024 12:37:55 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 15 Apr 2024 12:37:55 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 12:37:55 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 12:37:55 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c8U1m9n7dyIBEHqslPjGbVxw2U1s22ZilzllpOJHY6mLzKXVMc9NEB5Q3/81KaudEcTNcPB43AD2dKRNAD42+9jnKKNiGtMGejcxTw+VDoJKG/kn6Dq5Z4MyWyvA2B8he3fCfmTwB8osCY8VpUZGBx7gE0leUSMGy1GrHhipzGsrlt6mAUyrA9uz1FcZR2OZHmwlw0LgAPwjlAIbBMbGb609/KJqmxC3zPVsK14AoAie2W1eXO9hEMUJM6AX2Hp2ze+Ics8sR3ZH26jagq+UcjKSGEerH9PirtfKUfm0MDMopWMBTZGrntFhOyFbGtuLuDfjSJlGbAdP6drirKd1xA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iiZpkv45pfzCLCTR915wV7W4lNOs94pQyHFiNl/euoo=;
+ b=FBbG1HS8EisziRwYGm3NDBGoh552ZK9p/ELl/q93OE40h+djsCQlcsqiHV9/2n/wG9iBzedP06fJ4YrygAQVK95oz9K5dS4ub/liTvolMHsOsyJBiwfr9qwNJ+v46x0mLEI1XLLmVD7xqGkfu9kKEjNSgaksTS4MEER8P+rWvwUH4QCFpyiGvHzU+itDe8dsYPE0mWk5g7jY/UpixPGoB+MDYmgAbYLR6peG8TnZ/nE+bqAFoH/VwBzde+iGOddhZoevRK58KsydMkyRfEDR05K77/cOX35moGmYhg1ZujTwx/hsBSWqjlzF7of9xFfGTYdzlhTuou/LOXjVbk3qTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by SJ0PR11MB6695.namprd11.prod.outlook.com (2603:10b6:a03:44e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Mon, 15 Apr
+ 2024 19:37:52 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::1761:33ae:729c:a795]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::1761:33ae:729c:a795%5]) with mapi id 15.20.7472.027; Mon, 15 Apr 2024
+ 19:37:52 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "Yamahata, Isaku"
+	<isaku.yamahata@intel.com>
+CC: "seanjc@google.com" <seanjc@google.com>, "Huang, Kai"
+	<kai.huang@intel.com>, "federico.parola@polito.it"
+	<federico.parola@polito.it>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "isaku.yamahata@gmail.com"
+	<isaku.yamahata@gmail.com>, "dmatlack@google.com" <dmatlack@google.com>,
+	"michael.roth@amd.com" <michael.roth@amd.com>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>
+Subject: Re: [PATCH v2 07/10] KVM: x86: Always populate L1 GPA for
+ KVM_MAP_MEMORY
+Thread-Topic: [PATCH v2 07/10] KVM: x86: Always populate L1 GPA for
+ KVM_MAP_MEMORY
+Thread-Index: AQHaj2xn+VEgNlPf0Eipl86WfDYsqA==
+Date: Mon, 15 Apr 2024 19:37:52 +0000
+Message-ID: <245f8011e1f8cccb16a25f080d9521376172f909.camel@intel.com>
+References: <cover.1712785629.git.isaku.yamahata@intel.com>
+	 <2f1de1b7b6512280fae4ac05e77ced80a585971b.1712785629.git.isaku.yamahata@intel.com>
+In-Reply-To: <2f1de1b7b6512280fae4ac05e77ced80a585971b.1712785629.git.isaku.yamahata@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|SJ0PR11MB6695:EE_
+x-ms-office365-filtering-correlation-id: e6d27ecb-a3cd-4d4c-15e7-08dc5d838a56
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5nfUJs9rFsk75eTr7Jnmh6/4N9PC9I79/KWnFmiiMH3gU044+R7xUl43syGh0VeX6x9jR3ITP7N20sFfBqQ6jJ2NbXFLn1M0mJv9zb/YP2RiyG23Fyj4bFVaWkYuYiKIVJcdLxUhkQBZ9R5AtIoE0asjUBF2cToOrxBOccy7lVfaKoPKrbyxgQiT2ltKcXINZehJUuOTzO6r1CwoU726ag2IJ2BCM0/GoBqjcfpbViR15JyD0suWRBD8DZZxApH8+REXQxW9gDsAJoT7Ae2x6b3OlBYCi4V4aUbieg37xN1nYjrXFIRYTOnwXdM72lMTbjJFEjoxwEbsRkOYZwn6mG8lmekGXI+ZrLH9j6xChmWgYu7k9NHZp+hqqifYyTpfk63PeEnaBEZ56Nnl7TQvvlbpHT39ZdGrGiBgeIXf7US5YJ2mE1g3Edva09GJc0EUtCX/kz7XWm26IaPtQ+KniNmJYTVcqlm0n/5Db61hHr1c1jpgX30uqhreYgxBeCKND+gobBeTXDqVOQEW9BTeq9JuV2wAocCW+j1hheE/pIG7Z5Cq7uRSPsjmxOYm+1IPmHOVxE8s7Vvxk6Os2MjJQkGWaSPCObE64pXEsYVGX8H6Wphtxkd8bSZJeKbRYYNWBRi/IbRyPxAwPDW+pi4GvcO5wtxn2eDaSBD9Z5t1jIlbixhykWwRO1X5u8KRMisMV80jL5HQ6F8lmm4iDgxpIExM2x6Q6xT18P2d0MJckQg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bkR5cE9GOXdoQm5WWjJzMngyQ1dOZlhtOTRQNFY2TEFwVTNnV2VYZG9sMG9r?=
+ =?utf-8?B?cTV3Y0loSU1sb2dBd2ZUTjUzckdOT3FMa0hhSGRvOWxnQ1JKbWhsbUx5TUEr?=
+ =?utf-8?B?MnVnNWt3MGtwbzBha3UwekFUVnc1S2FNdEJQQXIxZytMU3FJaGxHRnRLemIy?=
+ =?utf-8?B?c2VOT2RBUjRIM0JBSDVFemhSTWpSRldCK1ZTaEJlRisrZnE5bE5TM1ZuWGgy?=
+ =?utf-8?B?SFRiYVczcGdveUZXS0xhdDI0ZXVhc0Z6YVJkaUdVYTBlckxaTHNpRU5lWVBO?=
+ =?utf-8?B?K0VkeHBGeWNMcTlRWE1INFRPU25sLzI4TjZuUGNTK0VOdEt0S1RSNDZ2SFAx?=
+ =?utf-8?B?U0NOQ3JyVzBFYSt2dEFTRWhuNWFZb0lwckNQVWVxVXNuN2U3QTBDWXFaVGRD?=
+ =?utf-8?B?TTU2Tzh1WVRSWjhHZzc5bkJLQXJwaHNvOHluUmJsY3BJaEtDOXBHL1BHZ2o0?=
+ =?utf-8?B?K1RTdENNb25hMUVqYytZUkRaTVY5cmltdElkM0sxajJQdGI1cEtuUm9jTWM5?=
+ =?utf-8?B?NG95OThJUktaTFM4YmJhRVd5OUU5YUMvaytlUjdJbjN6NFJUdzBQWXU0ZHpW?=
+ =?utf-8?B?Ry8zdktIblUySDhqS09nemR4SW1OcnJBTWVLczcrQnFNUzR4YjBWZUNZcGp3?=
+ =?utf-8?B?Q0NZOXlUQlJKWThXUmVOMHE1QU82cnA3Qzc2SWNJWXhiTDdhNVRTUDhoLzlL?=
+ =?utf-8?B?aTRnSW9IZS92emtaUmxwSWtyclNackdlaHBQWnN2LzZKcUdRZFphMG9xd0ZO?=
+ =?utf-8?B?akszUjRqUTBZR3pvRnhXcjNyYitvd2dkRDVmcnBPeTNOVXZtdmZmNllXVVI5?=
+ =?utf-8?B?OVdXUTZlZUZvMGpmUjVUT3p5T3Z4c2FmUG5tQjZJdHZ0LzlvNHZSMklpSUdX?=
+ =?utf-8?B?VytPK1JJNDFNeW5tdUtnRm55ZDM0RzBGVlhQcFFRaGVXODVodVBtUXZsUUdz?=
+ =?utf-8?B?bHhrVTNVdzluTHVwTEJMWjlld1NmZHZucTRsR043ckRQSlVSWU42bEZveDBm?=
+ =?utf-8?B?RzBIcVFLWlk0clVUbEJ2WHlBLzc5RVZpbGNkQUJQVEwxcGpta0RoZ0JsTTh5?=
+ =?utf-8?B?UGh6ZitHbDRJSHBHZFhkdGdGZ09Yb2lwWFRVNlpYdE9GaStiQjlQczlib1hs?=
+ =?utf-8?B?eS9lMFpXVGZwZGNqbFdDUUhXaFluOVY5SGp6OW9PMDlpNVl5MnV0RnVLdDhl?=
+ =?utf-8?B?QnUvWW1EWjRTREdFVGhnd3p4UTFySU83b3dabG5jVzdycHVrWjd1bEROYUpk?=
+ =?utf-8?B?M2RKaGxYMlZaSWQ5dWRIWVM0emQwZzZybXM5MURJNVY2SEpNRTJjUkpXYzlL?=
+ =?utf-8?B?MkMrT2FwaW15cUFUU08yMk5kajJvaHkrMCtIU1FSblBkM2ExanQxdGZsQmt2?=
+ =?utf-8?B?T0pyZHpHUGtZTnZ3dGdwVkdDNXdwekM2VjZza0gwUXFyRnh4SEszbWlENzBT?=
+ =?utf-8?B?dXV1S3Y0cXpod09SMWJsM2NxT1BERVFsbG9YVzY1aFFxcUlYUEZUUEw4Mm12?=
+ =?utf-8?B?a2tuczZZVzVuQTRvQzduVyt5N1cvTHJlMktHOG5ZdUJrWXVSR0dkQXFQRE1q?=
+ =?utf-8?B?RUpnaDhlbk1LdEJiV0pMZGpNMjJZMVdqV3l2aVJKSUtNV0c0YmVBRS9iUDNj?=
+ =?utf-8?B?Mll1SkJUZ2J1VzBZNmpxUHpKMkxlNzVtUXhsTFZxOGxHNG9UZW93WVFoejVv?=
+ =?utf-8?B?b0gvSkpucXQ2cnNTRUc0akt2c2Mxd0F1cWRuMVcwdXZjZUVHKytDeDg3a1lh?=
+ =?utf-8?B?UDd0djFyVkJHcldaT3NxT0pNQ1ZDdWpiaGFXR2JGTm94VnFMTUt4Tkl5RDFL?=
+ =?utf-8?B?UW9HbG05SStwM0p6ZW4yNjNKZVRobXVINGNEVFNrMHZhZEl3akI5dEttay9M?=
+ =?utf-8?B?N2dnckFpUmdQTExHZlFleVpnVkNsY1k3cTVhTE9GbzNxRlJRbmpSSHZMNDZQ?=
+ =?utf-8?B?OWhQSDdac0R3Slo5cnJTdjFkL21zSHhrOFVna0lWOXJicUc0dGtEQnFPbGk0?=
+ =?utf-8?B?bmowVDVQaGdSMFh0bDJ6QW91TUgwanAraHJKSndJc0htd0dWcGJGZUxSdmZG?=
+ =?utf-8?B?VkJGYkE1M3g0R1ZaTUZZVTY0NDJkZi9PZmdCbFdJRlpzZlE0Q3VqaUVlRm8w?=
+ =?utf-8?B?NmRHNExyblBDNU5hNDc5TG9xSzNSNHRvaExCQjRlMEVBSEpTb3o5dVJ3Mysr?=
+ =?utf-8?B?MlE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E68CC965BD03224FAF7008787ACA9562@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 15 Apr 2024 22:36:30 +0300
-Message-Id: <D0KY6ORXBNXP.1EVHFHMS89OK6@kernel.org>
-Cc: <linux-security-module@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
- <bpf@vger.kernel.org>, <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
- <linux-integrity@vger.kernel.org>, <wufan@linux.microsoft.com>,
- <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
- <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
- <dhowells@redhat.com>, <jikos@kernel.org>, <mkoutny@suse.com>,
- <ppavlu@suse.com>, <petr.vorel@gmail.com>, <mzerqung@0pointer.de>,
- <kgold@linux.ibm.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v4 04/14] digest_cache: Add hash tables and operations
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
- <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>,
- <akpm@linux-foundation.org>, <shuah@kernel.org>,
- <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
- <mic@digikod.net>
-X-Mailer: aerc 0.17.0
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
- <20240415142436.2545003-5-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20240415142436.2545003-5-roberto.sassu@huaweicloud.com>
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e6d27ecb-a3cd-4d4c-15e7-08dc5d838a56
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 19:37:52.2113
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wLY39UEUgYZrty5oY7xA/fMcDZC1z5TxW0SpGlzTET9ZqXdmRe29Hv+HHPQvwc8FmdgD96T9MZIsbs+anOaZFhUzbFg6w95CBndvM/dMNJ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB6695
+X-OriginatorOrg: intel.com
 
-On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Add a linked list of hash tables to the digest cache, one per algorithm,
-> containing the digests extracted from digest lists.
->
-> The number of hash table slots is determined by dividing the number of
-> digests to add to the average depth of the collision list defined with
-> CONFIG_DIGEST_CACHE_HTABLE_DEPTH (currently set to 30). It can be changed
-> in the kernel configuration.
->
-> Add digest_cache_htable_init() and digest_cache_htable_add(), to be calle=
-d
-> by digest list parsers, in order to allocate the hash tables and to add
-> extracted digests.
->
-> Add digest_cache_htable_free(), to let the digest_cache LSM free the hash
-> tables at the time a digest cache is freed.
->
-> Add digest_cache_htable_lookup() to search a digest in the hash table of =
-a
-> digest cache for a given algorithm.
->
-> Add digest_cache_lookup() to the public API, to let users of the
-> digest_cache LSM search a digest in a digest cache and, in a subsequent
-> patch, to search it in the digest caches for each directory entry.
->
-> Return the digest cache containing the digest, as a different type,
-> digest_cache_found_t to avoid it being accidentally put. Also, introduce
-> digest_cache_from_found_t() to explicitly convert it back to a digest cac=
-he
-> for further use (e.g. retrieving verification data, introduced later).
->
-> Finally, add digest_cache_hash_key() to compute the hash table key from t=
-he
-> first two bytes of the digest (modulo the number of slots).
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  include/linux/digest_cache.h     |  34 +++++
->  security/digest_cache/Kconfig    |  11 ++
->  security/digest_cache/Makefile   |   2 +-
->  security/digest_cache/htable.c   | 250 +++++++++++++++++++++++++++++++
->  security/digest_cache/internal.h |  43 ++++++
->  security/digest_cache/main.c     |   3 +
->  6 files changed, 342 insertions(+), 1 deletion(-)
->  create mode 100644 security/digest_cache/htable.c
->
-> diff --git a/include/linux/digest_cache.h b/include/linux/digest_cache.h
-> index e79f94a60b0f..4872700ac205 100644
-> --- a/include/linux/digest_cache.h
-> +++ b/include/linux/digest_cache.h
-> @@ -11,12 +11,39 @@
->  #define _LINUX_DIGEST_CACHE_H
-> =20
->  #include <linux/fs.h>
-> +#include <crypto/hash_info.h>
-> =20
->  struct digest_cache;
-> =20
-> +/**
-> + * typedef digest_cache_found_t - Digest cache reference as numeric valu=
-e
-> + *
-> + * This new type represents a digest cache reference that should not be =
-put.
-> + */
-> +typedef unsigned long digest_cache_found_t;
-> +
-> +/**
-> + * digest_cache_from_found_t - Convert digest_cache_found_t to digest ca=
-che ptr
-> + * @found: digest_cache_found_t value
-> + *
-> + * Convert the digest_cache_found_t returned by digest_cache_lookup() to=
- a
-> + * digest cache pointer, so that it can be passed to the other functions=
- of the
-> + * API.
-> + *
-> + * Return: Digest cache pointer.
-> + */
-> +static inline struct digest_cache *
-> +digest_cache_from_found_t(digest_cache_found_t found)
-> +{
-> +	return (struct digest_cache *)found;
-> +}
-> +
->  #ifdef CONFIG_SECURITY_DIGEST_CACHE
->  struct digest_cache *digest_cache_get(struct dentry *dentry);
->  void digest_cache_put(struct digest_cache *digest_cache);
-> +digest_cache_found_t digest_cache_lookup(struct dentry *dentry,
-> +					 struct digest_cache *digest_cache,
-> +					 u8 *digest, enum hash_algo algo);
-> =20
->  #else
->  static inline struct digest_cache *digest_cache_get(struct dentry *dentr=
-y)
-> @@ -28,5 +55,12 @@ static inline void digest_cache_put(struct digest_cach=
-e *digest_cache)
->  {
->  }
-> =20
-> +static inline digest_cache_found_t
-> +digest_cache_lookup(struct dentry *dentry, struct digest_cache *digest_c=
-ache,
-> +		    u8 *digest, enum hash_algo algo)
-> +{
-> +	return 0UL;
-> +}
-> +
->  #endif /* CONFIG_SECURITY_DIGEST_CACHE */
->  #endif /* _LINUX_DIGEST_CACHE_H */
-> diff --git a/security/digest_cache/Kconfig b/security/digest_cache/Kconfi=
-g
-> index dfabe5d6e3ca..71017954e5c5 100644
-> --- a/security/digest_cache/Kconfig
-> +++ b/security/digest_cache/Kconfig
-> @@ -18,3 +18,14 @@ config DIGEST_LIST_DEFAULT_PATH
->  	  It can be changed at run-time, by writing the new path to the
->  	  securityfs interface. Digest caches created with the old path are
->  	  not affected by the change.
-> +
-> +config DIGEST_CACHE_HTABLE_DEPTH
-> +	int
-> +	default 30
-> +	help
-> +	  Desired average depth of the collision list in the digest cache
-> +	  hash tables.
-> +
-> +	  A smaller number will increase the amount of hash table slots, and
-> +	  make the search faster. A bigger number will decrease the number of
-> +	  hash table slots, but make the search slower.
-> diff --git a/security/digest_cache/Makefile b/security/digest_cache/Makef=
-ile
-> index 1330655e33b1..7e00c53d8f55 100644
-> --- a/security/digest_cache/Makefile
-> +++ b/security/digest_cache/Makefile
-> @@ -4,4 +4,4 @@
-> =20
->  obj-$(CONFIG_SECURITY_DIGEST_CACHE) +=3D digest_cache.o
-> =20
-> -digest_cache-y :=3D main.o secfs.o
-> +digest_cache-y :=3D main.o secfs.o htable.o
-> diff --git a/security/digest_cache/htable.c b/security/digest_cache/htabl=
-e.c
-> new file mode 100644
-> index 000000000000..d2d5d8f5e5b1
-> --- /dev/null
-> +++ b/security/digest_cache/htable.c
-> @@ -0,0 +1,250 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
-> + *
-> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> + *
-> + * Implement hash table operations for the digest cache.
-> + */
-> +
-> +#define pr_fmt(fmt) "DIGEST CACHE: "fmt
-
-For easier grepping from kernel tree i'd suggest to name this accordingly i=
-e.
-just "digest_cache".
-
-> +#include "internal.h"
-> +
-> +/**
-> + * digest_cache_hash_key - Compute hash key
-> + * @digest: Digest cache
-> + * @num_slots: Number of slots in the hash table
-> + *
-> + * This function computes a hash key based on the first two bytes of the
-> + * digest and the number of slots of the hash table.
-> + *
-> + * Return: Hash key.
-> + */
-> +static inline unsigned int digest_cache_hash_key(u8 *digest,
-> +						 unsigned int num_slots)
-> +{
-> +	/* Same as ima_hash_key() but parametrized. */
-> +	return (digest[0] | digest[1] << 8) % num_slots;
-> +}
-> +
-> +/**
-> + * lookup_htable - Lookup a hash table
-> + * @digest_cache: Digest cache
-> + * @algo: Algorithm of the desired hash table
-> + *
-> + * This function searches the hash table for a given algorithm in the di=
-gest
-> + * cache.
-> + *
-> + * Return: A hash table if found, NULL otherwise.
-> + */
-> +static struct htable *lookup_htable(struct digest_cache *digest_cache,
-> +				    enum hash_algo algo)
-> +{
-> +	struct htable *h;
-> +
-> +	list_for_each_entry(h, &digest_cache->htables, next)
-> +		if (h->algo =3D=3D algo)
-> +			return h;
-> +
-> +	return NULL;
-> +}
-> +
-> +/**
-> + * digest_cache_htable_init - Allocate and initialize the hash table
-> + * @digest_cache: Digest cache
-> + * @num_digests: Number of digests to add to the digest cache
-> + * @algo: Algorithm of the digests
-> + *
-> + * This function allocates and initializes the hash table for a given al=
-gorithm.
-> + * The number of slots depends on the number of digests to add to the di=
-gest
-> + * cache, and the constant CONFIG_DIGEST_CACHE_HTABLE_DEPTH stating the =
-desired
-> + * average depth of the collision list.
-> + *
-> + * Return: Zero on success, a POSIX error code otherwise.
-> + */
-> +int digest_cache_htable_init(struct digest_cache *digest_cache, u64 num_=
-digests,
-> +			     enum hash_algo algo)
-> +{
-> +	struct htable *h;
-> +	int i;
-> +
-> +	h =3D lookup_htable(digest_cache, algo);
-> +	if (h)
-> +		return 0;
-> +
-> +	h =3D kmalloc(sizeof(*h), GFP_KERNEL);
-> +	if (!h)
-> +		return -ENOMEM;
-> +
-> +	h->num_slots =3D DIV_ROUND_UP(num_digests,
-> +				    CONFIG_DIGEST_CACHE_HTABLE_DEPTH);
-> +	h->slots =3D kmalloc_array(h->num_slots, sizeof(*h->slots), GFP_KERNEL)=
-;
-> +	if (!h->slots) {
-> +		kfree(h);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	for (i =3D 0; i < h->num_slots; i++)
-> +		INIT_HLIST_HEAD(&h->slots[i]);
-> +
-> +	h->num_digests =3D 0;
-> +	h->algo =3D algo;
-> +
-> +	list_add_tail(&h->next, &digest_cache->htables);
-> +
-> +	pr_debug("Initialized hash table for digest list %s, digests: %llu, slo=
-ts: %u, algo: %s\n",
-> +		 digest_cache->path_str, num_digests, h->num_slots,
-> +		 hash_algo_name[algo]);
-> +	return 0;
-> +}
-> +
-> +/**
-> + * digest_cache_htable_add - Add a new digest to the digest cache
-> + * @digest_cache: Digest cache
-> + * @digest: Digest to add
-> + * @algo: Algorithm of digest
-> + *
-> + * This function, invoked by a digest list parser, adds a digest extract=
-ed
-> + * from a digest list to the digest cache.
-> + *
-> + * Return: Zero on success, a POSIX error code otherwise.
-> + */
-> +int digest_cache_htable_add(struct digest_cache *digest_cache, u8 *diges=
-t,
-> +			    enum hash_algo algo)
-> +{
-> +	struct htable *h;
-> +	struct digest_cache_entry *entry;
-> +	unsigned int key;
-> +	int digest_len;
-> +
-> +	h =3D lookup_htable(digest_cache, algo);
-> +	if (!h) {
-> +		pr_debug("No hash table for algorithm %s was found in digest cache %s,=
- initialize one\n",
-> +			 hash_algo_name[algo], digest_cache->path_str);
-> +		return -ENOENT;
-> +	}
-> +
-> +	digest_len =3D hash_digest_size[algo];
-> +
-> +	entry =3D kmalloc(sizeof(*entry) + digest_len, GFP_KERNEL);
-> +	if (!entry)
-> +		return -ENOMEM;
-> +
-> +	memcpy(entry->digest, digest, digest_len);
-> +
-> +	key =3D digest_cache_hash_key(digest, h->num_slots);
-> +	hlist_add_head(&entry->hnext, &h->slots[key]);
-> +	h->num_digests++;
-> +	pr_debug("Added digest %s:%*phN to digest cache %s, num of %s digests: =
-%llu\n",
-> +		 hash_algo_name[algo], digest_len, digest,
-> +		 digest_cache->path_str, hash_algo_name[algo], h->num_digests);
-> +	return 0;
-> +}
-> +
-> +/**
-> + * digest_cache_htable_lookup - Search a digest in the digest cache
-> + * @dentry: Dentry of the file whose digest is looked up
-> + * @digest_cache: Digest cache
-> + * @digest: Digest to search
-> + * @algo: Algorithm of the digest to search
-> + *
-> + * This function searches the passed digest and algorithm in the passed =
-digest
-> + * cache.
-> + *
-> + * Return: Zero if the digest is found, -ENOENT if not.
-> + */
-> +int digest_cache_htable_lookup(struct dentry *dentry,
-> +			       struct digest_cache *digest_cache, u8 *digest,
-> +			       enum hash_algo algo)
-> +{
-> +	struct digest_cache_entry *entry;
-> +	struct htable *h;
-> +	unsigned int key;
-> +	int digest_len;
-> +	int search_depth =3D 0;
-> +
-> +	h =3D lookup_htable(digest_cache, algo);
-> +	if (!h)
-> +		return -ENOENT;
-> +
-> +	digest_len =3D hash_digest_size[algo];
-> +	key =3D digest_cache_hash_key(digest, h->num_slots);
-> +
-> +	hlist_for_each_entry(entry, &h->slots[key], hnext) {
-> +		if (!memcmp(entry->digest, digest, digest_len)) {
-> +			pr_debug("Cache hit at depth %d for file %s, digest %s:%*phN in diges=
-t cache %s\n",
-> +				 search_depth, dentry->d_name.name,
-> +				 hash_algo_name[algo], digest_len, digest,
-> +				 digest_cache->path_str);
-> +
-> +			return 0;
-> +		}
-> +
-> +		search_depth++;
-> +	}
-> +
-> +	pr_debug("Cache miss for file %s, digest %s:%*phN in digest cache %s\n"=
-,
-> +		 dentry->d_name.name, hash_algo_name[algo], digest_len, digest,
-> +		 digest_cache->path_str);
-> +	return -ENOENT;
-> +}
-> +
-> +/**
-> + * digest_cache_lookup - Search a digest in the digest cache
-> + * @dentry: Dentry of the file whose digest is looked up
-> + * @digest_cache: Digest cache
-> + * @digest: Digest to search
-> + * @algo: Algorithm of the digest to search
-> + *
-> + * This function calls digest_cache_htable_lookup() to search a digest i=
-n the
-> + * passed digest cache, obtained with digest_cache_get().
-> + *
-> + * It returns the digest cache reference as the digest_cache_found_t typ=
-e, to
-> + * avoid that the digest cache is accidentally put. The digest_cache_fou=
-nd_t
-> + * type can be converted back to a digest cache pointer, by
-> + * calling digest_cache_from_found_t().
-> + *
-> + * Return: A positive digest_cache_found_t if the digest is found, zero =
-if not.
-> + */
-> +digest_cache_found_t digest_cache_lookup(struct dentry *dentry,
-> +					 struct digest_cache *digest_cache,
-> +					 u8 *digest, enum hash_algo algo)
-> +{
-> +	int ret;
-> +
-> +	ret =3D digest_cache_htable_lookup(dentry, digest_cache, digest, algo);
-> +	return (!ret) ? (digest_cache_found_t)digest_cache : 0UL;
-> +}
-> +EXPORT_SYMBOL_GPL(digest_cache_lookup);
-> +
-> +/**
-> + * digest_cache_htable_free - Free the hash tables
-> + * @digest_cache: Digest cache
-> + *
-> + * This function removes all digests from all hash tables in the digest =
-cache,
-> + * and frees the memory.
-> + */
-> +void digest_cache_htable_free(struct digest_cache *digest_cache)
-> +{
-> +	struct htable *h, *h_tmp;
-> +	struct digest_cache_entry *p;
-> +	struct hlist_node *q;
-> +	int i;
-> +
-> +	list_for_each_entry_safe(h, h_tmp, &digest_cache->htables, next) {
-> +		for (i =3D 0; i < h->num_slots; i++) {
-> +			hlist_for_each_entry_safe(p, q, &h->slots[i], hnext) {
-> +				hlist_del(&p->hnext);
-> +				pr_debug("Removed digest %s:%*phN from digest cache %s\n",
-> +					 hash_algo_name[h->algo],
-> +					 hash_digest_size[h->algo], p->digest,
-> +					 digest_cache->path_str);
-> +				kfree(p);
-> +			}
-> +		}
-> +
-> +		list_del(&h->next);
-> +		kfree(h->slots);
-> +		kfree(h);
-> +	}
-> +}
-> diff --git a/security/digest_cache/internal.h b/security/digest_cache/int=
-ernal.h
-> index bbf5eefe5c82..f6ffeaa25288 100644
-> --- a/security/digest_cache/internal.h
-> +++ b/security/digest_cache/internal.h
-> @@ -16,8 +16,40 @@
->  /* Digest cache bits in flags. */
->  #define INIT_IN_PROGRESS	0	/* Digest cache being initialized. */
-> =20
-> +/**
-> + * struct digest_cache_entry - Entry of a digest cache hash table
-> + * @hnext: Pointer to the next element in the collision list
-> + * @digest: Stored digest
-> + *
-> + * This structure represents an entry of a digest cache hash table, stor=
-ing a
-> + * digest.
-> + */
-> +struct digest_cache_entry {
-> +	struct hlist_node hnext;
-> +	u8 digest[];
-> +} __packed;
-
-Please correct me if I'm wrong but I don't think __packed has any use
-here as the definition of hlist_node is:
-
-
-struct hlist_node {
-	struct hlist_node *next, **pprev;
-};
-
-It is naturally aligned to begin with.
-
-
-> +
-> +/**
-> + * struct htable - Hash table
-> + * @next: Next hash table in the linked list
-> + * @slots: Hash table slots
-> + * @num_slots: Number of slots
-> + * @num_digests: Number of digests stored in the hash table
-> + * @algo: Algorithm of the digests
-> + *
-> + * This structure is a hash table storing digests of file data or metada=
-ta.
-> + */
-> +struct htable {
-> +	struct list_head next;
-> +	struct hlist_head *slots;
-> +	unsigned int num_slots;
-> +	u64 num_digests;
-> +	enum hash_algo algo;
-> +};
-> +
->  /**
->   * struct digest_cache - Digest cache
-> + * @htables: Hash tables (one per algorithm)
->   * @ref_count: Number of references to the digest cache
->   * @path_str: Path of the digest list the digest cache was created from
->   * @flags: Control flags
-> @@ -25,6 +57,7 @@
->   * This structure represents a cache of digests extracted from a digest =
-list.
->   */
->  struct digest_cache {
-> +	struct list_head htables;
->  	atomic_t ref_count;
->  	char *path_str;
->  	unsigned long flags;
-> @@ -84,4 +117,14 @@ struct digest_cache *digest_cache_create(struct dentr=
-y *dentry,
->  					 struct path *digest_list_path,
->  					 char *path_str, char *filename);
-> =20
-> +/* htable.c */
-> +int digest_cache_htable_init(struct digest_cache *digest_cache, u64 num_=
-digests,
-> +			     enum hash_algo algo);
-> +int digest_cache_htable_add(struct digest_cache *digest_cache, u8 *diges=
-t,
-> +			    enum hash_algo algo);
-> +int digest_cache_htable_lookup(struct dentry *dentry,
-> +			       struct digest_cache *digest_cache, u8 *digest,
-> +			       enum hash_algo algo);
-> +void digest_cache_htable_free(struct digest_cache *digest_cache);
-> +
->  #endif /* _DIGEST_CACHE_INTERNAL_H */
-> diff --git a/security/digest_cache/main.c b/security/digest_cache/main.c
-> index 661c8d106791..0b201af6432c 100644
-> --- a/security/digest_cache/main.c
-> +++ b/security/digest_cache/main.c
-> @@ -48,6 +48,7 @@ static struct digest_cache *digest_cache_alloc_init(cha=
-r *path_str,
-> =20
->  	atomic_set(&digest_cache->ref_count, 1);
->  	digest_cache->flags =3D 0UL;
-> +	INIT_LIST_HEAD(&digest_cache->htables);
-> =20
->  	pr_debug("New digest cache %s (ref count: %d)\n",
->  		 digest_cache->path_str, atomic_read(&digest_cache->ref_count));
-> @@ -63,6 +64,8 @@ static struct digest_cache *digest_cache_alloc_init(cha=
-r *path_str,
->   */
->  static void digest_cache_free(struct digest_cache *digest_cache)
->  {
-> +	digest_cache_htable_free(digest_cache);
-> +
->  	pr_debug("Freed digest cache %s\n", digest_cache->path_str);
->  	kfree(digest_cache->path_str);
->  	kmem_cache_free(digest_cache_cache, digest_cache);
-
-
-BR, Jarkko
+T24gV2VkLCAyMDI0LTA0LTEwIGF0IDE1OjA3IC0wNzAwLCBpc2FrdS55YW1haGF0YUBpbnRlbC5j
+b20gd3JvdGU6Cj4gQEAgLTU4ODIsMTggKzU4ODQsNDAgQEAgaW50IGt2bV9hcmNoX3ZjcHVfbWFw
+X21lbW9yeShzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUsCj4gwqDCoMKgwqDCoMKgwqDCoGlmICghdGRw
+X2VuYWJsZWQpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVPUE5P
+VFNVUFA7Cj4gwqAKPiArwqDCoMKgwqDCoMKgwqAvKiBGb3JjZSB0byB1c2UgTDEgR1BBIGRlc3Bp
+dGUgb2YgdmNwdSBNTVUgbW9kZS4gKi8KPiArwqDCoMKgwqDCoMKgwqBpc19zbW0gPSAhISh2Y3B1
+LT5hcmNoLmhmbGFncyAmIEhGX1NNTV9NQVNLKTsKPiArwqDCoMKgwqDCoMKgwqBpZiAoaXNfc21t
+IHx8Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgIHZjcHUtPmFyY2gubW11ICE9ICZ2Y3B1LT5hcmNo
+LnJvb3RfbW11IHx8Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgIHZjcHUtPmFyY2gud2Fsa19tbXUg
+IT0gJnZjcHUtPmFyY2gucm9vdF9tbXUpIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgdmNwdS0+YXJjaC5oZmxhZ3MgJj0gfkhGX1NNTV9NQVNLOwo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBtbXUgPSB2Y3B1LT5hcmNoLm1tdTsKPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgd2Fsa19tbXUgPSB2Y3B1LT5hcmNoLndhbGtfbW11Owo+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqB2Y3B1LT5hcmNoLm1tdSA9ICZ2Y3B1LT5hcmNoLnJvb3RfbW11
+Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB2Y3B1LT5hcmNoLndhbGtfbW11ID0g
+JnZjcHUtPmFyY2gucm9vdF9tbXU7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGt2
+bV9tbXVfcmVzZXRfY29udGV4dCh2Y3B1KTsKPiArwqDCoMKgwqDCoMKgwqB9Cj4gKwo+IMKgwqDC
+oMKgwqDCoMKgwqAvKiByZWxvYWQgaXMgb3B0aW1pemVkIGZvciByZXBlYXRlZCBjYWxsLiAqLwoK
+QWZ0ZXIgdGhlIGt2bV9tbXVfcmVzZXRfY29udGV4dCgpLCB3aGF0IGJlbmVmaXQgaXMgdGhlcmUg
+dG8gdGhlIG9wZXJhdGlvbj8gQW5kCml0IGhhcHBlbmluZyBmb3IgZXZlcnkgY2FsbCBvZiBrdm1f
+YXJjaF92Y3B1X21hcF9tZW1vcnkoKT8KCj4gwqDCoMKgwqDCoMKgwqDCoGt2bV9tbXVfcmVsb2Fk
+KHZjcHUpOwoK
 
