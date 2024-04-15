@@ -1,119 +1,102 @@
-Return-Path: <linux-kernel+bounces-144436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5179E8A466E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D702A8A4672
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:08:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F242824F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:07:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92366282ABB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93876D29E;
-	Mon, 15 Apr 2024 01:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C444C9F;
+	Mon, 15 Apr 2024 01:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AP+/Pkre"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ir74pn5T"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B748333CA;
-	Mon, 15 Apr 2024 01:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 899DEC8E1;
+	Mon, 15 Apr 2024 01:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713143213; cv=none; b=IjRHcnB4lcszKPGHqGMm9Qzoszh/GcnPosgI5C5ViMcwecDHFdxhbSEsQYX2b2wtLejCTV8I3ljs4DY0iM1ZqbtQXc+9gOlUF4mctS8Bvx4qRFClR1H79xwGP73tD8q3yOmXiCTcZqO9ov01fiNw7EoJToK9t2whE0hsLeKiZN0=
+	t=1713143310; cv=none; b=S/ryTklIdhgu4+2saIO89SCtatz5ICOsc+phpKfzMK/WhL7B4jzlhNLLLEabUHM5BNGQY/LbcmoOEd+xTjrxaECmnOtI9VJ7yJ+kUYBeMp5K+ZEoAFVMOmODbpmoJWTO4dBHhwjluCFz9521Z++xmdzvuzSFlDQzxKA4b8SpUqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713143213; c=relaxed/simple;
-	bh=rykQa5lyIfiHN9qYO+UH/csm4L0wBhXCNiha9aVGAS8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=btzYzsN1oSPIdPJ3LDhO1xxgR/Zb9xl+zFis1rUGjcFweatPCaUnREoPlNy05OIiEoKnsCX8RRMNhRM4ShQtwWRt+0F7VrYX0RshKE+Iem76TfTj5RvZefm3BIKoJM52YNsmzMySgP4MgwPE3tHgz2JLhnWi+daXEr2u6/HTxAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AP+/Pkre; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B899DC072AA;
-	Mon, 15 Apr 2024 01:06:52 +0000 (UTC)
+	s=arc-20240116; t=1713143310; c=relaxed/simple;
+	bh=zpBvuQnPFxKq2nHUdYdTD5xTpzFHltAy/FweRAAelgM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Tu75Iv30U+WPP8JxHoMJLOnHKVkhnATOLsKpTRzBsCKOTbROrVAShDpiu97IE/eDZ7NWevsNyYWzH8JDzDN3BZ1c6Drhdq/mNawbyhavKRa8FeYE/aigZqEwXxdI5dwcuLmeoqUvESXwGaKvLRoP46iiLE7JMvLWR6gBaqZiM1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ir74pn5T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF514C072AA;
+	Mon, 15 Apr 2024 01:08:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713143213;
-	bh=rykQa5lyIfiHN9qYO+UH/csm4L0wBhXCNiha9aVGAS8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AP+/PkrexOxpAHNN0YFHU1E800DYe/dV1yegf+/alc3ol+qoXvemnIML/FpOsCEZJ
-	 rN/5GIqtxaQSRVAq5ZT2i+etORasmmeAMxK4UFOQedSkwyWkHYYsuJinCLJf0aWace
-	 sMCofiDHLXbDkaWe/45J0y+eRyR/05CDVM7Lcnya5kD/cXchEcE8NbGWLlI75ZKqc2
-	 UX9qhYJWPF3SlGyOMVYB8hHTe9UVPppXnuMuScL5XY62p1hF+N991P+9wuAp7ROMxm
-	 7dSENQwh1P1Q9eVBgHrMtEGodKg/dkuS9HjZgiUbLQPfwOIsHjtyPkpggYlaVY1D0H
-	 iMqHoGZ5KcI3Q==
-Date: Mon, 15 Apr 2024 10:06:50 +0900
+	s=k20201202; t=1713143310;
+	bh=zpBvuQnPFxKq2nHUdYdTD5xTpzFHltAy/FweRAAelgM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=Ir74pn5TorqLemEcgPnpBcqlJKtgxB00MANYepJ6PDLETHJd9KUQD/6m4D+7dcOLW
+	 /dYpxPJEi/aj2asCMZhKzmJW2TwYvrbQ1eNAJY6ReFlWDffpg7x11g0kaHYkrdex3V
+	 2wgIAseRP9lLD8ej8jK4RfuR75wAJJm61NzRzbb1THGgOUiKooLJeqnx/oyTzw8g7c
+	 zAAshFmfulXy6cnFHBYB1AWrQqQSOb8F5h6Tjb+hkdVjaSsxDa/gbPofPQlIhr65qw
+	 Hc4OPGGMHyUPwwzlhovvWvmYPyrmgPhzS0bjs36zkjABMrdgt8Nj6L69EAiWlmyJze
+	 4rsJNLSWHedSg==
 From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Len Brown <lenb@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	kernel-team@android.com, Wolfram Sang <wsa@kernel.org>,
-	linux-kernel@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-	linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] of: dynamic: Fix overlayed devices not probing
- because of fw_devlink
-Message-ID: <Zhx9qqiymJdXwYQs@finisterre.sirena.org.uk>
-References: <20240411235623.1260061-1-saravanak@google.com>
- <20240411235623.1260061-3-saravanak@google.com>
- <CAL_JsqKRVVNzgQk6PETfJ9RrDuzT1CTjHWW02Twc_T4C82t__Q@mail.gmail.com>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, 
+ Michael Hennerich <michael.hennerich@analog.com>, 
+ =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, linux-spi@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240412-axi-spi-engine-version-printf-v1-1-95e1e842c1a6@baylibre.com>
+References: <20240412-axi-spi-engine-version-printf-v1-1-95e1e842c1a6@baylibre.com>
+Subject: Re: [PATCH] spi: axi-spi-engine: fix version format string
+Message-Id: <171314330849.1643230.1623656878142423975.b4-ty@kernel.org>
+Date: Mon, 15 Apr 2024 10:08:28 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="w8x69Pci+HaC+o9L"
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKRVVNzgQk6PETfJ9RrDuzT1CTjHWW02Twc_T4C82t__Q@mail.gmail.com>
-X-Cookie: You might have mail.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 
+On Fri, 12 Apr 2024 17:52:48 -0500, David Lechner wrote:
+> The version format string in the AXI SPI Engine driver was probably
+> intended to print the version number in the same format as the DT
+> compatible string (e.g. 1.00.a). However, the version just uses
+> semantic versioning so formatting the patch number as a character
+> is not correct and would result in printing control characters for
+> patch numbers less than 32.
+> 
+> [...]
 
---w8x69Pci+HaC+o9L
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Fri, Apr 12, 2024 at 07:54:32AM -0500, Rob Herring wrote:
-> On Thu, Apr 11, 2024 at 6:56=E2=80=AFPM Saravana Kannan <saravanak@google=
-=2Ecom> wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-> > +#define get_dev_from_fwnode(fwnode)    get_device((fwnode)->dev)
+Thanks!
 
-> I think it is better to not have this wrapper. We want it to be clear
-> when we're acquiring a ref. I know get_device() does that, but I have
-> to look up what get_dev_from_fwnode() does exactly.
+[1/1] spi: axi-spi-engine: fix version format string
+      commit: 0064db9ce4aa7cc794e6f4aed60dee0f94fc9bcf
 
-Or perhaps calling it get_device_from_fwnode() would make it more
-obvious that it is a get_device() variant?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
---w8x69Pci+HaC+o9L
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYcfaAACgkQJNaLcl1U
-h9CojAgAgt2fCimmNYhJQqDqfhM2bmWL/w9vqvYjQe8HGvckNhSuz23yy6xPb/bE
-q9dDK6V1xzGLIMriwY4TgiSXPLVdmp4gORRq3/zEsaSIMDbBzgVuMnxFghARPVwT
-8sjCvifFv9N5yOCMHbYhMteie92AzIWo9yrxq10KgKzX/4HURrT1G8n1zu3jOglG
-2OjGQTHa5LeyE+5RdfaUMwE1JhchXojQe7tWE+tK1lqb5Tk4x1sKmCJG9BkZqE6k
-0x5U+V1i77GpyUhFNbkFBFV1ROZ+oeBnIkd311q9Y8vOF3ecYFA0pe4hr3/6ceyo
-cxfTAKuaqYZknFMwFcvvgiKIHuRFDA==
-=+cQa
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---w8x69Pci+HaC+o9L--
+Thanks,
+Mark
+
 
