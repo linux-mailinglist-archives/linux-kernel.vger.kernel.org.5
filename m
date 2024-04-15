@@ -1,275 +1,202 @@
-Return-Path: <linux-kernel+bounces-145012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A74A8A4E21
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:53:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D72668A4E2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:56:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28DF62811CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:53:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 620F71F219CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F4A6773D;
-	Mon, 15 Apr 2024 11:52:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D5A664B7;
+	Mon, 15 Apr 2024 11:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oIBNFBEq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y9KDrW6r"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A27664AB;
-	Mon, 15 Apr 2024 11:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A3D634E2;
+	Mon, 15 Apr 2024 11:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713181969; cv=none; b=jYd+LheeuNwheZp/FZAGIh/gquUblaQCQdfrlZAmJziPE4d8asnN7aRN3GD2DXtGTJxnGfaxVV7x583zjKhVxtXK9w5J36rJhUpRWOd3R5ZEfVeLJHFokLUebkWjExs2VUsU5yFJelMqiooD9BgOtR7Ks+oZUW6Dt+3ki1ibIuo=
+	t=1713182183; cv=none; b=CyoiBHkBEjuaTYnqjciIv25O8Ev4ZmI5T4CLDJD6u/NsX5HXm8Pwo78FNjxg/PX5+iJmSlCp53/2+iOnXHKVPp8kxZgLDeHxYMnqr9plTXqX4I08L4gFJpWlFUg20prfM3Tcd78dNqRe/k2hhkj4oD1CBmHoXhwTzpvnlDE5Cbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713181969; c=relaxed/simple;
-	bh=KDOa3WMhDZdCJkFOdWTeMccO2m7M+we4CfSTwKFdtC8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ra1Fcbi+nlF1ttI1df1p8rauowE0yAkqMXh6EBuegRyZqtLknFEIquBzjFFEr1oKa43JHavxZRG3hC8db+joT+u8Hj31G+AAugjIAm+6J0FtejSMHDU9VVGL7g8rsXkG9y/otJIPbNDDktn/iEis0RuzXlgyjcbBdwaVjCkuFMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oIBNFBEq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34221C4AF08;
-	Mon, 15 Apr 2024 11:52:49 +0000 (UTC)
+	s=arc-20240116; t=1713182183; c=relaxed/simple;
+	bh=Y7NdTGJ5WllEpMCU0vHN/6b9JSORAL8KQcYrFDsZBEU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mk0yajq2+v/p4sYIIWRNTyhWa8g9o4cPzXusAmzziVMjpgMDUV9KolhlIvXazhDxsfSnAHTdoXKA+ZLoVrzm+t41wu5AZbuD5vXgIhh2rsZx11dhnc2b3rTLGPyuUVAtjCI1ERrqZuFgWUa9jB/NZgqYBnS5OAZj7lbS1SEif/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y9KDrW6r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70507C113CC;
+	Mon, 15 Apr 2024 11:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713181969;
-	bh=KDOa3WMhDZdCJkFOdWTeMccO2m7M+we4CfSTwKFdtC8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=oIBNFBEqx27wE7YnGIQL5va6oghRoZsIBk7dZ6Y5YkGZkdDFq4eDbeUPvBrLFcHn4
-	 g5NJ7sRS4UXG4ffu2FelF0itZGK5ioO5lI3bMll3lxU1khEN2T5lW3rgtIOrN4ZeXf
-	 TJwahAR67LD6xbc3xp9ohfJnvmGcu68Qva+e6KZQiiqao8LrBDnKwqX7kJtZzFdb0b
-	 /HMr7hn7XF/tO/Isb1UBK2KM8WEDXrc+UD0L8n+VDZ/QnuFX+f6s1RgaJGUSt4Kpzu
-	 Qoaucfj4WbGqk5fQy/mxpDk0TDnsX4JMuDMlNS5sSPFw04yeHQv2hVUpa6NJVWAMKe
-	 ut7WP5Mi6Hu4Q==
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3c6febc1506so339349b6e.1;
-        Mon, 15 Apr 2024 04:52:49 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVVC97vZ/pAjRm847xsihsorRTnYhSn/LM47mIY3aLwMAlIsb7j/k1bP3OLBD6fO24xWlnDmISG1bCuSevirthGVvYqIpPg3J6sCP4L0md0Z3i0lgL4wZkL9amTVL76a7CtfSx/jsSPdMrz0kBgPY+HG/wrpUOIU9sxOBPDxNskWMFQBKRZGxvwK2QW1EYsbiKOy+ZegbSIDNH6wjcI8A==
-X-Gm-Message-State: AOJu0YzLCQAgka9iUqnh8IP35OZbh1kvyLhHne9gIFZ7PYRFvU3yc/Um
-	B6hhrWxoqGQW2lYAAeRYEiF4AafJ5muuSc+b6VtwRKWXDc19mbPhgxtmMuLtynAaCFsOClWMKmr
-	fYQH692beLNeazPWn/8zK7CK1cDI=
-X-Google-Smtp-Source: AGHT+IHAqEAgDmmyxpmlL7R5uR0Ay/up7sqUWFs77wqXP3g7U1JKzh9PgyufuKdVSAZm4f9VaPPIEoUIWvDgb5wmreo=
-X-Received: by 2002:a05:6871:460a:b0:22e:d06b:5d8f with SMTP id
- nf10-20020a056871460a00b0022ed06b5d8fmr11074172oab.3.1713181968497; Mon, 15
- Apr 2024 04:52:48 -0700 (PDT)
+	s=k20201202; t=1713182182;
+	bh=Y7NdTGJ5WllEpMCU0vHN/6b9JSORAL8KQcYrFDsZBEU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y9KDrW6rzI4upgYlURPA9wBKJaXXTAehYjqV6mSy9lM7v4cOyvOEJ1YGuI8bUCq2b
+	 klXoY1sHxZuy8IgLj6gbl5Id/bVP0Kx2Ybyi1wQyI9sHAo1mQtG5vVCzM9HulnttA8
+	 aXl2Xb9F2nJ7hgTiTEDQnDcbc1mhIUZ/egqsRmp/L5tlPjMg5YD5lPp470nUqyklxd
+	 mwXKPe2cM1ZzUMvw9lWLkiH9k07ENAs1XOBzvVDk21woQUmWtpzpNRssjHQX7a1jhh
+	 7sU4L3mJY8PZ1BBxcOc9P+5nE4TRHkl/1qJfBc0qrbNAmM1kRC4oO114kVnds1PAIo
+	 baTBv894ravpQ==
+Date: Mon, 15 Apr 2024 17:26:16 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Qiang Yu <quic_qianyu@quicinc.com>
+Cc: quic_jhugo@quicinc.com, mhi@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	quic_cang@quicinc.com, quic_mrana@quicinc.com
+Subject: Re: [PATCH v3 1/3] bus: mhi: host: Add sysfs entry to force device
+ to enter EDL
+Message-ID: <20240415115616.GF7537@thinkpad>
+References: <1713170945-44640-1-git-send-email-quic_qianyu@quicinc.com>
+ <1713170945-44640-2-git-send-email-quic_qianyu@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
- <20240412143719.11398-4-Jonathan.Cameron@huawei.com> <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
- <20240415115203.0000011b@Huawei.com>
-In-Reply-To: <20240415115203.0000011b@Huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 15 Apr 2024 13:52:33 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0ipGX8WL_YuB_x7=yxY1p_Q=U=9UmqwNdXcA9HgD=_1hQ@mail.gmail.com>
-Message-ID: <CAJZ5v0ipGX8WL_YuB_x7=yxY1p_Q=U=9UmqwNdXcA9HgD=_1hQ@mail.gmail.com>
-Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, x86@kernel.org, Russell King <linux@armlinux.org.uk>, 
-	Miguel Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, 
-	Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, linuxarm@huawei.com, 
-	justin.he@arm.com, jianyong.wu@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1713170945-44640-2-git-send-email-quic_qianyu@quicinc.com>
 
-On Mon, Apr 15, 2024 at 12:52=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Fri, 12 Apr 2024 20:30:40 +0200
-> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
->
-> > On Fri, Apr 12, 2024 at 4:38=E2=80=AFPM Jonathan Cameron
-> > <Jonathan.Cameron@huawei.com> wrote:
-> > >
-> > > From: James Morse <james.morse@arm.com>
-> > >
-> > > The arm64 specific arch_register_cpu() call may defer CPU registratio=
-n
-> > > until the ACPI interpreter is available and the _STA method can
-> > > be evaluated.
-> > >
-> > > If this occurs, then a second attempt is made in
-> > > acpi_processor_get_info(). Note that the arm64 specific call has
-> > > not yet been added so for now this will never be successfully
-> > > called.
-> > >
-> > > Systems can still be booted with 'acpi=3Doff', or not include an
-> > > ACPI description at all as in these cases arch_register_cpu()
-> > > will not have deferred registration when first called.
-> > >
-> > > This moves the CPU register logic back to a subsys_initcall(),
-> > > while the memory nodes will have been registered earlier.
-> > > Note this is where the call was prior to the cleanup series so
-> > > there should be no side effects of moving it back again for this
-> > > specific case.
-> > >
-> > > [PATCH 00/21] Initial cleanups for vCPU HP.
-> > > https://lore.kernel.org/all/ZVyz%2FVe5pPu8AWoA@shell.armlinux.org.uk/
-> > >
-> > > e.g. 5b95f94c3b9f ("x86/topology: Switch over to GENERIC_CPU_DEVICES"=
-)
-> > >
-> > > Signed-off-by: James Morse <james.morse@arm.com>
-> > > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > > Co-developed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > Signed-off-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
-> > > ---
-> > > v5: Update commit message to make it clear this is moving the
-> > >     init back to where it was until very recently.
-> > >
-> > >     No longer change the condition in the earlier registration point
-> > >     as that will be handled by the arm64 registration routine
-> > >     deferring until called again here.
-> > > ---
-> > >  drivers/acpi/acpi_processor.c | 12 ++++++++++++
-> > >  1 file changed, 12 insertions(+)
-> > >
-> > > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_proces=
-sor.c
-> > > index 93e029403d05..c78398cdd060 100644
-> > > --- a/drivers/acpi/acpi_processor.c
-> > > +++ b/drivers/acpi/acpi_processor.c
-> > > @@ -317,6 +317,18 @@ static int acpi_processor_get_info(struct acpi_d=
-evice *device)
-> > >
-> > >         c =3D &per_cpu(cpu_devices, pr->id);
-> > >         ACPI_COMPANION_SET(&c->dev, device);
-> > > +       /*
-> > > +        * Register CPUs that are present. get_cpu_device() is used t=
-o skip
-> > > +        * duplicate CPU descriptions from firmware.
-> > > +        */
-> > > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> > > +           !get_cpu_device(pr->id)) {
-> > > +               int ret =3D arch_register_cpu(pr->id);
-> > > +
-> > > +               if (ret)
-> > > +                       return ret;
-> > > +       }
-> > > +
-> > >         /*
-> > >          *  Extra Processor objects may be enumerated on MP systems w=
-ith
-> > >          *  less than the max # of CPUs. They should be ignored _iff
-> > > --
-> >
-> > I am still unsure why there need to be two paths calling
-> > arch_register_cpu() in acpi_processor_get_info().
->
-> I replied further down the thread, but the key point was to maintain
-> the strong distinction between 'what' was done in a real hotplug
-> path vs one where onlining was all.  We can relax that but it goes
-> contrary to the careful dance that was needed to get any agreement
-> to the ARM architecture aspects of this.
+On Mon, Apr 15, 2024 at 04:49:03PM +0800, Qiang Yu wrote:
+> Add sysfs entry to allow users of MHI bus force device to enter EDL.
+> Considering that the way to enter EDL mode varies from device to device and
+> some devices even do not support EDL. Hence, add a callback edl_trigger in
+> mhi controller as part of the sysfs entry to be invoked and MHI core will
+> only create EDL sysfs entry for mhi controller that provides edl_trigger
+> callback. All of the process a specific device required to enter EDL mode
+> can be placed in this callback.
+> 
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+> ---
+>  Documentation/ABI/stable/sysfs-bus-mhi | 11 +++++++++++
+>  drivers/bus/mhi/host/init.c            | 35 ++++++++++++++++++++++++++++++++++
+>  include/linux/mhi.h                    |  2 ++
+>  3 files changed, 48 insertions(+)
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-bus-mhi b/Documentation/ABI/stable/sysfs-bus-mhi
+> index 1a47f9e..d0bf9ae 100644
+> --- a/Documentation/ABI/stable/sysfs-bus-mhi
+> +++ b/Documentation/ABI/stable/sysfs-bus-mhi
+> @@ -29,3 +29,14 @@ Description:	Initiates a SoC reset on the MHI controller.  A SoC reset is
+>                  This can be useful as a method of recovery if the device is
+>                  non-responsive, or as a means of loading new firmware as a
+>                  system administration task.
+> +
+> +What:           /sys/bus/mhi/devices/.../force_edl
 
-This seems to go beyond technical territory.
+s/force_edl/trigger_edl
 
-As a general rule, we tend to combine code paths that look similar
-instead of making them separate on purpose.  Especially with a little
-to no explanation of the technical reason.
+> +Date:           April 2024
+> +KernelVersion:  6.9
+> +Contact:        mhi@lists.linux.dev
+> +Description:    Force devices to enter EDL (emergency download) mode. Only MHI
 
-> >
-> > Just below the comment partially pulled into the patch context above,
-> > there is this code:
-> >
-> > if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> >          int ret =3D acpi_processor_hotadd_init(pr);
-> >
-> >         if (ret)
-> >                 return ret;
-> > }
-> >
-> > For the sake of the argument, fold acpi_processor_hotadd_init() into
-> > it and drop the redundant _STA check from it:
->
-> If we combine these, the _STA check is necessary because we will call thi=
-s
-> path for delayed onlining of ARM64 CPUs (if the earlier registration code
-> call or arch_register_cpu() returned -EPROBE defer). That's the only way
-> we know that a given CPU is online capable but firmware is saying we can'=
-t
-> bring it online yet (it may be be vHP later).
+How can the user trigger EDL mode? Writing to this file? If so, what is the
+value?
 
-Ignoring the above as per the other message.
+'Emergency Download'
 
-> >
-> > if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
-> >         if (invalid_phys_cpuid(pr->phys_id))
-> >                 return -ENODEV;
-> >
-> >         cpu_maps_update_begin();
-> >         cpus_write_lock();
-> >
-> >        ret =3D acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->=
-id);
->
-> I read that call as
->         acpi_map_cpu_for_physical_cpu_hotplug()
-> but we could make it equivalent of.
->         acpi_map_cpu_for_whatever_cpu_hotplug()
+> +                controller that supports EDL mode and provides a mechanism for
+> +                manually triggering EDL contains this file. Once in EDL mode,
 
-Yes.
+'This entry only exists for devices capable of entering the EDL mode using the
+standard EDL triggering mechanism defined in the MHI spec <insert the version>.'
 
-> (I'm not proposing those names though ;)
+> +                the flash programmer image can be downloaded to the device to
+> +                enter the flash programmer execution environment. This can be
+> +                useful if user wants to update firmware.
 
-Sure.
+It'd be good to mention the OS tool like QDL that is used to download firmware
+over EDL.
 
-> in which case it is fine to just stub it out on ARM64.
-> >        if (ret) {
-> >                 cpus_write_unlock();
-> >                 cpu_maps_update_done();
-> >                 return ret;
-> >        }
-> >        ret =3D arch_register_cpu(pr->id);
-> >        if (ret) {
-> >                 acpi_unmap_cpu(pr->id);
-> >
-> >                 cpus_write_unlock();
-> >                 cpu_maps_update_done();
-> >                 return ret;
-> >        }
-> >       pr_info("CPU%d has been hot-added\n", pr->id);
-> >       pr->flags.need_hotplug_init =3D 1;
-> This one needs more careful handling because we are calling this
-> for non hotplug cases on arm64 in which case we end up setting this
-> for initially online CPUs - thus if we offline and online them
-> again via sysfs /sys/bus/cpu/device/cpuX/online it goes through the
-> hotplug path and should not.
->
-> So I need a way to detect if we are hotplugging the cpu or not.
-> Is there a standard way to do this?
+> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+> index 44f9349..333ac94 100644
+> --- a/drivers/bus/mhi/host/init.c
+> +++ b/drivers/bus/mhi/host/init.c
+> @@ -127,6 +127,32 @@ static ssize_t soc_reset_store(struct device *dev,
+>  }
+>  static DEVICE_ATTR_WO(soc_reset);
+>  
+> +static ssize_t force_edl_store(struct device *dev,
 
-If you mean physical hot-add, I don't think so.
+s/force_edl/trigger_edl
 
-What exactly do you need to do differently in the two cases?
+> +			       struct device_attribute *attr,
+> +			       const char *buf, size_t count)
+> +{
+> +	struct mhi_device *mhi_dev = to_mhi_device(dev);
+> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+> +	unsigned long val;
+> +	int ret;
+> +
+> +	ret = kstrtoul(buf, 10, &val);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Could not parse string: %d\n", ret);
 
->  I haven't figured out how to use flags in drivers to communicate this st=
-ate.
->
-> >
-> >       cpus_write_unlock();
-> >       cpu_maps_update_done();
-> > }
-> >
-> > so I'm not sure why this cannot be combined with the new code.
-> >
-> > Say acpi_map_cpu) / acpi_unmap_cpu() are turned into arch calls.
-> > What's the difference then?  The locking, which should be fine if I'm
-> > not mistaken and need_hotplug_init that needs to be set if this code
-> > runs after the processor driver has loaded AFAICS.
->
-> That's the bit that I'm currently finding a challenge. Is there a clean
-> way to detect that?
+No need to print error.
 
-If you mean the need_hotplug_init flag, I'm currently a bit struggling
-to convince myself that it is really needed.
+> +		return ret;
+> +	}
+> +
+> +	if (!val)
+> +		return count;
+
+What does this mean?
+
+> +
+> +	ret = mhi_cntrl->edl_trigger(mhi_cntrl);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return count;
+> +}
+> +static DEVICE_ATTR_WO(force_edl);
+> +
+>  static struct attribute *mhi_dev_attrs[] = {
+>  	&dev_attr_serial_number.attr,
+>  	&dev_attr_oem_pk_hash.attr,
+> @@ -1018,6 +1044,12 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+>  	if (ret)
+>  		goto err_release_dev;
+>  
+> +	if (mhi_cntrl->edl_trigger) {
+> +		ret = sysfs_create_file(&mhi_dev->dev.kobj, &dev_attr_force_edl.attr);
+> +		if (ret)
+> +			goto err_release_dev;
+> +	}
+> +
+>  	mhi_cntrl->mhi_dev = mhi_dev;
+>  
+>  	mhi_create_debugfs(mhi_cntrl);
+> @@ -1051,6 +1083,9 @@ void mhi_unregister_controller(struct mhi_controller *mhi_cntrl)
+>  	mhi_deinit_free_irq(mhi_cntrl);
+>  	mhi_destroy_debugfs(mhi_cntrl);
+>  
+> +	if (mhi_cntrl->edl_trigger)
+> +		sysfs_remove_file(&mhi_dev->dev.kobj, &dev_attr_force_edl.attr);
+> +
+>  	destroy_workqueue(mhi_cntrl->hiprio_wq);
+>  	kfree(mhi_cntrl->mhi_cmd);
+>  	kfree(mhi_cntrl->mhi_event);
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index cde01e1..8280545 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -353,6 +353,7 @@ struct mhi_controller_config {
+>   * @read_reg: Read a MHI register via the physical link (required)
+>   * @write_reg: Write a MHI register via the physical link (required)
+>   * @reset: Controller specific reset function (optional)
+> + * @edl_trigger: CB function to enter EDL mode (optional)
+
+s/enter/trigger
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
