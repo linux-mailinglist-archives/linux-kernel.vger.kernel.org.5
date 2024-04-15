@@ -1,183 +1,136 @@
-Return-Path: <linux-kernel+bounces-145412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C866E8A55DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:02:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ACFD8A55E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:03:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FD871F2308C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26432282ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:03:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B45776044;
-	Mon, 15 Apr 2024 15:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d5wajOPE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736767602A;
+	Mon, 15 Apr 2024 15:03:09 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03A211D524
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 15:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3682271B3B
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 15:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713193319; cv=none; b=fRQSsnPHoFNyYFEsG4Ib+KYCsByckLe7GeGlGoV6NrgqliJUhSAdWv1uGrudfdz0kb3E6z2UkPmz3XgMCCIMb2ZlgvlDAj/BERjSFN5tkz2C9ArX8SKvvdPqD4ScHBICeUHpuox6/AR/oKNs8zT8DkDnuUu5PgG8Ae0ndKoXKOw=
+	t=1713193389; cv=none; b=M3F0bXsTOyU28FEpmeRjZx2ZQVEQt2RqVthFO0DCGo7VU6XOhQgWWi88KTAqXkr6dflzbq6u0GiF2kO6ang25C/yj9ue90OI7QnGPH7DSFEjUlItkGDlp+DFOhNOYXRLo6gb299s9KRl/4qEw2MyQJJf3xFyxTcm4mQ31DazGz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713193319; c=relaxed/simple;
-	bh=sIiFyXwqbhaN2h69y2E+rbEJLjROIneYsPH1WX9xh84=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E6iU4c5cSd7HJ52f3rikXNosrCT0+k1k7of8W2rX5djCQ2KXiKecCUlYtPVDkWrOaRI9rZHyfLWf7LwRKieFQFqYoZxC07aWqA8gb347TZWCSfs+bx8qRM0GcvPClB2YeiWD0GX7rEjiNrdb1SLKjqqut9gamjrakP7uMln2Qkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d5wajOPE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713193317;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zwjBbQo6C7j6xP7+cDacBB/+QuPqifcUdRYibqKmYA0=;
-	b=d5wajOPEVoo6uacNunS7eMkH0GVSBfQjIgcsL3j+s/yRPu73KeCNvriGy7CHo/xXwNFlZZ
-	cVRZQTnXvgq0WzpPtz4R4yxJE1SfRIvGXAdEkQREskFlrc3wMwHJUSWE8P3VvFUSmWePud
-	58EWonEsEIC5+7UHADRMqrvHAwdWaAc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-680-9ymtmfl1OWC_FKI9pEuRZA-1; Mon, 15 Apr 2024 11:01:53 -0400
-X-MC-Unique: 9ymtmfl1OWC_FKI9pEuRZA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343c6bb1f21so2271255f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:01:53 -0700 (PDT)
+	s=arc-20240116; t=1713193389; c=relaxed/simple;
+	bh=QAzFmffWsZYQzeY3yEKEC0gQlvmNo9ljGjRjjp/8IfU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=rqsZOI5ChTIzMhQkrQ8cIyTVPqx6lpg6LOodRoLSmVJ8d+odFyzGAerPmvDQlAPrmXWqAfCgC1jh/F93vuUEOuGWixr/GCoXlTKkld9z4p86GKoRSGdW4a5i7urZEJDXoha49aJPBmvGMEfa5s/aDzIapgo8BsE4Eplz+bFmWrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d622cae9e4so356950539f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 08:03:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713193312; x=1713798112;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zwjBbQo6C7j6xP7+cDacBB/+QuPqifcUdRYibqKmYA0=;
-        b=uW3uRj+FDJUO/oj0K+Uzm8OvEnoX8f5OA5o+eCv+WjNbCA605HmllZihc1FCeFKUZQ
-         UMAQy/hIet1JrDhFSoyoS4s2yYkTQasuOYgjeVRtM8VREertyvvFh3oXw2ebzj2bnT4J
-         RywlC+SvNBRqDvz7dlu/1gE05H6zCM7tABNf79XJYj7jy2C4rrrUZ22xYYQr9RYNjwIU
-         e2lZstK2N5ApCSF/sNq7IMLEv1WMnf6Yv/191mPsjWflwxisDuSM1pK/6wimm+p8GW1k
-         RUbgHHBysC8v0wsQRyuNIAAEIcd0CjwJi1Y1yHrBpikZSCbp+mWuPdjXFaoF945BXCTs
-         gk+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUEDoNz40g+GWWor6GOeZ+lMDEvjXf4WPad1KOi5f7vAcEe6YGzXPVMZSsCeF94IFTxeIDbKolI0Aaqh/WYsdhhDBPb/L8ScbwiP0rl
-X-Gm-Message-State: AOJu0YxQ9kIkJSuVLv9hMLJ0EZdhkaRItERKPiN+Pow55YEYc89RQCXr
-	gLH0F7dHYvsgWkgZ5r53Hu3M4gwWUO7NYOXEz7rmHreG1xBLMU/+G9YU1uGhMJAYzMonwN61syr
-	8ZhGrSySoJiNzrtk2P9WGsFwYgTiUhUQE16LIIiKXZ6FCJ0T9aX8Tw8Bx0IAIYQ==
-X-Received: by 2002:a5d:6749:0:b0:346:bb52:25a1 with SMTP id l9-20020a5d6749000000b00346bb5225a1mr7167267wrw.33.1713193311923;
-        Mon, 15 Apr 2024 08:01:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IESay4aKO0ZgPPO7ryxLsiEvDZn+lExNAZU8G+nuJuuajPSqAAIfF3Ob1/AhUDMhrDyLw/M9A==
-X-Received: by 2002:a5d:6749:0:b0:346:bb52:25a1 with SMTP id l9-20020a5d6749000000b00346bb5225a1mr7167243wrw.33.1713193311544;
-        Mon, 15 Apr 2024 08:01:51 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
-        by smtp.gmail.com with ESMTPSA id b13-20020a5d4d8d000000b003432d61d6b7sm12232617wru.51.2024.04.15.08.01.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 08:01:51 -0700 (PDT)
-Message-ID: <ee1ac0fb-daf7-4aea-b07e-f8879b6b860b@redhat.com>
-Date: Mon, 15 Apr 2024 17:01:49 +0200
+        d=1e100.net; s=20230601; t=1713193383; x=1713798183;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hSq8qGn/JF5KdpapQccUGb3UzISwAxkFXjt7VDeXU64=;
+        b=Lv72CcUD8HcHH9xRviVPcVo6ZNhEnC9FHS35sQmla3FjY5GyPE4qqOI2bvueF5cpfd
+         CoJV6D/RUgf3Wx6Gh8I/UrVhf8AZlekcc7WQW4srRSan52MBoG6Rrx2ojeY833QuccIJ
+         FxUwWW311aAnvS0fPCCNPiJzssHX5KjcqzZf/kl9d1HST+k7/cBGZfBRZO9i9rYkGaHs
+         36uvjFZbwUGwc5eu6ZdYZ66fl65rHlLrPwtgF+QvLLObEbFebyUJYFFGpyzLwp9XV2Bi
+         bZpwJw1pXLNGX5bYV9EvxWrc7CFEQ/wCII0gkm0AicY8qCcOWE0a48dxemudYPKjAzyP
+         uXKw==
+X-Gm-Message-State: AOJu0YzO/gL16vWn+lCm92wt3VZBA0OTovPs2kGBv+9BQAasRQOSpQXJ
+	Oq7FJm6cHP7ZEaqV/z5gpQk3QcuHonB64GrezQUpOmqNNny95waQDE0cJy//GIOP0hzbVHX+WKm
+	8yxwPOMT41xJu9rmnHub6ikNny72Mbf9S00yGCgrwnCFYLfvtimkyFew=
+X-Google-Smtp-Source: AGHT+IH5fP1hNjHV5iZhkXGr2AeaV+3IJv9e9gh7OynLUxpJJ6hstBncRmesAd2VqtfV0x3WTwa3KDYZ7KQjyB1aH63Fry0WQIFq
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/3] Improve memory statistics for virtio balloon
-To: zhenwei pi <pizhenwei@bytedance.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, virtualization@lists.linux.dev
-Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
- akpm@linux-foundation.org
-References: <20240415084113.1203428-1-pizhenwei@bytedance.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240415084113.1203428-1-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:204d:b0:482:fbfb:e72e with SMTP id
+ t13-20020a056638204d00b00482fbfbe72emr379402jaj.6.1713193383440; Mon, 15 Apr
+ 2024 08:03:03 -0700 (PDT)
+Date: Mon, 15 Apr 2024 08:03:03 -0700
+In-Reply-To: <20240415144101.44907-1-n.zhandarovich@fintech.ru>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000d41d2061623ebed@google.com>
+Subject: Re: [syzbot] [usb?] WARNING in usbnet_start_xmit/usb_submit_urb (2)
+From: syzbot <syzbot+d693c07c6f647e0388d3@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, n.zhandarovich@fintech.ru, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 15.04.24 10:41, zhenwei pi wrote:
-> Hi,
-> 
-> When the guest runs under critial memory pressure, the guest becomss
-> too slow, even sshd turns D state(uninterruptible) on memory
-> allocation. We can't login this VM to do any work on trouble shooting.
-> 
-> Guest kernel log via virtual TTY(on host side) only provides a few
-> necessary log after OOM. More detail memory statistics are required,
-> then we can know explicit memory events and estimate the pressure.
-> 
-> I'm going to introduce several VM counters for virtio balloon:
-> - oom-kill
-> - alloc-stall
-> - scan-async
-> - scan-direct
-> - reclaim-async
-> - reclaim-direct
+Hello,
 
-IIUC, we're only exposing events that are already getting provided via 
-all_vm_events(), correct?
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in usbnet_start_xmit/usb_submit_urb
 
-In that case, I don't really see a major issue. Some considerations:
+------------[ cut here ]------------
+usb 2-1: BOGUS urb xfer, pipe 3 != type 1
+WARNING: CPU: 0 PID: 726 at drivers/usb/core/urb.c:503 usb_submit_urb+0xe4b/0x1730 drivers/usb/core/urb.c:503
+Modules linked in:
+CPU: 0 PID: 726 Comm: kworker/0:2 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: mld mld_ifc_work
+RIP: 0010:usb_submit_urb+0xe4b/0x1730 drivers/usb/core/urb.c:503
+Code: 84 3c 02 00 00 e8 35 48 30 fd 4c 89 ef e8 1d 24 01 ff 45 89 e0 89 e9 4c 89 f2 48 89 c6 48 c7 c7 c0 49 30 87 e8 46 b1 f6 fc 90 <0f> 0b 90 90 e9 e9 f8 ff ff e8 07 48 30 fd 49 81 c4 b8 05 00 00 e9
+RSP: 0000:ffffc90001bef2e0 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffff8881026a1e00 RCX: ffffffff8118b029
+RDX: ffff88810b350000 RSI: ffffffff8118b036 RDI: 0000000000000001
+RBP: 0000000000000003 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 000000000000000c R12: 0000000000000001
+R13: ffff888101f760a8 R14: ffff888105ee9040 R15: ffff8881026a1e7c
+FS:  0000000000000000(0000) GS:ffff8881f6400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f13260e9870 CR3: 000000010dbd0000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ usbnet_start_xmit+0x696/0x2440 drivers/net/usb/usbnet.c:1453
+ __netdev_start_xmit include/linux/netdevice.h:4903 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4917 [inline]
+ xmit_one net/core/dev.c:3531 [inline]
+ dev_hard_start_xmit+0x143/0x720 net/core/dev.c:3547
+ sch_direct_xmit+0x18e/0x840 net/sched/sch_generic.c:343
+ __dev_xmit_skb net/core/dev.c:3760 [inline]
+ __dev_queue_xmit+0x12c5/0x3ef0 net/core/dev.c:4301
+ dev_queue_xmit include/linux/netdevice.h:3091 [inline]
+ neigh_resolve_output net/core/neighbour.c:1563 [inline]
+ neigh_resolve_output+0x5ba/0x950 net/core/neighbour.c:1543
+ neigh_output include/net/neighbour.h:542 [inline]
+ ip6_finish_output2+0xad9/0x2300 net/ipv6/ip6_output.c:137
+ __ip6_finish_output+0x3d8/0xf10 net/ipv6/ip6_output.c:211
+ ip6_finish_output net/ipv6/ip6_output.c:222 [inline]
+ NF_HOOK_COND include/linux/netfilter.h:303 [inline]
+ ip6_output+0x23a/0x8c0 net/ipv6/ip6_output.c:243
+ dst_output include/net/dst.h:450 [inline]
+ NF_HOOK.constprop.0+0x118/0x8b0 include/linux/netfilter.h:314
+ mld_sendpack+0x6e6/0xd20 net/ipv6/mcast.c:1818
+ mld_send_cr net/ipv6/mcast.c:2119 [inline]
+ mld_ifc_work+0x756/0xce0 net/ipv6/mcast.c:2650
+ process_one_work+0x9a9/0x1a60 kernel/workqueue.c:3254
+ process_scheduled_works kernel/workqueue.c:3335 [inline]
+ worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
 
-(1) These new events are fairly Linux specific.
 
-PSWPIN and friends are fairly generic, but HGTLB is also already fairly 
-Linux specific already. OOM-kills don't really exist on Windows, for 
-example. We'll have to be careful of properly describing what the 
-semantics are.
+Tested on:
 
-(2) How should we handle if Linux ever stops supporting a certain event 
-(e.g., major reclaim rework). I assume, simply return nothing like we 
-currently would for VIRTIO_BALLOON_S_HTLB_PGALLOC without 
-CONFIG_HUGETLB_PAGE.
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=15b90f43180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=811ce8e010ac6afc
+dashboard link: https://syzkaller.appspot.com/bug?extid=d693c07c6f647e0388d3
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
--- 
-Cheers,
-
-David / dhildenb
-
+Note: no patches were applied.
 
