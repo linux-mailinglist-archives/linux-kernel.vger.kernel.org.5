@@ -1,163 +1,128 @@
-Return-Path: <linux-kernel+bounces-145807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991F88A5B24
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:44:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E798A5B09
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:42:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F25FBB244D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:44:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBE401F2158A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CCB156981;
-	Mon, 15 Apr 2024 19:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD09415FCE8;
+	Mon, 15 Apr 2024 19:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SO82mOYD"
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uBSZdj0i"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357DE160887
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:34:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60F8E15F322
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:34:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209700; cv=none; b=jguGfJIPrNSqGhvghR+j5p8AWNcQ/+siiHNh3fioW2p/Wp/nTHXtLuxP5B+g+PvYdticx58J/RrsL5ffE0PkX7V2LxdJIt91miNqnaw8bLQ+YvwBDbR5IPBMOvLuwAjj8QL3As28As58Kpc42FThpXwYKF2Mj3DW2tveagk3hqk=
+	t=1713209693; cv=none; b=ciNa8Md5+Syqoc8mbRKN+45wGsNQ+MvrLlavo5IR0xPhZN25vW4GTeLIKWTVvAv11C/R6EpHxETgvhklLeQeKbGXY7TYcrhWyVQW7GKFJchENXepeXgtFpIf1RalxvqGhF0u7ZXuw75vsHqrr6Rw1E9KENeqx3WPkY9pkoV+SO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209700; c=relaxed/simple;
-	bh=xLgrZZRlgHue6M9OsvJFWob4LMm7t7pNYu1OWpjQXlI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=LyoFspNGmDuuzjyxnDAFnXIe8ASyO94rhmSk+SE0d3ZSdH9WuEhrXdhSDPmMAjsInXjZET0mo5s7sMW2KTSVl1vQg67FtYd8n7rEk3Xkm/6ByACpClY6g12rKJZPYpJWRc2E8gi2V9rHSQye7H1mr4MswlFaMx6E/QjZK129ImU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SO82mOYD; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78d61a6229bso247229285a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:34:57 -0700 (PDT)
+	s=arc-20240116; t=1713209693; c=relaxed/simple;
+	bh=RQH/xq79Dx1ojuJ4FQ/1sF/nVGfejgfjDs1gdTGmfb4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jm3pfqEId2uCRqxGXBk6hBcD4/DOS/UCEXS8Vh2KDXs8dbNelFw6Xqfd1DkOOOwd/sppBkebC8BbrZzADFMY8nS4v8ybUeDRhgraZpniDPcpLxZaQK9/vNtgOl+XpEd82j/Yaz4xhtrC2Ux8Mcums8CP8bMwyPRXwIyMSalY6/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uBSZdj0i; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2da0b3f7ad3so40935951fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:34:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713209696; x=1713814496; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LUBi0S9+ghcjER4xO9v0racZxhYV4zff+IOh7tdBF3Y=;
-        b=SO82mOYDZw/UKakxnQuTFkklz4l2bqLfzMNsNZxhPfrWnvs78i5QXu0tuG8APBtV4L
-         Ut7FdGWF/e+NeELAA82rM56O7kIvrlMCvZdjzXhH5aCbsN9+Z8Asggpf+NweU/OMjy9d
-         CpJZkTdLXvRC410dH3UAV0vRUyn44OVUMQbGs=
+        d=linaro.org; s=google; t=1713209689; x=1713814489; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=74eh0UAxjJzTVRALg/TqF+8BFcarO+L4T6AcFES85ZQ=;
+        b=uBSZdj0iJ7YWi/iCIKkcSf8QzNbly0iw8z8f6QAn7pHtVBCsn8vDbV88sFqabbzPe/
+         8qt8Y3Nw1mjGvTpdEjHfCcv+LeXIQSE385185nh+WjHhSQcydGMivNUUgahpafnc2um6
+         p6LW7DAR3yTaW3SzTLMotTn9I3WdJ1y+O17fCNXeDoLOqxg2/k/AB4qfUGY+ud36dsKr
+         LBLTIPRi5N2HafysJt9+GN2Yd7Qud/FYNH4zfzmMDOdH+zDl8+4hbP73SZNr8cIxz8jG
+         DagIeWNoVRSPdJmHcIWbiSzvJPV0VCD7b9fkczOIzNTNTqPQR9k86eCGTO79M+cF+eAD
+         ewsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713209696; x=1713814496;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LUBi0S9+ghcjER4xO9v0racZxhYV4zff+IOh7tdBF3Y=;
-        b=TAqcIvfxZ6culZcJowyoevGX0Tye219SmmCteb7DVqf7qZyhUUHEg14F3Sx6YJwFJQ
-         2Z89VVpdvlgZkPsGt6SxAsa+49gJuWc3WP0XPSK6XUADE5xdmMRFnBur4Nlv+hKhmd7R
-         94A/4jRVQe7kGOuQpHc+IgE3DOGcgVfyVAWQm8hXoxCQw7Fi4185zUIhu+mUcTxSLBG6
-         H41stua+0/vvduBwlJ+yaGkgQzjxrx9+TLbVaDtHP/4eof8BGum8GpVFyh0TE37s218r
-         DI7CgFOFwdN1lYY3pXvT1OFJ38aECBl9cunioBsm5F2CqJLb1jhX6u0iPB6sDCr0Pgvh
-         3tFA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhpDpEvzB2Uwvu5fhLuwQHQ2humHYx50726zGTbsEJj59TkhiyCIEeiCixDJI+g6bi+W3sIOU4zpCGTY9kb7Tp8H8qCfvIrZIRYBgR
-X-Gm-Message-State: AOJu0YxTU421Cmc39dNBOxC0X1R4wRSA8KdO0xbrKJdVYGgZwAWdnwmY
-	cPUrqLi2klSo+wvdpS+em/OKY34bsE0NyKLKHUJcVYyIvU4vc4xnkQNMMZCukQ==
-X-Google-Smtp-Source: AGHT+IENHla9VOs9zol9LIJSv1150+DgeHz4OsMQu2kACgbSSAPw34HTPzLa823VVZ1Js6TnsSST2Q==
-X-Received: by 2002:ae9:ec08:0:b0:78e:df14:19dc with SMTP id h8-20020ae9ec08000000b0078edf1419dcmr4888734qkg.20.1713209696184;
-        Mon, 15 Apr 2024 12:34:56 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id s26-20020ae9f71a000000b0078d3b54eb76sm6718055qkg.78.2024.04.15.12.34.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 12:34:55 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 15 Apr 2024 19:34:42 +0000
-Subject: [PATCH 25/35] media: venus: Use the correct div_ function
+        d=1e100.net; s=20230601; t=1713209689; x=1713814489;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=74eh0UAxjJzTVRALg/TqF+8BFcarO+L4T6AcFES85ZQ=;
+        b=gczBsqGmXarEy0xWmktlWfw/akbZLWuwD5sVRVdHLYl/PTUAb+t5uWkesySYZbX7Xz
+         AMDGWqFjydkYuN5WumuRHVBz6Jn18EhqeQibduMkQycGVKJG8jVbkc4udnekO7cYqIR8
+         PpPveuwhfB1zw5j9I9lNxn0gjqdPMDxOwvSb3gEJIhh8jTEeZsQadKO/Q3DuFC56jqET
+         CBFpX7rktQfrwd1t/7G5epNvbqF3P3VhctNaF/i78Nz0ZwHzEG068CYzDfibVPxlh4El
+         f5w1vQvrhhvutpkBbHKo6hWV7qkOIuCdRfZx9kPptayK5ScKBRm7tywJyEAiRFvhsOpj
+         QXaA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQhcbXe/zSDtNI41dqmlVX3Y7UnQkBy70lLPHtjUHHYPI4JiDHw2IyhnE+eRtrokGpB8WhtRwmnxGwNZanguhCiBWFu6jukCknxuNi
+X-Gm-Message-State: AOJu0Yz/hE3ejXxIb/tx2wFjZpWe5onwqgCDND02Y2/Wb+XC2vqvF40V
+	WJIrpXAhvmsQOXv5KNEo7RpedTcDzx4QitXeLPDjbCbdZwG+VWqdCwDZNqzT36o=
+X-Google-Smtp-Source: AGHT+IFQbBYBAbKPlge2VUflWQ2uNCh+LB7V46pgV2EVpKugyDBFZB4CcvFXwqvdSBuJQ983f8Qc0A==
+X-Received: by 2002:a2e:9bcc:0:b0:2d7:16f6:f678 with SMTP id w12-20020a2e9bcc000000b002d716f6f678mr5697752ljj.15.1713209689508;
+        Mon, 15 Apr 2024 12:34:49 -0700 (PDT)
+Received: from [172.30.205.18] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id c3-20020a2ea1c3000000b002d8c9bcedcdsm1344155ljm.95.2024.04.15.12.34.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 12:34:48 -0700 (PDT)
+Message-ID: <c02f9730-3182-46b4-b584-02487aafa22b@linaro.org>
+Date: Mon, 15 Apr 2024 21:34:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] dt-bindings: arm: Document reboot mode magic
+To: Elliot Berman <quic_eberman@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Andy Yan <andy.yan@rock-chips.com>, Lorenzo Pieralisi
+ <lpieralisi@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Cc: Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+ Melody Olvera <quic_molvera@quicinc.com>,
+ Shivendra Pratap <quic_spratap@quicinc.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Florian Fainelli <florian.fainelli@broadcom.com>, linux-pm@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
+ <20240414-arm-psci-system_reset2-vendor-reboots-v2-2-da9a055a648f@quicinc.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240414-arm-psci-system_reset2-vendor-reboots-v2-2-da9a055a648f@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240415-fix-cocci-v1-25-477afb23728b@chromium.org>
-References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
-In-Reply-To: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
-To: Martin Tuma <martin.tuma@digiteqautomotive.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
- Hugues Fruchet <hugues.fruchet@foss.st.com>, 
- Alain Volmat <alain.volmat@foss.st.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Paul Kocialkowski <paul.kocialkowski@bootlin.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Thierry Reding <thierry.reding@gmail.com>, 
- Jonathan Hunter <jonathanh@nvidia.com>, 
- Sowjanya Komatineni <skomatineni@nvidia.com>, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>, 
- Abylay Ospan <aospan@netup.ru>, 
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, 
- Dmitry Osipenko <digetx@gmail.com>, 
- Stanimir Varbanov <stanimir.k.varbanov@gmail.com>, 
- Vikash Garodia <quic_vgarodia@quicinc.com>, 
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>, 
- Sylvain Petinot <sylvain.petinot@foss.st.com>, 
- Jacopo Mondi <jacopo+renesas@jmondi.org>, 
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>, 
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
- =?utf-8?q?Niklas_S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>, 
- Pavel Machek <pavel@ucw.cz>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev, 
- linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
 
-us_per_frame does not fit in u32
 
-Found with cocci:
-drivers/media/platform/qcom/venus/venc.c:418:1-7: WARNING: do_div() does a 64-by-32 division, please consider using div64_u64 instead.
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/platform/qcom/venus/venc.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+On 4/14/24 21:30, Elliot Berman wrote:
+> Add bindings to describe vendor-specific reboot modes. Values here
+> correspond to valid parameters to vendor-specific reset types in PSCI
+> SYSTEM_RESET2 call.
+> 
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> ---
 
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 3ec2fb8d9fab..de06e1712d09 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -393,7 +393,7 @@ static int venc_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
- 	struct venus_inst *inst = to_inst(file);
- 	struct v4l2_outputparm *out = &a->parm.output;
- 	struct v4l2_fract *timeperframe = &out->timeperframe;
--	u64 us_per_frame, fps;
-+	u64 us_per_frame;
- 
- 	if (a->type != V4L2_BUF_TYPE_VIDEO_OUTPUT &&
- 	    a->type != V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
-@@ -414,11 +414,8 @@ static int venc_s_parm(struct file *file, void *fh, struct v4l2_streamparm *a)
- 	if (!us_per_frame)
- 		return -EINVAL;
- 
--	fps = (u64)USEC_PER_SEC;
--	do_div(fps, us_per_frame);
--
-+	inst->fps = div64_u64(USEC_PER_SEC, us_per_frame);
- 	inst->timeperframe = *timeperframe;
--	inst->fps = fps;
- 
- 	return 0;
- }
+[...]
 
--- 
-2.44.0.683.g7961c838ac-goog
 
+> +
+> +    // Case 5: SYSTEM_RESET2 vendor resets
+> +    psci {
+> +      compatible = "arm,psci-1.0";
+> +      method = "smc";
+> +
+> +      mode-edl = <0>;
+> +      mode-bootloader = <1 2>;
+
+These properties seem overly generic, and with PSCI only growing every
+now and then, I think a reboot-mode (or similar) subnode would be in
+order here
+
+Konrad
 
