@@ -1,111 +1,94 @@
-Return-Path: <linux-kernel+bounces-144934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F18608A4CE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:48:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 105D78A4CE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:49:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A72A91F22F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:48:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C67D7285604
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8295D477;
-	Mon, 15 Apr 2024 10:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F48F5C911;
+	Mon, 15 Apr 2024 10:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DmPlp+Gw"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KcHWyvnG"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF5F5B692;
-	Mon, 15 Apr 2024 10:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58EAD58AA4;
+	Mon, 15 Apr 2024 10:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713178092; cv=none; b=eF9m+gcFYoIAOdb/tKTW7zNcwOvur2xrhjtUt0JJDkDK+CF9nOizyaYr+T4mR4jK+wjpe6wtmUSeLbLunGCM4dC5GgQYZNz6cX7whJcLI8czLWAZnERRuy/tQQkX48yyip/QE0CxbwN+6FN8k8aU4c57GyfSzI8jcQsduIMPX0o=
+	t=1713178155; cv=none; b=AhhhxAiUQSEYyNTcEUBYL4vCtoeei9y/DROyRNRj4EWnb+m14GqFADskrZ2E+hXySqYsv81WsUwrxkAlQQtm2uqa4V6Qx4GjoMQkw2ZbOvB2JLfzqjehuvvBzwcp5RFQ+ZAu8vvOlbYtJAwj/KMdQ5Nk/k77bw11xEWdL9XxRPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713178092; c=relaxed/simple;
-	bh=DHHOkCShD1hzMwPMuxL6SrFxpgSganyXDD6xvwRxLUY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EU1CxCT0GTZouk3hhRqsio4WG8qRUPN4esVBqcXPmqoFeLFNrnuWTqDPCWhFSPIkR3Ic5STiyt9dz5zfaFqkpa6lq1POtHwKogDejCt5eCwgzPcl5sS6mpWsMWaWuKaDkAxA5O6rxHgFQje/lqj1LSuZsdDx/gbMu9zY0CJt5zc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DmPlp+Gw; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=RaoQRV0+66EHGN6m1Ed2GcaJhrluoYf96YNmq1kLoeM=; b=DmPlp+GwTjnqhKH6J+sryoEdrY
-	Bs7/bAK5dGN/tvOZpggS1MRWFWhxCzXtg3Kme5+z0u7Td+mbEbDDM50WNlWh1bBT5LGWUxcb+bGHm
-	elRahugHUcxnEkAqkbSjVEdy4EY9K3hAojTO6rN2gFUgyfCr0rBFNu0FLG+U39e1a1V9WMtD/KjXZ
-	Zp9hCayzKEN/2qzib0qaBIaeLkLJf4Ht0/GJYYy/QPucZKIP2egPoJY7GIjLvQztCzQtItKx8NefU
-	MgyHUypo6g915o9W6pq9YTc3bSEs3SrWCDaJITQ7Iyh1VXY7BNiW5EFf6MEbQ4nSlfuaPnF415DH5
-	Z7AJDBhA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwJsN-0000000AXAk-0b8k;
-	Mon, 15 Apr 2024 10:47:52 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id C563430040C; Mon, 15 Apr 2024 12:47:50 +0200 (CEST)
-Date: Mon, 15 Apr 2024 12:47:50 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>, Helge Deller <deller@gmx.de>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, x86@kernel.org
-Subject: Re: [RFC PATCH 6/7] execmem: add support for cache of large ROX pages
-Message-ID: <20240415104750.GJ40213@noisy.programming.kicks-ass.net>
-References: <20240411160526.2093408-1-rppt@kernel.org>
- <20240411160526.2093408-7-rppt@kernel.org>
+	s=arc-20240116; t=1713178155; c=relaxed/simple;
+	bh=VkoLIjMfNZTvr+tRbMnom1duDqUONl1TjFQKiVbF0Lc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UAa8nIwpgoiw/Y7smx0tJl9Id2PPlvpOeLqmgWzwjQki5ws2cV348MteK1QuBi7mdMQyIXMA7JQ+J7yPi6qYwV7JMjH9mKfvD+gBYFhAZDxE5BPIgUsYG8jcisllT3kONEv0rFY5mdHM8T1HPCvTr2eGP+QOPEUTPH+XKWufsSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KcHWyvnG; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713178152;
+	bh=VkoLIjMfNZTvr+tRbMnom1duDqUONl1TjFQKiVbF0Lc=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=KcHWyvnGAgdW9ZW4VFd4Xi9hmwJAWTZ35eKwXcw2bVHYhaWIqoDxUnhLHsG32T1OU
+	 waSGhlxo+xMZdyyvRWL6tbfEeIbMLdJjXMcOP03/xyUgH8q1VMB7OuBVsXnq1JjGXN
+	 RIekDF2m4QzemuXTd/Hb4SYd6U63g8jLDLrKDMYVKGqjIBWwOe15RdykL7tscHD9gS
+	 V/XoBBjC6RR0Idz9F+ZOSTL/e+VH4gb0Xw94LNdf+AUJ2Uxz4GeSS7luTSC7aW2Jh5
+	 U+KsCndweUCNFjRdgE/l9/jc2SpyJwLy/c+bfsMSBZFdAPxSWRz1L7PpHbR9cAII8l
+	 IrFqGtuHOZn5w==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E957A378203F;
+	Mon, 15 Apr 2024 10:49:10 +0000 (UTC)
+Message-ID: <1306b0ec-24b3-426b-b656-dd8cc9741912@collabora.com>
+Date: Mon, 15 Apr 2024 12:49:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411160526.2093408-7-rppt@kernel.org>
+User-Agent: Mozilla Thunderbird
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH 14/14] ASoC: SOF: mediatek: mt8195: Constify
+ snd_sof_dsp_ops
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>
+Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240414-n-const-ops-var-v1-0-8f53ee5d981c@kernel.org>
+ <20240414-n-const-ops-var-v1-14-8f53ee5d981c@kernel.org>
+Content-Language: en-US
+In-Reply-To: <20240414-n-const-ops-var-v1-14-8f53ee5d981c@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 07:05:25PM +0300, Mike Rapoport wrote:
+Il 14/04/24 20:47, Krzysztof Kozlowski ha scritto:
+> 'struct snd_sof_dsp_ops' is not modified by core code, so it can be made
+> const for increased code safety.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> To populate the cache, a writable large page is allocated from vmalloc with
-> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
-> ROX.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-> +static void execmem_invalidate(void *ptr, size_t size, bool writable)
-> +{
-> +	if (execmem_info->invalidate)
-> +		execmem_info->invalidate(ptr, size, writable);
-> +	else
-> +		memset(ptr, 0, size);
-> +}
 
-+static void execmem_invalidate(void *ptr, size_t size, bool writeable)
-+{
-+       /* fill memory with INT3 instructions */
-+       if (writeable)
-+               memset(ptr, 0xcc, size);
-+       else
-+               text_poke_set(ptr, 0xcc, size);
-+}
-
-Thing is, 0xcc (aka INT3_INSN_OPCODE) is not an invalid instruction.
-It raises #BP not #UD.
 
