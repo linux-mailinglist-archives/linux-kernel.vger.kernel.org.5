@@ -1,156 +1,119 @@
-Return-Path: <linux-kernel+bounces-144437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C9B48A466F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:07:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5179E8A466E
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:07:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5751C21271
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:07:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7F242824F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 01:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A003BE6C;
-	Mon, 15 Apr 2024 01:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93876D29E;
+	Mon, 15 Apr 2024 01:06:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GFYRa/iS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AP+/Pkre"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB44134AC;
-	Mon, 15 Apr 2024 01:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B748333CA;
+	Mon, 15 Apr 2024 01:06:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713143225; cv=none; b=ruw7+UFLXt97caJ2Ppdtcfqi1IBJNg6lZNgZ7Uv3TKyjw5/BZY4RR8flFT9iGJW01xPQ1JvgAmh+iJ0/d0XQ1v0XKRthalfe2UMoTV09YofybYlJ+u3p/3g/ZW5qdb7BeeUw9j3robRCobFWKl4IOeE6pf4va8JfDgXwCAqyaUg=
+	t=1713143213; cv=none; b=IjRHcnB4lcszKPGHqGMm9Qzoszh/GcnPosgI5C5ViMcwecDHFdxhbSEsQYX2b2wtLejCTV8I3ljs4DY0iM1ZqbtQXc+9gOlUF4mctS8Bvx4qRFClR1H79xwGP73tD8q3yOmXiCTcZqO9ov01fiNw7EoJToK9t2whE0hsLeKiZN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713143225; c=relaxed/simple;
-	bh=bJNrSYB09b8z+tlGP3CjyvyKkpqB54wXqUvtpor+eRE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fab8r3aG2oSSAJNCT0ky10E/O+a4dondcvHcydSHrwitMVgeRbFRzkW/GAgRn/XkJeJhSXHew17yayLigW86QRFQbuBA1HaeraLe1/JprXcRcyC4VhJC7nkPZwyjRLZh2A8kBVBEsz9C4SA+QWwxTx1YTQn01LFWF85t/0qgmjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GFYRa/iS; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713143224; x=1744679224;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=bJNrSYB09b8z+tlGP3CjyvyKkpqB54wXqUvtpor+eRE=;
-  b=GFYRa/iSvrEJJg30AqDw5/TmoiR/fnClp2y8GRbBgtOHLi1JdFVYc5Nv
-   84dcOsaF0OLl9s5BNOLaXJo2xMG3btIrndExF8BGxzo2scsxotdaRDjLk
-   DvlLEVziLm4KdghgoixEoqeGBgc+nsO1Fi4vY0H3Musam8u9ZhwpnufIP
-   m91aNThm7INy4KqVAsNJWzl6ihyG06L/aUT+ohnrAyeCEyn3dvpD9w5+R
-   ZQKat0nqYqR+cffP0Y/hdIcn9gHgmWF1gIDguHjAApYxN2lXdU9KwvJex
-   K342M90ge53BBVuUAiaNjcWd0NTBboSAltc2UKAXSVlHdMmSY1e6kGuHB
-   w==;
-X-CSE-ConnectionGUID: eS5frwSiTtO5yb7eqme1YQ==
-X-CSE-MsgGUID: 0M0U979cSeOD7ZSQkpwVug==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="12294494"
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="12294494"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 18:07:03 -0700
-X-CSE-ConnectionGUID: B260IZR8SfOOnFPYEYIjdA==
-X-CSE-MsgGUID: u+xe5U4QTd+frt1uiy8XBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,202,1708416000"; 
-   d="scan'208";a="22333842"
-Received: from xiongzha-mobl1.ccr.corp.intel.com (HELO [10.124.244.162]) ([10.124.244.162])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2024 18:06:59 -0700
-Message-ID: <9469faf7-1659-4436-848f-53ec01d967f2@linux.intel.com>
-Date: Mon, 15 Apr 2024 09:06:44 +0800
+	s=arc-20240116; t=1713143213; c=relaxed/simple;
+	bh=rykQa5lyIfiHN9qYO+UH/csm4L0wBhXCNiha9aVGAS8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=btzYzsN1oSPIdPJ3LDhO1xxgR/Zb9xl+zFis1rUGjcFweatPCaUnREoPlNy05OIiEoKnsCX8RRMNhRM4ShQtwWRt+0F7VrYX0RshKE+Iem76TfTj5RvZefm3BIKoJM52YNsmzMySgP4MgwPE3tHgz2JLhnWi+daXEr2u6/HTxAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AP+/Pkre; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B899DC072AA;
+	Mon, 15 Apr 2024 01:06:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713143213;
+	bh=rykQa5lyIfiHN9qYO+UH/csm4L0wBhXCNiha9aVGAS8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AP+/PkrexOxpAHNN0YFHU1E800DYe/dV1yegf+/alc3ol+qoXvemnIML/FpOsCEZJ
+	 rN/5GIqtxaQSRVAq5ZT2i+etORasmmeAMxK4UFOQedSkwyWkHYYsuJinCLJf0aWace
+	 sMCofiDHLXbDkaWe/45J0y+eRyR/05CDVM7Lcnya5kD/cXchEcE8NbGWLlI75ZKqc2
+	 UX9qhYJWPF3SlGyOMVYB8hHTe9UVPppXnuMuScL5XY62p1hF+N991P+9wuAp7ROMxm
+	 7dSENQwh1P1Q9eVBgHrMtEGodKg/dkuS9HjZgiUbLQPfwOIsHjtyPkpggYlaVY1D0H
+	 iMqHoGZ5KcI3Q==
+Date: Mon, 15 Apr 2024 10:06:50 +0900
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Saravana Kannan <saravanak@google.com>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Len Brown <lenb@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	kernel-team@android.com, Wolfram Sang <wsa@kernel.org>,
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] of: dynamic: Fix overlayed devices not probing
+ because of fw_devlink
+Message-ID: <Zhx9qqiymJdXwYQs@finisterre.sirena.org.uk>
+References: <20240411235623.1260061-1-saravanak@google.com>
+ <20240411235623.1260061-3-saravanak@google.com>
+ <CAL_JsqKRVVNzgQk6PETfJ9RrDuzT1CTjHWW02Twc_T4C82t__Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 00/41] KVM: x86/pmu: Introduce passthrough vPM
-To: Sean Christopherson <seanjc@google.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
- kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com,
- jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
- irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
- chao.gao@intel.com
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <ZhgX6BStTh05OfEd@google.com>
- <f6f714ef-eb58-4aa9-9c4d-12bfe29c383b@linux.intel.com>
- <Zhl-JFk5hw-hlyGi@google.com>
-Content-Language: en-US
-From: "Zhang, Xiong Y" <xiong.y.zhang@linux.intel.com>
-In-Reply-To: <Zhl-JFk5hw-hlyGi@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="w8x69Pci+HaC+o9L"
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKRVVNzgQk6PETfJ9RrDuzT1CTjHWW02Twc_T4C82t__Q@mail.gmail.com>
+X-Cookie: You might have mail.
 
 
+--w8x69Pci+HaC+o9L
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 4/13/2024 2:32 AM, Sean Christopherson wrote:
-> On Fri, Apr 12, 2024, Xiong Y Zhang wrote:
->>>> 2. NMI watchdog
->>>>    the perf event for NMI watchdog is a system wide cpu pinned event, it
->>>>    will be stopped also during vm running, but it doesn't have
->>>>    attr.exclude_guest=1, we add it in this RFC. But this still means NMI
->>>>    watchdog loses function during VM running.
->>>>
->>>>    Two candidates exist for replacing perf event of NMI watchdog:
->>>>    a. Buddy hardlock detector[3] may be not reliable to replace perf event.
->>>>    b. HPET-based hardlock detector [4] isn't in the upstream kernel.
->>>
->>> I think the simplest solution is to allow mediated PMU usage if and only if
->>> the NMI watchdog is disabled.  Then whether or not the host replaces the NMI
->>> watchdog with something else becomes an orthogonal discussion, i.e. not KVM's
->>> problem to solve.
->> Make sense. KVM should not affect host high priority work.
->> NMI watchdog is a client of perf and is a system wide perf event, perf can't
->> distinguish a system wide perf event is NMI watchdog or others, so how about
->> we extend this suggestion to all the system wide perf events ?  mediated PMU
->> is only allowed when all system wide perf events are disabled or non-exist at
->> vm creation.
-> 
-> What other kernel-driven system wide perf events are there?
-does "kernel-driven" mean perf events created through perf_event_create_kernel_counter() like nmi_watchdog and kvm perf events ?
-User can create system wide perf event through "perf record -e {} -a" also, I call it as user-driven system wide perf events.
-Perf subsystem doesn't distinguish "kernel-driven" and "user-driven" system wide perf events.
-> 
->> but NMI watchdog is usually enabled, this will limit mediated PMU usage.
-> 
-> I don't think it is at all unreasonable to require users that want optimal PMU
-> virtualization to adjust their environment.  And we can and should document the
-> tradeoffs and alternatives, e.g. so that users that want better PMU results don't
-> need to re-discover all the "gotchas" on their own.
-> 
-> This would even be one of the rare times where I would be ok with a dmesg log.
-> E.g. if KVM is loaded with enable_mediated_pmu=true, but there are system wide
-> perf events, pr_warn() to explain the conflict and direct the user at documentation
-> explaining how to make their system compatible with mediate PMU usage.> 
->>>> 3. Dedicated kvm_pmi_vector
->>>>    In emulated vPMU, host PMI handler notify KVM to inject a virtual
->>>>    PMI into guest when physical PMI belongs to guest counter. If the
->>>>    same mechanism is used in passthrough vPMU and PMI skid exists
->>>>    which cause physical PMI belonging to guest happens after VM-exit,
->>>>    then the host PMI handler couldn't identify this PMI belongs to
->>>>    host or guest.
->>>>    So this RFC uses a dedicated kvm_pmi_vector, PMI belonging to guest
->>>>    has this vector only. The PMI belonging to host still has an NMI
->>>>    vector.
->>>>
->>>>    Without considering PMI skid especially for AMD, the host NMI vector
->>>>    could be used for guest PMI also, this method is simpler and doesn't
->>>
->>> I don't see how multiplexing NMIs between guest and host is simpler.  At best,
->>> the complexity is a wash, just in different locations, and I highly doubt it's
->>> a wash.  AFAIK, there is no way to precisely know that an NMI came in via the
->>> LVTPC.
->> when kvm_intel.pt_mode=PT_MODE_HOST_GUEST, guest PT's PMI is a multiplexing
->> NMI between guest and host, we could extend guest PT's PMI framework to
->> mediated PMU. so I think this is simpler.
-> 
-> Heh, what do you mean by "this"?  Using a dedicated IRQ vector, or extending the
-> PT framework of multiplexing NMI?
-here "this" means "extending the PT framework of multiplexing NMI".
+On Fri, Apr 12, 2024 at 07:54:32AM -0500, Rob Herring wrote:
+> On Thu, Apr 11, 2024 at 6:56=E2=80=AFPM Saravana Kannan <saravanak@google=
+=2Ecom> wrote:
 
-thanks
-> 
+> > +#define get_dev_from_fwnode(fwnode)    get_device((fwnode)->dev)
+
+> I think it is better to not have this wrapper. We want it to be clear
+> when we're acquiring a ref. I know get_device() does that, but I have
+> to look up what get_dev_from_fwnode() does exactly.
+
+Or perhaps calling it get_device_from_fwnode() would make it more
+obvious that it is a get_device() variant?
+
+--w8x69Pci+HaC+o9L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYcfaAACgkQJNaLcl1U
+h9CojAgAgt2fCimmNYhJQqDqfhM2bmWL/w9vqvYjQe8HGvckNhSuz23yy6xPb/bE
+q9dDK6V1xzGLIMriwY4TgiSXPLVdmp4gORRq3/zEsaSIMDbBzgVuMnxFghARPVwT
+8sjCvifFv9N5yOCMHbYhMteie92AzIWo9yrxq10KgKzX/4HURrT1G8n1zu3jOglG
+2OjGQTHa5LeyE+5RdfaUMwE1JhchXojQe7tWE+tK1lqb5Tk4x1sKmCJG9BkZqE6k
+0x5U+V1i77GpyUhFNbkFBFV1ROZ+oeBnIkd311q9Y8vOF3ecYFA0pe4hr3/6ceyo
+cxfTAKuaqYZknFMwFcvvgiKIHuRFDA==
+=+cQa
+-----END PGP SIGNATURE-----
+
+--w8x69Pci+HaC+o9L--
 
