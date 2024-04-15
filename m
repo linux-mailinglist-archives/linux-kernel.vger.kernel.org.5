@@ -1,268 +1,119 @@
-Return-Path: <linux-kernel+bounces-145073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562DF8A4F17
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:34:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 308868A4F21
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:35:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 087751F21C4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:34:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7698B20D13
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E4781FA1;
-	Mon, 15 Apr 2024 12:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CFD6D1A0;
+	Mon, 15 Apr 2024 12:35:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iPdgdq6f";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mMow96Fi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iPdgdq6f";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mMow96Fi"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="UO73SpD7"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345EF3EA7B;
-	Mon, 15 Apr 2024 12:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E89EEBB
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713184450; cv=none; b=XvT2kxxsbjftesYzXcm1A32ANfLe4HI66rBI0j0vErWMqo0rOkf6ifW2z0yWf9kq3ftZGc1Mvayrd50Xx4Gqo1Uc1zIjybXQxTLBuIkc7QIP/Ow0KrQAitomxvbyXXrGg6ufk32gbrxM4AuYCEzXRBbXNtsJjh9psgP+PCLW62Y=
+	t=1713184541; cv=none; b=cD8r1mWI3JlbtDThy1A9AY9NnucMAGNXplDVhseJLq0KrgTva7PhOhXg/gRgunXzmGlygw9/R64Kel8h33ZvTRfMEFqUueDfBw615EZarX2FdT+0+WdJQJG2wA+DUdHDGDE/zpGJLgOlSAJsKXJNZZ/FA1Pf4izv9mp3iEDnHQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713184450; c=relaxed/simple;
-	bh=XISiyAtFHq95w6NCfaJwm5kMhLqyG50dLNVMF8JyFh0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lYZY32gSheJnlBAqwPSchw8Ux4YP8cls5zXsWEINsrHtkEpzVGbDENaayrQJ6Inoxvovo43ne04xM2dKINmJsR/TGAtEHA+XzBgsOLJpBJjOtNxf9gsuk1e3MMaPncxnfZP0SuwJkpFjjCX20d/SJhirr/Q+R5pYppE7ND4pBGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iPdgdq6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mMow96Fi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iPdgdq6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mMow96Fi; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 438473538E;
-	Mon, 15 Apr 2024 12:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713184446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
-	b=iPdgdq6f0/qUkhtm/RFw4S3ZS2j0E6xwp33LssCW8rjplPIWeqAMmtZcPEjXGI4W5u4qIV
-	Ud64zCrRJJwfcDfgIgR2DaFUHYJ7D32xoUkjpVNTUXFX87yv4Th0tfw18+QyBNddbZvqlL
-	O8Rwq68slm2jPGKFdhFoKvPGGr7XyYs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713184446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
-	b=mMow96FiaICW5zQpHM4MQE57bjTTIfpgyig1sWRo2jgFEq91i2o9G8NtMaMmVEZYTcZd8e
-	w4FL62nO61xG10AQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1713184446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
-	b=iPdgdq6f0/qUkhtm/RFw4S3ZS2j0E6xwp33LssCW8rjplPIWeqAMmtZcPEjXGI4W5u4qIV
-	Ud64zCrRJJwfcDfgIgR2DaFUHYJ7D32xoUkjpVNTUXFX87yv4Th0tfw18+QyBNddbZvqlL
-	O8Rwq68slm2jPGKFdhFoKvPGGr7XyYs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1713184446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aZaiXC/ENK8z3Mnd08KZm1Mu7rk07z7GW1TMM5mkzT8=;
-	b=mMow96FiaICW5zQpHM4MQE57bjTTIfpgyig1sWRo2jgFEq91i2o9G8NtMaMmVEZYTcZd8e
-	w4FL62nO61xG10AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 375C71386E;
-	Mon, 15 Apr 2024 12:34:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id PImCDb4eHWYTfwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 15 Apr 2024 12:34:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D6100A0834; Mon, 15 Apr 2024 14:34:05 +0200 (CEST)
-Date: Mon, 15 Apr 2024 14:34:05 +0200
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-	Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-	adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-	linux-kernel@vger.kernel.org, jun.nie@linaro.org,
-	ebiggers@kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
-	yukuai3@huawei.com,
-	syzbot+a158d886ca08a3fecca4@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] ext4: fix race condition between buffer write and
- page_mkwrite
-Message-ID: <20240415123405.htw6vqbzsb3speor@quack3>
-References: <20230530134405.322194-1-libaokun1@huawei.com>
- <20230604030445.GF1128744@mit.edu>
- <20230604210821.GA1257572@mit.edu>
- <ZH1BN+H1/Sa4eLQ4@casper.infradead.org>
- <20230605091655.24vl5fjesfskt3o5@quack3>
- <20230605122141.4njwwx3mrapqhvt4@quack3>
- <ZH33ZzwyLFY48tfA@casper.infradead.org>
- <20230605150855.7oaiplp7r57dcww3@quack3>
- <49d5b109-7cc3-6717-b3c6-6858310aa3ba@huawei.com>
+	s=arc-20240116; t=1713184541; c=relaxed/simple;
+	bh=x/KPjovEA/yFJrg8jHFyhdNqIvozS9PyYfSqcYTlzrM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NcKsC1e23eYropvRoDVyTE6vVUYgtMuyhvNPB9+ilZXVZ8v6hdnHlmYGvIR+cSO+8n+Jyeo02vo80La6Zo7+ujJTNIL4ApaMY+nwbR3/u0d0ny0Y860w4VE9cgJ1q7Gdg+AKTaHnXWvgEIQsRCRs6Yod7Ix2VssY7vvIgeBtucY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UO73SpD7; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e5174ffc2so13357a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713184539; x=1713789339; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F+m99dMu6nu74LL7/6GwhDV83h2jmoItj/TqWmxDl74=;
+        b=UO73SpD7YDto9Vp6vM3kDZVTM+5rLOVOooKGcZ3TcGWaXtVZk6LQL+niZ3qtts1XHn
+         3Ul7rm0x8M0Yi/XCy44L7VWqUGpwZZWwXRPoKMwhEJo9Q+kuxHIpfe7owUU8PLNklqNx
+         Nd9F6fP2E43FTb32OmkZD2U/GdvDNYdrrnu2s7AZPhAuovniDkm09L3lHtl3hbcK/jIK
+         jymlEl69ZqWzJw/10uUx5M1xELHg0KNPHykyR5geSTEgIdgU/WkCsD6lCSJ50FQS/fGV
+         oI4M/iwvsAIpDKVZ1SBLiuBZc6p91vRjMLgEtHb9vsgOz2KFU5Q0Lg2hSr2ovjig3cg5
+         qisQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713184539; x=1713789339;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F+m99dMu6nu74LL7/6GwhDV83h2jmoItj/TqWmxDl74=;
+        b=VKPdpyMSNy1UME7ZCkNpSaKd2MPwhMgiTFCHTbNObfbazdJ5wxeBYy+v+KQEC0ItHB
+         SPpOI+SCoTBccNyyfR1+Q+l2RphiaGmV4v1VMCYNoXTDWVWGNsbf/I+Syn9+Dny98qtp
+         pgDO8Sh9Rkbjdq9nAxJ8lFUsJnEG0nZrWlIlOfQNVvZN1U+Z+8n5H6crENOSXo6vEtCs
+         6zlsuXb1+4ut2WfBMNqtfWmNu4dwtwGqHKzmpWkSXfkS082wODqg/LkE8Zb0oe/hS7r0
+         Q85xraid81QI5AqQAHVN2j/0bkbFococcD+upMnxyApXSv82L5/cfixA97URMDxM8uTt
+         EEwA==
+X-Forwarded-Encrypted: i=1; AJvYcCXRDsvibn/q2fnJckjytTH7lUDqAmkBBiYfDOtr8HJJC+uUAGA0g18sIDPSuGasq9SIB0llVh69DwPV1t7P4EG2BIfj8vE6M4Hzb1jn
+X-Gm-Message-State: AOJu0YyTepE64kQAhxrtvrJfTaDi+7+ud5ErgaosrxRhd8RRSn9Y3/XB
+	G47+2iFonhX4U3wRDQGVK4MCHRPb1qxLGa9/kDR+w4cjkPUF/HOGrvb5puwhpLgPfUqBgOvb+gc
+	Xi+Ek9OkGxmnWZ91fKWSbNp3OCKtjBdGhvLxv+ApWthlefjNv/g6j
+X-Google-Smtp-Source: AGHT+IE6S+TSxd4EsWXWZTzuCgnCVcAcnlwRSRLZS14INH+865qtauJF0v2rUCxEdSvXouYC0WJtvlbdfgOCf1eBCrY=
+X-Received: by 2002:a05:6402:5253:b0:570:2ec6:56b5 with SMTP id
+ t19-20020a056402525300b005702ec656b5mr100509edd.4.1713184538481; Mon, 15 Apr
+ 2024 05:35:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <49d5b109-7cc3-6717-b3c6-6858310aa3ba@huawei.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[a158d886ca08a3fecca4];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,infradead.org,mit.edu,vger.kernel.org,dilger.ca,gmail.com,linaro.org,kernel.org,huawei.com,syzkaller.appspotmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+References: <20240415113436.3261042-1-vschneid@redhat.com>
+In-Reply-To: <20240415113436.3261042-1-vschneid@redhat.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 15 Apr 2024 14:35:24 +0200
+Message-ID: <CANn89iJYX8e_3Or9a5Q55NuQ8ZAHfYL+p_SpM0yz91sdj4HqtQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] tcp/dcpp: Un-pin tw_timer
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: dccp@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rt-users@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, mleitner@redhat.com, 
+	David Ahern <dsahern@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Tomas Glozar <tglozar@redhat.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 15-04-24 12:28:01, Baokun Li wrote:
-> On 2023/6/5 23:08, Jan Kara wrote:
-> > On Mon 05-06-23 15:55:35, Matthew Wilcox wrote:
-> > > On Mon, Jun 05, 2023 at 02:21:41PM +0200, Jan Kara wrote:
-> > > > On Mon 05-06-23 11:16:55, Jan Kara wrote:
-> > > > > Yeah, I agree, that is also the conclusion I have arrived at when thinking
-> > > > > about this problem now. We should be able to just remove the conversion
-> > > > > from ext4_page_mkwrite() and rely on write(2) or truncate(2) doing it when
-> > > > > growing i_size.
-> > > > OK, thinking more about this and searching through the history, I've
-> > > > realized why the conversion is originally in ext4_page_mkwrite(). The
-> > > > problem is described in commit 7b4cc9787fe35b ("ext4: evict inline data
-> > > > when writing to memory map") but essentially it boils down to the fact that
-> > > > ext4 writeback code does not expect dirty page for a file with inline data
-> > > > because ext4_write_inline_data_end() should have copied the data into the
-> > > > inode and cleared the folio's dirty flag.
-> > > > 
-> > > > Indeed messing with xattrs from the writeback path to copy page contents
-> > > > into inline data xattr would be ... interesting. Hum, out of good ideas for
-> > > > now :-|.
-> > > Is it so bad?  Now that we don't have writepage in ext4, only
-> > > writepages, it seems like we have a considerably more benign locking
-> > > environment to work in.
-> > Well, yes, without ->writepage() it might be *possible*. But still rather
-> > ugly. The problem is that in ->writepages() i_size is not stable. Thus also
-> > whether the inode data is inline or not is not stable. We'd need inode_lock
-> > for that but that is not easily doable in the writeback path - inode lock
-> > would then become fs_reclaim unsafe...
-> > 
-> > 								Honza
-> Hi Honza!
-> Hi Ted!
-> Hi Matthew!
-> 
-> Long time later came back to this, because while discussing another similar
-> ABBA problem with Hou Tao, he mentioned VM_FAULT_RETRY, and then I
-> thought that this could be used to solve this problem as well.
-> 
-> The general idea is that if we see a file with inline data in
-> ext4_page_mkwrite(),
-> we release the mmap_lock and grab the inode_lock to convert the inline data,
-> and then return VM_FAULT_RETRY to retry to get the mmap_lock.
-> 
-> The code implementation is as follows, do you have any thoughts?
+On Mon, Apr 15, 2024 at 1:34=E2=80=AFPM Valentin Schneider <vschneid@redhat=
+com> wrote:
+>
+> Hi,
+>
+> This is v5 of the series where the tw_timer is un-pinned to get rid of
+> interferences in isolated CPUs setups.
+>
+> The first patch is a new one stemming from Jakub's bug reported. It's the=
+re
+> mainly to make the reviewing a bit easier, but as it changes behaviour it=
+ should
+> be squashed with the second one.
+>
+> Revisions
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> v4 -> v5
+> ++++++++
+>
+> o Rebased against latest Linus' tree
+> o Converted tw_timer into a delayed work following Jakub's bug report on =
+v4
+>   http://lore.kernel.org/r/20240411100536.224fa1e7@kernel.org
 
-So the problem with this is that VM_FAULT_RETRY is not always an option -
-in particular the caller has to set FAULT_FLAG_ALLOW_RETRY to indicate it
-is prepared to handle VM_FAULT_RETRY return. See how
-maybe_unlock_mmap_for_io() is carefully checking this. There are callers
-(most notably some get_user_pages() users) that don't set
-FAULT_FLAG_ALLOW_RETRY so the escape through VM_FAULT_RETRY is sadly not a
-reliable solution.
+What was the issue again ?
 
-My long-term wish is we were always allowed to use VM_FAULT_RETRY and that
-was actually what motivated some get_user_pages() cleanups I did couple
-years ago. But dealing with all the cases in various drivers was too
-difficult and I've run out of time. Now maybe it would be worth it to
-revisit this since things have changed noticeably and maybe now it would be
-easier to achive the goal...
-
-								Honza
-
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 537803250ca9..e044c11c9cf6 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -6056,15 +6056,36 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
->      if (unlikely(IS_IMMUTABLE(inode)))
->          return VM_FAULT_SIGBUS;
-> 
-> +    /*
-> +     * The ext4 writeback code does not expect dirty page for a file with
-> +     * inline data, so inline data needs to be converted. But it needs to
-> +     * hold the inode_lock when converting, and trying to lock the inode
-> +     * while holding the mmap_lock may result in an ABBA deadlock. So here
-> +     * we release the mmap_lock for conversion and retry after conversion.
-> +     * Only one retry is allowed to avoid endless loops.
-> +     * Acquire xattr_sem to avoid race with inline data conversion.
-> +     */
-> +    down_read(&EXT4_I(inode)->xattr_sem);
-> +    if (ext4_has_inline_data(inode)) {
-> +        up_read(&EXT4_I(inode)->xattr_sem);
-> +
-> +        if (!fault_flag_allow_retry_first(vmf->flags))
-> +            return VM_FAULT_SIGBUS;
-> +
-> +        release_fault_lock(vmf);
-> +
-> +        inode_lock(inode);
-> +        ext4_convert_inline_data(inode);
-> +        inode_unlock(inode);
-> +        return VM_FAULT_RETRY;
-> +    }
-> +    up_read(&EXT4_I(inode)->xattr_sem);
-> +
->      sb_start_pagefault(inode->i_sb);
->      file_update_time(vma->vm_file);
-> 
->      filemap_invalidate_lock_shared(mapping);
-> 
-> -    err = ext4_convert_inline_data(inode);
-> -    if (err)
-> -        goto out_ret;
-> -
->      /*
->       * On data journalling we skip straight to the transaction handle:
->       * there's no delalloc; page truncated will be checked later; the
-> 
-> -- 
-> With Best Regards,
-> Baokun Li
-> .
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Please explain precisely why it was fundamentally tied to the use of
+timers (and this was not possible to fix the issue without
+adding work queues and more dependencies to TCP stack)
 
