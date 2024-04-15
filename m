@@ -1,86 +1,113 @@
-Return-Path: <linux-kernel+bounces-144916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF80B8A4C92
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:33:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF7F8A4C94
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:34:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E06ED1C210A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:33:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D749B20E8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05CB5BAFA;
-	Mon, 15 Apr 2024 10:33:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28B25B694;
+	Mon, 15 Apr 2024 10:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rnyFditB"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hToGEX5H"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5ADE5B20F;
-	Mon, 15 Apr 2024 10:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A215B20F
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713177219; cv=none; b=MbybCJORQ8GRczDMgDG9S33WlAT+I5qDZcR2c36o6I73IjzudB2nGMGCGMS8krNxYepVV+J65Leqx0egG898ncaSfgATZomVIZu2AtWkFhM1jYhGM4XpvWGPqgiZpPfqG83NRDEV5FoXQogaz/9JgVHNwQ4ErvPQc4iBKYpJx4E=
+	t=1713177284; cv=none; b=edcdraHU4aNAEa8TPBWHZcqInvci8CMn+kDuKOPYnynKErGxAJFacCPNbS/jGvun3wCLYUW9IoGPi6C0xSYTBOZFTucFTdjJnU9D0dXbmQKAXIoh1NrvdQw7ewJ1w54wzAsVsgO6EPvOZ7FJNzJL3mKvBDKRzS3P/cnuXlQP/Zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713177219; c=relaxed/simple;
-	bh=hx5s8YmotvAhrLtLSctDiJ/fC4X9KfCW0JvNJiLtpmU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sP+JW4ITJl4AoG46JhltDIwRsY0E86zS2BTjarKnwSg1KZJjX8bIXuEOEgJ/OJtQfcB/wIwJEfyx4iUYCo9fryzvpZH43vEF4n/15pn3h1DjW4hT9x3TgAK38Fyb9+UKrPmarnmGMFEZgsXyg6WmeMoyiJsOVl1UE2wg23l620s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rnyFditB; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713177211;
-	bh=hx5s8YmotvAhrLtLSctDiJ/fC4X9KfCW0JvNJiLtpmU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rnyFditB0BzFnFzj7LFXWWjVfcWdO2ownQtAnHtW/RJuScVy0ut63cuuSBiiz7uVV
-	 eta1WWQGEXVAKq8TCju4WG4UwC8Qd5YkRHV5goSGmRrl9guqozlZCNb7h979b0HqrI
-	 RtgNugSCXoO3MZf+7JcCUOPtwCqoMesh9pb8QePmCMgH0ekuBWzsY3PvP7MhYOW5B/
-	 7y8likFp4trGknm1qAS7rd1HemBVb333JejXJRbJojkLYcmFXSSt/Ec1x8HTJsN9PO
-	 ESrIPmGwUrAuiccmLQXZnmWjQj9Q4dVnmoCEkBtOVfyOXQJb7ebFo1FZKW9e60iiT7
-	 o0uHgCje/szhw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 64001378042B;
-	Mon, 15 Apr 2024 10:33:30 +0000 (UTC)
-Message-ID: <799428ae-83ca-4c91-89d3-8cd1b489bbf3@collabora.com>
-Date: Mon, 15 Apr 2024 12:33:30 +0200
+	s=arc-20240116; t=1713177284; c=relaxed/simple;
+	bh=r+M9Bk+4YRd+zQ8ivjTlZYC6qhnETV86VeSJFPKxcBI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=UPzJRnELsU4qMvxnCYxwojZB6ffGqfivTIC+7Enmz92mtqXJzrqtxxL1avqryjtSF6evSs3gEX9exBDUeMI1cCcK0zBhxS9itODc5KUsk0APJAvp6unM7nDcMiYigjGiD9WsqW27yN9Ep+JISChW2syHWSx9zW1ky5Dphdg9Byg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hToGEX5H; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so486057166b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 03:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713177280; x=1713782080; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ixcHPOvFOOXtJqtF3vNA0iGHZzONIeZBn6zmJrMcgH0=;
+        b=hToGEX5HZtif/uUshqXAbmdUpUFNAUC+U+6Lw1EdLTFUHzI/diKb9dtiBV/ne/xXIx
+         sMqTt9fOF0dt8qcsbXvnXkWQlxNP4rFvtLeYdF+xd/4Sg+qghCmn8i1yvBuQiyRsSjOI
+         Qss46CFjAPpTF1ZH20qAhqK7c5gzMWewG6Jf8BAYN/pIEU0oZhqbWixyIgNgqzt60vrc
+         p4Qjqwz05uojIdOamJ8mizixKj14RXwXY1LQh0XKcH4AlceicjfePESiIDBOZOgePjst
+         +6LyC7BwNWkinc8pOtadnsK3EMye+vnWGIm8TShAmB4xnNfl+VggJNhjF70PKUlts5LN
+         UT9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713177280; x=1713782080;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ixcHPOvFOOXtJqtF3vNA0iGHZzONIeZBn6zmJrMcgH0=;
+        b=UrV6Wv1Ug00WHdF2vkdXuxfq6/Q+IrEioDoa//Nvch/xSw8T9Wb5tXv5dCeiSqr0Eb
+         mY17ynoudA43Qjob81kD0B/zz5RvZxmx8UZXhP1ERFiF7ZsPINni0KQEZGMq2RbyvetJ
+         QV4zGWIFuSA7YoUSV1Uv2R4+4qJdSXbrllwxyj54RXxPnkr2z84mdtsxuMi1rKwBnPMl
+         rc4ptTRsSIM2tV5uUI5HUAuOy9ScioxtHlKXxg9fAi3P9wH8mBBofqpf9blcuN+3DL3a
+         R/lTFm9XW+JJe1B9t1wxx+Rcj275WlDdZF0CVDQPO9QDPiZs0d2LeMcLpNSYd1NRbRSz
+         x0hQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXMzdyukGj8R8wNLH9WalqsvR4h9bLQo4fIratZZIAc8v5IagwtOYGFzFktLtUq4+ZRD3m2qlOItjOcMIl9eQXWHr1ctehhka/xcQWp
+X-Gm-Message-State: AOJu0YxkEb7MzmyqYRA2P846GaJ3W0EMoZmy1lb2CAgJpb8/yUGEDxX8
+	3EZ6YgqENU8gQDTunwWGh7ATK0XMItmqYP2q/wXRD/Pw64jnoztYUJW073vXTHE=
+X-Google-Smtp-Source: AGHT+IE8taSRi7cZZenb22Hrhoo4IcK5IkZ6zpDWyZ3iR0Lu0U9yZ+r/3VZ74qZxKOLyEcvqXb+uAA==
+X-Received: by 2002:a17:907:bb82:b0:a52:2a65:cf2 with SMTP id xo2-20020a170907bb8200b00a522a650cf2mr7787401ejc.13.1713177279707;
+        Mon, 15 Apr 2024 03:34:39 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id v13-20020a17090606cd00b00a526562de1fsm1589133ejb.73.2024.04.15.03.34.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 03:34:39 -0700 (PDT)
+Date: Mon, 15 Apr 2024 13:34:34 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: James Schulman <james.schulman@cirrus.com>,
+	David Rhodes <david.rhodes@cirrus.com>,
+	Richard Fitzgerald <rf@opensource.cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+	patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] ASoC: cs35l41: Fix error code in cs35l41_dsp_init()
+Message-ID: <a50d27fd-716e-4fb0-8519-8798e3c79543@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: mediatek: Drop mediatek,drive-strength-adv
- usage
-To: Chen-Yu Tsai <wenst@chromium.org>,
- Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240412075516.1199846-1-wenst@chromium.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240412075516.1199846-1-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-Il 12/04/24 09:55, Chen-Yu Tsai ha scritto:
-> The "mediatek,drive-strength-adv" pin config property has been
-> deprecated in favor of the generic "drive-strength-microamp" property.
-> 
-> Drop or convert all instances. A value of 0 disables the advanced
-> mode, which is the hardware default.
-> 
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Set the error code on this error path.  Don't return success.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Fixes: eefb831d2e4d ("ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP config")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ sound/soc/codecs/cs35l41.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index f8e57a2fc3e3..2799ccd6b5c7 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -1126,6 +1126,7 @@ static int cs35l41_dsp_init(struct cs35l41_private *cs35l41)
+ 	default:
+ 		dev_err(cs35l41->dev, "wm_halo_init failed - Invalid Boost Type: %d\n",
+ 			cs35l41->hw_cfg.bst_type);
++		ret = -EINVAL;
+ 		goto err_dsp;
+ 	}
+ 
+-- 
+2.43.0
 
 
