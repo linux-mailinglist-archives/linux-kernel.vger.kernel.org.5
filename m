@@ -1,668 +1,936 @@
-Return-Path: <linux-kernel+bounces-145767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A357D8A5A87
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:28:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CD08A5A8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:31:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A5161F22E2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:28:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98F4F1C22DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A087156250;
-	Mon, 15 Apr 2024 19:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1F215664C;
+	Mon, 15 Apr 2024 19:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fYHxrxlc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDV5CSfE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD3CB656;
-	Mon, 15 Apr 2024 19:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6C5155A27;
+	Mon, 15 Apr 2024 19:31:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713209305; cv=none; b=iXrn2mAPVL0CGqCkRE5KznfPRZIxIinKKNGcvuaFszq5uhJzZVtd9zyj5KVcw7dZSnDDwKevUlBH16P5WmeRI7RD6ij+g/UyP3xICFVk+8BakGdlk4WUYAj4DzF2PqCGTSOYoIallLnyhI2tDvbArDggOdLPPpWlfoVEA149apQ=
+	t=1713209469; cv=none; b=bhioTDCKdGT+C4ovXFMBbMAxkkWt6uHRP97/kv6nRmURZa+02Pck2Qre4+dAS6AOlUEosSRelbW88H5PV0qIKdlr1BtiiAOrGIt1hutm+tigA8JMj9dyNlZ1skC+LJ5wh46du6w3loHboOdrUQCkPDJXIWNjTdCJM5wyqKBKT+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713209305; c=relaxed/simple;
-	bh=QQ2teeXacovDt3WqzQ2XWPoxzQtb2WZdpbcJQyZajng=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=UnsSWLbaCwJCo3G+xnr3f1eOrd9AZZLKgmCm9C9PLnHXZVMr5eatF4M2aCdXWYO9HOTbN1sgmHOgAeFiBUbrpetuHqHNA8gIvyWzvz48zUpDwM6a+mL3cJebFdo/wSsEUdTqfUtI5oRKHB9dFM3kSnlQkDdBM1z/2yVdhaadGcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fYHxrxlc; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713209303; x=1744745303;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=QQ2teeXacovDt3WqzQ2XWPoxzQtb2WZdpbcJQyZajng=;
-  b=fYHxrxlcgEloEgYOJflmhE+KzS6/7lUifW52yFuvkKrsAKBaz7LbS0g0
-   SjcG6IRHO4t/TTbPP/7B/QAj146WZHqHauAnQtPBg4NiK4YQfURfvmaBz
-   vB0lsDSuviaJmlRH5PIKNc4EfYyJ/78lJZ1o+mp8cMvfIwxdhFt0CMvIp
-   97nAUlPovdfAiuOucS3pe9cFUgvvP7YdoWb/02kH2Ppk5qzoe2TrQ3yFd
-   0dfrp0RtlRqps2EjGfEQhjqLs1Z9RjIHec2PJA1tp5cEiW3Bocp8XsxOJ
-   +K8Z8QK6urE/FgxSrHsozvUNEMy4dmlxZ4YeuAswIe1YveZrrERJci10w
-   w==;
-X-CSE-ConnectionGUID: bC6I0VjaS+G0912EZ41Blg==
-X-CSE-MsgGUID: 3lNla7CTR4Gc5XsSbvFvrg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="12466060"
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="12466060"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 12:28:20 -0700
-X-CSE-ConnectionGUID: vUUIiobjRB2n8r/TENNTSw==
-X-CSE-MsgGUID: NQd5iZD3S4iKrD+X1GlIug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="22004213"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 15 Apr 2024 12:28:13 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
- <20240410182558.41467-15-haitao.huang@linux.intel.com>
- <D0JXP8HZLEQZ.3PHVXZI140VIH@kernel.org>
- <op.2l81wdjdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D0KXLFE83H9V.3GNOZNN4II125@kernel.org>
-Date: Mon, 15 Apr 2024 14:28:10 -0500
+	s=arc-20240116; t=1713209469; c=relaxed/simple;
+	bh=0BFk36JPOYr+jS2Jvsedu4hhRnXQizaVPCnZMu198Ms=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=FNP85zjFQ+fyyyJ3qrmKTB7mXC7LLx6DjoHvsYpFlWQQBIHKCfXMLoNrZqov4ChCnCGe/ShZ5WnMzziibGMwLtJghnzF7jw1mUFwwhM/3PyjnrOVg+nc2hmFD/injo5iP9Qhmxg3s1XGM3AnpZkkNJ/FN0A0y3UuyKTBddobrm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDV5CSfE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1D28C32786;
+	Mon, 15 Apr 2024 19:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713209469;
+	bh=0BFk36JPOYr+jS2Jvsedu4hhRnXQizaVPCnZMu198Ms=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=sDV5CSfEzdXGup8KVGQ+8/vLsrYoV3czbyv9sz9bi6yqxqd6/HGXgm2NCDrNGLFgS
+	 Zl8TT+85NV8FOD2g62a7rXZEw0klQ8KSI0QY+Xp4A1STNtrGFOrHk9wKOCqqMuVgIw
+	 HofR4F7DSDfZ1gsc3VXofbttoUc+CYPHmPPNmy6kwKr6bs4qxMwsPyFEeIGy0wxZvk
+	 y0/Rz+x5rxqRahrmLj+Opq/JFemiS7i9B7kix927ZVR6uflTOK5hjy8Y+BSReuj6Jh
+	 IlLEbzFnjnfX7MvtBd4NowmpTdzbaDbcSCIggXJrIeZbGcdAcDKAVgSGjrnaTB5AXq
+	 BaAxTJo/Wvn1Q==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2maa08nfwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D0KXLFE83H9V.3GNOZNN4II125@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 15 Apr 2024 22:31:01 +0300
+Message-Id: <D0KY2HE7TMDH.2X3BQUDMRK17U@kernel.org>
+Cc: <linux-security-module@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+ <bpf@vger.kernel.org>, <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
+ <linux-integrity@vger.kernel.org>, <wufan@linux.microsoft.com>,
+ <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
+ <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
+ <dhowells@redhat.com>, <jikos@kernel.org>, <mkoutny@suse.com>,
+ <ppavlu@suse.com>, <petr.vorel@gmail.com>, <mzerqung@0pointer.de>,
+ <kgold@linux.ibm.com>, "Roberto Sassu" <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v4 02/14] security: Introduce the digest_cache LSM
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
+ <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>,
+ <akpm@linux-foundation.org>, <shuah@kernel.org>,
+ <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+ <mic@digikod.net>
+X-Mailer: aerc 0.17.0
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <20240415142436.2545003-3-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240415142436.2545003-3-roberto.sassu@huaweicloud.com>
 
-On Mon, 15 Apr 2024 14:08:44 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Introduce the digest_cache LSM, to collect digests from various sources
+> (called digest lists), and to store them in kernel memory, in a set of ha=
+sh
+> tables forming a digest cache. Extracted digests can be used as reference
+> values for integrity verification of file data or metadata.
+>
+> A digest cache has three types of references: in the inode security blob =
+of
+> the digest list the digest cache was created from (dig_owner field); in t=
+he
+> security blob of the inodes for which the digest cache is requested
+> (dig_user field); a reference returned by digest_cache_get().
+>
+> References are released with digest_cache_put(), in the first two cases
+> when inodes are evicted from memory, in the last case when that function =
+is
+> explicitly called. Obtaining a digest cache reference means that the dige=
+st
+> cache remains valid and cannot be freed until releasing it and until the
+> total number of references (stored in the digest cache) becomes zero.
+>
+> When digest_cache_get() is called on an inode to compare its digest with
+> a reference value, the digest_cache LSM knows which digest cache to get
+> from the new security.digest_list xattr added to that inode, which contai=
+ns
+> the file name of the desired digest list digests will be extracted from.
+>
+> All digest lists are expected to be in the same directory, defined in the
+> kernel config, and modifiable (with a later patch) at run-time through
+> securityfs. When the digest_cache LSM reads the security.digest_list xatt=
+r,
+> it uses its value as last path component, appended to the default path
+> (unless the default path is a file). If an inode does not have that xattr=
+,
+> the default path is considered as the final destination.
+>
+> The default path can be either a file or a directory. If it is a file, th=
+e
+> digest_cache LSM always uses the same digest cache from that file to veri=
+fy
+> all inodes (the xattr, if present, is ignored). If it is a directory, and
+> the inode to verify does not have the xattr, a subsequent patch will make
+> it possible to iterate and lookup on the digest caches created from each
+> directory entry.
+>
+> Digest caches are created on demand, only when digest_cache_get() is
+> called. The first time a digest cache is requested, the digest_cache LSM
+> creates it and sets its reference in the dig_owner and dig_user fields of
+> the respective inode security blobs. On the next requests, the previously
+> set reference is returned, after incrementing the reference count.
+>
+> Since there might be multiple digest_cache_get() calls for the same inode=
+,
+> or for different inodes pointing to the same digest list, dig_owner_mutex
+> and dig_user_mutex have been introduced to protect the check and assignme=
+nt
+> of the digest cache reference in the inode security blob.
+>
+> Contenders that didn't get the lock also have to wait until the digest
+> cache is fully instantiated (when the bit INIT_IN_PROGRESS is cleared).
+> Dig_owner_mutex cannot be used for waiting on the instantiation to avoid
+> lock inversion with the inode lock for directories.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  MAINTAINERS                                   |   6 +
+>  include/linux/digest_cache.h                  |  32 ++
+>  include/uapi/linux/lsm.h                      |   1 +
+>  include/uapi/linux/xattr.h                    |   3 +
+>  security/Kconfig                              |  11 +-
+>  security/Makefile                             |   1 +
+>  security/digest_cache/Kconfig                 |  16 +
+>  security/digest_cache/Makefile                |   7 +
+>  security/digest_cache/internal.h              |  86 ++++
+>  security/digest_cache/main.c                  | 404 ++++++++++++++++++
+>  security/security.c                           |   3 +-
+>  .../selftests/lsm/lsm_list_modules_test.c     |   3 +
+>  12 files changed, 567 insertions(+), 6 deletions(-)
+>  create mode 100644 include/linux/digest_cache.h
+>  create mode 100644 security/digest_cache/Kconfig
+>  create mode 100644 security/digest_cache/Makefile
+>  create mode 100644 security/digest_cache/internal.h
+>  create mode 100644 security/digest_cache/main.c
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b1ca23ab8732..72801a88449c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6193,6 +6193,12 @@ L:	linux-gpio@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/gpio/gpio-gpio-mm.c
+> =20
+> +DIGEST_CACHE LSM
+> +M:	Roberto Sassu <roberto.sassu@huawei.com>
+> +L:	linux-security-module@vger.kernel.org
+> +S:	Maintained
+> +F:	security/digest_cache/
+> +
+>  DIGITEQ AUTOMOTIVE MGB4 V4L2 DRIVER
+>  M:	Martin Tuma <martin.tuma@digiteqautomotive.com>
+>  L:	linux-media@vger.kernel.org
 
-> On Mon Apr 15, 2024 at 6:13 AM EEST, Haitao Huang wrote:
->> On Sun, 14 Apr 2024 10:01:03 -0500, Jarkko Sakkinen <jarkko@kernel.org>
->> wrote:
->>
->> > On Wed Apr 10, 2024 at 9:25 PM EEST, Haitao Huang wrote:
->> >> To run selftests for EPC cgroup:
->> >>
->> >> sudo ./run_epc_cg_selftests.sh
->> >>
->> >> To watch misc cgroup 'current' changes during testing, run this in a
->> >> separate terminal:
->> >>
->> >> ./watch_misc_for_tests.sh current
->> >>
->> >> With different cgroups, the script starts one or multiple concurrent  
->> SGX
->> >> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
->> >> test case, which loads an enclave of EPC size equal to the EPC  
->> capacity
->> >> available on the platform. The script checks results against the
->> >> expectation set for each cgroup and reports success or failure.
->> >>
->> >> The script creates 3 different cgroups at the beginning with  
->> following
->> >> expectations:
->> >>
->> >> 1) SMALL - intentionally small enough to fail the test loading an
->> >> enclave of size equal to the capacity.
->> >> 2) LARGE - large enough to run up to 4 concurrent tests but fail  
->> some if
->> >> more than 4 concurrent tests are run. The script starts 4 expecting  
->> at
->> >> least one test to pass, and then starts 5 expecting at least one test
->> >> to fail.
->> >> 3) LARGER - limit is the same as the capacity, large enough to run  
->> lots
->> >> of
->> >> concurrent tests. The script starts 8 of them and expects all pass.
->> >> Then it reruns the same test with one process randomly killed and
->> >> usage checked to be zero after all processes exit.
->> >>
->> >> The script also includes a test with low mem_cg limit and LARGE  
->> sgx_epc
->> >> limit to verify that the RAM used for per-cgroup reclamation is  
->> charged
->> >> to a proper mem_cg. For this test, it turns off swapping before  
->> start,
->> >> and turns swapping back on afterwards.
->> >>
->> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> >> ---
->> >> V11:
->> >> - Remove cgroups-tools dependency and make scripts ash compatible.
->> >> (Jarkko)
->> >> - Drop support for cgroup v1 and simplify. (Michal, Jarkko)
->> >> - Add documentation for functions. (Jarkko)
->> >> - Turn off swapping before memcontrol tests and back on after
->> >> - Format and style fixes, name for hard coded values
->> >>
->> >> V7:
->> >> - Added memcontrol test.
->> >>
->> >> V5:
->> >> - Added script with automatic results checking, remove the  
->> interactive
->> >> script.
->> >> - The script can run independent from the series below.
->> >> ---
->> >>  tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
->> >>  .../selftests/sgx/run_epc_cg_selftests.sh     | 275  
->> ++++++++++++++++++
->> >>  .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
->> >>  3 files changed, 302 insertions(+)
->> >>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
->> >>  create mode 100755  
->> tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> >>  create mode 100755  
->> tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> >>
->> >> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh
->> >> b/tools/testing/selftests/sgx/ash_cgexec.sh
->> >> new file mode 100755
->> >> index 000000000000..cfa5d2b0e795
->> >> --- /dev/null
->> >> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
->> >> @@ -0,0 +1,16 @@
->> >> +#!/usr/bin/env sh
->> >> +# SPDX-License-Identifier: GPL-2.0
->> >> +# Copyright(c) 2024 Intel Corporation.
->> >> +
->> >> +# Start a program in a given cgroup.
->> >> +# Supports V2 cgroup paths, relative to /sys/fs/cgroup
->> >> +if [ "$#" -lt 2 ]; then
->> >> +    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
->> >> +    exit 1
->> >> +fi
->> >> +# Move this shell to the cgroup.
->> >> +echo 0 >/sys/fs/cgroup/$1/cgroup.procs
->> >> +shift
->> >> +# Execute the command within the cgroup
->> >> +exec "$@"
->> >> +
->> >> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> >> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> >> new file mode 100755
->> >> index 000000000000..dd56273056fc
->> >> --- /dev/null
->> >> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> >> @@ -0,0 +1,275 @@
->> >> +#!/usr/bin/env sh
->> >> +# SPDX-License-Identifier: GPL-2.0
->> >> +# Copyright(c) 2023, 2024 Intel Corporation.
->> >> +
->> >> +TEST_ROOT_CG=selftest
->> >> +TEST_CG_SUB1=$TEST_ROOT_CG/test1
->> >> +TEST_CG_SUB2=$TEST_ROOT_CG/test2
->> >> +# We will only set limit in test1 and run tests in test3
->> >> +TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
->> >> +TEST_CG_SUB4=$TEST_ROOT_CG/test4
->> >> +
->> >> +# Cgroup v2 only
->> >> +CG_ROOT=/sys/fs/cgroup
->> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB1
->> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB2
->> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB3
->> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB4
->> >> +
->> >> +# Turn on misc and memory controller in non-leaf nodes
->> >> +echo "+misc" >  $CG_ROOT/cgroup.subtree_control && \
->> >> +echo "+memory" > $CG_ROOT/cgroup.subtree_control && \
->> >> +echo "+misc" >  $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> >> +echo "+memory" > $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> >> +echo "+misc" >  $CG_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
->> >> +if [ $? -ne 0 ]; then
->> >> +    echo "# Failed setting up cgroups, make sure misc and memory
->> >> cgroups are enabled."
->> >> +    exit 1
->> >> +fi
->> >> +
->> >> +CAPACITY=$(grep "sgx_epc" "$CG_ROOT/misc.capacity" | awk '{print  
->> $2}')
->> >> +# This is below number of VA pages needed for enclave of capacity
->> >> size. So
->> >> +# should fail oversubscribed cases
->> >> +SMALL=$(( CAPACITY / 512 ))
->> >> +
->> >> +# At least load one enclave of capacity size successfully, maybe up  
->> to
->> >> 4.
->> >> +# But some may fail if we run more than 4 concurrent enclaves of
->> >> capacity size.
->> >> +LARGE=$(( SMALL * 4 ))
->> >> +
->> >> +# Load lots of enclaves
->> >> +LARGER=$CAPACITY
->> >> +echo "# Setting up limits."
->> >> +echo "sgx_epc $SMALL" > $CG_ROOT/$TEST_CG_SUB1/misc.max && \
->> >> +echo "sgx_epc $LARGE" >  $CG_ROOT/$TEST_CG_SUB2/misc.max && \
->> >> +echo "sgx_epc $LARGER" > $CG_ROOT/$TEST_CG_SUB4/misc.max
->> >> +if [ $? -ne 0 ]; then
->> >> +    echo "# Failed setting up misc limits."
->> >> +    exit 1
->> >> +fi
->> >> +
->> >> +clean_up()
->> >> +{
->> >> +    sleep 2
->> >> +    rmdir $CG_ROOT/$TEST_CG_SUB2
->> >> +    rmdir $CG_ROOT/$TEST_CG_SUB3
->> >> +    rmdir $CG_ROOT/$TEST_CG_SUB4
->> >> +    rmdir $CG_ROOT/$TEST_CG_SUB1
->> >> +    rmdir $CG_ROOT/$TEST_ROOT_CG
->> >> +}
->> >> +
->> >> +timestamp=$(date +%Y%m%d_%H%M%S)
->> >> +
->> >> +test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
->> >> +
->> >> +PROCESS_SUCCESS=1
->> >> +PROCESS_FAILURE=0
->> >> +
->> >> +# Wait for a process and check for expected exit status.
->> >> +#
->> >> +# Arguments:
->> >> +#	$1 - the pid of the process to wait and check.
->> >> +#	$2 - 1 if expecting success, 0 for failure.
->> >> +#
->> >> +# Return:
->> >> +#	0 if the exit status of the process matches the expectation.
->> >> +#	1 otherwise.
->> >> +wait_check_process_status() {
->> >> +    pid=$1
->> >> +    check_for_success=$2
->> >> +
->> >> +    wait "$pid"
->> >> +    status=$?
->> >> +
->> >> +    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq  
->> 0
->> >> ]; then
->> >> +        echo "# Process $pid succeeded."
->> >> +        return 0
->> >> +    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status  
->> -ne
->> >> 0 ]; then
->> >> +        echo "# Process $pid returned failure."
->> >> +        return 0
->> >> +    fi
->> >> +    return 1
->> >> +}
->> >> +
->> >> +# Wait for a set of processes and check for expected exit status
->> >> +#
->> >> +# Arguments:
->> >> +#	$1 - 1 if expecting success, 0 for failure.
->> >> +#	remaining args - The pids of the processes
->> >> +#
->> >> +# Return:
->> >> +#	0 if exit status of any process matches the expectation.
->> >> +#	1 otherwise.
->> >> +wait_and_detect_for_any() {
->> >> +    check_for_success=$1
->> >> +
->> >> +    shift
->> >> +    detected=1 # 0 for success detection
->> >> +
->> >> +    for pid in $@; do
->> >> +        if wait_check_process_status "$pid" "$check_for_success";  
->> then
->> >> +            detected=0
->> >> +            # Wait for other processes to exit
->> >> +        fi
->> >> +    done
->> >> +
->> >> +    return $detected
->> >> +}
->> >> +
->> >> +echo "# Start unclobbered_vdso_oversubscribed with SMALL limit,
->> >> expecting failure..."
->> >> +# Always use leaf node of misc cgroups
->> >> +# these may fail on OOM
->> >> +./ash_cgexec.sh $TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log
->> >> 2>&1
->> >> +if [ $? -eq 0 ]; then
->> >> +    echo "# Fail on SMALL limit, not expecting any test passes."
->> >> +    clean_up
->> >> +    exit 1
->> >> +else
->> >> +    echo "# Test failed as expected."
->> >> +fi
->> >> +
->> >> +echo "# PASSED SMALL limit."
->> >> +
->> >> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests  
->> with
->> >> LARGE limit,
->> >> +        expecting at least one success...."
->> >> +
->> >> +pids=""
->> >> +for i in 1 2 3 4; do
->> >> +    (
->> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd
->> >> >cgtest_large_positive_$timestamp.$i.log 2>&1
->> >> +    ) &
->> >> +    pids="$pids $!"
->> >> +done
->> >> +
->> >> +
->> >> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> >> +    echo "# PASSED LARGE limit positive testing."
->> >> +else
->> >> +    echo "# Failed on LARGE limit positive testing, no test passes."
->> >> +    clean_up
->> >> +    exit 1
->> >> +fi
->> >> +
->> >> +echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests  
->> with
->> >> LARGE limit,
->> >> +        expecting at least one failure...."
->> >> +pids=""
->> >> +for i in 1 2 3 4 5; do
->> >> +    (
->> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd
->> >> >cgtest_large_negative_$timestamp.$i.log 2>&1
->> >> +    ) &
->> >> +    pids="$pids $!"
->> >> +done
->> >> +
->> >> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> >> +    echo "# PASSED LARGE limit negative testing."
->> >> +else
->> >> +    echo "# Failed on LARGE limit negative testing, no test fails."
->> >> +    clean_up
->> >> +    exit 1
->> >> +fi
->> >> +
->> >> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests  
->> with
->> >> LARGER limit,
->> >> +        expecting no failure...."
->> >> +pids=""
->> >> +for i in 1 2 3 4 5 6 7 8; do
->> >> +    (
->> >> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd
->> >> >cgtest_larger_$timestamp.$i.log 2>&1
->> >> +    ) &
->> >> +    pids="$pids $!"
->> >> +done
->> >> +
->> >> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> >> +    echo "# Failed on LARGER limit, at least one test fails."
->> >> +    clean_up
->> >> +    exit 1
->> >> +else
->> >> +    echo "# PASSED LARGER limit tests."
->> >> +fi
->> >> +
->> >> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests  
->> with
->> >> LARGER limit,
->> >> +      randomly kill one, expecting no failure...."
->> >> +pids=""
->> >> +for i in 1 2 3 4 5 6 7 8; do
->> >> +    (
->> >> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd
->> >> >cgtest_larger_kill_$timestamp.$i.log 2>&1
->> >> +    ) &
->> >> +    pids="$pids $!"
->> >> +done
->> >> +random_number=$(awk 'BEGIN{srand();print int(rand()*5)}')
->> >> +sleep $((random_number + 1))
->> >> +
->> >> +# Randomly select a process to kill
->> >> +# Make sure usage counter not leaked at the end.
->> >> +RANDOM_INDEX=$(awk 'BEGIN{srand();print int(rand()*8)}')
->> >> +counter=0
->> >> +for pid in $pids; do
->> >> +    if [ "$counter" -eq "$RANDOM_INDEX" ]; then
->> >> +        PID_TO_KILL=$pid
->> >> +        break
->> >> +    fi
->> >> +    counter=$((counter + 1))
->> >> +done
->> >> +
->> >> +kill $PID_TO_KILL
->> >> +echo "# Killed process with PID: $PID_TO_KILL"
->> >> +
->> >> +any_failure=0
->> >> +for pid in $pids; do
->> >> +    wait "$pid"
->> >> +    status=$?
->> >> +    if [ "$pid" != "$PID_TO_KILL" ]; then
->> >> +        if [ $status -ne 0 ]; then
->> >> +	    echo "# Process $pid returned failure."
->> >> +            any_failure=1
->> >> +        fi
->> >> +    fi
->> >> +done
->> >> +
->> >> +if [ $any_failure -ne 0 ]; then
->> >> +    echo "# Failed on random killing, at least one test fails."
->> >> +    clean_up
->> >> +    exit 1
->> >> +fi
->> >> +echo "# PASSED LARGER limit test with a process randomly killed."
->> >> +
->> >> +MEM_LIMIT_TOO_SMALL=$((CAPACITY - 2 * LARGE))
->> >> +
->> >> +echo "$MEM_LIMIT_TOO_SMALL" > $CG_ROOT/$TEST_CG_SUB2/memory.max
->> >> +if [ $? -ne 0 ]; then
->> >> +    echo "# Failed creating memory controller."
->> >> +    clean_up
->> >> +    exit 1
->> >> +fi
->> >> +
->> >> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests  
->> with
->> >> LARGE EPC limit,
->> >> +        and too small RAM limit, expecting all failures...."
->> >> +# Ensure swapping off so the OOM killer is activated when mem_cgroup
->> >> limit is hit.
->> >> +swapoff -a
->> >> +pids=""
->> >> +for i in 1 2 3 4; do
->> >> +    (
->> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd
->> >> >cgtest_large_oom_$timestamp.$i.log 2>&1
->> >> +    ) &
->> >> +    pids="$pids $!"
->> >> +done
->> >> +
->> >> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> >> +    echo "# Failed on tests with memcontrol, some tests did not  
->> fail."
->> >> +    clean_up
->> >> +    swapon -a
->> >> +    exit 1
->> >> +else
->> >> +    swapon -a
->> >> +    echo "# PASSED LARGE limit tests with memcontrol."
->> >> +fi
->> >> +
->> >> +sleep 2
->> >> +
->> >> +USAGE=$(grep '^sgx_epc' "$CG_ROOT/$TEST_ROOT_CG/misc.current" | awk
->> >> '{print $2}')
->> >> +if [ "$USAGE" -ne 0 ]; then
->> >> +    echo "# Failed: Final usage is $USAGE, not 0."
->> >> +else
->> >> +    echo "# PASSED leakage check."
->> >> +    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
->> >> +fi
->> >> +clean_up
->> >> +echo "# done."
->> >> diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> >> b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> >> new file mode 100755
->> >> index 000000000000..1c9985726ace
->> >> --- /dev/null
->> >> +++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> >> @@ -0,0 +1,11 @@
->> >> +#!/usr/bin/env sh
->> >> +# SPDX-License-Identifier: GPL-2.0
->> >> +# Copyright(c) 2023, 2024 Intel Corporation.
->> >> +
->> >> +if [ -z "$1" ]; then
->> >> +    echo "No argument supplied, please provide 'max', 'current', or
->> >> 'events'"
->> >> +    exit 1
->> >> +fi
->> >> +
->> >> +watch -n 1 'find /sys/fs/cgroup -wholename "*/test*/misc.'$1'"  
->> -exec \
->> >> +    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
->> >
->> > So this is what happens now:
->> >
->> > jarkko@mustatorvisieni:~/linux-tpmdd> make -C
->> > tools/testing/selftests/sgx run_tests
->> > make: Entering directory
->> > '/home/jarkko/linux-tpmdd/tools/testing/selftests/sgx'
->> > TAP version 13
->> > 1..1
->> > # timeout set to 45
->> > # selftests: sgx: test_sgx
->> > # TAP version 13
->> > # 1..16
->> > # # Starting 16 tests from 1 test cases.
->> > # #  RUN           enclave.unclobbered_vdso ...
->> > # #            OK  enclave.unclobbered_vdso
->> > # ok 1 enclave.unclobbered_vdso
->> > # #  RUN           enclave.unclobbered_vdso_oversubscribed ...
->> > # #            OK  enclave.unclobbered_vdso_oversubscribed
->> > # ok 2 enclave.unclobbered_vdso_oversubscribed
->> > # #  RUN           enclave.unclobbered_vdso_oversubscribed_remove ...
->> > # # main.c:402:unclobbered_vdso_oversubscribed_remove:Creating an
->> > enclave with 98566144 bytes heap may take a while ...
->> > # # main.c:457:unclobbered_vdso_oversubscribed_remove:Changing type of
->> > 98566144 bytes to trimmed may take a while ...
->> > # # main.c:473:unclobbered_vdso_oversubscribed_remove:Entering enclave
->> > to run EACCEPT for each page of 98566144 bytes may take a while ...
->> > # # main.c:494:unclobbered_vdso_oversubscribed_remove:Removing  
->> 98566144
->> > bytes from enclave may take a while ...
->> > # #            OK  enclave.unclobbered_vdso_oversubscribed_remove
->> > # ok 3 enclave.unclobbered_vdso_oversubscribed_remove
->> > # #  RUN           enclave.clobbered_vdso ...
->> > # #            OK  enclave.clobbered_vdso
->> > # ok 4 enclave.clobbered_vdso
->> > # #  RUN           enclave.clobbered_vdso_and_user_function ...
->> > # #            OK  enclave.clobbered_vdso_and_user_function
->> > # ok 5 enclave.clobbered_vdso_and_user_function
->> > # #  RUN           enclave.tcs_entry ...
->> > # #            OK  enclave.tcs_entry
->> > # ok 6 enclave.tcs_entry
->> > # #  RUN           enclave.pte_permissions ...
->> > # #            OK  enclave.pte_permissions
->> > # ok 7 enclave.pte_permissions
->> > # #  RUN           enclave.tcs_permissions ...
->> > # #            OK  enclave.tcs_permissions
->> > # ok 8 enclave.tcs_permissions
->> > # #  RUN           enclave.epcm_permissions ...
->> > # #            OK  enclave.epcm_permissions
->> > # ok 9 enclave.epcm_permissions
->> > # #  RUN           enclave.augment ...
->> > # #            OK  enclave.augment
->> > # ok 10 enclave.augment
->> > # #  RUN           enclave.augment_via_eaccept ...
->> > # #            OK  enclave.augment_via_eaccept
->> > # ok 11 enclave.augment_via_eaccept
->> > # #  RUN           enclave.tcs_create ...
->> > # #            OK  enclave.tcs_create
->> > # ok 12 enclave.tcs_create
->> > # #  RUN           enclave.remove_added_page_no_eaccept ...
->> > # #            OK  enclave.remove_added_page_no_eaccept
->> > # ok 13 enclave.remove_added_page_no_eaccept
->> > # #  RUN           enclave.remove_added_page_invalid_access ...
->> > # #            OK  enclave.remove_added_page_invalid_access
->> > # ok 14 enclave.remove_added_page_invalid_access
->> > # #  RUN
->> > enclave.remove_added_page_invalid_access_after_eaccept ...
->> > # #            OK   
->> enclave.remove_added_page_invalid_access_after_eaccept
->> > # ok 15 enclave.remove_added_page_invalid_access_after_eaccept
->> > # #  RUN           enclave.remove_untouched_page ...
->> > # #            OK  enclave.remove_untouched_page
->> > # ok 16 enclave.remove_untouched_page
->> > # # PASSED: 16 / 16 tests passed.
->> > # # Totals: pass:16 fail:0 xfail:0 xpass:0 skip:0 error:0
->> > ok 1 selftests: sgx: test_sgx
->> >
->> > Also cgroups tests are expected to run when invoking "run_tests".
->> >
->> I can add the SGX cgroup tests to the "run_tests" target. But it will  
->> need
->> more than the 45secs given by the default timeout especially on  
->> platforms
->> with larger EPC. You will need run with --override-timeout
->> (current SGX selftests also timeout for default 45 sec on a server with  
->> 4G
->> EPC).
->>
->>
->> > I also wonder do we really want this:
->> >
->> > diff --git a/config/x86_64/default b/config/x86_64/default
->> > index 246b1f3df46..6c3d20af7b4 100644
->> > --- a/config/x86_64/default
->> > +++ b/config/x86_64/default
->> > @@ -502,6 +502,7 @@ CONFIG_X86_INTEL_TSX_MODE_OFF=y
->> >  # CONFIG_X86_INTEL_TSX_MODE_ON is not set
->> >  # CONFIG_X86_INTEL_TSX_MODE_AUTO is not set
->> >  CONFIG_X86_SGX=y
->> > +CONFIG_CGROUP_SGX_EPC=y
->> >  # CONFIG_X86_USER_SHADOW_STACK is not set
->> >  CONFIG_EFI=y
->> >  CONFIG_EFI_STUB=y
->> >
->> > It is a small change but affects all of downstream, not just OpenSUSE.
->> >
->> > I hard time projecting a situation where you wanted SGX but without
->> > cgroups support so perhaps it would be a better idea to enable cgroups
->> > unconditionally when SGX and cgroups are part of the kernel config?
->> >
->> > Then downstream can just pick the patches and call it a day...
->> >
->> > BR, Jarkko
->> >
->>
->> I don't have issue to remove this config and conditionally compile in  
->> SGX
->> cgroup implementation when MISC is configured.
->
-> I did run the basic test by manually creating the cgroup so you could
-> add tested-by from my side to the other kernel patches expect this one
-> :-)
+Nit: afaik, MAINTAINER updates should be split.
 
-Thanks
->
-> I've reviewed it enough rounds and given various code suggestions etc.
-> For me it is "good enough" or has been for a while. I just want this
-> test to work so that people doing kernel QA will automatically get it
-> to their testing cycle. That is why proper integration to kselftest
-> framework is a must.
->
-> BR, Jarkko
->
-Sounds good. I have added integration now on tip of the staging/plus  
-branch: https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v11_plus
-Will send v12 with those and with the change to remove CGROUP_SGX_EPC  
-config.
+> diff --git a/include/linux/digest_cache.h b/include/linux/digest_cache.h
+> new file mode 100644
+> index 000000000000..e79f94a60b0f
+> --- /dev/null
+> +++ b/include/linux/digest_cache.h
+> @@ -0,0 +1,32 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
+> + *
+> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
 
-Thanks
-Haitao
+Nit: Git has an author field in commit granularity so adding author
+fields to files is sort of old world.
+
+> + *
+> + * Public API of the digest_cache LSM.
+> + */
+> +
+> +#ifndef _LINUX_DIGEST_CACHE_H
+> +#define _LINUX_DIGEST_CACHE_H
+> +
+> +#include <linux/fs.h>
+> +
+> +struct digest_cache;
+
+Is this declaration necessary?
+
+I don't think you need forward declaration here as this does compile:
+
+#include <stdio.h>
+
+struct digest_cache *digest_cache_get(void)
+{
+        return NULL;
+}
+
+int main(void)
+{
+        return (long)digest_cache_get();
+}
+
+
+> +
+> +#ifdef CONFIG_SECURITY_DIGEST_CACHE
+> +struct digest_cache *digest_cache_get(struct dentry *dentry);
+> +void digest_cache_put(struct digest_cache *digest_cache);
+> +
+> +#else
+> +static inline struct digest_cache *digest_cache_get(struct dentry *dentr=
+y)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline void digest_cache_put(struct digest_cache *digest_cache)
+> +{
+> +}
+> +
+> +#endif /* CONFIG_SECURITY_DIGEST_CACHE */
+> +#endif /* _LINUX_DIGEST_CACHE_H */
+> diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
+> index 33d8c9f4aa6b..832b3aea5c26 100644
+> --- a/include/uapi/linux/lsm.h
+> +++ b/include/uapi/linux/lsm.h
+> @@ -64,6 +64,7 @@ struct lsm_ctx {
+>  #define LSM_ID_LANDLOCK		110
+>  #define LSM_ID_IMA		111
+>  #define LSM_ID_EVM		112
+> +#define LSM_ID_DIGEST_CACHE	113
+> =20
+>  /*
+>   * LSM_ATTR_XXX definitions identify different LSM attributes
+> diff --git a/include/uapi/linux/xattr.h b/include/uapi/linux/xattr.h
+> index 9463db2dfa9d..8a58cf4bce65 100644
+> --- a/include/uapi/linux/xattr.h
+> +++ b/include/uapi/linux/xattr.h
+> @@ -54,6 +54,9 @@
+>  #define XATTR_IMA_SUFFIX "ima"
+>  #define XATTR_NAME_IMA XATTR_SECURITY_PREFIX XATTR_IMA_SUFFIX
+> =20
+> +#define XATTR_DIGEST_LIST_SUFFIX "digest_list"
+> +#define XATTR_NAME_DIGEST_LIST XATTR_SECURITY_PREFIX XATTR_DIGEST_LIST_S=
+UFFIX
+> +
+>  #define XATTR_SELINUX_SUFFIX "selinux"
+>  #define XATTR_NAME_SELINUX XATTR_SECURITY_PREFIX XATTR_SELINUX_SUFFIX
+> =20
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 52c9af08ad35..99f99cbd94cc 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -194,6 +194,7 @@ source "security/yama/Kconfig"
+>  source "security/safesetid/Kconfig"
+>  source "security/lockdown/Kconfig"
+>  source "security/landlock/Kconfig"
+> +source "security/digest_cache/Kconfig"
+> =20
+>  source "security/integrity/Kconfig"
+> =20
+> @@ -233,11 +234,11 @@ endchoice
+> =20
+>  config LSM
+>  	string "Ordered list of enabled LSMs"
+> -	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,=
+apparmor,bpf" if DEFAULT_SECURITY_SMACK
+> -	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smac=
+k,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+> -	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAUL=
+T_SECURITY_TOMOYO
+> -	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECUR=
+ITY_DAC
+> -	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,=
+apparmor,bpf"
+> +	default "digest_cache,landlock,lockdown,yama,loadpin,safesetid,smack,se=
+linux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
+> +	default "digest_cache,landlock,lockdown,yama,loadpin,safesetid,apparmor=
+,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
+> +	default "digest_cache,landlock,lockdown,yama,loadpin,safesetid,tomoyo,b=
+pf" if DEFAULT_SECURITY_TOMOYO
+> +	default "digest_cache,landlock,lockdown,yama,loadpin,safesetid,bpf" if =
+DEFAULT_SECURITY_DAC
+> +	default "digest_cache,landlock,lockdown,yama,loadpin,safesetid,selinux,=
+smack,tomoyo,apparmor,bpf"
+>  	help
+>  	  A comma-separated list of LSMs, in initialization order.
+>  	  Any LSMs left off this list, except for those with order
+> diff --git a/security/Makefile b/security/Makefile
+> index 59f238490665..e9b43e7b715a 100644
+> --- a/security/Makefile
+> +++ b/security/Makefile
+> @@ -25,6 +25,7 @@ obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+=3D lockdown/
+>  obj-$(CONFIG_CGROUPS)			+=3D device_cgroup.o
+>  obj-$(CONFIG_BPF_LSM)			+=3D bpf/
+>  obj-$(CONFIG_SECURITY_LANDLOCK)		+=3D landlock/
+> +obj-$(CONFIG_SECURITY_DIGEST_CACHE)	+=3D digest_cache/
+> =20
+>  # Object integrity file lists
+>  obj-$(CONFIG_INTEGRITY)			+=3D integrity/
+> diff --git a/security/digest_cache/Kconfig b/security/digest_cache/Kconfi=
+g
+> new file mode 100644
+> index 000000000000..e53fbf0779d6
+> --- /dev/null
+> +++ b/security/digest_cache/Kconfig
+> @@ -0,0 +1,16 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +config SECURITY_DIGEST_CACHE
+> +	bool "Digest_cache LSM"
+> +	default n
+> +	help
+> +	  This option enables an LSM maintaining a cache of digests
+> +	  (e.g. of file data or metadata).
+> +
+> +	  This LSM can support other kernel components in making access
+> +	  control decisions.
+> +
+> +config DIGEST_LIST_DEFAULT_PATH
+> +	string
+> +	default "/etc/digest_lists"
+> +	help
+> +	  Default directory where digest_cache LSM expects to find digest lists=
+.
+> diff --git a/security/digest_cache/Makefile b/security/digest_cache/Makef=
+ile
+> new file mode 100644
+> index 000000000000..48848c41253e
+> --- /dev/null
+> +++ b/security/digest_cache/Makefile
+> @@ -0,0 +1,7 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Makefile for building the digest_cache LSM.
+> +
+> +obj-$(CONFIG_SECURITY_DIGEST_CACHE) +=3D digest_cache.o
+> +
+> +digest_cache-y :=3D main.o
+> diff --git a/security/digest_cache/internal.h b/security/digest_cache/int=
+ernal.h
+> new file mode 100644
+> index 000000000000..5f04844af3a5
+> --- /dev/null
+> +++ b/security/digest_cache/internal.h
+> @@ -0,0 +1,86 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
+> + *
+> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+
+ditto
+
+> + *
+> + * Internal header of the digest_cache LSM.
+> + */
+> +
+> +#ifndef _DIGEST_CACHE_INTERNAL_H
+> +#define _DIGEST_CACHE_INTERNAL_H
+> +
+> +#include <linux/lsm_hooks.h>
+> +#include <linux/digest_cache.h>
+> +
+> +/* Digest cache bits in flags. */
+> +#define INIT_IN_PROGRESS	0	/* Digest cache being initialized. */
+> +
+> +/**
+> + * struct digest_cache - Digest cache
+> + * @ref_count: Number of references to the digest cache
+> + * @path_str: Path of the digest list the digest cache was created from
+> + * @flags: Control flags
+> + *
+> + * This structure represents a cache of digests extracted from a digest =
+list.
+> + */
+> +struct digest_cache {
+> +	atomic_t ref_count;
+> +	char *path_str;
+> +	unsigned long flags;
+> +};
+> +
+> +/**
+> + * struct digest_cache_security - Digest cache pointers in inode securit=
+y blob
+> + * @dig_owner: Digest cache created from this inode
+> + * @dig_owner_mutex: Protects @dig_owner
+> + * @dig_user: Digest cache requested for this inode
+> + * @dig_user_mutex: Protects @dig_user
+> + *
+> + * This structure contains references to digest caches, protected by the=
+ir
+> + * respective mutex.
+> + */
+> +struct digest_cache_security {
+> +	struct digest_cache *dig_owner;
+> +	struct mutex dig_owner_mutex;
+> +	struct digest_cache *dig_user;
+> +	struct mutex dig_user_mutex;
+> +};
+> +
+> +extern struct lsm_blob_sizes digest_cache_blob_sizes;
+> +extern char *default_path_str;
+> +
+> +static inline struct digest_cache_security *
+> +digest_cache_get_security(const struct inode *inode)
+> +{
+> +	if (unlikely(!inode->i_security))
+> +		return NULL;
+> +
+> +	return inode->i_security + digest_cache_blob_sizes.lbs_inode;
+> +}
+> +
+> +static inline struct digest_cache *
+> +digest_cache_ref(struct digest_cache *digest_cache)
+> +{
+> +	atomic_inc(&digest_cache->ref_count);
+> +	pr_debug("Ref (+) digest cache %s (ref count: %d)\n",
+> +		 digest_cache->path_str, atomic_read(&digest_cache->ref_count));
+> +	return digest_cache;
+> +}
+> +
+> +static inline struct digest_cache *
+> +digest_cache_unref(struct digest_cache *digest_cache)
+> +{
+> +	bool ref_is_zero =3D atomic_dec_and_test(&digest_cache->ref_count);
+> +
+> +	pr_debug("Ref (-) digest cache %s (ref count: %d)\n",
+> +		 digest_cache->path_str, atomic_read(&digest_cache->ref_count));
+> +	return (ref_is_zero) ? digest_cache : NULL;
+> +}
+> +
+> +/* main.c */
+> +struct digest_cache *digest_cache_create(struct dentry *dentry,
+> +					 struct path *digest_list_path,
+> +					 char *path_str, char *filename);
+> +
+> +#endif /* _DIGEST_CACHE_INTERNAL_H */
+> diff --git a/security/digest_cache/main.c b/security/digest_cache/main.c
+> new file mode 100644
+> index 000000000000..14dba8915e99
+> --- /dev/null
+> +++ b/security/digest_cache/main.c
+> @@ -0,0 +1,404 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
+> + *
+> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> + *
+> + * Implement the main code of the digest_cache LSM.
+> + */
+> +
+> +#define pr_fmt(fmt) "DIGEST CACHE: "fmt
+> +#include <linux/namei.h>
+> +#include <linux/xattr.h>
+> +
+> +#include "internal.h"
+> +
+> +static int digest_cache_enabled __ro_after_init =3D 1;
+> +static struct kmem_cache *digest_cache_cache __read_mostly;
+> +
+> +char *default_path_str =3D CONFIG_DIGEST_LIST_DEFAULT_PATH;
+> +
+> +/**
+> + * digest_cache_alloc_init - Allocate and initialize a new digest cache
+> + * @path_str: Path string of the digest list
+> + * @filename: Digest list file name (can be an empty string)
+> + *
+> + * This function allocates and initializes a new digest cache.
+> + *
+> + * Return: A digest_cache structure on success, NULL on error.
+> + */
+> +static struct digest_cache *digest_cache_alloc_init(char *path_str,
+> +						    char *filename)
+> +{
+> +	struct digest_cache *digest_cache;
+> +
+> +	digest_cache =3D kmem_cache_alloc(digest_cache_cache, GFP_KERNEL);
+> +	if (!digest_cache)
+> +		return digest_cache;
+> +
+> +	digest_cache->path_str =3D kasprintf(GFP_KERNEL, "%s%s%s", path_str,
+> +					   filename[0] ? "/" : "", filename);
+> +	if (!digest_cache->path_str) {
+> +		kmem_cache_free(digest_cache_cache, digest_cache);
+> +		return NULL;
+> +	}
+> +
+> +	atomic_set(&digest_cache->ref_count, 1);
+> +	digest_cache->flags =3D 0UL;
+> +
+> +	pr_debug("New digest cache %s (ref count: %d)\n",
+> +		 digest_cache->path_str, atomic_read(&digest_cache->ref_count));
+
+Nit: kretprobe can be used to grab the same information easil and
+do e.g. statistics and stuff like that. Traces for return values
+are not very useful.
+
+
+> +
+> +	return digest_cache;
+> +}
+> +
+> +/**
+> + * digest_cache_free - Free all memory occupied by the digest cache
+> + * @digest_cache: Digest cache
+> + *
+> + * This function frees the memory occupied by the digest cache.
+> + */
+> +static void digest_cache_free(struct digest_cache *digest_cache)
+> +{
+> +	pr_debug("Freed digest cache %s\n", digest_cache->path_str);
+
+ditto for the above trace
+
+> +	kfree(digest_cache->path_str);
+> +	kmem_cache_free(digest_cache_cache, digest_cache);
+> +}
+> +
+> +/**
+> + * digest_cache_create - Create a digest cache
+> + * @dentry: Dentry of the inode for which the digest cache will be used
+> + * @digest_list_path: Path structure of the digest list
+> + * @path_str: Path string of the digest list
+> + * @filename: Digest list file name (can be an empty string)
+> + *
+> + * This function first locates, from the passed path, the digest list in=
+ode
+> + * from which the digest cache will be created or retrieved (if it alrea=
+dy
+> + * exists).
+> + *
+> + * If dig_owner is NULL in the inode security blob, this function create=
+s a
+> + * new digest cache with reference count set to 1 (reference returned), =
+sets
+> + * it to dig_owner and consequently increments again the digest cache re=
+ference
+> + * count.
+> + *
+> + * Otherwise, it simply increments the reference count of the existing
+> + * dig_owner, since that reference is returned to the caller.
+> + *
+> + * Incrementing the reference count twice before calling path_put() ensu=
+res
+> + * that the digest cache returned is valid even if the inode is evicted =
+from
+> + * memory (which decreases the reference count).
+> + *
+> + * Releasing the dig_owner_mutex lock does not mean that the digest cach=
+e is
+> + * ready for use. digest_cache_create() callers that found a partially
+> + * instantiated digest cache have to wait until the INIT_IN_PROGRESS bit=
+ is
+> + * cleared by the caller that is actually creating that digest cache.
+> + *
+> + * Return: A new digest cache on success, NULL on error.
+> + */
+> +struct digest_cache *digest_cache_create(struct dentry *dentry,
+> +					 struct path *digest_list_path,
+> +					 char *path_str, char *filename)
+> +{
+> +	struct path file_path;
+> +	struct digest_cache *digest_cache =3D NULL;
+> +	struct digest_cache_security *dig_sec;
+> +	struct inode *inode =3D d_backing_inode(digest_list_path->dentry);
+> +	bool dig_owner_exists =3D false;
+> +	int ret;
+> +
+> +	if (S_ISDIR(d_backing_inode(digest_list_path->dentry)->i_mode) &&
+> +	    filename[0]) {
+> +		ret =3D vfs_path_lookup(digest_list_path->dentry,
+> +				      digest_list_path->mnt, filename, 0,
+> +				      &file_path);
+> +		if (ret < 0) {
+> +			pr_debug("Cannot find digest list %s/%s\n", path_str,
+> +				 filename);
+> +			return NULL;
+> +		}
+> +
+> +		digest_list_path =3D &file_path;
+> +		inode =3D d_backing_inode(file_path.dentry);
+> +
+> +		/*
+> +		 * Cannot request a digest cache for the same inode the
+> +		 * digest cache is populated from.
+> +		 */
+> +		if (d_backing_inode(dentry) =3D=3D inode) {
+> +			pr_debug("Cannot request a digest cache for %s and use it as digest l=
+ist\n",
+> +				 dentry->d_name.name);
+> +			goto out;
+> +		}
+> +
+> +		/* No support for nested directories. */
+> +		if (!S_ISREG(inode->i_mode)) {
+> +			pr_debug("%s is not a regular file (no support for nested directories=
+)\n",
+> +				 dentry->d_name.name);
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	dig_sec =3D digest_cache_get_security(inode);
+> +	if (unlikely(!dig_sec))
+> +		goto out;
+> +
+> +	/* Serialize check and assignment of dig_owner. */
+> +	mutex_lock(&dig_sec->dig_owner_mutex);
+> +	if (dig_sec->dig_owner) {
+> +		/* Increment ref. count for reference returned to the caller. */
+> +		digest_cache =3D digest_cache_ref(dig_sec->dig_owner);
+> +		dig_owner_exists =3D true;
+> +		mutex_unlock(&dig_sec->dig_owner_mutex);
+> +		goto exists;
+> +	}
+> +
+> +	/* Ref. count is already 1 for this reference. */
+> +	digest_cache =3D digest_cache_alloc_init(path_str, filename);
+> +	if (!digest_cache) {
+> +		mutex_unlock(&dig_sec->dig_owner_mutex);
+> +		goto out;
+> +	}
+> +
+> +	/* Increment ref. count for reference set to dig_owner. */
+> +	dig_sec->dig_owner =3D digest_cache_ref(digest_cache);
+> +
+> +	/* Make the other lock contenders wait until creation complete. */
+> +	set_bit(INIT_IN_PROGRESS, &dig_sec->dig_owner->flags);
+> +	mutex_unlock(&dig_sec->dig_owner_mutex);
+> +
+> +	/* Creation complete, notify the other lock contenders. */
+> +	clear_and_wake_up_bit(INIT_IN_PROGRESS, &dig_sec->dig_owner->flags);
+> +exists:
+> +	if (dig_owner_exists)
+> +		/* Wait until creation complete. */
+> +		wait_on_bit(&dig_sec->dig_owner->flags, INIT_IN_PROGRESS,
+> +			    TASK_UNINTERRUPTIBLE);
+> +out:
+> +	if (digest_list_path =3D=3D &file_path)
+> +		path_put(&file_path);
+> +
+> +	return digest_cache;
+> +}
+> +
+> +/**
+> + * digest_cache_new - Retrieve digest list file name and request digest =
+cache
+> + * @dentry: Dentry of the inode for which the digest cache will be used
+> + *
+> + * This function locates the default path. If it is a file, it directly =
+creates
+> + * a digest cache from it. Otherwise, it reads the digest list file name=
+ from
+> + * the security.digest_list xattr and requests the creation of a digest =
+cache
+> + * with that file name. If security.digest_list is not found, this funct=
+ion
+> + * requests the creation of a digest cache on the parent directory.
+> + *
+> + * Return: A new digest cache on success, NULL on error.
+> + */
+> +static struct digest_cache *digest_cache_new(struct dentry *dentry)
+> +{
+> +	char filename[NAME_MAX + 1] =3D { 0 };
+> +	struct digest_cache *digest_cache =3D NULL;
+> +	struct path default_path;
+> +	int ret;
+> +
+> +	ret =3D kern_path(default_path_str, 0, &default_path);
+> +	if (ret < 0) {
+> +		pr_debug("Cannot find path %s\n", default_path_str);
+> +		return NULL;
+> +	}
+> +
+> +	/* The default path is a file, no need to get xattr. */
+> +	if (S_ISREG(d_backing_inode(default_path.dentry)->i_mode)) {
+> +		pr_debug("Default path %s is a file, not reading %s xattr\n",
+> +			 default_path_str, XATTR_NAME_DIGEST_LIST);
+> +		goto create;
+> +	} else if (!S_ISDIR(d_backing_inode(default_path.dentry)->i_mode)) {
+> +		pr_debug("Default path %s must be either a file or a directory\n",
+> +			 default_path_str);
+> +		goto out;
+> +	}
+> +
+> +	ret =3D vfs_getxattr(&nop_mnt_idmap, dentry, XATTR_NAME_DIGEST_LIST,
+> +			   filename, sizeof(filename) - 1);
+> +	if (ret <=3D 0) {
+> +		pr_debug("Digest list path not found for file %s, using %s\n",
+> +			 dentry->d_name.name, default_path_str);
+> +		goto create;
+> +	}
+> +
+> +	if (strchr(filename, '/')) {
+> +		pr_debug("%s xattr should contain only a file name, got: %s\n",
+> +			 XATTR_NAME_DIGEST_LIST, filename);
+> +		goto out;
+> +	}
+> +
+> +	pr_debug("Found %s xattr in %s, default path: %s, digest list: %s\n",
+> +		 XATTR_NAME_DIGEST_LIST, dentry->d_name.name, default_path_str,
+> +		 filename);
+> +create:
+> +	digest_cache =3D digest_cache_create(dentry, &default_path,
+> +					   default_path_str, filename);
+> +out:
+> +	path_put(&default_path);
+> +	return digest_cache;
+> +}
+> +
+> +/**
+> + * digest_cache_get - Get a digest cache for a given inode
+> + * @dentry: Dentry of the inode for which the digest cache will be used
+> + *
+> + * This function tries to find a digest cache from the inode security bl=
+ob of
+> + * the passed dentry (dig_user field). If a digest cache was not found, =
+it calls
+> + * digest_cache_new() to create a new one. In both cases, it increments =
+the
+> + * digest cache reference count before returning the reference to the ca=
+ller.
+> + *
+> + * The caller is responsible to call digest_cache_put() to release the d=
+igest
+> + * cache reference returned.
+> + *
+> + * Lock dig_user_mutex to protect against concurrent requests to obtain =
+a digest
+> + * cache for the same inode, and to make other contenders wait until the=
+ first
+> + * requester finishes the process.
+> + *
+> + * Return: A digest cache on success, NULL otherwise.
+> + */
+> +struct digest_cache *digest_cache_get(struct dentry *dentry)
+> +{
+> +	struct digest_cache_security *dig_sec;
+> +	struct digest_cache *digest_cache =3D NULL;
+> +	struct inode *inode =3D d_backing_inode(dentry);
+> +
+> +	if (!digest_cache_enabled)
+> +		return NULL;
+> +
+> +	dig_sec =3D digest_cache_get_security(inode);
+> +	if (unlikely(!dig_sec))
+> +		return NULL;
+> +
+> +	/* Serialize accesses to inode for which the digest cache is used. */
+> +	mutex_lock(&dig_sec->dig_user_mutex);
+> +	if (!dig_sec->dig_user)
+> +		/* Consume extra reference from digest_cache_create(). */
+> +		dig_sec->dig_user =3D digest_cache_new(dentry);
+> +
+> +	if (dig_sec->dig_user)
+> +		/* Increment ref. count for reference returned to the caller. */
+> +		digest_cache =3D digest_cache_ref(dig_sec->dig_user);
+> +
+> +	mutex_unlock(&dig_sec->dig_user_mutex);
+> +	return digest_cache;
+> +}
+> +EXPORT_SYMBOL_GPL(digest_cache_get);
+> +
+> +/**
+> + * digest_cache_put - Release a digest cache reference
+> + * @digest_cache: Digest cache
+> + *
+> + * This function decrements the reference count of the digest cache pass=
+ed as
+> + * argument. If the reference count reaches zero, it calls digest_cache_=
+free()
+> + * to free the digest cache.
+> + */
+> +void digest_cache_put(struct digest_cache *digest_cache)
+> +{
+> +	struct digest_cache *to_free;
+> +
+> +	to_free =3D digest_cache_unref(digest_cache);
+> +	if (!to_free)
+> +		return;
+> +
+> +	digest_cache_free(to_free);
+> +}
+> +EXPORT_SYMBOL_GPL(digest_cache_put);
+> +
+> +struct lsm_blob_sizes digest_cache_blob_sizes __ro_after_init =3D {
+> +	.lbs_inode =3D sizeof(struct digest_cache_security),
+> +};
+> +
+> +/**
+> + * digest_cache_inode_alloc_security - Initialize inode security blob
+> + * @inode: Inode for which the security blob is initialized
+> + *
+> + * This function initializes the digest_cache_security structure, direct=
+ly
+> + * stored in the inode security blob.
+> + *
+> + * Return: Zero.
+> + */
+> +static int digest_cache_inode_alloc_security(struct inode *inode)
+> +{
+> +	struct digest_cache_security *dig_sec;
+> +
+> +	/* The inode security blob is always allocated here. */
+> +	dig_sec =3D digest_cache_get_security(inode);
+> +	mutex_init(&dig_sec->dig_owner_mutex);
+> +	mutex_init(&dig_sec->dig_user_mutex);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * digest_cache_inode_free_security - Release the digest cache reference=
+s
+> + * @inode: Inode for which the digest cache references are released
+> + *
+> + * Since the inode is being evicted, this function releases the non-need=
+ed
+> + * references to the digest caches stored in the digest_cache_security
+> + * structure.
+> + */
+> +static void digest_cache_inode_free_security(struct inode *inode)
+> +{
+> +	struct digest_cache_security *dig_sec;
+> +
+> +	dig_sec =3D digest_cache_get_security(inode);
+> +	if (!dig_sec)
+> +		return;
+> +
+> +	mutex_destroy(&dig_sec->dig_owner_mutex);
+> +	mutex_destroy(&dig_sec->dig_user_mutex);
+> +	if (dig_sec->dig_owner)
+> +		digest_cache_put(dig_sec->dig_owner);
+> +	if (dig_sec->dig_user)
+> +		digest_cache_put(dig_sec->dig_user);
+> +}
+> +
+> +static struct security_hook_list digest_cache_hooks[] __ro_after_init =
+=3D {
+> +	LSM_HOOK_INIT(inode_alloc_security, digest_cache_inode_alloc_security),
+> +	LSM_HOOK_INIT(inode_free_security, digest_cache_inode_free_security),
+> +};
+> +
+> +/**
+> + * digest_cache_init_once - Initialize the digest cache structure
+> + * @foo: Digest cache structure to initialize
+> + *
+> + * This function fills the digest cache structure with zeros.
+> + */
+> +static void digest_cache_init_once(void *foo)
+> +{
+> +	struct digest_cache *digest_cache =3D (struct digest_cache *)foo;
+> +
+> +	memset(digest_cache, 0, sizeof(*digest_cache));
+> +}
+> +
+> +static const struct lsm_id digest_cache_lsmid =3D {
+> +	.name =3D "digest_cache",
+> +	.id =3D LSM_ID_DIGEST_CACHE,
+> +};
+> +
+> +/**
+> + * digest_cache_init - Initialize the digest_cache LSM
+> + *
+> + * Initialize the digest_cache LSM, by instantiating a cache for the
+> + * digest_cache structure and by registering the digest_cache LSM hooks.
+> + */
+> +static int __init digest_cache_init(void)
+> +{
+> +	digest_cache_cache =3D kmem_cache_create("digest_cache_cache",
+> +					       sizeof(struct digest_cache),
+> +					       0, SLAB_PANIC,
+> +					       digest_cache_init_once);
+> +
+> +	security_add_hooks(digest_cache_hooks, ARRAY_SIZE(digest_cache_hooks),
+> +			   &digest_cache_lsmid);
+> +	return 0;
+> +}
+> +
+> +DEFINE_LSM(digest_cache) =3D {
+> +	.name =3D "digest_cache",
+> +	.enabled =3D &digest_cache_enabled,
+> +	.init =3D digest_cache_init,
+> +	.blobs =3D &digest_cache_blob_sizes,
+> +};
+> diff --git a/security/security.c b/security/security.c
+> index cbdc9bebe802..cb084ed58617 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -50,7 +50,8 @@
+>  	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
+>  	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0) + \
+>  	(IS_ENABLED(CONFIG_IMA) ? 1 : 0) + \
+> -	(IS_ENABLED(CONFIG_EVM) ? 1 : 0))
+> +	(IS_ENABLED(CONFIG_EVM) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_SECURITY_DIGEST_CACHE) ? 1 : 0))
+> =20
+>  /*
+>   * These are descriptions of the reasons that can be passed to the
+> diff --git a/tools/testing/selftests/lsm/lsm_list_modules_test.c b/tools/=
+testing/selftests/lsm/lsm_list_modules_test.c
+> index 4d5d4cee2586..d00831edc582 100644
+> --- a/tools/testing/selftests/lsm/lsm_list_modules_test.c
+> +++ b/tools/testing/selftests/lsm/lsm_list_modules_test.c
+> @@ -128,6 +128,9 @@ TEST(correct_lsm_list_modules)
+>  		case LSM_ID_EVM:
+>  			name =3D "evm";
+>  			break;
+> +		case LSM_ID_DIGEST_CACHE:
+> +			name =3D "digest_cache";
+> +			break;
+>  		default:
+>  			name =3D "INVALID";
+>  			break;
+
+BR, Jarkko
 
