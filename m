@@ -1,120 +1,122 @@
-Return-Path: <linux-kernel+bounces-145738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EB5A8A5A34
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:51:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC0398A5A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:53:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A53811F232AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:51:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63E96284C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38163155752;
-	Mon, 15 Apr 2024 18:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C34155753;
+	Mon, 15 Apr 2024 18:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=gschafra@web.de header.b="GqGg1tPx"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qm9lnOTn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E8491553A7;
-	Mon, 15 Apr 2024 18:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D2784D24;
+	Mon, 15 Apr 2024 18:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713207094; cv=none; b=PymB3cKJvs3cBK+NaoYVJzSQV6e9UkU7CImVuaerIuU58NOh6pRjM7dje7g0ar2k+pHiRF91eYzts121703nJe4j46li465nK63phbTyW+hFxWCTCPtYiZo5dZDii+WaUqrd9VzROTZwLjzQyWmnZiYLmg4tt9gKeT2Sfeug0BU=
+	t=1713207206; cv=none; b=cqmC160oqq8+ZLMsUsd10SED0hNuoZf/g0WvOEWqhq+a/SHwHorir1dQqNh45kai+8ctiVHvMl2D/21bC8vunuhrNhqlIIWNfZqeVs1u/VgiyrLcOmFijGUEGSwkfFc41/8+dPdGj1yeJv4Ii7qv7JbjZWcz9riTANB6wrhpzyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713207094; c=relaxed/simple;
-	bh=DfqDZSCy1bT7YhVav0SrkmE8gji+HQI8UQPnQWILtoE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tjK6rcdnH1bnoWCXrny3LZHO5ItV7lkFD02EtwAsjR3CU3Uh03zxTJIh518pvANse+YGOf+vJI1GtE4PnUKavdFbD4FadBGVMGMGBwqcWThB2Sa758OowDJp6WGJ0cKG6DJJlR9KS8KJWq1QAFhT/coQWM5A1jlN1NZkZIztQcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=gschafra@web.de header.b=GqGg1tPx; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1713207085; x=1713811885; i=gschafra@web.de;
-	bh=/G+TvMeVvPYHHHKjlKDGzZ+uXBSjb0e1s3YVRMV7XBQ=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
-	 MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=GqGg1tPxo9aX6ntVK9oke/lh/dHH4VOMSWckBxUT4zvv+0VjgxS1O+u22ugcvJaV
-	 zmoQQCUTdV14YZSv79VYObx4AWBx9UqgiGLGdWCuyppgaBMhKvd/SaotMhZ3gcJWv
-	 1zRDl+iWWpT52CS8CWooYbZxjwAzvtDkRoWd+11eXmMLsRm9AzbMSErWCT7Rm+lgC
-	 nvTIRmdk1Ylq4GXrXd1m8VH/W5HmJGnOSJcvhWCCNhC5rvc5Vr3PMk8peO1Q7/pm9
-	 IgvXqOu/CZem3KxNgxGZiAhJrhzp6Hog3FAc7lRa5T9BcfTlLumCkJykoJPzlACek
-	 0GKq2hNSEHQwLUxFNg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from tazdevil.fritz.box ([213.152.127.16]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MODmV-1s75UL3rRJ-00OUz7; Mon, 15
- Apr 2024 20:51:25 +0200
-From: Guenter Schafranek <gschafra@web.de>
-To: rafael@kernel.org,
-	lenb@kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Guenter Schafranek <gschafra@web.de>
-Subject: [PATCH] ACPI: resource: Do IRQ override on GMxBGxx (XMG APEX 17 M23)
-Date: Mon, 15 Apr 2024 20:51:18 +0200
-Message-ID: <20240415185120.57973-1-gschafra@web.de>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1713207206; c=relaxed/simple;
+	bh=UkUaj+YEBYtsKTapfAJux7C066BfGC//yi1ms4YuhCE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=D9zTWWhNWXlu48BENST/8vCVrZqVNpw/5YtKC0HV+FmGf+vxto4ZiI5j7yU8UezimXL4DejH2nhbjARIN3OILp1E0c+G4Pj/X1GT1wSfLCw6QDki2UM+3qT7EhX7TanyKIlqVgczda3RvmcMCKesuNtLBsN8ZDw9yLxv6JJ6a0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qm9lnOTn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7A6EC113CC;
+	Mon, 15 Apr 2024 18:53:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713207206;
+	bh=UkUaj+YEBYtsKTapfAJux7C066BfGC//yi1ms4YuhCE=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=qm9lnOTnsra/ebQMHfh+2A2rXpue5E6ciUWJM5F38MPvYC1UH/92p2N/S3/nZjG9I
+	 qwweOWJ1iPX9ewNimlUbpdQ6x7KmL0pn1sTBuR/DQgPwQnzTCGbVgyVChIb0UvBdIM
+	 9rhQ/1CJi7xV7CEEu0ALA1gSi2nIVCOaU6GtudFPG5Q6TcKPZAI6Cfnl3U14rOhhER
+	 GUz0z7z+hqxtyovunJq18pwDDOSYJ45+r7/rqpz5PCcaWxwwS7cWdvnxqnmaiSdDJe
+	 gn17T+fE+6JJP9V8DdA5IXPmu8ecvtqera/edq2jngIq25qgZx4dja+ms001Zg/C89
+	 vdqrmswEPoKJg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:uKPrlSo69z6OcNVYMf+a7dHHP1IGatc+qsoMPIE2d6gPMjBHJTf
- lFUptmJ900MTQUl6Sqf/rHNe0uKTgpPhq2y+DvAlI3VU8Uhfjo2OeuYnqH6mJCoQoinS5xa
- OcR45WY4R/Vd905SVsZ1pdp0j4bXw5PapQyOnEMx+LDP+jwtfqd1rFQlk9d9W6zsNr1V1Bi
- FwruoplEaPNP3CDmGcYHQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:lXaItDdWRiA=;OLLhv9+CCWfpiDvGx/H5kfutapw
- Gg+Gy2LvlEW2R7+Gxuk8EduOMzjtU8wxUyus9UcalC/qjLsB/5N4T6dfVAXDCk2iEbu3bexHo
- clUhK2jbOf4C98xLpG4Mnn8Gq1SgpPAp8JvQelsyWFxZFNG6pReduvNJ4x3kptkRv+LR7D7SZ
- 53bgN4pGLF1mMt3spXcGFzbhi78Kbu7QYAs3BnpSQx1lqYJ80Gl7rSgtO5t/mUNNEB1pysu5C
- z7VDcVjXOy2kWFqz+paadYDcCrAUVKgg3A4cUIFsbX9pBD+N31/V1pOp5ueveaI7tJFXNbl0H
- 6ysTAw/kXnnJnp+8ItdyX2csm4IvDW8veGIX8Tzl/q0QEI14K58oX3MsoFPsPyLIRTS8l/C0w
- lNeVA9srRXdSFtxI81ePDDAGl4lYqnNtnNWo4QvggBHwAl1EXLyOavB/TsI0hWQNwcWv3T0Lo
- WfSf/flDUroZuOM5e0/dQ6CjBdGMh6DF4UpE7DUPd0fzINonYE1A2PbMkDI02XxBRisvixZ5U
- c4x+c2FnT52VFSaz/e/X5ojXKK77fTywX2CrcwwLH4eEvnsmOwnfZqzv43aQ+6GBuzflhcrXR
- AOkMNvHXrlTupHq7hv8HuqL7g09SHO78E1wIrTN9G6u8Y9dmNh5+NK+r+YgUpJnLFFJwri3lS
- R/YQyNdOxU4PSzmGEQKig2MfEQszddXwuBzWDbqQ83MWSe6+zHp625dEdqdrA1d4eYiwp55UI
- CDj0/X9VHm/SP5ULe9OK5Ho66KSaHBWzcU0Ohpa+h4pxzkHriLxasIMhlW3wdIax29cSDAdF8
- BxcoeDGGQfUqJcDrKdNsRQuEFvfa6pcLZz1vYFmSEPv/g=
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 15 Apr 2024 21:53:22 +0300
+Message-Id: <D0KX9NQPXKO1.2RXZU000DD1BB@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <ardb@kernel.org>,
+ <salvatore.benedetto@intel.com>
+Subject: Re: [PATCH 1/2] crypto: ecdh - Pass private key in proper byte
+ order to check valid key
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>, <linux-crypto@vger.kernel.org>,
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+X-Mailer: aerc 0.17.0
+References: <20240415003026.2661270-1-stefanb@linux.ibm.com>
+ <20240415003026.2661270-2-stefanb@linux.ibm.com>
+In-Reply-To: <20240415003026.2661270-2-stefanb@linux.ibm.com>
 
-The XM APEX 17 M23 (TongFang?) GMxBGxx (got using `sudo dmidecode -s
-baseboard-product-name`) needs IRQ overriding for the keyboard to work.
-Adding an entry for this laptop to the override_table makes the internal
-keyboard functional.
-See https://www.reddit.com/r/XMG_gg/comments/15kd5pg/xmg_apex_17_m23_keybo=
-ard_not_working_on_linux/.
-Patch was successfully tested with Arch Linux Kernel v6.8 under
-Manjaro Linux v23.1.4.
+On Mon Apr 15, 2024 at 3:30 AM EEST, Stefan Berger wrote:
+> ecc_is_key_valid expects a key with the most significant digit in the las=
+t
+> entry of the digit array. Currently ecdh_set_secret passes a reversed key
+> to ecc_is_key_valid that then passes the rather simple test checking
+> whether the private key is in range [2, n-3]. For all current ecdh-
+> supported curves (NIST P192/256/384) the 'n' parameter is a rather large
+> number, therefore easily passing this test.
+>
+> Throughout the ecdh and ecc codebase the variable 'priv' is used for a
+> private_key holding the bytes in proper byte order. Therefore, introduce
+> priv in ecdh_set_secret and copy the bytes from ctx->private_key into
+> priv in proper byte order by using ecc_swap_digits. Pass priv to
+> ecc_is_valid_key.
+>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Salvatore Benedetto <salvatore.benedetto@intel.com>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
+>  crypto/ecdh.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/crypto/ecdh.c b/crypto/ecdh.c
+> index 3049f147e011..a73853bd44de 100644
+> --- a/crypto/ecdh.c
+> +++ b/crypto/ecdh.c
+> @@ -27,6 +27,7 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, cons=
+t void *buf,
+>  			   unsigned int len)
+>  {
+>  	struct ecdh_ctx *ctx =3D ecdh_get_ctx(tfm);
+> +	u64 priv[ECC_MAX_DIGITS];
+>  	struct ecdh params;
+> =20
+>  	if (crypto_ecdh_decode_key(buf, len, &params) < 0 ||
+> @@ -40,9 +41,10 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, con=
+st void *buf,
+>  				       ctx->private_key);
+> =20
+>  	memcpy(ctx->private_key, params.key, params.key_size);
+> +	ecc_swap_digits(ctx->private_key, priv, ctx->ndigits);
 
-Signed-off-by: Guenter Schafranek <gschafra@web.de>
-=2D--
- drivers/acpi/resource.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Does swapping speed up the test that follows are what effect does it
+have to the ecc_is_key_valid() call?
 
-diff --git a/drivers/acpi/resource.c b/drivers/acpi/resource.c
-index 59423fe9d..c9af5d2f4 100644
-=2D-- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -533,6 +533,12 @@ static const struct dmi_system_id irq1_level_low_skip=
-_override[] =3D {
-  * to have a working keyboard.
-  */
- static const struct dmi_system_id irq1_edge_low_force_override[] =3D {
-+	{
-+		/* XMG APEX 17 (M23) */
-+		.matches =3D {
-+			DMI_MATCH(DMI_BOARD_NAME, "GMxBGxx"),
-+		},
-+	},
- 	{
- 		/* TongFang GMxRGxx/XMG CORE 15 (M22)/TUXEDO Stellaris 15 Gen4 AMD */
- 		.matches =3D {
-=2D-
-2.44.0
+Just a question to understand what is going on, not actual review
+feedback.
 
+> =20
+>  	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
+> -			     ctx->private_key, params.key_size) < 0) {
+> +			     priv, params.key_size) < 0) {
+>  		memzero_explicit(ctx->private_key, params.key_size);
+>  		return -EINVAL;
+>  	}
+
+BR, Jarkko
 
