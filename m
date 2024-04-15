@@ -1,178 +1,504 @@
-Return-Path: <linux-kernel+bounces-145185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFE928A5088
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C59F08A5087
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43BCB1F2122E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:11:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C5D41F226E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7B813AA41;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB9513AA39;
 	Mon, 15 Apr 2024 12:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mSPe5As7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EwCONDjg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D7B6AF88;
-	Mon, 15 Apr 2024 12:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185595; cv=fail; b=noG7hfqBNWm0+Q1XUUvki6/0/4xasaJwoHiEvswo9c1omMSbpNPVLHTUgfg4CDfv24+N2GriTnLgidXsPaoO/eXD9XLdyicGew8c0PKb0oIHGdratXGZzNMS6O2GsqlLEgwpPAjDOnZOGlrwQt1PefuSSxuzXsOEi24erPec37E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185595; c=relaxed/simple;
-	bh=SOejPrh1oAcUeys+pF82fWydvPVfGi/hMf3Sx0c1YEk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Q2zHpcgpX5jonhwJMnCqpa7XsyXuXqmpQtEyZgU2cqAdwUBE/Lmbln54blcYR6GT6R2TvHVeXfOzMBZBu3Y/rx1xjnk7nMlHLt+mCDCZIwvfTGA7aA18s3UtEbJZpJdoj6/6hGtZIBfKoiVQKXeagp3nYkaWVrnO1LB8q0+Ln3s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mSPe5As7; arc=fail smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713185594; x=1744721594;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=SOejPrh1oAcUeys+pF82fWydvPVfGi/hMf3Sx0c1YEk=;
-  b=mSPe5As7oRycvHX6jPsdE4ObnqEPJ7R+UBxBypHnIthOBjXIaAM4q815
-   U7wZ9AnBX/em5YZcWxw+EU4xj8fz9eqbm20a5oNNuWiKi80iMKpDHW6xk
-   WFg8VHbrSSIpJwhGU7apH7FJiVDYx+hruPNI15uMvVU/qKwisgU7ywXb/
-   ChwvArdgjfVxv65vFhU8lTS+Rx6XGE70FD7XLXawAC5b0iORwQmg5mh9i
-   GoAvjvJ1bEuIpGH3mjt/55ncKB6KvxcEo2yWXxd5yv4DQ2vUwKukJAUvH
-   JjkbFZJKhHbZ3b3+MInItebMlC9gGh5lkU+yWOy4dMSfyN1+j8Yj/4xZM
-   A==;
-X-CSE-ConnectionGUID: +gcmY7osSvCoMa1x6MCuCg==
-X-CSE-MsgGUID: tyVgPQmyT9iNuH/A9XZiag==
-X-IronPort-AV: E=McAfee;i="6600,9927,11044"; a="12352266"
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="12352266"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 05:53:13 -0700
-X-CSE-ConnectionGUID: ZFpVTGmnT5OP9bz9cdNJTg==
-X-CSE-MsgGUID: H7iFZP24RlWpG38Z8zR7rw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="26537652"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 05:53:13 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Apr 2024 05:53:12 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Apr 2024 05:53:12 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 05:53:12 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 05:53:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TpkXEaVKsCLRkm4cr5Ds+BZxlkft1Qjo532HjNNTd6uyIK+SQNfOLQAaOL8dk2Vfqt6JGyurlfY1AFKdZDvx6MyEBqBNtDjnjV1y+Kv6g3611KMBKpc5AQT2KCfI6nFrQKQaFsI+s37Fim5FGG38qlIek8vhO/6gaWbIQFryRsloV4UySix8jOJosG1HNOVcFVG9XOAU8VEZ9BRD7oElChwB15xdBDBvcen3HyPwsaVLTtz3CBCmlR07zuG42oPDgLpudGw/w6yaCwhpPmiM5kScl7G6injx1hvGHA/P2VvxCSmtJ/7x9k5KVorCos6XFTAh2DFrEFfkzE6KkDVx7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=twY8PSz4mBoJ7Ttf//cFiRt+sFGl5+o0XV5ecBLfuDA=;
- b=B+l0tFy2MqeCbpAiFr1Tt5vJqtP0YW6Hlxv+qcysbJ8srSB9xg4ijnIBq9MihxK3hZW81Io1lZWi7JvPeBmovFDWCWdGezjOkVDVLScv7GMQ4wf2RxG1RMjTJft0KUvCkTyNSKHOIF/u1nNGSTFZynrgWadEEnWzJMi0LS5o8M9P5IhIGRGlN5NpuKbRNk1E/tpL3gsZe2kACXyQPfQCUg5QvNgTwNAP9DwqLJVM+F9qXrGSFF5U9mWWBL9DUvomwj1DLFo5dlIVdMzF4E1LCAS8hEzEvcWzN0J/yA9EdaDe6aVqF3Mf3S0OAzwYFAG7OeMBnXLj5ORVQ7AntWUQmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by MW4PR11MB5871.namprd11.prod.outlook.com (2603:10b6:303:188::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.30; Mon, 15 Apr
- 2024 12:53:09 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::5135:2255:52ba:c64e%4]) with mapi id 15.20.7452.041; Mon, 15 Apr 2024
- 12:53:09 +0000
-Date: Mon, 15 Apr 2024 20:53:00 +0800
-From: Chao Gao <chao.gao@intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>, Sean Christopherson
-	<seanjc@google.com>, Isaku Yamahata <isaku.yamahata@intel.com>, Xiaoyao Li
-	<xiaoyao.li@intel.com>, Binbin Wu <binbin.wu@linux.intel.com>
-Subject: Re: [PATCH 02/10] KVM: x86/mmu: Replace hardcoded value 0 for the
- initial value for SPTE
-Message-ID: <Zh0jLB5Ym8eUPLp2@chao-email>
-References: <20240412173532.3481264-1-pbonzini@redhat.com>
- <20240412173532.3481264-3-pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240412173532.3481264-3-pbonzini@redhat.com>
-X-ClientProxiedBy: SI1PR02CA0031.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::11) To CH3PR11MB8660.namprd11.prod.outlook.com
- (2603:10b6:610:1ce::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F517FBB0;
+	Mon, 15 Apr 2024 12:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713185594; cv=none; b=FlbSF20ZG2jab55ZxPSmFNq3IPX+/siE3y1MIcrN490ZesOGAT3JkGgaU8ErSb6NGflUtUdrxLS7GcgZD+YAK8TW3PKNQ1pWFZMaO7hx9HM1G5BopeRTNEx7bNKvy0zq3AD4H6I3m6Cm10jdRlinINjXoHgQTTBn7MqRrx3HkDw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713185594; c=relaxed/simple;
+	bh=EdwnsM+WidyVwcl/S976hgyfsg8TRUFqMX5t1CcbJcA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=R+WL7kfg2uOZi5DwnNZJd80UhjKztYbPYwSuadfIUoVFF1b2PhoJjO8yFYssDs8irNtNRU0ZZqEQYnKRN9Ypt1x+wF3ypkB2VBp30YUJ0RseFOH13TwWXUoeFSyDDuO4VqjXSzqUnkzlXXmpogfEUv5dP3s7nYHWmfynWq5wTm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EwCONDjg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEFE6C2BD11;
+	Mon, 15 Apr 2024 12:53:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713185594;
+	bh=EdwnsM+WidyVwcl/S976hgyfsg8TRUFqMX5t1CcbJcA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=EwCONDjgigNY4GnaIXnQ6pC9pfL5EUmZ8wfiH4EEqVWTUF+j3T9RVoi9t9Yx4V/mt
+	 NR6mdiK822KNGqwkzlxS2RmgutuSgTwwV1NlkIcyhVtVNp+DbyGzxp5rl0yY8jRFJB
+	 aFDffBBF+qJwovDEPwxeLiLqYPtXtLdLPtxM2rx/eTMVvLZqDENGh8RwAvgXSUEmh8
+	 t9dRUruxqkOeL3K06WE/rDgwKyMBhsnkejzumoFnKRDCAS+EvbvQboiTCdmIcDAo/E
+	 lIzI5YiFgq8LgVgG8LtUg4nVgscwqk+bPTpV8dc88p8UwlN4xjsCLYaGQ65zbgHS9/
+	 PpDaYmGynDkMQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v9 21/36] function_graph: Pass ftrace_regs to entryfunc
+Date: Mon, 15 Apr 2024 21:53:08 +0900
+Message-Id: <171318558846.254850.11212334424960079198.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|MW4PR11MB5871:EE_
-X-MS-Office365-Filtering-Correlation-Id: 12a116fd-0f4e-44ed-9265-08dc5d4b0045
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gKQHMl1yEsp+3kTODcNdE2gHFMMO7aYM8o5kVtxu+SauLm7zj2wHb6x0hUvLgjZspbyd5e6eMCh8y0H99wTZdH97dkHeThA/xNlMHDdCzlra1aoshiXzh28XIzIMeJ48ftLxsj8TLzltewBcx95yVA/QHR2ogoPE9smaCWh8XEjIIuoMEcMbeamEjEDUerbkAM0gDPTn3mvs4WLlsV7pOdMAd0S53nj+J/c2nWfNN+8/dZRTcV946I3FHtvg3rUwr5j13aGhS9i7UdDpjOvs7vVK3e+dCVp8C2xlQYNtNn3OjEmeuAmRqTrozNTUUnBopp7VJXUPmzRDvz/hcec7qTC8QBykwlOF0gV5E4tv5/RVP76BNtCXQRfx3HmGWyfOD4IN5DRcZw+L5FQF0xvrsiRRR/6DLEpGsrvukCTI9aMW/LtroR5GPEJWQFV0ld5OSxsBUqtefVAxxSqpMXjwBPNMA3KbCPHu8bMeM4naXd7f8FcslC8S9KPj0t4wn9FVPteDKr+CW0pnGp464XKAvlRpWCyxtbdmIFr94p/VdbmtsEQEPNLb0enVnrlr4q5/xeIFQ33+K4p5YUEcE3skURlXpFtU91qeTxuq9iJ6y6WXh78O6wm5SSOAMWlKY4EqobPb/XC6p6EM1n6nIJKK/oFOzYcYKGzykLt4N2QsBiI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gdCoXttBU+QN0aPow9Kel2LGNqGUVC/Ut52zot/Eb7LB/vhdhmg9j8u05ZCg?=
- =?us-ascii?Q?jUN72FnkqxYSc54+yrOFQUVYvPvmjqLzKLYf774Buv5/3FxUB430JlWNpXOW?=
- =?us-ascii?Q?8T9VQLx7FhcgwlbfLPf3eJV1fBnKjPxWO6QyOX8wIFQimVdOUgTwPEzA+eQJ?=
- =?us-ascii?Q?qQuwtLKOyDXzCCNd0MPOK4w1vcjWdoNUhLU2tbohbLpI2eiL+koU47pGzSpb?=
- =?us-ascii?Q?VsnNS6v246Ii48NLKkRyI8b/jIj2hSLrHm/NMF59xd4yW3Bp6cKKx3EK7LWs?=
- =?us-ascii?Q?s/mkIuY2uqx0OF2JJOr8hFUd1p0nb7sAFuqQMfnlCLxpJ9UNAJFabhISS/ym?=
- =?us-ascii?Q?iuWF7wTg6HMDES9VbpO88t/99XZfeHUS5wgSBAwfLl3kP6NEbRuvqJv44N8r?=
- =?us-ascii?Q?gF6GsWSVnJptEJjkzZaZ6rGCjj3tt1Ui34oPKCpxxJE3B4teSzAI/XhGFokK?=
- =?us-ascii?Q?60l+IvBqiOB+Y6GveGtarHbPHV9k77u1iXTm2szxYsYwaevbSfXToISncLCc?=
- =?us-ascii?Q?iNpKeQRGlRHRwNb82+UFIHSW0lGI4H/u9KKjplujS9ppxSNbIBJYg11ohTCG?=
- =?us-ascii?Q?akO5mFxgMX04f2uq+4WqBp0Z8b36kjr+mNnBuuiKZhASQ/URAV57YGGz8pbL?=
- =?us-ascii?Q?Q8Br4TmjGIpRaTJKVCfraHoA9lQng51nXk48PgACZsZqyJHs/6y8UELVG+3y?=
- =?us-ascii?Q?cm/+oB/VzcFcI9kLt79lB2WHzK5EX2JTtGMEY1rweI20nEVgSBIMr2PNnrk/?=
- =?us-ascii?Q?YMYqLAkMKbOrGL7bHfykTcOi+SNI3Z7+9S9oRjklE4GooxNjcYVN4m+FYgds?=
- =?us-ascii?Q?P7HY+Dn4I1hlEpRz5g1Z0pVyA0XDwG1JEzMZXtgUWJ6jNEckzBQSA5zS8TtZ?=
- =?us-ascii?Q?H4yDVERnVdc+acEGKReD0lkPg/1io63oJSkXmp9YjHXPXxUoMpZhPif75yFG?=
- =?us-ascii?Q?yZug6kxdaI/trCniR5au81SPiuTCWA9/MqXj4WJjwJLYfn0Exk+5xLEIKjA3?=
- =?us-ascii?Q?VONrnmQ4xuClPhYqfngYau+52H65MhrEPCKIPTxKtfSq53rFCXAzfXyV04G9?=
- =?us-ascii?Q?GIr1DeVrtjke6f03J1rVc1fJIOsceGiWZlqrykUGNYzESfAH98jG6NUvfgT1?=
- =?us-ascii?Q?UZ3RN+g8CmhM2CfNRpWU+rmtpY7ITK54mEj2d00dn0QCY4m4AMxHEw4DvXhy?=
- =?us-ascii?Q?W3VrGtgN8UX6pdPua6BhD/kiGcJHE484fvgfvBRQuCtA3QxLuNNIU4rICwDP?=
- =?us-ascii?Q?O3430+Uvq4pKYKkiYwhyZuNaF59vB4HMgsZS2KEJ7plTTCuveJ/XyZfFTEo+?=
- =?us-ascii?Q?B/r0/L3/wxCZSWgXg/LfHgOI4LhyagpgJjU+vSViyboRx4qGQ7XhuUiHqClT?=
- =?us-ascii?Q?YgjAMRDtSw9Ki9zuytRP+rXT+HIjMLeurML7iKxLUBbK0aURRseu3EoAzUDm?=
- =?us-ascii?Q?ZjRZqgkHtPQEoNaNWmRwGHrSeOT32n6E2DU/DbIL3clob2HvBfKBxUrDpZON?=
- =?us-ascii?Q?jH+jizfWPapLpXfQJW5fVIldosDH6f6F8nxjHcpv5rho1RRpssz9wjWsi3wQ?=
- =?us-ascii?Q?PfQBnSm2wX4E03EHlGxvYQ4vkRbuzmJydQxCecD5?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12a116fd-0f4e-44ed-9265-08dc5d4b0045
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 12:53:08.9862
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BhpRwOabtypBK94g8z7FodTt+aDYgoXjo/QtmeQjmdYFahVG47uM9gn5hbf1jhWAJcw3CmaAchgVBQIxsGzazQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5871
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
->@@ -194,7 +196,7 @@ extern u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
->  *
->  * Only used by the TDP MMU.
->  */
->-#define REMOVED_SPTE	0x5a0ULL
->+#define REMOVED_SPTE	(SHADOW_NONPRESENT_VALUE | 0x5a0ULL)
-> 
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-"Use only low bits to avoid 64-bit immediates" in the comment above becomes
-stale w/ patch 3 applied.
+Pass ftrace_regs to the fgraph_ops::entryfunc(). If ftrace_regs is not
+available, it passes a NULL instead. User callback function can access
+some registers (including return address) via this ftrace_regs.
+
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ Changes in v8:
+  - Just pass ftrace_regs to the handler instead of adding a new
+    entryregfunc.
+  - Update riscv ftrace_graph_func().
+ Changes in v3:
+  - Update for new multiple fgraph.
+---
+ arch/arm64/kernel/ftrace.c               |    2 +
+ arch/loongarch/kernel/ftrace_dyn.c       |    2 +
+ arch/powerpc/kernel/trace/ftrace.c       |    2 +
+ arch/powerpc/kernel/trace/ftrace_64_pg.c |   10 ++++---
+ arch/riscv/kernel/ftrace.c               |    2 +
+ arch/x86/kernel/ftrace.c                 |   42 ++++++++++++++++--------------
+ include/linux/ftrace.h                   |   20 +++++++++++---
+ kernel/trace/fgraph.c                    |   21 +++++++++------
+ kernel/trace/ftrace.c                    |    3 +-
+ kernel/trace/trace.h                     |    3 +-
+ kernel/trace/trace_functions_graph.c     |    3 +-
+ kernel/trace/trace_irqsoff.c             |    3 +-
+ kernel/trace/trace_sched_wakeup.c        |    3 +-
+ kernel/trace/trace_selftest.c            |    8 ++++--
+ 14 files changed, 76 insertions(+), 48 deletions(-)
+
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index b96740829798..779b975f03f5 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -497,7 +497,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 		return;
+ 
+ 	if (!function_graph_enter_ops(*parent, ip, frame_pointer,
+-				      (void *)frame_pointer, gops))
++				      (void *)frame_pointer, fregs, gops))
+ 		*parent = (unsigned long)&return_to_handler;
+ 
+ 	ftrace_test_recursion_unlock(bit);
+diff --git a/arch/loongarch/kernel/ftrace_dyn.c b/arch/loongarch/kernel/ftrace_dyn.c
+index 920eb673b32b..155bdaba2012 100644
+--- a/arch/loongarch/kernel/ftrace_dyn.c
++++ b/arch/loongarch/kernel/ftrace_dyn.c
+@@ -254,7 +254,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 
+ 	old = *parent;
+ 
+-	if (!function_graph_enter_ops(old, ip, 0, parent, gops))
++	if (!function_graph_enter_ops(old, ip, 0, parent, fregs, gops))
+ 		*parent = return_hooker;
+ }
+ #else
+diff --git a/arch/powerpc/kernel/trace/ftrace.c b/arch/powerpc/kernel/trace/ftrace.c
+index 4a9294821c0d..501adb80fc8d 100644
+--- a/arch/powerpc/kernel/trace/ftrace.c
++++ b/arch/powerpc/kernel/trace/ftrace.c
+@@ -435,7 +435,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 	if (bit < 0)
+ 		goto out;
+ 
+-	if (!function_graph_enter_ops(parent_ip, ip, 0, (unsigned long *)sp, gops))
++	if (!function_graph_enter_ops(parent_ip, ip, 0, (unsigned long *)sp, fregs, gops))
+ 		parent_ip = ppc_function_entry(return_to_handler);
+ 
+ 	ftrace_test_recursion_unlock(bit);
+diff --git a/arch/powerpc/kernel/trace/ftrace_64_pg.c b/arch/powerpc/kernel/trace/ftrace_64_pg.c
+index 12fab1803bcf..4ae9eeb1c8f1 100644
+--- a/arch/powerpc/kernel/trace/ftrace_64_pg.c
++++ b/arch/powerpc/kernel/trace/ftrace_64_pg.c
+@@ -800,7 +800,8 @@ int ftrace_disable_ftrace_graph_caller(void)
+  * in current thread info. Return the address we want to divert to.
+  */
+ static unsigned long
+-__prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp)
++__prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp,
++			struct ftrace_regs *fregs)
+ {
+ 	unsigned long return_hooker;
+ 	int bit;
+@@ -817,7 +818,7 @@ __prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp
+ 
+ 	return_hooker = ppc_function_entry(return_to_handler);
+ 
+-	if (!function_graph_enter(parent, ip, 0, (unsigned long *)sp))
++	if (!function_graph_enter_regs(parent, ip, 0, (unsigned long *)sp, fregs))
+ 		parent = return_hooker;
+ 
+ 	ftrace_test_recursion_unlock(bit);
+@@ -829,13 +830,14 @@ __prepare_ftrace_return(unsigned long parent, unsigned long ip, unsigned long sp
+ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 		       struct ftrace_ops *op, struct ftrace_regs *fregs)
+ {
+-	fregs->regs.link = __prepare_ftrace_return(parent_ip, ip, fregs->regs.gpr[1]);
++	fregs->regs.link = __prepare_ftrace_return(parent_ip, ip,
++						   fregs->regs.gpr[1], fregs);
+ }
+ #else
+ unsigned long prepare_ftrace_return(unsigned long parent, unsigned long ip,
+ 				    unsigned long sp)
+ {
+-	return __prepare_ftrace_return(parent, ip, sp);
++	return __prepare_ftrace_return(parent, ip, sp, NULL);
+ }
+ #endif
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+index eb86fb005f34..59c2824e2aaf 100644
+--- a/arch/riscv/kernel/ftrace.c
++++ b/arch/riscv/kernel/ftrace.c
+@@ -197,7 +197,7 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 	 */
+ 	old = *parent;
+ 
+-	if (!function_graph_enter_ops(old, ip, frame_pointer(regs), parent, gops))
++	if (!function_graph_enter_ops(old, ip, frame_pointer(regs), parent, fregs, gops))
+ 		*parent = return_hooker;
+ }
+ #else /* CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 5e30cd69b8ab..fb81afa7d07d 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -615,16 +615,8 @@ int ftrace_disable_ftrace_graph_caller(void)
+ }
+ #endif /* CONFIG_DYNAMIC_FTRACE && !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
+ 
+-/*
+- * Hook the return address and push it in the stack of return addrs
+- * in current thread info.
+- */
+-void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
+-			   unsigned long frame_pointer)
++static inline bool skip_ftrace_return(void)
+ {
+-	unsigned long return_hooker = (unsigned long)&return_to_handler;
+-	int bit;
+-
+ 	/*
+ 	 * When resuming from suspend-to-ram, this function can be indirectly
+ 	 * called from early CPU startup code while the CPU is in real mode,
+@@ -634,13 +626,28 @@ void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
+ 	 * This check isn't as accurate as virt_addr_valid(), but it should be
+ 	 * good enough for this purpose, and it's fast.
+ 	 */
+-	if (unlikely((long)__builtin_frame_address(0) >= 0))
+-		return;
++	if ((long)__builtin_frame_address(0) >= 0)
++		return true;
+ 
+-	if (unlikely(ftrace_graph_is_dead()))
+-		return;
++	if (ftrace_graph_is_dead())
++		return true;
++
++	if (atomic_read(&current->tracing_graph_pause))
++		return true;
++	return false;
++}
+ 
+-	if (unlikely(atomic_read(&current->tracing_graph_pause)))
++/*
++ * Hook the return address and push it in the stack of return addrs
++ * in current thread info.
++ */
++void prepare_ftrace_return(unsigned long ip, unsigned long *parent,
++			   unsigned long frame_pointer)
++{
++	unsigned long return_hooker = (unsigned long)&return_to_handler;
++	int bit;
++
++	if (unlikely(skip_ftrace_return()))
+ 		return;
+ 
+ 	bit = ftrace_test_recursion_trylock(ip, *parent);
+@@ -662,17 +669,14 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+ 	struct fgraph_ops *gops = container_of(op, struct fgraph_ops, ops);
+ 	int bit;
+ 
+-	if (unlikely(ftrace_graph_is_dead()))
+-		return;
+-
+-	if (unlikely(atomic_read(&current->tracing_graph_pause)))
++	if (unlikely(skip_ftrace_return()))
+ 		return;
+ 
+ 	bit = ftrace_test_recursion_trylock(ip, *parent);
+ 	if (bit < 0)
+ 		return;
+ 
+-	if (!function_graph_enter_ops(*parent, ip, 0, parent, gops))
++	if (!function_graph_enter_ops(*parent, ip, 0, parent, fregs, gops))
+ 		*parent = (unsigned long)&return_to_handler;
+ 
+ 	ftrace_test_recursion_unlock(bit);
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 4c53f3dffab8..087345ef0d72 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -1061,9 +1061,12 @@ struct fgraph_ops;
+ typedef void (*trace_func_graph_ret_t)(struct ftrace_graph_ret *,
+ 				       struct fgraph_ops *); /* return */
+ typedef int (*trace_func_graph_ent_t)(struct ftrace_graph_ent *,
+-				      struct fgraph_ops *); /* entry */
++				      struct fgraph_ops *,
++				      struct ftrace_regs *); /* entry */
+ 
+-extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
++extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace,
++				   struct fgraph_ops *gops,
++				   struct ftrace_regs *fregs);
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 
+@@ -1106,13 +1109,20 @@ struct ftrace_ret_stack {
+ extern void return_to_handler(void);
+ 
+ extern int
+-function_graph_enter(unsigned long ret, unsigned long func,
+-		     unsigned long frame_pointer, unsigned long *retp);
++function_graph_enter_regs(unsigned long ret, unsigned long func,
++			  unsigned long frame_pointer, unsigned long *retp,
++			  struct ftrace_regs *fregs);
++
++static inline int function_graph_enter(unsigned long ret, unsigned long func,
++				       unsigned long fp, unsigned long *retp)
++{
++	return function_graph_enter_regs(ret, func, fp, retp, NULL);
++}
+ 
+ extern int
+ function_graph_enter_ops(unsigned long ret, unsigned long func,
+ 			 unsigned long frame_pointer, unsigned long *retp,
+-			 struct fgraph_ops *gops);
++			 struct ftrace_regs *fregs, struct fgraph_ops *gops);
+ 
+ struct ftrace_ret_stack *
+ ftrace_graph_get_ret_stack(struct task_struct *task, int idx);
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index d13806ca1bbb..05845291c4bd 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -248,7 +248,8 @@ static inline unsigned long make_fgraph_data(int idx, int size, int offset)
+ }
+ 
+ /* ftrace_graph_entry set to this to tell some archs to run function graph */
+-static int entry_run(struct ftrace_graph_ent *trace, struct fgraph_ops *ops)
++static int entry_run(struct ftrace_graph_ent *trace, struct fgraph_ops *ops,
++		     struct ftrace_regs *fregs)
+ {
+ 	return 0;
+ }
+@@ -440,7 +441,7 @@ int __weak ftrace_disable_ftrace_graph_caller(void)
+ #endif
+ 
+ int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace,
+-			    struct fgraph_ops *gops)
++			    struct fgraph_ops *gops, struct ftrace_regs *fregs)
+ {
+ 	return 0;
+ }
+@@ -574,8 +575,9 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ #endif
+ 
+ /* If the caller does not use ftrace, call this function. */
+-int function_graph_enter(unsigned long ret, unsigned long func,
+-			 unsigned long frame_pointer, unsigned long *retp)
++int function_graph_enter_regs(unsigned long ret, unsigned long func,
++			      unsigned long frame_pointer, unsigned long *retp,
++			      struct ftrace_regs *fregs)
+ {
+ 	struct ftrace_graph_ent trace;
+ 	unsigned long bitmap = 0;
+@@ -610,7 +612,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ 
+ 		save_curr_ret_stack = current->curr_ret_stack;
+ 		if (ftrace_ops_test(&gops->ops, func, NULL) &&
+-		    gops->entryfunc(&trace, gops))
++		    gops->entryfunc(&trace, gops, fregs))
+ 			bitmap |= BIT(i);
+ 		else
+ 			/* Clear out any saved storage */
+@@ -637,6 +639,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ /* This is called from ftrace_graph_func() via ftrace */
+ int function_graph_enter_ops(unsigned long ret, unsigned long func,
+ 			     unsigned long frame_pointer, unsigned long *retp,
++			     struct ftrace_regs *fregs,
+ 			     struct fgraph_ops *gops)
+ {
+ 	struct ftrace_graph_ent trace;
+@@ -661,7 +664,7 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
+ 	trace.func = func;
+ 	trace.depth = current->curr_ret_depth;
+ 	save_curr_ret_stack = current->curr_ret_stack;
+-	if (gops->entryfunc(&trace, gops)) {
++	if (gops->entryfunc(&trace, gops, fregs)) {
+ 		if (type == FGRAPH_TYPE_RESERVED)
+ 			set_fgraph_index_bitmap(current, index, BIT(gops->idx));
+ 		else
+@@ -942,7 +945,8 @@ void fgraph_init_ops(struct ftrace_ops *dst_ops,
+ 		     struct ftrace_ops *src_ops)
+ {
+ 	dst_ops->func = ftrace_graph_func;
+-	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_GRAPH_STUB;
++	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_GRAPH_STUB |
++			 FTRACE_OPS_FL_SAVE_ARGS;
+ 
+ #ifdef FTRACE_GRAPH_TRAMP_ADDR
+ 	dst_ops->trampoline = FTRACE_GRAPH_TRAMP_ADDR;
+@@ -1187,7 +1191,8 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 	mutex_lock(&ftrace_lock);
+ 
+ 	if (!gops->ops.func) {
+-		gops->ops.flags |= FTRACE_OPS_GRAPH_STUB;
++		gops->ops.flags |= FTRACE_OPS_GRAPH_STUB |
++				   FTRACE_OPS_FL_SAVE_ARGS;
+ 		gops->ops.func = ftrace_graph_func;
+ #ifdef FTRACE_GRAPH_TRAMP_ADDR
+ 		gops->ops.trampoline = FTRACE_GRAPH_TRAMP_ADDR;
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 45fd2710f81b..5377a0b22ec9 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -816,7 +816,8 @@ void ftrace_graph_graph_time_control(bool enable)
+ }
+ 
+ static int profile_graph_entry(struct ftrace_graph_ent *trace,
+-			       struct fgraph_ops *gops)
++			       struct fgraph_ops *gops,
++			       struct ftrace_regs *fregs)
+ {
+ 	struct ftrace_ret_stack *ret_stack;
+ 
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index f23b6fbd547d..8221b6febb51 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -682,7 +682,8 @@ void trace_default_header(struct seq_file *m);
+ void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
+ 
+ void trace_graph_return(struct ftrace_graph_ret *trace, struct fgraph_ops *gops);
+-int trace_graph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
++int trace_graph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops,
++		      struct ftrace_regs *fregs);
+ 
+ void tracing_start_cmdline_record(void);
+ void tracing_stop_cmdline_record(void);
+diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
+index 13d0387ac6a6..b9785fc919c9 100644
+--- a/kernel/trace/trace_functions_graph.c
++++ b/kernel/trace/trace_functions_graph.c
+@@ -128,7 +128,8 @@ static inline int ftrace_graph_ignore_irqs(void)
+ }
+ 
+ int trace_graph_entry(struct ftrace_graph_ent *trace,
+-		      struct fgraph_ops *gops)
++		      struct fgraph_ops *gops,
++		      struct ftrace_regs *fregs)
+ {
+ 	unsigned long *task_var = fgraph_get_task_var(gops);
+ 	struct trace_array *tr = gops->private;
+diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
+index fce064e20570..ad739d76fc86 100644
+--- a/kernel/trace/trace_irqsoff.c
++++ b/kernel/trace/trace_irqsoff.c
+@@ -176,7 +176,8 @@ static int irqsoff_display_graph(struct trace_array *tr, int set)
+ }
+ 
+ static int irqsoff_graph_entry(struct ftrace_graph_ent *trace,
+-			       struct fgraph_ops *gops)
++			       struct fgraph_ops *gops,
++			       struct ftrace_regs *fregs)
+ {
+ 	struct trace_array *tr = irqsoff_trace;
+ 	struct trace_array_cpu *data;
+diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
+index 130ca7e7787e..23360a2700de 100644
+--- a/kernel/trace/trace_sched_wakeup.c
++++ b/kernel/trace/trace_sched_wakeup.c
+@@ -113,7 +113,8 @@ static int wakeup_display_graph(struct trace_array *tr, int set)
+ }
+ 
+ static int wakeup_graph_entry(struct ftrace_graph_ent *trace,
+-			      struct fgraph_ops *gops)
++			      struct fgraph_ops *gops,
++			      struct ftrace_regs *fregs)
+ {
+ 	struct trace_array *tr = wakeup_trace;
+ 	struct trace_array_cpu *data;
+diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+index 369efc569238..5edbf09844d9 100644
+--- a/kernel/trace/trace_selftest.c
++++ b/kernel/trace/trace_selftest.c
+@@ -773,7 +773,8 @@ struct fgraph_fixture {
+ };
+ 
+ static __init int store_entry(struct ftrace_graph_ent *trace,
+-			      struct fgraph_ops *gops)
++			      struct fgraph_ops *gops,
++			      struct ftrace_regs *fregs)
+ {
+ 	struct fgraph_fixture *fixture = container_of(gops, struct fgraph_fixture, gops);
+ 	const char *type = fixture->store_type_name;
+@@ -1011,7 +1012,8 @@ static unsigned int graph_hang_thresh;
+ 
+ /* Wrap the real function entry probe to avoid possible hanging */
+ static int trace_graph_entry_watchdog(struct ftrace_graph_ent *trace,
+-				      struct fgraph_ops *gops)
++				      struct fgraph_ops *gops,
++				      struct ftrace_regs *fregs)
+ {
+ 	/* This is harmlessly racy, we want to approximately detect a hang */
+ 	if (unlikely(++graph_hang_thresh > GRAPH_MAX_FUNC_TEST)) {
+@@ -1025,7 +1027,7 @@ static int trace_graph_entry_watchdog(struct ftrace_graph_ent *trace,
+ 		return 0;
+ 	}
+ 
+-	return trace_graph_entry(trace, gops);
++	return trace_graph_entry(trace, gops, fregs);
+ }
+ 
+ static struct fgraph_ops fgraph_ops __initdata  = {
+
 
