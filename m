@@ -1,108 +1,130 @@
-Return-Path: <linux-kernel+bounces-145124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C18A8A4FE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:56:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CBD08A4FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:56:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB63F28420D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:56:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB9F4284744
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 915CA71730;
-	Mon, 15 Apr 2024 12:49:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E0985940;
+	Mon, 15 Apr 2024 12:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EGs1PQ9h"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mSS8f0tm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA45E84DE2
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 12:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85DBB85299;
+	Mon, 15 Apr 2024 12:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185398; cv=none; b=K1dABCk+xz9tuh/XkAbhNk52nB0bT1hEv7CPNq7mFdpk7HIbE8IvvflpXEXJ1gpVI5jg1niBRnRL4nbCls3frgFAntyvvU97iVxZjzN2/PALkhOft2z6UnU686hpEdOBSvpDcwka7B0RjI4GJozw0aX80/zVbzhf8DJxnL7VgTo=
+	t=1713185402; cv=none; b=rX95gj9BJfdMhIXRU5/wognf5OhuRCxVkbpOnKPNWx7+1V+nEvL5NSq/cbEASjNmifSBSelG1TlLqEBLCfPs3E8glCJbAw1DIm3rbMLIUrmJewBoOqDQCadDWus5lBb2nbs0BjbdjFYPv9IwMRLLvMtgiim8cL+dDqgtHphVIkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185398; c=relaxed/simple;
-	bh=YQTOMiU6gYM5FdXLFvC0kzpvxWDYETwVK1r4K+Qq21U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=drgQPjLsYT/naTkYtZ6376PCDA5fRZy8OFAutcqVyBeDWBbQKf3io9jRGjPt/qSN1Bmg6P49accL75ycyyO0jReWhLK+pqtwA6NWYaP51R4IABtIA5793nvqCFrwjG+y/TNdyTJmebO93NUPStCUDH90nK2h5FFx18ZcjpxiAQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EGs1PQ9h; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4187d5f0812so1803775e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 05:49:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713185394; x=1713790194; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YQTOMiU6gYM5FdXLFvC0kzpvxWDYETwVK1r4K+Qq21U=;
-        b=EGs1PQ9h0Kx1LlOLzDvkY+m+xg9w2PKNa1RIWrGVlWEWlfaE0LZeSuWAGliuR4JeJl
-         OrBCoMEFEIfu9bTHqoZ+VHbd/5ZlYywwce/h8shEpn2sYo98h9xp+VTOMwo/g1dRohk3
-         dJaW9xsA3e7fJl3UifiGyuwzE/4kEqjHlMDi17bPfxabqEqNJwkQVeG+KRPzRmuOCUBY
-         SrqnLXZBUYSfoze4kA+3OPasjSkOvtKhQiZkY3g95oFlzoQYtxHv8pGX4Wkqe16hb+RK
-         ElbBK/kceKwMnY4TG/mmelyj1DBfu/vFH8F1QG6eacEih/TEXkiCoFvgxgnAHuW6GIhm
-         bhCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713185394; x=1713790194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YQTOMiU6gYM5FdXLFvC0kzpvxWDYETwVK1r4K+Qq21U=;
-        b=c2OzJyZSsHxCzhEmzHG26LimmP2wqKItBpzzpoQQXBofF1nmhisb1tDknX3xNJUdI4
-         hjUc0/yP7HsjcTLru3eK1g2p8FKi1MqcJnP+sV1FAtKOsP9pJOEr4Y9tiCp92XMoEfvS
-         KJEpnTWdHsUrLA9yzGKLO/MDhD14HAM3/44GK0veo0cnWOt9pmVFgOoTqSNXgLugg70m
-         y6EGkFz3Frx1NDoVaJv2HXAAUocbp6UfFBPcIsPlvnLx26GVFmpJcXZM7gh0IiQ7TMRS
-         KhTQ2hJRC9+HTnehEtOklJPktggfHCh4gqdVLDit5yLohVenxg6LKWOs/Z2hCm4RD24F
-         uiqA==
-X-Forwarded-Encrypted: i=1; AJvYcCV5MXPVPANL6SJ6RbNmx5+SQldGF81XBoTpVVVbNfojpCxUstNJz3eNlySzcE/CPGbKDxQnMBLof4yLjzPSoKSyOBRFs+BE0LrsWZHP
-X-Gm-Message-State: AOJu0YyHhupTgTj3irzG+dhGLgdQnRpV2WciyRBVD1rb/T61XtAagpn1
-	lCW7Ml8rrXgQYT2D5MYKbaDmZzGoyWj7bwowkOTL8aYtXPeJly8Xmxn1Ld3WG6A=
-X-Google-Smtp-Source: AGHT+IE0jfEg8j9eNQ32UlJgwwRwcJBMnq8mxk2glq1rj3pDzq37W/GBcRUB+mKPUDxRmuZRlave7w==
-X-Received: by 2002:a05:600c:458d:b0:416:b74d:eb94 with SMTP id r13-20020a05600c458d00b00416b74deb94mr7708786wmo.1.1713185394484;
-        Mon, 15 Apr 2024 05:49:54 -0700 (PDT)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id m16-20020a05600c3b1000b004182b87aaacsm8741388wms.14.2024.04.15.05.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 05:49:54 -0700 (PDT)
-Date: Mon, 15 Apr 2024 13:49:52 +0100
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-	Helge Deller <deller@gmx.de>,
-	Bruno =?iso-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <bentiss@kernel.org>,
-	Alexander Shiyan <shc_work@mail.ru>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>, Fabio Estevam <festevam@gmail.com>,
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
-	linux-omap@vger.kernel.org
-Subject: Re: [PATCH 06/18] backlight: ili9320: Constify lcd_ops
-Message-ID: <20240415124952.GF222427@aspen.lan>
-References: <20240414-video-backlight-lcd-ops-v1-0-9b37fcbf546a@kernel.org>
- <20240414-video-backlight-lcd-ops-v1-6-9b37fcbf546a@kernel.org>
+	s=arc-20240116; t=1713185402; c=relaxed/simple;
+	bh=v6a8A4n/NQNVvl6IUBlyb4ncY6wKsPnocwxI4QmL7G4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aTDZQvubJ6O3igXywurnt12LZiqgqOtiIANsM1z0o+mX/4GDPNmh5EINspQvHLwZreYKp0lxU7DO92qsHPB41OgHf51O73XdC8Xf05z6eo+XqfZoViWosJxE0DQLiVS6IXc5gUIo5O//eZuDhMWEFQWpC64qc+I9Wyi4CfB4fJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mSS8f0tm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7837C113CC;
+	Mon, 15 Apr 2024 12:49:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713185402;
+	bh=v6a8A4n/NQNVvl6IUBlyb4ncY6wKsPnocwxI4QmL7G4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=mSS8f0tmbEjB0HOjLht2e8wfg1cZRfKaMcSV9fYdVyQ+xIzbz0p454mUqlXhC4o8h
+	 bByVOLS+5HhVbnVNHIS5z5QClB05E7YXYmC6sia/AmRpCXpovgmWUZZb/PToWVdPS+
+	 QC4ssQXovpmYjEGFT4AisJWZPpPE2QVVH5k4jYN8MUtsmm4NG3ZMs7z6DzZ4Ve8Y9b
+	 o+FYUI5hlZeAGIjL8uR6AR5TZQRAJZUU42Sl9k+Mj0jatq3Gdy9d059nQzysRGR0ij
+	 A74jXL3wU5OPidiEqn2TjYWeCOwGV04GM1bcfHK7ofAhBl2Le23TYGcU8Manj1Szyt
+	 m9rc0VCZavMMw==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v9 05/36] fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+Date: Mon, 15 Apr 2024 21:49:55 +0900
+Message-Id: <171318539550.254850.4289354595322910591.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <171318533841.254850.15841395205784342850.stgit@devnote2>
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240414-video-backlight-lcd-ops-v1-6-9b37fcbf546a@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Sun, Apr 14, 2024 at 06:36:04PM +0200, Krzysztof Kozlowski wrote:
-> 'struct lcd_ops' is not modified by core backlight code, so it can be
-> made const for increased code safety.
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Instead of using "ALIGN()", use BUILD_BUG_ON() as the structures should
+always be divisible by sizeof(long).
 
+Link: http://lkml.kernel.org/r/20190524111144.GI2589@hirez.programming.kicks-ass.net
 
-Daniel.
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ Changes in v7:
+  - Use DIV_ROUND_UP() to calculate FGRAPH_RET_INDEX
+---
+ kernel/trace/fgraph.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index 30edeb6d4aa9..6f8d36370994 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -26,10 +26,9 @@
+ #endif
+ 
+ #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
+-#define FGRAPH_RET_INDEX (ALIGN(FGRAPH_RET_SIZE, sizeof(long)) / sizeof(long))
++#define FGRAPH_RET_INDEX DIV_ROUND_UP(FGRAPH_RET_SIZE, sizeof(long))
+ #define SHADOW_STACK_SIZE (PAGE_SIZE)
+-#define SHADOW_STACK_INDEX			\
+-	(ALIGN(SHADOW_STACK_SIZE, sizeof(long)) / sizeof(long))
++#define SHADOW_STACK_INDEX (SHADOW_STACK_SIZE / sizeof(long))
+ /* Leave on a buffer at the end */
+ #define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - FGRAPH_RET_INDEX)
+ 
+@@ -91,6 +90,8 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 	if (!current->ret_stack)
+ 		return -EBUSY;
+ 
++	BUILD_BUG_ON(SHADOW_STACK_SIZE % sizeof(long));
++
+ 	/*
+ 	 * We must make sure the ret_stack is tested before we read
+ 	 * anything else.
+@@ -325,6 +326,8 @@ ftrace_graph_get_ret_stack(struct task_struct *task, int idx)
+ {
+ 	int index = task->curr_ret_stack;
+ 
++	BUILD_BUG_ON(FGRAPH_RET_SIZE % sizeof(long));
++
+ 	index -= FGRAPH_RET_INDEX * (idx + 1);
+ 	if (index < 0)
+ 		return NULL;
+
 
