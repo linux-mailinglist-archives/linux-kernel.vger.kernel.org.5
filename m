@@ -1,170 +1,125 @@
-Return-Path: <linux-kernel+bounces-145473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAA718A5695
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:36:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A9E8A56A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:40:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E8E4B214B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:36:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 851C8283712
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BE579B99;
-	Mon, 15 Apr 2024 15:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FC779B8E;
+	Mon, 15 Apr 2024 15:40:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="nsCdW1U5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="s/cIWt86"
-Received: from fout5-smtp.messagingengine.com (fout5-smtp.messagingengine.com [103.168.172.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dyoqXAAz"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBEB378C78;
-	Mon, 15 Apr 2024 15:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ABF979945;
+	Mon, 15 Apr 2024 15:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713195354; cv=none; b=eyogk7nOrkATzI3LWM/hWLkw42uuk7SVV8UxUOVc7kT+k5GYnF2EI82pv23IleSM06Np5sNbqqDYUpe5dnotVHJvWiIxnyyOiueKxFvyz+bjKHYG+KZ4LxxpGVL0aMU1nTH451maWvMOwuJ1dslRYe/q3jS/S/Pn11cF8tiganc=
+	t=1713195610; cv=none; b=gUvoMs1UKin+cmP6vrabC7eegmXC/cS8e74OmYIAL6DerZTSLgQZJvSSmAczJoQ22qlWzsI+kTDIk5ZFS7AAWL7DHidfmOk2GueYGQG1oHpJ66NXyUzCEPmd6lDdVlTAWEMgqGhdq6Dor7odoRJ48aaQlOKFmU10hirVzi3/zms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713195354; c=relaxed/simple;
-	bh=+Hr1RSEs61KbR8I+XiQic0F3lvj+u2G4lhHUoJS4y8s=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=quGtutM/NV1sXomgVEROG4VKJ0qHV7S52XKs7CNWhohi/O6vX1EVmSU9an2xGXpnztFfCbmepUgnRNfJTU5SMD0rJtzcA/v2aWYWYDThSMu68RIa52s1JxQvKmzHMtf28wPThUGnExsK+4wl4spx22HOFUo2hPx/dnvfE/SYUCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=nsCdW1U5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=s/cIWt86; arc=none smtp.client-ip=103.168.172.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id E4015138008C;
-	Mon, 15 Apr 2024 11:35:51 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 15 Apr 2024 11:35:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1713195351; x=1713281751; bh=NKyHVd6O5G
-	xyMIbK6qGm5hs8jJkIZEH0cqFINvkbpUA=; b=nsCdW1U51jfzeMkyZHn0Fbb0ao
-	ikCGQ2m8sEt8IzFsf2Y91pKjA743pr4et54buHMJ18+wfoUyu3+1T7yMo0N3EMsh
-	hWjPJIREZSzKTcUCEwZ+QOl5GTgcvtYkLYF8kUBxyhPLhWyBqgrc2SVV9U17rNDy
-	uauUhhaFKZCVAoxZz5Ay8zxq6zC5i36nA5JnhbLa/v7qbxKR6I4MkRKkYjADdOwu
-	4G7RGEeqWX6T097kMoVwWJ+r5PcR3IIsqplnh0PtQe2jVoqaDAISxlQPXrzetgBj
-	MnxKIeEe20mYTZhOWN/bDJRJ7r8ycT0+eC4hE62WUXfgrQ1hKQQ03IJMXb5Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1713195351; x=1713281751; bh=NKyHVd6O5GxyMIbK6qGm5hs8jJkI
-	ZEH0cqFINvkbpUA=; b=s/cIWt866OUPpq+SGeHRpY+cwbQKV7lcLczMsPVcaV/F
-	EDnq1h1asCSMTzxemSxR94D2ne4gbYsHdeW+1AE4cLr13usIaEG1EmVhoxDB3rve
-	7rnXELuXrBx6N01XziYoAIXPdiiVtB9/rEpj5wwnZEaUXRzeTtT3+8mjFrYxPvaf
-	noJ0OL90mNlKaBMKarEqwh4VwXAIXzOaRS+a7BEvH4XRSIRd621Izyrg2gW8Elfo
-	yj2nhZYxmIVYNuW5NkjZe5L1JDtE5GxMvxO1iDpmvKbT2qOwIJ4LwbFHFv10qZ3K
-	Gcog4XGLOGqSWPm2WqhKCJYrtYPFK11WR1PuT62lLw==
-X-ME-Sender: <xms:V0kdZl5-Ks5H4ZIMsueKvNzcseWUdcxlN1bHo3L0FXNmQAsoQ3hquA>
-    <xme:V0kdZi5ePkAR-UV1hDdBO-DisyYak1ddjUBzwzTSUMNH0IoJtrRPE_mkO6L2fNfZk
-    9Hx0bBdT-m6Ozfx9O8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejvddgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:V0kdZsfF8xA-hXd_nvSYSobS20nFGN0x9XjtFi1OVnyGUtW02lPinQ>
-    <xmx:V0kdZuJr02V0bjMWLu1OYgLN3jcRy0kJ6DD5ZaM4sJ1lo4Ma5OpIgA>
-    <xmx:V0kdZpK_jfoTK42y2-Lb5lgs7xKkOdfc1q9LaoaXqDQWTjQuEfBrNw>
-    <xmx:V0kdZnxZ9r8LEj0Ct9uR5wPh--IidebIgB3b5JmFA7rg4QgbW2ftZA>
-    <xmx:V0kdZn2NOqZbkoIdGySo0kb7whsiu5YeDLfPLZVeDsnKGEuee0WQkEjg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id E9918B6008D; Mon, 15 Apr 2024 11:35:50 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1713195610; c=relaxed/simple;
+	bh=HJrc8pdWVl7s0NIcPWqAkeXX4IopbqYycZeDyyLdV5Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WklUbNMGxQqgxurMXHkbZ60dTz26q20ntT6eIzyImp2GNntMJCquBXpuP9DrCWwFLDQNxGNZSh8MXTa4bJGfOGP7cnVMZyAAa5eMrrmpGYWAW3gzyZyvq4vfMsm8f66H18BCzhC9nwbGe7ID2kIdpiis7ysWSqze8/FjpXxFQ+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dyoqXAAz; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so2124315a12.1;
+        Mon, 15 Apr 2024 08:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713195608; x=1713800408; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJwYmGeajWnyhfmhvhXH4yIzBpJk9yhRWIfhSSJVJjo=;
+        b=dyoqXAAz4I8N4sHOOkfF2dHS5w4rCH+ZRTgnIFgWySVow7ZqjiS3NCe2nJwdX4ONJ7
+         vefA7/Um64sjDrll1ipyA7d4VsiZhGRE9MvxYpIzqgaDtugW9labd7Hwhf41BXAf9S42
+         gLtJSGN6V+zl12aWuVZ2TPlWETS96h1kCc/wmho5sSG9ipoy1WKgdDdY0UqlfAf14cJO
+         XFFzFRkkWajD+3NO8q8g3HMXPYH/xw+hr1rNwoM0Do3gOgkHlbjTHm9ndBqQytL0XxRM
+         UQXJ4Ih/KEYsdu6t9e0bLc/aYRfKjj7OLHikx3Qt4B6eqPAgwjVnlNyuBtdMZQQavqLg
+         MfKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713195608; x=1713800408;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZJwYmGeajWnyhfmhvhXH4yIzBpJk9yhRWIfhSSJVJjo=;
+        b=ULDDOf0xcVgLG6FxeTzOt1LuntNqV1xBOyWU1uN41dqvOn8ftPEXtnuo5ewgyjo/G/
+         5yfCpkM4L/gUJYDGEp1Qw/6N6NnzdcSS+wwfzSm+xvs8vKfeE5ASuEZqBtdYbZgCti8V
+         Oc+Udm3K5sDrMVj4ymyCCwWTY1UXCPMXlmO0CsxCF19JKEsMFcLhFpcqAzJf3xBvXGNX
+         ISOWptx/awI+mzNPvFkNjNVJSsivZWIWOwjyndp58la511lT1slsUYBbNg8sg1/Mqi9d
+         8HzbJW9l7eOM92R43notqCFKjDFimaqwIWd2+ctWN+F55Lg5Sv8wC99ABgIrl9zUG+xl
+         WfuA==
+X-Forwarded-Encrypted: i=1; AJvYcCW0H7qWXcFyVoHeSV5fQLNLOKKsbJr3bSaRRrzj3vRNQWhJ4snaLJCE8e0n3ABxgOrsb/qzmOfpg91kRZERbIpmsxGD46TRTwEw12dd
+X-Gm-Message-State: AOJu0YxFhnE1jGLuAKFn7W74aGXt4UaFffbQ1WJtzs+ZaQrWoqiT4iI0
+	6NfoU63IGTxbTTr7j+KLCY75VioavQRrRRD8lNyBouzqHFsumOyi
+X-Google-Smtp-Source: AGHT+IF8qChUKseubeCjGhDo0oZmlYjsyW1V61iA0n0tPvMqtYxJOzrRJwlw2eNCFoplaUiBjIvoeA==
+X-Received: by 2002:a17:90b:1243:b0:2a5:bf83:8db8 with SMTP id gx3-20020a17090b124300b002a5bf838db8mr7695825pjb.4.1713195608296;
+        Mon, 15 Apr 2024 08:40:08 -0700 (PDT)
+Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
+        by smtp.gmail.com with ESMTPSA id k32-20020a17090a4ca300b0029c3bac0aa8sm10035805pjh.4.2024.04.15.08.40.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 08:40:07 -0700 (PDT)
+From: Jeongjun Park <aha310510@gmail.com>
+To: konishi.ryusuke@gmail.com
+Cc: linux-nilfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+2e22057de05b9f3b30d8@syzkaller.appspotmail.com,
+	Jeongjun Park <aha310510@gmail.com>
+Subject: [PATCH] nilfs: Fix OOB in nilfs_set_de_type
+Date: Tue, 16 Apr 2024 00:40:02 +0900
+Message-Id: <20240415154002.151149-1-aha310510@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e0cf6827-06c2-4212-848c-10d275c75546@app.fastmail.com>
-In-Reply-To: <875xwjcqpl.fsf@mail.lhotse>
-References: <20240410153212.127477-1-adrian.hunter@intel.com>
- <87be83da-6102-483d-b1dc-a77eecc9f780@app.fastmail.com>
- <c9f382b2-cd96-4ee3-ad68-95381d9e09c0@intel.com>
- <a434248a-1e9f-4f4f-8f90-d36d8e979f53@csgroup.eu>
- <ff9d7032-a3b6-4ecd-ac26-d7d4a06a5c7f@csgroup.eu>
- <4d429a10-eb45-4262-8e74-69af810ef1ac@intel.com>
- <dd6653b2-3a88-4b95-af13-c6fda5b27b39@app.fastmail.com>
- <875xwjcqpl.fsf@mail.lhotse>
-Date: Mon, 15 Apr 2024 17:35:30 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Michael Ellerman" <mpe@ellerman.id.au>,
- "Adrian Hunter" <adrian.hunter@intel.com>,
- "Christophe Leroy" <christophe.leroy@csgroup.eu>
-Cc: "Peter Zijlstra" <peterz@infradead.org>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- "John Stultz" <jstultz@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "Naresh Kamboju" <naresh.kamboju@linaro.org>,
- "x86@kernel.org" <x86@kernel.org>,
- "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- "Ingo Molnar" <mingo@redhat.com>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "Nicholas Piggin" <npiggin@gmail.com>, "Borislav Petkov" <bp@alien8.de>,
- "Andy Lutomirski" <luto@kernel.org>,
- "Bjorn Helgaas" <bhelgaas@google.com>,
- "Thomas Gleixner" <tglx@linutronix.de>,
- "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
- "Stephen Boyd" <sboyd@kernel.org>,
- "Randy Dunlap" <rdunlap@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Sven Schnelle" <svens@linux.ibm.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 15, 2024, at 04:19, Michael Ellerman wrote:
-> "Arnd Bergmann" <arnd@arndb.de> writes:
->> On Thu, Apr 11, 2024, at 11:27, Adrian Hunter wrote:
->>> On 11/04/24 11:22, Christophe Leroy wrote:
->>>
->>> That is fragile because it depends on defined(__OPTIMIZE__),
->>> so it should still be:
->>
->> If there is a function that is defined but that must never be
->> called, I think we are doing something wrong.
->
-> It's a pretty inevitable result of using IS_ENABLED(), which the docs
-> encourage people to use.
 
-Using IS_ENABLED() is usually a good idea, as it helps avoid
-adding extra #ifdef checks and just drops static functions as
-dead code, or lets you call extern functions that are conditionally
-defined in a different file.
+static void nilfs_set_de_type(struct nilfs_dir_entry *de, struct inode *inode)
+{
+	umode_t mode = inode->i_mode;
 
-The thing is that here it does not do either of those and
-adds more complexity than it avoids.
+	de->file_type = nilfs_type_by_mode[(mode & S_IFMT)>>S_SHIFT]; // oob
+}
 
-> In this case it could easily be turned into a build error by just making
-> it an extern rather than a static inline.
->
-> But I think Christophe's solution is actually better, because it's more
-> explicit, ie. this function should not be called and if it is that's a
-> build time error.
 
-I haven't seen a good solution here. Ideally we'd just define
-the functions unconditionally and have IS_ENABLED() take care
-of letting the compiler drop them silently, but that doesn't
-build because of missing struct members.
 
-I won't object to either an 'extern' declaration or the
-'BUILD_BUG_ON()' if you and others prefer that, both are better
-than BUG() here. I still think my suggestion would be a little
-simpler.
+The size of the nilfs_type_by_mode array in the fs/nilfs2/dir.c file is defined 
+as "S_IFMT >> S_SHIFT", but the nilfs_set_de_type() function, which uses this array, 
+specifies the index to read from the array in the same way as "(mode & S_IFMT) >> S_SHIFT".
 
-     Arnd
+However, when the index is determined this way, an out-of-bounds (OOB) error occurs by referring 
+to an index that is 1 larger than the array size when the condition "mode & S_IFMT == S_IFMT" is satisfied. 
+Therefore, a patch to resize the nilfs_type_by_mode array should be applied to prevent OOB errors.
+
+
+
+Reported-and-tested-by: syzbot+2e22057de05b9f3b30d8@syzkaller.appspotmail.com
+Fixes: 2ba466d74ed7 ("nilfs2: directory entry operations")
+Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+---
+ fs/nilfs2/dir.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/nilfs2/dir.c b/fs/nilfs2/dir.c
+index bc846b904b68..aee40db7a036 100644
+--- a/fs/nilfs2/dir.c
++++ b/fs/nilfs2/dir.c
+@@ -240,7 +240,7 @@ nilfs_filetype_table[NILFS_FT_MAX] = {
+ 
+ #define S_SHIFT 12
+ static unsigned char
+-nilfs_type_by_mode[S_IFMT >> S_SHIFT] = {
++nilfs_type_by_mode[(S_IFMT >> S_SHIFT) + 1] = {
+        [S_IFREG >> S_SHIFT]    = NILFS_FT_REG_FILE,
+        [S_IFDIR >> S_SHIFT]    = NILFS_FT_DIR,
+        [S_IFCHR >> S_SHIFT]    = NILFS_FT_CHRDEV,
 
