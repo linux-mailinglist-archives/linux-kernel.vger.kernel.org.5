@@ -1,544 +1,128 @@
-Return-Path: <linux-kernel+bounces-145662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF478A5927
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C00C8A5929
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:33:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C02BF1F22968
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:33:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70171F22AAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:33:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B075284A32;
-	Mon, 15 Apr 2024 17:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFCD285272;
+	Mon, 15 Apr 2024 17:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k5f/3ioO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="rGCp7Sza"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9E0839FD;
-	Mon, 15 Apr 2024 17:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B5B84A5C
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:33:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713202392; cv=none; b=Jc4wxSfeNMriEw17QOkVWJwSO/SchpUHcFt/XQ2Sc4WnohlB+ELyqSw7eTu4LcLu78p7tDx+v7z+gp0yJtFYL6pnu6lDZIdjV6+IRxCUc4NyMvk9xp3VsbHeyKtU4yx/gwGq2B9J0e+xIKiR/6spOgNOkYP6prtP6BdV30CFVE0=
+	t=1713202396; cv=none; b=jOPFanQPszyJHoFKk2Bv8o0hcukmFUJdapNoCy+o0zFClHbCoDw8hysiR8XycVz+1976jkuyNbdDu7cr9qnDTJR/J/UXaGcUA0qA3M+YQv2aQcB+3adSWjGnhToThgX2Be/jgIoxxZ4C7ae+Naxo4wwe9k2MT1KaOwS99+qOwf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713202392; c=relaxed/simple;
-	bh=dmJnwQssfjKZlvBOGnSQcCg3pYKxhQQGFHC9ZTv2v6Y=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=oWXY1WEyqDvg2gxF2zos2nzZkoNvuKsQ5ObGEBUMpI9vOA0grjpXJyCu5dURGF5FAjqMh5Px/lafWEQbW1LqdXB910tznA9EFQMusUYv+xiU+XAkhzQUxrV58qkjFhrmLoiOp/B7ykhmbCVPt9vc3g8Na7XqlqfVSPiSvGBtf1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k5f/3ioO; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713202390; x=1744738390;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=dmJnwQssfjKZlvBOGnSQcCg3pYKxhQQGFHC9ZTv2v6Y=;
-  b=k5f/3ioOU4z/yLpzDSvpzPA9EatySdJ0zZY+pjZSsAmrnZU20NUt5n/9
-   oJtcVJEplYkuTE2TmPwRs6o2Sa54ZJ8HPmC7n3+ZIHRTxLtg7IHPDxlHP
-   wV0fl3GaAR7a1LwdasAuGUw0H7F4f65FIpV9PnautOQY+UczOMb6pu8Hf
-   RV2MSxwUMjMpcJv3s0VGwHzKt31e7Qjsc9E/udZ+zNqb4BYIEG8rGXVsr
-   QmDfqe5PFmi4KbIrC+kl8WSfckD/MLYMIarTEHKpbY1TZ3G17fgOE2CEB
-   z+g4bQU0LypYuBx4p6EJs1M48Wo4zNeyRoSbuUQFo1pPopM/6NJ8wcmad
-   g==;
-X-CSE-ConnectionGUID: g06/G7+ZSdSExsUTA31O8A==
-X-CSE-MsgGUID: WL7FbwByTtKlQI6KczMb1Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8440862"
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="8440862"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 10:33:09 -0700
-X-CSE-ConnectionGUID: spGTXlG4QTyfNcmljMhxqQ==
-X-CSE-MsgGUID: 6N3PJCvSQ6aNW90S4YZ1wQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="22407763"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 15 Apr 2024 10:33:01 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
- <20240410182558.41467-15-haitao.huang@linux.intel.com>
- <D0JBFRTGWZV9.3TRHOTV0SCGV@kernel.org>
-Date: Mon, 15 Apr 2024 12:32:55 -0500
+	s=arc-20240116; t=1713202396; c=relaxed/simple;
+	bh=fVy4/qxgl9tInqx5RaGpJ8jCmmUJpdjjrYyl5Pd0ifA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vAJB2lM7hyo1ckJtcppuMZnNxrKodjF0FmMb8ShVnadV7p8747hfoPVOM6GGqltIobzXMQ2XlgWkvWfhuR7oGLtDryfhYQAA8p+U5HgNvt5RoM01NcMkpt+2FiiUIyCDDkzNKtwUUMJxM4Y0IPgfPFf4djESfc+M/ODsLAqdkhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rGCp7Sza; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56e5174ffc2so1123a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713202393; x=1713807193; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LSr3+keZEEUpgLhE9iNBG2D84pBypL07nhs/T7aX3QY=;
+        b=rGCp7SzaJVlwzvqiNF2K5FRm9MQZD0PmwK6/X1uH2hRCsksW8bOmxPaO+sOh7rali9
+         hrLFFFTk9XPOWpmFy6+4vVtPkc5Kszc+Mu77XcWMmQ4RBli4VWgcOEmFAE5n/dJnY9vl
+         Uzq39WspCHq1NUK7phqfr7XtexyhWvvYzYolv0gLELXvJs3cg+3ljsm93Rs0QyLmH3Z1
+         WgRMrn1GVTZXEYmkfaYSIn8Sl0KKx4XXK9t+ccjIqBAC5OzRYJ0EghqYkULjesOJOFAe
+         XK8mRSTAHeVaUaKWJAad8TBCqBPxA5GHvYG5friSyYWStlBV1zfk+f7v+CEMXF+55Oaf
+         +OiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713202393; x=1713807193;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LSr3+keZEEUpgLhE9iNBG2D84pBypL07nhs/T7aX3QY=;
+        b=RVmtCHBMXWGx6gb0vqGIrIWZzy60E7kgfix7yx9k6gix2qaUw8jPHMJdxOEF5zU0Qi
+         lFrZq/QlExkNqezUziE1ucKrkxb8KkqCL1KfVNlhEH7yMKDbR747rvE8v06Q2UlQcpae
+         RJEEszF4/mPxYgPBMyyhJHbdD1zDKcc3rUrQvra/L0ciRx0CiF/QGxw0XHyBJIqceOVv
+         0NhKi6yeDWcp8eVRH4c+ZLwN51xFLWUZ998/xsvoHd5MpwRkQsFjFreZDLRT2BPCavao
+         Wmhdpsqk3RgF4X1fXmq+grS11evFpiWb34QJgbEd7vYujjiv1d3hFfeTEDLaGOUxfGdm
+         Ljzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVaeyUNOqLKIOhG6lXQfE/i1jOUbGqAZ+YtvtZgVZFqc/EZjous+/M949FS2dtzrPqvlpmywTQhDIK5VnbRgU5ZPLpOROlhFmAsKnZY
+X-Gm-Message-State: AOJu0YyZ0/BTqNlOi74NG2ZF4HijRFCo86RssjYNlA/SbcUoPzKD4Drz
+	jS7PGHqrV6XiPYE2I2HcVICg9e7xGg9QKYoDuFJPOIgv2QjM+7xR1MLoIny4cyyE1iQzVRdc4fp
+	SLTa7uRRM78vbdke/ZpnXKmdO59SycXpFQrJf
+X-Google-Smtp-Source: AGHT+IH810ux34EZKW9Uz3R3oXi/ZuIa3p05Bogdhvu55oIUMngGKz41OARjPzCxIdf/U/1GeyegG2SYZudPeI/Lqns=
+X-Received: by 2002:aa7:d3da:0:b0:570:25a1:7671 with SMTP id
+ o26-20020aa7d3da000000b0057025a17671mr2746edr.2.1713202392702; Mon, 15 Apr
+ 2024 10:33:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2l95o5tawjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D0JBFRTGWZV9.3TRHOTV0SCGV@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20240415160619.8249-1-jain.abhinav177@gmail.com>
+In-Reply-To: <20240415160619.8249-1-jain.abhinav177@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 15 Apr 2024 19:33:01 +0200
+Message-ID: <CANn89i+7OrEtM18hPjfjnZ9wf04KJ2NQsKDAV5dVwPV2UYwsPA@mail.gmail.com>
+Subject: Re: [PATCH] inet: inet_defrag: Removing the usage of refcount_inc_not_zero
+To: Abhinav Jain <jain.abhinav177@gmail.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org, 
+	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	skhan@linuxfoundation.org, javier.carrasco.cruz@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 13 Apr 2024 16:34:17 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
-
-> On Wed Apr 10, 2024 at 9:25 PM EEST, Haitao Huang wrote:
->> To run selftests for EPC cgroup:
->>
->> sudo ./run_epc_cg_selftests.sh
->>
->> To watch misc cgroup 'current' changes during testing, run this in a
->> separate terminal:
->>
->> ./watch_misc_for_tests.sh current
->>
->> With different cgroups, the script starts one or multiple concurrent SGX
->> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
->> test case, which loads an enclave of EPC size equal to the EPC capacity
->> available on the platform. The script checks results against the
->> expectation set for each cgroup and reports success or failure.
->>
->> The script creates 3 different cgroups at the beginning with following
->> expectations:
->>
->> 1) SMALL - intentionally small enough to fail the test loading an
->> enclave of size equal to the capacity.
->> 2) LARGE - large enough to run up to 4 concurrent tests but fail some if
->> more than 4 concurrent tests are run. The script starts 4 expecting at
->> least one test to pass, and then starts 5 expecting at least one test
->> to fail.
->> 3) LARGER - limit is the same as the capacity, large enough to run lots  
->> of
->> concurrent tests. The script starts 8 of them and expects all pass.
->> Then it reruns the same test with one process randomly killed and
->> usage checked to be zero after all processes exit.
->>
->> The script also includes a test with low mem_cg limit and LARGE sgx_epc
->> limit to verify that the RAM used for per-cgroup reclamation is charged
->> to a proper mem_cg. For this test, it turns off swapping before start,
->> and turns swapping back on afterwards.
->>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> ---
->> V11:
->> - Remove cgroups-tools dependency and make scripts ash compatible.  
->> (Jarkko)
->> - Drop support for cgroup v1 and simplify. (Michal, Jarkko)
->> - Add documentation for functions. (Jarkko)
->> - Turn off swapping before memcontrol tests and back on after
->> - Format and style fixes, name for hard coded values
->>
->> V7:
->> - Added memcontrol test.
->>
->> V5:
->> - Added script with automatic results checking, remove the interactive
->> script.
->> - The script can run independent from the series below.
->> ---
->>  tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
->>  .../selftests/sgx/run_epc_cg_selftests.sh     | 275 ++++++++++++++++++
->>  .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
->>  3 files changed, 302 insertions(+)
->>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
->>  create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
->>
->> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh  
->> b/tools/testing/selftests/sgx/ash_cgexec.sh
->> new file mode 100755
->> index 000000000000..cfa5d2b0e795
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
->> @@ -0,0 +1,16 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2024 Intel Corporation.
->> +
->> +# Start a program in a given cgroup.
->> +# Supports V2 cgroup paths, relative to /sys/fs/cgroup
->> +if [ "$#" -lt 2 ]; then
->> +    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
->> +    exit 1
->> +fi
->> +# Move this shell to the cgroup.
->> +echo 0 >/sys/fs/cgroup/$1/cgroup.procs
->> +shift
->> +# Execute the command within the cgroup
->> +exec "$@"
->> +
->> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh  
->> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> new file mode 100755
->> index 000000000000..dd56273056fc
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> @@ -0,0 +1,275 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2023, 2024 Intel Corporation.
->> +
->> +TEST_ROOT_CG=selftest
->> +TEST_CG_SUB1=$TEST_ROOT_CG/test1
->> +TEST_CG_SUB2=$TEST_ROOT_CG/test2
->> +# We will only set limit in test1 and run tests in test3
->> +TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
->> +TEST_CG_SUB4=$TEST_ROOT_CG/test4
->> +
->> +# Cgroup v2 only
->> +CG_ROOT=/sys/fs/cgroup
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB1
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB2
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB3
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB4
->> +
->> +# Turn on misc and memory controller in non-leaf nodes
->> +echo "+misc" >  $CG_ROOT/cgroup.subtree_control && \
->> +echo "+memory" > $CG_ROOT/cgroup.subtree_control && \
->> +echo "+misc" >  $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> +echo "+memory" > $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> +echo "+misc" >  $CG_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed setting up cgroups, make sure misc and memory  
->> cgroups are enabled."
->> +    exit 1
->> +fi
->> +
->> +CAPACITY=$(grep "sgx_epc" "$CG_ROOT/misc.capacity" | awk '{print $2}')
->> +# This is below number of VA pages needed for enclave of capacity  
->> size. So
->> +# should fail oversubscribed cases
->> +SMALL=$(( CAPACITY / 512 ))
->> +
->> +# At least load one enclave of capacity size successfully, maybe up to  
->> 4.
->> +# But some may fail if we run more than 4 concurrent enclaves of  
->> capacity size.
->> +LARGE=$(( SMALL * 4 ))
->> +
->> +# Load lots of enclaves
->> +LARGER=$CAPACITY
->> +echo "# Setting up limits."
->> +echo "sgx_epc $SMALL" > $CG_ROOT/$TEST_CG_SUB1/misc.max && \
->> +echo "sgx_epc $LARGE" >  $CG_ROOT/$TEST_CG_SUB2/misc.max && \
->> +echo "sgx_epc $LARGER" > $CG_ROOT/$TEST_CG_SUB4/misc.max
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed setting up misc limits."
->> +    exit 1
->> +fi
->> +
->> +clean_up()
->> +{
->> +    sleep 2
->> +    rmdir $CG_ROOT/$TEST_CG_SUB2
->> +    rmdir $CG_ROOT/$TEST_CG_SUB3
->> +    rmdir $CG_ROOT/$TEST_CG_SUB4
->> +    rmdir $CG_ROOT/$TEST_CG_SUB1
->> +    rmdir $CG_ROOT/$TEST_ROOT_CG
->> +}
->> +
->> +timestamp=$(date +%Y%m%d_%H%M%S)
->> +
->> +test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
->> +
->> +PROCESS_SUCCESS=1
->> +PROCESS_FAILURE=0
->> +
->> +# Wait for a process and check for expected exit status.
->> +#
->> +# Arguments:
->> +#	$1 - the pid of the process to wait and check.
->> +#	$2 - 1 if expecting success, 0 for failure.
->> +#
->> +# Return:
->> +#	0 if the exit status of the process matches the expectation.
->> +#	1 otherwise.
->> +wait_check_process_status() {
->> +    pid=$1
->> +    check_for_success=$2
->> +
->> +    wait "$pid"
->> +    status=$?
->> +
->> +    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq 0  
->> ]; then
->> +        echo "# Process $pid succeeded."
->> +        return 0
->> +    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status -ne  
->> 0 ]; then
->> +        echo "# Process $pid returned failure."
->> +        return 0
->> +    fi
->> +    return 1
->> +}
->> +
->> +# Wait for a set of processes and check for expected exit status
->> +#
->> +# Arguments:
->> +#	$1 - 1 if expecting success, 0 for failure.
->> +#	remaining args - The pids of the processes
->> +#
->> +# Return:
->> +#	0 if exit status of any process matches the expectation.
->> +#	1 otherwise.
->> +wait_and_detect_for_any() {
->> +    check_for_success=$1
->> +
->> +    shift
->> +    detected=1 # 0 for success detection
->> +
->> +    for pid in $@; do
->> +        if wait_check_process_status "$pid" "$check_for_success"; then
->> +            detected=0
->> +            # Wait for other processes to exit
->> +        fi
->> +    done
->> +
->> +    return $detected
->> +}
->> +
->> +echo "# Start unclobbered_vdso_oversubscribed with SMALL limit,  
->> expecting failure..."
->> +# Always use leaf node of misc cgroups
->> +# these may fail on OOM
->> +./ash_cgexec.sh $TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log  
->> 2>&1
->> +if [ $? -eq 0 ]; then
->> +    echo "# Fail on SMALL limit, not expecting any test passes."
->> +    clean_up
->> +    exit 1
->> +else
->> +    echo "# Test failed as expected."
->> +fi
->> +
->> +echo "# PASSED SMALL limit."
->> +
->> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE limit,
->> +        expecting at least one success...."
->> +
->> +pids=""
->> +for i in 1 2 3 4; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_positive_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +
->> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> +    echo "# PASSED LARGE limit positive testing."
->> +else
->> +    echo "# Failed on LARGE limit positive testing, no test passes."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE limit,
->> +        expecting at least one failure...."
->> +pids=""
->> +for i in 1 2 3 4 5; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_negative_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> +    echo "# PASSED LARGE limit negative testing."
->> +else
->> +    echo "# Failed on LARGE limit negative testing, no test fails."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGER limit,
->> +        expecting no failure...."
->> +pids=""
->> +for i in 1 2 3 4 5 6 7 8; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd  
->> >cgtest_larger_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> +    echo "# Failed on LARGER limit, at least one test fails."
->> +    clean_up
->> +    exit 1
->> +else
->> +    echo "# PASSED LARGER limit tests."
->> +fi
->> +
->> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGER limit,
->> +      randomly kill one, expecting no failure...."
->> +pids=""
->> +for i in 1 2 3 4 5 6 7 8; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd  
->> >cgtest_larger_kill_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +random_number=$(awk 'BEGIN{srand();print int(rand()*5)}')
->> +sleep $((random_number + 1))
->> +
->> +# Randomly select a process to kill
->> +# Make sure usage counter not leaked at the end.
->> +RANDOM_INDEX=$(awk 'BEGIN{srand();print int(rand()*8)}')
->> +counter=0
->> +for pid in $pids; do
->> +    if [ "$counter" -eq "$RANDOM_INDEX" ]; then
->> +        PID_TO_KILL=$pid
->> +        break
->> +    fi
->> +    counter=$((counter + 1))
->> +done
->> +
->> +kill $PID_TO_KILL
->> +echo "# Killed process with PID: $PID_TO_KILL"
->> +
->> +any_failure=0
->> +for pid in $pids; do
->> +    wait "$pid"
->> +    status=$?
->> +    if [ "$pid" != "$PID_TO_KILL" ]; then
->> +        if [ $status -ne 0 ]; then
->> +	    echo "# Process $pid returned failure."
->> +            any_failure=1
->> +        fi
->> +    fi
->> +done
->> +
->> +if [ $any_failure -ne 0 ]; then
->> +    echo "# Failed on random killing, at least one test fails."
->> +    clean_up
->> +    exit 1
->> +fi
->> +echo "# PASSED LARGER limit test with a process randomly killed."
->> +
->> +MEM_LIMIT_TOO_SMALL=$((CAPACITY - 2 * LARGE))
->> +
->> +echo "$MEM_LIMIT_TOO_SMALL" > $CG_ROOT/$TEST_CG_SUB2/memory.max
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed creating memory controller."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE EPC limit,
->> +        and too small RAM limit, expecting all failures...."
->> +# Ensure swapping off so the OOM killer is activated when mem_cgroup  
->> limit is hit.
->> +swapoff -a
->> +pids=""
->> +for i in 1 2 3 4; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_oom_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> +    echo "# Failed on tests with memcontrol, some tests did not fail."
->> +    clean_up
->> +    swapon -a
->> +    exit 1
->> +else
->> +    swapon -a
->> +    echo "# PASSED LARGE limit tests with memcontrol."
->> +fi
->> +
->> +sleep 2
->> +
->> +USAGE=$(grep '^sgx_epc' "$CG_ROOT/$TEST_ROOT_CG/misc.current" | awk  
->> '{print $2}')
->> +if [ "$USAGE" -ne 0 ]; then
->> +    echo "# Failed: Final usage is $USAGE, not 0."
->> +else
->> +    echo "# PASSED leakage check."
->> +    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
->> +fi
->> +clean_up
->> +echo "# done."
->> diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh  
->> b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> new file mode 100755
->> index 000000000000..1c9985726ace
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> @@ -0,0 +1,11 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2023, 2024 Intel Corporation.
->> +
->> +if [ -z "$1" ]; then
->> +    echo "No argument supplied, please provide 'max', 'current', or  
->> 'events'"
->> +    exit 1
->> +fi
->> +
->> +watch -n 1 'find /sys/fs/cgroup -wholename "*/test*/misc.'$1'" -exec \
->> +    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
+On Mon, Apr 15, 2024 at 6:06=E2=80=AFPM Abhinav Jain <jain.abhinav177@gmail=
+com> wrote:
 >
-> I'll compile the kernel with this and see what happens!
+> Remove refcount_inc_not_zero as per the listed TODO in the file.
+> Used spin_(un)lock and refcount_* functions for synchronization.
 >
-> Have you tried to run the test suite from top-level? This is just a
-> sanity check. I've few times forgot to do this so thus asking :-)
+> Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
+> ---
+>  net/ipv4/inet_fragment.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> BR, Jarkko
+> diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+> index c88c9034d630..e4838bbe0abb 100644
+> --- a/net/ipv4/inet_fragment.c
+> +++ b/net/ipv4/inet_fragment.c
+> @@ -358,7 +358,6 @@ static struct inet_frag_queue *inet_frag_create(struc=
+t fqdir *fqdir,
+>         return q;
+>  }
+>
+> -/* TODO : call from rcu_read_lock() and no longer use refcount_inc_not_z=
+ero() */
+>  struct inet_frag_queue *inet_frag_find(struct fqdir *fqdir, void *key)
+>  {
+>         /* This pairs with WRITE_ONCE() in fqdir_pre_exit(). */
+> @@ -375,8 +374,14 @@ struct inet_frag_queue *inet_frag_find(struct fqdir =
+*fqdir, void *key)
+>                 fq =3D inet_frag_create(fqdir, key, &prev);
+>         if (!IS_ERR_OR_NULL(prev)) {
+>                 fq =3D prev;
+> -               if (!refcount_inc_not_zero(&fq->refcnt))
+> +               spin_lock(&fq->lock);
+> +               if (refcount_read(&fq->refcnt) > 0) {
+> +                       refcount_inc(&fq->refcnt);
+> +                       spin_unlock(&fq->lock);
+> +               } else {
+> +                       spin_unlock(&fq->lock);
+>                         fq =3D NULL;
+> +               }
 >
 
-I added following on  
-https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v11_plus
-Please update to run from top-level.
-
---- a/tools/testing/selftests/sgx/Makefile
-+++ b/tools/testing/selftests/sgx/Makefile
-@@ -20,7 +20,8 @@ ENCL_LDFLAGS := -Wl,-T,test_encl.lds,--build-id=none
-
-  ifeq ($(CAN_BUILD_X86_64), 1)
-  TEST_CUSTOM_PROGS := $(OUTPUT)/test_sgx
--TEST_FILES := $(OUTPUT)/test_encl.elf
-+TEST_FILES := $(OUTPUT)/test_encl.elf ash_cgexec.sh
-+TEST_PROGS := run_epc_cg_selftests.sh
-
-  all: $(TEST_CUSTOM_PROGS) $(OUTPUT)/test_encl.elf
-  endif
-
-..
-
-index dd56273056fc..ba0451fc16bc 100755
---- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-+++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-@@ -2,6 +2,14 @@
-  # SPDX-License-Identifier: GPL-2.0
-  # Copyright(c) 2023, 2024 Intel Corporation.
-
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+if [ "$(id -u)" -ne 0 ]; then
-+    echo "SKIP: SGX Cgroup tests need root priviledges."
-+    exit $ksft_skip
-+fi
-+
-  TEST_ROOT_CG=selftest
-
-Thanks
-Haitao
+This is bogus. I do not think you understood the comment.
 
