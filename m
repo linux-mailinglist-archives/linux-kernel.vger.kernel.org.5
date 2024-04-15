@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-145720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEEB88A59FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:38:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E91D98A5A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:38:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E9DB1F214A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:38:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F8E41C21073
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70D9154C09;
-	Mon, 15 Apr 2024 18:37:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2808115575A;
+	Mon, 15 Apr 2024 18:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="twzbk0p5"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QdWD1EKV"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F8C41C66;
-	Mon, 15 Apr 2024 18:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DE941C66;
+	Mon, 15 Apr 2024 18:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713206273; cv=none; b=Mu/tA0r52RI2LlLFNFoBfEn0eXCV4ht7O+EBRo+Jl9BAee3aZgXlhbO45UWDHOqNzzmmCEhnWBEgXkC3Nf4g9w6zYcUwYFR2WO3A7pu97SYtoSYSUsZqTG7aMjqqxYHJTpXJ3fGOMg3H9fZtFTT7B/HWb7d0g+Tl8AGa9eZXgHY=
+	t=1713206279; cv=none; b=B00aEgu7IXGQegkKtHvc4JHbGFa3/5qAPqWeLgf17iXlupuXaCCMvD6tEakwzb95gDD2SIbmzAV8uDHTFpPyqqIF77RHypeTdEUR4rLRwBUO/zBZymLLRCaQN4HWINXc2PtmcoefHtdeK6kUIm1cXr9cHyj3jUASR9mUO5QTN+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713206273; c=relaxed/simple;
-	bh=yZUuC3xzyPoLW4oe9jvfM0QlOUieP/gu7KYwV8GgId0=;
+	s=arc-20240116; t=1713206279; c=relaxed/simple;
+	bh=U29sDrgbhhdXj+npBt1jlHxYJTm07oduug5LWw9LWsU=;
 	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eeHvEeWkXHZVxLrNlNpsV7V6t5PFDy2XiAiErRUCaRkhzCCWOQaYt/Tp4zO0tTeTQKCGZZ9/K01Aa0uMbtaL7vw61lpEJunT8yavhd0uBv1DtVSpfy1ZbjQWkud7600QMSsBcz8UQLSZ1VFD2DulQl004cd+limmzmtbvXiPjJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=twzbk0p5; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=Ui3zK6B7hXImESGtMPr5l9E3udaBpA/uM/Yp2rAk4IuDSIHA0g+Yblo9w/7mUBAiYs6JSygPl2TSKfi7woJTIVJGfDHG6a65WEoy6Cv3bgqkyEPFntPkaXRho9TIXMF8kzWZ3u/8eMfgdNbBqQRI3oU6k8HmpubGW/F4u7TUHe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QdWD1EKV; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713206269;
-	bh=yZUuC3xzyPoLW4oe9jvfM0QlOUieP/gu7KYwV8GgId0=;
+	s=mail; t=1713206276;
+	bh=U29sDrgbhhdXj+npBt1jlHxYJTm07oduug5LWw9LWsU=;
 	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=twzbk0p5jq+YnJyXlk19OjdxVwEag+GgnPZKIvHLenZ5wHmP+th9jYP/7YSLydF59
-	 0xILVs+Ycz3S74s00LROxxV3Hw0QdAEv1O0JBuVMJUpIS7HrCmfsLXtQUHkMOuS7GL
-	 i5Pfqa9/+k16VXLFlb72Lj+wjjMm2zr/4CkV5wSOdT34UNAZbUSGfZpJSPK+EnDec3
-	 xmsZCm2GcqK2rwy0z/sbDEROREtfpl1wkI0jGuOCzf41/01yZ7cU2c93vKV7AHLw59
-	 3tO986dFhNct6uYt05P6zlwgCYhhSx/vxRQd1oijt0nh0XArvhNz0qgk7y1Pk0NLz0
-	 Ye9mPllP+LCFw==
+	b=QdWD1EKVTObBT2wXUT8lnEtSx9LXzcJYzfDirIso9e+V2B3BAnLOae0svdRihqC8t
+	 EQXyFBqlA5DD+hNEctLOlMdxDBkbwxb39cJYshUjVkycsxTu/RSUOEDORweWMJVt2B
+	 iZU8vEBb9GEM15dJUTjrBEzvZiP3qQ1lJnzKATDxseIYPZfOd6M3bLC2RB4XZAiovD
+	 uRpJxdm/26pM9DIDzpQuw8oNMevbXimZfth+9hMVJ0J4Yrm0bD3AjRSUOhvNMTVm6u
+	 UAPOmswX4Dcmx6Da+ehimEAAf34zk4PDFax5jJFZobC5yNQ+gi8MubJUhVvLwOuEhV
+	 VS67pw1BuZO5A==
 Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9143537810F1;
-	Mon, 15 Apr 2024 18:37:47 +0000 (UTC)
-Message-ID: <732fb6c2-230d-4d48-8ecc-dba6c1688142@collabora.com>
-Date: Mon, 15 Apr 2024 23:38:20 +0500
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 334C13781107;
+	Mon, 15 Apr 2024 18:37:51 +0000 (UTC)
+Message-ID: <01247791-7841-4530-bde3-5db3fbd1770d@collabora.com>
+Date: Mon, 15 Apr 2024 23:38:28 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,55 +61,45 @@ Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
  <mike.looijmans@topic.nl>, kernel@collabora.com,
  linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-pm@vger.kernel.org
-Subject: Re: [PATCH 1/2] selftests: ktap_helpers: Make it POSIX-compliant
+Subject: Re: [PATCH 2/2] selftests: power_supply: Make it POSIX-compliant
 To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
  Shuah Khan <shuah@kernel.org>
 References: <20240415-supply-selftest-posix-sh-v1-0-328f008d698d@collabora.com>
- <20240415-supply-selftest-posix-sh-v1-1-328f008d698d@collabora.com>
+ <20240415-supply-selftest-posix-sh-v1-2-328f008d698d@collabora.com>
 Content-Language: en-US
 From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240415-supply-selftest-posix-sh-v1-1-328f008d698d@collabora.com>
+In-Reply-To: <20240415-supply-selftest-posix-sh-v1-2-328f008d698d@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 On 4/15/24 8:32 PM, Nícolas F. R. A. Prado wrote:
-> There are a couple uses of bash specific syntax in the script. Change
-> them to the equivalent POSIX syntax. This doesn't change functionality
-> and allows non-bash test scripts to make use of these helpers.
+> There is one use of bash specific syntax in the script. Change it to the
+> equivalent POSIX syntax. This doesn't change functionality and allows
+> the test to be run on shells other than bash.
 > 
 > Reported-by: Mike Looijmans <mike.looijmans@topic.nl>
 > Closes: https://lore.kernel.org/all/efae4037-c22a-40be-8ba9-7c1c12ece042@topic.nl/
-> Fixes: 2dd0b5a8fcc4 ("selftests: ktap_helpers: Add a helper to finish the test")
-> Fixes: 14571ab1ad21 ("kselftest: Add new test for detecting unprobed Devicetree devices")
+> Fixes: 4a679c5afca0 ("selftests: Add test to verify power supply properties")
 > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
 > ---
->  tools/testing/selftests/kselftest/ktap_helpers.sh | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/power_supply/test_power_supply_properties.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/tools/testing/selftests/kselftest/ktap_helpers.sh b/tools/testing/selftests/kselftest/ktap_helpers.sh
-> index f2fbb914e058..79a125eb24c2 100644
-> --- a/tools/testing/selftests/kselftest/ktap_helpers.sh
-> +++ b/tools/testing/selftests/kselftest/ktap_helpers.sh
-> @@ -43,7 +43,7 @@ __ktap_test() {
->  	directive="$3" # optional
+> diff --git a/tools/testing/selftests/power_supply/test_power_supply_properties.sh b/tools/testing/selftests/power_supply/test_power_supply_properties.sh
+> index df272dfe1d2a..a66b1313ed88 100755
+> --- a/tools/testing/selftests/power_supply/test_power_supply_properties.sh
+> +++ b/tools/testing/selftests/power_supply/test_power_supply_properties.sh
+> @@ -23,7 +23,7 @@ count_tests() {
+>  	total_tests=0
 >  
->  	local directive_str=
-> -	[[ ! -z "$directive" ]] && directive_str="# $directive"
-> +	[ ! -z "$directive" ] && directive_str="# $directive"
+>  	for i in $SUPPLIES; do
+> -		total_tests=$(("$total_tests" + "$NUM_TESTS"))
+> +		total_tests=$((total_tests + NUM_TESTS))
+>  	done
 >  
->  	echo $result $KTAP_TESTNO $description $directive_str
->  
-> @@ -99,7 +99,7 @@ ktap_exit_fail_msg() {
->  ktap_finished() {
->  	ktap_print_totals
->  
-> -	if [ $(("$KTAP_CNT_PASS" + "$KTAP_CNT_SKIP")) -eq "$KSFT_NUM_TESTS" ]; then
-> +	if [ $((KTAP_CNT_PASS + KTAP_CNT_SKIP)) -eq "$KSFT_NUM_TESTS" ]; then
->  		exit "$KSFT_PASS"
->  	else
->  		exit "$KSFT_FAIL"
+>  	echo "$total_tests"
 > 
 
 -- 
