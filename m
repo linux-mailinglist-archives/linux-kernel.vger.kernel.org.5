@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-144591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 298E98A482F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:36:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113B88A4831
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:37:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D358C1F2262F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:36:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7AA9B21C14
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B081DA32;
-	Mon, 15 Apr 2024 06:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D27208C1;
+	Mon, 15 Apr 2024 06:36:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hcGRw8SM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OTNc3jkL"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0569134A9
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354A417C6D
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713162993; cv=none; b=n1zjWzYUgieOQK9N++IQ6ItrzQSS0MRkd67Lxh8S8rUOFvhsQSYKjngB5GMWapY7TlmLPP3wDSgdfMioPh/RQgYErW3xq8tk5S6zVoZ4Nxfgnt8DNzpRR33yPqZgPM5Aqc2utTMZ4JLXdCba8+N6TBmNl2L7AMDCfGYMmNM5LPI=
+	t=1713162995; cv=none; b=YjCLE2pnTq5hqruqlfVH4hA3XxcfsEfjgQ/iDNkH03l9A4/1CsTP+rZo3lclIm5PLY79l8ZkED8SH7IBhgotRYPxaHxdP3dJ3lCRwr8OoMu6PPWu4i4snB0QwxudsTPj1GM3keIJzbfMXZkWyvFayQAw/IlUzkvJKVpY1D8GRpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713162993; c=relaxed/simple;
-	bh=1d/EDYFwGSGnOUpbaeGtzTmb3A7VDzDqdL9koovPZnk=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=TjgHLUqn5WRh/kLk2dIOeKowCWCFxaTrdVN7qB1K3qV/KRw0Qz5th3C9kSb93x/gQKv3cfSWHPJaPheSBxMwD3bfc61UKHqjRe1EKyi4blDL3nW7s/b44UyC5Q+1sIkdfuaLg7Gxb8GZWwwwf4pRbUPfsGID5pGiPzzwvxpe9c8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hcGRw8SM; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1713162995; c=relaxed/simple;
+	bh=z8AXrLaNzb+8gvaf2At9VNLcG0t9xXxT/9GG0wDhFkQ=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=t1XZzrxrjkN5jIeDKx0SW1FQqxFhi43pqs8AcQSvcQZardKVdzAMLE/HdReLeHdpb6w09R92OTF88b6NdWoI2Gzd1Ok2F9NF5wdlSBgaImqIxhEvZLvPJX2Uh+BmmFj5LGM/04sIPcLMV8C140ItlDtEWnfwOw73Od3JsFp4GCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OTNc3jkL; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-617bd0cf61fso54690967b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:36:30 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-615138794f5so49568527b3.2
+        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:36:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713162989; x=1713767789; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wB0mFKuGZHW/z83jZ9UZ1kMmy9iw6kq5zXLeGG3r0jQ=;
-        b=hcGRw8SMOTvoMtNVOokID05DyO7/dYhklcK3EuiJjHeIoPV5l9mEE/LT3saizYkMeB
-         Qbbm3JHrFlTt0kt1DNFNkXM9ZvxqTZ+3MURAKWxyz1X2jXvcy6OFC4gMoJ89SnLuF/fG
-         5qgtV4imNjqEhhc/8e5bIf+3Ogh4egdqCxVdgaB/R+sKU+pGluxKAXJ8TzzI+m/HyQjn
-         ynyej5z1M89YxJJyhrBuJFCk+V5cg96zG61erH3jrzC0tewtaS0g8gTJDw0+m7TpLmRU
-         Cr8PpGvlPBG3Hpl9e6m93SIsK2STdJn+Y0uvR+/yMlB3Zm6fFoJDvrh2hc6Yg3usFD53
-         hg2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713162989; x=1713767789;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1713162992; x=1713767792; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wB0mFKuGZHW/z83jZ9UZ1kMmy9iw6kq5zXLeGG3r0jQ=;
-        b=HrXwY6ddwC0wJSdvpBPppwVDq5AoO4Vl8tyJ5VvhrZX1YaMpnzY0MKhSuH82Tk1h+r
-         SLTdrkux8EOdJkQDTk4HZnaJIE2+si9MmtpRDlYRN0uNEbZ1tdXJe1cVj2j+050E88DU
-         dRaCXH5xsEXQWX+kWT6xpk5qpcNOrg6nm9G+snFMLnPKxtkwW+EokTHlxwy8durpfanD
-         eI9xl0yfDkUDWifepET9CzL2q4b9QFkzYoAZEgxBjz+KVXlcbAl5BUEJAYOJvXaZnRC1
-         OcOzm885OieP5Ab+SP/3pHZKUtrdXQHF7YzCqw3tq0XuuxKZh1lC84Gsb0fOkdPpDHgH
-         IiAA==
-X-Forwarded-Encrypted: i=1; AJvYcCWBIY/66Y4XLDdqddO9teAJr2YcyDA8aYI7rvHuiDvK7rulMoUO/gy5Dqdc1nQisqJ9T+gbrlJZh0KYFJNTCAlGUD0BbmlDO/JNwu5c
-X-Gm-Message-State: AOJu0YwBW8Aw4I4iuWrfBosv+tj8kB+D+w9zV82y5VHSlhmK19DREt3H
-	I2Wxv0l+Hl6hgdN8GbNWnlTDuDBS7qQIH44DS3K8qOlIEIRDVto+UJEAP/f1vpmVKIot2qZkPLq
-	ytoQvew==
-X-Google-Smtp-Source: AGHT+IFla4MrX294yqIP+FWtWzJmxqGcQ32XqueDUfsH1OcnJlS4SzKTAazV/kcLnzG+SAXlo39sSpcyIttX
+        bh=3/UXsGbRM4hk6gURXUv3cQgeMnu1X8cp+uoMKx5i54A=;
+        b=OTNc3jkL+v+erdDSZdzg/S3AjxCAHS3Mz3hT2Vz7SHU1ioER5IVMa8pQ8w08cawmhe
+         tVtD2yxWWPI+l2XAMd2rnJ6xzKmxF6tqDMistNs63bSMt/C9Ky1gVNVv2X92TghAuzp1
+         dww58Y+bopQN1QMryoSS0TU1fVmAqNC4PZUYT9BV/cXB1FUVRDUBKcMrX99kivjI8IaO
+         oyRPJq3P1bGMfk36ReKGmbYneRy1t//HeYr1+LpEIXTgX7FbuG/Tc13D2J+FX725wDUZ
+         gLKt1L/TJULVYDBSZJ4mjLBo2Ip98fzikjo9MiPo7/ROJ/djwa5nmZsc4kPjXQpLlSba
+         p9Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713162992; x=1713767792;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3/UXsGbRM4hk6gURXUv3cQgeMnu1X8cp+uoMKx5i54A=;
+        b=R57WNvn3HfRGoTH97DFKKXqhnsp6Zb1HA4lr0iFnY8E7BqSMlH4H/9GY2DV9qFJca0
+         uNu+UQqhdmD1cKV/mkk032RKZkCrBLsTtdR+4JwUlR4+PaXL2sYDstyrGXghiinEtgMr
+         d048lw86PuRcESVXXsYLizdeCbq+e8r1G9Q1lsWLjYjE3p+66GxipzQb/0mrPDzbYYG9
+         j69mC6KTSx3xsoEkFzB3R37V/l5MLDMLi8H13DofXwQQZnzkeaYaT6UplQmuKFCJE4et
+         49ItvOk+WyFjTAAG0njqOcV7PtpkzPI+iTDxd7DDOI1XuF05wqEBCqeMidvWFkm4nS+N
+         xDPw==
+X-Forwarded-Encrypted: i=1; AJvYcCWCOzjh7nNPQtdzVgiSNVcdC/h94FAIbykGXi/G+4q2CV5X6nOSxvVuk0GAxwSTNlu0ei7HHDHvpRKOSYehVc+bIl/gk++XQTgJvTkj
+X-Gm-Message-State: AOJu0YwuAhg/i9kFJn+G4QCgaRbXwr6yhQAAIW25+clfhPyKhC2cMN8H
+	5I/cZ+deVd3wDYVy5Qr55HVItqiah7nzZdSYcgJIbuvZxAwJYDcEM+NmfQbmD7/fQ+5Es0SaOAF
+	X7KY/UQ==
+X-Google-Smtp-Source: AGHT+IEpPwiuctvi4YKU+jbWzpMd0bbjy29hbZCztwCayE2Xpwu2Te6+qRZrYddkUXa58px17V/U1JOs3MD6
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f304:d776:d707:4b57])
- (user=irogers job=sendgmr) by 2002:a05:690c:a:b0:618:9588:e9db with SMTP id
- bc10-20020a05690c000a00b006189588e9dbmr1908547ywb.2.1713162989579; Sun, 14
- Apr 2024 23:36:29 -0700 (PDT)
-Date: Sun, 14 Apr 2024 23:36:17 -0700
-Message-Id: <20240415063626.453987-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a0d:c241:0:b0:615:80c8:94eb with SMTP id
+ e62-20020a0dc241000000b0061580c894ebmr2287735ywd.10.1713162992269; Sun, 14
+ Apr 2024 23:36:32 -0700 (PDT)
+Date: Sun, 14 Apr 2024 23:36:18 -0700
+In-Reply-To: <20240415063626.453987-1-irogers@google.com>
+Message-Id: <20240415063626.453987-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240415063626.453987-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Subject: [PATCH v1 0/9] Consistently prefer sysfs/json events
+Subject: [PATCH v1 1/9] perf parse-events: Factor out '<event_or_pmu>/.../' parsing
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -84,34 +87,223 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Beeman Strong <beeman@rivosinc.com>
 Content-Type: text/plain; charset="UTF-8"
 
-As discussed in:
-https://lore.kernel.org/lkml/20240217005738.3744121-1-atishp@rivosinc.com/
-preferring sysfs/json events consistently (with or without a given
-PMU) will enable RISC-V's hope to customize legacy events in the perf
-tool.
+Factor out the case of an event or PMU name followed by a slash based
+term list. This is with a view to sharing the code with new legacy
+hardware parsing. Use early return to reduce indentation in the code.
+Make parse_events_add_pmu static now it doesn't need sharing with
+parse-events.y.
 
-Some minor clean-up is performed on the way.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/parse-events.c | 69 +++++++++++++++++++++++++++++++-
+ tools/perf/util/parse-events.h | 10 +++--
+ tools/perf/util/parse-events.y | 73 +++-------------------------------
+ 3 files changed, 80 insertions(+), 72 deletions(-)
 
-Ian Rogers (9):
-  perf parse-events: Factor out '<event_or_pmu>/.../' parsing
-  perf parse-events: Directly pass PMU to parse_events_add_pmu
-  perf parse-events: Avoid copying an empty list
-  perf pmu: Refactor perf_pmu__match
-  perf tests parse-events: Use branches rather than cache-references
-  perf parse-events: Legacy cache names on all PMUs and lower priority
-  perf parse-events: Handle PE_TERM_HW in name_or_raw
-  perf parse-events: Constify parse_events_add_numeric
-  perf parse-events: Prefer sysfs/json hardware events over legacy
-
- tools/perf/tests/parse-events.c |   6 +-
- tools/perf/util/parse-events.c  | 201 ++++++++++++++++++++++----------
- tools/perf/util/parse-events.h  |  16 +--
- tools/perf/util/parse-events.l  |  76 ++++++------
- tools/perf/util/parse-events.y  | 166 +++++++++-----------------
- tools/perf/util/pmu.c           |  27 +++--
- tools/perf/util/pmu.h           |   2 +-
- 7 files changed, 262 insertions(+), 232 deletions(-)
-
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 6f8b0fa17689..b16c75bf5580 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1385,7 +1385,7 @@ static bool config_term_percore(struct list_head *config_terms)
+ 	return false;
+ }
+ 
+-int parse_events_add_pmu(struct parse_events_state *parse_state,
++static int parse_events_add_pmu(struct parse_events_state *parse_state,
+ 			 struct list_head *list, const char *name,
+ 			 const struct parse_events_terms *const_parsed_terms,
+ 			 bool auto_merge_stats, void *loc_)
+@@ -1618,6 +1618,73 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
+ 	return ok ? 0 : -1;
+ }
+ 
++int parse_events_multi_pmu_add_or_add_pmu(struct parse_events_state *parse_state,
++					const char *event_or_pmu,
++					const struct parse_events_terms *const_parsed_terms,
++					struct list_head **listp,
++					void *loc_)
++{
++	char *pattern = NULL;
++	YYLTYPE *loc = loc_;
++	struct perf_pmu *pmu = NULL;
++	int ok = 0;
++	char *help;
++
++	*listp = malloc(sizeof(**listp));
++	if (!*listp)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(*listp);
++
++	/* Attempt to add to list assuming event_or_pmu is a PMU name. */
++	if (!parse_events_add_pmu(parse_state, *listp, event_or_pmu, const_parsed_terms,
++					/*auto_merge_stats=*/false, loc))
++		return 0;
++
++	/* Failed to add, try wildcard expansion of event_or_pmu as a PMU name. */
++	if (asprintf(&pattern, "%s*", event_or_pmu) < 0) {
++		zfree(listp);
++		return -ENOMEM;
++	}
++
++	while ((pmu = perf_pmus__scan(pmu)) != NULL) {
++		const char *name = pmu->name;
++
++		if (parse_events__filter_pmu(parse_state, pmu))
++			continue;
++
++		if (!strncmp(name, "uncore_", 7) &&
++		    strncmp(event_or_pmu, "uncore_", 7))
++			name += 7;
++		if (!perf_pmu__match(pattern, name, event_or_pmu) ||
++		    !perf_pmu__match(pattern, pmu->alias_name, event_or_pmu)) {
++			bool auto_merge_stats = perf_pmu__auto_merge_stats(pmu);
++
++			if (!parse_events_add_pmu(parse_state, *listp, pmu->name, const_parsed_terms,
++						  auto_merge_stats, loc)) {
++				ok++;
++				parse_state->wild_card_pmus = true;
++			}
++		}
++	}
++	zfree(&pattern);
++	if (ok)
++		return 0;
++
++	/* Failure to add, assume event_or_pmu is an event name. */
++	zfree(listp);
++	if (!parse_events_multi_pmu_add(parse_state, event_or_pmu, const_parsed_terms, listp, loc))
++		return 0;
++
++	if (asprintf(&help, "Unable to find PMU or event on a PMU of '%s'", event_or_pmu) < 0)
++		help = NULL;
++	parse_events_error__handle(parse_state->error, loc->first_column,
++				strdup("Bad event or PMU"),
++				help);
++	zfree(listp);
++	return -EINVAL;
++}
++
+ int parse_events__modifier_group(struct list_head *list,
+ 				 char *event_mod)
+ {
+diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+index 809359e8544e..a331b9f0da2b 100644
+--- a/tools/perf/util/parse-events.h
++++ b/tools/perf/util/parse-events.h
+@@ -209,10 +209,6 @@ int parse_events_add_breakpoint(struct parse_events_state *parse_state,
+ 				struct list_head *list,
+ 				u64 addr, char *type, u64 len,
+ 				struct parse_events_terms *head_config);
+-int parse_events_add_pmu(struct parse_events_state *parse_state,
+-			 struct list_head *list, const char *name,
+-			 const struct parse_events_terms *const_parsed_terms,
+-			bool auto_merge_stats, void *loc);
+ 
+ struct evsel *parse_events__add_event(int idx, struct perf_event_attr *attr,
+ 				      const char *name, const char *metric_id,
+@@ -223,6 +219,12 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
+ 			       const struct parse_events_terms *const_parsed_terms,
+ 			       struct list_head **listp, void *loc);
+ 
++int parse_events_multi_pmu_add_or_add_pmu(struct parse_events_state *parse_state,
++					const char *event_or_pmu,
++					const struct parse_events_terms *const_parsed_terms,
++					struct list_head **listp,
++					void *loc_);
++
+ void parse_events__set_leader(char *name, struct list_head *list);
+ void parse_events_update_lists(struct list_head *list_event,
+ 			       struct list_head *list_all);
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index d70f5d84af92..14175eee9489 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -273,78 +273,17 @@ event_def: event_pmu |
+ event_pmu:
+ PE_NAME opt_pmu_config
+ {
+-	struct parse_events_state *parse_state = _parse_state;
+ 	/* List of created evsels. */
+ 	struct list_head *list = NULL;
+-	char *pattern = NULL;
+-
+-#define CLEANUP						\
+-	do {						\
+-		parse_events_terms__delete($2);		\
+-		free(list);				\
+-		free($1);				\
+-		free(pattern);				\
+-	} while(0)
++	int err = parse_events_multi_pmu_add_or_add_pmu(_parse_state, $1, $2, &list, &@1);
+ 
+-	list = alloc_list();
+-	if (!list) {
+-		CLEANUP;
++	parse_events_terms__delete($2);
++	free($1);
++	if (err == -ENOMEM)
+ 		YYNOMEM;
+-	}
+-	/* Attempt to add to list assuming $1 is a PMU name. */
+-	if (parse_events_add_pmu(parse_state, list, $1, $2, /*auto_merge_stats=*/false, &@1)) {
+-		struct perf_pmu *pmu = NULL;
+-		int ok = 0;
+-
+-		/* Failure to add, try wildcard expansion of $1 as a PMU name. */
+-		if (asprintf(&pattern, "%s*", $1) < 0) {
+-			CLEANUP;
+-			YYNOMEM;
+-		}
+-
+-		while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+-			const char *name = pmu->name;
+-
+-			if (parse_events__filter_pmu(parse_state, pmu))
+-				continue;
+-
+-			if (!strncmp(name, "uncore_", 7) &&
+-			    strncmp($1, "uncore_", 7))
+-				name += 7;
+-			if (!perf_pmu__match(pattern, name, $1) ||
+-			    !perf_pmu__match(pattern, pmu->alias_name, $1)) {
+-				bool auto_merge_stats = perf_pmu__auto_merge_stats(pmu);
+-
+-				if (!parse_events_add_pmu(parse_state, list, pmu->name, $2,
+-							  auto_merge_stats, &@1)) {
+-					ok++;
+-					parse_state->wild_card_pmus = true;
+-				}
+-			}
+-		}
+-
+-		if (!ok) {
+-			/* Failure to add, assume $1 is an event name. */
+-			zfree(&list);
+-			ok = !parse_events_multi_pmu_add(parse_state, $1, $2, &list, &@1);
+-		}
+-		if (!ok) {
+-			struct parse_events_error *error = parse_state->error;
+-			char *help;
+-
+-			if (asprintf(&help, "Unable to find PMU or event on a PMU of '%s'", $1) < 0)
+-				help = NULL;
+-			parse_events_error__handle(error, @1.first_column,
+-						   strdup("Bad event or PMU"),
+-						   help);
+-			CLEANUP;
+-			YYABORT;
+-		}
+-	}
++	if (err)
++		YYABORT;
+ 	$$ = list;
+-	list = NULL;
+-	CLEANUP;
+-#undef CLEANUP
+ }
+ |
+ PE_NAME sep_dc
 -- 
 2.44.0.683.g7961c838ac-goog
 
