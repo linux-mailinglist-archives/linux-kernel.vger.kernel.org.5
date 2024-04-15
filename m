@@ -1,197 +1,139 @@
-Return-Path: <linux-kernel+bounces-144505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF868A4733
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:11:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0B998A473F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:16:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAAF51C21230
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:11:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 053E9B22CD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 03:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753DA1BF2A;
-	Mon, 15 Apr 2024 03:11:50 +0000 (UTC)
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C6631C36;
-	Mon, 15 Apr 2024 03:11:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.216.63.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34421C697;
+	Mon, 15 Apr 2024 03:16:23 +0000 (UTC)
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [20.231.56.155])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27E01DA22;
+	Mon, 15 Apr 2024 03:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=20.231.56.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713150710; cv=none; b=rpEi3uher3z2Teck2ojwNj/VKnzQx3aS24w+JQcNMAde0onkRwpzEk7jK9g4Xec4bmVEMCkoDhgNezWRWXIRaFM31d8DNpzG4CD8PcQdw12ZO2m1GRZtdm/rdSwKH6a2aGjLtmhUPV0ZGH9IP5KyZ7yFOt88ETfKz6rQIkBg8Hc=
+	t=1713150983; cv=none; b=JXWDtZaPXrUs0syrzl8UFUIcg5WXcpDitA3AFT1GYjv3+tG02Hxq42aUFjpOc3E2FKdCuDjz5+3AC5xMr8DgjCZzqwKQaxQfJ0pY86yu2AQChoQ+CxV5l/wmHf1+dmp0gl/Zjz2R+BfUKEOVNKb3e3fixpzDMjf+evoimFGsUmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713150710; c=relaxed/simple;
-	bh=3IvHce7lNC4S84RHDCeuNMMstEMBuQo+9+JntyZZ1Zs=;
-	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=mM7ZeXIPSrppvAEplCHA1wb9pKVykMdAuWXE07TEU+G6Jv6KnDuffp89RNnN1gTBFodiYCMVv3qMVqfXlvqpY89Tbpw0qEx4Zd0SSKJ26tl11CH7LShwSoovnBXWqJ0OoTn0pc04kwjl08KeoKorAP0CEplzzZveswYEV4gyv/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=63.216.63.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4VHsdk2fWSz6G3wZ;
-	Mon, 15 Apr 2024 11:11:38 +0800 (CST)
-Received: from xaxapp01.zte.com.cn ([10.88.99.176])
-	by mse-fl1.zte.com.cn with SMTP id 43F3BMeA060726;
-	Mon, 15 Apr 2024 11:11:22 +0800 (+08)
-	(envelope-from xu.xin16@zte.com.cn)
-Received: from mapi (xaxapp01[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Mon, 15 Apr 2024 11:11:23 +0800 (CST)
-Date: Mon, 15 Apr 2024 11:11:23 +0800 (CST)
-X-Zmail-TransId: 2af9661c9adb5fc-0b588
-X-Mailer: Zmail v1.0
-Message-ID: <20240415111123924s9IbQkgHF8S4yZv4su8LI@zte.com.cn>
+	s=arc-20240116; t=1713150983; c=relaxed/simple;
+	bh=rfukLwDDV18e2IBcGCdhJgSFIi+4pEqXkQGWXDpgN6o=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=Qx/A9Gqt8sV8PejSgCZZm/CL/9Vnqh+l7KETp9XpzokBbaQftNtfxyJeeuLtYMhGY3ARCYajYR4vQ2ELJ5dtAF/wKi8MbTJbR2LaS3xGGIdBMn4GF5y04DbmrE0bsY0tuEnmBNQgZmHCePD8QV3NgMU0kZ42eYwF8c74Cj3HSF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com; spf=pass smtp.mailfrom=eswincomputing.com; arc=none smtp.client-ip=20.231.56.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eswincomputing.com
+Received: from localhost.localdomain (unknown [10.12.130.31])
+	by app1 (Coremail) with SMTP id TAJkCgCnSOV3mxxmR4gGAA--.51722S4;
+	Mon, 15 Apr 2024 11:14:00 +0800 (CST)
+From: Shenlin Liang <liangshenlin@eswincomputing.com>
+To: anup@brainfault.org,
+	atishp@atishpatra.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	kvm@vger.kernel.org,
+	kvm-riscv@lists.infradead.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	linux-perf-users@vger.kernel.org
+Cc: Shenlin Liang <liangshenlin@eswincomputing.com>
+Subject: [PATCH v2 0/2] perf kvm: Add kvm stat support on riscv
+Date: Mon, 15 Apr 2024 03:11:29 +0000
+Message-Id: <20240415031131.23443-1-liangshenlin@eswincomputing.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:TAJkCgCnSOV3mxxmR4gGAA--.51722S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7urWUGrykZr47XF4UZFWxXrb_yoW8Kw48pF
+	W2krs8Kw4rtFy3KwsxC3WDWrWrCw4kur1Yqr12yryUC3yj9ryDJ3WkKr9FyrZ8JF1UtFWk
+	AF1Dur1rGrW5JF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+	UI43ZEXa7VU122NtUUUUU==
+X-CM-SenderInfo: xold0whvkh0z1lq6v25zlqu0xpsx3x1qjou0bp/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <xu.xin16@zte.com.cn>
-To: <v-songbaohua@oppo.com>, <mhocko@kernel.org>, <ryan.roberts@arm.com>,
-        <david@redhat.com>
-Cc: <roman.gushchin@linux.dev>, <shakeel.butt@linux.dev>,
-        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <ran.xiaokai@zte.com.cn>,
-        <xu.xin16@zte.com.cn>, <yang.yang29@zte.com.cn>,
-        <lu.zhongjun@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIXSBtbTogdGhwOiBtYWtlcyB0aGUgbWVtY2cgVEhQIGRlZmVycmVkIHNwbGl0IHNocmlua2VyIGF3YXJlIG9mCgogbm9kZV9pZA==?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 43F3BMeA060726
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 661C9AEA.001/4VHsdk2fWSz6G3wZ
 
-From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+Changes from v1->v2:
+- Rebased on Linux 6.9-rc3.
 
-Since commit 87eaceb3faa5 ("mm: thp: make deferred split shrinker
-memcg aware"), the THP deferred split queue is per memcg but not
-per mem_cgroup_per_node. This has two aspects of impact:
+'perf kvm stat report/record' generates a statistical analysis of KVM
+events and can be used to analyze guest exit reasons. This patch tries
+to add stat support on riscv.
 
-Impact1: for kswapd reclaim
-=====================
-  kswapd
-    balance_pgdat
-      kswapd_shrink_node
-        shrink_node(pgdat, sc);
-          shrink_node_memcgs(pgdat, sc);
-            shrink_slab(sc->gfp_mask, pgdat->node_id, memcg...);
-  the parameter "pgdat->node_id"  does not take effectct for
-  THP deferred_split_shrinker, as the deferred_split_queue of
-  specified memcg is not for a certain numa node but for all the nodes.
-  We want to makes the memcg THP deferred split shrinker aware of
-  node_id.
+Map the return value of trace_kvm_exit() to the specific cause of the 
+exception, and export it to userspace.
 
-Impact2: thp-deferred_split shrinker debugfs interface
-=========================================
-   for the "count" file:
-   <cgroup inode id> <objects on node 0> <objects on node 1>
-     the output is acctually the sum of all numa nodes.
-   for the "scan" file:
-   <cgroup inode id> <numa id> <number of objects to scan>
-     Also the "numa id" input does not take effect here.
+It records on two available KVM tracepoints for riscv: "kvm:kvm_entry"
+and "kvm:kvm_exit", and reports statistical data which includes events
+handles time, samples, and so on.
 
-This patch makes memcg deferred_split_queue per mem_cgroup_per_node
-so try to conform to semantic logic.
+Simple tests go below:
 
-Reviewed-by: Lu Zhongjun <lu.zhongjun@zte.com.cn>
-Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
-Cc: xu xin <xu.xin16@zte.com.cn>
-Cc: Yang Yang <yang.yang29@zte.com.cn>
----
- include/linux/memcontrol.h |  7 +++----
- mm/huge_memory.c           |  6 +++---
- mm/memcontrol.c            | 11 +++++------
- 3 files changed, 11 insertions(+), 13 deletions(-)
+# ./perf kvm record -e "kvm:kvm_entry" -e "kvm:kvm_exit"
+Lowering default frequency rate from 4000 to 2500.
+Please consider tweaking /proc/sys/kernel/perf_event_max_sample_rate.
+[ perf record: Woken up 18 times to write data ]
+[ perf record: Captured and wrote 5.433 MB perf.data.guest (62519 samples) 
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 394fd0a887ae..7282861d5a5d 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -130,6 +130,9 @@ struct mem_cgroup_per_node {
- 	bool			on_tree;
- 	struct mem_cgroup	*memcg;		/* Back pointer, we cannot */
- 						/* use container_of	   */
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	struct deferred_split deferred_split_queue;
-+#endif
- };
+# ./perf kvm report
+31K kvm:kvm_entry
+31K kvm:kvm_exit
 
- struct mem_cgroup_threshold {
-@@ -327,10 +330,6 @@ struct mem_cgroup {
- 	struct list_head event_list;
- 	spinlock_t event_list_lock;
+# ./perf kvm stat record -a
+[ perf record: Woken up 3 times to write data ]
+[ perf record: Captured and wrote 8.502 MB perf.data.guest (99338 samples) ]
 
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	struct deferred_split deferred_split_queue;
--#endif
--
- #ifdef CONFIG_LRU_GEN_WALKS_MMU
- 	/* per-memcg mm_struct list */
- 	struct lru_gen_mm_list mm_list;
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9859aa4f7553..338d071070a6 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -774,7 +774,7 @@ struct deferred_split *get_deferred_split_queue(struct folio *folio)
- 	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
+# ./perf kvm stat report --event=vmexit
+Event name                Samples   Sample%    Time (ns)     Time%   Max Time (ns)   Min Time (ns)  Mean Time (ns)
+STORE_GUEST_PAGE_FAULT     26968     54.00%    2003031800    40.00%     3361400         27600          74274
+LOAD_GUEST_PAGE_FAULT      17645     35.00%    1153338100    23.00%     2513400         30800          65363
+VIRTUAL_INST_FAULT         1247      2.00%     340820800     6.00%      1190800         43300          273312
+INST_GUEST_PAGE_FAULT      1128      2.00%     340645800     6.00%      2123200         30200          301990
+SUPERVISOR_SYSCALL         1019      2.00%     245989900     4.00%      1851500         29300          241403
+LOAD_ACCESS                986       1.00%     671556200     13.00%     4180200         100700         681091
+INST_ACCESS                655       1.00%     170054800     3.00%      1808300         54600          259625
+HYPERVISOR_SYSCALL         21        0.00%     4276400       0.00%      716500          116000         203638 
 
- 	if (memcg)
--		return &memcg->deferred_split_queue;
-+		return &memcg->nodeinfo[pgdat->node_id]->deferred_split_queue;
- 	else
- 		return &pgdat->deferred_split_queue;
- }
-@@ -3305,7 +3305,7 @@ static unsigned long deferred_split_count(struct shrinker *shrink,
+Shenlin Liang (2):
+  RISCV: KVM: add tracepoints for entry and exit events
+  perf kvm/riscv: Port perf kvm stat to RISC-V
 
- #ifdef CONFIG_MEMCG
- 	if (sc->memcg)
--		ds_queue = &sc->memcg->deferred_split_queue;
-+		ds_queue = &sc->memcg->nodeinfo[sc->nid]->deferred_split_queue;
- #endif
- 	return READ_ONCE(ds_queue->split_queue_len);
- }
-@@ -3322,7 +3322,7 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+ arch/riscv/kvm/trace.h                        | 67 ++++++++++++++++
+ arch/riscv/kvm/vcpu.c                         |  7 ++
+ tools/perf/arch/riscv/Makefile                |  1 +
+ tools/perf/arch/riscv/util/Build              |  1 +
+ tools/perf/arch/riscv/util/kvm-stat.c         | 78 +++++++++++++++++++
+ .../arch/riscv/util/riscv_exception_types.h   | 41 ++++++++++
+ 6 files changed, 195 insertions(+)
+ create mode 100644 arch/riscv/kvm/trace.h
+ create mode 100644 tools/perf/arch/riscv/util/kvm-stat.c
+ create mode 100644 tools/perf/arch/riscv/util/riscv_exception_types.h
 
- #ifdef CONFIG_MEMCG
- 	if (sc->memcg)
--		ds_queue = &sc->memcg->deferred_split_queue;
-+		ds_queue = &sc->memcg->nodeinfo[sc->nid]->deferred_split_queue;
- #endif
-
- 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index fabce2b50c69..cdf9f5fa3b8e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5445,7 +5445,11 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 		kfree(pn);
- 		return 1;
- 	}
--
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	spin_lock_init(&pn->deferred_split_queue.split_queue_lock);
-+	INIT_LIST_HEAD(&pn->deferred_split_queue.split_queue);
-+	pn->deferred_split_queue.split_queue_len = 0;
-+#endif
- 	lruvec_init(&pn->lruvec);
- 	pn->memcg = memcg;
-
-@@ -5545,11 +5549,6 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
- 	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
- 		memcg->cgwb_frn[i].done =
- 			__WB_COMPLETION_INIT(&memcg_cgwb_frn_waitq);
--#endif
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	spin_lock_init(&memcg->deferred_split_queue.split_queue_lock);
--	INIT_LIST_HEAD(&memcg->deferred_split_queue.split_queue);
--	memcg->deferred_split_queue.split_queue_len = 0;
- #endif
- 	lru_gen_init_memcg(memcg);
- 	return memcg;
 -- 
-2.15.2
+2.37.2
+
 
