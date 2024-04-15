@@ -1,323 +1,144 @@
-Return-Path: <linux-kernel+bounces-145582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E730F8A5814
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:45:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 875A48A5812
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E38F1C224F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:45:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B83071C22442
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80E582876;
-	Mon, 15 Apr 2024 16:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06ECB82482;
+	Mon, 15 Apr 2024 16:45:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EZLoD7XH"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eIRg9Fca"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6632824B5
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C190E8062B;
+	Mon, 15 Apr 2024 16:45:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713199525; cv=none; b=jdRtxqAwL5HVZq8+DsI1rp4xiwNLuxvabTEH85oZyGia2pCgez30fWUuae0qh+oqxuMrtrKF78EzI/qYrBxmc2Sf5VUHf1X3CNMUhlVET06/wzbfEL76EO90ILs/k2+pbSOMqEAg+kG1baaB2weEtpLvpavENfe/bfZZL02EcbA=
+	t=1713199519; cv=none; b=Uwh3x9Y3ORPmYdfribu1HHoSDewASjb2mtfCyBnoJbVp7T0bcXpL8h4g/a5tIxxLX0KplfQswmOBPi+DIIpgCNFqJWFgNzlB2r68z3TdKIoe6HDIh0oxXg26JndN3JpCb5P0ZzI7kjeMoD4of/Cttau6T9mtByKkSOMb7WKztlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713199525; c=relaxed/simple;
-	bh=z7REmhzopffrfEb5EpBXG8pv1dB7QSKXzzdb+Bcd26Q=;
+	s=arc-20240116; t=1713199519; c=relaxed/simple;
+	bh=wBW+oa3pCykS3OyYpa7PMDqthcdmirp/ICjlcDVn1yI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ugws8EHojgKjk+hZQgavqCNx9afxf9cWwLCbNNT8vEhPAWgD74/1sfhUT/0fvce0Yo0uD2g41wq5F/PrUy3/CeDtnQdqXNvHToOJ4JJ0S8cM8XAbAUjUJfxxW8IeKGh+e3hQZrNSmsfnXfsqKUfkV0uyI4wPvGLnRcdgAE0hikI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EZLoD7XH; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516dc51bb72so3704704e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:45:23 -0700 (PDT)
+	 To:Cc:Content-Type; b=eZXLysGChLCLslkDatMlHbXY+yuYYMbl7vszt7C5zJH8DkOT9Dt5uQUqDvJ1clJkEYRkfeDSdR92oeE0mxJZU377QVQ/UIOSzydR9vSasZS54HXHs9LIYVhk66o/pvYqhARYhCfGFrYELgBHoLsherC/jSi7eXYIxHWbqCOCOg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eIRg9Fca; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso40667281fa.0;
+        Mon, 15 Apr 2024 09:45:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713199522; x=1713804322; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713199516; x=1713804316; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f/KhD9KfHwX7IX6Wrg2MRL7/a7LRnOwbZXhvbxH+MaQ=;
-        b=EZLoD7XHemjf1D8iOb431mEcQaa4MRr0/1sf0MCyw30Vojwn7G+lCjKsnkcYNF4vU8
-         ipouaTZ6oz27yQDXEEsW2OYJqP0jIMzWJ328fzVKAMZ9vof9Tt9+iOOIq6rYfGfvA/kA
-         hU5dNy5WNjf8KjanbHu4aTkY9Xj+7tfzf2nW52OXfwJLqdShb3tAtPlQ8GuruCGAhheN
-         6YEwE5NAwtDlvIXh79aItETvp6ce3p4zZPdQqRMgEpoGbq0ofLtdclpe53H7kYT2GBdZ
-         Vj0GoM6vBu6YUudkSo8Gj2w+172WWdRxwPey4+Mna5yfKuHLBnV+7Is5FyG1tgwqJeWV
-         04fg==
+        bh=N9v1PjagDUY8H1QOOVNJ+FGMolz3i+jv+HOl4/jTkIU=;
+        b=eIRg9FcaTvT38cqeyLnOI+5Jr6EePO9BibI5Iso3M201aiskSxFTPrwI17vygmW3ND
+         GpIJmn89np4NllRSMhFvqihCMxwiOXR8/85anNRymUf4z7odPmpQCdeIGoKv95MR+uiQ
+         e7pfBhw3+juytU6/qQBEwVP8Yc5WkwpqHHX0inmWfDaFLmxwdxsLpWQ7n2CDioIQnA0w
+         K4a6AJs24PHaOOJ4EqdMig6MdzcWoZ5mwz3/ShhEKvghKUSrfA4Q0gUpXBKOtwxi7LWq
+         xySSgGHWP5KeRDvroEjoseMV+DHOMsKGSKbydXM+QVS5tpFyd2x9jY3Ncc3RK/WKw+hi
+         V61A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713199522; x=1713804322;
+        d=1e100.net; s=20230601; t=1713199516; x=1713804316;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f/KhD9KfHwX7IX6Wrg2MRL7/a7LRnOwbZXhvbxH+MaQ=;
-        b=b8dWb/nOCvLh868z7J0fDY0VxQNK70HoXMY8u3herpqDWrjv1wBk3Qh1BgrynLLy8U
-         xBvMekHedhxJYy0XxPpXMn7mefWZ/VZ/y3ynuN9VSfUuzLKPAkBdQPS2hmXKvPXiK095
-         Lno+/07XK2IudfxuINehrTwwxscIgdwczdBiNdDWwBRp2/k3Zvwz1//mIUyN85rLqAxU
-         ARm6QDpTp6WBjWmKPsG2E/Lm6/BbxX79Dc3U1ANYRduv/9MumkQJTQsxK30kC2d9CVti
-         521vpKUx1idIqaujjn3FnepFTb421T1lwvBcjfDH4+w0gA/33dzf9kvc/Qm1AQDh486Z
-         R4/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW+16BbKtB+iLSL+3D/fQy6GqiBCorIXlW9vjbK3rpjGrF+vZtIicsFnTjUpaelt0EHboGST4Zp9VLN7tXFcOUV2iLvX+61lpQVLeA4
-X-Gm-Message-State: AOJu0Yw76HGiZGnh7bYlPnsvG8dTko+wwFJWrcGRIt8eubDSU9jU0VcA
-	yarAG3kgzizD1P4pbks2Qeb+Mdry68tXNPd3lX3l6Y7jPq6i4d7z0vvdey694apM570+cfGLeqQ
-	hYW9xIy0WyjPdH3O/sOXhtI/XGKQaAGpZz3Gt
-X-Google-Smtp-Source: AGHT+IEcBD8O1qMrT7A92+Ydq3Sto26jxXW+0RuDsdMTKnmJALnhCB284OCiAeunirCqxNaVBDcxQvXd+kj7ZYSGKsA=
-X-Received: by 2002:a19:3805:0:b0:516:a8f6:3863 with SMTP id
- f5-20020a193805000000b00516a8f63863mr6831908lfa.30.1713199521580; Mon, 15 Apr
- 2024 09:45:21 -0700 (PDT)
+        bh=N9v1PjagDUY8H1QOOVNJ+FGMolz3i+jv+HOl4/jTkIU=;
+        b=QuZJBzqBYVCfbsdR5XV+zHOreRrjcZuV55l7+bK3an1ofKW9L2DBxOxwE33JALFHju
+         9BdOJLAmOWXCsSyTozQsIb+3ppQDCTFNdttGrE2IA+PnRl4XoGc89poT+sCIDsFCpVO/
+         fIUaFanQmizBh1vbdIEiKa55zWE+wJ+5n5f1rxc0bonJ/N8TrlbPa2flpIsuvaW+2gFG
+         51xPYFA+I8SIrC2n9C6PAgVSIKSysgAPmpzH1olrcoQhM4knPKIZqdBzU4aUk6RVqlie
+         V61nUeS4Izz5ew4OB2Iqki+e3oif2j7zb4+OwwgK/Ag8U+u2VFHvVQn6crSw9JpYYI2W
+         u/+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXXpAc6Uiljmo8iVP/+Gvmo9Tw7JwHd4lSG/6gODiNn4fvHxs6GmWZ+lEOzNQOG/RJCtSWMFKMehfSiWAWHzUmiCBp250BCNMVKgWbB
+X-Gm-Message-State: AOJu0YzG4/merH9PuStBRZAZNf200f7tqZOHK0j18HFcVrGbl0E+U/Sl
+	BSpE6mV8GURqCHkcRUKcp5maCTj0knmlUW2rQl/AauGMyLSpeRkveNcurqo2FvGtzK8oBnpwA03
+	cs/5MK9U0uodkmRByFNM1FU0MTSE=
+X-Google-Smtp-Source: AGHT+IHo3yzw96c6T6O7XQd5D5MeUjIy17EQ78/NP06KKVEq6l4hTDOfe6aa3zGIA5cBRi8TDGB1JrQnInWCofP859c=
+X-Received: by 2002:a05:651c:19a4:b0:2da:91d0:54e7 with SMTP id
+ bx36-20020a05651c19a400b002da91d054e7mr2063608ljb.31.1713199515580; Mon, 15
+ Apr 2024 09:45:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-24-xiong.y.zhang@linux.intel.com> <ZhhZush_VOEnimuw@google.com>
- <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com> <Zhn9TGOiXxcV5Epx@google.com>
- <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com> <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
- <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com>
-In-Reply-To: <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com>
-From: Mingwei Zhang <mizhang@google.com>
-Date: Mon, 15 Apr 2024 09:44:45 -0700
-Message-ID: <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-To: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, 
-	pbonzini@redhat.com, peterz@infradead.org, kan.liang@intel.com, 
-	zhenyuw@linux.intel.com, jmattson@google.com, kvm@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com, 
-	samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com
+References: <20240415154002.151149-1-aha310510@gmail.com>
+In-Reply-To: <20240415154002.151149-1-aha310510@gmail.com>
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Tue, 16 Apr 2024 01:44:59 +0900
+Message-ID: <CAKFNMon3DWhBxMor7UNqTcrTdms6nUQF+=uWDeEc0wWerH4sOQ@mail.gmail.com>
+Subject: Re: [PATCH] nilfs: Fix OOB in nilfs_set_de_type
+To: Jeongjun Park <aha310510@gmail.com>
+Cc: linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzbot+2e22057de05b9f3b30d8@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 3:04=E2=80=AFAM Mi, Dapeng <dapeng1.mi@linux.intel.=
-com> wrote:
+On Tue, Apr 16, 2024 at 12:40=E2=80=AFAM Jeongjun Park  wrote:
 >
 >
-> On 4/15/2024 2:06 PM, Mingwei Zhang wrote:
-> > On Fri, Apr 12, 2024 at 9:25=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.in=
-tel.com> wrote:
-> >>
-> >> On 4/13/2024 11:34 AM, Mingwei Zhang wrote:
-> >>> On Sat, Apr 13, 2024, Mi, Dapeng wrote:
-> >>>> On 4/12/2024 5:44 AM, Sean Christopherson wrote:
-> >>>>> On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> >>>>>> From: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> >>>>>>
-> >>>>>> Implement the save/restore of PMU state for pasthrough PMU in Inte=
-l. In
-> >>>>>> passthrough mode, KVM owns exclusively the PMU HW when control flo=
-w goes to
-> >>>>>> the scope of passthrough PMU. Thus, KVM needs to save the host PMU=
- state
-> >>>>>> and gains the full HW PMU ownership. On the contrary, host regains=
- the
-> >>>>>> ownership of PMU HW from KVM when control flow leaves the scope of
-> >>>>>> passthrough PMU.
-> >>>>>>
-> >>>>>> Implement PMU context switches for Intel CPUs and opptunistically =
-use
-> >>>>>> rdpmcl() instead of rdmsrl() when reading counters since the forme=
-r has
-> >>>>>> lower latency in Intel CPUs.
-> >>>>>>
-> >>>>>> Co-developed-by: Mingwei Zhang <mizhang@google.com>
-> >>>>>> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> >>>>>> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> >>>>>> ---
-> >>>>>>     arch/x86/kvm/vmx/pmu_intel.c | 73 ++++++++++++++++++++++++++++=
-++++++++
-> >>>>>>     1 file changed, 73 insertions(+)
-> >>>>>>
-> >>>>>> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_i=
-ntel.c
-> >>>>>> index 0d58fe7d243e..f79bebe7093d 100644
-> >>>>>> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> >>>>>> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> >>>>>> @@ -823,10 +823,83 @@ void intel_passthrough_pmu_msrs(struct kvm_v=
-cpu *vcpu)
-> >>>>>>     static void intel_save_pmu_context(struct kvm_vcpu *vcpu)
-> >>>>> I would prefer there be a "guest" in there somewhere, e.g. intel_sa=
-ve_guest_pmu_context().
-> >>>> Yeah. It looks clearer.
-> >>>>>>     {
-> >>>>>> +  struct kvm_pmu *pmu =3D vcpu_to_pmu(vcpu);
-> >>>>>> +  struct kvm_pmc *pmc;
-> >>>>>> +  u32 i;
-> >>>>>> +
-> >>>>>> +  if (pmu->version !=3D 2) {
-> >>>>>> +          pr_warn("only PerfMon v2 is supported for passthrough P=
-MU");
-> >>>>>> +          return;
-> >>>>>> +  }
-> >>>>>> +
-> >>>>>> +  /* Global ctrl register is already saved at VM-exit. */
-> >>>>>> +  rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, pmu->global_status);
-> >>>>>> +  /* Clear hardware MSR_CORE_PERF_GLOBAL_STATUS MSR, if non-zero.=
- */
-> >>>>>> +  if (pmu->global_status)
-> >>>>>> +          wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, pmu->global_statu=
-s);
-> >>>>>> +
-> >>>>>> +  for (i =3D 0; i < pmu->nr_arch_gp_counters; i++) {
-> >>>>>> +          pmc =3D &pmu->gp_counters[i];
-> >>>>>> +          rdpmcl(i, pmc->counter);
-> >>>>>> +          rdmsrl(i + MSR_ARCH_PERFMON_EVENTSEL0, pmc->eventsel);
-> >>>>>> +          /*
-> >>>>>> +           * Clear hardware PERFMON_EVENTSELx and its counter to =
-avoid
-> >>>>>> +           * leakage and also avoid this guest GP counter get acc=
-identally
-> >>>>>> +           * enabled during host running when host enable global =
-ctrl.
-> >>>>>> +           */
-> >>>>>> +          if (pmc->eventsel)
-> >>>>>> +                  wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, 0);
-> >>>>>> +          if (pmc->counter)
-> >>>>>> +                  wrmsrl(MSR_IA32_PMC0 + i, 0);
-> >>>>> This doesn't make much sense.  The kernel already has full access t=
-o the guest,
-> >>>>> I don't see what is gained by zeroing out the MSRs just to hide the=
-m from perf.
-> >>>> It's necessary to clear the EVENTSELx MSRs for both GP and fixed cou=
-nters.
-> >>>> Considering this case, Guest uses GP counter 2, but Host doesn't use=
- it. So
-> >>>> if the EVENTSEL2 MSR is not cleared here, the GP counter 2 would be =
-enabled
-> >>>> unexpectedly on host later since Host perf always enable all validat=
-e bits
-> >>>> in PERF_GLOBAL_CTRL MSR. That would cause issues.
-> >>>>
-> >>>> Yeah,  the clearing for PMCx MSR should be unnecessary .
-> >>>>
-> >>> Why is clearing for PMCx MSR unnecessary? Do we want to leaking count=
-er
-> >>> values to the host? NO. Not in cloud usage.
-> >> No, this place is clearing the guest counter value instead of host
-> >> counter value. Host always has method to see guest value in a normal V=
-M
-> >> if he want. I don't see its necessity, it's just a overkill and
-> >> introduce extra overhead to write MSRs.
-> >>
-> > I am curious how the perf subsystem solves the problem? Does perf
-> > subsystem in the host only scrubbing the selector but not the counter
-> > value when doing the context switch?
+> static void nilfs_set_de_type(struct nilfs_dir_entry *de, struct inode *i=
+node)
+> {
+>         umode_t mode =3D inode->i_mode;
 >
-> When context switch happens, perf code would schedule out the old events
-> and schedule in the new events. When scheduling out, the ENABLE bit of
-> EVENTSELx MSR would be cleared, and when scheduling in, the EVENTSELx
-> and PMCx MSRs would be overwritten with new event's attr.config and
-> sample_period separately.  Of course, these is only for the case when
-> there are new events to be programmed on the PMC. If no new events, the
-> PMCx MSR would keep stall value and won't be cleared.
+>         de->file_type =3D nilfs_type_by_mode[(mode & S_IFMT)>>S_SHIFT]; /=
+/ oob
+> }
 >
-> Anyway, I don't see any reason that PMCx MSR must be cleared.
 >
+>
+> The size of the nilfs_type_by_mode array in the fs/nilfs2/dir.c file is d=
+efined
+> as "S_IFMT >> S_SHIFT", but the nilfs_set_de_type() function, which uses =
+this array,
+> specifies the index to read from the array in the same way as "(mode & S_=
+IFMT) >> S_SHIFT".
+>
+> However, when the index is determined this way, an out-of-bounds (OOB) er=
+ror occurs by referring
+> to an index that is 1 larger than the array size when the condition "mode=
+ & S_IFMT =3D=3D S_IFMT" is satisfied.
+> Therefore, a patch to resize the nilfs_type_by_mode array should be appli=
+ed to prevent OOB errors.
+>
+>
+>
+> Reported-and-tested-by: syzbot+2e22057de05b9f3b30d8@syzkaller.appspotmail=
+com
+> Fixes: 2ba466d74ed7 ("nilfs2: directory entry operations")
+> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+> ---
+>  fs/nilfs2/dir.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/nilfs2/dir.c b/fs/nilfs2/dir.c
+> index bc846b904b68..aee40db7a036 100644
+> --- a/fs/nilfs2/dir.c
+> +++ b/fs/nilfs2/dir.c
+> @@ -240,7 +240,7 @@ nilfs_filetype_table[NILFS_FT_MAX] =3D {
+>
+>  #define S_SHIFT 12
+>  static unsigned char
+> -nilfs_type_by_mode[S_IFMT >> S_SHIFT] =3D {
+> +nilfs_type_by_mode[(S_IFMT >> S_SHIFT) + 1] =3D {
+>         [S_IFREG >> S_SHIFT]    =3D NILFS_FT_REG_FILE,
+>         [S_IFDIR >> S_SHIFT]    =3D NILFS_FT_DIR,
+>         [S_IFCHR >> S_SHIFT]    =3D NILFS_FT_CHRDEV,
 
-I don't have a strong opinion on the upstream version. But since both
-the mediated vPMU and perf are clients of PMU HW, leaving PMC values
-uncleared when transition out of the vPMU boundary is leaking info
-technically.
+Thank you for your prompt response and posting the patch.
 
-Alternatively, doing the clearing at vcpu loop boundary should be
-sufficient if considering performance overhead.
+A little formatting and tag editing is required, but it's okay.
+I'll handle this patch.
 
-Thanks
--Mingwei
->
->
-> >
-> >>> Please make changes to this patch with **extreme** caution.
-> >>>
-> >>> According to our past experience, if there is a bug somewhere,
-> >>> there is a catch here (normally).
-> >>>
-> >>> Thanks.
-> >>> -Mingwei
-> >>>>> Similarly, if perf enables a counter if PERF_GLOBAL_CTRL without fi=
-rst restoring
-> >>>>> the event selector, we gots problems.
-> >>>>>
-> >>>>> Same thing for the fixed counters below.  Can't this just be?
-> >>>>>
-> >>>>>      for (i =3D 0; i < pmu->nr_arch_gp_counters; i++)
-> >>>>>              rdpmcl(i, pmu->gp_counters[i].counter);
-> >>>>>
-> >>>>>      for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++)
-> >>>>>              rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i,
-> >>>>>                     pmu->fixed_counters[i].counter);
-> >>>>>
-> >>>>>> +  }
-> >>>>>> +
-> >>>>>> +  rdmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
-> >>>>>> +  /*
-> >>>>>> +   * Clear hardware FIXED_CTR_CTRL MSR to avoid information leaka=
-ge and
-> >>>>>> +   * also avoid these guest fixed counters get accidentially enab=
-led
-> >>>>>> +   * during host running when host enable global ctrl.
-> >>>>>> +   */
-> >>>>>> +  if (pmu->fixed_ctr_ctrl)
-> >>>>>> +          wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, 0);
-> >>>>>> +  for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++) {
-> >>>>>> +          pmc =3D &pmu->fixed_counters[i];
-> >>>>>> +          rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i, pmc->counter);
-> >>>>>> +          if (pmc->counter)
-> >>>>>> +                  wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
-> >>>>>> +  }
-> >>>>>>     }
-> >>>>>>     static void intel_restore_pmu_context(struct kvm_vcpu *vcpu)
-> >>>>>>     {
-> >>>>>> +  struct kvm_pmu *pmu =3D vcpu_to_pmu(vcpu);
-> >>>>>> +  struct kvm_pmc *pmc;
-> >>>>>> +  u64 global_status;
-> >>>>>> +  int i;
-> >>>>>> +
-> >>>>>> +  if (pmu->version !=3D 2) {
-> >>>>>> +          pr_warn("only PerfMon v2 is supported for passthrough P=
-MU");
-> >>>>>> +          return;
-> >>>>>> +  }
-> >>>>>> +
-> >>>>>> +  /* Clear host global_ctrl and global_status MSR if non-zero. */
-> >>>>>> +  wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
-> >>>>> Why?  PERF_GLOBAL_CTRL will be auto-loaded at VM-Enter, why do it n=
-ow?
-> >>>> As previous comments say, host perf always enable all counters in
-> >>>> PERF_GLOBAL_CTRL by default. The reason to clear PERF_GLOBAL_CTRL he=
-re is to
-> >>>> ensure all counters in disabled state and the later counter manipula=
-tion
-> >>>> (writing MSR) won't cause any race condition or unexpected behavior =
-on HW.
-> >>>>
-> >>>>
-> >>>>>> +  rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, global_status);
-> >>>>>> +  if (global_status)
-> >>>>>> +          wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, global_status);
-> >>>>> This seems especially silly, isn't the full MSR being written below=
-?  Or am I
-> >>>>> misunderstanding how these things work?
-> >>>> I think Jim's comment has already explain why we need to do this.
-> >>>>
-> >>>>>> +  wrmsrl(MSR_CORE_PERF_GLOBAL_STATUS_SET, pmu->global_status);
-> >>>>>> +
-> >>>>>> +  for (i =3D 0; i < pmu->nr_arch_gp_counters; i++) {
-> >>>>>> +          pmc =3D &pmu->gp_counters[i];
-> >>>>>> +          wrmsrl(MSR_IA32_PMC0 + i, pmc->counter);
-> >>>>>> +          wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, pmc->eventsel);
-> >>>>>> +  }
-> >>>>>> +
-> >>>>>> +  wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
-> >>>>>> +  for (i =3D 0; i < pmu->nr_arch_fixed_counters; i++) {
-> >>>>>> +          pmc =3D &pmu->fixed_counters[i];
-> >>>>>> +          wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, pmc->counter);
-> >>>>>> +  }
-> >>>>>>     }
-> >>>>>>     struct kvm_pmu_ops intel_pmu_ops __initdata =3D {
-> >>>>>> --
-> >>>>>> 2.34.1
-> >>>>>>
+Thanks,
+Ryusuke Konishi
 
