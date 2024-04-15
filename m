@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-145148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DC2D8A5023
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F4E98A5027
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:02:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEC091C22676
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:02:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C04F81C22936
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45A412E1D3;
-	Mon, 15 Apr 2024 12:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BDB12F388;
+	Mon, 15 Apr 2024 12:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YBqq7VHa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpS8V3E/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F408D12DD9B;
-	Mon, 15 Apr 2024 12:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B8F12EBCB;
+	Mon, 15 Apr 2024 12:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713185438; cv=none; b=dba4dxENCPrs+FwNkBvmVEL4Yp9YAujvlQnp2xD9R5qCQyCVrH4JxgoFUeIh/F5uQuqcfbv7phHaZpPk0YHOKbxYoaGYxkZRG/37kwYtdyuSg4I9N3OKVtpuYoCm5enm3YqKBpImlRRlHzI2w7ZcQdU8nKyAGyOMwQxvFFoSiz4=
+	t=1713185439; cv=none; b=aExFOtw7gn+nIVC9kdzqXTw5TG8eAcDpvk36qew0zWwhbD+DysAoLZloeJghNrT1o6Ce9D8Bcin8IpQlDhRMRPeTrAghbA68TNhgxyi5pCjdIFLZ1+SmdIDAYfgDMPPUX3pj55MjlhPB1sRHyh7H5/0bYzl86Jwg6PNDRP5QlXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713185438; c=relaxed/simple;
-	bh=UjhrPhhIxTdzHcb2S0fePs6c139Ez5ih5td+TTQ3hN4=;
+	s=arc-20240116; t=1713185439; c=relaxed/simple;
+	bh=nw55+VOpSKCFU5z9iBHcAaveAuSjI2mNzuzQYI+vTic=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bY883dzS4ZOh3wG1ZowhoOZu+Ob6AapUs9094m88s0lFTpgSF3YX8dPPrYCk98p7diJEHJjZBASyZGEuIhn+pFQ1pufPqBiqHFp/7q8FPxUX/q8c3brmX7jEadBnomNK834TKg2AvGzSLW5iEfyxrfd/uqY1/jfwtt9WvW9K+VE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YBqq7VHa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AE11C2BD11;
-	Mon, 15 Apr 2024 12:50:36 +0000 (UTC)
+	 MIME-Version; b=Vyq7UP+UD1XtoA3AaN6bdT+wqRBLO77QSwBfktB9WLtVf39Gzl5h7FAZYYl3sLRoZWCguffCnoPG70g3W0LcCM1aXCL1/MuxMakmNnDzM7fp0Taxx/6uWuFVEIIfEIWuFPuD3U/SQQutEDCHCpLk9vogdzGI2sO//uj80yzed34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpS8V3E/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A090C2BD11;
+	Mon, 15 Apr 2024 12:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713185437;
-	bh=UjhrPhhIxTdzHcb2S0fePs6c139Ez5ih5td+TTQ3hN4=;
+	s=k20201202; t=1713185439;
+	bh=nw55+VOpSKCFU5z9iBHcAaveAuSjI2mNzuzQYI+vTic=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YBqq7VHaFLcPXMrQhGuwY/pJ4rH3RxKwjY+JknDOzWHU8NwPFSVzS7/oc5gtmKwzc
-	 uZ6xyy03q5PePsIihsQrxVWxez8isdfNUg0EYeXiFh9xsDkCeVaw5PU+A1SvEoN1po
-	 4bJQy1atC7FUYRkcsw+LW5EdcnVheWEAhLGATZHconl9LooUGPS7HngyHvsIAHR1mc
-	 Fx0dc2Y8ZR/Fp3CetCNOHuu7hdxbfaBBWgbZTpfcSkAHhB2lZeQAZDY77TNVm2bEv9
-	 eQAI0MmoFClJTeWyK0OV6ah+ZlBg3StfIDl2b5KdmwbgSs8WdG77MrchhVo+3EmzqP
-	 Oh3sV/d2Ucj+A==
+	b=IpS8V3E/ksNs5LVkc3FELoZLfTt2hzqJyjrB5Q/qnGSAARxI3BJ/K0TE8ZVREP3QZ
+	 S+HJCuNFiUu5HuGMhCpUJmb8jhPyZyv2qLEuJbr8T5CgVyrDerzOnfd5r6r3EeJmQk
+	 xhUVkn8lZg86P0+19QpeGDslfFvmHlKljupo15gQG3So2N5p3gq9sT/D3S08IJMniS
+	 F4Pe2CfRzvVY3aeJfPMRNo7JfDeaD5KgbTbK4G5dDgv8UIAFP96Q3tGfL2K3PqyxNp
+	 hWj79sgMMdxIpXHvVXqDV3KrBhTK1xi+sJ//gS1qW6hBDqNrGimRcp1V6eMM0vlhci
+	 cpph7I1BzalHw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Chen Ni <nichen@iscas.ac.cn>,
-	Damien Le Moal <dlemoal@kernel.org>,
+Cc: Adam Goldman <adamg@pobox.com>,
+	Takashi Sakamoto <o-takashi@sakamocchi.jp>,
 	Sasha Levin <sashal@kernel.org>,
-	linus.walleij@linaro.org,
-	cassel@kernel.org,
-	linux-ide@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 5/6] ata: sata_gemini: Check clk_enable() result
-Date: Mon, 15 Apr 2024 06:04:26 -0400
-Message-ID: <20240415100433.3127434-5-sashal@kernel.org>
+	linux1394-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 6.1 6/6] firewire: ohci: mask bus reset interrupts between ISR and bottom half
+Date: Mon, 15 Apr 2024 06:04:27 -0400
+Message-ID: <20240415100433.3127434-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415100433.3127434-1-sashal@kernel.org>
 References: <20240415100433.3127434-1-sashal@kernel.org>
@@ -66,36 +64,85 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.86
 Content-Transfer-Encoding: 8bit
 
-From: Chen Ni <nichen@iscas.ac.cn>
+From: Adam Goldman <adamg@pobox.com>
 
-[ Upstream commit e85006ae7430aef780cc4f0849692e266a102ec0 ]
+[ Upstream commit 752e3c53de0fa3b7d817a83050b6699b8e9c6ec9 ]
 
-The call to clk_enable() in gemini_sata_start_bridge() can fail.
-Add a check to detect such failure.
+In the FireWire OHCI interrupt handler, if a bus reset interrupt has
+occurred, mask bus reset interrupts until bus_reset_work has serviced and
+cleared the interrupt.
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+Normally, we always leave bus reset interrupts masked. We infer the bus
+reset from the self-ID interrupt that happens shortly thereafter. A
+scenario where we unmask bus reset interrupts was introduced in 2008 in
+a007bb857e0b26f5d8b73c2ff90782d9c0972620: If
+OHCI_PARAM_DEBUG_BUSRESETS (8) is set in the debug parameter bitmask, we
+will unmask bus reset interrupts so we can log them.
+
+irq_handler logs the bus reset interrupt. However, we can't clear the bus
+reset event flag in irq_handler, because we won't service the event until
+later. irq_handler exits with the event flag still set. If the
+corresponding interrupt is still unmasked, the first bus reset will
+usually freeze the system due to irq_handler being called again each
+time it exits. This freeze can be reproduced by loading firewire_ohci
+with "modprobe firewire_ohci debug=-1" (to enable all debugging output).
+Apparently there are also some cases where bus_reset_work will get called
+soon enough to clear the event, and operation will continue normally.
+
+This freeze was first reported a few months after a007bb85 was committed,
+but until now it was never fixed. The debug level could safely be set
+to -1 through sysfs after the module was loaded, but this would be
+ineffectual in logging bus reset interrupts since they were only
+unmasked during initialization.
+
+irq_handler will now leave the event flag set but mask bus reset
+interrupts, so irq_handler won't be called again and there will be no
+freeze. If OHCI_PARAM_DEBUG_BUSRESETS is enabled, bus_reset_work will
+unmask the interrupt after servicing the event, so future interrupts
+will be caught as desired.
+
+As a side effect to this change, OHCI_PARAM_DEBUG_BUSRESETS can now be
+enabled through sysfs in addition to during initial module loading.
+However, when enabled through sysfs, logging of bus reset interrupts will
+be effective only starting with the second bus reset, after
+bus_reset_work has executed.
+
+Signed-off-by: Adam Goldman <adamg@pobox.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/sata_gemini.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/firewire/ohci.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ata/sata_gemini.c b/drivers/ata/sata_gemini.c
-index c96fcf9ee3c07..01f050b1bc93b 100644
---- a/drivers/ata/sata_gemini.c
-+++ b/drivers/ata/sata_gemini.c
-@@ -201,7 +201,10 @@ int gemini_sata_start_bridge(struct sata_gemini *sg, unsigned int bridge)
- 		pclk = sg->sata0_pclk;
- 	else
- 		pclk = sg->sata1_pclk;
--	clk_enable(pclk);
-+	ret = clk_enable(pclk);
-+	if (ret)
-+		return ret;
-+
- 	msleep(10);
+diff --git a/drivers/firewire/ohci.c b/drivers/firewire/ohci.c
+index 667ff40f39353..7d94e1cbc0ed3 100644
+--- a/drivers/firewire/ohci.c
++++ b/drivers/firewire/ohci.c
+@@ -2049,6 +2049,8 @@ static void bus_reset_work(struct work_struct *work)
  
- 	/* Do not keep clocking a bridge that is not online */
+ 	ohci->generation = generation;
+ 	reg_write(ohci, OHCI1394_IntEventClear, OHCI1394_busReset);
++	if (param_debug & OHCI_PARAM_DEBUG_BUSRESETS)
++		reg_write(ohci, OHCI1394_IntMaskSet, OHCI1394_busReset);
+ 
+ 	if (ohci->quirks & QUIRK_RESET_PACKET)
+ 		ohci->request_generation = generation;
+@@ -2115,12 +2117,14 @@ static irqreturn_t irq_handler(int irq, void *data)
+ 		return IRQ_NONE;
+ 
+ 	/*
+-	 * busReset and postedWriteErr must not be cleared yet
++	 * busReset and postedWriteErr events must not be cleared yet
+ 	 * (OHCI 1.1 clauses 7.2.3.2 and 13.2.8.1)
+ 	 */
+ 	reg_write(ohci, OHCI1394_IntEventClear,
+ 		  event & ~(OHCI1394_busReset | OHCI1394_postedWriteErr));
+ 	log_irqs(ohci, event);
++	if (event & OHCI1394_busReset)
++		reg_write(ohci, OHCI1394_IntMaskClear, OHCI1394_busReset);
+ 
+ 	if (event & OHCI1394_selfIDComplete)
+ 		queue_work(selfid_workqueue, &ohci->bus_reset_work);
 -- 
 2.43.0
 
