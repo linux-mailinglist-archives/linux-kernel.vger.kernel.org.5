@@ -1,231 +1,562 @@
-Return-Path: <linux-kernel+bounces-145754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 455388A5A65
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1589B8A5A67
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:13:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB65F281AE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:12:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C090F281C38
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13345155A37;
-	Mon, 15 Apr 2024 19:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 813B9155A3C;
+	Mon, 15 Apr 2024 19:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="P5rNh4SP"
-Received: from MRZP264CU002.outbound.protection.outlook.com (mail-francesouthazon11020002.outbound.protection.outlook.com [52.101.165.2])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sfU4pnDx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CE9219EA
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.165.2
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713208354; cv=fail; b=QixmMtPRfpvJCF/Cq86L/qpvAB63a0dVlBkvw32lX6wfqlXjRMgM/EwlGJkTUmVAvbOhDwgQLBhXUY4jTJagPOpQywBtSNWWJNWsZIc56/G3Fz3s11HIyJHKtv5nsablZXsioECs8vgB1mYM3JojtvUfGZnoSXKgoVcUjG66790=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713208354; c=relaxed/simple;
-	bh=Ia2n2KzpbDLjaTms/DTpbmfvViK+MO+lW7uXCi7nxqE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=k+OWmKO4UDRplJsZrH0WG/7UJMDrwe9P7aDaOL9DTf9ELIZefn9YY1OAmcqgz/NWqieU5gZRv4hbPLfGca44mg6WVkpgU/kqjHPvBNwOeNN6wLqef7qBw3bQOyTOL4U6SDFjUUbS7/50xyF/KXxzK3L/JrKbuM30eq+Vp+UIZv4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=P5rNh4SP; arc=fail smtp.client-ip=52.101.165.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YsF7VKvyjT+uX53djQHS9hvo2f28VGPggxvbEa8rQAdgzUuLln3wXMTM2c7vAvp05KS7ZtsWX02tG2zGC9XOL6xbrZcUwCxQrNl4GUXB66HCcTi28ZjBqbyGL4nKEV3Idz//kBR/A1cHbNFLCvJShzot14jm2GN10VwhX3CAeF7MwKsH4zR2klOs55+pLNKqxCdwG/XcSU6wczU3sZ0SPt5DAB1r/1+VcAU8SDeu9yBKcIdmOVxEED5CUJkUt0k3IDfSL9mWhHapw8refTN7+MXbrq3KrUN075C/e7Qbv/l3cACTGchX/CtgKfgb0LNmvLQ/8AmfqucLjli3zMetmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ia2n2KzpbDLjaTms/DTpbmfvViK+MO+lW7uXCi7nxqE=;
- b=fsVdW2PSyKEhLUWIRv1mVFt9/5co/0GHwiL2oSR8FexB2ONrkcTKNvGx0uKToxtAA6iEPsMNQK8c4UhOl0DgT30j3ABWumDaY4fS3dxCQeMvrh8w09Y1Pf57owbPPCwPsijVJKjONEi8C5+XmXwT5rNd6ke6kcIxCJDuJXXdyGKE6fTPZfhtAXohz2KIOtJIyT/DMDw3VndDgNBQipAoEHZPIbPURulpCsaH4heaBMlWAzsMEhWWOSikHqnitznSfMDBvjoialgDcghmH/5hcqrLFGUW1274lOLnAfHPqPjhs/c+pHA+uRvG21XiQzPSDr0AQDVbXK06DmXY0NefiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ia2n2KzpbDLjaTms/DTpbmfvViK+MO+lW7uXCi7nxqE=;
- b=P5rNh4SPiEIh8d/sHbeoutbFwRlqD3m9JBCIpqjjbwaSRVx14Tc9gtACr/uipw03VEZz1A5KXidPztNsQVEzykWDmqo37LH8qqaPjr2rotkBPZFtRaI+Szps7gQtfiu2SNDNzQ0nXyhX4cYl6/sILpUoTBdJCISL2Ujm8maHx4tpFrQzdpsJSauF0ozsa6at34LRWBE50C0DpUc4uxpwZKOkh/Sg1cj/Ql0xttzGYveoqyTwlUvVIlAf4YP9mQXcWupp/ZMu+xkpcvNULACu2WOvmB/2Ao9m7yAf/1je5fSP1NTir7MUgfMqcVrq5KaqJLJmLnV2e3l+SOZqLibY9A==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MRZP264MB2682.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1f::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 19:12:29 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1f75:cb9f:416:4dbb]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1f75:cb9f:416:4dbb%7]) with mapi id 15.20.7452.049; Mon, 15 Apr 2024
- 19:12:29 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Peter Xu <peterx@redhat.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, Andrew Morton
-	<akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [RFC PATCH 0/8] Reimplement huge pages without hugepd on powerpc
- 8xx
-Thread-Topic: [RFC PATCH 0/8] Reimplement huge pages without hugepd on powerpc
- 8xx
-Thread-Index: AQHafsSU45Ki1FdCPEivNpHUmuU++LFIqD8AgBqxMACAAW6xAIAABmgAgAUFpQA=
-Date: Mon, 15 Apr 2024 19:12:29 +0000
-Message-ID: <d3a4c5a6-0fd6-4518-a76b-04dcf2ea2f2c@csgroup.eu>
-References: <cover.1711377230.git.christophe.leroy@csgroup.eu>
- <20240325163840.GF6245@nvidia.com> <ZhgMqF7SNaISrYMJ@x1n>
- <d236ce4a-1dde-4ee9-8cef-fe96242c2f4b@csgroup.eu> <ZhlFokakZo3c90C6@x1n>
-In-Reply-To: <ZhlFokakZo3c90C6@x1n>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB2682:EE_
-x-ms-office365-filtering-correlation-id: 4fe038dc-649b-488f-e522-08dc5d7ffeb0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- WvAYAZOgueXT7NwAJNJVHD1gtB6tJT0iG1GxFpi694f7WiOJEmjisbmAwD5E2ZotHeCtQ36/SsRJEnAKzWuNgZU6v61jIrLQeJcPDOcq2UZarSmeve2Bb4qDKcFYKHEJLTQpTvsBNQPclBsyzkY4xMhgBFOqdQr3o0K/DT4k/ehyV5WoLl7CBc0ixxYktPbmsGQFA7zN7vYCYy7bUq4MF82jZX8pqDULnra4Mu15fTI+0WpDtVpJpANh9fhg8V0rkpBTpNFVtvQB+uFyD2VF9wm3Hsge011GWdWedpq+I1QmA/OtVJfLHjJBeKNSfT0Z6++0QHRXXL9vgMprebYzZbXps+gKsLjdMgf+NakG6dRsnA800/ixjjt+tejIgcavpCGqgDtKfOMvhPXDl7CzeFUK5bDA+oRBu1T+kBmtQ3qsyuTVMhZ04cOD0PU1F1Xkm18BvxOXVIWUhLHLxCaSgSk44MsDeo4NdKepfgvIXtxjElRfuXIy8AnWLgxPrCavdPdE8GOcYykTk5Tj3waMIVp2aCDup6cyXP7D5e9iFE6IGmHDnsoEyo+Y4Gi+FcTyHMV7b5epXvoD+/UVDytTyVLACycmKGvD2pZCO5+WrR3sQ7VbzVAiH/9UiM5f84CAH+Tm4oJrFe3nu7V888soTlm9yZhKoDtTGm4nnMDpeA4YMcpv5Yj5LOMAZK5jCZeDwrqImTp2Uph0hAQAv1QyNJAfZ44Ns1CyU6TodNgQKII=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?dEpwY2NaalFqK2l2THBoSm04elVkempWQnFubEY3QmhoRXhkTVhaOHlaMm9v?=
- =?utf-8?B?ckNOZkVRdW9RSTg3VGJKSGRYNGc5QnZxNWcrWTRNRnQ5enFNUWdFck1pRms4?=
- =?utf-8?B?N3NRVCtCZHh4T3dOWFNUM0tpTldLN3U0NnRPOEJzbEY5UlFZT1JkT215RXhm?=
- =?utf-8?B?ZzRsU2JhZmh4R1VzVElHZ1dTS04vS21iUmxOU3diVm1TU1RKUHhYNjZicVZV?=
- =?utf-8?B?aGRPaGQ4c1RGYkVjbWlpQ3Zva2ZUcEhGeXRMamFSekt3ZjNhMnhucmUyVVlh?=
- =?utf-8?B?TXp4Z2hvOWZpWW96Z1VPRVdNOTdFM2x5ZTJWMWQ1M0hsY1RRMG54NTZSQlVz?=
- =?utf-8?B?cUk5NEVPNDY0S1JraFgwQVJKZUJidU9yQjNQZ3RlSFpNbmVURzZIUDlPcXIz?=
- =?utf-8?B?TDM4bXUrVGZHdzRBVE04RjUyOHhwOGNCVEVuZU9xbWtyaXFjbGV4VmROWTZW?=
- =?utf-8?B?YVRQY2NuU3JpQ1VyWW0vcWxZckUwdFhPcGdHVjJGaVhObWRJMlQxdEJTdUh4?=
- =?utf-8?B?U3VjNHdUd3NsS09ocWFROTRyaE5ZbUtJUVNOa0Q2MFlTVDZ3WHE0NytLTEp6?=
- =?utf-8?B?T2Y3NC9aeWFzTVZRVURDMHFKVlBpMk1xQzNVWHN6UWFpZlltQXRBRllOWlVu?=
- =?utf-8?B?Qm81L25FY0NOVGNwUE93M3lKdGwxdUs3cTlvZVB4c3A0RnFjVmNhSHlXaFZq?=
- =?utf-8?B?ODd5bmNXeDVRK2FGd3hlc2JweWg2WnA4cU00VE94elBTWC9vS3hwRWozcDEv?=
- =?utf-8?B?TCtJR2JMTDhPN21rYzl1WEwvVjFMRjk5YUFoa0JpUWtGWFhMRDVzN05OYU5Y?=
- =?utf-8?B?RVZTaU03Nmwwa3oxUnN6dEgxblByOCs2Zmx4RVB6Q0FUWlJFY1BPa1FEVmdl?=
- =?utf-8?B?RDYxZjIzK1phQW9ZVnBZUy9objRabW1SWlV4WTZqNVBQbW1Wb0oxZkF6aFp4?=
- =?utf-8?B?Y2FGNzNyY1BzclRUems0b0JnMzhkeTJEdzJvTTF6Tm9OL1RFRUI5LzN5Yktu?=
- =?utf-8?B?OGRyaVhMemloU0JsanRwMFNQeW92cXN1L3UwSjlSdTRwLytvTGR6MEgvdElM?=
- =?utf-8?B?Y3N3R0pSOXZVay9XQmhrMkVhUFBnNno2aVdySlQ4RHFPUXlEUmZ2MjhBK1dI?=
- =?utf-8?B?S2U0bTRzTHZubjZiK1ROY1FiZ1V4UUpETnZ0cE5qUnN6QkFjRUdXOVN1MXFz?=
- =?utf-8?B?b0lVaWpBS213blA3QlQ1T0pWSlVLUmdZSFdxUzdxTDkzc1NQdkVERXRTcVZk?=
- =?utf-8?B?VGp2bzZhV0VMYjUrY2dPUTQ0dXlsZjV3TXl3V0R5b0p4SktqNnBPbWRqTzZt?=
- =?utf-8?B?WmRpUVp2ZU00VXI4Rys5cDVWN0VxZk5sdjU2dDFjSndUc3ZwZHp1VWY2cHZG?=
- =?utf-8?B?Sk1NanE5QXBwL010ZDhYTHNKTWpJVGkwQkNaV2lqc2NoVlFSZnpTaVFERTMw?=
- =?utf-8?B?QUwwbkYzM3JxU0s3ZHozRTVJekZsSlVWbGpzalNETi84Q0RjbmcyNUtxOVVI?=
- =?utf-8?B?VGpQSjl1dnVMenNPNjlVWnk2VUFtQUNRRzRCOU9nSmtGOUdSSmtEUGpvaHdp?=
- =?utf-8?B?aDdWNFBuaUc5TUVmK2dsZ2wwbXBzdWVvWktHanFXbjREb2xha0JMaGx0d3pJ?=
- =?utf-8?B?Vk5UZSsvVHFBZTcyTHZFNzVOOEJyQ0lFb252OXBRWkIxYXIrMXhpektiWTkx?=
- =?utf-8?B?Z2JMN3BRZGQybnlOMnV5WjFuelZLWSsyU2NQdXVYVmlLTWlsVy9DRGRPVzN0?=
- =?utf-8?B?T0liL0IzY081Tlo2NVUraDcvMThYbUdSSklIODYrdEMxZFZZN2R1NlFFNVN5?=
- =?utf-8?B?SERiQjZ3UVpBamNuWlNUTUlycE9mdmhoQUhmak9SczNHVkpScXFlWHIwKzZC?=
- =?utf-8?B?cGxXYUhjMEZSRlNKd0JaUVBmQ3dCRnVCQXA4OEJkZ2kweHV0MWczczQyMmk2?=
- =?utf-8?B?S3E4S0lXM2FuWjczRmQvUlZydkd0WTFCT1B1ZjFLTHdtMnE5V3FJR3VrNVBx?=
- =?utf-8?B?RnZGYVBYTjFMV3pVdkFDKzdyci9YWDdtS1ZISUxUSHVyVW85RUZiYTZTeGRQ?=
- =?utf-8?B?WmFqUlJldFpHK2Z6L3k4cHpIUGlqU0hnNW12Q2JIMUhCa2ZnVmtNdHNvemNX?=
- =?utf-8?B?VW8zWWJoQk03VEpsQnJTa21LY1dJUDROYWVod3hRRTRtdVRlNEV5Tys1cCt3?=
- =?utf-8?B?U3c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F92F8775591270499DCCE2F52D8D0B70@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A31D15575F;
+	Mon, 15 Apr 2024 19:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713208377; cv=none; b=B+5tnJ/kqE6ymRqOjZDqDdYPdikrB9IoGiqU7LMmSqnlfBz+zR01gZgmUqw45mvo7Xvl+xFbBvhKexwX6wWhw2uJpbxP3CcYRihPEDOVKhPTpP8Is2goYvq/JDbv3RkkpWSqjzrzaBx0EI1Nw0VflKadJ4JUU7T9i78HkPau5kg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713208377; c=relaxed/simple;
+	bh=ICp5rmxWe7FWUej/nnllTpqvza8bTHzvopCLeKc0cP0=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=XA6V5AaHFPZXGc8TNy+sLIS2apGpRoLP9YyIsI+YnNQkYA0zo0FcDHIy5o3WONvBtCeVyBAamQrB1IdoVtsS8uAeN0qHwNcr9meiSgLyEbFaHH5Bs3S0EUZyugUzWdh9H5Ak29AKC9y9PAgpPpmOwzKOvJ06O1G5bSi79YWYk4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sfU4pnDx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50021C113CC;
+	Mon, 15 Apr 2024 19:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713208376;
+	bh=ICp5rmxWe7FWUej/nnllTpqvza8bTHzvopCLeKc0cP0=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=sfU4pnDxix7rjkQ5ba0XZzLb6qF6f0VRbPvUMohFLBoc1ZN2I9jmJ3ND/wW5hBliV
+	 sAww3Z7NXBawQTu3D17NMkCo69kSnQTFaJZJnayaoNXErbQ9fVFgJAriMClv8u+Wqh
+	 TGu1MCxBUDTllmMZYTAtI/lCZQWZgHF/nMyeyO+JlqqaIRcrLQa09JPBgy1l4NOXuM
+	 P4rCjyohxy2HsOjsX9rznnaCEcyvDMUF/jUhlyThFfSVRU/oUD+1qjhMe4RG4nQRAF
+	 n3Z/hlXsQt9TAb3DyMKx1djuEBnzO9kzRGorosNOhmQOJfl82RwqU7D7yhAWPh0TuU
+	 4kSnsf71DCaSg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fe038dc-649b-488f-e522-08dc5d7ffeb0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2024 19:12:29.4987
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H+MKFocacZY510/BvjAkAmQvomgRXIvkM54WXD5t1WOE1SRNMh5xTCkewMI5ClPFQDYLpzXVzM4rAPn+7m7C9MiHfJ120fa3fVh9yfkN13s=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB2682
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 15 Apr 2024 22:12:50 +0300
+Message-Id: <D0KXOKCTA0ZN.LWGRWL76XBQR@kernel.org>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
+ <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
+ <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+X-Mailer: aerc 0.17.0
+References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
+ <20240410182558.41467-15-haitao.huang@linux.intel.com>
+ <D0JBFRTGWZV9.3TRHOTV0SCGV@kernel.org>
+ <op.2l95o5tawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2l95o5tawjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-DQoNCkxlIDEyLzA0LzIwMjQgw6AgMTY6MzAsIFBldGVyIFh1IGEgw6ljcml0wqA6DQo+IE9uIEZy
-aSwgQXByIDEyLCAyMDI0IGF0IDAyOjA4OjAzUE0gKzAwMDAsIENocmlzdG9waGUgTGVyb3kgd3Jv
-dGU6DQo+Pg0KPj4NCj4+IExlIDExLzA0LzIwMjQgw6AgMTg6MTUsIFBldGVyIFh1IGEgw6ljcml0
-wqA6DQo+Pj4gT24gTW9uLCBNYXIgMjUsIDIwMjQgYXQgMDE6Mzg6NDBQTSAtMDMwMCwgSmFzb24g
-R3VudGhvcnBlIHdyb3RlOg0KPj4+PiBPbiBNb24sIE1hciAyNSwgMjAyNCBhdCAwMzo1NTo1M1BN
-ICswMTAwLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPj4+Pj4gVGhpcyBzZXJpZXMgcmVpbXBs
-ZW1lbnRzIGh1Z2VwYWdlcyB3aXRoIGh1Z2VwZCBvbiBwb3dlcnBjIDh4eC4NCj4+Pj4+DQo+Pj4+
-PiBVbmxpa2UgbW9zdCBhcmNoaXRlY3R1cmVzLCBwb3dlcnBjIDh4eCBIVyByZXF1aXJlcyBhIHR3
-by1sZXZlbA0KPj4+Pj4gcGFnZXRhYmxlIHRvcG9sb2d5IGZvciBhbGwgcGFnZSBzaXplcy4gU28g
-YSBsZWFmIFBNRC1jb250aWcgYXBwcm9hY2gNCj4+Pj4+IGlzIG5vdCBmZWFzaWJsZSBhcyBzdWNo
-Lg0KPj4+Pj4NCj4+Pj4+IFBvc3NpYmxlIHNpemVzIGFyZSA0aywgMTZrLCA1MTJrIGFuZCA4TS4N
-Cj4+Pj4+DQo+Pj4+PiBGaXJzdCBsZXZlbCAoUEdEL1BNRCkgY292ZXJzIDRNIHBlciBlbnRyeS4g
-Rm9yIDhNIHBhZ2VzLCB0d28gUE1EIGVudHJpZXMNCj4+Pj4+IG11c3QgcG9pbnQgdG8gYSBzaW5n
-bGUgZW50cnkgbGV2ZWwtMiBwYWdlIHRhYmxlLiBVbnRpbCBub3cgdGhhdCB3YXMNCj4+Pj4+IGRv
-bmUgdXNpbmcgaHVnZXBkLiBUaGlzIHNlcmllcyBjaGFuZ2VzIGl0IHRvIHVzZSBzdGFuZGFyZCBw
-YWdlIHRhYmxlcw0KPj4+Pj4gd2hlcmUgdGhlIGVudHJ5IGlzIHJlcGxpY2F0ZWQgMTAyNCB0aW1l
-cyBvbiBlYWNoIG9mIHRoZSB0d28gcGFnZXRhYmxlcw0KPj4+Pj4gcmVmZXJlZCBieSB0aGUgdHdv
-IGFzc29jaWF0ZWQgUE1EIGVudHJpZXMgZm9yIHRoYXQgOE0gcGFnZS4NCj4+Pj4+DQo+Pj4+PiBB
-dCB0aGUgbW9tZW50IGl0IGhhcyB0byBsb29rIGludG8gZWFjaCBoZWxwZXIgdG8ga25vdyBpZiB0
-aGUNCj4+Pj4+IGh1Z2VwYWdlIHB0ZXAgaXMgYSBQVEUgb3IgYSBQTUQgaW4gb3JkZXIgdG8ga25v
-dyBpdCBpcyBhIDhNIHBhZ2Ugb3INCj4+Pj4+IGEgbG93ZXIgc2l6ZS4gSSBob3BlIHRoaXMgY2Fu
-IG1lIGhhbmRsZWQgYnkgY29yZS1tbSBpbiB0aGUgZnV0dXJlLg0KPj4+Pj4NCj4+Pj4+IFRoZXJl
-IGFyZSBwcm9iYWJseSBzZXZlcmFsIHdheXMgdG8gaW1wbGVtZW50IHN0dWZmLCBzbyBmZWVkYmFj
-ayBpcw0KPj4+Pj4gdmVyeSB3ZWxjb21lLg0KPj4+Pg0KPj4+PiBJIHRob3VnaHQgaXQgbG9va3Mg
-cHJldHR5IGdvb2QhDQo+Pj4NCj4+PiBJIHNlY29uZCBpdC4NCj4+Pg0KPj4+IEkgc2F3IHRoZSBk
-aXNjdXNzaW9ucyBpbiBwYXRjaCAxLiAgQ2hyaXN0b3BoZSwgSSBzdXBwb3NlIHlvdSdyZSBleHBs
-b3JpbmcNCj4+PiB0aGUgYmlnIGhhbW1lciBvdmVyIGh1Z2VwZCwgYW5kIHBlcmhhcHMgd2VudCBh
-bHJlYWR5IHdpdGggdGhlIDMyYml0IHBtZA0KPj4+IHNvbHV0aW9uIGZvciBub2hhc2gvMzJiaXQg
-Y2hhbGxlbmdlIHlvdSBtZW50aW9uZWQ/DQo+Pj4NCj4+PiBJJ20gdHJ5aW5nIHRvIHBvc2l0aW9u
-IG15IG5leHQgc3RlcDsgaXQgc2VlbXMgbGlrZSBhdCBsZWFzdCBJIHNob3VsZCBub3QNCj4+PiBh
-ZGRpbmcgYW55IG1vcmUgaHVnZXBkIGNvZGUsIHRoZW4gc2hvdWxkIEkgZ28gd2l0aCBBUkNIX0hB
-U19IVUdFUEQgY2hlY2tzLA0KPj4+IG9yIHlvdSdyZSBnb2luZyB0byBoYXZlIGFuIFJGQyBzb29u
-IHRoZW4gSSBjYW4gYmFzZSBvbiB0b3A/DQo+Pg0KPj4gRGVwZW5kcyBvbiB3aGF0IHlvdSBleHBl
-Y3QgYnkgInNvb24iLg0KPj4NCj4+IEkgc3VyZSB3b24ndCBiZSBhYmxlIHRvIHNlbmQgYW55IFJG
-QyBiZWZvcmUgZW5kIG9mIEFwcmlsLg0KPj4NCj4+IFNob3VsZCBiZSBwb3NzaWJsZSB0byBoYXZl
-IHNvbWV0aGluZyBkdXJpbmcgTWF5Lg0KPiANCj4gVGhhdCdzIGdvb2QgZW5vdWdoLCB0aGFua3Mu
-ICBJJ2xsIHNlZSB3aGF0IGlzIHRoZSBiZXN0IEkgY2FuIGRvLg0KPiANCj4gVGhlbiBkbyB5b3Ug
-dGhpbmsgSSBjYW4gbGVhdmUgcDRkL3BnZCBsZWF2ZXMgYWxvbmU/ICBQbGVhc2UgY2hlY2sgdGhl
-IG90aGVyDQo+IGVtYWlsIHdoZXJlIEknbSBub3Qgc3VyZSB3aGV0aGVyIHBnZCBsZWF2ZXMgZXZl
-ciBleGlzdGVkIGZvciBhbnkgb2YNCj4gUG93ZXJQQy4gIFRoYXQncyBzbyBmYXIgd2hhdCBJIHBs
-YW4gdG8gZG8sIG9uIHRlYWNoaW5nIHBndGFibGUgd2Fsa2Vycw0KPiByZWNvZ25pemUgcHVkIGFu
-ZCBsb3dlciBmb3IgYWxsIGxlYXZlcy4gIFRoZW4gaWYgUG93ZXIgY2FuIHN3aXRjaCBmcm9tDQo+
-IGh1Z2VwZCB0byB0aGlzIGl0IHNob3VsZCBqdXN0IHdvcmsuDQoNCldlbGwsIGlmIEkgdW5kZXJz
-dGFuZCBjb3JyZWN0bHksIHNvbWV0aGluZyB3aXRoIG5vIFBNRCB3aWxsIGluY2x1ZGUgDQo8YXNt
-LWdlbmVyaWMvcGd0YWJsZS1ub3BtZC5oPiBhbmQgd2lsbCB0aGVyZWZvcmUgb25seSBoYXZlIC4u
-Li4gcG1kIA0KZW50cmllcyAoaGVuY2Ugbm8gcGdkL3A0ZC9wdWQgZW50cmllcykuIExvb2tzIG9k
-ZCBidXQgdGhhdCdzIHdoYXQgaXQgaXMuIA0KcGdkX3BvcHVsYXRlKCksIHA0ZF9wb3B1bGF0ZSgp
-LCBwdWRfcG9wdWxhdGUoKSBhcmUgYWxsICJkbyB7IH0gd2hpbGUgDQooMCkiIGFuZCBvbmx5IHBt
-ZF9wb3B1bGF0ZSBleGlzdHMuIFNvIG9ubHkgcG1kX2xlYWYoKSB3aWxsIGV4aXN0IGluIHRoYXQg
-DQpjYXNlLg0KDQpBbmQgdGhlcmVmb3JlIGluY2x1ZGluZyA8YXNtLWdlbmVyaWMvcGd0YWJsZS1u
-b3A0ZC5oPiBtZWFucyAuLi4uIHlvdSANCmhhdmUgcDRkIGVudHJpZXMuIERvZXNuJ3QgbWVhbiB5
-b3UgaGF2ZSBwNGRfbGVhZigpIGJ1dCB0aGF0IG5lZWRzIHRvIGJlIA0KY2hlY2tlZC4NCg0KDQo+
-IA0KPiBFdmVuIGlmIHBnZCBleGlzdHMgKHRoZW4gc29tZXRoaW5nIEkgb3Zlcmxvb2tlZC4uKSwg
-SSdtIHdvbmRlcmluZyB3aGV0aGVyDQo+IHdlIGNhbiBwdXNoIHRoYXQgZG93bndhcmRzIHRvIGJl
-IGVpdGhlciBwdWQvcG1kIChhbmQgbG9va3MgbGlrZSB3ZSBhbGwNCj4gYWdyZWUgcDRkIGlzIG5l
-dmVyIHVzZWQgb24gUG93ZXIpLiAgVGhhdCBtYXkgaW52b2x2ZSBzb21lIHBndGFibGUNCj4gb3Bl
-cmF0aW9ucyBtb3ZpbmcgZnJvbSBwZ2QgbGV2ZWwgdG8gbG93ZXIsIGUuZy4gbXkgcHVyZSBpbWFn
-aW5hdGlvbiB3b3VsZA0KPiBsb29rIGxpa2Ugc3RhcnRpbmcgd2l0aDoNCg0KWWVzIEkgdGhpbmsg
-dGhlcmUgaXMgbm8gZG91YnQgdGhhdCBwNGQgaXMgbmV2ZXIgdXNlZDoNCg0KYXJjaC9wb3dlcnBj
-L2luY2x1ZGUvYXNtL2Jvb2szcy8zMi9wZ3RhYmxlLmg6I2luY2x1ZGUgDQo8YXNtLWdlbmVyaWMv
-cGd0YWJsZS1ub3BtZC5oPg0KYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2Jvb2szcy82NC9wZ3Rh
-YmxlLmg6I2luY2x1ZGUgDQo8YXNtLWdlbmVyaWMvcGd0YWJsZS1ub3A0ZC5oPg0KYXJjaC9wb3dl
-cnBjL2luY2x1ZGUvYXNtL25vaGFzaC8zMi9wZ3RhYmxlLmg6I2luY2x1ZGUgDQo8YXNtLWdlbmVy
-aWMvcGd0YWJsZS1ub3BtZC5oPg0KYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL25vaGFzaC82NC9w
-Z3RhYmxlLTRrLmg6I2luY2x1ZGUgDQo8YXNtLWdlbmVyaWMvcGd0YWJsZS1ub3A0ZC5oPg0KDQpC
-dXQgdGhhdCBtZWFucyB0aGF0IFBQQzMyIGhhdmUgcG1kIGVudHJpZXMgYW5kIFBQQzY0IGhhdmUg
-cDRkIGVudHJpZXMgLi4uDQoNCj4gDQo+ICNkZWZpbmUgUFRFX0lOREVYX1NJWkUJUFRFX1NISUZU
-DQo+ICNkZWZpbmUgUE1EX0lOREVYX1NJWkUJMA0KPiAjZGVmaW5lIFBVRF9JTkRFWF9TSVpFCTAN
-Cj4gI2RlZmluZSBQR0RfSU5ERVhfU0laRQkoMzIgLSBQR0RJUl9TSElGVCkNCj4gDQo+IFRvOg0K
-PiANCj4gI2RlZmluZSBQVEVfSU5ERVhfU0laRQlQVEVfU0hJRlQNCj4gI2RlZmluZSBQTURfSU5E
-RVhfU0laRQkoMzIgLSBQTURfU0hJRlQpDQo+ICNkZWZpbmUgUFVEX0lOREVYX1NJWkUJMA0KPiAj
-ZGVmaW5lIFBHRF9JTkRFWF9TSVpFCTANCg0KQnV0IHRoZW4geW91IGNhbid0IGFueW1vcmUgaGF2
-ZSAjZGVmaW5lIFBUUlNfUEVSX1BNRCAxIGZyb20gDQo8YXNtLWdlbmVyaWMvcGd0YWJsZS1ub3A0
-ZC5oPg0KDQo+IA0KPiBBbmQgdGhlIHJlc3Qgd2lsbCBuZWVkIGNhcmUgdG9vLiAgSSBob3BlIG1v
-dmluZyBkb3dud2FyZCBpcyBlYXNpZXINCj4gKGUuZy4gdGhlIHdhbGtlciBzaG91bGQgYWx3YXlz
-IGV4aXN0IGZvciBsb3dlciBsZXZlbHMgYnV0IG5vdCBhbHdheXMgZm9yDQo+IGhpZ2hlciBsZXZl
-bHMpLCBidXQgSSBhY3R1YWxseSBoYXZlIGxpdHRsZSBpZGVhIG9uIHdoZXRoZXIgdGhlcmUncyBh
-bnkNCj4gb3RoZXIgaW1wbGljYXRpb25zLCBzbyBwbGVhc2UgYmFyZSB3aXRoIG1lIG9uIHN0dXBp
-ZCBtaXN0YWtlcy4NCj4gDQo+IEkganVzdCBob3BlIHBnZCBsZWF2ZXMgZG9uJ3QgZXhpc3QgYWxy
-ZWFkeSwgdGhlbiBJIHRoaW5rIGl0J2xsIGJlIHNpbXBsZXIuDQo+IA0KPiBUaGFua3MsDQo+IA0K
+On Mon Apr 15, 2024 at 8:32 PM EEST, Haitao Huang wrote:
+> On Sat, 13 Apr 2024 16:34:17 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> > On Wed Apr 10, 2024 at 9:25 PM EEST, Haitao Huang wrote:
+> >> To run selftests for EPC cgroup:
+> >>
+> >> sudo ./run_epc_cg_selftests.sh
+> >>
+> >> To watch misc cgroup 'current' changes during testing, run this in a
+> >> separate terminal:
+> >>
+> >> ./watch_misc_for_tests.sh current
+> >>
+> >> With different cgroups, the script starts one or multiple concurrent S=
+GX
+> >> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
+> >> test case, which loads an enclave of EPC size equal to the EPC capacit=
+y
+> >> available on the platform. The script checks results against the
+> >> expectation set for each cgroup and reports success or failure.
+> >>
+> >> The script creates 3 different cgroups at the beginning with following
+> >> expectations:
+> >>
+> >> 1) SMALL - intentionally small enough to fail the test loading an
+> >> enclave of size equal to the capacity.
+> >> 2) LARGE - large enough to run up to 4 concurrent tests but fail some =
+if
+> >> more than 4 concurrent tests are run. The script starts 4 expecting at
+> >> least one test to pass, and then starts 5 expecting at least one test
+> >> to fail.
+> >> 3) LARGER - limit is the same as the capacity, large enough to run lot=
+s =20
+> >> of
+> >> concurrent tests. The script starts 8 of them and expects all pass.
+> >> Then it reruns the same test with one process randomly killed and
+> >> usage checked to be zero after all processes exit.
+> >>
+> >> The script also includes a test with low mem_cg limit and LARGE sgx_ep=
+c
+> >> limit to verify that the RAM used for per-cgroup reclamation is charge=
+d
+> >> to a proper mem_cg. For this test, it turns off swapping before start,
+> >> and turns swapping back on afterwards.
+> >>
+> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> ---
+> >> V11:
+> >> - Remove cgroups-tools dependency and make scripts ash compatible. =20
+> >> (Jarkko)
+> >> - Drop support for cgroup v1 and simplify. (Michal, Jarkko)
+> >> - Add documentation for functions. (Jarkko)
+> >> - Turn off swapping before memcontrol tests and back on after
+> >> - Format and style fixes, name for hard coded values
+> >>
+> >> V7:
+> >> - Added memcontrol test.
+> >>
+> >> V5:
+> >> - Added script with automatic results checking, remove the interactive
+> >> script.
+> >> - The script can run independent from the series below.
+> >> ---
+> >>  tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
+> >>  .../selftests/sgx/run_epc_cg_selftests.sh     | 275 +++++++++++++++++=
++
+> >>  .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
+> >>  3 files changed, 302 insertions(+)
+> >>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
+> >>  create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.s=
+h
+> >>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.s=
+h
+> >>
+> >> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh =20
+> >> b/tools/testing/selftests/sgx/ash_cgexec.sh
+> >> new file mode 100755
+> >> index 000000000000..cfa5d2b0e795
+> >> --- /dev/null
+> >> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
+> >> @@ -0,0 +1,16 @@
+> >> +#!/usr/bin/env sh
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >> +# Copyright(c) 2024 Intel Corporation.
+> >> +
+> >> +# Start a program in a given cgroup.
+> >> +# Supports V2 cgroup paths, relative to /sys/fs/cgroup
+> >> +if [ "$#" -lt 2 ]; then
+> >> +    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
+> >> +    exit 1
+> >> +fi
+> >> +# Move this shell to the cgroup.
+> >> +echo 0 >/sys/fs/cgroup/$1/cgroup.procs
+> >> +shift
+> >> +# Execute the command within the cgroup
+> >> +exec "$@"
+> >> +
+> >> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh =20
+> >> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> >> new file mode 100755
+> >> index 000000000000..dd56273056fc
+> >> --- /dev/null
+> >> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> >> @@ -0,0 +1,275 @@
+> >> +#!/usr/bin/env sh
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >> +# Copyright(c) 2023, 2024 Intel Corporation.
+> >> +
+> >> +TEST_ROOT_CG=3Dselftest
+> >> +TEST_CG_SUB1=3D$TEST_ROOT_CG/test1
+> >> +TEST_CG_SUB2=3D$TEST_ROOT_CG/test2
+> >> +# We will only set limit in test1 and run tests in test3
+> >> +TEST_CG_SUB3=3D$TEST_ROOT_CG/test1/test3
+> >> +TEST_CG_SUB4=3D$TEST_ROOT_CG/test4
+> >> +
+> >> +# Cgroup v2 only
+> >> +CG_ROOT=3D/sys/fs/cgroup
+> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB1
+> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB2
+> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB3
+> >> +mkdir -p $CG_ROOT/$TEST_CG_SUB4
+> >> +
+> >> +# Turn on misc and memory controller in non-leaf nodes
+> >> +echo "+misc" >  $CG_ROOT/cgroup.subtree_control && \
+> >> +echo "+memory" > $CG_ROOT/cgroup.subtree_control && \
+> >> +echo "+misc" >  $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
+> >> +echo "+memory" > $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
+> >> +echo "+misc" >  $CG_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
+> >> +if [ $? -ne 0 ]; then
+> >> +    echo "# Failed setting up cgroups, make sure misc and memory =20
+> >> cgroups are enabled."
+> >> +    exit 1
+> >> +fi
+> >> +
+> >> +CAPACITY=3D$(grep "sgx_epc" "$CG_ROOT/misc.capacity" | awk '{print $2=
+}')
+> >> +# This is below number of VA pages needed for enclave of capacity =20
+> >> size. So
+> >> +# should fail oversubscribed cases
+> >> +SMALL=3D$(( CAPACITY / 512 ))
+> >> +
+> >> +# At least load one enclave of capacity size successfully, maybe up t=
+o =20
+> >> 4.
+> >> +# But some may fail if we run more than 4 concurrent enclaves of =20
+> >> capacity size.
+> >> +LARGE=3D$(( SMALL * 4 ))
+> >> +
+> >> +# Load lots of enclaves
+> >> +LARGER=3D$CAPACITY
+> >> +echo "# Setting up limits."
+> >> +echo "sgx_epc $SMALL" > $CG_ROOT/$TEST_CG_SUB1/misc.max && \
+> >> +echo "sgx_epc $LARGE" >  $CG_ROOT/$TEST_CG_SUB2/misc.max && \
+> >> +echo "sgx_epc $LARGER" > $CG_ROOT/$TEST_CG_SUB4/misc.max
+> >> +if [ $? -ne 0 ]; then
+> >> +    echo "# Failed setting up misc limits."
+> >> +    exit 1
+> >> +fi
+> >> +
+> >> +clean_up()
+> >> +{
+> >> +    sleep 2
+> >> +    rmdir $CG_ROOT/$TEST_CG_SUB2
+> >> +    rmdir $CG_ROOT/$TEST_CG_SUB3
+> >> +    rmdir $CG_ROOT/$TEST_CG_SUB4
+> >> +    rmdir $CG_ROOT/$TEST_CG_SUB1
+> >> +    rmdir $CG_ROOT/$TEST_ROOT_CG
+> >> +}
+> >> +
+> >> +timestamp=3D$(date +%Y%m%d_%H%M%S)
+> >> +
+> >> +test_cmd=3D"./test_sgx -t unclobbered_vdso_oversubscribed"
+> >> +
+> >> +PROCESS_SUCCESS=3D1
+> >> +PROCESS_FAILURE=3D0
+> >> +
+> >> +# Wait for a process and check for expected exit status.
+> >> +#
+> >> +# Arguments:
+> >> +#	$1 - the pid of the process to wait and check.
+> >> +#	$2 - 1 if expecting success, 0 for failure.
+> >> +#
+> >> +# Return:
+> >> +#	0 if the exit status of the process matches the expectation.
+> >> +#	1 otherwise.
+> >> +wait_check_process_status() {
+> >> +    pid=3D$1
+> >> +    check_for_success=3D$2
+> >> +
+> >> +    wait "$pid"
+> >> +    status=3D$?
+> >> +
+> >> +    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq 0=
+ =20
+> >> ]; then
+> >> +        echo "# Process $pid succeeded."
+> >> +        return 0
+> >> +    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status -ne=
+ =20
+> >> 0 ]; then
+> >> +        echo "# Process $pid returned failure."
+> >> +        return 0
+> >> +    fi
+> >> +    return 1
+> >> +}
+> >> +
+> >> +# Wait for a set of processes and check for expected exit status
+> >> +#
+> >> +# Arguments:
+> >> +#	$1 - 1 if expecting success, 0 for failure.
+> >> +#	remaining args - The pids of the processes
+> >> +#
+> >> +# Return:
+> >> +#	0 if exit status of any process matches the expectation.
+> >> +#	1 otherwise.
+> >> +wait_and_detect_for_any() {
+> >> +    check_for_success=3D$1
+> >> +
+> >> +    shift
+> >> +    detected=3D1 # 0 for success detection
+> >> +
+> >> +    for pid in $@; do
+> >> +        if wait_check_process_status "$pid" "$check_for_success"; the=
+n
+> >> +            detected=3D0
+> >> +            # Wait for other processes to exit
+> >> +        fi
+> >> +    done
+> >> +
+> >> +    return $detected
+> >> +}
+> >> +
+> >> +echo "# Start unclobbered_vdso_oversubscribed with SMALL limit, =20
+> >> expecting failure..."
+> >> +# Always use leaf node of misc cgroups
+> >> +# these may fail on OOM
+> >> +./ash_cgexec.sh $TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log =
+=20
+> >> 2>&1
+> >> +if [ $? -eq 0 ]; then
+> >> +    echo "# Fail on SMALL limit, not expecting any test passes."
+> >> +    clean_up
+> >> +    exit 1
+> >> +else
+> >> +    echo "# Test failed as expected."
+> >> +fi
+> >> +
+> >> +echo "# PASSED SMALL limit."
+> >> +
+> >> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with=
+ =20
+> >> LARGE limit,
+> >> +        expecting at least one success...."
+> >> +
+> >> +pids=3D""
+> >> +for i in 1 2 3 4; do
+> >> +    (
+> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd =20
+> >> >cgtest_large_positive_$timestamp.$i.log 2>&1
+> >> +    ) &
+> >> +    pids=3D"$pids $!"
+> >> +done
+> >> +
+> >> +
+> >> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
+> >> +    echo "# PASSED LARGE limit positive testing."
+> >> +else
+> >> +    echo "# Failed on LARGE limit positive testing, no test passes."
+> >> +    clean_up
+> >> +    exit 1
+> >> +fi
+> >> +
+> >> +echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with=
+ =20
+> >> LARGE limit,
+> >> +        expecting at least one failure...."
+> >> +pids=3D""
+> >> +for i in 1 2 3 4 5; do
+> >> +    (
+> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd =20
+> >> >cgtest_large_negative_$timestamp.$i.log 2>&1
+> >> +    ) &
+> >> +    pids=3D"$pids $!"
+> >> +done
+> >> +
+> >> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
+> >> +    echo "# PASSED LARGE limit negative testing."
+> >> +else
+> >> +    echo "# Failed on LARGE limit negative testing, no test fails."
+> >> +    clean_up
+> >> +    exit 1
+> >> +fi
+> >> +
+> >> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with=
+ =20
+> >> LARGER limit,
+> >> +        expecting no failure...."
+> >> +pids=3D""
+> >> +for i in 1 2 3 4 5 6 7 8; do
+> >> +    (
+> >> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd =20
+> >> >cgtest_larger_$timestamp.$i.log 2>&1
+> >> +    ) &
+> >> +    pids=3D"$pids $!"
+> >> +done
+> >> +
+> >> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
+> >> +    echo "# Failed on LARGER limit, at least one test fails."
+> >> +    clean_up
+> >> +    exit 1
+> >> +else
+> >> +    echo "# PASSED LARGER limit tests."
+> >> +fi
+> >> +
+> >> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with=
+ =20
+> >> LARGER limit,
+> >> +      randomly kill one, expecting no failure...."
+> >> +pids=3D""
+> >> +for i in 1 2 3 4 5 6 7 8; do
+> >> +    (
+> >> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd =20
+> >> >cgtest_larger_kill_$timestamp.$i.log 2>&1
+> >> +    ) &
+> >> +    pids=3D"$pids $!"
+> >> +done
+> >> +random_number=3D$(awk 'BEGIN{srand();print int(rand()*5)}')
+> >> +sleep $((random_number + 1))
+> >> +
+> >> +# Randomly select a process to kill
+> >> +# Make sure usage counter not leaked at the end.
+> >> +RANDOM_INDEX=3D$(awk 'BEGIN{srand();print int(rand()*8)}')
+> >> +counter=3D0
+> >> +for pid in $pids; do
+> >> +    if [ "$counter" -eq "$RANDOM_INDEX" ]; then
+> >> +        PID_TO_KILL=3D$pid
+> >> +        break
+> >> +    fi
+> >> +    counter=3D$((counter + 1))
+> >> +done
+> >> +
+> >> +kill $PID_TO_KILL
+> >> +echo "# Killed process with PID: $PID_TO_KILL"
+> >> +
+> >> +any_failure=3D0
+> >> +for pid in $pids; do
+> >> +    wait "$pid"
+> >> +    status=3D$?
+> >> +    if [ "$pid" !=3D "$PID_TO_KILL" ]; then
+> >> +        if [ $status -ne 0 ]; then
+> >> +	    echo "# Process $pid returned failure."
+> >> +            any_failure=3D1
+> >> +        fi
+> >> +    fi
+> >> +done
+> >> +
+> >> +if [ $any_failure -ne 0 ]; then
+> >> +    echo "# Failed on random killing, at least one test fails."
+> >> +    clean_up
+> >> +    exit 1
+> >> +fi
+> >> +echo "# PASSED LARGER limit test with a process randomly killed."
+> >> +
+> >> +MEM_LIMIT_TOO_SMALL=3D$((CAPACITY - 2 * LARGE))
+> >> +
+> >> +echo "$MEM_LIMIT_TOO_SMALL" > $CG_ROOT/$TEST_CG_SUB2/memory.max
+> >> +if [ $? -ne 0 ]; then
+> >> +    echo "# Failed creating memory controller."
+> >> +    clean_up
+> >> +    exit 1
+> >> +fi
+> >> +
+> >> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with=
+ =20
+> >> LARGE EPC limit,
+> >> +        and too small RAM limit, expecting all failures...."
+> >> +# Ensure swapping off so the OOM killer is activated when mem_cgroup =
+=20
+> >> limit is hit.
+> >> +swapoff -a
+> >> +pids=3D""
+> >> +for i in 1 2 3 4; do
+> >> +    (
+> >> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd =20
+> >> >cgtest_large_oom_$timestamp.$i.log 2>&1
+> >> +    ) &
+> >> +    pids=3D"$pids $!"
+> >> +done
+> >> +
+> >> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
+> >> +    echo "# Failed on tests with memcontrol, some tests did not fail.=
+"
+> >> +    clean_up
+> >> +    swapon -a
+> >> +    exit 1
+> >> +else
+> >> +    swapon -a
+> >> +    echo "# PASSED LARGE limit tests with memcontrol."
+> >> +fi
+> >> +
+> >> +sleep 2
+> >> +
+> >> +USAGE=3D$(grep '^sgx_epc' "$CG_ROOT/$TEST_ROOT_CG/misc.current" | awk=
+ =20
+> >> '{print $2}')
+> >> +if [ "$USAGE" -ne 0 ]; then
+> >> +    echo "# Failed: Final usage is $USAGE, not 0."
+> >> +else
+> >> +    echo "# PASSED leakage check."
+> >> +    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
+> >> +fi
+> >> +clean_up
+> >> +echo "# done."
+> >> diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh =20
+> >> b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
+> >> new file mode 100755
+> >> index 000000000000..1c9985726ace
+> >> --- /dev/null
+> >> +++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
+> >> @@ -0,0 +1,11 @@
+> >> +#!/usr/bin/env sh
+> >> +# SPDX-License-Identifier: GPL-2.0
+> >> +# Copyright(c) 2023, 2024 Intel Corporation.
+> >> +
+> >> +if [ -z "$1" ]; then
+> >> +    echo "No argument supplied, please provide 'max', 'current', or =
+=20
+> >> 'events'"
+> >> +    exit 1
+> >> +fi
+> >> +
+> >> +watch -n 1 'find /sys/fs/cgroup -wholename "*/test*/misc.'$1'" -exec =
+\
+> >> +    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
+> >
+> > I'll compile the kernel with this and see what happens!
+> >
+> > Have you tried to run the test suite from top-level? This is just a
+> > sanity check. I've few times forgot to do this so thus asking :-)
+> >
+> > BR, Jarkko
+> >
+>
+> I added following on =20
+> https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v11_plus
+> Please update to run from top-level.
+>
+> --- a/tools/testing/selftests/sgx/Makefile
+> +++ b/tools/testing/selftests/sgx/Makefile
+> @@ -20,7 +20,8 @@ ENCL_LDFLAGS :=3D -Wl,-T,test_encl.lds,--build-id=3Dnon=
+e
+>
+>   ifeq ($(CAN_BUILD_X86_64), 1)
+>   TEST_CUSTOM_PROGS :=3D $(OUTPUT)/test_sgx
+> -TEST_FILES :=3D $(OUTPUT)/test_encl.elf
+> +TEST_FILES :=3D $(OUTPUT)/test_encl.elf ash_cgexec.sh
+> +TEST_PROGS :=3D run_epc_cg_selftests.sh
+>
+>   all: $(TEST_CUSTOM_PROGS) $(OUTPUT)/test_encl.elf
+>   endif
+>
+> ...
+>
+> index dd56273056fc..ba0451fc16bc 100755
+> --- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> @@ -2,6 +2,14 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   # Copyright(c) 2023, 2024 Intel Corporation.
+>
+> +
+> +# Kselftest framework requirement - SKIP code is 4.
+> +ksft_skip=3D4
+> +if [ "$(id -u)" -ne 0 ]; then
+> +    echo "SKIP: SGX Cgroup tests need root priviledges."
+> +    exit $ksft_skip
+> +fi
+> +
+>   TEST_ROOT_CG=3Dselftest
+>
+> Thanks
+> Haitao
+
+OK, I'll move this mail to my TODO folder and try to get it
+tested asap.
+
+BR, Jarkko
 
