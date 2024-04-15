@@ -1,78 +1,79 @@
-Return-Path: <linux-kernel+bounces-145966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C4D8A5DA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4F98A5DA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 00:14:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04D561C20E14
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:13:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F12A1C20AE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 22:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1E3157A6B;
-	Mon, 15 Apr 2024 22:13:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B65157E62;
+	Mon, 15 Apr 2024 22:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UOJTNbDw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IpT0mfL9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7781A25601;
-	Mon, 15 Apr 2024 22:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B85725601;
+	Mon, 15 Apr 2024 22:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713219232; cv=none; b=avFesKSM+HiQZqEZgSPjAKy0XG4CaxeCIdlAi8Oog3CWaOGNyRMeDlMxu4ISMVDbmI37WCA4fQ7laihH23fFYk3mQWPBPs+KfLSyCST22wa7CLWRCs/d6GW+HTfpiD4Tbsa2h264kMCGEvG2GbN7jvet8z0T20IyFFouOcIAl38=
+	t=1713219242; cv=none; b=W5kUhSI4bAcdGq9y07lEzjHsl07JLYXyenip6JP8aFrPHHo18MgILaqFTnzpdzukYWhIuZil1NW7s9pd8uuDr92imiEGWMQJssSGArNt6+FZ59imi2d3HmbhS9umeCS0DSfiaVATtRcjgqfC/AY2xsZv87AEOfjnk7ax6bYu43Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713219232; c=relaxed/simple;
-	bh=M90vJ3MsH0dryaDQi6o46A1Gs2LvpeUpZqmtQOfzufg=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=YW5iwobQ2/YxqP2cYAd6KEBgzczQ2i1MbfTpQrlCUFRs9nxLACJZBS16EMsWnYEjyy3sYQUr5UdXF6OzVRdF6eSfLT9oXun5oV9aknnt/eHWrQBGWbV7mkkOqIKQju/XVSLqTG8UYHUCW+II+sxCYLiyUgpYrE9hVBygCc9qggo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UOJTNbDw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EE72CC113CC;
-	Mon, 15 Apr 2024 22:13:51 +0000 (UTC)
+	s=arc-20240116; t=1713219242; c=relaxed/simple;
+	bh=26oxSnJXJHMA9f77hvIZs4zBgyNf1e+BFsA+b05GPLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kai6ElpQIV/PLsHpj1BqLlegzVYfFZwoZlp6BPr2n5PSfNQXK+DfBrYN0JOOa+bJV+V1P7rsQY6Qh4s2UPLPpuCU7GYlW2Y1RDy6gyyRXPF3vahzUgAfff6YEdzx3qxzGAZIXYDDu3+zUr+I4AEHwZ60x8vUb1X+/66gwk4lUNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IpT0mfL9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B23DC113CC;
+	Mon, 15 Apr 2024 22:14:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713219232;
-	bh=M90vJ3MsH0dryaDQi6o46A1Gs2LvpeUpZqmtQOfzufg=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=UOJTNbDwAxlzkEsA7mRjxGVUNeUPynvyrOWD1UxmZKUKyg1/IsmunY2GJuRo7NtGS
-	 /PKlCfKoLq0qLdonR3YAoh3MCUfkObyGgAyi5uuV+9QTVCVx5zvsvplQOfmZwwu03Q
-	 q5+eoeCC/mkV7HjcexEO1b3PAqCO0AKWSQM0fgtQzYOua1hNvyuXlTUHIGqXlyubyW
-	 gsUVbBI7xOeCUiYfVRZGqvWbUwR1eLRZ5JKllkFmto73FrvBQWB7RFalx0outzULLT
-	 vsl81jZniKR5s/ej+PeSBX1q2Onbp3MJxfo5dsBTJn/BMJyy9OuCVEavjwFma8PKco
-	 H/Hxq3cyoEyWg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DCC7CC395FE;
-	Mon, 15 Apr 2024 22:13:51 +0000 (UTC)
-Subject: Re: [GIT PULL] 3rd round of NFSD fixes for v6.9-rc
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <Zh2WGRLG3mA92OxN@tissot.1015granger.net>
-References: <Zh2WGRLG3mA92OxN@tissot.1015granger.net>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <Zh2WGRLG3mA92OxN@tissot.1015granger.net>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.9-3
-X-PR-Tracked-Commit-Id: f488138b526715c6d2568d7329c4477911be4210
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 96fca68c4fbf77a8185eb10f7557e23352732ea2
-Message-Id: <171321923188.15775.12825885354121277640.pr-tracker-bot@kernel.org>
-Date: Mon, 15 Apr 2024 22:13:51 +0000
-To: Chuck Lever <chuck.lever@oracle.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Jeff Layton <jlayton@kernel.org>, linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+	s=k20201202; t=1713219241;
+	bh=26oxSnJXJHMA9f77hvIZs4zBgyNf1e+BFsA+b05GPLo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IpT0mfL9CIAaotexVhJ5qL8Wb3XB+XI06E2y/D4fLz76hjOtuii4sF2oTbHIqUBJa
+	 RjTWMci0+t7p3Bt6VpUmx/t01mj+f8XbN/V4yUENDWSdBOTqtNsbX9PB2i0eiO811b
+	 F42uwZ6zYBzajn2KPaZp0fmfglCvYz7j1LNO/EPS0Dz5qz0fB8Lk3dmx7WjTskqGiQ
+	 MisFQcGmp8zshOjimDZ8pu2ZZ4YPBUd78TPHFsqlYSYji2JpNDHvKUuEUGB8v3G3Fk
+	 OUsP8iEIIYxjhznQcceH8b2h+HaHRKD9bRnuOjlTBN/jkBCVUSWTohfiCQOKgQTBqX
+	 ChXDUqzsAj1ew==
+Date: Tue, 16 Apr 2024 00:13:58 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Eddie James <eajames@linux.ibm.com>
+Cc: linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, alistair@popple.id.au, 
+	joel@jms.id.au, jk@ozlabs.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, lakshmiy@us.ibmcom
+Subject: Re: [PATCH v2 26/31] i2c: fsi: Improve formatting
+Message-ID: <x4kcinmi6ocu2jkefddlf4rvcblh77rsrrahdbi4sfzrbivka5@xodcl7r6ssh7>
+References: <20240226165321.91976-1-eajames@linux.ibm.com>
+ <20240226165321.91976-27-eajames@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240226165321.91976-27-eajames@linux.ibm.com>
 
-The pull request you sent on Mon, 15 Apr 2024 17:03:21 -0400:
+On Mon, Feb 26, 2024 at 10:53:16AM -0600, Eddie James wrote:
+> No functional change.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.9-3
+Lazy log, lazy log, a coder’s brief epilogue.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/96fca68c4fbf77a8185eb10f7557e23352732ea2
+Please explain.
 
-Thank you!
+I'm not going any further at reviewing this series. Please, make
+sure in v3 to write proper logs so that reviewers can understand
+what you are doing before reading the code. Cleanup, run
+checkpatch, etc. etc.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+Andi
 
