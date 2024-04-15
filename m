@@ -1,105 +1,119 @@
-Return-Path: <linux-kernel+bounces-144584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 813078A481E
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:33:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C0F58A4820
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2154E1F21CC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:33:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40EB41F21C3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 06:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D29B517547;
-	Mon, 15 Apr 2024 06:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA84118E1E;
+	Mon, 15 Apr 2024 06:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AEeFL5Rj"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="q6qkveo7"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77DF14689
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 06:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC231EB35;
+	Mon, 15 Apr 2024 06:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713162810; cv=none; b=RqRMzm6TWQEUE2sH8NNHnKPl/5SiEEC4kdWp9Tu90H2S1HR8HrKlD+AKqvvK+DdlZnvd0JOlC4Xgbe66XZC9hf12C7Exel0HL/aKlTJnvJc3BfvHKI933if9dy0giMDWbAKO0xyh5ozacRGkLGi5Atq2wCnVtYp6iKcIBzx3HQ0=
+	t=1713162837; cv=none; b=gGsQulA9QPTVXtEw3oCgHa+t2M5gFFPQRhQ5RCVuexAlLIpR3FKJcmixT1PapuChadghmuyPxfcZ9ZXdDfVVvl+M7vLnbprt4aqfjYSqsHlAfFQbELbaBm0M4hKMvZSukeu7OBz56e0gngW4Dn1fE4CqK4qw0f+VJZ6InzVVeaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713162810; c=relaxed/simple;
-	bh=gTSCRtiukqL2BYeOwjzNg/l21VRZzAe9//nU1tl1I5Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KVZZqMeTRFiKxDgu9q/lDdij0aUR2J2FTSkpUZs3wbSl7koq1cnqQJXflZfSX+7ojXRB3uhaFESdy3qr9qPmbwvFYzvBfJ5oXCmKhBXBiDZPVxSfvwagWQmYqXylOQPeE2hvfhXIelqfvYtUFkhtHWlA0Nv83otih+iWpJtn+os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AEeFL5Rj; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so3748026a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 14 Apr 2024 23:33:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713162807; x=1713767607; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kcK6IuttindIK0ibbk1Eks/0diZZJiqcDdWxbvTVosU=;
-        b=AEeFL5Rj/WOd47L9xps5Ied29pZzRsk72wqqr6IFLkuXs+MPK1Pz0uw2Kzv3pXqepJ
-         PQM/HSzuuyekS4psRRNZJSyO6Vv/ZbuntMgMmM4xfEofAlEycG4FzVwsqCLpzYCC98AS
-         6xAkuaT961XCzwjG1pdBlKPqpz+S3wgOzXKv/s1EIq1WexeoTCLG0XHkHTfsZlvikQlJ
-         CzRkck0xE5nFHijiW4zzlRm2Dg5Uv/KXBakMIbKzfZm4Ee3tib2TMWa7KebpGbuAjX/s
-         5GlTpJ90oYbhNvu+SbMe9jMGa8xQSQQdqTjeq67Fvpp6jibsV2wTimKO2fCWbJwYJ9oi
-         RZNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713162807; x=1713767607;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kcK6IuttindIK0ibbk1Eks/0diZZJiqcDdWxbvTVosU=;
-        b=N/HLvwr9CduMtq9Mf431zK7KbAsDgg8h+uOOAR6AseerNC+cW+1zyFajYs8lwMY3vG
-         vbGzcqv1yTyQi8PSRWgbsGHvldd9uTfAN7APVxNXA+SZ/QS3JRni0lXXGU+OBMod4dsb
-         u6M5ldgPPtV2nvhXAVtTQ4W4f9J06r9dHUGGqbJCDcOFgVLqFOgvyJhaLk/8Hp1+mDtB
-         htG1si0i79PApVtJjlKl3MBWQRzekJDCNQrA047zMdZ+RguTeTHpYBmm5pUVnzujt394
-         a9PaL843apjn8UtRYIEPkPp/xtq8VTV8EGDWPuPzUwGDhGqbcNsWicy1MS8BhdST7xgL
-         oEUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIGLBTNrVLJhib6k9XBOapNgPjfpQWeRIyThnTlUOdLgfi9qCio585UjVJ7EUb9N4FOg5bhv8Z2Rcpn3dEe5XcfFG9FwtTGP9m1dnd
-X-Gm-Message-State: AOJu0YzAuZpvyhTnsifBgvYpEcZcphXu4JAJAcdK/EayTs2lhdmJw+wa
-	l25ZWuJvbY4Aj+iB+sjPuEQpCa/Eh1DCiBLpdSbwN1hmGFtyKXJvJWsUy38zGs4=
-X-Google-Smtp-Source: AGHT+IGvpMtw3rMInVwgGIn+k3i/tzXT0C81uzRme6mL6qXm7+7PCc3jMvdKuafc3RxvzZ5W19cVzQ==
-X-Received: by 2002:a50:8acf:0:b0:56b:fd17:3522 with SMTP id k15-20020a508acf000000b0056bfd173522mr5621220edk.14.1713162806745;
-        Sun, 14 Apr 2024 23:33:26 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id u5-20020aa7d985000000b0057000a2cb5bsm3225234eds.18.2024.04.14.23.33.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 23:33:26 -0700 (PDT)
-Date: Mon, 15 Apr 2024 09:33:22 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: linan666@huaweicloud.com
-Cc: richard@nod.at, miquel.raynal@bootlin.com, vigneshr@ti.com,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-	houtao1@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2] ubi: block: fix memleak in ubiblock_create()
-Message-ID: <79703e8b-ce3a-4407-9750-05f9202039d4@moroto.mountain>
-References: <20231208074629.1656356-1-linan666@huaweicloud.com>
+	s=arc-20240116; t=1713162837; c=relaxed/simple;
+	bh=t4QhWflZmb3a6EAAnOubb1Rw1MiqOWkmdlzFU3Iyd2A=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=J5Rs5GGsDN3IZmazBArFT//UGHf8NMoiXNt1Y+WeqS5kVY7YOtpR2Q19VOd7NXshuU0Ctg+MAJC4YpyJkd7CSdanmAf1pxRG0Ceaw77qkwgaeW9/2XuZf4hJLPCA8ewk6T+YUkl1N4bcdl+2WTCZrTVIF0xHJ7xWLN9bANj6Q6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=q6qkveo7; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43F6XmYK075291;
+	Mon, 15 Apr 2024 01:33:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713162828;
+	bh=53CrcW3/BJQjl3Y8bJu9EfeREgM50todFjEwoG6XlvU=;
+	h=From:To:CC:Subject:Date;
+	b=q6qkveo7NjBl3j2dbgdUL+Ps2JSiaPXaYeSp9pzTDxUrAc38F3F6bTXb07gaE/X0G
+	 42cgZVRfYFFgArfHbMRznkCqghReQj7GyZYi10DOtQ4ceBedEtVY/BhMnNIhtnNU6R
+	 J7F4zYpuOxmddZqD7SIrJjTYarGNdLLSI/nLnyuk=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43F6Xmb1024199
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 15 Apr 2024 01:33:48 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 15
+ Apr 2024 01:33:48 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 15 Apr 2024 01:33:48 -0500
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (udit-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.18])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43F6Xidb065992;
+	Mon, 15 Apr 2024 01:33:45 -0500
+From: Udit Kumar <u-kumar1@ti.com>
+To: <nm@ti.com>, <vigneshr@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+CC: <kristo@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
+        <conor+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Udit Kumar
+	<u-kumar1@ti.com>
+Subject: [PATCH 0/4] Arranging mux and macro update
+Date: Mon, 15 Apr 2024 12:03:25 +0530
+Message-ID: <20240415063329.3286600-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208074629.1656356-1-linan666@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Dec 08, 2023 at 03:46:29PM +0800, linan666@huaweicloud.com wrote:
-> From: Li Nan <linan122@huawei.com>
-> 
-> If idr_alloc() fails, dev->gd will be put after goto out_cleanup_disk in
-> ubiblock_create(), but dev->gd has not been assigned yet at this time, and
-> 'gd' will not be put anymore. Fix it by putting 'gd' directly.
-> 
+I need to resend this, as previous git send-email
+just sent cover note and timeout after that.
 
-There is another invalid reference to dev->gd if blk_mq_alloc_tag_set()
-fails.
+This series aims to align ordering of pin muxes in following order
+main_pmx0/1, wkup_pmx0/1/2/3 along with two fixes for 784s4-evm
+and am69 for UART pin type.
 
-	dev_err(disk_to_dev(dev->gd), "blk_mq_alloc_tag_set failed");
-                            ^^^^^^^
+Also, updating pin mux macro of J784S4 SOC instead of J721S2 for 784s4-evm
+and am69 at few places.
 
-regards,
-dan carpenter
+Sorry for this cosmetic push, but usages of pin muxes was not consistent
+across the platforms, and even for j784s4-evm wkup_pmx1 was coded at two
+place.
+
+For fixes, these errors should be caught during review but missed due to
+cross reference is taken from tool's output.
+
+Note to self, don't always rely on tool's output while reviewing the patch.
+
+Boot logs
+https://gist.github.com/uditkumarti/089777a8c31482a67be35aa0ab3cefe9 
+
+
+
+Udit Kumar (4):
+  arm64: dts: ti: k3-j784s4-evm: Arranging mux and macro update
+  arm64: dts: ti: k3-am69-sk: Fix UART pin type and macro update
+  arm64: dts: ti: k3-j7200: Arranging pin mux in order
+  arm64: dts: ti: k3-j721s2: Arranging pin mux in order
+
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts         |  12 +-
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 132 +++++++++---------
+ arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   |  31 ++--
+ .../dts/ti/k3-j721s2-common-proc-board.dts    |  30 ++--
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  |  32 ++---
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts      | 116 ++++++++-------
+ 6 files changed, 175 insertions(+), 178 deletions(-)
+
+-- 
+2.34.1
 
 
