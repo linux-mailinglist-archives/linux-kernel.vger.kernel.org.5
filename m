@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-145053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3222C8A4ED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:21:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9EE48A4EDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:21:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDA7E1F23BAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:21:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78BE11F22E0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:21:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E366BFB3;
-	Mon, 15 Apr 2024 12:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377746DCF5;
+	Mon, 15 Apr 2024 12:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JvVnKv4A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rSrP0dWT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340B8679F3;
-	Mon, 15 Apr 2024 12:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799A16D1B5;
+	Mon, 15 Apr 2024 12:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713183646; cv=none; b=IsT6SNhZdGEaCbjx+rH1pVzKiUPwIgzgy3Igo/LYXjLFq9f6cJKUELaBGvTQvl1sgV/B+o65kyLX5CNG5W7cX1KWbSbYguBQa8lNtcpvqXidothEoFih6xtofLvKbFj0vtVdC6Dkp3vTnxZ0PtKTsQSektlkclGyIjMFjZvea5M=
+	t=1713183648; cv=none; b=U98HmTXd72ftqLnemWmStu+D6GsnXoKgED/MvbYiqRs1dFkEthm9TH4e9DjwZhIa/1U0urojYNGetufgY8CIsJ1ONC2JxS7DqmN36yhzgQwqPgzPrGxmd4bhfSp+M/Xpb471A9duaOPLrzXXH4WaU5Xu/y6OmvofVQQBg1j8NrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713183646; c=relaxed/simple;
-	bh=IW1/5zKnRf0vw8lfNR7D2qM5w54xu3yNJIPDeRFonXI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KPDvdPyIpvRuZY+D/rU6LujgfHBYtZ2I5aQmQp/lDC/czmnyqVqUl4Fe7+b/EnIzkkn7UZ0fQMXIUEKSlsfC9EPVOsQ68o8MouqWZ7VZ6yXjSrX4RWlBYPptehE/VrERXXHz6IYyo9YTL0qty4wCpgeIa9/ToG+usWxYC+A6Pp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JvVnKv4A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3B97C2BD11;
-	Mon, 15 Apr 2024 12:20:43 +0000 (UTC)
+	s=arc-20240116; t=1713183648; c=relaxed/simple;
+	bh=9rWj91Ui3yXdrYdI/xJnn3eqhuI+T44/0BgWu41vBio=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=mjjR0whXUB7c3Kru21/N4HPBDOh4T//jYlu8zQt8GM+x3uv9WeWAVKEd6pklE+RCIYTPO9GpjEoVHR0eS5XHwG3x/OG7ShNi5GTyd4YtDUKeJnmmTzVGYvmRj0mMuOo6hOfLraQ1vxtg9N77rKnEn/1c3p0P043mwMgSR+1NghI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rSrP0dWT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28CCFC4AF07;
+	Mon, 15 Apr 2024 12:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713183645;
-	bh=IW1/5zKnRf0vw8lfNR7D2qM5w54xu3yNJIPDeRFonXI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=JvVnKv4AsPCeRMiEg6D4oYpvvDe2nSTFgYOiHNrlrifk56E7NMCpMsX4UZmoLtQDL
-	 j/QBUMPyJLDS32sKkOTrl/BaPpq2HQvqkeBiddUjEyKw2lhz86S/N4QvJfiEFwxRTd
-	 ljrITaHn2FIm8du8d6QJKQCwvlbYFTWBRJJOKgsve0shOShydllGXvNmiZU3cUaZCY
-	 PFWjcIwP166IZvxjlRvVyy2i0oJoN1zQJvbmX/OfAr+egklRCgBXknOuZxbBdzl5G9
-	 rZZr7EP3uZ/ktq8b5/AuOAVy/GjXvaAMJFDJMxjY5yWnKVoPgqZlnFH2jdSCvrfoll
-	 Cc0ANhX7thanw==
+	s=k20201202; t=1713183648;
+	bh=9rWj91Ui3yXdrYdI/xJnn3eqhuI+T44/0BgWu41vBio=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=rSrP0dWTMu2/IdKx7qvepoKhAnZ7EOl7KGN9Nh/Hq9qybD2qbUBwiDqqbEiLlvdJH
+	 bBzACt7BoWDybOEUMOq4C3MJcjoCuhq5567XE1yXGNv1DkpBds7ZzvAnwaHzrFjXeH
+	 /9CA62207RipTTXueygEh1xelWDTACJah/x/3AbQ6R8xFAZ4OLJK/EI94lW0VP0Rz6
+	 NJrXuFN6CYP1YHqq9NbxyrlAKoJaA0gPVKh/xod14ayxUkh0YdqhVQ5gpx9YOMcLse
+	 jd0WyIBPS8hpm1bPZqPHLKyMH7Q13Avdjn3f8aGR8urL4iOIkfyRCqZvN6iFQT99CN
+	 g5bh1Nfz7PRWg==
 From: Arnd Bergmann <arnd@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
@@ -48,10 +49,12 @@ Cc: Arnd Bergmann <arnd@arndb.de>,
 	Kees Cook <keescook@chromium.org>,
 	linux-kbuild@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/6] [v3] kbuild: enable more warnings by default
-Date: Mon, 15 Apr 2024 14:20:31 +0200
-Message-Id: <20240415122037.1983124-1-arnd@kernel.org>
+Subject: [PATCH 1/6] [v3] kbuild: turn on -Wextra by default
+Date: Mon, 15 Apr 2024 14:20:32 +0200
+Message-Id: <20240415122037.1983124-2-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240415122037.1983124-1-arnd@kernel.org>
+References: <20240415122037.1983124-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,44 +65,56 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Hi Andrew,
+The -Wextra option controls a number of different warnings that differ
+slightly by compiler version. Some are useful in general, others are
+better left at W=1 or higher. Based on earlier work, the ones that
+should be disabled by default are left for the higher warning levels
+already, and a lot of the useful ones have no remaining output when
+enabled.
 
-All the warning fixes I sent for these warnings have been merged into
-mainline or linux-next, so let's turn them on by default.
+Move the -Wextra option up into the set of default-enabled warnings
+and just rely on the individual ones getting disabled as needed.
 
-Since some of the bugfixes are still in flight in maintainer trees,
-I have rebased this on top of the mm/mm-nonmm-unstable branch
-for the purpose of merging these during the second half of the
-6.10 merge window.
+The -Wunused warning was always grouped with this, so turn it on
+by default as well, except for the -Wunused-parameter warning that
+really has no value at all for the kernel since many interfaces
+have intentionally unused arguments.
 
-I did thorough testing of the changes on x86, arm64 and arm, as
-well as allmodconfig testing across all architectures and compilers.
-It is still likely that this will catch more warnings that show
-up in configurations I did not test, or in newly merged code,
-and I plan to send fixes for those as well.
+Acked-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ scripts/Makefile.extrawarn | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-I also sent patches to enable -Wunused-const-variable and
--Wtautological-constant-out-of-range-compare, but those still
-need additional bugfixes to get merged first.
-
-Arnd Bergmann (6):
-  [v3] kbuild: turn on -Wextra by default
-  [v3] kbuild: remove redundant extra warning flags
-  [v3] kbuild: turn on -Wrestrict by default
-  [v3] kbuild: enable -Wformat-truncation on clang
-  [v3] kbuild: enable -Wcast-function-type-strict unconditionally
-  [v3] kbuild: enable -Wstringop-truncation globally
-
- scripts/Makefile.extrawarn | 30 +++++++++++-------------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
-
+diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+index c5af566e911a..c247552c192c 100644
+--- a/scripts/Makefile.extrawarn
++++ b/scripts/Makefile.extrawarn
+@@ -82,12 +82,14 @@ KBUILD_CFLAGS += $(call cc-option,-Werror=designated-init)
+ # Warn if there is an enum types mismatch
+ KBUILD_CFLAGS += $(call cc-option,-Wenum-conversion)
+ 
++KBUILD_CFLAGS += -Wextra
++KBUILD_CFLAGS += -Wunused
++
+ #
+ # W=1 - warnings which may be relevant and do not occur too often
+ #
+ ifneq ($(findstring 1, $(KBUILD_EXTRA_WARN)),)
+ 
+-KBUILD_CFLAGS += -Wextra -Wunused -Wno-unused-parameter
+ KBUILD_CFLAGS += $(call cc-option, -Wrestrict)
+ KBUILD_CFLAGS += -Wmissing-format-attribute
+ KBUILD_CFLAGS += -Wold-style-definition
+@@ -190,6 +192,7 @@ else
+ 
+ # The following turn off the warnings enabled by -Wextra
+ KBUILD_CFLAGS += -Wno-sign-compare
++KBUILD_CFLAGS += -Wno-unused-parameter
+ 
+ endif
+ 
 -- 
 2.39.2
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
 
