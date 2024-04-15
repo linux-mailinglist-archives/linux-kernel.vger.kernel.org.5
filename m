@@ -1,137 +1,256 @@
-Return-Path: <linux-kernel+bounces-144551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F9948A47AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:46:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9114B8A47AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:49:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8E5FB2085C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:46:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B458E1C21791
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA5D6139;
-	Mon, 15 Apr 2024 05:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936156139;
+	Mon, 15 Apr 2024 05:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aPBRPXRu"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="To7LlRJW"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D1C4C8D;
-	Mon, 15 Apr 2024 05:45:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2558763A5;
+	Mon, 15 Apr 2024 05:49:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713159956; cv=none; b=FGO/p/0Z1gKX9s6dflxdNAzVUoqCy4ag5tU3pRk0eU12xurjQM7if7+FV1jAyFUvtGfokzq4P/3EFKw+jLSNpEPrp/Qlc3mS6CZQD7Xt6o1TjHdq2jupZW27DcPy7Aobh0EinFGx9HW15SjMBRVQTdKRgx07rgknZUr/ZKrQjr0=
+	t=1713160156; cv=none; b=bxL/hGBh7xRZgf/UlvcadhOOO+Fp/lStAd2R8sjvMdiH+XYwUpiBLNF+lZ4ZI44JvHwNSFsUjeVjC5rCwTr5hc8+A88lTW+Ct8zDqe0otfS8LccA/l2N4DcG8pWY983BTlgUDqd3ymkxACsJQ+21F+RNEqWbpzZqvkkqvTGaPys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713159956; c=relaxed/simple;
-	bh=qFieUhNtf7gY5QwzUiRLdl7pLkGjb3T/77XEctVZtHQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VdIRQLDK3eHRyiOhLPOLPl1A10E5RDfA8MPK4pAm/7VngjAvVVmUeygSQQgDPOFgYu4ZVh+cWFJeu5YxE96Yd6bU/fhVY7GonNejOehH5xABCwlyO/saHM9o6MzV4yuEMuOECdlHKz5h+AQ6+PquQ2k7N8rmZ29C/SanpA1jRTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aPBRPXRu; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e5715a9ebdso21685085ad.2;
-        Sun, 14 Apr 2024 22:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713159955; x=1713764755; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E4DDC+LwXZjI/6N/5F4H8pVyFKOeGcEAAcQ7ZgvxsaY=;
-        b=aPBRPXRuI3kLmx5+AAXtQL1NYTtspA8JrQtecr+CwYq+2AB4cvbFBBBrLYud/4zciR
-         uA4fSbaE8WsVkaLXU7N71b1RfLr5PZFMw8ugicdd8wRTLfk+B+WeJXNV7Co+vnbbB5Qr
-         pZnTvBLKCEsNt2yQfIRk9ys+lvmij59PqIPIN74U9BqBiS5ayVqcaKiv4Ye0fJKZOFH3
-         yB2W/ZiEW/G9tGNwEI5VXs26wF+ModMxJkWsRHx7BDAg6CarwbVE5eKftnq4qIGs3u7X
-         LfFawUho8dXsmj22Gzm26BYIJfTHVUmLrXEVE8fufn7aw284l9nTqnRvnmZq/6xIHdhq
-         AqVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713159955; x=1713764755;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E4DDC+LwXZjI/6N/5F4H8pVyFKOeGcEAAcQ7ZgvxsaY=;
-        b=eFOKARPrqdCxaEM9TecPBL1hRq3bViowKsxkxVguEnzLLnucMAVLFLR8q61gs1aZ/d
-         OafaRnPc8O7M1sGOa/xF35a0SqRkpYHoxbxfW7NwEJ1GfP4FnunCR481j9h5k0nrtojr
-         tRrOS9Rxwdu8JETGK/vJyZE8aCSFzbsOKu8QaMw3AE7E2B992wwfxX9WKfeTMPNAHnJL
-         RfLGMMxNtkGRKSTZUhP5mM8le0N5q1wlIsWT0/pqvWIY2Dnb2npk4ck+3jNB2fgIM5rF
-         YuzFXX6pw52ZmXH3WXzLSVZkKL8f384UlqyQTqgj5Cv4A4r3Wf2aI1geQnugNbDO2EFy
-         DGwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXRJ//U+ATvbYOzq0iA7U1DNS+yggks6WbWgzmK3HBYmIvkb1ddcYQnX8CTrWAcWxAwktD2Bn915mHvbb/UFbuso9hMeFTRo2xkfEK7llkgu1oH0a2P8Pulx6tQbtIAWmFLUzWynKMB1w==
-X-Gm-Message-State: AOJu0Yyt5Ma8AfBrBrydlF4Gc4lzb2Zq3ubpqFkPvjs2qg7mOE6R0oyG
-	5Tllw/vzHRR1yHAZyYWb5HzXz0wiLZWMLoMMyxtd77xgsvPw78ZOnc1ojG6L
-X-Google-Smtp-Source: AGHT+IG7dNHrsvuiEQIRtiLysao3KzYqzYQz3Xs4Do5AIQA4ZwPlB4ecyD9+rnHr+pY2uLCHAGVP1Q==
-X-Received: by 2002:a17:902:e841:b0:1e4:17e4:3a1f with SMTP id t1-20020a170902e84100b001e417e43a1fmr9161487plg.4.1713159954625;
-        Sun, 14 Apr 2024 22:45:54 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id l1-20020a170902f68100b001e3e244e5c0sm6995124plg.78.2024.04.14.22.45.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Apr 2024 22:45:54 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: sfr@canb.auug.org.au
-Cc: akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org,
-	linux-next@vger.kernel.org,
-	v-songbaohua@oppo.com
-Subject: Re: linux-next: build warning after merge of the mm tree
-Date: Mon, 15 Apr 2024 17:45:38 +1200
-Message-Id: <20240415054538.17071-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240415152008.0708afb1@canb.auug.org.au>
-References: <20240415152008.0708afb1@canb.auug.org.au>
+	s=arc-20240116; t=1713160156; c=relaxed/simple;
+	bh=RvsIj2/CxOu+Es+77iPviLcpSen5OK5EYaifN48R1ZQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nr/1kEpCLG3zq7/4ilQ012icfZbhsbM5YWY0QYiV/2xaHVeT9YzBqGTLe52An+x31NeFwTZvd8z5QuhbKnHSVUTbLgWVKUmjS8xcsPTAY8jT8fLAWmFH4XrgxTH9m8oR5+gem3MOEZv+NtS1v/FE0ezdFddmoLth5GCIFFF5DC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=To7LlRJW; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43F5Aatn029477;
+	Mon, 15 Apr 2024 05:49:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=73LwgEeWelJcxJMEUcfUFeZn2voBLw1f0r8uGOoFOmQ=; b=To
+	7LlRJWYYTPxFitZ1yQKDaEQEulJbLi9oALTwYO+hDXKBL5SOF6FPMRReuhSDMZWW
+	USnxlohOgO2m+StwzYYKTC8zKY578AG9+EH7Q0U2Ur3t4gLzt0P2Uh+HoQEven7h
+	R6hQbvsCYpvOU/85DBEXCm0JxftANhdkUZyhb0xzZOCpi4gPChlJhxJO8e/D2UOL
+	PY/LbLIQhMhqhyAIzKMYm76YzoC/xlRelyDGJQSwYMsUMUYL0R8ThzXsFg8tQR4E
+	qI2JjN3USkUTQMOBThmayZehuuODHkA4AKHdndkTpdGOPYx3TczJx+vVuWq2FSbo
+	0JR6tFkSV8cDbtF+enVg==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xgwqfg29k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 05:49:11 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43F5n9Fe020608
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 05:49:09 GMT
+Received: from [10.239.29.179] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Sun, 14 Apr
+ 2024 22:49:07 -0700
+Message-ID: <a43f394e-9f6a-4ec0-aff7-b43de1e3035e@quicinc.com>
+Date: Mon, 15 Apr 2024 13:48:54 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] bus: mhi: host: pci_generic: Add edl callback to
+ enter EDL
+To: Manivannan Sadhasivam <mani@kernel.org>,
+        Jeffrey Hugo
+	<quic_jhugo@quicinc.com>
+CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>
+References: <1712805329-46158-1-git-send-email-quic_qianyu@quicinc.com>
+ <1712805329-46158-3-git-send-email-quic_qianyu@quicinc.com>
+ <78de32be-7e3b-e7e9-61f3-9679993dbe71@quicinc.com>
+ <a901549e-c3ec-47b5-9523-a6342eca455f@quicinc.com>
+ <95ee53a5-e261-9106-1104-09077e348a99@quicinc.com>
+ <20240412170910.GA21555@thinkpad>
+Content-Language: en-US
+From: Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20240412170910.GA21555@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Z_Hlk5786o_WfKPQOdP1d1di6Hg3AjEV
+X-Proofpoint-ORIG-GUID: Z_Hlk5786o_WfKPQOdP1d1di6Hg3AjEV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404150035
 
-Thanks, I admit I know nothing about sphinx, after google the similar warning,
-adding an extra line can fix this (I also noticed I should had named the file
-as sysfs but not sys to align with other ABI docs):
 
-From ae3350752540696753940166e8e9f2da4b872760 Mon Sep 17 00:00:00 2001
-From: Barry Song <v-songbaohua@oppo.com>
-Date: Mon, 15 Apr 2024 17:37:04 +1200
-Subject: [PATCH] sysfs-kernel-mm-transparent-hugepage: fix the name and
- unexpected indentation
+On 4/13/2024 1:09 AM, Manivannan Sadhasivam wrote:
+> On Fri, Apr 12, 2024 at 08:16:52AM -0600, Jeffrey Hugo wrote:
+>> On 4/12/2024 1:13 AM, Qiang Yu wrote:
+>>> On 4/11/2024 10:46 PM, Jeffrey Hugo wrote:
+>>>> On 4/10/2024 9:15 PM, Qiang Yu wrote:
+>>>>> Add mhi_pci_generic_edl_trigger as edl_trigger for some devices
+>>>>> (eg. SDX65)
+>>>>> to enter EDL mode by writing the 0xEDEDEDED cookie to the channel 91
+>>>>> doorbell register and forcing an SOC reset afterwards.
+>>>>>
+>>>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>>>>> ---
+>>>>>    drivers/bus/mhi/host/pci_generic.c | 50
+>>>>> ++++++++++++++++++++++++++++++++++++++
+>>>>>    1 file changed, 50 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/bus/mhi/host/pci_generic.c
+>>>>> b/drivers/bus/mhi/host/pci_generic.c
+>>>>> index 51639bf..a529815 100644
+>>>>> --- a/drivers/bus/mhi/host/pci_generic.c
+>>>>> +++ b/drivers/bus/mhi/host/pci_generic.c
+>>>>> @@ -27,12 +27,23 @@
+>>>>>    #define PCI_VENDOR_ID_THALES    0x1269
+>>>>>    #define PCI_VENDOR_ID_QUECTEL    0x1eac
+>>>>>    +#define MHI_EDL_DB            91
+>>>>> +#define MHI_EDL_COOKIE            0xEDEDEDED
+>>>>> +
+>>>>> +/* Device can enter EDL by first setting edl cookie then
+>>>>> issuing inband reset*/
+>>>>> +#define MHI_PCI_GENERIC_EDL_TRIGGER    BIT(0)
+>>>>> +
+>>>>> +#define CHDBOFF            0x18
+>>>> This is already in drivers/bus/mhi/common.h why duplicate it here?
+>>> I only see common.h be included in ep/internal.h host/internal.h and
+>>> host/trace.h. So I thought it can only be used by MHI stack. Can we
+>>> include common.h in pci_generic.c?
+>> Up to Mani, but duplicating the definition seems like it would result in
+>> maintence overhead over time.  An alternative to including the header might
+>> be a new API between MHI and controller which allow the setting of a CHDB to
+>> a specific value.
+>>
+> +1 to the new API suggestion.
+>
+> - Mani
 
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- ...transparent-hugepage => sysfs-kernel-mm-transparent-hugepage} | 1 +
- 1 file changed, 1 insertion(+)
- rename Documentation/ABI/testing/{sys-kernel-mm-transparent-hugepage => sysfs-kernel-mm-transparent-hugepage} (99%)
-
-diff --git a/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage b/Documentation/ABI/testing/sysfs-kernel-mm-transparent-hugepage
-similarity index 99%
-rename from Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
-rename to Documentation/ABI/testing/sysfs-kernel-mm-transparent-hugepage
-index 33163eba5342..7bfbb9cc2c11 100644
---- a/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
-+++ b/Documentation/ABI/testing/sysfs-kernel-mm-transparent-hugepage
-@@ -4,6 +4,7 @@ Contact:	Linux memory management mailing list <linux-mm@kvack.org>
- Description:
- 		/sys/kernel/mm/transparent_hugepage/ contains a number of files and
- 		subdirectories,
-+
- 			- defrag
- 			- enabled
- 			- hpage_pmd_size
--- 
-2.34.1
-
-> 
-> Introduced by commit
-> 
->   a70dabb40c3d ("mm: add docs for per-order mTHP counters and transhuge_page ABI")
-> 
-> from the mm-unstable branch of the mm tree.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-Thanks
-Barry
-
+OK, will add a new API in MHI to allow controller get CHDB address.
+>>>>> +#define CHDBOFF_CHDBOFF_MASK 0xFFFFFFFF
+>>>>> +#define CHDBOFF_CHDBOFF_SHIFT    0
+>>>>> +
+>>>>>    /**
+>>>>>     * struct mhi_pci_dev_info - MHI PCI device specific information
+>>>>>     * @config: MHI controller configuration
+>>>>>     * @name: name of the PCI module
+>>>>>     * @fw: firmware path (if any)
+>>>>>     * @edl: emergency download mode firmware path (if any)
+>>>>> + * @edl_trigger: each bit represents a different way to enter EDL
+>>>>>     * @bar_num: PCI base address register to use for MHI MMIO
+>>>>> register space
+>>>>>     * @dma_data_width: DMA transfer word size (32 or 64 bits)
+>>>>>     * @mru_default: default MRU size for MBIM network packets
+>>>>> @@ -44,6 +55,7 @@ struct mhi_pci_dev_info {
+>>>>>        const char *name;
+>>>>>        const char *fw;
+>>>>>        const char *edl;
+>>>>> +    unsigned int edl_trigger;
+>>>>>        unsigned int bar_num;
+>>>>>        unsigned int dma_data_width;
+>>>>>        unsigned int mru_default;
+>>>>> @@ -292,6 +304,7 @@ static const struct mhi_pci_dev_info
+>>>>> mhi_qcom_sdx75_info = {
+>>>>>        .name = "qcom-sdx75m",
+>>>>>        .fw = "qcom/sdx75m/xbl.elf",
+>>>>>        .edl = "qcom/sdx75m/edl.mbn",
+>>>>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
+>>>>>        .config = &modem_qcom_v2_mhiv_config,
+>>>>>        .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+>>>>>        .dma_data_width = 32,
+>>>>> @@ -302,6 +315,7 @@ static const struct mhi_pci_dev_info
+>>>>> mhi_qcom_sdx65_info = {
+>>>>>        .name = "qcom-sdx65m",
+>>>>>        .fw = "qcom/sdx65m/xbl.elf",
+>>>>>        .edl = "qcom/sdx65m/edl.mbn",
+>>>>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
+>>>>>        .config = &modem_qcom_v1_mhiv_config,
+>>>>>        .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+>>>>>        .dma_data_width = 32,
+>>>>> @@ -312,6 +326,7 @@ static const struct mhi_pci_dev_info
+>>>>> mhi_qcom_sdx55_info = {
+>>>>>        .name = "qcom-sdx55m",
+>>>>>        .fw = "qcom/sdx55m/sbl1.mbn",
+>>>>>        .edl = "qcom/sdx55m/edl.mbn",
+>>>>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
+>>>>>        .config = &modem_qcom_v1_mhiv_config,
+>>>>>        .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+>>>>>        .dma_data_width = 32,
+>>>>> @@ -928,6 +943,38 @@ static void health_check(struct timer_list *t)
+>>>>>        mod_timer(&mhi_pdev->health_check_timer, jiffies +
+>>>>> HEALTH_CHECK_PERIOD);
+>>>>>    }
+>>>>>    +static int mhi_pci_generic_edl_trigger(struct mhi_controller
+>>>>> *mhi_cntrl)
+>>>>> +{
+>>>>> +    int ret;
+>>>>> +    u32 val;
+>>>>> +    void __iomem *edl_db;
+>>>>> +    void __iomem *base = mhi_cntrl->regs;
+>>>> It looks like this file follows reverse christmas tree, but this
+>>>> function does not. you should fix it.
+>>> Will fix it in next version patch.
+>>>>> +
+>>>>> +    ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
+>>>>> +    if (ret) {
+>>>>> +        dev_err(mhi_cntrl->cntrl_dev, "Wake up device fail
+>>>>> before trigger EDL\n");
+>>>>> +        return ret;
+>>>>> +    }
+>>>>> +
+>>>>> +    pm_wakeup_event(&mhi_cntrl->mhi_dev->dev, 0);
+>>>>> +    mhi_cntrl->runtime_get(mhi_cntrl);
+>>>>> +
+>>>>> +    mhi_cntrl->read_reg(mhi_cntrl, base + CHDBOFF, &val);
+>>>>> +    val = (val & CHDBOFF_CHDBOFF_MASK) >> CHDBOFF_CHDBOFF_SHIFT;
+>>>>> +
+>>>>> +    edl_db = base + val + (8 * MHI_EDL_DB);
+>>>>> +
+>>>>> +    mhi_cntrl->write_reg(mhi_cntrl, edl_db + 4,
+>>>>> upper_32_bits(MHI_EDL_COOKIE));
+>>>>> +    mhi_cntrl->write_reg(mhi_cntrl, edl_db,
+>>>>> lower_32_bits(MHI_EDL_COOKIE));
+>>>>> +
+>>>>> +    mhi_soc_reset(mhi_cntrl);
+>>>>> +
+>>>>> +    mhi_cntrl->runtime_put(mhi_cntrl);
+>>>>> +    mhi_device_put(mhi_cntrl->mhi_dev);
+>>>>> +
+>>>>> +    return 0;
+>>>>> +}
+>>>>> +
+>>>>>    static int mhi_pci_probe(struct pci_dev *pdev, const struct
+>>>>> pci_device_id *id)
+>>>>>    {
+>>>>>        const struct mhi_pci_dev_info *info = (struct
+>>>>> mhi_pci_dev_info *) id->driver_data;
+>>>>> @@ -962,6 +1009,9 @@ static int mhi_pci_probe(struct pci_dev
+>>>>> *pdev, const struct pci_device_id *id)
+>>>>>        mhi_cntrl->runtime_put = mhi_pci_runtime_put;
+>>>>>        mhi_cntrl->mru = info->mru_default;
+>>>>>    +    if (info->edl_trigger & MHI_PCI_GENERIC_EDL_TRIGGER)
+>>>>> +        mhi_cntrl->edl_trigger = mhi_pci_generic_edl_trigger;
+>>>>> +
+>>>>>        if (info->sideband_wake) {
+>>>>>            mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+>>>>>            mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
+>>
 
