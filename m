@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-144744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8FDC8A4A21
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:16:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0478A4A23
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:16:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73C811F22853
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:16:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFA2A1C22C40
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 08:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77743F9D4;
-	Mon, 15 Apr 2024 08:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19ED33FBB8;
+	Mon, 15 Apr 2024 08:15:04 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490FA3BBD9;
-	Mon, 15 Apr 2024 08:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421383D969;
+	Mon, 15 Apr 2024 08:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713168902; cv=none; b=aZTfyzdUpkYcp38m542j8bAy2Ocq6hRbS9Eslo9tAgTa9YQzUndromo1VXQP9OU3hHSlgFHU7lQN43xI3qvi4XwA7JJOfzamKVPRlim8kc3SL3bEAc1idMji6yKUueSiZ+3w17i595g4hqhziwEbBWcog9HBAwPYqfuBoWcP1aA=
+	t=1713168903; cv=none; b=Ay8QL0ywEOt2f3k6Sr3cefVSMlNpOS9PPq8P6bdW8uxBuBCSmMAzdP3MoyjRCmI75/ilYlR+kZGjo8bU7Pz1jjzLOrYLqJJCWyiaO6erjCPntz7dPdvwQiK947/xBbiI4FbooKz4zfvkSgs9+nXKWg4vj72lj1FvKABy1CObDFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713168902; c=relaxed/simple;
-	bh=1vW++xN8zF1A0z3Y8yp49FhFAPI2if6N2fDvYtR7R4w=;
+	s=arc-20240116; t=1713168903; c=relaxed/simple;
+	bh=wvmEMvCUzSgouK7RL1vaW0SFREP1d3S87z3s6JyC/4U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KmRAFrl5JjAYs7qR0jLJ6U/lMK5HqvrOUUb8LDUehiE+9CnlHBLuImzsIcadsH23Ir3AXgZ8Lskb/+PQr/ptGz0gjm41pBC3JGoWROwsUDhCknloT6a3b9z+DPY4fBaQEnPDa+OM8e5dfpIIKmtMXZd3uLvGFkMs/hde0rGrvqc=
+	 MIME-Version; b=ovkEvN7hlL7Gg3WO24UpVLDjTEt+VXPTAdZY8ceKf7Tgw8oANMyTKyHpVAxnpO85s5N0BmeskFoFCvP5DqALqgYVxdMKyDEhGsTjJLRSux1IqA5UmMVW7kAuI+y3AzT/qYP9ZYOOD6kTiyWSEgVGXhF7OFaVs5J+u/IrfokGPfY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 170D81476;
-	Mon, 15 Apr 2024 01:15:28 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02C261515;
+	Mon, 15 Apr 2024 01:15:30 -0700 (PDT)
 Received: from e126817.cambridge.arm.com (e126817.cambridge.arm.com [10.2.3.5])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 14AAF3F64C;
-	Mon, 15 Apr 2024 01:14:57 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F3F353F64C;
+	Mon, 15 Apr 2024 01:14:59 -0700 (PDT)
 From: Ben Gainey <ben.gainey@arm.com>
 To: peterz@infradead.org,
 	mingo@redhat.com,
@@ -46,9 +46,9 @@ Cc: james.clark@arm.com,
 	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Ben Gainey <ben.gainey@arm.com>
-Subject: [PATCH v5 1/4] perf: Support PERF_SAMPLE_READ with inherit
-Date: Mon, 15 Apr 2024 09:14:45 +0100
-Message-ID: <20240415081448.123789-2-ben.gainey@arm.com>
+Subject: [PATCH v5 2/4] tools/perf: Track where perf_sample_ids need per-thread periods
+Date: Mon, 15 Apr 2024 09:14:46 +0100
+Message-ID: <20240415081448.123789-3-ben.gainey@arm.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240415081448.123789-1-ben.gainey@arm.com>
 References: <20240415081448.123789-1-ben.gainey@arm.com>
@@ -60,281 +60,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This change allows events to use PERF_SAMPLE READ with inherit
-so long as PERF_SAMPLE_TID is also set.
+perf_sample_ids and related evlist/evsel code are modified to track
+which events combine inherit+PERF_SAMPLE_READ+PERF_SAMPLE_TID.
 
-In this configuration, an event will be inherited into any
-child processes / threads, allowing convenient profiling of a
-multiprocess or multithreaded application, whilst allowing
-profiling tools to collect per-thread samples, in particular
-of groups of counters.
-
-The read_format field of both PERF_RECORD_READ and PERF_RECORD_SAMPLE
-are changed by this new configuration, but calls to `read()` on the same
-event file descriptor are unaffected and continue to return the
-cumulative total.
+Events with this combination of properties must be handled differently
+when calculating each sample period. They must use the combination
+of (ID + TID) to uniquely identify each distinct sequence of values.
 
 Signed-off-by: Ben Gainey <ben.gainey@arm.com>
 ---
- include/linux/perf_event.h |  1 +
- kernel/events/core.c       | 82 ++++++++++++++++++++++++++++----------
- 2 files changed, 62 insertions(+), 21 deletions(-)
+ tools/lib/perf/evlist.c                 | 1 +
+ tools/lib/perf/evsel.c                  | 7 +++++++
+ tools/lib/perf/include/internal/evsel.h | 9 +++++++++
+ 3 files changed, 17 insertions(+)
 
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index d2a15c0c6f8a..e7eed33c50f1 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -932,6 +932,7 @@ struct perf_event_context {
+diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
+index c6d67fc9e57e..d17288eeaee4 100644
+--- a/tools/lib/perf/evlist.c
++++ b/tools/lib/perf/evlist.c
+@@ -255,6 +255,7 @@ static void perf_evlist__id_hash(struct perf_evlist *evlist,
  
- 	int				nr_task_data;
- 	int				nr_stat;
-+	int				nr_inherit_read;
- 	int				nr_freq;
- 	int				rotate_disable;
- 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 724e6d7e128f..bf0639a2e2b1 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1767,6 +1767,18 @@ perf_event_groups_next(struct perf_event *event, struct pmu *pmu)
- 		event = rb_entry_safe(rb_next(&event->group_node),	\
- 				typeof(*event), group_node))
- 
-+/*
-+ * Does the event attribute request inherit with PERF_SAMPLE_READ
-+ */
-+#define perf_attr_has_inherit_and_sample_read(attr)			\
-+	((attr)->inherit && ((attr)->sample_type & PERF_SAMPLE_READ))
-+
-+/*
-+ * Does the event request an attribte that requests inherit with PERF_SAMPLE_READ
-+ */
-+#define perf_event_has_inherit_and_sample_read(event)			\
-+	perf_attr_has_inherit_and_sample_read(&((event)->attr))
-+
- /*
-  * Add an event from the lists for its context.
-  * Must be called with ctx->mutex and ctx->lock held.
-@@ -1797,6 +1809,8 @@ list_add_event(struct perf_event *event, struct perf_event_context *ctx)
- 		ctx->nr_user++;
- 	if (event->attr.inherit_stat)
- 		ctx->nr_stat++;
-+	if (perf_event_has_inherit_and_sample_read(event))
-+		ctx->nr_inherit_read++;
- 
- 	if (event->state > PERF_EVENT_STATE_OFF)
- 		perf_cgroup_event_enable(event, ctx);
-@@ -2021,6 +2035,8 @@ list_del_event(struct perf_event *event, struct perf_event_context *ctx)
- 		ctx->nr_user--;
- 	if (event->attr.inherit_stat)
- 		ctx->nr_stat--;
-+	if (perf_event_has_inherit_and_sample_read(event))
-+		ctx->nr_inherit_read--;
- 
- 	list_del_rcu(&event->event_entry);
- 
-@@ -3529,11 +3545,18 @@ perf_event_context_sched_out(struct task_struct *task, struct task_struct *next)
- 			perf_ctx_disable(ctx, false);
- 
- 			/* PMIs are disabled; ctx->nr_pending is stable. */
--			if (local_read(&ctx->nr_pending) ||
-+			if (ctx->nr_inherit_read ||
-+			    next_ctx->nr_inherit_read ||
-+			    local_read(&ctx->nr_pending) ||
- 			    local_read(&next_ctx->nr_pending)) {
- 				/*
- 				 * Must not swap out ctx when there's pending
- 				 * events that rely on the ctx->task relation.
-+				 *
-+				 * Likewise, when a context contains inherit +
-+				 * SAMPLE_READ events they should be switched
-+				 * out using the slow path so that they are
-+				 * treated as if they were distinct contexts.
- 				 */
- 				raw_spin_unlock(&next_ctx->lock);
- 				rcu_read_unlock();
-@@ -4533,11 +4556,19 @@ static void __perf_event_read(void *info)
- 	raw_spin_unlock(&ctx->lock);
+ 	sid->id = id;
+ 	sid->evsel = evsel;
++	sid->period_per_thread = perf_evsel__attr_has_per_thread_sample_period(evsel);
+ 	hash = hash_64(sid->id, PERF_EVLIST__HLIST_BITS);
+ 	hlist_add_head(&sid->node, &evlist->heads[hash]);
+ }
+diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+index c07160953224..f7abb879f416 100644
+--- a/tools/lib/perf/evsel.c
++++ b/tools/lib/perf/evsel.c
+@@ -537,6 +537,13 @@ void perf_evsel__free_id(struct perf_evsel *evsel)
+ 	evsel->ids = 0;
  }
  
--static inline u64 perf_event_count(struct perf_event *event)
-+static inline u64 perf_event_count_cumulative(struct perf_event *event)
- {
- 	return local64_read(&event->count) + atomic64_read(&event->child_count);
- }
- 
-+static inline u64 perf_event_count(struct perf_event *event, bool self_value_only)
++bool perf_evsel__attr_has_per_thread_sample_period(struct perf_evsel *evsel)
 +{
-+	if (self_value_only && perf_event_has_inherit_and_sample_read(event))
-+		return local64_read(&event->count);
-+
-+	return perf_event_count_cumulative(event);
++	return (evsel->attr.sample_type & PERF_SAMPLE_READ)
++		&& (evsel->attr.sample_type & PERF_SAMPLE_TID)
++		&& evsel->attr.inherit;
 +}
 +
- static void calc_timer_values(struct perf_event *event,
- 				u64 *now,
- 				u64 *enabled,
-@@ -5454,7 +5485,7 @@ static u64 __perf_event_read_value(struct perf_event *event, u64 *enabled, u64 *
- 	mutex_lock(&event->child_mutex);
- 
- 	(void)perf_event_read(event, false);
--	total += perf_event_count(event);
-+	total += perf_event_count_cumulative(event);
- 
- 	*enabled += event->total_time_enabled +
- 			atomic64_read(&event->child_total_time_enabled);
-@@ -5463,7 +5494,7 @@ static u64 __perf_event_read_value(struct perf_event *event, u64 *enabled, u64 *
- 
- 	list_for_each_entry(child, &event->child_list, child_list) {
- 		(void)perf_event_read(child, false);
--		total += perf_event_count(child);
-+		total += perf_event_count_cumulative(child);
- 		*enabled += child->total_time_enabled;
- 		*running += child->total_time_running;
- 	}
-@@ -5545,14 +5576,14 @@ static int __perf_read_group_add(struct perf_event *leader,
- 	/*
- 	 * Write {count,id} tuples for every sibling.
- 	 */
--	values[n++] += perf_event_count(leader);
-+	values[n++] += perf_event_count_cumulative(leader);
- 	if (read_format & PERF_FORMAT_ID)
- 		values[n++] = primary_event_id(leader);
- 	if (read_format & PERF_FORMAT_LOST)
- 		values[n++] = atomic64_read(&leader->lost_samples);
- 
- 	for_each_sibling_event(sub, leader) {
--		values[n++] += perf_event_count(sub);
-+		values[n++] += perf_event_count_cumulative(sub);
- 		if (read_format & PERF_FORMAT_ID)
- 			values[n++] = primary_event_id(sub);
- 		if (read_format & PERF_FORMAT_LOST)
-@@ -6132,7 +6163,7 @@ void perf_event_update_userpage(struct perf_event *event)
- 	++userpg->lock;
- 	barrier();
- 	userpg->index = perf_event_index(event);
--	userpg->offset = perf_event_count(event);
-+	userpg->offset = perf_event_count_cumulative(event);
- 	if (userpg->index)
- 		userpg->offset -= local64_read(&event->hw.prev_count);
- 
-@@ -7194,13 +7225,14 @@ void perf_event__output_id_sample(struct perf_event *event,
- 
- static void perf_output_read_one(struct perf_output_handle *handle,
- 				 struct perf_event *event,
--				 u64 enabled, u64 running)
-+				 u64 enabled, u64 running,
-+				 bool from_sample)
+ void perf_counts_values__scale(struct perf_counts_values *count,
+ 			       bool scale, __s8 *pscaled)
  {
- 	u64 read_format = event->attr.read_format;
- 	u64 values[5];
- 	int n = 0;
+diff --git a/tools/lib/perf/include/internal/evsel.h b/tools/lib/perf/include/internal/evsel.h
+index 5cd220a61962..f8de2bf89c76 100644
+--- a/tools/lib/perf/include/internal/evsel.h
++++ b/tools/lib/perf/include/internal/evsel.h
+@@ -36,6 +36,13 @@ struct perf_sample_id {
  
--	values[n++] = perf_event_count(event);
-+	values[n++] = perf_event_count(event, from_sample);
- 	if (read_format & PERF_FORMAT_TOTAL_TIME_ENABLED) {
- 		values[n++] = enabled +
- 			atomic64_read(&event->child_total_time_enabled);
-@@ -7218,8 +7250,9 @@ static void perf_output_read_one(struct perf_output_handle *handle,
- }
+ 	/* Holds total ID period value for PERF_SAMPLE_READ processing. */
+ 	u64			 period;
++
++	/*
++	 * When inherit is combined with PERF_SAMPLE_READ, the period value is
++	 * per (id, thread) tuple, rather than per id, so use the stream_id to
++	 * uniquely identify the period, rather than the id.
++	 */
++	bool			 period_per_thread;
+ };
  
- static void perf_output_read_group(struct perf_output_handle *handle,
--			    struct perf_event *event,
--			    u64 enabled, u64 running)
-+				   struct perf_event *event,
-+				   u64 enabled, u64 running,
-+				   bool from_sample)
- {
- 	struct perf_event *leader = event->group_leader, *sub;
- 	u64 read_format = event->attr.read_format;
-@@ -7245,7 +7278,7 @@ static void perf_output_read_group(struct perf_output_handle *handle,
- 	    (leader->state == PERF_EVENT_STATE_ACTIVE))
- 		leader->pmu->read(leader);
+ struct perf_evsel {
+@@ -88,4 +95,6 @@ int perf_evsel__apply_filter(struct perf_evsel *evsel, const char *filter);
+ int perf_evsel__alloc_id(struct perf_evsel *evsel, int ncpus, int nthreads);
+ void perf_evsel__free_id(struct perf_evsel *evsel);
  
--	values[n++] = perf_event_count(leader);
-+	values[n++] = perf_event_count(leader, from_sample);
- 	if (read_format & PERF_FORMAT_ID)
- 		values[n++] = primary_event_id(leader);
- 	if (read_format & PERF_FORMAT_LOST)
-@@ -7260,7 +7293,7 @@ static void perf_output_read_group(struct perf_output_handle *handle,
- 		    (sub->state == PERF_EVENT_STATE_ACTIVE))
- 			sub->pmu->read(sub);
- 
--		values[n++] = perf_event_count(sub);
-+		values[n++] = perf_event_count(sub, from_sample);
- 		if (read_format & PERF_FORMAT_ID)
- 			values[n++] = primary_event_id(sub);
- 		if (read_format & PERF_FORMAT_LOST)
-@@ -7281,9 +7314,14 @@ static void perf_output_read_group(struct perf_output_handle *handle,
-  * The problem is that its both hard and excessively expensive to iterate the
-  * child list, not to mention that its impossible to IPI the children running
-  * on another CPU, from interrupt/NMI context.
-+ *
-+ * Instead the combination of PERF_SAMPLE_READ and inherit will track per-thread
-+ * counts rather than attempting to accumulate some value across all children on
-+ * all cores.
-  */
- static void perf_output_read(struct perf_output_handle *handle,
--			     struct perf_event *event)
-+			     struct perf_event *event,
-+			     bool from_sample)
- {
- 	u64 enabled = 0, running = 0, now;
- 	u64 read_format = event->attr.read_format;
-@@ -7301,9 +7339,9 @@ static void perf_output_read(struct perf_output_handle *handle,
- 		calc_timer_values(event, &now, &enabled, &running);
- 
- 	if (event->attr.read_format & PERF_FORMAT_GROUP)
--		perf_output_read_group(handle, event, enabled, running);
-+		perf_output_read_group(handle, event, enabled, running, from_sample);
- 	else
--		perf_output_read_one(handle, event, enabled, running);
-+		perf_output_read_one(handle, event, enabled, running, from_sample);
- }
- 
- void perf_output_sample(struct perf_output_handle *handle,
-@@ -7343,7 +7381,7 @@ void perf_output_sample(struct perf_output_handle *handle,
- 		perf_output_put(handle, data->period);
- 
- 	if (sample_type & PERF_SAMPLE_READ)
--		perf_output_read(handle, event);
-+		perf_output_read(handle, event, true);
- 
- 	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
- 		int size = 1;
-@@ -7944,7 +7982,7 @@ perf_event_read_event(struct perf_event *event,
- 		return;
- 
- 	perf_output_put(&handle, read_event);
--	perf_output_read(&handle, event);
-+	perf_output_read(&handle, event, false);
- 	perf_event__output_id_sample(event, &handle, &sample);
- 
- 	perf_output_end(&handle);
-@@ -12006,10 +12044,12 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
- 	local64_set(&hwc->period_left, hwc->sample_period);
- 
- 	/*
--	 * We currently do not support PERF_SAMPLE_READ on inherited events.
-+	 * We do not support PERF_SAMPLE_READ on inherited events unless
-+	 * PERF_SAMPLE_TID is also selected, which allows inherited events to
-+	 * collect per-thread samples.
- 	 * See perf_output_read().
- 	 */
--	if (attr->inherit && (attr->sample_type & PERF_SAMPLE_READ))
-+	if (perf_attr_has_inherit_and_sample_read(attr) && !(attr->sample_type & PERF_SAMPLE_TID))
- 		goto err_ns;
- 
- 	if (!has_branch_stack(event))
-@@ -13033,7 +13073,7 @@ static void sync_child_event(struct perf_event *child_event)
- 			perf_event_read_event(child_event, task);
- 	}
- 
--	child_val = perf_event_count(child_event);
-+	child_val = perf_event_count_cumulative(child_event);
- 
- 	/*
- 	 * Add back the child's count to the parent's count:
++bool perf_evsel__attr_has_per_thread_sample_period(struct perf_evsel *evsel);
++
+ #endif /* __LIBPERF_INTERNAL_EVSEL_H */
 -- 
 2.44.0
 
