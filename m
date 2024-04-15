@@ -1,53 +1,69 @@
-Return-Path: <linux-kernel+bounces-145544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A608A579D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:22:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EE9F8A57A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:23:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0E55283AC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:22:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA1FC1F21137
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797C080BF0;
-	Mon, 15 Apr 2024 16:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDB380055;
+	Mon, 15 Apr 2024 16:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="1Q1xlOw6"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Vzpt0IrT"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B025F3E48F
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C351E535
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713198119; cv=none; b=tMhZQawAm4tlhXISnizznoVpP8V82dOZlv48r+kj+rMhaqggbhCNlavnrSUiJ7PEVduSw/8j2oMO7APBoxBTxw9NawzxpyK2K1R/GMvehugzYS0g6FQJRTK4pWPPv/Tly/t6vy96YpXR65fPr+rcTH6J1UL58uK0uOsSB3u/8YQ=
+	t=1713198196; cv=none; b=L6KexF+5JeKtm2Ee2nUPLQzBDJ6fbE6dEUlRzNPVogotHrR7ZYbdiXPiWc4drnQHSlVTWWF4zOCdlVnUHOv54X0FWXUPKhwo93RALNpSIgey1wIMmhgOq4aOClNvoLderrpEw0cyjItDPegU3/AmdAHoKGkKi5aYBAequf+s0ro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713198119; c=relaxed/simple;
-	bh=49wBF7ETWIbvhYXhdoUzf3PHmI2RzJqJ6hg/xPslkn4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F/t/23/rPmMN5AXE7IakiWkrsdgcwQbTK9peuVnfHX18/cZF5jSRvvFLjikPtatfA2sn5ZqWvMNVsP/acdjdrKWRa1DXW/XakAYEM7kv/lvSaeXJNpmAJr6sngLGq2COusn/J7Lwhxy9ddmnmfACiR+tEAmeaAKrkJfopag+Aeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=fail (0-bit key) header.d=zytor.com header.i=@zytor.com header.b=1Q1xlOw6 reason="key not found in DNS"; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [IPV6:2601:646:8002:4640:7285:c2ff:fefb:fd4] ([IPv6:2601:646:8002:4640:7285:c2ff:fefb:fd4])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43FGL5xT2477030
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Mon, 15 Apr 2024 09:21:05 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43FGL5xT2477030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024031401; t=1713198066;
-	bh=s8TZ5pnM8hKiFX3Jje3ZRxOCl+tkEojjH/6DtaJtRg0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=1Q1xlOw6fohkdTv0BTocNV+SXRZcfesd/TgPbuZlnbw6WyeSEIJdrQax/ExiQgCfI
-	 k7ZehbiPfiJ5cmaJZqu4qTY3ixossinX1shA7MBaJo5fL7K77yzPYP+D2btGQdPTLF
-	 /oIpxJnitnmdGiDhM5sEAjswFu+tId/qtQHKTKlqDXe5I8hi3QBXvl8tq76F0x1oT6
-	 WdqYd1IiGEn0dg+AHWqqeGHtZi7RuPkT/RVOSn9zSjuB2SDGadcodVEq//isBXhgsR
-	 mh2DzT6x9GMggTD6KiFqmYRzmeSODWFziPZHoHh7GCgA8PbUOKfVcGYQJs8DTP49ds
-	 HlAMi3x9IH5XQ==
-Message-ID: <1fbb0c1a-998f-4424-82aa-12483fafb197@zytor.com>
-Date: Mon, 15 Apr 2024 09:21:00 -0700
+	s=arc-20240116; t=1713198196; c=relaxed/simple;
+	bh=IztYwKZ/VaVkKmnd9d5+3jv+XxvhkFJkenC+M8BvwQU=;
+	h=Content-Type:Message-ID:Date:MIME-Version:To:Cc:From:Subject; b=X6EVpxqrAHMEwMGi9RJ7n64ZP3VV3PmEOUi/e6fHHUkxXAh/SpE4ToAY2HfA3cWM39Z9CZFE5Vp8PGlNtnulEFmC0DeGd8QqJQHLEPCfcEP5iICjGB9ri4BI6naZvTm2kSZ/uGQubDO+8jpdbpdnB79IXuZuMdKJT2eiRngLUlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Vzpt0IrT; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so179982a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1713198194; x=1713802994; darn=vger.kernel.org;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=0/Z51JDqeCMIYAogMv4e7mjxOubQ/EaWsQPKXTj8RQ4=;
+        b=Vzpt0IrT4UmI/8l2V4DdwEdp8olYOeS0Ax+R9NARoHlKti3i30gfSyDvqaZbDySlj4
+         I2J52A41IUNsNq8PT4HZzyX4XI1iQEvIDX+XclN/NipNIbS/btZnTbTj6nTSc5u8d8V2
+         efrCFrdGCiDK2H7s1/1sTtESSZUxLyWdn/kdM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713198194; x=1713802994;
+        h=subject:from:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0/Z51JDqeCMIYAogMv4e7mjxOubQ/EaWsQPKXTj8RQ4=;
+        b=FGgB3qiaC85BdFLqcX8BoKlx3MyLJLkwJa0zFk3DArxWhH3tb+AYsTDEVIsAbwTRkL
+         +pdtPMrK0ExGuYHj49Ua63XYeK9fRd46f7ty1QE8NpONDMlplNmFioGoo7A0qZulN8UB
+         dC1GTtyQMkxTO6fzF3fl6safSQ1f47zBNKutbULokGWIzlfDGFn96bLydw8EPZpKWJeO
+         d80wdeT1OJTLmqY9qIJbNJKoeTcdsX/oYmfXdMc4Vm81arJ+7nBotQPp/ypn7EzuNEsF
+         RAgfbfGYuabcKfJVyVkLGYezMYQOzyRGsgbMC7va2+aSe68yLWHQUdcV0ZjQdQrZVh/6
+         K/Mg==
+X-Forwarded-Encrypted: i=1; AJvYcCWHGibzYI8Bd0yMGgkjRPFQn5XTRa0HRjzw0YP6DWK01f2zP6nNtgzS9Na7v1Bcfh2XbQteNBrThgMLquW2Caxw2GfYInvp2jI1zlLH
+X-Gm-Message-State: AOJu0YzNpTub7QnzNwoIVGetdw2ZN+qQJtdN+C4NudPw1El6xXqlUnyz
+	dbIwC3RriLyfd53M3Z5aB3RlyGgUVGLjo1T9fZroRHhkfgCQrzKJg/eTCfNeMNY=
+X-Google-Smtp-Source: AGHT+IGGW7en+6bXWtgxTwQRzlAn+FGmigqcoxLVLENAYPJ4AFSUjBaYrm1Wyp93UhbyFXXF7OuKDg==
+X-Received: by 2002:a17:902:da8c:b0:1e2:c544:9bb0 with SMTP id j12-20020a170902da8c00b001e2c5449bb0mr12201217plx.0.1713198193865;
+        Mon, 15 Apr 2024 09:23:13 -0700 (PDT)
+Received: from [172.20.9.236] ([209.37.221.130])
+        by smtp.gmail.com with ESMTPSA id b11-20020a170902650b00b001e509d4d6ddsm8293062plk.1.2024.04.15.09.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 09:23:13 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------9zKQTgrVK4VJRn8QITeFZYlg"
+Message-ID: <c03e09c7-e9a5-4e64-b146-40c14c68bfd5@linuxfoundation.org>
+Date: Mon, 15 Apr 2024 10:23:12 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,41 +71,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] x86/fred: Fix int80 emulation for FRED
 Content-Language: en-US
-To: "Xin Li (Intel)" <xin@zytor.com>, linux-kernel@vger.kernel.org
-Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org
-References: <20240412234058.1106744-1-xin@zytor.com>
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20240412234058.1106744-1-xin@zytor.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] Kselftest fixes update for Linux 6.9-rc5
+
+This is a multi-part message in MIME format.
+--------------9zKQTgrVK4VJRn8QITeFZYlg
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 4/12/24 16:40, Xin Li (Intel) wrote:
-> Commit 55617fb991df added a bunch of tests to the int $0x80 path, however
-> they are unnecessary and event wrong in fact under FRED.
-> 
-> First FRED distinguishes external interrupts from software interrupts,
-> thus int80_emulation() should NEVER be called for handling an external
-> interrupt, and then int80_is_external() should be skipped under FRED.
-> 
-> Second, the FRED kernel entry handler NEVER dispatches INTx, which is
-> of event type EVENT_TYPE_SWINT, so the user mode checking in
-> do_int80_emulation() is redundant, and should be skipped.
-> 
-> It might be even better to strip down do_int80_emulation() to a lean
-> fred_int80_emulation(), not to mention int80_emulation() does a
-> CLEAR_BRANCH_HISTORY.
-> 
-> Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
-> ---
->   arch/x86/entry/common.c | 22 ++++++++++++++++++++--
->   1 file changed, 20 insertions(+), 2 deletions(-)
+Hi Linus,
 
-Note: this is the minimal bug fix versions and belongs in x86/urgent.
+Please pull the following kselftest fixes update for Linux 6.9-rc5.
 
-	-hpa
+This kselftest fixes update for Linux 6.9-rc5 consists of a fix to
+kselftest harness to prevent infinite loop triggered in an assert
+in FIXTURE_TEARDOWN and a fix to a problem seen in being able to stop
+subsystem-enable tests when sched events are being traced.
 
+diff is attached.
+
+thanks,
+-- Shuah
+
+
+----------------------------------------------------------------
+The following changes since commit 224fe424c356cb5c8f451eca4127f32099a6f764:
+
+   selftests: dmabuf-heap: add config file for the test (2024-03-29 13:57:14 -0600)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux_kselftest-fixes-6.9-rc5
+
+for you to fetch changes up to 72d7cb5c190befbb095bae7737e71560ec0fcaa6:
+
+   selftests/harness: Prevent infinite loop due to Assert in FIXTURE_TEARDOWN (2024-04-04 10:50:53 -0600)
+
+----------------------------------------------------------------
+linux_kselftest-fixes-6.9-rc5
+
+This kselftest fixes update for Linux 6.9-rc5 consists of a fix to
+kselftest harness to prevent infinite loop triggered in an assert
+in FIXTURE_TEARDOWN and a fix to a problem seen in being able to stop
+subsystem-enable tests when sched events are being traced.
+
+----------------------------------------------------------------
+Shengyu Li (1):
+       selftests/harness: Prevent infinite loop due to Assert in FIXTURE_TEARDOWN
+
+Yuanhe Shu (1):
+       selftests/ftrace: Limit length in subsystem-enable tests
+
+  tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc | 6 +++---
+  tools/testing/selftests/kselftest_harness.h                     | 5 ++++-
+  2 files changed, 7 insertions(+), 4 deletions(-)
+
+----------------------------------------------------------------
+
+
+
+--------------9zKQTgrVK4VJRn8QITeFZYlg
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux_kselftest-fixes-6.9-rc5.diff"
+Content-Disposition: attachment; filename="linux_kselftest-fixes-6.9-rc5.diff"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Z0cmFjZS90ZXN0LmQvZXZl
+bnQvc3Vic3lzdGVtLWVuYWJsZS50YyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Z0cmFj
+ZS90ZXN0LmQvZXZlbnQvc3Vic3lzdGVtLWVuYWJsZS50YwppbmRleCBiMWVkZTYyNDk4NjYu
+LmI3YzhmMjljMDlhOSAxMDA2NDQKLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvZnRy
+YWNlL3Rlc3QuZC9ldmVudC9zdWJzeXN0ZW0tZW5hYmxlLnRjCisrKyBiL3Rvb2xzL3Rlc3Rp
+bmcvc2VsZnRlc3RzL2Z0cmFjZS90ZXN0LmQvZXZlbnQvc3Vic3lzdGVtLWVuYWJsZS50YwpA
+QCAtMTgsNyArMTgsNyBAQCBlY2hvICdzY2hlZDoqJyA+IHNldF9ldmVudAogCiB5aWVsZAog
+Ci1jb3VudD1gY2F0IHRyYWNlIHwgZ3JlcCAtdiBeIyB8IGF3ayAneyBwcmludCAkNSB9JyB8
+IHNvcnQgLXUgfCB3YyAtbGAKK2NvdW50PWBoZWFkIC1uIDEwMCB0cmFjZSB8IGdyZXAgLXYg
+XiMgfCBhd2sgJ3sgcHJpbnQgJDUgfScgfCBzb3J0IC11IHwgd2MgLWxgCiBpZiBbICRjb3Vu
+dCAtbHQgMyBdOyB0aGVuCiAgICAgZmFpbCAiYXQgbGVhc3QgZm9yaywgZXhlYyBhbmQgZXhp
+dCBldmVudHMgc2hvdWxkIGJlIHJlY29yZGVkIgogZmkKQEAgLTI5LDcgKzI5LDcgQEAgZWNo
+byAxID4gZXZlbnRzL3NjaGVkL2VuYWJsZQogCiB5aWVsZAogCi1jb3VudD1gY2F0IHRyYWNl
+IHwgZ3JlcCAtdiBeIyB8IGF3ayAneyBwcmludCAkNSB9JyB8IHNvcnQgLXUgfCB3YyAtbGAK
+K2NvdW50PWBoZWFkIC1uIDEwMCB0cmFjZSB8IGdyZXAgLXYgXiMgfCBhd2sgJ3sgcHJpbnQg
+JDUgfScgfCBzb3J0IC11IHwgd2MgLWxgCiBpZiBbICRjb3VudCAtbHQgMyBdOyB0aGVuCiAg
+ICAgZmFpbCAiYXQgbGVhc3QgZm9yaywgZXhlYyBhbmQgZXhpdCBldmVudHMgc2hvdWxkIGJl
+IHJlY29yZGVkIgogZmkKQEAgLTQwLDcgKzQwLDcgQEAgZWNobyAwID4gZXZlbnRzL3NjaGVk
+L2VuYWJsZQogCiB5aWVsZAogCi1jb3VudD1gY2F0IHRyYWNlIHwgZ3JlcCAtdiBeIyB8IGF3
+ayAneyBwcmludCAkNSB9JyB8IHNvcnQgLXUgfCB3YyAtbGAKK2NvdW50PWBoZWFkIC1uIDEw
+MCB0cmFjZSB8IGdyZXAgLXYgXiMgfCBhd2sgJ3sgcHJpbnQgJDUgfScgfCBzb3J0IC11IHwg
+d2MgLWxgCiBpZiBbICRjb3VudCAtbmUgMCBdOyB0aGVuCiAgICAgZmFpbCAiYW55IG9mIHNj
+aGVkdWxlciBldmVudHMgc2hvdWxkIG5vdCBiZSByZWNvcmRlZCIKIGZpCmRpZmYgLS1naXQg
+YS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rc2VsZnRlc3RfaGFybmVzcy5oIGIvdG9vbHMv
+dGVzdGluZy9zZWxmdGVzdHMva3NlbGZ0ZXN0X2hhcm5lc3MuaAppbmRleCA0ZmQ3MzVlNDhl
+ZTcuLjIzMGQ2Mjg4NDg4NSAxMDA2NDQKLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMv
+a3NlbGZ0ZXN0X2hhcm5lc3MuaAorKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rc2Vs
+ZnRlc3RfaGFybmVzcy5oCkBAIC0zODMsNiArMzgzLDcgQEAKIAkJRklYVFVSRV9EQVRBKGZp
+eHR1cmVfbmFtZSkgc2VsZjsgXAogCQlwaWRfdCBjaGlsZCA9IDE7IFwKIAkJaW50IHN0YXR1
+cyA9IDA7IFwKKwkJYm9vbCBqbXAgPSBmYWxzZTsgXAogCQltZW1zZXQoJnNlbGYsIDAsIHNp
+emVvZihGSVhUVVJFX0RBVEEoZml4dHVyZV9uYW1lKSkpOyBcCiAJCWlmIChzZXRqbXAoX21l
+dGFkYXRhLT5lbnYpID09IDApIHsgXAogCQkJLyogVXNlIHRoZSBzYW1lIF9tZXRhZGF0YS4g
+Ki8gXApAQCAtMzk5LDggKzQwMCwxMCBAQAogCQkJCV9tZXRhZGF0YS0+ZXhpdF9jb2RlID0g
+S1NGVF9GQUlMOyBcCiAJCQl9IFwKIAkJfSBcCisJCWVsc2UgXAorCQkJam1wID0gdHJ1ZTsg
+XAogCQlpZiAoY2hpbGQgPT0gMCkgeyBcCi0JCQlpZiAoX21ldGFkYXRhLT5zZXR1cF9jb21w
+bGV0ZWQgJiYgIV9tZXRhZGF0YS0+dGVhcmRvd25fcGFyZW50KSBcCisJCQlpZiAoX21ldGFk
+YXRhLT5zZXR1cF9jb21wbGV0ZWQgJiYgIV9tZXRhZGF0YS0+dGVhcmRvd25fcGFyZW50ICYm
+ICFqbXApIFwKIAkJCQlmaXh0dXJlX25hbWUjI190ZWFyZG93bihfbWV0YWRhdGEsICZzZWxm
+LCB2YXJpYW50LT5kYXRhKTsgXAogCQkJX2V4aXQoMCk7IFwKIAkJfSBcCg==
+
+--------------9zKQTgrVK4VJRn8QITeFZYlg--
 
