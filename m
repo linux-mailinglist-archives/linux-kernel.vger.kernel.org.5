@@ -1,94 +1,82 @@
-Return-Path: <linux-kernel+bounces-145685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC498A597D
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:00:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75DEF8A5983
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 20:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE5C41C20E98
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:00:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CB1DB2275F
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D66137757;
-	Mon, 15 Apr 2024 17:59:55 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D4D913A26E;
+	Mon, 15 Apr 2024 18:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="C8a4cA1i"
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6232F1E877
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AABD91E877;
+	Mon, 15 Apr 2024 18:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713203994; cv=none; b=G3n8UKjdp2Fv3pvFSpyuqQbBFEY5JYz37VWtICH/ADz8OA9KYftT5k6mhnDIEL1nzfryQIdL5jTxn8uXBByhlSZv3AOMG5BchCZAzsuDOiqk4zaI0HGqNTP+yAlv27YhWCsoF3ockrkEyc8gnEohotG4CkH50diaEVDvQwFsh+A=
+	t=1713204161; cv=none; b=q33eoqDpd8UHFOD3DxOnwUx3qNxpMXA2Tmmp9XtzOy5ZS/uDokgo39ZQfzwf2/In/PAp9RtkMuyyFUFguUd6waPn9krbgOwS1wzQEyZRQ7EYzCaS2TrTME0SJDiFpvKgAR2MOS5ATsd0BVDdULa8dZRaBId73NypLpKm8j0BMrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713203994; c=relaxed/simple;
-	bh=n12H2AcXe/G7fDq4Ayn11voWzAaVMt96sN1Ga2WKu5o=;
+	s=arc-20240116; t=1713204161; c=relaxed/simple;
+	bh=jjRA8zXzvN3+cUuLH6NQmwsAUi5CL+5L4B90taz/wa0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LBeWWfbyfSdoEz+J7Iz57XzsCt8s2TT/WVug0Ivnq5gL5s49PHNhb1HfVYNfL+3oTxdEbo59D5CHpzTAXXUYv3pjYGZLWDzU+ID3hdsh4rfbMUyDvI7PDca+4cgi7YyDevKna/NxvWdQpeKymBtWpVMAcNexZyxxHBtHQppQbH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E2DDB40E0187;
-	Mon, 15 Apr 2024 17:59:43 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id B2ZEUQpsPhhK; Mon, 15 Apr 2024 17:59:38 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6F31040E01C5;
-	Mon, 15 Apr 2024 17:59:19 +0000 (UTC)
-Date: Mon, 15 Apr 2024 19:59:12 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	linux-kernel@vger.kernel.org, x86@kernel.org, dave.hansen@intel.com,
-	tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-	luto@kernel.org, peterz@infradead.org, rick.p.edgecombe@intel.com,
-	thomas.lendacky@amd.com, ashish.kalra@amd.com, chao.gao@intel.com,
-	bhe@redhat.com, nik.borisov@suse.com, pbonzini@redhat.com,
-	seanjc@google.com
-Subject: Re: [PATCH v3 1/5] x86/kexec: do unconditional WBINVD for bare-metal
- in stop_this_cpu()
-Message-ID: <20240415175912.GAZh1q8GgpY3tpJj5a@fat_crate.local>
-References: <cover.1712493366.git.kai.huang@intel.com>
- <33b985a8f4346f4bcf0944eaf37193a906b11af3.1712493366.git.kai.huang@intel.com>
- <a4o4wlaojm5am4hc5yhr2mpn7clm3sjy5vx3w76ahm52lhxvwr@msdcnkcj3i6k>
- <4875349a-90e5-4a04-8a56-7d172b17e245@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kvL3mtDfGUiMVXNvjw8Iz4LtHaMp3IuU7HVvzFwIEe6ErGDaZvp0Y7iRz+qvDLPLwGMihMa/MKrJgYP6R46TUB5OEm/gthA1AgcHN/GT4uO6CsNnhzG1QCerC/pRjiS0Fl8nMypYaU0dc4sUXoJeMK5Du3OzkeHReRy1Aisd7RU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C8a4cA1i; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 15 Apr 2024 14:02:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1713204156;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BvG3OA4w+Lj+qFTRz9zvJBh1oQGpJxeKv6GShdGzH/k=;
+	b=C8a4cA1ivcG5Bo7GDT8vVtf5hr3IqHQvcKX+4O0fFKHUHgmIX1sthSt0u8U3kKTqaSIi+V
+	/lt41/u+rU12oYkxjHuLrF/5lHiSYArGy10tPc0cEinynEE6E3q+T0spsmyRA3XSbE5EEd
+	YiX+R37zTKLup25G96rRs4KCJNxe5Gs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Johannes Berg <johannes.berg@intel.com>, 
+	linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: debugfs revoke broken?
+Message-ID: <ra3ig25pwua6wm6v7vqexjvwybfpk23i5qqfeihth4f3zygjb6@7ykqlkyu25tb>
+References: <nxucitm2agdzdodrkm5rjyuwnnf6keivjiqlp5rn6poxkpkye6@yor2lprsxh7x>
+ <2024041557-stereo-wafer-1551@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4875349a-90e5-4a04-8a56-7d172b17e245@intel.com>
+In-Reply-To: <2024041557-stereo-wafer-1551@gregkh>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Apr 11, 2024 at 09:54:13AM +1200, Huang, Kai wrote:
-> Could you be more specific?
-> 
-> I was following Boris's suggestion to summerize all the discussion around
-> the "unconditional WBINVD" issue.
-> 
-> https://lore.kernel.org/linux-kernel/20240228110207.GCZd8Sr8mXHA2KTiLz@fat_crate.local/
-> 
-> I can try to improve if I can know specifically what should be trimmed down.
+On Mon, Apr 15, 2024 at 10:47:56AM +0200, Greg Kroah-Hartman wrote:
+> So this file was open when debugfs_remove() was called?
 
-No, keep it this way. I've yet to see someone complaining from too
-verbose commit message while doing git archeology.
+Seems likely.
 
-If it is too verbose to a reader, then that reader can jump over the
-paragraphs.
+> Any chance you can bisect?  We just fixed some issues here in
+> 952c3fce297f ("debugfs: fix wait/cancellation handling during remove")
+> that I thought should have handled this.  If you revert that commit,
+> does things work again?  And/or what about commit 8c88a474357e
+> ("debugfs: add API to allow debugfs operations cancellation")?  Maybe we
+> need to go back to not having completions at all in the debugfs remove
+> path and just live with waiting for the files to be removed before
+> continuing (which should at the least, resolve the issue you see here,
+> while slowing things down a bit.)
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+No, this doesn't occur often enough to bisect, unfortunately. All my
+tests bang on sysfs/debugfs in the background to torture test those
+codepaths, and I've seen 2 occurrences out of thousands of test runs -
+it's rare.
 
