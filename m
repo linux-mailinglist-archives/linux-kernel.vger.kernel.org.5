@@ -1,272 +1,105 @@
-Return-Path: <linux-kernel+bounces-144534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 038A98A4781
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:13:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B89B78A4785
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 07:20:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 276DB1C21534
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:13:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2EF11C21516
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 05:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1E324C6D;
-	Mon, 15 Apr 2024 05:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59CCF5234;
+	Mon, 15 Apr 2024 05:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="KmBQr6da"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="cNCcyY2k"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161971367;
-	Mon, 15 Apr 2024 05:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23778441F;
+	Mon, 15 Apr 2024 05:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713157991; cv=none; b=FUeik9Bw8+VGoqMv/BeuYwyQ5P/PbhJA7paIm7ZiY0nEWpqCUaX1e1AC/JY1Ldb9zhW2vilick3jjjK//ALbYJWeiM8NkDYHELGm8TqKNsAC/Xit7HnkC5lxD6GXfnlOH90hYLwELYeWX3823RsYsm8H3dYk4D0ko//hValSvRs=
+	t=1713158414; cv=none; b=U76TgNCegCM6L34bH8vOdJEFHyt4OpfOEdgZ5haM0f1fj5k+MuaPwpIKEDk8GdYzRWS8w8KJdeFr4mCZbmpCEhZiwv3ORbam7KNPG7y95QLpK+Ci83KvRAseTpv6NBzdjYQ90w61X8mzNWVMFNw2IuqXMzeVqQgeYYhRW3b/g3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713157991; c=relaxed/simple;
-	bh=3ay7QUHVnq3g2qo7RYJPpuz89x8PWB5r7okF2VoLa1c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=o4a4DeKeZo4wvxfvaJxijgWBc779MCv4j2P7mJQCmTmnOg0g1n30yr0LMRPDQPAyL6BVgF8aIeEfvnPAVkBl+QUqlygaLAxwvLLZN8O6wn/8Cow7rx5Oi/p9cHRWN7xly8dWpJv23giK5J+B6VU8jAjRNZOVbTi6qa4KgKQ7ifU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=KmBQr6da; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43F5CnKa049580;
-	Mon, 15 Apr 2024 00:12:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1713157969;
-	bh=U6MBw7wQDrCAyt79Is6SYYDcOKYGdw7dyNXobmxAR8Y=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=KmBQr6daNEVu7Mh4KVCMZK5Wf6uYtAFCBHkCDq/bt/aH1ClHlnJyeTWadNDw94nAz
-	 jrFh2un75srNiDO02RdlVfRhnpzJe/LfHFyblcdyHsJfXtInZnuDzGTnX3kvaq41T2
-	 S+bkaDL8sVP1kR6LaGaq4DT7UJ3iTCvo62mKuYwc=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43F5CnV4110551
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 15 Apr 2024 00:12:49 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 15
- Apr 2024 00:12:49 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 15 Apr 2024 00:12:49 -0500
-Received: from [172.24.31.60] (lt5cd2489kgj.dhcp.ti.com [172.24.31.60])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43F5Cjkt123637;
-	Mon, 15 Apr 2024 00:12:46 -0500
-Message-ID: <85ea2b33-05ac-400f-8017-5539d21ebe32@ti.com>
-Date: Mon, 15 Apr 2024 10:42:45 +0530
+	s=arc-20240116; t=1713158414; c=relaxed/simple;
+	bh=3+2slqMSSHYSy3izbMcmiQrG16EbrDDl0oQELaj4Zv0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=BAQiNyVeHxKn0hMcx8T8rRDLmwnGRNgtIwslGDw2Xf35f3Fpr3/gu0vn1qqQ0bPuhbt9RCalWCiPGnLQ3eWLK/CihC0T5HR9hbnZh0VqVQc517mvRTb6a85U7QrH5QXTgEANn3rzxXOXM9bLA659yyWZRLtOshNmrWIQ4WuM6rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=cNCcyY2k; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713158409;
+	bh=Qe+r7ojQoqxGOKMmJ7jfbUFde7TJ+FtV5rP61rPrhYg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=cNCcyY2k50CEfjvj9O/x4BeCo0d3ZMbnqDuYz5pxBy0tipPS9qQwapPeX6b/qug4d
+	 x8DdgiHhqCrY1ru7C9sAyckVwmkmDZX/YkhQ2fYb4RYObxdSVRyzJy02ppJVbvW7FM
+	 fi+YuXMQV1j9SA+dzWpj2N2JFn1+dJuyUK2GI9OXTzmZtNG8WSdnvhacR1rotb+/Kj
+	 e1ADqGEffpwazEyBNIhMlopvfZMFyHdaBI0Wq1JbHV7/T2b8xzb9gr5TgbaSpQuVfc
+	 4ICRFQlPNxmIrqlNp5VUCAZieMje88wpmwdxe5CR9K3Ke97DjbXYjdGSSyVIdx5Jqo
+	 67HoYid64ZlPQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VHwV05sGhz4wcR;
+	Mon, 15 Apr 2024 15:20:08 +1000 (AEST)
+Date: Mon, 15 Apr 2024 15:20:08 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Barry Song <v-songbaohua@oppo.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the mm tree
+Message-ID: <20240415152008.0708afb1@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for multiple
- CAN instances
-To: Bhavya Kapoor <b-kapoor@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <vigneshr@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <conor+dt@kernel.org>,
-        <krzk+dt@kernel.org>, <robh@kernel.org>, <kristo@kernel.org>,
-        <nm@ti.com>, <u-kumar1@ti.com>
-References: <20240411201747.18697-1-b-kapoor@ti.com>
-Content-Language: en-US
-From: "Kumar, Udit" <u-kumar1@ti.com>
-In-Reply-To: <20240411201747.18697-1-b-kapoor@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; boundary="Sig_/1bVpxP8y_WER/.L72r/mfsc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Hello Bhavya,
+--Sig_/1bVpxP8y_WER/.L72r/mfsc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 4/12/2024 1:47 AM, Bhavya Kapoor wrote:
-> CAN instances 0 and 1 in the mcu domain and 16 in the main domain are
-> brought on the evm through headers J42, J43 and J46 respectively. Thus,
-> add their respective transceiver's 0, 1 and 2 dt nodes to add support
-> for these CAN instances.
+Hi all,
 
-Looking at schematic and board data sheet, it appears, board has 6 CAN 
-interfaces.
+After merging the mm tree, today's linux-next build (htmldocs) produced
+this warning:
 
-[J41--J46],  but we are enabling only 4.
+Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage:2: ERROR: Unex=
+pected indentation.
 
-I understand, other interfaces might be used for other purpose.
+Introduced by commit
 
-Vignesh/Nishanth,
+  a70dabb40c3d ("mm: add docs for per-order mTHP counters and transhuge_pag=
+e ABI")
 
-Do you think, this make sense to code all available interfaces on board and
+from the mm-unstable branch of the mm tree.
 
-mark as reserved, if used for other purpose , similar to what is done 
-for wkup_uart for this board.
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/1bVpxP8y_WER/.L72r/mfsc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> CAN instance 4 in the main domain is brought on the evm through header
-> J45. The CAN High and Low lines from the SoC are routed through a mux
-> on the evm. The select lines need to be set for the CAN signals to
-> reach to its transceiver on the evm. Therefore, add transceiver 3
-> dt node to add support for this CAN instance.
->
-> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
-> ---
->
-> rebased to next-20240411
->
->   arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 107 +++++++++++++++++++++++
->   1 file changed, 107 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-> index 81fd7afac8c5..e56901973895 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-> @@ -272,6 +272,45 @@ dp0_connector_in: endpoint {
->   			};
->   		};
->   	};
-> +
-> +	transceiver0: can-phy0 {
-> +		compatible = "ti,tcan1042";
-> +		#phy-cells = <0>;
-> +		max-bitrate = <5000000>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
-> +		standby-gpios = <&wkup_gpio0 69 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	transceiver1: can-phy1 {
-> +		compatible = "ti,tcan1042";
-> +		#phy-cells = <0>;
-> +		max-bitrate = <5000000>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&mcu_mcan1_gpio_pins_default>;
-> +		standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	transceiver2: can-phy2 {
-> +		/* standby pin has been grounded by default */
-> +		compatible = "ti,tcan1042";
-> +		#phy-cells = <0>;
-> +		max-bitrate = <5000000>;
-> +	};
-> +
-> +	transceiver3: can-phy3 {
-> +		compatible = "ti,tcan1042";
-> +		#phy-cells = <0>;
-> +		max-bitrate = <5000000>;
-> +		standby-gpios = <&exp2 7 GPIO_ACTIVE_HIGH>;
-> +		mux-states = <&mux1 1>;
-> +	};
-> +
-> +	mux1: mux-controller {
-> +		compatible = "gpio-mux";
-> +		#mux-state-cells = <1>;
-> +		mux-gpios = <&exp2 14 GPIO_ACTIVE_HIGH>;
+-----BEGIN PGP SIGNATURE-----
 
-Could you help here on logic to choose pin 14
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYcuQgACgkQAVBC80lX
+0GynSwf+I+a9CfjizKw8Q6NodnX8M7lW9J8QwI6GekOFeMGdTjtdSDMrH9WXIXuT
+aHjZGSUAakXjXpGu51FNz+IN3b4J5Hqn0rguxoa3zSawcBuQdPUt4i7Vx/L4A5JL
+H0GKX5mVfH5bx+7vGfDMMvXMRs9OCpsre5STG0nIWlNud3ypjx4srLCXsviJVZ1L
+XrCzP72yNF7Ux0/j4JPPsJ7FxWsoms4J4nll6Wpe4C5EShUP0Gz9rMFJMw6/fMhU
+hc7cQCt77O4fvV2F8VBylEwjm0iJi/1LsGVUOxO4H1xod6lQay6cPPgeJN4ZB1ga
++fq+iciYNB9zsfXwI31QMA5l0xs/DA==
+=0bRo
+-----END PGP SIGNATURE-----
 
-As I see for this mux
-
-S0 is CANUART_MUX_SEL0 [Pin 14, which you want to control as high]
-
-S1 is Pin 15 is "CANUART_MUX2_SEL1"
-
-S2 is high
-
-So in order to get CAN on mux output
-
-All, S0, S1 and S2 should be high.
-
-IMO, you should control both S0 and S1, or just S1 and S0 with dip switch
-
-> +	};
->   };
->   
->   &wkup_gpio0 {
-> @@ -336,6 +375,20 @@ J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
->   			J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
->   		>;
->   	};
-> +
-> +	main_mcan4_pins_default: main-mcan4-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_IOPAD(0x088, PIN_INPUT, 0) /* (AF36) MCAN4_RX */
-> +			J784S4_IOPAD(0x084, PIN_OUTPUT, 0) /* (AG38) MCAN4_TX */
-> +		>;
-> +	};
-> +
-> +	main_mcan16_pins_default: main-mcan16-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_IOPAD(0x028, PIN_INPUT, 0) /* (AE33) MCAN16_RX */
-> +			J784S4_IOPAD(0x024, PIN_OUTPUT, 0) /* (AH34) MCAN16_TX */
-> +		>;
-> +	};
->   };
->   
->   &wkup_pmx2 {
-> @@ -415,6 +468,32 @@ J784S4_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
->   			J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
->   		>;
->   	};
-> +
-> +	mcu_mcan0_pins_default: mcu-mcan0-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_WKUP_IOPAD(0x050, PIN_OUTPUT, 0) /* (K33) MCU_MCAN0_TX */
-> +			J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (F38) MCU_MCAN0_RX */
-> +		>;
-> +	};
-> +
-> +	mcu_mcan1_pins_default: mcu-mcan1-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_WKUP_IOPAD(0x068, PIN_OUTPUT, 0) /* (H35) WKUP_GPIO0_4.MCU_MCAN1_TX */
-> +			J784S4_WKUP_IOPAD(0x06c, PIN_INPUT, 0) /* (K36) WKUP_GPIO0_5.MCU_MCAN1_RX */
-> +		>;
-> +	};
-> +
-> +	mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_WKUP_IOPAD(0x040, PIN_INPUT, 7) /* (J38) MCU_SPI0_D1.WKUP_GPIO0_69 */
-> +		>;
-> +	};
-> +
-> +	mcu_mcan1_gpio_pins_default: mcu-mcan1-gpio-default-pins {
-> +		pinctrl-single,pins = <
-> +			J784S4_WKUP_IOPAD(0x060, PIN_INPUT, 7) /* (J35) WKUP_GPIO0_2 */
-> +		>;
-> +	};
->   };
->   
->   &wkup_pmx1 {
-> @@ -1105,3 +1184,31 @@ dp0_out: endpoint {
->   		};
->   	};
->   };
-> +
-> +&mcu_mcan0 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcu_mcan0_pins_default>;
-> +	phys = <&transceiver0>;
-> +};
-> +
-> +&mcu_mcan1 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&mcu_mcan1_pins_default>;
-> +	phys = <&transceiver1>;
-> +};
-> +
-> +&main_mcan16 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_mcan16_pins_default>;
-> +	phys = <&transceiver2>;
-> +};
-> +
-> +&main_mcan4 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&main_mcan4_pins_default>;
-> +	phys = <&transceiver3>;
-> +};
+--Sig_/1bVpxP8y_WER/.L72r/mfsc--
 
