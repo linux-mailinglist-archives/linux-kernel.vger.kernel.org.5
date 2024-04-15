@@ -1,135 +1,261 @@
-Return-Path: <linux-kernel+bounces-145352-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A2088A5395
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:29:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6282A8A53B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:30:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 242FC28534C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:29:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8B14B227F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7307480BFF;
-	Mon, 15 Apr 2024 14:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73137F7EF;
+	Mon, 15 Apr 2024 14:28:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WZrksUYi"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RpXs78/Q"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B96762D2;
-	Mon, 15 Apr 2024 14:27:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A478874E25
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713191245; cv=none; b=DS7dcDz7q3C9Ag/vcSd+E5R8aatrkLscOww2eWZbLVOG/1XK7LAqKMG9N27R16m0J6rcvfwKLE62sV87tsRCtGOj4qrKql+zErL6kAyAvjf24nk9UF2frbaQnjrsQsUvdLcYiIa72f8WrRk6+FywgjI6blQN4SXIKiGIjiQ2bpI=
+	t=1713191307; cv=none; b=BeAvv1DsGQd8t2R/+MMp/llef83hW4cuKD9Eam0stMVy4m0PO3kXxVZf20pOyEiq3sXRqxtxetERS+0Qxvw5KCF5PtoNGWqFDBmfyXAcMAKYW/uLOePfASeJV+LxLeiK8khgDMnGSSf0sbR0VFE/UdGtBn1d5AK5R/MrcQjJWhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713191245; c=relaxed/simple;
-	bh=U8+VhHtVtHYm99pwI9LXA/ypd0RLVR9GZnPOqy4ulUk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=aGnBqHcPXw/FE4iSI3epp+6Q4n0Ye8AjUw1dOUUAh/niV0z436I7iDXn38UBvLt+b1Oz6lRBrJK8Nn/HosEAK206sFxBsFKPPEuVYts919pYbGBU9NuA1oRjw6FKZNEtgU+3kw3SuHwr5NPfLR2aMnWrshrcZIYkjFDT3/fP2ZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WZrksUYi; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43FEQXoW001397;
-	Mon, 15 Apr 2024 14:27:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=PN5/ARZMuUxRRpX+S1l+ndAR/7ixTDYrllzhIU8GDgQ=;
- b=WZrksUYigDTsgLOK9ZdeecgKLxcSKnggI+E0yMaNB58dUxJ23v755TThJt/XzjGKzk/e
- YD//8jiHXP8IEjQ4yEO4qgXNjnkSvc8zIVRtuYlEQ4J6PPkWOqsyQoXWSCTh8qazuh6W
- yZGQk048U2ZNDkuuAAiozD8DZnz5LcrkJI8Z4xBWgH+iYfKxByQ/KvAzr/mADxEx2Wey
- E+4HaiAws5TJhwIb01gUGKMZkTZYJaQwHOW2grhNUux6Qa2LDrM4PiNrUiZ5S4n02fAb
- yT7t2CZ+fgBM1bfrAh67sOzO0Hlk4IvOUK9Uyvvpidi+YGi9vCaWyRgZUdHFIDrV37JK Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xfh2jm48g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 14:27:21 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43FERK9B002996;
-	Mon, 15 Apr 2024 14:27:20 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xfh2jm48e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 14:27:20 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43FDiM4p021347;
-	Mon, 15 Apr 2024 14:27:20 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg6kk7ynt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 14:27:19 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43FEREXh49938780
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 15 Apr 2024 14:27:16 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6EC5420043;
-	Mon, 15 Apr 2024 14:27:14 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2CE9B20040;
-	Mon, 15 Apr 2024 14:27:14 +0000 (GMT)
-Received: from [9.155.199.94] (unknown [9.155.199.94])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 15 Apr 2024 14:27:14 +0000 (GMT)
-Message-ID: <743bd638-2a9d-4c53-bc44-14292edef58a@linux.ibm.com>
-Date: Mon, 15 Apr 2024 16:27:14 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] KVM: s390x: selftests: Add shared zeropage test
-Content-Language: en-US
-To: Alexander Gordeev <agordeev@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Thomas Huth <thuth@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-References: <20240412084329.30315-1-david@redhat.com>
- <Zh03fI2oA0UkE0Kp@tuxmaker.boeblingen.de.ibm.com>
-From: Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <Zh03fI2oA0UkE0Kp@tuxmaker.boeblingen.de.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FT_VEbQt5d-W0Wbkq9NOT1W9eDcmA1cJ
-X-Proofpoint-ORIG-GUID: ruadlHnHpqBXQJv0mOBmsUmd1-A1fvBg
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1713191307; c=relaxed/simple;
+	bh=ytcogp74VJ66uuFEXxuGZV5D/Qv4HwWVONS/Jg5tnbI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dxWkN5iRDaYCbSkuo6XfShuGFo7madJoBXYA8T9ALgkIzOxLLGU3RWusp626Rg+9Zs/eUsbUXIYGIOqDGLildq/qUGVMcu3CmFcydzXNL7XPq+r3NIfXeS0M07ZwG5mOHwegcJFXu/SI3ViYI8adWxwawSNRWf+YmbDSoO/a0Ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RpXs78/Q; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so949899b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:28:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713191305; x=1713796105; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dCR27t1hGGufnpVnvCmoWaIgC3EfAz+l4DjDvpX/Ib0=;
+        b=RpXs78/Q4RyDnYJ8kW0Vtx3fnf2d3DQ6nUbUTyC1xvZ13m7yNyioyu6dy0YmuXK3SW
+         5yKAxfptuGCWG+dwawE4+X7T+LdLjrmdbAM8KhzcWy/G/j39+Z1VCFOU55G5Woz2+q/Y
+         4jxj+H9D/km0GLg5+uPgYj55GVBIfmy349XkX82MWg0ii3PHu4OcFNU9n3xzZ0WZ/rsH
+         QNXc9JOvuG4ZpPoMtQgvxxdLaKwEy2CmwLLp02aLTyyvHEXa3xhi5wuii/FoRFNCBqyE
+         MAMn7bFQdq+sr1FeiknhC2UAhAOh2Su22hUaeaeEOuNP8JEKEbuBhioABN2l5Gg+Oo3b
+         ocvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713191305; x=1713796105;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dCR27t1hGGufnpVnvCmoWaIgC3EfAz+l4DjDvpX/Ib0=;
+        b=EqCCwttEXc3Jx5SII+DnbVg9vfdOXFrWzufdLPbPr0HH/Ojg0kb6M1Rpfgy7XcA9oE
+         +JFKHQcozp3o7azeclzCp4800tJ4Y+u9iOWFiHIWgCpQf63gJEh8UnRQ5HxxnZE9UBH0
+         3OlAzbiGtDkMxMixRyYV/FG6CdcO14H6LTPkXlutTZfymLHD0ANK51HP7/lOiKOSnXVb
+         bY1NGdoDWPp6KrwAqWmoDpccFguOyVCEyraqJ7JHuVu34ENCu2nxItPQmK+vpgoZpnmw
+         QsBAL9E5Qm7uayJzmrydYDaQlRpu64Ip4s0yAENiThpCmhr3nI7qMrTAuujiW1a2r/rn
+         5lZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTyneVAbzyBDvbh80P7FK8HpfUxzSeNL4ympqcsB5m1zSuB9Cs0mltOmre50mHUTRdVkD7ddAFteUWG/kD2jWXtZsz/v0MmeODtX4z
+X-Gm-Message-State: AOJu0YwB8Uh2Mi3uYTm8Q95VaKo+WHXGmcUayNLK3gVOCeTLNlLRIfgH
+	mppk2OA9X4bEOlrOI/V8F2PPoQjlxWdGb1TRVdCCF57TbZhIqIol
+X-Google-Smtp-Source: AGHT+IEZsOXWoubXFpf8Vkx3wtYoY3Jn51Rk7KaombfQH8gQhzRsZEy2LZRoH/MX2zdMWNSfl4NpvQ==
+X-Received: by 2002:a05:6a21:398f:b0:1a9:fe63:90f0 with SMTP id ad15-20020a056a21398f00b001a9fe6390f0mr3568262pzc.53.1713191304871;
+        Mon, 15 Apr 2024 07:28:24 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id y25-20020aa78059000000b006ef97508163sm4349905pfm.37.2024.04.15.07.28.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 07:28:24 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 9C0131B5EF086; Mon, 15 Apr 2024 21:28:22 +0700 (WIB)
+Date: Mon, 15 Apr 2024 21:28:22 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com,
+	pekka.paalanen@collabora.com, thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH 2/3] drm: drm_blend.c: Improve
+ drm_plane_create_rotation_property kernel doc
+Message-ID: <Zh05hqtB9owzjjez@archie.me>
+References: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
+ <20240409-google-drm-doc-v1-2-033d55cc8250@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-15_11,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- mlxscore=0 priorityscore=1501 impostorscore=0 clxscore=1011 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404150094
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="j3zP2GZ4OPkidsR1"
+Content-Disposition: inline
+In-Reply-To: <20240409-google-drm-doc-v1-2-033d55cc8250@bootlin.com>
 
 
+--j3zP2GZ4OPkidsR1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Am 15.04.24 um 16:19 schrieb Alexander Gordeev:
-> On Fri, Apr 12, 2024 at 10:43:29AM +0200, David Hildenbrand wrote:
-> Hi David,
->>   tools/testing/selftests/kvm/Makefile          |   1 +
->>   .../kvm/s390x/shared_zeropage_test.c          | 110 ++++++++++++++++++
->>   2 files changed, 111 insertions(+)
->>   create mode 100644 tools/testing/selftests/kvm/s390x/shared_zeropage_test.c
-> 
-> Tested-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> 
-> @Janosch, Christian,
-> 
-> I think this patch should go via s390 tree together with
-> https://lore.kernel.org/r/20240411161441.910170-3-david@redhat.com
-> 
-> Do you agree?
+On Tue, Apr 09, 2024 at 12:04:06PM +0200, Louis Chauvet wrote:
+> @@ -266,8 +257,41 @@ EXPORT_SYMBOL(drm_plane_create_alpha_property);
+>   *
+>   * Rotation is the specified amount in degrees in counter clockwise dire=
+ction,
+>   * the X and Y axis are within the source rectangle, i.e.  the X/Y axis =
+before
+> - * rotation. After reflection, the rotation is applied to the image samp=
+led from
+> - * the source rectangle, before scaling it to fit the destination rectan=
+gle.
+> + * rotation.
+> + *
+> + * Here are some examples of rotation and reflections:
+> + *
+> + * |o  +|  REFLECT_X  |+  o|
+> + * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+> + * |    |             |    |
+> + *
+> + * |o   |  REFLECT_Y  |+   |
+> + * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+> + * |+   |             |o   |
+> + *
+> + * |o  +|  ROTATE_90  |+   |
+> + * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+> + * |    |             |o   |
+> + *
+> + * |o   |  ROTATE_180 |   +|
+> + * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+> + * |+   |             |   o|
+> + *
+> + * |o   |  ROTATE_270 |+  o|
+> + * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+> + * |+   |             |    |
+> + *
+> + * Rotation and reflection can be combined to handle more situations. In=
+ this condition, the
+> + * reflection is applied first and the rotation in second.
+> + *
+> + * For example the expected result for DRM_MODE_ROTATE_90 | DRM_MODE_REF=
+LECT_X is:
+> + *
+> + * |o  +|  REFLECT_X  |+  o|  ROTATE_90  |o   |
+> + * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |  =3D=3D=3D=3D=3D=3D=3D=3D> =
+ |    |
+> + * |    |             |    |             |+   |
+> + *
+> + * It is not possible to pass multiple rotation at the same time. (i.e R=
+OTATE_90 | ROTATE_180 is
+> + * not the same as ROTATE_270 and is not accepted).
 
-Yes, thank you
+Sphinx reports htmldocs warnings on these transformation diagrams:
 
-Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:265: ERROR: Un=
+defined substitution referenced: "o +".
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:265: ERROR: Un=
+defined substitution referenced: "+ o".
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:273: ERROR: Un=
+defined substitution referenced: "o +".
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:277: ERROR: Un=
+defined substitution referenced: "o | ROTATE_180 | +".
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:277: ERROR: Un=
+defined substitution referenced: "+ | | o".
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:281: ERROR: Un=
+defined substitution referenced: "o | ROTATE_270 |+ o".
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:290: ERROR: Un=
+defined substitution referenced: "o +".
+Documentation/gpu/drm-kms:389: ./drivers/gpu/drm/drm_blend.c:290: ERROR: Un=
+defined substitution referenced: "+ o".
+
+I have to wrap them in literal blocks:
+
+---- >8 ----
+diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
+index 6fbb8730d8b022..f2cbf8d8efbbbc 100644
+--- a/drivers/gpu/drm/drm_blend.c
++++ b/drivers/gpu/drm/drm_blend.c
+@@ -259,36 +259,36 @@ EXPORT_SYMBOL(drm_plane_create_alpha_property);
+  * the X and Y axis are within the source rectangle, i.e.  the X/Y axis be=
+fore
+  * rotation.
+  *
+- * Here are some examples of rotation and reflections:
++ * Here are some examples of rotation and reflections::
+  *
+- * |o  +|  REFLECT_X  |+  o|
+- * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+- * |    |             |    |
++ *	|o  +|  REFLECT_X  |+  o|
++ *	|    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
++ *	|    |             |    |
+  *
+- * |o   |  REFLECT_Y  |+   |
+- * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+- * |+   |             |o   |
++ *	|o   |  REFLECT_Y  |+   |
++ *	|    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
++ *	|+   |             |o   |
+  *
+- * |o  +|  ROTATE_90  |+   |
+- * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+- * |    |             |o   |
++ *	|o  +|  ROTATE_90  |+   |
++ *	|    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
++ *	|    |             |o   |
+  *
+- * |o   |  ROTATE_180 |   +|
+- * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+- * |+   |             |   o|
++ *	|o   |  ROTATE_180 |   +|
++ *	|    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
++ *	|+   |             |   o|
+  *
+- * |o   |  ROTATE_270 |+  o|
+- * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
+- * |+   |             |    |
++ *	|o   |  ROTATE_270 |+  o|
++ *	|    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |
++ *	|+   |             |    |
+  *
+  * Rotation and reflection can be combined to handle more situations. In t=
+his condition, the
+  * reflection is applied first and the rotation in second.
+  *
+- * For example the expected result for DRM_MODE_ROTATE_90 | DRM_MODE_REFLE=
+CT_X is:
++ * For example the expected result for DRM_MODE_ROTATE_90 | DRM_MODE_REFLE=
+CT_X is::
+  *
+- * |o  +|  REFLECT_X  |+  o|  ROTATE_90  |o   |
+- * |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |=
+    |
+- * |    |             |    |             |+   |
++ *	|o  +|  REFLECT_X  |+  o|  ROTATE_90  |o   |
++ *	|    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |    |  =3D=3D=3D=3D=3D=3D=3D=3D>  |=
+    |
++ *	|    |             |    |             |+   |
+  *
+  * It is not possible to pass multiple rotation at the same time. (i.e ROT=
+ATE_90 | ROTATE_180 is
+  * not the same as ROTATE_270 and is not accepted).
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--j3zP2GZ4OPkidsR1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh05hgAKCRD2uYlJVVFO
+o1ViAQCpYUwFBWA1VJ9hNZykmFyvVHFiqufi3AfxQWmolU+5WgD/QCeVancsmMRC
+Xu+Tf5kfiNJTrMQwSlF/2Dxr+StGagc=
+=91C7
+-----END PGP SIGNATURE-----
+
+--j3zP2GZ4OPkidsR1--
 
