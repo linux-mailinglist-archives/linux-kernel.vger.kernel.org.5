@@ -1,80 +1,70 @@
-Return-Path: <linux-kernel+bounces-145499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A7928A56F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:02:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3BB68A56FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5F891F2296F
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:02:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47D7FB228A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:04:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C125C7CF16;
-	Mon, 15 Apr 2024 16:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331C27FBBE;
+	Mon, 15 Apr 2024 16:03:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZIOKpiZ6"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BApmuDAt"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406847F490
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 16:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9A979DD5;
+	Mon, 15 Apr 2024 16:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713196955; cv=none; b=RiapgHj9or+8gkTsoLpeC9PI5QTpk7UVtRINul1mRR+zUXM1dqU5FxBcU/ByBC0NtT2j9xSm6WEUf59dvQsssIJZHZiltv3cMKM/6blhkSbJXXbo3PLiegYvEgrVdSySOhjbwm9c/A4qlQiS1uQjc9F6KEYstdJRjqA3HQc5SVM=
+	t=1713197034; cv=none; b=IFoVLQpFpHZ4WYFea8INjLrnp/eI++Cw2NYq+lpRSd/CyvvoswoVkZLxj0mZlO9mZJhfANQEjg2rrHbz9DJNHCM85RPwxoLZNM0Zn9w3oOSG1TxR8ijczCXUuq37qiFjTVT7Q29JSJVMnNNpvLuVt1S2bV9YXp0C0AuUC3MoxOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713196955; c=relaxed/simple;
-	bh=cl5WBWviIU0Mw1ZExh0tD+xzkFGkwSD45sUBOwUVm6c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DbME5w9nKiuOYYbFp7Si31vyFihsurT9c1wD8JwDml3z5M6RNzWzbHKM2Fjwd6ezDCCrhF4tns3sT6EOVgWp232i+gXTmOl9u9t3/i3LDaueI3GeiJ/UJO9JU8xBPU3z5s0miQy9Lh5tn0WGK/AKyNBCSS/3WoOLm12vtf4mQmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZIOKpiZ6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713196952;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zXE906H3fuZsmm3fetxI7aX0o0Q77mLxPPNeSWk0lQk=;
-	b=ZIOKpiZ6Pxcr7SwHuuV30dMh3g3a0949xJjHZ+MTQP3Xp59fONrSiD6tL0Wiu1t0+z9hNE
-	FDdwZ2T/q5rWR11G2l24ORgMZ53HiQ+O68UDYpbZ/qKVzWDP4wJxdsJf1iq28NTyClt+Bv
-	SHp38tV8CKj5Hac1vhR9aeHF1X5ccWQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-yhBD91gIN6OG4WyRkfI05Q-1; Mon, 15 Apr 2024 12:02:30 -0400
-X-MC-Unique: yhBD91gIN6OG4WyRkfI05Q-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343ee356227so2136407f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:02:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713196949; x=1713801749;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zXE906H3fuZsmm3fetxI7aX0o0Q77mLxPPNeSWk0lQk=;
-        b=IZtlxGd/RQlt1Lv9irb1NkLGg/nlhdu3bpjSGPWTO8pCH27M3/Es9Ln9jPi3KML/Wo
-         01KlzPiwizHOQIoqWej5g66X2hhp2I4PZRem5WWzDRDSd82wORSgIlj5KsYw23kca3rL
-         FFFNEP/CirP0Pjd2JYYsEHIAxqbbDuaYr9bHH6W2iovYBF1ICYwbg49qdZPpFSFLDUuk
-         WHmDphdDyDeFzQd8Qczt2Xa3fOnm07t6XymgX2vN7AlZ7jrzOnYbJYEaNJ/jtCtg9WHM
-         uzW5z5QOVhh/4OqmBEOgZ+0PYHYMaCvSEWUUZU6Gr8XkdD0aY3CrLXgXRcBPlH82KLT8
-         o18Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWuDyQj9Wle+aNQ5cy1luyzZnEbe3Y5gHRKy/4b7hbiGhr+SKuaCXDuycdu/ec0c8/DRhUDciZyeA8kKqJlx+a8GBb4J9oXQ164kXxr
-X-Gm-Message-State: AOJu0YxPwz2Tuw03g61VFijm65bLjSjvnKAVQiZyveWI3HgqdXwdqJGU
-	ERxIB7lUi7TsPtE50DF1pS4cYenSh+m/pIwIrYV+VpR8TfocvdT4yuDRSHkyDahuwfcg6oA/Q8Y
-	Kk1XC0YRi45uvOdrL/2C3Q7nltVUgldBCP838PKk4j/xmgsEWHFUpVvbQUr4CwMxr6Wa2gg==
-X-Received: by 2002:a05:6000:bca:b0:345:edfd:9529 with SMTP id dm10-20020a0560000bca00b00345edfd9529mr5907463wrb.29.1713196948977;
-        Mon, 15 Apr 2024 09:02:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFeLpeqDIjR0x4VRGhylPjLUc6KpyZYO+kJPyDkXYnHbIVY3O7JoYuBWnxQEJ9czEWbc73X3A==
-X-Received: by 2002:a05:6000:bca:b0:345:edfd:9529 with SMTP id dm10-20020a0560000bca00b00345edfd9529mr5907448wrb.29.1713196948496;
-        Mon, 15 Apr 2024 09:02:28 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c706:d800:568a:6ea7:5272:797c? (p200300cbc706d800568a6ea75272797c.dip0.t-ipconnect.de. [2003:cb:c706:d800:568a:6ea7:5272:797c])
-        by smtp.gmail.com with ESMTPSA id w5-20020a5d4045000000b00346ceb9e060sm11638411wrp.103.2024.04.15.09.02.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Apr 2024 09:02:28 -0700 (PDT)
-Message-ID: <abc3f45e-3bb9-44b8-ac87-c988e4de706c@redhat.com>
-Date: Mon, 15 Apr 2024 18:02:26 +0200
+	s=arc-20240116; t=1713197034; c=relaxed/simple;
+	bh=eRNqsnu2gggpUPFWgp9U5SWpDCENJohEVqbf6eu8y30=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=oBvEs7Kqtnl71qT7CdA7IWp3PtOuECgKMj4v9msHQsyPoGdsT0ztpb31ff3xoU0nLdhNeRxFPfkGwYGMJAIbh63mJKiE4mdhzk0cWgZOBXlska0x/OOJinzioqCTPBrQANd5J+u5EsRRJP2MRfrb9coxnNVga9t0oKocjNNTZiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BApmuDAt; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713197034; x=1744733034;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=eRNqsnu2gggpUPFWgp9U5SWpDCENJohEVqbf6eu8y30=;
+  b=BApmuDAtNAZ92w2IHlP1JVthdPcAWTHRuTV97fXabuO+GiSiq+o8lyuS
+   z/nQpMQLk8ffHqc3VWBvFNQco8iulXe+vJ4Dzqeu1/06ljoqkBFdOMrCH
+   njLjZv/GQrTfsRi4qRQIIxeSZIbY6ZCzQNuQMw1WxzDH12JroOrk1hZDu
+   Q9IlY2QNUoar9hmrbzh5yyVFPRh2+s6Yq8Fl3q6VD2yOgEsjjx7SRXIJP
+   nkP4YsL98AmaLg3MSQSjBigpVHfX/GaoyrEAfASeqqUc338SkR3Ihg8b7
+   vPKKpePQSgAPWJZmbpqyQtvo6rKBwA5E60WdgS4D7e7LUEoWnr37t6u4O
+   A==;
+X-CSE-ConnectionGUID: OO3W3y6OT82G3tK6N+7qbg==
+X-CSE-MsgGUID: 9rHW795JR26f0GnLN3l8HA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8703769"
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="8703769"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 09:03:14 -0700
+X-CSE-ConnectionGUID: cV6mMS5KT5+Khu71lQelUQ==
+X-CSE-MsgGUID: pEs01NjfSe+wVT96RpHFcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="26624362"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 09:03:09 -0700
+Received: from [10.213.164.211] (kliang2-mobl1.ccr.corp.intel.com [10.213.164.211])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 07FDE206D892;
+	Mon, 15 Apr 2024 09:03:06 -0700 (PDT)
+Message-ID: <ab2953b7-18fd-4b4c-a83b-ab243e2a21e1@linux.intel.com>
+Date: Mon, 15 Apr 2024 12:03:05 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,164 +72,113 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 0/4] Reduce cost of ptep_get_lockless on arm64
-To: Ryan Roberts <ryan.roberts@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Muchun Song <muchun.song@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215121756.2734131-1-ryan.roberts@arm.com>
- <a41b0534-b841-42c2-8c06-41337c35347d@arm.com>
- <8bd9e136-8575-4c40-bae2-9b015d823916@redhat.com>
- <86680856-2532-495b-951a-ea7b2b93872f@arm.com>
- <35236bbf-3d9a-40e9-84b5-e10e10295c0c@redhat.com>
- <dbc5083b-bf8c-4869-8dc7-5fbf2c88cce8@arm.com>
- <f2aad459-e19c-45e2-a7ab-35383e8c3ba5@redhat.com>
- <4fba71aa-8a63-4a27-8eaf-92a69b2cff0d@arm.com>
- <5a23518b-7974-4b03-bd6e-80ecf6c39484@redhat.com>
- <81aa23ca-18b1-4430-9ad1-00a2c5af8fc2@arm.com>
- <70a36403-aefd-4311-b612-84e602465689@redhat.com>
- <f13d1e4d-1eea-4379-b683-4d736ad99c2c@arm.com>
- <3e50030d-2289-4470-a727-a293baa21618@redhat.com>
- <772de69a-27fa-4d39-a75d-54600d767ad1@arm.com>
- <969dc6c3-2764-4a35-9fa6-7596832fb2a3@redhat.com>
- <e0b34a1f-ef2e-484e-8d56-4901101dbdbf@arm.com>
- <11b1c25b-3e20-4acf-9be5-57b508266c5b@redhat.com>
- <89e04df9-6a2f-409c-ae7d-af1f91d0131e@arm.com>
- <ecd6e3e5-8617-42bd-bed4-3f97577934f9@redhat.com>
- <c880ba19-93ab-492b-a720-7272a1f8756d@arm.com>
-From: David Hildenbrand <david@redhat.com>
+Subject: Re: [RFC PATCH 02/41] perf: Support guest enter/exit interfaces
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, mizhang@google.com, kan.liang@intel.com,
+ zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, jmattson@google.com,
+ kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-3-xiong.y.zhang@linux.intel.com>
+ <ZhgmrczGpccfU-cI@google.com>
+ <23af8648-ca9f-41d2-8782-f2ffc3c11e9e@linux.intel.com>
+ <ZhmIrQQVgblrhCZs@google.com>
+ <2342a4e2-2834-48e2-8403-f0050481e59e@linux.intel.com>
 Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <c880ba19-93ab-492b-a720-7272a1f8756d@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <2342a4e2-2834-48e2-8403-f0050481e59e@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
->>> The potential problem I see with this is that the Arm ARM doesn't specify which
->>> PTE of a contpte block the HW stores a/d in. So the HW _could_ update them
->>> randomly and this could spuriously increase your check failure rate. In reality
->>> I believe most implementations will update the PTE for the address that caused
->>> the TLB to be populated. But in some cases, you could have eviction (due to
->>> pressure or explicit invalidation) followed by re-population due to faulting on
->>> a different page of the contpte block. In this case you would see this type of
->>> problem too.
->>>
->>> But ultimately, isn't this basically equivalent to ptep_get_lockless() returning
->>> potentially false-negatives for access and dirty? Just with a much higher chance
->>> of getting a false-negative. How is this helping?
+
+
+On 2024-04-12 4:56 p.m., Liang, Kan wrote:
+>> What if perf had a global knob to enable/disable mediate PMU support?  Then when
+>> KVM is loaded with enable_mediated_true, call into perf to (a) check that there
+>> are no existing !exclude_guest events (this part could be optional), and (b) set
+>> the global knob to reject all new !exclude_guest events (for the core PMU?).
 >>
->> You are performing an atomic read like GUP-fast wants you to. So there are no
->> races to worry about like on other architectures: HW might *set* the dirty bit
->> concurrently, but that's just fine.
+>> Hmm, or probably better, do it at VM creation.  That has the advantage of playing
+>> nice with CONFIG_KVM=y (perf could reject the enabling without completely breaking
+>> KVM), and not causing problems if KVM is auto-probed but the user doesn't actually
+>> want to run VMs.
+> I think it should be doable, and may simplify the perf implementation.
+> (The check in the schedule stage should not be necessary anymore.)
 > 
-> But you can still see false-negatives for access and dirty...
-
-Yes.
-
+> With this, something like NMI watchdog should fail the VM creation. The
+> user should either disable the NMI watchdog or use a replacement.
 > 
+> Thanks,
+> Kan
+>> E.g. (very roughly)
 >>
->> The whole races you describe with concurrent folding/unfolding/ ... are irrelevant.
-> 
-> And I think I convinced myself that you will only see false-negatives with
-> today's arm64 ptep_get(). But an order or magnitude fewer than with your
-> proposal (assuming 16 ptes per contpte block, and the a/d bits are in one of those).
-> 
+>> int x86_perf_get_mediated_pmu(void)
+>> {
+>> 	if (refcount_inc_not_zero(...))
+>> 		return 0;
 >>
->> To me that sounds ... much simpler ;) But again, just something I've been
->> thinking about.
-> 
-> OK so this approach upgrades my "I'm fairly sure we never see false-positives"
-> to "we definitely never see false-positives". But it certainly increases the
-> quantity of false-negatives.
-
-Yes.
-
-> 
+>> 	if (<system wide events>)
+>> 		return -EBUSY;
 >>
->> The reuse of pte_get_lockless() outside GUP code might not have been the wisest
->> choice.
+>> 	<slow path with locking>
+>> }
 >>
-> 
-> If you want to go down the ptep_get_gup_fast() route, you've still got to be
-> able to spec it, and I think it will land pretty close to my most recent stab at
-> respec'ing ptep_get_lockless() a couple of replies up on this thread.
-> 
-> Where would your proposal leave the KVM use case? If you call it
-> ptep_get_gup_fast() presumably you wouldn't want to use it for KVM? So it would
-> be left with ptep_get()...
+>> void x86_perf_put_mediated_pmu(void)
+>> {
+>> 	if (!refcount_dec_and_test(...))
+>> 		return;
+>>
+>> 	<slow path with locking>
+>> }
 
-It's using GUP-fast.
 
-> 
-> Sorry this thread is getting so long. Just to summarise, I think there are
-> currently 3 solutions on the table:
-> 
->    - ptep_get_lockless() remains as is
->    - ptep_get_lockless() wraps ptep_get()
->    - ptep_get_lockless() wraps __ptep_get() (and gets a gup_fast rename)
-> 
-> Based on discussion so far, that's also the order of my preference.
+I think the locking should include the refcount check and system wide
+event check as well.
+It should be possible that two VMs are created very close.
+The second creation may mistakenly return 0 if there is no lock.
 
-(1) seems like the easiest thing to do.
+I plan to do something as below (not test yet).
 
-> 
-> Perhaps its useful to enumerate why we dislike the current ptep_get_lockless()?
++/*
++ * Currently invoked at VM creation to
++ * - Check whether there are existing !exclude_guest system wide events
++ *   of PMU with PERF_PMU_CAP_MEDIATED_VPMU
++ * - Set nr_mediated_pmu to prevent !exclude_guest event creation on
++ *   PMUs with PERF_PMU_CAP_MEDIATED_VPMU
++ *
++ * No impact for the PMU without PERF_PMU_CAP_MEDIATED_VPMU. The perf
++ * still owns all the PMU resources.
++ */
++int x86_perf_get_mediated_pmu(void)
++{
++	int ret = 0;
++	mutex_lock(&perf_mediated_pmu_mutex);
++	if (refcount_inc_not_zero(&nr_mediated_pmu_vms))
++		goto end;
++
++	if (atomic_read(&nr_include_guest_events)) {
++		ret = -EBUSY;
++		goto end;
++	}
++	refcount_inc(&nr_mediated_pmu_vms);
++end:
++	mutex_unlock(&perf_mediated_pmu_mutex);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(x86_perf_get_mediated_pmu);
++
++void x86_perf_put_mediated_pmu(void)
++{
++	mutex_lock(&perf_mediated_pmu_mutex);
++	refcount_dec(&nr_mediated_pmu_vms);
++	mutex_unlock(&perf_mediated_pmu_mutex);
++}
++EXPORT_SYMBOL_GPL(x86_perf_put_mediated_pmu);
 
-Well, you sent that patch series with "that aims to reduce the cost and 
-complexity of ptep_get_lockless() for arm64". (2) and (3) would achieve 
-that. :)
 
--- 
-Cheers,
-
-David / dhildenb
-
+Thanks,
+Kan
 
