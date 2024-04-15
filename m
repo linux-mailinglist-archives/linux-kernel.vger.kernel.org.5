@@ -1,107 +1,248 @@
-Return-Path: <linux-kernel+bounces-145900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622908A5C8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:00:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B7638A5C90
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:03:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EC511C2110C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:00:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 526A2282D22
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDD6156992;
-	Mon, 15 Apr 2024 21:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C69B515697D;
+	Mon, 15 Apr 2024 21:03:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="T3D/TTc6"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b="IMrOl8tK"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB037154452;
-	Mon, 15 Apr 2024 21:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79004154452;
+	Mon, 15 Apr 2024 21:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713214841; cv=none; b=CFcl5i2M6ohMaw9nsGnsakfBxullHdt1YcKWkTt5H7DEyK1Zco2XYKCzjXxULBhXjW+Lg0o+gdqDJhZNBbGUMbOZj2GCXssciZU38YLeysp5mjKMF3CbVJIb2Rf0K7Vq9aybvNsnTkmJn3hAeRq5PwwEcUq7t+gMad4a+Gt5Ho8=
+	t=1713215009; cv=none; b=lyZaSvQ8gFBTKVuYT6Mlu434MvYw6GbCk51by4qio6bOI1H25dFDfivcnKZhs2a0vweqk5OIpME4UoRmTHDqSnDsOaCkExUctG58TUXCWJpb1nVINFUsPImt/1oFLdzKPKCbodJf3RXe3+S5Q0pF3SAsGTlZoFXjfxn7CbKLB84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713214841; c=relaxed/simple;
-	bh=SUdVdoOMMcKuE6T44gDXZc9Du5rZohlYcfTiT1o0FTM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DbzWxYyhbchYn1FLp4ygRQGxdf45AXS/e+VVRX505bn5znP4nenGtvq5vrZOu+fr9NWooXwARjXkVR6SQMwlu19bPwKHqNKEe3KLuZo08KIoAYvpWFimanVp2kz3vf2a8o3xIjcdc7IBPcLdW4xezXYRLaUTJJM+ZaOnTGWYJmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=T3D/TTc6; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-	bh=YtPwJPZSjzsq4Aj/scT6HbP0Qc6Mf3kzhzhzkus5EP4=; b=T3D/TTc60g+XvgrjxjXkGQ8mq/
-	TFP+ivSh8MZ4hzKCWDtW21By0e5UV2ccTJaw5OO7ecqi00Y1IhDtAbO9/fugrsItm7HgaSFAQQNgE
-	yaBWmHfDf9ov3jTAjO2DazEk2HReBwa2rmGnmE/UsQcHinQIuTA26ms5j1XpbKGbvcVuXDf8x/8Lo
-	jiJsXXuqNqRbqmtAbLyXMLv7RgJ/NLYw5lZPtLETz/qzu4YXdOzPkLqBU6kSSCvfjpLFQSPWMSvSy
-	mlwhChPgZ1BH0K/x8prUBnlrn5CQTNULv1WZYtrRCClnSLPmGQIXWoOTvlpTcrUmraVkSGhv0sXWW
-	VAkhM63w==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rwTRL-00D0xQ-13;
-	Mon, 15 Apr 2024 21:00:35 +0000
-Date: Mon, 15 Apr 2024 22:00:35 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] seq_file: Optimize seq_puts()
-Message-ID: <20240415210035.GW2118490@ZenIV>
-References: <5c4f7ad7b88f5026940efa9c8be36a58755ec1b3.1704374916.git.christophe.jaillet@wanadoo.fr>
- <4b1a4cc5-e057-4944-be69-d25f28645256@wanadoo.fr>
+	s=arc-20240116; t=1713215009; c=relaxed/simple;
+	bh=IQBTxWzfZWJOnehnyxvXhc/K0wYe3wbyqabJe2nCPEA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XEGGrSOh/g7fKIzP1X7Naj0GJR53wlGrsIJ0P1YfGIDPtJvobzBGro6/cfv5cqQ4pLq1MbKEYfwDkLls6CTvcirEILlLEs7nhOr2kxiN7X2pqEOEMRifHQrtEdBPwBMsDX0+i5sF9Io2sOi538blu1xOiZ8OHwmzyUcSgFMtLYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b=IMrOl8tK; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1713214993; x=1713819793; i=schierlm@gmx.de;
+	bh=xBGCFuRo9W2rRub7BgbidjDbo1cCVInZYN5PxwDq+iE=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=IMrOl8tKJsSyzCDq2YwubRqIvuMm+1xV/btDi4u5ECMCyEJ7q4o2KMaIQdEAKBLM
+	 QoGFMDOeVjrxBppHtmphB6sB0IFQWL52uIrDMCBIC/ID+vt0Y16ccXVZnQZLFfmfQ
+	 8AVyDIxDs5O/uSm8XYekWsfXRpQPXGsdD9DHwdu3kl+UjXNLr85IZIg2alMGjRvst
+	 c9pT0vkVf884S3tYLr8t2vOmUbqmzMGy9ZF6oyPOpXSlylnwyVjVZ64yAaDfkt322
+	 WO3och9qtYWfKcuyVnJWVFb3d2e6C9BBSK05rO6g8dcO5oSRjU7HE7MsnOAYFQGe/
+	 R8o3m9yM2+qj6KvsRQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.178.56] ([79.195.87.106]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M9Wyy-1rqxAS3HrI-005XLZ; Mon, 15
+ Apr 2024 23:03:12 +0200
+Message-ID: <e416f2a0-6162-481e-9194-11101fa1224c@gmx.de>
+Date: Mon, 15 Apr 2024 23:03:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4b1a4cc5-e057-4944-be69-d25f28645256@wanadoo.fr>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Early kernel panic in dmi_decode when running 32-bit kernel on
+ Hyper-V on Windows 11
+To: Michael Kelley <mhklinux@outlook.com>, Jean Delvare <jdelvare@suse.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>
+Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <2db080ae-5e59-46e8-ac4e-13cdf26067cc@gmx.de>
+ <SN6PR02MB41578C71EB900E5725231462D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Language: de-DE
+From: Michael Schierl <schierlm@gmx.de>
+Autocrypt: addr=schierlm@gmx.de; keydata=
+ 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
+ uxTR60TDY/d6Kz8=
+In-Reply-To: <SN6PR02MB41578C71EB900E5725231462D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Sdj1S0oXqz9y5sDQP4MZ5V/gmnx0jpQihVG09Yh0eshe5RrZVXv
+ 2nIvALIe4IwAardPGkPYqZzC9SgvmZ2OnENDO6wUXdLvhnl6nPHdrXdtvC43hOjndf5pE43
+ wdWZrtc8nCL4Vlu3L+w9/d51cyFq2jfBhdf0FGG74AJWMgLjLe9BvJ3zKLBTKN7ean0jwDk
+ y55KsSqiM8DjvpYkNnckg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:n/jK8yiSaE0=;ISr0eXkXCP9r80m/b1SWt+Mbp2e
+ lQ9iA7iFnjCgK8Ix5/X6OHiFo7bhHKojMXsM3GsPTmWO7sDl9PWp0Fo8j2Aoss10V1Y1Jhp9C
+ I5Zf889zf6XizkFbAj4kk/LIt7SsdDm1cFipAfXDJn7kXNLTvALfu1dk5wcxYamBD6JLI6UCq
+ WhFWCazkk0ioOoADsUSB0MdXJM8vDz9tF7i48LsUX2yKAko8eQpP4lE7xWLEMwELsfJpf786R
+ HookWf2obo9fvQdtBNJMD1yAfPC/wN0goDBraeMVrtwnRUtX8zQg9kw6/RaJLZj+/BglBZOz+
+ qGYFiwrH8IUEbZVrFtt9QIsaL77OCifw624fUjgrrtPI50p4ySSb9HOyk7hDeEDDQqiive+xL
+ NWdr371tOg9Le6dvJc/Lo6tuDavH54bzPe+ygwlNeFbumMCa64EibOPw07xiTTTrXMn1TYoW7
+ +uQ8pfWzXOAT7hSYGhDB5MqmkcZKndlnHnb2dgB+Dg0pdzvZCvyCpYThAJtI1RuVl+EmesIZ8
+ ohh3IjfOOTWz89WVPyQEaiS4BzJtyHZU48rBz6Z20ApleKeoFUseQElXfdpHtEjuQDcWvvYFi
+ s0v+gBwypZu5WV6hShEjwMGZpLHlh04YSVWEvW1TXALuimn+qLFEsDs2Yoc4cqak5tJzPc7/b
+ kOoYRRqYVI/+W5W8AHED1vt2BqxZSmnPWEt4S9JboqYvVnIm22XoWd+b3Fz2J1UOowhba8nj1
+ VqtZdGHv3gU5kIKNjMxWIcPIsu7xqzpaxdcT0WKzSGX1jKB0qtLQG5rKWD0QczESvzFYJI0TW
+ lReUHcNHLUI0wh/nc+AsGCZ9AHr52hMDsRmUIII5RSjWE=
 
-On Mon, Apr 15, 2024 at 10:47:59PM +0200, Christophe JAILLET wrote:
-> Le 04/01/2024 à 14:29, Christophe JAILLET a écrit :
-> > Most of seq_puts() usages are done with a string literal. In such cases,
-> > the length of the string car be computed at compile time in order to save
-> > a strlen() call at run-time. seq_write() can then be used instead.
-> > 
-> > This saves a few cycles.
-> > 
-> > To have an estimation of how often this optimization triggers:
-> >     $ git grep seq_puts.*\" | wc -l
-> >     3391
-> > 
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> 
-> Hi,
-> 
-> any feed-back on this small optimisation of seq_puts()?
+Hello Michael,
 
-> > +#define seq_puts(m, s)						\
-> > +do {								\
-> > +	if (__builtin_constant_p(s))				\
-> > +		seq_write(m, s, __builtin_strlen(s));		\
-> > +	else							\
-> > +		__seq_puts(m, s);				\
-> > +} while (0)
-> > +
+Am 15.04.2024 um 05:17 schrieb Michael Kelley:
 
-No need to make it a macro, actually.  And I would suggest going
-a bit further:
+> Let me suggest some additional diagnostics.  The DMI information is
+> provided by the virtual firmware, which is provided by the Hyper-V
+> host. The raw DMI bytes are available in Linux at
+>
+> /sys/firmware/dmi/tables/DMI
+>
+> If you do "hexdump /sys/firmware/dmi/tables/DMI" on your
+> patched 32-bit kernel and on a working 64-bit kernel, do you see the
+> same hex data?   (send the output to a file in each case, and then
+> compare the two files)
 
-static inline void seq_puts(struct seq_file *m, const char *s)
-{
-        if (!__builtin_constant_p(*s))
-		__seq_puts(m, s);
-	else if (s[0] && !s[1])
-		seq_putc(m, s[0]);
-	else
-		seq_write(m, s, __builtin_strlen(s));
-}
+For convenience, as I currently have no installed system with 64-bit
+kernel on this Hyper-v instance, I tested with 32-bit and 64-bit kernel
+6.0.8 from live media (grml96 2022.11 from www.grml.org), as well as
+with my own 32-bit kernel (only for 2-core case).
+
+In any case, I see the same content for /sys/firmware/rmi/tables/DMI as
+well as /sys/firmware/dmi/tables/smbios_entry_point on 32-bit vs. 64-bit
+kernels. But I see different content when booted with 1 vs. 2 vCPU.
+
+So it is understandable to me why 1 vCPU behaves different from 2vCPU,
+but not clear why 32-bit behaves different from 64-bit (assuming in both
+cases the same parts of the dmi "blob" are parsed).
+
+
+> If the DMI data is exactly the same, and a
+> 64-bit kernel works, then perhaps there's a bug in the
+> DMI parsing code when the kernel is compiled in 32-bit mode.
+>
+> Also, what is the output of "dmidecode | grep type", both on your
+> patched 32-bit kernel and a working 64-bit kernel?
+
+
+On 64-bit I see output on stderr as well as stdout.
+
+
+     Invalid entry length (0). DMI table is broken! Stop.
+
+The output before is the same when grepping for type
+
+Handle 0x0000, DMI type 0, 20 bytes
+Handle 0x0001, DMI type 1, 25 bytes
+Handle 0x0002, DMI type 2, 8 bytes
+Handle 0x0003, DMI type 3, 17 bytes
+Handle 0x0004, DMI type 11, 5 bytes
+
+
+When not grepping for type, the only difference is the number of structure=
+s
+
+1core: 339 structures occupying 17307 bytes.
+2core: 356 structures occupying 17307 bytes.
+
+I put everything (raw and hex) up at
+<https://gist.github.com/schierlm/4a1f38565856c49e4e4b534cf51961be>
+
+> root@mhkubun:~# dmidecode | grep type
+> Handle 0x0000, DMI type 0, 26 bytes
+> Handle 0x0001, DMI type 1, 27 bytes
+> Handle 0x0002, DMI type 3, 24 bytes
+> Handle 0x0003, DMI type 2, 17 bytes
+> Handle 0x0004, DMI type 4, 48 bytes
+> Handle 0x0005, DMI type 11, 5 bytes
+> Handle 0x0006, DMI type 16, 23 bytes
+> Handle 0x0007, DMI type 17, 92 bytes
+> Handle 0x0008, DMI type 19, 31 bytes
+> Handle 0x0009, DMI type 20, 35 bytes
+> Handle 0x000A, DMI type 17, 92 bytes
+> Handle 0x000B, DMI type 19, 31 bytes
+> Handle 0x000C, DMI type 20, 35 bytes
+> Handle 0x000D, DMI type 32, 11 bytes
+> Handle 0xFEFF, DMI type 127, 4 bytes
+
+That looks healthier than mine... Maybe it also depends on the host...?
+
+> Interestingly, there's no entry of type "10", though perhaps your
+> VM is configured differently from mine.  Try also
+>
+> dmidecode -u
+>
+> What details are provided for "type 10" (On Board Devices)?  That
+> may help identify which device(s) are causing the problem.   Then I
+> might be able to repro the problem and do some debugging myself.
+
+No type 10, but again the error on stderr (even with only 1 vCPU).
+
+
+> One final question:  Is there an earlier version of the Linux kernel
+> where 32-bit builds worked for you on this same Windows 11
+> version?
+
+I am not aware of any (I came from Windows 10 with VirtualBox and wanted
+to move my setup to Windows 11 with Hyper-V).
+
+I just tested a 10-year old Linux live media with kernel 3.16.7, and it
+behaves the same (2vCPU 32-bit does not boot, the other configurations
+do). I may have some more really old live media on physical CDROMs
+around, but I doubt is is useful testing these to find out if some
+really old kernel would work better.
+
+
+Thanks again,
+
+
+Michael
+
 
