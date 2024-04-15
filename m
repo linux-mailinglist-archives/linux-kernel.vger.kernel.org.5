@@ -1,277 +1,142 @@
-Return-Path: <linux-kernel+bounces-144849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C01328A4BBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:41:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 933C08A4BC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 11:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2C231C223CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:41:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B17861C223F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 09:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24AE340878;
-	Mon, 15 Apr 2024 09:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E2B446AD;
+	Mon, 15 Apr 2024 09:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cr/Yrh1Q"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XoQ2BrCs"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AE93FBAE
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B263D3BF
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 09:44:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713174091; cv=none; b=jlWCi8Bz9B7AxDq+9QpmGFeDHjaLD+ScpLw9P7X226O0THsx4gtVvFx5AXg1pBDLOMGoST8PN6FfnnMom3boTOyb+L3mv9GoCvN4JDRfMH5f2NPjPz0Xm2T6sfg0kQhVggBjJ/3PhvkHKjr7gSsfLCWAT1CLy7giIzHmaTSH3hc=
+	t=1713174287; cv=none; b=Y9/FqTsr9JaqBPduLPsRw5b5BFF6KocQbO1OwPmXEaBNvRfeZ93kFTgBR1qJvNI9hGP1ubbdHTPIaBzu5BMPQkngJBomstEm7+0zGrYYqmCjc2o66ueLOHKL9NRtrUk+E+Vr6DQWUEROyS4RMZXIuE9JtSELj3yPYXDFxpaj2Is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713174091; c=relaxed/simple;
-	bh=ZdeiT0bJdSYCdBd/dJmHKpSxxX0NK7In3L4V0oqL6Ac=;
+	s=arc-20240116; t=1713174287; c=relaxed/simple;
+	bh=gba+sm2E9ePiUcK4VdEn+S71kqNe3vHsP4roaANqYZQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JHISnNUOgAxOG7jUMzjzVNtnVLpWBhculNfYzpph3cvUosWdUMI9T0x+J64zTWG4Kbslwk4xxyD3epp4SiJwsKZzk0Ce48XI7q67zM/B8D8VCeBm1rTB4reUcZO0wzTWa/vHjiexyd4g1N9VZ1QZ+ILLCxp1TFfUS0AxeIiawTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cr/Yrh1Q; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e47843cc7so2738672a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:41:29 -0700 (PDT)
+	 To:Cc:Content-Type; b=B58juSNd5Spe52ftaGJ409WI966QPNxO9oI17bsh4bfsa/BmDT3+BtwytMDupsZL+/zrBPrS/ShEO7yHAF4Q5safgGrEGOf09zaDV1/3YnC2feRIa8B35OJZG2zx8hyxRYw8cLo23/nXDxgVxawEhS0+w+4iiDrlr1mONCxC5IQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XoQ2BrCs; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dac92abe71so936521e0c.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 02:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713174088; x=1713778888; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713174285; x=1713779085; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vmvgoDnU5iPDaNfHEWNk9nMHC+RqFBpn8cszCtXpYEU=;
-        b=Cr/Yrh1Q5xKmQ2P+QXZHAUhFuJtajvSZMlRaT1EQiEAzk+Q+O0YI50PnuPqj2PvUc2
-         NT1nQMFKdLm816/daOY+r8pfKss0Ccmr4ayctb2fx6fGndwQl9jaXMWBm/+Ht0GNyc4+
-         WGkAWGKEYhND6AYpLF/DB8yIfpjjFevxoBig6ZCMvtNxECRN8DNBeLryzJA3M+MB7TGK
-         +SKDxfRBhjzeBNuB+GpVcY3KpbnTh3SIEq7FAScm3x2kW/fiol1petAR+6cyDe1FK9At
-         FZ8R0WWNfB7XzrjzWObQPwoiwo16bZhdEGLAIfRR4X5J4H3OlpHTKFv/OIomVPH74sMk
-         RrbA==
+        bh=CSLoiB2mZ+syImFaap979pBovjFFHgK5JL5uKJwM15M=;
+        b=XoQ2BrCsSSi552IZiY+s5HsdFrU9bkzS2JPOtArpzFK0VzYW/ljZcvU74jdsNbpWDn
+         c7uGzvsErny2Xz5iraH8hSySM3TgTSDvfb29SGlmyDC3UlF8oYlpZu1NgpQvam1zX72Y
+         inKPVjNxhEgIcvyx9CZ4947qy//ieHNaY1LhtuST4MBIetzcL6wYE5Vy7CQ2R8ZdXk9h
+         V67A9+zcfKtkhhk9iE9D2mmxYqUBIakYeUqPYOgTvLDwno/9Rc1YVKKe5nLT1Z/mf4xF
+         zHmZdK9ejJsSF3wz5d6UvfGADaPrK4gq2cxXl7wTVV+8/ngEvX+4BzWI+Ts/blYXk+sY
+         nZ7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713174088; x=1713778888;
+        d=1e100.net; s=20230601; t=1713174285; x=1713779085;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vmvgoDnU5iPDaNfHEWNk9nMHC+RqFBpn8cszCtXpYEU=;
-        b=JUnGahVvgqw9OdTVNFiQz+c9hRip/j9KtzyJ5fsYo/mGP55cCZhYVfylvPqU8DoK54
-         wGId44VRh/fEtiKXrKONAiwF6AYoRqaWEvZ+qpI9cw6EGhLQi54ImwTRniSebl2Yw2sQ
-         PtleQKUBgryb1iGz2bEkCB4L2qxl9piFxGwQnFxdx5crRYLTF3OATbY3UasmTk0F5aaK
-         wg+SnCbIk44prc2ipMKqhA489tUJjQudtX3I/2grzRL01h1LqANdI3WEQnxQsMZemPKx
-         Owc2UW5iGXd3cz5G/Y0KvPPgqL8nWmtJRfMnMwrrPIxwMuKUCUWEOJW/lGk6UVhI5Tg3
-         HJbg==
-X-Forwarded-Encrypted: i=1; AJvYcCVZ3TFI7PXZHMBAD0M55AxH7T+JS1cbA02BmMqAxx6jztOE+pdtDbt6Iz+RFTV4bx/p5X81L5D4N1qDy5NMZLpZIMBnkfJ8AeLtXJOd
-X-Gm-Message-State: AOJu0Yw6psBAkaSjwuovIh2ziSKksF4aeg4zkRiqOpZ6lebLsP0VnQHC
-	axmjuoaeSjsQfsCrBJYpmpvPTrBdc83I+DBaPx+SO3/9AHyXKS5wHNfoUxckX8syadaVtaJGrQB
-	rCa85FYUB+ycZdVniiQwLP7lISBk=
-X-Google-Smtp-Source: AGHT+IEbqfHAiws4+f53DJkjb2XkVtw3Iy6rmNtsHEqP4Je0cKaSTwBd5go4csOUYSYpO15EOo32AgPHDP1wrC9oGe8=
-X-Received: by 2002:a50:8e5d:0:b0:56d:f00c:2b13 with SMTP id
- 29-20020a508e5d000000b0056df00c2b13mr5423638edx.32.1713174087534; Mon, 15 Apr
- 2024 02:41:27 -0700 (PDT)
+        bh=CSLoiB2mZ+syImFaap979pBovjFFHgK5JL5uKJwM15M=;
+        b=q0//gqA1v1Cgrm7Owqc4GIRVTCA97lSJWofdjKaS/O96NDohm9Traik1HAyzWRBb7m
+         wldtMAZhiPPZL8CpgRS+UvxqSUOu8jkN07lcSIVIT5H2xE/elLd4VbRy61IDUvThivPX
+         C5C4zmxX7Yv1SmdnVaHmEgabXUT8FZ5cQlyGMncIy6aRb2LUI7iAkAPC0hUBSST7Mu97
+         w/TJE5mwrkuZQhrjYHNUsz2k/U4JNy5BHGTExeS4aYiYkLb8drHOmIRL9hw3mqp92Xnx
+         viLNJR5Sgxvf6u60y1jfuQZ4SOEE2ZkYLxNaBaDGl2Gz/gH56mjH7XWsmfbBVo1N/owR
+         /AoA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3JcoaVmzY5pXLZn0ExAumISK62Kjdi+b/E9+Jn+34XYpq3JH6vSdEmxWVgCxjy55B03co9viaBFoehqREQbHyjeTCvNQaGMfoI/73
+X-Gm-Message-State: AOJu0YzM9hNlpcbnxIRzMucl9k3+lofYcRNUQzczFG2bLERDge52om8C
+	sLy73wvkeQOQ7wEkoO+k1GuNaosrwKijHuaNb/8vkcxaamXpk8Lkb/SDuntHDf8C7fUuf15v+Ne
+	D2iMIFOwNKDcTO2gAqa5cYq0whelmhlP4/YFG
+X-Google-Smtp-Source: AGHT+IEkhwcc26gJYhEUGK0Rz98TITLvdkASwy8xab0jVCJOyrzEUfOPadfPmhxaylFC0rFqS6AhEhBJ09WImT7Whzc=
+X-Received: by 2002:a05:6122:3681:b0:4d8:74a2:6d35 with SMTP id
+ ec1-20020a056122368100b004d874a26d35mr7925511vkb.9.1713174285085; Mon, 15 Apr
+ 2024 02:44:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240413002219.71246-1-ioworker0@gmail.com> <20240413002219.71246-3-ioworker0@gmail.com>
- <209b9341-8bd0-47fe-b8fd-9a0f02beeab0@arm.com>
-In-Reply-To: <209b9341-8bd0-47fe-b8fd-9a0f02beeab0@arm.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Mon, 15 Apr 2024 17:41:16 +0800
-Message-ID: <CAK1f24=oanyccKUYz1E7H2euyhnExjqRShQ8KKqDXAV6qkohhg@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] mm/arm64: override clear_young_dirty_ptes() batch helper
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: akpm@linux-foundation.org, zokeefe@google.com, 21cnbao@gmail.com, 
-	shy828301@gmail.com, david@redhat.com, mhocko@suse.com, fengwei.yin@intel.com, 
-	xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com, 
-	peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
+References: <20240415-alice-mm-v5-0-6f55e4d8ef51@google.com>
+ <20240415-alice-mm-v5-1-6f55e4d8ef51@google.com> <2cae6fd4-906c-44ad-88be-0dfed090d07c@proton.me>
+In-Reply-To: <2cae6fd4-906c-44ad-88be-0dfed090d07c@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 15 Apr 2024 11:44:33 +0200
+Message-ID: <CAH5fLgjT3hAdtdNeb7FgX491UhvMGa-JHevz_EqC=N4zVViBjw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] rust: uaccess: add userspace pointers
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 4:59=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
+On Mon, Apr 15, 2024 at 11:37=E2=80=AFAM Benno Lossin <benno.lossin@proton.=
+me> wrote:
 >
-> On 13/04/2024 01:22, Lance Yang wrote:
-> > The per-pte get_and_clear/modify/set approach would result in
-> > unfolding/refolding for contpte mappings on arm64. So we need
-> > to override clear_young_dirty_ptes() for arm64 to avoid it.
-> >
-> > Suggested-by: David Hildenbrand <david@redhat.com>
-> > Suggested-by: Barry Song <21cnbao@gmail.com>
-> > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> On 15.04.24 09:13, Alice Ryhl wrote:
+> > +impl UserSlice {
+> > +    /// Constructs a user slice from a raw pointer and a length in byt=
+es.
+> > +    ///
+> > +    /// Constructing a [`UserSlice`] performs no checks on the provide=
+d address and length, it can
+> > +    /// safely be constructed inside a kernel thread with no current u=
+serspace process. Reads and
+> > +    /// writes wrap the kernel APIs `copy_from_user` and `copy_to_user=
+`, which check the memory map
+> > +    /// of the current process and enforce that the address range is w=
+ithin the user range (no
+> > +    /// additional calls to `access_ok` are needed).
+> > +    ///
+> > +    /// Callers must be careful to avoid time-of-check-time-of-use (TO=
+CTOU) issues. The simplest way
+> > +    /// is to create a single instance of [`UserSlice`] per user memor=
+y block as it reads each byte
+> > +    /// at most once.
+> > +    pub fn new(ptr: *mut c_void, length: usize) -> Self {
 >
-> No, afraid I haven't signed off yet!
+> What would happen if I call this with a kernel pointer and then
+> read/write to it? For example
+>
+>      let mut arr =3D [MaybeUninit::uninit(); 64];
+>      let ptr: *mut [MaybeUninit<u8>] =3D &mut arr;
+>      let ptr =3D ptr.cast::<c_void>();
+>
+>      let slice =3D UserSlice::new(ptr, 64);
+>      let (mut r, mut w) =3D slice.reader_writer();
+>
+>      r.read_raw(&mut arr)?;
+>      // SAFETY: `arr` was initialized above.
+>      w.write_slice(unsafe { MaybeUninit::slice_assume_init_ref(&arr) })?;
+>
+> I think this would violate the exclusivity of `&mut` without any
+> `unsafe` code. (the `unsafe` block at the end cannot possibly be wrong)
 
-Actually, you've done most of this change, and I just do the legwork :)
-But I'll remove this s-o-b.
+This will fail with an EFAULT error. There is a check on the C side
+that verifies that the address is in userspace. (The access_ok call.)
 
->
-> > Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> > ---
-> >  arch/arm64/include/asm/pgtable.h | 37 ++++++++++++++++++++++++++++++++
-> >  arch/arm64/mm/contpte.c          | 28 ++++++++++++++++++++++++
-> >  2 files changed, 65 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/=
-pgtable.h
-> > index 9fd8613b2db2..f951774dd2d6 100644
-> > --- a/arch/arm64/include/asm/pgtable.h
-> > +++ b/arch/arm64/include/asm/pgtable.h
-> > @@ -1223,6 +1223,28 @@ static inline void __wrprotect_ptes(struct mm_st=
-ruct *mm, unsigned long address,
-> >               __ptep_set_wrprotect(mm, address, ptep);
-> >  }
-> >
-> > +static inline void __clear_young_dirty_ptes(struct mm_struct *mm,
-> > +                                         unsigned long addr, pte_t *pt=
-ep,
-> > +                                         unsigned int nr, cydp_t flags=
-)
-> > +{
-> > +     pte_t pte;
-> > +
-> > +     for (;;) {
-> > +             pte =3D __ptep_get(ptep);
-> > +
-> > +             if (flags | CYDP_CLEAR_YOUNG)
->
-> bug: should be bitwise AND (&).
-
-Good spot! Thanks!
-
->
-> > +                     pte =3D pte_mkold(pte);
-> > +             if (flags | CYDP_CLEAR_DIRTY)
-> > +                     pte =3D pte_mkclean(pte);
-> > +
-> > +             __set_pte(ptep, pte);
->
-> The __ptep_get() and __set_pte() are not atomic. This is only safe when y=
-ou are
-> clearing BOTH access and dirty (as I explained in the previous version). =
-If you
-> are only clearing one of the flags, you will need a similar cmpxchg loop =
-as for
-> __ptep_test_and_clear_young(). Otherwise you can race with the HW and los=
-e
-> information.
-
-Thanks again for your patience and explanation!
-I still got it wrong :(
-
->
-> > +             if (--nr =3D=3D 0)
-> > +                     break;
-> > +             ptep++;
-> > +             addr +=3D PAGE_SIZE;
-> > +     }
-> > +}
-> > +
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
-> >  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
-> > @@ -1379,6 +1401,9 @@ extern void contpte_wrprotect_ptes(struct mm_stru=
-ct *mm, unsigned long addr,
-> >  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
-> >                               unsigned long addr, pte_t *ptep,
-> >                               pte_t entry, int dirty);
-> > +extern void contpte_clear_young_dirty_ptes(struct mm_struct *mm,
-> > +                             unsigned long addr, pte_t *ptep,
-> > +                             unsigned int nr, cydp_t flags);
-> >
-> >  static __always_inline void contpte_try_fold(struct mm_struct *mm,
-> >                               unsigned long addr, pte_t *ptep, pte_t pt=
-e)
-> > @@ -1603,6 +1628,17 @@ static inline int ptep_set_access_flags(struct v=
-m_area_struct *vma,
-> >       return contpte_ptep_set_access_flags(vma, addr, ptep, entry, dirt=
-y);
-> >  }
-> >
-> > +#define clear_young_dirty_ptes clear_young_dirty_ptes
-> > +static inline void clear_young_dirty_ptes(struct mm_struct *mm,
-> > +                                       unsigned long addr, pte_t *ptep=
-,
-> > +                                       unsigned int nr, cydp_t flags)
-> > +{
-> > +     if (likely(nr =3D=3D 1 && !pte_cont(__ptep_get(ptep))))
-> > +             __clear_young_dirty_ptes(mm, addr, ptep, nr, flags);
-> > +     else
-> > +             contpte_clear_young_dirty_ptes(mm, addr, ptep, nr, flags)=
-;
-> > +}
-> > +
-> >  #else /* CONFIG_ARM64_CONTPTE */
-> >
-> >  #define ptep_get                             __ptep_get
-> > @@ -1622,6 +1658,7 @@ static inline int ptep_set_access_flags(struct vm=
-_area_struct *vma,
-> >  #define wrprotect_ptes                               __wrprotect_ptes
-> >  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
-> >  #define ptep_set_access_flags                        __ptep_set_access=
-_flags
-> > +#define clear_young_dirty_ptes                       __clear_young_dir=
-ty_ptes
-> >
-> >  #endif /* CONFIG_ARM64_CONTPTE */
-> >
-> > diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
-> > index 1b64b4c3f8bf..bf3b089d9641 100644
-> > --- a/arch/arm64/mm/contpte.c
-> > +++ b/arch/arm64/mm/contpte.c
-> > @@ -361,6 +361,34 @@ void contpte_wrprotect_ptes(struct mm_struct *mm, =
-unsigned long addr,
-> >  }
-> >  EXPORT_SYMBOL_GPL(contpte_wrprotect_ptes);
-> >
-> > +void contpte_clear_young_dirty_ptes(struct mm_struct *mm, unsigned lon=
-g addr,
-> > +                                 pte_t *ptep, unsigned int nr, cydp_t =
-flags)
-> > +{
-> > +     /*
-> > +      * We can safely clear access/dirty without needing to unfold fro=
-m
-> > +      * the architectures perspective, even when contpte is set. If th=
-e
-> > +      * range starts or ends midway through a contpte block, we can ju=
-st
-> > +      * expand to include the full contpte block. While this is not
-> > +      * exactly what the core-mm asked for, it tracks access/dirty per
-> > +      * folio, not per page. And since we only create a contpte block
-> > +      * when it is covered by a single folio, we can get away with
-> > +      * clearing access/dirty for the whole block.
-> > +      */
-> > +     unsigned int start =3D addr;
-> > +     unsigned int end =3D start + nr;
->
-> There are addresses; they should be unsigned long. May have been my error
-> originally when I sent you the example snippet.
-
-Got it. I'll sort it.
-
-Thanks again for your time!
-
-Thanks,
-Lance
-
->
-> Thanks,
-> Ryan
->
-> > +
-> > +     if (pte_cont(__ptep_get(ptep + nr - 1)))
-> > +             end =3D ALIGN(end, CONT_PTE_SIZE);
-> > +
-> > +     if (pte_cont(__ptep_get(ptep))) {
-> > +             start =3D ALIGN_DOWN(start, CONT_PTE_SIZE);
-> > +             ptep =3D contpte_align_down(ptep);
-> > +     }
-> > +
-> > +     __clear_young_dirty_ptes(mm, start, ptep, end - start, flags);
-> > +}
-> > +EXPORT_SYMBOL_GPL(contpte_clear_young_dirty_ptes);
-> > +
-> >  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
-> >                                       unsigned long addr, pte_t *ptep,
-> >                                       pte_t entry, int dirty)
->
+Alice
 
