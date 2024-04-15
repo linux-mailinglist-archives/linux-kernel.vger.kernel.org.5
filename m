@@ -1,208 +1,129 @@
-Return-Path: <linux-kernel+bounces-145502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C7088A5705
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:05:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19A258A5715
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 18:07:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DD4AB225D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:05:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C965A284893
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:07:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F31D80031;
-	Mon, 15 Apr 2024 16:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBB08175E;
+	Mon, 15 Apr 2024 16:06:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDD9FIlL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jvp3+qiU"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C285478C88;
-	Mon, 15 Apr 2024 16:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6692580046;
+	Mon, 15 Apr 2024 16:06:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197094; cv=none; b=jwYqpZxchoolH8PXD8ilCw9LXF2FCf/q/R+nh7RRFXfv3sC+/VWKDSlW8U4kjaxN77UiLyZpvCPE+19cdCs8aO5bJO9Pryb93KtXSBG7vTk31myW5YpKkIduuV8OFMnCBh41MvxXW/ON6Y5Sf5HEnNIoBLvYfw90UER3+lWMrpU=
+	t=1713197211; cv=none; b=UWc9X6qdV4gV65tjUkVNr8R5O2Zdmt9MSZvPX0twqQ0QAuVDm39/lalexHUL98DaiKIi9iM5NQ9XODUyRHW1Bq9YBUlJZDMxtluBhWSy9o3Eas3SFXIWutKDvSkeiNo/vPCh4B0qhYPsUR7GLL44YYWkA3YnkTHOvUP5XKIsxkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197094; c=relaxed/simple;
-	bh=vFMJFGnJyanRDxAtVKIrLAB0ePFQhQ+GU0wvYeD6asg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=P+rmSpMm5uF0xf8M5YWnl5Koe5mP7zLYZoYPUeP3X+N7BjvYN1G9xQjIe6s8YRBQ/FftE1ecrDt6rubMDNBr8qKfzzfe7SE5HKdWSc0NjAegXca3f3iG91hp6x6fGCwf5nvON9rUfetIsdplNIuwgoSkL32hUxXREn8I9y8ORJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UDD9FIlL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDBE1C113CC;
-	Mon, 15 Apr 2024 16:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713197094;
-	bh=vFMJFGnJyanRDxAtVKIrLAB0ePFQhQ+GU0wvYeD6asg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UDD9FIlLCszfXS3i6dFnz0lKTpcFcfRbhntScaXy5d8gUHRFxwjLQKQaZfNwW2Ryh
-	 7nRQd01d/K8fA8QLWuhYIw7RomrBeK7/cl3xRKTz859GMQynZORYQCqiO75PMqkdRf
-	 +BUTAh6yr/W/nmyKW9FwVXMQZdPmytnIP1dup0cjPAjff97Tbvon/QKh1vsF+nMtzB
-	 ObuR8kiYpMWR1zegA/rSJZN3pZbbndudpyNlwyYZ66r11OncXDF2bF2KoIjP2+aI73
-	 LIjIcUHWh+XmybbioeXlZgeGhS+U01be1Eu0rrhDk3YdVgzMEpKB2Wa6V2P4LD2Va8
-	 5N+mVpwTelLeg==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andreas Dilger <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>,
- Nam Cao <namcao@linutronix.de>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>,
- linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
- Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
- <conor@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-In-Reply-To: <20240415-festland-unattraktiv-2b5953a6dbc9@brauner>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
- <20240413164318.7260c5ef@namcao>
- <22E65CA5-A2C0-44A3-AB01-7514916A18FC@dilger.ca>
- <20240414021555.GQ2118490@ZenIV>
- <887E261B-3C76-4CD9-867B-5D087051D004@dilger.ca>
- <87v84kujec.fsf@all.your.base.are.belong.to.us>
- <20240415-festland-unattraktiv-2b5953a6dbc9@brauner>
-Date: Mon, 15 Apr 2024 18:04:50 +0200
-Message-ID: <87le5e393x.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1713197211; c=relaxed/simple;
+	bh=u1JCRRKzjl8qykx2k9hA7pqCSuJlx9ieUvrB1zSrnaM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IaNfBRP1O1Mpc86d3eC5sjdm231JpKxxZ/mD0SUbLJxwbsWjF+09SPpkaXcF9FtrE4UvnApMftfyxUh0yCfD90b1sbs+ofZWAVZe+u9GjH2dOTfLkMed6hRmZn635WXrv6ViJgxEVDqd8oRCAZkHPyD856SQWaiz6w80chMBJAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jvp3+qiU; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6eff9dc1821so972231b3a.3;
+        Mon, 15 Apr 2024 09:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713197210; x=1713802010; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XZ0hl5wvzDiV5OaUiC6GQia70++FDm51nSD2qz6+gxI=;
+        b=Jvp3+qiUN+0bkZuGQclPRG+4aPOJva2eJh1DlbXxlOltFvF2oL//UZLvV3wIduTj7s
+         JzEMImwLlunibn8g0bIMtKKcR5MjVg8E2Oyio0fVcAGd3A26cJISyN96WuidxMRSXNZs
+         7qMphV+W1udGo1GLo+3WMxDN2dZbY/vetOhkS6plo2dfBe3BAfq6q4ypr0RFxn1vqnuR
+         o/UBQSccmiH3gldrOO14FV1kCIpiDM5nBJIi6sSh5yhEycW+iH+xMIfCnJ7YHHrCSKLb
+         LqKDp/suX8whPBaUmmqMNuSetl6TA2vva2QRhMNfLje1Zy+Um9WeiFwfb9AQESjiYk5M
+         /JpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713197210; x=1713802010;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XZ0hl5wvzDiV5OaUiC6GQia70++FDm51nSD2qz6+gxI=;
+        b=p3PZvm+No2LPkq3wr+W2rwD/kxwjeDzJwjTTtoQu1nTym8OCigGSuN0YRLJ3uYEZvT
+         +Pf2ZfA3WXb53q03BadcpWw1m1sPPNkMWxBf7VHTCW3b1CUlfNvhCTrdrN4j9bibHD5t
+         alZHOtX+r9Y2MX/kzjL+N9MkMCOtmqb0yKjti7SiCd70l7nOp/Erkh8BY7jCXrkpNY8D
+         teC178PSZ4VKoJ+1qi0MlMJoGaiQNoHCq41ZtTE4sHjMImyqjzpovyjN6MGxNJBKzRjK
+         /LHZyFjb3OnWwbUanDKn7TWJwlxuqlTFK4LR5Dd3UF8XDdC9RuSFs+pgJxnzG+zkXcir
+         Urdg==
+X-Forwarded-Encrypted: i=1; AJvYcCUw40D7gJBmcl0CMTSouy64W6BS83IDlywaINHcMHUfFN3Bd69PQAiUXrVE0zcEzVCjgsZjyMUakZ9WqJbwaZcOiOP6SbTOahIdtHWgyA6Mg9XLoIazl/Ln2otFHipfO8m80Mck
+X-Gm-Message-State: AOJu0YzWzrVL3x1ywRt7fBU7r8zlwu1Oa+/CUkTHIrju3I+yfeB834WT
+	zOpE0ycwFCYN9b0OEtO2PDA4ZtzBqIxK03QleBvYTz5wehjaF75h
+X-Google-Smtp-Source: AGHT+IHbh8tNg77nATSHoTkIIdZZIBNUTvd1fRqJhsJm8FfiM0ZTsfx/M5xl3/GHmJSgMJqTuVBkig==
+X-Received: by 2002:a05:6a21:8015:b0:1a9:9c20:6ca with SMTP id ou21-20020a056a21801500b001a99c2006camr8124174pzb.23.1713197209674;
+        Mon, 15 Apr 2024 09:06:49 -0700 (PDT)
+Received: from dev0.. ([49.43.161.106])
+        by smtp.gmail.com with ESMTPSA id gk11-20020a056a00848b00b006ed045af796sm7306920pfb.88.2024.04.15.09.06.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Apr 2024 09:06:49 -0700 (PDT)
+From: Abhinav Jain <jain.abhinav177@gmail.com>
+To: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com,
+	Abhinav Jain <jain.abhinav177@gmail.com>
+Subject: [PATCH] inet: inet_defrag: Removing the usage of refcount_inc_not_zero
+Date: Mon, 15 Apr 2024 16:06:19 +0000
+Message-Id: <20240415160619.8249-1-jain.abhinav177@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Christian Brauner <brauner@kernel.org> writes:
+Remove refcount_inc_not_zero as per the listed TODO in the file.
+Used spin_(un)lock and refcount_* functions for synchronization.
 
-> On Sun, Apr 14, 2024 at 04:08:11PM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
->> Andreas Dilger <adilger@dilger.ca> writes:
->>=20
->> > On Apr 13, 2024, at 8:15 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
->> >>=20
->> >> On Sat, Apr 13, 2024 at 07:46:03PM -0600, Andreas Dilger wrote:
->> >>=20
->> >>> As to whether the 0xfffff000 address itself is valid for riscv32 is
->> >>> outside my realm, but given that RAM is cheap it doesn't seem unlike=
-ly
->> >>> to have 4GB+ of RAM and want to use it all.  The riscv32 might consi=
-der
->> >>> reserving this page address from allocation to avoid similar issues =
-in
->> >>> other parts of the code, as is done with the NULL/0 page address.
->> >>=20
->> >> Not a chance.  *Any* page mapped there is a serious bug on any 32bit
->> >> box.  Recall what ERR_PTR() is...
->> >>=20
->> >> On any architecture the virtual addresses in range (unsigned long)-51=
-2..
->> >> (unsigned long)-1 must never resolve to valid kernel objects.
->> >> In other words, any kind of wraparound here is asking for an oops on
->> >> attempts to access the elements of buffer - kernel dereference of
->> >> (char *)0xfffff000 on a 32bit box is already a bug.
->> >>=20
->> >> It might be getting an invalid pointer, but arithmetical overflows
->> >> are irrelevant.
->> >
->> > The original bug report stated that search_buf =3D 0xfffff000 on entry,
->> > and I'd quoted that at the start of my email:
->> >
->> > On Apr 12, 2024, at 8:57 AM, Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> =
-wrote:
->> >> What I see in ext4_search_dir() is that search_buf is 0xfffff000, and=
- at
->> >> some point the address wraps to zero, and boom. I doubt that 0xfffff0=
-00
->> >> is a sane address.
->> >
->> > Now that you mention ERR_PTR() it definitely makes sense that this last
->> > page HAS to be excluded.
->> >
->> > So some other bug is passing the bad pointer to this code before this
->> > error, or the arch is not correctly excluding this page from allocatio=
-n.
->>=20
->> Yeah, something is off for sure.
->>=20
->> (FWIW, I manage to hit this for Linus' master as well.)
->>=20
->> I added a print (close to trace_mm_filemap_add_to_page_cache()), and for
->> this BT:
->>=20
->>   [<c01e8b34>] __filemap_add_folio+0x322/0x508
->>   [<c01e8d6e>] filemap_add_folio+0x54/0xce
->>   [<c01ea076>] __filemap_get_folio+0x156/0x2aa
->>   [<c02df346>] __getblk_slow+0xcc/0x302
->>   [<c02df5f2>] bdev_getblk+0x76/0x7a
->>   [<c03519da>] ext4_getblk+0xbc/0x2c4
->>   [<c0351cc2>] ext4_bread_batch+0x56/0x186
->>   [<c036bcaa>] __ext4_find_entry+0x156/0x578
->>   [<c036c152>] ext4_lookup+0x86/0x1f4
->>   [<c02a3252>] __lookup_slow+0x8e/0x142
->>   [<c02a6d70>] walk_component+0x104/0x174
->>   [<c02a793c>] path_lookupat+0x78/0x182
->>   [<c02a8c7c>] filename_lookup+0x96/0x158
->>   [<c02a8d76>] kern_path+0x38/0x56
->>   [<c0c1cb7a>] init_mount+0x5c/0xac
->>   [<c0c2ba4c>] devtmpfs_mount+0x44/0x7a
->>   [<c0c01cce>] prepare_namespace+0x226/0x27c
->>   [<c0c011c6>] kernel_init_freeable+0x286/0x2a8
->>   [<c0b97ab8>] kernel_init+0x2a/0x156
->>   [<c0ba22ca>] ret_from_fork+0xe/0x20
->>=20
->> I get a folio where folio_address(folio) =3D=3D 0xfffff000 (which is
->> broken).
->>=20
->> Need to go into the weeds here...
->
-> I don't see anything obvious that could explain this right away. Did you
-> manage to reproduce this on any other architecture and/or filesystem?
->
-> Fwiw, iirc there were a bunch of fs/buffer.c changes that came in
-> through the mm/ layer between v6.7 and v6.8 that might also be
-> interesting. But really I'm poking in the dark currently.
+Signed-off-by: Abhinav Jain <jain.abhinav177@gmail.com>
+---
+ net/ipv4/inet_fragment.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Thanks for getting back! Spent some more time one it today.
-
-It seems that the buddy allocator *can* return a page with a VA that can
-wrap (0xfffff000 -- pointed out by Nam and myself).
-
-Further, it seems like riscv32 indeed inserts a page like that to the
-buddy allocator, when the memblock is free'd:
-
-  | [<c024961c>] __free_one_page+0x2a4/0x3ea
-  | [<c024a448>] __free_pages_ok+0x158/0x3cc
-  | [<c024b1a4>] __free_pages_core+0xe8/0x12c
-  | [<c0c1435a>] memblock_free_pages+0x1a/0x22
-  | [<c0c17676>] memblock_free_all+0x1ee/0x278
-  | [<c0c050b0>] mem_init+0x10/0xa4
-  | [<c0c1447c>] mm_core_init+0x11a/0x2da
-  | [<c0c00bb6>] start_kernel+0x3c4/0x6de
-
-Here, a page with VA 0xfffff000 is a added to the freelist. We were just
-lucky (unlucky?) that page was used for the page cache.
-
-A nasty patch like:
---8<--
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 549e76af8f82..a6a6abbe71b0 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -2566,6 +2566,9 @@ void __init set_dma_reserve(unsigned long new_dma_res=
-erve)
- void __init memblock_free_pages(struct page *page, unsigned long pfn,
- 							unsigned int order)
+diff --git a/net/ipv4/inet_fragment.c b/net/ipv4/inet_fragment.c
+index c88c9034d630..e4838bbe0abb 100644
+--- a/net/ipv4/inet_fragment.c
++++ b/net/ipv4/inet_fragment.c
+@@ -358,7 +358,6 @@ static struct inet_frag_queue *inet_frag_create(struct fqdir *fqdir,
+ 	return q;
+ }
+ 
+-/* TODO : call from rcu_read_lock() and no longer use refcount_inc_not_zero() */
+ struct inet_frag_queue *inet_frag_find(struct fqdir *fqdir, void *key)
  {
-+	if ((long)page_address(page) =3D=3D 0xfffff000L) {
-+		return; // leak it
-+	}
-=20
- 	if (IS_ENABLED(CONFIG_DEFERRED_STRUCT_PAGE_INIT)) {
- 		int nid =3D early_pfn_to_nid(pfn);
---8<--
+ 	/* This pairs with WRITE_ONCE() in fqdir_pre_exit(). */
+@@ -375,8 +374,14 @@ struct inet_frag_queue *inet_frag_find(struct fqdir *fqdir, void *key)
+ 		fq = inet_frag_create(fqdir, key, &prev);
+ 	if (!IS_ERR_OR_NULL(prev)) {
+ 		fq = prev;
+-		if (!refcount_inc_not_zero(&fq->refcnt))
++		spin_lock(&fq->lock);
++		if (refcount_read(&fq->refcnt) > 0) {
++			refcount_inc(&fq->refcnt);
++			spin_unlock(&fq->lock);
++		} else {
++			spin_unlock(&fq->lock);
+ 			fq = NULL;
++		}
+ 	}
+ 	rcu_read_unlock();
+ 	return fq;
+-- 
+2.34.1
 
-..and it's gone.
-
-I need to think more about what a proper fix is. Regardless; Christian,
-Al, and Ted can all relax. ;-)
-
-
-Bj=C3=B6rn
 
