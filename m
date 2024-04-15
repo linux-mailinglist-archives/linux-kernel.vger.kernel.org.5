@@ -1,139 +1,245 @@
-Return-Path: <linux-kernel+bounces-145383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD808A5583
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:47:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A57308A5585
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:48:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 304CE1F2244C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:47:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32CAE1F22459
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352D374BEB;
-	Mon, 15 Apr 2024 14:47:48 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id A45181E4B1
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FA2745C9;
+	Mon, 15 Apr 2024 14:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PWlTAD6A"
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8F1433AD;
+	Mon, 15 Apr 2024 14:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713192467; cv=none; b=TYViVaihpVIVOFeY5Xxn4bKHgaPunEmWPUpF/QA9R3oy+IQ21FkP3TLVGTK2ukE0HqGIw0vWLyxcrrCokM9XsW5fVFMaHmSF3oEO4pPVep4rJJ3fdiaNhRQqiz7nC9FJCjNZruTANq8xHXHn2N0btWJG/CGznBwoRlhMTwAZZE8=
+	t=1713192481; cv=none; b=JJMKoflwG2TEjLWeEk7PJhAjeAE1tuM5JtzvoyedmpO8f2n91KCDc2YfW8yBLC9PtQMFgSaCLUdLo0ENFAgMkGciOAhbl3rrfxO75cIoffezRyQbONSwXfZLKrKGlfXPM8rSFeW+v3Z9f/b9twwKhMG/qsm3st5pQioQInKEqb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713192467; c=relaxed/simple;
-	bh=m4Kte0giezl+If8hqhuQU7p0YsRvGoGX4kkW0p3OyhE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iuu50bZg6OF/Ju2f/7kyukt5wtH6B1JhdB98xMPnwW0qVL+lET4SfYlxIjE/sS2MJ5qAQgNsM9elpzu5CVseSu3kHBoUkf1FiFc+9XP2GicxfFZza2vEXg70l2HoHFq9XoIcHQp/zk89+Z6BmucMuvSFAsSQMs9oHexuXicynh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 127300 invoked by uid 1000); 15 Apr 2024 10:47:37 -0400
-Date: Mon, 15 Apr 2024 10:47:37 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Sam Sun <samsun1006219@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-  Greg KH <gregkh@linuxfoundation.org>, swboyd@chromium.org,
-  ricardo@marliere.net, hkallweit1@gmail.com, heikki.krogerus@linux.intel.com,
-  mathias.nyman@linux.intel.com, royluo@google.com,
-  syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
-Subject: Re: [Linux kernel bug] general protection fault in disable_store
-Message-ID: <5704ac63-5e5b-416c-a2a1-57528e76a02f@rowland.harvard.edu>
-References: <CAEkJfYON+ry7xPx=AiLR9jzUNT+i_Va68ACajOC3HoacOfL1ig@mail.gmail.com>
- <92fe8e95-bc01-4d7d-9678-8cfc55cc4a7b@rowland.harvard.edu>
- <CAEkJfYORHKO16xT3DCS04JFzkquz6oZ5CdC2USJ5-c0WihAMXg@mail.gmail.com>
- <45e246ab-01e8-40b7-8ede-b47957df0d7b@rowland.harvard.edu>
- <CAEkJfYMjO+vMBGPcaLa51gjeKxFAJBrSa0t_iJUtauQD3DaK8w@mail.gmail.com>
- <69a6f4c9-6470-40d1-99f1-aaf532497d02@rowland.harvard.edu>
- <CAEkJfYNJyyGhR9AAWc0V7o8i6pmS+OB=KSbh6XqVWAAGetS9hA@mail.gmail.com>
+	s=arc-20240116; t=1713192481; c=relaxed/simple;
+	bh=I13XM/oOMXTIWSLViq/vlsHE+oDy5NBL3yk6E0aLyX4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=blYwTfSPGi/HFwBsdRlrwliQS2O2Ssq0kBQGRXXJowEwbKAMG6gnyo2pjD/y3l1xrnp3cQNvfCt+nXCT+uEFeq1dgp6/7/tIAIjKVhirMzqATSiMIlt45VKq/MmXfcEEG00F3ih48ZFQaqj9CgQ2hOw8Qia6WHiW1STiFkHS/Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PWlTAD6A; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-78ebcfcd3abso278468685a.1;
+        Mon, 15 Apr 2024 07:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713192478; x=1713797278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wdP5OuUUDcs87pXh/dw1Deyj8T0mk9wfjCCCqRUMku0=;
+        b=PWlTAD6AgUdCqrd9mKWrym9nNSbxJSpwp2Wqx/s3cV5ae1576Tm5VKWUNvavciH8E3
+         rN4qyXanjSLACPNo5GdcJfJ64qDhrQoeaRZ2pGQ8MWR8JdakdOj7eP9pQtJGf3KMh87U
+         nWCqQ9vfgIduOksdulCSJbZUE3/0WBfOJJ4ql+tsBVpWw4ZELfKk1wYRs+NL6OP83c4g
+         AwpvtysylL01kUPWKRPPuYP/esv6HYhA8i3l3edHrceqtLeVJIEsWRUx8DblsZuUI7iu
+         YckREVVkJnsjapbmF1Aq205Z3O3PWE0wzXRhd+/yVDv+8qwanCoL/DIztUY/hgfBoLKc
+         Og0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713192478; x=1713797278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wdP5OuUUDcs87pXh/dw1Deyj8T0mk9wfjCCCqRUMku0=;
+        b=WYoONwEDRYECvlGQFbQgJnEiaWS3939eWQjNjnnx0twg/lyJLUB/6tsBHItzPZo7lS
+         YogsOZQbn0g28R1M6470XIRRgCm2SU5oFfuEChVxIgXw430x2ym3ulOXtR6yh28YL5RM
+         u2QfKkPMx0VHoI3EDsylyOY4fbjHCs+8UHduVuIO1iyQglUC97r32B//WHIy4/np45tC
+         8H157j/fRZJQcGBsbcu/dpCCv+VP5+vduPRUStkY078X0CH8TCoZKxp/L0q09o7+Fiv5
+         +thAOj8sN5DNHbOEaWt3orfy+rZNGPmIEK2S72+Sf9oNu6qOYRN3EJZX0AKOimwzok4K
+         kzog==
+X-Forwarded-Encrypted: i=1; AJvYcCWBjyLrdcGW2wv+L7SKlJbsTXz88JDufd5T3bGg1srSJLS0xV9alOWP030iQR+xeBV2c9aFE+JrO4gGX0SmCDEukJi+POLVQQOKEsRMUi5WiOhPNDi9fjGPhLpM0C0nB+d90EDTWzhWZxt+PQ==
+X-Gm-Message-State: AOJu0Ywl7ST/duNnetCWbI6/owvMS8USA6GLh9Co1aB9jBIRgejyYHpa
+	TSTwve3Ir7hG4F1zzqKgtBR+A2nhAgDoLJly0DpVV+HLTKYW7NemzsZqIqSm0oRwVCEQcmQogd1
+	2Zc5f3TXJCYvHf8wXuA+zXf5lsqk=
+X-Google-Smtp-Source: AGHT+IFXBXviIp8bhU13C8T8lSfHKPASLhMZCZr5YCmvZvKkE8Sp56JW7pcBIf1nVRHkDz/Van/bYQPDwNtNoDtbkzo=
+X-Received: by 2002:a0c:fc06:0:b0:69b:2897:4fc4 with SMTP id
+ z6-20020a0cfc06000000b0069b28974fc4mr8856089qvo.58.1713192478430; Mon, 15 Apr
+ 2024 07:47:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEkJfYNJyyGhR9AAWc0V7o8i6pmS+OB=KSbh6XqVWAAGetS9hA@mail.gmail.com>
+References: <00000000000095bb400615f4b0ed@google.com> <20240413084519.1774-1-hdanton@sina.com>
+ <CAOQ4uxhh4Tm6j+Hh+F2aQFuHfpCh_kJ10FYTfXo+AxoP4m01ag@mail.gmail.com> <20240415140333.y44rk5ggbadv4oej@quack3>
+In-Reply-To: <20240415140333.y44rk5ggbadv4oej@quack3>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 15 Apr 2024 17:47:45 +0300
+Message-ID: <CAOQ4uxiG_7HGESMNkrJ7QmsXbgOneUGpMjx8vob87kntwTzUTQ@mail.gmail.com>
+Subject: Re: [syzbot] Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
+To: Jan Kara <jack@suse.cz>
+Cc: Hillf Danton <hdanton@sina.com>, 
+	syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>, 
+	linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 13, 2024 at 01:08:41PM +0800, Sam Sun wrote:
-> On Sat, Apr 13, 2024 at 2:11 AM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Sat, Apr 13, 2024 at 12:26:07AM +0800, Sam Sun wrote:
-> > > On Fri, Apr 12, 2024 at 10:40 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > > I suspect the usb_hub_to_struct_hub() call is racing with the
-> > > > spinlock-protected region in hub_disconnect() (in hub.c).
+On Mon, Apr 15, 2024 at 5:03=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+>
+> On Sat 13-04-24 12:32:32, Amir Goldstein wrote:
+> > On Sat, Apr 13, 2024 at 11:45=E2=80=AFAM Hillf Danton <hdanton@sina.com=
+> wrote:
+> > > On Fri, 12 Apr 2024 23:42:19 -0700 Amir Goldstein
+> > > > On Sat, Apr 13, 2024 at 4:41=3DE2=3D80=3DAFAM Hillf Danton <hdanton=
+@sina.com> wrote:
+> > > > > On Thu, 11 Apr 2024 01:11:20 -0700
+> > > > > > syzbot found the following issue on:
+> > > > > >
+> > > > > > HEAD commit:    6ebf211bb11d Add linux-next specific files for =
+20240410
+> > > > > > git tree:       linux-next
+> > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D3D1=
+621af9d180000
+> > > > >
+> > > > > #syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/li=
+nux-next.git  6ebf211bb11d
+> > > > >
+> > > > > --- x/fs/notify/fsnotify.c
+> > > > > +++ y/fs/notify/fsnotify.c
+> > > > > @@ -101,8 +101,8 @@ void fsnotify_sb_delete(struct super_blo
+> > > > >         wait_var_event(fsnotify_sb_watched_objects(sb),
+> > > > >                        !atomic_long_read(fsnotify_sb_watched_obje=
+cts(sb)));
+> > > > >         WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PR=
+IO_CONTENT));
+> > > > > -       WARN_ON(fsnotify_sb_has_priority_watchers(sb,
+> > > > > -                                                 FSNOTIFY_PRIO_P=
+RE_CONTENT));
+> > > > > +       WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PR=
+IO_PRE_CONTENT));
+> > > > > +       synchronize_srcu(&fsnotify_mark_srcu);
+> > > > >         kfree(sbinfo);
+> > > > >  }
+> > > > >
+> > > > > @@ -499,7 +499,7 @@ int fsnotify(__u32 mask, const void *dat
+> > > > >  {
+> > > > >         const struct path *path =3D3D fsnotify_data_path(data, da=
+ta_type);
+> > > > >         struct super_block *sb =3D3D fsnotify_data_sb(data, data_=
+type);
+> > > > > -       struct fsnotify_sb_info *sbinfo =3D3D fsnotify_sb_info(sb=
+);
+> > > > > +       struct fsnotify_sb_info *sbinfo;
+> > > > >         struct fsnotify_iter_info iter_info =3D {};
+> > > > >         struct mount *mnt =3D3D NULL;
+> > > > >         struct inode *inode2 =3D3D NULL;
+> > > > > @@ -529,6 +529,8 @@ int fsnotify(__u32 mask, const void *dat
+> > > > >                 inode2_type =3D3D FSNOTIFY_ITER_TYPE_PARENT;
+> > > > >         }
+> > > > >
+> > > > > +       iter_info.srcu_idx =3D3D srcu_read_lock(&fsnotify_mark_sr=
+cu);
+> > > > > +       sbinfo =3D3D fsnotify_sb_info(sb);
+> > > > >         /*
+> > > > >          * Optimization: srcu_read_lock() has a memory barrier wh=
+ich can
+> > > > >          * be expensive.  It protects walking the *_fsnotify_mark=
+s lists.
 > > > >
-> > > > > If there is any other thing I could help, please let me know.
 > > > >
-> > > > Try the patch below.  It should eliminate that race, which hopefully
-> > > > will fix the problem.
+> > > > See comment above. This kills the optimization.
+> > > > It is not worth letting all the fsnotify hooks suffer the consequen=
+ce
+> > > > for the edge case of calling fsnotify hook during fs shutdown.
+> > >
+> > > Say nothing before reading your fix.
+> > > >
+> > > > Also, fsnotify_sb_info(sb) in fsnotify_sb_has_priority_watchers()
+> > > > is also not protected and using srcu_read_lock() there completely
+> > > > nullifies the purpose of fsnotify_sb_info.
+> > > >
+> > > > Here is a simplified fix for fsnotify_sb_error() rebased on the
+> > > > pending mm fixes for this syzbot boot failure:
+> > > >
+> > > > #syz test: https://github.com/amir73il/linux fsnotify-fixes
+> > >
+> > > Feel free to post your patch at lore because not everyone has
+> > > access to sites like github.
+> > > >
+> > > > Jan,
+> > > >
+> > > > I think that all the functions called from fs shutdown context
+> > > > should observe that SB_ACTIVE is cleared but wasn't sure?
+> > >
+> > > If you composed fix based on SB_ACTIVE that is cleared in
+> > > generic_shutdown_super() with &sb->s_umount held for write,
+> > > I wonder what simpler serialization than srcu you could
+> > > find/create in fsnotify.
 > >
-> > > I applied this patch and tried to execute several times, no more
-> > > kernel core dump in my environment. I think this bug is fixed by the
-> > > patch. But I do have one more question about it. Since it is a data
-> > > race bug, it has reproducibility issues originally. How can I confirm
-> > > if a racy bug is fixed by test? This kind of bug might still have a
-> > > race window but is harder to trigger. Just curious, not for this
-> > > patch. I think this patch eliminates the racy window.
+> > As far as I can tell there is no need for serialisation.
 > >
-> > If you don't what what is racing, then testing cannot prove that a race
-> > is eliminated.  However, if you do know where a race occurs then it's
-> > easy to see how mutual exclusion can prevent the race from happening.
+> > The problem is that fsnotify_sb_error() can be called from the
+> > context of ->put_super() call from generic_shutdown_super().
 > >
-> > In this case the bug might have had a different cause, something other
-> > than a race between usb_hub_to_struct_hub() and hub_disconnect().  If
-> > that's so then testing this patch would not be a definite proof that the
-> > bug is gone.  But if that race _is_ the cause of the bug then this patch
-> > will fix it -- you can see that just by reading the code with no need
-> > for testing.
+> > It's true that in the repro the thread calling fsnotify_sb_error()
+> > in the worker thread running quota deferred work from put_super()
+> > but I think there are sufficient barriers for this worker thread to
+> > observer the cleared SB_ACTIVE flag.
 > >
-> > Besides, the patch is needed in any case because that race certainly
-> > _can_ occur.  And maybe not only on this pathway.
+> > Anyway, according to syzbot, repro does not trigger the UAF
+> > with my last fix.
 > >
-> 
-> Thanks for explaining! I will check the related code next time.
-> 
-> > May I add your "Reported-and-tested-by:" to the patch?
-> 
-> Sure, thanks for your help!
+> > To be clear, any fsnotify_sb_error() that is a result of a user operati=
+on
+> > would be holding an active reference to sb so cannot race with
+> > fsnotify_sb_delete(), but I am not sure that same is true for ext4
+> > worker threads.
+> >
+> > Jan,
+> >
+> > You wrote that "In theory these two calls can even run in parallel
+> > and fsnotify() can be holding fsnotify_sb_info pointer while
+> > fsnotify_sb_delete() is freeing".
+> >
+> > Can you give an example of this case?
+>
+> Yeah, basically what Hilf writes:
+>
+> Task 1                                  Task 2
+>   umount()                              some delayed work, transaction
+>                                           commit, whatever is still runni=
+ng
+>                                           before ext4_put_super() complet=
+es
+>     ...                                     ext4_error()
+>                                               fsnotify_sb_error()
+>                                                 fsnotify()
+>                                                   fetches fsnotify_sb_inf=
+o
+>     generic_shutdown_super()
+>       fsnotify_sb_delete()
+>         frees fsnotify_sb_info
 
-Actually, I've got a completely different patch which I think will fix 
-the problem you encountered.  Instead of using mutual exclusion to 
-avoid the race, it prevents the two routines from being called at the 
-same time so the race can't occur in the first place.  It also should 
-guarantee the usb_hub_to_struct_hub() doesn't return NULL when 
-disable_store() calls it.
+OK, so what do you say about Hillf's fix patch?
 
-Can you try the patch below, instead of (not along with) the first 
-patch?  Thanks.
+Maybe it is ok to let go of the optimization in fsnotify(), considering
+that we now have stronger optimizations in the inline hooks and
+in __fsnotify_parent()?
 
-Alan Stern
+I think that Hillf's patch is missing setting s_fsnotify_info to NULL?
 
+ @@ -101,8 +101,8 @@ void fsnotify_sb_delete(struct super_blo
+         wait_var_event(fsnotify_sb_watched_objects(sb),
+                        !atomic_long_read(fsnotify_sb_watched_objects(sb)))=
+;
+         WARN_ON(fsnotify_sb_has_priority_watchers(sb, FSNOTIFY_PRIO_CONTEN=
+T));
++       WRITE_ONCE(sb->s_fsnotify_info, NULL);
++       synchronize_srcu(&fsnotify_mark_srcu);
+         kfree(sbinfo);
+ }
 
-
-Index: usb-devel/drivers/usb/core/hub.c
-===================================================================
---- usb-devel.orig/drivers/usb/core/hub.c
-+++ usb-devel/drivers/usb/core/hub.c
-@@ -1788,16 +1788,15 @@ static void hub_disconnect(struct usb_in
- 
- 	mutex_lock(&usb_port_peer_mutex);
- 
-+	for (port1 = hdev->maxchild; port1 > 0; --port1)
-+		usb_hub_remove_port_device(hub, port1);
-+
- 	/* Avoid races with recursively_mark_NOTATTACHED() */
- 	spin_lock_irq(&device_state_lock);
--	port1 = hdev->maxchild;
- 	hdev->maxchild = 0;
- 	usb_set_intfdata(intf, NULL);
- 	spin_unlock_irq(&device_state_lock);
- 
--	for (; port1 > 0; --port1)
--		usb_hub_remove_port_device(hub, port1);
--
- 	mutex_unlock(&usb_port_peer_mutex);
- 
- 	if (hub->hdev->speed == USB_SPEED_HIGH)
-
+Thanks,
+Amir.
 
