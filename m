@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-145300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E64C38A524C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0658C8A5244
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 15:52:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14D8F1C224C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:52:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37CB21C212CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 13:52:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86634763EC;
-	Mon, 15 Apr 2024 13:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443F67351A;
+	Mon, 15 Apr 2024 13:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="G3iVbMOB"
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="FSs5JXQy"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5E4757F8;
-	Mon, 15 Apr 2024 13:51:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF8F7317D;
+	Mon, 15 Apr 2024 13:51:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713189112; cv=none; b=bU4l3nOid4H3WRPqlVEKoae9ENiP7UJk/3AO1AXTd91uzsdfbo2f9wyeHXnLo6VXEoyfpNsjH6S7cK7RG2UKlap3KQnmKU/+rtBIT+XtGZDp35AQHOXNT1g6OkkmMHYGNzjezRJmXmvaQqivNyncIG3duCgbeHz/p0CwvMiKa1M=
+	t=1713189089; cv=none; b=f57iHr+IhU2lgjnIPg7tGz9B0pxWZTyUrvr6sDUNZslb9qSQ8keXuMMeDG49EIiBOU3V03t/2G1oCrVv2qfVf4tpq3FfnCIsjwHt7/IOJ22xamQSgxDjUu4LgVNb0AApwUhJAUweYPm+RRrWGn+0RIn99tzuqfmrZgIkdjZFU9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713189112; c=relaxed/simple;
-	bh=/MzS58Bdx0IFb51w+DsL1+jIu8+5Y9BR9QKXoZXp1EY=;
+	s=arc-20240116; t=1713189089; c=relaxed/simple;
+	bh=4y/GRkg4o36/tQA+ZTsU0DVaBwtvFa4f9SJXDJvLOXU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aezaS1ziKWQOdZiVhZy90uIR0uXXWFWSahhOVGk6nVJSNK0W1FcI3gv5GNCLnm/lOk8NuXjAPYNLAWjXZwpamMn2e3Ws8IZ6eGiZapXVAaJFiYPOONr5AsoPYXtDG0WgX+v3tiVP530am/euHfzszTUFEhJ/ZKGekQn8OflgTak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=G3iVbMOB; arc=none smtp.client-ip=91.207.212.93
+	 MIME-Version:Content-Type; b=se2QwiDulVO/xEau8Wg+vgK59YBZSWw7U33upNWgbO7Qade1mRCFzcL13KdUXnObVV0MayYwLdUjfKvWEHC+MYas43+OTsNSt3u238fYNeXdlaGhycLeIti4D3h69IggOUUGZgNfaKgP06Hu8beHFWDtySNhtwiREYpleOscPwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=FSs5JXQy; arc=none smtp.client-ip=185.132.182.106
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43FC3ST8003618;
-	Mon, 15 Apr 2024 15:51:37 +0200
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43FCKLtx003594;
+	Mon, 15 Apr 2024 15:51:17 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=w9gUvAo5C5cla/R3zAeNTWknO3h/W93JuYgOfKva52s=; b=G3
-	iVbMOBhftyMXIoS2HROrLGts5IsxCiY4n3nEjJSLGnYlt0AazSLm/S9jECY/y9g9
-	MswqCF03ZFsvaB+IGlzaebuVF1ySdQ8i44qfg5sPWGrUo5TOArBjjZqJam1R69ee
-	Qoj2yS/9BCPHfctjgGdG2TeVN8qTlWfOaE3Veq/EFjS8TSvFmtuoQCUrkxdMwDah
-	cxXlxDIcJ5h/XKWryL461RbCN/BujiJwBfinCOWeIx35/dxDUawEb8MIaFdgbRzZ
-	Q5AwQUA9EyCoK2x/M4Hp5D+udjoNg5QVFK1C0CTej/rhWhYG14T2Mi5fN+9Gibrn
-	FkRm6xXMaIs32Ijf9YJA==
+	selector1; bh=xqd7f3rTrGl7iHCxH+UrWDvQJYssTs2N59yFdBiosU0=; b=FS
+	s5JXQyr/wThnlShIpdOZbGS1hFllOTrpYqiHn7lA8zmJCqCBByU3CJdGW2FNaK2i
+	qf0fE3jTwTCXBXdCSX62ySNOXmCiJ/CFPf36an8pCfN2p397nDvQj1o+ipvKS5KT
+	sfpYYiXAYviaWR4epwPyS0sC2ur6fJUNDaRcgJGXttMBYLWe/3yGTZwa0M5hmm4C
+	qxCpPkt5bEOI4PWTIESEoVLtvw5oNIler8w0OyqRKIBJC+nigVYoGeBBG+x6eeBa
+	iCLQg/EcIHdIyG+xqdYjVZyvHAA+OkK/FXtNCVtfUusACEm0CAYINVHOeTbFWg2U
+	FBh3l0i74qgj27WsyJQg==
 Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xgecy4eus-1
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3xffff85yh-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Apr 2024 15:51:37 +0200 (MEST)
+	Mon, 15 Apr 2024 15:51:17 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 9240E4002D;
-	Mon, 15 Apr 2024 15:51:33 +0200 (CEST)
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 216424002D;
+	Mon, 15 Apr 2024 15:51:14 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EAF96215BEB;
-	Mon, 15 Apr 2024 15:50:48 +0200 (CEST)
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8AE872165FD;
+	Mon, 15 Apr 2024 15:50:49 +0200 (CEST)
 Received: from localhost (10.48.86.102) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 15 Apr
- 2024 15:50:48 +0200
+ 2024 15:50:49 +0200
 From: Antonio Borneo <antonio.borneo@foss.st.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -74,9 +74,9 @@ CC: Antonio Borneo <antonio.borneo@foss.st.com>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 05/11] irqchip/stm32-exti: Skip secure events
-Date: Mon, 15 Apr 2024 15:49:20 +0200
-Message-ID: <20240415134926.1254428-6-antonio.borneo@foss.st.com>
+Subject: [PATCH v2 06/11] irqchip/stm32-exti: Mark events reserved with RIF configuration check
+Date: Mon, 15 Apr 2024 15:49:21 +0200
+Message-ID: <20240415134926.1254428-7-antonio.borneo@foss.st.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240216094758.916722-1-antonio.borneo@foss.st.com>
 References: <20240216094758.916722-1-antonio.borneo@foss.st.com>
@@ -91,134 +91,91 @@ Content-Type: text/plain
 X-ClientProxiedBy: SAFCAS1NODE2.st.com (10.75.90.13) To SHFDAG1NODE1.st.com
  (10.75.129.69)
 X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-15_11,2024-04-15_01,2023-05-22_02
 
-Secure OS can reserve some EXTI event, marking them as "secure" by
-setting the corresponding bit in register SECCFGR (aka TZENR).
-These events cannot be used by Linux.
+EXTI events availability depends on Resource Isolation Framework
+(RIF) configuration.
+RIF grants access to buses with Compartment ID (CID) filtering,
+secure and privilege level. It also assigns EXTI events to one or
+several processors (CID, Secure, Privilege).
 
-Read the list of reserved events and check it during irq domain
-allocation.
+EXTI events used by Linux must be CID-filtered (EnCIDCFGR.CFEN=1)
+and statically assigned to CID1 (EnCIDCFR.CID=CID1).
+EXTI events not filling these conditions are marked as reserved
+and can't be used by Linux.
 
 Signed-off-by: Antonio Borneo <antonio.borneo@foss.st.com>
 ---
- drivers/irqchip/irq-stm32-exti.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/irqchip/irq-stm32-exti.c | 40 ++++++++++++++++++++++++++++++--
+ 1 file changed, 38 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-index ded20d9bde73f..c0a020aab557a 100644
+index c0a020aab557a..2cc9f3b7d6690 100644
 --- a/drivers/irqchip/irq-stm32-exti.c
 +++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -36,6 +36,7 @@ struct stm32_exti_bank {
- 	u32 rpr_ofst;
- 	u32 fpr_ofst;
- 	u32 trg_ofst;
-+	u32 seccfgr_ofst;
+@@ -23,9 +23,22 @@
+ 
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+ 
+-#define IRQS_PER_BANK 32
++#define IRQS_PER_BANK			32
+ 
+-#define HWSPNLCK_TIMEOUT	1000 /* usec */
++#define HWSPNLCK_TIMEOUT		1000 /* usec */
++
++#define EXTI_EnCIDCFGR(n)		(0x180 + (n) * 4)
++#define EXTI_HWCFGR1			0x3f0
++
++/* Register: EXTI_EnCIDCFGR(n) */
++#define EXTI_CIDCFGR_CFEN_MASK		BIT(0)
++#define EXTI_CIDCFGR_CID_MASK		GENMASK(6, 4)
++#define EXTI_CIDCFGR_CID_SHIFT		4
++
++/* Register: EXTI_HWCFGR1 */
++#define EXTI_HWCFGR1_CIDWIDTH_MASK	GENMASK(27, 24)
++
++#define EXTI_CID1			1
+ 
+ struct stm32_exti_bank {
+ 	u32 imr_ofst;
+@@ -907,6 +920,27 @@ static const struct irq_domain_ops stm32_exti_h_domain_ops = {
+ 	.xlate = irq_domain_xlate_twocell,
  };
  
- #define UNDEF_REG ~0
-@@ -54,10 +55,12 @@ struct stm32_exti_chip_data {
- 	u32 mask_cache;
- 	u32 rtsr_cache;
- 	u32 ftsr_cache;
-+	u32 event_reserved;
- };
- 
- struct stm32_exti_host_data {
- 	void __iomem *base;
-+	struct device *dev;
- 	struct stm32_exti_chip_data *chips_data;
- 	const struct stm32_exti_drv_data *drv_data;
- 	struct hwspinlock *hwlock;
-@@ -73,6 +76,7 @@ static const struct stm32_exti_bank stm32f4xx_exti_b1 = {
- 	.rpr_ofst	= 0x14,
- 	.fpr_ofst	= UNDEF_REG,
- 	.trg_ofst	= UNDEF_REG,
-+	.seccfgr_ofst	= UNDEF_REG,
- };
- 
- static const struct stm32_exti_bank *stm32f4xx_exti_banks[] = {
-@@ -93,6 +97,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b1 = {
- 	.rpr_ofst	= 0x88,
- 	.fpr_ofst	= UNDEF_REG,
- 	.trg_ofst	= UNDEF_REG,
-+	.seccfgr_ofst	= UNDEF_REG,
- };
- 
- static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
-@@ -104,6 +109,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b2 = {
- 	.rpr_ofst	= 0x98,
- 	.fpr_ofst	= UNDEF_REG,
- 	.trg_ofst	= UNDEF_REG,
-+	.seccfgr_ofst	= UNDEF_REG,
- };
- 
- static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
-@@ -115,6 +121,7 @@ static const struct stm32_exti_bank stm32h7xx_exti_b3 = {
- 	.rpr_ofst	= 0xA8,
- 	.fpr_ofst	= UNDEF_REG,
- 	.trg_ofst	= UNDEF_REG,
-+	.seccfgr_ofst	= UNDEF_REG,
- };
- 
- static const struct stm32_exti_bank *stm32h7xx_exti_banks[] = {
-@@ -137,6 +144,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b1 = {
- 	.rpr_ofst	= 0x0C,
- 	.fpr_ofst	= 0x10,
- 	.trg_ofst	= 0x3EC,
-+	.seccfgr_ofst	= 0x14,
- };
- 
- static const struct stm32_exti_bank stm32mp1_exti_b2 = {
-@@ -148,6 +156,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b2 = {
- 	.rpr_ofst	= 0x2C,
- 	.fpr_ofst	= 0x30,
- 	.trg_ofst	= 0x3E8,
-+	.seccfgr_ofst	= 0x34,
- };
- 
- static const struct stm32_exti_bank stm32mp1_exti_b3 = {
-@@ -159,6 +168,7 @@ static const struct stm32_exti_bank stm32mp1_exti_b3 = {
- 	.rpr_ofst	= 0x4C,
- 	.fpr_ofst	= 0x50,
- 	.trg_ofst	= 0x3E4,
-+	.seccfgr_ofst	= 0x54,
- };
- 
- static const struct stm32_exti_bank *stm32mp1_exti_banks[] = {
-@@ -706,6 +716,12 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
- 	bank  = hwirq / IRQS_PER_BANK;
- 	chip_data = &host_data->chips_data[bank];
- 
-+	/* Check if event is reserved (Secure) */
-+	if (chip_data->event_reserved & BIT(hwirq % IRQS_PER_BANK)) {
-+		dev_err(host_data->dev, "event %lu is reserved, secure\n", hwirq);
-+		return -EPERM;
++static void stm32_exti_check_rif(struct stm32_exti_host_data *host_data)
++{
++	unsigned int bank, i, event;
++	u32 cid, cidcfgr, hwcfgr1;
++
++	/* quit on CID not supported */
++	hwcfgr1 = readl_relaxed(host_data->base + EXTI_HWCFGR1);
++	if ((hwcfgr1 & EXTI_HWCFGR1_CIDWIDTH_MASK) == 0)
++		return;
++
++	for (bank = 0; bank < host_data->drv_data->bank_nr; bank++) {
++		for (i = 0; i < IRQS_PER_BANK; i++) {
++			event = bank * IRQS_PER_BANK + i;
++			cidcfgr = readl_relaxed(host_data->base + EXTI_EnCIDCFGR(event));
++			cid = (cidcfgr & EXTI_CIDCFGR_CID_MASK) >> EXTI_CIDCFGR_CID_SHIFT;
++			if ((cidcfgr & EXTI_CIDCFGR_CFEN_MASK) && cid != EXTI_CID1)
++				host_data->chips_data[bank].event_reserved |= BIT(i);
++		}
 +	}
++}
 +
- 	event_trg = readl_relaxed(host_data->base + chip_data->reg_bank->trg_ofst);
- 	chip = (event_trg & BIT(hwirq % IRQS_PER_BANK)) ?
- 	       &stm32_exti_h_chip : &stm32_exti_h_chip_direct;
-@@ -803,6 +819,10 @@ stm32_exti_chip_data *stm32_exti_chip_init(struct stm32_exti_host_data *h_data,
- 	if (stm32_bank->emr_ofst != UNDEF_REG)
- 		writel_relaxed(0, base + stm32_bank->emr_ofst);
+ static void stm32_exti_remove_irq(void *data)
+ {
+ 	struct irq_domain *domain = data;
+@@ -969,6 +1003,8 @@ static int stm32_exti_probe(struct platform_device *pdev)
+ 	for (i = 0; i < drv_data->bank_nr; i++)
+ 		stm32_exti_chip_init(host_data, i, np);
  
-+	/* reserve Secure events */
-+	if (stm32_bank->seccfgr_ofst != UNDEF_REG)
-+		chip_data->event_reserved = readl_relaxed(base + stm32_bank->seccfgr_ofst);
++	stm32_exti_check_rif(host_data);
 +
- 	pr_info("%pOF: bank%d\n", node, bank_idx);
- 
- 	return chip_data;
-@@ -908,6 +928,7 @@ static int stm32_exti_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	dev_set_drvdata(dev, host_data);
-+	host_data->dev = dev;
- 
- 	/* check for optional hwspinlock which may be not available yet */
- 	ret = of_hwspin_lock_get_id(np, 0);
+ 	parent_domain = irq_find_host(of_irq_find_parent(np));
+ 	if (!parent_domain) {
+ 		dev_err(dev, "GIC interrupt-parent not found\n");
 -- 
 2.34.1
 
