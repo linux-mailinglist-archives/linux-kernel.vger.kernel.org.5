@@ -1,245 +1,263 @@
-Return-Path: <linux-kernel+bounces-144942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DC48A4CF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C298A4CFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:53:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45E7C285944
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:52:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED8A1281E4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F9835D48D;
-	Mon, 15 Apr 2024 10:52:13 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591755D726;
+	Mon, 15 Apr 2024 10:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="B4faCUjX"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425735D465;
-	Mon, 15 Apr 2024 10:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96933C062;
+	Mon, 15 Apr 2024 10:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713178332; cv=none; b=hWXmGqKUPJg4P1v9eXnZCaXlH+LW1pKU3AuaaZkgiqmaWNooIPKfK+LD/5FwWVALhboFgLQuG7B6xSi9YegZBmk4yzpMYV0In+mfsqYeUPFhvOJBCweaqIFJxJv3TMxHK4tkajbGAJFvR01oLmIK9OvZEZxDAPrO2Lv/WQfxwcY=
+	t=1713178401; cv=none; b=Xk892QwMWnUYjZd3TU0KVK0d9OaYG4AmgYgaoPxUHEEJYXfD24k8eevTOPLi2n0lZlvr1Ipi39qvfQRbpEWMhY7Qxo0G95ZMcoQXph3XCG6Bso00fTMXK7NvOUrbAhu1PwAEWYDRGrlHLbf2sYy9tu6z4LT9Cj1v6OAimPs3EYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713178332; c=relaxed/simple;
-	bh=YjzZLPQbXgfdGlGbGlYWn308Tq/4T7rk/4RnIScxBMU=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jGVkxz3RPwwHmqkvL0Q/eG0QovHsDcAozyYNfEJacMGdsQqfdoyr0yPlPbZLDisJOvd10k0JFo6WjwNKmayFeU1/xKx0rUD554kOfD/tUj7bkO6ZsVhXYFY6i9c+aon5l7Fkv1QvqD0aojmMD3DFLEQdI++r6FKIP6JfbdShxrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VJ3lL5dzRz6K919;
-	Mon, 15 Apr 2024 18:47:10 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5943D140A08;
-	Mon, 15 Apr 2024 18:52:05 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 15 Apr
- 2024 11:52:04 +0100
-Date: Mon, 15 Apr 2024 11:52:03 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, Miguel Luis <miguel.luis@oracle.com>, James Morse
-	<james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, "Jean-Philippe
- Brucker" <jean-philippe@linaro.org>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-	<linuxarm@huawei.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
-Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from
- acpi_processor_get_info()
-Message-ID: <20240415115203.0000011b@Huawei.com>
-In-Reply-To: <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
-References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
-	<20240412143719.11398-4-Jonathan.Cameron@huawei.com>
-	<CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1713178401; c=relaxed/simple;
+	bh=V1BGjb8HNq5D0Fh/oi6hs0eA4zpI5ma4eOXVd4utS/0=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=fOab8k50ZripcoE7lcaxLbKNsAXU3pa29rZRZRuww0ZIbk/Fm/vJmPMZLKhkF67SLMq/Aab2Ut0N8T0zrrMOBBXVeE8ykHilIwwos9VEIrd7fxDXjF82s+VvFIlfzUto+YEM57wGJpP2ERsoFPaHBm8dsyYCXjRoGXnFiURCs+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=B4faCUjX; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43F7GxAH032342;
+	Mon, 15 Apr 2024 10:53:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=fUh8aczGJXmKWquDnETV7CYiUkU0VYPdnsfrIcnMzMc=; b=B4
+	faCUjXXP28O7QszLlFE7/qB6vFZgRWlZsLl/v3DcCyOEEZPJcZ//jRNHUH2pQwO6
+	bZrSn1Rc3kR2Odgz0lihftZeDwTPBOh2PwlQmjLxX7QnnNIP6zgPwF8Z6RXVWM+A
+	8vnnMRzu2QP4kB8Ev123A2brJcrYzowSy+bMrHViJRQS91KZbjEbjOKJQl9sSc5V
+	4rpq3XNDuvcv7fKeJ50MZBZokHraBXmrCMNF4m6g6imid+/V6vzH/7VKwbP9OeFn
+	7332nn9A8pqsdIfIq9RU/pApDdYWsEc/gtLN7PMoKBgdmOJQjxdC/jc+pCaGz+wp
+	55G3osGg+tUAIGGInZcw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xgyq7rf6t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 10:53:00 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43FAqx8F019341
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Apr 2024 10:52:59 GMT
+Received: from [10.218.29.219] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
+ 2024 03:52:56 -0700
+Message-ID: <f72d83fd-9576-4017-bcf9-c50ce94d85ec@quicinc.com>
+Date: Mon, 15 Apr 2024 16:22:51 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
+ exists in DT"
+Content-Language: en-US
+From: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+To: Johan Hovold <johan@kernel.org>
+CC: Johan Hovold <johan+linaro@kernel.org>, <luiz.dentz@gmail.com>,
+        <marcel@holtmann.org>, <linux-bluetooth@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <quic_mohamull@quicinc.com>, <quic_hbandi@quicinc.com>
+References: <20240314084412.1127-1-johan+linaro@kernel.org>
+ <171146704035.9961.13096206001570615153.git-patchwork-notify@kernel.org>
+ <124a7d54-5a18-4be7-9a76-a12017f6cce5@quicinc.com>
+ <ZgWLeo5KSLurLDhK@hovoldconsulting.com>
+ <c03abbbd-faa5-4fdc-b7c3-5554a90c3419@quicinc.com>
+ <Zg1KmcFQ3bAJa8qJ@hovoldconsulting.com>
+ <b7d5c2ac-2278-4ccc-be2a-7c7d9936581a@quicinc.com>
+In-Reply-To: <b7d5c2ac-2278-4ccc-be2a-7c7d9936581a@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3N7v25ujwldprVXf3XOs24gFnLmeFYCL
+X-Proofpoint-ORIG-GUID: 3N7v25ujwldprVXf3XOs24gFnLmeFYCL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-15_08,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
+ clxscore=1011 adultscore=0 impostorscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404150071
 
-On Fri, 12 Apr 2024 20:30:40 +0200
-"Rafael J. Wysocki" <rafael@kernel.org> wrote:
+Hi Johan,
+Are you planing to merge your below patch ?
 
-> On Fri, Apr 12, 2024 at 4:38=E2=80=AFPM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> >
-> > From: James Morse <james.morse@arm.com>
-> >
-> > The arm64 specific arch_register_cpu() call may defer CPU registration
-> > until the ACPI interpreter is available and the _STA method can
-> > be evaluated.
-> >
-> > If this occurs, then a second attempt is made in
-> > acpi_processor_get_info(). Note that the arm64 specific call has
-> > not yet been added so for now this will never be successfully
-> > called.
-> >
-> > Systems can still be booted with 'acpi=3Doff', or not include an
-> > ACPI description at all as in these cases arch_register_cpu()
-> > will not have deferred registration when first called.
-> >
-> > This moves the CPU register logic back to a subsys_initcall(),
-> > while the memory nodes will have been registered earlier.
-> > Note this is where the call was prior to the cleanup series so
-> > there should be no side effects of moving it back again for this
-> > specific case.
-> >
-> > [PATCH 00/21] Initial cleanups for vCPU HP.
-> > https://lore.kernel.org/all/ZVyz%2FVe5pPu8AWoA@shell.armlinux.org.uk/
-> >
-> > e.g. 5b95f94c3b9f ("x86/topology: Switch over to GENERIC_CPU_DEVICES")
-> >
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > Co-developed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > Signed-off-by: Joanthan Cameron <Jonathan.Cameron@huawei.com>
-> > ---
-> > v5: Update commit message to make it clear this is moving the
-> >     init back to where it was until very recently.
-> >
-> >     No longer change the condition in the earlier registration point
-> >     as that will be handled by the arm64 registration routine
-> >     deferring until called again here.
-> > ---
-> >  drivers/acpi/acpi_processor.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processo=
-r.c
-> > index 93e029403d05..c78398cdd060 100644
-> > --- a/drivers/acpi/acpi_processor.c
-> > +++ b/drivers/acpi/acpi_processor.c
-> > @@ -317,6 +317,18 @@ static int acpi_processor_get_info(struct acpi_dev=
-ice *device)
-> >
-> >         c =3D &per_cpu(cpu_devices, pr->id);
-> >         ACPI_COMPANION_SET(&c->dev, device);
-> > +       /*
-> > +        * Register CPUs that are present. get_cpu_device() is used to =
-skip
-> > +        * duplicate CPU descriptions from firmware.
-> > +        */
-> > +       if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
-> > +           !get_cpu_device(pr->id)) {
-> > +               int ret =3D arch_register_cpu(pr->id);
-> > +
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
-> > +
-> >         /*
-> >          *  Extra Processor objects may be enumerated on MP systems with
-> >          *  less than the max # of CPUs. They should be ignored _iff
-> > -- =20
->=20
-> I am still unsure why there need to be two paths calling
-> arch_register_cpu() in acpi_processor_get_info().
+On 4/5/2024 6:29 PM, Janaki Ramaiah Thota wrote:
+> 
+> 
+> On 4/3/2024 5:54 PM, Johan Hovold wrote:
+>> On Fri, Mar 29, 2024 at 12:55:40PM +0530, Janaki Ramaiah Thota wrote:
+>>> On 3/28/2024 8:53 PM, Johan Hovold wrote:
+>>>> On Thu, Mar 28, 2024 at 08:25:16PM +0530, Janaki Ramaiah Thota wrote:
+>>
+>>>>> We made this change to configure the device which supports persistent
+>>>>> memory for the BD-Address
+>>>>
+>>>> Can you say something more about which devices support persistent
+>>>> storage for the address? Is that all or just some of the chip variants?
+>>
+>>> Most of the devices support persistent storage, and bd-address storage
+>>> is chosen based on the OEM and Target.
+>>
+>> Can you be more specific about which devices support it (or say which do
+>> not)?
+>>
+> 
+> We know below BT chipsets supports persistent storage(OTP) for BDA
+> WCN7850, WCN6855, WCN6750
+> 
+>> Is the address stored in some external eeprom or similar which the OEM
+>> can choose to populate?
+>>
+> 
+> This persistent storage is One Time Programmable (OTP) reserved memory
+> which resides in the BT chip.
+> 
+>>>>> So to make device functional in both scenarios we are adding a new
+>>>>> property in dts file to distinguish persistent and non-persistent
+>>>>> support of BD Address and set HCI_QUIRK_USE_BDADDR_PROPERTY bit
+>>>>> accordingly
+>>>>
+>>>> Depending on the answer to my questions above, you may be able to infer
+>>>> this from the compatible string and/or you can read out the address from
+>>>> the device and only set the quirk if it's set to the default address.
+>>>>
+>>>> You should not need to add a new property for this.
+>>
+>>> As per my understanding, altering the compatible string may cause duplicate
+>>> configuration, right ?
+>>
+> 
+> Yes, we are correct.
+> 
+>> If it's the same device and just a different configuration then we can't
+>> use the compatible string for this.
+>>
+>> It seems we need a patch like the below to address this. But please
+>> provide some more details (e.g. answers to the questions above) so I can
+>> determine what the end result should look like.
+>>
+>> Johan
+>>
+>>
+>>  From 9719effe80fcc17518131816fdfeb1824cfa08b6 Mon Sep 17 00:00:00 2001
+>> From: Johan Hovold <johan+linaro@kernel.org>
+>> Date: Thu, 20 Apr 2023 14:10:55 +0200
+>> Subject: [PATCH] Bluetooth: btqca: add invalid device address check
+>>
+>> Some Qualcomm Bluetooth controllers lack persistent storage for the
+>> device address and therefore end up using the default address
+>> 00:00:00:00:5a:ad.
+>>
+>> Apparently this depends on how the controller has been integrated so we
+>> can not use the device type alone to determine when the address is
+>> valid.
+>>
+>> Instead read back the address during setup() and only set the
+>> HCI_QUIRK_USE_BDADDR_PROPERTY flag when needed.
+>>
+>> Fixes: de79a9df1692 ("Bluetooth: btqcomsmd: use HCI_QUIRK_USE_BDADDR_PROPERTY")
+>> Fixes: e668eb1e1578 ("Bluetooth: hci_core: Don't stop BT if the BD address missing in dts")
+>> Fixes: 6945795bc81a ("Bluetooth: fix use-bdaddr-property quirk")
+>> Cc: stable@vger.kernel.org    # 6.5
+>> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+>> ---
+>>   drivers/bluetooth/btqca.c   | 33 +++++++++++++++++++++++++++++++++
+>>   drivers/bluetooth/hci_qca.c |  2 --
+>>   2 files changed, 33 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+>> index 19cfc342fc7b..15124157372c 100644
+>> --- a/drivers/bluetooth/btqca.c
+>> +++ b/drivers/bluetooth/btqca.c
+>> @@ -15,6 +15,8 @@
+>>   #define VERSION "0.1"
+>> +#define QCA_BDADDR_DEFAULT (&(bdaddr_t) {{ 0xad, 0x5a, 0x00, 0x00, 0x00, 0x00 }})
+>> +
+>>   int qca_read_soc_version(struct hci_dev *hdev, struct qca_btsoc_version *ver,
+>>                enum qca_btsoc_type soc_type)
+>>   {
+>> @@ -612,6 +614,35 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
+>>   }
+>>   EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
+>> +static void qca_check_bdaddr(struct hci_dev *hdev)
+>> +{
+>> +    struct hci_rp_read_bd_addr *bda;
+>> +    struct sk_buff *skb;
+>> +    int err;
+>> +
+>> +    if (bacmp(&hdev->public_addr, BDADDR_ANY))
+>> +        return;
+>> +
+>> +    skb = __hci_cmd_sync(hdev, HCI_OP_READ_BD_ADDR, 0, NULL,
+>> +                 HCI_INIT_TIMEOUT);
+>> +    if (IS_ERR(skb)) {
+>> +        err = PTR_ERR(skb);
+>> +        bt_dev_err(hdev, "Failed to read device address (%d)", err);
+>> +        return;
+>> +    }
+>> +
+>> +    if (skb->len != sizeof(*bda)) {
+>> +        bt_dev_err(hdev, "Device address length mismatch");
+>> +        goto free_skb;
+>> +    }
+>> +
+>> +    bda = (struct hci_rp_read_bd_addr *)skb->data;
+>> +    if (!bacmp(&bda->bdaddr, QCA_BDADDR_DEFAULT))
+>> +        set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+>> +free_skb:
+>> +    kfree_skb(skb);
+>> +}
+>> +
+>>   static void qca_generate_hsp_nvm_name(char *fwname, size_t max_size,
+>>           struct qca_btsoc_version ver, u8 rom_ver, u16 bid)
+>>   {
+>> @@ -818,6 +849,8 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+>>           break;
+>>       }
+>> +    qca_check_bdaddr(hdev);
+>> +
+>>       bt_dev_info(hdev, "QCA setup on UART is completed");
+>>       return 0;
+>> diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+>> index b266db18c8cc..b621a0a40ea4 100644
+>> --- a/drivers/bluetooth/hci_qca.c
+>> +++ b/drivers/bluetooth/hci_qca.c
+>> @@ -1908,8 +1908,6 @@ static int qca_setup(struct hci_uart *hu)
+>>       case QCA_WCN6750:
+>>       case QCA_WCN6855:
+>>       case QCA_WCN7850:
+>> -        set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
+>> -
+>>           qcadev = serdev_device_get_drvdata(hu->serdev);
+>>           if (qcadev->bdaddr_property_broken)
+>>               set_bit(HCI_QUIRK_BDADDR_PROPERTY_BROKEN, &hdev->quirks);
+> 
+> Thanks for the patch. This change looks fine and it will resolve the current OTP issue.
+> 
+> -- 
+> Thanks,
+> JanakiRam
 
-I replied further down the thread, but the key point was to maintain
-the strong distinction between 'what' was done in a real hotplug
-path vs one where onlining was all.  We can relax that but it goes
-contrary to the careful dance that was needed to get any agreement
-to the ARM architecture aspects of this.
-
->=20
-> Just below the comment partially pulled into the patch context above,
-> there is this code:
->=20
-> if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
->          int ret =3D acpi_processor_hotadd_init(pr);
->=20
->         if (ret)
->                 return ret;
-> }
->=20
-> For the sake of the argument, fold acpi_processor_hotadd_init() into
-> it and drop the redundant _STA check from it:
-
-If we combine these, the _STA check is necessary because we will call this
-path for delayed onlining of ARM64 CPUs (if the earlier registration code
-call or arch_register_cpu() returned -EPROBE defer). That's the only way
-we know that a given CPU is online capable but firmware is saying we can't
-bring it online yet (it may be be vHP later).
-
->=20
-> if (invalid_logical_cpuid(pr->id) || !cpu_present(pr->id)) {
->         if (invalid_phys_cpuid(pr->phys_id))
->                 return -ENODEV;
->=20
->         cpu_maps_update_begin();
->         cpus_write_lock();
->=20
->        ret =3D acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id=
-);
-
-I read that call as
-	acpi_map_cpu_for_physical_cpu_hotplug()
-but we could make it equivalent of.
-	acpi_map_cpu_for_whatever_cpu_hotplug()
-(I'm not proposing those names though ;)
-
-in which case it is fine to just stub it out on ARM64.
->        if (ret) {
->                 cpus_write_unlock();
->                 cpu_maps_update_done();
->                 return ret;
->        }
->        ret =3D arch_register_cpu(pr->id);
->        if (ret) {
->                 acpi_unmap_cpu(pr->id);
->=20
->                 cpus_write_unlock();
->                 cpu_maps_update_done();
->                 return ret;
->        }
->       pr_info("CPU%d has been hot-added\n", pr->id);
->       pr->flags.need_hotplug_init =3D 1;
-This one needs more careful handling because we are calling this
-for non hotplug cases on arm64 in which case we end up setting this
-for initially online CPUs - thus if we offline and online them
-again via sysfs /sys/bus/cpu/device/cpuX/online it goes through the
-hotplug path and should not.
-
-So I need a way to detect if we are hotplugging the cpu or not.
-Is there a standard way to do this?  I haven't figured out how
-to use flags in drivers to communicate this state.
-
->=20
->       cpus_write_unlock();
->       cpu_maps_update_done();
-> }
->=20
-> so I'm not sure why this cannot be combined with the new code.
->=20
-> Say acpi_map_cpu) / acpi_unmap_cpu() are turned into arch calls.
-> What's the difference then?  The locking, which should be fine if I'm
-> not mistaken and need_hotplug_init that needs to be set if this code
-> runs after the processor driver has loaded AFAICS.
-
-That's the bit that I'm currently finding a challenge. Is there a clean
-way to detect that?
-
-Jonathan
-
-
-
-
-
+Regards,
+Janaki Ram
 
