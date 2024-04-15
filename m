@@ -1,104 +1,100 @@
-Return-Path: <linux-kernel+bounces-144909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-144911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBAFC8A4C80
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:27:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDBD28A4C86
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:28:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CF961F238CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:27:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19A51F23919
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 10:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9F558ABD;
-	Mon, 15 Apr 2024 10:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FDF5A108;
+	Mon, 15 Apr 2024 10:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bANNOlL6"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b="MmchsshG"
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAAC5811B;
-	Mon, 15 Apr 2024 10:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D8158AD1;
+	Mon, 15 Apr 2024 10:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713176851; cv=none; b=VJqvLR5t0SYV777g8SGA+yvEkk3P0qLW6EYq1Tr9Nv/eD0a32McKUtYJvaFBsQQFdBp6FbDqRnp6KcBuH7RdtleQ6a4AMiL1ia/DW9twDpr/3UPycdXREc8x2/maqkuIPCFDLlBw5kJpm8lQwhNfBFqMdTZzvXbKPe+CtDrdFhY=
+	t=1713176915; cv=none; b=Y5KXWC0dBnWYCyrBd4wLlrn3Vgk3BdrQfaNRdyGP8/ljDu0AT17zZU72bHeKqOsnpAyETXQ7gprUH0HdRkWADX7dvCHyEoH6PdpwkyLTuRfAc27omL6HdPWXIJhjwcfSzNCVtkDj9jVskrWJ+oGRtK9elevSYAkdvd0meH2rqNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713176851; c=relaxed/simple;
-	bh=QTaNE6v9yitIg/5Jk0vp633X8veBSijdhDfr5Qjx7vk=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=ZKc/rJxLFWzFs6WL3+Kk4KAIz7qSWOBygqW5+1IZemG/NigaNUFMX9oxMikdR/XJw/hbEZMVyFGlK8hGuB0pYar7cExi/HKJ3pw1Zc3F6fgw1/Pc2FGF6yuP3oQ33DvXTFKzH50SDyyAf1XQyn8i0cPLCcCMaiwnd25890tg7HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bANNOlL6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 159A9C32781;
-	Mon, 15 Apr 2024 10:27:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713176851;
-	bh=QTaNE6v9yitIg/5Jk0vp633X8veBSijdhDfr5Qjx7vk=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=bANNOlL621BAycIRNCS9TRMeFEGfc0t4zzHHJbNC58uNPnYg3mKANMFVwejD114gX
-	 0KFY6NHw3x/4nXSjccLiR2G0fF5f5I5653VklH0cdGNm6czAnE5sFxOxdyhjp0inno
-	 L2QfwxJkjKYZ66uKssxBpkNnDGHdEbwBd6YGyLi7jRM73289JSh6SVTFNCMwn+N/cp
-	 Ve4I9mCvDYQwHyRuA7G3j4Y2sEnRWpIjVxfyo2ULGSprA/ZQtQT5owtU7Kk8k+vSWq
-	 TSeQTwEwHDS+XkvBaQuLetH2Zqk63Hvmjte3MSvL698ueJru8ohDhPtk1zDbT1FcQl
-	 8f9rWIimTQAnA==
-Date: Mon, 15 Apr 2024 05:27:30 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713176915; c=relaxed/simple;
+	bh=9qcyX04KyI8G4kbI9fh1FRESLOWNTgk1cIGMzjzWf1o=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=siJgVs3fqa4iPMNpHQXVFAcF30Nxi3OQnvxDclKY/O2SOoJ5/dBOwGft2KZK74iOU6SnA3OTwfbBlp+Gyfb6lx9L+hpNz3aWChLQZeb+xp2lyoc6lGn0pzvnhrsEosbEwJA1XgaYNSMmBMlKzT1aNCcNzUCvCZkV6y3ksvfND6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf; spf=pass smtp.mailfrom=kl.wtf; dkim=pass (2048-bit key) header.d=kl.wtf header.i=@kl.wtf header.b=MmchsshG; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=kl.wtf
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kl.wtf
+Message-ID: <81e1b870-37f9-4ef2-9a3d-87015f32546b@kl.wtf>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=key1;
+	t=1713176910;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U9PVb8xivoJgq4CfEp7VS5NnrAbJtk5R/pKxVfPKHvI=;
+	b=MmchsshGqvcfQoWrOQpZSpfrNEAo8LMcrO89bEbsDggNM26yaIXRq8qdga4SMJqcvJzuGK
+	+0zk6oj/wCNQ7bNODSeoYgyS+V8k8k6FvXu5Mj1EcgMlsrcJCyHqwNdEQG72NZIQABXsV4
+	ldHdEeNikM2qwH4sUvw43voXEpjo3/x+6s8AbhnJw2wfXuwUloBPxrrYwZkW+h0xL7ibz5
+	V6gx3wu9+zYaG1CX82YH6Fk9Wu84FhjW8M/flhBzyFsOajnV30dRpP1bxBxdUT5Q4fHzOP
+	pvFSf2syIQnHsS2CQ1KKe9K6AJzH7eKZi6YensugvHV2ZhN/DJKfl2a/iYuveg==
+Date: Mon, 15 Apr 2024 12:28:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Hugues Fruchet <hugues.fruchet@foss.st.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, 
- linux-arm-kernel@lists.infradead.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-media@vger.kernel.org, 
- devicetree@vger.kernel.org, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- linux-stm32@st-md-mailman.stormreply.com, Rob Herring <robh+dt@kernel.org>, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240415093211.809927-1-hugues.fruchet@foss.st.com>
-References: <20240415093211.809927-1-hugues.fruchet@foss.st.com>
-Message-Id: <171317684894.2177567.12294607430511830863.robh@kernel.org>
-Subject: Re: [PATCH v2] media: dt-bindings: add access-controllers to
- STM32MP25 video codecs
+To: lma@chromium.org
+Cc: benjamin.tissoires@redhat.com, dianders@chromium.org, dtor@chromium.org,
+ hdegoede@redhat.com, jikos@kernel.org, johan+linaro@kernel.org,
+ johan@kernel.org, kai.heng.feng@canonical.com, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, mripard@kernel.org, rad@chromium.org
+References: <CAE5UKNqufWZfKLAXLcpBYKQpJEVt6jPD4Xtr=Nesh34VkNOETg@mail.gmail.com>
+Subject: Re: [PATCH v2] HID: i2c-hid: wait for i2c touchpad deep-sleep to
+ power-up transition
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kenny Levinsen <kl@kl.wtf>
+In-Reply-To: <CAE5UKNqufWZfKLAXLcpBYKQpJEVt6jPD4Xtr=Nesh34VkNOETg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
+> The problem is that the probe function calling i2c_smbus_read_byte()
+> is not aware that
+> uC on the other end is in a deep sleep state so the first read will
+> fail and so the whole probe.
+Well, the probe was just added to "avoid scary messages", so we could 
+just do away with it and fix the "scary messages" instead.
 
-On Mon, 15 Apr 2024 11:32:11 +0200, Hugues Fruchet wrote:
-> access-controllers is an optional property that allows a peripheral to
-> refer to one or more domain access controller(s).
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
-> ---
->  .../devicetree/bindings/media/st,stm32mp25-video-codec.yaml   | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+I think it would be better to handle the wake-up near the command being 
+sent that requires the device to be awake, just like is done for 
+i2c_hid_set_power(). This would mean removing the smbus probe 
+altogether, extending the HID descriptor fetch code to retry on 
+EREMOTEIO, and to avoid the "scary messages", print something nice if 
+the second attempt also fails with EREMOTEIO.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+If the device can enter deep-sleep arbitrarily, then we presumably also 
+have problems in i2c_hid_output_raw_report() and 
+i2c_hid_get_raw_report() which could happen after the device has gone to 
+sleep from inactivity. These places would also need EREMOTEIO retry logic.
 
-yamllint warnings/errors:
+All these places should have the same sleeping behavior as they are 
+working around the same device glitch. I imagine the client ACK timeout 
+is longer than your required 400µs, in which case you don't need any 
+sleep on retry at all, as is the case in the current i2c_hid_set_power() 
+implementation.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/st,stm32mp25-video-codec.yaml: access-controllers: missing type definition
+However, as we litter retry-code all over the place, Johan's suggestion 
+about doing this in the I2C driver does become a bit more relevant...
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240415093211.809927-1-hugues.fruchet@foss.st.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+Best regards,
+Kenny Levinsen
 
 
