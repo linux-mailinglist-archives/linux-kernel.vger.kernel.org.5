@@ -1,167 +1,115 @@
-Return-Path: <linux-kernel+bounces-145917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 363178A5CBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:15:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B358B8A5CC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:16:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA3391F23AEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:15:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D781B1C2107A
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 21:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3066B156974;
-	Mon, 15 Apr 2024 21:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F99156993;
+	Mon, 15 Apr 2024 21:16:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kZQW97HJ"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jlo20hKE"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09214156F32
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF85C82D93
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 21:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713215721; cv=none; b=KJjX5ByUX5WyADCzbuJC6fdZEV6k/sJLD7A/2Imk8t4C+/+3yadPJxXZyRjjH+5g+RC0NlG009Y8qhXBOZlId9NaiLRUWIIFwcI5x7UfeLG9R734rsoVtsxQdaMfaF58Lgx2tvtwX9pqh/mSCkB6CxVB/yvYtL5o6xVkOup6D7M=
+	t=1713215777; cv=none; b=gOTJabSJxCDVKJD/BlspLT7EhspGUKIZeLbZ5k6y/pRKx8QkVSDRWEWzk0/RMFYMakYZ8SNlPlTtPZgWvIvslSZ1imlvRM55wjdf6t8Eh788CuPmjSILWSaYQTTJ5v6RG8diO8o0+E9LhsqNE1sBDG8ZmXNTwCjJLmMaW9ByxXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713215721; c=relaxed/simple;
-	bh=Up0AFmKvJgWdTQvHHflIIpGjsCQFkFLSnaf0RWof8hU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=lVB7xXG0vmaIbp1jsD1QG8bGx7Vh5loIqYXb6JurYobyqgY+wX86HgtdFQa67kTU5bLe8RbYOx9xx/6OeibeRIgiAP1GYddSL4LQeawfzPJbttuXSCNGhQY+CstqGe1108RdI7Js9YEGMXlpA7prEIvsAK4KY9S+58dmH5RuwPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kZQW97HJ; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5aa318db8a0so2470472eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:15:19 -0700 (PDT)
+	s=arc-20240116; t=1713215777; c=relaxed/simple;
+	bh=xoLaJGmjQcgkTnzAgsA/seITc/Y6ILIFZGdfmyscPfg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FsCjeBX3VImLs8wwsE7Tv6mB2ZC2lNTAPZfVyf/AuTNVKm+nVh+RFcoggvj5kmkXblr64vwhFPTuYRAt9kr43b0yOKWJPTSTYmfJYa6UOO5Dif/WQNeF62jYcW1/qRob77fFCVVALpTOXZGx76Ic0ePQG1qugg6Jw+iPtCf8a5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jlo20hKE; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7d9a64f140dso4912839f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:16:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713215719; x=1713820519; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=noGDNhlYTVCOxYMkKSiuv/88YZjTVfCnIqr69mquf1I=;
-        b=kZQW97HJheJrQ81wC2CmETGgubQNi3B43ViIEbGmN5T5Qh2w2ropGgRE3bmIxNyqB4
-         zBhdDrz3JudQdJhYkm1BBgVqB2QXofLlJLVJfJFmqiEUK1T+xvTejUOZGbiMJ/V9VRPY
-         nMfUtomwR3xT4s/5QzAHCcpjZ+kfdImzY8zm4=
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713215774; x=1713820574; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5Ypra/wKNoZBy4J2SPqn2RJs4l+Rqlu5EcwF8XxE/0w=;
+        b=jlo20hKEA0m6gc8e5Dn0ha4WTBF+uEtRyl8koRAQzS/gGCkbXSQOy4oe9S5iX9bluS
+         457YMUsDbC3LUpMMRnuepAfxPKojuhhoMzkXRl54kfqQOyFlsTtXrUR2jmNijxiqUdBx
+         AV5dy71PMKYj2vHV88JnrdQdHWBPiUZuZ288iNLR/MRz+AtpVUF6rbs/oa9LjL6fSN28
+         uzaT6uqJavhLFTFxv+7ocC+uzqe67x+DZSdPMnFWN2KQTiL98P5cQ3MduFHeLneMDaG2
+         nkqqi6z6PuN9FFc6pnVu4XE4AE09OMJw5EY9aCCPYXg4EZ5SmCHzjc5BxWn9udwNzHOb
+         /NRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713215719; x=1713820519;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=noGDNhlYTVCOxYMkKSiuv/88YZjTVfCnIqr69mquf1I=;
-        b=eM9b836faBqpVkxUVbrvzynldAFCfGP3zuCwh4xBGG1OojDb72F/MieIk/vXpL8f1D
-         jttHYqPLOsESIXiq29+zzijn08e+/z98CQv5P6T0Y7jI87ZGGTOgmj8DehT3YsN9Y8m+
-         g5oFxmRulypg7bBQ6vt+IZEsQMF3tZdhEHVrPaE0UpeYFqLNwI2LXfuyuZINaBsdJhv4
-         YZPfpDIVWKnP/xoVhxUxaXjtRwUVkqx/xdGfnd3lSuae8HlIFRwS8Tmq+9EvZIQAxAnJ
-         fdXJoYcmtnqH5FC3A1gUN7fTOWYuMMF3BJIxCpqeyzlH87cjS4HLchDbClNvV60MMyIp
-         f5Bw==
-X-Forwarded-Encrypted: i=1; AJvYcCX5lEZd8RszTHF8HCfdRSpAp3vUS/Y8E5xKUy2ELkiiBDgyR1uNGoG27j2CByTnJ/ergfoBNWou54fvMdiSZ/NCUD2aZPcv+zGJQfHo
-X-Gm-Message-State: AOJu0YzaWV2NO/QsexDfWkBW0C/KYQUc/TsEbA3bOeDliBf7CS8RSug4
-	KmrnaFfGwgrkoRhh4qHoXsW9lt6OxRWCQTMRfXjXcLfuxcQ+g9z/omQEGasUKzifRLr3tZ/eZiK
-	Nag==
-X-Google-Smtp-Source: AGHT+IHf1qn76SCzUXH6Z1+2/uU02m8Fl85aGDYYCydfcEn0/Vn+rHDNiaMu2dloPj2wsKVWi8Ejmw==
-X-Received: by 2002:a05:6820:1a0b:b0:5a2:37c9:d91f with SMTP id bq11-20020a0568201a0b00b005a237c9d91fmr12909057oob.5.1713215718858;
-        Mon, 15 Apr 2024 14:15:18 -0700 (PDT)
-Received: from denia.c.googlers.com (114.152.245.35.bc.googleusercontent.com. [35.245.152.114])
-        by smtp.gmail.com with ESMTPSA id c15-20020ac853cf000000b00434ec509ce9sm6500847qtq.46.2024.04.15.14.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 14:15:18 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 15 Apr 2024 21:15:18 +0000
-Subject: [PATCH] coccinelle: misc: minmax: Suppress reports for err returns
+        d=1e100.net; s=20230601; t=1713215774; x=1713820574;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Ypra/wKNoZBy4J2SPqn2RJs4l+Rqlu5EcwF8XxE/0w=;
+        b=txcb0D+P4zm80YAbzBcctV9E3WEGijo+LgQQJcMXf37yWNNJvoS2AJw6AIegczL0N+
+         3IX7ZDsI4i4psL3PXIvLLRHaHDMYZeAewQZxURhOoLOD+DdNgILXMBFxl+mrYcbLP+Pa
+         7T+yhbbtElhYH/UMU456w36bu86p3epLWUSSf1/ApDg+azn2gvH5+pDpU123ZnemwOcM
+         UZf7x8jRqVBSd4PaE1/ep6gGR9h2wANMzhZzv6eepxdc/0YpyfeGPIJqUk5MthTvmgSV
+         FGsErb+itXflBTBfs3EJvtKCUW88f9MY7W69vt32GUYUOYIAlrAlCgc6mLX+nS9H/uHK
+         cgKA==
+X-Gm-Message-State: AOJu0YzurWXtBA6ixWKSpkHvQj8hgOR7zjizVgGt4yLQMCofhWNotZv8
+	8Pul/a83jz+GzYCog95fer9BVov7baVvdmU5yYakZKheIM0UV/O3TqOVUXHNil7OrbA9IgE4HVQ
+	I
+X-Google-Smtp-Source: AGHT+IHpcc+WmnAU+kwVSJb9WefBAeGIt/4Q2HwSkYVSGK8jnaZALFTRg/XQaf+rL3LvNdyy7uSfsQ==
+X-Received: by 2002:a05:6602:448:b0:7d6:b07e:2126 with SMTP id e8-20020a056602044800b007d6b07e2126mr10143148iov.2.1713215774082;
+        Mon, 15 Apr 2024 14:16:14 -0700 (PDT)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id m40-20020a05663840a800b00482b8b12872sm3294477jam.174.2024.04.15.14.16.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 14:16:13 -0700 (PDT)
+Message-ID: <de942b9c-6e91-4dcc-a386-9d1317e0e0b4@kernel.dk>
+Date: Mon, 15 Apr 2024 15:16:12 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 002/437] fs: add generic read/write iterator helpers
+Content-Language: en-US
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org
+References: <20240411153126.16201-1-axboe@kernel.dk>
+ <20240411153126.16201-3-axboe@kernel.dk> <20240415195504.GU2118490@ZenIV>
+ <898afc09-428f-4da2-a620-d7ca9f37133c@kernel.dk>
+ <20240415210827.GX2118490@ZenIV>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240415210827.GX2118490@ZenIV>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240415-minimax-v1-1-5feb20d66a79@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAOWYHWYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE0NT3dzMvMzcxApdw1RLQ0ODFBMzS/MkJaDqgqLUtMwKsEnRsbW1ANT
- b+lpZAAAA
-To: Julia Lawall <Julia.Lawall@inria.fr>, 
- Nicolas Palix <nicolas.palix@imag.fr>
-Cc: Denis Efremov <efremov@linux.com>, cocci@inria.fr, 
- linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
 
-Most of the people prefer:
+On 4/15/24 3:08 PM, Al Viro wrote:
+> On Mon, Apr 15, 2024 at 02:11:56PM -0600, Jens Axboe wrote:
+> 
+>> do_loop_{readv,writev} need to look like the one io_uring had, which was
+>> just an augmented version of the fs/ version. At least for handling
+>> anything that is IOVEC/UBUF/BVEC.
+> 
+> IOVEC and UBUF: pointer will be __user one; copy_from_user() works.
+> KVEC: kernel pointer.  Try copy_from_user() on that on x86 with SMAP (or
+> on e.g. sparc64, etc.) and you'll get an oops.
+> BVEC: page + offset, page quite possibly not mapped anywhere in kernel page
+> tables.  And "just kmap() around the call of your callback" is not a good
+> idea either, for even more reason that for KVEC.
 
-return ret < 0 ? ret: 0;
+The old read/write path only handled user pointers, with the exception
+being bvecs mapped on the io_uring side (which the io_uring version
+dealt with) which also originally came from user pointers. So just user
+memory. Why would we need to expand that now? Who would be doing
+->read_iter() or ->write_iter() with something that isn't either UBUF or
+IOVEC? Because that would break horrible as it is in the current kernel.
 
-than:
-
-return min(ret, 0);
-
-Let's tweak the cocci file to ignore those lines completely.
-
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-Following discussion at:
-https://lore.kernel.org/linux-media/20240415203304.GA3460978@ragnatech.se/T/#m4dce34572312bd8a02542d798f21af7e4fc05fe8
----
- scripts/coccinelle/misc/minmax.cocci | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
-index fcf908b34f27..ca4830ae3042 100644
---- a/scripts/coccinelle/misc/minmax.cocci
-+++ b/scripts/coccinelle/misc/minmax.cocci
-@@ -50,11 +50,26 @@ func(...)
- 	...>
- }
- 
-+// Ignore errcode returns.
-+@errcode@
-+position p;
-+identifier func;
-+expression x;
-+binary operator cmp = {<, <=};
-+@@
-+
-+func(...)
-+{
-+	<...
-+	return ((x) cmp@p 0 ? (x) : 0);
-+	...>
-+}
-+
- @rmin depends on !patch@
- identifier func;
- expression x, y;
- binary operator cmp = {<, <=};
--position p;
-+position p != errcode.p;
- @@
- 
- func(...)
-@@ -116,21 +131,6 @@ func(...)
- 	...>
- }
- 
--// Don't generate patches for errcode returns.
--@errcode depends on patch@
--position p;
--identifier func;
--expression x;
--binary operator cmp = {<, <=};
--@@
--
--func(...)
--{
--	<...
--	return ((x) cmp@p 0 ? (x) : 0);
--	...>
--}
--
- @pmin depends on patch@
- identifier func;
- expression x, y;
-
----
-base-commit: 71b3ed53b08d87212fbbe51bdc3bf44eb8c462f8
-change-id: 20240415-minimax-1e9110d4697b
-
-Best regards,
 -- 
-Ricardo Ribalda <ribalda@chromium.org>
+Jens Axboe
 
 
