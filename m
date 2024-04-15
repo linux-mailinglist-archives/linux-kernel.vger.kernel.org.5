@@ -1,131 +1,81 @@
-Return-Path: <linux-kernel+bounces-146023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DE488A5EEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFE5C8A5EED
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:54:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EB812B220A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:54:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 729CCB21695
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 23:54:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97DFE1598E7;
-	Mon, 15 Apr 2024 23:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F223515A489;
+	Mon, 15 Apr 2024 23:53:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZL1hpYiq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07F71591F9;
-	Mon, 15 Apr 2024 23:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="IcxTo69K"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306D7159591;
+	Mon, 15 Apr 2024 23:53:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713225228; cv=none; b=aY50IK6GX+EVjIUf3TzZQNnv9bFKEQwO6OAqfLs+FifVEbrH5H4LUNP9JYRRHLPB6uI3n446sfnj5CITOvySxatlX99/upcXwoLMrnvBmpEBcVoitLYvsaBXXJXnwhwzkIXbt8Bmzc/Y9aiHuTUh+h3hpgb7rVR4uScAOc0W4dw=
+	t=1713225238; cv=none; b=o7jgWMsi1YdSf4rh1CyhT2fA33af1Llp7w/E/p0ij0hdNV+iMPQWmPPsGSmCggQZXHFkm3Tn11XD3uHuSiST9S1zBumkVn66TLhMblvDMz2oVqEqFkdIG2wrMycQikAIA6sT1NAo9m19QK4/bDAy2QH6boailPSpZ316wDuiEp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713225228; c=relaxed/simple;
-	bh=Glti5hmyaExB5aURz0ZlgjDbYGJVM7NX72vmMzXnptw=;
+	s=arc-20240116; t=1713225238; c=relaxed/simple;
+	bh=YKNEpGupa/ZCSJsDLL1o2LJI5zl6TmROX7E4YZp3jik=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hwHMwN0a3mumtyZkBOu5QpmDRk+Yln1khT0rT/roY1rM8R1AYejYT7lsINYGNZUlhLwCaWWJESOcb0Y3dNJ1IPFd/JMJLJJnfrjWytyXGVXOq0/RJYjrv3MoA7kPSlsK4bID0pNuYz1BenEIsIF+gVS6wtDHEnnTwLFBnY8RJIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZL1hpYiq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAEFC113CC;
-	Mon, 15 Apr 2024 23:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713225228;
-	bh=Glti5hmyaExB5aURz0ZlgjDbYGJVM7NX72vmMzXnptw=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=OzySW7vPkgm5noRkwBw1H4nvQhTroLE0Uvr48DUpUuRrnCt9HSvqsThvUddh2i5ff03iyxL7SZDQG1aO8n6rhZWjyjGi2PVimBia9G5tpGUcL3ii9wzmGnDUXQpIhoJVNonmvq7s243cg8yDMOUDZ4TbAxvIdY4utqRiVUrEhd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=IcxTo69K; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1131)
+	id DA37320FCF9D; Mon, 15 Apr 2024 16:53:56 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DA37320FCF9D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1713225236;
+	bh=9diPs8M1wQaux+oG7SdA4XNjDZE0S/hE1fFt6vAwrYw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZL1hpYiqFFDqEGcnDjrAmsFrlATUjRRZYpTwcmizOz0LFIFtZNFdvRy1mN1IFPBfc
-	 WKhjgFdNYyuXRRIP7E55JZ15scpBAphhvGyqy01JkbCkAqyPNjaq/Rb3zgvOCRtMtg
-	 U+b0hvgvCsCHj48SPclceOQU2PaC/XQX/WOL9tjvJzR7xiIZ2Py7xfsQAvhKmjezyg
-	 GBuxyh0pQMfR2gkRe2josr74QsPhHNKT8doEeokNaAHLhNRpPBHW+yEiZZDgGC0b3d
-	 D59ME0/rdlohUULjuEmzYZJ/jw3jcaRhYSrYHTXKtYYSnM33E4eOw99zTY4n6Y9uyH
-	 f+/I59nHzeKmg==
-Date: Tue, 16 Apr 2024 08:53:45 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>,
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-	Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
-	Samuel Holland <samuel@sholland.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
-	linux-sunxi@lists.linux.dev, linux-mips@vger.kernel.org,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 0/7] drm/display: Fix display helpers depends on fallouts
-Message-ID: <Zh2+CZ2G9UOxcUaf@finisterre.sirena.org.uk>
-References: <20240403-fix-dw-hdmi-kconfig-v1-0-afbc4a835c38@kernel.org>
- <117b0d3b-a60b-4bc0-9f2c-f0e4fffe634a@sirena.org.uk>
- <20240415-sloppy-invisible-crocodile-da4545@houat>
+	b=IcxTo69KhDUB8EV6N417ddlhfoFhk0pgMzJFFUxcyYcS+p9xgoBX/EQaYW4NPjC24
+	 P3OfQAnbbot9GxT515fePN7CXrp2UTT+sD9elaPg3tNLDpDZn0Til9Tohbqod2YuV2
+	 ZbNDWgHw4oU1ZukKHCvpcIpen1taecSo4ijLyQBk=
+Date: Mon, 15 Apr 2024 16:53:56 -0700
+From: Kelsey Steele <kelseysteele@linux.microsoft.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+Subject: Re: [PATCH 5.15 00/45] 5.15.156-rc1 review
+Message-ID: <20240415235356.GC11121@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20240415141942.235939111@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hvR5IVqVtFxbshiT"
-Content-Disposition: inline
-In-Reply-To: <20240415-sloppy-invisible-crocodile-da4545@houat>
-X-Cookie: You might have mail.
-
-
---hvR5IVqVtFxbshiT
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240415141942.235939111@linuxfoundation.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Mon, Apr 15, 2024 at 01:21:47PM +0200, Maxime Ripard wrote:
-> On Wed, Apr 10, 2024 at 07:06:39PM +0100, Mark Brown wrote:
+On Mon, Apr 15, 2024 at 04:21:07PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.156 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
+> Anything received after that time might be too late.
+> 
+No regressions found on WSL (x86 and arm64).
 
-> > Is there any news on getting the rest of this merged?  It's been more
-> > than a week now and the Designware display controllers are all still
-> > broken in -next, causing widespread breakage in CI.  For bisection
-> > purposes it probably makes sense for the defconfig updates to go along
-> > with the changes to the Kconfig for the driver...
+Built, booted, and reviewed dmesg.
 
-> I was on holidays so I've admittedly hoped that it would be picked up /
-> reviewed by the relevant maintainers.
+Thank you. :)
 
-> Aside from the changes on sunxi_defconfig, I haven't seen any review
-> from the relevant maintainers so I'm not sure how to merge this. Should
-> we get an Acked-by from Arnd, Olof, Catalin or Will and merge everything
-> through drm-misc?
-
-Sounds like a reasonable plan to me - usually it'd be the SoC
-maintainers for stuff like this but they're not on the CC, though TBH it
-seems sufficiently obvious that I doubt anyone would mind if you just
-merged things without waiting.
-
---hvR5IVqVtFxbshiT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYdvggACgkQJNaLcl1U
-h9AFegf/bZsYaXP8tRkdBSjyeRExVkNbru80uysU+lEbQYvxVG8vF5HBon4Llvvy
-FRg2q45T55EjATaU7/f1FDFJ3TVDtXnQ4bWRlx4dvbk5S4Hcb5XaoGmwatO6eHmX
-rQz/hduFIKhwU+82v3ND/kJYfR1f9+8dvnCdL5TblWBG4o/p21dMWJKoAOlDkAzQ
-Ygt03tBG4O46UgmwS8aPVSbv0ShId3zR/L9lYdIVvtQaK6a0CK7+5EIoS5emLKlZ
-zeXN2qxSfzaUNhhGtJ3aD0Fa76bGjFeXB54Io6f8fPawV/QkDfaxIGFf9FG/G2gq
-D7fQ+Bg6302L5j6cebEC3qW3tmxzdg==
-=U8FE
------END PGP SIGNATURE-----
-
---hvR5IVqVtFxbshiT--
+Tested-by: Kelsey Steele <kelseysteele@linux.microsoft.com> 
 
