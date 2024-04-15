@@ -1,142 +1,99 @@
-Return-Path: <linux-kernel+bounces-145362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 879E28A540C
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:33:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B9248A5421
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 16:34:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1505AB23615
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:33:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1584C2823FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BAE378C74;
-	Mon, 15 Apr 2024 14:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B8A839F7;
+	Mon, 15 Apr 2024 14:31:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b51JChLb"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="pTCvqqa1"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5660B78676
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C598063C
+	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 14:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713191434; cv=none; b=tVyL4uHNMyQdJAXvYKLh/KpEwCE4OcN/8SzjDgs7Z/BLsllXZKIpZ92OY1g1UVMMA+t90AnvVu2D5oYikHITDobcWQOZMxhEXqR0JOHU9YMUNhGrRrDE5zsYAEECc3gD/ABAULz+idBWItPzzhWqrWmgrHXbTJMqALY4yIHmKxY=
+	t=1713191476; cv=none; b=fE6+oKGxSYpkZD6R3GWn/G1VBoG+BWjr3Kh78MCCifzNls1obVFgnjy2MFmOawg2w4+J+7fTwWqRJU3ABr3L7k14dp+YiHyI4ESGiHObT6zUlo/LkveHf/tWcoHKRNFQcPuWInXlMsbD9xfMjRrIdV4VGLUC2FRMFqx2Wu7xf8A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713191434; c=relaxed/simple;
-	bh=w0eyMKWTZscv6UqDhMkbwu1ZzxZ2alXxQgYF7I9Bdck=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e4rI293/o49lD8Yy8hkwLMYJvKA9DN9sM4RGclQWxlPYM9SBlRFr0jVrm9qTnAHsnFqN1eKvNUNTR6I3lltbEKz813IFz9jgumgB3HcMEeY4b0TaXrnwa0w0Sp+wCkitRT7nJLz6/8UiElOAIVx/Tk1Sa35WLScZ9ElDMc870RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b51JChLb; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed054f282aso2231637b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:30:32 -0700 (PDT)
+	s=arc-20240116; t=1713191476; c=relaxed/simple;
+	bh=HqcXRnFyce4t6qwtROljrSsa/5ZmP0WlXQyFVrryB3A=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=LPhwoNEh4wp+8oxe1VH2zC6d/6fg0fLjXUhcyHhJDhcRV6C9LvD3g+PKVespQzEm0EL/XpT6rIMne0JGAVg9G0dg3ZI90JcJGLqDQHUOdy6xTTbMATmvQg8CO6YyNdSXEUAhGwtAW2MASUVQK/LbE6oEIhqP3aGyTT4R9yOpkP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=pTCvqqa1; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-36b0b81a698so425345ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 07:31:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713191432; x=1713796232; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OxkgnUs+kBMGiJuwP3wApGOJHNIKCPg1iHNxfXmCeQ8=;
-        b=b51JChLblAplOCpHPCa8aFKsxcMYksSLpP3NNgs+5FofdUnoS69edN68R6nX5FTGX2
-         SARdyjpMBxPSWbK9VXixmZL+U3DSlJcsrMX5/mPvWGGNSxu23uR+cSQiyXcClx7nNXFh
-         //OQ9SoTyMlwzYSj/DCAPR46zFBdHZHXZQpef6gRfGGQbe33khHRghODpjc3cBGWshtu
-         AJ8pBemlkcPBxrN+YShrnSExk5NA8VWrimGyNqR2TaVXevi6ujfiaLdNFV+hPQCwYnct
-         WeOv+MZ5+9e0fX+Wl4cfJq40nZFPPcRRIy1xqWKLaiUbGliubm1u98lPJBtACy5acV7C
-         pjug==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1713191474; x=1713796274; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OnyTUnI7yjOjaMRaS9jTa0qNIFpYhtFJ/FJeohWZYZ8=;
+        b=pTCvqqa1YGZFhKo4ZTRdU8zW5RCFBoqBKmnvgh4cnWy331LViylg21Hl2KvPV1yTls
+         l4bnb345PFdQqO60qjRHMw4Lg5gZeI4GkrDM/yewXNtzmI5Iqdkw6AguiUvKCbZ2lB57
+         zXi9Hnm1+SmWPx5wLUOYO7CS4WjJBat3nY+UdRPbkgoKL/8WpR+wvOVoX3e5evJ2bY0e
+         Rl5WHizsqKC4UNEOynZNUe/+EuVY8MLoa9M5EN2/QA2eVaevC3HtdezEjFNneEFSFlt4
+         R8V5xgwWWnpgv9xoucMln38BWHQq8Wz5l3z6VGpjKoCEgW3mdlYkjktrT7L1yJKHozyO
+         pquA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713191432; x=1713796232;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OxkgnUs+kBMGiJuwP3wApGOJHNIKCPg1iHNxfXmCeQ8=;
-        b=bGg0ajgEA9YuK5ms63BaSHitJV8zyIq+7c2gitd6alIObljIEqReW58yxZNpKHKox0
-         cd69eEcrzfLuaiwE+DUzx1tISaIa8hqhSvszPHVWALXTMMG0LATXap+TI+U4eiT0brO0
-         PrCifmwPTuhPf/6zOWzKT3aK5sgzWzlHF4rTsshdZkSVVB/te0mqkav4hZTUHUk3i5AU
-         kNWWJYPO6T97g7dkYpn+ydlktKWdUXBbzdwpkDZOKmbs/BZ8mgmWvXSKkqUexqO2xfLN
-         tb5Qwk3vygh7V3BjPUcH9jeHk8ehdN/1JbDJuxEm/wGh/LjW7nw2AqGOe4FBO6OpY/JJ
-         4iyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXVM+jkD8soW6bKMcHpqFLS4sYRwh68K+22Pnvin+rOlHoPbAiTMm38UMbM8qJ6bWh8vi1WCLApZT7HcRcL+lIaPWwqAR+vKI6bFtJN
-X-Gm-Message-State: AOJu0YykP7o85SNQdg8olf/WVr1cfRbxFaF5S8xXxXd3vpzRc44m0Vz9
-	IcqKxVN8KNFBp3cL9ZMCdHC3S2IdZe4unQ8fgX1ZkS8XJp0Tywpg
-X-Google-Smtp-Source: AGHT+IEqcAqUqtYh/KP0MdkXTBsdUaAq3tHbRzSrrLSYR8NONpFCq0LMvNa0Lrr1mOr33eSJRtzz6g==
-X-Received: by 2002:a05:6a00:22c2:b0:6ed:def7:6acb with SMTP id f2-20020a056a0022c200b006eddef76acbmr11091850pfj.14.1713191431494;
-        Mon, 15 Apr 2024 07:30:31 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id y21-20020aa78055000000b006ecfc3a5f2dsm7257230pfm.46.2024.04.15.07.30.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 07:30:31 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id B36CA1846908B; Mon, 15 Apr 2024 21:30:26 +0700 (WIB)
-Date: Mon, 15 Apr 2024 21:30:26 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com,
-	pekka.paalanen@collabora.com, thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 1/3] drm: drm_blend.c: Add precision in
- drm_rotation_simplify kernel doc
-Message-ID: <Zh06AuQ80Zm6LqXw@archie.me>
-References: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
- <20240409-google-drm-doc-v1-1-033d55cc8250@bootlin.com>
+        d=1e100.net; s=20230601; t=1713191474; x=1713796274;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OnyTUnI7yjOjaMRaS9jTa0qNIFpYhtFJ/FJeohWZYZ8=;
+        b=ipKqvyY/fvbhxWvp+ywZ10mWUPlHf4B3nj7rFVS+dJcgwjj18JvPL0gf2BTL8jrmv+
+         ihp/QPciP3S4b82Qc79nOf4nNTcyw0e/oz0QkbroElLlB4qeTq7jG6+OhPxlh31F+w4e
+         ynnFjXEglXm+BJwv3uQZpAjWg0H1+1LgUNiq0ulufb+GvPMywup00U+WCeDK7nz6IJLM
+         kv7rs8u0Bo8xm+vKP2pFrlSwSdY6KzEErdqPBwE9T/cw9PNJt9Iu08CypnYjpT3l+ONn
+         e7wW8HvLamwxl4m3a7kOUAdZrzX/tNZvPtI78eK66AySEfLgE1TRltqcIlb4I1IITUNF
+         xZQg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkMZosDWYCAQ7MoSZAXlfJEQNS4QH1uugv2TAaiNkCqsaMGYwX6YRXm0sYRAwkMtW0rXkgf59BR4cBsD7ZO1zMa4jtdIeVYLgn2Hkn
+X-Gm-Message-State: AOJu0Yz84ZRdmbR6sMfVQpujo9ws6ADU8prxBmWTfdOojFj8Bn7TzQvM
+	9cUgCgIAU4laO1BWhkjOQbIWorjZJ5+5xXbeca4GJlm8af+oCdbafufL9bTw6yw=
+X-Google-Smtp-Source: AGHT+IGxjV6l3osWhSBMqMq8bHa6oq22HWgvV00Vl7O88jIAahhIDnE/sRlw5ymP4XlITqHuj3e8aw==
+X-Received: by 2002:a92:c14d:0:b0:36a:3ee8:b9f0 with SMTP id b13-20020a92c14d000000b0036a3ee8b9f0mr8165771ilh.0.1713191474351;
+        Mon, 15 Apr 2024 07:31:14 -0700 (PDT)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id j10-20020a056e02218a00b0036577f79570sm2634837ila.54.2024.04.15.07.31.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Apr 2024 07:31:13 -0700 (PDT)
+Message-ID: <a81c7a79-44ce-44fb-8b33-4753d491bcec@kernel.dk>
+Date: Mon, 15 Apr 2024 08:31:13 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Nd2Ooc566udnyVEp"
-Content-Disposition: inline
-In-Reply-To: <20240409-google-drm-doc-v1-1-033d55cc8250@bootlin.com>
+User-Agent: Mozilla Thunderbird
+From: Jens Axboe <axboe@kernel.dk>
+Subject: Re: [syzbot] [fs?] [io-uring?] general protection fault in
+ __ep_remove
+To: syzbot <syzbot+045b454ab35fd82a35fb@syzkaller.appspotmail.com>
+Cc: brauner@kernel.org, io-uring@vger.kernel.org, jack@suse.cz,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <0000000000002d631f0615918f1e@google.com>
+Content-Language: en-US
+In-Reply-To: <0000000000002d631f0615918f1e@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+This isn't related to io_uring at all, not sure why syzbot has this idea
+that anything that involves task_work is iouring.
 
---Nd2Ooc566udnyVEp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+#syz set subsystems: fs
 
-On Tue, Apr 09, 2024 at 12:04:05PM +0200, Louis Chauvet wrote:
-> diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
-> index 6e74de833466..8d4b317eb9d7 100644
-> --- a/drivers/gpu/drm/drm_blend.c
-> +++ b/drivers/gpu/drm/drm_blend.c
-> @@ -321,6 +321,11 @@ EXPORT_SYMBOL(drm_plane_create_rotation_property);
->   * transforms the hardware supports, this function may not
->   * be able to produce a supported transform, so the caller should
->   * check the result afterwards.
-> + *
-> + * If the rotation is not fully supported, this function will add a rota=
-tion of 180
-> + * (ROTATE_90 would become ROTATE_270) and add a reflection on X and Y.
-> + * The resulting transformation is the same (REFLECT_X | REFLECT_Y | ROT=
-ATE_180
-> + * is a no-op), but some unsupported flags are removed.
->   */
->  unsigned int drm_rotation_simplify(unsigned int rotation,
->  				   unsigned int supported_rotations)
->=20
+-- 
+Jens Axboe
 
-The wording LGTM, thanks!
-
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---Nd2Ooc566udnyVEp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZh06AgAKCRD2uYlJVVFO
-o0l/AQD4NUxDF1Iqicep1DXiZGPvZhf1jPwez0pMPAHHpKhKxAEAwpEufXVwnGPh
-Pn+pnPga4IpjnDY7/8jcKtpeg+/lkwo=
-=CuX8
------END PGP SIGNATURE-----
-
---Nd2Ooc566udnyVEp--
 
