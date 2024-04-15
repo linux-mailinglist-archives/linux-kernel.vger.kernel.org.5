@@ -1,175 +1,132 @@
-Return-Path: <linux-kernel+bounces-145671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF3658A5951
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:39:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC6F98A5977
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 19:57:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6774285514
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:39:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE3601C215CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 17:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F21130E2F;
-	Mon, 15 Apr 2024 17:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9236713AA2E;
+	Mon, 15 Apr 2024 17:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rdhugJFe"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="qraoAuVl"
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF9983CAF
-	for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 17:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B96651369B8;
+	Mon, 15 Apr 2024 17:57:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713202734; cv=none; b=PF46se05SD5mfG1lMuBXGHyLQInPkKlg2Cr0GJ2qIXZkE+T+pRGMnpHHuhlFu09/H58ggfyXanW+qx66sDrwMP3BA7Cjv0VPhcgWcZLEAREq57v+SCuOpVufFx7B1LlmMpU3oRs03pNM8m4nAyh6mzfKy6lrksAKniXdGd6Zcd0=
+	t=1713203837; cv=none; b=DMM2AqC2MipIwKecgqYqZqRoiCgxG9jiVsXzKaYcySC6CrozDmnsM6Z0BhURYPEW3W9WwRBz92+Z9zGEiw6chOQW3XCuMKkcKx4HE6Vm8AcvdX59fZuJ97evFiY/HEwRMgRfAIXNxwVIpnjxQW/eq7hvjODv2yecYrJoXobTAGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713202734; c=relaxed/simple;
-	bh=L22n2kCvTPK9XcI/4uS/HsKJEBXwSpUSzpEaXjfZhzc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=WtSCkbY0F4CfNROCwt3HwtjDwHpw4ZXHjvluZLc9EFbOJx/iytkQeDcuaT+AISBw2KWOWXnP+en8De8xouWtYxNId+L9vgThi83L4UYTLwGgfh3XbuWF7hOlGQwFPKFsXwXMxcy28Ji9FHk0TCSbbf+kpLU+WDGANfrrdrcAAco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rdhugJFe; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5e4df21f22dso2463762a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 10:38:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713202733; x=1713807533; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uwFH+Sl4Dup9217t0rj3A5vCbDNAQn+qKOR55rnIiUg=;
-        b=rdhugJFevZpZvqqEI2o7hkRH8s11SqSNQDRaL2dCmtSe3DOB6CfNJPWC+8Y4fCqYXO
-         kZ/GZiRLaReJT5We0T5oP9RR9rBRrAEG9si5a8F06fZc0w/fGL+bZ4EST15mh5oH5QwB
-         KCJ0DKZr8zdohqjZoCVjiKlzxwWHRDH7qflSrUiym0dT22Y3UUs7NLE4aK+ws98AaKkz
-         aYmedL7OFJNOZ2wv5/rFz70U5aHRNDQRUPJB0Lr4y9cxYIPcQc+cEf5FEsnSDkO1t/Gl
-         hFhtLa0hZnL2+8MJiIUJdus7YlCyNJ76RyJ9pIFcN9t5n9iLliu630TiIJAXi9pfmEzo
-         0h9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713202733; x=1713807533;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uwFH+Sl4Dup9217t0rj3A5vCbDNAQn+qKOR55rnIiUg=;
-        b=Z82VBOLp0iwBweLqlD8xYWWA9ZFYIb1aENNSbly2EAwe9oDiYUO6L8OUC5BryFq5ej
-         wjNKRqyqDCwHI+uEAbTVMR65SCJAIjc+lptxnbTnRkNoJadRxpbuDGJGeBXsxK3vxzDv
-         TA0CzVnPymN13CTOf2ClNPYwrDM7J/dea69yCYkx7zWEmJmxCRcqbOZSBlk4FdjDdmvo
-         yZxZqcN/3v523zRfSDKau5NGNug2n1R2/mFNLSZ3SXdczUcoc0/OYahM4268jG7gI50G
-         UZFdtcOd76LfZbQqdVgOmf5t9Iah8l2kA4pPd0VLuw/0DJVuuX8N0EdprNCCV5sp4LAb
-         n19g==
-X-Forwarded-Encrypted: i=1; AJvYcCUbeL2buCnzVmBv+p083AzufN+tAXLaOj3w0PhU2E9zRMvH8KhYFK3NGKJhO8W12vKmVXtRq2WJLSOnsJIe5NGcMuFWgiOaK5Xr2S0D
-X-Gm-Message-State: AOJu0YwPqnzGErvK2MqAdzFZ9OswW6XnLryaGwfR3sWYlGytu7KJIm/Z
-	MCvzMgNEG38kjSz3JkxIzRQ6a+ugPBE5PjEPrlSiv71cZmRP88k03w3HvQIl7ssFhojHZBsqTnM
-	g0Q==
-X-Google-Smtp-Source: AGHT+IFAloId2SLtV6JoxGQKYTsCZiTDpJiD55pzS4mF16K+I7cTwNvT5DGemB+vk09A1vwo4FoBOBPhjLY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:6fc3:0:b0:5dc:4a5f:a5ee with SMTP id
- k186-20020a636fc3000000b005dc4a5fa5eemr844pgc.1.1713202732233; Mon, 15 Apr
- 2024 10:38:52 -0700 (PDT)
-Date: Mon, 15 Apr 2024 10:38:50 -0700
-In-Reply-To: <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
+	s=arc-20240116; t=1713203837; c=relaxed/simple;
+	bh=HZXXTICwCNfNnAAPksAihITX/uhY4HG81OJG+2aD0Lg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z2zN7MvKSGEjOaU3ydJOGNCAZHa5Nh4jxc2gJ5LWGGzqa8ZkCD1hsNY7OtmEh1z9NfXzgRl3WMjPQgMrweb+gMo8lZcVeoSyHtwYwP5notr/msd9nqM4lRoIdvZ/Hxu7wHOZxc/6z2uz76MpDnQsoGQ1cWdd/K7VCJcdRDxGRII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=qraoAuVl; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=Content-Type:MIME-Version:Message-ID:Subject:From:Date:From
+	:Subject; bh=7WoF/OVhja5rh0oZfHmbZHpLS9885IhKeZTon+/iGxA=; b=qraoAuVl2vW4OX78
+	0mqZnQJQzqSfaofrXipcO+bzUmf69MX21EjsLpb51ayPP4EkFCxSqG5+7ZSlKXrtuUN7GTMgPVpgK
+	hLL6jmykX+jjjZZRq/8++IEyjyCZS2O2oDo+1/tP4TuuE2m/YuDmBumng0J9Q2Ed0/rKUsM9gqlNi
+	FauM6xkVIFCUYF/BEn9hNqQxGwd1g9Al9TFKti28M45fYuVUUuOtoEw6mkBvpMeWzEDiwIBBQdML/
+	05rpf7EMZqogpYlYkNNOHvbqnjggIIZi7c3Pi9cmnHMqFXpolHVqMn8H8LvBwNWcFcc/88CO6ySHB
+	eJ+bzeEJsoYoSc5YiQ==;
+Received: from dg by mx.treblig.org with local (Exim 4.96)
+	(envelope-from <dg@treblig.org>)
+	id 1rwQJO-001G0D-1x;
+	Mon, 15 Apr 2024 17:40:10 +0000
+Date: Mon, 15 Apr 2024 17:40:10 +0000
+From: "Dr. David Alan Gilbert" <dave@treblig.org>
+To: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, akpm@linux-foundation.org,
+	linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, jack@suse.cz
+Subject: Re: [PATCH] module: ban '.', '..' as module names, ban '/' in module
+ names
+Message-ID: <Zh1menJ5GYy2ayFx@gallifrey>
+References: <ee371cf7-69fa-4f9c-99b9-59bab86f25e4@p183>
+ <ZhxDj3vQFLy62Yow@bombadil.infradead.org>
+ <e770923a-6719-403c-a9f2-1f7ac4313474@p183>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-24-xiong.y.zhang@linux.intel.com> <ZhhZush_VOEnimuw@google.com>
- <18b19dd4-6d76-4ed8-b784-32436ab93d06@linux.intel.com> <Zhn9TGOiXxcV5Epx@google.com>
- <4c47b975-ad30-4be9-a0a9-f0989d1fa395@linux.intel.com> <CAL715WJXWQgfzgh8KqL+pAzeqL+dkF6imfRM37nQ6PkZd09mhQ@mail.gmail.com>
- <737f0c66-2237-4ed3-8999-19fe9cca9ecc@linux.intel.com> <CAL715W+RKCLsByfM3-0uKBWdbYgyk_hou9oC+mC9H61yR_9tyw@mail.gmail.com>
-Message-ID: <Zh1mKoHJcj22rKy8@google.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-From: Sean Christopherson <seanjc@google.com>
-To: Mingwei Zhang <mizhang@google.com>
-Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, 
-	pbonzini@redhat.com, peterz@infradead.org, kan.liang@intel.com, 
-	zhenyuw@linux.intel.com, jmattson@google.com, kvm@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com, 
-	samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e770923a-6719-403c-a9f2-1f7ac4313474@p183>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/6.1.0-17-amd64 (x86_64)
+X-Uptime: 17:39:50 up 103 days, 20:29,  1 user,  load average: 0.00, 0.00,
+ 0.00
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On Mon, Apr 15, 2024, Mingwei Zhang wrote:
-> On Mon, Apr 15, 2024 at 3:04=E2=80=AFAM Mi, Dapeng <dapeng1.mi@linux.inte=
-l.com> wrote:
-> > On 4/15/2024 2:06 PM, Mingwei Zhang wrote:
-> > > On Fri, Apr 12, 2024 at 9:25=E2=80=AFPM Mi, Dapeng <dapeng1.mi@linux.=
-intel.com> wrote:
-> > >>>> It's necessary to clear the EVENTSELx MSRs for both GP and fixed c=
-ounters.
-> > >>>> Considering this case, Guest uses GP counter 2, but Host doesn't u=
-se it. So
-> > >>>> if the EVENTSEL2 MSR is not cleared here, the GP counter 2 would b=
-e enabled
-> > >>>> unexpectedly on host later since Host perf always enable all valid=
-ate bits
-> > >>>> in PERF_GLOBAL_CTRL MSR. That would cause issues.
-> > >>>>
-> > >>>> Yeah,  the clearing for PMCx MSR should be unnecessary .
-> > >>>>
-> > >>> Why is clearing for PMCx MSR unnecessary? Do we want to leaking cou=
-nter
-> > >>> values to the host? NO. Not in cloud usage.
-> > >> No, this place is clearing the guest counter value instead of host
-> > >> counter value. Host always has method to see guest value in a normal=
- VM
-> > >> if he want. I don't see its necessity, it's just a overkill and
-> > >> introduce extra overhead to write MSRs.
-> > >>
-> > > I am curious how the perf subsystem solves the problem? Does perf
-> > > subsystem in the host only scrubbing the selector but not the counter
-> > > value when doing the context switch?
-> >
-> > When context switch happens, perf code would schedule out the old event=
-s
-> > and schedule in the new events. When scheduling out, the ENABLE bit of
-> > EVENTSELx MSR would be cleared, and when scheduling in, the EVENTSELx
-> > and PMCx MSRs would be overwritten with new event's attr.config and
-> > sample_period separately.  Of course, these is only for the case when
-> > there are new events to be programmed on the PMC. If no new events, the
-> > PMCx MSR would keep stall value and won't be cleared.
-> >
-> > Anyway, I don't see any reason that PMCx MSR must be cleared.
-> >
->=20
-> I don't have a strong opinion on the upstream version. But since both
-> the mediated vPMU and perf are clients of PMU HW, leaving PMC values
-> uncleared when transition out of the vPMU boundary is leaking info
-> technically.
+* Alexey Dobriyan (adobriyan@gmail.com) wrote:
+> On Sun, Apr 14, 2024 at 01:58:55PM -0700, Luis Chamberlain wrote:
+> > On Sun, Apr 14, 2024 at 10:05:05PM +0300, Alexey Dobriyan wrote:
+> > > --- a/include/linux/fs.h
+> > > +++ b/include/linux/fs.h
+> > > @@ -3616,4 +3616,12 @@ extern int vfs_fadvise(struct file *file, loff_t offset, loff_t len,
+> > >  extern int generic_fadvise(struct file *file, loff_t offset, loff_t len,
+> > >  			   int advice);
+> > >  
+> > > +/*
+> > > + * Use this if data from userspace end up as directory/filename on
+> > > + * some virtual filesystem.
+> > > + */
+> > > +static inline bool string_is_vfs_ready(const char *s)
+> > > +{
+> > > +	return strcmp(s, ".") != 0 && strcmp(s, "..") != 0 && !strchr(s, '/');
+> > > +}
+> > >  #endif /* _LINUX_FS_H */
+> > > --- a/kernel/module/main.c
+> > > +++ b/kernel/module/main.c
+> > > @@ -2893,6 +2893,11 @@ static int load_module(struct load_info *info, const char __user *uargs,
+> > >  
+> > >  	audit_log_kern_module(mod->name);
+> > >  
+> > > +	if (!string_is_vfs_ready(mod->name)) {
+> > > +		err = -EINVAL;
+> > > +		goto free_module;
+> > > +	}
+> > > +
+> > 
+> > Sensible change however to put string_is_vfs_ready() in include/linux/fs.h 
+> > is a stretch if there really are no other users.
+> 
+> This is forward thinking patch :-)
+> 
+> Other subsystems may create files/directories in proc/sysfs, and should
+> check for bad names as well:
+> 
+> 	/proc/2821/net/dev_snmp6/eth0
+> 
+> This looks exactly like something coming from userspace and making it
+> into /proc, so the filter function doesn't belong to kernel/module/internal.h
 
-I'm not objecting to ensuring guest PMCs can't be read by any entity that's=
- not
-in the guest's TCB, which is what I would consider a true leak.  I'm object=
-ing
-to blindly clearing all PMCs, and more specifically objecting to *KVM* clea=
-ring
-PMCs when saving guest state without coordinating with perf in any way.
+You mean like:
 
-I am ok if we start with (or default to) a "safe" implementation that zeroe=
-s all
-PMCs when switching to host context, but I want KVM and perf to work togeth=
-er to
-do the context switches, e.g. so that we don't end up with code where KVM w=
-rites
-to all PMC MSRs and that perf also immediately writes to all PMC MSRs.
+[24180.292204] tuxthe____: renamed from tuxthe🐧
+root@dalek:/home/dg# ls /sys/class/net/
+enp5s0  lo  tuxthe____  tuxthe🐧  tuxthe🖊  virbr0  virbr1
 
-One my biggest complaints with the current vPMU code is that the roles and
-responsibilities between KVM and perf are poorly defined, which leads to su=
-boptimal
-and hard to maintain code.
+?
 
-Case in point, I'm pretty sure leaving guest values in PMCs _would_ leak gu=
-est
-state to userspace processes that have RDPMC permissions, as the PMCs might=
- not
-be dirty from perf's perspective (see perf_clear_dirty_counters()).
-
-Blindly clearing PMCs in KVM "solves" that problem, but in doing so makes t=
-he
-overall code brittle because it's not clear whether KVM _needs_ to clear PM=
-Cs,
-or if KVM is just being paranoid.
+Dave
+> 
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
 
