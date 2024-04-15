@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-145032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-145035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BDC8A4E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:09:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 859F68A4E8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 14:10:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84E851F223C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:09:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A86071C20FAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 15 Apr 2024 12:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FBF76995D;
-	Mon, 15 Apr 2024 12:08:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C5C6F07A;
+	Mon, 15 Apr 2024 12:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VI3lqkgz"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2059.outbound.protection.outlook.com [40.107.236.59])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="A0wvO9L9"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2052.outbound.protection.outlook.com [40.107.212.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965CF69946;
-	Mon, 15 Apr 2024 12:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.59
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C5F76997F;
+	Mon, 15 Apr 2024 12:08:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713182901; cv=fail; b=TGUqYxCflaegpKqwnOpPw1/N7vfiM+i8Jv0safVa8gzyGJ7P8bIXvs6d/rwmIIFxqNqroHOQ9YIrYD3eCrJ29c42e4TWGi44O/oqaHBFkJbHfzTuZjv8hDdbNQk+wPNJcgWQ6Im/uAHg4KeYFQAy/wFwd4GoJRi35EEPc8tzw4A=
+	t=1713182914; cv=fail; b=ZP53y4VT+T+CQakLg8AEsEThFKjRyjt6Ow43FHr5h+Hr0xdr0sccwkrKWrYaD8QBL665M229jqHqmfxt0Rr3wGKPYAMvJWztLdQZD5jT4WlPwXfGoqz7s7vezhVcA2k/jFvSUTELs5DNyyGlA7PK39ikhCcGze1vM1ZOBVzHPms=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713182901; c=relaxed/simple;
-	bh=OFdknu9ifl1dVUn93KjLhSo9144ESrNZYUFRA3j7NGY=;
+	s=arc-20240116; t=1713182914; c=relaxed/simple;
+	bh=QyEJTv+ju1WUuRomf/6VJUg5R13KnCo2VxHBZutDlq4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cgAj63lB1NfynmXvcRBbtsozw82SwYEeJb3T4mGq52uPy928MOFXMiIs8FSl/IEH9nCFIbk1pSV0+JTkviQW7Axyxa93rbSfWjGbqvuwCxk4KT5d7lLOmoQ7UBIvGoEkxlrI1AbHyFA9eqCectE1WH+vSQRNDmvzC+/6XOXOLvI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VI3lqkgz; arc=fail smtp.client-ip=40.107.236.59
+	 MIME-Version:Content-Type; b=mesLSqVN7QtAcR2sIUxKy5cXtptZODRLDJsaavKqA0E2jfwz8LLoKYfERMp/vv6b+PLemryE0mSh71bg9f9NHXtbQdBP7ZXsVdw+j6+vSfqICTUgf/cpBtKSd0cYQy7fXsHPgKXA4XoCiPk3GZsGP5Rj2qkgWTBe4ios0qA899M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=A0wvO9L9; arc=fail smtp.client-ip=40.107.212.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kJZN0CNZ1VcfiDo4CwpXCZ95QEOhkBM8/AqHVloinFuPG1qvao0OWR+3+Lk+U4rBjLFvb073mWMlOK/nd5yB4CaYSlfl/Q/SMsss7ppWnQHRfsWp54AJvYTsKGCv/BXRIwpLUfiKCwhrea994Tbghx0zqJs5XFDH0r+3R86YAFOgtVewAMHK3xU4b4Kt9mqCy0FaSLKtS6trXTWh2FesC9ZmJ7H3nYn+XKGoR2moXU4MNQX0dq6T3dvLRqAYqNooW2gS/EHZltAqiIPgpKIBISmK4QF7kVgLIENiX922+fUom0SVhIkxN2/sieEXDMybOa3FbWd3vioUOsrvqrGNsg==
+ b=Ihi4EgQM1d2ytX2rSU6ARbjNYQZhpMVVwVs5R3tHZ4gD/+4KdigWNbwgv+mH/TKaBqpnSeAU78v3M+rKtVCBwQQbArIBtFNtkb2DuWQuMbVWa1Ds/Q6X+thfY/FCUXibR95/RfIZHm3RZXNMMU1qELyLzpUwRf+I49qH5EULqg5cEBsPNu1DWeWArPLAjJqms7rEM2LNbTVRKYe+o58KaWOo1BmFPJL7pX+OmbUVAS7umgR9R8gElsUny1Ndg3KVQQ0cp//SVhYcPXiwzLnWyA7y2Mpyg1IO271o2c2w/9BKZ2Qr0YDNb4EUKWjkT3TS1N6sS1ZIImyrnPCitlDgEw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C6Kbu2o11318dCt1qo3ckSYzDcjsotrcsFd1iZusCBM=;
- b=USSxgPWSJot3VkHwWs+yi8GTTqM2XA3YUn64J+QbOQ6s2+M5z/hbX+LjZo23ouWhOCpl6079SP7A4UhGyoJbzoY7SQeEeCSAw0Ch56kPmHwNtXe5j6oZdQ+IAwuWOniSjKZ4qFDD3elobKMoyobO41jeYS/XNR9qbWlkqkcSMfqa0XgUxI1axjyxBJaDicDywRtzdDty77a1khMj5SCvIBEEKERyjfs7FYXS05EyrIci5tIByi94AFTr1AF6K3LZ4xbJN258ubsvuAIVOw3d9K69t/4gYiHa2qHsr2WP187fCqrbIBxVajx26qhUTn7N4S9IyJ7mobJptKzhZZOweA==
+ bh=WmEPOJp/OF4fh6S7KCaOH+lyLGhpUOti9wiz1S7s9Nc=;
+ b=D6hGpA9Nn9CvjEAgrcVqPXVcYTlMn40ThS6hEAJvK9/Z2LQDw9KVhYQnkQvY/XRMt0dti81PBzqFyyF+9xUvcb8SoiRYwDo8yD4D2GmIzHKh25fw0JiKCmYymKDO24EF0D1/Tbnf4TFpLctJBfclDhYH4lK5dsq16bqkln+Tte3VDvKvMeyibmmgF8s/VoigxiI5g7tPZbnhI0r2fG3QAGeQIst3GURAxMv54FRFqu4xSuBa1Y1LePidf8z8lr48GUHl8L89FcNxH7Vb3nIM/UCMXDjBbhKWOMt9p/Y9vACqW6xBSnZwyUVoTauIK8PbQFaJqmNGbWN0BoS245orqg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -44,18 +44,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C6Kbu2o11318dCt1qo3ckSYzDcjsotrcsFd1iZusCBM=;
- b=VI3lqkgzO07fODzlSDeDMP1MF/xWPjOfNO0WboWA0B1GiGWkcqa4Yy8tNa4Jlgwa79wQF8EeK//dpLHaK+tBUIRd4fghBF10xt6XxcDkrjT1cCdzmgugCr24/K1rj06tcY9uBsT5t4jcwQj/cOCmKbuoruASSSKPCMu8t8caKHSap9/r4U0gbyYHduEOm9Am5y5NZYjxOrBMyAa38rykAVRFBMFFaUaEAMmEvLczLw+wQJ2BOFU/EudGLbS6L8j+VrIqKVEHx0laNQUo9UbtLE1eQxXDSsoIsct90yyC+AD11isMcw6nz0cGRSNsrDMYNOSliFuJmWxOYPuBKr+49Q==
-Received: from MN2PR07CA0019.namprd07.prod.outlook.com (2603:10b6:208:1a0::29)
- by PH7PR12MB7211.namprd12.prod.outlook.com (2603:10b6:510:206::21) with
+ bh=WmEPOJp/OF4fh6S7KCaOH+lyLGhpUOti9wiz1S7s9Nc=;
+ b=A0wvO9L93iyrXjFInnRI1meS93LFAzXEqGMN5EgC1uBmq8ouOmrn8LJPR16fMKVFxdHX6wcBdpFig4515z8KQKLfECWK3OdO08NmsWmnt6kzB+k1m/rxJWTP4eeoUX7SJhBtbX9rSMn8197Y6nQgf+B3+RwJ2w4R00exIRDqfEGkMa90r/Sflm4cz0Kmw+//4ubKqySAAs8auS41k2GO+EjFIWDsQZ4nkh+jr8C6rL6NDr8qyYnzzkhTTofSXdSBCAUE0G2TLCRPs/DlZ2dZ2tpa9DDkfmrgyRCsZ6XHS4ZsVMrzoaJuoxTB4XK7xfNS++TdHSh7/DttmHG2gPk1Qw==
+Received: from BL0PR02CA0082.namprd02.prod.outlook.com (2603:10b6:208:51::23)
+ by IA1PR12MB7637.namprd12.prod.outlook.com (2603:10b6:208:427::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Mon, 15 Apr
- 2024 12:08:16 +0000
-Received: from BL02EPF0001A0FF.namprd03.prod.outlook.com
- (2603:10b6:208:1a0:cafe::78) by MN2PR07CA0019.outlook.office365.com
- (2603:10b6:208:1a0::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.34 via Frontend
- Transport; Mon, 15 Apr 2024 12:08:15 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Mon, 15 Apr
+ 2024 12:08:24 +0000
+Received: from BL02EPF0001A100.namprd03.prod.outlook.com
+ (2603:10b6:208:51:cafe::e0) by BL0PR02CA0082.outlook.office365.com
+ (2603:10b6:208:51::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.33 via Frontend
+ Transport; Mon, 15 Apr 2024 12:08:24 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -63,17 +63,17 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.117.160 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.117.160) by
- BL02EPF0001A0FF.mail.protection.outlook.com (10.167.242.106) with Microsoft
+ BL02EPF0001A100.mail.protection.outlook.com (10.167.242.107) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Mon, 15 Apr 2024 12:08:15 +0000
+ 15.20.7452.22 via Frontend Transport; Mon, 15 Apr 2024 12:08:23 +0000
 Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
  (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 15 Apr
- 2024 05:08:00 -0700
+ 2024 05:08:06 -0700
 Received: from dev-r-vrt-155.mtr.labs.mlnx (10.126.230.35) by
  rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Mon, 15 Apr 2024 05:07:54 -0700
+ 15.2.1258.12; Mon, 15 Apr 2024 05:08:00 -0700
 From: Danielle Ratson <danieller@nvidia.com>
 To: <netdev@vger.kernel.org>
 CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -85,9 +85,9 @@ CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
 	<jiri@resnulli.us>, <linux-doc@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>, <mlxsw@nvidia.com>, <petrm@nvidia.com>,
 	<idosch@nvidia.com>, Danielle Ratson <danieller@nvidia.com>
-Subject: [PATCH net-next v2 04/10] ethtool: Add flashing transceiver modules' firmware notifications ability
-Date: Mon, 15 Apr 2024 15:07:11 +0300
-Message-ID: <20240415120717.1251864-5-danieller@nvidia.com>
+Subject: [PATCH net-next v2 05/10] include: netdevice: Add module firmware flashing in progress flag to net_device
+Date: Mon, 15 Apr 2024 15:07:12 +0300
+Message-ID: <20240415120717.1251864-6-danieller@nvidia.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240415120717.1251864-1-danieller@nvidia.com>
 References: <20240415120717.1251864-1-danieller@nvidia.com>
@@ -103,157 +103,63 @@ X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
  rnnvmail201.nvidia.com (10.129.68.8)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A0FF:EE_|PH7PR12MB7211:EE_
-X-MS-Office365-Filtering-Correlation-Id: c84b3563-3a5a-4be3-09d4-08dc5d44baf6
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A100:EE_|IA1PR12MB7637:EE_
+X-MS-Office365-Filtering-Correlation-Id: fad5ea08-45b0-43ce-18c6-08dc5d44c00d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	yjUAiAz1TEW0HniDMLIRRSptgL0aUc+07GlembrOZw3+0GtMyFbQW1Ztl19T4Pjcg5KDxrRncDzOA3F8iuuSDtK9dCiO7VL/kEcXodYA7OscnmhQj8DUBjdKP+IcX7Ug80A4ofvxJaRumjVK5NqqUhKluVMpVQwlpy/NYn8/F3252e/qD3Uc5SWCdfCzYnZoKUNCp9bDwBIUtbdV4cFDMQdA7kwne7J3YArg/F+TmINCXBJHixdSh85njyH4USj0IgoIoBiyrNOzG1OdETNSkXBao7uPu2ovtEyZmH+An50xYTfl54LIEbHnOyTC1yqifMKOf/fvmAFsvDApSHMwBxcNDQXY8xJPEfKqDqRyVNzmF8prF7xRBVcTiLHrAlQ/153mcd5/JVw5BJ8NIbbhRIrUelEynOy6zFuqrjqiCbu31ptk6PaDajFQhrGHlYB4i7bMRQtPl4LKkobczdLhWbCAsnvbiOiDJmr/WYwxVRmS6G+0bQDAC3bkyw8OqmWH54fJt4Uo/4NG4oclRP8Qz7TliOUsD6c19/jVVC4KXgbpWF66csBA9Tzc+hOWSYMmh89ZxjVhNf/NnI+L4Z3v45Y5ShABgwdOz5d+7bdhplWIfAGFYWQtYY8rmC6rdDvAnVQQfZeav9prnGXcJhM8wu4IiMKPDJ28LSSuC2wrWWepTSa91zcuYG6c7jyk3t8w1kjwkNdrfxdeIilXzQoojUNTsIL8JgVs8z8sg95hl7vwt/WSmc4pIJ2mYKweBKVq
+	qtHDKfYhoqIw0v9+regJDu+tQVycJM4q/g2U9f4BcnfrWVU342bZLNWPo0+4sbVOkf2QNTNzQU/uA6/kt/bTB+PFgSLndS9AW/MolDKsvmjGY6DlDTxawnk7tVxuC1XsvGgOervaANRu0vZckh5NGXus0Tz7kGpNMSxFTOe+pPezvOUw3yYyYzphHaMYPJSEWtC7XQEvQqyKpJKOo2xOoUFtR5wyp590sC8CuxD8yUeEHI0qauq3VGgAKu4rVV420M7YZ8gGPhNXpxr9W8Ks0bDkVhHmzNhmrproI9f0Hh1VC+CZcxxGz5z9byKQ1/8Ekab0a6UeumIeDekujbgGphXVGIAOgMwz1E/WVum9NgbZZAVjnFqSS/pE+Pq68w8p2WDWeO4IBvY9mvm4Pf/DDpgPMb65V2H3YhIP5Llixt6Z5kT+ERnsv1ES9hcOetqmGeWGN5qU/lvhg4rDF32jfQdFfJdMcafKXwqePXVayXYLpn6NGhx10gSkG1RaXl+0f33mBko2aolxqDBtz18VeAFCaKz9b8N7c/cErE869Uc2J+9F6v6vZCyejOfMSGizjmwzh/2qc/TKlrDnlbDUTmEWr/2va5mlKBm+FioCIyYArRUC0RX6yI+a2j/uIskaV5uX9LeG2RQAcwDlIpTGJPTYq3InXDW8bPHDm0G69qOqEFXRulw8HsMac5kEXx2E1HJ3iaPBFucRVrpDCVmnT2O3TCK2h+im50pKmS265lNJS3CdRimLjiU4ahr1Wb5R
 X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(7416005)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014)(7416005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 12:08:15.3426
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 12:08:23.8979
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c84b3563-3a5a-4be3-09d4-08dc5d44baf6
+X-MS-Exchange-CrossTenant-Network-Message-Id: fad5ea08-45b0-43ce-18c6-08dc5d44c00d
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	BL02EPF0001A0FF.namprd03.prod.outlook.com
+	BL02EPF0001A100.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7211
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7637
 
-Add progress notifications ability to user space while flashing modules'
-firmware by implementing the interface between the user space and the
-kernel.
+Some operations cannot be performed during the firmware flashing
+process and will be vetoed later in the patchset.
+For example, flashing firmware on a device which is already in a flashing
+process should be forbidden.
+
+In order to veto those scenarios, add a flag in 'struct net_device' that
+indicates when a firmware flash is taking place on the module.
 
 Signed-off-by: Danielle Ratson <danieller@nvidia.com>
+Reviewed-by: Petr Machata <petrm@nvidia.com>
 ---
+ include/linux/netdevice.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Notes:
-    v2:
-    	* Increase err_msg length.
-
- net/ethtool/module.c    | 83 +++++++++++++++++++++++++++++++++++++++++
- net/ethtool/module_fw.h | 10 +++++
- 2 files changed, 93 insertions(+)
- create mode 100644 net/ethtool/module_fw.h
-
-diff --git a/net/ethtool/module.c b/net/ethtool/module.c
-index ceb575efc290..1c659bd85160 100644
---- a/net/ethtool/module.c
-+++ b/net/ethtool/module.c
-@@ -5,6 +5,7 @@
- #include "netlink.h"
- #include "common.h"
- #include "bitset.h"
-+#include "module_fw.h"
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index d45f330d083d..5dfcacff1db0 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1989,6 +1989,8 @@ enum netdev_reg_state {
+  *
+  *	@threaded:	napi threaded mode is enabled
+  *
++ *	@module_fw_flash_in_progress:	Module firmware flashing is in progress.
++ *
+  *	@net_notifier_list:	List of per-net netdev notifier block
+  *				that follow this device when it is moved
+  *				to another network namespace.
+@@ -2372,7 +2374,7 @@ struct net_device {
+ 	bool			proto_down;
+ 	unsigned		wol_enabled:1;
+ 	unsigned		threaded:1;
+-
++	unsigned		module_fw_flash_in_progress:1;
+ 	struct list_head	net_notifier_list;
  
- struct module_req_info {
- 	struct ethnl_req_info base;
-@@ -158,3 +159,85 @@ const struct ethnl_request_ops ethnl_module_request_ops = {
- 	.set			= ethnl_set_module,
- 	.set_ntf_cmd		= ETHTOOL_MSG_MODULE_NTF,
- };
-+
-+/* MODULE_FW_FLASH_NTF */
-+
-+static void
-+ethnl_module_fw_flash_ntf(struct net_device *dev,
-+			  enum ethtool_module_fw_flash_status status,
-+			  const char *status_msg, u64 done, u64 total)
-+{
-+	struct sk_buff *skb;
-+	void *hdr;
-+	int ret;
-+
-+	skb = genlmsg_new(NLMSG_GOODSIZE, GFP_KERNEL);
-+	if (!skb)
-+		return;
-+
-+	hdr = ethnl_bcastmsg_put(skb, ETHTOOL_MSG_MODULE_FW_FLASH_NTF);
-+	if (!hdr)
-+		goto err_skb;
-+
-+	ret = ethnl_fill_reply_header(skb, dev,
-+				      ETHTOOL_A_MODULE_FW_FLASH_HEADER);
-+	if (ret < 0)
-+		goto err_skb;
-+
-+	if (nla_put_u8(skb, ETHTOOL_A_MODULE_FW_FLASH_STATUS, status))
-+		goto err_skb;
-+
-+	if (status_msg &&
-+	    nla_put_string(skb, ETHTOOL_A_MODULE_FW_FLASH_STATUS_MSG,
-+			   status_msg))
-+		goto err_skb;
-+
-+	if (nla_put_u64_64bit(skb, ETHTOOL_A_MODULE_FW_FLASH_DONE, done,
-+			      ETHTOOL_A_MODULE_FW_FLASH_PAD))
-+		goto err_skb;
-+
-+	if (nla_put_u64_64bit(skb, ETHTOOL_A_MODULE_FW_FLASH_TOTAL,
-+			      total, ETHTOOL_A_MODULE_FW_FLASH_PAD))
-+		goto err_skb;
-+
-+	genlmsg_end(skb, hdr);
-+	ethnl_multicast(skb, dev);
-+	return;
-+
-+err_skb:
-+	nlmsg_free(skb);
-+}
-+
-+void ethnl_module_fw_flash_ntf_err(struct net_device *dev,
-+				   char *err_msg, char *sub_err_msg)
-+{
-+	char status_msg[120];
-+
-+	if (sub_err_msg)
-+		sprintf(status_msg, "%s, %s.", err_msg, sub_err_msg);
-+	else
-+		sprintf(status_msg, "%s.", err_msg);
-+
-+	ethnl_module_fw_flash_ntf(dev, ETHTOOL_MODULE_FW_FLASH_STATUS_ERROR,
-+				  status_msg, 0, 0);
-+}
-+
-+void ethnl_module_fw_flash_ntf_start(struct net_device *dev)
-+{
-+	ethnl_module_fw_flash_ntf(dev, ETHTOOL_MODULE_FW_FLASH_STATUS_STARTED,
-+				  NULL, 0, 0);
-+}
-+
-+void ethnl_module_fw_flash_ntf_complete(struct net_device *dev)
-+{
-+	ethnl_module_fw_flash_ntf(dev, ETHTOOL_MODULE_FW_FLASH_STATUS_COMPLETED,
-+				  NULL, 0, 0);
-+}
-+
-+void ethnl_module_fw_flash_ntf_in_progress(struct net_device *dev, u64 done,
-+					   u64 total)
-+{
-+	ethnl_module_fw_flash_ntf(dev,
-+				  ETHTOOL_MODULE_FW_FLASH_STATUS_IN_PROGRESS,
-+				  NULL, done, total);
-+}
-diff --git a/net/ethtool/module_fw.h b/net/ethtool/module_fw.h
-new file mode 100644
-index 000000000000..e40eae442741
---- /dev/null
-+++ b/net/ethtool/module_fw.h
-@@ -0,0 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#include <uapi/linux/ethtool.h>
-+
-+void ethnl_module_fw_flash_ntf_err(struct net_device *dev,
-+				   char *err_msg, char *sub_err_msg);
-+void ethnl_module_fw_flash_ntf_start(struct net_device *dev);
-+void ethnl_module_fw_flash_ntf_complete(struct net_device *dev);
-+void ethnl_module_fw_flash_ntf_in_progress(struct net_device *dev, u64 done,
-+					   u64 total);
+ #if IS_ENABLED(CONFIG_MACSEC)
 -- 
 2.43.0
 
