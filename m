@@ -1,128 +1,140 @@
-Return-Path: <linux-kernel+bounces-147748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D8738A7887
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:21:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8CFF8A7889
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:21:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B1FD1F2229D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:21:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B75B2812B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD6A13A415;
-	Tue, 16 Apr 2024 23:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F95B13AA4D;
+	Tue, 16 Apr 2024 23:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R6KzOwmj"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lMrwmiiW"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66C722375B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6C813A889
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713309698; cv=none; b=kvqC8Xb+kulDfmzuf8tTOREUnqkmrliRR1n/zFRPTdP5bUGp5GXhNXZ+z3pg++LrPtIJ/xXbGXpI6uvUiUOdKXkpwyz8+K1uqc32/MRonbLiiKxHC1NHrOGm+J54Z/jjagu0cbY9ERwRdpN+Eoe2JeixpM/d1+u8j4qzhnkeHuk=
+	t=1713309701; cv=none; b=tl22zHdQ/QZ3tAFffKhfDItQIsISvqCU4CdkZGOjM8siiYK8zC0YsNlWYoJitfJvtfUXtncSxapWtY98TXd9o0Uze6gNw/is3JN1fd8iXwa9669F5HsVlK+XwdJ5MZ3xlJZ5W98APPDFz90fRHScd7C9QDqg26eSkQzcSKfu/j8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713309698; c=relaxed/simple;
-	bh=Yq3XYE5PQn1xLC4Ak5UqnG6QBcosEZ2V2zfPFVJIjp0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IOQbADC6TWAY/Y6fmXDeB3zXpBMb31E0Ufw7GlpgmbRWdm9WODOr9fpSuk1fpH+DyrhvhF1VUrk5nFCN9DgAiwk+NpGJ/+ds2yLHeve93nhMdAttriAKtfzJ1l2jlum1m7qFaUho0J/eJdS15FCWWhcQZOW4gT0v72uS1Fvpec0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R6KzOwmj; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so4551997b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:21:37 -0700 (PDT)
+	s=arc-20240116; t=1713309701; c=relaxed/simple;
+	bh=TZ1TDxtq5mS8jogcFiQ2mpp3PgNw6F0xy2onDnlG92k=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=AXuLO2RClvgiOlJuoDDBxPJc1QK0F4LBy7IaChhdqZ20VwZbFhuvRZtzvqWma0kU0zpd0lKLaNsoTh2oaiYibWjiC2+fov3G3K2G5NtSgLU8+QOxEdaYR1WRnyI/8DXv0FZLZ0XMNZf24Y3mIQI9U9GUhVUHZad25zQNcBWoWxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lMrwmiiW; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf618042daso7571601276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:21:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713309696; x=1713914496; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+fgpHfTT4Bxv+6WWCRjV8ylNM9LjcYeL1sBjLxOjPOk=;
-        b=R6KzOwmjuOMT9YlICG+69oNm2zQd3tKYYLlHlTgeVi5BtwEp5tD9pMfHEcrSvlMFRF
-         haP7mkAxhHp66+wiRw6diuDgN0GB503M2og7hsUhCb4sOdyKrRhcMVV9pvozHSQFgdY9
-         HcrJE3rQw20ZKI7INucZV2EvwwuDNj7F112Siemtmn4fM653Q9FjrIKPnAR/5XA0Ta1Y
-         33NcNrs4eFwJqRNC93KkwEvWZyeHimzIlLETf0PAlUQerVEilW1bkhcLEeavw//mSwFE
-         VokVFJx8OBQx0yQOZ7faogiqlJUL2Bh1RzLnTIZq77nMlCr1rMCYg88V2vlwUpfgVLQv
-         941g==
+        d=google.com; s=20230601; t=1713309699; x=1713914499; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nRAv116/X/EXCKcRiElV2IY/zNoHQwSQq8KUhnFUBgo=;
+        b=lMrwmiiW3hTemU5QPn9CXadYznXPgOyWjF7H1Lx+83zxlohEqNpzFYNMVEVq+jJv7r
+         oRi1VHnHgDaKWZWcQE08leAbZ8IdqX1AYuOMH9TUApvmOQHuHHsi9xMxnRnAj2U0hlKq
+         VN7VXvVMyZS9vnODyMPAWxA48KhTQEX5CNDXjRVZ6zsgoR9MyPuxGaEoY5ZCbJaChmwb
+         p0U5WWXoEJ3cY5miDaOPm8FmYwTc5y7AxIW965ogcmFf1DKSDZjuvY07aBqK4K9JgKLj
+         aYCcAdOYmTi/mDxYNCMPHMkHyjEZzGqWwM0z0i1vZc0P5Vb4wwdXIIH2zmR2doUcNuOq
+         6foA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713309696; x=1713914496;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+fgpHfTT4Bxv+6WWCRjV8ylNM9LjcYeL1sBjLxOjPOk=;
-        b=iB2cFwoVfIf8hHnIv6rDqS0/Lc+45OXSTyIw5dE7aSCD5fU+TKm1KOsW6BrgoGI0/i
-         KK9hiC2N3CCDpnkSVgo7gZFlGma+3R+kNZgbM+Mx2Y2SDNtkfa/0VIPqUVSIwJ2d5Owe
-         Ku2lyxigdhdGfLubTribLU5r6+jSh1X/TQhwyhc8zETb5KUMhFgEwg0Nfe23s6NqDKoM
-         wALIuIZV7pPy73rPqDARECyv2QvSBrQe/s1N33wD7qnN1yi8B9GAJfUAQ96dvuOPV9pB
-         iqaeKM1JqhzgZ5U2utEfx0dou/amHx20qVnMq2Du4QQiv92At2C976WWQUauguq7jJud
-         cpIw==
-X-Gm-Message-State: AOJu0YwEmOmv2eG+HfmL1rXTotGEvYoGQn8XskRpzIx1BLsVZlfwJaeF
-	8Y+VRgqjtV3BlmojiuYT/FSDrfmQbwmsiBicq2uVkKLVbXN9DN3I
-X-Google-Smtp-Source: AGHT+IFRj3M/Wa9lIIhbJrMGRGXExG4U8ICEyuvtKUVCJx+R1O1y/hFqrxZp+bEM2ETZ7slNNsafMw==
-X-Received: by 2002:a05:6a00:2295:b0:6ed:1012:9572 with SMTP id f21-20020a056a00229500b006ed10129572mr15448814pfe.29.1713309696504;
-        Tue, 16 Apr 2024 16:21:36 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id t6-20020a056a00138600b006ecef9e9615sm9483775pfg.200.2024.04.16.16.21.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 16:21:36 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 16 Apr 2024 13:21:34 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>
-Subject: Re: Bug 218665 - nohz_full=0 prevents kernel from booting
-Message-ID: <Zh8H_vG2dQLOjoIB@slm.duckdns.org>
-References: <5be248c6-cdda-4d2e-8fae-30fc2cc124c0@leemhuis.info>
- <enqg6mcuhvff7gujjbapdiclicl3z6f2vnggcsg65pexipyr3o@4men5fhyt3vb>
- <28c84b3b-f68f-4f45-8da1-9c3f9a342509@leemhuis.info>
- <7kugx5ivbplwwrcq5zp37djtpakl55b3pfy36gpbsbcx43dpcs@uheu6iv7gm7h>
- <81149f18-0132-4ace-8c71-1b75790a88e4@leemhuis.info>
+        d=1e100.net; s=20230601; t=1713309699; x=1713914499;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nRAv116/X/EXCKcRiElV2IY/zNoHQwSQq8KUhnFUBgo=;
+        b=crlHolbUXOLpcs0SazevtTnsE7jSUiRsqN+OPsKhDxpd/WJiBrmGdSPuMtXVay/6MP
+         JwG6YLHklJeDdHOaGNQwCdrpTvcmARG4EEyetXhOhUTRB7CUpW381Kc/PkobPMxoIWa0
+         AFJ/TQVM6IyKoMhmZVTrqt6y0SHtDt0m38d/6z0VGdJLnUAJ61qSolSs4wfcJchfrLDZ
+         Ia2fJMUVyTEWvvXsT1rA4OkgHOmXHWGB/9GgRB5DdJ7r22B3VYRSIFpbE04CaSITLxnB
+         8G77S43Fqceo0byVYxduturieFei4LNsdSRiPtfxt/l4TTrvZG94j6xsAxDZgH9j2V+G
+         KJMw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8HX1AAeKE+1kKkkBlW8aCQmiacFJyH0u3AeUaGZqsJIk+m+f26M1/J6PgKg4CbYdXkBK+qBabcXGQWTtUXfXVkYuf1tYMZ7jJ42hr
+X-Gm-Message-State: AOJu0YwkVrrohINhftIAfOsLkl7FKJxx40xFDQ6kfrZAt1Z4E+ABzFXW
+	M0+9TMQxQdQNOI0+BC18woSiIFlqDfRTzhpI4QrWd93hr1W+r6jFfK8XBt943Ln3R3Cllo47GOT
+	rgQ==
+X-Google-Smtp-Source: AGHT+IHhox7XZBxgo4niwaT1Qmgey2WMckjhlZukXGiEaC7r8lfkTzDaY+UCmRBkb7dqS2tm6mqQFKH6dto=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a5b:9cf:0:b0:dc7:4af0:8c6c with SMTP id
+ y15-20020a5b09cf000000b00dc74af08c6cmr1530605ybq.6.1713309699386; Tue, 16 Apr
+ 2024 16:21:39 -0700 (PDT)
+Date: Tue, 16 Apr 2024 16:21:37 -0700
+In-Reply-To: <af4c78c1-ccd5-4c4d-92de-564a44fa815b@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <81149f18-0132-4ace-8c71-1b75790a88e4@leemhuis.info>
+Mime-Version: 1.0
+References: <20240411144322.14585-1-xry111@xry111.site> <20240411144322.14585-2-xry111@xry111.site>
+ <ZhgOPRIA5lyhTfGs@google.com> <af4c78c1-ccd5-4c4d-92de-564a44fa815b@intel.com>
+Message-ID: <Zh8IAcT0fQoyes_1@google.com>
+Subject: Re: [PATCH v7 2/2] x86/mm: Don't disable INVLPG if the kernel is
+ running on a hypervisor
+From: Sean Christopherson <seanjc@google.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Xi Ruoyao <xry111@xry111.site>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Michael Kelley <mhklinux@outlook.com>, Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	"H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Cooper <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="us-ascii"
 
-Hello,
-
-On Tue, Apr 16, 2024 at 08:08:07AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 12.04.24 04:57, Bjorn Andersson wrote:
-> > On Wed, Apr 10, 2024 at 11:18:04AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> >> On 08.04.24 00:52, Bjorn Andersson wrote:
-> >>> On Tue, Apr 02, 2024 at 10:17:16AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> >>>>
-> >>>> Tejun, apparently it's cause by a change of yours.
-> >>>> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218665 :
-> >>>>
-> >>>>> booting the current kernel (6.9.0-rc1, master/712e1425) on x86_64
-> >>>>> with nohz_full=0 cause a page fault and prevents the kernel from
-> >>>>> booting.
-> >>> [...]
+On Thu, Apr 11, 2024, Dave Hansen wrote:
+> On 4/11/24 09:22, Sean Christopherson wrote:
+> > In other words, simply checking HYPERVISOR *might* be safe, but it might not.
+> > If we wanted to be paranoid, this could also check X86_FEATURE_VMX, which also
+> > doesn't guarantee VMX non-root mode and would unnecessarily restrict PCID usage
+> > to setups that allow nested VMX, but AFAIK there aren't any hypervisors which
+> > fully emulate VMX.
 > 
-> Tejun, I got a bit lost here. Can you help me out please?
+> X86_FEATURE_HYPERVISOR is most commonly used for vulnerabilities to see
+> if the data coming out of CPUID is likely to be garbage or not.  I think
+> that's the most important thing to focus on.
 > 
-> I'm currently assuming that these two reports have the same cause:
-> https://lore.kernel.org/all/20240402105847.GA24832@redhat.com/T/#u
-> https://bugzilla.kernel.org/show_bug.cgi?id=218665
+> It's arguable that x86_match_cpu() itself should just have a:
 > 
-> And that both will be fixed by this patch from Oleg Nesterov:
-> https://lore.kernel.org/lkml/20240411143905.GA19288@redhat.com/
+> 	/*
+> 	 * Don't even waste our time when running under a hypervisor.
+> 	 * They lie.
+> 	 */
+> 	if (boot_cpu_bas(X86_FEATURE_HYPERVISOR))
+> 		return NULL;
 > 
-> But well, to me it looks like below issue from Bjorn is different, even
-> if it is caused by the same change -- nevertheless it looks like nobody
-> has looked into this since it was reported about two weeks ago. Or was
-> progress made and I just missed it?
+> (well, it should probably actually be in the for() loop because folks
+> might be looking for an X86_FEATURE_* that is set by software or derived
+> from actually agreed-upon host<->guest ABI, but you get my point...)
+> 
+> If the hypervisor is duplicitous enough to keep X86_FEATURE_HYPERVISOR
+> from getting set, then the hypervisor gets to clean up the mess.  The
+> kernel can just wash its hands of the whole thing.
+> 
+> So, there are two broad cases and a few sub-cases:
+> 
+> 1. "Nice" hypervisor.  Kernel sees X86_FEATURE_HYPERVISOR and knows that
+>    x86_match_cpu() and invlpg_miss_ids[] are irrelevant because:
+>  1a.  It is running in VMX non-root mode and is not vulnerable, or
+>  1b.  CPUID is a lie and x86_match_cpu() is meaningless, or
+>  1c.  The kernel is in ring3 and can't execute INVLPG anyway.  Whatever
+>       is running in ring0 will have to deal with it.
+> 2. X86_FEATURE_HYPERVISOR is unset.
+>  2a. "Mean" hypervisor. All bets are off anyway.
+>  2b. Actual bare metal. Actually look for the bug.
+> 
+> I _think_ I'm OK with skipping the mitigation in all of the #1 cases and
+> applying it in both of the #2 cases.  I don't think that checking for
+> VMX makes it much better.
+> 
+> Am I missing anything?
 
-Can you elaborate why Bjorn's case is different? I was assuming it was the
-same problem and that Oleg's fixes would address the issue.
+I'm a-ok with just checking HYPERVISOR, I agree that the hypervisor is fully
+responsible for correctly emulating PCID and INVLPG stuff for (1c).
 
-Thanks.
-
--- 
-tejun
+My reaction was really just to the changelog equating HYPERVSIOR to VMX non-root.
 
