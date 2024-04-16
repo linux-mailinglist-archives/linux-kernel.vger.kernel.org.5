@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-146768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF3E8A6A9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:18:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EFA78A6AAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:19:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 228C7281EA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:18:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A77491C20B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:19:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B79912BE9E;
-	Tue, 16 Apr 2024 12:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D4512C538;
+	Tue, 16 Apr 2024 12:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="Szfs6bPo"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2099.outbound.protection.outlook.com [40.107.7.99])
+	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="p4PwFbej"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2107.outbound.protection.outlook.com [40.107.104.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961DD12A15A;
-	Tue, 16 Apr 2024 12:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C43712C465;
+	Tue, 16 Apr 2024 12:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.107
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269918; cv=fail; b=AdGLt8j4LJNUyoGYPLugIOSQ0kq/p6Rw1Pm3EdVAFqOTqd1nJR+k9Z1P7Rc5rAN+/CPNN4CeeueGtZ4Q/NBL+GVhl01OcQk70mONlfvJeWxM/pPzAeB5jshFhSpaZyrxN41eEOwOGwGp0qb/icEygM+CxFDqMTK62LrNEgJBM6Q=
+	t=1713269923; cv=fail; b=S8ZpXATMTV3vKsWhsakg7/fFcTqOKSCt1jjv7BfgQeuUAMQdcUlx6nAnxkJYZsfs1bNIuyzqE6SpbXtiQy57abj+f+1VwfpzQZoEf1aw3/G8Ah2gw2mNgM9UCzNoBpkVKXxpkvMS8xtAuiWmE6+/uDG5xi2SdipxCNXc7I/v+WM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269918; c=relaxed/simple;
-	bh=DbMIqFE48QPZGX3tHgZgmG8nnZPoAJxlzjCAIhzJTMg=;
-	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version:
-	 References; b=rsb2nDbODhMQa/H/h6j7wcQxfn+CdiWR7wv6osu0CUeo29Xzsg1m162KZ8Eno1ajoyRrkydPjX2ioq15UNFY0QkgsgevwteHfksv4BYz3eTC2DxGiBx7jSC/YOXOCM6M10qZCWNlKaZOPnzK2RYO9R1b2lgcpHOym1//eb0FnGM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=Szfs6bPo; arc=fail smtp.client-ip=40.107.7.99
+	s=arc-20240116; t=1713269923; c=relaxed/simple;
+	bh=GPkE/SJb68lyAgEHhSekPwGVMWfpx+zYeTihz+61/SI=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Wi0iY1UDwvAmZQP7tQ9M+5aHiDUJTSJldqzmOS9siNyWWpccrVQ8+KriLg/norPqMG/WsdxuaI48HVW+S9FGtFh9fZZHC5jHrsdKSTCT+Otf3onc9vaWcQGgNguSYkZDA/w2Xh5ol8MeExu+cFXPj0P/v4/uQhYu1U0O0sDEcqs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=p4PwFbej; arc=fail smtp.client-ip=40.107.104.107
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=topic.nl
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZsPBSlu59/niNcmtBL3HZ9YkjSM+GQZ6NnB1I4K/p34IZrQymUZncyIh8BW+qON7ZJhyv7StX5Fp2VMTxsUkNjKJ48guAVJGHImQE58KTFZQDvdEznaAeKeMxGvg/L+mTUej0qChf0dgXvGYhVHFSrngnLSiPwUFlkCVM8HtD1q92wwYV3ZRFKcAgf7LrpsS+W7O6NqLbwBUSqSibuuZGDspIJgwjqsTLeu0u8lcV+AyC4bbKO7doiJZwUtRKVMg8GZ6tgy+fCON5XOYP2u5rvnTDzPEs2gUj8HHzo84+psPJHwHJiJkilIlWDAzWL/kW9Tbz0AsM4wfK0XgJIVuww==
+ b=EftWwHmEqjdO3t2XdYZvCkwY6Xz9hs/dQ2vY/QZ4qxE/2SYyWrRXPJ1IMCDVS6ARIOfJDKrEG+mbDNgMc7NUFmBtfowvjpzbs7rhLoA6xWdk4WyPIz0nKmDRSnKyZqC3UvbpX3wWCmTUkw1MVf+cGDl3SDVJZMKnUMijbOODSCjRM7cSTyON1I+6ZLt4VWNz/XaEa/CJ7pS2qUhCITMGh58SIFE+sEojIzmSdly2urd5CFBSr+wnaDsi7BYTwm8yjn0yV+Alg3J1o4bQw8xMJNnM9ojl65qdmoBsAETrB/qe8awVQYlfejA1GboncIKMyGOR1JYCYsg1aYFyWZHMSw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SM0GYnb+LCQZA1SJ1xN8BGBtGWYPC+YBaACg2JyuFQ0=;
- b=KfXUtN46cEcY2S0y7X/XQIQDyZzdkk7E29Kuxg7lIhd/WOzZfSNyZRscJk6hjRdcL7qVUcEXmz20Ge02XnCWCOeyS4KP6AgCdmj8SI1utWEyMLM73Vs1fIyFkDeVSb1wflI5AvEq0FDCxJZyzj21E2gmx0ZVsFTEe3bUo4xOZ+A8CLtnwLM+VUTup8Vt88wsR+x3T4sAXkHbsvmn1k1o9YNojdW2iXUINMgnjKYUDMcNW67oQRooBrbWaR3ozLJ0jxzDUDeDj7dve+F5Fs7vMXnVbob6FPl9scbeoUXPom3CT5teasW/74bAPHG6qPcrdHU1fJU/tMUtak4tzbiz8g==
+ bh=huSSah7O2ejmjagcW3rxMebHsAfaYtV6Nh3iQGgc6JE=;
+ b=gLoDJODcxnFoEpp7o90hb6GwaWBOyszRV8tKk4HxicgQmU9gUgm6bBJRvF9jW2tJ0kaFo9syjFIaWb+MaNQbfYMf38zRFnxn3Q9NH04pdvYmauszFIjBu88W5XHi43HtVgzSzQPrHXzw6Xc/odmUhsK/F69nC9+FiIcSMXtJCHw0Tw8RaWjLbCUaKB9rINixLDzYIKyQAPY+FJ83AtOFPy7yMoGHbzg3wJmjaSuge3KxyoRk1DEHSXHBD9pw5wvl66wSSnQDrpi+EWAB7RWnHeGWr6u/+1BzJyp1wjiu+rL0ijaT68YO11cJNjeVLjrdyO/dZtq6BR3XmOYLrHPw2A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  40.69.19.60) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=topic.nl;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=topic.nl;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SM0GYnb+LCQZA1SJ1xN8BGBtGWYPC+YBaACg2JyuFQ0=;
- b=Szfs6bPoHvsDuFWbRvZwkijHzYMO0NU40DuaAmIdTEU0DbqKUKcHseZ6E5BdwxTy+pehxuUQOVH/KngP/RiijczKATjmQp9mF4DgpzM4lGwr6uCfuffO4Yq4u8wkab9oaqHIBPUq4XONZRfR50t4nrGnNBs8nqgUcUTMGVbxrFcOj7C3CKy/60LoCbKkiTh3TneFb0dz9YzwsH8Z7Xk1B4QdJ82hnDXnLn+pg8nZbPtthxHKSg3BOmK4edv61ifAWliI+6JbZbzlBGqgnwee1REjmSCf1yCM5WCgDSHBJRwqvv8+cEohOdb5Pa+tv44nZn2X0wPkHOKwKYta6Y62Tw==
-Received: from DUZPR01CA0285.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b7::23) by AM9PR04MB9013.eurprd04.prod.outlook.com
- (2603:10a6:20b:409::17) with Microsoft SMTP Server (version=TLS1_2,
+ bh=huSSah7O2ejmjagcW3rxMebHsAfaYtV6Nh3iQGgc6JE=;
+ b=p4PwFbej46OU1czt4Ns1c8U2/v8Q0hANU6FMKkr283ASMsG7dvgSjZwYPa9PvK4rMgoRqXbFoGI7Hq52iZJM+rIDt3hXE7E1Sd4WKXR8E3WniGxPyOPgM+qgIaUKZcQ6ca3nNa28CPgT5ZPRQLj68hZ7hNhtFgFGw2MU9TcfBXHkOpXFe5yvGrEMkbIQESRHcqj6Zygo0wYLyV4p1HozLF37/lJ5DyWF3R3XhJDLAzAUC0sObelIe5I/JtPePo32RH9kHRyrBHassO97M4EiklSTtb04cjTVc0exI9k7+wGjaJTwOLs8iSDauZ0PnJorbrSPX2A5aXXwu7AE9DTvkA==
+Received: from DUZP191CA0062.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:4fa::25)
+ by PAXPR04MB9229.eurprd04.prod.outlook.com (2603:10a6:102:2bd::16) with
+ Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 12:18:32 +0000
-Received: from DU6PEPF0000B620.eurprd02.prod.outlook.com
- (2603:10a6:10:4b7:cafe::45) by DUZPR01CA0285.outlook.office365.com
- (2603:10a6:10:4b7::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.32 via Frontend
- Transport; Tue, 16 Apr 2024 12:18:32 +0000
+ 2024 12:18:37 +0000
+Received: from DU6PEPF0000A7E0.eurprd02.prod.outlook.com
+ (2603:10a6:10:4fa:cafe::34) by DUZP191CA0062.outlook.office365.com
+ (2603:10a6:10:4fa::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.34 via Frontend
+ Transport; Tue, 16 Apr 2024 12:18:37 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 40.69.19.60)
  smtp.mailfrom=topic.nl; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=topic.nl;
@@ -62,10 +62,10 @@ Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
  40.69.19.60 as permitted sender) receiver=protection.outlook.com;
  client-ip=40.69.19.60; helo=westeu100-emailsignatures-cloud.codetwo.com; pr=C
 Received: from westeu100-emailsignatures-cloud.codetwo.com (40.69.19.60) by
- DU6PEPF0000B620.mail.protection.outlook.com (10.167.8.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 12:18:32 +0000
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (104.47.51.169) by westeu100-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 16 Apr 2024 12:18:30 +0000
+ DU6PEPF0000A7E0.mail.protection.outlook.com (10.167.8.42) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 12:18:37 +0000
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (104.47.51.169) by westeu100-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 16 Apr 2024 12:18:32 +0000
 Authentication-Results-Original: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=topic.nl;
 Received: from AS8PR04MB8644.eurprd04.prod.outlook.com (2603:10a6:20b:42b::12)
@@ -80,16 +80,17 @@ Received: from AS8PR04MB8644.eurprd04.prod.outlook.com
 From: Mike Looijmans <mike.looijmans@topic.nl>
 To: linux-pm@vger.kernel.org
 CC: Mike Looijmans <mike.looijmans@topic.nl>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh@kernel.org>,
 	Sebastian Reichel <sre@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/5] dt-bindings: power: Extend battery chemistry with capacitor
-Date: Tue, 16 Apr 2024 14:18:14 +0200
-Message-ID: <20240416121818.543896-1-mike.looijmans@topic.nl>
+	Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v5 2/5] power: supply: core: Add POWER_SUPPLY_TECHNOLOGY_CAPACITOR
+Date: Tue, 16 Apr 2024 14:18:15 +0200
+Message-ID: <20240416121818.543896-2-mike.looijmans@topic.nl>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240416121818.543896-1-mike.looijmans@topic.nl>
+References: <20240416121818.543896-1-mike.looijmans@topic.nl>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.846cb2ab-fcec-478e-9752-6c7d0b6a347c@emailsignatures365.codetwo.com>
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 X-ClientProxiedBy: AM8P251CA0015.EURP251.PROD.OUTLOOK.COM
@@ -102,41 +103,40 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-TrafficTypeDiagnostic:
-	AS8PR04MB8644:EE_|VE1PR04MB7230:EE_|DU6PEPF0000B620:EE_|AM9PR04MB9013:EE_
-X-MS-Office365-Filtering-Correlation-Id: 63f61ead-601f-494b-d773-08dc5e0f54e1
+	AS8PR04MB8644:EE_|VE1PR04MB7230:EE_|DU6PEPF0000A7E0:EE_|PAXPR04MB9229:EE_
+X-MS-Office365-Filtering-Correlation-Id: 99117eea-c7f9-4182-67bd-08dc5e0f57e4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam-Untrusted: BCL:0;
 X-Microsoft-Antispam-Message-Info-Original:
- 7SFKj+nr678/bhjbcggr4nUXPOju4BpzSmR32s9EOzyGpTR2nTKy/jVjMdXlMK4edcg0Bey4TXZgKvKldEetsGfMkyd6ifu0QiH4oSbACmf3TnltX3CW6nL9oiCVRWWniyZE2FQRPcoKIaUh8GZRwKiAuC3AERHoxrOggWZhe9uLesBg3lwkBerpX4OCAPBhoHV8FjGIsUFHBJe7nsU8+1nClgj7sAxFbJKX7sB9qgn+sUqclllq5gMkLMxkpH58zcgifm4emPFO4oiTxQWm1zIDjd+MKDkiRGwOUDN7iZKmkRD8vYUqtpDoHoYa+gR5diuVIg7dRdQmPN0Y6ErT6qSegd/9hJU7S5Wv61DCFe7rvsfup307BTa4unKPkWsB7A5I51aLgQvUc+o6tVFaY5H68SHu4d9KgeDWHNCgHHXHu18FFFMTKV1sQDjHcEwZqnP7L01cSju7qC8GxZXk+7Q4fz9uTsizbP/X685C6ZyWmv8rCfMyHFcL1L2HowzRc80r+611ckW/GMmzmS7tzFbpwlkgVhpj2PdKxx5+Oc+C767OWWluMpPIRc7n02NdIF2siMJGFeGxXhQk+ild6SgnSmBFqG6T2CVsMDUyI7LDeODI1L30g8RoYjLpsx27HmKv+FksPBMQxEbuj+Bl02i3CUHWnIA8WC6azkGpQRpsDU2Ns5P4/nJWbI/Mz0/D+LryRBWxpfIKOcbDciN9qQ==
+ dgcVdLfinpNWs1sA3GCkU88kefiPU39E630OZoGqilCTqdhhz8a4Sj8e2q8b2J7SQDwC63CIJlyo/SkU+/Q3r9BJkj/mwfpi46f4A3CHPhTGHwuD7TG+4ikRq4ZuJd4nFKc1tBa6nd/uYjfauhv/ce6JI5oIVFWe3qnJzs3kCbWaGVtZF8AH/G+PVhh/LutV1IiGetmgAGxArygvhug1YsmvdCHMjPDfntyypZizy+voJ6LBTJyA2ZJXFkCP0BFnFrbyV5CpxNM3QmdKYhgZRB5w77msSusiAUnwx99UMmW0XMFNlBGo9bJrjdPfxGWL6v0duYTC8/lj1LGKG2FI+CQlDFEwUD5uLVzdMLPrULLIctSz9ySZEMVenwUlQ2YGMPwtQujU8BTCzO8+tNAl4B9Gy0lyJPFrTMqwrLto/rGMqJpWByXyizixMY4Maw43YvkhCC7pmaCjPt4fzA/E7rl6m1v7M4f1282UGoOp+1tqGE03mgvs8TTOBa/bk7b/cZTtkOkUeBjkQ+WRaExpV0KTY/WRhWYMSKrJdfbi0mtSiZplpYmXyR09k9SmYfcG3jIi9q8Jpql+eQwk0z+3P3Np8NJtuahCPSdosPVd6QZp1VUnITzVsh9uwT1kjjAXXorhKQWZSLSq2Z9uO3URb4Kq0cBNSyCl24/zU8gQXG0hs8RR0e/jf7ZLDectDgxfrLRI2c1qsYxeMnEgrkyNU4QK3ZrR11qwF4XmtEt2neo=
 X-Forefront-Antispam-Report-Untrusted:
  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8644.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(366007)(1800799015)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7230
-X-CodeTwo-MessageID: 1b5ac8c7-b024-4cb2-a073-9c05ed1eb553.20240416121830@westeu100-emailsignatures-cloud.codetwo.com
+X-CodeTwo-MessageID: 82f740c8-9228-48ca-96e8-58ee7cc842a9.20240416121832@westeu100-emailsignatures-cloud.codetwo.com
 X-CodeTwoProcessed: true
-References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.e2aac3eb-919a-41c3-81e9-f9030f4f80eb@emailsignatures365.codetwo.com>
 X-EOPAttributedMessage: 0
 X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- DU6PEPF0000B620.eurprd02.prod.outlook.com
+ DU6PEPF0000A7E0.eurprd02.prod.outlook.com
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	eaff7fcb-be01-465e-3bbd-08dc5e0f500b
+	3f097a2b-5709-4376-536a-08dc5e0f5063
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	w3WfWYCmkA4M+URVtOuVSQSZLZyQBUmmibN4tPYDqBMCahXS1arH9pNfd11WGCxGMPLaOExQuyBSvJZ2QOM9bk9RNlMqwjMwN9dbjsCX2EsJlXP5bD9WIInams3arWgMFTD5GM+OalTUFr1ofu7s8ZbaEuLrP+tcBxXTRdER0C66AalPqTZAxSRDlSkVIbeqLKRpK+MQoHyLCw1Vb3TvkH31vqXjikjsFaoQKP2aWrvjsBvfkBAVRMB9QX5NVsZIoiptNxTABsbrbczJABqR0TVoWgqzSL5BrKkn1sFbn/a3fq4qwoDqsVzyitU4+1U5g/vIT3TL4gbFtHDOH4yosqMGproFHepQn8SYMiDCoxQ9lXbKJkmJUQyc2E+IyinxdGrG4ZoP37BWOa46GguCZyYjy39zMXiBO1S44bI+0cRqKqKzBRx6oq3TPb0Wd2K736sCJFeTnmusAdUshPdf3f0x39Q6ezLr/S05coKG6zHgFQG9a6bPbFcQJGLjLklbEIEQ2zgzph0sj4ubF2LDD/HnhKrAdMO7vg/59M8oinplSGVcWxDFacmI3MEb4f6XHB0ctGx9WZnuz+/HlLWbmPVOs/56HEpruW+j5snCBVQoU2HbWrvaabSBEZnuhDd0jWMUlV5b3f21pN9/KqFmEX7HIfJsfQSp3JF/mRadnNTwfXJOfnv6ke9e0Emcc3DE3XM1g63W38Ktxky0HiJ2hw==
+	1fO6FbyFRKV2FymO3q50+SGRLrrMNrY40J6L2ZjiIDbAg/Pp4SNY2PnZ/GEtt+GgN+7MwZVLwKmQsRi8RnfF01fT5+PJBkwPR/UiSE5c4nRFY1czrSvj1zz9DhPbLRK9OHFviWo+sXREC2CB6IjRcvL+AjQdMxKeJ8AN1Wd3tVehqjWwlRkF2enazfJcB2ZdN+t4coX95twmHbpoqnfv0LBA/wZzK2A52DsQAQX4YZb+TPe5GQjvy/4croH17o4y5N8hfO/rlaQrM//7E00FKClRCAEDSoVNm5GWWYlE74rVAuQB7bTDYJAnCRNvy4NgsbsMY3VVH1OmTLWjekseJPPXJvfGVp8Hs09psYkmCcgJtoKt0kvALYRsNwb5CnC02h+UHTEwt7Y4dsHeIboJqBImHXEu+r1GnRnFB8KCX4AE8D6/rxCIRQecUOIRmORRIdt7rAvD35Ahfbk9LpGlQtb9D+p9juGgjs1s9Uwwn6lN8Y54CzrlgpGbhZm25DHCycV2laN9gOEArM1wpOLpOS3hRdNgBM1swkpZEiKv1ii/MxzsRdX3ASHL+xc7RrfbBj/gnWSAWOYFbkDHZnwEwayn6KxFz9MF77OP4ylmMIteDpf6fbdJD/qFgo13rxJeTnf8u2oSnI6dGDUNynla02sL6Dod6gOj3v9o0lIusySaIvpmBSdb3iFmbIWMxsg997TjbAWIzKHPNu8Sh+3pnw==
 X-Forefront-Antispam-Report:
-	CIP:40.69.19.60;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu100-emailsignatures-cloud.codetwo.com;PTR:westeu100-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(376005)(82310400014)(1800799015)(36860700004);DIR:OUT;SFP:1102;
+	CIP:40.69.19.60;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu100-emailsignatures-cloud.codetwo.com;PTR:westeu100-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(1800799015)(376005);DIR:OUT;SFP:1102;
 X-OriginatorOrg: topic.nl
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 12:18:32.1062
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 12:18:37.1093
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63f61ead-601f-494b-d773-08dc5e0f54e1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99117eea-c7f9-4182-67bd-08dc5e0f57e4
 X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[40.69.19.60];Helo=[westeu100-emailsignatures-cloud.codetwo.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DU6PEPF0000B620.eurprd02.prod.outlook.com
+	DU6PEPF0000A7E0.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB9013
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9229
 
 Another technology to store energy is a (super)capacitor.
 
@@ -145,22 +145,85 @@ Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
 
 (no changes since v1)
 
- Documentation/devicetree/bindings/power/supply/battery.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/ABI/testing/sysfs-class-power                     | 2 +-
+ drivers/power/supply/power_supply_core.c                        | 2 ++
+ drivers/power/supply/power_supply_sysfs.c                       | 1 +
+ include/linux/power_supply.h                                    | 1 +
+ .../selftests/power_supply/test_power_supply_properties.sh      | 2 +-
+ 5 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/power/supply/battery.yaml b/=
-Documentation/devicetree/bindings/power/supply/battery.yaml
-index 491488e7b970..a22c97dfad88 100644
---- a/Documentation/devicetree/bindings/power/supply/battery.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/battery.yaml
-@@ -44,6 +44,7 @@ properties:
-       - const: lithium-ion-polymer
-       - const: lithium-ion-iron-phosphate
-       - const: lithium-ion-manganese-oxide
-+      - const: capacitor
+diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/AB=
+I/testing/sysfs-class-power
+index 7c81f0a25a48..1f6a04a17c81 100644
+--- a/Documentation/ABI/testing/sysfs-class-power
++++ b/Documentation/ABI/testing/sysfs-class-power
+@@ -488,7 +488,7 @@ Description:
 =20
-   over-voltage-threshold-microvolt:
-     description: battery over-voltage limit
+ 		Valid values:
+ 			      "Unknown", "NiMH", "Li-ion", "Li-poly", "LiFe",
+-			      "NiCd", "LiMn"
++			      "NiCd", "LiMn", "Capacitor"
+=20
+=20
+ What:		/sys/class/power_supply/<supply_name>/voltage_avg,
+diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/suppl=
+y/power_supply_core.c
+index fefe938c9342..6d1327e16ff6 100644
+--- a/drivers/power/supply/power_supply_core.c
++++ b/drivers/power/supply/power_supply_core.c
+@@ -686,6 +686,8 @@ int power_supply_get_battery_info(struct power_supply *=
+psy,
+ 			info->technology =3D POWER_SUPPLY_TECHNOLOGY_LiFe;
+ 		else if (!strcmp("lithium-ion-manganese-oxide", value))
+ 			info->technology =3D POWER_SUPPLY_TECHNOLOGY_LiMn;
++		else if (!strcmp("capacitor", value))
++			info->technology =3D POWER_SUPPLY_TECHNOLOGY_CAPACITOR;
+ 		else
+ 			dev_warn(&psy->dev, "%s unknown battery type\n", value);
+ 	}
+diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supp=
+ly/power_supply_sysfs.c
+index 0d2c3724d0bc..9d8540ce1f7e 100644
+--- a/drivers/power/supply/power_supply_sysfs.c
++++ b/drivers/power/supply/power_supply_sysfs.c
+@@ -119,6 +119,7 @@ static const char * const POWER_SUPPLY_TECHNOLOGY_TEXT[=
+] =3D {
+ 	[POWER_SUPPLY_TECHNOLOGY_LiFe]		=3D "LiFe",
+ 	[POWER_SUPPLY_TECHNOLOGY_NiCd]		=3D "NiCd",
+ 	[POWER_SUPPLY_TECHNOLOGY_LiMn]		=3D "LiMn",
++	[POWER_SUPPLY_TECHNOLOGY_CAPACITOR]	=3D "Capacitor",
+ };
+=20
+ static const char * const POWER_SUPPLY_CAPACITY_LEVEL_TEXT[] =3D {
+diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+index 8e5705a56b85..af5a4e700881 100644
+--- a/include/linux/power_supply.h
++++ b/include/linux/power_supply.h
+@@ -78,6 +78,7 @@ enum {
+ 	POWER_SUPPLY_TECHNOLOGY_LiFe,
+ 	POWER_SUPPLY_TECHNOLOGY_NiCd,
+ 	POWER_SUPPLY_TECHNOLOGY_LiMn,
++	POWER_SUPPLY_TECHNOLOGY_CAPACITOR,
+ };
+=20
+ enum {
+diff --git a/tools/testing/selftests/power_supply/test_power_supply_propert=
+ies.sh b/tools/testing/selftests/power_supply/test_power_supply_properties.=
+sh
+index df272dfe1d2a..75f801eb86af 100755
+--- a/tools/testing/selftests/power_supply/test_power_supply_properties.sh
++++ b/tools/testing/selftests/power_supply/test_power_supply_properties.sh
+@@ -74,7 +74,7 @@ for DEVNAME in $supplies; do
+ 	test_sysfs_prop_optional model_name
+ 	test_sysfs_prop_optional manufacturer
+ 	test_sysfs_prop_optional serial_number
+-	test_sysfs_prop_optional_list technology "Unknown","NiMH","Li-ion","Li-po=
+ly","LiFe","NiCd","LiMn"
++	test_sysfs_prop_optional_list technology "Unknown","NiMH","Li-ion","Li-po=
+ly","LiFe","NiCd","LiMn","Capacitor"
+=20
+ 	test_sysfs_prop_optional cycle_count
+=20
 --=20
 2.34.1
 
