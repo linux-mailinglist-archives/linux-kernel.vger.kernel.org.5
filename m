@@ -1,160 +1,131 @@
-Return-Path: <linux-kernel+bounces-147235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08FE08A715C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:29:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54D0A8A715F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:29:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9424284A40
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:29:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 855A81C2181A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66BF132484;
-	Tue, 16 Apr 2024 16:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F23132C1E;
+	Tue, 16 Apr 2024 16:29:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KXmhhhYw"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ktn8pm/i"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5E143AA5
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBB013281F;
+	Tue, 16 Apr 2024 16:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713284951; cv=none; b=RpY3TR+Pjn2nZRdUe/fwIlH01gpKYADer64lw6M0+CdvlOsbY5OGSd9uXMWj1kKMXkbUg1Z9r3d66pIBu79HlG8HyhMXe8QS09BpKF2JM67TSFYu1y4WAqkihBwCZTQ+osGtw3vn1jP9MfXdPbtN8V+aEpSL81FEHuR8IlzLEfo=
+	t=1713284957; cv=none; b=j/6qPcVFlame3m7/u1vP/5U+ekdhe1FFh1VVofEskX0e4gUarwCdLtirA9r8LLIco+0N7+zPWX87iJfbEOYaMIaEeHo7jitJNKYXKbeXIqYO1adAULjpyFCFkYnml0KkhjOfKeNCaKfI2RC2PVS0Xitshp7GUu7acTJHMm0Wmoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713284951; c=relaxed/simple;
-	bh=pWTN710K0GAoCxnDcr+MGkw5lhjx+xF+6D5iLDvKMfE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ie55j7bL9CB0UVPykj78XFHqOSCz4592PpspxQmQzRv2dEfhx29TWMGZ9HA2Us8M08wNVpuJzrL6d2FqpDCExOki7CUMAE9XJfPRyqO37I/8DkQX3vhGzQE5/LM59Ma3cAo1Y8HoFGdvkFklmWXurp5zloRY6U4cSXqe6iinds8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KXmhhhYw; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GGM81G019629;
-	Tue, 16 Apr 2024 16:28:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=M/Jg7JWqI6UX86/ybDV9RYMD3Fu8CKqmYeH83wB2YOY=;
- b=KXmhhhYw9IT7j0OcNt1+9kojQHvRL/NAB9Di4D8iWT0at9Sm+M2jKc1qW/07Gi/apGtf
- Uy0UaxPrs6nju+u0zcEXD1tBHde12cKv/5XJVHW4HiMmF3iLUn9hEH4c0xU6tCG51/x/
- f0xMpKdC5i/FzIHybfJ/2VLgR+dsCwI1YHstHU7qO81/kwkO7BkAXLG2Hd4139H+PFtk
- mRUepkaxzc7bzmxrwO4617QqP+b37pWvFc0xS0/F8JJhV0rxmoZ6lIkrxf45VBbDJKDy
- ZEuO/qIoo1t+poUHDXwGC3I7bcDGLr3DiAEaP7d66jf80xIPgbY8wOKphUCZTyBLUBeV JA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhvsp80wt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 16:28:54 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43GGOIaB022939;
-	Tue, 16 Apr 2024 16:28:54 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhvsp80wm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 16:28:53 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43GDpBK2021351;
-	Tue, 16 Apr 2024 16:28:52 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xg6kkeuag-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 16:28:52 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43GGSntn43516240
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Apr 2024 16:28:51 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2B27720043;
-	Tue, 16 Apr 2024 16:28:49 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A30A820040;
-	Tue, 16 Apr 2024 16:28:46 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.179.12.58])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 16 Apr 2024 16:28:46 +0000 (GMT)
-Date: Tue, 16 Apr 2024 21:58:44 +0530
-From: Vishal Chourasia <vishalc@linux.ibm.com>
-To: Dawei Li <daweilics@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
-Message-ID: <Zh6nPAwdAmGEEn7V@linux.ibm.com>
-References: <20240315015916.21545-1-daweilics@gmail.com>
+	s=arc-20240116; t=1713284957; c=relaxed/simple;
+	bh=ksIMmot1Zu3RpcmxxuMwT29YF/YfRaoJNZVygL1gpD4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f6HxDpPJTq0FyXpNYmMJxcxBqUZNLQuQNnW2DwlwBJu2N5AFFFZJBjbaZN+mCfmmAv0xKI5KSsWX3cX1KvjEU9ku7JbFk/AnzWQUs/Iysn8u3V2WiTZRDVj4z//DNgNfsz4uFqGYhOfpW4mURAfAbEBND7/xZe4difN/EOSgvPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ktn8pm/i; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-518e5a74702so1700757e87.1;
+        Tue, 16 Apr 2024 09:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713284954; x=1713889754; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s15Rb4mbYoAFWiPnMFdoi3VC5Ubr4PDTS6LvLNYlcXw=;
+        b=ktn8pm/i2O4AkjDHmO65wO1mu3aNwa5jaAtodBuLpBXcK9C7DzLnDvYgX8kBOc3X+X
+         wo3gBQuD0i5x6l5hRQUC3Yvc6liDmOaTspb9SVVEwDtQcMe2m6c+B2l0+NCY3rQO648a
+         WkLkumaakOEPScmSnnk6ym3Zm2tCu8q5uMPa5hLZq/ZZ4D2nl7F/h/u8XU2YI4uuehNN
+         pvGpE5rnw0qPLcuUA0c7bHV6js4Ibs/VI31cGSHUHUYGTnqouQQhm21CP0KanjF5/ywC
+         qZODyY8mIOm2HUFTmxs9HyjxAxbhqGSoWQyxLfEwhgIRoIwh6jNBdcs/ycooOd1wR5Jz
+         rtcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713284954; x=1713889754;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s15Rb4mbYoAFWiPnMFdoi3VC5Ubr4PDTS6LvLNYlcXw=;
+        b=iYrQ+AGu4CMU+zKcK9tMe7mdxW22RsdLunt+8y/dk5TArpv3B39hUWZw2seT0p5QUY
+         sgIddpoSas+GZVoecsqWX0DWJYgtOtuWk9peUENCNbUciMSC1ixHW1VShWC+9RBSslYW
+         VFN1CkpOqIfaX6fSe0fQlb8fx3OmyGuC74hPtgXAGxhdDy8CrCRqsLTpWyzMu/FNNIMd
+         mOQF5++GLEgnQKu7gPtdX+yabXBQPrMNYPvRhu1L0zmGms45q4CMTLWNK9hzHGqhpOc/
+         bajvCKxjPxS1NjyegsHCax2tvCEFc/V80Qy/ngwTmZx5xuuGGmJ8bLp1QwiV0YroIosj
+         AR3w==
+X-Forwarded-Encrypted: i=1; AJvYcCW238vy0erKGs5gHgtvijLJERk7q6ay9ABwHY1DtrRUpPhx/zZMwRBqppBYmHBGjVpJrksSm8Ncsw0k5aaSw2uQjIiKFITEw0Ds0AS9bHcAm+FMARzE4Rmkqe8NyflzrY7Fvm7LsqYFB4SP4s7IUi7zDYUMEnlzyJYwG4zleG287Tm92EHJ
+X-Gm-Message-State: AOJu0YyrNUVojxync6oUddlNFJi6LgLe2eN6RH1mbneXUtSNuhZGRqlq
+	sQLZqgQk0J2SHHADui4p7zMVfykQXTYS+mx4vtCHePqlQsW1/kSDSWbE4+rZ
+X-Google-Smtp-Source: AGHT+IFvIT7a3LyG7ZK2+u/Vq1k1OtnoQS4CB5Ryc2C7XVf5KJW2tjeLVfSEBQxGOfJpz6kkX9uU9g==
+X-Received: by 2002:a05:6512:e89:b0:513:dcd2:1267 with SMTP id bi9-20020a0565120e8900b00513dcd21267mr1342082lfb.23.1713284953511;
+        Tue, 16 Apr 2024 09:29:13 -0700 (PDT)
+Received: from localhost (srv1.baikalchip.ru. [87.245.175.227])
+        by smtp.gmail.com with ESMTPSA id i11-20020ac25b4b000000b00518a37a7c2fsm1080400lfp.51.2024.04.16.09.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 09:29:13 -0700 (PDT)
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Viresh Kumar <vireshk@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Vinod Koul <vkoul@kernel.org>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	dmaengine@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] dmaengine: dw: Fix src/dst addr width misconfig
+Date: Tue, 16 Apr 2024 19:28:54 +0300
+Message-ID: <20240416162908.24180-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240315015916.21545-1-daweilics@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qZ4krOU15I-f0fmNW4EWriW9u_Js6T-8
-X-Proofpoint-GUID: x9xewc0Bu1e-5NJjYMLMWJeXtKDhY8hZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_14,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- clxscore=1015 mlxlogscore=999 phishscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404160101
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024 at 06:59:16PM -0700, Dawei Li wrote:
-> Change se->load.weight to se_weight(se) in the calculation for the
-> initial util_avg to avoid unnecessarily inflating the util_avg by 1024
-> times.
-> 
-> The reason is that se->load.weight has the unit/scale as the scaled-up
-> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
-> weight (as mapped directly from the task's nice/priority value). With
-> CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
-> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
-> Thus, the current code may inflate the util_avg by 1024 times. The
-> follow-up capping will not allow the util_avg value to go wild. But the
-> calculation should have the correct logic.
-> 
-> Signed-off-by: Dawei Li <daweilics@gmail.com>
-Reviewed-by: Vishal Chourasia <vishalc@linux.ibm.com>
+The main goal of this series is to fix the data disappearance in case of
+the DW UART handled by the DW AHB DMA engine. The problem happens on a
+portion of the data received when the pre-initialized DEV_TO_MEM
+DMA-transfer is paused and then disabled. The data just hangs up in the
+DMA-engine FIFO and isn't flushed out to the memory on the DMA-channel
+suspension (see the second commit log for details). On a way to find the
+denoted problem fix it was discovered that the driver doesn't verify the
+peripheral device address width specified by a client driver, which in its
+turn if unsupported or undefined value passed may cause DMA-transfer being
+misconfigured. It's fixed in the first patch of the series.
 
-> ---
-> Changes in v2:
-> - update the commit message
-> ---
->  kernel/sched/fair.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a19ea290b790..5f98f639bdb9 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
->   * With new tasks being created, their initial util_avgs are extrapolated
->   * based on the cfs_rq's current util_avg:
->   *
-> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
-> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
-> + *		* se_weight(se)
->   *
->   * However, in many cases, the above util_avg does not give a desired
->   * value. Moreover, the sum of the util_avgs may be divergent, such
-> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
->  
->  	if (cap > 0) {
->  		if (cfs_rq->avg.util_avg != 0) {
-> -			sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
-> +			sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
->  			sa->util_avg /= (cfs_rq->avg.load_avg + 1);
->  
->  			if (sa->util_avg > cap)
-> -- 
-> 2.40.1
-> 
+In addition to that two cleanup patch follow the fixes described above in
+order to make the DWC-engine configuration procedure more coherent. First
+one simplifies the CTL_LO register setup methods. Second one simplifies
+the max-burst calculation procedure and unifies it with the rest of the
+verification methods. Please see the patches log for more details.
+
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (4):
+  dmaengine: dw: Add peripheral bus width verification
+  dmaengine: dw: Add memory bus width verification
+  dmaengine: dw: Simplify prepare CTL_LO methods
+  dmaengine: dw: Simplify max-burst calculation procedure
+
+ drivers/dma/dw/core.c   | 97 ++++++++++++++++++++++++++++++++++++-----
+ drivers/dma/dw/dw.c     | 43 +++++++++++-------
+ drivers/dma/dw/idma32.c | 25 +++++++----
+ drivers/dma/dw/regs.h   |  1 -
+ 4 files changed, 129 insertions(+), 37 deletions(-)
+
+-- 
+2.43.0
+
 
