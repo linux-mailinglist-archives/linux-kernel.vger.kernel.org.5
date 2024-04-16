@@ -1,169 +1,79 @@
-Return-Path: <linux-kernel+bounces-146656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC7D78A68D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:43:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F7D58A68DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:44:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3B8228A9D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:43:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60A3C1C20AE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:44:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A02C127E3F;
-	Tue, 16 Apr 2024 10:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5395128378;
+	Tue, 16 Apr 2024 10:44:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="fL5L+0tV"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jJHECWn7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F87C127E3A;
-	Tue, 16 Apr 2024 10:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03CCF1E87F;
+	Tue, 16 Apr 2024 10:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713264217; cv=none; b=dq55Bp3Xl9FAz5VZx76NytN9uLoJ01/sjsoWUE4Xqlo5EiTGHvVkZusWHqXiCvC/W2/k57VTPex1Byj+JyjkBHRCehH32YIHNZyj0nsW4WwIPVAJF5vRgLrLzeAbdm54JVeFDDry9ejuorbTLCy996lOD/seWklAB+3zYszqZOA=
+	t=1713264283; cv=none; b=euqT7yZ0M0vOMewqwtkGfvj8YeDbJlOXn575pxY+scZhrbiCrP3r0Er4Lgsku8uC3rGsTHb6MEY9c8H30mhs84U6cat/kHR7D7SksXKZmulDXDcYtOMjTyVto63J/H8OlkYdb2bAniHenOVyY0b67LOzrEGmEcd0Dfwog7csyrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713264217; c=relaxed/simple;
-	bh=yCRvkvY86v9D9NIYZxSWg3IQQTlKeaICD66DfV4IdEk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RX3XqiO0zPvmPdjj2D3QyE/VO8RsU+VL6MAF1Qu64Qa0P8GIeDv5OVoTkxSlKBdI4LXSZFBGjNk+lqvxVeHwXYj1KOu8d6ycUwAtNbr9poM6TzFyhR1oAmX+qWl2NWcrrEViXO4xmrVV+y4lPt51yNSRPQzbgeR/7OOwtA7eTTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=fL5L+0tV; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 921C0480;
-	Tue, 16 Apr 2024 12:42:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1713264168;
-	bh=yCRvkvY86v9D9NIYZxSWg3IQQTlKeaICD66DfV4IdEk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fL5L+0tVteDlBCfuONfhzbI/hGQa/KVluZKniZFdZMi5QamScpRHUg0sdhO7KCmjQ
-	 xH220aLN2CtBL3q+IN/4XIMOseTuc8gII1UHZ197PoGTggiObV8iXAThaUGKFagN2V
-	 jzUy6dKqq6U8VXmRYVz7bvh97clV+DKqt974voPM=
-Message-ID: <271933b0-7ac1-4fdf-b66a-0ed860a1ec8f@ideasonboard.com>
-Date: Tue, 16 Apr 2024 13:43:31 +0300
+	s=arc-20240116; t=1713264283; c=relaxed/simple;
+	bh=tJ9ut0fQtFbr/3MLrbRhkeYtIXO9k3OC2VNhOofqi3c=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=mw1a/m6AEWRajndPtvO9FLLINlUKg4RGB8xWampvb+jriaVaqkkDYnQIiiJgmuxKDieRb9pEOc7I2D2KWBZQ/k4RH+xOJzKJIl2aO1CWBPOvEeZufA17JBrs8rqRqF06g6pl7zUpW1GOxvFq4qGI0Vf9RqpXB7zFgazBfA9bWuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jJHECWn7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8300C113CE;
+	Tue, 16 Apr 2024 10:44:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713264282;
+	bh=tJ9ut0fQtFbr/3MLrbRhkeYtIXO9k3OC2VNhOofqi3c=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=jJHECWn7lxCVHEA9KUzL5894HwD1awI4fV6JeVu00Nyx1swIwRBdzBH06MKgy9sEx
+	 XUcTMut9KXoyYKV47xl6FS2qZkxcOVPft+Jb3vpff0ls50VOc4Vi68Jj0n3DAjBcjB
+	 Qz1bmDKjlIZuBur2lELcxQHIhtVxe5YB1eFnIRBEhkAbPPCRUaHzvue1TPCoUFxjA/
+	 DLRgy7nRcxu/uU74Vp9wHupS+F0NX+YHxBK8Ii7hdRWDjTQtfXGkxjMnuHll2ngkpC
+	 zJ/Q7Ieby3VOeqaEIMs2nmX5jYCoH7U5TloDZKkIY9mqbt1hYc54a6kVRDJt+ybCai
+	 bKe1h2PfbXIsQ==
+From: Leon Romanovsky <leon@kernel.org>
+To: kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com, 
+ jgg@ziepe.ca, Konstantin Taranov <kotaranov@linux.microsoft.com>
+Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1712911656-17352-1-git-send-email-kotaranov@linux.microsoft.com>
+References: <1712911656-17352-1-git-send-email-kotaranov@linux.microsoft.com>
+Subject: Re: [PATCH rdma-next 1/1] RDMA/mana_ib: Use num_comp_vectors of
+ ib_device
+Message-Id: <171326427756.736000.6328547118814689839.b4-ty@kernel.org>
+Date: Tue, 16 Apr 2024 13:44:37 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/10] media: subdev: Support non-routing subdevs in
- v4l2_subdev_s_stream_helper()
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil
- <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>
-References: <20240416-enable-streams-impro-v4-0-1d370c9c2b6d@ideasonboard.com>
- <20240416-enable-streams-impro-v4-10-1d370c9c2b6d@ideasonboard.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Language: en-US
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240416-enable-streams-impro-v4-10-1d370c9c2b6d@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-Hi,
 
-On 16/04/2024 13:40, Tomi Valkeinen wrote:
-> At the moment v4l2_subdev_s_stream_helper() only works for subdevices
-> that support routing. As enable/disable_streams now also works for
-> subdevices without routing, improve v4l2_subdev_s_stream_helper() to do
-> the same.
-
-I forgot to mention, I have not tested this patch as I don't have a HW 
-setup. And, of course, I now see that it has a bug. The BIT_ULL(1) 
-should be BIT_ULL(0).
-
-Umang, can you try a fixed one on your side? If it works, I'll send a v5.
-
-  Tomi
-
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->   drivers/media/v4l2-core/v4l2-subdev.c | 23 ++++++++++++++++-------
->   1 file changed, 16 insertions(+), 7 deletions(-)
+On Fri, 12 Apr 2024 01:47:36 -0700, Konstantin Taranov wrote:
+> Use num_comp_vectors of struct ib_device instead of max_num_queues
+> from gdma_context.
 > 
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 1c6b305839a1..83ebcde54a34 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -2360,15 +2360,24 @@ int v4l2_subdev_s_stream_helper(struct v4l2_subdev *sd, int enable)
->   	if (WARN_ON(pad_index == -1))
->   		return -EINVAL;
->   
-> -	/*
-> -	 * As there's a single source pad, just collect all the source streams.
-> -	 */
-> -	state = v4l2_subdev_lock_and_get_active_state(sd);
-> +	if (sd->flags & V4L2_SUBDEV_FL_STREAMS) {
-> +		/*
-> +		 * As there's a single source pad, just collect all the source
-> +		 * streams.
-> +		 */
-> +		state = v4l2_subdev_lock_and_get_active_state(sd);
->   
-> -	for_each_active_route(&state->routing, route)
-> -		source_mask |= BIT_ULL(route->source_stream);
-> +		for_each_active_route(&state->routing, route)
-> +			source_mask |= BIT_ULL(route->source_stream);
->   
-> -	v4l2_subdev_unlock_state(state);
-> +		v4l2_subdev_unlock_state(state);
-> +	} else {
-> +		/*
-> +		 * For non-streams subdevices, there's a single implicit stream
-> +		 * per pad.
-> +		 */
-> +		source_mask = BIT_ULL(1);
-> +	}
->   
->   	if (enable)
->   		return v4l2_subdev_enable_streams(sd, pad_index, source_mask);
 > 
+
+Applied, thanks!
+
+[1/1] RDMA/mana_ib: Use num_comp_vectors of ib_device
+      https://git.kernel.org/rdma/rdma/c/23f59f4e837bba
+
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
 
 
