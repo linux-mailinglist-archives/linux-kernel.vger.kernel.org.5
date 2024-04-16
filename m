@@ -1,109 +1,152 @@
-Return-Path: <linux-kernel+bounces-146687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83FF88A6957
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFBB28A6962
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4063A28208C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:05:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 756B928218A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED927128816;
-	Tue, 16 Apr 2024 11:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1F9128816;
+	Tue, 16 Apr 2024 11:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AnNWPFk2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="BshHmH48"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35961127B5D;
-	Tue, 16 Apr 2024 11:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFAB127E3D;
+	Tue, 16 Apr 2024 11:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713265545; cv=none; b=uGgKSQH5sjRM5LAYtrKaDWbml5DpUjnJOBO6P2sd+sGT+B4wTfO/IBN2muxshJmzgHuYW6n7zOClegGCQBw7tPVbZZmPRloIKWechn89a3EvAJiDWoZ+DqbM7zBZjxSS2loCFJrvkvOnn9lxBNzIYaE2QKVZY8DxHAXIWKY0QVA=
+	t=1713265607; cv=none; b=Sj/v5DhAjR3uH/xXxRphluEduFG8JwrI8kNcwUJSU+alErJmDZIOjgTr1ijbabeC7wc7s1MBAjd71H6umsnqlod+pesmV0gjhMTbUac1fmgevNapC20LBwRPD1f1D6GwmGavMvQWuGZlTy2kA6UM7i6mdIAYFMSxnnWi/00oLqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713265545; c=relaxed/simple;
-	bh=b+bXT9aw+B73/v9YDMYAG7FfnV6DKgNRfmqZTWXBmro=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SAceiJeMWoY0cYC/tMYRj86TdD4d/jotBpSRqoHzwG/6J66JIInjfeCn38UQ25+ixWe7kiqXD+bOg6UkTMKaKczhdzdU3xCnxs3q+J2/tPTzLUiaKPZoc/aTuH0aSf6QySBlXBqA9koIlGhi2kykuHUJQ26yvpSwEJZdVKCjc6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AnNWPFk2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0989AC113CE;
-	Tue, 16 Apr 2024 11:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713265545;
-	bh=b+bXT9aw+B73/v9YDMYAG7FfnV6DKgNRfmqZTWXBmro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AnNWPFk2cPR63aap4cP380v2VxcbontjhUIhUDPw8VjdKLYXol+uDqChzoz/vIqtL
-	 CQtNYOSG4NFjgYm9zRpzIk4mWQtwesDabP+lVQv3DvXQ7HHk9ZR1OAOJxu3Laa+Dss
-	 ER3dOztV7KK7i3p58jW3/6z1qhX35ggZxlWrFV8PRmnRjYErVyg77pPpHPFnFNQA4c
-	 1RjPN1THSUmFrxOFwFqY+ktddtmpprzrSEYJldb280LYiFDLuy+7sKVVV3GSIJ+zip
-	 /4q8iaRzwAv7K1qNssIlLRfvzkzyemk7WcqEbP24uViUsrW2oynJePbU1/mSQLkQoZ
-	 SRFhaDiceip7A==
-Date: Tue, 16 Apr 2024 12:05:38 +0100
-From: Simon Horman <horms@kernel.org>
-To: Wen Gu <guwen@linux.alibaba.com>
-Cc: wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	wenjia@linux.ibm.com, jaka@linux.ibm.com, borntraeger@linux.ibm.com,
-	svens@linux.ibm.com, alibuda@linux.alibaba.com,
-	tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v6 10/11] net/smc: adapt cursor update when
- sndbuf and peer DMB are merged
-Message-ID: <20240416110538.GK2320920@kernel.org>
-References: <20240414040304.54255-1-guwen@linux.alibaba.com>
- <20240414040304.54255-11-guwen@linux.alibaba.com>
+	s=arc-20240116; t=1713265607; c=relaxed/simple;
+	bh=6YyzjOcrpjM2awxpuoWmwqK1BSbLE0TEGbSa1cisklg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=CYmkGAAtpV7+7kMHW7hBRYVwzlEuaQ2Czwk3yR7fRENlGn3ylPLua2+zdKFP8VJUR8+bcCbdX/tQEtG3cQHxsnj7V28GsYYE3j54X4AJkYz1cLdm0X+uJdi74VLzpeYSpthHELj9e1cWTEngeP7eOVDfGBoyrAZ6zrSE5qD8NNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=BshHmH48; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1713265594;
+	bh=m0OXBfeSJNV67OWiwlg58xXaL5nRVTZ9FFXZTv4YfRA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=BshHmH48hI2RHWM/xhDdoBq6VpEtUFcBGkMSWHrzLiOiE0TheY5hTBRpG1wc20YxQ
+	 BNWaqxEG4uZt80If+ksNGJS3kWD4eIS/i7uhp5CnKdC6VueM7JF0JSaTYKwQwih2/z
+	 Og+6U+bnQE9axLAC5y41TOmdCAi/9aH/2kGYIIa1Cqau8hD8mXXo53SbLknPqyv1Te
+	 xFY2lD888iOGSAomxoaCTXleIdnXZPzN2H87wCv/bR1q4kda/McrUf/xadTOE6qM0y
+	 MexQLEXPwXDr/cndRUWqG6qGdtu8OZscIqJbK4uu/keTeOEbMRm1eDLApmARTY/toS
+	 9STWuWmVTv/xg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VJh7C3WSSz4x1H;
+	Tue, 16 Apr 2024 21:06:31 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Sean Christopherson <seanjc@google.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Jonathan Corbet
+ <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, Peter Zijlstra
+ <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Pawan Gupta
+ <pawan.kumar.gupta@linux.intel.com>, Daniel Sneddon
+ <daniel.sneddon@linux.intel.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-arch@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH 1/3] x86/cpu: Actually turn off mitigations by default
+ for SPECULATION_MITIGATIONS=n
+In-Reply-To: <Zh06O35yKIF2vNdE@google.com>
+References: <20240409175108.1512861-1-seanjc@google.com>
+ <20240409175108.1512861-2-seanjc@google.com>
+ <20240413115324.53303a68@canb.auug.org.au> <87edb9d33r.fsf@mail.lhotse>
+ <87bk6dd2l4.fsf@mail.lhotse>
+ <CAMuHMdWD+UKZAkiUQUJOeRkOoyT4cH1o8=Gu465=K-Ub7O4y9A@mail.gmail.com>
+ <Zh06O35yKIF2vNdE@google.com>
+Date: Tue, 16 Apr 2024 21:06:31 +1000
+Message-ID: <87sezlbm88.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240414040304.54255-11-guwen@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 14, 2024 at 12:03:03PM +0800, Wen Gu wrote:
-> If the local sndbuf shares the same physical memory with peer DMB,
-> the cursor update processing needs to be adapted to ensure that the
-> data to be consumed won't be overwritten.
-> 
-> So in this case, the fin_curs and sndbuf_space that were originally
-> updated after sending the CDC message should be modified to not be
-> update until the peer updates cons_curs.
-> 
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-
-..
-
-> @@ -255,6 +256,14 @@ int smcd_cdc_msg_send(struct smc_connection *conn)
->  		return rc;
->  	smc_curs_copy(&conn->rx_curs_confirmed, &curs, conn);
->  	conn->local_rx_ctrl.prod_flags.cons_curs_upd_req = 0;
+Sean Christopherson <seanjc@google.com> writes:
+> On Mon, Apr 15, 2024, Geert Uytterhoeven wrote:
+>> On Sat, Apr 13, 2024 at 11:38=E2=80=AFAM Michael Ellerman <mpe@ellerman.=
+id.au> wrote:
+>> > Michael Ellerman <mpe@ellerman.id.au> writes:
+>> > > Stephen Rothwell <sfr@canb.auug.org.au> writes:
+>> > ...
+>> > >> On Tue,  9 Apr 2024 10:51:05 -0700 Sean Christopherson <seanjc@goog=
+le.com> wrote:
+>> > ...
+>> > >>> diff --git a/kernel/cpu.c b/kernel/cpu.c
+>> > >>> index 8f6affd051f7..07ad53b7f119 100644
+>> > >>> --- a/kernel/cpu.c
+>> > >>> +++ b/kernel/cpu.c
+>> > >>> @@ -3207,7 +3207,8 @@ enum cpu_mitigations {
+>> > >>>  };
+>> > >>>
+>> > >>>  static enum cpu_mitigations cpu_mitigations __ro_after_init =3D
+>> > >>> -   CPU_MITIGATIONS_AUTO;
+>> > >>> +   IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS) ? CPU_MITIGATIONS_A=
+UTO :
+>> > >>> +                                                CPU_MITIGATIONS_O=
+FF;
+>> > >>>
+>> > >>>  static int __init mitigations_parse_cmdline(char *arg)
+>> > >>>  {
+>> >
+>> > I think a minimal workaround/fix would be:
+>> >
+>> > diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+>> > index 2b8fd6bb7da0..290be2f9e909 100644
+>> > --- a/drivers/base/Kconfig
+>> > +++ b/drivers/base/Kconfig
+>> > @@ -191,6 +191,10 @@ config GENERIC_CPU_AUTOPROBE
+>> >  config GENERIC_CPU_VULNERABILITIES
+>> >         bool
+>> >
+>> > +config SPECULATION_MITIGATIONS
+>> > +       def_bool y
+>> > +       depends on !X86
+>> > +
+>> >  config SOC_BUS
+>> >         bool
+>> >         select GLOB
+>>=20
+>> Thanks, that works for me (on arm64), so
+>> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Oof.  I completely missed that "cpu_mitigations" wasn't x86-only.  I can'=
+t think
+> of better solution than an on-by-default generic Kconfig, though can't th=
+at it
+> more simply be:
+>
+> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+> index 2b8fd6bb7da0..5930cb56ee29 100644
+> --- a/drivers/base/Kconfig
+> +++ b/drivers/base/Kconfig
+> @@ -191,6 +191,9 @@ config GENERIC_CPU_AUTOPROBE
+>  config GENERIC_CPU_VULNERABILITIES
+>         bool
+>=20=20
+> +config SPECULATION_MITIGATIONS
+> +       def_bool !X86
 > +
-> +	if (smc_ism_support_dmb_nocopy(conn->lgr->smcd))
-> +		/* if local sndbuf shares the same memory region with
-> +		 * peer DMB, then don't update the tx_curs_fin
-> +		 * and sndbuf_space until peer has consumed the data.
-> +		 */
-> +		return rc;
 
-Hi Wen Gu,
+Yeah that works too.
 
-A minor nit from my side:
-
-To my mind "return rc" implies returning an error value.
-But here rc is 0, which based on the comment seems correct.
-So perhaps it would be clearer to simply return 0.
-
-Flagged by Smatch.
-
-> +
->  	/* Calculate transmitted data and increment free send buffer space */
->  	diff = smc_curs_diff(conn->sndbuf_desc->len, &conn->tx_curs_fin,
->  			     &conn->tx_curs_sent);
-
-..
+cheers
 
