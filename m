@@ -1,107 +1,129 @@
-Return-Path: <linux-kernel+bounces-147019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D49698A6E48
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:31:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA08E8A6E4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:32:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 119641C2279A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:31:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 704981F212DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:32:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E5912DD99;
-	Tue, 16 Apr 2024 14:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8852282D9D;
+	Tue, 16 Apr 2024 14:32:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ca2BeV89"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="CRyCJdk9"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF46112AAE6
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6716B1CAA6;
+	Tue, 16 Apr 2024 14:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713277841; cv=none; b=eCTnQtcc17aI7UAxtJlMF9UP7vBKlJGy1EDD47bYRfHT1OYF9WDpDgUXoeZn9BF9hUV4D9dq80MJ2tJvQtavDVKkcZ30eDVTGu4xUUsk3KFGNbY6jIdEBvynBP7q6chIJiN9WKR8eEBYX1U4tT76VAoAV8ezPl9bqNkGRuRo7rQ=
+	t=1713277936; cv=none; b=XbiRmG/hWkHFxRD7z/dyGcIsRtCfAkWKasDda9Kdwm1QG4xW/lG/fzAXT3sFmTc6OXr1Z40YJ9UQzr1y+zsD8E7oliAquQwXJMaAYrToRm6TuE8ZZ6dtVMtPFKrOt6IXkSP7o4e2i3M0Uo+rhdJwL5BSy6iFmWg7ZGsFFNITPXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713277841; c=relaxed/simple;
-	bh=CAARwFVs3yKtCFYh6SSnNVSgkeqkGD+D2UB4mgMiryI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G2zZWScykXymYeGyH8p7k/7wYhpSZruR4p8JDmEV1c0jmjuzAot8E+BZ005QIhPXF0PR+VAM75AJUayzYrnF6+jdDMyOXkyW4C+KGrr2ek92Sl8Ej+ccdaCLPBjGepOkB7SLGY5Y2twaBB0s0KmACfuMSz0EQLD9Boy8o29Wd4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ca2BeV89; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d4d80d00so5492663e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713277838; x=1713882638; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qtlZKHIIRTPrmMPlNl8Y4g3IVRv6I4I2Gd41GRQ6SNE=;
-        b=Ca2BeV89Guy6F32bAlZwvBBu+IIfV9BGYU2y4i2dQl3lcI+5qbmD84jaxX5KpcSc5k
-         tw6ZHUXgC8zpmojotXgwUYTQT8LZ3gMoQDTEASVUrYA4nKmxepySJvtt/4dbjomCkt9t
-         tfgtGdjDaNpiUI/U4XaihQ7rYx8C5pZL0hQGQIweCzekCP8nTRNG0RIqr6wfVepq0D5L
-         kzjxS97DpHp3RpV+bQer2ymb5G5EJygtAbBaLheE0W6qnAVUg7cv6bdEP+DmInLWUiSg
-         QUqCBjwcJqw5B+YpiiVG8Xpr68C+HhhVmem4O6tA0T3yBnxgZG5qbAocng2SjDDGdlv8
-         O03g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713277838; x=1713882638;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qtlZKHIIRTPrmMPlNl8Y4g3IVRv6I4I2Gd41GRQ6SNE=;
-        b=NipxzNDmQspcwr2asJe5pemmwWQu9yKxy7lzmbdCRwCHsycL6af737LZhSlunJVXJ8
-         G7EhGue2K2/UbwfRhcWwEWp4VLvN7EzQogceJzwhSdxWlk6sy9U4shNGVPeokgR81+fa
-         GKEZLbEVRGZmuo/iUO+pI+1l23jm0Z3quA2QB8yvIScdgLK6/rpQttk6ly69+YPa8Bdv
-         15ZTZllznslQToCnlakfBwivXGF3tEvSNzuakFDC0FZdeBiquUd4W+7S4HtHREW7GZ3y
-         YcYqi/6efk5+wmgRuGnNKaAGlahhZwHjPtrSQ6B6+kj8xZ8kK+Z9K8eIM+AMf7clRvae
-         2Kkg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQyQLk0hdPVN9o2WdW4ry0dBUZV22OcejPedIE2VkC5TXAYvWwFkbVDmmQds6px4oZbZy1oB7fkgmwdaVEKcnSPUhvjMbnCSD59W24
-X-Gm-Message-State: AOJu0YwKU22gCNC6j42eHgMRsfmv/NP9B7A+PXuXoN7VzD9cm1nC3XuB
-	MhDriWogMBNOsniQnKGF0ZqiRVQ0Z/lEWEcHC9ooPZ713sDgrBWcw9sGmbCf5zo=
-X-Google-Smtp-Source: AGHT+IEMK3ToPpFre8TBGqqiH04egFU2RIZe5ZOa5Ve6c3up7Osw5BJsl/VXC/ZDiEBh5lIfs2bIVQ==
-X-Received: by 2002:a05:6512:280a:b0:518:e249:c10d with SMTP id cf10-20020a056512280a00b00518e249c10dmr5163603lfb.37.1713277838030;
-        Tue, 16 Apr 2024 07:30:38 -0700 (PDT)
-Received: from [172.30.205.49] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id g8-20020a19e048000000b00516d2c05b3dsm1633547lfj.299.2024.04.16.07.30.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 07:30:37 -0700 (PDT)
-Message-ID: <548f4b0e-b765-4184-8b90-eec7fe0e7f69@linaro.org>
-Date: Tue, 16 Apr 2024 16:30:36 +0200
+	s=arc-20240116; t=1713277936; c=relaxed/simple;
+	bh=xwtOX3huVgNQWdzLmjX+ow6uv3bTrZuFvMHF8dtE9a4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mQOZMRfrqZyiI7U1v1kI/LI03UE/NngahIGrfgfwHle30Xe9c+dsA7AgRNpYanYrwgyqKWj+WPOoB27ZzZkd/Md+zEbiv9QPm8MVOYIVpJA0mK8oQvWVALFZgdlqrQbsY4icz37x0ZwvxIxVXU4RomWnizZD6Vq5KBb2MvXK7bM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=CRyCJdk9; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1713277933;
+	bh=xwtOX3huVgNQWdzLmjX+ow6uv3bTrZuFvMHF8dtE9a4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CRyCJdk9BPM0d4kzXLOxXz4EylR0wqZhxNbJR89AC3uCDb+7PEoZ1pPCcQJx25jvv
+	 Y2xbXdD9hj6+yPwoulIB5puWXkEf21/Ba8OUxyvR1D4MoQ7Dy1ykkmLitxLXJ5IT0M
+	 4VOz6S+m74p/WqkxE45AX5HPwEYY32SePcmYjfHnm7Ce43lB6zI8pWwksZNl18SWQ3
+	 XwfqRnj/OzxJZpKmwEo3RtDoZRaoKV75oiN5BEAemk4n45cftF8PPO3QJxrWl5nlyf
+	 zCRAGkMR/9TUPCrcEJBCbeDQ7jXs24jTw9XtgqWHlssOyY4vQUSiaBqfaPPFrZQyg7
+	 wt8X90IFgqitw==
+Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B6BCE37820F9;
+	Tue, 16 Apr 2024 14:32:12 +0000 (UTC)
+Date: Tue, 16 Apr 2024 10:32:10 -0400
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Sebastian Reichel <sre@kernel.org>, kernel@collabora.com,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] power: supply: sbs-battery: Handle unsupported
+ PROP_TIME_TO_EMPTY_NOW
+Message-ID: <9f805ec3-1611-4682-831e-9499ba8284d5@notapiano>
+References: <20240415-sbs-time-empty-now-error-v2-1-32d8a747e308@collabora.com>
+ <9ba1b4df-78dc-4f24-bb61-d7b168da18f8@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/8] usb: typec: Handle retimers in typec_set_mode()
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-msm@vger.kernel.org
-References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
- <20240416-ucsi-glink-altmode-v1-1-890db00877ac@linaro.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240416-ucsi-glink-altmode-v1-1-890db00877ac@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9ba1b4df-78dc-4f24-bb61-d7b168da18f8@collabora.com>
 
-
-
-On 4/16/24 04:20, Dmitry Baryshkov wrote:
-> Make typec_set_mode() also handle retimers in addition to muxes. Setting
-> the USB mode requires retimers to be configured in addition to just
-> switching the mux configuration.
+On Tue, Apr 16, 2024 at 09:46:56AM +0200, AngeloGioacchino Del Regno wrote:
+> Il 15/04/24 21:05, Nícolas F. R. A. Prado ha scritto:
+[..]
+> > +
+> > +static void sbs_update_quirks(struct sbs_info *chip)
+> > +{
+> > +	const char *model;
+> > +	const char *manufacturer;
+> > +	unsigned int i = 0;
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
+> Please reorder:
+> 
+> 	const char *manufacturer;
+> 	const char *model;
+> 	unsigned int i;
+> 
+> ...and please remove (like shown, of course) the double initialization of the
+> `i` variable, as you're initializing it again later in your for loop.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Ack.
 
-Konrad
+> 
+> > +
+> > +	/* reset quirks from battery before the hot-plug event */
+> > +	chip->quirks = 0;
+> > +
+> > +	manufacturer = sbs_get_constant_string(chip, POWER_SUPPLY_PROP_MANUFACTURER);
+> > +	model = sbs_get_constant_string(chip, POWER_SUPPLY_PROP_MODEL_NAME);
+> > +	if (IS_ERR(manufacturer) || IS_ERR(model)) {
+> > +		dev_warn(&chip->client->dev, "Couldn't read manufacturer and model to set quirks\n");
+> > +		return;
+> > +	}
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(sbs_quirks); i++) {
+> > +		if (strcmp(manufacturer, sbs_quirks[i].manufacturer))
+> > +			continue;
+> > +		if (strcmp(model, sbs_quirks[i].model))
+> > +			continue;
+> > +		chip->quirks |= sbs_quirks[i].flags;
+> > +	}
+> > +
+> > +	if (chip->quirks & SBS_QUIRK_BROKEN_TTE_NOW)
+> > +		dev_info(&chip->client->dev, "Added quirk disabling TIME_TO_EMPTY_NOW\n");
+> 
+> I don't really expect many quirks, but having a dev_info() print for every
+> quirk that gets set would make this driver too chatty, IMO.
+> 
+> Please, either turn that into a dev_dbg() or print a mask of the quirks .. or both.
+
+I wouldn't make this debug as it's pretty important information to be
+reported. I'd be ok with having a single message listing all the quirks, but at
+the same time I feel like this would be trying to fix a problem that we don't
+know will ever exist (one SBS battery that has many quirks). I propose we keep
+it the way it is - a nice clear message of what has happened - and adapt in the
+future if it turns out to be too much information.
+
+Thanks,
+Nícolas
 
