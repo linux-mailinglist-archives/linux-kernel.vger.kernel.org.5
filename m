@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-146526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60FDD8A668B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:57:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AFD48A6687
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:56:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D8D1281195
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:57:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBE431C21941
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5E9784FC9;
-	Tue, 16 Apr 2024 08:56:46 +0000 (UTC)
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.65.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE07484D06;
+	Tue, 16 Apr 2024 08:56:30 +0000 (UTC)
+Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD028529B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.65.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209BD85624
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.22.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713257806; cv=none; b=HoiacL7B5Que3W1m6/vs1yQX+0j0UsohIi3ofq+mTzCv8F6AqnYgrCesUioSENNOiqRYIjJnKWxzT3RMlqAjwLOZlfFVGWETdg7y5REyiZjVyGobJ+x+5foEgTr5QAo9LO3ogc+wDVZA2iFi9IQ86kXEBfhyv0kN0DOTkBP/69A=
+	t=1713257790; cv=none; b=sufet+6W6jwwX89iuXIKQkyAQdHxRzKvgqTxve/SP1VqJTMGNKNpWYSi0ziEi8cn8pyXs+6FBaW1kp80EUx+GnZeelnIYy9ATFqhdoWOnOTXVY5Ce22vxjhEAEkN0Wa07F1mws4LXI7aNlxfSpQLL50g2pEbqKviAQtJCv+XC2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713257806; c=relaxed/simple;
-	bh=aNS2CCSzwy6ql/BY4RSh2zfr6aw6EJPA7jfE3nYT5Ko=;
+	s=arc-20240116; t=1713257790; c=relaxed/simple;
+	bh=gFUBkPlzF5cDQT9LC54zRf5as74tcIexLd50RAv299g=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PIaViq0A84cu9Sj+1fk9LDA3rmC2rnTqeM4bcNrOwvRUBPBWf2W1nH3LeLGFIh4fTh73nR6uiq8kHuAp9cYAiFr4R9wAj0m27irAwhnwsE/IOX0hIj57N7LoTkO8pmqqM57ThbCQAxumysssa75oMNrMpyvsJaGqu1nX94JrsWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=114.132.65.219
+	 MIME-Version; b=tFsvO5ivxBeVkGQ9+FMRh1Ij7EwNtJ8I+va7L+x0H8tBn981bQjm0kp8CgaRNYhagUFFGIXdL44COe95sIrQFx+A0XFmT8UO0TYPxp30+N93HyuWwlQFhR1o7DnOA2nCcIflviifQEq5Zb06PKVE46crATeFdQ2PtvPDZDp6PdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.207.22.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp87t1713257741thn5yuho
-X-QQ-Originating-IP: b3mBBxw99vad6QHkIMchUCO3f6t5t/SWDS++WDSk0GY=
+X-QQ-mid: bizesmtp87t1713257748t7w1efza
+X-QQ-Originating-IP: iB8jNr9pX2jhXwgd8XhH1up9iEzNHUnblpbgKs1WA9Y=
 Received: from localhost ( [112.0.147.129])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 16 Apr 2024 16:55:39 +0800 (CST)
+	id ; Tue, 16 Apr 2024 16:55:46 +0800 (CST)
 X-QQ-SSF: 01400000000000903000000A0000000
-X-QQ-FEAT: oxALfFWpRnAGgHKq5PYOCdKNobJCSzITHPy+s17xVkuOuS8ISpwiXbZ0go368
-	3DYT2PnvxGELUqHxh975F+zBNMwkoI7n3JZ0zDQPunAZfrrd96hWcEf7CsBhOY1uMX6uxaa
-	vUKVvn5dWomgr5fTnB194u047Rg2hhQSwj9d6sqOdR9Q5inA1MBBidHwAGIxo8MN0D33SCb
-	tWRLEqOxvgOjqlfT5ZvF0gCGZeK8QRefPqfYADeuDTtlUWf1zx/vgivLV1GgTaPqFx3DQjL
-	vuUqUJiW6v6U8YcWlsorr8jhxuMDHwoU/l57qd4BtK9Hqxm+i2uUhqC2VthiQXrUEE4OrRN
-	LQT/Iav8YcXmYY2npfr8+FLyHgHeAaxl4FUAfBVBF7xEa78hSJWcg+G2KpxV92ds6frST21
-	HZoiVykqT/sD8R3paRKdrA==
+X-QQ-FEAT: oxALfFWpRnDqVrd8haq0aa8Vu7sBhcvD8Jczawzp6iG4QVrsPhEHjyNqYU4vm
+	jUaTLQJCGHeRlwrIGlU5MBZNl+puPXBKLAkHwsdLqKqbuYwa+eezJ/OEHvC4PMx5mkNwBY+
+	X/j6Napv/Q9twdqZqER0E6w+CxA2ZBOOz6s2kxpzE3++q9xLSTQObcaY/SKbc4DDkwbamoS
+	1tCV0tl7NTQOM+aeUl7KnSDbQTPzwq3XW0bed08kGFhri1AvjEbVYvSHGuvoLEUYsF2aeA6
+	wmYaRsqwsKNfO5ZCDOkrGB6bKuejTx/0yK+jQCGwwRhunQgVHPZxxMEobptjZEjIL0MZj85
+	1Uyex8aTBZqI0AWbe2vSdV5+JuwaLAiFdTLRsqEJmRHPZXqHG4VCzllpO1CvMgI+WbzVFni
+	YrPlU/KVTr3xGY23pEhzNmbDJqLkjWQD
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 9847811538725789897
+X-BIZMAIL-ID: 15208664375220775892
 From: Dawei Li <dawei.li@shingroup.cn>
 To: tglx@linutronix.de,
 	yury.norov@gmail.com,
@@ -59,9 +59,9 @@ Cc: akpm@linux-foundation.org,
 	daniel.lezcano@linaro.org,
 	linux-kernel@vger.kernel.org,
 	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH v2 4/7] irqchip/loongson-eiointc: Avoid explicit cpumask allocation on stack
-Date: Tue, 16 Apr 2024 16:54:51 +0800
-Message-Id: <20240416085454.3547175-5-dawei.li@shingroup.cn>
+Subject: [PATCH v2 5/7] irqchip/riscv-aplic-direct: Avoid explicit cpumask allocation on stack
+Date: Tue, 16 Apr 2024 16:54:52 +0800
+Message-Id: <20240416085454.3547175-6-dawei.li@shingroup.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20240416085454.3547175-1-dawei.li@shingroup.cn>
 References: <20240416085454.3547175-1-dawei.li@shingroup.cn>
@@ -84,35 +84,31 @@ the stack.
 
 Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 ---
- drivers/irqchip/irq-loongson-eiointc.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/irqchip/irq-riscv-aplic-direct.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-index 4f5e6d21d77d..c7ddebf312ad 100644
---- a/drivers/irqchip/irq-loongson-eiointc.c
-+++ b/drivers/irqchip/irq-loongson-eiointc.c
-@@ -93,19 +93,15 @@ static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *af
- 	unsigned int cpu;
- 	unsigned long flags;
- 	uint32_t vector, regaddr;
--	struct cpumask intersect_affinity;
- 	struct eiointc_priv *priv = d->domain->host_data;
+diff --git a/drivers/irqchip/irq-riscv-aplic-direct.c b/drivers/irqchip/irq-riscv-aplic-direct.c
+index 06bace9b7497..4a3ffe856d6c 100644
+--- a/drivers/irqchip/irq-riscv-aplic-direct.c
++++ b/drivers/irqchip/irq-riscv-aplic-direct.c
+@@ -54,15 +54,12 @@ static int aplic_direct_set_affinity(struct irq_data *d, const struct cpumask *m
+ 	struct aplic_direct *direct = container_of(priv, struct aplic_direct, priv);
+ 	struct aplic_idc *idc;
+ 	unsigned int cpu, val;
+-	struct cpumask amask;
+ 	void __iomem *target;
  
- 	raw_spin_lock_irqsave(&affinity_lock, flags);
- 
--	cpumask_and(&intersect_affinity, affinity, cpu_online_mask);
--	cpumask_and(&intersect_affinity, &intersect_affinity, &priv->cpuspan_map);
+-	cpumask_and(&amask, &direct->lmask, mask_val);
 -
--	if (cpumask_empty(&intersect_affinity)) {
-+	cpu = cpumask_first_and_and(&priv->cpuspan_map, affinity, cpu_online_mask);
-+	if (cpu >= nr_cpu_ids) {
- 		raw_spin_unlock_irqrestore(&affinity_lock, flags);
- 		return -EINVAL;
- 	}
--	cpu = cpumask_first(&intersect_affinity);
+ 	if (force)
+-		cpu = cpumask_first(&amask);
++		cpu = cpumask_first_and(&direct->lmask, mask_val);
+ 	else
+-		cpu = cpumask_any_and(&amask, cpu_online_mask);
++		cpu = cpumask_first_and_and(&direct->lmask, mask_val, cpu_online_mask);
  
- 	vector = d->hwirq;
- 	regaddr = EIOINTC_REG_ENABLE + ((vector >> 5) << 2);
+ 	if (cpu >= nr_cpu_ids)
+ 		return -EINVAL;
 -- 
 2.27.0
 
