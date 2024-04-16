@@ -1,253 +1,175 @@
-Return-Path: <linux-kernel+bounces-146944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 797438A6D5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:08:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47E9C8A6D56
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 000B028123F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:08:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A05E9B236D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD04712DDA4;
-	Tue, 16 Apr 2024 14:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3C412D1FA;
+	Tue, 16 Apr 2024 14:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="NcFrXxBs"
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2065.outbound.protection.outlook.com [40.107.249.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YrVQfmJz"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03C612CDB2;
-	Tue, 16 Apr 2024 14:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713276466; cv=fail; b=Icj9ByrXDGfsMlaziTza7W4HCiJ5wYxcHcLbF/1FsuAc7pVb7OnQn9jgKZL2ZF6KUzCpT9HAFmkFkPKYQ/NtEU2RANF/QzDjVNhhdPFmsed3J1f54PtlL2f4KOc747xmAkl5wgWKsyBAi5jirq4v1Cdlw0g1p88aMOsxYdEUaPg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713276466; c=relaxed/simple;
-	bh=Iz2BlTF0VPxWihMRnmVkVjSEvJR5ORV/78YcffebBPI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=XTSf9Kmj3q4aQImk6dYkJl63kePGCyt5xgWC3MVw2yQSsTN9mYcaNUMvGj6xHt/Wg/SIDrFEHAi2l9wgt0tuc/zyqky44WfMcFJPIOxKatXD5bUvqgP9HWvL1cIFot/reZUPWd0hyunjRu2kQcgwGhaTEOZMqadzHfYMRU70/Z4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=NcFrXxBs; arc=fail smtp.client-ip=40.107.249.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eFv2pGvh2hJAYKH8BW2c7rfogAc75vkPoZ47mquIHr0UyfKirwWTtSgYSZB9Cr9KiD0Rv4UnXy/Q1aCAGPBgkLwKVbzxndL+rv0oJDI+yq7hpxtpyjwTE5Fx1Fw26n72DVjdELP70/fouorXRwfZb04giiKeX9v0oDWy9HzTJeqa2mFt1rlTkJqeqS2Cl8zAGZwWeYQUVyS0Ij6V1eiLNqWd2OiD/jQxcItFI/I4qTxDYMD6wS+yqKJ73mU8pdKwrsrTkzmhUsWswCXLOMJs4m/ktA8v6Bb+a3Qr3zZnZ4iXZPpolWAU6dUiTxmWQiSys+XYWhh/P6rI80HCSVvJ0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GccN7hfp3cs20aVlZarHXNfD7QdlVvWwyNSA3uBh8OI=;
- b=D3qu3OMN5qRao9E5WWY+T/nkkstLe+5XZ6byeU7eO+iQW/v9ryHiF1sYN9oXkFw99MSf4S2jeB57hHxxLSBZGoI3yBgsspD+g6AeynRPG5SbNLaVooBgN6X3C5agZDIIRwOVnm5dqlhJV9/kdS3S8Fi8gWLzIAMwT9vyrzIVTgm44zM3PPqjj9CjjGxviLoY+kyTZ7zE4SAvhyt2bLaC9tPGWsAPpOaZTHFeoc2oJPisZiLU1Fupc6c7g5nXQRr44nGMPIN/r+tEasPqEKY+HJUHSkKVm0ziATn0qM1OUNhy/zllQzJ+9utP3TvS6sbVfO1dzUmn5oPpfqSvw5zCGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GccN7hfp3cs20aVlZarHXNfD7QdlVvWwyNSA3uBh8OI=;
- b=NcFrXxBsBRb4zQESdcMWrnw5KDTJjB2VH+mGjWRtPormyO4oYaEY0HOCOLx/3VAC+cevu7Nwx9KFYEmdp448k6D9AEpJxBGJsz+uKtruKxf8VfT1d+WTD+iI1YZIdBwqSJNDLl1TBigfZrG1bsCmTepUAzOGmsrSamyZWYj7TDo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS5PR04MB9827.eurprd04.prod.outlook.com (2603:10a6:20b:652::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 14:07:38 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 14:07:38 +0000
-Date: Tue, 16 Apr 2024 10:07:25 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-pci@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, devicetree@vger.kernel.org,
-	Jason Liu <jason.hui.liu@nxp.com>
-Subject: Re: [PATCH v3 00/11] PCI: imx6: Fix\rename\clean up and add lut
- information for imx95
-Message-ID: <Zh6GHcARSmlV/QdS@lizhi-Precision-Tower-5810>
-References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
-X-ClientProxiedBy: BYAPR11CA0063.namprd11.prod.outlook.com
- (2603:10b6:a03:80::40) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB36612CD84
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713276457; cv=none; b=Z2DfCF83bSyp/giWsKdbisTimawJIEba+OTpsxBcrGyYOwjk2B4SWoDJBz0ci3LbWX2LeIPwioUyzdtdxr5OLpX7S8TwkrHeLv4BEjYAVcR+j8CAcTe+Ei4ZrWh1MKYPo7GOEvWf1DS0Xe/MJ1xYDXAqYUmihCObUNzn6F1Td1M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713276457; c=relaxed/simple;
+	bh=Pujm/r3xB6YlHkRLKYxgDrcLT8Z+/QffDjAZvYeDnX4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=RMUOpXnPYP33uFVYTFFL+caoEQJ7s4lQFAl0B7wSXIGB2ha9QwRfiuUBgX2n2C/vygZ6pzVmnRxO0h+i+usKbHD50bbagVlf7i8JsxzY8ENt7++3R1fZkwUm6jXEfVe2rRO+vCA0Si0yCcyUv2VHJRVIWMq9LwpRRJLCXMVTO1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YrVQfmJz; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2a5457a8543so3929797a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:07:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713276454; x=1713881254; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3HMGW99TX0Cqe3aYrj5LiSxtL+KydbJYyp90EN1U2HI=;
+        b=YrVQfmJzyJVaQXvU58xrq3XdY0+gE8OO+M3CJeVtaC86Ki3fsDWRBiKpENeWyCzSMR
+         bTe2xJigvkXGTAJDDlox6sD4VVAO+S42nTxvkIujiRRYwjtXX8SM2GeTw3fZFSZ2WIvS
+         eGrldgepvtDEHtogynwU8ERcY+z+zYcmDDjyaIwZmQviOtKc09pTX4e3cGqa0dBttZg3
+         jAOEZmsXX5O78DA6BmgevrzVSGNlvtykzfJwO0AS2uzTR2Q5rYh66YkgHelwVBQUUKUz
+         dio09jg/f2ZwGllzJSx5oEM2lz5dI9FBpEYNyB0UFTxwE5C5gdDkOtt19P2tbCCCmbRP
+         iWpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713276454; x=1713881254;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3HMGW99TX0Cqe3aYrj5LiSxtL+KydbJYyp90EN1U2HI=;
+        b=p4sul6yr1Voj6Cw53SouR1rTNHBiz0cucWwqrvkwzfJavhkSMe8vHwN2zd1HKkJdLl
+         9J3IQt729hl44j1ovXozpSonKDkiOHLXhq9FHpWxqXIchgpm+dg1SEJh0dr9k9Sra3ug
+         SBlfrlB8FFoffcOiOyk2XSUdoW4avy/e6yGOJcJ3CvJIqSezqlomrYNSbmy7uPnJbqfX
+         KYMJmhnry+9ile6J+nehlQo0NJYDyzeZgMAcOI2WKKkk+U2YzgsjPYFBjVycm0KXdTEz
+         h22S8QB/lMwWd1QZLKgCt+F0WRdk+7pYUMPXL8Qz26GxQi7bSLWnywgitcFO234vdFD/
+         niqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXFyPpmMZnjMSqtLdnDWhNog/eivhaI1Ky6uuucPWP8FNbdEjxd+KwYe/Sal9O30dXCHj95dQAu9y6ZNBi53fXP0h8sPyYOWFt2j9wC
+X-Gm-Message-State: AOJu0Yz/NjcNzOzR/4QfOQZvGClFMYV1UFzuzOHPS+a3D6I0GhfzWJoE
+	rPkJGpBZSSFkxaqew+Zm20znmS9VGbLhRMeCel2k+JrcsUHQxCzrnQkAimc7ipqSU8TcXrAtT+K
+	0Sw==
+X-Google-Smtp-Source: AGHT+IHY9YzbCwBFObbbVKUprvWZ1lVsqt1aqVyeCtv5WiwA+nKUa0M0YnEHgFtBrjfmqeer2cDphAZ9lOw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e74b:b0:1e2:3051:8194 with SMTP id
+ p11-20020a170902e74b00b001e230518194mr60970plf.11.1713276453910; Tue, 16 Apr
+ 2024 07:07:33 -0700 (PDT)
+Date: Tue, 16 Apr 2024 07:07:32 -0700
+In-Reply-To: <Zh5w6rAWL+08a5lj@tpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS5PR04MB9827:EE_
-X-MS-Office365-Filtering-Correlation-Id: 393dd287-e3c7-4361-8ae5-08dc5e1e92a3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	Tu7Fq60EKu5W4Y2hXVzAuvFTavWdop/4PXDnbHXUmTlXtuBEzhVbEJS5Oqy7mPdW0tdzk0zQYU5e1nIaf5RPNy6+hekRUFAFSJf0I4cgs8jbdfX4VhoRLsKtbyFohnr2LtB26WHA4HwMPOrcRbRtQm3mGEmuse2usK1WRsgHX6Q02wRRGKjA6nsGJL/atpE+/q3C76zJ+M/k+ORelhgh+xVgH9E6X4j8SaVZ6TFbuideQ1Dl4Wx/O6Tp3K8Hr1B7fkkfvfJCocEfC4ST7SsGCoFi8K2QfFmg93Daw0kIB4nwST9Q0niQMSlExw2BzGjsbeNe3+p+vy6/63nnY9ABq7zECwF/9UPAHjoxBcdqWSPYgz/o972u/Fxho8mmj/CP7PVEjDVmuzAxtt9Fn/dqgsJWkjPebb8tewN3O7B2PVKbW9LHSLZ9Mi1mO9DgkyFCZXNtLBuocUQwZuQIKqAnT7+FTgqV8OlakzPHKLq1tsYQkC9EIC9bPtWif8BRn2+BWRnn+HqJvmRlJEnlEo2bk0kOw9OMyJJxydQfvN1GNFptrA+Mw2KOV62bp0n7icIVLdIhCdnN271hG2/LVOWn7kJEB7/9hXpxSBzSpeQwA6cR1Q2hu1Q5eo0Kfq9OtybMzBbCi7483zJn/ofim1iDWgHTXEJdWTe32HOn+o5UKC+bdeGAM3NJkgxPwcPtMN6LURGEXon6N2zc+2ACE7Q7Z3C/zadr/aTuQitM0NLXZr0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(52116005)(1800799015)(366007)(38350700005)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UEpXTjZiVnNhZTEySmRMaU9SRkRQYlBvNzB5U3lKdzZuN3RET2pRNVpEbU9l?=
- =?utf-8?B?K1BuNitZRnUvWU92aUxETnQ1WFdVR01wYTF6MURYUTFhY1VoczJZbU9UTU92?=
- =?utf-8?B?WVNDY2V1M3diMXVvc3Rrd2JFOTNpYnJlOHRhWDNWSEl4TklWM2w2dnVYQm5D?=
- =?utf-8?B?VEMwa1dnSVdSakhMZzhOYWQxb1ZzcUxKWjRCWE1sSzFabWRtK0lER0UrY0lw?=
- =?utf-8?B?UUZkc21BQlUxOVM4YkVsTDd0dnpDVnFmdVNIQTk4TkF2MSsrd0FZdC8vYzZS?=
- =?utf-8?B?TXZPSUx3NUFxZXpaRXo5eFk5WmRHMUY2T3RVSUQ0OVRYaFhod2NOOE5vUzlN?=
- =?utf-8?B?SXp3enFVRUZrRWQ1NlFwbHFJZVdYWEErdXROQlRLWXJ5blZyVVphajIwSEho?=
- =?utf-8?B?T2dkM2FWd0xmMFNHc1Mzdk1DSkF4aGtRc0tJU0lxcnJ1bkNWcDBLOHdyV0Ry?=
- =?utf-8?B?M3dMaU9hUDl0U1oxM0krZmdpWTNPMi9ZdkpDVnROM0gvVmZmVDBNZ1VKUVZE?=
- =?utf-8?B?RGxrY2ZhM2tKcmYzQUZaMzdFbFl2dmpYUklFbUR0TU9WL05INzRTQkRaQ1Jj?=
- =?utf-8?B?NzZMbVoxeTkrVnBtazZ4N2ZQRUd6TG1DZ2gvR0VTWTMyckJCT05mQnZFN1Vn?=
- =?utf-8?B?QnBSK2N1QXBtRVVHdXVqemdqV2dndmZuUDNhbDhSVUtia05qcUsrbVRHaWg5?=
- =?utf-8?B?TUFPeE9Cc1FwRTRJSVlxRmJsOW84bjhmUElENnpodTJHS3VpWGpMUUoyQ2xz?=
- =?utf-8?B?Y1QxQ3dDbjUwd29aWmU0M3lQbWU5S1NsWGxiWVY0S3Z4ZGhJNW1oeThiK01v?=
- =?utf-8?B?WXdjdFZwZ2Q3RFhzWnBYQkFjR0pFTlYzdVE4ZFBmWGdnKzNlcmd4dmpnajhM?=
- =?utf-8?B?L3lMZ2lwc0hyVWVmTmFwT25iekcrdHY0NG1lNzJGN0FWWndhcmpjbk5za051?=
- =?utf-8?B?a0t1TGFSRFE2ckpmaThlbmRNMDB4U3FtZGt2c2xrZDdiQU5ycW9CTCs4L01Q?=
- =?utf-8?B?WWUvTmhnMHhCdDFGQXdTdVhkSnVMRHJ5WEZaa2hqRG0wa0YzUENuS2JFQmdt?=
- =?utf-8?B?WjU0R0ZCZVNaRWpLenB2R1RBTXpMckVPTUtQMHUxMzBXRGNteWEwUjF1UlBY?=
- =?utf-8?B?YVlFb3lYemgrNFROcnBCY3drNWs5Y3RtZ0hML0t4ZUt0VlVyclhEMFNqbEg4?=
- =?utf-8?B?WUE1NDdIWm1KN1Y5TUpYa1V1cUxibWZ4WGNoWGtTaFI5R2JwejBHdnVFYklm?=
- =?utf-8?B?VlFCM0c2S3RlSFhYSXBkTmhwQ2lXUDd3dm5HWHZCRzAwREFaVERWT2lNU1ZH?=
- =?utf-8?B?SFBqb3NjOUJVZUlYZzc1MkYvdUpQcXhPU3JXelNJTGRCMUUvdnphSFo3Ri9y?=
- =?utf-8?B?ZVoxcStaR29vUS9XNGh6cGtZcWI3TkUrNTIySzJCSG5vTnNqZzRmZnQrM0Nu?=
- =?utf-8?B?cGE5WmJJdlppMW1ZYzlXRDJ1OHZ5Mi9pWndGT2xLWG9BQWJOeXQ4YTBFb0RZ?=
- =?utf-8?B?bUpaL0xYZDJ1aGt2NzJvQldHeWNvNjBMVUN2WlU0KzBpK2lpaU9WWkRPS0sw?=
- =?utf-8?B?MXdHUUxyLzlIUFd3RnBqbVFaRlRyeHhzeStmUzVhRGFqU2IzT3owMUtRUnNt?=
- =?utf-8?B?MGgwODlSRGlUYW81REdpNGFndW1tSUU3MnQ5NGNSb1gzcW1DNDVrWTdQM25E?=
- =?utf-8?B?UG1YNHY0WWxobGFMOXhVV1c0cW9iM2ZpQW9Sb0VnTHZRWkRySEJ6SHYrMEps?=
- =?utf-8?B?UDRFRDlNVTNPVFVaVXJqZ1dGcm1obzNIM0w0WE94bFg0K1FmTEg5N28xUFdC?=
- =?utf-8?B?aXpQVVRQaTkwc0tYVjdBclRidnhtMmt4ZDUyQThDWjVkU3hGalZJcGdodkZO?=
- =?utf-8?B?SG4zTnNGdHlYckxLeHhqeXZWNG5sQThaZmc3aGlvUTB3UEYzaUNsNXh2UkxY?=
- =?utf-8?B?OXRqMm93c2dEaEkzNE02QXFGR1NxK2N4NTBBNGVQSWx0NVl0Y3p4cjBKT3JX?=
- =?utf-8?B?VmZsYmQ3U2g1WnFMQ3pxMlI0WlpnK3dRZFdmWks5ZkdpbUl2NFltWGFQaTVL?=
- =?utf-8?B?T2VwWEpzUFpmbnJSTGlHK0krNWRzTFJrMmxOd0ljeG1laUFZZWFQeVVsT1Mw?=
- =?utf-8?Q?O7Q8=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 393dd287-e3c7-4361-8ae5-08dc5e1e92a3
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 14:07:38.3645
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NeB0nydf6b2wXHuHa2hySmwJtiTKN6pm0bS0FZMNqD5A2jeS6uK+RsX2OfksEhwvulCV0jxFK1n5v/35GZCUDQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9827
+Mime-Version: 1.0
+References: <20240328171949.743211-1-leobras@redhat.com> <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad> <ZhAN28BcMsfl4gm-@google.com> <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+ <ZhQmaEXPCqmx1rTW@google.com> <Zh2EQVj5bC0z5R90@tpad> <Zh2cPJ-5xh72ojzu@google.com>
+ <Zh5w6rAWL+08a5lj@tpad>
+Message-ID: <Zh6GC0NRonCpzpV4@google.com>
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+From: Sean Christopherson <seanjc@google.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Leonardo Bras <leobras@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Apr 02, 2024 at 10:33:36AM -0400, Frank Li wrote:
-> Fixed 8mp EP mode problem.
+On Tue, Apr 16, 2024, Marcelo Tosatti wrote:
+> On Mon, Apr 15, 2024 at 02:29:32PM -0700, Sean Christopherson wrote:
+> > And snapshotting the VM-Exit time will get false negatives when the vCPU is about
+> > to run, but for whatever reason has kvm_last_guest_exit=0, e.g. if a vCPU was
+> > preempted and/or migrated to a different pCPU.
 > 
-> imx6 actaully for all imx chips (imx6*, imx7*, imx8*, imx9*). To avoid     
-> confuse, rename all imx6_* to imx_*, IMX6_* to IMX_*. pci-imx6.c to        
-> pci-imx.c to avoid confuse.                                                
+> Right, for the use-case where waking up rcuc is a problem, the pCPU is
+> isolated (there are no userspace processes and hopefully no kernel threads
+> executing there), vCPU pinned to that pCPU.
+> 
+> So there should be no preemptions or migrations.
 
+I understand that preemption/migration will not be problematic if the system is
+configured "correctly", but we still need to play nice with other scenarios and/or
+suboptimal setups.  While false positives aren't fatal, KVM still should do its
+best to avoid them, especially when it's relatively easy to do so.
 
-Mani and lorenzo:
+> > My understanding is that RCU already has a timeout to avoid stalling RCU.  I don't
+> > see what is gained by effectively duplicating that timeout for KVM.
+> 
+> The point is not to avoid stalling RCU. The point is to not perform RCU
+> core processing through rcuc thread (because that interrupts execution
+> of the vCPU thread), if it is known that an extended quiescent state 
+> will occur "soon" anyway (via VM-entry).
 
-Do you have chance to look these patches?
+I know.  My point is that, as you note below, RCU will wake-up rcuc after 1 second
+even if KVM is still reporting a VM-Enter is imminent, i.e. there's a 1 second
+timeout to avoid an RCU stall to due to KVM never completing entry to the guest.
 
-Frank
+> If the extended quiescent state does not occur in 1 second, then rcuc
+> will be woken up (the time_before call in rcu_nohz_full_cpu function 
+> above).
+> 
+> > Why not have
+> > KVM provide a "this task is in KVM_RUN" flag, and then let the existing timeout
+> > handle the (hopefully rare) case where KVM doesn't "immediately" re-enter the guest?
+> 
+> Do you mean something like:
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d9642dd06c25..0ca5a6a45025 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3938,7 +3938,7 @@ static int rcu_pending(int user)
+>                 return 1;
+>  
+>         /* Is this a nohz_full CPU in userspace or idle?  (Ignore RCU if so.) */
+> -       if ((user || rcu_is_cpu_rrupt_from_idle()) && rcu_nohz_full_cpu())
+> +       if ((user || rcu_is_cpu_rrupt_from_idle() || this_cpu->in_kvm_run) && rcu_nohz_full_cpu())
+>                 return 0;
 
+Yes.  This, https://lore.kernel.org/all/ZhAN28BcMsfl4gm-@google.com, plus logic
+in kvm_sched_{in,out}().
+
+>         /* Is the RCU core waiting for a quiescent state from this CPU? */
 > 
-> Using callback to reduce switch case for core reset and refclk.            
+> The problem is:
 > 
-> Add imx95 iommux and its stream id information.                            
-> 
-> Base on linux-pci/controller/imx
-> 
-> To: Richard Zhu <hongxing.zhu@nxp.com>
-> To: Lucas Stach <l.stach@pengutronix.de>
-> To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-> To: Krzysztof Wilczyński <kw@linux.com>
-> To: Rob Herring <robh@kernel.org>
-> To: Bjorn Helgaas <bhelgaas@google.com>
-> To: Shawn Guo <shawnguo@kernel.org>
-> To: Sascha Hauer <s.hauer@pengutronix.de>
-> To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> To: Fabio Estevam <festevam@gmail.com>
-> To: NXP Linux Team <linux-imx@nxp.com>
-> To: Philipp Zabel <p.zabel@pengutronix.de>
-> To: Liam Girdwood <lgirdwood@gmail.com>
-> To: Mark Brown <broonie@kernel.org>
-> To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> To: Conor Dooley <conor+dt@kernel.org>
-> Cc: linux-pci@vger.kernel.org
-> Cc: imx@lists.linux.dev
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> 
-> Changes in v3:
-> - Add an EP fixed patch
->   PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
->   PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
-> - Add 8qxp rc support
-> dt-bing yaml pass binding check
-> make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,imx6q-pcie.yaml
->   LINT    Documentation/devicetree/bindings
->   DTEX    Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dts
->   CHKDT   Documentation/devicetree/bindings/processed-schema.json
->   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->   DTC_CHK Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.example.dtb
-> 
-> - Link to v2: https://lore.kernel.org/r/20240304-pci2_upstream-v2-0-ad07c5eb6d67@nxp.com
-> 
-> Changes in v2:
-> - remove file to 'pcie-imx.c'
-> - keep CONFIG unchange.
-> - Link to v1: https://lore.kernel.org/r/20240227-pci2_upstream-v1-0-b952f8333606@nxp.com
-> 
-> ---
-> Frank Li (7):
->       PCI: imx6: Rename imx6_* with imx_*
->       PCI: imx6: Rename pci-imx6.c to pcie-imx.c
->       MAINTAINERS: pci: imx: update imx6* to imx* since rename driver file
->       PCI: imx: Simplify switch-case logic by involve set_ref_clk callback
->       PCI: imx: Simplify switch-case logic by involve core_reset callback
->       PCI: imx: Config look up table(LUT) to support MSI ITS and IOMMU for i.MX95
->       PCI: imx: Consolidate redundant if-checks
-> 
-> Richard Zhu (4):
->       PCI: imx6: Fix PCIe link down when i.MX8MM and i.MX8MP PCIe is EP mode
->       PCI: imx6: Fix i.MX8MP PCIe EP can not trigger MSI
->       dt-bindings: imx6q-pcie: Add i.MX8Q pcie compatible string
->       PCI: imx6: Add i.MX8Q PCIe support
-> 
->  .../bindings/pci/fsl,imx6q-pcie-common.yaml        |    5 +
->  .../devicetree/bindings/pci/fsl,imx6q-pcie.yaml    |   18 +
->  MAINTAINERS                                        |    4 +-
->  drivers/pci/controller/dwc/Makefile                |    2 +-
->  .../pci/controller/dwc/{pci-imx6.c => pcie-imx.c}  | 1173 ++++++++++++--------
->  5 files changed, 727 insertions(+), 475 deletions(-)
-> ---
-> base-commit: 2e45e73eebd43365cb585c49b3a671dcfae6b5b5
-> change-id: 20240227-pci2_upstream-0cdd19a15163
-> 
-> Best regards,
-> ---
-> Frank Li <Frank.Li@nxp.com>
-> 
+> 1) You should only set that flag, in the VM-entry path, after the point
+> where no use of RCU is made: close to guest_state_enter_irqoff call.
+
+Why?  As established above, KVM essentially has 1 second to enter the guest after
+setting in_guest_run_loop (or whatever we call it).  In the vast majority of cases,
+the time before KVM enters the guest can probably be measured in microseconds.
+
+Snapshotting the exit time has the exact same problem of depending on KVM to
+re-enter the guest soon-ish, so I don't understand why this would be considered
+a problem with a flag to note the CPU is in KVM's run loop, but not with a
+snapshot to say the CPU recently exited a KVM guest.
+
+> 2) While handling a VM-exit, a host timer interrupt can occur before that,
+> or after the point where "this_cpu->in_kvm_run" is set to false.
+>
+> And a host timer interrupt calls rcu_sched_clock_irq which is going to
+> wake up rcuc.
+
+If in_kvm_run is false when the IRQ is handled, then either KVM exited to userspace
+or the vCPU was scheduled out.  In the former case, rcuc won't be woken up if the
+CPU is in userspace.  And in the latter case, waking up rcuc is absolutely the
+correct thing to do as VM-Enter is not imminent.
+
+For exits to userspace, there would be a small window where an IRQ could arrive
+between KVM putting the vCPU and the CPU actually returning to userspace, but
+unless that's problematic in practice, I think it's a reasonable tradeoff.
 
