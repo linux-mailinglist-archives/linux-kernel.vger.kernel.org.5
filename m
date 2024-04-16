@@ -1,113 +1,107 @@
-Return-Path: <linux-kernel+bounces-147470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295818A7499
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:21:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 623BD8A749E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:23:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3F131F2326D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:21:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 946D11C214C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABD2139587;
-	Tue, 16 Apr 2024 19:20:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BCD137C49;
+	Tue, 16 Apr 2024 19:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X/uVauMK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D4R5Gztd"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B0B139566;
-	Tue, 16 Apr 2024 19:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BE6137777;
+	Tue, 16 Apr 2024 19:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713295245; cv=none; b=MUYbA87XYXH3ichnxCKwGka2x88fxj8l6NUymOdbuc9fcuWHgKtwEG2M1rEskEmQd8RgCGg2ZT41SJeUqK3cm1Y1UVRH1z1/QhREimssC/W/vAy1HeCeTUQsRgqRDa4iG7omokpe6POrF1zyuDfy5FWFVVvEGyKN5rRPGMAYcpI=
+	t=1713295413; cv=none; b=kVv6fHwszAe2P0Uif05dGJuhEk5yCeEKtDggujvw1/YylBB1WKz/I8fV7rvBkZbtxfty10MmRO0aFsxaqTsYrZ2jcHQGbWMRH66xEge/Vy9dxtyLj/ntnYx1btJHCHMQu2nLQ15B7rfnbH/RVvjmCyT6HLln4QG/ToFndijT9Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713295245; c=relaxed/simple;
-	bh=JPCYyaNQ5aLMEvbd/QgJU8hMpf/HQ03GExzcJL2Qv/A=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=IYTrzTMgs+Xi0R75r8DsTUfkx2pCV2Ht8PYXmIoNP5uLMZH6Lih6F2L0TkyMenBK/NCkmQlZGujLlr9/KP4F9cPr2ZcaxSc3q6XmjiBIq+X3rAmTcZUE6TI+ShdO4cCjGtObtkucPiBOFVBKCAqpm5gZw2+UnJeloJDHwMOBMfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X/uVauMK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B805C4AF07;
-	Tue, 16 Apr 2024 19:20:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713295244;
-	bh=JPCYyaNQ5aLMEvbd/QgJU8hMpf/HQ03GExzcJL2Qv/A=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=X/uVauMKTrEJKeHSuimCQFH2qffGX5UJUXLGp1Lqc3Xd/2hDX3v0OBwGBl6m8PBmJ
-	 DJt3NYegAPxEIlk1Rbuzi190amVwRoVXW2W2DEdgFMHpGFbxq9ZgTBTtaWA2aX7QSq
-	 GU3xbx6+Ikyif5ExRKSpHxFKJ2wfDOGRkN4WtL/Gisu/3IY3+dDHj8gB+1v4gjoIUW
-	 KEfNA9D7tcxIyd1DtV2IHHCf2VeG50atxHUUxmYDW1XFQneVMwhCtYBmJ1GabzGVss
-	 XahY/K3DuAfbXRy7wT1+oBKfFxas8aEMBMAjK90vg7hvZqfssYTAN77R5i9m57VEfl
-	 stiZpF3I8DUyw==
-Date: Tue, 16 Apr 2024 14:20:43 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1713295413; c=relaxed/simple;
+	bh=IxFBhcBuXhAaWMYafyfOgtB9dObEv5wh3weokm48AQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r6qh0fNUES6YxUSI6jH9tjVugOgcfg1dBDc9YfXJXkzAKrbrXq4LZyFQ4BfDZ0G0ywiqfQUZOKPYwqlA4C3o2lyD1wrnCO8xeQP9m08pZEKK+sfHoa1buTaCUOUO163YJjSSQa6qMy4BFl1oCzfUC6EgURVp3d25RhSnQBYjcE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D4R5Gztd; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a53e810f10so2972225a91.0;
+        Tue, 16 Apr 2024 12:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713295410; x=1713900210; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ViIRHIDHyA9RsYj3V5deXpjEvZ4mPNUGbf3dBlxIbKw=;
+        b=D4R5GztdQQ7fX9MvU+pfBdstkdsK2YWF8tg/+a9scAA8FZaWDIU67KJxgOobjhr9ZI
+         eryHjkU1CAbTvIfV/sbP3oZBb/uN7CK7i/xTjCs+HEFELJaGBRdUvDkGa8VYuIHpDoHB
+         K3fyZ3NQsDqrzfLh3YjZzBjcr3HOHEjnAHGAIXK6tjuap75rtQHNZ3hktRHTKbXVIYPV
+         WM+glirb/KtKSHothhQkh85n+njq4t5u8OZcFl5eoooiyBD+kchEg3dzwSsp8KwfY6RB
+         kgdA58/JjVnyjAAcE+4RrOCwKeLWtaMr86XNJzoNYJTtVwZHw9MyugemKXjcxpwUtdOl
+         cpfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713295410; x=1713900210;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ViIRHIDHyA9RsYj3V5deXpjEvZ4mPNUGbf3dBlxIbKw=;
+        b=cC22ppDm0t7zugREsH3cpc36aPS0fiXDIK8gBpl2vnhtV4kWSqf0jQkMjOG6BDIJBO
+         l1mSOwK7PzYDuLANdg7niozH/U9VgsahhCDOZtQP8MuF35AxxVEalrqm2/orYV+WnVdr
+         35GACPQs7Wu4DvwmTzUdWtDUwzECKJmlUoC6NexOWbuBrn1x2mtmUNWWieb/OLCAa19Z
+         0AwUcwi/aum+NmIRkw1NpAyuqbdCdQoFAik/bObtaDSXadOJaIOYnISgJ4N1IEIKbYsB
+         QRWgbSg0H39afaAi33vo5HQO9XDSHn9kH7XVbLN6swMDe5d3xzLdv4S6oN4AJMkPhTkM
+         D3tw==
+X-Forwarded-Encrypted: i=1; AJvYcCVyx6QZZ9vRq11vRrcrCDz0yOo8roD/9sJ7WqLVHTpQzgqgU0jNYRqugHULy2mjdHQHty5iQ+vfbpNnvjoVndhJRI2M+WVYndK6jO7BbrKpb4qmCnx1dzsHUFnypdu1hw6JEIZ85xrd7+sb3Tw9qrfDNW2c9gomyUklje9kcnNoUk7J/GhSh49v
+X-Gm-Message-State: AOJu0Yx6FPiiGs2FTuyHZkp9CCOPNEOyi9BR2giAPhDcBXayZuc6lPYL
+	VdiKiUYwh14cEOeQtqw4kehPQrbhJB2Bb9H+fiYkzYfZRdjB3VbQ
+X-Google-Smtp-Source: AGHT+IE2br9IFwohZaNTezS9EaNHNUE9a9LyHYvBDfqBixBaHoEaLGwVptV8CqJKNiQ4rQOiXRbRjw==
+X-Received: by 2002:a17:90a:8c9:b0:2a8:2cce:9f46 with SMTP id 9-20020a17090a08c900b002a82cce9f46mr5757716pjn.30.1713295410026;
+        Tue, 16 Apr 2024 12:23:30 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id d13-20020a17090ac24d00b002a706910b05sm7471906pjx.9.2024.04.16.12.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 12:23:29 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 16 Apr 2024 09:23:28 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: Re: [PATCH v4 1/6] cgroup/pids: Remove superfluous zeroing
+Message-ID: <Zh7QMGhNKMQR-OSz@slm.duckdns.org>
+References: <20240416142014.27630-1-mkoutny@suse.com>
+ <20240416142014.27630-2-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: David Wronek <david@mainlining.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Maxime Ripard <mripard@kernel.org>, phone-devel@vger.kernel.org, 
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
- devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
- dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Konrad Dybcio <konradybcio@kernel.org>, linux-kernel@vger.kernel.org, 
- Neil Armstrong <neil.armstrong@linaro.org>
-In-Reply-To: <20240416-raydium-rm69380-driver-v3-1-21600ac4ce5f@mainlining.org>
-References: <20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org>
- <20240416-raydium-rm69380-driver-v3-1-21600ac4ce5f@mainlining.org>
-Message-Id: <171329524217.3866491.17133323798824607275.robh@kernel.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: display: panel: Add Raydium
- RM69380
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240416142014.27630-2-mkoutny@suse.com>
 
-
-On Tue, 16 Apr 2024 20:30:48 +0200, David Wronek wrote:
-> Raydium RM69380 is a display driver IC used to drive OLED DSI panels.
-> Add a dt-binding for it.
+On Tue, Apr 16, 2024 at 04:20:09PM +0200, Michal Koutný wrote:
+> Atomic counters are in kzalloc'd struct. They are zeroed already and
+> atomic64_t does not need special initialization
+> (cf kernel/trace/trace_clock.c:trace_counter).
 > 
-> Signed-off-by: David Wronek <david@mainlining.org>
-> ---
-> Note:
-> Depends on commit 48a516363e29 ("dt-bindings: display: panel: add common dual-link schema")
-> ---
->  .../bindings/display/panel/raydium,rm69380.yaml    | 91 ++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
-> 
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Applied to cgroup/for-6.10.
 
-yamllint warnings/errors:
+Thanks.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml:
-Error in referenced schema matching $id: http://devicetree.org/schemas/display/panel/panel-common-dual.yaml
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/panel/raydium,rm69380.example.dtb: panel@0: False schema does not allow {'compatible': ['lenovo,j716f-edo-rm69380', 'raydium,rm69380'], 'reg': [[0]], 'avdd-supply': [[4294967295]], 'vddio-supply': [[4294967295]], 'reset-gpios': [[4294967295, 75, 1]], 'ports': {'#address-cells': [[1]], '#size-cells': [[0]], 'port@0': {'reg': [[0]], 'endpoint': {'remote-endpoint': [[4294967295]]}}, 'port@1': {'reg': [[1]], 'endpoint': {'remote-endpoint': [[4294967295]]}}}, '$nodename': ['panel@0']}
-	from schema $id: http://devicetree.org/schemas/display/panel/raydium,rm69380.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240416-raydium-rm69380-driver-v3-1-21600ac4ce5f@mainlining.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+-- 
+tejun
 
