@@ -1,42 +1,43 @@
-Return-Path: <linux-kernel+bounces-147772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A47F8A797C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:58:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 300048A797D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:58:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15CA61F24267
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:58:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFA6D284D32
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63AAB13B79F;
-	Tue, 16 Apr 2024 23:57:51 +0000 (UTC)
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [5.144.164.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856A813C3C0;
+	Tue, 16 Apr 2024 23:57:52 +0000 (UTC)
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [5.144.164.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1A813A896
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919AB13AD1A
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713311870; cv=none; b=UCpzwSrOhjJKi0cQYjI2vjqTLwjIDTxDsgOIZKhtQNjYHg73Tmcb8bkko28JP4qnXof7BEchU3Alr88BZPrZLbFqlsk2P93jPKPsaXjqNTZHWK26WehI25/TkLfYIKDn9QlDQl34rFAwI8idwl+lHcszIrtLyROxGL+gxbxTJNg=
+	t=1713311872; cv=none; b=Sas48q0j/QzYP1G0q0Qjo/lmUNJWMG8EtkBl8w/gScvPt0ebfVZKOTQlfxdO1mxQa0Et3AvRqObe9NH/JKuWnSw7pYAaGqszkM53Ccob3X3atkaJhsxTL4bpdM01oruw2m1zq58BTtjC5+QePntB01qsRbPRk7cBv3bO2frddYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713311870; c=relaxed/simple;
-	bh=9QpYWFlDk7dpKjtswDkzFrbc8q7R2ogVFo1jYxLjeaM=;
+	s=arc-20240116; t=1713311872; c=relaxed/simple;
+	bh=m47iN2Qx4QgStq50FEm3/gYACYUiHtmJPCULeaPgmv0=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=C7U/Ew7fMq3wC6Qmnu3Nij3Yp6c6N7a4MGcUOBVcZ/1qUkmEQ96z410B6i30Hh5KQbMQ+I6VDLenACSIcWVndGPl8rKYqoJoRm3o0W6SZKx+irV236YIE2oBiFlBNqRn0JKIJJ/f+JKt/Kybk1mvZ7ws3vvGX7FevIGTIxE7xuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.169
+	 In-Reply-To:To:Cc; b=p413CFUhiBehsChJVRF48qJNBXt6NHQOlKao/7cHKVMjvX3jp62E6OiwHR4VcR8Jg99N4y/UyWllZ+NwPhB48y77WDx343xi+/YT+qKe0wW66T04U3UvixGd/Lq3fVBspwXjCcf7qN7cp3NiQ/JmLHUd6w9Lxuwdqzk8sTT89FU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
 Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id CE7D73F012;
-	Wed, 17 Apr 2024 01:57:46 +0200 (CEST)
+	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D756A3F01F;
+	Wed, 17 Apr 2024 01:57:47 +0200 (CEST)
 From: Marijn Suijten <marijn.suijten@somainline.org>
-Date: Wed, 17 Apr 2024 01:57:43 +0200
-Subject: [PATCH 3/7] drm/msm/dpu: Always flush the slave INTF on the CTL
+Date: Wed, 17 Apr 2024 01:57:44 +0200
+Subject: [PATCH 4/7] drm/msm/dpu: Allow configuring multiple active DSC
+ blocks
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -44,8 +45,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-3-78ae3ee9a697@somainline.org>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-4-78ae3ee9a697@somainline.org>
 References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
 In-Reply-To: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
 To: Rob Clark <robdclark@gmail.com>, 
@@ -68,37 +69,68 @@ Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
  Marijn Suijten <marijn.suijten@somainline.org>
 X-Mailer: b4 0.13.0
 
-As we can clearly see in a downstream kernel [1], flushing the slave INTF
-is skipped /only if/ the PPSPLIT topology is active.
+Just like the active interface and writeback block in ctl_intf_cfg_v1(),
+and later the rest of the blocks in followup active-CTL fixes or
+reworks, multiple calls to this function should enable additional DSC
+blocks instead of overwriting the blocks that are enabled.
 
-However, when DPU was originally submitted to mainline PPSPLIT was no
-longer part of it (seems to have been ripped out before submission), but
-this clause was incorrectly ported from the original SDE driver.  Given
-that there is no support for PPSPLIT (currently), flushing the slave
-INTF should /never/ be skipped (as the `if (ppsplit && !master) goto
-skip;` clause downstream never becomes true).
+This pattern is observed in an active-CTL scenario since DPU 5.0.0 where
+for example bonded-DSI uses a single CTL to drive multiple INTFs, and
+each encoder calls this function individually with the INTF (hence the
+pre-existing update instead of overwrite of this bitmask) and DSC blocks
+it wishes to be enabled, and expects them to be OR'd into the bitmask.
 
-[1]: https://git.codelinaro.org/clo/la/platform/vendor/opensource/display-drivers/-/blob/display-kernel.lnx.5.4.r1-rel/msm/sde/sde_encoder_phys_cmd.c?ref_type=heads#L1131-1139
+The reverse already exists in reset_intf_cfg_v1() where only specified
+DSC blocks are removed out of the CTL_DSC_ACTIVE bitmask (same for all
+other blocks and ACTIVE bitmasks), leaving the rest enabled.
 
-Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
+Fixes: 77f6da90487c ("drm/msm/disp/dpu1: Add DSC support in hw_ctl")
 Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
 ---
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-index fc1d5736d7fc..489be1c0c704 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-@@ -448,9 +448,6 @@ static void dpu_encoder_phys_cmd_enable_helper(
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+index a06f69d0b257..2e50049f2f85 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+@@ -545,6 +545,7 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+ {
+ 	struct dpu_hw_blk_reg_map *c = &ctx->hw;
+ 	u32 intf_active = 0;
++	u32 dsc_active = 0;
+ 	u32 wb_active = 0;
+ 	u32 mode_sel = 0;
  
- 	_dpu_encoder_phys_cmd_pingpong_config(phys_enc);
+@@ -560,6 +561,7 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
  
--	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
--		return;
+ 	intf_active = DPU_REG_READ(c, CTL_INTF_ACTIVE);
+ 	wb_active = DPU_REG_READ(c, CTL_WB_ACTIVE);
++	dsc_active = DPU_REG_READ(c, CTL_DSC_ACTIVE);
+ 
+ 	if (cfg->intf)
+ 		intf_active |= BIT(cfg->intf - INTF_0);
+@@ -567,17 +569,18 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
+ 	if (cfg->wb)
+ 		wb_active |= BIT(cfg->wb - WB_0);
+ 
++	if (cfg->dsc)
++		dsc_active |= cfg->dsc;
++
+ 	DPU_REG_WRITE(c, CTL_TOP, mode_sel);
+ 	DPU_REG_WRITE(c, CTL_INTF_ACTIVE, intf_active);
+ 	DPU_REG_WRITE(c, CTL_WB_ACTIVE, wb_active);
++	DPU_REG_WRITE(c, CTL_DSC_ACTIVE, dsc_active);
+ 
+ 	if (cfg->merge_3d)
+ 		DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
+ 			      BIT(cfg->merge_3d - MERGE_3D_0));
+ 
+-	if (cfg->dsc)
+-		DPU_REG_WRITE(c, CTL_DSC_ACTIVE, cfg->dsc);
 -
- 	ctl = phys_enc->hw_ctl;
- 	ctl->ops.update_pending_flush_intf(ctl, phys_enc->hw_intf->idx);
+ 	if (cfg->cdm)
+ 		DPU_REG_WRITE(c, CTL_CDM_ACTIVE, cfg->cdm);
  }
 
 -- 
