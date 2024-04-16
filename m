@@ -1,112 +1,97 @@
-Return-Path: <linux-kernel+bounces-146689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AF668A6965
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:10:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E9D8A696A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:10:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B01C41F21E88
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:10:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB15A1C20F4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA269128807;
-	Tue, 16 Apr 2024 11:10:05 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14E9D128816;
+	Tue, 16 Apr 2024 11:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GeFTlQ3J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D746F128384
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C5E128393;
+	Tue, 16 Apr 2024 11:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713265805; cv=none; b=DxbsJm8/R5z0R7tS+c+iNfwQD8BqAysu4BD4Zn7CxB7h1GMorcpP6E4pqB7GRF0CSN2yRs/vm9B4JHfAizQPmP1ipx5n2VY/BUWQJDdpTr8CGwetx7OgdKFV3Hw2uolq6oPJF1yN8NWPNBvVT4GjmUp820Qo2JpNBI5W+xPNgNI=
+	t=1713265846; cv=none; b=LorbWjwLKXpwY0zOwO4L2FbcRNO6m/Ej6QKnNMYb7jE17i6WaAlw6tPaHocOhyOvx31WTaabLmk28Ab499JBfL58doi33flhjf+bGOvBLeBBi3KRhuDaUhXgD/F3bLjf0PJAdaultoVzU0WTjm1eSAlLBn07fS+TYy1BIbmUrPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713265805; c=relaxed/simple;
-	bh=DGnXGWBZ6/NHWbsu+aI1H9Su1DSjbVK/pq0pcF7oTHQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=kL/O+iE3MelfZCUVaN9DWwgxneOSNNHRbdmokOZaefjAgIpue2c8OQQz1WFJVT5YVhSOQy1Vp1iPpXvJ7scEY4LLxJXzORjsEvCiPjTYKrtdy7ZAg6vgROifRNKVaq+elQyg+sgOY1A9ilVhooB2nHVXCYLZH7naD1OIM9Z3tEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-255-LPfE2IzbO0utuOqpskCb8A-1; Tue, 16 Apr 2024 12:09:55 +0100
-X-MC-Unique: LPfE2IzbO0utuOqpskCb8A-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 16 Apr
- 2024 12:09:27 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 16 Apr 2024 12:09:27 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Segher Boessenkool' <segher@kernel.crashing.org>, Naresh Kamboju
-	<naresh.kamboju@linaro.org>
-CC: Nathan Chancellor <nathan@kernel.org>, Anders Roxell
-	<anders.roxell@linaro.org>, Linux Regressions <regressions@lists.linux.dev>,
-	Arnd Bergmann <arnd@arndb.de>, clang-built-linux <llvm@lists.linux.dev>,
-	"Nick Desaulniers" <ndesaulniers@google.com>, open list
-	<linux-kernel@vger.kernel.org>, "lkft-triage@lists.linaro.org"
-	<lkft-triage@lists.linaro.org>, Aneesh Kumar K.V <aneesh.kumar@kernel.org>,
-	Jeff Xu <jeffxu@chromium.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Dan Carpenter
-	<dan.carpenter@linaro.org>, Kees Cook <keescook@chromium.org>
-Subject: RE: powerpc: io-defs.h:43:1: error: performing pointer arithmetic on
- a null pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
-Thread-Topic: powerpc: io-defs.h:43:1: error: performing pointer arithmetic on
- a null pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
-Thread-Index: AQHaj+s965G0tAMqzUOctdh7rJqb8rFqvAFg
-Date: Tue, 16 Apr 2024 11:09:26 +0000
-Message-ID: <1d0de2bee67643bfa5a561e70133db75@AcuMS.aculab.com>
-References: <CA+G9fYtEh8zmq8k8wE-8RZwW-Qr927RLTn+KqGnq1F=ptaaNsA@mail.gmail.com>
- <20240416103819.GQ19790@gate.crashing.org>
-In-Reply-To: <20240416103819.GQ19790@gate.crashing.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1713265846; c=relaxed/simple;
+	bh=JdpwCJ0sXpu10EiZS9M7KZj/uP44nfa2lKrsWpOLHY4=;
+	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=a4amqaeD6zJ/31zFI6UaaBjuEar0r2MvwJJmnzKEZnZ8c4BTzkv+lEojd7a4ZyzBqZFAHj8/bsHN5+Qq44V2IfFQ7c4s0J7mAqAIeRKbngCzHdgiU5rrzo6UgAmVuFl32u6IZaSEXQwhXtvCfQ0zhUSF6ilBv4OdfSpduS+RqGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GeFTlQ3J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C5BDC113CE;
+	Tue, 16 Apr 2024 11:10:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713265845;
+	bh=JdpwCJ0sXpu10EiZS9M7KZj/uP44nfa2lKrsWpOLHY4=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=GeFTlQ3J4rLiH514WI9hurQUwVLaAzJ1NK8HkFJTA/EAWQFQEmFLR4kBYX4yNhxfH
+	 QZF7mHxIlGgN/hbJS72oWT6u3djeinfpNxaiikcdKq4lDGN81CVlZTvcVJdtZhVeMg
+	 r20orwPqIeCFoglRH2dX7fxA0+H6FiAEWsrbVeGOCSM/MGBH47Xtea0I0x4NjzsllX
+	 SEh6St2zvVV12rLqcY+y6WblSsMUrLxgPLzuN6cMZ4986aAzkKeL1mwxfNWjvEGPM9
+	 vrj/f7LHBhKaOXWb5e2qaH66BmhXVv9kkMhyKcS0s5WYvm5YRIMjzBd5Un/Xco1Qlh
+	 gtFCWGXS0G19g==
+From: Mark Brown <broonie@kernel.org>
+To: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240415184757.1198149-1-andriy.shevchenko@linux.intel.com>
+References: <20240415184757.1198149-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] spi: Consistently use BIT for cs_index_mask
+ (part 2)
+Message-Id: <171326584478.1678604.5209919543907385015.b4-ty@kernel.org>
+Date: Tue, 16 Apr 2024 20:10:44 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14-dev
 
-From: Segher Boessenkool
-> Sent: 16 April 2024 11:38
->=20
-> On Tue, Apr 16, 2024 at 03:02:52PM +0530, Naresh Kamboju wrote:
-> > In file included from arch/powerpc/include/asm/io.h:672:
-> > arch/powerpc/include/asm/io-defs.h:43:1: error: performing pointer
-> > arithmetic on a null pointer has undefined behavior
-> > [-Werror,-Wnull-pointer-arithmetic]
->=20
-> It is not UB, but just undefined: the program is meaningless.
->=20
-> It is not a null pointer but even a null pointer constant here.  It
-> matters in places, including here.
->=20
-> It would help if the warnings were more correct :-(
+On Mon, 15 Apr 2024 21:47:57 +0300, Andy Shevchenko wrote:
+> For some reason the commit 1209c5566f9b ("spi: Consistently use BIT
+> for cs_index_mask") missed one place to change, do it here to finish
+> the job.
+> 
+> 
 
-Isn't it only a problem because the NULL pointer isn't required to
-be the all-zero bit pattern?
+Applied to
 
-So when do we get a warning from using memset() on a structure
-that contains pointers? Since it is equally buggy.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Has anyone ever seen a system where NULL wasn't 'all zeros'?
-I've used a system where the 'native' invalid pointer was 'all ones',
-but even there the C code used 'all zeros'.
+Thanks!
 
-=09David
+[1/1] spi: Consistently use BIT for cs_index_mask (part 2)
+      commit: bb40996267670862544cb8e740afb77cbf3a7949
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
 
