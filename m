@@ -1,297 +1,93 @@
-Return-Path: <linux-kernel+bounces-147467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 804828A7491
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:21:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF18F8A7478
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:18:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECB9C1F230E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:21:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0D3C1C21CC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8EC137C5B;
-	Tue, 16 Apr 2024 19:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB215137C39;
+	Tue, 16 Apr 2024 19:18:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="Jwc5YnkS"
-Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="fx8QpHx7"
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C04137C49;
-	Tue, 16 Apr 2024 19:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE6F137921;
+	Tue, 16 Apr 2024 19:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713295217; cv=none; b=MH99G+wuP/NsXruJu7CUa9cPL1D+33HpkXOadHAzw43/gDx/IGukfYfEPS8+CDqDmUAnCzfH0p0glqA8MIREVVoJX422Md61gZU+myY08jMq2nq6hZ9pIZ8IcdZtGRd6pK8/yCpCFrQsanrPfaLttWMN9CDwJY+RBY6kbX/s4Uk=
+	t=1713295117; cv=none; b=S01ohVwhoBBwkz7vS9i6Vx7WnsJNVB77Eh6qNpk1joubxZOL2Yj6LGZiuqTUnesDjNCMe8YEnlz+dd88+YbIKRMRdq98B4HAVCRAFxe7ERy/SfGe7qbVdR6I/gfU3jmKPoiKB/KjhqLURKMx+bcDFbUXeOP4aol0nK2JwlSRRxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713295217; c=relaxed/simple;
-	bh=8qCKzY35EGzYV4nWpAHAjd7zJfdPfc7UJRsZu59DAXQ=;
-	h=Message-Id:In-Reply-To:References:To:Cc:From:Subject:Date; b=G/91Jh7N21Ea2IMQilx5JQbrXPriexSSBjWKDu0qZ6ye9D/eE1/b3PaHEF1QLELv/CMVL56W9MKNiWOqnrBj09IzjN1wb81HW/NRJJ7G1+pqepeC9hQqErH09wYjMU0dsb33/EvfZIytGxjG1PJrQGQBNb1hhgQW1p0skDb8qQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=Jwc5YnkS; arc=none smtp.client-ip=148.163.152.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355091.ppops.net [127.0.0.1])
-	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GGDbkP026743;
-	Tue, 16 Apr 2024 19:19:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	message-id:in-reply-to:references:to:cc:from:subject:date; s=
-	DKIM202306; bh=Oc2SUwX6uzMkXCJf4ZSU5CLVXrP2N2CrXvm6EA3BRc0=; b=J
-	wc5YnkSa9VTYoe44uJ8PpfZJJ4I1RO0Ec5TEt2adm0mt1nvygMy/T04tcYsJyWuV
-	kUzcaafDi4Bsd2bVw9aoUvomRqgoHF4S77vYS2srx9bOnn2iEV2uVtmlrxJOaq6p
-	qSCjW/5TXBzgN9lsY7xm5E8yRWiaE1vXDVbRTO8VhAEcjuYj6mwS7r5BvVpXVz+r
-	FzYwhWzGUyOuHDT7oPu1klDPE+syM5GlnXghz20136x1kHZBmTYA9t99uJ4V+/gG
-	X81O07yG4prTi38sq+NIu0yuwjPU0BLHrgmQWpNj/GQnGqhp5L1V7/eXONP294JB
-	QBZxML18jVgaMH5opSXWQ==
-Received: from ilclpfpp02.lenovo.com ([144.188.128.68])
-	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3xhjbekf1r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 19:19:22 +0000 (GMT)
-Received: from va32lmmrp02.lenovo.com (va32lmmrp02.mot.com [10.62.176.191])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ilclpfpp02.lenovo.com (Postfix) with ESMTPS id 4VJv3t1srTzfBb2;
-	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
-Received: from ilclbld243.mot.com (ilclbld243.mot.com [100.64.22.29])
+	s=arc-20240116; t=1713295117; c=relaxed/simple;
+	bh=eFsQnwS6PGFtgDcFaHJVKvrfFzDGNqbI1upRmAGSdUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zefl1IMeAE2ZuHJIeYFuQlsuTAt8gL/UQwhKNwiKc5XPZePJLrXefg7Unh3acPFLjOhbxGXKbpYXpT+RHT2OTo71SwG9SPXg6ufg+eEhbyCpZjfcA0xYaK2KawEJEdiux+bG3uMD6eWsf+tacV0Q0XNI/BGbvL03S6/pwHxwgwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=fx8QpHx7; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VJv2s5Ty9zlgTHp;
+	Tue, 16 Apr 2024 19:18:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1713295108; x=1715887109; bh=eFsQnwS6PGFtgDcFaHJVKvrf
+	FzDGNqbI1upRmAGSdUs=; b=fx8QpHx7MdXz4DWNF5sKx2pET/oKMw17BAId9stL
+	5lzAFPohxQeKZACWn35Z8lu+Ne42NFD8qXLHVetH5fTj1WFay6FH1Gfn/XoYRCKx
+	kEYjzppO5JLFiPFgqOIcYv1hRVcxoy+yoL6LB9e8FQT8QgyxCPb8qFiv2vo0laLq
+	/+sX5Uc/C0O7KWaFLCidfxjTC1Xu2wpCB1soWkDo6WptScusk9a38o+3Zf90YLEu
+	HOBCLE0o5RKQaDzZ/SnkeEumTTSmZliH1sY2f5G7OSVCbTZfBi4umZWPkczglsW9
+	Pr7t9qwMb1oSjIo5s0agNOQYGEhfWupQHcPtSrFWZEl31g==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id gvqFSUSqaQat; Tue, 16 Apr 2024 19:18:28 +0000 (UTC)
+Received: from [100.96.154.26] (unknown [104.132.0.90])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: mbland)
-	by va32lmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VJv3t0ZCdz2Z122;
-	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
-Message-Id: <20240416122254.868007168-6-mbland@motorola.com>
-In-Reply-To: <20240416122254.868007168-1-mbland@motorola.com>
-References: <20240416122254.868007168-1-mbland@motorola.com>
-To: linux-mm@kvack.org
-Cc: Maxwell Bland <mbland@motorola.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Maxwell Bland <mbland@motorola.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Yu Chien Peter Lin <peterlin@andestech.com>,
-        Song Shuai <suagrfillet@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        David Hildenbrand <david@redhat.com>,
-        Conor Dooley <conor.dooley@microchip.com>, linux-s390@vger.kernel.org
-From: Maxwell Bland <mbland@motorola.com>
-Subject: [PATCH 5/5 RESEND] ptdump: add state parameter for non-leaf callback
-Date: Tue, 16 Apr 2024 14:18:19 -0500
-X-Proofpoint-ORIG-GUID: 2te5hZS_SLkB4TyM1Y9ZD386LAS6NjDY
-X-Proofpoint-GUID: 2te5hZS_SLkB4TyM1Y9ZD386LAS6NjDY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_16,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 clxscore=1015
- mlxscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 adultscore=0
- mlxlogscore=997 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404160120
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VJv2q3mZZzlgTsK;
+	Tue, 16 Apr 2024 19:18:27 +0000 (UTC)
+Message-ID: <0b031b8f-c07c-42ef-af93-7336439d3c37@acm.org>
+Date: Tue, 16 Apr 2024 12:18:25 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] scsi: ufs: core: Make use of guard(spinlock_irqsave)
+To: Avri Altman <avri.altman@wdc.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240416102348.614-1-avri.altman@wdc.com>
+ <20240416102348.614-2-avri.altman@wdc.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240416102348.614-2-avri.altman@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-ptdump can now note non-leaf descriptor entries, a useful addition for
-debugging table descriptor permissions when working on related code
+On 4/16/24 03:23, Avri Altman wrote:
+> +#define SERIALIZE_HOST_IRQSAVE(hba) guard(spinlock_irqsave)(hba->host->host_lock)
 
-Signed-off-by: Maxwell Bland <mbland@motorola.com>
----
- arch/arm64/mm/ptdump.c          |  6 ++++--
- arch/powerpc/mm/ptdump/ptdump.c |  2 ++
- arch/riscv/mm/ptdump.c          |  6 ++++--
- arch/s390/mm/dump_pagetables.c  |  6 ++++--
- arch/x86/mm/dump_pagetables.c   |  3 ++-
- include/linux/ptdump.h          |  1 +
- mm/ptdump.c                     | 13 +++++++++++++
- 7 files changed, 30 insertions(+), 7 deletions(-)
+Something I have brought up before: what does the host lock protect in
+the UFS driver? Rather than reworking the code that acquires and
+releases the host lock, all uses of the host lock should be eliminated
+from the UFS driver. The host lock should be replaced with new locks of
+which it is clearly documented what member variables these new locks
+protect.
 
-diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index 796231a4fd63..1a6f4a3513e5 100644
---- a/arch/arm64/mm/ptdump.c
-+++ b/arch/arm64/mm/ptdump.c
-@@ -299,7 +299,8 @@ void ptdump_walk(struct seq_file *s, struct ptdump_info *info)
- 			.range = (struct ptdump_range[]){
- 				{info->base_addr, end},
- 				{0, 0}
--			}
-+			},
-+			.note_non_leaf = false
- 		}
- 	};
- 
-@@ -335,7 +336,8 @@ bool ptdump_check_wx(void)
- 			.range = (struct ptdump_range[]) {
- 				{_PAGE_OFFSET(vabits_actual), ~0UL},
- 				{0, 0}
--			}
-+			},
-+			.note_non_leaf = false
- 		}
- 	};
- 
-diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
-index 9dc239967b77..89e673f5fd3d 100644
---- a/arch/powerpc/mm/ptdump/ptdump.c
-+++ b/arch/powerpc/mm/ptdump/ptdump.c
-@@ -307,6 +307,7 @@ static int ptdump_show(struct seq_file *m, void *v)
- 		.ptdump = {
- 			.note_page = note_page,
- 			.range = ptdump_range,
-+			.note_non_leaf = false
- 		}
- 	};
- 
-@@ -340,6 +341,7 @@ bool ptdump_check_wx(void)
- 		.ptdump = {
- 			.note_page = note_page,
- 			.range = ptdump_range,
-+			.note_non_leaf = false
- 		}
- 	};
- 
-diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
-index 1289cc6d3700..b355633afcaf 100644
---- a/arch/riscv/mm/ptdump.c
-+++ b/arch/riscv/mm/ptdump.c
-@@ -328,7 +328,8 @@ static void ptdump_walk(struct seq_file *s, struct ptd_mm_info *pinfo)
- 			.range = (struct ptdump_range[]) {
- 				{pinfo->base_addr, pinfo->end},
- 				{0, 0}
--			}
-+			},
-+			.note_non_leaf = false
- 		}
- 	};
- 
-@@ -350,7 +351,8 @@ bool ptdump_check_wx(void)
- 			.range = (struct ptdump_range[]) {
- 				{KERN_VIRT_START, ULONG_MAX},
- 				{0, 0}
--			}
-+			},
-+			.note_non_leaf = false
- 		}
- 	};
- 
-diff --git a/arch/s390/mm/dump_pagetables.c b/arch/s390/mm/dump_pagetables.c
-index ffd07ed7b4af..6468cfd53e2a 100644
---- a/arch/s390/mm/dump_pagetables.c
-+++ b/arch/s390/mm/dump_pagetables.c
-@@ -200,7 +200,8 @@ bool ptdump_check_wx(void)
- 			.range = (struct ptdump_range[]) {
- 				{.start = 0, .end = max_addr},
- 				{.start = 0, .end = 0},
--			}
-+			},
-+			.note_non_leaf = false
- 		},
- 		.seq = NULL,
- 		.level = -1,
-@@ -239,7 +240,8 @@ static int ptdump_show(struct seq_file *m, void *v)
- 			.range = (struct ptdump_range[]) {
- 				{.start = 0, .end = max_addr},
- 				{.start = 0, .end = 0},
--			}
-+			},
-+			.note_non_leaf = false
- 		},
- 		.seq = m,
- 		.level = -1,
-diff --git a/arch/x86/mm/dump_pagetables.c b/arch/x86/mm/dump_pagetables.c
-index 89079ea73e65..43f00dfb955f 100644
---- a/arch/x86/mm/dump_pagetables.c
-+++ b/arch/x86/mm/dump_pagetables.c
-@@ -380,7 +380,8 @@ bool ptdump_walk_pgd_level_core(struct seq_file *m,
- 		.ptdump = {
- 			.note_page	= note_page,
- 			.effective_prot = effective_prot,
--			.range		= ptdump_ranges
-+			.range		= ptdump_ranges,
-+			.note_non_leaf  = false
- 		},
- 		.level = -1,
- 		.to_dmesg	= dmesg,
-diff --git a/include/linux/ptdump.h b/include/linux/ptdump.h
-index 8dbd51ea8626..b3e793a5c77f 100644
---- a/include/linux/ptdump.h
-+++ b/include/linux/ptdump.h
-@@ -16,6 +16,7 @@ struct ptdump_state {
- 			  int level, u64 val);
- 	void (*effective_prot)(struct ptdump_state *st, int level, u64 val);
- 	const struct ptdump_range *range;
-+	bool note_non_leaf;
- };
- 
- bool ptdump_walk_pgd_level_core(struct seq_file *m,
-diff --git a/mm/ptdump.c b/mm/ptdump.c
-index 106e1d66e9f9..97da7a765b22 100644
---- a/mm/ptdump.c
-+++ b/mm/ptdump.c
-@@ -41,6 +41,9 @@ static int ptdump_pgd_entry(pgd_t *pgd, unsigned long addr,
- 	if (st->effective_prot)
- 		st->effective_prot(st, 0, pgd_val(val));
- 
-+	if (st->note_non_leaf && !pgd_leaf(val))
-+		st->note_page(st, addr, 0, pgd_val(val));
-+
- 	if (pgd_leaf(val)) {
- 		st->note_page(st, addr, 0, pgd_val(val));
- 		walk->action = ACTION_CONTINUE;
-@@ -64,6 +67,9 @@ static int ptdump_p4d_entry(p4d_t *p4d, unsigned long addr,
- 	if (st->effective_prot)
- 		st->effective_prot(st, 1, p4d_val(val));
- 
-+	if (st->note_non_leaf && !p4d_leaf(val))
-+		st->note_page(st, addr, 1, p4d_val(val));
-+
- 	if (p4d_leaf(val)) {
- 		st->note_page(st, addr, 1, p4d_val(val));
- 		walk->action = ACTION_CONTINUE;
-@@ -87,6 +93,9 @@ static int ptdump_pud_entry(pud_t *pud, unsigned long addr,
- 	if (st->effective_prot)
- 		st->effective_prot(st, 2, pud_val(val));
- 
-+	if (st->note_non_leaf && !pud_leaf(val))
-+		st->note_page(st, addr, 2, pud_val(val));
-+
- 	if (pud_leaf(val)) {
- 		st->note_page(st, addr, 2, pud_val(val));
- 		walk->action = ACTION_CONTINUE;
-@@ -108,6 +117,10 @@ static int ptdump_pmd_entry(pmd_t *pmd, unsigned long addr,
- 
- 	if (st->effective_prot)
- 		st->effective_prot(st, 3, pmd_val(val));
-+
-+	if (st->note_non_leaf && !pmd_leaf(val))
-+		st->note_page(st, addr, 3, pmd_val(val));
-+
- 	if (pmd_leaf(val)) {
- 		st->note_page(st, addr, 3, pmd_val(val));
- 		walk->action = ACTION_CONTINUE;
--- 
-2.39.2
+Thanks,
+
+Bart.
 
 
