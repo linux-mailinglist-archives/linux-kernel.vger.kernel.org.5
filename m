@@ -1,182 +1,247 @@
-Return-Path: <linux-kernel+bounces-147014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FDAB8A6E37
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:29:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 082DA8A6E2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:28:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F41901F21326
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:29:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3446281B71
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EC11339B1;
-	Tue, 16 Apr 2024 14:26:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871721332B3;
+	Tue, 16 Apr 2024 14:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6i63qqj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="hN9U4pEL"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2068.outbound.protection.outlook.com [40.107.212.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D90412EBF4;
-	Tue, 16 Apr 2024 14:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713277566; cv=none; b=Sou2Vt5mTw0T+xqYfXPdUuh+4h7pUvaN5+5EQv+3PiyH32kboSEjfCRt78DMEBgFNZgx4+c/ZI+MYMXZwNDzhwy8Uw60rMmgbAR1iqTWLtk3Ws9AknbcaP4QL7gK678k6n8alKnp7uhiCUjXvrnbQwPy2Preyh7HzswCS7xeDTU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713277566; c=relaxed/simple;
-	bh=+WyAEAGU6dHhLinGMVbyeKjBMJ0Y7Iab03XXzCxzVcU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jk2k11QhWCJRWmzcT6sV1lFBCJfQvyQYy/AD4umkEz1Q5Zw52UTM2qkDNDYF66ii0Iq1aHaal0E/ze7/tRtO3i3Kpba+n6JZoylZxKwNffK4uIj+nGK3VFAtX6DKXsfcbclam+Zj+M+xnYDFv2NHM+5bOEraT0xYij+7SuJrK1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o6i63qqj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B21F3C113CE;
-	Tue, 16 Apr 2024 14:26:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713277565;
-	bh=+WyAEAGU6dHhLinGMVbyeKjBMJ0Y7Iab03XXzCxzVcU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o6i63qqjHVahoY2VfNPDCyb0QK609jpzZ/ri34IbAojt+ypV2GQclA9EITdH1PB/Z
-	 M6f8dRbuu+3UifYh6LaZZAU8NXsVs3918Oe/xEACVlJZnr1BEi0Bp18OB3yZTZD/1Q
-	 CgPcVUq2chF13nYnivPvDrSQWN6QLKgMyFfPrVkPCPM0Uu5ZfUGUXdk6KC6yAdQH0O
-	 pVt/OdihXNnSPfO9iZyELa9gsZxYDc+iDQm5q0Jf1cI/aud0daCHBfrqyM2zCmhLqP
-	 T4q+nEaE/5R7XyW1/jr/PUBeRWiBAWD6LGFmA984CU5+4TqxGGnaTCtnvdzgtT9ude
-	 +8314dIjlCCTw==
-Date: Tue, 16 Apr 2024 17:24:54 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Nam Cao <namcao@linutronix.de>,
-	Andreas Dilger <adilger@dilger.ca>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
-	Ext4 Developers List <linux-ext4@vger.kernel.org>,
-	Conor Dooley <conor@kernel.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <Zh6KNglOu8mpTPHE@kernel.org>
-References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
- <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC7E0132C36;
+	Tue, 16 Apr 2024 14:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713277537; cv=fail; b=VaYIjwxDJGvQvQIT/DqojIM2JFCcGkxrccM+NjTVjwhvThoj2bHLQrEmMHvY+HWxZJHxepmxQRXU3yV+MpRvntlhpVg8ZDPNlE00gNAPoz/XdCzWXCyDUVczsEMpRDYAYELO3S/fMisUQOxkNBISpB7brYAyLhSSjHPMoFkwgrY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713277537; c=relaxed/simple;
+	bh=SINcn+IWiUapG/JuKjRSFB3ciWs6abn1FmX9SC8WA5I=;
+	h=Message-ID:Date:To:Cc:References:From:Subject:In-Reply-To:
+	 Content-Type:MIME-Version; b=AYUc1Qr+UGF8NtYNYIYNVyjROP1P8EXhpFqwtJyONIDP47mZd5B69jGB1YrgGayepRy8wVytBba3AyVCKvm1ilq6EDcSyt8IC2rPddfcD2FuRcxJTE7+ItX+hsRxKkvq5yS3TJzkszAhbQAaTxtvwAvqb/8y11Pimnrz56DnBu0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=hN9U4pEL; arc=fail smtp.client-ip=40.107.212.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CaMyHmr08roor3pp7WUljX8WZ0BPuOn+l5hTX+IANcORxnV8q86Jhw0Pmt4594b0qhfvnRh6sn9bzseNbR/sBthO29CuRekJj0lGNKeZux5MHBP9rA+7bhcC2FQYwNRK20Tk8J0uHhfI1ySiC7bV4MyA8lsP3SQB+k1JYGI48jP52xxO63BjCOhik8lFYpZJAiQQoFQoAvyGCF+4UQbr8704ENtjjl94+ZggSc4BFCYjOD0amEP3yAwy/8Y3vL25ta45jytRNDpoPwx4dJx9ZHyzv2q1gyCHHqcp/G4psLO9xxzH+prtIDI1ImpJYYRHDKBKylsPasePa5rB1P2Gwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wOeFlxviTMUT/VW2LboJqvhxAs+bBmfWBhWo79jkbq8=;
+ b=VMJoCXK6+hKnlkYgImUyLcDUjD1dbPrmciRZLRXLgADXvRpr9PR2qgEdVtCGlYhjKc0k24ow/PdQhNixwjNvbfiUBideazyttN+cKJveU9z4MrkSe8FEgK8P2URMa8cb71fQcTFsyQDFrqXHgzfwo8zPYAfY8yV3UlXFLYmWik8RTFwql15LS30NS8oxh4dZjMDIqqfvZkUEKPc66FX/jZDRLYRG7umfLtl7PwlR2GGxjiv+NbOxf75Et/JMdAYnbV/2m2WwYHuCz4IZWAPg1akfHia4yl0xsnobD03qoNtP132surfRhJDRrs10dfkaEZZkjpTMXDBGEKNQqfYAzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wOeFlxviTMUT/VW2LboJqvhxAs+bBmfWBhWo79jkbq8=;
+ b=hN9U4pELANIFKqV5yjkI2WmeS0gfz+kDtP4/lky3MrN2kd3Vkj84+QSST13PLltQ2mMqVz8xMJfiOBcgO7fA6uECn9wT03FDjF8A3qLNOwfOFfedU2T30Yqlui8UqF7Z+NtLt8yaJxIcDwcnwVHYmKT2kDqqhpa21QKj3en2GbU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
+ by CY8PR12MB7706.namprd12.prod.outlook.com (2603:10b6:930:85::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
+ 2024 14:25:13 +0000
+Received: from BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::bf0:d462:345b:dc52]) by BL1PR12MB5732.namprd12.prod.outlook.com
+ ([fe80::bf0:d462:345b:dc52%6]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
+ 14:25:13 +0000
+Message-ID: <758c876d-ff77-0633-7b3e-965d863d5a93@amd.com>
+Date: Tue, 16 Apr 2024 09:25:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To: Paolo Bonzini <pbonzini@redhat.com>, Michael Roth <michael.roth@amd.com>,
+ kvm@vger.kernel.org
+Cc: linux-coco@lists.linux.dev, linux-mm@kvack.org,
+ linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, hpa@zytor.com,
+ ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
+ jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+ slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+ srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+ dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, vbabka@suse.cz,
+ kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+ sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+ jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+ pankaj.gupta@amd.com, liam.merwick@oracle.com
+References: <20240329225835.400662-1-michael.roth@amd.com>
+ <20240329225835.400662-19-michael.roth@amd.com>
+ <67685ec7-ca61-43f1-8ecd-120ec137e93a@redhat.com>
+ <CABgObfZNVR-VKst8dDFZ4gs_zSWE8NE2gj5-Y4TNh0AnBfti7w@mail.gmail.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH v12 18/29] KVM: SEV: Use a VMSA physical address variable
+ for populating VMCB
+In-Reply-To: <CABgObfZNVR-VKst8dDFZ4gs_zSWE8NE2gj5-Y4TNh0AnBfti7w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DM6PR17CA0015.namprd17.prod.outlook.com
+ (2603:10b6:5:1b3::28) To BL1PR12MB5732.namprd12.prod.outlook.com
+ (2603:10b6:208:387::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|CY8PR12MB7706:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9b11a470-3eaa-42dd-606a-08dc5e210752
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bFr7YG6nJ4r5KgDaKBGuMHlVeBX4FytK6XOTsNaHPSLd+/uZaSVNJ6EBycadnYyyKsCweBzMX+7p0dToZVrgDkSgW8Q9xHX4Uh2/5EjbEJN88DAIKF/+BN2YkHXA026QegjX/53kjG1yZ5Ap+zbpO70+m28ISn/L8FPMnGgHSztMi9MH28gu0T6CpiL2gpI/6QF2HdZCM3slQleRwfvejXt95H/op44ZllRK0q5K0jzmBfh/hZmd4sbKgvtxMWPFQHZ1RqMNhaZBEmVoLeXfYEWj6DV/XlFNqLWiEgIeFacHmkTAUvhHsREsdGKZgQAd04BRnffAeAmjci4lB2Ot0T0Fx1/pyqosgqu4x4LwDQ6YR4gPOKoAvvYArtLPvHL8yn6lpuSnQvQq9ajmU5MjyrOKpKih4SOLkpaTP2sF0Ca4JpzFxYs+hc9Z8TiGYcDFLg65UPkN2woSjfj6W6TuC1ZAMJbnEqVkhPNdehBqw5EdbkB1UZKV0d1dsRUaXli3guVbZi3yhI2tG1LnjSJlIC9m55UkgHt7NfkQy0ak03Jl6RFWmbqJ9dLIVsDeMywJbf4k1dawQIb+P4mpEPq6lZ5DXVHXmRwCCAkut0Fs2c3a3xzkRmCI1AABMbH7Pf6E7mXNsukb9huI1YgSkt6jSFCp8hZQXSWXcUZpHXbaKbI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?T2gwdHc1QXplbW1kUVVjNk5kNm1hSTNqTlp3dTF2WDR6bmNoTjNXZFVpZDdQ?=
+ =?utf-8?B?TVlKcG5FaFlMN3NQSjJXNmFrbnRhazZmcXRHOU5xY0tmVXhXRWtxazVjby9q?=
+ =?utf-8?B?N3dNRUpyVHRsOVhHd3FpbW5HcmVpdlFxL3p5a1UvbTlMY0tFUnIwVG1JL2Er?=
+ =?utf-8?B?WUFOanBYUU55aFU0RlIrY0FZM1pxTU1GcVlwcW1wOHlkcllFQW4xaFBZV2sx?=
+ =?utf-8?B?UmtvRk9wMHI5a1czRGs0WDNYbGdYWGpmemsxVDllUTdtRDVqUjIvdkMvdDNn?=
+ =?utf-8?B?dFJVMXI0ZW9jOWZodUZmbVdoNVdHQVVKWVROaFpQWHl2S0tZa205RWNKS3RH?=
+ =?utf-8?B?NjJUM0xCR0podi94YkVGdjhsYjI0ZFQ5NmtOUFlpSnFCdkl5NUZwaGxiYm1K?=
+ =?utf-8?B?WUNNU1g3T2Q4bmlrUDd6VTYrTmJIbzVtbXgrdE1vQlNQSWpHK3FPK1kxd0R3?=
+ =?utf-8?B?UGJIVGlRNXNDcllCNzRZSHBiL0JUWTM5TnFYZHFtMnNFSGlaNjJjaXQvcnlG?=
+ =?utf-8?B?VGxqNW9JeUVXNmNsZTlEYU56Zm9jaktCTXRmUDY5UjY1Zi9xY09zck1HVThH?=
+ =?utf-8?B?N1JuM0lYRm5tZldkMVVzWi9PS2o5UFhFbHhYT1hPeEpqWkxnV1h5cTUyVUNK?=
+ =?utf-8?B?S1FqNWQ4bnJXU1dwOUxiYk41azB0LzYrUEc1UG1VR2ZoRnZYNml1SGowbmp4?=
+ =?utf-8?B?bjVwbnJOQnA4WWtUWWlvZTJ4V1h4c2llbkFKRzd5SGh5L1VMb0I2cVdkOEVm?=
+ =?utf-8?B?clNXTzBKYmttMGQvU3lBdFBwcDdYUGwzVGVzYWtDdWFGakdFZWVPMzZxL21n?=
+ =?utf-8?B?c2NkRHdzMksvWGpMRk8zU1JpYnJoL2FvL1diSDR6TC9DS2Z1bSsxQllROU1s?=
+ =?utf-8?B?cHpWNkk1UUhycHY3S1VZNmpVd1hpR29CRHV0eXRXSlFzekRzUDByVDNCRm1Y?=
+ =?utf-8?B?RzR5V3JaSjhkZ2hXTFZIY3lFNjE3NU5vVlp6RG9EQVZkME40WkpVOUU3eFJk?=
+ =?utf-8?B?YTIvbzJoaG1samhkV0hmOXB5MmpHZEZJNmFJMFA2NHVVVmkzKytDdGdWT2pH?=
+ =?utf-8?B?d3dQaHM0UFJBWXBQd1lFdGp6c3JYR3MvNHdYUGJxZXRxZzZ2S2g2dldOMU94?=
+ =?utf-8?B?V29OTEViNjI4MFpYMVp3dlBURXRRSUd6d3g2bW50NW9qTFRzQVNlbTl6Qk1j?=
+ =?utf-8?B?Ykx4b3VOdllFclQ0bkhicDdVcU9GSnIxcFBRcHNXMk4zK0FpUXhjVmtxZDFj?=
+ =?utf-8?B?WHRXL2htc004a3NtbU91dkJpWkpmeXR1NU0vN3JsRmpKNEZLVU8zQ3VMdHU0?=
+ =?utf-8?B?VGlRSEFwd1VxZEVqYktVNVZxZ1FSblJIV1NQZU1LUDJTVFRmbFNKRytHWmZZ?=
+ =?utf-8?B?SlB6U3J4ZTRoM2tpT29RejkxOVBtWlFlb2QySVpJVkVzampXeWZ5TGc1T0pC?=
+ =?utf-8?B?TWl4S2dyN1FDa1FVRlpqUGlCTUk1Z1o5WSt3WmlUc1BSVllESTI4ZVU2SG9K?=
+ =?utf-8?B?WG1NWVEvanNYQ280M2hFaEJhTTM4Q3B1dW5hYm1yTXJzZVhsbGFiNHg5bDRa?=
+ =?utf-8?B?VkFiREh2WGtvVTIxOE5lQm5TMzU0WHU0WTNJQ3RJREU1a1NTeklwaEUzbXh6?=
+ =?utf-8?B?R0F2NjIvM1dkOTg1R2VmZDhtZGtSUWxsN1REOENVREtlV0hvdnVja1l4MHVk?=
+ =?utf-8?B?TTg2RGQwVXlOSlFCb1kyZEZIU09QVXBTWWR5NVVDTDhNRVdBeTkvUTdFMmRp?=
+ =?utf-8?B?K3NQWEdpWHh2M2k5RlQ4MGU3T2JGYXR3RmgzV2kxNUN2NllrNFNKVmNhSHpP?=
+ =?utf-8?B?ek14TDFoL01OaVZJUERiTW5xcXZyL1ZKd0ZDV1ltWVNBOUY3bDQyQStnV3VH?=
+ =?utf-8?B?ZmVzZzEvd3Jxc0tWMEUzcVZiMHc0d2lwdXlPS1FSVVJRbXI0TWRnemJuYnhn?=
+ =?utf-8?B?a3cyVmpobGtEdlV3a0xlQ1dJa010dklzMXJGbXBvRFlhcmFNY2NXQ1p6aDFF?=
+ =?utf-8?B?b0htU0NydWVvSW50WXdobTVtMXhrMXZvT0d0emFzb2hVOFZjdW5RcHV3dnIy?=
+ =?utf-8?B?VFhZVkhEQmdTazQwL2tnU0dtU2VZY3JXWm9DUW9ndVpybEdMajEyd01jRklW?=
+ =?utf-8?Q?ecgwpSGOlUD0UYW+DfE5021do?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b11a470-3eaa-42dd-606a-08dc5e210752
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 14:25:13.0948
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2kQI/y5vz/idGOLiBkB+EkKeiXbdEPOSDoCL41hiB1N5HpAkoTNHHyv0ggouHoO71MkASvYCh6s5fvtkaFbpZw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7706
 
-Hi,
+On 4/16/24 06:53, Paolo Bonzini wrote:
+> On Sat, Mar 30, 2024 at 10:01â€¯PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 3/29/24 23:58, Michael Roth wrote:
+>>> From: Tom Lendacky<thomas.lendacky@amd.com>
+>>>
+>>> In preparation to support SEV-SNP AP Creation, use a variable that holds
+>>> the VMSA physical address rather than converting the virtual address.
+>>> This will allow SEV-SNP AP Creation to set the new physical address that
+>>> will be used should the vCPU reset path be taken.
+>>>
+>>> Signed-off-by: Tom Lendacky<thomas.lendacky@amd.com>
+>>> Signed-off-by: Ashish Kalra<ashish.kalra@amd.com>
+>>> Signed-off-by: Michael Roth<michael.roth@amd.com>
+>>> ---
+>>
+>> I'll get back to this one after Easter, but it looks like Sean had some
+>> objections at https://lore.kernel.org/lkml/ZeCqnq7dLcJI41O9@google.com/.
+> 
 
-On Tue, Apr 16, 2024 at 01:02:20PM +0200, Björn Töpel wrote:
-> Christian Brauner <brauner@kernel.org> writes:
-> 
-> > [Adding Mike who's knowledgeable in this area]
-> 
-> >> > Further, it seems like riscv32 indeed inserts a page like that to the
-> >> > buddy allocator, when the memblock is free'd:
-> >> > 
-> >> >   | [<c024961c>] __free_one_page+0x2a4/0x3ea
-> >> >   | [<c024a448>] __free_pages_ok+0x158/0x3cc
-> >> >   | [<c024b1a4>] __free_pages_core+0xe8/0x12c
-> >> >   | [<c0c1435a>] memblock_free_pages+0x1a/0x22
-> >> >   | [<c0c17676>] memblock_free_all+0x1ee/0x278
-> >> >   | [<c0c050b0>] mem_init+0x10/0xa4
-> >> >   | [<c0c1447c>] mm_core_init+0x11a/0x2da
-> >> >   | [<c0c00bb6>] start_kernel+0x3c4/0x6de
-> >> > 
-> >> > Here, a page with VA 0xfffff000 is a added to the freelist. We were just
-> >> > lucky (unlucky?) that page was used for the page cache.
-> >> 
-> >> I just educated myself about memory mapping last night, so the below
-> >> may be complete nonsense. Take it with a grain of salt.
-> >> 
-> >> In riscv's setup_bootmem(), we have this line:
-> >> 	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
-> >> 
-> >> I think this is the root cause: max_low_pfn indicates the last page
-> >> to be mapped. Problem is: nothing prevents PFN_DOWN(phys_ram_end) from
-> >> getting mapped to the last page (0xfffff000). If max_low_pfn is mapped
-> >> to the last page, we get the reported problem.
-> >> 
-> >> There seems to be some code to make sure the last page is not used
-> >> (the call to memblock_set_current_limit() right above this line). It is
-> >> unclear to me why this still lets the problem slip through.
-> >> 
-> >> The fix is simple: never let max_low_pfn gets mapped to the last page.
-> >> The below patch fixes the problem for me. But I am not entirely sure if
-> >> this is the correct fix, further investigation needed.
-> >> 
-> >> Best regards,
-> >> Nam
-> >> 
-> >> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> >> index fa34cf55037b..17cab0a52726 100644
-> >> --- a/arch/riscv/mm/init.c
-> >> +++ b/arch/riscv/mm/init.c
-> >> @@ -251,7 +251,8 @@ static void __init setup_bootmem(void)
-> >>  	}
-> >>  
-> >>  	min_low_pfn = PFN_UP(phys_ram_base);
-> >> -	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
-> >> +	max_low_pfn = PFN_DOWN(memblock_get_current_limit());
-> >> +	max_pfn = PFN_DOWN(phys_ram_end);
-> >>  	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
-> >>  
-> >>  	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
-> 
-> Yeah, AFAIU memblock_set_current_limit() only limits the allocation from
-> memblock. The "forbidden" page (PA 0xc03ff000 VA 0xfffff000) will still
-> be allowed in the zone.
-> 
-> I think your patch requires memblock_set_current_limit() is
-> unconditionally called, which currently is not done.
-> 
-> The hack I tried was (which seems to work):
-> 
-> --
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index fe8e159394d8..3a1f25d41794 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -245,8 +245,10 @@ static void __init setup_bootmem(void)
->          */
->         if (!IS_ENABLED(CONFIG_64BIT)) {
->                 max_mapped_addr = __pa(~(ulong)0);
-> -               if (max_mapped_addr == (phys_ram_end - 1))
-> +               if (max_mapped_addr == (phys_ram_end - 1)) {
->                         memblock_set_current_limit(max_mapped_addr - 4096);
-> +                       phys_ram_end -= 4096;
-> +               }
->         }
+Note that AP create is called multiple times per vCPU under OVMF with 
+and added call by the kernel when booting the APs.
 
-You can just memblock_reserve() the last page of the first gigabyte, e.g.
-
-	if (!IS_ENABLED(CONFIG_64BIT)
-		memblock_reserve(SZ_1G - PAGE_SIZE, PAGE_SIZE);
-
-The page will still be mapped, but it will never make it to the page
-allocator.
-
-The nice thing about it is, that memblock lets you to reserve regions that are
-not necessarily populated, so there's no need to check where the actual RAM
-ends.
-
->  
->         min_low_pfn = PFN_UP(phys_ram_base);
-> --
+> So IIUC the gist of the solution here would be to replace
 > 
-> I'd really like to see an actual MM person (Mike or Alex?) have some
-> input here, and not simply my pasta-on-wall approach. ;-)
+>     /* Use the new VMSA */
+>     svm->sev_es.vmsa_pa = pfn_to_hpa(pfn);
+>     svm->vmcb->control.vmsa_pa = svm->sev_es.vmsa_pa;
 > 
+> with something like
 > 
-> Björn
+>     /* Use the new VMSA */
+>     __free_page(virt_to_page(svm->sev_es.vmsa));
 
--- 
-Sincerely yours,
-Mike.
+This should only be called for the page that KVM allocated during vCPU 
+creation. After that, the VMSA page from an AP create is a guest page 
+and shouldn't be freed by KVM.
+
+>     svm->sev_es.vmsa = pfn_to_kaddr(pfn);
+>     svm->vmcb->control.vmsa_pa = __pa(svm->sev_es.vmsa);
+> 
+> and wrap the __free_page() in sev_free_vcpu() with "if
+> (!svm->sev_es.snp_ap_create)".
+> 
+> This should remove the need for svm->sev_es.vmsa_pa. It is always
+> equal to svm->vmcb->control.vmsa_pa anyway.
+
+Yeah, a little bit of multiple VMPL support worked its way in there 
+where the VMSA per VMPL level is maintained.
+
+But I believe that Sean wants a separate KVM object per VMPL level, so 
+that would disappear anyway (Joerg and I want to get on the PUCK 
+schedule to talk about multi-VMPL level support soon.)
+
+> 
+> Also, it's possible to remove
+> 
+>     /*
+>      * gmem pages aren't currently migratable, but if this ever
+>      * changes then care should be taken to ensure
+>      * svm->sev_es.vmsa_pa is pinned through some other means.
+>      */
+>     kvm_release_pfn_clean(pfn);
+
+Removing this here will cause any previous guest VMSA page(s) to remain 
+pinned, that's the reason for unpinning here. OVMF re-uses the VMSA, but 
+that isn't a requirement for a firmware, and the kernel will create a 
+new VMSA page.
+
+> 
+> if sev_free_vcpu() does
+> 
+>     if (svm->sev_es.snp_ap_create) {
+>       __free_page(virt_to_page(svm->sev_es.vmsa));
+>     } else {
+>       put_page(virt_to_page(svm->sev_es.vmsa));
+>     }
+> 
+> and while at it, please reverse the polarity of snp_ap_create and
+> rename it to snp_ap_created.
+
+The snp_ap_create flag gets cleared once the new VMSA is put in place, 
+it doesn't remain. So the flag usage will have to be altered in order 
+for this function to work properly.
+
+Thanks,
+Tom
+
+> 
+> Paolo
+> 
 
