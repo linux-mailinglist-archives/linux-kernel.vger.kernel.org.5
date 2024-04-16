@@ -1,96 +1,106 @@
-Return-Path: <linux-kernel+bounces-147646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F85C8A76D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:38:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC3E78A76DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:39:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A8FF2847FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:38:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 117B81C20D3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2868A136E09;
-	Tue, 16 Apr 2024 21:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BED13AA5A;
+	Tue, 16 Apr 2024 21:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b="X3BX3xxB"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUaIWbfJ"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5140B6CDC0
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:35:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D1C13A3E5;
+	Tue, 16 Apr 2024 21:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713303303; cv=none; b=K1UqE3sMX9HkFOFRESjrBXd3khMvQYWdgJD4u7Jo9dxoxsWFrXpn7hzyFSshLLnIgmJxWJNOySOyKQUJOxMpf83K/syKScrkdmgHJfRryHwG000OukiLUmGg48wg31ZXZMyiJMtAHX4W97Os8tVb2n48Hnwx2/TmJ9vFkyOUNlI=
+	t=1713303384; cv=none; b=YxJ6TzUYg/rm+7NkeLGzCSazud2keY1tceKAP6eGwqv/lQW/37yfq4kY4y7SXDHv6LUf0OCD4wwIKiX1FazGAepfKUE+KLzW1/kf6wrSAnFR/UuwnHqGZJSeESNifn8zJ8HerMAQDLsaKuDHpW3XNtlkfnBQ7aBOubpMQ5bOhvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713303303; c=relaxed/simple;
-	bh=AbGUTIr93cIZBICMTdcgi4m66F6R94LZwRvkAx0ybN4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=EuwmpCbsizFtwpdsnTdT131zBPamiyrdHEgNU8Im/4tNdqzacM9z3GTPygMA91b2l4JsMhrUSY2CxpChWrPm2d5po8sLoJ7emuLG2shzA8KC/NSZYr2VHVxkLlIyWcJ54YyFn5nexBodnRmHR+VnwIQ8uMThwd/L7X1oykahOvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net; spf=pass smtp.mailfrom=iwanders.net; dkim=pass (1024-bit key) header.d=iwanders.net header.i=@iwanders.net header.b=X3BX3xxB; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iwanders.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iwanders.net
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4347cbdb952so14985381cf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:35:00 -0700 (PDT)
+	s=arc-20240116; t=1713303384; c=relaxed/simple;
+	bh=hTZj3zFH/capdeqXw5vQK5e7OMPUwsVvEofrRIwsyJg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EBCgIf0uTd8wbjEa6A8LMj+a00Apb+O/SBuuN7uTqkdJ7IUTEy/c7YCgfAgGsZoWXuN4fSWkfOto74Fpxlo2BnzIulQ0ykI8H+GQQcBWjMbJK+l8GGgPi5Pqgmwify2rpNCpBr3fa2dr1CysHc3nje5iAUzK0yDjb5mxm+JbcT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUaIWbfJ; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ead4093f85so4108137b3a.3;
+        Tue, 16 Apr 2024 14:36:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iwanders.net; s=google; t=1713303300; x=1713908100; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AbGUTIr93cIZBICMTdcgi4m66F6R94LZwRvkAx0ybN4=;
-        b=X3BX3xxBdfZyLm2Y7uCzFrunCUEdaIQJYFUNYrgsuZV0URPn8HN6hGiaZZ6r1oJT0u
-         Utge9fWhUY4s7yOVYneuf4Fz14j0ZcE/RLTuDzu/jVRRzodKavKPDEhEH6au4d1sDovN
-         t98mjnzqZWWanHx2WCgd4uHfGskwTtsEPatls=
+        d=gmail.com; s=20230601; t=1713303382; x=1713908182; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dNYKjlq69Ck2YSCS4K7cKN7J0KiR/K/BwPBXXkuJ58E=;
+        b=lUaIWbfJH791Rxg/+cUVzv0avclvpqLTrGPnhQRbVDrM3CymmZv0QLFh8D0/LUEI7T
+         J61XgqoD7yNDODyJZ8eipOT+S5tnAUT5y24xjk/waWmIhfOjkIKwWjQIIGwbN1Q9Uszp
+         8iWRplvFbpovDVGNx+5eFP6RZMA7X17pTMFeaMqcHju1D+9fzig6aVRwOXUnY8ZlDfH/
+         W81ZJ101nWmF4yxQPTWZtMVY6nqlt36rURiMlAuaqHcqLdJwZYJS6zY6zIZdw6lcJMio
+         KQvYwvBN3jqoaVs2dfAOjukt/mNN8G1oScZoHr7HxoNM2A9eBeX3EDpFoqi+V5/Lf2ap
+         tm/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713303300; x=1713908100;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AbGUTIr93cIZBICMTdcgi4m66F6R94LZwRvkAx0ybN4=;
-        b=uzROUV/28yaN5REhCipv83ncIr5Ab6hM0phiHGfbUIMWS+N1zT64cXMEstUzBGNcKL
-         7Hz9VFxMr6h2Fjr46IC6btc2tj1F7wNDlZrUqDEbeD6j7d5vYu2AmBV3Nk6dW3SAm9aU
-         rOXfLLM2Yvdyk5PoOJosol2ZfnB2gOkuxaUl7BaH0jaw0O7jOC1tlMxr7aYT/mHpqrxC
-         djZtaCXXmnVf9SHGGeD45uDeNkgez5XxPXSJZ1mu1Rfnrda0oTjWxX+laUUhlLfGtlAp
-         Jvht8no3STgv1stpHK3D5u7Ns7xiIdIN8bgsXnLJtB14AlTIS26M26/osgjIhisat/h7
-         viCg==
-X-Forwarded-Encrypted: i=1; AJvYcCWywUuLfUXvftXDdHIEjE5CA4t6jlYB6RZ5XBhjGA2reHy8YvXLa+f4PEOeOmRmrRb+V63hSR1LKieNmZNY5kWuXtLWgGQuwfh3HupZ
-X-Gm-Message-State: AOJu0YyiCtXlqMeuiDIN568E0GmLmk1idmtHFo+DJL9Bmu2a5mh88JSU
-	VRV2r5XzanWbDo9hGkpSQN08JBezxQYt8ScQ70neWO7UguQtCOhzax5h6m493EM=
-X-Google-Smtp-Source: AGHT+IHDjh9+d1ObR8Ij8WEXEfjPgBM7QNiW7UwML0UelHwkd95ejcMfHejXGyIypHi5JcRJDdmBKQ==
-X-Received: by 2002:a05:622a:40c:b0:434:8f14:d24 with SMTP id n12-20020a05622a040c00b004348f140d24mr19186828qtx.62.1713303300063;
-        Tue, 16 Apr 2024 14:35:00 -0700 (PDT)
-Received: from eagle.lan (24-246-30-234.cable.teksavvy.com. [24.246.30.234])
-        by smtp.gmail.com with ESMTPSA id s11-20020ac8528b000000b0043476c7f668sm7566740qtn.5.2024.04.16.14.34.58
+        d=1e100.net; s=20230601; t=1713303382; x=1713908182;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dNYKjlq69Ck2YSCS4K7cKN7J0KiR/K/BwPBXXkuJ58E=;
+        b=jOSePsQdALPF2fv7UldV2vistBo9PCPdk9PXbDhlKU/kAXi+cvKo2MYPwHW4kH31QY
+         ADIslsZ39HJi+XkvJw4JmtifSs3N6px/tcCkYds9y9B+zihYzizrsbkwkbe0IjAChd1j
+         zGT8lLZ33SgMFBiNuf2YKOVHG2f7JDfyqFJofYW4uOXDFI65sPCYLXghmYbfXbF4o/U2
+         M5YsJHkE8401kIzUr3ScjjRK64KidZ8EO0N0iQomu42K7h+Doc3aobr8Be+LhLbfE6FG
+         2l8qU2YkoxMmESgQ+W36/owYcdfnhaSowvIImpxh4C23cDCULnCTj2DPu8VSa1P0uC8v
+         3YcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXVww9RckeQ94RfYd7nGaGw1AbsyAiuP7R+3xFg65BdKD0uBq7XYy2Vd6YfRcStunYNYnOBDHE+X5vh52zA9M9KQeIHEWGbFIoK1DJ+RxN408M1ch9bH36YgmuzAsz+EWKDxyRt+Ihq8ZBSXTm/kFTYXbCfeAe46T+rPSaKKw==
+X-Gm-Message-State: AOJu0YzPs0/5mne/q4Ogs36xUWSHzMwiaMWfMQ3GYFXVyxFBcAk/esUq
+	WwRAQlX0Y4ph47HF2Mv1PU0JjRMtjaxnkBcD3IQdMi6GTupRi0fr
+X-Google-Smtp-Source: AGHT+IFtvPB3hU1q5HQQPGVksw0oSgLO5/7Sm0T/QIFSiT1oaA+hQ2aTrUGjHmH0e6uOCRrKzFmQQA==
+X-Received: by 2002:a05:6300:8084:b0:1a9:5a2a:7e51 with SMTP id ap4-20020a056300808400b001a95a2a7e51mr12935570pzc.24.1713303382256;
+        Tue, 16 Apr 2024 14:36:22 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id 1-20020a056a00072100b006ed045e3a70sm9400413pfm.25.2024.04.16.14.36.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 14:34:59 -0700 (PDT)
-From: Ivor Wanders <ivor@iwanders.net>
-To: luzmaximilian@gmail.com
-Cc: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	ivor@iwanders.net,
-	jdelvare@suse.com,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux@roeck-us.net,
-	platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 2/3] hwmon: surface_temp: Add support for sensor names
-Date: Tue, 16 Apr 2024 17:34:56 -0400
-Message-Id: <20240416213456.3214-1-ivor@iwanders.net>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <97d0f68f-63da-4f72-ae8d-89fbf9aadf62@gmail.com>
-References: <97d0f68f-63da-4f72-ae8d-89fbf9aadf62@gmail.com>
+        Tue, 16 Apr 2024 14:36:21 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 16 Apr 2024 11:36:20 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+	yosryahmed@google.com, longman@redhat.com, netdev@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	shakeel.butt@linux.dev, kernel-team@cloudflare.com,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	mhocko@kernel.org
+Subject: Re: [PATCH v1 1/3] cgroup/rstat: add cgroup_rstat_lock helpers and
+ tracepoints
+Message-ID: <Zh7vVPp-Rj5hB6eN@slm.duckdns.org>
+References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
+ <171328988660.3930751.17537768209042139758.stgit@firesoul>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171328988660.3930751.17537768209042139758.stgit@firesoul>
 
-> Ivor reverse-engineered the interface calls to get the sensor
-> names and wrote the vast majority of this patch (I only changed some
-> smaller things and gave advice, hence the co-developed-by). Therefore I
-> wanted to give proper attribution to Ivor for his work and not squash it
-> into a single patch.
+On Tue, Apr 16, 2024 at 07:51:26PM +0200, Jesper Dangaard Brouer wrote:
+> This commit enhances the ability to troubleshoot the global
+> cgroup_rstat_lock by introducing wrapper helper functions for the lock
+> along with associated tracepoints.
 
-By all means squash them in the next patch revision to make things simpler
-to review, I don't think it's a large enough piece of work to worry too
-much about attribution if it makes review more difficult.
+Applied to cgroup/for-6.10.
 
-~Ivor
+Thanks.
+
+-- 
+tejun
 
