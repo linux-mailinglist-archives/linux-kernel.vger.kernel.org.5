@@ -1,137 +1,225 @@
-Return-Path: <linux-kernel+bounces-146435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3918A6536
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:36:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D278A6542
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:38:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D86881F225EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:36:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF6E8283F36
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A348120A;
-	Tue, 16 Apr 2024 07:35:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E67584D11;
+	Tue, 16 Apr 2024 07:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="m8YNJqle"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ffkhviKU"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C3971B50
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA72A71B50;
+	Tue, 16 Apr 2024 07:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252955; cv=none; b=FgQIgxitK88WCOUopYEBxBXb6RUuvDr2l49ndiE2Y5QRFcLmHZWwwKN0kDporTkHfFlM68SltIZ5H8wykT3vZFj5gwTC2Rt4ZfUnB0TgJGB1KrXTJHnowahHcIm+07FQ0/FvksX6xQA+0v/B665yAzJIq91wSSxRm4FcVwfFm6g=
+	t=1713253097; cv=none; b=pZl+zZ4AQugq6FEXohn4b7fICuKCHk9vPL9YOyQhpA3B9AOQHybefA6u99amlk3GCuqK4iZGYqyiAGrTtFdFwTM5hWQlFfMnZmcOVCe8xXGB8SYzYTOrMF6U8rV05JJoZZJokLjwPGBh0BouPdrw7DGI40APvmyghit8YqOI9ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252955; c=relaxed/simple;
-	bh=Mzy1RLChKpTXckeRfOn3L90L6pWcJRlTrF3gU8yBosw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=u7tXlUHB8C6SEkI3EaOVv4SsPArKAoXkNZYKhzb5G5Nd4yno7RlTMvtQeS3b8zxyB0BIjnyfHUY8W8+8VmvSZUJo0qr8nJLsjiZe5TFvn6FukMl/WSzfX8HyEaF+i//hKT6IaDzT4W7akMr6ABQv/rM/wZFQItl27VnBBY4JIB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=m8YNJqle; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a7d6bc81c6so2993382eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:35:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713252952; x=1713857752; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x3Y56dDS984KsDzs2nzTKgy6adBy9joM/agCd66RARo=;
-        b=m8YNJqleWJawjxqYMgdPyDvNSAxyEGyQieFXU+xYCur64y6QjTg9nl5J5nCO8pv7st
-         CFrRu/S01DkAF+yulHAH61ryd6s4oIKjJU6hhY5EOJkBcSCA8os57qi3MGvpsFAqGOxJ
-         QJKJ+vTRnSQ19nyRbyxZTmi+LuT/HXVFHJ9HA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713252952; x=1713857752;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x3Y56dDS984KsDzs2nzTKgy6adBy9joM/agCd66RARo=;
-        b=uVQ75iVmGAQ0KfZQwIByuysujM9x2fe5i9VmmmpCa8YoDGBHbHMM8dz3phH8rk43gd
-         cKoSmSkfTaNtP4iEiKHUUjTw9YeSLgsOWcMrvfqVkRMAFjUQEC5c/V34UidbbfK5yPkn
-         OX6VX0RRTbHWPxffZ4YdHeJ8KA3/TgPQl3iwHNLIO5VbcxU1vYKSG29zF4n6eME0rCTR
-         U9xwMhRUZba16EzKykPwuhKKtdT8tXpankoFLoSOkqUDYGRNuduJit02UNjxlh++nXeC
-         tvQEcxpAvMbM0vxdEWMIUSiRnCLTyY0rssUTj1UePvGQjWYQOlwYRNJTSpZsQJcX/CWM
-         UROg==
-X-Forwarded-Encrypted: i=1; AJvYcCUqyNtGSBAnQoCfUEm37bCUBCShiDJQszvAKOVsxhRgNzBaocli8UDfFbJHWpmq9pJ0Q9D6OswYGbFcFVpK9ljZFGg1ELpKz34Iqmif
-X-Gm-Message-State: AOJu0Yy76rs9yMA9xgi2uH1MzpLsfztDlOIMK1TWSP0Sqc2p0dyQZ+Ip
-	z5G6zlIjgwlEL/aDQECTuWSo7nvwT1YnfC/ziF3BfRGKYPW8hiAD5ZqJD1zwMd3bAF0e6QJ/6tF
-	mGbWO
-X-Google-Smtp-Source: AGHT+IHNjgaqMYg1Csze8sajKRyaaqmq9zLpH84gQd3fhwrzyArn1i3A0GueOZmBPZ6aUxRl85D33Q==
-X-Received: by 2002:a05:6870:568c:b0:232:fba4:4594 with SMTP id p12-20020a056870568c00b00232fba44594mr15920699oao.49.1713252952526;
-        Tue, 16 Apr 2024 00:35:52 -0700 (PDT)
-Received: from yuanhsinte1.c.googlers.com (88.216.124.34.bc.googleusercontent.com. [34.124.216.88])
-        by smtp.gmail.com with ESMTPSA id j24-20020a62b618000000b006ea9108ec12sm8307092pff.115.2024.04.16.00.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 00:35:52 -0700 (PDT)
-From: Hsin-Te Yuan <yuanhsinte@chromium.org>
-Date: Tue, 16 Apr 2024 07:35:47 +0000
-Subject: [PATCH RESEND v2] thermal/drivers/mediatek/lvts_thermal: Add coeff
- for mt8192
+	s=arc-20240116; t=1713253097; c=relaxed/simple;
+	bh=x5lugkkuTzZRflrDEuf9ADF8MPGbuJ8c7gc3ccW/M98=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lrqWVHaOiGPO7fqcVZAeItq5wHWRaNmHwD5BMctGozvtjHPxJNj7QrzprPONpvoQ3iedQoKK1SHariu8e/RfxEKNxfXrQ1rWk88ufwlGXiVBX8M8HqM23yEyfYSln0GYraCQnAA63vmi4eo0unM1CCdpOdo3Zsqg8GDOg+kGicA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ffkhviKU; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1713253095; x=1744789095;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=x5lugkkuTzZRflrDEuf9ADF8MPGbuJ8c7gc3ccW/M98=;
+  b=ffkhviKUAXUiuThSZ/tx29uQArlrjZFAD6ATYNjVEoxvac3g+66r9l7T
+   oUrR5m3pyB58wq5a+tUEXqrdtvxw2ntFN7B1lx7owY9qXwd2YvZzQKYub
+   M7TVs1DPW9EBFDoeO8ns02UiPHUocA+nRschigTr9ReBRIzRQ51A2N182
+   2iMNF+KAe0Cb3yIKVILn5yKBBlnH7OtHE8oWxgfYfe0znRuhLflaQkzHa
+   6yOBXWvCl1U6OmGJkcRXGZ3TPK0NseMZkhe5HQvOOsyv2SwvRMrH7yZQE
+   N6Nn2NLhCTtJJAfLWNVvI17PtTD1/TxNopz9zaTnt2VnYwJvA1A4iAB/v
+   g==;
+X-CSE-ConnectionGUID: 61Rrqh/nSVOeoxSPEgjDLA==
+X-CSE-MsgGUID: Y9MCszL3RR+vu36uIQGM/A==
+X-IronPort-AV: E=Sophos;i="6.07,205,1708412400"; 
+   d="asc'?scan'208";a="21182016"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Apr 2024 00:38:08 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 16 Apr 2024 00:37:29 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 16 Apr 2024 00:37:25 -0700
+Date: Tue, 16 Apr 2024 08:36:33 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
+	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
+	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
+	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
+	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 02/19] riscv: cpufeature: Fix thead vector hwcap removal
+Message-ID: <20240416-husband-flavored-96c1dad58b6e@wendy>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-2-4af9815ec746@rivosinc.com>
+ <20240412-tuesday-resident-d9d07e75463c@wendy>
+ <ZhlrdGXfSushUNTp@ghost>
+ <20240412-eastcoast-disparity-9c9e7d178df5@spud>
+ <ZhmeLoPS+tsfqv1T@ghost>
+ <20240412-chemist-haunt-0a30a8f280ca@spud>
+ <ZhmoPuoR00aS6qZp@ghost>
+ <20240413-sharper-unlivable-5a65660b19e2@spud>
+ <Zh3xrTfjjk3b4GHb@ghost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240416-lvts_thermal-v2-1-f8a36882cc53@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAFIqHmYC/32NPQ/CIBRF/4phFgOvH6iTg10ddDTGUPpaSNpio
- BJN0/8uYTTG8d6bc+5MPDqDnuxXM3EYjDd2jAHWK6K0HDukpomZAIOc5ZzRPkz+Pml0g+xp1mR
- lsc2FVG1LIvJw2JpX0l3JubpUpyO5xV4bP1n3Ti+Bp/W3MHDKKWLBatgpLoryoLSzg3kOG+u65
- Arwj4fIl8BVLRQTMoMvflmWDyKXp07zAAAA
-To: "Rafael J. Wysocki" <rafael@kernel.org>, 
- Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
- Lukasz Luba <lukasz.luba@arm.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>, 
- =?utf-8?q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>, 
- Balsam CHIHI <bchihi@baylibre.com>
-Cc: Alexandre Mergnat <amergnat@baylibre.com>, linux-pm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, Hsin-Te Yuan <yuanhsinte@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="S0aAJ0pL4KXiXwbM"
+Content-Disposition: inline
+In-Reply-To: <Zh3xrTfjjk3b4GHb@ghost>
 
-In order for lvts_raw_to_temp to function properly on mt8192,
-temperature coefficients for mt8192 need to be added.
+--S0aAJ0pL4KXiXwbM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 288732242db4 ("thermal/drivers/mediatek/lvts_thermal: Add mt8192 support")
-Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
----
-Changes in v2:
-- Reusing mt8195 coeff instead of creating duplicate definitions
-- Link to v1: https://lore.kernel.org/r/20240410-lvts_thermal-v1-1-ee50b29c1756@chromium.org
----
- drivers/thermal/mediatek/lvts_thermal.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On Mon, Apr 15, 2024 at 08:34:05PM -0700, Charlie Jenkins wrote:
+> On Sat, Apr 13, 2024 at 12:40:26AM +0100, Conor Dooley wrote:
+> > On Fri, Apr 12, 2024 at 02:31:42PM -0700, Charlie Jenkins wrote:
+> > > On Fri, Apr 12, 2024 at 10:27:47PM +0100, Conor Dooley wrote:
+> > > > On Fri, Apr 12, 2024 at 01:48:46PM -0700, Charlie Jenkins wrote:
+> > > > > On Fri, Apr 12, 2024 at 07:47:48PM +0100, Conor Dooley wrote:
+> > > > > > On Fri, Apr 12, 2024 at 10:12:20AM -0700, Charlie Jenkins wrote:
+> >=20
+> > > > > > > This is already falling back on the boot CPU, but that is not=
+ a solution
+> > > > > > > that scales. Even though all systems currently have homogenous
+> > > > > > > marchid/mvendorid I am hesitant to assert that all systems are
+> > > > > > > homogenous without providing an option to override this.
+> > > > > >=20
+> > > > > > There are already is an option. Use the non-deprecated property=
+ in your
+> > > > > > new system for describing what extesions you support. We don't =
+need to
+> > > > > > add any more properties (for now at least).
+> > > > >=20
+> > > > > The issue is that it is not possible to know which vendor extensi=
+ons are
+> > > > > associated with a vendor. That requires a global namespace where =
+each
+> > > > > extension can be looked up in a table. I have opted to have a
+> > > > > vendor-specific namespace so that vendors don't have to worry abo=
+ut
+> > > > > stepping on other vendor's toes (or the other way around). In ord=
+er to
+> > > > > support that, the vendorid of the hart needs to be known prior.
+> > > >=20
+> > > > Nah, I think you're mixing up something like hwprobe and having
+> > > > namespaces there with needing namespacing on the devicetree probing=
+ side
+> > > > too. You don't need any vendor namespacing, it's perfectly fine (IM=
+O)
+> > > > for a vendor to implement someone else's extension and I think we s=
+hould
+> > > > allow probing any vendors extension on any CPU.
+> > >=20
+> > > I am not mixing it up. Sure a vendor can implement somebody else's
+> > > extension, they just need to add it to their namespace too.
+> >=20
+> > I didn't mean that you were mixing up how your implementation worked, my
+> > point was that you're mixing up the hwprobe stuff which may need
+> > namespacing for $a{b,p}i_reason and probing from DT which does not.
+> > I don't think that the kernel should need to be changed at all if
+> > someone shows up and implements another vendor's extension - we already
+> > have far too many kernel changes required to display support for
+> > extensions and I don't welcome potential for more.
+>=20
+> Yes I understand where you are coming from. We do not want it to require
+> very many changes to add an extension. With this framework, there are
+> the same number of changes to add a vendor extension as there is to add
+> a standard extension.=20
 
-diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-index fd4bd650c77a6..4e5c213a89225 100644
---- a/drivers/thermal/mediatek/lvts_thermal.c
-+++ b/drivers/thermal/mediatek/lvts_thermal.c
-@@ -1530,11 +1530,15 @@ static const struct lvts_data mt7988_lvts_ap_data = {
- static const struct lvts_data mt8192_lvts_mcu_data = {
- 	.lvts_ctrl	= mt8192_lvts_mcu_data_ctrl,
- 	.num_lvts_ctrl	= ARRAY_SIZE(mt8192_lvts_mcu_data_ctrl),
-+	.temp_factor	= LVTS_COEFF_A_MT8195,
-+	.temp_offset	= LVTS_COEFF_B_MT8195,
- };
- 
- static const struct lvts_data mt8192_lvts_ap_data = {
- 	.lvts_ctrl	= mt8192_lvts_ap_data_ctrl,
- 	.num_lvts_ctrl	= ARRAY_SIZE(mt8192_lvts_ap_data_ctrl),
-+	.temp_factor	= LVTS_COEFF_A_MT8195,
-+	.temp_offset	= LVTS_COEFF_B_MT8195,
- };
- 
- static const struct lvts_data mt8195_lvts_mcu_data = {
+No, it is actually subtly different. Even if the kernel already supports
+the extension, it needs to be patched for each vendor
 
----
-base-commit: 20cb38a7af88dc40095da7c2c9094da3873fea23
-change-id: 20240410-lvts_thermal-3d365847acff
+> There is the upfront cost of creating the struct
+> for the first vendor extension from a vendor, but after that the
+> extension only needs to be added to the associated vendor's file (I am
+> extracting this out to a vendor file in the next version). This is also
+> a very easy task since the fields from a different vendor can be copied
+> and adapted.
+>=20
+> > Another thing I just thought of was systems where the SoC vendor
+> > implements some extension that gets communicated in the ISA string but
+> > is not the vendor in mvendorid in their various CPUs. I wouldn't want to
+> > see several different entries in structs (or several different hwprobe
+> > keys, but that's another story) for this situation because you're only
+> > allowing probing what's in the struct matching the vendorid.
+>=20
+> Since the isa string is a per-hart field, the vendor associated with the
+> hart will be used.
 
-Best regards,
--- 
-Hsin-Te Yuan <yuanhsinte@chromium.org>
+I don't know if you just didn't really read what I said or didn't
+understand it, but this response doesn't address my comment.
+Consider SoC vendor S buys CPUs from vendors A & B and asks both of them
+to implement Xsjam. The CPUs are have the vendorid of either A or B,
+depending on who made it. This scenario should not result in two
+different hwprobe keys nor two different in-kernel riscv_has_vendor_ext()
+checks to see if the extension is supported. *If* the extension is vendor
+namespaced, it should be to the SoC vendor whose extension it is, not
+the individual CPU vendors that implemented it.
 
+Additionally, consider that CPUs from both vendors are in the same SoC
+and all CPUs support Xsjam. Linux only supports homogeneous extensions
+so we should be able to detect that all CPUs support the extension and
+use it in a driver etc, but that's either not going to work (or be
+difficult to orchestrate) with different mappings per CPU vendor. I saw
+your v2 cover letter, in which you said:
+  Only patch vendor extension if all harts are associated with the same
+  vendor. This is the best chance the kernel has for working properly if
+  there are multiple vendors.
+I don't think that level of paranoia is required: if firmware tells us
+that an extension is supported, then we can trust that those extensions
+have been implemented correctly. If the fear of implementation bugs is
+what is driving the namespacing that you've gone for, I don't think that
+it is required and we can simplify things, with the per-vendor structs
+being the vendor of the extension (so SoC vendor S in my example), not
+A and B who are the vendors of the CPU IP.
+
+Thanks,
+Conor.
+
+
+--S0aAJ0pL4KXiXwbM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh4qgQAKCRB4tDGHoIJi
+0jJZAQDQmcK4nj841UhHcb8WvWbPC7o7TCt9g7AQS757vS0CSwD/XR1svOyQ4sAV
+a2VdMwg8xaojsbGnITddWN30iDLuywA=
+=fr0c
+-----END PGP SIGNATURE-----
+
+--S0aAJ0pL4KXiXwbM--
 
