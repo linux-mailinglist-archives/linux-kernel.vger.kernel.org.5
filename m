@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-147512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E4B38A7570
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:22:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B748A7573
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:22:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 973BF1F25274
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:22:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158381C20F09
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A7F13C80E;
-	Tue, 16 Apr 2024 20:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114E513C835;
+	Tue, 16 Apr 2024 20:19:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IMFwx/db"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G/BehYBW"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F6413AD2F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 20:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EEE13BACE
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 20:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713298786; cv=none; b=IXs+m0n/VTQ1sca5jUwACNUspFUI/XMJb4eEXQyRYSyDVwpt+4hp0OC9Yl2t50pkDaNsWv9MkD9BVLk8hjfASNt4lfp5lhgsLadsqHOaTkLOP0mYA697wX8kaiJF8Oz9U280p5L5uteakR8+BU3BltlIX/McheIK78coDvglRe4=
+	t=1713298787; cv=none; b=liBPFf9WRgGE5f/P0dgzfhCctYHkUnXKFhvP9tN4n9ZgQ3xAga89qoQVM4daDuq7if+o6o/qp0hw5iYfR2B9dssPtemhpFhG5gtlLLzoVdil95PvtvJYeGHLCpsnXaS4O22x+qg2Z43TKel+UcfyivvxyUAvuBJ4GKh01Y92MRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713298786; c=relaxed/simple;
-	bh=kBa0ttNLzIYcw56Tj7ZRgDCKQbljsWpNgIINUFwTnJY=;
+	s=arc-20240116; t=1713298787; c=relaxed/simple;
+	bh=AYc/dQIgIGfPyd8Ji3WVCJ/kBmRWzsyv1BvZrf6DJiU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Gnlx/gtfvpbUD7khKLXz550EKAW0CUvSLWYo/nBAH4lfAr1UYtVQdEjYefJYAZV6DHearKqxSK0N8K7Gju8U+uoosXy7U39LH1BHsjjHkUSC4xjKGORazJvXZZqiVug6vFnUsoTTbBFMOi5VkZsx47v+/KyBpDZqAuWUUe2HHa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IMFwx/db; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=VS53r+J1LGDGHnEZh3b85vZYlQpCVIcXN+UlcRTlWW0uqMJor4ciYScUi16ZUYwwuw7KPUAjTQNDKiTHuIYUfaV8et8X983hX3K/5zTu73lzzHwH7ISfpXw5RpDcxnx0xLFGjBP5R7uSXj+iPggMRzKs0TsnKbl/6SNeL0igtkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G/BehYBW; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713298783;
+	s=mimecast20190719; t=1713298784;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YQLC+xwt/HGEzdmMe/E3njAwGkq+LzsNlxhiuERSL3g=;
-	b=IMFwx/db9YMwAwQJoz0seSyQ5nuv5i9RbZAl+Bkx4UDv4xoB+hmQpWXdlDwBSuIqpIJkvN
-	8fIbcOthKFq+/wT/rO8kYa4BMIsF8nTAqtpmByPq6LNWoY6WzkeT46sWCdCTftuz+99NR1
-	1DxGW091XYqC/hlzTks2qjZJksQXRWI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-533-IgDoCBlZOQ2eUCOvgrF2DQ-1; Tue, 16 Apr 2024 16:19:38 -0400
-X-MC-Unique: IgDoCBlZOQ2eUCOvgrF2DQ-1
+	bh=OiuOtF3km5mOrYS4QJpem+PodieKRqZDiEKM9mH6/7c=;
+	b=G/BehYBWRUdOaiXWJ9RfWjff1KOGL3rrOPtcTV1tyY/gWgwZv81IlkQuSMvkLlR8AJp/3r
+	IkaKjfbj23FCWlSLpxckb4IKUsujchVTbou737KrCeDh9i+kuFT1Ghp/VDP0nOFMyN1xwf
+	3TkXlaOVxeYNHgusYMoyntrFGfSV0Es=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-283-HPWmBbwLOWaYRYJWb57g6g-1; Tue,
+ 16 Apr 2024 16:19:38 -0400
+X-MC-Unique: HPWmBbwLOWaYRYJWb57g6g-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CBF79188ACA0;
-	Tue, 16 Apr 2024 20:19:37 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0BE221C0AF42;
+	Tue, 16 Apr 2024 20:19:38 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9B26E18209F;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D45B94910F;
 	Tue, 16 Apr 2024 20:19:37 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
@@ -60,11 +60,10 @@ To: linux-kernel@vger.kernel.org,
 Cc: isaku.yamahata@intel.com,
 	xiaoyao.li@intel.com,
 	binbin.wu@linux.intel.com,
-	chao.gao@intel.com,
-	Sean Christopherson <seanjc@google.com>
-Subject: [PATCH v2 05/10] KVM: x86/mmu: Track shadow MMIO value on a per-VM basis
-Date: Tue, 16 Apr 2024 16:19:30 -0400
-Message-ID: <20240416201935.3525739-6-pbonzini@redhat.com>
+	chao.gao@intel.com
+Subject: [PATCH v2 06/10] KVM, x86: add architectural support code for #VE
+Date: Tue, 16 Apr 2024 16:19:31 -0400
+Message-ID: <20240416201935.3525739-7-pbonzini@redhat.com>
 In-Reply-To: <20240416201935.3525739-1-pbonzini@redhat.com>
 References: <20240416201935.3525739-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -77,137 +76,77 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-From: Sean Christopherson <seanjc@google.com>
+Dump the contents of the #VE info data structure and assert that #VE does
+not happen, but do not yet do anything with it.
 
-TDX will use a different shadow PTE entry value for MMIO from VMX.  Add a
-member to kvm_arch and track value for MMIO per-VM instead of a global
-variable.  By using the per-VM EPT entry value for MMIO, the existing VMX
-logic is kept working.  Introduce a separate setter function so that guest
-TD can use a different value later.
+No functional change intended, separated for clarity only.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Message-Id: <229a18434e5d83f45b1fcd7bf1544d79db1becb6.1705965635.git.isaku.yamahata@intel.com>
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+Extracted from a patch by Isaku Yamahata <isaku.yamahata@intel.com>.
+
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/include/asm/kvm_host.h | 2 ++
- arch/x86/kvm/mmu/mmu.c          | 7 ++++---
- arch/x86/kvm/mmu/spte.c         | 4 ++--
- arch/x86/kvm/mmu/spte.h         | 4 ++--
- arch/x86/kvm/mmu/tdp_mmu.c      | 6 +++---
- 5 files changed, 13 insertions(+), 10 deletions(-)
+ arch/x86/include/asm/vmx.h | 12 ++++++++++++
+ arch/x86/kvm/vmx/vmx.c     | 12 ++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 01c69840647e..9f92bdb78504 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1313,6 +1313,8 @@ struct kvm_arch {
- 	 */
- 	spinlock_t mmu_unsync_pages_lock;
+diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+index ac6da0a5f5e6..d77a31039f24 100644
+--- a/arch/x86/include/asm/vmx.h
++++ b/arch/x86/include/asm/vmx.h
+@@ -71,6 +71,7 @@
+ #define SECONDARY_EXEC_ENCLS_EXITING		VMCS_CONTROL_BIT(ENCLS_EXITING)
+ #define SECONDARY_EXEC_RDSEED_EXITING		VMCS_CONTROL_BIT(RDSEED_EXITING)
+ #define SECONDARY_EXEC_ENABLE_PML               VMCS_CONTROL_BIT(PAGE_MOD_LOGGING)
++#define SECONDARY_EXEC_EPT_VIOLATION_VE		VMCS_CONTROL_BIT(EPT_VIOLATION_VE)
+ #define SECONDARY_EXEC_PT_CONCEAL_VMX		VMCS_CONTROL_BIT(PT_CONCEAL_VMX)
+ #define SECONDARY_EXEC_ENABLE_XSAVES		VMCS_CONTROL_BIT(XSAVES)
+ #define SECONDARY_EXEC_MODE_BASED_EPT_EXEC	VMCS_CONTROL_BIT(MODE_BASED_EPT_EXEC)
+@@ -226,6 +227,8 @@ enum vmcs_field {
+ 	VMREAD_BITMAP_HIGH              = 0x00002027,
+ 	VMWRITE_BITMAP                  = 0x00002028,
+ 	VMWRITE_BITMAP_HIGH             = 0x00002029,
++	VE_INFORMATION_ADDRESS		= 0x0000202A,
++	VE_INFORMATION_ADDRESS_HIGH	= 0x0000202B,
+ 	XSS_EXIT_BITMAP                 = 0x0000202C,
+ 	XSS_EXIT_BITMAP_HIGH            = 0x0000202D,
+ 	ENCLS_EXITING_BITMAP		= 0x0000202E,
+@@ -631,4 +634,13 @@ enum vmx_l1d_flush_state {
  
-+	u64 shadow_mmio_value;
+ extern enum vmx_l1d_flush_state l1tf_vmx_mitigation;
+ 
++struct vmx_ve_information {
++	u32 exit_reason;
++	u32 delivery;
++	u64 exit_qualification;
++	u64 guest_linear_address;
++	u64 guest_physical_address;
++	u16 eptp_index;
++};
 +
- 	struct iommu_domain *iommu_domain;
- 	bool iommu_noncoherent;
- #define __KVM_HAVE_ARCH_NONCOHERENT_DMA
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index fbfdc606f1f1..45b6d8f9e359 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2462,7 +2462,7 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
- 				return kvm_mmu_prepare_zap_page(kvm, child,
- 								invalid_list);
- 		}
--	} else if (is_mmio_spte(pte)) {
-+	} else if (is_mmio_spte(kvm, pte)) {
- 		mmu_spte_clear_no_track(spte);
- 	}
- 	return 0;
-@@ -4144,7 +4144,7 @@ static int handle_mmio_page_fault(struct kvm_vcpu *vcpu, u64 addr, bool direct)
- 	if (WARN_ON_ONCE(reserved))
- 		return -EINVAL;
- 
--	if (is_mmio_spte(spte)) {
-+	if (is_mmio_spte(vcpu->kvm, spte)) {
- 		gfn_t gfn = get_mmio_spte_gfn(spte);
- 		unsigned int access = get_mmio_spte_access(spte);
- 
-@@ -4760,7 +4760,7 @@ EXPORT_SYMBOL_GPL(kvm_mmu_new_pgd);
- static bool sync_mmio_spte(struct kvm_vcpu *vcpu, u64 *sptep, gfn_t gfn,
- 			   unsigned int access)
- {
--	if (unlikely(is_mmio_spte(*sptep))) {
-+	if (unlikely(is_mmio_spte(vcpu->kvm, *sptep))) {
- 		if (gfn != get_mmio_spte_gfn(*sptep)) {
- 			mmu_spte_clear_no_track(sptep);
- 			return true;
-@@ -6267,6 +6267,7 @@ static bool kvm_has_zapped_obsolete_pages(struct kvm *kvm)
- 
- void kvm_mmu_init_vm(struct kvm *kvm)
- {
-+	kvm->arch.shadow_mmio_value = shadow_mmio_value;
- 	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
- 	INIT_LIST_HEAD(&kvm->arch.zapped_obsolete_pages);
- 	INIT_LIST_HEAD(&kvm->arch.possible_nx_huge_pages);
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 0a0e83859c27..a5e014d7bc62 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -74,10 +74,10 @@ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access)
- 	u64 spte = generation_mmio_spte_mask(gen);
- 	u64 gpa = gfn << PAGE_SHIFT;
- 
--	WARN_ON_ONCE(!shadow_mmio_value);
-+	WARN_ON_ONCE(!vcpu->kvm->arch.shadow_mmio_value);
- 
- 	access &= shadow_mmio_access_mask;
--	spte |= shadow_mmio_value | access;
-+	spte |= vcpu->kvm->arch.shadow_mmio_value | access;
- 	spte |= gpa | shadow_nonpresent_or_rsvd_mask;
- 	spte |= (gpa & shadow_nonpresent_or_rsvd_mask)
- 		<< SHADOW_NONPRESENT_OR_RSVD_MASK_LEN;
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 8056b7853a79..5dd5405fa07a 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -265,9 +265,9 @@ static inline struct kvm_mmu_page *root_to_sp(hpa_t root)
- 	return spte_to_child_sp(root);
+ #endif
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 6780313914f8..2c746318c6c3 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6408,6 +6408,18 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
+ 	if (secondary_exec_control & SECONDARY_EXEC_ENABLE_VPID)
+ 		pr_err("Virtual processor ID = 0x%04x\n",
+ 		       vmcs_read16(VIRTUAL_PROCESSOR_ID));
++	if (secondary_exec_control & SECONDARY_EXEC_EPT_VIOLATION_VE) {
++		struct vmx_ve_information *ve_info;
++
++		pr_err("VE info address = 0x%016llx\n",
++		       vmcs_read64(VE_INFORMATION_ADDRESS));
++		ve_info = __va(vmcs_read64(VE_INFORMATION_ADDRESS));
++		pr_err("ve_info: 0x%08x 0x%08x 0x%016llx 0x%016llx 0x%016llx 0x%04x\n",
++		       ve_info->exit_reason, ve_info->delivery,
++		       ve_info->exit_qualification,
++		       ve_info->guest_linear_address,
++		       ve_info->guest_physical_address, ve_info->eptp_index);
++	}
  }
  
--static inline bool is_mmio_spte(u64 spte)
-+static inline bool is_mmio_spte(struct kvm *kvm, u64 spte)
- {
--	return (spte & shadow_mmio_mask) == shadow_mmio_value &&
-+	return (spte & shadow_mmio_mask) == kvm->arch.shadow_mmio_value &&
- 	       likely(enable_mmio_caching);
- }
- 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index f5401967897a..5fd618abc243 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -495,8 +495,8 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 		 * impact the guest since both the former and current SPTEs
- 		 * are nonpresent.
- 		 */
--		if (WARN_ON_ONCE(!is_mmio_spte(old_spte) &&
--				 !is_mmio_spte(new_spte) &&
-+		if (WARN_ON_ONCE(!is_mmio_spte(kvm, old_spte) &&
-+				 !is_mmio_spte(kvm, new_spte) &&
- 				 !is_removed_spte(new_spte)))
- 			pr_err("Unexpected SPTE change! Nonpresent SPTEs\n"
- 			       "should not be replaced with another,\n"
-@@ -1028,7 +1028,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
- 	}
- 
- 	/* If a MMIO SPTE is installed, the MMIO will need to be emulated. */
--	if (unlikely(is_mmio_spte(new_spte))) {
-+	if (unlikely(is_mmio_spte(vcpu->kvm, new_spte))) {
- 		vcpu->stat.pf_mmio_spte_created++;
- 		trace_mark_mmio_spte(rcu_dereference(iter->sptep), iter->gfn,
- 				     new_spte);
+ /*
 -- 
 2.43.0
 
