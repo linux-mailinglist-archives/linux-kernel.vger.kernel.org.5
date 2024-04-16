@@ -1,203 +1,86 @@
-Return-Path: <linux-kernel+bounces-146973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48FB28A6DB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:16:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 592B38A6D64
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FFDD1C2061A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:16:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1584F2861AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB936137C27;
-	Tue, 16 Apr 2024 14:11:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3C412CDAF;
+	Tue, 16 Apr 2024 14:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BEnSi6sE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vJ+6c1nm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D69712F5B7;
-	Tue, 16 Apr 2024 14:11:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5E612C534;
+	Tue, 16 Apr 2024 14:09:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713276667; cv=none; b=b6CtMCfSoqxVc9hVkjkuYTP8tz7LwigzrI6UzN4Sh4CH2RBGXqpF7FRlnWzf1EJOWqBCYi0jlO60hWRxDuNnOY8m9YjyjaHefu5k257g35K+1vn6ryadOQgwVx33IonZ52PvEXrG0KTfi8MpLnXycS4dLFOu3hwZXH7IecVNqgc=
+	t=1713276545; cv=none; b=L8UdPSOVqi7WZTMMEpyHUuFdgblEvkm2bV96lvnmh3neXqGkf/huwVYEvdGkTXPfAZ4DSCtB6qlKglc3Qn+eQ90Id/b0omaZ8rYwy4wv2qyVNrQ4eaccWjE+ePApcDnbNwQPXnWEFTl8gdOXVRuWN0VXYwluSBdpCjBU946wNrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713276667; c=relaxed/simple;
-	bh=gnbd2RQ+3wctyheUyU6clAJleG99mpq90RdQg9GTbNQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=NhcpVKHa3p76w8dc8cWL6v7UD1utHYb59uYVa0fzmTzlrVIOWaeWlX02y3YPvn5mdjP0K6RPqB8xx/L89du39EyLW8E/6G2eHVjzu4yJO2FUg2QCMqXG7r/bF6En18c6yts/aLD/YqBl5ksor9uSYl8ChaCgxkJdEseJxr77+Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BEnSi6sE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BF52C4AF08;
-	Tue, 16 Apr 2024 14:11:03 +0000 (UTC)
+	s=arc-20240116; t=1713276545; c=relaxed/simple;
+	bh=ztYAfRqyCAO4TihC8giRcF/Rn09DqX63ao2fuDHUQw0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kVKV4dMMYDl57NHNWDExkfkIVc8CTvuth4eELvIh1it3rNNKvXI1S1Lp9fHEs4G14GtQpwHjhvdgcabHH5BttdxTlFB8m1BUMSIsCA1ScrPwce9K2jofggE0fWnE8BKPmFo1Yyi+MVRECHSDAj21TsWW/NXpHFg/7Yu99QQatZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vJ+6c1nm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FB11C113CE;
+	Tue, 16 Apr 2024 14:09:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713276666;
-	bh=gnbd2RQ+3wctyheUyU6clAJleG99mpq90RdQg9GTbNQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=BEnSi6sEfEy4ETnuX2tyAlbFU3a2WhICTdSAAhJc6cCjoZRYho6M2iM4SyMD0JWx5
-	 QDIj9dD9GSmaPzfHCOcY64foFkxrK3fgSys79boI6ku3nDRxelSuBKDG5j7/Y2Tpdw
-	 Drg2xd/5jxoeOm/xQ40GkZQwZdd+0ExD0a4bJCIRkDCT0+Gt5DC9I7wtGTlBWeONfz
-	 epxg69KPorBQJBigXSF7VwNJdMFomIQpedr/fCtoIBPfLJ6JK3JOB/SaQIqOfViqRP
-	 cb7vjD9GI1pHp3NvkqECm3QQwY0b+kQAOC7mVFECeg9uazU268pcP9xa6/HI990T+S
-	 aYPM0Ae6Ip5EQ==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Tue, 16 Apr 2024 16:08:31 +0200
-Subject: [PATCH bpf-next 18/18] selftests/bpf: wq: add bpf_wq_start()
- checks
+	s=k20201202; t=1713276545;
+	bh=ztYAfRqyCAO4TihC8giRcF/Rn09DqX63ao2fuDHUQw0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vJ+6c1nmWW33jynK9xJcmJix7xN9eJXDw9YZXIlotYkpCMvOe4Hz06JcAopp+ESCC
+	 TRcx5jYGQ5+GTwyxMZjuYQyLCcfn6Q6g90hYYEMaIwgZJ1EKJI18PSsT+CcdgCKBPP
+	 ckNB0R3kvGQVz1kWzQN5c6OFcd6ozWBU5KmMBQ4sSwm26ClhcOo+PtxMzFXFB2KLby
+	 EaOShXvLC4lv2fNdsGCtXQjuc/HIqF7g/iXvKneJgvstUzwtKIdwUfewhmBn/+dB5C
+	 xFedLa5tmj4cZwHMvZP0TC2XNSHxymDJts1tHD/RVaN3mku46MZp/ptcPw2lDvzuoP
+	 3/bEFoWIdQY4A==
+Date: Tue, 16 Apr 2024 16:09:01 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Abhinav Jain <jain.abhinav177@gmail.com>, 
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"skhan@linuxfoundation.org" <skhan@linuxfoundation.org>, 
+	"javier.carrasco.cruz@gmail.com" <javier.carrasco.cruz@gmail.com>, Julia Lawall <julia.lawall@inria.fr>, 
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] i2c: mpc: Removal of of_node_put with __free for auto
+ cleanup
+Message-ID: <y5yjitgjf3v4tui6wrg5x4ltuaieugzgkk7aiggefqxfbezdev@t36fwhrzrxsz>
+References: <20240415161220.8347-1-jain.abhinav177@gmail.com>
+ <vegjt4pcl2x2wmwso6ajbihqc6rpbup5knycnz76jz3zfbfpp4@opxek6apu3w4>
+ <2ea08951-3613-4ed5-a2b2-dd4887105ac3@alliedtelesis.co.nz>
+ <ctfgvm32ga232lcxlanyu2cvcbybfgkwj5ovxzha6rq7yrf2sn@xduhb3qnssao>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240416-bpf_wq-v1-18-c9e66092f842@kernel.org>
-References: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
-In-Reply-To: <20240416-bpf_wq-v1-0-c9e66092f842@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713276593; l=3923;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=gnbd2RQ+3wctyheUyU6clAJleG99mpq90RdQg9GTbNQ=;
- b=mzIPuuOm/lFkrF62NVNgi+3On2eJg7VFrdRf4n38fn++QOsGIWqJb9YU8tvgORWM3sVh/ni3y
- YhwFhuWpvFsCMCKYndxDhjdyGcYoMm0m90DEhYDSoSeKzREEXqbbpxO
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ctfgvm32ga232lcxlanyu2cvcbybfgkwj5ovxzha6rq7yrf2sn@xduhb3qnssao>
 
-Allows to test if allocation/free works
+On Tue, Apr 16, 2024 at 04:07:48PM +0200, Andi Shyti wrote:
+> On Tue, Apr 16, 2024 at 03:59:13AM +0000, Chris Packham wrote:
+> > On 16/04/24 08:54, Andi Shyti wrote:
+> > >>   	/* Enable I2C interrupts for mpc5121 */
+> > >> -	node_ctrl = of_find_compatible_node(NULL, NULL,
+> > >> -					    "fsl,mpc5121-i2c-ctrl");
+> > >> +	struct device_node *node_ctrl __free(device_node) =
+> > > How have you tested this?
+> > 
+> > I'm not sure I know anyone that still has a mpc5121. Maybe someone on 
+> > linuxppc-dev?
+> 
+> that's why I was asking, this would be the first driver in i2c
+> using Rob's __free(device_node).
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
- tools/testing/selftests/bpf/bpf_experimental.h |  1 +
- tools/testing/selftests/bpf/prog_tests/wq.c    | 22 ++++++++++++++++++++++
- tools/testing/selftests/bpf/progs/wq.c         | 22 +++++++++++++++++++---
- 3 files changed, 42 insertions(+), 3 deletions(-)
+Jonathan's, of course :-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index 272604f9c4a5..19dffa32fc08 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -471,6 +471,7 @@ extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it) __
- extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
- 
- extern int bpf_wq_init(struct bpf_wq *wq, void *map, unsigned int flags) __weak __ksym;
-+extern int bpf_wq_start(struct bpf_wq *wq, unsigned int flags) __weak __ksym;
- extern int bpf_wq_set_callback_impl(struct bpf_wq *wq,
- 		int (callback_fn)(void *map, int *key, struct bpf_wq *wq),
- 		unsigned int flags__k, void *aux__ign) __ksym;
-diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/selftests/bpf/prog_tests/wq.c
-index 26ab69796103..8a4a91d944cc 100644
---- a/tools/testing/selftests/bpf/prog_tests/wq.c
-+++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-@@ -6,9 +6,31 @@
- 
- void serial_test_wq(void)
- {
-+	struct wq *wq_skel = NULL;
-+	int err, prog_fd;
-+
- 	LIBBPF_OPTS(bpf_test_run_opts, topts);
- 
- 	RUN_TESTS(wq);
-+
-+	/* re-run the success test to check if the timer was actually executed */
-+
-+	wq_skel = wq__open_and_load();
-+	if (!ASSERT_OK_PTR(wq_skel, "wq_skel_load"))
-+		return;
-+
-+	err = wq__attach(wq_skel);
-+	if (!ASSERT_OK(err, "wq_attach"))
-+		return;
-+
-+	prog_fd = bpf_program__fd(wq_skel->progs.test_syscall_array_sleepable);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
-+	usleep(50); /* 10 usecs should be enough, but give it extra */
-+
-+	ASSERT_EQ(wq_skel->bss->ok_sleepable, (1 << 1), "ok_sleepable");
- }
- 
- void serial_test_failures_wq(void)
-diff --git a/tools/testing/selftests/bpf/progs/wq.c b/tools/testing/selftests/bpf/progs/wq.c
-index c0a094c84834..0cdb9d273e60 100644
---- a/tools/testing/selftests/bpf/progs/wq.c
-+++ b/tools/testing/selftests/bpf/progs/wq.c
-@@ -49,6 +49,11 @@ struct {
- 	__type(value, struct elem);
- } lru SEC(".maps");
- 
-+#define CLOCK_MONOTONIC 1
-+
-+__u32 ok;
-+__u32 ok_sleepable;
-+
- static int test_elem_callback(void *map, int *key,
- 		int (callback_fn)(void *map, int *key, struct bpf_wq *wq),
- 		u64 callback_flags)
-@@ -56,6 +61,10 @@ static int test_elem_callback(void *map, int *key,
- 	struct elem init = {}, *val;
- 	struct bpf_wq *wq;
- 
-+	if ((ok & (1 << *key) ||
-+	    (ok_sleepable & (1 << *key))))
-+		return -22;
-+
- 	if (map == &lru &&
- 	    bpf_map_update_elem(map, key, &init, 0))
- 		return -1;
-@@ -71,6 +80,9 @@ static int test_elem_callback(void *map, int *key,
- 	if (bpf_wq_set_callback(wq, callback_fn, callback_flags))
- 		return -4;
- 
-+	if (bpf_wq_start(wq, 0))
-+		return -5;
-+
- 	return 0;
- }
- 
-@@ -81,6 +93,10 @@ static int test_hmap_elem_callback(void *map, int *key,
- 	struct hmap_elem init = {}, *val;
- 	struct bpf_wq *wq;
- 
-+	if ((ok & (1 << *key) ||
-+	    (ok_sleepable & (1 << *key))))
-+		return -22;
-+
- 	if (bpf_map_update_elem(map, key, &init, 0))
- 		return -1;
- 
-@@ -95,12 +111,12 @@ static int test_hmap_elem_callback(void *map, int *key,
- 	if (bpf_wq_set_callback(wq, callback_fn, callback_flags))
- 		return -4;
- 
-+	if (bpf_wq_start(wq, 0))
-+		return -5;
-+
- 	return 0;
- }
- 
--__u32 ok;
--__u32 ok_sleepable;
--
- /* callback for non sleepable workqueue */
- static int wq_callback(void *map, int *key, struct bpf_wq *work)
- {
-
--- 
-2.44.0
-
+Andi
 
