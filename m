@@ -1,124 +1,135 @@
-Return-Path: <linux-kernel+bounces-147088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CAE48A6F4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:05:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0958A6F4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:05:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7DC81F21B80
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:05:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE1B91C2149B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A05313048D;
-	Tue, 16 Apr 2024 15:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B2B130A76;
+	Tue, 16 Apr 2024 15:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Evlue0WE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qeXYVayM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE3E12AACA;
-	Tue, 16 Apr 2024 15:05:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C5012FB02;
+	Tue, 16 Apr 2024 15:05:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713279925; cv=none; b=sQCTTemznZKOb9/jzHv83/zGIWdDpskWnFnJtV+aCAweUufGuOSlzYJQH7R6cMjeZfB+RUdxxgK+ONtOnfZf1xquF/pHYG1iEYbiGh5DQ8ghsrkRliHHiO89pNI9FkoNVUaLXCI3T9Zq/33SvYc0gg09VuwcC6I4EnVIE2I/JrE=
+	t=1713279934; cv=none; b=vDr7FlKa7ShNvmsVYCK/GHfxJb75Eki55WGKQl0t9Rf794CSbhi6l7nstou3kUHBOs0rT8F5g3GLv1x2C7kq8xdw+Wc1FDssUxIAdP5Eg6UlPpTsin+kf3gk4L2Swj7ZOZAsj7SXML+g7Ks8YNNMM9F7jlezUab26zmipyR3r3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713279925; c=relaxed/simple;
-	bh=eoUEUNDDT3IISkVkLcQVShb7N8n4cu8oTCAwsjC3QRk=;
+	s=arc-20240116; t=1713279934; c=relaxed/simple;
+	bh=O9p4OJelM8j5ChKW6+ZnGM3uSLJaoJ69DKouPYKRqlw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b1E/ddFx7XUE+VfrRIlokjI9OFNRCgMx2/D1Ur96YXwcsjDlPyh1wSvl58ZebqU47YHDyCkG1okS2SasYVXisxgzpb0IoaULikr/ojAK2AYmeRh5aa36uJGDAzIIF4wSGXzwZnchSJ9RWw9I4YJ7Zy3ytroeUj9U5stxObiSv2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Evlue0WE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72DACC113CE;
-	Tue, 16 Apr 2024 15:05:24 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CrHA7+gDPZqPlZ4nrHktnfpy0bfqERQ6STMPmoUuPnDlgbOZwiBMNKHBinvujCZacZ/No+5lYduuUuR7YvntYCHfXonf+Eg9jOyMqdEuodyEOmoOoa3cFs53xpaJpH0hzEf1RegFzY41cyeWX4kOVsQC9LiAEFOtsTLp5Vb0n9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qeXYVayM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4437C32786;
+	Tue, 16 Apr 2024 15:05:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713279925;
-	bh=eoUEUNDDT3IISkVkLcQVShb7N8n4cu8oTCAwsjC3QRk=;
+	s=k20201202; t=1713279933;
+	bh=O9p4OJelM8j5ChKW6+ZnGM3uSLJaoJ69DKouPYKRqlw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Evlue0WEIc8vjVKo7214wtqrJwG33LppDFpOSjHmzZdLCpH0Q5ZwKbIIiRdjODvRi
-	 io69mrj6mVB9dGbkDBmiNtGdXiX5X/SQ19kkg4C77i/9vZM0ArEnmYW3JquUAY7Y+D
-	 idxob1Z1DbnhbnMD+JG+/TXq45ba4+/JMMJ5RIJrNmsReWNyKb3tuBkk4R9hBh1+r4
-	 PU1VIJvEhcRnV5C4TUQ6vOasuo0TndKz0yClmR+lyJfUPdkO3zcH6vquhQnZ8dBksj
-	 KjL8P5Dt8rAVG30LcylEElB/LEjPH+JGka8otxNzGzv5QGpGiAIhE8xV1GR8wMZY3x
-	 0dZbj9gZT6ESw==
-Date: Tue, 16 Apr 2024 17:05:21 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-Cc: konrad.dybcio@linaro.org, andersson@kernel.org, wsa@kernel.org, 
-	linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-i2c@vger.kernel.org, Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>, 
-	quic_vdadhani@quicinc.com, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: Re: [PATCH v4] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
- mode
-Message-ID: <j3zupurwq5vtzfwby7ubl7ft75fqqhutk4vfqolihkcldfcesi@ywwfnkjcfhgu>
-References: <20240313052639.1747078-1-quic_msavaliy@quicinc.com>
- <171161140136.2698925.4294566764047886777.b4-ty@kernel.org>
- <ZgbwJAb7Ffktf554@matsya>
- <a76mmz5xrfipqpmq2ltsyobwc54dyw2d55gb4vta5d746dwb3i@5mm2ew5uudi3>
- <ZhJVgDVthhr4hISg@matsya>
+	b=qeXYVayMoFa9mEbIWXY9ZBGlRgib//9BkGwkvOXQc5ScFPvJWcyFuzBpZcXy6lmVV
+	 R1UhVDdenW8hJS1bVLytbNm8Me0gheegQtCoE6g2LrJF615lVPFdplSs+V25UXlFe3
+	 +fV6CmblloXgOY2hh0sHrjI9RFLZUuXKCknAa02JsFiIUXG4dypxmNKLEDcFzTAbBI
+	 djrdXqCeqtQx3OmyUnf/pPiOCqJ3CCd/YhDD7HHzj3wXRMEr6N/ulunG+fAiCF79tR
+	 Xu967LvfUwGz4YmxeEbhuKiu3sT4utLWKjldeb1lxX25lwpdlp4zswvSmg7aybUJ9P
+	 UOBikzQmbzqRw==
+Date: Tue, 16 Apr 2024 16:05:26 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 03/17] dt-bindings: riscv: Add vendorid
+Message-ID: <20240416-cavity-afar-d25eaac5fb03@spud>
+References: <20240415-dev-charlie-support_thead_vector_6_9-v2-0-c7d68c603268@rivosinc.com>
+ <20240415-dev-charlie-support_thead_vector_6_9-v2-3-c7d68c603268@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wMBbbKu9mXXkxQXp"
+Content-Disposition: inline
+In-Reply-To: <20240415-dev-charlie-support_thead_vector_6_9-v2-3-c7d68c603268@rivosinc.com>
+
+
+--wMBbbKu9mXXkxQXp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhJVgDVthhr4hISg@matsya>
+Content-Transfer-Encoding: quoted-printable
 
-Hi Vinod, Mukesh,
+On Mon, Apr 15, 2024 at 09:12:00PM -0700, Charlie Jenkins wrote:
+> vendorid are required during DT parsing to determine known hardware
+> capabilities. This parsing happens before the whole system has booted,
+> so only the boot hart is online and able to report the value of its
+> vendorid.
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 
-On Sun, Apr 07, 2024 at 01:42:48PM +0530, Vinod Koul wrote:
-> On 02-04-24, 18:44, Andi Shyti wrote:
-> > On Fri, Mar 29, 2024 at 10:15:24PM +0530, Vinod Koul wrote:
-> > > On 28-03-24, 08:36, Andi Shyti wrote:
-> > > > On Wed, 13 Mar 2024 10:56:39 +0530, Mukesh Kumar Savaliya wrote:
-> > > > > I2C driver currently reports "DMA txn failed" error even though it's
-> > > > > NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
-> > > > > on the bus instead of generic transfer failure which doesn't give any
-> > > > > specific clue.
-> > > > > 
-> > > > > Make Changes inside i2c driver callback handler function
-> > > > > i2c_gpi_cb_result() to parse these errors and make sure GSI driver
-> > > > > stores the error status during error interrupt.
-> > > > > 
-> > > > > [...]
-> > > > 
-> > > > Applied to i2c/i2c-host-next on
-> > > > 
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/local tree
-> > > 
-> > > You applied changes to dmaengine driver without my ack! I dont agree to
-> > > the approach here, we could do better
-> > 
-> > this must be an error from b4 ty. The changes have been added to
-> > 
-> > pub/scm/linux/kernel/git/andi.shyti/linux.git
-> > 
-> > branch i2c/i2c-host, As it has been agreed from very long.
-> > 
-> > Anyway, the changes are in -next. What do we do now? Do I revert
-> > it? Mukesh, can you please agree with Vinod?
-> 
-> I dont apply patches to other subsystem without the ack. Either way you
-> can ask always! 
+If we are gonna add these, I think we may as well add all 3. I'd also
+tie them together, so that either you have none or all 3.
 
-Yes, you are totally right; but please, keep in mind that this
-patch has some history and I would have loved to hear from you
-earlier. Anyway...
+Cheers,
+Conor.
 
-> I will leave it upto you...
+> ---
+>  Documentation/devicetree/bindings/riscv/cpus.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Document=
+ation/devicetree/bindings/riscv/cpus.yaml
+> index d87dd50f1a4b..030c7697d3b7 100644
+> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+> @@ -94,6 +94,11 @@ properties:
+>      description:
+>        The blocksize in bytes for the Zicboz cache operations.
+> =20
+> +  riscv,vendorid:
+> +    $ref: /schemas/types.yaml#/definitions/uint64
+> +    description:
+> +      Same value as the mvendorid CSR.
+> +
+>    # RISC-V has multiple properties for cache op block sizes as the sizes
+>    # differ between individual CBO extensions
+>    cache-op-block-size: false
+>=20
+> --=20
+> 2.44.0
+>=20
 
-.. Mukesh, I'm sorry, but I'm going to revert this patch again
-until we address all the last minute issues from Vinod. The
-silence on this thread is worrying me more than reverting it.
+--wMBbbKu9mXXkxQXp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I hope this will be the last time I revert this patch.
+-----BEGIN PGP SIGNATURE-----
 
-Moreover, in order to avoid maintainers' rumble (:)), please
-let's try to split patches that are touching more than one
-subsystems keeping the logical meainings intact.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh6TtgAKCRB4tDGHoIJi
+0sLCAP9GK5EvwG7exqhsRC6YBSqncpF7d0Ozytay1vZqdS4XsQD/RpbWEV4Jsg1B
+lsL0MHoKzJIL7pb7I+XCv8Ff59aiCwA=
+=6uQe
+-----END PGP SIGNATURE-----
 
-I hope this is fine with you, Vinod.
-
-Andi
+--wMBbbKu9mXXkxQXp--
 
