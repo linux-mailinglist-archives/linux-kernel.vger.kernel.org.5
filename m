@@ -1,202 +1,134 @@
-Return-Path: <linux-kernel+bounces-147424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C61558A73D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:53:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EB8D8A73D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:53:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CDD4282428
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:53:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 350BF1F22100
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4498D137C29;
-	Tue, 16 Apr 2024 18:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFFB513792A;
+	Tue, 16 Apr 2024 18:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fpAzZnHr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VV7QYurP"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B947134CFA;
-	Tue, 16 Apr 2024 18:47:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD622137777
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713293230; cv=none; b=BsC9pcdapi431BgF27aZ1gwtA5bxb8GvtBmkka0VTBS9Ri+Dn21dSqym77zro5irVLMGBqh9EsTcTVs4rn+YEMSx+KsNgTxfX2Y4zzjDG+IH+JRYoUJhfkwHX2h62vuVrY47tSg0j3qhsvT7LNSqcoNEvkB50x/ubyUzRZtL/mE=
+	t=1713293423; cv=none; b=bk9+xdLBdumKju7ooPaMXBzqRrHNS3Jy1zpmSY8LcwCCPC4kuI6ixQXCQxXVqusFGlBCTOC1jgNg/y/fpUm9X8k984y1H/Ei7hyGgt5lC4Rjzm2u3WOzmmrK3ZCC+X3HslsNfzEFRSs2IlXZi3Q6xXHqHwkBOe6ET8g4Fe78BbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713293230; c=relaxed/simple;
-	bh=sLh7jAnxEgDhzrphM2vEc6n61fuaaaO6jruIdretCgo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RnWj49opBVXqAHIvhDINZaBUHYZPtgh+dKe5e2YXJnd/kKruDF0EIdSYVRWK6kwkrY+rLECWp/u2v35oCoyT35b9iyq/lkWFpUPIATslj0X1UsR62gTYz+etB65CgA90VTJPEFpRFcgrVyZ/qSXO2Sttg5WNIemJ8yNiSksf9lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fpAzZnHr; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713293229; x=1744829229;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sLh7jAnxEgDhzrphM2vEc6n61fuaaaO6jruIdretCgo=;
-  b=fpAzZnHrcytTBpZ3LfofDSpFuLuiIaP6maCbJfjmKEkxZaIv3bWqfK6U
-   /UKtqJBZRtP2mmjkt4dcwa/hxwkKDjFhWMuzG2JCcGRknRZ3f/gYpqPfO
-   SlBbcBN/Jh23UD+QGw3fjJYsPUJOgdpbPQChO4hmFS21twUt4B6+TyZ3e
-   EFz6XCGBRXUSwqN/YFSHTbVKEirezrVlexSjitMkMd75tLW9ei8bs/7j0
-   G21dahg4Y3W7rklPFj+8Zegfn/28aS12su/zNUUTLVUQZP4eBvp7+/xYL
-   TcwkBXlzUDh8udHzGfch3i7bHQlzhWRheVz8/ySAzwfT+zjMwNKyzUBzu
-   w==;
-X-CSE-ConnectionGUID: 9pOB0gXcQpy5MlprmTVsgw==
-X-CSE-MsgGUID: 2AC8O8geRQm4iTCxti+csw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8635859"
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="8635859"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:47:08 -0700
-X-CSE-ConnectionGUID: w3p3xxn4RA2V89Fo/JnbYw==
-X-CSE-MsgGUID: SewNWemiSEWsv6xMweAcTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="22422655"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:47:05 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rwnpe-00000004nLf-2an3;
-	Tue, 16 Apr 2024 21:47:02 +0300
-Date: Tue, 16 Apr 2024 21:47:02 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Viresh Kumar <vireshk@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, dmaengine@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 2/4] dmaengine: dw: Add memory bus width verification
-Message-ID: <Zh7Hpuo-TzSmlz69@smile.fi.intel.com>
-References: <20240416162908.24180-1-fancer.lancer@gmail.com>
- <20240416162908.24180-3-fancer.lancer@gmail.com>
+	s=arc-20240116; t=1713293423; c=relaxed/simple;
+	bh=KrLRBto3JssKwlYjlBIyxafefBjA3IrDNNlM/vJJ9hI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=GhxIGtAb3ypKVVXhDywH/xyArH9aWuGu1xKJp0C9nBU0knnJuKxpGYUrjUVI97d+ZjYkl4+gKOgzEIG/rfJyJBHh/qIRx/Vka5KKE5De0Ndjjoail7oYxVRMuZLpVVB8if5u5sTeqr3ACcLNy+l/sQdUu8A0TCtfK9kObX7QML8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VV7QYurP; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6188040f3d2so85957897b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713293421; x=1713898221; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=71fCbdfH1vAW84WFTiCdLyvSqDYlBpK8GsY+uanrllo=;
+        b=VV7QYurPOp5zTg7ny6efPCKGEtrNWZI7feSbb11SZC4ZxHrZ647dEqDP0PmvYgPrCe
+         V+XvbGOWpm2/JXVRMM6uWr4AsKw04ODhBIoFBJXEwwhAknQ4Fk8/iZz+lzY4z+s2am0b
+         unw70iZR+6DwU34un3OdJZ6qJePX/QcmkBlpVIZO7xAQM+j+2ikzQpCimYhhkSclQMw8
+         S0sj9D6DKvGtGAsTShKSMqnzLBrVAC5ipzPrdizdutuVineV4W5CW1ozoBqA8SieoaTi
+         x9y7mDoIKLcFBiVoOC4qoqVj3Cz+++E1hYI0y0w0s4jmFoqPbBwNFWB7/bcuTybpLqbX
+         lC6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713293421; x=1713898221;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=71fCbdfH1vAW84WFTiCdLyvSqDYlBpK8GsY+uanrllo=;
+        b=bF86dNVfxlJU+CaUd/ZX0s8ni+88bI/Kc7CL/6Zgokhu7UERPX8PBvd+0SAlJm6aoC
+         K8DJj83hV3FxUYWwWxF6LFgewvbn79ij77LFGI041MCdLCxtJTWWPs7hX6uKckeimU0G
+         U5SpFvRHJ295dDcCLqZ4eLnGwr4/ggcO/n3HozEPmKOZETmVeYxPZK5+r/Clu51LA0TJ
+         j44YjSqIrLhO1cfF/Xx8HQfB7BD8WeDqj15myOWi5dYIMbY/sxqp1TXqpNkjN5lWSIu/
+         iZJbpqiBPq3qbamvg1GfmEAEAYPw+Gf6XUPCXWehiVmS/YIdxtXBvgZsrE4U5ms5alpG
+         d+dQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVhgs+jEKhthPBpl/QkZApIEw2oTwMarOMyX+jB5qqkQ0Ue1ammct2PirY4fGA0905AFHGl/FJmhZVXOeWzzDmeHAvxJzEnHR4xVcWs
+X-Gm-Message-State: AOJu0YxSHcdXuIpO3vZQlxL5Pi75cWBZJaghKBRoS5R+vBj3PKHKQLMS
+	RbglnfhJgJgKMk8KpATp20PASqQuzhHMKfYSYpIT6ExE7u4GcqjWat9w9GxvatDmGp83/Peckbl
+	v9A==
+X-Google-Smtp-Source: AGHT+IHgjpuzWhjz2uabzMwzuba3r3n3pXCUudSHE4FaID0UFJjuojA5qYXAZzXF16Fsmgo1kqxASxbfYuQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1081:b0:dc7:8e30:e2e3 with SMTP id
+ v1-20020a056902108100b00dc78e30e2e3mr4217093ybu.2.1713293420969; Tue, 16 Apr
+ 2024 11:50:20 -0700 (PDT)
+Date: Tue, 16 Apr 2024 11:50:19 -0700
+In-Reply-To: <Zhz8xNpQoi0wCQgL@yzhao56-desk.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416162908.24180-3-fancer.lancer@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0
+References: <ZhkhvtijbhxKKAEk@yzhao56-desk.sh.intel.com> <diqzr0f7jbj6.fsf@ctop-sg.c.googlers.com>
+ <Zhz8xNpQoi0wCQgL@yzhao56-desk.sh.intel.com>
+Message-ID: <Zh7Iay40VQgNvsFW@google.com>
+Subject: Re: [RFC PATCH v5 09/29] KVM: selftests: TDX: Add report_fatal_error test
+From: Sean Christopherson <seanjc@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: Ackerley Tng <ackerleytng@google.com>, sagis@google.com, 
+	linux-kselftest@vger.kernel.org, afranji@google.com, erdemaktas@google.com, 
+	isaku.yamahata@intel.com, pbonzini@redhat.com, shuah@kernel.org, 
+	pgonda@google.com, haibo1.xu@intel.com, chao.p.peng@linux.intel.com, 
+	vannapurve@google.com, runanwang@google.com, vipinsh@google.com, 
+	jmattson@google.com, dmatlack@google.com, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Apr 16, 2024 at 07:28:56PM +0300, Serge Semin wrote:
-> Currently in case of the DEV_TO_MEM or MEM_TO_DEV DMA transfers the memory
-> data width (single transfer width) is determined based on the buffer
-> length, buffer base address or DMA master-channel max address width
-> capability. It isn't enough in case of the channel disabling prior the
-> block transfer is finished. Here is what DW AHB DMA IP-core databook says
-> regarding the port suspension (DMA-transfer pause) implementation in the
-> controller:
+On Mon, Apr 15, 2024, Yan Zhao wrote:
+> On Mon, Apr 15, 2024 at 08:05:49AM +0000, Ackerley Tng wrote:
+> > >> The Intel GHCI Spec says in R12, bit 63 is set if the GPA is valid. As a
+> > > But above "__LINE__" is obviously not a valid GPA.
+> > >
+> > > Do you think it's better to check "data_gpa" is with shared bit on and
+> > > aligned in 4K before setting bit 63?
+> > >
+> > 
+> > I read "valid" in the spec to mean that the value in R13 "should be
+> > considered as useful" or "should be passed on to the host VMM via the
+> > TDX module", and not so much as in "validated".
+> > 
+> > We could validate the data_gpa as you suggested to check alignment and
+> > shared bit, but perhaps that could be a higher-level function that calls
+> > tdg_vp_vmcall_report_fatal_error()?
+> > 
+> > If it helps, shall we rename "data_gpa" to "data" for this lower-level,
+> > generic helper function and remove these two lines
+> > 
+> > if (data_gpa)
+> > 	error_code |= 0x8000000000000000;
+> > 
+> > A higher-level function could perhaps do the validation as you suggested
+> > and then set bit 63.
+> This could be all right. But I'm not sure if it would be a burden for
+> higher-level function to set bit 63 which is of GHCI details.
 > 
-> "When CTLx.SRC_TR_WIDTH < CTLx.DST_TR_WIDTH and the CFGx.CH_SUSP bit is
-> high, the CFGx.FIFO_EMPTY is asserted once the contents of the FIFO do not
-> permit a single word of CTLx.DST_TR_WIDTH to be formed. However, there may
-> still be data in the channel FIFO, but not enough to form a single
-> transfer of CTLx.DST_TR_WIDTH. In this scenario, once the channel is
-> disabled, the remaining data in the channel FIFO is not transferred to the
-> destination peripheral."
-> 
-> So in case if the port gets to be suspended and then disabled it's
-> possible to have the data silently discarded even though the controller
-> reported that FIFO is empty and the CTLx.BLOCK_TS indicated the dropped
-> data already received from the source device. This looks as if the data
-> somehow got lost on a way from the peripheral device to memory and causes
-> problems for instance in the DW APB UART driver, which pauses and disables
-> the DMA-transfer as soon as the recv data timeout happens. Here is the way
-> it looks:
-> 
->  Memory <------- DMA FIFO <------ UART FIFO <---------------- UART
->   DST_TR_WIDTH -+--------|       |         |
->                 |        |       |         |                No more data
->    Current lvl -+--------|       |---------+- DMA-burst lvl
->                 |        |       |---------+- Leftover data
->                 |        |       |---------+- SRC_TR_WIDTH
->                -+--------+-------+---------+
-> 
-> In the example above: no more data is getting received over the UART port
-> and BLOCK_TS is not even close to be fully received; some data is left in
-> the UART FIFO, but not enough to perform a bursted DMA-xfer to the DMA
-> FIFO; some data is left in the DMA FIFO, but not enough to be passed
-> further to the system memory in a single transfer. In this situation the
-> 8250 UART driver catches the recv timeout interrupt, pauses the
-> DMA-transfer and terminates it completely, after which the IRQ handler
-> manually fetches the leftover data from the UART FIFO into the
-> recv-buffer. But since the DMA-channel has been disabled with the data
-> left in the DMA FIFO, that data will be just discarded and the recv-buffer
-> will have a gap of the "current lvl" size in the recv-buffer at the tail
-> of the lately received data portion. So the data will be lost just due to
-> the misconfigured DMA transfer.
-> 
-> Note this is only relevant for the case of the transfer suspension and
-> _disabling_. No problem will happen if the transfer will be re-enabled
-> afterwards or the block transfer is fully completed. In the later case the
-> "FIFO flush mode" will be executed at the transfer final stage in order to
-> push out the data left in the DMA FIFO.
-> 
-> In order to fix the denoted problem the DW AHB DMA-engine driver needs to
-> make sure that the _bursted_ source transfer width is greater or equal to
-> the single destination transfer (note the HW databook describes more
-> strict constraint than actually required). Since the peripheral-device
-> side is prescribed by the client driver logic, the memory-side can be only
-> used for that. The solution can be easily implemented for the DEV_TO_MEM
-> transfers just by adjusting the memory-channel address width. Sadly it's
-> not that easy for the MEM_TO_DEV transfers since the mem-to-dma burst size
-> is normally dynamically determined by the controller. So the only thing
-> that can be done is to make sure that memory-side address width can be
-> greater than the peripheral device address width.
+> What about adding another "data_gpa_valid" parameter and then test
+> "data_gpa_valid" rather than test "data_gpa" to set bit 63?
 
-..
+Who cares what the GHCI says about validity?  The GHCI is a spec for getting
+random guests to play nice with random hosts.  Selftests own both, and the goal
+of selftests is to test that KVM (and KVM's dependencies) adhere to their relevant
+specs.  And more importantly, KVM is NOT inheriting the GHCI ABI verbatim[*].
 
-> +static int dwc_verify_m_buswidth(struct dma_chan *chan)
-> +{
-> +	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
-> +	struct dw_dma *dw = to_dw_dma(chan->device);
-> +	u32 reg_width, reg_burst, mem_width;
-> +
-> +	mem_width = dw->pdata->data_width[dwc->dws.m_master];
-> +
-> +	/* Make sure src and dst word widths are coherent */
-> +	if (dwc->dma_sconfig.direction == DMA_MEM_TO_DEV) {
-> +		reg_width = dwc->dma_sconfig.dst_addr_width;
-> +		if (mem_width < reg_width)
-> +			return -EINVAL;
-> +
-> +		dwc->dma_sconfig.src_addr_width = mem_width;
-> +	} else if (dwc->dma_sconfig.direction == DMA_DEV_TO_MEM) {
-> +		reg_width = dwc->dma_sconfig.src_addr_width;
-> +		reg_burst = rounddown_pow_of_two(dwc->dma_sconfig.src_maxburst);
-> +
-> +		dwc->dma_sconfig.dst_addr_width = min(mem_width, reg_width * reg_burst);
+So except for the bits and bobs that *KVM* (or the TDX module) gets involved in,
+just ignore the GHCI (or even deliberately abuse it).  To put it differently, use
+selftests verify *KVM's* ABI and functionality.
 
-I understand the desire to go this way, but wouldn't be better to have
-a symmetrical check and return an error?
+As it pertains to this thread, while I haven't looked at any of this in detail,
+I'm guessing that whether or not bit 63 is set is a complete "don't care", i.e.
+KVM and the TDX Module should pass it through as-is.
 
-> +	}
-> +
-> +	return 0;
-> +}
-
-IIRC MEM side of the DMA channel will ignore those in HW, so basically you are
-(re-)using them purely for the __ffs() corrections.
-
-..
-
->  	dwc->dma_sconfig.src_maxburst =
-> -		clamp(dwc->dma_sconfig.src_maxburst, 0U, dwc->max_burst);
-> +		clamp(dwc->dma_sconfig.src_maxburst, 1U, dwc->max_burst);
->  	dwc->dma_sconfig.dst_maxburst =
-> -		clamp(dwc->dma_sconfig.dst_maxburst, 0U, dwc->max_burst);
-> +		clamp(dwc->dma_sconfig.dst_maxburst, 1U, dwc->max_burst);
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+[*] https://lore.kernel.org/all/Zg18ul8Q4PGQMWam@google.com
 
