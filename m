@@ -1,163 +1,100 @@
-Return-Path: <linux-kernel+bounces-147189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85E888A70BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:01:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 237F48A70C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:02:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41E0E286CD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:01:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48C5E1C21560
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2559134CEA;
-	Tue, 16 Apr 2024 15:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5BF6136E0C;
+	Tue, 16 Apr 2024 15:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NDqQLRjo";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NDqQLRjo"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="PqsFQpc8"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AB8131E33;
-	Tue, 16 Apr 2024 15:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4D313698D;
+	Tue, 16 Apr 2024 15:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713283025; cv=none; b=EjSKckvkGmb8svaf08/yXv/Hj809YciQIiAHtcpamjUZHlLLT48EKJk5wIFM9qSWOzMn8R2K+EFeohcm3s9rifceZHzjFSNjP7kdsFZ6/97U1l2Cav4m/+sLEDdqo00nmqUpFwjne7+w2HaFM1tsXk7hNzbGqgJk4wC4JYLNCew=
+	t=1713283099; cv=none; b=DhH2NdzD+y/Uryn0bwb8REObzmx+03pTe/fX3cPJKIlq3ALpC/52EFfhrNcf4whR1rHkb7JrOMQ98jsk5JHugCftX23mo8zQzleZZ1ipDF+6hwM+zyFvsJkrbgNE2uLaEfWNYmVa4V/huaEDCAtlIconPatADvelX2YPdghnwUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713283025; c=relaxed/simple;
-	bh=Iu6ZI5gBqlme3cg5MEOC3W62ydJpeBmX4hJ+JUWNsy4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AFumoJTQX3CWvRHUtuVZl3nzd531zaOMPHezLZkNrWA5UEhWQTj4tD+Q0ztlGY93TABJmE8Yad0wV7g/TGojeVn43DxMiLCFKh4VksubX8pOP4kQ192b5R98Kcyfw2gM/Oxgx9BOMB+AFVy4fIVahuv9LxZaEkdMd4Az7zGuGUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NDqQLRjo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NDqQLRjo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 731C637C62;
-	Tue, 16 Apr 2024 15:57:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713283021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=anWo6fGpjMWEBqkA/kZa06BJ2jwAbp66h31uSjcrdZU=;
-	b=NDqQLRjosYjcezQ8nZejzJ+RF7CAggNYviN83sEJr/QMQQrnVrIfXjPcAEP/093aI+Gz71
-	R70+4hZL6C4Q1wIBVDvjJpZVszHKakptD1ElOJHzuEdn6da0NblG+YbDA7+2G/NslmPPyo
-	ynPcVIcd8+MvjEV3ItcPi1R/y7Iakzc=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=NDqQLRjo
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713283021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=anWo6fGpjMWEBqkA/kZa06BJ2jwAbp66h31uSjcrdZU=;
-	b=NDqQLRjosYjcezQ8nZejzJ+RF7CAggNYviN83sEJr/QMQQrnVrIfXjPcAEP/093aI+Gz71
-	R70+4hZL6C4Q1wIBVDvjJpZVszHKakptD1ElOJHzuEdn6da0NblG+YbDA7+2G/NslmPPyo
-	ynPcVIcd8+MvjEV3ItcPi1R/y7Iakzc=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E18A13931;
-	Tue, 16 Apr 2024 15:57:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8zzEFs2fHmaCEgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Tue, 16 Apr 2024 15:57:01 +0000
-Date: Tue, 16 Apr 2024 17:56:52 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, chenhuacai@kernel.org, tj@kernel.org, 
-	josef@toxicpanda.com, jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net, 
-	pctammela@mojatatu.com, yukuai3@huawei.com, qde@naccy.de, zhaotianrui@loongson.cn, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
-	cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 0/6] blk-throttle: support enable and disable
- during runtime
-Message-ID: <4exmes2ilp2cmfj3evf3jhhhq6tapfzgfzuasjejrxbj6a3327@3ecptofffblf>
-References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1713283099; c=relaxed/simple;
+	bh=nllEtvvs6NqH5k5GLLTv3RLRUZlAuaXj2VxYKEvp3tQ=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=dvHtkXYKRwMpdob7SfRgd0Bzdg2qPP7Pe+XGeGX7t4f1pPDPqGWsXgaGnMLppBwoV4WfKYRJo0A3hXcbwdlPn2QyxY4O0fb+n1zW5BouAVmY2gqxWc9UP+y+8xF6yolxEIs/Jh268DC976iwTeO4PecoBG7U2H6fuQxiLRsbaHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=PqsFQpc8; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1713283065; x=1713887865; i=markus.elfring@web.de;
+	bh=nllEtvvs6NqH5k5GLLTv3RLRUZlAuaXj2VxYKEvp3tQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=PqsFQpc86gZnr20gXM0/CJH7lVBimxXIBRX8EskPX++2UUrD8+/3lDvtgYLPahLk
+	 FIF6KdHEOTrUTt9+UR0SUWv883QxV3d2STeApsWdWfG2mS0IwP+NxEUWKAzs9B+IE
+	 9IX3JTP+5+NEYn6VTfiwX4u1uRl+0845Rixknl+wNbnfA4CTq7sC0QQWOf40q3cdt
+	 ti0qNhF9FiEiJp9r8PrmDziND6XYHrQtIf6YC1399lFHisgsAVeuejkSZvFbnk1RR
+	 gbCApXWzzotEOwg/v5c/JQiuUcTV4IOhrv6+6fw/w9aPOItUbe8Qb8gAAU49BIbCJ
+	 IaIT61ZxYTQ5g/hEmg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MJnvf-1sCUca0uxV-00K5DT; Tue, 16
+ Apr 2024 17:57:45 +0200
+Message-ID: <bf870914-3845-4d2a-b7cf-d7f9ef28e0b9@web.de>
+Date: Tue, 16 Apr 2024 17:57:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gcg27uqvq5iwros6"
-Content-Disposition: inline
-In-Reply-To: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-5.56 / 50.00];
-	BAYES_HAM(-2.45)[97.49%];
-	SIGNED_PGP(-2.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.dk,kernel.org,toxicpanda.com,mojatatu.com,gmx.de,themaw.net,huawei.com,naccy.de,loongson.cn,vger.kernel.org,lists.linux.dev];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 731C637C62
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -5.56
-
-
---gcg27uqvq5iwros6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+To: Zheng Yejian <zhengyejian1@huawei.com>,
+ linux-trace-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240416112459.1444612-1-zhengyejian1@huawei.com>
+Subject: Re: [PATCH v2] ftrace: Fix possible use-after-free issue in
+ ftrace_location()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240416112459.1444612-1-zhengyejian1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FFYeLD5kLXfbghX3LoP20kT5Jkoa52aNgyc4iVwSdKGw/0O7uyU
+ qwv41NCR+Leot8428I/N1AGO/pXqoDpGaGutf3arxyq2WNvT//+LZxsdqEHovX0tzgxaM4t
+ JGUclvFoGfsardn6fRzjqkh1Vj55sv0iYc1pXSEbWgqvFVd8ePKsMxbMomBQEx1ArU9vk0B
+ Wluy8K0lUz00e6SMe4rJA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:1fbYECY+dng=;+1DYhBjlCdbR2Vf5//lqiN4Yw3R
+ gNcEV/8sH0uXm44607oje8/jq9JLdXYw4Xe95o1zObM+k+7+0qaztqAGjgIychDdbU3x22SVo
+ irESF06Lp4g/5+5RNK79CExkXtcXgZcUezK/62FDoRmI6d2W0J9QQRXKYta7wYbiqWZ3oSlYl
+ FAzozpHm5bOnkhUGgZ1Un2yBujACqHbvhXSqY5UOLyF3oszp8PGdxj+F6+bx1Vr7jPzcdeNyi
+ npHhH2KIHpfwCujIDx+uLJdAvPWLleA35IhjlydlWNBzl4UtY39BBT63gTUfV49Ir+9AgY9j9
+ 9UgG+hI3AjoBGjc3keSsS7a8xhmxT2ZJ3yut5gI6Rr1TzeSqm/n1Sk4/weli/ujGgMokrd1kc
+ XscO/DNqhvXHSKRyQdcwjdA0Ww/DYPZE4k9hba/0H6uPf+1VMF41XZugCHLMFq1Q4moxoDcAl
+ HGGY+KAdh73GUDeadhB9smvRhMBpg8S5yXCEXnzu+QFMh+BJEcWQL+TFpWVL3Moz2b9pFYP+n
+ KaMBJYrRmHcOcBW6+GT1slz0ze0vr6ThTvykO6y/welS9yT2kM2T2H3tQKGhC3qW3r28xweYl
+ 2VQAJi/deb+TRNcURXJJ7vVbywo/tDW53wI4wN+3C90/eV9mr3GhceMNU4NY/FsnnX+ucXlqk
+ ADGb+GVVmq5KAvcSfMzAcTgMsT6KHoBxQmlPwxYc6l3tJH6D6AXuI0Yc0EH927vWLIqFO/ubb
+ B2ug/kiuhb3HjPxAYMyVs9WMjHk+fJ0rs9qxo0UNdeUx1/5h2WHuwLN5toOGr2GmJLuygsTr9
+ G0f+3yWUUE0x99PN+ETGwDaTfYddLkaVplER19FeRlQQs=
 
-On Sat, Apr 06, 2024 at 04:00:53PM +0800, Yu Kuai <yukuai1@huaweicloud.com>=
- wrote:
-> I'm planning to support build all blk-throttle polices as kernel module,
+=E2=80=A6
+> To fix it, we hold rcu lock as lookuping ftrace record, and call
+> synchronize_rcu() before freeing any ftrace pages.
 
-There is only one blk-throttle policy (especially after your removal of
-io.low). Did you mean blkcg policies in general?
+I suggest to convert this description into an imperative wording.
 
-The current code is complex because of various lifecycles in=20
-	devices x cgroups.
-Turning policies into modules seems to make it=20
-	devices x cgroups x policy modules
-=2E
-
-Could you please add more info why policies as modules is beneficial,
-how to keep complexity capped?
-
-Thanks,
-Michal
-
---gcg27uqvq5iwros6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZh6fwgAKCRAGvrMr/1gc
-jk6XAQCeZFtufnuWTQip3NTiZ2vlcVYT97vuhRvyjVW1FUJmXwD/Ws2DBY85GsT2
-hWc+vTpwYwuFW0zjBy+qQ871rrOUHAc=
-=UDnt
------END PGP SIGNATURE-----
-
---gcg27uqvq5iwros6--
+Regards,
+Markus
 
