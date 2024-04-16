@@ -1,129 +1,161 @@
-Return-Path: <linux-kernel+bounces-146671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C660E8A6908
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:51:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB388A690E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:52:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BD771F21D80
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:51:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 006F01F21F03
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38AC12839E;
-	Tue, 16 Apr 2024 10:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660AD128809;
+	Tue, 16 Apr 2024 10:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="X9j2ipqP"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ap8fqOuj"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DEA1E87F;
-	Tue, 16 Apr 2024 10:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3374C3D38E;
+	Tue, 16 Apr 2024 10:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713264690; cv=none; b=C0X6kk4cI3V725U970kPDycHRqEAAKDfl6kXFkGu/G//z2Kg13McWzRCFlvXBTkTpn7+jtqaWWResz1lZfBrnuwGHwk9mzlarxcrQQUypCNXvNTQ9IoQoVPQCgatwbDzjmcGtOlOjy5109TxJQmC1Aj2UjHyJuv5KX1ylSOSnSU=
+	t=1713264759; cv=none; b=N6FxHByjr6wYanxPhO1E7y8wBsi6VyiapjRXwr9B6ZyPqJ+N1hcQ+sOsRID8I1+h9NjcSVwSLq45pSMImpv9Q/5jN9Efxg8B0/BTDJDXBGiSqgPiLq5Z9UneXFvLG0VT8unQUazvzh5Dq+gY5HdAwAMvLj6/r7kPOE1FpmznwMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713264690; c=relaxed/simple;
-	bh=Eg2d6DSO7vljcimSjm9nh5yaJmrhsxpma7PRC2x1+Uk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=de82p2OUzfnKoZL46LQLzPJILIby2FZdsjAbO87sBXsbr+xX0rg9skNUW/VgG0eawb5TkN10akrcXNIeo+Gs+f4jTPmkdHyc0yPFlaJbB3IYUyz7Jr6PGSxaZQ6zHBvQDJUlgNlC8U2Zu0iv07vT4HvhgPpMnPiE4mcTPXuLwKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=X9j2ipqP; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43G4ua7f014191;
-	Tue, 16 Apr 2024 10:51:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=W38VflJdgyZa
-	byOkm+lr02s/pUISBOkObcSb0K+i7bQ=; b=X9j2ipqPlt+WPrW8AdhWiCgCqYcb
-	P/DVqEPFCLiwV/TLtSEcCRg26hSh8EEzhXs7k1GLLwfIZ3hljU5ByIwHggcVFjIR
-	XVac8UxZOJqgRhzgJvAT6HDWB18qCJBUUl+bZIIi6RwyGgwWgMoTr6vJk2EOqh29
-	zdBzAkBw5lNVJ9ONCiKFEK5OfZ+k1dwpMmylhWc0hM0jASbGTkRJ63ekj3E29wu7
-	mBGY1ssIN9Oi+lYVMArIb7pErobrDUJe7t4gtSzfcE9Jk8NGfu0gMGgwxDBfG9xV
-	uk3QUYLIPef9RMGRrzccV2tLgis0zjKywFiqKGWKiPMrPy1r9NtbzFAGbw==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xh5jxausv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 10:51:24 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 43GApK32010446;
-	Tue, 16 Apr 2024 10:51:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3xfk4kqq7g-1;
-	Tue, 16 Apr 2024 10:51:20 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43GApKZE010441;
-	Tue, 16 Apr 2024 10:51:20 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 43GAp4CQ010374;
-	Tue, 16 Apr 2024 10:51:20 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
-	id 0CC93500C6C; Tue, 16 Apr 2024 16:21:02 +0530 (+0530)
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-To: andersson@kernel.org, konrad.dybcio@linaro.org, robh@kernel.org,
-        krzk+dt@kernel.org, linux-arm-msm@vger.kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: quic_msavaliy@quicinc.com, quic_anupkulk@quicinc.com,
-        Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Subject: [PATCH v1] arm64: dts: qcom: qcm6490-rb3: Enable gpi-dma and qup node
-Date: Tue, 16 Apr 2024 16:20:59 +0530
-Message-Id: <20240416105059.1167-1-quic_vdadhani@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: a4IMRRPdpsUnI5-S7oRZatyBk4xq9Lbi
-X-Proofpoint-ORIG-GUID: a4IMRRPdpsUnI5-S7oRZatyBk4xq9Lbi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_08,2024-04-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- suspectscore=0 adultscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
- mlxlogscore=756 spamscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404160066
+	s=arc-20240116; t=1713264759; c=relaxed/simple;
+	bh=9gNKl0lrAyzFZuHgMx15OipfXoXEYkAjMfWK1Ym8ab8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rLv7dyNTJJcvHoWjjw3SlE/PgEbevI2mrm68h0zSCpbEoBd5h4u30nVCtj/JXDF44024gHEbWr0TfYbFZlJvVatwYyEOKwiuvq2mXh0SP3H/7oK0yBzXp9brvjCl7fiw+85479H3Lp+P5d3NG0zoUt4pM5oSo+x41l1IC6WhJh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ap8fqOuj; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5701dec0c0aso2762330a12.3;
+        Tue, 16 Apr 2024 03:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713264756; x=1713869556; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yj+Iuq37H5CQ3HHFDH6wk2fzVZAY8yC5nRKMEowsuSI=;
+        b=ap8fqOujQXb5mpgB3C4efzPlg/7yyqHRat9k3cFJ85hrykaPTIJGyxX8pJaHm+HrR6
+         ogizh78Ph4ntZZu4g+mO/kPXSPBDUjxKIlEEwUwpAV8HFS01UiL9Rko6zAw5BqefhHUv
+         V+lE7DUs9PuQWoyV8I9wRn+sQ/XcJmL9DQWwpOCRAIk2EksYzUm/nlxcoCqviFfdTLFj
+         eSKxh9wM9omkaCkpY0uRAiPS3MMyGJlvb4hdY8etENq/qZsy1KyZpJxV4yAs7yszfGOG
+         P1pOUFsrxtdjhLqaY25rmc6rTIIA0ecR/JRaq2VgD2fhdHAOizqIwS+v/F7FehzZi4i9
+         /uNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713264756; x=1713869556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yj+Iuq37H5CQ3HHFDH6wk2fzVZAY8yC5nRKMEowsuSI=;
+        b=o12jYCldbKHK+e6sjuCN0aIHqp012W3Qm7pww8ublz8rHoN+GPaa3qjYu0tMLnU1M6
+         FZgPwTEnTnRwiCH7uMQxpMcgcumdTFPhey06K/miWTpWXZ4TAbNbbaDdVRe6QwqLFpwe
+         GV10aX0+DN+jbvsSMkxSLGE7HqACQelcP5jM20xFEyhZkFIi6YER3arQGawWZzoEnCGK
+         aFbOZMcWztOPApmfOryic8qAg39ibGMNF8sXBQnl+Rr6Uaxc/JV1oHG16//VkZ8Zb4/o
+         uZQeRQHrEeW7WS9qszyNrnD/Rl/dwzo55Mbp0Rb2s5EToUdlrHILg1sYrEqmNt4+pNgn
+         UMnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUw7BMzUY/+6gqZ1nL4FafQ6jbtIg/cKuTJm0Aol8QRBGD6m0gLSgJpz0hqeqJwSsxxb+kTdJYEk/e6zZGMm4ztqGA8jF7JQn5oqzK2bpJvn+wKhf6nl9Z6Lgja1pUMCpGhUwF6X+mHxEMfkHU/1bV7foOO1rgQbk6XOhCWp132NKc/1pMCuuJwciyLX6uH4yYhXlMuoHQbPFkBdo2UWPCsWV93NTFTnQrb/Bf6nW7Rghvb+i4vIHgsxapVbGAXFGmIUL2ehatbj1xUB9M6xAtNAn0jl6dokl9aq3RbnA==
+X-Gm-Message-State: AOJu0Yxcpp1iaqEjsfGIbnaHnR2fvO6TOdqYCmqcD1+sntopREuEUfD6
+	lSrc65JU67rtJJe8EhStyKvwYUXAno/R1sV2ftRSq4itKjJAFhAkwVeiRzz0UE9mmdmjgKjNkty
+	PrRa4+qsE49bcpJqQv8mOqN/xgrY=
+X-Google-Smtp-Source: AGHT+IFon2Aw3ti4vkbB1b2ywIYBBfu+zHa7Gr7yH1CDPfXp+5JnTzJ9UBBOwEC/nOMEAZCzW6rVZshgLJrmc6B/ebQ=
+X-Received: by 2002:a50:f699:0:b0:570:2367:47e7 with SMTP id
+ d25-20020a50f699000000b00570236747e7mr4030108edn.12.1713264756242; Tue, 16
+ Apr 2024 03:52:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240409192301.907377-6-david@redhat.com> <20240416104008.41979-1-ioworker0@gmail.com>
+ <3ef81fe3-2584-4db8-ab66-eaa44c035707@redhat.com>
+In-Reply-To: <3ef81fe3-2584-4db8-ab66-eaa44c035707@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Tue, 16 Apr 2024 18:52:24 +0800
+Message-ID: <CAK1f24kph=hV6Da=fAXFuKChx5JVasPLYC7efQbPr+JT0WxQ1A@mail.gmail.com>
+Subject: Re: [PATCH v1 05/18] mm: improve folio_likely_mapped_shared() using
+ the mapcount of large folios
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, chris@zankel.net, 
+	corbet@lwn.net, dalias@libc.org, fengwei.yin@intel.com, 
+	glaubitz@physik.fu-berlin.de, hughd@google.com, jcmvbkbc@gmail.com, 
+	linmiaohe@huawei.com, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-sh@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, muchun.song@linux.dev, 
+	naoya.horiguchi@nec.com, peterx@redhat.com, richardycc@google.com, 
+	ryan.roberts@arm.com, shy828301@gmail.com, willy@infradead.org, 
+	ysato@users.sourceforge.jp, ziy@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Enable gpi-dma0, gpi-dma1 and qupv3_id_1 nodes for
-busses usecase on RB3 platform.
+On Tue, Apr 16, 2024 at 6:47=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 16.04.24 12:40, Lance Yang wrote:
+> > Hey David,
+> >
+> > Maybe I spotted a bug below.
+>
+> Thanks for the review!
+>
+> >
+> > [...]
+> >   static inline bool folio_likely_mapped_shared(struct folio *folio)
+> >   {
+> > -     return page_mapcount(folio_page(folio, 0)) > 1;
+> > +     int mapcount =3D folio_mapcount(folio);
+> > +
+> > +     /* Only partially-mappable folios require more care. */
+> > +     if (!folio_test_large(folio) || unlikely(folio_test_hugetlb(folio=
+)))
+> > +             return mapcount > 1;
+> > +
+> > +     /* A single mapping implies "mapped exclusively". */
+> > +     if (mapcount <=3D 1)
+> > +             return false;
+> > +
+> > +     /* If any page is mapped more than once we treat it "mapped share=
+d". */
+> > +     if (folio_entire_mapcount(folio) || mapcount > folio_nr_pages(fol=
+io))
+> > +             return true;
+> >
+> > bug: if a PMD-mapped THP is exclusively mapped, the folio_entire_mapcou=
+nt()
+> > function will return 1 (atomic_read(&folio->_entire_mapcount) + 1).
+>
+> If it's exclusively mapped, then folio_mapcount(folio)=3D=3D1. In which c=
+ase
+> the previous statement:
+>
+> if (mapcount <=3D 1)
+>         return false;
+>
+> Catches it.
 
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
----
- arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+You're right!
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-index c98c41f8f3b1..811033592bab 100644
---- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-+++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-@@ -603,10 +603,22 @@
- 	status = "okay";
- };
- 
-+&gpi_dma0 {
-+	status = "okay";
-+};
-+
-+&gpi_dma1 {
-+	status = "okay";
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
- 
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
- &remoteproc_adsp {
- 	firmware-name = "qcom/qcs6490/adsp.mbn";
- 	status = "okay";
--- 
-2.17.1
+>
+> IOW, once we reach this point we now that folio_mapcount(folio) > 1, and
+> there must be something else besides the entire mapping ("more than once"=
+).
+>
+>
+> Or did I not address your concern?
 
+Sorry, my mistake :(
+
+Thanks,
+Lance
+
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
