@@ -1,106 +1,132 @@
-Return-Path: <linux-kernel+bounces-146605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 691098A67E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:12:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 287D28A67EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:13:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A32E1C203A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:12:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88226B219B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F73126F02;
-	Tue, 16 Apr 2024 10:12:05 +0000 (UTC)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA6C126F03;
+	Tue, 16 Apr 2024 10:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b="Ou/+1mni"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1745985280
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EBC586250
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713262325; cv=none; b=Nbvhe1JD2cjIROVp/dwMAyIy8ls6rI+gpvrQNtyU4ndFF9JkQdMLRs6mZPhLYoEQhHkB7xbYRqV6e8DWYyetUMTXdNqyXqC3VAhtMTxL8+xU/6cyPgcnxe4PIt4Ie7WyGPGdwXrmF5H9jbIwBxRTbivf6MEvJKkVcXaqrt+/KPs=
+	t=1713262425; cv=none; b=IdAqazWVJDp1xzLZP88jUr0f25Su1Sj7YbkoscxXVMSBfC9OnNvwADriieSMoxuCZm8utQQcmgeb5M0bvyF6OlsvbvsRI7lxxRw7OqMmxbHgfvhC4hpTB2k7X4O/FuQxFjn7rinsJoM2lGYg0dGYjdUXyyqQahthlvOU4NuojQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713262325; c=relaxed/simple;
-	bh=uciQa9NlLIukC8sJKCILTRFZbXwk4eeGjKahnO5Dh7Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NwynjrT7mqD4REO+PSv0E/s8YANdKKT0XTkwlIHoq4hOZ07bmkGmxeMxdp1GfvG0zW4mI9yrXYItqrC7P06WQUU8JvkcD+YjqTAhxx1mpi+M+FhxwmOBs96YYgKNQ7hCeu/wkos5T+3He5lsCfIpRdPJsOrWm1R4QP9QbUYmqG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B9E6740E02A5;
-	Tue, 16 Apr 2024 10:12:00 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id xok-7l0TsIx3; Tue, 16 Apr 2024 10:11:57 +0000 (UTC)
-Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AD59140E0177;
-	Tue, 16 Apr 2024 10:11:48 +0000 (UTC)
-Date: Tue, 16 Apr 2024 12:11:47 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: "Xin Li (Intel)" <xin@zytor.com>
-Cc: linux-kernel@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com
-Subject: Re: [PATCH v1 1/1] x86/fred: Fix int80 emulation for FRED
-Message-ID: <20240416101147.GDZh5O473e4X_ZG1lZ@fat_crate.local>
-References: <20240412234058.1106744-1-xin@zytor.com>
+	s=arc-20240116; t=1713262425; c=relaxed/simple;
+	bh=PLfHS/pr861fPjFBeMBoEopPIt381ou0qj9dA0o7sxM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uNNI63hSCRSXKOlKglhHQY/ahgoryFI0FewZc5ytd3TiwexGqGfeklET2DOwB0pXD5i6Q4RYLClDvIhXBP8X93XcNr63wZn1xq+Fh0N3btPPPycxQAcl4i5aIPQ6b95JvotZTrN37YaBqxxDn58TIHX/25ge0NNudWC6oqsJRwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com; spf=pass smtp.mailfrom=futuring-girl.com; dkim=pass (2048-bit key) header.d=futuring-girl-com.20230601.gappssmtp.com header.i=@futuring-girl-com.20230601.gappssmtp.com header.b=Ou/+1mni; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=futuring-girl.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=futuring-girl.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a2d0ca3c92so2732875a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1713262422; x=1713867222; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YZfb01z1cElSdFgczCPztvVWoygfwcGgF7HnVAPTuEs=;
+        b=Ou/+1mnibDBFuGPcQ0dWFkRgXX9GC0Nywe2x4pGJI0/QodftMdTwehlyON8vOOciQa
+         BeEn4O4ss2KnJQII1/G83f3p4FPr2znkx7MfwCmsLz4tEjrxeKKYnr0HrzZAlTPync7d
+         xBrRsG21s+E2Z3YyG6vO+6rqOoZSFFxiYAsy6eCkXNodDsPsvKA1V7vh07Qp/S4JK4lr
+         hq/cePmHYYJqfMWHlQH18BqKdrjXsGlaq+ybfpYFBLuHHDSxHRfw30z+hfcXA7xNJIu8
+         HXOkF/sBRBU6/97i24RMvIIWwUsiEbDzykoIxTo+nUV0/5dl+7EQICdKAN1paTWYXpLJ
+         V4jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713262422; x=1713867222;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YZfb01z1cElSdFgczCPztvVWoygfwcGgF7HnVAPTuEs=;
+        b=RW2wlG0GWms2XfqA3FohV1XDYlFMGSaSrtggq1NoW7cxzrZ8J2eSErIKrA4Y7eQvXL
+         uo6v5pQc1pJJvQTlKDANx1SnULFEMpQnQhmVR4VdlEEBsnkoz2e9mcgR/pfNZHsfDTAd
+         qMtCL41WVr49n0BWhWJwvWf7cbM02BDqt8tZf6lnit6h2UKuEoEcSgV+vglOGgwh2/YR
+         7y48Wv/A0AyO8cyDWu9K7UMF15AdaRuQPCqJxoDKd6RzjynRpSWZxysfFtkBMVkHt20J
+         0A2TvbdRLFQHAM/KA1MSxnBTFKP8iQKRjZfClzHaNkFRhLw15PoYoh//O7K7sTyKjP4W
+         0Z9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWMFFF6hSJynmF1csvv+YDACPSXW6XeVltWGJg+H3EURJWEVfQ0iyutNRX3nx5Eg/es1RbulyentLFX7nYlMgwK3kXzVIT7b2xlBDAk
+X-Gm-Message-State: AOJu0Yw+D7h1xOK37Y0z7BiA2Kax0j7NuIwn/mKMsV5lyyijZGX6odzE
+	YYNi/gbQKOptfxnoA+ozhJM47QPzt/4XV9SDyfAgQrUBRZQbaTY/xpKK6j7kBXfnKVt37DQfcc6
+	aQj0bdmriRNzeh+cyFxNRcoV5tCULW+neWnyHkQ==
+X-Google-Smtp-Source: AGHT+IEAmCX3pj6Nd8BE8HVb4J6COM8iyob7Dnrh8XVaPFzBOespQeJDXW+F7FT5eUBAa5B9DPn9VuXJil6nMAitpYE=
+X-Received: by 2002:a17:90a:f105:b0:2a7:8674:a0c8 with SMTP id
+ cc5-20020a17090af10500b002a78674a0c8mr2945956pjb.1.1713262421827; Tue, 16 Apr
+ 2024 03:13:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240412234058.1106744-1-xin@zytor.com>
+References: <20240415141953.365222063@linuxfoundation.org>
+In-Reply-To: <20240415141953.365222063@linuxfoundation.org>
+From: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Date: Tue, 16 Apr 2024 19:13:30 +0900
+Message-ID: <CAKL4bV6gTOUt=LomZjGceMm6SjqWeOXXeTE8EQ7H-ovQvnfzZA@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 04:40:58PM -0700, Xin Li (Intel) wrote:
-> Commit 55617fb991df
+Hi Greg
 
-Use the full commit abbreviation when mentioning commits:
+On Mon, Apr 15, 2024 at 11:35=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.28 release.
+> There are 122 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.28-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-"Commit
+6.6.28-rc1 tested.
 
-  55617fb991df ("x86/entry: Do not allow external 0x80 interrupts")
+Build successfully completed.
+Boot successfully completed.
+No dmesg regressions.
+Video output normal.
+Sound output normal.
 
-.."
+Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
 
-> added a bunch of tests to the int $0x80 path,
+[    0.000000] Linux version 6.6.28-rc1rv
+(takeshi@ThinkPadX1Gen10J0764) (gcc (GCC) 13.2.1 20230801, GNU ld (GNU
+Binutils) 2.42.0) #1 SMP PREEMPT_DYNAMIC Tue Apr 16 18:32:52 JST 2024
 
-Added a bunch of tests?
+Thanks
 
-What does that even mean?
-
-> however they are unnecessary and event wrong in fact under FRED.
-
-Are the bunch of tests wrong or is do_int80_emulation() simply the wrong
-handler to use on a FRED?
-
-> First FRED distinguishes external interrupts from software interrupts,
-> thus int80_emulation() should NEVER be called for handling an external
-> interrupt, and then int80_is_external() should be skipped under FRED.
-> 
-> Second, the FRED kernel entry handler NEVER dispatches INTx, which is
-> of event type EVENT_TYPE_SWINT, so the user mode checking in
-> do_int80_emulation() is redundant, and should be skipped.
-> 
-> It might be even better to strip down do_int80_emulation() to a lean
-> fred_int80_emulation(), not to mention int80_emulation() does a
-> CLEAR_BRANCH_HISTORY.
-
-Yah, how about you do a FRED-specific INT80 handler instead of
-sprinkling moar tests around? fred_intx() looks like the right place to
-stuff it in...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
 
