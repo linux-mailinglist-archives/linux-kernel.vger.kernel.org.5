@@ -1,347 +1,192 @@
-Return-Path: <linux-kernel+bounces-146999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B477C8A6E11
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:24:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D73218A6E13
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:25:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A562B23807
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:24:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39B37B21D5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:25:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3BA13698F;
-	Tue, 16 Apr 2024 14:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6564612DD9C;
+	Tue, 16 Apr 2024 14:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KF5rdz/k";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KF5rdz/k"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oO9vjs9w"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2959D1304B4;
-	Tue, 16 Apr 2024 14:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E88812C54B
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713277221; cv=none; b=Saw9wpR4Tzuw5PgmqyXCQbbaxxBBstlIAEgs7N8rYDtOEV3cNGC4a9AjaFbFCtifF5Va01t5cACuX3JQ80jAzjIoUZH2fMFV1EGX/Xc4qsTp48WdmqVktQY0itVJOk12AiM994X1E+ENgr7dZXgVqsHPENPPJQ9Sfp90w88CncE=
+	t=1713277345; cv=none; b=Z/tX1yuGs2i9uAivc0ROkFwYAkKhqQHkiCcsGGTQidcA9lEjZHu3L0yd5YVU0k3VWS9BKn6Pmh2dijDMqZZeXG7S/wwrFzC3o//e1iP9uARq0dbPDg2/GZwYpea2uMso5bO25nVRCpN7xidL6hrEk6FhzF43DZlInGtar6ADVD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713277221; c=relaxed/simple;
-	bh=3jGZQApJ9fWbuggQ4IbzhCB3DJkJBT9AZ/zmJVg8UUk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WPeE+AqhX2r0HLz/3QENa6xsPPlpYgFLZlhuYBGs7kELaxLBPcdW/umlPgSEpeGVLly289gVydrWjyN9XN2rarFz/6H03vCp2+38fWf6mHN8IhgboC5uQHpS3PagAmfAz+v5HEH+DfeMLUNx+cdvEmCFYGbLhuSt1Oe0PkN7Lgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KF5rdz/k; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KF5rdz/k; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6AF0A5F890;
-	Tue, 16 Apr 2024 14:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713277216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iv3fNv8LLYJHp4fC3CC5bwMdRNSE7gN5K/TlvWEl93E=;
-	b=KF5rdz/ksFIVU9XivjIiExKMDfAKRwB3083NjlRwt8bh/hfvnLYnoLiBx05jOA1gge8W1r
-	7ZNhzjqdGcEMcszMBnq90cEM2rSi9QoHTz7koLOd5UqE79MP38ijtG50bXgLcPLRgJlvTg
-	+/9sC7gmY6ph9M8MWKnvu/9l3Mdkmx0=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713277216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iv3fNv8LLYJHp4fC3CC5bwMdRNSE7gN5K/TlvWEl93E=;
-	b=KF5rdz/ksFIVU9XivjIiExKMDfAKRwB3083NjlRwt8bh/hfvnLYnoLiBx05jOA1gge8W1r
-	7ZNhzjqdGcEMcszMBnq90cEM2rSi9QoHTz7koLOd5UqE79MP38ijtG50bXgLcPLRgJlvTg
-	+/9sC7gmY6ph9M8MWKnvu/9l3Mdkmx0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5CC7B13931;
-	Tue, 16 Apr 2024 14:20:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GKiDFiCJHmbAbQAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Tue, 16 Apr 2024 14:20:16 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: [PATCH v4 6/6] selftests: cgroup: Add basic tests for pids controller
-Date: Tue, 16 Apr 2024 16:20:14 +0200
-Message-ID: <20240416142014.27630-7-mkoutny@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240416142014.27630-1-mkoutny@suse.com>
-References: <20240416142014.27630-1-mkoutny@suse.com>
+	s=arc-20240116; t=1713277345; c=relaxed/simple;
+	bh=3cqRkxuAoAdclD1Decn0UctEiqoo56MnyyAqYSNaqFw=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=f34ycglHuAWvLg1C3kzATR9p7wBNgQBXexgqvvjRVSTagz6OBOP66/Z3omVm46BzNA/uDESKjUlS6kt+44CSR8o2El77vN6XXyKPmBqlvBHxcdMAOOLKMjyJ7A+8W4e8cDdkABpuFqW69Tqntq6Y6gQrzaJExDLIccqXp0JGN/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oO9vjs9w; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-615073c8dfbso91320137b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713277343; x=1713882143; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k/UOLwv0XSJq/Zhcb8vmfEVms5jwTpIC8eJyCuIIgTE=;
+        b=oO9vjs9wCmVH9V9uCoCEqLXzHit5KgzVDCfu7up/n99ulaYVnflm7QsrnrVyma77eA
+         tY+gWJLsZy99sU8zahN5Rwb2Sw4Y6jnLUnrEuHjaPDYPzXgZrWDYZz0vOn7tLVDHMPJn
+         7IO4VCJiIoWc6hf1zaLQcNVRaGOVvjKzhSFIirH+rI1nEp6NVrYc9QoNOhH6Q/53NSNB
+         /OqH6VG0WAwBPmY4v2aGdylUhM5B0Ga+XqZbJr3ngKrRKoSk988OOYYedZQvxQ0F9JD/
+         huRLATtJAqkBrVU26rLPG3eqJO7o6jQ/vFPtypZ7dUY7s5BJmUlkeiiip7bXOD11HP1y
+         bEVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713277343; x=1713882143;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=k/UOLwv0XSJq/Zhcb8vmfEVms5jwTpIC8eJyCuIIgTE=;
+        b=QvvuFqx9skIR49DAiU3kqS+zQU6nUOJrZBdfnUT8LVKNKKSz6XLhLZlfomI/Vd7NYR
+         AvTUywHn1zJrXhoduGpdnl9eVXObkhcCBAoMNdT445vsUEaQwN34Ut4s4Y3HYM97Mzl4
+         0ikMnqGJN5kwfEB8IlP4xvTqKWIgDd1lBp0VL5wrVBT8W/h4Bks2SCh1IzTHfxJzvP2H
+         LHPeGI/YE14ERk2VvVjfADKAtOKXFK9x9Axl7P0S5MdSqGTq4xp4L60ezxYNrYk++Xds
+         zqBELhwkLZlm2wITKHiW4z0Lf2BfoBUtGB92ytdLmNcSzlNFaK4DIcg+X77SSyS2tytC
+         +PqA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+5xp5FsKL0ey4H+iMpQdmydQKVb/m7lzLf2LGzYviQBbaFPL4ZQO+ymrh5b2HEfu+4QpM6BpHoeudWtstmN405S01P34QElhxAG9x
+X-Gm-Message-State: AOJu0Yyf/ClssPJYw7R+d/Fc0DYV6x04Of1W6NmMqoGATmF0vwjZcHev
+	5Ek50IZp8aSrVo6emNCnWijj8F/ILO/t2vb+qoivZ22IqmqBTjJVNj+5P2b4llxaeSTcwU//9I4
+	hfg==
+X-Google-Smtp-Source: AGHT+IH4L7bxzfAmLvXgK5qDnsanL4f0HebJHtDqLccexofjsXMGDPYacotzowqfEWUaTjnLoM96cIwRCHA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:d17:b0:611:2c40:e8d0 with SMTP id
+ cn23-20020a05690c0d1700b006112c40e8d0mr3236216ywb.3.1713277343237; Tue, 16
+ Apr 2024 07:22:23 -0700 (PDT)
+Date: Tue, 16 Apr 2024 07:22:21 -0700
+In-Reply-To: <20240416014931.GW3039520@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RL6j1h7wxugqfdyj8pnx7tibp9)];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+Mime-Version: 1.0
+References: <cover.1712785629.git.isaku.yamahata@intel.com>
+ <2f1de1b7b6512280fae4ac05e77ced80a585971b.1712785629.git.isaku.yamahata@intel.com>
+ <116179545fafbf39ed01e1f0f5ac76e0467fc09a.camel@intel.com>
+ <Zh2ZTt4tXXg0f0d9@google.com> <20240416014931.GW3039520@ls.amr.corp.intel.com>
+Message-ID: <Zh6JndoNGqEhCpCR@google.com>
+Subject: Re: [PATCH v2 07/10] KVM: x86: Always populate L1 GPA for KVM_MAP_MEMORY
+From: Sean Christopherson <seanjc@google.com>
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	Kai Huang <kai.huang@intel.com>, 
+	"federico.parola@polito.it" <federico.parola@polito.it>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, "dmatlack@google.com" <dmatlack@google.com>, 
+	"michael.roth@amd.com" <michael.roth@amd.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>, 
+	isaku.yamahata@linux.intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit adds (and wires in) new test program for checking basic pids
-controller functionality -- restricting tasks in a cgroup and correct
-event counting.
+On Mon, Apr 15, 2024, Isaku Yamahata wrote:
+> On Mon, Apr 15, 2024 at 02:17:02PM -0700,
+> Sean Christopherson <seanjc@google.com> wrote:
+>=20
+> > > > - Return error on guest mode or SMM mode:=C2=A0 Without this patch.
+> > > > =C2=A0 Pros: No additional patch.
+> > > > =C2=A0 Cons: Difficult to use.
+> > >=20
+> > > Hmm... For the non-TDX use cases this is just an optimization, right?=
+ For TDX
+> > > there shouldn't be an issue. If so, maybe this last one is not so hor=
+rible.
+> >=20
+> > And the fact there are so variables to control (MAXPHADDR, SMM, and gue=
+st_mode)
+> > basically invalidates the argument that returning an error makes the io=
+ctl() hard
+> > to use.  I can imagine it might be hard to squeeze this ioctl() into QE=
+MU's
+> > existing code, but I don't buy that the ioctl() itself is hard to use.
+> >=20
+> > Literally the only thing userspace needs to do is set CPUID to implicit=
+ly select
+> > between 4-level and 5-level paging.  If userspace wants to pre-map memo=
+ry during
+> > live migration, or when jump-starting the guest with pre-defined state,=
+ simply
+> > pre-map memory before stuffing guest state.  In and of itself, that doe=
+sn't seem
+> > difficult, e.g. at a quick glance, QEMU could add a hook somewhere in
+> > kvm_vcpu_thread_fn() without too much trouble (though that comes with a=
+ huge
+> > disclaimer that I only know enough about how QEMU manages vCPUs to be d=
+angerous).
+> >=20
+> > I would describe the overall cons for this patch versus returning an er=
+ror
+> > differently.  Switching MMU state puts the complexity in the kernel.  R=
+eturning
+> > an error punts any complexity to userspace.  Specifically, anything tha=
+t KVM can
+> > do regarding vCPU state to get the right MMU, userspace can do too.
+> > =20
+> > Add on that silently doing things that effectively ignore guest state u=
+sually
+> > ends badly, and I don't see a good argument for this patch (or any vari=
+ant
+> > thereof).
+>=20
+> Ok, here is a experimental patch on top of the 7/10 to return error.  Is =
+this
+> a direction? or do we want to invoke KVM page fault handler without any c=
+heck?
+>=20
+> I can see the following options.
+>=20
+> - Error if vCPU is in SMM mode or guest mode: This patch
+>   Defer the decision until the use cases come up.  We can utilize
+>   KVM_CAP_MAP_MEMORY and struct kvm_map_memory.flags for future
+>   enhancement.
+>   Pro: Keep room for future enhancement for unclear use cases to defer
+>        the decision.
+>   Con: The use space VMM has to check/switch the vCPU mode.
+>=20
+> - No check of vCPU mode and go on
+>   Pro: It works.
+>   Con: Unclear how the uAPI should be without concrete use cases.
+>=20
+> - Always populate with L1 GPA:
+>   This is a bad idea.
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- tools/testing/selftests/cgroup/.gitignore  |   1 +
- tools/testing/selftests/cgroup/Makefile    |   2 +
- tools/testing/selftests/cgroup/test_pids.c | 178 +++++++++++++++++++++
- 3 files changed, 181 insertions(+)
- create mode 100644 tools/testing/selftests/cgroup/test_pids.c
+Not always.  If L1 is using shadow paging, then L1 and L2 GPAs are in the s=
+ame
+domain from KVM's perspective.
 
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/selftests/cgroup/.gitignore
-index ec635a0ef488..952e4448bf07 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -7,5 +7,6 @@ test_hugetlb_memcg
- test_kill
- test_kmem
- test_memcontrol
-+test_pids
- test_zswap
- wait_inotify
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index f3e1ef69e88d..f5f0886a2c4a 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -15,6 +15,7 @@ TEST_GEN_PROGS += test_hugetlb_memcg
- TEST_GEN_PROGS += test_kill
- TEST_GEN_PROGS += test_kmem
- TEST_GEN_PROGS += test_memcontrol
-+TEST_GEN_PROGS += test_pids
- TEST_GEN_PROGS += test_zswap
- 
- LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
-@@ -29,4 +30,5 @@ $(OUTPUT)/test_hugetlb_memcg: cgroup_util.c
- $(OUTPUT)/test_kill: cgroup_util.c
- $(OUTPUT)/test_kmem: cgroup_util.c
- $(OUTPUT)/test_memcontrol: cgroup_util.c
-+$(OUTPUT)/test_pids: cgroup_util.c
- $(OUTPUT)/test_zswap: cgroup_util.c
-diff --git a/tools/testing/selftests/cgroup/test_pids.c b/tools/testing/selftests/cgroup/test_pids.c
-new file mode 100644
-index 000000000000..61f939c9bc24
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_pids.c
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <linux/limits.h>
-+#include <signal.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+static int run_success(const char *cgroup, void *arg)
-+{
-+	return 0;
-+}
-+
-+static int run_pause(const char *cgroup, void *arg)
-+{
-+	return pause();
-+}
-+
-+/*
-+ * This test checks that pids.max prevents forking new children above the
-+ * specified limit in the cgroup.
-+ */
-+static int test_pids_max(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_pids;
-+	int pid;
-+
-+	cg_pids = cg_name(root, "pids_test");
-+	if (!cg_pids)
-+		goto cleanup;
-+
-+	if (cg_create(cg_pids))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cg_pids, "pids.max", "max\n"))
-+		goto cleanup;
-+
-+	if (cg_write(cg_pids, "pids.max", "2"))
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_pids))
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_pids, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_run_nowait(cg_pids, run_success, NULL) != -1 || errno != EAGAIN)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	cg_destroy(cg_pids);
-+	free(cg_pids);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This test checks that pids.events are counted in cgroup associated with pids.max
-+ */
-+static int test_pids_events(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_parent = NULL, *cg_child = NULL;
-+	int pid;
-+
-+	cg_parent = cg_name(root, "pids_parent");
-+	cg_child = cg_name(cg_parent, "pids_child");
-+	if (!cg_parent || !cg_child)
-+		goto cleanup;
-+
-+	if (cg_create(cg_parent))
-+		goto cleanup;
-+	if (cg_write(cg_parent, "cgroup.subtree_control", "+pids"))
-+		goto cleanup;
-+	if (cg_create(cg_child))
-+		goto cleanup;
-+
-+	if (cg_write(cg_parent, "pids.max", "2"))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cg_child, "pids.max", "max\n"))
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_child))
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_child, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_run_nowait(cg_child, run_success, NULL) != -1 || errno != EAGAIN)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+	if (cg_read_key_long(cg_child, "pids.events", "max ") != 0)
-+		goto cleanup;
-+	if (cg_read_key_long(cg_parent, "pids.events", "max ") != 1)
-+		goto cleanup;
-+
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	if (cg_child)
-+		cg_destroy(cg_child);
-+	if (cg_parent)
-+		cg_destroy(cg_parent);
-+	free(cg_child);
-+	free(cg_parent);
-+
-+	return ret;
-+}
-+
-+
-+
-+#define T(x) { x, #x }
-+struct pids_test {
-+	int (*fn)(const char *root);
-+	const char *name;
-+} tests[] = {
-+	T(test_pids_max),
-+	T(test_pids_events),
-+};
-+#undef T
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	/*
-+	 * Check that pids controller is available:
-+	 * pids is listed in cgroup.controllers
-+	 */
-+	if (cg_read_strstr(root, "cgroup.controllers", "pids"))
-+		ksft_exit_skip("pids controller isn't available\n");
-+
-+	if (cg_read_strstr(root, "cgroup.subtree_control", "pids"))
-+		if (cg_write(root, "cgroup.subtree_control", "+pids"))
-+			ksft_exit_skip("Failed to set pids controller\n");
-+
-+	for (int i = 0; i < ARRAY_SIZE(tests); i++) {
-+		switch (tests[i].fn(root)) {
-+		case KSFT_PASS:
-+			ksft_test_result_pass("%s\n", tests[i].name);
-+			break;
-+		case KSFT_SKIP:
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			break;
-+		default:
-+			ksft_test_result_fail("%s\n", tests[i].name);
-+			break;
-+		}
-+	}
-+
-+	ksft_finished();
-+}
--- 
-2.44.0
+As I said in v1 (I think it was v1), whether or not mapping an L1 GPA is su=
+pported
+should be a property of the mmu, not an explicit check.  As far as the TDP =
+MMU is
+concerend, there's nothing special about SMM nor is there anything special =
+about
+guest_mode, except for the fact that they use different roots than "normal"=
+ mode.
+But that part Just Works.
 
+And if L1 is using TDP, i.e. KVM is shadowing L1's TDP page tables, and L2 =
+is
+active, then vcpu->arch.mmu will point at a variation of the shadow MMU, e.=
+g.
+the PTTYPE_EPT MMU on Intel CPUs.  The shadow MMU won't support pre-mapping=
+ GPAs
+because it's non-sensical (legacy shadow paging needs a GVA, nested TDP nee=
+ds an
+L2 GPA), and so the ioctl() fails because mmu->map_gpa or whatever is NULL.
+
+In other words, unless I'm forgetting something, explicit checks for "unsup=
+ported"
+modes shoud be unnecessary, because
 
