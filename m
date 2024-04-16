@@ -1,237 +1,191 @@
-Return-Path: <linux-kernel+bounces-146793-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6AEA8A6B05
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:34:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3278A6B13
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:35:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E4BF1F22330
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:34:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6E2F2841D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C024207A;
-	Tue, 16 Apr 2024 12:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C24C811F1;
+	Tue, 16 Apr 2024 12:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="dh6bi7v4"
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2040.outbound.protection.outlook.com [40.107.14.40])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="GNa3eqSQ"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2081.outbound.protection.outlook.com [40.107.93.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798AC1D530
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1766012B143;
+	Tue, 16 Apr 2024 12:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.81
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713270859; cv=fail; b=SqRbQDaXxC1jkUDaCtItKYW0OjeCdOGCGLKd37AMSohhbMKmM1dWGYydvM1yx/o+uIpx3zxS5RM8QYmt2ygQy9bO9oaTOVU+lWcghmwHVW3/nki3rUlywNsbV8efQ0svX+KX+D/6ewAJp7ezxLiD0CD4eY4BWBF1WXW3cTKeCGk=
+	t=1713270918; cv=fail; b=Uv9d/mgsDoz9iH++LPw98nFSmKIv+OazQb0HQn6Gu6QeY7sCVuO39KvbU6d97O97HkDscJrhY0mYqy7EwNWRtjYXxmiaOeF0logfZIrcAWiTJQq6WkkJyJUl9sZ9GLBZfC0l7VZRHHhxlX2Pug+u4RDNIbOwubow9kUWiOcU9Ps=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713270859; c=relaxed/simple;
-	bh=/lgrneu6a4PIb7s5qmgySta5FPBoZt4AP5sIBPDVpqk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=KFiDT0iqfBSvFD5hxhOSXWB60kjQ4GIw4XSGPfsFjQNpduPP5RsbG45JJDJwqBg/28375Sa3pUQDfDqGt97CRsRMs3vGxfvKs+o4JplbrgZcmjDGd0kBsztWTwRXrNQtno3IFUHcdxB2XaG79ieZPHBRFG9ckj07KfoYlOzVgIs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=dh6bi7v4; arc=fail smtp.client-ip=40.107.14.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	s=arc-20240116; t=1713270918; c=relaxed/simple;
+	bh=m2+yzipPU9KP4I3SoL2sYcO1b1xel6Gg8BCeBXLPTOg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SDzCWRyaATjAzovudk2+KaooNn+oib7vg69TLFDI0V/W9kotdMN1Iz47HhwcFIYTR9/p41hj+Qm/wxfoVDxxM7PA/SSRsU9aWyZr4yS0Mwk1QXCrLYvp7d+L13Y0eaHwPGKmNYu3LjBTbSxfp2rO4Dpk6z2yI5JEH6pQjYuH8xg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=GNa3eqSQ; arc=fail smtp.client-ip=40.107.93.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OuceRR3SHvN5yYXQOEpSpSowy/c2FYLcIY1LOB5hl6T3Yz0NVNA4I2rpNLxDWmqcr8bi+CYMgHBcxFWWte3IHUVcFuGzDQrQV+o9vGaYrlZC8wvRDfC4lUul29s+fM81RPJE41Xpz+y6fTTJi7BBGsuhLimjotCrgYNCTLUmbpu9hVrKSzc9XkzmM2YZ7r0bq+4Sw3YmJdWM8hFgHPDy7PJGFeuw6rNwA5tQry3aZONf1nP5FddDr8FjOS1YTNnMHStnh6CCDvlt6umVnO5sO9umHuRB8IhdBmRPHSjhxnVXR0pvIg6UJsZmi8w99L3todmkZWV16hYLsrRdu+9Qeg==
+ b=OhiF1lJUWZK/nBeNdxiabY+5Id9iiKYTer5p6r/WYSkt6MKL3lcOjRhS4uWIdtmYvcWV5m1Xu1WMlXpdQPUIy1gGtM3OZb3CJKEV6pl4pBL4Gh2HpmlBcIsyeV7u9DqSgnl5ZuremHegIpCbj0joQUXUuxjNvxBWx1bU762wk3vh7PYjY49pI4WJLsfjiXg/KWenUKqUIdExX+Ao6yfXv3PfjMDFt8+BN+0UyDAwILHpQurRAW1wTMh8WWx/KPL6fKhipNOFXeGviXH0WpFp0yAq8ZXqBvkqbG7pnmrKcaJ2jy8mNZHapP14zcDPITjyKBldfSUEhPRGXNxANFvpaA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rFEhv24W0AhlFk6wQRyiBK2MXNcd93ZSJDEJVZeGE9Q=;
- b=YkKC3MmlYKmou/O5lvzrT0mOgnnyr6MVQTKibH42k0jNGLM26+7Z1Tt9K4EYkiWZ/ytjZJxAoxswN0s6k39qzysOoKV5+m/QPfa8TCJOmBcyi/zN5kqY059HWFUI1JA2JkMg41r0Ddcgag05gzw/g0DR66EUR6b6We4+qAHQmYERkP7eV0UZST5/VrTVwDvr1uuNx1dklsteNR8Qu2m1AbD2/qcmdawV1VwA4SL/6uhngBwd3n4hqoLqtulo4qF9jAhwbNSKad76yfGulVOIAn1g6EvX50MX/ZPPjWyLmoI7QJ2NxeAZLg4tGC4rU/nMadFyCA+lB/Xn2FpzNF92fA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ bh=Pm3xgn12Qi5o3UoGAzoVPsIM1fz6m8EDo+t5i6775v0=;
+ b=K3eN2rC7DfLm2VoQhrwHm+3mXA+PdhkQcux7sDKQU64QbCXvl+H4Z7mJ/RS0CSjnlMQ5DSG7OMB9tDd2z/b7sDjeIGSWDrGBBlX5niUyfi15eL0u/7s4KiTb/cn3IR8rZYmEY9oIY941I66G1GcUii54l4NHSS4UkYbOQTfwrYKiLnnW6+IDo/hSDJ4bL/CisJIpuewlgj1mkTxUub9TI9yMVLprs+rZhqErIy+eSS9sy+3sfDeOqtcovcNU+I15Z/fsnwdACiR5pdmBVTGdvml3HrYW29ceHvWzDhfmO7U6KEuVBNhy0U5Ol3Y6/tKdoahPevyAyJgSTb9yEOxukw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rFEhv24W0AhlFk6wQRyiBK2MXNcd93ZSJDEJVZeGE9Q=;
- b=dh6bi7v4cgW3TokODoaMtgIHmmMeyznx/VOLNHS+68Sm84I4psOD8BWgH+eT4RunJXaB9HAr8X7iq9eVcyD2GYohBM1u3l5y6gcPBWnsj21JcQBdQRNkNQVowJ2fIyW0PlbJVu99m6zNH9wzeuyNXLivN6m+s30Q9Icef4OKGS4=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM9PR04MB8812.eurprd04.prod.outlook.com (2603:10a6:20b:40b::24) with
+ bh=Pm3xgn12Qi5o3UoGAzoVPsIM1fz6m8EDo+t5i6775v0=;
+ b=GNa3eqSQr5WB6f6vRal3qWW5862R5lLO1La4/ybHu2Xz2Z0cFWc+N3V2CNIYwgdUT3dpTg6znLLxXF/AHDomy38qpexpzJ2BQQt/sQJ7RXlYcJb986Fu7xEmbjdxAi9uWMWMLN3ehrObsst5R5HWMQE/YQiZ+wTbndtV0JDKSEXbcn1Ir8N8OjT1v2XWLcNANZVwdyPitsU4fXiOf0p6piHU6cZ2DrPxmHcxEwIJV290bS4z6g/T9lioQA8yBNJDdtYC0UnjGZSAt8rOfc8ta9egzEpH1jWTHNmOSxSYTs5ZNppHsIcr1gF6OrONhBMWGAOnIy8ilf4Mb9oJtUu70Q==
+Received: from BYAPR03CA0036.namprd03.prod.outlook.com (2603:10b6:a02:a8::49)
+ by CH2PR12MB4053.namprd12.prod.outlook.com (2603:10b6:610:7c::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 12:34:14 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 12:34:14 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Cristian Marussi <cristian.marussi@arm.com>
-CC: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, "sudeep.holla@arm.com"
-	<sudeep.holla@arm.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] firmware: arm_scmi: power_control: support suspend
- command
-Thread-Topic: [PATCH] firmware: arm_scmi: power_control: support suspend
- command
-Thread-Index: AQHajxwygJMjjnYsXEamYB79VvBL0LFpzXAAgACrohCAADbUAIAAJIBg
-Date: Tue, 16 Apr 2024 12:34:14 +0000
-Message-ID:
- <DU0PR04MB9417FFF8A9FB5018125C524688082@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240415101141.1591112-1-peng.fan@oss.nxp.com>
- <Zh2R4FZPmVOigfT9@pluto>
- <DU0PR04MB9417AC020C28AD5847CAB24088082@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <Zh5P2EtruMmTrgXM@pluto>
-In-Reply-To: <Zh5P2EtruMmTrgXM@pluto>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AM9PR04MB8812:EE_
-x-ms-office365-filtering-correlation-id: 989c9a9b-e4ab-4202-3bf3-08dc5e118680
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- 3l5ke3NARA+QOLKHWdcizLrn+xlTVXVV2fRHuYOgNiVa6dKujHeNb+RqCSx9qUmBwS2LtQ0gfsgNweqX4I75pZ33aD6QqT9tKICUBLHkgIOs8u6/fcXT+cPyYF78xXC7rNfhsvmrT9VfaurzTIP9BahHlfnHSbXarngvhhDmUNYZZsy/bQelnuCOi5iY7i5UZajVjWURkDJDySdbNVC++aYoO7CB5rUxlw9nRsSocinbe5VGzgLIhD+GMo+L5y0+xjNPjzP+lMWKW7pKCjJJxdjL2hpNHwN7Uxi2/TqrO9639Eg3YqwrBEmWHZcXAnsJezopg/VSyypr6ykffEaO8aREwvUap26YcgNL3uMnV2R/9IisKHX69Pbw3JMdRxhHeWg6FCF114fn4F89vgt1MEmDpb7GHkknfL3THzKduUUcBhBY4hzhgSfmTzAMDzgzUnofgCDzGXw8EEYvfKmhr1+Dg5peQh8o/r+vQxf6DAed7D25OVJZzZXs6HTH22EF+3RTS8NotJ/3kUiVWGKFn3wByDcy8oTnfn9vvUVZ1QgRvYNVVNVk0a/z3L7cIZifiAh7sQUrcASlMRjj0UGtlgXx0bPPgwT8BQ/Fb+cAhWzRWFLphR0wYRDDg+fYHmGfE3tVniEUKEcS/LvlhWlwNtNW9lAuMzP5j7EoGKgQ5ViZlPHTHUwgUjDxO1QVybQ+PXaNFkN0O+THQqXHVJNArqA7ga3yI+wfEjnyOKLQZ7I=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?dJ96POSyIuXZ1SeRMcLc+hQG1XoxTuH2RgUGUSsiwUJZy71tqqLEZkGNMEHS?=
- =?us-ascii?Q?z79vZ1Epq9aJViCW5TgWMM24VV9J0qNi29FL5aJ2G6K39rftVRN8Bvywj8Yu?=
- =?us-ascii?Q?zGYkua5v8a7/sl389y046ReZGMcdYzbibZwlSqsWnLRTkD7yhryWStV2oBI9?=
- =?us-ascii?Q?wAX8Ry6m8lk1AnR0YVNRO5vG9jid2PmzykpoZ4rihP7n3wJkLAIDLlmNYWhB?=
- =?us-ascii?Q?uHeUKu3+MkfYy1+vq+pF2JlqlhjpndgrmWeFH71mXTZ4tYNL6rd9y2c216UU?=
- =?us-ascii?Q?qLU3Pxb+CbZ+A9pzuzZjDvSDb2D+GSeSp/mnqJ/N/Mtm3LLZgwOvxP2L6Rpn?=
- =?us-ascii?Q?9dY82yeOTvyo0OzfuX+RilBAGHazYTnByEw1Td6EPIurNHXHBJ5jqvyttNfE?=
- =?us-ascii?Q?3a0aKtrbY7W0f2BtWyZsjvEyx4WgZMRXSrsve9oroLyPTYhLrPYfz0fU6RBh?=
- =?us-ascii?Q?ztnCJpaX+UXFI4AEjl/zNAv2o9bsvcuw5R0e+Mgca/vmluaewDTLPq1C9SMG?=
- =?us-ascii?Q?3oXlxN31ffrJOV7vvOd7hoi7sYdvJ0R1PAt1HIoljNXXO5xNOS4P7P4m7fvt?=
- =?us-ascii?Q?Bt8JDdKkGa2ZnM9vaoZnuc7JbGkG6ym139vlQQ67o40F8zTnkclXLxp3Qbq7?=
- =?us-ascii?Q?1b22BlRxSUMHliTk46ei5hsts4mCku5RbWwl5RP5HQqqOk8Ok+c8Q1KxOqf/?=
- =?us-ascii?Q?vTlb8chlGcLR9n6/fUiJgsWacl+twx2IS1Nit32sODqf/qTZ6eFc8iwZmSKI?=
- =?us-ascii?Q?RtzYKqhUT4R4vFFmjMiaRklu3v75ckXdIFe7idSr6aZjZjwZKFz5N+Ovvm5r?=
- =?us-ascii?Q?yrykplINzv9Rvscjo0nnpX6NwwNgSLGmbcT9mKLvpDhuMW+v2CtzNPwoKix5?=
- =?us-ascii?Q?xGnCn08UMkpn3yoHUBSRrxJMC5CoEIMoQ6IVelbIpEQHErWMqjILCjC/5reb?=
- =?us-ascii?Q?b6uJH0uD5kg5tj417+gfBzYm8lHrLHOYe7Cysjo/w2C4WN9A1SpHhNJkobAJ?=
- =?us-ascii?Q?vpIeUQ5Isk0yijT4Y/d1xtk/nAWQEeUN4zQWMsCoj91cdLy4pM7PnRg9/2rR?=
- =?us-ascii?Q?VlCxCpBizINJAHZyIN8l0un5HokWL5tZ6LLsjDFHg3AIy8LkYbdFLv+u6z6Q?=
- =?us-ascii?Q?QErRmoAYrE88zGOgzJqp5Wr5GpJ5A8IeLdG4Wj/voBaDTQ9dK/SK+tRUIpAL?=
- =?us-ascii?Q?+177RqXU0v+42OeaBRKhx4anEUK8MsU6WWMBGkhIZIWRe7Uv6pZ2EP1PpLbm?=
- =?us-ascii?Q?eLzUayfwKX38TgbnUWuFljTGs4r4TNPSx/Wr+LE5xbcJbtfNFf9p8mDdSmEg?=
- =?us-ascii?Q?oOeps7fv3qA2xbYLSoDMeZn3re2X9glAaGdRAZO/L8m/nxa7EzTxvbbZ4Uzb?=
- =?us-ascii?Q?NvbWbnxGDPQ4DwS9wrn0qDFz9mCyqWn4nqYtLDrpMsnzgivnGiKFmUFK6M2J?=
- =?us-ascii?Q?I9cgO0oTwEgpH0djTQlFpOOVtbPeqtRN9Q8WEJCF44wOcvS1/HvUg1c85r2R?=
- =?us-ascii?Q?KziJTRzF7jNvCm6Il/+5SP2E5j5LWjwvCkKUkt2jhlGq4ikQpMNvZf1M2Mxy?=
- =?us-ascii?Q?3xrzXaFYH/OwKrgpKug=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 2024 12:35:12 +0000
+Received: from SJ1PEPF00001CE3.namprd05.prod.outlook.com
+ (2603:10b6:a02:a8:cafe::d) by BYAPR03CA0036.outlook.office365.com
+ (2603:10b6:a02:a8::49) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.33 via Frontend
+ Transport; Tue, 16 Apr 2024 12:35:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SJ1PEPF00001CE3.mail.protection.outlook.com (10.167.242.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 12:35:12 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 16 Apr
+ 2024 05:35:07 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Tue, 16 Apr 2024 05:35:06 -0700
+Received: from pshete-ubuntu.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Tue, 16 Apr 2024 05:35:03 -0700
+From: Prathamesh Shete <pshete@nvidia.com>
+To: <linus.walleij@linaro.org>, <brgl@bgdev.pl>, <jonathanh@nvidia.com>,
+	<treding@nvidia.com>, <linux-gpio@vger.kernel.org>,
+	<linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <mochs@nvidia.com>, <csoto@nvidia.com>, <pshete@nvidia.com>,
+	<jamien@nvidia.com>, <smangipudi@nvidia.com>
+Subject: [PATCH] gpio: tegra186: Fix tegra186_gpio_is_accessible() check
+Date: Tue, 16 Apr 2024 18:05:01 +0530
+Message-ID: <20240416123501.12916-1-pshete@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 989c9a9b-e4ab-4202-3bf3-08dc5e118680
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2024 12:34:14.3556
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CE3:EE_|CH2PR12MB4053:EE_
+X-MS-Office365-Filtering-Correlation-Id: e2f5e69d-8940-4bb2-3480-08dc5e11a95c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Yasai6qY6TqUFE9fmNU3P/JdEH7RXHt3SJ2nXX1WftuIhsVRJvcPxTTjzfrqgBBEHp0h7OKPIytWu5nkqB5tNBDHlCmEc/lMNrBHvx+Yras5Xk/IgzodCJCEvoF4zsVNi/SPYMaFrkdcGys7d3DC1rzSq04DgV8PzO62jc4//K+arlJIYPkSl0vLwMs9ISOd8QiDc0Wqtx1PBDy+e2ilKNYdDZG0i28OVwrt7nhULPZRmHf3C82ZURDPvU7rfNfydEPOkT5GxaqDxjK6PB5pvFc1OhQQnMWUg8l6r8/ptaLo1nc09kkS4ggGy7upo+DwkbEN/BZsu+t+NAnzvBs+0u0NmjV06Y2ugKYJCC+jkrXs4/GmlRmcDR6tR7ZnNWNglH66erPC9DFI/B7+TnppTYacK/Uwp9D1wBS1ktn7u/NBY7lVGgXYQ9aXekuIAtBC7HzTm8BuyrS6Nzx286Abl9hkLS/LhqEuBTQeTQV9inGySquvY42DETqVXsPHwn0fBliSGk03ZifUf0cjfflrwgo29PxWX8d0zHeXF89yuc+jgDtyK1rPht2KmfIwTs5nw+oiHrkYdQSHw9ZqjXhZBYtT+HrXXFmZ0vfmEP5gSxs+EC42c0IyxALOeBJN2sM/pfiyQxnZgX3e0gt8nsuh0rjZwb1UwL31FEOkN91QlIcWveHqyD/lO4FSf8DBuPUg6Ril3wfz0gW4FK4qPw2YHvnsBgeyYEvdvMS58Emev42IGI5KyhctVAB/IaVC0FBb
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(376005)(1800799015)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 12:35:12.8458
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MJzuuUmO4Q6YToUmMLjhLYHCXjkbQ5mhNmdWL45pgoDtXK+v7qJSjQxXx3h9uN0LHt+daGoctVAsF00eGumJkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8812
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2f5e69d-8940-4bb2-3480-08dc5e11a95c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CE3.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4053
 
-> Subject: Re: [PATCH] firmware: arm_scmi: power_control: support suspend
-> command
->=20
-> On Tue, Apr 16, 2024 at 07:01:42AM +0000, Peng Fan wrote:
-> > Hi Cristian,
-> >
->=20
-> Hi,
->=20
-> > > Subject: Re: [PATCH] firmware: arm_scmi: power_control: support
-> > > suspend command
-> > >
-> > > On Mon, Apr 15, 2024 at 06:11:41PM +0800, Peng Fan (OSS) wrote:
-> > > > From: Peng Fan <peng.fan@nxp.com>
-> > > >
-> > > > Support System suspend notification. Using a work struct to call
-> > > > pm_suspend. There is no way to pass suspend level to pm_suspend,
-> > > > so use MEM as of now.
-> > > >
-> > >
-> > > Hi Peng,
-> > >
-> > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > > > ---
-> > > >  .../firmware/arm_scmi/scmi_power_control.c    | 20
-> ++++++++++++++++++-
-> > > >  1 file changed, 19 insertions(+), 1 deletion(-)
-> > > >
-> > >
-> > > This LGTM in general, the only obsservation here is that while on
-> > > shutdown by issuing a orderly_reboot() we in fact ask PID_1 to start
-> > > a shutdown from
-> >
-> > Would you please share why PID_1 is involved here? orderly_reboot is
-> > just schedule a work.
->=20
-> For the shutdown case, orderly_reboot related scheduled work ends up in a
-> call to /sbin/reboot via usermodehelper kernel facilities, so that, depen=
-ding
-> on what PID_1 you have and how it is configured, PID_1 does have a chance
-> to perform some additional task (if configured) before triggering the rea=
-l final
-> shutdown....this is done because the SCMI Notification is supposed to be =
-a
-> graceful request, so we dont just kernel_poweroff or similar.
->=20
-> As an example with SystemD PID_1 /sbin/reboot is just a link to systemctl
-> and you can place whatever you want in
->=20
-> /usr/lib/systemd/system-shutdown/
->=20
-> and that it will executed by systemctl before kernel shutdown is really
-> triggered.
+The controller has several register bits describing access control
+information for a given GPIO pin. When SCR_SEC_[R|W]EN is unset, it
+means we have full read/write access to all the registers for given GPIO
+pin. When SCR_SEC[R|W]EN is set, it means we need to further check the
+accompanying SCR_SEC_G1[R|W] bit to determine read/write access to all
+the registers for given GPIO pin.
 
-Thanks for explaining the details. I see that in kernel/reboot.c
+This check was previously declaring that a GPIO pin was accessible
+only if either of the following conditions were met:
 
->=20
-> > > userspace, when triggering a system suspend with pm_suspend() we do
-> > > not involve userspace in the process, but I dont think there is anoth=
-er way
-> indeed.
-> >
-> > Userspace process should not be involved, otherwise the freezing
-> > process will never finish, and suspend will abort.
-> >
->=20
-> Similarly in the suspend case when you initiate it from userspace (system=
-cl
-> suspend) you can place something in /usr/lib/systemd/system-sleep/ and
-> have it executed before suspend is passwed on to the kernel, BUT in our c=
-ase
-> we are not passing through userspace and it seems there is no way to do i=
-t,
-> indeed, like we do for shutdown with orderly_reboot(). Moreover userspace=
-,
-> as Sudeep mentioned in the other thread, could be configured to trigger a
-> different type of suspend, it it was involved at all in this process.
->=20
-> But, as said, I dont think there is a way to trigger a userspace suspennd=
- from
-> jernel like we do for shutdown/reboot...I'll try to investigate a bit mor=
-e.
+  - SCR_SEC_REN + SCR_SEC_WEN both set
 
-Thanks for helping.
+    or
 
->=20
-> Anyway the change seems good to me as I said.
+  - SCR_SEC_REN + SCR_SEC_WEN both set and
+    SCR_SEC_G1R + SCR_SEC_G1W both set
 
-ok, I will post v2 with commit log updated later, waiting some feedback fro=
-m
-others.
+Update the check to properly handle cases where only one of
+SCR_SEC_REN or SCR_SEC_WEN is set.
 
-Thanks
-Peng.
->=20
-> Thanks,
-> Cristian
+Fixes: b2b56a163230 ("gpio: tegra186: Check GPIO pin permission before access.")
+Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
+---
+ drivers/gpio/gpio-tegra186.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
+index d87dd06db40d..54c8b02eec22 100644
+--- a/drivers/gpio/gpio-tegra186.c
++++ b/drivers/gpio/gpio-tegra186.c
+@@ -36,12 +36,10 @@
+ #define  TEGRA186_GPIO_SCR_SEC_REN		BIT(27)
+ #define  TEGRA186_GPIO_SCR_SEC_G1W		BIT(9)
+ #define  TEGRA186_GPIO_SCR_SEC_G1R		BIT(1)
+-#define  TEGRA186_GPIO_FULL_ACCESS		(TEGRA186_GPIO_SCR_SEC_WEN | \
+-						 TEGRA186_GPIO_SCR_SEC_REN | \
+-						 TEGRA186_GPIO_SCR_SEC_G1R | \
++#define  TEGRA186_GPIO_READ_ACCESS		(TEGRA186_GPIO_SCR_SEC_REN | \
++						 TEGRA186_GPIO_SCR_SEC_G1R)
++#define  TEGRA186_GPIO_WRITE_ACCESS		(TEGRA186_GPIO_SCR_SEC_WEN | \
+ 						 TEGRA186_GPIO_SCR_SEC_G1W)
+-#define  TEGRA186_GPIO_SCR_SEC_ENABLE		(TEGRA186_GPIO_SCR_SEC_WEN | \
+-						 TEGRA186_GPIO_SCR_SEC_REN)
+ 
+ /* control registers */
+ #define TEGRA186_GPIO_ENABLE_CONFIG 0x00
+@@ -177,10 +175,18 @@ static inline bool tegra186_gpio_is_accessible(struct tegra_gpio *gpio, unsigned
+ 
+ 	value = __raw_readl(secure + TEGRA186_GPIO_SCR);
+ 
+-	if ((value & TEGRA186_GPIO_SCR_SEC_ENABLE) == 0)
+-		return true;
++	/*
++	 * When SCR_SEC_[R|W]EN is unset, then we have full read/write access to all the
++	 * registers for given GPIO pin.
++	 * When SCR_SEC[R|W]EN is set, then there is need to further check the accompanying
++	 * SCR_SEC_G1[R|W] bit to determine read/write access to all the registers for given
++	 * GPIO pin.
++	 */
+ 
+-	if ((value & TEGRA186_GPIO_FULL_ACCESS) == TEGRA186_GPIO_FULL_ACCESS)
++	if (((value & TEGRA186_GPIO_SCR_SEC_REN) == 0 ||
++	     (value & TEGRA186_GPIO_READ_ACCESS)) &&
++	    ((value & TEGRA186_GPIO_SCR_SEC_WEN) == 0 ||
++	     (value & TEGRA186_GPIO_WRITE_ACCESS)))
+ 		return true;
+ 
+ 	return false;
+-- 
+2.17.1
+
 
