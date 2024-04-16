@@ -1,51 +1,72 @@
-Return-Path: <linux-kernel+bounces-146497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68AAE8A6617
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:28:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E801A8A6623
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20F96284552
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:28:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16DB41C22A64
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96D9B156225;
-	Tue, 16 Apr 2024 08:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FF83B78D;
+	Tue, 16 Apr 2024 08:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="LGd4MOuT"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="oRSHb/GE"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE0EB3B78D;
-	Tue, 16 Apr 2024 08:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E577C2B9B7
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:31:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713256121; cv=none; b=ro+WRFmsTCPzJPjXCzIpxEW1vLjlcd82GYNAn8bcnKMk5WyOvwOAOfaXTF+MT3NpeGAdKX4IqYImTUdBsAouP1kQTQ0sMAqlRAd72psvi0uC6EhM5/86syIilvPoSA69T0pcZcszIkrwu483v8xgRds7VFadOMhbjrms9NzgfcM=
+	t=1713256294; cv=none; b=DC79pxsQ8gtnbBIvELAY2ftptkBMVB2q83p5ud6XRNY+O6qPLjaipgmeKpW2UUbhbxNuo9b8FeqA3IEmTvdaT3rvEFuFj509Ur1DTCcNTxjpccF1XoooApLWpYyiyohO6F14fEnh8hzhlTYZ1DvVerLL+u27Kp+GTNQmvTwltxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713256121; c=relaxed/simple;
-	bh=4fVG0hgGeE2MEJ2IjJFjK+zjyRc2WZJcMXDmHG2OPTM=;
+	s=arc-20240116; t=1713256294; c=relaxed/simple;
+	bh=QJUQ/zdpL5MKogbwTVUpahdJojofb6ggmogXZkHP62Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nqdaJkHbpigRffR6dgDxvTkhmLhI1+o5Q/RN28VxzfvZpj5Z1Mj4JGRACEmLQki8yctxm/3qULIizqgllrzBqJEy0V0u+h07+QhYpf9KLseSq1uQUPeHvUOsMR3evjyMAa0XhBbcfE0ca6uyGbd5uYAzfnfasGsM4672KgFjezQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=LGd4MOuT; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=vzFrt8UEjfFC2LhFGHg/hPX6/YCtSpcnbyd4WgxC8mQ=;
-	t=1713256119; x=1713688119; b=LGd4MOuTk4ddDXKzQ8sqmAmUIxZGaYJYz93V8ans7Q/fgUY
-	n2F86+GwCih63j7mZ6rOdsBUN2zvbAF0jlxDGytapbLtemmgb6vPhi3m7a186p/rcfjScIWXX8BMX
-	9rcelsdV6I/G0wrj5Y3vsD7hm626rEVL58JqGzRwYhH2DUoGrV9jAwqbeeGC3+jQEI34fd6o2NuUb
-	CoTvVkH6Sx0vUOfCSv6drGjYwUiPZpn/+X2bI2QnA26QUrI6wyJqFkbyh8KPraP0G7GrdynvJBkPt
-	RmBdbELUsmF3R+bsQx3fxXCfiWDJHa5TEQGyVEjyhTRHL/ORlBs0l0epS1cCXp6g==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rweBB-0002LJ-72; Tue, 16 Apr 2024 10:28:37 +0200
-Message-ID: <256e3d3c-d43f-4bd6-9a7b-50fc870e75e4@leemhuis.info>
-Date: Tue, 16 Apr 2024 10:28:36 +0200
+	 In-Reply-To:Content-Type; b=lpDpCd4KQ27+pSTG4uSgMuXPdZ97uzQpAV6P6kyXwHws+O7l6GS9HHH+bnwaqY5w02mvpq91lu4RfjHiRvs8b8nbSKhpC9HqxBUy9cJ/k5/uwSZfTOXdCz58DSxlpPxeOPDpzcZW0ePAHqdac/Lj2YxyXgHMhRYCdRST1i5jdsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=oRSHb/GE; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2a4bdef3d8eso3035677a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:31:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713256291; x=1713861091; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=akzntEN6IcfsPIIN3EJ0b1QR4PPdVf92yYRa0+VTDrk=;
+        b=oRSHb/GE4NTlJUP44a/g5ZX2WwTpYnOxJCRdWcqjvaeKU6h9W3cuQHo6VxdCkLHEw6
+         c6/qZqC3K8ZHpFcKWH13prM75+sAEWMcoEX9hE8dC0Ynj9UqkMh8qlTaHhI3213ZnZEn
+         xIh4LqVfQiMxBnuGlKEcgUUp6wRiTDIdat6bSNzCOM8NOYXg6JcrNPLBQL5am3Kg189P
+         FENpHXd2RpodMT/R8VXUsYtRNBCK+OjZIMyhP8j2gVAVJtbcbthQgv9Jln5Uvtx/q8OK
+         jb52H5FkbY7vTkn4ui+xwjrPpt4Hl8SU9NQCkfNV3JD6gsaniklTRKQEi7izBVvIbwGN
+         LUqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713256291; x=1713861091;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=akzntEN6IcfsPIIN3EJ0b1QR4PPdVf92yYRa0+VTDrk=;
+        b=vtdx8C7gIy4xU4PLPEjia1gyDpWG9T6ahR1klfWbQTGkJpiLjt+iuPIVjwKbJsIxnk
+         677blQ4Y6yfTYbmCfpA2Ufwt3B/JB5ZltBSkudPmOKcqvgUsBVJSPrMWvqU879a8t1Ge
+         F06v91Ym1sHr5c/8bz419lDvZ+cPrdx8mWcLWGLjRstgJ39YA7kx9h/wcpmUJYrd8yxj
+         iogkKObPARUnAUlYvIdix0XBsQgre+dINPskxvNMsCVQQp7jZh9ecg206cHsiFAl21/C
+         iZ4vlUGt7IXFzNghCMo3wAOrCJjBLd0Xqqu4U9l96TWWh5pkxFau3sOLfrLs/++mzb0C
+         1wPQ==
+X-Gm-Message-State: AOJu0YzyOjv0xbIu1YdMbcJP8EeCKIctVSeS8nmrWQim3lwHeVCWJ45c
+	iBXLHzlvxXDuJXJ5GhdXXLmyD9hSrN0iWjIKEUlGpGUiwXS6n7UxH/xUHdJG4/4=
+X-Google-Smtp-Source: AGHT+IEjp4eHKvU41MXzaTBSiCq/DCxOMtVytJg0BK7QzgSTloHHj2HR6MrE7Rn4vkRt6wQgP/UbDw==
+X-Received: by 2002:a17:90a:640a:b0:2a4:752f:b7b7 with SMTP id g10-20020a17090a640a00b002a4752fb7b7mr11498554pjj.26.1713256291117;
+        Tue, 16 Apr 2024 01:31:31 -0700 (PDT)
+Received: from [172.16.0.33] (c-67-188-2-18.hsd1.ca.comcast.net. [67.188.2.18])
+        by smtp.gmail.com with ESMTPSA id d24-20020a17090ab31800b002a513cc466esm10012347pjr.45.2024.04.16.01.31.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 01:31:30 -0700 (PDT)
+Message-ID: <2a63d7da-91b6-496d-9966-e6c0a0aa6c6c@rivosinc.com>
+Date: Tue, 16 Apr 2024 01:31:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,96 +74,95 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [regression] stm32mp1xx based targets stopped entering suspend if
- pwm-leds exist
-To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org,
- linux-pwm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-References: <5da6cf8a-4250-42f6-8b39-13bff7fcdd9c@leemhuis.info>
- <2vbwacjy25z5vekylle3ehwi3be4urm6bssrbg6bxobtdlekt4@mazicwtgf4qb>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <2vbwacjy25z5vekylle3ehwi3be4urm6bssrbg6bxobtdlekt4@mazicwtgf4qb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713256119;bcf7860a;
-X-HE-SMSGID: 1rweBB-0002LJ-72
+Subject: Re: [PATCH v6 07/24] RISC-V: Use the minor version mask while
+ computing sbi version
+Content-Language: en-US
+To: Andrew Jones <ajones@ventanamicro.com>
+Cc: linux-kernel@vger.kernel.org, Ajay Kaher <ajay.kaher@broadcom.com>,
+ Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Alexey Makhalov <alexey.amakhalov@broadcom.com>,
+ Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>,
+ Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>,
+ kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>,
+ virtualization@lists.linux.dev, Will Deacon <will@kernel.org>, x86@kernel.org
+References: <20240411000752.955910-1-atishp@rivosinc.com>
+ <20240411000752.955910-8-atishp@rivosinc.com>
+ <20240415-e229bb33ad53ce43e3534f5a@orel>
+From: Atish Patra <atishp@rivosinc.com>
+In-Reply-To: <20240415-e229bb33ad53ce43e3534f5a@orel>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 06.03.24 09:18, Uwe Kleine-König wrote:
-> On Wed, Mar 06, 2024 at 08:05:15AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+On 4/15/24 06:06, Andrew Jones wrote:
+> On Wed, Apr 10, 2024 at 05:07:35PM -0700, Atish Patra wrote:
+>> As per the SBI specification, minor version is encoded in the
+>> lower 24 bits only. Make sure that the SBI version is computed
+>> with the appropriate mask.
 >>
->> Uwe, I noticed a report about a regression in bugzilla.kernel.org that
->> apparently is caused by a change of yours. As many (most?) kernel
->> developers don't keep an eye on it, I decided to forward it by mail.
+>> Currently, there is no minor version in use. Thus, it doesn't
+>> change anything functionality but it is good to be compliant with
+>> the specification.
 >>
->> Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
->> not CCed them in mails like this.
+>> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+>> ---
+>>   arch/riscv/include/asm/sbi.h | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
->> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218559 :
+>> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+>> index f31650b10899..935b082d6a6c 100644
+>> --- a/arch/riscv/include/asm/sbi.h
+>> +++ b/arch/riscv/include/asm/sbi.h
+>> @@ -367,8 +367,8 @@ static inline unsigned long sbi_minor_version(void)
+>>   static inline unsigned long sbi_mk_version(unsigned long major,
+>>   					    unsigned long minor)
+>>   {
+>> -	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
+>> -		SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
+>> +	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) << SBI_SPEC_VERSION_MAJOR_SHIFT
+>> +		| (minor & SBI_SPEC_VERSION_MINOR_MASK));
+> 
+> The previous version had ((major & major_mask) << major_shift) | minor
+> (parentheses around all the major bits before the OR). Now we have
+> parentheses around everything, which aren't necessary, and no longer
+
+We have to use parentheses around | to avoid compiler warnings 
+(-Wparentheses)
+
+Are you only concerned about the outer parentheses ? I have removed it.
+
+> have them around all the major bits before the OR. We don't need the
+> parentheses around the major bits, since shift has higher precedence
+> than OR, but I'd probably keep them.
+> 
+
+Is this what you prefer?
+
+return ((major & SBI_SPEC_VERSION_MAJOR_MASK) << 
+SBI_SPEC_VERSION_MAJOR_SHIFT) | (minor & SBI_SPEC_VERSION_MINOR_MASK); 
+ 
+
+
+
+> Otherwise,
+> 
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> 
+>>   }
+>>   
+>>   int sbi_err_map_linux_errno(int err);
+>> -- 
+>> 2.34.1
 >>
->>> Commit 76fe464c8e64e71b2e4af11edeef0e5d85eeb6aa ("leds: pwm: Don't
->>> disable the PWM when the LED should be off") prevents stm32mp1xx based
->>> targets from entering suspend if pwm-leds exist, as the stm32 PWM driver
->>> refuses to enter suspend if any PWM channels are still active ("PWM 0
->>> still in use by consumer" see stm32_pwm_suspend in drivers/pwm/stm32-pwm.c).
->>>
->>> Reverting the mentioned commit fixes this behaviour but I'm not
->>> certain if this is a problem with stm32-pwm or pwm-leds (what is the
->>> usual behaviour for suspend with active PWM channels?).
 > 
-> I'd assume the following patch fixes this report. I didn't test it
-> though.
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Jakob confirmed it helped in the bugzilla ticket. But the patch since
-then didn't make any progress afaics -- or did it and I just missed it
-in my search?
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
-#regzbot poke
-
-> ---->8----
-> From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Subject: [PATCH] leds: pwm: Disable PWM when going to suspend
-> 
-> On stm32mp1xx based machines (and others) a PWM consumer has to disable
-> the PWM because an enabled PWM refuses to suspend. So check the
-> LED_SUSPENDED flag and depending on that set the .enabled property.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218559
-> Fixes: 76fe464c8e64 ("leds: pwm: Don't disable the PWM when the LED should be off")
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
->  drivers/leds/leds-pwm.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
-> index 4e3936a39d0e..e1b414b40353 100644
-> --- a/drivers/leds/leds-pwm.c
-> +++ b/drivers/leds/leds-pwm.c
-> @@ -53,7 +53,13 @@ static int led_pwm_set(struct led_classdev *led_cdev,
->  		duty = led_dat->pwmstate.period - duty;
->  
->  	led_dat->pwmstate.duty_cycle = duty;
-> -	led_dat->pwmstate.enabled = true;
-> +	/*
-> +	 * Disabling a PWM doesn't guarantee that it emits the inactive level.
-> +	 * So keep it on. Only for suspending the PWM should be disabled because
-> +	 * otherwise it refuses to suspend. The possible downside is that the
-> +	 * LED might stay (or even go) on.
-> +	 */
-> +	led_dat->pwmstate.enabled = !(led_cdev->flags & LED_SUSPENDED);
->  	return pwm_apply_might_sleep(led_dat->pwm, &led_dat->pwmstate);
->  }
-> 
-> base-commit: 15facbd7bd3dbfa04721cb71e69954eb4686cb9e
-> ---->8----
-> 
 
