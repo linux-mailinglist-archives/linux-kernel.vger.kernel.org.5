@@ -1,251 +1,231 @@
-Return-Path: <linux-kernel+bounces-147303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147220-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A4E58A7231
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:25:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 809F28A7129
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:19:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9F331F21E36
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:25:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 090F72824CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1163132C23;
-	Tue, 16 Apr 2024 17:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F041327F1;
+	Tue, 16 Apr 2024 16:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="SolvqlvV"
-Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="oQA3y6Km"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61EAC1DFE1
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81911130492;
+	Tue, 16 Apr 2024 16:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713288329; cv=none; b=krwdOkG9BY8m6gJEiANDCWIIKmKEZzQc+VMWq9uquds7F9e+mQbJ3BN1L/YGUKJ0IUqfQN12GNWkm8MECw80yxqzE4oEMjAhInpyX/IYfkKsQGDT2HQYp/bARPfirnhB61VotFk0Cr3gF9bMrFH3MxyhJYmhGQVBjsDzmx0AESE=
+	t=1713284323; cv=none; b=etO/SzJxwr50cJ/MTTfVkWxQm0INqhPRIUFUUS7y/AcnNvNy1GCAsXF/jo7VbwtOpWDY8C+7owgiXIm2qfOBnXLlfI9gRh0+HnpL7bRo3pXJD0Ih/Qr5F4fLs6MwQeWc2Lixsqr1h12jD918Jp2+L0SaCK9GLpZXaal4fFubGOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713288329; c=relaxed/simple;
-	bh=zwYrBxkEEYBASiRC8Syy0zLJ4HxZUFqXp9PwVXTB9WQ=;
-	h=Message-Id:To:Cc:From:Date:Subject; b=mJz0aVZ3hgm2DQImWcW3kUlFhlMu038JRPz4V2SH90WAG/DJCzXkNXCg/LakYr+YIg0gRFAwa/Tat2lffWMfLapfs0Vmr5nZLwfykGNugAAB++paljQ0C5WxL/5w2Oe0ElMC93A123QROI+Y7DirhT2p9noZ26t1CtTIDkufr7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=SolvqlvV; arc=none smtp.client-ip=148.163.152.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355090.ppops.net [127.0.0.1])
-	by m0355090.ppops.net (8.17.1.24/8.17.1.24) with ESMTP id 43GEXrjS031887;
-	Tue, 16 Apr 2024 17:24:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	message-id:to:cc:from:date:subject; s=DKIM202306; bh=2/+dIqzISm4
-	HW8XR6l5FpwwTpbfMt78jX0a3kMrPooU=; b=SolvqlvVeEOjkEw0Mfw/sd/8/ot
-	TsfiEGZZja2kdjDzKEYOW9/aS24NkmlJ6tdI+Cgag2ptvGjbp30Xln2h7funf0gT
-	BLOndgDSy/av5W2JlacRZfEKMPfWmKX+VGLFY8UPm74eDw6DB0NdJHXEt4u0qN1m
-	cQHdsfe+VHO3+k0LVOg8xxeriOjh8wpt7Rt5tkzWSuTlwb28z2IPitn08E3uiFC1
-	0jYRGM31ajc/4yMeBDn1X/MQXTdLgzUqbEJ0THkaFOcXlplfu1FenxPbVSnBKQ9j
-	Ps8ZT9LJ/VqctuMg8lc5IjxObtHrPNs8v5D7WaR12QE9O8AmxlrTl0qAafg==
-Received: from va32lpfpp02.lenovo.com ([104.232.228.22])
-	by m0355090.ppops.net (PPS) with ESMTPS id 3xhrya9dpw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 17:24:57 +0000 (GMT)
-Received: from va32lmmrp01.lenovo.com (va32lmmrp01.mot.com [10.62.177.113])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by va32lpfpp02.lenovo.com (Postfix) with ESMTPS id 4VJrWs0n42z53xyX;
-	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
-Received: from ilclbld243.mot.com (ilclbld243.mot.com [100.64.22.29])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: mbland)
-	by va32lmmrp01.lenovo.com (Postfix) with ESMTPSA id 4VJrWs0XQ6z2VZRf;
-	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
-Message-Id: <20240416122254.868007168-1-mbland@motorola.com>
-To: linux-mm@kvack.org
-Cc: Maxwell Bland <mbland@motorola.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        David Hildenbrand <david@redhat.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-From: Maxwell Bland <mbland@motorola.com>
-Date: Mon, 15 Apr 2024 15:16:08 -0500
-Subject: [PATCH 0/5] mm: code and data partitioning improvements
-X-Proofpoint-ORIG-GUID: vSRvg_yzr5e2ij9r_RJZHMk7igMKbit5
-X-Proofpoint-GUID: vSRvg_yzr5e2ij9r_RJZHMk7igMKbit5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_14,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0
- malwarescore=0 spamscore=0 phishscore=0 adultscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404160108
+	s=arc-20240116; t=1713284323; c=relaxed/simple;
+	bh=TMe84rkKVnERfDW7pnotvDYbq5M96tycRe0wAzXGtTE=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=cK4V1282Jq825iOMsdQ7LwVDRLXh15dLoIXdtq8qrHmJGUIPwbHbPQWvv2ucCbKjqktTDhZSTp3c5BK8HUk2HNygwCCJlYRztFShSHffqa2pj43CxIa0Ccnb6hk9j3hnjHQQUKy3CuIUoASIaPmgYsIYdb7boPusk20bdpodWHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=oQA3y6Km; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240416161834euoutp016ed8e3413fe609790c0d8dbf9feac414~GzwGfGfWW3240132401euoutp019;
+	Tue, 16 Apr 2024 16:18:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240416161834euoutp016ed8e3413fe609790c0d8dbf9feac414~GzwGfGfWW3240132401euoutp019
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1713284314;
+	bh=h+c9h4XaiZkjioKXCmApqXr79Ng5aLpw1//8aiqZHc0=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=oQA3y6KmBKthx8qB9iE4BR3H6yqJ6FukwNapodgwSnRYzAL31g2zz1LG0XV+UMQtL
+	 4zQb3hb/qbUPieVGupbzz8vixmzqZg/dtu/87j1Ox0AjkK/QGpaLghlYR8LlHkWnMB
+	 IcVLcJI4qek4WgTYJyN7I9My/dEfKwnCG6u2qbyY=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+	20240416161833eucas1p2933e7709d8615304a664fce5197722dc~GzwGP5yav1903019030eucas1p2N;
+	Tue, 16 Apr 2024 16:18:33 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 88.0B.09624.9D4AE166; Tue, 16
+	Apr 2024 17:18:33 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240416161833eucas1p12e7e5db7e46bb558f0b7e7b7c0f3a17d~GzwFfH9zE2936029360eucas1p1t;
+	Tue, 16 Apr 2024 16:18:33 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240416161833eusmtrp13acb475819bd914644dc864e75f24f1b~GzwFdvMoW2276022760eusmtrp1Q;
+	Tue, 16 Apr 2024 16:18:33 +0000 (GMT)
+X-AuditID: cbfec7f2-c11ff70000002598-dd-661ea4d9ad2d
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id D1.78.09010.8D4AE166; Tue, 16
+	Apr 2024 17:18:32 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240416161832eusmtip2f37c2e32456a165bc55314d3e78c49a2~GzwFH_cTH1934419344eusmtip27;
+	Tue, 16 Apr 2024 16:18:32 +0000 (GMT)
+Received: from localhost (106.210.248.3) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Tue, 16 Apr 2024 17:18:31 +0100
+Date: Tue, 16 Apr 2024 14:32:12 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Paolo Abeni <pabeni@redhat.com>
+CC: Kuniyuki Iwashima <kuniyu@amazon.com>,
+	<devnull+j.granados.samsung.com@kernel.org>, <Dai.Ngo@oracle.com>,
+	<alex.aring@gmail.com>, <alibuda@linux.alibaba.com>,
+	<allison.henderson@oracle.com>, <anna@kernel.org>, <bridge@lists.linux.dev>,
+	<chuck.lever@oracle.com>, <coreteam@netfilter.org>, <courmisch@gmail.com>,
+	<davem@davemloft.net>, <dccp@vger.kernel.org>, <dhowells@redhat.com>,
+	<dsahern@kernel.org>, <edumazet@google.com>, <fw@strlen.de>,
+	<geliang@kernel.org>, <guwen@linux.alibaba.com>,
+	<herbert@gondor.apana.org.au>, <horms@verge.net.au>, <ja@ssi.bg>,
+	<jaka@linux.ibm.com>, <jlayton@kernel.org>, <jmaloy@redhat.com>,
+	<jreuter@yaina.de>, <kadlec@netfilter.org>, <keescook@chromium.org>,
+	<kolga@netapp.com>, <kuba@kernel.org>, <linux-afs@lists.infradead.org>,
+	<linux-hams@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-nfs@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+	<linux-s390@vger.kernel.org>, <linux-sctp@vger.kernel.org>,
+	<linux-wpan@vger.kernel.org>, <linux-x25@vger.kernel.org>,
+	<lucien.xin@gmail.com>, <lvs-devel@vger.kernel.org>,
+	<marc.dionne@auristor.com>, <marcelo.leitner@gmail.com>,
+	<martineau@kernel.org>, <matttbe@kernel.org>, <mcgrof@kernel.org>,
+	<miquel.raynal@bootlin.com>, <mptcp@lists.linux.dev>, <ms@dev.tdt.de>,
+	<neilb@suse.de>, <netdev@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <pablo@netfilter.org>,
+	<ralf@linux-mips.org>, <razor@blackwall.org>, <rds-devel@oss.oracle.com>,
+	<roopa@nvidia.com>, <stefan@datenfreihafen.org>,
+	<steffen.klassert@secunet.com>, <tipc-discussion@lists.sourceforge.net>,
+	<tom@talpey.com>, <tonylu@linux.alibaba.com>,
+	<trond.myklebust@hammerspace.com>, <wenjia@linux.ibm.com>,
+	<ying.xue@windriver.com>
+Subject: Re: [PATCH v3 1/4] networking: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <20240416123212.nrgpuix3dhkmfbzq@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="arc6idvhr2tglhrq"
+Content-Disposition: inline
+In-Reply-To: <be056435353af60a564f457c79dacc16c6ea920e.camel@redhat.com>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe1BUdRTH+9179+6KLV12KX+DZoqShUJSpqc0n6XX0VHLPyKnRhi4osjD
+	dqUgs5AF0UV0cymT1wLmykNWhXUVQaSNhy4GKE9RbFiXFoFEgVVAYWO9ODrjf5/zPecz95zf
+	zBWRkt9EbqJtYTs5WZh/iDvtRBkqh2q8bvwxdcvcv3s9wRi9ANpLlAKIjt1LQFyRnQLDsQQC
+	7G1WAkaK4knob7cKQJNVSENqbSwFI80JNNSnWQi4F/OYAt2FOAI6Ks1CMCTmIciLuUXBOesj
+	GhK6poDirA2B5ZBZAA3a+zQMaXOF8I/NTMHQwYlwVKkg4GpCKJxvs1BQZzgoAO2BfBpUJh9o
+	OtdGQP2FVBrqyqoF8K8xkQJVpoKEjoxuAdxSaykou6hBYD7VS4BC00eCov8OCcPZVQKoSbST
+	kKzLJaFF1YHgr/hSAVw9FSOEh+mXSbioiaagMuMNUOlMFDys7kFwpKeRhOslM8E0YCegprBf
+	AP2p74A6W09A8f5BIehrg8E0bCLgziMrDfaWJUuXs9l1SgHbaraR7L2aK4hNP7mLTYm+RrHD
+	Q56sPucGwSaUd5FsUXKbkDWUebAZBRHsE+MZIVuQu59mK3LyCbao/SNWlVWGNrhvcloUyIVs
+	+46TvbfYz2mrPUGNdjS4RGZq+8hoFOesRBNEmJmH0zp1pBI5iSRMNsLX2kbGiwGET2tKhHzR
+	j3B7/E3imZKjiEN84wTClt5Lz6f2FOeP+4UIlx+vIB0KxXjgjuZy5GCamYNre249zV2ZGbh7
+	5DLtEEimSow7Ux8/HZIy27EpuYd2sJhZis9Wd5A8u+ArRy2Ug0kmEl/45fgYi8Z4Mj4xKnLE
+	ExgWJ2U2IX7V6VhX20DxvBub9K2E41uYufIqNpuHab7xKT6vqhHyLMVdVfpxnoKr1QcoXlAj
+	fGn0vpAv8hDW7rGNv8ZCHNtgGTeW4bKUlqcbYcYZt/znwi/qjA8bjpB8LMb79kr46bdx3u0e
+	SoVmJL9wWvILpyU/P42P5+CM4j76pXg21mZ2kzx/gnW6XioDCXPRJC5CHhrEyX3CuO+95f6h
+	8oiwIO+A8NACNPa7Vo9W9Z1HaV0PvI2IECEjmjkmm0/n1SE3Kiw8jHN3FcdK39wiEQf6R/3A
+	ycI3yyJCOLkRTRZR7pPEHoFvcRImyH8nt53jdnCyZ11CNMEtmpjf2XXa69i6DeRXQs3G11ev
+	/RJ1rJll4O4GpKxK/LXx3MDNkE22kDVWaUqU9IOVReqNwVNju4VLTlwvMGU3mGNcSuTiubNr
+	dOnVt5uy7MEPj8t8xDp5U7Dfu7agk1HrzwRWLbT0TZzuXjS64GvfAmXSrAfLPvz9SUBzaUVd
+	Vqvey2dzqXX9IXudJP3PwbKAafqfNLleWWnTIpfvS9ncWOG84uNgpa9xRZKhJa7ix0VLC90k
+	921LSL9vDgrWba9IbVy98PDnoz2DEqnUuy9gduVrZ6yv+MYv3t1kXZtqmb4yX7GKix8ovyzL
+	UX9xPWtXVH3prrstnx3zeuTqMe/n91Uebt82SOcvTnKn5Fv9fTxJmdz/f4S0r8gpBQAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTdxTH/d17e1vc0EpR79At2kliulkoFDxd8JFlSy7LsviHWzLN5hq4
+	gtoHttQ9zBakoFIESkCmFQR8lNeE8bCIw0mqIhRjOxSsW4HRgmQUZViF8WrX2i0z2X+f8z3n
+	+83JSQ4HD2tkR3D2KdIZlUIq45NLiR7v7cFN9gtv7I1+bBeDOWMzDLfrWJCRdRSD7DYfAabz
+	uRj4BsYwWGw7hoNneIwF5eeaSSi1ZhGw+CCXhHtlIxg8yZwnoP5qNgajnU42mPLqENRlOgho
+	HZshIXd8LWgvP0cwUuBkwX3jnyTMGmvZMPTcScBs/itwWqfF4E6uHK4MjBBgM+WzwHjiEgl6
+	iwj6WwcwuHe1lARbRw8LHpnzCNBXanEYrXCzwFFkJKDjWjkCZ8MkBtrypzhoPS4c5qpvs+Bu
+	ng8HQ30tDnb9KIIbx35mwZ2GTDZMn+3C4Vp5BgGdFatAX28hYLpnAsH3E3049LZvAMszHwZ3
+	mz0s8JRuhKLqFgx+yvmLDS3W/WCZs2DgmhkjwWfftv1dutqmY9G/Op/j9JO73Yg++8Nh+kzG
+	LwQ9NyugW2oeYnTuzXGcbjMMsGlTRyRd0aShF8yNbLqpNoekb9Vcwui2YQmtP9eBdvB3CRNU
+	Sk06sy5VqU7fwt8tghihSALCGLFEKIrd/Nk7MXH8qK0JyYxs3yFGFbX1C2GqXasj0npXfFVR
+	OIRlIO0yHQrhUFwxVaPNRgEO415ElNG4PqivpRqf9bGCzKMW+nWkDi31z0wh6nbr9X+KZkQd
+	OTX3wk1wI6nRBzdfMMl9m7JOOPAAh3PfpNyLXS8MOPdWKOUuGmQHGjzuAcpimCADHMrdTl3u
+	GcWDqTkYlZOdzQo2VlDdp0eIAOPcQ1Tp74GdOH5eQ1V5OQE5hEtTxZX9KLjqeqreep8I8reU
+	Z/ER0iOe4aUkw0tJhv+SgrKAsnv/wP4nv0UZK914kLdQ9fWTRAVi16JwRqOWp8jVMUK1VK7W
+	KFKESUp5E/L/i6lztuUKqhmfEpoRxkFmtMHvdP5YZ0MRhEKpYPjhoVm81/eGhSZLv/6GUSn3
+	qDQyRm1Gcf4zFuIRK5OU/udTpO8RxUfHicTxkug4SXwsf3VoYtpxaRg3RZrOHGCYNEb1rw/j
+	hERkYLB5tdablXQwa++qeCH+Pr1c4ZgS9H7auu1z0/HhZv6IZuM6HD+zKSay8bHMdbZ5RlFu
+	trzqEsc/beLYY2dk0wuupWWJj5n+ecFr7I/XamDhS897ndVXf0voXba8Shd3fuWOglZ5Vrji
+	4WDiZTI2jO86v1j5XQivLpnXlFBDr/nE1n4jsVZf5xa4lxjm91dtPzQdNX7R0VByhK3Zrbz+
+	YZo0uezoPtOsJtxlG9zJiy7buatAdbDLunxJ/gfWR0eijBeKo91Dp4uTxpSn5iXKtsMlDbLS
+	B91DXonPVtDZUygebpjMjLVJtjlOHKVL+pQTfaJi0TXmozjRzAFve/pJD59Qp0pFAlyllv4N
+	Xa6R4cQEAAA=
+X-CMS-MailID: 20240416161833eucas1p12e7e5db7e46bb558f0b7e7b7c0f3a17d
+X-Msg-Generator: CA
+X-RootMTR: 20240416081854eucas1p102081018d3e61cd9a250ab62f46b4e8a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240416081854eucas1p102081018d3e61cd9a250ab62f46b4e8a
+References: <20240412-jag-sysctl_remset_net-v3-1-11187d13c211@samsung.com>
+	<20240415231210.22785-1-kuniyu@amazon.com>
+	<CGME20240416081854eucas1p102081018d3e61cd9a250ab62f46b4e8a@eucas1p1.samsung.com>
+	<be056435353af60a564f457c79dacc16c6ea920e.camel@redhat.com>
 
-Managing allocations to ensure code and data pages are not interleaved
-is not possible prior to this patch, as ASLR requires programming a
-dynamic _text offset while the vmalloc infrastructure maintains static
-VMALLOC_START and VMALLOC_END constants.
+--arc6idvhr2tglhrq
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In systems where code and data are interleaved at a PTE granularity,
-kernel improvements targeting the prevention of exploit stages which
-modify page tables are inefficient and less effective as individual PTE
-updates occur at high frequency and cannot be coarsely grouped at the
-PMD level or greater.
+On Tue, Apr 16, 2024 at 10:18:42AM +0200, Paolo Abeni wrote:
+> On Mon, 2024-04-15 at 16:12 -0700, Kuniyuki Iwashima wrote:
+> > From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel=
+=2Eorg>
+> > Date: Fri, 12 Apr 2024 16:48:29 +0200
+> > > From: Joel Granados <j.granados@samsung.com>
+=2E..
+> > >  net/rxrpc/sysctl.c                  | 1 -
+> > >  net/sctp/sysctl.c                   | 6 +-----
+> > >  net/smc/smc_sysctl.c                | 1 -
+> > >  net/sunrpc/sysctl.c                 | 1 -
+> > >  net/sunrpc/xprtrdma/svc_rdma.c      | 1 -
+> > >  net/sunrpc/xprtrdma/transport.c     | 1 -
+> > >  net/sunrpc/xprtsock.c               | 1 -
+> > >  net/tipc/sysctl.c                   | 1 -
+> > >  net/unix/sysctl_net_unix.c          | 1 -
+> > >  net/x25/sysctl_net_x25.c            | 1 -
+> > >  net/xfrm/xfrm_sysctl.c              | 5 +----
+> > >  35 files changed, 20 insertions(+), 81 deletions(-)
+> >=20
+> > You may want to split patch based on subsystem or the type of changes
+> > to make review easier.
+>=20
+> I agree with Kuniyuki. I think the x25 chunks can me moved in the last
+> patch, and at least sunrpc and rds could go in separate patches,
+> possibly even xfrm and smc.
 
-This patch adds minimal arch-specific callbacks to the initialization of
-vmalloc and when deciding whether to use a specific virtual memory area
-to satisfy a vmalloc request to provide the capability to prevent the
-allocation of specific virtual addresses under specific system states.
-By default these hooks are unimplemented.
+No problem. I'll put x25 and ax.25 patches together into one commit.
+Thx
 
-To further support the practical use of these callbacks, this patch also
-adds a virtual address parameter to pmd_populate_kernel, so that this
-interface matches the equivalent pte-level interface and architectures
-are not required to perform a reverse page table lookup to determine the
-vaddr being allocated during pmd creation.
+Best
 
-To demonstrate the impact and value of these changes, this patch
-implements support for dynamic PXNTable under aarch64 in 71 lines of
-code (a single "if" check during memory allocation), by checking the
-virtual address of a given vmalloc call to determine whether it is code
-or data. From experience in trying to implement kernel page table
-immutability and protections in KVM to prevent recent CVEs, e.g.
-CVE-2024-1086, this is a necessary first step.
+--=20
 
-To better help maintainers and future developers, this patch expands
-ptdump.c so that non-leaf page table descriptors can be more easily
-noted in debug output by setting a note_non_leaf bool in the ptdump
-state.
+Joel Granados
 
-Signed-off-by: Maxwell Bland <mbland@motorola.com>
+--arc6idvhr2tglhrq
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
+-----BEGIN PGP SIGNATURE-----
 
-First, thank you to a number of maintainers (Mark Rutland, Greg KH,
-Christoph Hellwig, Christophe Leroy, David Hildenbrand, Conor Dooley)
-for their feedback on
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYeb8sACgkQupfNUreW
+QU9IgQv/f3B6o6CgzcLe66voGeH52C4Mqq88G+CAPi1Y55DViplwGANdfK6EBoDN
+6Uzq/iW+1nx0YiieJ0iErfZYCed7fAx2cY90xhYzfiJk3+e0xJGOzirNFxHFI0oL
+/AdldpRWTtKVIjqOLxy8V75vvztbqeUhe7WrLg59RD3bDhmRtwXp/VsJ7bfe+HjC
+lUB3RjWgKUyR0J8eRFAi0cq3JgnpPHxOyHmr6RUrARc/MEm/fXh+L/GiipQLOjMM
+3AiwB/v96pvRP+gjjIVHvB87IAZYCrpeLlx5YKpxNg6z3YxKf+unw2DrwXrbsduD
+Uxd0fgyicGQFvBbm4eSG/49a5uByExNlmH7aldYY1QuSbCVgTCFc/85ybpbyufFJ
+k0MgrMSr4J7H+kxulOrh3U0NW7qhZXo0HGc6isvypx0qZARcVunY/pLIqyyGsInv
+V6iNf9SGHFSR5BL81V0wQVuPrRaIgae5oho/2EzF8x5dCuwZtIc3oW5dfmk0Nlr4
+EsKgK3Yv
+=6qGD
+-----END PGP SIGNATURE-----
 
-<20240220203256.31153-1-mbland@motorola.com>
-and
-<CAP5Mv+ydhk=Ob4b40ZahGMgT-5+-VEHxtmA=-LkJiEOOU+K6hw@mail.gmail.com>
-
-This patch is a further refinement and overhaul of these prior two
-attempts. Also, apologies for the roughly two months delay between patch
-submissions! I had Motorola work to do.
-
-In support of testing this patch (but not included in this patch), I set
-note_non_leaf to true under arch/arm64/mm/ptdump.c and added
-PMD_TABLE_PXN to pte_bits to print out whether the PXNTable bit was set.
-The txt files under the following directory can be diff'ed to see the
-result:
-
-github.com/maxwell-bland/linux-patch-data/tree/main/code_data_parting/ptdump
-
-I also created a script to fetch and cross-compile the kernel for each
-of the 21 subarchitectures which required fixes to provide a virtual
-address to pmd_populate_kernel. I have no idea if it is useful and maybe
-one already exists, but it worked well for me over some alternatives
-(xcross, buildroot):
-
-github.com/maxwell-bland/x-linux
-
-As with the last patchset, I also measured performance using Torvald's 
-test-tlb program on an aarch64 QEMU instance, with results here:
-
-github.com/maxwell-bland/linux-patch-data/tree/main/code_data_parting/tlbperf
-
-As all changes to other arches are effectively no-ops, performance
-impacts in those domains are negligible. 
-
-Maxwell Bland (5):
-  mm: allow arch refinement/skip for vmap alloc
-  arm64: mm: code and data partitioning for aslr
-  mm: add vaddr param to pmd_populate_kernel
-  arm64: dynamic enforcement of PXNTable
-  ptdump: add state parameter for non-leaf callback
-
- arch/alpha/include/asm/pgalloc.h             |  5 +-
- arch/arc/include/asm/pgalloc.h               |  3 +-
- arch/arc/mm/highmem.c                        |  2 +-
- arch/arm/include/asm/kfence.h                |  2 +-
- arch/arm/include/asm/pgalloc.h               |  3 +-
- arch/arm/mm/kasan_init.c                     |  2 +-
- arch/arm/mm/mmu.c                            |  2 +-
- arch/arm64/include/asm/module.h              | 12 ++++
- arch/arm64/include/asm/pgalloc.h             | 15 ++++-
- arch/arm64/include/asm/vmalloc.h             | 17 ++++-
- arch/arm64/kernel/Makefile                   |  2 +-
- arch/arm64/kernel/module.c                   |  7 +-
- arch/arm64/kernel/probes/kprobes.c           |  7 +-
- arch/arm64/kernel/setup.c                    |  4 ++
- arch/arm64/kernel/vmalloc.c                  | 71 ++++++++++++++++++++
- arch/arm64/mm/ptdump.c                       | 10 +--
- arch/arm64/mm/trans_pgd.c                    |  2 +-
- arch/arm64/net/bpf_jit_comp.c                |  8 ++-
- arch/csky/include/asm/pgalloc.h              |  2 +-
- arch/hexagon/include/asm/pgalloc.h           |  2 +-
- arch/loongarch/include/asm/pgalloc.h         |  3 +-
- arch/loongarch/mm/init.c                     |  2 +-
- arch/loongarch/mm/kasan_init.c               |  2 +-
- arch/m68k/include/asm/mcf_pgalloc.h          |  2 +-
- arch/m68k/include/asm/motorola_pgalloc.h     |  3 +-
- arch/m68k/include/asm/sun3_pgalloc.h         |  3 +-
- arch/microblaze/include/asm/pgalloc.h        |  2 +-
- arch/mips/include/asm/pgalloc.h              |  2 +-
- arch/mips/kvm/mmu.c                          |  2 +-
- arch/nios2/include/asm/pgalloc.h             |  2 +-
- arch/openrisc/include/asm/pgalloc.h          |  2 +-
- arch/parisc/include/asm/pgalloc.h            |  5 +-
- arch/parisc/mm/init.c                        |  6 +-
- arch/powerpc/include/asm/book3s/32/pgalloc.h |  2 +-
- arch/powerpc/include/asm/book3s/64/pgalloc.h |  2 +-
- arch/powerpc/include/asm/nohash/32/pgalloc.h |  2 +-
- arch/powerpc/include/asm/nohash/64/pgalloc.h |  2 +-
- arch/powerpc/mm/book3s64/radix_pgtable.c     |  2 +-
- arch/powerpc/mm/kasan/init_32.c              |  4 +-
- arch/powerpc/mm/kasan/init_book3e_64.c       |  9 ++-
- arch/powerpc/mm/kasan/init_book3s_64.c       |  7 +-
- arch/powerpc/mm/nohash/book3e_pgtable.c      |  2 +-
- arch/powerpc/mm/pgtable_32.c                 |  4 +-
- arch/powerpc/mm/ptdump/ptdump.c              |  2 +
- arch/riscv/include/asm/pgalloc.h             |  2 +-
- arch/riscv/kernel/hibernate.c                |  2 +-
- arch/riscv/mm/ptdump.c                       |  6 +-
- arch/s390/include/asm/pgalloc.h              |  2 +-
- arch/s390/mm/dump_pagetables.c               |  6 +-
- arch/sh/include/asm/pgalloc.h                |  2 +-
- arch/sh/mm/init.c                            |  2 +-
- arch/sparc/include/asm/pgalloc_32.h          |  3 +-
- arch/sparc/include/asm/pgalloc_64.h          |  4 +-
- arch/sparc/mm/init_64.c                      |  8 +--
- arch/um/include/asm/pgalloc.h                |  4 +-
- arch/x86/include/asm/pgalloc.h               |  3 +-
- arch/x86/mm/dump_pagetables.c                |  3 +-
- arch/x86/mm/init_64.c                        | 14 +++-
- arch/x86/mm/ioremap.c                        |  2 +-
- arch/x86/mm/kasan_init_64.c                  |  2 +-
- arch/xtensa/include/asm/pgalloc.h            |  2 +-
- include/linux/mm.h                           |  4 +-
- include/linux/ptdump.h                       |  1 +
- include/linux/vmalloc.h                      | 24 +++++++
- mm/hugetlb_vmemmap.c                         |  4 +-
- mm/kasan/init.c                              | 14 ++--
- mm/memory.c                                  |  4 +-
- mm/percpu.c                                  |  2 +-
- mm/pgalloc-track.h                           |  3 +-
- mm/ptdump.c                                  | 13 ++++
- mm/sparse-vmemmap.c                          |  2 +-
- mm/vmalloc.c                                 | 16 +++--
- 72 files changed, 299 insertions(+), 107 deletions(-)
- create mode 100644 arch/arm64/kernel/vmalloc.c
-
-
-base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
--- 
-2.39.2
-
+--arc6idvhr2tglhrq--
 
