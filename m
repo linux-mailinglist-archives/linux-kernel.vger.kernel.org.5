@@ -1,121 +1,175 @@
-Return-Path: <linux-kernel+bounces-146580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF108A678E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:57:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2C2D8A6793
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:58:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDEB8B21EE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:57:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99E19283E02
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09238664D;
-	Tue, 16 Apr 2024 09:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7186E86AC4;
+	Tue, 16 Apr 2024 09:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FbuDV7Ew"
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TiLZnJiM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E85885929
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0020883A1D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261438; cv=none; b=mJZWauJx5fCNPbnOMMMoydZJV4LkBGVGKkGytU7kM5E6uYKsdEUemIHEuZz8Z7awc+uKB7LcYtoPJhclu9P8n9+JAfHojYVSVV+OmcSdPKMrzkos5t1+7AIAdo9GQlp9pz0hLEFtCWeUBTW6Q9Tqm8juzoSwmMrgDZqZ9nMl4Uc=
+	t=1713261487; cv=none; b=KydZG+Nyz2W7xXLOsliEYL3/UAYF8yFfEvGW1QlMpr6MViiDenA8veSgj1qq7BIc9rZJfDuYa1RjJoOI2Pq57OljMPReDMdt/Z9HqiAfrLxI3Q9O5wSQnfbwuc+oT8l/XFp8Kj+jIgdfRaRt7MiAToeRiBDpzyUJD++QJoc4EMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261438; c=relaxed/simple;
-	bh=NHiCoxCRUNDM+U/esFCAFumYpu6ndbBWZi/5QFnqRTc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LCmB0tHUwmA4qXMYp9YiUrxHpddOK1cpm+CIx8d34kX4SSQhERpYNofPhVNgFYPVyhYE4sKsrGEqRjZB/XKyQstL6JfRVdZkz0QeNllx3owIpBpLNcspryswKCIW41qiCX7XyPe5gYUhatEwqo3JbXtTtL/NfuT6u57n1c4WraY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FbuDV7Ew; arc=none smtp.client-ip=209.85.217.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-47a404c6decso1113705137.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713261435; x=1713866235; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NHiCoxCRUNDM+U/esFCAFumYpu6ndbBWZi/5QFnqRTc=;
-        b=FbuDV7EwX+FwQw93U6rtrmn01IWg6/YjrdhIk21GdG9dQ3oDnnsqJktJjTvtaPouHD
-         +OZUJcC1c3R7WEqRae5PcN5GZ8QyOHxULY7fePWEyzFnLr7dWVLoJiTNaZNLNPavVH7N
-         0bkOWmSpkheevBAWtGk082wEB5u/giX9SSZ7B1VgGT1oe2z6wgNE7nYvsK2vtzaR4dLW
-         hGWKpRugoPFuUA03fAfQrecF1rMG45bv6kIVl/PKYk37yfb6OW2buNkaDOBfbuFqghl4
-         5cmLhkccCeC1fuJ9XgcCSA+10AUqZ5OZkw4ZjymDQiOOxuwhq5HlhjmRNiPPsQG+YPIu
-         jnyA==
+	s=arc-20240116; t=1713261487; c=relaxed/simple;
+	bh=KwZmFBYAqg+B+dbpT/j2cFN+N3E9//zZnas4MzkRbYI=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=K8zZIrly8QH41HLdIiZizt19LtlqlQtwX+2vccm9iFRAP/gI4fVk6jfIHXY0vGJZ3PkevU0zOtnQ5kdAJ8mt+KHBzclZWQYQE+Y2cyaG8raas52zyNair758WXLwBdHb62FyTGc4jAMmkeV/MjPMQKsgW5B8LOJxUtLVVc2ltEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TiLZnJiM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713261485;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SFyR0xGSUlDFq4bRYadYqHqn2Ie/fiirEvayyMJ3GoA=;
+	b=TiLZnJiMjeOTKA+72Ly0LVTxcnosFefycU+ikf3aOxSu9qM7KWfP5lpbf8RTR1euy5stWI
+	CCDrhab8cOpkOLF0k9jng24xEW3q+iWYkEN5/X+vUixmx3W5/ymMTIDmyNkq1+cL6H18Og
+	+5+/s/x4RYA6ttvvSn4aUajaX+rf1AQ=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-550-aIN12dWZNc6e0zAv_DrCUQ-1; Tue, 16 Apr 2024 05:58:03 -0400
+X-MC-Unique: aIN12dWZNc6e0zAv_DrCUQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-348973b648fso159875f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:58:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713261435; x=1713866235;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NHiCoxCRUNDM+U/esFCAFumYpu6ndbBWZi/5QFnqRTc=;
-        b=hlGFOBeyyl3UmhSnPnlI45YtLmIj+OuLbrBRZp+wu2V5rkh6VkdEJB3Nk2HiRvDIgI
-         wMX8ihlus8q5qlZKRlpPWaxr7tnolxXyHiuWednr7SuCwXV0j4XUtswOkcnaUN4PEkO+
-         dry0njyDwU5zMexCItRmroL/CJJ4vTvcQjOREOgmvFh+4R+nFZSxxyfcaCIyP+bouBll
-         ZuQD2xhS9DaqzTbRLHzVY26vo7v9MBNoxe/a9W4I6T5NhR0U9fDAezFKIm2faWiaU88C
-         UZARj+DhqyBkxZUjGB0kHyKdcuHs0SstfMGhOtYCZ5cdCIngeiWX/jKgDNlAxKhCWGlL
-         SfTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXkvlRGIZu6Ro7Xc/H0z+wY7CLHiBkkjtnmx0xCSMmyQP+VLQyCgKcT8qgiwkcb8FhMJi1KAoPlqq8tuiulGx3iF6n+ezVplxIxkfe5
-X-Gm-Message-State: AOJu0Yy93sydMr01Wz59EOvLW46B5hc03SeBN4JrBy2yUkvpt/uW2Yr1
-	sxNsF7V9DDKAHaxyQ7YKpKabK+qtS7Y3ATeFFiwEvrqhxbwo19cspm0RGxzUzKon6ZfemyyXHgx
-	Xtgy+dshqR3s41ZUqHa6lRTPsa1nycBizIks6
-X-Google-Smtp-Source: AGHT+IEPsW05phYUIrlx5Uy8pAv8kP3cZvEoCRY/OH7h5cbl24CtY5s86HrRZB2SYuf+ooWwSmXNWVN1t06Z6diHe0c=
-X-Received: by 2002:a05:6102:dcd:b0:47a:296c:def with SMTP id
- e13-20020a0561020dcd00b0047a296c0defmr11930644vst.29.1713261435254; Tue, 16
- Apr 2024 02:57:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713261482; x=1713866282;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SFyR0xGSUlDFq4bRYadYqHqn2Ie/fiirEvayyMJ3GoA=;
+        b=CY/IsxlDgK50Vh2noCpvd6ztZwsx739EKcQzIpH/Zf4CkjqUa+ZM0B3bZMglSIB34O
+         STcQ0cKYH9xfdzSF9ly+r4OGFKtZkKZurJChI8xLPnRJiLJ9soI/P/Sm5gyMoQo5GZ1G
+         ZhZj2Dwpg4fk9W6DJ+6q3RgXQ7mIsFprFxDaLUqTch8pt/DhwspQgAUhmRpyPffE0pPe
+         3BtYn9i0O286SB5gQpbg2wxhMGs6/HpNWuo3DR6r2qfWZJJaGHrdqjn9mezj9fUZCibt
+         vJwUwkSHPjWH4WdWdgN+LqdF4IgG1F2Ow6KMuUVR0/Q7tpXOwJ15IOgXmpTCFwTjNlCK
+         qOCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXKZNsZMcm9RHttIPqspNDfARs+Cp47zlUFO+u3bd3PN7hhH/DnzzS2r+LwaxCRSXb2BsGYkf6ORf/gYXw4DV6/uuDAor0Sw7vEjB5h
+X-Gm-Message-State: AOJu0YxGDa12ByWg1b18N/FvWe3K6yZh5sPyLOHp9FUCZZdaRtseYjal
+	aP01k51q74giNOQDdx97NCwLwW/XBCTVGZHEDh7gSQ/HYbGWxm5TiZDYeh2UcZ0LLoJ0haoDTzu
+	6pwgT1IbF6NhWIgW514cAtdtTuxL/in0ENuTdzrH3r1U7kB7FdamIGYOwdE5BXg==
+X-Received: by 2002:a5d:4e0a:0:b0:33e:c97c:a24 with SMTP id p10-20020a5d4e0a000000b0033ec97c0a24mr8655154wrt.5.1713261482474;
+        Tue, 16 Apr 2024 02:58:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+H5GtR4dSPDHt/X+BdOZkvjiofnARPzbWkG4xJmpYzugS0LVJxkMttR2eDMl8n/s2qgnC1g==
+X-Received: by 2002:a5d:4e0a:0:b0:33e:c97c:a24 with SMTP id p10-20020a5d4e0a000000b0033ec97c0a24mr8655137wrt.5.1713261482092;
+        Tue, 16 Apr 2024 02:58:02 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-231-31.dyn.eolo.it. [146.241.231.31])
+        by smtp.gmail.com with ESMTPSA id di7-20020a0560000ac700b003439d2a5f99sm14291462wrb.55.2024.04.16.02.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 02:58:01 -0700 (PDT)
+Message-ID: <469c26d112600bce3a7fe77131c62eae4ecae5d1.camel@redhat.com>
+Subject: Re: [PATCH net-next v7 2/3] net: gro: move L3 flush checks to
+ tcp_gro_receive and udp_gro_receive_segment
+From: Paolo Abeni <pabeni@redhat.com>
+To: Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, dsahern@kernel.org, 
+	willemdebruijn.kernel@gmail.com, shuah@kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Date: Tue, 16 Apr 2024 11:58:00 +0200
+In-Reply-To: <a36bf0b117f7786bbf028494d68185486025777d.camel@redhat.com>
+References: <20240412155533.115507-1-richardbgobert@gmail.com>
+	 <20240412155533.115507-3-richardbgobert@gmail.com>
+	 <a36bf0b117f7786bbf028494d68185486025777d.camel@redhat.com>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415-alice-mm-v5-0-6f55e4d8ef51@google.com>
- <20240415-alice-mm-v5-2-6f55e4d8ef51@google.com> <202404151605.6EFC791E@keescook>
-In-Reply-To: <202404151605.6EFC791E@keescook>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Tue, 16 Apr 2024 11:57:03 +0200
-Message-ID: <CAH5fLgg1UiU0b-1Wewz9Wm_V_G44G+TUb4L1beQF7mkAcCXKfg@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] uaccess: always export _copy_[from|to]_user with CONFIG_RUST
-To: Kees Cook <keescook@chromium.org>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 1:05=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> On Mon, Apr 15, 2024 at 07:13:54AM +0000, Alice Ryhl wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Rust code needs to be able to access _copy_from_user and _copy_to_user
-> > so that it can skip the check_copy_size check in cases where the length
-> > is known at compile-time, mirroring the logic for when C code will skip
-> > check_copy_size. To do this, we ensure that exported versions of these
-> > methods are available when CONFIG_RUST is enabled.
-> >
-> > Alice has verified that this patch passes the CONFIG_TEST_USER_COPY tes=
-t
-> > on x86 using the Android cuttlefish emulator.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Thanks for the updates and the comment on testing. :)
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+On Tue, 2024-04-16 at 11:21 +0200, Paolo Abeni wrote:
+> On Fri, 2024-04-12 at 17:55 +0200, Richard Gobert wrote:
+> > {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
+> > iph->id, ...) against all packets in a loop. These flush checks are use=
+d
+> > currently in all tcp flows and in some UDP flows in GRO.
+> >=20
+> > These checks need to be done only once and only against the found p skb=
+,
+> > since they only affect flush and not same_flow.
+> >=20
+> > Leveraging the previous commit in the series, in which correct network
+> > header offsets are saved for both outer and inner network headers -
+> > allowing these checks to be done only once, in tcp_gro_receive and
+> > udp_gro_receive_segment. As a result, NAPI_GRO_CB(p)->flush is not used=
+ at
+> > all. In addition, flush_id checks are more declarative and contained in
+> > inet_gro_flush, thus removing the need for flush_id in napi_gro_cb.
+> >=20
+> > This results in less parsing code for UDP flows and non-loop flush test=
+s
+> > for TCP flows.
+> >=20
+> > To make sure results are not within noise range - I've made netfilter d=
+rop
+> > all TCP packets, and measured CPU performance in GRO (in this case GRO =
+is
+> > responsible for about 50% of the CPU utilization).
+> >=20
+> > L3 flush/flush_id checks are not relevant to UDP connections where
+> > skb_gro_receive_list is called. The only code change relevant to this f=
+low
+> > is inet_gro_receive. The rest of the code parsing this flow stays the
+> > same.
+> >=20
+> > All concurrent connections tested are with the same ip srcaddr and
+> > dstaddr.
+> >=20
+> > perf top while replaying 64 concurrent IP/UDP connections (UDP fwd flow=
+):
+> > net-next:
+> >         3.03%  [kernel]  [k] inet_gro_receive
+> >=20
+> > patch applied:
+> >         2.78%  [kernel]  [k] inet_gro_receive
+>=20
+> Why there are no figures for
+> udp_gro_receive_segment()/gro_network_flush() here?
+>=20
+> Also you should be able to observer a very high amount of CPU usage by
+> GRO even with TCP with very high speed links, keeping the BH/GRO on a
+> CPU and the user-space/data copy on a different one (or using rx zero
+> copy).
 
-Thanks for taking a look :)
+To be more explicit: I think at least the above figures are required,=C2=A0
+and I still fear the real gain in that case would range from zero to
+negative.=20
 
-Alice
+If you can't do the TCP part of the testing, please provide at least
+the figures for a single UDP flow, that should give more indication WRT
+the result we can expect with TCP.
+
+Note that GRO is used mainly by TCP and TCP packets with different
+src/dst port will land into different GRO hash buckets, having
+different RX hash.
+
+That will happen even for UDP, at least for some (most?) nics include
+the UDP ports in the RX hash.
+
+Thanks,
+
+Paolo
+
 
