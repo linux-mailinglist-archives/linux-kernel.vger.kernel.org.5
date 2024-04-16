@@ -1,159 +1,185 @@
-Return-Path: <linux-kernel+bounces-146732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 718FF8A6A04
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:57:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 039DE8A6A0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:59:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD9831F216B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:57:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 269D81C20C9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465D812A157;
-	Tue, 16 Apr 2024 11:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5626129E88;
+	Tue, 16 Apr 2024 11:59:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qAWrIJSB"
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sq7AS0AV"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220A3129A67
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE55129E70
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268625; cv=none; b=N4hL6wdrgNLFqHCL7E8bASIx+aP8zFJm1itHc7bqaEH/iO/2S5MKLASsZ1hAVWx3UyiKg3C8rvtFpPevGKWF4Bw5brf51tjdnLFhZcGUIQlN0Fs2EO4DenUOR4NgnSwmksVHA1RsQdWvw6QKxcpskH27Lyi0tllkJ/1qeQl0BAw=
+	t=1713268770; cv=none; b=r15pFUKB8yuE+nw9IM8in6PLa5MYMhQxBwrjcmMBxHw/9iDfYoQf3xA5GBBRBgDD7hHEX/TBrpMf+x6dr63GG9OSkW+s7OMG8JE0q3njkPE81IeORQkHThUc+mTi79+5TUNKGdK+AjyDKkELNfkX8xnHhoRzLqHwLAJy/rP9Yi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268625; c=relaxed/simple;
-	bh=vIl3v//FVA36XrKiforyh9hY0/yXzSMuW90U1Lzldf4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EyFwSfqa+eEKAgarOzTiMEvT6oreEhLRNLcOXumy/FG1nxP+Hihd0fTNIwjiUEFdRX1meVkyV81kwqgfS5opxHNqoDg3l8VriduGKYMjWO/sr+/W0naug5U6zMBrAEji0MM/6C/YYwCGP6Woot2fBLu2b2XQ5Gh4u4J6yVrOCa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qAWrIJSB; arc=none smtp.client-ip=209.85.161.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5aa1e9527d1so3060247eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:57:03 -0700 (PDT)
+	s=arc-20240116; t=1713268770; c=relaxed/simple;
+	bh=qbqi+XsX6wxH4QDDPdchG2lSzTVOiuCarFXtt6z8m5g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iodQNTMN5sHqVIqhtG5RcSjbNF8LTg+8F4ByE4yeiLXtKO5HQ/tgCsHzeAnwiVUu/abhT/2+g6Y1IhCpL+M9aULmbfUp5FOZ0lqg1nmVTe2eVJIe7p15q2iMopSRIB0cWWlDJxLImlrk2Jnq3IyRQkNh5eEc25wuRl89J8+l94M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sq7AS0AV; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so34128905ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713268623; x=1713873423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ophtYrF9IpPwZurMvgYV2hp9I3BGj1tkL8j63ZRtc2I=;
-        b=qAWrIJSBaImnX5AI81q+IaPhDKBY5xYc6kTf40ixeVO8Vn8qqUOGKLZNpdiyguEcD8
-         osusODQ1FeE3OolyPUzXBkJE5b6qYdrRFT1i4fBvgC3SuI/JWDWh8RajZkmP5f8+rhnw
-         aaILeP6Aunaf8nFMdBvn1gp/IE12Kp2Nl5SYLhcpDt51Tu7y7qYQdcigN91BrCrpAKtu
-         EqqhQXRBoa7Z/Z4N3fJKss6XN93vDpG9jLh4XUi4GgGdo3iyFuW1qbVK/ESFRwJ6O75r
-         OeWWLX8AHiWzM6QmHV2B4lNH/sNEEEv8G/9ltoIAwNgOxtZLTO7f12qmS2QXTDadUhlP
-         qP6A==
+        d=gmail.com; s=20230601; t=1713268768; x=1713873568; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hQ8Km8pUrRdj6HD7UNUZL3puRDpbGZKIzvHBUwGPNQw=;
+        b=Sq7AS0AVnoecKFWatpxGI2SSmdkhBbFCsgLii44duGuCJ4saM4AbnEXdoXDcXoY1t5
+         EiogZ5nylvlaTh8K8zviKfTr2C+ElWN/O7WS1r1BAHwnnjpkkxudDRj2b3eNpNhUPXIR
+         HXiHi0IFuOMXDZz2dudbSURVrymaF1fU2IQAp8CKH9NwqS5Z+OR2wdkxOlaHV76mN30f
+         Wx0zQC31+N/HW5qYyWOtKJFNKP0/7AUcjq7SsAhiIdy3W/qaKKjwrRohgAT/DkvdxqZS
+         HkIwepD3jH1ij0/y74nrAToWsg7ia+WUyKKhfBcs5LXtxbyOZNhtgjEBU6VpViqJU6Ro
+         ATuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713268623; x=1713873423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ophtYrF9IpPwZurMvgYV2hp9I3BGj1tkL8j63ZRtc2I=;
-        b=nABVNf8fUKc3V2SUbHS4mpzR+vQ7YAnATO5XxGTnoTXpa1h9Ix2BXcMzFQ2pFDJc/f
-         36zgoWINhwfcetuZclvlC5zivaas3axLCzr0VQ3bsSxabY4BhiiNiTqQ13n5sIWri89u
-         pjGj7Qzrw7ESu7GzkeXWlotAljWqJs64JwzAof7Q9uG93Mc0Sh+QUgjPs3RTcsAd6JlV
-         vaeLXguCAzoGHkf6OdhjKpD4dvQftEqzvPvGo3QKhoYD7OpPnJ8Qz1x6rmya3aHXfE66
-         jcyXrNr+6+cqU73Pi+IbN4P9XW5m/s8vATt4Q/Re1fucsk9H1muabgSZEB55Tn+E01zq
-         50kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVw8X1OYnjGEG2UaFb7Q1qGNbRWuL1QYD1xOuBPdVA4dl1K69i3xB/Zsy4S9/b38niueeKoHAiXcUNCY14w6CvBlzlyEq2b0qD6rCMp
-X-Gm-Message-State: AOJu0YyQC8M7JqPviE/9c9r6asVICgwHTdLl2dyVOdybDFmp2NdoVP9X
-	a6Qrm9y1ualXMOBywKH5vw8En94I/jBsyY/EhZwQ3olat6WyMDyMK4+tVZXjT6v4Ck5pOUW/l2I
-	fjEm2wOnTz8W9aY/pIwP0yBUHODSNnhmWmsjhRw==
-X-Google-Smtp-Source: AGHT+IGdAJXHt7mAsVZuzt9JgE7vdWoLagtGQT3T15A+kBPHpQZl6zuXKVT8ycszrHB5VvpVeZdYSex6pwkAq/Bp7sg=
-X-Received: by 2002:a4a:aecb:0:b0:5ac:9efc:3b02 with SMTP id
- v11-20020a4aaecb000000b005ac9efc3b02mr5501112oon.8.1713268621486; Tue, 16 Apr
- 2024 04:57:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713268768; x=1713873568;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hQ8Km8pUrRdj6HD7UNUZL3puRDpbGZKIzvHBUwGPNQw=;
+        b=NuFuOBhInaAibnuOZ1eGq17wL+JXbZ2ccFF0YVD9chN9AMBMl9YqYBB7v+j6sapA2k
+         hasT1p+zocY9q8g9WXfiXDDn7RXtoNfw0DxJYcJWlgj1duNI55TIf9rXv7DqwTu2Uob+
+         MJmIEHPJwnNoxgqKi/VOKiDi96nExkfjcYxd+lDyc0v9CKOGIHT/wBjhP4912Ntfk2Z5
+         /yAPSXADKLIOmCQdwbaDvoE4QzTd6VXU+W9gq6ETYEHjiDOGQirgGplNLJUyKq9N3gio
+         aDCE5IEHrc8q2jYWgyYcdmadEAQpiwyOVawK74L01SZuScvM+/QQryYOuNikCFJZvIWI
+         27JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVKcFyCenRR6oaHP0o/HZ5aZvoH3E3YhvIx+9U2kHRa4eQ9K/zAxF6ARf/bvK3mUC2khZWWAyLMCeAxIwBT1d+CLUCjH/xRw05bLRKY
+X-Gm-Message-State: AOJu0Yw4athRS+YMhftXMCc2jy7rHeGZVszs3fwcGUmFgzTiJZdfte+6
+	5QcJyRo5U9xtwPFcbhMhOp33Gh+TasF//IdqUwq6jKeqVwFQJSnZ
+X-Google-Smtp-Source: AGHT+IG3114+5T4rKIudyGIHpqSw90eJAE+y4lnLAgiCoA96yKOqVpWxd3xunDkFep4E/G/a19QgEA==
+X-Received: by 2002:a17:902:f688:b0:1e2:6165:8086 with SMTP id l8-20020a170902f68800b001e261658086mr13188458plg.61.1713268768024;
+        Tue, 16 Apr 2024 04:59:28 -0700 (PDT)
+Received: from karan-IdeaPad-3-15ALC6-Ub.. ([2401:4900:1c96:c7dd:27d5:f53e:33a6:5717])
+        by smtp.gmail.com with ESMTPSA id k18-20020a170902c41200b001e3dff1e4d1sm9590941plk.268.2024.04.16.04.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 04:59:27 -0700 (PDT)
+From: Karan Sanghavi <karansanghvi98@gmail.com>
+To: gregkh@linuxfoundation.org
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Karan Sanghavi <karansanghvi98@gmail.com>
+Subject: [PATCH] Staging : ks7010 ks_wlan_net : Fixed Unnecessary Paranthesis, Prefer Fallthrough and Line spacing issue.
+Date: Tue, 16 Apr 2024 17:29:03 +0530
+Message-Id: <20240416115903.92706-1-karansanghvi98@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404122559.898930-1-peter.griffin@linaro.org>
- <20240404122559.898930-6-peter.griffin@linaro.org> <391a874522a4141b4bc7f0314a9e50d27142123a.camel@linaro.org>
-In-Reply-To: <391a874522a4141b4bc7f0314a9e50d27142123a.camel@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 16 Apr 2024 12:56:50 +0100
-Message-ID: <CADrjBPqwLt6gzwMpkZvxp5sC-owdDYUN91F0-nV2NvEzek_v9g@mail.gmail.com>
-Subject: Re: [PATCH 05/17] arm64: dts: exynos: gs101: enable cmu-hsi2 clock controller
-To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org, 
-	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org, 
-	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com, 
-	martin.petersen@oracle.com, chanho61.park@samsung.com, ebiggers@kernel.org, 
-	linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
-	saravanak@google.com, willmcvicker@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Andr=C3=A9,
+Fixed a coding style issue.
 
-Thanks for the review.
+Signed-off-by: Karan Sanghavi <karansanghvi98@gmail.com>
+---
+ drivers/staging/ks7010/ks_wlan_net.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-On Fri, 5 Apr 2024 at 08:38, Andr=C3=A9 Draszik <andre.draszik@linaro.org> =
-wrote:
->
-> On Thu, 2024-04-04 at 13:25 +0100, Peter Griffin wrote:
-> > Enable the cmu_hsi2 clock management unit. It feeds some of
-> > the high speed interfaces such as PCIe and UFS.
-> >
-> > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> > ---
-> >  arch/arm64/boot/dts/exynos/google/gs101.dtsi | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/=
-boot/dts/exynos/google/gs101.dtsi
-> > index eddb6b326fde..38ac4fb1397e 100644
-> > --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> > +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> > @@ -1253,6 +1253,18 @@ pinctrl_hsi1: pinctrl@11840000 {
-> >                       interrupts =3D <GIC_SPI 471 IRQ_TYPE_LEVEL_HIGH 0=
->;
-> >               };
-> >
-> > +             cmu_hsi2: clock-controller@14400000 {
-> > +                     compatible =3D "google,gs101-cmu-hsi2";
-> > +                     reg =3D <0x14400000 0x4000>;
-> > +                     #clock-cells =3D <1>;
-> > +                     clocks =3D <&ext_24_5m>,
-> > +                              <&cmu_top CLK_DOUT_CMU_HSI2_BUS>,
-> > +                              <&cmu_top CLK_DOUT_CMU_HSI2_PCIE>,
-> > +                              <&cmu_top CLK_DOUT_CMU_HSI2_UFS_EMBD>,
-> > +                              <&cmu_top CLK_DOUT_CMU_HSI2_MMC_CARD>;
-> > +                     clock-names =3D "oscclk", "bus", "pcie", "ufs_emb=
-d", "mmc_card";
-> > +             };
->
-> This doesn't build because you didn't add the clock ids in the binding pa=
-tch.
+diff --git a/drivers/staging/ks7010/ks_wlan_net.c b/drivers/staging/ks7010/ks_wlan_net.c
+index 0fb97a79ad0b..4b1b5d9b883b 100644
+--- a/drivers/staging/ks7010/ks_wlan_net.c
++++ b/drivers/staging/ks7010/ks_wlan_net.c
+@@ -12,7 +12,6 @@
+ #include <linux/netdevice.h>
+ #include <linux/timer.h>
+ #include <linux/uaccess.h>
+-
+ static int wep_on_off;
+ #define	WEP_OFF		0
+ #define	WEP_ON_64BIT	1
+@@ -181,26 +180,26 @@ static int ks_wlan_set_freq(struct net_device *dev,
+ 
+ 	/* for SLEEP MODE */
+ 	/* If setting by frequency, convert to a channel */
+-	if ((fwrq->freq.e == 1) &&
+-	    (fwrq->freq.m >= 241200000) && (fwrq->freq.m <= 248700000)) {
++	if (fwrq->freq.e == 1 &&
++	    fwrq->freq.m >= 241200000 && fwrq->freq.m <= 248700000) {
+ 		int f = fwrq->freq.m / 100000;
+ 		int c = 0;
+ 
+ 		while ((c < 14) && (f != frequency_list[c]))
+ 			c++;
+-		/* Hack to fall through... */
++		[[fallthough]];
+ 		fwrq->freq.e = 0;
+ 		fwrq->freq.m = c + 1;
+ 	}
+ 	/* Setting by channel number */
+-	if ((fwrq->freq.m > 1000) || (fwrq->freq.e > 0))
++	if (fwrq->freq.m > 1000 || fwrq->freq.e >)
+ 		return -EOPNOTSUPP;
+ 
+ 	channel = fwrq->freq.m;
+ 	/* We should do a better check than that,
+ 	 * based on the card capability !!!
+ 	 */
+-	if ((channel < 1) || (channel > 14)) {
++	if (channel < 1 || channel > 14) {
+ 		netdev_dbg(dev, "%s: New channel value of %d is invalid!\n",
+ 			   dev->name, fwrq->freq.m);
+ 		return -EINVAL;
+@@ -663,7 +662,7 @@ static int ks_wlan_set_rts(struct net_device *dev, struct iw_request_info *info,
+ 	/* for SLEEP MODE */
+ 	if (vwrq->rts.disabled)
+ 		rthr = 2347;
+-	if ((rthr < 0) || (rthr > 2347))
++	if (rthr < 0 || rthr > 2347)
+ 		return -EINVAL;
+ 
+ 	priv->reg.rts = rthr;
+@@ -701,7 +700,7 @@ static int ks_wlan_set_frag(struct net_device *dev,
+ 	/* for SLEEP MODE */
+ 	if (vwrq->frag.disabled)
+ 		fthr = 2346;
+-	if ((fthr < 256) || (fthr > 2346))
++	if (fthr < 256 || fthr > 2346)
+ 		return -EINVAL;
+ 
+ 	fthr &= ~0x1;	/* Get an even value - is it really needed ??? */
+@@ -780,7 +779,7 @@ static int ks_wlan_set_encode(struct net_device *dev,
+ 		return -EINVAL;
+ 
+ 	/* for SLEEP MODE */
+-	if ((index < 0) || (index > 4))
++	if (index < 0 || index > 4)
+ 		return -EINVAL;
+ 
+ 	index = (index == 0) ? priv->reg.wep_index : (index - 1);
+@@ -881,7 +880,7 @@ static int ks_wlan_get_encode(struct net_device *dev,
+ 	}
+ 
+ 	/* Which key do we want ? -1 -> tx index */
+-	if ((index < 0) || (index >= 4))
++	if (index < 0 || index >= 4)
+ 		index = priv->reg.wep_index;
+ 	if (priv->reg.privacy_invoked) {
+ 		enc->flags &= ~IW_ENCODE_DISABLED;
+@@ -1863,8 +1862,8 @@ static int ks_wlan_set_power_mgmt(struct net_device *dev,
+ 	    uwrq->mode != POWER_MGMT_SAVE2)
+ 		return -EINVAL;
+ 
+-	if ((uwrq->mode == POWER_MGMT_SAVE1 || uwrq->mode == POWER_MGMT_SAVE2) &&
+-	    (priv->reg.operation_mode != MODE_INFRASTRUCTURE))
++	if (uwrq->mode == POWER_MGMT_SAVE1 || uwrq->mode == POWER_MGMT_SAVE2 &&
++	    priv->reg.operation_mode != MODE_INFRASTRUCTURE)
+ 		return -EINVAL;
+ 
+ 	priv->reg.power_mgmt = uwrq->mode;
+-- 
+2.40.1
 
-These clock IDs are for cmu_top, not cmu_hsi2. They were added as part
-of the initial gs101/Oriole upstream support series in the following
-commit
-
-commit 0a910f1606384a5886a045e36b1fc80a7fa6706b
-Author: Peter Griffin <peter.griffin@linaro.org>
-Date:   Sat Dec 9 23:30:48 2023 +0000
-
-    dt-bindings: clock: Add Google gs101 clock management unit bindings
-
-    Provide dt-schema documentation for Google gs101 SoC clock controller.
-    Currently this adds support for cmu_top, cmu_misc and cmu_apm.
-
-    Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-    Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-    Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-    Link: https://lore.kernel.org/r/20231209233106.147416-3-peter.griffin@l=
-inaro.org
-    Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-regards,
-
-Peter
 
