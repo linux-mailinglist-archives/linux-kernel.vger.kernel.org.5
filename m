@@ -1,109 +1,117 @@
-Return-Path: <linux-kernel+bounces-147097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A96C08A6F74
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:16:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 858098A6F78
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:16:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31F2DB21FCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:16:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6E7F1C20FC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90407130A79;
-	Tue, 16 Apr 2024 15:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D77B130AF6;
+	Tue, 16 Apr 2024 15:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sqG7xAiB"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/DbuuJV"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E8B1304B9
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5CCF131195;
+	Tue, 16 Apr 2024 15:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713280558; cv=none; b=JivEOVu3wKDiwmMm7ocDUrO1/kPaPOCo7mqcDlwgmTq/undGs7Pap45t/N54MvkHwRPGWs4BYYUQZN9+o3Qs4kcmy+qwH9ZohOXbb8e2ieoJvYpEVcjAusKZPqKb44kGU6wEZZcDwWEINnYaUC47qSCzyhnv+o974OJenLZNnWQ=
+	t=1713280576; cv=none; b=qg45Rgquuqm2QVIbZeg1U8zP0rBaD0ncBLYMZ6eJFi32R2/U4GkCqc45ohe0cRPksC1ubMvrYpG2Lf2PEwQz0jd5xdurd6xUp8iRxPsvfR+1Xx81Ya6tFOFQze33qK0guC9XXQre/TRu/TXJtw0BBeKS7jm0tWRB+eszvqNB1P4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713280558; c=relaxed/simple;
-	bh=zaoja2SjlH3NFx4QONthXCor2x9mlk5CiLQ+K1scUz0=;
+	s=arc-20240116; t=1713280576; c=relaxed/simple;
+	bh=8JSmIW6AisC0YGxh3A+gqhVtexddPmiOclf8d6UXDT8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HBXoYdi4u2fuH3uEH/lyXfpWm98fWfBBfI9E9nlt4AePO29qnhfoSsjpZ9hoSqRHGnLpK20Fi+utiGEFL79dBXJ5VxHwQrm4QRvK/JpX5yhfY+WKGr6Oqo7Be9U6Q14N27wsZb8EhpolXsuZKqqkn94dzVfFl99yp2N9rH/gPL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sqG7xAiB; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6157c30fbc9so44684247b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:15:56 -0700 (PDT)
+	 To:Cc:Content-Type; b=AOMmxQBIDnSd2tRELO/oVv18UUEWN31fp7R6sWepRp4zhC+MawXuVJH8k5QrIWKrcyASg4HpabMnKc3pk22SjKEH4NjcYELwlPbBSbLr+H/LUL3pqYdJ1tMMEQk0oOxBhddeKGs8jzWpwDTz4TkCt2En9ev8ObRgNAWRNzeFor0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q/DbuuJV; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-34388753650so2093317f8f.3;
+        Tue, 16 Apr 2024 08:16:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713280555; x=1713885355; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CACAUQHiKa/5rbKG2xHcEHJiwEEsgJJj1Ty5DFU18AY=;
-        b=sqG7xAiBufKO9MSy4CNtb4R/dnuQBj/WQQd1ZDhHW5RFNsf270Y8LvKmVQSV2j181E
-         5jlMU9yAKn4phbf8PJMcCQIqCXlW9iE7fzwQ+A/SF7WhydIMAKNrXOwkApaj+IMMVz5R
-         ukOxWZ3e+6dFhWd+sfLafrqgbPgm1vSuS8O3Y9iG+AS1b8TX3YMsU1vEtsfAeJnt3zsY
-         tXZ1ZVYg+s6Wr//6lswKwwm+k0cDr13Xxr+9Rz5v+xNuY/LJ/lmYOvDzOTF68kpuf4qw
-         jfFVahHqvATudVf4QnmvhZPnF4J/PCbFh1RvgpzCdtgSeI3TSVI3ZaEvLVtxvXzzPy5Q
-         dO6A==
+        d=gmail.com; s=20230601; t=1713280573; x=1713885373; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8JSmIW6AisC0YGxh3A+gqhVtexddPmiOclf8d6UXDT8=;
+        b=Q/DbuuJVW1xPZFx0ZONTjpKakpFzxfGzRkJfTzaJ4H4rP8jhBin/e/pLJcImw4ExzH
+         1jQDdTDuYywJuSrxMFRjd6kM+AiP+grCsoQYrKT4n1LvbTOeGnPUcB6XRAtadHHXdaoM
+         CZYyUe8pqLbtChrgDmiYMBRS1TD8mS45sUt0J8Pgb/leq0Tu1EWPAfYNUAhFLfhaaihH
+         7FSu/MC/jf1zpfZWbY0JIPmlg1NnaHYTKfBhj6Y2FMOj6/HV+HJ6AvlzmyQWFx6KW0pS
+         cPutLy330A32Cj4nzxJ4nglynYHqK/Uo4hJlMxr+8K7z2oHtU4990o0a7rjHFYZM5b2Z
+         cGPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713280555; x=1713885355;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CACAUQHiKa/5rbKG2xHcEHJiwEEsgJJj1Ty5DFU18AY=;
-        b=bri+zJn4rcZZQHNbUrJdRNQJmtBwbadahl49nXiL4vjPjEFS9+jZSapJP8LtLWuA4G
-         vs9cOb8yPTX1Lgp6nYV+/cxGAIxHxRL7JSnZWxB7JL+nFzM9ymaVeFhYkpVA329vo1lq
-         uUR4DD4YZ/iqjvaGIbQfCDWBcrRLYSTwrSgxH0k3De74htoqe3s8XdGOQ22P5MUSGFhv
-         Of6r2azDvItEgWGkXxCVqEgpe8k/MUGzSG1FLqF7HXcKqHJWlu6ogUM4sq2wjoBvd17I
-         REws7ni+QXYxggrxXKp3tX2X757nv2pv+6R1oWFYvyvfK3y9xCQNz2AKTMDaEOzl5Ojz
-         WFnA==
-X-Forwarded-Encrypted: i=1; AJvYcCUE7vF+gTgfd6wegACuOkzGlC+COXuMZqF0hgwejtOUxH9cAItAkc7IocgJA7h9OhGlzVtLXdBHZflJye5yiCn9YYJR7WTL+TEcguSF
-X-Gm-Message-State: AOJu0Yx/t2gFkQzXj/nOEGGQHgP9yOv67WAy+nfvj/A6PgCgB7fkna62
-	xaxJ6cpw2tAZJBzDdXluH9I0kP9RWS33ksNEQDPexD4ZRLTc/dDgNSg/HgH74d42BK8YJw4CCGf
-	Yq4Cl7GdA4vgB4SrpyjCL1/OSj+a9qbban52rcsTv8U5TwqAOtvs=
-X-Google-Smtp-Source: AGHT+IEn11qmsJXHPQo91cfYzFclr0ETZWeU2a6Li6Yzx9L65+/Jp5/Hvk01iKl8IIf8RphLlcqzTm9/ENY56Uymys8=
-X-Received: by 2002:a5b:40d:0:b0:dc6:bcb3:5d8e with SMTP id
- m13-20020a5b040d000000b00dc6bcb35d8emr12080662ybp.20.1713280555495; Tue, 16
- Apr 2024 08:15:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713280573; x=1713885373;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8JSmIW6AisC0YGxh3A+gqhVtexddPmiOclf8d6UXDT8=;
+        b=buGH509nPtCa6MYgCHWYXLqRUouQtDmAo87zSqZQyS0ZRQBbxlJlnWnMc1qDuKngh4
+         bDtN5ySnZ9oq81K/crzJggJru+z+YOKGQtuxBYykMI+tgC96VRoi8aSZ5drRJ+HrB6w3
+         297MHAsFj2dEOE13EqhukSZ7cS4c9HZj4TvTi7OfWBBqitMm/aevJuXjM2js+/t3vmxA
+         8uCjhHx6xFMDtx7rrkXa+CDd+f3DZSpsBx8j6cLZNapj3xAgQWC69FVq7DQ8Y2BZdlie
+         N2KiApA4Tu3v2+hheVDTiKUjeGeTrVnX7/OTWBQaoRK4YMxzqohvM/DITIqgIEfauyYq
+         zsog==
+X-Forwarded-Encrypted: i=1; AJvYcCXFktKhLoQjbKh9uiThrRLkzTunLOQeZvcQ/avVW7HCsIAI/15mqiAga4oPRqAN1URHnEh5tq8oI9qH5XTf5l7T2YOL6rZy+KMXAaKZ1HzVcaTWYDHW9DAqubES7gG60/Ix
+X-Gm-Message-State: AOJu0YxUbOZBO8ZLIyZxbeuqDHKOtvrDmFVMc9v5dS/kwqHpwTjh+7U6
+	kbfbvXmK1Ag96vacfVj49yqnch4ZIW6zq5Gqwn9FO5ye0y0zeAf/pmRsGx0UyDLwu0nyxMeOsLT
+	mcp6TDB4Fc6M/qol9WNPTRlcYZ7UTgvSP
+X-Google-Smtp-Source: AGHT+IF8Nl0MMpxdCBz7YOuqSPmL6zOTDD6DeortoGI1yNBvpT1TYwnUZsl3dePdOGnb7RaFfhoArAxG453LTbO1ZSg=
+X-Received: by 2002:a05:6000:4c5:b0:346:ba70:f262 with SMTP id
+ h5-20020a05600004c500b00346ba70f262mr9409969wri.14.1713280572902; Tue, 16 Apr
+ 2024 08:16:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
- <20240416-ucsi-glink-altmode-v1-5-890db00877ac@linaro.org> <80a8b7d4-2dd6-42a9-8305-81a93ba5e6bc@linaro.org>
-In-Reply-To: <80a8b7d4-2dd6-42a9-8305-81a93ba5e6bc@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 16 Apr 2024 18:15:44 +0300
-Message-ID: <CAA8EJpqVWEWkc+MtJWCtiz0CVnpgPT4RRjab50AwO-NZWi2vYQ@mail.gmail.com>
-Subject: Re: [PATCH 5/8] usb: typec: ucsi: glink: simplify notification handling
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Bjorn Andersson <andersson@kernel.org>, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <000000000000fe696d0615f120bb@google.com> <20240415131837.411c6e05eb7b0af077d6424a@linux-foundation.org>
+ <CAADnVQ+E=j1Z4MOuk2f-U33oqvUmmrRcvWvsDrmLXvD8FhUmsQ@mail.gmail.com> <CAG_fn=Uxaq1juuq-3cA1qQu6gB7ZB=LpyxBEdKf7DpYfAo3zmg@mail.gmail.com>
+In-Reply-To: <CAG_fn=Uxaq1juuq-3cA1qQu6gB7ZB=LpyxBEdKf7DpYfAo3zmg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 16 Apr 2024 08:16:01 -0700
+Message-ID: <CAADnVQLUXVV_viC7mmm6VaAyveQKMzibdCMpnUQdf_-3FdjM7Q@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] KMSAN: kernel-infoleak in bpf_probe_write_user
+To: Alexander Potapenko <glider@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	syzbot <syzbot+79102ed905e5b2dc0fc3@syzkaller.appspotmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 16 Apr 2024 at 17:36, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+On Tue, Apr 16, 2024 at 1:52=E2=80=AFAM Alexander Potapenko <glider@google.=
+com> wrote:
 >
->
->
-> On 4/16/24 04:20, Dmitry Baryshkov wrote:
-> > All platforms except Qualcomm SC8180X pass CCI in the notification
-> > message. Use it instead of going back and forth over RPMSG
-> > interface to read CCI.
+> On Mon, Apr 15, 2024 at 11:06=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
+> > Hi,
+> >
+> > syzbot folks, please disable such "bug" reporting.
+> > The whole point of bpf is to pass such info to userspace.
+> > probe_write_user, various ring buffers, bpf_*_printk-s, bpf maps
+> > all serve this purpose of "infoleak".
+> >
 >
-> Are we sure it's reeeeallly just 8180?
+> Hi Alexei,
+>
+> From KMSAN's perspective it is fine to pass information to the
+> userspace, unless it is marked as uninitialized.
+> It could be that we are missing some initialization in kernel/bpf/core.c =
+though.
+> Do you know which part of the code is supposed to initialize the stack
+> in PROG_NAME?
 
-More or less so. Previous platforms used either qcom-pmic-typec
-(sm8150, sm8250) or laptop-specific EC (sdm850 / c630, sc7180 /
-aspire1, CrOS). Next platforms (sc8280xp and sm8350, qcm6490) used
-pmic-glink and the new way of sending events. I think sc8180x was
-really the unfortunate one to use mixed events.
+cap_bpf + cap_perfmon bpf program are allowed to read uninitialized stack.
 
--- 
-With best wishes
-Dmitry
+And recently we added
+commit e8742081db7d ("bpf: Mark bpf prog stack with
+kmsan_unposion_memory in interpreter mode")
+to shut up syzbot.
 
