@@ -1,116 +1,109 @@
-Return-Path: <linux-kernel+bounces-147253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ECCD8A7191
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:40:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B889F8A7195
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:41:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C49241C2178F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:40:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F1CD287172
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 897DD82485;
-	Tue, 16 Apr 2024 16:40:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCB482485;
+	Tue, 16 Apr 2024 16:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YxGhi2SS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PYiX4XBA"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0114310A22;
-	Tue, 16 Apr 2024 16:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C6710A22;
+	Tue, 16 Apr 2024 16:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713285644; cv=none; b=eeH/xr7rJkY0zhCGGbuGIPoYWbhC/pNOOTDLXqzhFfVNEJxQISjsy1TCfqmiOwiwORLsuOrIufgC7eWC9uceIzPBlaKELds69XP4gawIa58UmrFrJAHY7tRzRt3rsP7U33CmEdzN0Ri9MmE+LQjgBZHNL5t6F5zH3O63EsJX0uw=
+	t=1713285691; cv=none; b=pVx5pgM5WjX34tV8buFn48G3BoZbYJ8zouoLtXJNKhZooK0ZV1RHkelYXHqj1RdCLkF7NoZD0LHgMQGEYjBTtQvrqVjHEtmip4/P5VDb6J8KAqjBEobN52Z8BYpTv2YOx1u774fmi30zHaf26JnFsdRKE2bdWwIOoExf4Tm2gWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713285644; c=relaxed/simple;
-	bh=c9rv2ENZUtW89CuH5U8B/1vQYk4rvmSwwB56Zf73aj0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QVYh8icJwtxDvfDZ1/B6LLHm5rg7CML4uH2WP1sRDvzjC9r+eYL3UTv98oWU/SW8Dva8+WHmMxeCeTGdngp6oO9AVbxTKNfaNyAQMwNt9r6AElcsoME23XuxfeFR2LIFjqgKEwrDWupW0XMF5Dfn1zpPMyGKaB1sJQeTTM2ZWn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YxGhi2SS; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713285643; x=1744821643;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c9rv2ENZUtW89CuH5U8B/1vQYk4rvmSwwB56Zf73aj0=;
-  b=YxGhi2SSRj8Tt4Q+I5ydNmpLNV51AWKHDX1hcvvR5yDXYe5yqzpR7z+4
-   DnJx0zkMIZXqn0S/YC9gkwQAwXu5sX28ku3gKEgyf/lOLB2XKukW37+sk
-   EhGFjzZ8+BjfJJz9g0o66NM7ZABAVPmwvUGrL5UkXRgnmzxGHRTYSI6GM
-   ghtPALwQsdGPGcwxCR7oh+SLPTLCKAt8uEyDZ3w7nykoPzt6I+hm7MIcb
-   qUVGwpXYk2qBNI4KyxJ3+mLTM3W6TKM11Qt24L4FEOHFFTYTMroBD1H+5
-   dYpjhvJBe2qYeccWqtAyMKCd/7n/gT5NpYEmZNNZsDTLkrgRZBPpPO8C3
-   w==;
-X-CSE-ConnectionGUID: RIuodRcSRUuVh0Vo1RHK3Q==
-X-CSE-MsgGUID: JWeJHHA8QeiHeMrOxwEsIA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="9289188"
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="9289188"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 09:40:42 -0700
-X-CSE-ConnectionGUID: /u9bDAVcSWqs0tXiTvD9MQ==
-X-CSE-MsgGUID: IrKk4m3VQW+WflQgAuFKEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="22371840"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 09:40:42 -0700
-Date: Tue, 16 Apr 2024 09:40:41 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 038/130] KVM: TDX: create/destroy VM structure
-Message-ID: <20240416164041.GY3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <7a508f88e8c8b5199da85b7a9959882ddf390796.1708933498.git.isaku.yamahata@intel.com>
- <8aad3a39-dc7a-471e-a5f0-b3b1d5a51a00@intel.com>
+	s=arc-20240116; t=1713285691; c=relaxed/simple;
+	bh=n2QPNvPuVN+mGg9aHHpFcDKDnrcqLCsURfATRKMqsz4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b2AWwxiSqapL8kBnxFG7MDNiXdx2JuEwdKmVnWkQJtmmm7F014BmlXVg6JSX/49ZvpFSl/a/Zdx5aY15YkoRvNBVPtPkb0rx5YW0WQGv06DgxcvGD0+WBdLcPci88K53Th/Dqqy/rCTFYZ8iWJIO+eyvpv8QZ4PcEhqAQGAz5H8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PYiX4XBA; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2aa0f3625aeso603344a91.1;
+        Tue, 16 Apr 2024 09:41:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713285689; x=1713890489; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p1ATCU1Md8tgFRlK9+WCz2NrwVn9WPr0B+EpBjJ78NI=;
+        b=PYiX4XBAOdpXEMNbHuyQk3CHVssrIxn7F1ooHKFcWSId0ED4UCCMjXkSywXbSYuYSj
+         FMjQX3e2wxW9o+FDYLarlAB2QPBOscHPSCdeDcAlQ3cOsQvrXBjyRaS91k1hzsk9k/Iv
+         qrZiEFciLgTcqmVHXn2Vq/ZqDX2z/8Qs1zZDwsigUfdBizCgA/eAUUsPfqqH0vIKYSgh
+         Dx+JndH8N0tYItv0kri7nfKcKuPUjfAONn9XnsWkquSzMn+H30iTmc+1hp4/jOK7/MIk
+         D7ZKX3y5owwyN+9Cu6XvhFKyKMfyFuRXE/CFY8jJ2Z6n+BHAYlZIKEdIHzqAVXlSE+KV
+         LgZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713285689; x=1713890489;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p1ATCU1Md8tgFRlK9+WCz2NrwVn9WPr0B+EpBjJ78NI=;
+        b=BNLP7WCbsRn59sIYz2pANdn7PlYMhmSyZ2yu4Sc0CA/1snhNg8a6fHeIBpzJf5SYtB
+         5EOZtynlejSULKPU5a8kQFb4slNUh3O4qJe1K5+ZTs6OwnJFbRGFMo8ZirVKshwW8NQl
+         y3M53SmnjSnFqPWlovyekuTm8etejs7YOHiQgwaty0VWt3pyPW9vWMb0/vyyOrxwWIa7
+         h/z3emorHvS8/fe4gyP7eAQ+ezEc6iA8o6aWQNIhuD1viWasmvZWWP1TLgTgW8mAFAiC
+         fz1Kt+IIVyprFLQzCB+gYchoBYfouEyIoLhII6o5fL2C0y1ZMHKfkfv7sw1Qai1HyRyG
+         zc/A==
+X-Forwarded-Encrypted: i=1; AJvYcCWqSBAkByXheseRB/T5WjosGDwOFWSCkZExSY7COviOYPQojB5Gh6dKZy9+qfOJ7xzlFB4j61PfUx7N80yEnpCdF/P0TtYVv1pEfcNyWMADKKmqIFcQWhxVvqSDedggZ85RX2hkDq4QHg==
+X-Gm-Message-State: AOJu0Yw7LuFXuYqY42ASXC+K4ehw3kaJzhSVm+toSS+VpfOIfRrPJ4et
+	mT40arcI22IZQT8PgjU+Gov8FqT+dYr78qkXWO45nWrlsvrlMPbzcKK1LNwAEdjTKGlvmKMHb5w
+	zmNxPHv9BenAXYqv4ZZBk6iPjoOM=
+X-Google-Smtp-Source: AGHT+IESH7+EWeYIw4jeZC7l99COVZ+9VNJTY8eGys6W10quyfujwug7mwoD9JM3MQgKDQzehSqIvZBcghY5wmKOick=
+X-Received: by 2002:a17:90a:db0f:b0:2a6:8e66:d585 with SMTP id
+ g15-20020a17090adb0f00b002a68e66d585mr12675470pjv.4.1713285689175; Tue, 16
+ Apr 2024 09:41:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8aad3a39-dc7a-471e-a5f0-b3b1d5a51a00@intel.com>
+References: <20240416163256.2121923-1-Frank.Li@nxp.com>
+In-Reply-To: <20240416163256.2121923-1-Frank.Li@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Tue, 16 Apr 2024 13:41:17 -0300
+Message-ID: <CAOMZO5DZ-8Cphm_U+ric4yE0uCXc9cTbVs2BPBzWYQd02xTN5Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] arm64: dts: imx8qxp-mek: add cm40_i2c, wm8960 and sai[0,1,4,5]
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
+	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>, 
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 04:17:35PM +0800,
-Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+On Tue, Apr 16, 2024 at 1:33=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
 
-> On 2/26/2024 4:25 PM, isaku.yamahata@intel.com wrote:
-> 
-> ...
-> 
-> > +
-> > +	kvm_tdx->tdcs_pa = tdcs_pa;
-> > +	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
-> > +		err = tdh_mng_addcx(kvm_tdx->tdr_pa, tdcs_pa[i]);
-> > +		if (err == TDX_RND_NO_ENTROPY) {
-> > +			/* Here it's hard to allow userspace to retry. */
-> > +			ret = -EBUSY;
-> 
-> So userspace is expected to stop creating TD and quit on this?
-> 
-> If so, it exposes an DOS attack surface that malicious users in another can
-> drain the entropy with busy-loop on RDSEED.
-> 
-> Can you clarify why it's hard to allow userspace to retry? To me, it's OK to
-> retry that "teardown" cleans everything up, and userspace and issue the
-> KVM_TDX_INIT_VM again.
+> +&cm40_i2c {
+> +       #address-cells =3D <1>;
+> +       #size-cells =3D <0>;
+> +       clock-frequency =3D <100000>;
+> +       pinctrl-names =3D "default", "gpio";
+> +       pinctrl-0 =3D <&pinctrl_cm40_i2c>;
+> +       pinctrl-1 =3D <&pinctrl_cm40_i2c_gpio>;
+> +       scl-gpios =3D <&lsio_gpio1 10 GPIO_ACTIVE_HIGH>;
+> +       sda-gpios =3D <&lsio_gpio1 9 GPIO_ACTIVE_HIGH>;
+> +       status =3D "okay";
+> +
+> +       wm8960: wm8960@1a {
 
-The current patch has complicated error recovery path.  After simplifying
-the code, it would be possible to return -EAGAIN in this patch.
+Node names should be generic, so:
 
-For the retry case, we need to avoid TDH.MNG.CREATE() and TDH.MNG.KEY.CONFIG().
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+ wm8960: audio-codec@1a {
 
