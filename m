@@ -1,52 +1,53 @@
-Return-Path: <linux-kernel+bounces-146821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E7218A6B78
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B829E8A6B79
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:53:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA4D1C21657
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:53:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB5041C21C5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B80612BF1A;
-	Tue, 16 Apr 2024 12:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5284212C467;
+	Tue, 16 Apr 2024 12:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pk96PNKJ"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WLbBzn5g"
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643A0129A7B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629B112BE8C
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713271980; cv=none; b=mKxtV2h/RqHibUPJ5tLVyKzxlCsjnWCIbCi8e7B9THqARDqU+ORuMKlfPXb0IYBd7tzz5UhyE6HSrcgRF/rXlceYlaERcq8vZssHBSnIlW/WSk6j4wwTnfVnDLAsrRu4E6FsciMJecB94RTcfrzAGIQ5qrsJDRwSjTG6Z+lVn1s=
+	t=1713271982; cv=none; b=Co52uTyk8UxL1qKow1D3aUdK4Lr9A5btxRyhu0kbBPxrPF+oY7FTyeGGzMBS6lKOggBzkV4j1gXPZYs61ZL7e2G02vLB8pCsUCfbE+TpR6g0sDgs+M+ul1T29Up2hVPlNh9dL0sv9eI3/Ykv2cORw10dUFLfWkbKPHllM68ckW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713271980; c=relaxed/simple;
-	bh=5kC7K574cqEV8ZNzQmO84DuPtoIppBMm+PsVptjsJ9M=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=jQeOdTVz+JCtupxZB8PPCR8d28GSlEW7s+pmLH07gLJFYUG83xu9SDX1HBbOHd1M460Y/nZsF+dF76B0qDDQR7ArnyyK5Hr99t7q1Q4vVxQi1UQUhZ1PYVa/svVGCI/cXOmyjqc6wpLbLTY7Js7pUXD/cu5k62FwgmfTidClmEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pk96PNKJ; arc=none smtp.client-ip=217.70.183.200
+	s=arc-20240116; t=1713271982; c=relaxed/simple;
+	bh=gDGwcPUlhrJ58tTxtAf4S10aFgybKlZmlLgO5JE33HE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=AIkvclCzGHMjmte9LdYr32EZknBD8sn4kgsz5pWVSCKaywPb+vZylHkYzq8OQdonCTPQJMU6NBxwVfOGjxW1H7ZGPGFlnHHHNsqUNxABBBnambw+VgC6v5UtQwN6y2pNpM0k5rRIb0TSfHvHmLhZfFkjjt9cSS06AjCH67I5Koc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WLbBzn5g; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1D0C920005;
-	Tue, 16 Apr 2024 12:52:49 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 26AC020009;
+	Tue, 16 Apr 2024 12:52:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713271971;
+	t=1713271973;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=K3y9GuS5/xl69QZWu2ZPRVC1k2WjWkSaQK5l7tBAvM4=;
-	b=pk96PNKJvxtGcj+a+jiYvS7naxMkRd0XCRZgHvwwWUd2fx98vnmtLLzzNj/jN39ZFDmcGE
-	gjjWqKEEPTJwS2utG2GNmPb6hcSVpqIIri3QHcwOiuIvyAZ5NwUzXUxBzhOAt0x6mHxtUu
-	//3QwhwYhL12ERZmpa8UBHiyonerp6C7YGiPwP8wOL8xX2hbQhr+dsLxBdm6BO+dRUOE+5
-	VcOL69u4+lYUcdyhyG1il1cIp3zHOGXVUrXmSxrsKcUiA44Rh4DIe8PT+FKA7CtdBdvTTw
-	hiSHn8M1CG65mSGYSnmNaot2rIJGVFwvSG7IWgLUCd8JgjO7ecHn1fchW6qPmw==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9MU9XELe1rM5Qiqxbtkg8dW/yfnlPXWOR1yK6MM7gxg=;
+	b=WLbBzn5gy3ph07VsIR980IaL+R79W7fITyjAVQdORLdCv59T3lKm2bJ//bK+PZLVmHSuU4
+	3bybP5lxjM52va46BJHwEI1GW8jaxeKX7+5fY/2XQgS/3qN8TbJlNfy3K43HM4q0t3/fzk
+	EVZn9UMeKFnxAk/NjWQ9IgDvT0ppobvVOQIa23gLu08aW2nyoeR0zqOFtNAxPaIhxtGvWy
+	IVAu6QhHDfpQF2qQq6w4FeCL8W/mpvBJbRiIiLtylHfxj10FcEcNQ9BK2UvPT7QqHXt95r
+	kVIeex45iiRJd6lL43bwUUyGbZnbAATIq4BwWmNM41qlrjQTukj2O2mag8Z9CA==
 From: Thomas Richard <thomas.richard@bootlin.com>
-Subject: [PATCH 0/8] Add suspend and resume support for phy-cadence-torrent
- and phy-j721e-wiz
-Date: Tue, 16 Apr 2024 14:52:29 +0200
-Message-Id: <20240412-j7200-phy-s2r-v1-0-f15815833974@bootlin.com>
+Date: Tue, 16 Apr 2024 14:52:30 +0200
+Subject: [PATCH 1/8] phy: ti: phy-j721e-wiz: use dev_err_probe() instead of
+ dev_err()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,9 +56,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAI10HmYC/x2NwQrCQAxEf6XkbCBNi1v8FfGQ1ujGw1oSEKX03
- 7vr8c3MYzYIddOAS7eB68fC3qVCf+pgyVKeinavDEw80tgzvhIT4Zp/GOyYaFI5D6KSJqjOLKE
- 4u5QlN6tNWtSq1fVh3//V9bbvBz6aFjV6AAAA
+Message-Id: <20240412-j7200-phy-s2r-v1-1-f15815833974@bootlin.com>
+References: <20240412-j7200-phy-s2r-v1-0-f15815833974@bootlin.com>
+In-Reply-To: <20240412-j7200-phy-s2r-v1-0-f15815833974@bootlin.com>
 To: Vinod Koul <vkoul@kernel.org>, 
  Kishon Vijay Abraham I <kishon@kernel.org>, 
  Philipp Zabel <p.zabel@pengutronix.de>
@@ -68,45 +69,120 @@ Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
 X-Mailer: b4 0.12.0
 X-GND-Sasl: thomas.richard@bootlin.com
 
-The patches of this series were originally in the series "Add suspend to
-ram support for PCIe on J7200" [1].
-They were moved in a separate series as requested by the PHY maintainer.
-This series adds suspend and resume support for the phy-cadence-torrent and
-phy-j721e-wiz drivers.
-
-Compared to the PCIe series v4 [1], these PHY patches were rebased on Linux
-v6.9-rc1.
-The only change is for the patch "phy: cadence-torrent: extract calls to
-clk_get from cdns_torrent_clk". Now the cadence-torrent driver supports
-dual reference clock, so the patch was updated consequently.
-
-[1] https://lore.kernel.org/all/20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com/
-
-Regards, 
-
-Thomas
+Use dev_err_probe() instead of dev_err() in wiz_clock_init() to simplify
+the code and standardize the error output.
 
 Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 ---
-Thomas Richard (8):
-      phy: ti: phy-j721e-wiz: use dev_err_probe() instead of dev_err()
-      phy: ti: phy-j721e-wiz: split wiz_clock_init() function
-      phy: ti: phy-j721e-wiz: add resume support
-      phy: cadence-torrent: extract calls to clk_get from cdns_torrent_clk
-      phy: cadence-torrent: register resets even if the phy is already configured
-      phy: cadence-torrent: add already_configured to struct cdns_torrent_phy
-      phy: cadence-torrent: remove noop_ops phy operations
-      phy: cadence-torrent: add suspend and resume support
+ drivers/phy/ti/phy-j721e-wiz.c | 46 +++++++++++++++++++-----------------------
+ 1 file changed, 21 insertions(+), 25 deletions(-)
 
- drivers/phy/cadence/phy-cadence-torrent.c | 140 +++++++++++++++++++++---------
- drivers/phy/ti/phy-j721e-wiz.c            | 133 +++++++++++++++++-----------
- 2 files changed, 182 insertions(+), 91 deletions(-)
----
-base-commit: b6b2d5379911df41ad51f7773ed98ef18b939258
-change-id: 20240412-j7200-phy-s2r-708ea63aea78
+diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+index 00d7e6a6de03..5fea4df9404e 100644
+--- a/drivers/phy/ti/phy-j721e-wiz.c
++++ b/drivers/phy/ti/phy-j721e-wiz.c
+@@ -1088,11 +1088,10 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 	int i;
+ 
+ 	clk = devm_clk_get(dev, "core_ref_clk");
+-	if (IS_ERR(clk)) {
+-		dev_err(dev, "core_ref_clk clock not found\n");
+-		ret = PTR_ERR(clk);
+-		return ret;
+-	}
++	if (IS_ERR(clk))
++		return dev_err_probe(dev, PTR_ERR(clk),
++				     "core_ref_clk clock not found\n");
++
+ 	wiz->input_clks[WIZ_CORE_REFCLK] = clk;
+ 
+ 	rate = clk_get_rate(clk);
+@@ -1122,11 +1121,10 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 
+ 	if (wiz->data->pma_cmn_refclk1_int_mode) {
+ 		clk = devm_clk_get(dev, "core_ref1_clk");
+-		if (IS_ERR(clk)) {
+-			dev_err(dev, "core_ref1_clk clock not found\n");
+-			ret = PTR_ERR(clk);
+-			return ret;
+-		}
++		if (IS_ERR(clk))
++			return dev_err_probe(dev, PTR_ERR(clk),
++					     "core_ref1_clk clock not found\n");
++
+ 		wiz->input_clks[WIZ_CORE_REFCLK1] = clk;
+ 
+ 		rate = clk_get_rate(clk);
+@@ -1137,11 +1135,10 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 	}
+ 
+ 	clk = devm_clk_get(dev, "ext_ref_clk");
+-	if (IS_ERR(clk)) {
+-		dev_err(dev, "ext_ref_clk clock not found\n");
+-		ret = PTR_ERR(clk);
+-		return ret;
+-	}
++	if (IS_ERR(clk))
++		return dev_err_probe(dev, PTR_ERR(clk),
++				     "ext_ref_clk clock not found\n");
++
+ 	wiz->input_clks[WIZ_EXT_REFCLK] = clk;
+ 
+ 	rate = clk_get_rate(clk);
+@@ -1157,8 +1154,9 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 	case J721S2_WIZ_10G:
+ 		ret = wiz_clock_register(wiz);
+ 		if (ret)
+-			dev_err(dev, "Failed to register wiz clocks\n");
+-		return ret;
++			return dev_err_probe(dev, ret, "Failed to register wiz clocks\n");
++
++		return 0;
+ 	default:
+ 		break;
+ 	}
+@@ -1167,16 +1165,15 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 		node_name = clk_mux_sel[i].node_name;
+ 		clk_node = of_get_child_by_name(node, node_name);
+ 		if (!clk_node) {
+-			dev_err(dev, "Unable to get %s node\n", node_name);
+-			ret = -EINVAL;
++			ret = dev_err_probe(dev, -EINVAL, "Unable to get %s node\n", node_name);
+ 			goto err;
+ 		}
+ 
+ 		ret = wiz_mux_of_clk_register(wiz, clk_node, wiz->mux_sel_field[i],
+ 					      clk_mux_sel[i].table);
+ 		if (ret) {
+-			dev_err(dev, "Failed to register %s clock\n",
+-				node_name);
++			dev_err_probe(dev, ret, "Failed to register %s clock\n",
++				      node_name);
+ 			of_node_put(clk_node);
+ 			goto err;
+ 		}
+@@ -1188,16 +1185,15 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
+ 		node_name = clk_div_sel[i].node_name;
+ 		clk_node = of_get_child_by_name(node, node_name);
+ 		if (!clk_node) {
+-			dev_err(dev, "Unable to get %s node\n", node_name);
+-			ret = -EINVAL;
++			ret = dev_err_probe(dev, -EINVAL, "Unable to get %s node\n", node_name);
+ 			goto err;
+ 		}
+ 
+ 		ret = wiz_div_clk_register(wiz, clk_node, wiz->div_sel_field[i],
+ 					   clk_div_sel[i].table);
+ 		if (ret) {
+-			dev_err(dev, "Failed to register %s clock\n",
+-				node_name);
++			dev_err_probe(dev, ret, "Failed to register %s clock\n",
++				      node_name);
+ 			of_node_put(clk_node);
+ 			goto err;
+ 		}
 
-Best regards,
 -- 
-Thomas Richard <thomas.richard@bootlin.com>
+2.39.2
 
 
