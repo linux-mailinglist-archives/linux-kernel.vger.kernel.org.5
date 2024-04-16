@@ -1,542 +1,152 @@
-Return-Path: <linux-kernel+bounces-147537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 428B78A75F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:53:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CAFB8A75F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDE292836A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:53:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96B7B1C218AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F7525338C;
-	Tue, 16 Apr 2024 20:53:02 +0000 (UTC)
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [5.144.164.167])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23D72375B;
+	Tue, 16 Apr 2024 20:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XOX+B0gH"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E23F2375B
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 20:52:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8354E4502E
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 20:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713300781; cv=none; b=ZIOqiYaNxxHrs2jkgWP/lyxgxshWjdkUwGLWhqJ7LEzdY+bm6qGrL1siSKMgZCDqn1EnJ49qTFMRnYw+UD50OzRVq/2dHQBxri/lxOCvp6nTPIg/0aZdAPyEz2z1/PuzDXPhci+n7JVAE8+9IoTVzNSjz5gxnENCYJHn/e9bgQ0=
+	t=1713300809; cv=none; b=p932k/Fg/qFYtz9VEBhX+xwCgqLgZXCzUmPmwB2wvbTXaq2lApsTz3NZ+SHoPoGkgkhp0Pb1uIx6qHjzSSosMyc6BZ6k54e5VEzG8NOCqdRADKBQQ0QouYd/ezPJjDF45RV5zwOMNwffvk6H1wKez0LIa04Sj26hvl+/+zA/jq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713300781; c=relaxed/simple;
-	bh=WSOvMpgm9tMw0MVbsj4l7xgpqsrgwRBA26iRBm5aFOU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tPDtR28mAkDVBo4/bTgYXzCdvgpQ3nDgwe3l+HXTronPSIFjCgkggkk0/e3j8k3XfM64Ri0TallIKIPqBLskYVt3f/nR6G2KnjtXn8k2AgpQKCwi7O2MnhaMyF6kkoDhZ5XRMf7gbjskbRrc8C1USwC2g0fnJ4iN/oHAREdhSyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id EF84740628;
-	Tue, 16 Apr 2024 22:52:55 +0200 (CEST)
-Date: Tue, 16 Apr 2024 22:52:54 +0200
-From: Marijn Suijten <marijn.suijten@somainline.org>
-To: David Wronek <david@mainlining.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Konrad Dybcio <konradybcio@kernel.org>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
-	phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] drm/panel: Add driver for EDO RM69380 OLED panel
-Message-ID: <iw5weemw5wpfz5adyikfxcbcvwioxkub5w7537i4i4dfpgmlkr@xtml7tuq752u>
-Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Wronek <david@mainlining.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Konrad Dybcio <konradybcio@kernel.org>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
-	phone-devel@vger.kernel.org
-References: <20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org>
- <20240416-raydium-rm69380-driver-v3-2-21600ac4ce5f@mainlining.org>
+	s=arc-20240116; t=1713300809; c=relaxed/simple;
+	bh=2VUPsNGTvaCb6MINiK02YsJin39zd+0ghPTKjVLVvio=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VkeHzi7Uy3vLaEhCzlw2fuc6oKNcmB3koDH2SsJf0drdQbeZWIAa5z+yQl2nrHtRK3JhR/0eGgxHPJEpWV0/r9Vnmk5rgQWfkLXGKogZa+Dg2hP7jVyUYm3O/bWdkMObUWQ2Lt0dMwpkMkUm2TlyZNJ2cJ+iySiqgLgXMDTMFA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XOX+B0gH; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713300807;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=w0LXRE+t+WnC8kTK9JZPMPSEIrgpz4+A1T0TjLOgBQQ=;
+	b=XOX+B0gHOR15PDMbjR8oGa3rRHx3cVQyT8aCW8332kpYjzy7zj3jmB/pJB+yZI0lJ1/n1A
+	k9NMapYqis/lJdMxEZv5IwDD3JiSeRBlWtpEZCbjdUY97/fA47jtjViB1INA5/660DYqHG
+	pi0fOFDyEfZrrmblF25feldM5q2U49Q=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-185-Rc5o4dSOODq54MkEZexmSA-1; Tue, 16 Apr 2024 16:53:25 -0400
+X-MC-Unique: Rc5o4dSOODq54MkEZexmSA-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d87257c610so50384731fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 13:53:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713300804; x=1713905604;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w0LXRE+t+WnC8kTK9JZPMPSEIrgpz4+A1T0TjLOgBQQ=;
+        b=vhrDD17T9UCjb+R66AAPF23s4zOx6mvrkkWUb2iCCajItmTkmj0UDO1D89obbkRpOf
+         hxEM86r4aeNYkz3E0bfXDY/2ezFmA5aAXWd96IXpubrD7aYcAtOQuzC/pwhP8KtOJeLU
+         q7gQvKYPzx2ET4QumdgGJXUvXdqUuVcG1DFey/q8ZAbfBZ/GtvqyZEoN1vG0SYkt79z6
+         LjqkVOEray/VTnygPsQkSMFISpoNlcn6GSmQqWtpnu7Dl4DA7MEVeC88e8Ggwf7XYXpX
+         7cOYOvgFyOBszOoI/YXCRFTuFFf39L63qM3zCPsiv0ytd/uzNeHlD3FPdGmrWx6JyltI
+         XgiA==
+X-Forwarded-Encrypted: i=1; AJvYcCXHlEfnZ83TkCO88R/mFPD7TayFpdUIL4hirlhY0TSvqvKHitF+CW6Ufwd1vnKAWHOlsLS2G0Lua21HTSuIRCoL3dMhmAHBPDCga0cF
+X-Gm-Message-State: AOJu0Yx1c6ODr3+Cb/MrGOVAID0UAR1B/XE55GrgLl+Wn/VUrLhPDltn
+	J07PmLlCvIXhAbDRlutHVJjhgT9K/tjK8kbswZO0adhV0AnqUUYZnmPBM+VJRyrYlqPGTU2l9oi
+	Qivx6MgQd5MxmhoLChJaNkgJN6Z1dJ/Hw1/g8aXfwZXq7aGHfdaT+51X50U6m6g==
+X-Received: by 2002:a2e:a545:0:b0:2d8:58b6:c10d with SMTP id e5-20020a2ea545000000b002d858b6c10dmr13647780ljn.18.1713300804422;
+        Tue, 16 Apr 2024 13:53:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfasX2C9RXD1QxCmrRiZ9/PmkUafU+pu20xDYC6mW5MZk9tqlruDfwYXzlTcti9KVGP4yb7g==
+X-Received: by 2002:a2e:a545:0:b0:2d8:58b6:c10d with SMTP id e5-20020a2ea545000000b002d858b6c10dmr13647771ljn.18.1713300804066;
+        Tue, 16 Apr 2024 13:53:24 -0700 (PDT)
+Received: from [192.168.10.48] ([151.49.82.91])
+        by smtp.googlemail.com with ESMTPSA id h6-20020a0564020e0600b0056fed5286b5sm6114425edh.55.2024.04.16.13.53.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 13:53:23 -0700 (PDT)
+Message-ID: <c7091688-8af5-4e70-b2d7-6d0a7134dbbe@redhat.com>
+Date: Tue, 16 Apr 2024 22:53:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-raydium-rm69380-driver-v3-2-21600ac4ce5f@mainlining.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM/x86: Do not clear SIPI while in SMM
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>, kvm@vger.kernel.org
+Cc: seanjc@google.com, linux-kernel@vger.kernel.org
+References: <20240416204729.2541743-1-boris.ostrovsky@oracle.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20240416204729.2541743-1-boris.ostrovsky@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2024-04-16 20:30:49, David Wronek wrote:
-> Add support for the 2560x1600@90Hz OLED panel by EDO bundled with a
-> Raydium RM69380 controller, as found on the Lenovo Xiaoxin Pad Pro 2021.
+On 4/16/24 22:47, Boris Ostrovsky wrote:
+> When a processor is running in SMM and receives INIT message the interrupt
+> is left pending until SMM is exited. On the other hand, SIPI, which
+> typically follows INIT, is discarded. This presents a problem since sender
+> has no way of knowing that its SIPI has been dropped, which results in
+> processor failing to come up.
 > 
-> Signed-off-by: David Wronek <david@mainlining.org>
-> ---
->  drivers/gpu/drm/panel/Kconfig                 |  14 +
->  drivers/gpu/drm/panel/Makefile                |   1 +
->  drivers/gpu/drm/panel/panel-raydium-rm69380.c | 367 ++++++++++++++++++++++++++
->  3 files changed, 382 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-> index 154f5bf82980..5b3eeb93b1a2 100644
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -542,6 +542,20 @@ config DRM_PANEL_RAYDIUM_RM692E5
->  	  Say Y here if you want to enable support for Raydium RM692E5-based
->  	  display panels, such as the one found in the Fairphone 5 smartphone.
->  
-> +config DRM_PANEL_RAYDIUM_RM69380
-> +	tristate "Raydium RM69380-based DSI panel"
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	depends on DRM_DISPLAY_DP_HELPER
+> Keeping the SIPI pending avoids this scenario.
 
-"DRM DisplayPort helpers"
+This is incorrect - it's yet another ugly legacy facet of x86, but we 
+have to live with it.  SIPI is discarded because the code is supposed to 
+retry it if needed ("INIT-SIPI-SIPI").
 
-But you said that this is a DSI device?
+The sender should set a flag as early as possible in the SIPI code so 
+that it's clear that it was not received; and an extra SIPI is not a 
+problem, it will be ignored anyway and will not cause trouble if there's 
+a race.
 
-Looking in -next from yesterday, Raydium-RM692E5 and Visionox-R66451 get this
-wrong as well.
+What is the reproducer for this?
 
-> +	depends on DRM_DISPLAY_HELPER
+Paolo
 
-This also looks unused?  The only helpers in the non-DP non-HDMI helper points
-to more DP AUX code.
-
-> +	depends on DRM_MIPI_DSI
-> +	depends on OF
-
-As I've shown in the SOFEF00 cleanup patch, devm_gpiod_get() is used which is
-behind GPIOLIB.  This should probably be a dependency.
-
-> +	help
-> +	  Say Y here if you want to enable support for Raydium RM69380-based
-> +	  display panels.
-> +
-> +	  This panel controller can be found in the Lenovo Xiaoxin Pad Pro 2021
-> +	  in combination with an EDO OLED panel.
-> +
->  config DRM_PANEL_RONBO_RB070D30
->  	tristate "Ronbo Electronics RB070D30 panel"
->  	depends on OF
-> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-> index 24a02655d726..e2a2807d4ef0 100644
-> --- a/drivers/gpu/drm/panel/Makefile
-> +++ b/drivers/gpu/drm/panel/Makefile
-> @@ -55,6 +55,7 @@ obj-$(CONFIG_DRM_PANEL_RASPBERRYPI_TOUCHSCREEN) += panel-raspberrypi-touchscreen
->  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM67191) += panel-raydium-rm67191.o
->  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
->  obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM692E5) += panel-raydium-rm692e5.o
-> +obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM69380) += panel-raydium-rm69380.o
->  obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
->  obj-$(CONFIG_DRM_PANEL_SAMSUNG_ATNA33XC20) += panel-samsung-atna33xc20.o
->  obj-$(CONFIG_DRM_PANEL_SAMSUNG_DB7430) += panel-samsung-db7430.o
-> diff --git a/drivers/gpu/drm/panel/panel-raydium-rm69380.c b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
-> new file mode 100644
-> index 000000000000..f89230c969b7
-> --- /dev/null
-> +++ b/drivers/gpu/drm/panel/panel-raydium-rm69380.c
-> @@ -0,0 +1,367 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree.
-> + * Copyright (c) 2024 David Wronek <david@mainlining.org>
-> + */
-> +
-> +#include <linux/backlight.h>
-> +#include <linux/delay.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_graph.h>
-> +#include <linux/regulator/consumer.h>
-> +
-> +#include <video/mipi_display.h>
-> +
-> +#include <drm/drm_mipi_dsi.h>
-> +#include <drm/drm_modes.h>
-> +#include <drm/drm_panel.h>
-> +#include <drm/drm_probe_helper.h>
-> +
-> +struct rm69380_panel {
-> +	struct drm_panel panel;
-> +	struct mipi_dsi_device *dsi[2];
-> +	struct regulator_bulk_data supplies[2];
-> +	struct gpio_desc *reset_gpio;
-> +};
-> +
-> +static inline
-> +struct rm69380_panel *to_rm69380_panel(struct drm_panel *panel)
-> +{
-> +	return container_of(panel, struct rm69380_panel, panel);
-> +}
-> +
-> +static void rm69380_reset(struct rm69380_panel *ctx)
-> +{
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-> +	usleep_range(15000, 16000);
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> +	usleep_range(10000, 11000);
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-> +	msleep(30);
-> +}
-> +
-> +static int rm69380_on(struct rm69380_panel *ctx)
-> +{
-> +	struct mipi_dsi_device *dsi = ctx->dsi[0];
-> +	struct device *dev = &dsi->dev;
-> +	int ret;
-> +
-> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-> +	if (ctx->dsi[1])
-> +		ctx->dsi[1]->mode_flags |= MIPI_DSI_MODE_LPM;
-> +
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd4);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x00, 0x80);
-
-Is this MIPI_DCS_NOP?  Strange to see that with a parameter.
-
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0xd0);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x48, 0x00);
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x26);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x75, 0x3f);
-> +	mipi_dsi_dcs_write_seq(dsi, 0x1d, 0x1a);
-> +	mipi_dsi_dcs_write_seq(dsi, 0xfe, 0x00);
-> +	mipi_dsi_dcs_write_seq(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY, 0x28);
-
-Separate from this patch, I feel like we should document these bits.  Their
-meaning might be defined by a paywall, intersecting a few downstream DTS with
-DCS commands makes it instantly clear what each bit means.
-
-> +	mipi_dsi_dcs_write_seq(dsi, 0xc2, 0x08);
-> +
-> +	ret = mipi_dsi_dcs_set_tear_on(dsi, MIPI_DSI_DCS_TEAR_MODE_VBLANK);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set tear on: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = mipi_dsi_dcs_set_display_brightness(dsi, 0x7ff);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set display brightness: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(20);
-> +
-> +	ret = mipi_dsi_dcs_set_display_on(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set display on: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(36);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_off(struct rm69380_panel *ctx)
-> +{
-> +	struct mipi_dsi_device *dsi = ctx->dsi[0];
-> +	struct device *dev = &dsi->dev;
-> +	int ret;
-> +
-> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +	if (ctx->dsi[1])
-> +		ctx->dsi[1]->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +
-> +	ret = mipi_dsi_dcs_set_display_off(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to set display off: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(35);
-> +
-> +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
-> +		return ret;
-> +	}
-> +	msleep(20);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_prepare(struct drm_panel *panel)
-> +{
-> +	struct rm69380_panel *ctx = to_rm69380_panel(panel);
-> +	struct device *dev = &ctx->dsi[0]->dev;
-> +	int ret;
-> +
-> +	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to enable regulators: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	rm69380_reset(ctx);
-> +
-> +	ret = rm69380_on(ctx);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to initialize panel: %d\n", ret);
-> +		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> +		regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_unprepare(struct drm_panel *panel)
-> +{
-> +	struct rm69380_panel *ctx = to_rm69380_panel(panel);
-> +	struct device *dev = &ctx->dsi[0]->dev;
-> +	int ret;
-> +
-> +	ret = rm69380_off(ctx);
-> +	if (ret < 0)
-> +		dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
-> +
-> +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> +	regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_display_mode rm69380_mode = {
-> +	.clock = (2560 + 32 + 12 + 38) * (1600 + 20 + 4 + 8) * 90 / 1000,
-> +	.hdisplay = 2560,
-> +	.hsync_start = 2560 + 32,
-> +	.hsync_end = 2560 + 32 + 12,
-> +	.htotal = 2560 + 32 + 12 + 38,
-> +	.vdisplay = 1600,
-> +	.vsync_start = 1600 + 20,
-> +	.vsync_end = 1600 + 20 + 4,
-> +	.vtotal = 1600 + 20 + 4 + 8,
-> +	.width_mm = 248,
-> +	.height_mm = 155,
-> +	.type = DRM_MODE_TYPE_DRIVER,
-> +};
-> +
-> +static int rm69380_get_modes(struct drm_panel *panel,
-> +					struct drm_connector *connector)
-> +{
-> +	return drm_connector_helper_get_modes_fixed(connector, &rm69380_mode);
-> +}
-> +
-> +static const struct drm_panel_funcs rm69380_panel_funcs = {
-> +	.prepare = rm69380_prepare,
-> +	.unprepare = rm69380_unprepare,
-> +	.get_modes = rm69380_get_modes,
-> +};
-> +
-> +static int rm69380_bl_update_status(struct backlight_device *bl)
-> +{
-> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
-> +	u16 brightness = backlight_get_brightness(bl);
-> +	int ret;
-> +
-> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +
-> +	ret = mipi_dsi_dcs_set_display_brightness_large(dsi, brightness);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-> +
-> +	return 0;
-> +}
-> +
-> +static int rm69380_bl_get_brightness(struct backlight_device *bl)
-> +{
-> +	struct mipi_dsi_device *dsi = bl_get_data(bl);
-> +	u16 brightness;
-> +	int ret;
-> +
-> +	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-> +
-> +	ret = mipi_dsi_dcs_get_display_brightness_large(dsi, &brightness);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-> +
-> +	return brightness;
-> +}
-> +
-> +static const struct backlight_ops rm69380_bl_ops = {
-> +	.update_status = rm69380_bl_update_status,
-> +	.get_brightness = rm69380_bl_get_brightness,
-> +};
-> +
-> +static struct backlight_device *
-> +rm69380_create_backlight(struct mipi_dsi_device *dsi)
-> +{
-> +	struct device *dev = &dsi->dev;
-> +	const struct backlight_properties props = {
-> +		.type = BACKLIGHT_RAW,
-> +		.brightness = 2047,
-
-Might be nice to reduce the init brightness to something lower, like 1023 or
-511?  But also drop the brightness call in _on().
-
-> +		.max_brightness = 2047,
-> +	};
-> +
-> +	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
-> +					      &rm69380_bl_ops, &props);
-> +}
-> +
-> +static int rm69380_probe(struct mipi_dsi_device *dsi)
-> +{
-> +	struct mipi_dsi_host *dsi_sec_host;
-> +	struct rm69380_panel *ctx;
-> +	struct device *dev = &dsi->dev;
-> +	struct device_node *dsi_sec;
-> +	int ret, i;
-> +
-> +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx)
-> +		return -ENOMEM;
-> +
-> +	ctx->supplies[0].supply = "vddio";
-> +	ctx->supplies[1].supply = "avdd";
-> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ctx->supplies),
-> +				      ctx->supplies);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "Failed to get regulators\n");
-> +
-> +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(ctx->reset_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
-> +				     "Failed to get reset-gpios\n");
-> +
-> +	dsi_sec = of_graph_get_remote_node(dsi->dev.of_node, 1, -1);
-> +
-> +	if (dsi_sec) {
-> +		const struct mipi_dsi_device_info info = { "RM69380", 0,
-> +							   dsi_sec };
-> +
-> +		dev_dbg(dev, "Using Dual-DSI: found `%s`\n", dsi_sec->name);
-> +
-> +		dsi_sec_host = of_find_mipi_dsi_host_by_node(dsi_sec);
-> +		of_node_put(dsi_sec);
-> +		if (!dsi_sec_host)
-> +			return dev_err_probe(dev, -EPROBE_DEFER,
-> +					     "Cannot get secondary DSI host\n");
-> +
-> +		ctx->dsi[1] =
-> +			devm_mipi_dsi_device_register_full(dev, dsi_sec_host, &info);
-> +		if (IS_ERR(ctx->dsi[1]))
-> +			return dev_err_probe(dev, PTR_ERR(ctx->dsi[1]),
-> +					     "Cannot get secondary DSI node\n");
-> +
-> +		dev_dbg(dev, "Second DSI name `%s`\n", ctx->dsi[1]->name);
-
-Let's drop my debug logs :)
-
-> +		mipi_dsi_set_drvdata(ctx->dsi[1], ctx);
-> +	} else {
-> +		dev_dbg(dev, "Using Single-DSI\n");
-> +	}
-> +
-> +	ctx->dsi[0] = dsi;
-> +	mipi_dsi_set_drvdata(dsi, ctx);
-> +
-> +	drm_panel_init(&ctx->panel, dev, &rm69380_panel_funcs,
-> +		       DRM_MODE_CONNECTOR_DSI);
-> +	ctx->panel.prepare_prev_first = true;
-> +
-> +	ctx->panel.backlight = rm69380_create_backlight(dsi);
-> +	if (IS_ERR(ctx->panel.backlight))
-> +		return dev_err_probe(dev, PTR_ERR(ctx->panel.backlight),
-> +				     "Failed to create backlight\n");
-> +
-> +	drm_panel_add(&ctx->panel);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
-> +		if (!ctx->dsi[i])
-> +			continue;
-> +
-> +		dev_dbg(&ctx->dsi[i]->dev, "Binding DSI %d\n", i);
-
-Probably not very useful?
-
-> +
-> +		ctx->dsi[i]->lanes = 4;
-> +		ctx->dsi[i]->format = MIPI_DSI_FMT_RGB888;
-> +		ctx->dsi[i]->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
-> +					  MIPI_DSI_CLOCK_NON_CONTINUOUS;
-> +
-> +		ret = mipi_dsi_attach(ctx->dsi[i]);
-> +		if (ret < 0) {
-> +			mipi_dsi_detach(ctx->dsi[i]);
-
-This isn't sound as written.  If attaching fails, it is likely an error to
-detach the same DSI device.
-
-The error scenario that Christophe pointed out is when attaching dsi[1]
-fails, in this case you have to detach dsi[0].  But as written in late v2
-review, instead of making complicated logic statements there is a matching
-devm_mipi_dsi_attach() to handle these cleanup scenarios for you.  This should
-also remove the need for mipi_dsi_attach() in the _remove function.
-
-- Marijn
-
-> +			drm_panel_remove(&ctx->panel);
-> +			return dev_err_probe(dev, ret,
-> +					     "Failed to attach to DSI%d\n", i);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void rm69380_remove(struct mipi_dsi_device *dsi)
-> +{
-> +	struct rm69380_panel *ctx = mipi_dsi_get_drvdata(dsi);
-> +	int i;
-> +	int ret;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(ctx->dsi); i++) {
-> +		if (!ctx->dsi[i])
-> +			continue;
-> +
-> +		ret = mipi_dsi_detach(ctx->dsi[i]);
-> +		if (ret < 0)
-> +			dev_err(&dsi->dev, "Failed to detach from DSI%d host: %d\n", i, ret);
-> +	}
-> +
-> +	drm_panel_remove(&ctx->panel);
-> +}
-> +
-> +static const struct of_device_id rm69380_of_match[] = {
-> +	{ .compatible = "lenovo,j716f-edo-rm69380" },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, rm69380_of_match);
-> +
-> +static struct mipi_dsi_driver rm69380_panel_driver = {
-> +	.probe = rm69380_probe,
-> +	.remove = rm69380_remove,
-> +	.driver = {
-> +		.name = "panel-raydium-rm69380",
-> +		.of_match_table = rm69380_of_match,
-> +	},
-> +};
-> +module_mipi_dsi_driver(rm69380_panel_driver);
-> +
-> +MODULE_AUTHOR("David Wronek <david@mainlining.org");
-> +MODULE_DESCRIPTION("DRM driver for Raydium RM69380-equipped DSI panels");
-> +MODULE_LICENSE("GPL");
-> 
-> -- 
-> 2.44.0
-> 
 
