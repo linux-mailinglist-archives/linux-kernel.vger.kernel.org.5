@@ -1,130 +1,133 @@
-Return-Path: <linux-kernel+bounces-146867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863678A6C12
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:22:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70BAA8A6C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:23:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1072CB215EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:22:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0798B22A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF17612C489;
-	Tue, 16 Apr 2024 13:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0C212CDAF;
+	Tue, 16 Apr 2024 13:22:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oauJhRl1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gptTwyKa"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95E112C46F;
-	Tue, 16 Apr 2024 13:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A577812AACE;
+	Tue, 16 Apr 2024 13:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713273732; cv=none; b=MACaickG5J54CddLfFOEN7UTyq+dYtNsV3fZwh2Y800ghG5bZYii8QQYMuga2tNwGxVAevFak5LvsFFr/d0K4m03A/9LyjjDMVvf+VtUHC0A0XQ4K9V/kTCMU41o3c3cZpawaVq7gXyuUl2UGaQx+xA6cx4+wpbw+8snQO8UXNA=
+	t=1713273768; cv=none; b=G+70bwdEw4gaC9PYZD4IGjYYij8A5geZB0X/zL8FHcPBPe03TaunOvuwZs6or1BSK2MxEvLrO2P1RAR+iKWcgwznEgBXrh7gHTFdUSEuptjRCX03PwBPS/LQ8HU8pwrVILs/vcrb6rh1fplb/qD0R/F+xKR8B6T0zyJRnNmOTbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713273732; c=relaxed/simple;
-	bh=BFQljuMVTClNVjDMuw/IrsqPjuJUXCtl5zc7GQU7tpc=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YQq7ANhppeWgpvF2/WAbcAQeNe7u2NKSyNjDHjemrs1B/YaPA8cTPJy0+C+ilZmCYg8SYiSVCsZolvnO6rWbNphFHXSNQo/59bg8VbEuOiS9nY9rFWDC6GcGN40m8ZIK+/RF1wpnOvAULikLBDin4QhXcZFi53eK4cx4EeHF70M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oauJhRl1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71870C113CE;
-	Tue, 16 Apr 2024 13:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713273731;
-	bh=BFQljuMVTClNVjDMuw/IrsqPjuJUXCtl5zc7GQU7tpc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oauJhRl1Ng77wYskusi1RAwDUu9MXz1hjLryHTHiIjNl+n07VIKjCIKuf5Rln5CyE
-	 2gA4nJVd0uzIKIzITAsuRNX6paoUyGBTKJaDjh6G8WokgClf66H6t0Fr7L9Fa7/pio
-	 /unsiVNAqhRLIH6Av0WwQ5DFAjaH/a6qJlNCpjVbepAdLHj2MoLEaCqPlgtLvj9kys
-	 BX33QuZ9EE61exWHDkJSmNN3FM8066NUaRkWbqi+WHAXDI4+xEfI2B0q8kPEc2DBAQ
-	 IVh4+44AzezZ4+AufuewqjR2IY48LH7b0S0TZieuvLhjtA947mb52eL5YFdfkmDlL3
-	 vRYdts8WbjeHg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rwilF-0051lu-82;
-	Tue, 16 Apr 2024 14:22:09 +0100
-Date: Tue, 16 Apr 2024 14:22:07 +0100
-Message-ID: <86y19dqw74.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Mark Brown <broonie@kernel.org>,
-	stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	Yihuang Yu <yihyu@redhat.com>,
-	Gavin Shan <gshan@redhat.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Shaoqin Huang <shahuang@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
-In-Reply-To: <CA+G9fYu-AjRm-BBA=8fWS8oCbBJ5W443JHPh3uddD7ea7MY-YA@mail.gmail.com>
-References: <20240415141953.365222063@linuxfoundation.org>
-	<Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
-	<CA+G9fYu-AjRm-BBA=8fWS8oCbBJ5W443JHPh3uddD7ea7MY-YA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1713273768; c=relaxed/simple;
+	bh=1BjZEULlCLvJqv4DjncS8MZEajXmIYaXA1X0dAnpp98=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EdiyNKT6uNYJ5vzyQNSp+znKAHJDEaYELi+785XLY367fMXTQn3l2FrQ6d6NDfV/83+QpMpYPEtKfPNs7w7tec50vA7MUj8IU+51pOZmgg1/yNkyFc0hyVatGrJ8j5MTzsawfa6OFTuBtfTI38WMX+uxicv941Tfb84CnFSIYXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gptTwyKa; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5dcc4076c13so2909144a12.0;
+        Tue, 16 Apr 2024 06:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713273767; x=1713878567; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NUyFM9i0rtryeQoNW8AUTADCgYG36OPoQZzM4bvcyrg=;
+        b=gptTwyKaPIGx7CbGGFezkEYsD86lxBYlmJnbbfu8ili3c+37vBkjBgOoPQhKFdJKui
+         5QBEg0bnUccKdgICEERjj3Y/jOXLL1aU9fw3LrJIdNZglaneYK8XG8P8cu/Ld27lBmr5
+         uK0xujJhza5a6LX3RagqqfgrZq4Deovj+IqxXoVLA5wwphP7oAhoaQI6BqkzdNT6L6xf
+         hWJmaMJWz0VeFZACYjb7x6QFcxo5syVRIJur/Kd+YiH2w2otxtrVSTXRC6aMvwKu4GAf
+         Ejwq1EzxwiMOpx1yzdiREjtyl9SwrlHSGEFdXoLNAiYe9bIPjdIEMk1FbAStxs1J/Dcz
+         vHMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713273767; x=1713878567;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NUyFM9i0rtryeQoNW8AUTADCgYG36OPoQZzM4bvcyrg=;
+        b=Wpl/7g5QSErpX9GdHB6A++ODVFvDOFKEtQhEfhDOG0NEGxuSdv9SoiwdbLgVK9FzOX
+         e+m/uL3jo8SQJ/zlGTC0+2Ue2bPh4MWB7czn2WyrVKZdm2gBaSNcbo1BgfOf+M1jitzC
+         QbIqffKCjlo96a4TCM9XWC4YE17532tEdihCpIVDJhuWg8auNAtR5YPMMpkgXoCs9GTA
+         WW4HP4x70OdtUTieLRZOQJDc29ioWJr929vAi1ZsfxjFyLtZNPqi7r7oVnVhpuqX7HCb
+         U8B3/YKVT+qFFQTNWhixDmplZpB/IXUsrq0xI/iFwn47uB3NnxodFwWop3eP/pPXX8D1
+         NT1w==
+X-Forwarded-Encrypted: i=1; AJvYcCWfQ4EodvKQXhzeAY9m3r+BgErU9d8NAxygoGuWMsuxwlkLUGUYm5d581SJsn5t2713dUB/mjauj407r644ew13Ct2IZogdxbwNH/gP49eJefbQ//maF/84DqfB8CqAAg+Sr75wdXS/mLxOzM2cwAVMjhbMsCk0aYvftjBTyWZ8smEc4oOUqC72O6E7AFNKaH/N+oP0eDcW2GkXehFkQCvc
+X-Gm-Message-State: AOJu0YwqtAeGxrmRscc2UB4w/Z6rXSxG9o6/DArROqdOto1HqVPSUq2Z
+	6fhOfvwfe5WMOcgEWAVcLyvHeFXh4AFyT1JdMn4fmgTR/A7nfnkCqz1z7qVh/yCW2QiW7z+6/Ms
+	RdRaubMPIL9mkyOUl/xpsM5zKKYk=
+X-Google-Smtp-Source: AGHT+IFP6210waMqO1NN+/uEDyO7Znkn9Ms/B1bjT8WrCAkXIpVxBUQKxtXXNBOYwcbWaGoZpe/UQlzDo69EIq+/22M=
+X-Received: by 2002:a17:90a:ad7:b0:2a2:dcfe:bd69 with SMTP id
+ r23-20020a17090a0ad700b002a2dcfebd69mr3827029pje.13.1713273766756; Tue, 16
+ Apr 2024 06:22:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: naresh.kamboju@linaro.org, gregkh@linuxfoundation.org, broonie@kernel.org, stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, yihyu@redhat.com, gshan@redhat.com, catalin.marinas@arm.com, ryan.roberts@arm.com, anshuman.khandual@arm.com, shahuang@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, anders.roxell@linaro.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+References: <20240412162510.29483-1-robimarko@gmail.com> <20240416132124.GA2143558-robh@kernel.org>
+In-Reply-To: <20240416132124.GA2143558-robh@kernel.org>
+From: Robert Marko <robimarko@gmail.com>
+Date: Tue, 16 Apr 2024 15:22:34 +0200
+Message-ID: <CAOX2RU5tWt-dEA4it1G+LeNawwPqkwdG=vBBgnmdD6CNc4iywA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: net: wireless: ath11k: add
+ ieee80211-freq-limit property
+To: Rob Herring <robh@kernel.org>
+Cc: kvalo@kernel.org, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, jjohnson@kernel.org, linux-wireless@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	ath11k@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 16 Apr 2024 14:07:30 +0100,
-Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> 
-> On Tue, 16 Apr 2024 at 16:04, Mark Brown <broonie@kernel.org> wrote:
+On Tue, 16 Apr 2024 at 15:21, Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Apr 12, 2024 at 06:24:08PM +0200, Robert Marko wrote:
+> > This is an existing optional property that ieee80211.yaml/cfg80211
+> > provides. It's useful to further restrict supported frequencies
+> > for a specified device through device-tree.
 > >
-> > On Mon, Apr 15, 2024 at 04:19:25PM +0200, Greg Kroah-Hartman wrote:
-> > > This is the start of the stable review cycle for the 6.6.28 release.
-> > > There are 122 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
+> > Signed-off-by: Robert Marko <robimarko@gmail.com>
+> > ---
+> >  .../devicetree/bindings/net/wireless/qcom,ath11k.yaml          | 3 +++
+> >  1 file changed, 3 insertions(+)
 > >
-> > The bisect of the boot issue that's affecting the FVP in v6.6 (only)
-> > landed on c9ad150ed8dd988 (arm64: tlb: Fix TLBI RANGE operand),
-> > e3ba51ab24fdd in mainline, as being the first bad commit - it's also in
-> > the -rc for v6.8 but that seems fine.  I've done no investigation beyond
-> > the bisect and looking at the commit log to pull out people to CC and
-> > note that the fix was explicitly targeted at v6.6.
-> 
-> Anders investigated this reported issues and bisected and also found
-> the missing commit for stable-rc 6.6 is
-> e2768b798a19 ("arm64/mm: Modify range-based tlbi to decrement scale")
+> > diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+> > index 672282cdfc2f..907bbb646614 100644
+> > --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+> > +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+> > @@ -55,6 +55,8 @@ properties:
+> >        phandle to a node describing reserved memory (System RAM memory)
+> >        used by ath11k firmware (see bindings/reserved-memory/reserved-memory.txt)
+> >
+> > +  ieee80211-freq-limit: true
+> > +
+>
+> Drop this and change additionalProperties to unevaluatedProperties.
 
-Which is definitely *not* stable candidate. We need to understand why
-the invalidation goes south when the scale go up instead of down.
+Hi Rob,
+This patch series has been dropped as Christian already proposed the
+same before and it was reviewed.
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Regards,
+Robert
+>
+> >    iommus:
+> >      minItems: 1
+> >      maxItems: 2
+> > @@ -88,6 +90,7 @@ required:
+> >  additionalProperties: false
+> >
+> >  allOf:
+> > +  - $ref: ieee80211.yaml#
+> >    - if:
+> >        properties:
+> >          compatible:
+> > --
+> > 2.44.0
+> >
 
