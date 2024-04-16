@@ -1,222 +1,116 @@
-Return-Path: <linux-kernel+bounces-146941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFFB18A6D4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E62F8A6D50
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:06:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A48B6287C1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:06:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ABF3287AA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B2A12D750;
-	Tue, 16 Apr 2024 14:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4886412D218;
+	Tue, 16 Apr 2024 14:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a0r79liM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="AzKDH9U5"
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E68F12C485;
-	Tue, 16 Apr 2024 14:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7466612CD9A;
+	Tue, 16 Apr 2024 14:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713276358; cv=none; b=b+z4rFK8SWRXs6S3GTma6ekxDmNNc/ZRjgAhIA1jIDcKa/FcLSWKz5KCCRtWYxXzZ2xdXjLvczg6F9ImWwmGxm6jN93FLr+z03uJrF6K8ymeXTui4clu1OoVAJg/GdQuY302g6sdyJvll4YrX3G2wPZk5APYrFuLb92wQA2vUwk=
+	t=1713276374; cv=none; b=HqA0cvAdRSc8QpPg/9wI7HVkeYuOhIlZULlTotFDKA3NOR1zsJN2rLej9TMroFNiNMo563sWkHA5Cl96xpfNmHjFsmzzizPB7681AqsN+yr/Sn58wB5oU71BxM0cxGEuy1AXk6okdrtzmHeml3NH7a9m8udFQd/L1lzXqwiLMwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713276358; c=relaxed/simple;
-	bh=GW4b3JjjpzhyEgr0U37zkqjQS5CiLTeAstpJ8q/JZFw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=bDw6ntiEFhsltMAKJZgDAUvxuUqjXXwam12E0F+G2Q9o6ZWFqn4dkjyFz+2ilKp13PNWrEPdb7FeCipkCsXpaSFFDCGCEHfxUkNQPPQwkP6IYNsyLJNHnsmLFs9ntbV4Um4J/dbL1SP32KHbKLyTYfRwptcZ8ZJ39KQ8ueGsU84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0r79liM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D8FC2BD11;
-	Tue, 16 Apr 2024 14:05:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713276357;
-	bh=GW4b3JjjpzhyEgr0U37zkqjQS5CiLTeAstpJ8q/JZFw=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=a0r79liMkvsBhViEXn4XE6QleDlH/AJGLeB5n+/BVBlotBeJNnn8hAwhK30d55/yB
-	 /hF0hI8/j4A5/tH1aKS7gPmqkwS+XkDBzYHw8mQaZ0vKJWejAyOYa4SMNjdv5MsTNo
-	 DWWBeHyY099jZTeGY1Es3XOlD1FQzDJZTufrpVEgtRK3a+YPgTygu+apaBvLzJJpdp
-	 BluSYTUE24rQqeZVRElwFhlyzyVbwuuyLPvc+DKA0UXjT38LFotuoleeI1riSwnNJE
-	 xp51dBj8+vuspWsVcjqqMiuZjroQQRw15lPun3mzVxhBNIQZbd4iOlfTZNbfVQYMJZ
-	 to9WKHuk8EMIg==
+	s=arc-20240116; t=1713276374; c=relaxed/simple;
+	bh=OIjBZ2uSrRRCPA7njEkAYgEvMcESbAP5c3QefnQVxTg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ptpJD4R3w3gCnpHS4LDaUKEnT1Z+/TBXh6xNv9IQ+WuiOU1l47/Qwsb9MCtXKxctqpJugExfkxSsfZRyVjzF/O1ZpUHkCEIXqCSlxn/xFANmzYoNAYaQFZmUvNNtJk2BOV4juKniaJneVFf5wHFf/YRZg5ApDLufBINLjPE6btE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=AzKDH9U5; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1713276369; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=xEYEMePmztZfbv9xHlEGvnUIEV3Ro9LAXkzvLijPqCM=;
+	b=AzKDH9U57bdwbad16JV9nYVCvrfGqIt1Z59x5f/IyczPiIjwxucwaM9LDa7zZzIBXBBRn0FA2ysg8KM3hWZuwhe+XcdScnJcXQ0lQrg3Li3m/Bljzwr9mpnRiG4gGDnGu1OAnbECgoEJSEFGqSOIPWk3JY/wDTWLL0bRVKFx3oY=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W4i8467_1713276365;
+Received: from 30.213.156.135(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W4i8467_1713276365)
+          by smtp.aliyun-inc.com;
+          Tue, 16 Apr 2024 22:06:07 +0800
+Message-ID: <eb7eb42a-ea96-41d9-b385-c459379bed99@linux.alibaba.com>
+Date: Tue, 16 Apr 2024 22:06:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 16 Apr 2024 17:05:51 +0300
-Message-Id: <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
- <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
- <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
- <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-X-Mailer: aerc 0.17.0
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-15-haitao.huang@linux.intel.com>
-In-Reply-To: <20240416032011.58578-15-haitao.huang@linux.intel.com>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 10/11] net/smc: adapt cursor update when
+ sndbuf and peer DMB are merged
+To: Simon Horman <horms@kernel.org>
+Cc: wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ wenjia@linux.ibm.com, jaka@linux.ibm.com, borntraeger@linux.ibm.com,
+ svens@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20240414040304.54255-1-guwen@linux.alibaba.com>
+ <20240414040304.54255-11-guwen@linux.alibaba.com>
+ <20240416110538.GK2320920@kernel.org>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <20240416110538.GK2320920@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue Apr 16, 2024 at 6:20 AM EEST, Haitao Huang wrote:
-> With different cgroups, the script starts one or multiple concurrent SGX
-> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
-> test case, which loads an enclave of EPC size equal to the EPC capacity
-> available on the platform. The script checks results against the
-> expectation set for each cgroup and reports success or failure.
->
-> The script creates 3 different cgroups at the beginning with following
-> expectations:
->
-> 1) SMALL - intentionally small enough to fail the test loading an
-> enclave of size equal to the capacity.
-> 2) LARGE - large enough to run up to 4 concurrent tests but fail some if
-> more than 4 concurrent tests are run. The script starts 4 expecting at
-> least one test to pass, and then starts 5 expecting at least one test
-> to fail.
-> 3) LARGER - limit is the same as the capacity, large enough to run lots o=
-f
-> concurrent tests. The script starts 8 of them and expects all pass.
-> Then it reruns the same test with one process randomly killed and
-> usage checked to be zero after all processes exit.
->
-> The script also includes a test with low mem_cg limit and LARGE sgx_epc
-> limit to verify that the RAM used for per-cgroup reclamation is charged
-> to a proper mem_cg. For this test, it turns off swapping before start,
-> and turns swapping back on afterwards.
->
-> Add README to document how to run the tests.
->
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 
-jarkko@mustatorvisieni:~/linux-tpmdd> sudo make -C tools/testing/selftests/=
-sgx run_tests
-make: Entering directory '/home/jarkko/linux-tpmdd/tools/testing/selftests/=
-sgx'
-gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
-./../tools/include -fPIC -c main.c -o /home/jarkko/linux-tpmdd/tools/testi=
-ng/selftests/sgx/main.o
-gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
-./../tools/include -fPIC -c load.c -o /home/jarkko/linux-tpmdd/tools/testi=
-ng/selftests/sgx/load.o
-gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
-./../tools/include -fPIC -c sigstruct.c -o /home/jarkko/linux-tpmdd/tools/=
-testing/selftests/sgx/sigstruct.o
-gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
-./../tools/include -fPIC -c call.S -o /home/jarkko/linux-tpmdd/tools/testi=
-ng/selftests/sgx/call.o
-gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
-./../tools/include -fPIC -c sign_key.S -o /home/jarkko/linux-tpmdd/tools/t=
-esting/selftests/sgx/sign_key.o
-gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../=
-./../tools/include -fPIC -o /home/jarkko/linux-tpmdd/tools/testing/selftes=
-ts/sgx/test_sgx /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/main.o=
- /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/load.o /home/jarkko/l=
-inux-tpmdd/tools/testing/selftests/sgx/sigstruct.o /home/jarkko/linux-tpmdd=
-/tools/testing/selftests/sgx/call.o /home/jarkko/linux-tpmdd/tools/testing/=
-selftests/sgx/sign_key.o -z noexecstack -lcrypto
-gcc -Wall -Werror -static-pie -nostdlib -ffreestanding -fPIE -fno-stack-pro=
-tector -mrdrnd -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../../../=
-tools/include test_encl.c test_encl_bootstrap.S -o /home/jarkko/linux-tpmdd=
-/tools/testing/selftests/sgx/test_encl.elf -Wl,-T,test_encl.lds,--build-id=
-=3Dnone
-/usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: w=
-arning: /tmp/ccqvDJVg.o: missing .note.GNU-stack section implies executable=
- stack
-/usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: N=
-OTE: This behaviour is deprecated and will be removed in a future version o=
-f the linker
-TAP version 13
-1..2
-# timeout set to 45
-# selftests: sgx: test_sgx
-# TAP version 13
-# 1..16
-# # Starting 16 tests from 1 test cases.
-# #  RUN           enclave.unclobbered_vdso ...
-# #            OK  enclave.unclobbered_vdso
-# ok 1 enclave.unclobbered_vdso
-# #  RUN           enclave.unclobbered_vdso_oversubscribed ...
-# #            OK  enclave.unclobbered_vdso_oversubscribed
-# ok 2 enclave.unclobbered_vdso_oversubscribed
-# #  RUN           enclave.unclobbered_vdso_oversubscribed_remove ...
-# # main.c:402:unclobbered_vdso_oversubscribed_remove:Creating an enclave w=
-ith 98566144 bytes heap may take a while ...
-# # main.c:457:unclobbered_vdso_oversubscribed_remove:Changing type of 9856=
-6144 bytes to trimmed may take a while ...
-# # main.c:473:unclobbered_vdso_oversubscribed_remove:Entering enclave to r=
-un EACCEPT for each page of 98566144 bytes may take a while ...
-# # main.c:494:unclobbered_vdso_oversubscribed_remove:Removing 98566144 byt=
-es from enclave may take a while ...
-# #            OK  enclave.unclobbered_vdso_oversubscribed_remove
-# ok 3 enclave.unclobbered_vdso_oversubscribed_remove
-# #  RUN           enclave.clobbered_vdso ...
-# #            OK  enclave.clobbered_vdso
-# ok 4 enclave.clobbered_vdso
-# #  RUN           enclave.clobbered_vdso_and_user_function ...
-# #            OK  enclave.clobbered_vdso_and_user_function
-# ok 5 enclave.clobbered_vdso_and_user_function
-# #  RUN           enclave.tcs_entry ...
-# #            OK  enclave.tcs_entry
-# ok 6 enclave.tcs_entry
-# #  RUN           enclave.pte_permissions ...
-# #            OK  enclave.pte_permissions
-# ok 7 enclave.pte_permissions
-# #  RUN           enclave.tcs_permissions ...
-# #            OK  enclave.tcs_permissions
-# ok 8 enclave.tcs_permissions
-# #  RUN           enclave.epcm_permissions ...
-# #            OK  enclave.epcm_permissions
-# ok 9 enclave.epcm_permissions
-# #  RUN           enclave.augment ...
-# #            OK  enclave.augment
-# ok 10 enclave.augment
-# #  RUN           enclave.augment_via_eaccept ...
-# #            OK  enclave.augment_via_eaccept
-# ok 11 enclave.augment_via_eaccept
-# #  RUN           enclave.tcs_create ...
-# #            OK  enclave.tcs_create
-# ok 12 enclave.tcs_create
-# #  RUN           enclave.remove_added_page_no_eaccept ...
-# #            OK  enclave.remove_added_page_no_eaccept
-# ok 13 enclave.remove_added_page_no_eaccept
-# #  RUN           enclave.remove_added_page_invalid_access ...
-# #            OK  enclave.remove_added_page_invalid_access
-# ok 14 enclave.remove_added_page_invalid_access
-# #  RUN           enclave.remove_added_page_invalid_access_after_eaccept .=
-.
-# #            OK  enclave.remove_added_page_invalid_access_after_eaccept
-# ok 15 enclave.remove_added_page_invalid_access_after_eaccept
-# #  RUN           enclave.remove_untouched_page ...
-# #            OK  enclave.remove_untouched_page
-# ok 16 enclave.remove_untouched_page
-# # PASSED: 16 / 16 tests passed.
-# # Totals: pass:16 fail:0 xfail:0 xpass:0 skip:0 error:0
-ok 1 selftests: sgx: test_sgx
-# timeout set to 45
-# selftests: sgx: run_epc_cg_selftests.sh
-# # Setting up limits.
-# ./run_epc_cg_selftests.sh: line 50: echo: write error: Invalid argument
-# # Failed setting up misc limits.
-not ok 2 selftests: sgx: run_epc_cg_selftests.sh # exit=3D1
-make: Leaving directory '/home/jarkko/linux-tpmdd/tools/testing/selftests/s=
-gx'
 
-This is what happens now.
+On 2024/4/16 19:05, Simon Horman wrote:
+> On Sun, Apr 14, 2024 at 12:03:03PM +0800, Wen Gu wrote:
+>> If the local sndbuf shares the same physical memory with peer DMB,
+>> the cursor update processing needs to be adapted to ensure that the
+>> data to be consumed won't be overwritten.
+>>
+>> So in this case, the fin_curs and sndbuf_space that were originally
+>> updated after sending the CDC message should be modified to not be
+>> update until the peer updates cons_curs.
+>>
+>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> 
+> ...
+> 
+>> @@ -255,6 +256,14 @@ int smcd_cdc_msg_send(struct smc_connection *conn)
+>>   		return rc;
+>>   	smc_curs_copy(&conn->rx_curs_confirmed, &curs, conn);
+>>   	conn->local_rx_ctrl.prod_flags.cons_curs_upd_req = 0;
+>> +
+>> +	if (smc_ism_support_dmb_nocopy(conn->lgr->smcd))
+>> +		/* if local sndbuf shares the same memory region with
+>> +		 * peer DMB, then don't update the tx_curs_fin
+>> +		 * and sndbuf_space until peer has consumed the data.
+>> +		 */
+>> +		return rc;
+> 
+> Hi Wen Gu,
+> 
+> A minor nit from my side:
+> 
+> To my mind "return rc" implies returning an error value.
+> But here rc is 0, which based on the comment seems correct.
+> So perhaps it would be clearer to simply return 0.
+> 
+> Flagged by Smatch.
+> 
+>> +
+>>   	/* Calculate transmitted data and increment free send buffer space */
+>>   	diff = smc_curs_diff(conn->sndbuf_desc->len, &conn->tx_curs_fin,
+>>   			     &conn->tx_curs_sent);
+> 
+> ...
 
-BTW, I noticed a file that should not exist, i.e. README. Only thing
-that should exist is the tests for kselftest and anything else should
-not exist at all, so this file by definiton should not exist.
-
-BR, Jarkko
+OK. I will improve it and another 'return rc' at the end of
+smcd_cdc_msg_send(). Thanks! Simon.
 
