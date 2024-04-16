@@ -1,189 +1,269 @@
-Return-Path: <linux-kernel+bounces-150728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A51E8AA3A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:01:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D7F8AA53D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Apr 2024 00:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 008D91F25AC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 20:01:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ACD3284FAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 22:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0FD4181BB2;
-	Thu, 18 Apr 2024 20:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE26199E8B;
+	Thu, 18 Apr 2024 22:02:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GAFMVr1+"
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m0zc54iM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745C117BB2C;
-	Thu, 18 Apr 2024 20:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2837918410C;
+	Thu, 18 Apr 2024 22:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713470506; cv=none; b=qX6IoLnLLKogXoZWDHW/Np31Hd4AIGbQrH/1g1odFjunQpRQMMNiC04GjgNpOHb3T//02PwnP1w5Z0V+AUJxsrv679B7yHfWm4SqHiPsJrFn4c6PoVZsJkgqNre5V/xbLtr0MKt5EdCPdXrfCNy0+kVjXr6O0t/w+0+bGulBcdQ=
+	t=1713477759; cv=none; b=C4iqjgBY+kxu9FVjMGRNUj3FI9TvlXRCWSVO+uOVJ8CcZgf7sLx9Yi4hjkO5yIQVyTzvcFNWQoCx3LfjyzYoMfXHh+lvJqkq2tKLmoiud0gmQ6P541AFG66aLOUOHkIBhr8NjdVSgqtApJUc+lLny/baysroEWuPRADqLbUQ0ug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713470506; c=relaxed/simple;
-	bh=KCTidw9vRB31lBRexx3e+unentIUwTOohcO9L341OtA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gsK+qCY+gAY70Xm+pvJTxnPxNCvDydR41didthA4qgM48Qr3Rz8Oafeier1KIZW4UkzkhPg+ij5+m41lIGrTMxQ6obhZBFf8zeBgsrQ3dgP84oOY0udxS46QR5Az6ESjT4wWW0NyHgWvRBOu9usELP+p46o2q+IvPSYUV+skt+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GAFMVr1+; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-69629b4ae2bso10852726d6.3;
-        Thu, 18 Apr 2024 13:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713470504; x=1714075304; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=p5U2uM1qAfDBe46uPOXJfDBT1BwgCpqdYnUA213Koas=;
-        b=GAFMVr1+56KkT2ugTlj3b3Wk+wJ8bgxz2MJBRUZq4liMOCIjvk9X5aVrpqmawoVYyi
-         X7u7vVoV6hhdLPLgRXIvvvk+yCbfyzgZZ5bvJP3Nt694Uzh0xCryISuSWYlmzFSzcuZ6
-         ukyWR+++/x+wECl1BVOQC21LQXwbDARFvrX2st9QidieK770WdznYSRpv6bjlxbliUjF
-         /i+AxmKju5EsM1DM6f0xJn2bu0cEsAm2frg1HoHbdclAikwKlAZLjrSlM9mpFHE5S47H
-         IspA1Ce99vw30tk9q3xzq85Gj9YFpbBJoMYlvZSmSaMWveGcj0Rtjc+JMdch/yHa1ywK
-         CtbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713470504; x=1714075304;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p5U2uM1qAfDBe46uPOXJfDBT1BwgCpqdYnUA213Koas=;
-        b=SEpFXmSnkGNLaL6wFY2ESqRBLrN+eVvLsJk4XvLMbugCDUsG8AlpzguwWgxeGjR6tn
-         FZ9g9F8tCVuZ2OUZtwms1RuyCZM+CvdV1pBqfRQciEld7mCgM1BRA5b2CI703di6i0SY
-         KenAcs4U+TvXVFOWQgUDAepWBNdmM0LDmW6By0G6lyzH6wgyoS3+oduD1CYYJ3OZz1Zp
-         29n4yI3h9Qp/gZGICU2TtaLphg1+6fbcGKy6eQjR022t4cXIGHtp9YEjKXB2uhxJisZy
-         1tb/wUz+kyVqNtnyrVwD+QO8+kH3XWDW6Yi8+fJ9iJmSgVTBYw6xL2W1BkCdfp4KJPRR
-         6/AQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV4eIKv+PL6t82zsTumM3rEhvetI/QJFgZlpx2Li0h9uIo1OoXNwGKMynsTWEgfGN05cYm8OKTKoBrv1iGv379NeHjBUZrLOX2cZu3pNMlHqcasGdk/2j3BE5OdUnCKZvnrOOC/TWnAcO9q5tI=
-X-Gm-Message-State: AOJu0YxmkKpugxz5LGRjb+N4xWSCr5kVVvOzUdiTBR+AurZrlHAGlhPV
-	dgmR4EuUo1itN+7Rhmj0MGP1BX2QhbpmBP5p/WziZtgStn9HWCwa
-X-Google-Smtp-Source: AGHT+IHHWzl1+nKVAwM7dNU7DNh/vXCt5ExjFummesJ4M9MCAmCraD0SqGCzuz7G5x0biMnpsT/nZw==
-X-Received: by 2002:a05:6214:705:b0:69b:5576:49e7 with SMTP id c5-20020a056214070500b0069b557649e7mr40348qvz.45.1713470504285;
-        Thu, 18 Apr 2024 13:01:44 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id w19-20020a0562140b3300b006a056736f10sm751933qvj.25.2024.04.18.13.01.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 13:01:43 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 8DDF81200066;
-	Thu, 18 Apr 2024 16:01:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Thu, 18 Apr 2024 16:01:42 -0400
-X-ME-Sender: <xms:JnwhZo6JFcXmaecT5V0xbj5igWyagTF6kv_Uvz5gC0YCjaZsSCH9wA>
-    <xme:JnwhZp5Bn34z62aCWy1G820w1GzX7lqlSkp01FtiL9gs9aEz9XyIUm4b3LajeHmI_
-    JdkZkuiKXqZbANUaQ>
-X-ME-Received: <xmr:JnwhZnc8y3cQapL7gFvURoAr-p9nwtOgyztreTz3QVFvIeqsHXIVpvxsoPNPVA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudektddgudegvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttddtjeenucfhrhhomhepueho
-    qhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtf
-    frrghtthgvrhhnpeevgffhueevkedutefgveduuedujeefledthffgheegkeekiefgudek
-    hffggeelfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeeh
-    tdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmse
-    hfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:JnwhZtIUc86mAUXKYgWqus_QUbqhxqhufDLM7O-NzrAJPZBT7jIIWQ>
-    <xmx:JnwhZsJNkNVm1P_qOMK6mhFMEXaU7xA4tImED-Cb4tBiLvroQ9gWXw>
-    <xmx:JnwhZuwDDAAnSYQ--k3pIOMLRYNSdhjFrPoJVV3oQEDmEMK_pHsGTQ>
-    <xmx:JnwhZgJF0YgP5FtgWbmqaa6sl7QXXu8hiLAbmUlclPtqFvvCc3yDHQ>
-    <xmx:JnwhZrb6oqd_5XldUxQBEsqTShozsedmuUzXrl3ibZG9_ou5fcBF8AKa>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 18 Apr 2024 16:01:41 -0400 (EDT)
-Date: Thu, 18 Apr 2024 13:01:17 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Benno Lossin <benno.lossin@proton.me>, Miguel Ojeda <ojeda@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, Trevor Gross <tmgross@umich.edu>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v6 3/4] rust: uaccess: add typed accessors for userspace
- pointers
-Message-ID: <ZiF8DcuGw1KgD4Tz@boqun-archlinux>
-References: <20240418-alice-mm-v6-0-cb8f3e5d688f@google.com>
- <20240418-alice-mm-v6-3-cb8f3e5d688f@google.com>
- <5fd684d8-d46d-4009-bcf8-134dab342322@proton.me>
- <CAH5fLgiMLxmmm0AVX_5HQF61FzzN69GCKabrr-uM_oV-rRMuHw@mail.gmail.com>
- <c6239407-8410-49e2-a8a1-16be8468ab88@proton.me>
- <ZiFWIFMSBbU0i8JF@boqun-archlinux>
- <CAH5fLghTqbK-b4z_GJYJF9PFj8JkkKE+dNNpELFZspC2o9Oa1A@mail.gmail.com>
+	s=arc-20240116; t=1713477759; c=relaxed/simple;
+	bh=oVYWLM9trh8HtwmbEDDKBxyHoVQ7INFrBZV/vthJ800=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LceDNxb5tJ97V60rmvIMR/urm6vStNUPUbitZ0zkr6qh+iT0WfeG2/E6TOjBiU1r+nUrwo38bqBAvkPO/ZIHVz3pRvaf+w7oyg1IuM98wzXpstJo9OLuXgT07UXC6OlLcYuGJykYS0/gwrvABRkhNtzDJM5zDhWxbSsXHKTaDOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m0zc54iM; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713477757; x=1745013757;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=oVYWLM9trh8HtwmbEDDKBxyHoVQ7INFrBZV/vthJ800=;
+  b=m0zc54iMMi7QBCumyXNvaEfl5F69zSimiPyJidZqWvRocdnMUUhe+2eG
+   bpnZjB91VrZs5/Xg9ZBqcXOxHglX6bpctgYTBz2dziqSCBjvxwvlToMGC
+   E7FnZzcqqSoOXTbpz/QPNpYkla8mAwFQU17hVB3CmbARlSTN24rdaDF+/
+   aZYALlpk8QKCVgnhFAFpDWI2l8LrHWx7gQCeeTE4W5kL0XTfGl11moqKO
+   B9Xd6zlu6rQeUJQwBSZ1qhkXsSWk+8hSTodzUicSJDqGJUENv95jGzMWk
+   9M1EjU/5JG/YRN2XFiB85McDzaLfVb33bHXZWKTNLQmtnfNpsbQ0UWlwM
+   Q==;
+X-CSE-ConnectionGUID: a9dLE0OEQMmmXykp7N3vAQ==
+X-CSE-MsgGUID: UVkdyTT2TReZcjCklXD0DA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="9280706"
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="9280706"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 15:02:19 -0700
+X-CSE-ConnectionGUID: VycWeHnAQ5qqQLpbVysWlw==
+X-CSE-MsgGUID: DCyyz4rjSd2fcvtXz26M3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,213,1708416000"; 
+   d="scan'208";a="23176023"
+Received: from mchatter-mobl.amr.corp.intel.com (HELO peluse-desk5) ([10.213.188.90])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 15:02:18 -0700
+Date: Tue, 16 Apr 2024 15:41:13 -0700
+From: Paul E Luse <paul.e.luse@linux.intel.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: tada keisuke <keisuke1.tada@kioxia.com>, "song@kernel.org"
+ <song@kernel.org>, "yukuai (C)" <yukuai3@huawei.com>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Luse, Paul
+ E" <paul.e.luse@intel.com>
+Subject: Re: [PATCH v2 08/11] md: add atomic mode switching in RAID 1/10
+Message-ID: <20240416154113.114dc42f@peluse-desk5>
+In-Reply-To: <20240416073806.50e3ff5d@peluse-desk5>
+References: <47c035c3e741418b80eb6b73d96e7e92@kioxia.com>
+ <8d21354c-9e67-b19c-1986-b4c027dff125@huaweicloud.com>
+ <20240416073806.50e3ff5d@peluse-desk5>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; aarch64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH5fLghTqbK-b4z_GJYJF9PFj8JkkKE+dNNpELFZspC2o9Oa1A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 09:35:53PM +0200, Alice Ryhl wrote:
-> On Thu, Apr 18, 2024 at 7:27 PM Boqun Feng <boqun.feng@gmail.com> wrote:
-> >
-> > On Thu, Apr 18, 2024 at 04:23:06PM +0000, Benno Lossin wrote:
-> > > On 18.04.24 15:17, Alice Ryhl wrote:
-> > > > On Thu, Apr 18, 2024 at 3:02 PM Benno Lossin <benno.lossin@proton.me> wrote:
-> > > >>
-> > > >> On 18.04.24 10:59, Alice Ryhl wrote:
-> > > >>> diff --git a/rust/kernel/types.rs b/rust/kernel/types.rs
-> > > >>> index 8fad61268465..9c57c6c75553 100644
-> > > >>> --- a/rust/kernel/types.rs
-> > > >>> +++ b/rust/kernel/types.rs
-> > > >>> @@ -409,3 +409,67 @@ pub enum Either<L, R> {
-> > > >>>       /// Constructs an instance of [`Either`] containing a value of type `R`.
-> > > >>>       Right(R),
-> > > >>>   }
-> > > >>> +
-> > > >>> +/// Types for which any bit pattern is valid.
-> > > >>> +///
-> > > >>> +/// Not all types are valid for all values. For example, a `bool` must be either zero or one, so
-> > > >>> +/// reading arbitrary bytes into something that contains a `bool` is not okay.
-> > > >>> +///
-> > > >>> +/// It's okay for the type to have padding, as initializing those bytes has no effect.
-> > > >>> +///
-> > > >>> +/// # Safety
-> > > >>> +///
-> > > >>> +/// All bit-patterns must be valid for this type. This type must not have interior mutability.
-> > > >>
-> > > >> What is the reason for disallowing interior mutability here? I agree
-> > > >> that it is necessary for `AsBytes`, but I don't think we need it here.
-> >
-> > Hmm.. technically, if the interior mutability behaves in a way that each
-> > byte is still initialized during the modification, then it should be
-> > fine for `AsBytes`, for example and `AtomicI32` (implemented by asm
-> > blocks)? Not making any change suggestion, just checking my understand.
-> 
-> No, that's UB. When the type is not interior mutable, then any two
-> loads from the same immutable reference may be assumed to return the
-> same value. Changing it with an atomic would violate that since the
-> value changes.
-> 
+On Tue, 16 Apr 2024 07:38:06 -0700
+Paul E Luse <paul.e.luse@linux.intel.com> wrote:
 
-Oh, that makes sense! Thanks!
+> On Thu, 18 Apr 2024 14:39:53 +0800
+> Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>=20
+> > Hi,
+> >=20
+> > =E5=9C=A8 2024/04/18 13:44, tada keisuke =E5=86=99=E9=81=93: =20
+> > > This patch depends on patch 07.
+> > >=20
+> > > All rdevs running in RAID 1/10 switch nr_pending to atomic mode.
+> > > The value of nr_pending is read in a normal operation
+> > > (choose_best_rdev()). Therefore, nr_pending must always be
+> > > consistent.
+> > >=20
+> > > Signed-off-by: Keisuke TADA <keisuke1.tada@kioxia.com>
+> > > Signed-off-by: Toshifumi OHTAKE <toshifumi.ootake@kioxia.com>
+> > > ---
+> > >   drivers/md/md.h     | 14 ++++++++++++++
+> > >   drivers/md/raid1.c  |  7 +++++++
+> > >   drivers/md/raid10.c |  4 ++++
+> > >   3 files changed, 25 insertions(+)
+> > >=20
+> > > diff --git a/drivers/md/md.h b/drivers/md/md.h
+> > > index ab09e312c9bb..57b09b567ffa 100644
+> > > --- a/drivers/md/md.h
+> > > +++ b/drivers/md/md.h
+> > > @@ -236,6 +236,20 @@ static inline unsigned long
+> > > nr_pending_read(struct md_rdev *rdev) return
+> > > atomic_long_read(&rdev->nr_pending.data->count); }
+> > >  =20
+> > > +static inline bool nr_pending_is_percpu_mode(struct md_rdev
+> > > *rdev) +{
+> > > +	unsigned long __percpu *percpu_count;
+> > > +
+> > > +	return __ref_is_percpu(&rdev->nr_pending, &percpu_count);
+> > > +}
+> > > +
+> > > +static inline bool nr_pending_is_atomic_mode(struct md_rdev
+> > > *rdev) +{
+> > > +	unsigned long __percpu *percpu_count;
+> > > +
+> > > +	return !__ref_is_percpu(&rdev->nr_pending,
+> > > &percpu_count); +}
+> > > +
+> > >   static inline int is_badblock(struct md_rdev *rdev, sector_t s,
+> > > int sectors, sector_t *first_bad, int *bad_sectors)
+> > >   {
+> > > diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> > > index 12318fb15a88..c38ae13aadab 100644
+> > > --- a/drivers/md/raid1.c
+> > > +++ b/drivers/md/raid1.c
+> > > @@ -784,6 +784,7 @@ static int choose_best_rdev(struct r1conf
+> > > *conf, struct r1bio *r1_bio) if (ctl.readable_disks++ =3D=3D 1)
+> > >   			set_bit(R1BIO_FailFast, &r1_bio->state);
+> > >  =20
+> > > +		WARN_ON_ONCE(nr_pending_is_percpu_mode(rdev));
+> > >   		pending =3D nr_pending_read(rdev);
+> > >   		dist =3D abs(r1_bio->sector -
+> > > conf->mirrors[disk].head_position);=20
+> > > @@ -1930,6 +1931,7 @@ static int raid1_add_disk(struct mddev
+> > > *mddev, struct md_rdev *rdev) if (err)
+> > >   				return err;
+> > >  =20
+> > > +
+> > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);
+> > > raid1_add_conf(conf, rdev, mirror, false); /* As all devices are
+> > > equivalent, we don't need a full recovery
+> > >   			 * if this was recently any drive of the
+> > > array @@ -1949,6 +1951,7 @@ static int raid1_add_disk(struct mddev
+> > > *mddev, struct md_rdev *rdev) set_bit(Replacement, &rdev->flags);
+> > >   		raid1_add_conf(conf, rdev, repl_slot, true);
+> > >   		err =3D 0;
+> > > +
+> > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);   =20
+> >=20
+> > I don't understand what's the point here, 'nr_pending' will be used
+> > when the rdev issuing IO, and it's always used as atomic mode, there
+> > is no difference.
+> >=20
+> > Consider that 'nr_pending' must be read from IO fast path, use it as
+> > atomic is something we must accept. Unless someone comes up with a
+> > plan to avoid reading 'inflight' counter from fast path like generic
+> > block layer, it's not ok to me to switch to percpu_ref for now.
+> >=20
+> > +CC Paul
+> >=20
+> > HI, Paul, perhaps you RR mode doesn't need such 'inflight' counter
+> > anymore?
+> >  =20
+>=20
+> I too am struggling to see the benefit but am curious enough that I
+> will run some tests on my own as I have fresh baseline RAID1 large
+> sweep performance data ready right now.
+>=20
+> So my WIP round robin patch won't need nr_pedning for SSDs but I think
+> it will for HDD plus I need a new atomic counter for round robin for
+> SSDs anyway but I see no perfomrnace impact so far from adding it.
+>=20
+> -Paul
+>=20
 
-Regards,
-Boqun
+I can run more if others are interested (RAID5 or HDD for example) but
+at least for RAID1 there's really no difference.  This was a quick run,
+just 40 sec each, 16 jobs and the rest ofthe fio params are on the
+charts. 2 disk RAID1. THe baseline is 6.8.0 from the md repo.
 
-> Alice
+Using my favorite drives, of course, KIOXIA KCMYDVUG3T20 :)
+
+Here's the results: https://photos.app.goo.gl/Avyw64eXCqWFWrs78
+
+NOTE:  There are few small randoms where it appears to help but I
+assumed that was because these are small randoms with very short run
+times.  SO I reran the 4K mixed rw randoms with 5 minute run time and
+that chart is at the very bottom and shows that over longer duration
+its a wash, there's no clear winner.  I'm sure an even longer run would
+show more consistently close results.
+
+> > Thanks,
+> > Kuai
+> >  =20
+> > >   		conf->fullsync =3D 1;
+> > >   	}
+> > >  =20
+> > > @@ -3208,6 +3211,7 @@ static void raid1_free(struct mddev *mddev,
+> > > void *priv); static int raid1_run(struct mddev *mddev)
+> > >   {
+> > >   	struct r1conf *conf;
+> > > +	struct md_rdev *rdev;
+> > >   	int i;
+> > >   	int ret;
+> > >  =20
+> > > @@ -3269,6 +3273,9 @@ static int raid1_run(struct mddev *mddev)
+> > >   	/*
+> > >   	 * Ok, everything is just fine now
+> > >   	 */
+> > > +	rdev_for_each(rdev, mddev) {
+> > > +
+> > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);
+> > > +	}
+> > >   	rcu_assign_pointer(mddev->thread, conf->thread);
+> > >   	rcu_assign_pointer(conf->thread, NULL);
+> > >   	mddev->private =3D conf;
+> > > diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+> > > index b91dd6c0be5a..66896a1076e1 100644
+> > > --- a/drivers/md/raid10.c
+> > > +++ b/drivers/md/raid10.c
+> > > @@ -808,6 +808,7 @@ static struct md_rdev *read_balance(struct
+> > > r10conf *conf,=20
+> > >   		nonrot =3D bdev_nonrot(rdev->bdev);
+> > >   		has_nonrot_disk |=3D nonrot;
+> > > +		WARN_ON_ONCE(nr_pending_is_percpu_mode(rdev));
+> > >   		pending =3D nr_pending_read(rdev);
+> > >   		if (min_pending > pending && nonrot) {
+> > >   			min_pending =3D pending;
+> > > @@ -2113,6 +2114,7 @@ static int raid10_add_disk(struct mddev
+> > > *mddev, struct md_rdev *rdev) p->recovery_disabled =3D
+> > > mddev->recovery_disabled - 1; rdev->raid_disk =3D mirror;
+> > >   		err =3D 0;
+> > > +
+> > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending); if
+> > > (rdev->saved_raid_disk !=3D mirror) conf->fullsync =3D 1;
+> > >   		WRITE_ONCE(p->rdev, rdev);
+> > > @@ -2127,6 +2129,7 @@ static int raid10_add_disk(struct mddev
+> > > *mddev, struct md_rdev *rdev) err =3D mddev_stack_new_rdev(mddev,
+> > > rdev); if (err)
+> > >   			return err;
+> > > +
+> > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);
+> > > conf->fullsync =3D 1; WRITE_ONCE(p->replacement, rdev);
+> > >   	}
+> > > @@ -4028,6 +4031,7 @@ static int raid10_run(struct mddev *mddev)
+> > >   	rdev_for_each(rdev, mddev) {
+> > >   		long long diff;
+> > >  =20
+> > > +
+> > > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending); disk_idx =3D
+> > > rdev->raid_disk; if (disk_idx < 0)
+> > >   			continue;
+> > >    =20
+> >=20
+> >  =20
+>=20
+
 
