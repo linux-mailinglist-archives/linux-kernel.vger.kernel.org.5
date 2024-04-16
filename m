@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-146755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEF28A6A61
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:11:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B686E8A6A62
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:11:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86C37B2104A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:11:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69389280E5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3C712BEA9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F7612BF21;
 	Tue, 16 Apr 2024 12:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cRfw9yae"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JNUj3Y9T"
 Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D16912A17F;
-	Tue, 16 Apr 2024 12:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D0B12AACC;
+	Tue, 16 Apr 2024 12:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269438; cv=none; b=fLV9sWjFslHjiQr8ax6pXp7zArsIEU67Jnu7j7hEGWcQTizirhEC3BQarIMUkIa4+jq0AqVGX9bzhsCexFRK8VATaeHqdPOHKTpkwmBQVZp+G0d7Tn0fDDmBjge0/tXcUZFfCuhAWCsvXgoifvEbABRit3C+9shSHFUqUuXY8nQ=
+	t=1713269439; cv=none; b=Jmjgt/VyZwlQ4MDapGlY/rBWGNKbW0u5gR6C8yKZ5nMjWG7HbuNUc5GctJrqyOaKS27LbgwpYdjb1fC15xWKBcT7pN/lvfkvwRFpQ32ETMj3g0luEaz0K/Ph1Xj7OdD1MSHaMyXj60u3THAoTn+1zB2uN10yxyOX7x61UD9KH2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269438; c=relaxed/simple;
-	bh=7HYteCqzMBVNnPZJ467F/B4yXEixmL6lB2fxTh4FCiM=;
+	s=arc-20240116; t=1713269439; c=relaxed/simple;
+	bh=Np0xodRkfHCyc2ASkxWCyonOqAUzHF+7BznmT2uScWQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ruxgBufv77WWoworu+y9cfofJw95jsTmZnmvEskVKvfPb63y+MiRfTzYwb6yX7yMeod+tHliVPMjFHh5lRHswQg9qqqPtTsCJzyVh95rqnB1Y4g/FYaeapwCWHF4Xbh7pcki0akRy9H2JB+Vq3/g5qDoGm2967HEFVQlCtX5QBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cRfw9yae; arc=none smtp.client-ip=209.85.218.52
+	 MIME-Version; b=N3qluMBkNIQkoNPpKkof//8Sz/FtjnBMjR81aP2DjZzqNMunxx3tB9zxPQomELtTCtX+n23BBNI0gzygslFMliO5s4zTNYV8VteCzUag+s/3wOUUykE6eRCVGRjNvZfmvDufNQZV+HTL8z/xnNF+eQkw7f2Zori6N8/F5wgAiuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JNUj3Y9T; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a5200afe39eso533370366b.1;
-        Tue, 16 Apr 2024 05:10:36 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a51a7d4466bso491686966b.2;
+        Tue, 16 Apr 2024 05:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1713269435; x=1713874235; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qunSwPKc7mLDKqqj/ytcrTEeCRQTTp7HPOMCEfR0Oks=;
-        b=cRfw9yaeg54xPTipDbj/+0hg9Rs7ufr+dezFea6I2sLaoAt1wh2AzYDOQv9gkgg+EN
-         d0dj5ZUuVfEigFZdg3ZJ73og1GWFB9bL6Of6R2CV7uIPM44Ys8DHJN8vXYcDIuVZpAEQ
-         GW2L7P/dBzmEzcQJvzgGPi4s0PaDhVpyV5qNeEa3Jo+tPYM7+SAbimq7yOJ+9pNmk3VK
-         O2iaNVezPUggTscs+DvS5E4p43K7bEbaVLZ8DwxzibIEiLrUJ0hcPWi+BtO/Nr9o3CkH
-         YSfHzbTiW6zgtKuKpPMxIi5I2OPExygaBYm4y8RmmTNlGupN++yuBz52vVIUleRssixR
-         flEQ==
+        bh=EywP0ORbcwYupTHjZxnseaKIdgopmLjXc6Kh63nwRpk=;
+        b=JNUj3Y9TXOQQv8ZMjEKJhMTK4/Rqv1zS0d//069auA1SJKhTlqtcp5FDN34qPJvdV1
+         e3NiVVBsET+LHx8VvUjeR1+FAjc6EpkziQ5SVrLA1JMH/CeBY6JsKECGYrXqPglCeu7b
+         hVfkgYY8CbWU6PacwSUbtNneX2zJmco+u1ZYTE1F43QueW+zNlRQyCJluy4WT5g/KcdK
+         pW9HIPpgchqCPyhKxR2xiYBH0lkFRj6s7jhT9vHAe5gaNqrJfyMDxZTLUQH73frEOeWe
+         P/jZ1RKrdqFDDe2uIHiS55ijpga5435GBjoCbVsRldPcfOshe0Mq9fKb39Go6SIMSuDh
+         gCrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713269435; x=1713874235;
+        d=1e100.net; s=20230601; t=1713269436; x=1713874236;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qunSwPKc7mLDKqqj/ytcrTEeCRQTTp7HPOMCEfR0Oks=;
-        b=hfXTaruIxuyWa/uB1dAjkbRccta7OReSNRf6fLi9ZkKQUdWcX37c/38ozWJveoDAHX
-         4wkanQDBMJqZRztsaZTyqhhWitV/ztLulkxI3tLJHRsBt+9wX4YWtiXhAmuytMB8Jvpp
-         CYY5TmNEB8ZQytS0YI7cpP4la4nDAihHAYweTnlDPaITZiYEZoTxvYgiOn25kdpATN/A
-         B4ipTM4oVxj6x+dCGbQBgQXFWOREsOKsPC9AEwhoKdFOkP7tffzasK1wMbJPAt6RBfx0
-         5TbWPIAMWcBdSxL9tfMlR0BQQh2sfXHiTKXwqEwP1CcXdW6E+QOPlJMjLZiOVi4kght5
-         NVfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/Yo7PDFTrjSqdq9DZc1mmv8QPAOvEKF18t4+RuoNkYqitkidRSE4BJ6cw3oPuuOFFtuptLFQZuDLEP9RneuLe0pAPwoDzwbtkmu1m46rl4Jkmj6xEuPSDPruEIa6C6SgfJ/sgp0oEDA==
-X-Gm-Message-State: AOJu0YxTKoaVcKCL2hSOd/hQ0Ivn2RrKZf5XKft/y8mGx/ryUQAPmXTz
-	HLOrQepQyneb4kqttJVffBW+edHrb+wcZBPTBygr5OT2QaghMaUH
-X-Google-Smtp-Source: AGHT+IFLd32PpfiMZS/7VU2QkkCZR1Wf817qWky5Xivl1b/LeGM3OeLirKtJfDe2F38dHsegA/iweQ==
-X-Received: by 2002:a17:907:36c2:b0:a54:4f06:375d with SMTP id bj2-20020a17090736c200b00a544f06375dmr4575931ejc.62.1713269434792;
-        Tue, 16 Apr 2024 05:10:34 -0700 (PDT)
+        bh=EywP0ORbcwYupTHjZxnseaKIdgopmLjXc6Kh63nwRpk=;
+        b=AOue4lpoFvoDSWpKTdbdHoq3pS1fdbbTson0cSHmdTxuxB/YlH4qrffaT6V5/k2x/l
+         gYRh6XStOaj1vsKb23o4sVmAGbGCLaD+9XVXRO2cePTz/sTh93DElQnrSKREXGvlAmzN
+         EyME5erjQnqLuJ7/hz2cTxnoxIoFFFQfPVxTB2RCYyb/kwJhzoQMNOVdA6taAuvkA9g0
+         GmoUbyllZWzWeBrLJuOfCiWC0IsVCH+rW8RCMUmDeMrp8TkqmmPR3VK7yggi7pUgvTiC
+         cq7PO8SBLpKgdmcsQlUxnSu4sNEi0W6cFHEQk1sYDF7l7bCU/1yiEyl6icRqk8qkE2CQ
+         r0Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCVl6ldDqIvf53R2y5W+l4uHkdRT+xAXjIL714IHH9La98hBRp+T4ipWC1Xw7CkTgY5tfeCoElzhncPTZktyPoc21p/nQWsrvRxqa7Qr4JL1/wYY6lo3KPmH+bmwsRdegireh4YcedyPqw==
+X-Gm-Message-State: AOJu0YzPid4OXGQbKGtq/S+91QIJ4/1A4s+ZQdxDiz+JT6w5JT/tHfvZ
+	09gKpicR6SuXk1q6iLIq403TpoviaXgADkUvgROUfhh8n7VmV7iG
+X-Google-Smtp-Source: AGHT+IHSL8lBWdoxil/kiJaFxgpUjKdUY4oR9IJ/STOc6VcsQt43Bj6omc0sg9tnSjrfSQCkXj4Hag==
+X-Received: by 2002:a17:907:8690:b0:a55:357d:1ed4 with SMTP id qa16-20020a170907869000b00a55357d1ed4mr2809328ejc.6.1713269435516;
+        Tue, 16 Apr 2024 05:10:35 -0700 (PDT)
 Received: from eichest-laptop.netmodule.intranet ([77.109.188.34])
-        by smtp.gmail.com with ESMTPSA id hg17-20020a170906f35100b00a469d3df3c1sm6767509ejb.96.2024.04.16.05.10.33
+        by smtp.gmail.com with ESMTPSA id hg17-20020a170906f35100b00a469d3df3c1sm6767509ejb.96.2024.04.16.05.10.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 05:10:33 -0700 (PDT)
+        Tue, 16 Apr 2024 05:10:35 -0700 (PDT)
 From: Stefan Eichenberger <eichest@gmail.com>
 To: davem@davemloft.net,
 	edumazet@google.com,
@@ -82,9 +82,9 @@ To: davem@davemloft.net,
 Cc: netdev@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/2] dt-bindings: net: phy: gpy2xx: add sgmii-match-tpi-speed property
-Date: Tue, 16 Apr 2024 14:10:31 +0200
-Message-Id: <20240416121032.52108-2-eichest@gmail.com>
+Subject: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property to disable SGMII autoneg
+Date: Tue, 16 Apr 2024 14:10:32 +0200
+Message-Id: <20240416121032.52108-3-eichest@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240416121032.52108-1-eichest@gmail.com>
 References: <20240416121032.52108-1-eichest@gmail.com>
@@ -96,32 +96,83 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a new sgmii-match-tpi-speed property to the gpy2xx binding to allow
-the phy to match the SGMII link speed to that negotiated on the TPI
-interface.
+Add a new device tree property to disable SGMII autonegotiation and
+instead use the option to match the SGMII speed to what was negotiated
+on the twisted pair interface (tpi). This allows us to disable SGMII
+autonegotiation on Ethernet controllers that are not compatible with
+this mode.
 
 Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
 ---
- Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/phy/mxl-gpy.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml b/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml
-index 8a3713abd1ca..9deae36bd837 100644
---- a/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml
-+++ b/Documentation/devicetree/bindings/net/maxlinear,gpy2xx.yaml
-@@ -27,6 +27,12 @@ properties:
-       Affected PHYs (as far as known) are GPY215B and GPY215C.
-     type: boolean
+diff --git a/drivers/net/phy/mxl-gpy.c b/drivers/net/phy/mxl-gpy.c
+index b2d36a3a96f1..4147b4c29eaf 100644
+--- a/drivers/net/phy/mxl-gpy.c
++++ b/drivers/net/phy/mxl-gpy.c
+@@ -114,6 +114,7 @@ struct gpy_priv {
+ 	 * is enabled.
+ 	 */
+ 	u64 lb_dis_to;
++	bool sgmii_match_tpi_speed;
+ };
  
-+  maxlinear,sgmii-match-tpi-speed:
-+    description: |
-+      When this property is present, the SGMII speed is set to the twisted
-+      pair interface (tpi) speed.
-+    type: boolean
+ static const struct {
+@@ -262,8 +263,17 @@ static int gpy_mbox_read(struct phy_device *phydev, u32 addr)
+ 
+ static int gpy_config_init(struct phy_device *phydev)
+ {
++	struct gpy_priv *priv = phydev->priv;
+ 	int ret;
+ 
++	/* Disalbe SGMII Autoneg if we want to match SGMII to TPI speed */
++	if (priv->sgmii_match_tpi_speed) {
++		ret = phy_modify_mmd(phydev, MDIO_MMD_VEND1, VSPEC1_SGMII_CTRL,
++				     VSPEC1_SGMII_CTRL_ANEN, 0);
++		if (ret < 0)
++			return ret;
++	}
 +
- dependencies:
-   maxlinear,use-broken-interrupts: [ interrupts ]
+ 	/* Mask all interrupts */
+ 	ret = phy_write(phydev, PHY_IMASK, 0);
+ 	if (ret)
+@@ -304,6 +314,9 @@ static int gpy_probe(struct phy_device *phydev)
+ 	if (!device_property_present(dev, "maxlinear,use-broken-interrupts"))
+ 		phydev->dev_flags |= PHY_F_NO_IRQ;
  
++	priv->sgmii_match_tpi_speed =
++		device_property_present(dev, "maxlinear,sgmii-match-tpi-speed");
++
+ 	fw_version = phy_read(phydev, PHY_FWV);
+ 	if (fw_version < 0)
+ 		return fw_version;
+@@ -516,6 +529,7 @@ static int gpy_update_mdix(struct phy_device *phydev)
+ 
+ static int gpy_update_interface(struct phy_device *phydev)
+ {
++	struct gpy_priv *priv = phydev->priv;
+ 	int ret;
+ 
+ 	/* Interface mode is fixed for USXGMII and integrated PHY */
+@@ -529,6 +543,8 @@ static int gpy_update_interface(struct phy_device *phydev)
+ 	switch (phydev->speed) {
+ 	case SPEED_2500:
+ 		phydev->interface = PHY_INTERFACE_MODE_2500BASEX;
++		if (!gpy_sgmii_aneg_en(phydev))
++			break;
+ 		ret = phy_modify_mmd(phydev, MDIO_MMD_VEND1, VSPEC1_SGMII_CTRL,
+ 				     VSPEC1_SGMII_CTRL_ANEN, 0);
+ 		if (ret < 0) {
+@@ -542,7 +558,7 @@ static int gpy_update_interface(struct phy_device *phydev)
+ 	case SPEED_100:
+ 	case SPEED_10:
+ 		phydev->interface = PHY_INTERFACE_MODE_SGMII;
+-		if (gpy_sgmii_aneg_en(phydev))
++		if (gpy_sgmii_aneg_en(phydev) || priv->sgmii_match_tpi_speed)
+ 			break;
+ 		/* Enable and restart SGMII ANEG for 10/100/1000Mbps link speed
+ 		 * if ANEG is disabled (in 2500-BaseX mode).
 -- 
 2.40.1
 
