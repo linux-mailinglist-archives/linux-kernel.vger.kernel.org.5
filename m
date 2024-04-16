@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-146658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ACBD8A68E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:45:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C7C8A68E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 989F4B21B2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:45:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C84FC1F216D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0A9128385;
-	Tue, 16 Apr 2024 10:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1891C128801;
+	Tue, 16 Apr 2024 10:45:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oby7qBd0"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CuhSy5WI"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E0D127E32
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:45:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AA8F127E38
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713264325; cv=none; b=RNZ9QdNctBnyiLilT3UJUPneU2Y2l0P5dL2lZU1lRBrjT6yzFt2RvanGc3VCIo58e9+Tc3gIaQB57wteNDa2WrRz1hYcd5XzuSV5OY29pE2heSnePMXgAs26NAM2byrdFLbYHb0QqCdod+sNmnW08V6bLmuGPVxaqrhtSd1nwLU=
+	t=1713264326; cv=none; b=lEphrBAdPPq56wmiFJwvSU7DPzYjZsxyzvdBKMSP9jzWc9HVpfYefMrccZhJNdSEXDjq7vXc/5KzRSS1k8QudOlfmcZuARiJzT42yYgG4BalmrrGSE1MQO+jNf83T1iY/e2MU3VYznJqjr7zuotfwK8tdgJ6zb4ALLnjC0zSwXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713264325; c=relaxed/simple;
-	bh=4kQYUNc9mzRT+PHh7G/UYt0sG1PbuqHRv+Wn2eqN/AY=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=RrwGkr5ZkCzpICoESgFNy1LbQ7UWiiub8Jq5CIGmvLLckR3LvHt2PprTrNyiglV/8J48SJFWKWSn6RYGWYUWdPQzm403b8LzCEI3Ms4Ll44apWFiZigXhm453D94ANkrR4g8WlXUYsO0WrzANKe9pDlcLkbwjHuZHf/TibSaFUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oby7qBd0; arc=none smtp.client-ip=209.85.128.54
+	s=arc-20240116; t=1713264326; c=relaxed/simple;
+	bh=7fVDMBM5xVV869P8MZlUPmDuxIwrqax34KtYB5UCsHY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=JOt1xFUl7eEaWnpd2Br/4JhbXhxac6t3Md545llEQD2HapkoDIjeuSrV+PIUl/r9MC9y2CjAFemrqzL8cpGhx7fXPvgTH8mTqdiBIoKAeegbnuVFmL/g8Ijkfclybyom5/en/2nG8eASnY8KcziwW9EDd6N/rNUQCEOn9J4JZ2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CuhSy5WI; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4155819f710so29056855e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:45:22 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-343e096965bso2806109f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:45:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713264321; x=1713869121; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=73kbs5VJGtZKxtjSM37kUl+tdcgdJXHyl+eR81HvUto=;
-        b=oby7qBd0/9+6m+BiyWFSnlE/N8CM5qBPLR1RWN/PcjNe3oBVinbEzGpVAOw7M/Jmdj
-         2rBNGNeK2ufoqpmTts4aRDQV3gSUOhE80889iiPzEyol4VQLzJj1FoFw5cyD5Sq02FSI
-         lzuySQtlvHryYVUU8fjrOXcONU1P+GmBYeLS8B+Q6YLZluZUB/r8KhfbpKc4ZHPkGf+Y
-         MwSACzei7D48eNVBfhZb/HDEK/Rh9Fz1jsKf4ykhyVA8HKPNaN/lrSskgjaTAb0tpmmP
-         Ep/GsqWEBoj44noh7AEp6AHpLfBu89LaOGU2hnMNLtKSCAq1HBlajrzaKmUy1g9bbL0k
-         Nxog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713264321; x=1713869121;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1713264322; x=1713869122; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=73kbs5VJGtZKxtjSM37kUl+tdcgdJXHyl+eR81HvUto=;
-        b=qesWdWQJqUDyOMh6JQHxDhaNt/lDz4WGum9j5w3hVwCz9P1xJwxVKLcREQLmvfHw1y
-         8+33f6QwIjZc+kQSvQds5yEQ5ObJh4gIkikLTw2KqS+H7eTZqL2PfNo7V4bObV28qbaG
-         s1yaUsfr7AlXvTFtGvuXGojOdnUJsoFGitD/wHGCNX5ZMY6p2ZmRzZX05pfw7OeWfT2q
-         8D72wbeJBj1+oPMFqpJs9hy6MQHASUmTvE9FGJ+0/cp9Hyxq9MUkubP2SiGhrbRjcrNf
-         /I24WGSR7AU2GpBgblhW2gCekRLTesMYRqNUvkKUZft7TgLMcaCW7CaVLB9DctcttPpp
-         VH3g==
-X-Forwarded-Encrypted: i=1; AJvYcCX4+AEaDPE3vqjHAMq3eZShj/cZyM5Zv5TO+FNkOBcCPbKygnCt1D2Ze03aLNW24s0ndU1faRTsfnyXF4OIoAvCw1ddO2KqNcYvVQ4v
-X-Gm-Message-State: AOJu0Yw9r0GNBWC5gWn8Q8pvn2CXE0GP+Qf1r9CG/qV5q4XGrbjPqW7S
-	KFdh5AzMwZE1ei9JTWkWa5C+VreRCNrPYmv1+PhoODLJAnYzKhH/NhM+qXhfjoM=
-X-Google-Smtp-Source: AGHT+IEus0QrFqsiwanPBFgmjAVGHYH7Qs5v7rzguwH+k374rvHQ1vLsxPb89GflAFcILrO0wlrBiA==
-X-Received: by 2002:adf:f404:0:b0:347:eb55:8f5 with SMTP id g4-20020adff404000000b00347eb5508f5mr3633603wro.7.1713264321139;
-        Tue, 16 Apr 2024 03:45:21 -0700 (PDT)
+        bh=5kQx7z6+Ldz5XYyh8xXwCAcDyA8gIafLtX7+rdECU0g=;
+        b=CuhSy5WI7u7OfgGCzX+mrnGlxQjYsZ5MvOGSAcmHux8uqlPNuwprjkUfUrVRwdKs1S
+         JsuTr639YdEQaW8SJTEhSkYIewU1hVbgEAoUcejU2qjTM38bMLd9+UHlICxegqOs+1jv
+         Qy0npnuonsvF6DL/kQKnUcC0vKezjAWXN/fo3afBVVcT+XMhNIRiSij3EgfegiuOKhTc
+         glVcXphYU/3pLVRQzWqyGxdeygbxbK6etmTbNmJT18y/HH0kEUUzK6YD+rcxrLQeXARn
+         WeNPpIO7iZO0EOwJpXLDALf/jQDWkIN45P8g+1UsEYj//ETvaPFiBX/A9smH2OPqe+PV
+         rIvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713264322; x=1713869122;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5kQx7z6+Ldz5XYyh8xXwCAcDyA8gIafLtX7+rdECU0g=;
+        b=WVHpJnRu4iTV5j/ulN/WXbhVxNyG7vtax5KxSJIntob5dLaCpmGNGA6cyc18Mz2PGd
+         z8bp5IzUEFAjt3yziW9h6VfqCodN90iDAeXDZsg3d/KOjKxIcyYbIWIvBPUIIloM5deE
+         mgwi0LAc2CT6al6+ixaqbOkvDxXh7uTquX4ZjbshWKsAIanC5gKh6PimaEbgQCtkN62d
+         xYFkLIt2H02ePvbcoX9l56C/bqBmyiZr9YuYUiaOzYvJM4PFJZfwlJCsGAvsBcRYpDre
+         LqbBAuZMSHXhEkCO9luA9MU/G592PfFQ8vta/QsLGBxBnxn7PZ/f3Qw+3D6pP0/zpkfl
+         WRbg==
+X-Forwarded-Encrypted: i=1; AJvYcCWekrZjzO2Z3WIwVGbftPhJuOUO3QsSwLSFomW0HWi3GfXiFvyFpXhnPloci32a3D8r0b5Fkwhb8GiqqmyA52TeNlN3IE2nWqaU9AMI
+X-Gm-Message-State: AOJu0Yx5IU5aCaIMzpJCSb9JsC9Op8Rya8PBWNcHZSumNSnv03M1xS/C
+	NVabCV/NOSHx0W3Az4dgfu0UBuIbXXb3j4iqKJ8C61QzUFVb1yOc0ibDCzeJ2FY=
+X-Google-Smtp-Source: AGHT+IHTtRNyS7RiqQutDLkv4RpX5jb9ZLT6VAbYyVqY0HwbgVW+ohpwd874WyS5frEK6yACKIVDlw==
+X-Received: by 2002:a5d:4d03:0:b0:346:c6e6:b7a3 with SMTP id z3-20020a5d4d03000000b00346c6e6b7a3mr9009266wrt.27.1713264322473;
+        Tue, 16 Apr 2024 03:45:22 -0700 (PDT)
 Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id o9-20020a5d6709000000b00343956e8852sm14470141wru.42.2024.04.16.03.45.20
+        by smtp.gmail.com with ESMTPSA id o9-20020a5d6709000000b00343956e8852sm14470141wru.42.2024.04.16.03.45.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 03:45:20 -0700 (PDT)
+        Tue, 16 Apr 2024 03:45:22 -0700 (PDT)
 From: Daniel Thompson <daniel.thompson@linaro.org>
-Subject: [PATCH 0/7] kdb: Refactor and fix bugs in kdb_read()
-Date: Tue, 16 Apr 2024 11:43:17 +0100
-Message-Id: <20240416-kgdb_read_refactor-v1-0-b18c2d01076d@linaro.org>
+Date: Tue, 16 Apr 2024 11:43:18 +0100
+Subject: [PATCH 1/7] kdb: Fix buffer overflow during tab-complete
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,63 +77,85 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAEVWHmYC/x2MUQqAIBAFrxL7nZCiP10lItTdagk0NCII797Sz
- 8AwvPdCpcJUYexeKHRz5ZxEdN9B3H3aSDGKgxmMHax26tgwLIU8ClYfr1yUIW9wjdphCCDDUwo
- //+k0t/YBfZhk+WQAAAA=
+Message-Id: <20240416-kgdb_read_refactor-v1-1-b18c2d01076d@linaro.org>
+References: <20240416-kgdb_read_refactor-v1-0-b18c2d01076d@linaro.org>
+In-Reply-To: <20240416-kgdb_read_refactor-v1-0-b18c2d01076d@linaro.org>
 To: Jason Wessel <jason.wessel@windriver.com>, 
  Douglas Anderson <dianders@chromium.org>
 Cc: kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
  Justin Stitt <justinstitt@google.com>, stable@vger.kernel.org
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1411;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2001;
  i=daniel.thompson@linaro.org; h=from:subject:message-id;
- bh=4kQYUNc9mzRT+PHh7G/UYt0sG1PbuqHRv+Wn2eqN/AY=;
- b=owEBbQKS/ZANAwAKAXzjJV0594ihAcsmYgBmHlZMs0vwQ8tOuyT2arstjNqtfoUEl8ZHGNwwr
- tCDqzdIr+CJAjMEAAEKAB0WIQQvNUFTUPeVarpwrPB84yVdOfeIoQUCZh5WTAAKCRB84yVdOfeI
- oTcoEACAPJFW5SjQtzaP6yGRdaHprXnRsogRVkZu6Q7ty0kWbvGjFDMKiIzb6A0ttgGmwyCIgcZ
- 8iwQbdZFWioLmhyLSU6TDlt5tMOvzkjELjhJ98xkyPu7EMJYuqVrAzev5fm4sRpOVq+M1mCUm3w
- Qa7xPTYGMd6V+P8dHNTiZmvm7qYOausPaN0+X8kbiqWSs0FuTWZXmyV00MY6FxpW+7PGoQFFMKN
- hdQ6ftQXESXkqWojUg/9oGwdryVBl9S3lK3NOwfr1qhI6SsGWNMOomc8ln3MYfzsoH8kWIBSHyT
- /1hoxSVDbI7cri7PtOXvorJ0zuXkZ+oLXZrec8EYPOfoJoMNdhfsuaAg95IYsdkxF+dQv1EkA4T
- ViJUgS5+aeVWX/53vhPs/jqIn/245moTmTSRNF+TrnKvGPXvXduk5uCNP1cVNGm0pJO9hAjz6ic
- Shsewo20iC9Fiza1yLwFlmDDZXQdXGGsr1zxHDGkFKkmwwBL8szle7ZbgFJ25uc/H7hBvJBaetk
- KQmZoIUdVmHgkb6O60FSIvSUrR4d0Gt+615z+rXhsGeEbBvflcfFbOLoHLABQwRJGJa7klj+pem
- 2KF+WxmoryDpTDWZ3g2mLejv2ucfXE5Ovw4okZxKQ41cZnbCcSLrpRcYHuxxk/wOtKKUTSQyMLB
- NRHWG6fvJT/V07g==
+ bh=7fVDMBM5xVV869P8MZlUPmDuxIwrqax34KtYB5UCsHY=;
+ b=owEBbQKS/ZANAwAKAXzjJV0594ihAcsmYgBmHlZdkGw9HMU6ZyFyNTx1wTmdr5u+FzJGQKx1C
+ oIc1CdCUlqJAjMEAAEKAB0WIQQvNUFTUPeVarpwrPB84yVdOfeIoQUCZh5WXQAKCRB84yVdOfeI
+ oWYFD/kBz8MRqROT8FtLzkp2dOxoxnKkbbpva59PSCF6knfFq/AA68i/AWI6/Mjb+eX8qqX6HQw
+ a0KVrKuWSTVhPxOEoo06JMZfqEwzkyVjOGWI/35UGd4EvCaCuK2YG/gATjyCqtRtttGPVXcy07R
+ Ay4ig0syDAd4DKcvehsyKXCxfws/iRt+rKm3bmHWQ8jKP7eqXj5i6+3fZoRXQbuWB+FfhygjMHo
+ OWmwkrkDkn9QLJXugOxSPStsjjcw2MgI+WgSms2EbvOBzy8Wcub706dkOK0zci4IRYHpMqRu7Qa
+ 2xeDDHbv8yWc9jDoZMjfqbRgHMLGG4ASdlYReKyLmz/C6pZLrQd3ITBy4lA31anDfsqUgj3SszZ
+ aL/XTepchju5K7H/0tSMkaO0zooUkWZhu1N/79JSMvjDNJYFfV/iO+MK2YZKDwO2/m7XMEHwi+S
+ kfzHOF2NIC8eMctYV78EkjPHqMbkmplyD+ELvvfJBUPrIhNN8xIMlw0t/KGkpvRkYwV5TOSN4rD
+ PIMfXV7x4NKLR6f145VA/pleGtVVc1H3KAOPM1lQywUDFDa7FDhHUVW3uTgvre7kOoAVNWHY8k6
+ CLsvNDvUwvjb8/5IsAvpyp7Glo6mD932aohrcaNX41X6ofAC6MTnVU8ylZ5vTh0RIdI2c3CR0Vw
+ BfwqwWE6PK+i1SQ==
 X-Developer-Key: i=daniel.thompson@linaro.org; a=openpgp;
  fpr=E38BE19861669213F6E2661AA8A4E3BC5B7B28BE
 
-Inspired by a patch from [Justin][1] I took a closer look at kdb_read().
+Currently, when the user attempts symbol completion with the Tab key, kdb
+will use strncpy() to insert the completed symbol into the command buffer.
+Unfortunately it passes the size of the source buffer rather than the
+destination to strncpy() with predictably horrible results. Most obviously
+if the command buffer is already full but cp, the cursor position, is in
+the middle of the buffer, then we will write past the end of the supplied
+buffer.
 
-Despite Justin's patch being a (correct) one-line manipulation it was a
-tough patch to review because the surrounding code was hard to read and
-it looked like there were unfixed problems.
+Fix this by replacing the dubious strncpy() calls with memmove()/memcpy()
+calls plus explicit boundary checks to make sure we have enough space
+before we start moving characters around.
 
-This series isn't enough to make kdb_read() beautiful but it does make
-it shorter, easier to reason about and fixes a buffer overflow and a
-screen redraw problem!
-
-[1]: https://lore.kernel.org/all/20240403-strncpy-kernel-debug-kdb-kdb_io-c-v1-1-7f78a08e9ff4@google.com/
-
+Reported-by: Justin Stitt <justinstitt@google.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 ---
-Daniel Thompson (7):
-      kdb: Fix buffer overflow during tab-complete
-      kdb: Use format-strings rather than '\0' injection in kdb_read()
-      kdb: Fix console handling when editing and tab-completing commands
-      kdb: Replace double memcpy() with memmove() in kdb_read()
-      kdb: Merge identical case statements in kdb_read()
-      kdb: Use format-specifiers rather than memset() for padding in kdb_read()
-      kdb: Simplify management of tmpbuffer in kdb_read()
+ kernel/debug/kdb/kdb_io.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
- kernel/debug/kdb/kdb_io.c | 133 ++++++++++++++++++++--------------------------
- 1 file changed, 58 insertions(+), 75 deletions(-)
----
-base-commit: dccce9b8780618986962ba37c373668bcf426866
-change-id: 20240415-kgdb_read_refactor-2ea2dfc15dbb
+diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+index 9443bc63c5a24..06dfbccb10336 100644
+--- a/kernel/debug/kdb/kdb_io.c
++++ b/kernel/debug/kdb/kdb_io.c
+@@ -367,14 +367,19 @@ static char *kdb_read(char *buffer, size_t bufsize)
+ 			kdb_printf(kdb_prompt_str);
+ 			kdb_printf("%s", buffer);
+ 		} else if (tab != 2 && count > 0) {
+-			len_tmp = strlen(p_tmp);
+-			strncpy(p_tmp+len_tmp, cp, lastchar-cp+1);
+-			len_tmp = strlen(p_tmp);
+-			strncpy(cp, p_tmp+len, len_tmp-len + 1);
+-			len = len_tmp - len;
+-			kdb_printf("%s", cp);
+-			cp += len;
+-			lastchar += len;
++			/* How many new characters do we want from tmpbuffer? */
++			len_tmp = strlen(p_tmp) - len;
++			if (lastchar + len_tmp >= bufend)
++				len_tmp = bufend - lastchar;
++
++			if (len_tmp) {
++				/* + 1 ensures the '\0' is memmove'd */
++				memmove(cp+len_tmp, cp, (lastchar-cp) + 1);
++				memcpy(cp, p_tmp+len, len_tmp);
++				kdb_printf("%s", cp);
++				cp += len_tmp;
++				lastchar += len_tmp;
++			}
+ 		}
+ 		kdb_nextline = 1; /* reset output line number */
+ 		break;
 
-Best regards,
 -- 
-Daniel Thompson <daniel.thompson@linaro.org>
+2.43.0
 
 
