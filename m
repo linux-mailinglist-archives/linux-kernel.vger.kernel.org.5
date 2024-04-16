@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-146769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A2EC8A6AA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:19:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF16C8A6AA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:19:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32168281991
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:19:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46BDC1F218BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:19:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB33412BF02;
-	Tue, 16 Apr 2024 12:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8AF112BF31;
+	Tue, 16 Apr 2024 12:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="RSSyTrox"
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2093.outbound.protection.outlook.com [40.107.14.93])
+	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="Bqo1ki0W"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2112.outbound.protection.outlook.com [40.107.22.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DD2129E9C;
-	Tue, 16 Apr 2024 12:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.93
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9727412A177;
+	Tue, 16 Apr 2024 12:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.112
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713269918; cv=fail; b=EYCSY7WhmGyTXJdsUYh5AeF4u9LGtE0y8J0Ith+etODTDL31ElGpJrnZaalgT8CiPb/Z9QNFf/t8HxvYHUaRgxmwMCXBzUIb6RsAE4Z7sjmjMatylu1ZJXcG99rxGyWzsiuSeg0IPB/scLvnYpgNaGHQHCHeDF0w18zi6xvwad0=
+	t=1713269919; cv=fail; b=ppz+gm663w/wh1hV8RtH57oM6VfmVvo8I+Gg48uCNr/rBjaWAO0qky3Z25ukhuqAfY/jX6gVu5V1cvbqGWXwgE3G697pP7VJUzFyTWJGYOFeqi0zN64zByXsZYNYgIBNFsre41aj/DG34jKb6Om+KhYOXKuP8Y4+vP4sVwbOJDs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713269918; c=relaxed/simple;
-	bh=9qcG7iz3fuDsLrOzdibbuaHhqB/sTiBM5Y03rQwu/g8=;
+	s=arc-20240116; t=1713269919; c=relaxed/simple;
+	bh=u2jNXUdlEl0kN1j8OchrByc+t9mhlXMj8KWzl9eF8sU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Psqemt/evKtSvy2yD223RIlaHmUGJOAvt6kwfa5Wg7aRRSCMuslT2bzcP0aXVVxkbIzXGqJiBa1gSMqHCWRGFunWK8YKjTaT+M9hPE3tTIQLqzY9qu4aofEG/281Zaka0LFUe0E5PH4UjKtMN/vbWQiDqQHuucqpE3JiOxDo2do=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=RSSyTrox; arc=fail smtp.client-ip=40.107.14.93
+	 Content-Type:MIME-Version; b=YGYd03QF7R+o+HGhVRTF9n1+7ESEhlS7lLDutjoVDZETAk/A4uMZqOp2IxpR0fHC7+vSUOvYE3ncN+h8Xi1fv6HIddfKx4k0DFJhbCGVtETmcLpjEHcC47Ss6MxhsojH8bJlUMj6ufoarYq4Av7ip+LNp+wL+7JdF9H4g5/mrkY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=Bqo1ki0W; arc=fail smtp.client-ip=40.107.22.112
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=topic.nl
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ftleeA7dzRXMsmgqcz9iSQ/kG4OhdRKoOFODb7oG7mQH9pXbWFck0vBht0+kqS7TPjz9LV3qL/C24U9Psmrz3VwBdOUdu825PPul9hB0i1SM2ZZkBoHEHj+airxWlzKqTJ4bWaTokE8H7vIcneYSWkaq/7eMyxk/fOZXICnBP1Gcp9SmnoWDJDlLX8hsV1gLHJeSofHqyKOL3TjRSm8hkRyCiWir7xGAnL4v80Ol10uxAxdUJ+6a9gVwkwL1dOoNCzg+TLc6YG+tRKcf+CTNVKtrzZQxPz34W5tBeSz76OzLb8yrJ3reYyKXMyQR9Thl83ilMKR6jDD2Cy2Vkme65g==
+ b=l9OjJ7dix/kwjF7yJuMbhV+U/Y1CUv+NU92wyDhVtwE3NOtW6iQnMBRx5RSv6e5IFk1/oZDt3onwcVn1LcHp3c5UDEHg/PW7it4Q5OsxrBXBx4q7bA0SGQkLcjl7RlPpuJEzd6SMlSsQMV5YF/hXmb9NonmCWa6i7wYEO3zZaTbOnDrArg0urx9Q3tFeY/51/n6CBI3i2KrKySoGNztMa1AzTPIERaV7D0WAHggvWo6ORzmm19DQ+JPoQGuB6JA8mbu5cJMguqYiECTnnBfERCeXFuKrkklK0sYYgv+HSBrnXRIJbyEsMro3akPDFKlxBoYUGdMRMvz0hR+Ups+Rhw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7CXGJvQlQE1Iieu+YOvD9q8PM9AIhDyaffeEMwspuFQ=;
- b=jaOUQlna+wn9cgxka+XSQc4H6Qo/NO/nWBGoJMbDzkf/asM2YRDCTWkPr4/XLZNj+TjlWIFkB5HMXLDrTK1N3/HTp//W7O2NWqQXts1i58/fzsoz7TXD1TAW5G5n19dhAtxe5wcA0AmX4wbr5nTBSYfTWRxRiEokBtO9f5erQ6hmoGqC/9Y2pJA6Km6W4RONTPxBAfXe8kHa14BaQ5mnELKPnDD6cqkDhpSUI/u7WijBJCoJDLINw3jRUlzKEaYO1kn8jREg+35i6m6EUt5+w9Q31aoLT9yeKB8P17pkASq/wMKBkhnvQfKFXcCcWLuCaC2WHPxrPkXFuhzA4YWAog==
+ bh=5Qkr7nM727EHH45DBlYjU1b/MAYY/KynsP/yC64XoSI=;
+ b=XSFQFKjN5H+h6ZLKgSn2UjPwvpQb+8B3IX2euYcbq4GyBzr03nIzldaRbJs1YX4AmpYl/+hm1csIfUC2EkYuOIvofBtyShtdm0AmLX8rkJ89WPXbTv1PFtobnjbAO3CMIuiPoz698BptUBXwm1UjcLMLchyX3RWFZG1t7MeuyYd9I6+JPXcaIvRo2SBPAhllR6FNiMyNZy7gH7ThwP+kReVIyXb/STIUiniWvBGGbNtma89qf5K2UtZFGNJWguFPsAY5WDRvkindrdVCqHn6+FsA+vAb4DG6h8+fyOfv1NzTI67kShjLsiDOk4FWtbEhnvzb57wqhVrDs9f+EpHyWA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  40.69.19.60) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=topic.nl;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=topic.nl;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7CXGJvQlQE1Iieu+YOvD9q8PM9AIhDyaffeEMwspuFQ=;
- b=RSSyTroxfg1ntBeHN7AdhtayOa56jywLRW781t2xNBMIVZBZGbB7Ae+yT5UL9aTbnSIlazqggP0sN8EQhtWesfw/J+ig1pPYJ2OZqwQ1YhpWWWPeRaVcHwPgyLtUxO+D8suO/2gqacxGG7fe4L/NJwFAYa+O6IvPMU4jipttepGbFtP1qHGVnM4n++8Kd1r0yLN6J3D3YP7xvGC9HbVQl2lRlfky991M3GhGMViyFoOBH4a/CGO4TlWcooRQ93bqgfJ++HdKggPt2ZcrLYEkzes5m5O+h2HAqKQBQT26q5vOrIYoiYLTmyMAE35amv+PiB4D66/sxX18EEDwgU7N6A==
-Received: from DU2P251CA0008.EURP251.PROD.OUTLOOK.COM (2603:10a6:10:230::10)
- by PAWPR04MB10053.eurprd04.prod.outlook.com (2603:10a6:102:387::9) with
+ bh=5Qkr7nM727EHH45DBlYjU1b/MAYY/KynsP/yC64XoSI=;
+ b=Bqo1ki0WIfl33iPbLUssWCtIoJJwl4PSkoACYkcUMSpPLvOaacVVyNewbG8DlRiGjGw93pG/thqTfx31DMRfeDzlUefdRzfccJNIwYwNQ8hfVhqVq5BkW8UeIzn/2b+7mGrl89VdfYoOU8R0nu/BBrxN6FYUPHHjvoH8F6N3GLLu+QdANxwPyhKcI42abXDgU5J8cp4BYPe7uW9H6MgDqEtQA1oVYjAQVhtfN2RClerbQW9G1/4w8KOad7kHkGZRZyo925iVGdo0PWfQg1TPt8M2gkViXqQo1hr6uiLvo+Lvlo95Xe/vuzPWUVXh4TdqW+zjEBHBs+7bQbkQkCfI/g==
+Received: from DU7P250CA0023.EURP250.PROD.OUTLOOK.COM (2603:10a6:10:54f::11)
+ by AS8PR04MB8610.eurprd04.prod.outlook.com (2603:10a6:20b:425::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 12:18:33 +0000
-Received: from DU2PEPF00028CFE.eurprd03.prod.outlook.com
- (2603:10a6:10:230:cafe::12) by DU2P251CA0008.outlook.office365.com
- (2603:10a6:10:230::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.43; Tue, 16 Apr
+ 2024 12:18:34 +0000
+Received: from DB5PEPF00014B9B.eurprd02.prod.outlook.com
+ (2603:10a6:10:54f:cafe::ef) by DU7P250CA0023.outlook.office365.com
+ (2603:10a6:10:54f::11) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.34 via Frontend
- Transport; Tue, 16 Apr 2024 12:18:32 +0000
+ Transport; Tue, 16 Apr 2024 12:18:34 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 40.69.19.60)
  smtp.mailfrom=topic.nl; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=topic.nl;
@@ -62,10 +62,10 @@ Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
  40.69.19.60 as permitted sender) receiver=protection.outlook.com;
  client-ip=40.69.19.60; helo=westeu100-emailsignatures-cloud.codetwo.com; pr=C
 Received: from westeu100-emailsignatures-cloud.codetwo.com (40.69.19.60) by
- DU2PEPF00028CFE.mail.protection.outlook.com (10.167.242.182) with Microsoft
+ DB5PEPF00014B9B.mail.protection.outlook.com (10.167.8.168) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 12:18:32 +0000
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (104.47.51.169) by westeu100-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 16 Apr 2024 12:18:30 +0000
+ 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 12:18:33 +0000
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (104.47.51.169) by westeu100-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 16 Apr 2024 12:18:31 +0000
 Authentication-Results-Original: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=topic.nl;
 Received: from AS8PR04MB8644.eurprd04.prod.outlook.com (2603:10a6:20b:42b::12)
@@ -80,18 +80,20 @@ Received: from AS8PR04MB8644.eurprd04.prod.outlook.com
 From: Mike Looijmans <mike.looijmans@topic.nl>
 To: linux-pm@vger.kernel.org
 CC: Mike Looijmans <mike.looijmans@topic.nl>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
 	Sebastian Reichel <sre@kernel.org>,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/5] power: supply: core: Add POWER_SUPPLY_PROP_*CELL* entries
-Date: Tue, 16 Apr 2024 14:18:16 +0200
-Message-ID: <20240416121818.543896-3-mike.looijmans@topic.nl>
+Subject: [PATCH v5 4/5] dt-bindings: power: supply: ltc3350-charger: Add bindings
+Date: Tue, 16 Apr 2024 14:18:17 +0200
+Message-ID: <20240416121818.543896-4-mike.looijmans@topic.nl>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240416121818.543896-1-mike.looijmans@topic.nl>
 References: <20240416121818.543896-1-mike.looijmans@topic.nl>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.dc197200-74ec-4cd3-a0dd-4f7fd874c623@emailsignatures365.codetwo.com>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.217e6bb9-ab43-4da3-b354-1d8d288df2de@emailsignatures365.codetwo.com>
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 X-ClientProxiedBy: AM8P251CA0015.EURP251.PROD.OUTLOOK.COM
@@ -104,177 +106,125 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-TrafficTypeDiagnostic:
-	AS8PR04MB8644:EE_|VE1PR04MB7230:EE_|DU2PEPF00028CFE:EE_|PAWPR04MB10053:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0e377bd-b1a7-48d6-0135-08dc5e0f5516
+	AS8PR04MB8644:EE_|VE1PR04MB7230:EE_|DB5PEPF00014B9B:EE_|AS8PR04MB8610:EE_
+X-MS-Office365-Filtering-Correlation-Id: 269eaed1-4f6f-4814-f119-08dc5e0f5570
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam-Untrusted: BCL:0;
 X-Microsoft-Antispam-Message-Info-Original:
- tfVjBKJhoXfQjFgWGSpUdvZiztfHVLwf9VSdxqmv8/ZMQAtuYtqsQ3o7nUR9sF3I+PEPOliSbv4NBJ4kxmUb3raG20vZrJhOMXA6YoazyoOck55vUSN8AuiBP3CIjOseSDbket6OVHZ2NDiCfBpOkuQO8lcS0u+O+34L6BUcaSSZAr91npYlL8mJQF51U5yfo5hte7Ypqkgf4aTwRFGP1kT53OjnN4M8IoxsibYVLMPHpfBXwQ7qAYj+gg+jRNZqngg2R9K+kkXXDil19rxwwYNnQ3qeGnwc6q8LaCQGOqL4VqBzIeCSUnmHx4qACAtQcbJXv/JT9DavPO6QhDte5mzTQ1eytBC7dwJFykDH7DLMxkYIuRgAoPAgj/zhTThAKTBimiT3FYG8IHxerLjGz8RzepX+cLFLwoHYMwkLrT19AgmrB1NL71WtzrE/kmNSCggmYjeegIHgpbCZeyFETJm5QRYQllRBnOzM56G/W6IDewwSGACArIhF2pLl7Ar/PbgOPYb3rkQY8vjvDl2mDxxPEh4U6PLI7dNINXjRGfAGZeDs8d1+c75U0KcekB+V21/QT+65wiiInyQqk7LEBqbNMDprpWGrD6zb6d6yzn2rgL/AXDQR0ucBgvTJ4tWR6TCV5bRx+yWqbT4u7VqurI0C1SK0m6oEe6QYBJMP7OpQTBZH5DJsfSbJr9w/DbUV2sbsRvzHZsZCvxHwX5ZYEA==
+ EElw9z3JSiY61C7ScIOZjnHM+frHco3KHeSPRsWzv/zfDfT26cyoZGxwsw2rAEtmNFiEZvN/BKuKq2ERuDRfjz0m8WHreIuhql36g4POg8QYfGhGZiNU/EMXHhThb6kTNOyfPdnikt1gkaBViYww+t2h1VAlpY/kyaNLwC6f5KslI4gZW9nInwQnjH3Q6NOCuf3eDvhbirkTVzaqhyXl3cNmMG2hvkRjNyj9maogCwsR69QPoNpcaztmRJZJWZBa5dBGfaXNPa6d9uCxs4XatJO6t73nRhq45RJYiEaVRHmRSIR9n1kFN+vtTg+oTDj1fm+bQeLPtEPfov/hljEGlOa+h2Wi8WBLv7vC+LD79JormqgdSyPZCr73GXUFV8M79p8AsutYomT9h3R6R5RvB2d14HySA0jqRTwxyo8ONttQuzLShoShMxdun0VJmHOYskhOf6EISp7RzfAtsTD8XT6XKFRdIDx462fsTeh5QDCuAtk3rmOiEFwErceQ/DzaqZoM6VyaaffDSiV/q3t9XwWxxhjy69Im6ArHehCG9DcvExutqAWnzDu8ybce4wE59PPg2/7fgz73S8Wb4QEHQU7Nr0f18/hQBC5isE+bLVieKldcOi3h4+664aEELmOQqnHoJiETS2MvACVNkW23iWZspP7WsDfRxwtuwTPjJYM=
 X-Forefront-Antispam-Report-Untrusted:
  CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8644.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(52116005)(366007)(1800799015)(38350700005);DIR:OUT;SFP:1102;
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7230
-X-CodeTwo-MessageID: dc67f059-2f8e-46b6-adbc-99c741076226.20240416121830@westeu100-emailsignatures-cloud.codetwo.com
+X-CodeTwo-MessageID: 7cab85bb-b450-4b7a-803c-6431a8086678.20240416121831@westeu100-emailsignatures-cloud.codetwo.com
 X-CodeTwoProcessed: true
 X-EOPAttributedMessage: 0
 X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- DU2PEPF00028CFE.eurprd03.prod.outlook.com
+ DB5PEPF00014B9B.eurprd02.prod.outlook.com
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	0c7cca2f-7c26-4078-7ea5-08dc5e0f50ad
+	445b5ffc-6864-4c1e-ca39-08dc5e0f50f4
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	wFXqZgw9j92C0Z7eud/WWrvXgaartii/YHSPuadVWMyuoTPhn0O4yzdyZfzBjSZolZGa/DPQfBJzzE7NqqMaZTQ4yASFoCfxKtMl+t7vy2WmsY6+OSvz8GjYrWHqRcKELjI6Mu9oTdzYcrYB1Ru0srbZRFSiI1dz22G/xdo1KfLpdXmdInsyVTydYnlAWBFPZO12mBJLrzj79OfKP7MGY7aU51sYhD3rkQvVC1OcDDkRrvLSuVUl3bDAMzrQ7SB7st211BK/sorjtc7mGUDQPfe3cSVYg6JmfFmH0so9kAQmRFooHnCQmMa9yQIvvI9SnckngbV+AlRCBmXKMxAVTnwz0/8WJL5AfY9BjOpx6S8K2H0it2qNXmovmbnsYKGFge6CHST19Ka/8PVRMmW+tI6r5CZ9K8+pOp5kQSkDrwhDhoNwx55MpqXuHT5XjAJZ+Zum3vWi8MttnymW4wWe+HgGx1xtd2qYRnS6cPc7aBjDyX/n9cFgRNFRCSoXC5wqmWD4NA0HnZf6KY2SQm9LvGzlDYk3QfZLBkpqPTBDVZIry3POlTp7/ElEbU2F9dnFGfoLD+3sW+zksfGxYZ2DNmOLGR4ugyZNnH5kpS0ohueNk/J/wXMSAV376Xpc1itLnuopB7+SGlphAZMm7qJ2dgVYB7DgHrAT5KfPgyxoPfkzExgpsLOOOmZa/WT2t+1GC0JmIdTwcaZZpUK089FVLg==
+	uAI51seGvFaUN0erFhno7YrJGASc3bEX76/q38uzvGmAseDC7mkJavj6fs6wlSih5OGUv07PoyWPXKcrkNou25FaJFM5n5WzPhlM2kDCYl9ODH2Q7nFrfu7vKcTNJYjHkaOGeB+psapqsLBY4YPuvtRk2pdp13K+dvPpilyer+wCZ+6dYUjl1suYAq8juQbdPwOc1/kdoaNaGnJhLvJncpYJcqe7F62zFD7JVjT+4yn63nPC8zjtwWMhbin2m27D5zHSA3Xs/0MHZIq5lw7iXXDHu76PsHt6FUXDlvzIPikrZjKiGCssGDA6mUJa5PskVoL0CuHkSATPDfMIV28wOe74y4NNxsu6mlvmtW/QvDx/C8LFD3S4LyHyP6YJj4JswU3LOu7622kGLe1bUdPNS4ozF9zB2r8LXWBf8xYBi0YrblnUy5VxAosr1g6S92y168gfY+t4iC7FjCoF6s8sOqERbMbOC6djVQXXXPb3G8I4znCy46ogaH1XIiox6Ld7Cxb+h49RJNx9BF4r8X7EEVkM8XjBkeSN+LFUM20Xp6nZOHXAFcU9n2nlHDvejrA1SBURM+CF51jLTTvwXcGZybCxzIAhTHkiJTJtwP+54iXJ0YiceWVg7GLE2qKTomx2tlO6eOadEStZkJy8HdrHitBqwQY7clneBChYk6VZSTDV/8HzD2oXFWpKLdilMDJprPBmBtVh3mLS9a2rKrBC5A==
 X-Forefront-Antispam-Report:
-	CIP:40.69.19.60;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu100-emailsignatures-cloud.codetwo.com;PTR:westeu100-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(36860700004)(1800799015)(82310400014)(376005);DIR:OUT;SFP:1102;
+	CIP:40.69.19.60;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu100-emailsignatures-cloud.codetwo.com;PTR:westeu100-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(376005)(82310400014)(1800799015)(36860700004);DIR:OUT;SFP:1102;
 X-OriginatorOrg: topic.nl
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 12:18:32.4481
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 12:18:33.0597
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0e377bd-b1a7-48d6-0135-08dc5e0f5516
+X-MS-Exchange-CrossTenant-Network-Message-Id: 269eaed1-4f6f-4814-f119-08dc5e0f5570
 X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[40.69.19.60];Helo=[westeu100-emailsignatures-cloud.codetwo.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DU2PEPF00028CFE.eurprd03.prod.outlook.com
+	DB5PEPF00014B9B.eurprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB10053
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8610
 
-For multi-cell chargers (or stacks of capacitors), allow to report the
-number of cells in series and the voltage of each cell.
+The LTC3350 is a backup power controller that can charge and monitor
+a series stack of one to four supercapacitors.
 
 Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 ---
 
-(no changes since v1)
+(no changes since v3)
 
- Documentation/ABI/testing/sysfs-class-power | 51 +++++++++++++++++++++
- Documentation/power/power_supply_class.rst  |  7 +++
- drivers/power/supply/power_supply_sysfs.c   |  7 +++
- include/linux/power_supply.h                |  7 +++
- 4 files changed, 72 insertions(+)
+Changes in v3:
+Fix $id after rename to lltc,ltc3350.yaml
 
-diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/AB=
-I/testing/sysfs-class-power
-index 1f6a04a17c81..f5b194ad61b3 100644
---- a/Documentation/ABI/testing/sysfs-class-power
-+++ b/Documentation/ABI/testing/sysfs-class-power
-@@ -516,6 +516,57 @@ Description:
- 			Integer > 0: representing full cycles
- 			Integer =3D 0: cycle_count info is not available
-=20
-+What:		/sys/class/power_supply/<supply_name>/number_of_serial_cells
-+Date:		April 2024
-+Contact:	linux-pm@vger.kernel.org
-+Description:
-+		If the energy storage is composed of multiple cells in series,
-+		this provides the number of stacked cells. Parallel cells aren't
-+		considered here.
+Changes in v2:
+Rename to lltc,ltc3350.yaml
+Fix spaces and indentation
+
+ .../bindings/power/supply/lltc,ltc3350.yaml   | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/lltc,ltc=
+3350.yaml
+
+diff --git a/Documentation/devicetree/bindings/power/supply/lltc,ltc3350.ya=
+ml b/Documentation/devicetree/bindings/power/supply/lltc,ltc3350.yaml
+new file mode 100644
+index 000000000000..dca7fe0f0d8f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/lltc,ltc3350.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright (C) 2024 Topic Embedded Products
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/supply/lltc,ltc3350.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+		Access: Read
++title: Linear Technology (Analog Devices) LTC3350 Supercap Charger
 +
-+		Valid values:
-+			Integer > 0: number of cells
-+			Integer =3D 0: info is not available
++maintainers:
++  - Mike Looijmans <mike.looijmans@topic.nl>
 +
-+What:		/sys/class/power_supply/<supply_name>/cell1_voltage_now
-+Date:		April 2024
-+Contact:	linux-pm@vger.kernel.org
-+Description:
-+		Reports an instant, single cell voltage reading. The voltage is
-+		measured across the cell. The battery reports voltages for up to
-+		'number_of_serial_cells' cells, in cell2_voltage_now and so on.
++description: |
++  The LTC3350 is a High Current Supercapacitor Backup Controller and Syste=
+m
++  Monitor.
++  Specifications about the charger can be found at:
++    https://www.analog.com/en/products/ltc3350.html
 +
-+		Access: Read
++properties:
++  compatible:
++    enum:
++      - lltc,ltc3350
 +
-+		Valid values: Represented in microvolts
++  reg:
++    maxItems: 1
 +
-+What:		/sys/class/power_supply/<supply_name>/cell_voltage_max
-+Date:		April 2024
-+Contact:	linux-pm@vger.kernel.org
-+Description:
-+		Maximum allowed voltage for a single cell. This value is shared
-+		across all cells in the range 1 to 'number_of_serial_cells'.
-+		Typically used to trigger an alert for userspace.
++  lltc,rsnsc-micro-ohms:
++    description: Capacitor charger sense resistor in microohm.
++    minimum: 1000
 +
-+		Access: Read, Write
++  lltc,rsnsi-micro-ohms:
++    description: Input current sense resistor in microohm.
++    minimum: 1000
 +
-+		Valid values: Represented in microvolts
++required:
++  - compatible
++  - reg
++  - lltc,rsnsc-micro-ohms
++  - lltc,rsnsi-micro-ohms
 +
-+What:		/sys/class/power_supply/<supply_name>/cell_voltage_min
-+Date:		April 2024
-+Contact:	linux-pm@vger.kernel.org
-+Description:
-+		Minimum allowed voltage for a single cell. This value is shared
-+		across all cells in the range 1 to 'number_of_serial_cells'.
-+		Typically used to trigger an alert for userspace.
++additionalProperties: false
 +
-+		Access: Read, Write
-+
-+		Valid values: Represented in microvolts
-+
-+
- **USB Properties**
-=20
- What:		/sys/class/power_supply/<supply_name>/input_current_limit
-diff --git a/Documentation/power/power_supply_class.rst b/Documentation/pow=
-er/power_supply_class.rst
-index da8e275a14ff..42110cbbea4a 100644
---- a/Documentation/power/power_supply_class.rst
-+++ b/Documentation/power/power_supply_class.rst
-@@ -213,6 +213,13 @@ TIME_TO_FULL
-   seconds left for battery to be considered full
-   (i.e. while battery is charging)
-=20
-+NUMBER_OF_SERIAL_CELLS
-+  If the energy storage is composed of multiple cells in series, this prov=
-ides
-+  the number of stacked cells. Parallel cells aren't considered here.
-+CELLn_VOLTAGE
-+  voltage measured of the n-th cell in the stack
-+CELL_VOLTAGE
-+  single cell voltage when the cells share the same value (usually MIN or =
-MAX)
-=20
- Battery <-> external power supply interaction
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supp=
-ly/power_supply_sysfs.c
-index 9d8540ce1f7e..4ea6b556f3fd 100644
---- a/drivers/power/supply/power_supply_sysfs.c
-+++ b/drivers/power/supply/power_supply_sysfs.c
-@@ -218,6 +218,13 @@ static struct power_supply_attr power_supply_attrs[] =
-=3D {
- 	POWER_SUPPLY_ATTR(MANUFACTURE_YEAR),
- 	POWER_SUPPLY_ATTR(MANUFACTURE_MONTH),
- 	POWER_SUPPLY_ATTR(MANUFACTURE_DAY),
-+	POWER_SUPPLY_ATTR(NUMBER_OF_SERIAL_CELLS),
-+	POWER_SUPPLY_ATTR(CELL1_VOLTAGE_NOW),
-+	POWER_SUPPLY_ATTR(CELL2_VOLTAGE_NOW),
-+	POWER_SUPPLY_ATTR(CELL3_VOLTAGE_NOW),
-+	POWER_SUPPLY_ATTR(CELL4_VOLTAGE_NOW),
-+	POWER_SUPPLY_ATTR(CELL_VOLTAGE_MIN),
-+	POWER_SUPPLY_ATTR(CELL_VOLTAGE_MAX),
- 	/* Properties of type `const char *' */
- 	POWER_SUPPLY_ATTR(MODEL_NAME),
- 	POWER_SUPPLY_ATTR(MANUFACTURER),
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index af5a4e700881..3c208dff8af8 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -171,6 +171,13 @@ enum power_supply_property {
- 	POWER_SUPPLY_PROP_MANUFACTURE_YEAR,
- 	POWER_SUPPLY_PROP_MANUFACTURE_MONTH,
- 	POWER_SUPPLY_PROP_MANUFACTURE_DAY,
-+	POWER_SUPPLY_PROP_NUMBER_OF_SERIAL_CELLS,
-+	POWER_SUPPLY_PROP_CELL1_VOLTAGE_NOW,
-+	POWER_SUPPLY_PROP_CELL2_VOLTAGE_NOW,
-+	POWER_SUPPLY_PROP_CELL3_VOLTAGE_NOW,
-+	POWER_SUPPLY_PROP_CELL4_VOLTAGE_NOW,
-+	POWER_SUPPLY_PROP_CELL_VOLTAGE_MIN,
-+	POWER_SUPPLY_PROP_CELL_VOLTAGE_MAX,
- 	/* Properties of type `const char *' */
- 	POWER_SUPPLY_PROP_MODEL_NAME,
- 	POWER_SUPPLY_PROP_MANUFACTURER,
++examples:
++  - |
++    i2c {
++      #address-cells =3D <1>;
++      #size-cells =3D <0>;
++      charger: battery-charger@9 {
++        compatible =3D "lltc,ltc3350";
++        reg =3D <0x9>;
++        lltc,rsnsc-micro-ohms =3D <10000>;
++        lltc,rsnsi-micro-ohms =3D <10000>;
++      };
++    };
 --=20
 2.34.1
 
