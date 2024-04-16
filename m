@@ -1,106 +1,219 @@
-Return-Path: <linux-kernel+bounces-147648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC3E78A76DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:39:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F528A76DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:39:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 117B81C20D3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:39:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F08F4B249FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BED13AA5A;
-	Tue, 16 Apr 2024 21:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D30413B591;
+	Tue, 16 Apr 2024 21:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUaIWbfJ"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Seg7e16T"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D1C13A3E5;
-	Tue, 16 Apr 2024 21:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D796BFA5
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 21:36:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713303384; cv=none; b=YxJ6TzUYg/rm+7NkeLGzCSazud2keY1tceKAP6eGwqv/lQW/37yfq4kY4y7SXDHv6LUf0OCD4wwIKiX1FazGAepfKUE+KLzW1/kf6wrSAnFR/UuwnHqGZJSeESNifn8zJ8HerMAQDLsaKuDHpW3XNtlkfnBQ7aBOubpMQ5bOhvg=
+	t=1713303415; cv=none; b=T5nFtGrI9Nz0W7w77sMcBwV75hdTNYtJCZUNdJQxSiLsyTQbQVoiCfJOWZ+sej0HY+kdmMEfwcSRK5PmUMBgNcvNsX4AoPheyRn1XXh+811z4U7K2LCpTbbnBxy4W+EBmSnccenl7OzWQBORDwJ6ZaGZ2o0Vami0GKe2q1saYCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713303384; c=relaxed/simple;
-	bh=hTZj3zFH/capdeqXw5vQK5e7OMPUwsVvEofrRIwsyJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EBCgIf0uTd8wbjEa6A8LMj+a00Apb+O/SBuuN7uTqkdJ7IUTEy/c7YCgfAgGsZoWXuN4fSWkfOto74Fpxlo2BnzIulQ0ykI8H+GQQcBWjMbJK+l8GGgPi5Pqgmwify2rpNCpBr3fa2dr1CysHc3nje5iAUzK0yDjb5mxm+JbcT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUaIWbfJ; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ead4093f85so4108137b3a.3;
-        Tue, 16 Apr 2024 14:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713303382; x=1713908182; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dNYKjlq69Ck2YSCS4K7cKN7J0KiR/K/BwPBXXkuJ58E=;
-        b=lUaIWbfJH791Rxg/+cUVzv0avclvpqLTrGPnhQRbVDrM3CymmZv0QLFh8D0/LUEI7T
-         J61XgqoD7yNDODyJZ8eipOT+S5tnAUT5y24xjk/waWmIhfOjkIKwWjQIIGwbN1Q9Uszp
-         8iWRplvFbpovDVGNx+5eFP6RZMA7X17pTMFeaMqcHju1D+9fzig6aVRwOXUnY8ZlDfH/
-         W81ZJ101nWmF4yxQPTWZtMVY6nqlt36rURiMlAuaqHcqLdJwZYJS6zY6zIZdw6lcJMio
-         KQvYwvBN3jqoaVs2dfAOjukt/mNN8G1oScZoHr7HxoNM2A9eBeX3EDpFoqi+V5/Lf2ap
-         tm/Q==
+	s=arc-20240116; t=1713303415; c=relaxed/simple;
+	bh=c3EoyWM19DUSeIavFgvY6oD+s9pl5dwzlLm7a+SK04M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tJD7OmJjrKWYb4cBO0J2c2ThTt+tdKE1VZuklKgkyV3zaH+XCYMf9wiD6gb7tG1BT6ZxbjXYHdmNJUJX/MyiuDiee7O6JpN2yBcEdPdWT0qCgB4d6OQLYnHVtvH33CUagR7icwwbaZqVaLIfR7+BpDikw7JNtGVTuBCZNvX4TZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Seg7e16T; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713303412;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H0qLih9CVo//sQPGcjSldQT1UvSQG7AJG7QoYxruR5c=;
+	b=Seg7e16TpVke0Gcaqk/zJPh4owaUzGAAXCBvshGsfspolDASV2ADvJkyUANn9WOHBaixOJ
+	4SxIdsslvF6joSWOSRMDhI1KCHVd6/2NjmAe/ANYZu1XlruW6bFRumaBmiz1JrTa49m4zO
+	AXfwpandIxkLeIxGJsN8qwLPJ/u31Ko=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-BxU1UEkLOcOJYepWLeOx0Q-1; Tue, 16 Apr 2024 17:36:50 -0400
+X-MC-Unique: BxU1UEkLOcOJYepWLeOx0Q-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343da0a889dso3691289f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:36:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713303382; x=1713908182;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1713303409; x=1713908209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dNYKjlq69Ck2YSCS4K7cKN7J0KiR/K/BwPBXXkuJ58E=;
-        b=jOSePsQdALPF2fv7UldV2vistBo9PCPdk9PXbDhlKU/kAXi+cvKo2MYPwHW4kH31QY
-         ADIslsZ39HJi+XkvJw4JmtifSs3N6px/tcCkYds9y9B+zihYzizrsbkwkbe0IjAChd1j
-         zGT8lLZ33SgMFBiNuf2YKOVHG2f7JDfyqFJofYW4uOXDFI65sPCYLXghmYbfXbF4o/U2
-         M5YsJHkE8401kIzUr3ScjjRK64KidZ8EO0N0iQomu42K7h+Doc3aobr8Be+LhLbfE6FG
-         2l8qU2YkoxMmESgQ+W36/owYcdfnhaSowvIImpxh4C23cDCULnCTj2DPu8VSa1P0uC8v
-         3YcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXVww9RckeQ94RfYd7nGaGw1AbsyAiuP7R+3xFg65BdKD0uBq7XYy2Vd6YfRcStunYNYnOBDHE+X5vh52zA9M9KQeIHEWGbFIoK1DJ+RxN408M1ch9bH36YgmuzAsz+EWKDxyRt+Ihq8ZBSXTm/kFTYXbCfeAe46T+rPSaKKw==
-X-Gm-Message-State: AOJu0YzPs0/5mne/q4Ogs36xUWSHzMwiaMWfMQ3GYFXVyxFBcAk/esUq
-	WwRAQlX0Y4ph47HF2Mv1PU0JjRMtjaxnkBcD3IQdMi6GTupRi0fr
-X-Google-Smtp-Source: AGHT+IFtvPB3hU1q5HQQPGVksw0oSgLO5/7Sm0T/QIFSiT1oaA+hQ2aTrUGjHmH0e6uOCRrKzFmQQA==
-X-Received: by 2002:a05:6300:8084:b0:1a9:5a2a:7e51 with SMTP id ap4-20020a056300808400b001a95a2a7e51mr12935570pzc.24.1713303382256;
-        Tue, 16 Apr 2024 14:36:22 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id 1-20020a056a00072100b006ed045e3a70sm9400413pfm.25.2024.04.16.14.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 14:36:21 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 16 Apr 2024 11:36:20 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-	yosryahmed@google.com, longman@redhat.com, netdev@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	shakeel.butt@linux.dev, kernel-team@cloudflare.com,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	mhocko@kernel.org
-Subject: Re: [PATCH v1 1/3] cgroup/rstat: add cgroup_rstat_lock helpers and
- tracepoints
-Message-ID: <Zh7vVPp-Rj5hB6eN@slm.duckdns.org>
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328988660.3930751.17537768209042139758.stgit@firesoul>
+        bh=H0qLih9CVo//sQPGcjSldQT1UvSQG7AJG7QoYxruR5c=;
+        b=qVYqfzgHISmsCn/Qw5KkyaGKcJ15x4UyGMgansJMpDt3ZOKs+pahXalbpvZsA1zAHX
+         UiVA+9dYWg5bQqrcc6zL2+uHJUsr/nwpjByVyvioVl/ed9NeAWkd337w4cASU+b+DlUt
+         l1StslsN84G+piMBTd+b9NWbHkCoDx8v0QsL88U61U/QY8Gz6+4MNHGjPxi1a5TNdBiw
+         X4vnARx3A74me8AS5oPY4/hYAvP+Sz1MqqooV8uTNWNTMjVsEqnPg2Uvdz+w5WympUNq
+         RXo5lmslTBaRB/kuCD7bn3kIFkvTeBwPitjI8Tu9pJZabxq0t58ablBctFCcwUlkLN6e
+         k8yg==
+X-Forwarded-Encrypted: i=1; AJvYcCWt9+snhJx1R8kPuvGfpOhNsCyuKfIeCzqqgUIIjutdScOoqt/zVHaodA28Kqksmwv1Rb50qOA3A69xcWmuDJEhRvxS5GBbtWqRF/w7
+X-Gm-Message-State: AOJu0YxsDt8wdLm+CHYhjoF0UAAI+RndIk7bW149HAzxOiPsJjCuExRI
+	0t19JkRA5ENtCmXckR4gcbBWGPlAgjklyzSGWclvrlFa3/bEhIRTa5z8g2j9vgL/xBzjUEs/0s/
+	q1baKa9/e0IBUYd47QhuYIhLakLS2jKRHjFS99sKKIIQb/PYQD9Yg45mrLYeFew90eXpwNdjfKJ
+	APuvxSMGA0rF3LDK8j/Oj31B0MoO/xiJoiXiMI
+X-Received: by 2002:a5d:4d03:0:b0:346:c6e6:b7a3 with SMTP id z3-20020a5d4d03000000b00346c6e6b7a3mr10055945wrt.27.1713303409637;
+        Tue, 16 Apr 2024 14:36:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEH2aalsqR17NVaw3iwl23TCGdtUkDF3Z86K6sf3k8FdRa0FuECZeJaDo/mZHzWA4PU75JXSod12XE1eLB57eI=
+X-Received: by 2002:a5d:4d03:0:b0:346:c6e6:b7a3 with SMTP id
+ z3-20020a5d4d03000000b00346c6e6b7a3mr10055930wrt.27.1713303409298; Tue, 16
+ Apr 2024 14:36:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <171328988660.3930751.17537768209042139758.stgit@firesoul>
+References: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
+ <Zh6-h0lBCpYBahw7@google.com> <CABgObfZ4kqaXLaOAOj4aGB5GAe9GxOmJmOP+7kdke6OqA35HzA@mail.gmail.com>
+ <4cdf71ca-c4e4-49a5-a64d-d0549ad2cf7b@oracle.com>
+In-Reply-To: <4cdf71ca-c4e4-49a5-a64d-d0549ad2cf7b@oracle.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 16 Apr 2024 23:36:36 +0200
+Message-ID: <CABgObfZugCVm7xysXBB=OZhQumga1bvit8oXbfhyjk7ncCa4NA@mail.gmail.com>
+Subject: Re: [RFC 0/3] Export APICv-related state via binary stats interface
+To: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+Cc: Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	joao.m.martins@oracle.com, boris.ostrovsky@oracle.com, mark.kanda@oracle.com, 
+	suravee.suthikulpanit@amd.com, mlevitsk@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 07:51:26PM +0200, Jesper Dangaard Brouer wrote:
-> This commit enhances the ability to troubleshoot the global
-> cgroup_rstat_lock by introducing wrapper helper functions for the lock
-> along with associated tracepoints.
+On Tue, Apr 16, 2024 at 11:29=E2=80=AFPM Alejandro Jimenez
+<alejandro.j.jimenez@oracle.com> wrote:
+>
+>
+>
+> On 4/16/24 15:51, Paolo Bonzini wrote:
+> > On Tue, Apr 16, 2024 at 8:08=E2=80=AFPM Sean Christopherson <seanjc@goo=
+gle.com> wrote:
+> >>
+> >> On Thu, Feb 15, 2024, Alejandro Jimenez wrote:
+> >>> The goal of this RFC is to agree on a mechanism for querying the stat=
+e (and
+> >>> related stats) of APICv/AVIC. I clearly have an AVIC bias when approa=
+ching this
+> >>> topic since that is the side that I have mostly looked at, and has th=
+e greater
+> >>> number of possible inhibits, but I believe the argument applies for b=
+oth
+> >>> vendor's technologies.
+> >>>
+> >>> Currently, a user or monitoring app trying to determine if APICv is a=
+ctually
+> >>> being used needs implementation-specific knowlegde in order to look f=
+or specific
+> >>> types of #VMEXIT (i.e. AVIC_INCOMPLETE_IPI/AVIC_NOACCEL), checking GA=
+Log events
+> >>> by watching /proc/interrupts for AMD-Vi*-GA, etc. There are existing =
+tracepoints
+> >>> (e.g. kvm_apicv_accept_irq, kvm_avic_ga_log) that make this task easi=
+er, but
+> >>> tracefs is not viable in some scenarios. Adding kvm debugfs entries h=
+as similar
+> >>> downsides. Suravee has previously proposed a new IOCTL interface[0] t=
+o expose
+> >>> this information, but there has not been any development in that dire=
+ction.
+> >>> Sean has mentioned a preference for using BPF to extract info from th=
+e current
+> >>> tracepoints, which would require reworking existing structs to access=
+ some
+> >>> desired data, but as far as I know there isn't any work done on that =
+approach
+> >>> yet.
+> >>>
+> >>> Recently Joao mentioned another alternative: the binary stats framewo=
+rk that is
+> >>> already supported by kernel[1] and QEMU[2].
+> >>
+> >> The hiccup with stats are that they are ABI, e.g. we can't (easily) di=
+tch stats
+> >> once they're added, and KVM needs to maintain the exact behavior.
+> >
+> > Stats are not ABI---why would they be? They have an established
+> > meaning and it's not a good idea to change it, but it's not an
+> > absolute no-no(*); and removing them is not a problem at all.
+> >
+> > For example, if stats were ABI, there would be no need for the
+> > introspection mechanism, you could just use a struct like ethtool
+> > stats (which *are* ABO).
+> >
+> > Not everything makes a good stat but, if in doubt and it's cheap
+> > enough to collect it, go ahead and add it. Cheap collection is the
+> > important point, because tracepoints in a hot path can be so expensive
+> > as to slow down the guest substantially, at least in microbenchmarks.
+> >
+> > In this case I'm not sure _all_ inhibits makes sense and I certainly
+> > wouldn't want a bitmask,
+>
+> I wanted to be able to query enough info via stats (i.e. is APICv active,=
+ and if
+> not, why is it inhibited?) that is exposed via the other interfaces which=
+ are not
+> always available. That unfortunately requires a bit of "overloading" of
+> the stat as I mentioned earlier, but it remains cheap to collect and expo=
+se.
+>
+> What would be your preferred interface to provide the (complete) APICv st=
+ate?
+>
+>   but a generic APICv-enabled stat certainly
+> > makes sense, and perhaps another for a weirdly-configured local APIC.
+>
+> Can you expand on what you mean by "weirdly-configured"? Do you mean some=
+thing
+> like virtual wire mode?
 
-Applied to cgroup/for-6.10.
+I mean any of
 
-Thanks.
+    APICV_INHIBIT_REASON_HYPERV,
+    APICV_INHIBIT_REASON_PHYSICAL_ID_ALIASED,
+    APICV_INHIBIT_REASON_APIC_ID_MODIFIED,
+    APICV_INHIBIT_REASON_APIC_BASE_MODIFIED,
+    APICV_INHIBIT_REASON_LOGICAL_ID_ALIASED,
 
--- 
-tejun
+which in practice are always going to be APICV_INHIBIT_REASON_HYPERV
+on 99.99% of the gues
+
+ExtINT is visible via irq_window_exits; if you are not running nested,
+do not have the problematic configurations above. don't have debugging
+(BLOCKIRQ) or in-kernel PIT with reinjection, that's basically the
+only one that's left.
+
+Paolo
+
+> Alejandro
+>
+> >
+> > Paolo
+> >
+> > (*) you have to draw a line somewhere. New processor models may
+> > virtualize parts of the CPU in such a way that some stats become
+> > meaningless or just stay at zero. Should KVM not support those
+> > features because it is not possible anymore to introspect the guest
+> > through stat?
+> >
+> >> Tracepoints are explicitly not ABI, and so we can be much more permiss=
+ive when it
+> >> comes to adding/expanding tracepoints, specifically because there are =
+no guarantees
+> >> provided to userspace.
+> >>
+> >
+> >
+>
+
 
