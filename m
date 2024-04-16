@@ -1,112 +1,94 @@
-Return-Path: <linux-kernel+bounces-147184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 488928A70B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:00:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D96488A70BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:01:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2D91F26173
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:00:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EDA41F26466
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C5D13C679;
-	Tue, 16 Apr 2024 15:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589A3131BDB;
+	Tue, 16 Apr 2024 15:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cn57aN//"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PzG0c6gX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0019713C3FB;
-	Tue, 16 Apr 2024 15:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A863131756;
+	Tue, 16 Apr 2024 15:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713282840; cv=none; b=pLujvcztLkLPamwTEnZMHsQIKDP6lOZdOhefhmvLrG8ELpoT8s97Kg2Z/8nCxB3uwZVg/HlWDqsizOon3F+FPTzbpOsiWYIrV3hGxUhxbYuq3eZuty9APMDf+OtmVoX25ZJuaTZY+3NpAA3VAEtzEI5nAooSpClMcXNTLJPWnY4=
+	t=1713282989; cv=none; b=KvnL8NE5t+DM9E57D4gK8SVATy9fP0uNjs4qwv2QKPBPRjBWtR6Dap3yYy8SLxGyq7iYw/YfMLpDEc6s+DZOWWTysUSnoYnY5CT/jwoNzJaFai7auEBRX2PrLPjvH/It3ppwnfwHJg3XyfqZkqI18Xor/CjB4XW3Cm63YXQmV2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713282840; c=relaxed/simple;
-	bh=xr7ky7Cb0ygGptcAXZwef1Q17uuZn48m+YBRnvcd9GE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qhBIOj0D61j4cWtUXMQ7FicfFICkPkr5U5lQC7mzR4EFPj5Hvbe8Wa9wnxU6RK8mOwBowMW7AIOVYFg5k1Dg4a750ofDGwV3dBwAkpwz0Ct/6to14eepBwJYL2JDDGQIGdd2vAm4Ebj4GkyQVmRDLCDsHo2vmUVovPmp1ojk+tI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Cn57aN//; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=wZEy1lpoVSmMRE0DeOc5Gd5oUzFgnMEWwvGF0LAHu8U=; b=Cn57aN//MYZ+dXqCms+9QZ2xFM
-	R6jH8lG6V6rsLnVsxURyoEsjbtBO9tDJ7v6UB/+HgbxZsAyFFOBR+YDH5xpjk7FVFActU1ECnBScj
-	N4ho/AR8AAxxxhz93MqQpIYfDGuWKuTvhQcG6IvQrIbyfOd5oSjCOA4iYUcVjHN3NL6S91Me6bJGx
-	7qqb2+R4sImsoxiMBzz11/ADpFTAwXs5ytiwivw4SLINRHcE3VrgJ9HhImwP87YrY3IglUYI/zgfL
-	H1NJOi2F75jD1YIvcett5AlBNg1Y6joZY9hDc/LKkyUmLc1x69gk/ogvw0l41MO6CZMBFrddqPe1Z
-	k1Ulqj2A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwl7y-00000000r5i-0m9z;
-	Tue, 16 Apr 2024 15:53:46 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id BC83030040C; Tue, 16 Apr 2024 17:53:45 +0200 (CEST)
-Date: Tue, 16 Apr 2024 17:53:45 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
-Message-ID: <20240416155345.GC12673@noisy.programming.kicks-ass.net>
-References: <20240416010837.333694-1-zfigura@codeweavers.com>
- <20240416081421.GB31647@noisy.programming.kicks-ass.net>
- <20240416155014.GB12673@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1713282989; c=relaxed/simple;
+	bh=xj5oIWlYq20UZfWwDIb9TzDyZ90WyaHjoi8dkpzi3hY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KNGXRcXEN5N6sk6sit5dCslNqB6WpfMvTZ5z4gigUfq1ciygg0lQX58UoJQSBfTMxij1ou8aMmsls0WzA4wJCJAIAjnJpR5Y4ABqNxb5WLLsyWb+MFl1/DKekdfdF5fXyVJPi8Heqzgzc/UyIVWB3+qHJ4s+1V1b+TvMbTShIew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PzG0c6gX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 792D7C113CE;
+	Tue, 16 Apr 2024 15:56:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713282989;
+	bh=xj5oIWlYq20UZfWwDIb9TzDyZ90WyaHjoi8dkpzi3hY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=PzG0c6gXNNiSNW/OjmEVa1jcml2jIk4toUumXHj1PFWRlW2puT5qUARDvSSBmZTld
+	 GCIGfOAW1VrnjTIUNavavaDJSr1Gd6sgvwCnf1q1E4zJyQ0c/2xGB5qkqPuFUmSIP1
+	 WV83tvTswwBRItV5wgDOF4QtZpNeolSypSzp89MKMt8qQE86rh4Q29J08tgh8oa8vy
+	 8gNUYmIGxZIwan4Vu3AM5C0yy0H+O3SMqtkvl1DpLDRJDWwL9UuARjO2nZ4x38Sxtx
+	 RyRhgZY0gKSJaLestj4GkhWJgONsgLu4ePJn4xXcsB8Mbs8Dgr/UxuVimLexjZD4DM
+	 NWD56iIML/gfQ==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Nam Cao <namcao@linutronix.de>, Mike Rapoport <rppt@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Andreas Dilger
+ <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel
+ <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org, Theodore
+ Ts'o <tytso@mit.edu>, Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Conor Dooley <conor@kernel.org>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Anders Roxell <anders.roxell@linaro.org>, Alexandre
+ Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+In-Reply-To: <20240416173030.257f0807@namcao>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+ <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+ <Zh6KNglOu8mpTPHE@kernel.org> <20240416171713.7d76fe7d@namcao>
+ <20240416173030.257f0807@namcao>
+Date: Tue, 16 Apr 2024 17:56:25 +0200
+Message-ID: <87v84h2tee.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416155014.GB12673@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 05:50:14PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 16, 2024 at 10:14:21AM +0200, Peter Zijlstra wrote:
-> 
-> > > Some aspects of the implementation may deserve particular comment:
-> > > 
-> > > * In the interest of performance, each object is governed only by a single
-> > >   spinlock. However, NTSYNC_IOC_WAIT_ALL requires that the state of multiple
-> > >   objects be changed as a single atomic operation. In order to achieve this, we
-> > >   first take a device-wide lock ("wait_all_lock") any time we are going to lock
-> > >   more than one object at a time.
-> > > 
-> > >   The maximum number of objects that can be used in a vectored wait, and
-> > >   therefore the maximum that can be locked simultaneously, is 64. This number is
-> > >   NT's own limit.
-> 
-> AFAICT:
-> 
-> 	spin_lock(&dev->wait_all_lock);
-> 	  list_for_each_entry(entry, &obj->all_waiters, node)
-> 	    for (i=0; i<count; i++)
-> 	      spin_lock_nest_lock(q->entries[i].obj->lock, &dev->wait_all_lock);
-> 
-> Where @count <= NTSYNC_MAX_WAIT_COUNT.
-> 
-> So while this nests at most 65 spinlocks, there is no actual bound on
-> the amount of nested lock sections in total. That is, all_waiters list
-> can be grown without limits.
-> 
-> Can we pretty please make wait_all_lock a mutex ?
+Nam Cao <namcao@linutronix.de> writes:
 
-Hurmph, it's worse, you do that list walk while holding some obj->lock
-spinlokc too. Still need to figure out how all that works....
+> Fixed version:
+>
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index fa34cf55037b..af4192bc51d0 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -245,6 +245,7 @@ static void __init setup_bootmem(void)
+>  	 * be done as soon as the kernel mapping base address is determined.
+>  	 */
+>  	if (!IS_ENABLED(CONFIG_64BIT)) {
+> +		memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
+>  		max_mapped_addr =3D __pa(~(ulong)0);
+>  		if (max_mapped_addr =3D=3D (phys_ram_end - 1))
+>  			memblock_set_current_limit(max_mapped_addr - 4096);
+
+Nice!
+
+Can't we get rid of the if-statement, and max_mapped_address as well?
+
+
+Bj=C3=B6rn
 
