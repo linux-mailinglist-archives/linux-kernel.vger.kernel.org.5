@@ -1,132 +1,93 @@
-Return-Path: <linux-kernel+bounces-147354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D56318A72D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:09:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5C38A72DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:12:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 892201F22638
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:09:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C1E41F228EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:12:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72351350EF;
-	Tue, 16 Apr 2024 18:09:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 562D8134CD4;
+	Tue, 16 Apr 2024 18:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="QeyODSL4"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="d4oHhak1"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62F9134429;
-	Tue, 16 Apr 2024 18:09:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F2B13343F
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713290985; cv=none; b=nvn2dtFsHSV5Y+RkRYErgH6VY9nMECe0D27rptc99p6FGSJesYfebf/cL5dVoRFuaEoLaju+liq9vYVZeVvsaUb7ftCLLmpZzkVk7R3CDezh7oVMSQfTrbgxK5wbUl8hDn64QTR6SnwJSOnE3z1VQ4O9wraG0mBqIjnCWfvNTiw=
+	t=1713291135; cv=none; b=A6v+2MRmMo4MDpF6C259u4b6MC7KHVZQWItb4mBHb6/8FS7cWSNIbKL2ILh0NxqZz3d/+dSO1Hgn75q1dvVSxndYlDuEMO4q9YB5PBBgEiFMef84LYKYq4ZtLG7Rk0amn5IHu+SkjB9uVQEUwUmIeczqjen6ViNr94YqpE6j71s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713290985; c=relaxed/simple;
-	bh=N4C2FjdiqPsdy0C9kaCE8/PgntEeBxpWzcAr3NeY9aQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ez0kvxrDA3lV8TKlCPmQkb5FuDRkJnjXOf0vREw9fqbIHRYn/rbYU/mIoI+Lawji0uo1rqWXe4RpDLhQaBX8zy06R1L2MGU9OgfwefmKHPgy+6U9muFD1Ur+LZgFmorGsZIlG0+1KtPDkssYrBcK5ZGa0oQTOb9I6v+Kdctrj8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=QeyODSL4; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=TXomqugHQL46au9N8uw64oQNOo/r6UX6m/Q4x5PGJ/s=; b=Qe
-	yODSL4fDFv1MzBJSrO1z8zZKmNc73pmcIo2Y/X2bUlc0REHNbm32Y+FukB9CDnKVU3YceRNG4ohs/
-	+EwRYyI6BHmc5MiGJxj0ROQQ194dkGh8nChvnOeB9LWjDnvUJ9OjcEHN2928IhGbX7jisHyBuyoqd
-	sQq2Yfra6x8SjD0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rwnFP-00DAOS-No; Tue, 16 Apr 2024 20:09:35 +0200
-Date: Tue, 16 Apr 2024 20:09:35 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	Leon Romanovsky <leon@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Michael Kelley <mikelley@microsoft.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>,
-	Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
-Message-ID: <b34bfb11-98a3-4418-b482-14f2e50745d3@lunn.ch>
-References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240415161305.GO223006@ziepe.ca>
- <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+	s=arc-20240116; t=1713291135; c=relaxed/simple;
+	bh=TnlZvVJj+tUuYBS/gyNODwaQ8kYkGHafqDe7bPx4asg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aJJRSzFlVuUEm49ZBIb1iXLvmVL8/Q+hmD4QuC6ARqcCkrOAf6YEhgWPgfpX2bocc5CCipBeYhsaUO9AQTiqwmdXz6Xw/ocHfyPwTwWYo9PSLpPXhdVxWBbO6kBIXGIQ79BwgGfbeJkCVQab9PJO2Y64HOKtyGJrAGCMlxmcy38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=d4oHhak1; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPV6:2601:646:8002:4640:7285:c2ff:fefb:fd4] ([IPv6:2601:646:8002:4640:7285:c2ff:fefb:fd4])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43GIBnVQ3336923
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 16 Apr 2024 11:11:50 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43GIBnVQ3336923
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024041401; t=1713291110;
+	bh=oSoc3fRQu2SYnHBcMoGn1X200+uujndTDonzbZqfy7Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=d4oHhak1j4CdsVq4b/eqx91gPiRgCEyAvxYUi2O9Xv1lnPCkYDAlJS9gG40LHBoRr
+	 LD2iPWy10h2O7IK65NWx29CW4iyT8FUBBw6M39odyXHdzXVdrHAUDi6d4EhdLb7Mia
+	 euUmsN1hFGTJi/+03RFKFyjpIcXfrY2uxI46gqC4430YcMG4frKhjrws4JR8htVXEp
+	 TOrvK5w+j96HydCGa9Lcb/DPCQY0Ui5SosaBGjyxVCQ/4mg51sjC/5gcS79t7Ly10k
+	 Wp+QIo5sQsUQtiCMttwdPo7Z3YaElqREXcpK7ustcX0l+a8ZP/IQ7CR9hk4Qov/Pp4
+	 +rvyrEJnLvA5A==
+Message-ID: <e3fbd500-f6b8-49ea-addb-bbc4803709ce@zytor.com>
+Date: Tue, 16 Apr 2024 11:11:44 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] x86/fred: Fix int80 emulation for FRED
+Content-Language: en-US
+To: Borislav Petkov <bp@alien8.de>
+Cc: "Xin Li (Intel)" <xin@zytor.com>, linux-kernel@vger.kernel.org,
+        luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        dave.hansen@linux.intel.com, x86@kernel.org
+References: <20240412234058.1106744-1-xin@zytor.com>
+ <20240416101147.GDZh5O473e4X_ZG1lZ@fat_crate.local>
+ <1AE9FA53-A130-4F95-8408-C1990DD031AA@zytor.com>
+ <20240416180746.GFZh6-cmZqCF6KX5tt@fat_crate.local>
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <20240416180746.GFZh6-cmZqCF6KX5tt@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 16, 2024 at 06:27:04AM +0200, Zhu Yanjun wrote:
-> 在 2024/4/15 18:13, Jason Gunthorpe 写道:
-> > On Mon, Apr 15, 2024 at 02:49:49AM -0700, Shradha Gupta wrote:
-> > > Add new device attributes to view multiport, msix, and adapter MTU
-> > > setting for MANA device.
-> > > 
-> > > Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
-> > > ---
-> > >   .../net/ethernet/microsoft/mana/gdma_main.c   | 74 +++++++++++++++++++
-> > >   include/net/mana/gdma.h                       |  9 +++
-> > >   2 files changed, 83 insertions(+)
-> > > 
-> > > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > index 1332db9a08eb..6674a02cff06 100644
-> > > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-> > > @@ -1471,6 +1471,65 @@ static bool mana_is_pf(unsigned short dev_id)
-> > >   	return dev_id == MANA_PF_DEVICE_ID;
-> > >   }
-> > > +static ssize_t mana_attr_show(struct device *dev,
-> > > +			      struct device_attribute *attr, char *buf)
-> > > +{
-> > > +	struct pci_dev *pdev = to_pci_dev(dev);
-> > > +	struct gdma_context *gc = pci_get_drvdata(pdev);
-> > > +	struct mana_context *ac = gc->mana.driver_data;
-> > > +
-> > > +	if (strcmp(attr->attr.name, "mport") == 0)
-> > > +		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
-> > > +	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
-> > > +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
-> > > +	else if (strcmp(attr->attr.name, "msix") == 0)
-> > > +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
-> > > +	else
-> > > +		return -EINVAL;
-> > > +
-> > 
-> > That is not how sysfs should be implemented at all, please find a
-> > good example to copy from. Every attribute should use its own function
-> > with the macros to link it into an attributes group and sysfs_emit
-> > should be used for printing
+On 4/16/24 11:07, Borislav Petkov wrote:
+> On Tue, Apr 16, 2024 at 11:05:09AM -0700, H. Peter Anvin wrote:
+>> The question was if you wanted a quick fix for x86/urgent. It's pretty
+>> obvious that a FRED fork of the int80 code is called for.
 > 
-> Not sure if this file drivers/infiniband/hw/usnic/usnic_ib_sysfs.c is a good
-> example or not.
+> Yeah, I'm thinking the FRED fork would be even easier to send to Linus
+> now since no existing hw will break.
 
-The first question should be, what are these values used for? You can
-then decide on debugfs or sysfs. debugfs is easier to use, and you
-avoid any ABI, which will make long term support easier.
+Looking at the resulting code (Xin's v2 path), I would agree with you. 
+The code is downright trivial.
 
-      Andrew
+> Btw, I presume that patch needs to have
+> 
+> Fixes: 55617fb991df ("x86/entry: Do not allow external 0x80 interrupts")
+> 
+
+Yes. My fault, I gave Xin incorrect information w.r.t. Fixes: tags.
+
+	-hpa
+
 
