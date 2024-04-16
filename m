@@ -1,86 +1,62 @@
-Return-Path: <linux-kernel+bounces-147295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C25D8A721E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:19:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BC9E8A7223
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495501C211FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:19:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7BA91F21EDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564491332B6;
-	Tue, 16 Apr 2024 17:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757ED13328B;
+	Tue, 16 Apr 2024 17:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="tUGGNUz6";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="8Re553De"
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MbnBdXzf"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34938132493;
-	Tue, 16 Apr 2024 17:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.167
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713287975; cv=pass; b=IE7lbJZ2Whco3BD/o9BOKQq83b2bJSK834XvQEy7BcKyRc2I7ppFQWGBW66AzSV6AVZ0YUc5BIj4VBMTGwHgv0rUkBcsdihUV/YXvwRcpI/gL7iwVOUVCVfMFJTwfNOn6h4FehaczjanBaukBWD45tbQAgXDWcwv5aHaAQehhZs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713287975; c=relaxed/simple;
-	bh=Azr7ovdYaxV3PlnjjsIAyizZx7zMsRJjz5oo0vl5kMo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y9UTsn3PWuYzFd7UIWcZPj1au/HW2P7NOEEbhy8+g7GuhE8G+b0NpoTf2R13atz36ndQgUyn5jEt52OGeVwi1GQV3tM/Cg4Ct0m+QF288T9k1+BkLnU6PX9yIdsFrOuumBftEw+xAAiUeyVrbYnsp+oX74AlnSvPeO5A3VYaArI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=tUGGNUz6; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=8Re553De; arc=pass smtp.client-ip=81.169.146.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-ARC-Seal: i=1; a=rsa-sha256; t=1713287950; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=VYjrR8FNDMNqQJZ1flH9Y/rD9hieKAIvH0HbpU+zeJcSUOQwEualufMNRhsx4lLnAO
-    6CCOQmtdF/I35BqaBGt14Bmftm/iMlvdPFVFrYDZta33tN7QomhLknSoV/l4b/G0o8DK
-    8+IIMvuiuKi+pogsUk8ilknWsYaG3YR57ySHlTU67Z15WLCXViYhAU6oZJgzZmB2rAgK
-    ElR4fpg84nG565p0RycMVYfqRV6NCP5Mk94vEJOUWC8SMCUUqQ/37v9372Dm/DLTMLXC
-    Ddnd8RsbN3/E1C+/bxGF6/8J21dMUbCqVHnPa7F+CS+5c0GRv70hSrF7QUCLymVZiSSj
-    UkJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1713287950;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=UZNazYxiaUPP62ZqofHCxP4mD8sMhtRghorMzgkk/Zs=;
-    b=gLXnXCttLlYyG60NJNPGm+Xp5Xbvu6Plo9XMZ5kbfpeGh9+GuZ1R3ew8e7JjZytxYy
-    +SK+wMNCCGs4kpeaZ/qMTd89bYuN0ip99NAP2jyQYpmWZ8pUg/B2Hc20K+xW9e0IsVX2
-    9orGlhI8ufrMfgVghLnVsIjyCyRi15U4iey+01KHrbYjwm2KET+idnTJlgbPuTnw7+9/
-    652S8wmKeaO/FYxCWEQaqfPconBNMa+WgYm223cvpvLXaXoPiUlU+RzbKzbJJhtiEY1P
-    r5aThUOIso3Gm8TA6wYMeoeFtGQGYrlbAqh5VDlhxR5+ALQaj7GbzQBmCucGduEPTf9Q
-    60lw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1713287950;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=UZNazYxiaUPP62ZqofHCxP4mD8sMhtRghorMzgkk/Zs=;
-    b=tUGGNUz6T13vFpz9+ezMtiFNIURaWR+iWcfWN6sUvBU9/es0JKhD2h50vlTjfOzVkR
-    kgrdh9wPcOAagKKdaAB2IQKUbAJeKgSHwcauz+9B4pNV2vIAGPVkOX1Eb4yCFP1jIZw0
-    DjGvAJNTsXROBng+mcMZfkmoxxRKTMklJeHVoP53iYGpLZJEvTfZ9tWy8jRlyZ7znjQ6
-    yxK+6Up7aKnW4p9VmGTNKoUFWBHRqgaSKB/fwrTK66j8IxVlXJJ0ww62GIb3hEkJvAt2
-    EluNeS3c9EOwwUU8Tvjsxx4LOUIkVvhVBok76DSALfS8lSzD8+8XplIGxpCdVUhtDenn
-    r9eQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1713287950;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=UZNazYxiaUPP62ZqofHCxP4mD8sMhtRghorMzgkk/Zs=;
-    b=8Re553DeDZ5GUPLWwSAt3vpX8+Zf9DSidpB8rfsjmi8ZORdySd5HY+9yrvECcDPNVa
-    lk9BQxcVpQ4XX0vQ73CA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFr0USEbHoO0g=="
-Received: from [IPV6:2a00:6020:4a8e:5010::923]
-    by smtp.strato.de (RZmta 50.3.2 AUTH)
-    with ESMTPSA id K701d603GHJ9TIN
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 16 Apr 2024 19:19:09 +0200 (CEST)
-Message-ID: <d4a55991-0ccc-4e8f-8acb-56077600c9e0@hartkopp.net>
-Date: Tue, 16 Apr 2024 19:19:03 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D692B131BC9;
+	Tue, 16 Apr 2024 17:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713288030; cv=none; b=HzYkvIIwPypMmzZEcwq2k3MkeZZ/WZyTzO2Am1VbetoP+gDh3YwI4P4JfGFDvoQRa/B8wg3bOWuRbbtGiGfR8epBBhQCx16y4olKpZ6VOXJYaeN1gKuk7M5CEQkMdOVdmO9nyszoZLgAjQ/VfZJB5ZFdNq9DULSLNJEl8p/LsGA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713288030; c=relaxed/simple;
+	bh=2cfuyq5GcE3CI7VnL9s0GI1C82nktGFMqeEENs1XprI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=LZAytGcquJdeINg9CE1+6YHzOnIzSOWDQiM5D8VmQz7MqeN78ONAru3UqUohbqIF52FDVXm8ua0f5C7/K1lfzPdGA4rb3Scydd8u4IVP7D4HRkFMl8g9/UlV8RZWNvV7Nu+ggWEtmmU30o4pLfZCnkCeZqeQC92y1pTymUKsuks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=MbnBdXzf; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43GHJxju122800;
+	Tue, 16 Apr 2024 12:19:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713287999;
+	bh=sAFH6DRN1lSkcqVKY1a+HNKCTDfBP0E1lCeQ2JTcf0A=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=MbnBdXzfm8pDKOhBRTlK0exGRaKWNusvq83fE5k7TmbI0wTwah+5UOe8FWxDsZlnx
+	 hvC7eoDujOA+/P3eFGzpEn+a1IRGEeD4QXOH/26afVr9/ln4U/lEal5fX2sqvW5aZg
+	 5VCDIHBJTaVDSzLykiv55PkSIaPJM7WY+Su/vrxA=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43GHJxZu007592
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Apr 2024 12:19:59 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
+ Apr 2024 12:19:59 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 16 Apr 2024 12:19:58 -0500
+Received: from [10.249.42.149] ([10.249.42.149])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43GHJvcd050351;
+	Tue, 16 Apr 2024 12:19:57 -0500
+Message-ID: <f4a91360-bf31-4dd0-a00d-cd4b7464160e@ti.com>
+Date: Tue, 16 Apr 2024 12:19:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,79 +64,149 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] Documentation: networking: document ISO
- 15765-2:2016
-To: Francesco Valla <valla.francesco@gmail.com>,
- Vincent Mailhol <vincent.mailhol@gmail.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Simon Horman <horms@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>,
- fabio@redaril.me
-References: <20240329133458.323041-2-valla.francesco@gmail.com>
- <20240329133458.323041-3-valla.francesco@gmail.com>
- <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
- <9f5ad308-f2a0-47be-85f3-d152bc98099a@hartkopp.net>
- <CAMZ6RqKGKcYd4hAM8AVV72t78H-Kt92NXowx6Q+YCw=AuSxKuw@mail.gmail.com>
- <64586257-3cf6-4c10-a30b-200b1ecc5e80@hartkopp.net> <Zh6qiDwbEnaJtTvl@fedora>
+Subject: Re: [PATCH net-next v3 3/3] net: ti: icssg-prueth: Add support for
+ ICSSG switch firmware
+To: "Anwar, Md Danish" <a0501179@ti.com>,
+        MD Danish Anwar
+	<danishanwar@ti.com>,
+        Diogo Ivo <diogo.ivo@siemens.com>, Rob Herring
+	<robh@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Jan Kiszka
+	<jan.kiszka@siemens.com>, Simon Horman <horms@kernel.org>,
+        Andrew Lunn
+	<andrew@lunn.ch>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Arnd
+ Bergmann <arnd@arndb.de>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Vladimir
+ Oltean <vladimir.oltean@nxp.com>,
+        Roger Quadros <rogerq@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+	<edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+CC: <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
+References: <20240327114054.1907278-1-danishanwar@ti.com>
+ <20240327114054.1907278-4-danishanwar@ti.com>
+ <cb13da4a-13c9-409a-a813-0ac852062163@ti.com>
+ <bc0e05c5-11a8-4519-b50d-04dabd6e5999@ti.com>
 Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <Zh6qiDwbEnaJtTvl@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <bc0e05c5-11a8-4519-b50d-04dabd6e5999@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Francesco and Vincent,
-
-On 16.04.24 18:42, Francesco Valla wrote:
-> On Sun, Apr 14, 2024 at 10:21:33PM +0200, Oliver Hartkopp wrote:
->> On 14.04.24 06:03, Vincent Mailhol wrote:
-
->>> Regardless, here is a verbatim extract from the Foreworld section of
->>> ISO 15765-2:2024
+On 4/15/24 1:56 AM, Anwar, Md Danish wrote:
+> Hi Andrew,
+> 
+> On 4/13/2024 12:22 AM, Andrew Davis wrote:
+>> On 3/27/24 6:40 AM, MD Danish Anwar wrote:
+>>> Add support for ICSSG switch firmware using existing Dual EMAC driver
+>>> with switchdev.
 >>>
->>>     This fourth edition cancels and replaces the third edition (ISO
->>>     15765-2:2016), which has been technically revised.
+>>> Limitations:
+>>> VLAN offloading is limited to 0-256 IDs.
+>>> MDB/FDB static entries are limited to 511 entries and different FDBs can
+>>> hash to same bucket and thus may not completely offloaded
 >>>
->>>     The main changes are as follows:
+>>> Switch mode requires loading of new firmware into ICSSG cores. This
+>>> means interfaces have to taken down and then reconfigured to switch
+>>> mode.
 >>>
->>>       - restructured the document to achieve compatibility with OSI
->>>         7-layers model;
+>>> Example assuming ETH1 and ETH2 as ICSSG2 interfaces:
 >>>
->>>       - introduced T_Data abstract service primitive interface to
->>>         achieve compatibility with ISO 14229-2;
+>>> Switch to ICSSG Switch mode:
+>>>    ip link set dev eth1 down
+>>>    ip link set dev eth2 down
+>>>    ip link add name br0 type bridge
+>>>    ip link set dev eth1 master br0
+>>>    ip link set dev eth2 master br0
+>>>    ip link set dev br0 up
+>>>    ip link set dev eth1 up
+>>>    ip link set dev eth2 up
+>>>    bridge vlan add dev br0 vid 1 pvid untagged self
 >>>
->>>       - moved all transport layer protocol-related information to Clause 9;
+>>> Going back to Dual EMAC mode:
 >>>
->>>       - clarification and editorial corrections
+>>>    ip link set dev br0 down
+>>>    ip link set dev eth1 nomaster
+>>>    ip link set dev eth2 nomaster
+>>>    ip link set dev eth1 down
+>>>    ip link set dev eth2 down
+>>>    ip link del name br0 type bridge
+>>>    ip link set dev eth1 up
+>>>    ip link set dev eth2 up
+>>>
+>>> By default, Dual EMAC firmware is loaded, and can be changed to switch
+>>> mode by above steps
 >>>
 >>
->> Yes, I've checked the release notes on the ISO website too.
->> This really looks like editorial stuff that has nothing to do with the data
->> protocol and its segmentation.
+>> This was asked before, maybe I missed the answer, but why do we
+>> default to Dual-EMAC firmware? I remember when I was working on
+>> the original ICSS-ETH driver, we started with the Dual-EMAC
+>> firmware as the switch firmware was not ready yet (and EMAC mode
+>> was easier). Now that we have both available, if we just use Switch
+>> firmwar by default, what would we lose? Seems that would solve
+>> the issues with re-loading firmware at runtime (configuration loss
+>> and dropping packets, etc..).
 >>
 > 
-> The :2016 suffix is cited both here and inside the Kconfig. We can:
-> - keep the :2016 here and then update both the documentation and the
->    Kconfig once the standard has been checked
-> - move to :2024 both here and inside the Kconfig
-> - drop the :2016 from everywhere (leaving only ISO 15765) and move to
->    ISO 15765:2024 only inside the "Specifications used" paragraph
+> We can start the driver with either Dual-EMAC firmware or SWITCH
+> firmware. But the problem lies in switching between these two firmwares.
+> For switching to / from Dual-EMAC and switch firmwares we need to stop
+> the cores and that is where we previously used to bring down the
+> interfaces, switch firmware and bring it up again. But as discussed on
+> this thread, I can now do the same without bringing interfaces up /
+> down. We'll just need to stop the cores and change firmware this will
+> also result in preserving the configuration. There will be packet loss
+> but that will not be a big concern as Andrew L. pointed out.
 > 
-> What do you think? Shall the modifications to the Kconfig be done as part of
-> this series?
 
-So here is my completely new view on this version topic ... ;-D
+Yes I saw that and understand all this, but that is not my question.
 
-I would vote for ISO 15765-2:2016 in all places.
+> Currently we are starting in Dual-EMAC mode as by default the interfaces
+> are not needed to forward packets. They are supposed to act as
+> individual ports. Port to port forwarding is not needed. Only when user
+> adds a bridge and starts forwarding we switch to Switch mode and load
+> different firmware so that packet forwarding can happen in firmware.
+> That is why currently we are starting Dual-EMAC mode and then switching
+> to firmware.
+> 
 
-The ISO 15765-2:2016 is the first ISO 15765-2 standard which supports 
-CAN FD and ISO 15765-2:2024 does not bring any functional change neither 
-to the standard nor to the implementation in the Linux kernel.
+Same, I see what we do here, this doesn't give me the "why".
 
-For that reason ISO 15765-2:2016 is still correct and relevant (due to 
-the CAN FD support) and does not confuse the users whether the 2024 
-version has some completely new feature or is potentially incompatible 
-to the 2016 version.
+> If we use switch firmware by default, we will not be able to use
+> individual ports separately and any data sent to one port will be
+> forwarded to the second port.
 
-Best regards,
-Oliver
+So this seems to almost answer the question, but I still do not see
+why we could not use the ports separately when using SWITCH firmware.
+
+Why not have a filter/rule set by default to each port so that they
+do not forward packets automatically but instead always forward
+to the host port? That would result in the same functionality as
+the Dual-EMAC firmware, but without all the mess of runtime firmware
+switching based on usecase (simply update the forwarding rules when
+in bridge mode).
+
+Andrew
+
+> 
+> I will be posting v4 soon and I will describe all the details on how to
+> use and switch between different modes in the cover letter.
+> 
+>> Andrew
+>>
+> 
+> [ ... ]
+> 
+>>>      static const struct prueth_pdata am64x_icssg_pdata = {
+>>>        .fdqring_mode = K3_RINGACC_RING_MODE_RING,
+>>> +    .switch_mode = 1,
+>>>    };
+>>>      static const struct of_device_id prueth_dt_match[] = {
+> 
 
