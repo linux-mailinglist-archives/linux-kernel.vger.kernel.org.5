@@ -1,164 +1,491 @@
-Return-Path: <linux-kernel+bounces-146635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44E0F8A6896
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:37:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 460B28A689D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:38:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 689EA1C21542
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:37:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21D3A1C20A47
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186087E0F4;
-	Tue, 16 Apr 2024 10:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nAGvkjMY"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2079.outbound.protection.outlook.com [40.107.243.79])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D464212839F;
+	Tue, 16 Apr 2024 10:37:58 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B241B6BB30;
-	Tue, 16 Apr 2024 10:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.79
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713263863; cv=fail; b=RsVM7Mni/FkOIDTsu40fiAUzhHby6ed0IZD44Yk4ShbDD4BjIolldHDYkoYfUhaamfJVkgex6NRr8GySO1sh9v0mndXgr9yu9/Uait4kd2mUw4ZM5a5hJTiUwlV6h+coZDjLr+n/3k81zix20ATMJ9C9Gnz+Lul22qj3DDspQhU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713263863; c=relaxed/simple;
-	bh=NBLaSzJ2ml6DgzW98I+krOWt3mPW74PAFoajVLAdEzE=;
-	h=From:To:CC:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID:Date; b=df/WvwkEficp9hSHvsjaDnBRY+aPawcmsCfGiAsNEs4fjDWszSengscWSWMVlZwbfwxuCyyFtYLaHrTlA+e1ohrXQ5kZBRreP+tAj4KUe2+guFfp3fUtnA0dRxj51gUc+XS9eVi5+nEB3OPu3Vl458eo0gzjZteZNwk4kI20OXs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nAGvkjMY; arc=fail smtp.client-ip=40.107.243.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TKxom8VzP9vhSU2REK6jTWQo/7YWeH+2qu9vyftrnnKT5AftZjREdVdlaxbtD9/NEHnpfmFrmBUkqVAXxMRSYmO6am/Cw8ceFWshWXDrXQDT5gtuYWCxEzFqoDkhxlOb8CE6bDrT0nv3Xb3LTta8V0Zr5neVJnpujdWV7Qv0SrTwYx1kSpRHMuhSFDmY1UN6SxMNZfmWYKVeXCS/Cu7nUiOocbTzcqEhLAf0InS2SWcuhllPMhVD7m+tEYoRL9XInzlBbyGojtaxl6SlT5YlWGNDkHtpeLihL+AcWGqTwadLDnBM0/2yFvLZX3hGy1BJzmYyxJhIKTW6jU9dVAzJoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HefBnKZXLy90t/Ue70/4BfYppNM3DAVFwN5RgK02BKo=;
- b=a5pULuymkBrI816t60CXq67QEe2sx8nU2ROsEz+meAy2Gg91/42EUedURrca4aUcIGqPIOq9JIe4tsh4ZzqfuBUX2vRgopVEWNjSB0qZRKl5CwgB4Fp6F1haxXtGO6QKbs2Fj7pluAAzyzGfNrcbaUgIJMSOwTT+huM95xxo3O2cXS1ktq6ddF47RK6bHIqXMTssRKfwV3kpNpsJrRKFh96nk7MrwSgoxi8FLbCzRTKqyWQbHWQrDHeHdBvbFOBtxm/RydQ6Ph/RrDjDN4imMjh70D2Ww1v3LUGO8DqyyT6Qm19EVk9I3VcieK8rlkR+3W+3sNSJloNHysIbJ1d/5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HefBnKZXLy90t/Ue70/4BfYppNM3DAVFwN5RgK02BKo=;
- b=nAGvkjMYmxbz8eK/1XFthDsAwEh63a6FaMqgAQHjRRsz4GjGVC0ezUUP+iZjsR9LxzidjkQCGglrVvjDgRXCca2cxbzV3ZSnSeqPS9rVXzwlGZdwS/BuJW7U/CztO+PEyTZ9i6tVJvAmW7YRkFmLrXdRrpaxqmLQJP2uJKKP4pvJmraoEDvDVAcZHlM9OAzcFONQup6APsjqH8iAK0YO0qq9L2FMyvnHLGvBxUgK5DHKXFV5IWiv94NNbXg0tvOZNNWrRAS303iJQgwaW0Z/KqnDbCg33B1gCKHnajK8S1Dbd4eGES54e4w+vnKY7N6iAn/DGMExf7I3XxPoUQmjLg==
-Received: from CYZPR05CA0013.namprd05.prod.outlook.com (2603:10b6:930:89::11)
- by IA0PR12MB8278.namprd12.prod.outlook.com (2603:10b6:208:3dc::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 10:37:36 +0000
-Received: from CY4PEPF0000E9CF.namprd03.prod.outlook.com
- (2603:10b6:930:89:cafe::98) by CYZPR05CA0013.outlook.office365.com
- (2603:10b6:930:89::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.20 via Frontend
- Transport; Tue, 16 Apr 2024 10:37:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- CY4PEPF0000E9CF.mail.protection.outlook.com (10.167.241.134) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 10:37:35 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 16 Apr
- 2024 03:37:24 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Tue, 16 Apr
- 2024 03:37:24 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
- Transport; Tue, 16 Apr 2024 03:37:24 -0700
-From: Jon Hunter <jonathanh@nvidia.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
-	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-	<broonie@kernel.org>, <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
-In-Reply-To: <20240415141953.365222063@linuxfoundation.org>
-References: <20240415141953.365222063@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9B3127B70;
+	Tue, 16 Apr 2024 10:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713263877; cv=none; b=FasSDEoDKI9VEgRBtqqWxmyxC4j304jlEZyeoagNeivxeMOzE/UJ/OyukUpniMviJV9h3G6WuQ6a4ZBLU9CfAE7JpPOdET4sct3keFmg3GiSTTBcRFH6Wj9eR7K1RDmMCgogFjS+EyczXNddTlJ4zfr1f40GVPVhk6OVw7aPxb4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713263877; c=relaxed/simple;
+	bh=EmXVK2veExAeOZj4pCVm0NDfx5hxYJmmxaYhajCi2Qk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WF2nHeSd5Sy1aGWmcfRGyg1UyUqMR/z+XLW2a4ySS8rnD48HlUoYqMEeD4BEcaXVbPg8T+szNiGx8vrCrZSucZd356uo0mmU3AEgk7NhvrIc0so9J0ALnpdlYg2CeT8KVnr9ds87JuolS2LKP5sOL4qbFg8H8LpOveUQv4qcJ8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4VJg761rvLz9xHv9;
+	Tue, 16 Apr 2024 18:21:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 4067E1402A5;
+	Tue, 16 Apr 2024 18:37:52 +0800 (CST)
+Received: from [10.81.220.53] (unknown [10.81.220.53])
+	by APP2 (Coremail) with SMTP id GxC2BwBHgSXrVB5mqDRUBg--.22422S2;
+	Tue, 16 Apr 2024 11:37:51 +0100 (CET)
+Message-ID: <90318bf6-1d86-4d37-8377-2436ecb83667@huaweicloud.com>
+Date: Tue, 16 Apr 2024 12:37:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <2c09dd53-a5e3-4b7c-9240-21eb9c10995d@rnnvmail201.nvidia.com>
-Date: Tue, 16 Apr 2024 03:37:24 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CF:EE_|IA0PR12MB8278:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb8ab65d-f9d2-4cf7-1db4-08dc5e013b10
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	NQxgWbZ11AZyT3pllwTzFBcRAlWlS/TmRXL5/4qt4hUppWdFnVb/s7cbRYhIBMYbR7q7wrj4DCoDinqK8CowipICJZ+J6BRC8d3pIn0M6NoUOYoHj4OMLK0cTI5rUuvyDS/Mbavky1fFKQsB2YiOtPA7lgz+1KTXeF4hlUmrpNA0bxnvVxKPR1j/IGGlMfXHpQoo4aP09k2h0MAw53jOiqWsk2+wt+q29yECSP751KF1TWcFJ2pMd/pDJfDvICbj+sXmCCJxD+1XXTmzOZuNajYLi7PiapeAR9EXEq4ZIgJVCa3o5+QMsEy0/+aRrjYCh64AExR4+E1Jmyxz1/lxWzfc5aQfMDwXvQ+BQS4UoF6kRVofx8Y8UlBFGgE7JRSB9LaPY61yiM/0Ov/Me/AjTkPqp4FGfa67+5YsMp0+5nK1lhG65jKnWULv/jIv0id8UI2+dcm/j70Gw6w5X/LeKns2l6iSk2GirmdbvDIZZzAj57cFS/W2JkeMJQ6wUnicf2Rb1vh8AGolO/9Jz4wWh9IFkp9DxWNoR4GcL7W0Pe4UoyGsfhNAHkUmj657uidKYBkOyFKDgKNhXQV7qS5XPUzXyM6v0AY6i0nZ+AV1j8tWLYKB2WZzikaq4mA9n5oRT+WUktf3BSveNksdN2j7CRoG1TIfiDJHXdX0cIZFI/neMsAob+KW79KqkkWPOVHGwLoBdMSnW7q7ooQuYU/jS6rc3a3lohJJkeCigYXDf1TwhNFE0acWebWNWqmoF7Dy
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 10:37:35.7407
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb8ab65d-f9d2-4cf7-1db4-08dc5e013b10
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9CF.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8278
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 11/14] digest_cache: Reset digest cache on
+ file/directory change
+To: Jarkko Sakkinen <jarkko@kernel.org>, corbet@lwn.net, paul@paul-moore.com,
+ jmorris@namei.org, serge@hallyn.com, akpm@linux-foundation.org,
+ shuah@kernel.org, mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+ mic@digikod.net
+Cc: linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+ linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
+ pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
+ pmatilai@redhat.com, jannh@google.com, dhowells@redhat.com,
+ jikos@kernel.org, mkoutny@suse.com, ppavlu@suse.com, petr.vorel@gmail.com,
+ mzerqung@0pointer.de, kgold@linux.ibm.com,
+ Roberto Sassu <roberto.sassu@huawei.com>
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <20240415142436.2545003-12-roberto.sassu@huaweicloud.com>
+ <D0KYD68AC7LR.9E01ZR9Q216J@kernel.org>
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <D0KYD68AC7LR.9E01ZR9Q216J@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwBHgSXrVB5mqDRUBg--.22422S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3ur1rWry8tF1xZr1DWryfZwb_yoW8WFyfCo
+	ZYvF47Jw10gFy5AFs8u3WxZayUuayYgw18Ar1kK398Z3W0vFyUG3WDCF1DJFW5Jr18Gr97
+	Aa4xJ3y8XFWUtrn3n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUYn7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF
+	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7
+	CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAq
+	x4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6x
+	CaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41l
+	IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	CI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+	x4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUrfOzDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAPBF1jj5h70wAAsI
 
-On Mon, 15 Apr 2024 16:19:25 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.28 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 4/15/2024 9:44 PM, Jarkko Sakkinen wrote:
+> On Mon Apr 15, 2024 at 5:24 PM EEST, Roberto Sassu wrote:
+>> From: Roberto Sassu <roberto.sassu@huawei.com>
+>>
+>> Register six new LSM hooks, path_truncate, file_release, inode_unlink,
+>> inode_rename, inode_post_setxattr and inode_post_removexattr, to monitor
+>> digest lists/directory modifications.
+>>
+>> If an action affects a digest list or the parent directory, the new LSM
+>> hook implementations call digest_cache_reset_owner() to set the RESET bit
+>> (if unset) on the digest cache pointed to by dig_owner in the inode
+>> security blob. This will cause next calls to digest_cache_get() and
+>> digest_cache_create() to respectively put and clear dig_user and dig_owner,
+>> and request a new digest cache.
+>>
+>> If an action affects a file using a digest cache, the new LSM hook
+>> implementations call digest_cache_reset_user() to set the RESET_USER bit
+>> (if unset) on the digest cache pointed to by dig_user in the inode security
+>> blob. This will cause next calls to digest_cache_get() to put and clear
+>> dig_user, and retrieve the digest cache again.
+>>
+>> That does not affect other users of the old digest cache, since that one
+>> remains valid as long as the reference count is greater than zero. However,
+>> they will be notified in a subsequent patch about the reset, so that they
+>> can eventually request a new digest cache.
+>>
+>> Recreating a file digest cache means reading the digest list again and
+>> extracting the digests. Recreating a directory digest cache, instead, does
+>> not mean recreating the digest cache for directory entries, since those
+>> digest caches are likely already stored in the inode security blob. It
+>> would happen however for new files.
+>>
+>> Dig_owner reset for file digest caches is done on path_truncate, when a
+>> digest list is truncated (there is no inode_truncate, file_truncate does
+>> not catch operations through the truncate() system call), file_release,
+>> when a digest list opened for write is being closed, inode_unlink, when a
+>> digest list is removed, and inode_rename when a digest list is renamed.
+>>
+>> Dig_owner reset for directory digest caches is done on file_release, when a
+>> new digest list is written in the digest list directory, on inode_unlink,
+>> when a digest list is deleted from that directory, and finally on
+>> inode_rename, when a digest list is moved to/from that directory.
+>>
+>> Dig_user reset is always done on inode_post_setxattr and
+>> inode_post_removexattr, when the security.digest_list xattr is respectively
+>> set or removed from a file using a digest cache.
+>>
+>> With the exception of file_release, which will always be executed (cannot
+>> be denied), and inode_post_setxattr and inode_post_removexattr, which are
+>> executed after the actual operation, the other LSM hooks are not optimal,
+>> since the digest_cache LSM does not know whether or not the operation will
+>> be allowed also by other LSMs. If the operation is denied, the digest_cache
+>> LSM would do an unnecessary reset.
+>>
+>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+>> ---
+>>   security/digest_cache/Kconfig    |   1 +
+>>   security/digest_cache/Makefile   |   3 +-
+>>   security/digest_cache/dir.c      |   6 +
+>>   security/digest_cache/internal.h |  14 +++
+>>   security/digest_cache/main.c     |  19 +++
+>>   security/digest_cache/reset.c    | 197 +++++++++++++++++++++++++++++++
+>>   6 files changed, 239 insertions(+), 1 deletion(-)
+>>   create mode 100644 security/digest_cache/reset.c
+>>
+>> diff --git a/security/digest_cache/Kconfig b/security/digest_cache/Kconfig
+>> index cb4fa44e8f2a..54ba3a585073 100644
+>> --- a/security/digest_cache/Kconfig
+>> +++ b/security/digest_cache/Kconfig
+>> @@ -2,6 +2,7 @@
+>>   config SECURITY_DIGEST_CACHE
+>>   	bool "Digest_cache LSM"
+>>   	select TLV_PARSER
+>> +	select SECURITY_PATH
+>>   	default n
+>>   	help
+>>   	  This option enables an LSM maintaining a cache of digests
+>> diff --git a/security/digest_cache/Makefile b/security/digest_cache/Makefile
+>> index e417da0383ab..3d5e600a2c45 100644
+>> --- a/security/digest_cache/Makefile
+>> +++ b/security/digest_cache/Makefile
+>> @@ -4,7 +4,8 @@
+>>   
+>>   obj-$(CONFIG_SECURITY_DIGEST_CACHE) += digest_cache.o
+>>   
+>> -digest_cache-y := main.o secfs.o htable.o populate.o modsig.o verif.o dir.o
+>> +digest_cache-y := main.o secfs.o htable.o populate.o modsig.o verif.o dir.o \
+>> +		  reset.o
+>>   
+>>   digest_cache-y += parsers/tlv.o
+>>   digest_cache-y += parsers/rpm.o
+>> diff --git a/security/digest_cache/dir.c b/security/digest_cache/dir.c
+>> index a7d203c15386..937177660242 100644
+>> --- a/security/digest_cache/dir.c
+>> +++ b/security/digest_cache/dir.c
+>> @@ -148,6 +148,12 @@ digest_cache_dir_lookup_digest(struct dentry *dentry,
+>>   
+>>   	list_for_each_entry(dir_entry, &digest_cache->dir_entries, list) {
+>>   		mutex_lock(&dir_entry->digest_cache_mutex);
+>> +		if (dir_entry->digest_cache &&
+>> +		    test_bit(RESET, &dir_entry->digest_cache->flags)) {
+>> +			digest_cache_put(dir_entry->digest_cache);
+>> +			dir_entry->digest_cache = NULL;
+>> +		}
+>> +
+>>   		if (!dir_entry->digest_cache) {
+>>   			cache = digest_cache_create(dentry, digest_list_path,
+>>   						    digest_cache->path_str,
+>> diff --git a/security/digest_cache/internal.h b/security/digest_cache/internal.h
+>> index c13b35f6b2c0..c816929c4743 100644
+>> --- a/security/digest_cache/internal.h
+>> +++ b/security/digest_cache/internal.h
+>> @@ -18,6 +18,8 @@
+>>   #define INVALID			1	/* Digest cache marked as invalid. */
+>>   #define IS_DIR			2	/* Digest cache created from dir. */
+>>   #define DIR_PREFETCH		3	/* Prefetching requested for dir. */
+>> +#define RESET			4	/* Digest cache to be recreated. */
+>> +#define RESET_USER		5	/* Dig_user pointer to be released. */
+>>   
+>>   /**
+>>    * struct readdir_callback - Structure to store information for dir iteration
+>> @@ -247,4 +249,16 @@ digest_cache_dir_lookup_filename(struct dentry *dentry,
+>>   				 char *filename);
+>>   void digest_cache_dir_free(struct digest_cache *digest_cache);
+>>   
+>> +/* reset.c */
+>> +int digest_cache_path_truncate(const struct path *path);
+>> +void digest_cache_file_release(struct file *file);
+>> +int digest_cache_inode_unlink(struct inode *dir, struct dentry *dentry);
+>> +int digest_cache_inode_rename(struct inode *old_dir, struct dentry *old_dentry,
+>> +			      struct inode *new_dir, struct dentry *new_dentry);
+>> +void digest_cache_inode_post_setxattr(struct dentry *dentry, const char *name,
+>> +				      const void *value, size_t size,
+>> +				      int flags);
+>> +void digest_cache_inode_post_removexattr(struct dentry *dentry,
+>> +					 const char *name);
+>> +
+>>   #endif /* _DIGEST_CACHE_INTERNAL_H */
+>> diff --git a/security/digest_cache/main.c b/security/digest_cache/main.c
+>> index a5616fd07c1d..ce3518a33c80 100644
+>> --- a/security/digest_cache/main.c
+>> +++ b/security/digest_cache/main.c
+>> @@ -169,6 +169,11 @@ struct digest_cache *digest_cache_create(struct dentry *dentry,
+>>   
+>>   	/* Serialize check and assignment of dig_owner. */
+>>   	mutex_lock(&dig_sec->dig_owner_mutex);
+>> +	if (dig_sec->dig_owner && test_bit(RESET, &dig_sec->dig_owner->flags)) {
+>> +		digest_cache_put(dig_sec->dig_owner);
+>> +		dig_sec->dig_owner = NULL;
+>> +	}
+>> +
+>>   	if (dig_sec->dig_owner) {
+>>   		/* Increment ref. count for reference returned to the caller. */
+>>   		digest_cache = digest_cache_ref(dig_sec->dig_owner);
+>> @@ -403,6 +408,13 @@ struct digest_cache *digest_cache_get(struct dentry *dentry)
+>>   
+>>   	/* Serialize accesses to inode for which the digest cache is used. */
+>>   	mutex_lock(&dig_sec->dig_user_mutex);
+>> +	if (dig_sec->dig_user &&
+>> +	    (test_bit(RESET, &dig_sec->dig_user->flags) ||
+>> +	     test_bit(RESET_USER, &dig_sec->dig_user->flags))) {
+>> +		digest_cache_put(dig_sec->dig_user);
+>> +		dig_sec->dig_user = NULL;
+>> +	}
+>> +
+>>   	if (!dig_sec->dig_user) {
+>>   		down_read(&default_path_sem);
+>>   		/* Consume extra reference from digest_cache_create(). */
+>> @@ -491,6 +503,13 @@ static void digest_cache_inode_free_security(struct inode *inode)
+>>   static struct security_hook_list digest_cache_hooks[] __ro_after_init = {
+>>   	LSM_HOOK_INIT(inode_alloc_security, digest_cache_inode_alloc_security),
+>>   	LSM_HOOK_INIT(inode_free_security, digest_cache_inode_free_security),
+>> +	LSM_HOOK_INIT(path_truncate, digest_cache_path_truncate),
+>> +	LSM_HOOK_INIT(file_release, digest_cache_file_release),
+>> +	LSM_HOOK_INIT(inode_unlink, digest_cache_inode_unlink),
+>> +	LSM_HOOK_INIT(inode_rename, digest_cache_inode_rename),
+>> +	LSM_HOOK_INIT(inode_post_setxattr, digest_cache_inode_post_setxattr),
+>> +	LSM_HOOK_INIT(inode_post_removexattr,
+>> +		      digest_cache_inode_post_removexattr),
+>>   };
+>>   
+>>   /**
+>> diff --git a/security/digest_cache/reset.c b/security/digest_cache/reset.c
+>> new file mode 100644
+>> index 000000000000..e07222b0e0e8
+>> --- /dev/null
+>> +++ b/security/digest_cache/reset.c
+>> @@ -0,0 +1,197 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) 2023-2024 Huawei Technologies Duesseldorf GmbH
+>> + *
+>> + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+>> + *
+>> + * Reset digest cache on digest lists/directory modifications.
+>> + */
+>> +
+>> +#define pr_fmt(fmt) "DIGEST CACHE: "fmt
+>> +#include "internal.h"
+>> +
+>> +/**
+>> + * digest_cache_reset_owner - Reset dig_owner
+>> + * @inode: Inode of the digest list/directory containing the digest list
+>> + * @reason: Reason for reset
+>> + *
+>> + * This function sets the RESET bit of the digest cache pointed to by dig_owner
+>> + * (if unset), so that digest_cache_get() and digest_cache_create() respectively
+>> + * release and clear dig_user and dig_owner in the inode security blob. This
+>> + * causes new callers of digest_cache_get() to get a new digest cache.
+>> + */
+>> +static void digest_cache_reset_owner(struct inode *inode, const char *reason)
+>> +{
+>> +	struct digest_cache_security *dig_sec;
+>> +
+>> +	dig_sec = digest_cache_get_security(inode);
+>> +	if (unlikely(!dig_sec))
+>> +		return;
+>> +
+>> +	mutex_lock(&dig_sec->dig_owner_mutex);
+>> +	if (dig_sec->dig_owner &&
+>> +	    !test_and_set_bit(RESET, &dig_sec->dig_owner->flags))
+>> +		pr_debug("Resetting %s (dig_owner), reason: %s\n",
+>> +			 dig_sec->dig_owner->path_str, reason);
+>> +	mutex_unlock(&dig_sec->dig_owner_mutex);
+>> +}
+>> +
+>> +/**
+>> + * digest_cache_reset_user - Reset dig_user
+>> + * @inode: Inode of the file using the digest cache
+>> + * @reason: Reason for reset
+>> + *
+>> + * This function sets the RESET_USER bit (if unset), so that digest_cache_get()
+>> + * clears the dig_user pointer in the inode security blob and determines again
+>> + * the digest list inode to get a digest cache from.
+>> + */
+>> +static void digest_cache_reset_user(struct inode *inode, const char *reason)
+>> +{
+>> +	struct digest_cache_security *dig_sec;
+>> +
+>> +	dig_sec = digest_cache_get_security(inode);
+>> +	if (unlikely(!dig_sec))
+>> +		return;
+>> +
+>> +	mutex_lock(&dig_sec->dig_user_mutex);
+>> +	if (dig_sec->dig_user &&
+>> +	    !test_and_set_bit(RESET_USER, &dig_sec->dig_user->flags))
+>> +		pr_debug("Resetting %s (dig_user), reason: %s\n",
+>> +			 dig_sec->dig_user->path_str, reason);
+>> +	mutex_unlock(&dig_sec->dig_user_mutex);
+>> +}
+>> +
+>> +/**
+>> + * digest_cache_path_truncate - A file is being truncated
+>> + * @path: File path
+>> + *
+>> + * This function is called when a file is being truncated. If the inode is a
+>> + * digest list, it resets the inode dig_owner, to force rebuilding the digest
+>> + * cache.
+>> + *
+>> + * Return: Zero.
+>> + */
+>> +int digest_cache_path_truncate(const struct path *path)
+>> +{
+>> +	struct inode *inode = d_backing_inode(path->dentry);
+>> +
+>> +	if (!S_ISREG(inode->i_mode))
+>> +		return 0;
+>> +
+>> +	digest_cache_reset_owner(inode, "file_truncate");
+>> +	return 0;
+>> +}
+>> +
+>> +/**
+>> + * digest_cache_file_release - Last reference of a file desc is being released
+>> + * @file: File descriptor
+>> + *
+>> + * This function is called when the last reference of a file descriptor is
+>> + * being released. If the inode is a regular file and was opened for write, or
+>> + * the parent inode is the digest list directory and the file was created, it
+>> + * resets the inode dig_owner, to force rebuilding the digest cache.
+>> + */
+>> +void digest_cache_file_release(struct file *file)
+>> +{
+>> +	struct inode *dir = d_backing_inode(file_dentry(file)->d_parent);
+>> +
+>> +	if (!S_ISREG(file_inode(file)->i_mode) || !(file->f_mode & FMODE_WRITE))
+>> +		return;
+>> +
+>> +	digest_cache_reset_owner(file_inode(file), "file_file_release");
+>> +	if (file->f_mode & FMODE_CREATED)
+>> +		digest_cache_reset_owner(dir, "dir_file_release");
+>> +}
+>> +
+>> +/**
+>> + * digest_cache_inode_unlink - An inode is being removed
+>> + * @dir: Inode of the affected directory
+>> + * @dentry: Dentry of the inode being removed
+>> + *
+>> + * This function is called when an existing inode is being removed. If the
+>> + * inode is a digest list, or the parent inode is the digest list directory and
+>> + * the inode is a regular file, it resets the affected inode dig_owner, to force
+>> + * rebuilding the digest cache.
+>> + *
+>> + * Return: Zero.
+>> + */
+>> +int digest_cache_inode_unlink(struct inode *dir, struct dentry *dentry)
+>> +{
+>> +	struct inode *inode = d_backing_inode(dentry);
+>> +
+>> +	if (!S_ISREG(inode->i_mode))
+>> +		return 0;
+>> +
+>> +	digest_cache_reset_owner(inode, "file_unlink");
+>> +	digest_cache_reset_owner(dir, "dir_unlink");
+>> +	return 0;
+>> +}
+>> +
+>> +/**
+>> + * digest_cache_inode_rename - An inode is being renamed
+>> + * @old_dir: Inode of the directory containing the inode being renamed
+>> + * @old_dentry: Dentry of the inode being renamed
+>> + * @new_dir: Directory where the inode will be placed into
+>> + * @new_dentry: Dentry of the inode after being renamed
+>> + *
+>> + * This function is called when an existing inode is being moved from a
+>> + * directory to another (rename). If the inode is a digest list, or that inode
+>> + * is moved from/to the digest list directory, it resets the affected inode
+>> + * dig_owner, to force rebuilding the digest cache.
+>> + *
+>> + * Return: Zero.
+>> + */
+>> +int digest_cache_inode_rename(struct inode *old_dir, struct dentry *old_dentry,
+>> +			      struct inode *new_dir, struct dentry *new_dentry)
+>> +{
+>> +	struct inode *old_inode = d_backing_inode(old_dentry);
+>> +
+>> +	if (!S_ISREG(old_inode->i_mode))
+>> +		return 0;
+>> +
+>> +	digest_cache_reset_owner(old_inode, "file_rename");
+>> +	digest_cache_reset_owner(old_dir, "dir_rename_from");
+>> +	digest_cache_reset_owner(new_dir, "dir_rename_to");
+>> +	return 0;
+>> +}
+>> +
+>> +/**
+>> + * digest_cache_inode_post_setxattr() - An xattr was set
+>> + * @dentry: file
+>> + * @name: xattr name
+>> + * @value: xattr value
+>> + * @size: size of xattr value
+>> + * @flags: flags
+>> + *
+>> + * This function is called after an xattr was set on an existing inode. If the
+>> + * inode points to a digest cache and the xattr set is security.digest_list, it
+>> + * resets dig_user in the inode security blob, to force retrieving a fresh
+>> + * digest cache.
+>> + */
+>> +void digest_cache_inode_post_setxattr(struct dentry *dentry, const char *name,
+>> +				      const void *value, size_t size, int flags)
+>> +{
+>> +	if (strcmp(name, XATTR_NAME_DIGEST_LIST))
+>> +		return;
+>> +
+>> +	digest_cache_reset_user(d_backing_inode(dentry), "file_setxattr");
+>> +}
+>> +
+>> +/**
+>> + * digest_cache_inode_post_removexattr() - An xattr was removed
+>> + * @dentry: file
+>> + * @name: xattr name
+>> + *
+>> + * This function is called after an xattr was removed from an existing inode.
+>> + * If the inode points to a digest cache and the xattr removed is
+>> + * security.digest_list, it resets dig_user in the inode security blob, to
+>> + * force retrieving a fresh digest cache.
+>> + */
+>> +void digest_cache_inode_post_removexattr(struct dentry *dentry,
+>> +					 const char *name)
 > 
-> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
-> Anything received after that time might be too late.
+> nit:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.28-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> void digest_cache_inode_post_removexattr(struct dentry *dentry, const char *name)
 > 
-> thanks,
+> would be fine too
+
+I still prefer to stay within 80 characters.
+
+Thanks
+
+Roberto
+
+>> +{
+>> +	if (strcmp(name, XATTR_NAME_DIGEST_LIST))
+>> +		return;
+>> +
+>> +	digest_cache_reset_user(d_backing_inode(dentry), "file_removexattr");
+>> +}
 > 
-> greg k-h
+> 
+> BR, Jarkko
 
-All tests passing for Tegra ...
-
-Test results for stable-v6.6:
-    10 builds:	10 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    102 tests:	102 pass, 0 fail
-
-Linux version:	6.6.28-rc1-ga4e5ff353287
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
 
