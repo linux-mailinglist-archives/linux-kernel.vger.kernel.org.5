@@ -1,166 +1,189 @@
-Return-Path: <linux-kernel+bounces-147143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E4428A7011
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:44:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C0C38A7013
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AF8E1C211B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:44:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7775C1F22201
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB02A131725;
-	Tue, 16 Apr 2024 15:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02DF131720;
+	Tue, 16 Apr 2024 15:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ALW1WFmy"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="WDjXGues"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2043.outbound.protection.outlook.com [40.107.22.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024DA1311A1
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713282263; cv=none; b=C9YJjiaTd7JtRZA6AN0np84aVnB7NY4SssZeVpiVqbPvFnQzX3HRfpNSHJrPnYEfADUzL4hBrzeprHxiw8uGHIlkzqShISCNYBPb4aKvAm2CBKAtyWW2F86KJppvZtSprUIXdWeYNl1CJnrjoCCcldTS0fv2tbSeVowi0B859mE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713282263; c=relaxed/simple;
-	bh=6tXNn+CXz7BrPC+7REh0M85C6tQtokLLBLVNUiDpCcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lVC6W91RfqJrsWUuB8T5XPrSyaZW8qJ+/EqifLKIos1xMtQyQlO31G1F0Ds/6gnh3M+dH5npOxEZwonYMftHGoi1D0Xersgt2JL+ih5DlZE8531YJsCEwSOMXwcinHuXcD5Sw3n3IzDqKh0ghx9pfyzVkcGrXUtxcVfcXPoEbGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ALW1WFmy; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed01c63657so4082301b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:44:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1713282260; x=1713887060; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=e9KltKjoXDfkbWSeu7VmS8Z2kEX/B6kq3EkTIupIde8=;
-        b=ALW1WFmyGAOBjA26OuF6npmDJO4C0WJZosTD4MYfWG8D5NfMlDjDp5Z/yk4dEsFyvo
-         r/Va3vED+wOFwaNLp+mlE7wmemJPf5gukirE1LlpBwVHeeq5YEuWRjUzz6jpmE3u7DgD
-         F9M0/heNm3B66Yk3bJMKnwIuv8OSsMoa5TOryF5/JN6AXH8u2VW/hiEC+31E78Ihqq7c
-         Qh+wqWva6PUdF0lu8OxFsX0+ngjGNYaJGpPncDdeBNP0Saexofr/55RHR93YnQCMU6SR
-         X2Vs7iC4OPQm8a14lWFgW6RUUIsDGVLbTZH3N9WWnrp/PbJ+kzBi7J6Yias7XEZ71XlZ
-         C3lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713282260; x=1713887060;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=e9KltKjoXDfkbWSeu7VmS8Z2kEX/B6kq3EkTIupIde8=;
-        b=hIp5ZJRvlYGMpdRMnaS0NYKiUIVK94NgejsZN7LWXjyLa7rB9eiH/rWjdu76HrjbHO
-         KbXX8LVnCoVNtNiR0SOKECHCTzThEVIoJn1p5/iMUv0I7jPnBJEK/EbQh4rvv3spl2k+
-         RWbVLDex9eNYItIHN5E1dhk1JbPrBrQlLZ/v4yRL1uQPm6vvyqUhTF1T3L2mUmbB8cll
-         5asm380LxxeIOZk6quBqFiVYpLyzdKNSGsYHN0IiIVZJ7w5uwC3DeEpycauNAVRRLYiR
-         mQ03GyO0sXkwKzx88It8OoTr0Sb6dOmp7ZBM1DLvFePzUSEZbDBkYCTnDHGVP3NfTJ2H
-         YUKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUaQ9On9AXtlLVYSxiMAdp6AQ0Dch+p6AgqqBvQbFc89QpC20OzzIndSMwl1mwyP+jL/XY2JjwDh/En1MLvi2U9AzMtC7YNG2/yjBlj
-X-Gm-Message-State: AOJu0Yzbr6JZC46mXg6n3C+jiabULSJ4UBBg04x/6ApjLZLtBbHHPNd5
-	XicdRRSgUGAu04YpUR0aUNKyAVl2PeOBBJ4xZ3EEEKDXuu7wOfuswDr21WVdouM=
-X-Google-Smtp-Source: AGHT+IFNgClAgjt5IgadPoPwJJY8jHfiJ4L4eLugbC5yjDCPSYARmT9MsoiuwN97dJz0uoqxOuQM5A==
-X-Received: by 2002:a05:6a21:1014:b0:1a9:c2a1:3ae2 with SMTP id nk20-20020a056a21101400b001a9c2a13ae2mr11175898pzb.4.1713282260198;
-        Tue, 16 Apr 2024 08:44:20 -0700 (PDT)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id q24-20020a62e118000000b006ecf76df20csm9154539pfh.158.2024.04.16.08.44.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 08:44:19 -0700 (PDT)
-Date: Tue, 16 Apr 2024 08:44:16 -0700
-From: Deepak Gupta <debug@rivosinc.com>
-To: Rob Herring <robh@kernel.org>
-Cc: paul.walmsley@sifive.com, rick.p.edgecombe@intel.com,
-	broonie@kernel.org, Szabolcs.Nagy@arm.com, kito.cheng@sifive.com,
-	keescook@chromium.org, ajones@ventanamicro.com,
-	conor.dooley@microchip.com, cleger@rivosinc.com,
-	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
-	alexghiti@rivosinc.com, samuel.holland@sifive.com, conor@kernel.org,
-	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-mm@kvack.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, corbet@lwn.net, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
-	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
-	ebiederm@xmission.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	lstoakes@gmail.com, shuah@kernel.org, brauner@kernel.org,
-	andy.chiu@sifive.com, jerry.shih@sifive.com,
-	hankuan.chen@sifive.com, greentime.hu@sifive.com, evan@rivosinc.com,
-	xiao.w.wang@intel.com, charlie@rivosinc.com,
-	apatel@ventanamicro.com, mchitale@ventanamicro.com,
-	dbarboza@ventanamicro.com, sameo@rivosinc.com,
-	shikemeng@huaweicloud.com, willy@infradead.org,
-	vincent.chen@sifive.com, guoren@kernel.org, samitolvanen@google.com,
-	songshuaishuai@tinylab.org, gerg@kernel.org, heiko@sntech.de,
-	bhe@redhat.com, jeeheng.sia@starfivetech.com, cyy@cyyself.name,
-	maskray@google.com, ancientmodern4@gmail.com,
-	mathis.salmen@matsal.de, cuiyunhui@bytedance.com,
-	bgray@linux.ibm.com, mpe@ellerman.id.au, baruch@tkos.co.il,
-	alx@kernel.org, david@redhat.com, catalin.marinas@arm.com,
-	revest@chromium.org, josh@joshtriplett.org, shr@devkernel.io,
-	deller@gmx.de, omosnace@redhat.com, ojeda@kernel.org,
-	jhubbard@nvidia.com
-Subject: Re: [PATCH v3 04/29] riscv: zicfilp / zicfiss in dt-bindings
- (extensions.yaml)
-Message-ID: <Zh6c0FH2OvrfDLje@debug.ba.rivosinc.com>
-References: <20240403234054.2020347-1-debug@rivosinc.com>
- <20240403234054.2020347-5-debug@rivosinc.com>
- <20240410115806.GA4044117-robh@kernel.org>
- <CAKC1njSsZ6wfvJtXkp4J4J6wXFtU92W9JGca-atKxBy8UvUwRg@mail.gmail.com>
- <20240415194105.GA94432-robh@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47569130AC3;
+	Tue, 16 Apr 2024 15:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.43
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713282316; cv=fail; b=vFPQG6GEWuBqTKsxIwj9n5fwPu5jLM+0a2Rn4ksjFlhnndzsvEQut4Sft9QK+UxnfIbWff1ENB+EeuwKNUpzGbzIXsW49k+3NrWTQn4Yg6FEv3OHniEkSCaGSRwm9l25Ob0OgfLNM0GDrWFsXKykhiWTULOkwlzv6dQVoMBTA9Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713282316; c=relaxed/simple;
+	bh=R5OEHTXQXX4d+SvYO/3a3+Ppt8wY/O3VPU7QP5Ow74w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=giM6JSKMdtHLmFo7fARckcaLRdWUvSOKIiPYg0nbnhPcn2f9JWGOMo6NdudNUMD0mUkQBMD0xbPMHrEbmno7wltqvEHgfIARHuV4lKKqi5abSfLYgcadh7fuFUSNEDjdiyxROLKMXV5C676s1XN9hwJ9H47GAP+HsDwUES8o/ag=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=WDjXGues; arc=fail smtp.client-ip=40.107.22.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KuXmeWkN1XKK3CSlnOIbNZiKw+5PuPzB89MtBAU1ERHfK1TN+3recZllk26Z2fvCbyN4hBfgOFqTvcnkVObl/1F0JhlQAF4rqaQi1ORq05hUw6y64Z/bjOPgZICwRauvTyjj21b9D5E/Dchb24cjLJg0f1DHW4w/XT5uhrIeIrupAJs1e291o9tcdVzq4d0/whyXf01WuxmEv3WAhOmodv2tMsoB6XZ8ZxWEbG5t4VM3lyAk/UmboMpDoHacuOKu+P1ZRtFaP12qL2UOoONkJPBG0AcS6RIsc3MTYhPgw+qjNWcOEgbDFxxeywrFNQMqaF3jkOCTbOCXxDkgRYNc1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/55rCU6eDp0mdrTuojSXATBmsXHSiCfJIG4rpWVEX4c=;
+ b=eYPBgFpvrYTSRmYFMPuIkRJzu4CO4m6KPI9HAMJepQi4GnNaGzCBJQfQwRLZnm3w2XZ9q41xwIcf10zqiYYXgvyAHB2R8xPl6hNHWG/2KiIWBZG2RrA99PVkIQvGutd8h1bQhVCChBA1Z3BjQVSfj4PodHTojSzT6TGoJeDcjraZrRwUlTztycNg2BlxGBXBKkmkksmhwv3EldHya5SL1ulilzqEgv2pPRDvKp2MeXWIgNlTk+9ltPmOwrSVZ4Uj7WvQ2O3dnpiMu/U0PYPRF1Np4RXbuI45aGeZAfmTSIV+DbZHyLaoocqwx2312DbNIWXibwzVzBIWQN1Yng5chg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/55rCU6eDp0mdrTuojSXATBmsXHSiCfJIG4rpWVEX4c=;
+ b=WDjXGues8IbV6hVe3H8WKUvdyWoXgNCVA1ALFUn+czpHcbiCbRONQYjRAtu8nr9pOerdwEZFjaK6g9HoMlzKMfbma8DK96P4JSLd/1emmbJyf+3CzIDeOzoLQm4YUPJ3X9heU2DD9YjKO6tWPYOcBU3yhuAW6cMupYdm278bYxc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PA4PR04MB9438.eurprd04.prod.outlook.com (2603:10a6:102:2aa::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
+ 2024 15:45:11 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
+ 15:45:11 +0000
+Date: Tue, 16 Apr 2024 11:45:02 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH 06/11] arm64: dts: imx93-11x11-evk: update resource table
+ address
+Message-ID: <Zh6c/gfdlNTIa0pj@lizhi-Precision-Tower-5810>
+References: <20240416-imx93-dts-4-13-v1-0-da8ac02e8413@nxp.com>
+ <20240416-imx93-dts-4-13-v1-6-da8ac02e8413@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416-imx93-dts-4-13-v1-6-da8ac02e8413@nxp.com>
+X-ClientProxiedBy: BYAPR08CA0007.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::20) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240415194105.GA94432-robh@kernel.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA4PR04MB9438:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0ea6031b-b711-422e-c368-08dc5e2c3322
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	foPungl603qBT915KoCs7P62Qu6YDHIXzojLfuuRFz4tCt+XHug3w81ixoWjl98UmhNp9uF8wGsSbcV+8ryJ841X4TldtZVfDe/lXGH5Pfb5dsCLewHxpHcj2NNE9V/oGxh65uSaHaAngPazHgRP6IHLdHiYx2Vtbi2IsLkFGwT5BEetjbOdgT7Y6kCmOicg+l8PpWPXaF6qRMgtl1fORDm+H4w5LB2nX08/nLQAwZK1ZXKxooNinDkyjdFEiXAJtkAm3QVWb98wwEkx/8q/LZSC//nyLcUEBdTGoePkqXN0lYZajYy5GlubRTnBkt+RmsDSB5/7KJAJJRhUTbFwmNqI6RbssaGjqIUWeYgOWQqR258gcNAkbXBlO6u2w4rl63TrMRFMCADiCjd3QOjgf5iFztQHA+cFXiHRQDeVFnIdQ8WYIRqw5Y7vL4MoCAqOlTE0Z8jlIks/EF1FkrALXf2C1TsE5HZThhtMM6saKL7iTGIPajFbRZV8tEi9zO7OytTduESudCfsJmyvg7bvAXov6EyRZdlNVQ8ZkUfTizkXxGvQAQZ86aLh8QRQR6hY95KI2lPtHj/Y8gLxjro//aiscn4jyqm29a0UYPTR6Jw7rvh+W7ERrTDDwumOz9rpBoxjDdS8DaUwUprtt7TmZ7KAH2Qnuk/T8oSaZspBQU0T4m3ZeEqDbFkfBgpkj4O4fMFYQzopxEEqjXy8TMqgppJ3f0k9xCTdpt3BWpsXbew=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(7416005)(366007)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?ROUOi9qYY2ngod1UPF7/AwD558Tq9aG7VKoSWgFq80g21WLqmsrMHZwgUxph?=
+ =?us-ascii?Q?sZrA4ccT95BnX9LmpCD4YUHzwTFI+jCYZjtxsy5qQ14wS8riW3sjUAYAULse?=
+ =?us-ascii?Q?YBIK7JKGISK/6i1Ck/llftWnhHKBsHBZrgt0FDLqOc/6XVblMOUrSpic2vfr?=
+ =?us-ascii?Q?jUsFOCcjeMAgXF2KXNPqt+hkyc9W0mhGNIDNpbv/8gmkCgkieslRYZdsjA5j?=
+ =?us-ascii?Q?FsSRqWkS+inXIly7i64guPTWRiGgN334Hh0BX65x4ZWDfKAA/z233IVnXiwp?=
+ =?us-ascii?Q?pMBULfTfFTrkYFWdHPtPg5zPYzG5eR3vs7Vj4LTfmCVXSmkSO3Af6UNPpgFL?=
+ =?us-ascii?Q?ScvnSnDltke7iTa3EGyRuNizK6sfYh2ePDSkqf591YWu91JebBAhWhoCpOkc?=
+ =?us-ascii?Q?LBmT942vAZQpquWmkTO0JlH6sRaXlVjt4l0GYdlFscSqCeeS9PVuIPXz7c9g?=
+ =?us-ascii?Q?un7azN+mUXiIvBesRaAtDgIG9sygvWDqCFTO/rmHkoYiLlecz71zgGlaWbPO?=
+ =?us-ascii?Q?cPQk67EZlSzvNTj/kc2wjd54xThXW/7xKco07ZDKlvwIs2iHGCzsUBjEGYxD?=
+ =?us-ascii?Q?uNF1d01ooNpaTsericNelUf4j6+CVetLSAsk2070fdUZW2GT60secniGuLD0?=
+ =?us-ascii?Q?UdKg85N5fPSBbnjLue4/3TOI5G4phaUVpQYFLlWFqOcfXhxvdRzKQoW9ZUUC?=
+ =?us-ascii?Q?gGQK7gbZ1eIP91VdKWYQmpzjEm1u15jA/g5COsr5LIT32w6pCwxSWuWrsqLu?=
+ =?us-ascii?Q?y5SEsE2ZCZtnx9RTmIQrjfBTs501UG3kkKIoKR4WNueq/A8NRUhRCT2swMx+?=
+ =?us-ascii?Q?1SIM6ofAFeWAqNTP0L4ZOC5p1mSnJA/VnYo/qZOdcry7Sgz1MJX4BDeRCuNG?=
+ =?us-ascii?Q?WFOGed+sJC8wfaphGzLpLTwbLuc+m7eWWUVYQ0pgW9d5BnjlIirdIPQ/JCfk?=
+ =?us-ascii?Q?xuzX4ypJlj8mYhibPdj10ux6sRxPCvADKZxn5UVIP6S504549z+q+bOuvQY4?=
+ =?us-ascii?Q?cQbU3sOGd9XrdvaCGikv7uFApntvbzqDisBHJJdWyilpEO1yRuDKzto0u2Vb?=
+ =?us-ascii?Q?iXKSIS6VpUdIHbLBL8+GP0KKuSbqT+0W1Oupf5sBsGSXMy3VIFz0amhjAe3z?=
+ =?us-ascii?Q?rd3voulr3YHS0Kd2VHO/bASoHSYhO9BKh5Dir7RugfkSjYR5pxJcAoOnnwJB?=
+ =?us-ascii?Q?DHDAfK++PAhJYHxHri46OxljdTCnuxjarYLIGnLGmapqYR18b9yJw1/gZrLy?=
+ =?us-ascii?Q?ammSIGB33FtQokgn6QalzkN/cT9zD0VGaKFNSLthseOLMzBuzdH05b7epgq+?=
+ =?us-ascii?Q?PJfXWENNwcUa5fEQ5IbGrBs61Q3eWVX7YFpeW4cvliwisIG21OMD0/Hd3qZf?=
+ =?us-ascii?Q?v24ez62v0+BTRWD7/Hvp/k0T1Gd3o3NTi7wlCUetgUclcswoG10Wxc7/LqEV?=
+ =?us-ascii?Q?pV6m44khd+uSd9/DnVteqedjSTXL/GQGAgjI0IJpI+iL9uPr8tLax6Z2n5aG?=
+ =?us-ascii?Q?Ezodt0NMUyVduS8qbuwALjPurp1OxT/SF8BIJ5Psqs/tgi0IrmGw7UkU/Mdc?=
+ =?us-ascii?Q?BE22jmD497pLeaKMfF9EdfB2Bq8gA1ixgq5/JZUi?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ea6031b-b711-422e-c368-08dc5e2c3322
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 15:45:11.0326
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WS6Ohwtex7XbA0BYjPZGXieSE7oHsxw+X3toa2+lhwzlw6iXdX3HQjxC6MEO3SvJCd0Z7j3FgO4jKhaAeRgtqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9438
 
-On Mon, Apr 15, 2024 at 02:41:05PM -0500, Rob Herring wrote:
->On Wed, Apr 10, 2024 at 02:37:21PM -0700, Deepak Gupta wrote:
->> On Wed, Apr 10, 2024 at 4:58 AM Rob Herring <robh@kernel.org> wrote:
->> >
->> > On Wed, Apr 03, 2024 at 04:34:52PM -0700, Deepak Gupta wrote:
->> > > Make an entry for cfi extensions in extensions.yaml.
->> > >
->> > > Signed-off-by: Deepak Gupta <debug@rivosinc.com>
->> > > ---
->> > >  .../devicetree/bindings/riscv/extensions.yaml          | 10 ++++++++++
->> > >  1 file changed, 10 insertions(+)
->> > >
->> > > diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
->> > > index 63d81dc895e5..45b87ad6cc1c 100644
->> > > --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
->> > > +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
->> > > @@ -317,6 +317,16 @@ properties:
->> > >              The standard Zicboz extension for cache-block zeroing as ratified
->> > >              in commit 3dd606f ("Create cmobase-v1.0.pdf") of riscv-CMOs.
->> > >
->> > > +        - const: zicfilp
->> > > +          description:
->> > > +            The standard Zicfilp extension for enforcing forward edge control-flow
->> > > +            integrity in commit 3a20dc9 of riscv-cfi and is in public review.
->> >
->> > Does in public review mean the commit sha is going to change?
->> >
->>
->> Less likely. Next step after public review is to gather comments from
->> public review.
->> If something is really pressing and needs to be addressed, then yes
->> this will change.
->> Else this gets ratified as it is.
->
->If the commit sha can change, then it is useless. What's the guarantee
->someone is going to remember to update it if it changes?
+On Tue, Apr 16, 2024 at 11:26:42PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Because i.MX93 A1 ROM used the last 4KB TCM area, update the resource
+> table to avoid conflict. Also correct vdev1vring node name to align with
 
-Sorry for late reply.
+Is it little better
 
-I was following existing wordings and patterns for messaging in this file.
-You would rather have me remove sha and only mention that spec is in public
-review?
+Update the resource table to avoid conflict because iMX93 ROM use last 4KB
+TCM aream.
 
->
->Rob
+where you correct vdev1vring node name?
+
+> reg.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+
+It is bug fix, please add fixes tag.
+
+Frank
+
+> ---
+>  arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+> index 07e85a30a25f..b7b52576586f 100644
+> --- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+> @@ -38,7 +38,7 @@ vdev0vring1: vdev0vring1@a4008000 {
+>  			no-map;
+>  		};
+>  
+> -		vdev1vring0: vdev1vring0@a4000000 {
+> +		vdev1vring0: vdev1vring0@a4010000 {
+>  			reg = <0 0xa4010000 0 0x8000>;
+>  			no-map;
+>  		};
+> @@ -48,8 +48,8 @@ vdev1vring1: vdev1vring1@a4018000 {
+>  			no-map;
+>  		};
+>  
+> -		rsc_table: rsc-table@2021f000 {
+> -			reg = <0 0x2021f000 0 0x1000>;
+> +		rsc_table: rsc-table@2021e000 {
+> +			reg = <0 0x2021e000 0 0x1000>;
+>  			no-map;
+>  		};
+>  
+> 
+> -- 
+> 2.37.1
+> 
 
