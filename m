@@ -1,356 +1,191 @@
-Return-Path: <linux-kernel+bounces-146247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE2C78A62B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:02:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E4E8A62BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:04:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEA741C2169C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:02:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70151B22A63
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBB938FA3;
-	Tue, 16 Apr 2024 05:02:05 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D41A39AFD;
+	Tue, 16 Apr 2024 05:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="t9/m+Ljz"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00747381C4
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 05:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713243724; cv=none; b=tMOMrNp06WsIpYhth5qdeXDED4YsM9FZxqHFBeXn0P3gM2PJOWJ0kUF+CmDcp/wEujlsMA8PTvxuA7cfuxdpVbchlsPHMcYA2aB+2JJDGhqoVbpCoqTh94ZS+sKkMz3rjf2SdOgEvog0vG1ULZavKz54PrSglXm/pN4FTTO7wro=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713243724; c=relaxed/simple;
-	bh=6nXu3aOrzW2uYbvEpaskErs1E0cE+an6SfFwfj+x66A=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=HY4csSy1CNf/TdRAwUnU5JcF8vtWsJsgmhgC6Ozs4IstFqkTwqPiBHr6ThSP1PaIzJTDSc4x4oG46tjVGMSaX0EmmM7F54YxbK9rShXIERK94bT2cn9MkwqJyvTDQjiGFeTNiD0dC1v2hQVX03L5y9QTkBthqhwe6u71UKCTUwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d5e487d194so293093839f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 22:02:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713243722; x=1713848522;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9y30aEvxJE0diCeWdI/3oXWsV75oRNkMfQ8L8q0NDzM=;
-        b=PP0Kch0HzXvO/CugYoVvzrJ2MqgT6nDjJJhIX4OkMNC73GOFLd0xz+hBWdDAbonzQt
-         eStGfPNvp83ctoZ8J9TJ3K4SpGJ0/aY0ugmjMmM/yRc0zu4rLYWzvkkp8wOvwgSmS0yq
-         HhOtQWRRirVibR8UMr50zKkarhwv1NEdylnAQMxEcT8p9OOGsc1fM4Ru955GyLEtXKIO
-         7Y0ihhC571ftHRcL+xNwNMVKfkRaXkq4yZLlc0h5zxXQR7Oa5umnPb11TKstvjLL1sev
-         BdJaVqa7720BsQ0eJvNTS7IR+R8j9rGq33SFDgiRuHqbhQbBVFmIgnm9lyyqYVDPReYY
-         9PzQ==
-X-Gm-Message-State: AOJu0YxTyY3ptk+ZYoD81Qf5PeKphzNMf7RPzLuv54EJ9Zl+j/ZwKW9P
-	qemXtkMSxATwKxxyYndS7fFY23na7FxRu+kvrVY9lMDDZvhcYTbwM4yZwkGlF+TjN5mCQPtfYfm
-	PcX9pxa7iqBGx9YYJ8EN15eh5WQd2FcV6jeMuZnzc/4prfWtBBfvb6NQ=
-X-Google-Smtp-Source: AGHT+IGp7U/5H4DmtqMWQQwot6cb3Dzjsd+Z+auUmmmwifgb5yyZqQXFJV+jv8P01f4QdbB4wkR0ArYYcqEheX+x390z84ZFjXIq
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD3A38385;
+	Tue, 16 Apr 2024 05:04:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713243862; cv=fail; b=iNnFn2PmLVd/cm2+YRAv9QsfNsWbe5nWMwITg/7ed2mVIGCgpPGDT+JYo6ML/bgZMeT2hzN73jvIfpVhSQdoLx/LoRDlw+xImR0fkNkTyQ05KVZ+bSFhuGUUxARzZlO2xc+xg+v+zr2jBNa/YPeC/+Tpb2haO2SHzy6bwrghwMs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713243862; c=relaxed/simple;
+	bh=mAjrCSiY046xHMc/kf5mFd1kvCrHY/fwwSS6SHHiqg0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=b2KSmtvM8a+iPbZo7kx2ciioQk4L2e9bJ1dOFDooBBI1PSBl5e542GvO2LppjtFiZ3T4aqbRxoeT75Mkdv76SlESXMYbZYPXldnhjsUe1I3hFaAPwnfPbaSpmoxVZsL9dwmr75KXmobrXh6Yb/BXdOaDIVC/uiXzPDuoRthWgQE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=t9/m+Ljz; arc=fail smtp.client-ip=40.107.94.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SOK/p6MXEoYH/x4BuShW/Am1v2tx2DNr6iEWNlr52c55VlZKM6BCtWO0+h7BzHyA/66hoACzeysCdQCV7shntXp0GDqiAhr2LUS5OANhn4GoK+OYtSQ/TzDLVRZ1lm2Ro2mx99u49PgPfx2H+mberGRGGfltSzU4YDI9GidT9EqG1rCl4qjnDtmolNjH8dYriXJskrQGapz9S2Cr8y6pwNtJKSMm2q9FAxeKbYzwOy8nL4jbr/IFsAx6gBHrWiN3YWNx1uoMI4HIlCAIwmOvqvEU1yglB65DidFUByu5F/GroFYsg605XTtLM2UiwljIehPXa0gC9LOj1QJeEJK7Kw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZE9OG4vP0tkg6JhP6AIkaAD6PN8QpWYdYx7g4Z/dpdQ=;
+ b=R4T0zwGRdXExrQ07SM6FQpnXMEAGwstbZ/U1LZIq30kgdDVYaTmIFSh84C1Hx/S2yjvkA07SDhNmdHIRVkbrRZKqEHxUL45ZxdBpSqZ1X3JG2OmlaFqb38wsfRzRujkdRz71IlHgV6NQHmxn/HZCJCFcWQdau106U1z4dXXqHdb8pFZLLl48V4WIUy1VnXAQdTulkX27RhEBvBwUYmH+firyBe43yN0tqAqBNfuvUZEj5+ll3R8krT0LOR89C6hyfDemiK34CQrOQiLA8Lbdlou1+8N6DzrXWr4p6u15mxY+0MFtF2IuHMVDKdgpxTPGMr6aZN1LuNINLCnLFLn0ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZE9OG4vP0tkg6JhP6AIkaAD6PN8QpWYdYx7g4Z/dpdQ=;
+ b=t9/m+LjzRSSDHXJ3YVPfvNL1bCNd8PdgpcP6rELosUowQDu78A43IL8BIk1Y9SFHkliJQeojWNKjejx95sDeA0tm6EoMQ1GOZf9VIYKc8aCuNlTrbdfklgqFYMX215AWAeUtJwgyIXA9A6G3mxWnKbp3zLC37NnO6dJRGCYe+8c=
+Received: from CH0PR03CA0083.namprd03.prod.outlook.com (2603:10b6:610:cc::28)
+ by SJ2PR12MB9085.namprd12.prod.outlook.com (2603:10b6:a03:564::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
+ 2024 05:04:18 +0000
+Received: from CH1PEPF0000A346.namprd04.prod.outlook.com
+ (2603:10b6:610:cc:cafe::3f) by CH0PR03CA0083.outlook.office365.com
+ (2603:10b6:610:cc::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.33 via Frontend
+ Transport; Tue, 16 Apr 2024 05:04:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CH1PEPF0000A346.mail.protection.outlook.com (10.167.244.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Tue, 16 Apr 2024 05:04:18 +0000
+Received: from BLR-5CG113396H.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 16 Apr
+ 2024 00:04:08 -0500
+From: Ravi Bangoria <ravi.bangoria@amd.com>
+To: <seanjc@google.com>, <pbonzini@redhat.com>, <thomas.lendacky@amd.com>
+CC: <ravi.bangoria@amd.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	<hpa@zytor.com>, <michael.roth@amd.com>, <nikunj.dadhania@amd.com>,
+	<kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<santosh.shukla@amd.com>
+Subject: [PATCH v2] KVM: SEV-ES: Don't intercept MSR_IA32_DEBUGCTLMSR for SEV-ES guests
+Date: Tue, 16 Apr 2024 10:33:38 +0530
+Message-ID: <20240416050338.517-1-ravi.bangoria@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:891e:b0:482:ead5:4f5d with SMTP id
- jc30-20020a056638891e00b00482ead54f5dmr130959jab.1.1713243722138; Mon, 15 Apr
- 2024 22:02:02 -0700 (PDT)
-Date: Mon, 15 Apr 2024 22:02:02 -0700
-In-Reply-To: <CA+LQOUdW5Sp0i1ez3LKYVyUVTaM13rmPkGd0LiWDbey+9L7NAg@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000078d84e06162fa3fb@google.com>
-Subject: Re: [syzbot] [input?] WARNING in bcm5974_start_traffic/usb_submit_urb (2)
-From: syzbot <syzbot+b064b5599f18f7ebb1e1@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, mukattreyee@gmail.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000A346:EE_|SJ2PR12MB9085:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1e186ff6-13d3-4519-ed83-08dc5dd2aba6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	P/jGnDag38mCq/YqpsTQBn7ktrgwVdWTDW1VU//K6a8DeS/Jm6l97jE733W9Vruedodidt2gKtrHd3d33+gZM6Eb8Qr78KuKq2NLF/RPeO6IANio2QkVeBTT2/ZIArXGvOUCQrOhMGHiL3TCiZr7uJ6uTocCTZHjDEniQemayeHUmoKY3EliyLXaEEODQzHq6Fy3Vxt5fIy7KJkG7ldq+HFNY4x4nebkublmzkHuVAmoAaGVnesXmFJUJmX3P/dXSN+2rsXR4yp0pCDrkXoea/ITM0c4sf0LBdkPK7NVL9GqXGSxhbt9BqJTYzz0LcLIgJq5dA5PcJ06Yn8g1kTvOtIG5AF3OiybNMkAhu1ykpcj14ZuXPVusM4QmjhmqEJSE38lbQtxOXwbkqAqrSFZ3nn9ZbFh0cmU+pSg21EFgdJv7KERl4xwXCgggYN5Z6D4HkU3Cp6Non159eZVVOLd5nQ+Sa2qbnOg2YNf6IAM27YxlC8jiK4u1U3CUA+9qgGZJXzlAKRSpIlkoHMKLKr6oxnV9FapRAZiU5/Jv1JKbeEJdMX+nqxlMLqYDCIqlBl9w9xkhy9j7XcIl1an+ZugtpynkmvDr9BTrctOVUAclVyO1BUpH9+9cQ+ySk59X8c2pNUxIqqhmoPOmB+RDdAIDcLHM2oO0wR6ni9S9MBjl0i4DRCCE5iF73cXucGwHNFr8QSAuz0nmBwYwJBtrSWFNCs0yVklOJzwRSj+pCqB9rIDvedDAeN/g7KvEleSF92K
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(376005)(1800799015)(7416005)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 05:04:18.3501
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e186ff6-13d3-4519-ed83-08dc5dd2aba6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH1PEPF0000A346.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9085
 
-Hello,
+Currently, LBR Virtualization is dynamically enabled and disabled for
+a vcpu by intercepting writes to MSR_IA32_DEBUGCTLMSR. This helps by
+avoiding unnecessary save/restore of LBR MSRs when nobody is using it
+in the guest. However, SEV-ES guest mandates LBR Virtualization to be
+_always_ ON[1] and thus this dynamic toggling doesn't work for SEV-ES
+guest, in fact it results into fatal error:
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in bcm5974_start_traffic/usb_submit_urb
+SEV-ES guest on Zen3, kvm-amd.ko loaded with lbrv=1
 
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 1 PID: 6593 at drivers/usb/core/urb.c:504 usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-Modules linked in:
-CPU: 1 PID: 6593 Comm: udevd Not tainted 6.9.0-rc4-syzkaller-g96fca68c4fbf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-lr : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-sp : ffff8000a0a473b0
-x29: ffff8000a0a473f0 x28: ffff0000c247f000 x27: 0000000000000001
-x26: ffff80008c6a23a8 x25: ffff0000c522f0a0 x24: ffff0000cbee4f50
-x23: ffff80008c6a8ec0 x22: dfff800000000000 x21: 0000000000000002
-x20: 0000000000000cc0 x19: ffff0000cbee4f00 x18: 0000000000000008
-x17: 0000000000000000 x16: ffff80008ae75488 x15: 0000000000000001
-x14: 1fffe000367bda02 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : 399e84fd1d74f400
-x8 : 399e84fd1d74f400 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a0a46b18 x4 : ffff80008ef75060 x3 : ffff8000805e616c
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
- bcm5974_start_traffic+0xe0/0x154 drivers/input/mouse/bcm5974.c:799
- bcm5974_open+0x98/0x134 drivers/input/mouse/bcm5974.c:839
- input_open_device+0x170/0x29c drivers/input/input.c:654
- evdev_open_device drivers/input/evdev.c:400 [inline]
- evdev_open+0x308/0x4b4 drivers/input/evdev.c:487
- chrdev_open+0x3c8/0x4dc fs/char_dev.c:414
- do_dentry_open+0x778/0x12b4 fs/open.c:955
- vfs_open+0x7c/0x90 fs/open.c:1089
- do_open fs/namei.c:3642 [inline]
- path_openat+0x1f6c/0x2830 fs/namei.c:3799
- do_filp_open+0x1bc/0x3cc fs/namei.c:3826
- do_sys_openat2+0x124/0x1b8 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1432
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 6980
-hardirqs last  enabled at (6979): [<ffff8000803749b4>] __up_console_sem kernel/printk/printk.c:341 [inline]
-hardirqs last  enabled at (6979): [<ffff8000803749b4>] __console_unlock kernel/printk/printk.c:2731 [inline]
-hardirqs last  enabled at (6979): [<ffff8000803749b4>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3050
-hardirqs last disabled at (6980): [<ffff80008ae708d4>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (6580): [<ffff800080031848>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (6578): [<ffff800080031814>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-bcm5974 1-1:1.0: could not read from device
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 0 PID: 6593 at drivers/usb/core/urb.c:504 usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-Modules linked in:
-CPU: 0 PID: 6593 Comm: udevd Tainted: G        W          6.9.0-rc4-syzkaller-g96fca68c4fbf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-lr : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-sp : ffff8000a0a473b0
-x29: ffff8000a0a473f0 x28: ffff0000d006f000 x27: 0000000000000001
-x26: ffff80008c6a23a8 x25: ffff0000d3d5ac80 x24: ffff0000cfbc1350
-x23: ffff80008c6a8ec0 x22: dfff800000000000 x21: 0000000000000002
-x20: 0000000000000cc0 x19: ffff0000cfbc1300 x18: 0000000000000008
-x17: 0000000000000000 x16: ffff80008ae75488 x15: 0000000000000001
-x14: 1fffe000367b9202 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : 399e84fd1d74f400
-x8 : 399e84fd1d74f400 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a0a46b18 x4 : ffff80008ef75060 x3 : ffff8000805e616c
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
- bcm5974_start_traffic+0xe0/0x154 drivers/input/mouse/bcm5974.c:799
- bcm5974_open+0x98/0x134 drivers/input/mouse/bcm5974.c:839
- input_open_device+0x170/0x29c drivers/input/input.c:654
- evdev_open_device drivers/input/evdev.c:400 [inline]
- evdev_open+0x308/0x4b4 drivers/input/evdev.c:487
- chrdev_open+0x3c8/0x4dc fs/char_dev.c:414
- do_dentry_open+0x778/0x12b4 fs/open.c:955
- vfs_open+0x7c/0x90 fs/open.c:1089
- do_open fs/namei.c:3642 [inline]
- path_openat+0x1f6c/0x2830 fs/namei.c:3799
- do_filp_open+0x1bc/0x3cc fs/namei.c:3826
- do_sys_openat2+0x124/0x1b8 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1432
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 13636
-hardirqs last  enabled at (13635): [<ffff8000803749b4>] __up_console_sem kernel/printk/printk.c:341 [inline]
-hardirqs last  enabled at (13635): [<ffff8000803749b4>] __console_unlock kernel/printk/printk.c:2731 [inline]
-hardirqs last  enabled at (13635): [<ffff8000803749b4>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3050
-hardirqs last disabled at (13636): [<ffff80008ae708d4>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (13242): [<ffff800080031848>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (13240): [<ffff800080031814>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-bcm5974 1-1:1.0: could not read from device
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 0 PID: 6593 at drivers/usb/core/urb.c:504 usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-Modules linked in:
-CPU: 0 PID: 6593 Comm: udevd Tainted: G        W          6.9.0-rc4-syzkaller-g96fca68c4fbf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-lr : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-sp : ffff8000a0a473b0
-x29: ffff8000a0a473f0 x28: ffff0000d791f000 x27: 0000000000000001
-x26: ffff80008c6a23a8 x25: ffff0000c2527c60 x24: ffff0000c9c89550
-x23: ffff80008c6a8ec0 x22: dfff800000000000 x21: 0000000000000002
-x20: 0000000000000cc0 x19: ffff0000c9c89500 x18: 0000000000000008
-x17: 0000000000000000 x16: ffff80008ae75488 x15: 0000000000000001
-x14: 1fffe000367b9202 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : 399e84fd1d74f400
-x8 : 399e84fd1d74f400 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a0a46b18 x4 : ffff80008ef75060 x3 : ffff8000805e616c
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
- bcm5974_start_traffic+0xe0/0x154 drivers/input/mouse/bcm5974.c:799
- bcm5974_open+0x98/0x134 drivers/input/mouse/bcm5974.c:839
- input_open_device+0x170/0x29c drivers/input/input.c:654
- evdev_open_device drivers/input/evdev.c:400 [inline]
- evdev_open+0x308/0x4b4 drivers/input/evdev.c:487
- chrdev_open+0x3c8/0x4dc fs/char_dev.c:414
- do_dentry_open+0x778/0x12b4 fs/open.c:955
- vfs_open+0x7c/0x90 fs/open.c:1089
- do_open fs/namei.c:3642 [inline]
- path_openat+0x1f6c/0x2830 fs/namei.c:3799
- do_filp_open+0x1bc/0x3cc fs/namei.c:3826
- do_sys_openat2+0x124/0x1b8 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1432
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 19686
-hardirqs last  enabled at (19685): [<ffff8000803749b4>] __up_console_sem kernel/printk/printk.c:341 [inline]
-hardirqs last  enabled at (19685): [<ffff8000803749b4>] __console_unlock kernel/printk/printk.c:2731 [inline]
-hardirqs last  enabled at (19685): [<ffff8000803749b4>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3050
-hardirqs last disabled at (19686): [<ffff80008ae708d4>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (19436): [<ffff800080031848>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (19434): [<ffff800080031814>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-bcm5974 1-1:1.0: could not read from device
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 0 PID: 6593 at drivers/usb/core/urb.c:504 usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-Modules linked in:
-CPU: 0 PID: 6593 Comm: udevd Tainted: G        W          6.9.0-rc4-syzkaller-g96fca68c4fbf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-lr : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-sp : ffff8000a0a473b0
-x29: ffff8000a0a473f0 x28: ffff0000d791e000 x27: 0000000000000001
-x26: ffff80008c6a23a8 x25: ffff0000d4041580 x24: ffff0000cfdc4050
-x23: ffff80008c6a8ec0 x22: dfff800000000000 x21: 0000000000000002
-x20: 0000000000000cc0 x19: ffff0000cfdc4000 x18: 0000000000000008
-x17: 0000000000000000 x16: ffff80008ae75488 x15: 0000000000000001
-x14: 1fffe000367b9202 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : 399e84fd1d74f400
-x8 : 399e84fd1d74f400 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a0a46b18 x4 : ffff80008ef75060 x3 : ffff8000805e616c
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
- bcm5974_start_traffic+0xe0/0x154 drivers/input/mouse/bcm5974.c:799
- bcm5974_open+0x98/0x134 drivers/input/mouse/bcm5974.c:839
- input_open_device+0x170/0x29c drivers/input/input.c:654
- evdev_open_device drivers/input/evdev.c:400 [inline]
- evdev_open+0x308/0x4b4 drivers/input/evdev.c:487
- chrdev_open+0x3c8/0x4dc fs/char_dev.c:414
- do_dentry_open+0x778/0x12b4 fs/open.c:955
- vfs_open+0x7c/0x90 fs/open.c:1089
- do_open fs/namei.c:3642 [inline]
- path_openat+0x1f6c/0x2830 fs/namei.c:3799
- do_filp_open+0x1bc/0x3cc fs/namei.c:3826
- do_sys_openat2+0x124/0x1b8 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1432
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 25512
-hardirqs last  enabled at (25511): [<ffff8000803749b4>] __up_console_sem kernel/printk/printk.c:341 [inline]
-hardirqs last  enabled at (25511): [<ffff8000803749b4>] __console_unlock kernel/printk/printk.c:2731 [inline]
-hardirqs last  enabled at (25511): [<ffff8000803749b4>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3050
-hardirqs last disabled at (25512): [<ffff80008ae708d4>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (23142): [<ffff800080031848>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (23140): [<ffff800080031814>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-bcm5974 1-1:1.0: could not read from device
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 0 PID: 6593 at drivers/usb/core/urb.c:504 usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-Modules linked in:
-CPU: 0 PID: 6593 Comm: udevd Tainted: G        W          6.9.0-rc4-syzkaller-g96fca68c4fbf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 60401005 (nZCv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-lr : usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
-sp : ffff8000a0a473b0
-x29: ffff8000a0a473f0 x28: ffff0000e4099000 x27: 0000000000000001
-x26: ffff80008c6a23a8 x25: ffff0000c23b2de0 x24: ffff0000d1773650
-x23: ffff80008c6a8ec0 x22: dfff800000000000 x21: 0000000000000002
-x20: 0000000000000cc0 x19: ffff0000d1773600 x18: 0000000000000008
-x17: 0000000000000000 x16: ffff80008ae75488 x15: 0000000000000001
-x14: 1fffe000367b9202 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : 399e84fd1d74f400
-x8 : 399e84fd1d74f400 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a0a46b18 x4 : ffff80008ef75060 x3 : ffff8000805e616c
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- usb_submit_urb+0xa00/0x1434 drivers/usb/core/urb.c:503
- bcm5974_start_traffic+0xe0/0x154 drivers/input/mouse/bcm5974.c:799
- bcm5974_open+0x98/0x134 drivers/input/mouse/bcm5974.c:839
- input_open_device+0x170/0x29c drivers/input/input.c:654
- evdev_open_device drivers/input/evdev.c:400 [inline]
- evdev_open+0x308/0x4b4 drivers/input/evdev.c:487
- chrdev_open+0x3c8/0x4dc fs/char_dev.c:414
- do_dentry_open+0x778/0x12b4 fs/open.c:955
- vfs_open+0x7c/0x90 fs/open.c:1089
- do_open fs/namei.c:3642 [inline]
- path_openat+0x1f6c/0x2830 fs/namei.c:3799
- do_filp_open+0x1bc/0x3cc fs/namei.c:3826
- do_sys_openat2+0x124/0x1b8 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1432
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 31378
-hardirqs last  enabled at (31377): [<ffff8000803749b4>] __up_console_sem kernel/printk/printk.c:341 [inline]
-hardirqs last  enabled at (31377): [<ffff8000803749b4>] __console_unlock kernel/printk/printk.c:2731 [inline]
-hardirqs last  enabled at (31377): [<ffff8000803749b4>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3050
-hardirqs last disabled at (31378): [<ffff80008ae708d4>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (28966): [<ffff800080031848>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (28964): [<ffff800080031814>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-bcm5974 1-1:1.0: could not read from device
+  [guest ~]# wrmsr 0x1d9 0x4
+  KVM: entry failed, hardware error 0xffffffff
+  EAX=00000004 EBX=00000000 ECX=000001d9 EDX=00000000
+  ...
 
+Fix this by never intercepting MSR_IA32_DEBUGCTLMSR for SEV-ES guests.
+No additional save/restore logic is required since MSR_IA32_DEBUGCTLMSR
+is of swap type A.
 
-Tested on:
+[1]: AMD64 Architecture Programmer's Manual Pub. 40332, Rev. 4.07 - June
+     2023, Vol 2, 15.35.2 Enabling SEV-ES.
+     https://bugzilla.kernel.org/attachment.cgi?id=304653
 
-commit:         96fca68c Merge tag 'nfsd-6.9-3' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=152b3957180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fca646cf17cc616b
-dashboard link: https://syzkaller.appspot.com/bug?extid=b064b5599f18f7ebb1e1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
+Fixes: 376c6d285017 ("KVM: SVM: Provide support for SEV-ES vCPU creation/loading")
+Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
+Reviewed-by: Nikunj A Dadhania <nikunj@amd.com>
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+---
+v1: https://lore.kernel.org/r/20240326081143.715-1-ravi.bangoria@amd.com
+v1->v2:
+  - Add MSR swap type detail in the patch description. No code changes.
 
-Note: no patches were applied.
+ arch/x86/kvm/svm/sev.c | 1 +
+ arch/x86/kvm/svm/svm.c | 1 +
+ arch/x86/kvm/svm/svm.h | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index a8ce5226b3b5..ef932a7ff9bd 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -3073,6 +3073,7 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
+ 	/* Clear intercepts on selected MSRs */
+ 	set_msr_interception(vcpu, svm->msrpm, MSR_EFER, 1, 1);
+ 	set_msr_interception(vcpu, svm->msrpm, MSR_IA32_CR_PAT, 1, 1);
++	set_msr_interception(vcpu, svm->msrpm, MSR_IA32_DEBUGCTLMSR, 1, 1);
+ 	set_msr_interception(vcpu, svm->msrpm, MSR_IA32_LASTBRANCHFROMIP, 1, 1);
+ 	set_msr_interception(vcpu, svm->msrpm, MSR_IA32_LASTBRANCHTOIP, 1, 1);
+ 	set_msr_interception(vcpu, svm->msrpm, MSR_IA32_LASTINTFROMIP, 1, 1);
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index e90b429c84f1..5a82135ae84e 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -99,6 +99,7 @@ static const struct svm_direct_access_msrs {
+ 	{ .index = MSR_IA32_SPEC_CTRL,			.always = false },
+ 	{ .index = MSR_IA32_PRED_CMD,			.always = false },
+ 	{ .index = MSR_IA32_FLUSH_CMD,			.always = false },
++	{ .index = MSR_IA32_DEBUGCTLMSR,		.always = false },
+ 	{ .index = MSR_IA32_LASTBRANCHFROMIP,		.always = false },
+ 	{ .index = MSR_IA32_LASTBRANCHTOIP,		.always = false },
+ 	{ .index = MSR_IA32_LASTINTFROMIP,		.always = false },
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 8ef95139cd24..7a1b60bcebff 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -30,7 +30,7 @@
+ #define	IOPM_SIZE PAGE_SIZE * 3
+ #define	MSRPM_SIZE PAGE_SIZE * 2
+ 
+-#define MAX_DIRECT_ACCESS_MSRS	47
++#define MAX_DIRECT_ACCESS_MSRS	48
+ #define MSRPM_OFFSETS	32
+ extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
+ extern bool npt_enabled;
+-- 
+2.44.0
+
 
