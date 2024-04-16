@@ -1,143 +1,113 @@
-Return-Path: <linux-kernel+bounces-147775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E4DE8A7987
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:58:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031EF8A798B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 02:00:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EACA1C22295
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:58:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2A74284C39
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4104D13C684;
-	Tue, 16 Apr 2024 23:57:55 +0000 (UTC)
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [5.144.164.167])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC0F13AA5C;
+	Tue, 16 Apr 2024 23:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Z5kQaskv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AB213C3E7
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:57:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.144.164.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578EB40850;
+	Tue, 16 Apr 2024 23:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713311874; cv=none; b=HZsZTfoJwWTlBBH7IEjsScXFUsgo2QB0rH6Y7zdotI2b8vIoW0rD1eEQpuiNXi7khYpG3FaEaTGX6dC4CtGeuP6HM+8mYXmfpsQJtdPn3DuHjdwy/NE1Dz/tHpMN+aDUQz/eKSc+hnvbE0PIcbugG5nYa9gqMt0zm7mTFw+lzAo=
+	t=1713311994; cv=none; b=Lf7Tt2MgNvx0QZvjETN9Knu2sKHFyWr5TM9YTPlHD/spc1xCbQTV7+ntG0uV7HBnzWrih7EsHvuHQ9bWj52U4YfiR1QaFAniHZyL2kLKLTW8AVz/WB/hddpr0GK9WzV0Ly/ECoCfX4lAnnF0JvsrcRzRB8JlPR7psGpF8ANapq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713311874; c=relaxed/simple;
-	bh=va9fPRtJ0SkXGycOhlB8Ezr85RrN/MriF/E14uxzkS0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=h9i+DjFCw+kgR4gTgc7x+wbovs6QMdJUXFBOMsEqFnbvpGMSKluHrUUseeQxMay7wJ5lTQfBpwpkqSJaxf4u+w/tiynDuaddc2phGbSVBrW88bcYvbZqUwbb4sQhre8Eogz6fHW2m4e5LPYQVV1Ra7jCSOVU87GuLheLtreZbLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org; spf=pass smtp.mailfrom=somainline.org; arc=none smtp.client-ip=5.144.164.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=somainline.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=somainline.org
-Received: from Marijn-Arch-PC.localdomain (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by m-r2.th.seeweb.it (Postfix) with ESMTPSA id EB4833F0E3;
-	Wed, 17 Apr 2024 01:57:50 +0200 (CEST)
-From: Marijn Suijten <marijn.suijten@somainline.org>
-Date: Wed, 17 Apr 2024 01:57:47 +0200
-Subject: [PATCH 7/7] drm/msm/dpu: Rename `ctx` parameter to `intf` to match
- other functions
+	s=arc-20240116; t=1713311994; c=relaxed/simple;
+	bh=Vx+HDH1cQHnldwgMARSmJhI6g68VoC6OilGGmpFSPpA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mrcy9rdYBAaHxpfyZRkWqjkBTjiwe0H9LgUki41INwh3iuxNrM4hMPe/4uELtxRSwfBCYgVvmDUhynWsgCf2zhDCThG4HbUMzW5RQHwBV4bDmeraKKxlgKmIptnVt4nnbbeeBrMJdSLGctw0G0+jH0rwgw4npIZc5gM1RJmhU0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Z5kQaskv; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713311992; x=1744847992;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Vx+HDH1cQHnldwgMARSmJhI6g68VoC6OilGGmpFSPpA=;
+  b=Z5kQaskv3CvjMrtuO9zNM/7KBR5NaPZDry7TBj2WjHQ1tmr/FCqG5Mmw
+   kdZcN8PpWQOC0sEnQH8dBS2JQPLD9ayIBiBd0p4Phmvy8g5sBGx+EWu2L
+   OnJt8X0pU7qQIFkTjgpWxBnr58hwyzEQrM7C/5BwJzYZYOHPbbjPjNiGB
+   VD0KqNqMuv9kuUKLsTag0zglwoWTkeEfkEKQ1dj6L6lGTRSHeKEMDveuh
+   jfxA4lcP1UvQvscS48y+SXLYEUO5IfU1G2yfN0BkDnU42NYqoBs0huM/1
+   JqtQH8uKJ+/5njdEEwXW8av9mLbFNdisXcpYBuubfRXDzNcjqr/ySgtPW
+   w==;
+X-CSE-ConnectionGUID: GT+7brLpTECL7KF9AMAaiQ==
+X-CSE-MsgGUID: OhIbYortS+e/K79S5Ct02w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8644669"
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="8644669"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 16:59:50 -0700
+X-CSE-ConnectionGUID: XXSph9GBSRGb6mGKaIuoEQ==
+X-CSE-MsgGUID: HhJS9hzDSRKopR4VbWV+MA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="22297766"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 16:59:51 -0700
+Date: Tue, 16 Apr 2024 16:59:49 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>,
+	"federico.parola@polito.it" <federico.parola@polito.it>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"dmatlack@google.com" <dmatlack@google.com>,
+	"michael.roth@amd.com" <michael.roth@amd.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v2 04/10] KVM: x86/mmu: Make __kvm_mmu_do_page_fault()
+ return mapped level
+Message-ID: <20240416235949.GC3039520@ls.amr.corp.intel.com>
+References: <cover.1712785629.git.isaku.yamahata@intel.com>
+ <eabc3f3e5eb03b370cadf6e1901ea34d7a020adc.1712785629.git.isaku.yamahata@intel.com>
+ <567468a068fb160b724a7fa1fa8c36767d9155ac.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-7-78ae3ee9a697@somainline.org>
-References: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
-In-Reply-To: <20240417-drm-msm-initial-dualpipe-dsc-fixes-v1-0-78ae3ee9a697@somainline.org>
-To: Rob Clark <robdclark@gmail.com>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Archit Taneja <architt@codeaurora.org>, 
- Chandan Uddaraju <chandanu@codeaurora.org>, Vinod Koul <vkoul@kernel.org>, 
- Sravanthi Kollukuduru <skolluku@codeaurora.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Jordan Crouse <jordan@cosmicpenguin.net>, 
- Rajesh Yadav <ryadav@codeaurora.org>, 
- Jeykumar Sankaran <jsanka@codeaurora.org>, 
- ~postmarketos/upstreaming@lists.sr.ht, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Martin Botka <martin.botka@somainline.org>, 
- Jami Kettunen <jami.kettunen@somainline.org>, 
- Marijn Suijten <marijn.suijten@somainline.org>
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <567468a068fb160b724a7fa1fa8c36767d9155ac.camel@intel.com>
 
-All other functions in dpu_hw_intf name the "self" parameter `intf`,
-except dpu_hw_intf_setup_timing_engine() and the recently added
-dpu_hw_intf_program_intf_cmd_cfg().  Clean that up for consistency.
+On Tue, Apr 16, 2024 at 02:40:39PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+> On Wed, 2024-04-10 at 15:07 -0700, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > The guest memory population logic will need to know what page size or level
+> > (4K, 2M, ...) is mapped.
+> 
+> TDX needs this, but do the normal VM users need to have it fixed to 4k? Is it
+> actually good?
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-index 965692ef7892..34d0c4e04d27 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-@@ -96,11 +96,11 @@
- #define INTF_CFG2_DCE_DATA_COMPRESS     BIT(12)
- 
- 
--static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
-+static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *intf,
- 		const struct dpu_hw_intf_timing_params *p,
- 		const struct dpu_format *fmt)
- {
--	struct dpu_hw_blk_reg_map *c = &ctx->hw;
-+	struct dpu_hw_blk_reg_map *c = &intf->hw;
- 	u32 hsync_period, vsync_period;
- 	u32 display_v_start, display_v_end;
- 	u32 hsync_start_x, hsync_end_x;
-@@ -118,7 +118,7 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
- 	/* read interface_cfg */
- 	intf_cfg = DPU_REG_READ(c, INTF_CONFIG);
- 
--	if (ctx->cap->type == INTF_DP)
-+	if (intf->cap->type == INTF_DP)
- 		dp_intf = true;
- 
- 	hsync_period = p->hsync_pulse_width + p->h_back_porch + p->width +
-@@ -223,7 +223,7 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
- 	DPU_REG_WRITE(c, INTF_FRAME_LINE_COUNT_EN, 0x3);
- 	DPU_REG_WRITE(c, INTF_CONFIG, intf_cfg);
- 	DPU_REG_WRITE(c, INTF_PANEL_FORMAT, panel_format);
--	if (ctx->cap->features & BIT(DPU_DATA_HCTL_EN)) {
-+	if (intf->cap->features & BIT(DPU_DATA_HCTL_EN)) {
- 		/*
- 		 * DATA_HCTL_EN controls data timing which can be different from
- 		 * video timing. It is recommended to enable it for all cases, except
-@@ -518,10 +518,10 @@ static void dpu_hw_intf_disable_autorefresh(struct dpu_hw_intf *intf,
- 
- }
- 
--static void dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *ctx,
-+static void dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *intf,
- 					     struct dpu_hw_intf_cmd_mode_cfg *cmd_mode_cfg)
- {
--	u32 intf_cfg2 = DPU_REG_READ(&ctx->hw, INTF_CONFIG2);
-+	u32 intf_cfg2 = DPU_REG_READ(&intf->hw, INTF_CONFIG2);
- 
- 	if (cmd_mode_cfg->data_compress)
- 		intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
-@@ -529,7 +529,7 @@ static void dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *ctx,
- 	if (cmd_mode_cfg->wide_bus_en)
- 		intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
- 
--	DPU_REG_WRITE(&ctx->hw, INTF_CONFIG2, intf_cfg2);
-+	DPU_REG_WRITE(&intf->hw, INTF_CONFIG2, intf_cfg2);
- }
- 
- struct dpu_hw_intf *dpu_hw_intf_init(struct drm_device *dev,
+I meant that the function, kvm_arch_vcpu_map_memory(), in
+[PATCH v2 06/10] KVM: x86: Implement kvm_arch_vcpu_map_memory() needs level.
 
+No logic in this patch series enforces to fixed 4K. 
+gmem_max_level() hook will determine it.
+
+https://lore.kernel.org/all/20240404185034.3184582-12-pbonzini@redhat.com/
+
+I'll update the commit message to reflect it.
 -- 
-2.44.0
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
