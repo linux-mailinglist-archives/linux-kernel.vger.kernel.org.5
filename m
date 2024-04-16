@@ -1,242 +1,298 @@
-Return-Path: <linux-kernel+bounces-146133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 431EF8A612D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D49E48A6131
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:52:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66BE01C211D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:45:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF33A1C210DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:52:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C832C22075;
-	Tue, 16 Apr 2024 02:44:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F59910A14;
+	Tue, 16 Apr 2024 02:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QZ40ErWr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+RKtPRp"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4480171D2;
-	Tue, 16 Apr 2024 02:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB9E9A38
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:52:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713235481; cv=none; b=YnkuggRMlpAbvY+1PggAMlmF5E2i5GbtYrbb20wG2/WQ7yaloxVvQRBScCF1rKD5o2YpAnr2BWvb/QD1X0lpf9pb1g1EJUY1m1RTDypilcSDhan7eP7SXyDcBe8/4o214Cimii/qSlIXj5JeoUTcC9Sg3t1KpOOVyRsWJEXpSvQ=
+	t=1713235958; cv=none; b=b6bZ1WM2hLqQQXoAJezIlbi5ZHo6hAMmCQ80PqrDFwaGrpSkUpu2LzM0jiFyf7sY4dCqv8jMQqkXzAOHwJ2FgojyFqv5S0XqkndeneS7Tr8ns8dVsVfTf74Ftgf3o5+U8oaxxKRbHrhL88V/1ucGJxCVyoTcjOVOSTvA6vwm/Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713235481; c=relaxed/simple;
-	bh=3ygo566KgNes/y1LnnasDIozu4wqPQgtkAmJdJFtQ0U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DxCiqFfEdNO7EHDCJRaPnKXKS2RV0IZt580Y8HSt6dxIH9Qae/Z0lfLI/6eqg6gBRQ8mXF+ssR4l6XKQLIhmu5EZpI3MatvvlfIRhyHuni2wwHv5n7iAPKqEdwPgGyxjGJI177bZoawGCBvBAtvxGvQiAJq8vVzZxMOJMXtuFp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QZ40ErWr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6F17DC4AF0C;
-	Tue, 16 Apr 2024 02:44:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713235481;
-	bh=3ygo566KgNes/y1LnnasDIozu4wqPQgtkAmJdJFtQ0U=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=QZ40ErWrn5XtEtonMojY5vHzFnnHAwMKEGafsomu8FfPecoagy8UIaz6TJ5C9VvE2
-	 TpFJRy6PH+PayzGui8+OMBqhMFXrq3w9zaQ/KrE+VbRfMDnHRFNyvk//+cx/PA3KgV
-	 Mmmb40/5HnY0pMiiHTxszGpWPfwmFSo9vKw+ps2hXA7BUVaw/AhrcymyQzLRuFRnYe
-	 kIzzzgzFcygnb4SKwXDxipu9aol7b/m7qxELm6o0Cl8KTA3vTwfp1iVCzhleKBAB6M
-	 0znEDxieW3OG1GzqyJ9URbPiGi9THpBTtX9zkhOJ+Xuxw1CveYr9/S07EEiHcGBhBd
-	 1K3g3SuO7zvtQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59803C04FFE;
-	Tue, 16 Apr 2024 02:44:41 +0000 (UTC)
-From: Fenglin Wu via B4 Relay <devnull+quic_fenglinw.quicinc.com@kernel.org>
-Date: Tue, 16 Apr 2024 10:44:34 +0800
-Subject: [PATCH v11 3/3] input: pm8xxx-vibrator: add new SPMI vibrator
- support
+	s=arc-20240116; t=1713235958; c=relaxed/simple;
+	bh=8Pkir9qaqf83Jtkp/E3HQO9padGCKAwrP8HOfQFuQgI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=REwhIbtkfKSm1xbk18uPYWD6WYu88zjuxDfv/LK93uXBxYW8WppA5IRdS8TxyecrkFQUqx8/ZA1ZXNoGvHnfkzP8VmXZPogbwJn6AF4d2eRFVRS29a+YM1ZhK4KlBNPF4kNKbSpLIv3TlJBZ42cPiZ5QYYb+LOLHRSVdKUKjloQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S+RKtPRp; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4daa91c0344so1814515e0c.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713235956; x=1713840756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lFczH1dIfyyTRf2W5n4H9U/PB8b6sWya9Y+4vbVP4sA=;
+        b=S+RKtPRpeqU9yUrMKGebaI0q8LotYMTJYBF8LApO/xTNSj092JhgHjhwND7uJQQOBR
+         48QTd+oEmIKMOXdEWyBkqAugGv6xqRM+yBp0AWcEKZPU3B6AcEcJ7yV1baPFxvZG5811
+         CARrhqlW1b/VFDGkhhVn1SizjW2xGF7M7orKuA5f0T/KjACs7x+o5nGIsHQrYc/iwKyo
+         Ooq9xJi697V22ZBPFuvLh6l9jIvSyrsk8H5ZOKQG/XeCr55ExZ0lwlOZD+RzUEYJuJf0
+         uZzWGrvj7Xjlil/9Xr2BLv/sFSXgOCDFjxGarXWe40af6C3Hzawf0CPIDoM7GKInnRet
+         tblA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713235956; x=1713840756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lFczH1dIfyyTRf2W5n4H9U/PB8b6sWya9Y+4vbVP4sA=;
+        b=aC8oaB9+qk+lhk+PbW0fm17NUo7zogqZe2wiXEgXSMpVkxznFJQ9ZVWNakvOlWTNNM
+         rtocZfDDiL/zk7m+IHysJD5Vbmxnf0wE8v8+/TFBLOHa8Y9/hyLwghWdUEW31aTeYC53
+         Ru4H7sJseoJWeac524Y+uZNs22BnSH77t7a2KmnRmD7AEuZ43bFy5bYBiQVgxqkObWp5
+         RoSYhyjxHO+oOWtbYWRYnPX6HdWTklaQE+oxjMnuLSGPKW5oV92Tc1QrJOMEKNnuy2l1
+         6b78bG/FIIcseG4cUGGMCxHbjLDzS8Hp6coNhlhL8kmm5IsbdjK03BWOObZCyrevr4fH
+         loHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWKN2jcTzt+u4V4HndeA0U6vqTQzW+mhpnomU0xu9Jg/mslhriElqWT1TKdRxWf0UrH4/pToYl7FcJy9xMkcsD91KK1zgXSmRpIQiMz
+X-Gm-Message-State: AOJu0Yz/7hyflu5BxqwK5eB33g63AN0JuGcuSxZped6TLAEyQP3zqvgr
+	kPaVxsmy54pcvwNEc2ju7BmseETx9kMibvRxk8DwhX8qbznz+BL3Xj30q9XC09yXSOqonczYrp6
+	xot0L+E63NtOxRbafcK58RkolRto=
+X-Google-Smtp-Source: AGHT+IHMrnSUhuVEuo4y3tiKOPKziGLcQQRIaE2TzTqfVCk8KiKNdVf22ivrucySUANuiuxuBay5T1zPpM1Wy/chv9Q=
+X-Received: by 2002:a05:6122:3d14:b0:4d4:ef9:719d with SMTP id
+ ga20-20020a0561223d1400b004d40ef9719dmr9351058vkb.5.1713235955700; Mon, 15
+ Apr 2024 19:52:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240416-pm8xxx-vibrator-new-design-v11-3-7b1c951e1515@quicinc.com>
-References: <20240416-pm8xxx-vibrator-new-design-v11-0-7b1c951e1515@quicinc.com>
-In-Reply-To: <20240416-pm8xxx-vibrator-new-design-v11-0-7b1c951e1515@quicinc.com>
-To: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
- Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- Fenglin Wu <quic_fenglinw@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713235479; l=5248;
- i=quic_fenglinw@quicinc.com; s=20240327; h=from:subject:message-id;
- bh=O6jY1vE2jMlOuUDvAlQRyMO4JqLMmvGnt6KvdZSWoX4=;
- b=DoVE674AWh7yt0zyoiZS7k+TyNiecyJD6qsCJWj6VcIDOmE8qE0HfBZR8zD/tDtfLs4P4Die3
- wPTFMEcosIoC5u84zbHjJVsJI1xojlhrLWDyobziNQDybr+cg6EEK1H
-X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
- pk=BF8SA4IVDk8/EBCwlBehKtn2hp6kipuuAuDAHh9s+K4=
-X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20240327
- with auth_id=146
-X-Original-From: Fenglin Wu <quic_fenglinw@quicinc.com>
-Reply-To: quic_fenglinw@quicinc.com
+References: <20240409082631.187483-1-21cnbao@gmail.com> <20240409082631.187483-5-21cnbao@gmail.com>
+ <87frvn2f89.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAGsJ_4x_bOchG=bJjR8WE=vQxu3ke8fkxcDOFhqX5FS_a-0heA@mail.gmail.com>
+ <8734rm2gdj.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAGsJ_4xHVN_QXu5Q8c_FcjsnffZYWsjOx4KR4G_2GNyaxfVWAw@mail.gmail.com>
+ <87y19e115l.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87y19e115l.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 16 Apr 2024 14:52:24 +1200
+Message-ID: <CAGsJ_4xUna=wNNoLw0yCkzjD1d0pfJDKfqmWuA5zrSzWF+-cow@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] mm: swap: entirely map large folios found in swapcache
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: Khalid Aziz <khalid.aziz@oracle.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com, 
+	hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com, 
+	kasong@tencent.com, ryan.roberts@arm.com, surenb@google.com, 
+	v-songbaohua@oppo.com, willy@infradead.org, xiang@kernel.org, 
+	yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Fenglin Wu <quic_fenglinw@quicinc.com>
+On Tue, Apr 16, 2024 at 2:41=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
+>
+> Barry Song <21cnbao@gmail.com> writes:
+>
+> > On Tue, Apr 16, 2024 at 2:27=E2=80=AFPM Huang, Ying <ying.huang@intel.c=
+om> wrote:
+> >>
+> >>
+> >> Added Khalid for arch_do_swap_page().
+> >>
+> >> Barry Song <21cnbao@gmail.com> writes:
+> >>
+> >> > On Mon, Apr 15, 2024 at 8:39=E2=80=AFPM Huang, Ying <ying.huang@inte=
+l.com> wrote:
+> >> >>
+> >> >> Barry Song <21cnbao@gmail.com> writes:
+> >>
+> >> [snip]
+> >>
+> >> >>
+> >> >> > +     bool any_swap_shared =3D false;
+> >> >> >
+> >> >> >       if (!pte_unmap_same(vmf))
+> >> >> >               goto out;
+> >> >> > @@ -4137,6 +4141,35 @@ vm_fault_t do_swap_page(struct vm_fault *v=
+mf)
+> >> >> >        */
+> >> >> >       vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf-=
+>address,
+> >> >> >                       &vmf->ptl);
+> >> >>
+> >> >> We should move pte check here.  That is,
+> >> >>
+> >> >>         if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf=
+->orig_pte)))
+> >> >>                 goto out_nomap;
+> >> >>
+> >> >> This will simplify the situation for large folio.
+> >> >
+> >> > the plan is moving the whole code block
+> >> >
+> >> > if (start_pte && folio_test_large(folio) && folio_test_swapcache(fol=
+io))
+> >> >
+> >> > after
+> >> >         if (unlikely(!folio_test_uptodate(folio))) {
+> >> >                 ret =3D VM_FAULT_SIGBUS;
+> >> >                 goto out_nomap;
+> >> >         }
+> >> >
+> >> > though we couldn't be !folio_test_uptodate(folio)) for hitting
+> >> > swapcache but it seems
+> >> > logically better for future use.
+> >>
+> >> LGTM, Thanks!
+> >>
+> >> >>
+> >> >> > +
+> >> >> > +     /* We hit large folios in swapcache */
+> >> >>
+> >> >> The comments seems unnecessary because the code tells that already.
+> >> >>
+> >> >> > +     if (start_pte && folio_test_large(folio) && folio_test_swap=
+cache(folio)) {
+> >> >> > +             int nr =3D folio_nr_pages(folio);
+> >> >> > +             int idx =3D folio_page_idx(folio, page);
+> >> >> > +             unsigned long folio_start =3D vmf->address - idx * =
+PAGE_SIZE;
+> >> >> > +             unsigned long folio_end =3D folio_start + nr * PAGE=
+_SIZE;
+> >> >> > +             pte_t *folio_ptep;
+> >> >> > +             pte_t folio_pte;
+> >> >> > +
+> >> >> > +             if (unlikely(folio_start < max(vmf->address & PMD_M=
+ASK, vma->vm_start)))
+> >> >> > +                     goto check_pte;
+> >> >> > +             if (unlikely(folio_end > pmd_addr_end(vmf->address,=
+ vma->vm_end)))
+> >> >> > +                     goto check_pte;
+> >> >> > +
+> >> >> > +             folio_ptep =3D vmf->pte - idx;
+> >> >> > +             folio_pte =3D ptep_get(folio_ptep);
+> >> >>
+> >> >> It's better to construct pte based on fault PTE via generalizing
+> >> >> pte_next_swp_offset() (may be pte_move_swp_offset()).  Then we can =
+find
+> >> >> inconsistent PTEs quicker.
+> >> >
+> >> > it seems your point is getting the pte of page0 by pte_next_swp_offs=
+et()
+> >> > unfortunately pte_next_swp_offset can't go back. on the other hand,
+> >> > we have to check the real pte value of the 0nd entry right now becau=
+se
+> >> > swap_pte_batch() only really reads pte from the 1st entry. it assume=
+s
+> >> > pte argument is the real value for the 0nd pte entry.
+> >> >
+> >> > static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_=
+t pte)
+> >> > {
+> >> >         pte_t expected_pte =3D pte_next_swp_offset(pte);
+> >> >         const pte_t *end_ptep =3D start_ptep + max_nr;
+> >> >         pte_t *ptep =3D start_ptep + 1;
+> >> >
+> >> >         VM_WARN_ON(max_nr < 1);
+> >> >         VM_WARN_ON(!is_swap_pte(pte));
+> >> >         VM_WARN_ON(non_swap_entry(pte_to_swp_entry(pte)));
+> >> >
+> >> >         while (ptep < end_ptep) {
+> >> >                 pte =3D ptep_get(ptep);
+> >> >
+> >> >                 if (!pte_same(pte, expected_pte))
+> >> >                         break;
+> >> >
+> >> >                 expected_pte =3D pte_next_swp_offset(expected_pte);
+> >> >                 ptep++;
+> >> >         }
+> >> >
+> >> >         return ptep - start_ptep;
+> >> > }
+> >>
+> >> Yes.  You are right.
+> >>
+> >> But we may check whether the pte of page0 is same as "vmf->orig_pte -
+> >> folio_page_idx()" (fake code).
+> >
+> > right, that is why we are reading and checking PTE0 before calling
+> > swap_pte_batch()
+> > right now.
+> >
+> >   folio_ptep =3D vmf->pte - idx;
+> >   folio_pte =3D ptep_get(folio_ptep);
+> >   if (!is_swap_pte(folio_pte) || non_swap_entry(pte_to_swp_entry(folio_=
+pte)) ||
+> >       swap_pte_batch(folio_ptep, nr, folio_pte, &any_swap_shared) !=3D =
+nr)
+> >    goto check_pte;
+> >
+> > So, if I understand correctly, you're proposing that we should directly=
+ check
+> > PTE0 in swap_pte_batch(). Personally, I don't have any objections to th=
+is idea.
+> > However, I'd also like to hear the feedback from Ryan and David :-)
+>
+> I mean that we can replace
+>
+>         !is_swap_pte(folio_pte) || non_swap_entry(pte_to_swp_entry(folio_=
+pte))
+>
+> in above code with pte_same() with constructed expected first pte.
 
-Add support for a new SPMI vibrator module which is very similar
-to the vibrator module inside PM8916 but has a finer drive voltage
-step and different output voltage range, its drive level control
-is expanded across 2 registers. The vibrator module can be found
-in following Qualcomm PMICs: PMI632, PM7250B, PM7325B, PM7550BA.
+Got it. It could be quite tricky, especially with considerations like
+pte_swp_soft_dirty, pte_swp_exclusive, and pte_swp_uffd_wp. We might
+require a helper function similar to pte_next_swp_offset() but capable of
+moving both forward and backward. For instance:
 
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
----
- drivers/input/misc/pm8xxx-vibrator.c | 52 +++++++++++++++++++++++++++++-------
- 1 file changed, 43 insertions(+), 9 deletions(-)
+pte_move_swp_offset(pte_t pte, long delta)
 
-diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
-index 2bcfa7ed3d6b..381b06473279 100644
---- a/drivers/input/misc/pm8xxx-vibrator.c
-+++ b/drivers/input/misc/pm8xxx-vibrator.c
-@@ -11,10 +11,11 @@
- #include <linux/regmap.h>
- #include <linux/slab.h>
- 
--#define VIB_MAX_LEVEL_mV	(3100)
--#define VIB_MIN_LEVEL_mV	(1200)
--#define VIB_PER_STEP_mV		(100)
--#define VIB_MAX_LEVELS		(VIB_MAX_LEVEL_mV - VIB_MIN_LEVEL_mV + VIB_PER_STEP_mV)
-+#define VIB_MAX_LEVEL_mV(vib)	(vib->drv2_addr ? 3544 : 3100)
-+#define VIB_MIN_LEVEL_mV(vib)	(vib->drv2_addr ? 1504 : 1200)
-+#define VIB_PER_STEP_mV(vib)	(vib->drv2_addr ? 8 : 100)
-+#define VIB_MAX_LEVELS(vib) \
-+	(VIB_MAX_LEVEL_mV(vib) - VIB_MIN_LEVEL_mV(vib) + VIB_PER_STEP_mV(vib))
- 
- #define MAX_FF_SPEED		0xff
- 
-@@ -25,7 +26,11 @@ struct pm8xxx_regs {
- 	unsigned int drv_offset;
- 	unsigned int drv_mask;
- 	unsigned int drv_shift;
-+	unsigned int drv2_offset;
-+	unsigned int drv2_mask;
-+	unsigned int drv2_shift;
- 	unsigned int drv_en_manual_mask;
-+	bool	     drv_in_step;
- };
- 
- static const struct pm8xxx_regs pm8058_regs = {
-@@ -33,6 +38,7 @@ static const struct pm8xxx_regs pm8058_regs = {
- 	.drv_mask = GENMASK(7, 3),
- 	.drv_shift = 3,
- 	.drv_en_manual_mask = 0xfc,
-+	.drv_in_step = true,
- };
- 
- static struct pm8xxx_regs pm8916_regs = {
-@@ -42,6 +48,20 @@ static struct pm8xxx_regs pm8916_regs = {
- 	.drv_mask = GENMASK(4, 0),
- 	.drv_shift = 0,
- 	.drv_en_manual_mask = 0,
-+	.drv_in_step = true,
-+};
-+
-+static struct pm8xxx_regs pmi632_regs = {
-+	.enable_offset = 0x46,
-+	.enable_mask = BIT(7),
-+	.drv_offset = 0x40,
-+	.drv_mask = GENMASK(7, 0),
-+	.drv_shift = 0,
-+	.drv2_offset = 0x41,
-+	.drv2_mask = GENMASK(3, 0),
-+	.drv2_shift = 8,
-+	.drv_en_manual_mask = 0,
-+	.drv_in_step = false,
- };
- 
- /**
-@@ -52,6 +72,7 @@ static struct pm8xxx_regs pm8916_regs = {
-  * @regs: registers' info
-  * @enable_addr: vibrator enable register
-  * @drv_addr: vibrator drive strength register
-+ * @drv2_addr: vibrator drive strength upper byte register
-  * @speed: speed of vibration set from userland
-  * @active: state of vibrator
-  * @level: level of vibration to set in the chip
-@@ -64,6 +85,7 @@ struct pm8xxx_vib {
- 	const struct pm8xxx_regs *regs;
- 	unsigned int enable_addr;
- 	unsigned int drv_addr;
-+	unsigned int drv2_addr;
- 	int speed;
- 	int level;
- 	bool active;
-@@ -81,6 +103,9 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
- 	unsigned int val = vib->reg_vib_drv;
- 	const struct pm8xxx_regs *regs = vib->regs;
- 
-+	if (regs->drv_in_step)
-+		vib->level /= VIB_PER_STEP_mV(vib);
-+
- 	if (on)
- 		val |= (vib->level << regs->drv_shift) & regs->drv_mask;
- 	else
-@@ -92,6 +117,14 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
- 
- 	vib->reg_vib_drv = val;
- 
-+	if (regs->drv2_mask) {
-+		val = vib->level << regs->drv2_shift;
-+		rc = regmap_write_bits(vib->regmap, vib->drv2_addr,
-+				regs->drv2_mask, on ? val : 0);
-+		if (rc < 0)
-+			return rc;
-+	}
-+
- 	if (regs->enable_mask)
- 		rc = regmap_update_bits(vib->regmap, vib->enable_addr,
- 					regs->enable_mask, on ? regs->enable_mask : 0);
-@@ -114,17 +147,16 @@ static void pm8xxx_work_handler(struct work_struct *work)
- 		return;
- 
- 	/*
--	 * pmic vibrator supports voltage ranges from 1.2 to 3.1V, so
-+	 * pmic vibrator supports voltage ranges from MIN_LEVEL to MAX_LEVEL, so
- 	 * scale the level to fit into these ranges.
- 	 */
- 	if (vib->speed) {
- 		vib->active = true;
--		vib->level = ((VIB_MAX_LEVELS * vib->speed) / MAX_FF_SPEED) +
--						VIB_MIN_LEVEL_mV;
--		vib->level /= VIB_PER_STEP_mV;
-+		vib->level = VIB_MIN_LEVEL_mV(vib);
-+		vib->level += mult_frac(VIB_MAX_LEVELS(vib), vib->speed, MAX_FF_SPEED);
- 	} else {
- 		vib->active = false;
--		vib->level = VIB_MIN_LEVEL_mV / VIB_PER_STEP_mV;
-+		vib->level = VIB_MIN_LEVEL_mV(vib);
- 	}
- 
- 	pm8xxx_vib_set(vib, vib->active);
-@@ -197,6 +229,7 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
- 	regs = of_device_get_match_data(&pdev->dev);
- 	vib->enable_addr = reg_base + regs->enable_offset;
- 	vib->drv_addr = reg_base + regs->drv_offset;
-+	vib->drv2_addr = reg_base + regs->drv2_offset;
- 
- 	/* operate in manual mode */
- 	error = regmap_read(vib->regmap, vib->drv_addr, &val);
-@@ -251,6 +284,7 @@ static const struct of_device_id pm8xxx_vib_id_table[] = {
- 	{ .compatible = "qcom,pm8058-vib", .data = &pm8058_regs },
- 	{ .compatible = "qcom,pm8921-vib", .data = &pm8058_regs },
- 	{ .compatible = "qcom,pm8916-vib", .data = &pm8916_regs },
-+	{ .compatible = "qcom,pmi632-vib", .data = &pmi632_regs },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pm8xxx_vib_id_table);
+pte_next_swp_offset can insteadly call it by:
+pte_move_swp_offset(pte, 1);
 
--- 
-2.25.1
+Is it what you are proposing?
 
-
+>
+> >>
+> >> You need to check the pte of page 0 anyway.
+> >>
+> >> >>
+> >> >> > +             if (!is_swap_pte(folio_pte) || non_swap_entry(pte_t=
+o_swp_entry(folio_pte)) ||
+> >> >> > +                 swap_pte_batch(folio_ptep, nr, folio_pte, &any_=
+swap_shared) !=3D nr)
+> >> >> > +                     goto check_pte;
+> >> >> > +
+> >> >> > +             start_address =3D folio_start;
+> >> >> > +             start_pte =3D folio_ptep;
+> >> >> > +             nr_pages =3D nr;
+> >> >> > +             entry =3D folio->swap;
+> >> >> > +             page =3D &folio->page;
+> >> >> > +     }
+> >> >> > +
+> >> >> > +check_pte:
+> >> >> >       if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf=
+->orig_pte)))
+> >> >> >               goto out_nomap;
+> >> >> >
+> >> >> > @@ -4190,6 +4223,10 @@ vm_fault_t do_swap_page(struct vm_fault *v=
+mf)
+> >> >> >                        */
+> >> >> >                       exclusive =3D false;
+> >> >> >               }
+> >> >> > +
+> >> >> > +             /* Reuse the whole large folio iff all entries are =
+exclusive */
+> >> >> > +             if (nr_pages > 1 && any_swap_shared)
+> >> >> > +                     exclusive =3D false;
+> >> >> >       }
+> >> >> >
+>
+> [snip]
+>
+> --
+> Best Regards,
+> Huang, Ying
 
