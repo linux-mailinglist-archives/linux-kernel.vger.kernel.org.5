@@ -1,157 +1,247 @@
-Return-Path: <linux-kernel+bounces-150241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-150319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B41C58A9C2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:03:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6229C8A9D38
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 16:36:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DD6F1F244DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:03:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 657FA1C20978
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Apr 2024 14:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2DC165FDE;
-	Thu, 18 Apr 2024 14:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA3BA161933;
+	Thu, 18 Apr 2024 14:36:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="VltlHbXc"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dFJnipS+"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63676165FA9
-	for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 14:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CFB41C71;
+	Thu, 18 Apr 2024 14:36:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713449005; cv=none; b=oa3wgL5ohz+C7qNA7B8G1nNX+ZVD4UfIdRYgZjQ+lwg59643ROBXqzuiKetGPmYldMRNuguSsQyqSSbt36LyLl08/VcMQDKvdkz1JXKvqL+wAYtH0DN7W/BV9r7AYcVjZRQqLk6pj7qrj8iGe01l5V+6VTy8W3ptKD9ofH/5Fek=
+	t=1713450984; cv=none; b=W269kNOReE9uboqVU+qxATh5Be1MptY4uyImo+RNdPXi53FcA7kAjup2G6K4bA9VBTr6/HA7UMtb/G02SL6FO1fvfllDGviPgCADOMp7yLK2I8R5LE79psNTF1FAvAeuSsVBiBSfcpr7FVAgX8UE5JELnQnFxdY3l7iV55yC3qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713449005; c=relaxed/simple;
-	bh=29NSP3ckhchgCk/BenPgTMkiEk28YJODiPFZQnpe0GQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zij6cK0TkLTJEMwuTDJQFrPyj5ds3aR79DSseMT58IAS8hZSJvCAn9U3RN+ny1JTukYT/Z1fG+qPf5f5q2VUc++ktXZcE40Ifa1ce9Um3E7L/G0Wq7nK3fdQ57m5UcPbDcMPuOMVEkozx9fWOq1PIRkkcDg92Sy4+mrHwnfaQwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=VltlHbXc; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-5176f217b7bso1539280e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Apr 2024 07:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1713449001; x=1714053801; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=29NSP3ckhchgCk/BenPgTMkiEk28YJODiPFZQnpe0GQ=;
-        b=VltlHbXcY/hXnGG2jz+w5zDZZ/tsvF06fpogDT2sVlKafCF0s0QMQ6AJpIRz7osL47
-         p0+BXPM4xu0D6iHC+6CUnEx4qbRQTFszzCFQoHGG9cWF50ZHK8DPXkmn5TBbOaM+LMWM
-         gCVw8TgQN20h8i7z+RPjpWmm0e/SprTcERH0LhR65IPIQiaqPCG1zQMcXmQ+j7C2g7wu
-         eS0ZdMCy1y7OWt82gzWzxUTZcXGxrzCdN+tm2LaDNI8KgSBnyV9wwmo9orq/pSkQKAmp
-         jhWYNSbkOedth9j/E5AwGkdUlcuHxyE6motV7suJlp91pi1FwqO4pbgKAJ2GhWRUAl/g
-         Bo8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713449001; x=1714053801;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=29NSP3ckhchgCk/BenPgTMkiEk28YJODiPFZQnpe0GQ=;
-        b=Nu7fU2FBZMTnB8cUaKnylbzkPij2D4wYmA9ZyieZivoUwDqr5PaP8ESGJabH5/nZyq
-         EYoSah4MhUKK2K5KNWCJGe9NBnPl5z1v+iUKTKNnNLRGIEg22PhMzWu+qMdEV5vXwOld
-         Y33edtbCG9DSzrDzEJgAtxd3FmVo3ymj+VMoM/xRLJeCsZaj+tUzsVFh96meyUeo9qFp
-         OdxH3oHWgbs6o/q8L1u9Lc6mxQnt6CyX1SLCYr+Iocc6kT60MGQtXXQWwJX5W2eXhDT4
-         hYoVGeIpOu6LwEHGulMK5urhsUu7ZAda6WUl2gSK+V00s8ZJf40G0jHRrlojDFsV8HTZ
-         hsUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVH9z+XeECPbF85X8MMdvuatopfBIDd+J9hlGE8JaifWneR5641jU/jHb3f7mfNV1nr6V66eqJS2zY+IhD6I5JZeH/g1nd/j68Wyrn1
-X-Gm-Message-State: AOJu0Yx0I0EMxAiM7yesn97MpEEbOgs2IfM/cvulfAwWy8mIYRiHiv2I
-	tm8HQAEEDPK8K3di8iC/KshxXAB5rvKDDsH5YRxVi/u2bIFGtZPKfwtdm9wrd3s=
-X-Google-Smtp-Source: AGHT+IEEaAqAaRn0OgbuNYh5fB4s3wbKRYCkPSN2nyv1oCLgvcIRJoVOQEt5V3SOR++8k+CwHg+lTQ==
-X-Received: by 2002:ac2:5b5b:0:b0:518:d5c4:d9b7 with SMTP id i27-20020ac25b5b000000b00518d5c4d9b7mr1966338lfp.16.1713449000512;
-        Thu, 18 Apr 2024 07:03:20 -0700 (PDT)
-Received: from [192.168.1.70] ([84.102.31.74])
-        by smtp.gmail.com with ESMTPSA id w25-20020a17090633d900b00a51cdde5d9bsm931130eja.225.2024.04.18.07.03.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Apr 2024 07:03:19 -0700 (PDT)
-Message-ID: <7f7fb71a-6d15-46f1-b63c-b569a2e230b7@baylibre.com>
-Date: Thu, 18 Apr 2024 16:03:15 +0200
+	s=arc-20240116; t=1713450984; c=relaxed/simple;
+	bh=M6U0rjdf8U6RK8i0cs3YEunM23bUqM+mF3NUJ2kNZtQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nAHYaf8Hnqhzr0nD8uiZ8sHo5rH4Sa45QMwTbh/UV0ARisvsKAXgUxegqPnvqAq3ttc9it3mqPLYJKWPe9KbsqSjmDn1H3BO4W2K/1cd2dBU0Xa8vJ2rh1QyCzknMdnCj5liHzG/Mo/96cKBVg9sI7jkVinVHmHo+o0bvVi9Bu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dFJnipS+; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713450983; x=1744986983;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=M6U0rjdf8U6RK8i0cs3YEunM23bUqM+mF3NUJ2kNZtQ=;
+  b=dFJnipS+iTv7i7PtgepoE7RhM91UUfCSEmrq9Igpo8z0R/IrSMqr8cJR
+   /4UHOQ9zSHlN+btDFtucTDarqIbY/+W6OMM2L4bJvUGz9Ey7jApewtSal
+   aUMlzsWaJSEKoE2W9x9DybS6mNmuDL/TVaXR9z1U6ECccZ+lmn6kFWhGU
+   RPjH0W1mATIZq1ILPA8cwZTq1FE/WgcjLMROk2vMVD+w7rwehNgQte2oJ
+   WtQy/h5rfcRWfB01pneDVfvkzn+Z/dUnet2twJHRJCJTHHmqjTN+vQbOJ
+   DPaDu/Q7AbYpFPra2PMWZPykgrgoplPOp1Z5sTCFqX2t39TtiWyNSbwPB
+   A==;
+X-CSE-ConnectionGUID: exYZh36JTeOefB1gSSEwMQ==
+X-CSE-MsgGUID: uGO4pqPPQ8esrnzAHoMGpA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11047"; a="20146262"
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="20146262"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:36:22 -0700
+X-CSE-ConnectionGUID: PN2pXaY/Sa6p1CR1/ciTqQ==
+X-CSE-MsgGUID: YvrH9gx3QhmodywluCaaqA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,212,1708416000"; 
+   d="scan'208";a="23085579"
+Received: from mchatter-mobl.amr.corp.intel.com (HELO peluse-desk5) ([10.213.188.90])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2024 07:36:21 -0700
+Date: Tue, 16 Apr 2024 07:38:06 -0700
+From: Paul E Luse <paul.e.luse@linux.intel.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: tada keisuke <keisuke1.tada@kioxia.com>, "song@kernel.org"
+ <song@kernel.org>, "yukuai (C)" <yukuai3@huawei.com>,
+ "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Luse, Paul
+ E" <paul.e.luse@intel.com>
+Subject: Re: [PATCH v2 08/11] md: add atomic mode switching in RAID 1/10
+Message-ID: <20240416073806.50e3ff5d@peluse-desk5>
+In-Reply-To: <8d21354c-9e67-b19c-1986-b4c027dff125@huaweicloud.com>
+References: <47c035c3e741418b80eb6b73d96e7e92@kioxia.com>
+	<8d21354c-9e67-b19c-1986-b4c027dff125@huaweicloud.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; aarch64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 0/3] Add minimal XDP support to TI AM65 CPSW
- Ethernet driver
-To: Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Ratheesh Kannoth <rkannoth@marvell.com>,
- Naveen Mamindlapalli <naveenm@marvell.com>,
- Jacob Keller <jacob.e.keller@intel.com>, danishanwar@ti.com,
- yuehaibing@huawei.com, rogerq@kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org
-References: <20240223-am65-cpsw-xdp-basic-v9-0-2c194217e325@baylibre.com>
- <260d258f-87a1-4aac-8883-aab4746b32d8@ti.com>
- <08319f88-36a9-445a-9920-ad1fba666b6a@baylibre.com>
- <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
-Content-Language: en-US
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <1da48c7e-ba87-4f7a-b6d1-d35961005ab0@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 4/18/24 13:25, Siddharth Vadapalli wrote:
-> On Thu, Apr 18, 2024 at 01:17:47PM +0200, Julien Panis wrote:
->> On 4/18/24 13:00, Siddharth Vadapalli wrote:
->>> On 12-04-2024 21:08, Julien Panis wrote:
->>>> This patch adds XDP support to TI AM65 CPSW Ethernet driver.
->>>>
->>>> The following features are implemented: NETDEV_XDP_ACT_BASIC,
->>>> NETDEV_XDP_ACT_REDIRECT, and NETDEV_XDP_ACT_NDO_XMIT.
->>>>
->>>> Zero-copy and non-linear XDP buffer supports are NOT implemented.
->>>>
->>>> Besides, the page pool memory model is used to get better performance.
->>>>
->>>> Signed-off-by: Julien Panis <jpanis@baylibre.com>
->>> Hello Julien,
->>>
->>> This series crashes Linux on AM62ax SoC which also uses the
->>> AM65-CPSW-NUSS driver:
->>> https://gist.github.com/Siddharth-Vadapalli-at-TI/5ed0e436606001c247a7da664f75edee
->>>
->>> Regards,
->>> Siddharth.
->> Hello Siddharth.
->>
->> Thanks for the log. I can read:
->> [    1.966094] Missing net_device from driver
->>
->> Did you check that nodes exist in the device tree for the net devices ?
-> Yes it exists. The device-tree used was also built with linux-next
-> tagged next-20240417. The node corresponding to eth0 is cpsw_port1 which
-> is present and enabled in the device-tree:
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts?h=next-20240417#n644
->
-> Regards,
-> Siddharth.
+On Thu, 18 Apr 2024 14:39:53 +0800
+Yu Kuai <yukuai1@huaweicloud.com> wrote:
 
-I could reproduce the bug by disabling 'cpsw_port2' in my device tree,
-which is 'k3-am625-sk.dts' for the board I use.
+> Hi,
+>=20
+> =E5=9C=A8 2024/04/18 13:44, tada keisuke =E5=86=99=E9=81=93:
+> > This patch depends on patch 07.
+> >=20
+> > All rdevs running in RAID 1/10 switch nr_pending to atomic mode.
+> > The value of nr_pending is read in a normal operation
+> > (choose_best_rdev()). Therefore, nr_pending must always be
+> > consistent.
+> >=20
+> > Signed-off-by: Keisuke TADA <keisuke1.tada@kioxia.com>
+> > Signed-off-by: Toshifumi OHTAKE <toshifumi.ootake@kioxia.com>
+> > ---
+> >   drivers/md/md.h     | 14 ++++++++++++++
+> >   drivers/md/raid1.c  |  7 +++++++
+> >   drivers/md/raid10.c |  4 ++++
+> >   3 files changed, 25 insertions(+)
+> >=20
+> > diff --git a/drivers/md/md.h b/drivers/md/md.h
+> > index ab09e312c9bb..57b09b567ffa 100644
+> > --- a/drivers/md/md.h
+> > +++ b/drivers/md/md.h
+> > @@ -236,6 +236,20 @@ static inline unsigned long
+> > nr_pending_read(struct md_rdev *rdev) return
+> > atomic_long_read(&rdev->nr_pending.data->count); }
+> >  =20
+> > +static inline bool nr_pending_is_percpu_mode(struct md_rdev *rdev)
+> > +{
+> > +	unsigned long __percpu *percpu_count;
+> > +
+> > +	return __ref_is_percpu(&rdev->nr_pending, &percpu_count);
+> > +}
+> > +
+> > +static inline bool nr_pending_is_atomic_mode(struct md_rdev *rdev)
+> > +{
+> > +	unsigned long __percpu *percpu_count;
+> > +
+> > +	return !__ref_is_percpu(&rdev->nr_pending, &percpu_count);
+> > +}
+> > +
+> >   static inline int is_badblock(struct md_rdev *rdev, sector_t s,
+> > int sectors, sector_t *first_bad, int *bad_sectors)
+> >   {
+> > diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> > index 12318fb15a88..c38ae13aadab 100644
+> > --- a/drivers/md/raid1.c
+> > +++ b/drivers/md/raid1.c
+> > @@ -784,6 +784,7 @@ static int choose_best_rdev(struct r1conf
+> > *conf, struct r1bio *r1_bio) if (ctl.readable_disks++ =3D=3D 1)
+> >   			set_bit(R1BIO_FailFast, &r1_bio->state);
+> >  =20
+> > +		WARN_ON_ONCE(nr_pending_is_percpu_mode(rdev));
+> >   		pending =3D nr_pending_read(rdev);
+> >   		dist =3D abs(r1_bio->sector -
+> > conf->mirrors[disk].head_position);=20
+> > @@ -1930,6 +1931,7 @@ static int raid1_add_disk(struct mddev
+> > *mddev, struct md_rdev *rdev) if (err)
+> >   				return err;
+> >  =20
+> > +
+> > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);
+> > raid1_add_conf(conf, rdev, mirror, false); /* As all devices are
+> > equivalent, we don't need a full recovery
+> >   			 * if this was recently any drive of the
+> > array @@ -1949,6 +1951,7 @@ static int raid1_add_disk(struct mddev
+> > *mddev, struct md_rdev *rdev) set_bit(Replacement, &rdev->flags);
+> >   		raid1_add_conf(conf, rdev, repl_slot, true);
+> >   		err =3D 0;
+> > +
+> > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending); =20
+>=20
+> I don't understand what's the point here, 'nr_pending' will be used
+> when the rdev issuing IO, and it's always used as atomic mode, there
+> is no difference.
+>=20
+> Consider that 'nr_pending' must be read from IO fast path, use it as
+> atomic is something we must accept. Unless someone comes up with a
+> plan to avoid reading 'inflight' counter from fast path like generic
+> block layer, it's not ok to me to switch to percpu_ref for now.
+>=20
+> +CC Paul
+>=20
+> HI, Paul, perhaps you RR mode doesn't need such 'inflight' counter
+> anymore?
+>=20
 
-A condition is missing in am65_cpsw_create_xdp_rxqs() and
-am65_cpsw_destroy_xdp_rxqs() functions.
+I too am struggling to see the benefit but am curious enough that I
+will run some tests on my own as I have fresh baseline RAID1 large sweep
+performance data ready right now.
 
-For these 2 functions, the code which is in the for loop should be
-run only when port ethX is enabled. That's why it crashes with
-your device tree (cpsw_port2 is disabled, which is not the case by
-default for the board I developed with).
+So my WIP round robin patch won't need nr_pedning for SSDs but I think
+it will for HDD plus I need a new atomic counter for round robin for
+SSDs anyway but I see no perfomrnace impact so far from adding it.
 
-I'll send a patch to fix the issue. Thanks for reporting it.
+-Paul
 
-Julien
+> Thanks,
+> Kuai
+>=20
+> >   		conf->fullsync =3D 1;
+> >   	}
+> >  =20
+> > @@ -3208,6 +3211,7 @@ static void raid1_free(struct mddev *mddev,
+> > void *priv); static int raid1_run(struct mddev *mddev)
+> >   {
+> >   	struct r1conf *conf;
+> > +	struct md_rdev *rdev;
+> >   	int i;
+> >   	int ret;
+> >  =20
+> > @@ -3269,6 +3273,9 @@ static int raid1_run(struct mddev *mddev)
+> >   	/*
+> >   	 * Ok, everything is just fine now
+> >   	 */
+> > +	rdev_for_each(rdev, mddev) {
+> > +
+> > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending);
+> > +	}
+> >   	rcu_assign_pointer(mddev->thread, conf->thread);
+> >   	rcu_assign_pointer(conf->thread, NULL);
+> >   	mddev->private =3D conf;
+> > diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+> > index b91dd6c0be5a..66896a1076e1 100644
+> > --- a/drivers/md/raid10.c
+> > +++ b/drivers/md/raid10.c
+> > @@ -808,6 +808,7 @@ static struct md_rdev *read_balance(struct
+> > r10conf *conf,=20
+> >   		nonrot =3D bdev_nonrot(rdev->bdev);
+> >   		has_nonrot_disk |=3D nonrot;
+> > +		WARN_ON_ONCE(nr_pending_is_percpu_mode(rdev));
+> >   		pending =3D nr_pending_read(rdev);
+> >   		if (min_pending > pending && nonrot) {
+> >   			min_pending =3D pending;
+> > @@ -2113,6 +2114,7 @@ static int raid10_add_disk(struct mddev
+> > *mddev, struct md_rdev *rdev) p->recovery_disabled =3D
+> > mddev->recovery_disabled - 1; rdev->raid_disk =3D mirror;
+> >   		err =3D 0;
+> > +
+> > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending); if
+> > (rdev->saved_raid_disk !=3D mirror) conf->fullsync =3D 1;
+> >   		WRITE_ONCE(p->rdev, rdev);
+> > @@ -2127,6 +2129,7 @@ static int raid10_add_disk(struct mddev
+> > *mddev, struct md_rdev *rdev) err =3D mddev_stack_new_rdev(mddev,
+> > rdev); if (err)
+> >   			return err;
+> > +
+> > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending); conf->fullsync
+> > =3D 1; WRITE_ONCE(p->replacement, rdev);
+> >   	}
+> > @@ -4028,6 +4031,7 @@ static int raid10_run(struct mddev *mddev)
+> >   	rdev_for_each(rdev, mddev) {
+> >   		long long diff;
+> >  =20
+> > +
+> > percpu_ref_switch_to_atomic_sync(&rdev->nr_pending); disk_idx =3D
+> > rdev->raid_disk; if (disk_idx < 0)
+> >   			continue;
+> >  =20
+>=20
+>=20
+
 
