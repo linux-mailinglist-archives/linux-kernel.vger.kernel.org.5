@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-146119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FA188A60FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:22:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC268A60F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:22:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A849CB225B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:22:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E433B1C210D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225153BB24;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DF13B7A8;
 	Tue, 16 Apr 2024 02:21:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="V9vl7s3O"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x+/HNUs8"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7955A18C1F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498BC20DCB
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713234061; cv=none; b=iABWrrvK7FjnCIjwRC8tWxO5wBggVtk4X3xIbJTyQgvncKYZ3VotL3qhBKPyjnjxDUjSt9XqFWlQebtIIgdKvTTN1eUwaOHsSOKj4pMXjXqmoyjx/XqbnpdGXoQB+g7EchovxzBFTfvLrJO2KLYjBk6k7mGaql4meAL2p4q4MmE=
+	t=1713234062; cv=none; b=HU6HqZQDEp1zfyUKGss2FaDJrYIKNc8UQZ1sYfbXs5dUfWY16lADZ8+2uaBt5u+XBbYBj+QeWBtzVTkb7f4vx8JPPSVYTBGMTYGOjFYQ767aXcmFkZ7R9A2gvKZNfDv4LrKWPweno2DSPJRBv+rkt5T94PmSN73cjzXHeSlNnPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713234061; c=relaxed/simple;
-	bh=S4XLZ5gKp33g0mOP4hRwHIm80nPUorFiQzB2vpdJzqo=;
+	s=arc-20240116; t=1713234062; c=relaxed/simple;
+	bh=SToAHymtfQGBKZLpbR0Oic69HFLPWamTvWh5j26sXtY=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QdNlXwZbjJPx4kQc8YVX0f497Ef3M2LnerahNk7ryiJFHpf2VRrfXGBTkToiSHnODyMyRank9t6kdk0b1wskvJPxa/6omKo/i0uAzY/jTE+haAH6CSLL/gHmUqtrIbnlQZErjPSAv5L5ELMZs13T3Crb/hc+pBM/gMW03Nph474=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=V9vl7s3O; arc=none smtp.client-ip=209.85.167.53
+	 In-Reply-To:To:Cc; b=VZIGTVaFMxf6EXWqzyn96PGC6cYpD2LW+TOCXyN2NcKOMNyEjHRAqW2gsce6n/H1nGnYI5nflSjWITomftFz3gPxFnv/BiVAg28EA3f3bxKSNkAu6m9SATzkFoW6ZeaWquy3881HBNL041nQcmHhSuvJTy19e1FBkCfsVsj8x48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x+/HNUs8; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5192588c56cso99152e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:20:59 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516d3a470d5so4473984e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:21:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google; t=1713234058; x=1713838858; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hmft9a32U+BC16BwBrJgQUX6tPI4vtXStWeaypraph0=;
-        b=V9vl7s3OxQ1QMieud4iI3xs0xB7ASdcSWluvabszSj3boX5WKvf4aCCSNy/v4Ex70x
-         Yach5XfRzP6jfzn6mLxAXwfdMJutNvmj7efIo4b42bdvGC1oQIsNdJw+0S2C8a7SEQam
-         HlZ7pcnkFH+MGThUjpbpEm8f3n7bOC4mJGAb4lgZ3CgpsPP2SUG4NO4ChrgzmFF5zrT5
-         sUf2Bbqr2xBnc3uIVW09w9gHQ64Jzb3tjNxRaSqaz3XAa0xXqWxcQ/ElLg2Q5xgA8izO
-         Dnk7o2rX35gZjoLuSsi7We5nETfzld5pM2KKVp6deAMIbKBMZs5u2493D+hTRkSw8v75
-         Ktww==
+        bh=WU7kkHqmeD8WLGIOtmqDI6a+4uwK8HkBVPKBTEJy0EU=;
+        b=x+/HNUs8dqMsD5di6b2GsS+M2svZJIXiS8gmeHeEw3+FPOrOy6Z0jjEdxiukxkTkYp
+         p7XpH+tDD+3rJ1YDAdCGJsZPG0IMXTIguKrmr6xz6AR9LU3ikW0Knwo/IqFwL4OLqIj0
+         h9J+4IfzuMS/0bSl/ycr3OYQnA/9eFKWRUE0K+nZt1kNYjCM9a5t7jKqTDl2gNUyDsbU
+         jF0YbDgeqUBLftO0fT2Te5P7PLUWvaNJz0Uv1GrQlVvyoGK/kAhHUQTdxqro4VV/whZU
+         nbApmUj/WeyBVVRlYaIfuNyJlnbjsHTO6PDS+iCDUYm8xt0tAzgMsCLG48BV8w6x7nuX
+         jlzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1713234058; x=1713838858;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hmft9a32U+BC16BwBrJgQUX6tPI4vtXStWeaypraph0=;
-        b=ZecNUoLHnFWwXG97SlN+7gxpyWueTVYFQrXzbC/fo76ivEdfIKVjSoOUFkRsaq2qlJ
-         YfcGw2kCO5swFUeHnv8GN7m36+6KEGNN+5YXjX/t5VGLJNJyruf68RCQf2V7BCeg3yy3
-         Pjn20abD8JqWCCnq2FqzEQjp/QsQQsai0dYX5XcweiU6CTZEBAddRVSoWMmr8xvTMzjb
-         WSxzMSmxpwa+Oi3wwyhEK3eNM38M/wsX7aYTyyhnwEPGAAR7nvWdhGqgqSS9jTgndPBB
-         KOl5H1kzxoJwIYVJkcObh+MKMg7mIAqvYSpdZCG/2Vj4KldYC0UGp2gjA8oonZyzOsks
-         xWiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVrxlBdaImepwqH+BxdDeApVt+tXbAz9iQ5Q4jsb3UE7b0+BBIuiM/EC4h4dH3Q7oK6AfMw2AW18vaTRvqyjiCEt8BeTUmmoEnD0MfF
-X-Gm-Message-State: AOJu0YzJD0FZ0eSIAKkoc3jiCZLZMeC39jLs29vNqJSeZQwtVJ/S3zrR
-	vWnaUDvJE3An14mPHxPRrvDimiLKak9owTj+QxuVouTKLyfsTscaKS85V+/WQVE=
-X-Google-Smtp-Source: AGHT+IFBL6bM/VlpK1viDFzpuJ5b+21YlpTzGJvRGZG9aZFsEC0Wh30vqokRKodcDSO5bVKOvjRQzA==
-X-Received: by 2002:a05:6512:55b:b0:517:8594:2c00 with SMTP id h27-20020a056512055b00b0051785942c00mr6506167lfl.22.1713234057752;
-        Mon, 15 Apr 2024 19:20:57 -0700 (PDT)
+        bh=WU7kkHqmeD8WLGIOtmqDI6a+4uwK8HkBVPKBTEJy0EU=;
+        b=CSdB83JEL8m7AwoTxaQOC6Q7qQO28MlcNQqhcwRlIusYWQHNHhIT6YWDAhGH5yD9HG
+         6lMdjI+T7B0ITvi9oJ/kiHxn16VL/DLjuQBO5JIHHJba3DhPY6c0hz41ZfND66SAjW4q
+         fHbaeU5L/BXE8+sVP73L/djpGydlOH8z9JJiPlETCy9OUogw9TnX2bLxsPHEhGAB8PQN
+         +m0DwjB7PmBOLZyYXSYRHT1fUZNVH58O5hOaHOQWgRBotwE7+1Ti5HZ0E9yo01JrvjJJ
+         X4d65dqv9/Ss7FEoMn/Koa76HitIZhuAGEMr1y1GJZzij3ERdS2N98Q0jIGzIMu3TayJ
+         kUvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUOfd6K3+kcEd4bxpUSNV1fARqXaHg4wk1vL4RWHCA2G14AGANlZPl4T85QqCJpCteIXO8edPM7AB3xjK0/hyAo3ouT8wc0zAfDJWn+
+X-Gm-Message-State: AOJu0YwuWyuFBHmWn57JBZ48NGx5b1uTRxVEdxQMFTUpQSL6z++ury9M
+	00dXut1NN201Jq9w3IVzf9JUg5vMnUWtJrB7hwU033QAWQ/118p0CF+pQtYgwBG5lDfS28PV4wg
+	I
+X-Google-Smtp-Source: AGHT+IHOVwyxCsFGxzMB7VCkX79Ri++G8vkHqYJkw7PDN/FaNvbEMg6uvmiAAxAardy8Z0daJuJWcQ==
+X-Received: by 2002:ac2:5931:0:b0:515:99f6:2ca4 with SMTP id v17-20020ac25931000000b0051599f62ca4mr7434912lfi.36.1713234058533;
+        Mon, 15 Apr 2024 19:20:58 -0700 (PDT)
 Received: from umbar.lan ([192.130.178.91])
         by smtp.gmail.com with ESMTPSA id bi30-20020a0565120e9e00b0051925dd92dbsm27716lfb.214.2024.04.15.19.20.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 19:20:57 -0700 (PDT)
+        Mon, 15 Apr 2024 19:20:58 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 16 Apr 2024 05:20:54 +0300
-Subject: [PATCH 5/8] usb: typec: ucsi: glink: simplify notification
- handling
+Date: Tue, 16 Apr 2024 05:20:55 +0300
+Subject: [PATCH 6/8] usb: typec: ucsi: add ucsi_registered() callback
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240416-ucsi-glink-altmode-v1-5-890db00877ac@linaro.org>
+Message-Id: <20240416-ucsi-glink-altmode-v1-6-890db00877ac@linaro.org>
 References: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
 In-Reply-To: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
 To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
@@ -90,193 +90,64 @@ Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org, 
  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5788;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1914;
  i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=S4XLZ5gKp33g0mOP4hRwHIm80nPUorFiQzB2vpdJzqo=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmHeCEOldYMhHpDjHlCssZl4h2CPK7xckJEkiNk
- 1xqfri6NkuJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZh3ghAAKCRCLPIo+Aiko
- 1QD+B/0S2/56T00TOtH5nUi/LdKpLohPJVjV+re8oMk8XGAbEE8KyYWJ8pUBracYkn4e3d4qvYi
- VzKtIHxVhVHPBErzaIaK0OlyVxBCZYr4pCk5wsC7Dg0Cw334G9FL254Eubp0e/FZlr8X4MtdbDw
- Uv92CWnNLUaEwOFSTh9wg/CjgOaxDVEOGqZRvRKXDb0xPxgmAWccGiGzy8nfB3nZ0RLGC6/xS5o
- XZ132SlUwMVVn9mzvpYsEbivU19s5uWHXtgihUuIzOSC2Bw6NZZPpyiVE2iz+K1LkrqiOoocK1K
- fYVh9q7ocJkwPOb7Yxo5HFril/IfcNKmDsFRg8qReXTyLRfV
+ bh=SToAHymtfQGBKZLpbR0Oic69HFLPWamTvWh5j26sXtY=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmHeCEZyNdqdYdy5k8fktQr8KpTHz9ht3CfWxcR
+ qepO/zIpF6JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZh3ghAAKCRCLPIo+Aiko
+ 1ZrzB/0ZMtTNXuCJ9qcQq7KFdJhCrQYMdE0BtbgFMtTDhBe7lE42wRn06wEkhA43KUWPV6YgyV8
+ E0Ov94SXw2ICzurfz+SU3dkMOIMiIBcDdWw6eUcHL2TbrKs43knPvLabUVty+8z55DIH0OtK/bX
+ cpLQrX+TWz29PzjS+Cg4qWtLqZInpCRmAZhgQLKWMtU0/5yJMViLXok0OlHg8NQBAvRcxtWngB1
+ eV74DpLPKHikHjbUdMZjKGBEQ39pwslBTFyScRt6FxKZ0meiZt87PeQnmaev7LT2VKyaMQ1AJHf
+ POyvzEWkd5XEcFYrzRTudraH9xZXQW3PUgVojHbLLGm6TG5O
 X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
  fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-All platforms except Qualcomm SC8180X pass CCI in the notification
-message. Use it instead of going back and forth over RPMSG
-interface to read CCI.
+As the registration of the UCSI device is performed from the scheduled
+worker, the glue driver isn't notified when the UCSI registration
+succeeds. The ucsi_glink driver needs this event to be able to manually
+register DisplayPort altmodes.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/usb/typec/ucsi/ucsi_glink.c | 90 +++++++++++++++++++++++++++++--------
- 1 file changed, 71 insertions(+), 19 deletions(-)
+ drivers/usb/typec/ucsi/ucsi.c | 3 +++
+ drivers/usb/typec/ucsi/ucsi.h | 2 ++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-index d029cc9d82e3..40fcda055b05 100644
---- a/drivers/usb/typec/ucsi/ucsi_glink.c
-+++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-@@ -6,6 +6,7 @@
- #include <linux/auxiliary_bus.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/property.h>
- #include <linux/soc/qcom/pdr.h>
-@@ -70,7 +71,7 @@ struct pmic_glink_ucsi {
+diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+index cb52e7b0a2c5..ae89c4c8341d 100644
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -1755,6 +1755,9 @@ static int ucsi_init(struct ucsi *ucsi)
+ 	if (UCSI_CCI_CONNECTOR(cci))
+ 		ucsi_connector_change(ucsi, UCSI_CCI_CONNECTOR(cci));
  
- 	int sync_val;
++	if (ucsi->ops->ucsi_registered)
++		ucsi->ops->ucsi_registered(ucsi);
++
+ 	return 0;
  
--	struct work_struct notify_work;
-+	struct work_struct notify_work_sc8180x;
- 	struct work_struct register_work;
- 
- 	u8 read_buf[UCSI_BUF_SIZE];
-@@ -223,6 +224,20 @@ static const struct ucsi_operations pmic_glink_ucsi_ops = {
- 	.connector_status = pmic_glink_ucsi_connector_status,
+ err_unregister:
+diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
+index c4d103db9d0f..37ee1b1d8c31 100644
+--- a/drivers/usb/typec/ucsi/ucsi.h
++++ b/drivers/usb/typec/ucsi/ucsi.h
+@@ -62,6 +62,7 @@ struct dentry;
+  * @update_altmodes: Squashes duplicate DP altmodes
+  * @update_connector: Update connector capabilities before registering
+  * @connector_status: Updates connector status, called holding connector lock
++ * @ucsi_registered: notify host driver when the UCSI interface is registered
+  *
+  * Read and write routines for UCSI interface. @sync_write must wait for the
+  * Command Completion Event from the PPM before returning, and @async_write must
+@@ -78,6 +79,7 @@ struct ucsi_operations {
+ 				struct ucsi_altmode *updated);
+ 	void (*update_connector)(struct ucsi_connector *con);
+ 	void (*connector_status)(struct ucsi_connector *con);
++	void (*ucsi_registered)(struct ucsi *ucsi);
  };
  
-+static void pmic_glink_ucsi_notify_handle(struct pmic_glink_ucsi *ucsi, u32 cci)
-+{
-+	unsigned int con_num;
-+
-+	con_num = UCSI_CCI_CONNECTOR(cci);
-+	if (con_num)
-+		ucsi_connector_change(ucsi->ucsi, con_num);
-+
-+	if (ucsi->sync_pending &&
-+		   (cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))) {
-+		complete(&ucsi->sync_ack);
-+	}
-+}
-+
- static void pmic_glink_ucsi_read_ack(struct pmic_glink_ucsi *ucsi, const void *data, size_t len)
- {
- 	const struct ucsi_read_buf_resp_msg *resp;
-@@ -259,10 +274,24 @@ static void pmic_glink_ucsi_write_ack(struct pmic_glink_ucsi *ucsi, const void *
- 	complete(&ucsi->write_ack);
- }
- 
--static void pmic_glink_ucsi_notify(struct work_struct *work)
-+/* used everywhere except sc8180x */
-+static void pmic_glink_ucsi_notify_ind(struct pmic_glink_ucsi *ucsi, const void *data, size_t len)
- {
--	struct pmic_glink_ucsi *ucsi = container_of(work, struct pmic_glink_ucsi, notify_work);
--	unsigned int con_num;
-+	const struct ucsi_notify_ind_msg *msg;
-+
-+	if (len != sizeof (*msg)) {
-+		dev_err_ratelimited(ucsi->dev, "Unexpected notification struct size %zd\n", len);
-+		return;
-+	}
-+
-+	msg = data;
-+
-+	pmic_glink_ucsi_notify_handle(ucsi, le32_to_cpu(msg->notification));
-+}
-+
-+static void pmic_glink_ucsi_notify_work_sc8180x(struct work_struct *work)
-+{
-+	struct pmic_glink_ucsi *ucsi = container_of(work, struct pmic_glink_ucsi, notify_work_sc8180x);
- 	u32 cci;
- 	int ret;
- 
-@@ -272,14 +301,7 @@ static void pmic_glink_ucsi_notify(struct work_struct *work)
- 		return;
- 	}
- 
--	con_num = UCSI_CCI_CONNECTOR(cci);
--	if (con_num)
--		ucsi_connector_change(ucsi->ucsi, con_num);
--
--	if (ucsi->sync_pending &&
--		   (cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))) {
--		complete(&ucsi->sync_ack);
--	}
-+	pmic_glink_ucsi_notify_handle(ucsi, cci);
- }
- 
- static void pmic_glink_ucsi_register(struct work_struct *work)
-@@ -289,6 +311,24 @@ static void pmic_glink_ucsi_register(struct work_struct *work)
- 	ucsi_register(ucsi->ucsi);
- }
- 
-+static void pmic_glink_ucsi_callback_sc8180x(const void *data, size_t len, void *priv)
-+{
-+	struct pmic_glink_ucsi *ucsi = priv;
-+	const struct pmic_glink_hdr *hdr = data;
-+
-+	switch (le32_to_cpu(hdr->opcode)) {
-+	case UC_UCSI_READ_BUF_REQ:
-+		pmic_glink_ucsi_read_ack(ucsi, data, len);
-+		break;
-+	case UC_UCSI_WRITE_BUF_REQ:
-+		pmic_glink_ucsi_write_ack(ucsi, data, len);
-+		break;
-+	case UC_UCSI_USBC_NOTIFY_IND:
-+		schedule_work(&ucsi->notify_work_sc8180x);
-+		break;
-+	};
-+}
-+
- static void pmic_glink_ucsi_callback(const void *data, size_t len, void *priv)
- {
- 	struct pmic_glink_ucsi *ucsi = priv;
-@@ -302,7 +342,7 @@ static void pmic_glink_ucsi_callback(const void *data, size_t len, void *priv)
- 		pmic_glink_ucsi_write_ack(ucsi, data, len);
- 		break;
- 	case UC_UCSI_USBC_NOTIFY_IND:
--		schedule_work(&ucsi->notify_work);
-+		pmic_glink_ucsi_notify_ind(ucsi, data, len);
- 		break;
- 	};
- }
-@@ -348,6 +388,7 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- 	struct device *dev = &adev->dev;
- 	const struct of_device_id *match;
- 	struct fwnode_handle *fwnode;
-+	bool sc8180x_glink;
- 	int ret;
- 
- 	ucsi = devm_kzalloc(dev, sizeof(*ucsi), GFP_KERNEL);
-@@ -357,7 +398,7 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- 	ucsi->dev = dev;
- 	dev_set_drvdata(dev, ucsi);
- 
--	INIT_WORK(&ucsi->notify_work, pmic_glink_ucsi_notify);
-+	INIT_WORK(&ucsi->notify_work_sc8180x, pmic_glink_ucsi_notify_work_sc8180x);
- 	INIT_WORK(&ucsi->register_work, pmic_glink_ucsi_register);
- 	init_completion(&ucsi->read_ack);
- 	init_completion(&ucsi->write_ack);
-@@ -406,11 +447,22 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
- 		ucsi->port_orientation[port] = desc;
- 	}
- 
--	ucsi->client = devm_pmic_glink_register_client(dev,
--						       PMIC_GLINK_OWNER_USBC,
--						       pmic_glink_ucsi_callback,
--						       pmic_glink_ucsi_pdr_notify,
--						       ucsi);
-+	sc8180x_glink = of_device_is_compatible(dev->parent->of_node,
-+						"qcom,sc8180x-pmic-glink");
-+
-+	if (sc8180x_glink) {
-+		ucsi->client = devm_pmic_glink_register_client(dev,
-+							       PMIC_GLINK_OWNER_USBC,
-+							       pmic_glink_ucsi_callback_sc8180x,
-+							       pmic_glink_ucsi_pdr_notify,
-+							       ucsi);
-+	} else {
-+		ucsi->client = devm_pmic_glink_register_client(dev,
-+							       PMIC_GLINK_OWNER_USBC,
-+							       pmic_glink_ucsi_callback,
-+							       pmic_glink_ucsi_pdr_notify,
-+							       ucsi);
-+	}
- 	return PTR_ERR_OR_ZERO(ucsi->client);
- }
- 
+ struct ucsi *ucsi_create(struct device *dev, const struct ucsi_operations *ops);
 
 -- 
 2.39.2
