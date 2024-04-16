@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-146113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EE298A60DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E47E18A60E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:21:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C4E0B20EB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:19:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4922DB2169C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:21:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF261170F;
-	Tue, 16 Apr 2024 02:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF1B3156E4;
+	Tue, 16 Apr 2024 02:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fvLA1KpD"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zkUHihq/"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5FF10795
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:19:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C2BF9E8
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:20:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713233943; cv=none; b=kEk686+DdWBmxzx1fUBqSnGgEokh7IDptIv6Qwtpg5MiL3s5D8YkM3ZpAHI9fXB3jMEhmy7YuhPcfaquNL0PufdEb1NVdXk/Kah1kp7Sf5uej/GrAORdc6QfMVaihNMyIcEnpGvMnnyZ9ETs0JiGk1c0SAI4mRUrmt3CM8VmRVM=
+	t=1713234057; cv=none; b=CXYHx+XAcLzvd9JbRp8pWAyFe2yJhrexqxDXxdjLDfiIlVjKGjF3tgtsj1Krel27VFASgIREeDPUqM81Th9IajBJAZAXWOKjr6r/+OtTf92KhHpps6D/YuKSWL+BR4JBTJ+XhulEV7CBfkzmuVljs5k2eoTFBA86DlCRmVEWS9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713233943; c=relaxed/simple;
-	bh=MHIdviCdb2UidFcnZtfqo0Fb9VHpj6iocABWQYC7Xqc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ko3YHtc4o16fchtp2rsazGgoIKfrPuC8t1CWA8kDscXOCiLkNlgeZ1eATSGpjBaX7qS07hIOv/1JD9FOOcPiMKRJnf7L/yRu1VZt/JQ9/Q0lagP/Rd6jezl7iWG4MVy3MgmBbOMQShsvYoDJduDPcoGoDaJeetHUmQrBVhfEnHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fvLA1KpD; arc=none smtp.client-ip=209.85.167.47
+	s=arc-20240116; t=1713234057; c=relaxed/simple;
+	bh=I6m2M+8GekB9Ra+iG3eKclLpfI1M2HDrEBoYGhILldA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=j/zFrIr7tS9sMOlKXBHoR2F6osAbm0KhBOPpCE5Cu3rqKdatyONyHQMEQmo93aoTMli6+KW53p8f7D9M5qsUrmcyS//cVWoQq2+DrKvreos/HMUGx5zYUddXSonTA7wEzdgc7vj/gwdm1rJw8RT8eNsgTgC3IRV3DWgg2cUviwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zkUHihq/; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516db2214e6so4804916e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:19:00 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518bad5f598so2574796e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 19:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713233939; x=1713838739; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5oDbW8M1wnTWukjhwfq9qbSiG4q2CDrYmMq6tS/w00c=;
-        b=fvLA1KpDB0hLH+hPuBbv4A3FEWYcgqmlyIxg2ZJ7nFl6FLTzCdMT1i4IqIymip5qhr
-         swzJSWV1t0nLc3/92jXS1GXgyo/lyOPja7nWNd8tYd9wgOcYVLcxUu1Qbz3ZrHjhztJC
-         wo39ifKpwL/Txjji/OWTjVQMsnH+t467M0/EKH+SSgIQzbsSORdogqFC8IAOPLTTb7M5
-         H4oZdHVefCx2BOykA+zr7/sgkqDp9zdh+ONobM087SXLuaC9gCbkONlyDXMUIaXCgzZH
-         PqZqFG+dNUXJfxSvtmW+KgBByPkAD70lTrJ1OavSyLPjzTeUtEZ/MAmqVVNEYRSVP5J+
-         ypLQ==
+        d=linaro.org; s=google; t=1713234054; x=1713838854; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=31Zi/BCGo17+6WL9U+yMAfsapL3UhLlQ6swNbqDLj4U=;
+        b=zkUHihq/qhpHfQalp7GecvDPMulMGY8BACVR7lozX8LETEvu0foLdL14HbpkahLFIH
+         R9drF4yyoVHQ26r95nuwsp07Za/zc223w6QPy3WMQ2fIjZAHqchPKA5SdBwCpZZOKNBc
+         8uQ3U+AgtjUSL6FC32wdxeh2Gm2u4PFroD7ZvQGp6Yu013q9tj7OTZFRe0vCg4i91HGi
+         XaVFsFvKLzCWC5o0kV+CFg0e654Of1blIYlrhbg1Fau/jZgj62ZtGTWc17QwbKiTRAgP
+         F36l+Lxs+pOGAt5zIZ/nTqPO1NLLY8YB+as5wMK4gCpy/hQatU6ZaxFX4En8suuVqr8e
+         EKNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713233939; x=1713838739;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1713234054; x=1713838854;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5oDbW8M1wnTWukjhwfq9qbSiG4q2CDrYmMq6tS/w00c=;
-        b=Eotu0yGJeyaT56tfLtC454A78lxULcWp7rLirdc5LwFTuGU/+K+b2suAHMmsigAW2u
-         PWVj8FaC9gB2/dAH86mamjvG5NeAE3FpZOheY871c0Guj4shArjbu79u9dV030tDGddE
-         ZN1L4GSTL5UN/IPvc5/nevImkyOufprIBbeOeB14zz9/bYKz7MPYQNqHiGIU770y7bW7
-         ZK2xYzPahes5K+IOgul33w9hppgL3fT5wMPcb619+hhjI4ybeyySGS6t0o7CDavpwlcP
-         x/GA7AtVo4LdSNVpVoBI6t+wDk0hAPmD2ffIkFvfKOpJktGgB+mM3jDRETounQqgs2+6
-         rpwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUjygbfDRQOQ7FESdY2JqBob4h4DjDRQs5jOq8hjwtXx/rpZ+MVLrlqjaeXg1jUiVAbO/RlgEulCGnpB8a0gmH4DkMHwTx6k0kJp6Nf
-X-Gm-Message-State: AOJu0Yzs9pDvlHQdXpk0uJqGTR8fkZD93aPlG6AwqB4mYhe0GLFdAQpD
-	SGbkJkFJ2Q8KUylkdbLJDRb+yVZIRPDbOvQq5anSV6NTTdrmXlM1xX8KwhXz82o=
-X-Google-Smtp-Source: AGHT+IHfyVY9cg3QTI5knfzFgZiKtEcizLWiX8/cm33X8cyTKnAMLoSSEcH5gXxzE+6/VFBO70AOFA==
-X-Received: by 2002:a05:6512:3da2:b0:516:a13e:d775 with SMTP id k34-20020a0565123da200b00516a13ed775mr8830997lfv.2.1713233937986;
-        Mon, 15 Apr 2024 19:18:57 -0700 (PDT)
+        bh=31Zi/BCGo17+6WL9U+yMAfsapL3UhLlQ6swNbqDLj4U=;
+        b=u/iTkAiUVlou6bZu3gkRV5TubXhOybsztqVGGGkH4f3c7IjE+5Ce/MhG5h6jDoFVBN
+         BKbe8ALLz6urpjUW/PkXdgQ/rj0LmvzSxJCU5S95/Qr233MuFmKtW8o8d7QgfIec+pW0
+         N6+rOdY9HBVRPTvH0W7gas5UkIN/Pv42T4PPhcCDUqQ/cXR2us3k8BVTnN1qTYj/JlmR
+         U2unZsWKsKWzZ+VufZRjSW8cdU++20PP/LTqZh5GRlwNEd6AEAAqKfOugzcoHylXrzzR
+         Mr36G6dT1ve78hqYOhik1W073+divQMNt4Hjx7DbMvJOTz7+ZsAaMoki/XGi9ycD3kPW
+         t/Dw==
+X-Forwarded-Encrypted: i=1; AJvYcCUOnq73nKe5LKXDPi4ClSFksnzbeEOKKZRu3C2p+k0jpa5BbHISP/zk+/L5pwuoNJogcZzSFbfooq1lSKFhn36PChs2Qn5v0SJ8J5av
+X-Gm-Message-State: AOJu0Yy2uFquPh795SPodGCSjQ4r5FGbFRq61XphkQ+Dn497MKiu1UD+
+	ZGETRYjR+CCW4DrdT4WjLKzp6GVlLFt5A5RGkGMAzWa+5BeZsq5ISz54aD2sg/Uo+yFI/eA1Vuc
+	I
+X-Google-Smtp-Source: AGHT+IGg2XVY2pkXFF64W+aZzzMeOONtNpRSHuTRqOBIPJ3cw3XhH807g35lb7b4mCe4u3AVMKJyLg==
+X-Received: by 2002:ac2:4430:0:b0:518:bd37:b27d with SMTP id w16-20020ac24430000000b00518bd37b27dmr3765414lfl.67.1713234053565;
+        Mon, 15 Apr 2024 19:20:53 -0700 (PDT)
 Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id w12-20020ac2598c000000b00516c403d243sm1419868lfn.60.2024.04.15.19.18.57
+        by smtp.gmail.com with ESMTPSA id bi30-20020a0565120e9e00b0051925dd92dbsm27716lfb.214.2024.04.15.19.20.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 19:18:57 -0700 (PDT)
+        Mon, 15 Apr 2024 19:20:53 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 16 Apr 2024 05:18:56 +0300
-Subject: [PATCH v3] usb: typec: qcom-pmic-typec: split HPD bridge alloc and
- registration
+Subject: [PATCH 0/8] usb: typec: ucsi: glink: merge in altmode support
+Date: Tue, 16 Apr 2024 05:20:49 +0300
+Message-Id: <20240416-ucsi-glink-altmode-v1-0-890db00877ac@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,105 +77,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240416-qc-pmic-typec-hpd-split-v3-1-fd071e3191a1@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAA/gHWYC/4XNTQ6CMBCG4auYrh3TTvnTlfcwLkopMAnS2pJGQ
- ri7hZUujMv3S+aZhQXjyQR2OSzMm0iB7JhCHg9M92rsDFCTmiHHjGc8h6cG9yAN0+yMht41ENx
- AEyBWPEMuzhxrlq6dNy29dvl2T91TmKyf90dRbOt/MwoQIAvZKNXWUsviOtCovD1Z37ENjfgJV
- b8hTJAoedbmEkVdyi9oXdc3zbR8lwgBAAA=
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, 
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+X-B4-Tracking: v=1; b=H4sIAIHgHWYC/x3MTQqAIBBA4avErBswE/q5SrQwHWuoLLQiiO6et
+ PwW7z0QKTBFaLMHAl0cefMJRZ6BmbQfCdkmgxRSCSVqPE1kHBf2M+rlWDdLKJvS2MGVshIGUrg
+ Hcnz/065/3w/lmAepZAAAAA==
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, 
  Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>, linux-arm-msm@vger.kernel.org, 
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Caleb Connolly <caleb.connolly@linaro.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, 
  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3051;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2221;
  i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=MHIdviCdb2UidFcnZtfqo0Fb9VHpj6iocABWQYC7Xqc=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmHeARXPEiZjIUDFYvajgiSUJkPkERcc1010T8R
- P51cd5Ey5qJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZh3gEQAKCRCLPIo+Aiko
- 1StjCACcCM5SP+4h5B28K85XStct3OSB9acYvCwV81z9BaC2oUzhvCiRGicL1HVNeMkPKCzJ7x8
- KOLeWW4rS51upcj15IZfmJbeGuz/yuqNbKZrT7KZqFvBo7U91+OJkDtTumCdiNOATDuYnH1LMoP
- Hbi2S3+oAeokvtTn9rCjELvo+kVKGqJHJw+nLt3LJKrOodpBJM1+ejJj5wsk5lV73EqhRJ6HxVJ
- 5a6+6Ed5gN08xXsWboZ11+1o25PZBThVmT4zaN3jjZ195ikLkcumVhIiOaGlqa2hOXYWQUXNtrn
- kYdfqIWfQdzj5PHgwdMbEmZTO0GJso39+lWxUjixWTr2DfCM
+ bh=I6m2M+8GekB9Ra+iG3eKclLpfI1M2HDrEBoYGhILldA=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmHeCDxYYHr6DhuHF5Rx3H3UF3NZQ+UU0xJXKpG
+ Djr2ZkkgkyJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZh3ggwAKCRCLPIo+Aiko
+ 1cFvCACGUL3X5X657gbpGTVoM+fio/lBRG69Mp83UZWFjhSsTHLhtxOJ+1Pqt7GTpOVV9O0zMWX
+ tXvrDXLDMuXJeA2bKmjfvqGLy0ye5PJttVLMeZJxrw6ynFo7rGrwfwGHlpunB4MIQk8UztvztrX
+ H6TAuPebI9j6kGlYeXGrMcdGImjUi1HGDBExqy7vIAJpz2ntPKRd3zKvhcugQ7Tg1zX42bi8YX9
+ JKGws/XC1UW8lznI877kckpaK/XIT71um7Hl5V+wLAsbZH85XEJF8wofi4fXdqXjae+otr3EuM8
+ 4q5EEIiPvt5qFPX9NbNoN+IHUzfvZYqcTXuhqwnUM5tbCugF
 X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
  fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-If a probe function returns -EPROBE_DEFER after creating another device
-there is a change of ending up in a probe deferral loop, (see commit
-fbc35b45f9f6 ("Add documentation on meaning of -EPROBE_DEFER"). In case
-of the qcom-pmic-typec driver the tcpm_register_port() function looks up
-external resources (USB role switch and inherently via called
-typec_register_port() USB-C muxes, switches and retimers).
+PMIC GLINK platforms handle the altmode support via OOB messages rather
+than by fully following the UCSI standard. Currently altmode handling is
+implemented in a separate driver, which has to duplicate significant
+part of the USB-C stack to control USB-C muxes, switches and retimers.
+Also this potentially introduces race conditions, since both UCSI and
+pmic-glink-altmode will drive those components. Last but not least,
+there is no connection betnween the altmode's aux-hpd-bridge and
+corresponding typec_port instance.
 
-In order to prevent such probe-defer loops caused by qcom-pmic-typec
-driver, use the API added by Johan Hovold and move HPD bridge
-registration to the end of the probe function.
+Merge the pmic-glink-altmode driver into the ucsi-glink, streamling the
+altmode support for Qualcomm platforms.
 
-The devm_drm_dp_hpd_bridge_add() is called at the end of the probe
-function after all TCPM start functions. This is done as a way to
-overcome a different problem, the DRM subsystem can not properly cope
-with the DRM bridges being destroyed once the bridge is attached. Having
-this function call at the end of the probe function prevents possible
-DRM bridge device creation followed by destruction in case one of the
-TCPM start functions returns an error.
+Depends: https://lore.kernel.org/linux-usb/20240411-ucsi-orient-aware-v2-0-d4b1cb22a33f@linaro.org/
 
-Reported-by: Caleb Connolly <caleb.connolly@linaro.org>
-Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Merge strategy: since the series involves both UCSI and soc/qcom
+drivers, I'd kindly ask to ack merging the whole patchset through the
+USB tree.
+
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
-Changes in v3:
-- Updated commit message to explain my decisions (Johan).
-- Link to v2: https://lore.kernel.org/r/20240408-qc-pmic-typec-hpd-split-v2-1-1704f5321b73@linaro.org
+Dmitry Baryshkov (8):
+      usb: typec: Handle retimers in typec_set_mode()
+      usb: typec: altmode: add low level altmode configuration helper
+      usb: typec: ucsi: glink: check message data sizes
+      usb: typec: ucsi: glink: use le32 for message data
+      usb: typec: ucsi: glink: simplify notification handling
+      usb: typec: ucsi: add ucsi_registered() callback
+      usb: typec: ucsi: glink: merge pmic_glink_altmode driver
+      soc: qcom: pmic-glink: drop separate altmode driver support
 
-Changes in v2:
-- Fix commit message (Bryan)
-- Link to v1: https://lore.kernel.org/r/20240405-qc-pmic-typec-hpd-split-v1-1-363daafb3c36@linaro.org
+ drivers/soc/qcom/Makefile             |   1 -
+ drivers/soc/qcom/pmic_glink.c         |  15 +-
+ drivers/soc/qcom/pmic_glink_altmode.c | 546 ------------------------------
+ drivers/usb/typec/bus.c               |  34 ++
+ drivers/usb/typec/class.c             |   9 +-
+ drivers/usb/typec/ucsi/ucsi.c         |   3 +
+ drivers/usb/typec/ucsi/ucsi.h         |   2 +
+ drivers/usb/typec/ucsi/ucsi_glink.c   | 615 +++++++++++++++++++++++++++++++---
+ include/linux/usb/typec_altmode.h     |   3 +
+ 9 files changed, 619 insertions(+), 609 deletions(-)
 ---
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-index e48412cdcb0f..96b41efae318 100644
---- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-+++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c
-@@ -41,7 +41,7 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
- 	struct device_node *np = dev->of_node;
- 	const struct pmic_typec_resources *res;
- 	struct regmap *regmap;
--	struct device *bridge_dev;
-+	struct auxiliary_device *bridge_dev;
- 	u32 base;
- 	int ret;
- 
-@@ -92,7 +92,7 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
- 	if (!tcpm->tcpc.fwnode)
- 		return -EINVAL;
- 
--	bridge_dev = drm_dp_hpd_bridge_register(tcpm->dev, to_of_node(tcpm->tcpc.fwnode));
-+	bridge_dev = devm_drm_dp_hpd_bridge_alloc(tcpm->dev, to_of_node(tcpm->tcpc.fwnode));
- 	if (IS_ERR(bridge_dev))
- 		return PTR_ERR(bridge_dev);
- 
-@@ -110,6 +110,10 @@ static int qcom_pmic_typec_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto fwnode_remove;
- 
-+	ret = devm_drm_dp_hpd_bridge_add(tcpm->dev, bridge_dev);
-+	if (ret)
-+		goto fwnode_remove;
-+
- 	return 0;
- 
- fwnode_remove:
-
----
-base-commit: 6bd343537461b57f3efe5dfc5fc193a232dfef1e
-change-id: 20240405-qc-pmic-typec-hpd-split-22804201902b
+base-commit: 7f3fd687151a552038967f31993f1bc7e447b99e
+change-id: 20240408-ucsi-glink-altmode-293cdbf3270c
 
 Best regards,
 -- 
