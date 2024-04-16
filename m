@@ -1,55 +1,73 @@
-Return-Path: <linux-kernel+bounces-147640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 329228A76C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:37:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0389A8A76C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:37:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55EF81C22CFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:37:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 276371C22AF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 825F713C8E9;
-	Tue, 16 Apr 2024 21:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9445213C9CD;
+	Tue, 16 Apr 2024 21:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b="RAMMC9Je"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BQnFdUBo"
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FE66BFAC;
-	Tue, 16 Apr 2024 21:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2582958203;
+	Tue, 16 Apr 2024 21:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713302676; cv=none; b=XrCeZjKAO6NirNG2HMR6MvdLj0eQpyPyP9OQjA8qKBHIaCK2Ps1muEOsAfFIzCBT9+FbxLhrVN/SPXmsz9XwtX4eKDnYgxpxZFJLl/cdfUCQo6WR3xh//wdlbYE3GtKqRMiPd2yZOEFgqEm5Tz/CcjSsgTpBKTCgH/BlTaLVoDE=
+	t=1713302734; cv=none; b=ta4Br4PVsYQSnmW3XKKqVtNaoMmAfH5Ze95KJOgps7p5JL8lHOQ0QBsigz1olxgMfyUr8tISVnxaKtcYJMeb/oQVlFogBwtQ+5hWhSG6CQUual8uyFZfe9ZtgNI+XKbRkwE6NXc59cklACqaKe5911EnFrEtX3aHacf5qIp5/t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713302676; c=relaxed/simple;
-	bh=6Er98QEzCV3v4jZJfnwfJ5MZqGreJzJUCo8yTwZXUVk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eHo9XjSWpzQ8uBEQbIlh2BNNOmN9857XhbaTzVwqNW6M2giINJhuw1f3gmqvanxrkATTRNgtQNIYl+dHGH/w0U9Fy+MkeYxbKZg5Z1WubtRoLLCpg9oxq25T8bhakNufJHZXFK5Nw5GsWWfl2P49kuKXwVU109jbI4J504b3qkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=schierlm@gmx.de header.b=RAMMC9Je; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1713302661; x=1713907461; i=schierlm@gmx.de;
-	bh=Ka7LPxFhhP0ZNYDyQkBs58K1jS0AmF/oAMEmYL467FQ=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=RAMMC9Je7Wm4JIrhW/wQ8uq7xxgfyWuK67oimBToPWFom2TWFNurBWuHjpQfUq56
-	 4/dkQqmQAejk6b9K2uJWETt6kChBri5ixNN4+1N5+8SuajYFdtbaKMyE8gBE5sapC
-	 Mhp+IDOB3ZS6DZ5HegVSMkBQrW1FHiupXvbKOHdMmfnFXjqxnND5lC496zjxSt5S2
-	 oFGpXpRP4NUAlhc4Rua4GI+EKkVKCJcc+JT92AH+l0gWRIOf/Puf2jsA4uUqCOcBR
-	 CuJNBSK262vTFE/BXvl9/a8Umf5yiSirE3TxljIUFq+rd9JgCAJ/5CzI531mOHb7K
-	 kZTBrYui6rj3s3Iclg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.56] ([84.130.61.91]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTiPv-1sK6LR399p-00U3Sm; Tue, 16
- Apr 2024 23:24:20 +0200
-Message-ID: <71af4abb-cffd-449e-b397-bd3134d98fb3@gmx.de>
-Date: Tue, 16 Apr 2024 23:24:21 +0200
+	s=arc-20240116; t=1713302734; c=relaxed/simple;
+	bh=eO98DY7CIz7eC1ApeDbKUP4UlrTAg7IIAn5q3LTWsbE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=lpZ7bM5tkr4VdDAsbM6neYmUFjHh6buWZyMx7a85fvOEh0jGrEhg04KW4yqF8WUDT8UrWpnuAOZdK5dLvqzmSb5ZnzYQHJbPCyxffO8Eyt4waAlEA/NFjJZbrr62aNDjLJlM/EYeWg5Lf5O/swLRj5PyleWltAkRLp+SGiXz+oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BQnFdUBo; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e696ee8fa3so88792a34.1;
+        Tue, 16 Apr 2024 14:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713302732; x=1713907532; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WP41hdtXelUpwcI0aj34hpgq/euzrgZ/XyTOcECec+8=;
+        b=BQnFdUBoi1vGSiFGT3BKG/bmM80DEwec7AiTay7gzXFgnHZAms7Z7UwiweTCSf4vJi
+         p2aoSwSOdQwsvFASBdFw5S3NO5JWes+FH3o3yS/w8Shnng8pV2KTeHOKafprxUW/4tQC
+         ibuXmuNfXHevsbDcvn40LG3cC3KKnVPtVnSN4+bQwcfYHvJEa058nmHd/hGw2N46s/XG
+         Yu9y4lqq6jHIeJmuMKfiCP3G5S4dYpMEOk3XbDZDxYzRl5tZ1K6Us9HDlecSpa33DEJ5
+         RaTbw9mtqYOWY4tXsEdyJnvwyGTAe6UNT3i0x4oQ853OeTz798tMcmsR4TtXjLk0dDuq
+         PoHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713302732; x=1713907532;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WP41hdtXelUpwcI0aj34hpgq/euzrgZ/XyTOcECec+8=;
+        b=VYjVkLYeFsT2KJSst+/E4mekhMQJtqILivRli6e9M0SmqYVzqXsz8h0pIGaJoaijzh
+         wM67e+RE7A07qbN4uqX1miKJkNbVh5JMWt4fnJ4CFzKcQvgCFKZADUDSwcPx21EyF81e
+         +YUmR8ZFVdoXdL66uPX6xnFg2rUD3njT8vemmL/uPdC/gKC5Fpiny9DjFmM8rCaqdHT9
+         i0GS80t/6kDm32CUE3H523fD9ciR+I7R+UJqDileg2SgVYXiQLCZQy4bSptTk/EpS5Yt
+         os98MZy6vqukuGUMHRUYS/Udr/tFRo0CX4jGgl6B/0Y6dnlNhh2lAR8M81P3cQdDsv5w
+         rmfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWIKFab3FjyC1zJJKN6ehOiWY0EEOgV5osLwlSqCHuMzECtkUokmbrylC16rxSJGGl28HsLUPIhxFOFmaxjZsHKDC35eH3xGtQIjz8IUF72CWxopL42Vn5cX8pPtB0+xgx489n2bqNi5cO8DXbpqhojE57sq5BzS8HQrhW3rmTky8cC9ShorAyYsVXSnqONioL8DIVuLFO2axALgq2I2OFkgmEBS0LX3PtT0qJ6C2RZaiFwWfiKhMOIsxUAwt4=
+X-Gm-Message-State: AOJu0YytqYmZxrdyZ45RM/bfSjlO6sREwEJwsZgmm0aVmKAkIrj9LXAQ
+	zYrSmuVpLE/8g2Ax5FlmKEWWGUuacNQlRDyTKpiLl3sm1IndoWcS
+X-Google-Smtp-Source: AGHT+IEfDmYbKj3xvgd6fPThcAdO/OKuBg0B8gvdcmmOULb0La1dI1vNl5sTDa1HjyWzJle9WGCrLQ==
+X-Received: by 2002:a05:6830:487b:b0:6eb:96b4:7018 with SMTP id dx27-20020a056830487b00b006eb96b47018mr429271otb.11.1713302731884;
+        Tue, 16 Apr 2024 14:25:31 -0700 (PDT)
+Received: from [192.168.7.110] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
+        by smtp.gmail.com with ESMTPSA id eg7-20020a0568306f8700b006eb84466e68sm793940otb.55.2024.04.16.14.25.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 14:25:31 -0700 (PDT)
+Message-ID: <4a7b1e1d-ac68-4857-8925-f90c9e123fd1@gmail.com>
+Date: Tue, 16 Apr 2024 16:25:28 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,142 +75,162 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Early kernel panic in dmi_decode when running 32-bit kernel on
- Hyper-V on Windows 11
-To: Michael Kelley <mhklinux@outlook.com>, Jean Delvare <jdelvare@suse.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>
-Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <2db080ae-5e59-46e8-ac4e-13cdf26067cc@gmx.de>
- <SN6PR02MB41578C71EB900E5725231462D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
- <e416f2a0-6162-481e-9194-11101fa1224c@gmx.de>
- <SN6PR02MB41573B2FED887B1E3DCADB55D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Language: de-DE
-From: Michael Schierl <schierlm@gmx.de>
-Autocrypt: addr=schierlm@gmx.de; keydata=
- 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
- uxTR60TDY/d6Kz8=
-In-Reply-To: <SN6PR02MB41573B2FED887B1E3DCADB55D4092@SN6PR02MB4157.namprd02.prod.outlook.com>
+Subject: Re: [PATCH v3 6/7] phy: qcom-qmp-pcie: add support for ipq9574 gen3x2
+ PHY
+Content-Language: en-US
+From: "Alex G." <mr.nuke.me@gmail.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Manivannan Sadhasivam
+ <manivannan.sadhasivam@linaro.org>, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-clk@vger.kernel.org
+References: <20240415182052.374494-1-mr.nuke.me@gmail.com>
+ <20240415182052.374494-7-mr.nuke.me@gmail.com>
+ <CAA8EJpqY1aDZMaeqBULEOD26UeGYbLd8RsA16jZw7zXJ7_oGPQ@mail.gmail.com>
+ <6726fa2b-f5fe-10fb-6aab-f76d61f0b3cd@gmail.com>
+In-Reply-To: <6726fa2b-f5fe-10fb-6aab-f76d61f0b3cd@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Z7o3Ads1mcXcCTU2E8zTY/MWzn/c0Q+dPQ3Z8fLPcU9+Dt0zjic
- Hc5HE3tBwT7CECpxqzBCjtWT9VmK3lSuMeNnrgQnjti4vvwo0cKPj3tguRkNgrv8gfbjVCo
- 2OqM8d1xj6Nlf7ENxLqrJYr7mlnxfD1gna0x0inNk3B2NdZCNc3uEkx5mgjE+z5OD6ZVGWs
- oRPyNqRYi05Tru/oAt2Sw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:ATgbfHdK2VI=;bO2mVvUWqTtT1wd+CbJF0FTOVNf
- S68w+YTUu09BHLrsp8+yIVsQ/58hYOM6zvVBSYflGmiLp7KmK9CNsPlP7DPPJeDossZ2Q+QAe
- oUGoe1ssy7g/yCxaxBeP3AVQngRB7opPYzsXCeNf3eKQktjkcOVN7E0CUBkiVSbXYCdfFSJz9
- KXCNW0smLjzHW6/DyO2M63TnLz04xM6X0etc0GTl4/oi/LAVyMKG0ER1Fzo7P6BpuQKwMOLd2
- cxXjhbieHGJApLk46ETQifZprdcgutmjOH3JXF/N2UDoGorZrLinqJQ3XeX9mXSZn38KKJZZK
- Nwk492Difi85ANsHUqjP6W1m89dvG6RlonYDiha27RfFuMVsLzcslX1wck+wAURH8bYcJkEUG
- w4gkP7eo7a6zdovboTLsmB/6dhIVKU4LAXx8iX7DpZU+tj94WMVbpjqtlfZ02M4Rp/1yd09sx
- ai1RtLtC/jsQzZ2OnnNnhD+13vWKdGzmqWoOnkrs3zLusiIRUkZm+tdOZxLc9NHNeNWu1VCt6
- t6rmLScAD6PPDpaNi7kyUM9qKdAX6HHPTw4R+cqPDNOnPWYciGUh9bF7Kn2bHF9SAVay0TBRe
- Wq8F60mLVWLBB2yUUDIyPqQgj3wdycJo08PClj8BkIj4Z65FLjxghWcqkG1L0tHK3aCpC92NG
- JkEOyMj3kPnmOu9fyxWgKbA7jaG7NBZGEE3XhERK4f2uOIXLMB5ifemAQa06NENKOSvc+TTW1
- G15fJ0SSTewUD+rjGoxiFdvbjQl3AHiKhFpRGUnXvIfBqVY0a764fivYvPj6yHxIZH465NxXM
- e0GDuidTiopnlmQHD7E9GoEURT33jIYIUASxFnSIi9vIU=
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Hi Dmitry,
 
+On 4/15/24 16:25, mr.nuke.me@gmail.com wrote:
+> 
+> 
+> On 4/15/24 15:10, Dmitry Baryshkov wrote:
+>> On Mon, 15 Apr 2024 at 21:23, Alexandru Gagniuc <mr.nuke.me@gmail.com> 
+>> wrote:
+>>>
+>>> Add support for the gen3x2 PCIe PHY on IPQ9574, ported form downstream
+>>> 5.4 kernel. Only the serdes and pcs_misc tables are new, the others
+>>> being reused from IPQ8074 and IPQ6018 PHYs.
+>>>
+>>> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+>>> ---
+>>>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c      | 136 +++++++++++++++++-
+>>>   .../phy/qualcomm/phy-qcom-qmp-pcs-pcie-v5.h   |  14 ++
+>>>   2 files changed, 149 insertions(+), 1 deletion(-)
+>>>
+>>
+>> [skipped]
+>>
+>>> @@ -2448,7 +2542,7 @@ static inline void qphy_clrbits(void __iomem 
+>>> *base, u32 offset, u32 val)
+>>>
+>>>   /* list of clocks required by phy */
+>>>   static const char * const qmp_pciephy_clk_l[] = {
+>>> -       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux",
+>>> +       "aux", "cfg_ahb", "ref", "refgen", "rchng", "phy_aux", 
+>>> "anoc", "snoc"
+>>
+>> Are the NoC clocks really necessary to drive the PHY? I think they are
+>> usually connected to the controllers, not the PHYs.
+> 
+> The system will hang if these clocks are not enabled. They are also 
+> attached to the PHY in the QCA 5.4 downstream kernel.
+> 
+They are named "anoc_lane", and "snoc_lane" in the downstream kernel. 
+Would you like me to use these names instead?
 
-Am 16.04.2024 um 01:31 schrieb Michael Kelley:
+e>>>   };
+>>>
+>>>   /* list of regulators */
+>>> @@ -2499,6 +2593,16 @@ static const struct qmp_pcie_offsets 
+>>> qmp_pcie_offsets_v4x1 = {
+>>>          .rx             = 0x0400,
+>>>   };
+>>>
+>>> +static const struct qmp_pcie_offsets qmp_pcie_offsets_ipq9574 = {
+>>> +       .serdes         = 0,
+>>> +       .pcs            = 0x1000,
+>>> +       .pcs_misc       = 0x1400,
+>>> +       .tx             = 0x0200,
+>>> +       .rx             = 0x0400,
+>>> +       .tx2            = 0x0600,
+>>> +       .rx2            = 0x0800,
+>>> +};
+>>> +
+>>>   static const struct qmp_pcie_offsets qmp_pcie_offsets_v4x2 = {
+>>>          .serdes         = 0,
+>>>          .pcs            = 0x0a00,
+>>> @@ -2728,6 +2832,33 @@ static const struct qmp_phy_cfg 
+>>> sm8250_qmp_gen3x1_pciephy_cfg = {
+>>>          .phy_status             = PHYSTATUS,
+>>>   };
+>>>
+>>> +static const struct qmp_phy_cfg ipq9574_pciephy_gen3x2_cfg = {
+>>> +       .lanes                  = 2,
+>>> +
+>>> +       .offsets                = &qmp_pcie_offsets_ipq9574,
+>>> +
+>>> +       .tbls = {
+>>> +               .serdes         = ipq9574_gen3x2_pcie_serdes_tbl,
+>>> +               .serdes_num     = 
+>>> ARRAY_SIZE(ipq9574_gen3x2_pcie_serdes_tbl),
+>>> +               .tx             = ipq8074_pcie_gen3_tx_tbl,
+>>> +               .tx_num         = ARRAY_SIZE(ipq8074_pcie_gen3_tx_tbl),
+>>> +               .rx             = ipq6018_pcie_rx_tbl,
+>>> +               .rx_num         = ARRAY_SIZE(ipq6018_pcie_rx_tbl),
+>>> +               .pcs            = ipq6018_pcie_pcs_tbl,
+>>> +               .pcs_num        = ARRAY_SIZE(ipq6018_pcie_pcs_tbl),
+>>> +               .pcs_misc       = ipq9574_gen3x2_pcie_pcs_misc_tbl,
+>>> +               .pcs_misc_num   = 
+>>> ARRAY_SIZE(ipq9574_gen3x2_pcie_pcs_misc_tbl),
+>>> +       },
+>>> +       .reset_list             = ipq8074_pciephy_reset_l,
+>>> +       .num_resets             = ARRAY_SIZE(ipq8074_pciephy_reset_l),
+>>> +       .vreg_list              = NULL,
+>>> +       .num_vregs              = 0,
+>>> +       .regs                   = pciephy_v4_regs_layout,
+>>
+>> So, is it v4 or v5?
+> 
+> Please give me a day or so to go over my notes and give you a more 
+> coherent explanation of why this versioning was chosen. I am only 
+> working from the QCA 5.4 downstream sources. I don't have any 
+> documentation for the silicon
 
-> Can you give me details of the Hyper-V VM configuration?  Maybe
-> a screenshot of the Hyper-V Manager "Settings" for the VM would
-> be a good starting point, though some of the details are on
-> sub-panels in the UI.
+The downstream QCA kernel uses the same table for ipq6018, ipq8074-gen3, 
+and ipq9574. It is named "ipq_pciephy_gen3_regs_layout". Thus, it made 
+sense to use the same upstream table for ipq9574, "pciephy_v4_regs_layout".
 
-It used to be possible to export Hyper-V VM settings as XML, but
-apparently that option has been removed in Win2016/Win10, in favor of
-their own proprietary binary .vmcx format...
+As far as the register tables go, the pcs/pcs_misc are squashed into the 
+same table in the downstream 5.4 kernel. I was able to separate the two 
+tables because the pcs_misc registers were defined with an offset of 
+0x400. For example:
 
-Also, maybe it matters what else Hyper-V is doing. I've installed both
-WSL and WSA, and Windows Defender is using Core Isolation Memory
-Integrity. I have also enabled support for nested virtualisation in the
-Host/Network Switch, but not in that VM.
+/* QMP V2 PHY for PCIE gen3 2 Lane ports - PCS Misc registers */
+#define PCS_PCIE_X2_POWER_STATE_CONFIG2                    0x40c
+#define PCS_PCIE_X2_POWER_STATE_CONFIG4                    0x414
+#define PCS_PCIE_X2_ENDPOINT_REFCLK_DRIVE                  0x420
+#define PCS_PCIE_X2_L1P1_WAKEUP_DLY_TIME_AUXCLK_L          0x444
+#define PCS_PCIE_X2_L1P1_WAKEUP_DLY_TIME_AUXCLK_H          0x448
+#define PCS_PCIE_X2_L1P2_WAKEUP_DLY_TIME_AUXCLK_L          0x44c
+#define PCS_PCIE_X2_L1P2_WAKEUP_DLY_TIME_AUXCLK_H          0x450
+..
 
-Anyway, I just created two new VMs (one of each generation) with no hard
-disk and everything else default, added a DVD drive to the SCSI
-controller of Gen2 (which Gen1 already had on its IDE controller),
-disabled Secure Boot on Gen2 and added a second vCPU to Gen1 (which Gen2
-already had).
+Here, QPHY_V4_PCS_PCIE_POWER_STATE_CONFIG2 = 0xc would be correct, 
+assuming a pcs_misc offset of 0x400. However, starting with 
+ENDPOINT_REFCLK_DRIVE, the register would be 
+QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_DRIVE = 0x1c. Our offsets are off-by 0x4.
 
-Afterwards, Gen2's dmidecode looks like the summary you posted, and Gen1
-reproduces the issue.
+The existing V5 offsets, on the other hand, were all correct. For this 
+reason, I considered that V5 is the most likely place to add the missing 
+PCS misc definitions.
 
-> I'm guessing your 32-bit Linux VM is
-> a Generation 1 VM.   FWIW, my example was a Generation 2 VM.
+Is this explanation sufficiently convincing? Where does the v4/v5 scheme 
+in upstream kernel originate?
 
-Very interesting that Gen2 boots 32-bit Linux better than Gen1 (there is
-a delay during hardware autoconfigruation (systemd-udevd) for about 30
-seconds when booting Gen2 which I did not investigate yet), despite the
-documentation claiming not to use Gen2 for any 32-bit Host OSes.
-
-So I assume this only applies to crappy OSes that directly couple their
-bitness to the bitness of the UEFI firmware.
-
-To be fair, the live media I'm using uses Grub's "non-compliant" Linux
-loader that bypasses the kernel's EFI stub. When trying with Grub's
-"linuxefi" loader, Linux does not boot either, as expected. (On the Gen1
-VM, the panic happens regardless whether I use grub's linux16 or linux
-loader, and also with SYSLINUX/ISOLINUX loader).
-
-> When you ran a 64-bit Linux and did not have the problem, was
-> that with exactly the same Hyper-V VM configuration, or a different
-> config?
-
-All my tests were performed with a single (Gen1) VM, and the only
-setting I changed was the number of vCPUs.
-
-
-Regards,
-
-
-Michael
+Alex
 
 
