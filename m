@@ -1,120 +1,151 @@
-Return-Path: <linux-kernel+bounces-147395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0240F8A7352
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:36:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032F08A734D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:35:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAA991F231CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:36:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35E66B22903
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB4F137748;
-	Tue, 16 Apr 2024 18:36:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFBE3134429;
+	Tue, 16 Apr 2024 18:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0XOvrLO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mAjJXpqh"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F562D60A;
-	Tue, 16 Apr 2024 18:36:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B909B12EBF5
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292561; cv=none; b=Lu6NlSY+3fEROkGqsyGPt40mpHBkgoCqr0PrM4OwTsfsaNMhGsh2UE7edhC3maQljhQ588Le6CrH3r4ZEtHK9y26vi3TKuRTseW0iMp5rGt5NllS0kmmxINf5UhMx6I8v0BREIuT3Ri8I4hH+OyMb2eAcTTgbFWPtxRi+viIoik=
+	t=1713292515; cv=none; b=Da40a+A664ox5FL5XfRlYTcF30Erkr1bo8C/BJO8129uqfOqJjNmXdl3eNtLltazI/HmS1Im1bSjNHNvAJWkr72H+/MwsEO8GeCconNP8UtgAg6hIpLBEwzFvvyz4gPYHdB5dUc2jZhZYcUNt7xS/1475unkKs8Cz+cfjAA72Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713292561; c=relaxed/simple;
-	bh=RUydQSI9IalFqEGbK9QMhcm64ilwdfZmZE3G8mYwjzg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g7ntnfBFNwCTT10vYndeQqSnwYJ+n4VbQp4hqvKKolS9TvvOphVlm1hKkCCk1MxuMAAdUm1qhKXR05Y9/r0p7IEDpLvmRd5EI8rt6fQp3RXfC/Oy3UW5P+T7UwHb+jS5p2d/5qfbh5rnwTRtYEYIbAOvBW5BinLYlkAFw0o/njk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B0XOvrLO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165C3C113CE;
-	Tue, 16 Apr 2024 18:35:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713292561;
-	bh=RUydQSI9IalFqEGbK9QMhcm64ilwdfZmZE3G8mYwjzg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B0XOvrLOmIGvtvZ81QXFXzN4kYMmV6ckD/uMbpDkJL8LOZfAKxnJZFm4KYJoTWIoO
-	 M8TyNsvhgGRMql9wlIWgnTAj1yJcmch0lIXb0su80K1hgIpyMoUga4NhSei6/A4QCk
-	 lc7bJGNPIsemhUlHKhSgp7YZTyvWyEl+9p/aR5FZCziUNaaxjKV5J6CY9Vg7g0tRuw
-	 6BE159Fcux3KiPOeKvDdx07Lvy8+3/UBMYMRoW7yUZu5yxKDaYJFE6O04Tjv6grN+z
-	 fR1mt4uB/FYFf4+9WdGti/KqrBBHoPa3Dvg2s5jspWiwhLLJ4TP0WNg46JR094OSOl
-	 K+Kx+6gKRxQUQ==
-Date: Tue, 16 Apr 2024 21:34:51 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Nam Cao <namcao@linutronix.de>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Andreas Dilger <adilger@dilger.ca>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
-	Ext4 Developers List <linux-ext4@vger.kernel.org>,
-	Conor Dooley <conor@kernel.org>,
-	Anders Roxell <anders.roxell@linaro.org>,
-	Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <Zh7Ey507KXIak8NW@kernel.org>
-References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
- <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
- <Zh6KNglOu8mpTPHE@kernel.org>
- <20240416171713.7d76fe7d@namcao>
- <20240416173030.257f0807@namcao>
- <87v84h2tee.fsf@all.your.base.are.belong.to.us>
- <20240416181944.23af44ee@namcao>
- <Zh6n-nvnQbL-0xss@kernel.org>
- <Zh6urRin2-wVxNeq@casper.infradead.org>
+	s=arc-20240116; t=1713292515; c=relaxed/simple;
+	bh=2DmfH0iZuBeBaf9fmZxw8bxd/Na/JJLdrJnni9XYYsI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=A5s/iCz4IOLfDal6FTM2Gq/m9I1gwHLSj4kqoVNrWZb9YRs/J/4k99UpSlh9DOdc9xzw39IDQPSgGLGam1C8uFSo39XDKfwLxoTAtaPD4w9jJ6iyeyTWTwhf93fcqTS8xNSLozyKG4wwQWd/queJLGyE8WM1G4KdGivDLCez54c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mAjJXpqh; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e4ad1c0fc8so53412835ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713292513; x=1713897313; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y4IcmDFg9mXfsOm+KYa9etM9trKW2oRgOEYJLX5Llhs=;
+        b=mAjJXpqhNpvZHQD00GZO0U/Oz751ABA9G+j4q35BGnuTiqi1/cVAM2sOQCZ/cnwEUS
+         Zc92UALDTpfzuN9r9LHlhQ9BR+YIYqKSEDNa8PK7AumZVSOyHVXqpHM5+On/iggdWbLA
+         90vUzEu0vyHlgrGZmPRIW7EppLWhdhkKEY8nFm/mvo2Y2IhZS5i3z/i9SSRE0xE3UShQ
+         A+PUVOHg554RzM6UM+r8RbC7oydSTbn+vNNc3wLaXrAPdORAeJT0tN2RkD6J10oN09NT
+         pASk5elribF1Er6BZYJll0uASG7BiDh7wZJ7OXtH2L7gu3eZv30PjdP2M2ECTAN0ruPl
+         lNqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713292513; x=1713897313;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y4IcmDFg9mXfsOm+KYa9etM9trKW2oRgOEYJLX5Llhs=;
+        b=FvdrETifF9F2rB2IUhB1s0eBoF6tN61ymJve8OQ34hXYvWNfwhmQMZsTAjLkzRnodZ
+         6Xn12VarVrI/I00D5n/J8EOxOAjMm5IybRS6ViFTEQdCrOjivh80/8WX4d18rV11CC1G
+         dQ7iWmyEB8L+T/IKBNAPQi/YcUj2ua+7rHSZMewfeTbsqn4l9R1P+7hLwpMNxWmz6xO6
+         Wi7FM/lvQePOuIGQw3EmTZOCzlsUmeQoRPy9jpjU2Jlt28XacfB7BUBnATUfAJ8rFQj3
+         G4TYrMw42VWQu7BEGSTlFJCdTzm8f34b52edEGM2gwZa+NQTooWj3nu/S8eSl62remhj
+         GgTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWzqYrRrPB43eP6RZEXxN2jEy1BS/lrQYtaRLadG0EQnG6QgVjtWtECUCI81iGkMaGsos219NZYT2JjsNMQef6izrb+PYDyNCWwmvoO
+X-Gm-Message-State: AOJu0YySr7KtXOjMa/LwFHo8/GdSNmpsh8jrKnhxtQxYD62XzPutgmHF
+	kHxt6y4OTLnHDxvnx/++konYnsH8lm1J5CjPhJWFe16Roc6vpVAxJE9a5LGeuXKnHZPdE4WshfL
+	WvQ==
+X-Google-Smtp-Source: AGHT+IH2l/4Q1X0kmlazvUCeA2LxIdHYVFqddoS+Vcjn6XdYq8l7HIp0PwRH0csKmwi+ILtTtyM7Ra+SNYM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e80b:b0:1e3:ff3a:7a07 with SMTP id
+ u11-20020a170902e80b00b001e3ff3a7a07mr93926plg.6.1713292513069; Tue, 16 Apr
+ 2024 11:35:13 -0700 (PDT)
+Date: Tue, 16 Apr 2024 11:35:11 -0700
+In-Reply-To: <ZhkQsqRjy1ba+mRm@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh6urRin2-wVxNeq@casper.infradead.org>
+Mime-Version: 1.0
+References: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
+ <20240215160136.1256084-4-alejandro.j.jimenez@oracle.com> <ZhTj8kdChoqSLpi8@chao-email>
+ <98493056-4a75-46ad-be79-eb6784034394@oracle.com> <ZhkQsqRjy1ba+mRm@chao-email>
+Message-ID: <Zh7E3yIYHYGTGGoB@google.com>
+Subject: Re: [RFC 3/3] x86: KVM: stats: Add a stat counter for GALog events
+From: Sean Christopherson <seanjc@google.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>, kvm@vger.kernel.org, 
+	pbonzini@redhat.com, linux-kernel@vger.kernel.org, joao.m.martins@oracle.com, 
+	boris.ostrovsky@oracle.com, mark.kanda@oracle.com, 
+	suravee.suthikulpanit@amd.com, mlevitsk@redhat.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Apr 16, 2024 at 06:00:29PM +0100, Matthew Wilcox wrote:
-> On Tue, Apr 16, 2024 at 07:31:54PM +0300, Mike Rapoport wrote:
-> > > @@ -238,17 +237,9 @@ static void __init setup_bootmem(void)
-> > >  	/*
-> > >  	 * memblock allocator is not aware of the fact that last 4K bytes of
-> > >  	 * the addressable memory can not be mapped because of IS_ERR_VALUE
-> > > -	 * macro. Make sure that last 4k bytes are not usable by memblock
-> > > -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
-> > > -	 * kernel, this problem can't happen here as the end of the virtual
-> > > -	 * address space is occupied by the kernel mapping then this check must
-> > > -	 * be done as soon as the kernel mapping base address is determined.
-> > > +	 * macro. Make sure that last 4k bytes are not usable by memblock.
-> > >  	 */
-> > 
-> > It's not only memblock, but buddy as well, so maybe
-> > 
-> > 	/*
-> > 	 * The last 4K bytes of the addressable memory can not be used
-> > 	 * because of IS_ERR_VALUE macro. Make sure that last 4K bytes are
-> > 	 * not usable by kernel memory allocators.
-> > 	 */
-> > 
-> > > -	if (!IS_ENABLED(CONFIG_64BIT)) {
-> > > -		max_mapped_addr = __pa(~(ulong)0);
-> > > -		if (max_mapped_addr == (phys_ram_end - 1))
-> > > -			memblock_set_current_limit(max_mapped_addr - 4096);
-> > > -	}
-> > > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
-> > 
-> > Ack.
+On Fri, Apr 12, 2024, Chao Gao wrote:
+> On Tue, Apr 09, 2024 at 09:31:45PM -0400, Alejandro Jimenez wrote:
+> >
+> >On 4/9/24 02:45, Chao Gao wrote:
+> >> > diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+> >> > index 4b74ea91f4e6..853cafe4a9af 100644
+> >> > --- a/arch/x86/kvm/svm/avic.c
+> >> > +++ b/arch/x86/kvm/svm/avic.c
+> >> > @@ -165,8 +165,10 @@ int avic_ga_log_notifier(u32 ga_tag)
+> >> > 	 * bit in the vAPIC backing page. So, we just need to schedule
+> >> > 	 * in the vcpu.
+> >> > 	 */
+> >> > -	if (vcpu)
+> >> > +	if (vcpu) {
+> >> > 		kvm_vcpu_wake_up(vcpu);
+> >> > +		++vcpu->stat.ga_log_event;
+> >> > +	}
+> >> > 
+> >> 
+> >> I am not sure why this is added for SVM only.
+> >
+> >I am mostly familiar with AVIC, and much less so with VMX's PI, so this is
+> >why I am likely missing potential stats that could be useful to expose from
+> >the VMX  side. I'll be glad to implement any other suggestions you have.
+> >
+> >
+> >it looks to me GALog events are
+> >> similar to Intel IOMMU's wakeup events. Can we have a general name? maybe
+> >> iommu_wakeup_event
+> >
+> >I believe that after:
+> >d588bb9be1da ("KVM: VMX: enable IPI virtualization")
+> >
+> >both the VT-d PI and the virtualized IPIs code paths will use POSTED_INTR_WAKEUP_VECTOR
+> >for interrupts targeting a blocked vCPU. So on Intel hosts enabling IPI virtualization,
+> >a counter incremented in pi_wakeup_handler() would record interrupts from both virtualized
+> >IPIs and VT-d sources.
+> >
+> >I don't think it is correct to generalize this counter since AMD's implementation is
+> >different; when a blocked vCPU is targeted:
+> >
+> >- by device interrupts, it uses the GA Log mechanism
+> >- by an IPI, it generates an AVIC_INCOMPLETE_IPI #VMEXIT
+> >
+> >If the reasoning above is correct, we can add a VMX specific counter (vmx_pi_wakeup_event?)
+> >that is increased in pi_wakeup_handler() as you suggest, and document the difference
+> >in behavior so that is not confused as equivalent with the ga_log_event counter.
 > 
-> Can this go to generic code instead of letting architecture maintainers
-> fall over it?
+> Correct. If we cannot generalize the counter, I think it is ok to
+> add the counter for SVM only. Thank you for the clarification.
 
-Yes, it's just have to happen before setup_arch() where most architectures
-enable memblock allocations.
+There's already a generic stat, halt_wakeup, that more or less covers this case.
+And despite what the comment says, avic_ga_log_notifier() does NOT schedule in
+the task, kvm_vcpu_wake_up() only wakes up blocking vCPUs, no more, no less.
 
--- 
-Sincerely yours,
-Mike.
+I'm also not at all convinced that KVM needs to differentiate between IPIs and
+device interrupts that arrive when the vCPU isn't in the guest.  E.g. this can
+kinda sorta be used to confirm IRQ affinity, but if the vCPU is happily running
+in the guest, such a heuristic will get false negatives.
+
+And for confirming that GA logging is working, that's more or less covered by the
+proposed APICv stat.  If AVIC is enabled, the VM has assigned devices, and GA logging
+*isn't* working, then you'll probably find out quite quickly because the VM will
+have a lot of missed interrupts, e.g. vCPUs will get stuck in HLT.
 
