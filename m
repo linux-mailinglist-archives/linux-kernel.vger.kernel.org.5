@@ -1,71 +1,70 @@
-Return-Path: <linux-kernel+bounces-147761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43FC28A7954
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:47:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7580C8A7958
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:49:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 679B51C21050
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:47:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01F571F22FC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:49:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3E213AA48;
-	Tue, 16 Apr 2024 23:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14E213AA44;
+	Tue, 16 Apr 2024 23:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="U3j6FrEl"
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="DQsj77kK"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6CC413A415
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:47:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3D53B2A6
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:48:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713311223; cv=none; b=pkYGKlvUddQYJhCtDsEP3tf4J5b61k3RE5/xJw3pyUiS1Ei6QOUKIt5GTKAHn+BcvsJu1tHesyfXmDeJL7vkJudVy9bNIfaHcj1kRYV7BpiIjc+EPbs9f+O1G8CNB+o3nluCN/WWhGc85F453ciaC/F0BDbowdvi9883PhgzEtE=
+	t=1713311329; cv=none; b=jYN11K94xwMWw69WmEL4ENZ9nUdOLDMUEW2I5e2HFFuj0pnzjjBSwpnnXlimv5ue6Dr8J+/WGykX/SBHnJdZTZRGy/bT+kpjhRl/IbfMUqylIuhGnjMpqh17I87ztCPkEsCgQyA8FgzQIH9/dgbhx99svD/vnz/cdMFS7wBz55E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713311223; c=relaxed/simple;
-	bh=VjSYpteFuMSsOLUQEdDe+V9Y/AGl9w0B9l/8RvgaKvA=;
+	s=arc-20240116; t=1713311329; c=relaxed/simple;
+	bh=/t2jaeTR1HEWQM7TECKiGQbkyE6b/hoJwZnjLhBOLpw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mxp41VoZberiteTXh5PSxo+Wy2IhrzrmLdMjrS3RyMhklSv5drU+Kke/Ac9tEMsxVlvDSr0tciOwcl4Gho2b4GtaTDt30drvbSr8Kn0KbW9HvA/Chu3ETGGdPGBJeS58HcKl7wX4wlixABTXgkL+l1R5r1FSCls/Cja9VwEMdXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=U3j6FrEl; arc=none smtp.client-ip=209.85.217.47
+	 In-Reply-To:Content-Type; b=gxDqfGPjVdqVomIWD08dP3N3TuRJxB7wefUilFO6nYx/aJul+My9/EjA8PF9khALkoSwxDVUk2ZzQJdcP0oUh2re2IT6gGGmbKzNSer+s5suDftX5lvQkxkvXpxFbOqcL42WDQKt9YLvkzEZXFam95aO+HYR5f1tO2ST4lswe8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=DQsj77kK; arc=none smtp.client-ip=209.85.160.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-479e45cc9e7so1342706137.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:47:01 -0700 (PDT)
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-4347e55066cso19567441cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:48:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1713311220; x=1713916020; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1713311326; x=1713916126; darn=vger.kernel.org;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=kn6MxYhysOB1d34QHIR1D4F2nY1zGuaLB6YUfJJMSPM=;
-        b=U3j6FrElw3LHrnLbHNWo5cVo/oFnJD6PelSUPxE5gEKL2L5zylEvsF7wY8S2vqrFAQ
-         VpAoUiHMhARYjanD+iHsvHSbjxmye+z8YyEBTpooqBMQX5llLNGfLAowT2LvIDTGA3ZO
-         lqfI/wIQ4LmF35Kjy+DmDktIyroY+Ao85jd8Y=
+        bh=bA4y7B4vtX3cVTLrK0KhmofaBtcISyRZFye2zuFzoqY=;
+        b=DQsj77kKX0VQwDNqt3hOUvZerw2Ar4ck9x+VQbf2XluJNM/mIoKAoL4OTtfdLzolac
+         Wq+DCQ9O+tvESgwm7bkOEEpgJh79otQCJYLAl+reKSfgYwqZItkEyQ6aTO44Umj7yZVH
+         l4nczNU5usOBe548K/0vxMxlZu+Z5ZmpMhZCw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713311220; x=1713916020;
+        d=1e100.net; s=20230601; t=1713311326; x=1713916126;
         h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=kn6MxYhysOB1d34QHIR1D4F2nY1zGuaLB6YUfJJMSPM=;
-        b=D9UBjqq/hYisOBkLpy7n5sq+G3aTD1Zco4PZu88sI4cgPtsRCRpEVrGNLOkbkpuwjc
-         1mhADa/FAzuwI0nxIh4ESaa1f/sGbFaQdb0WUSQYcGP9Ip8diM/xRDiaEk6NNS/J8g9Q
-         L0awfDEqu4VLJI6PxGJWs/16xd/NRPGxqqPWf/9pyZ7QGkCD6cWNFtS4LNvpUugVn714
-         Od8EUFQVSH2+TSB3q/l+FPRj5mtAy896/J/U7x/kRJ6xk/248uRUIRGZJgxpMDdwyhYb
-         ltjWzW0GBjt67aknpZ9oYQhSmYrSX6DYd/0BumoBZ11CsUFpX34AC2wqO45lk/QxCpEY
-         75rQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX9gdug74+JUjxuFH4XHqi8mP/CXBF7PMQu0Y/WvmF0GAX9L3+j6QpPkxK/zyatb9tHAeN84pnuuaejF6Jpzmojn0lqNHFnEzbeBS1v
-X-Gm-Message-State: AOJu0Yy7TTnyy6cbwcyTkmm9GEl5WoGN6vzxsNdm6nFMsNw0PbrAtbXt
-	+LtT0JY3/I7m385ycbnp3C48Ti4ugzRikGfWQawUTYN4cm7v1RnbtV4xuUEp64qdwp9vKdHnRLA
-	=
-X-Google-Smtp-Source: AGHT+IEuOVyg5ZS5BxMPsAxY0yMql1QJx21exzVcOMNoXN0Ad62wSSEzTOkuPFhhfc6aPOBH8jFUvg==
-X-Received: by 2002:a05:6102:1627:b0:47b:a44d:1ca5 with SMTP id cu39-20020a056102162700b0047ba44d1ca5mr1173850vsb.10.1713311220660;
-        Tue, 16 Apr 2024 16:47:00 -0700 (PDT)
+        bh=bA4y7B4vtX3cVTLrK0KhmofaBtcISyRZFye2zuFzoqY=;
+        b=C/7aIc16CtPZ6jTJec1oRoUT253fqM8tZ3Rp1mbNNbBCWhaIFxQVAI3VufmbCQzcbI
+         3OYgAcZxbi9nwI4K9NJu1P6lEQoROyJnliLdZwSl6jj2XhkWjkxIbfxwbRrSR4xKpPsS
+         ZhCi8mWwjsNVhV18zOcUiJASNHrnza+aa+Z5vYK6zmpBlN41ly183jOZE9/yY9swa3Mj
+         x8rzI1kQELjUbXuaFAZhOHCAPKd5kSiInczYQVVIpamUIBv0M9Qx5IMm2/nJYMgmCvUf
+         EkaM2r1JMepFptTK1Z3WXOyYENrBdePjSNipLlt7XCeG65P9N52la4JOTiUGW+NFDdTr
+         U+Tw==
+X-Forwarded-Encrypted: i=1; AJvYcCXT9LPmcTmKwr3djEIfzSawrnKTWSH4DVmpxvcWADkKo0YcdSZ2z9mntLd3dYwMfpN2ETqpNhN3Qmt1GCZGvusAAJ/doknrbaz2rjrB
+X-Gm-Message-State: AOJu0YxrkCBh+Eje/Fa/0+9kJcX/q/OoIiZiEPYQ7OCef+3svmTwmMwK
+	Or2HidovyWWxZ70Q0cV5NwMq+CIlQJBC+Ddp8YFXftsh7JjttWlxGtuWnxP73g==
+X-Google-Smtp-Source: AGHT+IGsI2LiohfvORaUI7Wf72uNtRfgOs8lYShMrp/Pr/jK2baFKN9ABj3NG90CHPQBJgVp8bicJw==
+X-Received: by 2002:ac8:5f46:0:b0:437:a1e:5eb0 with SMTP id y6-20020ac85f46000000b004370a1e5eb0mr7569754qta.14.1713311326372;
+        Tue, 16 Apr 2024 16:48:46 -0700 (PDT)
 Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o2-20020ad443c2000000b006a0404ce6afsm556503qvs.140.2024.04.16.16.46.56
+        by smtp.gmail.com with ESMTPSA id 17-20020a05620a04d100b0078d693c0b4bsm7885379qks.135.2024.04.16.16.48.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 16:46:58 -0700 (PDT)
-Message-ID: <1b985a54-8c47-4f62-8971-e2a4d7976c03@broadcom.com>
-Date: Tue, 16 Apr 2024 16:46:55 -0700
+        Tue, 16 Apr 2024 16:48:44 -0700 (PDT)
+Message-ID: <96dc827a-9f4b-4b9a-8577-170cb335bebf@broadcom.com>
+Date: Tue, 16 Apr 2024 16:48:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,12 +73,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] net: phy: bcm54811: add support for BroadR-Reach mode
-To: Andrew Lunn <andrew@lunn.ch>, =?UTF-8?Q?Kamil_Hor=C3=A1k_-_2N?=
- <kamilh@axis.com>
-Cc: bcm-kernel-feedback-list@broadcom.com, hkallweit1@gmail.com,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: =?UTF-8?Q?Kamil_Hor=C3=A1k_-_2N?= <kamilh@axis.com>,
+ florian.fainelli@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+ andrew@lunn.ch, hkallweit1@gmail.com
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20240416123811.1880177-1-kamilh@axis.com>
- <3aaf1b82-247e-447d-a39c-c209105c2d7c@lunn.ch>
 From: Florian Fainelli <florian.fainelli@broadcom.com>
 Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
@@ -113,48 +111,311 @@ Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
  MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
  7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
  95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <3aaf1b82-247e-447d-a39c-c209105c2d7c@lunn.ch>
+In-Reply-To: <20240416123811.1880177-1-kamilh@axis.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000b6e06b06163f5ae3"
+	boundary="000000000000061a1b06163f6121"
 
---000000000000b6e06b06163f5ae3
+--000000000000061a1b06163f6121
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/16/24 07:10, Andrew Lunn wrote:
->> @@ -258,6 +257,9 @@ static const struct phy_setting settings[] = {
->>   	PHY_SETTING(    100, HALF,    100baseT_Half		),
->>   	PHY_SETTING(    100, HALF,    100baseFX_Half		),
->>   	PHY_SETTING(    100, FULL,    100baseFX_Full		),
->> +	PHY_SETTING(    100, FULL,    4BR100			),
->> +	PHY_SETTING(    100, FULL,    2BR100			),
->> +	PHY_SETTING(    100, FULL,    1BR100			),
+On 4/16/24 05:38, Kamil Horák - 2N wrote:
+> Enable the BroadR-Reach link modes for BCM54811 PHY by Broadcom.
+> This allows for two-wire Ethernet at 10 or 100MBit using BroadR-Reach
+> mode and also for other BroadR-Reach modes using more than one pair.
+
+In terms of organization, it seems like you could do at least 3 patches:
+
+- one patch that adds the new BroadR-Reach link modes and ethtool plumbing
+- one patch that adds all of the register definitions to brcmphy.h which 
+can be easily skipped
+- one patch that updates broadcom.c and bcm-phy-lib.[ch] to implement 
+BroadR-Reach
+
+I am happy that you introduced an ethtool tunable, rather than key it 
+off Device Tree or module parameter, so kudos for doing that!
+
+Need to wrap my head a bit as to what to do with the overlapping 
+register mapping, and whether it would not be simpler to do some sort of 
+register level remapping of values, rather than provide different 
+callbacks for read_status, config_aneg, etc.
+
 > 
-> Please could you explain the name convention. IEEE puts the speed
-> first, then some letters to indicate the media type, and then a number
-> for the number of pairs. Why is this not followed here? 100BaseBR4?
-> 100BaseBR2? 100BaseBR1? Are these names part of the BroadR-Reach
-> standard?
+> Signed-off-by: Kamil Horák - 2N <kamilh@axis.com>
+> ---
+>   drivers/net/phy/broadcom.c   | 432 ++++++++++++++++++++++++++++++++++-
+>   drivers/net/phy/phy-core.c   |  13 +-
+>   include/linux/brcmphy.h      |  91 +++++++-
+>   include/uapi/linux/ethtool.h |  13 +-
+>   net/ethtool/common.c         |  31 +++
+>   net/ethtool/ioctl.c          |   1 +
+>   net/ipv4/tcp.c               |   2 +-
 
-The datasheet refers to those mode as 1BR-100 so it seems to make sense 
-to define them the same way here.
+This file should really not be modified, you must have made this 
+temporary change to build test your changes, but this is now fixed in 
+net-next as of a few days ago.
 
+>   7 files changed, 567 insertions(+), 16 deletions(-)
 > 
-> Also, is there any compatibility? Are 100BaseT1 and 1BR100 compatible?
+> diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+> index 370e4ed45098..aeb49b566aca 100644
+> --- a/drivers/net/phy/broadcom.c
+> +++ b/drivers/net/phy/broadcom.c
+> @@ -553,18 +553,46 @@ static int bcm54810_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
+>   	return -EOPNOTSUPP;
+>   }
+>   
+> -static int bcm54811_config_init(struct phy_device *phydev)
+> +static int bcm54811_get_brrmode(struct phy_device *phydev, u8 *data)
+>   {
+> -	int err, reg;
+> +	int reg;
+>   
+> -	/* Disable BroadR-Reach function. */
+>   	reg = bcm_phy_read_exp(phydev, BCM54810_EXP_BROADREACH_LRE_MISC_CTL);
+> -	reg &= ~BCM54810_EXP_BROADREACH_LRE_MISC_CTL_EN;
+> -	err = bcm_phy_write_exp(phydev, BCM54810_EXP_BROADREACH_LRE_MISC_CTL,
+> -				reg);
+> -	if (err < 0)
+> +
+> +	*data = (reg & BCM54810_EXP_BROADREACH_LRE_MISC_CTL_EN) ?
+> +				ETHTOOL_PHY_BRR_MODE_ON : ETHTOOL_PHY_BRR_MODE_OFF;
+> +
+> +	return 0;
+> +}
+> +
+> +static int bcm54811_set_brrmode(struct phy_device *phydev, u8 on)
+> +{
+> +	int reg;
+> +	int err;
+> +
+> +	reg = bcm_phy_read_exp(phydev, BCM54810_EXP_BROADREACH_LRE_MISC_CTL);
+> +
+> +	if (on)
+> +		reg |= BCM54810_EXP_BROADREACH_LRE_MISC_CTL_EN;
+> +	else
+> +		reg &= ~BCM54810_EXP_BROADREACH_LRE_MISC_CTL_EN;
+> +
+> +	err = bcm_phy_write_exp(phydev, BCM54810_EXP_BROADREACH_LRE_MISC_CTL, reg);
+> +	if (err)
+>   		return err;
+>   
+> +	/* Ensure LRE or IEEE register set is accessed according to the brr on/off,
+> +	 *  thus set the override
+> +	 */
+> +	return bcm_phy_write_exp(phydev, BCM54811_EXP_BROADREACH_LRE_OVERLAY_CTL,
+> +		BCM54811_EXP_BROADREACH_LRE_OVERLAY_CTL_EN |
+> +		on ? 0 : BCM54811_EXP_BROADREACH_LRE_OVERLAY_CTL_OVERRIDE_VAL);
+> +}
+> +
+> +static int bcm54811_config_init(struct phy_device *phydev)
+> +{
+> +	int err, reg;
+> +
+>   	err = bcm54xx_config_init(phydev);
+>   
+>   	/* Enable CLK125 MUX on LED4 if ref clock is enabled. */
+> @@ -576,16 +604,151 @@ static int bcm54811_config_init(struct phy_device *phydev)
+>   			return err;
+>   	}
+>   
+> -	return err;
+> +	/* Configure BroadR-Reach function. */
+> +	return  bcm54811_set_brrmode(phydev, ETHTOOL_PHY_BRR_MODE_OFF);
+> +}
+> +
+> +static int bcm_setup_master_slave(struct phy_device *phydev)
 
-As far as I could glean, they are supposed to be:
+The namespace in this driver is such that we prefix with bcm54xx_ or 
+bcm<phy number>, this is generic so this could go to bcm-phy-lib.[ch] as 
+a matter of fact.
 
-https://www.electronicdesign.com/markets/automotive/article/21806576/whats-the-difference-between-broadr-reach-and-100base-t1
+> +{
+> +	u16 ctl = 0;
+> +
+> +	switch (phydev->master_slave_set) {
+> +	case MASTER_SLAVE_CFG_MASTER_PREFERRED:
+> +	case MASTER_SLAVE_CFG_MASTER_FORCE:
+> +		ctl = LRECR_MASTER;
+> +		break;
+> +	case MASTER_SLAVE_CFG_SLAVE_PREFERRED:
+> +		break;
+> +	case MASTER_SLAVE_CFG_SLAVE_FORCE:
+> +		break;
+> +	case MASTER_SLAVE_CFG_UNKNOWN:
+> +	case MASTER_SLAVE_CFG_UNSUPPORTED:
+> +		return 0;
+> +	default:
+> +		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return phy_modify_changed(phydev, MII_BCM54XX_LRECR, LRECR_MASTER, ctl);
+> +}
+> +
+> +static int bcm_setup_forced(struct phy_device *phydev)
+> +{
+> +	u16 ctl = 0;
+> +
+> +	phydev->pause = 0;
+> +	phydev->asym_pause = 0;
+> +
+> +	if (phydev->speed == SPEED_100)
+> +		ctl |= LRECR_SPEED100;
+> +
+> +	if (phydev->duplex != DUPLEX_FULL)
+> +		return -EOPNOTSUPP;
+> +
+> +	return phy_modify(phydev, MII_BCM54XX_LRECR, LRECR_SPEED100, ctl);
+> +}
+> +
+> +/**
+> + * bcm_linkmode_adv_to_mii_adv_t
+> + * @advertising: the linkmode advertisement settings
+> + *
+> + * A small helper function that translates linkmode advertisement
+> + * settings to phy autonegotiation advertisements for the
+> + * MII_BCM54XX_LREANAA register.
+> + */
+> +static inline u32 bcm_linkmode_adv_to_mii_adv_t(unsigned long *advertising)
+> +{
+> +	u32 result = 0;
+> +
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1BR10_BIT, advertising))
+> +		result |= LREANAA_10_1PAIR;
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_2BR10_BIT, advertising))
+> +		result |= LREANAA_10_2PAIR;
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1BR100_BIT, advertising))
+> +		result |= LREANAA_100_1PAIR;
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_2BR100_BIT, advertising))
+> +		result |= LREANAA_100_2PAIR;
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_4BR100_BIT, advertising))
+> +		result |= LREANAA_100_4PAIR;
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_Pause_BIT, advertising))
+> +		result |= LRELPA_PAUSE;
+> +	if (linkmode_test_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT, advertising))
+> +		result |= LRELPA_PAUSE_ASYM;
+> +
+> +	return result;
+> +}
+> +
+> +/**
+> + * bcm_config_advert - sanitize and advertise auto-negotiation parameters
+> + * @phydev: target phy_device struct
+> + *
+> + * Description: Writes MII_BCM54XX_LREANAA with the appropriate values,
+> + *   after sanitizing the values to make sure we only advertise
+> + *   what is supported.  Returns < 0 on error, 0 if the PHY's advertisement
+> + *   hasn't changed, and > 0 if it has changed.
+> + */
+> +static int bcm_config_advert(struct phy_device *phydev)
+> +{
+> +	int err;
+> +	u32 adv;
+> +
+> +	/* Only allow advertising what this PHY supports */
+> +	linkmode_and(phydev->advertising, phydev->advertising,
+> +		     phydev->supported);
+> +
+> +	adv = bcm_linkmode_adv_to_mii_adv_t(phydev->advertising);
+> +
+> +	/* Setup BroadR-Reach mode advertisement */
+> +	err = phy_modify_changed(phydev, MII_BCM54XX_LREANAA,
+> +				 LRE_ADVERTISE_ALL | LREANAA_PAUSE |
+> +				 LREANAA_PAUSE_ASYM, adv);
+> +
+> +	if (err < 0)
+> +		return err;
+> +
+> +	return err > 0 ? 1 : 0;
+> +}
+> +
+> +static int bcm_config_aneg(struct phy_device *phydev, bool changed)
+> +{
+> +	int err;
+> +
+> +	if (genphy_config_eee_advert(phydev))
+> +		changed = true;
+> +
+> +	err = bcm_setup_master_slave(phydev);
+> +	if (err < 0)
+> +		return err;
+> +	else if (err)
+> +		changed = true;
+> +
+> +	if (phydev->autoneg != AUTONEG_ENABLE)
+> +		return bcm_setup_forced(phydev);
+> +
+> +	err = bcm_config_advert(phydev);
+> +	if (err < 0) /* error */
+> +		return err;
+> +	else if (err)
+> +		changed = true;
+> +
+> +	return genphy_check_and_restart_aneg(phydev, changed);
+>   }
+>   
+>   static int bcm5481_config_aneg(struct phy_device *phydev)
+>   {
 
-Given that part, it makes me wonder if it would not be less confusing to 
-map the existing T1 link modes onto what the BCM54811 PHY supports, 
-Kamil, what do you think?
+I would create a bcm54811_config_aneg() function here which checks for 
+the BRR mode.
+
+>   	struct device_node *np = phydev->mdio.dev.of_node;
+>   	int ret;
+> +	u8 brr_mode;
+>   
+>   	/* Aneg firstly. */
+> -	ret = genphy_config_aneg(phydev);
+> +	ret = bcm54811_get_brrmode(phydev, &brr_mode);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (brr_mode == ETHTOOL_PHY_BRR_MODE_ON)
+> +		ret = bcm_config_aneg(phydev, false);
+> +	else
+> +		ret = genphy_config_aneg(phydev);
+>   
+>   	/* Then we can set up the delay. */
+>   	bcm54xx_config_clock_delay(phydev);
+> @@ -1062,6 +1225,253 @@ static void bcm54xx_link_change_notify(struct phy_device *phydev)
+>   	bcm_phy_write_exp(phydev, MII_BCM54XX_EXP_EXP08, ret);
+>   }
+>   
+> +static int bcm54811_read_abilities(struct phy_device *phydev)
+> +{
+> +	int val, err;
+> +	int i;
+> +	static const int modes_array[] = {ETHTOOL_LINK_MODE_1BR100_BIT,
+> +					  ETHTOOL_LINK_MODE_4BR100_BIT,
+> +					  ETHTOOL_LINK_MODE_2BR100_BIT,
+> +					  ETHTOOL_LINK_MODE_2BR10_BIT,
+> +					  ETHTOOL_LINK_MODE_1BR10_BIT,
+> +					  ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
+> +					  ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
+> +					  ETHTOOL_LINK_MODE_1000baseT_Half_BIT,
+> +					  ETHTOOL_LINK_MODE_100baseT_Full_BIT,
+> +					  ETHTOOL_LINK_MODE_100baseT_Half_BIT,
+> +					  ETHTOOL_LINK_MODE_10baseT_Full_BIT,
+> +					  ETHTOOL_LINK_MODE_10baseT_Half_BIT};
+> +
+> +	u8 brr_mode;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(modes_array); i++)
+> +		linkmode_clear_bit(modes_array[i], phydev->supported);
+> +
+> +	err = bcm54811_get_brrmode(phydev, &brr_mode);
+> +
+> +	if (!err) {
+
+Please do an early return so you can reduce the indentation here, and 
+elsewhere, too.
 -- 
 Florian
 
 
---000000000000b6e06b06163f5ae3
+--000000000000061a1b06163f6121
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -225,15 +486,15 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOCfOmxnWISZtvQm
-6Tm5DFhqgGKgAGIsLhUReDrFuAiyMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDQxNjIzNDcwMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIHhy11smduKGTTiN
+gi8iRlH9ZnI4wNzLuUbQhoXqvRmhMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTI0MDQxNjIzNDg0NlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCzUKjHFA5dxOJl6whT/y5kNcHDL/Js2ln+
-+YCIYtiZHbxfLVeK5OBa0BBe3aBkQyImMh8ozweRG1hHENfn0+BVR/6eWNCUnMAnGScrCeHI7/Rf
-gJ7O9QWCT9UrDUE+/PMVmBWSE+Np2AVPnzwUFzUVnaFmkvmxZsUGjR3kgCqbWamq8kcp6tPY7QAQ
-v7RwHFCDEI1qhFz1rCVxJbNPepyZAfwLp9SUT6Q2SZPTlm3idguSx6lyPNzhs0TVHcqjc2Usyl5b
-p5HJf0lFy+JdloUxH5fb6C1EiHjA1z3gaRUaZmdaGwY+QtPgTeAxMIPuxz5jwWV/vh5x5PL9Jtia
-XzD6
---000000000000b6e06b06163f5ae3--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCupQR4mgRjiPQtfiYpgaiIGqIrj7bkct3m
+BtxY8+XT+brR1yANCjpzWjPxyDJoKWXaHgyH12T57QSKig1ctDkXpCeZ5hnKACCk+4dkjR6x3E6p
+fc4lXQUWCnOKeyamGIF9P9/zC1mDZWq3A07Kjft5hGYU+oPrZXrEI+6bYFusIZEyk6nU+gguc7z8
+zT/ILrHQ1rT/Vt21gwnoU3KJ7i911PNhtiDHDtIMrE0k7tMVEyrTWV3UN4TAUUjFUsqC6sF6+5rb
+twd4i4FOt3W7+NGThUgAoOtHAPf4Q9NCxdAEBURR+OGoZ5GPhgLm1MXWS0dG09DotDLIKa+TU0tv
+q/Sm
+--000000000000061a1b06163f6121--
 
