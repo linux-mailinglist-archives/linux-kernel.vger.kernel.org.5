@@ -1,245 +1,133 @@
-Return-Path: <linux-kernel+bounces-147086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17DE88A6F44
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:03:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 855518A6F47
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:05:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D2B285995
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:03:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F26F61F21A38
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24A413048D;
-	Tue, 16 Apr 2024 15:03:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7DF12C7FB;
+	Tue, 16 Apr 2024 15:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d1EqWvM4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b2SsN4HJ"
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF9B212C47A;
-	Tue, 16 Apr 2024 15:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DFB12A174
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713279808; cv=none; b=KPNA/zk5UcfMaSaPnr8cB/Np2gpqC9pvjstoJ9nFmgcg9c/ROw+QpjrwmfjDkjHk8zw5csA+gJFawI5xfxdeTTyOReBKqyhOUAnMbMSeGUkBLJayk/qUNrxQSHC2YFHsZEzXk5F/zN2dlAeiaPpgqHea3IZ8zKsFq/3OSLU2gA4=
+	t=1713279909; cv=none; b=fmxMK/PMD5qNBPTXPSNHtJqRGv/CgNxGN46xjuGBzp19qUSDjFuxN26TzTmqNGU0Z9lSe3aBPgJv0MbXD7M6JZcfjJHHLHG+cKWQht0YdWHBrZualKvOewVH+FHX1S1019pyKwgVFYpcpmO/Y8FgyO0mtmdlgRnB9XzZpsj8KY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713279808; c=relaxed/simple;
-	bh=0dFehR7bAofXvwdhbQHUWpVwxNS4jlbytNrjxajS/Pg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hs5MoXZHwUfWUwQj15pwRco7LA3j6dTuBf5CqMZ9YERMPKwc//W3NFqHf8SJ3L0WPOvI4zCxKisHt2fVQK3K51iU+6weopSu3AsEhVirFte9CzpgrJEKp1O9LThMk757OCHESk3Z3K3SH7/93aqsqUk+DGcwyzu1bJGtnB5qcWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d1EqWvM4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBA14C113CE;
-	Tue, 16 Apr 2024 15:03:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713279807;
-	bh=0dFehR7bAofXvwdhbQHUWpVwxNS4jlbytNrjxajS/Pg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d1EqWvM4R01QG++RsWmY7K55v0olQvvgXIenexsbrc4JKA4nwVfDNHbXnpJ2hODiu
-	 uKXP42Z5t3X8ceOGrFIX++T91LRgNZrljeuacqKst+uLTaMHaV99gERfLC1bHjBbod
-	 uCrU9jKaCvpAs4YTPg8bY4yfClF1wx8tsQqjMthQc5BA0EToSY6K1fPSqef/N+PSro
-	 ozaY5pPAqJBmIuxx6sHAeyRk60Mr9DyVOlmvpu+y3z4jVI9aHvcO3wiChQu9vPek6+
-	 ANtnjbfUJ/4nZQqhFLpPwXnHN61iI1y9UYuY2KOIzVPTHSIbTmXWfY9vUYJGk1R2cL
-	 GwKYqAUJQnPDg==
-Date: Tue, 16 Apr 2024 16:03:20 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 01/17] riscv: cpufeature: Fix thead vector hwcap
- removal
-Message-ID: <20240416-swipe-flattered-7cdccc01f0fe@spud>
-References: <20240415-dev-charlie-support_thead_vector_6_9-v2-0-c7d68c603268@rivosinc.com>
- <20240415-dev-charlie-support_thead_vector_6_9-v2-1-c7d68c603268@rivosinc.com>
+	s=arc-20240116; t=1713279909; c=relaxed/simple;
+	bh=TZeXcbtKOMozMWJ/kUHSgG1n49qX5lbSr1iuS7NKbrk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bbb1/Uud9TGINAgjJcnIR3FLQJgF3m8QJbhUMHLMw+HLVtEdTkNvcNAjq5AngYkNuiPQhMaoMEGYy+EZK4WQf97nj7o97zBfpDipypZaUbcalpvwEBlDL7y6UUAy5lb0g6u/pg2HCMdeG1Dz3zbwEpjOWMa675OseZkjduAydRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b2SsN4HJ; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-36aff988d73so146435ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713279907; x=1713884707; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ApDEEOzWKbr2lAoaPzmlzkmuB1oGm6TlwwUuSX/oB4U=;
+        b=b2SsN4HJqmF8/DlY40a4MIfpFTt0nc0phvFoHv6I+3lHshEU8HJSVlUGvVQDH0gXnm
+         8qB2PqokDUg6BR/TlxjjVx3elydri24CMBd1Be3sk+2HAh/I1Vl1RJuGnWPVssHDMFtj
+         AG/pTKLeoheOUJLDBjrikDjXHG1dO79z6AfRLbmsMgGJzIIgEyziVt9lEqncdbiZ/T5U
+         dqQb2Xv7TSZpVlfqXlwqCRy6GxmJJ0LMUzHttV+PlL/A8IDh3Uh25Dzw1rkiRcmR2qn5
+         QWSbswPlh57itqRvOTYCkOHHO1Zk+WQa4UwrFNykzPyqm8UOaKVgOQusKsx6EsTVStkH
+         pQ0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713279908; x=1713884708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ApDEEOzWKbr2lAoaPzmlzkmuB1oGm6TlwwUuSX/oB4U=;
+        b=f0gKqh+9ehsqahQUku7uQOFBjDs2AQ3i0eA7aN4GYrj/gBcrGVvMiGhxzgfAujzw8V
+         0yX6a4Sa0SChZ9ii4kt4JjyjkCZt4zBCriKWs7iwh7LpbeqCB15skt1wfG/wpdFrNsuT
+         wJfQdGFYbfbhrxR0cGXtMXz1h+wWlab9Y6h5eSpIATqvOFaclILqLon8NAa+k2RqyWxl
+         KGPoCXoE42idewExvxTqG5nAiMS5rqsJaDN6cilsKftW3dny7i/IKUjVUO7WbBqm1tk+
+         QOZ5rwUiScQi3/quqpR2Z372CA+YTKWrXNpVgUQ1AmDiDNI0PTWcTXep2q208aGsPuIm
+         cMtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUicfVp7xCZR725B8nHzyhzQvH7xDnl0t6AoYbe6iA8RpfH+xqThyyHVi/GwDXNvblDo4h2hZKu/8xHjXzIkjKAUhF++fFlZuyviTc8
+X-Gm-Message-State: AOJu0YxlSr1czgAUEViMk8s1ITPnVgFT7U3y6By/zlXLIv51DfaQwP+w
+	mMAxSRW8VXyRKqwtdOOeRslEY9gZdwDGrLTyricLvzLKQs6W5EQyGYi6Coy9ZNysvF/E71Fw67D
+	ghdhXJEoSRWlwdJ+NA57XOC05BjsbqHr7nMQQOkLUgCw2rAQx3q9P
+X-Google-Smtp-Source: AGHT+IHvWDLJmei1CN4y1/p2zSA/lQX+UTvY0I6sNXRKd7s7bQlKSOTx4dMhC3HH0AIyV6T3oZc3Drm71XkXXTumgbI=
+X-Received: by 2002:a92:c5cd:0:b0:36a:fcc9:64ec with SMTP id
+ s13-20020a92c5cd000000b0036afcc964ecmr186375ilt.1.1713279907511; Tue, 16 Apr
+ 2024 08:05:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RbQjJEERG41bUbGr"
-Content-Disposition: inline
-In-Reply-To: <20240415-dev-charlie-support_thead_vector_6_9-v2-1-c7d68c603268@rivosinc.com>
-
-
---RbQjJEERG41bUbGr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240415095532.4930-1-cp0613@linux.alibaba.com>
+In-Reply-To: <20240415095532.4930-1-cp0613@linux.alibaba.com>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 16 Apr 2024 08:04:55 -0700
+Message-ID: <CAP-5=fWZSPTtk+UjssH4Mhw11CAP0-jZcZAbCesdqrVCnZbu2Q@mail.gmail.com>
+Subject: Re: [PATCH] tools/perf: Fix compiling with libelf on rv32
+To: cp0613@linux.alibaba.com
+Cc: palmer@dabbelt.com, paul.walmsley@sifive.com, aou@eecs.berkeley.edu, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 09:11:58PM -0700, Charlie Jenkins wrote:
-> The riscv_cpuinfo struct that contains mvendorid and marchid is not
-> populated until all harts are booted which happens after the DT parsing.
-> Use the vendorid/archid values from the DT if available or assume all
-> harts have the same values as the boot hart as a fallback.
->=20
-> Fixes: d82f32202e0d ("RISC-V: Ignore V from the riscv,isa DT property on =
-older T-Head CPUs")
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+On Mon, Apr 15, 2024 at 2:57=E2=80=AFAM <cp0613@linux.alibaba.com> wrote:
+>
+> From: Chen Pei <cp0613@linux.alibaba.com>
+>
+> When cross-compiling perf with libelf, the following error occurred:
+>
+>         In file included from tests/genelf.c:14:
+>         tests/../util/genelf.h:50:2: error: #error "unsupported architect=
+ure"
+>         50 | #error "unsupported architecture"
+>                 |  ^~~~~
+>         tests/../util/genelf.h:59:5: warning: "GEN_ELF_CLASS" is not defi=
+ned, evaluates to 0 [-Wundef]
+>         59 | #if GEN_ELF_CLASS =3D=3D ELFCLASS64
+>
+> Fix this by adding GEN-ELF-ARCH and GEN-ELF-CLASS definitions for rv32.
+>
+> Signed-off-by: Chen Pei <cp0613@linux.alibaba.com>
+
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
 > ---
->  arch/riscv/include/asm/sbi.h   |  2 ++
->  arch/riscv/kernel/cpu.c        | 36 ++++++++++++++++++++++++++++++++----
->  arch/riscv/kernel/cpufeature.c | 12 ++++++++++--
->  3 files changed, 44 insertions(+), 6 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 6e68f8dff76b..0fab508a65b3 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -370,6 +370,8 @@ static inline int sbi_remote_fence_i(const struct cpu=
-mask *cpu_mask) { return -1
->  static inline void sbi_init(void) {}
->  #endif /* CONFIG_RISCV_SBI */
-> =20
-> +unsigned long riscv_get_mvendorid(void);
-> +unsigned long riscv_get_marchid(void);
->  unsigned long riscv_cached_mvendorid(unsigned int cpu_id);
->  unsigned long riscv_cached_marchid(unsigned int cpu_id);
->  unsigned long riscv_cached_mimpid(unsigned int cpu_id);
-> diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-> index d11d6320fb0d..8c8250b98752 100644
-> --- a/arch/riscv/kernel/cpu.c
-> +++ b/arch/riscv/kernel/cpu.c
-> @@ -139,6 +139,34 @@ int riscv_of_parent_hartid(struct device_node *node,=
- unsigned long *hartid)
->  	return -1;
->  }
-> =20
-> +unsigned long __init riscv_get_marchid(void)
-> +{
-> +	struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
-> +
-> +#if IS_ENABLED(CONFIG_RISCV_SBI)
-> +	ci->marchid =3D sbi_spec_is_0_1() ? 0 : sbi_get_marchid();
-> +#elif IS_ENABLED(CONFIG_RISCV_M_MODE)
-> +	ci->marchid =3D csr_read(CSR_MARCHID);
-> +#else
-> +	ci->marchid =3D 0;
-> +#endif
-> +	return ci->marchid;
-> +}
-> +
-> +unsigned long __init riscv_get_mvendorid(void)
-> +{
-> +	struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
-> +
-> +#if IS_ENABLED(CONFIG_RISCV_SBI)
-> +	ci->mvendorid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mvendorid();
-> +#elif IS_ENABLED(CONFIG_RISCV_M_MODE)
-> +	ci->mvendorid =3D csr_read(CSR_MVENDORID);
-> +#else
-> +	ci->mvendorid =3D 0;
-> +#endif
-> +	return ci->mvendorid;
-> +}
-> +
->  DEFINE_PER_CPU(struct riscv_cpuinfo, riscv_cpuinfo);
-> =20
->  unsigned long riscv_cached_mvendorid(unsigned int cpu_id)
-> @@ -170,12 +198,12 @@ static int riscv_cpuinfo_starting(unsigned int cpu)
->  	struct riscv_cpuinfo *ci =3D this_cpu_ptr(&riscv_cpuinfo);
-> =20
->  #if IS_ENABLED(CONFIG_RISCV_SBI)
-> -	ci->mvendorid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mvendorid();
-> -	ci->marchid =3D sbi_spec_is_0_1() ? 0 : sbi_get_marchid();
-> +	ci->mvendorid =3D ci->mvendorid ? ci->mvendorid : sbi_spec_is_0_1() ? 0=
- : sbi_get_mvendorid();
-> +	ci->marchid =3D ci->marchid ? ci->marchid : sbi_spec_is_0_1() ? 0 : sbi=
-_get_marchid();
-
-Can we please not have double ternary stuff? This is awful to grok :(
-Can you do
-if (!ci->m*id)
-	sbi_spec_is_0_1() ? 0 : sbi_get_m*id();
-instead? I think that is much easier to understand.
-Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
->  	ci->mimpid =3D sbi_spec_is_0_1() ? 0 : sbi_get_mimpid();
->  #elif IS_ENABLED(CONFIG_RISCV_M_MODE)
-> -	ci->mvendorid =3D csr_read(CSR_MVENDORID);
-> -	ci->marchid =3D csr_read(CSR_MARCHID);
-> +	ci->mvendorid =3D ci->mvendorid ? ci->mvendorid : csr_read(CSR_MVENDORI=
-D);
-> +	ci->marchid =3D ci->marchid ? ci->marchid : csr_read(CSR_MARCHID);
->  	ci->mimpid =3D csr_read(CSR_MIMPID);
->  #else
->  	ci->mvendorid =3D 0;
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 3ed2359eae35..c6e27b45e192 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -490,6 +490,8 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
-nsigned long *isa2hwcap)
->  	struct acpi_table_header *rhct;
->  	acpi_status status;
->  	unsigned int cpu;
-> +	u64 boot_vendorid;
-> +	u64 boot_archid;
-> =20
->  	if (!acpi_disabled) {
->  		status =3D acpi_get_table(ACPI_SIG_RHCT, 0, &rhct);
-> @@ -497,6 +499,13 @@ static void __init riscv_fill_hwcap_from_isa_string(=
-unsigned long *isa2hwcap)
->  			return;
->  	}
-> =20
-> +	/*
-> +	 * Naively assume that all harts have the same mvendorid/marchid as the
-> +	 * boot hart.
-> +	 */
-> +	boot_vendorid =3D riscv_get_mvendorid();
-> +	boot_archid =3D riscv_get_marchid();
-> +
->  	for_each_possible_cpu(cpu) {
->  		struct riscv_isainfo *isainfo =3D &hart_isa[cpu];
->  		unsigned long this_hwcap =3D 0;
-> @@ -544,8 +553,7 @@ static void __init riscv_fill_hwcap_from_isa_string(u=
-nsigned long *isa2hwcap)
->  		 * CPU cores with the ratified spec will contain non-zero
->  		 * marchid.
->  		 */
-> -		if (acpi_disabled && riscv_cached_mvendorid(cpu) =3D=3D THEAD_VENDOR_I=
-D &&
-> -		    riscv_cached_marchid(cpu) =3D=3D 0x0) {
-> +		if (acpi_disabled && boot_vendorid =3D=3D THEAD_VENDOR_ID && boot_arch=
-id =3D=3D 0x0) {
->  			this_hwcap &=3D ~isa2hwcap[RISCV_ISA_EXT_v];
->  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
->  		}
->=20
-> --=20
-> 2.44.0
->=20
-
---RbQjJEERG41bUbGr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh6TOAAKCRB4tDGHoIJi
-0ugHAP9wq53A/rRMZA7YNcwk3t+YkspiOROzoX/lB6mQceQcywEA6kOQ31DLs19U
-K7NuAGuzzBkZ9AZreTReZw47pw/tXwo=
-=YaUr
------END PGP SIGNATURE-----
-
---RbQjJEERG41bUbGr--
+>  tools/perf/util/genelf.h | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/tools/perf/util/genelf.h b/tools/perf/util/genelf.h
+> index 5f18d20ea903..4e2e4f40e134 100644
+> --- a/tools/perf/util/genelf.h
+> +++ b/tools/perf/util/genelf.h
+> @@ -43,6 +43,9 @@ int jit_add_debug_info(Elf *e, uint64_t code_addr, void=
+ *debug, int nr_debug_ent
+>  #elif defined(__riscv) && __riscv_xlen =3D=3D 64
+>  #define GEN_ELF_ARCH   EM_RISCV
+>  #define GEN_ELF_CLASS  ELFCLASS64
+> +#elif defined(__riscv) && __riscv_xlen =3D=3D 32
+> +#define GEN_ELF_ARCH   EM_RISCV
+> +#define GEN_ELF_CLASS  ELFCLASS32
+>  #elif defined(__loongarch__)
+>  #define GEN_ELF_ARCH   EM_LOONGARCH
+>  #define GEN_ELF_CLASS  ELFCLASS64
+> --
+> 2.25.1
+>
+>
 
