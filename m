@@ -1,236 +1,278 @@
-Return-Path: <linux-kernel+bounces-146958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2827E8A6D89
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:12:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79AA58A6DB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:15:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7784281E4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:12:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 977471C2168D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1F4130E25;
-	Tue, 16 Apr 2024 14:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rc9wnS+M"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D043C130E44;
-	Tue, 16 Apr 2024 14:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23161369A1;
+	Tue, 16 Apr 2024 14:10:59 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DF612CDAF
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713276619; cv=none; b=XpA4B93/FedZYIwGrs99MD0AQDoKT/Fwh7ExthZVkJhl+QSp/t+n56FyhezoiWkfPNX33pjbeIethpYwzfAnOs3S9i+h5PSDIz4JtraU1R2sQaF8QshDN7TAzBJqlm9fVMm/dfJ5PAaAnaYgrVPcsoHdDc+EFHJcaaX8QptDlsw=
+	t=1713276659; cv=none; b=P8HZYrjs7kGlDplu+LSWOrwxHnVlY8D3VldSjMHe7+tWQBifdhB18HnV7je0a/M5mFXaHG4vPr97/fRXzk4TfTSxC0PRrP6qyWZo238A93ZjtOJMgsSsCV+RlPxWwxQSPrrWq04mcCaRE/uqqrurWOi07RhoSIPcyES83MPhOW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713276619; c=relaxed/simple;
-	bh=CnqFUzo8UL/kd/hyzPQiXIi6sHVHjTGA/XehLo3EEAk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=OR2dc6CWtiBKgEN4U4UYHh0Gd/NbuRnbXc/lpYP2/YQB+zzzgeokNbnyxc9O+YLNn9xaUj+H3NdTWaVAhgcR+l/yF7K5mNj4TmEf4jWKdFPZxDz6/Q96EAYaSigLW/kgxh3pRQU3WTQ4YkUd6iFX2wFXJ9ohAHhBUs77EZ+Jksc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rc9wnS+M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E75FFC32786;
-	Tue, 16 Apr 2024 14:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713276619;
-	bh=CnqFUzo8UL/kd/hyzPQiXIi6sHVHjTGA/XehLo3EEAk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rc9wnS+M/4NNuIAcdlGbCdArukIVQa7MRbKshkWBfu0bAlSGsTZnjaM5GpWNA+pn7
-	 OImx3KIosCJC0nj+BdMGAGeFKeJoS60S+UmZbwPHfsEdL1D2hRwJLYzrzzxhiIvEU0
-	 TPoM9i7iIG24HKYrMFK7P2K5jlpdZgUjpBDBFi9rh99R/uqVtNpVZmdQFfndlYutMP
-	 r9NIF7AJDEiOws0Al7PmhSMpwGZYc6od/dRzMHHq2lKvltw7EJRKUqs1ZcWfZ/EhL0
-	 oQ3XBb9xaeF5huxlUFSXK0+BlTRqBF4IpiVSz9N/JixSoVFCcr2LVfUI4noJSNGyt/
-	 ptMF0i9e9F+Fw==
+	s=arc-20240116; t=1713276659; c=relaxed/simple;
+	bh=aukE2VXAcMUvjs7ARrPKGU7Le/giScUEE4GV4g707EQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GOz+GaJYNAM/gdQRnB7LVr8kXkylaF+sMmsKXMBkPUlgY/eXmHBh19HnU6N8LjTR2aHLqNwX1cHtEorEhXdgXOylRDaiCNDzvm6UPAHkwmZFIqcC89YkXRMtw4AiAvSq4ahediDue+EOx8VKdF9ifvzYUPnTBAIaN51MLTjz0P4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92065339;
+	Tue, 16 Apr 2024 07:11:18 -0700 (PDT)
+Received: from [10.1.26.17] (e133047.arm.com [10.1.26.17])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F37A3F738;
+	Tue, 16 Apr 2024 07:10:49 -0700 (PDT)
+Message-ID: <f1685b30-9d0d-419e-b004-590edf21315a@arm.com>
+Date: Tue, 16 Apr 2024 15:10:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] sched/core: split iowait state into two states
+To: Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, tglx@linutronix.de
+References: <20240416121526.67022-1-axboe@kernel.dk>
+ <20240416121526.67022-5-axboe@kernel.dk>
+Content-Language: en-US
+From: Christian Loehle <christian.loehle@arm.com>
+In-Reply-To: <20240416121526.67022-5-axboe@kernel.dk>
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 16 Apr 2024 17:10:12 +0300
-Message-Id: <D0LLVE07V8O0.S8XF3CY2DQ9A@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Haitao Huang"
- <haitao.huang@linux.intel.com>, <dave.hansen@linux.intel.com>,
- <kai.huang@intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-X-Mailer: aerc 0.17.0
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-15-haitao.huang@linux.intel.com>
- <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org>
-In-Reply-To: <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org>
+Content-Transfer-Encoding: 7bit
 
-On Tue Apr 16, 2024 at 5:05 PM EEST, Jarkko Sakkinen wrote:
-> On Tue Apr 16, 2024 at 6:20 AM EEST, Haitao Huang wrote:
-> > With different cgroups, the script starts one or multiple concurrent SG=
-X
-> > selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
-> > test case, which loads an enclave of EPC size equal to the EPC capacity
-> > available on the platform. The script checks results against the
-> > expectation set for each cgroup and reports success or failure.
-> >
-> > The script creates 3 different cgroups at the beginning with following
-> > expectations:
-> >
-> > 1) SMALL - intentionally small enough to fail the test loading an
-> > enclave of size equal to the capacity.
-> > 2) LARGE - large enough to run up to 4 concurrent tests but fail some i=
-f
-> > more than 4 concurrent tests are run. The script starts 4 expecting at
-> > least one test to pass, and then starts 5 expecting at least one test
-> > to fail.
-> > 3) LARGER - limit is the same as the capacity, large enough to run lots=
- of
-> > concurrent tests. The script starts 8 of them and expects all pass.
-> > Then it reruns the same test with one process randomly killed and
-> > usage checked to be zero after all processes exit.
-> >
-> > The script also includes a test with low mem_cg limit and LARGE sgx_epc
-> > limit to verify that the RAM used for per-cgroup reclamation is charged
-> > to a proper mem_cg. For this test, it turns off swapping before start,
-> > and turns swapping back on afterwards.
-> >
-> > Add README to document how to run the tests.
-> >
-> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->
-> jarkko@mustatorvisieni:~/linux-tpmdd> sudo make -C tools/testing/selftest=
-s/sgx run_tests
-> make: Entering directory '/home/jarkko/linux-tpmdd/tools/testing/selftest=
-s/sgx'
-> gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/.=
-/../../tools/include -fPIC -c main.c -o /home/jarkko/linux-tpmdd/tools/tes=
-ting/selftests/sgx/main.o
-> gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/.=
-/../../tools/include -fPIC -c load.c -o /home/jarkko/linux-tpmdd/tools/tes=
-ting/selftests/sgx/load.o
-> gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/.=
-/../../tools/include -fPIC -c sigstruct.c -o /home/jarkko/linux-tpmdd/tool=
-s/testing/selftests/sgx/sigstruct.o
-> gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/.=
-/../../tools/include -fPIC -c call.S -o /home/jarkko/linux-tpmdd/tools/tes=
-ting/selftests/sgx/call.o
-> gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/.=
-/../../tools/include -fPIC -c sign_key.S -o /home/jarkko/linux-tpmdd/tools=
-/testing/selftests/sgx/sign_key.o
-> gcc -Wall -Werror -g -I/home/jarkko/linux-tpmdd/tools/testing/selftests/.=
-/../../tools/include -fPIC -o /home/jarkko/linux-tpmdd/tools/testing/selft=
-ests/sgx/test_sgx /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/main=
-o /home/jarkko/linux-tpmdd/tools/testing/selftests/sgx/load.o /home/jarkko=
-/linux-tpmdd/tools/testing/selftests/sgx/sigstruct.o /home/jarkko/linux-tpm=
-dd/tools/testing/selftests/sgx/call.o /home/jarkko/linux-tpmdd/tools/testin=
-g/selftests/sgx/sign_key.o -z noexecstack -lcrypto
-> gcc -Wall -Werror -static-pie -nostdlib -ffreestanding -fPIE -fno-stack-p=
-rotector -mrdrnd -I/home/jarkko/linux-tpmdd/tools/testing/selftests/../../.=
-/tools/include test_encl.c test_encl_bootstrap.S -o /home/jarkko/linux-tpm=
-dd/tools/testing/selftests/sgx/test_encl.elf -Wl,-T,test_encl.lds,--build-i=
-d=3Dnone
-> /usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld:=
- warning: /tmp/ccqvDJVg.o: missing .note.GNU-stack section implies executab=
-le stack
-> /usr/lib64/gcc/x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld:=
- NOTE: This behaviour is deprecated and will be removed in a future version=
- of the linker
-> TAP version 13
-> 1..2
-> # timeout set to 45
-> # selftests: sgx: test_sgx
-> # TAP version 13
-> # 1..16
-> # # Starting 16 tests from 1 test cases.
-> # #  RUN           enclave.unclobbered_vdso ...
-> # #            OK  enclave.unclobbered_vdso
-> # ok 1 enclave.unclobbered_vdso
-> # #  RUN           enclave.unclobbered_vdso_oversubscribed ...
-> # #            OK  enclave.unclobbered_vdso_oversubscribed
-> # ok 2 enclave.unclobbered_vdso_oversubscribed
-> # #  RUN           enclave.unclobbered_vdso_oversubscribed_remove ...
-> # # main.c:402:unclobbered_vdso_oversubscribed_remove:Creating an enclave=
- with 98566144 bytes heap may take a while ...
-> # # main.c:457:unclobbered_vdso_oversubscribed_remove:Changing type of 98=
-566144 bytes to trimmed may take a while ...
-> # # main.c:473:unclobbered_vdso_oversubscribed_remove:Entering enclave to=
- run EACCEPT for each page of 98566144 bytes may take a while ...
-> # # main.c:494:unclobbered_vdso_oversubscribed_remove:Removing 98566144 b=
-ytes from enclave may take a while ...
-> # #            OK  enclave.unclobbered_vdso_oversubscribed_remove
-> # ok 3 enclave.unclobbered_vdso_oversubscribed_remove
-> # #  RUN           enclave.clobbered_vdso ...
-> # #            OK  enclave.clobbered_vdso
-> # ok 4 enclave.clobbered_vdso
-> # #  RUN           enclave.clobbered_vdso_and_user_function ...
-> # #            OK  enclave.clobbered_vdso_and_user_function
-> # ok 5 enclave.clobbered_vdso_and_user_function
-> # #  RUN           enclave.tcs_entry ...
-> # #            OK  enclave.tcs_entry
-> # ok 6 enclave.tcs_entry
-> # #  RUN           enclave.pte_permissions ...
-> # #            OK  enclave.pte_permissions
-> # ok 7 enclave.pte_permissions
-> # #  RUN           enclave.tcs_permissions ...
-> # #            OK  enclave.tcs_permissions
-> # ok 8 enclave.tcs_permissions
-> # #  RUN           enclave.epcm_permissions ...
-> # #            OK  enclave.epcm_permissions
-> # ok 9 enclave.epcm_permissions
-> # #  RUN           enclave.augment ...
-> # #            OK  enclave.augment
-> # ok 10 enclave.augment
-> # #  RUN           enclave.augment_via_eaccept ...
-> # #            OK  enclave.augment_via_eaccept
-> # ok 11 enclave.augment_via_eaccept
-> # #  RUN           enclave.tcs_create ...
-> # #            OK  enclave.tcs_create
-> # ok 12 enclave.tcs_create
-> # #  RUN           enclave.remove_added_page_no_eaccept ...
-> # #            OK  enclave.remove_added_page_no_eaccept
-> # ok 13 enclave.remove_added_page_no_eaccept
-> # #  RUN           enclave.remove_added_page_invalid_access ...
-> # #            OK  enclave.remove_added_page_invalid_access
-> # ok 14 enclave.remove_added_page_invalid_access
-> # #  RUN           enclave.remove_added_page_invalid_access_after_eaccept=
- ...
-> # #            OK  enclave.remove_added_page_invalid_access_after_eaccept
-> # ok 15 enclave.remove_added_page_invalid_access_after_eaccept
-> # #  RUN           enclave.remove_untouched_page ...
-> # #            OK  enclave.remove_untouched_page
-> # ok 16 enclave.remove_untouched_page
-> # # PASSED: 16 / 16 tests passed.
-> # # Totals: pass:16 fail:0 xfail:0 xpass:0 skip:0 error:0
-> ok 1 selftests: sgx: test_sgx
-> # timeout set to 45
-> # selftests: sgx: run_epc_cg_selftests.sh
-> # # Setting up limits.
-> # ./run_epc_cg_selftests.sh: line 50: echo: write error: Invalid argument
-> # # Failed setting up misc limits.
-> not ok 2 selftests: sgx: run_epc_cg_selftests.sh # exit=3D1
-> make: Leaving directory '/home/jarkko/linux-tpmdd/tools/testing/selftests=
-/sgx'
->
-> This is what happens now.
->
-> BTW, I noticed a file that should not exist, i.e. README. Only thing
-> that should exist is the tests for kselftest and anything else should
-> not exist at all, so this file by definiton should not exist.
+On 16/04/2024 13:11, Jens Axboe wrote:
+> iowait is a bogus metric, but it's helpful in the sense that it allows
+> short waits to not enter sleep states that have a higher exit latency
+> than would've otherwise have been picked for iowait'ing tasks. However,
+> it's harmless in that lots of applications and monitoring assumes that
+s/harmless/harmful ?
+> iowait is busy time, or otherwise use it as a health metric.
+> Particularly for async IO it's entirely nonsensical.
+> 
+> Split the iowait part into two parts - one that tracks whether the task
+> needs boosting for short waits, and one that marks whether the task
+> needs to be accounted as such. ->in_iowait_acct nests inside of
+> ->in_iowait, both for efficiency reasons, but also so that the
+> relationship between the two is clear. A waiter may set ->in_wait alone
+s/in_wait/in_iowait/
+> and not care about the accounting.
+> 
+> Existing users of nr_iowait() for accounting purposes are switched to
+> use nr_iowait_acct(), which leaves the governor using nr_iowait() as it
+> only cares about iowaiters, not the accounting side.
+> 
+> Utilize that there's enough space in rq->nr_iowait to store both values
+> in there, shifting the accounting side by half the size of the type.
+> Thank you to Thomas Gleixner for that [1] suggestion.
+> 
+> [1] https://lore.kernel.org/lkml/87sf1b6o9w.ffs@tglx/
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-I'd suggest to sanity-check the kselftest with a person from Intel who
-has worked with kselftest before the next version so that it will be
-nailed next time. Or better internal review this single patch with a=20
-person with expertise on kernel QA.
+Again this is just a tiny symptom of iowait being bogus, but I understand
+your problem and have nothing simple to offer you as of now.
+Daniel's comment mentioned below is still spot on.
+Any behavior piggybacked ontop of iowait is also non-sensical without
+any definition of what "iowait" is actually supposed to mean.
+Are we returning to the same rq real soon? Maybe, maybe not.
+Are we on the critical path to higher IO throughput and should be run
+with a high frequency after wakeup? Maybe, maybe not (Probably not?).
+Apart from that obligatory nagging and my comments below this looks okay.
 
-I did not check this but I have also suspicion that it might have some
-checks whetehr it is run as root or not. If there are any, those should
-be removed too. Let people set their environment however want...
+> ---
+>  arch/s390/appldata/appldata_base.c |  2 +-
+>  arch/s390/appldata/appldata_os.c   |  2 +-
+>  fs/proc/stat.c                     |  2 +-
+>  include/linux/sched.h              |  6 +++
+>  include/linux/sched/stat.h         |  5 ++-
+>  kernel/sched/core.c                | 62 +++++++++++++++++++++++-------
+>  kernel/sched/sched.h               |  1 +
+>  kernel/time/tick-sched.c           |  6 +--
+>  8 files changed, 65 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/s390/appldata/appldata_base.c b/arch/s390/appldata/appldata_base.c
+> index c2978cb03b36..6844b5294a8b 100644
+> --- a/arch/s390/appldata/appldata_base.c
+> +++ b/arch/s390/appldata/appldata_base.c
+> @@ -423,4 +423,4 @@ EXPORT_SYMBOL_GPL(si_swapinfo);
+>  #endif
+>  EXPORT_SYMBOL_GPL(nr_threads);
+>  EXPORT_SYMBOL_GPL(nr_running);
+> -EXPORT_SYMBOL_GPL(nr_iowait);
+> +EXPORT_SYMBOL_GPL(nr_iowait_acct);
+> diff --git a/arch/s390/appldata/appldata_os.c b/arch/s390/appldata/appldata_os.c
+> index a363d30ce739..fa4b278aca6c 100644
+> --- a/arch/s390/appldata/appldata_os.c
+> +++ b/arch/s390/appldata/appldata_os.c
+> @@ -100,7 +100,7 @@ static void appldata_get_os_data(void *data)
+>  
+>  	os_data->nr_threads = nr_threads;
+>  	os_data->nr_running = nr_running();
+> -	os_data->nr_iowait  = nr_iowait();
+> +	os_data->nr_iowait  = nr_iowait_acct();
+>  	os_data->avenrun[0] = avenrun[0] + (FIXED_1/200);
+>  	os_data->avenrun[1] = avenrun[1] + (FIXED_1/200);
+>  	os_data->avenrun[2] = avenrun[2] + (FIXED_1/200);
+> diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+> index da60956b2915..149be7a884fb 100644
+> --- a/fs/proc/stat.c
+> +++ b/fs/proc/stat.c
+> @@ -180,7 +180,7 @@ static int show_stat(struct seq_file *p, void *v)
+>  		(unsigned long long)boottime.tv_sec,
+>  		total_forks,
+>  		nr_running(),
+> -		nr_iowait());
+> +		nr_iowait_acct());
+>  
+>  	seq_put_decimal_ull(p, "softirq ", (unsigned long long)sum_softirq);
+>  
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index dcfc2830ed8e..26c69db5484b 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -924,7 +924,13 @@ struct task_struct {
+>  
+>  	/* Bit to tell TOMOYO we're in execve(): */
+>  	unsigned			in_execve:1;
+> +	/* task is in iowait */
+>  	unsigned			in_iowait:1;
+> +	/*
+> +	 * task is in iowait and should be accounted as such. can only be set
+> +	 * if ->in_iowait is also set.
+> +	 */
+> +	unsigned			in_iowait_acct:1;
+>  #ifndef TIF_RESTORE_SIGMASK
+>  	unsigned			restore_sigmask:1;
+>  #endif
+> diff --git a/include/linux/sched/stat.h b/include/linux/sched/stat.h
+> index 0108a38bb64d..31e8a44b3d71 100644
+> --- a/include/linux/sched/stat.h
+> +++ b/include/linux/sched/stat.h
+> @@ -19,8 +19,9 @@ DECLARE_PER_CPU(unsigned long, process_counts);
+>  extern int nr_processes(void);
+>  extern unsigned int nr_running(void);
+>  extern bool single_task_running(void);
+> -extern unsigned int nr_iowait(void);
+> -extern unsigned int nr_iowait_cpu(int cpu);
+> +unsigned int nr_iowait_acct(void);
+> +unsigned int nr_iowait_acct_cpu(int cpu);
+> +unsigned int nr_iowait_cpu(int cpu);
+>  
+>  static inline int sched_info_on(void)
+>  {
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 63f6d44f460c..d52d3118dd73 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3721,30 +3721,47 @@ static inline cpumask_t *alloc_user_cpus_ptr(int node)
+>  
+>  #endif /* !CONFIG_SMP */
+>  
+> +/*
+> + * Store iowait and iowait_acct state in the same variable. The lower bits
+> + * hold the iowait state, and the upper bits hold the iowait_acct state.
+> + */
+>  static void task_iowait_inc(struct task_struct *p)
+>  {
+>  #ifdef CONFIG_64BIT
+> -	atomic_long_inc(&task_rq(p)->nr_iowait);
+> +	long val = 1 + ((long) p->in_iowait_acct << 32);
+Are we not doing declarations at the beginning of the block anymore?
 
-BR, Jarkko
+> +	atomic_long_add(val, &task_rq(p)->nr_iowait);
+>  #else
+> -	atomic_inc(&task_rq(p)->nr_iowait);
+> +	int val = 1 + ((int) p->in_iowait_acct << 16);
+> +	atomic_add(val, &task_rq(p)->nr_iowait);
+>  #endif
+>  }
+>  
+>  static void task_iowait_dec(struct task_struct *p)
+>  {
+>  #ifdef CONFIG_64BIT
+> -	atomic_long_dec(&task_rq(p)->nr_iowait);
+> +	long val = 1 + ((long) p->in_iowait_acct << 32);
+> +	atomic_long_sub(val, &task_rq(p)->nr_iowait);
+>  #else
+> -	atomic_dec(&task_rq(p)->nr_iowait);
+> +	int val = 1 + ((int) p->in_iowait_acct << 16);
+> +	atomic_sub(val, &task_rq(p)->nr_iowait);
+>  #endif
+>  }
+>  
+>  int rq_iowait(struct rq *rq)
+>  {
+>  #ifdef CONFIG_64BIT
+> -	return atomic_long_read(&rq->nr_iowait);
+> +	return atomic_long_read(&rq->nr_iowait) & ((1UL << 32) - 1);
+> +#else
+> +	return atomic_read(&rq->nr_iowait) & ((1U << 16) - 1);
+> +#endif
+> +}
+> +
+> +int rq_iowait_acct(struct rq *rq)
+> +{
+> +#ifdef CONFIG_64BIT
+> +	return atomic_long_read(&rq->nr_iowait) >> 32;
+>  #else
+> -	return atomic_read(&rq->nr_iowait);
+> +	return atomic_read(&rq->nr_iowait) >> 16;
+>  #endif
+>  }
+>  
+> @@ -5497,7 +5514,12 @@ unsigned long long nr_context_switches(void)
+>   * it does become runnable.
+>   */
+>  
+> -unsigned int nr_iowait_cpu(int cpu)
+> +unsigned int nr_iowait_acct_cpu(int cpu)
+
+There is a comment above here by Daniel referring to "these two
+interfaces [...]", originally referring to nr_iowait_cpu() and
+get_iowait_load().
+get_iowait_load() was removed in commit a7fe5190c03f ("cpuidle: menu: Remove get_loadavg() from the performance multiplier")
+but nr_iowait_cpu() remains, so the comment should remain above it.
+Rewording is also way overdue, although that's hardly on your
+patch ;)
+
+> +{
+> +	return rq_iowait_acct(cpu_rq(cpu));
+> +}
+> +
+> +unsigned nr_iowait_cpu(int cpu)
+unsigned int
+>  {
+>  	return rq_iowait(cpu_rq(cpu));
+>  }
+> @@ -5532,12 +5554,12 @@ unsigned int nr_iowait_cpu(int cpu)
+>   * Task CPU affinities can make all that even more 'interesting'.
+>   */
+>  
+> -unsigned int nr_iowait(void)
+> +unsigned int nr_iowait_acct(void)
+>  {
+>  	unsigned int i, sum = 0;
+>  
+>  	for_each_possible_cpu(i)
+> -		sum += nr_iowait_cpu(i);
+> +		sum += nr_iowait_acct_cpu(i);
+>  
+>  	return sum;
+>  }
+> @@ -9032,18 +9054,32 @@ int __sched yield_to(struct task_struct *p, bool preempt)
+>  }
+>  EXPORT_SYMBOL_GPL(yield_to);
+>  [snip]
 
