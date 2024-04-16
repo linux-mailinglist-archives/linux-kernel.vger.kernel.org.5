@@ -1,174 +1,180 @@
-Return-Path: <linux-kernel+bounces-146441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF9A8A6555
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 85CA98A655D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:44:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B7AA1C21B69
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:43:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EC211C21CC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7723E84D3E;
-	Tue, 16 Apr 2024 07:43:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F00482864;
+	Tue, 16 Apr 2024 07:44:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="BhXDmMJt"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="moCOUKVD"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C686A6F06D;
-	Tue, 16 Apr 2024 07:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B42D7FBC6
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:44:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713253423; cv=none; b=au5U9wz/wFaSfH5C8GFaYCj8PIZaEeFK377Rak7BAKP0gMJo9yhwrSZF4g/jJ5rCweuXQEnbRo8/Q2DINcZRhur1QYEYDPZuQbYG4cDX0ks2ldoD4ZTE9dHRi6pxRyQYcq3AM9zuOxt+qcDBHVXvJk8xjJ58SDsTfLmqOAQ69bs=
+	t=1713253472; cv=none; b=gfrMFWeT9PTA4YFIcEdv8mLSWr/Qwi7LR1KTuLYhfq9LzHyWFL/gI55H1PS8f3TNdvL1xqx+1/pvud5CBgYgietd0s2nxmSDBoXS1VgV0XRflshrxplPEPACYwUul9eNu7Ntxb7LnCEZrHF0A0WQ7QvGKcz2q5dBjVkw49SX+Ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713253423; c=relaxed/simple;
-	bh=X1Vcw62l7Ek+/f0Ou02coxzDyic5lJOn7jwbKRTwpik=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=f6v7z2QWqwf4sLn4g5XYnTPZlL2682CM+fv+KBeZzTKlo9+KjbLryFZsWjnnQJgvdv6G3gtwd7vIo9pRgNz/Yq5pnMmwqvWYfzIEx4CKYTFjuimzSAg+i3kyQBG31Oy1oJ56/8BtdTmbEo+gTCyy2aXEDC3emgzz+TmCKxIpmQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=BhXDmMJt; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240416074333euoutp028b501f50a3215b929876f5a82a270b87~Gsub_C_JP1015410154euoutp02v;
-	Tue, 16 Apr 2024 07:43:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240416074333euoutp028b501f50a3215b929876f5a82a270b87~Gsub_C_JP1015410154euoutp02v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1713253413;
-	bh=TjfVzkNH2Z5KdNt4ACyy65MVY1rM2cr/zaPB8/gncUk=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=BhXDmMJtalOmmWs1bizsaetYno6MWRhqmCepGuIMQ6yFDPE4lOq9bDBN8ROsjwLWs
-	 P62EJPQwBaudXGpqaobr9GpXASjpNFDFzkJQYut5LtHYm3yN2o8ll+fXPr4uYGNmSJ
-	 OiLGWHgTsB3ZRHoPfi6O9JfUShKgugJHxmVr4/W8=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240416074333eucas1p144964b20d4f24a66529c0d55255e682b~Gsubxgg543103231032eucas1p1U;
-	Tue, 16 Apr 2024 07:43:33 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id 85.9F.09875.52C2E166; Tue, 16
-	Apr 2024 08:43:33 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240416074332eucas1p2c852836fdfd1e657ad07543470707438~GsubXKTC71567315673eucas1p2a;
-	Tue, 16 Apr 2024 07:43:32 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240416074332eusmtrp10dfb97e61dc7b1435894b6674c0ad762~GsubWknVC0396403964eusmtrp1W;
-	Tue, 16 Apr 2024 07:43:32 +0000 (GMT)
-X-AuditID: cbfec7f4-131ff70000002693-bc-661e2c25eea2
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id 80.60.08810.42C2E166; Tue, 16
-	Apr 2024 08:43:32 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240416074332eusmtip105bd2f00b401e492ecfb0833a65f6f3f~GsubLmB1_0992609926eusmtip1B;
-	Tue, 16 Apr 2024 07:43:32 +0000 (GMT)
-Received: from localhost (106.210.248.128) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Tue, 16 Apr 2024 08:43:32 +0100
-Date: Tue, 16 Apr 2024 09:43:27 +0200
-From: Joel Granados <j.granados@samsung.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-CC: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing
-	List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the sysctl tree
-Message-ID: <20240416074327.ran3jwdrcp4gz67u@joelS2.panther.com>
+	s=arc-20240116; t=1713253472; c=relaxed/simple;
+	bh=y9gOE2zuKiIA3PVc9oPZQMxUqwvKVk8idGCEvr2B1w0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZO7wFxFKbMf5BsbJ+qcxoptl2M2giFV1OEAMugGGSFauibwHXYtlcl+873+abq+TgtLZWG3M0fsHzcxgKNQJOeWPR7P5Ysr+oH5mIj4XvcLR7uipt99I2TYWatMmrvpnDSyQQGsxp2CQFg1UqwgQ01N1U9dFiP53QzXty9O3504=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=moCOUKVD; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5701dec0c0aso2478207a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713253468; x=1713858268; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AkbPRxuJaFbf8hemSHK1ZWQRF0fsDq8QRKmW1NagRfM=;
+        b=moCOUKVDYu97XfRqUsugkHszVhb0d68eYpYE6omXdDtRhSbEW22lCX5DpMqezwofMp
+         2d7TCcMZlXgCXVvNI5sdrCpqa6HvLEmHCmafGp/te4M0Pedb2X54eatczGQfxzm5CGXZ
+         29T5jAlCf7yMwKQZ4VgZCiV68rfZXQrOXsXH6SATlsiyZMGMPyqUObW7hBe1wLlLSebs
+         z3gMtmWYP5wvPWfF9WBmUbpEu+iXuKvEYFcHExv/ab4DwrbIpvsRfrOspt4z21sexFIM
+         3pif8yOoraQVAKN1zinw+I+UmvAUUD4VpchoiszVcB3sFIJsdBD7LB8lnyLF/D/RNW5j
+         Bviw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713253468; x=1713858268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AkbPRxuJaFbf8hemSHK1ZWQRF0fsDq8QRKmW1NagRfM=;
+        b=PaIjkzSwdZBd00WC7yFcSS6MuQxpDGKJhLIk8lVuk4fEo52VSokfGvFAvANiPQSL6+
+         A54tTpOJjaniU8hEAsZkZ3+tz9IYC2gtBnGjoJ+aYq0IO80Egugdk3t5Ql5WlT1zOBtZ
+         MZty4USO1ogLxWicyC9Bojnr795rya02lNVlB063wy53EH1G9O7P19swTIP3mGpUZaAt
+         5GwpbbC2R1iuOvaPeFbFQKQjSi2RsYHFa73s7XNKm+0HaHPvReihFVipqxWYZr+uUigB
+         nhQGo8r126gVa9MdECNRtJCuiaMOL8U2YHDMM6+z5rI9Sy1QqVLDtArKt8AmGD8fOKmO
+         ChUw==
+X-Forwarded-Encrypted: i=1; AJvYcCXyHXqBn5if7MyPfQDkwv8fn0lA0JpdvwmWGPsTFATS0LevzY0yv3KhvyfgA6+azi3PnqGFMfGyKyrOzxDrknsQlehbY4y1UkGFSOnD
+X-Gm-Message-State: AOJu0YyRKZtUBXIlLPi/nhyB6ltHCfAkAFN6VRWUJFtux4lO2Eh6AQzk
+	13K5Ge46Khz+bhQyr09Yme/ZLLYFyQeE0q2tQuwXeKOMdRiYfsjitev+2oVTeIk=
+X-Google-Smtp-Source: AGHT+IHyv6GyLcCM7SuFRY2lQ0w+D3nRQ0Oogv+NgpwSUUhg8+w7A2aBnM/9CzYE2fZ/BNYLgCzdrg==
+X-Received: by 2002:a50:8d0b:0:b0:570:38a:57ea with SMTP id s11-20020a508d0b000000b00570038a57eamr6318788eds.33.1713253468256;
+        Tue, 16 Apr 2024 00:44:28 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id fk27-20020a056402399b00b0056e78e90a1dsm5799411edb.49.2024.04.16.00.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 00:44:28 -0700 (PDT)
+Date: Tue, 16 Apr 2024 10:44:23 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ricardo Ribalda <ribalda@chromium.org>
+Cc: Martin Tuma <martin.tuma@digiteqautomotive.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Hugues Fruchet <hugues.fruchet@foss.st.com>,
+	Alain Volmat <alain.volmat@foss.st.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Sowjanya Komatineni <skomatineni@nvidia.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
+	Abylay Ospan <aospan@netup.ru>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Dmitry Osipenko <digetx@gmail.com>,
+	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+	Vikash Garodia <quic_vgarodia@quicinc.com>,
+	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+	Sylvain Petinot <sylvain.petinot@foss.st.com>,
+	Jacopo Mondi <jacopo+renesas@jmondi.org>,
+	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
+	Pavel Machek <pavel@ucw.cz>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 09/35] media: v4l: async: refactor
+ v4l2_async_create_ancillary_links
+Message-ID: <a1917f15-ba04-4d8b-8dd6-0c1bc9a498ca@moroto.mountain>
+References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
+ <20240415-fix-cocci-v1-9-477afb23728b@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="opc3ici7b5eccz64"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416085831.51b372a3@canb.auug.org.au>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLKsWRmVeSWpSXmKPExsWy7djP87qqOnJpBidPsFqc6c61uLxrDpvF
-	wYVtjBY3JjxltNi69yq7A6tH440bbB6zGy6yeGxa1cnm8XmTXABLFJdNSmpOZllqkb5dAlfG
-	gc17WQqOcFV8bXvE3MC4i7OLkZNDQsBEovvKLJYuRi4OIYEVjBI90+YzQzhfGCX+bHrPCOF8
-	ZpQ41vSSFablzrsWJojEckaJm98Os4AkwKoOfrOESGxllJg0/TNQgoODRUBVYvFZV5AaNgEd
-	ifNv7jCDhEUEtCUO/BYAKWcW2M8ocXnzU3aQGmEBH4m7u/vYQGxeAQeJM5MeskPYghInZz4B
-	28UsUCHxqKkRbA6zgLTE8n8cIGFOAXOJY/2v2CDuVJZoerQE6uZaiVNbboHdLCHQzCnRt/Ey
-	C0TCReLvlTWMELawxKvjW9ghbBmJ05N7WCAaJjNK7P/3gR3CWc0osazxKxNElbVEy5UnUB2O
-	EqseHmMFuUhCgE/ixltBiEP5JCZtm84MEeaV6GgTgqhWk1h97w3LBEblWUhem4XktVkIr0GE
-	dSQW7P7EhiGsLbFs4WtmCNtWYt269ywLGNlXMYqnlhbnpqcWG+WllusVJ+YWl+al6yXn525i
-	BKaq0/+Of9nBuPzVR71DjEwcjIcYVYCaH21YfYFRiiUvPy9VSYS3RVg2TYg3JbGyKrUoP76o
-	NCe1+BCjNAeLkjivaop8qpBAemJJanZqakFqEUyWiYNTqoGpTN6G7VnPN9P0Vvfq2KppZ7/Z
-	1GU+XdJ4QWBN1ZuO1NSzR3aVip5S8zyplbTYrbJRcqtOkf2mNTtbmQ4HFW+ue3tKfJ+ZhdpU
-	vZp/8za/WbVTXmbZkjsaYXpGsjFnP030+f43/cbDmTFbwp3PF4TfunM/rSL4e0PXrj18744k
-	zJ+tJn2gbGVWxpE8zc+K1eUP5rQtfrjVOt161+czZ6JX/VP7Wxr3QE8o80mSX8ykXxE73qtv
-	FBE6MOuRaJnwsW0LrkmHF/ycZ9+p1SFn0yWqvNAwLerO3hVtGu/qP8wzmvur/HvZeYaqSU5n
-	OFwvFHMqFqTtnZj7UVt24U2uwz++KM7vZ6+4x7MnR+Uk36srSizFGYmGWsxFxYkA1zQt4NAD
-	AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJIsWRmVeSWpSXmKPExsVy+t/xu7oqOnJpBquXa1mc6c61uLxrDpvF
-	wYVtjBY3JjxltNi69yq7A6tH440bbB6zGy6yeGxa1cnm8XmTXABLlJ5NUX5pSapCRn5xia1S
-	tKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl7GsiM6BYe4Kl5tb2NsYNzB2cXI
-	ySEhYCJx510LUxcjF4eQwFJGid83dzBCJGQkNn65ygphC0v8udbFBlH0kVFixoUdLBDOVkaJ
-	lTPmAlVxcLAIqEosPusK0sAmoCNx/s0dZpCwiIC2xIHfAiDlzAL7GSV2NfxlA6kRFvCRuLu7
-	D8zmFXCQODPpITvEzC5GiUc/jjNDJAQlTs58wgJiMwuUSZw+94ENZCizgLTE8n8cIGFOAXOJ
-	Y/2v2CAOVZZoerQE6uhaic9/nzFOYBSehWTSLCSTZiFMgghrSdz495IJQ1hbYtnC18wQtq3E
-	unXvWRYwsq9iFEktLc5Nzy021CtOzC0uzUvXS87P3cQIjNdtx35u3sE479VHvUOMTByMhxhV
-	gDofbVh9gVGKJS8/L1VJhLdFWDZNiDclsbIqtSg/vqg0J7X4EKMpMBAnMkuJJucDE0leSbyh
-	mYGpoYmZpYGppZmxkjivZ0FHopBAemJJanZqakFqEUwfEwenVAOT1cGbN65z66QuvFB6bYGT
-	jeXqxzUfj12VCZywdmJwXYGMjof+NsW1Ez5+KsnxPtekVxRbxfrk/De7tbu6NRd2lUpIeMdH
-	7/nhpVOhYslWbvvjrcg7QdN1r5Unz47MWutz4Xqxn+EDHT65F1KLQtWEZz99GDn3VfH+4+cd
-	FlRb9q6aOfN+WoLNAtFM56/5RwRTZ69ttUq6VCUkaSSimHqtop+vz/uw2Hah+R9OsM1q3iVk
-	sFoydNelO8aSj9QL9FomrH+jeVD8mdVUS0N/94a4byH/Ow3yT++S09p1/mSmbmjL5aVH+7Xb
-	1pXZCd+Y87L83ONbzpaHtp8zeclu/vCSzDmuaR+yHp9w91Cdu22/EktxRqKhFnNRcSIAN10A
-	XGwDAAA=
-X-CMS-MailID: 20240416074332eucas1p2c852836fdfd1e657ad07543470707438
-X-Msg-Generator: CA
-X-RootMTR: 20240415225837eucas1p1ebba36eabbb4ccbd2693ee5dc2b744af
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240415225837eucas1p1ebba36eabbb4ccbd2693ee5dc2b744af
-References: <CGME20240415225837eucas1p1ebba36eabbb4ccbd2693ee5dc2b744af@eucas1p1.samsung.com>
-	<20240416085831.51b372a3@canb.auug.org.au>
+In-Reply-To: <20240415-fix-cocci-v1-9-477afb23728b@chromium.org>
 
---opc3ici7b5eccz64
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 15, 2024 at 07:34:26PM +0000, Ricardo Ribalda wrote:
+> Return 0 without checking IS_ERR or PTR_ERR if CONFIG_MEDIA_CONTROLLER
+> is not enabled.
+> 
+> This makes cocci happier:
+> 
+> drivers/media/v4l2-core/v4l2-async.c:331:23-30: ERROR: PTR_ERR applied after initialization to constant on line 319
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/v4l2-core/v4l2-async.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
+> index 4bb073587817..e26a011c89c4 100644
+> --- a/drivers/media/v4l2-core/v4l2-async.c
+> +++ b/drivers/media/v4l2-core/v4l2-async.c
+> @@ -316,9 +316,8 @@ v4l2_async_nf_try_all_subdevs(struct v4l2_async_notifier *notifier);
+>  static int v4l2_async_create_ancillary_links(struct v4l2_async_notifier *n,
+>  					     struct v4l2_subdev *sd)
+>  {
+> -	struct media_link *link = NULL;
+> -
+>  #if IS_ENABLED(CONFIG_MEDIA_CONTROLLER)
+> +	struct media_link *link;
+>  
 
-On Tue, Apr 16, 2024 at 08:58:31AM +1000, Stephen Rothwell wrote:
-> Hi all,
->=20
-> Commits
->=20
->   693d33b8fc7e ("sysctl: treewide: constify argument ctl_table_root::perm=
-issions(table)")
->   e423195d7930 ("sysctl: treewide: drop unused argument ctl_table_root::s=
-et_ownership(table)")
->=20
-> are missing a Signed-off-by from their committer.
-oops!. My bad. Let me fix that.
+I think another way you could write this is to remove the #ifs...
 
-Best
---=20
+	struct media_link *link;
 
-Joel Granados
+	if (!IS_ENABLED(CONFIG_MEDIA_CONTROLLER))
+		return 0;
 
---opc3ici7b5eccz64
-Content-Type: application/pgp-signature; name="signature.asc"
+	if (sd->entity.function != MEDIA_ENT_F_LENS && ...
 
------BEGIN PGP SIGNATURE-----
+regards,
+dan carpenter
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmYeLB4ACgkQupfNUreW
-QU/29wv/dY7znnWSddBJrrmeAPH1kYWxi/+sEW94ZbnWb44cFMaesktxkrQiWjCm
-/Lb4fn/XHMm5np+pz/B5ZAOWlvY9wWLiYYclk8Qjevpj1mETlOnwblmDA1z0Li5u
-3AxXiRomqhe+rdhsHZewtahFfzWJ8AIGnFIXU0w2NrEIms4FnFr24+aevSsFge5O
-m0B6U1RhHpIEo5Zluljmam4q5LxPRBqt6jKWwosd5jIDNys7ifVXXblaqSJTCWbM
-MbcbEiPCwJqD24SEXxoSRGW0wkRHnarIs3w3j5XMbmQ/HbnDVJET6Uc1avtmLqg2
-dpVh7UJCXTYN3L9Z+cxVCzbvhpMwDXxlVdoZFD7qC0hShZhfo/spv7Tsvp1nBzol
-WvxM1EA1MYhvHjKX0e5ra42yE7nGanPeh1ZfSWSfjmjLY/BK3ULkCzMcpjXNgHGC
-L52ltJG/lGtJsCERMy4f9qc9/7X1I2tXy8frAgO1Sjfr0pWDU+mc6vcL8jHRRjMf
-WE1Fat0y
-=Odlp
------END PGP SIGNATURE-----
-
---opc3ici7b5eccz64--
+>  	if (sd->entity.function != MEDIA_ENT_F_LENS &&
+>  	    sd->entity.function != MEDIA_ENT_F_FLASH)
+> @@ -326,9 +325,10 @@ static int v4l2_async_create_ancillary_links(struct v4l2_async_notifier *n,
+>  
+>  	link = media_create_ancillary_link(&n->sd->entity, &sd->entity);
+>  
+> -#endif
+> -
+>  	return IS_ERR(link) ? PTR_ERR(link) : 0;
+> +#else
+> +	return 0;
+> +#endif
+>  }
+> 
 
