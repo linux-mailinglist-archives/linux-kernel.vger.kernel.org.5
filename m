@@ -1,125 +1,82 @@
-Return-Path: <linux-kernel+bounces-146224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A128A6262
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:27:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F18648A6267
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:29:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE5991F23208
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:27:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88B8C1F22349
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BBB2D60A;
-	Tue, 16 Apr 2024 04:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168D02E40E;
+	Tue, 16 Apr 2024 04:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D2i5KAqD"
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LWCynFmo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F20521101
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5392F12E4A;
+	Tue, 16 Apr 2024 04:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713241632; cv=none; b=qcD+sArVwBs6Xbfdw7w8HMIASzI43dTnYAMXXwYKijTKP0G9I8U3Wh82rYmQpJcQyNR3jWIaQ74aWp0VraWhXEoDPEegd/OvTdvcmdm6oNdufGC9sV6F5Trp/jD0++1welmpX9+ik+PhcxvoLPFuTNnQSp0jsZOJVKKfLR9T/Bc=
+	t=1713241769; cv=none; b=rBVdbl9RaYFNt9slK0LJMppDQWCuG7qcl5MGYLJJQvx0w5MQzND/T6bZSuG3F5trl/D74Y0LcdNaC6WPFrCXW278AaPDxDt1Fu8JMTWrUhiMVprYp5x4gD4Ocss5QjbnV96MKqmz1vVeLCyJ6c3fW5iM38WdmSmcExDOzXHlwfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713241632; c=relaxed/simple;
-	bh=0xecUiT5IqPzvTJOIQC5hqXruSFac8zxlq/vQvqSXgs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VcQT2dF18RzlfK7hXBNA00gwMqRBh1rGSI9L3M/OFETRphBd61t4MYPzYPhhJ0nuwE/NQlOu8JigiICO6F6qW5jXwC2JrM/HZ9x64p1CgyN7ZuiE+NN0VmBM6PPVpU+JS/aq32QT46aBAhvuNoALLgp5YhDpDm81+iXYP18uuYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D2i5KAqD; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <56b0a8c1-50f6-41a9-9ea5-ed45ada58892@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713241628;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xtudUHObd5FAkvIMzOg0MTxFzzCYwBlwkkCYwlAcIHs=;
-	b=D2i5KAqDKs8klSfndz0c2S1gYNEJbLXTY+VzV7COIzkHA1uL+rCg9e9Q4G3y+kNAbDbXRT
-	eVd6uS6SXRNA5bvuftrLsOmHwavWXM4GUcFIeKETdUPT2R6W6ADCqvbOni2GhHgBli2KBJ
-	ka/Pxqb6H0cImaD/fyvxs+Dsej9rAP4=
-Date: Tue, 16 Apr 2024 06:27:04 +0200
+	s=arc-20240116; t=1713241769; c=relaxed/simple;
+	bh=fDIsLiFBv8WZkqMSX9IWNo7S8e9UOXd1bRwfNm5CC3w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hhLCmB/s4xzbtuBOw2hrABYalHygZTyj5MRImiAyfWRBNNQrTtdCsl+Tx3ZqiTf4eX/CSNYAJXxdOW0uwHfFZO+L5HysT2M2kZYKhdCIWEyFHgrURleJlXFOZ6hV0MaFIhQVTWrWNMBXlJLoKcOFXpHwo4PPMT8pNKWNoMEn/WE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LWCynFmo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39FD8C113CE;
+	Tue, 16 Apr 2024 04:29:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713241769;
+	bh=fDIsLiFBv8WZkqMSX9IWNo7S8e9UOXd1bRwfNm5CC3w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LWCynFmoZTqD8CzHXe/yWkLg2Z8Enrvqsmu+vuSdkmpF1+qTq3LLzqy2MMdiAorFA
+	 R1TBLMmNAnonVhA7kqX9P21xAapEKfTxqS7rYOFT+0Yi4odoPe9SzDjjl3flrQXZMq
+	 3Is5HVO9g5nW7vDRgmNH8gRSzeoOQoHbe8+waj2Kx0Xw7Rr6gljswc6cEL2mrPy0wZ
+	 Ays+K0Uaywhok6rRYyPdIBqHWqs0v+koFP6ZI0dBpN7plFTj7OTo4t4AaL3wkw0Z4q
+	 QMhNUvfNrTxzmS4NN7papqKK1690+8GmKB606CnL7huEyGLlFxYBhbvH51oZ1NZFgp
+	 +Zqetax5Z+kUg==
+Date: Mon, 15 Apr 2024 21:29:27 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Danielle Ratson <danieller@nvidia.com>
+Cc: <netdev@vger.kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+ <pabeni@redhat.com>, <corbet@lwn.net>, <linux@armlinux.org.uk>,
+ <sdf@google.com>, <kory.maincent@bootlin.com>,
+ <maxime.chevallier@bootlin.com>, <vladimir.oltean@nxp.com>,
+ <przemyslaw.kitszel@intel.com>, <ahmed.zaki@intel.com>,
+ <richardcochran@gmail.com>, <shayagr@amazon.com>,
+ <paul.greenwalt@intel.com>, <jiri@resnulli.us>,
+ <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <mlxsw@nvidia.com>, <petrm@nvidia.com>, <idosch@nvidia.com>
+Subject: Re: [PATCH net-next v2 07/10] ethtool: cmis_cdb: Add a layer for
+ supporting CDB commands
+Message-ID: <20240415212927.2c87ddca@kernel.org>
+In-Reply-To: <20240415120717.1251864-8-danieller@nvidia.com>
+References: <20240415120717.1251864-1-danieller@nvidia.com>
+	<20240415120717.1251864-8-danieller@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next] net: mana: Add new device attributes for mana
-To: Jason Gunthorpe <jgg@ziepe.ca>,
- Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Ajay Sharma <sharmaajay@microsoft.com>,
- Leon Romanovsky <leon@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Michael Kelley <mikelley@microsoft.com>,
- Shradha Gupta <shradhagupta@microsoft.com>, Yury Norov
- <yury.norov@gmail.com>, Konstantin Taranov <kotaranov@microsoft.com>,
- Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-References: <1713174589-29243-1-git-send-email-shradhagupta@linux.microsoft.com>
- <20240415161305.GO223006@ziepe.ca>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20240415161305.GO223006@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-在 2024/4/15 18:13, Jason Gunthorpe 写道:
-> On Mon, Apr 15, 2024 at 02:49:49AM -0700, Shradha Gupta wrote:
->> Add new device attributes to view multiport, msix, and adapter MTU
->> setting for MANA device.
->>
->> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
->> ---
->>   .../net/ethernet/microsoft/mana/gdma_main.c   | 74 +++++++++++++++++++
->>   include/net/mana/gdma.h                       |  9 +++
->>   2 files changed, 83 insertions(+)
->>
->> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
->> index 1332db9a08eb..6674a02cff06 100644
->> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
->> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
->> @@ -1471,6 +1471,65 @@ static bool mana_is_pf(unsigned short dev_id)
->>   	return dev_id == MANA_PF_DEVICE_ID;
->>   }
->>   
->> +static ssize_t mana_attr_show(struct device *dev,
->> +			      struct device_attribute *attr, char *buf)
->> +{
->> +	struct pci_dev *pdev = to_pci_dev(dev);
->> +	struct gdma_context *gc = pci_get_drvdata(pdev);
->> +	struct mana_context *ac = gc->mana.driver_data;
->> +
->> +	if (strcmp(attr->attr.name, "mport") == 0)
->> +		return snprintf(buf, PAGE_SIZE, "%d\n", ac->num_ports);
->> +	else if (strcmp(attr->attr.name, "adapter_mtu") == 0)
->> +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->adapter_mtu);
->> +	else if (strcmp(attr->attr.name, "msix") == 0)
->> +		return snprintf(buf, PAGE_SIZE, "%d\n", gc->max_num_msix);
->> +	else
->> +		return -EINVAL;
->> +
-> 
-> That is not how sysfs should be implemented at all, please find a
-> good example to copy from. Every attribute should use its own function
-> with the macros to link it into an attributes group and sysfs_emit
-> should be used for printing
+On Mon, 15 Apr 2024 15:07:14 +0300 Danielle Ratson wrote:
+> +	page_data->data = kmalloc(page_data->length, GFP_KERNEL);
+> +	if (!page_data->data)
+> +		return -ENOMEM;
+> +
+> +	memcpy(page_data->data, data, page_data->length);
 
-Not sure if this file drivers/infiniband/hw/usnic/usnic_ib_sysfs.c is a 
-good example or not.
+coccicheck suggests to use kmemdup() here:
 
-Zhu Yanjun
-
-> 
-> Jason
-
+net/ethtool/cmis_cdb.c:504:19-26: WARNING opportunity for kmemdup
+-- 
+pw-bot: cr
 
