@@ -1,164 +1,119 @@
-Return-Path: <linux-kernel+bounces-146138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45FAD8A613C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:58:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 921D78A613B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:58:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E8F5B2142F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:58:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DD36281AE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D974134AB;
-	Tue, 16 Apr 2024 02:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ckdnkwWG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E074A14A82;
+	Tue, 16 Apr 2024 02:58:15 +0000 (UTC)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05E6199BC
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:58:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E0CAD55;
+	Tue, 16 Apr 2024 02:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.75.126.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713236307; cv=none; b=pJfhmLm+7bbwlI9PYawIHwm5FsUAdV8XC0VnmnUL22ZNqzFOPGsXlYTtBoQm6ewW0tv5XOCvfHMbXrFaqNzxhQYEOjhLM4rUoYw3EDd2F+f6FlqjLsuQBQHA28ZEKVdexavlejLXAlCa9qAP/Lq0VViYeGCEAAq/R0Ji77cxxXw=
+	t=1713236295; cv=none; b=YzCQPbyGCA99l5ZoQR9r9sJb2NrFd+eBs+0Ejwb5njnrQDH86pOTjqmr2HdMK0EwH7E7GEO51AhoTlz3Ai5XNDYy09QhAtm/Iuo66xU+PmJNVPDUyzbwYaXGaHFK/oW3Eia4l1mcX0qE/4uUIK3NZJEmVOGAsO6KUpB9inLob/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713236307; c=relaxed/simple;
-	bh=BnwpGwNp+5YU6aApL0zOgln6MzekW8/Pu06ULLBFAkQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fok4ENPxA7dLLfpvT3bimWGtaR+Q8tx9bI9LhoyUdpMYvDKeZSgqoi64E5/eDfbgJ660TxlRZ5E//7BQtj3yGGHslc4sYmTe27dxNMF2BvojzhNbNRMe0OjwoUII1AZmNvLn+9hHxIgmpeivI2g7zTfb3UEFOKwRWbfggIB9K4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ckdnkwWG; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713236305; x=1744772305;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=BnwpGwNp+5YU6aApL0zOgln6MzekW8/Pu06ULLBFAkQ=;
-  b=ckdnkwWGxSJax2RGwxXKgj5RJSer56qqoujEYwQsAYYUrhLPrhPWt3vG
-   uwQujXNvYOULvGIcvnbrGS3U8RhuzPHxCMj9sCnUSD25Lq7xKxx5fEoK9
-   AQr3ez2u9+ysScFPBxwdMyNEMKeGZI3iXWnmI36QvKFOiM+JT2VTqm4US
-   iiiSU+3G/tixGT6QyyhzKaLn6vOHnLWB57CIo1x7AJI3z0XkQYCihL0b0
-   RzaBHA2aQFu2kCes5jYJ+qEWHsglW50Tog6WCL/tfh3oPZSmNMdgOOwhh
-   jS+QBq/CW5BUszoNvNFt778b4jaRUqRYhJOrE4AJi1GJzKRwRXhkvx+SK
-   A==;
-X-CSE-ConnectionGUID: wx6J60URTwC4yEqSO0euTQ==
-X-CSE-MsgGUID: aMLkkFD6QGiewYU8x9fC/w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="19256858"
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="19256858"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 19:58:24 -0700
-X-CSE-ConnectionGUID: Sa8bw42ATN+0hXTMrkACLA==
-X-CSE-MsgGUID: DEVMaxGMSre/3Yd0zWhUZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="26767880"
-Received: from unknown (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa004.fm.intel.com with ESMTP; 15 Apr 2024 19:58:21 -0700
-Message-ID: <da521760-c2d7-432e-8ace-8793d520ab09@linux.intel.com>
-Date: Tue, 16 Apr 2024 10:57:08 +0800
+	s=arc-20240116; t=1713236295; c=relaxed/simple;
+	bh=kzzxL8PRi1kwcNbGM6+YW9/lhovKhqh+OMOd+UnQukc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=sFleOUokJ0JCd0HKbczeqqSek+K8d4NZ3f547qWkXLJpLn9UKbIcFLgN1RE6JCc+9W60+fn8fEMFd3h0Ej9a5F7lOKS1oqzHuVG9qMi3LL0eim3IROTFc8Ev0ifYeq+dFKdUSQlv5PxhWMt4DViVTURihyXFjNdY3LP6x0IxuGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com; spf=pass smtp.mailfrom=realtek.com; arc=none smtp.client-ip=211.75.126.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 43G2vvlK71765271, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 43G2vvlK71765271
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Apr 2024 10:57:57 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 16 Apr 2024 10:57:57 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 16 Apr 2024 10:57:57 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::1a1:9ae3:e313:52e7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::1a1:9ae3:e313:52e7%5]) with mapi id
+ 15.01.2507.035; Tue, 16 Apr 2024 10:57:57 +0800
+From: Ping-Ke Shih <pkshih@realtek.com>
+To: Lewis Robbins <lewis.robbins2@gmail.com>,
+        "kvalo@kernel.org"
+	<kvalo@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Subject: RE: [PATCH] wifi: rtw88: reduce failed to flush queue severity
+Thread-Topic: [PATCH] wifi: rtw88: reduce failed to flush queue severity
+Thread-Index: AQHajfcTVqg9i2byzkGmq7L8YOsC/LFojyVQgAD1gD3///KZAIAAvNSw
+Date: Tue, 16 Apr 2024 02:57:57 +0000
+Message-ID: <d03e8c066a6e464aa61badb252c32b01@realtek.com>
+References: <87le5ey52e.fsf@kernel.org>
+ <20240415232837.388945-2-lewis.robbins2@gmail.com>
+In-Reply-To: <20240415232837.388945-2-lewis.robbins2@gmail.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
- Yi Liu <yi.l.liu@intel.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>,
- Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] iommu/vt-d: Remove caching mode check before
- device TLB flush
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, iommu@lists.linux.dev
-References: <20240415013835.9527-1-baolu.lu@linux.intel.com>
- <9ba0b6a2-e6c1-46de-8d30-929567952c54@linux.intel.com>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <9ba0b6a2-e6c1-46de-8d30-929567952c54@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-KSE-AntiSpam-Interceptor-Info: fallback
 
-On 4/16/24 8:53 AM, Ethan Zhao wrote:
-> On 4/15/2024 9:38 AM, Lu Baolu wrote:
->> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
->> implementation caches not-present or erroneous translation-structure
->> entries except for the first-stage translation. The caching mode is
->> irrelevant to the device TLB, therefore there is no need to check it
->> before a device TLB invalidation operation.
->>
->> Remove two caching mode checks before device TLB invalidation in the
->> driver. The removal of these checks doesn't change the driver's behavior
->> in critical map/unmap paths. Hence, there is no functionality or
->> performance impact, especially since commit <29b32839725f> ("iommu/vt-d:
->> Do not use flush-queue when caching-mode is on") has already disabled
->> flush-queue for caching mode. Therefore, caching mode will never call
->> intel_flush_iotlb_all().
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 9 ++-------
->>   1 file changed, 2 insertions(+), 7 deletions(-)
->>
->> Change log:
->> v3:
->>   - It turned out that the removals don't change the driver's behavior,
->>     hence change it from a fix patch to a cleanup one.
->>   - No functionality changes.
->> v2: 
->> https://lore.kernel.org/lkml/20240410055823.264501-1-baolu.lu@linux.intel.com/
->>   - Squash two patches into a single one.
->>   - No functionality changes.
->> v1: 
->> https://lore.kernel.org/linux-iommu/20240407144232.190355-1-baolu.lu@linux.intel.com/
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index a7ecd90303dc..f0a67e9d9faf 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -1501,11 +1501,7 @@ static void iommu_flush_iotlb_psi(struct 
->> intel_iommu *iommu,
->>       else
->>           __iommu_flush_iotlb_psi(iommu, did, pfn, pages, ih);
->> -    /*
->> -     * In caching mode, changes of pages from non-present to present 
->> require
->> -     * flush. However, device IOTLB doesn't need to be flushed in 
->> this case.
->> -     */
->> -    if (!cap_caching_mode(iommu->cap) || !map)
->> +    if (!map)
->>           iommu_flush_dev_iotlb(domain, addr, mask);
->>   }
-> 
-> Given devTLB flushing is irrelavent to CM, put iommu_flush_dev_iotlb()
-> in iommu_flush_iotlb_psi() and called with CM checking context is not
-> reasonable. the logic is buggy.
-> 
-> static void __mapping_notify_one(struct intel_iommu *iommu, struct 
-> dmar_domain *domain,
->                   unsigned long pfn, unsigned int pages)
-> {
->      /*
->       * It's a non-present to present mapping. Only flush if caching mode
->       * and second level.
->       */
->      if (cap_caching_mode(iommu->cap) && !domain->use_first_level)
->          iommu_flush_iotlb_psi(iommu, domain, pfn, pages, 0, 1);
->      else
->          iommu_flush_write_buffer(iommu);
-> 
-> 
-> then how about fold all CM checking logic in iommu_flush_iotlb_psi()
-> or speperate iommu_flush_dev_iotlb() from iommu_flush_iotlb_psi() ?
+Lewis Robbins <lewis.robbins2@gmail.com> wrote:
+>=20
+> Ping-Ke Shih <pkshih@realtek.com> writes:
+>=20
+> > Lewis Robbins <lewis.robbins2@gmail.com> wrote:
+> >>
+> >> Reduce the log message severity when we fail to flush device priority
+> >> queue. If a system has a lot of traffic, we may fail to flush the queu=
+e
+> >> in time. This generates a lot of messages in the kernel ring buffer. A=
+s
+> >> this is a common occurrence, we should use dev_info instead of dev_war=
+n.
+> >>
+> >> Signed-off-by: Lewis Robbins <lewis.robbins2@gmail.com>
+> >
+> > Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+> >
+> > I'd like to know situations of " If a system has a lot of traffic...".
+> > Did you scan or do something during traffic?
+>=20
+> So, after digging a bit more, it seems you're right this only happens dur=
+ing a
+> scan. The log message itself is repeated about 5-10x.
 
-I am refactoring the code with a new series.
+That is the same as my test before.=20
 
-https://lore.kernel.org/linux-iommu/20240410020844.253535-1-baolu.lu@linux.intel.com/
+>=20
+> I'm not sure as to the cause. If the flush operation takes a long time do=
+ we
+> need to release any mutexes etc? And if this is just a hardware issue, th=
+en we
+> can do a debug print as you say.
 
-Best regards,
-baolu
+The cause is because packets in hardware TX queue that can't be sent out in=
+ time,
+and flush ops with 'drop =3D false', so driver throws one warning. I don't =
+have
+good idea for now. Maybe, we can add a special debug mask to replace this k=
+ind of
+verbose warning with uncertain solution.=20
+
+
 
