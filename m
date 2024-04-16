@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-147716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5BBE8A7815
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:49:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 706438A7817
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:49:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DDFD2849B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:49:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC6501F2137F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB9A13DBAD;
-	Tue, 16 Apr 2024 22:45:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414A41411DE;
+	Tue, 16 Apr 2024 22:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="amCj3tS8"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CJvw7l9U"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF1713D60A;
-	Tue, 16 Apr 2024 22:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E80A13E052;
+	Tue, 16 Apr 2024 22:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713307552; cv=none; b=nESaffBT2PgOIBeRO5stXA3HbQPGG8Ppyjd4GYo5GmduXxlxZEbnwku/pi6LJ7L2aiJTRkyVbrWT7Ecib9e4s2+4Fa6T4ut99cbbAVJT3bfq69zqRgUdEmLcwZuGdo9MQe2GGE3Tx5/PMxJqMlODx+LXy3x3L0Jvdg+6hPcemZ0=
+	t=1713307554; cv=none; b=qA4QdQGppCJgm4qKa53gCWbwQgnbCIJ6ATXI1GbfFNhPFNRY433bG/vPy6ENKzmnGg6ABpGMAHtzqDha/SoXjSaxY04T/EddL7xb1Thrbbn85oOJadC9Piou4vTXWCW/++pRMEhBlLPTR4oeWrqpN+aqQngF5SJSX9wPwSnoO5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713307552; c=relaxed/simple;
-	bh=sLICh8uWL/pFkYZmub7k1MwFmB7JItN36Hx/5frbUuU=;
+	s=arc-20240116; t=1713307554; c=relaxed/simple;
+	bh=fpjcBYWKI7/oU2A5MYkdaQS7my7qviwEtb9hhcIwAKc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=taX8UXIvXspKUShBOBivWNprbiZbN5xCN35VrUk8lRehqijdCMKqb/12hzB6FxdzueSrISoLRPtCCGvaAhA1YsxAktPqpGHupPJlOis3eaiRp+moSwaHXy0yvi1mCPYVJCX6WHmKq113mJtsy83sJkzQ6oacawVCI37WZNX0hgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=amCj3tS8; arc=none smtp.client-ip=209.85.167.52
+	 MIME-Version; b=kxFeOUK0LI2KyhoKG3QJ3v57TWYnt7baleisRQUk2BIBnEO+8YdiTfU5wa2VX1vMnL5/nWmfFcXCMHUzwIZF7fDqBQt8AphX5HoCrQLAsb3KoyZz+kg130CrcUjCGxttzfj8U2aahlpaqRyesXs+DsgbvvNuEPnWCeWee4NReGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CJvw7l9U; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d6c1e238so5889630e87.2;
-        Tue, 16 Apr 2024 15:45:50 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-518c9ff3e29so3592674e87.0;
+        Tue, 16 Apr 2024 15:45:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713307549; x=1713912349; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713307550; x=1713912350; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QNrZ+v7tBZ68Mo8D5/6+veCro3vnKNVEByeT1M+GGEA=;
-        b=amCj3tS87BvLGuDZC0e/eJQBGYFUraUT39hgbXAgRvNXCBLUrqcVIlhdeJHINXX/Gf
-         kPk0NS6hBZ0NoDPT0sMyfPK3cMJp8TnhoWVXGhutiEFLsI6OjvhHskxQOXlhilYT96A1
-         GAPExUzKLW0p/7qN9ElAgATrQM93ocb/qlTNydbq/xm+4ZAFAFYVX9azShbZEWS6gWLT
-         kHGBAW2WNR2eQA6UpcEjCtnVkVieOjpG95boRk0IPL4wt0B1fr3dlRovlZRl/fOT2P5e
-         TOY4H3qCeFpeeibpmp8V79mxMX503KM3OSHMSWUXkevyPiQfUxDoMRwGZ8rqIOZsCR0M
-         3MEQ==
+        bh=6WTz6RxNbzEeUZHtBYgSuV5IA4nML2YqNqY1OSaSBE4=;
+        b=CJvw7l9U/paOx4tnDJPccXphixbSR6aEJBRAVyGk/1xvedQ8uy3IX5ki1Btr++YISR
+         NR+NeVWdxXxRGlRjAEn99Dwp1kYuR1QDIvzTE7Bq9EI277hn04bmx+gr85LsTB43+BdX
+         LfsuK7ZFnt6UlQ3MO3wTl34CRWzFxISY9tZEojJaGs5oQBK9OTRoR91EsLRBYFIQ9EZ2
+         UqJ82uJr4jQxCeZwcDTaiKKu4G5qo4c8sjJwNq49SkBUhOd2g9ZR5KSPJe5G9Q+B2iuV
+         CWd3qRpXP8xq72Xy6QOVkSD0afvr4I2QVirBadowiCj7gGv9KtmJ0zlw2ypFF8Ct/ZUV
+         eo7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713307549; x=1713912349;
+        d=1e100.net; s=20230601; t=1713307550; x=1713912350;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QNrZ+v7tBZ68Mo8D5/6+veCro3vnKNVEByeT1M+GGEA=;
-        b=PNZDG/VQLEHTG0edjuaeSyfSjV/N535DD/9LJwnqtTwlxcWBmdkK2X9RSOGwQEcaxO
-         uKRwlIQQ7TDPSS128xeqs4b3WjjyYHIqjvLVTWBfqkaM0K35gOnfiwqBztovQjP80k1E
-         ettw+vFcRDyCX5ON7t5BCZucQKmvWzWHpHYpjSzP0EKOg1MjTF6J+sTlXjP3ap82N7at
-         rvsZdhpDH9e1KJ0znqEAR2Dpjh8GIzb3BttuubPpX2U/z/Nhom4AO0mlBQ8mdpB0L6vU
-         YiUXjsOKYFj0TrBIbB0MbRTbPmcUYl/xXI3LqbL39OgS+AuZc6zTycyQuUxdaTeL70bw
-         ggOg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwj8m06auq5OvfKQsQKZg38422+O/vJt+cSEZV8QhkvNjpi8OHsQmGrYk3TKE2w74BrmfjY4rr+mvr/vH67yipNhEJw4I7RFwERqQW
-X-Gm-Message-State: AOJu0Ywbw8uR6FX7vVEAOIPZOCa/ypofGMITcbXzEKiTFMY3/fxkc6SE
-	2ViTPwIOAnzyUuABG/FeZ6xEQ9+A7F/WeEzp3xXMPpUP6zGaMKFnXCcZe0YWxr8=
-X-Google-Smtp-Source: AGHT+IGymgJktXLd90G06oaSwmUX2LOPBgoVgIwP8g2xxsJea7dBlERLI7/P3Qk/sa0qrtFKfqjozw==
-X-Received: by 2002:ac2:410a:0:b0:515:bacd:adbf with SMTP id b10-20020ac2410a000000b00515bacdadbfmr8584259lfi.34.1713307548463;
-        Tue, 16 Apr 2024 15:45:48 -0700 (PDT)
+        bh=6WTz6RxNbzEeUZHtBYgSuV5IA4nML2YqNqY1OSaSBE4=;
+        b=dfCZGpOzl6aZGQs0eLix1aqyFTuVllRvMJky037WxDZaCU7EUkm8zwsb6M7zyVL3fO
+         XtM9VIsNuf4bOxjJSC4Vyc0GoD4qtvPgk4mDm002bZWB9mbIKTo3W6r544OJOuiYNllu
+         p49L6G36AW0lecfGa1+WMJFLb7HO97S3BDXOOqR7dnP3cxq6Nmoa3Bg3uElL1GU81gNz
+         sX/4FHf1d4bUebuszd9B3jNOIOoTb2Lhn7KdDpAiEL9+cuZSmf07W1QxzftOWxBysOyz
+         jpIxjSTi46/HwOAjR3kH7qWTIKjASkKwjh+aFzA/lSXDl5q2Zu6mbfdSgV5Q1PxtcR+6
+         YX5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVm88chDLDbx4+/mCZbu8Us3l6VA6UkVccWJ8WMqa0mnFQrewDtdMxFdTcXQEWMq80vgmNH8LfJcfwMXCfOH81DpDnH5z2/eWSVa8hl
+X-Gm-Message-State: AOJu0YwANfmJkdjXuUn2+q8eNygeDlQzPyW7ahID2ZppRtgfMsItiGk4
+	1SUh+R8mBohpRgsLcrohvOwvOd13let4qB1NcD54xiShx2i03XE6DQm16BIhK1A=
+X-Google-Smtp-Source: AGHT+IFRQeiSrlNFBGze9bikBICwT+4Be4weNOJX+RPDCnHjz0mCwy8ltjNBBbW+oNSi07Q9ph7pYQ==
+X-Received: by 2002:a05:6512:3b98:b0:518:fb01:448e with SMTP id g24-20020a0565123b9800b00518fb01448emr4984114lfv.57.1713307549892;
+        Tue, 16 Apr 2024 15:45:49 -0700 (PDT)
 Received: from localhost (95-24-153-47.broadband.corbina.ru. [95.24.153.47])
-        by smtp.gmail.com with ESMTPSA id z18-20020a19f712000000b00518e3a194e9sm800817lfe.304.2024.04.16.15.45.47
+        by smtp.gmail.com with ESMTPSA id eq9-20020a056512488900b00518c3eb3a9csm981831lfb.309.2024.04.16.15.45.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 15:45:47 -0700 (PDT)
+        Tue, 16 Apr 2024 15:45:49 -0700 (PDT)
 From: Mikhail Rudenko <mike.rudenko@gmail.com>
 To: linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -76,11 +76,10 @@ Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
 	Dave Stevenson <dave.stevenson@raspberrypi.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Mikhail Rudenko <mike.rudenko@gmail.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>
-Subject: [PATCH v5 15/16] media: i2c: ov4689: Move pixel array size out of struct ov4689_mode
-Date: Wed, 17 Apr 2024 01:45:23 +0300
-Message-ID: <20240416224524.1511357-16-mike.rudenko@gmail.com>
+	Mikhail Rudenko <mike.rudenko@gmail.com>
+Subject: [PATCH v5 16/16] media: i2c: ov4689: Set timing registers programmatically
+Date: Wed, 17 Apr 2024 01:45:24 +0300
+Message-ID: <20240416224524.1511357-17-mike.rudenko@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240416224524.1511357-1-mike.rudenko@gmail.com>
 References: <20240416224524.1511357-1-mike.rudenko@gmail.com>
@@ -92,87 +91,158 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Pixel array dimensions and default crop size do not belong to the
-ov4689_mode structure, since they are mode independent. Make them
-defines instead.
+Set timing-related and BLC anchor registers via cci calls instead of
+hardcoding them in the register table. This prepares the driver for
+implementation of configurable analogue crop and binning. No
+functional change intended.
 
 Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- drivers/media/i2c/ov4689.c | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ drivers/media/i2c/ov4689.c | 83 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 68 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-index 81153b1a49a5..9da4f84e63b1 100644
+index 9da4f84e63b1..0c623d43c0ad 100644
 --- a/drivers/media/i2c/ov4689.c
 +++ b/drivers/media/i2c/ov4689.c
-@@ -70,6 +70,11 @@
- #define OV4689_LANES			4
- #define OV4689_XVCLK_FREQ		24000000
+@@ -41,6 +41,13 @@
+ #define OV4689_DIG_GAIN_STEP		1
+ #define OV4689_DIG_GAIN_DEFAULT		0x800
  
-+#define OV4689_PIXEL_ARRAY_WIDTH	2720
-+#define OV4689_PIXEL_ARRAY_HEIGHT	1536
-+#define OV4689_DUMMY_ROWS		8	/* 8 dummy rows on each side */
-+#define OV4689_DUMMY_COLUMNS		16	/* 16 dummy columns on each side */
++#define OV4689_REG_H_CROP_START		CCI_REG16(0x3800)
++#define OV4689_REG_V_CROP_START		CCI_REG16(0x3802)
++#define OV4689_REG_H_CROP_END		CCI_REG16(0x3804)
++#define OV4689_REG_V_CROP_END		CCI_REG16(0x3806)
++#define OV4689_REG_H_OUTPUT_SIZE	CCI_REG16(0x3808)
++#define OV4689_REG_V_OUTPUT_SIZE	CCI_REG16(0x380a)
 +
- static const char *const ov4689_supply_names[] = {
- 	"avdd", /* Analog power */
- 	"dovdd", /* Digital I/O power */
-@@ -90,10 +95,6 @@ struct ov4689_mode {
- 	u32 vts_def;
- 	u32 exp_def;
- 	u32 pixel_rate;
--	u32 sensor_width;
--	u32 sensor_height;
--	u32 crop_top;
--	u32 crop_left;
- 	const struct cci_reg_sequence *reg_list;
- 	unsigned int num_regs;
- };
-@@ -254,10 +255,6 @@ static const struct ov4689_mode supported_modes[] = {
- 		.id = OV4689_MODE_2688_1520,
- 		.width = 2688,
- 		.height = 1520,
--		.sensor_width = 2720,
--		.sensor_height = 1536,
--		.crop_top = 8,
--		.crop_left = 16,
- 		.exp_def = 1536,
- 		.hts_def = 10296,
- 		.hts_min = 3432,
-@@ -385,8 +382,6 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- 				struct v4l2_subdev_state *state,
- 				struct v4l2_subdev_selection *sel)
- {
--	const struct ov4689_mode *mode = to_ov4689(sd)->cur_mode;
+ #define OV4689_REG_HTS			CCI_REG16(0x380c)
+ #define OV4689_HTS_DIVIDER		4
+ #define OV4689_HTS_MAX			0x7fff
+@@ -48,6 +55,9 @@
+ #define OV4689_REG_VTS			CCI_REG16(0x380e)
+ #define OV4689_VTS_MAX			0x7fff
+ 
++#define OV4689_REG_H_WIN_OFF		CCI_REG16(0x3810)
++#define OV4689_REG_V_WIN_OFF		CCI_REG16(0x3812)
++
+ #define OV4689_REG_TIMING_FORMAT1	CCI_REG8(0x3820) /* Vertical */
+ #define OV4689_REG_TIMING_FORMAT2	CCI_REG8(0x3821) /* Horizontal */
+ #define OV4689_TIMING_FLIP_MASK		GENMASK(2, 1)
+@@ -56,6 +66,17 @@
+ #define OV4689_TIMING_FLIP_BOTH		(OV4689_TIMING_FLIP_ARRAY |\
+ 					 OV4689_TIMING_FLIP_DIGITAL)
+ 
++#define OV4689_REG_ANCHOR_LEFT_START	CCI_REG16(0x4020)
++#define OV4689_ANCHOR_LEFT_START_DEF	576
++#define OV4689_REG_ANCHOR_LEFT_END	CCI_REG16(0x4022)
++#define OV4689_ANCHOR_LEFT_END_DEF	831
++#define OV4689_REG_ANCHOR_RIGHT_START	CCI_REG16(0x4024)
++#define OV4689_ANCHOR_RIGHT_START_DEF	1984
++#define OV4689_REG_ANCHOR_RIGHT_END	CCI_REG16(0x4026)
++#define OV4689_ANCHOR_RIGHT_END_DEF	2239
++
++#define OV4689_REG_VFIFO_CTRL_01	CCI_REG8(0x4601)
++
+ #define OV4689_REG_WB_GAIN_RED		CCI_REG16(0x500c)
+ #define OV4689_REG_WB_GAIN_BLUE		CCI_REG16(0x5010)
+ #define OV4689_WB_GAIN_MIN		1
+@@ -199,10 +220,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+ 	{ CCI_REG8(0x3798), 0x1b },
+ 
+ 	/* Timing control */
+-	{ CCI_REG8(0x3801), 0x08 }, /* H_CROP_START_L h_crop_start[7:0] = 0x08 */
+-	{ CCI_REG8(0x3805), 0x97 }, /* H_CROP_END_L h_crop_end[7:0] = 0x97 */
+-	{ CCI_REG8(0x3811), 0x08 }, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
+-	{ CCI_REG8(0x3813), 0x04 }, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
+ 	{ CCI_REG8(0x3819), 0x01 }, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
+ 
+ 	/* OTP control */
+@@ -218,22 +235,11 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+ 	{ CCI_REG8(0x401b), 0x00 }, /* DEBUG_MODE */
+ 	{ CCI_REG8(0x401d), 0x00 }, /* DEBUG_MODE */
+ 	{ CCI_REG8(0x401f), 0x00 }, /* DEBUG_MODE */
+-	{ CCI_REG8(0x4020), 0x00 }, /* ANCHOR_LEFT_START_H anchor_left_start[11:8] = 0 */
+-	{ CCI_REG8(0x4021), 0x10 }, /* ANCHOR_LEFT_START_L anchor_left_start[7:0] = 0x10 */
+-	{ CCI_REG8(0x4022), 0x07 }, /* ANCHOR_LEFT_END_H anchor_left_end[11:8] = 0x07 */
+-	{ CCI_REG8(0x4023), 0xcf }, /* ANCHOR_LEFT_END_L anchor_left_end[7:0] = 0xcf */
+-	{ CCI_REG8(0x4024), 0x09 }, /* ANCHOR_RIGHT_START_H anchor_right_start[11:8] = 0x09 */
+-	{ CCI_REG8(0x4025), 0x60 }, /* ANCHOR_RIGHT_START_L anchor_right_start[7:0] = 0x60 */
+-	{ CCI_REG8(0x4026), 0x09 }, /* ANCHOR_RIGHT_END_H anchor_right_end[11:8] = 0x09 */
+-	{ CCI_REG8(0x4027), 0x6f }, /* ANCHOR_RIGHT_END_L anchor_right_end[7:0] = 0x6f */
+ 
+ 	/* ADC sync control */
+ 	{ CCI_REG8(0x4500), 0x6c }, /* ADC_SYNC_CTRL */
+ 	{ CCI_REG8(0x4503), 0x01 }, /* ADC_SYNC_CTRL */
+ 
+-	/* VFIFO */
+-	{ CCI_REG8(0x4601), 0xa7 }, /* VFIFO_CTRL_01 r_vfifo_read_start[7:0] = 0xa7 */
 -
- 	if (sel->which != V4L2_SUBDEV_FORMAT_ACTIVE)
- 		return -EINVAL;
+ 	/* Temperature monitor */
+ 	{ CCI_REG8(0x4d00), 0x04 }, /* TPM_CTRL_00 tmp_slope[15:8] = 0x04 */
+ 	{ CCI_REG8(0x4d01), 0x42 }, /* TPM_CTRL_01 tmp_slope[7:0] = 0x42 */
+@@ -406,6 +412,41 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
+ 	return -EINVAL;
+ }
  
-@@ -394,15 +389,17 @@ static int ov4689_get_selection(struct v4l2_subdev *sd,
- 	case V4L2_SEL_TGT_CROP_BOUNDS:
- 		sel->r.top = 0;
- 		sel->r.left = 0;
--		sel->r.width = mode->sensor_width;
--		sel->r.height = mode->sensor_height;
-+		sel->r.width = OV4689_PIXEL_ARRAY_WIDTH;
-+		sel->r.height = OV4689_PIXEL_ARRAY_HEIGHT;
- 		return 0;
- 	case V4L2_SEL_TGT_CROP:
- 	case V4L2_SEL_TGT_CROP_DEFAULT:
--		sel->r.top = mode->crop_top;
--		sel->r.left = mode->crop_left;
--		sel->r.width = mode->width;
--		sel->r.height = mode->height;
-+		sel->r.top = OV4689_DUMMY_ROWS;
-+		sel->r.left = OV4689_DUMMY_COLUMNS;
-+		sel->r.width =
-+			OV4689_PIXEL_ARRAY_WIDTH - 2 * OV4689_DUMMY_COLUMNS;
-+		sel->r.height =
-+			OV4689_PIXEL_ARRAY_HEIGHT - 2 * OV4689_DUMMY_ROWS;
- 		return 0;
- 	}
++static int ov4689_setup_timings(struct ov4689 *ov4689)
++{
++	const struct ov4689_mode *mode = ov4689->cur_mode;
++	struct regmap *rm = ov4689->regmap;
++	int ret = 0;
++
++	cci_write(rm, OV4689_REG_H_CROP_START, 8, &ret);
++	cci_write(rm, OV4689_REG_V_CROP_START, 8, &ret);
++	cci_write(rm, OV4689_REG_H_CROP_END, 2711, &ret);
++	cci_write(rm, OV4689_REG_V_CROP_END, 1531, &ret);
++
++	cci_write(rm, OV4689_REG_H_OUTPUT_SIZE, mode->width, &ret);
++	cci_write(rm, OV4689_REG_V_OUTPUT_SIZE, mode->height, &ret);
++
++	cci_write(rm, OV4689_REG_H_WIN_OFF, 8, &ret);
++	cci_write(rm, OV4689_REG_V_WIN_OFF, 4, &ret);
++
++	cci_write(rm, OV4689_REG_VFIFO_CTRL_01, 167, &ret);
++
++	return ret;
++}
++
++static int ov4689_setup_blc_anchors(struct ov4689 *ov4689)
++{
++	struct regmap *rm = ov4689->regmap;
++	int ret = 0;
++
++	cci_write(rm, OV4689_REG_ANCHOR_LEFT_START, 16, &ret);
++	cci_write(rm, OV4689_REG_ANCHOR_LEFT_END, 1999, &ret);
++	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_START, 2400, &ret);
++	cci_write(rm, OV4689_REG_ANCHOR_RIGHT_END, 2415, &ret);
++
++	return ret;
++}
++
+ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+ {
+ 	struct ov4689 *ov4689 = to_ov4689(sd);
+@@ -429,6 +470,18 @@ static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+ 			goto unlock_and_return;
+ 		}
  
++		ret = ov4689_setup_timings(ov4689);
++		if (ret) {
++			pm_runtime_put(dev);
++			goto unlock_and_return;
++		}
++
++		ret = ov4689_setup_blc_anchors(ov4689);
++		if (ret) {
++			pm_runtime_put(dev);
++			goto unlock_and_return;
++		}
++
+ 		ret = __v4l2_ctrl_handler_setup(&ov4689->ctrl_handler);
+ 		if (ret) {
+ 			pm_runtime_put(dev);
 -- 
 2.44.0
 
