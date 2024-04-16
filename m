@@ -1,175 +1,79 @@
-Return-Path: <linux-kernel+bounces-146581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C2D8A6793
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:58:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAEF18A6798
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:02:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99E19283E02
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:58:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 992C31F2191B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7186E86AC4;
-	Tue, 16 Apr 2024 09:58:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TiLZnJiM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2CE586629;
+	Tue, 16 Apr 2024 10:02:08 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0020883A1D
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E09E82D82
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:02:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713261487; cv=none; b=KydZG+Nyz2W7xXLOsliEYL3/UAYF8yFfEvGW1QlMpr6MViiDenA8veSgj1qq7BIc9rZJfDuYa1RjJoOI2Pq57OljMPReDMdt/Z9HqiAfrLxI3Q9O5wSQnfbwuc+oT8l/XFp8Kj+jIgdfRaRt7MiAToeRiBDpzyUJD++QJoc4EMk=
+	t=1713261728; cv=none; b=AAAfr/5hCnMfRuetOTZCV3Ni/ztrPQX6Yt43Gq4Cw49UuGj6rMYGR2ZkBaZ7Y9H5kMLldQPtnfYy5RpRpVDn4orOdJbwDaXsnARduVUCYQCdj0676+vq/11TCDfvU802mvN7yDSf9wC6zlVOTjks6XuDXCr/w2F1VPndpLQ4APw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713261487; c=relaxed/simple;
-	bh=KwZmFBYAqg+B+dbpT/j2cFN+N3E9//zZnas4MzkRbYI=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=K8zZIrly8QH41HLdIiZizt19LtlqlQtwX+2vccm9iFRAP/gI4fVk6jfIHXY0vGJZ3PkevU0zOtnQ5kdAJ8mt+KHBzclZWQYQE+Y2cyaG8raas52zyNair758WXLwBdHb62FyTGc4jAMmkeV/MjPMQKsgW5B8LOJxUtLVVc2ltEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TiLZnJiM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713261485;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=SFyR0xGSUlDFq4bRYadYqHqn2Ie/fiirEvayyMJ3GoA=;
-	b=TiLZnJiMjeOTKA+72Ly0LVTxcnosFefycU+ikf3aOxSu9qM7KWfP5lpbf8RTR1euy5stWI
-	CCDrhab8cOpkOLF0k9jng24xEW3q+iWYkEN5/X+vUixmx3W5/ymMTIDmyNkq1+cL6H18Og
-	+5+/s/x4RYA6ttvvSn4aUajaX+rf1AQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-550-aIN12dWZNc6e0zAv_DrCUQ-1; Tue, 16 Apr 2024 05:58:03 -0400
-X-MC-Unique: aIN12dWZNc6e0zAv_DrCUQ-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-348973b648fso159875f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 02:58:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713261482; x=1713866282;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SFyR0xGSUlDFq4bRYadYqHqn2Ie/fiirEvayyMJ3GoA=;
-        b=CY/IsxlDgK50Vh2noCpvd6ztZwsx739EKcQzIpH/Zf4CkjqUa+ZM0B3bZMglSIB34O
-         STcQ0cKYH9xfdzSF9ly+r4OGFKtZkKZurJChI8xLPnRJiLJ9soI/P/Sm5gyMoQo5GZ1G
-         ZhZj2Dwpg4fk9W6DJ+6q3RgXQ7mIsFprFxDaLUqTch8pt/DhwspQgAUhmRpyPffE0pPe
-         3BtYn9i0O286SB5gQpbg2wxhMGs6/HpNWuo3DR6r2qfWZJJaGHrdqjn9mezj9fUZCibt
-         vJwUwkSHPjWH4WdWdgN+LqdF4IgG1F2Ow6KMuUVR0/Q7tpXOwJ15IOgXmpTCFwTjNlCK
-         qOCw==
-X-Forwarded-Encrypted: i=1; AJvYcCXKZNsZMcm9RHttIPqspNDfARs+Cp47zlUFO+u3bd3PN7hhH/DnzzS2r+LwaxCRSXb2BsGYkf6ORf/gYXw4DV6/uuDAor0Sw7vEjB5h
-X-Gm-Message-State: AOJu0YxGDa12ByWg1b18N/FvWe3K6yZh5sPyLOHp9FUCZZdaRtseYjal
-	aP01k51q74giNOQDdx97NCwLwW/XBCTVGZHEDh7gSQ/HYbGWxm5TiZDYeh2UcZ0LLoJ0haoDTzu
-	6pwgT1IbF6NhWIgW514cAtdtTuxL/in0ENuTdzrH3r1U7kB7FdamIGYOwdE5BXg==
-X-Received: by 2002:a5d:4e0a:0:b0:33e:c97c:a24 with SMTP id p10-20020a5d4e0a000000b0033ec97c0a24mr8655154wrt.5.1713261482474;
-        Tue, 16 Apr 2024 02:58:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG+H5GtR4dSPDHt/X+BdOZkvjiofnARPzbWkG4xJmpYzugS0LVJxkMttR2eDMl8n/s2qgnC1g==
-X-Received: by 2002:a5d:4e0a:0:b0:33e:c97c:a24 with SMTP id p10-20020a5d4e0a000000b0033ec97c0a24mr8655137wrt.5.1713261482092;
-        Tue, 16 Apr 2024 02:58:02 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-231-31.dyn.eolo.it. [146.241.231.31])
-        by smtp.gmail.com with ESMTPSA id di7-20020a0560000ac700b003439d2a5f99sm14291462wrb.55.2024.04.16.02.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 02:58:01 -0700 (PDT)
-Message-ID: <469c26d112600bce3a7fe77131c62eae4ecae5d1.camel@redhat.com>
-Subject: Re: [PATCH net-next v7 2/3] net: gro: move L3 flush checks to
- tcp_gro_receive and udp_gro_receive_segment
-From: Paolo Abeni <pabeni@redhat.com>
-To: Richard Gobert <richardbgobert@gmail.com>, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, dsahern@kernel.org, 
-	willemdebruijn.kernel@gmail.com, shuah@kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Date: Tue, 16 Apr 2024 11:58:00 +0200
-In-Reply-To: <a36bf0b117f7786bbf028494d68185486025777d.camel@redhat.com>
-References: <20240412155533.115507-1-richardbgobert@gmail.com>
-	 <20240412155533.115507-3-richardbgobert@gmail.com>
-	 <a36bf0b117f7786bbf028494d68185486025777d.camel@redhat.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=mQINBGISiDUBEAC5uMdJicjm3ZlWQJG4u2EU1EhWUSx8IZLUTmEE8zmjPJFSYDcjtfGcbzLPb63BvX7FADmTOkO7gwtDgm501XnQaZgBUnCOUT8qv5MkKsFH20h1XJyqjPeGM55YFAXc+a4WD0YyO5M0+KhDeRLoildeRna1ey944VlZ6Inf67zMYw9vfE5XozBtytFIrRyGEWkQwkjaYhr1cGM8ia24QQVQid3P7SPkR78kJmrT32sGk+TdR4YnZzBvVaojX4AroZrrAQVdOLQWR+w4w1mONfJvahNdjq73tKv51nIpu4SAC1Zmnm3x4u9r22mbMDr0uWqDqwhsvkanYmn4umDKc1ZkBnDIbbumd40x9CKgG6ogVlLYeJa9WyfVMOHDF6f0wRjFjxVoPO6p/ZDkuEa67KCpJnXNYipLJ3MYhdKWBZw0xc3LKiKc+nMfQlo76T/qHMDfRMaMhk+L8gWc3ZlRQFG0/Pd1pdQEiRuvfM5DUXDo/YOZLV0NfRFU9SmtIPhbdm9cV8Hf8mUwubihiJB/9zPvVq8xfiVbdT0sPzBtxW0fXwrbFxYAOFvT0UC2MjlIsukjmXOUJtdZqBE3v3Jf7VnjNVj9P58+MOx9iYo8jl3fNd7biyQWdPDfYk9ncK8km4skfZQIoUVqrWqGDJjHO1W9CQLAxkfOeHrmG29PK9tHIwARAQABtB9QYW9sbyBBYmVuaSA8cGFiZW5pQHJlZGhhdC5jb20+iQJSBBMBCAA8FiEEg1AjqC77wbdLX2LbKSR5jcyPE6QFAmISiDUCGwMFCwkIBwIDIgIBBhUKCQgLAgQWAgMBAh4HAheAAAoJECkkeY3MjxOkJSYQAJcc6MTsuFxYdYZkeWjW//zbD3ApRHzpNlHLVSuJqHr9/aDS+tyszgS8jj9MiqALzgq4iZbg
- 7ZxN9ZsDL38qVIuFkSpgMZCiUHdxBC11J8nbBSLlpnc924UAyr5XrGA99 6Wl5I4Km3128GY6iAkH54pZpOmpoUyBjcxbJWHstzmvyiXrjA2sMzYjt3Xkqp0cJfIEekOi75wnNPofEEJg28XPcFrpkMUFFvB4Aqrdc2yyR8Y36rbw18sIX3dJdomIP3dL7LoJi9mfUKOnr86Z0xltgcLPGYoCiUZMlXyWgB2IPmmcMP2jLJrusICjZxLYJJLofEjznAJSUEwB/3rlvFrSYvkKkVmfnfro5XEr5nStVTECxfy7RTtltwih85LlZEHP8eJWMUDj3P4Q9CWNgz2pWr1t68QuPHWaA+PrXyasDlcRpRXHZCOcvsKhAaCOG8TzCrutOZ5NxdfXTe3f1jVIEab7lNgr+7HiNVS+UPRzmvBc73DAyToKQBn9kC4jh9HoWyYTepjdcxnio0crmara+/HEyRZDQeOzSexf85I4dwxcdPKXv0fmLtxrN57Ae82bHuRlfeTuDG3x3vl/Bjx4O7Lb+oN2BLTmgpYq7V1WJPUwikZg8M+nvDNcsOoWGbU417PbHHn3N7yS0lLGoCCWyrK1OY0QM4EVsL3TjOfUtCNQYW9sbyBBYmVuaSA8cGFvbG8uYWJlbmlAZ21haWwuY29tPokCUgQTAQgAPBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEoitAhsDBQsJCAcCAyICAQYVCgkICwIEFgIDAQIeBwIXgAAKCRApJHmNzI8TpBzHD/45pUctaCnhee1vkQnmStAYvHmwrWwIEH1lzDMDCpJQHTUQOOJWDAZOFnE/67bxSS81Wie0OKW2jvg1ylmpBA0gPpnzIExQmfP72cQ1TBoeVColVT6Io35BINn+ymM7c0Bn8RvngSEpr3jBtqvvWXjvtnJ5/HbOVQCg62NC6ewosoKJPWpGXMJ9SKsVIOUHsmoWK60spzeiJoSmAwm3zTJQnM5kRh2q
- iWjoCy8L35zPqR5TV+f5WR5hTVCqmLHSgm1jxwKhPg9L+GfuE4d0SWd84y GeOB3sSxlhWsuTj1K6K3MO9srD9hr0puqjO9sAizd0BJP8ucf/AACfrgmzIqZXCfVS7jJ/M+0ic+j1Si3yY8wYPEi3dvbVC0zsoGj9n1R7B7L9c3g1pZ4L9ui428vnPiMnDN3jh9OsdaXeWLvSvTylYvw9q0DEXVQTv4/OkcoMrfEkfbXbtZ3PRlAiddSZA5BDEkkm6P9KA2YAuooi1OD9d4MW8LFAeEicvHG+TPO6jtKTacdXDRe611EfRwTjBs19HmabSUfFcumL6BlVyceIoSqXFe5jOfGpbBevTZtg4kTSHqymGb6ra6sKs+/9aJiONs5NXY7iacZ55qG3Ib1cpQTps9bQILnqpwL2VTaH9TPGWwMY3Nc2VEc08zsLrXnA/yZKqZ1YzSY9MGXWYLkCDQRiEog1ARAAyXMKL+x1lDvLZVQjSUIVlaWswc0nV5y2EzBdbdZZCP3ysGC+s+n7xtq0o1wOvSvaG9h5q7sYZs+AKbuUbeZPu0bPWKoO02i00yVoSgWnEqDbyNeiSW+vI+VdiXITV83lG6pS+pAoTZlRROkpb5xo0gQ5ZeYok8MrkEmJbsPjdoKUJDBFTwrRnaDOfb+Qx1D22PlAZpdKiNtwbNZWiwEQFm6mHkIVSTUe2zSemoqYX4QQRvbmuMyPIbwbdNWlItukjHsffuPivLF/XsI1gDV67S1cVnQbBgrpFDxN62USwewXkNl+ndwa+15wgJFyq4Sd+RSMTPDzDQPFovyDfA/jxN2SK1Lizam6o+LBmvhIxwZOfdYH8bdYCoSpqcKLJVG3qVcTwbhGJr3kpRcBRz39Ml6iZhJyI3pEoX3bJTlR5Pr1Kjpx13qGydSMos94CIYWAKhegI06aTdvvuiigBwjngo/Rk5S+iEGR5KmTqGyp27o6YxZy6D4NIc6PKUzhIUxfvuHNvfu
- sD2W1U7eyLdm/jCgticGDsRtweytsgCSYfbz0gdgUuL3EBYN3JLbAU+UZpy v/fyD4cHDWaizNy/KmOI6FFjvVh4LRCpGTGDVPHsQXaqvzUybaMb7HSfmBBzZqqfVbq9n5FqPjAgD2lJ0rkzb9XnVXHgr6bmMRlaTlBMAEQEAAYkCNgQYAQgAIBYhBINQI6gu+8G3S19i2ykkeY3MjxOkBQJiEog1AhsMAAoJECkkeY3MjxOkY1YQAKdGjHyIdOWSjM8DPLdGJaPgJdugHZowaoyCxffilMGXqc8axBtmYjUIoXurpl+f+a7S0tQhXjGUt09zKlNXxGcebL5TEPFqgJTHN/77ayLslMTtZVYHE2FiIxkvW48yDjZUlefmphGpfpoXe4nRBNto1mMB9Pb9vR47EjNBZCtWWbwJTIEUwHP2Z5fV9nMx9Zw2BhwrfnODnzI8xRWVqk7/5R+FJvl7s3nY4F+svKGD9QHYmxfd8Gx42PZc/qkeCjUORaOf1fsYyChTtJI4iNm6iWbD9HK5LTMzwl0n0lL7CEsBsCJ97i2swm1DQiY1ZJ95G2Nz5PjNRSiymIw9/neTvUT8VJJhzRl3Nb/EmO/qeahfiG7zTpqSn2dEl+AwbcwQrbAhTPzuHIcoLZYV0xDWzAibUnn7pSrQKja+b8kHD9WF+m7dPlRVY7soqEYXylyCOXr5516upH8vVBmqweCIxXSWqPAhQq8d3hB/Ww2A0H0PBTN1REVw8pRLNApEA7C2nX6RW0XmA53PIQvAP0EAakWsqHoKZ5WdpeOcH9iVlUQhRgemQSkhfNaP9LqR1XKujlTuUTpoyT3xwAzkmSxN1nABoutHEO/N87fpIbpbZaIdinF7b9srwUvDOKsywfs5HMiUZhLKoZzCcU/AEFjQsPTATACGsWf3JYPnWxL9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1713261728; c=relaxed/simple;
+	bh=Jq19k12ilL8BDybMeNw1DHJhQaeEvIBxmiWCnWQG7Uc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=kbJhbUJlfysFl2UBU+Iklrfqj68KpTyT3RSz1dFo42zzizPWkW0PNow2NlHYQ47b6sTzlsnFV6zEldPg0Fk7vpZUBMf3xbiOPKYmnPEneQUnadgvKR0+2UhunRy1VkMA2KtAGO4ttO8Xk8ra0oma63M1Wua/XRNthLnGXfiaRhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6256C113CE;
+	Tue, 16 Apr 2024 10:02:07 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id A6AEB106071E; Tue, 16 Apr 2024 12:02:05 +0200 (CEST)
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Sebastian Reichel <sre@kernel.org>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>, 
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
+ Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, 
+ kernel@pengutronix.de, Osama Muhammad <osmtendev@gmail.com>
+In-Reply-To: <cover.1712756364.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1712756364.git.u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 0/2] HSI: Convert to platform remove callback returning
+ void
+Message-Id: <171326172562.1374966.13797098333010871783.b4-ty@collabora.com>
+Date: Tue, 16 Apr 2024 12:02:05 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.13.0
 
-On Tue, 2024-04-16 at 11:21 +0200, Paolo Abeni wrote:
-> On Fri, 2024-04-12 at 17:55 +0200, Richard Gobert wrote:
-> > {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
-> > iph->id, ...) against all packets in a loop. These flush checks are use=
-d
-> > currently in all tcp flows and in some UDP flows in GRO.
-> >=20
-> > These checks need to be done only once and only against the found p skb=
-,
-> > since they only affect flush and not same_flow.
-> >=20
-> > Leveraging the previous commit in the series, in which correct network
-> > header offsets are saved for both outer and inner network headers -
-> > allowing these checks to be done only once, in tcp_gro_receive and
-> > udp_gro_receive_segment. As a result, NAPI_GRO_CB(p)->flush is not used=
- at
-> > all. In addition, flush_id checks are more declarative and contained in
-> > inet_gro_flush, thus removing the need for flush_id in napi_gro_cb.
-> >=20
-> > This results in less parsing code for UDP flows and non-loop flush test=
-s
-> > for TCP flows.
-> >=20
-> > To make sure results are not within noise range - I've made netfilter d=
-rop
-> > all TCP packets, and measured CPU performance in GRO (in this case GRO =
-is
-> > responsible for about 50% of the CPU utilization).
-> >=20
-> > L3 flush/flush_id checks are not relevant to UDP connections where
-> > skb_gro_receive_list is called. The only code change relevant to this f=
-low
-> > is inet_gro_receive. The rest of the code parsing this flow stays the
-> > same.
-> >=20
-> > All concurrent connections tested are with the same ip srcaddr and
-> > dstaddr.
-> >=20
-> > perf top while replaying 64 concurrent IP/UDP connections (UDP fwd flow=
-):
-> > net-next:
-> >         3.03%  [kernel]  [k] inet_gro_receive
-> >=20
-> > patch applied:
-> >         2.78%  [kernel]  [k] inet_gro_receive
->=20
-> Why there are no figures for
-> udp_gro_receive_segment()/gro_network_flush() here?
->=20
-> Also you should be able to observer a very high amount of CPU usage by
-> GRO even with TCP with very high speed links, keeping the BH/GRO on a
-> CPU and the user-space/data copy on a different one (or using rx zero
-> copy).
 
-To be more explicit: I think at least the above figures are required,=C2=A0
-and I still fear the real gain in that case would range from zero to
-negative.=20
+On Wed, 10 Apr 2024 15:41:09 +0200, Uwe Kleine-König wrote:
+> this series converts all platform drivers below drivers/hsi/ to not use
+> struct platform_device::remove() any more. See commit 5c5a7680e67b
+> ("platform: Provide a remove callback that returns no value") for an
+> extended explanation and the eventual goal.
+> 
+> All conversations are trivial, because the driver's .remove() callbacks
+> returned zero unconditionally.
+> 
+> [...]
 
-If you can't do the TCP part of the testing, please provide at least
-the figures for a single UDP flow, that should give more indication WRT
-the result we can expect with TCP.
+Applied, thanks!
 
-Note that GRO is used mainly by TCP and TCP packets with different
-src/dst port will land into different GRO hash buckets, having
-different RX hash.
+[1/2] HSI: omap_ssi_core: Convert to platform remove callback returning void
+      commit: 94eabddc24b3ec2d9e0ff77e17722a2afb092155
+[2/2] HSI: omap_ssi_port: Convert to platform remove callback returning void
+      commit: c076486b6a28aa584b3e86312442bac09279a015
 
-That will happen even for UDP, at least for some (most?) nics include
-the UDP ports in the RX hash.
-
-Thanks,
-
-Paolo
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
 
 
