@@ -1,235 +1,325 @@
-Return-Path: <linux-kernel+bounces-146457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A24D8A659C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:03:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CDE78A6596
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:00:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11F9E2848FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:03:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8ED01C224A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3539136E28;
-	Tue, 16 Apr 2024 08:02:49 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3D7136E13;
+	Tue, 16 Apr 2024 08:00:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NV3om/Vu"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49C87FBBA;
-	Tue, 16 Apr 2024 08:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE20184FDB;
+	Tue, 16 Apr 2024 08:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713254569; cv=none; b=JfFcHttI/f2N14XkHOBeck/lt8lbnmzNH6Yw6CgreDBkdMzqy5PUZ8DDmFHmLTfPgy8rFSmKKXko/E78OfXuntMwa1UQky1OIQrz6BXMPSiXYZM7lF/ecSca1um18m2tE+SWxmCU0GqBTLrrxQHpWd8+T646+HGR+KNek+lK9Yw=
+	t=1713254428; cv=none; b=GeKe8My+9/MyjvgmzsV3oDWw7z/Wr1GkwHKYM7AvYsgAounKBIEK+QTOmP+bZcFZR9QbY5APozc/eGehYzoFLM46XK4JljnsG54+/D3ulrrQUCLOJ9QDUA0PVmVseb3cWbB5YJgL7pirgf/3MJBKxbgE+CozMvg7qJlUfYnyxJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713254569; c=relaxed/simple;
-	bh=tn/GBnRICcJdeKMYnrg62lH25ltqM035b4xvTJV5wYw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SnkxcPXx9a4Wn0I79SqwA/qVabkA9zpyVRY6lplDUSfxALK5V8g+HcEqHiOgpLn70oxBxqryITZSxyAHlR4wPJW92n+Vs0Elr+KMiXQMRB+ioTG3fIVK5dIZV7iclhrMXkIs5pBKbUn3pRKk6UKdqhRzBOVAgYc6BGVrPYG16hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 43G80usQ012685;
-	Tue, 16 Apr 2024 16:00:56 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4VJbyL62Z3z2NTBr4;
-	Tue, 16 Apr 2024 15:58:34 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 16 Apr 2024 16:00:54 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: <dqminh@cloudflare.com>
-CC: <david@fromorbit.com>, <kernel-team@cloudflare.com>,
-        <linux-fsdevel@vger.kernel.org>, <steve.kang@unisoc.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] mm: protect xa split stuff under lruvec->lru_lock during migration
-Date: Tue, 16 Apr 2024 16:00:46 +0800
-Message-ID: <20240416080046.310866-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CA+wXwBS7YTHUmxGP3JrhcKMnYQJcd6=7HE+E1v-guk01L2K3Zw@mail.gmail.com>
-References: <CA+wXwBS7YTHUmxGP3JrhcKMnYQJcd6=7HE+E1v-guk01L2K3Zw@mail.gmail.com>
+	s=arc-20240116; t=1713254428; c=relaxed/simple;
+	bh=mLgxZjyAUp0NV/f8DGt9IaprdC+uRW+ysDIR4IryXvo=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=UlulmdxqssIt15isU3amZLBv/TrVGc7loptwQp9HrHUz/qRsgMXZF6IRyJkyg7i81bznge0MBK64EfkpZrjEjv+R7H9nQG79kMjyaBsmdAB49ZkRGR6BDD92sqxFHd1HnzusvjoHDrtxpUo3sv4gEYdq8hF7p/B79pRsdWlDvhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=NV3om/Vu; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9AA15E0012;
+	Tue, 16 Apr 2024 08:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713254422;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AQNbiMLr4jYeyHOSIBnjLr8DKZRWgrbGnQddnfIMp/4=;
+	b=NV3om/VuFyHBWFyV70iAztTsjeYvR15eF47iCzTxUBC4arj/TlqTMggfwQ1bwtn0jrKnds
+	hBOXJLPkVFrx7JLYzsGn8GPmYvuOdd4WcWa9YmYD8SjRWGRqJqp0F+aK2G2mhIPqbxFYd2
+	YabIJaRgtnLGvch8lLDpTeQXw7y+JTNz+d1t93IjjespoOk6OY/1cFNJWuKlbsDwCmPHKz
+	9vtuSsO/lC3vkhnRAmLJIpCPsOkiuedFmiCVAuh/dqXD8ffX0qfZbtUjrcok2EDWPl3kw4
+	8w0fCOodmzlGLIGcxmY3u/OuVK5grNjvA1NhI6CVwn4Jtg3vvfHUWmIWWVyYgA==
+Date: Tue, 16 Apr 2024 10:00:56 +0200 (CEST)
+From: Romain Gantois <romain.gantois@bootlin.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+    Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>, 
+    Yanteng Si <siyanteng@loongson.cn>, 
+    Maxime Coquelin <mcoquelin.stm32@gmail.com>, Chen-Yu Tsai <wens@csie.org>, 
+    Jernej Skrabec <jernej.skrabec@gmail.com>, 
+    Samuel Holland <samuel@sholland.org>, Simon Horman <horms@kernel.org>, 
+    Huacai Chen <chenhuacai@kernel.org>, netdev@vger.kernel.org, 
+    linux-stm32@st-md-mailman.stormreply.com, 
+    linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+    linux-kernel@vger.kernel.org, Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH net 3/4] net: stmmac: Fix IP-cores specific MAC
+ capabilities
+In-Reply-To: <20240412180340.7965-4-fancer.lancer@gmail.com>
+Message-ID: <b1c32388-f815-469f-479d-2a67e6924350@bootlin.com>
+References: <20240412180340.7965-1-fancer.lancer@gmail.com> <20240412180340.7965-4-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 43G80usQ012685
+Content-Type: text/plain; charset=US-ASCII
+X-GND-Sasl: romain.gantois@bootlin.com
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On Fri, 12 Apr 2024, Serge Semin wrote:
 
-Livelock in [1] is reported multitimes since v515, where the zero-ref
-folio is repeatly found on the page cache by find_get_entry. A possible
-timing sequence is proposed in [2], which can be described briefly as
-the lockless xarray operation could get harmed by an illegal folio
-remaining on the slot[offset]. This commit would like to protect
-the xa split stuff(folio_ref_freeze and __split_huge_page) under
-lruvec->lock to remove the race window.
+> Here is the list of the MAC capabilities specific to the particular DW MAC
+> IP-cores currently supported by the driver:
+> 
+> DW MAC100: MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> 	   MAC_10 | MAC_100
+> 
+> DW GMAC:  MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+>           MAC_10 | MAC_100 | MAC_1000
+> 
+> Allwinner sun8i MAC: MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+>                      MAC_10 | MAC_100 | MAC_1000
+> 
+> DW QoS Eth: MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+>             MAC_10 | MAC_100 | MAC_1000 | MAC_2500FD
+> if there is more than 1 active Tx/Rx queues:
+> 	   MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+>            MAC_10FD | MAC_100FD | MAC_1000FD | MAC_2500FD
+> 
+> DW XGMAC: MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+>           MAC_1000FD | MAC_2500FD | MAC_5000FD | MAC_10000FD
+> 
+> DW XLGMAC: MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+>           MAC_1000FD | MAC_2500FD | MAC_5000FD | MAC_10000FD |
+>           MAC_25000FD | MAC_40000FD | MAC_50000FD | MAC_100000FD
+> 
+> As you can see there are only two common capabilities:
+> MAC_ASYM_PAUSE | MAC_SYM_PAUSE.
+> Meanwhile what is currently implemented defines 10/100/1000 link speeds
+> for all IP-cores, which is definitely incorrect for DW MAC100, DW XGMAC
+> and DW XLGMAC devices.
+> 
+> Seeing the flow-control is implemented as a callback for each MAC IP-core
+> (see dwmac100_flow_ctrl(), dwmac1000_flow_ctrl(), sun8i_dwmac_flow_ctrl(),
+> etc) and since the MAC-specific setup() method is supposed to be called
+> for each available DW MAC-based device, the capabilities initialization
+> can be freely moved to these setup() functions, thus correctly setting up
+> the MAC-capabilities for each IP-core (including the Allwinner Sun8i). A
+> new stmmac_link::caps field was specifically introduced for that so to
+> have all link-specific info preserved in a single structure.
+> 
+> Note the suggested change fixes three earlier commits at a time. The
+> commit 5b0d7d7da64b ("net: stmmac: Add the missing speeds that XGMAC
+> supports") permitted the 10-100 link speeds and 1G half-duplex mode for DW
+> XGMAC IP-core even though it doesn't support them. The commit df7699c70c1b
+> ("net: stmmac: Do not cut down 1G modes") incorrectly added the MAC1000
+> capability to the DW MAC100 IP-core. Similarly to the DW XGMAC the commit
+> 8a880936e902 ("net: stmmac: Add XLGMII support") incorrectly permitted the
+> 10-100 link speeds and 1G half-duplex mode for DW XLGMAC IP-core.
+> 
+> Fixes: 5b0d7d7da64b ("net: stmmac: Add the missing speeds that XGMAC supports")
+> Fixes: df7699c70c1b ("net: stmmac: Do not cut down 1G modes")
+> Fixes: 8a880936e902 ("net: stmmac: Add XLGMII support")
+> Suggested-by: Russell King (Oracle) <linux@armlinux.org.uk>
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/common.h   |  1 +
+>  .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c  |  2 ++
+>  .../ethernet/stmicro/stmmac/dwmac1000_core.c   |  2 ++
+>  .../ethernet/stmicro/stmmac/dwmac100_core.c    |  2 ++
+>  .../net/ethernet/stmicro/stmmac/dwmac4_core.c  | 10 ++++------
+>  .../ethernet/stmicro/stmmac/dwxgmac2_core.c    | 18 ++++++++----------
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c  |  7 ++++---
+>  7 files changed, 23 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+> index a6fefe675ef1..3b7d4ac1e7be 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/common.h
+> +++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+> @@ -553,6 +553,7 @@ extern const struct stmmac_hwtimestamp stmmac_ptp;
+>  extern const struct stmmac_mode_ops dwmac4_ring_mode_ops;
+>  
+>  struct mac_link {
+> +	u32 caps;
+>  	u32 speed_mask;
+>  	u32 speed10;
+>  	u32 speed100;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+> index b21d99faa2d0..e1b761dcfa1d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+> @@ -1096,6 +1096,8 @@ static struct mac_device_info *sun8i_dwmac_setup(void *ppriv)
+>  
+>  	priv->dev->priv_flags |= IFF_UNICAST_FLT;
+>  
+> +	mac->link.caps = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> +			 MAC_10 | MAC_100 | MAC_1000;
+>  	/* The loopback bit seems to be re-set when link change
+>  	 * Simply mask it each time
+>  	 * Speed 10/100/1000 are set in BIT(2)/BIT(3)
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+> index 3927609abc44..8555299443f4 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+> @@ -539,6 +539,8 @@ int dwmac1000_setup(struct stmmac_priv *priv)
+>  	if (mac->multicast_filter_bins)
+>  		mac->mcast_bits_log2 = ilog2(mac->multicast_filter_bins);
+>  
+> +	mac->link.caps = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> +			 MAC_10 | MAC_100 | MAC_1000;
+>  	mac->link.duplex = GMAC_CONTROL_DM;
+>  	mac->link.speed10 = GMAC_CONTROL_PS;
+>  	mac->link.speed100 = GMAC_CONTROL_PS | GMAC_CONTROL_FES;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac100_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac100_core.c
+> index a6e8d7bd9588..7667d103cd0e 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac100_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac100_core.c
+> @@ -175,6 +175,8 @@ int dwmac100_setup(struct stmmac_priv *priv)
+>  	dev_info(priv->device, "\tDWMAC100\n");
+>  
+>  	mac->pcsr = priv->ioaddr;
+> +	mac->link.caps = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> +			 MAC_10 | MAC_100;
+>  	mac->link.duplex = MAC_CONTROL_F;
+>  	mac->link.speed10 = 0;
+>  	mac->link.speed100 = 0;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+> index ec6a13e644b3..a38226d7cc6a 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+> @@ -70,14 +70,10 @@ static void dwmac4_core_init(struct mac_device_info *hw,
+>  
+>  static void dwmac4_phylink_get_caps(struct stmmac_priv *priv)
+>  {
+> -	priv->phylink_config.mac_capabilities |= MAC_2500FD;
+> -
+>  	if (priv->plat->tx_queues_to_use > 1)
+> -		priv->phylink_config.mac_capabilities &=
+> -			~(MAC_10HD | MAC_100HD | MAC_1000HD);
+> +		priv->hw->link.caps &= ~(MAC_10HD | MAC_100HD | MAC_1000HD);
+>  	else
+> -		priv->phylink_config.mac_capabilities |=
+> -			(MAC_10HD | MAC_100HD | MAC_1000HD);
+> +		priv->hw->link.caps |= (MAC_10HD | MAC_100HD | MAC_1000HD);
+>  }
+>  
+>  static void dwmac4_rx_queue_enable(struct mac_device_info *hw,
+> @@ -1385,6 +1381,8 @@ int dwmac4_setup(struct stmmac_priv *priv)
+>  	if (mac->multicast_filter_bins)
+>  		mac->mcast_bits_log2 = ilog2(mac->multicast_filter_bins);
+>  
+> +	mac->link.caps = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> +			 MAC_10 | MAC_100 | MAC_1000 | MAC_2500FD;
+>  	mac->link.duplex = GMAC_CONFIG_DM;
+>  	mac->link.speed10 = GMAC_CONFIG_PS;
+>  	mac->link.speed100 = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> index e841e312077e..f8e7775bb633 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
+> @@ -47,14 +47,6 @@ static void dwxgmac2_core_init(struct mac_device_info *hw,
+>  	writel(XGMAC_INT_DEFAULT_EN, ioaddr + XGMAC_INT_EN);
+>  }
+>  
+> -static void xgmac_phylink_get_caps(struct stmmac_priv *priv)
+> -{
+> -	priv->phylink_config.mac_capabilities |= MAC_2500FD | MAC_5000FD |
+> -						 MAC_10000FD | MAC_25000FD |
+> -						 MAC_40000FD | MAC_50000FD |
+> -						 MAC_100000FD;
+> -}
+> -
+>  static void dwxgmac2_set_mac(void __iomem *ioaddr, bool enable)
+>  {
+>  	u32 tx = readl(ioaddr + XGMAC_TX_CONFIG);
+> @@ -1540,7 +1532,6 @@ static void dwxgmac3_fpe_configure(void __iomem *ioaddr, struct stmmac_fpe_cfg *
+>  
+>  const struct stmmac_ops dwxgmac210_ops = {
+>  	.core_init = dwxgmac2_core_init,
+> -	.phylink_get_caps = xgmac_phylink_get_caps,
+>  	.set_mac = dwxgmac2_set_mac,
+>  	.rx_ipc = dwxgmac2_rx_ipc,
+>  	.rx_queue_enable = dwxgmac2_rx_queue_enable,
+> @@ -1601,7 +1592,6 @@ static void dwxlgmac2_rx_queue_enable(struct mac_device_info *hw, u8 mode,
+>  
+>  const struct stmmac_ops dwxlgmac2_ops = {
+>  	.core_init = dwxgmac2_core_init,
+> -	.phylink_get_caps = xgmac_phylink_get_caps,
+>  	.set_mac = dwxgmac2_set_mac,
+>  	.rx_ipc = dwxgmac2_rx_ipc,
+>  	.rx_queue_enable = dwxlgmac2_rx_queue_enable,
+> @@ -1661,6 +1651,9 @@ int dwxgmac2_setup(struct stmmac_priv *priv)
+>  	if (mac->multicast_filter_bins)
+>  		mac->mcast_bits_log2 = ilog2(mac->multicast_filter_bins);
+>  
+> +	mac->link.caps = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> +			 MAC_1000FD | MAC_2500FD | MAC_5000FD |
+> +			 MAC_10000FD;
+>  	mac->link.duplex = 0;
+>  	mac->link.speed10 = XGMAC_CONFIG_SS_10_MII;
+>  	mac->link.speed100 = XGMAC_CONFIG_SS_100_MII;
+> @@ -1698,6 +1691,11 @@ int dwxlgmac2_setup(struct stmmac_priv *priv)
+>  	if (mac->multicast_filter_bins)
+>  		mac->mcast_bits_log2 = ilog2(mac->multicast_filter_bins);
+>  
+> +	mac->link.caps = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> +			 MAC_1000FD | MAC_2500FD | MAC_5000FD |
+> +			 MAC_10000FD | MAC_25000FD |
+> +			 MAC_40000FD | MAC_50000FD |
+> +			 MAC_100000FD;
+>  	mac->link.duplex = 0;
+>  	mac->link.speed1000 = XLGMAC_CONFIG_SS_1000;
+>  	mac->link.speed2500 = XLGMAC_CONFIG_SS_2500;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index b8a1f02398ee..7c6fb14b5555 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -1225,12 +1225,11 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
+>  		xpcs_get_interfaces(priv->hw->xpcs,
+>  				    priv->phylink_config.supported_interfaces);
+>  
+> -	priv->phylink_config.mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+> -						MAC_10 | MAC_100 | MAC_1000;
+> -
+>  	/* Get the MAC specific capabilities */
+>  	stmmac_mac_phylink_get_caps(priv);
+>  
+> +	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
+> +
+>  	max_speed = priv->plat->max_speed;
+>  	if (max_speed)
+>  		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
+> @@ -7344,6 +7343,8 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
+>  
+>  	stmmac_mac_phylink_get_caps(priv);
+>  
+> +	priv->phylink_config.mac_capabilities = priv->hw->link.caps;
+> +
+>  	max_speed = priv->plat->max_speed;
+>  	if (max_speed)
+>  		phylink_limit_mac_speed(&priv->phylink_config, max_speed);
+> -- 
+> 2.43.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
-[1]
-[167789.800297] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-[167726.780305] rcu: Tasks blocked on level-0 rcu_node (CPUs 0-7): P155
-[167726.780319] (detected by 3, t=17256977 jiffies, g=19883597, q=2397394)
-[167726.780325] task:kswapd0         state:R  running task     stack:   24 pid:  155 ppid:     2 flags:0x00000008
-[167789.800308] rcu: Tasks blocked on level-0 rcu_node (CPUs 0-7): P155
-[167789.800322] (detected by 3, t=17272732 jiffies, g=19883597, q=2397470)
-[167789.800328] task:kswapd0         state:R  running task     stack:   24 pid:  155 ppid:     2 flags:0x00000008
-[167789.800339] Call trace:
-[167789.800342]  dump_backtrace.cfi_jt+0x0/0x8
-[167789.800355]  show_stack+0x1c/0x2c
-[167789.800363]  sched_show_task+0x1ac/0x27c
-[167789.800370]  print_other_cpu_stall+0x314/0x4dc
-[167789.800377]  check_cpu_stall+0x1c4/0x36c
-[167789.800382]  rcu_sched_clock_irq+0xe8/0x388
-[167789.800389]  update_process_times+0xa0/0xe0
-[167789.800396]  tick_sched_timer+0x7c/0xd4
-[167789.800404]  __run_hrtimer+0xd8/0x30c
-[167789.800408]  hrtimer_interrupt+0x1e4/0x2d0
-[167789.800414]  arch_timer_handler_phys+0x5c/0xa0
-[167789.800423]  handle_percpu_devid_irq+0xbc/0x318
-[167789.800430]  handle_domain_irq+0x7c/0xf0
-[167789.800437]  gic_handle_irq+0x54/0x12c
-[167789.800445]  call_on_irq_stack+0x40/0x70
-[167789.800451]  do_interrupt_handler+0x44/0xa0
-[167789.800457]  el1_interrupt+0x34/0x64
-[167789.800464]  el1h_64_irq_handler+0x1c/0x2c
-[167789.800470]  el1h_64_irq+0x7c/0x80
-[167789.800474]  xas_find+0xb4/0x28c
-[167789.800481]  find_get_entry+0x3c/0x178
-[167789.800487]  find_lock_entries+0x98/0x2f8
-[167789.800492]  __invalidate_mapping_pages.llvm.3657204692649320853+0xc8/0x224
-[167789.800500]  invalidate_mapping_pages+0x18/0x28
-[167789.800506]  inode_lru_isolate+0x140/0x2a4
-[167789.800512]  __list_lru_walk_one+0xd8/0x204
-[167789.800519]  list_lru_walk_one+0x64/0x90
-[167789.800524]  prune_icache_sb+0x54/0xe0
-[167789.800529]  super_cache_scan+0x160/0x1ec
-[167789.800535]  do_shrink_slab+0x20c/0x5c0
-[167789.800541]  shrink_slab+0xf0/0x20c
-[167789.800546]  shrink_node_memcgs+0x98/0x320
-[167789.800553]  shrink_node+0xe8/0x45c
-[167789.800557]  balance_pgdat+0x464/0x814
-[167789.800563]  kswapd+0xfc/0x23c
-[167789.800567]  kthread+0x164/0x1c8
-[167789.800573]  ret_from_fork+0x10/0x20
+Reviewed-by: Romain Gantois <romain.gantois@bootlin.com>
 
-[2]
-Thread_isolate:
-1. alloc_contig_range->isolate_migratepages_block isolate a certain of
-pages to cc->migratepages via pfn
-       (folio has refcount: 1 + n (alloc_pages, page_cache))
+Thanks,
 
-2. alloc_contig_range->migrate_pages->folio_ref_freeze(folio, 1 +
-extra_pins) set the folio->refcnt to 0
-
-3. alloc_contig_range->migrate_pages->xas_split split the folios to
-each slot as folio from slot[offset] to slot[offset + sibs]
-
-4. alloc_contig_range->migrate_pages->__split_huge_page->folio_lruvec_lock
-failed which have the folio be failed in setting refcnt to 2
-
-5. Thread_kswapd enter the livelock by the chain below
-      rcu_read_lock();
-   retry:
-        find_get_entry
-            folio = xas_find
-            if(!folio_try_get_rcu)
-                xas_reset;
-            goto retry;
-      rcu_read_unlock();
-
-5'. Thread_holdlock as the lruvec->lru_lock holder could be stalled in
-the same core of Thread_kswapd.
-
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
- mm/huge_memory.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9859aa4f7553..418e8d03480a 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2891,7 +2891,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- {
- 	struct folio *folio = page_folio(page);
- 	struct page *head = &folio->page;
--	struct lruvec *lruvec;
-+	struct lruvec *lruvec = folio_lruvec(folio);
- 	struct address_space *swap_cache = NULL;
- 	unsigned long offset = 0;
- 	int i, nr_dropped = 0;
-@@ -2908,8 +2908,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		xa_lock(&swap_cache->i_pages);
- 	}
- 
--	/* lock lru list/PageCompound, ref frozen by page_ref_freeze */
--	lruvec = folio_lruvec_lock(folio);
- 
- 	ClearPageHasHWPoisoned(head);
- 
-@@ -2942,7 +2940,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 
- 		folio_set_order(new_folio, new_order);
- 	}
--	unlock_page_lruvec(lruvec);
- 	/* Caller disabled irqs, so they are still disabled here */
- 
- 	split_page_owner(head, order, new_order);
-@@ -2961,7 +2958,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		folio_ref_add(folio, 1 + new_nr);
- 		xa_unlock(&folio->mapping->i_pages);
- 	}
--	local_irq_enable();
- 
- 	if (nr_dropped)
- 		shmem_uncharge(folio->mapping->host, nr_dropped);
-@@ -3048,6 +3044,7 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
- 	int extra_pins, ret;
- 	pgoff_t end;
- 	bool is_hzp;
-+	struct lruvec *lruvec;
- 
- 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
- 	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
-@@ -3159,6 +3156,14 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
- 
- 	/* block interrupt reentry in xa_lock and spinlock */
- 	local_irq_disable();
-+
-+	/*
-+	 * take lruvec's lock before freeze the folio to prevent the folio
-+	 * remains in the page cache with refcnt == 0, which could lead to
-+	 * find_get_entry enters livelock by iterating the xarray.
-+	 */
-+	lruvec = folio_lruvec_lock(folio);
-+
- 	if (mapping) {
- 		/*
- 		 * Check if the folio is present in page cache.
-@@ -3203,12 +3208,16 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
- 		}
- 
- 		__split_huge_page(page, list, end, new_order);
-+		unlock_page_lruvec(lruvec);
-+		local_irq_enable();
- 		ret = 0;
- 	} else {
- 		spin_unlock(&ds_queue->split_queue_lock);
- fail:
- 		if (mapping)
- 			xas_unlock(&xas);
-+
-+		unlock_page_lruvec(lruvec);
- 		local_irq_enable();
- 		remap_page(folio, folio_nr_pages(folio));
- 		ret = -EAGAIN;
 -- 
-2.25.1
-
+Romain Gantois, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
