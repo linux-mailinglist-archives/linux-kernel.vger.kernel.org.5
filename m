@@ -1,163 +1,135 @@
-Return-Path: <linux-kernel+bounces-146734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15D8F8A6A0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:00:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EED958A69FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:56:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5DE5282437
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:00:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7761C20FD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6233C129E8A;
-	Tue, 16 Apr 2024 12:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185F512A174;
+	Tue, 16 Apr 2024 11:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="dDBlCKxT";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="QZzg9Wyn"
-Received: from smtpout42.security-mail.net (mxout.security-mail.net [85.31.212.45])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="TZBJaeaO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YWD6x8Ms"
+Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9276B129E64
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=85.31.212.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268806; cv=fail; b=rrTBOdnyG3hiJDrKmSc1DjQVDUDEiC897oUfFZNVVsBhWOupSzWrQ3PMVlJo70yuNnaBGPI+t6oTJPX1UR2U3dIwgIdwOO/b4H+OvZtHdCbOEUY8UMJ5zjF/6nMwQD2mQgAAO1QBrNFNa1bDCWM9Km2C1zE2x1/FvqJhJ0yb3+w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268806; c=relaxed/simple;
-	bh=StrGid2dBfOixfPa9P2MRP26amZHDOUthHHCkeBF848=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=RBAQykolmPgUZsxSeB2l6hwDvKNB4QSfREnFeYAmvKVidwu+e2WkwvIs/HvzMMZP6/lFs75o8shwWe469c1T8a9/M1GYX3cXYFU2PRHFzN7NBLGtjhxduI6MiORiQKlEX2asX8Td6j5E3LfUdngdiU0FbszIX31QNCfxNAGrqoo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=dDBlCKxT; dkim=fail (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=QZzg9Wyn reason="signature verification failed"; arc=fail smtp.client-ip=85.31.212.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
-Received: from localhost (localhost [127.0.0.1])
-	by fx302.security-mail.net (Postfix) with ESMTP id 183257C4738
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 13:55:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1713268555;
-	bh=StrGid2dBfOixfPa9P2MRP26amZHDOUthHHCkeBF848=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=dDBlCKxTdgPbKXREfaRG1d4FpITreAUPx7IfJPozghsnSU7r9dn7PPzJLjVFJko0k
-	 uUBq4FYr4aUAFwzNRCJxH7eXDpHWvJuqaGoWJyneD84hT+r6xP+cXImjtSA1pq4tZL
-	 IKp6Hvck1GKuwuRqzAaLMxnqzmlHYbFU/q+ampKk=
-Received: from fx302 (localhost [127.0.0.1]) by fx302.security-mail.net
- (Postfix) with ESMTP id E67997C43EA; Tue, 16 Apr 2024 13:55:54 +0200 (CEST)
-Received: from MRZP264CU002.outbound.protection.outlook.com
- (mail-francesouthazlp17010000.outbound.protection.outlook.com [40.93.69.0])
- by fx302.security-mail.net (Postfix) with ESMTPS id 65D427C4375; Tue, 16 Apr
- 2024 13:55:54 +0200 (CEST)
-Received: from PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:14b::6)
- by PAZP264MB3245.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f6::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 11:55:51 +0000
-Received: from PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
- ([fe80::d918:21af:904a:ce0a]) by PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
- ([fe80::d918:21af:904a:ce0a%4]) with mapi id 15.20.7452.049; Tue, 16 Apr
- 2024 11:55:51 +0000
-X-Virus-Scanned: E-securemail
-Secumail-id: <eb52.661e674a.6493b.0>
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HW+bApLiskXP6XHLC5sRiTz85l+y9pxDh2ohMAYDEBvbBINIYY434o3tnOb7Wdl45iDDOe6x2WZLU5i+i6zyK+qeOw13ch46OAjqfaCNAbgPKeyoN3cRTZ37whh9QWmv4pW6eX9aD9tQi09+HgxZdN7tV2bDOOnBGpwQOHYq4uI4HU3sXBH/y6lTgtU9RGHcryk9PXs1BJ2TjWhFtnE0NceUtqVO5mDewtSGk/3bYu1l6prq3tj8w5J0PmezIxjOBqVN2gJIZS/qOoZWuIeu+8+EYXS/2Gb0OO1qL21/N5FuwZmI5iWJ7DE4k/F6/zfht8ehlueEQW5LCr0B+LgiBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microsoft.com; s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2j35nNn33eL4zpEznZM9BCAUc3eIC8SYVU6BFRGeIAU=;
- b=LmPBR1bGWjoajgHgrjE6ShK7vNEqinVhtPNxJTS3Aii2tfo3mHOATB5Yh2IK+Y9/GeRtZRSfJTxlQ6hh7Y11v5ogBJZpE9eylZzkHl0IkX48HMezS18v+gc/S0vXLmVKRnS2yo/h6hrW4PNLNARh675QNvix5Nl8kpDPbnRiTpd9gWsT2EjNP453BaO0WjJxqB9Zx77EONSX3jU0prI14pqx6lJatkDMt+7kuJrt0O4f6KiEGNWqU81YNHtRLmWkSYp7Jt34dY6CAw+FjyZksSAL/5RFF+9BLgwqFFVjtFvz37h4Q3An6Bl+vdzAJCfVF2fdKcTpUuOCvmLvjeDupQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
- header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2j35nNn33eL4zpEznZM9BCAUc3eIC8SYVU6BFRGeIAU=;
- b=QZzg9WynEndJ8umZr6iWOvTrNp17XQ7q3i8Of5t1pBKVQJippXIvHFXFtjKbdszjAwaRYLElzBl8yr7I4zcHW0p1TRBnnSH+BXI9bubbRCmWY5kdPMUz7/ZjGhNDgCdpgOABSFC1HDcLMjj8x3BLP2rWYUN6k5ptDB/k7IevTLQAxTf/0i7rES5bB7XKgKZ5INOvWwV9TfvCAMijEVYISvjmzv6RFS2iqUf97XmzavaQ8dt+DGWgh54oTDrVNUe9ToU+r7eLtS12M+wldIYPOulrXGpVYkFpPfPu5d9hQnEWYDvXa3lEdKg86HRdFF2mC23X8MjXhveuurkLlu95vg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kalrayinc.com;
-Message-ID: <7ebb18ec-a7ac-4145-ab21-1d6d7f77234e@kalrayinc.com>
-Date: Tue, 16 Apr 2024 13:55:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 6.1 00/69] 6.1.87-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240415141946.165870434@linuxfoundation.org>
-Content-Language: en-us
-From: Yann Sionneau <ysionneau@kalrayinc.com>
-In-Reply-To: <20240415141946.165870434@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM4PR0302CA0012.eurprd03.prod.outlook.com
- (2603:10a6:205:2::25) To PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:14b::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9B461292DB
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713268580; cv=none; b=OV6Gx9/nW3si6grFKXLz37kgil4OUI42owvvu5vKDog38QbCFerjrOmNUEweTbCYdyViarbOKPqtRRvinIkIzWfgiGOb9zQeZDkkZLur/tZqxgWasbtoYadVdePyoGGpK5fSCcPhQP2uPWpY2snBwE1LkUJCT1G0Op0gqpWYaDM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713268580; c=relaxed/simple;
+	bh=bsPGy+NGN3PslT5YVV+jNDgdS2kXGSlLU5Q3qCgog9k=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=lwNr9dK9ruiuO4vMMpJIPW9qu11qNsJjun4PNjJ/cYifk8fTKOLnOd1TIDgAUUL4h+0yd616RJxDSoJNrVi0LysjNuCOouCAQRiaT2+14k0mEK9Ps4xscylU0mUSqQEwvMtk/XJmIavwb9p6iA8mNlh3uoE0II10sDLTMdH2d7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=TZBJaeaO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YWD6x8Ms; arc=none smtp.client-ip=103.168.172.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id C71911380923;
+	Tue, 16 Apr 2024 07:56:17 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 16 Apr 2024 07:56:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1713268577; x=1713354977; bh=h7Ln9pZ+NP
+	UuES0mE7CzS9ETsJon3TNjqsNEMWr/MVg=; b=TZBJaeaOb0soz5m3pqRKVJFAZ6
+	6izkxtQ1BDmlqo+a9lvABlWI6XZmJM8qlnZKzuMq8rea5riO39xA3OBN4tiahpGW
+	efy9MR+77P2HzmVYrevSldIlU9fc5UEECnXiCA6U7pFSY12n2/ebCjTlIAHLy9DP
+	EEPbqNrUOkIeFJxdPC4KEZRDMRcHw5ggujpkUUwlm/y4yZal8urYAuMTYcrewhm4
+	8pDsV2/teineypM1QjXrEmEV9etIThOBOBxYp77YVf/8DD/pzewhdiWREj7z8+MX
+	8jtSqPRqyYZDdE8wqobU8M1wwApTNcd7Pclztq2XxPE2C+eA4C/iGbND+icQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1713268577; x=1713354977; bh=h7Ln9pZ+NPUuES0mE7CzS9ETsJon
+	3TNjqsNEMWr/MVg=; b=YWD6x8MsxAjQlo1yywyXxb3v/kbjviAjfzyzz5IMQX7Y
+	VJaaE3UTITJwIXJ6e52Eq+zWeAinVDNBWRenMLn64W1dv1iQRd1FWWW/xdy/s6nI
+	c1gofNB7RhaIcHjYiqH69J9FJq8wtAKma0mcRbV/dJBAIGGouMFQWC1XemA4Dlyn
+	BO2AwB4DkQEJ5tCLA3yoy4+vPOTBgEGWL6zlx5dOYkRuH1Pbjp/22Zy23hlo9n3L
+	l5hZUk581ge5R5027gTa7CoEy53TD+Ew9pUYfslcEgC2kCO3NAziKb/agzg5XzCM
+	wRNCSDhsIOjafW04RN2r7ImLnCApwjUCyIh21gqBUQ==
+X-ME-Sender: <xms:YWceZtbf-_WHpoVzfU21gFsABKry4JZb8IitZfqUBfOJBKNMnPMpFw>
+    <xme:YWceZkauljyiD1MeCrigtaDtBFFowPqi2BXKFolY-Z9QhxAKjZlJ4qTYbHAjYT8Tw
+    bGneYsrH6C01xbIFLw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejhedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:YWceZv9vo4AHySWT_OZdZsnc4uBjJ-ictSJYEKgQwE-xwrvbmxaXqw>
+    <xmx:YWceZro1LUIDNMKlrR6h-juc8AN9RAkY2cSftGwM78qGav_AI7CuXA>
+    <xmx:YWceZorAQNt07Imz0vMyVoPhjdGGM53gL2IAbe4FDFglVKL9J0mejQ>
+    <xmx:YWceZhSTrDOAKvkeiAbNO8_dDUy--R25lICa1a3kYAz4-ptVKWQBzg>
+    <xmx:YWceZjBqMyo36wIOh3Ce_9N3NZFvSm46pPP3yKZ8KbhUmbY8xCDe6ibk>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 4441BB6008D; Tue, 16 Apr 2024 07:56:17 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PR0P264MB3481:EE_|PAZP264MB3245:EE_
-X-MS-Office365-Filtering-Correlation-Id: faf4bdc8-fd2e-4b5e-b459-08dc5e0c2979
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: APa/BdBdGDGJpK+y0nytTD65YtqAkd0gS1xbdXP1N4KoRi1LTYP9RKc5HllRjxce/wn4ZT1xnJ2mD1fah5EE+cLH3cN5ldNOBOP3DAWkUNZ7HJrfW0+rBx4eTb9EoQYUOE/lGlcroG/br8uYMM16AoG+Z4SH99CYLHNaRi5acUjBFofjzL/pCHfkN5jUsdhmYSC3A4Z4gbMI+berS9s53qA8JRR0lQb9TsacU4OVbbLRbi0STsB4kkkViaWPKoUtWMR1UuLewJAlTLj2IkK+E/vHKsPmYBq3h+bqsr8SiDwlGOXD3rnh4aK7FTsiBlGMAHnzPlQVROH+kghO2Z8+B66E2ia9qfaBE+F5HXhdQ8BEiQuAEjYfINe0aGGW/HNgT+1gEl2YnfjUM90cVIC+RrjO9bAa1HvbrQ9jhCY59QTxzufGC3qZbLUg9Mq+P1sfG2VFaTImIaB00ge8HRHfvbzSovTYDYq0hZ2ZN9fs+AaRrw4uqEhwaWiFM3TvqM/36N6YleWJG41y3L7bk2f1fUtFZBr1RWfw30Ank3Ru+D7Vy3YKMZd6dMf+KxNh0a/HEP9UA3b6DWtzFlrl/PQuBTozdLMCWwWHyTdRLJ305iNsLuKOOqKiXqLG/oQOIVpxOZmaoX/yBYNff5ul10CknlcBjgPkVtUZpENxduCH4S4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: E1THdzdxoKb/U9uGh+6DBLrnx1x8dDiBsSnprSGROhkGWwBqQA67pY56fTdSxFuS/kp0UcfWfBNs+WdjmZ21rh8WwMJvNGGKIEtwkpFK8o6WK9mUI1HLsVf8vctgSQe+W7CMCSGjsvn1dEWGYUi0VdGQmoo1jtbzNFBNA1yiI/rtrbFfxrL5zMTpMUnqESh5PjJZThWgZ/KMd3ugD0GTcPxw6tRltJMR3OD5RLLYY0n//mY5PaTWonIM71lEwYW/667fK9swnv38WDjCLEV4wHx9BZ/rz2pmu7o2RGI+Jx01sBEHJ3d8IpiLWjP5+QJfkqtQDvWPraG4soQVl8zhG3D3oIlZW3exRaRWkk1eYQ/csMXuoF8nQTafHH+ehpQ/CdPS9EjQpZJFzzCi92qNnYzsfSAGaWadq3fMaesB4aEil8M52X5rm51Ps9PyRKB2smQaw+Oskdq8nHhqNw6Y6GKMvjYpaWBJYPn6UdEOUKQPEHMDsD4HzZkKDt9pPgClhfdobeVrxafA1W/Gw6VHtHrI1H6Gt37Z6DfMxDkDGmvR4l3Z9rCmpoS9LZLOeCQwQxc4kD3I+pbxlRpFvMXjHQqxaEAPz7bptOQNDD40bs8YnJuQSmEgV9jA+pCH7qZWxbEtUV9gZZwXEpKd0sXoa13dejSIh+8z9Vc8DX3XWVKuQ5de5/k2BYz1lc/u6r55vIZwI73/yViWH14z2zJVYZTf/MvLv3YaLz1DZQRNBHVnqp09uFRy0OfLO1NteIIr5ycVUuKamuk1w3ygMgOJzFmkCr+1liIYi+v/1zyqk2aYn2tS5AerUHQEFm2Udt4ln6W9C9IKw9n3nn9beH5zqCmDNipqjBWt+MeawWADBAy35eMWYf2GOW8NvJ8+0nERs+yGG5cUnKjYm1h3fXi7G1YYAUSpDf4xVgZ/RR4hJHutdN2s1+/06TK+jMpuyPUf
- fPSRuj8gEV5qo71wWL84mEVwlyYRLFUOs3/nHrK26pYt+ihvwr5YMJXDSI3szBMGIxEUJ4lEoiJ3//eXy5RVEWINgBU7zG260f2og+U+vUf4uCEoVa52LJqxzWthGVnZ979MwiwjovvKGR1KZJhbXnF5rZRO/Zajqf64HseNVkN9t3mrTpwd/wkzBEW1tjKhAWeMUIWIOrByHCbndoevB4E9PLbzzD1h9hxhry92h2dVJHmznEJSzvermRxIxV3oRJi0VXxtx0YpWJCrS20wDvlrGh74mjZrbf3jtsd3C57Rclgje70GURENXWWlc3Xp35Geg03ojcU5aiUHJoQoMjN8DHcghF8A926pzXtz0x8UvI8rYYP28Iw9dWOXpuMSzwlSrFB7ufS6AZoqg80zBFndv9li/GNrkiEe2WNgFZarsSOznb+/Fj3NvxilYrcCml6KiPNLHD+lHXMRNIX7m4BpLnvRq3rPxrqiTRQf0g3AZ341u7k/l2oY2mQ/Pv30X50ERkGnhA2ikrcYdg9gAOJ4g1e9FEEA9jaJcNiF385PZo2N1UDO6XNWRmi22ilPugkUKiL/vBuZvaIMGgWQo/QtIRanZOLP7AcSZQZMsTU47cn58Bvw/BzYdubj+4Io/uGLaj4H8wo5BSDpQAJPfA==
-X-OriginatorOrg: kalrayinc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: faf4bdc8-fd2e-4b5e-b459-08dc5e0c2979
-X-MS-Exchange-CrossTenant-AuthSource: PR0P264MB3481.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 11:55:51.2331
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K25ckVWwF9hNMBKZNkTcXSgEWx9ZqVAxa7asHu6/4BUJ3OXDbAqXwBDJg3iABvJpDG+n5G8SG+KLxHze+Z9pfA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB3245
-X-ALTERMIMEV2_out: done
+Message-Id: <f7d8cd55-5a14-4391-884f-0b072790fa41@app.fastmail.com>
+In-Reply-To: <3d139886-9549-4384-918a-2d18480eb758@app.fastmail.com>
+References: 
+ <CA+G9fYtEh8zmq8k8wE-8RZwW-Qr927RLTn+KqGnq1F=ptaaNsA@mail.gmail.com>
+ <3d139886-9549-4384-918a-2d18480eb758@app.fastmail.com>
+Date: Tue, 16 Apr 2024 13:55:57 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "open list" <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
+ "Linux Regressions" <regressions@lists.linux.dev>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Anders Roxell" <anders.roxell@linaro.org>,
+ "Kees Cook" <keescook@chromium.org>,
+ "Niklas Schnelle" <schnelle@linux.ibm.com>,
+ clang-built-linux <llvm@lists.linux.dev>,
+ "Nick Desaulniers" <ndesaulniers@google.com>,
+ "Nathan Chancellor" <nathan@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>
+Subject: Re: powerpc: io-defs.h:43:1: error: performing pointer arithmetic on a null
+ pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
+Content-Type: text/plain
 
-Hi Greg,
-
-On 4/15/24 16:20, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.87 release.
-> There are 69 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Apr 16, 2024, at 13:01, Arnd Bergmann wrote:
+> On Tue, Apr 16, 2024, at 11:32, Naresh Kamboju wrote:
+>> The Powerpc clang builds failed due to following warnings / errors on the
+>> Linux next-20240416 tag.
+>>
+>> Powerpc:
+>>  - tqm8xx_defconfig + clang-17 - Failed
+>>  - allnoconfig + clang-17 - Failed
+>>  - tinyconfig + clang-17 - Failed
+>>
+>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 >
-> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
-> Anything received after that time might be too late.
+> I'm not sure why this showed up now, but there is a series from
+> in progress that will avoid this in the future, as the same
+> issue is present on a couple of other architectures.
 >
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.87-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
 
-I tested 6.1.87-rc1 (6745a5f2c806) on Kalray kvx arch (not upstream yet) and everything looks good!
+I see now, it was introduced by my patch to turn on -Wextra
+by default. I had tested that patch on all architectures
+with allmodconfig and defconfig, but I did not test any
+powerpc configs with PCI disabled.
 
-It ran on real hw (k200, k200lp and k300 boards), on qemu as well as on our internal instruction set simulator (ISS).
-
-Tests were run on several interfaces/drivers (usb, qsfp ethernet, eMMC, PCIe endpoint+RC, SPI, remoteproc, uart, iommu). LTP and uClibc-ng testsuites are also run without any regression.
-
-Everything looks fine to us.
-
-Tested-by: Yann Sionneau<ysionneau@kalrayinc.com>
-
--- 
-Yann
-
-
-
-
-
+     Arnd
 
