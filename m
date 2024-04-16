@@ -1,95 +1,128 @@
-Return-Path: <linux-kernel+bounces-147669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 897EF8A7774
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:09:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54E358A7787
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:10:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D257AB21A14
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:09:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19FDC28308B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8554F78B49;
-	Tue, 16 Apr 2024 22:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A807FBAA;
+	Tue, 16 Apr 2024 22:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FI5YlVQU"
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="mZFsERtc"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810536E61A
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF2EE6BFCF
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713305352; cv=none; b=Gb75EffkseY0OsExtJJDRL85DvZ7PYqh4JlCgA0+XMTzWTzbyxAaur8GZSk9Vt3nYqFsf65d8/TrqqcVNYSWVRmj+xYDUlBFFRDzDEA++9qdaL3YNsrexglwxtzpUEUy8TAL5XchUxmnO02Rqc75O65QrCFykrY+VLjBgkvirC4=
+	t=1713305408; cv=none; b=QYbTHcxhoc8cvub6P5IFGs1NJVAnezRv9q8FVVvdNdh4gbJL4KTbMkWuzz0eh+r+9rTRnv1zE+RyH1vYMN8D52iYDbybZivB6TAVCdPMObl98N4B2zhYPkfAO7QOqOj4EwEIWVDepOWb4/BGhPYowSpdG0r1+1B1tVjuWoicsWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713305352; c=relaxed/simple;
-	bh=cceio2i2g+XpMA67ZaweBAe8aJQ465GCa8o/ranK5qM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IakaKyIOtQTBZf8cEDAlX6xbTJornVZuctURRvM8oDudo3sXHzYlH+BX7uxvfQDV9DoYFonUqCb0jSzXw+dQgVrwnXCvvH13rEjy8ANKnaRXdYWWy/leA48h/zgSXPhdLe50lQNeV/NELgZ1Gg3rNdOMJtH0s7hv9l66hRdk5Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FI5YlVQU; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 16 Apr 2024 18:09:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713305348;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4a0PGrEMu5XdQTilCmMwlfM2e10kXfm2bWbg/3JQ9fE=;
-	b=FI5YlVQU7/PZdq56uBNG41rfudamqGUdSMoeKgpiy+XntCQV87bD7yZTFCey4SzZ1+1XFH
-	FyGrHrXmsoC9bfh84x2/qCOhy3JZXpf5na6M8NPndnzBKC0hmzMvSd9Hk90/sYyR5fp1nF
-	8k7rJcky9EPu15hEPYS/3Q00EKGt5ws=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: bfoster@redhat.com, linux-bcachefs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] bcachefs: Fix format specifier in validate_bset_keys()
-Message-ID: <xznpzlnjcf3goexunm6azwercgwz7ikgum3i4gpdyxwykb4e4l@ascd3uztphq3>
-References: <20240416-bcachefs-fix-format-specifier-validate_bset_keys-v1-1-3ea2cdf28b12@kernel.org>
+	s=arc-20240116; t=1713305408; c=relaxed/simple;
+	bh=WRfn/cAsNNMRbBq4GuWQdlT1whoo5mgh0SJ91YMp45M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M/I07Xj9CuXU/fKVL6/6oqntBaz1ZroGDbFVgbBeIahgOzgZc2QAt9Pk+UkkmRvajN6VQ0XTd2Ff4m0uvIJTkaZM1DljeA/LNtvHfRbwxP6eyoRpneeqmXW2E7l18L5zOlChog1zE9GSpST79OhQGL3CV6Ypn060jqNnlmu05Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=mZFsERtc; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ed267f2936so3932541b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 15:10:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1713305406; x=1713910206; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kWpnbwrols/HFksVXx6/pFTtlVbtQF7yySAM3VjY0NM=;
+        b=mZFsERtcoeR+yD6q+ecfyS+3pRFu1IrSUxDCgnESXNVP2gX3duOq02JoBYd6onKPkO
+         QCzTDUlGVfwb63i9R7CsdkZqM9YWeTQnyYrKVvFV29f6SbA56cKAk3yKRQzaaY+bjogJ
+         jBhp5wjwY3vGVkiE62AQ3mbu5JxPW3bDGs7Z0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713305406; x=1713910206;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kWpnbwrols/HFksVXx6/pFTtlVbtQF7yySAM3VjY0NM=;
+        b=DPFXklR21hLVg4ICS+AoF5LCseku6TjBXNpNVNPekNGegCGIiPtvL7UPeUKw3sLw1J
+         Ko2xc1S+mqH1ER7lvH/BqcDpVKN+rZxY0/37cbE/MAZvYQqVRDccHfrpUzd0zJQ3nMZY
+         obLyhSRbmTAs6GQqIF+eP55aIpj15e9ON+HJshgleGL+G2Nka4dKEUYRov/RMPuxBcoG
+         s1O4sxnUaQBH10jre8RQ/HELt/Igx2Qu5IwdDriHhppwtFk5tqRzDTv5LfLbRzmLZowr
+         cy1ci9t4+j5enmokBW6SEsLBehL90T4tg7zFYOJ+pTuMvtkKjOUvaBAQy0nEu1hDESjz
+         1EfA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDXpX+X+Nr8HGWxIEyxhPxO1+72wmVRAnsaQ1IASC5nsEispbzSy5iqPjj9obEsOId8j7GCWnctS2mQfkzdN93WRF2SzeLpd+C6LI2
+X-Gm-Message-State: AOJu0YzIEtjWnZo/6juKSr70yOzV08v02G1uIF/y5Rca19hij1VDcRHk
+	Zy33/Jh0Ijm0zBcyKx0/LNU3fAjnEk37WlB7uTEbeSQKv5/ugKX9bLUk8lk39g==
+X-Google-Smtp-Source: AGHT+IFXzTOtdhmzkFf7kvRjs/2yOBCu6yaN7ivsHMPoTYcwF1gpR1l+bDIYrHHeInvIb0cUfNNPvg==
+X-Received: by 2002:a05:6a20:9f86:b0:1a9:db37:bef3 with SMTP id mm6-20020a056a209f8600b001a9db37bef3mr8840834pzb.12.1713305406053;
+        Tue, 16 Apr 2024 15:10:06 -0700 (PDT)
+Received: from localhost (15.4.198.104.bc.googleusercontent.com. [104.198.4.15])
+        by smtp.gmail.com with UTF8SMTPSA id q4-20020a656244000000b005dc4fc80b21sm8032266pgv.70.2024.04.16.15.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Apr 2024 15:10:05 -0700 (PDT)
+From: jeffxu@chromium.org
+To: akpm@linux-foundation.org,
+	keescook@chromium.org,
+	usama.anjum@collabora.com
+Cc: jeffxu@google.com,
+	jorgelo@chromium.org,
+	groeck@chromium.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org,
+	jannh@google.com,
+	sroettger@google.com,
+	pedro.falcato@gmail.com,
+	dave.hansen@intel.com,
+	linux-hardening@vger.kernel.org,
+	willy@infradead.org,
+	gregkh@linuxfoundation.org,
+	torvalds@linux-foundation.org,
+	deraadt@openbsd.org,
+	corbet@lwn.net,
+	Liam.Howlett@oracle.com,
+	surenb@google.com,
+	merimus@google.com,
+	rdunlap@infradead.org,
+	Jeff Xu <jeffxu@chromium.org>
+Subject: [PATCH 0/1] selftest mm/mseal: style change
+Date: Tue, 16 Apr 2024 22:09:43 +0000
+Message-ID: <20240416220944.2481203-1-jeffxu@chromium.org>
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416-bcachefs-fix-format-specifier-validate_bset_keys-v1-1-3ea2cdf28b12@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 16, 2024 at 08:16:02AM -0700, Nathan Chancellor wrote:
-> When building for 32-bit platforms, for which size_t is 'unsigned int',
-> there is a warning from a format string in validate_bset_keys():
-> 
->   fs/bcachefs/btree_io.c: In function 'validate_bset_keys':
->   fs/bcachefs/btree_io.c:891:34: error: format '%lu' expects argument of type 'long unsigned int', but argument 12 has type 'unsigned int' [-Werror=format=]
->     891 |                                  "bad k->u64s %u (min %u max %lu)", k->u64s,
->         |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   fs/bcachefs/btree_io.c:603:32: note: in definition of macro 'btree_err'
->     603 |                                msg, ##__VA_ARGS__);                     \
->         |                                ^~~
->   fs/bcachefs/btree_io.c:887:21: note: in expansion of macro 'btree_err_on'
->     887 |                 if (btree_err_on(!bkeyp_u64s_valid(&b->format, k),
->         |                     ^~~~~~~~~~~~
->   fs/bcachefs/btree_io.c:891:64: note: format string is defined here
->     891 |                                  "bad k->u64s %u (min %u max %lu)", k->u64s,
->         |                                                              ~~^
->         |                                                                |
->         |                                                                long unsigned int
->         |                                                              %u
->   cc1: all warnings being treated as errors
-> 
-> BKEY_U64s is size_t so the entire expression is promoted to size_t. Use
-> the '%zu' specifier so that there is no warning regardless of the width
-> of size_t.
-> 
-> Fixes: 031ad9e7dbd1 ("bcachefs: Check for packed bkeys that are too big")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404130747.wH6Dd23p-lkp@intel.com/
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404131536.HdAMBOVc-lkp@intel.com/
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+From: Jeff Xu <jeffxu@chromium.org>
 
-Thanks, applied
+This patch is a follow up to the comments [1] on test code during
+mseal discussion. This is style only change to the selftest code, not to
+test code logic.
+
+Please apply on top of mseal v10 patch [2]
+
+[1] 
+https://lore.kernel.org/all/e1744539-a843-468a-9101-ce7a08669394@collabora.com/
+
+[2]
+https://lore.kernel.org/all/20240415163527.626541-1-jeffxu@chromium.org/
+
+Thanks
+
+
+Jeff Xu (1):
+  selftest mm/mseal: style change
+
+ tools/testing/selftests/mm/mseal_test.c | 124 +++++++++++++++++-------
+ tools/testing/selftests/mm/seal_elf.c   |   3 -
+ 2 files changed, 91 insertions(+), 36 deletions(-)
+
+-- 
+2.44.0.683.g7961c838ac-goog
+
 
