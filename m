@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-147135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A998A6FEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D6F8A6FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:39:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B46D1F21C28
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:38:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA3581F220C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:39:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4FD131E2A;
-	Tue, 16 Apr 2024 15:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 506951327FE;
+	Tue, 16 Apr 2024 15:38:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="odbc4Lb1"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="b0BtlntJ"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185AB1311AC;
-	Tue, 16 Apr 2024 15:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36BE4131746;
+	Tue, 16 Apr 2024 15:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713281894; cv=none; b=SUEFXrAJe1HVuj0FlyF0fZfuTBJupVO9lwGBnjzlVtPsdqtuTJrwM5pRYzHf3rhqGpQ9vdYmT8jm+IaCqbZnJK2wUxEqfeAbl6rX0/UtX2PHvoFNVmkjCQC8vjFjPxBFejiceuGQFZ3y1YIjkHxQ0ELK8C7nCePLOenI/+7FYaU=
+	t=1713281895; cv=none; b=i+5s9GOxFCLmKVHQfp/d355mQ0XvVt4SDZjxfRLc895sHcIAYRpaF/fJfmNVt8Ca04LC0zHToBHps0i3BzaSU2u64NDIFUkjEjKGiDO+no0UutOa1Ml5GUocReC5rW4utNqMZVR2Dx71OkgxSk5facQxGqY8t8a0EBkDX6I0jA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713281894; c=relaxed/simple;
-	bh=uVSrmbTrrTvx18AEnTce99nuhXlfyhC3Uf5p8Q689dA=;
+	s=arc-20240116; t=1713281895; c=relaxed/simple;
+	bh=eUguFybIDGAPoGMi8HJFCUVTUbSzbIBgnMV+xhfg7N0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RmjM22cpVKGzveqPZVEjqpzgv3hZl2aI0SNHDg0fTI+cch44wCBY9/fwf+f9bZlMSIuujFm2QHn4qzihygWgoMoKhfX/ZmajY/GUVyvkKaTxhZ9yokFtpVMINM+xbIOKPGTSrjD3McVoalniFQFatYIXzzFs2BF3xYIHrBVZt1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=odbc4Lb1; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=Bfnhk5GQLi/MNWAAXjSHMoTi3xTMnU5OMo08fdy2wZ3dFqR5LQMraiok5NCIVqtlCwbOYZQo034ip9o3R0ghf5DYlh77vJ/fNWoy0wHNENwP4BR1lf244xkfjBALSgQxLs5+yJYp8c7sCOalfIlNvfF9x/4pKxC6DlB+zB3whnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=b0BtlntJ; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1713281891;
-	bh=uVSrmbTrrTvx18AEnTce99nuhXlfyhC3Uf5p8Q689dA=;
+	s=mail; t=1713281892;
+	bh=eUguFybIDGAPoGMi8HJFCUVTUbSzbIBgnMV+xhfg7N0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=odbc4Lb1Xbd0lFOH8i49YwZeFfJuirm8es2OkFD9COYVv18IpfPvNAJ4ahxZjiVvb
-	 /i7CX9erbDdpNgMqDLGFrLpfUeOghT/3eWoVG3ThizwSBfV5OXfSmivKT0L7IyPX8o
-	 ZhKxYIAxfpJioyNv6+9Qo3jsmX2unukhNR/yjhuo/FIfy6ndqZxT1+P/cYY55xhfKl
-	 gZH5ey9rmHXc+k3i4AzQ4onCL2SbvQsUTquHff8SK79g/ez5mmS5h9DzBwBYauMQTc
-	 5gRzRVrkkvZ5QcVRAhX9Vo1xdX311aowo5ZRE9Z7ibnvwBpM7+kIrITWuIN1H1bKe8
-	 prwGTJuBmURCA==
+	b=b0BtlntJJCGCfWAoj1S+JwRKqLPdBd+/UyjncG7Jn36YY+/C8Uz2UuhNT/H6qUf2A
+	 sD1PjnT2HcPu/j0mVDvHaVrwtUupe7QC4AOfq4Cuj1/yMXn31GpTcSTLTevEyaDyku
+	 mugiHqO/r0Vrpv+GHE5Vj/PLh48GqK8+oVvcK9lfh6TL2nZvtVlmL1CW41YOHzCTaW
+	 h75BnE2elw7S+JyV3GwU0XyuSgoZKUcDByh3IsNCeDk5D1l1HdVnXGJPsJ2NAafqBW
+	 YDFI+1JbpfOd3IlDRKDh/dV9muO6wueu2rQHAgeYOHUNAzftbyvaVRNhdGlSo1gKSD
+	 yXisg+qvuRdfg==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1A86B3782140;
-	Tue, 16 Apr 2024 15:38:10 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 825D03782142;
+	Tue, 16 Apr 2024 15:38:11 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: djakov@kernel.org
 Cc: robh@kernel.org,
@@ -67,9 +67,9 @@ Cc: robh@kernel.org,
 	kernel@collabora.com,
 	wenst@chromium.org,
 	amergnat@baylibre.com
-Subject: [PATCH v1 2/6] dt-bindings: interconnect: Add MediaTek EMI Interconnect bindings
-Date: Tue, 16 Apr 2024 17:38:01 +0200
-Message-ID: <20240416153805.431118-3-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v1 3/6] dt-bindings: regulator: Add bindings for MediaTek DVFSRC Regulators
+Date: Tue, 16 Apr 2024 17:38:02 +0200
+Message-ID: <20240416153805.431118-4-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240416153805.431118-1-angelogioacchino.delregno@collabora.com>
 References: <20240416153805.431118-1-angelogioacchino.delregno@collabora.com>
@@ -81,87 +81,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add bindings for the MediaTek External Memory Interface Interconnect,
-which providers support system bandwidth requirements through Dynamic
-Voltage Frequency Scaling Resource Collector (DVFSRC) hardware.
+The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
+are controlled with votes to the DVFSRC hardware.
 
-This adds bindings for MediaTek MT8183 and MT8195 SoCs.
+This adds support for the regulators found in MT6873, MT8183, MT8192
+and MT8195 SoCs.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- .../interconnect/mediatek,mt8183-emi.yaml     | 76 +++++++++++++++++++
- .../interconnect/mediatek,mt8183.h            | 23 ++++++
- .../interconnect/mediatek,mt8195.h            | 44 +++++++++++
- 3 files changed, 143 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
- create mode 100644 include/dt-bindings/interconnect/mediatek,mt8183.h
- create mode 100644 include/dt-bindings/interconnect/mediatek,mt8195.h
+ .../mediatek,mt6873-dvfsrc-regulator.yaml     | 71 +++++++++++++++++++
+ 1 file changed, 71 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
 
-diff --git a/Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml b/Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
+diff --git a/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
 new file mode 100644
-index 000000000000..e6e0db71209b
+index 000000000000..17961c430fd3
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/interconnect/mediatek,mt8183-emi.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++++ b/Documentation/devicetree/bindings/regulator/mediatek,mt6873-dvfsrc-regulator.yaml
+@@ -0,0 +1,71 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/interconnect/mediatek,mt8183-emi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++$id: "http://devicetree.org/schemas/soc/mediatek/mediatek,mt6873-dvfsrc-regulator.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+title: MediaTek External Memory Interface (EMI) Interconnect
++title: MediaTek DVFSRC-controlled Regulators
++
++description:
++  The Dynamic Voltage and Frequency Scaling Resource Collector Regulators
++  are controlled with votes to the DVFSRC hardware.
 +
 +maintainers:
 +  - AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 +
-+description: |
-+  EMI interconnect providers support system bandwidth requirements through
-+  Dynamic Voltage Frequency Scaling Resource Collector (DVFSRC) hardware.
-+  The provider is able to communicate with the DVFSRC through Secure Monitor
-+  Call (SMC).
-+
-+             ICC provider         ICC Nodes
-+                              ----          ----
-+             _________       |CPU |   |--- |VPU |
-+    _____   |         |-----  ----    |     ----
-+   |     |->|  DRAM   |       ----    |     ----
-+   |DRAM |->|scheduler|----- |GPU |   |--- |DISP|
-+   |     |->|  (EMI)  |       ----    |     ----
-+   |_____|->|_________|---.   -----   |     ----
-+               /|\         `-|MMSYS|--|--- |VDEC|
-+                |             -----   |     ----
-+                |                     |     ----
-+                | change DRAM freq    |--- |VENC|
-+             --------                 |     ----
-+    SMC --> | DVFSRC |                |     ----
-+             --------                 |--- |IMG |
-+                                      |     ----
-+                                      |     ----
-+                                      |--- |CAM |
-+                                            ----
-+
 +properties:
 +  compatible:
 +    enum:
-+      - mediatek,mt8183-emi
-+      - mediatek,mt8195-emi
++      - mediatek,mt6873-dvfsrc-regulator
++      - mediatek,mt8183-dvfsrc-regulator
++      - mediatek,mt8192-dvfsrc-regulator
++      - mediatek,mt8195-dvfsrc-regulator
 +
 +  reg:
 +    maxItems: 1
 +
-+  '#interconnect-cells':
-+    const: 1
++  dvfsrc-vcore:
++    description: DVFSRC-controlled SoC Vcore regulator
++    $ref: regulator.yaml#
++
++  dvfsrc-vscp:
++    description: DVFSRC-controlled System Control Processor regulator
++    $ref: regulator.yaml#
 +
 +required:
 +  - compatible
-+  - '#interconnect-cells'
 +
-+unevaluatedProperties: false
++additionalProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/interconnect/mediatek,mt8195.h>
-+
 +    soc {
 +        #address-cells = <2>;
 +        #size-cells = <2>;
@@ -172,92 +150,26 @@ index 000000000000..e6e0db71209b
 +            #address-cells = <1>;
 +            #size-cells = <0>;
 +
-+            emi_icc: interconnect@1 {
-+                compatible = "mediatek,mt8195-emi";
-+                reg = <1>;
-+                #interconnect-cells = <1>;
++            regulators@0 {
++                compatible = "mediatek,mt8195-dvfsrc-regulator";
++                reg = <0>;
++
++                dvfsrc_vcore: dvfsrc-vcore {
++                        regulator-name = "dvfsrc-vcore";
++                        regulator-min-microvolt = <550000>;
++                        regulator-max-microvolt = <750000>;
++                        regulator-always-on;
++                };
++
++                dvfsrc_vscp: dvfsrc-vscp {
++                        regulator-name = "dvfsrc-vscp";
++                        regulator-min-microvolt = <550000>;
++                        regulator-max-microvolt = <750000>;
++                        regulator-always-on;
++                };
 +            };
 +        };
 +    };
-diff --git a/include/dt-bindings/interconnect/mediatek,mt8183.h b/include/dt-bindings/interconnect/mediatek,mt8183.h
-new file mode 100644
-index 000000000000..1088c350258d
---- /dev/null
-+++ b/include/dt-bindings/interconnect/mediatek,mt8183.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Copyright (c) 2024 Collabora Ltd.
-+ *                    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-+ */
-+
-+#ifndef __DT_BINDINGS_INTERCONNECT_MEDIATEK_MT8183_H
-+#define __DT_BINDINGS_INTERCONNECT_MEDIATEK_MT8183_H
-+
-+#define SLAVE_DDR_EMI		0
-+#define MASTER_MCUSYS		1
-+#define MASTER_MFG		2
-+#define MASTER_MMSYS		3
-+#define MASTER_MM_VPU		4
-+#define MASTER_MM_DISP		5
-+#define MASTER_MM_VDEC		6
-+#define MASTER_MM_VENC		7
-+#define MASTER_MM_CAM		8
-+#define MASTER_MM_IMG		9
-+#define MASTER_MM_MDP		10
-+
-+#endif
-diff --git a/include/dt-bindings/interconnect/mediatek,mt8195.h b/include/dt-bindings/interconnect/mediatek,mt8195.h
-new file mode 100644
-index 000000000000..33e0e6cde732
---- /dev/null
-+++ b/include/dt-bindings/interconnect/mediatek,mt8195.h
-@@ -0,0 +1,44 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2020 MediaTek Inc.
-+ * Copyright (c) 2024 Collabora Ltd.
-+ *                    AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-+ */
-+
-+#ifndef __DT_BINDINGS_INTERCONNECT_MEDIATEK_MT8195_H
-+#define __DT_BINDINGS_INTERCONNECT_MEDIATEK_MT8195_H
-+
-+#define SLAVE_DDR_EMI		0
-+#define MASTER_MCUSYS		1
-+#define MASTER_GPUSYS		2
-+#define MASTER_MMSYS		3
-+#define MASTER_MM_VPU		4
-+#define MASTER_MM_DISP		5
-+#define MASTER_MM_VDEC		6
-+#define MASTER_MM_VENC		7
-+#define MASTER_MM_CAM		8
-+#define MASTER_MM_IMG		9
-+#define MASTER_MM_MDP		10
-+#define MASTER_VPUSYS		11
-+#define MASTER_VPU_0		12
-+#define MASTER_VPU_1		13
-+#define MASTER_MDLASYS		14
-+#define MASTER_MDLA_0		15
-+#define MASTER_UFS		16
-+#define MASTER_PCIE_0		17
-+#define MASTER_PCIE_1		18
-+#define MASTER_USB		19
-+#define MASTER_DBGIF		20
-+#define SLAVE_HRT_DDR_EMI	21
-+#define MASTER_HRT_MMSYS	22
-+#define MASTER_HRT_MM_DISP	23
-+#define MASTER_HRT_MM_VDEC	24
-+#define MASTER_HRT_MM_VENC	25
-+#define MASTER_HRT_MM_CAM	26
-+#define MASTER_HRT_MM_IMG	27
-+#define MASTER_HRT_MM_MDP	28
-+#define MASTER_HRT_DBGIF	29
-+#define MASTER_WIFI		30
-+#define MASTER_BT		31
-+#define MASTER_NETSYS		32
-+#endif
 -- 
 2.44.0
 
