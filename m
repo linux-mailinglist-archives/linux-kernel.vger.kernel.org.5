@@ -1,234 +1,349 @@
-Return-Path: <linux-kernel+bounces-146892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C45B8A6C90
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:34:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969598A6C48
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:30:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E78781F21AAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22DE62825E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92FEF132C0D;
-	Tue, 16 Apr 2024 13:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ly3tUPHV"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E50132470;
-	Tue, 16 Apr 2024 13:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E043612C52E;
+	Tue, 16 Apr 2024 13:30:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEF412C483;
+	Tue, 16 Apr 2024 13:30:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713274237; cv=none; b=txzF4TN4mPVYWqtQSBfD2ilpSkTy6ho2QPrvnB+xGB7lG1WpSMGR7vHoeoIzsp9btV5QZKjTInNnOwBSRHKdz+FRX2XJutQza5iFUWP4R0RSkiP0Nc+mwZVG/yJaHgmDdN4/4JX0gtpYsf0csqEBSqd1Lejh5gBni3zOl2EuBOs=
+	t=1713274215; cv=none; b=iwz3ikb+W3lZOb730fw09DAXHmdgVwWCD+Swa1PvT95xpb59aFcO1GHW6LCyrN9q8I4xfwMKPpPXyAAtUpmInfFoaoJJLepwCSnQQBQNiw60gYmNAVCTTc+zXgZQQ4M4sFlYoK3xBad8Kx0doQMlSwMeM+7rdwPuA5IVPf4jgLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713274237; c=relaxed/simple;
-	bh=lpcRI6pbJ32meL/VjTzpGOcoWSJTYnk21moIdV1Kpxk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sX74VLvrXQgZHsa3UZzRrzx8za03yzPOqtUx/fQh2BJPLvpMWj60a4tlDTga5Be2kPzfW/MVu+2dPLJ0XOo0+n/viCrnWWN9Nu3qIlqrNrpoz/E27Ui6s4FZ+OPkS5JbufBMeuiGlzzSLsgZbjM7RcT3gZIoOC2LFGxEyIKDZDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ly3tUPHV; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 37A8840003;
-	Tue, 16 Apr 2024 13:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713274229;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M72jZYyV65DqxQX89BNQFEE+r0wyDWzohfJY2wWVXuo=;
-	b=Ly3tUPHVPHxGu2QGf1SReurnXyVT6yZJ2fK77RoLnNLB4XnongqrymoRROo2eNs32VwIjH
-	+kgILqGY2ooadU4CkFnaTAV1+r2G2DkEkFvsCCIm4oy/QhaXoum08Xx7YhTHSHNkFPv/Yb
-	W/0ql6ngJTtsiaPSjw09Gec9DUYqcWAfwuGEooptvqlQBQw2OVZekcGbDLyIGJmFhj4op/
-	bmOecvZaw56s/5WJg5aNLren0s3uanD+/Vn8mZMLNmtlTlWzVZ43UwX6ZIHDOpIHcPcG+m
-	5AYr47/tmI4N25ASXbJG9ncJNe1tkj82DN/+JJWexW0f8Xv3sUqANYfpeLqCPw==
-From: Thomas Richard <thomas.richard@bootlin.com>
-Date: Tue, 16 Apr 2024 15:30:00 +0200
-Subject: [PATCH v5 11/11] PCI: j721e: Add suspend and resume support
+	s=arc-20240116; t=1713274215; c=relaxed/simple;
+	bh=+j/6gM3a937z2BzVy5L+xPXIwJaTO68RZyd2qEEbv9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hqrsCvhnk7iKu9SF005exezHZrYMrUjqKiDWdeU+SQFHV3FHj4KpuzUe4GAsDA+9mho0Kxn+t888MsE1N/wwUacA/PlHGRxi2BkqwECGQQDOIp6E00nPkUvbWKKcWYPy5X4j+qoarztEg+TQW1y8Fle2UVfr+G5yMXJEbJoaHQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68DE4339;
+	Tue, 16 Apr 2024 06:30:40 -0700 (PDT)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EB303F738;
+	Tue, 16 Apr 2024 06:30:07 -0700 (PDT)
+Message-ID: <37fa1ff5-9e94-4def-afd6-fb9ea9356977@arm.com>
+Date: Tue, 16 Apr 2024 14:30:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 07/43] arm64: RME: Check for RME support at KVM init
+To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
+ kvmarm@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Joey Gouly <joey.gouly@arm.com>, Alexandru Elisei
+ <alexandru.elisei@arm.com>, Christoffer Dall <christoffer.dall@arm.com>,
+ Fuad Tabba <tabba@google.com>, linux-coco@lists.linux.dev,
+ Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084309.1733783-1-steven.price@arm.com>
+ <20240412084309.1733783-8-steven.price@arm.com>
+Content-Language: en-US
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20240412084309.1733783-8-steven.price@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240102-j7200-pcie-s2r-v5-11-4b8c46711ded@bootlin.com>
-References: <20240102-j7200-pcie-s2r-v5-0-4b8c46711ded@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v5-0-4b8c46711ded@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>, 
- Aaro Koskinen <aaro.koskinen@iki.fi>, 
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vignesh R <vigneshr@ti.com>, 
- Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
- Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org, 
- linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- gregory.clement@bootlin.com, theo.lebrun@bootlin.com, 
- thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
- Thomas Richard <thomas.richard@bootlin.com>
-X-Mailer: b4 0.12.0
-X-GND-Sasl: thomas.richard@bootlin.com
 
-From: Théo Lebrun <theo.lebrun@bootlin.com>
+Hi Steven
 
-Add suspend and resume support. Only the rc mode is supported.
+On 12/04/2024 09:42, Steven Price wrote:
+> Query the RMI version number and check if it is a compatible version. A
+> static key is also provided to signal that a supported RMM is available.
+> 
+> Functions are provided to query if a VM or VCPU is a realm (or rec)
+> which currently will always return false.
+> 
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>   arch/arm64/include/asm/kvm_emulate.h | 18 +++++++++
+>   arch/arm64/include/asm/kvm_host.h    |  4 ++
+>   arch/arm64/include/asm/kvm_rme.h     | 56 ++++++++++++++++++++++++++++
+>   arch/arm64/include/asm/virt.h        |  1 +
+>   arch/arm64/kvm/Makefile              |  3 +-
+>   arch/arm64/kvm/arm.c                 |  9 +++++
+>   arch/arm64/kvm/rme.c                 | 52 ++++++++++++++++++++++++++
+>   7 files changed, 142 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/arm64/include/asm/kvm_rme.h
+>   create mode 100644 arch/arm64/kvm/rme.c
+> 
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> index 975af30af31f..6f08398537e2 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -611,4 +611,22 @@ static __always_inline void kvm_reset_cptr_el2(struct kvm_vcpu *vcpu)
+>   
+>   	kvm_write_cptr_el2(val);
+>   }
+> +
+> +static inline bool kvm_is_realm(struct kvm *kvm)
+> +{
+> +	if (static_branch_unlikely(&kvm_rme_is_available))
+> +		return kvm->arch.is_realm;
+> +	return false;
+> +}
+> +
+> +static inline enum realm_state kvm_realm_state(struct kvm *kvm)
+> +{
+> +	return READ_ONCE(kvm->arch.realm.state);
+> +}
+> +
+> +static inline bool vcpu_is_rec(struct kvm_vcpu *vcpu)
+> +{
+> +	return false;
+> +}
+> +
+>   #endif /* __ARM64_KVM_EMULATE_H__ */
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 9e8a496fb284..63b68b85db3f 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -27,6 +27,7 @@
+>   #include <asm/fpsimd.h>
+>   #include <asm/kvm.h>
+>   #include <asm/kvm_asm.h>
+> +#include <asm/kvm_rme.h>
+>   #include <asm/vncr_mapping.h>
+>   
+>   #define __KVM_HAVE_ARCH_INTC_INITIALIZED
+> @@ -348,6 +349,9 @@ struct kvm_arch {
+>   	 * the associated pKVM instance in the hypervisor.
+>   	 */
+>   	struct kvm_protected_vm pkvm;
+> +
+> +	bool is_realm;
+> +	struct realm realm;
+>   };
+>   
+>   struct kvm_vcpu_fault_info {
+> diff --git a/arch/arm64/include/asm/kvm_rme.h b/arch/arm64/include/asm/kvm_rme.h
+> new file mode 100644
+> index 000000000000..922da3f47227
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/kvm_rme.h
+> @@ -0,0 +1,56 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2023 ARM Ltd.
+> + */
+> +
+> +#ifndef __ASM_KVM_RME_H
+> +#define __ASM_KVM_RME_H
+> +
+> +/**
+> + * enum realm_state - State of a Realm
+> + */
+> +enum realm_state {
+> +	/**
+> +	 * @REALM_STATE_NONE:
+> +	 *      Realm has not yet been created. rmi_realm_create() may be
+> +	 *      called to create the realm.
+> +	 */
+> +	REALM_STATE_NONE,
+> +	/**
+> +	 * @REALM_STATE_NEW:
+> +	 *      Realm is under construction, not eligible for execution. Pages
+> +	 *      may be populated with rmi_data_create().
+> +	 */
+> +	REALM_STATE_NEW,
+> +	/**
+> +	 * @REALM_STATE_ACTIVE:
+> +	 *      Realm has been created and is eligible for execution with
+> +	 *      rmi_rec_enter(). Pages may no longer be populated with
+> +	 *      rmi_data_create().
+> +	 */
+> +	REALM_STATE_ACTIVE,
+> +	/**
+> +	 * @REALM_STATE_DYING:
+> +	 *      Realm is in the process of being destroyed or has already been
+> +	 *      destroyed.
+> +	 */
+> +	REALM_STATE_DYING,
+> +	/**
+> +	 * @REALM_STATE_DEAD:
+> +	 *      Realm has been destroyed.
+> +	 */
+> +	REALM_STATE_DEAD
+> +};
+> +
+> +/**
+> + * struct realm - Additional per VM data for a Realm
+> + *
+> + * @state: The lifetime state machine for the realm
+> + */
+> +struct realm {
+> +	enum realm_state state;
+> +};
+> +
+> +int kvm_init_rme(void);
+> +
+> +#endif
+> diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
+> index 261d6e9df2e1..12cf36c38189 100644
+> --- a/arch/arm64/include/asm/virt.h
+> +++ b/arch/arm64/include/asm/virt.h
+> @@ -81,6 +81,7 @@ void __hyp_reset_vectors(void);
+>   bool is_kvm_arm_initialised(void);
+>   
+>   DECLARE_STATIC_KEY_FALSE(kvm_protected_mode_initialized);
+> +DECLARE_STATIC_KEY_FALSE(kvm_rme_is_available);
+>   
+>   /* Reports the availability of HYP mode */
+>   static inline bool is_hyp_mode_available(void)
+> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+> index c0c050e53157..1c1d8cdf381f 100644
+> --- a/arch/arm64/kvm/Makefile
+> +++ b/arch/arm64/kvm/Makefile
+> @@ -20,7 +20,8 @@ kvm-y += arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
+>   	 vgic/vgic-v3.o vgic/vgic-v4.o \
+>   	 vgic/vgic-mmio.o vgic/vgic-mmio-v2.o \
+>   	 vgic/vgic-mmio-v3.o vgic/vgic-kvm-device.o \
+> -	 vgic/vgic-its.o vgic/vgic-debug.o
+> +	 vgic/vgic-its.o vgic/vgic-debug.o \
+> +	 rme.o
+>   
+>   kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o pmu.o
+>   
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 3dee5490eea9..2056c660c5ee 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -38,6 +38,7 @@
+>   #include <asm/kvm_mmu.h>
+>   #include <asm/kvm_nested.h>
+>   #include <asm/kvm_pkvm.h>
+> +#include <asm/kvm_rme.h>
+>   #include <asm/kvm_emulate.h>
+>   #include <asm/sections.h>
+>   
+> @@ -47,6 +48,8 @@
+>   
+>   static enum kvm_mode kvm_mode = KVM_MODE_DEFAULT;
+>   
+> +DEFINE_STATIC_KEY_FALSE(kvm_rme_is_available);
+> +
+>   DECLARE_KVM_HYP_PER_CPU(unsigned long, kvm_hyp_vector);
+>   
+>   DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
+> @@ -2562,6 +2565,12 @@ static __init int kvm_arm_init(void)
+>   
+>   	in_hyp_mode = is_kernel_in_hyp_mode();
+>   
+> +	if (in_hyp_mode) {
+> +		err = kvm_init_rme();
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>   	if (cpus_have_final_cap(ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE) ||
+>   	    cpus_have_final_cap(ARM64_WORKAROUND_1508412))
+>   		kvm_info("Guests without required CPU erratum workarounds can deadlock system!\n" \
+> diff --git a/arch/arm64/kvm/rme.c b/arch/arm64/kvm/rme.c
+> new file mode 100644
+> index 000000000000..3dbbf9d046bf
+> --- /dev/null
+> +++ b/arch/arm64/kvm/rme.c
+> @@ -0,0 +1,52 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 ARM Ltd.
+> + */
+> +
+> +#include <linux/kvm_host.h>
+> +
+> +#include <asm/rmi_cmds.h>
+> +#include <asm/virt.h>
+> +
+> +static int rmi_check_version(void)
+> +{
+> +	struct arm_smccc_res res;
+> +	int version_major, version_minor;
+> +	unsigned long host_version = RMI_ABI_VERSION(RMI_ABI_MAJOR_VERSION,
+> +						     RMI_ABI_MINOR_VERSION);
+> +
+> +	arm_smccc_1_1_invoke(SMC_RMI_VERSION, host_version, &res);
+> +
+> +	if (res.a0 == SMCCC_RET_NOT_SUPPORTED)
+> +		return -ENXIO;
+> +
+> +	version_major = RMI_ABI_VERSION_GET_MAJOR(res.a1);
+> +	version_minor = RMI_ABI_VERSION_GET_MINOR(res.a1);
+> +
 
-During the suspend stage PERST# is asserted, then deasserted during the
-resume stage.
+We don't seem to be using the res.a0 to determin if the RMM supports our
+requested version. As per RMM spec, section B4.3.23 :
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
----
- drivers/pci/controller/cadence/pci-j721e.c | 98 ++++++++++++++++++++++++++++--
- 1 file changed, 92 insertions(+), 6 deletions(-)
+"
+The status code and lower revision output values indicate which of the 
+following is true, in order of precedence:
+  a) The RMM supports an interface revision which is compatible with the
+     requested revision.
+      • The status code is RMI_SUCCESS.
+      • The lower revision is equal to the requested revision.
+  b) The RMM does not support an interface revision which is compatible
+     with the requested revision The RMM supports an interface revision
+     which is incompatible with and less than the requested revision.
+      • The status code is RMI_ERROR_INPUT.
+      • The lower revision is the highest interface revision which is
+        both less than the requested revision and supported by the RMM.
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index 967a5bf38e26..96316a79ab8a 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -7,6 +7,8 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/container_of.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/io.h>
-@@ -22,6 +24,8 @@
- #include "../../pci.h"
- #include "pcie-cadence.h"
- 
-+#define cdns_pcie_to_rc(p) container_of(p, struct cdns_pcie_rc, pcie)
-+
- #define ENABLE_REG_SYS_2	0x108
- #define STATUS_REG_SYS_2	0x508
- #define STATUS_CLR_REG_SYS_2	0x708
-@@ -531,12 +535,12 @@ static int j721e_pcie_probe(struct platform_device *pdev)
- 		pcie->refclk = clk;
- 
- 		/*
--		 * "Power Sequencing and Reset Signal Timings" table in
--		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
--		 * indicates PERST# should be deasserted after minimum of 100us
--		 * once REFCLK is stable. The REFCLK to the connector in RC
--		 * mode is selected while enabling the PHY. So deassert PERST#
--		 * after 100 us.
-+		 * "Power Sequencing and Reset Signal Timings" table (section
-+		 * 2.9.2) in PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION,
-+		 * REV. 5.1 indicates PERST# should be deasserted after minimum
-+		 * of 100us once REFCLK is stable (symbol T_PERST-CLK).
-+		 * The REFCLK to the connector in RC mode is selected while
-+		 * enabling the PHY. So deassert PERST# after 100 us.
- 		 */
- 		if (gpiod) {
- 			fsleep(PCIE_T_PERST_CLK_US);
-@@ -588,6 +592,87 @@ static void j721e_pcie_remove(struct platform_device *pdev)
- 	pm_runtime_disable(dev);
- }
- 
-+static int j721e_pcie_suspend_noirq(struct device *dev)
-+{
-+	struct j721e_pcie *pcie = dev_get_drvdata(dev);
-+
-+	if (pcie->mode == PCI_MODE_RC) {
-+		gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-+		clk_disable_unprepare(pcie->refclk);
-+	}
-+
-+	cdns_pcie_disable_phy(pcie->cdns_pcie);
-+
-+	return 0;
-+}
-+
-+static int j721e_pcie_resume_noirq(struct device *dev)
-+{
-+	struct j721e_pcie *pcie = dev_get_drvdata(dev);
-+	struct cdns_pcie *cdns_pcie = pcie->cdns_pcie;
-+	int ret;
-+
-+	ret = j721e_pcie_ctrl_init(pcie);
-+	if (ret < 0)
-+		return ret;
-+
-+	j721e_pcie_config_link_irq(pcie);
-+
-+	/*
-+	 * This is not called explicitly in the probe, it is called by
-+	 * cdns_pcie_init_phy().
-+	 */
-+	ret = cdns_pcie_enable_phy(pcie->cdns_pcie);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (pcie->mode == PCI_MODE_RC) {
-+		struct cdns_pcie_rc *rc = cdns_pcie_to_rc(cdns_pcie);
-+
-+		ret = clk_prepare_enable(pcie->refclk);
-+		if (ret < 0)
-+			return ret;
-+
-+		/*
-+		 * "Power Sequencing and Reset Signal Timings" table (section
-+		 * 2.9.2) in PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION,
-+		 * REV. 5.1 indicates PERST# should be deasserted after minimum
-+		 * of 100us once REFCLK is stable (symbol T_PERST-CLK).
-+		 * The REFCLK to the connector in RC mode is selected while
-+		 * enabling the PHY. So deassert PERST# after 100 us.
-+		 */
-+		if (pcie->reset_gpio) {
-+			fsleep(PCIE_T_PERST_CLK_US);
-+			gpiod_set_value_cansleep(pcie->reset_gpio, 1);
-+		}
-+
-+		ret = cdns_pcie_host_link_setup(rc);
-+		if (ret < 0) {
-+			clk_disable_unprepare(pcie->refclk);
-+			return ret;
-+		}
-+
-+		/*
-+		 * Reset internal status of BARs to force reinitialization in
-+		 * cdns_pcie_host_init().
-+		 */
-+		for (enum cdns_pcie_rp_bar bar = RP_BAR0; bar <= RP_NO_BAR; bar++)
-+			rc->avail_ib_bar[bar] = true;
-+
-+		ret = cdns_pcie_host_init(rc);
-+		if (ret) {
-+			clk_disable_unprepare(pcie->refclk);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static DEFINE_NOIRQ_DEV_PM_OPS(j721e_pcie_pm_ops,
-+			       j721e_pcie_suspend_noirq,
-+			       j721e_pcie_resume_noirq);
-+
- static struct platform_driver j721e_pcie_driver = {
- 	.probe  = j721e_pcie_probe,
- 	.remove_new = j721e_pcie_remove,
-@@ -595,6 +680,7 @@ static struct platform_driver j721e_pcie_driver = {
- 		.name	= "j721e-pcie",
- 		.of_match_table = of_j721e_pcie_match,
- 		.suppress_bind_attrs = true,
-+		.pm	= pm_sleep_ptr(&j721e_pcie_pm_ops),
- 	},
- };
- builtin_platform_driver(j721e_pcie_driver);
+  c) The RMM does not support an interface revision which is compatible
+     with the requested revision The RMM supports an interface revision
+     which is incompatible with and greater than the requested revision.
+      • The status code is RMI_ERROR_INPUT.
+      • The lower revision is equal to the higher revision.
 
--- 
-2.39.2
+So, we could simply check the res.a0 for RMI_SUCCESS and proceed with
+marking RMM available.
+
+
+> +	if (version_major != RMI_ABI_MAJOR_VERSION) {
+> +		kvm_err("Unsupported RMI ABI (v%d.%d) host supports v%d.%d\n",
+> +			version_major, version_minor,
+> +			RMI_ABI_MAJOR_VERSION,
+> +			RMI_ABI_MINOR_VERSION);
+> +		return -ENXIO;
+> +	}
+> +
+> +	kvm_info("RMI ABI version %d.%d\n", version_major, version_minor);
+> +
+> +	return 0;
+> +}
+> +
+> +int kvm_init_rme(void)
+> +{
+> +	if (PAGE_SIZE != SZ_4K)
+> +		/* Only 4k page size on the host is supported */
+> +		return 0;
+> +
+> +	if (rmi_check_version())
+> +		/* Continue without realm support */
+> +		return 0;
+> +
+> +	/* Future patch will enable static branch kvm_rme_is_available */
+> +
+> +	return 0;
+
+Do we ever expect this to fail the kvm initialisation ? Otherwise, we
+could leave it as a void ?
+
+Suzuki
+> +}
 
 
