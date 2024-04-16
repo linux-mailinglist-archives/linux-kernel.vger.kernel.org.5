@@ -1,144 +1,118 @@
-Return-Path: <linux-kernel+bounces-147064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0167D8A6EF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC088A6EFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 836E11F2186A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:50:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 766FA1F21C63
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1938512F5BE;
-	Tue, 16 Apr 2024 14:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4339212FF9E;
+	Tue, 16 Apr 2024 14:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cp9aWPme"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RrpBiHO1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C26712DD95;
-	Tue, 16 Apr 2024 14:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5730812F5B1
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 14:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278946; cv=none; b=lBGeUQhrNL9jrr135Z70zcOL1fXjlZ+iF2x9uQQsjBsoHrk8DDEeLT4BmX+3FVSgUX7yAw+3ht3THsh95zQjJ0hDL68O0ppuTMQf0ka+kN8HDTHoa8fFHTo9YtoD1TZZy2XMEcUsClSdBtmDteAUzYRYQAG/+8RCO66FsLGzTEk=
+	t=1713278982; cv=none; b=it+RJyGMFyUNzIrX0p3/8u0lR6Mw65FZGAuQJF9IpQCd4b7XF1BocBvvg03tqA85bf/AMxQmPCVpn1eZL+I9W1fVrsybtf0alxr5JWZHrOIbkLtIyXFVnOkvNtQPy//tBTeKUye9R5VNQv715wnDmlQvTvYHGnAfSOGv6YYb43s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278946; c=relaxed/simple;
-	bh=N7wBR+UpwtOV9tGvVgMsV+bnRTrkTRC+bkXsjuPHIuY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TdszABVUP8uCGvukqb+GKNp/wI7phVHWovWj+J0QIqp+wT6J4rMQoF/mJZmd1qFdDgLotUYNPpdLIVK9y9tRH7UrK9zSkEMveubHBUQCnXb/RZT3DiuydMbwqZ48omK2Jj0RtaKk6diJeI8hAgXMQ+h9/VVaihbphdDIjJ0foTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cp9aWPme; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed01c63657so4012379b3a.2;
-        Tue, 16 Apr 2024 07:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713278944; x=1713883744; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BX6A1PLIPUHloNbC1YwAKF3yvucqzC+IykrkDL2EP9k=;
-        b=Cp9aWPmeMH+dt/AMVWJSWZu8t/9uQxw8G/UwKTRTZwxUj9JadJkKxBHFl++VxFoiwE
-         AgLIp1xWmESaiSA5/UbYipL+s+H64p2AfNFhzJpzILY0IfZrrVBHmqqKxkkI/nxgw+7h
-         6kB+okac3WlQTYydfqpoHnmFvn4pwxCy0WgtGsrUov56z37148y/6Ipd9avj+Bld/i+u
-         k312TBwFccBR94oD1Mqw1hz1rKvJlODxVat36Gd9+cGw1Ky1szuuJIDP4tEPSF5w98Ix
-         ieFzGmi5PGiPZ0CwokfeIJFQv2NV9yuFCh7hHzKp9Sv3jR31nXxuj1S+DBPnwGiCGQzN
-         M+Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713278944; x=1713883744;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BX6A1PLIPUHloNbC1YwAKF3yvucqzC+IykrkDL2EP9k=;
-        b=TJBznwNQNwYKj022PeFNvURJ3+Ixc6bGrVQPrx2e+2+2Z8+7m8f9+CWqtjB6L72KY9
-         D/Ry/MFNSiljHfavSSj4Gk8XFm/ZLyhKUmp83LmkYOnJ2VONv4jyF6NyKOOcMsml1X71
-         GTn1bdRSK+3V1jG30+VS5htwDEZwYpvpn07GJ3EZvlnXddp3Xe4qrxsTNKP9zEh3zy5b
-         VSeCCA5f8BZsf898SGMrmbHSK1xvUsp1q3UCA/ASkBrG1AFr1zWKSzVB8n9oxXxDtAek
-         /DROd/DDDqgNmRdJ85md3UppbRW0SskzUTcqkO2ftaaOCSU24OxNFsKiV3vvYTOng/YG
-         2QpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJQkQTvTuMLMUjNoh2v+mrMhx1RHnGnK+EeKCefutz8gnnyIy93jXJhUQ1rH5Cl0sI3/0NRvjDsN5IDi+mchXp8SdMkBiKZNM+wQE7dARzuPjMPkxJW2AXff5RgcdrIe5FIF97uusdDH6euD4Qt00y/o9n8AtpkNji5kjSiQG4Mg==
-X-Gm-Message-State: AOJu0YyfRdaf1tAvlnYUg6ENAs3thHAunlbsisQogRi/YvDVG2AOHUMU
-	Ajwqd4HaHvxyq7C+cyfkvvAsIliZuNvn7n0LftYyN3M/+lHFIz++o1lv4n6huM3hJZFmjgleE4L
-	IAO1SFMGW7lTIXxHgnBKiLXdqbqrYGjFxL4I=
-X-Google-Smtp-Source: AGHT+IHwXhNE3qhkiOVa1dv2tNZZoMwwK96HbsfDvdiRkntrb7ZgeBlDRihGUMHsqNe5ZhvEp1uCE2io4H+6TCFJAD0=
-X-Received: by 2002:a05:6a20:3255:b0:1a7:9fd2:8bbb with SMTP id
- hm21-20020a056a20325500b001a79fd28bbbmr11344740pzc.24.1713278944220; Tue, 16
- Apr 2024 07:49:04 -0700 (PDT)
+	s=arc-20240116; t=1713278982; c=relaxed/simple;
+	bh=7ARtCr6gtBIZWPixhMOKo/+c9HV56ed5oMvKe8ko6Dw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EnsH/dKHHRK0bbr8/UHwIFDqhryao9dEr7tSpLVROQF9Pi6bEUUg/Wqpq4RE8kx0vG5AvP53n822jkzJVtwir4aXGLUBoqmbI1eRu9ulLvP8gI5+unPOg3Z03n2xOZv0yFOlJWnVmMHbpU2gwo/1cIEAkw8Szud69yAFplVoxYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RrpBiHO1; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713278979;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Kro/6N3hNJUz0mvlhxtTHwRpm8U0aOExj9xAbQAp3R0=;
+	b=RrpBiHO1J9ueoJSFRY1JNYQkAQmKftHGnGlkKZAHe+j6pxRPKitgQhAS2ckgQA2bUd9ScV
+	1KTx/+t5g3SZlpPec3/6CRIF6SqiFhf0YoIVH9dtTb71kSc9Lor06auzZqHhwDLIYFcFze
+	lqmbnAynkzj7KgCbPm1Qfzq5Pu6xhUg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-488-F48Bfbb7NgShjBLlx_GDCQ-1; Tue,
+ 16 Apr 2024 10:49:35 -0400
+X-MC-Unique: F48Bfbb7NgShjBLlx_GDCQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 860931C4C3A0;
+	Tue, 16 Apr 2024 14:49:34 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.39.194.131])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C9847492BD4;
+	Tue, 16 Apr 2024 14:49:31 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: kvm@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	llvm@lists.linux.dev,
+	David Hildenbrand <david@redhat.com>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v1] LoongArch/tlb: fix "error: parameter 'ptep' set but not used" due to __tlb_remove_tlb_entry()
+Date: Tue, 16 Apr 2024 16:49:26 +0200
+Message-ID: <20240416144926.599101-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240414065305.9796-1-marco@sirabella.org>
-In-Reply-To: <20240414065305.9796-1-marco@sirabella.org>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Tue, 16 Apr 2024 16:48:52 +0200
-Message-ID: <CAOiHx==-V-SeyiH3+BbPD2r13vwsWE2MzRDjtHRBWX7CtFLsDg@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: spi: Update gpio+bitbang instruction
-To: Marco Sirabella <marco@sirabella.org>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
-	linux-spi@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-Hi,
+With LLVM=1 and W=1 we get:
 
-On Sun, 14 Apr 2024 at 08:54, Marco Sirabella <marco@sirabella.org> wrote:
->
-> The way to do this was changed in
-> 9b00bc7b901f (spi-gpio: Rewrite to use GPIO descriptors)
-> and there's no real docs outlining this,
-> update defunct #include "spi-gpio.c" instructions
->
-> Signed-off-by: Marco Sirabella <marco@sirabella.org>
-> ---
->  drivers/spi/spi-gpio.c | 17 ++++-------------
->  1 file changed, 4 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/spi/spi-gpio.c b/drivers/spi/spi-gpio.c
-> index 909cce109bba..8c5f88f01db2 100644
-> --- a/drivers/spi/spi-gpio.c
-> +++ b/drivers/spi/spi-gpio.c
-> @@ -44,22 +44,13 @@ struct spi_gpio {
->   * per transferred bit can make performance a problem, this code
->   * is set up so that you can use it in either of two ways:
->   *
-> - *   - The slow generic way:  set up platform_data to hold the GPIO
-> + *   - The generic way:  set up platform_data to hold the GPIO
->   *     numbers used for MISO/MOSI/SCK, and issue procedure calls for
->   *     each of them.  This driver can handle several such busses.
+  ./include/asm-generic/tlb.h:629:10: error: parameter 'ptep' set
+  but not used [-Werror,-Wunused-but-set-parameter]
 
-9b00bc7b901f (spi-gpio: Rewrite to use GPIO descriptors) removed the
-fields for the GPIO numbers, so this is definitely not the way
-anymore.
+We fixed a similar issue via Arnd in the introducing commit, missed the
+loongarch variant. Turns out, there is no need for loongarch to have a
+custom variant, so let's just drop it and rely on the asm-generic one.
 
-Since the code now always uses descriptors, the performance comment in
-the first paragraph does not apply anymore as well and should be
-dropped as well.
+Reported-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Closes: https://lkml.kernel.org/r/CANiq72mQh3O9S4umbvrKBgMMorty48UMwS01U22FR0mRyd3cyQ@mail.gmail.com
+Fixes: 4d5bf0b6183f ("mm/mmu_gather: add tlb_remove_tlb_entries()")
+Tested-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: WANG Xuerui <kernel@xen0n.name>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ arch/loongarch/include/asm/tlb.h | 2 --
+ 1 file changed, 2 deletions(-)
 
->   *
-> - *   - The quicker inlined way:  only helps with platform GPIO code
-> - *     that inlines operations for constant GPIOs.  This can give
-> - *     you tight (fast!) inner loops, but each such bus needs a
-> - *     new driver.  You'll define a new C file, with Makefile and
-> - *     Kconfig support; the C code can be a total of six lines:
-> - *
-> - *             #define DRIVER_NAME     "myboard_spi2"
-> - *             #define SPI_MISO_GPIO   119
-> - *             #define SPI_MOSI_GPIO   120
-> - *             #define SPI_SCK_GPIO    121
-> - *             #define SPI_N_CHIPSEL   4
-> - *             #include "spi-gpio.c"
-> + *   - The inlined way:  manually set up and register a gpiod_lookup_table with
-> + *     the appropriately labelled gpio pins "sck", "mosi", "miso" & an array
-> + *     named "cs" before calling devm_spi_register_controller (XXX).
+diff --git a/arch/loongarch/include/asm/tlb.h b/arch/loongarch/include/asm/tlb.h
+index da7a3b5b9374a..e071f5e9e8580 100644
+--- a/arch/loongarch/include/asm/tlb.h
++++ b/arch/loongarch/include/asm/tlb.h
+@@ -132,8 +132,6 @@ static __always_inline void invtlb_all(u32 op, u32 info, u64 addr)
+ 		);
+ }
+ 
+-#define __tlb_remove_tlb_entry(tlb, ptep, address) do { } while (0)
+-
+ static void tlb_flush(struct mmu_gather *tlb);
+ 
+ #define tlb_flush tlb_flush
+-- 
+2.44.0
 
-I think you need to use platform_device_register(), at least both
-remaining users do so. And this is AFAICT now the only option for
-registering it via C code (which also means that DRIVER_NAME will
-never be defined from outside, and GENERIC_BITBANG will always be true
-.. ).
-
-Best Regards,
-Jonas
 
