@@ -1,96 +1,144 @@
-Return-Path: <linux-kernel+bounces-147687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A4838A77BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CBA1F8A77BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:21:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27C2B28426A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86613282C33
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:21:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7D712C469;
-	Tue, 16 Apr 2024 22:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A82F84E01;
+	Tue, 16 Apr 2024 22:21:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="ShQQv/MH"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OvUMVHDb"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F58D811F8;
-	Tue, 16 Apr 2024 22:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CB0A1DDEE;
+	Tue, 16 Apr 2024 22:21:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713305943; cv=none; b=XLDo3RAHCGnbgHgm9hG5e+H5UPDcWi3YSgw+KOY/JXg4zdeBTX9JyeCbHwYrR9yDo7zYCjd1wLe8Nw3dNOxb2HOibJh9fCu6ZEQYQyaUAoWSGJY4lHJv3H+UScyr1YKjYEnIT6JhUl49FpkynX0lCCEYLNC4bBfmdQpTdEwhb3k=
+	t=1713306101; cv=none; b=QrAKzHnCoIRGa1mal6/54zo4mtZhqrZQ07V3bNKHCtzCYKrpLFHHSUNWwAvohxd1a54OMyhlEdJHhdERKBvv80uL+03zBaWLDnY9aW5i2u0sORaAZf9szxCeV7m+c6s1zZ92JlEL6JA9ui1rh+s4IXCnCYeYLeupwudh6LPQQTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713305943; c=relaxed/simple;
-	bh=2UTgKuAbrwfWuorBNpc3DoDq6mu+gQFxigrPLV5qftU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TitTj6dpCEmX58pbTrJdzubyM6sZw+r7PZDjBfbXLFQ0irTD/IH5SK/CNE/1nWfEJk9LLU3/6vv5Z1avP6eqnj1mZAArY2y8zpPB8ywn62sdQEMhUTIaeKKPLyrkEVGmIKEVax0YljeZ0N9wmF0abCycyU9GYIqkaFd2TRVgT34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=ShQQv/MH; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=LjIgFuPbUWQTQ78rm1vu5j/huuLNGgrNm+YPodOSqE0=; b=ShQQv/MHydPLbBH6mC4Cus80Xh
-	Cd/y0Jq20egXeGhhrajocUzcMMi6eRAb27GMj5TF+8l7LGK8uVh8syE4ouMIAiRCqRn9zNVqVXTIQ
-	8WxVviYUjOF+H+xopFnSeGciC6EVEuc+kZbUuNGGjNsAuJPUyBAL0InlpHO1pZgGiQY6MvMzry+wu
-	V9r57YdjOWQTy1WjEdp/GQIgKJNGVfpxdou5zRROR2EmbA9Cd/63Ki/ZfEicMl+RKmF4MZNQYL2B0
-	B28WYRfSUMHQuiQ4Y4KkMCfUlwbvL2dmo5afYjCTuLNxwCIl8fAbJZ/Zpc+fQbtLBID23YRaCWGdW
-	fcoIsLbQ==;
-Received: from [10.69.139.14] (helo=terabithia.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rwr8j-00GVN4-1I;
-	Tue, 16 Apr 2024 17:18:57 -0500
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Peter Zijlstra <peterz@infradead.org>, wine-devel@winehq.org
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
- wine-devel@winehq.org,
- =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
- Wolfram Sang <wsa@kernel.org>, Andy Lutomirski <luto@kernel.org>,
- linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Randy Dunlap <rdunlap@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
- Boqun Feng <boqun.feng@gmail.com>, Elizabeth Figura <zfigura@codeweavers.com>
-Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
-Date: Tue, 16 Apr 2024 17:18:56 -0500
-Message-ID: <3743440.MHq7AAxBmi@terabithia>
-In-Reply-To: <4340072.ejJDZkT8p0@terabithia>
-References:
- <20240416010837.333694-1-zfigura@codeweavers.com>
- <20240416081421.GB31647@noisy.programming.kicks-ass.net>
- <4340072.ejJDZkT8p0@terabithia>
+	s=arc-20240116; t=1713306101; c=relaxed/simple;
+	bh=M5gQrJN78A1ObpmBenyDDmsu5o4tKBX3ccIZbR0GsnM=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=j3RKLO2TyKffpvwCLZXVqHhDewDMG2rl099/GboI2/HXA2YuKLpiYdMPdxMQTj4CvQUlboPw0m6p58YxYzne6A6ZjQq0BG+g+6efrKiGjlIcENlaZj6kQxyIQzBMHMZdezGNleDuJ5haCw0KrtvmfKE3r8UdW3AfOEoWS37VNxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OvUMVHDb; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713306100; x=1744842100;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=M5gQrJN78A1ObpmBenyDDmsu5o4tKBX3ccIZbR0GsnM=;
+  b=OvUMVHDbLC8E9OF6yUE/wSYsd7H4Lgbb81ex52C+Jfgk2UYCjkgQFC25
+   SbTe29ZTzNjTEIbLNHdJa/IacqjFxUkRxgoxXz+dGB66V4Pu18e0NAID0
+   ecdwQOowY0V4m7wu1PaT7oOJL94m3Ji8NpGDsXpmAL+IiM5TBMVFtvR0+
+   z+QzkTvwOEHr5bA5Y0tjG4EYGcyuoa1q8zi6yQvprQwB9g0Gh7czSiQ51
+   YNm9RTQOtqfrJ8f25HZ7HVi9SRRORZ0jttwGJ6fqdbAnRDgN3mcWe76t7
+   R5Rpab+/zjsZCvZDxLG9ZWzZkiELzDdL3UCCSwi0UFLNLheR56Q2Txq5m
+   w==;
+X-CSE-ConnectionGUID: X9MVg8KRRUK4iKv/ChCIew==
+X-CSE-MsgGUID: FD3m712bTyKuSxlJgIM7dQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8904567"
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="8904567"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 15:21:39 -0700
+X-CSE-ConnectionGUID: kj5eQ0swQ3Ke+eceumFYhw==
+X-CSE-MsgGUID: rzaBnjEHREi2kf8UZozdjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
+   d="scan'208";a="22816784"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 16 Apr 2024 15:21:29 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>, "Haitao
+ Huang" <haitao.huang@linux.intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-15-haitao.huang@linux.intel.com>
+ <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org> <D0LLVE07V8O0.S8XF3CY2DQ9A@kernel.org>
+ <op.2mbs1m05wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D0LODQCRSTRA.2KSPCDB0FLK0X@kernel.org>
+ <op.2mccxje2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Date: Tue, 16 Apr 2024 17:21:24 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2mcdpygvwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2mccxje2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Tuesday, 16 April 2024 16:18:24 CDT Elizabeth Figura wrote:
-> On Tuesday, 16 April 2024 03:14:21 CDT Peter Zijlstra wrote:
-> > I don't support GE has it in his builds? Last time I tried, building
-> > Wine was a bit of a pain.
->=20
-> It doesn't seem so. I tried to build a GE-compatible ntsync build, upload=
-ed
-> here (thanks Arek for hosting):
->=20
->     https://f002.backblazeb2.com/file/wine-ntsync/ntsync-wine.tar.xz
+On Tue, 16 Apr 2024 17:04:21 -0500, Haitao Huang  
+<haitao.huang@linux.intel.com> wrote:
 
-Oops, the initial version I uploaded had broken paths. Should be fixed now.
+> On Tue, 16 Apr 2024 11:08:11 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+> wrote:
+>
+>> On Tue Apr 16, 2024 at 5:54 PM EEST, Haitao Huang wrote:
+>>> I did declare the configs in the config file but I missed it in my  
+>>> patch
+>>> as stated earlier. IIUC, that would not cause this error though.
+>>>
+>>> Maybe I should exit with the skip code if no CGROUP_MISC (no more
+>>> CGROUP_SGX_EPC) is configured?
+>>
+>> OK, so I wanted to do a distro kernel test here, and used the default
+>> OpenSUSE kernel config. I need to check if it has CGROUP_MISC set.
+>>
+>>> tools/testing/selftests$ find . -name README
+>>> ./futex/README
+>>> ./tc-testing/README
+>>> ./net/forwarding/README
+>>> ./powerpc/nx-gzip/README
+>>> ./ftrace/README
+>>> ./arm64/signal/README
+>>> ./arm64/fp/README
+>>> ./arm64/README
+>>> ./zram/README
+>>> ./livepatch/README
+>>> ./resctrl/README
+>>
+>> So is there a README because of override timeout parameter? Maybe it
+>> should be just set to a high enough value?
+>>
+>> BR, Jarkko
+>>
+>
+>
+>  From the docs, I think we are supposed to use override.
+> See:  
+> https://docs.kernel.org/dev-tools/kselftest.html#timeout-for-selftests
+>
+> Thanks
+> Haitao
+>
 
-(It's also broken on an unpatched kernel unless explicitly disabled with=20
-WINE_DISABLE_FAST_SYNC=3D1. Not sure what I messed up there=E2=80=94it shou=
-ld fall back=20
-cleanly=E2=80=94but hopefully shouldn't be too important for testing.)
+Maybe you are suggesting we add settings file? I can do that.
+README also explains what the tests do though. Do you still think they  
+should not exist?
+I was mostly following resctrl as example.
 
-
+Thanks
+Haitao
 
