@@ -1,162 +1,108 @@
-Return-Path: <linux-kernel+bounces-146429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A06D28A651A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:30:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B56A08A6524
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:31:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56C2D1F22DD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:30:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 736202843D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 07:31:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB8678C6C;
-	Tue, 16 Apr 2024 07:30:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCE157D086;
+	Tue, 16 Apr 2024 07:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SNlf7vio"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="fLbbpvtq"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A51C7D086
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 07:30:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2D46EB76;
+	Tue, 16 Apr 2024 07:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713252620; cv=none; b=deNbqjElZaixL4m+Lm3t9mg+hKKXv3uaCwoNJBTLXv4UjsWQxJ2ihdm49gig9vc5RLnJ6SFE5OzqToQVN3SujO/Weazw9ay0DV6lSMROlPYycFF6P+vi0RcYrV908UUNaqibmBHBgflfxdUTMMDRhKrVS4EUnL3IZZAwCiGZjqw=
+	t=1713252681; cv=none; b=SMo2Imf2CfqPQCaZCHLVvn3B+VlwQKYhrj7GphWdIV0hBYSJRKZRYTymCe+L59a1/5fj3XaJ0w/egqDrkE5ty1/jc3DGZXcwrrUl6O963nl9B2WZwEwWc9sC8H/l6Qty5LIBEsG+0zRvgpMCeXVp97NMlEeU+ouqtckI7CC0pSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713252620; c=relaxed/simple;
-	bh=3EBKV7AoYCxlJECmklFzoEXRovNanxjXalvsVOT4m+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iv4x+sMDO4kSiBxpWrmBX25m2Kd321mv9nIfYyCtt/0QDiy+BxWEVwk0fdLnzer6AaM8FDVbnRIiRefVkmOmcnSx8TpyAJNsx513bdnAF7pN45/Tl5ALjX5tDYyhXpDwKFRrGFkpN69u2qX6/zJ/V6nry1EkJHrs9pUEbe0xwVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SNlf7vio; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4715991c32so515466866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 00:30:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713252616; x=1713857416; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cQoXqxQGz5UdNS/uHt9iOu3c65OCBEQl1AjepevvRYw=;
-        b=SNlf7vioxt9kCwvhEUN8obQyhDYbHdl4mPQtUdgYuiGObRsj3s3lTmyk/rgfuO9C0b
-         G/go3KPIiKXe8EL7p2wymeks0Ne2COByut5L6T4WRBNrmkwvDXUMfIYeCaaHBXelPe+z
-         6XNJdOsb275n+a2dt0ntwxe+TEOwv4IwBgUdks0IiqLlrWd85B3RoNpJazutUQIc1wxC
-         sz1XqbKDXYN84YdAWzEWn0OrUHfuvgBavPzJU8YjCcZmbUNz/tnjrtDE94ylLfSPr6ei
-         Po0ST2OC1kThPV2sUV4K3rGk8Lv/QKQdR9a41Wocb6oTxU35MJ+2E8qhC2dmJGK1n4IZ
-         Rkiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713252616; x=1713857416;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cQoXqxQGz5UdNS/uHt9iOu3c65OCBEQl1AjepevvRYw=;
-        b=k2+0zQr3HqFYo6EULvsh90lUtBmHDqMJJgalIqEZsPBxFrBAPNRUqPnDQGGz61z5ch
-         w+UHqCQz3IYmoiA4UnchG6ZjLBjNEWGJWO2kiDgUg95oJWmvWNEJioRIt4+KFj6VKl3f
-         h81GVjCTOZmj+i2BFnTkyEDjLLHpblEPphXbXjVB4LOIdCHKPH/9QTmQs88brVKbuSoI
-         hJtN3MMuwQogZt4dNLnLm4Rb3XH9/eSyvAqtbmzRZBYfNuqXA94z0LtfbnVHQUqS4jgY
-         m+4LirFS3rOYw0RCIrSjTLYapx277sYH3vE0l9bTFMnoUKn83Hs1CuYcKMe3HcVPjPAG
-         iidg==
-X-Forwarded-Encrypted: i=1; AJvYcCU1cCx8QuEXf9ekL6HQ6/AwZbTiusiornJSSUhjkKFSYqbtsAvEr0lTcUJEC6kQJm+7vB++DN9CQeCMQscfIE209lMG++53BASeA9YH
-X-Gm-Message-State: AOJu0Ywzh3fTYme8Mva4FwlIhjyv51FH3zmkgaeMlD1wOsBprTUkIU6u
-	J7EJS8R9FAmB8Qwbr92TmVItLQzyHGbmC5MdxZ7rojviQgBmCUXd4QLTnGP26l8=
-X-Google-Smtp-Source: AGHT+IES0flyaPsDqcItqmrdcMlT/9HhmNC59nIBd1+qe6iKBoJLQjAdExVi7n8xHc0r8DPQuGmsnQ==
-X-Received: by 2002:a17:906:fd89:b0:a52:24b7:b4fc with SMTP id xa9-20020a170906fd8900b00a5224b7b4fcmr9643955ejb.72.1713252616011;
-        Tue, 16 Apr 2024 00:30:16 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id h14-20020a1709070b0e00b00a518c69c4e3sm6421654ejl.23.2024.04.16.00.30.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 00:30:15 -0700 (PDT)
-Date: Tue, 16 Apr 2024 10:30:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ricardo Ribalda <ribalda@chromium.org>
-Cc: Martin Tuma <martin.tuma@digiteqautomotive.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hugues Fruchet <hugues.fruchet@foss.st.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Sowjanya Komatineni <skomatineni@nvidia.com>,
-	Luca Ceresoli <luca.ceresoli@bootlin.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>, Sergey Kozlov <serjk@netup.ru>,
-	Abylay Ospan <aospan@netup.ru>,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Dmitry Osipenko <digetx@gmail.com>,
-	Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-	Vikash Garodia <quic_vgarodia@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-	Sylvain Petinot <sylvain.petinot@foss.st.com>,
-	Jacopo Mondi <jacopo+renesas@jmondi.org>,
-	Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
-	Pavel Machek <pavel@ucw.cz>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev,
-	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 06/35] media: stm32-dcmipp: Remove redundant printk
-Message-ID: <cd4aac19-c4cf-4db0-a18c-42f1bf1441a8@moroto.mountain>
-References: <20240415-fix-cocci-v1-0-477afb23728b@chromium.org>
- <20240415-fix-cocci-v1-6-477afb23728b@chromium.org>
+	s=arc-20240116; t=1713252681; c=relaxed/simple;
+	bh=AVvgrdwgUlFcyOqJC1cNpEHtXM6gzqbA1VoxF+YYTOI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=QuQj4Pf728yOWP+4Eg5Vr20AFiAiMHCQOFMa1Z1Ez2OOg7SxEHLVepTTH93o9aQpJ76j+9Rvx2PdWwsjFwfSIPYVmy/hl7FUhlnqLWjcUGiUKHj5de9AZuMgadxgA2Ap29Wm6bM4Usl446Rf2jjpCzmQo8S5/mBEjWZY/5fFT80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=fLbbpvtq; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1713252675;
+	bh=eOK/bCV7IyfygWV9u4shyKXmqc9QPsYNWN/ruKFTjn0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=fLbbpvtqB5ohUbohD+5h0tTJFVqVyLEOJdJziboW0356r5MKQEkZqAbhfp1clFcey
+	 +LFSNWb/hV47tZfyzxiREouTRd8su67dnHBgW0YXkQp+6EQIRAImVZHmcSYOXOy6Sy
+	 XY1P4Oah3eKDhVuyBtMAD7Z4vNJIOReRqUCfFddPv2tFC29c1RjnZZBPJKbydbUUw7
+	 dIA4aYJTpwDvp6VwKYJgau6N4GkEOtNrqv3njMgYDwG4+AlfBn+zDp7VrZ93GoFNKa
+	 VHsbVO+3AHpfc4t+3/DDIzDEompn2pt96XO+efd7SziDDnB3lbNp4MyEe/CXJ/m3CL
+	 gpdwArMAPLmDA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VJbLp6YNdz4wnv;
+	Tue, 16 Apr 2024 17:31:14 +1000 (AEST)
+Date: Tue, 16 Apr 2024 17:31:12 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Jocelyn Falempe <jfalempe@redhat.com>, Intel Graphics
+ <intel-gfx@lists.freedesktop.org>, DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the drm-misc tree
+Message-ID: <20240416173112.04579e40@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240415-fix-cocci-v1-6-477afb23728b@chromium.org>
+Content-Type: multipart/signed; boundary="Sig_/jKM7rW28KcV_xG8kmBaV5Jf";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Mon, Apr 15, 2024 at 07:34:23PM +0000, Ricardo Ribalda wrote:
-> platform_get_irq() already prints an error message.
-> 
-> Found by cocci:
-> drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c:444:3-10: line 444 is redundant because platform_get_irq() already prints an error
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-> index bce821eb71ce..c25027b0ca32 100644
-> --- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-> +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
-> @@ -439,11 +439,8 @@ static int dcmipp_probe(struct platform_device *pdev)
->  				     "Could not get reset control\n");
->  
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq <= 0) {
-> -		if (irq != -EPROBE_DEFER)
-> -			dev_err(&pdev->dev, "Could not get irq\n");
-> +	if (irq <= 0)
->  		return irq ? irq : -ENXIO;
+--Sig_/jKM7rW28KcV_xG8kmBaV5Jf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-platform_get_irq() can never return zero so this should be written as:
+Hi all,
 
-	irq = platform_get_irq(pdev, 0);
-	if (irq < 0)
-		return irq;
+After merging the drm-misc tree, today's linux-next build (htmldocs)
+produced these warnings:
 
-There is a comment next to platform_get_irq() which documents this.
+drivers/gpu/drm/drm_fb_dma_helper.c:166: warning: Excess function parameter=
+ 'drm_scanout_buffer' description in 'drm_fb_dma_get_scanout_buffer'
+drivers/gpu/drm/drm_fb_dma_helper.c:166: warning: Function parameter or str=
+uct member 'sb' not described in 'drm_fb_dma_get_scanout_buffer'
+drivers/gpu/drm/drm_fb_dma_helper.c:166: warning: Excess function parameter=
+ 'drm_scanout_buffer' description in 'drm_fb_dma_get_scanout_buffer'
 
-regards,
-dan carpenter
+Introduced by commit
 
+  879b3b6511fe ("drm/fb_dma: Add generic get_scanout_buffer() for drm_panic=
+")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/jKM7rW28KcV_xG8kmBaV5Jf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYeKUAACgkQAVBC80lX
+0Gw/Ugf9GCtTwfsqYN6Q9KQJP18BmL2JZH5PKYqdWlunZ5miF5JWklZFbmtc/c+y
+3OSqOq9JJEQYZjENLc8JuaiRfljIzOWXa8rDPY5ozXTIRaJYaWcEJcBeoQtkgUvM
+fyfM6hxh6NvtxZ+m4p5UxPt+rJloNc/I2QADH91xkLzD2SaXBR7Cby35sSj37K3S
+SVx52L7Kia/A3DCb6QRzYEBPvY+waP2geLe+UJk8e049itVjYFvzV9bZjT0phRj1
+dMZ+KraFIktK8AhJsi5Z9HdKi8liTgfxMMMMGgioR6OZ+ZxMPU/IdfFLuY6xDKap
+sIzKNEQ3ExRB1BpsOZoRKA/EXx0FTg==
+=NNr4
+-----END PGP SIGNATURE-----
+
+--Sig_/jKM7rW28KcV_xG8kmBaV5Jf--
 
