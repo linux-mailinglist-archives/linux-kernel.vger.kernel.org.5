@@ -1,162 +1,130 @@
-Return-Path: <linux-kernel+bounces-147353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAE548A72D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:09:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0377D8A72D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:09:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 630F62845C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:09:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD601F216FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C56134CD0;
-	Tue, 16 Apr 2024 18:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DEA1134CE8;
+	Tue, 16 Apr 2024 18:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lJVGnBEw"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GMhnFAjb";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ixQmOQ/Z"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F25A132C1F;
-	Tue, 16 Apr 2024 18:09:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F052A132C1F;
+	Tue, 16 Apr 2024 18:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713290969; cv=none; b=W00b2tOijeKEUUYAEju4khSb3ZC2jHg4T97VU+kRaUCiognwDmuIroHyeweG0NRbLzoqhl/+8DLohZinCX9UjV7Osq/85fhHMIjfyEBOwnSUr8xeu12kijTSSDFyyP1h6Y1HiYxFD6bNBxirdBCR0Amq7BLHAHkqFaB2+P8uNv8=
+	t=1713290958; cv=none; b=SqNCjE1JgzJQNA3vD4pAmyt9XcPtjkhjnMjoHeNkdDjFc38rzwMJRxKoKnNGn4ts4FhpZc6bvORWl/ABwTIdUgtJcNxuECZDxglBP3n2Vkije+rHjGuOkADAIwQ0O97TEI1WjSzOZ18C16ugGfY+oSQ+h3J/kTEVwiJhud4ey3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713290969; c=relaxed/simple;
-	bh=QBJT0fvjo/sByvVdqWhfu7C0uSPTcABMfRn0BIp6lpA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cmglIK26F0UOUbhbfnlhiHgvDnENWNMLX3XHlG2l4pgocA4oDKuxjUS4a3AbaL3sbydaaulXgXXO9Lt9K1f4BS0PIyy1VVE3i2nClPCpl7JncC8NsPk4+yiuda7nmeNDSMushq1kLKCQeEMFWthEe/G1ERcUZtIG6cc0AcX2WM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lJVGnBEw; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GI5beo022066;
-	Tue, 16 Apr 2024 18:09:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=jfBrONQQ7jEqgKW5KCcnvgp1KEoPk8Do22dELHBXnrQ=;
- b=lJVGnBEwDgreOF3Ue6jX6Ov4xleZ8XKnqDGGvotfYVgKjraJtjPtvEkUPmlDCaPrvhxC
- n83sDnZFDxzCG7B4yBdG+DzpSl3dEkDAOFnftgauf9Pe757FUYGHxTjNa43UhC7/r4H1
- 6ymg9CejrR7HC2vxaQ1TE5aXEC+A58tOxI6OGFk/B8bMFfwhB26o5vms5TQ9WBwnZDX6
- +9t4Gv4ERZE6Dpo6nuPI1/YjsuJCXmLf8Y1WNW8VTqX8GZPB+gd7l1aqaZxQt/ydW42X
- 65E+aOSPkF7B/4QdP+nK0ScSdgVqIaKB9+MLHjJdye21yJglgebflEha/2JKU4P7Osti qw== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhwrr032h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 18:09:08 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43GG05Xg015835;
-	Tue, 16 Apr 2024 18:09:07 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg5vm7kt8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 18:09:07 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43GI957s22807200
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Apr 2024 18:09:07 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2DCCA5805E;
-	Tue, 16 Apr 2024 18:09:05 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E38135805A;
-	Tue, 16 Apr 2024 18:09:04 +0000 (GMT)
-Received: from [9.61.157.174] (unknown [9.61.157.174])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 16 Apr 2024 18:09:04 +0000 (GMT)
-Message-ID: <2474f02c-c835-4691-b531-62c8c747aede@linux.ibm.com>
-Date: Tue, 16 Apr 2024 13:09:04 -0500
+	s=arc-20240116; t=1713290958; c=relaxed/simple;
+	bh=H8MrxffkceMumKJooGQ32Ry3ywid0CvWTua4pVRYLN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qtMhSQ+EUtSTAjMSeTO+QN21B1lK+YV01ciDx5e2DtGEIrDkOzX7fwjUjLfue4dHTpbgjGeVPyZ6hSZKvadiLsUYaSvxdnw9nJ8WV3R2v6ogIyxfSx1uYgvEYiO6PmsZ+srMIa4SZ6iKOjI+t0iMRPA8b9tR7OwwS8H3kZ3qncg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GMhnFAjb; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ixQmOQ/Z; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 16 Apr 2024 20:09:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713290953;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SKLrAI5OCUe/r2J49t7qM8eP1fCwVfsTtu23X+cbhBw=;
+	b=GMhnFAjb5aq0fLq1hjaVwDC+5vKgO0aCNwGaU5Cg54Dwdl9OeS42slUU0vCDSUpV6s95+f
+	So/JFdqMFwQ0NhjaqOe7zQ6d/VA+QxIwi1ucEUpCvWu3Z99MtkGTlNIi+1NEvgulAc7YK4
+	mGvSc0PTS7Km/W9dDgIwMo0psk4jzZkt8Hjk2JQlw+oovvt5+rRdK1El/jdfj0lNyKmJM8
+	K3c5LmVS0QcaJ04UQk8GV7B8uhyW95BRdfrKnE8JKF2ILPHxVKa8r24H2DSgA65SfvSj8e
+	eEa7YmcRxOk5ZCcqgm4uc/7pdnlChnyC0eyqwezB7TpQ98nV0HvVanFPYH5acA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713290953;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SKLrAI5OCUe/r2J49t7qM8eP1fCwVfsTtu23X+cbhBw=;
+	b=ixQmOQ/Z45c/M1fP70O0/XH6yLZ1zVX1OS5AAh3Zp3iBkAq1q4nMCxItjJ18ha6HRKoS0G
+	uM/NfWOUolPOHiBA==
+From: Nam Cao <namcao@linutronix.de>
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Mike Rapoport <rppt@kernel.org>, Christian Brauner <brauner@kernel.org>,
+ Andreas Dilger <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
+ Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
+ <conor@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, Anders
+ Roxell <anders.roxell@linaro.org>, Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240416200910.294ea07b@namcao>
+In-Reply-To: <875xwhuqrx.fsf@all.your.base.are.belong.to.us>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+	<8734rlo9j7.fsf@all.your.base.are.belong.to.us>
+	<Zh6KNglOu8mpTPHE@kernel.org>
+	<20240416171713.7d76fe7d@namcao>
+	<20240416173030.257f0807@namcao>
+	<87v84h2tee.fsf@all.your.base.are.belong.to.us>
+	<20240416181944.23af44ee@namcao>
+	<875xwhuqrx.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 25/31] i2c: fsi: Calculate clock divider from local bus
- frequency
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        alistair@popple.id.au, joel@jms.id.au, jk@ozlabs.org, robh@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        lakshmiy@us.ibmcom
-References: <20240226165321.91976-1-eajames@linux.ibm.com>
- <20240226165321.91976-26-eajames@linux.ibm.com>
- <q6bl7sbskt4ukd3mylfgwpo6dmv444umdpycs6xp7ozd2kv335@syeymu62fczb>
-Content-Language: en-US
-From: Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <q6bl7sbskt4ukd3mylfgwpo6dmv444umdpycs6xp7ozd2kv335@syeymu62fczb>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QRXN4cZro-l8ZSyMN11WgV7XKQPY7orO
-X-Proofpoint-ORIG-GUID: QRXN4cZro-l8ZSyMN11WgV7XKQPY7orO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_16,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 bulkscore=0 adultscore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 priorityscore=1501 clxscore=1011 suspectscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2404160113
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
+On 2024-04-16 Bj=C3=B6rn T=C3=B6pel wrote:
+> Nam Cao <namcao@linutronix.de> writes:
+>=20
+> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > index fa34cf55037b..f600cfee0aef 100644
+> > --- a/arch/riscv/mm/init.c
+> > +++ b/arch/riscv/mm/init.c
+> > @@ -197,7 +197,6 @@ early_param("mem", early_mem);
+> >  static void __init setup_bootmem(void)
+> >  {
+> >  	phys_addr_t vmlinux_end =3D __pa_symbol(&_end);
+> > -	phys_addr_t max_mapped_addr;
+> >  	phys_addr_t phys_ram_end, vmlinux_start;
+> > =20
+> >  	if (IS_ENABLED(CONFIG_XIP_KERNEL))
+> > @@ -238,17 +237,9 @@ static void __init setup_bootmem(void)
+> >  	/*
+> >  	 * memblock allocator is not aware of the fact that last 4K bytes of
+> >  	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+> > -	 * macro. Make sure that last 4k bytes are not usable by memblock
+> > -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+> > -	 * kernel, this problem can't happen here as the end of the virtual
+> > -	 * address space is occupied by the kernel mapping then this check mu=
+st
+> > -	 * be done as soon as the kernel mapping base address is determined.
+> > +	 * macro. Make sure that last 4k bytes are not usable by memblock.
+> >  	 */
+> > -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> > -		max_mapped_addr =3D __pa(~(ulong)0);
+> > -		if (max_mapped_addr =3D=3D (phys_ram_end - 1))
+> > -			memblock_set_current_limit(max_mapped_addr - 4096);
+> > -	}
+> > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
+> > =20
+> >  	min_low_pfn =3D PFN_UP(phys_ram_base);
+> >  	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end); =20
+>=20
+> Nice! Would you mind submitting this as a proper fix (unless there's a
+> way to do it non-arch specific like Matthew pointed out).
 
-On 4/15/24 17:11, Andi Shyti wrote:
-> Hi Eddie,
->
->> @@ -689,6 +692,20 @@ static int fsi_i2c_probe(struct device *dev)
->>   	mutex_init(&i2c->lock);
->>   	i2c->fsi = to_fsi_dev(dev);
->>   	INIT_LIST_HEAD(&i2c->ports);
->> +	i2c->clock_div = I2C_DEFAULT_CLK_DIV;
->> +
->> +	lbus = fsi_device_local_bus_frequency(i2c->fsi);
->> +	if (lbus) {
->> +		u32 clock = I2C_DEFAULT_CLK_RATE;
-> I don't see the need for initialization.
+I don't mind, but I am waiting for the discussion on the non-arch solution.
 
-
-Does device_property_read_u32 set clock if the property isn't found? If 
-not, it needs to be initialized here. Or I can set it in an else 
-statement from device_property_read_u32.
-
-
->
->> +
->> +		if (!device_property_read_u32(dev, "clock-frequency", &clock)) {
->> +			if (!clock)
->> +				clock = I2C_DEFAULT_CLK_RATE;
->> +		}
-> no need for brackets.
-
-
-Perhaps not, but checkpatch didn't complain, and I personally like 
-brackets if multiple lines are included.
-
-
->
->> +
->> +		// i2c clock rate = local bus clock / (4 * (i2c clock div + 1))
-> You forgot to remove this.
-
-
-I actually meant to leave that comment to explain how the clock rate is 
-calculated, as the reverse calculation in the code is a little more 
-confusing.
-
-
->
-> Andi
->
->> +		i2c->clock_div = (((lbus + (clock - 1)) / clock) / 4) - 1;
->> +	}
->>   
->>   	rc = fsi_i2c_dev_init(i2c);
->>   	if (rc)
->> -- 
->> 2.39.3
->>
+Best regards,
+Nam
 
