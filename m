@@ -1,121 +1,184 @@
-Return-Path: <linux-kernel+bounces-147478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095F88A7506
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:37:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 671DD8A7508
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:40:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B210D1F2153C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:37:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B2161C20CBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:40:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0131386C8;
-	Tue, 16 Apr 2024 19:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85CCE1386C8;
+	Tue, 16 Apr 2024 19:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WMXi/bbN"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gIPnfds+"
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89E632943C;
-	Tue, 16 Apr 2024 19:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F3B812E1F0
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 19:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713296253; cv=none; b=c559PKy0QojNWWl7s3Z2b2J9ZUNinI9QzfWpwQCAQs8x2VwH1q2sc4V2ToQ1RE826uy9+Vdo3W+ZPES9CcKlamawmutlsGQNPLlbMtcN+GdodPPAgW/s9kuKWf6APKpKb4KgyBAcQHK0lhnuwOpsRAz9rWWnr4Z0EzZKl/951wc=
+	t=1713296439; cv=none; b=Y8OGMnyfYsoqkpYwIiJSB0DNthgKg6pqdBNCMxccNZgSh1bdCOEP+nFzPRfZgFWZ5ruW+5echCLS33SNRUc6DCnoifHeqeWphi/c7DG6Cb6F3fc4k6tUl5uwHS6Y+jeTJcWtWE6eewvtoZ6xZYhN8MlTmsBF6jsB7rZP35uZiU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713296253; c=relaxed/simple;
-	bh=F6vLZMw5iKbm8/K6P0sUwSZXxcZ1d1VPqXfAJPc1ClE=;
+	s=arc-20240116; t=1713296439; c=relaxed/simple;
+	bh=RvR6Qs/XmUof5Nbp59FmfgdsMMPaxV8slV+aC7LWifg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p5TG7N4bCpFLlVJDTBfST+bEH7UYmWkTSo80/X7IaeHCxppdvLm7YTw/QcQQ10aMXMixxoDDvdIs2FA7VkJCL88lseyHIp5PsRJBNUbviLunNHMHObGgq5T9TBR17CgZSxZdydARTrb2xUp1eIq7iE1wM/kn3aMRhYQhz4eLwJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WMXi/bbN; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-518e5a74702so88164e87.1;
-        Tue, 16 Apr 2024 12:37:31 -0700 (PDT)
+	 To:Content-Type; b=KXwnm8zq/lEfdsLmrp1c9+c5ZC/pcsCcY7IfvYcwChPOxNlg9dPzN+8f0dRKeDlyvrT/+tHCP6BcTA/J0dDT3aXe8ufBApMFD9lLKgE5xw6qYETH89HME7qj6NEwKhEGHKlE2bI4WPf9MPhBfl9bWqxNg0x/irmBMjTYYQ+LjTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gIPnfds+; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-23319017c4cso3223721fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:40:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713296250; x=1713901050; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=chromium.org; s=google; t=1713296437; x=1713901237; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bhWQKc/eYOwik0yE3g6ijPo7WAzZsqUpRV7UJ5RlYZU=;
-        b=WMXi/bbNsOSmogIMC9C18YcFhLsiKGKEYUUIZwmagPvQ3yxDHooK1xtAOLiiHZzHZS
-         j4VMm37RjOqEUBNJh0Ma7/43Dlk2SXyrYKMv0LXncXACUJInyMZG/hcfZPjTyyH5AXoF
-         3SQgqxd3/wgeJvwYcPF2M6XmFK+7jL0/gAINLK70YePQVSbXn6RTnk+m+BNFdfBz12+G
-         jmUPNeG6KQM/c43KOVyQYV40WGvqaAz676YUDc2d4yzANop7wsAFmuUUi/iauHdfY5lL
-         4adMfXxF4SAvCS19TMdOiVvBWdLmiBETxMGtnias8j8Ym4NPpEvo59ATJmphO1x9eWrR
-         VtEw==
+        bh=KwEv4Z/MXON03xxjjs3as0fX96oGOhkKVq/HAbUMzow=;
+        b=gIPnfds+AZmqgVlPcM05vY2KMGCvBFfZX+tCc4fa3kNhn9OmFIDYBvKWgmrN9p3LWl
+         KmOkk74I4nLya8fELsVfokSYibTpF0NjFRsKW9m1cKQ+qDP4smksUnQvgbp1ayHnsoBn
+         OX/556GWj6ENvVZEM4uqvtskjAUpcN9ZtZSAE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713296250; x=1713901050;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1713296437; x=1713901237;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bhWQKc/eYOwik0yE3g6ijPo7WAzZsqUpRV7UJ5RlYZU=;
-        b=UM7WA56DItfDCe0+TpTN4WW6WR/2jCrQnzaIelwk29f/zk+Hy0vCrAPIuGlcBr8oSP
-         SAUNDj/H+XGcecZvfbr9QKB/MCCSaYYWGp2HD6Oc3C4/cSyhR5BHGFdvB7OK2Au4VvjA
-         EXeAignAewozd181OYppKNJYBKuELeur/5sO3R/vBGtEdRG1DRBy64EzHsQ9ERouccCM
-         3XE3K+ljIk+br6HOf9NaCOGWVxfHYUJgKJ7HBsB67CdoVkotro7QEat/k+DD+m4dFfjo
-         a/20WK6aLhCZJSZVPluSlKlCXJE0q6fusJ1LpI5Zvgsqc9E4JNEN9Nn7dvrtCCPCBGgY
-         j5NQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvphNQmojbAKa5dw7+OOE0O74iNOvpB9QqCatdfIqWbqRMLgxOwGN2EXbnpEbvxY75KENrO4YuBWG3rNPG6LHg3h49IEOWtV2K4pRtyBb3VbUOSZ/fc5s6H45BNhJzMJfVcmI13UuuH00Qc/4VcrdLFRNoT0K4UxYpPv2vDOHDu7dV4WQ=
-X-Gm-Message-State: AOJu0Yw/M1JeuJhOV6rfj1P2syhrq8fSfW9NHPoSuIFnmwMH2Dh1TcXX
-	tmvWvcwfu25q6pQxOR4gOSkgD2y6Pgjadh1yrMwss2f4sf3tOT64y/YUOkoqlgAqlElkqd4gp57
-	YwulPiNE2Sci7hltuW6SmZ3ppCYk=
-X-Google-Smtp-Source: AGHT+IH9hPdu6JNc6JS8yjgqhAuaq5GbLqml3teWtRplC+EvlAKU3fTiFGUAx2AXF00rfhMM9xrkMQebrE8LWS5Kmiw=
-X-Received: by 2002:a2e:6e0c:0:b0:2da:f300:90ff with SMTP id
- j12-20020a2e6e0c000000b002daf30090ffmr700414ljc.2.1713296249388; Tue, 16 Apr
- 2024 12:37:29 -0700 (PDT)
+        bh=KwEv4Z/MXON03xxjjs3as0fX96oGOhkKVq/HAbUMzow=;
+        b=Z85V4LHsVBZ4powWSdfw+S7x32SZQSxbJ91Zh/1RGI17kHtu3ZgWfEGE+uMEl24X5H
+         ftyt4u4IgmOjyh69YJOV7J5RqPhWAShON7k7hM5vppzfcevNwIoL19fXMtcONEiIN09t
+         IECaNtSJ3Yv6hXIQH3jKxb0HIXy5doVbkXEbV0lcQe7ArMviMK3VjullgjNKAKDeDkBh
+         52aaWIE+F4VURAGCAEwoTOyh9YjTfrszqlFQKjTAK6aI1OO7p+BzV86pjAj74QrDXHPa
+         vKEJutsbVZdBQ67EOe2JhVWTBJZsWA6L6B+AfYmUou8uduKGER9+pUGGSiuilmXuCAZ2
+         LNzw==
+X-Forwarded-Encrypted: i=1; AJvYcCV63VIec+xUU0DkUQmGiUv+JkHeiBKsi6L9nmJ2/pih83K/NN6YJxp43PVlhJnc4/x7i+lskcdTmW/EX6ae2WgKqPeCGJh+w8yuMXRG
+X-Gm-Message-State: AOJu0YzVvUyfYiMuD3zT5dtq+DjIMO9Lrme1L27MKkx2JvQWZGyYZhAh
+	KIqB2c5hW9ZK5nMxLHYSiGQy4Q+y+egjK80st/q8fr5G/IgC6VB+6DKoe/oAAGK0/3njpJImseB
+	GksOulVtv5mXcgD08mplbPdfueMxCORX2f0Oz
+X-Google-Smtp-Source: AGHT+IFpMnnuBnQ5Arki390SOLtA3w0Zzb02W+aYx36dAai5mD00AOXWCVWabXOS8NOrnI69HIi0pttIqRN879o1qMk=
+X-Received: by 2002:a05:6870:d14d:b0:22a:4249:f409 with SMTP id
+ f13-20020a056870d14d00b0022a4249f409mr16854617oac.4.1713296437395; Tue, 16
+ Apr 2024 12:40:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401185222.12015-1-benno.lossin@proton.me>
- <CANiq72=M0L+RG6v701ThedXgYj4SUgotx-BcVoWbMxOcKY5--w@mail.gmail.com> <Zh6wTDoMgvjJZ7T9@boqun-archlinux>
-In-Reply-To: <Zh6wTDoMgvjJZ7T9@boqun-archlinux>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 16 Apr 2024 21:36:30 +0200
-Message-ID: <CANiq72m4P8NNr7M0Bv6bFpLonPu=WZC_x-k1KdtzqUd=vtLObA@mail.gmail.com>
-Subject: Re: [PATCH v2] rust: macros: fix soundness issue in `module!` macro
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Benno Lossin <benno.lossin@proton.me>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, 
-	Sumera Priyadarsini <sylphrenadin@gmail.com>, Neal Gompa <neal@gompa.dev>, 
-	Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, 
-	Matthew Bakhtiari <dev@mtbk.me>, Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org, 
-	Masahiro Yamada <masahiroy@kernel.org>, Wedson Almeida Filho <wedsonaf@google.com>, Finn Behrens <me@kloenk.dev>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240415163527.626541-1-jeffxu@chromium.org> <znrbeb744774vre5dkeg7kjnnt7uuifs6xw63udcyupwj3veqh@rpcqs7dmoxi6>
+In-Reply-To: <znrbeb744774vre5dkeg7kjnnt7uuifs6xw63udcyupwj3veqh@rpcqs7dmoxi6>
+From: Jeff Xu <jeffxu@chromium.org>
+Date: Tue, 16 Apr 2024 12:40:26 -0700
+Message-ID: <CABi2SkU8B27O28jjTDajFpENgUHhntuRAMKFUMXr6A6AxZeyiQ@mail.gmail.com>
+Subject: Re: [PATCH v10 0/5] Introduce mseal
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, jeffxu@chromium.org, akpm@linux-foundation.org, 
+	keescook@chromium.org, jannh@google.com, sroettger@google.com, 
+	willy@infradead.org, gregkh@linuxfoundation.org, 
+	torvalds@linux-foundation.org, usama.anjum@collabora.com, corbet@lwn.net, 
+	surenb@google.com, merimus@google.com, rdunlap@infradead.org, 
+	jeffxu@google.com, jorgelo@chromium.org, groeck@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
+	linux-hardening@vger.kernel.org, deraadt@openbsd.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 16, 2024 at 7:07=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
+On Tue, Apr 16, 2024 at 8:13=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
 >
-> As reported by Dirk Behme:
+> * jeffxu@chromium.org <jeffxu@chromium.org> [240415 12:35]:
+> > From: Jeff Xu <jeffxu@chromium.org>
+> >
+> > This is V10 version, it rebases v9 patch to 6.9.rc3.
+> > We also applied and tested mseal() in chrome and chromebook.
+> >
+> > ------------------------------------------------------------------
+> ...
 >
->         https://rust-for-linux.zulipchat.com/#narrow/stream/291565-Help/t=
-opic/How.20to.20use.20THIS_MODULE.20with.20.22.20rust.3A.20macros.3A.20fix.=
-20soundness.20.2E.22/near/433512583
+> > MM perf benchmarks
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > This patch adds a loop in the mprotect/munmap/madvise(DONTNEED) to
+> > check the VMAs=E2=80=99 sealing flag, so that no partial update can be =
+made,
+> > when any segment within the given memory range is sealed.
+> >
+> > To measure the performance impact of this loop, two tests are developed=
+.
+> > [8]
+> >
+> > The first is measuring the time taken for a particular system call,
+> > by using clock_gettime(CLOCK_MONOTONIC). The second is using
+> > PERF_COUNT_HW_REF_CPU_CYCLES (exclude user space). Both tests have
+> > similar results.
+> >
+> > The tests have roughly below sequence:
+> > for (i =3D 0; i < 1000, i++)
+> >     create 1000 mappings (1 page per VMA)
+> >     start the sampling
+> >     for (j =3D 0; j < 1000, j++)
+> >         mprotect one mapping
+> >     stop and save the sample
+> >     delete 1000 mappings
+> > calculates all samples.
 >
-> The following is needed to allow modules using `THIS_MODULE` as a static
-> variable. That being said, maybe we can merge this patch as it is, since
-> it doesn't break mainline, and the following change can be done in a
-> separate patch.
+>
+> Thank you for doing this performance testing.
+>
+> >
+> > Below tests are performed on Intel(R) Pentium(R) Gold 7505 @ 2.00GHz,
+> > 4G memory, Chromebook.
+> >
+> > Based on the latest upstream code:
+> > The first test (measuring time)
+> > syscall__     vmas    t       t_mseal delta_ns        per_vma %
+> > munmap__      1       909     944     35      35      104%
+> > munmap__      2       1398    1502    104     52      107%
+> > munmap__      4       2444    2594    149     37      106%
+> > munmap__      8       4029    4323    293     37      107%
+> > munmap__      16      6647    6935    288     18      104%
+> > munmap__      32      11811   12398   587     18      105%
+> > mprotect      1       439     465     26      26      106%
+> > mprotect      2       1659    1745    86      43      105%
+> > mprotect      4       3747    3889    142     36      104%
+> > mprotect      8       6755    6969    215     27      103%
+> > mprotect      16      13748   14144   396     25      103%
+> > mprotect      32      27827   28969   1142    36      104%
+> > madvise_      1       240     262     22      22      109%
+> > madvise_      2       366     442     76      38      121%
+> > madvise_      4       623     751     128     32      121%
+> > madvise_      8       1110    1324    215     27      119%
+> > madvise_      16      2127    2451    324     20      115%
+> > madvise_      32      4109    4642    534     17      113%
+> >
+> > The second test (measuring cpu cycle)
+> > syscall__     vmas    cpu     cmseal  delta_cpu       per_vma %
+> > munmap__      1       1790    1890    100     100     106%
+> > munmap__      2       2819    3033    214     107     108%
+> > munmap__      4       4959    5271    312     78      106%
+> > munmap__      8       8262    8745    483     60      106%
+> > munmap__      16      13099   14116   1017    64      108%
+> > munmap__      32      23221   24785   1565    49      107%
+> > mprotect      1       906     967     62      62      107%
+> > mprotect      2       3019    3203    184     92      106%
+> > mprotect      4       6149    6569    420     105     107%
+> > mprotect      8       9978    10524   545     68      105%
+> > mprotect      16      20448   21427   979     61      105%
+> > mprotect      32      40972   42935   1963    61      105%
+> > madvise_      1       434     497     63      63      115%
+> > madvise_      2       752     899     147     74      120%
+> > madvise_      4       1313    1513    200     50      115%
+> > madvise_      8       2271    2627    356     44      116%
+> > madvise_      16      4312    4883    571     36      113%
+> > madvise_      32      8376    9319    943     29      111%
+> >
+>
+> If I am reading this right, madvise() is affected more than the other
+> calls?  Is that expected or do we need to have a closer look?
+>
+The madvise() has a bigger percentage (per_vma %), but it also has a
+smaller base value (cpu).
 
-Fixed in `rust-fixes` now.
-
-    [ Moved `THIS_MODULE` out of the private-in-private modules since it
-      should remain public, as Dirk Behme noticed [1]. Capitalized comments=
-,
-      avoided newline in non-list SAFETY comments and reworded to add
-      Reported-by and newline. ]
-    Link: https://rust-for-linux.zulipchat.com/#narrow/stream/291565-Help/t=
-opic/x/near/433512583
-[1]
-
-Cheers,
-Miguel
+-Jeff
 
