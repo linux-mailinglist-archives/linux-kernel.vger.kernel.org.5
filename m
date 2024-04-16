@@ -1,120 +1,109 @@
-Return-Path: <linux-kernel+bounces-146686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 968A48A6954
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83FF88A6957
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:05:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54067282338
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:04:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4063A28208C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718C5128828;
-	Tue, 16 Apr 2024 11:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED927128816;
+	Tue, 16 Apr 2024 11:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TwHQpbmm"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AnNWPFk2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACAEE12838A;
-	Tue, 16 Apr 2024 11:04:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35961127B5D;
+	Tue, 16 Apr 2024 11:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713265474; cv=none; b=d7K0ikE4mcfunI/9E8i9PlQzcQugcw0LzIDsYNl2DQtOP2Lvx26Hpqs4uKdC/AzxDywDlNy3gqtigL6QIJlNdqe0A/xpel2KsT4tzIJ35jhEXIHKLv6y0jegpGKQs+ouoAzo0v/J4910LHg6c5bKuxXwvFdxXgbxhdS2Fzvszn8=
+	t=1713265545; cv=none; b=uGgKSQH5sjRM5LAYtrKaDWbml5DpUjnJOBO6P2sd+sGT+B4wTfO/IBN2muxshJmzgHuYW6n7zOClegGCQBw7tPVbZZmPRloIKWechn89a3EvAJiDWoZ+DqbM7zBZjxSS2loCFJrvkvOnn9lxBNzIYaE2QKVZY8DxHAXIWKY0QVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713265474; c=relaxed/simple;
-	bh=KcfsyDFtDwm+76QLCm2uHrf37SSxIwm1ldEOf6zXOHU=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D8vlnghzEz5R9meoWIJcMCPnG/03a2Et6uhxqu/vwQLYORPSfPrcWvqBnkDulc+H3mKKtPyZKCLgwGhz8T7whFjhfp4cNnTPs37iiO/CrDi3w8ZCNWWOIyuKb+M3JqpNZADd4ahUTSp/XmQ4DLHYJD9oSDReX5WiVahVzgHppdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TwHQpbmm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 310ECC113CE;
-	Tue, 16 Apr 2024 11:04:34 +0000 (UTC)
+	s=arc-20240116; t=1713265545; c=relaxed/simple;
+	bh=b+bXT9aw+B73/v9YDMYAG7FfnV6DKgNRfmqZTWXBmro=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SAceiJeMWoY0cYC/tMYRj86TdD4d/jotBpSRqoHzwG/6J66JIInjfeCn38UQ25+ixWe7kiqXD+bOg6UkTMKaKczhdzdU3xCnxs3q+J2/tPTzLUiaKPZoc/aTuH0aSf6QySBlXBqA9koIlGhi2kykuHUJQ26yvpSwEJZdVKCjc6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AnNWPFk2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0989AC113CE;
+	Tue, 16 Apr 2024 11:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713265474;
-	bh=KcfsyDFtDwm+76QLCm2uHrf37SSxIwm1ldEOf6zXOHU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TwHQpbmmRNXOXD52PKCYvuEI4g00n8M2qsSgUuLt+wyQuy+3mg12vdzpd3ed3VMs8
-	 Yy2A/G1DP2pntFvBFyZWbAfURgQZ2GnN0jcV0K9f7XXn5DEJyVrBvfFk3nRbm9Slu9
-	 jxD2zRqpHe2wRcGzQlwiBogAGbRYqi5aFaVd/cQiixKCgZYYJarY5NQZxSMNNhqipI
-	 Ra1ZigmTMIHWmiEVIlDFmzQyA91TM2P3aZBfAFcMTtbrR/EmT4QysCwlobKIy6KzmR
-	 v3SARv1j4CLY/18tP4JFtkmAvlGy1yTNkB7BDHH42j0na6JrUeR82R1KSEfHdiMp8Z
-	 0S/T5bJaXAdtA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rwgc3-004zM6-8H;
-	Tue, 16 Apr 2024 12:04:31 +0100
-Date: Tue, 16 Apr 2024 12:04:29 +0100
-Message-ID: <8634rlsh4y.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	linux@roeck-us.net,
-	shuah@kernel.org,
-	patches@kernelci.org,
-	lkft-triage@lists.linaro.org,
-	pavel@denx.de,
-	jonathanh@nvidia.com,
-	f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net,
-	rwarsow@gmx.de,
-	conor@kernel.org,
-	allen.lkml@gmail.com,
-	Yihuang Yu <yihyu@redhat.com>,
-	Gavin Shan <gshan@redhat.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Shaoqin Huang <shahuang@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 6.6 000/122] 6.6.28-rc1 review
-In-Reply-To: <Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
-References: <20240415141953.365222063@linuxfoundation.org>
-	<Zh5UJh31PlBkpZWd@finisterre.sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1713265545;
+	bh=b+bXT9aw+B73/v9YDMYAG7FfnV6DKgNRfmqZTWXBmro=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AnNWPFk2cPR63aap4cP380v2VxcbontjhUIhUDPw8VjdKLYXol+uDqChzoz/vIqtL
+	 CQtNYOSG4NFjgYm9zRpzIk4mWQtwesDabP+lVQv3DvXQ7HHk9ZR1OAOJxu3Laa+Dss
+	 ER3dOztV7KK7i3p58jW3/6z1qhX35ggZxlWrFV8PRmnRjYErVyg77pPpHPFnFNQA4c
+	 1RjPN1THSUmFrxOFwFqY+ktddtmpprzrSEYJldb280LYiFDLuy+7sKVVV3GSIJ+zip
+	 /4q8iaRzwAv7K1qNssIlLRfvzkzyemk7WcqEbP24uViUsrW2oynJePbU1/mSQLkQoZ
+	 SRFhaDiceip7A==
+Date: Tue, 16 Apr 2024 12:05:38 +0100
+From: Simon Horman <horms@kernel.org>
+To: Wen Gu <guwen@linux.alibaba.com>
+Cc: wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	wenjia@linux.ibm.com, jaka@linux.ibm.com, borntraeger@linux.ibm.com,
+	svens@linux.ibm.com, alibuda@linux.alibaba.com,
+	tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v6 10/11] net/smc: adapt cursor update when
+ sndbuf and peer DMB are merged
+Message-ID: <20240416110538.GK2320920@kernel.org>
+References: <20240414040304.54255-1-guwen@linux.alibaba.com>
+ <20240414040304.54255-11-guwen@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: broonie@kernel.org, gregkh@linuxfoundation.org, stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, yihyu@redhat.com, gshan@redhat.com, catalin.marinas@arm.com, ryan.roberts@arm.com, anshuman.khandual@arm.com, shahuang@redhat.com, will@kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240414040304.54255-11-guwen@linux.alibaba.com>
 
-On Tue, 16 Apr 2024 11:34:14 +0100,
-Mark Brown <broonie@kernel.org> wrote:
+On Sun, Apr 14, 2024 at 12:03:03PM +0800, Wen Gu wrote:
+> If the local sndbuf shares the same physical memory with peer DMB,
+> the cursor update processing needs to be adapted to ensure that the
+> data to be consumed won't be overwritten.
 > 
-> On Mon, Apr 15, 2024 at 04:19:25PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.6.28 release.
-> > There are 122 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+> So in this case, the fin_curs and sndbuf_space that were originally
+> updated after sending the CDC message should be modified to not be
+> update until the peer updates cons_curs.
 > 
-> The bisect of the boot issue that's affecting the FVP in v6.6 (only)
-> landed on c9ad150ed8dd988 (arm64: tlb: Fix TLBI RANGE operand),
-> e3ba51ab24fdd in mainline, as being the first bad commit - it's also in
-> the -rc for v6.8 but that seems fine.  I've done no investigation beyond
-> the bisect and looking at the commit log to pull out people to CC and
-> note that the fix was explicitly targeted at v6.6.
+> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
 
-What are the configurations of the kernel and the FVP?
+..
 
-	M.
+> @@ -255,6 +256,14 @@ int smcd_cdc_msg_send(struct smc_connection *conn)
+>  		return rc;
+>  	smc_curs_copy(&conn->rx_curs_confirmed, &curs, conn);
+>  	conn->local_rx_ctrl.prod_flags.cons_curs_upd_req = 0;
+> +
+> +	if (smc_ism_support_dmb_nocopy(conn->lgr->smcd))
+> +		/* if local sndbuf shares the same memory region with
+> +		 * peer DMB, then don't update the tx_curs_fin
+> +		 * and sndbuf_space until peer has consumed the data.
+> +		 */
+> +		return rc;
 
--- 
-Without deviation from the norm, progress is not possible.
+Hi Wen Gu,
+
+A minor nit from my side:
+
+To my mind "return rc" implies returning an error value.
+But here rc is 0, which based on the comment seems correct.
+So perhaps it would be clearer to simply return 0.
+
+Flagged by Smatch.
+
+> +
+>  	/* Calculate transmitted data and increment free send buffer space */
+>  	diff = smc_curs_diff(conn->sndbuf_desc->len, &conn->tx_curs_fin,
+>  			     &conn->tx_curs_sent);
+
+..
 
