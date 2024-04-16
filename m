@@ -1,168 +1,131 @@
-Return-Path: <linux-kernel+bounces-146968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3AEE8A6DA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:15:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDC328A6DBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:17:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F9051C22191
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:15:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A1B1F21BB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C81134425;
-	Tue, 16 Apr 2024 14:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9F612FF64;
+	Tue, 16 Apr 2024 14:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="imdJkKDY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="PidpUtUk"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70882134406;
-	Tue, 16 Apr 2024 14:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E76012CDB0;
+	Tue, 16 Apr 2024 14:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713276652; cv=none; b=VVurmvnTemEmGbceNSgEp/OMQSF3lDN4V+IVoYvEgOyqIfqq8wRgdgemmADT5XyBVDKRS5hdAjsK0CmQ86kKTKVaG3sCKC2se1Z7rmb/esDPc7eNwjk5qduQiopjfTK9v0oktg5CgMBEQ6c7SWVpX/3k6CRkWV1DZYPY5X2uJIs=
+	t=1713276726; cv=none; b=HKyaC29oEn/hSv5317/8jjxlf8/vu7i+Osnedub1KdrbWghrzcEhojX8zNW3jjAK2bAqVA+2a0kmIn3jj+PpTwMyLrZV+yBMnc85JfWwOPdhghVN4nWDXifYnmHPWsIIs0HcbtiempOpAKM/ryGzR9TZRjM8JhqwvSDPFR3B+yw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713276652; c=relaxed/simple;
-	bh=KrWX/mg6sB3IEZrckEkLG2wQSu4eyNuu4r2kX+Ke2dM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Db3wHoY1pd3GKhChwlDAGwFg+xY98oukv4CKtjuk3Z67Ya2VFbtV5wXiWMqv9m/X/Dc27RrjMdWnSBhwe12IK8Qy2o2h3ovIPmAhwk+VmXh5RuPCGYjGdz7u57TlDDWilQGGHI6TeK6aiy7T++wJxpUaCeYapc6zkgvjU7O/zFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=imdJkKDY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA9EAC4AF0B;
-	Tue, 16 Apr 2024 14:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713276652;
-	bh=KrWX/mg6sB3IEZrckEkLG2wQSu4eyNuu4r2kX+Ke2dM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=imdJkKDYt4IFdH2ZckctnvXhpZbwxdxcgmUWwCvsrSIY1BBC3Zve/1ZAOnUB2VU7r
-	 o4QWE3QJ+6HF2FSN6XVw50nGwR+64xUP/kb4KIAsCz1CUF/S04ZGbwS6f0cNjWe/6v
-	 Rhj+mq5FCttUy+RNqV+pPUOjSwdGaS4b88AK/rycT+U6phHhDzlgDZf0O84XN0yt+1
-	 e32QCFkUFHSakyxij42InYbVbscHOW6jZ387u0s5pPfaJqOT1VIUeRuM5INvBzmzCY
-	 AXM8KInzJKNcTTY+bsVy+F9LdvQ2sltQNRfvKI1Wg3WsbTvJHSVVGU9ob7lxzLUD1E
-	 RLYXnH8XFlEuA==
-Date: Tue, 16 Apr 2024 09:10:49 -0500
-From: Rob Herring <robh@kernel.org>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Saravana Kannan <saravanak@google.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Atish Patra <atishp@atishpatra.org>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Sunil V L <sunilvl@ventanamicro.com>,
-	Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2] of: property: Add fw_devlink support for
- interrupt-map property
-Message-ID: <20240416141049.GA2148267-robh@kernel.org>
-References: <20240413091942.316054-1-apatel@ventanamicro.com>
+	s=arc-20240116; t=1713276726; c=relaxed/simple;
+	bh=9lb0vxA4WQBvo8bA+3SRiWJn3KQMYj0rb9tY1M90M2g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FnhV0+tbmEmdATFB8G4iwvh5Ez575AYVNg3mVByyBj8QJZelk5RY7BtBKJScQlDSO4NM0CgGQjCo7bRcdOXoPMP+mPNDSI7npK6xV5oh9S4GfxX7z81JSEsLiXCnSkrJKavgXMdexLVRNewwfTbMHzpSTljzk9GlDmJtECbn25U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=PidpUtUk; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id BE625600A2;
+	Tue, 16 Apr 2024 14:11:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1713276718;
+	bh=9lb0vxA4WQBvo8bA+3SRiWJn3KQMYj0rb9tY1M90M2g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PidpUtUkGQyHqrq4m2n5FU4Gl18JgJySU1rvtQcHbKWXUS+S7ajBps43ud2ma1jQi
+	 9/wwyNTFc8qRRZRKW+X+T5kFAsMxtD0TL6H4FunB1GkZX71ELOeixpWTAZH0ecanAF
+	 lyOhLxgWlqs9RaVPGu9A0QhzNFlDElRQoZ2r/eM84kMC2eSpHKJIno/OLC4BBGaYY9
+	 qP8rKwLZS4pe5eceQvIeAj2W6gKa/S/cq6j9yJDdTzPL8DnRZLYgDtqZb8fQWxOPR3
+	 7FLMcyuKaE60fEy5dsOWtU0Ek72MCvamFC0v4f9QOHKKqg5HJiGRopHBKN7jEVFpEW
+	 YUOfSNR4IE3AA==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id A657820025D;
+	Tue, 16 Apr 2024 14:11:52 +0000 (UTC)
+Message-ID: <ce0a08e2-a74a-4059-97c4-a38cae788a0a@fiberby.net>
+Date: Tue, 16 Apr 2024 14:11:52 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240413091942.316054-1-apatel@ventanamicro.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next] sfc: use flow_rule_no_unsupp_control_flags()
+To: Edward Cree <ecree.xilinx@gmail.com>, netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Martin Habets <habetsm.xilinx@gmail.com>,
+ linux-net-drivers@amd.com
+References: <20240416134432.9527-1-ast@fiberby.net>
+ <496dba36-1d40-e7d1-1250-a350bc590902@gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+In-Reply-To: <496dba36-1d40-e7d1-1250-a350bc590902@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 13, 2024 at 02:49:42PM +0530, Anup Patel wrote:
-> Some of the PCI controllers (such as generic PCI host controller)
-> use "interrupt-map" DT property to describe the mapping between
-> PCI endpoints and PCI interrupt pins. This the only case where
-> the interrupts are not described in DT.
+Hi Ed,
+
+On 4/16/24 1:57 PM, Edward Cree wrote:
+> On 16/04/2024 14:44, Asbjørn Sloth Tønnesen wrote:
+>> Adopt nfp-style *_FLOWER_SUPPORTED_CTLFLAGS define.
+>>
+>> Change the check for unsupported control flags, to use the new helper
+>> flow_rule_is_supp_control_flags().
+>>
+>> Since the helper was based on sfc, then nothing really changes.
+>>
+>> Compile-tested, and compiled objects are identical.
+>>
+>> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
 > 
-> Currently, there is no fw_devlink created based on "interrupt-map"
-> DT property so interrupt controller is not guaranteed to be probed
-> before PCI host controller. This affects every platform where both
-> PCI host controller and interrupt controllers are probed as regular
-> platform devices.
+> Subject line doesn't match the patch (I guess because the helper
+>   got renamed).
+
+Correct, through I had fixed it everywhere. Apparently I missed one.
+
+
+>> ---
+>>   drivers/net/ethernet/sfc/tc.c | 10 ++++++----
+>>   1 file changed, 6 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/sfc/tc.c b/drivers/net/ethernet/sfc/tc.c
+>> index 82e8891a619a..5f73f1dea524 100644
+>> --- a/drivers/net/ethernet/sfc/tc.c
+>> +++ b/drivers/net/ethernet/sfc/tc.c
+>> @@ -21,6 +21,10 @@
+>>   #include "ef100_rep.h"
+>>   #include "efx.h"
+>>   
+>> +#define SFC_FLOWER_SUPPORTED_CTLFLAGS \
+>> +	(FLOW_DIS_IS_FRAGMENT | \
+>> +	 FLOW_DIS_FIRST_FRAG)
 > 
-> This creates fw_devlink between consumers (PCI host controller) and
-> supplier (interrupt controller) based on "interrupt-map" DT property.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
-> Changes since v1:
-> - Updated commit description based on Rob's suggestion
-> - Use of_irq_parse_raw() for parsing interrupt-map DT property
-> ---
->  drivers/of/property.c | 58 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 58 insertions(+)
-> 
-> diff --git a/drivers/of/property.c b/drivers/of/property.c
-> index a6358ee99b74..67be66384dac 100644
-> --- a/drivers/of/property.c
-> +++ b/drivers/of/property.c
-> @@ -1311,6 +1311,63 @@ static struct device_node *parse_interrupts(struct device_node *np,
->  	return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.np;
->  }
->  
-> +static struct device_node *parse_interrupt_map(struct device_node *np,
-> +					       const char *prop_name, int index)
-> +{
-> +	const __be32 *imap, *imap_end, *addr;
-> +	struct of_phandle_args sup_args;
-> +	struct device_node *tn, *ipar;
-> +	u32 addrcells, intcells;
-> +	int i, j, imaplen;
-> +
-> +	if (!IS_ENABLED(CONFIG_OF_IRQ))
-> +		return NULL;
-> +
-> +	if (strcmp(prop_name, "interrupt-map"))
-> +		return NULL;
-> +
-> +	ipar = of_node_get(np);
-> +	do {
-> +		if (!of_property_read_u32(ipar, "#interrupt-cells", &intcells))
-> +			break;
-> +		tn = ipar;
-> +		ipar = of_irq_find_parent(ipar);
-> +		of_node_put(tn);
-> +	} while (ipar);
+> I'd rather keep the flags in-line, next to where they're actually
+>   used.  I.e. we have
+>      if (flags & FRAGMENT)
+>          blah;
+>      if (flags & FIRST_FRAG)
+>          foo;
+>      if (!blah_supported(FRAGMENT | FIRST_FRAG))
+>          return -EEK;
+>   and it's very clear that anyone changing one of those parts also
+>   needs to change the other.  Whereas with your #define it's not
+>   immediately obvious to someone reading the code where that set
+>   of supported flags comes from conceptually.
 
-No need for this loop. We've only gotten here if 'interrupt-map' is 
-present in the node and '#interrupt-cells' is required if 
-'interrupt-map' is present.
+Ok, I liked the NFP-style #define, but will drop trying to expand that.
 
-> +	if (!ipar)
-> +		return NULL;
-> +	addrcells = of_bus_n_addr_cells(ipar);
-> +	of_node_put(ipar);
-> +
-> +	imap = of_get_property(np, "interrupt-map", &imaplen);
-> +	if (!imap || imaplen <= (addrcells + intcells))
-> +		return NULL;
-> +	imap_end = imap + imaplen;
-> +
-> +	sup_args.np = NULL;
-> +	for (i = 0; i <= index && imap < imap_end; i++) {
-> +		if (sup_args.np) {
-> +			of_node_put(sup_args.np);
-> +			sup_args.np = NULL;
-> +		}
-> +
-> +		addr = imap;
-> +		imap += addrcells;
-> +
-> +		sup_args.np = np;
-> +		sup_args.args_count = intcells;
-> +		for (j = 0; j < intcells; j++)
-> +			sup_args.args[j] = be32_to_cpu(imap[j]);
-> +		imap += intcells;
-> +
-> +		if (of_irq_parse_raw(addr, &sup_args))
-> +			return NULL;
-> +		imap += sup_args.args_count + 1;
-> +	}
+pw-bot: changes-requested
 
-Doesn't this leak a ref on the last time the function is invoked? For 
-example, if we have 2 entries and index is 2. We'll get index=1, but 
-then exit because imap==imap_end. We need a put on index==1 node.
-
-Look at my next branch where I've converted things to use __free() 
-cleanups. I don't see it helping here as-is, but maybe when it is 
-correct.
-
-Rob
+-- 
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
