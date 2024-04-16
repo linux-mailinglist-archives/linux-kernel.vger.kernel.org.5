@@ -1,122 +1,126 @@
-Return-Path: <linux-kernel+bounces-147551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0AC68A7621
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:10:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14FB48A7626
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:11:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DF341C21C6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:10:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DE3C283D49
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8F445FBA5;
-	Tue, 16 Apr 2024 21:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C805A6BFB3;
+	Tue, 16 Apr 2024 21:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b37s1TWz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="e/VN90jy"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C391C10;
-	Tue, 16 Apr 2024 21:10:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D08915A4CF;
+	Tue, 16 Apr 2024 21:11:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713301846; cv=none; b=bzorw/xnj1tHtv8FGU3/LfzHy0As2mZc1a6eG7BKAdrSSFau3+MMTeNICICRpt822YP3jYMB7Mrcav+wu427/oml5mIsEfLm0lX9X88HsVD9xJaY4RQZ1mWrIT9Bu8aFi2zL7S5i4UDsFBrYzUKe1fKN0zYfglqSGpbJ6gTsyuM=
+	t=1713301871; cv=none; b=KHmkV4StHvAcVJ7aj4cYEFBCRNniO4LCJCvCJpw5EcbNv06FVon5tKRuvN7j/bjs2+PWjsHh5IUt86Byq6k0iQS/Ycgok8tF5YjlfONXeyqS8kF9afSYQxeayJtLNkJee8jsviGH/DgoqLgxJvvwWyC5MxFOCk+a0WrTOZZRhis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713301846; c=relaxed/simple;
-	bh=6SKY8bqj53o+GZYyijFSxu3zJnsN2yU7FXXH7uzjaJo=;
+	s=arc-20240116; t=1713301871; c=relaxed/simple;
+	bh=8FNV3zbi4W0+s5iELgnOQOr6ZJQLzz3pHFBU0pDSGJc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b/qnNF1wYp4dmjzht0L2c7bj/esRIWliTP3L4gPPzONOtvsrgBB1VgE7+M26mrkYQcPrsK+vWf8pBe+fF7Cgv/WgKXD9jJyxel91tBX1e+d1NEEPRfI0NqakBjKFeIuzXfXZdTbBux5yINm4lqW604FXxEUeFkkus1liqquNj+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b37s1TWz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B04AC113CE;
-	Tue, 16 Apr 2024 21:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713301845;
-	bh=6SKY8bqj53o+GZYyijFSxu3zJnsN2yU7FXXH7uzjaJo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b37s1TWztoEP1XtKjvnrYhTztn6FEZSBRfS0CB5E/U2BBjp0zO04UvRS5kEmszB8L
-	 2ZSzdsdQuVvsFeKpVdqg8pBTpg/B/DuOCBe4UGtZTDtsUoTVS53u6IEeCTU/9X/btu
-	 gVT1MTAal9in/KAKNRctjS4hF7PK3Gn3VXjqow1RSmhAuKZMhKsJJhxDHnjJASdGFK
-	 velt7R45/pMbac6a2dg8Pk+zO7MuKRdtuo8813r7UOcMGTKClRdEXACNsm1mLQwLKh
-	 AoUclerCfq7D68JiZg/fJswcJi6GyHh5ghp4zX7el4+4XH2Jp9DLmI+v5ptUZmy5G8
-	 oZlcN1+GPeUCg==
-Date: Tue, 16 Apr 2024 22:10:39 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 02/17] dt-bindings: riscv: Add xtheadvector ISA
- extension description
-Message-ID: <20240416-budget-cause-c4002a9cc05b@spud>
-References: <20240415-dev-charlie-support_thead_vector_6_9-v2-0-c7d68c603268@rivosinc.com>
- <20240415-dev-charlie-support_thead_vector_6_9-v2-2-c7d68c603268@rivosinc.com>
- <20240416-underwire-bright-b2ab0fa991ec@spud>
- <Zh7i2pir0j6tXfPD@ghost>
+	 Content-Type:Content-Disposition:In-Reply-To; b=J1n/8/c3XiYz9hEBVubiDSH96+nPSyQ8y/7ZbvectoBIahUA2m5Wu/nUZ3eTcwDIlw3vFXL6/6L+tGuwdx3x5ogjiYDzxD3K7wXgGuv+lnytbxlLmvu0p7CfcmJUdljUMemf6SbdRCaJfjsG9L9GCi1H6KqHPb8w+9U7rBx3s2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=e/VN90jy; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=FRN0S0UrdEiWG4B5xuc/QvC+4jIMUlM9ivvZ43mxxCA=; b=e/VN90jySWq7d6XlyBQgn7rs3s
+	AB6sQMjNqGP7kHOZRUxvLv1PlxeTKJU1QlDocHcG7Sk6ezLyKIZLtFc1Kv01cBGJCYbKrkBGhppnz
+	RdCDVzplL6GgCvgY9WxCkdNOk0db7H9pR5PCWaG6viMfEi/NWo9vYJsHICdP1374dGYBb+Hg9zg7C
+	d/c7mYXYvYTX+uzESF+M4iIf4TzuqsN9oBNYY40MhgyypVIlbBZLLJS2v99LboMM3MKOcQi9Uq07T
+	3WhvCC9iOEV0Un8JNpAiRR7JMuzQRPCufe7TnGJPkZPUHXDDn8KP75jb+dXzq/DYlmzLcSVrvkCpI
+	DBZ09n7A==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwq4z-0000000Dp1F-3nSD;
+	Tue, 16 Apr 2024 21:11:01 +0000
+Date: Tue, 16 Apr 2024 14:11:01 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: John Garry <john.g.garry@oracle.com>,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+	axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v6 00/10] block atomic writes
+Message-ID: <Zh7pZUwmQXF-qC6D@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+ <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+ <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
+ <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
+ <ZhYQANQATz82ytl1@casper.infradead.org>
+ <ZhxBiLSHuW35aoLB@bombadil.infradead.org>
+ <Zh2ZptLxnwa_jtSk@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="N+EO9PqJ6paNtHI3"
-Content-Disposition: inline
-In-Reply-To: <Zh7i2pir0j6tXfPD@ghost>
-
-
---N+EO9PqJ6paNtHI3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Zh2ZptLxnwa_jtSk@casper.infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Tue, Apr 16, 2024 at 01:43:06PM -0700, Charlie Jenkins wrote:
-> On Tue, Apr 16, 2024 at 04:16:30PM +0100, Conor Dooley wrote:
-> > On Mon, Apr 15, 2024 at 09:11:59PM -0700, Charlie Jenkins wrote:
-> > > The xtheadvector ISA extension is described on the T-Head extension s=
-pec
-> > > Github page [1] at commit 95358cb2cca9.
-> > >=20
-> > > Link: https://github.com/T-head-Semi/thead-extension-spec/blob/95358c=
-b2cca9489361c61d3
-> > > 35e03d3134b14133f/xtheadvector.adoc [1]
-> >=20
-> > This should not be wrapped btw.
-> > Otherwise,
-> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
->=20
-> I don't believe it is wrapped? It appears wrapped in your response but
-> it appears on lore correctly:
->=20
-> https://lore.kernel.org/lkml/20240415-dev-charlie-support_thead_vector_6_=
-9-v2-2-c7d68c603268@rivosinc.com/
+On Mon, Apr 15, 2024 at 10:18:30PM +0100, Matthew Wilcox wrote:
+> On Sun, Apr 14, 2024 at 01:50:16PM -0700, Luis Chamberlain wrote:
+> > On Wed, Apr 10, 2024 at 05:05:20AM +0100, Matthew Wilcox wrote:
+> > > Have you tried just using the buffer_head code?  I think you heard bad
+> > > advice at last LSFMM.  Since then I've landed a bunch of patches which
+> > > remove PAGE_SIZE assumptions throughout the buffer_head code, and while
+> > > I haven't tried it, it might work.  And it might be easier to make work
+> > > than adding more BH hacks to the iomap code.
+> > 
+> > I have considered it but the issue is that *may work* isn't good enough and
+> > without a test plan for buffer-heads on a real filesystem this may never
+> > suffice. Addressing a buffere-head iomap compat for the block device cache
+> > is less error prone here for now.
+> 
+> Is it really your position that testing the code I already wrote is
+> harder than writing and testing some entirely new code?  Surely the
+> tests are the same for both.
 
-IDK man, looks wrapped on lore too. The other copy of the same link
-isn't wrapped & I've never had mutt wrap stuff like this before.
+The compat code would only allow large folios for iomap, and use
+buffer-heads for non-large folios, so nothing much would change except
+a special wrapper.
 
---N+EO9PqJ6paNtHI3
-Content-Type: application/pgp-signature; name="signature.asc"
+> Besides, we aren't talking about a filesystem on top of the bdev here.
+> We're talking about accessing the bdev's page cache directly.
 
------BEGIN PGP SIGNATURE-----
+Sure, but my concern was the lack of testing for buffer-head large
+folios. While for iomap we'd at least have done the ton of work to
+stress test testing large folios while testing XFS with it.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZh7pTwAKCRB4tDGHoIJi
-0oe3AQDQG/kHZeAldrMoBtsuQPLTNJ0Epz1UV1aUIpGum4LtuQEAogQ6sgpTP4rw
-9y6K4GRRCRzQDtYDNsq3qY/MEznY0As=
-=fCu9
------END PGP SIGNATURE-----
+While the block device cache is not a proper full blown filesystem,
+it just means since no filesystem has been tested with buffer heads with
+large folios its a possible minefield waiting to explode due to lack of
+testing.
 
---N+EO9PqJ6paNtHI3--
+Is writing a proper test plan for the block device cache code with
+buffer-heads with large folios less work than writing the compat code
+for the block device cache? I concede that I'm not sure.
+
+I'm happy to try it out to see what blows up.
+
+  Luis
 
