@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-146331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F25FA8A6395
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:18:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24DB68A6398
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:18:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CE70B24631
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:18:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46EF41C20832
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2526E84E0B;
-	Tue, 16 Apr 2024 06:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8704385264;
+	Tue, 16 Apr 2024 06:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MxdiMkSt"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l4ufWgn0"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA13E84D3C
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 06:16:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3564E84E0F
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 06:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713248170; cv=none; b=QOTYRGaBGdGcK9lNjrJBlwiBJECcoDW/xLWp4A1iF3mnWBbCNtzZgwe1LAD+c3zfdU6sBGHtk/tAW94xMjpSF+vL89A7n+Fzl+U740A+y2tlpcTAVxfnoGKoj2RQIuSMdHqMzNYRCX8/bkh69mDQ55tCX0kjEZvLu7ER0di05rU=
+	t=1713248172; cv=none; b=S0NVqutCG9EGw3FdHGwXeTMioS9BW5Hk0KJ/wOOR4rJkfV8ZY14HkaKbHtnaFqkzUSzKrpMsh90l0MNDoECwBvt9QPzLrSu8Wuh6k6CzttqXjzLyNRGkkCpl1+45nrGM9OnrhIbG1msk7JxWSjUPib5I+qG4UPmOlk+/txNdDfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713248170; c=relaxed/simple;
-	bh=O8OUGtb6bTGqfSyRVlfSK5T8OB2WkT+9dGZAqdqh/Cs=;
+	s=arc-20240116; t=1713248172; c=relaxed/simple;
+	bh=eftodLo96oKKWTTBK2VOKzkPV1r4wS9wxU2SLYPC8Eo=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=Y6l+ahSCMrZefam+cOUeTDG8cRo7PI2aMbd87WAS5ROtkn9xU5p8aJGIihaf7UBXp/HMk4mjPQKm0SNgIqo5OGExWp11jV/wn+2Mong7VFiGKkB08fIkHN2fArKFee0SAXbidHMvEaZvzCojazFC2xKtzmrHLxlUhZGmCf/6G/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MxdiMkSt; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=e/Fpk2DIJyflxiPAUJCW+UMjzlJucswNrjlPvvNeoeS7aaW2cnVonDapQjI8mbcm3wUKvWdnrGnofK51c0tmH1ag7t4oK3uzmbVusZHkJo5lL6YjWOLdASunuJq5sSuv+MjWZSXII2PGvxQoJyLAgjmo15rN8w3rl3qxug6MQ0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l4ufWgn0; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso6190990276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 23:16:08 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcbee93a3e1so6550252276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 23:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713248168; x=1713852968; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713248170; x=1713852970; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+PPi7agW0cdqI/eav98kRS0rctCNoN8MXcmmiJuSnV8=;
-        b=MxdiMkStihO7e4lTLn3RbwoirBdNzvt5ov3NOwHLmnM6Z91/xTBJKXWNvoeS+ww1lM
-         BQJJIzlhPn+/OSHvtMeiKwoZmM/mQnXovIH8xqJvZigGu9sJ8/lPhwEGSwqJJVeHA8k3
-         CkRBlZQTUUHlpgFW3SYk0PlIIjAPULZO9FatnbmNRJzTdEcPNmF+DOI0URQjkbQPDvzK
-         wW9NKS9EwnLNOR3ISpRNw725sg9H+9B9ONerKHIDoLjyWr3XjjNJhbOcpHzX+DQqKJWI
-         oJcwIMCFVyshepxMkdBFoGSXyC9GSPaR+DJrTVfPygsJc7nF/a43CtmXc+gM94DrdI63
-         gOLA==
+        bh=boFz9eIMJ+Fb11V/P0+sRNFH04HSu2tXThEFb/mBZSs=;
+        b=l4ufWgn0MhCDqXGTY4M+/K46oVdjcrnyp7udcxTfCbTxbiz6JHuVM3X7jnH/Ipp1zZ
+         MFS+GbuMJEhjzv/CHSIORIittQBgSFk9EjM5RkevL6aR1VCnqwXL6IohwbLjGP9ryr16
+         S+VNrHP2a1slYeT6FDyWGzQNF1lak1gCGhQYV6yntNRoNk1TpVDhmHg8Gx1lTekHuZjn
+         fQE0PV+U8bNAisUThsyFCsE//dj0BrFu+f5MzxDdXwXIFnIsUeW+yKVf/Dcb7VkeY1U7
+         6o60Id47PMn7A21AgM3Oevyu1oR1iS8VF31h48U8YfDGrojUOmcqYpY3NAQCOa/ymc7g
+         DCtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713248168; x=1713852968;
+        d=1e100.net; s=20230601; t=1713248170; x=1713852970;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+PPi7agW0cdqI/eav98kRS0rctCNoN8MXcmmiJuSnV8=;
-        b=iN70b3BvuhX3Ik5hpi/nMWW2LHqHf0Kt3C8bXqQXvauLAX+NcLrykm8k+Rf/BJ1bbz
-         aMktPBJ+u0fYFjcFCmLq4u+dZDskVwXMXLQdXWg/+d11/Re8wf3ZtfGbk9TNs2SCdqo0
-         zoIH5Z9w6nW6WoH59jLZo/AndSzK3/1MvJ2jLrvO+zObKYgyHyZXncpIXE08Z7i/IC0t
-         6Z+lfyMaD57WeeqXxQSWIOTbevwwDEqQaZWm/lP9KPZ0AIqwiWi42giYey6aC5SIY8Mm
-         t6Mu0ilx9jxn8p0G0ivJHjZlmZOGLMnl8HDT4v0NZe0WRdWEzmQ15em7RutdhAQT3AlP
-         tbdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVrWW1nJtT0YVZ8Ibt8B/xZHnhvzNH5okNhJGjL0wzlULeNDQGC+2geErH1VxCl6NZmPUs9Wpk7boqyynHg2P3c0/CBrHHOapZGeHhW
-X-Gm-Message-State: AOJu0Yz1PET/minK0GveFP9Qd+IzaIhKJMK9t6Iw/xa41aVr6YWKzKhJ
-	M41Z8UwoC8Y4IIGTWcem2TMm9FQ398XhdKZQSGW/sBJT27kKijEE2bEHaK4YsO0ccMISNJOm35O
-	I/1+Guw==
-X-Google-Smtp-Source: AGHT+IH2niG4HLP7/x+KA0mPGPOc5Cee9M3cvuF12USU8FSK8dwpi2y2t4/mArka5E1ZbdSzG8VUZRYDDFLw
+        bh=boFz9eIMJ+Fb11V/P0+sRNFH04HSu2tXThEFb/mBZSs=;
+        b=qZDeQv/20uAz96t1nWvhqFJmIrqoSHNzZ8ooomwK3OzpX0fV/SiCXmI0WS3444TBH1
+         RY5xrX3fb9SoX2ZSwlnQueRV2rDZ6heufwKwYQWTEPM+U5QDyuaPl1AHNJSBy5CIjVk/
+         bbngT9HbksbNRiCKlhrfrVSGRwM8EjanyEc86iA2+H3hmxnJET2/pQ711i13iE5TxfIU
+         cAjdw3E9GpY9oxfVP972M6Mx3cU6OAsOsEkiVaoSwb9E3T2l2IgDF0/kvGPnWqdUtFCu
+         ApGvA3b7wKM3CcX8pAEN04haWmDZpiaKsCBzXN/pcjj1gjhAfmZv4eVNDiHR7tgMmBl8
+         ceug==
+X-Forwarded-Encrypted: i=1; AJvYcCUvi4oiUT/pZmxbDhG8FLFVrYoEYJS7V2JksvSRAroQTU1RgQlafbC12t6M+6LwjEWA7G9yJrAoKPPSdKW0yVTgJQmVx4zrUyDjimqm
+X-Gm-Message-State: AOJu0YxH9UpSe5j6wxAlacGpkxXk+UAPpg4JKqOazyW2kl0TKn5UH9Ju
+	RD5mIS4SeciPXo8X35IzhXzZTkKm8u48+F+en7iPZjx2BgkRfmqauhCN+XoL/yDcpfUzFo0PUgz
+	9ZkhaJw==
+X-Google-Smtp-Source: AGHT+IHd9B6qnuS0vDMu71FLmzqF2ZG7fcWnX6FbkHfRo5r1HZC5wXOQPvp4ubEYNvo/IQi3a4rVn7px521z
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:30c8:f541:acad:b4f7])
- (user=irogers job=sendgmr) by 2002:a05:6902:1501:b0:dd9:1b94:edb5 with SMTP
- id q1-20020a056902150100b00dd91b94edb5mr1355225ybu.10.1713248167928; Mon, 15
- Apr 2024 23:16:07 -0700 (PDT)
-Date: Mon, 15 Apr 2024 23:15:26 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:c07:b0:dbe:a0c2:df25 with SMTP id
+ fs7-20020a0569020c0700b00dbea0c2df25mr1501367ybb.8.1713248170374; Mon, 15 Apr
+ 2024 23:16:10 -0700 (PDT)
+Date: Mon, 15 Apr 2024 23:15:27 -0700
 In-Reply-To: <20240416061533.921723-1-irogers@google.com>
-Message-Id: <20240416061533.921723-11-irogers@google.com>
+Message-Id: <20240416061533.921723-12-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240416061533.921723-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Subject: [PATCH v2 10/16] perf parse-events: Inline parse_events_update_lists
+Subject: [PATCH v2 11/16] perf parse-events: Improve error message for bad numbers
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -87,135 +87,114 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Beeman Strong <beeman@rivosinc.com>
 Content-Type: text/plain; charset="UTF-8"
 
-The helper function just wraps a splice and free. Making the free
-inline removes a comment, so then it just wraps a splice which we can
-make inline too.
+Use the error handler from the parse_state to give a more informative
+error message.
+
+Before:
+```
+$ perf stat -e 'cycles/period=99999999999999999999/' true
+event syntax error: 'cycles/period=99999999999999999999/'
+                                  \___ parser error
+Run 'perf list' for a list of valid events
+
+ Usage: perf stat [<options>] [<command>]
+
+    -e, --event <event>   event selector. use 'perf list' to list available events
+```
+
+After:
+```
+$ perf stat -e 'cycles/period=99999999999999999999/' true
+event syntax error: 'cycles/period=99999999999999999999/'
+                                  \___ parser error
+
+event syntax error: '..les/period=99999999999999999999/'
+                                  \___ Bad base 10 number "99999999999999999999"
+Run 'perf list' for a list of valid events
+
+ Usage: perf stat [<options>] [<command>]
+
+    -e, --event <event>   event selector. use 'perf list' to list available events
+```
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.c | 13 -----------
- tools/perf/util/parse-events.h |  2 --
- tools/perf/util/parse-events.y | 41 +++++++++++++++++++++-------------
- 3 files changed, 25 insertions(+), 31 deletions(-)
+ tools/perf/util/parse-events.l | 40 ++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 805872c90a3e..7eba714f0d73 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1720,19 +1720,6 @@ void parse_events__set_leader(char *name, struct list_head *list)
- 	leader->group_name = name;
- }
+diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+index 6fe37003ab7b..0cd68c9f0d4f 100644
+--- a/tools/perf/util/parse-events.l
++++ b/tools/perf/util/parse-events.l
+@@ -18,26 +18,34 @@
  
--/* list_event is assumed to point to malloc'ed memory */
--void parse_events_update_lists(struct list_head *list_event,
--			       struct list_head *list_all)
--{
--	/*
--	 * Called for single event definition. Update the
--	 * 'all event' list, and reinit the 'single event'
--	 * list, for next event definition.
--	 */
--	list_splice_tail(list_event, list_all);
--	free(list_event);
--}
+ char *parse_events_get_text(yyscan_t yyscanner);
+ YYSTYPE *parse_events_get_lval(yyscan_t yyscanner);
++int parse_events_get_column(yyscan_t yyscanner);
++int parse_events_get_leng(yyscan_t yyscanner);
+ 
+-static int __value(YYSTYPE *yylval, char *str, int base, int token)
++static int get_column(yyscan_t scanner)
+ {
+-	u64 num;
 -
- struct event_modifier {
- 	int eu;
- 	int ek;
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index 7e5afad3feb8..e8f2aebea10f 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -226,8 +226,6 @@ int parse_events_multi_pmu_add_or_add_pmu(struct parse_events_state *parse_state
- 					void *loc_);
- 
- void parse_events__set_leader(char *name, struct list_head *list);
--void parse_events_update_lists(struct list_head *list_event,
--			       struct list_head *list_all);
- void parse_events_evlist_error(struct parse_events_state *parse_state,
- 			       int idx, const char *str);
- 
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 31fe8cf428ff..51490f0f8c50 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -125,6 +125,10 @@ static void free_list_evsel(struct list_head* list_evsel)
- }
- %%
- 
-+ /*
-+  * Entry points. We are either parsing events or terminals. Just terminal
-+  * parsing is used for parsing events in sysfs.
-+  */
- start:
- PE_START_EVENTS start_events
- |
-@@ -132,31 +136,36 @@ PE_START_TERMS  start_terms
- 
- start_events: groups
- {
-+	/* Take the parsed events, groups.. and place into parse_state. */
-+	struct list_head *groups  = $1;
- 	struct parse_events_state *parse_state = _parse_state;
- 
--	/* frees $1 */
--	parse_events_update_lists($1, &parse_state->list);
-+	list_splice_tail(groups, &parse_state->list);
-+	free(groups);
+-	errno = 0;
+-	num = strtoull(str, NULL, base);
+-	if (errno)
+-		return PE_ERROR;
+-
+-	yylval->num = num;
+-	return token;
++	return parse_events_get_column(scanner) - parse_events_get_leng(scanner);
  }
  
--groups:
-+groups: /* A list of groups or events. */
- groups ',' group
+-static int value(yyscan_t scanner, int base)
++static int value(struct parse_events_state *parse_state, yyscan_t scanner, int base)
  {
--	struct list_head *list  = $1;
--	struct list_head *group = $3;
-+	/* Merge group into the list of events/groups. */
-+	struct list_head *groups  = $1;
-+	struct list_head *group  = $3;
+ 	YYSTYPE *yylval = parse_events_get_lval(scanner);
+ 	char *text = parse_events_get_text(scanner);
++	u64 num;
  
--	/* frees $3 */
--	parse_events_update_lists(group, list);
--	$$ = list;
-+	list_splice_tail(group, groups);
-+	free(group);
-+	$$ = groups;
- }
- |
- groups ',' event
- {
--	struct list_head *list  = $1;
-+	/* Merge event into the list of events/groups. */
-+	struct list_head *groups  = $1;
- 	struct list_head *event = $3;
- 
--	/* frees $3 */
--	parse_events_update_lists(event, list);
--	$$ = list;
+-	return __value(yylval, text, base, PE_VALUE);
++	errno = 0;
++	num = strtoull(text, NULL, base);
++	if (errno) {
++		struct parse_events_error *error = parse_state->error;
++		char *help = NULL;
 +
-+	list_splice_tail(event, groups);
-+	free(event);
-+	$$ = groups;
++		if (asprintf(&help, "Bad base %d number \"%s\"", base, text) > 0)
++			parse_events_error__handle(error, get_column(scanner), help , NULL);
++
++		return PE_ERROR;
++	}
++
++	yylval->num = num;
++	return PE_VALUE;
  }
- |
- group
-@@ -206,12 +215,12 @@ PE_NAME '{' events '}'
- events:
- events ',' event
- {
-+	struct list_head *events  = $1;
- 	struct list_head *event = $3;
--	struct list_head *list  = $1;
  
--	/* frees $3 */
--	parse_events_update_lists(event, list);
--	$$ = list;
-+	list_splice_tail(event, events);
-+	free(event);
-+	$$ = events;
- }
- |
- event
+ static int str(yyscan_t scanner, int token)
+@@ -283,8 +291,8 @@ r0x{num_raw_hex}	{ return str(yyscanner, PE_RAW); }
+ 	 */
+ "/"/{digit}		{ return PE_BP_SLASH; }
+ "/"/{non_digit}		{ BEGIN(config); return '/'; }
+-{num_dec}		{ return value(yyscanner, 10); }
+-{num_hex}		{ return value(yyscanner, 16); }
++{num_dec}		{ return value(_parse_state, yyscanner, 10); }
++{num_hex}		{ return value(_parse_state, yyscanner, 16); }
+ 	/*
+ 	 * We need to separate 'mem:' scanner part, in order to get specific
+ 	 * modifier bits parsed out. Otherwise we would need to handle PE_NAME
+@@ -330,8 +338,8 @@ cgroup-switches					{ return sym(yyscanner, PERF_COUNT_SW_CGROUP_SWITCHES); }
+ {lc_type}-{lc_op_result}-{lc_op_result}	{ return str(yyscanner, PE_LEGACY_CACHE); }
+ mem:			{ BEGIN(mem); return PE_PREFIX_MEM; }
+ r{num_raw_hex}		{ return str(yyscanner, PE_RAW); }
+-{num_dec}		{ return value(yyscanner, 10); }
+-{num_hex}		{ return value(yyscanner, 16); }
++{num_dec}		{ return value(_parse_state, yyscanner, 10); }
++{num_hex}		{ return value(_parse_state, yyscanner, 16); }
+ 
+ {modifier_event}	{ return str(yyscanner, PE_MODIFIER_EVENT); }
+ {name}			{ return str(yyscanner, PE_NAME); }
 -- 
 2.44.0.683.g7961c838ac-goog
 
