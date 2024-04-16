@@ -1,143 +1,116 @@
-Return-Path: <linux-kernel+bounces-147330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09BB08A729C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:48:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B61A58A729D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCD681F21C45
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:48:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21589B21069
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D06EB1339B1;
-	Tue, 16 Apr 2024 17:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b="eUDKjTlB"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2560D13398E;
+	Tue, 16 Apr 2024 17:49:14 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E217FC1F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E77A1327ED
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713289691; cv=none; b=cClQ2hxpDJ2sx/ED1RuP1Sv7QqE7QajZBpV5HOwSMng+zsAHHbYnToKZ5Nr1+NyUcfMSKXedGlIwx0q74jDtBzLzyrhFijTDqqMmjya73PEw6d4vn5taUmC3Lp3vY9qPYOZVnNP/+ChO8kZNKYgyE1/Xo24e39u8trSxswl4oYg=
+	t=1713289753; cv=none; b=UxOpJZx97TLjON7Y23oZCd92gYgXlaC14d6+1LFCyzhke3l/rRMOUQRwn/7sxkfKzsxYWXYCWBkLbIuAYWEiB1v4wmuywKO6mivK0RFRhNlan1xI4g8u/yfYgBN6jf6Uy55F9sowPVsEgjvKfnJIKlraXs9duCW23NeKQ364dQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713289691; c=relaxed/simple;
-	bh=CFLPbaTqHgy35LCkZ8/WIR4fdR8dupvDJeKom1cb3Tc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t+08vVsPOnt/WUF45H7Z+uzmzQLxfbowlYAIv40q90rP1RGWnhJMw8KkNNxmJK8QtNPL6a1mb+9p+VtZ0k3AEo6aMiPsRQj/aYo3bBgtDukOoAjS1MCMTX1MOWLseezMash+X4DFBiJPQ7ZmX7pX8fUDdj7SXmXnpGKqcPE4LXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu; spf=pass smtp.mailfrom=umich.edu; dkim=pass (2048-bit key) header.d=umich.edu header.i=@umich.edu header.b=eUDKjTlB; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=umich.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=umich.edu
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso4636369276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1713289688; x=1713894488; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cgxo59IYhnHPL9WU4YKhZaxzeo3fMP1MrECdS5RGdv8=;
-        b=eUDKjTlBT29qfAlDcoUy2U1r+7cY8RglJ/6AU7pb+GfackqEn8tjBT63fCwXj8r6ph
-         vIHzVswQ1aD1xiHv3jXV5FyJALVltYXvFK8pgG/Ym5HtTIZHS++PW5hZah87Wml7yFqC
-         b+ai5iO//SnTNatl1C9pDoSOlvT+H28FDhW0HH5ET4iHKkgFrg8EtXaQdyCG4Brk0rVw
-         GGlB04Mij1r/0jNX2/DBE3PYmw5kSLimADJz4MjfJkwumGoGhb7HiAHFI+oih90oPeDW
-         h9EkLvDAH3lmGV09U8//u6YmLnZk6eWYVlgDGIge1PQ0xs8gv8whaCKZ5MbPaI6SKCEb
-         Kx9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713289688; x=1713894488;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cgxo59IYhnHPL9WU4YKhZaxzeo3fMP1MrECdS5RGdv8=;
-        b=dDMzyS1AVRLKBTCj4BkBV2DDxcyJbTqZV1a5iKhAJ6AowkZxKn14xmYZBOYEgYzxvL
-         sXHZedbEWjb0Ze/JHI6dENMEBJujuR/ir7Z6ziqRG6AooZbOci6EV+64Kfq2zSUwII9d
-         aneMwCBOL85j+qiS8IIVlifBFEqwbZovvNzjk3zAT28uv2SHIOl8ePIGos6qLVsCNxZm
-         AIR7h9sqpFftVgN9Sl7iS/MoUbWXcuGQlfU3Yzc17uYDrK6v8Bpeyxd6rDyxVBMzB+R+
-         IRK+vrkCb9yi79W+76SO+uSTcu8H0hwlsXRdTRPS5/0znQfIdNMxE3hSugtzkZjwrTAx
-         LdSg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIIcd+/eRwf4gd9MiIvwVkpWgMhQJgg2apodSDZc+1pqzMmrXrrwB5JzHvDxnpbbCv+lvzp0Xypl3NnQGwTM96/L3oM4B3v1WVVxf5
-X-Gm-Message-State: AOJu0YzxwBlOstkOtNMayTgpNOFjuQ1smtV76CEXOdRcsdWPwJ4u17Os
-	CoBhFj465yHB8+q0HKmbu+5G0nlxVnWHtkvnKYaviYW2E1xIgkhAg/UXA1aTU7R36ZmGkLbBsXL
-	mVp5HZaWwZIYGSahbQvgzLOKIoeY5x54bvDuhYg==
-X-Google-Smtp-Source: AGHT+IFEcewgx6K0H5JoHC0s7S4uCrcrKg0tuesPZ6/XjGUTZZkpFY+pctxrZr4MfL7ku3gK9QgVdIyhlEaUIc8tLro=
-X-Received: by 2002:a25:2f0f:0:b0:de0:d728:1b21 with SMTP id
- v15-20020a252f0f000000b00de0d7281b21mr10940224ybv.54.1713289688081; Tue, 16
- Apr 2024 10:48:08 -0700 (PDT)
+	s=arc-20240116; t=1713289753; c=relaxed/simple;
+	bh=zL4vHYXodo+iDEIfDbv2+Viy78mHAcondGKwEefuddE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rs03z4Qxr2UX+pTGT3zW5xJMdYLjnWXBUpUokF+mrKIWdeyVERPWfT9yCwxWCbKrk5s6miO3McAASeIKoPViW1LCC8ouybDNTbMdo4fIlOMh/eHoEcrPNzvSFvewidlbCoJvOX0WcMSGV8+2uiOd3DKkulNeQfCjOuKaZVDzETY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BE68340E0187;
+	Tue, 16 Apr 2024 17:49:08 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id sU6ThkcJiHGY; Tue, 16 Apr 2024 17:49:03 +0000 (UTC)
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2832440E00B2;
+	Tue, 16 Apr 2024 17:48:56 +0000 (UTC)
+Date: Tue, 16 Apr 2024 19:48:50 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+	Robert Richter <rric@kernel.org>, linux-kernel@vger.kernel.org,
+	jgross@suse.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [PATCH 2/4] perf/x86/ibs: Use CPUID region helper
+Message-ID: <20240416174850.GEZh66AmnDjrLxoXaw@fat_crate.local>
+References: <20240403153508.7328E749@davehans-spike.ostc.intel.com>
+ <20240403153511.75CB9DA0@davehans-spike.ostc.intel.com>
+ <20240416151242.GGZh6VaiO2gC4ej2BT@fat_crate.local>
+ <f142e9c4-4829-4ace-8757-485246ad3572@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALNs47tEZqL201jsExfF1j7m+yW37YRAws-NTF6hwsxohSKoQA@mail.gmail.com>
- <20240416095333.1108884-1-aliceryhl@google.com>
-In-Reply-To: <20240416095333.1108884-1-aliceryhl@google.com>
-From: Trevor Gross <tmgross@umich.edu>
-Date: Tue, 16 Apr 2024 13:47:56 -0400
-Message-ID: <CALNs47vUXA9z8+bM4TOU-Q_NY3wbux3OA4nBVxegAWykzTd2zQ@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] rust: add abstraction for `struct page`
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
-	arnd@arndb.de, arve@android.com, benno.lossin@proton.me, 
-	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
-	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
-	viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f142e9c4-4829-4ace-8757-485246ad3572@intel.com>
 
-On Tue, Apr 16, 2024 at 5:53=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> w=
-rote:
->
-> >> +/// Flags for the "get free page" function that underlies all memory =
-allocations.
-> >> +pub mod flags {
-> >> +    /// gfp flags.
-> >
-> > Uppercase acronym, maybe with a description:
-> >
-> >     GFP (Get Free Page) flags.
-> >
-> >> +    #[allow(non_camel_case_types)]
-> >> +    pub type gfp_t =3D bindings::gfp_t;
-> >
-> > Why not GfpFlags, do we do this elsewhere?
-> >
-> >> +    /// `GFP_KERNEL` is typical for kernel-internal allocations. The =
-caller requires `ZONE_NORMAL`
-> >> +    /// or a lower zone for direct access but can direct reclaim.
-> >> +    pub const GFP_KERNEL: gfp_t =3D bindings::GFP_KERNEL;
-> >> +    /// `GFP_ZERO` returns a zeroed page on success.
-> >> +    pub const __GFP_ZERO: gfp_t =3D bindings::__GFP_ZERO;
-> >> +    /// `GFP_HIGHMEM` indicates that the allocated memory may be loca=
-ted in high memory.
-> >> +    pub const __GFP_HIGHMEM: gfp_t =3D bindings::__GFP_HIGHMEM;
-> >
-> > It feels a bit weird to have dunder constants on the rust side that
-> > aren't also `#[doc(hidden)]` or just nonpublic. Makes me think they
-> > are an implementation detail or not really meant to be used - could
-> > you update the docs if this is the case?
->
-> All of this is going away in the next version because it will be based
-> on [1], which defines the gfp flags type for us.
->
-> [1]: https://lore.kernel.org/rust-for-linux/20240328013603.206764-1-wedso=
-naf@gmail.com/
+On Tue, Apr 16, 2024 at 08:23:58AM -0700, Dave Hansen wrote:
+> When I was looking at it, I (maybe wrongly) assumed that 0x8000001b and
+> X86_FEATURE_IBS were independent for a reason.  Because, oddly enough:
+> 
+> 	#define IBS_CAPS_DEFAULT         (IBS_CAPS_AVAIL         \
+>                                          | IBS_CAPS_FETCHSAM    \
+>                                          | IBS_CAPS_OPSAM)
+> 
+> So, if the CPU enumerates X86_FEATURE_IBS but has a
+> max_level<IBS_CPUID_FEATURES then it assumes there's a working IBS
+> because the software-inserted IBS_CAPS_DEFAULT has IBS_CAPS_AVAIL set.
 
-Great, thanks for the link.
+Right, that's why I added Robert. I found this in a F10h doc (old
+Greyhound CPU rust):
 
-> > Could you add an example of how to use this correctly?
->
-> This is a private function, you're not supposed to use it directly.
-> Anyone who is modifying this file directly can look at the existing
-> users for examples.
+"CPUID Fn8000_0001_ECX Feature Identifiers
 
-Ah you're right, missed this bit.
+..
 
-Thanks for the followup.
+10: IBS: Instruction Based Sampling = 1.
 
-Trevor
+..
+
+CPUID Fn8000_001B Instruction Based Sampling Identifiers
+
+..
+
+IBSFFV. IBS feature flags valid. Revision B = 0. Revision C = 1."
+
+which makes this look like some hack to fix broken CPUID IBS reporting.
+
+And if it is that, I don't think we care, frankly, because revB is
+ooold. Mine is somewhere in the basement on some old board which got
+bricked so I don't know even if I could use it anymore.
+
+And I'm not even planing to - that CPU is almost 20 years old and no one
+cares whether it can even do IBS.
+
+So I wouldn't mind at all if we simplify this code for the sake of it.
+I don't think anyone would care or notice.
+
+But let's see what Robert says first...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
