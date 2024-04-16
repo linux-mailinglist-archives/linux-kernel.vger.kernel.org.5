@@ -1,156 +1,162 @@
-Return-Path: <linux-kernel+bounces-146129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC9778A611D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:44:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 225ED8A612A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:45:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 507B5B21634
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:44:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1A1A282618
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1CA11181;
-	Tue, 16 Apr 2024 02:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DEF6208A4;
+	Tue, 16 Apr 2024 02:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="F9JT0Pvj"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rm3C/JfV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00C08485;
-	Tue, 16 Apr 2024 02:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83EF415AF6;
+	Tue, 16 Apr 2024 02:44:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713235476; cv=none; b=NGAf7sQf4kTq8ItA0O6C6jXh+XyVE3baiLWUjjwIqyy7CkDAKVPPN+F0Fa465YwOrJ/LAivclr62I0RO1p+qP63d4CCc1VPbtfzFJh1Sdzhv03Ri+8lH6YacR6eHbjiJnj8xancTp91J9Gww7iTEzQXAYQJ4kZlDodcZ7GSNtFs=
+	t=1713235481; cv=none; b=cXjXmKNzXNWL2C2yN9FImQGlmeW1yiieY+2d+ENm1AascL5zUFGtN4TbmJXhwhDz9U7MneXYx8nFa72OVSQCWPJd8DWM9e1UdfmWFj27J0hZedbAXcdoShxkFL/QH1wA0LLMguMUjHucG26hrM69BaK1Rp08IP1jtpB384afiKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713235476; c=relaxed/simple;
-	bh=WOP6vQcoqzks8WSee7OrShtu3+FKMyr2tXm7Fba/t1c=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=BPzPa/+xAjBFNA+55BU1qJCjzf+qyuvVZ8lJ+jagU0uYwMKynW1gupfTnw4MKPIuvLaZr4LPDfOYuxewNOYNyejRnWBSYamRDh3YCu3O6K5ZhbK3+6LrLcLQLPOp+KhH6DuRCHxeLtM17ktWpDXJhlPLpTe033qwdU1NkjtPz3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=F9JT0Pvj; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1713235470;
-	bh=fxHKmx6FXKZbRduyay5x+5YXC7g5gOcmxuvTB4fmgXs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=F9JT0Pvj5V+l5thEcdKGemIPFQ9HOe253uXXjBukxsZNFQcCoeczklOltNUq5tteB
-	 ObkGzhf8w+xiiNA1MnJigWpKTLviFDdaMW170z2I6+W4h0z2y6OzwNQWZrn2JFYFQF
-	 UmIQoiVmjZQVtgt9VgshQdaF0I5UoUe30ZuyaiPgxTGXAn4OChiUr+0alI/IY/FcIC
-	 M2X/mUwsfleT3CTygdxNaBR7rC82ZUsbwCtWJd7f8Ezgf8YyANM8UysOI0r487mOS7
-	 nkP497ODLi9WjrcClqT7OH93Hv/m8GCK0nmBf4mwgDOW0ThAM+vTyePt1Ccilwoo9K
-	 vXp6OHkrYj2UA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VJSzy1vyhz4wcn;
-	Tue, 16 Apr 2024 12:44:29 +1000 (AEST)
-Date: Tue, 16 Apr 2024 12:44:26 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Jens Axboe <axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>, Al
- Viro <viro@ZenIV.linux.org.uk>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, Miklos Szeredi
- <mszeredi@redhat.com>
-Subject: linux-next: manual merge of the block tree with the vfs-brauner,
- vfs trees
-Message-ID: <20240416124426.624cfaf9@canb.auug.org.au>
+	s=arc-20240116; t=1713235481; c=relaxed/simple;
+	bh=RreoZmN1edYuN7I01FSs8Hp2zCBxe6Smv38jWjREaV4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=GHKyux0rDMjw1And5Yf/Fo7+SGKuDtM87wmGdAQjBqyB/cqeDWXIzxd5CNnRKAoqRLPb+l04b153qPBpZp0i47Yj6qnRO8k0r0d0ogTqJDWqKsqcNk5xOptr7YN3RlA0Spqxwo9x7F92VzO7kFzHzCbdr72dLIWgTaORlcKaztU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rm3C/JfV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 48E2AC3277B;
+	Tue, 16 Apr 2024 02:44:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713235481;
+	bh=RreoZmN1edYuN7I01FSs8Hp2zCBxe6Smv38jWjREaV4=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=rm3C/JfVwCIVWivUx4yxMlC6uOMTC2OeE2EVRqfYHDhHIovoKZXCBHgwftMNJnQNF
+	 taiLt3jaMeiu8YwjV369J5c+AhDaqmcd8bgMFsdS5CFjEuxBSkytL51hYqRaTVw8+y
+	 Hj7h+rVz7hr9i9ts4Y9EHYP7HD1pgveoMMZYS7E56swILBOICm4XPVXv7HzqHiN+yg
+	 TjP9hVRrdoQZDmU32zPK8jVzEptecdeRUfpJrDd3/NsXxhkRTBXbEbUGbg5cjF2m9b
+	 otXanmd8u894Nl7fGuAkY/G+xAlvtTHKhfa+gPTkLhMlWlWDV0FdElQUoAlwwubcXJ
+	 9GiOvB3A18Oyw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34373C4345F;
+	Tue, 16 Apr 2024 02:44:41 +0000 (UTC)
+From: Fenglin Wu via B4 Relay <devnull+quic_fenglinw.quicinc.com@kernel.org>
+Subject: [PATCH v11 0/3] Add support for vibrator in multiple PMICs
+Date: Tue, 16 Apr 2024 10:44:31 +0800
+Message-Id: <20240416-pm8xxx-vibrator-new-design-v11-0-7b1c951e1515@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/m8f_evjuhWhg6A1r=yhb4Q6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAA/mHWYC/33NzW7CMBAE4FdBPuNq1/lh01PfA/VgOxvYA06ww
+ aRCefcaeqFCynFGmm/uKnEUTupzc1eRsyQZQwmI243yRxsOrKUvhTJgaqgM6elE8zzrLC7ayxh
+ 14JvuOckhaG4I0fZNx2RVAabIg8xPff9d8lFSWfw8zzI92j+2BlxjM2nQ7WAcOahc7Xdf56t4C
+ f7Djyf1gHP3guE61hVs54am9a4zztA7hvCqmVUNoXDAHmyPVUVt+59bluUXEFqF1WMBAAA=
+To: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ Fenglin Wu <quic_fenglinw@quicinc.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713235479; l=3163;
+ i=quic_fenglinw@quicinc.com; s=20240327; h=from:subject:message-id;
+ bh=RreoZmN1edYuN7I01FSs8Hp2zCBxe6Smv38jWjREaV4=;
+ b=r23ue46tPssBOUx14QG0XF32Hf9unfHC7pg1hOPjY7KUqpeHsmHFbrdyn64EKSa9ssVbFo4wV
+ JE9r7L1hkutBzK6sMG3eioWiNOxlFthbORu0oyiuvW4ly2jwHDnPXrs
+X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
+ pk=BF8SA4IVDk8/EBCwlBehKtn2hp6kipuuAuDAHh9s+K4=
+X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20240327
+ with auth_id=146
+X-Original-From: Fenglin Wu <quic_fenglinw@quicinc.com>
+Reply-To: quic_fenglinw@quicinc.com
 
---Sig_/m8f_evjuhWhg6A1r=yhb4Q6
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
+It is very similar to the vibrator module inside PM8916 which is supported in
+pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
+and the register base offset in each PMIC is different.
 
-Hi all,
+Changes in v11:
+  1. Drop the 1st patch since it has been applied
+  2. Update to address review comments
+     Link to v10: https://lore.kernel.org/r/20240412-pm8xxx-vibrator-new-design-v10-0-0ec0ad133866@quicinc.com
 
-Today's linux-next merge of the block tree got a conflict in:
+Changes in v10:
+  1. Add Fixes tag
+  2. Update SSBI vibrator to use DT 'reg' value
+  3. Add drv_in_step flag for programming vibrator level in steps
+     Link to v9: https://lore.kernel.org/r/20240411-pm8xxx-vibrator-new-design-v9-0-7bf56cb92b28@quicinc.com
 
-  io_uring/rw.c
+Changes in v9:
+  1. Add a preceding change to correct VIB_MAX_LEVELS calculation
+  2. Address review comments from Konrad
+     Link to v8: https://lore.kernel.org/r/20240401-pm8xxx-vibrator-new-design-v8-0-6f2b8b03b4c7@quicinc.com
 
-between commits:
+Changes in v8:
+  1. Remove hw_type, and still keep the register info in match data
+  2. Update to use register offset in pm8xxx_regs, and the base address
+     defined in DT for SPMI vibrator will be added in register access
+  3. Update voltage output range for SPMI vibrator which has 2 bytes drive
+     registers
 
-  210a03c9d51a ("fs: claw back a few FMODE_* bits")
-  7c98f7cb8fda ("remove call_{read,write}_iter() functions")
+Changes in v7:
+  1. Fix a typo: SSBL_VIB_DRV_REG --> SSBI_VIB_DRV_REG
+  2. Move the hw_type switch case in pm8xxx_vib_set() to the refactoring
+     change.
 
-from the vfs-brauner, vfs trees and commits:
+Changes in v6:
+  1. Add "qcom,pmi632-vib" as a standalone compatible string.
 
-  a9165b83c193 ("io_uring/rw: always setup io_async_rw for read/write reque=
-sts")
-  0d10bd77a1be ("io_uring: get rid of struct io_rw_state")
+Changes in v5:
+  1. Drop "qcom,spmi-vib-gen2" generic compatible string as requested
+     and use device specific compatible strings only.
 
-from the block tree.
+Changes in v4:
+  1. Update to use the combination of the HW type and register offset
+     as the constant match data, the register base address defined in
+     'reg' property will be added when accessing SPMI registers using
+     regmap APIs.
+  2. Remove 'qcom,spmi-vib-gen1' generic compatible string.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Changes in v3:
+  1. Refactor the driver to support different type of the vibrators with
+    better flexibility by introducing the HW type with corresponding
+    register fields definitions.
+  2. Add 'qcom,spmi-vib-gen1' and 'qcom,spmi-vib-gen2' compatible
+    strings, and add PMI632, PM7250B, PM7325B, PM7550BA as compatbile as
+    spmi-vib-gen2.
 
---=20
-Cheers,
-Stephen Rothwell
+Changes in v2:
+  Remove the "pm7550ba-vib" compatible string as it's compatible with pm7325b.
 
-diff --cc io_uring/rw.c
-index d517a1a29274,3134a6ece1be..000000000000
---- a/io_uring/rw.c
-+++ b/io_uring/rw.c
-@@@ -1028,13 -1003,13 +1004,13 @@@ int io_write(struct io_kiocb *req, unsi
-  	if (force_nonblock) {
-  		/* If the file doesn't support async, just async punt */
-  		if (unlikely(!io_file_supports_nowait(req)))
-- 			goto copy_iov;
-+ 			goto ret_eagain;
- =20
- -		/* File path supports NOWAIT for non-direct_IO only for block devices. =
-*/
- +		/* Check if we can support NOWAIT. */
-  		if (!(kiocb->ki_flags & IOCB_DIRECT) &&
- -			!(kiocb->ki_filp->f_mode & FMODE_BUF_WASYNC) &&
- -			(req->flags & REQ_F_ISREG))
- +		    !(req->file->f_op->fop_flags & FOP_BUFFER_WASYNC) &&
- +		    (req->flags & REQ_F_ISREG))
-- 			goto copy_iov;
-+ 			goto ret_eagain;
- =20
-  		kiocb->ki_flags |=3D IOCB_NOWAIT;
-  	} else {
-@@@ -1055,9 -1028,9 +1029,9 @@@
-  	kiocb->ki_flags |=3D IOCB_WRITE;
- =20
-  	if (likely(req->file->f_op->write_iter))
-- 		ret2 =3D req->file->f_op->write_iter(kiocb, &s->iter);
- -		ret2 =3D call_write_iter(req->file, kiocb, &io->iter);
-++		ret2 =3D req->file->f_op->write_iter(kiocb, &io->iter);
-  	else if (req->file->f_op->write)
-- 		ret2 =3D loop_rw_iter(WRITE, rw, &s->iter);
-+ 		ret2 =3D loop_rw_iter(WRITE, rw, &io->iter);
-  	else
-  		ret2 =3D -EINVAL;
- =20
+Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+---
+Fenglin Wu (3):
+      input: pm8xxx-vibrator: refactor to support new SPMI vibrator
+      dt-bindings: input: qcom,pm8xxx-vib: add new SPMI vibrator module
+      input: pm8xxx-vibrator: add new SPMI vibrator support
 
---Sig_/m8f_evjuhWhg6A1r=yhb4Q6
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ .../devicetree/bindings/input/qcom,pm8xxx-vib.yaml | 16 +++-
+ drivers/input/misc/pm8xxx-vibrator.c               | 93 ++++++++++++++++------
+ 2 files changed, 80 insertions(+), 29 deletions(-)
+---
+base-commit: 48c0687a322d54ac7e7a685c0b6db78d78f593af
+change-id: 20240328-pm8xxx-vibrator-new-design-e5811ad59e8a
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+-- 
+Fenglin Wu <quic_fenglinw@quicinc.com>
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYd5goACgkQAVBC80lX
-0Gzdhgf7B/64lJSehzi2t9+TjMayIbnv5trux8hxlGjDICXLRDhuBAE9nCQwddTB
-z9osMIAVuYl4D/+4ocJYWPEX7nyhGL1gMP7Gam1fW7XZhdm27veSH2XGkt2NRhVh
-BkaGdK5QY+nQsWsyl4+U9ZpbFWFk9EiWaUkRGdakRmclBB7g3K+nWvyPg6BVlGSw
-/17/5hO8FGVk6cisBAvqzfvebUNBW+JCuBU1bTilxtC4efcYO/nYd2hBRuraK8ME
-lRVcncKv4IRXKcHg2miblzpUqFHxyivAzqguS3GkwjB8W3VMde2TrDSvnrjqn3zP
-GcExA4J4DWwz/Wl995OCQhrjudhGSg==
-=2tLZ
------END PGP SIGNATURE-----
 
---Sig_/m8f_evjuhWhg6A1r=yhb4Q6--
 
