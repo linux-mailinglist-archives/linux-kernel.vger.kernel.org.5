@@ -1,53 +1,58 @@
-Return-Path: <linux-kernel+bounces-147027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F12F28A6E82
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:37:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 128FF8A6E64
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:34:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E798B28CDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:34:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9919B2825D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4F412F365;
-	Tue, 16 Apr 2024 14:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DEB130AC7;
+	Tue, 16 Apr 2024 14:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0+DyPwlG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kMaLeZDQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63B4912FF9E;
-	Tue, 16 Apr 2024 14:33:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A5612FF9E;
+	Tue, 16 Apr 2024 14:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713278014; cv=none; b=Zr9bbXLeotnbOZfwsMUvPJtrfa0HWjlNrYsA8DD81FMMbKVbfCKLqCtB5xdlALCt1RUN3LGv/fiacbhxPJ/Jpm7MdmsIyLPhrGMziOh5IjhEZj7NwdXP44qcj9NxCC5q+Ie8WftD2DalCSBn1WppzEhV36uzAWa9pfNeBB0Ivmk=
+	t=1713278018; cv=none; b=A2AMr7DhRhPh78EIrMAoaHWJoKkqcU6M2VTmqczQ876r0LsfZYex6qWzZ7CfYbaoGnQZGHyi6SVXU7zneY5gWrE/kKCnWD9U/Mj1SvC41WeuOMFFYr/LWgyNYcxBmPhat6vCdZd9oUYZCFNBGXeah2TlYY98tS8E0ec3wovAkrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713278014; c=relaxed/simple;
-	bh=S3+lG+Q4zz1vpzcDH9owuemE4fYStoaS86UMxk5U1J4=;
+	s=arc-20240116; t=1713278018; c=relaxed/simple;
+	bh=73evdPQiOOApw7QL8q9vw0HzZUfbwzxdzB9xRg+enm4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ny1QRV7hEUp66NA5ZGl9rLzwEnAz6GDsiZ5UjDc55nL63gv8TDhqY/o9pESgX1nzCJnM2f93MofwTlJ/DsTlcM7eR7XRu5XQP1jOunXOQ2lp62leAkaMeQSnH87JEe6To1gaiBR9vFGPrhcMvTKkXJzI5LJBMYt5cwDCFixWPSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=0+DyPwlG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70BAFC32783;
-	Tue, 16 Apr 2024 14:33:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1713278013;
-	bh=S3+lG+Q4zz1vpzcDH9owuemE4fYStoaS86UMxk5U1J4=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=ggEWYLts7lWj3jrl400St4VT84urN1bLF0BQAGteB4bjO8NeN2l07Q4Ejvl8toQ8FX3hiVQrpy2K9y1C/fGkIs4MMVPKN8HLMueL0HDI5lJNSqKBtEU2ZtZdTEm9oQ5eRlh/Jf8zHeJhlkvJRlWAvJD0r2tQT9esfkGQmbnNDqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kMaLeZDQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83C0BC2BD10;
+	Tue, 16 Apr 2024 14:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713278017;
+	bh=73evdPQiOOApw7QL8q9vw0HzZUfbwzxdzB9xRg+enm4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=0+DyPwlGsaCyAcl74aQcZEoKNlafqD253vXe+at408/lTtSZFqY732I6veMUNTJiD
-	 kAw1rB3SW31dZCwayjZu08nsfjNu+yXxE400hAYlx+zyCxkrjHcdVRP11C3A4k+021
-	 S9nMv/SR9Flg66ICCPZTkKKhhNi+j2aukCNTEIlk=
-Date: Tue, 16 Apr 2024 16:33:30 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: joro@8bytes.org, will@kernel.org, ewagner12@gmail.com,
-	suravee.suthikulpanit@amd.com, vashegde@amd.com, jgg@ziepe.ca,
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev
-Subject: Re: [PATCH] iommu: Fix def_domain_type interaction with untrusted
- devices
-Message-ID: <2024041620-brick-stack-6736@gregkh>
-References: <fa14583e94cbf540b60a6be94b41bb24d0037e75.1713272443.git.robin.murphy@arm.com>
+	b=kMaLeZDQhQpMslb1F6+zzVI9LpFJlfaRtVT0etbL1ozTHk+OEaAbtDH8SUroPagj2
+	 pFt3vQxye/JfnqgEm2K9174tUV/EWQIjTyYY02OlXF9kMXeDyuQXWnkuGARqpzDLr9
+	 NvHGku+xwLNgHFFLt+8CIPnVVtapvo10UzHaPFHmHa6YhaVlh3V7JdXjSjeaW7wtoM
+	 9fouxB5ReL9yW0J6QlzRK1D2hn3emDi8aawc3Yv5ib0/UTqttNWIyVcEAWUrADmoCs
+	 aaUU5+uXmWwKyza0drl4rZosaSLP4w+pgeuVpWOVPPxWYHEqQX4LJY1gohbO3cEXB7
+	 mTtjr4oBRTuhQ==
+Date: Tue, 16 Apr 2024 09:33:35 -0500
+From: Rob Herring <robh@kernel.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: linux-kernel@vger.kernel.org,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: timer: renesas,cmt: Add R-Car V4M support
+Message-ID: <171327801307.2257481.3238910701067194343.robh@kernel.org>
+References: <3e8a7a93261d8ad264dec2fa2784fe1bbfc4a23c.1712068536.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,87 +61,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fa14583e94cbf540b60a6be94b41bb24d0037e75.1713272443.git.robin.murphy@arm.com>
+In-Reply-To: <3e8a7a93261d8ad264dec2fa2784fe1bbfc4a23c.1712068536.git.geert+renesas@glider.be>
 
-On Tue, Apr 16, 2024 at 02:00:43PM +0100, Robin Murphy wrote:
-> Previously, an untrusted device forcing IOMMU_DOMAIN_DMA always took
-> precedence over whatever a driver's def_domain_type may have wanted to
-> say. This was intentionally handled in core code since 3 years prior,
-> to avoid drivers poking at the details of what is essentially a policy
-> between the PCI core and the IOMMU core. Now, though, we go to the
-> length of evaluating both constraints to check for any conflict, and if
-> so throw our toys out of the pram and refuse to handle the device at
-> all. Regardless of any intent, in practice this leaves the device, and
-> potentially the rest of its group or even the whole IOMMU, in a largely
-> undetermined state, which at worst may render the whole system unusable.
-> Unfortunately it turns out that this is a realistic situation to run
-> into by connecting a PASID-capable device (e.g. a GPU) to an AMD-based
-> laptop via a Thunderbolt expansion box, since the AMD IOMMU driver needs
-> an identity default domain for PASIDs to be usable, and thus sets a
-> def_domain_type override based on PASID capability.
+
+On Tue, 02 Apr 2024 16:36:05 +0200, Geert Uytterhoeven wrote:
+> Document support for the Compare Match Timer Type0 (CMT0) and Type1
+> (CMT1) in the Renesas R-Car V4M (R8A779H0) SoC.
 > 
-> In general, restoring the old behaviour of forcing translation will not
-> make that device's operation any more broken than leaving it potentially
-> blocked or subject to the rest of a group's translations would, nor will
-> it be any less safe than leaving it potentially bypassed or subject to
-> the rest of a group's translations would, so do that, and let eGPUs work
-> again.
-> 
-> Reported-by: Eric Wagner <ewagner12@gmail.com>
-> Link: https://lore.kernel.org/linux-iommu/CAHudX3zLH6CsRmLE-yb+gRjhh-v4bU5_1jW_xCcxOo_oUUZKYg@mail.gmail.com
-> Fixes: 59ddce4418da ("iommu: Reorganize iommu_get_default_domain_type() to respect def_domain_type()")
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  drivers/iommu/iommu.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 996e79dc582d..90dbea14d4d6 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -1772,9 +1772,8 @@ static int iommu_get_default_domain_type(struct iommu_group *group,
->  		if (driver_type && driver_type != IOMMU_DOMAIN_DMA) {
->  			dev_err_ratelimited(
->  				untrusted,
-> -				"Device is not trusted, but driver is overriding group %u to %s, refusing to probe.\n",
-> +				"IOMMU_DOMAIN_DMA for untrusted device overrides driver request of %s for group %u, expect issues...\n",
->  				group->id, iommu_domain_type_str(driver_type));
-> -			return -1;
->  		}
->  		driver_type = IOMMU_DOMAIN_DMA;
->  	}
-> -- 
-> 2.39.2.101.g768bb238c484.dirty
-> 
+>  Documentation/devicetree/bindings/timer/renesas,cmt.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Hi,
+Applied, thanks!
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
 
