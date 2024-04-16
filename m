@@ -1,116 +1,291 @@
-Return-Path: <linux-kernel+bounces-147151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E23B48A7026
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:49:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFE6F8A7029
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:50:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 989571F22175
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:49:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E74E1C21116
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107AD13173F;
-	Tue, 16 Apr 2024 15:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A524131726;
+	Tue, 16 Apr 2024 15:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="vNe6/Btr"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=amazon.es header.i=@amazon.es header.b="cR76Hz4l"
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E0B130A76;
-	Tue, 16 Apr 2024 15:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 767BC53E15;
+	Tue, 16 Apr 2024 15:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713282534; cv=none; b=qFmDIJIrdoXd01HEIEqGmX1YfgaHkVcgtE4l7c/5EbUtZG3hzN2gIRYjTHaTf9OdQQvdwRTNBPvm7ENo1CjC9O/sX68v+EZXsuHuLu3qQVED5CBw2keppocc98cQJOswFlwzhmG9uwonBuaLpH0mYnSHCKuqTE2Of64xXAzQLbc=
+	t=1713282601; cv=none; b=Ri3ZWOS8ZdaMQmpy+uP0XBRlmh0twGVIdB7WXMD7Yv4/TSaKd1wr3WBteznpk75MWfTA4PLgNdLax56iFOnc7r66OosDjZytvMSPrW7ZwjdXbBJI3nhUEg+sskxzUIfMPlNlQEj1NS1RI8/4JGTJ9lwxFuvKlHi2JoZDJ8YA9KU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713282534; c=relaxed/simple;
-	bh=7LiuzRlYvi/96BvFLIFohrkKwHGDfivoCdvdPYQ/DZY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F4/KldMongEJZfFMW67fBnmc3FrxG1HlptFxN8sY4dxSm5LpM5F8Sg5/zsbiXG5zEvsGK5uKcWfV+4EGixnAgMW0gELQnmovnP0ZuW/3SKAzwY4QaNA2+fLHTWNsdeP+7iuVvwkXeyCcGFoCIZtROXLWcnQ+wCdK/YYKE2kIuFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=vNe6/Btr; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=NVCA4wyFU9exr9tcOuCRXVzr7IFOkRpJTnTyMwRKb/Y=; b=vNe6/BtrCFUChNdBAmAQtdF7m0
-	klnwkXW067VvhjKBRYUQgr1B6eJRvKht/6EGx0Y9LDHmRbZMeLK228Rp6lRRGOWockUxHFUscjygL
-	zzvzW9kd/04HGMjrbUG+KQo7IB5aLjkZzdLz+ty8oW/bPnfLTQ0iDg4UDWhKrZ5job7vEcQWVzP0h
-	sjAJYRLWYf1X8ZmY27oniyalobcuHJ/LmiPQX9S5xwBXiVcPkRGljVBcgX0OeQuPJuuk5HbbldzZv
-	+UmlLldaRskCEp6514Leom7uLjtNOljjr3UzQJm/f0SX5a9gpBBIrXZIupn6c6e5BQsILo/o+IOjn
-	4SCq10EA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53342)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rwl2y-0000Zt-0V;
-	Tue, 16 Apr 2024 16:48:36 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rwl2v-0004xT-TS; Tue, 16 Apr 2024 16:48:33 +0100
-Date: Tue, 16 Apr 2024 16:48:33 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	lxu@maxlinear.com, hkallweit1@gmail.com, michael@walle.cc,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] net: phy: mxl-gpy: add new device tree property
- to disable SGMII autoneg
-Message-ID: <Zh6d0VKVFK7JJWAf@shell.armlinux.org.uk>
-References: <20240416121032.52108-1-eichest@gmail.com>
- <20240416121032.52108-3-eichest@gmail.com>
- <3f7f278f-e490-47f1-971c-ecf44a70cee4@lunn.ch>
- <Zh6clAtI3NO+nMEi@eichest-laptop>
+	s=arc-20240116; t=1713282601; c=relaxed/simple;
+	bh=DeIGpI4J2s2bhWdutKdlfr6mBJvVRwiz0KjAewxS9Bs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ErIaq/sqTTYsvjYBYL1keLq3Vi2xw2nz8xDXVL1lYXmiMyVxzFB55EozjELXlNJHW4UeTNeX68VvmdZN7ycAOV9JWIgEURW8IFk0ZN3mVqE7o1+PW7JvlZy38deha3bWsRIJyL60kBSWljAeH4MktE0MipN+jP/oLcXglOnoWkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.es; spf=pass smtp.mailfrom=amazon.es; dkim=pass (1024-bit key) header.d=amazon.es header.i=@amazon.es header.b=cR76Hz4l; arc=none smtp.client-ip=52.119.213.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.es
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.es
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.es; i=@amazon.es; q=dns/txt; s=amazon201209;
+  t=1713282600; x=1744818600;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=mntj+fXN5a54sfKhFM7PgZmUZBd4LjjmIWz6DPtP244=;
+  b=cR76Hz4lHUXTv4GVGcQCfraJJIYZKfUz8cLSjpuCV1JMKOc2LV1b+8zY
+   zDcENoS6Zg3quZr6BJOMTNK5lbh3h3B4lTG9rDHI9UDJUotiVMAynekWl
+   PLZ1SiUDiec7JREeGm7qq06lzc3SYJLC3V6lQcDeZPCTfB9JhUWj2ZkaZ
+   U=;
+X-IronPort-AV: E=Sophos;i="6.07,206,1708387200"; 
+   d="scan'208";a="652346720"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 15:49:58 +0000
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.43.254:17357]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.2.180:2525] with esmtp (Farcaster)
+ id c30e20ed-742d-4336-9503-02da0bb74705; Tue, 16 Apr 2024 15:49:56 +0000 (UTC)
+X-Farcaster-Flow-ID: c30e20ed-742d-4336-9503-02da0bb74705
+Received: from EX19D037EUB003.ant.amazon.com (10.252.61.119) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 16 Apr 2024 15:49:56 +0000
+Received: from [192.168.224.251] (10.1.212.48) by
+ EX19D037EUB003.ant.amazon.com (10.252.61.119) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 16 Apr 2024 15:49:51 +0000
+Message-ID: <c4caca2d-8840-4ed5-b580-f984bd0ee5cd@amazon.es>
+Date: Tue, 16 Apr 2024 17:49:47 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh6clAtI3NO+nMEi@eichest-laptop>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/5] virt: vmgenid: add support for devicetree bindings
+To: Alexander Graf <graf@amazon.de>, Sudan Landge <sudanl@amazon.com>,
+	<tytso@mit.edu>, <Jason@zx2c4.com>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <thomas.lendacky@amd.com>,
+	<dan.j.williams@intel.com>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: <dwmw@amazon.co.uk>, <xmarcalx@amazon.co.uk>
+References: <20240409181154.9962-1-sudanl@amazon.com>
+ <20240409181154.9962-6-sudanl@amazon.com>
+ <1e4fad99-76d4-4c45-a924-b78b597c7cd6@amazon.de>
+Content-Language: en-US
+From: Babis Chalios <bchalios@amazon.es>
+Autocrypt: addr=bchalios@amazon.es; keydata=
+ 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
+In-Reply-To: <1e4fad99-76d4-4c45-a924-b78b597c7cd6@amazon.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: EX19D043UWA001.ant.amazon.com (10.13.139.45) To
+ EX19D037EUB003.ant.amazon.com (10.252.61.119)
 
-On Tue, Apr 16, 2024 at 05:43:16PM +0200, Stefan Eichenberger wrote:
-> Hi Andrew,
-> 
-> Thanks a lot for the feedback.
-> 
-> On Tue, Apr 16, 2024 at 03:46:19PM +0200, Andrew Lunn wrote:
-> > On Tue, Apr 16, 2024 at 02:10:32PM +0200, Stefan Eichenberger wrote:
-> > > Add a new device tree property to disable SGMII autonegotiation and
-> > > instead use the option to match the SGMII speed to what was negotiated
-> > > on the twisted pair interface (tpi).
-> > 
-> > Could you explain this is more detail.
-> > 
-> > SGMII always runs its clocks at 1000Mbps. The MAC needs to duplicate
-> > the symbols 100 times when running at 10Mbs, and 10 times when running
-> > at 100Mbps.
-> 
-> Currently, the mxl-gpy driver uses SGMII autonegotiation for 10 Mbps,
-> 100 Mbps, and 1000 Mbps. For our Ethernet controller, which is on an
-> Octeon TX2 SoC, this means that we have to enable "in-band-status" on
-> the controller. This will work for all three speed settings. However, if
-> we have a link partner that can do 2.5 Gbps, the mxl-gpy driver will
-> disable SGMII autonegotiation in gpy_update_interface. This is not
-> supported by this Ethernet controller because in-band-status is still
-> enabled. Therefore, we will not be able to transfer data at 2.5 Gbps,
-> the SGMII link will not go into a working state.
 
-I have been working on a phylink/phylib patch set to address this. As
-I've been busy with health-based appointments during last week and this
-week, I haven't been able to spend enough time to get that to a point
-that I'm happy to publish it yet.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+On 16/4/24 12:49, Alexander Graf wrote:
+>
+> On 09.04.24 20:11, Sudan Landge wrote:
+>> Extend the vmgenid platform driver to support devicetree bindings.
+>> With this support, hypervisors can send vmgenid notifications to
+>> the virtual machine without the need to enable ACPI.
+>> The bindings are located at:
+>> Documentation/devicetree/bindings/rng/microsoft,vmgenid.yaml
+>>
+>> Signed-off-by: Sudan Landge <sudanl@amazon.com>
+>> ---
+>>   drivers/virt/vmgenid.c | 53 ++++++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 51 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
+>> index 3d93e3fb94c4..e1ad74116c0c 100644
+>> --- a/drivers/virt/vmgenid.c
+>> +++ b/drivers/virt/vmgenid.c
+>> @@ -2,12 +2,13 @@
+>>   /*
+>>    * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All 
+>> Rights Reserved.
+>>    *
+>> - * The "Virtual Machine Generation ID" is exposed via ACPI and 
+>> changes when a
+>> + * The "Virtual Machine Generation ID" is exposed via ACPI or DT and 
+>> changes when a
+>>    * virtual machine forks or is cloned. This driver exists for 
+>> shepherding that
+>>    * information to random.c.
+>>    */
+>>     #include <linux/acpi.h>
+>> +#include <linux/interrupt.h>
+>>   #include <linux/kernel.h>
+>>   #include <linux/module.h>
+>>   #include <linux/platform_device.h>
+>> @@ -20,6 +21,7 @@ enum { VMGENID_SIZE = 16 };
+>>   struct vmgenid_state {
+>>       u8 *next_id;
+>>       u8 this_id[VMGENID_SIZE];
+>> +    int irq;
+>>   };
+>>     static void vmgenid_notify(struct device *device)
+>> @@ -43,6 +45,14 @@ vmgenid_acpi_handler(acpi_handle __always_unused 
+>> handle,
+>>       vmgenid_notify(dev);
+>>   }
+>>   +static __maybe_unused irqreturn_t
+>
+>
+> Why is this maybe_unused? It seems to be always referenced by 
+> vmgenid_add_of(), no?
+
+You are right, Alex. I removed the attribute and build the kernel 
+without `CONFIG_OF`
+without any warnings. I will remove it in the next version.
+
+>
+>
+>> +vmgenid_of_irq_handler(int __always_unused irq, void *dev)
+>> +{
+>> +    vmgenid_notify(dev);
+>> +
+>> +    return IRQ_HANDLED;
+>> +}
+>> +
+>>   static int __maybe_unused
+>>   setup_vmgenid_state(struct vmgenid_state *state, u8 *next_id)
+>>   {
+>> @@ -106,6 +116,35 @@ static int vmgenid_add_acpi(struct device 
+>> __maybe_unused *dev,
+>>   #endif
+>>   }
+>>   +static int vmgenid_add_of(struct platform_device *pdev,
+>> +              struct vmgenid_state *state)
+>> +{
+>> +    u8 *virt_addr;
+>> +    int ret = 0;
+>> +
+>> +    virt_addr = (u8 *)devm_platform_get_and_ioremap_resource(pdev, 
+>> 0, NULL);
+>> +    if (IS_ERR(virt_addr))
+>> +        return PTR_ERR(virt_addr);
+>> +
+>> +    ret = setup_vmgenid_state(state, virt_addr);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    ret = platform_get_irq(pdev, 0);
+>> +    if (ret < 0)
+>> +        return ret;
+>
+>
+> Doesn't this error path need to do something about the ioremap'ed 
+> resource? Or does devm do that automatically for you?
+
+devm should be doing this automatically according to this:
+https://docs.kernel.org/driver-api/driver-model/devres.html#devres
+
+Also, I took a quick look in other drivers and it looks like the virtio-mmio
+probe callback follows the same pattern:
+https://elixir.bootlin.com/linux/latest/source/drivers/virtio/virtio_mmio.c#L636
+
+Cheers,
+Babis
+
+>
+> Alex
+>
+>
+>> +
+>> +    state->irq = ret;
+>> +    pdev->dev.driver_data = state;
+>> +
+>> +    ret = devm_request_irq(&pdev->dev, state->irq, 
+>> vmgenid_of_irq_handler,
+>> +                   IRQF_SHARED, "vmgenid", &pdev->dev);
+>> +    if (ret)
+>> +        pdev->dev.driver_data = NULL;
+>> +
+>> +    return ret;
+>> +}
+>> +
+>>   static int vmgenid_add(struct platform_device *pdev)
+>>   {
+>>       struct vmgenid_state *state;
+>> @@ -116,7 +155,10 @@ static int vmgenid_add(struct platform_device 
+>> *pdev)
+>>       if (!state)
+>>           return -ENOMEM;
+>>   -    ret = vmgenid_add_acpi(dev, state);
+>> +    if (dev->of_node)
+>> +        ret = vmgenid_add_of(pdev, state);
+>> +    else
+>> +        ret = vmgenid_add_acpi(dev, state);
+>>         if (ret)
+>>           devm_kfree(dev, state);
+>> @@ -124,6 +166,12 @@ static int vmgenid_add(struct platform_device 
+>> *pdev)
+>>       return ret;
+>>   }
+>>   +static const struct of_device_id vmgenid_of_ids[] = {
+>> +    { .compatible = "microsoft,vmgenid", },
+>> +    { },
+>> +};
+>> +MODULE_DEVICE_TABLE(of, vmgenid_of_ids);
+>> +
+>>   static const struct acpi_device_id vmgenid_acpi_ids[] = {
+>>       { "VMGENCTR", 0 },
+>>       { "VM_GEN_COUNTER", 0 },
+>> @@ -136,6 +184,7 @@ static struct platform_driver 
+>> vmgenid_plaform_driver = {
+>>       .driver     = {
+>>           .name   = "vmgenid",
+>>           .acpi_match_table = vmgenid_acpi_ids,
+>> +        .of_match_table = vmgenid_of_ids,
+>>       },
+>>   };
+
 
