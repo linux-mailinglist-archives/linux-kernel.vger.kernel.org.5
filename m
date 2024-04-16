@@ -1,131 +1,125 @@
-Return-Path: <linux-kernel+bounces-146709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF06B8A69A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:33:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DFD88A69AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:34:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EE5E1F21673
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:33:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEB3B1C21091
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A744D1292D7;
-	Tue, 16 Apr 2024 11:33:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A421292FC;
+	Tue, 16 Apr 2024 11:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WL2ijIa7"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tPW985o9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692B212838F
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:33:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CBDA1DFEF;
+	Tue, 16 Apr 2024 11:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713267194; cv=none; b=ffVt/SkLcveg18VSnmg8iIlIlDnW3rP66YvCM01sQcPVzauXU1e9MStCmL8HBaJfyceLsj+Lu+xVnpo2r+gYw7M5J9AG8ltu/CyZTFDg5pimLLNBHx6arc+3t2fsMChugJwN9OusWFMWFLd/lz6aA2FB7gNyx8DPve/Fm63jVjU=
+	t=1713267285; cv=none; b=bVp0ftU1qUvBajnuOtn3or9j4DMM5RDEzNs7gduVwFe67zKoxzGdYAG3nsC+Ljr+6CzXlNTzgLHDxwY1rKSlUk+cqnP0dOKHJXHbLk972si/JggC2P6nReDtUhXbvZ31lBjd74Nl+7JkrHbqTrAlELLAZxMfTLDE8gGwYz7p5k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713267194; c=relaxed/simple;
-	bh=/J/j05/+16uopVTGFKC52nqDPULfg6d/l94dzwLNwzs=;
+	s=arc-20240116; t=1713267285; c=relaxed/simple;
+	bh=JEB2ze4FTOdoPtrx7qGRWNXJdiwK6MLijfrzKDOzS+8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qwdlgc0jQhOKGdcenljiGkRs1RQuzxua/azD2XP7M+H7fRcNmF8pHsGZ662efH3anaaqbJDTlOe057lp3Ss0SWNgx+o+e4PUCeyifR4s03MEAYPRSO9uHbGcawl7pzToe0+3BK8bFL69G9xXruIbQbRhVN2W52Lt8CNCU7J3tfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WL2ijIa7; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a52223e004dso481690766b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:33:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1713267190; x=1713871990; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lwJdmAUAGjo5XlKYImrypGenO5EDNxyflFLlUfqTWMk=;
-        b=WL2ijIa7aQq2J07tAjiYkksPVOhjozdaJGuc7o5EmPEvGXPo+oONl5LfKZKSlQlxBu
-         FpIWRZXVv+Smsa3YvG/LfqxyeRNyP+QqAKmB5ozA4odOQQxdMB9cwGz4g0U7yl42KE3v
-         wUuiTHbWoBF4j5a0DLb/VTho+qtf8lm0+TTP4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713267190; x=1713871990;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lwJdmAUAGjo5XlKYImrypGenO5EDNxyflFLlUfqTWMk=;
-        b=bshC1r/iKk2mZ/QIugCjOHCpa8340PJ30kLqnViFfiODE4xTP+VBVRjbUSSsJH9OSZ
-         D2ZY7fSnhXPfZNoI4E33TokjiDmLDq6kIItIk2LX7IOblz37PJfHNqeQNFno4OnlrkuX
-         Abpwhilor56kGhUquKYwdHzMVVFnNOulVAh2iFKKrWl7DDmQbHn06O1JnHOpvJZTFKzF
-         gEgNeZg+UHnz014ChShIiFJ5ChfbzVE8ZaHg5QrLe7LcRezdZSi6PTodCZ1/sSjf7K/t
-         KOAvAXxbgdokBzDwVhrZpmW4vui+u+ixXOmyjbiNg5K56StrguT1DyifpXEx9eiQtXwJ
-         0I8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU+RuAhcTyRK4MCN5XBah7krBKS81jKsn32b9YApgtFl3eCap1NObTc15hEBIalAwC1nYGqij9u/yNFq83s5DZmZkyUHMCgEF5gDmmg
-X-Gm-Message-State: AOJu0YyYUg9LmEfKMvJEX00yc1u4vBOcbk7A9cQHnDjUJHF1RPH8oS06
-	pURFDp5t/ujeYQJy/ZIszUNLeGEMzCq1ev6KjP+2CYkC6qzYTnI21Qhj8gEaQ1rLG7ViWa+adLk
-	e6WrC
-X-Google-Smtp-Source: AGHT+IHHdIrFdS6HbutL+7pt+0uCWMrVjLH9MIRNTZZu8/xxHB8Mdda2T8y85uNXOyiu61/G2joY/Q==
-X-Received: by 2002:a17:906:6b8f:b0:a52:5493:a0b9 with SMTP id l15-20020a1709066b8f00b00a525493a0b9mr5868150ejr.39.1713267190675;
-        Tue, 16 Apr 2024 04:33:10 -0700 (PDT)
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
-        by smtp.gmail.com with ESMTPSA id y24-20020a1709063a9800b00a5268203c85sm2860129ejd.107.2024.04.16.04.33.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 04:33:10 -0700 (PDT)
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3455ff1339dso2931994f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 04:33:10 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWl2BluwVpHmekQzYpdLk1/FpzX29VTrdhze57DlHswktKDERdYsJdmjHHSDgEJbRO0zzDsOp8FlPY99a8+q8l604Npf+zeGYXOiKfA
-X-Received: by 2002:adf:e80b:0:b0:341:c210:3d1b with SMTP id
- o11-20020adfe80b000000b00341c2103d1bmr10320976wrm.8.1713267189995; Tue, 16
- Apr 2024 04:33:09 -0700 (PDT)
+	 To:Cc:Content-Type; b=kKAZwADgRzPaxxdydD3R21m09KKSqYDYlfhjCEEiW/hjv1oKYFT6f3OCCkanL08elgaUN2McM9ozgmIbutEOJrbq8ppKYMup8mL0zuV4mZZIIxibxhZh/xO6SyyqCc8M0HwT5Pdjp9eBS9tCpe/IH7Mu5X4HNZjBhMqIqNR8Ijc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tPW985o9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D814AC3277B;
+	Tue, 16 Apr 2024 11:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713267284;
+	bh=JEB2ze4FTOdoPtrx7qGRWNXJdiwK6MLijfrzKDOzS+8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tPW985o99XgdT5+tX0EwF2yFaLjiWldWohukQaA3emhWvxgHecbpM+E6vgsYklXZu
+	 lxRbgEIvSmmL4SkikIUatHHtYPQk8J6/gZ+d99OCxPA8I2JSsJJ8a1DjhyxD+Q8zhH
+	 2yFPORjIh2bN9cf6RCg3Sl+XrbmKV2ElPglrUYhikD6yOO5D3u72WktobOjEay1xZC
+	 adMvtWpuwwyzxlXXgtC9pAzxTUtwL5KUIn6IhSg/Ext+jFvh0CU1Xrs2eoMkzM+Ybe
+	 oqwpHrzc2y9Oj+y00e9/KD/ewnbcO64/h0w/BQFHOwr8+ujZGihFnEIeKJynkKstzT
+	 JcPhxsa+jvCmw==
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6eac2b144b3so1183541a34.0;
+        Tue, 16 Apr 2024 04:34:44 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXk/35jrJGKspklnvj8tvntYLPqF0HNSZwm/VM2bqyc/+XLSF2QLugeasUJUjAkhyTLN6YoHsmqOWdtkVlXiuIdHzFbdAHYDvLuc83b9UVyEipP1428yvse6LsT1KcHR1M5pPVF8Yw=
+X-Gm-Message-State: AOJu0Yw3QSQuA3G1TtR8rM36Lwtwvm+/S0mkT/E/PwpqpuS+zMtqXJIz
+	eXzj2uEsbnAHCY3uQcPGvNfxjPznboX5N+6IFLG2ND/wi8TNLSO+9W+4lzk5EBoUsgOpMsw5Rcy
+	MNGgo8VIFmRifr80fcmY5pFa9VBE=
+X-Google-Smtp-Source: AGHT+IFNqiWoke4OcolARhwscUnn1kKtQJrYzcKsSCBgcNH5PmMnem/f7qJvG1YCbBid8j89jX5GZBomywu49X2Prdg=
+X-Received: by 2002:a05:6870:d28d:b0:232:fa03:3736 with SMTP id
+ d13-20020a056870d28d00b00232fa033736mr15052954oae.0.1713267284150; Tue, 16
+ Apr 2024 04:34:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240415-minimax-v1-1-5feb20d66a79@chromium.org> <fbf22b53-7b68-4e60-99c7-ab38a77a53c8@web.de>
-In-Reply-To: <fbf22b53-7b68-4e60-99c7-ab38a77a53c8@web.de>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Tue, 16 Apr 2024 13:32:52 +0200
-X-Gmail-Original-Message-ID: <CANiDSCuvXvjfhw2mjSef1wR8RiL=9KrDEoh+3o1ed4+8P+AqGw@mail.gmail.com>
-Message-ID: <CANiDSCuvXvjfhw2mjSef1wR8RiL=9KrDEoh+3o1ed4+8P+AqGw@mail.gmail.com>
-Subject: Re: [PATCH] coccinelle: misc: minmax: Suppress reports for err returns
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Julia Lawall <Julia.Lawall@inria.fr>, cocci@inria.fr, 
-	LKML <linux-kernel@vger.kernel.org>, Denis Efremov <efremov@linux.com>, 
-	Nicolas Palix <nicolas.palix@imag.fr>
+References: <20240415094821.3060892-1-dawei.li@shingroup.cn>
+In-Reply-To: <20240415094821.3060892-1-dawei.li@shingroup.cn>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 16 Apr 2024 13:34:32 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hgeRo0oVviN8GHNaR_wNOBxGyYF=S-2LU3GEOFSUzytQ@mail.gmail.com>
+Message-ID: <CAJZ5v0hgeRo0oVviN8GHNaR_wNOBxGyYF=S-2LU3GEOFSUzytQ@mail.gmail.com>
+Subject: Re: [PATCH] powercap: Avoid explicit cpumask allocation on stack
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: daniel.lezcano@kernel.org, rafael@kernel.org, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Markus
-
-On Tue, 16 Apr 2024 at 13:30, Markus Elfring <Markus.Elfring@web.de> wrote:
+On Mon, Apr 15, 2024 at 11:48=E2=80=AFAM Dawei Li <dawei.li@shingroup.cn> w=
+rote:
 >
-> =E2=80=A6
-> > +++ b/scripts/coccinelle/misc/minmax.cocci
-> > @@ -50,11 +50,26 @@ func(...)
-> >       ...>
-> >  }
-> >
-> > +// Ignore errcode returns.
-> > +@errcode@
-> =E2=80=A6
+> In general it's preferable to avoid placing cpumasks on the stack, as
+> for large values of NR_CPUS these can consume significant amounts of
+> stack space and make stack overflows more likely.
 >
-> I see that you would like to omit the specification =E2=80=9Cdepends on p=
-atch=E2=80=9D
-> from the previous SmPL rule location.
+> Use cpumask_weight_and() to avoid the need for a temporary cpumask on
+> the stack.
 >
-> Would you really like to influence and adjust SmPL code any more
-> according to affected coccicheck operation modes?
-
-I probably do not know what I am doing :), it is my first .cocci patch.
-
-If I leave the "depends on patch", then the change is ignored in report mod=
-e.
-
-I think errcode needs to be executed in report and in patch mode, but
-there might be a better way to do it.
-
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>  drivers/powercap/dtpm_cpu.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 >
-> Regards,
-> Markus
+> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> index bc90126f1b5f..6b6f51b21550 100644
+> --- a/drivers/powercap/dtpm_cpu.c
+> +++ b/drivers/powercap/dtpm_cpu.c
+> @@ -43,13 +43,11 @@ static u64 set_pd_power_limit(struct dtpm *dtpm, u64 =
+power_limit)
+>         struct dtpm_cpu *dtpm_cpu =3D to_dtpm_cpu(dtpm);
+>         struct em_perf_domain *pd =3D em_cpu_get(dtpm_cpu->cpu);
+>         struct em_perf_state *table;
+> -       struct cpumask cpus;
+>         unsigned long freq;
+>         u64 power;
+>         int i, nr_cpus;
+>
+> -       cpumask_and(&cpus, cpu_online_mask, to_cpumask(pd->cpus));
+> -       nr_cpus =3D cpumask_weight(&cpus);
+> +       nr_cpus =3D cpumask_weight_and(cpu_online_mask, to_cpumask(pd->cp=
+us));
+>
+>         rcu_read_lock();
+>         table =3D em_perf_state_from_pd(pd);
+> @@ -123,11 +121,9 @@ static int update_pd_power_uw(struct dtpm *dtpm)
+>         struct dtpm_cpu *dtpm_cpu =3D to_dtpm_cpu(dtpm);
+>         struct em_perf_domain *em =3D em_cpu_get(dtpm_cpu->cpu);
+>         struct em_perf_state *table;
+> -       struct cpumask cpus;
+>         int nr_cpus;
+>
+> -       cpumask_and(&cpus, cpu_online_mask, to_cpumask(em->cpus));
+> -       nr_cpus =3D cpumask_weight(&cpus);
+> +       nr_cpus =3D cpumask_weight_and(cpu_online_mask, to_cpumask(em->cp=
+us));
+>
+>         rcu_read_lock();
+>         table =3D em_perf_state_from_pd(em);
+> --
 
-
-
---=20
-Ricardo Ribalda
+Applied as 6.10 material, thanks!
 
