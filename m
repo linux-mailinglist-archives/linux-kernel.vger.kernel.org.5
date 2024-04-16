@@ -1,133 +1,258 @@
-Return-Path: <linux-kernel+bounces-147325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C0B58A728B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:41:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B61B48A728D
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:42:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D9761C2157C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:41:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 456551F220B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725B2133435;
-	Tue, 16 Apr 2024 17:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18538133997;
+	Tue, 16 Apr 2024 17:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yg4y+BaZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Mgy1JR3E"
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 619AB1332A7
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:41:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A399A133406
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713289302; cv=none; b=e6pVAG7sr+7IVv4J+eZi9WEWjm4HHIzcqDuqezVWIfXs+FuyDyMJbx97xANx2t/sAyD5CjXzyDjP/vkT91vfZ0YqvWHDZbX+M2GWu66DsJHTCKHX5oEVvC6LA9HRtP5Glfwf/tpuK2qmlzqsMlfWJm5frcJBS6WZkWaH/fNh6eY=
+	t=1713289310; cv=none; b=CvLO2FJxE3xA6X2CqgwUfPPH12cGdOK/0EixGW+orwyN75cWYKplnTx4AVzQjzjC3eE5JwxT5O+l5r17T+UjEbzYAilhYCG/rnlEwS4pvXVpaHMY7e9hgBBMZUX1kGoobP80SxBi6Is3EuMt7GV1y4m2EA0QXISzlqwsH4yKVQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713289302; c=relaxed/simple;
-	bh=Vw0CuoQdG1Izc0eYCH/qYFN7N+2d8J9VLlSakCDBFi4=;
+	s=arc-20240116; t=1713289310; c=relaxed/simple;
+	bh=uKVZxVZlSo4tSfHTbZrt8QwnCT7MxtMg82Aru1PM+u8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Qsk459LR0ya+/MGT1f2CHHHa8yDkX6Vy/uZghIyxq7W83xEHk5TzpvjHbrfsyRs7nGve7vsu5avKDgAEAtbL2J2iShfhU4J2Z4EB29V4IR9bHsmeTqSYejNf5z8wHJ0AFXb0Cv6dVWN4t/hgVz+p2iH3Z84jShQoExpN3bWdag0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yg4y+BaZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713289300;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kEHTIuVZ7IxKlDHHHL8YBjswFPsEcqdIbeYKHCzhGso=;
-	b=Yg4y+BaZK28kWUOlybkb8UYbyTkCsa/TlMg9cz7vuTSYiYLwhPxC9i2gaVLfT9uTBTSXPs
-	uQVZ/bpwxU1CkOGtib57ix7vhIWBYheJFY8MoctfsFdoEx2QFYlZoKNq1AKaqdcd5oNmcC
-	uvxRpRybqphJXt0br7JXPqsD3t21128=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-320-LLnZDNbYP1CcJhuodhnRsQ-1; Tue, 16 Apr 2024 13:41:38 -0400
-X-MC-Unique: LLnZDNbYP1CcJhuodhnRsQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41828dd7c29so10506505e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:41:38 -0700 (PDT)
+	 To:Cc:Content-Type; b=AFoE1Zn9bPi91W7X77sLA809ENzJY0/+p9ylp5PkxYXV1SFgfRoJpLE/US9fD7E8oimhd40cfnDFkvLkztE4ESXkbwQvKnD/qfC1W1761KUNAjnvhae4X4PAgCpAKviwk+Y646yNsxM4VMi8vddxnQZYgdnYrWwodLbgcXHvSoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Mgy1JR3E; arc=none smtp.client-ip=209.85.222.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7dacc916452so529974241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713289307; x=1713894107; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WnPrPrshaoqEgDMfeskW4XuFf5a8CzPJbeeAH4eg1mE=;
+        b=Mgy1JR3E9Vsur5ZlHMWzpTWsyNILiUCWGhzslPjYUNRww5e2xPpD+XivgOpASyZ1D1
+         GLkYFUheF/nwvu5YHjIfbAi/6Ax1SJPA13zPmGvR2TLo5putFx+oYTUQSVYosD56OtHE
+         IncOhxn/CygVBU95NtRKVougqP8jwWOLkBbmzQdTjMMUWTsx3l1ewyLw0R8awEo8qgfs
+         U4U5pWYiOmQRR/kQ2R5+11UvgHWlYhapvWp7U8aivSccF0zZiwqJ3gAZUKuqaQIXCH1M
+         lSSwE5n+cSDyHt/VpRxpX8gQFoYzjyv13rZLsvxLq5f0TYRfRiAqAfpNlNXJvLAcZ5Ga
+         tTDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713289297; x=1713894097;
+        d=1e100.net; s=20230601; t=1713289307; x=1713894107;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kEHTIuVZ7IxKlDHHHL8YBjswFPsEcqdIbeYKHCzhGso=;
-        b=ftOaGjzboDYxgbOQevV7HzKkY7HwNa/fw/irr8Yya7+cFZBgYhPbp6+K6DPENtG8HA
-         VlsYQXm9kEaiVM1NkcWGcMrrwUBrKevzSwpkEUuwlhJvuYVfk3X7qft0kisKQG+f8hDs
-         JFakRBFJt1rSBCI3FphG/Sks3+yAlnrwUr/Pr40/vj5nqKuZNmtmYCbKAAj1HXFIKdFs
-         YXgs25FeIXeQUCejCdwv8PSB1D+ZwQ+9dQWADmJm/rKXFyzADvUjdKBd5tlsLxVkNVSr
-         5hBhNXhF4UeUp46cYdmY6P8IScQEyOlqsQm8Xu6qsv2MVHWhhv95q5dhwm2BtMcFp25h
-         ndAg==
-X-Gm-Message-State: AOJu0YzKEOC/WUTWMRJi7nYQC+SClAjhysaIzNJEcD6RLyV+RNfX4f+I
-	3Rdp3nGmx3Ig4sOtliQrGlRyXANB7gm/oXoevY3GTmShc0D3sPTXRWUAejtHCR3n2FWWmgST6zU
-	SL0V3M7GXXP4sdBlT6qPMXr5rA4DIhNujuCd1UTh708mtqPdBfl3jDlTU9B9Z170GBsJ3pVlbvb
-	jHaa0mAfa44bc3Ia0VPg5izOVLYXoDwuvJecWM
-X-Received: by 2002:adf:e350:0:b0:341:c9d1:eae5 with SMTP id n16-20020adfe350000000b00341c9d1eae5mr8036997wrj.27.1713289297630;
-        Tue, 16 Apr 2024 10:41:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEyH8MDxjCQbeF4u8/ZnigxwSksZER5MaFWOeKNXzVAniAX9fCqV7NYMCr8Msf/kPf1h3wAmnL54k980D0yUQo=
-X-Received: by 2002:adf:e350:0:b0:341:c9d1:eae5 with SMTP id
- n16-20020adfe350000000b00341c9d1eae5mr8036988wrj.27.1713289297303; Tue, 16
- Apr 2024 10:41:37 -0700 (PDT)
+        bh=WnPrPrshaoqEgDMfeskW4XuFf5a8CzPJbeeAH4eg1mE=;
+        b=sLLuopEeaUkW6Lt5jGKFuK6JsqhuY89mEwRluOttqYcwGYZK+evrlPTOpSg3S/RT1R
+         WUmrFk3w/joX0Wn3KLFOIAOQQT/iQImGLurXQkJIrBQteAnaTKpz+64orL14bwLqsAxV
+         RohW897Aeftxj2Oxf0o8GnAOzNq910ruYVCUYJArrTNC4qxdHDcEbdzYBQ4qFtHvyL4E
+         AKlILDV+b98ZLnSgh9kwd5SiJgV09hCpR8xNjgQOaREUJ03gjsp+yvWgC31UvdxTZ3eR
+         3onuVB/kFq5jwqvpcDxSrP+Byvjx0IuifSBb7XsrM85uhQkcmbAcXi/wSmVAUID9cJFM
+         DknQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0ta9STKHVaaf4qZZl4FCa2UPuIh6h3EPfh0ALif/+OBwOUnHd51p+mO+hdd8e6khojiYNyZ+sMOMUR4QvQl2lJcSmOnYc4ilXIbMY
+X-Gm-Message-State: AOJu0YwOlGDn6MMISsG8kTlEKIvZUjPMiryOj89eQuzsBcERhmiMOO/e
+	cAP/Q4TiWej5gLh4k7l1rE+jtCKo3gbsS2UBTCM9cXPqsPogH+eVbZtzTfdgUwOb4LJAp6DrEDL
+	SGlO8rDhg1R8yLqvip+JQuVjDMLSWW5wSa0okMw==
+X-Google-Smtp-Source: AGHT+IGQOiRJVB0i9nfTAHucMka5bk9jMtq3i/B9OdHXAz7Tlx+yTSFzDhb7vY49vXsiPkVKXzwjOnCxxwy7cZedC4E=
+X-Received: by 2002:a05:6102:1629:b0:47b:a037:99ca with SMTP id
+ cu41-20020a056102162900b0047ba03799camr1332168vsb.1.1713289306728; Tue, 16
+ Apr 2024 10:41:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412173532.3481264-1-pbonzini@redhat.com> <20240412173532.3481264-5-pbonzini@redhat.com>
- <Zh0mocWeGCGWmBvA@chao-email>
-In-Reply-To: <Zh0mocWeGCGWmBvA@chao-email>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Tue, 16 Apr 2024 19:41:25 +0200
-Message-ID: <CABgObfaV416+wRoRLJzEU6q5D4CJcLh=Ja-K_OBrf6LBnU=KiA@mail.gmail.com>
-Subject: Re: [PATCH 04/10] KVM: x86/mmu: Add Suppress VE bit to EPT shadow_mmio_mask/shadow_present_mask
-To: Chao Gao <chao.gao@intel.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	Isaku Yamahata <isaku.yamahata@intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>
+References: <20240415141959.976094777@linuxfoundation.org>
+In-Reply-To: <20240415141959.976094777@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Tue, 16 Apr 2024 23:11:35 +0530
+Message-ID: <CA+G9fYscTZr0qJH5k8eycnD7Mj50XGgNbzcmk65=RKtme1tVpg@mail.gmail.com>
+Subject: Re: [PATCH 6.8 000/172] 6.8.7-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 3:08=E2=80=AFPM Chao Gao <chao.gao@intel.com> wrote=
-:
+On Mon, 15 Apr 2024 at 19:54, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> >+++ b/arch/x86/include/asm/vmx.h
-> >@@ -514,6 +514,7 @@ enum vmcs_field {
-> > #define VMX_EPT_IPAT_BIT                      (1ull << 6)
-> > #define VMX_EPT_ACCESS_BIT                    (1ull << 8)
-> > #define VMX_EPT_DIRTY_BIT                     (1ull << 9)
-> >+#define VMX_EPT_SUPPRESS_VE_BIT                       (1ull << 63)
-> > #define VMX_EPT_RWX_MASK                        (VMX_EPT_READABLE_MASK =
-|       \
-> >                                                VMX_EPT_WRITABLE_MASK | =
-      \
-> >                                                VMX_EPT_EXECUTABLE_MASK)
-> >diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-> >index 6c7ab3aa6aa7..d97c4725c0b7 100644
-> >--- a/arch/x86/kvm/mmu/spte.c
-> >+++ b/arch/x86/kvm/mmu/spte.c
-> >@@ -413,7 +413,9 @@ void kvm_mmu_set_ept_masks(bool has_ad_bits, bool ha=
-s_exec_only)
-> >       shadow_dirty_mask       =3D has_ad_bits ? VMX_EPT_DIRTY_BIT : 0ul=
-l;
-> >       shadow_nx_mask          =3D 0ull;
-> >       shadow_x_mask           =3D VMX_EPT_EXECUTABLE_MASK;
-> >-      shadow_present_mask     =3D has_exec_only ? 0ull : VMX_EPT_READAB=
-LE_MASK;
-> >+      /* VMX_EPT_SUPPRESS_VE_BIT is needed for W or X violation. */
-> >+      shadow_present_mask     =3D
-> >+              (has_exec_only ? 0ull : VMX_EPT_READABLE_MASK) | VMX_EPT_=
-SUPPRESS_VE_BIT;
+> This is the start of the stable review cycle for the 6.8.7 release.
+> There are 172 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> This change makes !shadow_present_mask checks in FNAME(sync_spte) and
-> make_spte() pointless as shadow_present_mask will never be zero.
+> Responses should be made by Wed, 17 Apr 2024 14:19:30 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.8.7-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.8.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-It makes them wrong, not pointless. :)
 
-The checks verify that there are "some" bits that are different
-between non-present and present PTEs. They need to remove
-SHADOW_NONPRESENT_MASK from shadow_present_mask.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Paolo
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 6.8.7-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.8.y
+* git commit: 367141eaada2c7635234576914bcd1f480d62731
+* git describe: v6.8.6-173-g367141eaada2
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.8.y/build/v6.8.6=
+-173-g367141eaada2
+
+## Test Regressions (compared to v6.8.6)
+
+## Metric Regressions (compared to v6.8.6)
+
+## Test Fixes (compared to v6.8.6)
+
+## Metric Fixes (compared to v6.8.6)
+
+## Test result summary
+total: 285130, pass: 247210, fail: 3619, skip: 33930, xfail: 371
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 133 total, 131 passed, 2 failed
+* arm64: 41 total, 41 passed, 0 failed
+* i386: 32 total, 32 passed, 0 failed
+* mips: 25 total, 25 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 19 total, 19 passed, 0 failed
+* s390: 13 total, 13 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 6 passed, 2 failed
+* x86_64: 37 total, 36 passed, 1 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-io
+* ltp-io[
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-smoketest
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
