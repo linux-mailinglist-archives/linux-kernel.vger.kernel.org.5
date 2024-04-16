@@ -1,268 +1,99 @@
-Return-Path: <linux-kernel+bounces-146509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B568A665B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:45:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29E8B8A665C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:46:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97E241F21E67
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:45:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AC111C21259
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92A783CDD;
-	Tue, 16 Apr 2024 08:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eilafzIe"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECFCE83CCD;
+	Tue, 16 Apr 2024 08:46:12 +0000 (UTC)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DF6205E10
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84274629
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713257107; cv=none; b=OTatjMP2YvI+uOY4kkabW+SUxnHSbELho1KcTPo06dQY+iD6itJA6tt+FsM9wgLCjYxwKZsvJBx3XQ0+MCUN9bikbK0DcemeU5tDRHjIXFdbdfJpOpBoRhFDTLhtNzt5VOLqBVvbq89mk8wq6I8NlzLUDKRYixq+pj9Q7uYa1Gw=
+	t=1713257172; cv=none; b=oafg8IW97zONsOoWBAuuB43jT3ej/3j1KULg/Gjjazehpe+TAvJUabb7Rea4MeoOKdkdw36IT4OBpgJLIRCtoNu2bU9GGkrmU5VUZ8K4Dc4MB7GCEvIIJYHe/78CweXxvfu7n166swi5cq31MnFMQk/4wK2l4gTEyBQkshD+VmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713257107; c=relaxed/simple;
-	bh=4i1bxtRn1zayAgsHWhVAYEKFLQorPrBFPXFKDPF3Zag=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DaD2rGqrbnNJv+j0Od5UCUp3oQK7cJL23JXdWP5TSDkOVQJiSJfCIOmf/qODuIFoL27hMJzswszNZSnwe1yXrTmyvuuuH9+LhThE0DwJMzAZ93RilxaAlrMPCDcveECybiLkn4BVkZq/s4BjIG1APZhUc4JGATQ0FSfwLf5I+Ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eilafzIe; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2dd2221d3so3052135a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:45:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713257105; x=1713861905; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RihuMiIWlbuGtVSdgK6r/0uN0L8tyoomVDcFOHkSGsk=;
-        b=eilafzIe1jJNKbvBHrKvEZzn7/sBWBBVl976akgb9Xd53psGTmP6PrE0ilai+asVoG
-         SvfF+VyNz+Ct5LlCwkr0zYHcJLptq0C/W9Kvzf3wObfI930T87rzPFKmE2OiJcQJNrwj
-         fcD0vbkfBjRS/6SK8hT3dbWgRdD/8KdgmqIsQDTzZ9QeVtiMlKlMFIIiqLJ9Qqlt4GJy
-         fNb3yAinhoqbKYL+oJ5GPd0y/Mh7PknUrYSpnLFkRui+1nQTCLNZ1kcPqsoaGXMHFnpI
-         B8mbqoipkpH1p/BhAI+aVHaA1YhNir/4zapC9ZHejNYfIFcOTZUVUZf46e8/apkSvcAA
-         WVWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713257105; x=1713861905;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RihuMiIWlbuGtVSdgK6r/0uN0L8tyoomVDcFOHkSGsk=;
-        b=LMw6p/wB8ExzXZBP6eZXVVznNUB6oyD1dp4NnWEFJys8Jln2npQ7cbHo+OGg5UgdDr
-         OyuRtR7bRg0GNk03DiZuxavHaq9M3kZcA8Rrz/lmBKysUr5Q+mGdxRQqUJpRfC6PxDRu
-         gqkPiAFKfUDpqGIlbPzV+aYPTD4szcBKrbIkMVVdCTm0Y5SIsUr9tWn3QSA4NDMg318Q
-         tGBM9bcCYa4t3nqgGgFl3uy49ymEYrc5Pg96Fl6QNfexXBYYm0MZDbwyCSCWv6MmGs+b
-         XXeBQYEAN7cvu6lOAlSz85BEmvuqniVcVFa2R6Ra8YdqHiTMiCqeIV0SADX1IWAAcPon
-         FeWA==
-X-Gm-Message-State: AOJu0YymNs02lTLBVfPnorGQNI0Xq/j6H6S1n5mAJouwyCljuz6gTnR4
-	F0qEHpPbsdwMXKL4tjHRo9zetOfy4TLji2uj50tlTWqL9Q9hNRKXyhbbwmGyIPAKYVpbI9jEC8q
-	pR0IPUOwMus+Wm9Leojx/244J+PU=
-X-Google-Smtp-Source: AGHT+IH1TGKi1KN+pbV8njK2/FU/Uid6/6ehU6FRUzCcZmAPrisIrAUsfMEobm3yzJvJf7xqVnHk6hahfA8ilC5VDbA=
-X-Received: by 2002:a17:90a:db97:b0:2a5:fb3a:32e8 with SMTP id
- h23-20020a17090adb9700b002a5fb3a32e8mr9564918pjv.38.1713257105570; Tue, 16
- Apr 2024 01:45:05 -0700 (PDT)
+	s=arc-20240116; t=1713257172; c=relaxed/simple;
+	bh=3Qr/MuM4uXVFnY2ljfnWTLIE1lncUnhBYk9YiKW04ls=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gEKiKco/JWHoeg5EY66vWPkX1CmqWvAA5Uy0NPJH5OhlyeBsUNnaz0y2CPAzJFS7a9LK7pDTCWjnILKRd1EwSE9NBMSgMdX50KhHYbqt1oF2nDt5MApT5sdCpDlTrf9NaTyQWHTuKzJc9q4H+fHOpLctWr9GZ9Gb4S237v3aWnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CD09040E0177;
+	Tue, 16 Apr 2024 08:46:06 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ZdGIa9CSwlM9; Tue, 16 Apr 2024 08:46:00 +0000 (UTC)
+Received: from zn.tnic (pd953020b.dip0.t-ipconnect.de [217.83.2.11])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 509A440E00B2;
+	Tue, 16 Apr 2024 08:45:51 +0000 (UTC)
+Date: Tue, 16 Apr 2024 10:45:44 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: a-development@posteo.de
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
+	David.Kaplan@amd.com, Andrew.Cooper3@citrix.com,
+	jpoimboe@kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 00/17] Fix up the recent SRSO patches
+Message-ID: <20240416084544.GAZh46uKW6ijAfftmI@fat_crate.local>
+References: <cbad6acb30e33e8dd387080e5936cc38@posteo.net>
+ <20240127191942.GEZbVXTtDNzLB9hTpr@fat_crate.local>
+ <181005cf4a78a4c3c5e1de77498f6c23@posteo.net>
+ <20240127194139.GFZbVcc2RxhNtO3ZHD@fat_crate.local>
+ <6170a3f60cd1ca68bca5829db4a8568a@posteo.net>
+ <20240326222134.GNZgNKbgdBUsAU98RV@fat_crate.local>
+ <d0dfa77ba8231652554c4e6088f985d1@posteo.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000b24903061520f3e9@google.com> <CALm+0cWx1kYtftE4nj7Jjgx2_bmNmSrBAgd36ksSvxJtNVhxHg@mail.gmail.com>
-In-Reply-To: <CALm+0cWx1kYtftE4nj7Jjgx2_bmNmSrBAgd36ksSvxJtNVhxHg@mail.gmail.com>
-From: Z qiang <qiang.zhang1211@gmail.com>
-Date: Tue, 16 Apr 2024 16:44:54 +0800
-Message-ID: <CALm+0cWRC1kqLJvmEqda4O97PZ-n0R0UQ35=fi6oA3rLsPoUSQ@mail.gmail.com>
-Subject: Re: [syzbot] [kernel?] WARNING: suspicious RCU usage in __do_softirq
-To: syzbot <syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, peterz@infradead.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d0dfa77ba8231652554c4e6088f985d1@posteo.net>
 
-On Tue, Apr 16, 2024 at 4:10=E2=80=AFPM Z qiang <qiang.zhang1211@gmail.com>=
- wrote:
->
-> Cc: Paul
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
-> > git tree:       linux-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D15f64776180=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dafcaf46d374=
-cec8c
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Ddce04ed6d1438=
-ad69656
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10f004711=
-80000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/d=
-isk-c0b83251.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmli=
-nux-c0b83251.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7=
-/bzImage-c0b83251.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+dce04ed6d1438ad69656@syzkaller.appspotmail.com
-> >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > WARNING: suspicious RCU usage
-> > 6.9.0-rc2-next-20240402-syzkaller #0 Not tainted
-> > -----------------------------
-> > kernel/rcu/tree.c:276 Illegal rcu_softirq_qs() in RCU read-side critica=
-l section!
-> >
-> > other info that might help us debug this:
-> >
-> >
-> > rcu_scheduler_active =3D 2, debug_locks =3D 1
-> > 1 lock held by ksoftirqd/0/16:
-> >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: rcu_lock_a=
-cquire include/linux/rcupdate.h:329 [inline]
-> >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: rcu_read_l=
-ock_sched include/linux/rcupdate.h:933 [inline]
-> >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: pfn_valid =
-include/linux/mmzone.h:2019 [inline]
-> >  #0: ffffffff8e334d20 (rcu_read_lock_sched){....}-{1:2}, at: __virt_add=
-r_valid+0x183/0x520 arch/x86/mm/physaddr.c:65
-> >
-> > stack backtrace:
-> > CPU: 0 PID: 16 Comm: ksoftirqd/0 Not tainted 6.9.0-rc2-next-20240402-sy=
-zkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 03/27/2024
-> > Call Trace:
-> >  <IRQ>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
-> >  lockdep_rcu_suspicious+0x221/0x340 kernel/locking/lockdep.c:6712
-> >  rcu_softirq_qs+0xd9/0x370 kernel/rcu/tree.c:273
-> >  __do_softirq+0x5fd/0x980 kernel/softirq.c:568
-> >  invoke_softirq kernel/softirq.c:428 [inline]
-> >  __irq_exit_rcu+0xf2/0x1c0 kernel/softirq.c:633
-> >  irq_exit_rcu+0x9/0x30 kernel/softirq.c:645
-> >  instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [in=
-line]
-> >  sysvec_apic_timer_interrupt+0xa6/0xc0 arch/x86/kernel/apic/apic.c:1043
-> >  </IRQ>
-> >  <TASK>
-> >  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentr=
-y.h:702
-> > RIP: 0010:debug_lockdep_rcu_enabled+0xd/0x40 kernel/rcu/update.c:320
-> > Code: f5 90 0f 0b 90 90 90 eb c6 0f 1f 40 00 90 90 90 90 90 90 90 90 90=
- 90 90 90 90 90 90 90 f3 0f 1e fa 31 c0 83 3d c7 0f 28 04 00 <74> 1e 83 3d =
-26 42 28 04 00 74 15 65 48 8b 0c 25 c0 d3 03 00 31 c0
-> > RSP: 0018:ffffc90000157a50 EFLAGS: 00000202
-> > RAX: 0000000000000000 RBX: 00000000000000a0 RCX: 0000000000000001
-> > RDX: dffffc0000000000 RSI: ffffffff8bcae740 RDI: ffffffff8c1f7ec0
-> > RBP: dffffc0000000000 R08: ffffffff92f3a527 R09: 1ffffffff25e74a4
-> > R10: dffffc0000000000 R11: fffffbfff25e74a5 R12: 0000000029373578
-> > R13: 1ffff9200002af64 R14: ffffffff814220f3 R15: ffff88813fff90a0
-> >  rcu_read_lock_sched include/linux/rcupdate.h:934 [inline]
-> >  pfn_valid include/linux/mmzone.h:2019 [inline]
-> >  __virt_addr_valid+0x1a9/0x520 arch/x86/mm/physaddr.c:65
-> >  kasan_addr_to_slab+0xd/0x80 mm/kasan/common.c:37
-> >  __kasan_record_aux_stack+0x11/0xc0 mm/kasan/generic.c:526
->
->
-> This should be caused by the following commit:
-> d818cc76e2b4 ("kasan: Record work creation stack trace with interrupts en=
-abled")
->
-> Is it possible to make the rcu_softirq_qs() run only in ksoftirqd task?
+On Tue, Apr 16, 2024 at 06:48:54AM +0000, a-development@posteo.de wrote:
+> It worked, it worked!
+> 
+> https://up.tail.ws/txt/working-suspend.txt
+> 
+> I've tested it now quite some time.
+> But, I also had to start using 6.6.26-1-lts because my magewell capture card
+> wouldn't without.
 
-use rcu_softirq_qs_periodic() in run_ksoftirqd().
+Right, that thing I guess:
 
->
-> Thanks
-> Zqiang
->
-> >  __call_rcu_common kernel/rcu/tree.c:3096 [inline]
-> >  call_rcu+0x167/0xa70 kernel/rcu/tree.c:3200
-> >  context_switch kernel/sched/core.c:5412 [inline]
-> >  __schedule+0x17f0/0x4a50 kernel/sched/core.c:6746
-> >  __schedule_loop kernel/sched/core.c:6823 [inline]
-> >  schedule+0x14b/0x320 kernel/sched/core.c:6838
-> >  smpboot_thread_fn+0x61e/0xa30 kernel/smpboot.c:160
-> >  kthread+0x2f0/0x390 kernel/kthread.c:388
-> >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-> >  </TASK>
-> > ----------------
-> > Code disassembly (best guess):
-> >    0:   f5                      cmc
-> >    1:   90                      nop
-> >    2:   0f 0b                   ud2
-> >    4:   90                      nop
-> >    5:   90                      nop
-> >    6:   90                      nop
-> >    7:   eb c6                   jmp    0xffffffcf
-> >    9:   0f 1f 40 00             nopl   0x0(%rax)
-> >    d:   90                      nop
-> >    e:   90                      nop
-> >    f:   90                      nop
-> >   10:   90                      nop
-> >   11:   90                      nop
-> >   12:   90                      nop
-> >   13:   90                      nop
-> >   14:   90                      nop
-> >   15:   90                      nop
-> >   16:   90                      nop
-> >   17:   90                      nop
-> >   18:   90                      nop
-> >   19:   90                      nop
-> >   1a:   90                      nop
-> >   1b:   90                      nop
-> >   1c:   90                      nop
-> >   1d:   f3 0f 1e fa             endbr64
-> >   21:   31 c0                   xor    %eax,%eax
-> >   23:   83 3d c7 0f 28 04 00    cmpl   $0x0,0x4280fc7(%rip)        # 0x=
-4280ff1
-> > * 2a:   74 1e                   je     0x4a <-- trapping instruction
-> >   2c:   83 3d 26 42 28 04 00    cmpl   $0x0,0x4284226(%rip)        # 0x=
-4284259
-> >   33:   74 15                   je     0x4a
-> >   35:   65 48 8b 0c 25 c0 d3    mov    %gs:0x3d3c0,%rcx
-> >   3c:   03 00
-> >   3e:   31 c0                   xor    %eax,%eax
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > If the report is already addressed, let syzbot know by replying with:
-> > #syz fix: exact-commit-title
-> >
-> > If you want syzbot to run the reproducer, reply with:
-> > #syz test: git://repo/address.git branch-or-commit-hash
-> > If you attach or paste a git patch, syzbot will apply it before testing=
-.
-> >
-> > If you want to overwrite report's subsystems, reply with:
-> > #syz set subsystems: new-subsystem
-> > (See the list of subsystem names on the web dashboard)
-> >
-> > If the report is a duplicate of another one, reply with:
-> > #syz dup: exact-subject-of-another-report
-> >
-> > If you want to undo deduplication, reply with:
-> > #syz undup
-> >
+[Mon Apr 15 18:37:58 2024] ProCapture: loading out-of-tree module taints kernel.
+[Mon Apr 15 18:37:58 2024] ProCapture: module verification failed: signature and/or required key missing - tainting kernel
+
+So, machines do suspend even with SRSO enabled and since your machine is
+affected, you probably should try without spec_rstack_overflow=off to
+see if it works with the new kernel.
+
+Then, the other thing you could try is whether suspend works without
+that proprietary crap.
+
+And then we can see.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
