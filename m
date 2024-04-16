@@ -1,141 +1,166 @@
-Return-Path: <linux-kernel+bounces-147294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302048A721B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:19:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C25D8A721E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:19:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F921F21B49
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:19:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495501C211FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABD9132807;
-	Tue, 16 Apr 2024 17:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564491332B6;
+	Tue, 16 Apr 2024 17:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="TKknnC3Q"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="tUGGNUz6";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="8Re553De"
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3224012AAE3
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713287960; cv=none; b=SRJh5ceGc5/lOtvOLKTIYTlnSQWKmYkFkCKYjkc5fUYR0ZltEKGnd6IBtP2CVAbl5VBFc23oWt3Rn4p0OsT5fkcKxvbgHEOmphf4BEUV41UFAWobaTkg9feSDCs9WH8B6vlxDgN9dxGiKafS2PA9hsjBrafsEncAgLtETzfDY1w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713287960; c=relaxed/simple;
-	bh=rjQMIV0W9BgQ4Y3l4zyBoteIX46oVOvTz03GZ41BZDs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AwZmAnZERuQk2iWatcMIfUwNZ/rfgcA15M0TrkQ7dXZQv0f8ScQ3R5dNLaKXoRPyZE1n62RTxHo/J/pxay5TEDcYq/rCf4nQSe3QIc04CBN8tm5IGoUMfBFKDbULEv3+zYbHs59sfifUR8V/xPDitWpBAJp88hI80H0S7EFWvoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TKknnC3Q; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e3c89f3d32so15875ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 10:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713287958; x=1713892758; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pMzpM+93sB8KN+aihvsI4sj2s8RINAbT1I+ikFGc/QQ=;
-        b=TKknnC3QzsmbJF3j5kGWCVLvjFEiMifECrwvp5xf5VnKKIIO92ReC8i1YlJEQNaQOt
-         8RfgFkawwrCRzSl0qv/Orla5EjuRSSEo6U6CiN0zX3Q3qqd5Bz604/hHKzfpA8LkyCNw
-         8p6WReKlLHWKMv9qVbq8BQqEw76zQqBXGyFnQnCdfK/VT7jX8X6mwG8YlrQWslBidVXM
-         0g3MmGfDlcXdoTgZ6JWNSqY1Kjse3xQMyppwGp8eVhRds+2/3cYUMvtRR4sQ1jLi8i2U
-         Khn8+d9zR68WU568pbDQqnNQbMKdxPztRiwwVoa5cPr+zTSj9vjtKpNaIQgAgMvPUIfA
-         Z/Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713287958; x=1713892758;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pMzpM+93sB8KN+aihvsI4sj2s8RINAbT1I+ikFGc/QQ=;
-        b=jaRlHcKfI/8Vname9AaHSVEfwi1cST83Bk21DD13zH2KTNTKqBq0x6uh8zlbv16RzK
-         tCRlQkl5GJN1Pq5pD247dQakcFGv6bKX22Sk4RlK2DAVDqNzInmYOta5M/aUvZXe6n3A
-         Qmm34hWvkgCO/zeoYTmCgIpvThJAUWmx4ZFuxmZDUSp9JMfWkrCTQBDSCrC9O4GYKVqD
-         6oVpZr2iCOvrX+Hi3YOKyIhsU8ydF+FMKgEgVdNk4OsLq+PxK8gYZBWNxQNa9RkKU+BC
-         RpuKe++6WZuWCF9a5AsO9nnfF8GjaGDXS3dgseoFk5NUbfxetUOUzvJktLAd2Hn74oNa
-         hW0A==
-X-Forwarded-Encrypted: i=1; AJvYcCUCkqTUIyiacpxNw805CqB/eS5RriERZI45Pt4CM8j8H6QxuXZ+KWZOuG0yetL7EYkeCWVd98vlusIS1zuaeqjd86NLv2Akn0wLbarx
-X-Gm-Message-State: AOJu0Yz3eWBPQ76hHmVAWzp3bMhAmE06Lbc9105qFhf0N6TNTvj0VCpw
-	94N0sgHTVBth7hllW8Ko5bwqJ4/2BMcnLN+ObrJA/qXG5xL5feq4Yyiyw6RoqmeTy5H2QERqKKU
-	BwN7w6dGk03qK2pnqPUFsf3ptmWsrUF1wB8Q=
-X-Google-Smtp-Source: AGHT+IE+6v3wDbegK+Ux9rAhzTqqKq8TNFIZbmfaam/cohc7jxMrIVpQZc4dbB+03Ft2nzo9gRjOdyXae1RXd7Onh9g=
-X-Received: by 2002:a17:902:fc8b:b0:1e4:33a6:b0d4 with SMTP id
- mf11-20020a170902fc8b00b001e433a6b0d4mr258654plb.9.1713287958225; Tue, 16 Apr
- 2024 10:19:18 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34938132493;
+	Tue, 16 Apr 2024 17:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.167
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713287975; cv=pass; b=IE7lbJZ2Whco3BD/o9BOKQq83b2bJSK834XvQEy7BcKyRc2I7ppFQWGBW66AzSV6AVZ0YUc5BIj4VBMTGwHgv0rUkBcsdihUV/YXvwRcpI/gL7iwVOUVCVfMFJTwfNOn6h4FehaczjanBaukBWD45tbQAgXDWcwv5aHaAQehhZs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713287975; c=relaxed/simple;
+	bh=Azr7ovdYaxV3PlnjjsIAyizZx7zMsRJjz5oo0vl5kMo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y9UTsn3PWuYzFd7UIWcZPj1au/HW2P7NOEEbhy8+g7GuhE8G+b0NpoTf2R13atz36ndQgUyn5jEt52OGeVwi1GQV3tM/Cg4Ct0m+QF288T9k1+BkLnU6PX9yIdsFrOuumBftEw+xAAiUeyVrbYnsp+oX74AlnSvPeO5A3VYaArI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=tUGGNUz6; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=8Re553De; arc=pass smtp.client-ip=81.169.146.167
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
+ARC-Seal: i=1; a=rsa-sha256; t=1713287950; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=VYjrR8FNDMNqQJZ1flH9Y/rD9hieKAIvH0HbpU+zeJcSUOQwEualufMNRhsx4lLnAO
+    6CCOQmtdF/I35BqaBGt14Bmftm/iMlvdPFVFrYDZta33tN7QomhLknSoV/l4b/G0o8DK
+    8+IIMvuiuKi+pogsUk8ilknWsYaG3YR57ySHlTU67Z15WLCXViYhAU6oZJgzZmB2rAgK
+    ElR4fpg84nG565p0RycMVYfqRV6NCP5Mk94vEJOUWC8SMCUUqQ/37v9372Dm/DLTMLXC
+    Ddnd8RsbN3/E1C+/bxGF6/8J21dMUbCqVHnPa7F+CS+5c0GRv70hSrF7QUCLymVZiSSj
+    UkJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1713287950;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=UZNazYxiaUPP62ZqofHCxP4mD8sMhtRghorMzgkk/Zs=;
+    b=gLXnXCttLlYyG60NJNPGm+Xp5Xbvu6Plo9XMZ5kbfpeGh9+GuZ1R3ew8e7JjZytxYy
+    +SK+wMNCCGs4kpeaZ/qMTd89bYuN0ip99NAP2jyQYpmWZ8pUg/B2Hc20K+xW9e0IsVX2
+    9orGlhI8ufrMfgVghLnVsIjyCyRi15U4iey+01KHrbYjwm2KET+idnTJlgbPuTnw7+9/
+    652S8wmKeaO/FYxCWEQaqfPconBNMa+WgYm223cvpvLXaXoPiUlU+RzbKzbJJhtiEY1P
+    r5aThUOIso3Gm8TA6wYMeoeFtGQGYrlbAqh5VDlhxR5+ALQaj7GbzQBmCucGduEPTf9Q
+    60lw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1713287950;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=UZNazYxiaUPP62ZqofHCxP4mD8sMhtRghorMzgkk/Zs=;
+    b=tUGGNUz6T13vFpz9+ezMtiFNIURaWR+iWcfWN6sUvBU9/es0JKhD2h50vlTjfOzVkR
+    kgrdh9wPcOAagKKdaAB2IQKUbAJeKgSHwcauz+9B4pNV2vIAGPVkOX1Eb4yCFP1jIZw0
+    DjGvAJNTsXROBng+mcMZfkmoxxRKTMklJeHVoP53iYGpLZJEvTfZ9tWy8jRlyZ7znjQ6
+    yxK+6Up7aKnW4p9VmGTNKoUFWBHRqgaSKB/fwrTK66j8IxVlXJJ0ww62GIb3hEkJvAt2
+    EluNeS3c9EOwwUU8Tvjsxx4LOUIkVvhVBok76DSALfS8lSzD8+8XplIGxpCdVUhtDenn
+    r9eQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1713287950;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=UZNazYxiaUPP62ZqofHCxP4mD8sMhtRghorMzgkk/Zs=;
+    b=8Re553DeDZ5GUPLWwSAt3vpX8+Zf9DSidpB8rfsjmi8ZORdySd5HY+9yrvECcDPNVa
+    lk9BQxcVpQ4XX0vQ73CA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFr0USEbHoO0g=="
+Received: from [IPV6:2a00:6020:4a8e:5010::923]
+    by smtp.strato.de (RZmta 50.3.2 AUTH)
+    with ESMTPSA id K701d603GHJ9TIN
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 16 Apr 2024 19:19:09 +0200 (CEST)
+Message-ID: <d4a55991-0ccc-4e8f-8acb-56077600c9e0@hartkopp.net>
+Date: Tue, 16 Apr 2024 19:19:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403102701.369-1-shawn.sung@mediatek.com> <20240403102701.369-2-shawn.sung@mediatek.com>
- <70733fe5c919527796bd3d9735ced522bcdd7a25.camel@ndufresne.ca>
-In-Reply-To: <70733fe5c919527796bd3d9735ced522bcdd7a25.camel@ndufresne.ca>
-From: Jeffrey Kardatzke <jkardatzke@google.com>
-Date: Tue, 16 Apr 2024 10:19:02 -0700
-Message-ID: <CA+ddPcMWein69X6U46pZbDy51gFHHxXV5d+6BvFq7ma6n0E22w@mail.gmail.com>
-Subject: Re: [PATCH v5 1/9] drm/mediatek/uapi: Add DRM_MTK_GEM_CREATE_ENCRYPTED
- flag
-To: Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc: Shawn Sung <shawn.sung@mediatek.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org, 
-	"Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] Documentation: networking: document ISO
+ 15765-2:2016
+To: Francesco Valla <valla.francesco@gmail.com>,
+ Vincent Mailhol <vincent.mailhol@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Simon Horman <horms@kernel.org>, Bagas Sanjaya <bagasdotme@gmail.com>,
+ fabio@redaril.me
+References: <20240329133458.323041-2-valla.francesco@gmail.com>
+ <20240329133458.323041-3-valla.francesco@gmail.com>
+ <CAMZ6RqKLaYb+8EaeoFMHofcaBT5G2-qdqSb4do73xrgMvWMZaA@mail.gmail.com>
+ <9f5ad308-f2a0-47be-85f3-d152bc98099a@hartkopp.net>
+ <CAMZ6RqKGKcYd4hAM8AVV72t78H-Kt92NXowx6Q+YCw=AuSxKuw@mail.gmail.com>
+ <64586257-3cf6-4c10-a30b-200b1ecc5e80@hartkopp.net> <Zh6qiDwbEnaJtTvl@fedora>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <Zh6qiDwbEnaJtTvl@fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I would argue 'restricted' is the proper name since that was what was
-settled on for the dma-buf code.  :)  But you are definitely right
-that this memory is not encrypted.
+Hi Francesco and Vincent,
 
+On 16.04.24 18:42, Francesco Valla wrote:
+> On Sun, Apr 14, 2024 at 10:21:33PM +0200, Oliver Hartkopp wrote:
+>> On 14.04.24 06:03, Vincent Mailhol wrote:
 
-On Tue, Apr 16, 2024 at 7:09=E2=80=AFAM Nicolas Dufresne <nicolas@ndufresne=
-ca> wrote:
->
-> Hi,
->
-> Le mercredi 03 avril 2024 =C3=A0 18:26 +0800, Shawn Sung a =C3=A9crit :
-> > From: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-> >
-> > Add DRM_MTK_GEM_CREATE_ENCRYPTED flag to allow user to allocate
->
-> Is "ENCRYPTED" a proper naming ? My expectation is that this would hold d=
-ata in
-> a PROTECTED memory region but that no cryptographic algorithm will be inv=
-olved.
->
-> Nicolas
->
-> > a secure buffer to support secure video path feature.
-> >
-> > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> > Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
-> > ---
-> >  include/uapi/drm/mediatek_drm.h | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/include/uapi/drm/mediatek_drm.h b/include/uapi/drm/mediate=
-k_drm.h
-> > index b0dea00bacbc4..e9125de3a24ad 100644
-> > --- a/include/uapi/drm/mediatek_drm.h
-> > +++ b/include/uapi/drm/mediatek_drm.h
-> > @@ -54,6 +54,7 @@ struct drm_mtk_gem_map_off {
-> >
-> >  #define DRM_MTK_GEM_CREATE           0x00
-> >  #define DRM_MTK_GEM_MAP_OFFSET               0x01
-> > +#define DRM_MTK_GEM_CREATE_ENCRYPTED 0x02
-> >
-> >  #define DRM_IOCTL_MTK_GEM_CREATE     DRM_IOWR(DRM_COMMAND_BASE + \
-> >               DRM_MTK_GEM_CREATE, struct drm_mtk_gem_create)
->
->
+>>> Regardless, here is a verbatim extract from the Foreworld section of
+>>> ISO 15765-2:2024
+>>>
+>>>     This fourth edition cancels and replaces the third edition (ISO
+>>>     15765-2:2016), which has been technically revised.
+>>>
+>>>     The main changes are as follows:
+>>>
+>>>       - restructured the document to achieve compatibility with OSI
+>>>         7-layers model;
+>>>
+>>>       - introduced T_Data abstract service primitive interface to
+>>>         achieve compatibility with ISO 14229-2;
+>>>
+>>>       - moved all transport layer protocol-related information to Clause 9;
+>>>
+>>>       - clarification and editorial corrections
+>>>
+>>
+>> Yes, I've checked the release notes on the ISO website too.
+>> This really looks like editorial stuff that has nothing to do with the data
+>> protocol and its segmentation.
+>>
+> 
+> The :2016 suffix is cited both here and inside the Kconfig. We can:
+> - keep the :2016 here and then update both the documentation and the
+>    Kconfig once the standard has been checked
+> - move to :2024 both here and inside the Kconfig
+> - drop the :2016 from everywhere (leaving only ISO 15765) and move to
+>    ISO 15765:2024 only inside the "Specifications used" paragraph
+> 
+> What do you think? Shall the modifications to the Kconfig be done as part of
+> this series?
+
+So here is my completely new view on this version topic ... ;-D
+
+I would vote for ISO 15765-2:2016 in all places.
+
+The ISO 15765-2:2016 is the first ISO 15765-2 standard which supports 
+CAN FD and ISO 15765-2:2024 does not bring any functional change neither 
+to the standard nor to the implementation in the Linux kernel.
+
+For that reason ISO 15765-2:2016 is still correct and relevant (due to 
+the CAN FD support) and does not confuse the users whether the 2024 
+version has some completely new feature or is potentially incompatible 
+to the 2016 version.
+
+Best regards,
+Oliver
 
