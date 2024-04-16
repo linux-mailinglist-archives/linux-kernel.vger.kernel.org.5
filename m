@@ -1,242 +1,246 @@
-Return-Path: <linux-kernel+bounces-146190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F9E8A61D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:48:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 257478A61D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:50:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15E551C2133B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:48:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92AED1F2380E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6465E38398;
-	Tue, 16 Apr 2024 03:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA9B208A4;
+	Tue, 16 Apr 2024 03:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JuS7ucZw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fQPl31W6"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007E33839D;
-	Tue, 16 Apr 2024 03:47:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.8
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713239276; cv=fail; b=LX4dcy1qM4ftUxajtGAD7HXATzb3C1viEEMb/qBrerL7Fl/KQ4JmsdKIdFd1o9bAGhXc8YAFfQTVJ5QMTsxwbgooX/swn5RvmYoxWNn1x39u5aPTdqGMuDTC9CJ+5wHdnAV/CDTX2ZKfea7CFU/0/mhH3a3KhU+JgTFS+ev2840=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713239276; c=relaxed/simple;
-	bh=EBYXNbFqDrq7DGMFyp9+kM0gYQ2iFJb+u2Z0s2IQMI4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=fW6tl6zZ9vta4Kn7QA1rKBWyhyJGGIo4h1kvc38uyF0eDGgPA45gVFzl00WeajImCN/MGdYrYvcudHCB8SeniMB5pf7qp9FZ/OzlzpbGNIXt70+5CPNDWGlfu9d9mfIsAQ9Pz0dqClCEMh3M2FFY6q+tJMlC3D/lDCJvmmVLwtI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JuS7ucZw; arc=fail smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713239275; x=1744775275;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=EBYXNbFqDrq7DGMFyp9+kM0gYQ2iFJb+u2Z0s2IQMI4=;
-  b=JuS7ucZw+6InGsUxCNWtWh1218kP6eZ2gc6zBMXMWRK6NvcVhbApr6aY
-   XrQcHvRcRZtlvrTNN7e5ZuIqtwNtP43mvPFjZdgZOyykK4482unvAX1r9
-   tF9OxwXKq0sGh1UagGJT1j9aFazguQPbvPlZpqSzXjd3prYyDcO4BbBq3
-   6+ZeJ2ii/zGwe7VoTJUyW9i7ZL4YNVlSTOiMK3t7154y7YyFIcpJpTFCT
-   ZIPwvBXYyhHoZSsBJavu/q0FrlfoMjHZKQ9VK7VHkdiTZl8dMEX6zoWrj
-   a1P/3wEtuTHafPdJpyfIMTpDsdI054G7zrNpWuhb3KS/UcrCSZMbDwf5d
-   Q==;
-X-CSE-ConnectionGUID: fjCZrSaUTwu7MhlB1Ye4vQ==
-X-CSE-MsgGUID: BJe18OSeTBiBpcXt9tJP+Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="26170923"
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="26170923"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 20:47:54 -0700
-X-CSE-ConnectionGUID: 04qKRXp7Rpewi3cZN2y07w==
-X-CSE-MsgGUID: ak7YSUSVS+6Mai7PbSAjVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
-   d="scan'208";a="22193975"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 20:47:54 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Apr 2024 20:47:53 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Apr 2024 20:47:52 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 20:47:52 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 20:47:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CdEhkaVmVMYDF1mHAaZbZIsUSgNQ3dmSjwegiy8GhXM7dEGEKnO3Ydh2xlWAyELCdYBHuXmHT5rkjeDoMSiB7iKTkZ90Sw8XHaxTkpqAkZX0Oar9sOQm9NIAFZhBu+NI9RjCLFsrgaPNYOQUZcxoHrB0VvxKmyK/wWRTL8+CZVlsKyfL+KrWUbXBP6wEg7zxat7svsjzsoUVSt1nE0Zn0r5KELPVxSknLqQzIdmHHz1NdYFOv96SdwGI1LaylsuqrbCbLzvUsk3tZ6XxlcPa1GF6b9OaEBx6qzfDWh8WSuMluxHKUCDlHQTNGn+Oz9+JtcTl7zFsfCvd2gNDiOlp2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cy1G/t3Zo6Iqs/KT9pmcDkzy6i42fjF6EJWQkvfc3o8=;
- b=YnqVEmYofdVROeekFgDe94X9spCbnzbnWTyTf/7bYvWCjaN3w5us8394CioacLEYFOA2wl35eeSGO1gC35yBQceqaJDimvkDOSqyYNl+O+9wam5WSxvIqtQWcJB5Iz9zvy5i8PRz3f/a46EWY1EGxfm7BW+pp3HXgADA9UA4+cTWWFu73nCsyfvFf0i6J/hhiPPaKjYBV4rd0YwUW1jculx/LE/EK32EqC6CXw/tI9juTzpwu1A2uc6NLVQxOnh9C71aatOtb2WAIoO307ZxnNvYf5qpcZiQQpMd6DnVy2QU1Br5D8bkeU37wEorocSe52HnmK70UVeTAwrkC5qf4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by MN0PR11MB6010.namprd11.prod.outlook.com (2603:10b6:208:371::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.28; Tue, 16 Apr
- 2024 03:47:50 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::6c9f:86e:4b8e:8234%6]) with mapi id 15.20.7472.027; Tue, 16 Apr 2024
- 03:47:48 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>
-CC: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, "Peter
- Zijlstra" <peterz@infradead.org>, "iommu@lists.linux.dev"
-	<iommu@lists.linux.dev>, Thomas Gleixner <tglx@linutronix.de>, Lu Baolu
-	<baolu.lu@linux.intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"Hansen, Dave" <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, "H.
- Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
-	<mingo@redhat.com>, "Luse, Paul E" <paul.e.luse@intel.com>, "Williams, Dan J"
-	<dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, "Raj, Ashok"
-	<ashok.raj@intel.com>, "maz@kernel.org" <maz@kernel.org>, "seanjc@google.com"
-	<seanjc@google.com>, Robin Murphy <robin.murphy@arm.com>,
-	"jim.harris@samsung.com" <jim.harris@samsung.com>, "a.manzanares@samsung.com"
-	<a.manzanares@samsung.com>, Bjorn Helgaas <helgaas@kernel.org>, "Zeng, Guang"
-	<guang.zeng@intel.com>, "robert.hoo.linux@gmail.com"
-	<robert.hoo.linux@gmail.com>
-Subject: RE: [PATCH v2 10/13] x86/irq: Extend checks for pending vectors to
- posted interrupts
-Thread-Topic: [PATCH v2 10/13] x86/irq: Extend checks for pending vectors to
- posted interrupts
-Thread-Index: AQHah6hgttNy4xVG0Emr3Eje1s1aQLFkZmJAgACXWICABVSIQA==
-Date: Tue, 16 Apr 2024 03:47:48 +0000
-Message-ID: <BN9PR11MB5276129A5784849F2D06104D8C082@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
-	<20240405223110.1609888-11-jacob.jun.pan@linux.intel.com>
-	<BN9PR11MB5276215478903C50701D05498C042@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20240412112331.5a3c1d18@jacob-builder>
-In-Reply-To: <20240412112331.5a3c1d18@jacob-builder>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|MN0PR11MB6010:EE_
-x-ms-office365-filtering-correlation-id: 567dbb34-a5d0-4ea1-fc73-08dc5dc7fbfd
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cU3ss7HcUPCaguc1J46E3DgEoM7SKkk6J65IiYzH6RDdGfur73Qo4jJOlSiVnKQQpNsZN40QDSQyvSnvOG1SWaAnESb2sS0b/k4uOmg6jQVVeqH0I2/3H1SogjBevsvXBZiSwbZYjAiE65wW6v3Z8dQmCgqblX35wakhFfwTULzYZKUA7uohDpIDYBYH1HN7sGX0LwAzJrJ03Yzb1MVY1UEQ/XrVAdOoMF3JtHMB1QQhHzTgja+nDOYXxRCEfIE7Vov2AQ2phz74oSK4SjAR2q9NjqNGtO8r6reP5cL45rDPjJNgfNKcJEg5ZhwEtnE+wrA4+k3Fh8a8Cgmg9qQVKGA/UytNm79ZHA60+ea08xK4ZxQzFxMpND3Nf6S3ZOuu1y4PtanZgR0IJXc92jAm02BNBfObNrQBer8ARs3AChgSl2VKiR/OTn1gir4XV1Faw/7C0Zj7Lo3o9sCz56k+blVYFwpeb5Z2RpF1Bk3SKE1+uzQ1im+eYG8psAMHb0b6VAUzBJMYxXjY/60+XI/9PuKUXkNIbScR/H+ejqIg7kdQncUVu5sUOcqKv+PhLwcMSveM+Zmph/CGnFSfecA3Qm9md393eYJ+kpRohS5BQSPU99qY3xt4tKPBU8/uJOZzBDXEaW5ycGi9DxWiBVWwl1fdy2IN4mqiJyMgfsflU9hwuiUoLui3moUxJMHNHCfldvJ9UUUZ2eN2UbTIFAI17egEo++xzu4LMoBAi71p7lk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cPE49uNt0sfPmju6T15djiUPBzN9SMqDId845QGTJIfiNt8YWBI3it3CRnJZ?=
- =?us-ascii?Q?VpNyG/zYCgeItL/opzsXnbKi3rXmioP2VrLjHibjMQfzBLmqHa7OxQ5BHJfH?=
- =?us-ascii?Q?HuhK1AZ+QvdHkVS/ruq8KkivRQVaypWREmQpa9jCgHe7oregx6Oc3PDI/amE?=
- =?us-ascii?Q?/jk47UT5IQgKRSrwre0TP9NuEdUXRhy7tXfiY3wEnE5DeBMGZrjwMeAcjBnt?=
- =?us-ascii?Q?FUdMUgHLJrE+3QXT4nvv6CqD2PdFDmOvI0Gt7xTIJkHAMbU9kBsGwmrycxsy?=
- =?us-ascii?Q?nYfhqHTGrOf75lkyQ9ypaC+rNsbzPTIKByN4OzfeBQs6DypblIg8jeRU4wo1?=
- =?us-ascii?Q?RhNZZQzaP3sGr9/PoH+w+eKsj9YOhoKyGpiMn0FKWzb9QndDNivEpZ4HBc48?=
- =?us-ascii?Q?4Rj+KoQmR4Mvcs4oJByAZP56rFdVDTwoWj/t/KS2m/lRARayQ1QSCFNllbBQ?=
- =?us-ascii?Q?ZOi7fFbTaoe6dgMF7PhYZMQacFb/r6gKqF28Dw0v4lIBZd4WixX0bIo2O9/s?=
- =?us-ascii?Q?iv14LQcis8Ctdb0LpswUR9CkvLYSJfFwpP1z5GJGDPBMnSYlVLY3Ye15A/2c?=
- =?us-ascii?Q?oyFZAhkKXhFNwnuze3xNYu9HNHXpOfo8uafDIK2c3xOWcnpy3GnkVX9eRM5Q?=
- =?us-ascii?Q?ROfJdEgDxDrispZbf1RSoS2qmVPhWW+PkM+QDAlaOUAoXfhetYL2xr9aEGgt?=
- =?us-ascii?Q?IPq9rmXww77Lv+BlWaRlxVqWRHfnnDfCR3TD0+Hf6rBG4AqxiQ8iMoR1HPcl?=
- =?us-ascii?Q?3+G11EloRnr5+8lo81LHwrtbBL+V50uMZGBCKnwqu3/D0hOMbtKXLo70wMxX?=
- =?us-ascii?Q?G9ZCq/i5htuIKX04rrOgppgoj1QG6o8zv1yAUSrQnBzD5JBwVVJqgyB8q+f5?=
- =?us-ascii?Q?vvqG+3MNzOVp7+hnHfV5SpCwmpv0elQMXGV+vPQOWdEgqXGza2Vju4tsde6+?=
- =?us-ascii?Q?i5q7uStoGocEfZpydqs6W9QCCQev8GMvEhsUTEdnGnApSqJKGSy+JVnXTmkN?=
- =?us-ascii?Q?yUBqX5EdNC/0ZjDC14tIIEyiCg4DPRb4MK2WiXq7M1ufHwKYS5lSYtdxXFXr?=
- =?us-ascii?Q?34Vy2xtxHmb3FaK3YHk7e2lRcY+TMjwx8OOtNV9MnF8op0LtinNtBtWSbaW0?=
- =?us-ascii?Q?3sLsiWo3dghfsTi8beZYNzCi2HrNKLWu7DPUchfVeqSnCLmSIhfIo5Aosu+b?=
- =?us-ascii?Q?X/NlsLjd4ZCDh0oaJ3mWl4z31Avg5Wfwb6ZGlwCMusAHSMYYhlxiT+67okqG?=
- =?us-ascii?Q?MuGYuJVrqi1dG0/dOOFanTxRy3Q981owlAyWFN7jh/w6XjmSSjmp4LoaiUrf?=
- =?us-ascii?Q?0FlD6iUI6OdnZW73/4IDGKJ32n79/3Ev1R2kwaMnbOuULULaJCgSLMaaqXLH?=
- =?us-ascii?Q?+N4XoHzijN6QSQr+26PZbqxqV5pAfobntZaFnHpRf7sIZujsVDXHdveT+xK/?=
- =?us-ascii?Q?5CEbNo3srfY85b02uldEVJ47t+3B5L7/o0amRH2VSVSJJMMbZeLbjVISqSpD?=
- =?us-ascii?Q?HZpoRMNbzXicU0XQeB0DpoedxoTSg+Txy7vqTapYoWbE0LDpTCGmvEg++0x3?=
- =?us-ascii?Q?SqBbzSKbfwBChaAQTp/Nv2gfIwEmZ2g+h9Gxu8tG?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E69A199BC;
+	Tue, 16 Apr 2024 03:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713239428; cv=none; b=qcePTG3debUzFr8KOmQ/wpOrTymn1eoJYpDkfcQqMcROi8HyarxgiDJnB38o7Iahw9DzDzL/Ys6Yz79y2zkfRyMcAygbllODhf+7sv4kg9lsYya1IUOVA1oRW9ttNgZwOIN2lgfvVyHh3/Lh8I8yCp9iZgoAxUYHxVdkn6xoQAs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713239428; c=relaxed/simple;
+	bh=pwekYD8Wkc6Veq9X/9ki7fdgxaAJi5ssre0H+rqvVOQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=GkvXr2QthI/Wqx+bH1zFcg84tr498VDENVxD8jTCIYPJwNUaMq1r4XnYG6q934aDH/KMELB2KZNVBpRTAa/dIknZ5yJXq9OOBfMAyCKbbtBVQjcDTUUZzls0LzogOuD1JRDn2Vg1+qXO8UiJDJW9XxOSXytjsT370NB39Hrx/Jw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fQPl31W6; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43G3o12p011307;
+	Tue, 16 Apr 2024 03:50:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Hte0m1rpzkCLyr+QyeNl0cr9HUN873o6biJxbNQpjVo=; b=fQ
+	Pl31W67xSr1GlRIljQlHG0f7yGoQFITbwd/fD+PzCOw/8o1jfWuVrXRnggiv3boz
+	dmfLYQ8NloVaUbAsm/I6bIQ+f+nRyWsD6QwSAUj70gBc6XPQ3u650P0q/+yYjYqg
+	v2iByUcW3EXS3JAghqXwtuAb5clAzGjjuVMFEkiOmLH93TxhhW9ihHdtoW0RFuqp
+	GzeseMFV20b81Eh3WacVmXBh9X7i+ZBbDHQhjBB/av7UIrX2ccIYsrQRokWVANU3
+	jc3fH0+IIUryQnsxOLfCS/iAtI2y0zmvCehJWQJ1rS4oizYDtAhSA0bMlaIKil5T
+	yckEdSKF6iEMLrygS8+A==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xh5jx9ka5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 03:50:21 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43G3oKrY022947
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 03:50:20 GMT
+Received: from [10.239.29.179] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 15 Apr
+ 2024 20:50:18 -0700
+Message-ID: <4b684db2-d384-404a-9c54-60d79ac7cf9f@quicinc.com>
+Date: Tue, 16 Apr 2024 11:50:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 567dbb34-a5d0-4ea1-fc73-08dc5dc7fbfd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2024 03:47:48.6975
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QTHMJCqReRjpIrhvJYS7d2/TXv3a28bNmO0LAQRkB6tBLaOKKr8P5diOoadbwOjYcxIQHr8HVR6oC99RQ1F+kg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6010
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] bus: mhi: host: pci_generic: Add edl callback to
+ enter EDL
+To: Mayank Rana <quic_mrana@quicinc.com>, <mani@kernel.org>,
+        <quic_jhugo@quicinc.com>
+CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>
+References: <1713170945-44640-1-git-send-email-quic_qianyu@quicinc.com>
+ <1713170945-44640-4-git-send-email-quic_qianyu@quicinc.com>
+ <17d94b91-137c-409c-8af3-f32f1af2eb71@quicinc.com>
+Content-Language: en-US
+From: Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <17d94b91-137c-409c-8af3-f32f1af2eb71@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZjP7A9NfbE99xMuEif1TzTvdzB6e-sMv
+X-Proofpoint-ORIG-GUID: ZjP7A9NfbE99xMuEif1TzTvdzB6e-sMv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_02,2024-04-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ suspectscore=0 adultscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404160022
 
-> From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Sent: Saturday, April 13, 2024 2:24 AM
->=20
-> Hi Kevin,
->=20
-> On Fri, 12 Apr 2024 09:25:57 +0000, "Tian, Kevin" <kevin.tian@intel.com>
-> wrote:
->=20
-> > > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > > Sent: Saturday, April 6, 2024 6:31 AM
-> > >
-> > > During interrupt affinity change, it is possible to have interrupts
-> > > delivered to the old CPU after the affinity has changed to the new on=
-e.
-> > > To prevent lost interrupts, local APIC IRR is checked on the old CPU.
-> > > Similar checks must be done for posted MSIs given the same reason.
-> > >
-> > > Consider the following scenario:
-> > > 	Device		system agent		iommu
-> > > 	memory CPU/LAPIC
-> > > 1	FEEX_XXXX
-> > > 2			Interrupt request
-> > > 3						Fetch IRTE	->
-> > > 4						->Atomic Swap
-> > > PID.PIR(vec) Push to Global
-> > > Observable(GO)
-> > > 5						if (ON*)
-> > > 	i						done;*
-> >
-> > there is a stray 'i'
-> will fix, thanks
->=20
-> >
-> > > 						else
-> > > 6							send a
-> > > notification ->
-> > >
-> > > * ON: outstanding notification, 1 will suppress new notifications
-> > >
-> > > If the affinity change happens between 3 and 5 in IOMMU, the old CPU'=
-s
-> > > posted
-> > > interrupt request (PIR) could have pending bit set for the vector bei=
-ng
-> > > moved.
-> >
-> > how could affinity change be possible in 3/4 when the cache line is
-> > locked by IOMMU? Strictly speaking it's about a change after 4 and
-> > before 6.
-> SW can still perform affinity change on IRTE and do the flushing on IR
-> cache after IOMMU fectched it (step 3). They are async events.
->=20
-> In step 4, the atomic swap is on the PID cacheline, not IRTE.
->=20
 
-yeah, I mixed IRTE with PID.
+On 4/16/2024 7:53 AM, Mayank Rana wrote:
+> Hi Qiang
+>
+> On 4/15/2024 1:49 AM, Qiang Yu wrote:
+>> Add mhi_pci_generic_edl_trigger as edl_trigger for some devices (eg. 
+>> SDX65)
+>> to enter EDL mode by writing the 0xEDEDEDED cookie to the channel 91
+>> doorbell register and forcing an SOC reset afterwards.
+>>
+>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>> ---
+>>   drivers/bus/mhi/host/pci_generic.c | 47 
+>> ++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 47 insertions(+)
+>>
+>> diff --git a/drivers/bus/mhi/host/pci_generic.c 
+>> b/drivers/bus/mhi/host/pci_generic.c
+>> index 51639bf..cbf8a58 100644
+>> --- a/drivers/bus/mhi/host/pci_generic.c
+>> +++ b/drivers/bus/mhi/host/pci_generic.c
+>> @@ -27,12 +27,19 @@
+>>   #define PCI_VENDOR_ID_THALES    0x1269
+>>   #define PCI_VENDOR_ID_QUECTEL    0x1eac
+>>   +#define MHI_EDL_DB            91
+>> +#define MHI_EDL_COOKIE            0xEDEDEDED
+>> +
+>> +/* Device can enter EDL by first setting edl cookie then issuing 
+>> inband reset*/
+>> +#define MHI_PCI_GENERIC_EDL_TRIGGER    BIT(0)
+>> +
+>>   /**
+>>    * struct mhi_pci_dev_info - MHI PCI device specific information
+>>    * @config: MHI controller configuration
+>>    * @name: name of the PCI module
+>>    * @fw: firmware path (if any)
+>>    * @edl: emergency download mode firmware path (if any)
+>> + * @edl_trigger: each bit represents a different way to enter EDL
+>>    * @bar_num: PCI base address register to use for MHI MMIO register 
+>> space
+>>    * @dma_data_width: DMA transfer word size (32 or 64 bits)
+>>    * @mru_default: default MRU size for MBIM network packets
+>> @@ -44,6 +51,7 @@ struct mhi_pci_dev_info {
+>>       const char *name;
+>>       const char *fw;
+>>       const char *edl;
+>> +    unsigned int edl_trigger;
+>>       unsigned int bar_num;
+>>       unsigned int dma_data_width;
+>>       unsigned int mru_default;
+>> @@ -292,6 +300,7 @@ static const struct mhi_pci_dev_info 
+>> mhi_qcom_sdx75_info = {
+>>       .name = "qcom-sdx75m",
+>>       .fw = "qcom/sdx75m/xbl.elf",
+>>       .edl = "qcom/sdx75m/edl.mbn",
+>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
+>>       .config = &modem_qcom_v2_mhiv_config,
+>>       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+>>       .dma_data_width = 32,
+>> @@ -302,6 +311,7 @@ static const struct mhi_pci_dev_info 
+>> mhi_qcom_sdx65_info = {
+>>       .name = "qcom-sdx65m",
+>>       .fw = "qcom/sdx65m/xbl.elf",
+>>       .edl = "qcom/sdx65m/edl.mbn",
+>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
+>>       .config = &modem_qcom_v1_mhiv_config,
+>>       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+>>       .dma_data_width = 32,
+>> @@ -312,6 +322,7 @@ static const struct mhi_pci_dev_info 
+>> mhi_qcom_sdx55_info = {
+>>       .name = "qcom-sdx55m",
+>>       .fw = "qcom/sdx55m/sbl1.mbn",
+>>       .edl = "qcom/sdx55m/edl.mbn",
+>> +    .edl_trigger = MHI_PCI_GENERIC_EDL_TRIGGER,
+>>       .config = &modem_qcom_v1_mhiv_config,
+>>       .bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+>>       .dma_data_width = 32,
+>> @@ -928,6 +939,39 @@ static void health_check(struct timer_list *t)
+>>       mod_timer(&mhi_pdev->health_check_timer, jiffies + 
+>> HEALTH_CHECK_PERIOD);
+>>   }
+>>   +static int mhi_pci_generic_edl_trigger(struct mhi_controller 
+>> *mhi_cntrl)
+>> +{
+>> +    void __iomem *base = mhi_cntrl->regs;
+>> +    void __iomem *edl_db;
+>> +    int ret;
+>> +    u32 val;
+>> +
+>> +    ret = mhi_device_get_sync(mhi_cntrl->mhi_dev);
+>> +    if (ret) {
+>> +        dev_err(mhi_cntrl->cntrl_dev, "Wake up device fail before 
+>> trigger EDL\n");
+>> +        return ret;
+>> +    }
+>> +
+>> +    pm_wakeup_event(&mhi_cntrl->mhi_dev->dev, 0);
+>> +    mhi_cntrl->runtime_get(mhi_cntrl);
+>> +
+>> +    ret = mhi_get_channel_doorbell(mhi_cntrl, &val);
+>> +    if (ret)
+>> +        return ret;
+> Don't we need error handling part here i.e. calling 
+> mhi_cntrl->runtime_put() as well mhi_device_put() ?
+
+Hi Mayank
+
+After soc_reset, device will reboot to EDL mode and MHI state will be 
+SYSERR. So host will fail to suspend
+anyway. The "error handling" we need here is actually to enter EDL mode, 
+this will be done by SYSERR irq.
+Here, mhi_cntrl->runtime_put() and mhi_device_put() are only to balance 
+mhi_cntrl->runtime_get() and
+mhi_device_get_sync().
+
+Thanks,
+Qiang
+
+>> +    edl_db = base + val + (8 * MHI_EDL_DB);
+>> +
+>> +    mhi_cntrl->write_reg(mhi_cntrl, edl_db + 4, 
+>> upper_32_bits(MHI_EDL_COOKIE));
+>> +    mhi_cntrl->write_reg(mhi_cntrl, edl_db, 
+>> lower_32_bits(MHI_EDL_COOKIE));
+>> +
+>> +    mhi_soc_reset(mhi_cntrl);
+>> +
+>> +    mhi_cntrl->runtime_put(mhi_cntrl);
+>> +    mhi_device_put(mhi_cntrl->mhi_dev);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   static int mhi_pci_probe(struct pci_dev *pdev, const struct 
+>> pci_device_id *id)
+>>   {
+>>       const struct mhi_pci_dev_info *info = (struct mhi_pci_dev_info 
+>> *) id->driver_data;
+>> @@ -962,6 +1006,9 @@ static int mhi_pci_probe(struct pci_dev *pdev, 
+>> const struct pci_device_id *id)
+>>       mhi_cntrl->runtime_put = mhi_pci_runtime_put;
+>>       mhi_cntrl->mru = info->mru_default;
+>>   +    if (info->edl_trigger & MHI_PCI_GENERIC_EDL_TRIGGER)
+>> +        mhi_cntrl->edl_trigger = mhi_pci_generic_edl_trigger;
+>> +
+>>       if (info->sideband_wake) {
+>>           mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+>>           mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
+> Regards,
+> Mayank
 
