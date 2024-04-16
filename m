@@ -1,150 +1,188 @@
-Return-Path: <linux-kernel+bounces-147735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A738A785A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C408E8A785C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:10:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6ABA1C20E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:08:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDD561C2160E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0888C13A885;
-	Tue, 16 Apr 2024 23:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F0A13A415;
+	Tue, 16 Apr 2024 23:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bMK+GTlm"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="g3MA+NyM"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B0F13A869
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C092375B
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:10:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713308902; cv=none; b=Bq9++429g9AQXTFqQ+KwRQbkfPG4Ao7fnWsAonnTO6JiTF/PIRRsrz1up75WWHaAoTLnb42PMnNNo8FBR2w100R8gT9ePrgu2rCFk6iQDrNo+re/vobrNxemyprNTTPzelEspVcKcB9PhtvHB18dzMDTBMxpIjBI7uKpamydGRU=
+	t=1713309032; cv=none; b=tiBElIvAaHjeSpl/TW5/A8/ei3DFEGvODUopGZIOq6G2/FIbMjaP4wKJs08fIbEDDXAT9hWyzxFLOtCv+/1WXXHmuc2dllBzaqtBr9tPvWnU0N/NiX7GbQ6+R4rxNOSyh8BQq+SdE5xGAG0TDc1CKfg8k1ri7j0jeI1F6iVsfaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713308902; c=relaxed/simple;
-	bh=/vIsnAKq8bf1u4kLAh1Kfg/s9oWW3TeQ5VA71aykdbE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A1UmeCCStxlRbwbSlP9kY1MI+z+aaSI7l+fpZPxnlFyJX3zLo4X9qkAK3F59Z9iykl1dKh0ocpYwVN2/6IF36uHaeh2WTIWUWT12Bc9PYKgT28lbOVD/1BYHV+0WdUwdZz4vN/g2Hq81V33Lr3v4p6a6to+mJ8c6rZxktkPuriU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bMK+GTlm; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56e5174ffc2so2988a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:08:20 -0700 (PDT)
+	s=arc-20240116; t=1713309032; c=relaxed/simple;
+	bh=ymDm8FNebz/mOiDajTJYRMBuXxCLleV3KCeiOkFjjXA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H/U1LOHgT2SEetdvUWHVDjE5i+nF3l/V0tFV5+DuwBpBk5MwxTTDruZ5MHvF/J4GIzknl8zVy9iu4bKdFCp59d48/UHTa9wgIDMWkKFhWbG9QpwiI++uNhqquxL5sk32ejjc7cme3Duej6LK5yx+hz/emgVdoUfVyfNzrCzxFRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=g3MA+NyM; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c8b95f7f73so7542139f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:10:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713308899; x=1713913699; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SOdiC0tL+G3FANw6Y9F4LL53FfietZiL2c5R415IOXg=;
-        b=bMK+GTlmy09ymhQacmF7/ZuUXTDpnvA5O5aDFgvgg33N+gBii5eNEAlzZK/cC3hfML
-         DrB70z8Ut5QHIADD8OmvaOSKJoB1O5YOkxJm8wIKxd4MQhjlW4se6vjDR1d4YrsEdGH+
-         2s+0ClnWJVTqGJfut6FJd8lms3FcBFOiTMJKRyvnqXb/6IG15hw/CR9za0OiUiuIXnDB
-         ftDKsfxcV/1LDX6rD72XMI294fM0fnR9W8NaHVCbhSiywtHAh087BRTauI6iiLGKNO6H
-         nfqyzCna08aRGvAFq4OqvUutArG3u7bwrQm+ihR68P9afD2B3Kvl0dMUyGCOnl0N0adz
-         PFQQ==
+        d=linaro.org; s=google; t=1713309029; x=1713913829; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wWdyAt9+nQw8Qr1h0NChEuvDVEscavXKBcKHv+jkRUk=;
+        b=g3MA+NyM9vaq6gZ+GOxivubJFGeSvSpSVoTnUuZ82MWgHrZAXlrHC4WbozBQG0CPfQ
+         vOwRxAbqwAArJQS2sNxr8/vCSDLRPa3G0UfmxnETP2H2oip8LRykhxzPdv38pwGxTp+U
+         E9xO46rF1+l4Tgxy4BSjC08+yFDMHhyc5YcUd7sdPd3pGBj8xkoOAG9B0wIbrf2KWft8
+         caHPieC0cretTVJ1mcpHpv6je/ILIKT8AIUU9k9+PyPHkhuhyOhGPKQgWjbx/W6XeOri
+         SxTrXfLH/GFrKtws6vq7EuvpMlgtjqoRC6/qAvxOFJ2SIhYO++3xU+7yRA0Vs/hHh2Mo
+         W3bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713308899; x=1713913699;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SOdiC0tL+G3FANw6Y9F4LL53FfietZiL2c5R415IOXg=;
-        b=vfgEKxm1PU2xJWNtElvZowGaJ4LtQnm5ioFium8SVuoVkt7Bm1NX6lHtzLKroKMQzB
-         QLhn8NWMT5U4qNqTjq1D5weiYf434mg6TdblyiFQsvitBhVgUIycvkY/cAwtNteQeRir
-         bh303f+cvj7nPYHtbK6zCVqezpSQD96N1PiQx2CSFFeyFPCwupGr/c4zD9gR0ToLOSC0
-         J0/IBypV8JJwkHb9oS+SamEUdPHgLjGv0VDT/SliUKvTgRxMPVXuHXRC1RrQhTOS7Tme
-         YdzWlaTH7YWAVx7U0kZmEs37P+HaiXSVewziZpvpwUTriCe7jCtHw4HxeJ067tUJfXrn
-         a4iQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWnVLSO9CJnvzB4S7QBBF53nwv4W761PNCBBhMlFcW+Wy3Pttcx5CODf8zM2t4FIl32WaHwBQYJmHf13UCV+N11mfGZWxlrmgGsIyRU
-X-Gm-Message-State: AOJu0YzTvl3LNc4g6n34WFSVlg5ecpkpwJBENLDI3M2Is2qb4faDtB5Y
-	98aHzWeADy1i46tNuDpKAp74IHLZ1NJCrVKMz4hbHlsNJnIIbYJD+UbZC3lBrmdM5qdVnfq5nUB
-	ILMGz6OXiKOgy24Dr1nwUVZSLlp9YAtgZdAZU
-X-Google-Smtp-Source: AGHT+IGkH8dcsSd2mHEmIvZNmPTDJjKG22oRPWWX1ECCNsJoXjeJV4w8yQaudJm2VHLYAmkWNYyZwliEX9Gq/R0Jt28=
-X-Received: by 2002:a50:9f2c:0:b0:570:5d40:5e3b with SMTP id
- b41-20020a509f2c000000b005705d405e3bmr10618edf.6.1713308898764; Tue, 16 Apr
- 2024 16:08:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713309029; x=1713913829;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wWdyAt9+nQw8Qr1h0NChEuvDVEscavXKBcKHv+jkRUk=;
+        b=qFvTjnh3T0+vVUU7Mi9DoWlKUq6Lu1jU0d8Ggk2uh04Am7IF4SnxovsLbY3hW3V13+
+         /pPJMlj4bV2ZvlQWX/9NKztLLT+g2mW10w78nFmgaYTBDD5LNrufVvjv0kMK64FnsOuB
+         fgMSV/khWafKw0vI0S6NuM/V3vuKRH9bMfJqshx++yAWRNufEsQFz1ZMqlsboRnSPrz2
+         kBsLrJiFhMcjsJbka7uY21whNTJatvJaYln79UphYQ6G/UGFaFnh/irtY/QnYiOFRup5
+         Po8Eo9h+FvceJDfpOnhVKAnG3+V4u2DCIgmOgM6wMO7h8Giy07R9sW4jxBWnfUkYDOnl
+         Xyaw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgm18zNQC6TPvajRhBwvoeJFTyo44Q4fVcTSTlFp3uMlFMHYOlz7ua5fx1cf618zvvEVg+ONefealo5oF1foO5AhuxZQ7ze/sgwqje
+X-Gm-Message-State: AOJu0YxJA1dzFyV0HR10iKAz+gCqmNc8HLsouW0HU6YWY+Pc0xsDDZon
+	+sBfc2Ua1CsFDKnLIU7U5DmbpREpL0EeiVszUpKB4MCsMpy9wRGZ8KHiYMEULz4=
+X-Google-Smtp-Source: AGHT+IFBzqHKauKE431Ap7rruqxL8m+evB+FBiojGzEmkAMuz2sLkBpLbgNVXueReWbxd96Fq/JIug==
+X-Received: by 2002:a05:6602:1206:b0:7d6:12d1:5879 with SMTP id y6-20020a056602120600b007d612d15879mr3165187iot.1.1713309029684;
+        Tue, 16 Apr 2024 16:10:29 -0700 (PDT)
+Received: from localhost.localdomain (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.gmail.com with ESMTPSA id le9-20020a056638960900b004846ed9fcb1sm372170jab.101.2024.04.16.16.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 16:10:21 -0700 (PDT)
+From: Alex Elder <elder@linaro.org>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: mka@chromium.org,
+	andersson@kernel.org,
+	quic_cpratapa@quicinc.com,
+	quic_avuyyuru@quicinc.com,
+	quic_jponduru@quicinc.com,
+	quic_subashab@quicinc.com,
+	elder@kernel.org,
+	netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/7] net: ipa: header hygiene
+Date: Tue, 16 Apr 2024 18:10:11 -0500
+Message-Id: <20240416231018.389520-1-elder@linaro.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000009db84e0615a73698@google.com> <20240409164627.b4803e09c81c01ccb6f55601@linux-foundation.org>
- <CAAa6QmQ-fSNHu0VWQod+Cz89zOtQ9Ayet_2OEQsrp2zeCfos3A@mail.gmail.com>
-In-Reply-To: <CAAa6QmQ-fSNHu0VWQod+Cz89zOtQ9Ayet_2OEQsrp2zeCfos3A@mail.gmail.com>
-From: "Zach O'Keefe" <zokeefe@google.com>
-Date: Tue, 16 Apr 2024 16:07:41 -0700
-Message-ID: <CAAa6QmS6Kw_E5wfabE1Sg8WHUXYYWsUo9e2KQNo-OiQVRDk-Ag@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] general protection fault in hpage_collapse_scan_file
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: syzbot <syzbot+57adb2a4b9d206521bc2@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 9, 2024 at 5:32=E2=80=AFPM Zach O'Keefe <zokeefe@google.com> wr=
-ote:
->
-> On Tue, Apr 9, 2024 at 4:46=E2=80=AFPM Andrew Morton <akpm@linux-foundati=
-on.org> wrote:
-> >
-> > On Tue, 09 Apr 2024 03:16:20 -0700 syzbot <syzbot+57adb2a4b9d206521bc2@=
-syzkaller.appspotmail.com> wrote:
-> >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    8568bb2ccc27 Add linux-next specific files for 202404=
-05
-> > > git tree:       linux-next
-> > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D152f48051=
-80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D48ca5acf8=
-d2eb3bc
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D57adb2a4b9d=
-206521bc2
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
- Debian) 2.40
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1268258=
-d180000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1256598d1=
-80000
-> >
-> > Help.  From a quick look this seems to be claiming that collapse_file()
-> > got to
-> >
-> >         VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
-> >
-> > with folio=3D=3DNULL, but the code look solid regarding this.
-> >
-> > Given that we have a reproducer, can we expect the bot to perform a
-> > bisection for us?
-> >
->
-> I often don't see a successful automatic bisect, even with
-> reproducers. Hit or miss. I will take a closer look tomorrow -- the
-> reproducer doesn't look to be doing anything crazy.
+The end result of this series is that the list of files included in
+every IPA source file will be maintained in sorted order.  This
+imposes some consistency that was previously not possible.
 
-I've only been able to reproduce this using the disk image provided by syzb=
-ot.
+If an IPA header file requires a symbol or type declared in another
+header, that other header must be included.  E.g., if bool or u32
+type is used in a function declaration in an IPA header file, the
+IPA header must include <linux/types.h>.
 
-What is happening is we are calling MADV_COLLAPSE on an empty mapping
--- which actually reaches collapse_file() -> filemap_lock_folio()
-after page_cache_sync_readahead() attempt. This of course fails
-correctly, and I can see right before GPF that the returned pointer is
-0xfffffffffffffffe, which is correctly ERR_PTR(-ENOENT). This should
-be causing us to take the if (IS_ERR(folio)) {..} path .. but we
-don't, and I don't know why. I haven't yet attempted to repro this
-against other images. Will continue looking, but wanted to provide
-some type of update -- even if it is a disappointing one -- so as to
-not appear like I've disappeared.
+If a type used is just a struct or union *pointer* or enum type (and
+no members within these types are needed), then these types only need
+to be *declared* within the header that uses it.
 
-Thanks,
-Zach
+This is sufficient, but in addition, this series removes includes of
+files that aren't necessary, as well as unneeded type declarations.
 
-> Thanks,
-> Zach
+					-Alex
+
+Alex Elder (7):
+  net: ipa: include some standard header files
+  net: ipa: remove unneeded standard includes
+  net: ipa: include "ipa_interrupt.h" where needed
+  net: ipa: add some needed struct declarations
+  net: ipa: eliminate unneeded struct declarations
+  net: ipa: more include file cleanup
+  net: ipa: sort all includes
+
+ drivers/net/ipa/data/ipa_data-v3.1.c   |  5 +++--
+ drivers/net/ipa/data/ipa_data-v3.5.1.c |  5 +++--
+ drivers/net/ipa/data/ipa_data-v4.11.c  |  5 +++--
+ drivers/net/ipa/data/ipa_data-v4.2.c   |  5 +++--
+ drivers/net/ipa/data/ipa_data-v4.5.c   |  5 +++--
+ drivers/net/ipa/data/ipa_data-v4.7.c   |  5 +++--
+ drivers/net/ipa/data/ipa_data-v4.9.c   |  5 +++--
+ drivers/net/ipa/data/ipa_data-v5.0.c   |  5 +++--
+ drivers/net/ipa/data/ipa_data-v5.5.c   |  5 +++--
+ drivers/net/ipa/gsi.c                  | 18 ++++++++---------
+ drivers/net/ipa/gsi.h                  | 10 +++-------
+ drivers/net/ipa/gsi_private.h          |  7 ++++---
+ drivers/net/ipa/gsi_reg.c              |  6 +++---
+ drivers/net/ipa/gsi_trans.c            | 12 ++++++------
+ drivers/net/ipa/gsi_trans.h            |  9 ++++-----
+ drivers/net/ipa/ipa.h                  | 15 +++++---------
+ drivers/net/ipa/ipa_cmd.c              | 13 +++++++------
+ drivers/net/ipa/ipa_cmd.h              | 10 +++-------
+ drivers/net/ipa/ipa_data.h             |  4 ++--
+ drivers/net/ipa/ipa_endpoint.c         | 19 ++++++++++--------
+ drivers/net/ipa/ipa_endpoint.h         |  4 ++--
+ drivers/net/ipa/ipa_gsi.c              |  7 ++++---
+ drivers/net/ipa/ipa_interrupt.c        | 10 +++++-----
+ drivers/net/ipa/ipa_interrupt.h        |  6 ++++--
+ drivers/net/ipa/ipa_main.c             | 27 +++++++++++++-------------
+ drivers/net/ipa/ipa_mem.c              | 15 +++++++-------
+ drivers/net/ipa/ipa_mem.h              |  4 +++-
+ drivers/net/ipa/ipa_modem.c            | 14 ++++++-------
+ drivers/net/ipa/ipa_modem.h            |  5 +++--
+ drivers/net/ipa/ipa_power.c            |  8 ++++----
+ drivers/net/ipa/ipa_power.h            |  5 +++--
+ drivers/net/ipa/ipa_qmi.c              | 10 +++-------
+ drivers/net/ipa/ipa_qmi.h              |  4 +++-
+ drivers/net/ipa/ipa_qmi_msg.c          |  3 ++-
+ drivers/net/ipa/ipa_qmi_msg.h          |  3 ++-
+ drivers/net/ipa/ipa_reg.c              |  4 ++--
+ drivers/net/ipa/ipa_reg.h              |  6 +-----
+ drivers/net/ipa/ipa_resource.c         |  3 +--
+ drivers/net/ipa/ipa_smp2p.c            | 10 +++++-----
+ drivers/net/ipa/ipa_sysfs.c            |  7 +++----
+ drivers/net/ipa/ipa_sysfs.h            |  4 +---
+ drivers/net/ipa/ipa_table.c            | 19 ++++++++----------
+ drivers/net/ipa/ipa_uc.c               | 10 ++++++----
+ drivers/net/ipa/ipa_uc.h               |  3 +--
+ drivers/net/ipa/ipa_version.h          |  4 +++-
+ drivers/net/ipa/reg.h                  |  8 +++++---
+ drivers/net/ipa/reg/gsi_reg-v3.1.c     |  8 +++++---
+ drivers/net/ipa/reg/gsi_reg-v3.5.1.c   |  8 +++++---
+ drivers/net/ipa/reg/gsi_reg-v4.0.c     |  8 +++++---
+ drivers/net/ipa/reg/gsi_reg-v4.11.c    |  8 +++++---
+ drivers/net/ipa/reg/gsi_reg-v4.5.c     |  8 +++++---
+ drivers/net/ipa/reg/gsi_reg-v4.9.c     |  8 +++++---
+ drivers/net/ipa/reg/gsi_reg-v5.0.c     |  8 +++++---
+ drivers/net/ipa/reg/ipa_reg-v3.1.c     |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v3.5.1.c   |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v4.11.c    |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v4.2.c     |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v4.5.c     |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v4.7.c     |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v4.9.c     |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v5.0.c     |  6 ++++--
+ drivers/net/ipa/reg/ipa_reg-v5.5.c     |  6 +++---
+ 62 files changed, 253 insertions(+), 228 deletions(-)
+
+-- 
+2.40.1
+
 
