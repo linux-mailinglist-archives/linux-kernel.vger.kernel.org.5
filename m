@@ -1,113 +1,121 @@
-Return-Path: <linux-kernel+bounces-146087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF3E8A6051
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:31:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C88318A6060
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:34:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7651C20C18
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:31:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84C872833E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078BD539C;
-	Tue, 16 Apr 2024 01:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="HEVVAzMy"
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912C37483;
+	Tue, 16 Apr 2024 01:34:48 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E2F5227
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 125487464;
+	Tue, 16 Apr 2024 01:34:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713231106; cv=none; b=RSF8lnsxGzw51p6X3VkXhtSvjc+iOQFQil0Nrm0OcPNnF5CDYoSmtXsbqs9nMKyCZoSbuVhu7osX68UTavx6DfujpyYZiWZ3+/XS2pEAQLw3nI6kAgQgJKEZs/yjQQnUWFWXBCD8NvCpuFvZ8iqXdL1XmZid8ArBj9v066XvN80=
+	t=1713231288; cv=none; b=DH1w5mCBmGVlWiY7qkCS5ogKLAxfVvSFAz/OvOs7piJNI5o1oTULkuIBLKJqU/QUS5Omj4v9KGUVhT0aFbkNgJkshIkSna1mArin4FTO1kXd5LILLN6QnJh3MlqCrlFeZdlj+/GlM7ZO+tXb1w5fnXD3sq7IyF/lruS7hWyIr8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713231106; c=relaxed/simple;
-	bh=Lt5qa2tKJaXTFBi0w3EsYO6+uA+O9X5f7mwgjyL9enY=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=GmmumJfKTjdr68yUk98IQ1aLBlE5+f19QcjuyJmO/fMNZAnkWeIt/zJ4pCege9iJCHKHMUqMMFc4vfQntZH6Q2FDaDHN7A3w6q2VVnl26tnUquezCvdw2WFVcHHTQvvbYJl+6iapOo6X6iFaa9fi1zwGEJL34c9Asd7L6S8OmOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=HEVVAzMy; arc=none smtp.client-ip=209.85.160.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-2331bef249eso1704474fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1713231104; x=1713835904; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AQ1Fmu4Vn/bJTdN2f3Tpcx/PWLxgEkHvwqs2u4LlG6Q=;
-        b=HEVVAzMyF1muehurD+wPHdccrFYjznQhek7Pj9Zo/xqr+DP3k0LlMxUawUtmMRIaP3
-         J1dAOQdq4rAYIMuYeQWeXQdE3d/3peI9jBhuEkhy+/YFFG8ecl2N/u4BLjvedK6jIj5b
-         A63gJpx12RAcwVEViQROHb4N3N92JBWQ9stjyv26upTh2sr23mqVbu4g1tVVuqIWycWQ
-         epLc6hjOuoT6rYDpRNOuc/YPqzCqEFQMq6GS5C/+O2sCX01uZGZnPC2xpijEDrUI5sx5
-         +dFDLglTqLuOiwScIH2dLPeUVha4tGy56l0rKdYt10zR+S2CHMSZi+grcKCB2nQfq1uz
-         qvjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713231104; x=1713835904;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AQ1Fmu4Vn/bJTdN2f3Tpcx/PWLxgEkHvwqs2u4LlG6Q=;
-        b=wZyOEijj/+zQ40+D3TbGmqbM0dYHPSw1o2gNd4gqGSm4gNtfpL7tCJ8osYlbJLcAI5
-         AqOLn1rTW5cspcXsu1dXMIt7DFS2fVG03CdXawaL1+IeIDtaejIWgCE25xHaC60n/Sfi
-         2gWB0xg+iVnPiZQtD6mHi2YJqrsg4h3vHqDFMqYQUja68ta3HqzxyLn9imL4pkVd+pzq
-         IQyh0gvfhnhtcZuD0C7qUhzvwI8vfVkEqpPvg6JBsQdS1D5En3O0iY1AbdtSozWzPv96
-         NqupDCIpavTUxQmI6e1+PbXY6SWEKNcVafejI/0tjXLB6861Q9PA/+hFxLdPhCRJUc2g
-         tFCw==
-X-Forwarded-Encrypted: i=1; AJvYcCV4kUUF3IZshjGc7tygQENhTkri5YzsIfCpiCVdvt7GvqJos2j2EzeMx/LQ9g9X56WoxVz9XKYW3BIKbSkR9Hdqcu2n4FMCF9slJdCV
-X-Gm-Message-State: AOJu0Yw4+zOkNZLiiDTW3ZwBgb+2z6X1aBUi5JDIRJptTd0RnJZU7A8+
-	xg+Yh3FXB6yGZFnaL7nkC5qps/VUYll0VmuCmQ3qz7MFl85gs39IiW+fHBgpiyE=
-X-Google-Smtp-Source: AGHT+IGV28aTXnJZCsv5QTO9arJ7Mejc0+P37jlL8ec2Sy1TLly7UFcUuc2+Lugf+lCiR8bqSzVsfg==
-X-Received: by 2002:a05:6870:f61d:b0:22e:8a2a:2497 with SMTP id ek29-20020a056870f61d00b0022e8a2a2497mr13497999oab.45.1713231103843;
-        Mon, 15 Apr 2024 18:31:43 -0700 (PDT)
-Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id b13-20020a630c0d000000b005dc4da2121fsm7642525pgl.6.2024.04.15.18.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 18:31:43 -0700 (PDT)
-From: Zong Li <zong.li@sifive.com>
-To: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	schwab@suse.de,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Zong Li <zong.li@sifive.com>
-Subject: [PATCH] Revert "riscv: disable generation of unwind tables"
-Date: Tue, 16 Apr 2024 09:31:38 +0800
-Message-Id: <20240416013138.28760-1-zong.li@sifive.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1713231288; c=relaxed/simple;
+	bh=mJem2Ufbl9Ew2/f7xgNNLsKEvT9e4WkGZGTdtTMWaTk=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XODnLMxgmGM7K6ZPj838D+DoSbZjK66zHagpPxmZwwcj3Hh+BaGaKORCr5jcO4wkP/r7y9yQEdV29qC77+lr3qLCCh2ysSqtqKXxPiJln1zL/r/jXXgLbgFVPfUkP7zA65Ms87NVdIQaeS8eyJ14D5xXOlqm8xpkdMmViYGOuaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VJRQJ1YQ9z1ws14;
+	Tue, 16 Apr 2024 09:33:44 +0800 (CST)
+Received: from kwepemi500009.china.huawei.com (unknown [7.221.188.199])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2049E1400D5;
+	Tue, 16 Apr 2024 09:34:42 +0800 (CST)
+Received: from localhost (10.175.127.227) by kwepemi500009.china.huawei.com
+ (7.221.188.199) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 16 Apr
+ 2024 09:34:41 +0800
+Date: Tue, 16 Apr 2024 09:35:20 +0800
+From: Long Li <leo.lilong@huawei.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+CC: <willy@infradead.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>, <houtao1@huawei.com>,
+	<yangerkun@huawei.com>
+Subject: Re: [PATCH] xarray: inline xas_descend to improve performance
+Message-ID: <20240416013520.GA506789@ceph-admin>
+References: <20240415012136.3636671-1-leo.lilong@huawei.com>
+ <20240415131053.051e60135eacf281df6921f6@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20240415131053.051e60135eacf281df6921f6@linux-foundation.org>
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500009.china.huawei.com (7.221.188.199)
 
-This reverts commit 2f394c0e7d1129a35156e492bc8f445fb20f43ac.
+On Mon, Apr 15, 2024 at 01:10:53PM -0700, Andrew Morton wrote:
+> On Mon, 15 Apr 2024 09:21:36 +0800 Long Li <leo.lilong@huawei.com> wrote:
+> 
+> > The commit 63b1898fffcd ("XArray: Disallow sibling entries of nodes")
+> > modified the xas_descend function in such a way that it was no longer
+> > being compiled as an inline function, because it increased the size of
+> > xas_descend(), and the compiler no longer optimizes it as inline. This
+> > had a negative impact on performance, xas_descend is called frequently
+> > to traverse downwards in the xarray tree, making it a hot function.
+> > 
+> > Inlining xas_descend has been shown to significantly improve performance
+> > by approximately 4.95% in the iozone write test.
+> > 
+> >   Machine: Intel(R) Xeon(R) Gold 6240 CPU @ 2.60GHz
+> >   #iozone i 0 -i 1 -s 64g -r 16m -f /test/tmptest
+> > 
+> > Before this patch:
+> > 
+> >        kB    reclen    write   rewrite     read    reread
+> >  67108864     16384  2230080   3637689 6 315197   5496027
+> > 
+> > After this patch:
+> > 
+> >        kB    reclen    write   rewrite     read    reread
+> >  67108864     16384  2340360   3666175  6272401   5460782
+> > 
+> > Percentage change:
+> >                        4.95%     0.78%   -0.68%    -0.64%
+> > 
+> > This patch introduces inlining to the xas_descend function. While this
+> > change increases the size of lib/xarray.o, the performance gains in
+> > critical workloads make this an acceptable trade-off.
+> > 
+> > Size comparison before and after patch:
+> > .text		.data		.bss		file
+> > 0x3502		    0		   0		lib/xarray.o.before
+> > 0x3602		    0		   0		lib/xarray.o.after
+> > 
+> > ...
+> >
+> > --- a/lib/xarray.c
+> > +++ b/lib/xarray.c
+> > @@ -200,7 +200,7 @@ static void *xas_start(struct xa_state *xas)
+> >  	return entry;
+> >  }
+> >  
+> > -static void *xas_descend(struct xa_state *xas, struct xa_node *node)
+> > +static inline void *xas_descend(struct xa_state *xas, struct xa_node *node)
+> >  {
+> >  	unsigned int offset = get_offset(xas->xa_index, node);
+> >  	void *entry = xa_entry(xas->xa, node, offset);
+> 
+> I thought gcc nowadays treats `inline' as avisory and still makes up
+> its own mind?
+> 
+> Perhaps we should use __always_inline here?
 
-RISC-V has supported the complete relocation types in module loader by
-'8fd6c5142395 ("riscv: Add remaining module relocations")'.
-Now RISC-V port can enable unwind tables in case eh_frame parsing is
-needed.
-
-Signed-off-by: Zong Li <zong.li@sifive.com>
----
- arch/riscv/Makefile | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 5b3115a19852..9216bf8a2691 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -94,9 +94,6 @@ ifeq ($(CONFIG_CMODEL_MEDANY),y)
- 	KBUILD_CFLAGS += -mcmodel=medany
- endif
- 
--# Avoid generating .eh_frame sections.
--KBUILD_CFLAGS += -fno-asynchronous-unwind-tables -fno-unwind-tables
--
- # The RISC-V attributes frequently cause compatibility issues and provide no
- # information, so just turn them off.
- KBUILD_CFLAGS += $(call cc-option,-mno-riscv-attribute)
--- 
-2.17.1
-
+Yes, I agree with you, I will send a new version. thanks!
 
