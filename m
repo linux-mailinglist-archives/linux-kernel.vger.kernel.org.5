@@ -1,107 +1,120 @@
-Return-Path: <linux-kernel+bounces-147301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D58A08A722F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:24:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 498F58A723A
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:26:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FBEF1C20D8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:24:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3B6D1F22BD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65451133284;
-	Tue, 16 Apr 2024 17:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A32134401;
+	Tue, 16 Apr 2024 17:26:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="N+VVVFIh"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BE91332A7;
-	Tue, 16 Apr 2024 17:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c8XALg5n"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287EF13340D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 17:26:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713288276; cv=none; b=iwHlkIJOfFmhwG2QuaEp2mSaRu2pmRtS3kOWXVv+6kWIESr7msfP1/qaSOXSZ/1TlibDTM5fdykGzzWf8FlpcnIi6NIkzkw4v/EeOzcd2yIR7A9/aisKmQJhM4UaMsa4yks/DbJq13YjX75u7Lg4qe4D9mb2XcNbblMCjHdPZvM=
+	t=1713288362; cv=none; b=BaUKzemER9EFNMUtPUO3EIA5y67/2ajG3sxCrUgxc6xbOCUTqf8WApyKmpNe8Ozu2ZxO3O2xN35jZxolXSGTe6AhZLEAYkWAiEjWhSwIwO7kmeWFdnqt6/W7uaBmp00kxp86xRjev2hpLcf4UL6qInUXqCEa2BENDf89bNlkKeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713288276; c=relaxed/simple;
-	bh=XzlHoWbCewhBMWvTfN59eZpOMbP92r+tEx3PdmU5CvI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FPLXFh/pVuuN06ZGeMLNO/FqtpnsHhxuTTaJl1Oh78aYivRGlbcrd+OfFYgrKfA0JfLoMAACdKOt7BCzmV+kbOlpt7IpEyEaq+H9uDz/SLmRjhWpKaMmSKIJcuhkwtA5IpAYJs0dXKgf0RW6mABk6ZZdzKloCTF2CLJ0wgQqXPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=N+VVVFIh; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.192.9.210] (unknown [167.220.77.82])
-	by linux.microsoft.com (Postfix) with ESMTPSA id AB92420FD413;
-	Tue, 16 Apr 2024 10:24:28 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AB92420FD413
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1713288268;
-	bh=ls55kzA4NgbPtH5yXF9qjPYhHDVyOeLEqJj+MKe3bqM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=N+VVVFIhkTvl4mLN4zwmv18TFMdC9JISjm+SBtgcqQ/5V1d08QI196QyOuqKmgLgK
-	 gCwBJDk+xncjm55NHbewVDIppAYbhxBgHvN1AqDBceTG6SQy0aGsRDxg/7cxLCwjzZ
-	 kr5pbQVz9AIpAz7G1LQvGNTz83oE7ALyIynw3QIs=
-Message-ID: <cc48b26a-f67e-43bc-a29f-2e9f36cecc45@linux.microsoft.com>
-Date: Tue, 16 Apr 2024 10:24:27 -0700
+	s=arc-20240116; t=1713288362; c=relaxed/simple;
+	bh=IJuIYdnF0LWSygsLwsn6+waVDToijuxbtvLwjuDB96c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mIRxUiICfNdtdcjaOm5Aji2P0gRw3xV4kLHC8J1ZAFoA8d23/cPqWgJBsiyMPZLFTP76lUgbHDIqo+B6zPnSsplkKk5/VbmChek/pFBDAS05+jmbmDq2Im+aAI/K3yBi7SbzC+BESAn6lV8YXrhbaJZN4uZYLxjulFYV5L5IT7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c8XALg5n; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713288359;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=1onEK+mjIGOBc7x6Ypb0bDNESgiVTW/1kwHRGIFFvkM=;
+	b=c8XALg5nBqwNPx1DayV83y2zB9+ljr31D2dNqH1TSxhL7U0R1fgr2qbEa3+7xy+tStjB3e
+	c4Xyf1tqtSWFVYpDFQqToSes1kbFa7UbMSqX4qogAOlPPa/UACkKCFamkQ/8aZQLPcucwV
+	i9NcRbl9MfOYY4m711OezJK4M4Csbms=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-46-CG4LeTsyOi2kOFzEDet5uA-1; Tue, 16 Apr 2024 13:25:56 -0400
+X-MC-Unique: CG4LeTsyOi2kOFzEDet5uA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2837A811001;
+	Tue, 16 Apr 2024 17:25:56 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.39.192.80])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id DB2A949106;
+	Tue, 16 Apr 2024 17:25:53 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alex Shi <alexs@kernel.org>
+Subject: [PATCH v1] mm/ksm: remove page_mapcount() usage in stable_tree_search()
+Date: Tue, 16 Apr 2024 19:25:33 +0200
+Message-ID: <20240416172533.663418-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ACPI: CPPC: Fix bit_offset shift in MASK_VAL macro
-To: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- Easwar Hariharan <eahariha@linux.microsoft.com>,
- "open list:ACPI" <linux-acpi@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
- stable@vger.kernel.org
-References: <20240409052310.3162495-1-jarredwhite@linux.microsoft.com>
-Content-Language: en-CA
-From: Jarred White <jarredwhite@linux.microsoft.com>
-In-Reply-To: <20240409052310.3162495-1-jarredwhite@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On 4/8/2024 10:23 PM, Jarred White wrote:
-> Commit 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for
-> system memory accesses") neglected to properly wrap the bit_offset shift
-> when it comes to applying the mask. This may cause incorrect values to be
-> read and may cause the cpufreq module not be loaded.
-> 
-> [   11.059751] cpu_capacity: CPU0 missing/invalid highest performance.
-> [   11.066005] cpu_capacity: partial information: fallback to 1024 for all CPUs
-> 
-> Also, corrected the bitmask generation in GENMASK (extra bit being added).
-> 
-> Fixes: 2f4a4d63a193 ("ACPI: CPPC: Use access_width over bit_width for system memory accesses")
-> Signed-off-by: Jarred White <jarredwhite@linux.microsoft.com>
-> CC: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> CC: stable@vger.kernel.org #5.15+
-> ---
->   drivers/acpi/cppc_acpi.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 4bfbe55553f4..00a30ca35e78 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -170,8 +170,8 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
->   #define GET_BIT_WIDTH(reg) ((reg)->access_width ? (8 << ((reg)->access_width - 1)) : (reg)->bit_width)
->   
->   /* Shift and apply the mask for CPC reads/writes */
-> -#define MASK_VAL(reg, val) ((val) >> ((reg)->bit_offset & 			\
-> -					GENMASK(((reg)->bit_width), 0)))
-> +#define MASK_VAL(reg, val) (((val) >> (reg)->bit_offset) & 			\
-> +					GENMASK(((reg)->bit_width) - 1, 0))
->   
->   static ssize_t show_feedback_ctrs(struct kobject *kobj,
->   		struct kobj_attribute *attr, char *buf)
+We want to limit the use of page_mapcount() to the places where it is
+absolutely necessary.
 
-Hi Vanshi,
+If our folio has a stable node, it is a (small) KSM folio -- see
+folio_stable_node(). Let's use folio_mapcount() in stable_tree_search()
+instead, which results in no functional change.
 
-Could you review please?
+The mapcount > 1 check is a bit confusing, because that's usually a check
+for page sharing. Looks like the reason is that we are guaranteed to not
+exceed ksm_max_page_sharing for the tree KSM folio when merging with
+that. Let's update the documentation to make that clearer.
 
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alex Shi (tencent) <alexs@kernel.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ mm/ksm.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-Thanks,
-Jarred
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 486c9974f8e20..159604ad47799 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -1909,12 +1909,15 @@ static struct page *stable_tree_search(struct page *page)
+ 			if (page_node) {
+ 				VM_BUG_ON(page_node->head != &migrate_nodes);
+ 				/*
+-				 * Test if the migrated page should be merged
+-				 * into a stable node dup. If the mapcount is
+-				 * 1 we can migrate it with another KSM page
+-				 * without adding it to the chain.
++				 * If the mapcount of our migrated KSM folio is
++				 * at most 1, we can merge it with another
++				 * KSM folio where we know that we have space
++				 * for one more mapping without exceeding the
++				 * ksm_max_page_sharing limit: see
++				 * chain_prune(). This way, we can avoid adding
++				 * this stable node to the chain.
+ 				 */
+-				if (page_mapcount(page) > 1)
++				if (folio_mapcount(folio) > 1)
+ 					goto chain_append;
+ 			}
+ 
+-- 
+2.44.0
+
 
