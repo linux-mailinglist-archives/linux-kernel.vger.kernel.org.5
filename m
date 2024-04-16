@@ -1,137 +1,231 @@
-Return-Path: <linux-kernel+bounces-146738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 361388A6A1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:03:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5058A6A1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:02:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF3191F217C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:03:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67DF7B22249
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9853912B15A;
-	Tue, 16 Apr 2024 12:02:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="efSm+JIt"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EAC12A16C;
+	Tue, 16 Apr 2024 12:02:30 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1003512A170;
-	Tue, 16 Apr 2024 12:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF7CD12A16D
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268957; cv=none; b=qs+6Lp/t4es8xR/mTx8r/p0tRQN+tUKBQOGKdHteoDv+gz3skqtNawlIWioCl79E1uODTjzRjnc7vYN7Mmc6J+UPs2WR+B6HOjYsf+8EBlyPPnQl+kx+2NSc3O1K9w1Zpl7o13kJ9x+s6tslBSzJo+vZWHHyJnD95O4/slBGnDg=
+	t=1713268949; cv=none; b=Sg/fZILRKgXI1CBAdW0KMOHZAEvp1Ub/DRnYnEaJ+0/zgF6f3kNCjKbDVCDegkdGc1Uye8DG3ID/5O/JnVTgFxiXrGXCIF14fI7mgxIrOMXd8fn/ckYE6sR1vknJOPEtn90SjPxxahPymx1uPANGAYVjqiE6gxoDpSWsnaOvoUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268957; c=relaxed/simple;
-	bh=ZWpYfz4eCT9K2GMgCPAps04fnJ+d32kW6EGhaGfLoCc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mB+RDllI98riywtAjuUbNbhD+xJtc2jlnIS96FTaSkZupu6EV9Dhe1iqlEEWN4QmQcOW2j51DVwnXqOypM0raiKhzLXX4lt7Myo+hLSmgmNFwXAyRQmuhVTmz366aYQJ8zWRvzV0nh99znDzm+PImg+deDIGINKM3kMU0rwT2eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=efSm+JIt; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GAScMb031904;
-	Tue, 16 Apr 2024 12:02:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=RL4SldF35NlNvMsqOFwvpvMKNHxNrohbBmlz5SARb3A=;
- b=efSm+JItYNBcGoyKi3IcXexxmeDEg0KGkbcb0KrVvHA3ComO6H83i1SwsZehZzFpptME
- diu1IoirH4sLxgs5gV2a+OlehqNnsUMziuxq2jS0w6isJyOzvrxikXZLE5rPeoexUsnL
- JAGDLFU9O9U0adFa3FI1VuikA7JRT/ECHnfkzv96gwQ1E1OJUNR2HUN7EWEekxG/zsFP
- Sw5rg8UgwDDkRPEvflR6qavz4FO1zzBa5o+0ChV5hyM4cSThjmPjlMKfkNa1IYznvX4u
- qG80nmD4zh42mpx7P1TOjTVCx9dt/kz5E+YL0TQYXIbuY2qFVoB1MHLD735YkOWzWlrN MQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhqky0598-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 12:02:30 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43GC28mM004926;
-	Tue, 16 Apr 2024 12:02:29 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhqky0595-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 12:02:29 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43G9drqv015506;
-	Tue, 16 Apr 2024 12:02:29 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg5vm5sye-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 12:02:28 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43GC2NBS40042794
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Apr 2024 12:02:25 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3764D2004B;
-	Tue, 16 Apr 2024 12:02:23 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 914B120043;
-	Tue, 16 Apr 2024 12:02:22 +0000 (GMT)
-Received: from [9.152.224.222] (unknown [9.152.224.222])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 16 Apr 2024 12:02:22 +0000 (GMT)
-Message-ID: <20d1d8c5-70e9-4b00-965b-918f275cfae7@linux.ibm.com>
-Date: Tue, 16 Apr 2024 14:02:22 +0200
+	s=arc-20240116; t=1713268949; c=relaxed/simple;
+	bh=1C8QensAqDcvNf44zqn5EdvvsKL0UVn3tH+ErfAOl+M=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ldZkS0rF+bM8+8jml7kTgUgfghdGaQTIP6s8g7TMlf24FXslUyiyaJyalDtLvjoQWBB/yPaqxZMFb1nz7Cy2vnTcUEnOc+0d/WThmSNmb1JnD79tnHII/Qa2KpVXnOZh0T3iI/6fLy5qMm6zDQe7sr4w0roevkNWC3fmKKGbuU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36a179df9fdso45535905ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 05:02:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713268945; x=1713873745;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RliH/lwwNQjo2LcJr03DjdCa5kWkv5xAiJHUNHgwVYw=;
+        b=TsFAVpt7F/uEb2oMPQo8OpIyYHewHybTvhzRyeN3gCJNSoNAFYgYv5He8OUts6T5HY
+         jTp+VvwQql2I283zrMAQ/pgJ3ea7PhT+8orPV8dxLzBS3UXUOHu2vPqMGEc3Y5AefZOc
+         ABj42VnrCHqdM6UznGUQZIaSxTAhraoMUrWYihsZwVaT1APpWolRpiuuXdi439RqcpvB
+         9JspZ2FEhJQGrXIFuTD+ea748/lVyFq8GTVwHcjkdkkQJicgw2VXHwv/MKMWzKAz0ndK
+         HnMg7XLyQfXN5JwGvcEjl6FHx6bf8l9gQ0Eyk4LyOu+gF34CCa2xl6CDq5/4i690nZLe
+         xRog==
+X-Forwarded-Encrypted: i=1; AJvYcCWzdUkGcG+KH87Pg6KweT/CTdU+HuEtYrtR/EzXX9EwND5gEaJHid9OTksxngt9oQ5Kis2/FtyZ+oIseSEMdRa92SHJiv8OjzYdh3AH
+X-Gm-Message-State: AOJu0YzEDUJm/oxVhE9iLO0gu7NdmsZZBgAE2iYb4Z8uboGYvH0A+lCd
+	7rKx+gLh+yn2NiMdJ6Tz1odGV6umVYaSFFKxLrny6STfsC/D0JQEfHZD2BxyAvj4QuR4iE1lPWS
+	+8yps8Z3gFAIsGcZiGIxkx9I63d/JHLWioo1BgiKTQRSN3TF1k0vm07E=
+X-Google-Smtp-Source: AGHT+IGPHdee8JjKHOeuBQgVBStbNj/c5ul3p6q9T2b8cyMj+j+acL2QyjWoUjWV1FqPD1NBTzOcmL94+78qDTWCLGtM5nTs7iPr
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV and
- !skeys KVM guests
-To: Alexander Gordeev <agordeev@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-References: <20240411161441.910170-1-david@redhat.com>
- <20240411161441.910170-3-david@redhat.com>
- <Zh1w1QTNSy+rrCH7@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <8533cb18-42ff-42bc-b9e5-b0537aa51b21@redhat.com>
- <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-Content-Language: en-US
-From: Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <Zh4cqZkuPR9V1t1o@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rOCqEBPwxOZabIO0iThK6HIAofE6o9PZ
-X-Proofpoint-ORIG-GUID: c0NOLnVFYJU1pyCLAA0PU_HqyxkdNqbp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_08,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
- bulkscore=0 mlxlogscore=768 spamscore=0 mlxscore=0 adultscore=0
- malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2404010000 definitions=main-2404160074
+X-Received: by 2002:a05:6e02:2199:b0:36a:3f1f:bd4e with SMTP id
+ j25-20020a056e02219900b0036a3f1fbd4emr836028ila.5.1713268945260; Tue, 16 Apr
+ 2024 05:02:25 -0700 (PDT)
+Date: Tue, 16 Apr 2024 05:02:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e33add0616358204@google.com>
+Subject: [syzbot] [xfs?] possible deadlock in xfs_icwalk_ag (2)
+From: syzbot <syzbot+4248e91deb3db78358a2@syzkaller.appspotmail.com>
+To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    9ed46da14b9b Add linux-next specific files for 20240412
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=100fbfcb180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7ea0abc478c49859
+dashboard link: https://syzkaller.appspot.com/bug?extid=4248e91deb3db78358a2
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/fc649744d68c/disk-9ed46da1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/11eab7b9945d/vmlinux-9ed46da1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e7885afd198d/bzImage-9ed46da1.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4248e91deb3db78358a2@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-rc3-next-20240412-syzkaller #0 Not tainted
+------------------------------------------------------
+kswapd0/88 is trying to acquire lock:
+ffff88807b8bc6d8 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
+ffff88807b8bc6d8 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
+ffff88807b8bc6d8 (&xfs_dir_ilock_class){++++}-{3:3}, at: xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
+
+but task is already holding lock:
+ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat mm/vmscan.c:6819 [inline]
+ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: kswapd+0xbe8/0x38a0 mm/vmscan.c:7201
+
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
 
-Am 16.04.24 um 08:37 schrieb Alexander Gordeev:
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __fs_reclaim_acquire mm/page_alloc.c:3825 [inline]
+       fs_reclaim_acquire+0x88/0x140 mm/page_alloc.c:3839
+       might_alloc include/linux/sched/mm.h:334 [inline]
+       slab_pre_alloc_hook mm/slub.c:3847 [inline]
+       slab_alloc_node mm/slub.c:3937 [inline]
+       __do_kmalloc_node mm/slub.c:4077 [inline]
+       __kmalloc_noprof+0xae/0x400 mm/slub.c:4091
+       kmalloc_noprof include/linux/slab.h:664 [inline]
+       xfs_attr_shortform_list+0x6f1/0x17b0 fs/xfs/xfs_attr_list.c:115
+       xfs_attr_list_ilocked fs/xfs/xfs_attr_list.c:527 [inline]
+       xfs_attr_list+0x25b/0x350 fs/xfs/xfs_attr_list.c:547
+       xfs_vn_listxattr+0x1d2/0x2c0 fs/xfs/xfs_xattr.c:314
+       vfs_listxattr fs/xattr.c:493 [inline]
+       listxattr+0x107/0x290 fs/xattr.c:840
+       path_listxattr fs/xattr.c:864 [inline]
+       __do_sys_listxattr fs/xattr.c:876 [inline]
+       __se_sys_listxattr fs/xattr.c:873 [inline]
+       __x64_sys_listxattr+0x176/0x240 fs/xattr.c:873
+       do_syscall_x64 arch/x86/entry/common.c:74 [inline]
+       do_syscall_64+0xfa/0x250 arch/x86/entry/common.c:105
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
->> We could piggy-back on vm_fault_to_errno(). We could use
->> vm_fault_to_errno(rc, FOLL_HWPOISON), and only continue (retry) if the rc is 0 or
->> -EFAULT, otherwise fail with the returned error.
->>
->> But I'd do that as a follow up, and also use it in break_ksm() in the same fashion.
-> 
-> @Christian, do you agree with this suggestion?
+-> #0 (&xfs_dir_ilock_class){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
+       xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
+       xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
+       xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
+       xfs_icwalk fs/xfs/xfs_icache.c:1762 [inline]
+       xfs_reclaim_inodes_nr+0x257/0x360 fs/xfs/xfs_icache.c:1011
+       super_cache_scan+0x40f/0x4b0 fs/super.c:227
+       do_shrink_slab+0x705/0x1160 mm/shrinker.c:435
+       shrink_slab+0x1092/0x14d0 mm/shrinker.c:662
+       shrink_one+0x453/0x880 mm/vmscan.c:4809
+       shrink_many mm/vmscan.c:4870 [inline]
+       lru_gen_shrink_node mm/vmscan.c:4970 [inline]
+       shrink_node+0x3b17/0x4310 mm/vmscan.c:5929
+       kswapd_shrink_node mm/vmscan.c:6741 [inline]
+       balance_pgdat mm/vmscan.c:6932 [inline]
+       kswapd+0x1882/0x38a0 mm/vmscan.c:7201
+       kthread+0x2f0/0x390 kernel/kthread.c:389
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-I would need to look into that more closely to give a proper answer. In general I am ok
-with this but I prefer to have more eyes on that.
- From what I can tell we should cover all the normal cases with our CI as soon as it hits
-next. But maybe we should try to create/change a selftest to trigger these error cases?
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(&xfs_dir_ilock_class);
+                               lock(fs_reclaim);
+  lock(&xfs_dir_ilock_class);
+
+ *** DEADLOCK ***
+
+2 locks held by kswapd0/88:
+ #0: ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat mm/vmscan.c:6819 [inline]
+ #0: ffffffff8e429e80 (fs_reclaim){+.+.}-{0:0}, at: kswapd+0xbe8/0x38a0 mm/vmscan.c:7201
+ #1: ffff8880866840e0 (&type->s_umount_key#74){++++}-{3:3}, at: super_trylock_shared fs/super.c:561 [inline]
+ #1: ffff8880866840e0 (&type->s_umount_key#74){++++}-{3:3}, at: super_cache_scan+0x94/0x4b0 fs/super.c:196
+
+stack backtrace:
+CPU: 1 PID: 88 Comm: kswapd0 Not tainted 6.9.0-rc3-next-20240412-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ down_write_nested+0x3d/0x50 kernel/locking/rwsem.c:1695
+ xfs_reclaim_inode fs/xfs/xfs_icache.c:945 [inline]
+ xfs_icwalk_process_inode fs/xfs/xfs_icache.c:1631 [inline]
+ xfs_icwalk_ag+0x120e/0x1ad0 fs/xfs/xfs_icache.c:1713
+ xfs_icwalk fs/xfs/xfs_icache.c:1762 [inline]
+ xfs_reclaim_inodes_nr+0x257/0x360 fs/xfs/xfs_icache.c:1011
+ super_cache_scan+0x40f/0x4b0 fs/super.c:227
+ do_shrink_slab+0x705/0x1160 mm/shrinker.c:435
+ shrink_slab+0x1092/0x14d0 mm/shrinker.c:662
+ shrink_one+0x453/0x880 mm/vmscan.c:4809
+ shrink_many mm/vmscan.c:4870 [inline]
+ lru_gen_shrink_node mm/vmscan.c:4970 [inline]
+ shrink_node+0x3b17/0x4310 mm/vmscan.c:5929
+ kswapd_shrink_node mm/vmscan.c:6741 [inline]
+ balance_pgdat mm/vmscan.c:6932 [inline]
+ kswapd+0x1882/0x38a0 mm/vmscan.c:7201
+ kthread+0x2f0/0x390 kernel/kthread.c:389
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
