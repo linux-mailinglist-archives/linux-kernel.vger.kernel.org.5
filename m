@@ -1,79 +1,62 @@
-Return-Path: <linux-kernel+bounces-146503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 546BC8A6637
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:35:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3847C8A663F
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:36:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B400EB25C24
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:35:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBB61B222FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC4E82860;
-	Tue, 16 Apr 2024 08:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1FC0839E5;
+	Tue, 16 Apr 2024 08:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GeZbOWaa"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NYRh5pJ/"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83476EEB7
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB3D205E10;
+	Tue, 16 Apr 2024 08:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713256529; cv=none; b=nakA5Ys4hqo8C6ainXX1w4d2hPpiyPt0lePmGNlbjNdyZoymZEVmYPkmzvEgSOQ9iQPf0VeAd7l2yBzwXTXPS3rEppwyXYW7O3lZwhL4xD/Ry0UeDJFDnR0dVNbfWAvQ6d8bJYrBZV0pF0Z4Pv7Rfpjj7yusRprpEjwamkJhleg=
+	t=1713256581; cv=none; b=u+MEhjF68XgvNmRpV7xAkmQ8T7p0u5GDrbfQ+bKki2riJ97q0rl/FXtCX0Fquw//QBe98D1Fi2woFpUKHDYQWp8OCQOoSHHpMVdzCjDFBu5tGc6YpgQJfbU2DnrhYDX9VJwgezSYz0xV+YC0YShneY6Hx8UBEULIbTzYX1W2VTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713256529; c=relaxed/simple;
-	bh=t96Grci89Hj3Fv+275ZZvzDuX9j3ZzLEJyheAvKRgig=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UcjdRQSCp3BIIM2su6Ksv/36z/ObitKA+sXDHdhO4sDWvrdkNtgWRg4EjXh3J4qDLU7PPcfZSMLbLJ+jCg0c1Gxf/Le96fNJVYTZbs/PkAfe/DD40+Fb0slXDfCx/ayieX1B78fO83/E6gco+O9wo5WpIZ1YND+qenfK1nd8xPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GeZbOWaa; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1713256526;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mqB42b0Dt4aCzlHrsBwMSNL2dlraPP0p7qf/q2hbpaA=;
-	b=GeZbOWaa0OuiTv3Jw4PYOGGnKZ/TNW3kSosIDhVz1ujFU9i3wjQf0c079+HopAxgZkYZDa
-	0vaqgUEhP+W4uDyd9QctRi2p6Hj9oHezSAv2Ftxu8sgY5BM6hYW3M/5fZJ76AP/G8ITxKB
-	x+c2NdVetUpf++Z7eOiNaj7r130cFlo=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-515-WEQWRE1eP8-HQyLEef1vAQ-1; Tue, 16 Apr 2024 04:35:25 -0400
-X-MC-Unique: WEQWRE1eP8-HQyLEef1vAQ-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5704900f94fso137453a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:35:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713256524; x=1713861324;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mqB42b0Dt4aCzlHrsBwMSNL2dlraPP0p7qf/q2hbpaA=;
-        b=TdxKUKJ+N4ls+QQIrdExVU1rBfUqb6t5TQrPOoXtS0f9yQ6pSI1VU/5vomrdhc60Wl
-         Z9+6nE+fuS1Liv7q/Ewspacy0WxoNkY0cpdxoc7vVeeyDFb4M1tUwcFIZH/6d59Wg99Q
-         mGtE9rF7DiH0vsWy637ibU/cXYdblO2YkGx9k7SFbeD8Pg6AvBc7UjzpP+2dROl2MggB
-         hZdSpLykrYNY4lfIDFWkaOX+hvtwwrUVr/DITwGZwaNBUX+gTBGyYk43xq1WpnI+spny
-         ukRjJw6VH2KcNc4bVzkz7df3zhGwb15+b86T1+9zAz09opBwDGePcOYUBlrTulTD3HG5
-         PPcw==
-X-Forwarded-Encrypted: i=1; AJvYcCVnOopDgO66cokpvW8MioBfvRgnAj2XkJVH8KJpXm+I6Bwx7wQM532b/50D1opd2lAGuSPqtid/ri3/0n0d/UX7Kxt/bnxtogX2dwEh
-X-Gm-Message-State: AOJu0YwNOof7+3YqaUGfjwKYTkJ5+x5ujbA4q/WSJU5pm4SKwtbpyy5b
-	vLALwhEff6dWzasars5PNjwSOT2BuRqrQ/03B4ge0ae7xSoAJ2yATKHkWf5Ncoz33OpUAfaqen0
-	vW4g7mFKCDTr6SScooXUMhCcV1QyfY93JM4TbIFfZepHgjXbHpZlB2HuzzQfqE2DpkWuk8A==
-X-Received: by 2002:a50:cd04:0:b0:56d:f637:451c with SMTP id z4-20020a50cd04000000b0056df637451cmr7419236edi.32.1713256523852;
-        Tue, 16 Apr 2024 01:35:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH09YFiUxZaU1utW3PoJytxXwlh9BUF5b0iDmnwb9dAZxMMtiyt2VQVzkI0t44Hn5rRN+kOdQ==
-X-Received: by 2002:a50:cd04:0:b0:56d:f637:451c with SMTP id z4-20020a50cd04000000b0056df637451cmr7419225edi.32.1713256523511;
-        Tue, 16 Apr 2024 01:35:23 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id n7-20020a056402434700b0056e66f1fe9bsm5766826edc.23.2024.04.16.01.35.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Apr 2024 01:35:23 -0700 (PDT)
-Message-ID: <ab98ff25-2ab3-4ab6-ae46-84aef6369c3c@redhat.com>
-Date: Tue, 16 Apr 2024 10:35:22 +0200
+	s=arc-20240116; t=1713256581; c=relaxed/simple;
+	bh=AveT/kzhMyKqy9qT8luIjlZhEw74u3Rg6QrwfWqr29U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=DU3YN6axj1wfTW3SFFGLR82rGaWUOi7edOsJ0d9mGMwH8dsv88GHGH3HSLxpsikPON9KckSeQAMnDbkYDR7+XdgXgBoTgqvwd/xAC8N4AsqYAoKaNV1S7Y6eAx6JtLn27WX0NqDDbSdIKJPeKUomDL6hsprJgJxlZ1x49vRJYoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NYRh5pJ/; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43G8a5ET051699;
+	Tue, 16 Apr 2024 03:36:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1713256565;
+	bh=gunZQjBXlTN74AuFxyYpvMjk5/cg4ebKFt9lvmAInR0=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=NYRh5pJ/awzVIVr4sD0Qm2nOpnz+fNtcJuwBVUH09sLg4gr37FOxU/L1UY1w/cTMV
+	 jxqZaAOI86/Aa1lA/vToagLbAxf/77FVw1WdPdL6DJRa1tM1yzlFlugUFkhNdnUeTi
+	 5cIgmeWO1Rz+oHEqVHNrdtLYDgDfOZEbX1bSFLlc=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43G8a5Uj060264
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 16 Apr 2024 03:36:05 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 16
+ Apr 2024 03:36:05 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 16 Apr 2024 03:36:05 -0500
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43G8a0Dr067512;
+	Tue, 16 Apr 2024 03:36:01 -0500
+Message-ID: <dc4563a4-949a-4e5e-a87b-2068a42eea85@ti.com>
+Date: Tue, 16 Apr 2024 14:05:59 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,71 +64,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] Input: Add trackpoint doubletap and system debug info
- keycodes
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Mark Pearson <mpearson-lenovo@squebb.ca>,
- Peter Hutterer <peter.hutterer@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
- ibm-acpi-devel@lists.sourceforge.net,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
- Nitin Joshi1 <njoshi1@lenovo.com>, Vishnu Sankar <vsankar@lenovo.com>
-References: <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
- <ZhR-WPx7dgKxziMb@google.com>
- <f3342c0b-fb31-4323-aede-7fb02192cf44@redhat.com>
- <ZhW3Wbn4YSGFBgfS@google.com> <ZhXpZe1Gm5e4xP6r@google.com>
- <92ee5cb2-565e-413c-b968-81393a9211c4@app.fastmail.com>
- <ZhcogDESvZmUPEEf@google.com>
- <91593303-4a6a-49c9-87a0-bb6f72f512a1@app.fastmail.com>
- <Zh2CtKy1NfKfojzS@google.com>
- <484638e2-1565-454b-97f8-4fcc6514a69c@redhat.com>
- <Zh2G85df29tPP6OK@google.com>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <Zh2G85df29tPP6OK@google.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH net-next v5 1/2] net: ethernet: ti: am65-cpts: Enable RX
+ HW timestamp for PTP packets using CPTS FIFO
+Content-Language: en-US
+To: Paolo Abeni <pabeni@redhat.com>, Dan Carpenter <dan.carpenter@linaro.org>,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Heiner Kallweit
+	<hkallweit1@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Roger Quadros
+	<rogerq@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jakub
+ Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20240402114405.219100-1-c-vankar@ti.com>
+ <20240402114405.219100-2-c-vankar@ti.com>
+ <7c8be16329668d343a971e265e923543cba5e304.camel@redhat.com>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <7c8be16329668d343a971e265e923543cba5e304.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi,
 
-On 4/15/24 9:58 PM, Dmitry Torokhov wrote:
-> On Mon, Apr 15, 2024 at 09:50:37PM +0200, Hans de Goede wrote:
->> Hi,
+
+On 04/04/24 16:10, Paolo Abeni wrote:
+> On Tue, 2024-04-02 at 17:14 +0530, Chintan Vankar wrote:
+>> Add a new function "am65_cpts_rx_timestamp()" which checks for PTP
+>> packets from header and timestamps them.
 >>
->> On 4/15/24 9:40 PM, Dmitry Torokhov wrote:
->>> On Wed, Apr 10, 2024 at 10:48:10PM -0400, Mark Pearson wrote:
->>>>
->>>> I have a stronger preference to keep the KEY_DOUBLECLICK - that one seems less controversial as a genuine new input event.
->>>
->>> Please see my response to Peter's letter. I think it very much depends
->>> on how it will be used (associated with the pointer or standalone as it
->>> is now).
->>>
->>> For standalone application, recalling your statement that on Win you
->>> have this gesture invoke configuration utility I would argue for
->>> KEY_CONFIG for it.
+>> Add another function "am65_cpts_find_rx_ts()" which finds CPTS FIFO
+>> Event to get the timestamp of received PTP packet.
 >>
->> KEY_CONFIG is already generated by Fn + F# on some ThinkPads to launch
->> the GNOME/KDE control center/panel and I believe that at least GNOME
->> comes with a default binding to map KEY_CONFIG to the control-center.
+>> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+>> ---
+>>
+>> Link to v4:
+>> https://lore.kernel.org/r/20240327054234.1906957-1-c-vankar@ti.com/
+>>
+>> Changes from v4 to v5:
+>> - Updated commit message.
+>> - Replaced "list_del_entry()" and "list_add()" functions with equivalent
+>>    "list_move()" function.
+>>
+>>   drivers/net/ethernet/ti/am65-cpts.c | 64 +++++++++++++++++++++++++++++
+>>   drivers/net/ethernet/ti/am65-cpts.h |  6 +++
+>>   2 files changed, 70 insertions(+)
+>>
+>> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+>> index c66618d91c28..bc0bfda1db12 100644
+>> --- a/drivers/net/ethernet/ti/am65-cpts.c
+>> +++ b/drivers/net/ethernet/ti/am65-cpts.c
+>> @@ -906,6 +906,70 @@ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>>   	return 1;
+>>   }
+>>   
+>> +static u64 am65_cpts_find_rx_ts(struct am65_cpts *cpts, u32 skb_mtype_seqid)
+>> +{
+>> +	struct list_head *this, *next;
+>> +	struct am65_cpts_event *event;
+>> +	unsigned long flags;
+>> +	u32 mtype_seqid;
+>> +	u64 ns = 0;
+>> +
+>> +	am65_cpts_fifo_read(cpts);
+>> +	spin_lock_irqsave(&cpts->lock, flags);
 > 
-> Not KEY_CONTROLPANEL?
+> am65_cpts_fifo_read() acquires and releases this same lock. If moving
+> to a lockless schema is too complex, you should at least try to acquire
+> the lock only once. e.g. factor out a lockless  __am65_cpts_fifo_read
+> variant and explicitly acquire the lock before invoke it.
+> 
 
-No when this was added most distros were still using X11 not Wayland so
-it was preferable to use KEY_foo symbols with codes below 240.
+Moving to a lockless schema is complex for now, but I will make the
+changes suggested by you in next version.
 
-> Are there devices that use both Fn+# and the doubleclick? Would it be an
-> acceptable behavior for the users to have them behave the same?
+>> +	list_for_each_safe(this, next, &cpts->events) {
+>> +		event = list_entry(this, struct am65_cpts_event, list);
+>> +		if (time_after(jiffies, event->tmo)) {
+>> +			list_del_init(&event->list);
+>> +			list_add(&event->list, &cpts->pool);
+> 
+> Jakub suggested to use list_move() in v4, you should apply that here,
+> too.
+> 
+Okay. I will update that too.
 
-That is a good question, at least my current ThinkPad does not have
-the Fn + F## combo for the control center anymore. So I guess we could
-indeed re-use KEY_CONFIG for the double-tap.
-
-Regards,
-
-Hans
-
-
+> Cheers,
+> 
+> Paolo
+> 
+> 
 
