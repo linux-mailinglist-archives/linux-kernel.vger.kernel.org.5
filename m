@@ -1,113 +1,239 @@
-Return-Path: <linux-kernel+bounces-147429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872338A73ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:55:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4A798A73F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:56:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CDF51F222FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:55:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06A4AB219D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:56:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7238613777B;
-	Tue, 16 Apr 2024 18:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DE5137917;
+	Tue, 16 Apr 2024 18:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ACbuZAXC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fOkn/iN4"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8FB1C06;
-	Tue, 16 Apr 2024 18:55:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87C21C06
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 18:56:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713293745; cv=none; b=Hr3B9CwMSXWqP9qG3nXrORXuzvVm5AoF0D4pyKGOqn9LhgjX/DKLu2zBiTAuw/69VgL0qHm0ni4sNZjHH/87gJv3Zw7uJrrFEMs4XkIzroge/lDVyssIudT5nlBzad8S6/HVg4dfpEoW7S4kfnrHErbpC/hFnhPRe9wt/fe3xuk=
+	t=1713293779; cv=none; b=KlVSlIiVy2DeGLFy2i0JSqxPrRM73K2bGR4HdGvAIFFKyOcnjPVtdwUuNMYADS+X12ckqU9413vjhvkKSZbIWhiKuwANQL7JiznxERajd9/9ZASI0kz7Uu0DrqPy/7sgORYW1XWiwi5Pf6dseSWtQDDPAlMHG+c0denebjbuejs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713293745; c=relaxed/simple;
-	bh=80+I06RrrBCZAtelHC3oSYJjtxn58mItfSFXw8bzQXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JeUIjRuXo8QxvH/7J3RBUxW9h9OZlOjSwoZRUoRgo8HRPpYeItgrWsBTrKOwKwIYRhjWq+N6ko9kaDIPlDa4p9g5aedcbPYVwXwFSivdKr6V6LS3Mn8eMVgweomlqZGZfFxMzSUeSZHmjYi+eB5pV/KB8ACPvNZ9MySYTN4bIw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ACbuZAXC; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713293745; x=1744829745;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=80+I06RrrBCZAtelHC3oSYJjtxn58mItfSFXw8bzQXU=;
-  b=ACbuZAXCv9+HMyh75P6F/oqgpROzMr5v9cz8XXda7hBMVKfvku9KXqVm
-   dH4X8s2B+iSly560f0Q3sUDjwekfZDvawrgj1yzcJP6pDecG4a5Fe5vkB
-   xeoLK0+vS/TY5+YUg9LgzctcmCMh+/C5+IfnCo8mq4MRQkoyExteYOzJ2
-   GJ37irQt+N/PFZGANQIAFvkpPKVpFmaaAQKw4novds06tsdSprPjPEUeh
-   K5u1pRCIGkvqwV++ovyo7mmoUG0d8eM88bIGF3GCIpA0XItsoYBuemgVY
-   MdjzSF0x1Iv8IrSxbQpfaFfydINAXO5EibZZVOouPIrLXjWrheJJ9Mhx7
-   g==;
-X-CSE-ConnectionGUID: 1d/gJW5FSXWE6Xt1sdi2lw==
-X-CSE-MsgGUID: 2S0DJnnWSqaCo3h7A/WjoA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8679578"
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="8679578"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:55:44 -0700
-X-CSE-ConnectionGUID: sT7ukwYERSCHJKHETx1IZQ==
-X-CSE-MsgGUID: NwnxGkY1Sfqi7vga9gLcRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
-   d="scan'208";a="26787206"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 11:55:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rwnxy-00000004nSh-0qCS;
-	Tue, 16 Apr 2024 21:55:38 +0300
-Date: Tue, 16 Apr 2024 21:55:37 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Michael Pratt <mcpratt@pm.me>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Wander Lairson Costa <wander@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Vamshi Gajjela <vamshigajjela@google.com>
-Subject: Re: [PATCH v2 2/3] serial: 8250: Store whether fifo device is enabled
-Message-ID: <Zh7Jqf2sJNw1mVyJ@smile.fi.intel.com>
-References: <20240416182741.22514-1-mcpratt@pm.me>
- <20240416182741.22514-3-mcpratt@pm.me>
+	s=arc-20240116; t=1713293779; c=relaxed/simple;
+	bh=gcTRf65a+ftJnH8+Aa+F0CBgeHDfFdCEJgFqbkaBRy4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gvLnDi3r2oYXScJ20qnSFlGbTkNZQxtgB7Nh0rGLw7ONZVgan6wla6W8+ke/1SGrQEWQJVZcJI8Zu2BvR/1mVpY0qV9/BreJW9YOygHitWqwPJtL7vJd9bZezjbHLAPtaCoHR0sqirsk8h4HpKZFsDRH+dJD4iXBfRyex1AvIEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fOkn/iN4; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso4799314276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 11:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1713293776; x=1713898576; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=m3jRsJcFFlAEIpn9uxJ8q/UOrjJ8uD5kt4UN94jZCSY=;
+        b=fOkn/iN4jMbcWz9Mo2oBsXlRkpo2SkLqXMYzNDa0UZVWn/SeX/ypoJi5BdsfHjPk2p
+         wBusiqYME80vnVBoeaIk3CfYI2Gs/ky1K8p78LxhtMZeMqFx3NGJa1oKXqExPmiclapR
+         BLNBkPZ/G/1r2t+X3wmWHhYn+GBlOU4j6weDf07h5k/CIrRTFkNXwxH9CCeSiX5oxim3
+         LGp2PmH4ElcyqrMaHC1fgxwnNaPjxnEbowsaBVLMAKUQR44/mRIWNFiYuRj6BAKib3NF
+         k3JnZ54cxM1EHi9qwRyT32M5z1t0G2C+HPpsJuV3NlguV6l0jqMh2lesEgp1jy21OiQg
+         EDSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713293776; x=1713898576;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m3jRsJcFFlAEIpn9uxJ8q/UOrjJ8uD5kt4UN94jZCSY=;
+        b=Un/OoR9mbqawciuk8U2sIXHzeNszrkPpWvlWK9B9ZXKNaPXm8eQEbxcuc3F9bnl8dJ
+         KuDYCdTfO2+IyZMwYd3TcfMGdOGNMsimpG1lbM2VO/wqQWrej598n9Zjt3fRD+RwmqFz
+         NBnFFDfH/MS6AyET6X74od4DY1XONI1gcwmpb5y6l3t4nOi0VTegM/WdRNH/t9imC5C4
+         euuG48ta3rBdosY8dLtb9FDcE2aobGfHHDk39VPo8cjoSjV7t9wSksBtYmDdP0lj23lo
+         qT+WAxIl7ixPXDyd1eQr9MiDX/Mw8l/B3AgwEKm6czwDHRyON90kKxSTFZF4Kd3olYl7
+         7d3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWmDbvTNFfmX//OWL+EwLRbovyRXn9pQVuBx2ugGGm45gJn0CXEOtnbvcpvrt1BH28j/ZmvAS0ydP30lbH8zr/zc/AIwE534j7KbszL
+X-Gm-Message-State: AOJu0YxlSK1KYUYPiLsgbfhl68DSMOcOIuZiKaJ3hTnsGaptA6S7+JfV
+	CzwuKs9hUy7ct9EpuWZNbpp37ViPgUVMt9w+pJsgGAZ5d1KivA/TfEqFCGFbxYPNwJRwT/96smp
+	v01ux5nKczzJecGue7oH21AQLDdyAveHUBuuehw==
+X-Google-Smtp-Source: AGHT+IFxPCU3aUsqiq75v8UkxRyLa6/K+D4YbVrUrwZxzduOFhICd6UrgSRPeNifliYxS3rzszb0p2HGn9HqqJ1UIJI=
+X-Received: by 2002:a25:6890:0:b0:ddd:7459:c970 with SMTP id
+ d138-20020a256890000000b00ddd7459c970mr11800947ybc.63.1713293775884; Tue, 16
+ Apr 2024 11:56:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240416182741.22514-3-mcpratt@pm.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240416182005.75422-1-quic_ajipan@quicinc.com> <20240416182005.75422-4-quic_ajipan@quicinc.com>
+In-Reply-To: <20240416182005.75422-4-quic_ajipan@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 16 Apr 2024 21:56:05 +0300
+Message-ID: <CAA8EJprnMVSoOt7XtwcVXjFGzkPhompcfz3Zw4Hoxhk5-g5W0g@mail.gmail.com>
+Subject: Re: [PATCH V2 3/8] clk: qcom: Add DISPCC driver support for SM4450
+To: Ajit Pandey <quic_ajipan@quicinc.com>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
+	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
+	Jagadeesh Kona <quic_jkona@quicinc.com>, Imran Shaik <quic_imrashai@quicinc.com>, 
+	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Apr 16, 2024 at 06:29:56PM +0000, Michael Pratt wrote:
-> Currently, there are 7 checks for whether to enable
-> the internal fifo device of a 8250/16550 type uart.
-> 
-> Instead of checking all 7 values again whenever
-> we need to know whether we have the fifo device enabled,
-> store the result as a struct member of uart_8250_port.
-> 
-> This can, for example, lessen the amount
-> of calculations done during a write operation.
+On Tue, 16 Apr 2024 at 21:22, Ajit Pandey <quic_ajipan@quicinc.com> wrote:
+>
+> Add Display Clock Controller (DISPCC) support for SM4450 platform.
+>
+> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
+> ---
+>  drivers/clk/qcom/Kconfig         |  10 +
+>  drivers/clk/qcom/Makefile        |   1 +
+>  drivers/clk/qcom/dispcc-sm4450.c | 781 +++++++++++++++++++++++++++++++
+>  3 files changed, 792 insertions(+)
+>  create mode 100644 drivers/clk/qcom/dispcc-sm4450.c
+>
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 8ab08e7b5b6c..9fce64ced353 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -826,6 +826,16 @@ config SM_CAMCC_8550
+>           Support for the camera clock controller on SM8550 devices.
+>           Say Y if you want to support camera devices and camera functionality.
+>
+> +config SM_DISPCC_4450
+> +       tristate "SM4450 Display Clock Controller"
+> +       depends on ARM64 || COMPILE_TEST
+> +       depends on SM_GCC_4450
+> +       help
+> +         Support for the display clock controller on Qualcomm Technologies, Inc
+> +         SM4450 devices.
+> +         Say Y if you want to support display devices and functionality such as
+> +         splash screen
+> +
+>  config SM_DISPCC_6115
+>         tristate "SM6115 Display Clock Controller"
+>         depends on ARM64 || COMPILE_TEST
+> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+> index dec5b6db6860..68d1c5192c86 100644
+> --- a/drivers/clk/qcom/Makefile
+> +++ b/drivers/clk/qcom/Makefile
+> @@ -109,6 +109,7 @@ obj-$(CONFIG_SM_CAMCC_6350) += camcc-sm6350.o
+>  obj-$(CONFIG_SM_CAMCC_8250) += camcc-sm8250.o
+>  obj-$(CONFIG_SM_CAMCC_8450) += camcc-sm8450.o
+>  obj-$(CONFIG_SM_CAMCC_8550) += camcc-sm8550.o
+> +obj-$(CONFIG_SM_DISPCC_4450) += dispcc-sm4450.o
+>  obj-$(CONFIG_SM_DISPCC_6115) += dispcc-sm6115.o
+>  obj-$(CONFIG_SM_DISPCC_6125) += dispcc-sm6125.o
+>  obj-$(CONFIG_SM_DISPCC_6350) += dispcc-sm6350.o
+> diff --git a/drivers/clk/qcom/dispcc-sm4450.c b/drivers/clk/qcom/dispcc-sm4450.c
+> new file mode 100644
+> index 000000000000..7668b4bafae5
+> --- /dev/null
+> +++ b/drivers/clk/qcom/dispcc-sm4450.c
+> @@ -0,0 +1,781 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/of.h>
+> +#include <linux/regmap.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <dt-bindings/clock/qcom,sm4450-dispcc.h>
+> +
+> +#include "clk-alpha-pll.h"
+> +#include "clk-branch.h"
+> +#include "clk-pll.h"
+> +#include "clk-rcg.h"
+> +#include "clk-regmap.h"
+> +#include "clk-regmap-divider.h"
+> +#include "common.h"
+> +#include "gdsc.h"
+> +#include "reset.h"
+> +
+> +enum {
+> +       DT_BI_TCXO,
+> +       DT_BI_TCXO_AO,
+> +       DT_AHB_CLK,
+> +       DT_SLEEP_CLK,
+> +
+> +       DT_DSI0_PHY_PLL_OUT_BYTECLK,
+> +       DT_DSI0_PHY_PLL_OUT_DSICLK,
+> +};
+> +
+> +enum {
+> +       P_BI_TCXO,
+> +       P_DISP_CC_PLL0_OUT_MAIN,
+> +       P_DISP_CC_PLL1_OUT_EVEN,
+> +       P_DISP_CC_PLL1_OUT_MAIN,
+> +       P_DSI0_PHY_PLL_OUT_BYTECLK,
+> +       P_DSI0_PHY_PLL_OUT_DSICLK,
+> +       P_SLEEP_CLK,
+> +};
+> +
+> +static const struct pll_vco lucid_evo_vco[] = {
+> +       { 249600000, 2020000000, 0 },
+> +};
+> +
+> +/* 600.0 MHz Configuration */
+> +static const struct alpha_pll_config disp_cc_pll0_config = {
+> +       .l = 0x1f,
+> +       .alpha = 0x4000,
+> +       .config_ctl_val = 0x20485699,
+> +       .config_ctl_hi_val = 0x00182261,
+> +       .config_ctl_hi1_val = 0x32aa299c,
+> +       .user_ctl_val = 0x00000000,
+> +       .user_ctl_hi_val = 0x00000805,
+> +};
+> +
+> +static struct clk_alpha_pll disp_cc_pll0 = {
+> +       .offset = 0x0,
+> +       .vco_table = lucid_evo_vco,
+> +       .num_vco = ARRAY_SIZE(lucid_evo_vco),
+> +       .regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID_EVO],
+> +       .clkr = {
+> +               .hw.init = &(const struct clk_init_data) {
+> +                       .name = "disp_cc_pll0",
+> +                       .parent_data = &(const struct clk_parent_data) {
+> +                               .index = DT_BI_TCXO,
+> +                       },
+> +                       .num_parents = 1,
+> +                       .ops = &clk_alpha_pll_lucid_evo_ops,
+> +               },
+> +       },
+> +};
+> +
+> +/* 600.0 MHz Configuration */
+> +static const struct alpha_pll_config disp_cc_pll1_config = {
 
-..
+Can disp_cc_pll0_config be used here?
 
-> @@ -3392,6 +3392,8 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
+> +       .l = 0x1f,
+> +       .alpha = 0x4000,
+> +       .config_ctl_val = 0x20485699,
+> +       .config_ctl_hi_val = 0x00182261,
+> +       .config_ctl_hi1_val = 0x32aa299c,
+> +       .user_ctl_val = 0x00000000,
+> +       .user_ctl_hi_val = 0x00000805,
+> +};
 
-> +	up->fifo_enable = use_fifo;
+With that fixed:
 
-This seems incorrect / not the only one place to assign this. What if the
-console not enabled at compile time? What if it's not enabled at boot time?
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+With best wishes
+Dmitry
 
