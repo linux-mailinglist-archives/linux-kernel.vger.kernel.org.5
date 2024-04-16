@@ -1,88 +1,72 @@
-Return-Path: <linux-kernel+bounces-147181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD0568A70A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 17:59:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 488928A70B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:00:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97D52285907
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 15:58:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2D91F26173
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FFE13B7AC;
-	Tue, 16 Apr 2024 15:53:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80C5D13C679;
+	Tue, 16 Apr 2024 15:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="iYx1ySOU"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cn57aN//"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5012D13AA59;
-	Tue, 16 Apr 2024 15:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0019713C3FB;
+	Tue, 16 Apr 2024 15:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713282828; cv=none; b=bhmnBDJfWcqPVD3zHs3zRL3iOzjhfj0gDINtlt1D/jtXVQI2SIsaYs/N3C7/GQOZmjkd2UNUgCF9f701ClUljFji1A0sD+nU6gYqN5ilp1faGMKh5Mnt83pnjF4wnuEOH2yGpcLzA983BwVDo+EJC5XYD66uTUmXIeJPfvrgisE=
+	t=1713282840; cv=none; b=pLujvcztLkLPamwTEnZMHsQIKDP6lOZdOhefhmvLrG8ELpoT8s97Kg2Z/8nCxB3uwZVg/HlWDqsizOon3F+FPTzbpOsiWYIrV3hGxUhxbYuq3eZuty9APMDf+OtmVoX25ZJuaTZY+3NpAA3VAEtzEI5nAooSpClMcXNTLJPWnY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713282828; c=relaxed/simple;
-	bh=9bq8yrtQK9l1i0+gE8ENhkGDnD4PPiMZHJ7vhwh/RsA=;
+	s=arc-20240116; t=1713282840; c=relaxed/simple;
+	bh=xr7ky7Cb0ygGptcAXZwef1Q17uuZn48m+YBRnvcd9GE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JetB5cOtUqSbAgmMmnoccMUUKD58NDjbbIMc2fLme7rJhR1TEIZbm9htue1jg94BdlZyoUqZ9Q1NZ6f53TI5DIg9impg5DFpV7oHcYGlQH0ixRuJd7Us39vcsUMmMRlcgLwHMnc2sCZKicr6MEzmW++WijS192wQwP3wzPNuIOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=iYx1ySOU; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GFqHc3006661;
-	Tue, 16 Apr 2024 15:53:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ahwo9ygXLQPCBFtu1iJRpeFoiFvLTQacsCaUnSPP0Ks=;
- b=iYx1ySOUoceuxXKwor+p7dQ0GWGHPhOtoYP/hcb3nKMwY7FmdKBO++cZzzq1b57hASw4
- a/Bjw5dvCYCHwtEtFPRcO1FHpO6mnHdMvFo+szLsWU2xLk5ajV5UkfEtltW1fbVIkZ4Y
- FTTVTk19MgP3jSOM5HfWYTM/okv86x6A4W6e5FKaav9u8LsbXOWVPgtO/i8JGEIDLI9d
- dxs65E/EOvVPhzua5aSRFLRGIvifXfrgAPQlmNKOZYkp9DP2GAbuQQRZ4vocxJu4I5Ns
- waPr5V9yUyRBuYf/uxLZbErNJthVxj7B+fK/tz6bq/T+/wjwGLYvxbiqMzFzb5qjF4uH ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhvbgg08b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 15:53:45 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43GFri1p009295;
-	Tue, 16 Apr 2024 15:53:44 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xhvbgg087-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 15:53:44 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43GFl7gr015862;
-	Tue, 16 Apr 2024 15:53:43 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xg5vm6w08-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 15:53:43 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43GFrbTs17039840
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Apr 2024 15:53:39 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B5C1520040;
-	Tue, 16 Apr 2024 15:53:37 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 74ABB2004B;
-	Tue, 16 Apr 2024 15:53:37 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 16 Apr 2024 15:53:37 +0000 (GMT)
-Date: Tue, 16 Apr 2024 17:53:36 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        frankja@linux.ibm.com, nrb@linux.ibm.com, nsg@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, david@redhat.com
-Subject: Re: [PATCH v1 0/2] s390/mm: fix improper use of
- __storage_key_init_range
-Message-ID: <Zh6fAG5sQHQ564mJ@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240416114220.28489-1-imbrenda@linux.ibm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qhBIOj0D61j4cWtUXMQ7FicfFICkPkr5U5lQC7mzR4EFPj5Hvbe8Wa9wnxU6RK8mOwBowMW7AIOVYFg5k1Dg4a750ofDGwV3dBwAkpwz0Ct/6to14eepBwJYL2JDDGQIGdd2vAm4Ebj4GkyQVmRDLCDsHo2vmUVovPmp1ojk+tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Cn57aN//; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wZEy1lpoVSmMRE0DeOc5Gd5oUzFgnMEWwvGF0LAHu8U=; b=Cn57aN//MYZ+dXqCms+9QZ2xFM
+	R6jH8lG6V6rsLnVsxURyoEsjbtBO9tDJ7v6UB/+HgbxZsAyFFOBR+YDH5xpjk7FVFActU1ECnBScj
+	N4ho/AR8AAxxxhz93MqQpIYfDGuWKuTvhQcG6IvQrIbyfOd5oSjCOA4iYUcVjHN3NL6S91Me6bJGx
+	7qqb2+R4sImsoxiMBzz11/ADpFTAwXs5ytiwivw4SLINRHcE3VrgJ9HhImwP87YrY3IglUYI/zgfL
+	H1NJOi2F75jD1YIvcett5AlBNg1Y6joZY9hDc/LKkyUmLc1x69gk/ogvw0l41MO6CZMBFrddqPe1Z
+	k1Ulqj2A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwl7y-00000000r5i-0m9z;
+	Tue, 16 Apr 2024 15:53:46 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id BC83030040C; Tue, 16 Apr 2024 17:53:45 +0200 (CEST)
+Date: Tue, 16 Apr 2024 17:53:45 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Elizabeth Figura <zfigura@codeweavers.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	wine-devel@winehq.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>,
+	Arkadiusz Hiler <ahiler@codeweavers.com>,
+	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH v4 00/30] NT synchronization primitive driver
+Message-ID: <20240416155345.GC12673@noisy.programming.kicks-ass.net>
+References: <20240416010837.333694-1-zfigura@codeweavers.com>
+ <20240416081421.GB31647@noisy.programming.kicks-ass.net>
+ <20240416155014.GB12673@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,23 +75,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240416114220.28489-1-imbrenda@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BKcx-THJItvXurArp0MEw8DP_czU-NGu
-X-Proofpoint-ORIG-GUID: InaTEFXBxA9QVPmQsrYoVtEBR_5DXgIG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_13,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 mlxlogscore=633 mlxscore=0 phishscore=0 suspectscore=0
- impostorscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404160097
+In-Reply-To: <20240416155014.GB12673@noisy.programming.kicks-ass.net>
 
-On Tue, Apr 16, 2024 at 01:42:18PM +0200, Claudio Imbrenda wrote:
->  arch/s390/mm/gmap.c        | 2 +-
->  arch/s390/mm/hugetlbpage.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+On Tue, Apr 16, 2024 at 05:50:14PM +0200, Peter Zijlstra wrote:
+> On Tue, Apr 16, 2024 at 10:14:21AM +0200, Peter Zijlstra wrote:
+> 
+> > > Some aspects of the implementation may deserve particular comment:
+> > > 
+> > > * In the interest of performance, each object is governed only by a single
+> > >   spinlock. However, NTSYNC_IOC_WAIT_ALL requires that the state of multiple
+> > >   objects be changed as a single atomic operation. In order to achieve this, we
+> > >   first take a device-wide lock ("wait_all_lock") any time we are going to lock
+> > >   more than one object at a time.
+> > > 
+> > >   The maximum number of objects that can be used in a vectored wait, and
+> > >   therefore the maximum that can be locked simultaneously, is 64. This number is
+> > >   NT's own limit.
+> 
+> AFAICT:
+> 
+> 	spin_lock(&dev->wait_all_lock);
+> 	  list_for_each_entry(entry, &obj->all_waiters, node)
+> 	    for (i=0; i<count; i++)
+> 	      spin_lock_nest_lock(q->entries[i].obj->lock, &dev->wait_all_lock);
+> 
+> Where @count <= NTSYNC_MAX_WAIT_COUNT.
+> 
+> So while this nests at most 65 spinlocks, there is no actual bound on
+> the amount of nested lock sections in total. That is, all_waiters list
+> can be grown without limits.
+> 
+> Can we pretty please make wait_all_lock a mutex ?
 
-Applied, thanks!
+Hurmph, it's worse, you do that list walk while holding some obj->lock
+spinlokc too. Still need to figure out how all that works....
 
