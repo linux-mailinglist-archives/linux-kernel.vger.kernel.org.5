@@ -1,125 +1,113 @@
-Return-Path: <linux-kernel+bounces-146085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A54EE8A601A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:19:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF3E8A6051
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:31:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43FE61F23720
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:19:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7651C20C18
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 01:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91714C7E;
-	Tue, 16 Apr 2024 01:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078BD539C;
+	Tue, 16 Apr 2024 01:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FWBGM97u"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="HEVVAzMy"
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 837A36FC7
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E2F5227
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 01:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713230341; cv=none; b=nceZUYkMOyposGbVwI+bSWHOXnnMeBM2gtmwqEz819vvAhGZ0Jo5ceIRjETOz1uWH32U/ELunc+mrX2D7tsn4Fa8pX7QmqJmYWc+IMwDMu4dLVQEfE3Lx6rJHs6sjOvfOG8ShhC+yREMxQxtiZmmLEKmjAxE6e10NzNlR8GmoyI=
+	t=1713231106; cv=none; b=RSF8lnsxGzw51p6X3VkXhtSvjc+iOQFQil0Nrm0OcPNnF5CDYoSmtXsbqs9nMKyCZoSbuVhu7osX68UTavx6DfujpyYZiWZ3+/XS2pEAQLw3nI6kAgQgJKEZs/yjQQnUWFWXBCD8NvCpuFvZ8iqXdL1XmZid8ArBj9v066XvN80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713230341; c=relaxed/simple;
-	bh=T3Ub9CTBocqqsMgjGmcTGBv0ckjs+CI/cEJww9YWUk8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qOvf0kOk40sEJ7Eyd+4KyDddlCwmviGgJqQubWBEqQXxpXBt782UZGbOmu+D+GfDMV2zgGk7NXT49o9TtsebzUPGkDH0TZw9LHLyKc1mVd32xCX7Sinhn64VzWS3soWb+HGEbDvvREa8Ri9qDMIHF1XuXVJ0Oi6hESyFRAE1658=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FWBGM97u; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d3776334so4998160e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:18:59 -0700 (PDT)
+	s=arc-20240116; t=1713231106; c=relaxed/simple;
+	bh=Lt5qa2tKJaXTFBi0w3EsYO6+uA+O9X5f7mwgjyL9enY=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=GmmumJfKTjdr68yUk98IQ1aLBlE5+f19QcjuyJmO/fMNZAnkWeIt/zJ4pCege9iJCHKHMUqMMFc4vfQntZH6Q2FDaDHN7A3w6q2VVnl26tnUquezCvdw2WFVcHHTQvvbYJl+6iapOo6X6iFaa9fi1zwGEJL34c9Asd7L6S8OmOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=HEVVAzMy; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-2331bef249eso1704474fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 15 Apr 2024 18:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713230337; x=1713835137; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=V84Q9cVFBfzhJCyj19uweJAoXqH3wOGjSA4sDGt5T94=;
-        b=FWBGM97u8K/h9PBKXQeVEKajpvPtSzvxqepGd2U9X2tVKA2HO6nOt1eTk03SvJdH//
-         IYhctcNf5nm9cX0q+03eqPxZ9NJ30zqccxF7qPrQK1FGZUnl9dC1JkEE6HeDIcAeO7oO
-         oqh3hAPU/+P6reNS9zB9m+XrqkMQH2zSCqkoi6/YTEsiZsHu9ilUD1XX+cyBttSBLuHT
-         cGdZxxZ2NhNAcEE9j0xetQwtthyaNrDvgnjKcJ75VSUUD5QKgHtbsKStGwBXUpqs/B+p
-         o0Xu8nPqL8Qig+wJn/qsVUMtyX7k36VD+F3nuwdMP1Ea7SS2k5lIhGFp0Ha2jYxVz2kg
-         FGhQ==
+        d=sifive.com; s=google; t=1713231104; x=1713835904; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AQ1Fmu4Vn/bJTdN2f3Tpcx/PWLxgEkHvwqs2u4LlG6Q=;
+        b=HEVVAzMyF1muehurD+wPHdccrFYjznQhek7Pj9Zo/xqr+DP3k0LlMxUawUtmMRIaP3
+         J1dAOQdq4rAYIMuYeQWeXQdE3d/3peI9jBhuEkhy+/YFFG8ecl2N/u4BLjvedK6jIj5b
+         A63gJpx12RAcwVEViQROHb4N3N92JBWQ9stjyv26upTh2sr23mqVbu4g1tVVuqIWycWQ
+         epLc6hjOuoT6rYDpRNOuc/YPqzCqEFQMq6GS5C/+O2sCX01uZGZnPC2xpijEDrUI5sx5
+         +dFDLglTqLuOiwScIH2dLPeUVha4tGy56l0rKdYt10zR+S2CHMSZi+grcKCB2nQfq1uz
+         qvjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713230337; x=1713835137;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V84Q9cVFBfzhJCyj19uweJAoXqH3wOGjSA4sDGt5T94=;
-        b=lisuwV95Ht9ehMGROIg+lcKlp4qZB1GVR152UdVoeul8/tnlqORf+8q4lWrOfhXsGn
-         xZ5hzGhQpFGCDhbeBXmzm3Ltx+yukE5VrDirDwZVueMCm5yjkVPUARQza3nzHWNVEnE/
-         krwhZLUP0shUC3Qh7k+bVlpYhkJSFp00lomeOwy14ZW3AxXb9wTT4CUcBJdQEpz3dEau
-         RshiM/Va04DVreNODUrIoGjkX6oqTao0D6JJR2VNPtqH713Tcaq3v6/t6lVv3YKndYmK
-         d6d2BGsaXPNJqtpCIV3BEWaELiJ3jsOInIwCx6koPIAbGOl9FDvaq5GcMd6ztOie5L5X
-         JTNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW8irl9u/fkilyrYBlq6sXlV949mUC2C0IEFR4du9bZ+XZCou/Pj8/Do+xZyuKOu/G3/rnX41V3ji+/dDkRY2GHi2kUnU6KqpG47Qi5
-X-Gm-Message-State: AOJu0Yz8xopFZGVhY6DSceaXQbmOaaVHeY3a2QW+0li5NprCzLqcAztA
-	th9FMtJodk4AxthSTnnGLto2qZ3gBSyeUaxdMSRj3i3fa6wNvQ9Y7rdS+hvi6bM=
-X-Google-Smtp-Source: AGHT+IFWNBzccYch4p6khvIyf+Lk3SK7UVjljV/Hda5ozoFbl/KDRuaiAB21VcZyyqo2uS0i85rJow==
-X-Received: by 2002:a05:6512:3d02:b0:516:d444:b26b with SMTP id d2-20020a0565123d0200b00516d444b26bmr10792490lfv.46.1713230337521;
-        Mon, 15 Apr 2024 18:18:57 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
-        by smtp.gmail.com with ESMTPSA id o9-20020ac25b89000000b00516b069b27esm1425539lfn.37.2024.04.15.18.18.56
+        d=1e100.net; s=20230601; t=1713231104; x=1713835904;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AQ1Fmu4Vn/bJTdN2f3Tpcx/PWLxgEkHvwqs2u4LlG6Q=;
+        b=wZyOEijj/+zQ40+D3TbGmqbM0dYHPSw1o2gNd4gqGSm4gNtfpL7tCJ8osYlbJLcAI5
+         AqOLn1rTW5cspcXsu1dXMIt7DFS2fVG03CdXawaL1+IeIDtaejIWgCE25xHaC60n/Sfi
+         2gWB0xg+iVnPiZQtD6mHi2YJqrsg4h3vHqDFMqYQUja68ta3HqzxyLn9imL4pkVd+pzq
+         IQyh0gvfhnhtcZuD0C7qUhzvwI8vfVkEqpPvg6JBsQdS1D5En3O0iY1AbdtSozWzPv96
+         NqupDCIpavTUxQmI6e1+PbXY6SWEKNcVafejI/0tjXLB6861Q9PA/+hFxLdPhCRJUc2g
+         tFCw==
+X-Forwarded-Encrypted: i=1; AJvYcCV4kUUF3IZshjGc7tygQENhTkri5YzsIfCpiCVdvt7GvqJos2j2EzeMx/LQ9g9X56WoxVz9XKYW3BIKbSkR9Hdqcu2n4FMCF9slJdCV
+X-Gm-Message-State: AOJu0Yw4+zOkNZLiiDTW3ZwBgb+2z6X1aBUi5JDIRJptTd0RnJZU7A8+
+	xg+Yh3FXB6yGZFnaL7nkC5qps/VUYll0VmuCmQ3qz7MFl85gs39IiW+fHBgpiyE=
+X-Google-Smtp-Source: AGHT+IGV28aTXnJZCsv5QTO9arJ7Mejc0+P37jlL8ec2Sy1TLly7UFcUuc2+Lugf+lCiR8bqSzVsfg==
+X-Received: by 2002:a05:6870:f61d:b0:22e:8a2a:2497 with SMTP id ek29-20020a056870f61d00b0022e8a2a2497mr13497999oab.45.1713231103843;
+        Mon, 15 Apr 2024 18:31:43 -0700 (PDT)
+Received: from hsinchu26.internal.sifive.com (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id b13-20020a630c0d000000b005dc4da2121fsm7642525pgl.6.2024.04.15.18.31.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Apr 2024 18:18:57 -0700 (PDT)
-Date: Tue, 16 Apr 2024 04:18:55 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
-	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, owen <qwt9588@gmail.com>, 
-	Jagan Teki <jagan@amarulasolutions.com>, Marek Vasut <marex@denx.de>, 
-	Adrien Grassein <adrien.grassein@gmail.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Sam Ravnborg <sam@ravnborg.org>, Bjorn Andersson <andersson@kernel.org>, 
-	Vinod Koul <vkoul@kernel.org>, Vinay Simha BN <simhavcs@gmail.com>, 
-	Christopher Vollo <chris@renewoutreach.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, kernel@collabora.com, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Subject: Re: [PATCH v3 5/9] drm/bridge: lt9611uxc: Don't log an error when
- DSI host can't be found
-Message-ID: <wg7t7pnrpuz2dy3kj7eh5fmzxg2zwdnahm3yxlc6w35k6r3upy@txfrjhykfrko>
-References: <20240415-anx7625-defer-log-no-dsi-host-v3-0-619a28148e5c@collabora.com>
- <20240415-anx7625-defer-log-no-dsi-host-v3-5-619a28148e5c@collabora.com>
+        Mon, 15 Apr 2024 18:31:43 -0700 (PDT)
+From: Zong Li <zong.li@sifive.com>
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	schwab@suse.de,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Zong Li <zong.li@sifive.com>
+Subject: [PATCH] Revert "riscv: disable generation of unwind tables"
+Date: Tue, 16 Apr 2024 09:31:38 +0800
+Message-Id: <20240416013138.28760-1-zong.li@sifive.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240415-anx7625-defer-log-no-dsi-host-v3-5-619a28148e5c@collabora.com>
 
-On Mon, Apr 15, 2024 at 05:49:33PM -0400, Nícolas F. R. A. Prado wrote:
-> Given that failing to find a DSI host causes the driver to defer probe,
-> make use of dev_err_probe() to log the reason. This makes the defer
-> probe reason available and avoids alerting userspace about something
-> that is not necessarily an error.
-> 
-> Fixes: 0cbbd5b1a012 ("drm: bridge: add support for lontium LT9611UXC bridge")
-> Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> ---
->  drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
+This reverts commit 2f394c0e7d1129a35156e492bc8f445fb20f43ac.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+RISC-V has supported the complete relocation types in module loader by
+'8fd6c5142395 ("riscv: Add remaining module relocations")'.
+Now RISC-V port can enable unwind tables in case eh_frame parsing is
+needed.
 
+Signed-off-by: Zong Li <zong.li@sifive.com>
+---
+ arch/riscv/Makefile | 3 ---
+ 1 file changed, 3 deletions(-)
 
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index 5b3115a19852..9216bf8a2691 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -94,9 +94,6 @@ ifeq ($(CONFIG_CMODEL_MEDANY),y)
+ 	KBUILD_CFLAGS += -mcmodel=medany
+ endif
+ 
+-# Avoid generating .eh_frame sections.
+-KBUILD_CFLAGS += -fno-asynchronous-unwind-tables -fno-unwind-tables
+-
+ # The RISC-V attributes frequently cause compatibility issues and provide no
+ # information, so just turn them off.
+ KBUILD_CFLAGS += $(call cc-option,-mno-riscv-attribute)
 -- 
-With best wishes
-Dmitry
+2.17.1
+
 
