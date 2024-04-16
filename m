@@ -1,167 +1,426 @@
-Return-Path: <linux-kernel+bounces-146727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00DAC8A69F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D1B398A69F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 13:54:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59912B21672
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:50:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94E7FB20FC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84711129E88;
-	Tue, 16 Apr 2024 11:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FEB12AAC7;
+	Tue, 16 Apr 2024 11:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="EyICCcY8"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2054.outbound.protection.outlook.com [40.107.94.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gVaC/7+d"
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E57984E0A;
-	Tue, 16 Apr 2024 11:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713268244; cv=fail; b=M5mRqLlYDxSgZPLw+rwx1RzaQ9WYX7zNJVEViJhyt4keAMAkbGIvTUNrNzFZ8mHIc9n9emlHOTe1gemiqzXF92I7O8OBve950A0wexwzL6S1NP/cOYDU1DEnPkWPvxe/ccfE3/iEJ3genQ/QjfqYHQ4c65343HdJY3hzn41exlI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713268244; c=relaxed/simple;
-	bh=RZD7L1R/VB4TEPieqCJqBPWMJBxRbbCCYvjYxHMaOF8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=pKm081i8D6882gfSyEkcsS6gbGs7/J/u6kb6meRxWkskbmYPTqxHMXFqlfTeXLTOG/xJCX6c7kTVVXj6o4W3lp92roDDrD4hZ4jeDdcuulNMQ6E37rUKsvd+jknSQ3ZQxCDXK4wBG4685DN6yXpDw7BVaFAVYb5u4x+J9CQiRWY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=EyICCcY8; arc=fail smtp.client-ip=40.107.94.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bQmhCnXrwQCKXetDti/qu/ZzzkLW0kL4amc6Zz9PpFlc3vKdxf+XaAUZx4Jz6kS8IebFDK73ej+KX8bde45Pgo8QFz5V4HC2tZ46txKKPmrgGqiBKJtpgOOfSRBwAEfHlmZOfX44RZFzvOHT867qtbObj7yv0dq3QfwmoAkmrvmwuT+x/T1dTRxf4flqIMOAHatZkUlkA9ucTlbay+j61CQ6A9OtPfXwfA7CRKccnU15ubquXQ3NuO9qciFDDWTKeRFVaEzxHQgxUF9QEYY88QLTaa4fWMDLcDCGvS6ZofqJA/8cVwSBeJyAxDIIuubteWkIwDaHA2MMaKUh7usQUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RZD7L1R/VB4TEPieqCJqBPWMJBxRbbCCYvjYxHMaOF8=;
- b=DH4bf6owKeM6WABYNU7HxKIpD8HPUaFAqAsNIAZ/2y1ur+UyfUYwxNxQB+49Ytc7U+8Kx91uOdR6mHthjmXa7r2o/FoYjGd54muDdSolP1PvNtziK3gvaiTt8BxX4EfoWlnV6J7X0tyFNORi8yzEOuVZiiy8apVMOr2Zoh3dSzfwWFTp25GQ1ASZvUgQxqf1faDHaeE6HVPowbb+59y5hGQatiRsmdAJ/2kWCuzhfj4L1Te0qGY6Y3jET9otWjwgetdFSfnIVMBYtmquEFC/oPOxyklSKr3SOQxxq6Q6r3bywf5S1+0Zy10LlEtfJ4pGjZDchavgdw3t/UyfUEbvPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RZD7L1R/VB4TEPieqCJqBPWMJBxRbbCCYvjYxHMaOF8=;
- b=EyICCcY8WKLMVwCdqcpGkfa/nE739ryuoNLrQ3Qt0zb0DHLnpJTLgY5S/ibPV073mWsUeipqIYW1EhQS7IbMgh7HhmU3J7M/msdg79JqWD/cnjihFJgqK+WOJaqy0iQy3VPPN97nmkFBag6XFqi2xF2HfaJAKFE3FCgpLfwOMOrfgO7W5b0uO1D1lRfcFp2455TFg1J/8OD95ikQDGO2ag2x4Cs5YXvd9Z9gpUloIC1XQoR+akk7ZdA77az7oNjpeY4AvP0JO4VBtf/Ivh1o6ui32UnDGEo1WukNxRacMx6X+PT2uy124cLENKjdBp7brJm75I6McARZPUDdsVyGjA==
-Received: from DM6PR12MB4516.namprd12.prod.outlook.com (2603:10b6:5:2ac::20)
- by PH7PR12MB7913.namprd12.prod.outlook.com (2603:10b6:510:27b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 11:50:40 +0000
-Received: from DM6PR12MB4516.namprd12.prod.outlook.com
- ([fe80::43e9:7b19:9e11:d6bd]) by DM6PR12MB4516.namprd12.prod.outlook.com
- ([fe80::43e9:7b19:9e11:d6bd%7]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 11:50:39 +0000
-From: Danielle Ratson <danieller@nvidia.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "davem@davemloft.net"
-	<davem@davemloft.net>, "edumazet@google.com" <edumazet@google.com>,
-	"pabeni@redhat.com" <pabeni@redhat.com>, "corbet@lwn.net" <corbet@lwn.net>,
-	"linux@armlinux.org.uk" <linux@armlinux.org.uk>, "sdf@google.com"
-	<sdf@google.com>, "kory.maincent@bootlin.com" <kory.maincent@bootlin.com>,
-	"maxime.chevallier@bootlin.com" <maxime.chevallier@bootlin.com>,
-	"vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
-	"przemyslaw.kitszel@intel.com" <przemyslaw.kitszel@intel.com>,
-	"ahmed.zaki@intel.com" <ahmed.zaki@intel.com>, "richardcochran@gmail.com"
-	<richardcochran@gmail.com>, "shayagr@amazon.com" <shayagr@amazon.com>,
-	"paul.greenwalt@intel.com" <paul.greenwalt@intel.com>, "jiri@resnulli.us"
-	<jiri@resnulli.us>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, mlxsw
-	<mlxsw@nvidia.com>, Petr Machata <petrm@nvidia.com>, Ido Schimmel
-	<idosch@nvidia.com>
-Subject: RE: [PATCH net-next v2 07/10] ethtool: cmis_cdb: Add a layer for
- supporting CDB commands
-Thread-Topic: [PATCH net-next v2 07/10] ethtool: cmis_cdb: Add a layer for
- supporting CDB commands
-Thread-Index: AQHajy2oOK8Gokf+00ClZj5QTeHiJrFqTvmAgAB7JzA=
-Date: Tue, 16 Apr 2024 11:50:39 +0000
-Message-ID:
- <DM6PR12MB45161CCCBD7E9E70C223E62FD8082@DM6PR12MB4516.namprd12.prod.outlook.com>
-References: <20240415120717.1251864-1-danieller@nvidia.com>
-	<20240415120717.1251864-8-danieller@nvidia.com>
- <20240415212927.2c87ddca@kernel.org>
-In-Reply-To: <20240415212927.2c87ddca@kernel.org>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB4516:EE_|PH7PR12MB7913:EE_
-x-ms-office365-filtering-correlation-id: 5efedf05-3deb-4c8d-5f74-08dc5e0b7015
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- wwG9yZ5Kmj7jUmxtuGiqj5xGSYXUqPx2gwVIdOKaYNhuMdttBv/2p4bVlApFuFjh9bT86cF4zeHT3yYgJWZlMbMFHxWsQGT/auf6C/b1MuDgM3abrX9f1HUVX3jhsLEFIwgu2Ktlut0tg1jNwpJLgjSWSLtC8OVODQ0V/1e1sSc24i5OaSj2PaC1liMYLllta+wLqgA5dsZIUMds0qEZC8XJfa5lmeBMKOFhi8lN6a3Huvy391RXvFvcqwdyB70CBIW4eVCwjgkZ6s056MrtqtAnvVNsPtNfsqY5z0vMGrSHeTfSA71CWUY3m+wH+0f3lbXfg780VPSeI1P21onRuAAtQAr6BOUst/1LddwNaPVZjk8th6L/TkDmvISkofqdUsd7VnafSWtBz+vVGjxz1vc5Og5wT2w5juXyXGN2zq9PGfgq9L65dZC7gGbHY0IWVGDgtw3oBWwg+HyXOgB97EcJDACrz27WOwUqcFvMG4byyxmauUbLbH0XG+qaiKmGIkDyXV45QdgLEYuqSJ0+F0aHTsOJgY7HXgufetWVqTYaAiKAOq8WshqjuT5CqWOgKornQ/jh049eiLOoz9nu+9wqazpODwVUHtxiGoD2LXRFxU3LMkimU2gg5tgovGK5/dh0tnL1Q+BXHca7MuMycqfnus98ERZH3wX4qA7BWv9JH8YXg4T+UXdaTqTpEqR9ar0reU3X5dLSZ++5TAPiMrOiy+iILLOLqH+4S/VWRJU=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4516.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?eU85cGw0cW9sTE1LOTJsZCt1NUxoaDNDTTNGbzVMcm03NXBGMjJ0OEl5YkVY?=
- =?utf-8?B?QldNbVcwbjF0NjN5WXJIdVgyQUpEaTFpcHBZTFVhN3M5eWQ2aStUTnpvbzZ5?=
- =?utf-8?B?ay9yU3dDTFJabkg0VE43aE5SRlgySUNTNWk3SlR0UTQ3cHZEN2lpb3RnSnlk?=
- =?utf-8?B?Y3RVbVhRVzg4K3Z4MmJYU0R5TnY3T2dkd1QxQk5iZ3ZMTCtDR3RPQ1piTEp3?=
- =?utf-8?B?WHJ0VXdrNnUwUVh3TkZtc0psNjZqMmdPS2FpY0M1SGo3SGFiOGwzNjgvSUxP?=
- =?utf-8?B?ZVhmUnJoNFgya2JWcUVVeDJsZ0dJR1JuY3NMaWJOMGdTU05LRjh2SnZNOEdm?=
- =?utf-8?B?TmlFYmdWUmZJY255RlRtdWIra0M1YlVyaXowSDVqNXY1ekdRVlhlYy9aWXN5?=
- =?utf-8?B?ZnY1QlhpVndXSjlGSEJEK2N5QzI0bUNYM0ZQS1R4TXZjTmZKQWJKM0ltTjUx?=
- =?utf-8?B?WEYvc0lDRUpVcmJzaUgvM2sxdjNXczFLZGZYZGpWcFkyNWl2aE1TcXRJblhP?=
- =?utf-8?B?dHIxQUI2TnFvYWF3em5ZcUZhaHIveWttT3d5MWFoeWtlSDNDL1pyMzNJVEUz?=
- =?utf-8?B?c1R0cTh4dVFtZWVHR3cyU2dNcnkyS05EMU51b0RUZk80WGZZRWRyWlhEbFRa?=
- =?utf-8?B?ZTNTbi96SGE4Q0VmZDBjZVJPL3Zpc1g4TytCMEVYWmxXUG1HaHRVajlNZ3o2?=
- =?utf-8?B?WVRRSC92dTBIRWdBMnY4eVY2eTNoSk5MNFVLR0htU1RSdnRDVTErWUxYcTNa?=
- =?utf-8?B?TVhZN0N0NHhaSGNqcW9LK016MzM0M1liK0JxUG4rMktNdm5RRVlsVjBKRjVq?=
- =?utf-8?B?VzdQUDJNZ0hVTzhRRS9DTjBnR0J2WlFidjNrcmxsK0UwT1U0anQ2bkp6WUUw?=
- =?utf-8?B?R3BHNUlLTkgwS2JEYW1EY3d1ZmtWVTdIbStLLzRnTlpMaFR1QmZoL3RSdEZR?=
- =?utf-8?B?aExsRkx0MlZrVEdMd09PTy9IMkNaQnl0d2tmd2ZObWtqYkgxZ1pEMUtmU2hz?=
- =?utf-8?B?MEk5cUFwcEROZ3ZmeHY4RXRRbjRmOUdwWmVrRWJJU2Z2ZCtsTzhEYUgyR3B5?=
- =?utf-8?B?UkN2TzVZZCt4NmZmY1hzWWl6RlRCZm1SdS9hQmJyRWVLdFoxU1BacWhheE9O?=
- =?utf-8?B?c1FZTE10SnF6c2VKa0c1clBLV2lxWUVTY0w5NGJLc05VRVRha1R0ZERNNUxt?=
- =?utf-8?B?UTFka3RTMkVTWURxRC9wdVVLL2diaFQxcmRJREZsbTZQS0FORG9rZjBZWjFa?=
- =?utf-8?B?eEtSUzdlNUVkTHlqZjRVWWt6YlZuTzNIM2hiMWVTN2xmVzZDemliVVFnZnFD?=
- =?utf-8?B?Y3J3dm5NaCtVRlRpOWlJVXlWR01UNk1uZVVpK09wOVFsQjZYN3UrS3NTa1Z0?=
- =?utf-8?B?c3JrK0FlMTJ3emJXb1o5ZC9rcE5NcTBiQ3hnRDNIb2J0KzJleGtHeFBxZ0RL?=
- =?utf-8?B?aTBNZDVLMmxGS1VuSjFFZ0dSMys3QldBV0p5SnN1ZTFwNU9qQktJTmhNWTVH?=
- =?utf-8?B?Q2lmMFdaWTRzMzdjdGw1L2dqc3hUR3kyQXR4YTdrVnpGbzZWQjBjd2Zjdkhp?=
- =?utf-8?B?RlZ3TTVCWjYvOXN1eGYzYzNHVXpWWGtQMnViWWtITFNFTTU2VU9DODlxY0Nz?=
- =?utf-8?B?YzhCZnlzbXY1WE1pTnM2bngraFlIcXVmbHVLN3h0SWdMd1VQYU84TWlEV0VE?=
- =?utf-8?B?Z0M3SEJSOU5tY1lWengzamh3bXdiek5TSUh5azdmT053b2ZvL2toM2IvanJi?=
- =?utf-8?B?NkE5ZkRiS1ZMSit0VjBQa1BDSHVqczRxd09qNFR6S3FCOEwxNDV2NmR0Z2Z3?=
- =?utf-8?B?NTlRYmNKcE5kU1lqbmIwNFh2K3YzeVQxNEFyRFB6cyt1V2FOdnFsNCtLOVFL?=
- =?utf-8?B?UHZNZlpiTFdoRFNjUVNoR3IzUmcxTldWb0pRR2xQeTM4UXJnQ09Nc0JuUisw?=
- =?utf-8?B?YUJ3RmpCbjhxNC9hcWU3SGM5L1JnOVBvU0Q3dU5GQjcvb0thVDFoZXNRbDBl?=
- =?utf-8?B?MHZaTXlQS1FaNVBadXZDay9CZlRralMybm4wNFc5WHlid25Sai9DRFBzQWNq?=
- =?utf-8?B?R3Uxb29IVHM4WDBiNnpSL0tPSDcvNzlwQkdkMjZhdUxLWjIyRnVZZElGRUxV?=
- =?utf-8?Q?NvlQw44qu0vazQUZ0GjXYg010?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48354129E64;
+	Tue, 16 Apr 2024 11:53:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713268426; cv=none; b=lOm4wrz/GbVPkeC0fJKZmcYM17d/BZN99mtd33YucsJOEcnPTSczEl15GyXVXRp/qg8xjTmUxOOiDJZteJz0AVB8Z9fycPC2Aadrm7puwGTkVyM9u4td/QJRDCdeno4mFRMAwdWZ1K3wmWrGO/M1YfQw/JJviuvYRspet5guc8o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713268426; c=relaxed/simple;
+	bh=5RxQUoL+OTe9d1Ynqvd0tOUvgJ3NkyjjdNpfOhWHwPM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BOkR8fxHIfwuWQ9qVVUKnGFfY1RwtEYSvi0AUnE2AEpv/fKYHB68iljKMu42/qHr00WKoWkQXdKSzvhc1375D+DSS2w9CaaarQ8iJGBixqbBUTM4r/8oQ8dGcQiHNQLeS/Yp0eanK4RziqisNASbm71dYptxsemw18GZygZqKf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gVaC/7+d; arc=none smtp.client-ip=209.85.221.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4dca51ef1cfso1318937e0c.3;
+        Tue, 16 Apr 2024 04:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713268423; x=1713873223; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s7v8nQN+HWJPiUsrG6izQsXF7a5r3hQ8/qVVfR22Ufw=;
+        b=gVaC/7+drPRQSvtl6N4VR0iPvTcq33OD1ER7Ld8Z+Lcvb8ht9XZqt2GuUxA4E/6BCf
+         pnBRyhgksy+W5Gqpxvnstc/BIW/6FpR80pDW2g08Ii1pfaCqvnbgGziI0blq9RXeOSYU
+         MPt4wndIkFhBI664qjKZA+vMGQzNqTbSOVIB/+L9G/nAgFNtYCS4w5/tnKu2vvfHZPuY
+         nyyXh5Ra4Y6U7rwq41yrW+gr/hw6xBXOcg+OBTshfnS8q3JshSt6d3x5E4f5hrnX20C6
+         MiPyJXy7w22NMxhT56e9Scb03+7xEMroQ6skzeDsBSwfhwhZyk80QVEm7M9j0ghvsSYW
+         dVAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713268423; x=1713873223;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s7v8nQN+HWJPiUsrG6izQsXF7a5r3hQ8/qVVfR22Ufw=;
+        b=r0KybyhlaMAWqqP819VnZiG0tIw9whZMzkqSwc2nkdLIlozAiNJOH+Xx6hUA0z7Ds4
+         Kc2XGZqhYaCnAPUMOzF2uTnt6uDMUIHabRTwNx/K7AH1l5QT29U0V2MlDGM4Q9KS74Zd
+         p6hp9O8J6buVVbK8VODygGYlGUKBNCNuoFUVlZdtA4YxyqQXrk7MFwPUiyq9LAGlgFr5
+         XVObsEeESO8ltwq7i5xjexVxoZYkjo0GMxiHZ8xXZaVFiwH2zv/9Vj9eaRz1qHUGRx5E
+         +jIwdYe/7yASQzZmDqbnueJV7h3d2D5Q9sBDKM2FSBTeDV810QPgAUYiFec3IhmFxrY3
+         YRIw==
+X-Forwarded-Encrypted: i=1; AJvYcCUiR/xdm2wfoFNdn8R7zqNVd0a/Z/OaMUUQA9/4cTzWSOmwzdCrOkubQ8lcP58QutvaxCDZ+US0SD00cooCjX9T7WhwZXP6h4NPoECkZINUVF93sm8jzqKn0+IaOsrLe93H
+X-Gm-Message-State: AOJu0YzGhiMDZMdHH9DF6n1yCFCwmAq8vYDe1/22ZQ4s2rwe95geJq8i
+	mWPh5Z8v7XsXZZLCBwlNMHAgdHj4gDcCFBZDw87iPg/WoIi8/iYU
+X-Google-Smtp-Source: AGHT+IGD/k6XEx7ty/CGbQR2mclQHOq9ejpY7IhehX+8hrDzFWfuh6P+r8shztiWPLHaJHJBpVA19A==
+X-Received: by 2002:a05:6122:31a4:b0:4da:a9d8:f719 with SMTP id ch36-20020a05612231a400b004daa9d8f719mr10229681vkb.4.1713268422942;
+        Tue, 16 Apr 2024 04:53:42 -0700 (PDT)
+Received: from lima-default.myfiosgateway.com (pool-108-50-252-180.nwrknj.fios.verizon.net. [108.50.252.180])
+        by smtp.gmail.com with ESMTPSA id qh6-20020a0562144c0600b0069b520a60f3sm6639792qvb.136.2024.04.16.04.53.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 04:53:42 -0700 (PDT)
+From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+To: ast@kernel.org
+Cc: harishankar.vishwanathan@rutgers.edu,
+	sn624@cs.rutgers.edu,
+	sn349@cs.rutgers.edu,
+	m.shachnai@rutgers.edu,
+	paul@isovalent.com,
+	Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
+	Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 bpf-next] bpf: Harden and/or/xor value tracking
+Date: Tue, 16 Apr 2024 07:53:02 -0400
+Message-Id: <20240416115303.331688-1-harishankar.vishwanathan@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4516.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5efedf05-3deb-4c8d-5f74-08dc5e0b7015
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2024 11:50:39.7485
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fJLa9k9jCL4hun/uGvswx90xx3QwLA/tiD0erw5K0q43VXxwSk/6XohY7KJ3gJ+37JfihLoAXs1v27KfZFFDRQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7913
+Content-Transfer-Encoding: 8bit
 
-PiA+ICsJcGFnZV9kYXRhLT5kYXRhID0ga21hbGxvYyhwYWdlX2RhdGEtPmxlbmd0aCwgR0ZQX0tF
-Uk5FTCk7DQo+ID4gKwlpZiAoIXBhZ2VfZGF0YS0+ZGF0YSkNCj4gPiArCQlyZXR1cm4gLUVOT01F
-TTsNCj4gPiArDQo+ID4gKwltZW1jcHkocGFnZV9kYXRhLT5kYXRhLCBkYXRhLCBwYWdlX2RhdGEt
-Pmxlbmd0aCk7DQo+IA0KPiBjb2NjaWNoZWNrIHN1Z2dlc3RzIHRvIHVzZSBrbWVtZHVwKCkgaGVy
-ZToNCj4gDQo+IG5ldC9ldGh0b29sL2NtaXNfY2RiLmM6NTA0OjE5LTI2OiBXQVJOSU5HIG9wcG9y
-dHVuaXR5IGZvciBrbWVtZHVwDQo+IC0tDQo+IHB3LWJvdDogY3INCg0KV2lsbCBmaXgsIHRoYW5r
-cy4NCg==
+This patch addresses a latent unsoundness issue in the
+scalar(32)_min_max_and/or/xor functions. While it is not a bugfix, it
+ensures that the functions produce sound outputs for all inputs.
+
+The issue occurs in these functions when setting signed bounds. The
+following example illustrates the issue for scalar_min_max_and(), but it
+applies to the other functions.
+
+In scalar_min_max_and() the following clause is executed when ANDing
+positive numbers:
+
+		/* ANDing two positives gives a positive, so safe to
+		 * cast result into s64.
+		 */
+		dst_reg->smin_value = dst_reg->umin_value;
+		dst_reg->smax_value = dst_reg->umax_value;
+
+However, if umin_value and umax_value of dst_reg cross the sign boundary
+(i.e., if (s64)dst_reg->umin_value > (s64)dst_reg->umax_value), then we
+will end up with smin_value > smax_value, which is unsound.
+
+Previous works [1, 2] have discovered and reported this issue. Our tool
+Agni [2, 3] consideres it a false positive. This is because, during the
+verification of the abstract operator scalar_min_max_and(), Agni restricts
+its inputs to those passing through reg_bounds_sync(). This mimics
+real-world verifier behavior, as reg_bounds_sync() is invariably executed
+at the tail of every abstract operator. Therefore, such behavior is
+unlikely in an actual verifier execution.
+
+However, it is still unsound for an abstract operator to set signed bounds
+such that smin_value > smax_value. This patch fixes it, making the abstract
+operator sound for all (well-formed) inputs.
+
+It is worth noting that while the previous code updated the signed bounds
+(using the output unsigned bounds) only when the *input signed* bounds were
+positive, the new code updates them whenever the *output unsigned* bounds
+do not cross the sign boundary.
+
+An alternative approach to fix this latent unsoundness would be to
+unconditionally set the signed bounds to unbounded [S64_MIN, S64_MAX], and
+let reg_bounds_sync() refine the signed bounds using the unsigned bounds
+and the tnum. We found that our approach produces more precise (tighter)
+bounds.
+
+For example, consider these inputs to BPF_AND:
+
+/* dst_reg */
+var_off.value: 8608032320201083347
+var_off.mask: 615339716653692460
+smin_value: 8070450532247928832
+smax_value: 8070450532247928832
+umin_value: 13206380674380886586
+umax_value: 13206380674380886586
+s32_min_value: -2110561598
+s32_max_value: -133438816
+u32_min_value: 4135055354
+u32_max_value: 4135055354
+
+/* src_reg */
+var_off.value: 8584102546103074815
+var_off.mask: 9862641527606476800
+smin_value: 2920655011908158522
+smax_value: 7495731535348625717
+umin_value: 7001104867969363969
+umax_value: 8584102543730304042
+s32_min_value: -2097116671
+s32_max_value: 71704632
+u32_min_value: 1047457619
+u32_max_value: 4268683090
+
+After going through tnum_and() -> scalar32_min_max_and() ->
+scalar_min_max_and() -> reg_bounds_sync(), our patch produces the following
+bounds for s32:
+s32_min_value: -1263875629
+s32_max_value: -159911942
+
+Whereas, setting the signed bounds to unbounded in scalar_min_max_and()
+produces:
+s32_min_value: -1263875629
+s32_max_value: -1
+
+As observed, our patch produces a tighter s32 bound. We also confirmed
+using Agni and SMT verification that our patch always produces signed
+bounds that are equal to or more precise than setting the signed bounds to
+unbounded in scalar_min_max_and().
+
+[1] https://sanjit-bhat.github.io/assets/pdf/ebpf-verifier-range-analysis22.pdf
+[2] https://link.springer.com/chapter/10.1007/978-3-031-37709-9_12
+[3] https://github.com/bpfverif/agni
+
+---
+Changelog:
+
+v3:
+	* Removed unused variables
+
+v2:
+	* Shortened the if condition that updates the signed bounds. In v1
+	it was:
+
+	if (dst_reg->smin_value >= 0 && smin_val >= 0 &&
+		(s64)dst_reg->umin_value <= (s64)dst_reg->umax_value) {
+			// update s64 bounds using u64 bounds
+	}
+
+	In v2 it was updated to:
+
+	if ((s64)dst_reg->umin_value <= (s64)dst_reg->umax_value) {
+		// update s64 bounds using u64 bounds
+	}
+
+	Inside the if, the signed bounds are updated using the unsigned
+	bounds. The only case in which this is unsafe is when the unsigned
+	bounds cross the sign boundary. The shortened if condition is
+	enough to prevent this.
+
+v1:
+	https://lore.kernel.org/bpf/20240329030119.29995-1-harishankar.vishwanathan@gmail.com/
+---
+
+Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
+Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
+Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+---
+ kernel/bpf/verifier.c | 94 ++++++++++++++++++-------------------------
+ 1 file changed, 40 insertions(+), 54 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 2aad6d90550f..68cfd6fc6ad4 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -13320,7 +13320,6 @@ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
+ 	bool src_known = tnum_subreg_is_const(src_reg->var_off);
+ 	bool dst_known = tnum_subreg_is_const(dst_reg->var_off);
+ 	struct tnum var32_off = tnum_subreg(dst_reg->var_off);
+-	s32 smin_val = src_reg->s32_min_value;
+ 	u32 umax_val = src_reg->u32_max_value;
+ 
+ 	if (src_known && dst_known) {
+@@ -13333,18 +13332,16 @@ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
+ 	 */
+ 	dst_reg->u32_min_value = var32_off.value;
+ 	dst_reg->u32_max_value = min(dst_reg->u32_max_value, umax_val);
+-	if (dst_reg->s32_min_value < 0 || smin_val < 0) {
+-		/* Lose signed bounds when ANDing negative numbers,
+-		 * ain't nobody got time for that.
+-		 */
+-		dst_reg->s32_min_value = S32_MIN;
+-		dst_reg->s32_max_value = S32_MAX;
+-	} else {
+-		/* ANDing two positives gives a positive, so safe to
+-		 * cast result into s64.
+-		 */
++
++	/* Safe to set s32 bounds by casting u32 result into s32 when u32
++	 * doesn't cross sign boundary. Otherwise set s32 bounds to unbounded.
++	 */
++	if ((s32)dst_reg->u32_min_value <= (s32)dst_reg->u32_max_value) {
+ 		dst_reg->s32_min_value = dst_reg->u32_min_value;
+ 		dst_reg->s32_max_value = dst_reg->u32_max_value;
++	} else {
++		dst_reg->s32_min_value = S32_MIN;
++		dst_reg->s32_max_value = S32_MAX;
+ 	}
+ }
+ 
+@@ -13353,7 +13350,6 @@ static void scalar_min_max_and(struct bpf_reg_state *dst_reg,
+ {
+ 	bool src_known = tnum_is_const(src_reg->var_off);
+ 	bool dst_known = tnum_is_const(dst_reg->var_off);
+-	s64 smin_val = src_reg->smin_value;
+ 	u64 umax_val = src_reg->umax_value;
+ 
+ 	if (src_known && dst_known) {
+@@ -13366,18 +13362,16 @@ static void scalar_min_max_and(struct bpf_reg_state *dst_reg,
+ 	 */
+ 	dst_reg->umin_value = dst_reg->var_off.value;
+ 	dst_reg->umax_value = min(dst_reg->umax_value, umax_val);
+-	if (dst_reg->smin_value < 0 || smin_val < 0) {
+-		/* Lose signed bounds when ANDing negative numbers,
+-		 * ain't nobody got time for that.
+-		 */
+-		dst_reg->smin_value = S64_MIN;
+-		dst_reg->smax_value = S64_MAX;
+-	} else {
+-		/* ANDing two positives gives a positive, so safe to
+-		 * cast result into s64.
+-		 */
++
++	/* Safe to set s64 bounds by casting u64 result into s64 when u64
++	 * doesn't cross sign boundary. Otherwise set s64 bounds to unbounded.
++	 */
++	if ((s64)dst_reg->umin_value <= (s64)dst_reg->umax_value) {
+ 		dst_reg->smin_value = dst_reg->umin_value;
+ 		dst_reg->smax_value = dst_reg->umax_value;
++	} else {
++		dst_reg->smin_value = S64_MIN;
++		dst_reg->smax_value = S64_MAX;
+ 	}
+ 	/* We may learn something more from the var_off */
+ 	__update_reg_bounds(dst_reg);
+@@ -13389,7 +13383,6 @@ static void scalar32_min_max_or(struct bpf_reg_state *dst_reg,
+ 	bool src_known = tnum_subreg_is_const(src_reg->var_off);
+ 	bool dst_known = tnum_subreg_is_const(dst_reg->var_off);
+ 	struct tnum var32_off = tnum_subreg(dst_reg->var_off);
+-	s32 smin_val = src_reg->s32_min_value;
+ 	u32 umin_val = src_reg->u32_min_value;
+ 
+ 	if (src_known && dst_known) {
+@@ -13402,18 +13395,16 @@ static void scalar32_min_max_or(struct bpf_reg_state *dst_reg,
+ 	 */
+ 	dst_reg->u32_min_value = max(dst_reg->u32_min_value, umin_val);
+ 	dst_reg->u32_max_value = var32_off.value | var32_off.mask;
+-	if (dst_reg->s32_min_value < 0 || smin_val < 0) {
+-		/* Lose signed bounds when ORing negative numbers,
+-		 * ain't nobody got time for that.
+-		 */
+-		dst_reg->s32_min_value = S32_MIN;
+-		dst_reg->s32_max_value = S32_MAX;
+-	} else {
+-		/* ORing two positives gives a positive, so safe to
+-		 * cast result into s64.
+-		 */
++
++	/* Safe to set s32 bounds by casting u32 result into s32 when u32
++	 * doesn't cross sign boundary. Otherwise set s32 bounds to unbounded.
++	 */
++	if ((s32)dst_reg->u32_min_value <= (s32)dst_reg->u32_max_value) {
+ 		dst_reg->s32_min_value = dst_reg->u32_min_value;
+ 		dst_reg->s32_max_value = dst_reg->u32_max_value;
++	} else {
++		dst_reg->s32_min_value = S32_MIN;
++		dst_reg->s32_max_value = S32_MAX;
+ 	}
+ }
+ 
+@@ -13422,7 +13413,6 @@ static void scalar_min_max_or(struct bpf_reg_state *dst_reg,
+ {
+ 	bool src_known = tnum_is_const(src_reg->var_off);
+ 	bool dst_known = tnum_is_const(dst_reg->var_off);
+-	s64 smin_val = src_reg->smin_value;
+ 	u64 umin_val = src_reg->umin_value;
+ 
+ 	if (src_known && dst_known) {
+@@ -13435,18 +13425,16 @@ static void scalar_min_max_or(struct bpf_reg_state *dst_reg,
+ 	 */
+ 	dst_reg->umin_value = max(dst_reg->umin_value, umin_val);
+ 	dst_reg->umax_value = dst_reg->var_off.value | dst_reg->var_off.mask;
+-	if (dst_reg->smin_value < 0 || smin_val < 0) {
+-		/* Lose signed bounds when ORing negative numbers,
+-		 * ain't nobody got time for that.
+-		 */
+-		dst_reg->smin_value = S64_MIN;
+-		dst_reg->smax_value = S64_MAX;
+-	} else {
+-		/* ORing two positives gives a positive, so safe to
+-		 * cast result into s64.
+-		 */
++
++	/* Safe to set s64 bounds by casting u64 result into s64 when u64
++	 * doesn't cross sign boundary. Otherwise set s64 bounds to unbounded.
++	 */
++	if ((s64)dst_reg->umin_value <= (s64)dst_reg->umax_value) {
+ 		dst_reg->smin_value = dst_reg->umin_value;
+ 		dst_reg->smax_value = dst_reg->umax_value;
++	} else {
++		dst_reg->smin_value = S64_MIN;
++		dst_reg->smax_value = S64_MAX;
+ 	}
+ 	/* We may learn something more from the var_off */
+ 	__update_reg_bounds(dst_reg);
+@@ -13458,7 +13446,6 @@ static void scalar32_min_max_xor(struct bpf_reg_state *dst_reg,
+ 	bool src_known = tnum_subreg_is_const(src_reg->var_off);
+ 	bool dst_known = tnum_subreg_is_const(dst_reg->var_off);
+ 	struct tnum var32_off = tnum_subreg(dst_reg->var_off);
+-	s32 smin_val = src_reg->s32_min_value;
+ 
+ 	if (src_known && dst_known) {
+ 		__mark_reg32_known(dst_reg, var32_off.value);
+@@ -13469,10 +13456,10 @@ static void scalar32_min_max_xor(struct bpf_reg_state *dst_reg,
+ 	dst_reg->u32_min_value = var32_off.value;
+ 	dst_reg->u32_max_value = var32_off.value | var32_off.mask;
+ 
+-	if (dst_reg->s32_min_value >= 0 && smin_val >= 0) {
+-		/* XORing two positive sign numbers gives a positive,
+-		 * so safe to cast u32 result into s32.
+-		 */
++	/* Safe to set s32 bounds by casting u32 result into s32 when u32
++	 * doesn't cross sign boundary. Otherwise set s32 bounds to unbounded.
++	 */
++	if ((s32)dst_reg->u32_min_value <= (s32)dst_reg->u32_max_value) {
+ 		dst_reg->s32_min_value = dst_reg->u32_min_value;
+ 		dst_reg->s32_max_value = dst_reg->u32_max_value;
+ 	} else {
+@@ -13486,7 +13473,6 @@ static void scalar_min_max_xor(struct bpf_reg_state *dst_reg,
+ {
+ 	bool src_known = tnum_is_const(src_reg->var_off);
+ 	bool dst_known = tnum_is_const(dst_reg->var_off);
+-	s64 smin_val = src_reg->smin_value;
+ 
+ 	if (src_known && dst_known) {
+ 		/* dst_reg->var_off.value has been updated earlier */
+@@ -13498,10 +13484,10 @@ static void scalar_min_max_xor(struct bpf_reg_state *dst_reg,
+ 	dst_reg->umin_value = dst_reg->var_off.value;
+ 	dst_reg->umax_value = dst_reg->var_off.value | dst_reg->var_off.mask;
+ 
+-	if (dst_reg->smin_value >= 0 && smin_val >= 0) {
+-		/* XORing two positive sign numbers gives a positive,
+-		 * so safe to cast u64 result into s64.
+-		 */
++	/* Safe to set s64 bounds by casting u64 result into s64 when u64
++	 * doesn't cross sign boundary. Otherwise set s64 bounds to unbounded.
++	 */
++	if ((s64)dst_reg->umin_value <= (s64)dst_reg->umax_value) {
+ 		dst_reg->smin_value = dst_reg->umin_value;
+ 		dst_reg->smax_value = dst_reg->umax_value;
+ 	} else {
+-- 
+2.40.1
+
 
