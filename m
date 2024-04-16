@@ -1,52 +1,53 @@
-Return-Path: <linux-kernel+bounces-147387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCFC78A733E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A36488A7341
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:31:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FD4D1F21B8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:31:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 599DA1F22411
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6B61369B1;
-	Tue, 16 Apr 2024 18:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA07B137766;
+	Tue, 16 Apr 2024 18:31:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="kqKrEHo1"
+	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="UgG/gtxC"
 Received: from mail.mainlining.org (mainlining.org [94.241.141.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAE21C06;
-	Tue, 16 Apr 2024 18:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B80E555;
+	Tue, 16 Apr 2024 18:31:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.241.141.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292275; cv=none; b=q6/CgW0B5wWSvutx505HAPdoK0j7D65X8h/6ocY5HbWpiBG1h1oYHTTsIwTpBu+w+Bn+BO4qfvtHXKUKEywB9txMhqgSfgksG2uCdr8GqL5B5iUmFozoJY9OefzlP7i24uAeWtw1WlFWHZ3pwyTZProrWcT2MisIFNdBJiBC3rQ=
+	t=1713292275; cv=none; b=Ei+E91wfOhUTYcUBki9JYvhlkWJ60i55at+2D+rDLwSqqsydoaQDUuKDvgNapeJTw/s8z/ywFNk9uC31octy2Cnm0VH/7KrEe5R/Wt2SsNOwZcbInMuy1heeNVR/JpsgHVq9+HlCNE0g2SwzR0TFdzYmw2lJvLFaavI0v+uOrug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713292275; c=relaxed/simple;
-	bh=rzC5W1TaCb9OYzxdOKGyAXPykw9cGXSoLeHQch7h958=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ghSHvqigmNB1hHExPRuQo170LxmfsQhVkbhAZ4aompv8Z2vSNYXasEzh1u/ZYGZSFiaUyuUCmIXnlpLeFsTOkw4krUI8sAStxdEuw/udNcDnFcBRv1odPglGaqvVFgN0YAE3fka+1gNR1q3gzfngpZaxTtKXrRKK+Z7EZDBgN6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=kqKrEHo1; arc=none smtp.client-ip=94.241.141.152
+	bh=H4PFzqvmKwXu3PaRjVJ2GZOn4+++zfi7W3Cn2y64I2E=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=DpAJlKxDSlJc5RHdSzW2O71oL6y4E7vKn7XUgofv/j8r+cu4IRb7f80qDg50kz0A9993NtOZfpeZtIEtxDYawGY/hfbw0Bj+sh6lazR/XJoQ6iwoXG0Tq4MT+BJ0l+ydDKFeYk3aXXj+mFhE/Lg9bCUWmWctQV1Sk7mt50DUu+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=UgG/gtxC; arc=none smtp.client-ip=94.241.141.152
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
 Received: from david-ryuzu.localdomain (ipbcc3a836.dynamic.kabel-deutschland.de [188.195.168.54])
-	by mail.mainlining.org (Postfix) with ESMTPSA id 4063BE20E0;
-	Tue, 16 Apr 2024 18:31:08 +0000 (UTC)
+	by mail.mainlining.org (Postfix) with ESMTPSA id 3A167E20E8;
+	Tue, 16 Apr 2024 18:31:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mainlining.org;
-	s=psm; t=1713292269;
+	s=psm; t=1713292272;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CDEkPdtKTNgd1iLFlJr4m5I7DfTRIEGCJhDqsto7S8E=;
-	b=kqKrEHo1pbhQ4q90yt5ppV/kDqBM412ZH23DtnlWM5son7smI/mtbCocuiEd0jAxVkyYtj
-	MG2QMeINp4283CTadR7wg6IRgNIUe15YuN/fS9ppYJu2bzC7xLfnDvO9SHJAuisk9hOhPf
-	8onesEvjlU4SdYqak1qoGPECcD8U0HPKZ0eaJTAMlMvnYfA4jl55YoOLQNyFyCkaNaDQKj
-	AFe5TedYsPVvuEaqInUnymlUjCCJsVL4FD0R0iA1bvQphbp818XopUUW5A0qHDajygaBkT
-	fRs8iIevRiT2fo+noUX5xIbof9Q2oEPbDk1f2fvy+WxETp+iEAryLZAEtcGaug==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RnGPoQ0r3htGk+5p1b1VSDz+6cHpvgMQDQZH9FEMlN4=;
+	b=UgG/gtxCkxIJEfg7a7fu45DFLfcwBY0E+RUDaQpVsMIE9WnflnfqMQ8u1GvK8WXQtJgVzX
+	iOdogn3yqI+WsfO0ZkRWs2A1TpuyyF/c5D9dSMlZAeIrDgngMqYHHAy6rxBPfPU/4Ea30B
+	YprKphN89Dd86Qu0vlh/zmRG3CwLlFfIC0TlDzgvzil2riGp4673fmdMeKnYa5bLqRGEs2
+	/YEL2IvF2GwT5lxiX4fhHh0lFJ1As10OlE2Z9/CM1g4RBZLCaGbCQC2Rkc0SHzb+nXBYS2
+	S2bBVhgT6h2KD1uFGk2PSvKFhFS0a7lUw9aePHhl70OSVZE8cZPkvy4bs51sSA==
 From: David Wronek <david@mainlining.org>
-Subject: [PATCH v3 0/2] Add driver for Raydium RM69380-based DSI panels
-Date: Tue, 16 Apr 2024 20:30:47 +0200
-Message-Id: <20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org>
+Date: Tue, 16 Apr 2024 20:30:48 +0200
+Subject: [PATCH v3 1/2] dt-bindings: display: panel: Add Raydium RM69380
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,10 +56,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIANfDHmYC/4XNQQ6CMBCF4auQrq1ph1LBlfcwLkCmMIkUM9VGQ
- ri7hZWJMS7/l8w3swjIhEEcs1kwRgo0+hT5LhPXvvYdSmpTC1BglNFGcj219BwkD7bKSyVbpog
- szcEBNNaBcSjS8Z3R0WuDz5fUPYXHyNP2J+p1/UtGLZUssLRNDaZSTXEaavI38uS7/cidWN0In
- 1bx04LVAgPaGqtzZb+sZVne/26T/g0BAAA=
+Message-Id: <20240416-raydium-rm69380-driver-v3-1-21600ac4ce5f@mainlining.org>
+References: <20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org>
+In-Reply-To: <20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org>
 To: Neil Armstrong <neil.armstrong@linaro.org>, 
  Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
  Daniel Vetter <daniel@ffwll.ch>, 
@@ -72,58 +72,124 @@ Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
  phone-devel@vger.kernel.org, David Wronek <david@mainlining.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1713292268; l=1909;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713292268; l=3057;
  i=david@mainlining.org; s=20240121; h=from:subject:message-id;
- bh=rzC5W1TaCb9OYzxdOKGyAXPykw9cGXSoLeHQch7h958=;
- b=fHVKKYgh2Xauj1zzwwZfD7fVDUSHyQbzzy8cMaSXyu45ThbcnMq9DmCxgd6s4bzXCnISa63oG
- n0+jqf0FGN8D9RP9FYhxxXnkRX8e3/bUqdDQoey/lSkQOotsVK/2sF/
+ bh=H4PFzqvmKwXu3PaRjVJ2GZOn4+++zfi7W3Cn2y64I2E=;
+ b=8R6vLaLnAFMrla6QeH3sC3y4q+4yQ2ldcUICK1JxwYhChkT0O7xPmnRmNrG+rY/0zIDOUrufg
+ z6y3FWAE77RDQ5oDJO7p8/+lzXxBRHydsJIuA54NV3HebqlZhsF2UEi
 X-Developer-Key: i=david@mainlining.org; a=ed25519;
  pk=PJIYyFK3VrK6x+9W6ih8IGSJ5dxRXHiYay+gG1qQzqs=
 
-This patch adds support the 2560x1600@90Hz dual DSI command mode panel by
-EDO in combination with a Raydium RM69380 driver IC.
-
-This driver IC can be found in the following devices:
- * Lenovo Xiaoxin Pad Pro 2021 (TB-J716F) with EDO panel
- * Lenovo Tab P11 Pro (TB-J706F) with EDO panel
- * Robo & Kala 2-in-1 Laptop with Sharp panel
+Raydium RM69380 is a display driver IC used to drive OLED DSI panels.
+Add a dt-binding for it.
 
 Signed-off-by: David Wronek <david@mainlining.org>
 ---
-Changes in v3:
-- Removed unneeded curly brackets from some if statments
-- Fix error handling code in probe function
-- Include video/mipi_display.h and make use of MIPI command definitions
-- Removed DRM_MODE_TYPE_PREFERRED
-- Dropped 'prepared' bool entirely
-- Register second DSI host using mipi_dsi_device_register_full()
-- Link to v2: https://lore.kernel.org/r/20240415-raydium-rm69380-driver-v2-0-524216461306@mainlining.org
-
-Changes in v2:
-- Fixed typo in Kconfig
-- Removed ctx->prepared = true; in prepare function
-- Switched to drm_connector_helper_get_modes_fixed in get_modes function
-- Changed dev_notice() to dev_dbg()
-- Add description for compatible and reset-gpio in the dt-binding
-- Always require 'ports' node in the dt-binding regardless of compatible
-- Link to v1: https://lore.kernel.org/r/20240414-raydium-rm69380-driver-v1-0-5e86ba2490b5@mainlining.org
-
+Note:
+Depends on commit 48a516363e29 ("dt-bindings: display: panel: add common dual-link schema")
 ---
-David Wronek (2):
-      dt-bindings: display: panel: Add Raydium RM69380
-      drm/panel: Add driver for EDO RM69380 OLED panel
+ .../bindings/display/panel/raydium,rm69380.yaml    | 91 ++++++++++++++++++++++
+ 1 file changed, 91 insertions(+)
 
- .../bindings/display/panel/raydium,rm69380.yaml    |  91 +++++
- drivers/gpu/drm/panel/Kconfig                      |  14 +
- drivers/gpu/drm/panel/Makefile                     |   1 +
- drivers/gpu/drm/panel/panel-raydium-rm69380.c      | 367 +++++++++++++++++++++
- 4 files changed, 473 insertions(+)
----
-base-commit: 66e4190e92ce0e4a50b2f6be0e5f5b2e47e072f4
-change-id: 20240414-raydium-rm69380-driver-47f22b6f24fe
+diff --git a/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml b/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml
+new file mode 100644
+index 000000000000..0ac7d033cbe0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/raydium,rm69380.yaml
+@@ -0,0 +1,91 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/raydium,rm69380.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Raydium RM6380-based DSI display panels
++
++maintainers:
++  - David Wronek <david@mainlining.org>
++
++description:
++  The Raydium RM69380 is a generic DSI panel IC used to control
++  OLED panels.
++
++allOf:
++  - $ref: panel-common-dual.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - lenovo,j716f-edo-rm69380
++      - const: raydium,rm69380
++    description: This indicates the panel manufacturer of the panel
++      that is in turn using the RM69380 panel driver. The compatible
++      string determines how the RM69380 panel driver shall be configured
++      to work with the indicated panel. The raydium,rm69380 compatible shall
++      always be provided as a fallback.
++
++  avdd-supply:
++    description: Analog voltage rail
++
++  vddio-supply:
++    description: I/O voltage rail
++
++  reset-gpios:
++    maxItems: 1
++    description: phandle of gpio for reset line - This should be active low
++
++  ports: true
++  reg: true
++
++required:
++  - compatible
++  - reg
++  - avdd-supply
++  - vddio-supply
++  - reset-gpios
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        panel@0 {
++            compatible = "lenovo,j716f-edo-rm69380", "raydium,rm69380";
++            reg = <0>;
++
++            avdd-supply = <&panel_avdd_regulator>;
++            vddio-supply = <&vreg_l14a>;
++            reset-gpios = <&tlmm 75 GPIO_ACTIVE_LOW>;
++
++            ports {
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                port@0 {
++                    reg = <0>;
++                    panel_in_0: endpoint {
++                        remote-endpoint = <&mdss_dsi0_out>;
++                    };
++                };
++
++                port@1 {
++                    reg = <1>;
++                    panel_in_1: endpoint {
++                        remote-endpoint = <&mdss_dsi1_out>;
++                    };
++                };
++            };
++        };
++    };
++
++...
 
-Best regards,
 -- 
-David Wronek <david@mainlining.org>
+2.44.0
 
 
