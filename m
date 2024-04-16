@@ -1,81 +1,90 @@
-Return-Path: <linux-kernel+bounces-146548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 528D28A66E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:19:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B34A78A66F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 11:20:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E1AD281776
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:19:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46EB1C21B03
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 09:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B139184FBF;
-	Tue, 16 Apr 2024 09:19:00 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D108527B;
+	Tue, 16 Apr 2024 09:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iz5DZxJY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A1F84DE4
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 09:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E4AEEB7;
+	Tue, 16 Apr 2024 09:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713259140; cv=none; b=loJF9hmY9MbzNfGdnNYmSpJ9oiRc3s1/pXQV4j0OIS7vpFb2RM/vNxGHAryFJDWcOzU855oVVCdc7P4DLJJiZTOcG3rJBJ9PMvucNGd/mmGu8wJnt/2fe0+Yb6gnDnndlWLiOpfgfmNmL2+YsIlhBfsWhi2b+8swrA1/guBKR9k=
+	t=1713259218; cv=none; b=DALwESeTSj9VW5nvkZynwWdSf/TJDR7TPfiujPSdfciWtTApD0r3OOwPJvyfSL/NTk4/9EL9Pmvp5yvaUNYCW/LKxk4S1jvxjZISmX3ajm5comR9ocJNPSbrQ9QvBpgtQn6mLFYyaCZhZAF2eKX7pO5UfqD+3LwSix91EfKKdUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713259140; c=relaxed/simple;
-	bh=ESZpiJGjF6gmJ6oujrwxfz0d5l+Ta7ADcVYrGLAfulM=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PRIyYXcKxXQAnH5jWkkcKXELppra6p8s+pe83Cwr0/E4GqZplW/0rpL79a1+4OvJarKBYUZ3+Vs3IJ2nOM0Unc4+KDVZDIPQ1pICc5HDBhDUywdSbXgup7b0uCRm35o7/GstualRwRIIRhgj2oRa6fiDOaYl/1DIMVr7uHky3sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VJdjr1Wd9z1wsP4;
-	Tue, 16 Apr 2024 17:17:52 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id 468841A0190;
-	Tue, 16 Apr 2024 17:18:50 +0800 (CST)
-Received: from [10.173.135.154] (10.173.135.154) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 16 Apr 2024 17:18:49 +0800
-Subject: Re: [PATCH v2 2/2] mm/hugetlb: rename dissolve_free_huge_pages() to
- dissolve_free_hugetlb_folios()
-To: Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-CC: <akpm@linux-foundation.org>, <willy@infradead.org>, <jane.chu@oracle.com>,
-	<muchun.song@linux.dev>, <nao.horiguchi@gmail.com>, <osalvador@suse.de>
-References: <20240412182139.120871-1-sidhartha.kumar@oracle.com>
- <20240412182139.120871-2-sidhartha.kumar@oracle.com>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <893a6dda-d9a1-65c4-60b1-12ea5f652466@huawei.com>
-Date: Tue, 16 Apr 2024 17:18:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1713259218; c=relaxed/simple;
+	bh=JdkdEMs0VGgDEoGPH/7l1eo9YTIzttLE89QjVzLRvf4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PUcB8G+9ebdqeWusINybPiCQMZftMwcP2GZlKUfmL4n0zLP7Z3CyjJkjWKv34OxBP0hOBb9bB2nxXlypvpjxDg2UCP8pJ1sRMrXB19AyMxUDi77lwdobpw8spkACDt9aex8MVdUOUxnJeeQAvVgQZsQAR4vihrWqHBbyi9YBHaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iz5DZxJY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF73DC113CE;
+	Tue, 16 Apr 2024 09:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713259218;
+	bh=JdkdEMs0VGgDEoGPH/7l1eo9YTIzttLE89QjVzLRvf4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iz5DZxJYMjV/lqJEkIxmwYC2umpExhi9LHj3r85tw1WUdJ7ikmNGxWtGvyoehA+rl
+	 BwAzPgmU67jka6mn+Vpwk8e47i/mooNw0Udz79pT5R5c/bctwBlhDMXKghwK72JlyV
+	 1WoMHvIqBuNGMV0o9O+9kVa2A1b+h16cdSe3Uj+t7E8Lo4aQsJPV9SRZEZK6+cyg6Q
+	 Af8HiklxwUg/nbskPkkU/wL7CVvF/ychv4a4x95Hgx9Z7k1EiWW8xTFeZUxVZ2Jr7c
+	 YdnB1jRenNIqDNxz71aMxRGgrBnxyWPN9w/8ToLPcTwI+AQVRbGOKHQ5f5uUIlpaA9
+	 FY80xEVQvL0RQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rwezA-000000005IR-3diI;
+	Tue, 16 Apr 2024 11:20:16 +0200
+Date: Tue, 16 Apr 2024 11:20:16 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Janaki Ramaiah Thota <quic_janathot@quicinc.com>
+Cc: Johan Hovold <johan+linaro@kernel.org>, luiz.dentz@gmail.com,
+	marcel@holtmann.org, linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	quic_mohamull@quicinc.com, quic_hbandi@quicinc.com
+Subject: Re: [PATCH] Revert "Bluetooth: hci_qca: Set BDA quirk bit if fwnode
+ exists in DT"
+Message-ID: <Zh5C0OjVoJaX-GGg@hovoldconsulting.com>
+References: <20240314084412.1127-1-johan+linaro@kernel.org>
+ <171146704035.9961.13096206001570615153.git-patchwork-notify@kernel.org>
+ <124a7d54-5a18-4be7-9a76-a12017f6cce5@quicinc.com>
+ <ZgWLeo5KSLurLDhK@hovoldconsulting.com>
+ <c03abbbd-faa5-4fdc-b7c3-5554a90c3419@quicinc.com>
+ <Zg1KmcFQ3bAJa8qJ@hovoldconsulting.com>
+ <b7d5c2ac-2278-4ccc-be2a-7c7d9936581a@quicinc.com>
+ <f72d83fd-9576-4017-bcf9-c50ce94d85ec@quicinc.com>
+ <Zh0NhA4GBxIAM-ZI@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240412182139.120871-2-sidhartha.kumar@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500002.china.huawei.com (7.192.104.244)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zh0NhA4GBxIAM-ZI@hovoldconsulting.com>
 
-On 2024/4/13 2:21, Sidhartha Kumar wrote:
-> dissolve_free_huge_pages() only uses folios internally, rename it to
-> dissolve_free_hugetlb_folios() and change the comments which reference it.
+On Mon, Apr 15, 2024 at 01:20:36PM +0200, Johan Hovold wrote:
+> On Mon, Apr 15, 2024 at 04:22:51PM +0530, Janaki Ramaiah Thota wrote:
 > 
-> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> ---
->  include/linux/hugetlb.h | 4 ++--
->  mm/hugetlb.c            | 2 +-
->  mm/memory_hotplug.c     | 4 ++--
->  3 files changed, 5 insertions(+), 5 deletions(-)
+> > Are you planing to merge your below patch ?
+> 
+> Yes, sorry about the delay. Was busy with other things last week.
+> 
+> I'll revisit and post it shortly.
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Thanks.
-.
+For the record, I've now posted a fix for this here:
+
+	https://lore.kernel.org/r/20240416091509.19995-1-johan+linaro@kernel.org
+
+Johan
 
