@@ -1,89 +1,106 @@
-Return-Path: <linux-kernel+bounces-146195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBFA38A61E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E1008A61EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 05:59:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 713F7283F92
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:54:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C56F283E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 03:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E33C2033E;
-	Tue, 16 Apr 2024 03:54:28 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34130D512
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C341BF3F;
+	Tue, 16 Apr 2024 03:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="VUswTp5A"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C34D512
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 03:59:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713239667; cv=none; b=YadPm9HYI5I06sBVbsm67Zkr7fZpmhfBj3Y1CRAA5DkbKLwSzjUQaI1b0G561HNj51rkSi1nlK4cdc+5EaoiSHrgPz5yDPilXUpH+l01F0M5/BEfnVcXR2fK8bDnLaW9BpgBFZwWk8EIshiT2fs42zmuyg9P0OPY53l9LCgdtZk=
+	t=1713239964; cv=none; b=C+n19boH8p38mK2aNLUkwFxsW5HvMqOSPu6hl8ljKsPX/afJaPJZabMQ9Gcn5krboIIGE+9putSGrzVjCj3DCDvE0rfM5rNsK6BjllKKjGfSGARRhGAByha0OPXKlKqoa5QS2Mgt/AgbmswTAd/Ke4dUpslJ/1QIZOcCcOxkvNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713239667; c=relaxed/simple;
-	bh=wo0tpVuElMq45g8m7XIJHWZiP2YhlXaLXq6AtakN6lM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SnOxxGh9GVMDiqvySuH7B7LaPqwmywaSAgPHB3QgiBSq9cQNbaxb2GYl48+crusAUrsFhee4ccjOwHZWTCVNZ5Z/P39TRWjOQBEkKbxvaF9i6j5GtzXeSwATq09NCFavkccKh1gztx6vpuxvVbiHm2oTDZ4uUgtKheaewgm7cTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C679E2F4;
-	Mon, 15 Apr 2024 20:54:53 -0700 (PDT)
-Received: from [10.163.59.235] (unknown [10.163.59.235])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AF333F64C;
-	Mon, 15 Apr 2024 20:54:20 -0700 (PDT)
-Message-ID: <fec0df6a-c35c-41fe-8b03-de1b15893ff8@arm.com>
-Date: Tue, 16 Apr 2024 09:24:17 +0530
+	s=arc-20240116; t=1713239964; c=relaxed/simple;
+	bh=FgRQ8y+a+3342fuSHaW0GvB9Eat6gnfWUekNdzkskAo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=TnRul1168wSFlV+41KJMlgdgmSNQsufjfeHQWM+RHMYZV6wdR5gFNZDFVYTrCRgvxxg97JGLbWsWpGaSOCIE5GvTCSX0WVkAgSvESGrtr1iIhtfCPVNGBIx6OV+jnFFvndaQjccn2gurxvfeaz6UtGfvYMwTPv58uQ+iLiozxh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=VUswTp5A; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A6B272C04F7;
+	Tue, 16 Apr 2024 15:59:13 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1713239953;
+	bh=FgRQ8y+a+3342fuSHaW0GvB9Eat6gnfWUekNdzkskAo=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=VUswTp5ANw2uSZip3lUPe6I6gbL58AwpI5hKJuTzpeZMFA5wD1qYhDOpISvq8qVeG
+	 JFludmEeo2v6yCqkeymC0sOq1bj7W9LH8PO8M1JgNa7PLcgnm+XeKvFr0WJDRSYLac
+	 KNQ7Cq72YXoR8vdFaiiOd1Bly+FC4i+eabjo7tZ7AS+XUMwwlhUquaYLwBrRmTsKIR
+	 e/mIQIaKDSA6QsWVd1r8I/44PTtOVI9Ei1C959Jb3XGrVjtDraiH2+qxIwn33uClHy
+	 wqg/iuO7mJVOqGOKBNkD/DhNgZVKIjB/LUvPoMb4PztAIDY/Zzt07//ihDvcfMTUR+
+	 jZhNM7gq/ivgQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B661df7910001>; Tue, 16 Apr 2024 15:59:13 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Tue, 16 Apr 2024 15:59:13 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1544.009; Tue, 16 Apr 2024 15:59:13 +1200
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Andi Shyti <andi.shyti@kernel.org>, Abhinav Jain
+	<jain.abhinav177@gmail.com>
+CC: "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"skhan@linuxfoundation.org" <skhan@linuxfoundation.org>,
+	"javier.carrasco.cruz@gmail.com" <javier.carrasco.cruz@gmail.com>, "Julia
+ Lawall" <julia.lawall@inria.fr>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] i2c: mpc: Removal of of_node_put with __free for auto
+ cleanup
+Thread-Topic: [PATCH] i2c: mpc: Removal of of_node_put with __free for auto
+ cleanup
+Thread-Index: AQHaj0/GzDJ4DPHHek+eKx0F5hnQY7FpBlkAgAB2vgA=
+Date: Tue, 16 Apr 2024 03:59:13 +0000
+Message-ID: <2ea08951-3613-4ed5-a2b2-dd4887105ac3@alliedtelesis.co.nz>
+References: <20240415161220.8347-1-jain.abhinav177@gmail.com>
+ <vegjt4pcl2x2wmwso6ajbihqc6rpbup5knycnz76jz3zfbfpp4@opxek6apu3w4>
+In-Reply-To: <vegjt4pcl2x2wmwso6ajbihqc6rpbup5knycnz76jz3zfbfpp4@opxek6apu3w4>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <711434C7B851E04E8BA12FB3CEA63A67@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/8] arm64/hw_breakpoint: Enable FEAT_Debugv8p9
-Content-Language: en-US
-To: linux-arm-kernel@lists.infradead.org
-Cc: Jonathan Corbet <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240405080008.1225223-1-anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240405080008.1225223-1-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=dY4j3mXe c=1 sm=1 tr=0 ts=661df791 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=SQiHmE0Aj67H6G5b:21 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=raytVjVEu-sA:10 a=O23guemLEh43BbyxQAYA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 
-On 4/5/24 13:30, Anshuman Khandual wrote:
-> This series enables FEAT_Debugv8p9 thus extending breakpoint and watchpoint
-> support upto 64. This has been lightly tested and still work is in progress
-> but would like to get some early feedback on the approach.
-> 
-> Possible impact of context switches while tracing kernel addresses needs to
-> be evaluated regarding MDSELR_EL1 access. This series is based on v6.9-rc2.
-> 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Oliver Upton <oliver.upton@linux.dev>
-> Cc: James Morse <james.morse@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: kvmarm@lists.linux.dev
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Anshuman Khandual (8):
->   arm64/sysreg: Add register fields for MDSELR_EL1
->   arm64/sysreg: Add register fields for HDFGRTR2_EL2
->   arm64/sysreg: Add register fields for HDFGWTR2_EL2
->   arm64/sysreg: Update ID_AA64MMFR0_EL1 register
-
-Since the above patches add and update register definitions related to
-HW breakpoints, and have already been reviewed by Mark, will send them
-independently.
+DQpPbiAxNi8wNC8yNCAwODo1NCwgQW5kaSBTaHl0aSB3cm90ZToNCj4gSGkgQWJoaW5hdiwNCj4N
+Cj4+ICAgCS8qIEVuYWJsZSBJMkMgaW50ZXJydXB0cyBmb3IgbXBjNTEyMSAqLw0KPj4gLQlub2Rl
+X2N0cmwgPSBvZl9maW5kX2NvbXBhdGlibGVfbm9kZShOVUxMLCBOVUxMLA0KPj4gLQkJCQkJICAg
+ICJmc2wsbXBjNTEyMS1pMmMtY3RybCIpOw0KPj4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGVf
+Y3RybCBfX2ZyZWUoZGV2aWNlX25vZGUpID0NCj4gSG93IGhhdmUgeW91IHRlc3RlZCB0aGlzPw0K
+DQpJJ20gbm90IHN1cmUgSSBrbm93IGFueW9uZSB0aGF0IHN0aWxsIGhhcyBhIG1wYzUxMjEuIE1h
+eWJlIHNvbWVvbmUgb24gDQpsaW51eHBwYy1kZXY/DQoNCkkgZGlkIHRyeSB0byB0YWtlIHRoZSBw
+YXRjaCBmb3IgYSBzcGluIG9uIG15IFQyMDgxUkRCIGJ1dCBJJ20gaGF2aW5nIA0Kc29tZSB1c2Vy
+bGFuZCBpc3N1ZXMgb24gaXQgZm9yIHNvbWUgcmVhc29uICh1bnJlbGF0ZWQgdG8gdGhpcyBjaGFu
+Z2UpLiANClRoZSBrZXJuZWwgYm9vdCBkb2VzIGRpc2NvdmVyIGEgZmV3IHBlcmlwaGVyYWxzIGhh
+bmdpbmcgb2YgdGhlIEkyQyANCmludGVyZmFjZSBidXQgSSdtIG5vdCBpbiBhIHBvc2l0aW9uIHRv
+IG9mZmVyIHVwIGEgVGVzdGVkLWJ5IGFuZCBJJ3ZlIHJ1biANCm91dCBvZiB0aW1lIHRvIGRlYnVn
+IHdoeSBteSBib2FyZCBpcyB1bmhhcHB5Lg0KDQo=
 
