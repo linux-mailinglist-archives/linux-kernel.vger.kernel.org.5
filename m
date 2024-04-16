@@ -1,154 +1,117 @@
-Return-Path: <linux-kernel+bounces-147534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D86E8A75E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:47:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FEAC8A75E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:47:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD54028209B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:47:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C09681F21BDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39ADB4642B;
-	Tue, 16 Apr 2024 20:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE87A4AEE9;
+	Tue, 16 Apr 2024 20:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fSFZDRtQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kUHeEz6z"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698C717736;
-	Tue, 16 Apr 2024 20:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABDC24315B;
+	Tue, 16 Apr 2024 20:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713300416; cv=none; b=trE695kUU2Cy8CPHaPckvGwuLqoMiB+Sf5KOWh7Bw8EP1SfZdRHh2aFhdZfbi9vFeOnpx4XOILvPKzQTyEDnIdI46/s+m4x6KbHKfHLBaxrK7KegAOh+l3XwSTSJ+OnEHcjOyW4ffpBMFpE8CM7bDRsq6xxoZAnFaoGK57A6AwI=
+	t=1713300459; cv=none; b=kOAFjPBkDT87VfEuILTqRdXGY0PMh1nRrAvy1pVdPSbov5oV7ikaR15ZgiUjB2PNQglSrNh/NecPxv4U3ECIwyXGmDSOebA+SawP9CoCUR2+p3HWYN5ogFvQD8qBNk6WV+al66XCASA58npjyQXf3GIrL6XqgtJMwpPRLybZthM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713300416; c=relaxed/simple;
-	bh=PzXDXli+NQ8Ipg2Q4mQ6/IuDWq/2DB2/UEhvKB1bDGY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=jaVGvYHqB2EYPP+aIgQnYNctO+XxGE0A16yQmMYGrRPm9y/dQhDiu4g2CIdMMQc6pedBY7uMptMBCmzDfrN1dWPHxgxCi9+zgqNJGv38UQteIC6RrMoP5cNEYzFVBTU0C1l6tQHKNitMcdSsqorqPd4ncc1V5falv0CEZAqlG4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fSFZDRtQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE13DC113CE;
-	Tue, 16 Apr 2024 20:46:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713300416;
-	bh=PzXDXli+NQ8Ipg2Q4mQ6/IuDWq/2DB2/UEhvKB1bDGY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=fSFZDRtQHi98DyjaM7ap3zCMfLlmmte/nFr/5XWlWTnTM1LpqvArQ+D8bckThywai
-	 jFMa7mUCIFjhJ1oWR5p8SMN3y+R7l15DYEeFuqYu+hsTyNPM/RteaxG1JUO1BhDKgs
-	 CrPUvOqTDDMl72OsXWjnO+jy5TEy4Wl5iPb/XgpMaiEktYx2XSYFM+F0IGvNhd5T8M
-	 s32geYw0IVrgqrG54iJT61/6UeLeWhZ+vFl+wVtT5nrNT7V1W6bJ/7UDTXHjnV9J5g
-	 k4S265Dw8ltfIt6gbU1DfKSUOJlTSed0ol1qhvoiaUS9wMATn9An1Tw38qqQwxejlW
-	 PDM8tZvF67x5A==
-Date: Tue, 16 Apr 2024 15:46:53 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-pci@vger.kernel.org, acpica-devel@lists.linux.dev,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Robert Moore <robert.moore@intel.com>,
-	Haibo1 Xu <haibo1.xu@intel.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Atish Kumar Patra <atishp@rivosinc.com>,
-	Andrei Warkentin <andrei.warkentin@intel.com>,
-	Marc Zyngier <maz@kernel.org>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: Re: [RFC PATCH v4 03/20] PCI: Make pci_create_root_bus() declare its
- reliance on MSI domains
-Message-ID: <20240416204653.GA164172@bhelgaas>
+	s=arc-20240116; t=1713300459; c=relaxed/simple;
+	bh=sHZ70WphkG+mYobRvEaiJSM2HM+D/4WJgqMLw/E/qg0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jUL2Z1Y/naBWoUSpsYdJYXGd451H/RwdXBye5QYJTz3zoHqrRgjwaHepf4S9ewt17BgbsTFvE8iPD64anypd1qTnpsbTKESEGV7+YSIL3u8M+UJ2Bz5nk5k2XgLFUgTeYeZ39JWe8EsTOWvpuMd+gdgCGF8oTZo5aDvlFnlVPFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kUHeEz6z; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43GJju7K006461;
+	Tue, 16 Apr 2024 20:47:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=I8c2MHcIh6zhRXVAVEyIPq0j0sNudTyJwUHR7heApzo=;
+ b=kUHeEz6zCgRFCdZF1e5nO244Enp9BZHy8wanOfg1NRlrL94pXbwrZyXxPddjmVT4R0d5
+ BLQQRySXOdjnewfrdWpGVBJ2F7x0HC6B8Pb6sjVOf3g8ZX4u8bR0MZYIAfQsdM766+gO
+ KHduz2o1/EFI4U51Xmlf+2abpr9MS0TBwkyJGQl8Sb7v5VPzOAYJDbk27daeHGY7ulqs
+ tCUrnVJZUijK2mMEs51VUyzLEObU/cWqVtX6Py6K+HSe0aUkwjgto1+RFyllz5v4PAA3
+ inR9LfkJqWft3p8Wzi6k+9hKKm8S3ECpcm944ylhKF8tz0tC2orNAZ44G+D5mj3stznG BA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xfgn2paee-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Apr 2024 20:47:31 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43GKjN6U004355;
+	Tue, 16 Apr 2024 20:47:29 GMT
+Received: from bostrovs-home.us.oracle.com (bostrovs-home.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.254.198])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3xfgge32vh-1;
+	Tue, 16 Apr 2024 20:47:29 +0000
+From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+To: kvm@vger.kernel.org
+Cc: seanjc@google.com, pbonzini@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM/x86: Do not clear SIPI while in SMM
+Date: Tue, 16 Apr 2024 16:47:29 -0400
+Message-Id: <20240416204729.2541743-1-boris.ostrovsky@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh41pOmtAJ0EcbiN@sunil-laptop>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-16_18,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
+ mlxlogscore=918 suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404160133
+X-Proofpoint-ORIG-GUID: W3SfqcGs4ClkKsf_37POG1ZbFgSYcSkM
+X-Proofpoint-GUID: W3SfqcGs4ClkKsf_37POG1ZbFgSYcSkM
 
-On Tue, Apr 16, 2024 at 01:54:04PM +0530, Sunil V L wrote:
-> Hi Bjorn,
-> 
-> On Mon, Apr 15, 2024 at 06:15:23PM -0500, Bjorn Helgaas wrote:
-> > On Mon, Apr 15, 2024 at 10:30:56PM +0530, Sunil V L wrote:
-> > > Similar to commit 9ec37efb8783 ("PCI/MSI: Make
-> > > pci_host_common_probe() declare its reliance on MSI domains"), declare
-> > > this dependency for PCI probe in ACPI based flow.
-> > > 
-> > > This is required especially for RISC-V platforms where MSI controller
-> > > can be absent. However, setting this for all architectures seem to cause
-> > > issues on non RISC-V architectures [1]. Hence, enabled this only for
-> > > RISC-V.
-> > > 
-> > > [1] - https://lore.kernel.org/oe-lkp/202403041047.791cb18e-oliver.sang@intel.com
-> > > 
-> > > Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
-> > > ---
-> > >  drivers/pci/probe.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> > > index 1325fbae2f28..e09915bee2ee 100644
-> > > --- a/drivers/pci/probe.c
-> > > +++ b/drivers/pci/probe.c
-> > > @@ -3048,6 +3048,9 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
-> > >  	bridge->sysdata = sysdata;
-> > >  	bridge->busnr = bus;
-> > >  	bridge->ops = ops;
-> > > +#ifdef CONFIG_RISCV
-> > > +	bridge->msi_domain = true;
-> > > +#endif
-> > 
-> > Ugh.  I looked at [1], but that's not a very good justification for
-> > this #ifdef.  The fault mentioned in [1] would need to be fixed, but
-> > not this way.
-> 
-> Thank you again for the feedback!
-> 
-> I agree. This is due to my limitation with knowledge and resources to
-> debug the issue happening on non-UEFI x86 system with some particular
-> PCIe RC. Also, I was worried that we get into a rat hole of
-> assumptions/quirks with various architecture/PCIe RC combinations.
+When a processor is running in SMM and receives INIT message the interrupt
+is left pending until SMM is exited. On the other hand, SIPI, which
+typically follows INIT, is discarded. This presents a problem since sender
+has no way of knowing that its SIPI has been dropped, which results in
+processor failing to come up.
 
-The problem is that adding #ifdefs like this leads to a rat hole
-itself.  We need to understand and fix the underlying issue instead.
+Keeping the SIPI pending avoids this scenario.
 
-> For ex: I think the issue is, somehow MSI domain is not set at the time
-> of PCI host bridge registration in pci_register_host_bridge() causing
-> PCI_BUS_FLAGS_NO_MSI to be set. This causes pci_alloc_irq_vectors() to
-> fail. In portdrv.c, pcie_init_service_irqs() doesn't switch to INTx
-> handling if MSI can not be used. It switches only if pcie_pme_no_msi()
-> returns true. I couldn't find who actually sets up MSI domain bit late
-> on this platform so that it somehow worked when we didn't set this flag.
-> 
-> Unfortunately, I don't have system to root cause and fix this issue with
-> confidence. Also, I don't know if any other architectures have similar
-> issues which are not caught yet. Hence, I thought it may be better
-> just restrict the change to RISC-V.
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+---
+I am not sure whether non-SMM cases should clear the bit.
 
-It sounds like the above is a good start on analyzing the problem.
+ arch/x86/kvm/lapic.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I don't quite understand your statement that pcie_init_service_irqs()
-doesn't fall back to INTx when MSI/MSI-X is not available.
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index cf37586f0466..4a57b69efc7f 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -3308,13 +3308,13 @@ int kvm_apic_accept_events(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	/*
+-	 * INITs are blocked while CPU is in specific states (SMM, VMX root
+-	 * mode, SVM with GIF=0), while SIPIs are dropped if the CPU isn't in
+-	 * wait-for-SIPI (WFS).
++	 * INIT/SIPI are blocked while CPU is in specific states (SMM, VMX root
++	 * mode, SVM with GIF=0).
+ 	 */
+ 	if (!kvm_apic_init_sipi_allowed(vcpu)) {
+ 		WARN_ON_ONCE(vcpu->arch.mp_state == KVM_MP_STATE_INIT_RECEIVED);
+-		clear_bit(KVM_APIC_SIPI, &apic->pending_events);
++		if (!is_smm(vcpu))
++			clear_bit(KVM_APIC_SIPI, &apic->pending_events);
+ 		return 0;
+ 	}
+ 
+-- 
+2.39.3
 
-I'm looking at this:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pcie/portdrv.c?id=v6.8#n177
-pcie_port_enable_irq_vec() attempts
-pci_alloc_irq_vectors(PCI_IRQ_MSIX | PCI_IRQ_MSI) and returns 0 if
-successful.  If it returns failure, it looks like
-pcie_init_service_irqs() *does* fall through to trying INTx
-(PCI_IRQ_LEGACY).
-
-Bjorn
 
