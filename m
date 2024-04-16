@@ -1,94 +1,163 @@
-Return-Path: <linux-kernel+bounces-147188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96488A70BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:01:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85E888A70BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:01:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EDA41F26466
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:01:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41E0E286CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589A3131BDB;
-	Tue, 16 Apr 2024 15:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2559134CEA;
+	Tue, 16 Apr 2024 15:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PzG0c6gX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NDqQLRjo";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NDqQLRjo"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A863131756;
-	Tue, 16 Apr 2024 15:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AB8131E33;
+	Tue, 16 Apr 2024 15:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713282989; cv=none; b=KvnL8NE5t+DM9E57D4gK8SVATy9fP0uNjs4qwv2QKPBPRjBWtR6Dap3yYy8SLxGyq7iYw/YfMLpDEc6s+DZOWWTysUSnoYnY5CT/jwoNzJaFai7auEBRX2PrLPjvH/It3ppwnfwHJg3XyfqZkqI18Xor/CjB4XW3Cm63YXQmV2Q=
+	t=1713283025; cv=none; b=EjSKckvkGmb8svaf08/yXv/Hj809YciQIiAHtcpamjUZHlLLT48EKJk5wIFM9qSWOzMn8R2K+EFeohcm3s9rifceZHzjFSNjP7kdsFZ6/97U1l2Cav4m/+sLEDdqo00nmqUpFwjne7+w2HaFM1tsXk7hNzbGqgJk4wC4JYLNCew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713282989; c=relaxed/simple;
-	bh=xj5oIWlYq20UZfWwDIb9TzDyZ90WyaHjoi8dkpzi3hY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=KNGXRcXEN5N6sk6sit5dCslNqB6WpfMvTZ5z4gigUfq1ciygg0lQX58UoJQSBfTMxij1ou8aMmsls0WzA4wJCJAIAjnJpR5Y4ABqNxb5WLLsyWb+MFl1/DKekdfdF5fXyVJPi8Heqzgzc/UyIVWB3+qHJ4s+1V1b+TvMbTShIew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PzG0c6gX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 792D7C113CE;
-	Tue, 16 Apr 2024 15:56:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713282989;
-	bh=xj5oIWlYq20UZfWwDIb9TzDyZ90WyaHjoi8dkpzi3hY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=PzG0c6gXNNiSNW/OjmEVa1jcml2jIk4toUumXHj1PFWRlW2puT5qUARDvSSBmZTld
-	 GCIGfOAW1VrnjTIUNavavaDJSr1Gd6sgvwCnf1q1E4zJyQ0c/2xGB5qkqPuFUmSIP1
-	 WV83tvTswwBRItV5wgDOF4QtZpNeolSypSzp89MKMt8qQE86rh4Q29J08tgh8oa8vy
-	 8gNUYmIGxZIwan4Vu3AM5C0yy0H+O3SMqtkvl1DpLDRJDWwL9UuARjO2nZ4x38Sxtx
-	 RyRhgZY0gKSJaLestj4GkhWJgONsgLu4ePJn4xXcsB8Mbs8Dgr/UxuVimLexjZD4DM
-	 NWD56iIML/gfQ==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Nam Cao <namcao@linutronix.de>, Mike Rapoport <rppt@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Andreas Dilger
- <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>,
- linux-riscv@lists.infradead.org, Theodore
- Ts'o <tytso@mit.edu>, Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Conor Dooley <conor@kernel.org>, "Matthew Wilcox (Oracle)"
- <willy@infradead.org>, Anders Roxell <anders.roxell@linaro.org>, Alexandre
- Ghiti <alex@ghiti.fr>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-In-Reply-To: <20240416173030.257f0807@namcao>
-References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
- <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
- <Zh6KNglOu8mpTPHE@kernel.org> <20240416171713.7d76fe7d@namcao>
- <20240416173030.257f0807@namcao>
-Date: Tue, 16 Apr 2024 17:56:25 +0200
-Message-ID: <87v84h2tee.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1713283025; c=relaxed/simple;
+	bh=Iu6ZI5gBqlme3cg5MEOC3W62ydJpeBmX4hJ+JUWNsy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AFumoJTQX3CWvRHUtuVZl3nzd531zaOMPHezLZkNrWA5UEhWQTj4tD+Q0ztlGY93TABJmE8Yad0wV7g/TGojeVn43DxMiLCFKh4VksubX8pOP4kQ192b5R98Kcyfw2gM/Oxgx9BOMB+AFVy4fIVahuv9LxZaEkdMd4Az7zGuGUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NDqQLRjo; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NDqQLRjo; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 731C637C62;
+	Tue, 16 Apr 2024 15:57:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713283021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=anWo6fGpjMWEBqkA/kZa06BJ2jwAbp66h31uSjcrdZU=;
+	b=NDqQLRjosYjcezQ8nZejzJ+RF7CAggNYviN83sEJr/QMQQrnVrIfXjPcAEP/093aI+Gz71
+	R70+4hZL6C4Q1wIBVDvjJpZVszHKakptD1ElOJHzuEdn6da0NblG+YbDA7+2G/NslmPPyo
+	ynPcVIcd8+MvjEV3ItcPi1R/y7Iakzc=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=NDqQLRjo
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713283021; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=anWo6fGpjMWEBqkA/kZa06BJ2jwAbp66h31uSjcrdZU=;
+	b=NDqQLRjosYjcezQ8nZejzJ+RF7CAggNYviN83sEJr/QMQQrnVrIfXjPcAEP/093aI+Gz71
+	R70+4hZL6C4Q1wIBVDvjJpZVszHKakptD1ElOJHzuEdn6da0NblG+YbDA7+2G/NslmPPyo
+	ynPcVIcd8+MvjEV3ItcPi1R/y7Iakzc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E18A13931;
+	Tue, 16 Apr 2024 15:57:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8zzEFs2fHmaCEgAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Tue, 16 Apr 2024 15:57:01 +0000
+Date: Tue, 16 Apr 2024 17:56:52 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, chenhuacai@kernel.org, tj@kernel.org, 
+	josef@toxicpanda.com, jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net, 
+	pctammela@mojatatu.com, yukuai3@huawei.com, qde@naccy.de, zhaotianrui@loongson.cn, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
+	cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v2 0/6] blk-throttle: support enable and disable
+ during runtime
+Message-ID: <4exmes2ilp2cmfj3evf3jhhhq6tapfzgfzuasjejrxbj6a3327@3ecptofffblf>
+References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gcg27uqvq5iwros6"
+Content-Disposition: inline
+In-Reply-To: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-5.56 / 50.00];
+	BAYES_HAM(-2.45)[97.49%];
+	SIGNED_PGP(-2.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	MX_GOOD(-0.01)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.dk,kernel.org,toxicpanda.com,mojatatu.com,gmx.de,themaw.net,huawei.com,naccy.de,loongson.cn,vger.kernel.org,lists.linux.dev];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.com:+];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 731C637C62
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -5.56
+
+
+--gcg27uqvq5iwros6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Nam Cao <namcao@linutronix.de> writes:
+On Sat, Apr 06, 2024 at 04:00:53PM +0800, Yu Kuai <yukuai1@huaweicloud.com>=
+ wrote:
+> I'm planning to support build all blk-throttle polices as kernel module,
 
-> Fixed version:
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index fa34cf55037b..af4192bc51d0 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -245,6 +245,7 @@ static void __init setup_bootmem(void)
->  	 * be done as soon as the kernel mapping base address is determined.
->  	 */
->  	if (!IS_ENABLED(CONFIG_64BIT)) {
-> +		memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
->  		max_mapped_addr =3D __pa(~(ulong)0);
->  		if (max_mapped_addr =3D=3D (phys_ram_end - 1))
->  			memblock_set_current_limit(max_mapped_addr - 4096);
+There is only one blk-throttle policy (especially after your removal of
+io.low). Did you mean blkcg policies in general?
 
-Nice!
+The current code is complex because of various lifecycles in=20
+	devices x cgroups.
+Turning policies into modules seems to make it=20
+	devices x cgroups x policy modules
+=2E
 
-Can't we get rid of the if-statement, and max_mapped_address as well?
+Could you please add more info why policies as modules is beneficial,
+how to keep complexity capped?
 
+Thanks,
+Michal
 
-Bj=C3=B6rn
+--gcg27uqvq5iwros6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZh6fwgAKCRAGvrMr/1gc
+jk6XAQCeZFtufnuWTQip3NTiZ2vlcVYT97vuhRvyjVW1FUJmXwD/Ws2DBY85GsT2
+hWc+vTpwYwuFW0zjBy+qQ871rrOUHAc=
+=UDnt
+-----END PGP SIGNATURE-----
+
+--gcg27uqvq5iwros6--
 
