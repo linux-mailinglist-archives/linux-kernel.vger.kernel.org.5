@@ -1,147 +1,134 @@
-Return-Path: <linux-kernel+bounces-146643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46F7C8A68B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:40:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B81488A68CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:43:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77D8E1C20EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:40:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A45F7B235C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 10:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E81128385;
-	Tue, 16 Apr 2024 10:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B15912CD81;
+	Tue, 16 Apr 2024 10:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JAAJR2Tv"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="NjpCdpFi"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C58127E28;
-	Tue, 16 Apr 2024 10:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728F612C52E;
+	Tue, 16 Apr 2024 10:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713264034; cv=none; b=QjFagpmOMMFqyI6V5P1ectfGq6gyXbVOkg9srC2zhOsk1EdUKw5g4Ym2+dDvX6qfEU6S8vynjsjU4sVDhYjHMhi03n24SyFMF/sacTjhp/y09FIGgfUVMgK5WM5pyWb46HXNoIGXTkZbWWyUgFHYl28wpObLVB98SbfWhk4Rhrk=
+	t=1713264050; cv=none; b=O9hKL/Cg5iOO1nRaYkzHQIE9R2t9e9OYrNacHsObLLXx7qeab0AOxI7vLCHIiW/y/euY7AOxMtdk3143x4WwlFyfU7lPslSQFJ+Drx0qg09vHZN/uwyv7I37hk3mpYaU8OrjeVAH9ED+KP9ugBN1Ou018xD1atxuII0EWUK1AM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713264034; c=relaxed/simple;
-	bh=yf9ORU5VqJIrPlSmwr54fZQAo/+CCskqhWV5tfkQ+NQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R5flRRQ/zkvG6inWLZq4U27HWPZHF+y+CtTbmpHPxaQo+/+iZtBdtiXCVOTgQDCT4uIheCiTS1DwxNZHI7va5qgJ6WFZDcmSnHdWtGhpIq1EBI/nKK2BB43cmcKARHbey++YsdlqkBT7BhjGgGNALNONBcUMCd/BwziwijC+k+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JAAJR2Tv; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e4f341330fso34767955ad.0;
-        Tue, 16 Apr 2024 03:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713264033; x=1713868833; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w1z8VdCeJne2MyXf+8c+fA7mb2A/BjtvAD0nnKEdogs=;
-        b=JAAJR2TvWa/3opGUBZlZKjryTMfddqRLI3k8m72zfeVdWOetSLRPDpO3iWu85CTkp9
-         FXjlxWx0ahblezk4FHStiTXyHS+2+Sc4B3arIZguOaZLq8wV317DQ2KEdTVtgMsMoGaN
-         4DA/pEd28VqqRjHkBvQ/jeWJihEXq+08Cy6ZzQvzX3jD1EDPy2ifSZp6LcZ0O5as14MG
-         WuGoa/MUYLBKgiECCg5jYHLXH1B9+xMsxja9Jm+B3bA2olQ5t24XHV02uTl5hx/9yTNG
-         DBC/uZTKHZIusOI64HxYivCuo2U1QWRni9Zxty0qwOLsxaSdcHmI4VAtLOBf52ug3bdc
-         ogYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713264033; x=1713868833;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w1z8VdCeJne2MyXf+8c+fA7mb2A/BjtvAD0nnKEdogs=;
-        b=bAsrbranPg7YoEMy5Wh4NwHdOLicgCy0tg/JDolaI1547Mjs32rYJh0EpAUNFd/PsG
-         tjtB2GFOLaoDF5HEDckDhIGH+aqBoSAckZJNH7DhBZy2PX8VDz8pBdYJjGjNCqpzSsdO
-         Vk8ucn6wSiuzXjLPtDhpxG7Ds+/xbIEGSpDxiEpX9NktBXDNqGN3M9/HUoMDes09Myq+
-         VJcVHW13HoPGJSEmXK9NiQD6Wuwf1vClSL+xZiriispSkfHfRHzpD6jaYOSta8oXw+IM
-         Fe/6WQRm5UB/wwMRfQUbD8SeFXa8NMgwqgs9PWN+Gav2l+L281r9mrpxlESkkSEJZlRt
-         E7Kg==
-X-Forwarded-Encrypted: i=1; AJvYcCVKiE9kecZBcKfjP2Gx0d9bhAzhUTVG+Y8yTT4B3ahM/6Qk0vyitSwKvfVgQxQghWEsNL4ffX7iIYKH1fF5ByD3XgwXu0zJLtfdWW0R/WnJBkoRAtFTlaJQJkrFXQdVC72tCkiYmsrH+QKE+JCiKp4tHYdhyXvXudf9k3ykALxDX2VzJGv/wBuXzYp71Bf7l6g4ENSw+KEYTjOij4JPbm4Q4Or5BTCiVBojdz/SH6T8/fPXrTZGq67ZdaL2GTsl/RY8dXHmLvDDbE72eIrLKY+S2GSdnUcE1bJ9OfpjfQ==
-X-Gm-Message-State: AOJu0YxKZSvSrpGlscb8hByQmuGlsoym7WfVmVj/o3NoY3SuCZrEpmEr
-	X4sbULmCDiokFB3WS6Jut/GN5N9EkW6Wzg99C8yUVU5ob3Kn5/8P
-X-Google-Smtp-Source: AGHT+IEVE6JlEBgyeNQ8vkUPkRaSgWDWUYr0hp6JGZgymhUxvXFOsOst8mFB35mbNtNEl3G7ds+cRQ==
-X-Received: by 2002:a17:902:ed15:b0:1e4:9616:d967 with SMTP id b21-20020a170902ed1500b001e49616d967mr9788274pld.15.1713264032862;
-        Tue, 16 Apr 2024 03:40:32 -0700 (PDT)
-Received: from LancedeMBP.lan ([112.10.225.217])
-        by smtp.gmail.com with ESMTPSA id b2-20020a170903228200b001e53bb92093sm9410890plh.228.2024.04.16.03.40.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 03:40:32 -0700 (PDT)
-From: Lance Yang <ioworker0@gmail.com>
-To: david@redhat.com
-Cc: akpm@linux-foundation.org,
-	cgroups@vger.kernel.org,
-	chris@zankel.net,
-	corbet@lwn.net,
-	dalias@libc.org,
-	fengwei.yin@intel.com,
-	glaubitz@physik.fu-berlin.de,
-	hughd@google.com,
-	jcmvbkbc@gmail.com,
-	linmiaohe@huawei.com,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-sh@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	muchun.song@linux.dev,
-	naoya.horiguchi@nec.com,
-	peterx@redhat.com,
-	richardycc@google.com,
-	ryan.roberts@arm.com,
-	shy828301@gmail.com,
-	willy@infradead.org,
-	ysato@users.sourceforge.jp,
-	ziy@nvidia.com,
-	Lance Yang <ioworker0@gmail.com>
-Subject: Re: [PATCH v1 05/18] mm: improve folio_likely_mapped_shared() using the mapcount of large folios
-Date: Tue, 16 Apr 2024 18:40:08 +0800
-Message-Id: <20240416104008.41979-1-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20240409192301.907377-6-david@redhat.com>
-References: <20240409192301.907377-6-david@redhat.com>
+	s=arc-20240116; t=1713264050; c=relaxed/simple;
+	bh=QUIXIag+hvRWU9wlTolKXQYXe77jOaP6Mj5YCsZs9Zc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=hIyAQD6CXRoJDNa9/L6eJ3PEIEdElQPCkYIXpxlzPa6cacnd9qmeaIXGt+7VRL1tjOc8ZGpmXifQOA9+B2qhNapGVRVNjaugA2C2Y2JoQmzPWC8nj51/jG7yErlTRihYk1MGnehJhWcRdYi3r/CRetJ+MbHC3tjwSl/R4eOfc/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=NjpCdpFi; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [127.0.1.1] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4B5A6182C;
+	Tue, 16 Apr 2024 12:39:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1713263991;
+	bh=QUIXIag+hvRWU9wlTolKXQYXe77jOaP6Mj5YCsZs9Zc=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=NjpCdpFiMwS0gNFsuxj//3lohX3iXQVfDZesK4TsEzTw7sBjOEXSieLOurtpAVJdL
+	 GgOxdBO6lrXj4cSnbuXmxaeaLd4Ns5JbBn9WoyFSLEmZetB6DzDaVcNC2NjY0eYUS5
+	 tsFppbQOt4n+ggmWVJf+plcFMymtFgWDz6NUeq1Q=
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Date: Tue, 16 Apr 2024 13:40:09 +0300
+Subject: [PATCH v4 10/10] media: subdev: Support non-routing subdevs in
+ v4l2_subdev_s_stream_helper()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240416-enable-streams-impro-v4-10-1d370c9c2b6d@ideasonboard.com>
+References: <20240416-enable-streams-impro-v4-0-1d370c9c2b6d@ideasonboard.com>
+In-Reply-To: <20240416-enable-streams-impro-v4-0-1d370c9c2b6d@ideasonboard.com>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Hans Verkuil <hverkuil@xs4all.nl>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Sakari Ailus <sakari.ailus@linux.intel.com>, 
+ Umang Jain <umang.jain@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1654;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=QUIXIag+hvRWU9wlTolKXQYXe77jOaP6Mj5YCsZs9Zc=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBmHlWfylPU98r1DfMzWnp5XPdsM7x3jcGm55fmu
+ 3WFK1ZKWJyJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZh5VnwAKCRD6PaqMvJYe
+ 9StoD/4jhv+3mq5r5K6QD+xjUDEJLRdnOyPw6IzIk19CNTR3GEvBlSFVprQVe4sUED4TcWLHAKn
+ 89mk0Y7Tw3vwuJv0iqwjcwELpLhiLjaKuSQdxImu+0EootKR2SYfAXQ++vQPiNvibNXv2En6AUQ
+ V7MwvxCNp8oVVF7hen4GeKH8NBBoo1wQRcneau1f8L3wBHk+0KEaAITdvsrt6GuJqJ5AEL9qTEj
+ xWoEdV2gZRftWcxVaX8YfUStSrt0+fA/JedtstbIGOme/MmX4TXrCUcfGYYZyz4GUHSU37LZtrF
+ TpSnsEfv7Ly8uPpkcEMd8pviLKWSB2ccBZjaAIcmYwCcLB2FWMNGQsvPAFesWXT+UDmvtcjRYfs
+ Du8k0auZ7od4ykI2uymA3iYUzRvyLr/a8+5FKSJeFMzje8Eo0jzm1mzZhZv3kPO/NBWKZsLxLlo
+ Bb36lW5zfWYsrx27Qn0wHgET+sdqw2dTdQInhVMvYU/6JaWXtyMQ67qpmhbUMeuutDbe8lW4nrH
+ RUXE0DYvirvG836FzqU9SiqCOutsPp+oPZ+VU62oYBwaTljm5maEMJbs87YAlyyYqd0SYsegruV
+ 9h9bTKwjKz8e2TWZgYhmx07YJ6YQXa03vsPrblGUTz85m2+KKSQBJltoiF3xmT7aITBT0Op/Zhy
+ FDZcHF8DPSH/Utg==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 
-Hey David,
+At the moment v4l2_subdev_s_stream_helper() only works for subdevices
+that support routing. As enable/disable_streams now also works for
+subdevices without routing, improve v4l2_subdev_s_stream_helper() to do
+the same.
 
-Maybe I spotted a bug below.
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+ drivers/media/v4l2-core/v4l2-subdev.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-[...]
- static inline bool folio_likely_mapped_shared(struct folio *folio)
- {
--	return page_mapcount(folio_page(folio, 0)) > 1;
-+	int mapcount = folio_mapcount(folio);
-+
-+	/* Only partially-mappable folios require more care. */
-+	if (!folio_test_large(folio) || unlikely(folio_test_hugetlb(folio)))
-+		return mapcount > 1;
-+
-+	/* A single mapping implies "mapped exclusively". */
-+	if (mapcount <= 1)
-+		return false;
-+
-+	/* If any page is mapped more than once we treat it "mapped shared". */
-+	if (folio_entire_mapcount(folio) || mapcount > folio_nr_pages(folio))
-+		return true;
+diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+index 1c6b305839a1..83ebcde54a34 100644
+--- a/drivers/media/v4l2-core/v4l2-subdev.c
++++ b/drivers/media/v4l2-core/v4l2-subdev.c
+@@ -2360,15 +2360,24 @@ int v4l2_subdev_s_stream_helper(struct v4l2_subdev *sd, int enable)
+ 	if (WARN_ON(pad_index == -1))
+ 		return -EINVAL;
+ 
+-	/*
+-	 * As there's a single source pad, just collect all the source streams.
+-	 */
+-	state = v4l2_subdev_lock_and_get_active_state(sd);
++	if (sd->flags & V4L2_SUBDEV_FL_STREAMS) {
++		/*
++		 * As there's a single source pad, just collect all the source
++		 * streams.
++		 */
++		state = v4l2_subdev_lock_and_get_active_state(sd);
+ 
+-	for_each_active_route(&state->routing, route)
+-		source_mask |= BIT_ULL(route->source_stream);
++		for_each_active_route(&state->routing, route)
++			source_mask |= BIT_ULL(route->source_stream);
+ 
+-	v4l2_subdev_unlock_state(state);
++		v4l2_subdev_unlock_state(state);
++	} else {
++		/*
++		 * For non-streams subdevices, there's a single implicit stream
++		 * per pad.
++		 */
++		source_mask = BIT_ULL(1);
++	}
+ 
+ 	if (enable)
+ 		return v4l2_subdev_enable_streams(sd, pad_index, source_mask);
 
-bug: if a PMD-mapped THP is exclusively mapped, the folio_entire_mapcount()
-function will return 1 (atomic_read(&folio->_entire_mapcount) + 1).
+-- 
+2.34.1
 
-IIUC, when mapping a PMD entry for the entire THP, folio->_entire_mapcount
-increments from -1 to 0.
-
-Thanks,
-Lance
-
-+
-+	/* Let's guess based on the first subpage. */
-+	return atomic_read(&folio->_mapcount) > 0;
- }
-[...]
 
