@@ -1,141 +1,144 @@
-Return-Path: <linux-kernel+bounces-146362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AA7A8A6436
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:43:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672048A6443
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:44:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14FDE1F21D50
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:43:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9849A1C21342
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6226E5E8;
-	Tue, 16 Apr 2024 06:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AF16EB75;
+	Tue, 16 Apr 2024 06:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lIlrJZRH"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="I4EpvtrB";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bJzRYCLQ"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B79127715;
-	Tue, 16 Apr 2024 06:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3461D6CDB9;
+	Tue, 16 Apr 2024 06:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713249776; cv=none; b=uaYFwyULm/m57WPE7uQF3AguvaJHI7MdcenBt4kBOXEOu9xSVAssN8N8RT+ZFrtpOA7x5plEI0ggQhUxUsSO5xjlmDPFvkzOR0KmjbXbOnU7eq97FFRd1tCy/qfHrR0eioO+Pn1VnLUhcaZqymoGu+x+mzizEKu5YWTER3A9P4g=
+	t=1713249863; cv=none; b=iqH2UZic1Qb+OUcGNn3hreBZCje74fkuIQyUcUPaxxlvzfA59D8aicDOtvencJYLkt/UdDC2/Dy/BTwGpCqASFhv2tid3vRhF104+MQzujtM+dv2YhiLdTDQ+BHNM3XKa/HHC9ifr6VXGzg10aY3DkN06q8iVhanF5wL9XK4K3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713249776; c=relaxed/simple;
-	bh=vjFvnJ0DiF9W1/ez3ol+TtAwoJAYGfl60BD9NBAXzl0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fPRk19IPA2PILiHGtjjjHTFL8/f7E5/WzhWHwHgwJziZod2hBb725Vc0fiKjUEYj/ebup40wwqVFIFBfm9jbZG7/qG1ZYeejJ/spyLmPAt0BTwzGH8sd1KfN3s+9HIWsl755vRyNX31ZYDXFJotuIzMBFoT35coD1dvmksVMJww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lIlrJZRH; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56e69888a36so5741071a12.3;
-        Mon, 15 Apr 2024 23:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713249773; x=1713854573; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C/1YqI6k5U8HVHmH5m/IhhTHjeui5HKnPZc4Ol9mPwQ=;
-        b=lIlrJZRHEVLDo2i3RNkTdcx1E3TFGj3xTri+nIcWkienCaKSilTqcFdyqOKuwPAjJO
-         IRsAVm3ajGaDfhCwoOqpNu6lHaU+HSelcjws5sshHv/p02f3tZ+FdqLO/prG6Tz16vEe
-         0ZlycMR0+fuCgyaCbIFjvbskKdsSev3qcgioDnuOwZHeP6lV5EIkjt5O5QV/ooq1UyKu
-         nFAOMzItGjmGWw9eptMgPQKI/7T31a9cdd7Xl8FC3+yhNLm21XY0RoQuDkOp7Vxr6gmL
-         1blW1BL2csswGjYZ7d+nWRWzGb8vIfZAHGXC9khWiLbV0Nz0HbZIi9XDzgtiooyAPMpB
-         mCJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713249773; x=1713854573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C/1YqI6k5U8HVHmH5m/IhhTHjeui5HKnPZc4Ol9mPwQ=;
-        b=YnoW025KplFMEaetZtu36l+e+EnEfz6AR1cPQg9H4DfW1bg5Oc1H2TI+1HeLoYR+ov
-         vuXLd+VMogpMhv5VKaGHJUzDefSFmmNh+rkErh3PHgtenHr+gM9BMIZ70EqI+MwIl2aZ
-         X9t4ZSgqNX2rdsrZqmIAjWSMyPWA68+4iW2cwA0b6PlM5rgSCcVHYBHHQUoNH+3S4A0o
-         tj+EsgjcnhJN28lwnac5ZZhkVycb10DFqKzncy/GBF72ZdcT0syG5xsJnOB4QfxSpUuo
-         PtuYTrAossOFZWcKW0STed023G01TYOvZ6UYnRm1aEwDJKKdaGrTaPrpYCW5A33MX2Cp
-         h/gw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5Q2D4OdJRBn+bCLhJ61UFN4oYoifKIQHke+HE3xCDBiDsPjD8x9LDu0/sKdG+QZ1D0H5t9MEGqhFa7/7s9A/9Liz52uKB3ZhgvyS2XPDDywxLmXGD5DVsOkI3NBPdDe4OPQDh
-X-Gm-Message-State: AOJu0YxsKKdQQ6gzFbnNBjPbqdKM8GaIntTkTZZoL1kYm5YlteChOee0
-	nLzbGh4oaKezFwDcOtIlwa8TsdcjQm5TfWUOJjfjJcI6qS8LcC16nefQ3vDnrwc2cdgByGDxtfW
-	WlR9vLrF7ICI/3oHTJ8hb1vDsDLE=
-X-Google-Smtp-Source: AGHT+IEz/zqNTegclXfAY2q29JbjdLcNOEGz75t1I3AgJ6ydg3/K4qxTBZJ5XEBwywK7nRm+Z0wyM2EwCRX0o7Q+ZKc=
-X-Received: by 2002:a17:906:35ce:b0:a52:71af:405d with SMTP id
- p14-20020a17090635ce00b00a5271af405dmr2462563ejb.56.1713249772816; Mon, 15
- Apr 2024 23:42:52 -0700 (PDT)
+	s=arc-20240116; t=1713249863; c=relaxed/simple;
+	bh=IDXyCoMqGfsMJVQO4R4ACB5kFoxMOUpZEeJyD5og0ho=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HnVUmhyJSzpAzKJMnJbYhacoCpxhoxhDqfLA7DGLz8Vw3D0il0CE4sGjMysXCl7aj1NytG2jY25sKgks740uJ1EwVfFaTdYIQstZeayON4uuCXL1C8ZrXyDk1s2iEZdQnWFIwJZRfmxyd4lsGeNywed1nUcEHyuDkJYw3UIKz2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=I4EpvtrB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bJzRYCLQ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 16 Apr 2024 08:44:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713249860;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MXvhT03wv4aD4mG7No4QBS1v7N0JoskGOicMYBhMYkU=;
+	b=I4EpvtrBMDw8wtNcnN+FtV7XaKNKQxwSOUjI+gsa86yDttz6jik4c/ITUTbXRVSMCW5FgE
+	j1ybcCdXv3uk9RbqRiJmEvwk5X19kmTOqqW7XWK5vpS+z5gXt+zzrtLg+99Om0014tdyES
+	JOGcCCdqpzz9eib45hed8UOKMuFptKmg26d1n753cdw/gQeNFq8/Ci+ZBGGIEA7tYOKPTP
+	7+dPSEYQv42OGaQobWn8yXdYHZ/+NegmuisSyNJ4LpjxPnq/lfLTs6vY3NMEzyPVu1SGa3
+	g8U9b4BDtMDqJ8s+HwmPK7jcY5THj01jQ37v9JTWYtAJWMZcER3OE84d6Bzi1A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713249860;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MXvhT03wv4aD4mG7No4QBS1v7N0JoskGOicMYBhMYkU=;
+	b=bJzRYCLQmILvJC51K4zxw1Cp6h4ntNM+6v4foRDudJvLy+lpJM+x1SDNyCTogQ89bV3viq
+	bSPWcQsruKAKuDCA==
+From: Nam Cao <namcao@linutronix.de>
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Andreas Dilger
+ <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel
+ <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
+ Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
+ <conor@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, Anders
+ Roxell <anders.roxell@linaro.org>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240416084417.569356d3@namcao>
+In-Reply-To: <87le5e393x.fsf@all.your.base.are.belong.to.us>
+References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+	<20240413164318.7260c5ef@namcao>
+	<22E65CA5-A2C0-44A3-AB01-7514916A18FC@dilger.ca>
+	<20240414021555.GQ2118490@ZenIV>
+	<887E261B-3C76-4CD9-867B-5D087051D004@dilger.ca>
+	<87v84kujec.fsf@all.your.base.are.belong.to.us>
+	<20240415-festland-unattraktiv-2b5953a6dbc9@brauner>
+	<87le5e393x.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEkJfYPYF-nNB2oiXfXwjPG0VVB2Bd8Q8kAq+74J=R+4HkngWw@mail.gmail.com>
- <ZhzYCZyfsWgYWxIe@Laptop-X1> <CAEkJfYOebGdmKLtn4HXHJ2-CMzig=M+Sc7T0d6ghZcXY_iY5YA@mail.gmail.com>
- <12281.1713195788@famine>
-In-Reply-To: <12281.1713195788@famine>
-From: Sam Sun <samsun1006219@gmail.com>
-Date: Tue, 16 Apr 2024 14:42:41 +0800
-Message-ID: <CAEkJfYOP_fDODxtNc5SvYeYgbvQ86FPLhaecQQXExqtFBbEgyQ@mail.gmail.com>
-Subject: Re: [PATCH net v1] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
-To: Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc: Hangbin Liu <liuhangbin@gmail.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, andy@greyhouse.net, davem@davemloft.net, 
-	Eric Dumazet <edumazet@google.com>, kuba@kernel.org, pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 15, 2024 at 11:43=E2=80=AFPM Jay Vosburgh
-<jay.vosburgh@canonical.com> wrote:
->         The submitting-patches.rst file in Documentation/ isn't
-> explicit, but the intent seems to be that Reported-by is for a bug
-> report from a third party that isn't involved in creating the fix.  I
-> don't think you need it here, just a Signed-off-by.
->
+On 2024-04-15 Bj=C3=B6rn T=C3=B6pel wrote:
+> Thanks for getting back! Spent some more time one it today.
+>=20
+> It seems that the buddy allocator *can* return a page with a VA that can
+> wrap (0xfffff000 -- pointed out by Nam and myself).
+>=20
+> Further, it seems like riscv32 indeed inserts a page like that to the
+> buddy allocator, when the memblock is free'd:
+>=20
+>   | [<c024961c>] __free_one_page+0x2a4/0x3ea
+>   | [<c024a448>] __free_pages_ok+0x158/0x3cc
+>   | [<c024b1a4>] __free_pages_core+0xe8/0x12c
+>   | [<c0c1435a>] memblock_free_pages+0x1a/0x22
+>   | [<c0c17676>] memblock_free_all+0x1ee/0x278
+>   | [<c0c050b0>] mem_init+0x10/0xa4
+>   | [<c0c1447c>] mm_core_init+0x11a/0x2da
+>   | [<c0c00bb6>] start_kernel+0x3c4/0x6de
+>=20
+> Here, a page with VA 0xfffff000 is a added to the freelist. We were just
+> lucky (unlucky?) that page was used for the page cache.
 
-Sure, I will change it in my next submission.
+I just educated myself about memory mapping last night, so the below
+may be complete nonsense. Take it with a grain of salt.
 
-> >> > Signed-off-by: Yue Sun <samsun1006219@gmail.com>
-> >> > ---
-> >> >  drivers/net/bonding/bond_options.c | 3 ++-
-> >> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >> >
-> >> > diff --git a/drivers/net/bonding/bond_options.c
-> >> > b/drivers/net/bonding/bond_options.c
-> >> > index 4cdbc7e084f4..db8d99ca1de0 100644
-> >> > --- a/drivers/net/bonding/bond_options.c
-> >> > +++ b/drivers/net/bonding/bond_options.c
-> >> > @@ -1214,7 +1214,8 @@ static int bond_option_arp_ip_targets_set(stru=
-ct
-> >> > bonding *bond,
-> >> >      __be32 target;
-> >> >
-> >> >      if (newval->string) {
-> >> > -        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL=
-)) {
-> >> > +        if (!(strlen(newval->string)) ||
-> >> > +            !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, NU=
-LL)) {
-> >> >              netdev_err(bond->dev, "invalid ARP target %pI4 specifie=
-d\n",
-> >> >                     &target);
-> >>
-> >> Do we need to init target first if !(strlen(newval->string)) ?
-> >>
-> >Good question. I think we don't need to init target first, since in
-> >original logic in4_pton() also leave target untouched if any error
-> >occurs. If !(strlen(newval->string)), bond_option_arp_ip_targets_set()
-> >just ret and target is still untouched. But I am not sure about it.
->
->         I think the original code is incorrect, as target will be
-> uninitialized if in4_pton() fails.  The netdev_err() message shouldn't
-> include target at all, it will never contain useful information.
->
->         -J
+In riscv's setup_bootmem(), we have this line:
+	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
 
-Yes I think you are right. I will remove the target address in fmt
-string in my next submission.
+I think this is the root cause: max_low_pfn indicates the last page
+to be mapped. Problem is: nothing prevents PFN_DOWN(phys_ram_end) from
+getting mapped to the last page (0xfffff000). If max_low_pfn is mapped
+to the last page, we get the reported problem.
 
-Best,
-Yue
+There seems to be some code to make sure the last page is not used
+(the call to memblock_set_current_limit() right above this line). It is
+unclear to me why this still lets the problem slip through.
+
+The fix is simple: never let max_low_pfn gets mapped to the last page.
+The below patch fixes the problem for me. But I am not entirely sure if
+this is the correct fix, further investigation needed.
+
+Best regards,
+Nam
+
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index fa34cf55037b..17cab0a52726 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -251,7 +251,8 @@ static void __init setup_bootmem(void)
+ 	}
+=20
+ 	min_low_pfn =3D PFN_UP(phys_ram_base);
+-	max_low_pfn =3D max_pfn =3D PFN_DOWN(phys_ram_end);
++	max_low_pfn =3D PFN_DOWN(memblock_get_current_limit());
++	max_pfn =3D PFN_DOWN(phys_ram_end);
+ 	high_memory =3D (void *)(__va(PFN_PHYS(max_low_pfn)));
+=20
+ 	dma32_phys_limit =3D min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn=
+));
 
