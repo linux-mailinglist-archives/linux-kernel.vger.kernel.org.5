@@ -1,260 +1,133 @@
-Return-Path: <linux-kernel+bounces-146315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 962CD8A636E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F04DB8A6372
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:08:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C75A1F21FB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:05:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DCD31F21D19
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:08:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF2E3BBF5;
-	Tue, 16 Apr 2024 06:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A8A3C08F;
+	Tue, 16 Apr 2024 06:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TB1US/iV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="poOdPGFL"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8A933998
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 06:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713247537; cv=fail; b=gE6S4Kf6qLOITL2EE7FStNmkBTKm/tCsmX+ibLmihw2kAMROqPqHis8qD3UHqTXV1iyKJlQJDe/eZyHTkxIENFwDUn5Zp/LxXeqgkpsxKgsRSAHTJ3RqonbV91QnkgkT+9hYs/SuK/qDQQFPiK26X+yMo8D8CX/ZTzD1N24m0tc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713247537; c=relaxed/simple;
-	bh=z7BeCgqNwItHEh+VWcJoDfPbJSfS3PBNu/ZQaTkEvGo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=VIeu83XiDpQXeZwDbmJvXqy4SN07/KUYG9bUfx055d8ITKCL/1uY9mt5cX0UAhdTZmJo7lGSczbr8PMVgMWtaNAW6nDoPrC9YduLnavsNrGejiMPorUVEixHJO0K43u6hCulkyaNQcw55MoDh74yvIYzORk25wQnncg9HC6to9U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TB1US/iV; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713247536; x=1744783536;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=z7BeCgqNwItHEh+VWcJoDfPbJSfS3PBNu/ZQaTkEvGo=;
-  b=TB1US/iVmVg1bn5A4CWJ1IkUYqvdbRApdfdWVRLKziWGnifQWMw9IxbS
-   dTmMfMKL8cact+iGtiP/RlY/E1KRtP5nJZCGbYWNJJW7yb3FuBRBIOjX1
-   7B3jRje+xw72hvnO9GZbWlOZcL+/Bri8Xmv+X9q1X+3HF5VI0pfRiq4UA
-   0mzZfk4J9UwxrlLwPp7wUnGVNUGxeGN8+ZAJrVSWit3rRxXvwg0jjJClD
-   4xkbWaktMcEaPKIomvmOIxTcwQgL426fJwP+nzaqu0D2XKTzuAZw/WN1F
-   BULJCZQL44s9E/Lk1EXNOWvK3hBaTAYxktyACqDxpo5/dqi2/PfGzd/h9
-   Q==;
-X-CSE-ConnectionGUID: S4+oLdLnTQyXymE3ZzihGA==
-X-CSE-MsgGUID: D31yoRIiTASEZWTnn+qS+A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8545767"
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="8545767"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 23:05:35 -0700
-X-CSE-ConnectionGUID: BEazFD0MQU+W9vDxWxlSUQ==
-X-CSE-MsgGUID: KOfLgmjeQKq83BMtfbUfaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="26806784"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 23:05:34 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 15 Apr 2024 23:05:34 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 23:05:34 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 15 Apr 2024 23:05:34 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SMYtITZvZPUYhRMR+f0hsh1KwYRPjQurvWPU1zO9dj491d9tJw91qWtJcUzFytSPANIjwwtYOkxiMxM2rt3uzYGEFBJduu4HvMkfi9/4lep3F786v0HgXeYTCSPOJDouPyzpvrHl7k+a2DyPzQLI8DI53G83SLef6Z+G1W9IwVxKIE0m4W8Bg/62E2bWgGIwoEEOWcE/gI5VTrOMiLiQvnX/7g+CHLBBxW8DuGJkz4hqTSalPRh6LCmiP0sQBGiybknrD41Inozc7vcAflQDfqMJWSbKf0jDpqDWa65N3ItDuLqgS0iGCd3q8FIn/OqbFntYyGWHsYDFjYgf8H4DBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y2Kqp7AAO/+3T03+7NcRrxzngrbG+g26MsZktvHyD/I=;
- b=N4YDkXuZzdFBbRbvgLxkEOlCQJzEAQ1eEn8bsrlrhQIm0v16erH0cn9MIL+z+ck+8e7N8wDGg/dtRa+VA2HTNegYuKKrdHetMCOD5KHVRvfDvbod3vY/z2MRRyWLZ5yQcTOe37OTcrCx3PRi8vP4Yd9UzH0S+ilvtN/oZt6OY3t/r1SbbQrg0fFWXfPkyhZRn20i+k5gPxAP1MGPFEl7UFpabKVmKSWyc8YLunHQzQqP/6qChem3V9dwEJKk+nt5jqXCNI51buLWWx7lBHM4xzdABcFP8km1H5fBR79GCZiSe79QccFBwzqX8Hzo/ILK2EzaNiTCHmIhmpVaJvN+fQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SJ2PR11MB8471.namprd11.prod.outlook.com (2603:10b6:a03:578::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.28; Tue, 16 Apr
- 2024 06:05:32 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7452.046; Tue, 16 Apr 2024
- 06:05:32 +0000
-Date: Mon, 15 Apr 2024 23:05:29 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: Tom Lendacky <thomas.lendacky@amd.com>, Kuppuswamy Sathyanarayanan
-	<sathyanarayanan.kuppuswamy@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-	<x86@kernel.org>, <linux-coco@lists.linux.dev>, <svsm-devel@coconut-svsm.dev>
-CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, "Peter
- Zijlstra" <peterz@infradead.org>, Dan Williams <dan.j.williams@intel.com>,
-	Michael Roth <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
-	Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 13/14] x86/sev: Hide SVSM attestation entries if not
- running under an SVSM
-Message-ID: <661e15292be3_4d561294d6@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <67893f352bc54de61160bfe251cba0bdf0431f37.1711405593.git.thomas.lendacky@amd.com>
- <1f6f4477-0f2a-434a-8c89-3b5d51d61581@linux.intel.com>
- <19d69960-e548-a2e6-87d9-c463f2851613@amd.com>
- <e286883d-40ef-d749-26a8-7ec6fbd81eae@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <e286883d-40ef-d749-26a8-7ec6fbd81eae@amd.com>
-X-ClientProxiedBy: MW4PR03CA0083.namprd03.prod.outlook.com
- (2603:10b6:303:b6::28) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B14F93BBEA;
+	Tue, 16 Apr 2024 06:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713247698; cv=none; b=pCoDnE8Fvv1EE/PDpHErxpCTACZyrSEs5l8nCjPBtbbBPJDk55hjgoKbzTWqmObfJNJIoa41k71GYeuMiqIRQ5jSTm6x3h/zftMN7yQZoAGMEES7ZQ+/lTW6mmZlUoMwE+vR5UXYTvCTmpx8ENxOFI1V+r+PfvjSs0/Wbs53rj4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713247698; c=relaxed/simple;
+	bh=WICUcYaypsw/DK9gFrMDqKtJd5tnBe1HuVDRQOGmKBc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f6O2EhC88RwRz/sSNH0pw/s7SkHnwmrC/LzTiAHt+KWQNB6a2ZOppu8iKSEM2clc2ojjUaOi1g2iI33r4gopo0S8evgNlfqsPMvZenoirguI76sfD2fexaavLrx2HVxMPk5u71XW59WmjJw1cFD7HsCUD/nc7N7SIyygAFkZyZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=poOdPGFL; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=kokKt0017qNqpH691SbrggxmrEJ7Johu9iji03ZhiK0=;
+	t=1713247696; x=1713679696; b=poOdPGFLnaJdEbeYzfhtLcZr4qniDVpD3ZEVBsES3ap5hUI
+	8KrF/PPFm/D9PXajLDSEhcmlggJ97wdmCtoy9Iesi2MKNTtRiZpkvC211PZaPdbvGrV6H0uq65M0I
+	K4mSDfv275CY8fLirxdfaK097IUK8Mv1XWNzTMxHp5bm8OgY7CrN6M6P3Ump2MP9nmwsRrpy/T/IE
+	ZXbZc1xdIixqjFm9rQnGKgW3bvNXI46L0/s3IbbgBDfh2S9xGNKLWbiA53qN5eM4W6PB7knd/aTp6
+	S2/LCXFVQComi20L2rWG/7wH/v6BXsGBnU3fkIuRzsNnOACBGM6atdfxW+8GZ8rg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rwbzE-00032x-Aa; Tue, 16 Apr 2024 08:08:08 +0200
+Message-ID: <81149f18-0132-4ace-8c71-1b75790a88e4@leemhuis.info>
+Date: Tue, 16 Apr 2024 08:08:07 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ2PR11MB8471:EE_
-X-MS-Office365-Filtering-Correlation-Id: c45fab62-0804-4954-e1f1-08dc5ddb3938
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Wt+0wT0NDTn8XmLuv5uMp/vO46/MFlXxhu6HlSRF7pCxnaWdfgO3a2F3Ja5Z/Lh9rPNAXZ0PIp8n+/9y/2OwglddXaTUMULl7mMaGYuXCz997Asrg2zI0G0YMtEJftNXxLxpEN55m0dMclvBP4bUSbxpkBZhDyAQNe5lCpXWPlEjBcH0/DoDqiiWlttym5pTD1SpmZEZ4xIRoPajx0DhZHCHDBVpcN6ltr5qQCOKSAuazHB5ZTnLeyPPIF4cBakhNspqFuKvbRoU5G6v+QPhYwGr3XYCd8QAUaHYjillNII6yFBCp8vyd0GFiycslXsSvZvh3Usbxut26HgDr9vb1Ob/HtFgDB/PS/ZJFuDkoL2NFaw2S1azRERwiBEblM0mhaGzAdcMa2peblKGXNJIdtba938Jjxw9RuPjB3NdvyNz2NdC1LLHhIO2hkhs+oaVoEjAi0WiuU4mV7KWOITCDLFLpp56zh1YgwHSW9Xrk6FEmXy6LfULk3q29BrHM9+9MmjEXZJbJPJOdwSVkKlEXqsZVMEuVpK2oVzsiV1xiDPM2ZTDJBnKHnpQBoDiOrzMqxb6+pnq0hwYHxuLxT9qq05f84HeYAj5XpzTd4iWNHQQoSAmHzbM/EPB1jIY0vx56Tdg3y1YHC21nN36GZ6uiDrx87aObUbg03+35Zl5hA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ruSPQLLPY1V1oo1sSFEjw45ot2Z+a7vFZlkVZuM30rdKJNFJetjn3Bxkvb8K?=
- =?us-ascii?Q?+xfr2rDyL7L7iWcakM0rGRQQsdh9ZMRSgP1TvbJ5Ho/oImvbmzM97+ohV5md?=
- =?us-ascii?Q?BPASrlOYBgtYhyY88gM8zLAJBn1fOSoKDNn4QJrY/j5BeiO56TAvRj05GWVc?=
- =?us-ascii?Q?y8wp9zMc87c2yFXtrAycABc05oj0KyACasOwt3HjHMXmzbUg4LP13FQbL0IU?=
- =?us-ascii?Q?YaSr4G9ONdURKcCLZJ9IYx73zj3ClHNvKwGf9GeC/iPgO+Hjg+BzCY4sMCit?=
- =?us-ascii?Q?rM51FMV42N9xXCbclLnhHIID/AZYmzpHGEvgI5yyBha47eRrSJfx5iy31t1b?=
- =?us-ascii?Q?ppM3kxM21MXKEvqSeOQ+fDRSegGaOqCjP+h4C368uAkxaJJVdXKulYzdkX/R?=
- =?us-ascii?Q?Eset9I57AMoGfe2MF1BoIMHv8aNWNUi6QPCouYpYRFd08DgJ6Y8w76Wb1H/Z?=
- =?us-ascii?Q?nIYcFIvH2t9m8lgDoW9XARaJsVSOUzRiVU7xpYtK8JzJvVabla/BCm5xj5yK?=
- =?us-ascii?Q?qGIbXW33OonjyBgGMeKIPPXwvek/gRoLL4xVXVBCWXybC8I+2FPoK8vVxdns?=
- =?us-ascii?Q?kfRZq0XgeA+1x2xGQYABjAek7+JUxA0hk140akvnkLpjP3dNd+4pe9V4SthF?=
- =?us-ascii?Q?8fCxmB9rIVDBQtAuRRM+JGLyKGJ8i1jLgQo8UiXj2jybOcCsG0cqkySAtE7Q?=
- =?us-ascii?Q?0Md/yNQQVtl9K7NWkvZ4pnJH9xoSllcVCXO2tdloRc1+T+fpXYs+PVbc3+pH?=
- =?us-ascii?Q?mHoPnjucFBt5ss0t0pA8reLgt9vJ2ahYtJu7EPTCptxsStVmvSHDZAe9sqUC?=
- =?us-ascii?Q?fpcLhimJBQHQfMhVPA5868pVez+gUNOtXLtDU7ipQHwUvur35OUAHSnPe8hu?=
- =?us-ascii?Q?TrF4apyKVhH76elv3+yvGmbLjJszcffKCF7tcUwhBYBXwXQ8w7xdwZOcbmmG?=
- =?us-ascii?Q?kN/3EdeyN9RziSHPctT1aJCEsaL3hyyrozwuojTwLnPQRnlMvYSZnogJGnaI?=
- =?us-ascii?Q?hK7kOzcOf8QlN0unIChao5XRBeNXRobUPD5HRZ1xoHEIaE853FPTM6tO8RkG?=
- =?us-ascii?Q?a5NGerPkHdG3Ez4i/TUj/nycoI9VwWBeeauoaMJmcNeKEOC19/NEi7LWo9hR?=
- =?us-ascii?Q?3KN0hKPxmJ15bUGQu6b3OhqzrshNED1rNzsunfaYM6A4ua2NINSrflPIN2ml?=
- =?us-ascii?Q?aJEw6Z3RoXZD57zwuUOIM3W0eHLAKw+ll8bM1A0GaZQAgA9Qc23LG1DNoukJ?=
- =?us-ascii?Q?DqgfxyW6XXQJlq4Zl+78jyADVefGss/GiWqDF6mn42k6D30hCBUIzwtmgDhT?=
- =?us-ascii?Q?VXsbUczukQ28pTb7Rd3B/f/YOpvyVsrYJbkZ4qMvKx+HnVsU0yKo5RTboiyk?=
- =?us-ascii?Q?0LtXyXqF1r/UUUqXBe3KnvxNI93d51kAWt/Lrs9jcMDIpJyBkxNSY7Hqmg3v?=
- =?us-ascii?Q?lDLakC1BorlEMtX/ype1BQuy/2Q3wn0Qa9F0ibPqoJ9BVdJLuxubteRTdZ0N?=
- =?us-ascii?Q?8cho0d88S99Sy7JZLPhxvN6aMZPcAAGdxzOdw+Xo2CYMHQ0xUUP+sZ9zNbWH?=
- =?us-ascii?Q?g8FT1k5hFORtOww2dsoV8KHUMprrdO0Xshhz5WfOJDbGDEdlh9QLl9+6TZAw?=
- =?us-ascii?Q?gg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c45fab62-0804-4954-e1f1-08dc5ddb3938
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 06:05:32.0419
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: knAF3hXh1FRfFpRxZffRerOcsJy2xJvbEg1aOcik4OcNgmlr16j2G6boL+5HjtDs5pQrfF175eaCUlCwwXYC8i7wY9wW1gkoCmHG9K6RcaM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8471
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: Bug 218665 - nohz_full=0 prevents kernel from booting
+To: Tejun Heo <tj@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+References: <5be248c6-cdda-4d2e-8fae-30fc2cc124c0@leemhuis.info>
+ <enqg6mcuhvff7gujjbapdiclicl3z6f2vnggcsg65pexipyr3o@4men5fhyt3vb>
+ <28c84b3b-f68f-4f45-8da1-9c3f9a342509@leemhuis.info>
+ <7kugx5ivbplwwrcq5zp37djtpakl55b3pfy36gpbsbcx43dpcs@uheu6iv7gm7h>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <7kugx5ivbplwwrcq5zp37djtpakl55b3pfy36gpbsbcx43dpcs@uheu6iv7gm7h>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1713247696;9626bdd3;
+X-HE-SMSGID: 1rwbzE-00032x-Aa
 
-Tom Lendacky wrote:
-> On 4/12/24 10:52, Tom Lendacky wrote:
-> > On 4/9/24 13:12, Kuppuswamy Sathyanarayanan wrote:
-> >> On 3/25/24 3:26 PM, Tom Lendacky wrote:
-> >>> Config-fs provides support to hide individual attribute entries. Using
-> >>> this support, base the display of the SVSM related entries on the 
-> >>> presence
-> >>> of an SVSM.
-> >>>
-> >>> Cc: Joel Becker <jlbec@evilplan.org>
-> >>> Cc: Christoph Hellwig <hch@lst.de>
-> >>> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> >>> ---
-> >>>   arch/x86/coco/core.c        |  4 ++++
-> >>>   drivers/virt/coco/tsm.c     | 14 ++++++++++----
-> >>>   include/linux/cc_platform.h |  8 ++++++++
-> >>>   3 files changed, 22 insertions(+), 4 deletions(-)
-> >>>
-> 
-> >>
-> >> Any comment about the following query? I think introducing a CC flag 
-> >> for this use
-> >> case is over kill.
-> >>
-> >> https://lore.kernel.org/lkml/6b90b223-46e0-4e6d-a17c-5caf72e3c949@linux.intel.com/
-> > 
-> > If you don't think TDX will be able to make use of the SVSM attribute I 
-> > can look at adding a callback. But I was waiting to see if anyone else 
-> > had comments, for or against, before re-doing it all.
-> > 
-> 
-> What about something like this (applied on top of patch 13):
-> 
-> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
-> index efa0f648f754..d07be9d05cd0 100644
-> --- a/arch/x86/coco/core.c
-> +++ b/arch/x86/coco/core.c
-> @@ -12,7 +12,6 @@
->   
->   #include <asm/coco.h>
->   #include <asm/processor.h>
-> -#include <asm/sev.h>
->   
->   enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
->   u64 cc_mask __ro_after_init;
-> @@ -79,9 +78,6 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
->   	case CC_ATTR_GUEST_STATE_ENCRYPT:
->   		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
->   
-> -	case CC_ATTR_GUEST_SVSM_PRESENT:
-> -		return snp_get_vmpl();
-> -
->   	/*
->   	 * With SEV, the rep string I/O instructions need to be unrolled
->   	 * but SEV-ES supports them through the #VC handler.
-> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-> index 0d2c9926a97c..68c881a50026 100644
-> --- a/drivers/virt/coco/sev-guest/sev-guest.c
-> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-> @@ -1036,6 +1036,17 @@ static int sev_report_new(struct tsm_report *report, void *data)
->   	return 0;
->   }
->   
-> +static bool sev_tsm_visibility(enum tsm_type type)
-> +{
-> +	/* Check for SVSM-related attributes */
-> +	switch (type) {
-> +	case TSM_TYPE_SERVICE_PROVIDER:
-> +		return snp_get_vmpl();
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
->   static struct tsm_ops sev_tsm_ops = {
->   	.name = KBUILD_MODNAME,
->   	.report_new = sev_report_new,
-> @@ -1126,7 +1137,8 @@ static int __init sev_guest_probe(struct platform_device *pdev)
->   	/* Set the privlevel_floor attribute based on the current VMPL */
->   	sev_tsm_ops.privlevel_floor = snp_get_vmpl();
->   
-> -	ret = tsm_register(&sev_tsm_ops, snp_dev, &tsm_report_extra_type);
-> +	ret = tsm_register(&sev_tsm_ops, snp_dev, &tsm_report_extra_type,
-> +			   sev_tsm_visibility);
+On 12.04.24 04:57, Bjorn Andersson wrote:
+> On Wed, Apr 10, 2024 at 11:18:04AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> On 08.04.24 00:52, Bjorn Andersson wrote:
+>>> On Tue, Apr 02, 2024 at 10:17:16AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+>>>>
+>>>> Tejun, apparently it's cause by a change of yours.
+>>>> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218665 :
+>>>>
+>>>>> booting the current kernel (6.9.0-rc1, master/712e1425) on x86_64
+>>>>> with nohz_full=0 cause a page fault and prevents the kernel from
+>>>>> booting.
+>>> [...]
 
-I would have expected this in tsm_ops, but yes I think a callback lets
-this fixup the ugly "extra" attributes situation as well.
+Tejun, I got a bit lost here. Can you help me out please?
+
+I'm currently assuming that these two reports have the same cause:
+https://lore.kernel.org/all/20240402105847.GA24832@redhat.com/T/#u
+https://bugzilla.kernel.org/show_bug.cgi?id=218665
+
+And that both will be fixed by this patch from Oleg Nesterov:
+https://lore.kernel.org/lkml/20240411143905.GA19288@redhat.com/
+
+But well, to me it looks like below issue from Bjorn is different, even
+if it is caused by the same change -- nevertheless it looks like nobody
+has looked into this since it was reported about two weeks ago. Or was
+progress made and I just missed it?
+
+>>> In addition to this report, I have finally bisected another regression
+>>> to the same commit:
+>>>
+>>> I start neovim, send SIGSTOP (i.e. ^Z) to it, start another neovim
+>>> instance and upon sending SIGSTOP to that instance all of userspace
+>>> locks up - 100% reproducible.
+>>>
+>>> The kernel seems to continue to operate, and tapping the power button
+>>> dislodge the lockup and I get a clean shutdown.
+>>>
+>>> This is seen on multiple Arm64 (Qualcomm) machines with upstream
+>>> defconfig since commit '5797b1c18919 ("workqueue: Implement system-wide
+>>> nr_active enforcement for unbound workqueues")'.
+>>
+>> Hmmm, I had hoped Tejun would reply and share an opinion if these
+>> problems are related. But that didn't happen. :-/ So let me at least ask
+>> one question that might help to answer that question: is the machine
+>> using CPU isolation, like the two other reports about problems caused by
+>> this commit do (see the
+>> https://bugzilla.kernel.org/show_bug.cgi?id=218665 and
+>> https://lore.kernel.org/all/20240402105847.GA24832@redhat.com/ for
+>> details) ?
+> 
+> No, this is a clean SMP system running stock arch/arm64/defconfig,
+> booted with "clk_ignore_unused pd_ignore_unused audit=0" as the command
+> line.
+> 
+> Regards,
+> Bjorn
+
+Ciao, Thorsten
 
