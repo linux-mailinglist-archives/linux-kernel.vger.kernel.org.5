@@ -1,308 +1,449 @@
-Return-Path: <linux-kernel+bounces-147501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5327E8A7558
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:15:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D05DA8A755E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:19:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A12E2836BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:15:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29F751F226EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E78C139D18;
-	Tue, 16 Apr 2024 20:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1550C139D10;
+	Tue, 16 Apr 2024 20:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="B4EKl7sK"
-Received: from sonic310-24.consmr.mail.ne1.yahoo.com (sonic310-24.consmr.mail.ne1.yahoo.com [66.163.186.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="fwuRdMJL"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D18EA139D01
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 20:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.186.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6BB11181;
+	Tue, 16 Apr 2024 20:19:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713298505; cv=none; b=p+0M7es6haeeg9niWSZKT2o0dvd4UDxKhssOT2kBZDLT6UP8hSmgNkR+8l2H0qiPk6fAZMY6s/Nwjt/ofj7VC5dBjzqnfI7N9ueiRB4ckdQLmx8a0IQIZzY1JGLW5h/F8YCy+jzL+4TNxEjrIL+pC0+oiEpH4vKzB6v+i+n+/wY=
+	t=1713298751; cv=none; b=LjgAUwNvpj4sVPr+69R/pF8BMLrPCX9JrwqaPTb5QeHxqrpZ5uRFFmsfkrKZBTqcQ42vkFmpIg2A3yyhAAODS1+0zto3xVPJ/Lxylga1l/NmPw0nj0sQhGOOo7QTnvCslqsQfDbl/s3LUdQ0yTG1bWdVps0a23SqP8kWvE4+gVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713298505; c=relaxed/simple;
-	bh=QOAxSxqPb8aM2I8dIMb9zaaMs0lLOwqGvQ0uU6Di4W8=;
-	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version:
-	 References; b=JnbnCvI/Qtp1n68WVqK2HZjixsn7E4uhpG62qrt3SyMtj6fFI0lJZ1BZ1w0VxWz+ZCINLlzkXN+JxGb48zqbXgYD6bAeLAwP16flOxVQjfsv4a4GUm2NFEQa2Ka/NagbutCLwDuCRnvcscWD0hYqc0QQ10NLZPNVRoyoMbecq2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com; spf=pass smtp.mailfrom=yahoo.com; dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b=B4EKl7sK; arc=none smtp.client-ip=66.163.186.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=yahoo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yahoo.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1713298495; bh=iZgtGGZ+o2qQOMTF6tCLpgz1PmbtD2vBGZSP/gGVln0=; h=Subject:From:To:Date:References:From:Subject:Reply-To; b=B4EKl7sKCyiEi7IfleyQbwq/fvyU7ZcHZ9WO/LLg4B3Hxlx1Zsl4GxAcZwbOW8YTiUWWLRZ3uMrZQxSiFVkhW2N8YdNVcxNV5eNx77/3I3OrQE6Bzn9ZNZz7iTab1sxwD9VpD6B8BmVXJIm7Ye0obhXL562MU+GL0HsJkrUb9TGHzuMue/mjZARgjsjSL+YhRQBKHX4CyCAsQkQmgTQzZcPeoEO+Efw1FQ6EV5O7PXaffl00+l1nO7Y2QsjDhYPN8zNonBIurrTViPhblXvZnrRq0fxEb9UneDQ9GYw/CncdjOTALXBudRDTNjNzNgkk2JmNurW7+ggMfwIpbJiWOw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1713298495; bh=PW1mmMDFh3DNKfOKZFou1Dz2YeRrclHmgXlImryPW7v=; h=X-Sonic-MF:Subject:From:To:Date:From:Subject; b=MQD9A6H/llQn2sxcvGLKqiuBN+a6wyeW8TdbwAQDCHUZIn3rb23u88tqVMa0zAEt1LkN+N4kiricxrvCfDzl64NiK7EcdmZqGDvINyaW0Xo30PEmk57tSEQ4Mmrqf4tKyTzbZe1RNEnepZSWZ6BTm6CnCn/fBhuoL4MV9dqbxmifIcs9Djo2CQ37/Jl4wvc4ZMHR9Z8688qhzymzFCVTvZhaFg0CNxkX4Q5naXIB7TBtI8mZgtNyH9e/WUyu4gzIAJr1rr/6Agcjjew0xRrF/i7QHF9BaB+HENRpRwuDMdUdC7QGe2xsjNzDOSfhIL0v81J7268NhuWiB1KigJ6uOg==
-X-YMail-OSG: 3uyJAa4VM1mFnDbn1AszT5Z1T1FdAIgJd.uGwonq0dv90Dg8qZefmyMR4a5crzo
- zcDOcXPMX.p7eotL0mX7GLOokG9NbbF3B28QJujXy9dN3C_Dkl6nkdA6QL_iE9eY5FpqtwuPFZDI
- fhGiER0shB_H7wHWBfDSJ6w77BEqjUFK9o.1ykVOZNhZx2Pfr4Ww9Azq363FI6lDZHqWwFDtkhkM
- yPhvwP1IKon5OCMJqoP2hYe8nJ9NJPwRNIKTP.fRUbbAKYZm_zjorQ7yA_9jwe5xtEWyBgOCtYJT
- i_aaL90r.va8vMBmVx0WIYvu_YB1HGg98zVgJiv6mDpLEu8MQiGRPWB4q8gppxmJXcwgf.hTNLTL
- xzw__3MLrAQHUvrV.zmftIzyMiipYvqowzrUouAxDE1vZt7T.OIui3vhB_wS24RW32PxLGYeMrVr
- xO0Y1QRqTTWBK13BdCeQlcCAx6vXG6d1Zm5OnQEDw1mkhsPQiEo5uioCeK.kajMz39OZuZn3daUU
- k8b.CDb8z3WUH7XHHb3Qs07V.AXNObu4ZbFo7sNJadF1Po4TzoH9W8Swbr_7zp0TyAV3u_e79BPH
- _e.allV.wohi6C5lhtlN8V.G3BUDpd01UZE9GxxQFu9iKRKijmzAdG6f6YC51pDXJbw9vuMIA.4t
- HGZONj0wYtFyYCaVGLFCokrqdOICEyBVcHoxFUIlZ9nLgX.q91dGr2I81gzEf0YEH1Dd.7cVzo.9
- 34MkwDyZW8tKD8qozG1S30uNx1Hh1GH1uzRgLiUDRmjs8cjhZxAlDMja2BqrBEeXuzuPPucujw7i
- w.tgSiBrvrI67h40UcjaXxqwHTTHAigSMZiXGrgbU8tF61EdEhCbzJaF0YwKbk2in5KLLt0d185D
- dkRMI0FmKTlreXMsc.0Y3bDK.j.LFrNonJmlKzmk.DQyxH75b8GzYL7O_01xzaourOkdB8YDeUDC
- r9vV9ZOdudx27osU7fQ.HOVgQFvaLmaBovHN3NqhFzya5TYW_R4fpjUwfwYLVqP2vmxycsfFaiu1
- BAYAxYBHtnj3pXOytGzKuS9lpa.s9NnOBnLTj0xJcorXXhr.pW1mzDpY.q9pcEfiWdiKP3TifdZj
- IS2Dpxcuq07f_WE9WDsoLFyR7GJ3vk0mcquYOb.wbnxT1y.gmJnEyprfRVCetXXtemeAg7B7v2vF
- Ifxi41YX.5lg1d0vmXEsjIVvTiEq2aqZjlIt5dQiM44SXfQ6RL1A0vFs2EXLcvsRc0EeO8gASWCL
- uwPbPQXbkZY5ZTQt0_ihB3FaHqBq.6C0pINcWN25VIWzbYy.ufGhL6gzrIW4c2sN3uarPiLTwGfl
- Dq1Au9gy9VLqd_L_cwnjQWlaNnhTlengvsbvFoES21LPvAoN7zqC0PZggZ52s.jd1ZeqdKGItZbf
- G5L3LrVEhDd8PECPtVw2CSvEjKXjI8PbbKL2dpptERsq3TVXxke_ua5dh6ErB5m5xQ2PkoE6YJXX
- Gfjw.94560LxkNW8ldvRJCE4x4yiDGHYJviI5XfGKEnojtxfkqm0e.XKjiIobAhvRGl2XtDO66BW
- Mx9lB1hpfD_fBiiwJLWtyoWWlSBCFNLrJva_0SLJlsLNYRmxzKYqmSa7Bt2CvOkfyc0iMkemJjNa
- 1lkAP8lUQ1fQqr3.PhnoUZUbjVUC4npjZfs15fs28XlSLCisv6FXttsN_HaIcq8sUIyHJu5dF2Z8
- bLmyWS6Vyebf04YcrKch4Y.oIU2BuwRkkBkTAYxqk9RQGXy_YxDLYWX_H846XemuJN.n_o4OUms2
- 7FGiJXyHVElXLCK0LunJkd7ceB3V6BrbqfPGDkSgRiHmKgWhmEqUQeJNcu1khve3wSyYHDL.67a5
- 7VfJYBC2.xRxtkytCLklkot6CVG_wF4J.1dpvIvXc25qqgB4imuM8oZ_lj954BnASTQ9yuFeZoCe
- Ff6llHlg3HbRYZZuPl82XfHLvzsxeAyqnlMmlS9JF1y6jBM_nlIEKkbZhGIeGbrJA57l785YmX3F
- uydyli9mhcSxDFmWC0vPxLwEm.nZHaNhWxAMCBwZXUQWxVqF2KG_RhNFSkK2qrPcjmLW0KmU.mf5
- ZgVj_UwpZLsMPWYrpFaXw0OtMH733LsTEjwJ5YnmXM6wMM1BYcshi5he_b1jaNYSk8FERob4DyYk
- Id1f3BbcpEAKvn2HWQIR7fsXclAsGS7BTn8OXNJd9UznMlOj1UyndHhEFZ_igewkxBp37VLV0Kxt
- sKfH0dTYNIDsTprxqbNFp8JQsXZKsgp4.F09Aml7az1OzJSrvbECuojGf5oBPsadvgmST.Lgd_gz
- GARoauBtmLG7Nas_mzVIYWZRweWo43xFkeXRtTKAknig-
-X-Sonic-MF: <ashokemailat@yahoo.com>
-X-Sonic-ID: e776ce5b-2ecd-4172-a11d-16b719dd513e
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Tue, 16 Apr 2024 20:14:55 +0000
-Received: by hermes--production-bf1-5cc9fc94c8-tmzjr (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID f7cd3a3627d699b4c5bb0c83112631a2;
-          Tue, 16 Apr 2024 20:14:54 +0000 (UTC)
-Message-ID: <cc9b9357d30c4abac7301767ff01fe7947f811c4.camel@yahoo.com>
-Subject: [PATCH] staging: fbtft Removed redundant parentheses
-From: A <ashokemailat@yahoo.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	outreachy@lists.linux.dev
-Date: Tue, 16 Apr 2024 13:14:52 -0700
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1713298751; c=relaxed/simple;
+	bh=cNvivALIidlyfECLsQcIW+1kvtPs6SNsHT1bcaTUOKk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DjKIU0dlzSa1mReHGD4/swCWC054CKFI6oqRZFwUkTdsSYKQ9IOeK7COlDWVPZN0ODAadAB9Z6PQ7OTuqiTpY+DvcdieSflC/hJyVPzRWqWx/2PgfTHFio5WyFMPlycaKjOjO9GX0aCcTb7yGb4iaXEcqZ8s3To2X2Vst9lx8Vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=fwuRdMJL; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 546F912000A;
+	Tue, 16 Apr 2024 23:19:03 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 546F912000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1713298743;
+	bh=L9jXqS8fSzJ/1fhIJoEE9a+C/MWNnEorEAG3WBoMF9g=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=fwuRdMJLIX4czjhX8zYYXSubkh3eTeX3o7Mpoxng9MaX79e0Cdtck8iZUoBAcoE5R
+	 pn5kum8QLTvSOqNXf6dAvZULY3j3aBAlGrDczgOAq0k06dDQjkmKO5hqhUuEuLcoAi
+	 5LxLKCis5oBAngf/WUSl/DT/J0HJmDdttp1BQusQtbglbpvrkY4V9/0dRnxM3GIwSP
+	 ixnb9N2Sp8eB0by/v2NFMRWDl1Tm2luS40tpkyBaRH6zvUzhDKlh/SRzrMr6hOuv4x
+	 YJ3vh71KggwVZSN54uSy8obpb7VIeOTomtCI7wmIEXAShQDk/Od6y+DTnxWOMVExIL
+	 xsZa3yGoCVDmg==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 16 Apr 2024 23:19:03 +0300 (MSK)
+Received: from CAB-WSD-0004828.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 16 Apr 2024 23:19:02 +0300
+From: Martin Kurbanov <mmkurbanov@salutedevices.com>
+To: Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+	<kernel@salutedevices.com>, Martin Kurbanov <mmkurbanov@salutedevices.com>
+Subject: [PATCH v2 RESEND] leds: trigger: pattern: add support for hrtimer
+Date: Tue, 16 Apr 2024 23:18:05 +0300
+Message-ID: <20240416201847.357099-1-mmkurbanov@salutedevices.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cc9b9357d30c4abac7301767ff01fe7947f811c4.camel.ref@yahoo.com>
-X-Mailer: WebService/1.1.22205 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184745 [Apr 16 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 17 0.3.17 f2153f38d75b12894d9cf445f96cd15c9ef63a9d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/16 19:14:00
+X-KSMG-LinksScanning: Clean, bases: 2024/04/16 20:10:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/16 18:45:00 #24828684
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-From 6dbcb120581fc7cb45812193227b0a197abd8ba4 Mon Sep 17 00:00:00 2001
-From: Ashok Kumar <ashokemailat@yahoo.com>
-Date: Tue, 16 Apr 2024 09:19:32 -0700
-Subject: [PATCH] [PATCH] staging: fbtft Removed redundant parentheses on
- logical expr
+Currently, led pattern trigger uses timer_list to schedule brightness
+changing. As we know from timer_list API [1], it's not accurate to
+milliseconds and depends on HZ granularity.
 
-Adhere to Linux Kernel coding style removed redundant parentheses,
-multiple blank lines and indentation alignment.
+Example:
+"0 10 0 0 50 10 50 0 100 10 100 0 150 10 150 0 200 10 200 0 250 10 250 0",
+we expect it to be 60ms long, but it can actually be up to ~120ms
+(add ~10ms for each pattern when HZ == 100).
 
-Reported by checkpatch.pl
+But sometimes, userspace needs time accurate led patterns to make sure
+that pattern will be executed during expected time slot.
+To achieve this goal the patch introduces optional hrtimer usage for
+led trigger pattern, because hrtimer is microseconds accurate timer.
 
-------
-fb_ili9320.c
+[1]: kernel/time/timer.c#L104
 
-+       if ((devcode !=3D 0x0000) && (devcode !=3D 0x9320))
-
-------
-fb_ra8875.c
-
-CHECK: Unnecessary parentheses around 'par->info->var.xres =3D=3D 320'
-+      if ((par->info->var.xres =3D=3D 320) && (par->info->var.yres =3D=3D
-240)) {
-
-------
-fb_ssd1325.c
-
-CHECK: Please don't use multiple blank lines
-------
-
-fb_tinylcd.c    - indentation adjustment
-
------
-fbtft-bus.c
-
-CHECK: Unnecessary parentheses around 'par->spi->bits_per_word =3D=3D 8'
-
-------
-fbtft-core.c
-
-CHECK: Please don't use multiple blank lines
-
-CHECK: Unnecessary parentheses around '!txbuflen'
-
-CHECK: Please don't use multiple blank lines
-------
-
-Signed-off-by: Ashok Kumar <ashokemailat@yahoo.com>
+Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
 ---
- drivers/staging/fbtft/fb_ili9320.c | 2 +-
- drivers/staging/fbtft/fb_ra8875.c  | 8 ++++----
- drivers/staging/fbtft/fb_ssd1325.c | 2 --
- drivers/staging/fbtft/fb_tinylcd.c | 2 +-
- drivers/staging/fbtft/fbtft-bus.c  | 6 +++---
- drivers/staging/fbtft/fbtft-core.c | 7 +------
- 6 files changed, 10 insertions(+), 17 deletions(-)
+Changes v2 since v1 at [1]:
+  - Fix build warning reported by kernel test robot [2]
 
-diff --git a/drivers/staging/fbtft/fb_ili9320.c
-b/drivers/staging/fbtft/fb_ili9320.c
-index 0be7c2d51548..409b54cc562e 100644
---- a/drivers/staging/fbtft/fb_ili9320.c
-+++ b/drivers/staging/fbtft/fb_ili9320.c
-@@ -37,7 +37,7 @@ static int init_display(struct fbtft_par *par)
- 	devcode =3D read_devicecode(par);
- 	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "Device code:
-0x%04X\n",
- 		      devcode);
--	if ((devcode !=3D 0x0000) && (devcode !=3D 0x9320))
-+	if (devcode !=3D 0x0000 && devcode !=3D 0x9320)
- 		dev_warn(par->info->device,
- 			 "Unrecognized Device code: 0x%04X (expected
-0x9320)\n",
- 			devcode);
-diff --git a/drivers/staging/fbtft/fb_ra8875.c
-b/drivers/staging/fbtft/fb_ra8875.c
-index 398bdbf53c9a..4b79fb48c5f0 100644
---- a/drivers/staging/fbtft/fb_ra8875.c
-+++ b/drivers/staging/fbtft/fb_ra8875.c
-@@ -50,7 +50,7 @@ static int init_display(struct fbtft_par *par)
-=20
- 	par->fbtftops.reset(par);
-=20
--	if ((par->info->var.xres =3D=3D 320) && (par->info->var.yres =3D=3D
-240)) {
-+	if (par->info->var.xres =3D=3D 320 && par->info->var.yres =3D=3D 240)
-{
- 		/* PLL clock frequency */
- 		write_reg(par, 0x88, 0x0A);
- 		write_reg(par, 0x89, 0x02);
-@@ -74,8 +74,8 @@ static int init_display(struct fbtft_par *par)
- 		write_reg(par, 0x1D, 0x0E);
- 		write_reg(par, 0x1E, 0x00);
- 		write_reg(par, 0x1F, 0x02);
--	} else if ((par->info->var.xres =3D=3D 480) &&
--		   (par->info->var.yres =3D=3D 272)) {
-+	} else if (par->info->var.xres =3D=3D 480 &&
-+		   par->info->var.yres =3D=3D 272) {
- 		/* PLL clock frequency  */
- 		write_reg(par, 0x88, 0x0A);
- 		write_reg(par, 0x89, 0x02);
-@@ -111,7 +111,7 @@ static int init_display(struct fbtft_par *par)
- 		write_reg(par, 0x04, 0x01);
- 		mdelay(1);
- 		/* horizontal settings */
--		write_reg(par, 0x14, 0x4F);
-+write_reg(par, 0x14, 0x4F);
- 		write_reg(par, 0x15, 0x05);
- 		write_reg(par, 0x16, 0x0F);
- 		write_reg(par, 0x17, 0x01);
-diff --git a/drivers/staging/fbtft/fb_ssd1325.c
-b/drivers/staging/fbtft/fb_ssd1325.c
-index 796a2ac3e194..69aa808c7e23 100644
---- a/drivers/staging/fbtft/fb_ssd1325.c
-+++ b/drivers/staging/fbtft/fb_ssd1325.c
-@@ -109,8 +109,6 @@ static int set_gamma(struct fbtft_par *par, u32
-*curves)
- {
- 	int i;
-=20
--	fbtft_par_dbg(DEBUG_INIT_DISPLAY, par, "%s()\n", __func__);
--
- 	for (i =3D 0; i < GAMMA_LEN; i++) {
- 		if (i > 0 && curves[i] < 1) {
- 			dev_err(par->info->device,
-diff --git a/drivers/staging/fbtft/fb_tinylcd.c
-b/drivers/staging/fbtft/fb_tinylcd.c
-index 9469248f2c50..60cda57bcb33 100644
---- a/drivers/staging/fbtft/fb_tinylcd.c
-+++ b/drivers/staging/fbtft/fb_tinylcd.c
-@@ -38,7 +38,7 @@ static int init_display(struct fbtft_par *par)
- 	write_reg(par, 0xE5, 0x00);
- 	write_reg(par, 0xF0, 0x36, 0xA5, 0x53);
- 	write_reg(par, 0xE0, 0x00, 0x35, 0x33, 0x00, 0x00, 0x00,
--		       0x00, 0x35, 0x33, 0x00, 0x00, 0x00);
-+		  0x00, 0x35, 0x33, 0x00, 0x00, 0x00);
- 	write_reg(par, MIPI_DCS_SET_PIXEL_FORMAT, 0x55);
- 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
- 	udelay(250);
-diff --git a/drivers/staging/fbtft/fbtft-bus.c
-b/drivers/staging/fbtft/fbtft-bus.c
-index 3d422bc11641..02d7dbd38678 100644
---- a/drivers/staging/fbtft/fbtft-bus.c
-+++ b/drivers/staging/fbtft/fbtft-bus.c
-@@ -62,9 +62,9 @@
-out:									      \
- }                                                                   =20
-\
- EXPORT_SYMBOL(func);
-=20
--define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8, )
-+define_fbtft_write_reg(fbtft_write_reg8_bus8, u8, u8,)
- define_fbtft_write_reg(fbtft_write_reg16_bus8, __be16, u16,
-cpu_to_be16)
--define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16, )
-+define_fbtft_write_reg(fbtft_write_reg16_bus16, u16, u16,)
-=20
- void fbtft_write_reg8_bus9(struct fbtft_par *par, int len, ...)
- {
-@@ -85,7 +85,7 @@ void fbtft_write_reg8_bus9(struct fbtft_par *par, int
-len, ...)
- 	if (len <=3D 0)
- 		return;
-=20
--	if (par->spi && (par->spi->bits_per_word =3D=3D 8)) {
-+	if (par->spi && par->spi->bits_per_word =3D=3D 8) {
- 		/* we're emulating 9-bit, pad start of buffer with no-
-ops
- 		 * (assuming here that zero is a no-op)
- 		 */
-diff --git a/drivers/staging/fbtft/fbtft-core.c
-b/drivers/staging/fbtft/fbtft-core.c
-index 38845f23023f..98ffca49df81 100644
---- a/drivers/staging/fbtft/fbtft-core.c
-+++ b/drivers/staging/fbtft/fbtft-core.c
-@@ -216,8 +216,6 @@ static void fbtft_reset(struct fbtft_par *par)
- 	if (!par->gpio.reset)
- 		return;
-=20
--	fbtft_par_dbg(DEBUG_RESET, par, "%s()\n", __func__);
--
- 	gpiod_set_value_cansleep(par->gpio.reset, 1);
- 	usleep_range(20, 40);
- 	gpiod_set_value_cansleep(par->gpio.reset, 0);
-@@ -667,7 +665,7 @@ struct fb_info *fbtft_framebuffer_alloc(struct
-fbtft_display *display,
- 		txbuflen =3D 0;
-=20
- #ifdef __LITTLE_ENDIAN
--	if ((!txbuflen) && (bpp > 8))
-+	if (!txbuflen && bpp > 8)
- 		txbuflen =3D PAGE_SIZE; /* need buffer for byteswapping
-*/
- #endif
-=20
-@@ -1053,8 +1051,6 @@ static int fbtft_verify_gpios(struct fbtft_par
-*par)
- 	struct fbtft_platform_data *pdata =3D par->pdata;
- 	int i;
-=20
--	fbtft_par_dbg(DEBUG_VERIFY_GPIOS, par, "%s()\n", __func__);
--
- 	if (pdata->display.buswidth !=3D 9 &&  par->startbyte =3D=3D 0 &&
- 	    !par->gpio.dc) {
- 		dev_err(par->info->device,
-@@ -1159,7 +1155,6 @@ int fbtft_probe_common(struct fbtft_display
-*display,
- 		dev =3D &pdev->dev;
-=20
- 	if (unlikely(display->debug & DEBUG_DRIVER_INIT_FUNCTIONS))
--		dev_info(dev, "%s()\n", __func__);
-=20
- 	pdata =3D dev->platform_data;
- 	if (!pdata) {
---=20
-2.34.1
+Links:
+  [1] https://lore.kernel.org/all/20230522190412.374474-1-mmkurbanov@sberdevices.ru/
+  [2] https://lore.kernel.org/oe-kbuild-all/202305230549.ekneaQ89-lkp@intel.com/
 
+ .../testing/sysfs-class-led-trigger-pattern   |  10 ++
+ drivers/leds/trigger/ledtrig-pattern.c        | 126 ++++++++++++++----
+ 2 files changed, 113 insertions(+), 23 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-pattern b/Documentation/ABI/testing/sysfs-class-led-trigger-pattern
+index 8c57d2780554e..22f28f2e9ac49 100644
+--- a/Documentation/ABI/testing/sysfs-class-led-trigger-pattern
++++ b/Documentation/ABI/testing/sysfs-class-led-trigger-pattern
+@@ -12,6 +12,16 @@ Description:
+ 		The exact format is described in:
+ 		Documentation/devicetree/bindings/leds/leds-trigger-pattern.txt
+ 
++What:		/sys/class/leds/<led>/hr_pattern
++Date:		April 2024
++Description:
++		Specify a software pattern for the LED, that supports altering
++		the brightness for the specified duration with one software
++		timer. It can do gradual dimming and step change of brightness.
++
++		Unlike the /sys/class/leds/<led>/pattern, this attribute runs
++		a pattern on high-resolution timer (hrtimer).
++
+ What:		/sys/class/leds/<led>/hw_pattern
+ Date:		September 2018
+ KernelVersion:	4.20
+diff --git a/drivers/leds/trigger/ledtrig-pattern.c b/drivers/leds/trigger/ledtrig-pattern.c
+index fadd87dbe9930..aad48c2540fc8 100644
+--- a/drivers/leds/trigger/ledtrig-pattern.c
++++ b/drivers/leds/trigger/ledtrig-pattern.c
+@@ -13,6 +13,7 @@
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
+ #include <linux/timer.h>
++#include <linux/hrtimer.h>
+ 
+ #define MAX_PATTERNS		1024
+ /*
+@@ -21,6 +22,12 @@
+  */
+ #define UPDATE_INTERVAL		50
+ 
++enum pattern_type {
++	PATTERN_TYPE_SW, /* Use standard timer for software pattern */
++	PATTERN_TYPE_HR, /* Use hrtimer for software pattern */
++	PATTERN_TYPE_HW, /* Hardware pattern */
++};
++
+ struct pattern_trig_data {
+ 	struct led_classdev *led_cdev;
+ 	struct led_pattern patterns[MAX_PATTERNS];
+@@ -32,8 +39,9 @@ struct pattern_trig_data {
+ 	int last_repeat;
+ 	int delta_t;
+ 	bool is_indefinite;
+-	bool is_hw_pattern;
++	enum pattern_type type;
+ 	struct timer_list timer;
++	struct hrtimer hrtimer;
+ };
+ 
+ static void pattern_trig_update_patterns(struct pattern_trig_data *data)
+@@ -71,10 +79,35 @@ static int pattern_trig_compute_brightness(struct pattern_trig_data *data)
+ 		return data->curr->brightness - step_brightness;
+ }
+ 
+-static void pattern_trig_timer_function(struct timer_list *t)
++static void pattern_trig_timer_start(struct pattern_trig_data *data)
+ {
+-	struct pattern_trig_data *data = from_timer(data, t, timer);
++	if (data->type == PATTERN_TYPE_HR) {
++		hrtimer_start(&data->hrtimer, ns_to_ktime(0), HRTIMER_MODE_REL);
++	} else {
++		data->timer.expires = jiffies;
++		add_timer(&data->timer);
++	}
++}
+ 
++static void pattern_trig_timer_cancel(struct pattern_trig_data *data)
++{
++	if (data->type == PATTERN_TYPE_HR)
++		hrtimer_cancel(&data->hrtimer);
++	else
++		del_timer_sync(&data->timer);
++}
++
++static void pattern_trig_timer_restart(struct pattern_trig_data *data,
++				       unsigned long interval)
++{
++	if (data->type == PATTERN_TYPE_HR)
++		hrtimer_forward_now(&data->hrtimer, ms_to_ktime(interval));
++	else
++		mod_timer(&data->timer, jiffies + msecs_to_jiffies(interval));
++}
++
++static void pattern_trig_timer_common_function(struct pattern_trig_data *data)
++{
+ 	for (;;) {
+ 		if (!data->is_indefinite && !data->repeat)
+ 			break;
+@@ -83,8 +116,7 @@ static void pattern_trig_timer_function(struct timer_list *t)
+ 			/* Step change of brightness */
+ 			led_set_brightness(data->led_cdev,
+ 					   data->curr->brightness);
+-			mod_timer(&data->timer,
+-				  jiffies + msecs_to_jiffies(data->curr->delta_t));
++			pattern_trig_timer_restart(data, data->curr->delta_t);
+ 			if (!data->next->delta_t) {
+ 				/* Skip the tuple with zero duration */
+ 				pattern_trig_update_patterns(data);
+@@ -106,8 +138,7 @@ static void pattern_trig_timer_function(struct timer_list *t)
+ 
+ 			led_set_brightness(data->led_cdev,
+ 					   pattern_trig_compute_brightness(data));
+-			mod_timer(&data->timer,
+-				  jiffies + msecs_to_jiffies(UPDATE_INTERVAL));
++			pattern_trig_timer_restart(data, UPDATE_INTERVAL);
+ 
+ 			/* Accumulate the gradual dimming time */
+ 			data->delta_t += UPDATE_INTERVAL;
+@@ -117,6 +148,25 @@ static void pattern_trig_timer_function(struct timer_list *t)
+ 	}
+ }
+ 
++static void pattern_trig_timer_function(struct timer_list *t)
++{
++	struct pattern_trig_data *data = from_timer(data, t, timer);
++
++	return pattern_trig_timer_common_function(data);
++}
++
++static enum hrtimer_restart pattern_trig_hrtimer_function(struct hrtimer *t)
++{
++	struct pattern_trig_data *data =
++		container_of(t, struct pattern_trig_data, hrtimer);
++
++	pattern_trig_timer_common_function(data);
++	if (!data->is_indefinite && !data->repeat)
++		return HRTIMER_NORESTART;
++
++	return HRTIMER_RESTART;
++}
++
+ static int pattern_trig_start_pattern(struct led_classdev *led_cdev)
+ {
+ 	struct pattern_trig_data *data = led_cdev->trigger_data;
+@@ -124,7 +174,7 @@ static int pattern_trig_start_pattern(struct led_classdev *led_cdev)
+ 	if (!data->npatterns)
+ 		return 0;
+ 
+-	if (data->is_hw_pattern) {
++	if (data->type == PATTERN_TYPE_HW) {
+ 		return led_cdev->pattern_set(led_cdev, data->patterns,
+ 					     data->npatterns, data->repeat);
+ 	}
+@@ -136,8 +186,7 @@ static int pattern_trig_start_pattern(struct led_classdev *led_cdev)
+ 	data->delta_t = 0;
+ 	data->curr = data->patterns;
+ 	data->next = data->patterns + 1;
+-	data->timer.expires = jiffies;
+-	add_timer(&data->timer);
++	pattern_trig_timer_start(data);
+ 
+ 	return 0;
+ }
+@@ -175,9 +224,9 @@ static ssize_t repeat_store(struct device *dev, struct device_attribute *attr,
+ 
+ 	mutex_lock(&data->lock);
+ 
+-	del_timer_sync(&data->timer);
++	pattern_trig_timer_cancel(data);
+ 
+-	if (data->is_hw_pattern)
++	if (data->type == PATTERN_TYPE_HW)
+ 		led_cdev->pattern_clear(led_cdev);
+ 
+ 	data->last_repeat = data->repeat = res;
+@@ -196,14 +245,14 @@ static ssize_t repeat_store(struct device *dev, struct device_attribute *attr,
+ static DEVICE_ATTR_RW(repeat);
+ 
+ static ssize_t pattern_trig_show_patterns(struct pattern_trig_data *data,
+-					  char *buf, bool hw_pattern)
++					  char *buf, enum pattern_type type)
+ {
+ 	ssize_t count = 0;
+ 	int i;
+ 
+ 	mutex_lock(&data->lock);
+ 
+-	if (!data->npatterns || (data->is_hw_pattern ^ hw_pattern))
++	if (!data->npatterns || data->type != type)
+ 		goto out;
+ 
+ 	for (i = 0; i < data->npatterns; i++) {
+@@ -260,19 +309,19 @@ static int pattern_trig_store_patterns_int(struct pattern_trig_data *data,
+ 
+ static ssize_t pattern_trig_store_patterns(struct led_classdev *led_cdev,
+ 					   const char *buf, const u32 *buf_int,
+-					   size_t count, bool hw_pattern)
++					   size_t count, enum pattern_type type)
+ {
+ 	struct pattern_trig_data *data = led_cdev->trigger_data;
+ 	int err = 0;
+ 
+ 	mutex_lock(&data->lock);
+ 
+-	del_timer_sync(&data->timer);
++	pattern_trig_timer_cancel(data);
+ 
+-	if (data->is_hw_pattern)
++	if (data->type == PATTERN_TYPE_HW)
+ 		led_cdev->pattern_clear(led_cdev);
+ 
+-	data->is_hw_pattern = hw_pattern;
++	data->type = type;
+ 	data->npatterns = 0;
+ 
+ 	if (buf)
+@@ -297,7 +346,7 @@ static ssize_t pattern_show(struct device *dev, struct device_attribute *attr,
+ 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+ 	struct pattern_trig_data *data = led_cdev->trigger_data;
+ 
+-	return pattern_trig_show_patterns(data, buf, false);
++	return pattern_trig_show_patterns(data, buf, PATTERN_TYPE_SW);
+ }
+ 
+ static ssize_t pattern_store(struct device *dev, struct device_attribute *attr,
+@@ -305,7 +354,8 @@ static ssize_t pattern_store(struct device *dev, struct device_attribute *attr,
+ {
+ 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+ 
+-	return pattern_trig_store_patterns(led_cdev, buf, NULL, count, false);
++	return pattern_trig_store_patterns(led_cdev, buf, NULL, count,
++					   PATTERN_TYPE_SW);
+ }
+ 
+ static DEVICE_ATTR_RW(pattern);
+@@ -316,7 +366,7 @@ static ssize_t hw_pattern_show(struct device *dev,
+ 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+ 	struct pattern_trig_data *data = led_cdev->trigger_data;
+ 
+-	return pattern_trig_show_patterns(data, buf, true);
++	return pattern_trig_show_patterns(data, buf, PATTERN_TYPE_HW);
+ }
+ 
+ static ssize_t hw_pattern_store(struct device *dev,
+@@ -325,11 +375,33 @@ static ssize_t hw_pattern_store(struct device *dev,
+ {
+ 	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+ 
+-	return pattern_trig_store_patterns(led_cdev, buf, NULL, count, true);
++	return pattern_trig_store_patterns(led_cdev, buf, NULL, count,
++					   PATTERN_TYPE_HW);
+ }
+ 
+ static DEVICE_ATTR_RW(hw_pattern);
+ 
++static ssize_t hr_pattern_show(struct device *dev,
++			       struct device_attribute *attr, char *buf)
++{
++	struct led_classdev *led_cdev = dev_get_drvdata(dev);
++	struct pattern_trig_data *data = led_cdev->trigger_data;
++
++	return pattern_trig_show_patterns(data, buf, PATTERN_TYPE_HR);
++}
++
++static ssize_t hr_pattern_store(struct device *dev,
++				struct device_attribute *attr,
++				const char *buf, size_t count)
++{
++	struct led_classdev *led_cdev = dev_get_drvdata(dev);
++
++	return pattern_trig_store_patterns(led_cdev, buf, NULL, count,
++					   PATTERN_TYPE_HR);
++}
++
++static DEVICE_ATTR_RW(hr_pattern);
++
+ static umode_t pattern_trig_attrs_mode(struct kobject *kobj,
+ 				       struct attribute *attr, int index)
+ {
+@@ -338,6 +410,8 @@ static umode_t pattern_trig_attrs_mode(struct kobject *kobj,
+ 
+ 	if (attr == &dev_attr_repeat.attr || attr == &dev_attr_pattern.attr)
+ 		return attr->mode;
++	else if (attr == &dev_attr_hr_pattern.attr)
++		return attr->mode;
+ 	else if (attr == &dev_attr_hw_pattern.attr && led_cdev->pattern_set)
+ 		return attr->mode;
+ 
+@@ -347,6 +421,7 @@ static umode_t pattern_trig_attrs_mode(struct kobject *kobj,
+ static struct attribute *pattern_trig_attrs[] = {
+ 	&dev_attr_pattern.attr,
+ 	&dev_attr_hw_pattern.attr,
++	&dev_attr_hr_pattern.attr,
+ 	&dev_attr_repeat.attr,
+ 	NULL
+ };
+@@ -376,7 +451,8 @@ static void pattern_init(struct led_classdev *led_cdev)
+ 		goto out;
+ 	}
+ 
+-	err = pattern_trig_store_patterns(led_cdev, NULL, pattern, size, false);
++	err = pattern_trig_store_patterns(led_cdev, NULL, pattern, size,
++					  PATTERN_TYPE_SW);
+ 	if (err < 0)
+ 		dev_warn(led_cdev->dev,
+ 			 "Pattern initialization failed with error %d\n", err);
+@@ -400,12 +476,15 @@ static int pattern_trig_activate(struct led_classdev *led_cdev)
+ 		led_cdev->pattern_clear = NULL;
+ 	}
+ 
++	data->type = PATTERN_TYPE_SW;
+ 	data->is_indefinite = true;
+ 	data->last_repeat = -1;
+ 	mutex_init(&data->lock);
+ 	data->led_cdev = led_cdev;
+ 	led_set_trigger_data(led_cdev, data);
+ 	timer_setup(&data->timer, pattern_trig_timer_function, 0);
++	hrtimer_init(&data->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	data->hrtimer.function = pattern_trig_hrtimer_function;
+ 	led_cdev->activated = true;
+ 
+ 	if (led_cdev->flags & LED_INIT_DEFAULT_TRIGGER) {
+@@ -431,6 +510,7 @@ static void pattern_trig_deactivate(struct led_classdev *led_cdev)
+ 		led_cdev->pattern_clear(led_cdev);
+ 
+ 	timer_shutdown_sync(&data->timer);
++	hrtimer_cancel(&data->hrtimer);
+ 
+ 	led_set_brightness(led_cdev, LED_OFF);
+ 	kfree(data);
+-- 
+2.43.2
 
 
