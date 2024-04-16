@@ -1,217 +1,148 @@
-Return-Path: <linux-kernel+bounces-147692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 839898A77CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:31:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061B38A77D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:35:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6DCF1C22BA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:31:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D62871F217A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F181386D6;
-	Tue, 16 Apr 2024 22:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249F31E889;
+	Tue, 16 Apr 2024 22:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bFYCvk0O"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChUkTmyH"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910A11327F9
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 22:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0052439FCF;
+	Tue, 16 Apr 2024 22:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713306673; cv=none; b=lKhL3zulk+O+iwzXzTQqpbIYoBBgyZQA1rPWuHYXmIRDREq+31hQA2rOhnrSN7wiJVJrhFAfK49ciPTcx5g+axc2RdpRfRgPy5HOEfvJ/MEY+KuigNa4u6UKwojiCa1FAxwGUnMDxIDzOp6q0DiSVn7vOPeJL6jKNhdIItx8Z08=
+	t=1713306894; cv=none; b=LpY+7YCvRsKd6Z0jLqpwFeQulsP7IhrJZ11RH0I/HN4ekiSUpYavdz0gmBOibtAa5iFIK35UWc87uO1uyYe1VrQYznip7GYc7k27+sjeu+0mSI6KrC7gCc8/YmNrIxakhsUWOPuuDadDcAA/eUf5jbsA+QnpS2sUOhsURC2Px2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713306673; c=relaxed/simple;
-	bh=AowIziPlnp6QrKKNkvmODvgNb+UFzlx2uTjSdj6L63s=;
+	s=arc-20240116; t=1713306894; c=relaxed/simple;
+	bh=TIppXwoyy7JCBAG2mGLWtbBQ6zU3Bx81FBr226GDJ+A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lk5se25jw86wbBbK+lzaNccsHAU6Ir2CiSWKVmUGipD1Rve367AA/EIDG3ScLwMbPatMGPCg6eOOyh+mRXYGpnHOcOmG4VRlukNh8r3ccSto5Qg/iChRmqxOdDV/ewhY7aze95jMp9i8YDVdImxjaQuqrgr4yhSfvTfQw5YhuAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bFYCvk0O; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 725851BF203;
-	Tue, 16 Apr 2024 22:31:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1713306664;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tnFPGdAOdp8HdbbWeNxT8EznTGCleMyJgn9HOk9JBD4=;
-	b=bFYCvk0ObGGOqG8OJAvERGIYG1gNqOaoVA1jG2lcVDgJnLy3SpINdm7NECgRPUM7bWRPOY
-	c4HxTPUKZceCD4aYff6RAWbBzeRDjgHmJxr7CUzj+U8FcZQ7wBXCVmfZZXwEXjuczBl2Ig
-	nEI87S50aIrbPSbnvgocJ/80Qn1m46drftniPeGRbnvSg9HDQKl1u0a+neY08C9Hyb7KGX
-	r/QuIXRuB5yYZnIt7C4R6+RkLKV/ZwvPEfbmSNY1+HMqjsCXf83KnBcWYjrVLeuGlrVMWE
-	e/M54NHbEbudOtdy5qJdp49l1eyLVu0F3rksXEGykrotaSKTiwrH5EjCXJQs1A==
-Date: Wed, 17 Apr 2024 00:30:58 +0200
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-To: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com,
-	thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 2/3] drm: drm_blend.c: Improve
- drm_plane_create_rotation_property kernel doc
-Message-ID: <Zh78IolP2rwpk1Ti@localhost.localdomain>
-Mail-Followup-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com,
-	thomas.petazzoni@bootlin.com
-References: <20240409-google-drm-doc-v1-0-033d55cc8250@bootlin.com>
- <20240409-google-drm-doc-v1-2-033d55cc8250@bootlin.com>
- <20240415143622.7e600508.pekka.paalanen@collabora.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fmHN7sMVkPP1hbUQTtfwNBovHBtlgm7SAB2PKwhtYzywnfK269TSKuZRWCPipw5GCJcXHfip2l0hkAt/by03Y4jNoVN3V28T3yNqIVUDUPNX7o+mC5NttNUyS1pAECa3XLg9aWDVrhrsoPZE01jjnKlZy0atc50zNcwKkY/9HZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChUkTmyH; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso3733516b3a.1;
+        Tue, 16 Apr 2024 15:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713306892; x=1713911692; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gYEBHSAYBc3ncttOdz1OGEIHHb3oWxG6brf944qm+EY=;
+        b=ChUkTmyHQEOT7YuOAD6yPJOBOza0sjR79JtTCqlqeQnX6cgJNdOpKDsaAcu9JseqvK
+         nnTW82Rf7+aHtWTmpK/HQWP/F9a/rfXIwX8/8QVL2gvCFCu+0NMQER/IqgsCt6G2Pyz5
+         Y7NuP8CHbYssPRmQsGIlHYRZ04Io7uab3lhM+bn2niL0XGF9HqT6E98ybydxVVpqCdcZ
+         MqZSLdpZqTcA3jLXNLv+ZKAG7igdqxyqYvvbSMB5ejviOB4QOCTvwp3axnh+GQFGeUC7
+         2hoiSt90i48vCb/ytW8Lt5a9Wv7TO2btpZ7sHGplBjJ41f2V4WZOISAKtXQKNCvEDvET
+         Pi+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713306892; x=1713911692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gYEBHSAYBc3ncttOdz1OGEIHHb3oWxG6brf944qm+EY=;
+        b=FNp/2uKR7ZoTQCiF+ombIzjMJPjLno5RnRHmMy9NiVX/iNx31omtZ79eztPB9DDtXX
+         S0ZThRpLm8u8K/EC1KoMGR1whTU5uUn8hCzpTpvWohRvUPtLNK3VNGX7FRTdqPeEsCQo
+         ZsC4GLzgcvfZVte04lTWFN0eCufeQaa/7xS+OcJ8953g9Fh7fUd43C3fxcUar8ahCNFE
+         mB5qEZLkSAUijNDZ1rWhbeXYitSWnfpBbqio2QOJ1H7WDO+Ichk4qU3hXtmRXLEU5nki
+         x2ICBad4qU9E/ZSmzfrJmTky7+NxbR/h3nq6yJqQR7qh9TR5TQXe7uOwJUrMy2b0Mumw
+         yVyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVcuE30lOc92FSaIYfumvL/CRqDFEY0roQ3biKjMKIj/MdQgZGh2QiC12rAoEXv3D0KciD1ukVwvBuWU3tk30em6dInoAErIb0gmA2wCVA9rKalNIqTWn4KhtDrzDVr2EH4Ci+YznxJ6UA=
+X-Gm-Message-State: AOJu0Yxnt5cQXs2qqjo7fLTABlVs6ECjacPum3DFJTtc6Ir3H/6kPZtb
+	AIRNEeNTfkRpjll7zSWv6+2ePI2ad2phmEb9VX28X8VxbLZUsljp
+X-Google-Smtp-Source: AGHT+IFh/zIfLrwa77zo+Wv6gz7XzJ//wE0dD/DGVm2QVPsw21WOGIkW96K3P/dBgSNVdt8rRN1gYQ==
+X-Received: by 2002:a05:6a21:498a:b0:1a7:56d2:66c1 with SMTP id ax10-20020a056a21498a00b001a756d266c1mr13935301pzc.29.1713306892189;
+        Tue, 16 Apr 2024 15:34:52 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q14-20020a62ae0e000000b006ecde91bb6esm9413744pff.183.2024.04.16.15.34.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 15:34:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Tue, 16 Apr 2024 15:34:50 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Tony Luck <tony.luck@intel.com>
+Cc: Jean Delvare <jdelvare@suse.com>,
+	Iwona Winiarska <iwona.winiarska@intel.com>,
+	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev
+Subject: Re: [PATCH v3 50/74] x86/cpu/vfm: Update drivers/hwmon/peci/cputemp.c
+Message-ID: <5869d164-25c4-42e5-bf87-c4aeeac57388@roeck-us.net>
+References: <20240416211941.9369-1-tony.luck@intel.com>
+ <20240416212216.9605-1-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240415143622.7e600508.pekka.paalanen@collabora.com>
-X-GND-Sasl: louis.chauvet@bootlin.com
+In-Reply-To: <20240416212216.9605-1-tony.luck@intel.com>
 
-Le 15/04/24 - 14:36, Pekka Paalanen a écrit :
-> On Tue, 09 Apr 2024 12:04:06 +0200
-> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+On Tue, Apr 16, 2024 at 02:22:16PM -0700, Tony Luck wrote:
+> New CPU #defines encode vendor and family as well as model.
 > 
-> > The expected behavior of the rotation property was not very clear. Add
-> > more examples to explain what is the expected result.
-> > 
-> > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > ---
-> >  drivers/gpu/drm/drm_blend.c | 52 +++++++++++++++++++++++++++++++++------------
-> >  1 file changed, 38 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_blend.c b/drivers/gpu/drm/drm_blend.c
-> > index 8d4b317eb9d7..6fbb8730d8b0 100644
-> > --- a/drivers/gpu/drm/drm_blend.c
-> > +++ b/drivers/gpu/drm/drm_blend.c
-> > @@ -104,6 +104,9 @@
-> >   *	Without this property the rectangle is only scaled, but not rotated or
-> >   *	reflected.
-> >   *
-> > + *	See drm_plane_create_rotation_property() for details about the expected rotation and
-> > + *	reflection behavior.
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  drivers/hwmon/peci/cputemp.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> I think internal function docs should be referring to UAPI docs, and
-> not vice versa. Internal functions can change, but UAPI cannot.
-> 
-> > + *
-> >   *	Possbile values:
-> >   *
-> >   *	"rotate-<degrees>":
-> > @@ -114,18 +117,6 @@
-> >   *		Signals that the contents of a drm plane is reflected along the
-> >   *		<axis> axis, in the same way as mirroring.
-> >   *
-> > - *	reflect-x::
-> > - *
-> > - *			|o |    | o|
-> > - *			|  | -> |  |
-> > - *			| v|    |v |
-> > - *
-> > - *	reflect-y::
-> > - *
-> > - *			|o |    | ^|
-> > - *			|  | -> |  |
-> > - *			| v|    |o |
-> > - *
-> >   * zpos:
-> >   *	Z position is set up with drm_plane_create_zpos_immutable_property() and
-> >   *	drm_plane_create_zpos_property(). It controls the visibility of overlapping
-> > @@ -266,8 +257,41 @@ EXPORT_SYMBOL(drm_plane_create_alpha_property);
-> >   *
-> >   * Rotation is the specified amount in degrees in counter clockwise direction,
-> >   * the X and Y axis are within the source rectangle, i.e.  the X/Y axis before
-> > - * rotation. After reflection, the rotation is applied to the image sampled from
-> > - * the source rectangle, before scaling it to fit the destination rectangle.
-> > + * rotation.
-> > + *
-> > + * Here are some examples of rotation and reflections:
-> > + *
-> > + * |o  +|  REFLECT_X  |+  o|
-> > + * |    |  ========>  |    |
-> > + * |    |             |    |
-> > + *
-> > + * |o   |  REFLECT_Y  |+   |
-> > + * |    |  ========>  |    |
-> > + * |+   |             |o   |
-> > + *
-> > + * |o  +|  ROTATE_90  |+   |
-> > + * |    |  ========>  |    |
-> > + * |    |             |o   |
-> > + *
-> > + * |o   |  ROTATE_180 |   +|
-> > + * |    |  ========>  |    |
-> > + * |+   |             |   o|
-> > + *
-> > + * |o   |  ROTATE_270 |+  o|
-> > + * |    |  ========>  |    |
-> > + * |+   |             |    |
-> > + *
-> > + * Rotation and reflection can be combined to handle more situations. In this condition, the
-> > + * reflection is applied first and the rotation in second.
-> 
-> When going in which direction? Is the first image the FB source
-> rectangle contents, and the second image what the plane looks like in
-> CRTC frame of reference?
+> diff --git a/drivers/hwmon/peci/cputemp.c b/drivers/hwmon/peci/cputemp.c
+> index a812c15948d9..28cec5c318d4 100644
+> --- a/drivers/hwmon/peci/cputemp.c
+> +++ b/drivers/hwmon/peci/cputemp.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/peci-cpu.h>
+>  #include <linux/units.h>
+>  
+> +#include <asm/cpu_device_id.h>
+>  #include "common.h"
+>  
+>  #define CORE_NUMS_MAX		64
+> @@ -361,9 +362,9 @@ static int init_core_mask(struct peci_cputemp *priv)
+>  
+>  	/* Get the RESOLVED_CORES register value */
+>  	switch (peci_dev->info.model) {
+> -	case INTEL_FAM6_ICELAKE_X:
+> -	case INTEL_FAM6_ICELAKE_D:
+> -	case INTEL_FAM6_SAPPHIRERAPIDS_X:
+> +	case VFM_MODEL(INTEL_ICELAKE_X):
+> +	case VFM_MODEL(INTEL_ICELAKE_D):
+> +	case VFM_MODEL(INTEL_SAPPHIRERAPIDS_X):
 
-The first is the FB source, the second is the expected result on the CRTC 
-output.
+$ git describe
+v6.9-rc4-31-g96fca68c4fbf
+$ git grep VFM_MODEL
+$
 
-I will add a sentence before the schemas:
+So I guess this depends on some other patch ?
+That might be worth mentioning, especially since
 
- * Here are some examples of rotation and reflections, on the left it is 
- * the content of the source frame buffer, on the right is the expected 
- * result on the CRTC output.
+$ git describe
+next-20240416
+$ git grep VFM_MODEL
+$
 
-> 
-> > + *
-> > + * For example the expected result for DRM_MODE_ROTATE_90 | DRM_MODE_REFLECT_X is:
-> > + *
-> > + * |o  +|  REFLECT_X  |+  o|  ROTATE_90  |o   |
-> > + * |    |  ========>  |    |  ========>  |    |
-> > + * |    |             |    |             |+   |
-> > + *
-> > + * It is not possible to pass multiple rotation at the same time. (i.e ROTATE_90 | ROTATE_180 is
-> > + * not the same as ROTATE_270 and is not accepted).
-> >   */
-> >  int drm_plane_create_rotation_property(struct drm_plane *plane,
-> >  				       unsigned int rotation,
-> > 
-> 
-> These are definitely improvements. I think they should just be in the
-> UAPI section rather than implementation details.
+doesn't find it either.
 
-So, somewhere in [1]? It feel strange because this is in the `GPU Driver 
-Developer’s Guide` section, not a `UAPI interfaces`.
+On top of that, it looks like
 
-[1]: https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html
+#include <asm/cpu_device_id.h>
+
+introduces a dependency on X86 which is not currently the case.
+CONFIG_PECI is typically used on BMCs. Many of those do not use
+Intel CPUs. It does not seem appropriate to make support for PECI
+based hardware monitoring dependent on it running on an Intel CPU.
 
 Thanks,
-Louis Chauvet
-
-> Disclaimer again to everyone else: I cannot tell if this is the correct
-> documentation or its inverse.
-> 
-> 
-> Thanks,
-> pq
-
-
-
--- 
-Louis Chauvet, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Guenter
 
