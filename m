@@ -1,114 +1,194 @@
-Return-Path: <linux-kernel+bounces-147475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14FC78A74C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:32:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F228E8A74CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 21:33:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74379B21C9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:32:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA29C283FEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 19:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E940139560;
-	Tue, 16 Apr 2024 19:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B515C139593;
+	Tue, 16 Apr 2024 19:32:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="czd1Fgw5"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="GTlQe38L"
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B81138496;
-	Tue, 16 Apr 2024 19:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 514F2138496
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 19:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713295910; cv=none; b=FoIM8jaHth/zeQc8mh9HXqLq6T5XK/QxQGzbDgsMb8MiO/GpVAQyGrZxMZu4AlXzaiV/vbee6lzQLTxo6tAbX2xNu0v5GbQdBzQp9DPKElxOtiPC3HL3e54Gn3P65pezhOxWneB4H0j3EOYr7FQYZwnwam7yjuxH4du7Un2SmXw=
+	t=1713295958; cv=none; b=TT91DxtxF8O4QWpC3ZYc85hJdDAia5/X4SrW2ycoiYkQ1m9KrBfPl6l9+EgY8+3stz3aVDguTOl350jWNKe0DfQ9W/3FBaeBBlAAZT6RCfdpM2YeicCcYGpHiTU1ILLiaU1NSt/H1ArFFiV/qVkDoaqId+q3W0q7lfOnp3lfWQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713295910; c=relaxed/simple;
-	bh=/g1Qb9ZIXohbsDDomF8O5WJs2/QuzbWsl0pkvJOfmW8=;
+	s=arc-20240116; t=1713295958; c=relaxed/simple;
+	bh=SO3W75qAxcT+JpicVsmbr4gasfWWlWIucpF6Fwd65rA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a0iAyuOqTx5k9WOmsVOnSmjZynGU7Dul9Sej6+PhYjWpHFFBURgWSgZ1oaVnT1dzNkD8eE8lOf7TYiiB1GXlI4r4jVLWtkCRnKqSw7NvBYXkGrrmJpUzX1v1bt9DR5W7zOXrMC8eEeLiAKABFK5XVY5F2G0/N/SgauvGunLWcco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=czd1Fgw5; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5e8470c1cb7so3206745a12.2;
-        Tue, 16 Apr 2024 12:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713295909; x=1713900709; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+W2OGUTS0A9tOC4rCeQ7/73mUP1Q5seVrFrFA/nLuwE=;
-        b=czd1Fgw5DlMA6N1X/W/ahrGUkcYGhTmZ8dT407C3biU1k4hUqRAXA0aChu/aaiz6KZ
-         weu7/WPvLAgSX1+uNucJH/h6sOPhiLx8SUu2oiYWrRmEE3Z3788brOft8dBFeHYFRYE6
-         1/t5OERXgca0Me2k+4N+NJTcDM1GbYxhzLAj9hTuBZohkWreG7RorgujKYwHv7Qcr+51
-         ZAmM6QbshBPTWEb3uY9y/JxA0YfzzIY8aDCX5WO8AprM+fxHbbD4HX39kbMl6GOTmQUI
-         YRqnhwz6nSqY/ZHVljJEQSmoJ1gUkIlV+5lNXXxSFv9SOWb40KeHI03WVxZlfgkpQSrN
-         m0JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713295909; x=1713900709;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+W2OGUTS0A9tOC4rCeQ7/73mUP1Q5seVrFrFA/nLuwE=;
-        b=F5Owbai0AbOL0M8J/AhTfxYeSSYFWHRyaSQq9hjpw0UnApXUeDQ341T2cmA0klwUrr
-         MhT4NNnE0ntbTvqB6eJHj4f2cxOZz4jsw8/BNvMuSWYcb8YGPiuyT2o2vyABgqMMIMn2
-         Hf3tjMHF4xS5njIqVD626s1KLB9B96cmCKtEKNzc128SOkvmN7QLjSScIYtTei+rXAhR
-         LUgkcLx/UQscI1pqHlm+7IH2K1sQ5vEhG0DEMkdpG1k1mOYn+i0DrvC8d2iT/YYixAHC
-         Up4vtEjEaFGiq7HLOadnCbi9pA03sx9HPuBkTwRXtCfb0q3hhoB4i/xHvjjpX12Xzsuz
-         TSsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUwuiLrd2RwRIo4c+vJeTlkZQAGcHtcP+njuvwhkrq5wucJ7TF7N/fS0XTJOchAVKtdtEJdr7TIunNN1z+xOmjg5JFXQfhx8lkwipRfyblvW4MMzKXXmbzWjmIXIkcVoKi0nTxEkO5yxvq9tDecK2nL+BRvdRLfzanzc/sG9dtCzhF5dOZXgXTY
-X-Gm-Message-State: AOJu0YwIKbp82KNBPkE6V76RRZwBKvZdrjHd/M8HD9paC0sbDLKPjIP2
-	1CcXvw3rNG6yHCcABEMEDXLA8h0rq/OK2C9GTZ33TzkMaq8qDGaP
-X-Google-Smtp-Source: AGHT+IHSNs1U4Cgka+Ov+53HT7BldDE7a5hg9YtpBWTXFDs32OYniFi0zuiHVl1am1uunK7pt1vfSg==
-X-Received: by 2002:a17:90a:fd14:b0:2a2:ddc0:4bf8 with SMTP id cv20-20020a17090afd1400b002a2ddc04bf8mr11933603pjb.31.1713295908568;
-        Tue, 16 Apr 2024 12:31:48 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id f22-20020a17090ace1600b002a25bf61931sm11108889pju.29.2024.04.16.12.31.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Apr 2024 12:31:48 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 16 Apr 2024 09:31:47 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: Re: [PATCH v4 4/6] cgroup/pids: Add pids.events.local
-Message-ID: <Zh7SI8LaSTEq4Bj4@slm.duckdns.org>
-References: <20240416142014.27630-1-mkoutny@suse.com>
- <20240416142014.27630-5-mkoutny@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=o3FaV4x+MnufZqAeYL9g/H7qk+E7BJjnBfHmO+9QvraUfw62XK8k6IOyCFvBJXNJeDKoJ2AxP9cdTm3qq0fSzMEZs6SiCMxdHc8jbb7PlsF/uSaidwqYC+3gO1q8wV/6+LV3H9cl8s0g4/8dW3z2tDUB6QnUby/d4e9yGdnBmlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=GTlQe38L; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1713295945;
+	bh=SO3W75qAxcT+JpicVsmbr4gasfWWlWIucpF6Fwd65rA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GTlQe38L280+IC5U7MAelAhkZPBeh3DGr1Bqg0UureZD7gy3EbhrUHwtnHexV8PgJ
+	 RPufo1F0d0eMa8J/T3WKmxqCll+DurL/BIz1nYpksgb4VGK3cNMWFSQc42HYUlXYro
+	 cGtldAXEo1xqA/wyn3kjYFPb76c/WwJTMbTTw9KQ=
+Date: Tue, 16 Apr 2024 21:32:24 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>, 
+	Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 00/11] sysctl: treewide: constify ctl_table argument
+ of sysctl handlers
+Message-ID: <25166edb-4443-421f-abba-38914db2fac4@t-8ch.de>
+References: <CGME20240323154426eucas1p12a061ae721193083fd0ed29016277017@eucas1p1.samsung.com>
+ <20240323-sysctl-const-handler-v2-0-e80b178f1727@weissschuh.net>
+ <20240328210016.33wqcpwatamupxyw@joelS2.panther.com>
+ <cd60f573-ea02-4834-8bb9-9fef24088cfc@t-8ch.de>
+ <20240408085928.dhvexnhvvugfvjkt@joelS2.panther.com>
+ <a90e9483-f27b-4448-9fae-b768d8139ead@t-8ch.de>
+ <20240416161819.prjyozfkvy3nddzh@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240416142014.27630-5-mkoutny@suse.com>
+In-Reply-To: <20240416161819.prjyozfkvy3nddzh@joelS2.panther.com>
 
-On Tue, Apr 16, 2024 at 04:20:12PM +0200, Michal Koutn� wrote:
->  struct cgroup_subsys pids_cgrp_subsys = {
->  	.css_alloc	= pids_css_alloc,
->  	.css_free	= pids_css_free,
-> @@ -416,5 +469,6 @@ struct cgroup_subsys pids_cgrp_subsys = {
->  	.cancel_fork	= pids_cancel_fork,
->  	.release	= pids_release,
->  	.dfl_cftypes	= pids_files,
-> +	.legacy_cftypes = pids_files_legacy,
+(+Cc LKML to at least get the conversation into the archives)
 
-Ah, you restore it here. I see what you're doing now. It may be better to
-reorder patches so that .local is added first or just keep the legacy file
-behavior temporarily altered than removing them altogether, but this isn't
-the end of the world either. Can you please explicitly note what you're
-doing in the commit message?
+Hi Joel,
 
-Thanks.
+On 2024-04-16 18:18:19+0200, Joel Granados wrote:
+> On Mon, Apr 08, 2024 at 04:21:58PM +0200, Thomas Weißschuh wrote:
+> > On 2024-04-08 10:59:28+0200, Joel Granados wrote:
+> > > On Tue, Apr 02, 2024 at 07:15:37PM +0200, Thomas Weißschuh wrote:
+> > > > On 2024-03-28 22:00:16+0100, Joel Granados wrote:
+> > > > > On Sat, Mar 23, 2024 at 04:44:08PM +0100, Thomas Weißschuh wrote:
+> > > > > > * Patch 1 is a bugfix for the stack_erasing sysctl handler
+> > > > > > * Patches 2-10 change various helper functions throughout the kernel to
+> > > > > >   be able to handle 'const ctl_table'.
+> > > > > > * Patch 11 changes the signatures of all proc handlers through the tree.
+> > > > > >   Some other signatures are also adapted, for details see the commit
+> > > > > >   message.
+> > > > > > 
+> > > > > > Only patch 1 changes any code at all.
+> > > > > > 
+> > > > > > The series was compile-tested on top of next-20230322 for
+> > > > > > i386, x86_64, arm, arm64, riscv, loongarch and s390.
+> > > > > > 
+> > > > > > This series was split from my larger series sysctl-const series [0].
+> > > > > > It only focusses on the proc_handlers but is an important step to be
+> > > > > > able to move all static definitions of ctl_table into .rodata.
+> > > > > > 
+> > > > > > [0] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net/
+> > > > > > 
+> > > > > > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > > > > > ---
+> > > > > > Changes in v2:
+> > > > > > - Reduce recipient list
+> > > > > How did you reduce it? and why did you reduce it? This is quite an
+> > > > > extensive change; if anything we should have lots of eyes on it.
+> > > > 
+> > > > I used get_maintainer.pl for v1 and received negative feedback about
+> > > > sending the series to too many people.
+> > > I completely missed that. Was that a private mail to you? Do you have a
+> > > link of the message? I checked my history and I do not have it.
+> > 
+> > Yes that message was private. From a fairly prominent maintainer.
+> > 
+> > > > Advice I got was to only send it to the people whose tree it will be
+> > > > going through.
+> > > > 
+> > > > The only change affecting actual emitted object code in the series is
+> > > > "stackleak: don't modify ctl_table argument" and that got acked by Kees
+> > > > already quite some time ago.
+> > > > If Kees wants to pick this up for one of his own PRs during this cycle
+> > > > that would be nice, too.
+> > > > 
+> > > > I'm open for suggestions to increase the circle of recipients, but
+> > > > blindly using get_maintainer.pl again doesn't seem the right way.
+> > 
+> > > IMO, this can go either way: You can get feedback that tells you that it
+> > > is too many people that you are "bothering" and you can also get
+> > > maintainers pinging you to be included in what they consider to be part
+> > > of their job. You can't make everyone happy :)
+> > 
+> > Absolutely, this is my expectation, too.
+> > 
+> > But maintainers can nicely opt-in to all patches touching their
+> > subsystems using lore and lei, while it's harder to opt-out of broad
+> > recipient lists.
+> > (Except putting me in their killfile...)
 
--- 
-tejun
+> Not sure how possible it is to be individually black listed in a
+> maintainers inbox. But it is more of a reason to make it public; because
+> at least you have done your due diligence and made it available so every
+> one can see what is going on (even if you are black listed
+> individually).
+
+The reference to the killfile was more meant as a joke.
+
+> > > > The only real feedback I got was from Dave and that I addressed.
+> > > yes. I saw this.
+> > > 
+> > > > If somebody would have had fundamental issues with the aproach they
+> > > > could have spoken up on v1.
+> > > This seems reasonable. I'll try to get to it this week and add it to
+> > > constfy branch if I do not see anything glaring.
+> 
+> I Just realized that you did not include any kernel lists. I thought
+> that you had just removed individuals and left the lists. This reduces
+> the number of eyes on the code which is particularly important in this
+> specific case where there are so many changes touching so many
+> subsystems.
+
+This is absolutely an oversight, I intended to at least keep LKML.
+I have to assume it was me being inattentive.
+
+> Not only that, but it also breaks tools like lei and b4. I have configured b4 to
+> look at https://lore.kernel.org/all to handle patches coming from contributors.
+> If the change is not public it breaks my command (`b4 am -o - MESSAGE_ID | git
+> am -3`).
+
+Understood, as mentioned above the trimming went to far.
+
+FYI:
+b4 can do the `git am` itself with `b4 shazam MESSAGE_ID`.
+Use the config `b4.shazam-am-flags` for the `-3` flag.
+
+> I do not know who spooked you but I suggest you just remove this person
+> from the to:/cc: of your patches and leave the rest as it is. Like I
+> did with Mathew Wilcox after he asked me to do so here
+> https://lore.kernel.org/all/ZZbJRiN8ENV%2FFoTV@casper.infradead.org/.
+> Please resend the patchset including the relevant kernel mailing lists and
+> maintainers but excepting the person that sent you the private e-mail.
+
+In addition to the complaint I also got guidance from Thomas Gleixner to
+reduce the scope of recipients.
+
+What do you think about the following:
+
+You do a review of v2 and give feedback on that and I'll incorporate
+that feedback and afterwards send a v3.
+In addition to the recipients of v2 I'll add LKML, Greg and Andrew Morton.
+ 
+> This also goes for your "[PATCH] sysctl: treewide: constify ctl_table_header::ctl_table_arg"
+> which is also not public.
+
+Thanks for this pointer, too.
+I'd like to handle it the same way as proposed above.
+
+
+Sorry for all the back-and-forth,
+Thomas
 
