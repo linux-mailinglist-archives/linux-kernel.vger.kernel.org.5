@@ -1,139 +1,182 @@
-Return-Path: <linux-kernel+bounces-147008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 786C98A6E29
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:27:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FDAB8A6E37
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 16:29:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3490728363B
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:27:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F41901F21326
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADEFA13175F;
-	Tue, 16 Apr 2024 14:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EC11339B1;
+	Tue, 16 Apr 2024 14:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hl1t/AhT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6i63qqj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6C912D1FA;
-	Tue, 16 Apr 2024 14:24:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D90412EBF4;
+	Tue, 16 Apr 2024 14:26:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713277473; cv=none; b=RGhasWxaoEKt0G5tWalUojbQB8GeK9pnoV5K29OGkczMwuF0K0/1cfyyX+SdyL1Eok/88SlWs0YEhe7r8BZh2qcR21tq/CdOKSlWlnnv8Zgy/C/eOCexLlW2WI339OM9Y+IUhxmVpKIcPPhBXGkwUyp7RYrhh2xCcpfk5OGEt98=
+	t=1713277566; cv=none; b=Sou2Vt5mTw0T+xqYfXPdUuh+4h7pUvaN5+5EQv+3PiyH32kboSEjfCRt78DMEBgFNZgx4+c/ZI+MYMXZwNDzhwy8Uw60rMmgbAR1iqTWLtk3Ws9AknbcaP4QL7gK678k6n8alKnp7uhiCUjXvrnbQwPy2Preyh7HzswCS7xeDTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713277473; c=relaxed/simple;
-	bh=sgckCYCPNFE69WKP+u5aXdJX1LNHKHOzxtfV1/2KOJE=;
+	s=arc-20240116; t=1713277566; c=relaxed/simple;
+	bh=+WyAEAGU6dHhLinGMVbyeKjBMJ0Y7Iab03XXzCxzVcU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oRh4PqOzHVvB8aeGjfV2xACa7wwdG4L3DkvCQZQVo+IOmfw4hPnTBrJPl+6dmDvuj3PVFNClAWJYPFj8mbIarzFoy8Hh6NRYjAVe2+JegHIbvQHcp321AMlH9m0/62CEDROfoW6qqwX+hFE9TAhwLChgRbLA8VVRoqmRBALof3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hl1t/AhT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44D5AC113CE;
-	Tue, 16 Apr 2024 14:24:30 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jk2k11QhWCJRWmzcT6sV1lFBCJfQvyQYy/AD4umkEz1Q5Zw52UTM2qkDNDYF66ii0Iq1aHaal0E/ze7/tRtO3i3Kpba+n6JZoylZxKwNffK4uIj+nGK3VFAtX6DKXsfcbclam+Zj+M+xnYDFv2NHM+5bOEraT0xYij+7SuJrK1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o6i63qqj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B21F3C113CE;
+	Tue, 16 Apr 2024 14:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713277472;
-	bh=sgckCYCPNFE69WKP+u5aXdJX1LNHKHOzxtfV1/2KOJE=;
+	s=k20201202; t=1713277565;
+	bh=+WyAEAGU6dHhLinGMVbyeKjBMJ0Y7Iab03XXzCxzVcU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hl1t/AhT+KmP4IqkAjIKOPYIm8hsfGIMLfg51sYLhO8k8AguuBAW691BoR7KTecRa
-	 tlTwQxqwQD8XgGoaCcm3l2N7CdG98G7LIFI2of1hcPXPEm0uI/3s1IBg3Ea1cBD0gA
-	 DmYIWaZ2APG4/UdTgeDbEabRMXc7Jz9nhxPLhE2AGe58b/388YGmuythp5cJyR4cRd
-	 5CyUkrULDRFAR9dpMHFreuGNZfUQZE9vSq4nw9+KQ4bBJwwGHUolWT1Mte+Sm0Kewx
-	 6nTNtMpUsxkFkl0sMb5kFAJ1fzVhqxrFMtc2I1q4SDpQ23V3ZqpjSogFnnTgy5WPoy
-	 iCaefEbtZUmoA==
-Date: Tue, 16 Apr 2024 15:24:28 +0100
-From: Simon Horman <horms@kernel.org>
-To: Sam Sun <samsun1006219@gmail.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	j.vosburgh@gmail.com, Hangbin Liu <liuhangbin@gmail.com>,
-	Eric Dumazet <edumazet@google.com>, pabeni@redhat.com,
-	kuba@kernel.org, andy@greyhouse.net, davem@davemloft.net
-Subject: Re: [PATCH net v3] drivers/net/bonding: Fix out-of-bounds read in
- bond_option_arp_ip_targets_set()
-Message-ID: <20240416142428.GO2320920@kernel.org>
-References: <CAEkJfYOnsLLiCrtgOpq2Upr+_W0dViYVHU8YdjJOi-mxD8H9oQ@mail.gmail.com>
+	b=o6i63qqjHVahoY2VfNPDCyb0QK609jpzZ/ri34IbAojt+ypV2GQclA9EITdH1PB/Z
+	 M6f8dRbuu+3UifYh6LaZZAU8NXsVs3918Oe/xEACVlJZnr1BEi0Bp18OB3yZTZD/1Q
+	 CgPcVUq2chF13nYnivPvDrSQWN6QLKgMyFfPrVkPCPM0Uu5ZfUGUXdk6KC6yAdQH0O
+	 pVt/OdihXNnSPfO9iZyELa9gsZxYDc+iDQm5q0Jf1cI/aud0daCHBfrqyM2zCmhLqP
+	 T4q+nEaE/5R7XyW1/jr/PUBeRWiBAWD6LGFmA984CU5+4TqxGGnaTCtnvdzgtT9ude
+	 +8314dIjlCCTw==
+Date: Tue, 16 Apr 2024 17:24:54 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Nam Cao <namcao@linutronix.de>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
+	Ext4 Developers List <linux-ext4@vger.kernel.org>,
+	Conor Dooley <conor@kernel.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Alexandre Ghiti <alex@ghiti.fr>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <Zh6KNglOu8mpTPHE@kernel.org>
+References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
+ <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAEkJfYOnsLLiCrtgOpq2Upr+_W0dViYVHU8YdjJOi-mxD8H9oQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
 
-On Tue, Apr 16, 2024 at 08:09:44PM +0800, Sam Sun wrote:
-> In function bond_option_arp_ip_targets_set(), if newval->string is an
-> empty string, newval->string+1 will point to the byte after the
-> string, causing an out-of-bound read.
+Hi,
+
+On Tue, Apr 16, 2024 at 01:02:20PM +0200, Björn Töpel wrote:
+> Christian Brauner <brauner@kernel.org> writes:
 > 
-> BUG: KASAN: slab-out-of-bounds in strlen+0x7d/0xa0 lib/string.c:418
-> Read of size 1 at addr ffff8881119c4781 by task syz-executor665/8107
-> CPU: 1 PID: 8107 Comm: syz-executor665 Not tainted 6.7.0-rc7 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:364 [inline]
->  print_report+0xc1/0x5e0 mm/kasan/report.c:475
->  kasan_report+0xbe/0xf0 mm/kasan/report.c:588
->  strlen+0x7d/0xa0 lib/string.c:418
->  __fortify_strlen include/linux/fortify-string.h:210 [inline]
->  in4_pton+0xa3/0x3f0 net/core/utils.c:130
->  bond_option_arp_ip_targets_set+0xc2/0x910
-> drivers/net/bonding/bond_options.c:1201
->  __bond_opt_set+0x2a4/0x1030 drivers/net/bonding/bond_options.c:767
->  __bond_opt_set_notify+0x48/0x150 drivers/net/bonding/bond_options.c:792
->  bond_opt_tryset_rtnl+0xda/0x160 drivers/net/bonding/bond_options.c:817
->  bonding_sysfs_store_option+0xa1/0x120 drivers/net/bonding/bond_sysfs.c:156
->  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
->  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
->  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
->  call_write_iter include/linux/fs.h:2020 [inline]
->  new_sync_write fs/read_write.c:491 [inline]
->  vfs_write+0x96a/0xd80 fs/read_write.c:584
->  ksys_write+0x122/0x250 fs/read_write.c:637
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> ---[ end trace ]---
+> > [Adding Mike who's knowledgeable in this area]
 > 
-> Fix it by adding a check of string length before using it.
+> >> > Further, it seems like riscv32 indeed inserts a page like that to the
+> >> > buddy allocator, when the memblock is free'd:
+> >> > 
+> >> >   | [<c024961c>] __free_one_page+0x2a4/0x3ea
+> >> >   | [<c024a448>] __free_pages_ok+0x158/0x3cc
+> >> >   | [<c024b1a4>] __free_pages_core+0xe8/0x12c
+> >> >   | [<c0c1435a>] memblock_free_pages+0x1a/0x22
+> >> >   | [<c0c17676>] memblock_free_all+0x1ee/0x278
+> >> >   | [<c0c050b0>] mem_init+0x10/0xa4
+> >> >   | [<c0c1447c>] mm_core_init+0x11a/0x2da
+> >> >   | [<c0c00bb6>] start_kernel+0x3c4/0x6de
+> >> > 
+> >> > Here, a page with VA 0xfffff000 is a added to the freelist. We were just
+> >> > lucky (unlucky?) that page was used for the page cache.
+> >> 
+> >> I just educated myself about memory mapping last night, so the below
+> >> may be complete nonsense. Take it with a grain of salt.
+> >> 
+> >> In riscv's setup_bootmem(), we have this line:
+> >> 	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+> >> 
+> >> I think this is the root cause: max_low_pfn indicates the last page
+> >> to be mapped. Problem is: nothing prevents PFN_DOWN(phys_ram_end) from
+> >> getting mapped to the last page (0xfffff000). If max_low_pfn is mapped
+> >> to the last page, we get the reported problem.
+> >> 
+> >> There seems to be some code to make sure the last page is not used
+> >> (the call to memblock_set_current_limit() right above this line). It is
+> >> unclear to me why this still lets the problem slip through.
+> >> 
+> >> The fix is simple: never let max_low_pfn gets mapped to the last page.
+> >> The below patch fixes the problem for me. But I am not entirely sure if
+> >> this is the correct fix, further investigation needed.
+> >> 
+> >> Best regards,
+> >> Nam
+> >> 
+> >> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> >> index fa34cf55037b..17cab0a52726 100644
+> >> --- a/arch/riscv/mm/init.c
+> >> +++ b/arch/riscv/mm/init.c
+> >> @@ -251,7 +251,8 @@ static void __init setup_bootmem(void)
+> >>  	}
+> >>  
+> >>  	min_low_pfn = PFN_UP(phys_ram_base);
+> >> -	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+> >> +	max_low_pfn = PFN_DOWN(memblock_get_current_limit());
+> >> +	max_pfn = PFN_DOWN(phys_ram_end);
+> >>  	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
+> >>  
+> >>  	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
 > 
-> v2
-> According to Jay and Hangbin's opinion, remove target address in
-> netdev_err message since target is not initialized in error path and
-> will not provide useful information.
+> Yeah, AFAIU memblock_set_current_limit() only limits the allocation from
+> memblock. The "forbidden" page (PA 0xc03ff000 VA 0xfffff000) will still
+> be allowed in the zone.
 > 
-> v3
-> According to Hangbin's opinion, change Fixes tag from 4fb0ef585eb2
-> ("bonding: convert arp_ip_target to use the new option API") to
-> f9de11a16594 ("bonding: add ip checks when store ip target").
+> I think your patch requires memblock_set_current_limit() is
+> unconditionally called, which currently is not done.
 > 
-> Fixes: f9de11a16594 ("bonding: add ip checks when store ip target")
-> Signed-off-by: Yue Sun <samsun1006219@gmail.com>
-> ---
+> The hack I tried was (which seems to work):
+> 
+> --
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index fe8e159394d8..3a1f25d41794 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -245,8 +245,10 @@ static void __init setup_bootmem(void)
+>          */
+>         if (!IS_ENABLED(CONFIG_64BIT)) {
+>                 max_mapped_addr = __pa(~(ulong)0);
+> -               if (max_mapped_addr == (phys_ram_end - 1))
+> +               if (max_mapped_addr == (phys_ram_end - 1)) {
+>                         memblock_set_current_limit(max_mapped_addr - 4096);
+> +                       phys_ram_end -= 4096;
+> +               }
+>         }
 
-Hi Sam Sun,
+You can just memblock_reserve() the last page of the first gigabyte, e.g.
 
-Some comments about the formatting of this submission:
+	if (!IS_ENABLED(CONFIG_64BIT)
+		memblock_reserve(SZ_1G - PAGE_SIZE, PAGE_SIZE);
 
-* The list of chances, (v2, v3, ...) should be below rather than
-  above the scissors ("---"), so it is not included when the patch
-  is applied.
+The page will still be mapped, but it will never make it to the page
+allocator.
 
-* Looking at git history, the patch prefix should probably be "bonding:"
+The nice thing about it is, that memblock lets you to reserve regions that are
+not necessarily populated, so there's no need to check where the actual RAM
+ends.
 
-	Subject: [PATCH net v3] bonding: ...
+>  
+>         min_low_pfn = PFN_UP(phys_ram_base);
+> --
+> 
+> I'd really like to see an actual MM person (Mike or Alex?) have some
+> input here, and not simply my pasta-on-wall approach. ;-)
+> 
+> 
+> Björn
 
-* The diff seems to be a bit mangled, f.e. tabs seem to
-  have been translated into spaces. So it does not apply.
-  Which breaks automated testing. And for this reason
-  I am asking you to repost this patch.
-
-  git send-email, and b4, are two tools that can typically be used
-  to send patches in a way that this doesn't occur.
-
---- 
-pw-bot: changes-requested
+-- 
+Sincerely yours,
+Mike.
 
