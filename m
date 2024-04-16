@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-146104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28AEA8A60C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:13:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA2438A60C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 04:13:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 815B7B213EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:13:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBEB51C209FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 02:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A052101D4;
-	Tue, 16 Apr 2024 02:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E23125DE;
+	Tue, 16 Apr 2024 02:13:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="hqKoh8L8"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2095.outbound.protection.outlook.com [40.92.107.95])
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="rvu+wAen"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2080.outbound.protection.outlook.com [40.92.53.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B556AC0;
-	Tue, 16 Apr 2024 02:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5665011720;
+	Tue, 16 Apr 2024 02:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.80
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713233576; cv=fail; b=SBEEJYYvUAk8YbX2ngnZRulFxIInAp57apWtf+sU6IKnsudAAByXdYSg5W/+janmw0WRtbpsGuQbEsCpUljH2mcYO0MI5rZaiiH/Y8Z67mBiIcXIa4kWXGmaOY4JW5aAc+7Hgf8d3l/s0BaYViHmFcQpDek0UAxWAcjxNCYGxcQ=
+	t=1713233583; cv=fail; b=jSfzakmVPGLRgXkErlxnNRLjJpSrBO6sTldR0pizUhk6eLHifnotpXCQgNZ4TMFeNT+9dN/NiCQnfh9tdDfF9s3mzS2EITKopK2vg0t48T7Zf4BHb82gepCVAGz2jbT4sq3Zb3I0JhMWz0osG1We+SlNTsB3S5ZPEsgWvwxqQAk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713233576; c=relaxed/simple;
-	bh=2ZZlCXl+B0neqPeAkaA7Q+wRp/PXnnqRB8Pk5YyLuYo=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=P+ZpvbVey5d7RIxcoMxgiOHrA52uv+k6SfbE17s3wKN0XBVtWtz2k3JBkcpm/LT3xvNAL0a9ekrRSL0w33oG7HMBoSeBfgPgcmx/PrdsZRytdSHnYbHr6BRvi97xI9q2EYEv18qd4uM2jpTJTo2Cw5Zm5dS7XV6rRHE45LFIORM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=hqKoh8L8; arc=fail smtp.client-ip=40.92.107.95
+	s=arc-20240116; t=1713233583; c=relaxed/simple;
+	bh=zpNqSVUlrN62Z1uCEHRK8dfLOVwB/3hrtcvMwua510Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hP+kuWjhI2iWxOthE8Su1DRm4kO95/kxlm9efHCVfJClFmAtRuzJVxfH27J1RcvR4BZC0OirNP54KptU8K4dDUkDsMYClITam/Pmqba42U/2ZzW0TkP3LgJ1y+EABYvrnloEURPi58hmicwea/Mj5d52sHYy2kDbW7TvjO/j0HE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=rvu+wAen; arc=fail smtp.client-ip=40.92.53.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FJ9YzfkYalCBpEYZ2n0G1NcCHo1Rlk4oQz1LY8M4+qFI84J5qt9Skh6t4K1jGyT4x7Hzq01wvC2YPEhqBuV5OpX8Z8aoi64Kx8y17S+CvEAz/thDHvilq+AuVKVispfkehvIB8BLSEUblRz8MqItlVrQUI6IIqKvq2hnp0iQ3i/bYtOKizAGCYGNMsqGnVs3wxDk1J9Fa8QFr8JESf4kVM/o3tIc6JFZGYcujD+3AhowaZqXlKFDgttKJBI2IQYQy0XeVURSM2O3q3RgC4npNC529Qa5Hd/WXL8H0ehhVEfG3eh/ghflk4D0llCRWd+0FvxIOBQEquUiNdtcIiTArQ==
+ b=Qfa8ixKjzb732EAZ0l+2A9zt6TWimIt3Gf0cERPIiE2fIAbwT3LfqOXmQRXdccF3zU4kXoW5AMhjpnYafReRlEf5II/83tq6nsZcBg3kP1OuQNQZEfnRbSB2b9e8mq2tyvs0Pbl8BTaL13Dium5N3m7wz8+3f1ceL2m/DJSJgrB2O8/S7KjydvXW9aTLLG5x2C4zUAYgPrYYv0D4+Ls+uJHos/GAF10cyE3gLQoSlTj9q44utvd2kYnnctqWOGcHzVnAcZtKNwtBS89qVb+gyp9zywwL4NHfJRli7/gqgVrVzHe1oBb6wGhNBHukVHV+eUu7WVNZlUvXpR6Uqw17Cg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ATok7YqYwx6as4VbVNvLwyNzgjcNRikFm+smB+28NTk=;
- b=HPrQ49n5gZufjN8RN6YdKYQvMq2N5FZqyTKYClxofR9Dxwh14EPm5OjQXdNr5cYvhQ2BOZ5yTZJ6e6cHQqzfth5ntWPz8fPEyT+9+5WhwgU5bH7O1BEcc6KgxzFeQ2FqQ3xL1/OlWwvSa7FkA/+AJ+yKjsYHfY4FWeHoYuY5pR115YTh7KM9a3Fwqwyi0uQN6P3k7MF6p2uGO90alZL63zthaFGCOzRXtVBBuf92uhWj1yRE4lsYnvfSQhLlg3FmNzP+GcXWlUv0L91ELD5nep7WeHHq7IVpwNCa1+3T4H7ypjL+9sN5haR9rrA51lxdl7HgP4AFrywTV3NuTtYe/g==
+ bh=8l6JNomgXx6iLskAvS7xv0kglOAogOZdEre0qmlkQs0=;
+ b=SgdmffTak7IEc76kirv5KQCGgmnxmjo9d5C5R/XcEJxY3hRFGtU4bLIVCR3bVZa/PLYTGzX9nRZlvSCkzsAuorrpLMln12BTCpkV7MMhqbUW5gx8MqyMkJ1p+0+L2Pj5Kz6G6h42x/bsZ3kbSmRNiS8vaDuKRKRbfkY1lR0VFujY2CUWdM5o50KfoMXrqHfVQ7nBgcKDRtBJv65gI4Hmg56a8D0vJ+guLFmqvW5csEFKqcVZLjLyWULGB3au44T5iyYZtUWbQ4HAxMGU/Ri/izW4FGsWicANeP14YkYiE5JkZZeakzP/Bko0MJy6mDAXIyIhUiBj2UI97BnQb1lqfA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ATok7YqYwx6as4VbVNvLwyNzgjcNRikFm+smB+28NTk=;
- b=hqKoh8L8NQ40fMx9xlvgy7d8buTRnWrlYAjCuGkt/B/Jo0+qMvpK/ReZh7lR91T8u+zJ/csM6VTM/smONkgvulJnyyBpjJ/JuwX6VH2o9+TOtC2XtD4wHNYq4M+ZU7iCmy9rpR3u9iPk7XKWdoA7fr1t3x5jrhjwCyD0nnrqA2vwNBDo7uNgifZZOcCJ41Uqv2CUXBl4POGan9ygpaQx6/s9bNU4OZwsuJY3D7gCu7YEvhJqx0Fg51qcHFV072mAxRME9GPyH4ZXX+CH5FqALsNvIqhCfVQJlp/IrjSMfAPi2FG7ntGOplvqJnB6MYwcEoAKNqrSsa55vSC+tIP4pA==
+ bh=8l6JNomgXx6iLskAvS7xv0kglOAogOZdEre0qmlkQs0=;
+ b=rvu+wAenHi6Fq0Ds9RM0lZyZMTD3JJNb1PbGq9PAZF1I42zrQEnFAx783qt6XEOGDANOLVyrstybfmeU23puPJxdQLwhjyl0/nsM4pGyUSIH/EUi0f1oWHqKJMqwoJ6dnQvVoOTwKL6DkOqIscjwN+T173DgHWnvphVVCgMyVhNCfzZCbMancQEsU3yFzDCIFjqcaIcDOFFqVTdcaKbsv18FE3H8ctipscwi823BmWo7RdBAWkxMYICkyt0fK6ZVoVc0Hu5O5uBcLmo385/GUVrd6oBJJ0xDVcj6xGZV/sS9rBLLD3qDtNDvsU8Afef1vo+LXwZoOoZEzA6bSs/06A==
 Received: from TY0PR06MB5611.apcprd06.prod.outlook.com (2603:1096:400:31e::8)
  by TYZPR06MB5323.apcprd06.prod.outlook.com (2603:1096:400:1f1::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 02:12:51 +0000
+ 2024 02:12:56 +0000
 Received: from TY0PR06MB5611.apcprd06.prod.outlook.com
  ([fe80::d57a:9f0e:1ee7:85bf]) by TY0PR06MB5611.apcprd06.prod.outlook.com
  ([fe80::d57a:9f0e:1ee7:85bf%5]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 02:12:51 +0000
+ 02:12:55 +0000
 From: Allen_Lin <allencl_lin@hotmail.com>
 To: dmitry.torokhov@gmail.com,
 	robh@kernel.org,
@@ -63,19 +64,21 @@ To: dmitry.torokhov@gmail.com,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Allen_Lin <allencl_lin@hotmail.com>
-Subject: [PATCH v3 0/4] HID: Add support for Himax HX83102j touchscreen
-Date: Tue, 16 Apr 2024 10:12:24 +0800
+Subject: [PATCH v3 1/4] dt-bindings: input: Add Himax HX83102J touchscreen
+Date: Tue, 16 Apr 2024 10:12:25 +0800
 Message-ID:
- <TY0PR06MB5611DC53BD4FA5C0F6A21EA99E082@TY0PR06MB5611.apcprd06.prod.outlook.com>
+ <TY0PR06MB56112682F500F8761F76DBA99E082@TY0PR06MB5611.apcprd06.prod.outlook.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240416021228.1092678-1-allencl_lin@hotmail.com>
+References: <20240416021228.1092678-1-allencl_lin@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [7bQLXif/t9b4i7kgT6aJqgpaE/KcRHKX]
+X-TMN: [xqfrmftdHqajCiJlIdZfpb6gfvHbyhpc]
 X-ClientProxiedBy: PS2PR01CA0002.apcprd01.prod.exchangelabs.com
  (2603:1096:300:2d::14) To TY0PR06MB5611.apcprd06.prod.outlook.com
  (2603:1096:400:31e::8)
 X-Microsoft-Original-Message-ID:
- <20240416021228.1092678-1-allencl_lin@hotmail.com>
+ <20240416021228.1092678-2-allencl_lin@hotmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,39 +88,39 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TY0PR06MB5611:EE_|TYZPR06MB5323:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5264acb2-440c-483e-43f2-08dc5dbab75a
+X-MS-Office365-Filtering-Correlation-Id: e9478ebe-b7cf-4672-a6a3-08dc5dbaba96
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	FEx/9ncApk6PjUgzDeumlGhg/THG4OzCLhNw/DjfvZQo1KIbaI540fCd0Y/HnfvQGu2cmY6/u7+WrR1lpyzvMcD9QbnhdR5iFj10OENXP4LiD/vN+NDGZdKxkS7ZpbgFCjrKR/jVTy8JYXeU/wtF2Xtvrz0NEyDTpYvgxA1V+dTvp7H90APSMuak+J+x9VL4e5NFWM6SBVIQL/v6CoGMdzVUUXi+TiHBAW+bl1qspQ9jGajm3EmflqJXQ6PegxG48D30vWRYkpLx4jZqrqQHtt38Up84R8wefsqumtghkIMteq9/gIl8zMupETitDqHMEhbz/WrdT0WZd+dFE0Dj8EyobSX844ND8au+j4GzUeTCLhVWl9LkYfYawcgHOXNXDG56cZdLX58rO6dE/Yy62QVei/DZldO1WqZpRXqua7To4HDLRXT6SOAjMjTJpLtddl8g0OBqi1sKa0hjvErvgVhFwwrEL6zvyV/99/W/Soa5vLG9snKhy2TnY5HjR7l7C8XPNBKtS+dP7XtYWl07+Anjq+u3+FmmLbVOUBbHjNBx3sV4TXkoGDSVK8cPSjklEu4OgXy1h4jB9fNixOoWqDKjOYmHYYvQYGi6VqYPqehZclH1/9Le09axw6ayUlOc
+	DYmmPHsHz9aYbL9hEcxiAYZnDSFs5dbUlThxoT5xOQIhLwFu/ubZK+lbQLHQYraum65oVqldRWj4T2+lLK3YdmAvR99fXlJs8QzrZiVX1L627JAAlbyh5z2QY8niDJeEFZwJoWt2/oX0SnkTULrgaYDrK5+Y/aV/4LW3ZPbTbktS5+Vrc61nGT5/Em0eapDZVgl961mZ4KcYCdJ+VwNFHNka1Rpr20LBTsU0gbutdBAiaomGnhciin0q38kkQeD6NMVyTo41E9Dhur1w29fB5YPvRU3j4DwWP1rdmZReCEjvDb0G/EYDmfqvkpMDi/MltoVfGHWCI2OiKDcdg+dNs6J8yjGSSFxHl78WGPKPJkZB26i/gqVvWPEuXpyO0wnkbTOTyxGgeYOvFnOFlzT5Z6MhaKFauj4TF1js6s9bSA+35bIkXU4sqkh1XNiDdPg4iLjEyyGs65jlVg1f6R9/yURwDVEkEBGjD/pfQ++8nmXYSy8WZDf+KYCNKdC5OvVBd6O5QiqTmXClUyxl+5t7NYIemQ7WiGkaW9tuarih5juUygcwmYAPphH/Rv65/uN2s5bbFwRNYJLWq88gg3p0PxazqZDSw30ySvfjpSOKtHlNF2Gh4f139xBBUJiLSPnjU9OsjVU6EGXk6yPFW/141kYzN8qlL8nzc+0b/44ZhjnAS0DgX3pWV/AlPwibay8H
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?4KsDcFJaInbuQ8wzZLd+1t9kN4flsR130KGYXSPG7aVjYnMw/di4FlMDpHE0?=
- =?us-ascii?Q?zITQq2iRb4j8QuyLkcQ4TksIetIAxcLUVtQZIs3J8NhX5/nwzoSOYJswUOAd?=
- =?us-ascii?Q?68J7LdBMIq52PZ0ai4nclWy8c5yuoQo58TsbTd1nCDMp/BqCj5L3d5sSJSPX?=
- =?us-ascii?Q?Vc5jZXsk4tcBlXBTn8sKXyJolpcD6F6UbLgrQus/O1iTSmU1imoo9KKqaFJM?=
- =?us-ascii?Q?8rDbwP2BRUiV8JFh4Bxv3JT+BopcUsX+PH/cCgKYCgSEx/okQR++ThYlRrrq?=
- =?us-ascii?Q?zeD/dLJxM5WIMyc+08wqEHa4f1HSc2UiiFPmIxkuXaRcY69FCrRbhGgauJa6?=
- =?us-ascii?Q?0gjyi7d8aetvckeRWoLOy1tolfD88+vxJrChaGDfgp7uKHS36ughryD5ZymB?=
- =?us-ascii?Q?xVNTbKDmtnwFeg603rE1ALGYTPcw2l4z/UUjTpsJxIjizgP7ybHtJpeppaFJ?=
- =?us-ascii?Q?GwnGOA3pvyab0XgerUI+EAAM+YjyUoJ9Iib//YlGWrbHM+RRdZm6IuNVhu4g?=
- =?us-ascii?Q?YYlldCp/IzE6Bo1MNDTC5VTE8Y6kQ92OXuTeOvyfp9CmKqHMgz1yiegK+6RR?=
- =?us-ascii?Q?TRLsiNgBUEB3dSDQCoUx30qvCRsSF9//BsvcJ/T/S16DCSXWneO5SahJ/++0?=
- =?us-ascii?Q?zP8Lj77W1SXrZPJooj73/6jDd1LHQjLnXYC6WTukq0eGXoBiFDYAafqBXk4Y?=
- =?us-ascii?Q?WJqnte0RFe2rs90wBYvHdzwo7f3IWTsQ4QY13EzJo3qN/eVb+wNfGDl7pyGX?=
- =?us-ascii?Q?tBepOW+qBp5ppPLClFWyiwtGk8ErzWMbAFYSWZbMzlJcnubVZ59jX4vNm2l8?=
- =?us-ascii?Q?aptAoMpGcVYiPXzHmZdm68WBdyaL/kx1kbUXVOIoou1+m6rzWZPI7PrXTFch?=
- =?us-ascii?Q?XCOLegZqFxbX45Yd5Phm0wkrHUZ8ZeCvgLKo1P0GAH1EnAOpRh7+wWp75Y2l?=
- =?us-ascii?Q?xpO3xyLVJSF5ap4Dit+6Sj3lLfAGsV8pkB30GE5Lt9pA7uqUa5lWYwQ9OOpb?=
- =?us-ascii?Q?NHItqp2OemN40vStuwYI128WLZCr+lqYHH6nkNIEN616mF9f62rHggrCjwfh?=
- =?us-ascii?Q?eHSL33UWQUwka8gBKT+DG4a39SDlNFQG+4bjbfSgmALo0MZ7OeoazIqGe1I2?=
- =?us-ascii?Q?S5m4VtX2IulV998L7jahbLHzZa1acRBzld7J+vp0592ZGfOPZ/1frXhRKdCb?=
- =?us-ascii?Q?rKyVSU43a8qV3/LP+AEZb2EAsypV07WLPCsz1IUTlH7UKyxtngRpLMTiU4tP?=
- =?us-ascii?Q?RnG8rvuh5HylX2heyXv6?=
+	=?us-ascii?Q?aI047R7XjmHvjiibiSXENU3YZEzV5a9FT3Gnwn6gG4cCmCiQQuA4WIibvUPP?=
+ =?us-ascii?Q?+Wcw0PDPq0bPwKS7km0SY32RLOkCKvTJ45Be8O0VtH0QvxgUJX665X3xkQPA?=
+ =?us-ascii?Q?lPBhJb0c+OWYH6asjcfXXdEJqI6rIJ+cm+MOmWxBp0E/kLBVG0iAgF2xJnWQ?=
+ =?us-ascii?Q?HxLPkKt8eYK6Fc8ms1yGIEsTmz9YBIwRwM3qCDCVlh9ekdJlBY0uEmx5XThj?=
+ =?us-ascii?Q?lgpn4OKZI9FtX+m0nxt1IKfbACOqWRZizq1cg5mpmG0EPiZlD2ERyq3aIIo6?=
+ =?us-ascii?Q?HVCujL80i4G9XaR2+FvGPhWM1DNXqp5bUufegD6AALFsHIYNVc3r11c+4W2p?=
+ =?us-ascii?Q?+mgUOUpdMKKk4xvsJCFXklq5ojVseSRZuMzmWoYBQk4R0brooboasMF0p7w7?=
+ =?us-ascii?Q?EtPh9Lfno6x0nrSvoPDF3Ncj4eN+UObtZYcMKkQ6Q+Gg6jtzRPEk1SqhraHg?=
+ =?us-ascii?Q?edjvPe+wLk7FI3yP4rnyyVr+FB+uolhsgw31sHa7cGXt55HA3K+0w1EAtcK6?=
+ =?us-ascii?Q?CzOg6iE9Pk2LfYAUC1yOg56Nr75SU/S1SFaWTl1n1xmjiTVy7C+juC9NxJvg?=
+ =?us-ascii?Q?oTOj9f85UQcy/U0Us8uhXMQjkSsgMzKBtp/hg4DguYl+XXN9eznJitVH7q6D?=
+ =?us-ascii?Q?GwUpfoLRRhE0U3Ii1ghgkqodJjYznxsODVwqKAAwwiHPAaQWCUSpVlQkJvQC?=
+ =?us-ascii?Q?Ydx5wi1PuzgDvgBqbv8kSpstmqGM3CPiyYo9Yb3pCLRFC3sxPmPwAWR187SB?=
+ =?us-ascii?Q?d/+A+hkujVhZMBGPHkRCaiSFDUqUEsgGZd9nwW/mqnf5/Rjaeqo8iqx3cBqI?=
+ =?us-ascii?Q?GjC/KxK4dIiQUtKfgK2LBIfxgI0yw0tmhkcBR+vcd0ZmKMoE63ohXqvcr2sG?=
+ =?us-ascii?Q?3ZnTdAhTCBVEi0XWprylAhMlgiRGwiLPwk4NdVLtFi3BRIaodUzkDjRnciwS?=
+ =?us-ascii?Q?oLG1t1j7iDMiuEeKXJu1ANfNftH9F81Q3/Aft4yeY3WuR5sdkJhU+gwDjs1t?=
+ =?us-ascii?Q?jJ3J2xlu1hPWyZJKob88f1VEXMaD79mfBtSYdIBk2ci5CAgHHBrS9WQwxWUA?=
+ =?us-ascii?Q?eoASUP4K8STJxiTsH40Wxl1l55zKC0WbGk+pLVxq1iPdCYZbR6rGO8/REZ9G?=
+ =?us-ascii?Q?vy/J5vG3kcB5WNXI9VlQoWwIv959JIiid+zXG9XPeNmUwai5n1YHr/Lq8A9b?=
+ =?us-ascii?Q?Ugw+RVag+GnJxtAc+Jn/qfnyEHT8SWyUDRiEYNgRu55VKmB6WCi04cGgXzk8?=
+ =?us-ascii?Q?krdwU1jJh9l1snvYrjlg?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3208f.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5264acb2-440c-483e-43f2-08dc5dbab75a
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9478ebe-b7cf-4672-a6a3-08dc5dbaba96
 X-MS-Exchange-CrossTenant-AuthSource: TY0PR06MB5611.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 02:12:50.8395
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2024 02:12:55.8971
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -125,42 +128,138 @@ X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
 	00000000-0000-0000-0000-000000000000
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5323
 
-Hi,
-This driver implements for Himax HID touchscreen HX83102j.
+Add the HX83102j touchscreen device tree bindings documents.
+HX83102j is a Himax TDDI touchscreen controller.
+It's power sequence should be bound with a lcm driver, thus it
+needs to be a panel follower. Others are the same as normal SPI
+touchscreen controller.
 
-Using SPI interface to receive/send HID packets.
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-Changes in v2 :
--Added power description in YAML document. 
--Added ddreset-gpios property in YAML document.
--Added firmware-name property in YAML document.
--Modified the description of pid.
--Modified the example.
-
-
-Changes in v3:
--Fix "regulator" spelling in YAML file.
--Change himax,firmware-name to firmware-name in YAML file.
--Remove himax,pid in YAML file.
--Change driver name from hid-himax-83102j to hid-himax.
-
-Allen_Lin (4):
-  dt-bindings: input: Add Himax HX83102J touchscreen
-  HID: Add Himax HX83102J touchscreen driver
-  HID: Add DRM panel follower function
-  HID: Load firmware directly from file to IC
-
- .../input/touchscreen/himax,hx83102j.yaml     |   93 +
- MAINTAINERS                                   |    7 +
- drivers/hid/Kconfig                           |    7 +
- drivers/hid/Makefile                          |    2 +
- drivers/hid/hid-himax.c                       | 3133 +++++++++++++++++
- drivers/hid/hid-himax.h                       |  460 +++
- 6 files changed, 3702 insertions(+)
+Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+---
+ .../input/touchscreen/himax,hx83102j.yaml     | 93 +++++++++++++++++++
+ MAINTAINERS                                   |  6 ++
+ 2 files changed, 99 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/himax,hx83102j.yaml
- create mode 100644 drivers/hid/hid-himax.c
- create mode 100644 drivers/hid/hid-himax.h
 
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/himax,hx83102j.yaml b/Documentation/devicetree/bindings/input/touchscreen/himax,hx83102j.yaml
+new file mode 100644
+index 000000000000..113fa7945c0a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/himax,hx83102j.yaml
+@@ -0,0 +1,93 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/himax,hx83102j.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Himax hx83102j touchscreen
++
++maintainers:
++  - Allen Lin <allencl_lin@hotmail.com>
++
++description:
++  This Himax hx83102j touchscreen uses the spi protocol.
++
++allOf:
++  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++properties:
++  compatible:
++    const: himax,hx83102j
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  vccd-supply:
++    description: A phandle for the regulator supplying IO power.
++
++  vsn-supply:
++    description: Negative supply regulator.
++
++  vsp-supply:
++    description: Positive supply regulator.
++
++  ddreset-gpios:
++    description: A phandle of gpio for display reset controlled by the LCD driver.
++      This is the master reset, if this reset is triggered, the TP reset will
++      also be triggered.
++
++  spi-cpha: true
++
++  spi-cpol: true
++
++  spi-max-frequency: true
++
++  panel: true
++
++  firmware-name:
++    description: Specify the file name for firmware loading.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - reset-gpios
++  - panel
++  - vccd-supply
++  - vsn-supply
++  - vsp-supply
++  - ddreset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      ap_ts: touchscreen@0 {
++        compatible = "himax,hx83102j";
++        reg = <0>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&touch_int0 &touch_reset>;
++        reset-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
++        spi-cpha;
++        spi-cpol;
++        interrupt-parent = <&gpio1>;
++        interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++        panel = <&panel>;
++        vccd-supply = <&regulator>;
++        vsn-supply = <&regulator>;
++        vsp-supply = <&regulator>;
++        ddreset-gpios = <&gpio1>;
++      };
++    };
+\ No newline at end of file
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 43b39956694a..bb7b363cb2ed 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9669,6 +9669,12 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	drivers/misc/hisi_hikey_usb.c
+ 
++HIMAX HID TOUCHSCREEN
++M:	Allen Lin <allencl_lin@hotmail.com>
++L:	linux-input@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/input/touchscreen/himax,hx83102j.yaml
++
+ HIMAX HX83112B TOUCHSCREEN SUPPORT
+ M:	Job Noorman <job@noorman.info>
+ L:	linux-input@vger.kernel.org
 -- 
 2.34.1
 
