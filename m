@@ -1,134 +1,167 @@
-Return-Path: <linux-kernel+bounces-146366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8C78A644F
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:47:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CEEA8A646E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 08:59:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 567361F21A7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:47:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2022B22FB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 06:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61607FBC6;
-	Tue, 16 Apr 2024 06:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B8873199;
+	Tue, 16 Apr 2024 06:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="foDHY4IF"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b="cym5sjuC"
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FEC56E5FD;
-	Tue, 16 Apr 2024 06:47:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3992471B50
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 06:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713250046; cv=none; b=cbTd2BEU2NiQedwViuY2J9Mht4AUHZZaQF4RJu10Em4y+H/T+lys70KOn3cZkzp6oTkScJKV4nbZWG5kcGksiPiKt+WAfQZts2V2PHcJ3Y/eaIKawey8i/NHGYHT7lakoF669lD/bIuMME/u2d8I+FACH5citWx3upnA01rUbOc=
+	t=1713250738; cv=none; b=omTXCX2GZ/hJRKze9yvYZYlEA98gHxcb+6wkoycwRCSsi/3Q8ND9vmPsm0jNaOv8mRNubaTFx5mwxYs2crkatqOmD1NtPEb0m6p0mLK1PETbveVMNseZJbNB+83NztPVJNW6HA/mGzSrCwrlaTwauw30RuUujbOCCHlps7BGUH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713250046; c=relaxed/simple;
-	bh=qm9HuIqIHiV0TwCjlaPOkidq7z2qTqokgjceTJw5hJI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AAAYBiVk3NYX+NTuPodStEIZrkr/r4lehETHZffmNSQqa4dnu2nstIjJydQSuIEg1NK4H5Bq3z7GuGBZJeWhTMBqkkAwLEeVKwmzLI1YZQN67/18dgSHTTCYmSPX+8BbG9e4qVllh1ilCbFtFspSnsgG9gQUFENk2tmEYDdQiUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=foDHY4IF; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713250044; x=1744786044;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qm9HuIqIHiV0TwCjlaPOkidq7z2qTqokgjceTJw5hJI=;
-  b=foDHY4IFXTrALYFPiDDSemGUTvs7Ldtv96gZeIRFwYQ4u4I1OzgVaEPP
-   4ApkpGuhrXpmO2447PMtpF8I1JbsNrH+HhWAEGUhbo052R3FD1YtYLm3W
-   u1NwugnSZMKgHFZOX3MJ59G+pBbaBllqJCEyVgk/AOqs0ijww1e8gGkB6
-   OE9sKdMDY6Ueqir9xpNG5+UDXH/Tp6wub5JoacUG4+xwgCtdXOqFzO3mo
-   oFNXyPSJZfeV/13PlgO2bPorX7Woo6bp+4tcijBE4fGbkLuaoDkUs65ai
-   rbM8df8cOdL7rZU4dp8MDtqIerXIQ2YkxxPwo0y94XK37L/ceCHUn0X2k
-   w==;
-X-CSE-ConnectionGUID: 5G7Sa+wdTxmKIz1fqFbu4A==
-X-CSE-MsgGUID: OsEHOtp2TqaRvmQdTli1HQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8779795"
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="8779795"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 23:47:24 -0700
-X-CSE-ConnectionGUID: vpnYdRu+TgO5tYhKGtu/qQ==
-X-CSE-MsgGUID: HUe4Q++7TnmFR2np7DFglg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,205,1708416000"; 
-   d="scan'208";a="26939988"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 23:47:21 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 55C0111FAB0;
-	Tue, 16 Apr 2024 09:47:18 +0300 (EEST)
-Date: Tue, 16 Apr 2024 06:47:18 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Mikhail Rudenko <mike.rudenko@gmail.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Jacopo Mondi <jacopo@jmondi.org>,
-	Tommaso Merciai <tomm.merciai@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH v4 17/20] media: i2c: ov4689: Configurable analogue crop
-Message-ID: <Zh4e9q_RFIe-JIzz@kekkonen.localdomain>
-References: <20240402164552.19171-1-mike.rudenko@gmail.com>
- <20240402164552.19171-18-mike.rudenko@gmail.com>
- <ZhzEdXz-R2I6nZXf@kekkonen.localdomain>
- <87ttk274e6.fsf@gmail.com>
+	s=arc-20240116; t=1713250738; c=relaxed/simple;
+	bh=IM4cvG1Sv8fc7SXkqgdkN2hfaA94WQ3Inko2NHNFPSc=;
+	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
+	 References:Message-ID; b=P8BbXvSsExx30kKopetOnqUrTaxUIkQbWXFabQ9aKs/njgjGF4kpijVdney2b5HWbujmkWN5MfspRn6AIEpOZd+w5zrRsXvesUTJTnedLUtyUTU2MG6PP7DXyxVqBXyceeOUeQvXAKRNPZtqsNSCcbLuIsdhu226AsrCxy9Oyjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de; spf=pass smtp.mailfrom=posteo.de; dkim=pass (2048-bit key) header.d=posteo.de header.i=@posteo.de header.b=cym5sjuC; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.de
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 9C80B240027
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 08:48:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+	t=1713250136; bh=IM4cvG1Sv8fc7SXkqgdkN2hfaA94WQ3Inko2NHNFPSc=;
+	h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:
+	 Cc:Subject:Message-ID:From;
+	b=cym5sjuCraJxg5tWJI/Lw1M3tGm0PM+7sV9wMmhzTXu/3/cq/7vmUwLFuEYH6ZY3J
+	 sD8QNc33bS07LV2DIRXZAhKNeW1Hk5aLZEkmZw0kmCRXy/aN6gy8QzGdjvWFWEa4En
+	 rtMGWeymVx39GPNZnO5gO0cSxc5gfXcTX4ALq7W2DSlEH0uu9bfMXGqxkuT4ulqYFr
+	 TrnfNog+HkJIShrfn4apV1ZsPSGgXf3EFlwAx/AG7eqIru9UFu06F7MFSBg1MARGfY
+	 eJXyeLITzSNk5ZMjC7a4Jc0lv73hAokLuBX0YqdddsCbkNBslUin8H2OPYm5QweKQS
+	 s10ZwmHoJlkdA==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4VJZPz0lz5z6tm4;
+	Tue, 16 Apr 2024 08:48:55 +0200 (CEST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ttk274e6.fsf@gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Tue, 16 Apr 2024 06:48:54 +0000
+From: a-development@posteo.de
+To: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
+ David.Kaplan@amd.com, Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
+ gregkh@linuxfoundation.org
+Subject: Re: [RFC][PATCH 00/17] Fix up the recent SRSO patches
+In-Reply-To: <20240326222134.GNZgNKbgdBUsAU98RV@fat_crate.local>
+References: <cbad6acb30e33e8dd387080e5936cc38@posteo.net>
+ <20240127191942.GEZbVXTtDNzLB9hTpr@fat_crate.local>
+ <181005cf4a78a4c3c5e1de77498f6c23@posteo.net>
+ <20240127194139.GFZbVcc2RxhNtO3ZHD@fat_crate.local>
+ <6170a3f60cd1ca68bca5829db4a8568a@posteo.net>
+ <20240326222134.GNZgNKbgdBUsAU98RV@fat_crate.local>
+Message-ID: <d0dfa77ba8231652554c4e6088f985d1@posteo.net>
 
-On Mon, Apr 15, 2024 at 11:22:09PM +0300, Mikhail Rudenko wrote:
-> 
-> Hi Sakari,
-> 
-> On 2024-04-15 at 06:08 GMT, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
-> 
-> > Hi Mikhail,
-> >
-> > On Tue, Apr 02, 2024 at 07:45:48PM +0300, Mikhail Rudenko wrote:
-> >> Implement configurable analogue crop via .set_selection call.
-> >> ov4689_init_cfg is modified to initialize default subdev selection.
-> >> Offsets are aligned to 2 to preserve Bayer order, selection width is
-> >> aligned to 4 and height to 2 to meet hardware requirements.
-> >>
-> >> Experimentally discovered values of the cropping-related registers and
-> >> vfifo_read_start for various output sizes are used. Default BLC anchor
-> >> positions are used for the default analogue crop, scaling down
-> >> proportionally for the smaller crop sizes.
-> >>
-> >> When analogue crop is adjusted, several consequential actions take
-> >> place: the output format is reset, exposure/vblank/hblank control
-> >> ranges and default values are adjusted accordingly. Additionally,
-> >> ov4689_set_ctrl utilizes pad crop instead of cur_mode width and
-> >> height for HTS and VTS calculation. Also, ov4689_enum_frame_sizes is
-> >> modified to report crop size as available frame size.
-> >
-> > We're amidst of a change to the APIs touching sensors with the the
-> > introduction of the internal pads.
-> > <URL:https://lore.kernel.org/linux-media/20240313072516.241106-1-sakari.ailus@linux.intel.com/T/#t>.
-> >
-> > I'd therefore postpone this bit so it would align with the new practices
-> > (also subject to change in the metadata set).
-> >
-> > The rest of the patches would seem more or less ready for merging to me.
-> 
-> Okay, so I'll post a v5 of patches 1-16 with whitespace fixes (as you
-> suggested in patch 20) soon, and the remaining patches affected by the
-> metadata-related API changes as a separate series as soon those changes
-> land in media_stage. Do I get you right?
+It worked, it worked!
 
-Yes, please.
+https://up.tail.ws/txt/working-suspend.txt
 
--- 
-Sakari Ailus
+I've tested it now quite some time.
+But, I also had to start using 6.6.26-1-lts because my magewell capture 
+card wouldn't without.
+
+Thanks again!
+
+On 26.03.2024 23:21, Borislav Petkov wrote:
+> Whoops,
+> 
+> this fell through the cracks. Sorry about that.
+> 
+> On Mon, Jan 29, 2024 at 06:18:00PM +0000, a-development@posteo.de 
+> wrote:
+>> I have the feeling that something else is amiss.
+>> Currently under 6.7.2-2-cachyos with srso=off.
+>> https://0x0.st/HDqP.txt
+> 
+> Yah, your tasks refuse to freeze on suspend and they have this fuse
+> stuff in the stacktrace:
+> 
+> [ 6346.492593] task:btop            state:D stack:0     pid:279617
+> tgid:1548  ppid:1531   flags:0x00004006
+> [ 6346.492600] Call Trace:
+> [ 6346.492602]  <TASK>
+> [ 6346.492607]  __schedule+0xd44/0x1af0
+> [ 6346.492614]  ? srso_alias_return_thunk+0x5/0xfbef5
+> [ 6346.492617]  ? __wake_up+0x9d/0xc0
+> [ 6346.492622]  schedule+0x32/0xd0
+> [ 6346.492627]  request_wait_answer+0xd0/0x2a0 [fuse
+> db37c699d94393e946cf93306449ea0f307959a1]
+> [ 6346.492638]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [ 6346.492643]  fuse_simple_request+0x21c/0x390 [fuse
+> db37c699d94393e946cf93306449ea0f307959a1]
+> [ 6346.492653]  fuse_statfs+0xf2/0x160 [fuse
+> db37c699d94393e946cf93306449ea0f307959a1]
+> [ 6346.492667]  statfs_by_dentry+0x67/0x90
+> 
+>> 
+>> Now I feel, further communication is rather selfish, as a clean 
+>> environment
+>> is hard to provide.
+>> In any case, my FUSE arguments are sshfs -o kernel_cache -o auto_cache 
+>> -o
+>> reconnect \
+>>                -o compression=yes -o cache_timeout=600 -o
+>> ServerAliveInterval=30 \
+>>                "$source" "$target" -o idmap=user
+>> 
+>> With this line, I somehow managed to have the FUSE mount infinitely 
+>> mounted,
+>> even if the device was offline for couple of days.
+>> A followed suspend would fail to freeze.
+>> srso=off would reproducibly work.
+> 
+> Not in your example above. It would fail after a couple of suspend
+> cycles.
+> 
+> And looking at your splats
+> 
+> [ 6366.524953]  ? switch_fpu_return+0x50/0xe0
+> [ 6366.524956]  ? srso_alias_return_thunk+0x5/0xfbef5
+> 		  ^^^^^^^^^^^^^^^^^^^^^^^^
+> [ 6366.524958]  ? exit_to_user_mode_prepare+0x132/0x1f
+> 
+> the right cmdline option to disable it is:
+> 
+> spec_rstack_overflow=off
+> 
+> not
+> 
+> srso=off
+> 
+> :-)
+> 
+>> Please provide me a specific version of a kernel I should try in my
+>> configuration to try and reproduce.
+>> I'd prefer a pre-compiled one; if not tell me...
+>> I use archlinux.
+> 
+> Just build the latest released kernel, which is 6.8 now. Take your
+> .config and use it to build it. The net is full of tutorials how to do
+> so.
+> 
+> And then try with spec_rstack_overflow=off and let's see what that 
+> does.
+> 
+>> Please give me a reason to not feel bad about myself.
+> 
+> Don't worry - it's just a machine. :)
 
