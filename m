@@ -1,112 +1,129 @@
-Return-Path: <linux-kernel+bounces-147386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0131B8A733A
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:30:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFC78A733E
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 20:31:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 970401F21F55
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:30:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6FD4D1F21B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 18:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E73981369B9;
-	Tue, 16 Apr 2024 18:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6B61369B1;
+	Tue, 16 Apr 2024 18:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="Wg4PaEEn"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+	dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b="kqKrEHo1"
+Received: from mail.mainlining.org (mainlining.org [94.241.141.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C2D2C6A3;
-	Tue, 16 Apr 2024 18:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAE21C06;
+	Tue, 16 Apr 2024 18:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.241.141.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292229; cv=none; b=FVNreKo/6EBc30QB7Pjn3v9jme7no77Xv1cb1NOeTsqHka4eeB3XaRrwfkBHri96u1KPIjnytY6XJp1sReS5s8tQ8wl553obsv2l3QfTDIvakIDGLLE+fUc6MfD9xuRPn4kkOayY2ZTArrkTJ3C61tOGRqKo/NOp+hf3HiJMbaU=
+	t=1713292275; cv=none; b=q6/CgW0B5wWSvutx505HAPdoK0j7D65X8h/6ocY5HbWpiBG1h1oYHTTsIwTpBu+w+Bn+BO4qfvtHXKUKEywB9txMhqgSfgksG2uCdr8GqL5B5iUmFozoJY9OefzlP7i24uAeWtw1WlFWHZ3pwyTZProrWcT2MisIFNdBJiBC3rQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713292229; c=relaxed/simple;
-	bh=BOgkAFFdf2wnO9hL/ivSNkM9DBF2bbinKHnkCviT4l8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FiH4wni/L5MfstRP6f8Q5YSvkgp4lt7gvjXhV+toA+oCEeRXr/Dab6oydIP4ob83Us520dZJjWzmtywomEpSplGJ9AzIXbLr3pNBoiJbqFOXgsU67wJ5qHRUm0iUQ+T83nWxkKh/0N65FYpCivcn5POlm8eXbad4ySBxzN2vVKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me; spf=pass smtp.mailfrom=pm.me; dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b=Wg4PaEEn; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=pm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-	s=protonmail3; t=1713292225; x=1713551425;
-	bh=62YpHOvZnZ8olaQOV9AE7phGelntP6xtyhEl8JdkA54=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=Wg4PaEEnIx5Lk0zDGjMn6BASw1bt7to6J/Otm4Qg5gGACUkF2rEBqmcYuHbduwckQ
-	 H1eo4AJvG3DCpM9CG0k90JV04Y95S8+grRhuFgIlKPdbbC7n44ZULp+QPalg+XNLE0
-	 By9mcXrdmEjIw0e41WckW7a/gmG3c5RRA9bNKkfaeuNIIGFAssv+jM1995X88Mgm/N
-	 A/sID5Ok081/ygln9wjKqztDlG21Rm6msq3y/xotQbnVtCAQXlK4v5kYzlj+A9mgla
-	 qhJNgvAlLImKeJAI7VVqwLilQfcatPe1Sk/FYo5r7zrxe/g0QpIhyB1cVmU2Yh/Xt5
-	 OgauEt/0LlMRw==
-Date: Tue, 16 Apr 2024 18:29:56 +0000
-To: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
-From: Michael Pratt <mcpratt@pm.me>
-Cc: Wander Lairson Costa <wander@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vamshi Gajjela <vamshigajjela@google.com>, Michael Pratt <mcpratt@pm.me>
-Subject: [PATCH v2 2/3] serial: 8250: Store whether fifo device is enabled
-Message-ID: <20240416182741.22514-3-mcpratt@pm.me>
-In-Reply-To: <20240416182741.22514-1-mcpratt@pm.me>
-References: <20240416182741.22514-1-mcpratt@pm.me>
-Feedback-ID: 27397442:user:proton
+	s=arc-20240116; t=1713292275; c=relaxed/simple;
+	bh=rzC5W1TaCb9OYzxdOKGyAXPykw9cGXSoLeHQch7h958=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ghSHvqigmNB1hHExPRuQo170LxmfsQhVkbhAZ4aompv8Z2vSNYXasEzh1u/ZYGZSFiaUyuUCmIXnlpLeFsTOkw4krUI8sAStxdEuw/udNcDnFcBRv1odPglGaqvVFgN0YAE3fka+1gNR1q3gzfngpZaxTtKXrRKK+Z7EZDBgN6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org; spf=pass smtp.mailfrom=mainlining.org; dkim=pass (2048-bit key) header.d=mainlining.org header.i=@mainlining.org header.b=kqKrEHo1; arc=none smtp.client-ip=94.241.141.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mainlining.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mainlining.org
+Received: from david-ryuzu.localdomain (ipbcc3a836.dynamic.kabel-deutschland.de [188.195.168.54])
+	by mail.mainlining.org (Postfix) with ESMTPSA id 4063BE20E0;
+	Tue, 16 Apr 2024 18:31:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mainlining.org;
+	s=psm; t=1713292269;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CDEkPdtKTNgd1iLFlJr4m5I7DfTRIEGCJhDqsto7S8E=;
+	b=kqKrEHo1pbhQ4q90yt5ppV/kDqBM412ZH23DtnlWM5son7smI/mtbCocuiEd0jAxVkyYtj
+	MG2QMeINp4283CTadR7wg6IRgNIUe15YuN/fS9ppYJu2bzC7xLfnDvO9SHJAuisk9hOhPf
+	8onesEvjlU4SdYqak1qoGPECcD8U0HPKZ0eaJTAMlMvnYfA4jl55YoOLQNyFyCkaNaDQKj
+	AFe5TedYsPVvuEaqInUnymlUjCCJsVL4FD0R0iA1bvQphbp818XopUUW5A0qHDajygaBkT
+	fRs8iIevRiT2fo+noUX5xIbof9Q2oEPbDk1f2fvy+WxETp+iEAryLZAEtcGaug==
+From: David Wronek <david@mainlining.org>
+Subject: [PATCH v3 0/2] Add driver for Raydium RM69380-based DSI panels
+Date: Tue, 16 Apr 2024 20:30:47 +0200
+Message-Id: <20240416-raydium-rm69380-driver-v3-0-21600ac4ce5f@mainlining.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANfDHmYC/4XNQQ6CMBCF4auQrq1ph1LBlfcwLkCmMIkUM9VGQ
+ ri7hZWJMS7/l8w3swjIhEEcs1kwRgo0+hT5LhPXvvYdSmpTC1BglNFGcj219BwkD7bKSyVbpog
+ szcEBNNaBcSjS8Z3R0WuDz5fUPYXHyNP2J+p1/UtGLZUssLRNDaZSTXEaavI38uS7/cidWN0In
+ 1bx04LVAgPaGqtzZb+sZVne/26T/g0BAAA=
+To: Neil Armstrong <neil.armstrong@linaro.org>, 
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+ Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Marijn Suijten <marijn.suijten@somainline.org>, 
+ Konrad Dybcio <konradybcio@kernel.org>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+ phone-devel@vger.kernel.org, David Wronek <david@mainlining.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1713292268; l=1909;
+ i=david@mainlining.org; s=20240121; h=from:subject:message-id;
+ bh=rzC5W1TaCb9OYzxdOKGyAXPykw9cGXSoLeHQch7h958=;
+ b=fHVKKYgh2Xauj1zzwwZfD7fVDUSHyQbzzy8cMaSXyu45ThbcnMq9DmCxgd6s4bzXCnISa63oG
+ n0+jqf0FGN8D9RP9FYhxxXnkRX8e3/bUqdDQoey/lSkQOotsVK/2sF/
+X-Developer-Key: i=david@mainlining.org; a=ed25519;
+ pk=PJIYyFK3VrK6x+9W6ih8IGSJ5dxRXHiYay+gG1qQzqs=
 
-Currently, there are 7 checks for whether to enable
-the internal fifo device of a 8250/16550 type uart.
+This patch adds support the 2560x1600@90Hz dual DSI command mode panel by
+EDO in combination with a Raydium RM69380 driver IC.
 
-Instead of checking all 7 values again whenever
-we need to know whether we have the fifo device enabled,
-store the result as a struct member of uart_8250_port.
+This driver IC can be found in the following devices:
+ * Lenovo Xiaoxin Pad Pro 2021 (TB-J716F) with EDO panel
+ * Lenovo Tab P11 Pro (TB-J706F) with EDO panel
+ * Robo & Kala 2-in-1 Laptop with Sharp panel
 
-This can, for example, lessen the amount
-of calculations done during a write operation.
-
-Signed-off-by: Michael Pratt <mcpratt@pm.me>
+Signed-off-by: David Wronek <david@mainlining.org>
 ---
-V1 -> V2: new commit
+Changes in v3:
+- Removed unneeded curly brackets from some if statments
+- Fix error handling code in probe function
+- Include video/mipi_display.h and make use of MIPI command definitions
+- Removed DRM_MODE_TYPE_PREFERRED
+- Dropped 'prepared' bool entirely
+- Register second DSI host using mipi_dsi_device_register_full()
+- Link to v2: https://lore.kernel.org/r/20240415-raydium-rm69380-driver-v2-0-524216461306@mainlining.org
 
- drivers/tty/serial/8250/8250_port.c | 2 ++
- include/linux/serial_8250.h         | 1 +
- 2 files changed, 3 insertions(+)
+Changes in v2:
+- Fixed typo in Kconfig
+- Removed ctx->prepared = true; in prepare function
+- Switched to drm_connector_helper_get_modes_fixed in get_modes function
+- Changed dev_notice() to dev_dbg()
+- Add description for compatible and reset-gpio in the dt-binding
+- Always require 'ports' node in the dt-binding regardless of compatible
+- Link to v1: https://lore.kernel.org/r/20240414-raydium-rm69380-driver-v1-0-5e86ba2490b5@mainlining.org
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/=
-8250_port.c
-index fc9dd5d45295..5b0cfe6bc98c 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -3392,6 +3392,8 @@ void serial8250_console_write(struct uart_8250_port *=
-up, const char *s,
- =09=09 */
- =09=09!(up->port.flags & UPF_CONS_FLOW);
-=20
-+=09up->fifo_enable =3D use_fifo;
-+
- =09if (likely(use_fifo))
- =09=09serial8250_console_fifo_write(up, s, count);
- =09else
-diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
-index fd59ed2cca53..017429f0e743 100644
---- a/include/linux/serial_8250.h
-+++ b/include/linux/serial_8250.h
-@@ -127,6 +127,7 @@ struct uart_8250_port {
- =09struct list_head=09list;=09=09/* ports on this IRQ */
- =09u32=09=09=09capabilities;=09/* port capabilities */
- =09u16=09=09=09bugs;=09=09/* port bugs */
-+=09unsigned int=09=09fifo_enable;=09/* fifo enabled if capable */
- =09unsigned int=09=09tx_loadsz;=09/* transmit fifo load size */
- =09unsigned char=09=09acr;
- =09unsigned char=09=09fcr;
---=20
-2.30.2
+---
+David Wronek (2):
+      dt-bindings: display: panel: Add Raydium RM69380
+      drm/panel: Add driver for EDO RM69380 OLED panel
 
+ .../bindings/display/panel/raydium,rm69380.yaml    |  91 +++++
+ drivers/gpu/drm/panel/Kconfig                      |  14 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ drivers/gpu/drm/panel/panel-raydium-rm69380.c      | 367 +++++++++++++++++++++
+ 4 files changed, 473 insertions(+)
+---
+base-commit: 66e4190e92ce0e4a50b2f6be0e5f5b2e47e072f4
+change-id: 20240414-raydium-rm69380-driver-47f22b6f24fe
+
+Best regards,
+-- 
+David Wronek <david@mainlining.org>
 
 
