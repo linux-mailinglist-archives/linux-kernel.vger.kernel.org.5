@@ -1,154 +1,172 @@
-Return-Path: <linux-kernel+bounces-147725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-147726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD4328A7838
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 00:59:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6019E8A783B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Apr 2024 01:01:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40CBEB22B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 22:59:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFE021F2314B
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 23:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC7413A24E;
-	Tue, 16 Apr 2024 22:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 147C713A3EF;
+	Tue, 16 Apr 2024 23:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rnDAMIjU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ACTaVNrV"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941896EB4C;
-	Tue, 16 Apr 2024 22:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9CA284E0B
+	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 23:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713308372; cv=none; b=WudDmqcr9veoKs8kUmu0pxe9lZ8CFWENc9Vhq/mXG+WetCfKTqeaGDoYERpp9ckA+omP/hogAdMvNek7b/sFj8p3C06hDdGtRIVnoRjnrScV55JWmfwBOgmS4n7Gv3bJYy5fRd86K3CMqzAA7if8FE1a2HXeW0XlOzsMF726LsA=
+	t=1713308449; cv=none; b=DpKt6AWG2isj6u4mI8dthpilw3fEAXrjd6XAty5e0Q4SK6IYmYwWDShWgitCsH5ucp7hd4W5iPmus+j1nFaf9XQzogr9qVi3pdEAqRN9VgQftSnEV/S+B7PXHPwZvzQMahZ8Up3Y7ulGJhrm/okd/CfCJ8NvLaSONT0U41jKhYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713308372; c=relaxed/simple;
-	bh=NV/UguGow9ASlmVYIj3yQaT47Si6+C8YOXFO1DIJSdo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V/9g5PMQWowIp5OP7qsOBliIjB2gIUoD3gNUE1HLcKGVLdyCUsjqV2790uOZfuYSWMcJg3+T6iABLWZPnKzFPfb9jW2uEK7Uz59c2YmwQfHTpBt7JHKJBMLKDiOS13suqtlqOUGWXuNUDJJUVTgGy/5tnNtJwZcX+VtRVZd8Ctc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rnDAMIjU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25208C113CE;
-	Tue, 16 Apr 2024 22:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713308371;
-	bh=NV/UguGow9ASlmVYIj3yQaT47Si6+C8YOXFO1DIJSdo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rnDAMIjU8kWJTlYRTRhSgT5P8oNwjVDdsFyG7Yd13zClgiJ35bF77159960jslMe4
-	 NM53o4VVBlbeUEFpZTGWWRKq4yWZRNR0HBb7JhTsWDfTfWHByRXfiD/yFR6K/yqgKv
-	 HGQgV0VVjVIjQehl0tIL/ZGoy3sStmPfaJl+pPdV9+OkixSRlGKR8QZwRF927m70xx
-	 o4FGUC/olipHXL8XY5GS64EX6XQiuPl/SmwJMV6YOsezwI4gLV3iZKAnYFRuLzI/sq
-	 A1r01N3qbTfoyf4hVgv/c7CfsiMC9N8rFe3eTCzQKvkq9iR7oiAfkXtMiIJcDyNmWb
-	 185BR8MffMfCA==
-Message-ID: <898497f0-d279-4d01-be8d-aad4048df95d@kernel.org>
-Date: Wed, 17 Apr 2024 08:59:27 +1000
+	s=arc-20240116; t=1713308449; c=relaxed/simple;
+	bh=938CDYTogAtfMd1cQm26cNVOklu3dGsvJ7jgtq4RFlU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=O0MidvZW01b7Wdd98YybT1GGp1BnwVuhGLdlrhd5jQnWyoYX3ky9En9vJg4Rnl84CiDhBZgRy1O5VBVTG5eYpj6/VH3huaMXHRrhmzG4K2EjLsCCQKRIP4lk/rGQbGiKj8qdXcLDBmAaC83tAINoCFq6Ir42y6wBA9gXn09/oio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ACTaVNrV; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd0ae66422fso587361276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 16:00:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1713308447; x=1713913247; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gUTtXSCxfr7roX4tv8e3CeB2xn8HuprapDcEtfWKNTY=;
+        b=ACTaVNrVlaHruOYoVyqPS3OKmX7SdAPNIjoPF+QYfN+kmtAhl+hBlT7e4zhQ22ByK4
+         gc7cXCOGRX3c4LLz6ZslXrIci8h0wVK70MVKbDMgOiK1KPdjSlFrP7vqF6hXvuqydkEm
+         dUfLNjzZBRr0BsjQjtWQg6mJ5aIIlAjkPPEta2xNdZFIu/cBUI4SJk6wvpsWjVqUymdA
+         ZrUrDkEQ5k645g9AsyFSCBivs81JSA3ysv2BdZ98iO63wJ2PTLiIjmrAZvzJ5jYOrdFO
+         nCQ0bBO0hVnCuJE3KiCCpQI4mljAY8FhPLQ1Mr7f65B7AJArDANpfoI+AFCIbLL3zmCP
+         SLRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713308447; x=1713913247;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gUTtXSCxfr7roX4tv8e3CeB2xn8HuprapDcEtfWKNTY=;
+        b=IMj7bMQgOqb2dWVW0fr+5fEnSeNYhT6FSNFAneSusITWy+gzboC+jgvaXP/aDxx6SU
+         cx+bMYK7xp5jv3D0i5XnvjA0kbVC8tH8ghomrFz1BJUx+Hf/fiNaEzKb75vDmLuR23Z3
+         sRbTIRW+iBqysm17lmHTwq+SCa9bEUijdoXSOylW3VKrA5O3ocGnEBgpWJ05Yf8lqqnh
+         Td91Y/WKtJwXarCgIcx7hHsRGr1W6jgBjTxR/tVeJGcEBa3VcyGkRYoNKb3lO7YJSPBX
+         pyAAVSTEdzcBWfy5Cbhrd7aCaW9seOFtd5lI6at3kTop+sxPcClyxrzlvO/PbQuaJ509
+         Npeg==
+X-Forwarded-Encrypted: i=1; AJvYcCUe642W/7aaj/HRd036eGjK7r9nB91FRfhxLrkh+5SOxk6mAEjE5l7GWLy+m7zmaD80lCEvoTnsyJZQW+Je+6OLrNelhHwomTcf/rXL
+X-Gm-Message-State: AOJu0YzvmxKwPTfEST71PLB8T5uqTR7ZZvthXz/r6tDj7QYS5yZBZM+X
+	hJ40cPczyFbtG1MtgOu2eypH33xynhi0GL+5oE8J/MJY+Zq1ib2ZNbb1mTXUxFjhfXXnVXTjP75
+	Q7A==
+X-Google-Smtp-Source: AGHT+IGGPg5F3xVITgD22MhVeOLN2C5A9N7DTwy2uE0PPWyJU/iLFIj8WJZfjoHCNNmaAQgWOu404YDQs2I=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:72c:b0:dda:c4ec:7db5 with SMTP id
+ l12-20020a056902072c00b00ddac4ec7db5mr1295216ybt.4.1713308446874; Tue, 16 Apr
+ 2024 16:00:46 -0700 (PDT)
+Date: Tue, 16 Apr 2024 16:00:45 -0700
+In-Reply-To: <CABgObfZq9dzvq3tsPMM3D+Zn-c77QrVd2Z1gW5ZKfb5fPu_8WA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ata: Add sdev attribute to lower link speed in runtime
-To: Gustav Ekelund <gustaek@axis.com>,
- Gustav Ekelund <gustav.ekelund@axis.com>, cassel@kernel.org, hare@suse.de,
- martin.petersen@oracle.com
-Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@axis.com
-References: <20240412134838.788502-1-gustav.ekelund@axis.com>
- <4e5c88f1-1b24-4f6d-8c11-d7029329ba7a@kernel.org>
- <7e6eb387-5a0e-460c-af08-eff070fa35ca@axis.com>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <7e6eb387-5a0e-460c-af08-eff070fa35ca@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <cover.1712785629.git.isaku.yamahata@intel.com>
+ <2f1de1b7b6512280fae4ac05e77ced80a585971b.1712785629.git.isaku.yamahata@intel.com>
+ <116179545fafbf39ed01e1f0f5ac76e0467fc09a.camel@intel.com>
+ <Zh2ZTt4tXXg0f0d9@google.com> <CABgObfZq9dzvq3tsPMM3D+Zn-c77QrVd2Z1gW5ZKfb5fPu_8WA@mail.gmail.com>
+Message-ID: <Zh8DHbb8FzoVErgX@google.com>
+Subject: Re: [PATCH v2 07/10] KVM: x86: Always populate L1 GPA for KVM_MAP_MEMORY
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
+	Isaku Yamahata <isaku.yamahata@intel.com>, Kai Huang <kai.huang@intel.com>, 
+	"federico.parola@polito.it" <federico.parola@polito.it>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>, "dmatlack@google.com" <dmatlack@google.com>, 
+	"michael.roth@amd.com" <michael.roth@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/04/16 0:49, Gustav Ekelund wrote:
-> On 4/13/24 02:29, Damien Le Moal wrote:
->> On 4/12/24 22:48, Gustav Ekelund wrote:
->>> Expose a new sysfs attribute to userspace that gives root the ability to
->>> lower the link speed in a scsi_device at runtime. The handle enables
->>> programs to, based on external circumstances that may be unbeknownst to
->>> the kernel, determine if a link should slow down to perhaps achieve a
->>> stabler signal. External circumstances could include the mission time
->>> of the connected hardware or observations to temperature trends.
->>
->> may, perhaps, could... This does not sound very deterministic. Do you have an
->> actual practical use case where this patch is useful and solve a real problem ?
->>
->> Strictly speaking, if you are seeing link stability issues due to temperature or
->> other environmental factors (humidity, altitude), then either you are operating
->> your hardware (board and/or HDD) outside of their environmental specifications,
->> or you have some serious hardware issues (which can be a simple as a bad SATA
->> cable or an inappropriate power supply). In both cases, I do not think that this
->> patch will be of any help.
->>
->> Furthermore, libata already lowers a link speed automatically at runtime if it
->> sees too many NCQ errors. Isn't that enough ? And we also have the horkage flags
->> to force a maximum link speed for a device/adapter, which can also be specified
->> as a libata module argument (libata.force).
->>
->>> Writing 1 to /sys/block/*/device/down_link_spd signals the kernel to
->>> first lower the link speed one step with sata_down_spd_limit and then
->>> finish off with sata_link_hardreset.
->>
->> We already have "/sys/class/ata_link/*/hw_sata_spd_limit", which is read-only
->> for now. So if you can really justify this manual link speed tuning for an
->> actual use case (not a hypothetical one), then the way to go would be to make
->> that attribute RW and implement its store() method to lower the link speed at
->> runtime.
->>
->> And by the way, looking at what that attribute says, I always get:
->> <unknown>
->>
->> So it looks like there is an issue with it that went unnoticed (because no one
->> is using it...). This needs some fixing.
->>
-> Hello Damien and Niklas,
-> 
-> Thank you for the feedback.
-> 
-> I have a hotplug system, where the links behave differently depending
-> on the disk model connected. For some models the kernel emits a lot of
-> bus errors, but mostly not enough errors for it to automatically lower
-> the link speed, except during high workloads. I have not observed any
-> data-loss regarding the errors, but the excessive logging becomes a problem.
+On Tue, Apr 16, 2024, Paolo Bonzini wrote:
+> On Mon, Apr 15, 2024 at 11:17=E2=80=AFPM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > The first question to answer is, do we want to return an error or "sile=
+ntly"
+> > install mappings for !SMM, !guest_mode.  And so this option becomes rel=
+evant only
+> > _if_ we want to unconditionally install mappings for the 'base" mode.
+> >
+> > > > - Return error on guest mode or SMM mode:  Without this patch.
+> > > >   Pros: No additional patch.
+> > > >   Cons: Difficult to use.
+> > >
+> > > Hmm... For the non-TDX use cases this is just an optimization, right?=
+ For TDX
+> > > there shouldn't be an issue. If so, maybe this last one is not so hor=
+rible.
+>=20
+> It doesn't even have to be ABI that it gives an error. As you say,
+> this ioctl can just be advisory only for !confidential machines. Even
+> if it were implemented, the shadow MMU can drop roots at any moment
 
-Hot-plugging should not be an issue in itself. When hot-plugged, the port
-scanning process should detect the maximum link speed supported by your device
-and use that speed for probing the device itself (IDENTIFY etc). If you see bus
-errors, then you are either having hardware issues (e.g. a bad cable or power
-supply) or some issues with your AHCI controller that may need patching.
+Sure, but there's a difference between KVM _potentially_ dropping roots and
+guaranteed failure because userspace is trying to do something that's unsup=
+ported.
+But I think this is a non-issue, because it should really just be as simple=
+ as:
 
-Can you send examples of the errors you are seeing ? That needs to be
-investigated first before going the (drastic) route of allowing to manually
-lower link speed at run-time.
+	if (!mmu->pre_map_memory)
+		return -EOPNOTSUPP;
 
-> 
-> So I want to adapt the link, depending on the connected model, in a
-> running system because I know that some particular models in this case
-> will operate better in SATA2 in this system.
-> 
-> Can I use the libata.force module to make changes to a particular link
-> in runtime?
+Hmm, or probably this to avoid adding an MMU hook for a single MMU flavor:
 
-Nope, libata.force is a module parameter so you can specify it as a kernel boot
-parameter, or if you compile libata as a module when loading (modprobe) libata.
-At run time, you need to rmmod+modprobe again libata, and so the ahci driver as
-well (because of dependencies).
+	if (!tdp_mmu_enabled || !mmu->root_role.direct)
+		return -EOPNOTSUPP;
 
-As I mentioned, if a run-time knob really is necessary (it should not be), using
-the ata_link hw_sata_spd_limit would be a better approach. But again, that
-really should not be necessary at all.
+> and/or kill the mapping via the shrinker.
 
-> 
-> Best regards
-> Gustav
-> 
+Ugh, we really need to kill that code.
 
--- 
-Damien Le Moal
-Western Digital Research
+> That said, I can't fully shake the feeling that this ioctl should be
+> an error for !TDX and that TDX_INIT_MEM_REGION wasn't that bad. The
+> implementation was ugly but the API was fine.=20
 
+Hmm, but IMO the implementation was ugly in no small part because of the co=
+ntraints
+put on KVM by the API.  Mapping S-EPT *and* doing TDH.MEM.PAGE.ADD in the s=
+ame
+ioctl() forced KVM to operate on vcpu0, and necessitated shoving temporary =
+data
+into a per-VM structure in order to get the source contents into TDH.MEM.PA=
+GE.ADD.
+
+We could eliminate the vcpu0 grossness, but it would require a massive refa=
+ctor,
+which is also not a problem per se, but it's obviously not free.  Eliminati=
+ng
+kvm_tdx.source_page is also doable, but it's not clear to me that end resul=
+t would
+be a net positive.
+
+If userspace pre-maps the S-EPT entries ahead of time, then KVM should have=
+ a
+straight shot to PAGE.ADD, i.e. doesn't need to "pass" the source page via =
+a
+scratch field in kvm_tdx, and I think/hope would avoid the need to grab vcp=
+u0
+in order to get at an MMU to build the S-EPT.
+
+And stating the obvious, TDX_INIT_MEM_REGION also doesn't allow pre-mapping=
+ memory,
+which is generally useful, and can be especially beneficial for confidentia=
+l VMs
+(and TDX in particular) due to the added cost of a page fault VM-Exit.
+
+I'm not dead set on this generic ioctl(), but unless it ends up being a tra=
+in wreck
+for userspace, I think it will allow for cleaner and more reusable code in =
+KVM.
 
