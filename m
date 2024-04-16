@@ -1,119 +1,100 @@
-Return-Path: <linux-kernel+bounces-146790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-146789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADB6C8A6AFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:32:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0B7C8A6AF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 14:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEDC51C215EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:32:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 876F11F21D90
+	for <lists+linux-kernel@lfdr.de>; Tue, 16 Apr 2024 12:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E133811F1;
-	Tue, 16 Apr 2024 12:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5BD41C77;
+	Tue, 16 Apr 2024 12:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sxPlLjZ5"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JAwYl57T"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2512885959
-	for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 12:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53AAF1D530;
+	Tue, 16 Apr 2024 12:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713270736; cv=none; b=tUqr+I2Yzn0SMPtR58bmqurZN5r7Xm23ovn5Ba1M9lqYeeM/cBsaR0riscbBaIKeMcnNSWn+XofPhAMdDkyFL2v4pe8Bhqj7HimZ72Vhr3L1V9edvz1f/zWlv7sc/tYUt6Zs9QPd4Qg5+snue38ctH4FqhqH0gKvW7MWGil0UlI=
+	t=1713270733; cv=none; b=ZCPuQhdduMm2zPFstvmCQKH31McZlsGwSH7PtUiIbaBa3x9641ZtG1J8qNwBwCKtRBFQlDwcstRckiezDx25WzP9BfJA0fwLSxSd+FrVIx9OrcHVE3TfhzQVgNJ3U/VrodobxeBzuev6TLAxLrhRIn0W9U1IvqzAVf03qITrBJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713270736; c=relaxed/simple;
-	bh=Pt5/vGHuhGceeo+QpbsK2XpxTMgmfSIqSNFU1JiurME=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MVeNnBxDoFKPhnMFS5l7nCiFhqSmWgdcd05tElWCE8It0qIovx/In+0eA51dkKDGMrZksQHsR7ieV3OQ/oD17bxw1c67pdEvu/hcl6VBLkhtUtk3laW47pB4HMYn3LurlF3TblYGBYWUnJYlj88shpuvR4mo9ziGHp0tKVPQchA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sxPlLjZ5; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61874a5b8ecso41083807b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Apr 2024 05:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1713270734; x=1713875534; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qFzNumwLL/PShEK3mtGPwjGln1YmU4ULHeA3GQnXIh8=;
-        b=sxPlLjZ5GCGhLrxd9XBWpj/89hu9GSM/WsGPuHEsYI6fuMPDZvBklz9i9rm3A//m7N
-         BqNqVOCg32CkqQwHMuNYLcmuTUAAqqBRXBRFRe7gsknq7Z2H2QhZ2m+kaEXT2/kaS0YS
-         3ApxjEXH51bBG7n1LdHPFQbAcaeByGEmuITFBRUa94BED/cdqkknpyepqqkqdVrsQRiO
-         8eTdErEl/tkZ+NZoldn1p4EkrCIYW2YuCnU9wHkxYyfnRZZLhOZG6Na4pCCYM0/XyLX1
-         8gf6iiqayylIGEC6smp/9tC3508NQHncAL8vKxl2S6yxLeq6UBw/Tm4aPfz+SuxMxsuw
-         dQEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713270734; x=1713875534;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qFzNumwLL/PShEK3mtGPwjGln1YmU4ULHeA3GQnXIh8=;
-        b=O+142SPWej4ioUIif0stPoaJTh+upEgevs3BS4/Tkwr+trGo8x9bbhKcmJ6u3W5IRX
-         zmxwnhassupyT6AuuEZojAVNNtRNjUoFyPF4mIk3zQKVDwmmd33U2uw4QSlmQh3RVGwR
-         6GV8q+CZ923K8NCn/grnLINNDNO/c13NujtAZbNJ5T/9KUx/pGGzLmDlB/A1RXjXG08X
-         TplyTpVbJ9P3xrNrbyv5k51zElwScOf0DDrybjC5VDvalKsHXCRHbufVo6Ba0v9eD+5f
-         v67AidBIZirnksdJl9SkV3CPQrYJ5ef/Sajm1b5FsbjAwMznnCBstkNnrtXWfloIASR0
-         bAqg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIYAb1ktPS5bpjzTDf1bafoizdO7ykBkSZAnZzYHVWYCYutU/sCJI49dbmDkoR4ydyzqyBn+hYVIEVU/xcdTeN/NfqzqhRNaNVJRH4
-X-Gm-Message-State: AOJu0Yz0I+Y2VndTs4/7vlFvb4acavKlyejEx2ONAwIt+JIx4pOKcfeN
-	XwJlpo/r2KYp12RBgLlPpLUWM8GO6r6j7xgQtW+8BdAVI8WtCglzPr3lWNHul5x0pRtODx74jNY
-	h9CXFn/HT41M/kitU/3fqUhCYUgVxhLu3B/nMJQ==
-X-Google-Smtp-Source: AGHT+IGV27KS53nGXMmiHjntrt3Z5nGpbgyi0jBS2Pa+b7xJatvlhEtb1vxhnn5pvUEhuRd3C8c95o+slvde3TTPid0=
-X-Received: by 2002:a25:1687:0:b0:de0:fb80:5c6a with SMTP id
- 129-20020a251687000000b00de0fb805c6amr10814478ybw.60.1713270734122; Tue, 16
- Apr 2024 05:32:14 -0700 (PDT)
+	s=arc-20240116; t=1713270733; c=relaxed/simple;
+	bh=yc1OHvnCJrrwOA0Sled1/e0GCb4ZpXzGgDvC/GtJAHA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Bm/yrDEVwUkVebeIk1Hmyl67pXgKBzOaqfCN1joytcBXRDGYFmo64BGNV48spEwxv/nEHQ+YZ8XkQTrwWcn2pQKY1zZWy+NwMmSG/EFZLRjcZ3EmXPULOr/739at+5CLAN0rYQ17ZDPA6IsyF0GtRNXiG1+Wxhy6f0gGtrgJlGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JAwYl57T; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713270732; x=1744806732;
+  h=from:to:cc:in-reply-to:references:subject:message-id:
+   date:mime-version:content-transfer-encoding;
+  bh=yc1OHvnCJrrwOA0Sled1/e0GCb4ZpXzGgDvC/GtJAHA=;
+  b=JAwYl57TD2JXXzF4ogM6Qdj8pxLz6qaiM4tEEVdqVEkSzgELadg1Prqh
+   wewvABhJxxwcy9mMitY5+qqE4mGNK7jb5TdGSpV8d5MA5RznizeyclG1c
+   Z0BsWPH/gedNq1o/nkIwJPQ8IN6MnwxAhWoUUImjDBZ3pWBZvwFzm9erg
+   V8F9GYMEuH5aKvrKqdYagG5GCY2m5Q6VB9fEFx3dt0jb4JnvkvoQSEaSh
+   CvL2HKjXK9R4iuRtXAqDsd2sNogSqlRq8CAxo/vC15mNxUkw+iYvY+wEA
+   sUFNbkkICTOmLcRZQak0Lmbxl80a706xrKnxcumkN7M8yzDaTnNvdDljh
+   g==;
+X-CSE-ConnectionGUID: 4VNomxXSRNqgNFLDogS9eA==
+X-CSE-MsgGUID: EctLl3DtQ+Glypz1Lyrt+Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8868755"
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="8868755"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 05:32:11 -0700
+X-CSE-ConnectionGUID: MRuugAAZSO2xKeIREtP0lg==
+X-CSE-MsgGUID: 6JqSE1nESkOfEkiC/U89ag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,206,1708416000"; 
+   d="scan'208";a="26887543"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.34])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 05:32:08 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: hdegoede@redhat.com, markgross@kernel.org, 
+ andriy.shevchenko@linux.intel.com, 
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240415212853.2820470-1-srinivas.pandruvada@linux.intel.com>
+References: <20240415212853.2820470-1-srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH] platform/x86: ISST: Add Granite Rapids-D to HPM CPU
+ list
+Message-Id: <171327072346.3662.18169670503368574548.b4-ty@linux.intel.com>
+Date: Tue, 16 Apr 2024 15:32:03 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240414-arm-psci-system_reset2-vendor-reboots-v2-0-da9a055a648f@quicinc.com>
- <20240414-arm-psci-system_reset2-vendor-reboots-v2-2-da9a055a648f@quicinc.com>
- <Zh5FKtLVhIH-6R-I@bogus>
-In-Reply-To: <Zh5FKtLVhIH-6R-I@bogus>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 16 Apr 2024 15:32:02 +0300
-Message-ID: <CAA8EJpqHOWCLg65TSrpy6eh2kFL2=5uu8Kp+WKqu8dLZdowfZA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: arm: Document reboot mode magic
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Elliot Berman <quic_eberman@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Sebastian Reichel <sre@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vinod Koul <vkoul@kernel.org>, Andy Yan <andy.yan@rock-chips.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>, Melody Olvera <quic_molvera@quicinc.com>, 
-	Shivendra Pratap <quic_spratap@quicinc.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, linux-pm@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
-On Tue, 16 Apr 2024 at 12:30, Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Sun, Apr 14, 2024 at 12:30:25PM -0700, Elliot Berman wrote:
-> > Add bindings to describe vendor-specific reboot modes. Values here
-> > correspond to valid parameters to vendor-specific reset types in PSCI
-> > SYSTEM_RESET2 call.
-> >
->
-> IIUC, PSCI SYSTEM_RESET will be always supported, so the choice of using
-> SYSTEM_RESET2 sounds like a system policy and must not have any information
-> in the device tree. All required support from PSCI is discoverable and
-> the policy choice must be userspace driven. That's my opinion.
+On Mon, 15 Apr 2024 14:28:53 -0700, Srinivas Pandruvada wrote:
 
-Well, we are talking about the vendor-specific resets, which are not
-discoverable. The spec defines them as "implementation defined".
-For example, PCSI spec doesn't define a way to add "reset to
-bootloader" or "reset to recovery" kinds of resets.
+> Add Granite Rapids-D to hpm_cpu_ids, so that MSR 0x54 can be used.
+> 
+> 
 
-I think the bindings at least should make it clear that the vendor bit
-it being set automatically. I won't comment whether this is a good
-decision or not.
 
--- 
-With best wishes
-Dmitry
+Thank you for your contribution, it has been applied to my local
+review-ilpo branch. Note it will show up in the public
+platform-drivers-x86/review-ilpo branch only once I've pushed my
+local branch there, which might take a while.
+
+The list of commits applied:
+[1/1] platform/x86: ISST: Add Granite Rapids-D to HPM CPU list
+      commit: d8c2d38c4d1dee8fe8e015b9ebf65bdd8e4da99b
+
+--
+ i.
+
 
